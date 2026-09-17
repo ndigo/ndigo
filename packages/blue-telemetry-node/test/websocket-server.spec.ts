@@ -14,8 +14,9 @@ import {
     InMemoryMetricExporter,
     MeterProvider,
     PeriodicExportingMetricReader,
+    type DataPoint,
 } from '@opentelemetry/sdk-metrics';
-import { metrics, trace } from '@opentelemetry/api';
+import { metrics, trace, type Attributes } from '@opentelemetry/api';
 import { parameters, requestMapping, socketMapping, socketSession, type SocketSession } from '@blue/dispatcher';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@blue/platform-node';
@@ -67,6 +68,45 @@ async function counterValue(reader: PeriodicExportingMetricReader, name: string)
     return 0;
 }
 
+/**
+ * The counter's datapoints via an explicit collect (typed SDK `DataPoint`s).
+ *
+ * @param reader - The metric reader to collect from.
+ * @param name - The counter name (e.g. `blue.socket.messages.sent`).
+ * @returns The counter's datapoints, `[]` when the metric is absent.
+ */
+async function counterDatapoints(reader: PeriodicExportingMetricReader, name: string): Promise<DataPoint<number>[]> {
+    const { resourceMetrics } = await reader.collect();
+    for (const scope of resourceMetrics.scopeMetrics) {
+        for (const metric of scope.metrics) {
+            if (metric.descriptor?.name === name && metric.dataPointType === DataPointType.SUM) {
+                return [...metric.dataPoints];
+            }
+        }
+    }
+    return [];
+}
+
+/**
+ * Cumulative value of the datapoints whose attributes carry every entry of
+ * `match` — the series a specific fan-out dimension lands on, or the
+ * attribute-free series for `{}`.
+ *
+ * @param reader - The metric reader to collect from.
+ * @param name - The counter name.
+ * @param match - Attribute entries the datapoint must carry.
+ * @returns The matching series' cumulative value, `0` when absent.
+ */
+async function datapointValue(reader: PeriodicExportingMetricReader, name: string, match: Attributes): Promise<number> {
+    let total = 0;
+    for (const point of await counterDatapoints(reader, name)) {
+        if (Object.entries(match).every(([key, value]) => point.attributes[key] === value)) {
+            total += point.value;
+        }
+    }
+    return total;
+}
+
 const delay = (ms: number): Promise<void> => {
     const { promise, resolve } = Promise.withResolvers<void>();
     setTimeout(resolve, ms);
@@ -109,12 +149,24 @@ describe('WebSocketServerInstrumentation', () => {
         await adapter?.close();
     });
 
+    /**
+     * Open a socket against the echo endpoint, resolving once the upgrade
+     * handshake is up (so the registry has the session when the caller fans
+     * out — a fan-out that reaches nobody is not a sent message).
+     *
+     * @returns The connected socket.
+     */
+    async function openEchoSocket(): Promise<WebSocket> {
+        const socket = new WebSocket(`${wsUrl}/echo`);
+        const { promise, resolve, reject } = Promise.withResolvers<void>();
+        socket.on('open', resolve);
+        socket.on('error', reject);
+        await promise;
+        return socket;
+    }
+
     test('records a session lifetime span with path, duration, and close code', async () => {
-        const ws = new WebSocket(`${wsUrl}/echo`);
-        const { promise: opened, resolve, reject } = Promise.withResolvers<void>();
-        ws.on('open', resolve);
-        ws.on('error', reject);
-        await opened;
+        const ws = await openEchoSocket();
         ws.send('ping');
         ws.close(1000, 'done');
         await delay(150); // close handshake → registry remove → span end
@@ -127,11 +179,7 @@ describe('WebSocketServerInstrumentation', () => {
     });
 
     test('counts session lifecycle, fan-out messages, and bytes', async () => {
-        const ws = new WebSocket(`${wsUrl}/echo`);
-        const { promise: opened, resolve, reject } = Promise.withResolvers<void>();
-        ws.on('open', resolve);
-        ws.on('error', reject);
-        await opened;
+        const ws = await openEchoSocket();
 
         const received = new Promise<void>((resolve) => {
             ws.once('message', () => resolve());
@@ -147,5 +195,62 @@ describe('WebSocketServerInstrumentation', () => {
         ws.close(1000, 'done');
         await delay(150);
         expect(await counterValue(metricReader, 'blue.socket.sessions.closed')).toBe(2);
+    });
+
+    test('measures binary fan-out payloads by byte length, not JSON encoding', async () => {
+        const ws = await openEchoSocket();
+        const bytesBefore = await counterValue(metricReader, 'blue.socket.messages.bytes');
+        adapter.socketRegistry.broadcast('/echo', 'abc'); // text frame: 3 bytes
+        expect(await counterValue(metricReader, 'blue.socket.messages.bytes')).toBe(bytesBefore + 3);
+        // Binary frames: exact payload bytes. JSON-encoding them would record
+        // 31 (index-key object) and 2 (`'{}'`) instead.
+        adapter.socketRegistry.broadcast('/echo', new Uint8Array([1, 2, 3, 4, 5]));
+        expect(await counterValue(metricReader, 'blue.socket.messages.bytes')).toBe(bytesBefore + 8);
+        adapter.socketRegistry.broadcast('/echo', new ArrayBuffer(8));
+        expect(await counterValue(metricReader, 'blue.socket.messages.bytes')).toBe(bytesBefore + 16);
+        ws.close(1000, 'done');
+        await delay(150);
+    });
+
+    test('room fan-out counts on the bounded attribute-free series by default', async () => {
+        const ws = await openEchoSocket();
+        const room = 'TEL-3-default-room';
+        const session = adapter.socketRegistry.sessions('/echo')[0];
+        adapter.socketRegistry.join(session, room);
+        const sentBefore = await datapointValue(metricReader, 'blue.socket.messages.sent', {});
+        const bytesBefore = await datapointValue(metricReader, 'blue.socket.messages.bytes', {});
+        adapter.socketRegistry.broadcastTo(room, 'room-tin'); // 8 bytes
+
+        expect(await datapointValue(metricReader, 'blue.socket.messages.sent', {})).toBe(sentBefore + 1);
+        expect(await datapointValue(metricReader, 'blue.socket.messages.bytes', {})).toBe(bytesBefore + 8);
+        // The arbitrary room string never becomes a metric attribute.
+        const points = await counterDatapoints(metricReader, 'blue.socket.messages.sent');
+        expect(points.some((point) => point.attributes['socket.room'] === room)).toBe(false);
+        ws.close(1000, 'done');
+        await delay(150);
+    });
+
+    test('records socket.room only with the roomAttribute opt-in', async () => {
+        // Two instrumentations must not wrap the same prototype at once —
+        // hand the registry over to a room-aware instance for this test.
+        instrumentation.disable();
+        const roomAware = new WebSocketServerInstrumentation({ roomAttribute: true });
+        try {
+            // The observer attaches on the first registration while this
+            // instance is enabled, so the socket opens after the swap.
+            const ws = await openEchoSocket();
+            const room = 'TEL-3-opt-in-room';
+            const session = adapter.socketRegistry.sessions('/echo')[0];
+            adapter.socketRegistry.join(session, room);
+            adapter.socketRegistry.broadcastTo(room, 'room-tin'); // 8 bytes
+
+            expect(await datapointValue(metricReader, 'blue.socket.messages.sent', { 'socket.room': room })).toBe(1);
+            expect(await datapointValue(metricReader, 'blue.socket.messages.bytes', { 'socket.room': room })).toBe(8);
+            ws.close(1000, 'done');
+            await delay(150);
+        } finally {
+            roomAware.disable();
+            instrumentation.enable();
+        }
     });
 });

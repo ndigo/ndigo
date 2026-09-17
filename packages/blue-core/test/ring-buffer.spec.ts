@@ -181,6 +181,24 @@ describe('RingBuffer', () => {
             expect(result).toEqual(['a', 'b', 'c']);
         });
 
+        test('iteration and serialization survive a head wrap, oldest first', () => {
+            const wrapped = new RingBuffer<number>(4);
+            wrapped.put(1, 2, 3);
+            wrapped.get(); // tail advances — next puts wrap the head
+            wrapped.get();
+            wrapped.put(4, 5, 6);
+            // The old numeric slot walk visited only positions 0..length-1
+            // and dropped the elements past the wrap.
+            expect([...wrapped]).toEqual([3, 4, 5, 6]);
+            expect(wrapped.toJSON()).toEqual([3, 4, 5, 6]);
+            expect(wrapped.toString()).toBe('3,4,5,6');
+            expect(wrapped.get()).toBe(3);
+            expect(wrapped.get()).toBe(4);
+            expect(wrapped.get()).toBe(5);
+            expect(wrapped.get()).toBe(6);
+            expect(wrapped.isEmpty).toBe(true);
+        });
+
         test('it should only allow numeric capacity', () => {
             (rb as { capacity: unknown }).capacity = 'a';
             expect(rb.capacity).toBe(RingBuffer.MIN_CAPACITY);

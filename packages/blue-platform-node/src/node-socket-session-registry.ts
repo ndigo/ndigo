@@ -53,6 +53,27 @@ export type SocketBackpressureEvent = {
 };
 
 /**
+ * Fan-out event — emitted once per `broadcast`/`broadcastTo` that reached at
+ * least one session, after the payload has been serialized for the wire
+ * (exactly once). Telemetry and logging consume this instead of
+ * re-serializing the payload to measure it — the same payload would
+ * otherwise be JSON-encoded twice per broadcast. A fan-out to an empty
+ * path/room (or one whose members have all closed) sends nothing and emits
+ * nothing.
+ */
+export type SocketFanoutEvent = {
+    /** Which index fanned out: the endpoint path or a named room. */
+    scope: 'path' | 'room';
+    /** The path or room name that was targeted. */
+    key: string;
+    /** Wire size of the serialized payload (UTF-8 octets for text frames,
+     * raw length for binary). */
+    bytes: number;
+    /** Sessions the payload was handed to (closed ones excluded). */
+    recipients: number;
+};
+
+/**
  * Options for {@link NodeSocketSessionRegistry}.
  */
 export interface NodeSocketSessionRegistryOptions {
@@ -147,6 +168,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
     #lastSeen: WeakMap<SocketSession, number> = new WeakMap();
     readonly #backpressure: SocketBackpressurePolicy | null;
     #onOverflow: Set<(event: SocketBackpressureEvent) => void> = new Set();
+    #onFanout: Set<(event: SocketFanoutEvent) => void> = new Set();
     #heartbeatIntervalMs: number | null;
     #idleTimeoutMs: number;
     #now: () => number;
@@ -192,6 +214,21 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
     }
 
     /**
+     * Subscribe to fan-out events (`broadcast`/`broadcastTo`) after the
+     * payload has been serialized — the size seam for telemetry, so the
+     * payload is not serialized a second time just to be measured.
+     *
+     * @param observer - Invoked once per fan-out.
+     * @returns An unsubscribe function (disable-time symmetry).
+     */
+    addFanoutObserver(observer: (event: SocketFanoutEvent) => void): () => void {
+        this.#onFanout.add(observer);
+        return () => {
+            this.#onFanout.delete(observer);
+        };
+    }
+
+    /**
      * Start tracking a session. Adapter hook — not part of the dispatcher
      * contract: registers the transport for heartbeat pings and attaches the
      * pong bookkeeping. The session auto-joins the set keyed by its endpoint
@@ -203,7 +240,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
      *   graceful reaping).
      */
     register(session: SocketSession, path: string, transport: WebSocket): void {
-        if (this.#sessions.has(session)) {
+        if (this.#sessions.has(session) || session.isClosed) {
             return;
         }
         this.#sessions.set(session, path);
@@ -246,10 +283,12 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
     /**
      * Send a payload to every open session at the given endpoint path.
      *
-     * Strings are sent as text frames; any other value is JSON-encoded
-     * (parity with `SocketSession.send`). Best-effort fan-out: closed
-     * sessions are skipped and transport write errors are tolerated
-     * (AD-21 D5).
+     * Strings are sent as text frames, `Uint8Array`/`ArrayBuffer` as binary
+     * frames, any other value is JSON-encoded — parity with
+     * `SocketSession.send` (AD-23 D8). Best-effort fan-out: closed sessions
+     * are skipped and transport write errors are tolerated (AD-21 D5).
+     * Serialized once per fan-out; observers registered via
+     * {@link addFanoutObserver} see the wire size without re-serializing.
      *
      * @param path - The routing path (e.g. `/ws/room`).
      * @param payload - The payload to send.
@@ -261,9 +300,19 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
         }
         // Serialize once per broadcast, not once per member (each session
         // would re-`JSON.stringify` the same payload).
-        const wire = typeof payload === 'string' ? payload : (JSON.stringify(payload) ?? '');
+        const wire = serializeFanout(payload);
+        let recipients = 0;
         for (const session of members) {
+            if (session.isClosed) {
+                continue;
+            }
+            recipients += 1;
             this.#safeSend(session, wire);
+        }
+        // Only a fan-out that reached at least one session is a sent message
+        // (an empty path/room, or one whose members all closed, sends nothing).
+        if (recipients > 0) {
+            this.#emitFanout({ scope: 'path', key: path, bytes: fanoutBytes(wire), recipients });
         }
     }
 
@@ -279,9 +328,17 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
         if (!members) {
             return;
         }
-        const wire = typeof payload === 'string' ? payload : (JSON.stringify(payload) ?? '');
+        const wire = serializeFanout(payload);
+        let recipients = 0;
         for (const session of members) {
+            if (session.isClosed) {
+                continue;
+            }
+            recipients += 1;
             this.#safeSend(session, wire);
+        }
+        if (recipients > 0) {
+            this.#emitFanout({ scope: 'room', key: room, bytes: fanoutBytes(wire), recipients });
         }
     }
 
@@ -348,8 +405,11 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
      * the heartbeat sweep when the last session goes away.
      *
      * @param session - The session to remove.
-     * @param closeCode - WebSocket close status code when known — surfaced
-     *   for observability (e.g. backpressure closes carry `1013`).
+     * @param closeCode - WebSocket close status code when known (e.g.
+     *   backpressure closes carry `1013`). The registry itself does not
+     *   consume it — it is the observability seam for registry wrappers
+     *   (the socket telemetry instrumentation reads it for close-code
+     *   counters and session-span attributes).
      */
     remove(session: SocketSession, closeCode?: number): void {
         void closeCode;
@@ -440,7 +500,13 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
                     bufferedBytes: transport.bufferedAmount,
                 };
                 for (const observer of this.#onOverflow) {
-                    observer(event);
+                    try {
+                        observer(event);
+                    } catch {
+                        // An observer fault (telemetry, logging) must not
+                        // abort the fan-out or skip the overflow decision —
+                        // the send below is already the guarded path.
+                    }
                 }
                 if (policy.onOverflow === 'close') {
                     // 1013 "try again later" — bounded memory, explicit
@@ -468,4 +534,45 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
             throw new RangeError(`invalid room name: ${String(room)}`);
         }
     }
+
+    /**
+     * Notify fan-out observers. An observer fault (telemetry, logging) must
+     * not abort the fan-out — the send has already happened.
+     *
+     * @param event - The fan-out event.
+     */
+    #emitFanout(event: SocketFanoutEvent): void {
+        for (const observer of this.#onFanout) {
+            try {
+                observer(event);
+            } catch {
+                // Observer faults never break a broadcast.
+            }
+        }
+    }
+}
+
+/**
+ * Serialize a fan-out payload for the wire, once: strings stay text frames,
+ * `Uint8Array`/`ArrayBuffer` stay binary (parity with `SocketSession.send`),
+ * anything else is JSON-encoded.
+ *
+ * @param payload - The payload to fan out.
+ * @returns The wire form handed to every member.
+ */
+function serializeFanout(payload: unknown): string | Uint8Array | ArrayBuffer {
+    if (typeof payload === 'string' || payload instanceof Uint8Array || payload instanceof ArrayBuffer) {
+        return payload;
+    }
+    return JSON.stringify(payload) ?? '';
+}
+
+/**
+ * Wire size of a serialized fan-out payload.
+ *
+ * @param wire - The serialized payload.
+ * @returns The size in bytes (UTF-8 octets for text frames).
+ */
+function fanoutBytes(wire: string | Uint8Array | ArrayBuffer): number {
+    return typeof wire === 'string' ? Buffer.byteLength(wire, 'utf-8') : wire.byteLength;
 }

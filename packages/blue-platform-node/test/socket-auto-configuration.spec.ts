@@ -48,20 +48,41 @@ describe('resolveSocketRegistryOptions', () => {
 
 describe('resolveSocketLimits', () => {
     test('defaults when unset', () => {
-        expect(resolveSocketLimits({}, {})).toEqual({ maxPayloadBytes: 1_048_576, maxQueuedMessages: 1024 });
+        expect(resolveSocketLimits({}, {})).toEqual({
+            maxPayloadBytes: 1_048_576,
+            maxQueuedMessages: 1024,
+            maxQueuedBytes: 4_194_304,
+            maxBufferedBytes: 1_048_576,
+            onOverflow: 'close',
+        });
         expect(resolveSocketLimits({}, { BLUE_SOCKET_MAX_PAYLOAD_BYTES: '' })).toEqual({
             maxPayloadBytes: 1_048_576,
             maxQueuedMessages: 1024,
+            maxQueuedBytes: 4_194_304,
+            maxBufferedBytes: 1_048_576,
+            onOverflow: 'close',
         });
     });
 
     test('reads explicit values over environment', () => {
         expect(
-            resolveSocketLimits({ maxPayloadBytes: 512, maxQueuedMessages: 8 }, { BLUE_SOCKET_MAX_PAYLOAD_BYTES: '999999' })
-        ).toEqual({ maxPayloadBytes: 512, maxQueuedMessages: 8 });
+            resolveSocketLimits(
+                { maxPayloadBytes: 512, maxQueuedMessages: 8 },
+                { BLUE_SOCKET_MAX_PAYLOAD_BYTES: '999999' }
+            )
+        ).toEqual({
+            maxPayloadBytes: 512,
+            maxQueuedMessages: 8,
+            maxQueuedBytes: 4_194_304,
+            maxBufferedBytes: 1_048_576,
+            onOverflow: 'close',
+        });
         expect(resolveSocketLimits({}, { BLUE_SOCKET_MAX_PAYLOAD_BYTES: '2048' })).toEqual({
             maxPayloadBytes: 2048,
             maxQueuedMessages: 1024,
+            maxQueuedBytes: 4_194_304,
+            maxBufferedBytes: 1_048_576,
+            onOverflow: 'close',
         });
     });
 
@@ -78,7 +99,11 @@ describe('resolveSocketLimits', () => {
         const dispatcher = {} as unknown as NodeDispatcher;
         const adapter = {} as unknown as HTTPServer['server'];
         expect(
-            () => new HTTPServer(dispatcher, { adapter: adapter as never, socketRegistry: new NodeSocketSessionRegistry() })
+            () =>
+                new HTTPServer(dispatcher, {
+                    adapter: adapter as never,
+                    socketRegistry: new NodeSocketSessionRegistry(),
+                })
         ).toThrow(RangeError);
     });
 });

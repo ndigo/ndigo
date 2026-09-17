@@ -1003,6 +1003,9 @@ importers:
         specifier: ^8.18.0
         version: 8.21.3
     devDependencies:
+      '@blue/auth-core':
+        specifier: ~0.0.1
+        version: link:../blue-auth-core
       '@blue/context':
         specifier: ~0.0.1
         version: link:../blue-context

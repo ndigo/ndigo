@@ -207,7 +207,7 @@ describe('STOMP over WebSocket (AD-23)', () => {
         const receipt = await waitFrame(ws);
         expect(receipt.command).toBe('RECEIPT');
 
-        controller.broker.publish('/topic/push', 'server push');
+        await controller.broker.publish('/topic/push', 'server push');
 
         const message = await waitFrame(ws);
         expect(message.command).toBe('MESSAGE');
@@ -274,7 +274,7 @@ describe('STOMP over WebSocket (AD-23)', () => {
     });
 
     test('queue backlog replays to a late subscriber (AD-23 D11)', async () => {
-        controller.broker.publish('/queue/jobs', 'job-1');
+        await controller.broker.publish('/queue/jobs', 'job-1');
         const ws = new WebSocket(`${wsUrl}/stomp`);
         await new Promise<void>((resolve, reject) => {
             ws.on('open', resolve);

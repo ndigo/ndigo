@@ -955,6 +955,9 @@ importers:
 
   packages/blue-orm-drizzle:
     dependencies:
+      '@blue/socket':
+        specifier: ~0.0.1
+        version: link:../blue-socket
       '@libsql/client':
         specifier: 0.17.4
         version: 0.17.4

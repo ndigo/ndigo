@@ -770,8 +770,13 @@ the permanent equivalents live in `stomp-broker.spec.ts`,
 `stomp-frame.spec.ts`, `message-store.spec.ts`, `websocket.spec.ts` and
 `apps/blue-api/test/stomp.spec.ts`).
 
-**Left to the owner:** HYG-1 — commit the tree in slices (it also carries the
-pre-existing uncommitted AD-20..23 work). The
-`graft build` refresh was run after the changes landed (deep pass, exit 0,
-meaning coverage 6050/6052 symbols — two files failed to summarize; re-running
-`graft build --deep` resumes from cache).
+**Commit state (HYG-1, executed 2026-09-17):** the tree is committed in 12
+topical slices (core ring buffer → oxlint rule → socket STOMP → libsql store →
+boot typecheck → platform-node auth/bounds → api demo gate → telemetry →
+typedoc links → docs → smol-toml override → oxfmt baseline); the full gate
+ladder passes on the committed tree and the working tree is clean. Where the
+wave's uncommitted work and this remediation interleave in the same files
+(socket, platform-node, telemetry), the slice is the coherent feature delta;
+the pure-remediation items are their own commits. Also left for later:
+re-running `graft build --deep` (meaning coverage 6050/6052 symbols — two files
+failed to summarize; re-running resumes from cache).

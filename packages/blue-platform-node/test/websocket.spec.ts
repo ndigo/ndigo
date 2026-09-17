@@ -4,7 +4,8 @@
  * @author Jeff Rose
  */
 // @vitest-environment node
-import { describe, test, beforeAll, afterAll, expect } from 'vitest';
+import { describe, test, beforeAll, afterAll, expect, vi } from 'vitest';
+import { authenticated, authorized } from '@blue/auth-core';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import {
     getMapping,
@@ -19,6 +20,7 @@ import {
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
+import { NodeSocketSessionRegistry } from '../src/node-socket-session-registry';
 import { HTTPServer } from '../src/http-server';
 import { WebSocket } from 'ws';
 
@@ -282,26 +284,25 @@ describe('WebSocket origin enforcement', () => {
 
     test('a forged Origin is rejected with 403 before the connection fires', async () => {
         const ws = new WebSocket(`${originWsUrl}/echo`, { headers: { origin: 'https://evil.example' } });
-        let failed = false;
-        ws.on('error', () => {
-            failed = true;
+        // The security control is the HTTP status: any refusal — 400, 401,
+        // 500, or a stalled handshake — would pass an error-event-only
+        // assertion, so pin the actual 403 the verifyClient callback sends.
+        // (Attaching an `unexpected-response` listener suppresses ws's
+        // generic error event for this path by design.)
+        const status = await new Promise<number | null>((resolve) => {
+            ws.once('unexpected-response', (_request, response) => resolve(response.statusCode ?? null));
+            setTimeout(() => resolve(null), 400);
         });
-        const { promise, resolve } = Promise.withResolvers<void>();
-        setTimeout(resolve, 400);
-        await promise;
-        expect(failed).toBe(true);
+        expect(status).toBe(403);
     });
 
     test('a missing Origin fails closed when the allowlist is configured', async () => {
         const ws = new WebSocket(`${originWsUrl}/echo`);
-        let failed = false;
-        ws.on('error', () => {
-            failed = true;
+        const status = await new Promise<number | null>((resolve) => {
+            ws.once('unexpected-response', (_request, response) => resolve(response.statusCode ?? null));
+            setTimeout(() => resolve(null), 400);
         });
-        const { promise, resolve } = Promise.withResolvers<void>();
-        setTimeout(resolve, 400);
-        await promise;
-        expect(failed).toBe(true);
+        expect(status).toBe(403);
     });
 
     test('invalid allowedWebSocketOrigins entries are rejected at construction', () => {
@@ -430,9 +431,12 @@ describe('WebSocket upgrade authentication + limits', () => {
         expect(seenPaths).toEqual(['/brokenws/boom']);
     });
 
-    test('inbound queue overflow closes the session (1009) under a tiny cap', async () => {
+    test('inbound queue overflow closes the session (1013) under a tiny cap', async () => {
         // maxQueuedMessages: 2 — the /sink handler never drains, so the
         // queue fills and the third message trips the overflow close.
+        // 1013 ("try again later"): the consuming side is the slow party —
+        // 1009 stays reserved for per-frame size violations (ws sends it
+        // for maxPayload).
         const ws = new WebSocket(`${wsUrl}/brokenws/sink?token=good`);
         await open(ws);
         ws.on('error', () => undefined);
@@ -440,7 +444,7 @@ describe('WebSocket upgrade authentication + limits', () => {
         ws.send('1');
         ws.send('2');
         ws.send('3');
-        await expect(closed).resolves.toMatchObject({ code: 1009, reason: 'inbound queue overflow' });
+        await expect(closed).resolves.toMatchObject({ code: 1013, reason: 'inbound queue overflow' });
     });
 
     test('binary frames arrive byte-exact; handlers decode explicitly (AD-23 D8)', async () => {
@@ -461,3 +465,472 @@ const waitMessage = (ws: WebSocket): Promise<unknown> => {
     ws.once('message', (data: unknown) => resolve(JSON.parse(String(data))));
     return promise;
 };
+
+describe('WebSocket upgrade auth failure modes', () => {
+    let context: MetadataConfigApplicationContext;
+    let adapter: NodeHTTPServerAdapter;
+    let registry: NodeSocketSessionRegistry;
+    let wsUrl: string;
+    const seenPaths: string[] = [];
+
+    @requestMapping('/flaky')
+    class FlakySocketController {
+        @socketMapping('/x')
+        @parameters({ session: socketSession('session') })
+        async *echo(session: SocketSession) {
+            seenPaths.push(session.path);
+            for await (const message of session.messages) {
+                yield { event: 'echo', data: message };
+            }
+        }
+    }
+
+    beforeAll(async () => {
+        context = new MetadataConfigApplicationContext('ws-auth-failures');
+        context.register(NodeAutoConfiguration);
+        context.setValue(FlakySocketController.name, new FlakySocketController());
+        context.refresh();
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+        registry = new NodeSocketSessionRegistry();
+        adapter = new NodeHTTPServerAdapter(dispatcher, {
+            socketRegistry: registry,
+            authenticate: async () => {
+                // The hook holds long enough for a peer close to race the
+                // auth await, then fails — the identity provider is down.
+                await new Promise<void>((resolve) => setTimeout(resolve, 120));
+                throw new Error('identity provider down');
+            },
+        });
+        await adapter.listen(0, '127.0.0.1');
+        const boundAddress = adapter.server as { address: () => { port: number } | null };
+        const boundPort = boundAddress.address()?.port;
+        wsUrl = `ws://127.0.0.1:${boundPort}`;
+    });
+
+    const open = (ws: WebSocket): Promise<void> => {
+        const { promise, resolve, reject } = Promise.withResolvers<void>();
+        ws.once('open', resolve);
+        ws.once('error', reject);
+        return promise;
+    };
+    const waitClose = (ws: WebSocket): Promise<{ code: number; reason: string }> => {
+        const { promise, resolve } = Promise.withResolvers<{ code: number; reason: string }>();
+        ws.once('close', (code: number, reason: Buffer) => {
+            resolve({ code, reason: reason.toString() });
+        });
+        return promise;
+    };
+
+    afterAll(async () => {
+        await adapter?.close();
+    });
+
+    test('a throwing authenticate hook closes the upgrade with 1011 and never tracks the session', async () => {
+        const ws = new WebSocket(`${wsUrl}/flaky/x`);
+        const closed = waitClose(ws);
+        ws.on('error', () => undefined);
+        await expect(closed).resolves.toMatchObject({ code: 1011, reason: 'authentication failed' });
+        expect(seenPaths).toEqual([]);
+        expect(registry.count('/flaky/x')).toBe(0);
+    });
+
+    test('a peer closing while authentication is pending leaves no registry entry', async () => {
+        const ws = new WebSocket(`${wsUrl}/flaky/x`);
+        await open(ws);
+        // Close before the 120ms auth hook resolves — the removal listener
+        // attached at session creation must already be registered.
+        ws.close(1000, 'impatient');
+        await vi.waitFor(() => expect(registry.count('/flaky/x')).toBe(0));
+        expect(seenPaths).toEqual([]);
+    });
+});
+
+describe('socket auth metadata enforcement (SEC-3)', () => {
+    let context: MetadataConfigApplicationContext;
+    let server: HTTPServer;
+    let adapter: NodeHTTPServerAdapter;
+    let wsUrl: string;
+    let httpBase: string;
+
+    @requestMapping('/gate')
+    class GatedSocketController {
+        // No auth metadata: the public-socket posture (SEC-3's documented
+        // contrast) — the identity bag is still bound when a hook supplies one.
+        @socketMapping('/open')
+        @parameters({ session: socketSession('session') })
+        async *open(session: SocketSession) {
+            for await (const message of session.messages) {
+                yield { event: 'open', user: session.attributes['user'] ?? null, data: message };
+            }
+        }
+
+        @socketMapping('/private')
+        @authenticated
+        @parameters({ session: socketSession('session') })
+        async *priv(session: SocketSession) {
+            for await (const message of session.messages) {
+                yield { event: 'private', user: session.attributes['user'] ?? null, data: message };
+            }
+        }
+
+        // Roles imply authentication (the AuthRouteGuard contract): a
+        // principal without the role is denied, one with it proceeds.
+        @socketMapping('/admin')
+        @authorized('admin')
+        @parameters({ session: socketSession('session') })
+        async *admin(session: SocketSession) {
+            for await (const message of session.messages) {
+                yield { event: 'admin', user: session.attributes['user'] ?? null, data: message };
+            }
+        }
+
+        // `queryValue('*')` binds the whole parsed query map, so the handler
+        // observes exactly the map the adapter built from the URL.
+        @socketMapping('/proto')
+        @parameters({ session: socketSession('session'), query: queryValue('*') })
+        async *proto(session: SocketSession, query: Record<string, string | string[]>) {
+            for await (const message of session.messages) {
+                yield {
+                    event: 'proto',
+                    prototypeIsNull: Object.getPrototypeOf(query) === null,
+                    ownProtoKey: Object.hasOwn(query, '__proto__'),
+                    values: query['__proto__'],
+                    data: message,
+                };
+            }
+        }
+
+        @getMapping('/query-proto')
+        @parameters({ query: queryValue('*') })
+        protoQuery(query: Record<string, string | string[]>) {
+            return {
+                prototypeIsNull: Object.getPrototypeOf(query) === null,
+                ownProtoKey: Object.hasOwn(query, '__proto__'),
+                values: query['__proto__'],
+            };
+        }
+    }
+
+    // Class-level `@authenticated`: every socket method on the controller is
+    // gated (the other metadata form the adapter must read).
+    @requestMapping('/classgate')
+    @authenticated
+    class ClassGatedSocketController {
+        @socketMapping('/echo')
+        @parameters({ session: socketSession('session') })
+        async *echo(session: SocketSession) {
+            for await (const message of session.messages) {
+                yield { event: 'class', user: session.attributes['user'] ?? null, data: message };
+            }
+        }
+    }
+
+    const open = (ws: WebSocket): Promise<void> => {
+        const { promise, resolve, reject } = Promise.withResolvers<void>();
+        ws.once('open', resolve);
+        ws.once('error', reject);
+        return promise;
+    };
+    const waitMessage = (ws: WebSocket): Promise<unknown> => {
+        const { promise, resolve } = Promise.withResolvers<unknown>();
+        ws.once('message', (data: unknown) => resolve(JSON.parse(String(data))));
+        return promise;
+    };
+    const waitClose = (ws: WebSocket): Promise<{ code: number; reason: string }> => {
+        const { promise, resolve } = Promise.withResolvers<{ code: number; reason: string }>();
+        ws.once('close', (code: number, reason: Buffer) => {
+            resolve({ code, reason: reason.toString() });
+        });
+        return promise;
+    };
+
+    /** Demo identity: shape-checks like `@blue/auth-core`'s `Principal`. */
+    const principal = (id: string, roles: string[]) => ({
+        id,
+        hasRole: (role: string): boolean => roles.includes(role),
+    });
+
+    beforeAll(async () => {
+        context = new MetadataConfigApplicationContext('ws-auth-gate');
+        context.register(NodeAutoConfiguration);
+        context.setValue(GatedSocketController.name, new GatedSocketController());
+        context.setValue(ClassGatedSocketController.name, new ClassGatedSocketController());
+        context.refresh();
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+        adapter = new NodeHTTPServerAdapter(dispatcher, {
+            // A 64-byte cookie bound makes SEC-10's upgrade-path check
+            // observable; 100 ms keeps the hanging-hook test quick.
+            limits: { maxHeaderBytes: 64 },
+            authenticateTimeoutMs: 100,
+            authenticate: async (sources) => {
+                const token = String(sources.query['token'] ?? '');
+                // Anonymous: public endpoints still upgrade; decorated ones
+                // fail closed on the missing principal.
+                if (token === '') return {};
+                if (token === 'alice') return { principal: principal('alice', ['user']), user: 'alice' };
+                if (token === 'root') return { principal: principal('root', ['admin']), user: 'root' };
+                // Never settles: exercises the SEC-9 authentication budget.
+                if (token === 'hang') {
+                    await new Promise<void>(() => undefined);
+                    return null;
+                }
+                // A presented credential that resolves to nothing is a failed
+                // authentication, not anonymity.
+                return null;
+            },
+        });
+        await adapter.listen(0, '127.0.0.1');
+        const boundPort = (adapter.server as { address: () => { port: number } | null }).address()?.port;
+        wsUrl = `ws://127.0.0.1:${boundPort}`;
+        httpBase = `http://127.0.0.1:${boundPort}`;
+        server = new HTTPServer(dispatcher, { adapter });
+    });
+
+    afterAll(async () => {
+        await server?.close();
+    });
+
+    test('an upgrade to an @authenticated path without a principal is closed with 1008', async () => {
+        const ws = new WebSocket(`${wsUrl}/gate/private`);
+        ws.on('error', () => undefined);
+        await expect(waitClose(ws)).resolves.toMatchObject({ code: 1008, reason: 'authentication required' });
+    });
+
+    test('an authenticated upgrade reaches the handler with its identity bag', async () => {
+        const ws = new WebSocket(`${wsUrl}/gate/private?token=alice`);
+        await open(ws);
+        const reply = waitMessage(ws);
+        ws.send('hi');
+        await expect(reply).resolves.toEqual({ event: 'private', user: 'alice', data: 'hi' });
+        ws.close(1000, 'done');
+    });
+
+    test('class-level @authenticated gates the controller socket methods too', async () => {
+        const anonymous = new WebSocket(`${wsUrl}/classgate/echo`);
+        anonymous.on('error', () => undefined);
+        await expect(waitClose(anonymous)).resolves.toMatchObject({
+            code: 1008,
+            reason: 'authentication required',
+        });
+
+        const authed = new WebSocket(`${wsUrl}/classgate/echo?token=alice`);
+        await open(authed);
+        const reply = waitMessage(authed);
+        authed.send('class');
+        await expect(reply).resolves.toEqual({ event: 'class', user: 'alice', data: 'class' });
+        authed.close(1000, 'done');
+    });
+
+    test('a principal missing a required role is closed with 1008', async () => {
+        const ws = new WebSocket(`${wsUrl}/gate/admin?token=alice`);
+        ws.on('error', () => undefined);
+        await expect(waitClose(ws)).resolves.toMatchObject({ code: 1008, reason: 'insufficient role' });
+    });
+
+    test('a principal holding the required role proceeds', async () => {
+        const ws = new WebSocket(`${wsUrl}/gate/admin?token=root`);
+        await open(ws);
+        const reply = waitMessage(ws);
+        ws.send('go');
+        await expect(reply).resolves.toEqual({ event: 'admin', user: 'root', data: 'go' });
+        ws.close(1000, 'done');
+    });
+
+    test('an unresolvable token is refused by the hook before the handler runs', async () => {
+        const ws = new WebSocket(`${wsUrl}/gate/open?token=bogus`);
+        ws.on('error', () => undefined);
+        await expect(waitClose(ws)).resolves.toMatchObject({ code: 1008, reason: 'authentication required' });
+    });
+
+    test('an undecorated socket path is unaffected by the metadata check', async () => {
+        const ws = new WebSocket(`${wsUrl}/gate/open`);
+        await open(ws);
+        const reply = waitMessage(ws);
+        ws.send('public');
+        await expect(reply).resolves.toEqual({ event: 'open', user: null, data: 'public' });
+        ws.close(1000, 'done');
+    });
+
+    test('a hanging authenticate hook is closed with 1011 at the timeout', async () => {
+        const ws = new WebSocket(`${wsUrl}/gate/private?token=hang`);
+        ws.on('error', () => undefined);
+        await expect(waitClose(ws)).resolves.toMatchObject({ code: 1011, reason: 'authentication timeout' });
+    });
+
+    test('an oversized handshake header is refused on the upgrade path (SEC-10)', async () => {
+        const ws = new WebSocket(`${wsUrl}/gate/open`, { headers: { cookie: `big=${'a'.repeat(200)}` } });
+        const status = await new Promise<number | null>((resolve) => {
+            ws.once('unexpected-response', (_request, response) => resolve(response.statusCode ?? null));
+            setTimeout(() => resolve(null), 400);
+        });
+        // Refused before the 101: the handshake aborts with a 400.
+        expect(status).toBe(400);
+    });
+
+    test('repeated __proto__ parameters leave the socket query map intact (SEC-8)', async () => {
+        const ws = new WebSocket(`${wsUrl}/gate/proto?__proto__=a&__proto__=b`);
+        await open(ws);
+        const reply = waitMessage(ws);
+        ws.send('go');
+        await expect(reply).resolves.toEqual({
+            event: 'proto',
+            prototypeIsNull: true,
+            ownProtoKey: true,
+            values: ['a', 'b'],
+            data: 'go',
+        });
+        ws.close(1000, 'done');
+    });
+
+    test('repeated __proto__ parameters leave the HTTP query map intact (SEC-8)', async () => {
+        const response = await fetch(`${httpBase}/gate/query-proto?__proto__=a&__proto__=b`);
+        expect(response.status).toBe(200);
+        await expect(response.json()).resolves.toEqual({
+            prototypeIsNull: true,
+            ownProtoKey: true,
+            values: ['a', 'b'],
+        });
+    });
+
+    test('an explicit authenticate option wins over the socketRequestAuthenticator bean', async () => {
+        // The managed server resolves the bean only as a fallback: an app
+        // that passes its own hook keeps it.
+        const beanContext = new MetadataConfigApplicationContext('ws-auth-precedence');
+        beanContext.register(NodeAutoConfiguration);
+        beanContext.setValue(GatedSocketController.name, new GatedSocketController());
+        beanContext.setValue('socketRequestAuthenticator', {
+            authenticate: () => ({ principal: principal('bean', ['admin']), user: 'bean' }),
+        });
+        beanContext.refresh();
+
+        const managed = new HTTPServer(beanContext.getValue<NodeDispatcher>('dispatcher'), {
+            port: 0,
+            authenticate: () => ({ principal: principal('option', ['admin']), user: 'option' }),
+        });
+        managed.setApplicationContext(beanContext);
+        await managed.start();
+        try {
+            const port = (managed.server as { address: () => { port: number } | null }).address()?.port;
+            const ws = new WebSocket(`ws://127.0.0.1:${port}/gate/private`);
+            await open(ws);
+            const reply = waitMessage(ws);
+            ws.send('who');
+            await expect(reply).resolves.toEqual({ event: 'private', user: 'option', data: 'who' });
+            ws.close(1000, 'done');
+        } finally {
+            await managed.close();
+        }
+    });
+});
+
+describe('socket connection cap (SEC-9)', () => {
+    let context: MetadataConfigApplicationContext;
+    let adapter: NodeHTTPServerAdapter;
+    let wsUrl: string;
+
+    @requestMapping('/cap')
+    class CapSocketController {
+        @socketMapping('/echo')
+        @parameters({ session: socketSession('session') })
+        async *echo(session: SocketSession) {
+            for await (const message of session.messages) {
+                yield { event: 'echo', data: message };
+            }
+        }
+    }
+
+    const open = (ws: WebSocket): Promise<void> => {
+        const { promise, resolve, reject } = Promise.withResolvers<void>();
+        ws.once('open', resolve);
+        ws.once('error', reject);
+        return promise;
+    };
+    const waitMessage = (ws: WebSocket): Promise<unknown> => {
+        const { promise, resolve } = Promise.withResolvers<unknown>();
+        ws.once('message', (data: unknown) => resolve(JSON.parse(String(data))));
+        return promise;
+    };
+    const waitClose = (ws: WebSocket): Promise<{ code: number; reason: string }> => {
+        const { promise, resolve } = Promise.withResolvers<{ code: number; reason: string }>();
+        ws.once('close', (code: number, reason: Buffer) => {
+            resolve({ code, reason: reason.toString() });
+        });
+        return promise;
+    };
+
+    beforeAll(async () => {
+        context = new MetadataConfigApplicationContext('ws-connection-cap');
+        context.register(NodeAutoConfiguration);
+        context.setValue(CapSocketController.name, new CapSocketController());
+        context.refresh();
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+        adapter = new NodeHTTPServerAdapter(dispatcher, { maxConnections: 2 });
+        await adapter.listen(0, '127.0.0.1');
+        const boundPort = (adapter.server as { address: () => { port: number } | null }).address()?.port;
+        wsUrl = `ws://127.0.0.1:${boundPort}`;
+    });
+
+    afterAll(async () => {
+        await adapter?.close();
+    });
+
+    test('an upgrade over maxConnections is closed with 1013, and a freed slot is reusable', async () => {
+        const a = new WebSocket(`${wsUrl}/cap/echo`);
+        const b = new WebSocket(`${wsUrl}/cap/echo`);
+        await Promise.all([open(a), open(b)]);
+        // The cap is counted from the accepted upgrade: the registry holds both.
+        await vi.waitFor(() => expect(adapter.socketRegistry.count('/cap/echo')).toBe(2));
+
+        const overflow = new WebSocket(`${wsUrl}/cap/echo`);
+        overflow.on('error', () => undefined);
+        await expect(waitClose(overflow)).resolves.toMatchObject({
+            code: 1013,
+            reason: 'connection limit reached',
+        });
+
+        // Admitted sockets are untouched by the refusal.
+        const reply = waitMessage(a);
+        a.send('still here');
+        await expect(reply).resolves.toEqual({ event: 'echo', data: 'still here' });
+
+        // The ledger releases on close, so the next upgrade fits again.
+        a.close(1000, 'done');
+        await vi.waitFor(() => expect(adapter.socketRegistry.count('/cap/echo')).toBe(1));
+        const after = new WebSocket(`${wsUrl}/cap/echo`);
+        await open(after);
+        after.close(1000, 'done');
+        b.close(1000, 'done');
+    });
+
+    test('a socket still authenticating holds its slot before registration', async () => {
+        // SEC-9 counts from the accepted upgrade: the session is not in the
+        // registry while the auth hook is in flight, but the slot is taken.
+        const slow = new NodeHTTPServerAdapter(context.getValue<NodeDispatcher>('dispatcher'), {
+            maxConnections: 1,
+            authenticateTimeoutMs: 5_000,
+            authenticate: async (sources) => {
+                if (String(sources.query['token'] ?? '') === 'hang') {
+                    await new Promise<void>(() => undefined);
+                }
+                return {};
+            },
+        });
+        await slow.listen(0, '127.0.0.1');
+        try {
+            const slowPort = (slow.server as { address: () => { port: number } | null }).address()?.port;
+            const pending = new WebSocket(`ws://127.0.0.1:${slowPort}/cap/echo?token=hang`);
+            await open(pending);
+            expect(slow.socketRegistry.count('/cap/echo')).toBe(0);
+
+            const overflow = new WebSocket(`ws://127.0.0.1:${slowPort}/cap/echo`);
+            overflow.on('error', () => undefined);
+            await expect(waitClose(overflow)).resolves.toMatchObject({
+                code: 1013,
+                reason: 'connection limit reached',
+            });
+            pending.close(1000, 'done');
+        } finally {
+            await slow.close();
+        }
+    });
+});

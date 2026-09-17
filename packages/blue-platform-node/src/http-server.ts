@@ -7,7 +7,11 @@
 import { $aware, type SmartLifecycle } from '@blue/factory';
 import type { ApplicationContext, ApplicationContextAware } from '@blue/context';
 import type { NodeDispatcher } from './node-dispatcher';
-import { NodeHTTPServerAdapter, type NodeHTTPServerAdapterOptions } from './node-http-server-adapter';
+import {
+    NodeHTTPServerAdapter,
+    type NodeHTTPServerAdapterOptions,
+    type SocketRequestAuthenticator,
+} from './node-http-server-adapter';
 import type { SocketLimits } from './node-socket-session';
 import { NodeSocketSessionRegistry } from './node-socket-session-registry';
 
@@ -49,9 +53,21 @@ export interface HTTPServerOptions {
     allowedWebSocketOrigins?: string[];
     /**
      * Upgrade-time authentication hook for the default adapter — see
-     * {@link NodeHTTPServerAdapterOptions.authenticate}.
+     * {@link NodeHTTPServerAdapterOptions.authenticate}. When omitted, the
+     * default adapter uses the application-context
+     * `socketRequestAuthenticator` bean.
      */
     authenticate?: NodeHTTPServerAdapterOptions['authenticate'];
+    /**
+     * Maximum concurrent socket connections for the default adapter — see
+     * {@link NodeHTTPServerAdapterOptions.maxConnections}.
+     */
+    maxConnections?: number;
+    /**
+     * Milliseconds the default adapter waits for its authentication hook —
+     * see {@link NodeHTTPServerAdapterOptions.authenticateTimeoutMs}.
+     */
+    authenticateTimeoutMs?: number;
     /**
      * Socket session registry shared with the default adapter (AD-21 D4).
      * When omitted, the registry is resolved from the application context
@@ -89,6 +105,8 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
     #socketLimits: SocketLimits | undefined;
     #allowedWebSocketOrigins: string[] | undefined;
     #authenticate: NodeHTTPServerAdapterOptions['authenticate'];
+    #maxConnections: number | undefined;
+    #authenticateTimeoutMs: number | undefined;
     #applicationContext: ApplicationContext | null = null;
     #startPromise: Promise<void> | null = null;
 
@@ -158,6 +176,8 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         this.#allowedWebSocketOrigins =
             options.allowedWebSocketOrigins ?? parseOriginEnv(process.env['BLUE_SOCKET_ALLOWED_ORIGINS']);
         this.#authenticate = options.authenticate ?? undefined;
+        this.#maxConnections = options.maxConnections;
+        this.#authenticateTimeoutMs = options.authenticateTimeoutMs;
         this.#adapter = options.adapter ?? null;
         this.#started = false;
     }
@@ -192,7 +212,9 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
                 socketRegistry: registry,
                 socketLimits: this.#socketLimits,
                 allowedWebSocketOrigins: this.#allowedWebSocketOrigins,
-                authenticate: this.#authenticate,
+                authenticate: this.#resolveAuthenticateHook(),
+                maxConnections: this.#maxConnections,
+                authenticateTimeoutMs: this.#authenticateTimeoutMs,
             });
         }
         await this.#adapter.listen(this.#port, this.#host);
@@ -244,6 +266,27 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
             return this.#applicationContext.getValue<NodeSocketSessionRegistry>('socketSessionRegistry');
         }
         return null;
+    }
+
+    /**
+     * Resolves the upgrade authentication hook for the default adapter: the
+     * explicit `authenticate` option wins; otherwise the
+     * `socketRequestAuthenticator` application-context bean supplies
+     * identity (SEC-3). The bean's method is invoked on its own receiver, so
+     * a class-based authenticator keeps `this`.
+     *
+     * @returns The hook to hand the adapter, or `undefined` (public sockets).
+     */
+    #resolveAuthenticateHook(): NodeHTTPServerAdapterOptions['authenticate'] {
+        if (this.#authenticate) {
+            return this.#authenticate;
+        }
+        if (this.#applicationContext?.hasValue?.('socketRequestAuthenticator')) {
+            const authenticator =
+                this.#applicationContext.getValue<SocketRequestAuthenticator>('socketRequestAuthenticator');
+            return (sources) => authenticator.authenticate(sources);
+        }
+        return undefined;
     }
 }
 

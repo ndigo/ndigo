@@ -6,7 +6,7 @@
 // @vitest-environment node
 import { EventEmitter } from 'node:events';
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
-import { nodeSocketSession, NodeSocketSessionRegistry } from '../src/index';
+import { DEFAULT_SOCKET_LIMITS, nodeSocketSession, NodeSocketSessionRegistry } from '../src/index';
 import type { WebSocket } from 'ws';
 import type { SocketSession } from '@blue/dispatcher';
 
@@ -161,8 +161,17 @@ describe('NodeSocketSessionRegistry', () => {
 
     test('backpressure null disables the watermark guard', () => {
         registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: null, backpressure: null });
-        sessionAt('/echo');
-        transports[0].bufferedAmount = 100_000_000;
+        // Disable the session-level guard too so this test isolates the
+        // registry's policy seam (the session guard now enforces the same
+        // watermark at the send chokepoint by default).
+        const transport = fakeTransport();
+        const session = nodeSocketSession(transport as unknown as WebSocket, '/echo', undefined, registry, {
+            ...DEFAULT_SOCKET_LIMITS,
+            maxBufferedBytes: null,
+        });
+        registry.register(session, '/echo', transport as unknown as WebSocket);
+        transports.push(transport);
+        transport.bufferedAmount = 100_000_000;
 
         registry.broadcast('/echo', 'z');
         expect(transports[0].send).toHaveBeenCalledWith('z');
@@ -385,5 +394,65 @@ describe('NodeSocketSessionRegistry', () => {
         // Valid application range passes through.
         session.close(4000, 'done');
         expect(transports[0].close).toHaveBeenCalledWith(4000, 'done');
+    });
+
+    describe('overflow observers', () => {
+        test('a throwing overflow observer cannot abort the broadcast', () => {
+            const onOverflow = vi.fn(() => {
+                throw new Error('telemetry down');
+            });
+            registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: null, onOverflow });
+            sessionAt('/echo');
+            transports[0].bufferedAmount = 2_000_000;
+            // The observer fault must not skip the policy decision (close 1013)
+            // or break the surplus of the broadcast.
+            expect(() => registry.broadcast('/echo', 'x')).not.toThrow();
+            expect(transports[0].close).toHaveBeenCalledWith(1013, 'consumer too slow');
+        });
+    });
+
+    describe('registration guard', () => {
+        test('register skips sessions that already closed', () => {
+            const transport = fakeTransport();
+            const session = nodeSocketSession(transport as unknown as WebSocket, '/echo', undefined, registry);
+            // Peer closed before the adapter finished dispatching (e.g. while
+            // an auth hook awaited) — instrumenting the closed session must
+            // not pin a stale registry entry.
+            transport.emit('close', 1006, 'gone');
+            expect(session.isClosed).toBe(true);
+            registry.register(session, '/echo', transport as unknown as WebSocket);
+            expect(registry.count('/echo')).toBe(0);
+        });
+    });
+
+    describe('session-level outbound watermark (AD-21 D6 hardening)', () => {
+        test('send over the watermark closes 1013 in close mode', () => {
+            const transport = fakeTransport();
+            transport.bufferedAmount = 2_000_000;
+            const session = nodeSocketSession(transport as unknown as WebSocket, '/echo', undefined, null);
+            session.send('hello');
+            expect(transport.close).toHaveBeenCalledWith(1013, 'consumer too slow');
+            expect(transport.send).not.toHaveBeenCalled();
+        });
+
+        test('send over the watermark drops the frame in drop mode', () => {
+            const transport = fakeTransport();
+            transport.bufferedAmount = 2_000_000;
+            const session = nodeSocketSession(transport as unknown as WebSocket, '/echo', undefined, null, {
+                ...DEFAULT_SOCKET_LIMITS,
+                maxBufferedBytes: 1024,
+                onOverflow: 'drop',
+            });
+            session.send('hello');
+            expect(transport.close).not.toHaveBeenCalled();
+            expect(transport.send).not.toHaveBeenCalled();
+        });
+
+        test('under-watermark sends pass through', () => {
+            const transport = fakeTransport();
+            const session = nodeSocketSession(transport as unknown as WebSocket, '/echo', undefined, null);
+            session.send('hello');
+            expect(transport.send).toHaveBeenCalledWith('hello');
+        });
     });
 });

@@ -45,6 +45,10 @@ Auto-configuration for Node.js-based applications that provisions:
   broadcast, heartbeat, and backpressure for `@socketMapping` endpoints
   (AD-21) — shared with the managed server's adapter, so any service can
   push to a socket room
+- An optional `socketRequestAuthenticator` bean: upgrade-time identity for
+  sockets, and with it the socket-side `@authenticated`/`@authorized`
+  enforcement (SEC-3) — see
+  [Socket authentication](#socket-authentication-sec-3)
 
 Applications that previously relied on no language negotiation now render
 with the header-negotiated locale (`en-US` default) — see
@@ -60,20 +64,70 @@ broadcast, named rooms, heartbeats, and a slow-consumer guard.
 
 Transport bounds and behavior are env-tunable:
 
-| Env var | Default | Meaning |
-| --- | --- | --- |
-| `BLUE_SOCKET_HEARTBEAT_INTERVAL_MS` | `30000` | Ping cadence; `0` disables the heartbeat |
-| `BLUE_SOCKET_IDLE_TIMEOUT_MS` | `60000` | Reap sessions silent past this (close `1001`) |
-| `BLUE_SOCKET_MAX_PAYLOAD_BYTES` | `1048576` | WS frame payload cap (violations close `1009`) |
-| `BLUE_SOCKET_MAX_QUEUED_MESSAGES` | `1024` | Inbound queue cap per session (overflow closes `1009`) |
-| `BLUE_SOCKET_ALLOWED_ORIGINS` | unset | Comma-separated bare origins for upgrade checks; unset allows any origin (public sockets) |
+| Env var                             | Default   | Meaning                                                                                   |
+| ----------------------------------- | --------- | ----------------------------------------------------------------------------------------- |
+| `BLUE_SOCKET_HEARTBEAT_INTERVAL_MS` | `30000`   | Ping cadence; `0` disables the heartbeat                                                  |
+| `BLUE_SOCKET_IDLE_TIMEOUT_MS`       | `60000`   | Reap sessions silent past this (close `1001`)                                             |
+| `BLUE_SOCKET_MAX_PAYLOAD_BYTES`     | `1048576` | WS frame payload cap (violations close `1009`)                                            |
+| `BLUE_SOCKET_MAX_QUEUED_MESSAGES`   | `1024`    | Inbound queue cap per session (overflow closes `1013`)                                    |
+| `BLUE_SOCKET_MAX_QUEUED_BYTES`      | `4194304` | Inbound byte budget per session (overflow closes `1013`); `0` disables                    |
+| `BLUE_SOCKET_MAX_BUFFERED_BYTES`    | `1048576` | Outbound buffered-bytes watermark (per `onOverflow`); `0` disables                        |
+| `BLUE_SOCKET_ON_OVERFLOW`           | `close`   | Over-watermark policy: `close` (`1013`) or `drop`                                         |
+| `BLUE_SOCKET_ALLOWED_ORIGINS`       | unset     | Comma-separated bare origins for upgrade checks; unset allows any origin (public sockets) |
 
 Programmatic knobs (`NodeHTTPServerAdapter` / `HTTPServer` options):
 `backpressure` (1 MiB watermark, `close` `1013` / `drop` / disabled),
 `onOverflow` observer (`addOverflowObserver` for post-construction wiring),
 `authenticate(sources)` upgrade hook (populates `session.attributes`,
-`null` rejects with `1008`), `allowedWebSocketOrigins`, and
-`socketLimits`. See the [websockets guide](../../docs/guides/06-websockets.md).
+`null` rejects with `1008`), `authenticateTimeoutMs` (milliseconds the hook
+may take before the socket closes `1011`; default `10000`), `maxConnections`
+(concurrent connections, counted from the accepted upgrade until close;
+default `10000`, overflow closes `1013`, `Infinity` disables),
+`allowedWebSocketOrigins`, and `socketLimits`.
+See the [websockets guide](../../docs/guides/06-websockets.md) and
+[Socket authentication](#socket-authentication-sec-3).
+
+## Socket authentication (SEC-3)
+
+HTTP requests get authentication from the interceptor chain: `AuthRouteGuard`
+reads the `@authenticated` / `@authorized` metadata that `@blue/auth-core`
+writes onto the controller class. **Sockets do not run interceptors** — they
+are dispatched straight to the handler — so the adapter enforces the same
+metadata at dispatch time:
+
+- a `@socketMapping` / `@stompMapping` method (or its controller class)
+  marked `@authenticated` requires a principal: the upgrade is closed with
+  `1008` when `session.attributes['principal']` is missing or is not an
+  object with a `hasRole` method;
+- `@authorized('role')` additionally requires every declared role on that
+  principal (`1008` otherwise); roles imply authentication, as on the HTTP
+  path;
+- a socket method without auth metadata behaves exactly as before (a public
+  endpoint).
+
+Identity comes from one of two places:
+
+1. the `authenticate(sources)` option (`NodeHTTPServerAdapter` /
+   `HTTPServer`) — return the attribute bag to merge into
+   `session.attributes`, or `null` to refuse the upgrade with `1008`;
+2. an application-context bean named `socketRequestAuthenticator`
+   implementing the exported `SocketRequestAuthenticator` interface
+   (`authenticate(sources)`, same contract). `HTTPServer` resolves it at
+   start, so bean-based applications wire identity declaratively; the
+   explicit option wins when both are present.
+
+The returned bag MUST carry `principal` for `@authenticated` /
+`@authorized` endpoints — any object with `hasRole(role)` works, and
+`@blue/auth-core`'s `Principal` satisfies it — and SHOULD carry `user` (a
+string id), which the STOMP broker uses for its `/user/*` scope. With no
+authenticator configured, sockets accept any client: the explicit
+public-endpoint posture.
+
+`apps/blue-api` is the reference wiring: a `socketRequestAuthenticator` bean
+resolves a demo token from `?token=` on the upgrade URL or an
+`Authorization: Bearer …` header (through the app's own
+`lookupPrincipal`), and `/stomp/chat` is marked `@authenticated` while the
+raw `/ws/chat` endpoint stays public as the documented contrast.
 
 ## Managed server + graceful shutdown
 

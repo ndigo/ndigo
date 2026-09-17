@@ -20,22 +20,52 @@ export interface SocketLimits {
     /**
      * Maximum inbound messages queued per session awaiting the handler.
      * A slow handler fills the queue; overflow closes the session with
-     * `1009` — the inbound mirror of the registry's outbound watermark
-     * (default `1024`).
+     * `1013` — the inbound mirror of the registry's outbound watermark
+     * (default `1024` messages).
      */
     maxQueuedMessages?: number;
+    /**
+     * Maximum inbound bytes queued per session awaiting the handler
+     * (cumulative payload size; `sizeOf` parity with the wire). Caps the
+     * real memory cost of a stalled handler regardless of message count:
+     * `maxQueuedMessages` alone allows `count × maxPayloadBytes` pinning
+     * (default `4_194_304` — 4 MiB). `0` disables the byte budget.
+     */
+    maxQueuedBytes?: number;
+    /**
+     * Outbound watermark in bytes: a subscriber whose transport has more
+     * than this many bytes buffered is handled per `onOverflow`. The
+     * slow-consumer guard for **every** send path (direct
+     * `SocketSession.send`, handler pumps, STOMP fan-out) — not just the
+     * registry's broadcast (default `1_048_576` — 1 MiB, matching the
+     * registry's default policy). `0` disables the watermark.
+     */
+    maxBufferedBytes?: number;
+    /**
+     * What happens to over-watermark outbound: `close` (default) closes
+     * the session with `1013` ("try again later"); `drop` silently skips
+     * the frame. Mirrors `SocketBackpressurePolicy.onOverflow`.
+     */
+    onOverflow?: 'close' | 'drop';
 }
 
 /** Resolved, read-only socket limits with defaults applied. */
 export interface ResolvedSocketLimits {
     readonly maxPayloadBytes: number;
     readonly maxQueuedMessages: number;
+    readonly maxQueuedBytes: number | null;
+    readonly maxBufferedBytes: number | null;
+    readonly onOverflow: 'close' | 'drop';
 }
 
-/** Conservative defaults: 1 MiB frames, 1024 queued inbound messages. */
+/** Conservative defaults: 1 MiB frames, 1024 queued messages, 4 MiB queued
+ * bytes, 1 MiB outbound watermark, fail-closed close on overflow. */
 export const DEFAULT_SOCKET_LIMITS: ResolvedSocketLimits = {
     maxPayloadBytes: 1_048_576,
     maxQueuedMessages: 1024,
+    maxQueuedBytes: 4_194_304,
+    maxBufferedBytes: 1_048_576,
+    onOverflow: 'close',
 };
 
 /**
@@ -44,6 +74,11 @@ export const DEFAULT_SOCKET_LIMITS: ResolvedSocketLimits = {
  *
  * - `BLUE_SOCKET_MAX_PAYLOAD_BYTES` — max frame payload (default 1 MiB)
  * - `BLUE_SOCKET_MAX_QUEUED_MESSAGES` — inbound queue cap (default 1024)
+ * - `BLUE_SOCKET_MAX_QUEUED_BYTES` — inbound byte budget, `0` disables
+ *   (default 4 MiB)
+ * - `BLUE_SOCKET_MAX_BUFFERED_BYTES` — outbound watermark, `0` disables
+ *   (default 1 MiB)
+ * - `BLUE_SOCKET_ON_OVERFLOW` — `close` (default, 1013) or `drop`
  *
  * Invalid values throw a `RangeError` (fail fast at boot).
  *
@@ -55,28 +90,64 @@ export function resolveSocketLimits(
     limits: SocketLimits = {},
     env: Readonly<Record<string, string | undefined>> = process.env
 ): ResolvedSocketLimits {
-    const resolved: Record<keyof ResolvedSocketLimits, number> = { ...DEFAULT_SOCKET_LIMITS };
-    const overrides: Record<keyof ResolvedSocketLimits, string | undefined> = {
-        maxPayloadBytes:
-            limits.maxPayloadBytes === undefined
-                ? env['BLUE_SOCKET_MAX_PAYLOAD_BYTES']
-                : String(limits.maxPayloadBytes),
-        maxQueuedMessages:
-            limits.maxQueuedMessages === undefined
-                ? env['BLUE_SOCKET_MAX_QUEUED_MESSAGES']
-                : String(limits.maxQueuedMessages),
-    };
-    for (const key of Object.keys(DEFAULT_SOCKET_LIMITS) as Array<keyof ResolvedSocketLimits>) {
-        const raw = overrides[key];
+    const envNames = {
+        maxPayloadBytes: 'BLUE_SOCKET_MAX_PAYLOAD_BYTES',
+        maxQueuedMessages: 'BLUE_SOCKET_MAX_QUEUED_MESSAGES',
+        maxQueuedBytes: 'BLUE_SOCKET_MAX_QUEUED_BYTES',
+        maxBufferedBytes: 'BLUE_SOCKET_MAX_BUFFERED_BYTES',
+    } as const;
+    const resolved: {
+        maxPayloadBytes: number;
+        maxQueuedMessages: number;
+        maxQueuedBytes: number | null;
+        maxBufferedBytes: number | null;
+        onOverflow: 'close' | 'drop';
+    } = { ...DEFAULT_SOCKET_LIMITS };
+    for (const key of ['maxPayloadBytes', 'maxQueuedMessages'] as const) {
+        const explicit = limits[key];
+        if (explicit !== undefined) {
+            if (typeof explicit !== 'number' || !Number.isFinite(explicit) || explicit <= 0) {
+                throw new RangeError(`SocketLimits.${key} must be a positive integer, received ${explicit}`);
+            }
+            resolved[key] = Math.floor(explicit);
+            continue;
+        }
+        const raw = env[envNames[key] as string];
+        if (raw === undefined || raw === '') continue;
+        if (!/^\d+$/.test(raw) || Number(raw) <= 0) {
+            throw new RangeError(`SocketLimits.${key} must be a positive integer, received ${raw}`);
+        }
+        resolved[key] = Number(raw);
+    }
+    // Byte budgets: `0`/null explicitly disables the bound; absent means
+    // "use the env var", absent there means "use the default".
+    for (const key of ['maxQueuedBytes', 'maxBufferedBytes'] as const) {
+        const explicit = limits[key as 'maxQueuedBytes'];
+        if (explicit !== undefined && explicit !== null) {
+            if (typeof explicit !== 'number' || !Number.isFinite(explicit) || explicit < 0) {
+                throw new RangeError(`SocketLimits.${key} must be a non-negative integer, received ${explicit}`);
+            }
+            resolved[key] = explicit === 0 ? null : Math.floor(explicit);
+            continue;
+        }
+        if (explicit === 0 || explicit === null) {
+            resolved[key] = null;
+            continue;
+        }
+        const raw = env[envNames[key] as string];
         if (raw === undefined || raw === '') continue;
         if (!/^\d+$/.test(raw)) {
             throw new RangeError(`SocketLimits.${key} must be a non-negative integer, received ${raw}`);
         }
         const value = Number(raw);
-        if (value <= 0) {
-            throw new RangeError(`SocketLimits.${key} must be a positive integer, received ${raw}`);
+        resolved[key] = value === 0 ? null : value;
+    }
+    const overflowRaw = limits.onOverflow ?? env['BLUE_SOCKET_ON_OVERFLOW'] ?? undefined;
+    if (overflowRaw !== undefined) {
+        if (overflowRaw !== 'close' && overflowRaw !== 'drop') {
+            throw new RangeError(`SocketLimits.onOverflow must be 'close' or 'drop', received ${overflowRaw}`);
         }
-        resolved[key] = value;
+        resolved.onOverflow = overflowRaw;
     }
     return resolved;
 }
@@ -121,13 +192,34 @@ export function nodeSocketSession(
     limits: ResolvedSocketLimits = DEFAULT_SOCKET_LIMITS
 ): SocketSession {
     // Bounded inbound queue: a handler that stops draining must not let the
-    // peer pin unbounded memory. Overflow closes the connection with `1009`
-    // (message too big — the client-side mirror of the registry's outbound
-    // watermark). The `closed` reader is intentionally uncapped: it holds
-    // exactly one close code.
-    const inbound = new AsyncReader<unknown>(limits.maxQueuedMessages, () => {
-        transport.close(1009, 'inbound queue overflow');
-    });
+    // peer pin unbounded memory. Overflow closes the connection with `1013`
+    // ("try again later" — the consuming side is the slow party; 1009 stays
+    // reserved for per-frame size violations, which ws sends itself for
+    // maxPayload). The bound is both a message count and a cumulative byte
+    // budget (count × maxPayload would otherwise allow ~1 GiB pinning at
+    // the defaults). The `closed` reader is intentionally uncapped: it
+    // holds exactly one close code.
+    const inbound = new AsyncReader<unknown>(
+        limits.maxQueuedMessages,
+        () => {
+            try {
+                transport.close(1013, 'inbound queue overflow');
+            } catch {
+                // Raced close — the transport's close event completes the
+                // reader either way.
+            }
+        },
+        {
+            maxBytes: limits.maxQueuedBytes,
+            sizeOf: (value: unknown): number => {
+                if (typeof value === 'string') return Buffer.byteLength(value, 'utf-8');
+                if (Buffer.isBuffer(value)) return value.length;
+                if (value instanceof Uint8Array) return value.length;
+                if (value instanceof ArrayBuffer) return value.byteLength;
+                return 1;
+            },
+        }
+    );
     const closed = new AsyncReader<number>();
     let isClosed = false;
 
@@ -189,6 +281,29 @@ export function nodeSocketSession(
         },
         attributes: {},
         send(data: unknown) {
+            // Slow-consumer watermark (AD-21 D6 backpressure): every
+            // outbound path — direct send, handler pumps, STOMP fan-out —
+            // checks the transport buffer here, not just the registry's
+            // broadcast. Over the watermark: `close` mode closes with 1013
+            // (the AD-22 client reconnects with backoff) or `drop` mode
+            // silently skips the frame. The memory cost of a room is set
+            // by its slowest member.
+            const buffered = transport.bufferedAmount;
+            if (
+                typeof buffered === 'number' &&
+                limits.maxBufferedBytes !== null &&
+                buffered > limits.maxBufferedBytes
+            ) {
+                if (limits.onOverflow === 'close') {
+                    try {
+                        transport.close(1013, 'consumer too slow');
+                    } catch {
+                        // Raced close — the transport's close event drops
+                        // the session from the registry.
+                    }
+                }
+                return;
+            }
             if (typeof data === 'string') {
                 transport.send(data);
             } else if (data instanceof Uint8Array || data instanceof ArrayBuffer) {

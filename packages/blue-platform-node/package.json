@@ -34,6 +34,7 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
+    "@blue/auth-core": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
@@ -48,6 +49,7 @@
     "@blue/socket": "~0.0.1"
   },
   "peerDependencies": {
+    "@blue/auth-core": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",

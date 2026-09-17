@@ -7,7 +7,8 @@ import '@tsmetadata/polyfill';
 import { configuration, entry, profile } from '@blue/context';
 import { StaticContentSource } from '@blue/content';
 import { type MediaType, MediaTypes } from '@blue/core';
-import { StaticController } from '@blue/platform-node';
+import { StaticController, type SocketRequestAuthenticator } from '@blue/platform-node';
+import type { SocketRequestSources } from '@blue/dispatcher';
 import {
     ContentNegotiationManager,
     ContentNegotiationViewResolver,
@@ -24,6 +25,7 @@ import { StompChatController } from './stomp-chat-controller';
 import { NoteController } from './note-controller';
 import { DrizzleNoteController } from './drizzle-note-controller';
 import { ProductController } from './product-controller';
+import { lookupPrincipal } from './auth-store';
 
 const requireMediaType = (value: MediaType | null): MediaType => {
     if (value === null) {
@@ -31,6 +33,29 @@ const requireMediaType = (value: MediaType | null): MediaType => {
     }
     return value;
 };
+
+/**
+ * Reads the demo credential off the WebSocket handshake: `?token=` (the
+ * only channel a WHATWG `WebSocket` client can use) or an
+ * `Authorization: Bearer <token>` header for non-browser clients.
+ *
+ * @param sources - The upgrade request sources.
+ * @returns The token, or `null` when the handshake carries none.
+ */
+function upgradeToken(sources: SocketRequestSources): string | null {
+    const queryToken = sources.query['token'];
+    const fromQuery = Array.isArray(queryToken) ? queryToken[0] : queryToken;
+    if (typeof fromQuery === 'string' && fromQuery !== '') {
+        return fromQuery;
+    }
+    const authorization = sources.headers['authorization'];
+    const header = Array.isArray(authorization) ? authorization[0] : authorization;
+    if (typeof header === 'string' && header.startsWith('Bearer ')) {
+        const token = header.slice('Bearer '.length).trim();
+        return token === '' ? null : token;
+    }
+    return null;
+}
 
 @configuration
 export class NodeAppConfiguration {
@@ -54,6 +79,43 @@ export class NodeAppConfiguration {
     @entry stompChatController() {
         return new StompChatController();
     }
+
+    /**
+     * Socket identity source (SEC-3): `HTTPServer` resolves this bean and
+     * hands its `authenticate` method to the adapter's upgrade hook, so
+     * socket identity is wired declaratively like any other bean.
+     *
+     * A `?token=` query parameter (the channel a WHATWG `WebSocket` client
+     * can actually use) or an `Authorization: Bearer …` header resolves
+     * through the app's own `lookupPrincipal`. The returned bag carries
+     * `principal` — the identity `@authenticated`/`@authorized` socket
+     * handlers enforce at dispatch — plus `user`, which makes the STOMP
+     * broker's `/user/*` scope real.
+     *
+     * No credential ⇒ anonymous `{}`: the raw `/ws/chat` endpoint stays a
+     * public socket (the documented contrast), while `@authenticated`
+     * endpoints such as `/stomp/chat` fail closed with `1008`. A
+     * presented-but-unknown token is a failed authentication, not
+     * anonymity: `authenticate` returns `null` and the upgrade is refused
+     * with `1008`.
+     */
+    @entry
+    socketRequestAuthenticator(): SocketRequestAuthenticator {
+        return {
+            authenticate(sources: SocketRequestSources) {
+                const token = upgradeToken(sources);
+                if (token === null) {
+                    return {};
+                }
+                const principal = lookupPrincipal(token);
+                if (principal === null) {
+                    return null;
+                }
+                return { principal, user: principal.id };
+            },
+        };
+    }
+
     @entry noteController() {
         return new NoteController();
     }

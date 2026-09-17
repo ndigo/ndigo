@@ -62,6 +62,8 @@ async function main() {
     logger.info(`  GET  http://localhost:${PORT}/api/products/42   (no matrix)`);
     logger.info(`  POST http://localhost:${PORT}/auth/login  ({"username":"admin","password":"demo"})`);
     logger.info(`  GET  http://localhost:${PORT}/notes  (Authorization: Bearer <token>)`);
+    logger.info(`  WS   ws://localhost:${PORT}/stomp/chat?token=<login token>  (STOMP, @authenticated)`);
+    logger.info(`  WS   ws://localhost:${PORT}/ws/chat  (public socket contrast)`);
     logger.info(`  GET  http://localhost:${PORT}/static/    (serves ./public)`);
     logger.info(`  GET  http://localhost:${PORT}/health   (management)`);
     logger.info(`  GET  http://localhost:${PORT}/metrics  (management)`);

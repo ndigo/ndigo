@@ -4,11 +4,14 @@
  * `WebSocketClient` — the node global WHATWG `WebSocket` transport, same
  * wire as a browser.
  *
- * Boots the real application stack on an ephemeral port, connects two
- * `StompClient`s to `/stomp/chat`, and asserts the destination fan-out
- * (including the sender when subscribed), receipt-resolved sends, the
- * scheduler-driven `chat-tick` (scheduler → broker, D5), and deliberate
- * disconnect teardown.
+ * Boots the real application stack on an ephemeral port, logs in through
+ * `/auth/login`, connects two `StompClient`s to `/stomp/chat` (the endpoint
+ * is `@authenticated`, so the demo token rides the upgrade URL), and
+ * asserts the destination fan-out (including the sender when subscribed),
+ * receipt-resolved sends, the scheduler-driven `chat-tick` (scheduler →
+ * broker, D5), and deliberate disconnect teardown. A dedicated case pins
+ * the socket-side auth gate: an upgrade without a principal is closed with
+ * `1008` (SEC-3).
  * @module blue-api
  * @since 1.0.0
  * @author Jeff Rose
@@ -20,6 +23,7 @@ import { ApplicationBuilder } from '@blue/boot';
 import { ManagementAutoConfiguration } from '@blue/management';
 import { NodeAutoConfiguration, HTTPServer } from '@blue/platform-node';
 import { WebSocketClient, StompClient, type StompSubscription } from '@blue/socket';
+import { WebSocket } from 'ws';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { ServerConfig } from '../src/server-config';
 import { initAuth } from '../src/auth-store';
@@ -60,6 +64,7 @@ async function waitFor(predicate: () => boolean, timeoutMs: number): Promise<voi
 describe('blue-api STOMP chat via StompClient (AD-23 D6)', () => {
     let context: ApplicationContext;
     let wsUrl: string;
+    let token: string;
     const clients: WebSocketClient[] = [];
 
     beforeAll(async () => {
@@ -77,7 +82,23 @@ describe('blue-api STOMP chat via StompClient (AD-23 D6)', () => {
         const server = context.getValue<HTTPServer>('httpServer');
         await server.start();
         const bound = server.server as { address: () => { port: number } | null };
-        wsUrl = `ws://127.0.0.1:${bound.address()?.port}`;
+        const port = bound.address()?.port;
+        wsUrl = `ws://127.0.0.1:${port}`;
+
+        // `/stomp/chat` is `@authenticated` (SEC-3): the socket
+        // authenticator bean resolves the token from the upgrade URL, so the
+        // suite logs in once through the app's own endpoint.
+        const login = await fetch(`http://127.0.0.1:${port}/auth/login`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ username: 'admin', password: 'demo' }),
+        });
+        expect(login.status).toBe(200);
+        const credentials: unknown = await login.json();
+        if (typeof credentials !== 'object' || credentials === null || !('token' in credentials)) {
+            throw new Error('login response carried no token');
+        }
+        token = String(credentials.token);
     }, 30_000);
 
     afterAll(async () => {
@@ -89,10 +110,37 @@ describe('blue-api STOMP chat via StompClient (AD-23 D6)', () => {
     });
 
     const stomp = (): StompClient => {
-        const socket = new WebSocketClient(`${wsUrl}/stomp/chat`, { reconnect: null });
+        const socket = new WebSocketClient(`${wsUrl}/stomp/chat?token=${token}`, { reconnect: null });
         clients.push(socket);
         return new StompClient(socket, { host: 'stomp-spec', reconnect: false });
     };
+
+    test('an unauthenticated upgrade to /stomp/chat is closed with 1008', async () => {
+        // No token ⇒ no principal ⇒ the @authenticated metadata check fails
+        // closed at dispatch, before the broker ever sees the connection.
+        const socket = new WebSocket(`${wsUrl}/stomp/chat`);
+        socket.on('error', () => undefined);
+        const closed = await new Promise<number>((resolve) => {
+            socket.on('close', (code: number) => resolve(code));
+        });
+        expect(closed).toBe(1008);
+    });
+
+    test('an Authorization: Bearer header is an accepted upgrade credential', async () => {
+        // The second channel the demo authenticator accepts (browsers cannot
+        // set headers on the WS handshake; non-browser clients can). A
+        // resolved principal lets the @authenticated endpoint's upgrade
+        // complete instead of closing 1008.
+        const socket = new WebSocket(`${wsUrl}/stomp/chat`, {
+            headers: { authorization: `Bearer ${token}` },
+        });
+        socket.on('error', () => undefined);
+        await new Promise<void>((resolve, reject) => {
+            socket.once('open', resolve);
+            socket.once('close', (code: number) => reject(new Error(`upgrade refused with ${code}`)));
+        });
+        socket.close(1000, 'done');
+    });
 
     test('a SEND from one client is fanned out to subscribers, echo included', async () => {
         const a = stomp();

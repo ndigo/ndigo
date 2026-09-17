@@ -27,32 +27,16 @@
     "packages/blue-telemetry-node/src/index.ts",
     "packages/blue-telemetry-web/src/index.ts"
   ],
-  "exclude": [
-    "**/node_modules/**",
-    "**/test/**",
-    "archive/**"
-  ],
+  "exclude": ["**/node_modules/**", "**/test/**", "archive/**"],
   "out": "doc-html",
   "readme": "README.md",
   "categorizeByGroup": true,
-  "categoryOrder": [
-    "Function",
-    "List",
-    "Object",
-    "String",
-    "Type",
-    "Logic",
-    "Math",
-    "Relation",
-    "*"
-  ],
+  "categoryOrder": ["Function", "List", "Object", "String", "Type", "Logic", "Math", "Relation", "*"],
   "excludePrivate": true,
   "excludeProtected": false,
   "excludeInternal": false,
   "includeVersion": true,
-  "sort": [
-    "source-order"
-  ],
+  "sort": ["source-order"],
   "gitRevision": "main",
   "skipErrorChecking": true,
   "treatWarningsAsErrors": false,
@@ -122,9 +106,6 @@
       "external": "#"
     }
   },
-  "plugin": [
-    "typedoc-plugin-markdown",
-    "./scripts/typedoc-tags-plugin.mjs"
-  ],
+  "plugin": ["typedoc-plugin-markdown", "./scripts/typedoc-tags-plugin.mjs"],
   "sourceLinkTemplate": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/{gitRevision}/{path}#lines-{line}"
 }

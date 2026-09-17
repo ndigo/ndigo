@@ -15,10 +15,10 @@ binding, and environment auto-configuration.
 - **Config sources & precedence** — standard environment/file/CLI sources
   with documented precedence, placeholder resolution
 - **Auto-configuration** — provisions platform components by environment:
-  - *Node*: `NodeAutoConfiguration` (argument resolvers, converter registry,
-    metadata handler mapping, error-resolver chain, managed `HTTPServer`)
-  - *Browser*: Web auto-configuration (cookie/model/session/state resolvers,
-    built-in converters)
+    - _Node_: `NodeAutoConfiguration` (argument resolvers, converter registry,
+      metadata handler mapping, error-resolver chain, managed `HTTPServer`)
+    - _Browser_: Web auto-configuration (cookie/model/session/state resolvers,
+      built-in converters)
 
 ## Usage
 
@@ -26,9 +26,7 @@ binding, and environment auto-configuration.
 import { ApplicationBuilder } from '@blue/boot';
 import { MyConfiguration } from './my-configuration';
 
-const app = new ApplicationBuilder([MyConfiguration])
-    .profiles('dev')
-    .run();
+const app = new ApplicationBuilder([MyConfiguration]).profiles('dev').run();
 ```
 
 ## Development

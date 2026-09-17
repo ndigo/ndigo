@@ -72,6 +72,7 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 
 ## Active Plans
 
+- [2026-09-17_REVIEW_AND_REMEDIATION.md](2026-09-17_REVIEW_AND_REMEDIATION.md) - Review of the AD-21/22/23 wave (WS registry, client, STOMP) + uncommitted tree — **implemented 2026-09-17**: gate failures cleared, STOMP 1.2 conformance and ack/queue defects fixed, socket auth/DoS hardening landed, all repository gates green (including `pnpm audit --prod` via the `smol-toml` override)
 - [2026-09-16_STOMP.md](2026-09-16_STOMP.md) - STOMP 1.2 protocol layer: frame codec, server broker (destinations, subscriptions, receipts), `StompClient`, `@stompMapping` + `v12.stomp` subprotocol negotiation, blue-api demo gate (AD-23)
 - [2026-09-15_WEBSOCKET_BROADCAST.md](2026-09-15_WEBSOCKET_BROADCAST.md) - WebSocket session registry, rooms/broadcast, heartbeat reaping, auto-configuration wiring (AD-21)
 - [2026-09-15_WEBSOCKET_CLIENT.md](2026-09-15_WEBSOCKET_CLIENT.md) - Isomorphic `@blue/socket` package, `SocketClient` + reconnect, dispatcher re-export seam, demo gate rewire (AD-22)

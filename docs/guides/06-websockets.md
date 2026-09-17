@@ -86,21 +86,29 @@ observable via the registry's `onOverflow` observer
 telemetry).
 
 Inbound is bounded too: the adapter sets `ws` `maxPayload` (frame size,
-default 1 MiB) and each session's inbound queue caps at
-`maxQueuedMessages` (default 1024), closing `1009` on overflow — the
-inbound mirror of the outbound watermark. Tune per adapter or by env:
+default 1 MiB — `ws` closes `1009` on oversized frames) and each session's
+inbound queue caps at `maxQueuedMessages` (default 1024) **and** a
+cumulative `maxQueuedBytes` budget (default 4 MiB), closing `1013` on
+overflow — the inbound mirror of the outbound watermark (the byte budget
+is what stops a stalled handler pinning `count × payload`). Tune per
+adapter or by env:
 
 ```
 BLUE_SOCKET_MAX_PAYLOAD_BYTES=1048576       # frame payload cap (default 1 MiB)
 BLUE_SOCKET_MAX_QUEUED_MESSAGES=1024        # inbound queue cap per session (default 1024)
+BLUE_SOCKET_MAX_QUEUED_BYTES=4194304        # inbound byte budget (default 4 MiB; 0 disables)
+BLUE_SOCKET_MAX_BUFFERED_BYTES=1048576      # outbound watermark (default 1 MiB; 0 disables)
+BLUE_SOCKET_ON_OVERFLOW=close               # close (default, 1013) | drop
 ```
 
 Socket observability ships as `WebSocketServerInstrumentation`
 (`@blue/telemetry-node`, opt-in like the HTTP instrumentation): session
 lifetime spans (`SocketSession.connect`, path/duration/close code),
-sessions opened/closed, fan-out messages/bytes (path/room), and
-backpressure counters (`close` and `drop` actions) — all under
-`blue.socket.*`.
+sessions opened/closed, fan-out messages/bytes (per path; per room only
+with the `roomAttribute` option — room names are arbitrary application
+strings, so attributing them by default would mint unbounded metric
+series), and backpressure counters (`close` and `drop` actions) — all
+under `blue.socket.*`.
 
 Also on the session: `session.attributes` — a per-connection state bag
 (Micronaut/Spring/Jakarta parity), and `session.close(code, reason)` for a
@@ -177,6 +185,51 @@ may upgrade — the explicit public-socket posture (the demo chat room is
 intended to be open). Production deployments binding credentials to
 sockets should set it.
 
+### Authentication and authorization (socket dispatch)
+
+Socket handlers never run the HTTP interceptor chain, so `@authenticated` /
+`@authorized` are enforced **at dispatch** instead: before a
+`@socketMapping`/`@stompMapping` handler is invoked, the adapter reads the
+route auth metadata (class and method level) and fails closed with close
+`1008` when authentication is required and the session carries no principal,
+or when a required role is missing. A handler with no auth metadata is
+unaffected.
+
+The principal must be on the session's attribute bag
+(`session.attributes.principal` — any object with `hasRole(role)`); the
+upgrade-time authenticator is what puts it there:
+
+```ts
+// direct wiring
+new HTTPServer(dispatcher, {
+    authenticate: (sources) => {
+        const principal = lookupPrincipal(sources.query.token as string);
+        return principal ? { principal, user: principal.id } : null;   // null ⇒ close 1008
+    },
+});
+
+// or as a context bean (bean-based apps never construct the server):
+@entry socketRequestAuthenticator(): SocketRequestAuthenticator {
+    return {
+        authenticate: (sources) => {
+            const principal = lookupPrincipal(tokenFrom(sources));
+            return principal ? { principal, user: principal.id } : null;
+        },
+    };
+}
+```
+
+`HTTPServer` resolves a `socketRequestAuthenticator` bean when no explicit
+option is passed (the same pattern as `socketSessionRegistry`). The
+attribute bag is merged into `session.attributes`, so `{ user }` also
+drives STOMP `/user/*` routing (`resolveUser`). `authenticateTimeoutMs`
+(default 10 s) closes a socket whose authenticator never settles, and
+`maxConnections` bounds concurrent accepted upgrades (`1013` over the cap).
+`apps/blue-api` wires the reference implementation (demo token in
+`?token=` or `Authorization: Bearer …`) and marks its STOMP endpoint
+`@authenticated`; its raw `/ws/chat` endpoint stays open as the documented
+public-socket contrast.
+
 ## 6. The client (`@blue/socket`, AD-22)
 
 `WebSocketClient` is the isomorphic client: WHATWG `WebSocket` global in
@@ -228,6 +281,36 @@ import { countSocketClientStatus } from '@blue/telemetry-web';
 const chat = new WebSocketClient(url, { onStatusChange: countSocketClientStatus() });
 ```
 
+### Transport bounds (slow-consumer and flood guards)
+
+Every **outbound** path — registry broadcast, direct `session.send`,
+handler pumps, STOMP fan-out — shares one watermark at the transport
+(`maxBufferedBytes`, default 1 MiB): a peer whose `bufferedAmount` is over
+the watermark is handled per `onOverflow` — `close` (default) closes it
+with `1013` ("try again later"; the AD-22 client reconnects with backoff)
+or `drop` silently skips the frame. The memory cost of a room is set by
+its slowest member, on all paths, not just registry fan-out.
+
+**Inbound** is bounded twice: per-frame (`maxPayloadBytes`, 1 MiB — ws
+closes `1009` on oversized frames) and per-session queue —
+`maxQueuedMessages` (1024) **and** a cumulative byte budget
+(`maxQueuedBytes`, 4 MiB) so a stalled handler cannot pin
+`count × payload` (~1 GiB at the defaults). Queue overflow closes `1013`.
+Env override: `BLUE_SOCKET_MAX_PAYLOAD_BYTES`,
+`BLUE_SOCKET_MAX_QUEUED_MESSAGES`, `BLUE_SOCKET_MAX_QUEUED_BYTES`,
+`BLUE_SOCKET_MAX_BUFFERED_BYTES` (`0` disables the byte budgets) and
+`BLUE_SOCKET_ON_OVERFLOW` (`close`|`drop`).
+
+Client-side, `WebSocketClient.send` drops non-serializable payloads
+(`undefined`, functions, symbols) instead of queueing a frame that would
+wedge the reconnect flush; a partial `reconnect` policy falls back to the
+documented defaults per field instead of producing NaN retry delays; and
+`maxInboundMessages` (opt-in) caps the inbound queue. `StompClient`
+buffers sends while disconnected under `maxPendingSends` (default 10 000,
+drop-oldest) and bounds each subscription's MESSAGE queue under
+`maxSubscriptionMessages` (default 4096, drop-newest) — a stalled
+consumer cannot pin memory on any path.
+
 ## 7. STOMP (AD-23)
 
 The same sessions speak the industry-standard STOMP 1.2 broker protocol:
@@ -277,9 +360,17 @@ D7–D11):
   are held until then, ABORT discards. A frame on an unknown transaction
   fails closed.
 - **Ack tracking + NACK redelivery** — ack modes `client` /
-  `client-individual` track delivered-but-unacked messages per subscription
-  (bounded by `maxUnacked`, default 1000, FIFO eviction). `client` ACKs are
-  cumulative; NACK redelivers the message with `redelivered: true`.
+  `client-individual` track delivered-but-unacked messages per subscription.
+  `client` ACKs are cumulative (everything up to the named message);
+  `client-individual` ACKs exactly the named message — earlier unacked
+  deliveries stay tracked and NACK-able. NACK redelivers the named message
+  with `redelivered: true`. MESSAGE frames for these modes carry an `ack`
+  header, so a spec-conforming client can ack with `id` alone (the
+  `subscription` header is accepted too). Tracking is bounded by count
+  (`maxUnacked`, default 1000), by bytes per subscription (`maxUnackedBytes`,
+  default 1 MiB) and by bytes per session (`maxUnackedSessionBytes`, default
+  16 MiB) — oldest-first eviction on every bound, so a slow acker cannot pin
+  memory.
 - **Binary bodies (D8)** — the codec and transports are byte-exact:
   `Uint8Array`/`ArrayBuffer` bodies flow as binary frames (headers always
   text); `content-length` is emitted for binary bodies. Text frames stay
@@ -294,6 +385,56 @@ D7–D11):
   publish appends to the destination's backlog (`queueBacklog`, default
   1000, FIFO eviction), and a new subscriber replays the backlog before
   live traffic. `queueBacklog: 0` reduces the destination to live fan-out.
+  Retention is further bounded globally: the number of distinct `/queue`
+  destinations is capped (`maxBacklogDestinations`, default 1000 — the
+  oldest destination is evicted whole, releasing its retained messages, its
+  byte accounting **and its sequence entry**) and the retained bytes across
+  all destinations are capped (`maxBacklogBytes`, default 64 MiB — oldest
+  messages evicted first). Retained destination _keys_ are bounded by the
+  same cap, so a client cannot grow the server's memory by SENDing to
+  arbitrary `/queue/<name>` destinations; how much history one connection
+  may pull back is bounded separately by `maxReplayBytesPerSession`
+  (default 16 MiB, consumed by subscribe replays — exhaustion fails closed).
+- **Durable-queue seam (store-read phase)** — the store is the single
+  source of truth for `/queue`: every append persists through it and
+  subscribe replay reads from it. The default is an
+  `InMemoryQueueMessageStore` built from the backlog caps above; a libsql
+  (or Redis, cross-node, post-1.0) implementation swaps in as the broker's
+  `queueStore` option with no broker changes — and **a `RECEIPT` now means
+  "persisted"** for `/queue` destinations (the receipt follows the append; a
+  store fault withholds it and fails closed with an `ERROR` frame followed
+  by a `1011` close, per the STOMP rule that an ERROR is always followed by
+  a close — the subscribe-replay path does the same).
+- **Message history** — `broker.history('/queue/x', { limit, afterSeq })`
+  reads the retained window (the same seam subscribe replay reads); the
+  `retention: { ttlMs, maxMessages }` broker option bounds both durable
+  retention and the subscribe-replay window (newest `N`, TTL-pruned before
+  replay). Backend-agnostic: works identically on the in-memory store.
+- **Resource caps** — the broker fails closed on client-driven growth:
+  `maxSubscriptionsPerSession` (1000), `maxTransactionsPerSession` (8)
+  with `maxTransactionOps` (1000) and `maxTransactionBytes` (16 MiB) per
+  open transaction (SEND **and** ACK/NACK ops), `maxIdentifierLength`
+  (1024 characters — destinations, subscription/transaction/receipt ids),
+  the unacked byte bounds above, and `maxReplayBytesPerSession` (16 MiB).
+  All caps fail closed per the protocol-error policy (ERROR + close on the
+  violating frame). Transaction-buffered SENDs to `/user/*` ride the same
+  principal-scope routing and policy check as live SENDs.
+- **Policy seams** — `onMessage(destination, body, headers, session)` is the
+  app-routing hook: return `false` to suppress the default fan-out (the
+  frame still receipts — the app handled it). `authorize(destination,
+action, session)` is the _denial_ gate, consulted on SUBSCRIBE (before any
+  replay) and on SEND in both the live and transactional paths; `false`
+  fails closed with ERROR + close `1008`. `verifyCredentials(login,
+passcode, session)` validates CONNECT credentials — and a CONNECT that
+  carries `login`/`passcode` with **no** verifier configured is rejected
+  (fail closed) rather than silently trusting them.
+- **Spec conformance** — the codec accepts `EOL = [CR] LF`, treats undefined
+  header escapes as fatal, keeps the **first** of a repeated header, allows
+  trailing EOLs after the terminating NUL, and rejects anything after them.
+  A CONNECT without `accept-version` means STOMP 1.0 (negotiated as 1.0, not
+  refused). User-defined SEND headers pass through to MESSAGE frames. An
+  `ERROR` frame is always followed by a close (the stream is over when an
+  ERROR arrives).
 
 Still deferred, documented: durable persistence behind `/queue` (needs the
 audit's store contract — post-1.0), cross-node pub/sub, message history
@@ -318,9 +459,10 @@ like SockJS it is a non-feature, not a gap.
   [AD-22](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md) and
   [plan](../plans/2026-09-15_WEBSOCKET_CLIENT.md).
 - **Deferred, not built**: cross-node pub/sub (needs a store contract),
-  message history, NACK redelivery (needs persistence) — **STOMP: built**
-  (AD-23, §7); **SockJS: never** (pre-2015 fallback-transport workaround;
-  third-party territory, AD-22 D4).
+  durable `/queue` persistence beyond the swappable store seam — **STOMP:
+  built** (AD-23, §7, including NACK redelivery and bounded message history);
+  **SockJS: never** (pre-2015 fallback-transport workaround; third-party
+  territory, AD-22 D4).
 
 ## 9. References
 

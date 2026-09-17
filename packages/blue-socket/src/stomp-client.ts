@@ -17,18 +17,32 @@
  *
  * Protocol posture: heart-beat is advertised `0,0` (the AD-21 WS layer
  * owns liveness); receipts auto-generated per `send()` (a caller-supplied
- * `receipt` header is honored); a server ERROR rejects all outstanding
- * sends and surfaces through the `onError` observer.
+ * `receipt` header is honored); a transport drop settles every `send()`
+ * whose frame already left the wire (its receipt can never arrive on the
+ * new session, COR-12) while frames still buffered go out on the new one;
+ * a server ERROR is **terminal** per STOMP 1.2 §1.5 (the server closes the
+ * connection just after the frame), so it rejects all outstanding sends,
+ * completes every subscription stream and surfaces through the `onError`
+ * observer.
  * * @module blue-socket
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { effect, signal, type Signal } from '@blue/signals';
+import { RingBuffer } from '@blue/core';
 import { serializeStompFrame, StompProtocolError, parseStompFrame, type StompFrame } from './stomp-frame';
 import type { SocketClient } from './socket-client';
 import type { StompAckMode } from './stomp-broker';
 import { AsyncReader } from './async-reader';
 import { bodyAsText } from './stomp-frame';
+
+/** Default bound on sends buffered while (re)connecting (drop-oldest). */
+const DEFAULT_MAX_PENDING_SENDS = 10_000;
+/** Default bound on queued MESSAGE frames per subscription (drop-newest
+ * while the queue is full — the transport watermark posture). */
+const DEFAULT_MAX_SUBSCRIPTION_MESSAGES = 4096;
+/** Default CONNECT handshake deadline in ms (see `connectTimeoutMs`). */
+const DEFAULT_CONNECT_TIMEOUT_MS = 10_000;
 
 /**
  * A MESSAGE frame delivered to a subscription. The body is the wire
@@ -77,8 +91,34 @@ export interface StompClientOptions {
      * Whether the STOMP session rides the socket's automatic reconnects
      * (re-CONNECT + re-SUBSCRIBE on the next `open`). Default `true`.
      * `false` means an unexpected close ends the session.
+     *
+     * Either way a drop settles the receipts of sends whose frames already
+     * left the transport (the new STOMP session can never receipt the old
+     * ids); sends buffered for the new session keep their promises.
      */
     reconnect?: boolean;
+    /**
+     * Bound on sends buffered while (re)connecting. A reconnect storm with
+     * an app that keeps sending would otherwise grow the buffer (and its
+     * receipt promises) without limit. Overflow drops the oldest send and
+     * rejects its receipt promise. Default `10000`; `0` disables buffering
+     * (sends while disconnected reject immediately).
+     */
+    maxPendingSends?: number;
+    /**
+     * Bound on queued MESSAGE frames per subscription. A consumer slower
+     * than the broker (hidden tab, throttled renderer) otherwise lets the
+     * queue grow without limit; while full, the newest frame is dropped
+     * (the transport watermark posture). Default `4096`; `0` unbounded.
+     */
+    maxSubscriptionMessages?: number;
+    /**
+     * CONNECT handshake timeout in ms: no CONNECTED frame within this
+     * window ends the session (rejects outstanding sends, completes
+     * subscription streams, invokes `onError`). One timer per handshake,
+     * cleared as soon as the handshake settles. Default `10000`.
+     */
+    connectTimeoutMs?: number;
     /**
      * Error observer: invoked with the `message` header of a server ERROR
      * frame (and on protocol violations). All outstanding `send()`
@@ -107,6 +147,31 @@ export interface StompSubscription {
 interface PendingReceipt {
     resolve: () => void;
     reject: (error: Error) => void;
+    /**
+     * Whether the SEND frame reached the transport. Only a frame that left
+     * the wire can be stranded by a drop — its receipt can never arrive on
+     * the new session (COR-12); a still-buffered frame keeps its promise.
+     */
+    sent: boolean;
+}
+
+/** How a CONNECT handshake ended. */
+type HandshakeOutcome = 'connected' | 'aborted' | 'timeout';
+
+/**
+ * One CONNECT handshake: a deferred settled by the CONNECTED frame, by the
+ * ERROR/abort paths, or by a single timeout timer. `#onOpen` awaits this
+ * instead of polling the signals (RT-1).
+ */
+interface Handshake {
+    /** The session epoch this handshake belongs to (superseded → ignored). */
+    epoch: number;
+    /** Settled exactly once per outcome. */
+    promise: Promise<HandshakeOutcome>;
+    /** Settle the deferred and clear {@link Handshake.timer}. Idempotent. */
+    settle(outcome: HandshakeOutcome): void;
+    /** The timeout timer; `null` once settled. */
+    timer: number | NodeJS.Timeout | null;
 }
 
 /** A registered subscription before teardown. */
@@ -143,13 +208,24 @@ export class StompClient {
     readonly #subscriptions = new Map<string, SubscriptionEntry>();
     /** Receipt id → pending resolution. */
     readonly #receipts = new Map<string, PendingReceipt>();
-    /** App sends buffered while connecting; flushed after CONNECTED. */
-    readonly #pendingSends: Array<() => void> = [];
+    /** App sends buffered while connecting; flushed after CONNECTED — a
+     * head-indexed ring (drop-oldest eviction and the flush are O(1)). */
+    readonly #pendingSends: RingBuffer<{ receiptId: string; send: () => void }>;
+    readonly #maxPendingSends: number;
+    readonly #maxSubscriptionMessages: number;
     /** Frames possibly sent while not connected (never — guarded). */
     readonly #closedReader = new AsyncReader<void>();
     #nextReceiptId = 0;
     /** Session ended (socket closed or reconnect:false superseded). */
     #done = false;
+    /**
+     * Session epoch: bumped on every drop/close/fail so a superseded
+     * CONNECT handshake (from a replaced connection) is ignored instead of
+     * failing a newer, healthy session.
+     */
+    #epoch = 0;
+    /** The CONNECT handshake in flight, if any (RT-1). */
+    #handshake: Handshake | null = null;
 
     /**
      * @param socket - The underlying connection (any `SocketClient`).
@@ -158,6 +234,11 @@ export class StompClient {
     constructor(socket: SocketClient, options: StompClientOptions = {}) {
         this.#socket = socket;
         this.#options = options;
+        this.#maxPendingSends = options.maxPendingSends ?? DEFAULT_MAX_PENDING_SENDS;
+        this.#maxSubscriptionMessages = options.maxSubscriptionMessages ?? DEFAULT_MAX_SUBSCRIPTION_MESSAGES;
+        // Ring capacity rounds the bound up to a power of 2; the exact
+        // `maxPendingSends` is enforced by the length guard in send().
+        this.#pendingSends = new RingBuffer<{ receiptId: string; send: () => void }>(this.#maxPendingSends);
         // Consume the socket's message stream: parse frames, route MESSAGEs
         // to subscriptions, resolve receipts, track session state. Started
         // in the constructor so the reader's queue never grows unbounded.
@@ -168,7 +249,7 @@ export class StompClient {
         const sessionEnded = (): void => {
             this.connected.value = false;
             this.#settleReceipts(new StompProtocolError('connection closed'));
-            this.#pendingSends.length = 0;
+            this.#drainPendingSends();
             for (const subscription of this.#subscriptions.values()) {
                 subscription.reader.complete();
             }
@@ -190,7 +271,16 @@ export class StompClient {
                     });
                 }
             } else if (status === 'reconnecting') {
+                this.#epoch += 1;
+                this.#abortHandshake();
                 this.connected.value = false;
+                // COR-12: a SEND frame that left the dropped transport can
+                // never be receipted by the new STOMP session, so every
+                // in-flight receipt settles here — for **both** reconnect
+                // policies (`reconnect: true` used to strand them and hang
+                // the caller's `await send()`). Frames still buffered keep
+                // their promises: they go out on the new session.
+                this.#settleSentReceipts();
                 // A new transport connection is a new STOMP session: every
                 // entry must be re-SUBSCRIBEd after the next CONNECTED
                 // (the #onOpen pass picks up entries still `pending`).
@@ -204,6 +294,8 @@ export class StompClient {
                     sessionEnded();
                 }
             } else if (status === 'closed') {
+                this.#epoch += 1;
+                this.#abortHandshake();
                 this.#done = true;
                 sessionEnded();
             }
@@ -231,7 +323,18 @@ export class StompClient {
     subscribe(destination: string, opts: { id?: string; ack?: StompAckMode } = {}): StompSubscription {
         const id = opts.id ?? crypto.randomUUID();
         const ack = opts.ack ?? 'auto';
-        const reader = new AsyncReader<StompMessage>();
+        if (this.#subscriptions.has(id)) {
+            // A duplicate id would silently orphan the first subscription's
+            // stream (the server routes by id, so the new entry steals its
+            // frames) — reject loudly instead.
+            throw new Error(`duplicate subscription id: ${id}`);
+        }
+        // Bounded per-subscription queue: a stalled consumer must not pin
+        // memory; while full, the newest frame is dropped (the transport
+        // overflow posture, mirroring `maxInboundMessages`). `0` = unbounded.
+        const maxQueued =
+            this.#maxSubscriptionMessages === 0 ? Number.POSITIVE_INFINITY : this.#maxSubscriptionMessages;
+        const reader = new AsyncReader<StompMessage>(maxQueued);
         const entry: SubscriptionEntry = { destination, ack, reader, state: 'pending' };
         this.#subscriptions.set(id, entry);
         if (this.connected.value) {
@@ -281,7 +384,10 @@ export class StompClient {
      *
      * The returned promise resolves when the broker RECEIPTs the frame
      * (a fresh `receipt` header is attached), or rejects on a server
-     * ERROR / session end. Resolving on the wire, not just on send.
+     * ERROR / session end. Resolving on the wire, not just on send. A
+     * transport drop settles it too when the frame already left the wire —
+     * the new STOMP session cannot receipt the old id (COR-12); a frame
+     * buffered for the new session resolves there.
      *
      * @param destination - The destination (e.g. `/topic/chat`).
      * @param body - The message body.
@@ -290,6 +396,14 @@ export class StompClient {
      * @returns A promise resolving on RECEIPT.
      */
     send(destination: string, body: unknown, headers: Record<string, string> = {}): Promise<void> {
+        if (this.#done) {
+            // The session is over (disconnect, ERROR, transport closed): a
+            // buffered frame can never be flushed or receipted — reject
+            // now instead of pinning the caller's promise forever.
+            const { promise, reject } = Promise.withResolvers<void>();
+            reject(new StompProtocolError('client is closed'));
+            return promise;
+        }
         const payload: string | Uint8Array =
             typeof body === 'string'
                 ? body
@@ -299,17 +413,38 @@ export class StompClient {
                     ? new Uint8Array(body)
                     : JSON.stringify(body);
         const ownHeaders = { ...headers };
-        const receiptId = ownHeaders['receipt'] ?? `receipt-${this.#nextReceiptId++}`;
+        // Namespace auto receipt ids so a caller-supplied `receipt` header
+        // can never collide with a generated one (a collision would
+        // overwrite the map entry and strand the first send's promise).
+        const receiptId = ownHeaders['receipt'] ?? `bluejs-${this.#nextReceiptId++}-${crypto.randomUUID()}`;
         ownHeaders['receipt'] = receiptId;
         const { promise, resolve, reject } = Promise.withResolvers<void>();
-        this.#receipts.set(receiptId, { resolve, reject });
+        const receipt: PendingReceipt = { resolve, reject, sent: false };
+        this.#receipts.set(receiptId, receipt);
         const send = (): void => {
+            receipt.sent = true;
             this.#sendFrame({ command: 'SEND', headers: { destination, ...ownHeaders }, body: payload });
         };
         if (this.connected.value) {
             send();
+        } else if (this.#maxPendingSends === 0) {
+            // Buffering disabled — reject immediately; nothing is queued.
+            this.#receipts.delete(receiptId);
+            reject(new StompProtocolError('client is not connected'));
         } else {
-            this.#pendingSends.push(send);
+            this.#pendingSends.put({ receiptId, send });
+            if (this.#pendingSends.length > this.#maxPendingSends) {
+                // Bounded buffer (drop-oldest): the evicted send's receipt
+                // promise settles so no app await hangs on it.
+                const evicted = this.#pendingSends.get();
+                if (evicted !== undefined) {
+                    const pending = this.#receipts.get(evicted.receiptId);
+                    if (pending !== undefined) {
+                        this.#receipts.delete(evicted.receiptId);
+                        pending.reject(new StompProtocolError('send buffer overflow'));
+                    }
+                }
+            }
         }
         return promise;
     }
@@ -324,6 +459,8 @@ export class StompClient {
             return;
         }
         this.#done = true;
+        this.#epoch += 1;
+        this.#abortHandshake();
         if (this.connected.value) {
             this.#sendFrame({ command: 'DISCONNECT', headers: {}, body: '' });
         }
@@ -333,7 +470,7 @@ export class StompClient {
             subscription.reader.complete();
         }
         this.#subscriptions.clear();
-        this.#pendingSends.length = 0;
+        this.#drainPendingSends();
         this.#closedReader.complete();
         this.#socket.close(1000, 'stomp disconnect');
     }
@@ -372,10 +509,66 @@ export class StompClient {
     }
 
     /**
-     * A transport `open`: send CONNECT, await CONNECTED, then re-SUBSCRIBE
-     * active subscriptions and flush buffered sends.
+     * Start a CONNECT handshake: one deferred plus one timeout timer. The
+     * deferred is settled by the CONNECTED frame, by an ERROR/`#fail`, by a
+     * transport drop or close (the status watcher), or by the timer — the
+     * awaiting `#onOpen` never polls the signals (RT-1). Every exit path
+     * clears the timer so a settled handshake leaves nothing scheduled.
+     *
+     * @returns The handshake `#onOpen` awaits.
+     */
+    #beginHandshake(): Handshake {
+        // A new CONNECT supersedes any handshake still in flight (a drop and
+        // reopen can both queue a pass inside one epoch): the stale one
+        // settles `aborted` and its timer is cleared, so it can never fail
+        // the session it no longer owns.
+        this.#abortHandshake();
+        const { promise, resolve } = Promise.withResolvers<HandshakeOutcome>();
+        const handshake: Handshake = {
+            epoch: this.#epoch,
+            promise,
+            timer: null,
+            settle: (outcome) => {
+                if (handshake.timer !== null) {
+                    clearTimeout(handshake.timer);
+                    handshake.timer = null;
+                }
+                resolve(outcome);
+            },
+        };
+        handshake.timer = setTimeout(() => {
+            handshake.timer = null;
+            handshake.settle('timeout');
+        }, this.#options.connectTimeoutMs ?? DEFAULT_CONNECT_TIMEOUT_MS);
+        this.#handshake = handshake;
+        return handshake;
+    }
+
+    /**
+     * Abort the handshake in flight (drop, ERROR, deliberate teardown, or a
+     * newer CONNECT): its deferred settles `aborted` and its timer is
+     * cleared, so a stale session neither waits out the deadline nor fails a
+     * newer one.
+     */
+    #abortHandshake(): void {
+        const handshake = this.#handshake;
+        if (handshake !== null) {
+            this.#handshake = null;
+            handshake.settle('aborted');
+        }
+    }
+
+    /**
+     * A transport `open`: send CONNECT, await the handshake resolver, then
+     * re-SUBSCRIBE active subscriptions and flush buffered sends.
      */
     async #onOpen(): Promise<void> {
+        if (this.#done || this.#socket.status.value !== 'open') {
+            // The status flipped again before this queued pass ran (a fast
+            // drop, or a deliberate close): never CONNECT a dead transport.
+            return;
+        }
+        const handshake = this.#beginHandshake();
         const host = this.#options.host ?? this.#socketHost();
         this.#sendFrame({
             command: 'CONNECT',
@@ -388,20 +581,26 @@ export class StompClient {
             },
             body: '',
         });
-        // Wait for CONNECTED (or ERROR/close). Poll the signal — the
-        // socket delivers frames through #drain asynchronously.
-        const deadline = Date.now() + 10_000;
-        while (!this.connected.value && Date.now() < deadline) {
-            if (this.#socket.status.value !== 'open') {
-                return; // transport dropped before the handshake finished
-            }
-            // eslint-disable-next-line no-await-in-loop -- each iteration re-reads the just-updated state; batching would break the exit conditions.
-            await new Promise<void>((resolve) => setTimeout(resolve, 10));
+        // Await the deferred (RT-1): settled by the CONNECTED frame, by an
+        // ERROR/#fail, by a transport drop/close (the status watcher), or
+        // by the handshake's single timeout timer — no signal polling.
+        const outcome = await handshake.promise;
+        if (this.#handshake === handshake) {
+            this.#handshake = null;
         }
-        if (!this.connected.value) {
+        if (handshake.epoch !== this.#epoch || this.#done) {
+            // A newer session epoch superseded this handshake (a drop
+            // followed by a fast reconnect, or #fail) — stop without
+            // failing the live session.
+            return;
+        }
+        if (outcome === 'timeout') {
             // No CONNECTED before the deadline — surface and give up.
             this.#fail('CONNECT timed out');
             return;
+        }
+        if (outcome !== 'connected') {
+            return; // transport dropped/ERRORed before the handshake finished
         }
         // Re-SUBSCRIBE every pending subscription (same ids, same readers).
         // Entries subscribed while this connection was live are already
@@ -412,14 +611,18 @@ export class StompClient {
             }
         }
         // Flush sends that arrived while (re)connecting.
-        const pending = this.#pendingSends.splice(0);
-        for (const send of pending) {
-            send();
+        while (this.#pendingSends.length > 0) {
+            const pending = this.#pendingSends.get() as { receiptId: string; send: () => void };
+            pending.send();
         }
     }
 
     /**
      * Route one parsed frame.
+     *
+     * ERROR is terminal (decision D-A): STOMP 1.2 §1.5 requires the server
+     * to close the connection just after an ERROR frame, so the client ends
+     * the session on the frame instead of waiting for the socket to follow.
      *
      * @param frame - The parsed frame.
      */
@@ -427,6 +630,9 @@ export class StompClient {
         switch (frame.command) {
             case 'CONNECTED':
                 this.connected.value = true;
+                // Settle the handshake deferred (RT-1): the awaiting #onOpen
+                // resumes on the microtask queue to re-SUBSCRIBE + flush.
+                this.#handshake?.settle('connected');
                 break;
             case 'MESSAGE': {
                 const subscription = this.#subscriptions.get(frame.headers['subscription'] ?? '');
@@ -469,15 +675,29 @@ export class StompClient {
     }
 
     /**
-     * Fail the STOMP session: reject outstanding receipts, report through
-     * the observer. The socket may or may not be closing — the caller
-     * (or the server's ERROR+close) owns transport teardown.
+     * Fail the STOMP session: reject outstanding receipts, abort a
+     * handshake in flight, report through the observer. The socket may or
+     * may not be closing — the caller (or the server's ERROR+close, §1.5)
+     * owns transport teardown.
      *
      * @param message - The failure detail.
      */
     #fail(message: string): void {
+        this.#done = true;
+        this.#epoch += 1;
+        this.#abortHandshake();
         this.connected.value = false;
         this.#settleReceipts(new StompProtocolError(message));
+        this.#drainPendingSends();
+        // Fail closed: end the subscription streams and the closed reader
+        // so no app iterator hangs on a dead session. (The broker closes
+        // the transport after ERROR; a CONNECT timeout against a live
+        // transport leaves the socket open — the app observes the closed
+        // streams and owns teardown.)
+        for (const subscription of this.#subscriptions.values()) {
+            subscription.reader.complete();
+        }
+        this.#closedReader.complete();
         try {
             this.#options.onError?.(message);
         } catch {
@@ -486,7 +706,20 @@ export class StompClient {
     }
 
     /**
-     * Reject every outstanding receipt promise.
+     * Drop every buffered send (their frames were never flushed). Used on
+     * session end; the sends' receipt promises were already settled by the
+     * caller — this only releases the closures.
+     */
+    #drainPendingSends(): void {
+        while (this.#pendingSends.length > 0) {
+            this.#pendingSends.get();
+        }
+    }
+
+    /**
+     * Reject every outstanding receipt promise — the terminal paths (ERROR,
+     * deliberate teardown, socket `closed`, `reconnect: false` drop), where
+     * no frame can ever be receipted.
      *
      * @param error - The reason.
      */
@@ -495,6 +728,22 @@ export class StompClient {
             pending.reject(error);
         }
         this.#receipts.clear();
+    }
+
+    /**
+     * Reject the receipts of sends whose SEND frame already left the
+     * transport (COR-12): the dropped STOMP session can never receipt them
+     * and the new one never sees the old ids. Frames still buffered for the
+     * new session are left alone — their promises settle there.
+     */
+    #settleSentReceipts(): void {
+        for (const [receiptId, pending] of this.#receipts) {
+            if (!pending.sent) {
+                continue;
+            }
+            this.#receipts.delete(receiptId);
+            pending.reject(new StompProtocolError('connection closed'));
+        }
     }
 
     /**

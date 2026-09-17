@@ -56,6 +56,8 @@ import {
     RequestLimitError,
 } from './http-request-limits';
 import { parseCookies } from './cookie-parser';
+import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@blue/auth-core';
+import { getSymbolMetadata } from '@blue/core';
 
 /**
  * STOMP WebSocket subprotocols, best to worst (AD-23 D4). Spring and
@@ -63,6 +65,52 @@ import { parseCookies } from './cookie-parser';
  * mutual match.
  */
 const STOMP_SUBPROTOCOLS: readonly string[] = ['v12.stomp', 'v11.stomp', 'v10.stomp'];
+
+/** Default concurrent-connection cap (SEC-9). */
+const DEFAULT_MAX_CONNECTIONS = 10_000;
+
+/** Default upgrade-authentication budget in milliseconds (SEC-9). */
+const DEFAULT_AUTHENTICATE_TIMEOUT_MS = 10_000;
+
+/**
+ * Shape guard for the identity bag's `principal`: the socket auth check
+ * needs the `hasRole` contract only (session attributes are
+ * `unknown`-valued), not the full `Principal` interface —
+ * `@blue/auth-core` owns that interface, this package must not depend on
+ * its concrete implementations.
+ */
+function likeRolePrincipal(value: unknown): value is { hasRole(role: string): boolean } {
+    if (typeof value !== 'object' || value === null || !('hasRole' in value)) {
+        return false;
+    }
+    return typeof value.hasRole === 'function';
+}
+
+/**
+ * Upgrade-time identity provider for socket endpoints.
+ *
+ * The returned bag is merged into `session.attributes`. Returning `null`
+ * rejects the upgrade with `1008` (policy violation). Socket handlers
+ * marked `@authenticated`/`@authorized` additionally require the bag to
+ * carry a `principal` with a `hasRole(role)` method — authentication or
+ * authorization failures close the socket with `1008`.
+ *
+ * {@link NodeHTTPServerAdapterOptions.authenticate} is the direct wiring;
+ * `HTTPServer` also resolves an application-context bean named
+ * `socketRequestAuthenticator` implementing this interface, so bean-based
+ * applications wire identity without constructing the adapter.
+ */
+export interface SocketRequestAuthenticator {
+    /**
+     * Authenticates an accepted WebSocket upgrade from its request sources.
+     *
+     * @param sources - Query parameters, headers, and cookies captured from the handshake.
+     * @returns The attribute bag to merge into `session.attributes`, or `null` to reject the upgrade with `1008`.
+     */
+    authenticate(
+        sources: SocketRequestSources
+    ): Record<string, unknown> | null | Promise<Record<string, unknown> | null>;
+}
 
 /**
  * Options for {@link NodeHTTPServerAdapter}.
@@ -93,12 +141,31 @@ export interface NodeHTTPServerAdapterOptions {
      * Returning an object populates `session.attributes` — the identity
      * binding point (e.g. `{ principal }`) REST handlers get via the auth
      * session. Returning `null` rejects the upgrade with `1008` (policy
-     * violation). An `async` hook is awaited. Absent, sockets accept any
-     * client (public endpoint posture).
+     * violation). An `async` hook is awaited, up to
+     * {@link NodeHTTPServerAdapterOptions.authenticateTimeoutMs}. Absent,
+     * sockets accept any client (public endpoint posture).
+     *
+     * This is also where `@authenticated`/`@authorized` socket handlers get
+     * the `principal` they require — see {@link SocketRequestAuthenticator}.
      */
-    authenticate?: (
-        sources: SocketRequestSources
-    ) => Record<string, unknown> | null | Promise<Record<string, unknown> | null>;
+    authenticate?: SocketRequestAuthenticator['authenticate'];
+    /**
+     * Maximum concurrent WebSocket connections this adapter admits, counted
+     * from the accepted upgrade until the connection closes (so sockets
+     * still resolving parameters or identity hold their slot). An upgrade
+     * over the cap is closed with `1013` ("try again later") before
+     * dispatch. Default `10_000`; `Infinity` disables the cap.
+     */
+    maxConnections?: number;
+    /**
+     * Milliseconds an {@link NodeHTTPServerAdapterOptions.authenticate}
+     * hook may take before the socket is closed with `1011` and the
+     * session is dropped. The session is deliberately untracked while
+     * authentication is in flight, so an identity provider that never
+     * settles would otherwise pin the connection for the process's
+     * lifetime. Default `10_000`.
+     */
+    authenticateTimeoutMs?: number;
     /**
      * Session registry tracking open sockets (broadcast, rooms, heartbeat;
      * AD-21). When omitted, the adapter creates a default registry with
@@ -168,6 +235,15 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     /** Normalized allowed WebSocket origins, or `null` when unconstrained. */
     readonly #allowedWebSocketOrigins: Record<string, true> | null;
     readonly #authenticate: NodeHTTPServerAdapterOptions['authenticate'];
+    /**
+     * Admitted upgrades, from the `connection` event until the socket
+     * closes — the `maxConnections` ledger (SEC-9). Includes sockets still
+     * resolving parameters or awaiting authentication, which the registry
+     * does not yet track.
+     */
+    readonly #openConnections: Set<unknown> = new Set();
+    readonly #maxConnections: number;
+    readonly #authenticateTimeoutMs: number;
     #server: Server | null;
     #websocket: WebSocketServer | null = null;
     readonly #socketRegistry: NodeSocketSessionRegistry;
@@ -194,6 +270,20 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         this.#limits = resolveHTTPRequestLimits(options.limits);
         this.#socketLimits = resolveSocketLimits(options.socketLimits);
         this.#authenticate = options.authenticate ?? undefined;
+        const maxConnections = options.maxConnections ?? DEFAULT_MAX_CONNECTIONS;
+        if (maxConnections !== Number.POSITIVE_INFINITY && (!Number.isInteger(maxConnections) || maxConnections <= 0)) {
+            throw new RangeError(
+                `NodeHTTPServerAdapter maxConnections must be a positive integer or Infinity, received ${String(maxConnections)}`
+            );
+        }
+        this.#maxConnections = maxConnections;
+        const authenticateTimeoutMs = options.authenticateTimeoutMs ?? DEFAULT_AUTHENTICATE_TIMEOUT_MS;
+        if (!Number.isInteger(authenticateTimeoutMs) || authenticateTimeoutMs <= 0) {
+            throw new RangeError(
+                `NodeHTTPServerAdapter authenticateTimeoutMs must be a positive integer (ms), received ${String(authenticateTimeoutMs)}`
+            );
+        }
+        this.#authenticateTimeoutMs = authenticateTimeoutMs;
         this.#server = null;
         this.#socketRegistry = options.socketRegistry ?? new NodeSocketSessionRegistry();
         const origins: Record<string, true> = {};
@@ -293,11 +383,26 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             });
             websocket.on('error', () => undefined);
             websocket.shouldHandle = (req: IncomingMessage): boolean => {
+                // SEC-10: the upgrade path runs the same header/cookie bound
+                // as `handleRequest` (Node's 16 KiB `maxHeaderSize` is the
+                // only other bound). A `false` return aborts the handshake
+                // with `400` — an oversized handshake is never upgraded.
+                try {
+                    this.#assertHeaderLimits(req);
+                } catch {
+                    return false;
+                }
                 const [path, queryString] = (req.url ?? '').split('?', 2);
-                const query: Record<string, string | string[]> = {};
+                // SEC-8: null-prototype map. `?__proto__=a&__proto__=b` on a
+                // plain `{}` takes the inherited `__proto__` accessor path
+                // (the `in` test is true for the inherited accessor), so the
+                // assignment replaces the map's prototype instead of
+                // accumulating a value. `Object.hasOwn` + a null prototype
+                // keep `__proto__` an ordinary key (the codec's idiom).
+                const query: Record<string, string | string[]> = Object.create(null);
                 if (queryString) {
                     for (const [key, value] of new URLSearchParams(queryString)) {
-                        if (key in query) {
+                        if (Object.hasOwn(query, key)) {
                             const existing = query[key];
                             query[key] = Array.isArray(existing) ? [...existing, value] : [existing, value];
                         } else {
@@ -458,13 +563,47 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     }
 
     /**
+     * Reads a socket handler's `@authenticated`/`@authorized` metadata — the
+     * same `AUTH_REQUIRED_KEY`/`AUTH_ROLES_KEY` contract `AuthRouteGuard`
+     * enforces on HTTP requests. Both decorators are class- and
+     * method-scoped; the method form writes `${key}:${methodName}` into the
+     * class's `Symbol.metadata` record.
+     *
+     * @param target - The resolved socket handler (controller instance + method name).
+     * @returns Whether authentication is required and the roles the principal must hold.
+     */
+    #socketAuthRequirements(target: { instance: object; method: string }): {
+        requiresAuth: boolean;
+        requiredRoles: string[];
+    } {
+        const metadata = getSymbolMetadata(target.instance);
+        const method = target.method;
+        const classRequiresAuth = metadata[AUTH_REQUIRED_KEY] === true;
+        const methodRequiresAuth = metadata[`${AUTH_REQUIRED_KEY}:${method}`] === true;
+        const classRoles = (metadata[AUTH_ROLES_KEY] as string[] | undefined) ?? [];
+        const methodRoles = (metadata[`${AUTH_ROLES_KEY}:${method}`] as string[] | undefined) ?? [];
+        return {
+            requiresAuth: classRequiresAuth || methodRequiresAuth,
+            requiredRoles: [...classRoles, ...methodRoles],
+        };
+    }
+
+    /**
      * Dispatch an upgraded WebSocket to its socket-mapped handler.
      *
      * Builds a `SocketSession` from the `ws` connection, invokes the handler
      * (an async-iterable producer-consumer), and drains inbound + yields
      * outbound until the connection closes.
      *
+     * Fail-closed paths: an upgrade over {@link
+     * NodeHTTPServerAdapterOptions.maxConnections} closes `1013`; a missing
+     * required `@parameters` value, a rejecting `authenticate` hook, or an
+     * unmet `@authenticated`/`@authorized` requirement closes `1008`; a
+     * throwing or timing-out hook closes `1011`.
+     *
      * @param rawWs - The upgraded `ws` connection.
+     * @param path - The socket-mapped request path.
+     * @param sources - Query/headers/cookies captured from the handshake.
      */
     async #dispatchSocket(rawWs: unknown, path: string, sources: SocketRequestSources): Promise<void> {
         // The `ws` server hands us a `WebSocket` (RFC 6455 connection) which
@@ -472,6 +611,16 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         // surface is all we touch, so a boundary cast to the library type is
         // deliberate (the upgrade path is the only wire into this hook).
         const ws = rawWs as WebSocket;
+        // SEC-9: the connection cap is counted from the accepted upgrade
+        // until the socket closes — sockets still resolving parameters or
+        // awaiting authentication hold a slot, which the registry (registered
+        // later) does not yet account for.
+        if (this.#openConnections.size >= this.#maxConnections) {
+            ws.close(1013, 'connection limit reached');
+            return;
+        }
+        this.#openConnections.add(ws);
+        ws.once('close', () => this.#openConnections.delete(ws));
         const target = this.#findSocketHandler(path, sources.query);
         if (!target) {
             ws.close(1011, 'no socket handler');
@@ -508,28 +657,78 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             }
         }
         if (!session) session = nodeSocketSession(ws, path, sources, this.#socketRegistry, this.#socketLimits);
+        // Attach the removal listener before any await: a peer closing while
+        // authentication is pending must not leave a registry entry for a
+        // dead session (remove is idempotent, so this also covers the
+        // register below). The close code flows into `remove` for
+        // observability (e.g. 1013 backpressure closes) — AD-21 D4 +
+        // socket telemetry.
+        ws.on('close', (code: number) => this.#socketRegistry.remove(session, code));
         // Upgrade-time authentication: the adapter-level hook binds identity
         // before the handler runs (REST gets this via the interceptor chain;
         // sockets are dispatched directly, so this is the auth seam). A null
-        // result rejects with 1008; an async hook is awaited. Unauthenticated
+        // result rejects with 1008; an async hook is awaited under
+        // `authenticateTimeoutMs` (SEC-9). A hook that throws must not become
+        // an unhandled rejection (this dispatch is fire-and-forget from the
+        // connection event — Node ≥15 terminates on unhandled rejections) —
+        // close 1011 instead, as does a hook that never settles. Rejected
         // upgrades are never tracked by the registry or observable to the
         // handler.
         const authenticate = this.#authenticate;
         if (authenticate) {
-            const attributes = await authenticate(sources);
+            let attributes: Record<string, unknown> | null;
+            let timedOut = false;
+            let timer: NodeJS.Timeout | undefined;
+            const timeout = new Promise<never>((_resolve, reject) => {
+                timer = setTimeout(() => {
+                    timedOut = true;
+                    reject(new Error('authentication timeout'));
+                }, this.#authenticateTimeoutMs);
+                timer.unref?.();
+            });
+            try {
+                attributes = await Promise.race([authenticate(sources), timeout]);
+            } catch {
+                ws.close(1011, timedOut ? 'authentication timeout' : 'authentication failed');
+                return;
+            } finally {
+                clearTimeout(timer);
+            }
             if (attributes === null) {
                 ws.close(1008, 'authentication required');
                 return;
             }
             Object.assign(session.attributes, attributes);
         }
+        if (session.isClosed) {
+            // Closed while authentication was pending — the close listener
+            // above already removed it from the registry.
+            return;
+        }
+        // SEC-3 (decision D-B): enforce the `@authenticated`/`@authorized`
+        // metadata on the socket dispatch path. HTTP requests get this from
+        // the interceptor chain (`AuthRouteGuard`); sockets are dispatched
+        // directly, so without this check the decorators are inert and every
+        // socket endpoint is open by construction. The identity source is
+        // the `authenticate` hook / `socketRequestAuthenticator` bean whose
+        // bag lands in `session.attributes`. No metadata ⇒ unchanged
+        // behavior (a public socket endpoint).
+        const { requiresAuth, requiredRoles } = this.#socketAuthRequirements(target);
+        if (requiresAuth || requiredRoles.length > 0) {
+            const principal = session.attributes['principal'];
+            if (!likeRolePrincipal(principal)) {
+                ws.close(1008, 'authentication required');
+                return;
+            }
+            if (requiredRoles.length > 0 && !requiredRoles.every((role) => principal.hasRole(role))) {
+                ws.close(1008, 'insufficient role');
+                return;
+            }
+        }
         // Track the session before the handler runs so broadcasts from the
         // handler (or any service with the registry) reach it immediately;
         // the close event drops it from the registry (AD-21 D3/D4).
         this.#socketRegistry.register(session, path, ws);
-        // The close code flows into `remove` for observability (e.g. 1013
-        // backpressure closes) — AD-21 D4 + socket telemetry.
-        ws.on('close', (code: number) => this.#socketRegistry.remove(session, code));
         const handlerMethod = (target.instance as Record<string, unknown>)[target.method] as unknown;
         if (typeof handlerMethod !== 'function') {
             ws.close(1011, 'socket handler is not a function');
@@ -602,6 +801,9 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         const wss = this.#websocket;
         this.#websocket = null;
         this.#socketPathMemo.clear();
+        // The adapter is not listening any more; a later `listen()` starts
+        // from an empty ledger (pending close events are no-ops).
+        this.#openConnections.clear();
         if (wss) {
             const clients = wss.clients as unknown as Set<{ close(code: number, reason: string): void }> | undefined;
             clients?.forEach((client) => client.close(1001, 'server shutting down'));
@@ -630,13 +832,15 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 cookies: parseCookies(typeof req.headers['cookie'] === 'string' ? req.headers['cookie'] : undefined),
                 session: {},
             };
-            const data: Record<string, string | string[]> = {};
+            // SEC-8: null-prototype map — see the upgrade path. `?__proto__=a`
+            // must stay an ordinary parameter, not swap the map's prototype.
+            const data: Record<string, string | string[]> = Object.create(null);
 
             const { segments, cleanedPath } = this.#parseMatrixParams(urlObj.pathname);
             urlObj.searchParams.forEach((value, key) => {
                 // Preserve repeated query parameters using the multi-value
                 // contract (`data[key]` becomes an array on repeats).
-                if (key in data) {
+                if (Object.hasOwn(data, key)) {
                     const existing = data[key];
                     data[key] = Array.isArray(existing) ? [...existing, value] : [existing, value];
                 } else {

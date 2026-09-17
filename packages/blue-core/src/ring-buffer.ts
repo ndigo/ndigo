@@ -3,7 +3,6 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { IndexedIterator } from './iterable.js';
 import { Serializable, JSONArray, serialize } from './serializable.js';
 import { likeArray } from '@blue/util/types';
 
@@ -148,11 +147,20 @@ export class RingBuffer<T = unknown> implements ArrayLike<T | undefined>, Iterab
     }
 
     /**
-     * Returns an iterator for the elements in the ring buffer.
+     * Returns an iterator for the elements in the ring buffer, oldest
+     * first. Walks `tail → head` across the wrap so every live element is
+     * visited — the previous index-walk missed elements whose ring slots
+     * sat past the wrap.
      * @returns An iterator for the elements.
      */
-    [Symbol.iterator](): Iterator<T, undefined, undefined> {
-        return new IndexedIterator<T>(this);
+    *[Symbol.iterator](): Iterator<T, undefined, undefined> {
+        const capacity = this._capacity,
+            length = this.length;
+        let index = this._tail;
+        for (let i = 0; i < length; i++) {
+            yield this[index] as T;
+            index = (index + 1) & (capacity - 1);
+        }
     }
 
     /**
@@ -223,17 +231,17 @@ export class RingBuffer<T = unknown> implements ArrayLike<T | undefined>, Iterab
     }
 
     /**
-     * Returns a JSON array representation of the ring buffer's contents.
+     * Returns a JSON array representation of the ring buffer's contents,
+     * oldest first (walks tail → head like the iterator — the previous
+     * numeric slot walk dropped elements past the wrap).
      * @returns A JSON array.
      */
     toJSON(): JSONArray {
-        const { length } = this,
-            list = new Array(length);
-        let index = 0;
-        while (index < length) {
-            list[index] = serialize(this[index++]);
+        const list: unknown[] = [];
+        for (const item of this) {
+            list.push(serialize(item));
         }
-        return list;
+        return list as JSONArray;
     }
 
     /**

@@ -39,3 +39,4 @@ overrides:
   protobufjs: '>=7.6.5'
   tmp: '>=0.2.7'
   react-router: '>=7.18.2'
+  smol-toml: '>=1.7.1' # GHSA-7w5x-hrqm-74c2 — DoS via malformed TOML (nx · @nx/devkit chain)

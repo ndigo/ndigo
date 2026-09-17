@@ -1,4 +1,4 @@
-# Guide 06 — WebSockets, Rooms, and Broadcast
+# Guide 06 — WebSockets, Rooms, Broadcast, and STOMP
 
 How realtime endpoints work in BlueJS: `@socketMapping`, the
 `SocketSession` contract, the session registry (rooms + broadcast), and the
@@ -65,8 +65,8 @@ import { type SocketSessionRegistry } from '@blue/dispatcher';
 // any bean: fetch the registry from the context (or inject it)
 const registry = context.getValue<SocketSessionRegistry>('socketSessionRegistry');
 registry.broadcast('/ws/room', { event: 'server', data: 'maintenance window' });
-registry.count('/ws/room');          // 0 if nobody is connected
-registry.closeAll(1001, 'bye');      // graceful server shutdown
+registry.count('/ws/room'); // 0 if nobody is connected
+registry.closeAll(1001, 'bye'); // graceful server shutdown
 ```
 
 Every session auto-joins a set keyed by its endpoint path, so
@@ -117,8 +117,12 @@ into rooms — the `apps/blue-api` demo proves it with a chat room where a
 
 ```ts
 export class ChatController implements ApplicationContextAware {
-    get [$aware](): boolean { return true; }
-    setApplicationContext(context: ApplicationContext): void { /* … */ }
+    get [$aware](): boolean {
+        return true;
+    }
+    setApplicationContext(context: ApplicationContext): void {
+        /* … */
+    }
 
     @socketMapping('/chat')
     @parameters({ session: socketSession('session') })
@@ -184,8 +188,8 @@ import { effect } from '@blue/signals';
 
 const chat = new WebSocketClient('ws://localhost:3000/ws/chat', {
     reconnect: { baseMs: 1000, maxMs: 30_000, jitter: 0.2 }, // default
-    bufferWhileDisconnected: { maxMessages: 100 },            // opt-in queue
-    reconnectTrigger: createOnlineReconnectTrigger(),         // browser wiring
+    bufferWhileDisconnected: { maxMessages: 100 }, // opt-in queue
+    reconnectTrigger: createOnlineReconnectTrigger(), // browser wiring
 });
 
 effect(() => {
@@ -195,8 +199,8 @@ effect(() => {
 for await (const message of chat.messages) {
     applyMessage(JSON.parse(String(message))); // text frames arrive as strings
 }
-chat.send({ room: 'lobby', text: 'hello' });   // strings → text frames, else JSON
-chat.close();                                   // deliberate — never reconnects
+chat.send({ room: 'lobby', text: 'hello' }); // strings → text frames, else JSON
+chat.close(); // deliberate — never reconnects
 ```
 
 Semantics (AD-22 D3): `status` is a signal
@@ -224,7 +228,82 @@ import { countSocketClientStatus } from '@blue/telemetry-web';
 const chat = new WebSocketClient(url, { onStatusChange: countSocketClientStatus() });
 ```
 
-## 7. Design boundaries (AD-21)
+## 7. STOMP (AD-23)
+
+The same sessions speak the industry-standard STOMP 1.2 broker protocol:
+destinations, subscriptions, receipts — interop with Spring
+(`SimpMessagingTemplate`), RabbitMQ/Artemis STOMP, and @stomp/stompjs
+clients. It is a protocol layer over the socket contracts, so it is
+isomorphic (`@blue/socket`) and transport-agnostic:
+
+```ts
+// server: a broker owns the destination namespace; the handler runs the
+// protocol for each connection
+const broker = new StompBroker();   // app-scoped bean
+
+@stompMapping('/chat')
+@parameters({ session: socketSession('session') })
+async chat(session: SocketSession) {
+    await broker.handleSocket(session);   // CONNECT/SUBSCRIBE/SEND/ACK/RECEIPT
+}
+
+// any service: scheduler → destination (SimpMessagingTemplate parity)
+@scheduled('*/2 * * * * *')
+tick() {
+    broker.publish('/topic/chat', JSON.stringify({ at: Date.now() }));
+}
+```
+
+```ts
+// client: STOMP over the isomorphic WebSocketClient
+const stomp = new StompClient(new WebSocketClient('ws://host/stomp/chat'));
+const sub = stomp.subscribe('/topic/chat');
+for await (const message of sub.messages) {
+    applyMessage(message.json());
+}
+await stomp.send('/topic/chat', { text: 'hello' }); // resolves on RECEIPT
+```
+
+Semantics: destinations are broker state, not registry rooms (MESSAGE
+frames carry the subscriber's own `subscription` id — two subscriptions to
+one destination on a session stay distinct); SEND fans out to subscribers
+including the sender when subscribed; receipts answer every frame that
+asks; heart-beat is negotiated off (`0,0`) because the registry ping/pong
+already owns liveness. The second wave rounds out the protocol (AD-23
+D7–D11):
+
+- **Transactions** — BEGIN/COMMIT/ABORT with per-session buffers: SEND/
+  ACK/NACK frames inside a transaction apply atomically on COMMIT, receipts
+  are held until then, ABORT discards. A frame on an unknown transaction
+  fails closed.
+- **Ack tracking + NACK redelivery** — ack modes `client` /
+  `client-individual` track delivered-but-unacked messages per subscription
+  (bounded by `maxUnacked`, default 1000, FIFO eviction). `client` ACKs are
+  cumulative; NACK redelivers the message with `redelivered: true`.
+- **Binary bodies (D8)** — the codec and transports are byte-exact:
+  `Uint8Array`/`ArrayBuffer` bodies flow as binary frames (headers always
+  text); `content-length` is emitted for binary bodies. Text frames stay
+  strings (`SocketSession`/`SocketClient` JSDoc updated).
+- **`/user` destinations (D10)** — principal-scoped routing: subscribe
+  `/user/queue/events`, then `broker.sendToUser('alice', '/queue/events',
+…)` delivers to that user's scope (Spring `convertAndSendToUser` parity).
+  `resolveUser(session)` (default: `session.attributes.user`) binds the
+  scope; a client SEND to `/user/*` reaches only the sender's own scope,
+  and sessions with no resolved user cannot bind `/user/*` (1008).
+- **`/queue` destinations (D11)** — bounded store-and-forward: every SEND/
+  publish appends to the destination's backlog (`queueBacklog`, default
+  1000, FIFO eviction), and a new subscriber replays the backlog before
+  live traffic. `queueBacklog: 0` reduces the destination to live fan-out.
+
+Still deferred, documented: durable persistence behind `/queue` (needs the
+audit's store contract — post-1.0), cross-node pub/sub, message history
+beyond the bounded backlog. `@stompMapping` paths negotiate the
+`v12.stomp`/`v11.stomp`/`v10.stomp` WebSocket subprotocol on upgrade;
+other socket paths keep the stock behavior. **STOMP over TCP is never** —
+no consumer base (browsers, STOMP.js, and Spring all use WebSocket), and
+like SockJS it is a non-feature, not a gap.
+
+## 8. Design boundaries (AD-21)
 
 - **No generic `Session` base class.** HTTP session state and WebSocket
   connections share only "ID + data container" — every operation past that
@@ -239,18 +318,23 @@ const chat = new WebSocketClient(url, { onStatusChange: countSocketClientStatus(
   [AD-22](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md) and
   [plan](../plans/2026-09-15_WEBSOCKET_CLIENT.md).
 - **Deferred, not built**: cross-node pub/sub (needs a store contract),
-  STOMP (future layer), message history — **SockJS: never** (pre-2015
-  fallback-transport workaround; third-party territory, AD-22 D4).
+  message history, NACK redelivery (needs persistence) — **STOMP: built**
+  (AD-23, §7); **SockJS: never** (pre-2015 fallback-transport workaround;
+  third-party territory, AD-22 D4).
 
-## 8. References
+## 9. References
 
 - Decision: [AD-21 — WebSocket Session Registry](../decisions/2026-09-15_AD21_WEBSOCKET_SESSION_REGISTRY.md),
-  [AD-22 — WebSocket Client & `@blue/socket`](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md)
+  [AD-22 — WebSocket Client & `@blue/socket`](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md),
+  [AD-23 — STOMP Protocol Layer](../decisions/2026-09-16_AD23_STOMP.md)
 - Plans: [WebSocket Broadcast](../plans/2026-09-15_WEBSOCKET_BROADCAST.md),
-  [WebSocket Client](../plans/2026-09-15_WEBSOCKET_CLIENT.md)
+  [WebSocket Client](../plans/2026-09-15_WEBSOCKET_CLIENT.md),
+  [STOMP](../plans/2026-09-16_STOMP.md)
 - Demo: `ChatController` in `apps/blue-api/src/chat-controller.ts`, e2e in
-  `apps/blue-api/test/chat.spec.ts` (driven by `WebSocketClient`)
+  `apps/blue-api/test/chat.spec.ts` (driven by `WebSocketClient`);
+  `StompChatController` in `apps/blue-api/src/stomp-chat-controller.ts`,
+  e2e in `apps/blue-api/test/stomp.spec.ts` (driven by `StompClient`)
 - Package surfaces: [`@blue/socket`](../../packages/blue-socket/README.md)
-  (contracts + client), `@blue/dispatcher` (handler vocabulary),
+  (contracts + client + STOMP), `@blue/dispatcher` (handler vocabulary),
   [`@blue/platform-node`](../../packages/blue-platform-node/README.md)
   (registry, adapter, auto-configuration), `@blue/platform-web` (online trigger)

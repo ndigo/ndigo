@@ -4252,7 +4252,6 @@ Ref: STYLE_GUIDE.md Section 4.6"
 - Commit working changes before next extraction
 - Document rationale in commit messages
 
-
 ---
 
 ## 5. Documentation Blocks
@@ -4289,8 +4288,6 @@ files:
 The file-level block documents the whole module; class/method members carry
 their own focused TSDoc. `@blue/oxlint-plugin` enforcement can be layered on
 top of this convention.
-
-
 
 ### Mixin Naming [CONVENTION: Code Review]
 

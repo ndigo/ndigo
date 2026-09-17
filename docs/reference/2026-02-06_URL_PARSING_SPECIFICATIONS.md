@@ -275,18 +275,18 @@ MatrixString.stringify({
 
 ### Query String Compliance
 
-| Feature                         | RFC 3986 | WHATWG | BlueJS | Status             |
-| ------------------------------- | -------- | ------ | ------ | ------------------ |
-| Ampersand delimiter             | ✓        | ✓      | ✓      | ✅ Compliant       |
-| Semicolon delimiter             | ✓        | ✗      | ✗      | ✅ Aligned (WHATWG)  |
-| Percent-encoding                | ✓        | ✓      | ✓      | ✅ Compliant       |
-| Plus-to-space                   | —        | ✓      | ✓      | ✅ Compliant       |
-| Multiple values (repeated keys) | —        | ✓      | ✓      | ✅ Compliant       |
-| Empty value semantics           | —        | `""`   | `""`   | ✅ Aligned (WHATWG)  |
-| Missing value semantics         | —        | N/A    | `""`   | ✅ Aligned (WHATWG)  |
-| Key sorting                     | —        | ✗      | ✓      | ℹ️ Extension       |
-| Bracket arrays (`foo[]`)        | —        | ✗      | ✗      | ℹ️ Not implemented |
-| Indexed arrays (`foo[0]`)       | —        | ✗      | ✗      | ℹ️ Not implemented |
+| Feature                         | RFC 3986 | WHATWG | BlueJS | Status              |
+| ------------------------------- | -------- | ------ | ------ | ------------------- |
+| Ampersand delimiter             | ✓        | ✓      | ✓      | ✅ Compliant        |
+| Semicolon delimiter             | ✓        | ✗      | ✗      | ✅ Aligned (WHATWG) |
+| Percent-encoding                | ✓        | ✓      | ✓      | ✅ Compliant        |
+| Plus-to-space                   | —        | ✓      | ✓      | ✅ Compliant        |
+| Multiple values (repeated keys) | —        | ✓      | ✓      | ✅ Compliant        |
+| Empty value semantics           | —        | `""`   | `""`   | ✅ Aligned (WHATWG) |
+| Missing value semantics         | —        | N/A    | `""`   | ✅ Aligned (WHATWG) |
+| Key sorting                     | —        | ✗      | ✓      | ℹ️ Extension        |
+| Bracket arrays (`foo[]`)        | —        | ✗      | ✗      | ℹ️ Not implemented  |
+| Indexed arrays (`foo[0]`)       | —        | ✗      | ✗      | ℹ️ Not implemented  |
 
 ### Matrix String Compliance
 

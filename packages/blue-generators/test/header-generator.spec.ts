@@ -22,7 +22,7 @@ describe('header generator', () => {
     });
 
     it('injects the standard header into a file without one', async () => {
-        tree.write('packages/blue-core/src/widget.ts', "export const x = 1;\n");
+        tree.write('packages/blue-core/src/widget.ts', 'export const x = 1;\n');
 
         await headerGenerator(tree, { file: 'packages/blue-core/src/widget.ts' });
 
@@ -55,7 +55,9 @@ describe('header generator', () => {
     it('fails when the file already has a doc block', async () => {
         tree.write('packages/blue-core/src/widget.ts', '/**\n * Old header.\n */\nexport const x = 1;\n');
 
-        await expect(headerGenerator(tree, { file: 'packages/blue-core/src/widget.ts' })).rejects.toThrow(/already has a top-of-file doc block/);
+        await expect(headerGenerator(tree, { file: 'packages/blue-core/src/widget.ts' })).rejects.toThrow(
+            /already has a top-of-file doc block/
+        );
     });
 
     it('replaces the existing doc block with --force', async () => {
@@ -71,6 +73,8 @@ describe('header generator', () => {
     });
 
     it('throws for unknown files', async () => {
-        await expect(headerGenerator(tree, { file: 'packages/blue-core/src/nope.ts' })).rejects.toThrow(/File not found/);
+        await expect(headerGenerator(tree, { file: 'packages/blue-core/src/nope.ts' })).rejects.toThrow(
+            /File not found/
+        );
     });
 });

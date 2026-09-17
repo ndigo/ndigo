@@ -39,7 +39,7 @@ Rendering a document directly:
 import { EJSView } from '@blue/view-ejs';
 
 const view = new EJSView('views/home.html', {
-    loader: myResourceLoader,   // or set the view's application context
+    loader: myResourceLoader, // or set the view's application context
 });
 const result = await view.renderTo({ name: 'Blue' }, route); // RenderResult
 ```

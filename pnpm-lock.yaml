@@ -15,6 +15,7 @@ overrides:
   protobufjs: '>=7.6.5'
   tmp: '>=0.2.7'
   react-router: '>=7.18.2'
+  smol-toml: '>=1.7.1'
 
 importers:
 
@@ -6897,8 +6898,8 @@ packages:
     resolution: {integrity: sha512-p8lJZLw/5GDmxXO3FKjiOYjiBMFGDc+/8DgutoXKqjn8KX7buzbkX1unEavO7T+GHGLTOyeb7VjWTRWpb8wmuQ==}
     hasBin: true
 
-  smol-toml@1.6.1:
-    resolution: {integrity: sha512-dWUG8F5sIIARXih1DTaQAX4SsiTXhInKf1buxdY9DIg4ZYPZK5nGM1VRIYmEbDbsHt7USo99xSLFu5Q1IqTmsg==}
+  smol-toml@1.8.0:
+    resolution: {integrity: sha512-kCZr2V3ch9i00x8zXRhjUNVcjG9ijES5dDudkXvUVCT5QlJNQWElSJdZqyPemffHoLNUYwOcou0Fy+ojN0uHSQ==}
     engines: {node: '>= 18'}
 
   sockjs@0.3.24:
@@ -12238,7 +12239,7 @@ snapshots:
       semver: 7.8.4
       signal-exit: 3.0.7
       sisteransi: 1.0.5
-      smol-toml: 1.6.1
+      smol-toml: 1.8.0
       string-width: 4.2.3
       string_decoder: 1.3.0
       strip-ansi: 6.0.1
@@ -13263,7 +13264,7 @@ snapshots:
 
   slug@12.0.1: {}
 
-  smol-toml@1.6.1: {}
+  smol-toml@1.8.0: {}
 
   sockjs@0.3.24:
     dependencies:

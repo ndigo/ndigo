@@ -462,3 +462,63 @@ describe('WebSocketClient', () => {
         expect(created.length).toBe(3);
     });
 });
+
+describe('WebSocketClient send hygiene', () => {
+    beforeEach(() => {
+        vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+        vi.restoreAllMocks();
+    });
+
+    test('non-serializable payloads are dropped and cannot wedge the buffered flush', async () => {
+        const { client, created } = createHarness({ bufferWhileDisconnected: { maxMessages: 5 } });
+        client.send(undefined);
+        client.send(() => 'nope');
+        client.send('queued');
+        created[0].fireOpen();
+        // The poison values never entered the queue, so the flush reaches
+        // the real message (a queued poison frame would throw from the
+        // transport send and permanently stall the drain).
+        expect(created[0].sent).toEqual(['queued']);
+        client.close(1000, 'done');
+    });
+
+    test('a non-serializable payload while open is dropped without throwing', async () => {
+        const { client, created } = createHarness();
+        created[0].fireOpen();
+        expect(() => client.send(undefined)).not.toThrow();
+        client.send('real');
+        expect(created[0].sent).toEqual(['real']);
+        client.close(1000, 'done');
+    });
+});
+
+describe('WebSocketClient reconnect policy sanitization', () => {
+    beforeEach(() => {
+        vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+        vi.restoreAllMocks();
+    });
+
+    test('a partially-specified policy falls back to defaults instead of a NaN hot loop', () => {
+        const { client, created } = createHarness({ reconnect: {} as WebSocketClientOptions['reconnect'] });
+        created[0].fireOpen();
+        created[0].fireClose(1006, '', false);
+        // A NaN backoff schedules setTimeout(fn, NaN) → fires immediately
+        // (created.length would already be 2). The sanitized default base
+        // (1000ms ± jitter) keeps the retry in the future.
+        expect(created).toHaveLength(1);
+        expect(client.status.value).toBe('reconnecting');
+        vi.advanceTimersByTime(500);
+        expect(created).toHaveLength(1);
+        vi.advanceTimersByTime(1000);
+        expect(created).toHaveLength(2);
+        client.close(1000, 'done');
+    });
+});

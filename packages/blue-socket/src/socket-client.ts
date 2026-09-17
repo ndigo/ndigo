@@ -11,6 +11,7 @@
  * @author Jeff Rose
  */
 import { signal, type Signal } from '@blue/signals';
+import { RingBuffer } from '@blue/core';
 import { AsyncReader } from './async-reader';
 
 /**
@@ -182,7 +183,17 @@ export class WebSocketClient implements SocketClient {
     #intentional = false;
     #attempt = 0;
     #timer: number | NodeJS.Timeout | null = null;
-    #outbound: Array<string | ArrayBuffer> = [];
+    /**
+     * Outbound buffer while disconnected — a head-indexed ring (O(1)
+     * dequeue; the flush is a hot per-message path).
+     */
+    #outbound: RingBuffer<string | ArrayBuffer>;
+    /**
+     * The message whose send raced the wire to CLOSING: a ring cannot
+     * push-front, so the failed message parks here and is retried FIRST on
+     * the next open, preserving the buffer's order.
+     */
+    #retryPending: string | ArrayBuffer | null = null;
     #unsubscribeTrigger: (() => void) | null = null;
 
     /**
@@ -197,9 +208,13 @@ export class WebSocketClient implements SocketClient {
         this.#trigger = options.reconnectTrigger ?? null;
         this.#onStatusChange = options.onStatusChange ?? null;
         this.#transportFactory = options.transportFactory ?? defaultTransportFactory;
-        // Inbound watermark (opt-in): overflow drops the newest frame and
-        // latches the reader into drop-all — the consumer keeps draining
-        // what was queued (mirrors the server's overflow posture).
+        // The ring's power-of-2 capacity rounds the bound up; the exact
+        // `maxMessages` is enforced by the length guard in send().
+        this.#outbound = new RingBuffer<string | ArrayBuffer>(options.bufferWhileDisconnected?.maxMessages ?? 16);
+        // Inbound watermark (opt-in): while the queue is at the cap, the newest
+        // frame is dropped and the reader reports one overflow episode; the
+        // stream resumes once the consumer drains below the cap (mirrors
+        // the server's overflow posture).
         this.#inbound = new AsyncReader<unknown>(options.maxInboundMessages ?? Number.POSITIVE_INFINITY);
         // Keep the unsubscribe: a shared trigger (e.g. the browser global
         // `createOnlineReconnectTrigger`) otherwise pins every closed client
@@ -218,14 +233,26 @@ export class WebSocketClient implements SocketClient {
      * @param data - The payload.
      */
     send(data: unknown): void {
-        const payload =
-            typeof data === 'string'
-                ? data
-                : data instanceof ArrayBuffer
-                  ? data
-                  : data instanceof Uint8Array
-                    ? (data as Uint8Array).slice().buffer
-                    : JSON.stringify(data);
+        let payload: string | ArrayBuffer;
+        if (typeof data === 'string') {
+            payload = data;
+        } else if (data instanceof ArrayBuffer) {
+            payload = data;
+        } else if (data instanceof Uint8Array) {
+            payload = (data as Uint8Array).slice().buffer;
+        } else {
+            const serialized = JSON.stringify(data);
+            if (serialized === undefined) {
+                // Non-serializable (undefined/function/symbol): no frame can
+                // be produced — and a falsy payload must never reach the
+                // buffer, where the flush would throw on it forever and
+                // permanently wedge the outbound queue. Drop silently per
+                // the send contract. (Circular structures still throw out
+                // of `JSON.stringify` — a caller bug, surfaced loudly.)
+                return;
+            }
+            payload = serialized;
+        }
         const transport = this.#transport;
         if (transport !== null && this.status.value === 'open') {
             try {
@@ -240,9 +267,9 @@ export class WebSocketClient implements SocketClient {
             }
         }
         if (this.#bufferLimit !== null && this.status.value !== 'closed') {
-            this.#outbound.push(payload as string | ArrayBuffer);
+            this.#outbound.put(payload as string | ArrayBuffer);
             if (this.#outbound.length > this.#bufferLimit) {
-                this.#outbound.shift();
+                this.#outbound.get(); // drop oldest
             }
         }
     }
@@ -268,7 +295,10 @@ export class WebSocketClient implements SocketClient {
         // send later.
         this.#unsubscribeTrigger?.();
         this.#unsubscribeTrigger = null;
-        this.#outbound = [];
+        while (this.#outbound.length > 0) {
+            this.#outbound.get();
+        }
+        this.#retryPending = null;
         this.#transport?.close(code, reason);
         this.#transition('closed');
         this.#inbound.complete();
@@ -321,10 +351,19 @@ export class WebSocketClient implements SocketClient {
             return;
         }
         const policy = this.#reconnect;
-        const base = Math.min(policy.baseMs * Math.pow(2, this.#attempt), policy.maxMs);
+        // Runtime-constructed policies (JSON/env config) may omit fields or
+        // carry non-numeric values — a NaN delay would become an
+        // immediate-retry hot loop (a new WebSocket per tick). Sanitize
+        // each field against the documented defaults.
+        const baseMs = Number.isFinite(policy.baseMs) && policy.baseMs >= 0 ? policy.baseMs : DEFAULT_RECONNECT.baseMs;
+        const maxMs = Number.isFinite(policy.maxMs) && policy.maxMs >= 0 ? policy.maxMs : DEFAULT_RECONNECT.maxMs;
+        const jitter = Number.isFinite(policy.jitter)
+            ? Math.min(1, Math.max(0, policy.jitter))
+            : DEFAULT_RECONNECT.jitter;
+        const base = Math.min(baseMs * Math.pow(2, this.#attempt), maxMs);
         // Jitter then clamp so `maxMs` is a true ceiling (jitter outside the
         // cap would push sleeps to base×1.2 → beyond the documented max).
-        const delay = Math.min(policy.maxMs, base * (1 - policy.jitter + Math.random() * 2 * policy.jitter));
+        const delay = Math.min(maxMs, base * (1 - jitter + Math.random() * 2 * jitter));
         this.#attempt += 1;
         this.#timer = setTimeout(
             () => {
@@ -377,16 +416,28 @@ export class WebSocketClient implements SocketClient {
 
     #flush(): void {
         const transport = this.#transport;
-        while (transport !== null && this.#outbound.length > 0 && this.status.value === 'open') {
-            const message = this.#outbound.shift() as string | ArrayBuffer;
+        while (transport !== null && this.status.value === 'open') {
+            const retry = this.#retryPending;
+            if (retry !== null) {
+                try {
+                    transport.send(retry);
+                } catch {
+                    return; // still racing — parked for the next open
+                }
+                this.#retryPending = null;
+            }
+            if (this.#outbound.length === 0) {
+                return;
+            }
+            const message = this.#outbound.get() as string | ArrayBuffer;
             try {
                 transport.send(message);
             } catch {
                 // The wire raced to CLOSING between the status check and the
-                // send. Stop flushing; onclose will transition (reconnect →
-                // re-flush these on next open, or terminal close clears the
-                // queue).
-                this.#outbound.unshift(message);
+                // send. Park the message (a ring cannot push-front) so it is
+                // retried FIRST on the next open — order preserved; onclose
+                // transitions, or terminal close clears the buffer.
+                this.#retryPending = message;
                 return;
             }
         }

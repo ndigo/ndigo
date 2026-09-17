@@ -43,10 +43,28 @@ function isTypeofSubject(node: IdentifierLike): boolean {
 }
 
 /**
+ * Returns true if the identifier is the (non-computed) key of a property,
+ * method, or class member — a name position, never a reference to the global.
+ * Covers `Property`, `MethodDefinition`, `PropertyDefinition` and the TS
+ * signature forms; a class method or object key legitimately named like a
+ * browser global (`history()`, `{ window: 1 }`) is not a global access.
+ */
+function isMemberName(node: IdentifierLike): boolean {
+    const parent = node.parent as { key?: unknown; computed?: boolean } | undefined;
+    if (!parent || parent.key !== node) {
+        return false;
+    }
+    return parent.computed !== true;
+}
+
+/**
  * Returns true if `node` is in a declaration/binding position rather than a value reference.
  * This avoids false positives when a parameter or variable is named the same as a browser global.
  */
 function isBindingSite(node: IdentifierLike): boolean {
+    if (isMemberName(node)) {
+        return true;
+    }
     const parent = node.parent;
     if (!parent) return false;
     switch (parent.type) {
@@ -56,8 +74,6 @@ function isBindingSite(node: IdentifierLike): boolean {
         case 'FunctionExpression':
         case 'ArrowFunctionExpression':
             return parent.id === node || parent.params.some((param) => param === node);
-        case 'Property':
-            return parent.key === node && !parent.computed;
         case 'MemberExpression':
             return parent.property === node && !parent.computed;
         case 'ImportDefaultSpecifier':

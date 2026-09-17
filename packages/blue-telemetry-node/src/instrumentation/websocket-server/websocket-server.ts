@@ -78,8 +78,7 @@ export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation 
         // instance, on first registration crossing the wrapped `register`.
         // (Closed over via module-level sets — inside the patch the receiver
         // `this` is the registry instance.)
-        const observedRegistries =
-            OBSERVED_REGISTRIES.get(this) ?? new WeakSet<NodeSocketSessionRegistry>();
+        const observedRegistries = OBSERVED_REGISTRIES.get(this) ?? new WeakSet<NodeSocketSessionRegistry>();
         OBSERVED_REGISTRIES.set(this, observedRegistries);
         this._wrap(NodeSocketSessionRegistry.prototype, 'register', (original) => {
             return function (this: unknown, session: SocketSession, path: string, transport: WebSocket): void {
@@ -118,7 +117,10 @@ export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation 
                 const entry = open.get(session);
                 if (entry !== undefined) {
                     const path = entry.path;
-                    counter('blue.socket.sessions.closed', { 'socket.path': path, 'socket.close_code': closeCode ?? -1 });
+                    counter('blue.socket.sessions.closed', {
+                        'socket.path': path,
+                        'socket.close_code': closeCode ?? -1,
+                    });
                     entry.span.setAttribute('socket.close_code', closeCode ?? -1);
                     entry.span.setAttribute('socket.duration_ms', Date.now() - entry.began);
                     entry.span.end();
@@ -154,7 +156,7 @@ export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation 
         // End spans still open (sessions that never hit `remove` while
         // enabled) so disable leaves no dangling spans.
         const now = Date.now();
-        for (const entry of OPEN_SPANS.get(this) ?? []) {
+        for (const entry of OPEN_SPANS.get(this)?.values() ?? []) {
             entry.span.setAttribute('socket.close_code', -1);
             entry.span.setAttribute('socket.duration_ms', now - entry.began);
             entry.span.end();

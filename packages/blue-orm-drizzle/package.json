@@ -37,6 +37,7 @@
     "@blue/orm": "~0.0.1"
   },
   "dependencies": {
+    "@blue/socket": "~0.0.1",
     "@libsql/client": "0.17.4",
     "drizzle-orm": "0.45.2",
     "drizzle-zod": "^0.8.3"

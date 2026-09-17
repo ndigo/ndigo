@@ -72,6 +72,7 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 
 ## Active Plans
 
+- [2026-09-16_STOMP.md](2026-09-16_STOMP.md) - STOMP 1.2 protocol layer: frame codec, server broker (destinations, subscriptions, receipts), `StompClient`, `@stompMapping` + `v12.stomp` subprotocol negotiation, blue-api demo gate (AD-23)
 - [2026-09-15_WEBSOCKET_BROADCAST.md](2026-09-15_WEBSOCKET_BROADCAST.md) - WebSocket session registry, rooms/broadcast, heartbeat reaping, auto-configuration wiring (AD-21)
 - [2026-09-15_WEBSOCKET_CLIENT.md](2026-09-15_WEBSOCKET_CLIENT.md) - Isomorphic `@blue/socket` package, `SocketClient` + reconnect, dispatcher re-export seam, demo gate rewire (AD-22)
 - [2026-09-04_REPOSITORY_REMEDIATION.md](2026-09-04_REPOSITORY_REMEDIATION.md) - Comprehensive architecture, security, quality, documentation, and release remediation plan

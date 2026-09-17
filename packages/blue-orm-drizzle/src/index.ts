@@ -5,6 +5,8 @@
  */
 export { DrizzleDataSource } from './drizzle-data-source';
 export type { DrizzleDataSourceOptions } from './drizzle-data-source';
+export { LibSQLQueueMessageStore } from './libsql-queue-message-store';
+export type { LibSQLQueueMessageStoreOptions } from './libsql-queue-message-store';
 export { DrizzleEntityManager } from './drizzle-entity-manager';
 export { DrizzleTransactionManager } from './drizzle-transaction-manager';
 export { DrizzleUnitOfWork } from './drizzle-unit-of-work';

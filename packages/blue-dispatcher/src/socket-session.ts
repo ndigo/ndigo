@@ -5,4 +5,5 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-export type { SocketRequestSources, SocketSession } from '@blue/socket';
+export type { SocketRequestSources } from '@blue/socket';
+export type { SocketSession } from '@blue/socket';

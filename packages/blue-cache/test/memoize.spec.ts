@@ -5,6 +5,7 @@
  */
 import { describe, test, expect, vi } from 'vitest';
 import { memoize } from '../src/memoize';
+import { serializeCacheKeyStrict } from '../src/keys';
 
 describe('memoize', () => {
     test('caches results by serialized arguments', () => {
@@ -145,6 +146,20 @@ describe('memoize', () => {
         a(1);
         const b = make();
         expect(b(1)).toBe(1);
+        expect(calls).toBe(2);
+    });
+
+    test('opt-in strict key distinguishes undefined from null (M1)', () => {
+        let calls = 0;
+        const fn = memoize(
+            (a: unknown) => {
+                calls += 1;
+                return a;
+            },
+            { key: serializeCacheKeyStrict }
+        );
+        expect(fn(undefined)).toBeUndefined();
+        expect(fn(null)).toBeNull(); // distinct key under strict → recomputed, not collapsed
         expect(calls).toBe(2);
     });
 });

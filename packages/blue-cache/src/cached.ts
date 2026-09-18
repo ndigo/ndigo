@@ -92,12 +92,14 @@ export function resolveCachedSpec(spec: CachedSpec = {}): NormalizedCachedSpec {
  * - **Hits** return the stored settled value; **misses** call the target and
  *   store the result.
  * - **Fulfilled results only**: method rejections/throws propagate to the
- *   caller and are never stored — the next call retries.
- * - **Async methods** return the live promise (callers await the same
- *   computation); the cache is written on settle. No single-flight
- *   coalescing in v1 (see {@link memoize}); concurrent callers for a just-
- *   expired key both invoke the target, one write wins — safe, slightly
- *   redundant.
+ *   caller and are never stored — the in-flight slot is freed and the next
+ *   call retries.
+ * - **Async methods** return a promise callers await; the cache is written on
+ *   settle. Concurrent misses for the same key are coalesced behind one
+ *   in-flight computation (single-flight, mirroring {@link memoize}): only the
+ *   first caller invokes the target while it is pending. A cache write that
+ *   throws is logged and swallowed so a caching failure never breaks or hides
+ *   the primary result (S2).
  * - Self-invocation through `this.method()` **is** cached: the wrapper
  *   replaces the prototype method (stronger than Spring proxy semantics,
  *   where self-invocation bypasses the cache).
@@ -108,6 +110,10 @@ export function resolveCachedSpec(spec: CachedSpec = {}): NormalizedCachedSpec {
 export function cached(spec: CachedSpec = {}) {
     const normalized = resolveCachedSpec(spec);
 
+    // Recorded under `cache:<methodName>` for introspection; captured once so
+    // the degradation warning (S3) can name the method without re-reading it.
+    let methodName: string | undefined;
+
     return function <This, Args extends unknown[], Return>(
         value: (this: This, ...args: Args) => Return,
         context: ClassMethodDecoratorContext<This, (this: This, ...args: Args) => Return>
@@ -115,9 +121,15 @@ export function cached(spec: CachedSpec = {}) {
         if (context.kind !== 'method') {
             throw new TypeError(`@cached can only be applied to a method — received '${context.kind}'.`);
         }
-        context.metadata[`${CACHED_METADATA_PREFIX}${String(context.name)}`] = normalized;
+        methodName = String(context.name);
+        context.metadata[`${CACHED_METADATA_PREFIX}${methodName}`] = normalized;
 
         let asyncMode: 'sync' | 'async' | undefined;
+        // In-flight promises for the async single-flight path (S1): keyed by
+        // cache key, cleared on settle/reject so it cannot grow unbounded.
+        const inflight = new Map<string, Promise<unknown>>();
+        // One-time guard for the graceful-degradation warning (S3).
+        let degradationWarned = false;
 
         return function (this: This, ...args: Args): Return {
             // Structural contract, mirroring `@transactional`: the decorated
@@ -126,6 +138,12 @@ export function cached(spec: CachedSpec = {}) {
             const cacheAware = this as unknown as { cacheManager?: CacheManager };
             const manager = cacheAware.cacheManager;
             if (!manager) {
+                if (!degradationWarned && isInDevMode()) {
+                    degradationWarned = true;
+                    console.warn(
+                        `[@blue/cache] @cached("${methodName}") ran without a CacheManager — caching is disabled for this method.`
+                    );
+                }
                 return value.apply(this, args);
             }
 
@@ -139,23 +157,43 @@ export function cached(spec: CachedSpec = {}) {
 
             const hit: unknown = store.get(key);
             if (hit === CacheMiss.INSTANCE) {
+                // S1: coalesce concurrent async computations behind one in-flight
+                // promise — check before invoking the target so a second caller
+                // does not re-run it.
+                const pending = inflight.get(key);
+                if (pending !== undefined) {
+                    return pending as Return;
+                }
                 const result = value.apply(this, args);
                 if (isPromiseLike(result)) {
                     if (asyncMode === undefined) {
                         asyncMode = 'async';
                     }
-                    void Promise.resolve(result).then(
+                    const settled = Promise.resolve(result).then(
                         (resolved) => {
-                            store.set(key, resolved, normalized.ttl);
+                            inflight.delete(key);
+                            // S2: a store write must not break or hide the result.
+                            try {
+                                store.set(key, resolved, normalized.ttl);
+                            } catch (error) {
+                                console.warn(`[@blue/cache] failed to cache "${methodName}" (${key}):`, error);
+                            }
+                            return resolved;
                         },
-                        () => undefined // rejections are never cached; the caller's await still rejects
+                        (reason) => {
+                            // Never cache rejections; free the slot and re-throw so
+                            // the caller's await still rejects.
+                            inflight.delete(key);
+                            throw reason;
+                        }
                     );
-                } else {
-                    if (asyncMode === undefined) {
-                        asyncMode = 'sync';
-                    }
-                    store.set(key, result, normalized.ttl);
+                    inflight.set(key, settled);
+                    return settled as Return;
                 }
+                if (asyncMode === undefined) {
+                    asyncMode = 'sync';
+                }
+                store.set(key, result, normalized.ttl);
                 return result;
             }
 
@@ -164,6 +202,15 @@ export function cached(spec: CachedSpec = {}) {
             return asyncMode === 'async' ? (Promise.resolve(hit) as Return) : (hit as Return);
         };
     };
+}
+
+/**
+ * True when runtime warnings are desired: any environment except an explicit
+ * production build. Guards against referencing `process` in environments where
+ * it is absent (e.g. some browser/worker bundles).
+ */
+function isInDevMode(): boolean {
+    return typeof process !== 'undefined' && !!process.env && process.env.NODE_ENV !== 'production';
 }
 
 /**

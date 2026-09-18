@@ -317,6 +317,9 @@ importers:
       '@blue/boot':
         specifier: ~0.0.1
         version: link:../../packages/blue-boot
+      '@blue/cache':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-cache
       '@blue/content':
         specifier: ~0.0.1
         version: link:../../packages/blue-content
@@ -620,6 +623,9 @@ importers:
 
   apps/blue-views:
     dependencies:
+      '@blue/cache':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-cache
       '@blue/content':
         specifier: ~0.0.1
         version: link:../../packages/blue-content
@@ -745,6 +751,8 @@ importers:
       '@blue/view-webcomponent':
         specifier: ~0.0.1
         version: link:../blue-view-webcomponent
+
+  packages/blue-cache: {}
 
   packages/blue-content:
     devDependencies:
@@ -1007,6 +1015,9 @@ importers:
       '@blue/auth-core':
         specifier: ~0.0.1
         version: link:../blue-auth-core
+      '@blue/cache':
+        specifier: ~0.0.1
+        version: link:../blue-cache
       '@blue/context':
         specifier: ~0.0.1
         version: link:../blue-context

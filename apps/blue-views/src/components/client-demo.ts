@@ -5,6 +5,7 @@
  */
 import { ROOT_CONTEXT, trace, type Span } from '@opentelemetry/api';
 import { CacheInterceptor, HTTP, TraceHeaderInterceptor } from '@blue/http';
+import { memoize } from '@blue/cache';
 import { RetryOnOfflineInterceptor } from '@blue/platform-web';
 import { TagMapping } from '@blue/view-webcomponent';
 
@@ -38,6 +39,20 @@ function itemsOf(payload: unknown): string[] {
     const { items } = payload as { items: unknown };
     return Array.isArray(items) ? items.filter((item): item is string => typeof item === 'string') : [];
 }
+
+/**
+ * The client-side memoization half of the caching story (AD-24): the payload
+ * derivation is memoized with a TTL, so repeat loads of the same data skip
+ * the items extraction. Browser-side, no DI, no beans — the same ttl/maxSize
+ * behavior the `@cached` decorator provides server-side.
+ */
+const derivePayload = memoize(
+    (data: unknown) => {
+        const items = itemsOf(data);
+        return `[client] ${items.join(', ')}`;
+    },
+    { ttl: 60_000 }
+);
 
 @TagMapping('blue-views-client')
 export class ClientDemoComponent extends HTMLElement {
@@ -111,8 +126,9 @@ export class ClientDemoComponent extends HTMLElement {
                 throw new Error(String(response.status));
             }
             const data: unknown = await response.json();
-            const items = itemsOf(data);
-            this.#payload = `[client] ${items.join(', ')}`;
+            // Memoized derivation: identical payloads within the TTL reuse
+            // the extracted items instead of re-scanning (AD-24).
+            this.#payload = derivePayload(data);
             this.#status = 'online';
         } catch (error) {
             if (!(error instanceof Error) || error.name !== 'AbortError') {

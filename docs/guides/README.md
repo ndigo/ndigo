@@ -31,6 +31,10 @@ explain the _how_ with runnable patterns grounded in the demo apps.
    heartbeat), scheduler-driven room pushes (AD-21), the isomorphic
    client (AD-22), and STOMP destinations/subscriptions/receipts
    (AD-23).
+7. [07 — Caching](07-caching.md) — the `@blue/cache` store (TTL +
+   LRU/FIFO eviction), the `@cached` decorator for server methods, and
+   `memoize` for client functions — the same semantics on both sides
+   (AD-24).
 
 ## Reading Order
 

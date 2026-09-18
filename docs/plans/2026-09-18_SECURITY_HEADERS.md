@@ -71,21 +71,21 @@ default — header-writing is idempotent with app-level duplicate sets
 
 On by default (Helmet parity, minus COEP):
 
-| Header | Default |
-| --- | --- |
-| `Content-Security-Policy` | Helmet default directives (`default-src 'self'`, `object-src 'none'`, `script-src 'self'`, `frame-ancestors 'self'`, `upgrade-insecure-requests`, …) **with `connect-src 'self' ws: wss:`** — the framework ships a WebSocket server, so the default must not break it |
-| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains` (ignored by browsers over plain HTTP; proxy-caveat documented — trusted-proxy is a separate gap) |
-| `X-Frame-Options` | `SAMEORIGIN` (paired with `frame-ancestors` in CSP for non-CSP browsers) |
-| `X-Content-Type-Options` | `nosniff` |
-| `Referrer-Policy` | `no-referrer` |
-| `Cross-Origin-Resource-Policy` | `same-origin` |
-| `Cross-Origin-Opener-Policy` | `same-origin` |
-| `Origin-Agent-Cluster` | `?1` |
-| `X-DNS-Prefetch-Control` | `off` |
-| `X-Download-Options` | `noopen` |
-| `X-Permitted-Cross-Domain-Policies` | `none` |
-| `X-XSS-Protection` | `0` (disables the buggy legacy auditor) |
-| `X-Powered-By` | removed if present (Node does not emit one; harmless parity) |
+| Header                              | Default                                                                                                                                                                                                                                                                |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Content-Security-Policy`           | Helmet default directives (`default-src 'self'`, `object-src 'none'`, `script-src 'self'`, `frame-ancestors 'self'`, `upgrade-insecure-requests`, …) **with `connect-src 'self' ws: wss:`** — the framework ships a WebSocket server, so the default must not break it |
+| `Strict-Transport-Security`         | `max-age=31536000; includeSubDomains` (ignored by browsers over plain HTTP; proxy-caveat documented — trusted-proxy is a separate gap)                                                                                                                                 |
+| `X-Frame-Options`                   | `SAMEORIGIN` (paired with `frame-ancestors` in CSP for non-CSP browsers)                                                                                                                                                                                               |
+| `X-Content-Type-Options`            | `nosniff`                                                                                                                                                                                                                                                              |
+| `Referrer-Policy`                   | `no-referrer`                                                                                                                                                                                                                                                          |
+| `Cross-Origin-Resource-Policy`      | `same-origin`                                                                                                                                                                                                                                                          |
+| `Cross-Origin-Opener-Policy`        | `same-origin`                                                                                                                                                                                                                                                          |
+| `Origin-Agent-Cluster`              | `?1`                                                                                                                                                                                                                                                                   |
+| `X-DNS-Prefetch-Control`            | `off`                                                                                                                                                                                                                                                                  |
+| `X-Download-Options`                | `noopen`                                                                                                                                                                                                                                                               |
+| `X-Permitted-Cross-Domain-Policies` | `none`                                                                                                                                                                                                                                                                 |
+| `X-XSS-Protection`                  | `0` (disables the buggy legacy auditor)                                                                                                                                                                                                                                |
+| `X-Powered-By`                      | removed if present (Node does not emit one; harmless parity)                                                                                                                                                                                                           |
 
 Opt-in only (Helmet parity — both are the breaking ones): `Cross-Origin-Embedder-Policy`
 (requires CORP on every cross-origin resource), `Permissions-Policy`.
@@ -109,12 +109,12 @@ rate limiting (next wave), no header helpers for SSE/WebSocket handshakes
 
 ## 4. Architecture
 
-| Piece | Home | Notes |
-| --- | --- | --- |
+| Piece                                                              | Home                                                              | Notes                                                            |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- | ---------------------------------------------------------------- |
 | `SecurityHeadersInterceptor` + `SecurityHeadersInterceptorOptions` | `packages/blue-platform-node/src/security-headers-interceptor.ts` | Helmet middleware list built in ctor; `preHandle` per CORS idiom |
-| Default instance | `NodeAutoConfiguration.handlerMapping()` | prepended to `mapping.interceptors` |
-| Export | `blue-platform-node` index | manual use + custom wiring |
-| Dependency | `helmet@^8.3.0` in `blue-platform-node` `dependencies` | zero-dep lib (like `ws`) |
+| Default instance                                                   | `NodeAutoConfiguration.handlerMapping()`                          | prepended to `mapping.interceptors`                              |
+| Export                                                             | `blue-platform-node` index                                        | manual use + custom wiring                                       |
+| Dependency                                                         | `helmet@^8.3.0` in `blue-platform-node` `dependencies`            | zero-dep lib (like `ws`)                                         |
 
 ### API sketch
 
@@ -125,7 +125,7 @@ import { SecurityHeadersInterceptor } from '@blue/platform-node';
 new SecurityHeadersInterceptor(); // full default set
 
 new SecurityHeadersInterceptor({
-    contentSecurityPolicy: false,                       // per-header escape
+    contentSecurityPolicy: false, // per-header escape
     strictTransportSecurity: { preload: true },
     contentSecurityPolicy: { directives: { 'connect-src': ["'self'", 'ws:', 'wss:'] } }, // merged (useDefaults)
 });

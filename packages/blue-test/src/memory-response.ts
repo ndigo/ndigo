@@ -23,14 +23,23 @@ export interface MemoryResponse {
 
 const okStatus = 200;
 
+/** Lower-cases a header name (the captured map documents lower-cased keys). */
+const normalizeHeaderName = (name: string): string => name.toLowerCase();
+
 /**
- * The minimal `ServerResponse`-shaped sink the pipeline writes to. Only the
- * members `HTTPResponseViewTarget` / `ResponseEntityView` touch are present.
+ * The `ServerResponse`-shaped sink the pipeline writes to: the members
+ * `HTTPResponseViewTarget` / `ResponseEntityView` and server interceptors
+ * (CORS, CSRF, security headers) touch — `writeHead` merges with headers set
+ * earlier via {@link ResponseSink.setHeader}, mirroring Node's semantics.
  */
 export interface ResponseSink {
     /** Whether the response head has been written. */
     readonly headersSent: boolean;
-    /** Record the status and headers. */
+    /** Record a single header (lower-cased key), merging with prior sets. */
+    setHeader(name: string, value: string | string[]): void;
+    /** Remove a header previously set (lower-cased key; no-op when absent). */
+    removeHeader(name: string): void;
+    /** Record the status and headers, merging with prior sets. */
     writeHead(status: number, headers?: Record<string, string | string[]>): void;
     /** Finalize the response with the given body. */
     end(body?: string | unknown): void;
@@ -56,10 +65,20 @@ export function createMemoryResponse(): { response: MemoryResponse; sink: Respon
             return headersSent;
         },
 
+        setHeader(name: string, value: string | string[]): void {
+            response.headers[normalizeHeaderName(name)] = value;
+        },
+
+        removeHeader(name: string): void {
+            delete response.headers[normalizeHeaderName(name)];
+        },
+
         writeHead(status: number, headers?: Record<string, string | string[]>): void {
             response.status = status;
             if (headers) {
-                response.headers = { ...headers };
+                for (const [name, value] of Object.entries(headers)) {
+                    response.headers[normalizeHeaderName(name)] = value;
+                }
             }
             headersSent = true;
         },

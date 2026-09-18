@@ -46,7 +46,8 @@
     "@types/ws": "^8.18.0",
     "@blue/util": "~0.0.1",
     "@blue/scheduler": "~0.0.1",
-    "@blue/socket": "~0.0.1"
+    "@blue/socket": "~0.0.1",
+    "@blue/cache": "~0.0.1"
   },
   "peerDependencies": {
     "@blue/auth-core": "~0.0.1",
@@ -58,7 +59,8 @@
     "@blue/router": "~0.0.1",
     "@blue/view": "~0.0.1",
     "@blue/scheduler": "~0.0.1",
-    "@blue/socket": "~0.0.1"
+    "@blue/socket": "~0.0.1",
+    "@blue/cache": "~0.0.1"
   },
   "sideEffects": false,
   "dependencies": {

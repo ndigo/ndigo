@@ -25,6 +25,7 @@ import { StompChatController } from './stomp-chat-controller';
 import { NoteController } from './note-controller';
 import { DrizzleNoteController } from './drizzle-note-controller';
 import { ProductController } from './product-controller';
+import { CachedReportController } from './cached-report-controller';
 import { lookupPrincipal } from './auth-store';
 
 const requireMediaType = (value: MediaType | null): MediaType => {
@@ -124,6 +125,9 @@ export class NodeAppConfiguration {
     }
     @entry productController() {
         return new ProductController();
+    }
+    @entry cachedReportController() {
+        return new CachedReportController();
     }
     @entry staticController() {
         return new StaticController();

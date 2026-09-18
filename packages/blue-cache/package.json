@@ -1,0 +1,33 @@
+{
+  "name": "@blue/cache",
+  "version": "0.0.1",
+  "description": "Blue Cache",
+  "type": "module",
+  "files": [
+    "doc",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-cache",
+    "cache",
+    "memoize",
+    "lru"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "sideEffects": false
+}

@@ -43,6 +43,9 @@ export interface SecurityHeadersInterceptorOptions {
  * are not reliably covered by `'self'` (browser-divergent). Blue ships a
  * WebSocket server, so the default must not break it.
  */
+// NOTE (D1): bare `ws:`/`wss:` admit WebSocket connections to ANY origin — scope
+// this per app via `SecurityHeadersInterceptorOptions.headers.contentSecurityPolicy`
+// (`directives['connect-src']`) when the endpoint is not co-located with the WS server.
 const DEFAULT_CONNECT_SRC = ["'self'", 'ws:', 'wss:'];
 
 /**
@@ -50,15 +53,20 @@ const DEFAULT_CONNECT_SRC = ["'self'", 'ws:', 'wss:'];
  * every HTTP response (AD-25): Helmet middlewares built at construction and
  * invoked against the route's `ServerResponse` in `preHandle`.
  *
- * - **Default-on via `NodeAutoConfiguration (the mapping prepends a default
+ * - **Default-on via `NodeAutoConfiguration` (the mapping prepends a default
  * instance, so every Node app gets the set without wiring) — the CORS
  * short-circuit and CSRF denial run after it, and the fallback chain covers
  * unmatched routes (404s and errors included).
+ * - **CSP `connect-src` admits bare `ws:`/`wss:`** by default so same-origin
+ *   WebSocket streams are not broken (D1); this also permits WebSockets to any
+ *   origin — scope it per app via the Helmet `contentSecurityPolicy` option
+ *   (`directives['connect-src']`) when the endpoint is not co-located with the
+ *   WebSocket server.
  * - Never denies: always returns `true`; skips when no response is attached
- * (socket upgrades) or headers were already flushed.
+ *   (socket upgrades) or headers were already flushed.
  * - Error handling: middleware invocation failures propagate synchronously
- * and surface through the pipeline's normal error path; header-writing is
- * last-write-wins with app-level `setHeader` calls that run later.
+ *   and surface through the pipeline's normal error path; header-writing is
+ *   last-write-wins with app-level `setHeader` calls that run later.
  */
 export class SecurityHeadersInterceptor implements RouteHandlerInterceptor {
     readonly #middlewares: HeaderMiddleware[];
@@ -106,9 +114,7 @@ export class SecurityHeadersInterceptor implements RouteHandlerInterceptor {
         }
         const corp = headers.crossOriginResourcePolicy;
         if (corp !== false) {
-            middlewares.push(
-                helmet.crossOriginResourcePolicy(corp === true || corp === undefined ? undefined : corp)
-            );
+            middlewares.push(helmet.crossOriginResourcePolicy(corp === true || corp === undefined ? undefined : corp));
         }
         const coop = headers.crossOriginOpenerPolicy;
         if (coop !== false) {

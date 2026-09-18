@@ -4,6 +4,21 @@ Implementation plans for features and technical specifications.
 
 ## Completed Plans
 
+### 2026-09-17 - Caching
+
+`@blue/cache`: `Cache`/`MemoryCache` (TTL + LRU/FIFO eviction), `CacheManager`
+bean (zero-wiring node auto-config), `memoize` (client-side, single-flight),
+`@cached` decorator (no-AOP wrapper, graceful degradation) — demo gates in
+blue-api (`/api/cached-report` counter) and blue-views (client memoize).
+
+**Status:** Completed (2026-09-17)  
+**Commit:** (pending)  
+**Impact:** Server + client caching abstraction (AD-24) — gap-analysis seq #4
+
+[Read full plan](2026-09-17_CACHING.md)
+
+---
+
 ### 2026-09-13 - Scheduling
 
 `@scheduled` decorator, ScheduleRegistry + TaskScheduler engine, croner

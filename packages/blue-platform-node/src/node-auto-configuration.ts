@@ -13,6 +13,7 @@ import { IslandViewResolver } from '@blue/view';
 import { NodeDispatcher } from './node-dispatcher';
 import { HTTPServer } from './http-server';
 import { NodeSocketSessionRegistry, resolveSocketRegistryOptions } from './node-socket-session-registry';
+import { SecurityHeadersInterceptor } from './security-headers-interceptor';
 import { NodeParameterBindingErrorResolver } from './parameter-binding-error-resolver';
 import { NodeLastResortErrorResolver } from './last-resort-error-resolver';
 import { argumentValueConverters } from './argument-value-converter';
@@ -67,7 +68,9 @@ export class NodeAutoConfiguration {
      */
     @entry
     handlerMapping() {
-        return new RadixMetadataHandlerMapping();
+        const mapping = new RadixMetadataHandlerMapping();
+        mapping.interceptors.unshift(new SecurityHeadersInterceptor());
+        return mapping;
     }
 
     /**

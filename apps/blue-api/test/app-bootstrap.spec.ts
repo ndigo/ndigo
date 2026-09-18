@@ -13,6 +13,7 @@ import { MockHTTP } from '@blue/test';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { ServerConfig } from '../src/server-config';
 import { Heartbeat } from '../src/heartbeat';
+import { CachedReportController } from '../src/cached-report-controller';
 import { initAuth } from '../src/auth-store';
 
 /**
@@ -111,5 +112,21 @@ describe('blue-api full bootstrap (ApplicationBuilder path)', () => {
         // The ping ran the real bean: the counter incremented.
         const heartbeat = context.getValue<Heartbeat>('heartbeat');
         expect(heartbeat.pings).toBe(1);
+    });
+
+    test('the cacheManager bean is provisioned zero-wiring (AD-24)', () => {
+        expect(context.hasValue('cacheManager')).toBe(true);
+    });
+
+    test('GET /api/cached-report caches across dispatches (AD-24)', async () => {
+        const controller = context.getValue<CachedReportController>('cachedReportController');
+
+        const first = await mockMVC.get('/api/cached-report').exec();
+        const second = await mockMVC.get('/api/cached-report').exec();
+
+        expect(first.response.status).toBe(200);
+        expect(first.json()).toEqual({ invocations: 1, value: 'report-1' });
+        expect(second.json()).toEqual(first.json());
+        expect(controller.invocations).toBe(1);
     });
 });

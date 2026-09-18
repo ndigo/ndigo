@@ -5,6 +5,8 @@
  */
 import { configuration, entry } from '@blue/context';
 import { conditionalOnNode } from '@blue/core';
+import { MemoryCacheManager } from '@blue/cache';
+import type { CacheManager } from '@blue/cache';
 import { AcceptHeaderLanguageResolver, RadixMetadataHandlerMapping, MetadataErrorResolver } from '@blue/dispatcher';
 import { ScheduleRegistry, TaskScheduler } from '@blue/scheduler';
 import { IslandViewResolver } from '@blue/view';
@@ -109,6 +111,19 @@ export class NodeAutoConfiguration {
     @entry
     scheduleRegistry() {
         return new ScheduleRegistry();
+    }
+
+    /**
+     * The shared named-cache manager for `@cached` methods (AD-24):
+     * `@cached` resolves the manager off the method's `this.cacheManager`
+     * (constructor or aware-injection) — zero wiring for Node apps, mirror
+     * of the scheduler beans above.
+     *
+     * @returns The cache manager.
+     */
+    @entry
+    cacheManager(): CacheManager {
+        return new MemoryCacheManager();
     }
 
     /**

@@ -16,6 +16,7 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
+    "@blue/cache": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/content": "~0.0.1",
     "@blue/core": "~0.0.1",
@@ -31,6 +32,7 @@
     "@opentelemetry/sdk-trace-base": "~2.11.0"
   },
   "devDependencies": {
+    "@blue/cache": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/content": "~0.0.1",
     "@blue/core": "~0.0.1",

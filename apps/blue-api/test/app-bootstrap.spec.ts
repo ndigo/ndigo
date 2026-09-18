@@ -10,6 +10,8 @@ import { ManagementAutoConfiguration } from '@blue/management';
 import { NodeAutoConfiguration, NodeDispatcher } from '@blue/platform-node';
 import { TaskScheduler } from '@blue/scheduler';
 import { MockHTTP } from '@blue/test';
+import { NodeHTTPServerAdapter } from '@blue/platform-node';
+import type { AddressInfo } from 'node:net';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { ServerConfig } from '../src/server-config';
 import { Heartbeat } from '../src/heartbeat';
@@ -128,5 +130,26 @@ describe('blue-api full bootstrap (ApplicationBuilder path)', () => {
         expect(first.json()).toEqual({ invocations: 1, value: 'report-1' });
         expect(second.json()).toEqual(first.json());
         expect(controller.invocations).toBe(1);
+    });
+
+    test('security headers are set by default on dispatches (AD-25)', async () => {
+        // Asserted over a real socket: MockHTTP's route resolution walks the
+        // strategy's mapping collection (which can dedupe the platform
+        // mapping) — the adapter path resolves the platform mapping that
+        // carries the default-on interceptor.
+        const adapter = new NodeHTTPServerAdapter(context.getValue<NodeDispatcher>('dispatcher'));
+        await adapter.listen(0, '127.0.0.1');
+        try {
+            const base = `http://127.0.0.1:${(adapter.server as { address(): AddressInfo }).address().port}`;
+            const res = await fetch(`${base}/api/cached-report`);
+            expect(res.headers.get('x-content-type-options')).toBe('nosniff');
+            expect(res.headers.get('x-frame-options')).toBe('SAMEORIGIN');
+            expect(res.headers.get('strict-transport-security')).toBe('max-age=31536000; includeSubDomains');
+            const csp = res.headers.get('content-security-policy');
+            expect(csp).toContain("default-src 'self'");
+            expect(csp).toContain("connect-src 'self' ws: wss:");
+        } finally {
+            await adapter.close();
+        }
     });
 });

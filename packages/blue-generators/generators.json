@@ -14,6 +14,11 @@
       "factory": "./src/generators/header/generator",
       "schema": "./src/generators/header/schema.json",
       "description": "Add or replace the standard BlueJS documentation header on a source file"
+    },
+    "readme": {
+      "factory": "./src/generators/readme/generator",
+      "schema": "./src/generators/readme/schema.json",
+      "description": "Scaffold a new package README on the standard BlueJS template"
     }
   }
 }

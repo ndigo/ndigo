@@ -1,6 +1,8 @@
 # Blue ORM
 
-Blue ORM provides repository and data mapper persistence abstractions for BlueJS.
+> Repository and data mapper persistence abstractions for BlueJS — entities, columns, and Zod schema derivation backed by in-memory or SQL adapters.
+
+Blue ORM provides repository and data mapper persistence abstractions for BlueJS. Entities map through `@entity`, `@column`, `@primaryColumn`, and `@generated` to a `DataSource`/`EntityManager`/`Repository`/`UnitOfWork` object graph, backed by in-memory implementations (`InMemoryDataSource`, `InMemoryEntityManager`, `InMemoryRepository`, `InMemoryUnitOfWork`) intended for development and testing workflows.
 
 ## Installation
 
@@ -8,46 +10,9 @@ Blue ORM provides repository and data mapper persistence abstractions for BlueJS
 pnpm add @blue/orm
 ```
 
-## API Overview
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 
-- Decorators: `@entity`, `@column`, `@primaryColumn`, `@generated`
-- Interfaces: `DataSource`, `EntityManager`, `Repository`, `UnitOfWork`
-- In-memory implementations: `InMemoryDataSource`, `InMemoryEntityManager`, `InMemoryRepository`,
-  `InMemoryUnitOfWork`
-- Zod schema derivation (AD-7): `schemaForEntity`, `insertSchemaForEntity`,
-  `schemaForColumn`, `baseSchemaForType`, `validateEntity`
-
-## Entity-derived validation schemas
-
-Column metadata — including an optional `@column({ schema })` constraint —
-derives Zod schemas. `insertSchemaForEntity` yields the _writable_ shape
-(primary/generated columns omitted; nullable/untyped optional) for request
-body validation:
-
-```typescript
-import { entity, column } from '@blue/orm';
-import { z } from 'zod';
-
-@entity('notes')
-export class Note {
-    @column({ type: 'varchar', schema: z.string().min(1) })
-    title!: string;
-}
-```
-
-```typescript
-import { insertSchemaForEntity } from '@blue/orm';
-import { validatedBody } from '@blue/dispatcher';
-
-// @parameters({ data: validatedBody(insertSchemaForEntity(Note)) })
-```
-
-Unvalidated create bodies are rejected with a 422 problem document carrying
-the structured issues; the same schema family drives Drizzle table + select
-schemas via `@blue/orm-drizzle`. Guide:
-[`docs/guides/02-request-validation.md`](../../docs/guides/02-request-validation.md).
-
-## Usage
+## Getting Started
 
 ```typescript
 import {
@@ -60,7 +25,7 @@ import {
     primaryColumn,
 } from '@blue/orm';
 
-@entity('users')
+@Entity('users')
 class User {
     @primaryColumn()
     @generated()
@@ -90,6 +55,45 @@ const user = users.save(new User('Ada Lovelace'));
 const loaded = users.findById(user.id as number);
 ```
 
-## Notes
+## Usage
 
-Blue ORM currently includes an in-memory adapter intended for development and testing workflows.
+Column metadata — including an optional `@column({ schema })` constraint — derives Zod schemas. `insertSchemaForEntity` yields the _writable_ shape (primary/generated columns omitted; nullable/untyped optional) for request body validation:
+
+```typescript
+import { entity, column } from '@blue/orm';
+import { z } from 'zod';
+
+@Entity('notes')
+export class Note {
+    @column({ type: 'varchar', schema: z.string().min(1) })
+    title!: string;
+}
+```
+
+```typescript
+import { insertSchemaForEntity } from '@blue/orm';
+import { validatedBody } from '@blue/dispatcher';
+
+// @parameters({ data: validatedBody(insertSchemaForEntity(Note)) })
+```
+
+Unvalidated create bodies are rejected with a 422 problem document carrying the structured issues; the same schema family drives Drizzle table + select schemas via `@blue/orm-drizzle`. Guide: [`docs/guides/02-request-validation.md`](../../docs/guides/02-request-validation.md).
+
+## API
+
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+
+## Development
+
+```bash
+pnpm --filter @blue/orm build:lib
+pnpm --filter @blue/orm test
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

@@ -1,31 +1,18 @@
 # @blue/auth-server
 
-Server-side authentication for the BlueJS framework.
-
-## Overview
+> Server-side authentication coordination and JWT support for BlueJS — Node.js environments, adapters registered in `@blue/auth-core`.
 
 `@blue/auth-server` provides server-side authentication coordination and JSON Web Token (JWT) support. It is designed for Node.js environments and works with adapters registered in `@blue/auth-core`.
 
-## Architecture
+## Installation
 
-```
-@blue/auth-server
-├── AuthServer          ← Server-side token validation
-├── AuthRouteGuard      ← Route guard for protected routes
-└── JWTAdapter          ← JWT token validation adapter
+```bash
+pnpm add @blue/auth-server
 ```
 
-## Exports
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 
-### Classes
-
-- **`AuthServer`** — Server-side authentication coordinator
-- **`AuthRouteGuard`** — Guard for protecting server-side routes
-- **`JWTAdapter`** — JWT token validation adapter
-
-## Usage
-
-### Initializing AuthServer
+## Getting Started
 
 ```typescript
 import { AuthServer } from '@blue/auth-server';
@@ -39,6 +26,8 @@ if (principal) {
     console.log(`Validated: ${principal.name}`);
 }
 ```
+
+## Usage
 
 ### Multi-Adapter Validation
 
@@ -65,7 +54,6 @@ import { AuthRegistry } from '@blue/auth-core';
 
 const guard = new AuthRouteGuard('jwt');
 
-// Protect a route
 guard.canActivate('/api/admin').then((allowed) => {
     if (!allowed) {
         return { status: 401, body: 'Unauthorized' };
@@ -89,18 +77,28 @@ const adapter = new JWTAdapter({
 AuthRegistry.register(adapter);
 ```
 
-## Design Principles
+## API
 
-1. **Token validation** — `AuthServer` validates tokens against registered adapters
-2. **Multi-adapter support** — Can validate tokens from multiple providers
-3. **Immutable state** — No mutable state; all operations are read-only
-4. **Adapter-based** — Works with any `AuthAdapter` registered in the core
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
 
-## Dependencies
+- **Classes** — `AuthServer`, `AuthRouteGuard`, `JWTAdapter`
 
-- `@blue/auth-core` — Core authentication contracts
+## Development
+
+```bash
+pnpm --filter @blue/auth-server build:lib
+pnpm --filter @blue/auth-server test
+```
 
 ## See Also
 
 - [@blue/auth-core](../blue-auth-core/README.md) — Core authentication contracts
 - [@blue/auth-client](../blue-auth-client/README.md) — Client-side authentication
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

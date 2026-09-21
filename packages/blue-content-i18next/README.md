@@ -1,13 +1,10 @@
 # Blue Content i18next Adapter
 
-`@blue/content-i18next` implements the `@blue/content` `MessageSource`
-contract over [i18next](https://www.i18next.com/).
+> `@blue/content` MessageSource adapter over i18next — no global singleton, safe for isomorphic use.
 
-i18next owns resource storage, interpolation, plurals (via
-`Intl.PluralRules`), contexts, fallback chains, and lazy loading; this
-package maps the BlueJS contract (`getMessage(key, params?, language?)`)
-onto that surface. Each instance owns its i18next instance — no global
-singleton, safe for isomorphic use.
+`@blue/content-i18next` implements the `@blue/content` `MessageSource` contract over [i18next](https://www.i18next.com/).
+
+i18next owns resource storage, interpolation, plurals (via `Intl.PluralRules`), contexts, fallback chains, and lazy loading; this package maps the BlueJS contract (`getMessage(key, params?, language?)`) onto that surface. Each instance owns its i18next instance — no global singleton, safe for isomorphic use.
 
 ## Installation
 
@@ -15,7 +12,9 @@ singleton, safe for isomorphic use.
 pnpm add @blue/content-i18next
 ```
 
-## Usage
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+
+## Getting Started
 
 ```typescript
 import { I18nextMessageSource } from '@blue/content-i18next';
@@ -47,10 +46,11 @@ messages.getMessage('greeting', { values: { name: 'Ada' } }, 'fr'); // 'Bonjour 
 messages.getMessage('missing.key'); // 'missing.key'
 ```
 
-## Lazy loading
+## Usage
 
-Pass an i18next backend (e.g. `i18next-http-backend`) to load namespaces on
-demand, and `preload()` languages ahead of time:
+### Lazy loading
+
+Pass an i18next backend (e.g. `i18next-http-backend`) to load namespaces on demand, and `preload()` languages ahead of time:
 
 ```typescript
 import HttpBackend from 'i18next-http-backend';
@@ -66,18 +66,31 @@ await messages.changeLanguage('fr');
 
 ## API
 
-- `getMessage(key, params?, language?)` — format a message; missing keys
-  fall back to the key itself
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+
+- `getMessage(key, params?, language?)` — format a message; missing keys fall back to the key itself
 - `changeLanguage(language)` — switch the active language
 - `preload(languages)` — load resources for the given languages
 - `instance` — the underlying i18next instance (escape hatch)
 - `language` — the active language
 
-`params.values` map to interpolation values, `params.count` to i18next
-plural selection (`_one`/`_other` keys), `params.context` to context
-suffixes (`_male` and similar).
+`params.values` map to interpolation values, `params.count` to i18next plural selection (`_one`/`_other` keys), `params.context` to context suffixes (`_male` and similar).
+
+## Development
+
+```bash
+pnpm --filter @blue/content-i18next build:lib
+pnpm --filter @blue/content-i18next test
+```
 
 ## See Also
 
-- [@blue/content](../blue-content/README.md) — the `MessageSource` /
-  `ContentSource` contract this adapter implements
+- [@blue/content](../blue-content/README.md) — the `MessageSource` / `ContentSource` contract this adapter implements
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

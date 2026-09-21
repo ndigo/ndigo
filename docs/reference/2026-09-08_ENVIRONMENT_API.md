@@ -1,6 +1,6 @@
 # Environment Reference — API Surface
 
-The BlueJS environment, in one place. Built across AD-11..17 (Phases 0–6).
+The BlueJS environment, in one place. Built across Phases 0–6.
 
 ## Core types
 
@@ -44,7 +44,7 @@ The BlueJS environment, in one place. Built across AD-11..17 (Phases 0–6).
 | `propertySources`      | **Deprecated compat alias** — array getter returns a fresh snapshot (mutating it is a no-op); setter = replace-all. Use the registry. |
 | `merge(other)`         | Compose sources (collisions appended under `:merged`), profiles, defaults                                                             |
 
-## Profile expressions (AD-14)
+## Profile expressions
 
 Grammar: `name` | `!expr` | `expr & expr` | `expr | expr` | `( expr )`. `&`
 binds tighter than `|`. Whitespace tolerated. Malformed expressions and
@@ -81,7 +81,7 @@ Activation precedence: **CLI `--profiles.active=` > env `BLUE_PROFILES_ACTIVE` >
 builder `.profiles()`**. Defaults: `--profiles.default=` / `BLUE_PROFILES_DEFAULT`.
 Groups: `--profiles.group.<name>=…` / `BLUE_PROFILES_GROUPS` (`name=m1,m2;other=…`).
 
-## Files & env loading (P2/AD-13)
+## Files & env loading
 
 - Locations `./config/,./` per file name, first-present-wins (override via
   `BLUE_CONFIG_LOCATION`, comma-separated, `optional:`/`required:` prefixes).
@@ -93,7 +93,7 @@ Groups: `--profiles.group.<name>=…` / `BLUE_PROFILES_GROUPS` (`name=m1,m2;othe
   Vite-detected), `bootstrap` slot (host-registered), `defaults`. Anything in
   client-visible sources is client-visible by definition (security boundary).
 
-## Validation (P6/AD-17)
+## Validation
 
 `validateEnvironment(env, zodObjectSchema)` → `{ valid, issues: [{ path,
 expected, actual }] }` — aggregate (all top-level violations), report-only
@@ -111,11 +111,11 @@ report. Non-object schemas throw.
 | `refresh()` (P5)                             | Runtime recompute                                        |
 | `originOf` (P5)                              | Where did this come from?                                |
 
-## Index strategy notes (P0)
+## Index strategy notes
 
 - `PrototypeChainIndex` — the historical chain; **default on both platforms**
-  (P0 bench: lookup costs within noise; ties/mutation go to prototype).
+  (lookup costs within noise; ties/mutation go to prototype).
 - `FlatMergedIndex` — compiled on invalidation, zero-alloc lookups, per-key
   origin retention; opt in via `{ index: 'flat' }`. In-place map edits after
   build are invisible until the next rebuild (replace-not-mutate doctrine).
-- No eval-family anywhere (P0 D8) — expressions are parsed, never executed.
+No eval-family anywhere — expressions are parsed, never executed.

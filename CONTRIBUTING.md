@@ -68,6 +68,16 @@ pnpm exec prettier --write <changed files>
    (API Extractor) and review the report diff.
 7. Run the full validation list above before opening a PR.
 
+## READMEs
+
+Every `README.md` in this repo is scaffolded on the standard template via the
+`readme` generator — `pnpm exec nx generate @blue/generators:readme --name <package>` —
+then filled in: lead with value, show a runnable example, and keep it focused on a
+new user. Never include internal tracking IDs (`AD-##`, `D##`), plan or
+decision-record links, commit notes, or descriptions of removed features — those
+belong in `docs/`. Scaffold or update the affected README whenever you add or
+change a package or app.
+
 ## Dependency changes
 
 - Do not add vulnerable transitive deps. After changing any manifest, run

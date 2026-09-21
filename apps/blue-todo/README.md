@@ -1,5 +1,7 @@
 # @blue/todo — Blue Demo Web
 
+> TodoMVC built on the full BlueJS browser stack with a micro frontend shell.
+
 TodoMVC implemented on BlueJS with a micro frontend shell: feature mount
 manager, relay gateway, and feature routing registry.
 
@@ -19,8 +21,22 @@ cd apps/blue-todo && pnpm dev
   browser telemetry
 - End-to-end Playwright suite under `e2e/`
 
+## Development
+
+```bash
+cd apps/blue-todo && pnpm test
+```
+
 ## See Also
 
 - [apps/README](../README.md) — the applications progression
 - [@blue/host](../../packages/blue-host/README.md) — host orchestration
 - [@blue/signals](../../packages/blue-signals/README.md) — reactive state
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

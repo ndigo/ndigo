@@ -5,7 +5,7 @@ DI-scaffolded bootstrap, dependency configuration, controllers, request
 binding, validation, the error contract, and graceful shutdown.
 
 The finished shape of every pattern here lives in `apps/blue-api` — use it as
-the canonical reference. Concepts link to the relevant AD where the rationale
+the canonical reference. Concepts link to the relevant decision record where the rationale
 is worth reading.
 
 ## Prerequisites
@@ -39,7 +39,7 @@ const context = new ApplicationBuilder([NodeAutoConfiguration, AppConfiguration]
 
 `NodeAutoConfiguration` provisions the server-side stack: the 6 argument
 resolvers, the handler mapping, the dispatcher, the error-resolver chain
-(AD-10), and the managed `httpServer` entry.
+and the managed `httpServer` entry.
 
 ## 2. Configuration classes and entries
 
@@ -151,7 +151,7 @@ the lifecycle processor.
 
 ## 6. The error contract (RFC 9457)
 
-Every 4xx/5xx response is an `application/problem+json` document (AD-10):
+Every 4xx/5xx response is an `application/problem+json` document:
 
 ```json
 {
@@ -176,8 +176,7 @@ The framework maps errors deterministically:
 
 Handlers can return a `ResponseEntity<ProblemDetails>` for full control, or
 rely on the default chain. The `urn:blue:*` problem-type scheme is a
-placeholder — replace with real HTTPS URIs before first public release
-(tracked in AD-10).
+placeholder — replace with real HTTPS URIs before first public release.
 
 ## 6b. WebSockets (`@socketMapping`)
 
@@ -285,5 +284,5 @@ Run it with `pnpm --filter @blue/hello-node exec tsx src/index.ts` and set
   `validatedBody`, and entity-derived schemas.
 - Package READMEs: `@blue/platform-node`, `@blue/dispatcher`, `@blue/boot`,
   `@blue/orm` for the full symbol surface.
-- ADs: [AD-7](../decisions/2026-09-05_AD7_ZOD_VALIDATION.md) (Zod),
-  [AD-10](../decisions/2026-09-07_AD10_RFC9457_ERROR_MODEL.md) (error model).
+- Decision records: [Zod validation](../decisions/2026-09-05_AD7_ZOD_VALIDATION.md),
+  [RFC 9457 problem+json error model](../decisions/2026-09-07_AD10_RFC9457_ERROR_MODEL.md).

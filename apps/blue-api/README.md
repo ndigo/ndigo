@@ -1,5 +1,7 @@
 # @blue/api — Blue API
 
+> Node server showcase: controllers, JWT auth, ORM-backed notes, content negotiation, and problem+json errors.
+
 Node server showcase built on `@blue/platform-node`: controllers, JWT auth,
 ORM-backed notes (+Drizzle), content negotiation, RFC 9457 problem+json
 errors, and actuator-style management endpoints.
@@ -20,7 +22,7 @@ GET  /api/report.csv           CSV representation (CSVView)
 POST /auth/login               {"username":"admin","password":"demo"} → JWT
 GET  /notes                    (Authorization: Bearer <token>) ORM-backed notes
      /drizzle/notes/*          Drizzle-backed notes (SQL)
-WS   /stomp/chat?token=<token> STOMP 1.2 chat (@authenticated — SEC-3)
+WS   /stomp/chat?token=<token> STOMP 1.2 chat (@authenticated)
 WS   /ws/chat                  raw socket chat (public contrast)
 GET  /health                   liveness/readiness (management)
 GET  /metrics                  live telemetry counters (management)
@@ -34,11 +36,10 @@ GET  /metrics                  live telemetry counters (management)
 - `ResponseEntity` for status/header control and static file serving
 - JWT auth (`@blue/auth-server`) and profile-gated dev beans (`@profile('dev')`)
 - In-memory and Drizzle ORM entity managers
-- RFC 9457 problem+json error envelope (AD-10)
-- Scheduled heartbeat task (`@scheduled`, auto-discovered and auto-started —
-  AD-20, [scheduling guide](../../docs/guides/05-scheduling.md))
+- RFC 9457 problem+json error envelope
+- Scheduled heartbeat task (`@scheduled`, auto-discovered and auto-started; see the [scheduling guide](../../docs/guides/05-scheduling.md))
 
-## Socket authentication (SEC-3)
+## Socket authentication
 
 The app wires socket identity declaratively: `NodeAppConfiguration`'s
 `socketRequestAuthenticator` bean resolves a demo token from `?token=` on the
@@ -75,3 +76,11 @@ cd apps/blue-api && pnpm test
 - [apps/README](../README.md) — the applications progression
 - [@blue/platform-node](../../packages/blue-platform-node/README.md) — the
   Node platform foundation
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

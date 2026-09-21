@@ -4,7 +4,7 @@ How content and internationalization work in BlueJS: content keys, message
 formatting, locale resolution (server and client), and the formatting rule
 that keeps server-rendered pages faithful on the client.
 
-The design follows one rule (AD-19): **BlueJS owns the contract, wraps the
+The design follows one rule: **BlueJS owns the contract, wraps the
 ecosystem standard, and uses platform standard APIs directly** —
 
 | Layer                       | What it is                                                           | Who owns it                                           |
@@ -138,7 +138,7 @@ no manual locale plumbing in the controller:
 
 Formatters take an **explicit language and time zone** — never ambient
 server local time. A server-rendered date using the server's timezone would
-not match the client's re-render, breaking island hydration (AD-19 D5).
+not match the client's re-render, breaking island hydration.
 Pin the timezone in the template (`timeZone: 'UTC'`) or pass the request's.
 
 ## 5. Islands: the locale rides along
@@ -204,7 +204,7 @@ signal-driven re-rendering.
 
 ## See also
 
-- [AD-19 — Content/i18n decision](../decisions/2026-09-13_AD19_CONTENT_I18N.md)
+- [Content/i18n decision](../decisions/2026-09-13_AD19_CONTENT_I18N.md)
 - [Content/i18n implementation plan](../plans/2026-09-13_CONTENT_I18N.md)
 - [blue-island demo](../../apps/blue-island/README.md) — localized SSR page
 - [blue-todo demo](../../apps/blue-todo/README.md) — reactive locale switcher

@@ -1,15 +1,8 @@
 # Blue Content
 
+> Content and theme abstractions for BlueJS — localized lookups, theme-aware rendering, and default-language fallback.
+
 Blue Content defines content and theme abstractions used across BlueJS packages.
-
-## Features
-
-- `ContentSource` interface for localized/content-key lookups
-- `Theme` and `ThemeSource` contracts for theme-aware rendering
-- `StaticContentSource` with default language fallback
-- `StaticThemeResolver` for in-memory theme lookup
-- Awareness mixins (`AsContentSourceAware`) and duck-type guards
-- Integration with `@blue/factory` and `@blue/core`
 
 ## Installation
 
@@ -17,7 +10,9 @@ Blue Content defines content and theme abstractions used across BlueJS packages.
 pnpm add @blue/content
 ```
 
-## Usage
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+
+## Getting Started
 
 ```typescript
 import { StaticContentSource, StaticThemeResolver, Theme } from '@blue/content';
@@ -38,9 +33,25 @@ const resolver = new StaticThemeResolver([theme], 'default');
 resolver.getTheme().contentSource.getContent('welcome', 'en');
 ```
 
+## API
+
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+
+- **Sources** — `ContentSource`, `StaticContentSource` (default-language fallback), `ThemeSource`
+- **Themes** — `Theme`, `StaticThemeResolver`
+- **Mixins & guards** — `AsContentSourceAware` awareness mixins and duck-type guards
+
 ## Development
 
 ```bash
 pnpm --filter @blue/content build:lib
 pnpm --filter @blue/content test
 ```
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

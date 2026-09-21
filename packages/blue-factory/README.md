@@ -1,44 +1,50 @@
 # Blue Factory
 
-## Inversion of Control
+> Inversion-of-control container and scope strategies for BlueJS — powers dependency injection in the application context.
 
-Inversion of control (IoC), a.k.a. dependency injection (DI), is a pattern used for decoupling components and layers in the system. The pattern is implemented through injecting dependencies into a component through constructor arguments, arguments to a factory method, or properties that are set on the object instance after it is constructed or returned from a factory method. These dependencies are usually provided as interfaces for further decoupling and to support testability.
+`@blue/factory` provides the inversion-of-control (IoC) / dependency-injection foundation of BlueJS. Its `DefaultFactory` implementation backs the `GenericApplicationContext` container, and its interfaces (`FactoryAware`, `Initializable`, `Destroyable`) are integration points for other framework entities.
 
-## The Factory
+## Installation
 
-The `Factory` API provides the underlaying basis for IoC functionality in BlueJS. The `DefaultFactory` implementation provides the main functionality to the `GenericApplicationContext` container.
+```bash
+pnpm add @blue/factory
+```
 
-`Factory` and its related interfaces, e.g. `FactoryAware`, `Initializable`, `Destroyable`, etc., are important integration points for other framework entities. They allow for very efficient interactions between the container and its components.
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 
-## Scope Support
+## Usage
 
-`@blue/factory` now includes built-in scope resolution in `AbstractFactory` via pluggable scope strategies.
+### Scopes
 
-### Built-in decorators
+`AbstractFactory` resolves scopes via pluggable strategies:
 
 - `@singletonScope` — one shared instance per factory (default when no scope is declared)
 - `@prototypeScope` — a new instance on each `getValue()` resolution
 - `@hashScope` — key-based contextual scope (explicit key activation required)
 - `@scope('<name>')` — custom scope marker
 
-### Built-in scope names
+Built-in names: `singleton`, `prototype`, `route` (implemented using key-based hash scope), `hash`. Custom scopes register through `ScopedFactory`: `registerScope(name, scope)`, `getScope(name)`, `getScopeNames()`, `destroyScopedValue(scopeName, valueName)`. Custom implementations conform to the `Scope` interface and use an object-factory callback pattern for lazy creation.
 
-- `singleton`
-- `prototype`
-- `route` (implemented using key-based hash scope)
-- `hash`
+## API
 
-### Custom scopes
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
 
-Factories expose scope registration APIs through `ScopedFactory`:
+## Development
 
-- `registerScope(name, scope)`
-- `getScope(name)`
-- `getScopeNames()`
-- `destroyScopedValue(scopeName, valueName)`
+```bash
+pnpm --filter @blue/factory build:lib
+pnpm --filter @blue/factory test
+```
 
-Custom scope implementations conform to the `Scope` interface and use an object-factory callback pattern for lazy creation.
+## See Also
 
-## References
+- [@blue/context](../blue-context/README.md) — application context on top of the factory
+- [@blue/boot](../blue-boot/README.md) — `ApplicationBuilder` on top of the context
 
-- https://stackoverflow.com/questions/3058/what-is-inversion-of-control
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

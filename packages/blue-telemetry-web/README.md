@@ -1,25 +1,18 @@
 # @blue/telemetry-web
 
-Browser telemetry for BlueJS — browser telemetry configuration and web
-instrumentations, built on the isomorphic [`@blue/telemetry`](../blue-telemetry/README.md) core.
+> Browser telemetry configuration and web instrumentations for BlueJS, built on the isomorphic [`@blue/telemetry`](../blue-telemetry/README.md) core.
 
-## Overview
+`@blue/telemetry-web` wires OpenTelemetry into browser applications: one-call `configureBrowserTelemetry()` (tracer provider, span exporters, optional live metrics), plus instrumentations for route-change spans (`RouterInstrumentation`), client-side dispatch spans (`DispatcherInstrumentation`), and `WebSocketClient` outbound messages/bytes with deliberate-close counters (`WebSocketClientInstrumentation`). The isomorphic core carries only the OTel API packages; browser-specific wiring lives here.
 
-`@blue/telemetry-web` wires OpenTelemetry into browser applications:
+## Installation
 
-- **`configureBrowserTelemetry()`** — one-call browser setup: tracer
-  provider, span exporters, and optional live metrics
-- **Instrumentations**:
-    - `RouterInstrumentation` — route-change spans for hash/feature routing
-    - `DispatcherInstrumentation` — client-side dispatch spans
-    - `WebSocketClientInstrumentation` — `WebSocketClient` outbound
-      messages/bytes + deliberate-close counters
-      (`blue.socket.client.messages.sent` / `.bytes` / `.closes`); status and
-      reconnect transition counters (`blue.socket.client.connecting` /
-      `.opened` / `.reconnecting` / `.closed`) wire through
-      `countSocketClientStatus()` as the client's `onStatusChange` option
+```bash
+pnpm add @blue/telemetry-web
+```
 
-## Usage
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+
+## Getting Started
 
 ```ts
 import { configureBrowserTelemetry } from '@blue/telemetry-web';
@@ -30,12 +23,12 @@ configureBrowserTelemetry({
 });
 ```
 
-## Design
+## API
 
-- **Zero SDK weight in the shared core** — `@blue/telemetry` installs only the
-  OTel API packages; browser-specific wiring lives here
-- Counter and span decorators (`@counted`, `@traced`) work identically on the
-  web and Node sides
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+
+- **Bootstrap** — `configureBrowserTelemetry()`
+- **Instrumentations** — `RouterInstrumentation`, `DispatcherInstrumentation`, `WebSocketClientInstrumentation`
 
 ## Development
 
@@ -46,7 +39,13 @@ pnpm --filter @blue/telemetry-web test
 
 ## See Also
 
-- [@blue/telemetry](../blue-telemetry/README.md) — API core: `@traced`,
-  `@counted`, logger, severity
-- [@blue/telemetry-node](../blue-telemetry-node/README.md) — the Node
-  counterpart
+- [@blue/telemetry](../blue-telemetry/README.md) — API core: `@traced`, `@counted`, logger, severity
+- [@blue/telemetry-node](../blue-telemetry-node/README.md) — the Node counterpart
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

@@ -1,8 +1,8 @@
 # @blue/signals
 
-Reactive state management with signals, computed values, and effects.
+> Reactive state management for BlueJS — signals, computed values, and effects built on `@preact/signals-core` with a BlueJS decorator API.
 
-Built on [`@preact/signals-core`](https://github.com/preactjs/signals) — the fastest, smallest signals library — with a BlueJS decorator API for declarative reactive state.
+Reactive state management with signals, computed values, and effects. Built on [`@preact/signals-core`](https://github.com/preactjs/signals) — the fastest, smallest signals library — with a BlueJS decorator API for declarative reactive state.
 
 ## Installation
 
@@ -10,7 +10,9 @@ Built on [`@preact/signals-core`](https://github.com/preactjs/signals) — the f
 pnpm add @blue/signals
 ```
 
-## Usage
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+
+## Getting Started
 
 ### Core API (re-exported from `@preact/signals-core`)
 
@@ -31,6 +33,8 @@ batch(() => {
     // effect won't fire until batch completes
 });
 ```
+
+## Usage
 
 ### Decorator API
 
@@ -88,7 +92,9 @@ const sig = getSignal<number>(c, 'count');
 sig.value; // read directly
 ```
 
-## API Reference
+## API
+
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
 
 ### Core (`@blue/signals`)
 
@@ -117,14 +123,17 @@ sig.value; // read directly
 | `getSignal(instance, field)` | Returns the raw `Signal` instance for a decorated field |
 | `batch(fn)`                  | Also exported from decorators for convenience           |
 
-## Signals vs. the Old `@blue/reactive`
+## Development
 
-|                         | `@blue/reactive` (removed)            | `@blue/signals`                      |
-| ----------------------- | ------------------------------------- | ------------------------------------ |
-| **Pattern**             | Pull-based observable                 | Push-based signals                   |
-| **Dependency tracking** | Manual (explicit source arrays)       | Automatic (read-time tracking)       |
-| **Subscription**        | `.subscribe()` / manual `Unsubscribe` | `effect()` / auto-cleanup            |
-| **Reading**             | `.get()`                              | `.value` property                    |
-| **Writing**             | `.set(v)`                             | `.value = v`                         |
-| **Performance**         | Eager, no caching                     | Lazy, memoized, microtask-batched    |
-| **Size**                | ~2.5 KB                               | ~1.5 KB (via `@preact/signals-core`) |
+```bash
+pnpm --filter @blue/signals build:lib
+pnpm --filter @blue/signals test
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

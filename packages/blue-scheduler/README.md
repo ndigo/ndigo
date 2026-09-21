@@ -1,8 +1,10 @@
 # Blue Scheduler
 
+> Node-only scheduling for BlueJS: declarative `@scheduled` tasks with Spring-shaped semantics.
+
 Node-only scheduling for BlueJS: a `@scheduled` method decorator, a
 schedule registry, and a task-execution engine. Spring's declarative shape
-with Nest/AdonisJS runtime semantics (AD-20).
+with Nest/AdonisJS runtime semantics.
 
 ## Installation
 
@@ -10,8 +12,7 @@ with Nest/AdonisJS runtime semantics (AD-20).
 pnpm add @blue/scheduler
 ```
 
-## Usage
-
+## Getting Started
 ```typescript
 import { scheduled } from '@blue/scheduler';
 
@@ -71,5 +72,19 @@ lint rule flags browser-platform files importing this package.
 
 ## See Also
 
-- [AD-20 — scheduling decision](../../docs/decisions/2026-09-13_AD20_SCHEDULING.md)
-- [Implementation plan](../../docs/plans/2026-09-13_SCHEDULING.md)
+- [@blue/platform-node](../blue-platform-node/README.md) — auto-provisions the scheduler in a Node app via its `taskScheduler` bean
+
+## Development
+
+```bash
+pnpm --filter @blue/scheduler build:lib
+pnpm --filter @blue/scheduler test
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

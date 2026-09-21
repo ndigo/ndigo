@@ -1,7 +1,7 @@
 # @blue/cache
 
 Caching for BlueJS — one isomorphic, dependency-free package for both sides
-of the stack (AD-24):
+of the stack:
 
 - **`Cache` / `CacheMiss` / `MemoryCache`** — the store: TTL expiry (lazy,
   timer-free), bounded-size eviction (Map-order LRU default, `fifo`
@@ -56,6 +56,3 @@ class UserService {
 
 - Guide: [`docs/guides/07-caching.md`](../../docs/guides/07-caching.md) —
   server decorator, client memoization, invalidation, pitfalls.
-- Decision: [`AD-24`](../../docs/decisions/2026-09-17_AD24_CACHING.md) —
-  naming, no-AOP mechanism, eviction policy, non-goals.
-- Plan: [`2026-09-17_CACHING.md`](../../docs/plans/2026-09-17_CACHING.md).

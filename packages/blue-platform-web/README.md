@@ -1,13 +1,8 @@
 # Blue Platform Web
 
+> Browser-specific platform integrations for BlueJS — argument resolvers, converters, and cookie helpers.
+
 Blue Platform Web provides browser-specific platform integrations for BlueJS.
-
-## Features
-
-- Browser environment helpers
-- Cookie utilities and cookie-based argument resolution
-- Cookie theme resolver support
-- Router/dispatcher web-platform glue components
 
 ## Installation
 
@@ -15,7 +10,7 @@ Blue Platform Web provides browser-specific platform integrations for BlueJS.
 pnpm add @blue/platform-web
 ```
 
-## Usage
+## Getting Started
 
 > **Note**: If you are using `@blue/boot` to launch your application in the browser, these resolvers and converters are registered automatically. Manual configuration is only required for custom setups.
 
@@ -172,9 +167,21 @@ class AccountController {
 }
 ```
 
+## API
+
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+
 ## Development
 
 ```bash
 pnpm --filter @blue/platform-web build:lib
 pnpm --filter @blue/platform-web test
 ```
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

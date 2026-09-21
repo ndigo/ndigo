@@ -1,31 +1,18 @@
 # @blue/auth-client
 
-Client-side authentication for the BlueJS framework.
-
-## Overview
+> Client-side authentication state management and OIDC for BlueJS — browser environments, works with `@blue/auth-core` adapters.
 
 `@blue/auth-client` provides client-side authentication state management and OpenID Connect (OIDC) support. It is designed for browser environments and works with adapters registered in `@blue/auth-core`.
 
-## Architecture
+## Installation
 
-```
-@blue/auth-client
-├── AuthClient          ← Client-side state management
-├── ClientAuthGuard     ← Route guard for protected routes
-└── OIDCAdapter         ← OIDC protocol implementation
+```bash
+pnpm add @blue/auth-client
 ```
 
-## Exports
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 
-### Classes
-
-- **`AuthClient`** — Client-side authentication manager
-- **`ClientAuthGuard`** — Guard for protecting client-side routes
-- **`OIDCAdapter`** — OIDC authentication adapter
-
-## Usage
-
-### Initializing AuthClient
+## Getting Started
 
 ```typescript
 import { AuthClient } from '@blue/auth-client';
@@ -42,6 +29,8 @@ console.log(auth.isAuthenticated); // true
 console.log(auth.principal?.name); // "John Doe"
 ```
 
+## Usage
+
 ### Checking Authentication State
 
 ```typescript
@@ -49,12 +38,10 @@ import { AuthClient } from '@blue/auth-client';
 
 const auth = new AuthClient();
 
-// Check if user is authenticated
 if (auth.isAuthenticated) {
     console.log(`Logged in as: ${auth.principal?.name}`);
 }
 
-// Get current principal
 const principal = auth.principal;
 if (principal?.hasRole('admin')) {
     // Show admin UI
@@ -69,7 +56,6 @@ import { AuthRegistry } from '@blue/auth-core';
 
 const guard = new ClientAuthGuard('oidc');
 
-// Protect a route
 guard.canActivate('/admin').then((allowed) => {
     if (!allowed) {
         window.location.href = '/login';
@@ -79,17 +65,13 @@ guard.canActivate('/admin').then((allowed) => {
 
 ### OIDC Adapter (fail-closed)
 
-The `OIDCAdapter` requires a trusted token-verification source at
-construction — there is no claim-only mode. Choose one of:
+The `OIDCAdapter` requires a trusted token-verification source at construction — there is no claim-only mode. Choose one of:
 
 - `jwksUrl` — fetch signing keys from the provider's JWKS endpoint.
-- `discovery: true` — resolve endpoints (authorization, token, JWKS,
-  end-session) from `{issuer}/.well-known/openid-configuration`. The
-  discovery document's `issuer` must match exactly.
+- `discovery: true` — resolve endpoints from `{issuer}/.well-known/openid-configuration`; the document's `issuer` must match exactly.
 - `tokenValidator` — a custom callback that performs signature verification.
 
-The adapter implements the authorization code flow with PKCE (S256), `state`,
-and `nonce`:
+It implements the authorization code flow with PKCE (S256), `state`, and `nonce`. A token that is forged, unsigned, or has the wrong issuer/audience/state/nonce throws `OIDCError` without mutating authentication state. Public clients (SPAs) use PKCE without a secret; confidential servers add `clientSecret`.
 
 ```typescript
 import { OIDCAdapter, AuthRegistry } from '@blue/auth-client';
@@ -105,38 +87,28 @@ const adapter = new OIDCAdapter({
 AuthRegistry.register(adapter);
 ```
 
-```typescript
-// 1. Start the flow (persist request.state; keep codeVerifier server-side)
-const request = await adapter.createAuthorizationRequest();
-window.location.href = request.url;
+## API
 
-// 2. On your redirect URI, exchange the code (state is verified and single-use)
-const result = await adapter.exchangeCodeForTokens(code, request.state);
-console.log(result.principal?.name);
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+
+- **Classes** — `AuthClient`, `ClientAuthGuard`, `OIDCAdapter`
+
+## Development
+
+```bash
+pnpm --filter @blue/auth-client build:lib
+pnpm --filter @blue/auth-client test
 ```
-
-Failure modes (forged, unsigned, wrong issuer/audience, stale state, missing
-PKCE, wrong nonce, malformed responses) throw `OIDCError` with a `code` such
-as `invalid_state`, `invalid_nonce`, or `malformed_response` — without
-mutating authentication state.
-
-**Public vs. confidential clients:** public clients (SPAs, native apps)
-should use PKCE without a secret; confidential servers add `clientSecret`.
-Remote discovery/JWKS fetches are HTTPS-enforced (loopback exempt), bounded
-by `fetchTimeoutMs` (default 10s) and `maxResponseBytes` (default 1 MiB).
-
-## Design Principles
-
-1. **State management** — `AuthClient` manages authentication state locally
-2. **Adapter-based** — Works with any `AuthAdapter` registered in the core
-3. **Immutable state** — Authentication state is read-only via getters
-4. **Token lifecycle** — Handles token refresh and expiration automatically
-
-## Dependencies
-
-- `@blue/auth-core` — Core authentication contracts
 
 ## See Also
 
 - [@blue/auth-core](../blue-auth-core/README.md) — Core authentication contracts
 - [@blue/auth-server](../blue-auth-server/README.md) — Server-side authentication
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

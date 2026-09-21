@@ -11,10 +11,6 @@ bean (zero-wiring node auto-config), `memoize` (client-side, single-flight),
 `@cached` decorator (no-AOP wrapper, graceful degradation) — demo gates in
 blue-api (`/api/cached-report` counter) and blue-views (client memoize).
 
-**Status:** Completed (2026-09-17)  
-**Commit:** (pending)  
-**Impact:** Server + client caching abstraction (AD-24) — gap-analysis seq #4
-
 [Read full plan](2026-09-17_CACHING.md)
 
 ---
@@ -24,11 +20,6 @@ blue-api (`/api/cached-report` counter) and blue-views (client memoize).
 `@scheduled` decorator, ScheduleRegistry + TaskScheduler engine, croner
 seam, Node-only guardrails, zero-config discovery, per-run OTel spans —
 Phase 4 demo gate in blue-api.
-
-**Status:** Completed (2026-09-13)  
-**Commit:** (pending)  
-**Impact:** Enterprise scheduling (AD-20) — Spring's shape, Nest/AdonisJS
-semantics
 
 [Read full plan](2026-09-13_SCHEDULING.md)
 
@@ -40,11 +31,6 @@ Content/i18n completion: `MessageSource` contract, i18next adapter
 (`@blue/content-i18next`), Intl formatters, locale flow (server +
 client), EJS/island integration, and both demo gates.
 
-**Status:** Completed (2026-09-13)  
-**Commit:** (pending)  
-**Impact:** Full i18n story — contract + wrapped i18next + `Intl` formatting,
-with reactive client-side locale switching (AD-19)
-
 [Read full plan](2026-09-13_CONTENT_I18N.md)
 
 ---
@@ -52,10 +38,6 @@ with reactive client-side locale switching (AD-19)
 ### 2026-03-22 - View Event Architecture
 
 Hardened the Spring MVC-inspired view/event contracts with explicit event-bridge interfaces, router refresh contract, lifecycle cleanup, and legacy Bridge removal.
-
-**Status:** Completed  
-**Commit:** (pending)  
-**Impact:** Architectural hardening - stronger contracts and lifecycle safety
 
 [Read full plan](2026-03-22_VIEW_EVENT_ARCHITECTURE.md)
 
@@ -65,10 +47,6 @@ Hardened the Spring MVC-inspired view/event contracts with explicit event-bridge
 
 Multi-context/site architecture with hierarchical shell/feature contexts, route partitioning, event gateway isolation, and per-feature telemetry.
 
-**Status:** Completed  
-**Commit:** (pending)  
-**Impact:** Architectural foundation for micro-frontends and multi-feature applications
-
 [Read full plan](2026-03-24_SCALE2_CONTEXT_ROUTING_ARCHITECTURE.md)
 
 ---
@@ -77,21 +55,17 @@ Multi-context/site architecture with hierarchical shell/feature contexts, route 
 
 Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix across @blue/validate, @blue/http, and @blue/platform-web packages.
 
-**Status:** Completed  
-**Commit:** 7d58ca0  
-**Impact:** Breaking change - 37 constants renamed
-
 [Read full plan](2026-02-08_REGEX_NAMING_CONVENTION.md)
 
 ---
 
 ## Active Plans
 
-- [2026-09-18_CODE_REVIEW_AND_MITIGATION.md](2026-09-18_CODE_REVIEW_AND_MITIGATION.md) - Review of the AD-24 (caching) + AD-25 (security headers) waves — **2026-09-18**: format gate on AD-25 fixed (`oxfmt`), STOMP SEC-3 fail-close and SEC-1 queue-store leak verified landed; findings: JSON cache-key collisions (M1, must-fix), `@cached` lacks single-flight vs `memoize` (S1), silent degradation (S3); security headers otherwise sound
-- [2026-09-17_REVIEW_AND_REMEDIATION.md](2026-09-17_REVIEW_AND_REMEDIATION.md) - Review of the AD-21/22/23 wave (WS registry, client, STOMP) + uncommitted tree — **implemented 2026-09-17**: gate failures cleared, STOMP 1.2 conformance and ack/queue defects fixed, socket auth/DoS hardening landed, all repository gates green (including `pnpm audit --prod` via the `smol-toml` override)
-- [2026-09-16_STOMP.md](2026-09-16_STOMP.md) - STOMP 1.2 protocol layer: frame codec, server broker (destinations, subscriptions, receipts), `StompClient`, `@stompMapping` + `v12.stomp` subprotocol negotiation, blue-api demo gate (AD-23)
-- [2026-09-15_WEBSOCKET_BROADCAST.md](2026-09-15_WEBSOCKET_BROADCAST.md) - WebSocket session registry, rooms/broadcast, heartbeat reaping, auto-configuration wiring (AD-21)
-- [2026-09-15_WEBSOCKET_CLIENT.md](2026-09-15_WEBSOCKET_CLIENT.md) - Isomorphic `@blue/socket` package, `SocketClient` + reconnect, dispatcher re-export seam, demo gate rewire (AD-22)
+- [2026-09-18_CODE_REVIEW_AND_MITIGATION.md](2026-09-18_CODE_REVIEW_AND_MITIGATION.md) - Architecture, security, and quality review with remediation plan
+- [2026-09-17_REVIEW_AND_REMEDIATION.md](2026-09-17_REVIEW_AND_REMEDIATION.md) - Review of the WebSocket/STOMP wave with repository gate remediation
+- [2026-09-16_STOMP.md](2026-09-16_STOMP.md) - STOMP 1.2 protocol layer: frame codec, server broker, client, and demo gate
+- [2026-09-15_WEBSOCKET_BROADCAST.md](2026-09-15_WEBSOCKET_BROADCAST.md) - WebSocket session registry, rooms/broadcast, heartbeat reaping, auto-config wiring
+- [2026-09-15_WEBSOCKET_CLIENT.md](2026-09-15_WEBSOCKET_CLIENT.md) - Isomorphic socket package: client + reconnect, dispatcher seam, demo gate rewire
 - [2026-09-04_REPOSITORY_REMEDIATION.md](2026-09-04_REPOSITORY_REMEDIATION.md) - Comprehensive architecture, security, quality, documentation, and release remediation plan
 - [2026-05-27_FEATURE_COMPLETENESS_ROADMAP.md](2026-05-27_FEATURE_COMPLETENESS_ROADMAP.md) - Full 10-wave framework feature completeness roadmap
 - [2026-03-08_PACKAGE_ROADMAP.md](2026-03-08_PACKAGE_ROADMAP.md)

@@ -82,7 +82,7 @@ Custom rules are provided by `@blue/eslint-plugin` as oxlint-compatible JS plugi
 | `@blue/platform-node`     | Node.js platform support (`NodeEnvironment`, argument resolvers, `FileSystemRouter`)                                   |
 | `@blue/platform-web`      | Browser platform support (`HashRouter`, `BrowserRouter`, `OfflineInterceptor`, argument resolvers)                     |
 | `@blue/view-webcomponent` | Web Component view engine and custom element bindings                                                                  |
-| `@blue/host`              | Centralized micro frontend orchestration (`HostManager` + `HOST_MANAGER_TOKEN`; one-call feature registration — AD-18) |
+| `@blue/host`              | Centralized micro frontend orchestration (`HostManager` + `HOST_MANAGER_TOKEN`; one-call feature registration) |
 
 ### Removed/Consolidated
 
@@ -205,7 +205,7 @@ The micro frontend route partitioner was renamed to match the
 `route-partition.ts` vocabulary (`matchesPartitionPath`,
 `normalizePartitionPrefix`, `stripPartitionPrefix`,
 `restorePartitionPrefix`) and retires the last "Site" identifier (the Site
-model was retired in AD-3).
+model was retired.
 
 **Before (legacy):**
 
@@ -234,7 +234,7 @@ router.mount('/todo', callback);
 ### 8.2 Host orchestration via `@blue/host` (Pre-1.0)
 
 Micro frontend hosts compose the shell through `@blue/host` `HostManager`
-(AD-18) instead of hand-wiring `FeatureContextMountManager` +
+instead of hand-wiring `FeatureContextMountManager` +
 `FeatureRoutingRegistry` with closure joins.
 
 **Before (legacy):**

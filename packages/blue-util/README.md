@@ -1,27 +1,18 @@
 # Blue Utility
 
-The BlueJS utility library — zero-dependency helpers for strings, types,
-math, and structure matching, with **no third-party runtime deps**.
+> Zero-dependency BlueJS helpers for strings, types, math, and structure matching — fully native, no third-party runtime deps.
 
-## Overview
+`@blue/util` is the BlueJS utility library: zero-dependency helpers for strings, types, math, and structure matching, with no third-party runtime dependencies. It ships fully native, benchmarked implementations.
 
-`@blue/util` was historically a pass-through over Ramda/date-fns; those
-libraries were removed in favor of native, benchmarked implementations
-(2.7–200x faster in the worst offenders — see `audits/2026-04-03_RAMDA_BENCHMARK_ANALYSIS.md`).
-Today it is fully native.
+## Installation
 
-## Categories
+```bash
+pnpm add @blue/util
+```
 
-- **Type guards** — `isString`, `isNumber`, `isNumeric`, `isFunction`,
-  `isValidDate`, `isConstructor`, `type()`, and structural matching with `like`
-  (WeakMap-cached descriptors: 40+ call sites at ~175–200k Hz warm)
-- **String utilities** — encoding/decoding, slugify, camel/Pascal/proper/sentence
-  case, diacritics removal, interpolation, regex builders
-- **Math & ids** — `randInt`, `randHex`, `guid`, seeded random
-- **Predicates & composition** — native replacements for the removed Ramda
-  combinators (`allPass`-style checks are plain `&&` chains now)
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 
-## Usage
+## Getting Started
 
 ```ts
 import { isString, like, guid } from '@blue/util';
@@ -32,13 +23,20 @@ like({ then: Function }, thenable); // true — duck-type check
 const id = guid();
 ```
 
+## Categories
+
+- **Type guards** — `isString`, `isNumber`, `isNumeric`, `isFunction`, `isValidDate`, `isConstructor`, `type()`, and structural matching with `like` (WeakMap-cached descriptors)
+- **String utilities** — encoding/decoding, slugify, camel/Pascal/proper/sentence case, diacritics removal, interpolation, regex builders
+- **Math & ids** — `randInt`, `randHex`, `guid`, seeded random
+- **Predicates & composition** — native replacements for common combinators (`allPass`-style checks are plain `&&` chains)
+
+## API
+
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+
 ## Performance notes
 
-The `bench/` suites guard the native implementations against regression:
-
-```bash
-pnpm --filter @blue/util test:bench
-```
+The `bench/` suites guard the native implementations against regression, run via Vitest's benchmark runner (`vitest bench`).
 
 ## Development
 
@@ -50,3 +48,11 @@ pnpm --filter @blue/util test
 ## See Also
 
 - [@blue/core](../blue-core/README.md) — foundational primitives
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

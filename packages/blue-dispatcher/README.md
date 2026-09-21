@@ -1,29 +1,18 @@
 # BlueJS Dispatcher
 
-Platform-independent request dispatch for BlueJS: maps routes to handler
-methods, binds parameters, runs interceptors, resolves errors, and renders
-the resulting view.
+> Platform-independent request dispatch for BlueJS: maps routes to handlers, binds parameters, runs interceptors, resolves errors, renders views.
 
-## Features
+Platform-independent request dispatch for BlueJS: maps routes to handler methods, binds parameters, runs interceptors, resolves errors, and renders the resulting view.
 
-- **Metadata-driven handler mapping** — `@requestMapping`/`@getMapping`/…
-  decorators registered through a radix tree (`RadixMetadataHandlerMapping`),
-  with route conditions (matrix params, query params, patterns)
-- **Explicit parameter binding** — `@parameters` with typed extractors
-  (`pathVariable`, `queryValue`, `bodyValue`, `attributeValue`, `sessionValue`,
-  …) wrapped by converters (`asNumber`, `asJson`, `asUUID`, …); resolver
-  selection is cached per parameter
-- **Handler adapters** — controller/handler-method adapters with interceptor
-  chains (`applyPreHandle`/`applyPostHandle`)
-- **View routing** — `ModelAndView` results handed to the view-resolution
-  strategy (language, theme, content negotiation)
-- **Error resolution** — pluggable error resolvers (401/403 denials,
-  binding errors, last-resort 500)
-- **WebSocket endpoints** — `@socketMapping` on the same condition API
-- **Performance** — route lookup through a radix tree is 3–6x faster than
-  popular router libraries on parameterized paths
+## Installation
 
-## Usage
+```bash
+pnpm add @blue/dispatcher
+```
+
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+
+## Getting Started
 
 ```ts
 import { configuration } from '@blue/context';
@@ -46,22 +35,42 @@ class AppConfig {
 }
 ```
 
-Platform-specific dispatchers extend the same core:
+## Usage
 
-- [@blue/platform-node](../blue-platform-node/README.md) — `NodeDispatcher`
-  writes rendered output to the HTTP response
-- [@blue/platform-web](../blue-platform-web/README.md) — browser dispatch
+### Parameter binding
+
+`@parameters` uses typed extractors (`pathVariable`, `queryValue`, `bodyValue`, `attributeValue`, `sessionValue`) wrapped by converters (`asNumber`, `asJson`, `asUUID`); resolver selection is cached per parameter.
+
+### Conditions, interceptors, errors
+
+Handlers match on route conditions (matrix params, query params, patterns), run interceptor chains (`applyPreHandle`/`applyPostHandle`), and resolve errors through pluggable resolvers (401/403 denials, binding errors, last-resort 500). Route lookup through a radix tree is 3–6x faster than popular router libraries on parameterized paths.
+
+## API
+
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+
+- **Decorators** — `@requestMapping`, `@getMapping`, `@socketMapping`, `@parameters`
+- **Parameter helpers** — `pathVariable`, `queryValue`, `bodyValue`, `attributeValue`, `sessionValue`; converters `asNumber`, `asJson`, `asUUID`
+- **Core classes** — `RadixMetadataHandlerMapping`, `ModelAndView`
 
 ## Development
 
 ```bash
 pnpm --filter @blue/dispatcher build:lib
 pnpm --filter @blue/dispatcher test
-# benchmark route matching and parameter binding
-pnpm --filter @blue/dispatcher test:bench
 ```
 
 ## See Also
 
 - [@blue/view](../blue-view/README.md) — the view layer dispatcher renders
 - [@blue/router](../blue-router/README.md) — browser routing primitives
+- [@blue/platform-node](../blue-platform-node/README.md) — `NodeDispatcher` writes rendered output to the HTTP response
+- [@blue/platform-web](../blue-platform-web/README.md) — browser dispatch
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

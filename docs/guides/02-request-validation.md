@@ -4,11 +4,11 @@ How request validation fits the BlueJS pipeline: coercive binding via
 `@parameters` extractors, schema validation with Zod, and schemas that are
 derived directly from `@blue/orm` entity metadata.
 
-The validation mechanism is a single pipeline (AD-7): an extractor resolves
+The validation mechanism is a single pipeline: an extractor resolves
 
 - converts a value, then a Zod schema runs over it. Failures are reported as
   `ParameterConversionError` and surface as a **422 problem document** with the
-  structured issues (AD-10).
+  structured issues.
 
 ## The pipeline
 
@@ -139,7 +139,7 @@ A `POST` with `{ title: '' }` now yields:
 ```
 
 - 400 stays reserved for **transport/binding** problems; 422 is for
-  **schema (Zod) failures** (AD-10).
+  **schema (Zod) failures**.
 - The full entity schema (`schemaForEntity`) is for reads/validation of
   persisted instances; always use `insertSchemaForEntity` for create bodies.
 
@@ -156,7 +156,5 @@ browser request "bodies" are form/model sources.)
 - Full API: JSDoc in `packages/blue-dispatcher/src/zod-validated-by.ts`
   (docstring includes all four usage forms) and
   `packages/blue-orm/src/entity-schema.ts`.
-- Rationale: [AD-7](../decisions/2026-09-05_AD7_ZOD_VALIDATION.md) (Zod as
-  the canonical schema primitive) and
-  [AD-10](../decisions/2026-09-07_AD10_RFC9457_ERROR_MODEL.md) (error
-  contract).
+- Rationale: [Zod as the canonical schema primitive](../decisions/2026-09-05_AD7_ZOD_VALIDATION.md)
+  and [RFC 9457 problem+json error contract](../decisions/2026-09-07_AD10_RFC9457_ERROR_MODEL.md).

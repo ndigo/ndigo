@@ -1,30 +1,18 @@
 # @blue/telemetry-node
 
-Node.js telemetry for BlueJS — NodeSDK configuration and Node platform
-instrumentations, built on the isomorphic [`@blue/telemetry`](../blue-telemetry/README.md) core.
+> NodeSDK configuration and Node platform instrumentations for BlueJS, built on the isomorphic [`@blue/telemetry`](../blue-telemetry/README.md) core.
 
-## Overview
+`@blue/telemetry-node` wires OpenTelemetry into Node applications: one-call `configureTelemetry()` NodeSDK setup (tracer provider, span/live-metric exporters, severity-filtered log processor), runtime instrumentations that produce spans for BlueJS components, and a `SeverityFilterLogRecordProcessor` that drops log records below a configured severity so production logs stay quiet. The isomorphic core carries only the OTel API packages; SDK dependencies live here on the Node side.
 
-`@blue/telemetry-node` wires OpenTelemetry into Node applications:
+## Installation
 
-- **`configureTelemetry()`** — one-call NodeSDK setup: tracer provider,
-  span/live-metric exporters, and the severity-filtered log processor
-- **Instrumentations** — runtime patches that produce spans for BlueJS
-  components:
-    - `HTTPServerInstrumentation` — HTTP request spans (method, route, status)
-    - `ServerSentEventViewInstrumentation` — SSE stream-lifetime spans with
-      frame counts, duration, and client-disconnect flags (`sse.*` attributes)
-    - `WebSocketServerInstrumentation` — socket session-lifetime spans +
-      counters: sessions opened/closed (path, close code), fan-out
-      messages/bytes (per path; per room only with the `roomAttribute`
-      option, since room names are arbitrary app strings), backpressure
-      decisions — `close` `1013` and `drop` actions (`blue.socket.*`; wired
-      via the registry's overflow observer so drop-mode is visible too)
-    - `HTTPResponseViewTargetInstrumentation` — view-commit spans
-- **`SeverityFilterLogRecordProcessor`** — drops log records below a
-  configured severity so production logs stay quiet
+```bash
+pnpm add @blue/telemetry-node
+```
 
-## Usage
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+
+## Getting Started
 
 ```ts
 import { configureTelemetry } from '@blue/telemetry-node';
@@ -35,12 +23,13 @@ configureTelemetry({
 });
 ```
 
-## Design
+## API
 
-- **Isomorphic core** — `@blue/telemetry` carries only the OTel API packages;
-  SDK dependencies live here, on the Node side
-- **Span scope is sound** — producer-contract views wrap the consumed stream
-  body, so frames/duration are measured at true stream end, aborts included
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+
+- **Bootstrap** — `configureTelemetry()`
+- **Instrumentations** — `HTTPServerInstrumentation`, `ServerSentEventViewInstrumentation`, `WebSocketServerInstrumentation`, `HTTPResponseViewTargetInstrumentation`
+- **Logging** — `SeverityFilterLogRecordProcessor`
 
 ## Development
 
@@ -51,7 +40,13 @@ pnpm --filter @blue/telemetry-node test
 
 ## See Also
 
-- [@blue/telemetry](../blue-telemetry/README.md) — API core: `@traced`,
-  `@counted`, logger, severity
-- [@blue/management](../blue-management/README.md) — serves telemetry counters
-  over `/metrics`
+- [@blue/telemetry](../blue-telemetry/README.md) — API core: `@traced`, `@counted`, logger, severity
+- [@blue/management](../blue-management/README.md) — serves telemetry counters over `/metrics`
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

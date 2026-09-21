@@ -1,6 +1,8 @@
 # @blue/orm-drizzle
 
-Drizzle ORM adapter for @blue/orm. Provides a SQL-backed data source and entity manager for production persistence.
+> SQL-backed Drizzle ORM adapter for @blue/orm — production persistence via a libSQL data source with automatic table creation and an async entity manager for CRUD.
+
+Drizzle ORM adapter for `@blue/orm`. Provides a SQL-backed data source and entity manager for production persistence: `DrizzleDataSource` (a libSQL-backed data source with automatic table creation) and `DrizzleEntityManager` (an async entity manager for CRUD operations).
 
 ## Installation
 
@@ -8,13 +10,15 @@ Drizzle ORM adapter for @blue/orm. Provides a SQL-backed data source and entity 
 pnpm add @blue/orm-drizzle drizzle-orm @libsql/client
 ```
 
-## Usage
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+
+## Getting Started
 
 ```typescript
 import { DrizzleDataSource, DrizzleEntityManager } from '@blue/orm-drizzle';
 import { entity, primaryColumn, column } from '@blue/orm';
 
-@entity('users')
+@Entity('users')
 class User {
     @primaryColumn()
     id: number;
@@ -31,7 +35,21 @@ await em.persist(new User('Alice'));
 const found = await em.find(User, 1);
 ```
 
-## Exports
+## API
 
-- `DrizzleDataSource` — libSQL-backed data source with automatic table creation
-- `DrizzleEntityManager` — async entity manager for CRUD operations
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+
+## Development
+
+```bash
+pnpm --filter @blue/orm-drizzle build:lib
+pnpm --filter @blue/orm-drizzle test
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

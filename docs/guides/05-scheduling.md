@@ -1,8 +1,7 @@
 # Guide 05 — Scheduling
 
 How scheduled tasks work in BlueJS: the `@scheduled` decorator, zero-wiring
-discovery, execution semantics, and guardrails. Scheduling is **Node-only**
-(AD-20).
+discovery, execution semantics, and guardrails. Scheduling is **Node-only**.
 
 The design: Spring's declarative decorator shape with Nest/AdonisJS runtime
 semantics — async single-flight runs, error isolation, drain-on-close, and
@@ -101,7 +100,7 @@ const scheduler = context.getValue<TaskScheduler>('taskScheduler');
 scheduler.getStats('maintenance.purge'); // → { runs, failures, inFlight, … }
 ```
 
-## 5. Guardrails (AD-20 D5)
+## 5. Guardrails
 
 | Where      | Behavior                                                                                                    |
 | ---------- | ----------------------------------------------------------------------------------------------------------- |
@@ -135,7 +134,7 @@ class ReportController {
 
 ## See also
 
-- [AD-20 — scheduling decision](../../docs/decisions/2026-09-13_AD20_SCHEDULING.md)
+- [scheduling decision](../../docs/decisions/2026-09-13_AD20_SCHEDULING.md)
 - [Implementation plan](../../docs/plans/2026-09-13_SCHEDULING.md)
 - [blue-api demo](../../apps/blue-api/README.md) — the heartbeat task
 - [`@blue/scheduler`](../../packages/blue-scheduler/README.md) — package surface

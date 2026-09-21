@@ -1,47 +1,18 @@
 # @blue/auth-core
 
-Core authentication contracts and utilities for the BlueJS framework.
+> Core authentication contracts and utilities for BlueJS — environment-agnostic, zero runtime dependencies.
 
-## Overview
+Core authentication contracts and utilities for the BlueJS framework. `@blue/auth-core` provides the foundational types, interfaces, and utilities for authentication in BlueJS. It is environment-agnostic and contains no browser or Node.js-specific code.
 
-`@blue/auth-core` provides the foundational types, interfaces, and utilities for authentication in BlueJS. It is environment-agnostic and contains no browser or Node.js-specific code.
+## Installation
 
-## Architecture
-
-The package follows a **contract-first** approach:
-
-```
-@blue/auth-core          ← Contracts (AuthAdapter, Principal, AuthRegistry)
-├── @blue/auth-client    ← Client-side implementation (AuthClient, OIDCAdapter)
-└── @blue/auth-server    ← Server-side implementation (AuthServer, JWTAdapter)
+```bash
+pnpm add @blue/auth-core
 ```
 
-## Exports
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 
-### Types
-
-- **`Principal`** — Immutable representation of an authenticated user/entity
-- **`AuthResult`** — Result of an authentication attempt
-- **`AuthenticationState`** — Current authentication state
-- **`AuthAdapter`** — Standardized interface for authentication providers
-
-### Classes
-
-- **`AnonymousPrincipal`** — Sentinel principal for unauthenticated users
-- **`AuthRegistry`** — Central registry for authentication adapters
-
-### Decorators
-
-- **`@authenticated`** — Marks methods requiring authentication
-- **`@authorized(roles?)`** — Marks methods requiring specific roles
-
-### Utility Functions
-
-- **`likePrincipal(value)`** — Duck-type guard for Principal
-
-## Usage
-
-### Registering an Adapter
+## Getting Started
 
 ```typescript
 import { AuthRegistry } from '@blue/auth-core';
@@ -57,6 +28,8 @@ const adapter = new OIDCAdapter({
 });
 AuthRegistry.register(adapter);
 ```
+
+## Usage
 
 ### Using the Registry
 
@@ -86,18 +59,31 @@ if (principal.hasAnyRole('admin', 'moderator')) {
 }
 ```
 
-## Design Principles
+## API
 
-1. **Immutability** — `Principal` is immutable to ensure identity stability
-2. **Environment-agnostic** — No browser or Node.js dependencies
-3. **Adapter pattern** — Pluggable authentication providers
-4. **Passive decorators** — Metadata-only decorators; enforcement happens elsewhere
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
 
-## Dependencies
+- **Types** — `Principal`, `AuthResult`, `AuthenticationState`, `AuthAdapter`
+- **Classes** — `AnonymousPrincipal`, `AuthRegistry`
+- **Decorators** — `@authenticated`, `@authorized(roles?)`
+- **Utility functions** — `likePrincipal(value)`
 
-- None (zero runtime dependencies)
+## Development
+
+```bash
+pnpm --filter @blue/auth-core build:lib
+pnpm --filter @blue/auth-core test
+```
 
 ## See Also
 
 - [@blue/auth-client](../blue-auth-client/README.md) — Client-side authentication
 - [@blue/auth-server](../blue-auth-server/README.md) — Server-side authentication
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

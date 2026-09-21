@@ -4,7 +4,7 @@ The BlueJS environment is a six-phase port of **Spring's environment model**
 (PropertySource / MutablePropertySources / profiles / `@ConfigurationProperties` /
 `EnvironmentPostProcessor`), translated to **JavaScript-native structures** with
 fail-loud semantics throughout. This document is the "why" — the decisions,
-tensions, and how they resolved. The ADRs (AD-11..17) hold the full rationale;
+tensions, and how they resolved. The decision records hold the full rationale;
 this is the map.
 
 ## Design pillars
@@ -88,12 +88,12 @@ so doctrine cannot drift.
 | P5    | Origins (`originOf`), `EnvironmentCustomizer`, formal `refresh()`           |
 | P6    | Zod validation: `@environment`, aggregate fail-loud boot                    |
 
-**Deferred / revisit triggers** (from the ADRs): prototype-chain origins;
+**Deferred / revisit triggers** (from the decision records): prototype-chain origins;
 per-keypath origin granularity; validation-per-bind; coercive (transformative)
 validation; profile groups referencing groups. All additive — the seams exist.
 
 ## Reading order
 
 1. Guide 03 (usage) → Reference: Environment API (surface)
-2. ADR 11→17 (rationale, oldest to newest)
+2. The environment decision records (rationale, oldest to newest)
 3. This document (map) + Phase plans under `docs/plans/2026-09-08_ENVIRONMENT_*`

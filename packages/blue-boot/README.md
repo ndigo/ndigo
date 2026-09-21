@@ -1,26 +1,18 @@
 # Blue Boot
 
-Application startup for BlueJS: profile-aware bootstrapping, typed config
-binding, and environment auto-configuration.
+> Application startup for BlueJS — profile-aware bootstrapping, typed config binding, and environment auto-configuration.
 
-## Features
+Application startup for BlueJS: profile-aware bootstrapping, typed config binding, and environment auto-configuration. Register configurations and bind them with `@configurationProperties` class binding validated by zod (`@environment`); standard environment/file/CLI config sources combine with documented precedence and placeholder resolution. Activate profiles with `ApplicationBuilder.profiles('dev')`, run, and let auto-configuration provision platform components by environment — Node's `NodeAutoConfiguration` (argument resolvers, converter registry, metadata handler mapping, error-resolver chain, managed `HTTPServer`) or the Browser web auto-configuration (cookie/model/session/state resolvers, built-in converters).
 
-- **`Application` / `ApplicationBuilder`** — lifecycle bootstrap: register
-  configurations, activate profiles (`ApplicationBuilder.profiles('dev')`),
-  and run
-- **Environment + profiles** — profile activation with defaults and
-  expressions; `@profile('dev')`-gated beans (AD-14)
-- **Typed config binding v2** — `@configurationProperties` class binding with
-  zod schema validation (`@environment`)
-- **Config sources & precedence** — standard environment/file/CLI sources
-  with documented precedence, placeholder resolution
-- **Auto-configuration** — provisions platform components by environment:
-    - _Node_: `NodeAutoConfiguration` (argument resolvers, converter registry,
-      metadata handler mapping, error-resolver chain, managed `HTTPServer`)
-    - _Browser_: Web auto-configuration (cookie/model/session/state resolvers,
-      built-in converters)
+## Installation
 
-## Usage
+```bash
+pnpm add @blue/boot
+```
+
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+
+## Getting Started
 
 ```ts
 import { ApplicationBuilder } from '@blue/boot';
@@ -28,6 +20,10 @@ import { MyConfiguration } from './my-configuration';
 
 const app = new ApplicationBuilder([MyConfiguration]).profiles('dev').run();
 ```
+
+## API
+
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
 
 ## Development
 
@@ -39,5 +35,12 @@ pnpm --filter @blue/boot test
 ## See Also
 
 - [@blue/context](../blue-context/README.md) — the context underneath
-- [@blue/platform-node](../blue-platform-node/README.md) — the Node
-  auto-configuration provisions this on Node
+- [@blue/platform-node](../blue-platform-node/README.md) — the Node auto-configuration provisions this on Node
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

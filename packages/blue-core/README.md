@@ -1,25 +1,19 @@
 # Blue Core
 
+> Foundational primitives, contracts, and utilities for BlueJS — zero third-party dependencies.
+
 The foundational package for BlueJS: shared primitives, contracts, and
 utilities with zero third-party dependencies.
 
-## Features
+## Installation
 
-- **Core types** — `Null`, `Enumerable`, `Constructable`, `Equatable`,
-  `Serializable`, `Matchable`, `Comparable`, `Error` bases
-- **Async primitives** — `Deferred`, future-style helpers
-- **Media types** — `MediaType` parsing/quality factors and `MediaTypes`
-  constants (RFC 7231-style)
-- **Routing data structures** — `RadixTree` (URL route lookup, 3–6x faster
-  than popular router libraries on parameterized paths), `URLGlobPathMatcher`
-  with compiled-pattern LRU cache, `MultiValueMap`, `RingBuffer`
-- **Property & keypath** — property indices, keypath expressions,
-  `PropertyValue`
-- **Iteration & collection helpers** — `entriesIterator` and friends
-- **Validation & conversion** — `Converter` framework, `Validator`,
-  conditional helpers
+```bash
+pnpm add @blue/core
+```
 
-## Usage
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+
+## Getting Started
 
 ```ts
 import { RadixTree } from '@blue/core';
@@ -31,13 +25,17 @@ const match = tree.lookup('/users/42');
 match?.params; // { id: '42' }
 ```
 
+## API
+
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and
+`doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the
+[package index](../README.md) for how it fits with the rest of BlueJS.
+
 ## Development
 
 ```bash
 pnpm --filter @blue/core build:lib
 pnpm --filter @blue/core test
-# radix tree, path matcher, ring buffer, multi-value map benchmarks
-pnpm --filter @blue/core test:bench
 ```
 
 ## See Also
@@ -45,3 +43,11 @@ pnpm --filter @blue/core test:bench
 - [@blue/util](../blue-util/README.md) — higher-level type/string helpers
 - [@blue/dispatcher](../blue-dispatcher/README.md) — consumes the radix tree
   for handler mapping
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

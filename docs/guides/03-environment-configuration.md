@@ -4,7 +4,7 @@ How configuration reaches your BlueJS application and becomes typed, validated
 objects: property sources, precedence, profiles, and `@configurationProperties`
 binding.
 
-The environment is a pipeline (AD-11..17): **sources** provide raw values →
+The environment is a pipeline: **sources** provide raw values →
 **resolution** (lookup + profiles + placeholders) → **binding**
 (`@configurationProperties` → typed instances) → **validation**
 (`@environment` zod schemas). It is Spring's environment model, ported to
@@ -28,7 +28,7 @@ JavaScript-native structures with fail-loud semantics throughout.
         @environment zod schema → fail-loud boot if invalid
 ```
 
-## 1. The precedence chain (AD-13)
+## 1. The precedence chain
 
 Sources are **named and ordered** — higher wins:
 
@@ -48,7 +48,7 @@ you _which source won_ (the observability payoff):
 environment.originOf('server'); // → 'commandLine' | 'systemEnvironment' | ...
 ```
 
-## 2. Profiles (AD-14)
+## 2. Profiles
 
 Profiles gate config with expressions, and file loading is profile-aware:
 
@@ -83,7 +83,7 @@ env.acceptsProfiles('base'); // true — nothing explicit set
 
 `application-prod.json` loads above `application.json` when `prod` is active.
 
-## 3. Bind configuration to typed classes (AD-15)
+## 3. Bind configuration to typed classes
 
 `@configurationProperties` auto-registers a bound, converted singleton:
 
@@ -114,7 +114,7 @@ const port = serverConfig.getValue('serverConfig').port; // number, fail-loud
 - `@nested` binds a sub-object under the field name (`db` → `server.db.url`).
 - Missing-required or conversion failure **fails refresh** naming class.field.
 
-## 4. Placeholders & typed reads (AD-12, P1)
+## 4. Placeholders & typed reads
 
 ```ts
 environment.getProperty('endpoint'); // 'https://${HOST:local.dev}/api'
@@ -126,7 +126,7 @@ Placeholders support `${key}`, `${key:default}`, nesting, and cycle detection;
 unresolvable ones pass through literally (no escape syntax — a literal
 `${x}` is self-escaped when `x` is not a property).
 
-## 5. Validate the environment (AD-17)
+## 5. Validate the environment
 
 ```ts
 import { z } from 'zod';
@@ -151,8 +151,8 @@ const { valid, issues } = validateEnvironment(environment, schema);
 
 ## 6. Extending the environment
 
-Customizers adjust the prepared environment before the context reads it
-(AD-16) — reorder sources, inject test doubles:
+Customizers adjust the prepared environment before the context reads it —
+reorder sources, inject test doubles:
 
 ```ts
 builder.customizers({
@@ -169,5 +169,4 @@ rebuilds); `NodeEnvironment.refresh()` also re-snapshots `process.env`.
 
 - Guide 01 (building a node API) for the surrounding bootstrap
 - Reference: Environment API for the full surface
-- AD-13 (precedence), AD-14 (profiles), AD-15 (binding), AD-16 (origins),
-  AD-17 (validation)
+- Environment decisions: precedence chain, profiles, configuration binding, origins & refresh, validation

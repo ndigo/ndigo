@@ -1,5 +1,7 @@
 # Blue Oxlint Plugin
 
+> Custom oxlint rules for BlueJS — enforce architecture conventions like encapsulated-import boundaries and canonical doc headers.
+
 Custom **oxlint** rules that enforce BlueJS architecture conventions.
 
 ## Installation
@@ -7,6 +9,8 @@ Custom **oxlint** rules that enforce BlueJS architecture conventions.
 ```bash
 pnpm add -D @blue/oxlint-plugin
 ```
+
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 
 ## Rules
 
@@ -23,16 +27,9 @@ pnpm add -D @blue/oxlint-plugin
 | `@blue/no-abstract-class-without-prefix` | Abstract classes use the `Abstract`/`As` prefix convention                                                                         |
 | `@blue/requires-doc-header`              | Source files begin with the canonical doc header (`@module`/`@since`/`@author`); repair with `nx generate @blue/generators:header` |
 
-## Integration Layer Concept
+## API
 
-BlueJS wraps external libraries behind stable framework-facing contracts:
-
-- `@blue/util` re-exports curated functionality (native implementations — the
-  Ramda/arcsecond-based layers were removed)
-- Other packages import helpers through those layers
-
-This plugin keeps the boundary honest by refusing direct integration-package
-imports.
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
 
 ## Development
 
@@ -40,3 +37,11 @@ imports.
 pnpm --filter @blue/oxlint-plugin build:lib
 pnpm --filter @blue/oxlint-plugin test
 ```
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

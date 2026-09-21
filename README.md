@@ -133,7 +133,7 @@ Micro frontends:
 - **Repository graph** — `graft build` maintains the local `graft/` code
   graph used by context-aware tooling
 
-# Development
+## Development
 
 ## Build Commands
 
@@ -237,7 +237,7 @@ The project maintains two complementary documentation files for different purpos
 
 **Maintenance Note:** When updating the dividing line explanation, update it in both `README.md` and `AGENTS.md` to keep them synchronized.
 
-# Terminology
+## Terminology
 
 ## Naming Conventions
 

@@ -4,7 +4,7 @@ Caching in BlueJS has two halves sharing one store: server-side method
 caching with the `@cached` decorator, and client-side (browser or Node)
 function memoization with `memoize`. Both run on the same package —
 `@blue/cache` — an isomorphic, dependency-free TTL store with LRU/FIFO
-eviction (AD-24).
+eviction.
 
 The HTTP client's `CacheInterceptor`/`IfModifiedInterceptor` are the third
 piece (client-side **HTTP** caching) — see the `blue-views` client demo and
@@ -54,7 +54,7 @@ import { getMapping, requestMapping } from '@blue/dispatcher';
 @requestMapping('/api')
 export class ProductController {
     // Server apps: NodeAutoConfiguration provisions the `cacheManager` bean;
-    // resolve it with the ApplicationContextAware mixin (see AD-24 D7).
+    // resolve it with the ApplicationContextAware mixin
     cacheManager: CacheManager;
 
     @getMapping('/products/top')
@@ -132,4 +132,4 @@ catalog.getCache('catalog').clear(); // whole-store eviction
 Reference: `apps/blue-api` (`GET /api/cached-report` demo gate, counter spec
 in `app-bootstrap.spec.ts`) and the `blue-views` client demo (memoized
 payload derivation next to the HTTP cache-hit refresh). Design rationale:
-[AD-24](../decisions/2026-09-17_AD24_CACHING.md).
+[caching decision](../decisions/2026-09-17_AD24_CACHING.md).

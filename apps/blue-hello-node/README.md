@@ -1,5 +1,7 @@
 # @blue/hello-node — Blue Hello Node
 
+> Minimal Node HTTP server on the BlueJS Node platform foundation.
+
 Minimal Node HTTP server on the BlueJS Node platform foundation: one
 controller, `@getMapping`, JSON out.
 
@@ -20,3 +22,11 @@ cd apps/blue-hello-node && pnpm start
 - [apps/README](../README.md) — the applications progression
 - [@blue/platform-node](../../packages/blue-platform-node/README.md) — the
   Node platform foundation
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

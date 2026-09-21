@@ -77,7 +77,7 @@ Build output shows each feature as its own chunk (`catalog-*.js`,
 Hybrid island demo: the Node server renders a whole shell document with EJS
 (`@blue/view-ejs`) containing server-side island markup, serves the built
 client bundle that hydrates it, and pushes source-of-truth model updates to
-islands over SSE (AD-9).
+islands over SSE.
 
 ```bash
 cd apps/blue-island && pnpm dev

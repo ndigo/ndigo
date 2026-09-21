@@ -1,11 +1,8 @@
 # Blue Telemetry
 
-Blue Telemetry provides tracing, metrics, and logging integrations for BlueJS using OpenTelemetry.
+> Isomorphic OpenTelemetry core for BlueJS — tracing, metrics, and logging with zero platform installation weight.
 
-## Packages
-
-The telemetry surface is split by platform so the isomorphic core carries zero
-installation weight:
+Blue Telemetry provides tracing, metrics, and logging integrations for BlueJS using OpenTelemetry. The surface is split by platform so the isomorphic core carries zero installation weight:
 
 | Package                | Contents                                                                                                                                                                                                                |
 | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -13,17 +10,15 @@ installation weight:
 | `@blue/telemetry-node` | Node setup: `configureTelemetry()` (NodeSDK), `HTTPServerInstrumentation`, `HTTPResponseViewTargetInstrumentation`, `SeverityFilterLogRecordProcessor`.                                                                 |
 | `@blue/telemetry-web`  | Browser setup: `configureBrowserTelemetry()`, `RouterInstrumentation`, `DispatcherInstrumentation`.                                                                                                                     |
 
-## Features
+## Installation
 
-- Telemetry bootstrap via `configureTelemetry()` (`@blue/telemetry-node`) or
-  `configureBrowserTelemetry()` (`@blue/telemetry-web`)
-- TC39 decorators: `@traced`, `@counted`
-- Logger abstraction with threshold filtering
-- Severity mapping utilities for `syslog`, `npm`, `apache`, and `cli`
-- Context-aware logging for trace/span correlation
-- Built-in instrumentations for BlueJS context/dispatcher/router packages
+```bash
+pnpm add @blue/telemetry
+```
 
-## Usage
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+
+## Getting Started
 
 ```typescript
 import { SeverityNumber } from '@opentelemetry/api-logs';
@@ -39,13 +34,14 @@ const logger = getLogger('example');
 logger.info('telemetry initialized');
 ```
 
-Browser apps:
+## API
 
-```typescript
-import { configureBrowserTelemetry } from '@blue/telemetry-web';
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
 
-configureBrowserTelemetry({ serviceName: 'my-app', useConsoleExporters: true });
-```
+- **Logging** — `getLogger`, logger abstraction with threshold filtering
+- **Metrics** — `FeatureMetricAggregator`, `@counted`
+- **Tracing** — `@traced` decorator, platform-free instrumentation bases
+- **Severity mapping** — utilities for `syslog`, `npm`, `apache`, and `cli`
 
 ## Development
 
@@ -53,3 +49,16 @@ configureBrowserTelemetry({ serviceName: 'my-app', useConsoleExporters: true });
 pnpm --filter @blue/telemetry build:lib
 pnpm --filter @blue/telemetry test
 ```
+
+## See Also
+
+- [@blue/telemetry-node](../blue-telemetry-node/README.md) — Node setup
+- [@blue/telemetry-web](../blue-telemetry-web/README.md) — browser setup
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

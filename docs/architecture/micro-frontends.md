@@ -1,7 +1,7 @@
 # Micro Frontends in BlueJS — architecture map
 
 **Status:** Live — the patterns below are implemented (`@blue/host` since
-2026-09-13, AD-18) and demonstrated by `apps/blue-host` and `apps/blue-todo`.
+2026-09-13) and demonstrated by `apps/blue-host` and `apps/blue-todo`.
 
 This is the cross-cutting map for BlueJS micro frontends: how the shell
 hosts feature contexts, how islands fit in, and where the seams,
@@ -89,7 +89,7 @@ host.registerFeature({
   controller↔client link).
 - Client: `hydrateIslands()` upgrades markers to live custom elements
   (`@TagMapping`-registered), restores `.model`, replaces inert markup.
-- Reactive half (AD-9): server pushes model updates over SSE
+- Reactive half: server pushes model updates over SSE
   (`ServerSentEventView`/`SSEEmitter`); the island subscribes via a typed
   service-stream into `@blue/signals` (`streamToSignal`) and re-renders.
 - The integration contract is the **name ↔ tag ↔ zod schema triple** —
@@ -116,11 +116,11 @@ a graph of call sites. Both demo hosts exercise this discipline.
 
 ## Documentation pointers
 
-- **AD-18** (2026-09-13) — host orchestration decision + implementation
+- **host runtime** — host orchestration decision + implementation
   status: `docs/decisions/2026-09-13_AD18_HOST_RUNTIME.md`
-- **AD-3** — legacy Site/Page lineage; the open **Page concept / TTFB-vs-TTI**
+- **Site/Page model** — legacy Site/Page lineage; the open **Page concept / TTFB-vs-TTI**
   question: `docs/decisions/2026-09-07_AD3_SITE_PAGE_MODEL.md`
-- **AD-9** — SSE-first island reactivity: `docs/decisions/2026-09-05_AD9_SERVER_PUSH.md`
+- **SSE server push** — SSE-first island reactivity: `docs/decisions/2026-09-05_AD9_SERVER_PUSH.md`
 - **Shared dependency contract** (implemented): `docs/plans/2026-09-03_SHARED_DEPENDENCY_CONTRACT.md`
 - **Scale 2 context + routing** (completed): `docs/plans/2026-03-24_SCALE2_CONTEXT_ROUTING_ARCHITECTURE.md`
 - **View resolution strategy** (island resolver): `docs/plans/2026-09-06_VIEW_RESOLUTION_STRATEGY.md`
@@ -132,9 +132,9 @@ a graph of call sites. Both demo hosts exercise this discipline.
 
 ## Known gaps (deliberate)
 
-1. **Page concept / TTFB-vs-TTI contract** — AD-3's open design
-   conversation; AD-18 answered its registration-API half only.
+1. **Page concept / TTFB-vs-TTI contract** — the open design
+  conversation; its registration-API half was answered by the host runtime only.
 2. **Island name ↔ tag ↔ schema triple** — documented contract, no
    enforcement/registry yet.
 3. **Runtime self-registration** — the `HOST_MANAGER_TOKEN` seam makes it
-   possible; the deployment model stays compile-time (AD-18 D4).
+  possible; the deployment model stays compile-time.

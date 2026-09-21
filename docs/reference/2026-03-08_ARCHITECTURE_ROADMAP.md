@@ -69,7 +69,7 @@ Multi-application orchestration was envisioned through `Site`, but in practice o
 
 - `@blue/boot` contains `Application`, `ApplicationBuilder`, and `Site` scaffolding
 - `Application.run()` initializes `GenericApplicationContext`
-- `SiteBuilder` and full site orchestration remain incomplete (retired — see AD-3)
+- `SiteBuilder` and full site orchestration remain incomplete (retired).
 
 ## 3) View Engine Flexibility
 

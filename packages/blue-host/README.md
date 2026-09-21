@@ -1,24 +1,18 @@
 # @blue/host
 
-Micro frontend orchestration for BlueJS — registers features from any context
-and mounts them into a shared shell.
+> Micro frontend orchestration for BlueJS — register features from any context and mount them into a shared shell.
 
-## Overview
+`@blue/host` gives the shell one-call feature registration with dependency-validated mounting. Features are plain BlueJS contexts (or context factories); the shell owns their lifecycle and exclusive activation, declaring what they need from the shell and checking availability before mounting. The browser app shell demonstrates the pattern end to end (`apps/blue-host`).
 
-`@blue/host` gives the shell one-call feature registration with
-dependency-validated mounting:
+## Installation
 
-```
-@blue/host
-├── HostManager          ← register/mount/unmount features in a shell
-└── shell contracts      ← feature descriptors + shared-dependency validation
+```bash
+pnpm add @blue/host
 ```
 
-Features are plain BlueJS contexts (or context factories); the shell owns their
-lifecycle and exclusive activation. The browser app shell demonstrates the
-pattern end to end (`apps/blue-host`).
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 
-## Usage
+## Getting Started
 
 ```ts
 import { HostManager } from '@blue/host';
@@ -37,20 +31,35 @@ host.mount('catalog');
 host.unmount('catalog');
 ```
 
-For lazy feature chunks loaded with dynamic `import()`, see the
-`mountLazy` support used by the blue-host demo app.
+## Usage
 
-## Design
+### Lazy feature chunks
 
-- **Exclusive activation** — mounting a feature deactivates the previous one
-- **Shared-dependency validation** — features declare what they need from the
-  shell, and the shell checks availability before mounting
-- **Lifecycle managed** — mount/unmount are symmetric; unmounting destroys the
-  feature context
+For lazy feature chunks loaded with dynamic `import()`, use the `mountLazy` support used by the blue-host demo app.
+
+## API
+
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+
+- **Classes** — `HostManager`
+- **Contracts** — feature descriptors + shared-dependency validation
+
+## Development
+
+```bash
+pnpm --filter @blue/host build:lib
+pnpm --filter @blue/host test
+```
 
 ## See Also
 
-- [apps/blue-host](../../apps/blue-host/README.md) — micro frontend host demo
-  with three lazy-loaded feature chunks
-- [@blue/router](../blue-router/README.md) — feature routing registry used by
-  the shell
+- [apps/blue-host](../../apps/blue-host/README.md) — micro frontend host demo with three lazy-loaded feature chunks
+- [@blue/router](../blue-router/README.md) — feature routing registry used by the shell
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

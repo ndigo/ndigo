@@ -1,5 +1,7 @@
 # @blue/hello — Blue Hello
 
+> Minimal BlueJS single-page app: context, one route, and a Web Component view.
+
 Minimal BlueJS SPA: an application context, one route, and a Web Component
 view that says hello.
 
@@ -15,6 +17,20 @@ cd apps/blue-hello && pnpm dev
 - Context + route + template/Web Component render
 - Vite dev server wiring
 
+## Development
+
+```bash
+cd apps/blue-hello && pnpm build
+```
+
 ## See Also
 
 - [apps/README](../README.md) — the applications progression
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

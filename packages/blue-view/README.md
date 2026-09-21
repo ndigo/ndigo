@@ -1,31 +1,18 @@
 # Blue View
 
-View abstractions, view targets, and view resolution for BlueJS — the
-contract layer between controllers and their representations.
+> View contracts, view targets, and content-negotiation resolution for BlueJS — the contract layer between controllers and their representations.
 
-## Overview
+View abstractions, view targets, and view resolution for BlueJS — the contract layer between controllers and their representations. `@blue/view` defines the view family and the resolution machinery that turns a logical view name into a rendered representation: view contracts (`View`, `AbstractView`, `ProducerView`), serializing views (`JSONView`, `CSVView`, `TextView`, `OctetStreamView`), view targets for fragment rendering, content-negotiation resolvers, and island support for Web Component islands.
 
-`@blue/view` defines the view family and the resolution machinery that turns a
-logical view name into a rendered representation:
+## Installation
 
-- **View contracts** — `View`, `AbstractView`, and the `ProducerView` document
-  contract (a render produces `{ status, headers, body }` a dispatcher writes
-  directly — SSE and server-rendered pages)
-- **Serializing views** — `AbstractSerializingView` family with ready-made
-  `JSONView`, `CSVView`, `TextView`, `OctetStreamView` representations
-- **View targets** — `ViewTarget` abstraction for fragment rendering (DOM
-  targets, HTTP response targets)
-- **Resolution** — view resolvers and composites, path-based resolver with
-  per-name caching, and **content negotiation**:
-    - `ContentNegotiationManager` + strategies (`PathExtensionContentNegotiationStrategy`,
-      fixed strategies)
-    - `ContentNegotiationViewResolver` — aggregates candidate views once per
-      view name (cached) and negotiates the request's accepted media types per
-      call
-- **Island support** — `IslandViewResolver`/`IslandView` for Web Component
-  islands in server-rendered pages
+```bash
+pnpm add @blue/view
+```
 
-## Usage
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+
+## Getting Started
 
 ```ts
 import {
@@ -52,11 +39,18 @@ resolver.viewResolvers = [
 ];
 ```
 
+## API
+
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+
+- **View contracts** — `View`, `AbstractView`, `ProducerView` (a render produces `{ status, headers, body }`)
+- **Serializing views** — `AbstractSerializingView` family: `JSONView`, `CSVView`, `TextView`, `OctetStreamView`
+- **View targets** — `ViewTarget` abstraction for fragment rendering (DOM, HTTP response)
+- **Resolution** — `ContentNegotiationManager` + strategies, `ContentNegotiationViewResolver`, path-based resolvers with per-name caching, `IslandViewResolver`/`IslandView`
+
 ## Performance
 
-Candidate aggregation is cached per (view name, language) — the `Promise.all`
-over delegate resolvers runs once per name, not per request. Only the media
-type selection reads the current request.
+Candidate aggregation is cached per (view name, language) — the `Promise.all` over delegate resolvers runs once per name, not per request. Only the media type selection reads the current request.
 
 ## Development
 
@@ -68,7 +62,13 @@ pnpm --filter @blue/view test
 ## See Also
 
 - [@blue/view-ejs](../blue-view-ejs/README.md) — the EJS technology
-- [@blue/view-webcomponent](../blue-view-webcomponent/README.md) — Web
-  Component views
-- [@blue/dispatcher](../blue-dispatcher/README.md) — dispatches and renders
-  ModelAndView results
+- [@blue/view-webcomponent](../blue-view-webcomponent/README.md) — Web Component views
+- [@blue/dispatcher](../blue-dispatcher/README.md) — dispatches and renders ModelAndView results
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

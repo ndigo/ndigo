@@ -4,7 +4,7 @@ How realtime endpoints work in BlueJS: `@socketMapping`, the
 `SocketSession` contract, the session registry (rooms + broadcast), and the
 heartbeat. WebSockets are served from the same dispatcher as HTTP routes —
 same radix mapping, same `@parameters` binding, same Zod validation — with
-a **connection** contract instead of a request/response pair (AD-21).
+a **connection** contract instead of a request/response pair.
 
 The design: per-kind sessions with no generic base class. The dispatcher
 owns the types handlers sign against; the Node platform implements the
@@ -75,7 +75,7 @@ Every session auto-joins a set keyed by its endpoint path, so
 `broadcastTo('room', …)` from anywhere. Fan-out is best-effort — closed
 sessions are skipped, transport errors tolerated. Backpressure is on by
 default: a session whose transport buffer exceeds 1 MiB is closed with
-`1013` ("try again later", Spring's `SESSION_NOT_RELIABLE`) — the AD-22
+`1013` ("try again later", Spring's `SESSION_NOT_RELIABLE`) —
 client reconnects and resyncs. Tune per registry:
 `{ backpressure: { maxBufferedBytes, onOverflow: 'drop' | 'close' } }`
 (`drop` skips silently; `null` disables the guard). The decision is
@@ -230,7 +230,7 @@ drives STOMP `/user/*` routing (`resolveUser`). `authenticateTimeoutMs`
 `@authenticated`; its raw `/ws/chat` endpoint stays open as the documented
 public-socket contrast.
 
-## 6. The client (`@blue/socket`, AD-22)
+## 6. The client (`@blue/socket`)
 
 `WebSocketClient` is the isomorphic client: WHATWG `WebSocket` global in
 browsers **and** Node ≥22, with signal-based status and reconnect:
@@ -256,7 +256,7 @@ chat.send({ room: 'lobby', text: 'hello' }); // strings → text frames, else JS
 chat.close(); // deliberate — never reconnects
 ```
 
-Semantics (AD-22 D3): `status` is a signal
+Semantics: `status` is a signal
 (`connecting/open/reconnecting/closed`); `messages` is an async iterable
 that **survives reconnects** and completes only on a deliberate `close()`
 (or on any close when `reconnect: null` disables retries);
@@ -287,7 +287,7 @@ Every **outbound** path — registry broadcast, direct `session.send`,
 handler pumps, STOMP fan-out — shares one watermark at the transport
 (`maxBufferedBytes`, default 1 MiB): a peer whose `bufferedAmount` is over
 the watermark is handled per `onOverflow` — `close` (default) closes it
-with `1013` ("try again later"; the AD-22 client reconnects with backoff)
+with `1013` ("try again later"; client reconnects with backoff)
 or `drop` silently skips the frame. The memory cost of a room is set by
 its slowest member, on all paths, not just registry fan-out.
 
@@ -311,7 +311,7 @@ drop-oldest) and bounds each subscription's MESSAGE queue under
 `maxSubscriptionMessages` (default 4096, drop-newest) — a stalled
 consumer cannot pin memory on any path.
 
-## 7. STOMP (AD-23)
+## 7. STOMP
 
 The same sessions speak the industry-standard STOMP 1.2 broker protocol:
 destinations, subscriptions, receipts — interop with Spring
@@ -352,8 +352,7 @@ frames carry the subscriber's own `subscription` id — two subscriptions to
 one destination on a session stay distinct); SEND fans out to subscribers
 including the sender when subscribed; receipts answer every frame that
 asks; heart-beat is negotiated off (`0,0`) because the registry ping/pong
-already owns liveness. The second wave rounds out the protocol (AD-23
-D7–D11):
+already owns liveness. The second wave rounds out the protocol:
 
 - **Transactions** — BEGIN/COMMIT/ABORT with per-session buffers: SEND/
   ACK/NACK frames inside a transaction apply atomically on COMMIT, receipts
@@ -371,17 +370,17 @@ D7–D11):
   default 1 MiB) and by bytes per session (`maxUnackedSessionBytes`, default
   16 MiB) — oldest-first eviction on every bound, so a slow acker cannot pin
   memory.
-- **Binary bodies (D8)** — the codec and transports are byte-exact:
+- **Binary bodies** — the codec and transports are byte-exact:
   `Uint8Array`/`ArrayBuffer` bodies flow as binary frames (headers always
   text); `content-length` is emitted for binary bodies. Text frames stay
   strings (`SocketSession`/`SocketClient` JSDoc updated).
-- **`/user` destinations (D10)** — principal-scoped routing: subscribe
+- **`/user` destinations** — principal-scoped routing: subscribe
   `/user/queue/events`, then `broker.sendToUser('alice', '/queue/events',
 …)` delivers to that user's scope (Spring `convertAndSendToUser` parity).
   `resolveUser(session)` (default: `session.attributes.user`) binds the
   scope; a client SEND to `/user/*` reaches only the sender's own scope,
   and sessions with no resolved user cannot bind `/user/*` (1008).
-- **`/queue` destinations (D11)** — bounded store-and-forward: every SEND/
+- **`/queue` destinations** — bounded store-and-forward: every SEND/
   publish appends to the destination's backlog (`queueBacklog`, default
   1000, FIFO eviction), and a new subscriber replays the backlog before
   live traffic. `queueBacklog: 0` reduces the destination to live fan-out.
@@ -444,7 +443,7 @@ other socket paths keep the stock behavior. **STOMP over TCP is never** —
 no consumer base (browsers, STOMP.js, and Spring all use WebSocket), and
 like SockJS it is a non-feature, not a gap.
 
-## 8. Design boundaries (AD-21)
+## 8. Design boundaries
 
 - **No generic `Session` base class.** HTTP session state and WebSocket
   connections share only "ID + data container" — every operation past that
@@ -456,19 +455,19 @@ like SockJS it is a non-feature, not a gap.
   (connection), `HttpSession` (reserved for the future session store).
 - **Client story**: `@blue/socket` — the isomorphic client package
   (`SocketClient`, reconnect + status signal) — see
-  [AD-22](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md) and
+  [WebSocket client](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md) and
   [plan](../plans/2026-09-15_WEBSOCKET_CLIENT.md).
 - **Deferred, not built**: cross-node pub/sub (needs a store contract),
   durable `/queue` persistence beyond the swappable store seam — **STOMP:
-  built** (AD-23, §7, including NACK redelivery and bounded message history);
+  built**, including NACK redelivery and bounded message history;
   **SockJS: never** (pre-2015 fallback-transport workaround; third-party
-  territory, AD-22 D4).
+  territory.
 
 ## 9. References
 
-- Decision: [AD-21 — WebSocket Session Registry](../decisions/2026-09-15_AD21_WEBSOCKET_SESSION_REGISTRY.md),
-  [AD-22 — WebSocket Client & `@blue/socket`](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md),
-  [AD-23 — STOMP Protocol Layer](../decisions/2026-09-16_AD23_STOMP.md)
+- Decision: [WebSocket session registry](../decisions/2026-09-15_AD21_WEBSOCKET_SESSION_REGISTRY.md),
+  [WebSocket client](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md),
+  [STOMP protocol layer](../decisions/2026-09-16_AD23_STOMP.md)
 - Plans: [WebSocket Broadcast](../plans/2026-09-15_WEBSOCKET_BROADCAST.md),
   [WebSocket Client](../plans/2026-09-15_WEBSOCKET_CLIENT.md),
   [STOMP](../plans/2026-09-16_STOMP.md)

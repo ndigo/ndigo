@@ -1,21 +1,18 @@
 # Blue Service
 
-Service-layer abstractions for BlueJS: typed service clients, server-sent
-event streams, and service registration.
+> Service-layer abstractions for BlueJS: typed service clients, server-sent event streams, and service registration.
 
-## Overview
+`@blue/service` packages remote services behind BlueJS contracts: a `serviceClient` builds a typed client whose methods yield validated response data (or an async iterable of events for streaming endpoints); `@service` decorators declare service methods and schemas on a class; `feed`/`finish` helpers build SSE-style streams with request-id correlation; and a service registry locates service definitions at runtime.
 
-`@blue/service` packages remote services behind BlueJS contracts:
+## Installation
 
-- **`serviceClient`** — build a typed client for a service definition; each
-  method yields validated response data, or an async iterable of events for
-  streaming endpoints
-- **`@service` decorators** — declare service methods and schemas on a class
-- **Server-sent events** — `feed`/`finish` helpers for SSE-style streams with
-  request-id correlation
-- **Service registry** — locate service definitions at runtime
+```bash
+pnpm add @blue/service
+```
 
-## Usage
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+
+## Getting Started
 
 ```ts
 import { serviceClient, getCall } from '@blue/service';
@@ -32,6 +29,13 @@ for await (const event of client.events()) {
 }
 ```
 
+## API
+
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+
+- **Clients** — `serviceClient`, `getCall` (and related call decorators)
+- **SSE helpers** — `feed`, `finish`
+
 ## Development
 
 ```bash
@@ -42,5 +46,12 @@ pnpm --filter @blue/service test
 ## See Also
 
 - [@blue/http](../blue-http/README.md) — the underlying HTTP client
-- [apps/blue-island](../../apps/blue-island/README.md) — typed service streams
-  bridged to signals
+- [apps/blue-island](../../apps/blue-island/README.md) — typed service streams bridged to signals
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

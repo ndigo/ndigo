@@ -1,26 +1,20 @@
 # Blue HTTP
 
-An HTTP client for BlueJS built on the Fetch API, with a flexible
-interceptor system, body transforms, and type-safe HTTP vocabulary.
+> Fetch-based HTTP client for BlueJS — interceptor system, body transforms, and a type-safe HTTP vocabulary.
 
-## Features
+An HTTP client for BlueJS built on the Fetch API, with a flexible interceptor system, body transforms, and type-safe HTTP vocabulary.
 
-- **Interceptor system** — lifecycle hooks (`preInit`, `preRequest`,
-  `postResponse`, `postError`, `postComplete`) with URL-pattern-matched
-  application (`MappedHTTPInterceptor`)
-- **Built-in interceptors** — timeout, content-type, response-class, cache,
-  trace-header, and friends — compose per request
-- **Body transforms** — request/response transform pipelines
-- **Parsers** — `QueryString` aligned with the WHATWG `URLSearchParams`
-  parser (empty values as `''`, `&`-only splitting, lenient percent-decoding;
-  repeated keys aggregate into arrays); `MatrixString` for path-segment
-  parameters. Full parity with the built-in parser is asserted by
-  `url-search-params-compat.spec.ts`
-- **HTTP vocabulary** — status code and header constants for type-safe code
+## Installation
 
-## Usage
+```bash
+pnpm add @blue/http
+```
 
-### 1. Static factory (standalone)
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+
+## Getting Started
+
+### Static factory (standalone)
 
 ```ts
 import { HTTP } from '@blue/http';
@@ -33,7 +27,9 @@ const api = HTTP.create({
 const res = await api.request('GET', '/users/42');
 ```
 
-### 2. Interceptors and transforms
+## Usage
+
+### Interceptors and transforms
 
 ```ts
 import { HTTP, TimeoutInterceptor, ContentTypeInterceptor } from '@blue/http';
@@ -44,6 +40,16 @@ const api = HTTP.create({
 });
 ```
 
+## API
+
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+
+- **Client** — `HTTP.create(...)` static factory
+- **Interceptors** — timeout, content-type, response-class, cache, trace-header (lifecycle hooks: `preInit`, `preRequest`, `postResponse`, `postError`, `postComplete`)
+- **Parsers** — `QueryString` (WHATWG `URLSearchParams` parity), `MatrixString` for path-segment parameters
+- **Body transforms** — request/response transform pipelines
+- **HTTP vocabulary** — status code and header constants
+
 ## Development
 
 ```bash
@@ -53,7 +59,13 @@ pnpm --filter @blue/http test
 
 ## See Also
 
-- [@blue/test](../blue-test/README.md) — in-process dispatch for exercising
-  HTTP-boundary behavior
-- [@blue/platform-web](../blue-platform-web/README.md) — offline queueing and
-  fetch-credentials interceptors built on this client
+- [@blue/test](../blue-test/README.md) — in-process dispatch for exercising HTTP-boundary behavior
+- [@blue/platform-web](../blue-platform-web/README.md) — offline queueing and fetch-credentials interceptors built on this client
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

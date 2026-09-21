@@ -1,5 +1,7 @@
 # Blue Platform Node
 
+> Node.js HTTP argument resolvers, environment integration, and auto-configuration for @blue/dispatcher.
+
 Blue Platform Node provides Node.js HTTP argument resolvers and environment integration for @blue/dispatcher.
 
 ## Installation
@@ -33,29 +35,25 @@ Auto-configuration for Node.js-based applications that provisions:
 - All 6 argument resolvers
 - Default handler mapping for metadata-driven dispatch
 - The error-resolver chain (400 binding, 401/403 denials, 422 validation,
-  500 last-resort — AD-10)
-- An `Accept-Language` language resolver (`AcceptHeaderLanguageResolver`,
+  500 last-resort)
+:- An `Accept-Language` language resolver (`AcceptHeaderLanguageResolver`,
   default `en-US`) — the negotiated language reaches views, templates,
-  and islands via the route's `language` attribute (AD-19)
-- A `taskScheduler` + `scheduleRegistry` pair: `@scheduled` methods on
+  and islands via the route's `language` attribute
+:- A `taskScheduler` + `scheduleRegistry` pair: `@scheduled` methods on
   registered beans are auto-discovered and auto-started with zero wiring
-  (AD-20)
-- A managed `httpServer` entry (`HTTPServer`, a `SmartLifecycle` bean)
-- A `socketSessionRegistry` bean (`SocketSessionRegistry`): rooms, path
-  broadcast, heartbeat, and backpressure for `@socketMapping` endpoints
-  (AD-21) — shared with the managed server's adapter, so any service can
-  push to a socket room
-- An optional `socketRequestAuthenticator` bean: upgrade-time identity for
+:- A managed `httpServer` entry (`HTTPServer`, a `SmartLifecycle` bean)
+:- A `socketSessionRegistry` bean (`SocketSessionRegistry`): rooms, path
+  broadcast, heartbeat, and backpressure for `@socketMapping` endpoints —
+  shared with the managed server's adapter, so any service can push to a
+  socket room
+:- An optional `socketRequestAuthenticator` bean: upgrade-time identity for
   sockets, and with it the socket-side `@authenticated`/`@authorized`
-  enforcement (SEC-3) — see
-  [Socket authentication](#socket-authentication-sec-3)
+  enforcement — see [Socket authentication](#socket-authentication)
 
 Applications that previously relied on no language negotiation now render
 with the header-negotiated locale (`en-US` default) — see
-[the i18n guide](../../docs/guides/04-i18n-and-content.md) to override the
-resolver bean.
 
-## WebSockets (`@socketMapping`, AD-21)
+## WebSockets (`@socketMapping`)
 
 The managed server serves WebSocket endpoints alongside HTTP routes with
 the same dispatcher, `@parameters` binding, and Zod validation. The
@@ -85,9 +83,9 @@ may take before the socket closes `1011`; default `10000`), `maxConnections`
 default `10000`, overflow closes `1013`, `Infinity` disables),
 `allowedWebSocketOrigins`, and `socketLimits`.
 See the [websockets guide](../../docs/guides/06-websockets.md) and
-[Socket authentication](#socket-authentication-sec-3).
+[Socket authentication](#socket-authentication).
 
-## Socket authentication (SEC-3)
+## Socket authentication
 
 HTTP requests get authentication from the interceptor chain: `AuthRouteGuard`
 reads the `@authenticated` / `@authorized` metadata that `@blue/auth-core`
@@ -147,7 +145,7 @@ gracefulShutdown(context, { resources: [server] });
 
 ## RFC 9457 error documents
 
-Every 4xx/5xx response is `application/problem+json` (AD-10): `type`
+Every 4xx/5xx response is `application/problem+json`: `type`
 (`urn:blue:*` placeholder), `title`, `status`, `detail`, `instance`, and an
 `errors` extension for validation issues. `ProblemDetails`, `ProblemTypes`,
 and `writeProblem` are exported for custom errors.
@@ -157,7 +155,7 @@ and `writeProblem` are exported for custom errors.
 - [Building a Node API](../../docs/guides/01-building-a-node-api.md)
 - [Request Validation](../../docs/guides/02-request-validation.md)
 
-## Usage
+## Getting Started
 
 ### With @blue/boot
 
@@ -238,3 +236,27 @@ configureNodeArgumentResolvers(context, {
     strictNamedConverterLookup: true,
 });
 ```
+
+## API
+
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+
+## Development
+
+```bash
+pnpm --filter @blue/platform-node build:lib
+pnpm --filter @blue/platform-node test
+```
+
+## See Also
+
+- [@blue/dispatcher](../blue-dispatcher/README.md) — platform-independent request dispatch this extends
+- [@blue/boot](../blue-boot/README.md) — `ApplicationBuilder` wiring NodeAutoConfiguration
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

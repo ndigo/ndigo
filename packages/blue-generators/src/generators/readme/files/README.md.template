@@ -1,0 +1,66 @@
+# @blue/<%= name %>
+
+> [One-line tagline — what this package does and who it's for.]
+
+<%= description %>
+
+[2–3 more sentences expanding on the problem it solves and why a new user cares. Write for someone meeting BlueJS for the first time. Do not include internal tracking IDs (`AD-##`), plan or decision-record links, commit notes, audit references, or descriptions of removed features — those belong in `docs/`.]
+
+## Installation
+
+```bash
+pnpm add @blue/<%= name %>
+```
+
+Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+
+## Getting Started
+
+[A minimal, runnable example that shows the core value immediately.](#usage) for more.
+
+```ts
+import { SymbolName } from '@blue/<%= name %>';
+
+const x = new SymbolName();
+// …the smallest thing that demonstrates the package
+```
+
+## Usage
+
+[Common patterns beyond the minimum. Show the API exactly as a caller would use it — imports, construction, and the typical call sequence. Group by feature with `###` subsections.]
+
+### [Sub-feature]
+
+```ts
+// …
+```
+
+## Configuration *(optional — delete this section if the package has none)*
+
+| Option | Type | Default | Description |
+| ------ | ---- | ------- | ----------- |
+| `name` | `string` | `"default"` | What it does. Example: `value`. |
+
+## API *(packages only — link to the generated reference; do not re-list every symbol)*
+
+The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+
+## Development
+
+```bash
+pnpm --filter @blue/<%= name %> build:lib
+pnpm --filter @blue/<%= name %> test
+pnpm --filter @blue/<%= name %> test:bench   # only if a benchmark suite exists
+```
+
+## See Also *(optional — sibling package/app links)*
+
+- [@blue/other](../other/README.md) — what it relates to
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

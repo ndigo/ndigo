@@ -9,6 +9,7 @@ import { NodeQueryValueMethodArgumentResolver } from './query-argument-resolver'
 import { NodePathValueMethodArgumentResolver } from './path-argument-resolver';
 import { NodeHeaderValueMethodArgumentResolver } from './header-argument-resolver';
 import { NodeBodyValueMethodArgumentResolver } from './body-argument-resolver';
+import { NodeMultipartFileMethodArgumentResolver } from './multipart-file-argument-resolver';
 import { NodeCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
 import { NodeSessionValueMethodArgumentResolver } from './session-argument-resolver';
 
@@ -24,6 +25,7 @@ export function configureNodeArgumentResolvers(
         new NodePathValueMethodArgumentResolver(),
         new NodeHeaderValueMethodArgumentResolver(),
         new NodeBodyValueMethodArgumentResolver(),
+        new NodeMultipartFileMethodArgumentResolver(),
         new NodeCookieValueMethodArgumentResolver(),
         new NodeSessionValueMethodArgumentResolver(),
     ];

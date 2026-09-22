@@ -16,6 +16,7 @@ import {
     sessionValue,
     pathVariable,
     bodyValue,
+    fileValue,
     asNumber,
     asBoolean,
     asDate,
@@ -26,6 +27,7 @@ import {
     MethodParameterType,
 } from '../src/parameters';
 import { socketMapping } from '../src/socket-mapping';
+import { routeMapping } from '../src/route-mapping';
 
 describe('@parameters - TC39 Parameter Injection Pattern', () => {
     describe('Factory Functions', () => {
@@ -368,5 +370,58 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
                 /not available for that mapping kind/
             );
         });
+    });
+});
+
+describe('fileValue() multipart extractor', () => {
+    it('creates a MULTIPART_FILE extractor with an optional explicit part name', () => {
+        expect(fileValue().type).toEqual(MethodParameterType.MULTIPART_FILE);
+        const explicit = fileValue('avatar_url');
+        expect(explicit.type).toEqual(MethodParameterType.MULTIPART_FILE);
+        expect(explicit.partName).toBe('avatar_url');
+    });
+
+    it('folds the explicit part name into parameter.name (fileValue("field"))', () => {
+        class UploadController {
+            @routeMapping({ value: '/upload', method: 'POST' })
+            @parameters({ profile: fileValue('avatar_url') })
+            upload(profile: unknown) {}
+        }
+        const params = resolveParameters(
+            UploadController.prototype,
+            'upload',
+            UploadController.prototype.upload as Function
+        );
+        expect(params[0].type).toEqual(MethodParameterType.MULTIPART_FILE);
+        expect(params[0].name).toBe('avatar_url');
+    });
+
+    it('infers the part name from the argument name (fileValue())', () => {
+        class UploadController {
+            @routeMapping({ value: '/upload', method: 'POST' })
+            @parameters({ avatar: fileValue() })
+            upload(avatar: unknown) {}
+        }
+        const params = resolveParameters(
+            UploadController.prototype,
+            'upload',
+            UploadController.prototype.upload as Function
+        );
+        expect(params[0].type).toEqual(MethodParameterType.MULTIPART_FILE);
+        expect(params[0].name).toBe('avatar');
+    });
+
+    it('rejects fileValue() on a socket mapping at resolution time', () => {
+        class SocketController {
+            @socketMapping('/room')
+            @parameters({ avatar: fileValue() })
+            async *room(session: unknown) {
+                yield session;
+            }
+        }
+        const fn = SocketController.prototype.room as Function;
+        expect(() => resolveParameters(SocketController.prototype, 'room', fn)).toThrow(
+            /not available for that mapping kind/
+        );
     });
 });

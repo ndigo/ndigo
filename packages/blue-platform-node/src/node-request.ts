@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { Route } from '@blue/router';
+import type { MultipartContext } from './multipart-file';
 
 /**
  * Well-known route attribute key under which the Node.js request context is stored.
@@ -35,6 +36,13 @@ export interface NodeRequest {
      * the `session()` argument extractor reads it.
      */
     session: Record<string, unknown>;
+    /**
+     * Parsed `multipart/form-data` parts when the request's `Content-Type` is
+     * `multipart/form-data`. Populated by the adapter before dispatch; text
+     * fields are also merged into {@link NodeRequest.body}. Absent for every
+     * other content type. See `parseMultipart`.
+     */
+    multipart?: MultipartContext;
 }
 
 /**

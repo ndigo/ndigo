@@ -43,6 +43,8 @@ import {
     type SocketLimits,
 } from './node-socket-session';
 import { NodeSocketSessionRegistry } from './node-socket-session-registry';
+import { parseMultipart } from './parse-multipart';
+import type { MultipartContext } from './multipart-file';
 import { ProblemTypes, writeProblem } from './problem-details';
 import { ResponseStatus } from '@blue/http';
 import type { NodeDispatcher } from './node-dispatcher';
@@ -823,8 +825,15 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         try {
             const urlObj = this.#buildUrl(req);
             this.#assertHeaderLimits(req);
-            const body = await this.#readBody(req);
-            const bodyRecord = this.#parseBodyRecord(req, body);
+            const contentType = String(req.headers['content-type'] ?? '').toLowerCase();
+            let bodyRecord: Record<string, unknown>;
+            let multipart: MultipartContext | undefined;
+            if (contentType.startsWith('multipart/form-data')) {
+                multipart = await parseMultipart(req);
+                bodyRecord = multipart.fields;
+            } else {
+                bodyRecord = this.#parseBodyRecord(req, await this.#readBody(req));
+            }
 
             const nodeRequest: NodeRequest = {
                 headers: req.headers as Record<string, string | string[] | undefined>,
@@ -832,6 +841,9 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 cookies: parseCookies(typeof req.headers['cookie'] === 'string' ? req.headers['cookie'] : undefined),
                 session: {},
             };
+            if (multipart) {
+                nodeRequest.multipart = multipart;
+            }
             // SEC-8: null-prototype map — see the upgrade path. `?__proto__=a`
             // must stay an ordinary parameter, not swap the map's prototype.
             const data: Record<string, string | string[]> = Object.create(null);

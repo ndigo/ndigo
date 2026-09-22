@@ -31,6 +31,8 @@ export interface MockRequest {
     query?: Record<string, string>;
     /** Request body (JSON object). Bound as `'*'` for the whole object, or by field name. */
     body?: Record<string, unknown>;
+    /** Raw request body sent verbatim (string or Buffer), for content types the JSON `.body()` cannot express — e.g. `multipart/form-data`, which the harness streams through the real parser before dispatch. */
+    rawBody?: string | Buffer;
     /** Request headers (lower-cased keys). */
     headers?: Record<string, string>;
     /** Cookies. */

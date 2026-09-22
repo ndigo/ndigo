@@ -26,6 +26,7 @@ import { NoteController } from './note-controller';
 import { DrizzleNoteController } from './drizzle-note-controller';
 import { ProductController } from './product-controller';
 import { CachedReportController } from './cached-report-controller';
+import { UploadController } from './upload-controller';
 import { lookupPrincipal } from './auth-store';
 
 const requireMediaType = (value: MediaType | null): MediaType => {
@@ -125,6 +126,9 @@ export class NodeAppConfiguration {
     }
     @entry productController() {
         return new ProductController();
+    }
+    @entry uploadController() {
+        return new UploadController();
     }
     @entry cachedReportController() {
         return new CachedReportController();

@@ -7,6 +7,9 @@
 import { NodeDispatcher } from '@blue/platform-node';
 import { getMethodNotAllowed } from '@blue/dispatcher';
 import { ProblemTypes, writeProblem } from '@blue/platform-node';
+import { parseMultipart } from '@blue/platform-node';
+import { PassThrough } from 'node:stream';
+import type { IncomingMessage } from 'node:http';
 import { buildRoute, MockRequest, PreparedRoute } from './request-builder';
 import { createMemoryResponse, MemoryResponse } from './memory-response';
 
@@ -39,6 +42,18 @@ function decodeBody(body: unknown): string {
         return body.toString('utf-8');
     }
     return String(body);
+}
+
+/**
+ * Wrap raw multipart bytes + headers as the stream `parseMultipart` expects.
+ * A `PassThrough` is a valid `IncomingMessage`-shaped source for busboy: its
+ * `.headers` carry the boundary and `end()` feeds the body busboy pipes.
+ */
+function asIncoming(body: string | Buffer, headers: Record<string, string | undefined>): IncomingMessage {
+    const stream = new PassThrough();
+    (stream as unknown as { headers: Record<string, string | string[] | undefined> }).headers = headers;
+    stream.end(typeof body === 'string' ? Buffer.from(body, 'utf-8') : body);
+    return stream as unknown as IncomingMessage;
 }
 
 /**
@@ -100,6 +115,18 @@ export class MockHTTPRequestBuilder {
      */
     body(body: Record<string, unknown>): this {
         this.#request.body = body;
+        return this;
+    }
+    /**
+     * Set a raw (unserialized) request body, sent verbatim with the given
+     * Content-Type. Used for content types the JSON `.body()` cannot express,
+     * most notably `multipart/form-data`: when the Content-Type is multipart the
+     * bytes are streamed through the real busboy parser before dispatch.
+     * @param body - Raw body string or Buffer.
+     * @returns This builder.
+     */
+    rawBody(body: string | Buffer): this {
+        this.#request.rawBody = body;
         return this;
     }
 
@@ -187,6 +214,19 @@ export class MockHTTP {
         const prepared = buildRoute(req, sink);
 
         try {
+            // Multipart: mirror NodeHTTPServerAdapter — stream the raw bytes through
+            // busboy before dispatch and attach the parsed parts + text fields so the
+            // @file() resolver sees real parts (a true byte-level round-trip). Parse
+            // errors land in this catch and map to a problem response, as they do live.
+            if (req.rawBody !== undefined) {
+                const contentType = String(req.headers?.['content-type'] ?? '').toLowerCase();
+                if (contentType.startsWith('multipart/form-data')) {
+                    const parsed = await parseMultipart(asIncoming(req.rawBody, req.headers ?? {}));
+                    const nodeRequest = prepared.request;
+                    nodeRequest.multipart = parsed;
+                    nodeRequest.body = { ...(nodeRequest.body ?? {}), ...parsed.fields };
+                }
+            }
             const chain = this.#dispatcher.getHandler(prepared.route);
             // The mapping strategy returns an empty execution chain (`handler: {}`)
             // when nothing matches — detect a real handler by its own keys.

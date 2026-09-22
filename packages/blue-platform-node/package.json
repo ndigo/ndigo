@@ -46,6 +46,7 @@
     "@blue/socket": "~0.0.1",
     "@blue/util": "~0.0.1",
     "@blue/view": "~0.0.1",
+    "@types/busboy": "^1.5.4",
     "@types/ws": "^8.18.0",
     "zod": "^4.5.4"
   },
@@ -65,6 +66,7 @@
   "sideEffects": false,
   "dependencies": {
     "@blue/util": "~0.0.1",
+    "busboy": "^1.6.0",
     "helmet": "^8.3.0",
     "ws": "^8.18.0"
   }

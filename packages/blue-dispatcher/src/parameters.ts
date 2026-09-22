@@ -27,6 +27,10 @@ export type ParameterExtractor = {
     prefix?: string | null;
     /** Optional post-bind validator/converter (e.g. Zod via `validatedBy`). */
     convert?: (value: unknown) => unknown;
+    /** Explicit multipart/form-data client field name, when it differs from the
+     *  method-argument name. `fileValue('avatar_url')` sets this so the resolver
+     *  reads that part instead of inferring from the argument name. */
+    partName?: string;
 };
 
 /** Options for creating a parameter extractor with type-based conversion support. */
@@ -68,6 +72,7 @@ export class MethodParameterType implements Equatable, Serializable {
     static BODY: MethodParameterType;
     static ROUTE: MethodParameterType;
     static SOCKET_SESSION: MethodParameterType;
+    static MULTIPART_FILE: MethodParameterType;
 
     static fromType(type: string): MethodParameterType | null {
         const types = keys(this);
@@ -129,6 +134,7 @@ MethodParameterType.HEADER = new MethodParameterType('header:value');
 MethodParameterType.BODY = new MethodParameterType('body:value');
 MethodParameterType.ROUTE = new MethodParameterType('route:value');
 MethodParameterType.SOCKET_SESSION = new MethodParameterType('socket-session:value');
+MethodParameterType.MULTIPART_FILE = new MethodParameterType('multipart-file:value');
 
 /**
  * Method parameter metadata
@@ -410,6 +416,28 @@ export function bodyValue(name: string, options: ParameterExtractorOptions = {})
 }
 
 /**
+ * Factory function: Create a multipart/form-data file-part extractor.
+ * The client field name defaults to the method-argument name; pass an explicit
+ * name only when the form field differs from the JS variable. Resolved by
+ * `NodeMultipartFileMethodArgumentResolver` (blue-platform-node).
+ *
+ * @example
+ * `parameters`({
+ *   avatar: fileValue(),
+ *   profile: fileValue('avatar_url')
+ * })
+ */
+export function fileValue(partName?: string): ParameterExtractor {
+    return {
+        type: MethodParameterType.MULTIPART_FILE,
+        name: partName ?? '',
+        required: false,
+        defaultValue: null,
+        partName,
+    };
+}
+
+/**
  * Binder for the current `Route` object. Explicit replacement for the
  * removed implicit route-injection: `@parameters({ route: routeValue('route') })`
  * binds the `Route` to the argument named in the map. Available on
@@ -614,6 +642,7 @@ const SOURCES_BY_KIND: Record<ParameterMappingKind, ReadonlySet<MethodParameterT
         MethodParameterType.SESSION,
         MethodParameterType.ATTRIBUTE,
         MethodParameterType.BODY,
+        MethodParameterType.MULTIPART_FILE,
         MethodParameterType.ROUTE,
     ]),
     socket: new Set<MethodParameterType>([
@@ -728,6 +757,21 @@ export function resolveParameters(
 
 /** Build a `MethodParameter` from an extractor, labeling it with the map key. */
 function toMethodParameter(paramName: string, extractor: ParameterExtractor): MethodParameter {
+    // File parts infer their client field name from the method-argument (map
+    // key) unless `fileValue('field')` supplies one; fold that into `name` so
+    // both resolution and required-missing errors address the real part.
+    if (extractor.type.equals(MethodParameterType.MULTIPART_FILE)) {
+        return new MethodParameter(
+            extractor.type,
+            extractor.partName ?? paramName,
+            extractor.required,
+            extractor.defaultValue,
+            extractor.convertType,
+            extractor.prefix,
+            extractor.convert,
+            paramName
+        );
+    }
     return new MethodParameter(
         extractor.type,
         extractor.name,

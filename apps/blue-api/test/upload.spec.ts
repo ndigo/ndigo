@@ -20,9 +20,7 @@ import { initAuth } from '../src/auth-store';
 const BOUNDARY = '----BlueUploadTestBoundary';
 
 /** Build a `multipart/form-data` body from named parts (RFC 7578). */
-function multipartBody(
-    parts: Array<{ name: string; filename?: string; contentType?: string; value: string }>
-): Buffer {
+function multipartBody(parts: Array<{ name: string; filename?: string; contentType?: string; value: string }>): Buffer {
     const chunks: string[] = [];
     for (const part of parts) {
         let disposition = `Content-Disposition: form-data; name="${part.name}"`;
@@ -75,9 +73,7 @@ describe('blue-api multipart upload (AD-26)', () => {
     });
 
     test('POST /api/upload rejects an empty file part with 400', async () => {
-        const body = multipartBody([
-            { name: 'file', filename: 'empty.txt', contentType: 'text/plain', value: '' },
-        ]);
+        const body = multipartBody([{ name: 'file', filename: 'empty.txt', contentType: 'text/plain', value: '' }]);
 
         const res = await mockMVC
             .post('/api/upload')

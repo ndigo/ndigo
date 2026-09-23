@@ -1,7 +1,6 @@
 # 2026-09-22 Multipart / File Upload
 
-**Status:** Proposed (2026-09-22) — design + sequencing below, awaiting ratification as
-[AD-26](../decisions/2026-09-22_AD26_MULTIPART_FILE_UPLOAD.md).
+**Status:** Ratified as [AD-26](../decisions/2026-09-22_AD26_MULTIPART_FILE_UPLOAD.md) (2026-09-22); all four waves implemented and landed.
 **Scope:** Server-side acceptance of `multipart/form-data` uploads in `@blue/platform-node`:
 a streaming parser (busboy), a Blue-owned `MultipartFile` contract, an argument resolver +
 `@file` marker, size limits → `413`, and demo gates. Client-side `FormData` already exists
@@ -23,8 +22,8 @@ The gap analysis records this as a Tier 1 enterprise must-have that is **complet
 > Server cannot accept uploads — `MULTIPART_FORM_DATA` constant and client `FormData` transformer
 > exist, but the Node body resolver has no multipart parser.
 
-Blue can *emit* a `multipart/form-data` request (client `FormDataTransformer`, blue-http) but cannot
-*receive* one. A handler annotated for a file part has nothing to bind against. This is a hard gap:
+Blue can _emit_ a `multipart/form-data` request (client `FormDataTransformer`, blue-http) but cannot
+_receive_ one. A handler annotated for a file part has nothing to bind against. This is a hard gap:
 any form with an `<input type="file">` silently drops the file. Spring's answer is
 `MultipartFile` + `MultipartHttpServletRequest` resolved before argument binding; this plan ports
 that capability to Blue's resolver/interceptor model.
@@ -64,10 +63,11 @@ that capability to Blue's resolver/interceptor model.
 ## 3. External research
 
 ### Spring MVC (the contract to mirror)
+
 - **Parsing model.** `StandardServletMultipartResolver` delegates to Tomcat's `Request.parsePart`,
   which splits the stream on the multipart boundary; `CommonsMultipartResolver` wraps Apache Commons
   FileUpload as an alternative. Resolution happens **early** — the request is wrapped in a
-  `MultipartHttpServletRequest` *before* argument resolution, so resolvers see parts directly. This
+  `MultipartHttpServletRequest` _before_ argument resolution, so resolvers see parts directly. This
   is exactly why Blue must parse before `#readBody`.
 - **`MultipartFile` interface.** `getName()` (form field name), `getOriginalFilename()`, `getSize()`,
   `isEmpty()`, `getBytes()`, `getInputStream()` / `getStream()`, `transferTo(File)` / `copyTo(Path)`,
@@ -79,6 +79,7 @@ that capability to Blue's resolver/interceptor model.
   (total, default 2 MB); overflow throws `MaxUploadSizeExceededException` → **HTTP 413**.
 
 ### Node parsers (the primitive to wrap)
+
 - **busboy** is the canonical **zero-dependency, fully streaming** multipart parser — multer and
   `@fastify/multipart` both build on it. Event API: `file(readableStream, name, filename)`,
   `field(name, value, ...)`, and an iterator-style `parts()`; limits via config
@@ -164,23 +165,23 @@ explicitly **out of scope** — the contract exposes bytes/stream so a caller pi
 
 No client-side multipart building (already present), no `@RequestPart` JSON+file structured binding in
 v1 (a file part is bound as `MultipartFile`; JSON parts bind via the body resolver), no distributed /
-object-store upload, no streaming-response download endpoint (out of scope — this is *accepting*
+object-store upload, no streaming-response download endpoint (out of scope — this is _accepting_
 uploads), no on-disk auto-purge daemon (temp files are cleaned per-request). All are post-1.0
 candidates behind the `MultipartFile` seam.
 
 ## 5. Architecture
 
-| Piece | Home | Notes |
-| --- | --- | --- |
-| `parseMultipart(req, config)` — busboy streaming wrapper → `{ fields, files }` | `blue-platform-node/src/parse-multipart.ts` | New; the only busboy touchpoint |
-| `MultipartFile` interface + impl (buffer or temp-file handle) | `blue-platform-node/src/multipart-file.ts` | Contract consumers import from `@blue/platform-node` |
-| `MultipartContext` (`{ fields, files: Map<string, MultipartFile[]> }`) | `blue-platform-node/src/multipart-file.ts` | Lives on `NodeRequest.multipart` |
-| `@file(partName?)` marker + metadata reader | `blue-platform-node/src/file-argument-resolver.ts` | Mirrors `validatedBy`'s parameter-metadata hook |
-| `NodeMultipartFileMethodArgumentResolver` | `blue-platform-node/src/multipart-file-argument-resolver.ts` | Reads `request.multipart.files.get(name)` |
-| Adapter detection + wiring into `handleRequest` | `node-http-server-adapter.ts:822` | Before `#readBody`; bypasses buffering |
-| `NodeRequest.multipart?` field | `node-request.ts:20` | Optional, alongside `cookies`/`session` |
-| `MultipartConfig` + defaults | `blue-platform-node/src/http-request-limits.ts` (or new `multipart-config.ts`) | Extends the limits pattern; overflow → `RequestLimitError(413)` |
-| Auto-config wiring / defaults | `node-auto-configuration.ts` | AD-24/AD-25 platform-node precedent |
+| Piece                                                                          | Home                                                                           | Notes                                                           |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| `parseMultipart(req, config)` — busboy streaming wrapper → `{ fields, files }` | `blue-platform-node/src/parse-multipart.ts`                                    | New; the only busboy touchpoint                                 |
+| `MultipartFile` interface + impl (buffer or temp-file handle)                  | `blue-platform-node/src/multipart-file.ts`                                     | Contract consumers import from `@blue/platform-node`            |
+| `MultipartContext` (`{ fields, files: Map<string, MultipartFile[]> }`)         | `blue-platform-node/src/multipart-file.ts`                                     | Lives on `NodeRequest.multipart`                                |
+| `@file(partName?)` marker + metadata reader                                    | `blue-platform-node/src/file-argument-resolver.ts`                             | Mirrors `validatedBy`'s parameter-metadata hook                 |
+| `NodeMultipartFileMethodArgumentResolver`                                      | `blue-platform-node/src/multipart-file-argument-resolver.ts`                   | Reads `request.multipart.files.get(name)`                       |
+| Adapter detection + wiring into `handleRequest`                                | `node-http-server-adapter.ts:822`                                              | Before `#readBody`; bypasses buffering                          |
+| `NodeRequest.multipart?` field                                                 | `node-request.ts:20`                                                           | Optional, alongside `cookies`/`session`                         |
+| `MultipartConfig` + defaults                                                   | `blue-platform-node/src/http-request-limits.ts` (or new `multipart-config.ts`) | Extends the limits pattern; overflow → `RequestLimitError(413)` |
+| Auto-config wiring / defaults                                                  | `node-auto-configuration.ts`                                                   | AD-24/AD-25 platform-node precedent                             |
 
 Package deps: `blue-platform-node` gains **busboy** (runtime) + its types; no other new runtime
 dependencies. No browser globals (passes `@blue/no-browser-globals-in-isomorphic`).
@@ -194,28 +195,28 @@ class ProfileController {
     // @file() infers the part name from the param name ("avatar"); pass a name only when the client
     // form field differs from the JS variable, e.g. an array bound under one repeated field name:
     async updateProfile(
-        @file() avatar: MultipartFile,                 // client field "avatar"
-        @file('photos') gallery: MultipartFile[],      // client fields named "photos"
+        @file() avatar: MultipartFile, // client field "avatar"
+        @file('photos') gallery: MultipartFile[], // client fields named "photos"
         @RequestBody() meta: { name: string }
     ) {
         if (avatar.isEmpty()) throw new BadRequestException('avatar_required');
-        const size = avatar.size;                 // bytes
-        const name = avatar.originalFilename;     // client-supplied, sanitized on persist
-        await avatar.transferTo(`/uploads/${safeName(name)}`);  // or: avatar.stream() → S3
+        const size = avatar.size; // bytes
+        const name = avatar.originalFilename; // client-supplied, sanitized on persist
+        await avatar.transferTo(`/uploads/${safeName(name)}`); // or: avatar.stream() → S3
         return { ok: true, size, name, thumbnails: gallery.length };
     }
 }
 
 // The contract
 interface MultipartFile {
-    readonly name: string;          // form field name (getName)
+    readonly name: string; // form field name (getName)
     readonly originalFilename: string;
     readonly contentType?: string;
-    readonly size: number;          // bytes (getSize)
+    readonly size: number; // bytes (getSize)
     isEmpty(): boolean;
     bytes(): Uint8Array | Promise<Uint8Array>;
     stream(): NodeJS.ReadableStream | AsyncIterable<Buffer>;
-    transferTo(dest: string): Promise<void>;   // copy off temp file
+    transferTo(dest: string): Promise<void>; // copy off temp file
 }
 ```
 

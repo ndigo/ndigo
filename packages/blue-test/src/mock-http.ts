@@ -224,7 +224,7 @@ export class MockHTTP {
                     const parsed = await parseMultipart(asIncoming(req.rawBody, req.headers ?? {}));
                     const nodeRequest = prepared.request;
                     nodeRequest.multipart = parsed;
-                    nodeRequest.body = { ...(nodeRequest.body ?? {}), ...parsed.fields };
+                    nodeRequest.body = { ...nodeRequest.body, ...parsed.fields };
                 }
             }
             const chain = this.#dispatcher.getHandler(prepared.route);

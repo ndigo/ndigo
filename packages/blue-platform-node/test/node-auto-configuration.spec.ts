@@ -7,6 +7,7 @@ import { describe, test, expect } from 'vitest';
 import { Route, ACCEPT_LANGUAGE_ATTRIBUTE } from '@blue/router';
 import { AcceptHeaderLanguageResolver } from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
+import { NodeMultipartFileMethodArgumentResolver } from '../src/multipart-file-argument-resolver';
 
 describe('NodeAutoConfiguration', () => {
     test('creates an instance', () => {
@@ -20,10 +21,13 @@ describe('NodeAutoConfiguration', () => {
         expect(converters).toBeDefined();
     });
 
-    test('provides 6 argument resolvers', () => {
+    test('provides 7 argument resolvers, including multipart file binding', () => {
         const config = new NodeAutoConfiguration();
         const resolvers = config.argumentResolvers();
-        expect(resolvers).toHaveLength(6);
+        expect(resolvers).toHaveLength(7);
+        // AD-26: the multipart resolver is wired into the runtime chain. Without it,
+        // @file()/fileValue() parameters never bind and uploads return 400.
+        expect(resolvers.some((r) => r instanceof NodeMultipartFileMethodArgumentResolver)).toBe(true);
     });
 
     test('provides handler mapping', () => {

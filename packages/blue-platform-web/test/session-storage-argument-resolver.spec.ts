@@ -6,14 +6,18 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { MissingParameterError, MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { Route } from '@blue/router';
-import { BrowserSessionStorageValueMethodArgumentResolver } from '../src/session-storage-argument-resolver';
+import { BrowserStorageValueMethodArgumentResolver } from '../src/browser-storage-argument-resolver';
 
 describe('BrowserSessionStorageValueMethodArgumentResolver', () => {
-    let resolver: BrowserSessionStorageValueMethodArgumentResolver;
+    let resolver: BrowserStorageValueMethodArgumentResolver;
     const originalSessionStorage = globalThis.sessionStorage;
 
     beforeEach(() => {
-        resolver = new BrowserSessionStorageValueMethodArgumentResolver();
+        resolver = new BrowserStorageValueMethodArgumentResolver(
+            () => globalThis.sessionStorage,
+            MethodParameterType.SESSION_STORAGE,
+            'BrowserSessionStorageValueMethodArgumentResolver'
+        );
         vi.restoreAllMocks();
     });
 

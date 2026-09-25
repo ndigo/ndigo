@@ -48,18 +48,18 @@ const versionRe = /^[a-z][a-z0-9.]*$/;
  * A parsed secret marker.
  */
 export interface SecretMarker {
-  /**
-   * The scheme id (`cipher`, `jwe`, …) — dispatch key into the scheme registry.
-   */
-  readonly scheme: string;
-  /**
-   * The format version (`v1`), or `null` when the scheme carries none.
-   */
-  readonly version: string | null;
-  /**
-   * The scheme-specific payload (everything after scheme[:version]:).
-   */
-  readonly payload: string;
+    /**
+     * The scheme id (`cipher`, `jwe`, …) — dispatch key into the scheme registry.
+     */
+    readonly scheme: string;
+    /**
+     * The format version (`v1`), or `null` when the scheme carries none.
+     */
+    readonly version: string | null;
+    /**
+     * The scheme-specific payload (everything after scheme[:version]:).
+     */
+    readonly payload: string;
 }
 
 /**
@@ -71,49 +71,49 @@ export interface SecretMarker {
  * fails loud there.
  *
  * @param value - The candidate marker string.
+ *
+ * The marker shape is RESERVED: any plaintext value that happens to match
+ * `{scheme[:version]:...}` (e.g. `{en: hello}`) is treated as a marker and
+ * fails loud at lookup when the scheme is not registered — config values
+ * that look like markers cannot coexist with a wired decryptor.
  * @returns The parsed marker, or `null` when not in marker form.
  */
 export function parseSecretMarker(value: string): SecretMarker | null {
-  if (
-    typeof value !== "string" ||
-    value.length < 4 ||
-    value[0] !== "{" ||
-    !value.endsWith("}")
-  ) {
-    return null;
-  }
-  const inner = value.slice(1, -1);
-  const firstColon = inner.indexOf(":");
-  if (firstColon === -1) return null;
-  const scheme = inner.slice(0, firstColon);
-  if (!schemeRe.test(scheme)) return null;
-  const rest = inner.slice(firstColon + 1);
-  if (rest.length === 0) return null;
+    if (typeof value !== 'string' || value.length < 4 || value[0] !== '{' || !value.endsWith('}')) {
+        return null;
+    }
+    const inner = value.slice(1, -1);
+    const firstColon = inner.indexOf(':');
+    if (firstColon === -1) return null;
+    const scheme = inner.slice(0, firstColon);
+    if (!schemeRe.test(scheme)) return null;
+    const rest = inner.slice(firstColon + 1);
+    if (rest.length === 0) return null;
 
-  const secondColon = rest.indexOf(":");
-  if (secondColon === -1) {
-    return { scheme, version: null, payload: rest };
-  }
-  const version = rest.slice(0, secondColon);
-  // Only digits qualify as the version segment; anything else is payload.
-  if (!versionRe.test(version)) {
-    return { scheme, version: null, payload: rest };
-  }
-  return { scheme, version, payload: rest.slice(secondColon + 1) };
+    const secondColon = rest.indexOf(':');
+    if (secondColon === -1) {
+        return { scheme, version: null, payload: rest };
+    }
+    const version = rest.slice(0, secondColon);
+    // Only digits qualify as the version segment; anything else is payload.
+    if (!versionRe.test(version)) {
+        return { scheme, version: null, payload: rest };
+    }
+    return { scheme, version, payload: rest.slice(secondColon + 1) };
 }
 
 /**
  * Capability flags a cipher backend may declare.
  */
 export interface SecretCipherCapabilities {
-  /**
-   * Whether the backend supports additional authenticated data (AAD).
-   * The decrypt path REQUIRES AAD binding (key-path AAD, AD-29 D-4); a
-   * backend without it must be refused at wiring, never downgraded.
-   * Compact JWE and age have no AAD slot — a hypothetical adapter for
-   * them must return `false` here and be rejected by the capability gate.
-   */
-  readonly aad: boolean;
+    /**
+     * Whether the backend supports additional authenticated data (AAD).
+     * The decrypt path REQUIRES AAD binding (key-path AAD, AD-29 D-4); a
+     * backend without it must be refused at wiring, never downgraded.
+     * Compact JWE and age have no AAD slot — a hypothetical adapter for
+     * them must return `false` here and be rejected by the capability gate.
+     */
+    readonly aad: boolean;
 }
 
 /**
@@ -124,42 +124,42 @@ export interface SecretCipherCapabilities {
  * `encrypt(plain, aad?) → marker`, `decrypt(marker, aad?) → plain`.
  */
 export interface SecretCipher {
-  /**
-   * The scheme id dispatched on markers (`cipher`, `jwe`, `age`, `kms`).
-   */
-  readonly scheme: string;
-  /**
-   * Capabilities for the wiring capability gate.
-   */
-  readonly capabilities: SecretCipherCapabilities;
-  /**
-   * Encrypts a plaintext value into a secret marker.
-   *
-   * @param plain - The plaintext value.
-   * @param aad - Optional additional authenticated data (the key path).
-   * @returns The versioned secret marker to store in configuration.
-   */
-  encrypt(plain: string, aad?: string): string;
-  /**
-   * Decrypts a secret marker back to plaintext.
-   *
-   * @param marker - The stored marker (`{scheme[:version]:payload}`).
-   * @param aad - The additional authenticated data the value was bound to.
-   * @returns The plaintext value.
-   * @throws {IllegalStateError} On tamper, wrong key, or unknown scheme/version.
-   */
-  decrypt(marker: string, aad?: string): string;
+    /**
+     * The scheme id dispatched on markers (`cipher`, `jwe`, `age`, `kms`).
+     */
+    readonly scheme: string;
+    /**
+     * Capabilities for the wiring capability gate.
+     */
+    readonly capabilities: SecretCipherCapabilities;
+    /**
+     * Encrypts a plaintext value into a secret marker.
+     *
+     * @param plain - The plaintext value.
+     * @param aad - Optional additional authenticated data (the key path).
+     * @returns The versioned secret marker to store in configuration.
+     */
+    encrypt(plain: string, aad?: string): string;
+    /**
+     * Decrypts a secret marker back to plaintext.
+     *
+     * @param marker - The stored marker (`{scheme[:version]:payload}`).
+     * @param aad - The additional authenticated data the value was bound to.
+     * @returns The plaintext value.
+     * @throws {IllegalStateError} On tamper, wrong key, or unknown scheme/version.
+     */
+    decrypt(marker: string, aad?: string): string;
 }
 
 /**
  * Context passed to a {@link SecretDecryptor} for each resolved value.
  */
 export interface SecretDecryptContext {
-  /**
-   * The key path the value was resolved under (`db.password`) — the AAD
-   * binding (ciphertext moved between key paths fails auth at lookup).
-   */
-  readonly key: string;
+    /**
+     * The key path the value was resolved under (`db.password`) — the AAD
+     * binding (ciphertext moved between key paths fails auth at lookup).
+     */
+    readonly key: string;
 }
 
 /**
@@ -171,12 +171,12 @@ export interface SecretDecryptContext {
  * marker values with an unknown scheme fail loud (never plaintext fallback).
  */
 export interface SecretDecryptor {
-  /**
-   * Decrypts one resolved value.
-   *
-   * @param value - The resolved value (post-placeholder).
-   * @param context - The resolution context (key path for AAD).
-   * @returns The decrypted value, or the value unchanged when not a marker.
-   */
-  decrypt(value: string, context: SecretDecryptContext): string;
+    /**
+     * Decrypts one resolved value.
+     *
+     * @param value - The resolved value (post-placeholder).
+     * @param context - The resolution context (key path for AAD).
+     * @returns The decrypted value, or the value unchanged when not a marker.
+     */
+    decrypt(value: string, context: SecretDecryptContext): string;
 }

@@ -13,6 +13,7 @@ pnpm add @blue/scheduler
 ```
 
 ## Getting Started
+
 ```typescript
 import { scheduled } from '@blue/scheduler';
 

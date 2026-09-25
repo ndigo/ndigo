@@ -93,4 +93,25 @@ describe('blue-island static HTTP semantics (AD-28)', () => {
         expect(res.response.headers['content-encoding']).toBe('gzip');
         expect(res.response.headers['vary']).toBe('Accept-Encoding');
     });
+
+    test('empty file + any byte range → 416 with Content-Range: bytes */0', async () => {
+        await writeFile(join(dir, 'empty.txt'), '');
+        const responses = await Promise.all(
+            ['bytes=0-0', 'bytes=-4'].map((range) => mockMVC.get('/static/empty.txt').headers({ range }).exec())
+        );
+        for (const res of responses) {
+            expect(res.response.status).toBe(416);
+            expect(res.response.headers['content-range']).toBe('bytes */0');
+        }
+    });
+
+    test('traversal attempts never serve: encoded → 404, dotfile + raw .. → 403', async () => {
+        await writeFile(join(dir, '.env'), 'SECRET=1');
+        // Percent-encoded traversal is inert (nothing decodes request paths).
+        expect((await mockMVC.get('/static/%2e%2e/secret.txt').exec()).response.status).toBe(404);
+        // Dotfiles sit outside the MIME allowlist.
+        expect((await mockMVC.get('/static/.env').exec()).response.status).toBe(403);
+        // Raw `..` is refused by resolver containment.
+        expect((await mockMVC.get('/static/../nope.txt').exec()).response.status).toBe(403);
+    });
 });

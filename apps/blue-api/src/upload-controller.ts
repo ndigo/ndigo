@@ -16,8 +16,11 @@ import { join } from 'node:path';
  * Per-process temp directory for demo uploads (`os.tmpdir()/blue-upload-*`).
  * Created lazily on the first upload and bounded to the process lifetime. The
  * parser's own temp-file parts (large uploads above the spill threshold) are
- * cleaned up by the framework request lifecycle; this dir holds only the
- * transferred copies written by {@link UploadController.upload}.
+ * cleaned up by the framework request lifecycle — `NodeHTTPServerAdapter`
+ * calls `multipart.cleanup()` after dispatch (idempotent, SEC-6), and only
+ * AFTER the handler's `transferTo` has run — so this dir holds only the
+ * transferred copies written by {@link UploadController.upload}, which are
+ * app-owned and intentionally not auto-removed.
  */
 let uploadDir: Promise<string> | undefined;
 

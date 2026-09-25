@@ -5,7 +5,7 @@
  */
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
-import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, writeFile, rm, chmod, symlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Route } from '@blue/router';
@@ -46,8 +46,22 @@ function memorySink() {
                 }
             }
         },
+        // Streamed payloads (SEC-8) arrive via write(); returns true so the
+        // handler never waits for a drain that cannot come.
+        write(chunk: string | Uint8Array): boolean {
+            const piece = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk as string);
+            captured.body = captured.body === undefined ? piece : Buffer.concat([captured.body as Buffer, piece]);
+            return true;
+        },
+        destroy(): void {
+            captured.completed = true;
+        },
         end(body?: string | unknown): void {
-            captured.body = body;
+            // A finalization without a body must not clobber chunks already
+            // delivered via write() (streamed payloads).
+            if (body !== undefined) {
+                captured.body = body;
+            }
             captured.completed = true;
         },
     };
@@ -55,8 +69,13 @@ function memorySink() {
 }
 
 let root: string;
+let outsideDir: string;
 const HTML_BODY = '<h1>index</h1>\n';
 const JS_GZ = Buffer.from([0x1f, 0x8b, 0x08, 0x00, 0xaa, 0xbb, 0xcc, 0xdd, 0x00, 0x03, 0x73, 0x73, 0x96]);
+
+// Root runs skip the chmod-based no-read proof: root bypasses DAC checks, so
+// a 000 file stays readable and the test would not test anything.
+const IS_ROOT = typeof process.getuid === 'function' && process.getuid() === 0;
 
 beforeAll(async () => {
     root = await mkdtemp(join(tmpdir(), 'blue-static-handler-'));
@@ -68,10 +87,19 @@ beforeAll(async () => {
     await writeFile(join(root, 'assets', 'logo.png'), Buffer.from([0x89, 0x50, 0x4e, 0x47]));
     await mkdir(join(root, 'files'));
     await writeFile(join(root, 'files', 'notes.txt'), 'notes');
+    // SEC-8: empty payloads must answer every Range with 416, never a 206.
+    await writeFile(join(root, 'empty.txt'), '');
+    // TST-3: dotfiles are outside the MIME allowlist.
+    await writeFile(join(root, '.env'), 'SECRET=1');
+    // TST-3: a symlink pointing outside the root must be refused.
+    outsideDir = await mkdtemp(join(tmpdir(), 'blue-static-outside-'));
+    await writeFile(join(outsideDir, 'leak.txt'), 'leaked');
+    await symlink(join(outsideDir, 'leak.txt'), join(root, 'escape.lnk'));
 });
 
 afterAll(async () => {
     await rm(root, { recursive: true, force: true });
+    await rm(outsideDir, { recursive: true, force: true });
 });
 
 /** Routes an HTTP request at the handler, returning the captured response. */
@@ -276,6 +304,109 @@ describe('StaticResourceHandler — HEAD + method guard (D-8)', () => {
     test('non-GET/HEAD methods → 405 problem document', async () => {
         const res = await serve('/app.js', undefined, 'POST');
         expect(res.status).toBe(405);
+        expect(res.headers['content-type']).toBe('application/problem+json');
+    });
+});
+
+describe('StaticResourceHandler — streaming + stat-only serving (SEC-8)', () => {
+    test('serves the streamed body with a stat-derived Content-Length', async () => {
+        const res = await serve('/app.js');
+        expect(res.status).toBe(200);
+        expect(res.headers['content-length']).toBe('16'); // 'console.log(1);\n'
+        expect((res.body as Buffer).toString('utf-8')).toBe('console.log(1);\n');
+    });
+
+    test('maxFileSizeBytes rejects oversized files at stat time → 403', async () => {
+        expect((await serve('/app.js', { maxFileSizeBytes: 4 })).status).toBe(403);
+        expect((await serve('/app.js', { maxFileSizeBytes: 4 })).headers['content-type']).toBe(
+            'application/problem+json'
+        );
+        expect((await serve('/app.js', { maxFileSizeBytes: 100 })).status).toBe(200);
+        // The cap also guards the precompressed variant.
+        expect((await serve('/app.js', { maxFileSizeBytes: 4 }, 'GET', { 'accept-encoding': 'gzip' })).status).toBe(
+            403
+        );
+    });
+
+    test('empty file serves 200 with Content-Length 0', async () => {
+        const res = await serve('/empty.txt');
+        expect(res.status).toBe(200);
+        expect(res.headers['content-length']).toBe('0');
+    });
+
+    test('empty file + any byte range → 416 with Content-Range: bytes */0, never 206', async () => {
+        const responses = await Promise.all(
+            ['bytes=0-0', 'bytes=0-', 'bytes=-4', 'bytes=999-'].map((range) =>
+                serve('/empty.txt', undefined, 'GET', { range })
+            )
+        );
+        for (const res of responses) {
+            expect(res.status).toBe(416);
+            expect(res.headers['content-range']).toBe('bytes */0');
+        }
+    });
+
+    test.skipIf(IS_ROOT)('304 and HEAD are answered from stat alone — the file is never opened', async () => {
+        const etag = String((await serve('/app.js')).headers['etag']);
+        await chmod(join(root, 'app.js'), 0o000);
+        try {
+            // Old whole-file-buffering behavior read every request: an
+            // unreadable file made HEAD/304 fail with 500. Stat-only
+            // serving answers both from metadata.
+            const head = await serve('/app.js', undefined, 'HEAD');
+            expect(head.status).toBe(200);
+            expect(head.headers['content-length']).toBe('16');
+            expect(head.body).toBeUndefined();
+
+            const revalidated = await serve('/app.js', undefined, 'GET', { 'if-none-match': etag });
+            expect(revalidated.status).toBe(304);
+            expect(revalidated.body).toBeUndefined();
+        } finally {
+            await chmod(join(root, 'app.js'), 0o644);
+        }
+    });
+});
+
+describe('StaticResourceHandler — traversal regression matrix (TST-3)', () => {
+    test('literal ../ is WHATWG-collapsed by the URL layer → 404; raw containment → 403', async () => {
+        // The adapter's `new URL()` eliminates dot segments before routing
+        // (node-http-server-adapter #buildUrl); emulate that collapse, then
+        // confirm the collapsed path has nothing to serve inside the root.
+        const collapsed = new URL('http://local/static/../../etc/passwd').pathname;
+        expect((await serve(collapsed)).status).toBe(404);
+        // Defense in depth: a raw `..` sequence that ever reached the
+        // resolver is rejected outright by path containment.
+        expect((await serve('/assets/../../../etc/passwd')).status).toBe(403);
+    });
+
+    test('percent-encoded traversal is inert (no decode step) → 404', async () => {
+        // `%2e%2e` is a literal directory name; nothing percent-decodes it.
+        const res = await serve('/assets/%2e%2e/%2e%2e/secret.txt');
+        expect(res.status).toBe(404);
+    });
+
+    test('backslash traversal stays literal on POSIX → 404', async () => {
+        // `\` is a legal filename character here, never a path separator.
+        expect((await serve('/assets\\..\\..\\secret.txt')).status).toBe(404);
+    });
+
+    test('NUL byte in the path → 404 (fs rejects, classified not-found)', async () => {
+        expect((await serve('/assets/\0secret.txt')).status).toBe(404);
+    });
+
+    test('double-encoded traversal (%252e) is a literal filename → 404', async () => {
+        expect((await serve('/assets/%252e%252e/secret.txt')).status).toBe(404);
+    });
+
+    test('symlink pointing outside the root → 403', async () => {
+        const res = await serve('/escape.lnk');
+        expect(res.status).toBe(403);
+        expect(res.headers['content-type']).toBe('application/problem+json');
+    });
+
+    test('dotfile (.env) is outside the MIME allowlist → 403', async () => {
+        const res = await serve('/.env');
+        expect(res.status).toBe(403);
         expect(res.headers['content-type']).toBe('application/problem+json');
     });
 });

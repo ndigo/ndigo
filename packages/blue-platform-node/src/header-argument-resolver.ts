@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { MethodParameter, MethodParameterType, AbstractPlatformArgumentResolver } from '@blue/dispatcher';
+import { HTTPHeader } from '@blue/http';
 import { Route } from '@blue/router';
 import { convertArgumentValue } from './_resolver-util';
 import { getNodeRequest } from './node-request';
@@ -29,7 +30,9 @@ export class NodeHeaderValueMethodArgumentResolver extends AbstractPlatformArgum
         if (name === '') {
             return request.headers;
         }
-        const value = request.headers[name.toLowerCase()];
+        // HTTPHeader folds the key against lowercase Node-server records
+        // (DSG-5); multi-value headers still join into a comma list.
+        const value = new HTTPHeader(name).get(request.headers as unknown as Record<string, string>);
         return Array.isArray(value) ? value.join(', ') : value;
     }
 

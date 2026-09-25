@@ -6,14 +6,18 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { MissingParameterError, MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { Route } from '@blue/router';
-import { BrowserLocalStorageValueMethodArgumentResolver } from '../src/local-storage-argument-resolver';
+import { BrowserStorageValueMethodArgumentResolver } from '../src/browser-storage-argument-resolver';
 
 describe('BrowserLocalStorageValueMethodArgumentResolver', () => {
-    let resolver: BrowserLocalStorageValueMethodArgumentResolver;
+    let resolver: BrowserStorageValueMethodArgumentResolver;
     const originalLocalStorage = globalThis.localStorage;
 
     beforeEach(() => {
-        resolver = new BrowserLocalStorageValueMethodArgumentResolver();
+        resolver = new BrowserStorageValueMethodArgumentResolver(
+            () => globalThis.localStorage,
+            MethodParameterType.LOCAL_STORAGE,
+            'BrowserLocalStorageValueMethodArgumentResolver'
+        );
         vi.restoreAllMocks();
     });
 

@@ -13,9 +13,9 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import "@tsmetadata/polyfill";
-import { AsApplicationContextAware, ApplicationContext } from "@blue/context";
-import { getMapping, requestMapping } from "@blue/dispatcher";
+import '@tsmetadata/polyfill';
+import { AsApplicationContextAware, ApplicationContext } from '@blue/context';
+import { getMapping, requestMapping } from '@blue/dispatcher';
 
 /**
  * The mutable remote document this app serves (the self-served config
@@ -23,44 +23,41 @@ import { getMapping, requestMapping } from "@blue/dispatcher";
  * it to exercise the poll → rebind loop.
  */
 export const REMOTE_DOCUMENT: Record<string, unknown> = {
-  api: {
-    message: "hello from remote config",
-  },
+    api: {
+        message: 'hello from remote config',
+    },
 };
 
-@requestMapping("/api")
-export class ConfigServerDemoController extends AsApplicationContextAware(
-  Object,
-) {
-  /**
-   * The owning context, injected before refresh — used to read the
-   * environment's live resolved value on demand.
-   */
-  #context?: ApplicationContext;
+@requestMapping('/api')
+export class ConfigServerDemoController extends AsApplicationContextAware(Object) {
+    /**
+     * The owning context, injected before refresh — used to read the
+     * environment's live resolved value on demand.
+     */
+    #context?: ApplicationContext;
 
-  setApplicationContext(context: ApplicationContext): void {
-    this.#context = context;
-  }
+    setApplicationContext(context: ApplicationContext): void {
+        this.#context = context;
+    }
 
-  /**
-   * The self-served remote config document (GET /api/config.json).
-   */
-  @getMapping("/config.json")
-  configDocument() {
-    return { ...REMOTE_DOCUMENT };
-  }
+    /**
+     * The self-served remote config document (GET /api/config.json).
+     */
+    @getMapping('/config.json')
+    configDocument() {
+        return { ...REMOTE_DOCUMENT };
+    }
 
-  /**
-   * The live resolved remote value (GET /api/config/remote).
-   *
-   * Reads `api.message` from the ENVIRONMENT (not controller state), so
-   * after a remote change + poll + refresh this reflects the new value
-   * exactly as bound `@configurationProperties` would.
-   */
-  @getMapping("/config/remote")
-  remoteValue() {
-    const message =
-      this.#context?.environment.getProperty("api.message") ?? "unset";
-    return { message };
-  }
+    /**
+     * The live resolved remote value (GET /api/config/remote).
+     *
+     * Reads `api.message` from the ENVIRONMENT (not controller state), so
+     * after a remote change + poll + refresh this reflects the new value
+     * exactly as bound `@configurationProperties` would.
+     */
+    @getMapping('/config/remote')
+    remoteValue() {
+        const message = this.#context?.environment.getProperty('api.message') ?? 'unset';
+        return { message };
+    }
 }

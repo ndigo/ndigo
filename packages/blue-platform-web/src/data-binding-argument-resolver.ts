@@ -12,6 +12,7 @@ import {
 import { Route } from '@blue/router';
 import { convertArgumentValue } from './_resolver-util';
 import Cookies from './cookies';
+import { dumpStorage } from './browser-storage-argument-resolver';
 
 /**
  * The explicit browser bindable-source allow-list (D-3): kind validation in
@@ -55,30 +56,10 @@ export class BrowserDataBindingMethodArgumentResolver extends AbstractPlatformAr
                 const jar: unknown = Cookies.get('');
                 return typeof jar === 'object' && jar !== null ? (jar as Record<string, unknown>) : {};
             }
-            case 'session-storage': {
-                const session: Record<string, unknown> = {};
-                if (globalThis.sessionStorage) {
-                    for (let i = 0; i < globalThis.sessionStorage.length; i++) {
-                        const key = globalThis.sessionStorage.key(i);
-                        if (key) {
-                            session[key] = globalThis.sessionStorage.getItem(key);
-                        }
-                    }
-                }
-                return session;
-            }
-            case 'local-storage': {
-                const local: Record<string, unknown> = {};
-                if (globalThis.localStorage) {
-                    for (let i = 0; i < globalThis.localStorage.length; i++) {
-                        const key = globalThis.localStorage.key(i);
-                        if (key) {
-                            local[key] = globalThis.localStorage.getItem(key);
-                        }
-                    }
-                }
-                return local;
-            }
+            case 'session-storage':
+                return dumpStorage(globalThis.sessionStorage);
+            case 'local-storage':
+                return dumpStorage(globalThis.localStorage);
             default:
                 return {};
         }

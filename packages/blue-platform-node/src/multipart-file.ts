@@ -47,7 +47,9 @@ export interface MultipartContext {
     readonly files: Map<string, MultipartFile[]>;
     /**
      * Dispose any on-disk temp parts created during parsing. Idempotent and
-     * never throws — called once the request has finished being bound.
+     * never throws — called by the framework request lifecycle once the
+     * request dispatch has finished (success or error), and by the parser
+     * itself on the overflow-abort path.
      */
     cleanup(): Promise<void>;
 }

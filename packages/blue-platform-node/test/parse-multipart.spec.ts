@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { Readable } from 'node:stream';
+import { Readable, PassThrough } from 'node:stream';
 import type { IncomingMessage } from 'node:http';
 import { mkdtempSync, readdirSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -18,6 +18,13 @@ function req(body: Buffer, boundary = '----blueTest'): IncomingMessage {
     (r as unknown as { headers: Record<string, string> }).headers = {
         'content-type': `multipart/form-data; boundary=${boundary}`,
     };
+    return r;
+}
+
+/** Wrap a raw multipart body in a controllable stream with the matching Content-Type. */
+function reqStream(stream: NodeJS.ReadableStream, headers: Record<string, string>): IncomingMessage {
+    const r = stream as unknown as IncomingMessage;
+    (r as unknown as { headers: Record<string, string> }).headers = headers;
     return r;
 }
 
@@ -138,5 +145,84 @@ describe('parseMultipart', () => {
         expect(existsSync(join(workDir, 'etc'))).toBe(false);
         expect(existsSync(join(workDir, 'passwd'))).toBe(false);
         await ctx.cleanup();
+    });
+
+    it('accepts a boundary parameter name in any case (RFC 2045 §5.1)', async () => {
+        const payload = body([{ name: 'greeting', value: 'hi' }]);
+        const r = Readable.from([payload]) as unknown as IncomingMessage;
+        (r as unknown as { headers: Record<string, string> }).headers = {
+            'content-type': 'multipart/form-data; BOUNDARY=----blueTest',
+        };
+        const ctx = await parseMultipart(r, {});
+        expect(ctx.fields).toEqual({ greeting: 'hi' });
+    });
+
+    it('rejects with 413 too_many_files when the files limit is exceeded', async () => {
+        const many = body([
+            { name: 'a', value: 'x', filename: 'a.txt' },
+            { name: 'b', value: 'x', filename: 'b.txt' },
+        ]);
+        await expectLimit(
+            parseMultipart(req(many), { limits: { maxFiles: 1, maxRequestSize: 1_000_000 } }),
+            413,
+            'too_many_files'
+        );
+    });
+
+    it('rejects with 413 too_many_fields when the fields limit is exceeded', async () => {
+        const many = body([
+            { name: 'a', value: '1' },
+            { name: 'b', value: '2' },
+        ]);
+        await expectLimit(parseMultipart(req(many), { limits: { maxFields: 1 } }), 413, 'too_many_fields');
+    });
+
+    it('rejects with 413 too_many_parts when the parts limit is exceeded', async () => {
+        const many = body([
+            { name: 'a', value: '1' },
+            { name: 'b', value: '2' },
+            { name: 'c', value: '3' },
+        ]);
+        await expectLimit(parseMultipart(req(many), { limits: { maxParts: 2 } }), 413, 'too_many_parts');
+    });
+
+    it('rejects a malformed boundary body with 400 malformed_multipart', async () => {
+        // The declared boundary parses, but the payload is broken.
+        const garbage = Buffer.from('--declared\\r\\nnot a real part\\r\\n--declared--\\r\\n');
+        const r = Readable.from([garbage]) as unknown as IncomingMessage;
+        (r as unknown as { headers: Record<string, string> }).headers = {
+            'content-type': 'multipart/form-data; boundary=declared',
+        };
+        await expectLimit(parseMultipart(r, {}), 400, 'malformed_multipart');
+    });
+
+    it('rejects an over-cap text field with 413 field_too_large (SEC-9)', async () => {
+        const many = body([{ name: 'meta', value: 'y'.repeat(64) }]);
+        await expectLimit(parseMultipart(req(many), { limits: { maxFieldSize: 16 } }), 413, 'field_too_large');
+    });
+
+    it('rejects on Content-Length over the cap before consuming the body (SEC-5)', async () => {
+        const many = body([{ name: 'a', value: 'y'.repeat(2_000), filename: 'a.txt' }]);
+        const source = Readable.from([many]);
+        let consumed = 0;
+        source.on('data', () => {
+            consumed += 1;
+        });
+        const r = reqStream(source, {
+            'content-type': 'multipart/form-data; boundary=----blueTest',
+            'content-length': String(many.length + 10_000),
+        });
+        await expectLimit(parseMultipart(r, { limits: { maxRequestSize: 1_000 } }), 413, 'request_too_large');
+        expect(consumed).toBe(0);
+    });
+
+    it('stops streaming at the request cap without draining to EOF (SEC-5)', async () => {
+        const source = new PassThrough();
+        const r = reqStream(source, {
+            'content-type': 'multipart/form-data; boundary=----blueTest',
+        });
+        const promise = parseMultipart(r, { limits: { maxRequestSize: 1_000, fileThreshold: 64 } });
+        source.end(body([{ name: 'a', value: 'y'.repeat(4_000), filename: 'a.txt' }]));
+        await expectLimit(promise, 413, 'request_too_large');
     });
 });

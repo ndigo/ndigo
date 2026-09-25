@@ -3,23 +3,25 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import {
-  IllegalStateError,
-  JSONValue,
-  JSONObject,
-  createNull,
-  parseKeypath,
-} from "@blue/core";
-import type { KeypathToken } from "@blue/core";
-import type { ConversionService } from "@blue/core";
-import { createConversionService } from "@blue/core";
-import { like, isNil } from "@blue/util/types";
-import { PropertySource, wrapSource } from "./property-source";
-import type { MutablePropertySources } from "./property-sources";
-import { resolvePlaceholders } from "./placeholder-resolver";
-import type { SecretDecryptor } from "./secret-cipher";
+import { IllegalStateError, JSONValue, JSONObject, createNull, parseKeypath } from '@blue/core';
+import type { KeypathToken } from '@blue/core';
+import type { ConversionService } from '@blue/core';
+import { createConversionService } from '@blue/core';
+import { like, isNil } from '@blue/util/types';
+import { PropertySource, wrapSource } from './property-source';
+import type { MutablePropertySources } from './property-sources';
+import { resolvePlaceholders } from './placeholder-resolver';
+import { parseSecretMarker, SecretDecryptor } from './secret-cipher';
 
-type PrimitiveLike = "string" | "number" | "boolean";
+type PrimitiveLike = 'string' | 'number' | 'boolean';
+
+/**
+ * One-time fail-open sentinel (SEC-10): a resolved value carried a secret
+ * marker (`{scheme:...}`) while NO decryptor was configured, so the marker
+ * bound as plaintext. Warned once per process — repeat lookups must not
+ * spam the console; a later decryptor rewrite (new environment) is the fix.
+ */
+let secretFailOpenWarned = false;
 
 /**
  * Maps a constructor/function name to the primitive type name, or `undefined`
@@ -27,92 +29,87 @@ type PrimitiveLike = "string" | "number" | "boolean";
  * `String` → `'string'`, `Date` → `undefined`).
  */
 const primitiveNameOf = (name: string): PrimitiveLike | undefined => {
-  const lower = name.toLowerCase();
-  return lower === "boolean" || lower === "number" || lower === "string"
-    ? lower
-    : undefined;
+    const lower = name.toLowerCase();
+    return lower === 'boolean' || lower === 'number' || lower === 'string' ? lower : undefined;
 };
 
 /**
  * Resolves property values from a configured set of sources.
  */
 export interface PropertyResolver {
-  /**
-   * Resolves a property value, falling back to a default when missing.
-   *
-   * @param key - The property name to resolve.
-   * @param defaultValue - The value to return when no property is found.
-   * @returns The resolved property value or the default value.
-   */
-  getProperty(key: string, defaultValue?: JSONValue): JSONValue | undefined;
-  /**
-   * Returns the resolved property value or throws when missing.
-   *
-   * @param key - The property name to resolve.
-   * @returns The resolved property value.
-   * @throws {IllegalStateError} When the property cannot be resolved.
-   */
-  getRequiredProperty(key: string): JSONValue;
-  /**
-   * Returns whether a property key can be resolved.
-   *
-   * @param key - The property name to resolve.
-   * @returns `true` when the property exists.
-   */
-  hasProperty(key: string): boolean;
-  /**
-   * Resolves a property as a typed value, converting when needed.
-   *
-   * @param key - The property name to resolve.
-   * @param targetType - The target constructor or primitive (`Number`, `Boolean`, `Date`, ...).
-   * @param defaultValue - The value to return when the property is missing.
-   * @returns The typed value or the default.
-   * @throws {IllegalStateError} When a present value cannot be converted.
-   */
-  getPropertyAs<T>(
-    key: string,
-    targetType: (new (...args: never[]) => T) | (() => T) | T,
-    defaultValue?: T,
-  ): T | undefined;
-  /**
-   * Returns a typed property or throws when missing or unconvertible.
-   *
-   * @param key - The property name to resolve.
-   * @param targetType - The target constructor or primitive.
-   * @returns The typed value.
-   * @throws {IllegalStateError} When missing, unresolved, or unconvertible.
-   */
-  getRequiredPropertyAs<T>(
-    key: string,
-    targetType: (new (...args: never[]) => T) | (() => T) | T,
-  ): T;
-  /**
-   * Raw index lookup, bypassing placeholder resolution (internal use by the
-   * placeholder resolver; consumers should use {@link getProperty}).
-   *
-   * @param key - The property name to resolve.
-   * @returns The raw value or `undefined`.
-   */
-  getRawProperty(key: string): JSONValue | undefined;
-  /**
-   * Returns the name of the source that won the given key, or `null` when
-   * the active index does not retain origins or the key is unknown.
-   *
-   * @param key - The property key (top-level granularity).
-   * @returns The winning source name, or `null`.
-   * @see PropertyIndex#originOf
-   */
-  originOf(key: string): string | null;
+    /**
+     * Resolves a property value, falling back to a default when missing.
+     *
+     * @param key - The property name to resolve.
+     * @param defaultValue - The value to return when no property is found.
+     * @returns The resolved property value or the default value.
+     */
+    getProperty(key: string, defaultValue?: JSONValue): JSONValue | undefined;
+    /**
+     * Returns the resolved property value or throws when missing.
+     *
+     * @param key - The property name to resolve.
+     * @returns The resolved property value.
+     * @throws {IllegalStateError} When the property cannot be resolved.
+     */
+    getRequiredProperty(key: string): JSONValue;
+    /**
+     * Returns whether a property key can be resolved.
+     *
+     * @param key - The property name to resolve.
+     * @returns `true` when the property exists.
+     */
+    hasProperty(key: string): boolean;
+    /**
+     * Resolves a property as a typed value, converting when needed.
+     *
+     * @param key - The property name to resolve.
+     * @param targetType - The target constructor or primitive (`Number`, `Boolean`, `Date`, ...).
+     * @param defaultValue - The value to return when the property is missing.
+     * @returns The typed value or the default.
+     * @throws {IllegalStateError} When a present value cannot be converted.
+     */
+    getPropertyAs<T>(
+        key: string,
+        targetType: (new (...args: never[]) => T) | (() => T) | T,
+        defaultValue?: T
+    ): T | undefined;
+    /**
+     * Returns a typed property or throws when missing or unconvertible.
+     *
+     * @param key - The property name to resolve.
+     * @param targetType - The target constructor or primitive.
+     * @returns The typed value.
+     * @throws {IllegalStateError} When missing, unresolved, or unconvertible.
+     */
+    getRequiredPropertyAs<T>(key: string, targetType: (new (...args: never[]) => T) | (() => T) | T): T;
+    /**
+     * Raw index lookup, bypassing placeholder resolution (internal use by the
+     * placeholder resolver; consumers should use {@link getProperty}).
+     *
+     * @param key - The property name to resolve.
+     * @returns The raw value or `undefined`.
+     */
+    getRawProperty(key: string): JSONValue | undefined;
+    /**
+     * Returns the name of the source that won the given key, or `null` when
+     * the active index does not retain origins or the key is unknown.
+     *
+     * @param key - The property key (top-level granularity).
+     * @returns The winning source name, or `null`.
+     * @see PropertyIndex#originOf
+     */
+    originOf(key: string): string | null;
 }
 
 /**
  * Property resolver that exposes mutable property sources.
  */
 export interface ConfigurablePropertyResolver extends PropertyResolver {
-  /**
-   * The ordered set of property sources used during resolution.
-   */
-  propertySources: JSONObject[];
+    /**
+     * The ordered set of property sources used during resolution.
+     */
+    propertySources: JSONObject[];
 }
 
 /**
@@ -120,56 +117,56 @@ export interface ConfigurablePropertyResolver extends PropertyResolver {
  * @returns {boolean} Whether or not the value is like a {@link PropertyResolver|PropertyResolver}.
  */
 export const likePropertyResolver = like({
-  getProperty: Function,
-  getRequiredProperty: Function,
-  hasProperty: Function,
+    getProperty: Function,
+    getRequiredProperty: Function,
+    hasProperty: Function,
 }) as (value: unknown) => value is PropertyResolver;
 
 const pathIsDefined = (keypath: KeypathToken[], obj: unknown): boolean => {
-  let value: unknown = obj;
-  for (const token of keypath) {
-    if (value === null || typeof value !== "object") return false;
-    value = (value as Record<string | number, unknown>)[token];
-  }
-  return !isNil(value);
+    let value: unknown = obj;
+    for (const token of keypath) {
+        if (value === null || typeof value !== 'object') return false;
+        value = (value as Record<string | number, unknown>)[token];
+    }
+    return !isNil(value);
 };
 
 const linkPrototype = (current: object, next: object): object => {
-  Reflect.setPrototypeOf(next, null);
-  Reflect.setPrototypeOf(current, next);
-  return next;
+    Reflect.setPrototypeOf(next, null);
+    Reflect.setPrototypeOf(current, next);
+    return next;
 };
 
 const toPrototypeChain = (list: JSONObject[]): JSONObject => {
-  const data: JSONObject = createNull();
-  list.reduce<object>(linkPrototype, data);
-  return data; // chain of the captured source objects, by construction a JSONObject
+    const data: JSONObject = createNull();
+    list.reduce<object>(linkPrototype, data);
+    return data; // chain of the captured source objects, by construction a JSONObject
 };
 
 /**
  * Bounded FIFO cache of parsed keypaths, so hot lookups never allocate.
  */
 class TokenCache {
-  #entries = new Map<string, KeypathToken[]>();
-  #cap: number;
+    #entries = new Map<string, KeypathToken[]>();
+    #cap: number;
 
-  constructor(cap = 256) {
-    this.#cap = cap;
-  }
-
-  get(key: string): KeypathToken[] | null {
-    const cached = this.#entries.get(key);
-    if (cached) return cached;
-    const tokens = parseKeypath(key);
-    if (tokens) {
-      if (this.#entries.size >= this.#cap) {
-        // Evict the oldest entry (Map preserves insertion order).
-        this.#entries.delete(this.#entries.keys().next().value as string);
-      }
-      this.#entries.set(key, tokens);
+    constructor(cap = 256) {
+        this.#cap = cap;
     }
-    return tokens;
-  }
+
+    get(key: string): KeypathToken[] | null {
+        const cached = this.#entries.get(key);
+        if (cached) return cached;
+        const tokens = parseKeypath(key);
+        if (tokens) {
+            if (this.#entries.size >= this.#cap) {
+                // Evict the oldest entry (Map preserves insertion order).
+                this.#entries.delete(this.#entries.keys().next().value as string);
+            }
+            this.#entries.set(key, tokens);
+        }
+        return tokens;
+    }
 }
 
 /**
@@ -179,36 +176,36 @@ class TokenCache {
  * resolver picks one per platform (see the Phase 0 plan, D3/D6).
  */
 export interface PropertyIndex {
-  /**
-   * Rebuilds the index from the given ordered sources (first = highest
-   * precedence).
-   *
-   * @param sources - The ordered property sources.
-   */
-  build(sources: PropertySource[]): void;
-  /**
-   * Resolves a property value, or `undefined` when absent.
-   *
-   * @param key - The property name (keypath syntax).
-   * @returns The resolved value or `undefined`.
-   */
-  getProperty(key: string): JSONValue | undefined;
-  /**
-   * Returns whether the property resolves to a non-null value.
-   *
-   * @param key - The property name (keypath syntax).
-   * @returns `true` when the property is defined.
-   */
-  hasProperty(key: string): boolean;
-  /**
-   * Returns the name of the source that won the given key — optional:
-   * strategies that retain origins implement it; others omit it (the
-   * resolver reports `null`). Top-level-key granularity (AD-16 D1/Q7).
-   *
-   * @param key - The top-level property key.
-   * @returns The winning source name, or `undefined` when unsupported/unknown.
-   */
-  originOf?(key: string): string | undefined;
+    /**
+     * Rebuilds the index from the given ordered sources (first = highest
+     * precedence).
+     *
+     * @param sources - The ordered property sources.
+     */
+    build(sources: PropertySource[]): void;
+    /**
+     * Resolves a property value, or `undefined` when absent.
+     *
+     * @param key - The property name (keypath syntax).
+     * @returns The resolved value or `undefined`.
+     */
+    getProperty(key: string): JSONValue | undefined;
+    /**
+     * Returns whether the property resolves to a non-null value.
+     *
+     * @param key - The property name (keypath syntax).
+     * @returns `true` when the property is defined.
+     */
+    hasProperty(key: string): boolean;
+    /**
+     * Returns the name of the source that won the given key — optional:
+     * strategies that retain origins implement it; others omit it (the
+     * resolver reports `null`). Top-level-key granularity (AD-16 D1/Q7).
+     *
+     * @param key - The top-level property key.
+     * @returns The winning source name, or `undefined` when unsupported/unknown.
+     */
+    originOf?(key: string): string | undefined;
 }
 
 /**
@@ -220,30 +217,29 @@ export interface PropertyIndex {
  * without a rebuild.
  */
 export class PrototypeChainIndex implements PropertyIndex {
-  #chain: unknown;
-  #tokens = new TokenCache();
+    #chain: unknown;
+    #tokens = new TokenCache();
 
-  build(sources: PropertySource[]): void {
-    const properties = sources.map((source) => source.properties);
-    this.#chain =
-      properties.length === 1 ? properties[0] : toPrototypeChain(properties);
-  }
-
-  getProperty(key: string): JSONValue | undefined {
-    const keypath = this.#tokens.get(key);
-    if (!keypath) return undefined;
-    let value: unknown = this.#chain;
-    for (const token of keypath) {
-      if (value === null || typeof value !== "object") return undefined;
-      value = (value as Record<string | number, unknown>)[token];
+    build(sources: PropertySource[]): void {
+        const properties = sources.map((source) => source.properties);
+        this.#chain = properties.length === 1 ? properties[0] : toPrototypeChain(properties);
     }
-    return value as JSONValue | undefined;
-  }
 
-  hasProperty(key: string): boolean {
-    const keypath = this.#tokens.get(key);
-    return keypath ? pathIsDefined(keypath, this.#chain) : false;
-  }
+    getProperty(key: string): JSONValue | undefined {
+        const keypath = this.#tokens.get(key);
+        if (!keypath) return undefined;
+        let value: unknown = this.#chain;
+        for (const token of keypath) {
+            if (value === null || typeof value !== 'object') return undefined;
+            value = (value as Record<string | number, unknown>)[token];
+        }
+        return value as JSONValue | undefined;
+    }
+
+    hasProperty(key: string): boolean {
+        const keypath = this.#tokens.get(key);
+        return keypath ? pathIsDefined(keypath, this.#chain) : false;
+    }
 }
 
 /**
@@ -256,79 +252,87 @@ export class PrototypeChainIndex implements PropertyIndex {
  * the next rebuild.
  */
 export class FlatMergedIndex implements PropertyIndex {
-  #merged: Record<string | number, unknown> = createNull();
-  #origins = new Map<string, string>();
-  #tokens = new TokenCache();
+    #merged: Record<string | number, unknown> = createNull();
+    #origins = new Map<string, string>();
+    #tokens = new TokenCache();
 
-  build(sources: PropertySource[]): void {
-    const merged: Record<string | number, unknown> = createNull();
-    const origins = new Map<string, string>();
-    for (const source of sources) {
-      for (const key of Object.keys(source.properties)) {
-        if (key in merged) continue; // first source with the key wins
-        merged[key] = (source.properties as Record<string, unknown>)[key];
-        origins.set(key, source.name);
-      }
+    build(sources: PropertySource[]): void {
+        const merged: Record<string | number, unknown> = createNull();
+        const origins = new Map<string, string>();
+        for (const source of sources) {
+            for (const key of Object.keys(source.properties)) {
+                if (key in merged) continue; // first source with the key wins
+                merged[key] = (source.properties as Record<string, unknown>)[key];
+                origins.set(key, source.name);
+            }
+        }
+        this.#merged = merged;
+        this.#origins = origins;
     }
-    this.#merged = merged;
-    this.#origins = origins;
-  }
 
-  getProperty(key: string): JSONValue | undefined {
-    const keypath = this.#tokens.get(key);
-    if (!keypath) return undefined;
-    let value: unknown = this.#merged;
-    for (const token of keypath) {
-      if (value === null || typeof value !== "object") return undefined;
-      value = (value as Record<string | number, unknown>)[token];
+    getProperty(key: string): JSONValue | undefined {
+        const keypath = this.#tokens.get(key);
+        if (!keypath) return undefined;
+        let value: unknown = this.#merged;
+        for (const token of keypath) {
+            if (value === null || typeof value !== 'object') return undefined;
+            value = (value as Record<string | number, unknown>)[token];
+        }
+        return value as JSONValue | undefined;
     }
-    return value as JSONValue | undefined;
-  }
 
-  hasProperty(key: string): boolean {
-    const keypath = this.#tokens.get(key);
-    return keypath ? pathIsDefined(keypath, this.#merged) : false;
-  }
+    hasProperty(key: string): boolean {
+        const keypath = this.#tokens.get(key);
+        return keypath ? pathIsDefined(keypath, this.#merged) : false;
+    }
 
-  /**
-   * Returns the name of the source that first defined the top-level segment
-   * of the key (`server.port` reports the source owning `server` — top-level
-   * granularity, AD-16 D1/Q7).
-   *
-   * @param key - The property key (only the top-level segment is consulted).
-   * @returns The winning source name, or `undefined`.
-   */
-  originOf(key: string): string | undefined {
-    const dot = key.indexOf(".");
-    const top = dot === -1 ? key : key.slice(0, dot);
-    return this.#origins.get(top);
-  }
+    /**
+     * Returns the name of the source that first defined the top-level segment
+     * of the key (`server.port` reports the source owning `server` — top-level
+     * granularity, AD-16 D1/Q7).
+     *
+     * @param key - The property key (only the top-level segment is consulted).
+     * @returns The winning source name, or `undefined`.
+     */
+    originOf(key: string): string | undefined {
+        const dot = key.indexOf('.');
+        const top = dot === -1 ? key : key.slice(0, dot);
+        return this.#origins.get(top);
+    }
 }
 
 /**
  * Options controlling the resolver's internal lookup strategy.
  */
 export interface ResolverOptions {
-  /**
-   * The lookup index to use. Defaults to the prototype chain (the
-   * framework's historical behavior).
-   */
-  index?: "prototype" | "flat";
-  /**
-   * The conversion service for typed lookups (`getPropertyAs`). Defaults to
-   * a fresh `createConversionService()` when typed reads are used.
-   */
-  conversionService?: ConversionService;
-  /**
-   * Optional at-rest secret decryption (AD-29 Wave 2). Consulted for every
-   * resolved string value AFTER placeholder resolution and BEFORE
-   * conversion/typed reads: `{cipher:...}` markers decrypt, everything else
-   * passes through. The resolver passes the key path as the AAD context
-   * (key-path AAD binding). A `SecretSchemeRegistry` is the standard
-   * implementation; the seam is an interface so a single-cipher resolver
-   * can be injected without the registry.
-   */
-  secretDecryptor?: SecretDecryptor;
+    /**
+     * The lookup index to use. Defaults to the prototype chain (the
+     * framework's historical behavior).
+     *
+     * Divergence note (ARC-7): `prototype` (PrototypeChainIndex) keeps a live
+     * chain — in-place edits to a captured source map are visible without a
+     * rebuild; `flat` (FlatMergedIndex) snapshots — in-place edits stay
+     * invisible until the next rebuild. You must use the source-registry
+     * mutation APIs (replace/add) or `refresh()` for either index to observe
+     * edits; the placeholder cache clears only on registry version change or
+     * refresh, not on raw object mutation.
+     */
+    index?: 'prototype' | 'flat';
+    /**
+     * The conversion service for typed lookups (`getPropertyAs`). Defaults to
+     * a fresh `createConversionService()` when typed reads are used.
+     */
+    conversionService?: ConversionService;
+    /**
+     * Optional at-rest secret decryption (AD-29 Wave 2). Consulted for every
+     * resolved string value AFTER placeholder resolution and BEFORE
+     * conversion/typed reads: `{cipher:...}` markers decrypt, everything else
+     * passes through. The resolver passes the key path as the AAD context
+     * (key-path AAD binding). A `SecretSchemeRegistry` is the standard
+     * implementation; the seam is an interface so a single-cipher resolver
+     * can be injected without the registry.
+     */
+    secretDecryptor?: SecretDecryptor;
 }
 
 /**
@@ -341,279 +345,283 @@ export interface ResolverOptions {
  * setter.
  */
 export class PrototypalPropertyResolver implements ConfigurablePropertyResolver {
-  #sources!: PropertySource[];
-  #index: PropertyIndex;
-  #registry: MutablePropertySources | null = null;
-  #seenVersion = -1;
-  #options: ResolverOptions;
-  #placeholderCache = new Map<string, JSONValue>();
-  #conversionService: ConversionService | null = null;
-  #forceRebuild = false;
+    #sources!: PropertySource[];
+    #index: PropertyIndex;
+    #registry: MutablePropertySources | null = null;
+    #seenVersion = -1;
+    #options: ResolverOptions;
+    #placeholderCache = new Map<string, JSONValue>();
+    #conversionService: ConversionService | null = null;
+    #forceRebuild = false;
 
-  /**
-   * The live registry backing this resolver, when created via
-   * {@link PrototypalPropertyResolver.create}.
-   *
-   * @returns The registry, or throws when this resolver is array-backed.
-   * @throws {IllegalStateError} When the resolver was not created from a registry.
-   */
-  get registry(): MutablePropertySources {
-    if (!this.#registry) {
-      throw new IllegalStateError(
-        "Resolver is not backed by a property source registry",
-      );
+    /**
+     * The live registry backing this resolver, when created via
+     * {@link PrototypalPropertyResolver.create}.
+     *
+     * @returns The registry, or throws when this resolver is array-backed.
+     * @throws {IllegalStateError} When the resolver was not created from a registry.
+     */
+    get registry(): MutablePropertySources {
+        if (!this.#registry) {
+            throw new IllegalStateError('Resolver is not backed by a property source registry');
+        }
+        return this.#registry;
     }
-    return this.#registry;
-  }
 
-  /**
-   * The options this resolver was created with.
-   */
-  get options(): ResolverOptions {
-    return this.#options;
-  }
-
-  /**
-   * The ordered set of configured property sources (snapshot).
-   */
-  get propertySources(): JSONObject[] {
-    this.#syncRegistry();
-    return this.#sources.map((source) => source.properties);
-  }
-
-  /**
-   * Replaces the property sources and rebuilds the lookup index.
-   *
-   * @param propertySources - The new property sources.
-   */
-  set propertySources(propertySources) {
-    this.#sources = propertySources.map((source, index) =>
-      wrapSource(`source:${index}`, source),
-    );
-    this.#registry = null; // explicit array replaces any live registry binding
-    this.#index.build(this.#sources);
-  }
-
-  /**
-   * Creates a resolver over the given sources (compatibility path).
-   *
-   * @param propertySources - The ordered property sources.
-   * @param options - Resolver options (index strategy).
-   */
-  constructor(
-    propertySources: JSONObject[] = [],
-    options: ResolverOptions = {},
-  ) {
-    this.#options = options;
-    this.#index =
-      options.index === "flat"
-        ? new FlatMergedIndex()
-        : new PrototypeChainIndex();
-    this.propertySources = propertySources;
-  }
-
-  /**
-   * Creates a resolver backed by a live property source registry.
-   *
-   * The registry is read lazily: mutations are picked up on the next
-   * lookup, so burst edits cost a single index rebuild.
-   *
-   * @param registry - The registry to resolve against.
-   * @param options - Resolver options (index strategy).
-   * @returns The registry-backed resolver.
-   */
-  static create(
-    registry: MutablePropertySources,
-    options: ResolverOptions = {},
-  ): PrototypalPropertyResolver {
-    const resolver = new PrototypalPropertyResolver([], options);
-    resolver.#registry = registry;
-    resolver.#syncRegistry();
-    return resolver;
-  }
-
-  getProperty(key: string, defaultValue?: JSONValue): JSONValue | undefined {
-    this.#syncRegistry();
-    const raw = this.#index.getProperty(key);
-    if (typeof raw === "undefined")
-      return defaultValue === undefined ? undefined : defaultValue;
-    return this.#decrypt(key, this.#resolve(key, raw));
-  }
-
-  getRequiredProperty(key: string): JSONValue {
-    this.#syncRegistry();
-    const raw = this.#index.getProperty(key);
-    if (typeof raw === "undefined") {
-      throw new IllegalStateError(this.#missingMessage(key));
+    /**
+     * The options this resolver was created with.
+     */
+    get options(): ResolverOptions {
+        return this.#options;
     }
-    const resolved = this.#resolve(key, raw);
-    if (typeof resolved === "string" && resolved.includes("${")) {
-      throw new IllegalStateError(
-        `Required property "${key}" could not be resolved: unresolved placeholder in value "${resolved}"`,
-      );
+
+    /**
+     * The ordered set of configured property sources (snapshot).
+     */
+    get propertySources(): JSONObject[] {
+        this.#syncRegistry();
+        return this.#sources.map((source) => source.properties);
     }
-    return this.#decrypt(key, resolved) as JSONValue;
-  }
 
-  getPropertyAs<T>(
-    key: string,
-    targetType: (new (...args: never[]) => T) | (() => T) | T,
-    defaultValue?: T,
-  ): T | undefined {
-    this.#syncRegistry();
-    const raw = this.#index.getProperty(key);
-    if (typeof raw === "undefined") return defaultValue;
-    const resolved = this.#decrypt(key, this.#resolve(key, raw));
-    return this.#convert(key, resolved, targetType) ?? defaultValue;
-  }
-
-  getRequiredPropertyAs<T>(
-    key: string,
-    targetType: (new (...args: never[]) => T) | (() => T) | T,
-  ): T {
-    this.#syncRegistry();
-    const raw = this.#index.getProperty(key);
-    if (typeof raw === "undefined") {
-      throw new IllegalStateError(`Required property "${key}" missing`);
+    /**
+     * Replaces the property sources and rebuilds the lookup index.
+     *
+     * @param propertySources - The new property sources.
+     */
+    set propertySources(propertySources) {
+        this.#sources = propertySources.map((source, index) => wrapSource(`source:${index}`, source));
+        this.#registry = null; // explicit array replaces any live registry binding
+        this.#index.build(this.#sources);
     }
-    const resolved = this.#resolve(key, raw);
-    if (typeof resolved === "string" && resolved.includes("${")) {
-      throw new IllegalStateError(
-        `Required property "${key}" could not be resolved: unresolved placeholder in value "${resolved}"`,
-      );
+
+    /**
+     * Creates a resolver over the given sources (compatibility path).
+     *
+     * @param propertySources - The ordered property sources.
+     * @param options - Resolver options (index strategy).
+     */
+    constructor(propertySources: JSONObject[] = [], options: ResolverOptions = {}) {
+        this.#options = options;
+        this.#index = options.index === 'flat' ? new FlatMergedIndex() : new PrototypeChainIndex();
+        this.propertySources = propertySources;
     }
-    const value = this.#convert(key, this.#decrypt(key, resolved), targetType);
-    if (value === undefined) {
-      // Label extraction only: the targetType union has no narrowing for
-      // `name`; the message is cosmetic, so a structural read suffices.
-      const label =
-        (targetType as { name?: string }).name ?? String(targetType);
-      throw new IllegalStateError(
-        `Required property "${key}" could not be converted to ${label}: ${JSON.stringify(resolved)}`,
-      );
+
+    /**
+     * Creates a resolver backed by a live property source registry.
+     *
+     * The registry is read lazily: mutations are picked up on the next
+     * lookup, so burst edits cost a single index rebuild.
+     *
+     * @param registry - The registry to resolve against.
+     * @param options - Resolver options (index strategy).
+     * @returns The registry-backed resolver.
+     */
+    static create(registry: MutablePropertySources, options: ResolverOptions = {}): PrototypalPropertyResolver {
+        const resolver = new PrototypalPropertyResolver([], options);
+        resolver.#registry = registry;
+        resolver.#syncRegistry();
+        return resolver;
     }
-    return value;
-  }
 
-  hasProperty(key: string): boolean {
-    this.#syncRegistry();
-    return this.#index.hasProperty(key);
-  }
-
-  /**
-   * Raw index lookup, bypassing placeholder resolution.
-   *
-   * Used internally by the placeholder resolver so value chains resolve with
-   * cycle/depth tracking intact (each public `getProperty` would re-resolve
-   * and lose the in-progress state, overflowing the stack on cycles).
-   *
-   * @param key - The property name.
-   * @returns The raw value or `undefined`.
-   */
-  getRawProperty(key: string): JSONValue | undefined {
-    this.#syncRegistry();
-    return this.#index.getProperty(key);
-  }
-
-  /**
-   * Returns the name of the source that won the given key, or `null` when
-   * the active index does not retain origins (prototype chain) or the key
-   * is unknown. Top-level-key granularity (AD-16 D1).
-   *
-   * @param key - The top-level property key.
-   * @returns The winning source name, or `null`.
-   */
-  originOf(key: string): string | null {
-    this.#syncRegistry();
-    return this.#index.originOf?.(key) ?? null;
-  }
-
-  /**
-   * Forces the index to rebuild and clears the placeholder cache —
-   * "recompute from the current sources" (AD-16 D3). Does NOT re-run
-   * customizers or re-read platform snapshots (environment-scope only).
-   */
-  refresh(): void {
-    this.#placeholderCache.clear();
-    if (this.#registry) {
-      this.#forceRebuild = true;
-      this.#syncRegistry();
-      this.#forceRebuild = false;
-    } else {
-      this.#index.build(this.#sources);
+    getProperty(key: string, defaultValue?: JSONValue): JSONValue | undefined {
+        this.#syncRegistry();
+        const raw = this.#index.getProperty(key);
+        if (typeof raw === 'undefined') return defaultValue === undefined ? undefined : defaultValue;
+        return this.#decrypt(key, this.#resolve(key, raw));
     }
-  }
 
-  #missingMessage(key: string): string {
-    const origin = this.#index.originOf?.(key);
-    return origin
-      ? `Required property "${key}" missing (from source: ${origin})`
-      : `Required property "${key}" missing`;
-  }
-
-  #syncRegistry(): void {
-    const registry = this.#registry;
-    if (
-      registry &&
-      (registry.version !== this.#seenVersion || this.#forceRebuild)
-    ) {
-      this.#seenVersion = registry.version;
-      this.#sources = registry.toArray();
-      this.#index.build(this.#sources);
-      this.#placeholderCache.clear(); // version change → stale resolutions
+    getRequiredProperty(key: string): JSONValue {
+        this.#syncRegistry();
+        const raw = this.#index.getProperty(key);
+        if (typeof raw === 'undefined') {
+            throw new IllegalStateError(this.#missingMessage(key));
+        }
+        const resolved = this.#resolve(key, raw);
+        if (typeof resolved === 'string' && resolved.includes('${')) {
+            throw new IllegalStateError(
+                `Required property "${key}" could not be resolved: unresolved placeholder in value "${resolved}"`
+            );
+        }
+        return this.#decrypt(key, resolved) as JSONValue;
     }
-  }
 
-  /** Resolves placeholders in a raw value, engaging the cache only for `${`-bearing strings. */
-  #resolve(key: string, raw: JSONValue | undefined): JSONValue | undefined {
-    if (typeof raw !== "string" || !raw.includes("${")) return raw;
-    const cached = this.#placeholderCache.get(key);
-    if (cached !== undefined) return cached;
-    const resolved = resolvePlaceholders(raw, this);
-    this.#placeholderCache.set(key, resolved);
-    return resolved;
-  }
-
-  /**
-   * Applies at-rest secret decryption (AD-29 Wave 2) after placeholder
-   * resolution and before conversion: `{cipher:...}` markers decrypt via the
-   * configured decryptor (key-path AAD binding); all other values pass
-   * through untouched. No decryptor configured → identity.
-   */
-  #decrypt(key: string, value: JSONValue | undefined): JSONValue | undefined {
-    const decryptor = this.#options.secretDecryptor;
-    if (!decryptor || typeof value !== "string") return value;
-    return decryptor.decrypt(value, { key });
-  }
-
-  /** Converts a resolved value to the target type via the injected conversion service. */
-  #convert<T>(
-    key: string,
-    value: JSONValue | undefined,
-    targetType: (new (...args: never[]) => T) | (() => T) | T,
-  ): T | undefined {
-    const conversion =
-      this.#options.conversionService ??
-      (this.#conversionService ??= createConversionService());
-    if (value === undefined) return undefined;
-    // Identity short-circuit: already the target type. Primitives are
-    // matched by typeof against the primitive name ('boolean' from
-    // Boolean.name.toLowerCase()), constructors via instanceof.
-    const targetName = (targetType as { name?: string }).name;
-    const primitiveName = targetName ? primitiveNameOf(targetName) : undefined;
-    if (
-      value instanceof (targetType as { new (...args: never[]): T }) ||
-      (primitiveName !== undefined && typeof value === primitiveName)
-    ) {
-      return value as T;
+    getPropertyAs<T>(
+        key: string,
+        targetType: (new (...args: never[]) => T) | (() => T) | T,
+        defaultValue?: T
+    ): T | undefined {
+        this.#syncRegistry();
+        const raw = this.#index.getProperty(key);
+        if (typeof raw === 'undefined') return defaultValue;
+        const resolved = this.#decrypt(key, this.#resolve(key, raw));
+        return this.#convert(key, resolved, targetType) ?? defaultValue;
     }
-    const converted = conversion.convert(value, targetType);
-    // NaN rejection: NumberConverter yields NaN for non-numeric strings.
-    if (typeof converted === "number" && Number.isNaN(converted)) {
-      throw new IllegalStateError(
-        `Property "${key}" could not be converted to ${targetName ?? String(targetType)}: ${JSON.stringify(value)} (NaN)`,
-      );
+
+    getRequiredPropertyAs<T>(key: string, targetType: (new (...args: never[]) => T) | (() => T) | T): T {
+        this.#syncRegistry();
+        const raw = this.#index.getProperty(key);
+        if (typeof raw === 'undefined') {
+            throw new IllegalStateError(`Required property "${key}" missing`);
+        }
+        const resolved = this.#resolve(key, raw);
+        if (typeof resolved === 'string' && resolved.includes('${')) {
+            throw new IllegalStateError(
+                `Required property "${key}" could not be resolved: unresolved placeholder in value "${resolved}"`
+            );
+        }
+        const value = this.#convert(key, this.#decrypt(key, resolved), targetType);
+        if (value === undefined) {
+            // Label extraction only: the targetType union has no narrowing for
+            // `name`; the message is cosmetic, so a structural read suffices.
+            const label = (targetType as { name?: string }).name ?? String(targetType);
+            throw new IllegalStateError(
+                `Required property "${key}" could not be converted to ${label}: ${this.#diagnosticValue(resolved)}`
+            );
+        }
+        return value;
     }
-    return converted as T;
-  }
+
+    hasProperty(key: string): boolean {
+        this.#syncRegistry();
+        return this.#index.hasProperty(key);
+    }
+
+    /**
+     * Raw index lookup, bypassing placeholder resolution.
+     *
+     * Used internally by the placeholder resolver so value chains resolve with
+     * cycle/depth tracking intact (each public `getProperty` would re-resolve
+     * and lose the in-progress state, overflowing the stack on cycles).
+     *
+     * @param key - The property name.
+     * @returns The raw value or `undefined`.
+     */
+    getRawProperty(key: string): JSONValue | undefined {
+        this.#syncRegistry();
+        return this.#index.getProperty(key);
+    }
+
+    /**
+     * Returns the name of the source that won the given key, or `null` when
+     * the active index does not retain origins (prototype chain) or the key
+     * is unknown. Top-level-key granularity (AD-16 D1).
+     *
+     * @param key - The top-level property key.
+     * @returns The winning source name, or `null`.
+     */
+    originOf(key: string): string | null {
+        this.#syncRegistry();
+        return this.#index.originOf?.(key) ?? null;
+    }
+
+    /**
+     * Forces the index to rebuild and clears the placeholder cache —
+     * "recompute from the current sources" (AD-16 D3). Does NOT re-run
+     * customizers or re-read platform snapshots (environment-scope only).
+     */
+    refresh(): void {
+        this.#placeholderCache.clear();
+        if (this.#registry) {
+            this.#forceRebuild = true;
+            this.#syncRegistry();
+            this.#forceRebuild = false;
+        } else {
+            this.#index.build(this.#sources);
+        }
+    }
+
+    #missingMessage(key: string): string {
+        const origin = this.#index.originOf?.(key);
+        return origin
+            ? `Required property "${key}" missing (from source: ${origin})`
+            : `Required property "${key}" missing`;
+    }
+
+    #syncRegistry(): void {
+        const registry = this.#registry;
+        if (registry && (registry.version !== this.#seenVersion || this.#forceRebuild)) {
+            this.#seenVersion = registry.version;
+            this.#sources = registry.toArray();
+            this.#index.build(this.#sources);
+            this.#placeholderCache.clear(); // version change → stale resolutions
+        }
+    }
+
+    /** Resolves placeholders in a raw value, engaging the cache only for `${`-bearing strings. */
+    #resolve(key: string, raw: JSONValue | undefined): JSONValue | undefined {
+        if (typeof raw !== 'string' || !raw.includes('${')) return raw;
+        const cached = this.#placeholderCache.get(key);
+        if (cached !== undefined) return cached;
+        const resolved = resolvePlaceholders(raw, this);
+        this.#placeholderCache.set(key, resolved);
+        return resolved;
+    }
+
+    /**
+     * Applies at-rest secret decryption (AD-29 Wave 2) after placeholder
+     * resolution and before conversion: `{cipher:...}` markers decrypt via the
+     * configured decryptor (key-path AAD binding); all other values pass
+     * through untouched. No decryptor configured → identity — but a value
+     * carrying a secret marker then binds as literal plaintext (SEC-10's
+     * fail-open): warned once, values still pass through.
+     */
+    #decrypt(key: string, value: JSONValue | undefined): JSONValue | undefined {
+        const decryptor = this.#options.secretDecryptor;
+        if (typeof value !== 'string') return value;
+        const marker = parseSecretMarker(value);
+        if (marker && !decryptor && !secretFailOpenWarned) {
+            secretFailOpenWarned = true;
+            console.warn(
+                `[@blue/context] Property "${key}" holds a secret marker ({${marker.scheme}:...}) but no secret ` +
+                    'decryptor is wired — the ciphertext binds as a literal plaintext value (SEC-10 fail-open). ' +
+                    'Call environment.applySecretDecryptor(...) (e.g. builder.secrets(...) with BLUE_SECRET_KEY ' +
+                    'set) to decrypt at-rest secrets.'
+            );
+        }
+        if (!decryptor) return value;
+        return decryptor.decrypt(value, { key });
+    }
+
+    /**
+     * Formats a resolved value for an error message, redacting it when a
+     * decryptor is configured: the value reached this point post-decryption,
+     * so echoing it could leak plaintext (SEC-11). Non-strings are bound
+     * values, not secrets — only string echoes are a concern, but a configured
+     * decryptor redacts uniformly for a single, predictable diagnostic shape.
+     */
+    #diagnosticValue(value: JSONValue | undefined): string {
+        if (this.#options.secretDecryptor && typeof value === 'string') {
+            return '<redacted>';
+        }
+        return JSON.stringify(value);
+    }
+
+    /** Converts a resolved value to the target type via the injected conversion service. */
+    #convert<T>(
+        key: string,
+        value: JSONValue | undefined,
+        targetType: (new (...args: never[]) => T) | (() => T) | T
+    ): T | undefined {
+        const conversion = this.#options.conversionService ?? (this.#conversionService ??= createConversionService());
+        if (value === undefined) return undefined;
+        // Identity short-circuit: already the target type. Primitives are
+        // matched by typeof against the primitive name ('boolean' from
+        // Boolean.name.toLowerCase()), constructors via instanceof.
+        const targetName = (targetType as { name?: string }).name;
+        const primitiveName = targetName ? primitiveNameOf(targetName) : undefined;
+        if (
+            value instanceof (targetType as { new (...args: never[]): T }) ||
+            (primitiveName !== undefined && typeof value === primitiveName)
+        ) {
+            return value as T;
+        }
+        const converted = conversion.convert(value, targetType);
+        // NaN rejection: NumberConverter yields NaN for non-numeric strings.
+        if (typeof converted === 'number' && Number.isNaN(converted)) {
+            throw new IllegalStateError(
+                `Property "${key}" could not be converted to ${targetName ?? String(targetType)}: ${this.#diagnosticValue(value)} (NaN)`
+            );
+        }
+        return converted as T;
+    }
 }

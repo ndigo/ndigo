@@ -31,9 +31,9 @@ export interface MockRequest {
     query?: Record<string, string>;
     /** Request body (JSON object). Bound as `'*'` for the whole object, or by field name. */
     body?: Record<string, unknown>;
-    /** Raw request body sent verbatim (string or Buffer), for content types the JSON `.body()` cannot express — e.g. `multipart/form-data`, which the harness streams through the real parser before dispatch. */
+    /** Raw request body sent verbatim (string or Buffer). `multipart/form-data` streams through the real parser before dispatch; any other Content-Type is parsed like a live body (JSON / urlencoded / raw text). */
     rawBody?: string | Buffer;
-    /** Request headers (lower-cased keys). */
+    /** Request headers — keys are case-insensitive and normalized to lowercase, matching Node's `IncomingMessage`. */
     headers?: Record<string, string>;
     /** Cookies. */
     cookies?: Record<string, string>;
@@ -93,8 +93,16 @@ function splitPath(pathname: string): { cleanedPath: string; segments: RouteSegm
 export function buildRoute(request: MockRequest, responseSink: ResponseSink): PreparedRoute {
     const { cleanedPath, segments } = splitPath(request.path);
 
+    // RUS-4: Node lower-cases `IncomingMessage` header names; the mock must
+    // match at the boundary so `Content-Type:` keys never skip the pipeline's
+    // content-type gates. Response-side headers are already normalized.
+    const headers: Record<string, string> = {};
+    for (const [name, value] of Object.entries(request.headers ?? {})) {
+        headers[name.toLowerCase()] = value;
+    }
+
     const nodeRequest: NodeRequest = {
-        headers: request.headers ?? {},
+        headers,
         body: request.body ?? {},
         cookies: request.cookies ?? {},
         session: request.session ?? {},
@@ -118,7 +126,7 @@ export function buildRoute(request: MockRequest, responseSink: ResponseSink): Pr
         attributes: {
             [NODE_REQUEST_ATTRIBUTE]: nodeRequest,
             [NODE_RESPONSE_ATTRIBUTE]: responseSink,
-            [ACCEPT_LANGUAGE_ATTRIBUTE]: (request.headers ?? {})['accept-language'],
+            [ACCEPT_LANGUAGE_ATTRIBUTE]: headers['accept-language'],
         },
     } as unknown as Route;
 

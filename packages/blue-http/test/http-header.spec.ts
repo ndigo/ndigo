@@ -76,4 +76,32 @@ describe('HTTPHeader', () => {
 
         expect(pragma.has(headers)).toBe(false);
     });
+
+    test('it should fold case when reading lowercase records (DSG-5)', () => {
+        const headers: Record<string, string> = { 'content-type': 'text/plain' };
+        const contentType = new HTTPHeader('Content-Type');
+
+        expect(contentType.get(headers)).toBe('text/plain');
+        expect(contentType.has(headers)).toBe(true);
+    });
+
+    test('it should prefer the exact-case key over the folded lookup', () => {
+        const headers: Record<string, string> = { 'Content-Type': 'exact', 'content-type': 'folded' };
+
+        expect(new HTTPHeader('Content-Type').get(headers)).toBe('exact');
+    });
+
+    test('it should return null for lowercase records missing the header', () => {
+        const headers: Record<string, string> = { 'x-other': 'present' };
+
+        expect(new HTTPHeader('Content-Type').get(headers)).toBeNull();
+        expect(new HTTPHeader('Content-Type').has(headers)).toBe(false);
+    });
+
+    test('it should fold case when reading header tuples (DSG-5)', () => {
+        const headers: Array<[string, string]> = [['content-type', 'text/html']];
+
+        expect(new HTTPHeader('Content-Type').get(headers)).toBe('text/html');
+        expect(new HTTPHeader('Content-Type').has(headers)).toBe(true);
+    });
 });

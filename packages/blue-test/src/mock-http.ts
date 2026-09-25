@@ -6,8 +6,17 @@
  */
 import { NodeDispatcher } from '@blue/platform-node';
 import { getMethodNotAllowed } from '@blue/dispatcher';
-import { ProblemTypes, writeProblem } from '@blue/platform-node';
-import { parseMultipart } from '@blue/platform-node';
+import {
+    ProblemTypes,
+    writeProblem,
+    parseMultipart,
+    parseBodyRecord,
+    RequestLimitError,
+    type MultipartLimits,
+    type NodeMultipartContext,
+    contentTypeBase,
+    MULTIPART_FORM_DATA,
+} from '@blue/platform-node';
 import { PassThrough } from 'node:stream';
 import type { IncomingMessage } from 'node:http';
 import { buildRoute, MockRequest, PreparedRoute } from './request-builder';
@@ -184,12 +193,20 @@ export class MockHTTPRequestBuilder {
  */
 export class MockHTTP {
     #dispatcher: NodeDispatcher;
+    readonly #multipartLimits: Partial<MultipartLimits> | undefined;
 
     /**
      * @param arg (application dispatcher) - A configured node dispatcher, or an app with one.
+     * @param options - Optional harness configuration. `multipartLimits` is
+     * passed through to the multipart parser, mirroring
+     * `NodeHTTPServerAdapterOptions.multipart`.
      */
-    constructor(arg: NodeDispatcher | { dispatcher: NodeDispatcher }) {
+    constructor(
+        arg: NodeDispatcher | { dispatcher: NodeDispatcher },
+        options: { multipartLimits?: Partial<MultipartLimits> } = {}
+    ) {
         this.#dispatcher = typeof arg === 'object' && 'dispatcher' in arg ? arg.dispatcher : arg;
+        this.#multipartLimits = options.multipartLimits;
     }
 
     /**
@@ -212,19 +229,30 @@ export class MockHTTP {
     async request(req: MockRequest): Promise<MockResult> {
         const { response, sink } = createMemoryResponse();
         const prepared = buildRoute(req, sink);
+        let multipart: NodeMultipartContext | undefined;
 
         try {
-            // Multipart: mirror NodeHTTPServerAdapter — stream the raw bytes through
-            // busboy before dispatch and attach the parsed parts + text fields so the
-            // @file() resolver sees real parts (a true byte-level round-trip). Parse
-            // errors land in this catch and map to a problem response, as they do live.
+            // Mirror NodeHTTPServerAdapter — stream raw multipart bytes through
+            // busboy before dispatch and attach the parsed parts + text fields
+            // so the @file() resolver sees real parts (a true byte-level
+            // round-trip). Parse/limit errors land in the catch below and map
+            // to the same problem responses the live adapter writes.
             if (req.rawBody !== undefined) {
                 const contentType = String(req.headers?.['content-type'] ?? '').toLowerCase();
-                if (contentType.startsWith('multipart/form-data')) {
-                    const parsed = await parseMultipart(asIncoming(req.rawBody, req.headers ?? {}));
+                if (contentTypeBase(contentType) === MULTIPART_FORM_DATA) {
+                    multipart = await parseMultipart(asIncoming(req.rawBody, req.headers ?? {}), {
+                        limits: this.#multipartLimits,
+                    });
                     const nodeRequest = prepared.request;
-                    nodeRequest.multipart = parsed;
-                    nodeRequest.body = { ...nodeRequest.body, ...parsed.fields };
+                    nodeRequest.multipart = multipart;
+                    nodeRequest.body = { ...nodeRequest.body, ...multipart.fields };
+                } else {
+                    // RUS-4: a non-multipart rawBody is parsed like a live
+                    // body (JSON / urlencoded / raw) instead of being
+                    // silently dropped.
+                    const bytes = typeof req.rawBody === 'string' ? Buffer.from(req.rawBody, 'utf-8') : req.rawBody;
+                    const nodeRequest = prepared.request;
+                    nodeRequest.body = { ...nodeRequest.body, ...parseBodyRecord(contentType, bytes) };
                 }
             }
             const chain = this.#dispatcher.getHandler(prepared.route);
@@ -261,10 +289,31 @@ export class MockHTTP {
             // Dispatch through the real pipeline; the handler writes to the sink.
             await this.#dispatcher.dispatch(prepared.route);
         } catch (err: unknown) {
-            const message = err instanceof Error ? err.message : String(err);
             if (!response.completed) {
-                sink.writeHead(500, { 'Content-Type': 'application/json' });
-                sink.end(JSON.stringify({ error: message }));
+                if (err instanceof RequestLimitError) {
+                    // SEC-13: mirror NodeHTTPServerAdapter.#writeErrorResponse —
+                    // limit/parse rejections are problem documents at their own
+                    // status with a `urn:blue:<code>` type, not plain 500 JSON.
+                    writeProblem(sink, {
+                        type: `urn:blue:${err.code}`,
+                        status: err.statusCode,
+                        detail: err.code,
+                    });
+                } else {
+                    const message = err instanceof Error ? (err.stack ?? err.message) : String(err);
+                    console.error('[MockHTTP] dispatch failure:', message);
+                    writeProblem(sink, {
+                        type: ProblemTypes.internalError,
+                        title: 'Internal Server Error',
+                        status: 500,
+                    });
+                }
+            }
+        } finally {
+            // SEC-6: mirror the live adapter — parsed multipart temp parts are
+            // disposed once dispatch has finished (success or error).
+            if (multipart) {
+                await multipart.cleanup();
             }
         }
 

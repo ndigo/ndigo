@@ -5,7 +5,7 @@
  */
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
-import { mkdtemp, mkdir, writeFile, symlink, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, writeFile, symlink, rm, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { StaticResourceResolver, statusForKind, negotiateEncoding } from '../src/static-resource-resolver';
@@ -63,7 +63,10 @@ describe('StaticResourceResolver containment', () => {
     test('serves a file inside the base with correct MIME', async () => {
         const result = await makeResolver().resolve('/assets/index.html');
         expect(result.kind).toBe('ok');
-        expect(result.data?.toString('utf-8')).toBe('<h1>hello</h1>');
+        // File-backed results carry a path to stream, never buffered bytes.
+        expect(result.path).toBe(join(root, 'assets', 'index.html'));
+        expect(result.data).toBeUndefined();
+        expect((await readFile(result.path ?? '')).toString('utf-8')).toBe('<h1>hello</h1>');
         expect(result.contentType).toBe('text/html; charset=utf-8');
     });
 
@@ -86,9 +89,13 @@ describe('StaticResourceResolver containment', () => {
         }
     });
 
-    test('rejects percent-encoded traversal after decode', async () => {
+    test('percent-encoded traversal is inert — no decode step runs (raw, undecoded path semantics)', async () => {
+        // The pipeline never percent-decodes request paths (TST-3): `%2e%2e`
+        // is a literal directory name that does not exist on disk, so the
+        // lookup is a clean not-found — never a decoded `..` traversal.
         const result = await makeResolver().resolve('/assets/%2e%2e/%2e%2e/secret.txt');
-        expect(result.kind).not.toBe('ok');
+        expect(result.kind).toBe('not-found');
+        expect(result.data).toBeUndefined();
     });
 
     test('rejects absolute-path injection (never resolves outside the base)', async () => {
@@ -106,7 +113,7 @@ describe('StaticResourceResolver containment', () => {
     test('follows a benign symlink that stays inside the base', async () => {
         const result = await makeResolver().resolve('/assets/alias.html');
         expect(result.kind).toBe('ok');
-        expect(result.data?.toString('utf-8')).toBe('<h1>hello</h1>');
+        expect((await readFile(result.path ?? '')).toString('utf-8')).toBe('<h1>hello</h1>');
     });
 
     test('returns 404-kind for missing files', async () => {
@@ -125,7 +132,8 @@ describe('StaticResourceResolver binary safety', () => {
         const result = await makeResolver().resolve('/pixel.png');
         expect(result.kind).toBe('ok');
         expect(result.contentType).toBe('image/png');
-        expect([...(result.data ?? [])]).toEqual([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0xff, 0xfe]);
+        const bytes = await readFile(result.path ?? '');
+        expect([...bytes]).toEqual([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0xff, 0xfe]);
     });
 
     test('denies extensions outside the MIME allowlist', async () => {
@@ -153,7 +161,9 @@ describe('StaticResourceResolver metadata + variants (D-2/D-3)', () => {
         const result = await makeResolver().resolve('/app.js', { acceptEncoding: 'gzip' });
         expect(result.kind).toBe('ok');
         expect(result.encoding).toBe('gzip');
-        expect(result.data).toEqual(JS_GZ);
+        expect(result.path).toBe(join(root, 'app.js.gz'));
+        expect(result.data).toBeUndefined();
+        expect(await readFile(result.path ?? '')).toEqual(JS_GZ);
         expect(result.size).toBe(JS_GZ.length);
         expect(result.etag).toMatch(/-gzip"$/);
     });
@@ -161,7 +171,8 @@ describe('StaticResourceResolver metadata + variants (D-2/D-3)', () => {
     test('serves the .br variant and prefers it over gzip on ties', async () => {
         const result = await makeResolver().resolve('/app.js', { acceptEncoding: 'br, gzip' });
         expect(result.encoding).toBe('br');
-        expect(result.data).toEqual(JS_BR);
+        expect(result.path).toBe(join(root, 'app.js.br'));
+        expect(await readFile(result.path ?? '')).toEqual(JS_BR);
     });
 
     test('honors q-values: gzip wins when br is excluded', async () => {
@@ -172,7 +183,8 @@ describe('StaticResourceResolver metadata + variants (D-2/D-3)', () => {
     test('no Accept-Encoding serves the original', async () => {
         const result = await makeResolver().resolve('/app.js');
         expect(result.encoding).toBeUndefined();
-        expect(result.data?.toString('utf-8')).toBe(JS_BODY);
+        expect(result.path).toBe(join(root, 'app.js'));
+        expect((await readFile(result.path ?? '')).toString('utf-8')).toBe(JS_BODY);
     });
 
     test('originals mark compressible types variant-aware (Vary driver)', async () => {
@@ -189,7 +201,7 @@ describe('StaticResourceResolver metadata + variants (D-2/D-3)', () => {
     test('missing variant falls back to the original', async () => {
         const result = await makeResolver().resolve('/assets/style.css', { acceptEncoding: 'gzip' });
         expect(result.encoding).toBeUndefined();
-        expect(result.data?.toString('utf-8')).toBe('body { color: red; }');
+        expect((await readFile(result.path ?? '')).toString('utf-8')).toBe('body { color: red; }');
     });
 
     test('negotiateEncoding parses q-values and identity', () => {
@@ -211,8 +223,21 @@ describe('StaticResourceResolver directory modes (D-7)', () => {
     test('indexNames resolve a directory through its index file', async () => {
         const result = await makeResolver().resolve('/docs', { indexNames: ['index.html', 'a.txt'] });
         expect(result.kind).toBe('ok');
-        expect(result.data?.toString('utf-8')).toBe('alpha');
+        expect((await readFile(result.path ?? '')).toString('utf-8')).toBe('alpha');
         expect(result.contentType).toBe('text/plain; charset=utf-8');
+    });
+
+    test('maxFileSizeBytes rejects oversized files at stat time; 0 = unlimited', async () => {
+        // The cap applies to originals and precompressed variants alike and
+        // is enforced without reading payload bytes (SEC-8).
+        expect((await makeResolver().resolve('/app.js', { maxFileSizeBytes: 3 })).kind).toBe('forbidden');
+        expect((await makeResolver().resolve('/app.js', { acceptEncoding: 'gzip', maxFileSizeBytes: 3 })).kind).toBe(
+            'forbidden'
+        );
+        const allowed = await makeResolver().resolve('/app.js', { maxFileSizeBytes: 100 });
+        expect(allowed.kind).toBe('ok');
+        expect(allowed.path).toBe(join(root, 'app.js'));
+        expect((await makeResolver().resolve('/app.js')).kind).toBe('ok');
     });
 
     test('no matching index and no listing option → not-found', async () => {

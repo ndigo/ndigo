@@ -4,7 +4,24 @@
  * @author Jeff Rose
  */
 export * from './browser-environment';
-export * from './argument-value-converter';
+export {
+    argumentValueConverters,
+    createOptionalConverter,
+    createStringSplitConverter,
+    identityArgumentValueConverter,
+    resolveConverter,
+    toBooleanValue,
+    toDateValue,
+    toJSONStringValue,
+    toNumberValue,
+} from '@blue/dispatcher';
+export type {
+    ArgumentValueConversionContext,
+    ArgumentValueConverter,
+    ArgumentValueConverterRegistry,
+    ConverterResolutionOptions,
+    ResolverConverterOption,
+} from '@blue/dispatcher';
 export * from './data-binding-argument-resolver';
 export * from './configure-argument-resolvers';
 export * from './configure-converter-registry';
@@ -15,8 +32,7 @@ export * from './cookie-theme-resolver';
 export * from './cookies';
 export * from './locale';
 export * from './history-state-argument-resolver';
-export * from './session-storage-argument-resolver';
-export * from './local-storage-argument-resolver';
+export * from './browser-storage-argument-resolver';
 export * from './hash-router';
 export * from './browser-router';
 export * from './browser-dispatcher';

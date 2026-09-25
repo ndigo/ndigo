@@ -4,12 +4,11 @@
  * @author Jeff Rose
  */
 import { ApplicationContext } from '@blue/context';
-import { HandlerMethodArgumentResolver } from '@blue/dispatcher';
+import { HandlerMethodArgumentResolver, MethodParameterType } from '@blue/dispatcher';
 import { BrowserCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
 import { BrowserDataBindingMethodArgumentResolver } from './data-binding-argument-resolver';
 import { BrowserHistoryStateValueMethodArgumentResolver } from './history-state-argument-resolver';
-import { BrowserLocalStorageValueMethodArgumentResolver } from './local-storage-argument-resolver';
-import { BrowserSessionStorageValueMethodArgumentResolver } from './session-storage-argument-resolver';
+import { BrowserStorageValueMethodArgumentResolver } from './browser-storage-argument-resolver';
 
 /**
  * Registers browser-specific argument resolvers into the application context.
@@ -22,8 +21,16 @@ export function configureBrowserArgumentResolvers(
         new BrowserDataBindingMethodArgumentResolver(),
         new BrowserCookieValueMethodArgumentResolver(),
         new BrowserHistoryStateValueMethodArgumentResolver(),
-        new BrowserSessionStorageValueMethodArgumentResolver(),
-        new BrowserLocalStorageValueMethodArgumentResolver(),
+        new BrowserStorageValueMethodArgumentResolver(
+            () => globalThis.sessionStorage,
+            MethodParameterType.SESSION_STORAGE,
+            'BrowserSessionStorageValueMethodArgumentResolver'
+        ),
+        new BrowserStorageValueMethodArgumentResolver(
+            () => globalThis.localStorage,
+            MethodParameterType.LOCAL_STORAGE,
+            'BrowserLocalStorageValueMethodArgumentResolver'
+        ),
     ];
 
     applicationContext.setValue('argumentResolvers', resolvers);

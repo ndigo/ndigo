@@ -6,7 +6,10 @@
  * are held in memory; larger parts spill to a temp file so peak memory stays
  * bounded regardless of upload size. Size limits reject with `413` through the
  * same {@link RequestLimitError} the body-limit path uses, so uploads fail
- * identically to an over-large JSON body.
+ * identically to an over-large JSON body. An over-cap `Content-Length` rejects
+ * before any body byte is read; chunked uploads are capped by a counting gate
+ * that stops the flow instead of draining to EOF. Rejected or post-abort
+ * parts are drained with a real consumer so busboy always reaches `close`.
  *
  * @module blue-platform-node
  * @since 1.0.0
@@ -14,6 +17,7 @@
  */
 import busboy from 'busboy';
 import type { Readable } from 'node:stream';
+import { PassThrough } from 'node:stream';
 import { createWriteStream } from 'node:fs';
 import type { WriteStream } from 'node:fs';
 import type { IncomingMessage } from 'node:http';
@@ -21,6 +25,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { randomBytes } from 'node:crypto';
 import { RequestLimitError } from './http-request-limits';
+import { multipartBoundary } from './content-type';
 import { NodeMultipartContext, NodeMultipartFile, type Backing, type MultipartFile } from './multipart-file';
 
 /** Per-upload bounds. Every field is optional; {@link DEFAULT_MPART_LIMITS} fills the rest. */
@@ -31,6 +36,10 @@ export interface MultipartLimits {
     maxFiles?: number;
     /** Maximum number of text-field parts (default 100). */
     maxFields?: number;
+    /** Maximum total number of parts, fields + files (default `maxFiles + maxFields`). */
+    maxParts?: number;
+    /** Maximum size of a single text field, in bytes (default 1 MiB). Truncated fields reject with `413 field_too_large` — a silently truncated string is never bound. */
+    maxFieldSize?: number;
     /** Maximum combined size of the whole request, in bytes (default 10 MiB). */
     maxRequestSize?: number;
     /**
@@ -52,15 +61,26 @@ interface ResolvedMultipartLimits {
     readonly maxFileSize: number;
     readonly maxFiles: number;
     readonly maxFields: number;
+    readonly maxParts: number;
+    readonly maxFieldSize: number;
     readonly maxRequestSize: number;
     readonly fileThreshold: number;
 }
 
-/** Conservative v1 defaults — bounded, but generous enough for avatar/document uploads. */
+/**
+ * Conservative v1 defaults — bounded, but generous enough for avatar/document
+ * uploads. NOTE: `maxRequestSize`/`maxFileSize` default to 10 MiB while the
+ * adapter's whole-body cap (`HTTPRequestLimits.maxBodyBytes`) defaults to
+ * 1 MiB — the multipart parser is deliberately configured independently
+ * (surfaced via {@link NodeHTTPServerAdapterOptions.multipart}); deployments
+ * that want one budget for every body shape should align the two explicitly.
+ */
 const DEFAULT_MPART_LIMITS: ResolvedMultipartLimits = {
     maxFileSize: 10 * 1024 * 1024,
     maxFiles: 100,
     maxFields: 100,
+    maxParts: 200,
+    maxFieldSize: 1024 * 1024,
     maxRequestSize: 10 * 1024 * 1024,
     fileThreshold: 128 * 1024,
 };
@@ -74,26 +94,37 @@ function pickLimit(value: number | undefined, fallback: number): number {
 
 function resolveMultipartLimits(limits?: MultipartLimits): ResolvedMultipartLimits {
     const d = DEFAULT_MPART_LIMITS;
+    const maxFiles = pickLimit(limits?.maxFiles, d.maxFiles);
+    const maxFields = pickLimit(limits?.maxFields, d.maxFields);
     return {
         maxFileSize: pickLimit(limits?.maxFileSize, d.maxFileSize),
-        maxFiles: pickLimit(limits?.maxFiles, d.maxFiles),
-        maxFields: pickLimit(limits?.maxFields, d.maxFields),
+        maxFiles,
+        maxFields,
+        maxParts: pickLimit(limits?.maxParts, maxFiles + maxFields),
+        maxFieldSize: pickLimit(limits?.maxFieldSize, d.maxFieldSize),
         maxRequestSize: pickLimit(limits?.maxRequestSize, d.maxRequestSize),
         fileThreshold: pickLimit(limits?.fileThreshold, d.fileThreshold),
     };
 }
 
+/**
+ * Reads the request's declared `Content-Length` as a number, or `null` when
+ * the header is absent or not a plain non-negative integer. The raw header
+ * can be an array in degenerate cases (RFC 9110 folds); the first value wins.
+ */
+function contentLengthOf(req: IncomingMessage): number | null {
+    const raw = req.headers['content-length'];
+    const value = Array.isArray(raw) ? raw[0] : raw;
+    if (value === undefined || !/^\d+$/.test(value)) {
+        return null;
+    }
+    const parsed = Number(value);
+    return Number.isSafeInteger(parsed) ? parsed : null;
+}
+
 /** Extract the multipart boundary from a `Content-Type` header, or `null`. */
 function extractBoundary(contentType: string | undefined): string | null {
-    if (!contentType) {
-        return null;
-    }
-    const mime = contentType.split(';')[0]?.trim().toLowerCase() ?? '';
-    if (mime !== 'multipart/form-data') {
-        return null;
-    }
-    const match = /boundary=(?:"([^"]+)"|([^\s;]+))/.exec(contentType);
-    return match ? (match[1] ?? match[2]) : null;
+    return multipartBoundary(contentType);
 }
 
 /**
@@ -140,6 +171,18 @@ export async function parseMultipart(
     const tmpDir = options.tmpDir ?? tmpdir();
     const context = new NodeMultipartContext();
 
+    // SEC-5: when the client declares its size up front and it exceeds the
+    // cap, reject before reading a byte — no body consumption, no
+    // `100-continue` data transfer, no temp files.
+    const declaredLength = contentLengthOf(req);
+    if (declaredLength !== null && declaredLength > limits.maxRequestSize) {
+        throw new RequestLimitError(
+            413,
+            'request_too_large',
+            'Total multipart request exceeds the maximum allowed size'
+        );
+    }
+
     let totalBytes = 0;
     let aborted: RequestLimitError | null = null;
     const flagAbort = (code: string, message: string): void => {
@@ -154,7 +197,8 @@ export async function parseMultipart(
             fileSize: limits.maxFileSize,
             files: limits.maxFiles,
             fields: limits.maxFields,
-            parts: limits.maxFiles + limits.maxFields,
+            fieldSize: limits.maxFieldSize,
+            parts: limits.maxParts,
         },
     });
 
@@ -164,14 +208,59 @@ export async function parseMultipart(
         resolveParse = resolvePromise;
         rejectParse = rejectPromise;
     });
+    let settled = false;
+    const settleError = (error: Error): void => {
+        if (settled) {
+            return;
+        }
+        settled = true;
+        rejectParse(error);
+    };
+    const settleOk = (value: NodeMultipartContext): void => {
+        if (settled) {
+            return;
+        }
+        settled = true;
+        resolveParse(value);
+    };
+
+    // SEC-5: a counting gate between the request stream and busboy. Without
+    // a `Content-Length` (chunked uploads) the declared size is unknown, so
+    // the cap must stop the flow while streaming — crossing it destroys the
+    // gate stream with the same `RequestLimitError` busboy's own error path
+    // already surfaces, rejecting 413 promptly instead of draining to EOF.
+    const gate = new PassThrough();
+    // The cap-error propagates to busboy directly (destroying the gate alone
+    // would strand the piped parser without an error signal and it would
+    // never emit 'close'); busboy's 'error' path settles the promise.
+    gate.on('data', (chunk: Buffer) => {
+        totalBytes += chunk.length;
+        if (totalBytes > limits.maxRequestSize) {
+            flagAbort('request_too_large', 'Total multipart request exceeds the maximum allowed size');
+            gate.destroy();
+            bb.destroy(
+                new RequestLimitError(
+                    413,
+                    'request_too_large',
+                    'Total multipart request exceeds the maximum allowed size'
+                )
+            );
+        }
+    });
 
     const pending: Promise<void>[] = [];
 
-    bb.on('field', (name, value) => {
+    bb.on('field', (name, value, info) => {
         if (aborted) {
             return;
         }
         totalBytes += Buffer.byteLength(value);
+        if (info.valueTruncated) {
+            // SEC-9: busboy truncated this field at the field-size limit —
+            // bind nothing; the abort rejects with 413 field_too_large.
+            flagAbort('field_too_large', 'A text field exceeds the maximum allowed size');
+            return;
+        }
         if (totalBytes > limits.maxRequestSize) {
             flagAbort('request_too_large', 'Total multipart request exceeds the maximum allowed size');
             return;
@@ -181,14 +270,14 @@ export async function parseMultipart(
 
     bb.on('file', (_name, stream, info) => {
         const safeName = sanitizeFilename(info.filename);
-        if (safeName === null) {
-            // Reject traversal / absolute / separator filenames before any filesystem touch.
-            void stream.resume();
-            return;
-        }
-        if (aborted) {
-            // Still drain so busboy can reach 'close'.
-            void stream.resume();
+        if (safeName === null || aborted) {
+            // Reject traversal / absolute / separator filenames before any
+            // filesystem touch; still drain rejected or post-abort parts with
+            // a real consumer so busboy reaches 'close' promptly (SEC-7).
+            stream
+                .on('data', () => undefined)
+                .on('end', () => undefined)
+                .on('error', () => undefined);
             return;
         }
         pending.push(
@@ -217,8 +306,14 @@ export async function parseMultipart(
     bb.on('fieldsLimit', () => flagAbort('too_many_fields', 'Too many text fields were uploaded'));
     bb.on('partsLimit', () => flagAbort('too_many_parts', 'Too many parts were uploaded'));
     bb.on('error', (error) => {
-        // A parse error (e.g. a malformed boundary) is a client mistake, not an overload.
-        rejectParse(
+        // A parse error (e.g. a malformed boundary) is a client mistake, not
+        // an overload. The streaming gate's own cap error passes through with
+        // its 413 status; everything else is a malformed body.
+        if (error instanceof RequestLimitError) {
+            settleError(error);
+            return;
+        }
+        settleError(
             new RequestLimitError(
                 400,
                 'malformed_multipart',
@@ -234,15 +329,17 @@ export async function parseMultipart(
         if (aborted) {
             // Overflowed upload: discard temp parts so nothing leaks on disk.
             await context.cleanup();
-            rejectParse(aborted);
+            settleError(aborted);
             return;
         }
-        // Hand off readable parts to the caller; temps survive until the request
-        // is bound and cleanup() is called (D-3: cleaned up on read-completion).
-        resolveParse(context);
+        // Hand off readable parts to the caller. Temp files survive until the
+        // request dispatch completes; the framework request lifecycle then
+        // calls cleanup() (SEC-6) — the parser's own abort path above is the
+        // only other release.
+        settleOk(context);
     });
 
-    req.pipe(bb);
+    req.pipe(gate).pipe(bb);
 
     return settle;
 }

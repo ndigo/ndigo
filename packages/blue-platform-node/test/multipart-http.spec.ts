@@ -6,6 +6,9 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { type IncomingMessage, type ServerResponse, request as httpRequest } from 'node:http';
+import { readdirSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import type { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
 import { NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE, type NodeRequest } from '../src/node-request';
@@ -137,5 +140,58 @@ describe('Node multipart request wiring', () => {
         expect(res.status).toBe(200);
         const nodeRequest = cap.last?.attributes?.[NODE_REQUEST_ATTRIBUTE] as NodeRequest | undefined;
         expect(nodeRequest?.multipart).toBeUndefined();
+    });
+
+    test('413 over-cap multipart requests leave no blue-upload-* temp files after dispatch (SEC-6)', async () => {
+        const spill = (): string[] => readdirSync(tmpdir()).filter((name) => name.startsWith('blue-upload-'));
+        const before = new Set(spill());
+
+        const payload = [
+            `--${BOUNDARY}`,
+            'Content-Disposition: form-data; name="blob"; filename="big.bin"',
+            'Content-Type: application/octet-stream',
+            '',
+            'z'.repeat(300_000), // well above the 128 KiB fileThreshold → spills to tmpdir
+            `--${BOUNDARY}--`,
+            '',
+        ].join('\r\n');
+        const res = await post('/upload', Buffer.from(payload), `multipart/form-data; boundary=${BOUNDARY}`);
+
+        expect(res.status).toBe(200);
+        // The adapter disposes the parsed context after dispatch — no temp
+        // files survive the request.
+        const after = spill().filter((name) => !before.has(name));
+        expect(after).toEqual([]);
+    });
+
+    test('Content-Length over the multipart cap rejects 413 before the body is read (SEC-5)', async () => {
+        // The adapter surfaces parser limits via NodeHTTPServerAdapterOptions.multipart.
+        const cap = capturingDispatcher();
+        const limited = new NodeHTTPServerAdapter(cap.dispatcher, { multipart: { maxRequestSize: 24 } });
+        await limited.listen(0, '127.0.0.1');
+        const port = (limited.server as unknown as { address: () => { port: number } | null }).address()?.port;
+        try {
+            const res = await new Promise<{ status: number; json: unknown }>((resolve, reject) => {
+                const req = httpRequest(`http://127.0.0.1:${port}`, {
+                    method: 'POST',
+                    path: '/upload',
+                    headers: { 'content-type': `multipart/form-data; boundary=${BOUNDARY}` },
+                });
+                req.on('error', reject);
+                req.end(buildMultipartBody());
+                req.on('response', (res: IncomingMessage) => {
+                    let data = '';
+                    res.setEncoding('utf-8');
+                    res.on('data', (chunk: string): void => {
+                        data += chunk;
+                    });
+                    res.on('end', (): void => resolve({ status: res.statusCode ?? 0, json: JSON.parse(data) }));
+                });
+            });
+            expect(res.status).toBe(413);
+            expect(res.json).toMatchObject({ type: 'urn:blue:request_too_large', status: 413 });
+        } finally {
+            await limited.close();
+        }
     });
 });

@@ -16,7 +16,7 @@ import { NodeSocketSessionRegistry, resolveSocketRegistryOptions } from './node-
 import { SecurityHeadersInterceptor } from './security-headers-interceptor';
 import { NodeParameterBindingErrorResolver } from './parameter-binding-error-resolver';
 import { NodeLastResortErrorResolver } from './last-resort-error-resolver';
-import { argumentValueConverters } from './argument-value-converter';
+import { argumentValueConverters } from './_resolver-util';
 import { NodeQueryValueMethodArgumentResolver } from './query-argument-resolver';
 import { NodePathValueMethodArgumentResolver } from './path-argument-resolver';
 import { NodeHeaderValueMethodArgumentResolver } from './header-argument-resolver';

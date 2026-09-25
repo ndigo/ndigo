@@ -53,6 +53,18 @@ describe('NodeHeaderValueMethodArgumentResolver', () => {
             expect(resolver.resolveArgument(param, route, {})).toBe('application/json');
         });
 
+        test('should resolve canonical-case extractor names against lowercase records (DSG-5)', () => {
+            const route = makeRoute({
+                headers: { 'content-type': 'application/json', 'x-request-id': 'abc' },
+            });
+
+            const param = new MethodParameter(MethodParameterType.HEADER, 'Content-Type');
+            expect(resolver.resolveArgument(param, route, {})).toBe('application/json');
+
+            const idParam = new MethodParameter(MethodParameterType.HEADER, 'X-Request-Id');
+            expect(resolver.resolveArgument(idParam, route, {})).toBe('abc');
+        });
+
         test('headerValue() with no name binds the whole headers record', () => {
             const route = makeRoute({ headers: { 'content-type': 'application/json', 'x-via': 'test' } });
             const param = new MethodParameter(MethodParameterType.HEADER, '');

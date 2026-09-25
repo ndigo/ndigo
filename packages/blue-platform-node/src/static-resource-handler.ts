@@ -2,12 +2,32 @@
  * Per-request HTTP semantics for static resources (D-5): conditional GET,
  * single-range, cache headers, precompressed variants, directory listing,
  * and SPA fallback — writing directly to the `ServerResponse`.
+ *
+ * Payloads are streamed from disk (`createReadStream`) with stat-derived
+ * `Content-Length`s: nothing whole-file-buffers, and conditional GETs / HEAD
+ * are answered from stat metadata alone without opening the file (SEC-8).
+ * Write-side header names come from the `@blue/http` `HTTPHeader` constants
+ * (RUS-2); request-header reads use lowercase literals because Node
+ * normalizes `IncomingMessage` header names to lowercase records.
  * * @module blue-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */
 import type { ServerResponse } from 'node:http';
+import { createReadStream } from 'node:fs';
+import { once } from 'node:events';
 import { Route } from '@blue/router';
+import {
+    ACCEPT_RANGES,
+    CACHE_CONTROL,
+    CONTENT_ENCODING,
+    CONTENT_LENGTH,
+    CONTENT_RANGE,
+    CONTENT_TYPE,
+    ETAG,
+    LAST_MODIFIED,
+    VARY,
+} from '@blue/http';
 import { getNodeRequest, NODE_RESPONSE_ATTRIBUTE } from './node-request';
 import { StaticResourceResolver, type StaticResourceResult } from './static-resource-resolver';
 import { ProblemTypes, writeProblem } from './problem-details';
@@ -22,6 +42,8 @@ export interface StaticHandlerOptions {
     listDirectories?: boolean;
     /** 404 file miss + HTML-accepting GET/HEAD → serve the base index. Default `false`. */
     spaFallback?: boolean;
+    /** Reject files larger than this many bytes, checked at stat time before the file is opened. `0` = unlimited. Default `0`. */
+    maxFileSizeBytes?: number;
 }
 
 /** Default `Cache-Control` for successful responses (D-6). */
@@ -102,8 +124,12 @@ function parseSingleRange(rangeHeader: string, length: number): ByteRange | 'uns
         if (!Number.isInteger(n) || n <= 0) {
             return 'unsatisfiable';
         }
-        const lengthNum = Math.max(length, 0);
-        return { start: Math.max(lengthNum - n, 0), end: lengthNum - 1 };
+        // An empty payload admits no overlapping suffix range (start>end is
+        // never a valid 206) — any byte range on an empty file is 416.
+        if (length <= 0) {
+            return 'unsatisfiable';
+        }
+        return { start: Math.max(length - n, 0), end: length - 1 };
     }
     const dash = spec.indexOf('-');
     if (dash <= 0) {
@@ -173,12 +199,16 @@ export class StaticResourceHandler {
             indexNames: this.#options.indexNames ?? DEFAULT_INDEX_NAMES,
             listDirectories: this.#options.listDirectories,
             acceptEncoding: typeof headers['accept-encoding'] === 'string' ? headers['accept-encoding'] : undefined,
+            maxFileSizeBytes: this.#options.maxFileSizeBytes,
         });
 
         if (result.kind !== 'ok') {
             if (result.kind === 'not-found' && this.#options.spaFallback && acceptsHtml(headers['accept'])) {
                 const indexName = this.#options.indexNames?.[0] ?? DEFAULT_INDEX_NAMES[0];
-                const index = await this.#resolver.resolve(indexName, { acceptEncoding: undefined });
+                const index = await this.#resolver.resolve(indexName, {
+                    acceptEncoding: undefined,
+                    maxFileSizeBytes: this.#options.maxFileSizeBytes,
+                });
                 if (index.kind === 'ok') {
                     result = index;
                 }
@@ -198,64 +228,121 @@ export class StaticResourceHandler {
         const etag = result.etag;
         const fileBacked = etag !== undefined;
 
-        // Common headers for every successful representation.
+        // Common headers for every successful representation. Write-side names use
+        // the @blue/http constants (RUS-2); reads stay lowercase literals.
         const successHeaders: Record<string, string> = {
-            'Content-Type': result.contentType ?? 'application/octet-stream',
+            [CONTENT_TYPE.name]: result.contentType ?? 'application/octet-stream',
         };
         // `undefined` → default; `null` → opt out of the header entirely.
         const cacheControl =
             this.#options.cacheControl === undefined ? DEFAULT_CACHE_CONTROL : this.#options.cacheControl;
         if (cacheControl !== null) {
-            successHeaders['Cache-Control'] = cacheControl;
+            successHeaders[CACHE_CONTROL.name] = cacheControl;
         }
         if (result.variantAware) {
-            successHeaders['Vary'] = 'Accept-Encoding';
+            successHeaders[VARY.name] = 'Accept-Encoding';
         }
         if (etag) {
-            successHeaders['ETag'] = etag;
+            successHeaders[ETAG.name] = etag;
         }
         if (result.mtimeMs !== undefined) {
-            successHeaders['Last-Modified'] = toHttpDate(result.mtimeMs);
+            successHeaders[LAST_MODIFIED.name] = toHttpDate(result.mtimeMs);
         }
         if (result.encoding) {
-            successHeaders['Content-Encoding'] = result.encoding;
+            successHeaders[CONTENT_ENCODING.name] = result.encoding;
         }
         if (fileBacked) {
-            successHeaders['Accept-Ranges'] = 'bytes';
+            successHeaders[ACCEPT_RANGES.name] = 'bytes';
         }
 
-        // Conditional GET — evaluated before Range, on the whole representation.
+        // Conditional GET — answered from stat metadata only, the file is
+        // never opened for a 304 (SEC-8).
         if (etag && isNotModified(headers, result)) {
-            this.#send(res, 304, successHeaders, method === 'HEAD' ? '' : undefined);
+            this.#send(res, 304, successHeaders, undefined);
             return;
         }
 
-        let body: Buffer | undefined = result.data;
         if (fileBacked && typeof headers['range'] === 'string') {
             const range = parseSingleRange(headers['range'], result.size ?? 0);
             if (range === 'unsatisfiable') {
-                this.#send(res, 416, { ...successHeaders, 'Content-Range': `bytes */${result.size ?? 0}` }, '');
-                return;
-            }
-            if (range !== null && body) {
-                body = body.subarray(range.start, range.end + 1);
-                successHeaders['Content-Range'] = `bytes ${range.start}-${range.end}/${result.size ?? 0}`;
                 this.#send(
                     res,
+                    416,
+                    { ...successHeaders, [CONTENT_RANGE.name]: `bytes */${result.size ?? 0}` },
+                    undefined
+                );
+                return;
+            }
+            if (range !== null && result.path !== undefined) {
+                // Seeked stream over exactly the requested bytes (SEC-8).
+                successHeaders[CONTENT_RANGE.name] = `bytes ${range.start}-${range.end}/${result.size ?? 0}`;
+                const length = range.end - range.start + 1;
+                await this.#sendFile(
+                    res,
                     206,
-                    { ...successHeaders, 'Content-Length': String(body.length) },
-                    method === 'HEAD' ? '' : body
+                    { ...successHeaders, [CONTENT_LENGTH.name]: String(length) },
+                    result.path,
+                    { start: range.start, end: range.end },
+                    method === 'HEAD'
                 );
                 return;
             }
         }
 
+        if (fileBacked && result.path !== undefined) {
+            // Full representation: stat-derived Content-Length, streamed body.
+            await this.#sendFile(
+                res,
+                200,
+                { ...successHeaders, [CONTENT_LENGTH.name]: String(result.size ?? 0) },
+                result.path,
+                undefined,
+                method === 'HEAD'
+            );
+            return;
+        }
+
+        // Generated payload (directory listing): in-memory by construction.
         this.#send(
             res,
             200,
-            { ...successHeaders, 'Content-Length': String(body?.length ?? 0) },
-            method === 'HEAD' ? '' : body
+            { ...successHeaders, [CONTENT_LENGTH.name]: String(result.data?.length ?? 0) },
+            method === 'HEAD' ? undefined : result.data
         );
+    }
+
+    /**
+     * Streams a resolved file with a stat-derived `Content-Length`, or a
+     * seeked byte range (SEC-8). HEAD never opens the file — same headers,
+     * no body. Backpressure is honored; a stream failure after the headers
+     * were sent (file vanished/chmod'ed between stat and open) aborts the
+     * response.
+     */
+    async #sendFile(
+        res: ServerResponse,
+        status: number,
+        headers: Record<string, string>,
+        path: string,
+        range: { start: number; end: number } | undefined,
+        isHead: boolean
+    ): Promise<void> {
+        if (isHead) {
+            this.#send(res, status, headers, undefined);
+            return;
+        }
+        res.writeHead(status, headers);
+        const stream = createReadStream(path, range);
+        try {
+            for await (const chunk of stream) {
+                if (!res.write(chunk)) {
+                    await once(res, 'drain');
+                }
+            }
+            res.end();
+        } catch (error) {
+            void error;
+            res.destroy();
+        }
     }
 
     #send(
@@ -283,6 +370,9 @@ export class StaticResourceHandler {
 
 /** True when the client accepts HTML (SPA fallback gate, D-6). */
 function acceptsHtml(accept: string | string[] | undefined): boolean {
+    // Edge note (RUS-5): media types are case-insensitive (RFC 7231 §5.3.2) and
+    // `text/html;q=0` should mean 'never' — this substring check is a known
+    // approximation; it misfires only for unusual Accept headers.
     if (accept === undefined || accept.length === 0) {
         return true;
     }

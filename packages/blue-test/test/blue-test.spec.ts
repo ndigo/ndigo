@@ -49,7 +49,7 @@ describe('bootApp + MockHTTP (canonical app test)', () => {
 
     test('a second route on the same shared context is served', async () => {
         const res = await mockMVC.get('/math/hello').exec();
-        expect(res.response.headers['Content-Type']).toContain('application/json');
+        expect(res.response.headers['content-type']).toContain('application/json');
         expect(res.json()).toEqual({ message: 'hello' });
     });
 });

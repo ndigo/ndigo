@@ -64,7 +64,7 @@ import { StompBroker } from '@blue/socket';
 const broker = new StompBroker();
 
 @stompMapping('/chat')
-@parameters({ session: socketSession('session') })
+@parameters({ session: socketSessionValue('session') })
 async chat(session: SocketSession) {
     await broker.handleSocket(session);
 }

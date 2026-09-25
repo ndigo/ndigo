@@ -10,7 +10,7 @@ The design: per-kind sessions with no generic base class. The dispatcher
 owns the types handlers sign against; the Node platform implements the
 machinery; the application context composes it — a Node app can run socket
 sessions and HTTP sessions side by side as separate beans bound through
-separate extractors (`socketSession()` / `sessionValue()`).
+separate extractors (`socketSessionValue()` / `requestSessionValue()`).
 
 ## 1. Quickstart
 

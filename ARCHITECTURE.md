@@ -1287,7 +1287,7 @@ class RequestHandler {
 Entity decorators carry validation metadata that the framework derives into a Zod schema — validation logic is co-located with the field it protects, and the derived schema is the single source of truth (AD-7).
 
 - **Decorators**: `@column({ schema })`, `@primaryColumn`, `@generated`
-- **Problem Solved**: Keeps validation with the data it protects while producing a runtime schema _and_ a static type (`z.infer`) from one declaration. Route params use `validatedBy(schema, bindValue(...))` from `@blue/dispatcher`; domain components override `validationSchemas`.
+- **Problem Solved**: Keeps validation with the data it protects while producing a runtime schema _and_ a static type (`z.infer`) from one declaration. Route params use `validatedBy(schema, dataBinderValue('query'))` from `@blue/dispatcher`; domain components override `validationSchemas`.
 
 **Example:**
 

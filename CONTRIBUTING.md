@@ -78,6 +78,33 @@ decision-record links, commit notes, or descriptions of removed features — tho
 belong in `docs/`. Scaffold or update the affected README whenever you add or
 change a package or app.
 
+## Plans and decision records
+
+Plans (`docs/plans/`) and ADRs (`docs/decisions/`) are reviewable engineering
+artifacts with the same verification bar as code. Model the structure of the
+recent ADR/plan pairs (e.g. AD-26): `Date`/`Status` header first, then Problem,
+Decisions (D-N), Risks, Sequencing (waves with per-wave gates), Verification.
+Minimum requirements before a plan is ready to build:
+
+- **Every code claim cites an exact span** — `package/path:line` taken from
+  the repo graph (`graft ask` / `graft skeleton` / `graft grep`), never from
+  memory. No span, no claim: mark it unverified.
+- **Every named API is one of three kinds**: existing (span cited), new
+  (marked "new"/"adds"), or shelved idea (marked "never implemented"). Never
+  present a nonexistent API as shipped.
+- **Acceptance criteria are mechanically possible.** Each "spec asserts" must
+  trace to an existing primitive or to a prerequisite change named in the same
+  wave (e.g. "Wave 2 lands the DataBinder change before the `instanceof`
+  gate"). A gate the current code cannot satisfy means the plan is still a
+  proposal — say so.
+- **Lifecycle is tracked**: `Proposal` → review (record findings and fixes in
+  the doc) → `Accepted` (ADR recorded) → `Implemented` (status header updated,
+  gap-analysis rows refreshed, index entry moved in `docs/plans/README.md`).
+- **Links are bidirectional**: companion decision ↔ plan, superseded docs,
+  prerequisite docs.
+
+Naming: `YYYY-MM-DD_DESCRIPTION.md` (docs/README.md).
+
 ## Dependency changes
 
 - Do not add vulnerable transitive deps. After changing any manifest, run

@@ -4,24 +4,26 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import type { ServerResponse } from 'node:http';
 import { Route } from '@blue/router';
 import { ViewTarget } from '@blue/view';
-import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
-import { StaticResourceResolver } from './static-resource-resolver';
-import { ProblemTypes, writeProblem } from './problem-details';
+import { StaticResourceHandler, type StaticHandlerOptions } from './static-resource-handler';
 
 /**
  * Serve a static file from a base directory for a matching request path.
+ *
+ * Delegates every HTTP concern (conditional GET, Range, cache headers,
+ * precompressed variants, directory modes) to {@link StaticResourceHandler}
+ * (AD-28).
  */
 export class StaticFileView {
-    readonly #resolver: StaticResourceResolver;
+    readonly #handler: StaticResourceHandler;
 
     /**
      * @param basePath - The directory to serve files from.
+     * @param options - Static handler options (D-6).
      */
-    constructor(basePath: string) {
-        this.#resolver = new StaticResourceResolver(basePath);
+    constructor(basePath: string, options: StaticHandlerOptions = {}) {
+        this.#handler = new StaticResourceHandler(basePath, options);
     }
 
     /**
@@ -29,25 +31,9 @@ export class StaticFileView {
      *
      * @param _model - Unused.
      * @param route - The current route; `route.path` selects the file.
-     * @param target - The view target to commit output to.
+     * @param _target - Unused — the handler writes the response directly.
      */
-    async render(_model: unknown, route: Route, target: ViewTarget): Promise<void> {
-        const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
-        const result = await this.#resolver.resolve(route.path ?? '/');
-
-        if (result.kind !== 'ok') {
-            if (res && !res.headersSent) {
-                const forbidden = result.kind === 'forbidden';
-                writeProblem(res, {
-                    type: forbidden ? ProblemTypes.forbidden : ProblemTypes.notFound,
-                    title: forbidden ? 'Forbidden' : 'Not Found',
-                    status: forbidden ? 403 : 404,
-                    instance: route.path,
-                });
-            }
-            return;
-        }
-
-        await target.commit(result.data as unknown as string, _model, route);
+    async render(_model: unknown, route: Route, _target: ViewTarget): Promise<void> {
+        await this.#handler.handle(route, route.path ?? '/');
     }
 }

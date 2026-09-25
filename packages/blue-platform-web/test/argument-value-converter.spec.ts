@@ -16,7 +16,7 @@ import {
     toJSONStringValue,
     toNumberValue,
     ArgumentValueConversionContext,
-} from '../src/argument-value-converter';
+} from '../src/_resolver-util';
 import { conversionService } from '@blue/core';
 
 /** Context is never read by the built-in converters under test. */

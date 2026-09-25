@@ -30,6 +30,9 @@ import {
 } from '../src/parameters';
 import { socketMapping } from '../src/socket-mapping';
 import { routeMapping } from '../src/route-mapping';
+import { RouteHandlerMethod } from '../src/route-handler-method';
+import { ParameterBindingError } from '../src/error';
+import { QueryValueMethodArgumentResolver } from '../src/argument-resolver';
 
 describe('@parameters - TC39 Parameter Injection Pattern', () => {
     describe('Factory Functions', () => {
@@ -513,5 +516,53 @@ describe('requestPart() multipart JSON-part extractor (D-6)', () => {
         expect(() => resolveParameters(SocketController.prototype, 'room', fn)).toThrow(
             /not available for that mapping kind/
         );
+    });
+});
+
+describe('RouteHandlerMethod fails fast on unserved parameter types (DSG-1)', () => {
+    it('throws naming parameter and type when the resolver chain cannot serve a data-* source', () => {
+        class DataController {
+            @routeMapping('/users')
+            @parameters({ user: dataBinderValue('body') })
+            create(user: object) {}
+        }
+        const handler = new RouteHandlerMethod(new DataController(), 'create');
+        handler.parameters = resolveParameters(
+            DataController.prototype,
+            'create',
+            DataController.prototype.create as Function
+        );
+        // Empty chain: no resolver serves data-body:value — mirrors a
+        // platform whose resolver set cannot bind a body source.
+        handler.argumentResolvers = [];
+
+        try {
+            handler.invoke({} as never);
+            expect.unreachable('invoke should throw');
+        } catch (error) {
+            expect(error).toBeInstanceOf(ParameterBindingError);
+            expect(String(error)).toMatch(/No argument resolver supports data-body:value/);
+            expect(String(error)).toMatch(/'body'/);
+            expect(String(error)).toMatch(/'user'/);
+        }
+    });
+
+    it('still binds parameters the resolver chain can serve', () => {
+        class QueryController {
+            @routeMapping('/q')
+            @parameters({ page: queryValue('page') })
+            handle(page: string) {
+                return page;
+            }
+        }
+        const handler = new RouteHandlerMethod(new QueryController(), 'handle');
+        handler.parameters = resolveParameters(
+            QueryController.prototype,
+            'handle',
+            QueryController.prototype.handle as Function
+        );
+        handler.argumentResolvers = [new QueryValueMethodArgumentResolver()];
+
+        expect(handler.invoke({ data: { page: '42' }, attributes: {} } as never)).toBe('42');
     });
 });

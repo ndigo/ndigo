@@ -4,6 +4,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import { contentTypeBase } from './content-type';
 /**
  * Tunable bounds for the Node HTTP request pipeline.
  */
@@ -100,7 +101,7 @@ export type BodyParseResult =
  */
 export function parseBody(contentType: string | undefined, raw: Buffer): BodyParseResult {
     if (raw.length === 0) return { kind: 'empty' };
-    const mime = (contentType ?? '').split(';')[0]?.trim().toLowerCase() ?? '';
+    const mime = contentTypeBase(contentType) ?? '';
 
     if (mime === 'application/json' || mime === 'text/json' || mime.endsWith('+json')) {
         const text = raw.toString('utf-8');
@@ -127,4 +128,20 @@ export function parseBody(contentType: string | undefined, raw: Buffer): BodyPar
 
     const text = raw.toString('utf-8');
     return { kind: 'raw', raw: text };
+}
+
+/**
+ * Applies content-type-aware parsing to a raw body, mirroring the adapter's
+ * request-body contract (JSON is strict; any other non-empty type falls back
+ * to raw text under the wildcard `'*'` key — no silent reshaping).
+ *
+ * @param contentType - The request's `Content-Type` header value.
+ * @param raw - The raw body bytes.
+ * @returns The body record bound on `NodeRequest.body`.
+ */
+export function parseBodyRecord(contentType: string | undefined, raw: Buffer): Record<string, unknown> {
+    const result = parseBody(contentType, raw);
+    if (result.kind === 'empty') return {};
+    if (result.kind === 'json') return result.value;
+    return { '*': result.raw };
 }

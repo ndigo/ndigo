@@ -10,8 +10,7 @@ import { Route } from '@blue/router';
 import { configureBrowserArgumentResolvers } from '../src/configure-argument-resolvers';
 import { BrowserCookieValueMethodArgumentResolver } from '../src/cookie-argument-resolver';
 import { BrowserHistoryStateValueMethodArgumentResolver } from '../src/history-state-argument-resolver';
-import { BrowserLocalStorageValueMethodArgumentResolver } from '../src/local-storage-argument-resolver';
-import { BrowserSessionStorageValueMethodArgumentResolver } from '../src/session-storage-argument-resolver';
+import { BrowserStorageValueMethodArgumentResolver } from '../src/browser-storage-argument-resolver';
 import { BrowserDataBindingMethodArgumentResolver } from '../src/data-binding-argument-resolver';
 
 describe('configureBrowserArgumentResolvers', () => {
@@ -48,14 +47,20 @@ describe('configureBrowserArgumentResolvers', () => {
         const context = new MetadataConfigApplicationContext('test');
         const resolvers = configureBrowserArgumentResolvers(context);
 
-        expect(resolvers[3]).toBeInstanceOf(BrowserSessionStorageValueMethodArgumentResolver);
+        expect(resolvers[3]).toBeInstanceOf(BrowserStorageValueMethodArgumentResolver);
+        expect(Object.prototype.toString.call(resolvers[3])).toBe(
+            '[object BrowserSessionStorageValueMethodArgumentResolver]'
+        );
     });
 
     test('registers local-storage resolver fifth', () => {
         const context = new MetadataConfigApplicationContext('test');
         const resolvers = configureBrowserArgumentResolvers(context);
 
-        expect(resolvers[4]).toBeInstanceOf(BrowserLocalStorageValueMethodArgumentResolver);
+        expect(resolvers[4]).toBeInstanceOf(BrowserStorageValueMethodArgumentResolver);
+        expect(Object.prototype.toString.call(resolvers[4])).toBe(
+            '[object BrowserLocalStorageValueMethodArgumentResolver]'
+        );
     });
 
     test('applies type-based conversion when convertType is provided', () => {

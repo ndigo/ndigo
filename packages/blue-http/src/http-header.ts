@@ -34,6 +34,18 @@ function getPair(entries: HeaderEntries, name: string): string | null {
                 return entries[index][1];
             }
         }
+
+        // Case-folded retry (DSG-5): Node-server header tuples are
+        // lower-cased, so a canonical extractor name must still match.
+        const folded = name.toLowerCase();
+
+        if (folded !== name) {
+            for (let index = 0; index < length; index++) {
+                if (entries[index][0] === folded) {
+                    return entries[index][1];
+                }
+            }
+        }
     }
 
     return null;
@@ -75,7 +87,17 @@ function getHeader(headers: HeadersInit, name: string): string | null {
     } else if (isEntries(headers)) {
         return getPair(headers as unknown as HeaderEntries, name);
     } else if (isRecord(headers)) {
-        return get(headers as Record<string, string>, name) as string;
+        const record = headers as Record<string, string>;
+        let value = get(record, name);
+
+        if (value === undefined) {
+            // Case-folded retry (DSG-5): Node-server request/response headers
+            // are lower-cased records, so a canonical extractor name must
+            // still match.
+            value = get(record, name.toLowerCase());
+        }
+
+        return value === undefined ? null : (value as string);
     }
     return null;
 }

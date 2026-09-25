@@ -4,7 +4,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { readdir, realpath, stat, readFile } from 'node:fs/promises';
+import { readdir, realpath, stat } from 'node:fs/promises';
 import { sep, resolve, isAbsolute } from 'node:path';
 
 /** Outcome kinds for a static-resource lookup. */
@@ -16,7 +16,16 @@ export type StaticEncoding = 'br' | 'gzip';
 /** The result of resolving a static resource. */
 export interface StaticResourceResult {
     readonly kind: StaticResourceKind;
-    /** Raw file bytes (only for `ok`). */
+    /**
+     * Absolute path of the payload file to open (only for `ok` file-backed
+     * results). Callers stream from here — resolution never reads payload
+     * bytes (SEC-8).
+     */
+    readonly path?: string;
+    /**
+     * Generated payload bytes (directory listings only; `ok` file-backed
+     * results carry `path` instead).
+     */
     readonly data?: Buffer;
     /** MIME type from the allowlist (only for `ok`). */
     readonly contentType?: string;
@@ -89,6 +98,11 @@ export interface StaticResolveOptions {
     listDirectories?: boolean;
     /** Client `Accept-Encoding` header — drives precompressed variant selection (D-3). */
     acceptEncoding?: string;
+    /**
+     * Reject files larger than this many bytes, checked at stat time before
+     * anything is opened or read. `0` (default) = unlimited.
+     */
+    maxFileSizeBytes?: number;
 }
 
 /**
@@ -154,8 +168,10 @@ export class StaticResourceResolver {
     }
 
     /**
-     * Resolves a request-relative path to file bytes + MIME type, or a
-     * classified failure. Never throws for expected failure modes.
+     * Resolves a request-relative path to a servable file (absolute `path`
+     * plus MIME/validator metadata) or a classified failure. Never throws for
+     * expected failure modes. Payload bytes are never read here — callers
+     * open `path` (the handler streams it).
      *
      * Without options this is the plain-file resolution (directories are
      * not-found, no variants). With options, directories resolve through
@@ -163,8 +179,12 @@ export class StaticResourceResolver {
      * (`<file>.br` / `<file>.gz`) are selected via `Accept-Encoding` for
      * compressible types.
      *
-     * @param requestPath - The URL-decoded path relative to the base root
-     *   (leading `/` allowed and ignored).
+     * @param requestPath - The raw, undecoded path relative to the base root
+     *   (leading `/` allowed and ignored). The serving pipeline never
+     *   percent-decodes request paths: encoded sequences (`%2e%2e`, `%20`, …)
+     *   are literal filename characters, so only files whose on-disk names
+     *   literally contain them can be served — encoded traversal is inert,
+     *   and encoded spaces/unicode filenames are not servable (TST-3).
      * @param options - Optional resolution controls (D-6/D-7).
      */
     async resolve(requestPath: string, options?: StaticResolveOptions): Promise<StaticResourceResult> {
@@ -227,15 +247,22 @@ export class StaticResourceResolver {
             // Serving unknown types risks content-type confusion; deny.
             return { kind: 'forbidden' };
         }
+        // Size cap enforced from stat alone, before any open or read (SEC-8).
+        const maxFileSizeBytes = options?.maxFileSizeBytes;
+        if (maxFileSizeBytes !== undefined && maxFileSizeBytes > 0 && stats.size > maxFileSizeBytes) {
+            return { kind: 'forbidden' };
+        }
         const variantAware = COMPRESSIBLE_EXTENSIONS.has(extension);
         const encoding = variantAware ? negotiateEncoding(options?.acceptEncoding) : null;
         if (encoding) {
             const variant = await this._statVariant(real, encoding);
             if (variant) {
-                const data = await readFile(variant.path);
+                if (maxFileSizeBytes !== undefined && maxFileSizeBytes > 0 && variant.stats.size > maxFileSizeBytes) {
+                    return { kind: 'forbidden' };
+                }
                 return {
                     kind: 'ok',
-                    data,
+                    path: variant.path,
                     contentType,
                     size: variant.stats.size,
                     mtimeMs: variant.stats.mtimeMs,
@@ -245,10 +272,9 @@ export class StaticResourceResolver {
                 };
             }
         }
-        const data = await readFile(real);
         return {
             kind: 'ok',
-            data,
+            path: real,
             contentType,
             size: stats.size,
             mtimeMs: stats.mtimeMs,

@@ -65,6 +65,7 @@
   },
   "sideEffects": false,
   "dependencies": {
+    "@blue/http": "~0.0.1",
     "@blue/util": "~0.0.1",
     "busboy": "^1.6.0",
     "helmet": "^8.3.0",

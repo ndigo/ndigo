@@ -4,14 +4,13 @@
  * @author Jeff Rose
  */
 import { configuration, entry } from '@blue/context';
-import { argumentValueConverters } from './argument-value-converter';
+import { argumentValueConverters } from './_resolver-util';
 import { BrowserDataBindingMethodArgumentResolver } from './data-binding-argument-resolver';
 import { BrowserCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
 import { CookieLanguageResolver } from './cookie-language-resolver';
 import { BrowserHistoryStateValueMethodArgumentResolver } from './history-state-argument-resolver';
-import { BrowserSessionStorageValueMethodArgumentResolver } from './session-storage-argument-resolver';
-import { BrowserLocalStorageValueMethodArgumentResolver } from './local-storage-argument-resolver';
-import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
+import { BrowserStorageValueMethodArgumentResolver } from './browser-storage-argument-resolver';
+import { RadixMetadataHandlerMapping, MethodParameterType } from '@blue/dispatcher';
 import { NameViewResolver, ViewResolverComposite } from '@blue/view';
 import { WebComponentViewResolver } from '@blue/view-webcomponent';
 import { conditionalOnBrowser } from '@blue/core';
@@ -44,8 +43,16 @@ export class WebAutoConfiguration {
             new BrowserDataBindingMethodArgumentResolver(),
             new BrowserCookieValueMethodArgumentResolver(),
             new BrowserHistoryStateValueMethodArgumentResolver(),
-            new BrowserSessionStorageValueMethodArgumentResolver(),
-            new BrowserLocalStorageValueMethodArgumentResolver(),
+            new BrowserStorageValueMethodArgumentResolver(
+                () => globalThis.sessionStorage,
+                MethodParameterType.SESSION_STORAGE,
+                'BrowserSessionStorageValueMethodArgumentResolver'
+            ),
+            new BrowserStorageValueMethodArgumentResolver(
+                () => globalThis.localStorage,
+                MethodParameterType.LOCAL_STORAGE,
+                'BrowserLocalStorageValueMethodArgumentResolver'
+            ),
         ];
     }
 

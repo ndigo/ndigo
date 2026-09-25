@@ -5,9 +5,14 @@
  * `history-state:value`, `attribute:value`) supports both flat keys and
  * dotted traversal (`bodyValue('address.city')`). Exact key hits always win
  * (a literal `a.b` key in the source beats the walk); otherwise the key is
- * split on `.` and walked object by object, stopping at the first
+ * key is split on `.` and walked object by object, stopping at the first
  * non-traversable value. This is a read helper — it never constructs or
  * mutates, so it stays distinct from {@link DataBinder}.
+ *
+ * Grammar boundary: this walk supports dot-separated keys ONLY — bracketed
+ * paths (`items[0].name`) belong to the {@link parseKeypath} grammar in
+ * @blue/core (DataBinder's keypath family). A dotted source key that needs
+ * array indexing should use a DataBinder-bound source instead.
  *
  * @module blue-dispatcher
  * @since 1.0.0

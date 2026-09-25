@@ -137,18 +137,18 @@ the ladder (D-3).
   event. Naming matches the existing camelCase scope decorators exactly.
 - **`PrecedenceDoc`** (`blue-boot/src/precedence.ts`, AD-13 D6) is the
   canonical ordered source-name list, integration-tested: `commandLine > boot
-  > systemEnvironment > dotenv > application-{profile} > application >
-  > defaults`. Any new named source MUST update it + its spec (documented
-  > contract).
+    > systemEnvironment > dotenv > application-{profile} > application >
+    > defaults`. Any new named source MUST update it + its spec (documented
+    > contract).
 - **Boot binding** (`application.ts:_prepareContext`): after
   `context.refresh()`, each `@configurationProperties` class is resolved via
   `resolveConfigurationProperties` and registered under its camelCase name
   with `context.setValue`. One-shot, no rebind path.
 - **Seam precedents:** AD-13's `readFile` injection (`StandardConfigFileLoader`
-  - `node-file-reader.ts`, boot stays isomorphic) and its
-    `optional:`/`required:` file convention; `TtlContentSource`
-    (`blue-content/src/async.ts`) TTL pattern; AD-24's demo-gate counter test
-    (`cached-report`); AD-20's `NodeAutoConfiguration` `@entry` beans.
+    - `node-file-reader.ts`, boot stays isomorphic) and its
+      `optional:`/`required:` file convention; `TtlContentSource`
+      (`blue-content/src/async.ts`) TTL pattern; AD-24's demo-gate counter test
+      (`cached-report`); AD-20's `NodeAutoConfiguration` `@entry` beans.
 - **Crypto posture:** zero crypto deps in-tree; `jose` is a dependency of
   the auth packages only (never `blue-context`). `node:crypto` is the
   platform standard (Node ≥ 22 per the i18n note; `Intl` precedent AD-19
@@ -320,11 +320,11 @@ aad?: string): string`. Native token payload:
 
 ```ts
 interface RemoteSourceOptions {
-  url: string; // https required at fetch time (enforced)
-  pollMs?: number; // 0/absent = fetch once at boot, no polling
-  headers?: Record<string, string>;
-  optional?: boolean; // default true — fetch failure warns, boot proceeds
-  fetch?: typeof fetch; // injectable seam; defaults to globalThis.fetch
+    url: string; // https required at fetch time (enforced)
+    pollMs?: number; // 0/absent = fetch once at boot, no polling
+    headers?: Record<string, string>;
+    optional?: boolean; // default true — fetch failure warns, boot proceeds
+    fetch?: typeof fetch; // injectable seam; defaults to globalThis.fetch
 }
 ```
 

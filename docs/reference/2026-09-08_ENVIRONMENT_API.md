@@ -118,4 +118,4 @@ report. Non-object schemas throw.
 - `FlatMergedIndex` — compiled on invalidation, zero-alloc lookups, per-key
   origin retention; opt in via `{ index: 'flat' }`. In-place map edits after
   build are invisible until the next rebuild (replace-not-mutate doctrine).
-No eval-family anywhere — expressions are parsed, never executed.
+  No eval-family anywhere — expressions are parsed, never executed.

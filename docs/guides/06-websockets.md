@@ -17,12 +17,12 @@ separate extractors (`socketSessionValue()` / `requestSessionValue()`).
 Add a `@socketMapping` handler to any controller and connect:
 
 ```ts
-import { parameters, socketMapping, socketSession, type SocketSession } from '@blue/dispatcher';
+import { parameters, socketMapping, socketSessionValue, type SocketSession } from '@blue/dispatcher';
 
 @requestMapping('/ws')
 class ChatController {
     @socketMapping('/echo')
-    @parameters({ session: socketSession('session') })
+    @parameters({ session: socketSessionValue('session') })
     async *echo(session: SocketSession) {
         for await (const message of session.messages) {
             yield { event: 'echo', data: message };
@@ -43,7 +43,7 @@ handshake itself:
 
 ```ts
 @socketMapping({ value: '/room', queryParams: 'token=abc' })
-@parameters({ session: socketSession('session'), token: queryValue('token') })
+@parameters({ session: socketSessionValue('session'), token: queryValue('token') })
 async *room(session: SocketSession, token: string) { /* … */ }
 ```
 
@@ -133,7 +133,7 @@ export class ChatController implements ApplicationContextAware {
     }
 
     @socketMapping('/chat')
-    @parameters({ session: socketSession('session') })
+    @parameters({ session: socketSessionValue('session') })
     async chat(session: SocketSession) {
         session.join('room');
         for await (const message of session.messages) {
@@ -325,7 +325,7 @@ isomorphic (`@blue/socket`) and transport-agnostic:
 const broker = new StompBroker();   // app-scoped bean
 
 @stompMapping('/chat')
-@parameters({ session: socketSession('session') })
+@parameters({ session: socketSessionValue('session') })
 async chat(session: SocketSession) {
     await broker.handleSocket(session);   // CONNECT/SUBSCRIBE/SEND/ACK/RECEIPT
 }

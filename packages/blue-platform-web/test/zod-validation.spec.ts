@@ -10,7 +10,7 @@ import {
     ModelAndView,
     routeMapping,
     parameters,
-    bindBrowserValue,
+    dataBinderValue,
     queryValue,
     validatedBy,
     ParameterConversionError,
@@ -24,7 +24,7 @@ import {
     entry,
     ApplicationContextAwareProcessor,
 } from '@blue/context';
-import { BrowserBindMethodArgumentResolver } from '../src/bind-argument-resolver';
+import { BrowserDataBindingMethodArgumentResolver } from '../src/data-binding-argument-resolver';
 
 class TestView {
     render() {}
@@ -44,14 +44,14 @@ describe('Zod Validation Integration', () => {
 
     type User = z.infer<typeof UserSchema>;
 
-    it('should validate and coerce data using validatedBy and bindBrowserValue', async () => {
+    it('should validate and coerce data using validatedBy and dataBinderValue', async () => {
         let capturedUser: User | null = null;
 
         @routeMapping('/users')
         class UserController {
             @routeMapping('/create')
             @parameters({
-                user: validatedBy(UserSchema, bindBrowserValue('query')),
+                user: validatedBy(UserSchema, dataBinderValue('query')),
             })
             create(user: User) {
                 capturedUser = user;
@@ -68,7 +68,7 @@ describe('Zod Validation Integration', () => {
                 return new TestViewResolver();
             }
             @entry argumentResolvers() {
-                return [new BrowserBindMethodArgumentResolver()];
+                return [new BrowserDataBindingMethodArgumentResolver()];
             }
         }
 
@@ -105,7 +105,7 @@ describe('Zod Validation Integration', () => {
         class UserController {
             @routeMapping('/invalid')
             @parameters({
-                user: validatedBy(UserSchema, bindBrowserValue('query')),
+                user: validatedBy(UserSchema, dataBinderValue('query')),
             })
             invalid(user: User) {
                 return new ModelAndView('success');
@@ -131,7 +131,7 @@ describe('Zod Validation Integration', () => {
                 return [new ErrorCapturingResolver()];
             }
             @entry argumentResolvers() {
-                return [new BrowserBindMethodArgumentResolver()];
+                return [new BrowserDataBindingMethodArgumentResolver()];
             }
         }
 

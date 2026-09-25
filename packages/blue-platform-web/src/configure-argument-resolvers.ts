@@ -6,10 +6,10 @@
 import { ApplicationContext } from '@blue/context';
 import { HandlerMethodArgumentResolver } from '@blue/dispatcher';
 import { BrowserCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
-import { BrowserBindMethodArgumentResolver } from './bind-argument-resolver';
-import { BrowserModelValueMethodArgumentResolver } from './model-argument-resolver';
-import { BrowserStateValueMethodArgumentResolver } from './state-argument-resolver';
-import { BrowserSessionValueMethodArgumentResolver } from './session-argument-resolver';
+import { BrowserDataBindingMethodArgumentResolver } from './data-binding-argument-resolver';
+import { BrowserHistoryStateValueMethodArgumentResolver } from './history-state-argument-resolver';
+import { BrowserLocalStorageValueMethodArgumentResolver } from './local-storage-argument-resolver';
+import { BrowserSessionStorageValueMethodArgumentResolver } from './session-storage-argument-resolver';
 
 /**
  * Registers browser-specific argument resolvers into the application context.
@@ -19,11 +19,11 @@ export function configureBrowserArgumentResolvers(
     _options?: unknown
 ): HandlerMethodArgumentResolver[] {
     const resolvers: HandlerMethodArgumentResolver[] = [
-        new BrowserBindMethodArgumentResolver(),
+        new BrowserDataBindingMethodArgumentResolver(),
         new BrowserCookieValueMethodArgumentResolver(),
-        new BrowserModelValueMethodArgumentResolver(),
-        new BrowserStateValueMethodArgumentResolver(),
-        new BrowserSessionValueMethodArgumentResolver(),
+        new BrowserHistoryStateValueMethodArgumentResolver(),
+        new BrowserSessionStorageValueMethodArgumentResolver(),
+        new BrowserLocalStorageValueMethodArgumentResolver(),
     ];
 
     applicationContext.setValue('argumentResolvers', resolvers);

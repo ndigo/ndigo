@@ -57,7 +57,7 @@ export class GreetingController {
      * POST /api/echo
      */
     @postMapping('/echo')
-    @parameters({ payload: bodyValue('*') })
+    @parameters({ payload: bodyValue() })
     echo(payload: unknown) {
         return { echo: payload };
     }

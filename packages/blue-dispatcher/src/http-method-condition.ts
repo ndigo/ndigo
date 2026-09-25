@@ -64,11 +64,20 @@ export class HTTPMethodCondition extends AbstractRouteCondition<HTTPMethodCondit
      * Return this condition when the route's method matches (or this condition
      * has no method constraint); `null` otherwise.
      *
+     * A `HEAD` request matches a `GET`-constrained mapping when no HEAD
+     * mapping exists (RFC 9110 §9.3.2: HEAD is GET without the message body).
+     * Node's `ServerResponse` suppresses the body natively for HEAD while
+     * keeping the headers — conditional-GET revalidation probes (caches,
+     * `curl -I`) rely on this.
+     *
      * @param route - The current route.
      * @returns This condition, or `null`.
      */
     getMatchingCondition(route: Route): HTTPMethodCondition | null {
         if (this.method === undefined || route.method === undefined) {
+            return this;
+        }
+        if (route.method === 'HEAD' && this.method === 'GET') {
             return this;
         }
         return this.method === route.method ? this : null;

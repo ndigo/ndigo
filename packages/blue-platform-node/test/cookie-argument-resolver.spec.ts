@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect, beforeEach } from 'vitest';
-import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { MissingParameterError, MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { NodeCookieValueMethodArgumentResolver } from '../src/cookie-argument-resolver';
 import { NODE_REQUEST_ATTRIBUTE, NodeRequest } from '../src/node-request';
@@ -53,6 +53,13 @@ describe('NodeCookieValueMethodArgumentResolver', () => {
             expect(resolver.resolveArgument(param, route, {})).toBe('abc123');
         });
 
+        test('cookieValue() with no name binds the whole cookie jar', () => {
+            const route = makeRoute({ cookies: { session: 'abc123', theme: 'dark' } });
+            const param = new MethodParameter(MethodParameterType.COOKIE, '');
+
+            expect(resolver.resolveArgument(param, route, {})).toEqual({ session: 'abc123', theme: 'dark' });
+        });
+
         test('should return default value when source value is absent', () => {
             const route = makeRoute({
                 cookies: {},
@@ -68,8 +75,8 @@ describe('NodeCookieValueMethodArgumentResolver', () => {
             });
 
             const param = new MethodParameter(MethodParameterType.COOKIE, 'session', true);
-            expect(() => resolver.resolveArgument(param, route, {})).toThrow(TypeError);
-            expect(() => resolver.resolveArgument(param, route, {})).toThrow(/"session" cannot be undefined or null/);
+            expect(() => resolver.resolveArgument(param, route, {})).toThrow(MissingParameterError);
+            expect(() => resolver.resolveArgument(param, route, {})).toThrow(/parameter 'session' is missing/);
         });
 
         test('should apply type-based conversion when convertType is provided', () => {

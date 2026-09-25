@@ -4,16 +4,16 @@
  * @author Jeff Rose
  */
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { MissingParameterError, MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { Route } from '@blue/router';
-import { BrowserSessionValueMethodArgumentResolver } from '../src/session-argument-resolver';
+import { BrowserSessionStorageValueMethodArgumentResolver } from '../src/session-storage-argument-resolver';
 
-describe('BrowserSessionValueMethodArgumentResolver', () => {
-    let resolver: BrowserSessionValueMethodArgumentResolver;
+describe('BrowserSessionStorageValueMethodArgumentResolver', () => {
+    let resolver: BrowserSessionStorageValueMethodArgumentResolver;
     const originalSessionStorage = globalThis.sessionStorage;
 
     beforeEach(() => {
-        resolver = new BrowserSessionValueMethodArgumentResolver();
+        resolver = new BrowserSessionStorageValueMethodArgumentResolver();
         vi.restoreAllMocks();
     });
 
@@ -24,13 +24,13 @@ describe('BrowserSessionValueMethodArgumentResolver', () => {
         }
     });
 
-    test('supports session value parameters', () => {
-        const parameter = new MethodParameter(MethodParameterType.SESSION, 'sessionId');
+    test('supports session-storage value parameters', () => {
+        const parameter = new MethodParameter(MethodParameterType.SESSION_STORAGE, 'sessionId');
 
         expect(resolver.supportsParameter(parameter)).toBe(true);
     });
 
-    test('does not support non-session parameters', () => {
+    test('does not support non-session-storage parameters', () => {
         const parameter = new MethodParameter(MethodParameterType.QUERY, 'sessionId');
 
         expect(resolver.supportsParameter(parameter)).toBe(false);
@@ -41,10 +41,23 @@ describe('BrowserSessionValueMethodArgumentResolver', () => {
             getItem: vi.fn((name: string) => (name === 'sessionId' ? 'abc-123' : null)),
         });
 
-        const parameter = new MethodParameter(MethodParameterType.SESSION, 'sessionId');
+        const parameter = new MethodParameter(MethodParameterType.SESSION_STORAGE, 'sessionId');
         const value = resolver.resolveArgument(parameter, { data: {}, params: null } as unknown as Route, {});
 
         expect(value).toBe('abc-123');
+    });
+
+    test('sessionStorageValue() with no name binds the whole jar', () => {
+        vi.stubGlobal('sessionStorage', {
+            length: 2,
+            key: vi.fn((i: number) => (i === 0 ? 'theme' : 'sessionId')),
+            getItem: vi.fn((name: string) => (name === 'theme' ? 'dark' : 'abc-123')),
+        });
+
+        const parameter = new MethodParameter(MethodParameterType.SESSION_STORAGE, '');
+        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as unknown as Route, {});
+
+        expect(value).toEqual({ theme: 'dark', sessionId: 'abc-123' });
     });
 
     test('uses default value when session value is absent', () => {
@@ -52,7 +65,7 @@ describe('BrowserSessionValueMethodArgumentResolver', () => {
             getItem: vi.fn(() => null),
         });
 
-        const parameter = new MethodParameter(MethodParameterType.SESSION, 'sessionId', false, 'fallback-id');
+        const parameter = new MethodParameter(MethodParameterType.SESSION_STORAGE, 'sessionId', false, 'fallback-id');
         const value = resolver.resolveArgument(parameter, { data: {}, params: null } as unknown as Route, {});
 
         expect(value).toBe('fallback-id');
@@ -63,10 +76,10 @@ describe('BrowserSessionValueMethodArgumentResolver', () => {
             getItem: vi.fn(() => null),
         });
 
-        const parameter = new MethodParameter(MethodParameterType.SESSION, 'sessionId', true);
+        const parameter = new MethodParameter(MethodParameterType.SESSION_STORAGE, 'sessionId', true);
 
         expect(() => resolver.resolveArgument(parameter, { data: {}, params: null } as unknown as Route, {})).toThrow(
-            '"sessionId" cannot be undefined or null'
+            /parameter 'sessionId' is missing/
         );
     });
 
@@ -75,7 +88,7 @@ describe('BrowserSessionValueMethodArgumentResolver', () => {
             getItem: vi.fn(() => 'true'),
         });
 
-        const parameter = new MethodParameter(MethodParameterType.SESSION, 'sessionId', false, null, {
+        const parameter = new MethodParameter(MethodParameterType.SESSION_STORAGE, 'sessionId', false, null, {
             source: String,
             target: Boolean,
         });
@@ -89,7 +102,7 @@ describe('BrowserSessionValueMethodArgumentResolver', () => {
             getItem: vi.fn(() => '42'),
         });
 
-        const parameter = new MethodParameter(MethodParameterType.SESSION, 'count', false, null, {
+        const parameter = new MethodParameter(MethodParameterType.SESSION_STORAGE, 'count', false, null, {
             source: String,
             target: Number,
         });

@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect, beforeEach } from 'vitest';
-import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { MissingParameterError, MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { NodeQueryValueMethodArgumentResolver } from '../src/query-argument-resolver';
 
@@ -39,6 +39,24 @@ describe('NodeQueryValueMethodArgumentResolver', () => {
             expect(resolver.resolveArgument(param, route, {})).toBe('John');
         });
 
+        test('queryValue() with no name binds the whole query object', () => {
+            const route = makeRoute({ name: 'John', age: '30' });
+            const param = new MethodParameter(MethodParameterType.QUERY, '');
+
+            expect(resolver.resolveArgument(param, route, {})).toEqual({ name: 'John', age: '30' });
+        });
+
+        test('query is scalar-only — a dotted name is a literal key, never a walk (D-2)', () => {
+            const route = makeRoute({ 'a.b': 'literal' });
+            const literal = new MethodParameter(MethodParameterType.QUERY, 'a.b');
+            expect(resolver.resolveArgument(literal, route, {})).toBe('literal');
+
+            // No nested source: a dotted-only key is absent, not walked.
+            const nested = new MethodParameter(MethodParameterType.QUERY, 'a.b');
+            const flat = makeRoute({ a: { b: 'nested' } });
+            expect(resolver.resolveArgument(nested, flat, {})).toBeNull();
+        });
+
         test('should return default value when source value is absent', () => {
             const route = makeRoute({});
             const param = new MethodParameter(MethodParameterType.QUERY, 'name', false, 'default');
@@ -48,8 +66,8 @@ describe('NodeQueryValueMethodArgumentResolver', () => {
         test('should throw when required parameter is absent', () => {
             const route = makeRoute({});
             const param = new MethodParameter(MethodParameterType.QUERY, 'name', true);
-            expect(() => resolver.resolveArgument(param, route, {})).toThrow(TypeError);
-            expect(() => resolver.resolveArgument(param, route, {})).toThrow(/"name" cannot be undefined or null/);
+            expect(() => resolver.resolveArgument(param, route, {})).toThrow(MissingParameterError);
+            expect(() => resolver.resolveArgument(param, route, {})).toThrow(/parameter 'name' is missing/);
         });
 
         test('should apply type-based conversion when convertType is provided', () => {

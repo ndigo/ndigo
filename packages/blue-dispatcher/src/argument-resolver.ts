@@ -6,6 +6,8 @@
 import { Route } from '@blue/router';
 import { MethodParameter, MethodParameterType } from './parameters';
 import { isNil, like } from '@blue/util/types';
+import { readDottedValue } from './dotted-read';
+import { MissingParameterError } from './error';
 
 /**
  * Strategy interface for resolving method parameters into argument values in the context of a given route.
@@ -48,12 +50,16 @@ export const likeArgumentResolver = like({
  */
 export abstract class AbstractNamedValueMethodArgumentResolver implements HandlerMethodArgumentResolver {
     /**
-     * Handles a missing argument value by throwing a TypeError.
-     * @param name - The name of the missing argument.
-     * @throws {TypeError} If the argument is undefined or null.
+     * Handles a missing argument value by throwing a
+     * {@link MissingParameterError} — a `ParameterBindingError`, so HTTP
+     * error resolvers map it to `400` (Spring's
+     * `MissingServletRequestParameterException` parity) instead of a 500
+     * from a bare `TypeError`.
+     * @param parameter - The method parameter that could not be resolved.
+     * @throws {MissingParameterError} If the argument is undefined or null.
      */
-    handleMissingValue(name: string) {
-        throw TypeError(`"${name}" cannot be undefined or null`);
+    handleMissingValue(parameter: MethodParameter): never {
+        throw new MissingParameterError(parameter.name, parameter.type.toString());
     }
 
     /**
@@ -72,7 +78,7 @@ export abstract class AbstractNamedValueMethodArgumentResolver implements Handle
             validatedValue = parameter.convert ? parameter.convert(value) : value;
 
         if (isNil(validatedValue) && parameter.required) {
-            this.handleMissingValue(parameter.name);
+            this.handleMissingValue(parameter);
         }
 
         return validatedValue;
@@ -134,9 +140,9 @@ export class MatrixValueMethodArgumentResolver extends AbstractNamedValueMethodA
  */
 export class QueryValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: unknown): unknown {
-        // '*' binds the entire query object (validatedQuery sugar), mirroring
-        // the body resolver's '*' convention.
-        return name === '*' ? route.data : route.data[name];
+        // No name (`queryValue()`) binds the entire query object — the
+        // `*Value(name)` contract: omit the name → the whole source.
+        return name === '' ? route.data : route.data[name];
     }
 
     /**
@@ -154,7 +160,8 @@ export class QueryValueMethodArgumentResolver extends AbstractNamedValueMethodAr
  */
 export class PathValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: unknown): unknown {
-        return route.params?.[name];
+        // `pathVariable()` binds the whole params record; named binds one.
+        return name === '' ? route.params : route.params?.[name];
     }
 
     /**
@@ -172,7 +179,9 @@ export class PathValueMethodArgumentResolver extends AbstractNamedValueMethodArg
  */
 export class AttributeValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: unknown): unknown {
-        return route.attributes?.[name];
+        // `attributeValue()` binds the whole framework-context bag;
+        // named binds one value (nested-capable, D-2).
+        return name === '' ? route.attributes : readDottedValue(route.attributes, name);
     }
 
     /**
@@ -193,6 +202,10 @@ export class AttributeValueMethodArgumentResolver extends AbstractNamedValueMeth
  */
 export class RouteValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: unknown): unknown {
+        // `routeValue()` (no name) binds the whole Route — the `*Value(name)`
+        // contract extracts a value *named* `name`, and there is no "route"
+        // property. Named calls bind Route properties.
+        if (name === '') return route;
         if (name === 'path') return route.path;
         if (name === 'method') return route.method;
         if (name === 'id') return route.id;

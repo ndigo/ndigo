@@ -11,17 +11,19 @@ import {
     queryValue,
     matrixValue,
     cookieValue,
-    modelValue,
-    stateValue,
-    sessionValue,
+    historyStateValue,
+    requestSessionValue,
+    sessionStorageValue,
+    localStorageValue,
     pathVariable,
     bodyValue,
     fileValue,
+    requestPart,
     asNumber,
     asBoolean,
     asDate,
     asJson,
-    bindBrowserValue,
+    dataBinderValue,
     resolveParameters,
     getParameterMap,
     MethodParameterType,
@@ -88,35 +90,60 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
             expect(extractor.required).toBe(false);
         });
 
-        it('modelValue should create model parameter extractor', () => {
-            const extractor = modelValue('profile');
-            expect(extractor.type).toEqual(MethodParameterType.MODEL);
-            expect(extractor.name).toBe('profile');
-            expect(extractor.required).toBe(false);
-            expect(extractor.defaultValue).toBeNull();
-        });
-
-        it('sessionValue should create session parameter extractor', () => {
-            const extractor = sessionValue('sessionId');
-            expect(extractor.type).toEqual(MethodParameterType.SESSION);
-            expect(extractor.name).toBe('sessionId');
-            expect(extractor.required).toBe(false);
-            expect(extractor.defaultValue).toBeNull();
-        });
-
-        it('stateValue should create state parameter extractor', () => {
-            const extractor = stateValue('token');
-            expect(extractor.type).toEqual(MethodParameterType.STATE);
+        it('historyStateValue should create history-state parameter extractor', () => {
+            const extractor = historyStateValue('token');
+            expect(extractor.type).toEqual(MethodParameterType.HISTORY_STATE);
             expect(extractor.name).toBe('token');
             expect(extractor.required).toBe(false);
             expect(extractor.defaultValue).toBeNull();
         });
 
-        it('bindBrowserValue should create bind parameter extractor', () => {
-            const extractor = bindBrowserValue('query', { prefix: 'user.' });
-            expect(extractor.type).toEqual(MethodParameterType.BIND);
+        it('requestSessionValue should create request-session parameter extractor', () => {
+            const extractor = requestSessionValue('sessionId');
+            expect(extractor.type).toEqual(MethodParameterType.REQUEST_SESSION);
+            expect(extractor.name).toBe('sessionId');
+            expect(extractor.required).toBe(false);
+            expect(extractor.defaultValue).toBeNull();
+        });
+
+        it('sessionStorageValue should create session-storage parameter extractor', () => {
+            const extractor = sessionStorageValue('theme');
+            expect(extractor.type).toEqual(MethodParameterType.SESSION_STORAGE);
+            expect(extractor.name).toBe('theme');
+            expect(extractor.required).toBe(false);
+            expect(extractor.defaultValue).toBeNull();
+        });
+
+        it('localStorageValue should create local-storage parameter extractor', () => {
+            const extractor = localStorageValue('token');
+            expect(extractor.type).toEqual(MethodParameterType.LOCAL_STORAGE);
+            expect(extractor.name).toBe('token');
+            expect(extractor.required).toBe(false);
+            expect(extractor.defaultValue).toBeNull();
+        });
+
+        it('dataBinderValue should create a data-{source} parameter extractor', () => {
+            const extractor = dataBinderValue('query', undefined, { prefix: 'user.' });
+            expect(extractor.type).toEqual(MethodParameterType.data('query'));
+            expect(extractor.type.type).toBe('data-query:value');
             expect(extractor.name).toBe('query');
             expect(extractor.prefix).toBe('user.');
+        });
+
+        it('dataBinderValue should carry an optional target constructor', () => {
+            class ProfileForm {}
+            const extractor = dataBinderValue('body', ProfileForm);
+            expect(extractor.type).toEqual(MethodParameterType.data('body'));
+            expect(extractor.target).toBe(ProfileForm);
+        });
+
+        it('MethodParameterType.data round-trips through fromType', () => {
+            expect(MethodParameterType.fromType('data-cookie:value')).toEqual(MethodParameterType.data('cookie'));
+            expect(MethodParameterType.fromType('path:variable')).toEqual(MethodParameterType.PATH);
+            expect(MethodParameterType.fromType('history-state:value')).toEqual(MethodParameterType.HISTORY_STATE);
+            expect(MethodParameterType.fromType('request-session:value')).toEqual(MethodParameterType.REQUEST_SESSION);
+            expect(MethodParameterType.fromType('session-storage:value')).toEqual(MethodParameterType.SESSION_STORAGE);
+            expect(MethodParameterType.fromType('local-storage:value')).toEqual(MethodParameterType.LOCAL_STORAGE);
         });
 
         describe('Typed Converter Wrappers', () => {
@@ -129,7 +156,7 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
             });
 
             it('asBoolean should wrap extractor with boolean converter', () => {
-                const extractor = asBoolean(stateValue('active'));
+                const extractor = asBoolean(historyStateValue('active'));
                 expect(extractor.convertType).toEqual({ source: String, target: Boolean });
                 expect(extractor.name).toBe('active');
             });
@@ -141,7 +168,7 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
             });
 
             it('asJson should wrap extractor with json converter', () => {
-                const extractor = asJson(modelValue('profile'));
+                const extractor = asJson(sessionStorageValue('profile'));
                 expect(extractor.convertType).toEqual({ source: String, target: Object });
                 expect(extractor.name).toBe('profile');
             });
@@ -207,16 +234,16 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
                 @parameters({
                     page: queryValue('page'),
                     session: cookieValue('SESSIONID'),
-                    profile: modelValue('profile'),
-                    token: stateValue('token'),
-                    sessionId: sessionValue('sessionId'),
+                    profile: dataBinderValue('query'),
+                    token: historyStateValue('token'),
+                    sessionId: requestSessionValue('sessionId'),
                     color: matrixValue('color'),
                     userId: pathVariable('userId'),
                 })
                 handleMixed(
                     page: string,
                     session: string,
-                    profile: string,
+                    profile: object,
                     token: string,
                     sessionId: string,
                     color: string,
@@ -228,9 +255,9 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
             expect(params).toHaveLength(7);
             expect(params[0].type).toEqual(MethodParameterType.QUERY);
             expect(params[1].type).toEqual(MethodParameterType.COOKIE);
-            expect(params[2].type).toEqual(MethodParameterType.MODEL);
-            expect(params[3].type).toEqual(MethodParameterType.STATE);
-            expect(params[4].type).toEqual(MethodParameterType.SESSION);
+            expect(params[2].type).toEqual(MethodParameterType.data('query'));
+            expect(params[3].type).toEqual(MethodParameterType.HISTORY_STATE);
+            expect(params[4].type).toEqual(MethodParameterType.REQUEST_SESSION);
             expect(params[5].type).toEqual(MethodParameterType.MATRIX);
             expect(params[6].type).toEqual(MethodParameterType.PATH);
         });
@@ -360,7 +387,7 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
         it('rejects bodyValue on a socket mapping at resolution time', () => {
             class SocketController {
                 @socketMapping('/room')
-                @parameters({ payload: bodyValue('*') })
+                @parameters({ payload: bodyValue() })
                 async *room(session: unknown) {
                     yield session;
                 }
@@ -415,6 +442,69 @@ describe('fileValue() multipart extractor', () => {
         class SocketController {
             @socketMapping('/room')
             @parameters({ avatar: fileValue() })
+            async *room(session: unknown) {
+                yield session;
+            }
+        }
+        const fn = SocketController.prototype.room as Function;
+        expect(() => resolveParameters(SocketController.prototype, 'room', fn)).toThrow(
+            /not available for that mapping kind/
+        );
+    });
+});
+
+describe('requestPart() multipart JSON-part extractor (D-6)', () => {
+    it('creates a REQUEST_PART extractor with the part name inferred from the argument', () => {
+        class UploadController {
+            @routeMapping({ value: '/upload', method: 'POST' })
+            @parameters({ meta: requestPart() })
+            upload(meta: unknown) {}
+        }
+        const params = resolveParameters(
+            UploadController.prototype,
+            'upload',
+            UploadController.prototype.upload as Function
+        );
+        expect(params[0].type).toEqual(MethodParameterType.REQUEST_PART);
+        expect(params[0].name).toBe('meta');
+        expect(params[0].target).toBeUndefined();
+    });
+
+    it('carries an explicit part name and a target constructor', () => {
+        class MetaDTO {}
+        const extractor = requestPart('meta', MetaDTO);
+        expect(extractor.type).toEqual(MethodParameterType.REQUEST_PART);
+        expect(extractor.partName).toBe('meta');
+        expect(extractor.target).toBe(MetaDTO);
+    });
+
+    it('treats a lone constructor argument as the target (name inferred)', () => {
+        class MetaDTO {}
+        const extractor = requestPart(MetaDTO);
+        expect(extractor.partName).toBeUndefined();
+        expect(extractor.target).toBe(MetaDTO);
+    });
+
+    it('folds the explicit part name into parameter.name', () => {
+        class UploadController {
+            @routeMapping({ value: '/upload', method: 'POST' })
+            @parameters({ meta: requestPart('metadata') })
+            upload(meta: unknown) {}
+        }
+        const params = resolveParameters(
+            UploadController.prototype,
+            'upload',
+            UploadController.prototype.upload as Function
+        );
+        expect(params[0].type).toEqual(MethodParameterType.REQUEST_PART);
+        expect(params[0].name).toBe('metadata');
+        expect(params[0].target).toBeUndefined();
+    });
+
+    it('rejects requestPart() on a socket mapping at resolution time', () => {
+        class SocketController {
+            @socketMapping('/room')
+            @parameters({ meta: requestPart() })
             async *room(session: unknown) {
                 yield session;
             }

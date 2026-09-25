@@ -4,16 +4,16 @@
  * @author Jeff Rose
  */
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { MissingParameterError, MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { Route } from '@blue/router';
-import { BrowserStateValueMethodArgumentResolver } from '../src/state-argument-resolver';
+import { BrowserHistoryStateValueMethodArgumentResolver } from '../src/history-state-argument-resolver';
 
-describe('BrowserStateValueMethodArgumentResolver', () => {
-    let resolver: BrowserStateValueMethodArgumentResolver;
+describe('BrowserHistoryStateValueMethodArgumentResolver', () => {
+    let resolver: BrowserHistoryStateValueMethodArgumentResolver;
     const originalHistory = globalThis.history;
 
     beforeEach(() => {
-        resolver = new BrowserStateValueMethodArgumentResolver();
+        resolver = new BrowserHistoryStateValueMethodArgumentResolver();
         vi.restoreAllMocks();
     });
 
@@ -24,13 +24,13 @@ describe('BrowserStateValueMethodArgumentResolver', () => {
         }
     });
 
-    test('supports state parameters', () => {
-        const parameter = new MethodParameter(MethodParameterType.STATE, 'token');
+    test('supports history-state parameters', () => {
+        const parameter = new MethodParameter(MethodParameterType.HISTORY_STATE, 'token');
 
         expect(resolver.supportsParameter(parameter)).toBe(true);
     });
 
-    test('does not support non-state parameters', () => {
+    test('does not support non-history-state parameters', () => {
         const parameter = new MethodParameter(MethodParameterType.QUERY, 'token');
 
         expect(resolver.supportsParameter(parameter)).toBe(false);
@@ -39,16 +39,34 @@ describe('BrowserStateValueMethodArgumentResolver', () => {
     test('resolves values from browser history state', () => {
         vi.stubGlobal('history', { state: { token: 'abc-123' } });
 
-        const parameter = new MethodParameter(MethodParameterType.STATE, 'token');
+        const parameter = new MethodParameter(MethodParameterType.HISTORY_STATE, 'token');
         const value = resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {});
 
         expect(value).toBe('abc-123');
     });
 
+    test('historyStateValue() with no name binds the whole history.state', () => {
+        vi.stubGlobal('history', { state: { token: 'abc-123', count: 2 } });
+
+        const parameter = new MethodParameter(MethodParameterType.HISTORY_STATE, '');
+        const value = resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {});
+
+        expect(value).toEqual({ token: 'abc-123', count: 2 });
+    });
+
+    test('resolves dotted keys by walking history.state (nested-capable, D-2)', () => {
+        vi.stubGlobal('history', { state: { user: { name: 'Jeff' } } });
+
+        const parameter = new MethodParameter(MethodParameterType.HISTORY_STATE, 'user.name');
+        const value = resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {});
+
+        expect(value).toBe('Jeff');
+    });
+
     test('uses default value when state value is absent', () => {
         vi.stubGlobal('history', { state: {} });
 
-        const parameter = new MethodParameter(MethodParameterType.STATE, 'token', false, 'fallback');
+        const parameter = new MethodParameter(MethodParameterType.HISTORY_STATE, 'token', false, 'fallback');
         const value = resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {});
 
         expect(value).toBe('fallback');
@@ -57,17 +75,17 @@ describe('BrowserStateValueMethodArgumentResolver', () => {
     test('throws when required state value is absent', () => {
         vi.stubGlobal('history', { state: {} });
 
-        const parameter = new MethodParameter(MethodParameterType.STATE, 'token', true);
+        const parameter = new MethodParameter(MethodParameterType.HISTORY_STATE, 'token', true);
 
         expect(() => resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {})).toThrow(
-            '"token" cannot be undefined or null'
+            /parameter 'token' is missing/
         );
     });
 
     test('applies type-based conversion when convertType is provided', () => {
         vi.stubGlobal('history', { state: { count: '42' } });
 
-        const parameter = new MethodParameter(MethodParameterType.STATE, 'count', false, null, {
+        const parameter = new MethodParameter(MethodParameterType.HISTORY_STATE, 'count', false, null, {
             source: String,
             target: Number,
         });
@@ -79,7 +97,7 @@ describe('BrowserStateValueMethodArgumentResolver', () => {
     test('applies boolean conversion when convertType is provided', () => {
         vi.stubGlobal('history', { state: { active: 'true' } });
 
-        const parameter = new MethodParameter(MethodParameterType.STATE, 'active', false, null, {
+        const parameter = new MethodParameter(MethodParameterType.HISTORY_STATE, 'active', false, null, {
             source: String,
             target: Boolean,
         });

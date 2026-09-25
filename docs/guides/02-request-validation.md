@@ -50,7 +50,7 @@ second coercion stage.
 ## 2. Whole-body: `validatedBody(schema)`
 
 Validate an entire parsed request body against one schema — sugar over
-`validatedBy(schema, bodyValue('*'))`.
+`validatedBy(schema, bodyValue())`.
 
 ```ts
 const NoteSchema = z.object({
@@ -88,7 +88,7 @@ Apply one schema across several extractors.
 
 ```ts
 @parameters(validateParameters(UserSchema, {
-    user: bindValue('query'),
+    user: dataBinderValue('query'),
 }))
 ```
 

@@ -5,12 +5,12 @@
  */
 import { configuration, entry } from '@blue/context';
 import { argumentValueConverters } from './argument-value-converter';
-import { BrowserBindMethodArgumentResolver } from './bind-argument-resolver';
+import { BrowserDataBindingMethodArgumentResolver } from './data-binding-argument-resolver';
 import { BrowserCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
 import { CookieLanguageResolver } from './cookie-language-resolver';
-import { BrowserModelValueMethodArgumentResolver } from './model-argument-resolver';
-import { BrowserSessionValueMethodArgumentResolver } from './session-argument-resolver';
-import { BrowserStateValueMethodArgumentResolver } from './state-argument-resolver';
+import { BrowserHistoryStateValueMethodArgumentResolver } from './history-state-argument-resolver';
+import { BrowserSessionStorageValueMethodArgumentResolver } from './session-storage-argument-resolver';
+import { BrowserLocalStorageValueMethodArgumentResolver } from './local-storage-argument-resolver';
 import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { NameViewResolver, ViewResolverComposite } from '@blue/view';
 import { WebComponentViewResolver } from '@blue/view-webcomponent';
@@ -41,11 +41,11 @@ export class WebAutoConfiguration {
     @entry
     argumentResolvers() {
         return [
-            new BrowserBindMethodArgumentResolver(),
+            new BrowserDataBindingMethodArgumentResolver(),
             new BrowserCookieValueMethodArgumentResolver(),
-            new BrowserModelValueMethodArgumentResolver(),
-            new BrowserStateValueMethodArgumentResolver(),
-            new BrowserSessionValueMethodArgumentResolver(),
+            new BrowserHistoryStateValueMethodArgumentResolver(),
+            new BrowserSessionStorageValueMethodArgumentResolver(),
+            new BrowserLocalStorageValueMethodArgumentResolver(),
         ];
     }
 

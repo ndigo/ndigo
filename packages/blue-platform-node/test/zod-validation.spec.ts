@@ -246,7 +246,7 @@ describe('Zod validation over the Node argument pipeline', () => {
         @routeMapping('/notes')
         class NotesController {
             @routeMapping('/create')
-            @parameters({ data: validatedBy(UserSchema, bodyValue('*')) })
+            @parameters({ data: validatedBy(UserSchema, bodyValue()) })
             create(data: User) {
                 return { ok: true };
             }

@@ -6,7 +6,7 @@
 // @vitest-environment node
 import { afterAll, describe, expect, test } from 'vitest';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { parameters, requestMapping, socketMapping, socketSession, type SocketSession } from '@blue/dispatcher';
+import { parameters, requestMapping, socketMapping, socketSessionValue, type SocketSession } from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { HTTPServer } from '../src/http-server';
@@ -111,7 +111,7 @@ describe('resolveSocketLimits', () => {
 @requestMapping('/')
 class BeanSocketController {
     @socketMapping('/echo')
-    @parameters({ session: socketSession('session') })
+    @parameters({ session: socketSessionValue('session') })
     async *echo(session: SocketSession) {
         for await (const message of session.messages) {
             yield { event: 'echo', data: message };

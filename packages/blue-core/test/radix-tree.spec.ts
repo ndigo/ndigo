@@ -94,6 +94,102 @@ describe('RadixTree', () => {
         expect(result?.pattern).toBe('/api/v1/users/:id/profile');
     });
 
+    describe('greedy segments (D-1: `{*name}` capture + `**` non-capturing)', () => {
+        test('{*name} captures the multi-segment remainder', () => {
+            tree.insert('/static/{*file}', 'handler');
+            const result = tree.lookup('/static/a/b/c.png');
+            expect(result).not.toBeNull();
+            expect(result?.value).toBe('handler');
+            expect(result?.params).toEqual({ file: 'a/b/c.png' });
+            expect(result?.pattern).toBe('/static/{*file}');
+        });
+
+        test('{*name} captures a single segment too', () => {
+            tree.insert('/static/{*file}', 'handler');
+            const result = tree.lookup('/static/logo.png');
+            expect(result?.params).toEqual({ file: 'logo.png' });
+        });
+
+        test('{*name} captures an empty remainder at the segment boundary', () => {
+            tree.insert('/static/{*file}', 'handler');
+            expect(tree.lookup('/static')?.params).toEqual({ file: '' });
+        });
+
+        test('{*name} strips trailing slashes from the capture', () => {
+            tree.insert('/static/{*file}', 'handler');
+            expect(tree.lookup('/static/a/b/')?.params).toEqual({ file: 'a/b' });
+        });
+
+        test('a bare ** matches the remainder without capturing', () => {
+            tree.insert('/**', 'spa-handler');
+            const result = tree.lookup('/some/client/route');
+            expect(result).not.toBeNull();
+            expect(result?.value).toBe('spa-handler');
+            expect(result?.params).toBeNull();
+        });
+
+        test('a root ** also matches the root path (zero segments)', () => {
+            tree.insert('/**', 'spa-handler');
+            expect(tree.lookup('/')?.value).toBe('spa-handler');
+        });
+
+        test('static beats greedy at the same level; greedy backtracks for the rest', () => {
+            tree.insert('/users/list', 'static-handler');
+            tree.insert('/users/{*rest}', 'greedy-handler');
+
+            let result = tree.lookup('/users/list');
+            expect(result?.value).toBe('static-handler');
+
+            result = tree.lookup('/users/list/items');
+            expect(result).not.toBeNull();
+            expect(result?.value).toBe('greedy-handler');
+            expect(result?.params).toEqual({ rest: 'list/items' });
+        });
+
+        test('param beats greedy for one segment; greedy still gets deeper paths', () => {
+            tree.insert('/files/:name', 'param-handler');
+            tree.insert('/files/{*rest}', 'greedy-handler');
+
+            let result = tree.lookup('/files/report.pdf');
+            expect(result?.value).toBe('param-handler');
+            expect(result?.params).toEqual({ name: 'report.pdf' });
+
+            result = tree.lookup('/files/a/b');
+            expect(result?.value).toBe('greedy-handler');
+            expect(result?.params).toEqual({ rest: 'a/b' });
+        });
+
+        test('the deepest greedy candidate wins on backtrack', () => {
+            tree.insert('/a/{*r1}', 'outer');
+            tree.insert('/a/b/{*r2}', 'inner');
+
+            expect(tree.lookup('/a/x')?.params).toEqual({ r1: 'x' });
+            expect(tree.lookup('/a/b/x/y')?.params).toEqual({ r2: 'x/y' });
+        });
+
+        test('backtracking restores pre-greedy params (id captured above the fallback)', () => {
+            tree.insert('/x/:id/{*rest}', 'handler');
+
+            const result = tree.lookup('/x/5/y/z');
+            expect(result?.value).toBe('handler');
+            expect(result?.params).toEqual({ id: '5', rest: 'y/z' });
+        });
+
+        test('a greedy segment must be the last segment of its pattern', () => {
+            expect(() => tree.insert('/a/{*x}/b', 'bad')).toThrow(/must be the last segment/);
+        });
+
+        test('greedy routes count in toJSON and delete cleanly', () => {
+            tree.insert('/**', 'spa');
+            tree.insert('/static/{*file}', 'static');
+            expect(tree.toJSON()).toHaveProperty('size', 2);
+
+            expect(tree.delete('/static/{*file}')).toBe(true);
+            expect(tree.lookup('/static/a/b')).toBeNull();
+            expect(tree.lookup('/any/thing')).not.toBeNull();
+        });
+    });
+
     test('multiple routes in same tree do not interfere', () => {
         tree.insert('/users', 'a');
         tree.insert('/users/:id', 'b');

@@ -21,6 +21,10 @@ export class NodeCookieValueMethodArgumentResolver extends AbstractPlatformArgum
     }
 
     protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: unknown): unknown {
+        // `cookieValue()` (no name) binds the whole cookie jar.
+        if (name === '') {
+            return getNodeRequest(route)?.cookies;
+        }
         return getNodeRequest(route)?.cookies?.[name];
     }
 

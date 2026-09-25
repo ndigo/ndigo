@@ -69,7 +69,34 @@ describe('blue-api multipart upload (AD-26)', () => {
         expect(res.response.status).toBe(200);
         // size is the exact byte count busboy parsed — proves the bytes flowed
         // through the real parser, not a mock; name is the inferred client field.
-        expect(res.json()).toEqual({ size: Buffer.byteLength(content), name: 'hello.txt' });
+        expect(res.json()).toEqual({ size: Buffer.byteLength(content), name: 'hello.txt', meta: null });
+    });
+
+    test('POST /api/upload binds a JSON part to the DTO and the file part to MultipartFile', async () => {
+        const content = 'meta round trip';
+        const body = multipartBody([
+            {
+                name: 'meta',
+                contentType: 'application/json',
+                value: JSON.stringify({ label: 'blue-demo', tags: ['a', 'b'] }),
+            },
+            { name: 'file', filename: 'meta.txt', contentType: 'text/plain', value: content },
+        ]);
+
+        const res = await mockMVC
+            .post('/api/upload')
+            .rawBody(body)
+            .headers({ 'content-type': `multipart/form-data; boundary=${BOUNDARY}` })
+            .exec();
+
+        expect(res.response.status).toBe(200);
+        // The JSON part bound into the requestPart() DTO; the file part into
+        // MultipartFile — Spring @RequestPart parity, end to end.
+        expect(res.json()).toEqual({
+            size: Buffer.byteLength(content),
+            name: 'meta.txt',
+            meta: { label: 'blue-demo', tags: ['a', 'b'] },
+        });
     });
 
     test('POST /api/upload rejects an empty file part with 400', async () => {

@@ -169,5 +169,14 @@ function _assocPath(path: KeypathToken[], value: unknown, obj: unknown): unknown
         arr[head] = updatedChild;
         return arr;
     }
-    return { ...(obj as object), [head]: updatedChild };
+    // Class instances (whole-source binding into a DTO target, D-3) must keep
+    // their prototype and identity: spread would flatten the instance into a
+    // plain object and break `instanceof`. Plain objects and null-prototype
+    // objects keep the immutable spread semantics.
+    const proto = Object.getPrototypeOf(obj);
+    if (proto === Object.prototype || proto === null) {
+        return { ...(obj as object), [head]: updatedChild };
+    }
+    (obj as Record<PropertyKey, unknown>)[head] = updatedChild;
+    return obj;
 }

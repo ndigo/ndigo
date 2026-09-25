@@ -23,7 +23,7 @@
  */
 import '@tsmetadata/polyfill';
 import { authenticated } from '@blue/auth-core';
-import { parameters, requestMapping, stompMapping, socketSession, type SocketSession } from '@blue/dispatcher';
+import { parameters, requestMapping, stompMapping, socketSessionValue, type SocketSession } from '@blue/dispatcher';
 import { StompBroker } from '@blue/socket';
 import { scheduled } from '@blue/scheduler';
 
@@ -51,7 +51,7 @@ export class StompChatController {
      */
     @stompMapping('/chat')
     @authenticated
-    @parameters({ session: socketSession('session') })
+    @parameters({ session: socketSessionValue('session') })
     async chat(session: SocketSession) {
         await this.broker.handleSocket(session);
     }

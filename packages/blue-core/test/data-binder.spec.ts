@@ -31,4 +31,48 @@ describe('DataBinder', () => {
         db.bind(mpv);
         expect(db.result).toEqual({ foo: 123, bar: { qux: 456, fuz: 789 }, baz: ['abc', 'def'] });
     });
+
+    test('it should keep plain-object semantics for plain targets', () => {
+        const mpv = new MutablePropertyValues();
+        mpv.addPropertyValue('a.b', 1);
+        db.bind(mpv);
+        expect(db.result).toEqual({ a: { b: 1 } });
+        expect(Object.getPrototypeOf(db.result)).toBe(Object.prototype);
+        expect(db.result).not.toBe(target);
+    });
+
+    test('it should bind into a class instance in place, preserving the prototype', () => {
+        class ProfileForm {
+            email = '';
+            age = 0;
+            address = { street: '', city: '' };
+        }
+        const instance = new ProfileForm();
+        const binder = new DataBinder(instance, 'profile');
+        const mpv = new MutablePropertyValues();
+        mpv.addPropertyValue('email', 'a@b.c');
+        mpv.addPropertyValue('age', '42');
+        mpv.addPropertyValue('address.street', 'Main St');
+        mpv.addPropertyValue('address.city', 'York');
+        binder.bind(mpv);
+
+        expect(binder.result).toBe(instance);
+        expect(binder.result).toBeInstanceOf(ProfileForm);
+        expect(instance).toEqual({ email: 'a@b.c', age: '42', address: { street: 'Main St', city: 'York' } });
+    });
+
+    test('it should bind array keypaths into instance fields', () => {
+        class TagsForm {
+            tags: string[] = [];
+        }
+        const instance = new TagsForm();
+        const binder = new DataBinder(instance, 'f');
+        const mpv = new MutablePropertyValues();
+        mpv.addPropertyValue('tags[0]', 'a');
+        mpv.addPropertyValue('tags[1]', 'b');
+        binder.bind(mpv);
+
+        expect(binder.result).toBe(instance);
+        expect(instance.tags).toEqual(['a', 'b']);
+    });
 });

@@ -15,7 +15,7 @@ export class AuthController {
      * Returns 401 with an error body on bad credentials.
      */
     @postMapping('/login')
-    @parameters({ credentials: bodyValue('*') })
+    @parameters({ credentials: bodyValue() })
     async login(credentials: unknown) {
         const username = (credentials as { username?: unknown })?.username;
         const password = (credentials as { password?: unknown })?.password;

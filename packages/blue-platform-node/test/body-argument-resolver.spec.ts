@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect, beforeEach } from 'vitest';
-import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { MissingParameterError, MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { NodeBodyValueMethodArgumentResolver } from '../src/body-argument-resolver';
 import { NODE_REQUEST_ATTRIBUTE, NodeRequest } from '../src/node-request';
@@ -53,13 +53,34 @@ describe('NodeBodyValueMethodArgumentResolver', () => {
             expect(resolver.resolveArgument(param, route, {})).toBe('John');
         });
 
-        test('should return entire body when name is "*"', () => {
+        test('should resolve dotted keys by walking the JSON body (nested-capable, D-2)', () => {
+            const route = makeRoute({
+                body: { address: { city: 'York', street: 'Main' } },
+            });
+
+            const param = new MethodParameter(MethodParameterType.BODY, 'address.city');
+            expect(resolver.resolveArgument(param, route, {})).toBe('York');
+
+            const flat = new MethodParameter(MethodParameterType.BODY, 'address');
+            expect(resolver.resolveArgument(flat, route, {})).toEqual({ city: 'York', street: 'Main' });
+        });
+
+        test('a literal dotted body key wins over the dotted walk (D-2)', () => {
+            const route = makeRoute({
+                body: { 'a.b': 'literal', a: { b: 'nested' } },
+            });
+
+            const param = new MethodParameter(MethodParameterType.BODY, 'a.b');
+            expect(resolver.resolveArgument(param, route, {})).toBe('literal');
+        });
+
+        test('should return entire body when name is omitted (whole-source rule)', () => {
             const bodyData = { name: 'John', age: 30 };
             const route = makeRoute({
                 body: bodyData,
             });
 
-            const param = new MethodParameter(MethodParameterType.BODY, '*');
+            const param = new MethodParameter(MethodParameterType.BODY, '');
             expect(resolver.resolveArgument(param, route, {})).toBe(bodyData);
         });
 
@@ -78,8 +99,8 @@ describe('NodeBodyValueMethodArgumentResolver', () => {
             });
 
             const param = new MethodParameter(MethodParameterType.BODY, 'name', true);
-            expect(() => resolver.resolveArgument(param, route, {})).toThrow(TypeError);
-            expect(() => resolver.resolveArgument(param, route, {})).toThrow(/"name" cannot be undefined or null/);
+            expect(() => resolver.resolveArgument(param, route, {})).toThrow(MissingParameterError);
+            expect(() => resolver.resolveArgument(param, route, {})).toThrow(/parameter 'name' is missing/);
         });
 
         test('should apply type-based conversion when convertType is provided', () => {

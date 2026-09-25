@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect, beforeEach } from 'vitest';
-import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { MissingParameterError, MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { NodePathValueMethodArgumentResolver } from '../src/path-argument-resolver';
 
@@ -39,6 +39,13 @@ describe('NodePathValueMethodArgumentResolver', () => {
             expect(resolver.resolveArgument(param, route, {})).toBe('123');
         });
 
+        test('pathVariable() with no name binds the whole params record', () => {
+            const route = makeRoute({ id: '123', slug: 'ab' });
+            const param = new MethodParameter(MethodParameterType.PATH, '');
+
+            expect(resolver.resolveArgument(param, route, {})).toEqual({ id: '123', slug: 'ab' });
+        });
+
         test('should return default value when source value is absent', () => {
             const route = makeRoute({});
             const param = new MethodParameter(MethodParameterType.PATH, 'id', false, 'default');
@@ -48,8 +55,8 @@ describe('NodePathValueMethodArgumentResolver', () => {
         test('should throw when required parameter is absent', () => {
             const route = makeRoute({});
             const param = new MethodParameter(MethodParameterType.PATH, 'id', true);
-            expect(() => resolver.resolveArgument(param, route, {})).toThrow(TypeError);
-            expect(() => resolver.resolveArgument(param, route, {})).toThrow(/"id" cannot be undefined or null/);
+            expect(() => resolver.resolveArgument(param, route, {})).toThrow(MissingParameterError);
+            expect(() => resolver.resolveArgument(param, route, {})).toThrow(/parameter 'id' is missing/);
         });
 
         test('should apply type-based conversion when convertType is provided', () => {

@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect, beforeEach } from 'vitest';
-import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { MissingParameterError, MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { NodeMultipartFileMethodArgumentResolver } from '../src/multipart-file-argument-resolver';
 import { NODE_REQUEST_ATTRIBUTE, NodeRequest } from '../src/node-request';
@@ -91,11 +91,11 @@ describe('NodeMultipartFileMethodArgumentResolver', () => {
             expect(resolver.resolveArgument(fileParam('avatar'), route, {})).toBeNull();
         });
 
-        test('throws TypeError for a missing part on a required parameter', () => {
+        test('throws MissingParameterError for a missing part on a required parameter', () => {
             const route = makeRoute(new Map<string, unknown[]>());
 
             expect(() => resolver.resolveArgument(fileParam('avatar', true), route, {})).toThrow(
-                '"avatar" cannot be undefined or null'
+                /parameter 'avatar' is missing/
             );
         });
 

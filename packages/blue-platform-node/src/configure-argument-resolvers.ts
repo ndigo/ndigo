@@ -10,8 +10,10 @@ import { NodePathValueMethodArgumentResolver } from './path-argument-resolver';
 import { NodeHeaderValueMethodArgumentResolver } from './header-argument-resolver';
 import { NodeBodyValueMethodArgumentResolver } from './body-argument-resolver';
 import { NodeMultipartFileMethodArgumentResolver } from './multipart-file-argument-resolver';
+import { NodeDataBindingMethodArgumentResolver } from './data-binding-argument-resolver';
+import { NodeRequestPartMethodArgumentResolver } from './request-part-argument-resolver';
 import { NodeCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
-import { NodeSessionValueMethodArgumentResolver } from './session-argument-resolver';
+import { NodeRequestSessionValueMethodArgumentResolver } from './request-session-argument-resolver';
 
 /**
  * Registers Node.js-specific argument resolvers into the application context.
@@ -25,9 +27,11 @@ export function configureNodeArgumentResolvers(
         new NodePathValueMethodArgumentResolver(),
         new NodeHeaderValueMethodArgumentResolver(),
         new NodeBodyValueMethodArgumentResolver(),
+        new NodeDataBindingMethodArgumentResolver(),
+        new NodeRequestPartMethodArgumentResolver(),
         new NodeMultipartFileMethodArgumentResolver(),
         new NodeCookieValueMethodArgumentResolver(),
-        new NodeSessionValueMethodArgumentResolver(),
+        new NodeRequestSessionValueMethodArgumentResolver(),
     ];
 
     applicationContext.setValue('argumentResolvers', resolvers);

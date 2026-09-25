@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect, beforeEach } from 'vitest';
-import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { MissingParameterError, MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { NodeHeaderValueMethodArgumentResolver } from '../src/header-argument-resolver';
 import { NODE_REQUEST_ATTRIBUTE, NodeRequest } from '../src/node-request';
@@ -53,6 +53,16 @@ describe('NodeHeaderValueMethodArgumentResolver', () => {
             expect(resolver.resolveArgument(param, route, {})).toBe('application/json');
         });
 
+        test('headerValue() with no name binds the whole headers record', () => {
+            const route = makeRoute({ headers: { 'content-type': 'application/json', 'x-via': 'test' } });
+            const param = new MethodParameter(MethodParameterType.HEADER, '');
+
+            expect(resolver.resolveArgument(param, route, {})).toEqual({
+                'content-type': 'application/json',
+                'x-via': 'test',
+            });
+        });
+
         test('should resolve named value from route.headers with different case', () => {
             const route = makeRoute({
                 headers: { 'content-type': 'application/json' },
@@ -86,10 +96,8 @@ describe('NodeHeaderValueMethodArgumentResolver', () => {
             });
 
             const param = new MethodParameter(MethodParameterType.HEADER, 'content-type', true);
-            expect(() => resolver.resolveArgument(param, route, {})).toThrow(TypeError);
-            expect(() => resolver.resolveArgument(param, route, {})).toThrow(
-                /"content-type" cannot be undefined or null/
-            );
+            expect(() => resolver.resolveArgument(param, route, {})).toThrow(MissingParameterError);
+            expect(() => resolver.resolveArgument(param, route, {})).toThrow(/parameter 'content-type' is missing/);
         });
 
         test('should apply type-based conversion when convertType is provided', () => {

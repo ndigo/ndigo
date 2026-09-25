@@ -17,7 +17,7 @@ import {
     socketMapping,
     stompMapping,
     parameters,
-    socketSession,
+    socketSessionValue,
     type SocketSession,
 } from '@blue/dispatcher';
 import { StompBroker, parseStompFrame, serializeStompFrame, type StompFrame } from '@blue/socket';
@@ -65,7 +65,7 @@ class StompController {
     readonly broker = new StompBroker();
 
     @stompMapping('/stomp')
-    @parameters({ session: socketSession('session') })
+    @parameters({ session: socketSessionValue('session') })
     async stomp(session: SocketSession) {
         await this.broker.handleSocket(session);
     }
@@ -74,7 +74,7 @@ class StompController {
     // behavior is inferred, and the subprotocol negotiation must preserve
     // the stock echo-first behavior.
     @socketMapping('/plain')
-    @parameters({ session: socketSession('session') })
+    @parameters({ session: socketSessionValue('session') })
     async *plain(session: SocketSession) {
         for await (const message of session.messages) {
             yield { event: 'plain', data: String(message) };

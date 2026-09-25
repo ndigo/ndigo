@@ -5,7 +5,7 @@
  */
 export * from './browser-environment';
 export * from './argument-value-converter';
-export * from './bind-argument-resolver';
+export * from './data-binding-argument-resolver';
 export * from './configure-argument-resolvers';
 export * from './configure-converter-registry';
 export * from './configure-strict-argument-resolvers';
@@ -14,9 +14,9 @@ export * from './cookie-language-resolver';
 export * from './cookie-theme-resolver';
 export * from './cookies';
 export * from './locale';
-export * from './model-argument-resolver';
-export * from './state-argument-resolver';
-export * from './session-argument-resolver';
+export * from './history-state-argument-resolver';
+export * from './session-storage-argument-resolver';
+export * from './local-storage-argument-resolver';
 export * from './hash-router';
 export * from './browser-router';
 export * from './browser-dispatcher';

@@ -20,7 +20,8 @@ export class NodePathValueMethodArgumentResolver extends AbstractPlatformArgumen
     }
 
     protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: unknown): unknown {
-        return route.params?.[name];
+        // `pathVariable()` (no name) binds the whole params record.
+        return name === '' ? route.params : route.params?.[name];
     }
 
     supportsParameter(parameter: MethodParameter): boolean {

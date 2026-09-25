@@ -20,9 +20,8 @@ export class NodeQueryValueMethodArgumentResolver extends AbstractPlatformArgume
     }
 
     protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: unknown): unknown {
-        // '*' binds the entire query object (validatedQuery sugar), mirroring
-        // the body resolver's '*' convention.
-        return name === '*' ? route.data : route.data?.[name];
+        // `queryValue()` (no name) binds the entire query object.
+        return name === '' ? route.data : route.data?.[name];
     }
 
     supportsParameter(parameter: MethodParameter): boolean {

@@ -9,10 +9,10 @@ import { HandlerMethodArgumentResolver, MethodParameter, MethodParameterType } f
 import { Route } from '@blue/router';
 import { configureBrowserArgumentResolvers } from '../src/configure-argument-resolvers';
 import { BrowserCookieValueMethodArgumentResolver } from '../src/cookie-argument-resolver';
-import { BrowserModelValueMethodArgumentResolver } from '../src/model-argument-resolver';
-import { BrowserStateValueMethodArgumentResolver } from '../src/state-argument-resolver';
-import { BrowserSessionValueMethodArgumentResolver } from '../src/session-argument-resolver';
-import { BrowserBindMethodArgumentResolver } from '../src/bind-argument-resolver';
+import { BrowserHistoryStateValueMethodArgumentResolver } from '../src/history-state-argument-resolver';
+import { BrowserLocalStorageValueMethodArgumentResolver } from '../src/local-storage-argument-resolver';
+import { BrowserSessionStorageValueMethodArgumentResolver } from '../src/session-storage-argument-resolver';
+import { BrowserDataBindingMethodArgumentResolver } from '../src/data-binding-argument-resolver';
 
 describe('configureBrowserArgumentResolvers', () => {
     test('registers browser argument resolvers in context', () => {
@@ -23,11 +23,11 @@ describe('configureBrowserArgumentResolvers', () => {
         expect(context.hasValue('argumentResolvers')).toBe(true);
     });
 
-    test('registers bind resolver first', () => {
+    test('registers data-binding resolver first', () => {
         const context = new MetadataConfigApplicationContext('test');
         const resolvers = configureBrowserArgumentResolvers(context);
 
-        expect(resolvers[0]).toBeInstanceOf(BrowserBindMethodArgumentResolver);
+        expect(resolvers[0]).toBeInstanceOf(BrowserDataBindingMethodArgumentResolver);
     });
 
     test('registers cookie resolver second', () => {
@@ -37,25 +37,25 @@ describe('configureBrowserArgumentResolvers', () => {
         expect(resolvers[1]).toBeInstanceOf(BrowserCookieValueMethodArgumentResolver);
     });
 
-    test('registers model resolver third', () => {
+    test('registers history-state resolver third', () => {
         const context = new MetadataConfigApplicationContext('test');
         const resolvers = configureBrowserArgumentResolvers(context);
 
-        expect(resolvers[2]).toBeInstanceOf(BrowserModelValueMethodArgumentResolver);
+        expect(resolvers[2]).toBeInstanceOf(BrowserHistoryStateValueMethodArgumentResolver);
     });
 
-    test('registers state resolver fourth', () => {
+    test('registers session-storage resolver fourth', () => {
         const context = new MetadataConfigApplicationContext('test');
         const resolvers = configureBrowserArgumentResolvers(context);
 
-        expect(resolvers[3]).toBeInstanceOf(BrowserStateValueMethodArgumentResolver);
+        expect(resolvers[3]).toBeInstanceOf(BrowserSessionStorageValueMethodArgumentResolver);
     });
 
-    test('registers session resolver fifth', () => {
+    test('registers local-storage resolver fifth', () => {
         const context = new MetadataConfigApplicationContext('test');
         const resolvers = configureBrowserArgumentResolvers(context);
 
-        expect(resolvers[4]).toBeInstanceOf(BrowserSessionValueMethodArgumentResolver);
+        expect(resolvers[4]).toBeInstanceOf(BrowserLocalStorageValueMethodArgumentResolver);
     });
 
     test('applies type-based conversion when convertType is provided', () => {
@@ -65,7 +65,7 @@ describe('configureBrowserArgumentResolvers', () => {
         const resolvers: HandlerMethodArgumentResolver[] =
             context.getValue<HandlerMethodArgumentResolver[]>('argumentResolvers');
         const stateResolver = resolvers.find((r) =>
-            r.supportsParameter(new MethodParameter(MethodParameterType.STATE, 'count'))
+            r.supportsParameter(new MethodParameter(MethodParameterType.HISTORY_STATE, 'count'))
         );
         if (!stateResolver) {
             throw new Error('state resolver not registered');
@@ -75,7 +75,7 @@ describe('configureBrowserArgumentResolvers', () => {
         const originalState = globalThis.history?.state;
         vi.stubGlobal('history', { state: { count: '123' } });
 
-        const parameter = new MethodParameter(MethodParameterType.STATE, 'count', false, null, {
+        const parameter = new MethodParameter(MethodParameterType.HISTORY_STATE, 'count', false, null, {
             source: String,
             target: Number,
         });

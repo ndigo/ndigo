@@ -13,12 +13,12 @@ import {
 import {
     cookieValue,
     ModelAndView,
-    modelValue,
+    queryValue,
     ParameterConversionError,
     routeMapping,
     parameters,
-    stateValue,
-    sessionValue,
+    historyStateValue,
+    requestSessionValue,
     asNumber,
     asBoolean,
     MethodParameter,
@@ -28,9 +28,7 @@ import {
 import { Route } from '@blue/router';
 import { BrowserDispatcher } from '../src/browser-dispatcher';
 import { RouteErrorResolver } from '../../blue-dispatcher/src/route-error-resolver';
-import { BrowserModelValueMethodArgumentResolver } from '../src/model-argument-resolver';
-import { BrowserSessionValueMethodArgumentResolver } from '../src/session-argument-resolver';
-import { BrowserStateValueMethodArgumentResolver } from '../src/state-argument-resolver';
+import { BrowserHistoryStateValueMethodArgumentResolver } from '../src/history-state-argument-resolver';
 import { BrowserCookieValueMethodArgumentResolver } from '../src/cookie-argument-resolver';
 
 class TestView {
@@ -56,9 +54,9 @@ describe('conversion + error flow integration', () => {
             @routeMapping('/pay')
             @parameters({
                 amount: asNumber(cookieValue('amount')),
-                profileId: asNumber(modelValue('profile.id')),
-                txCount: asNumber(stateValue('txCount')),
-                darkMode: asBoolean(sessionValue('darkMode')),
+                profileId: queryValue('profile.id'),
+                txCount: asNumber(historyStateValue('txCount')),
+                darkMode: asBoolean(requestSessionValue('darkMode')),
             })
             pay(amount: number, profileId: number, txCount: number, darkMode: boolean): ModelAndView {
                 successCapture = { amount, profileId, txCount, darkMode };
@@ -86,9 +84,7 @@ describe('conversion + error flow integration', () => {
             argumentResolvers() {
                 return [
                     new BrowserCookieValueMethodArgumentResolver(),
-                    new BrowserModelValueMethodArgumentResolver(),
-                    new BrowserStateValueMethodArgumentResolver(),
-                    new BrowserSessionValueMethodArgumentResolver(),
+                    new BrowserHistoryStateValueMethodArgumentResolver(),
                 ];
             }
 
@@ -112,11 +108,11 @@ describe('conversion + error flow integration', () => {
             context.getValue<HandlerMethodArgumentResolver[]>('argumentResolvers');
         if (resolvers && resolvers.length > 0) {
             // Test type-based conversion directly
-            const stateResolver = resolvers.find((r) => r instanceof BrowserStateValueMethodArgumentResolver);
+            const stateResolver = resolvers.find((r) => r instanceof BrowserHistoryStateValueMethodArgumentResolver);
             if (!stateResolver) {
                 throw new Error('state resolver not registered');
             }
-            const parameter = new MethodParameter(MethodParameterType.STATE, 'txCount', false, null, {
+            const parameter = new MethodParameter(MethodParameterType.HISTORY_STATE, 'txCount', false, null, {
                 source: String,
                 target: Number,
             });

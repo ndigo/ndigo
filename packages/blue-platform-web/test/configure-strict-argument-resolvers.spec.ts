@@ -6,7 +6,7 @@
 import { describe, expect, test } from 'vitest';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { configureStrictBrowserArgumentResolvers } from '../src/configure-strict-argument-resolvers';
-import { BrowserStateValueMethodArgumentResolver } from '../src/state-argument-resolver';
+import { BrowserHistoryStateValueMethodArgumentResolver } from '../src/history-state-argument-resolver';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 
@@ -23,11 +23,11 @@ describe('configureStrictBrowserArgumentResolvers', () => {
         const context = new MetadataConfigApplicationContext('test');
         const resolvers = configureStrictBrowserArgumentResolvers(context);
 
-        const stateResolver = resolvers.find((r) => r instanceof BrowserStateValueMethodArgumentResolver);
+        const stateResolver = resolvers.find((r) => r instanceof BrowserHistoryStateValueMethodArgumentResolver);
         if (!stateResolver) {
             throw new Error('state resolver not registered');
         }
-        const parameter = new MethodParameter(MethodParameterType.STATE, 'count', false, null, {
+        const parameter = new MethodParameter(MethodParameterType.HISTORY_STATE, 'count', false, null, {
             source: String,
             target: Number,
         });

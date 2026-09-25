@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { MissingParameterError, MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { BrowserCookieValueMethodArgumentResolver } from '../src/cookie-argument-resolver';
 
@@ -47,6 +47,15 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
         expect(value).toBe('abc-123');
     });
 
+    test('cookieValue() with no name binds the whole cookie jar', () => {
+        vi.stubGlobal('document', { cookie: 'sessionId=abc-123; theme=dark' });
+
+        const parameter = new MethodParameter(MethodParameterType.COOKIE, '');
+        const value = resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {});
+
+        expect(value).toEqual({ sessionId: 'abc-123', theme: 'dark' });
+    });
+
     test('uses default value when cookie is absent', () => {
         vi.stubGlobal('document', { cookie: '' });
 
@@ -62,7 +71,7 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
         const parameter = new MethodParameter(MethodParameterType.COOKIE, 'sessionId', true);
 
         expect(() => resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {})).toThrow(
-            '"sessionId" cannot be undefined or null'
+            /parameter 'sessionId' is missing/
         );
     });
 

@@ -13,6 +13,7 @@ import {
     parameters,
     queryValue,
     bodyValue,
+    headerValue,
 } from '@blue/dispatcher';
 import { IslandView } from '@blue/view';
 import { bootApp, MockHTTP } from '../src/index';
@@ -40,6 +41,18 @@ class GreetingController {
     @parameters({ value: bodyValue('value') })
     echo(value?: string) {
         return { echoed: value ?? null };
+    }
+
+    @postMapping('/echo/raw')
+    @parameters({ value: bodyValue('value') })
+    echoRaw(value?: string) {
+        return { echoed: value ?? null };
+    }
+
+    @getMapping('/header')
+    @parameters({ via: headerValue('x-via') })
+    viaHeader(via?: string) {
+        return { via: via ?? null };
     }
 
     @getMapping('/plain')
@@ -84,6 +97,56 @@ describe('MockHTTP', () => {
     test('empty body yields undefined from .json()', async () => {
         const res = await mockMVC.get('/missing').exec();
         expect(res.response.status).toBe(404);
+    });
+
+    test('request header keys are case-normalized like Node IncomingMessage (RUS-4)', async () => {
+        const res = await mockMVC.get('/header').headers({ 'X-Via': 'case-folded' }).exec();
+        expect(res.response.status).toBe(200);
+        expect(res.json()).toEqual({ via: 'case-folded' });
+    });
+
+    test('a non-multipart rawBody is parsed into the request body, not dropped (RUS-4)', async () => {
+        const res = await mockMVC
+            .post('/echo/raw')
+            .rawBody(JSON.stringify({ value: 'raw-json' }))
+            .headers({ 'content-type': 'application/json' })
+            .exec();
+        expect(res.response.status).toBe(200);
+        expect(res.json()).toEqual({ echoed: 'raw-json' });
+    });
+
+    test('multipart part-limit rejection maps to the live 413 problem document (SEC-13)', async () => {
+        const app = bootApp([GreetingController]);
+        const limitingMock = new MockHTTP(app, { multipartLimits: { maxParts: 1 } });
+        try {
+            const boundary = '----blueMockLimitTest';
+            const payload = [
+                `--${boundary}`,
+                'Content-Disposition: form-data; name="a"',
+                '',
+                '1',
+                `--${boundary}`,
+                'Content-Disposition: form-data; name="b"',
+                '',
+                '2',
+                `--${boundary}--`,
+                '',
+            ].join('\r\n');
+            const res = await limitingMock
+                .post('/echo')
+                .rawBody(payload)
+                .headers({ 'content-type': `multipart/form-data; boundary=${boundary}` })
+                .exec();
+            expect(res.response.status).toBe(413);
+            expect(res.json()).toMatchObject({
+                type: 'urn:blue:too_many_parts',
+                status: 413,
+                detail: 'too_many_parts',
+            });
+            expect(res.response.headers['content-type']).toContain('application/problem+json');
+        } finally {
+            app.close();
+        }
     });
 });
 

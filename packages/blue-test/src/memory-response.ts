@@ -41,6 +41,13 @@ export interface ResponseSink {
     removeHeader(name: string): void;
     /** Record the status and headers, merging with prior sets. */
     writeHead(status: number, headers?: Record<string, string | string[]>): void;
+    /**
+     * Stream a body chunk into `response.body` (concatenated, in order).
+     * Returns `true` — an in-memory sink never backpressures.
+     */
+    write(chunk: string | Uint8Array): boolean;
+    /** Abort the response (stream failure after headers were sent). */
+    destroy(): void;
     /** Finalize the response with the given body. */
     end(body?: string | unknown): void;
 }
@@ -83,8 +90,24 @@ export function createMemoryResponse(): { response: MemoryResponse; sink: Respon
             headersSent = true;
         },
 
+        write(chunk: string | Uint8Array): boolean {
+            const piece = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk as string);
+            response.body = response.body === undefined ? piece : Buffer.concat([response.body as Buffer, piece]);
+            return true;
+        },
+
+        destroy(): void {
+            // Aborted after headers were sent — the response is finalized
+            // with whatever body made it through.
+            response.completed = true;
+        },
+
         end(body?: string | unknown): void {
-            response.body = body;
+            // A finalization without a body must not clobber chunks already
+            // delivered via write() (streamed payloads).
+            if (body !== undefined) {
+                response.body = body;
+            }
             response.completed = true;
         },
     };

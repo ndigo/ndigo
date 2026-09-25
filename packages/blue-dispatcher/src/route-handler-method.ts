@@ -8,6 +8,7 @@ import { Route } from '@blue/router';
 import { Serializable } from '@blue/core';
 import { type } from '@blue/util/types';
 import { HandlerMethodArgumentResolver } from './argument-resolver';
+import { ParameterBindingError } from './error';
 import { MethodParameter } from './parameters';
 import { getRouteMapping } from './route-mapping';
 
@@ -111,7 +112,25 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
                     resolver = argumentResolvers.find((candidate) => candidate.supportsParameter(parameter)) ?? null;
                     selection.byParameter.set(parameter, resolver);
                 }
-                args[index] = resolver ? resolver.resolveArgument(parameter, route, mapping) : void 0;
+                if (resolver === null) {
+                    // No registered resolver serves this parameter type — the
+                    // mapping uses a source the platform's resolver chain
+                    // cannot provide (e.g. dataBinderValue('body') on the
+                    // browser). Fail fast instead of silently binding
+                    // undefined, even for required extractors (the required
+                    // check lives inside resolvers).
+                    const argumentLabel =
+                        parameter.parameterName === parameter.name
+                            ? `'${parameter.name}'`
+                            : `'${parameter.name}' (argument '${parameter.parameterName}')`;
+                    throw new ParameterBindingError(
+                        `No argument resolver supports ${parameter.type} parameter ${argumentLabel}. ` +
+                            'Register an argument resolver for this type, or use a source the platform can serve.',
+                        parameter.name,
+                        this.method
+                    );
+                }
+                args[index] = resolver.resolveArgument(parameter, route, mapping);
             }
         } else {
             // No @parameters metadata — no implicit injection. Handlers that

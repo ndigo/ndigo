@@ -44,7 +44,9 @@ import {
 } from './node-socket-session';
 import { NodeSocketSessionRegistry } from './node-socket-session-registry';
 import { parseMultipart } from './parse-multipart';
+import type { MultipartLimits } from './parse-multipart';
 import type { MultipartContext } from './multipart-file';
+import { contentTypeBase, MULTIPART_FORM_DATA } from './content-type';
 import { ProblemTypes, writeProblem } from './problem-details';
 import { ResponseStatus } from '@blue/http';
 import type { NodeDispatcher } from './node-dispatcher';
@@ -54,7 +56,7 @@ import {
     type HTTPRequestLimits,
     type ResolvedHTTPRequestLimits,
     resolveHTTPRequestLimits,
-    parseBody,
+    parseBodyRecord,
     RequestLimitError,
 } from './http-request-limits';
 import { parseCookies } from './cookie-parser';
@@ -120,6 +122,15 @@ export interface SocketRequestAuthenticator {
 export interface NodeHTTPServerAdapterOptions {
     /** Request pipeline limits/timeouts. Defaults are conservative and safe. */
     limits?: HTTPRequestLimits;
+    /**
+     * Multipart parser bounds (per-file/field/part/request limits, spill
+     * threshold), passed through to {@link parseMultipart}. Defaults are the
+     * parser's 10 MiB request cap — NOTE this is independent of
+     * {@link HTTPRequestLimits.maxBodyBytes} (1 MiB default), which caps only
+     * non-multipart bodies; align the two when one budget for every body
+     * shape is intended.
+     */
+    multipart?: Partial<MultipartLimits>;
     /**
      * Socket transport bounds (frame payload, inbound queue cap). Defaults
      * are conservative and safe; env-tunable via `BLUE_SOCKET_MAX_PAYLOAD_BYTES`
@@ -234,6 +245,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     #dispatcher: NodeDispatcher;
     readonly #limits: ResolvedHTTPRequestLimits;
     readonly #socketLimits: ResolvedSocketLimits;
+    readonly #multipartLimits: Partial<MultipartLimits> | undefined;
     /** Normalized allowed WebSocket origins, or `null` when unconstrained. */
     readonly #allowedWebSocketOrigins: Record<string, true> | null;
     readonly #authenticate: NodeHTTPServerAdapterOptions['authenticate'];
@@ -270,6 +282,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     constructor(dispatcher: NodeDispatcher, options: NodeHTTPServerAdapterOptions = {}) {
         this.#dispatcher = dispatcher;
         this.#limits = resolveHTTPRequestLimits(options.limits);
+        this.#multipartLimits = options.multipart;
         this.#socketLimits = resolveSocketLimits(options.socketLimits);
         this.#authenticate = options.authenticate ?? undefined;
         const maxConnections = options.maxConnections ?? DEFAULT_MAX_CONNECTIONS;
@@ -822,14 +835,14 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     }
 
     async handleRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
+        let multipart: MultipartContext | undefined;
         try {
             const urlObj = this.#buildUrl(req);
             this.#assertHeaderLimits(req);
             const contentType = String(req.headers['content-type'] ?? '').toLowerCase();
             let bodyRecord: Record<string, unknown>;
-            let multipart: MultipartContext | undefined;
-            if (contentType.startsWith('multipart/form-data')) {
-                multipart = await parseMultipart(req);
+            if (contentTypeBase(contentType) === MULTIPART_FORM_DATA) {
+                multipart = await parseMultipart(req, { limits: this.#multipartLimits });
                 bodyRecord = multipart.fields;
             } else {
                 bodyRecord = this.#parseBodyRecord(req, await this.#readBody(req));
@@ -953,6 +966,15 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             }
         } catch (error: unknown) {
             this.#writeErrorResponse(res, error);
+        } finally {
+            // SEC-6: every parsed multipart context is disposed once the
+            // request has finished dispatching — success, early return
+            // (404/405/denial), or error — so spilled temp parts never leak.
+            // cleanup() is idempotent and never throws; handlers have already
+            // run transferTo() (a copy), so the temp file is still owned here.
+            if (multipart) {
+                await multipart.cleanup();
+            }
         }
     }
 
@@ -1160,10 +1182,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      * back to raw text under the `'*'` key (no silent reshaping).
      */
     #parseBodyRecord(req: IncomingMessage, raw: Buffer): Record<string, unknown> {
-        const result = parseBody(req.headers['content-type'], raw);
-        if (result.kind === 'empty') return {};
-        if (result.kind === 'json') return result.value;
-        return { '*': result.raw };
+        return parseBodyRecord(req.headers['content-type'], raw);
     }
 
     /**

@@ -3,91 +3,87 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { Constructable, Null, JSONValue, JSONObject } from "@blue/core";
-import { like, isNil } from "@blue/util/types";
-import { AsAware, Aware, likeAwareAnd } from "@blue/factory";
-import {
-  likePropertyResolver,
-  PropertyResolver,
-  PrototypalPropertyResolver,
-} from "./property-resolver";
-import type { ResolverOptions } from "./property-resolver";
-import { MutablePropertySources } from "./property-sources";
-import { evaluateProfileExpression } from "./profile-expression";
-import { AsEventEmitter, EventEmitter } from "./event-emitter";
-import type { SecretDecryptor } from "./secret-cipher";
+import { Constructable, Null, JSONValue, JSONObject } from '@blue/core';
+import { like, isNil } from '@blue/util/types';
+import { AsAware, Aware, likeAwareAnd } from '@blue/factory';
+import { likePropertyResolver, PropertyResolver, PrototypalPropertyResolver } from './property-resolver';
+import type { ResolverOptions } from './property-resolver';
+import { MutablePropertySources } from './property-sources';
+import { evaluateProfileExpression } from './profile-expression';
+import { AsEventEmitter, EventEmitter } from './event-emitter';
+import type { SecretDecryptor } from './secret-cipher';
 
 /**
  * Event emitted by a {@link ConfigurableEnvironment} after `refresh()`
  * recomputes from its current sources (AD-29 D-1). Listeners read fresh
  * state; the event carries no payload.
  */
-export const CONFIG_REFRESH_EVENT = "config:refresh";
+export const CONFIG_REFRESH_EVENT = 'config:refresh';
 
 /**
  * Resolves properties and manages profile activation for an application environment.
  */
 export interface Environment extends PropertyResolver {
-  /**
-   * The explicitly active profiles.
-   */
-  activeProfiles: string[];
-  /**
-   * The default profiles used when no active profile is configured.
-   */
-  defaultProfiles: string[];
+    /**
+     * The explicitly active profiles.
+     */
+    activeProfiles: string[];
+    /**
+     * The default profiles used when no active profile is configured.
+     */
+    defaultProfiles: string[];
 
-  /**
-   * Adds a profile to the active set.
-   *
-   * @param profile - The profile name.
-   */
-  addActiveProfile(profile: string): void;
-  /**
-   * Adds a profile to the default set.
-   *
-   * @param profile - The profile name.
-   */
-  addDefaultProfile(profile: string): void;
-  /**
-   * Evaluates a profile expression against the effective active set
-   * (explicit profiles, or defaults when none are explicit).
-   *
-   * @param expression - The profile expression (`dev`, `!prod`, `a & b`, `(a | b) & c`).
-   * @returns `true` when the expression matches.
-   * @throws {IllegalStateError} On malformed expressions.
-   */
-  acceptsProfiles(expression: string): boolean;
-  /**
-   * Returns the name of the source that won the given property key, or
-   * `null` when unknown or the active index retains no origins.
-   *
-   * @param key - The property key (top-level granularity).
-   * @returns The winning source name, or `null`.
-   */
-  originOf(key: string): string | null;
-  /**
-   * Recomputes the environment from its current sources: rebuilds the
-   * lookup index and clears caches. Environment-scope only (AD-16 D3).
-   */
-  refresh(): void;
+    /**
+     * Adds a profile to the active set.
+     *
+     * @param profile - The profile name.
+     */
+    addActiveProfile(profile: string): void;
+    /**
+     * Adds a profile to the default set.
+     *
+     * @param profile - The profile name.
+     */
+    addDefaultProfile(profile: string): void;
+    /**
+     * Evaluates a profile expression against the effective active set
+     * (explicit profiles, or defaults when none are explicit).
+     *
+     * @param expression - The profile expression (`dev`, `!prod`, `a & b`, `(a | b) & c`).
+     * @returns `true` when the expression matches.
+     * @throws {IllegalStateError} On malformed expressions.
+     */
+    acceptsProfiles(expression: string): boolean;
+    /**
+     * Returns the name of the source that won the given property key, or
+     * `null` when unknown or the active index retains no origins.
+     *
+     * @param key - The property key (top-level granularity).
+     * @returns The winning source name, or `null`.
+     */
+    originOf(key: string): string | null;
+    /**
+     * Recomputes the environment from its current sources: rebuilds the
+     * lookup index and clears caches. Environment-scope only (AD-16 D3).
+     */
+    refresh(): void;
 }
 
 /**
  * Receives the current environment during initialization.
  */
 export interface EnvironmentAware extends Aware {
-  setEnvironment(environment: Environment): void;
+    setEnvironment(environment: Environment): void;
 }
 
 /**
  * Provides access to the environment associated with a component.
  */
 export interface EnvironmentSource {
-  /**
-   * The environment associated with the component.
-   */
-  readonly environment: Environment;
+    /**
+     * The environment associated with the component.
+     */
+    readonly environment: Environment;
 }
 
 /**
@@ -96,29 +92,29 @@ export interface EnvironmentSource {
  * `refresh()` emits `config:refresh` (AD-29 D-1).
  */
 export interface ConfigurableEnvironment extends Environment, EventEmitter {
-  /**
-   * The ordered, named property source registry.
-   */
-  getPropertySources(): MutablePropertySources;
-  /**
-   * Compatibility alias (deprecated): the captured property sources.
-   * Mutating the returned array is a no-op; use the registry instead.
-   */
-  propertySources: JSONObject[];
-  /**
-   * Applies at-rest secret decryption (AD-29 Wave 2): `{cipher:...}`
-   * markers resolve to plaintext via the given decryptor on every lookup.
-   * Replaces the resolver's options (replace-not-mutate) — idempotent.
-   *
-   * @param decryptor - The secret decryptor (e.g. a `SecretSchemeRegistry`).
-   */
-  applySecretDecryptor(decryptor: SecretDecryptor): void;
-  /**
-   * Merges another environment into this one.
-   *
-   * @param environment - The environment to merge.
-   */
-  merge(environment: ConfigurableEnvironment): void;
+    /**
+     * The ordered, named property source registry.
+     */
+    getPropertySources(): MutablePropertySources;
+    /**
+     * Compatibility alias (deprecated): the captured property sources.
+     * Mutating the returned array is a no-op; use the registry instead.
+     */
+    propertySources: JSONObject[];
+    /**
+     * Applies at-rest secret decryption (AD-29 Wave 2): `{cipher:...}`
+     * markers resolve to plaintext via the given decryptor on every lookup.
+     * Replaces the resolver's options (replace-not-mutate) — idempotent.
+     *
+     * @param decryptor - The secret decryptor (e.g. a `SecretSchemeRegistry`).
+     */
+    applySecretDecryptor(decryptor: SecretDecryptor): void;
+    /**
+     * Merges another environment into this one.
+     *
+     * @param environment - The environment to merge.
+     */
+    merge(environment: ConfigurableEnvironment): void;
 }
 
 /**
@@ -164,198 +160,171 @@ const { defineProperty } = Reflect;
  * listeners (e.g. boot's `@refreshScope` rebinder, AD-29) observe config
  * changes.
  */
-export abstract class AbstractEnvironment
-  extends AsEventEmitter(Null)
-  implements ConfigurableEnvironment
-{
-  #propertyResolver: PrototypalPropertyResolver;
-  #activeProfiles: Set<string>;
-  #defaultProfiles: Set<string>;
+export abstract class AbstractEnvironment extends AsEventEmitter(Null) implements ConfigurableEnvironment {
+    #propertyResolver: PrototypalPropertyResolver;
+    #activeProfiles: Set<string>;
+    #defaultProfiles: Set<string>;
 
-  get propertySources(): JSONObject[] {
-    // Compatibility alias (deprecated): fresh snapshot per call; mutating
-    // the returned array is a documented no-op. Use the registry instead.
-    return this.#propertyResolver.propertySources;
-  }
-
-  set propertySources(propertySources) {
-    this.#replaceAll(propertySources);
-  }
-
-  /**
-   * The ordered, named property source registry (Phase 0).
-   *
-   * Mutations (add/replace/remove) are picked up lazily on the next lookup,
-   * so burst edits cost a single rebuild.
-   *
-   * @returns The live registry.
-   */
-  getPropertySources(): MutablePropertySources {
-    return this.#propertyResolver.registry;
-  }
-
-  get [Symbol.toStringTag](): string {
-    return `Environment:${[...this.#activeProfiles].join(",")}`;
-  }
-
-  get activeProfiles(): string[] {
-    return [...this.#activeProfiles];
-  }
-
-  set activeProfiles(profiles: string[]) {
-    const activeProfiles = this.#activeProfiles;
-    // eslint-disable-next-line no-unused-expressions -- guarded call: clear only when the set is non-empty
-    activeProfiles.size && activeProfiles.clear();
-    profiles.forEach(activeProfiles.add, activeProfiles);
-  }
-
-  get defaultProfiles(): string[] {
-    return [...this.#defaultProfiles];
-  }
-
-  set defaultProfiles(profiles: string[]) {
-    const defaultProfiles = this.#defaultProfiles;
-    // eslint-disable-next-line no-unused-expressions -- guarded call: clear only when the set is non-empty
-    defaultProfiles.size && defaultProfiles.clear();
-    profiles.forEach(defaultProfiles.add, defaultProfiles);
-  }
-
-  constructor(
-    propertySources: JSONObject[] = [],
-    options: ResolverOptions = {},
-  ) {
-    super();
-    this.#activeProfiles = new Set<string>();
-    this.#defaultProfiles = new Set<string>();
-    this.#propertyResolver = PrototypalPropertyResolver.create(
-      new MutablePropertySources(),
-      options,
-    );
-    this.#replaceAll(propertySources);
-  }
-
-  addActiveProfile(profile: string): void {
-    this.#activeProfiles.add(profile);
-  }
-
-  addDefaultProfile(profile: string): void {
-    this.#defaultProfiles.add(profile);
-  }
-
-  /**
-   * The effective active set: explicit profiles when present, else the
-   * defaults (Spring parity — defaults gate only when nothing is explicit).
-   */
-  get activeProfilesOrDefaults(): string[] {
-    return this.#activeProfiles.size
-      ? [...this.#activeProfiles]
-      : [...this.#defaultProfiles];
-  }
-
-  acceptsProfiles(expression: string): boolean {
-    return evaluateProfileExpression(
-      expression,
-      new Set(this.activeProfilesOrDefaults),
-    );
-  }
-
-  hasProperty(key: string): boolean {
-    return this.#propertyResolver.hasProperty(key);
-  }
-
-  getProperty(key: string, defaultValue?: JSONValue): JSONValue | undefined {
-    return this.#propertyResolver.getProperty(key, defaultValue);
-  }
-
-  getRequiredProperty(key: string): JSONValue {
-    return this.#propertyResolver.getRequiredProperty(key);
-  }
-
-  getPropertyAs<T>(
-    key: string,
-    targetType: (new (...args: never[]) => T) | (() => T) | T,
-    defaultValue?: T,
-  ): T | undefined {
-    return this.#propertyResolver.getPropertyAs(key, targetType, defaultValue);
-  }
-
-  getRequiredPropertyAs<T>(
-    key: string,
-    targetType: (new (...args: never[]) => T) | (() => T) | T,
-  ): T {
-    return this.#propertyResolver.getRequiredPropertyAs(key, targetType);
-  }
-
-  getRawProperty(key: string): JSONValue | undefined {
-    return this.#propertyResolver.getRawProperty(key);
-  }
-
-  originOf(key: string): string | null {
-    return this.#propertyResolver.originOf(key);
-  }
-
-  refresh(): void {
-    this.#propertyResolver.refresh();
-    // AD-29 D-1: emit AFTER the rebuild so listeners read fresh state.
-    this.emit(CONFIG_REFRESH_EVENT);
-  }
-
-  /**
-   * Applies at-rest secret decryption to this environment (AD-29 Wave 2).
-   *
-   * Rebuilds the resolver with the decryptor threaded through its options
-   * (replace-not-mutate, AD-11 D1): existing sources and registry bindings
-   * are preserved. Applying twice is idempotent — the last decryptor wins.
-   *
-   * @param decryptor - The secret decryptor (e.g. a `SecretSchemeRegistry`).
-   */
-  applySecretDecryptor(decryptor: SecretDecryptor): void {
-    const options = this.#propertyResolver.options;
-    const registry = this.#propertyResolver.registry;
-    this.#propertyResolver = PrototypalPropertyResolver.create(registry, {
-      ...options,
-      secretDecryptor: decryptor,
-    });
-  }
-
-  merge(environment: ConfigurableEnvironment): void {
-    const sources = this.getPropertySources();
-    for (const source of environment.getPropertySources()) {
-      // The registry allows unique names only; a colliding name is
-      // appended under a merged marker (previous concat appended the
-      // duplicate, with this environment's entry winning — preserved:
-      // this entry stays earlier in precedence).
-      sources.addLast(
-        sources.contains(source.name) ? `${source.name}:merged` : source.name,
-        source.properties,
-      );
+    get propertySources(): JSONObject[] {
+        // Compatibility alias (deprecated): fresh snapshot per call; mutating
+        // the returned array is a documented no-op. Use the registry instead.
+        return this.#propertyResolver.propertySources;
     }
-    // eslint-disable-next-line no-unused-expressions -- guarded dispatch: merge profiles only when present
-    environment.activeProfiles.length &&
-      environment.activeProfiles.forEach((profile) =>
-        this.addActiveProfile(profile),
-      );
-    // eslint-disable-next-line no-unused-expressions -- guarded dispatch: merge profiles only when present
-    environment.defaultProfiles.length &&
-      environment.defaultProfiles.forEach((profile) =>
-        this.addDefaultProfile(profile),
-      );
-  }
 
-  #replaceAll(propertySources: JSONObject[]): void {
-    const sources = new MutablePropertySources();
-    for (let index = 0; index < propertySources.length; index++) {
-      sources.addLast(`source:${index}`, propertySources[index]);
+    set propertySources(propertySources) {
+        this.#replaceAll(propertySources);
     }
-    this.#propertyResolver = PrototypalPropertyResolver.create(
-      sources,
-      this.#propertyResolver.options,
-    );
-  }
 
-  protected _isActiveProfile(profile: string): boolean {
-    return this.#activeProfiles.has(profile);
-  }
+    /**
+     * The ordered, named property source registry (Phase 0).
+     *
+     * Mutations (add/replace/remove) are picked up lazily on the next lookup,
+     * so burst edits cost a single rebuild.
+     *
+     * @returns The live registry.
+     */
+    getPropertySources(): MutablePropertySources {
+        return this.#propertyResolver.registry;
+    }
+
+    get [Symbol.toStringTag](): string {
+        return `Environment:${[...this.#activeProfiles].join(',')}`;
+    }
+
+    get activeProfiles(): string[] {
+        return [...this.#activeProfiles];
+    }
+
+    set activeProfiles(profiles: string[]) {
+        const activeProfiles = this.#activeProfiles;
+        // eslint-disable-next-line no-unused-expressions -- guarded call: clear only when the set is non-empty
+        activeProfiles.size && activeProfiles.clear();
+        profiles.forEach(activeProfiles.add, activeProfiles);
+    }
+
+    get defaultProfiles(): string[] {
+        return [...this.#defaultProfiles];
+    }
+
+    set defaultProfiles(profiles: string[]) {
+        const defaultProfiles = this.#defaultProfiles;
+        // eslint-disable-next-line no-unused-expressions -- guarded call: clear only when the set is non-empty
+        defaultProfiles.size && defaultProfiles.clear();
+        profiles.forEach(defaultProfiles.add, defaultProfiles);
+    }
+
+    constructor(propertySources: JSONObject[] = [], options: ResolverOptions = {}) {
+        super();
+        this.#activeProfiles = new Set<string>();
+        this.#defaultProfiles = new Set<string>();
+        this.#propertyResolver = PrototypalPropertyResolver.create(new MutablePropertySources(), options);
+        this.#replaceAll(propertySources);
+    }
+
+    addActiveProfile(profile: string): void {
+        this.#activeProfiles.add(profile);
+    }
+
+    addDefaultProfile(profile: string): void {
+        this.#defaultProfiles.add(profile);
+    }
+
+    /**
+     * The effective active set: explicit profiles when present, else the
+     * defaults (Spring parity — defaults gate only when nothing is explicit).
+     */
+    get activeProfilesOrDefaults(): string[] {
+        return this.#activeProfiles.size ? [...this.#activeProfiles] : [...this.#defaultProfiles];
+    }
+
+    acceptsProfiles(expression: string): boolean {
+        return evaluateProfileExpression(expression, new Set(this.activeProfilesOrDefaults));
+    }
+
+    hasProperty(key: string): boolean {
+        return this.#propertyResolver.hasProperty(key);
+    }
+
+    getProperty(key: string, defaultValue?: JSONValue): JSONValue | undefined {
+        return this.#propertyResolver.getProperty(key, defaultValue);
+    }
+
+    getRequiredProperty(key: string): JSONValue {
+        return this.#propertyResolver.getRequiredProperty(key);
+    }
+
+    getPropertyAs<T>(
+        key: string,
+        targetType: (new (...args: never[]) => T) | (() => T) | T,
+        defaultValue?: T
+    ): T | undefined {
+        return this.#propertyResolver.getPropertyAs(key, targetType, defaultValue);
+    }
+
+    getRequiredPropertyAs<T>(key: string, targetType: (new (...args: never[]) => T) | (() => T) | T): T {
+        return this.#propertyResolver.getRequiredPropertyAs(key, targetType);
+    }
+
+    getRawProperty(key: string): JSONValue | undefined {
+        return this.#propertyResolver.getRawProperty(key);
+    }
+
+    originOf(key: string): string | null {
+        return this.#propertyResolver.originOf(key);
+    }
+
+    refresh(): void {
+        this.#propertyResolver.refresh();
+        // AD-29 D-1: emit AFTER the rebuild so listeners read fresh state.
+        this.emit(CONFIG_REFRESH_EVENT);
+    }
+
+    /**
+     * Applies at-rest secret decryption to this environment (AD-29 Wave 2).
+     *
+     * Rebuilds the resolver with the decryptor threaded through its options
+     * (replace-not-mutate, AD-11 D1): existing sources and registry bindings
+     * are preserved. Applying twice is idempotent — the last decryptor wins.
+     *
+     * @param decryptor - The secret decryptor (e.g. a `SecretSchemeRegistry`).
+     */
+    applySecretDecryptor(decryptor: SecretDecryptor): void {
+        const options = this.#propertyResolver.options;
+        const registry = this.#propertyResolver.registry;
+        this.#propertyResolver = PrototypalPropertyResolver.create(registry, {
+            ...options,
+            secretDecryptor: decryptor,
+        });
+    }
+
+    merge(environment: ConfigurableEnvironment): void {
+        const sources = this.getPropertySources();
+        for (const source of environment.getPropertySources()) {
+            // The registry allows unique names only; a colliding name is
+            // appended under a merged marker (previous concat appended the
+            // duplicate, with this environment's entry winning — preserved:
+            // this entry stays earlier in precedence).
+            sources.addLast(sources.contains(source.name) ? `${source.name}:merged` : source.name, source.properties);
+        }
+        // eslint-disable-next-line no-unused-expressions -- guarded dispatch: merge profiles only when present
+        environment.activeProfiles.length &&
+            environment.activeProfiles.forEach((profile) => this.addActiveProfile(profile));
+        // eslint-disable-next-line no-unused-expressions -- guarded dispatch: merge profiles only when present
+        environment.defaultProfiles.length &&
+            environment.defaultProfiles.forEach((profile) => this.addDefaultProfile(profile));
+    }
+
+    #replaceAll(propertySources: JSONObject[]): void {
+        const sources = new MutablePropertySources();
+        for (let index = 0; index < propertySources.length; index++) {
+            sources.addLast(`source:${index}`, propertySources[index]);
+        }
+        this.#propertyResolver = PrototypalPropertyResolver.create(sources, this.#propertyResolver.options);
+    }
+
+    protected _isActiveProfile(profile: string): boolean {
+        return this.#activeProfiles.has(profile);
+    }
 }
 
 /**
@@ -365,26 +334,24 @@ export abstract class AbstractEnvironment
 /**
  * @see module:context.AsEnvironmentAware
  */
-export const AsEnvironmentAware = <T extends Constructable>(
-  superclass: T,
-): Constructable<EnvironmentAware> & T =>
-  class extends AsAware(superclass) implements EnvironmentAware {
-    readonly environment!: Environment;
+export const AsEnvironmentAware = <T extends Constructable>(superclass: T): Constructable<EnvironmentAware> & T =>
+    class extends AsAware(superclass) implements EnvironmentAware {
+        readonly environment!: Environment;
 
-    /**
-     * Captures the environment on the instance.
-     *
-     * @param environment - The environment to assign.
-     */
-    setEnvironment(environment: Environment): void {
-      defineProperty(this, "environment", {
-        value: environment,
-        configurable: true,
-        enumerable: false,
-        writable: false,
-      });
-    }
-  };
+        /**
+         * Captures the environment on the instance.
+         *
+         * @param environment - The environment to assign.
+         */
+        setEnvironment(environment: Environment): void {
+            defineProperty(this, 'environment', {
+                value: environment,
+                configurable: true,
+                enumerable: false,
+                writable: false,
+            });
+        }
+    };
 
 /**
  * Returns whether a value behaves like an environment.
@@ -393,18 +360,17 @@ export const AsEnvironmentAware = <T extends Constructable>(
  * @returns `true` when the value looks like an environment.
  */
 const _likeEnvironmentShape = like({
-  activeProfiles: Array,
-  defaultProfiles: Array,
-  addActiveProfile: Function,
-  addDefaultProfile: Function,
-  acceptsProfiles: Function,
-  originOf: Function,
-  refresh: Function,
+    activeProfiles: Array,
+    defaultProfiles: Array,
+    addActiveProfile: Function,
+    addDefaultProfile: Function,
+    acceptsProfiles: Function,
+    originOf: Function,
+    refresh: Function,
 });
 
-export const likeEnvironment = ((value: unknown) =>
-  likePropertyResolver(value) && _likeEnvironmentShape(value)) as (
-  value: unknown,
+export const likeEnvironment = ((value: unknown) => likePropertyResolver(value) && _likeEnvironmentShape(value)) as (
+    value: unknown
 ) => value is Environment;
 
 /**
@@ -413,12 +379,12 @@ export const likeEnvironment = ((value: unknown) =>
  * @param value - The value to test.
  * @returns `true` when the value looks like environment aware.
  */
-export const likeEnvironmentAware = likeAwareAnd(
-  like({ setEnvironment: Function }),
-) as (value: unknown) => value is EnvironmentAware;
+export const likeEnvironmentAware = likeAwareAnd(like({ setEnvironment: Function })) as (
+    value: unknown
+) => value is EnvironmentAware;
 
 const hasEnvironmentProperty = (value: unknown): boolean =>
-  likeEnvironment((value as Record<PropertyKey, unknown>)?.["environment"]);
+    likeEnvironment((value as Record<PropertyKey, unknown>)?.['environment']);
 
 /**
  * Returns whether a value exposes an environment.
@@ -426,9 +392,8 @@ const hasEnvironmentProperty = (value: unknown): boolean =>
  * @param value - The value to test.
  * @returns `true` when the value looks like an environment source.
  */
-export const likeEnvironmentSource = ((value: unknown) =>
-  !isNil(value) && hasEnvironmentProperty(value)) as (
-  value: unknown,
+export const likeEnvironmentSource = ((value: unknown) => !isNil(value) && hasEnvironmentProperty(value)) as (
+    value: unknown
 ) => value is EnvironmentSource;
 
 /**

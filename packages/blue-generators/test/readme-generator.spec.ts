@@ -22,7 +22,7 @@ describe('readme generator', () => {
 
         expect(content).toContain('# @blue/demo-pkg');
         expect(content).toContain('pnpm add @blue/demo-pkg');
-        expect(content).toContain("pnpm --filter @blue/demo-pkg build:lib");
+        expect(content).toContain('pnpm --filter @blue/demo-pkg build:lib');
         // No template markers left behind.
         expect(content).not.toContain('<%=');
         expect(content).not.toContain('.template');
@@ -43,9 +43,7 @@ describe('readme generator', () => {
 
     it('rejects a non-kebab-case name', async () => {
         const tree = createTreeWithEmptyWorkspace();
-        await expect(
-            readmeGenerator(tree, { name: 'Bad_Name' } as never),
-        ).rejects.toThrow(/kebab-case/);
+        await expect(readmeGenerator(tree, { name: 'Bad_Name' } as never)).rejects.toThrow(/kebab-case/);
     });
 
     it('honors an explicit destination path', async () => {

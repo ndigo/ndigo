@@ -48,7 +48,7 @@ messages back, but it cannot:
 
 The dispatcher already treats sockets as first-class (parameter binding via the same
 machinery as HTTP: `queryValue`, `headerValue`, `cookieValue`, `validatedBy`, plus
-`socketSession()`), and the adapter already resolves the socket handler through the
+`socketSessionValue()`), and the adapter already resolves the socket handler through the
 normal radix mapping. The missing layer is _session tracking and fan-out_.
 
 ## 3. Architecture: composition-root model
@@ -74,15 +74,15 @@ Coexistence example (the question this model answers — a Node app with both ki
 export class NodeAppConfiguration {
     @entry chatController() {
         return new ChatController();
-    } // @socketMapping + socketSession()
+    } // @socketMapping + socketSessionValue()
     @entry noteController() {
         return new NoteController();
-    } // @getMapping + sessionValue()
+    } // @getMapping + requestSessionValue()
 }
 ```
 
 The chat handler binds `SocketSession`; the HTTP handler binds the state bag via
-`sessionValue()`; a scheduler-driven task pushes into a room through the injected
+`requestSessionValue()`; a scheduler-driven task pushes into a room through the injected
 `SocketSessionRegistry` bean. All three coexist as ordinary DI.
 
 ## 4. Decisions

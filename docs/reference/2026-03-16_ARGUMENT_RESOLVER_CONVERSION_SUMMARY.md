@@ -16,9 +16,10 @@ It is intended as a compact upgrade note for framework consumers.
 `@blue/platform-web` now includes browser argument resolvers for:
 
 - cookies (`BrowserCookieValueMethodArgumentResolver`)
-- model values (`BrowserModelValueMethodArgumentResolver`)
-- browser history state (`BrowserStateValueMethodArgumentResolver`)
-- session storage (`BrowserSessionValueMethodArgumentResolver`)
+- whole-source data binding (`BrowserDataBindingMethodArgumentResolver`)
+- browser history state (`BrowserHistoryStateValueMethodArgumentResolver`)
+- session storage (`BrowserSessionStorageValueMethodArgumentResolver`)
+- local storage (`BrowserLocalStorageValueMethodArgumentResolver`)
 
 ### 2) Converter metadata on route parameters
 
@@ -34,10 +35,11 @@ Supported across:
 - `pathValue`
 - `matrixValue`
 - `cookieValue`
-- `modelValue`
-- `stateValue`
-- `sessionValue`
-- `bindValue`
+- `historyStateValue`
+- `sessionStorageValue`
+- `localStorageValue`
+- `requestSessionValue`
+- `dataBinderValue`
 
 ### 3) Built-in converter presets
 
@@ -72,7 +74,7 @@ In strict mode, unknown named converters fail fast.
 
 ### 6) Data Binding support
 
-`bindValue(source, options?)` allows mapping an entire data source (like query parameters or history state) to a nested object structure.
+`dataBinderValue(source, Target?)` allows mapping an entire data source (like query parameters or history state) to a nested object structure.
 
 - Supports dot-notation (`user.name`) and bracket-notation (`tags[0]`) via `@blue/core` `DataBinder`.
 - Supports optional `prefix` filtering.
@@ -113,8 +115,8 @@ configureBrowserArgumentResolvers(context, {
 
 @routeParams({
     amount: cookieValue('amount', { convert: 'toInt' }),
-    txCount: stateValue('txCount', { convert: { optional: true, use: 'toInt' } }),
-    user: validatedBy(UserSchema, bindValue('query'))
+    txCount: historyStateValue('txCount', { convert: { optional: true, use: 'toInt' } }),
+    user: validatedBy(UserSchema, dataBinderValue('query'))
 })
 handle(amount: number, txCount: number | null, user: User) {}
 ```

@@ -33,9 +33,10 @@ context.setThemeName('default');
 
 // Register browser-specific method argument resolvers.
 // - BrowserCookieValueMethodArgumentResolver
-// - BrowserModelValueMethodArgumentResolver
-// - BrowserStateValueMethodArgumentResolver
-// - BrowserSessionValueMethodArgumentResolver
+// - BrowserHistoryStateValueMethodArgumentResolver
+// - BrowserSessionStorageValueMethodArgumentResolver
+// - BrowserLocalStorageValueMethodArgumentResolver
+// - BrowserDataBindingMethodArgumentResolver
 configureBrowserArgumentResolvers(context);
 
 // Use built-in converter presets per resolver type.
@@ -77,7 +78,7 @@ import {
     ParameterConversionError,
     routeMapping,
     parameters,
-    stateValue,
+    historyStateValue,
 } from '@blue/dispatcher';
 import {
     argumentValueConverters,
@@ -101,7 +102,7 @@ class AccountController {
     @routeMapping('/summary')
     @parameters({
         amount: cookieValue('amount', { convert: 'toInt' }),
-        txCount: stateValue('txCount', { convert: { optional: true, use: 'toInt' } }),
+        txCount: historyStateValue('txCount', { convert: { optional: true, use: 'toInt' } }),
     })
     summary(amount: number, txCount: number | null) {
         return { amount, txCount };
@@ -119,26 +120,28 @@ class GlobalErrorHandler {
 
 ### Route Parameter Extractors
 
-`@blue/dispatcher` route parameter extractors can now resolve browser-backed cookie and session values:
+`@blue/dispatcher` route parameter extractors can now resolve browser-backed cookie, storage, and history-state values:
 
-- `cookieValue(name, options?)`
-- `modelValue(name, options?)`
-- `stateValue(name, options?)`
-- `sessionValue(name, options?)`
+- `cookieValue(name)`
+- `historyStateValue(name)`
+- `sessionStorageValue(name)`
+- `localStorageValue(name)`
+- `dataBinderValue(source, Target?)` — whole-source binding for `query`, `cookie`, `session-storage`, `local-storage`
 
 These are resolved at dispatch-time when compatible argument resolvers are registered in the application context.
 
 ### Optional Value Conversion
 
-Browser argument resolvers accept an optional value converter callback:
+Resolver classes are constructed argument-less; conversion is applied at the
+extractor level via `convertType` (or the `asNumber`/`asBoolean`/`asDate`/
+`asJson` wrappers) for lightweight coercion (e.g. `string` → `number`/`boolean`)
+while keeping parsing responsibilities in dedicated parser utilities:
 
 ```typescript
-import { BrowserStateValueMethodArgumentResolver } from '@blue/platform-web';
+import { historyStateValue, asNumber } from '@blue/dispatcher';
 
-const resolver = new BrowserStateValueMethodArgumentResolver((value) => Number(value));
+const extractor = asNumber(historyStateValue('txCount'));
 ```
-
-Use conversion callbacks for lightweight coercion (e.g. `string` → `number`/`boolean`) while keeping parsing responsibilities in dedicated parser utilities.
 
 If a converter throws, resolvers wrap the failure in `ParameterConversionError`.
 This allows error resolvers to map conversion failures to dedicated views consistently.
@@ -154,12 +157,12 @@ Built-in converter presets are exported as `argumentValueConverters`:
 You can also supply named converter references in `parameters` extractor options:
 
 ```typescript
-import { modelValue, routeMapping, parameters } from '@blue/dispatcher';
+import { historyStateValue, routeMapping, parameters } from '@blue/dispatcher';
 
 class AccountController {
     @routeMapping('/summary')
     @parameters({
-        profileId: modelValue('profile.id', { convert: 'number' }),
+        profileId: historyStateValue('profile.id', { convert: 'number' }),
     })
     summary(profileId: number) {
         return profileId;

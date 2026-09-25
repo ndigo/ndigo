@@ -14,14 +14,17 @@ pnpm add @blue/platform-node
 
 ### Argument Resolvers
 
-The package provides 6 argument resolvers for binding request data to controller method parameters:
+The package provides 9 argument resolvers for binding request data to controller method parameters:
 
 - `NodeQueryValueMethodArgumentResolver`: Binds query parameters from the URL
 - `NodePathValueMethodArgumentResolver`: Binds path parameters from the route
 - `NodeHeaderValueMethodArgumentResolver`: Binds HTTP headers
 - `NodeBodyValueMethodArgumentResolver`: Binds request body data
+- `NodeDataBindingMethodArgumentResolver`: Binds a whole source (`body` / `cookie`) into an object
+- `NodeRequestPartMethodArgumentResolver`: Binds multipart JSON/text parts
+- `NodeMultipartFileMethodArgumentResolver`: Binds multipart file parts
 - `NodeCookieValueMethodArgumentResolver`: Binds cookies from the request
-- `NodeSessionValueMethodArgumentResolver`: Binds session data
+- `NodeRequestSessionValueMethodArgumentResolver`: Binds request-session data
 
 ### NodeEnvironment
 
@@ -32,21 +35,21 @@ A Node.js environment implementation that includes `process.env` as the first pr
 Auto-configuration for Node.js-based applications that provisions:
 
 - Argument-value converter registry
-- All 6 argument resolvers
+- All 9 argument resolvers
 - Default handler mapping for metadata-driven dispatch
 - The error-resolver chain (400 binding, 401/403 denials, 422 validation,
   500 last-resort)
-:- An `Accept-Language` language resolver (`AcceptHeaderLanguageResolver`,
+  :- An `Accept-Language` language resolver (`AcceptHeaderLanguageResolver`,
   default `en-US`) — the negotiated language reaches views, templates,
   and islands via the route's `language` attribute
-:- A `taskScheduler` + `scheduleRegistry` pair: `@scheduled` methods on
+  :- A `taskScheduler` + `scheduleRegistry` pair: `@scheduled` methods on
   registered beans are auto-discovered and auto-started with zero wiring
-:- A managed `httpServer` entry (`HTTPServer`, a `SmartLifecycle` bean)
-:- A `socketSessionRegistry` bean (`SocketSessionRegistry`): rooms, path
+  :- A managed `httpServer` entry (`HTTPServer`, a `SmartLifecycle` bean)
+  :- A `socketSessionRegistry` bean (`SocketSessionRegistry`): rooms, path
   broadcast, heartbeat, and backpressure for `@socketMapping` endpoints —
   shared with the managed server's adapter, so any service can push to a
   socket room
-:- An optional `socketRequestAuthenticator` bean: upgrade-time identity for
+  :- An optional `socketRequestAuthenticator` bean: upgrade-time identity for
   sockets, and with it the socket-side `@authenticated`/`@authorized`
   enforcement — see [Socket authentication](#socket-authentication)
 
@@ -206,17 +209,28 @@ is a `400`, never silently reshaped. `listen()` rejects on bind errors, and
 ### Controller Example
 
 ```typescript
-import { controller, get, post, query, path, header, body, cookie, session } from '@blue/dispatcher';
+import { requestMapping, getMapping, postMapping, parameters } from '@blue/dispatcher';
+import { pathVariable, queryValue, headerValue, bodyValue, cookieValue, requestSessionValue } from '@blue/dispatcher';
 
-@controller('/users')
+@requestMapping('/users')
 class UserController {
-    @get('/:id')
-    getUser(@path('id') id: string, @query('include') include: string, @header('authorization') authHeader: string) {
+    @getMapping('/:id')
+    @parameters({
+        id: pathVariable('id'),
+        include: queryValue('include'),
+        authHeader: headerValue('authorization'),
+    })
+    getUser(id: string, include: string, authHeader: string) {
         return { id, include, authHeader };
     }
 
-    @post('/')
-    createUser(@body('name') name: string, @cookie('sessionId') sessionId: string, @session('userId') userId: string) {
+    @postMapping('/')
+    @parameters({
+        name: bodyValue('name'),
+        sessionId: cookieValue('sessionId'),
+        userId: requestSessionValue('userId'),
+    })
+    createUser(name: string, sessionId: string, userId: string) {
         return { name, sessionId, userId };
     }
 }
@@ -224,17 +238,13 @@ class UserController {
 
 ### Custom Configuration
 
-Use `configureNodeArgumentResolvers()` to register resolvers with custom options:
+Use `configureNodeArgumentResolvers()` to register the platform resolver
+chain explicitly (auto-configuration does this for you):
 
 ```typescript
 import { configureNodeArgumentResolvers } from '@blue/platform-node';
 
-configureNodeArgumentResolvers(context, {
-    query: 'string',
-    body: 'json',
-    converterRegistry: myCustomConverterRegistry,
-    strictNamedConverterLookup: true,
-});
+configureNodeArgumentResolvers(context);
 ```
 
 ## API

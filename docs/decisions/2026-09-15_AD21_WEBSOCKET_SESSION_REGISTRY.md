@@ -66,8 +66,8 @@ The dispatcher contributes **types only**; registries, heartbeat, and
 broadcast are beans registered by `NodeAutoConfiguration` (the AD-20
 zero-wiring pattern), with the implementation in `blue-platform-node`. A
 Node app runs socket sessions and HTTP sessions side by side as separate
-beans bound through separate extractors (`socketSession()` /
-`sessionValue()`) — ordinary DI, no unified session layer. The adapter
+beans bound through separate extractors (`socketSessionValue()` /
+`requestSessionValue()`) — ordinary DI, no unified session layer. The adapter
 keeps owning the `WebSocketServer`; the registry attaches at server start
 and is reachable from any service (scheduler → room, HTTP → room).
 

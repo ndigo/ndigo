@@ -39,7 +39,7 @@ class AppConfig {
 
 ### Parameter binding
 
-`@parameters` uses typed extractors (`pathVariable`, `queryValue`, `bodyValue`, `attributeValue`, `sessionValue`) wrapped by converters (`asNumber`, `asJson`, `asUUID`); resolver selection is cached per parameter.
+`@parameters` uses typed extractors (`pathVariable`, `queryValue`, `bodyValue`, `attributeValue`, `requestSessionValue`) wrapped by converters (`asNumber`, `asJson`, `asUUID`); resolver selection is cached per parameter.
 
 ### Conditions, interceptors, errors
 
@@ -50,7 +50,7 @@ Handlers match on route conditions (matrix params, query params, patterns), run 
 The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
 
 - **Decorators** — `@requestMapping`, `@getMapping`, `@socketMapping`, `@parameters`
-- **Parameter helpers** — `pathVariable`, `queryValue`, `bodyValue`, `attributeValue`, `sessionValue`; converters `asNumber`, `asJson`, `asUUID`
+- **Parameter helpers** — `pathVariable`, `queryValue`, `bodyValue`, `attributeValue`, `requestSessionValue`; converters `asNumber`, `asJson`, `asUUID`
 - **Core classes** — `RadixMetadataHandlerMapping`, `ModelAndView`
 
 ## Development

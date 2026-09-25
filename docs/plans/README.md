@@ -4,6 +4,46 @@ Implementation plans for features and technical specifications.
 
 ## Completed Plans
 
+### 2026-09-25 - Configuration Completion
+
+Closes the Framework Gap Analysis Configuration row (AD-29): live rebind
+(`config:refresh` event, `@refreshScope` scope, boot rebind listener),
+at-rest secret encryption (`{cipher:...}` markers, `AESGCMCipher`
+AES-256-GCM via `node:crypto`, key-path AAD, scheme registry with a wiring
+capability gate, `builder.secrets(...)`), and the remote config source
+(`RemotePropertySource` — ETag/body-text change gating, `optional` failure
+semantics, `builder.configServer(...)`, poll → refresh → rebind loop).
+Also fixed a real precedence bug (`defaults` now truly lowest; `boot` above
+`systemEnvironment`) pinned by a real-boot order-assertion spec.
+
+[Read full plan](2026-09-24_CONFIGURATION_COMPLETION.md)
+
+---
+
+### 2026-09-24 - Static Files
+
+Static HTTP semantics (AD-28): strong ETag + conditional GET (304),
+single-range 206/416, `Cache-Control`, precompressed `.br`/`.gz` variants,
+directory index/listing, SPA history fallback, dispatcher HEAD→GET — on top
+of greedy `{*name}`/`**` route segments. Demo gates in blue-island.
+
+[Read full plan](2026-09-24_STATIC_FILES.md)
+
+---
+
+### 2026-09-23 - Argument Binding
+
+Unified argument-binding surface (AD-27): `dataBinderValue(source, Target?)`
+whole-source data binding — the `@ModelAttribute` equivalent (flat form
+fields → nested DTO instances + Zod validate/whitelist), `requestPart` for
+multipart JSON parts, matrix array parity, dotted reads on nested-capable
+sources, and the D-4 binding renames (hard break, no aliases). Missing
+required params now throw `MissingParameterError` → 400.
+
+[Read full plan](2026-09-23_ARGUMENT_BINDING.md)
+
+---
+
 ### 2026-09-17 - Caching
 
 `@blue/cache`: `Cache`/`MemoryCache` (TTL + LRU/FIFO eviction), `CacheManager`
@@ -99,7 +139,7 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 
 ## Draft Plans
 
-None currently.
+- _(none)_
 
 ---
 

@@ -25,6 +25,10 @@ export class NodeHeaderValueMethodArgumentResolver extends AbstractPlatformArgum
         if (!request) {
             return undefined;
         }
+        // `headerValue()` (no name) binds the whole headers record.
+        if (name === '') {
+            return request.headers;
+        }
         const value = request.headers[name.toLowerCase()];
         return Array.isArray(value) ? value.join(', ') : value;
     }

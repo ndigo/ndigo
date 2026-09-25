@@ -86,7 +86,7 @@ export class GreetingController {
     }
 
     @postMapping('/echo')
-    @parameters({ payload: bodyValue('*') })
+    @parameters({ payload: bodyValue() })
     echo(payload: unknown) {
         return { echo: payload };
     }
@@ -113,17 +113,24 @@ Notes:
 the argument's value. The Node platform resolves them through
 `AbstractPlatformArgumentResolver` subclasses.
 
-| Extractor            | Source                      | Whole-source                                 |
-| -------------------- | --------------------------- | -------------------------------------------- |
-| `queryValue(name)`   | query string (`route.data`) | `queryValue('*')`                            |
-| `pathValue(name)`    | path parameter              | —                                            |
-| `headerValue(name)`  | request header              | —                                            |
-| `cookieValue(name)`  | cookie                      | —                                            |
-| `sessionValue(name)` | session                     | —                                            |
-| `bodyValue(name)`    | request body field          | `bodyValue('*')` binds the whole parsed body |
+| Extractor                   | Source                      | Whole-source                              |
+| --------------------------- | --------------------------- | ----------------------------------------- |
+| `queryValue(name)`          | query string (`route.data`) | `queryValue()`                            |
+| `pathVariable(name)`        | path parameter              | —                                         |
+| `matrixValue(name)`         | segment matrix params       | —                                         |
+| `headerValue(name)`         | request header              | —                                         |
+| `cookieValue(name)`         | cookie                      | —                                         |
+| `requestSessionValue(name)` | server session bag          | —                                         |
+| `bodyValue(name)`           | request body field          | `bodyValue()` binds the whole parsed body |
+| `dataBinderValue('body')`   | whole body → DTO object     | binds flat fields into a nested object    |
+| `requestPart(name)`         | multipart JSON/text part    | —                                         |
 
-The `'*'` convention binds the entire source object. Follow guide
-[02 — Request Validation](02-request-validation.md) for coercion and
+Omitting the name binds the entire source object (`queryValue()` =
+whole query, `bodyValue()` = whole body — the `*Value(name)` whole-source
+rule, AD-27 amendment). Whole-source **data
+binding** (`dataBinderValue`) and multipart JSON parts (`requestPart`) are
+covered in guide [09 — Argument Binding](09-argument-binding.md). Follow
+guide [02 — Request Validation](02-request-validation.md) for coercion and
 validation on top of extractors.
 
 ## 5. Managed beans and the server
@@ -236,16 +243,17 @@ extractors work across `@routeMapping`, `@requestMapping`, and
 binder without a source for its mapping is a configuration error — the
 framework throws at registration:
 
-| Mapping kind                  | Available `*Value` sources                                                                                        |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `@routeMapping` (method-less) | any source (transport-agnostic: query, path, matrix, header, cookie, session, attribute, body, bind/model/state…) |
-| `@requestMapping` / verbs     | query, path, matrix, header, cookie, session, attribute, body                                                     |
-| `@socketMapping`              | query, path, header, cookie (no body; no browser state)                                                           |
+| Mapping kind                  | Available `*Value` sources                                                                                                               |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `@routeMapping` (method-less) | any source (transport-agnostic: query, path, matrix, header, cookie, request-session, attribute, body, history-state, storage, `data-*`) |
+| `@requestMapping` / verbs     | query, path, matrix, header, cookie, request-session, attribute, body, `data-body`, `data-cookie`, `request-part`, multipart-file        |
+| `@socketMapping`              | query, path, header, cookie (no body; no browser state)                                                                                  |
 
 So `bodyValue` on a socket mapping is rejected (no body on an upgrade), as is
-`stateValue`/`modelValue`/`bindValue` on a verbed HTTP mapping (browser-only
-sources) — the error says which sources the mapping kind allows. Method-less
-`@routeMapping` accepts anything because it may dispatch on either platform.
+`historyStateValue`/`sessionStorageValue`/`localStorageValue` on a verbed HTTP
+mapping (browser-only sources) — the error says which sources the mapping
+kind allows. Method-less `@routeMapping` accepts anything because it may
+dispatch on either platform.
 
 ## 7. Putting it together
 

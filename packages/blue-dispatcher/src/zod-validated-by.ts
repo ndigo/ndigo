@@ -57,12 +57,12 @@ export class ZodValidationError extends Error {
  * });
  *
  * @routeMapping('/create')
- * @parameters({ user: validatedBy(UserSchema, bindBrowserValue('query')) })
+ * @parameters({ user: validatedBy(UserSchema, dataBinderValue('query')) })
  * create(user: z.infer<typeof UserSchema>) { … }
  * ```
  *
  * @param schema - The Zod schema to validate and coerce the resolved value.
- * @param extractor - The parameter extractor (e.g. `bindBrowserValue('query')`).
+ * @param extractor - The parameter extractor (e.g. `dataBinderValue('query')`).
  * @returns The extractor with the Zod validation attached.
  */
 export function validatedBy<T>(schema: z.ZodType<T>, extractor: ParameterExtractor): ParameterExtractor {
@@ -90,7 +90,7 @@ export function validatedBy<T>(schema: z.ZodType<T>, extractor: ParameterExtract
  *
  * @example
  * ```ts
- * @parameters(validateParameters(UserSchema, { user: bindBrowserValue('query') }))
+ * @parameters(validateParameters(UserSchema, { user: dataBinderValue('query') }))
  * ```
  *
  * @param schema - The Zod schema validating the bound object.
@@ -108,8 +108,8 @@ export function validateParameters(schema: z.ZodType, extractors: ParameterMap):
 /**
  * Sugar for validating the entire parsed request body against a Zod schema.
  *
- * Equivalent to {@link validatedBy}`(schema, bodyValue('*'))`. The `'*'`
- * extractor convention binds the whole parsed body object (Node platform).
+ * Equivalent to {@link validatedBy}`(schema, bodyValue())`. The no-argument
+ * extractor binds the whole parsed body object (Node platform).
  *
  * @example
  * ```ts
@@ -118,18 +118,18 @@ export function validateParameters(schema: z.ZodType, extractors: ParameterMap):
  * ```
  *
  * @param schema - The Zod schema validating the whole body.
- * @returns A parameter extractor binding `bodyValue('*')` through the schema.
+ * @returns A parameter extractor binding `bodyValue()` through the schema.
  */
 export function validatedBody<T>(schema: z.ZodType<T>): ParameterExtractor {
-    return validatedBy(schema, bodyValue('*'));
+    return validatedBy(schema, bodyValue());
 }
 
 /**
  * Sugar for validating the entire query object against a Zod schema.
  *
- * Equivalent to {@link validatedBy}`(schema, queryValue('*'))`. The `'*'`
- * extractor convention binds the whole `route.data` object (all query
- * parameters), so an object schema validates/coerces the whole query — e.g.
+ * Equivalent to {@link validatedBy}`(schema, queryValue())`. The no-argument
+ * extractor binds the whole `route.data` object (all query parameters), so an
+ * object schema validates/coerces the whole query — e.g.
  * `z.object({ page: z.coerce.number(), q: z.string() })` against
  * `?page=2&q=search`.
  *
@@ -140,10 +140,10 @@ export function validatedBody<T>(schema: z.ZodType<T>): ParameterExtractor {
  * ```
  *
  * @param schema - The Zod schema validating the whole query object.
- * @returns A parameter extractor binding `queryValue('*')` through the schema.
+ * @returns A parameter extractor binding `queryValue()` through the schema.
  */
 export function validatedQuery<T>(schema: z.ZodType<T>): ParameterExtractor {
-    return validatedBy(schema, queryValue('*'));
+    return validatedBy(schema, queryValue());
 }
 
 export type { MethodParameter } from './parameters';

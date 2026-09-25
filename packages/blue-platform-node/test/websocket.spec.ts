@@ -12,7 +12,7 @@ import {
     requestMapping,
     socketMapping,
     parameters,
-    socketSession,
+    socketSessionValue,
     queryValue,
     headerValue,
     type SocketSession,
@@ -41,7 +41,7 @@ class SocketController {
     }
 
     @socketMapping('/echo')
-    @parameters({ session: socketSession('session') })
+    @parameters({ session: socketSessionValue('session') })
     async *echo(session: SocketSession) {
         for await (const message of session.messages) {
             yield { event: 'echo', data: message };
@@ -51,7 +51,7 @@ class SocketController {
     // Room membership (AD-21 D5): the handler joins 'lobby' on connect;
     // the adapter's registry then fans out broadcastTo('lobby', …) to it.
     @socketMapping('/lobby')
-    @parameters({ session: socketSession('session') })
+    @parameters({ session: socketSessionValue('session') })
     async *lobby(session: SocketSession) {
         session.join('lobby');
         for await (const message of session.messages) {
@@ -63,7 +63,7 @@ class SocketController {
     // session.params (query/header), gated by the query condition.
     @socketMapping({ value: '/room', queryParams: 'token=abc', private: false })
     @parameters({
-        session: socketSession('session'),
+        session: socketSessionValue('session'),
         token: queryValue('token'),
         via: headerValue('x-via'),
     })
@@ -328,7 +328,7 @@ describe('WebSocket upgrade authentication + limits', () => {
     @requestMapping('/authws')
     class AuthedSocketController {
         @socketMapping('/private')
-        @parameters({ session: socketSession('session') })
+        @parameters({ session: socketSessionValue('session') })
         async *privateEcho(session: SocketSession) {
             for await (const message of session.messages) {
                 // Text frames arrive as strings; binary frames as bytes
@@ -345,7 +345,7 @@ describe('WebSocket upgrade authentication + limits', () => {
         // returns a Promise, exercising the async-handler path. The throw
         // inside must route to session.close(1011), not crash the process.
         @socketMapping('/boom')
-        @parameters({ session: socketSession('session') })
+        @parameters({ session: socketSessionValue('session') })
         async broken(session: SocketSession) {
             seenPaths.push(session.path);
             for await (const _message of session.messages) {
@@ -476,7 +476,7 @@ describe('WebSocket upgrade auth failure modes', () => {
     @requestMapping('/flaky')
     class FlakySocketController {
         @socketMapping('/x')
-        @parameters({ session: socketSession('session') })
+        @parameters({ session: socketSessionValue('session') })
         async *echo(session: SocketSession) {
             seenPaths.push(session.path);
             for await (const message of session.messages) {
@@ -557,7 +557,7 @@ describe('socket auth metadata enforcement (SEC-3)', () => {
         // No auth metadata: the public-socket posture (SEC-3's documented
         // contrast) — the identity bag is still bound when a hook supplies one.
         @socketMapping('/open')
-        @parameters({ session: socketSession('session') })
+        @parameters({ session: socketSessionValue('session') })
         async *open(session: SocketSession) {
             for await (const message of session.messages) {
                 yield { event: 'open', user: session.attributes['user'] ?? null, data: message };
@@ -566,7 +566,7 @@ describe('socket auth metadata enforcement (SEC-3)', () => {
 
         @socketMapping('/private')
         @authenticated
-        @parameters({ session: socketSession('session') })
+        @parameters({ session: socketSessionValue('session') })
         async *priv(session: SocketSession) {
             for await (const message of session.messages) {
                 yield { event: 'private', user: session.attributes['user'] ?? null, data: message };
@@ -577,17 +577,17 @@ describe('socket auth metadata enforcement (SEC-3)', () => {
         // principal without the role is denied, one with it proceeds.
         @socketMapping('/admin')
         @authorized('admin')
-        @parameters({ session: socketSession('session') })
+        @parameters({ session: socketSessionValue('session') })
         async *admin(session: SocketSession) {
             for await (const message of session.messages) {
                 yield { event: 'admin', user: session.attributes['user'] ?? null, data: message };
             }
         }
 
-        // `queryValue('*')` binds the whole parsed query map, so the handler
+        // `queryValue()` binds the whole parsed query map, so the handler
         // observes exactly the map the adapter built from the URL.
         @socketMapping('/proto')
-        @parameters({ session: socketSession('session'), query: queryValue('*') })
+        @parameters({ session: socketSessionValue('session'), query: queryValue() })
         async *proto(session: SocketSession, query: Record<string, string | string[]>) {
             for await (const message of session.messages) {
                 yield {
@@ -601,7 +601,7 @@ describe('socket auth metadata enforcement (SEC-3)', () => {
         }
 
         @getMapping('/query-proto')
-        @parameters({ query: queryValue('*') })
+        @parameters({ query: queryValue() })
         protoQuery(query: Record<string, string | string[]>) {
             return {
                 prototypeIsNull: Object.getPrototypeOf(query) === null,
@@ -617,7 +617,7 @@ describe('socket auth metadata enforcement (SEC-3)', () => {
     @authenticated
     class ClassGatedSocketController {
         @socketMapping('/echo')
-        @parameters({ session: socketSession('session') })
+        @parameters({ session: socketSessionValue('session') })
         async *echo(session: SocketSession) {
             for await (const message of session.messages) {
                 yield { event: 'class', user: session.attributes['user'] ?? null, data: message };
@@ -831,7 +831,7 @@ describe('socket connection cap (SEC-9)', () => {
     @requestMapping('/cap')
     class CapSocketController {
         @socketMapping('/echo')
-        @parameters({ session: socketSession('session') })
+        @parameters({ session: socketSessionValue('session') })
         async *echo(session: SocketSession) {
             for await (const message of session.messages) {
                 yield { event: 'echo', data: message };

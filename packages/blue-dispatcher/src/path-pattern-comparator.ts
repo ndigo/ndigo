@@ -21,6 +21,22 @@ function countWildcardSegments(pattern: string): number {
 }
 
 /**
+ * Counts the number of greedy segments (`**` / `{*name}`, D-1) in a path
+ * pattern. Greedy segments are strictly less specific than single-segment
+ * params at equal length, so patterns with fewer of them sort first.
+ */
+function countGreedySegments(pattern: string): number {
+    const segments = pattern.split('/');
+    let count = 0;
+    for (const segment of segments) {
+        if (segment === '**' || (segment.startsWith('{*') && segment.endsWith('}'))) {
+            count++;
+        }
+    }
+    return count;
+}
+
+/**
  * Returns `true` when the pattern contains any wildcard characters (`*`, `?`, `{`, `[`).
  */
 function hasWildcards(pattern: string): boolean {
@@ -34,8 +50,10 @@ function hasWildcards(pattern: string): boolean {
  *
  * ## Specificity Rules (most specific first)
  * 1. Exact matches (no wildcards) beat pattern matches.
- * 2. Longer patterns beat shorter patterns.
- * 3. Fewer wildcard segments beat more wildcard segments.
+ * 2. Fewer greedy segments (`**` / `{*name}`) beat more — a catch-all is
+ *    strictly less specific than any non-greedy pattern.
+ * 3. Longer patterns beat shorter patterns.
+ * 4. Fewer wildcard segments beat more wildcard segments.
  */
 export class PathPatternComparator implements Comparator<string> {
     get [Symbol.toStringTag](): string {
@@ -70,12 +88,22 @@ export class PathPatternComparator implements Comparator<string> {
             return -1;
         }
 
-        // 2. Longer patterns beat shorter patterns.
+        // 2. Fewer greedy segments (`**` / `{*name}`) beat more. A catch-all
+        // matches any depth below its anchor, so it is strictly less specific
+        // than any non-greedy pattern — decided before length, since the
+        // `{*name}` spelling is always one character longer than `{name}`.
+        const greedy1 = countGreedySegments(pattern1);
+        const greedy2 = countGreedySegments(pattern2);
+        if (greedy1 !== greedy2) {
+            return greedy1 - greedy2;
+        }
+
+        // 3. Longer patterns beat shorter patterns.
         if (pattern1.length !== pattern2.length) {
             return pattern2.length - pattern1.length;
         }
 
-        // 3. Fewer wildcard segments beat more wildcard segments.
+        // 4. Fewer wildcard segments beat more wildcard segments.
         const wildcards1 = countWildcardSegments(pattern1);
         const wildcards2 = countWildcardSegments(pattern2);
         if (wildcards1 !== wildcards2) {

@@ -31,6 +31,10 @@ export type ParameterExtractor = {
      *  method-argument name. `fileValue('avatar_url')` sets this so the resolver
      *  reads that part instead of inferring from the argument name. */
     partName?: string;
+    /** Optional target constructor for whole-source binding: when set, the
+     *  bound result is a real instance of the target (not a plain object).
+     *  `dataBinderValue(source, Target)` sets this (D-3). */
+    target?: new () => object;
 };
 
 /** Options for creating a parameter extractor with type-based conversion support. */
@@ -60,21 +64,42 @@ export type ParameterMap = Record<string, ParameterExtractor>;
  */
 export class MethodParameterType implements Equatable, Serializable {
     static COOKIE: MethodParameterType;
-    static MODEL: MethodParameterType;
     static MATRIX: MethodParameterType;
     static PATH: MethodParameterType;
     static QUERY: MethodParameterType;
-    static STATE: MethodParameterType;
-    static SESSION: MethodParameterType;
-    static BIND: MethodParameterType;
+    static HISTORY_STATE: MethodParameterType;
+    static REQUEST_SESSION: MethodParameterType;
+    static SESSION_STORAGE: MethodParameterType;
+    static LOCAL_STORAGE: MethodParameterType;
     static ATTRIBUTE: MethodParameterType;
     static HEADER: MethodParameterType;
     static BODY: MethodParameterType;
     static ROUTE: MethodParameterType;
     static SOCKET_SESSION: MethodParameterType;
     static MULTIPART_FILE: MethodParameterType;
+    static REQUEST_PART: MethodParameterType;
+
+    /**
+     * Whole-source data-binding types (`data-{source}:value`, D-3).
+     *
+     * The source is encoded in the type — `dataBinderValue('body')` produces
+     * `data-body:value` — and the instances are cached so type-equality via
+     * `Set.has` in the `SOURCES_BY_KIND` membership checks holds.
+     *
+     * @param source - The data source name (`'query'`, `'body'`, `'cookie'`,
+     *   `'session-storage'`, `'local-storage'`).
+     * @returns The cached type instance for `data-{source}:value`.
+     */
+    static data(source: string): MethodParameterType {
+        return (dataBindingTypes[source] ??= new MethodParameterType(`data-${source}:value`));
+    }
 
     static fromType(type: string): MethodParameterType | null {
+        // data-* types are cached instances, not static fields — resolve them
+        // from the source cache so serialized types round-trip.
+        if (type.startsWith('data-')) {
+            return dataBindingTypes[type.slice('data-'.length, -':value'.length)] ?? null;
+        }
         const types = keys(this);
         const length = types.length;
 
@@ -121,20 +146,24 @@ export class MethodParameterType implements Equatable, Serializable {
     }
 }
 
+/** Cache of `data-{source}:value` type instances (see {@link MethodParameterType.data}). */
+const dataBindingTypes: Record<string, MethodParameterType> = {};
+
 MethodParameterType.COOKIE = new MethodParameterType('cookie:value');
-MethodParameterType.MODEL = new MethodParameterType('model:value');
 MethodParameterType.MATRIX = new MethodParameterType('matrix:value');
-MethodParameterType.PATH = new MethodParameterType('path:value');
+MethodParameterType.PATH = new MethodParameterType('path:variable');
 MethodParameterType.QUERY = new MethodParameterType('query:value');
-MethodParameterType.STATE = new MethodParameterType('state:value');
-MethodParameterType.SESSION = new MethodParameterType('session:value');
-MethodParameterType.BIND = new MethodParameterType('bind:value');
+MethodParameterType.HISTORY_STATE = new MethodParameterType('history-state:value');
+MethodParameterType.REQUEST_SESSION = new MethodParameterType('request-session:value');
+MethodParameterType.SESSION_STORAGE = new MethodParameterType('session-storage:value');
+MethodParameterType.LOCAL_STORAGE = new MethodParameterType('local-storage:value');
 MethodParameterType.ATTRIBUTE = new MethodParameterType('attribute:value');
 MethodParameterType.HEADER = new MethodParameterType('header:value');
 MethodParameterType.BODY = new MethodParameterType('body:value');
 MethodParameterType.ROUTE = new MethodParameterType('route:value');
 MethodParameterType.SOCKET_SESSION = new MethodParameterType('socket-session:value');
 MethodParameterType.MULTIPART_FILE = new MethodParameterType('multipart-file:value');
+MethodParameterType.REQUEST_PART = new MethodParameterType('request-part:value');
 
 /**
  * Method parameter metadata
@@ -160,6 +189,12 @@ export class MethodParameter implements Serializable {
      * `name: 'x-via'`).
      */
     readonly parameterName!: string;
+    /**
+     * Optional target constructor for whole-source binding. When set, the
+     * bound value is a real instance of the target (see
+     * {@link ParameterExtractor.target} / `dataBinderValue(source, Target)`).
+     */
+    readonly target!: (new () => object) | undefined;
 
     constructor(
         type: MethodParameterType,
@@ -169,7 +204,8 @@ export class MethodParameter implements Serializable {
         convertType?: { source: unknown; target: unknown },
         prefix: string | null = null,
         convert?: (value: unknown) => unknown,
-        parameterName?: string
+        parameterName?: string,
+        target?: new () => object
     ) {
         if (!isString(name)) {
             throw new TypeError(`"name" must be a string but was ${name}`);
@@ -182,6 +218,7 @@ export class MethodParameter implements Serializable {
         this.prefix = prefix;
         this.convert = convert ?? undefined;
         this.parameterName = parameterName ?? name;
+        this.target = target;
     }
 
     toJSON(): JSONObject {
@@ -209,10 +246,10 @@ export class MethodParameter implements Serializable {
  *   limit: queryValue('limit', { required: true, defaultValue: '10' })
  * })
  */
-export function queryValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
+export function queryValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.QUERY,
-        name,
+        name: name ?? '',
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
         convertType: options.convertType ?? undefined,
@@ -224,13 +261,13 @@ export function queryValue(name: string, options: ParameterExtractorOptions = {}
  *
  * @example
  * `parameters`({
- *   userId: pathValue('userId')
+ *   userId: pathVariable('userId')
  * })
  */
-export function pathVariable(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
+export function pathVariable(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.PATH,
-        name,
+        name: name ?? '',
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
         convertType: options.convertType ?? undefined,
@@ -265,10 +302,10 @@ export function matrixValue(name: string, options: ParameterExtractorOptions = {
  *   token: cookieValue('AUTH_TOKEN', { required: true })
  * })
  */
-export function cookieValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
+export function cookieValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.COOKIE,
-        name,
+        name: name ?? '',
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
         convertType: options.convertType ?? undefined,
@@ -276,18 +313,19 @@ export function cookieValue(name: string, options: ParameterExtractorOptions = {
 }
 
 /**
- * Factory function: Create a session parameter extractor
+ * Factory function: Create a request-session parameter extractor.
+ * Reads `request.session` on the Node platform (nested-capable).
  *
  * @example
  * `parameters`({
- *   userId: sessionValue('userId'),
- *   token: sessionValue('AUTH_TOKEN', { required: true })
+ *   userId: requestSessionValue('userId'),
+ *   token: requestSessionValue('AUTH_TOKEN', { required: true })
  * })
  */
-export function sessionValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
+export function requestSessionValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
-        type: MethodParameterType.SESSION,
-        name,
+        type: MethodParameterType.REQUEST_SESSION,
+        name: name ?? '',
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
         convertType: options.convertType ?? undefined,
@@ -295,17 +333,18 @@ export function sessionValue(name: string, options: ParameterExtractorOptions = 
 }
 
 /**
- * Factory function: Create a model parameter extractor
+ * Factory function: Create a session-storage parameter extractor.
+ * Reads `sessionStorage` on the browser platform (scalar-only).
  *
  * @example
  * `parameters`({
- *   profile: modelValue('profile'),
+ *   theme: sessionStorageValue('theme'),
  * })
  */
-export function modelValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
+export function sessionStorageValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
-        type: MethodParameterType.MODEL,
-        name,
+        type: MethodParameterType.SESSION_STORAGE,
+        name: name ?? '',
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
         convertType: options.convertType ?? undefined,
@@ -313,17 +352,18 @@ export function modelValue(name: string, options: ParameterExtractorOptions = {}
 }
 
 /**
- * Factory function: Create a history state parameter extractor
+ * Factory function: Create a local-storage parameter extractor.
+ * Reads `localStorage` on the browser platform (scalar-only).
  *
  * @example
  * `parameters`({
- *   token: stateValue('token'),
+ *   token: localStorageValue('token'),
  * })
  */
-export function stateValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
+export function localStorageValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
-        type: MethodParameterType.STATE,
-        name,
+        type: MethodParameterType.LOCAL_STORAGE,
+        name: name ?? '',
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
         convertType: options.convertType ?? undefined,
@@ -331,16 +371,56 @@ export function stateValue(name: string, options: ParameterExtractorOptions = {}
 }
 
 /**
- * Factory function: Create a binding parameter extractor.
- * Binds an entire source (e.g. query, state) to an object, optionally filtering by prefix.
+ * Factory function: Create a history-state parameter extractor.
+ * Reads `history.state` on the browser platform (nested-capable).
  *
  * @example
  * `parameters`({
- *   user: bindValue('query', { prefix: 'user.' })
+ *   token: historyStateValue('token'),
  * })
  */
-export function bindBrowserValue(
-    source: 'query' | 'state' | 'session' | 'model' | 'cookie' | 'matrix' | 'path',
+export function historyStateValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
+    return {
+        type: MethodParameterType.HISTORY_STATE,
+        name: name ?? '',
+        required: options.required ?? false,
+        defaultValue: options.defaultValue ?? null,
+        convertType: options.convertType ?? undefined,
+    };
+}
+
+/**
+ * The data sources whole-source binding (`dataBinderValue`) can read from,
+ * per platform (D-3):
+ *
+ * - browser: `query`, `cookie`, `session-storage`, `local-storage`
+ * - node: `body`, `cookie`
+ *
+ * The source is encoded in the resulting type (`data-{source}:value`), and
+ * `SOURCES_BY_KIND` validates source-vs-mapping-kind compatibility at
+ * registration time.
+ */
+export type DataBindingSource = 'query' | 'body' | 'cookie' | 'session-storage' | 'local-storage';
+
+/**
+ * Factory function: Create a whole-source data-binding parameter extractor.
+ * Binds an entire flat source (e.g. `body`, `query`) into one nested object
+ * via `DataBinder`, optionally filtering by prefix. Dotted client keys
+ * (`address.street`) nest; repeated keys bind as arrays.
+ *
+ * The optional target constructor makes the bound result a real instance of
+ * the target instead of a plain object (mirrors `@file()`'s explicit-marker
+ * convention, AD-26 D-5).
+ *
+ * @example
+ * `parameters`({
+ *   user: dataBinderValue('body'),
+ *   profile: dataBinderValue('body', ProfileForm, { prefix: 'profile.' })
+ * })
+ */
+export function dataBinderValue(
+    source: DataBindingSource,
+    target?: new () => object,
     options: {
         required?: boolean;
         defaultValue?: string;
@@ -349,12 +429,13 @@ export function bindBrowserValue(
     } = {}
 ): ParameterExtractor {
     return {
-        type: MethodParameterType.BIND,
+        type: MethodParameterType.data(source),
         name: source,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
         convertType: options.convertType ?? undefined,
         prefix: options.prefix ?? null,
+        target,
     };
 }
 
@@ -366,10 +447,10 @@ export function bindBrowserValue(
  *   user: attributeValue('user')
  * })
  */
-export function attributeValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
+export function attributeValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.ATTRIBUTE,
-        name,
+        name: name ?? '',
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
         convertType: options.convertType ?? undefined,
@@ -385,10 +466,10 @@ export function attributeValue(name: string, options: ParameterExtractorOptions 
  *   authorization: headerValue('authorization', { required: true })
  * })
  */
-export function headerValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
+export function headerValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.HEADER,
-        name,
+        name: name ?? '',
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
         convertType: options.convertType ?? undefined,
@@ -397,18 +478,18 @@ export function headerValue(name: string, options: ParameterExtractorOptions = {
 
 /**
  * Factory function: Create a request-body parameter extractor.
- * Use `name: '*'` to bind the entire parsed body object.
+ * Omit the name to bind the entire parsed body object (`bodyValue()`).
  *
  * @example
  * `parameters`({
  *   user: bodyValue('user'),
- *   payload: bodyValue('*')
+ *   payload: bodyValue()
  * })
  */
-export function bodyValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
+export function bodyValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.BODY,
-        name,
+        name: name ?? '',
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
         convertType: options.convertType ?? undefined,
@@ -438,18 +519,71 @@ export function fileValue(partName?: string): ParameterExtractor {
 }
 
 /**
- * Binder for the current `Route` object. Explicit replacement for the
- * removed implicit route-injection: `@parameters({ route: routeValue('route') })`
- * binds the `Route` to the argument named in the map. Available on
- * route/request mappings (the dispatch unit); not available on sockets.
+ * Factory function: Create a multipart JSON/text-part extractor (D-6).
  *
- * @param name - The extractor name (defaults to `'route'`).
+ * Reads a named `multipart/form-data` part and binds it like `@RequestBody`:
+ * JSON parts parse to an object (raw-text fallback), optionally into a real
+ * target instance, then through the shared conversion + Zod `convert` hook.
+ * File parts stay `fileValue()`/`MultipartFile`.
+ *
+ * The part name follows the AD-26 `fileValue` convention — explicit when
+ * given, otherwise the method-argument name. Mirrors Spring's
+ * `@RequestPart(value)` with parameter-name fallback:
+ *
+ * - `requestPart()` reads the part named after the argument as a plain object;
+ * - `requestPart(MetaDto)` does the same into an instantiated DTO;
+ * - `requestPart('meta', MetaDto)` overrides the part name.
+ *
+ * Resolved by `NodeRequestPartMethodArgumentResolver` (blue-platform-node).
+ *
+ * @example
+ * `parameters`({
+ *   meta: requestPart(MetaDto),
+ *   biography: requestPart('bio'),
+ *   file: fileValue()
+ * })
+ */
+export function requestPart(partName?: string, target?: new () => object): ParameterExtractor;
+export function requestPart(target: new () => object): ParameterExtractor;
+export function requestPart(
+    partNameOrTarget?: string | (new () => object),
+    target?: new () => object
+): ParameterExtractor {
+    const partName = typeof partNameOrTarget === 'function' ? undefined : partNameOrTarget;
+    const targetConstructor = typeof partNameOrTarget === 'function' ? partNameOrTarget : target;
+    return {
+        type: MethodParameterType.REQUEST_PART,
+        name: partName ?? '',
+        required: false,
+        defaultValue: null,
+        partName,
+        target: targetConstructor,
+    };
+}
+
+/**
+ * Binder for the current `Route` object. Explicit replacement for the
+ * removed implicit route-injection.
+ *
+ * The `*Value(name)` contract extracts a value *named* `name` from its
+ * source — so no-argument `routeValue()` binds the whole `Route` (there is
+ * no "route" property to extract), and a named call binds a `Route`
+ * property: `routeValue('path')`, `routeValue('method')`, `routeValue('id')`
+ * (plus framework context stashed in `route.attributes`, matching
+ * `attributeValue`). Available on route/request mappings (the dispatch
+ * unit); not available on sockets.
+ *
+ * @example
+ * @parameters({ route: routeValue() })
+ * async handle(route: Route) { … }
+ *
+ * @param name - The `Route` property to bind; omit to bind the `Route` itself.
  * @returns A route-value extractor.
  */
-export function routeValue(name: string = 'route'): ParameterExtractor {
+export function routeValue(name?: string): ParameterExtractor {
     return {
         type: MethodParameterType.ROUTE,
-        name,
+        name: name ?? '',
         required: false,
         defaultValue: null,
     };
@@ -463,7 +597,7 @@ export function routeValue(name: string = 'route'): ParameterExtractor {
  * @param name - The extractor name (defaults to `'session'`).
  * @returns A socket-session extractor.
  */
-export function socketSession(name: string = 'session'): ParameterExtractor {
+export function socketSessionValue(name: string = 'session'): ParameterExtractor {
     return {
         type: MethodParameterType.SOCKET_SESSION,
         name,
@@ -515,7 +649,7 @@ export function asNumber(extractor: ParameterExtractor): ParameterExtractor {
 
 /**
  * Wraps a parameter extractor to enforce boolean conversion.
- * @example asBoolean(stateValue('isActive'))
+ * @example asBoolean(historyStateValue('isActive'))
  */
 export function asBoolean(extractor: ParameterExtractor): ParameterExtractor {
     return { ...extractor, convertType: { source: String, target: Boolean } };
@@ -531,7 +665,7 @@ export function asDate(extractor: ParameterExtractor): ParameterExtractor {
 
 /**
  * Wraps a parameter extractor to enforce JSON conversion.
- * @example asJson<UserProfile>(modelValue('profile'))
+ * @example asJson<UserProfile>(sessionStorageValue('profile'))
  */
 export function asJson<_T = unknown>(extractor: ParameterExtractor): ParameterExtractor {
     return { ...extractor, convertType: { source: String, target: Object } };
@@ -610,10 +744,11 @@ export type ParameterMappingKind = 'route' | 'request' | 'socket';
  * {@link InvalidParameterMappingError} at registration.
  *
  * - `route` (browser client-side navigation): route.data + browser state
- *   (+ model/state/bind form binding).
- * - `request` (Node HTTP): the request wire sources including a body.
+ *   (+ whole-source data binding from any bindable source).
+ * - `request` (Node HTTP): the request wire sources including a body
+ *   (+ `data-body` / `data-cookie` whole-source binding).
  * - `socket` (WebSocket upgrade): the upgrade URL query + handshake
- *   headers/cookies — no request body, no browser state.
+ *   headers/cookies — no request body, no browser state, no data binding.
  */
 const SOURCES_BY_KIND: Record<ParameterMappingKind, ReadonlySet<MethodParameterType>> = {
     // Method-less routeMapping: transport-agnostic — may match any verb and
@@ -623,15 +758,23 @@ const SOURCES_BY_KIND: Record<ParameterMappingKind, ReadonlySet<MethodParameterT
         MethodParameterType.QUERY,
         MethodParameterType.PATH,
         MethodParameterType.MATRIX,
-        MethodParameterType.STATE,
-        MethodParameterType.SESSION,
-        MethodParameterType.MODEL,
+        MethodParameterType.HISTORY_STATE,
+        MethodParameterType.REQUEST_SESSION,
+        MethodParameterType.SESSION_STORAGE,
+        MethodParameterType.LOCAL_STORAGE,
         MethodParameterType.COOKIE,
         MethodParameterType.ATTRIBUTE,
-        MethodParameterType.BIND,
         MethodParameterType.HEADER,
         MethodParameterType.BODY,
         MethodParameterType.ROUTE,
+        // Whole-source binding (D-3): permissive as today — every bindable
+        // source is admitted; the platform resolver only serves the ones it
+        // knows, and registration on the other transport is a no-op.
+        MethodParameterType.data('query'),
+        MethodParameterType.data('body'),
+        MethodParameterType.data('cookie'),
+        MethodParameterType.data('session-storage'),
+        MethodParameterType.data('local-storage'),
     ]),
     request: new Set<MethodParameterType>([
         MethodParameterType.QUERY,
@@ -639,11 +782,16 @@ const SOURCES_BY_KIND: Record<ParameterMappingKind, ReadonlySet<MethodParameterT
         MethodParameterType.MATRIX,
         MethodParameterType.HEADER,
         MethodParameterType.COOKIE,
-        MethodParameterType.SESSION,
+        MethodParameterType.REQUEST_SESSION,
         MethodParameterType.ATTRIBUTE,
         MethodParameterType.BODY,
         MethodParameterType.MULTIPART_FILE,
+        MethodParameterType.REQUEST_PART,
         MethodParameterType.ROUTE,
+        // Whole-source binding (D-3): the form-binding surface — `data-body`
+        // is the `@ModelAttribute` equivalent; `data-cookie` is symmetric.
+        MethodParameterType.data('body'),
+        MethodParameterType.data('cookie'),
     ]),
     socket: new Set<MethodParameterType>([
         MethodParameterType.QUERY,
@@ -757,10 +905,14 @@ export function resolveParameters(
 
 /** Build a `MethodParameter` from an extractor, labeling it with the map key. */
 function toMethodParameter(paramName: string, extractor: ParameterExtractor): MethodParameter {
-    // File parts infer their client field name from the method-argument (map
-    // key) unless `fileValue('field')` supplies one; fold that into `name` so
-    // both resolution and required-missing errors address the real part.
-    if (extractor.type.equals(MethodParameterType.MULTIPART_FILE)) {
+    // File/JSON parts infer their client field/part name from the
+    // method-argument (map key) unless `fileValue('field')` /
+    // `requestPart('part')` supplies one; fold that into `name` so both
+    // resolution and required-missing errors address the real part.
+    if (
+        extractor.type.equals(MethodParameterType.MULTIPART_FILE) ||
+        extractor.type.equals(MethodParameterType.REQUEST_PART)
+    ) {
         return new MethodParameter(
             extractor.type,
             extractor.partName ?? paramName,
@@ -769,7 +921,8 @@ function toMethodParameter(paramName: string, extractor: ParameterExtractor): Me
             extractor.convertType,
             extractor.prefix,
             extractor.convert,
-            paramName
+            paramName,
+            extractor.target
         );
     }
     return new MethodParameter(
@@ -780,7 +933,8 @@ function toMethodParameter(paramName: string, extractor: ParameterExtractor): Me
         extractor.convertType,
         extractor.prefix,
         extractor.convert,
-        paramName
+        paramName,
+        extractor.target
     );
 }
 

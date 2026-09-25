@@ -3,7 +3,12 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { MethodParameter, MethodParameterType, AbstractPlatformArgumentResolver } from '@blue/dispatcher';
+import {
+    MethodParameter,
+    MethodParameterType,
+    AbstractPlatformArgumentResolver,
+    readDottedValue,
+} from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { convertArgumentValue } from './_resolver-util';
 import { getNodeRequest } from './node-request';
@@ -27,7 +32,9 @@ export class NodeBodyValueMethodArgumentResolver extends AbstractPlatformArgumen
         if (!request) {
             return undefined;
         }
-        return name === '*' ? request.body : request.body?.[name];
+        // Nested-capable (D-2): `bodyValue('address.city')` walks the JSON
+        // body; `bodyValue()` (no name) binds the whole parsed body.
+        return name === '' ? request.body : readDottedValue(request.body, name);
     }
 
     supportsParameter(parameter: MethodParameter): boolean {

@@ -17,7 +17,7 @@ import {
     type DataPoint,
 } from '@opentelemetry/sdk-metrics';
 import { metrics, trace, type Attributes } from '@opentelemetry/api';
-import { parameters, requestMapping, socketMapping, socketSession, type SocketSession } from '@blue/dispatcher';
+import { parameters, requestMapping, socketMapping, socketSessionValue, type SocketSession } from '@blue/dispatcher';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@blue/platform-node';
 import { WebSocketServerInstrumentation } from '../src/instrumentation/websocket-server/websocket-server';
@@ -26,7 +26,7 @@ import { WebSocket } from 'ws';
 @requestMapping('/')
 class SocketTelemetryController {
     @socketMapping('/echo')
-    @parameters({ session: socketSession('session') })
+    @parameters({ session: socketSessionValue('session') })
     async *echo(session: SocketSession) {
         for await (const message of session.messages) {
             yield { event: 'echo', data: message };

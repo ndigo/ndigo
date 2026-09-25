@@ -16,7 +16,7 @@ import {
     parameters,
     requestMapping,
     socketMapping,
-    socketSession,
+    socketSessionValue,
     type SocketSession,
     type SocketSessionRegistry,
 } from '@blue/dispatcher';
@@ -69,7 +69,7 @@ export class ChatController implements ApplicationContextAware {
      * method consumes `session.messages` without yielding.
      */
     @socketMapping('/chat')
-    @parameters({ session: socketSession('session') })
+    @parameters({ session: socketSessionValue('session') })
     async chat(session: SocketSession) {
         session.join('room');
         // Resolve once per connection, not per message (context lookups on

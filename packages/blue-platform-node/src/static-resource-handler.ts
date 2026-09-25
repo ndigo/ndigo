@@ -1,0 +1,291 @@
+/**
+ * Per-request HTTP semantics for static resources (D-5): conditional GET,
+ * single-range, cache headers, precompressed variants, directory listing,
+ * and SPA fallback — writing directly to the `ServerResponse`.
+ * * @module blue-platform-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+import type { ServerResponse } from 'node:http';
+import { Route } from '@blue/router';
+import { getNodeRequest, NODE_RESPONSE_ATTRIBUTE } from './node-request';
+import { StaticResourceResolver, type StaticResourceResult } from './static-resource-resolver';
+import { ProblemTypes, writeProblem } from './problem-details';
+
+/** Handler options (D-6) — defaults preserve today's plain-file behavior. */
+export interface StaticHandlerOptions {
+    /** `Cache-Control` value on success; `null` omits the header. Default `'public, max-age=3600'`. */
+    cacheControl?: string | null;
+    /** Directory index files, tried in order for a directory path. Default `['index.html']`. */
+    indexNames?: readonly string[];
+    /** Serve a generated HTML listing for directories with no index match. Default `false`. */
+    listDirectories?: boolean;
+    /** 404 file miss + HTML-accepting GET/HEAD → serve the base index. Default `false`. */
+    spaFallback?: boolean;
+}
+
+/** Default `Cache-Control` for successful responses (D-6). */
+const DEFAULT_CACHE_CONTROL = 'public, max-age=3600';
+/** Default directory index names (D-6). */
+const DEFAULT_INDEX_NAMES = ['index.html'] as const;
+
+/** Converts epoch-ms to the RFC 1123 date used by `Last-Modified`/`If-Modified-Since`. */
+function toHttpDate(ms: number): string {
+    return new Date(ms).toUTCString();
+}
+
+/** True when the request method may receive a body (GET/HEAD only, D-8). */
+function isBodylessMethod(method: string | undefined): boolean {
+    return method === 'GET' || method === 'HEAD';
+}
+
+/**
+ * Whole-resource conditional check (RFC 7232 §3): `If-None-Match` takes
+ * precedence over `If-Modified-Since`.
+ *
+ * @param headers - The request headers (lower-cased names).
+ * @param result - The resolved payload with validators.
+ * @returns `true` when the client's validators match → respond 304.
+ */
+function isNotModified(headers: Record<string, string | string[] | undefined>, result: StaticResourceResult): boolean {
+    const ifNoneMatch = headers['if-none-match'];
+    if (ifNoneMatch !== undefined) {
+        const etag = result.etag;
+        if (!etag) {
+            return false;
+        }
+        const candidates = (Array.isArray(ifNoneMatch) ? ifNoneMatch : [ifNoneMatch]).join(',');
+        for (const candidate of candidates.split(',')) {
+            const tag = candidate.trim().replace(/^W\//, '');
+            if (tag === '*' || tag === etag) {
+                return true;
+            }
+        }
+        return false;
+    }
+    const ifModifiedSince = headers['if-modified-since'];
+    if (ifModifiedSince !== undefined && result.mtimeMs !== undefined) {
+        const since = Date.parse(Array.isArray(ifModifiedSince) ? ifModifiedSince[0] : ifModifiedSince);
+        // HTTP-date granularity is seconds — an mtime within the same second
+        // as the client's cached copy counts as not modified.
+        if (Number.isFinite(since) && Math.floor(result.mtimeMs / 1000) <= Math.floor(since / 1000)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/** Parsed single-range (RFC 7233 §3.1). */
+interface ByteRange {
+    /** Inclusive start (computed for suffix ranges). */
+    readonly start: number;
+    /** Inclusive end (clamped to the payload length - 1). */
+    readonly end: number;
+}
+
+/**
+ * Parses a single `bytes=` range spec against a payload length.
+ *
+ * @returns `null` to ignore the header (malformed or multi-range → full 200,
+ *   RFC 7233 §3.1), `'unsatisfiable'` for valid-but-empty overlap (→ 416),
+ *   or the computed range.
+ */
+function parseSingleRange(rangeHeader: string, length: number): ByteRange | 'unsatisfiable' | null {
+    const match = /^bytes=([^,]+)$/.exec(rangeHeader.trim());
+    if (!match || match[1] === undefined) {
+        return null;
+    }
+    const spec = match[1].trim();
+    if (spec.startsWith('-')) {
+        // Suffix range: last N bytes.
+        const n = Number(spec.slice(1));
+        if (!Number.isInteger(n) || n <= 0) {
+            return 'unsatisfiable';
+        }
+        const lengthNum = Math.max(length, 0);
+        return { start: Math.max(lengthNum - n, 0), end: lengthNum - 1 };
+    }
+    const dash = spec.indexOf('-');
+    if (dash <= 0) {
+        return null;
+    }
+    const start = Number(spec.slice(0, dash));
+    if (!Number.isInteger(start) || start < 0) {
+        return null;
+    }
+    if (start >= length) {
+        return 'unsatisfiable';
+    }
+    const openEnd = spec.slice(dash + 1);
+    const end = openEnd === '' ? length - 1 : Number(openEnd);
+    if (!Number.isInteger(end) || end < start) {
+        // Invalid byte-range-spec (last < first) — ignore the header.
+        return null;
+    }
+    return { start, end: Math.min(end, length - 1) };
+}
+
+/**
+ * The HTTP half of static serving: one `handle(route, requestPath)` call
+ * turns a path into a complete response (D-5).
+ *
+ * Flow: resolve (with variant negotiation) → conditional GET (D-2) → single
+ * range (D-4) → cache headers → body. Handles GET and HEAD; errors are
+ * problem+json documents; 404 file misses may fall back to the SPA index
+ * (D-6). Writes directly, because status/header combinations like 206/304/416
+ * cannot flow through `ResponseEntityView`.
+ */
+export class StaticResourceHandler {
+    readonly #resolver: StaticResourceResolver;
+    readonly #options: StaticHandlerOptions;
+
+    /**
+     * Creates a handler over a static root.
+     *
+     * @param basePath - The directory to serve files from.
+     * @param options - Handler options (D-6).
+     */
+    constructor(basePath: string, options: StaticHandlerOptions = {}) {
+        this.#resolver = new StaticResourceResolver(basePath);
+        this.#options = options;
+    }
+
+    /**
+     * Serves `requestPath` for the route's request, writing the response.
+     *
+     * @param route - The current route (carries the Node request/response).
+     * @param requestPath - The request-relative path to serve (raw, undecoded).
+     */
+    async handle(route: Route, requestPath: string): Promise<void> {
+        const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
+        if (!res || res.headersSent) {
+            return;
+        }
+        const method = route.method;
+        if (!isBodylessMethod(method)) {
+            this.#sendProblem(res, route, 405, 'Method Not Allowed', ProblemTypes.methodNotAllowed);
+            return;
+        }
+        const request = getNodeRequest(route);
+        const headers: Record<string, string | string[] | undefined> = request?.headers ?? {};
+
+        let result = await this.#resolver.resolve(requestPath, {
+            indexNames: this.#options.indexNames ?? DEFAULT_INDEX_NAMES,
+            listDirectories: this.#options.listDirectories,
+            acceptEncoding: typeof headers['accept-encoding'] === 'string' ? headers['accept-encoding'] : undefined,
+        });
+
+        if (result.kind !== 'ok') {
+            if (result.kind === 'not-found' && this.#options.spaFallback && acceptsHtml(headers['accept'])) {
+                const indexName = this.#options.indexNames?.[0] ?? DEFAULT_INDEX_NAMES[0];
+                const index = await this.#resolver.resolve(indexName, { acceptEncoding: undefined });
+                if (index.kind === 'ok') {
+                    result = index;
+                }
+            }
+            if (result.kind !== 'ok') {
+                if (result.kind === 'forbidden') {
+                    this.#sendProblem(res, route, 403, 'Forbidden', ProblemTypes.forbidden);
+                } else if (result.kind === 'internal-error') {
+                    this.#sendProblem(res, route, 500, 'Internal Server Error', ProblemTypes.internalError);
+                } else {
+                    this.#sendProblem(res, route, 404, 'Not Found', ProblemTypes.notFound);
+                }
+                return;
+            }
+        }
+
+        const etag = result.etag;
+        const fileBacked = etag !== undefined;
+
+        // Common headers for every successful representation.
+        const successHeaders: Record<string, string> = {
+            'Content-Type': result.contentType ?? 'application/octet-stream',
+        };
+        // `undefined` → default; `null` → opt out of the header entirely.
+        const cacheControl =
+            this.#options.cacheControl === undefined ? DEFAULT_CACHE_CONTROL : this.#options.cacheControl;
+        if (cacheControl !== null) {
+            successHeaders['Cache-Control'] = cacheControl;
+        }
+        if (result.variantAware) {
+            successHeaders['Vary'] = 'Accept-Encoding';
+        }
+        if (etag) {
+            successHeaders['ETag'] = etag;
+        }
+        if (result.mtimeMs !== undefined) {
+            successHeaders['Last-Modified'] = toHttpDate(result.mtimeMs);
+        }
+        if (result.encoding) {
+            successHeaders['Content-Encoding'] = result.encoding;
+        }
+        if (fileBacked) {
+            successHeaders['Accept-Ranges'] = 'bytes';
+        }
+
+        // Conditional GET — evaluated before Range, on the whole representation.
+        if (etag && isNotModified(headers, result)) {
+            this.#send(res, 304, successHeaders, method === 'HEAD' ? '' : undefined);
+            return;
+        }
+
+        let body: Buffer | undefined = result.data;
+        if (fileBacked && typeof headers['range'] === 'string') {
+            const range = parseSingleRange(headers['range'], result.size ?? 0);
+            if (range === 'unsatisfiable') {
+                this.#send(res, 416, { ...successHeaders, 'Content-Range': `bytes */${result.size ?? 0}` }, '');
+                return;
+            }
+            if (range !== null && body) {
+                body = body.subarray(range.start, range.end + 1);
+                successHeaders['Content-Range'] = `bytes ${range.start}-${range.end}/${result.size ?? 0}`;
+                this.#send(
+                    res,
+                    206,
+                    { ...successHeaders, 'Content-Length': String(body.length) },
+                    method === 'HEAD' ? '' : body
+                );
+                return;
+            }
+        }
+
+        this.#send(
+            res,
+            200,
+            { ...successHeaders, 'Content-Length': String(body?.length ?? 0) },
+            method === 'HEAD' ? '' : body
+        );
+    }
+
+    #send(
+        res: ServerResponse,
+        status: number,
+        headers: Record<string, string>,
+        body: Buffer | string | undefined
+    ): void {
+        if (body instanceof Buffer) {
+            res.writeHead(status, headers);
+            res.end(body);
+        } else if (typeof body === 'string' && body !== '') {
+            res.writeHead(status, headers);
+            res.end(body);
+        } else {
+            res.writeHead(status, headers);
+            res.end();
+        }
+    }
+
+    #sendProblem(res: ServerResponse, route: Route, status: number, title: string, type: string): void {
+        writeProblem(res, { type, title, status, instance: route.path });
+    }
+}
+
+/** True when the client accepts HTML (SPA fallback gate, D-6). */
+function acceptsHtml(accept: string | string[] | undefined): boolean {
+    if (accept === undefined || accept.length === 0) {
+        return true;
+    }
+    const value = Array.isArray(accept) ? accept.join(',') : accept;
+    return value.includes('text/html') || value.includes('*/*') || value.includes('application/xhtml+xml');
+}

@@ -3,34 +3,41 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import '@tsmetadata/polyfill';
-import { IllegalStateError } from '@blue/core';
+import "@tsmetadata/polyfill";
+import { IllegalStateError } from "@blue/core";
 
-export type KnownScope = 'singleton' | 'prototype' | 'route' | 'hash';
+export type KnownScope =
+  | "singleton"
+  | "prototype"
+  | "route"
+  | "hash"
+  | "refresh";
 export type PossibleScope = KnownScope | string;
 export type ObjectFactory<T = unknown> = () => T;
 
 export interface Scope {
-    destroyValue(name: string): void;
-    getValue<T = unknown>(name: string, objectFactory: ObjectFactory<T>): T;
+  destroyValue(name: string): void;
+  getValue<T = unknown>(name: string, objectFactory: ObjectFactory<T>): T;
 }
 
 export interface ScopedFactory {
-    destroyScopedValue(scopeName: string, valueName: string): void;
-    getScope(name: string): Scope;
-    getScopeNames(): PossibleScope[];
-    registerScope(name: string, scope: Scope): void;
+  destroyScopedValue(scopeName: string, valueName: string): void;
+  getScope(name: string): Scope;
+  getScopeNames(): PossibleScope[];
+  registerScope(name: string, scope: Scope): void;
 }
 
-const SCOPE_KEY = 'scope:mapping';
+const SCOPE_KEY = "scope:mapping";
 
-const getConstructor = (target: unknown): (Function & { [Symbol.metadata]?: Record<string, unknown> }) | undefined => {
-    if (typeof target === 'function') {
-        return target as Function & { [Symbol.metadata]?: Record<string, unknown> };
-    }
-    return (target as object | undefined)?.constructor as
-        | (Function & { [Symbol.metadata]?: Record<string, unknown> })
-        | undefined;
+const getConstructor = (
+  target: unknown,
+): (Function & { [Symbol.metadata]?: Record<string, unknown> }) | undefined => {
+  if (typeof target === "function") {
+    return target as Function & { [Symbol.metadata]?: Record<string, unknown> };
+  }
+  return (target as object | undefined)?.constructor as
+    | (Function & { [Symbol.metadata]?: Record<string, unknown> })
+    | undefined;
 };
 
 /**
@@ -39,16 +46,18 @@ const getConstructor = (target: unknown): (Function & { [Symbol.metadata]?: Reco
  * @param {*} target - Class constructor
  */
 export const defineScope = (value: PossibleScope, target: unknown): void => {
-    const ctor = getConstructor(target);
-    if (!ctor) return;
+  const ctor = getConstructor(target);
+  if (!ctor) return;
 
-    // Trust: ctor has Symbol.metadata from @tsmetadata/polyfill at runtime.
-    // The TS Function type doesn't declare it — this cast is needed.
-    const ctorWithMeta = ctor as Function & { [Symbol.metadata]: Record<string, unknown> };
-    if (!ctorWithMeta[Symbol.metadata]) {
-        ctorWithMeta[Symbol.metadata] = {};
-    }
-    ctorWithMeta[Symbol.metadata][SCOPE_KEY] = value;
+  // Trust: ctor has Symbol.metadata from @tsmetadata/polyfill at runtime.
+  // The TS Function type doesn't declare it — this cast is needed.
+  const ctorWithMeta = ctor as Function & {
+    [Symbol.metadata]: Record<string, unknown>;
+  };
+  if (!ctorWithMeta[Symbol.metadata]) {
+    ctorWithMeta[Symbol.metadata] = {};
+  }
+  ctorWithMeta[Symbol.metadata][SCOPE_KEY] = value;
 };
 
 /**
@@ -57,8 +66,8 @@ export const defineScope = (value: PossibleScope, target: unknown): void => {
  * @returns {*} Scope name or undefined
  */
 export const getScope = (target: unknown): PossibleScope | undefined => {
-    const ctor = getConstructor(target);
-    return ctor?.[Symbol.metadata]?.[SCOPE_KEY] as PossibleScope | undefined;
+  const ctor = getConstructor(target);
+  return ctor?.[Symbol.metadata]?.[SCOPE_KEY] as PossibleScope | undefined;
 };
 
 /**
@@ -67,8 +76,8 @@ export const getScope = (target: unknown): PossibleScope | undefined => {
  * @returns {boolean} Whether or not the target has a scope mapping defined
  */
 export const hasScope = (target: unknown): boolean => {
-    const ctor = getConstructor(target);
-    return ctor?.[Symbol.metadata]?.[SCOPE_KEY] !== undefined;
+  const ctor = getConstructor(target);
+  return ctor?.[Symbol.metadata]?.[SCOPE_KEY] !== undefined;
 };
 
 /**
@@ -77,28 +86,38 @@ export const hasScope = (target: unknown): boolean => {
  * @returns {ClassDecorator} TC39 class decorator
  */
 export function scope(scopeName: PossibleScope) {
-    return function <T extends new (...args: never[]) => unknown>(target: T, context: ClassDecoratorContext): T {
-        // Store scope in TC39 metadata
-        context.metadata[SCOPE_KEY] = scopeName;
+  return function <T extends new (...args: never[]) => unknown>(
+    target: T,
+    context: ClassDecoratorContext,
+  ): T {
+    // Store scope in TC39 metadata
+    context.metadata[SCOPE_KEY] = scopeName;
 
-        return target;
-    };
+    return target;
+  };
 }
 
 /**
  * Decorator for singleton scope (convenience factory)
  */
-export const singletonScope = scope('singleton');
+export const singletonScope = scope("singleton");
 
 /**
  * Decorator for prototype scope (convenience factory)
  */
-export const prototypeScope = scope('prototype');
+export const prototypeScope = scope("prototype");
 
 /**
  * Decorator for hash/route scope (convenience factory)
  */
-export const hashScope = scope('hash');
+export const hashScope = scope("hash");
+
+/**
+ * Decorator for refresh scope (convenience factory): the instance cache is
+ * cleared when the environment refreshes (`config:refresh`, AD-29 D-2), so
+ * the next `getValue` re-creates the instance from its factory.
+ */
+export const refreshScope = scope("refresh");
 
 /**
  * Prototype scope implementation — creates a fresh instance on every `getValue()` call.
@@ -108,13 +127,13 @@ export const hashScope = scope('hash');
  * A future scoping split may move concrete scope implementations to a separate module.
  */
 export class PrototypeScope implements Scope {
-    destroyValue(_name: string): void {
-        // Intentionally no-op. Prototype values are not cached/tracked.
-    }
+  destroyValue(_name: string): void {
+    // Intentionally no-op. Prototype values are not cached/tracked.
+  }
 
-    getValue<T = unknown>(_name: string, objectFactory: ObjectFactory<T>): T {
-        return objectFactory();
-    }
+  getValue<T = unknown>(_name: string, objectFactory: ObjectFactory<T>): T {
+    return objectFactory();
+  }
 }
 
 /**
@@ -124,55 +143,64 @@ export class PrototypeScope implements Scope {
  * @internal AD-6: Implementation detail — see {@link PrototypeScope} for rationale.
  */
 export class HashScope implements Scope {
-    #scopeMap: Map<string, Map<string, unknown>> = new Map<string, Map<string, unknown>>();
-    #currentKey: string | null = null;
+  #scopeMap: Map<string, Map<string, unknown>> = new Map<
+    string,
+    Map<string, unknown>
+  >();
+  #currentKey: string | null = null;
 
-    endScope(key: string): void {
-        this.#scopeMap.delete(key);
-        if (this.#currentKey === key) {
-            this.#currentKey = null;
-        }
+  endScope(key: string): void {
+    this.#scopeMap.delete(key);
+    if (this.#currentKey === key) {
+      this.#currentKey = null;
+    }
+  }
+
+  getCurrentKey(): string | null {
+    return this.#currentKey;
+  }
+
+  setCurrentKey(key: string): void {
+    this.#currentKey = key;
+
+    if (!this.#scopeMap.has(key)) {
+      this.#scopeMap.set(key, new Map<string, unknown>());
+    }
+  }
+
+  destroyValue(name: string): void {
+    if (!this.#currentKey) {
+      throw new IllegalStateError(
+        "No active hash scope context. Call setCurrentKey() first.",
+      );
     }
 
-    getCurrentKey(): string | null {
-        return this.#currentKey;
+    const bucket = this.#scopeMap.get(this.#currentKey);
+    if (bucket) {
+      bucket.delete(name);
+    }
+  }
+
+  getValue<T = unknown>(name: string, objectFactory: ObjectFactory<T>): T {
+    if (!this.#currentKey) {
+      throw new IllegalStateError(
+        "No active hash scope context. Call setCurrentKey() first.",
+      );
     }
 
-    setCurrentKey(key: string): void {
-        this.#currentKey = key;
-
-        if (!this.#scopeMap.has(key)) {
-            this.#scopeMap.set(key, new Map<string, unknown>());
-        }
+    const bucket = this.#scopeMap.get(this.#currentKey);
+    if (!bucket) {
+      throw new IllegalStateError(
+        "No active hash scope context. Call setCurrentKey() first.",
+      );
     }
 
-    destroyValue(name: string): void {
-        if (!this.#currentKey) {
-            throw new IllegalStateError('No active hash scope context. Call setCurrentKey() first.');
-        }
-
-        const bucket = this.#scopeMap.get(this.#currentKey);
-        if (bucket) {
-            bucket.delete(name);
-        }
+    if (!bucket.has(name)) {
+      bucket.set(name, objectFactory());
     }
 
-    getValue<T = unknown>(name: string, objectFactory: ObjectFactory<T>): T {
-        if (!this.#currentKey) {
-            throw new IllegalStateError('No active hash scope context. Call setCurrentKey() first.');
-        }
-
-        const bucket = this.#scopeMap.get(this.#currentKey);
-        if (!bucket) {
-            throw new IllegalStateError('No active hash scope context. Call setCurrentKey() first.');
-        }
-
-        if (!bucket.has(name)) {
-            bucket.set(name, objectFactory());
-        }
-
-        return bucket.get(name) as T;
-    }
+    return bucket.get(name) as T;
+  }
 }
 
 /**
@@ -182,29 +210,87 @@ export class HashScope implements Scope {
  * @internal AD-6: Implementation detail — see {@link PrototypeScope} for rationale.
  */
 export class SingletonScope implements Scope {
-    #instances: Map<string, unknown> = new Map<string, unknown>();
-    #destructionCallbacks: Map<string, () => void> = new Map<string, () => void>();
+  #instances: Map<string, unknown> = new Map<string, unknown>();
+  #destructionCallbacks: Map<string, () => void> = new Map<
+    string,
+    () => void
+  >();
 
-    destroyValue(name: string): void {
-        const callback = this.#destructionCallbacks.get(name);
+  destroyValue(name: string): void {
+    const callback = this.#destructionCallbacks.get(name);
 
-        if (callback) {
-            callback();
-            this.#destructionCallbacks.delete(name);
-        }
-
-        this.#instances.delete(name);
+    if (callback) {
+      callback();
+      this.#destructionCallbacks.delete(name);
     }
 
-    getValue<T = unknown>(name: string, objectFactory: ObjectFactory<T>): T {
-        if (!this.#instances.has(name)) {
-            this.#instances.set(name, objectFactory());
-        }
+    this.#instances.delete(name);
+  }
 
-        return this.#instances.get(name) as T;
+  getValue<T = unknown>(name: string, objectFactory: ObjectFactory<T>): T {
+    if (!this.#instances.has(name)) {
+      this.#instances.set(name, objectFactory());
     }
 
-    registerDestructionCallback(name: string, callback: () => void): void {
-        this.#destructionCallbacks.set(name, callback);
+    return this.#instances.get(name) as T;
+  }
+
+  registerDestructionCallback(name: string, callback: () => void): void {
+    this.#destructionCallbacks.set(name, callback);
+  }
+}
+
+/**
+ * Refresh scope implementation — one cached instance per named value, like
+ * {@link SingletonScope}, but the whole cache is cleared when the owning
+ * context's environment refreshes (`config:refresh` event, AD-29 D-2): the
+ * next `getValue` re-creates the instance from its factory.
+ *
+ * Destruction callbacks are registered by the container for lifecycle-bearing
+ * values; `clear()` runs them before discarding so `@destroyable`/`@closeable`
+ * values tear down properly (mirrors `SingletonScope.destroyValue`).
+ *
+ * @internal AD-6: Implementation detail — see {@link PrototypeScope} for rationale.
+ */
+export class RefreshScope implements Scope {
+  #instances: Map<string, unknown> = new Map<string, unknown>();
+  #destructionCallbacks: Map<string, () => void> = new Map<
+    string,
+    () => void
+  >();
+
+  destroyValue(name: string): void {
+    const callback = this.#destructionCallbacks.get(name);
+
+    if (callback) {
+      callback();
+      this.#destructionCallbacks.delete(name);
     }
+
+    this.#instances.delete(name);
+  }
+
+  getValue<T = unknown>(name: string, objectFactory: ObjectFactory<T>): T {
+    if (!this.#instances.has(name)) {
+      this.#instances.set(name, objectFactory());
+    }
+
+    return this.#instances.get(name) as T;
+  }
+
+  registerDestructionCallback(name: string, callback: () => void): void {
+    this.#destructionCallbacks.set(name, callback);
+  }
+
+  /**
+   * Clears every cached instance, running registered destruction callbacks
+   * first (lifecycle teardown), so the next `getValue` recreates fresh.
+   */
+  clear(): void {
+    for (const [name, callback] of this.#destructionCallbacks) {
+      callback();
+      this.#destructionCallbacks.delete(name);
+    }
+    this.#instances.clear();
+  }
 }

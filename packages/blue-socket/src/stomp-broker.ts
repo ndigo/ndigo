@@ -361,7 +361,7 @@ export interface StompBrokerOptions {
  * @requestMapping('/stomp')
  * class ChatController {
  *     @stompMapping('/chat')
- *     @parameters({ session: socketSession('session') })
+ *     @parameters({ session: socketSessionValue('session') })
  *     async chat(session: SocketSession) {
  *         await broker.handleSocket(session);
  *     }

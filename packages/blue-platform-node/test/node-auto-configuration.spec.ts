@@ -8,6 +8,8 @@ import { Route, ACCEPT_LANGUAGE_ATTRIBUTE } from '@blue/router';
 import { AcceptHeaderLanguageResolver } from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeMultipartFileMethodArgumentResolver } from '../src/multipart-file-argument-resolver';
+import { NodeRequestPartMethodArgumentResolver } from '../src/request-part-argument-resolver';
+import { NodeDataBindingMethodArgumentResolver } from '../src/data-binding-argument-resolver';
 
 describe('NodeAutoConfiguration', () => {
     test('creates an instance', () => {
@@ -21,13 +23,16 @@ describe('NodeAutoConfiguration', () => {
         expect(converters).toBeDefined();
     });
 
-    test('provides 7 argument resolvers, including multipart file binding', () => {
+    test('provides 9 argument resolvers, including multipart file + part binding', () => {
         const config = new NodeAutoConfiguration();
         const resolvers = config.argumentResolvers();
-        expect(resolvers).toHaveLength(7);
-        // AD-26: the multipart resolver is wired into the runtime chain. Without it,
-        // @file()/fileValue() parameters never bind and uploads return 400.
+        expect(resolvers).toHaveLength(9);
+        // AD-26/D-6: the multipart and request-part resolvers are wired into
+        // the runtime chain. Without them, @file()/fileValue() and
+        // requestPart() parameters never bind and uploads return 400.
         expect(resolvers.some((r) => r instanceof NodeMultipartFileMethodArgumentResolver)).toBe(true);
+        expect(resolvers.some((r) => r instanceof NodeRequestPartMethodArgumentResolver)).toBe(true);
+        expect(resolvers.some((r) => r instanceof NodeDataBindingMethodArgumentResolver)).toBe(true);
     });
 
     test('provides handler mapping', () => {

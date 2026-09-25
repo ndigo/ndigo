@@ -629,7 +629,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             return;
         }
         // Bind @parameters positionally (validated, coerced — including Zod):
-        // a socketSession() extractor yields the session; the other extractors
+        // a socketSessionValue() extractor yields the session; the other extractors
         // resolve against the upgrade sources. The handler is invoked with the
         // declared args in signature order — no implicit session injection.
         const args: unknown[] = [];

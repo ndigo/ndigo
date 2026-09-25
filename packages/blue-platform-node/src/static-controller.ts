@@ -5,39 +5,47 @@
  * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
-import { getMapping, pathVariable, parameters, requestMapping } from '@blue/dispatcher';
-import { ResponseStatuses } from '@blue/http';
-import { ResponseEntity, StaticResourceResolver } from '@blue/platform-node';
+import { getMapping, parameters, pathVariable, requestMapping, routeValue } from '@blue/dispatcher';
+import { Route } from '@blue/router';
+import { StaticResourceHandler, type StaticHandlerOptions } from './static-resource-handler';
 
+/**
+ * Static file serving controller (AD-28): `/static/{*file}`.
+ *
+ * The catch-all `{*file}` route binds nested paths (`/static/assets/logo.png`
+ * → `assets/logo.png`), and every HTTP concern — conditional GET, Range,
+ * cache headers, precompressed variants, directory index/listing, SPA
+ * fallback — is delegated to {@link StaticResourceHandler}.
+ *
+ * @example
+ * ```ts
+ * @entry
+ * staticController() {
+ *     return new StaticController(resolve('dist'), { spaFallback: true });
+ * }
+ * ```
+ */
 @requestMapping('/static')
 export class StaticController {
-    readonly #resolver: StaticResourceResolver;
+    readonly #handler: StaticResourceHandler;
 
     /**
      * @param baseDir - Static root. Defaults to `STATIC_DIR` env or `./public`.
+     * @param options - Static handler options (D-6).
      */
-    constructor(baseDir?: string) {
+    constructor(baseDir?: string, options: StaticHandlerOptions = {}) {
         const base = baseDir ?? process.env['STATIC_DIR'] ?? `${process.cwd()}/public`;
-        this.#resolver = new StaticResourceResolver(base);
+        this.#handler = new StaticResourceHandler(base, options);
     }
 
     /**
-     * GET /static/{file} — serves a file from the public directory.
+     * GET/HEAD /static/{*file} — serves the file with full HTTP semantics.
      */
-    @getMapping('/{file}')
-    @parameters({ file: pathVariable('file') })
-    async serve(file?: string) {
-        const result = await this.#resolver.resolve(file ?? '');
-        if (result.kind !== 'ok') {
-            if (result.kind === 'not-found') return ResponseEntity.notFound();
-            return new ResponseEntity(
-                { error: result.kind === 'forbidden' ? 'Forbidden' : 'Internal Server Error' },
-                result.kind === 'forbidden' ? ResponseStatuses.FORBIDDEN : ResponseStatuses.INTERNAL_SERVER_ERROR
-            );
-        }
-        return new ResponseEntity(result.data, ResponseStatuses.OK, {
-            'Content-Type': result.contentType ?? 'application/octet-stream',
-            'X-Content-Type-Options': 'nosniff',
-        });
+    @getMapping('/{*file}')
+    @parameters({ file: pathVariable('file'), route: routeValue() })
+    async serve(file?: string, route?: Route) {
+        // The handler writes the response directly (206/304/416 need
+        // status+header control `ResponseEntityView` cannot express).
+        await this.#handler.handle(route as Route, file ?? '');
     }
 }

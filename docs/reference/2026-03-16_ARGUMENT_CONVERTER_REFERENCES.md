@@ -13,7 +13,10 @@ This enables:
 
 ## Supported `convert` Forms
 
-All extractor factories (`queryValue`, `pathValue`, `matrixValue`, `cookieValue`, `modelValue`, `stateValue`, `sessionValue`) support:
+All extractor factories (`queryValue`, `pathVariable`, `matrixValue`, `headerValue`,
+`bodyValue`, `cookieValue`, `requestSessionValue`, `sessionStorageValue`,
+`localStorageValue`, `historyStateValue`, `attributeValue`, `socketSessionValue`)
+support:
 
 1. Function
 
@@ -24,13 +27,13 @@ queryValue('page', { convert: (value) => Number(value) });
 2. Named converter key
 
 ```typescript
-modelValue('profile.id', { convert: 'number' });
+historyStateValue('profile.id', { convert: 'number' });
 ```
 
 3. Optional descriptor
 
 ```typescript
-sessionValue('darkMode', {
+sessionStorageValue('darkMode', {
     convert: { optional: true, use: 'boolean' },
 });
 ```

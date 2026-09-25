@@ -73,15 +73,15 @@ Custom rules are provided by `@blue/eslint-plugin` as oxlint-compatible JS plugi
 
 ### New Packages
 
-| Package                   | Purpose                                                                                                                |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `@blue/auth-core`         | Shared auth interfaces (`Principal`, `Session`, `AuthAdapter`)                                                         |
-| `@blue/auth-client`       | Client-side auth (`AuthClient`, `ClientAuthGuard`, `OIDCAdapter`, `AuthHeaderInterceptor`)                             |
-| `@blue/auth-server`       | Server-side auth (`AuthServer`, `AuthRouteGuard`, `JWTAdapter`)                                                        |
-| `@blue/orm-drizzle`       | SQL persistence via Drizzle ORM (`DrizzleDataSource`, `DrizzleEntityManager`)                                          |
-| `@blue/platform-node`     | Node.js platform support (`NodeEnvironment`, argument resolvers, `FileSystemRouter`)                                   |
-| `@blue/platform-web`      | Browser platform support (`HashRouter`, `BrowserRouter`, `OfflineInterceptor`, argument resolvers)                     |
-| `@blue/view-webcomponent` | Web Component view engine and custom element bindings                                                                  |
+| Package                   | Purpose                                                                                                        |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `@blue/auth-core`         | Shared auth interfaces (`Principal`, `Session`, `AuthAdapter`)                                                 |
+| `@blue/auth-client`       | Client-side auth (`AuthClient`, `ClientAuthGuard`, `OIDCAdapter`, `AuthHeaderInterceptor`)                     |
+| `@blue/auth-server`       | Server-side auth (`AuthServer`, `AuthRouteGuard`, `JWTAdapter`)                                                |
+| `@blue/orm-drizzle`       | SQL persistence via Drizzle ORM (`DrizzleDataSource`, `DrizzleEntityManager`)                                  |
+| `@blue/platform-node`     | Node.js platform support (`NodeEnvironment`, argument resolvers, `FileSystemRouter`)                           |
+| `@blue/platform-web`      | Browser platform support (`HashRouter`, `BrowserRouter`, `OfflineInterceptor`, argument resolvers)             |
+| `@blue/view-webcomponent` | Web Component view engine and custom element bindings                                                          |
 | `@blue/host`              | Centralized micro frontend orchestration (`HostManager` + `HOST_MANAGER_TOKEN`; one-call feature registration) |
 
 ### Removed/Consolidated

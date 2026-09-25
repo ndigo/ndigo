@@ -202,7 +202,7 @@ Spring is server-only; BlueJS is isomorphic, which adds requirements:
 1. **Locale detection & persistence** — browser `navigator.language(s)`
    (exists) vs. server `Accept-Language` (helper exists); a user override
    persisted in cookie/localStorage; strategy order explicit-user-choice
-   > header/navigator > fixed default.
+    > header/navigator > fixed default.
 2. **Reactivity** — locale is state: a `locale` signal re-renders views and
    re-formats on switch. Spring's equivalent is a full page reload.
 3. **SSR/hydration parity** — a server-rendered date in server-local

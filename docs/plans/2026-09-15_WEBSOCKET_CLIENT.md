@@ -43,14 +43,14 @@ WHATWG `WebSocket` global makes the client isomorphic — the trigger for
 
 `@blue/socket` is the isomorphic socket domain package:
 
-| Piece                                                              | Home                   | Notes                                                  |
-| ------------------------------------------------------------------ | ---------------------- | ------------------------------------------------------ |
-| `SocketSession`, `SocketRequestSources`, `SocketSessionRegistry`   | `@blue/socket` (moved) | Type-only; dispatcher re-exports (D2)                  |
-| `SocketClient` contract + `WebSocketClient`                        | `@blue/socket`         | WHATWG `WebSocket` global (browser + Node ≥22)         |
-| Reconnect policy (backoff + jitter, status signal)                 | `@blue/socket`         | Injectable clock; `@blue/signals` dep                  |
-| Browser `online`-event reconnect trigger                           | `blue-platform-web`    | Window globals stay out of the isomorphic package (D3) |
-| Server machinery (registry, adapter, heartbeat)                    | `blue-platform-node`   | Unchanged                                              |
-| Handler vocabulary (`@socketMapping`, `socketSession()` extractor) | `blue-dispatcher`      | Imports + re-exports the moved types (D2)              |
+| Piece                                                                   | Home                   | Notes                                                  |
+| ----------------------------------------------------------------------- | ---------------------- | ------------------------------------------------------ |
+| `SocketSession`, `SocketRequestSources`, `SocketSessionRegistry`        | `@blue/socket` (moved) | Type-only; dispatcher re-exports (D2)                  |
+| `SocketClient` contract + `WebSocketClient`                             | `@blue/socket`         | WHATWG `WebSocket` global (browser + Node ≥22)         |
+| Reconnect policy (backoff + jitter, status signal)                      | `@blue/socket`         | Injectable clock; `@blue/signals` dep                  |
+| Browser `online`-event reconnect trigger                                | `blue-platform-web`    | Window globals stay out of the isomorphic package (D3) |
+| Server machinery (registry, adapter, heartbeat)                         | `blue-platform-node`   | Unchanged                                              |
+| Handler vocabulary (`@socketMapping`, `socketSessionValue()` extractor) | `blue-dispatcher`      | Imports + re-exports the moved types (D2)              |
 
 ## 4. Surface
 

@@ -133,8 +133,8 @@ a graph of call sites. Both demo hosts exercise this discipline.
 ## Known gaps (deliberate)
 
 1. **Page concept / TTFB-vs-TTI contract** — the open design
-  conversation; its registration-API half was answered by the host runtime only.
+   conversation; its registration-API half was answered by the host runtime only.
 2. **Island name ↔ tag ↔ schema triple** — documented contract, no
    enforcement/registry yet.
 3. **Runtime self-registration** — the `HOST_MANAGER_TOKEN` seam makes it
-  possible; the deployment model stays compile-time.
+   possible; the deployment model stays compile-time.

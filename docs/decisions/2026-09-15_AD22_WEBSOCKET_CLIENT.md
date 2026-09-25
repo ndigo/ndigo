@@ -43,7 +43,7 @@ pre-1.0-cheap (four known consumer files) versus a breaking migration at the
 
 Dispatcher imports the contracts from `@blue/socket` and re-exports them
 from its index: the handler-signature vocabulary stays stable for
-`@socketMapping` users, and `parameters.ts` must type the `socketSession()`
+`@socketMapping` users, and `parameters.ts` must type the `socketSessionValue()`
 extractor against them regardless. This is public-API aggregation, not a
 deprecated alias; no handler call sites change. `platform-node` keeps its
 server machinery (`NodeSocketSessionRegistry`, adapter) — that is the

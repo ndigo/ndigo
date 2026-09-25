@@ -45,7 +45,7 @@ Sources are **named and ordered** — higher wins:
 you _which source won_ (the observability payoff):
 
 ```ts
-environment.originOf("server"); // → 'commandLine' | 'systemEnvironment' | ...
+environment.originOf('server'); // → 'commandLine' | 'systemEnvironment' | ...
 ```
 
 ## 2. Profiles
@@ -53,15 +53,15 @@ environment.originOf("server"); // → 'commandLine' | 'systemEnvironment' | ...
 Profiles gate config with expressions, and file loading is profile-aware:
 
 ```ts
-import { configuration, entry, profile } from "@blue/context";
+import { configuration, entry, profile } from '@blue/context';
 
 @configuration
 class AppConfiguration {
-  @entry
-  @profile("dev | (test & !ci)") // expressions, not just exact names
-  devTools() {
-    return new DevToolsGate();
-  }
+    @entry
+    @profile('dev | (test & !ci)') // expressions, not just exact names
+    devTools() {
+        return new DevToolsGate();
+    }
 }
 ```
 
@@ -77,8 +77,8 @@ Default profiles gate only when **nothing is explicit**:
 
 ```ts
 const env = new StandardEnvironment();
-env.addDefaultProfile("base");
-env.acceptsProfiles("base"); // true — nothing explicit set
+env.addDefaultProfile('base');
+env.acceptsProfiles('base'); // true — nothing explicit set
 ```
 
 `application-prod.json` loads above `application.json` when `prod` is active.
@@ -88,25 +88,25 @@ env.acceptsProfiles("base"); // true — nothing explicit set
 `@configurationProperties` auto-registers a bound, converted singleton:
 
 ```ts
-import { configuration, property, defaultValue, nested } from "@blue/context";
-import { configurationProperties } from "@blue/boot";
+import { configuration, property, defaultValue, nested } from '@blue/context';
+import { configurationProperties } from '@blue/boot';
 
-@configurationProperties("server")
+@configurationProperties('server')
 class ServerConfig {
-  @property("port", Number) @defaultValue("8080") port!: number;
-  @property("host", String) @defaultValue("localhost") host!: string;
-  @nested db: DbConfig = new DbConfig();
+    @property('port', Number) @defaultValue('8080') port!: number;
+    @property('host', String) @defaultValue('localhost') host!: string;
+    @nested db: DbConfig = new DbConfig();
 }
 
 class DbConfig {
-  @property("url", String) @defaultValue("postgres://localhost") url!: string;
+    @property('url', String) @defaultValue('postgres://localhost') url!: string;
 }
 
 @configuration
 class AppConfig {} // register the app; ServerConfig is bound too
 // ...
 const serverConfig = await app.run(); // auto-registered
-const port = serverConfig.getValue("serverConfig").port; // number, fail-loud
+const port = serverConfig.getValue('serverConfig').port; // number, fail-loud
 ```
 
 - `@property(path, Type)` declares the conversion target (Number/Boolean/Date/String).
@@ -117,9 +117,9 @@ const port = serverConfig.getValue("serverConfig").port; // number, fail-loud
 ## 4. Placeholders & typed reads
 
 ```ts
-environment.getProperty("endpoint"); // 'https://${HOST:local.dev}/api'
-environment.getPropertyAs("port", Number); // 8080 (string → number)
-environment.getRequiredPropertyAs("port", Number); // throws if missing/unconvertible
+environment.getProperty('endpoint'); // 'https://${HOST:local.dev}/api'
+environment.getPropertyAs('port', Number); // 8080 (string → number)
+environment.getRequiredPropertyAs('port', Number); // throws if missing/unconvertible
 ```
 
 Placeholders support `${key}`, `${key:default}`, nesting, and cycle detection;
@@ -129,14 +129,14 @@ unresolvable ones pass through literally (no escape syntax — a literal
 ## 5. Validate the environment
 
 ```ts
-import { z } from "zod";
-import { environment } from "@blue/context";
+import { z } from 'zod';
+import { environment } from '@blue/context';
 
 @environment(
-  z.object({
-    server: z.object({ port: z.coerce.number().min(1) }),
-    mode: z.string().optional(),
-  }),
+    z.object({
+        server: z.object({ port: z.coerce.number().min(1) }),
+        mode: z.string().optional(),
+    })
 )
 class AppConfig {}
 ```
@@ -145,7 +145,7 @@ Boot now **fails loudly with every violation listed** (path, expected,
 actual) — aggregate, not first-error. Ad-hoc:
 
 ```ts
-import { validateEnvironment } from "@blue/context";
+import { validateEnvironment } from '@blue/context';
 const { valid, issues } = validateEnvironment(environment, schema);
 ```
 
@@ -156,9 +156,9 @@ reorder sources, inject test doubles:
 
 ```ts
 builder.customizers({
-  customize(environment) {
-    environment.getPropertySources().addFirst("stub", { server: { port: 1 } });
-  },
+    customize(environment) {
+        environment.getPropertySources().addFirst('stub', { server: { port: 1 } });
+    },
 });
 ```
 
@@ -174,12 +174,12 @@ Configuration is no longer a boot-time snapshot: environments emit
 it. Mark a `@configurationProperties` class:
 
 ```ts
-import { refreshScope, configurationProperties, property } from "@blue/context";
+import { refreshScope, configurationProperties, property } from '@blue/context';
 
 @refreshScope // re-binds on every environment refresh
-@configurationProperties("server")
+@configurationProperties('server')
 class ServerConfig {
-  @property("port", Number) @defaultValue("8080") port!: number;
+    @property('port', Number) @defaultValue('8080') port!: number;
 }
 ```
 
@@ -197,6 +197,31 @@ class ServerConfig {
   re-looks up. No proxy machinery (repo posture) — documented, deliberate.
 - Coverage is config classes only in v1 (AD-29 D-2); `@entry` method
   results are not re-run.
+
+#### Refresh snapshot semantics
+
+`config:refresh` re-binds the opt-in surface only — it does **not**
+re-inject consumers. After a refresh:
+
+- singleton beans and consumers that captured a value **at construction**
+  keep the **old** value for their lifetime;
+- only `@refreshScope` beans and re-bound `@configurationProperties` names
+  see the new values (from their next lookup);
+- a bean that injects the environment / property accessor (or reads
+  `environment.getPropertyAs(...)` at call time) always observes the
+  current source state.
+
+The recommended consumer pattern is therefore to **inject the environment
+(or another property accessor) rather than the value**: reads at call time
+see fresh state after any number of refreshes, while captured values go
+stale the moment a refresh lands. Dependency re-injection of captured
+values is a designed follow-up (plan ARC-3) — v1 consumers must re-look-up
+or read through the environment.
+
+Implementation note: `@refreshScope` is realized by **two listeners** —
+the context's scope-clear (`RefreshScope.clear()` on `config:refresh`) and
+boot's config-class rebind (`resolveConfigurationProperties` + `setValue`)
+— whose relative order is their subscription order.
 
 ## 8. At-rest secrets — `{cipher:...}` values and `BLUE_SECRET_KEY`
 
@@ -237,10 +262,10 @@ merge live and rebind refresh-scoped beans:
 
 ```ts
 builder.configServer({
-  url: "https://config.internal/blue-api.json", // https enforced
-  pollMs: 30_000, // 0/absent = fetch once
-  headers: { Authorization: `Bearer ${process.env.BLUE_CONFIG_SERVER_TOKEN}` },
-  optional: false, // fail boot when unreachable
+    url: 'https://config.internal/blue-api.json', // https enforced
+    pollMs: 30_000, // 0/absent = fetch once
+    headers: { Authorization: `Bearer ${process.env.BLUE_CONFIG_SERVER_TOKEN}` },
+    optional: false, // fail boot when unreachable
 });
 ```
 

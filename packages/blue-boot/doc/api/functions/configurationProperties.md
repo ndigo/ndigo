@@ -1,0 +1,59 @@
+[**@blue/boot v0.0.1**](../README.md)
+
+***
+
+[@blue/boot](../README.md) / configurationProperties
+
+# Function: configurationProperties()
+
+> **configurationProperties**(`prefix?`, `options?`): \<`T`\>(`target`, `context`) => `T`
+
+Marks a class as a configuration properties holder and optionally sets a
+property key prefix.
+
+When the application starts, every field decorated with `@property` on the
+class is bound from the environment (converted via `getPropertyAs`). If a
+`prefix` is given, property paths are prefixed with it (e.g. `prefix =
+'server'` makes `@property('port')` resolve `server.port`). The bound
+instance is auto-registered as an entry bean keyed by the camelCase-derived
+class name (`ServerConfig` → `serverConfig`).
+
+Use with `@property` (+ optional `@defaultValue` / `@nested`) from
+`@blue/context`.
+
+## Parameters
+
+### prefix?
+
+`string`
+
+Optional property key prefix applied to all `@property` fields.
+
+### options?
+
+[`ConfigurationPropertiesOptions`](../interfaces/ConfigurationPropertiesOptions.md)
+
+Additional binding options.
+
+## Returns
+
+A class decorator.
+
+\<`T`\>(`target`, `context`) => `T`
+
+## Example
+
+```ts
+import { property, defaultValue, nested } from '@blue/context';
+import { configurationProperties } from '@blue/boot';
+
+@configurationProperties('server')
+class ServerConfig {
+    @property('port') @defaultValue('8080') port!: number;
+    @property('db') @nested db!: DbConfig;
+}
+
+const ctx = app.run();
+const serverConfig = ctx.getValue('serverConfig');
+serverConfig.port // → number from server.port (or 8080)
+```

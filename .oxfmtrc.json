@@ -14,8 +14,6 @@
   "ignorePatterns": [
     "doc/",
     "**/graft/",
-    "doc-html/",
-    "doc-md/",
     "lib/",
     "dist/",
     "coverage/",

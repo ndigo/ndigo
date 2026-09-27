@@ -1,0 +1,41 @@
+[**@blue/core v0.0.1**](../README.md)
+
+***
+
+[@blue/core](../README.md) / direct
+
+# Function: direct()
+
+> **direct**\<`T`\>(`node`, `callback`, `inclusive?`): `void`
+
+Traverses descendants depth-first from the supplied node.
+
+## Type Parameters
+
+### T
+
+`T` *extends* [`ParentNode`](../interfaces/ParentNode.md)\<`unknown`\>
+
+## Parameters
+
+### node
+
+`T`
+
+Starting node.
+
+### callback
+
+(`node`) => `unknown`
+
+Function invoked for each visited node.
+
+### inclusive?
+
+`boolean` = `false`
+
+When `true`, include the starting node in the traversal.
+
+## Returns
+
+`void`

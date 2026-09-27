@@ -28,7 +28,7 @@
     "format:check": "oxfmt --check .",
     "doc": "pnpm doc:api",
     "doc:api": "node scripts/doc-api.mjs",
-    "doc:check": "pnpm doc:api && git diff --exit-code -- packages doc-md",
+    "doc:check": "pnpm doc:api && git diff --exit-code -- packages doc",
     "manifest:check": "node scripts/check-manifests.mjs",
     "graft:build": "graft build --deep --allow-partial",
     "postinstall": "node scripts/typedoc-ts-shim.mjs"

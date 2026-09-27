@@ -42,7 +42,7 @@ const result = await view.renderTo({ name: 'Blue' }, route); // RenderResult
 
 The full API is generated from JSDoc via `pnpm doc:api` into
 [`doc/api/`](doc/api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../doc-md/README.md) for
+[`src/index.ts`](src/index.ts); see the [package index](../../doc/README.md) for
 how it fits with the rest of BlueJS.
 
 - **`EJSView`** — a producer view that renders an EJS template into a fragment `ViewTarget` (islands, client-side DOM) or a whole document (servlet-style SSR), per the `ProducerView` contract

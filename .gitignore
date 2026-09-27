@@ -65,6 +65,7 @@ apps/*/index.js.map
 
 # Documentation
 doc/
+!doc/
 !packages/*/doc/
 docs-ts/
 playwright-report/

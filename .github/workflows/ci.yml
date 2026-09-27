@@ -78,7 +78,7 @@ jobs:
         # pnpm doc regenerated everything above; any resulting working-tree
         # diff means committed docs are stale. Docs standard:
         # docs/guides/12-package-documentation.md
-        run: git diff --exit-code -- packages doc-md
+        run: git diff --exit-code -- packages doc
 
       - name: Install graft
         # The repo graph tool is a global npm package on dev machines; make it

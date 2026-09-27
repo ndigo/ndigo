@@ -1,0 +1,29 @@
+[**@blue/context v0.0.1**](../README.md)
+
+***
+
+[@blue/context](../README.md) / property
+
+# Function: property()
+
+> **property**(`path`, `propertyType?`): (`value`, `context`) => `void`
+
+Binds a class field to a property path resolved from the environment.
+
+## Parameters
+
+### path
+
+`string`
+
+The property path to resolve.
+
+### propertyType?
+
+`string` \| ((...`args`) => `number`) \| ((...`args`) => `boolean`) \| ((...`args`) => `Date`) \| ((...`args`) => `string`)
+
+## Returns
+
+A field decorator that captures the path in metadata.
+
+(`value`, `context`) => `void`

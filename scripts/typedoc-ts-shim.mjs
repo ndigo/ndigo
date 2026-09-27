@@ -4,7 +4,7 @@
  * TypeDoc 0.28 declares `typescript: 5.x..6.0.x` as a peer dependency, but
  * the workspace's own TypeScript 7.0.2 devDependency wins peer fallback
  * resolution, and TypeDoc 0.28 cannot load the TS 7 API surface (`SyntaxKind`
- * moved): `pnpm doc:md`/`doc:html` crashed with "Cannot read properties of
+ * moved): TypeDoc runs crashed with "Cannot read properties of
  * undefined (reading 'PropertyDeclaration')". Upstream TypeDoc has no TS 7
  * support, and pnpm 11.4 offers no working mechanism to scope a dependency
  * pin to a single peer edge (parent-scoped `overrides`, `pnpmfile.cjs`

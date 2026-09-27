@@ -1,7 +1,6 @@
 {
   "ignorePatterns": [
     "archive",
-    "doc-html",
     "coverage",
     "lib",
     "dist",

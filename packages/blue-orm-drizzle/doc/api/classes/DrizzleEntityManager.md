@@ -1,0 +1,217 @@
+[**@blue/orm-drizzle v0.0.1**](../README.md)
+
+***
+
+[@blue/orm-drizzle](../README.md) / DrizzleEntityManager
+
+# Class: DrizzleEntityManager
+
+## Constructors
+
+### Constructor
+
+> **new DrizzleEntityManager**(`dataSource`): `DrizzleEntityManager`
+
+#### Parameters
+
+##### dataSource
+
+[`DrizzleDataSource`](DrizzleDataSource.md)
+
+#### Returns
+
+`DrizzleEntityManager`
+
+## Methods
+
+### fetchRelation()
+
+> **fetchRelation**(`entity`, `relationName`): `Promise`\<`unknown`\>
+
+Loads one declared relation of an entity: the related entity for the
+owning side (many-to-one, one-to-one) or the related entities for the
+inverse side (one-to-many, one-to-one). Does not mutate the entity.
+
+#### Parameters
+
+##### entity
+
+`object`
+
+##### relationName
+
+`string`
+
+#### Returns
+
+`Promise`\<`unknown`\>
+
+#### Throws
+
+When the relation, its join column, or the
+  target class is not declared, or for many-to-many relations
+  (join-table semantics not implemented).
+
+***
+
+### find()
+
+> **find**\<`T`\>(`entityClass`, `id`): `Promise`\<`T` \| `undefined`\>
+
+#### Type Parameters
+
+##### T
+
+`T` *extends* `object`
+
+#### Parameters
+
+##### entityClass
+
+`Constructable`\<`T`\>
+
+##### id
+
+`unknown`
+
+#### Returns
+
+`Promise`\<`T` \| `undefined`\>
+
+***
+
+### findAll()
+
+> **findAll**\<`T`\>(`entityClass`): `Promise`\<`T`[]\>
+
+#### Type Parameters
+
+##### T
+
+`T` *extends* `object`
+
+#### Parameters
+
+##### entityClass
+
+`Constructable`\<`T`\>
+
+#### Returns
+
+`Promise`\<`T`[]\>
+
+***
+
+### findAllWhere()
+
+> **findAllWhere**\<`T`\>(`entityClass`, `conditions`, `options?`): `Promise`\<`T`[]\>
+
+Finds rows matching equality conditions, with optional ordering and
+limit — the building block for derived-query repositories. Sort
+properties must name declared entity fields (validated before any SQL
+runs); unlike `findPage`, no total counts are computed.
+
+#### Type Parameters
+
+##### T
+
+`T` *extends* `object`
+
+#### Parameters
+
+##### entityClass
+
+`Constructable`\<`T`\>
+
+##### conditions
+
+`object`[]
+
+##### options?
+
+###### limit?
+
+`number`
+
+###### orderBy?
+
+`SortOrder`[]
+
+#### Returns
+
+`Promise`\<`T`[]\>
+
+***
+
+### findPage()
+
+> **findPage**\<`T`\>(`entityClass`, `request`): `Promise`\<`Page`\<`T`\>\>
+
+Retrieves one page of entities with SQL-side ordering and slicing.
+Sort properties must name declared entity fields (validated before any
+SQL runs); column and direction fragments are allowlisted and quoted,
+so the request can never inject SQL.
+
+#### Type Parameters
+
+##### T
+
+`T` *extends* `object`
+
+#### Parameters
+
+##### entityClass
+
+`Constructable`\<`T`\>
+
+##### request
+
+`PageRequest`
+
+#### Returns
+
+`Promise`\<`Page`\<`T`\>\>
+
+***
+
+### persist()
+
+> **persist**\<`T`\>(`entity`): `Promise`\<`void`\>
+
+#### Type Parameters
+
+##### T
+
+`T` *extends* `object`
+
+#### Parameters
+
+##### entity
+
+`T`
+
+#### Returns
+
+`Promise`\<`void`\>
+
+***
+
+### remove()
+
+> **remove**\<`T`\>(`entity`): `Promise`\<`void`\>
+
+#### Type Parameters
+
+##### T
+
+`T` *extends* `object`
+
+#### Parameters
+
+##### entity
+
+`T`
+
+#### Returns
+
+`Promise`\<`void`\>

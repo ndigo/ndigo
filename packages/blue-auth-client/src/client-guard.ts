@@ -43,7 +43,7 @@ export function extractAuthMetadata(handler: object | undefined): AuthRouteMetad
 }
 
 /**
- * A client-side guard for {@link @blue/router} that enforces authentication
+ * A client-side guard for the BlueJS router that enforces authentication
  * and authorization requirements declared via the `@authenticated` and `@authorized` decorators.
  *
  * This guard prevents unauthorized access to views by checking the {@link AuthClient}

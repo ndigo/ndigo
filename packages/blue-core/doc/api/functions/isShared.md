@@ -1,0 +1,25 @@
+[**@blue/core v0.0.1**](../README.md)
+
+***
+
+[@blue/core](../README.md) / isShared
+
+# Function: isShared()
+
+> **isShared**(`target`): `boolean`
+
+Checks whether a class or instance is marked with `@shared`.
+
+## Parameters
+
+### target
+
+`unknown`
+
+Class constructor, prototype, or instance.
+
+## Returns
+
+`boolean`
+
+`true` if the class is decorated with `@shared`.

@@ -74,6 +74,12 @@ jobs:
         # unresolved symbols fail the lane.
         run: pnpm doc
 
+      - name: API docs freshness (generated tree must match committed)
+        # pnpm doc regenerated everything above; any resulting working-tree
+        # diff means committed docs are stale. Docs standard:
+        # docs/guides/12-package-documentation.md
+        run: git diff --exit-code -- packages doc-md
+
       - name: Install graft
         # The repo graph tool is a global npm package on dev machines; make it
         # available to the lanes below.

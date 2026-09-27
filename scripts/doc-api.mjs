@@ -139,7 +139,7 @@ const indexLines = [
 for (const dir of packages) {
     const manifest = JSON.parse(readFileSync(join(PACKAGES, dir, 'package.json'), 'utf8'));
     indexLines.push(
-        `| \`${manifest.name}\` | ${(manifest.description ?? '').replaceAll('|', '\\|')} | [doc/api/index.md](../packages/${dir}/doc/api/index.md) |`,
+        `| \`${manifest.name}\` | ${(manifest.description ?? '').replaceAll('|', '\\|')} | [doc/api/README.md](../packages/${dir}/doc/api/README.md) |`,
     );
 }
 indexLines.push('', 'Tooling notes:', '', '- `pnpm doc:api` regenerates everything (TypeDoc, zero-warning standard).');

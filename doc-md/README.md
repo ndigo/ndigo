@@ -10,40 +10,40 @@ package can be read — and installed — on its own.
 
 | Package | Description | API reference |
 | :------ | :----------- | :------------ |
-| `@blue/auth-client` | Client-side authentication for BlueJS — AuthClient, ClientAuthGuard, and OIDC adapter | [doc/api/index.md](../packages/blue-auth-client/doc/api/index.md) |
-| `@blue/auth-core` | Core authentication types, interfaces, and passive decorators for BlueJS | [doc/api/index.md](../packages/blue-auth-core/doc/api/index.md) |
-| `@blue/auth-server` | Server-side authentication for BlueJS — AuthServer, AuthRouteGuard, and JWT adapter | [doc/api/index.md](../packages/blue-auth-server/doc/api/index.md) |
-| `@blue/boot` | Application bootstrap, profiles, and typed configuration for BlueJS | [doc/api/index.md](../packages/blue-boot/doc/api/index.md) |
-| `@blue/cache` | Isomorphic caching for BlueJS — memory cache manager, memoize, and the @cached decorator | [doc/api/index.md](../packages/blue-cache/doc/api/index.md) |
-| `@blue/content` | i18n content keys, themes, and the MessageSource contract for BlueJS | [doc/api/index.md](../packages/blue-content/doc/api/index.md) |
-| `@blue/content-i18next` | Blue Content i18next Adapter | [doc/api/index.md](../packages/blue-content-i18next/doc/api/index.md) |
-| `@blue/context` | Application context, environments, configuration, and events for BlueJS | [doc/api/index.md](../packages/blue-context/doc/api/index.md) |
-| `@blue/core` | Foundational primitives, contracts, and utilities for BlueJS | [doc/api/index.md](../packages/blue-core/doc/api/index.md) |
-| `@blue/dispatcher` | Request dispatch, parameter binding, and radix handler mappings for BlueJS | [doc/api/index.md](../packages/blue-dispatcher/doc/api/index.md) |
-| `@blue/dom` | Blue DOM – Isomorphic DOM parsing integration layer | [doc/api/index.md](../packages/blue-dom/doc/api/index.md) |
-| `@blue/factory` | IoC factory with scopes, lifecycle, and aware processors for BlueJS | [doc/api/index.md](../packages/blue-factory/doc/api/index.md) |
-| `@blue/generators` | Nx generators for BlueJS package and component scaffolding | [doc/api/index.md](../packages/blue-generators/doc/api/index.md) |
-| `@blue/host` | Blue Host — centralized micro frontend orchestration in the shell context | [doc/api/index.md](../packages/blue-host/doc/api/index.md) |
-| `@blue/http` | Fetch-based HTTP client, interceptors, and content parsing for BlueJS | [doc/api/index.md](../packages/blue-http/doc/api/index.md) |
-| `@blue/management` | Blue management endpoints — /health and /metrics (actuator-style) | [doc/api/index.md](../packages/blue-management/doc/api/index.md) |
-| `@blue/orm` | Blue ORM - Repository and Data Mapper persistence abstractions | [doc/api/index.md](../packages/blue-orm/doc/api/index.md) |
-| `@blue/orm-drizzle` | Blue ORM Drizzle – Drizzle ORM adapter for @blue/orm | [doc/api/index.md](../packages/blue-orm-drizzle/doc/api/index.md) |
-| `@blue/oxlint-plugin` | Custom oxlint rules for BlueJS architectural enforcement | [doc/api/index.md](../packages/blue-oxlint-plugin/doc/api/index.md) |
-| `@blue/platform-node` | Node.js platform adapter for BlueJS — HTTP server, auto-configuration, static files, multipart | [doc/api/index.md](../packages/blue-platform-node/doc/api/index.md) |
-| `@blue/platform-web` | Browser platform adapter for BlueJS — dispatcher glue, history/cookie resolvers, themes | [doc/api/index.md](../packages/blue-platform-web/doc/api/index.md) |
-| `@blue/router` | Route registry, path partitions, and feature routing for BlueJS | [doc/api/index.md](../packages/blue-router/doc/api/index.md) |
-| `@blue/scheduler` | Cron scheduling for Node.js — @scheduled tasks and the task registry | [doc/api/index.md](../packages/blue-scheduler/doc/api/index.md) |
-| `@blue/service` | Typed service clients and server-sent event streaming for BlueJS | [doc/api/index.md](../packages/blue-service/doc/api/index.md) |
-| `@blue/signals` | Blue Signals – Reactive state management with signals, computed values, and effects | [doc/api/index.md](../packages/blue-signals/doc/api/index.md) |
-| `@blue/socket` | Blue Socket — isomorphic WebSocket domain: client contract + implementation and server-side session contracts | [doc/api/index.md](../packages/blue-socket/doc/api/index.md) |
-| `@blue/telemetry` | Isomorphic telemetry core for BlueJS — API-only: logger, metrics, severity, tracing decorators | [doc/api/index.md](../packages/blue-telemetry/doc/api/index.md) |
-| `@blue/telemetry-node` | Node.js telemetry for BlueJS — NodeSDK configuration and Node platform instrumentations | [doc/api/index.md](../packages/blue-telemetry-node/doc/api/index.md) |
-| `@blue/telemetry-web` | Browser telemetry for BlueJS — browser telemetry configuration and web instrumentations | [doc/api/index.md](../packages/blue-telemetry-web/doc/api/index.md) |
-| `@blue/test` | Blue integration test harness — MockMVC-style in-process request dispatch | [doc/api/index.md](../packages/blue-test/doc/api/index.md) |
-| `@blue/util` | Native helper utilities — types, strings, math, and objects | [doc/api/index.md](../packages/blue-util/doc/api/index.md) |
-| `@blue/view` | Views, view targets, and content negotiation for BlueJS | [doc/api/index.md](../packages/blue-view/doc/api/index.md) |
-| `@blue/view-ejs` | Blue View EJS — server-side EJS template rendering as an isomorphic Blue view technology. | [doc/api/index.md](../packages/blue-view-ejs/doc/api/index.md) |
-| `@blue/view-webcomponent` | Web Component view technology for BlueJS — component creation and event binding | [doc/api/index.md](../packages/blue-view-webcomponent/doc/api/index.md) |
+| `@blue/auth-client` | Client-side authentication for BlueJS — AuthClient, ClientAuthGuard, and OIDC adapter | [doc/api/README.md](../packages/blue-auth-client/doc/api/README.md) |
+| `@blue/auth-core` | Core authentication types, interfaces, and passive decorators for BlueJS | [doc/api/README.md](../packages/blue-auth-core/doc/api/README.md) |
+| `@blue/auth-server` | Server-side authentication for BlueJS — AuthServer, AuthRouteGuard, and JWT adapter | [doc/api/README.md](../packages/blue-auth-server/doc/api/README.md) |
+| `@blue/boot` | Application bootstrap, profiles, and typed configuration for BlueJS | [doc/api/README.md](../packages/blue-boot/doc/api/README.md) |
+| `@blue/cache` | Isomorphic caching for BlueJS — memory cache manager, memoize, and the @cached decorator | [doc/api/README.md](../packages/blue-cache/doc/api/README.md) |
+| `@blue/content` | i18n content keys, themes, and the MessageSource contract for BlueJS | [doc/api/README.md](../packages/blue-content/doc/api/README.md) |
+| `@blue/content-i18next` | Blue Content i18next Adapter | [doc/api/README.md](../packages/blue-content-i18next/doc/api/README.md) |
+| `@blue/context` | Application context, environments, configuration, and events for BlueJS | [doc/api/README.md](../packages/blue-context/doc/api/README.md) |
+| `@blue/core` | Foundational primitives, contracts, and utilities for BlueJS | [doc/api/README.md](../packages/blue-core/doc/api/README.md) |
+| `@blue/dispatcher` | Request dispatch, parameter binding, and radix handler mappings for BlueJS | [doc/api/README.md](../packages/blue-dispatcher/doc/api/README.md) |
+| `@blue/dom` | Blue DOM – Isomorphic DOM parsing integration layer | [doc/api/README.md](../packages/blue-dom/doc/api/README.md) |
+| `@blue/factory` | IoC factory with scopes, lifecycle, and aware processors for BlueJS | [doc/api/README.md](../packages/blue-factory/doc/api/README.md) |
+| `@blue/generators` | Nx generators for BlueJS package and component scaffolding | [doc/api/README.md](../packages/blue-generators/doc/api/README.md) |
+| `@blue/host` | Blue Host — centralized micro frontend orchestration in the shell context | [doc/api/README.md](../packages/blue-host/doc/api/README.md) |
+| `@blue/http` | Fetch-based HTTP client, interceptors, and content parsing for BlueJS | [doc/api/README.md](../packages/blue-http/doc/api/README.md) |
+| `@blue/management` | Blue management endpoints — /health and /metrics (actuator-style) | [doc/api/README.md](../packages/blue-management/doc/api/README.md) |
+| `@blue/orm` | Blue ORM - Repository and Data Mapper persistence abstractions | [doc/api/README.md](../packages/blue-orm/doc/api/README.md) |
+| `@blue/orm-drizzle` | Blue ORM Drizzle – Drizzle ORM adapter for @blue/orm | [doc/api/README.md](../packages/blue-orm-drizzle/doc/api/README.md) |
+| `@blue/oxlint-plugin` | Custom oxlint rules for BlueJS architectural enforcement | [doc/api/README.md](../packages/blue-oxlint-plugin/doc/api/README.md) |
+| `@blue/platform-node` | Node.js platform adapter for BlueJS — HTTP server, auto-configuration, static files, multipart | [doc/api/README.md](../packages/blue-platform-node/doc/api/README.md) |
+| `@blue/platform-web` | Browser platform adapter for BlueJS — dispatcher glue, history/cookie resolvers, themes | [doc/api/README.md](../packages/blue-platform-web/doc/api/README.md) |
+| `@blue/router` | Route registry, path partitions, and feature routing for BlueJS | [doc/api/README.md](../packages/blue-router/doc/api/README.md) |
+| `@blue/scheduler` | Cron scheduling for Node.js — @scheduled tasks and the task registry | [doc/api/README.md](../packages/blue-scheduler/doc/api/README.md) |
+| `@blue/service` | Typed service clients and server-sent event streaming for BlueJS | [doc/api/README.md](../packages/blue-service/doc/api/README.md) |
+| `@blue/signals` | Blue Signals – Reactive state management with signals, computed values, and effects | [doc/api/README.md](../packages/blue-signals/doc/api/README.md) |
+| `@blue/socket` | Blue Socket — isomorphic WebSocket domain: client contract + implementation and server-side session contracts | [doc/api/README.md](../packages/blue-socket/doc/api/README.md) |
+| `@blue/telemetry` | Isomorphic telemetry core for BlueJS — API-only: logger, metrics, severity, tracing decorators | [doc/api/README.md](../packages/blue-telemetry/doc/api/README.md) |
+| `@blue/telemetry-node` | Node.js telemetry for BlueJS — NodeSDK configuration and Node platform instrumentations | [doc/api/README.md](../packages/blue-telemetry-node/doc/api/README.md) |
+| `@blue/telemetry-web` | Browser telemetry for BlueJS — browser telemetry configuration and web instrumentations | [doc/api/README.md](../packages/blue-telemetry-web/doc/api/README.md) |
+| `@blue/test` | Blue integration test harness — MockMVC-style in-process request dispatch | [doc/api/README.md](../packages/blue-test/doc/api/README.md) |
+| `@blue/util` | Native helper utilities — types, strings, math, and objects | [doc/api/README.md](../packages/blue-util/doc/api/README.md) |
+| `@blue/view` | Views, view targets, and content negotiation for BlueJS | [doc/api/README.md](../packages/blue-view/doc/api/README.md) |
+| `@blue/view-ejs` | Blue View EJS — server-side EJS template rendering as an isomorphic Blue view technology. | [doc/api/README.md](../packages/blue-view-ejs/doc/api/README.md) |
+| `@blue/view-webcomponent` | Web Component view technology for BlueJS — component creation and event binding | [doc/api/README.md](../packages/blue-view-webcomponent/doc/api/README.md) |
 
 Tooling notes:
 

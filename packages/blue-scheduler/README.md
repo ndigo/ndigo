@@ -62,7 +62,7 @@ Unresolvable owner instances fail refresh. The `no-scheduled-in-browser`
 lint rule flags browser-platform files importing this package.
 
 ## API
-Complete generated reference (all exports, via `pnpm doc:api`): [`doc/api/index.md`](doc/api/index.md).
+Complete generated reference (all exports, via `pnpm doc:api`): [`doc/api/README.md`](doc/api/README.md).
 
 
 - `@scheduled(spec)` — marks a method as a scheduled task

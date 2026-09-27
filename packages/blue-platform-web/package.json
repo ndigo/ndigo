@@ -1,7 +1,7 @@
 {
   "name": "@blue/platform-web",
   "version": "0.0.1",
-  "description": "Blue Web Platform",
+  "description": "Browser platform adapter for BlueJS — dispatcher glue, history/cookie resolvers, themes",
   "type": "module",
   "files": [
     "doc",

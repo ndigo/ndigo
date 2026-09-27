@@ -1,7 +1,13 @@
 {
   "name": "@blue/core",
   "version": "0.0.1",
-  "description": "Blue Core",
+  "description": "Foundational primitives, contracts, and utilities for BlueJS",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-core"
+  ],
   "type": "module",
   "files": [
     "doc",
@@ -19,12 +25,6 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "blue-core"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {

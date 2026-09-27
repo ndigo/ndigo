@@ -1,7 +1,16 @@
 {
   "name": "@blue/util",
   "version": "0.0.1",
-  "description": "Blue Utility",
+  "description": "Native helper utilities — types, strings, math, and objects",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-util",
+    "util",
+    "utilities",
+    "utility"
+  ],
   "type": "module",
   "files": [
     "doc",
@@ -43,15 +52,6 @@
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "blue-util",
-    "util",
-    "utilities",
-    "utility"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {

@@ -2,8 +2,19 @@
   "name": "@blue/orm",
   "version": "0.0.1",
   "description": "Blue ORM - Repository and Data Mapper persistence abstractions",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-orm",
+    "orm",
+    "repository",
+    "data-mapper",
+    "persistence"
+  ],
   "type": "module",
   "files": [
+    "doc",
     "lib"
   ],
   "exports": {
@@ -17,16 +28,6 @@
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "blue-orm",
-    "orm",
-    "repository",
-    "data-mapper",
-    "persistence"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {},

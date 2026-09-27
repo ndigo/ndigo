@@ -2,8 +2,16 @@
   "name": "@blue/oxlint-plugin",
   "version": "0.0.1",
   "description": "Custom oxlint rules for BlueJS architectural enforcement",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "oxlint",
+    "oxlint-plugin",
+    "architecture"
+  ],
   "type": "module",
   "files": [
+    "doc",
     "lib"
   ],
   "exports": {
@@ -29,13 +37,6 @@
   "peerDependencies": {
     "oxlint": ">=1.0.0"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "oxlint",
-    "oxlint-plugin",
-    "architecture"
-  ],
   "license": "ISC",
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "sideEffects": false

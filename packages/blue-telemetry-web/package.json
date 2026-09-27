@@ -2,6 +2,15 @@
   "name": "@blue/telemetry-web",
   "version": "0.0.1",
   "description": "Browser telemetry for BlueJS — browser telemetry configuration and web instrumentations",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "telemetry",
+    "opentelemetry",
+    "browser",
+    "web"
+  ],
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -16,16 +25,8 @@
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "telemetry",
-    "opentelemetry",
-    "browser",
-    "web"
-  ],
   "license": "ISC",
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
   "sideEffects": false,
   "dependencies": {
     "@blue/context": "~0.0.1",
@@ -43,5 +44,9 @@
     "@opentelemetry/sdk-metrics": "~2.11.0",
     "@opentelemetry/sdk-trace-base": "~2.11.0"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "files": [
+    "doc",
+    "lib"
+  ]
 }

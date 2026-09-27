@@ -1,7 +1,7 @@
 {
   "name": "@blue/platform-node",
   "version": "0.0.1",
-  "description": "Blue Node.js Platform",
+  "description": "Node.js platform adapter for BlueJS — HTTP server, auto-configuration, static files, multipart",
   "type": "module",
   "files": [
     "doc",

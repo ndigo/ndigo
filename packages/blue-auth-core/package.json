@@ -2,6 +2,12 @@
   "name": "@blue/auth-core",
   "version": "0.0.1",
   "description": "Core authentication types, interfaces, and passive decorators for BlueJS",
+  "keywords": [
+    "bluejs",
+    "auth",
+    "principal",
+    "session"
+  ],
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -24,5 +30,9 @@
       "default": "./lib/index.js"
     }
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "files": [
+    "doc",
+    "lib"
+  ]
 }

@@ -29,5 +29,9 @@
   ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
-  "sideEffects": false
+  "sideEffects": false,
+  "dependencies": {
+    "@tsmetadata/polyfill": "^1.1.3"
+  },
+  "devDependencies": {}
 }

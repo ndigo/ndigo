@@ -1,19 +1,13 @@
 {
   "name": "@blue/auth-client",
   "version": "0.0.1",
-  "description": "Client-side authentication for BlueJS \u2014 AuthClient, ClientAuthGuard, and OIDC adapter",
+  "description": "Client-side authentication for BlueJS — AuthClient, ClientAuthGuard, and OIDC adapter",
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
-  "peerDependencies": {
-    "@blue/auth-core": "~0.0.1",
-    "@blue/http": "~0.0.1"
-  },
   "devDependencies": {
-    "@blue/auth-core": "~0.0.1",
-    "@blue/http": "~0.0.1",
     "typescript": "^6.0.3"
   },
   "scripts": {
@@ -22,6 +16,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@blue/auth-core": "~0.0.1",
+    "@blue/http": "~0.0.1",
     "jose": "^6.2.12"
   },
   "exports": {

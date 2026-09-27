@@ -1,0 +1,91 @@
+[**@blue/cache v0.0.1**](../README.md)
+
+***
+
+[@blue/cache](../README.md) / MemoryCacheManager
+
+# Class: MemoryCacheManager
+
+In-memory [CacheManager](../interfaces/CacheManager.md): auto-creates [MemoryCache](MemoryCache.md) stores on
+first `getCache(name)` with the manager defaults. Caches are owned for the
+manager's lifetime — the auto-configuration `cacheManager` bean is a
+singleton per application context.
+
+## Implements
+
+- [`CacheManager`](../interfaces/CacheManager.md)
+
+## Constructors
+
+### Constructor
+
+> **new MemoryCacheManager**(`options?`): `MemoryCacheManager`
+
+#### Parameters
+
+##### options?
+
+[`CacheManagerOptions`](../interfaces/CacheManagerOptions.md) = `{}`
+
+Manager options (see [CacheManagerOptions](../interfaces/CacheManagerOptions.md)).
+
+#### Returns
+
+`MemoryCacheManager`
+
+## Methods
+
+### getCache()
+
+> **getCache**\<`V`\>(`name`): [`Cache`](../interfaces/Cache.md)\<`V`\>
+
+Returns the named cache, auto-creating it with the manager defaults
+when absent.
+
+#### Type Parameters
+
+##### V
+
+`V` = `unknown`
+
+#### Parameters
+
+##### name
+
+`string`
+
+Non-empty cache name.
+
+#### Returns
+
+[`Cache`](../interfaces/Cache.md)\<`V`\>
+
+#### Throws
+
+For a non-string or empty name.
+
+#### Implementation of
+
+[`CacheManager`](../interfaces/CacheManager.md).[`getCache`](../interfaces/CacheManager.md#getcache)
+
+***
+
+### hasCache()
+
+> **hasCache**(`name`): `boolean`
+
+Returns whether the named cache exists (no creation).
+
+#### Parameters
+
+##### name
+
+`string`
+
+#### Returns
+
+`boolean`
+
+#### Implementation of
+
+[`CacheManager`](../interfaces/CacheManager.md).[`hasCache`](../interfaces/CacheManager.md#hascache)

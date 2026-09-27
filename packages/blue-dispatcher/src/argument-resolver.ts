@@ -51,12 +51,12 @@ export const likeArgumentResolver = like({
 export abstract class AbstractNamedValueMethodArgumentResolver implements HandlerMethodArgumentResolver {
     /**
      * Handles a missing argument value by throwing a
-     * {@link MissingParameterError} — a `ParameterBindingError`, so HTTP
-     * error resolvers map it to `400` (Spring's
-     * `MissingServletRequestParameterException` parity) instead of a 500
-     * from a bare `TypeError`.
+     * a MissingParameterError — a ParameterBindingError, so HTTP
+     * error resolvers map it to 400 (Spring's
+     * MissingServletRequestParameterException parity) instead of a 500
+     * from a bare TypeError.
      * @param parameter - The method parameter that could not be resolved.
-     * @throws {MissingParameterError} If the argument is undefined or null.
+     * @throws if the argument is undefined or null.
      */
     handleMissingValue(parameter: MethodParameter): never {
         throw new MissingParameterError(parameter.name, parameter.type.toString());

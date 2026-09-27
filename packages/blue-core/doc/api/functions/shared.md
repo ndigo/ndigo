@@ -1,0 +1,31 @@
+[**@blue/core v0.0.1**](../README.md)
+
+***
+
+[@blue/core](../README.md) / shared
+
+# Function: shared()
+
+> **shared**(`options?`): (`target`, `context`) => `Function`
+
+Class decorator that marks an entry as a shell-managed shared dependency.
+
+When a child (feature) context attempts to register a `@shared` entry,
+the factory skips registration and resolves the entry from the parent chain instead.
+
+## Parameters
+
+### options?
+
+[`SharedOptions`](../interfaces/SharedOptions.md)
+
+## Returns
+
+(`target`, `context`) => `Function`
+
+## Example
+
+```ts
+@shared({ version: '1.2.0' })
+class TelemetryService { … }
+```

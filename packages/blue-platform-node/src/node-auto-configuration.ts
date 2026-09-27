@@ -35,7 +35,7 @@ import { RateLimitInterceptor } from './rate-limit-interceptor';
  * Provisions Node.js argument resolvers, a dispatcher, and an HTTP server.
  *
  * Register this configuration class with your `ApplicationContext` alongside
- * {@link NodeEnvironment} to enable full server-side request handling.
+ * NodeEnvironment to enable full server-side request handling.
  */
 @conditionalOnNode
 @configuration

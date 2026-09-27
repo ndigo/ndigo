@@ -1,0 +1,223 @@
+[**@blue/scheduler v0.0.1**](../README.md)
+
+***
+
+[@blue/scheduler](../README.md) / TaskScheduler
+
+# Class: TaskScheduler
+
+The task-execution engine: next-fire tracking, single-flight runs, error
+isolation, `maxRunTime` races, and drain-on-close (AD-20 D4).
+
+The engine is driven two ways:
+- `tick(now)` — deterministic, testable, and suited to an application
+  loop: fires every due task and awaits the runs it started.
+- `start()`/`stop()` — a wall-clock timer chain that calls `tick` at each
+  computed next-fire time (fire-and-forget; single-flight guards overlap).
+
+## Constructors
+
+### Constructor
+
+> **new TaskScheduler**(`options?`): `TaskScheduler`
+
+Creates a task scheduler.
+
+#### Parameters
+
+##### options?
+
+[`TaskSchedulerOptions`](../interfaces/TaskSchedulerOptions.md) = `{}`
+
+Clock and warning-sink injection.
+
+#### Returns
+
+`TaskScheduler`
+
+## Properties
+
+### destroyed
+
+> **destroyed**: `boolean` = `false`
+
+## Accessors
+
+### isRunning
+
+#### Get Signature
+
+> **get** **isRunning**(): `boolean`
+
+Whether the wall-clock timer loop is armed.
+
+##### Returns
+
+`boolean`
+
+## Methods
+
+### close()
+
+> **close**(): `Promise`\<`void`\>
+
+Stops the loop, drains in-flight runs, and clears the registry.
+
+Tasks are cleared on close; the scheduler is closed for further
+registration.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+***
+
+### destroy()
+
+> **destroy**(): `Promise`\<`void`\>
+
+Container contract (AD-20): stops the loop, drains in-flight runs, and
+clears the registry — the same work as [TaskScheduler.close](#close).
+
+The container does not await the drain (context close is synchronous);
+in-flight runs finish in the background and the scheduler rejects new
+registrations immediately.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+***
+
+### getStats()
+
+> **getStats**(`name`): [`TaskStats`](../interfaces/TaskStats.md) \| `undefined`
+
+Observable statistics for a task.
+
+#### Parameters
+
+##### name
+
+`string`
+
+The task name.
+
+#### Returns
+
+[`TaskStats`](../interfaces/TaskStats.md) \| `undefined`
+
+The task statistics, or `undefined` when not registered.
+
+***
+
+### register()
+
+> **register**(`definition`): `void`
+
+Registers a task; its first fire is computed from the current clock.
+
+#### Parameters
+
+##### definition
+
+[`ScheduledTaskDefinition`](../interfaces/ScheduledTaskDefinition.md)
+
+The task to register.
+
+#### Returns
+
+`void`
+
+#### Throws
+
+On duplicate names or after `close()`.
+
+***
+
+### start()
+
+> **start**(): `void`
+
+Starts the wall-clock timer loop (idempotent). Fire-and-forget: ticks
+are not awaited, so long runs never delay the loop — single-flight
+prevents same-task overlap.
+
+#### Returns
+
+`void`
+
+***
+
+### stop()
+
+> **stop**(): `void`
+
+Stops the wall-clock timer loop. In-flight runs continue; call
+[TaskScheduler.close](#close) to drain.
+
+#### Returns
+
+`void`
+
+***
+
+### taskNames()
+
+> **taskNames**(): `string`[]
+
+The names of all registered tasks.
+
+#### Returns
+
+`string`[]
+
+The task names in registration order.
+
+***
+
+### tick()
+
+> **tick**(`now?`): `Promise`\<`number`\>
+
+Advances the scheduler to `now` and fires every due task.
+
+Overlapping runs are skipped (single-flight): the task's next fire is
+slid forward. Runs started by this tick are awaited before it returns,
+so tests are deterministic; run failures never propagate.
+
+#### Parameters
+
+##### now?
+
+`Date`
+
+The time to advance to; defaults to the injected clock.
+
+#### Returns
+
+`Promise`\<`number`\>
+
+How many runs started.
+
+***
+
+### unregister()
+
+> **unregister**(`name`): `boolean`
+
+Removes a task.
+
+#### Parameters
+
+##### name
+
+`string`
+
+The task name.
+
+#### Returns
+
+`boolean`
+
+Whether a task was removed.

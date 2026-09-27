@@ -1,0 +1,135 @@
+{
+    "@blue/auth-core": {
+        "AuthAdapter": "#",
+        "AuthResult": "#",
+        "Principal": "#",
+        "SessionStore": "#"
+    },
+    "@blue/content": {
+        "ContentSource": "#",
+        "MessageSource": "#"
+    },
+    "@blue/context": {
+        "ApplicationEventEmitterAware": "#",
+        "ContentSource": "#",
+        "ContentSourceAware": "#",
+        "EntryDecorator": "#",
+        "EntryRegistryProcessor": "#",
+        "LifecycleProcessor": "#",
+        "ResourceLoader": "#",
+        "ResourceLoaderAware": "#",
+        "SecretCipher": "#"
+    },
+    "@blue/core": {
+        "ArrayEntries": "#",
+        "EntryProcessor": "#",
+        "Factory": "#",
+        "Map": "#",
+        "MapEntries": "#",
+        "MapKey": "#",
+        "MapValue": "#",
+        "MediaTypeParameters": "#",
+        "NumberComparator": "#",
+        "ObjectEntries": "#",
+        "QualityFactorComparator": "#",
+        "SetEntries": "#",
+        "SpecificityComparator": "#",
+        "StringComparator": "#",
+        "SupportedMediaType": "#",
+        "reduce": "#",
+        "string": "#"
+    },
+    "@blue/dispatcher": {
+        "AbstractPlatformArgumentResolver.resolveBoundArgument": "#",
+        "AbstractRouteErrorResolver": "#",
+        "Dispatcher": "#",
+        "InterceptorDenial": "#",
+        "MappingRegistry": "#",
+        "MissingParameterError": "#",
+        "Model": "#",
+        "ModelAndView": "#",
+        "NavigatorLanguageResolver": "#",
+        "ParameterBindingError": "#",
+        "RouteHandlerInterceptor": "#",
+        "RouteMappingValue": "#",
+        "SocketSession": "#",
+        "ViewNameTranslator": "#",
+        "default": "#"
+    },
+    "@blue/factory": {
+        "Constructable": "#",
+        "ContextToken": "#",
+        "EntryRegistryProcessor": "#",
+        "Factory": "#",
+        "Initializable": "#",
+        "InitializationAwareProcessor": "#",
+        "PrototypeScope": "#",
+        "SingletonScope": "#"
+    },
+    "@blue/http": {
+        "CompletionAwareHTTPInterceptor": "#",
+        "ErrorAwareHTTPInterceptor": "#",
+        "InitializationAwareHTTPInterceptor": "#",
+        "MatrixString": "#",
+        "QueryString": "#",
+        "RequestAwareHTTPInterceptor": "#",
+        "ResponseAwareHTTPInterceptor": "#",
+        "ResponseError": "#"
+    },
+    "@blue/management": {
+        "ManagementAutoConfigurationOptions": "#"
+    },
+    "@blue/orm": {
+        "ClassType": "#"
+    },
+    "@blue/platform-node": {
+        "DEFAULT_MPART_LIMITS": "#",
+        "HTTPServer": "#",
+        "NodeDispatcher": "#",
+        "NodeMultipartFileMethodArgumentResolver": "#",
+        "NodeSocketSessionRegistry": "#",
+        "NodeSocketSessionRegistry.broadcastTo": "#",
+        "ResourceLoader": "#",
+        "UnresolvedResource": "#"
+    },
+    "@blue/platform-web": {
+        "BrowserDispatcher": "#",
+        "CookieAttributeValue": "#",
+        "Parser": "#",
+        "RouteHistory": "#",
+        "RouteTransaction": "#"
+    },
+    "@blue/router": {
+        "ACCEPT_LANGUAGE_ATTRIBUTE": "#",
+        "Route": "#"
+    },
+    "@blue/service": {
+        "Service": "#"
+    },
+    "@blue/socket": {
+        "ReconnectTrigger": "#",
+        "SocketSession": "#",
+        "WebSocketClient": "#"
+    },
+    "@blue/telemetry": {
+        "FeatureMetricAggregator": "#",
+        "LoggerFactory": "#"
+    },
+    "@blue/test": {
+        "MockResult": "#"
+    },
+    "@blue/util": {
+        "LikeDescriptor": "#",
+        "Numeric": "#"
+    },
+    "@blue/view": {
+        "AbstractCachingViewResolver._loadView": "#",
+        "AbstractSerializingView.serialize": "#",
+        "ProducerView": "#",
+        "View": "#",
+        "ViewTarget": "#"
+    },
+    "typescript": {
+        "external": "#"
+    }
+}

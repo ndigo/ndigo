@@ -34,6 +34,12 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
+    "@types/busboy": "^1.5.4",
+    "@types/ws": "^8.18.0",
+    "zod": "^4.5.4"
+  },
+  "sideEffects": false,
+  "dependencies": {
     "@blue/auth-core": "~0.0.1",
     "@blue/cache": "~0.0.1",
     "@blue/context": "~0.0.1",
@@ -46,27 +52,7 @@
     "@blue/socket": "~0.0.1",
     "@blue/util": "~0.0.1",
     "@blue/view": "~0.0.1",
-    "@types/busboy": "^1.5.4",
-    "@types/ws": "^8.18.0",
-    "zod": "^4.5.4"
-  },
-  "peerDependencies": {
-    "@blue/auth-core": "~0.0.1",
-    "@blue/cache": "~0.0.1",
-    "@blue/context": "~0.0.1",
-    "@blue/core": "~0.0.1",
-    "@blue/dispatcher": "~0.0.1",
-    "@blue/factory": "~0.0.1",
-    "@blue/http": "~0.0.1",
-    "@blue/router": "~0.0.1",
-    "@blue/scheduler": "~0.0.1",
-    "@blue/socket": "~0.0.1",
-    "@blue/view": "~0.0.1"
-  },
-  "sideEffects": false,
-  "dependencies": {
-    "@blue/http": "~0.0.1",
-    "@blue/util": "~0.0.1",
+    "@tsmetadata/polyfill": "^1.1.3",
     "busboy": "^1.6.0",
     "helmet": "^8.3.0",
     "ws": "^8.18.0"

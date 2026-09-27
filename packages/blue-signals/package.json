@@ -1,7 +1,7 @@
 {
   "name": "@blue/signals",
   "version": "0.0.1",
-  "description": "Blue Signals \u2013 Reactive state management with signals, computed values, and effects",
+  "description": "Blue Signals – Reactive state management with signals, computed values, and effects",
   "type": "module",
   "files": [
     "lib"
@@ -35,11 +35,6 @@
   "dependencies": {
     "@preact/signals-core": "^1.14.4"
   },
-  "peerDependencies": {
-    "@blue/core": "~0.0.1"
-  },
-  "devDependencies": {
-    "@blue/core": "~0.0.1"
-  },
+  "devDependencies": {},
   "sideEffects": false
 }

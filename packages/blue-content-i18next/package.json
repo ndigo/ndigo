@@ -29,13 +29,9 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
+    "@blue/content": "~0.0.1",
     "i18next": "^24.2.3"
   },
-  "devDependencies": {
-    "@blue/content": "~0.0.1"
-  },
-  "peerDependencies": {
-    "@blue/content": "~0.0.1"
-  },
+  "devDependencies": {},
   "sideEffects": false
 }

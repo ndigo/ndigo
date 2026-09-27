@@ -1,7 +1,16 @@
 {
   "name": "@blue/factory",
   "version": "0.0.1",
-  "description": "Blue Factory",
+  "description": "IoC factory with scopes, lifecycle, and aware processors for BlueJS",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-factory",
+    "blue-registry",
+    "factory",
+    "registry"
+  ],
   "type": "module",
   "files": [
     "doc",
@@ -19,15 +28,6 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "blue-factory",
-    "blue-registry",
-    "factory",
-    "registry"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {},

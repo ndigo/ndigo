@@ -1,7 +1,13 @@
 {
   "name": "@blue/view",
   "version": "0.0.1",
-  "description": "Blue View",
+  "description": "Views, view targets, and content negotiation for BlueJS",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-view"
+  ],
   "type": "module",
   "files": [
     "doc",
@@ -19,12 +25,6 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "blue-view"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {},

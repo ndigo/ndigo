@@ -1,7 +1,16 @@
 {
   "name": "@blue/boot",
   "version": "0.0.1",
-  "description": "Blue Boot",
+  "description": "Application bootstrap, profiles, and typed configuration for BlueJS",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-app",
+    "blue-boot",
+    "app",
+    "boot"
+  ],
   "type": "module",
   "files": [
     "doc",
@@ -19,15 +28,6 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "blue-app",
-    "blue-boot",
-    "app",
-    "boot"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {

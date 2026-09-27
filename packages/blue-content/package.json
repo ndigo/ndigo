@@ -1,7 +1,14 @@
 {
   "name": "@blue/content",
   "version": "0.0.1",
-  "description": "Blue Content",
+  "description": "i18n content keys, themes, and the MessageSource contract for BlueJS",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-content",
+    "content"
+  ],
   "type": "module",
   "files": [
     "doc",
@@ -18,13 +25,6 @@
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "blue-content",
-    "content"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {},

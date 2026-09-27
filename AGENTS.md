@@ -113,6 +113,25 @@ The project maintains two complementary documentation files for different purpos
 
 **Maintenance Note:** When updating the dividing line explanation, update it in both `README.md` and `AGENTS.md` to keep them synchronized.
 
+### Package Documentation
+
+Every package must meet the documentation standard:
+
+- **README.md** — required sections (tagline, Installation, Getting Started,
+  Usage, API *link only*, Development, Contributing, License). No internal
+  tracking IDs or decision-record links in package READMEs. Template:
+  `packages/blue-generators/src/generators/readme/files/README.md.template`.
+- **Generated API reference** — `pnpm doc:api` writes
+  `packages/<name>/doc/api/` per package (zero-warning TypeDoc standard,
+  CI-enforced). After public API changes: regenerate, commit the tree.
+- **Cross-package JSDoc links** — add an entry to
+  `scripts/external-symbol-links.json`; never sprinkle links into package code.
+- **Enforcement** — `pnpm manifest:check` (README/metadata/files), CI
+  freshness diff. Full rules: `docs/guides/12-package-documentation.md`.
+
+**No HTML docs:** `doc-html/` and `typedoc.html.json` are gone; do not
+reintroduce them.
+
 ### Design Principles (SOLID & DRY)
 
 ARCHITECTURE.md now includes comprehensive guidance on SOLID and DRY principles adapted for JavaScript/TypeScript. When writing or refactoring code, refer to these principles:

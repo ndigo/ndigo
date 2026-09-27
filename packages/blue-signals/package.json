@@ -2,8 +2,18 @@
   "name": "@blue/signals",
   "version": "0.0.1",
   "description": "Blue Signals – Reactive state management with signals, computed values, and effects",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-signals",
+    "signals",
+    "reactive",
+    "state"
+  ],
   "type": "module",
   "files": [
+    "doc",
     "lib"
   ],
   "exports": {
@@ -21,15 +31,6 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "blue-signals",
-    "signals",
-    "reactive",
-    "state"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {

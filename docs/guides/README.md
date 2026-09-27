@@ -13,6 +13,9 @@ Conceptual and hands-on guides for building applications with BlueJS. These comp
 7. [07 — Caching](07-caching.md) — the `@blue/cache` store (TTL + LRU/FIFO eviction), the `@cached` decorator for server methods, and `memoize` for client functions — the same semantics on both sides.
 8. [08 — Multipart & File Upload](08-multipart-and-file-upload.md) — server-side acceptance of `multipart/form-data`: the `MultipartFile` contract, `fileValue()` binding, threshold-to-disk streaming, limits → 413, and filename-safety.
 9. [09 — Argument Binding](09-argument-binding.md) — the handler binding surface: per-source extractors, whole-source data binding (`dataBinderValue` — the form/model story), `requestPart` JSON parts, matrix parity, and missing-value → 400.
+10. [10 — Telemetry](10-telemetry.md) — logging, the OTel span/trace surface, metric counters, and the Node/browser wiring.
+11. [11 — Authentication & Sessions](11-authentication-and-sessions.md) — credentials + session storage, the auth decorators, and the admin-store workflow.
+12. [12 — Package Documentation](12-package-documentation.md) — the documentation standard every package must meet: README template, metadata fields, generated API references (`pnpm doc:api`), and CI freshness enforcement.
 
 ## Reading Order
 
@@ -21,4 +24,6 @@ Start with guide 01; it introduces every concept the other guides and the packag
 ## Conventions
 
 - Code snippets are written against the current framework surface and mirror the demo applications — treat `apps/blue-api` as the canonical reference.
-- API names link to nothing inline (the typedoc site is generated); the package READMEs list the primary exports per package.
+- API names link to nothing inline; the per-package TypeDoc references are
+  generated (`pnpm doc:api` → `packages/<name>/doc/api/`; index
+  `doc-md/README.md`) and the package READMEs link them.

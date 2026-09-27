@@ -42,7 +42,10 @@ const api = HTTP.create({
 
 ## API
 
-The full API is generated from JSDoc via `pnpm doc` into `doc-md/` and `doc-html/`. Primary exports live in [`src/index.ts`](src/index.ts); see the [package index](../README.md) for how it fits with the rest of BlueJS.
+The full API is generated from JSDoc via `pnpm doc:api` into
+[`doc/api/`](doc/api/index.md). Primary exports live in
+[`src/index.ts`](src/index.ts); see the [package index](../../doc-md/README.md) for
+how it fits with the rest of BlueJS.
 
 - **Client** — `HTTP.create(...)` static factory
 - **Interceptors** — timeout, content-type, response-class, cache, trace-header (lifecycle hooks: `preInit`, `preRequest`, `postResponse`, `postError`, `postComplete`)

@@ -1,7 +1,13 @@
 {
   "name": "@blue/dispatcher",
   "version": "0.0.1",
-  "description": "Blue Dispatcher",
+  "description": "Request dispatch, parameter binding, and radix handler mappings for BlueJS",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-dispatcher"
+  ],
   "type": "module",
   "files": [
     "doc",
@@ -19,12 +25,6 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "blue-dispatcher"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {

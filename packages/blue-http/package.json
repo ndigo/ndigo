@@ -1,7 +1,18 @@
 {
   "name": "@blue/http",
   "version": "0.0.1",
-  "description": "Blue HTTP",
+  "description": "Fetch-based HTTP client, interceptors, and content parsing for BlueJS",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-http",
+    "http",
+    "http-request",
+    "fetch",
+    "xhr",
+    "xmlhttprequest"
+  ],
   "type": "module",
   "files": [
     "doc",
@@ -23,17 +34,6 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "blue-http",
-    "http",
-    "http-request",
-    "fetch",
-    "xhr",
-    "xmlhttprequest"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {

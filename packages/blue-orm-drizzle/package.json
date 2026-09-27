@@ -2,8 +2,17 @@
   "name": "@blue/orm-drizzle",
   "version": "0.0.1",
   "description": "Blue ORM Drizzle – Drizzle ORM adapter for @blue/orm",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-orm-drizzle",
+    "orm",
+    "drizzle"
+  ],
   "type": "module",
   "files": [
+    "doc",
     "lib"
   ],
   "exports": {
@@ -17,14 +26,6 @@
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "blue-orm-drizzle",
-    "orm",
-    "drizzle"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {

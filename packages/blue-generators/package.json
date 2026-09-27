@@ -2,6 +2,12 @@
   "name": "@blue/generators",
   "version": "0.0.1",
   "description": "Nx generators for BlueJS package and component scaffolding",
+  "keywords": [
+    "bluejs",
+    "nx",
+    "generator",
+    "scaffolding"
+  ],
   "type": "module",
   "generators": "./generators.json",
   "main": "./src/index.js",

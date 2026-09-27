@@ -85,6 +85,28 @@ for (const dir of readdirSync(PACKAGES)) {
         }
     }
 
+    // Documentation standard (see docs/guides/package-documentation.md)
+    const readmePath = join(PACKAGES, dir, 'README.md');
+    if (!existsSync(readmePath) || readFileSync(readmePath, 'utf8').trim().length < 200) {
+        fail(name, `README.md must exist with real content (docs standard)`);
+    }
+    const desc = manifest.description ?? '';
+    if (desc.length < 25 || /^blue\s+\w+$/i.test(desc.trim())) {
+        fail(name, `description is generic or too short: "${desc}" (docs standard)`);
+    }
+    if (!manifest.author) fail(name, `author is required (docs standard)`);
+    if (!Array.isArray(manifest.keywords) || manifest.keywords.length === 0) {
+        fail(name, `keywords must be a non-empty array (docs standard)`);
+    }
+    if (name === '@blue/generators') {
+        const files = manifest.files ?? [];
+        if (!files.includes('src') || !files.includes('generators.json')) {
+            fail(name, `files must include "src" and "generators.json" (docs standard)`);
+        }
+    } else if (!Array.isArray(manifest.files) || !manifest.files.includes('doc') || !manifest.files.includes('lib')) {
+        fail(name, `files must include "doc" and "lib" (docs standard)`);
+    }
+
     // Rule 1: runtime closure — every src/ import is a dependency
     // (allowlisted host-provided peers excepted, e.g. telemetry-node's `ws`).
     for (const spec of runtime) {

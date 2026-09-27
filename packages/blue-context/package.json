@@ -1,7 +1,15 @@
 {
   "name": "@blue/context",
   "version": "0.0.1",
-  "description": "Blue Context",
+  "description": "Application context, environments, configuration, and events for BlueJS",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-context",
+    "application-context",
+    "context"
+  ],
   "type": "module",
   "files": [
     "doc",
@@ -19,14 +27,6 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "blue-context",
-    "application-context",
-    "context"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {},

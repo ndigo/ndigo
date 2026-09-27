@@ -2,8 +2,19 @@
   "name": "@blue/telemetry",
   "version": "0.0.1",
   "description": "Isomorphic telemetry core for BlueJS — API-only: logger, metrics, severity, tracing decorators",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-telemetry",
+    "observability",
+    "opentelemetry",
+    "metrics",
+    "tracing"
+  ],
   "type": "module",
   "files": [
+    "doc",
     "lib"
   ],
   "exports": {
@@ -18,16 +29,6 @@
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "blue-telemetry",
-    "observability",
-    "opentelemetry",
-    "metrics",
-    "tracing"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {

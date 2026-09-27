@@ -2,6 +2,14 @@
   "name": "@blue/telemetry-node",
   "version": "0.0.1",
   "description": "Node.js telemetry for BlueJS — NodeSDK configuration and Node platform instrumentations",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "telemetry",
+    "opentelemetry",
+    "node"
+  ],
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -16,14 +24,6 @@
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "telemetry",
-    "opentelemetry",
-    "node"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "sideEffects": false,
@@ -54,5 +54,9 @@
     "@opentelemetry/context-async-hooks": "~2.11.0",
     "@opentelemetry/core": "~2.11.0",
     "@types/ws": "^8.18.0"
-  }
+  },
+  "files": [
+    "doc",
+    "lib"
+  ]
 }

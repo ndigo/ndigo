@@ -2,6 +2,12 @@
   "name": "@blue/auth-server",
   "version": "0.0.1",
   "description": "Server-side authentication for BlueJS — AuthServer, AuthRouteGuard, and JWT adapter",
+  "keywords": [
+    "bluejs",
+    "auth",
+    "jwt",
+    "server"
+  ],
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -27,5 +33,9 @@
       "default": "./lib/index.js"
     }
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "files": [
+    "doc",
+    "lib"
+  ]
 }

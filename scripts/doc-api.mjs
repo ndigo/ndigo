@@ -3,7 +3,7 @@
  *
  * For every package with a `src/` directory, runs TypeDoc (markdown plugin)
  * over the package's own `exports` map and writes the reference tree to
- * `packages/<pkg>/doc/api/`. Also regenerates `doc-md/README.md`, the
+ * `packages/<pkg>/doc/api/`. Also regenerates `doc/README.md`, the
  * package-docs index at the repo root.
  *
  * Why per-package: each BlueJS package must read like a standalone library
@@ -121,7 +121,7 @@ for (const dir of packages) {
     if (WATCH) break; // watch mode: first package only, hangs by design
 }
 
-// --- doc-md/README.md index -------------------------------------------------
+// --- doc/README.md index -------------------------------------------------
 const indexLines = [
     '# BlueJS Package API Documentation',
     '',
@@ -143,7 +143,7 @@ for (const dir of packages) {
     );
 }
 indexLines.push('', 'Tooling notes:', '', '- `pnpm doc:api` regenerates everything (TypeDoc, zero-warning standard).');
-mkdirSync(join(ROOT, 'doc-md'), { recursive: true });
-writeFileSync(join(ROOT, 'doc-md', 'README.md'), indexLines.join('\n') + '\n');
-console.log('✓ doc-md/README.md');
+mkdirSync(join(ROOT, 'doc'), { recursive: true });
+writeFileSync(join(ROOT, 'doc', 'README.md'), indexLines.join('\n') + '\n');
+console.log('✓ doc/README.md');
 if (failures) process.exit(1);

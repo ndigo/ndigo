@@ -26,4 +26,4 @@ Start with guide 01; it introduces every concept the other guides and the packag
 - Code snippets are written against the current framework surface and mirror the demo applications — treat `apps/blue-api` as the canonical reference.
 - API names link to nothing inline; the per-package TypeDoc references are
   generated (`pnpm doc:api` → `packages/<name>/doc/api/`; index
-  `doc-md/README.md`) and the package READMEs link them.
+  `doc/README.md`) and the package READMEs link them.

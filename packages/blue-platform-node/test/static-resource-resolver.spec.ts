@@ -67,7 +67,7 @@ describe('StaticResourceResolver containment', () => {
         expect(result.path).toBe(join(root, 'assets', 'index.html'));
         expect(result.data).toBeUndefined();
         expect((await readFile(result.path ?? '')).toString('utf-8')).toBe('<h1>hello</h1>');
-        expect(result.contentType).toBe('text/html; charset=utf-8');
+        expect(result.contentType).toBe('text/html;charset=utf-8');
     });
 
     test('rejects parent traversal (`../`)', async () => {
@@ -224,7 +224,7 @@ describe('StaticResourceResolver directory modes (D-7)', () => {
         const result = await makeResolver().resolve('/docs', { indexNames: ['index.html', 'a.txt'] });
         expect(result.kind).toBe('ok');
         expect((await readFile(result.path ?? '')).toString('utf-8')).toBe('alpha');
-        expect(result.contentType).toBe('text/plain; charset=utf-8');
+        expect(result.contentType).toBe('text/plain;charset=utf-8');
     });
 
     test('maxFileSizeBytes rejects oversized files at stat time; 0 = unlimited', async () => {
@@ -249,7 +249,7 @@ describe('StaticResourceResolver directory modes (D-7)', () => {
         const result = await makeResolver().resolve('/docs', { listDirectories: true });
         expect(result.kind).toBe('ok');
         const html = result.data?.toString('utf-8') ?? '';
-        expect(result.contentType).toBe('text/html; charset=utf-8');
+        expect(result.contentType).toBe('text/html;charset=utf-8');
         // Entries link relatively and are HTML-escaped.
         expect(html).toContain('<a href="a.txt">a.txt</a>');
         expect(html).toContain('<a href="&lt;b&gt;&amp;&quot;quote&quot;.txt">');

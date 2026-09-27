@@ -99,18 +99,19 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
      */
     private async extractBody(source: Request | Response): Promise<unknown> {
         const contentType = source.headers.get('content-type') || '';
+        const mediaType = mediaTypeOf(contentType);
 
-        if (contentType.includes('application/json')) {
+        if (mediaType?.isJSON === true) {
             return await source.json();
         }
-        if (contentType.includes('text/')) {
+        if (mediaType?.type === 'text') {
             return await source.text();
         }
-        if (contentType.includes('application/x-www-form-urlencoded')) {
+        if (mediaType?.baseType === 'application/x-www-form-urlencoded') {
             const text = await source.text();
             return new URLSearchParams(text);
         }
-        if (contentType.includes('multipart/form-data')) {
+        if (mediaType?.baseType === 'multipart/form-data') {
             return await source.formData();
         }
 
@@ -170,18 +171,30 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
             return body;
         }
 
-        if (contentType.includes('application/json')) {
+        if (mediaTypeOf(contentType)?.isJSON === true) {
             return JSON.stringify(body);
         }
 
-        if (contentType.includes('application/x-www-form-urlencoded') && body instanceof URLSearchParams) {
+        if (
+            mediaTypeOf(contentType)?.baseType === 'application/x-www-form-urlencoded' &&
+            body instanceof URLSearchParams
+        ) {
             return body;
         }
 
-        if (contentType.includes('multipart/form-data') && body instanceof FormData) {
+        if (mediaTypeOf(contentType)?.baseType === 'multipart/form-data' && body instanceof FormData) {
             return body;
         }
 
         return typeof body === 'object' ? JSON.stringify(body) : String(body);
     }
+}
+
+/**
+ * The parsed media type of a Content-Type header value, or `null` when
+ * blank/unparseable — the single MediaType gate for the body-sniffing
+ * decisions (Wave 6): case folded by the registry, parameters tolerated.
+ */
+function mediaTypeOf(contentType: string): MediaType | null {
+    return contentType === '' ? null : MediaType.for(contentType);
 }

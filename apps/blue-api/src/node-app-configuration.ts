@@ -8,7 +8,7 @@ import 'node:process';
 import { resolve } from 'node:path';
 import { configuration, entry, profile } from '@blue/context';
 import { StaticContentSource } from '@blue/content';
-import { type MediaType, MediaTypes } from '@blue/core';
+import { MediaTypes } from '@blue/core';
 import { StaticController, type SocketRequestAuthenticator } from '@blue/platform-node';
 import type { SocketRequestSources } from '@blue/dispatcher';
 import {
@@ -32,13 +32,6 @@ import { ConfigSecretsController } from './config-secrets-controller';
 import { ConfigServerDemoController } from './config-server-demo-controller';
 import { UploadController } from './upload-controller';
 import { lookupPrincipal } from './auth-store';
-
-const requireMediaType = (value: MediaType | null): MediaType => {
-    if (value === null) {
-        throw new Error('expected a registered media type');
-    }
-    return value;
-};
 
 /**
  * Reads the demo credential off the WebSocket handshake: `?token=` (the
@@ -198,8 +191,8 @@ export class NodeAppConfiguration {
         const manager = new ContentNegotiationManager([
             new PathExtensionContentNegotiationStrategy(
                 new Map([
-                    ['json', requireMediaType(MediaTypes.APPLICATION_JSON)],
-                    ['csv', requireMediaType(MediaTypes.TEXT_CSV)],
+                    ['json', MediaTypes.APPLICATION_JSON],
+                    ['csv', MediaTypes.TEXT_CSV],
                 ])
             ),
         ]);

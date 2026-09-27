@@ -6,6 +6,8 @@
  */
 import type { ServerResponse } from 'node:http';
 import { Route } from '@blue/router';
+import { MediaTypes } from '@blue/core';
+import { HTTPHeaders } from '@blue/http';
 import { ViewTarget } from '@blue/view';
 import { isResponseEntity } from './response-entity';
 
@@ -37,7 +39,7 @@ export class HTTPResponseViewTarget implements ViewTarget {
         // Check if the model contains a ResponseEntity for status/headers
         if (isResponseEntity(model)) {
             const headers: Record<string, string> = {
-                'Content-Type': 'application/json',
+                [HTTPHeaders.CONTENT_TYPE.name]: String(MediaTypes.APPLICATION_JSON),
                 ...model.headers,
             };
             this.#response.writeHead(model.status.code, headers);
@@ -53,12 +55,12 @@ export class HTTPResponseViewTarget implements ViewTarget {
 
         if (typeof output === 'string') {
             if (!this.#response.headersSent) {
-                this.#response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+                this.#response.writeHead(200, { [HTTPHeaders.CONTENT_TYPE.name]: 'text/html; charset=utf-8' });
             }
             this.#response.end(output);
         } else {
             if (!this.#response.headersSent) {
-                this.#response.writeHead(200, { 'Content-Type': 'application/json' });
+                this.#response.writeHead(200, { [HTTPHeaders.CONTENT_TYPE.name]: String(MediaTypes.APPLICATION_JSON) });
             }
             this.#response.end(JSON.stringify(output));
         }

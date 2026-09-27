@@ -4,6 +4,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import { MediaType } from '@blue/core';
 import { contentTypeBase } from './content-type';
 /**
  * Tunable bounds for the Node HTTP request pipeline.
@@ -103,7 +104,7 @@ export function parseBody(contentType: string | undefined, raw: Buffer): BodyPar
     if (raw.length === 0) return { kind: 'empty' };
     const mime = contentTypeBase(contentType) ?? '';
 
-    if (mime === 'application/json' || mime === 'text/json' || mime.endsWith('+json')) {
+    if (MediaType.for(mime)?.isJSON === true) {
         const text = raw.toString('utf-8');
         const parsed: unknown = JSON.parse(text);
         if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {

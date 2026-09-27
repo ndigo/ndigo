@@ -4281,6 +4281,20 @@ The file-level block documents the whole module; class/method members carry
 their own focused TSDoc. `@blue/oxlint-plugin` enforcement can be layered on
 top of this convention.
 
+**Public symbol comments (coverage gate):** every top-level exported
+function, class, interface, or type alias needs a doc comment — the docs
+pipeline (`pnpm doc:api` → coverage gate) fails CI without one. A one-line
+summary suffices for self-evident type aliases and predicate helpers:
+
+```typescript
+/** Whether the lifecycle has finished initializing. */
+export function isInitialized(value: unknown): boolean;
+```
+
+Members (methods/getters/properties), variables, and enum members are exempt
+— names self-document. `@internal` and `_`-prefixed internal files are
+exempt. See `docs/guides/12-package-documentation.md`.
+
 ### Mixin Naming [CONVENTION: Code Review]
 
 **Pattern:** `As*` for class mixins, `as*` for function mixins

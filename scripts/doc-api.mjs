@@ -58,8 +58,8 @@ function toSourcePath(value) {
     return null;
 }
 
-function runTypedoc(pkgDir, manifest, watch) {
-    const config = {
+function typedocConfig(pkgDir, manifest) {
+    return {
         name: manifest.name,
         entryPoints: entryPointsFor(manifest, pkgDir).map((p) => join(pkgDir, p)),
         out: join(pkgDir, 'doc', 'api'),
@@ -77,19 +77,56 @@ function runTypedoc(pkgDir, manifest, watch) {
         externalSymbolLinkMappings: EXTERNAL_SYMBOL_LINK_MAPPINGS,
         compilerOptions: { skipLibCheck: true, noEmit: true },
     };
-    const tmp = mkdtempSync(join(ROOT, '.nx'));
-    const configPath = join(tmp, 'typedoc.json');
-    writeFileSync(configPath, JSON.stringify(config, null, 2));
+}
+
+function runTypedoc(configPath, watch = false) {
     const args = ['--options', configPath];
     if (watch) args.push('--watch');
     return new Promise((resolve, reject) => {
         const child = spawn(findTypedoc(), args, { cwd: ROOT, stdio: 'inherit' });
         child.on('error', reject);
         child.on('exit', (code) => {
-            rmSync(tmp, { recursive: true, force: true }); // drop the throwaway config
-            (code === 0 ? resolve : reject)(new Error(`typedoc exited ${code} for ${manifest.name}`));
+            (code === 0 ? resolve : reject)(new Error(`typedoc exited ${code}`));
         });
     });
+}
+
+/**
+ * Documentation-coverage gate: every top-level exported declaration of the
+ * four "needs prose" kinds must carry a doc comment.
+ * Scoped deliberately: class/interface members, variables and enum members
+ * self-document; `_`-prefixed internal files and bracket-named symbols
+ * (Symbol.toStringTag etc.) are implementation artifacts.
+ * @returns undocumented symbols [{name, kind, file}] — empty when clean.
+ */
+function coverageViolations(jsonPath, pkgDir, packageName) {
+    const GATE_KINDS = new Map([[4, 'class'], [8, 'interface'], [64, 'function'], [262144, 'type-alias']]);
+    const hasComment = (n) => !!n.comment || (n.signatures ?? []).some((s) => !!s.comment);
+    const isInternal = (n) =>
+        (n.comment?.blockTags ?? []).some((t) => t.tag === '@internal') ||
+        (n.comment?.modifiers ?? []).includes('@internal');
+    const violations = [];
+    const doc = JSON.parse(readFileSync(jsonPath, 'utf8'));
+
+    const walkTopLevel = (n, inNamespace = false) => {
+        // entry-point modules and namespace containers only — not class/interface members
+        if (!inNamespace && !n.children) return;
+        for (const child of n.children ?? []) {
+            const kind = GATE_KINDS.get(child.kind);
+            if (kind && !hasComment(child) && !isInternal(child)) {
+                const src = child.sources?.[0];
+                const file = src?.fileName ?? '';
+                const base = file.split('/').pop() ?? '';
+                if (child.name.startsWith('[')) continue;      // synthetic keys
+                if (base.startsWith('_')) continue;            // internal files
+                if (!file.startsWith(pkgDir.replaceAll('\\', '/'))) continue; // external
+                violations.push({ name: child.name, kind, file: `${base}:${src?.line ?? '?'}` });
+            }
+            if (child.kind === 16384 && child.children) walkTopLevel(child, true); // namespaces
+        }
+    };
+    for (const module of doc.children ?? []) walkTopLevel(module);
+    return violations;
 }
 
 function findTypedoc() {
@@ -108,12 +145,28 @@ const packages = readdirSync(PACKAGES)
     .sort();
 
 let failures = 0;
+let coverageFailures = 0;
 for (const dir of packages) {
     const pkgDir = join(PACKAGES, dir);
     const manifest = JSON.parse(readFileSync(join(pkgDir, 'package.json'), 'utf8'));
     try {
-        await runTypedoc(pkgDir, manifest, WATCH);
-        console.log(`✓ ${manifest.name}`);
+        const tmp = mkdtempSync(join(ROOT, '.nx'));
+        const configPath = join(tmp, 'typedoc.json');
+        const jsonPath = join(tmp, 'symbols.json');
+        const config = typedocConfig(pkgDir, manifest);
+        config.json = jsonPath;
+        writeFileSync(configPath, JSON.stringify(config, null, 2));
+        await runTypedoc(configPath);
+        const violations = coverageViolations(jsonPath, pkgDir, manifest.name);
+        rmSync(tmp, { recursive: true, force: true });
+        if (violations.length) {
+            coverageFailures += violations.length;
+            console.error(`✗ ${manifest.name}: ${violations.length} public ${violations.length === 1 ? 'symbol has' : 'symbols have'} no doc comment:`);
+            for (const v of violations.slice(0, 12)) console.error(`    ${v.kind} ${v.name} (${v.file})`);
+            if (violations.length > 12) console.error(`    … and ${violations.length - 12} more`);
+        } else {
+            console.log(`✓ ${manifest.name}`);
+        }
     } catch (error) {
         failures++;
         console.error(`✗ ${manifest.name}: ${error.message}`);
@@ -146,4 +199,4 @@ indexLines.push('', 'Tooling notes:', '', '- `pnpm doc:api` regenerates everythi
 mkdirSync(join(ROOT, 'doc'), { recursive: true });
 writeFileSync(join(ROOT, 'doc', 'README.md'), indexLines.join('\n') + '\n');
 console.log('✓ doc/README.md');
-if (failures) process.exit(1);
+if (failures || coverageFailures) process.exit(1);

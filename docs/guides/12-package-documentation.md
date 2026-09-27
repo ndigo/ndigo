@@ -80,6 +80,12 @@ Rules:
 - **Freshness:** CI regenerates and runs
   `git diff --exit-code -- packages doc`, so stale docs fail the lane.
   Locally: `pnpm doc:check`.
+- **Coverage gate:** `pnpm doc:api` fails when a **top-level exported**
+  function, class, interface, or type alias has no doc comment (declaration
+  or signature). By design: class/interface members, variables, and enum
+  members are exempt (names self-document); `@internal` and `_`-prefixed
+  internal files are exempt. Adding a public symbol with no comment is a
+  CI failure — write the one-liner (type aliases included).
 
 ## Adding a new package
 

@@ -5,19 +5,13 @@
 
 /** Tags appearing in BlueJS source JSDoc that TypeDoc doesn't know by default. */
 const CUSTOM_TAGS = [
-    'classdesc',
     'configuration',
     'counted',
-    'description',
-    'domainAction',
-    'domainData',
     'entry',
-    'errorHandler',
     'errorMapping',
     'requestMapping',
     'routeMapping',
     'parameters',
-    'security',
     'traced',
 ];
 

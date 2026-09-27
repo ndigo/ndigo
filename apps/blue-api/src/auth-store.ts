@@ -1,77 +1,74 @@
 /**
+ * Demo authentication wiring (AD-33 Wave 2): replaces the hand-rolled
+ * `demo-token-*` map with the framework machinery — scrypt-hashed demo
+ * users, a {@link CredentialsAuthAdapter} over an in-memory session store,
+ * registered on the existing {@link AuthRegistry} seam.
+ *
+ * The public functions keep their historical signatures so the socket
+ * authenticator, note controllers and integration tests needed no changes:
+ * `authenticate`/`lookupPrincipal`/`invalidateToken` now back onto the
+ * 'credentials' adapter (session store) instead of a token map.
+ *
  * @module blue-api
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { AuthRegistry, Principal } from '@blue/auth-core';
-import { JWTAdapter } from '@blue/auth-server';
+import { AuthRegistry, type Principal, DelegatingPasswordEncoder, ScryptPasswordEncoder } from '@blue/auth-core';
+import { CredentialsAuthAdapter, InMemoryUserStore, InMemorySessionStore } from '@blue/auth-server';
 
-// Demo credentials
-const DEMO_USERS = [
-    { username: 'admin', password: 'demo', roles: ['admin', 'user'] },
-    { username: 'alice', password: 'demo', roles: ['user'] },
-];
-
-// In-memory token → Principal store
-const tokenStore = new Map<string, Principal>();
+const encoder = new DelegatingPasswordEncoder({ scrypt: new ScryptPasswordEncoder() }, 'scrypt');
 
 /**
- * Initializes the authentication system with demo configuration.
+ * Initializes the demo authentication system: two demo accounts
+ * (`admin`/`alice`, password `demo`, scrypt-hashed at boot) and the
+ * 'credentials' adapter registered for the framework seam.
  */
 export function initAuth(): void {
-    // Register a JWT adapter for token validation (simplified for demo)
-    const jwtAdapter = new JWTAdapter({
-        issuer: 'blue-api',
-        audience: 'blue-api-api',
-        secret: 'demo-secret-key',
-        algorithm: 'HS256',
-    });
-    AuthRegistry.register(jwtAdapter);
+    const userStore = new InMemoryUserStore([
+        { id: 'admin', username: 'admin', passwordHash: encoder.encode('demo'), roles: ['admin', 'user'] },
+        { id: 'alice', username: 'alice', passwordHash: encoder.encode('demo'), roles: ['user'] },
+    ]);
+    AuthRegistry.register(
+        new CredentialsAuthAdapter({
+            userStore,
+            passwordEncoder: encoder,
+            sessionStore: new InMemorySessionStore(),
+        })
+    );
+}
+
+function credentialsAdapter(): CredentialsAuthAdapter {
+    const adapter = AuthRegistry.getAdapter('credentials');
+    if (!adapter) {
+        throw new Error('initAuth() must run before any auth flow');
+    }
+    return adapter as CredentialsAuthAdapter;
 }
 
 /**
- * Authenticates a user with username/password and returns a demo token.
- *
- * @param username - The username.
- * @param password - The password.
- * @returns The demo token, or null if authentication fails.
+ * Authenticates a user and returns the opaque session token, or `null`
+ * on any failure (one generic denial — no user enumeration).
  */
 export async function authenticate(username: string, password: string): Promise<string | null> {
-    const user = DEMO_USERS.find((u) => u.username === username && u.password === password);
-    if (!user) return null;
-
-    const principal: Principal = {
-        id: user.username,
-        name: user.username,
-        roles: user.roles,
-        hasRole(role: string) {
-            return this.roles.includes(role);
-        },
-        hasAnyRole(...roles: string[]) {
-            return roles.some((r) => this.roles.includes(r));
-        },
-    };
-
-    const token = `demo-token-${principal.id}-${Date.now()}`;
-    tokenStore.set(token, principal);
-    return token;
+    try {
+        const result = await credentialsAdapter().authenticate({ username, password });
+        return result.token;
+    } catch {
+        return null;
+    }
 }
 
 /**
- * Looks up a principal by token.
- *
- * @param token - The token to look up.
- * @returns The principal, or null if not found.
+ * Resolves a session token to its principal, or `null` when unknown,
+ * expired or revoked.
  */
-export function lookupPrincipal(token: string): Principal | null {
-    return tokenStore.get(token) ?? null;
+export function lookupPrincipal(token: string): Promise<Principal | null> {
+    return credentialsAdapter().validate(token);
 }
 
 /**
- * Invalidates a token (logs out the user).
- *
- * @param token - The token to invalidate.
+ * Terminates the session behind `token`.
  */
-export function invalidateToken(token: string): void {
-    tokenStore.delete(token);
+export async function invalidateToken(token: string): Promise<void> {
+    await credentialsAdapter().logout(token);
 }

@@ -4,7 +4,14 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-export { configureTelemetry, type TelemetryConfig } from './node-config';
+export {
+    configureTelemetry,
+    resolveExporter,
+    type TelemetryConfig,
+    type SamplerSpec,
+    type ExporterSpec,
+    type ResolvedExporter,
+} from './node-config';
 export { HTTPServerInstrumentation } from './instrumentation/http-server/http-server';
 export { HTTPResponseViewTargetInstrumentation } from './instrumentation/http-response-view-target/http-response-view-target';
 export { ServerSentEventViewInstrumentation } from './instrumentation/server-sent-event-view/server-sent-event-view';

@@ -26,7 +26,7 @@ import { initAuth } from '../src/auth-store';
  */
 describe('blue-api full bootstrap (ApplicationBuilder path)', () => {
     let context: Awaited<ReturnType<ApplicationBuilder['run']>>;
-    let mockMVC: MockHTTP;
+    let mockHTTP: MockHTTP;
 
     beforeAll(async () => {
         initAuth();
@@ -41,7 +41,7 @@ describe('blue-api full bootstrap (ApplicationBuilder path)', () => {
             .run();
 
         const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
-        mockMVC = new MockHTTP({ dispatcher });
+        mockHTTP = new MockHTTP({ dispatcher });
     });
 
     afterAll(() => {
@@ -64,7 +64,7 @@ describe('blue-api full bootstrap (ApplicationBuilder path)', () => {
     });
 
     test('GET /health reports the registry status', async () => {
-        const res = await mockMVC.get('/health').exec();
+        const res = await mockHTTP.get('/health').exec();
 
         expect(res.response.status).toBe(200);
         const body = res.json() as { status?: string; components?: Record<string, unknown> };
@@ -73,7 +73,7 @@ describe('blue-api full bootstrap (ApplicationBuilder path)', () => {
     });
 
     test('GET /metrics returns the aggregator snapshot', async () => {
-        const res = await mockMVC.get('/metrics').exec();
+        const res = await mockHTTP.get('/metrics').exec();
 
         expect(res.response.status).toBe(200);
         const body = res.json() as { features?: Record<string, unknown> };
@@ -81,7 +81,7 @@ describe('blue-api full bootstrap (ApplicationBuilder path)', () => {
     });
 
     test('GET /api/greeting resolves the language from Accept-Language', async () => {
-        const res = await mockMVC
+        const res = await mockHTTP
             .get('/api/greeting')
             .query({ name: 'Ada' })
             .headers({ 'accept-language': 'de-DE,de;q=0.9' })
@@ -92,7 +92,7 @@ describe('blue-api full bootstrap (ApplicationBuilder path)', () => {
     });
 
     test('GET /api/greeting falls back to English without the header', async () => {
-        const res = await mockMVC.get('/api/greeting').query({ name: 'Ada' }).exec();
+        const res = await mockHTTP.get('/api/greeting').query({ name: 'Ada' }).exec();
 
         expect(res.json()).toEqual({ message: 'Hello, Ada!', language: 'en' });
     });
@@ -123,8 +123,8 @@ describe('blue-api full bootstrap (ApplicationBuilder path)', () => {
     test('GET /api/cached-report caches across dispatches (AD-24)', async () => {
         const controller = context.getValue<CachedReportController>('cachedReportController');
 
-        const first = await mockMVC.get('/api/cached-report').exec();
-        const second = await mockMVC.get('/api/cached-report').exec();
+        const first = await mockHTTP.get('/api/cached-report').exec();
+        const second = await mockHTTP.get('/api/cached-report').exec();
 
         expect(first.response.status).toBe(200);
         expect(first.json()).toEqual({ invocations: 1, value: 'report-1' });

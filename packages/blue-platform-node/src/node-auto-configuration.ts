@@ -26,6 +26,9 @@ import { NodeRequestPartMethodArgumentResolver } from './request-part-argument-r
 import { NodeMultipartFileMethodArgumentResolver } from './multipart-file-argument-resolver';
 import { NodeCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
 import { NodeRequestSessionValueMethodArgumentResolver } from './request-session-argument-resolver';
+import { FixedWindowRateLimiter } from './rate-limit';
+import type { RateLimiter } from './rate-limit';
+import { RateLimitInterceptor } from './rate-limit-interceptor';
 
 /**
  * Auto-configuration for Node.js-based applications.
@@ -70,13 +73,30 @@ export class NodeAutoConfiguration {
     /**
      * Provides the default handler mapping for Node.js request dispatch.
      *
+     * Security headers and the (metadata-gated) rate-limit interceptor are
+     * default-on; routes declare opt-in budgets with `@rateLimit` (SEC-6,
+     * Wave 3) — routes without metadata are untouched.
+     *
      * @returns The default metadata-driven handler mapping.
      */
     @entry
     handlerMapping() {
         const mapping = new RadixMetadataHandlerMapping();
         mapping.interceptors.unshift(new SecurityHeadersInterceptor());
+        mapping.interceptors.push(new RateLimitInterceptor(this.rateLimiter()));
         return mapping;
+    }
+
+    /**
+     * The shared in-memory rate limiter (SEC-6). Apps needing a
+     * distributed backend provide their own {@link RateLimiter}
+     * implementation; the bean is the default.
+     *
+     * @returns The default fixed-window rate limiter.
+     */
+    @entry
+    rateLimiter(): RateLimiter {
+        return new FixedWindowRateLimiter();
     }
 
     /**

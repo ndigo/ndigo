@@ -24,7 +24,7 @@ const CSRF_HEADER = String(HTTPHeaders.X_CSRF_TOKEN);
 /**
  * Options for the CSRF interceptor.
  */
-export interface CsrfInterceptorOptions {
+export interface CSRFInterceptorOptions {
     /** Cookie name; defaults to `'blue-csrf'`. */
     cookieName?: string;
     /** Body/form field accepted as an alternative to the header. */
@@ -44,10 +44,10 @@ export interface CsrfInterceptorOptions {
  *
  * ```ts
  * const mapping = new RadixMetadataHandlerMapping();
- * mapping.interceptors.push(new CsrfInterceptor());
+ * mapping.interceptors.push(new CSRFInterceptor());
  * ```
  */
-export class CsrfInterceptor implements RouteHandlerInterceptor {
+export class CSRFInterceptor implements RouteHandlerInterceptor {
     #cookieName: string;
     #fieldName: string;
     #headerName: string;
@@ -57,7 +57,7 @@ export class CsrfInterceptor implements RouteHandlerInterceptor {
     /**
      * @param options - Interceptor options.
      */
-    constructor(options: CsrfInterceptorOptions = {}) {
+    constructor(options: CSRFInterceptorOptions = {}) {
         this.#cookieName = options.cookieName ?? CSRF_COOKIE;
         this.#fieldName = options.fieldName ?? 'csrf_token';
         this.#headerName = options.headerName ?? CSRF_HEADER;
@@ -67,7 +67,7 @@ export class CsrfInterceptor implements RouteHandlerInterceptor {
         this.#tokenBytes = options.tokenBytes ?? 32;
         if (!Number.isInteger(this.#tokenBytes) || this.#tokenBytes < 16 || this.#tokenBytes > 1024) {
             throw new RangeError(
-                `CsrfInterceptor tokenBytes must be an integer between 16 and 1024, received ${String(this.#tokenBytes)}`
+                `CSRFInterceptor tokenBytes must be an integer between 16 and 1024, received ${String(this.#tokenBytes)}`
             );
         }
     }

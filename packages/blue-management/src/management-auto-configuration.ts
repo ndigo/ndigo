@@ -119,9 +119,15 @@ export interface ManagementAutoConfigurationOptions {
     /**
      * Optional access guard for the management endpoints (`/metrics`,
      * `/health`). When set, every request to these routes must pass the
-     * guard or is denied before the handler runs; when omitted the endpoints
-     * are **open to any caller** (default posture — documented in the
-     * package README).
+     * guard or is denied before the handler runs; when omitted the
+     * endpoints are **open to any caller** (default posture — documented
+     * in the package README).
+     *
+     * **Recommendation (gap analysis SEC-5):** wire a guard in production —
+     * the auth completion guide's `AuthRouteGuard` over the `'credentials'
+     *` adapter (or a token-adapter guard) is the intended fit. Bind-address
+     * separation and response redaction remain open deferrals; keep the
+     * endpoints off public interfaces until then.
      */
     accessGuard?: RouteHandlerInterceptor;
 }

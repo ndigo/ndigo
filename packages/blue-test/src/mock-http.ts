@@ -90,20 +90,20 @@ function toResult(prepared: PreparedRoute, response: MemoryResponse): MockResult
  * Fluent builder for a single mock HTTP request.
  *
  * ```ts
- * const res = await mockMVC.get('/todos').query({ filter: 'active' }).exec();
+ * const res = await mockHTTP.get('/todos').query({ filter: 'active' }).exec();
  * expect(res.json()).toEqual([...]);
  * ```
  */
 export class MockHTTPRequestBuilder {
-    #mockMVC: MockHTTP;
+    #mockHTTP: MockHTTP;
     #request: MockRequest;
 
     /**
-     * @param mockMVC - The owning MockHTTP.
+     * @param mockHTTP - The owning MockHTTP.
      * @param request - The base request spec.
      */
-    constructor(mockMVC: MockHTTP, request: MockRequest) {
-        this.#mockMVC = mockMVC;
+    constructor(mockHTTP: MockHTTP, request: MockRequest) {
+        this.#mockHTTP = mockHTTP;
         this.#request = request;
     }
 
@@ -150,6 +150,14 @@ export class MockHTTPRequestBuilder {
     }
 
     /**
+     * Set the client socket address (the rate limiter's key; SEC-6).
+     */
+    remoteAddress(remoteAddress: string): this {
+        this.#request.remoteAddress = remoteAddress;
+        return this;
+    }
+
+    /**
      * Set cookies.
      * @param cookies - Cookie map.
      * @returns This builder.
@@ -174,7 +182,7 @@ export class MockHTTPRequestBuilder {
      * @returns The mock result (status, headers, parsed body).
      */
     async exec(): Promise<MockResult> {
-        return this.#mockMVC.request(this.#request);
+        return this.#mockHTTP.request(this.#request);
     }
 }
 
@@ -187,8 +195,8 @@ export class MockHTTPRequestBuilder {
  * @example
  * ```ts
  * const boot = await bootApp([MyConfiguration]);
- * const mockMVC = new MockHTTP(boot.dispatcher);
- * const res = await mockMVC.get('/todos').exec();
+ * const mockHTTP = new MockHTTP(boot.dispatcher);
+ * const res = await mockHTTP.get('/todos').exec();
  * ```
  */
 export class MockHTTP {

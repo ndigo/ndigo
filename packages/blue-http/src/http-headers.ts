@@ -4,6 +4,9 @@
  * @author Jeff Rose
  */
 import { HTTPHeader } from './http-header';
+import { AuthorizationHeader } from './authorization-header';
+import { ContentTypeHeader } from './content-type-header';
+import { SetCookieHeader } from './set-cookie-header';
 
 /**
  * @namespace module:http.HTTPHeaders
@@ -21,7 +24,7 @@ export const WWW_AUTHENTICATE = new HTTPHeader('WWW-Authenticate');
 /**
  * @readonly The constant value documented by the code.
  */
-export const AUTHORIZATION = new HTTPHeader('Authorization');
+export const AUTHORIZATION = new AuthorizationHeader('Authorization');
 
 /**
  * @readonly The constant value documented by the code.
@@ -204,7 +207,7 @@ export const COOKIE = new HTTPHeader('Cookie');
 /**
  * @readonly The constant value documented by the code.
  */
-export const SET_COOKIE = new HTTPHeader('Set-Cookie');
+export const SET_COOKIE = new SetCookieHeader('Set-Cookie');
 
 /**
  * @readonly The constant value documented by the code.
@@ -305,7 +308,7 @@ export const CONTENT_LENGTH = new HTTPHeader('Content-Length');
 /**
  * @readonly The constant value documented by the code.
  */
-export const CONTENT_TYPE = new HTTPHeader('Content-Type');
+export const CONTENT_TYPE = new ContentTypeHeader('Content-Type');
 
 /**
  * @readonly The constant value documented by the code.

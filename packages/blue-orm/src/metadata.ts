@@ -23,6 +23,16 @@ export interface RelationDefinition {
     kind: RelationKind;
     fieldName: string;
     targetEntity: () => ClassType;
+    /**
+     * Owning side (many-to-one, one-to-one): the `@column` field on THIS
+     * entity that holds the target entity's primary key.
+     */
+    joinColumn?: string;
+    /**
+     * Inverse side (one-to-many, one-to-one): the `@column` field on the
+     * TARGET entity that holds this entity's primary key.
+     */
+    inverseJoinColumn?: string;
 }
 
 export type LifecycleEvent = 'prePersist' | 'postLoad' | 'preUpdate' | 'postRemove';

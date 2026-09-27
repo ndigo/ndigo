@@ -15,6 +15,7 @@ import {
 import { ResponseEntity } from '@blue/platform-node';
 import { insertSchemaForEntity } from '@blue/orm';
 import { DrizzleDataSource, DrizzleEntityManager } from '@blue/orm-drizzle';
+import { HTTPHeaders } from '@blue/http';
 import { DrizzleNote } from './drizzle-note.entity';
 import { lookupPrincipal } from './auth-store';
 
@@ -51,8 +52,8 @@ export class DrizzleNoteController {
     @getMapping('/notes')
     @parameters({ token: headerValue('authorization') })
     async list(token: string | undefined) {
-        const bearer = token?.replace(/^Bearer\s+/i, '');
-        if (!bearer || !lookupPrincipal(bearer)) {
+        const bearer = HTTPHeaders.AUTHORIZATION.bearerToken(token);
+        if (!bearer || !(await lookupPrincipal(bearer))) {
             return ResponseEntity.unauthorized({ error: 'Unauthorized' }, { 'WWW-Authenticate': 'Bearer' });
         }
         await ensureInit();
@@ -62,8 +63,8 @@ export class DrizzleNoteController {
     @getMapping('/notes/:id')
     @parameters({ token: headerValue('authorization'), id: pathVariable('id') })
     async getById(token: string | undefined, id: string) {
-        const bearer = token?.replace(/^Bearer\s+/i, '');
-        if (!bearer || !lookupPrincipal(bearer)) {
+        const bearer = HTTPHeaders.AUTHORIZATION.bearerToken(token);
+        if (!bearer || !(await lookupPrincipal(bearer))) {
             return ResponseEntity.unauthorized({ error: 'Unauthorized' }, { 'WWW-Authenticate': 'Bearer' });
         }
         await ensureInit();
@@ -85,8 +86,8 @@ export class DrizzleNoteController {
         data: validatedBody(insertSchemaForEntity(DrizzleNote)),
     })
     async create(token: string | undefined, data: Record<string, unknown>) {
-        const bearer = token?.replace(/^Bearer\s+/i, '');
-        if (!bearer || !lookupPrincipal(bearer)) {
+        const bearer = HTTPHeaders.AUTHORIZATION.bearerToken(token);
+        if (!bearer || !(await lookupPrincipal(bearer))) {
             return ResponseEntity.unauthorized({ error: 'Unauthorized' }, { 'WWW-Authenticate': 'Bearer' });
         }
         await ensureInit();

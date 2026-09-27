@@ -6,7 +6,7 @@
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';
 import { Route } from '@blue/router';
-import { CsrfInterceptor } from '../src/csrf-interceptor';
+import { CSRFInterceptor } from '../src/csrf-interceptor';
 import { NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE, NodeRequest } from '../src/node-request';
 
 function makeRoute(
@@ -37,10 +37,10 @@ function makeRoute(
     } as unknown as Route;
 }
 
-describe('CsrfInterceptor', () => {
+describe('CSRFInterceptor', () => {
     test('issues a cookie on a safe GET with no existing token', () => {
         const headers: Record<string, string> = {};
-        const interceptor = new CsrfInterceptor();
+        const interceptor = new CSRFInterceptor();
         const response = {
             headersSent: false,
             setHeader: (name: string, value: string) => {
@@ -59,7 +59,7 @@ describe('CsrfInterceptor', () => {
 
     test('Secure flag is overridable while defaulting on', () => {
         const headers: Record<string, string> = {};
-        const interceptor = new CsrfInterceptor({ cookieOptions: 'SameSite=None; Path=/' });
+        const interceptor = new CSRFInterceptor({ cookieOptions: 'SameSite=None; Path=/' });
         const response = {
             headersSent: false,
             setHeader: (name: string, value: string) => {
@@ -76,16 +76,16 @@ describe('CsrfInterceptor', () => {
     });
 
     test('tokenBytes outside 16–1024 is rejected at construction', () => {
-        expect(() => new CsrfInterceptor({ tokenBytes: 8 })).toThrow(RangeError);
-        expect(() => new CsrfInterceptor({ tokenBytes: 0 })).toThrow(RangeError);
-        expect(() => new CsrfInterceptor({ tokenBytes: 4096 })).toThrow(RangeError);
-        expect(() => new CsrfInterceptor({ tokenBytes: 1.5 })).toThrow(RangeError);
-        expect(() => new CsrfInterceptor({ tokenBytes: 32 })).not.toThrow();
+        expect(() => new CSRFInterceptor({ tokenBytes: 8 })).toThrow(RangeError);
+        expect(() => new CSRFInterceptor({ tokenBytes: 0 })).toThrow(RangeError);
+        expect(() => new CSRFInterceptor({ tokenBytes: 4096 })).toThrow(RangeError);
+        expect(() => new CSRFInterceptor({ tokenBytes: 1.5 })).toThrow(RangeError);
+        expect(() => new CSRFInterceptor({ tokenBytes: 32 })).not.toThrow();
     });
 
     test('allows a mutating request with a matching header token', () => {
         const token = 'abc123def456';
-        const interceptor = new CsrfInterceptor();
+        const interceptor = new CSRFInterceptor();
         const route = makeRoute('POST', { cookies: { 'blue-csrf': token } }, { 'x-csrf-token': token });
 
         expect(interceptor.preHandle(route)).toBe(true);
@@ -93,7 +93,7 @@ describe('CsrfInterceptor', () => {
 
     test('allows a mutating request with a matching body-field token', () => {
         const token = 'token-body';
-        const interceptor = new CsrfInterceptor();
+        const interceptor = new CSRFInterceptor();
         const route = makeRoute('POST', {
             cookies: { 'blue-csrf': token },
             body: { csrf_token: token },
@@ -106,7 +106,7 @@ describe('CsrfInterceptor', () => {
         let status = 0;
         let body = '';
         const mode = { rejected: false };
-        const interceptor = new CsrfInterceptor();
+        const interceptor = new CSRFInterceptor();
         const response = {
             headersSent: false,
             setHeader: () => undefined,
@@ -131,7 +131,7 @@ describe('CsrfInterceptor', () => {
     });
 
     test('rejects a mutating request with a mismatched token', () => {
-        const interceptor = new CsrfInterceptor();
+        const interceptor = new CSRFInterceptor();
         const route = makeRoute(
             'PATCH',
             { cookies: { 'blue-csrf': 'cookie-token' } },
@@ -142,7 +142,7 @@ describe('CsrfInterceptor', () => {
     });
 
     test('safe methods pass through even with a bad header', () => {
-        const interceptor = new CsrfInterceptor();
+        const interceptor = new CSRFInterceptor();
         const route = makeRoute('GET', { cookies: {} }, { 'x-csrf-token': 'whatever' });
 
         expect(interceptor.preHandle(route)).toBe(true);

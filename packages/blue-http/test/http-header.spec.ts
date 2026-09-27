@@ -5,6 +5,9 @@
  */
 import { describe, test, expect } from 'vitest';
 import { HTTPHeader } from '../src/http-header';
+import { AuthorizationHeader } from '../src/authorization-header';
+import { ContentTypeHeader, contentTypeBase, multipartBoundary } from '../src/content-type-header';
+import { SetCookieHeader } from '../src/set-cookie-header';
 
 describe('HTTPHeader', () => {
     const pragma = new HTTPHeader('Pragma');
@@ -103,5 +106,83 @@ describe('HTTPHeader', () => {
 
         expect(new HTTPHeader('Content-Type').get(headers)).toBe('text/html');
         expect(new HTTPHeader('Content-Type').has(headers)).toBe(true);
+    });
+});
+
+describe('HTTPHeader.getJoined', () => {
+    const accept = new HTTPHeader('Accept');
+
+    test('returns the value as-is for plain strings', () => {
+        expect(accept.getJoined({ accept: 'text/html' })).toBe('text/html');
+    });
+
+    test('joins array values (Node server records) with the separator', () => {
+        const headers: Record<string, string> = { accept: 'text/html' };
+        (headers as Record<string, unknown>).accept = ['text/html', 'application/json'];
+        expect(accept.getJoined(headers)).toBe('text/html, application/json');
+        expect(accept.getJoined(headers, ',')).toBe('text/html,application/json');
+    });
+
+    test('folds case on records and returns null when missing', () => {
+        expect(accept.getJoined({ Accept: 'x' })).toBe('x');
+        expect(accept.getJoined({ other: 'x' })).toBeNull();
+        expect(accept.getJoined(undefined)).toBeNull();
+    });
+});
+
+describe('AuthorizationHeader', () => {
+    const authorization = new AuthorizationHeader('Authorization');
+
+    test('extracts the bearer credential, scheme case-insensitive and trimmed', () => {
+        expect(authorization.bearerToken('Bearer abc.def')).toBe('abc.def');
+        expect(authorization.bearerToken('bearer  abc.def ')).toBe('abc.def');
+    });
+
+    test('is undefined for absent, malformed or non-bearer values', () => {
+        expect(authorization.bearerToken(undefined)).toBeUndefined();
+        expect(authorization.bearerToken(null)).toBeUndefined();
+        expect(authorization.bearerToken('')).toBeUndefined();
+        expect(authorization.bearerToken('Bearer')).toBeUndefined();
+        expect(authorization.bearerToken('Basic abc')).toBeUndefined();
+    });
+
+    test('stays a plain HTTPHeader name', () => {
+        expect(authorization.name).toBe('Authorization');
+        expect(String(authorization)).toBe('Authorization');
+    });
+});
+
+describe('ContentTypeHeader', () => {
+    const contentType = new ContentTypeHeader('Content-Type');
+
+    test('baseValue strips parameters and folds case', () => {
+        expect(contentType.baseValue('text/html; charset=utf-8')).toBe('text/html');
+        expect(contentType.baseValue('  Multipart/Form-Data; BOUNDARY=x ')).toBe('multipart/form-data');
+        expect(contentType.baseValue(undefined)).toBeNull();
+        expect(contentType.baseValue('')).toBeNull();
+    });
+
+    test('boundary matches only multipart/form-data with case-insensitive parameter names', () => {
+        expect(contentType.boundary('multipart/form-data; boundary=abc')).toBe('abc');
+        expect(contentType.boundary('multipart/form-data; BOUNDARY="x y"')).toBe('x y');
+        expect(contentType.boundary('multipart/form-data; charset=utf-8')).toBeNull();
+        expect(contentType.boundary('text/plain; boundary=abc')).toBeNull();
+        expect(contentType.boundary(null)).toBeNull();
+    });
+
+    test('the free functions are the primitives the constant uses', () => {
+        expect(contentTypeBase('application/json')).toBe('application/json');
+        expect(multipartBoundary('multipart/form-data; boundary=z')).toBe('z');
+    });
+});
+
+describe('SetCookieHeader', () => {
+    const setCookie = new SetCookieHeader('Set-Cookie');
+
+    test('buildValue formats name=value plus attributes', () => {
+        expect(setCookie.buildValue('blue-session', 'tok', ['HttpOnly', 'SameSite=Lax', 'Path=/'])).toBe(
+            'blue-session=tok; HttpOnly; SameSite=Lax; Path=/'
+        );
+        expect(setCookie.buildValue('a', 'b')).toBe('a=b');
     });
 });

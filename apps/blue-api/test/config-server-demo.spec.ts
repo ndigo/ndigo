@@ -27,7 +27,7 @@ import { REMOTE_DOCUMENT } from '../src/config-server-demo-controller';
 
 describe('blue-api config-server demo (AD-29 Wave 3)', () => {
     let context: Awaited<ReturnType<ApplicationBuilder['run']>>;
-    let mockMVC: MockHTTP;
+    let mockHTTP: MockHTTP;
     let app: ApplicationBuilder;
 
     beforeAll(async () => {
@@ -56,7 +56,7 @@ describe('blue-api config-server demo (AD-29 Wave 3)', () => {
 
         context = await app.run();
         const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
-        mockMVC = new MockHTTP({ dispatcher });
+        mockHTTP = new MockHTTP({ dispatcher });
     });
 
     afterAll(() => {
@@ -68,14 +68,14 @@ describe('blue-api config-server demo (AD-29 Wave 3)', () => {
     });
 
     test('GET /api/config.json serves the exported REMOTE_DOCUMENT', async () => {
-        const res = await mockMVC.get('/api/config.json').exec();
+        const res = await mockHTTP.get('/api/config.json').exec();
 
         expect(res.response.status).toBe(200);
         expect(res.json()).toEqual(REMOTE_DOCUMENT);
     });
 
     test('/api/config/remote reflects the live resolved value', async () => {
-        const res = await mockMVC.get('/api/config/remote').exec();
+        const res = await mockHTTP.get('/api/config/remote').exec();
         expect(res.response.status).toBe(200);
         expect((res.json() as { message?: string }).message).toBe('hello from remote config');
     });
@@ -95,9 +95,9 @@ describe('blue-api config-server demo (AD-29 Wave 3)', () => {
         // The environment, the live endpoint, and the served document all
         // agree on the new value.
         expect(context.environment.getProperty('api.message')).toBe('updated remotely');
-        const res = await mockMVC.get('/api/config/remote').exec();
+        const res = await mockHTTP.get('/api/config/remote').exec();
         expect((res.json() as { message?: string }).message).toBe('updated remotely');
-        const doc = await mockMVC.get('/api/config.json').exec();
+        const doc = await mockHTTP.get('/api/config.json').exec();
         expect((doc.json() as { api?: { message?: string } }).api?.message).toBe('updated remotely');
     });
 });

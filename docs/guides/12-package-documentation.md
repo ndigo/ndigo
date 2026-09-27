@@ -36,7 +36,7 @@ section order (drop optional ones):
 ## Getting Started     # smallest runnable example
 ## Usage               # common patterns; ### subsections per feature
 ## Configuration       # (optional) options table
-## API                 # link to doc/api/index.md; DO NOT re-list symbols
+## API                 # link to doc/api/README.md; DO NOT re-list symbols
 ## Development         # pnpm --filter @blue/<name> build:lib / test
 ## See Also            # (optional) sibling packages
 ## Contributing        # link to root CONTRIBUTING.md

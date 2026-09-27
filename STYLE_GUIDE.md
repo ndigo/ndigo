@@ -2347,14 +2347,12 @@ class ResponseStatus {
     }
 }
 
-// From @blue/util/list.ts
-import { fromPairs } from '@blue/util/list';
-
+// Native — Object.fromEntries replaces any pair-building helper
 const pairs: [string, number][] = [
     ['a', 1],
     ['b', 2],
 ];
-const obj = fromPairs(pairs); // { a: 1, b: 2 }
+const obj = Object.fromEntries(pairs); // { a: 1, b: 2 }
 
 // ✅ Correct: parse* for string parsing (may throw)
 class MediaType {
@@ -3551,26 +3549,25 @@ import removeNonWord from './remove-non-word.js';
 
 Create a `_util.ts` when utilities are used by **4+ files across different categories**, or once `_util.ts` exists, add new cross-file utilities there directly.
 
-**Example: `packages/blue-parser/src/_util.ts`**
+**Example: `packages/blue-dispatcher/src/_shared.ts`**
 
 ```typescript
 // ✅ Correct: Re-exports + package-specific helpers
 // Re-export commonly used utilities
-export { always, compose, pipe } from '@blue/util/function';
-export { filter, join, map } from '@blue/util/list';
-export { lt } from '@blue/util/relation';
+export { like, isFunction } from '@blue/util';
+export { isString } from '@blue/util/string';
 
-// Package-specific helpers used across multiple parser modules
-export const joinOnEmptyString = join('');
-export const lengthLessThanN = (n: number) => propSatisfies(lt(__, n), 'length');
+// Package-specific helpers used across multiple dispatcher modules
+export const isNonEmptyString = (value: unknown) => isString(value) && value.length > 0;
+export const notLike = (value: unknown, pattern: unknown) => !like(value, pattern);
 ```
 
-**Current packages with `_util.ts`:**
+**Examples of existing internal files:**
 
-- `@blue/parser/src/_util.ts` (30 lines)
-- `@blue/context/src/_util.ts`
-- `@blue/view-webcomponent/src/_util.ts`
-- `@blue/platform-web/src/_util.ts`
+- `@blue/context/src/_event-emitter-helpers.ts`
+- `@blue/dispatcher/src/_shared.ts`
+- `@blue/dispatcher/src/_match.ts`
+- `@blue/platform-node/src/_resolver-util.ts`
 
 **Guidelines:**
 
@@ -3593,25 +3590,23 @@ Internal files (`_util.ts`, `_parser.ts`, etc.) should **only be created when th
 
 ```typescript
 /**
- * Internal utilities for @blue/parser package.
+ * Internal utilities for @blue/dispatcher package.
  *
  * @internal - Do not export in index.ts or import across package boundaries
  */
 
 // Re-exports (supporting infrastructure)
-import { pipe, compose } from '@blue/util/function';
-import { map, filter, join } from '@blue/util/list';
-import { lt } from '@blue/util/relation';
-import { propSatisfies } from '@blue/util/logic';
+import { like, isFunction } from '@blue/util';
+import { isString } from '@blue/util/string';
 
-export { pipe, compose, map, filter };
+export { like, isString };
 
 // LOCAL UTILITIES (this is what justifies the file's existence!)
-export const joinOnEmptyString = join(''); // ✅ Partial application
-export const lengthLessThanN = (n: number) => propSatisfies(lt(__, n), 'length'); // ✅ New function
+export const isNonEmptyString = (value: unknown) => isString(value) && value.length > 0; // ✅ New function
+export const notLike = (value: unknown, pattern: unknown) => !like(value, pattern); // ✅ New function
 ```
 
-**Why this is correct:** The file creates actual utility functions (`joinOnEmptyString`, `lengthLessThanN`). The re-exports are convenience infrastructure to support these utilities and consuming modules.
+**Why this is correct:** The file creates actual utility functions (`isNonEmptyString`, `notLike`). The re-exports are convenience infrastructure to support these utilities and consuming modules.
 
 ##### Wrong Pattern: Only Pass-Through Re-Exports
 
@@ -3623,13 +3618,10 @@ export const lengthLessThanN = (n: number) => propSatisfies(lt(__, n), 'length')
  */
 
 // Type utilities
-export { is, like, isString } from '@blue/util/types';
+export { is, like, isString } from '@blue/util';
 
-// Logic utilities
-export { cond, ifElse, isEmpty } from '@blue/util/logic';
-
-// Function utilities
-export { pipe, identity } from '@blue/util/function';
+// String utilities
+export { slugify, toSentence } from '@blue/util/string';
 
 // Package-specific utilities can be added below
 // (But they never were! This file should NOT exist.)
@@ -3719,13 +3711,13 @@ export const parseCacheControl = (header: string) => {
 **Stage 3: Add to `_util.ts` (becomes cross-cutting)**
 
 ```typescript
-// packages/blue-http/src/_util.ts
-import { split, map, trim } from '@blue/util/list';
+// packages/blue-http/src/_shared.ts
+import { slugify, toSentence } from '@blue/util/string';
 
-export { split, map, trim }; // Re-exports
+export { slugify, toSentence }; // Re-exports
 
 // Cross-cutting utilities used by multiple domains
-export const parseAcceptHeader = (header: string) => header.split(',').map(trim);
+export const parseAcceptHeader = (header: string) => header.split(',').map((part) => part.trim());
 ```
 
 **Stage 4: Promote to @blue/util (multiple packages use)**
@@ -3877,8 +3869,8 @@ import { SPACES_REGEX } from './_util';
 
 ```typescript
 // ❌ Wrong: Package-specific utility in @blue/util
-// This is only used by @blue/parser modules
-export const parseRouteSegment = ...;  // Should be in @blue/parser/src/_util.ts
+// This is only used by @blue/dispatcher modules
+export const resolveMatch = ...;  // Should be in @blue/dispatcher/src/_match.ts
 
 // ❌ Wrong: Cross-package utility in _util.ts
 // This is used by @blue/core, @blue/context, @blue/dispatcher

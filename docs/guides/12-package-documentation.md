@@ -18,7 +18,7 @@ So every package carries its own docs:
 - **`package.json` metadata** — registry-facing fields (description,
   keywords, files) that make the package self-describing on npm.
 
-The repo-root `doc-md/README.md` is just an index linking into the
+The repo-root `doc/README.md` is just an index linking into the
 per-package references — no root-level generated site.
 
 ## The per-package README
@@ -67,7 +67,7 @@ Rules:
 
 - **Generate:** `pnpm doc:api` (alias `pnpm doc`) — runs TypeDoc per package
   over the package's `exports` map, writing `packages/<name>/doc/api/`,
-  then regenerates the `doc-md/README.md` index.
+  then regenerates the `doc/README.md` index.
 - **Zero-warning standard:** `treatWarningsAsErrors` is on. Broken JSDoc
   links fail the lane — that's the drift guard.
 - **Cross-package links:** each package's API reference is isolated, so a
@@ -78,7 +78,7 @@ Rules:
 - **After any public API change:** update the JSDoc, run `pnpm doc:api`,
   commit the generated `doc/api/` tree with the change.
 - **Freshness:** CI regenerates and runs
-  `git diff --exit-code -- packages doc-md`, so stale docs fail the lane.
+  `git diff --exit-code -- packages doc`, so stale docs fail the lane.
   Locally: `pnpm doc:check`.
 
 ## Adding a new package
@@ -97,7 +97,7 @@ in real content, then let `pnpm manifest:check` + `pnpm doc:api` validate.
 - **No HTML docs** — `doc-html/`, `typedoc.html.json`, and `pnpm doc:html`
   were removed (2026-09). Markdown only.
 - **No root generated site** — `typedoc.json` entry-point wizardry is
-  replaced by `scripts/doc-api.mjs`; the root `doc-md/` holds only the
+  replaced by `scripts/doc-api.mjs`; the root `doc/` holds only the
   generated index.
 - **No per-package `README` duplication of the API** — the generated
   reference is the single source for signatures.

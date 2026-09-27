@@ -1,7 +1,16 @@
 {
   "name": "@blue/cache",
   "version": "0.0.1",
-  "description": "Blue Cache",
+  "description": "Isomorphic caching for BlueJS — memory cache manager, memoize, and the @cached decorator",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-cache",
+    "cache",
+    "memoize",
+    "lru"
+  ],
   "type": "module",
   "files": [
     "doc",
@@ -18,15 +27,6 @@
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "blue-cache",
-    "cache",
-    "memoize",
-    "lru"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "sideEffects": false,

@@ -1,9 +1,19 @@
 {
   "name": "@blue/socket",
   "version": "0.0.1",
-  "description": "Blue Socket — isomorphic WebSocket domain: client contract + implementation and server-side session contracts (AD-22)",
+  "description": "Blue Socket — isomorphic WebSocket domain: client contract + implementation and server-side session contracts",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-socket",
+    "websocket",
+    "socket",
+    "realtime"
+  ],
   "type": "module",
   "files": [
+    "doc",
     "lib"
   ],
   "exports": {
@@ -16,15 +26,6 @@
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "blue-socket",
-    "websocket",
-    "socket",
-    "realtime"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {

@@ -1,7 +1,7 @@
 {
   "name": "@blue/view-webcomponent",
   "version": "0.0.1",
-  "description": "Blue View Web Components",
+  "description": "Web Component view technology for BlueJS — component creation and event binding",
   "type": "module",
   "files": [
     "doc",

@@ -129,8 +129,9 @@ Micro frontends:
 
 ## Documentation
 
-- **API reference** — `pnpm doc:md` generates the markdown reference into
-  `doc-md/`; `pnpm doc:html` the alternate rendering into `doc-html/`
+- **API reference** — `pnpm doc:api` generates each package's reference from
+  JSDoc into `packages/<name>/doc/api/` (index:
+  [doc-md/README.md](doc-md/README.md))
 - **Guides** — the hand-written documentation set lives in `docs/`
   ([index](docs/README.md)): [guides](docs/guides/README.md),
   [architecture](docs/architecture/README.md),

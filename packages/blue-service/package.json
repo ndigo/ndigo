@@ -1,7 +1,13 @@
 {
   "name": "@blue/service",
   "version": "0.0.1",
-  "description": "Blue Service",
+  "description": "Typed service clients and server-sent event streaming for BlueJS",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-service"
+  ],
   "type": "module",
   "files": [
     "doc",
@@ -18,12 +24,6 @@
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run"
   },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "blue-service"
-  ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {

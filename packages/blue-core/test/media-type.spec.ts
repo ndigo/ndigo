@@ -306,3 +306,57 @@ describe('parseMediaType', () => {
         expect(mt1).toBe(mt2);
     });
 });
+
+describe('MediaType raw-header parsing (Wave 6)', () => {
+    test('case variants of type and subtype converge on one interned instance', () => {
+        const mixed = MediaType.for('TEXT/HTML');
+        const lower = MediaType.for('text/html');
+        expect(mixed).toBe(MediaTypes.TEXT_HTML);
+        expect(mixed).toBe(lower);
+        expect(mixed.baseType).toBe('text/html');
+    });
+
+    test('parameter names fold case, values keep their case', () => {
+        const mediaType = MediaType.for('text/html; CHARSET=UTF-8');
+        expect(mediaType.parameters).toEqual({ charset: 'UTF-8' });
+        expect(mediaType.toString()).toBe('text/html;charset=UTF-8');
+        expect(MediaType.for('text/html;charset=UTF-8')).toBe(mediaType);
+    });
+
+    test('quoted parameter values parse unquoted and serialize quoted', () => {
+        const mediaType = MediaType.for('multipart/form-data; BOUNDARY="x y"');
+        expect(mediaType.parameters).toEqual({ boundary: 'x y' });
+        expect(mediaType.toString()).toBe('multipart/form-data;boundary="x y"');
+    });
+
+    test('parameter values containing = survive (first-equals split)', () => {
+        const mediaType = MediaType.for('application/x-foo; session=a=b=c');
+        expect(mediaType.parameters).toEqual({ session: 'a=b=c' });
+    });
+
+    test('quality factors parse from the q parameter', () => {
+        expect(MediaType.for('text/html;q=0').qualityFactor).toBe(0);
+        expect(MediaType.for('text/html;q=0.5').qualityFactor).toBe(0.5);
+    });
+
+    test('isJSON covers bases and +json suffixes', () => {
+        expect(MediaTypes.APPLICATION_JSON.isJSON).toBe(true);
+        expect(MediaTypes.TEXT_JSON.isJSON).toBe(true);
+        expect(MediaType.for('application/problem+json').isJSON).toBe(true);
+        expect(MediaTypes.TEXT_HTML.isJSON).toBe(false);
+        expect(MediaType.for('application/atom+xml').isJSON).toBe(false);
+    });
+
+    test('parseAccept splits, turns bare type tokens into wildcards, and drops empty entries', () => {
+        const accepted = MediaType.parseAccept('text/html, , application/json;q=0.5, text, */*;q=0.1');
+        expect(accepted.map((mediaType) => mediaType.toString())).toEqual([
+            'text/html',
+            'application/json;q=0.5',
+            'text/*',
+            '*/*;q=0.1',
+        ]);
+        expect(accepted[1].qualityFactor).toBe(0.5);
+        expect(MediaType.parseAccept(undefined)).toEqual([]);
+        expect(MediaType.parseAccept('')).toEqual([]);
+    });
+});

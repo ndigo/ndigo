@@ -8,6 +8,8 @@ import { AbstractDispatcher } from '@blue/dispatcher';
 import { ModelAndView } from '@blue/dispatcher';
 import { Route, applyNegotiatedLanguage } from '@blue/router';
 import { likeApplicationContextAware } from '@blue/context';
+import { MediaTypes } from '@blue/core';
+import { HTTPHeaders } from '@blue/http';
 import { View, clearCurrentRequest, likeProducerView, setCurrentRequest } from '@blue/view';
 import type { ServerResponse } from 'node:http';
 import { NODE_RESPONSE_ATTRIBUTE, getNodeRequest } from './node-request';
@@ -62,7 +64,7 @@ export class NodeDispatcher extends AbstractDispatcher {
         // view/viewName semantics.
         if (!(mv instanceof ModelAndView) && mv !== undefined && mv !== null) {
             await writeRenderResult(res, {
-                headers: { 'Content-Type': 'application/json' },
+                headers: { [HTTPHeaders.CONTENT_TYPE.name]: String(MediaTypes.APPLICATION_JSON) },
                 body: JSON.stringify(mv),
             });
             return;
@@ -109,7 +111,7 @@ export class NodeDispatcher extends AbstractDispatcher {
             if (!view) {
                 // No view — fall back to serializing the model as JSON.
                 await writeRenderResult(res, {
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { [HTTPHeaders.CONTENT_TYPE.name]: String(MediaTypes.APPLICATION_JSON) },
                     body: JSON.stringify(mv?.model ?? {}),
                 });
                 return;

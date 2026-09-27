@@ -144,3 +144,25 @@ This wave's own remediation convention (09-25 RUS-2, and HEAD at `csrf-intercept
 | ARC-1 — N+1 batch fetch                     | Already documented in AD-31 Risks ("relation-aware JOIN loading is a future optimization")                                                                                                                          | AD-31                                               |
 | ARC-2 — interceptor seam                    | Documented usage in guide 11 §1; demo posture (platform-owned mapping, in-handler auth) documented in `auth-controller`                                                                                             | guide 11                                            |
 | SEC-7 — logout CSRF                         | Posture note added to guide 11 §6 (SameSite=Lax cross-site logout is nuisance-only; wire `CSRFInterceptor` for further cookie-mutating routes)                                                                      | guide 11                                            |
+
+## 8. Wave 6 — MediaType hardening + adoption (2026-09-27, ratified in working session)
+
+**Scope:** the static-file/MIME sniffing surfaces bypassed `@blue/core`'s `MediaType`; landed with it hardened for raw HTTP header values.
+
+**MediaType (blue-core):**
+- `for()`/`parseMediaType` raw-value path now **normalizes before interning**: type/subtype and parameter NAMES case-folded (RFC 6838 §4.2 / RFC 2045 §5.1), parameter values split on the first `=` (values containing `=` survive), quoted values unquoted. Header-case variants converge on one interned instance (`for('TEXT/HTML') === MediaTypes.TEXT_HTML`).
+- `stringifyParameters` re-quotes values containing header separators — parse/toString round-trip safe (`boundary="x y"`).
+- **`get isJSON`** — bases + `+json` suffix, absorbing the `endsWith('+json')`/`includes('application/json')` sniffing.
+- **`static parseAccept(header)`** — q-preserving `MediaType[]` in header order (empty segments dropped; bare type tokens become `type/*` wildcards).
+- **`static registered(type, subtype, parameters)`** — the never-null registry path; `MediaTypes.*` constants now use it (33 constants typed non-null, killing the `requireMediaType` guard witnesses: helper removed from `node-app-configuration`).
+- New constants: `TEXT_JAVASCRIPT`, `APPLICATION_WASM`, `FONT_WOFF2`.
+
+**Adoption (8 sites):**
+- `static-resource-resolver.ts` MIME allowlist → `MediaTypes` instances (`withCharset('utf-8')` for text entries; serialized canonically — served header dropped the RFC-permitted optional space; 5 pinned assertions updated); directory-listing contentType constant-sourced.
+- `static-resource-handler.ts` `acceptsHtml` → `parseAccept` + `matches()` + `qualityFactor > 0` — **fixes the documented q=0 approximation** (RUS-5 note retired); octet-stream fallback constant-sourced.
+- `http-request-limits.ts` JSON body gate → `MediaType.for(mime)?.isJSON`.
+- `transform-interceptor.ts` (7× `includes()`, importing MediaType and bypassing it) → `isJSON`/`type==='text'`/base-type checks in `extractBody`/`serializeBody`.
+- JSON response writes in `node-dispatcher`/`node-view-target`/`response-entity-view` → `[HTTPHeaders.CONTENT_TYPE.name]: String(MediaTypes.APPLICATION_JSON)`.
+- `blue-http/content-type-header.ts` credentials: `MULTIPART_FORM_DATA` now `String(MediaTypes.MULTIPART_FORM_DATA)` (single source), `contentTypeBase`/`multipartBoundary` delegate to `MediaType.for` (boundary gets case-insensitive names + unquoting for free).
+
+**Verification:** gates green (lint 0, format:check 0, build 33/33); suites: blue-core 302 (8 new Wave-6 specs), blue-http 369, blue-platform-node 410, blue-view 101, plus full sweep.

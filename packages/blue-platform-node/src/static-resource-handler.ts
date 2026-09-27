@@ -16,6 +16,7 @@
 import type { ServerResponse } from 'node:http';
 import { createReadStream } from 'node:fs';
 import { once } from 'node:events';
+import { MediaType, MediaTypes } from '@blue/core';
 import { Route } from '@blue/router';
 import {
     ACCEPT_RANGES,
@@ -231,7 +232,7 @@ export class StaticResourceHandler {
         // Common headers for every successful representation. Write-side names use
         // the @blue/http constants (RUS-2); reads stay lowercase literals.
         const successHeaders: Record<string, string> = {
-            [CONTENT_TYPE.name]: result.contentType ?? 'application/octet-stream',
+            [CONTENT_TYPE.name]: result.contentType ?? String(MediaTypes.APPLICATION_OCTET_STREAM),
         };
         // `undefined` → default; `null` → opt out of the header entirely.
         const cacheControl =
@@ -368,14 +369,22 @@ export class StaticResourceHandler {
     }
 }
 
+/**
+ * The representations the SPA fallback can serve.
+ */
+const SPA_FALLBACK_TYPES = [MediaTypes.TEXT_HTML, MediaTypes.APPLICATION_XHTML_XML];
+
 /** True when the client accepts HTML (SPA fallback gate, D-6). */
 function acceptsHtml(accept: string | string[] | undefined): boolean {
-    // Edge note (RUS-5): media types are case-insensitive (RFC 7231 §5.3.2) and
-    // `text/html;q=0` should mean 'never' — this substring check is a known
-    // approximation; it misfires only for unusual Accept headers.
+    // MediaType-based Accept evaluation (Wave 6): wildcard and suffix
+    // matching via `matches()`, and `;q=0` means "never" (RFC 7231 §5.3.1 —
+    // the pre-Wave-6 substring check reported `text/html;q=0` as
+    // acceptable). No Accept header → HTML assumed (browser default).
     if (accept === undefined || accept.length === 0) {
         return true;
     }
     const value = Array.isArray(accept) ? accept.join(',') : accept;
-    return value.includes('text/html') || value.includes('*/*') || value.includes('application/xhtml+xml');
+    return MediaType.parseAccept(value).some(
+        (accepted) => accepted.qualityFactor > 0 && SPA_FALLBACK_TYPES.some((offered) => accepted.matches(offered))
+    );
 }

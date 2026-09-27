@@ -5,6 +5,7 @@
  * @author Jeff Rose
  */
 import { Route } from '@blue/router';
+import { MediaTypes } from '@blue/core';
 import { type ProducerView, type RenderResult } from '@blue/view';
 import { ResponseEntity } from './response-entity';
 import { isProblemDetails, toProblemDetails, type ProblemDetails } from './problem-details';
@@ -29,7 +30,7 @@ export class ResponseEntityView implements ProducerView {
         }
 
         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
+            'Content-Type': String(MediaTypes.APPLICATION_JSON),
             ...entity.headers,
         };
 

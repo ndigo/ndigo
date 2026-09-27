@@ -172,6 +172,22 @@ export class HTTPHeader implements Serializable {
     }
 
     /**
+     * Reads this header from a header collection, joining multi-value
+     * entries (`string[]` — Node server records) into one string.
+     *
+     * @param headers - The header collection to read from.
+     * @param separator - The join separator (default `', '`).
+     * @returns The header value, or `null` when missing.
+     */
+    getJoined(headers: HeadersInit, separator = ', '): string | null {
+        const value = headers ? getHeader(headers, this.name) : null;
+        if (value === null) {
+            return null;
+        }
+        return Array.isArray(value) ? value.join(separator) : value;
+    }
+
+    /**
      * Tests whether this header exists in a header collection.
      *
      * @param headers - The header collection to inspect.

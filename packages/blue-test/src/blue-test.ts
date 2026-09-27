@@ -36,8 +36,8 @@ export interface BlueTestApp {
  * @example
  * ```ts
  * const app = bootApp([HelloConfiguration]);
- * const mockMVC = new MockHTTP(app);
- * const res = await mockMVC.get('/').exec();
+ * const mockHTTP = new MockHTTP(app);
+ * const res = await mockHTTP.get('/').exec();
  * ```
  */
 export function bootApp(sources: Function[]): BlueTestApp {

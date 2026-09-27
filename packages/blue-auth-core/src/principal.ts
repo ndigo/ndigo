@@ -43,6 +43,31 @@ export class AnonymousPrincipal implements Principal {
 }
 
 /**
+ * The framework's concrete principal, used by authentication adapters to
+ * materialize identities from user records (e.g.
+ * `CredentialsAuthAdapter` — AD-33 D-5).
+ */
+export class DefaultPrincipal implements Principal {
+    readonly id: string;
+    readonly name: string;
+    readonly roles: ReadonlyArray<string>;
+
+    constructor(id: string, name: string, roles: readonly string[] = []) {
+        this.id = id;
+        this.name = name;
+        this.roles = roles;
+    }
+
+    hasRole(role: string): boolean {
+        return this.roles.includes(role);
+    }
+
+    hasAnyRole(...roles: string[]): boolean {
+        return roles.some((role) => this.roles.includes(role));
+    }
+}
+
+/**
  * Duck-type guard for {@link Principal}: shape check, not identity —
  * per STYLE_GUIDE §3.7, property/method-presence guards use the `like*`
  * prefix (`is*` is reserved for `instanceof`/`typeof` checks).

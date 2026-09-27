@@ -62,10 +62,10 @@ class GreetingController {
 }
 
 describe('MockHTTP', () => {
-    let mockMVC: MockHTTP;
+    let mockHTTP: MockHTTP;
 
     beforeAll(() => {
-        mockMVC = new MockHTTP(bootApp([GreetingController]));
+        mockHTTP = new MockHTTP(bootApp([GreetingController]));
     });
 
     afterAll(() => {
@@ -73,40 +73,40 @@ describe('MockHTTP', () => {
     });
 
     test('GET / returns JSON through the real dispatcher', async () => {
-        const res = await mockMVC.get('/').exec();
+        const res = await mockHTTP.get('/').exec();
         expect(res.response.status).toBe(200);
         expect(res.json()).toEqual({ message: 'Hello, Node!' });
     });
 
     test('GET /hello?name=... binds the query parameter', async () => {
-        const res = await mockMVC.get('/hello').query({ name: 'Jeff' }).exec();
+        const res = await mockHTTP.get('/hello').query({ name: 'Jeff' }).exec();
         expect(res.json()).toEqual({ message: 'Hello, Jeff!' });
     });
 
     test('POST /echo binds the JSON body', async () => {
-        const res = await mockMVC.post('/echo').body({ value: 'ping' }).exec();
+        const res = await mockHTTP.post('/echo').body({ value: 'ping' }).exec();
         expect(res.json()).toEqual({ echoed: 'ping' });
     });
 
     test('plain-object return is JSON, not mutated with a default view name', async () => {
-        const res = await mockMVC.get('/plain').exec();
+        const res = await mockHTTP.get('/plain').exec();
         expect(res.response.status).toBe(200);
         expect(res.json()).toEqual('plain-text');
     });
 
     test('empty body yields undefined from .json()', async () => {
-        const res = await mockMVC.get('/missing').exec();
+        const res = await mockHTTP.get('/missing').exec();
         expect(res.response.status).toBe(404);
     });
 
     test('request header keys are case-normalized like Node IncomingMessage (RUS-4)', async () => {
-        const res = await mockMVC.get('/header').headers({ 'X-Via': 'case-folded' }).exec();
+        const res = await mockHTTP.get('/header').headers({ 'X-Via': 'case-folded' }).exec();
         expect(res.response.status).toBe(200);
         expect(res.json()).toEqual({ via: 'case-folded' });
     });
 
     test('a non-multipart rawBody is parsed into the request body, not dropped (RUS-4)', async () => {
-        const res = await mockMVC
+        const res = await mockHTTP
             .post('/echo/raw')
             .rawBody(JSON.stringify({ value: 'raw-json' }))
             .headers({ 'content-type': 'application/json' })
@@ -165,8 +165,8 @@ describe('IslandView through MockHTTP dispatch (SSR islands)', () => {
     test('server dispatches island markup with the serialized model', async () => {
         const app = bootApp([IslandsController]);
         try {
-            const mockMVC = new MockHTTP(app);
-            const res = await mockMVC.get('/islands/todo').exec();
+            const mockHTTP = new MockHTTP(app);
+            const res = await mockHTTP.get('/islands/todo').exec();
             expect(res.response.status).toBe(200);
             const html = res.text();
             expect(html).toContain('<todo-app data-blue-island data-blue-locale="en-US" data-blue-model=');

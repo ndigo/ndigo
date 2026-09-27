@@ -28,12 +28,12 @@ class MathController {
 }
 
 describe('bootApp + MockHTTP (canonical app test)', () => {
-    let mockMVC: MockHTTP;
+    let mockHTTP: MockHTTP;
     let close: () => void;
 
     beforeAll(() => {
         const app = bootApp([MathController]);
-        mockMVC = new MockHTTP(app);
+        mockHTTP = new MockHTTP(app);
         close = app.close;
     });
 
@@ -42,13 +42,13 @@ describe('bootApp + MockHTTP (canonical app test)', () => {
     });
 
     test('GET /math/double dispatches through the real handler mapping', async () => {
-        const res = await mockMVC.get('/math/double').exec();
+        const res = await mockHTTP.get('/math/double').exec();
         expect(res.response.status).toBe(200);
         expect(res.json()).toEqual({ doubled: 4 });
     });
 
     test('a second route on the same shared context is served', async () => {
-        const res = await mockMVC.get('/math/hello').exec();
+        const res = await mockHTTP.get('/math/hello').exec();
         expect(res.response.headers['content-type']).toContain('application/json');
         expect(res.json()).toEqual({ message: 'hello' });
     });

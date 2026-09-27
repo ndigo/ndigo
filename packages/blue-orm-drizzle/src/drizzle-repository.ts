@@ -5,6 +5,7 @@
  * @author Jeff Rose
  */
 import { Constructable } from '@blue/core';
+import type { PageRequest, Page, RelationFetchOptions } from '@blue/orm';
 import { DrizzleEntityManager } from './drizzle-entity-manager';
 
 /**
@@ -35,6 +36,13 @@ export class DrizzleRepository<T extends object, ID> {
     }
 
     /**
+     * The entity manager used for data access (subclass extension point).
+     */
+    protected getEntityManager(): DrizzleEntityManager {
+        return this.#entityManager;
+    }
+
+    /**
      * Persists (inserts or updates) the entity.
      *
      * @param entity - The entity to save.
@@ -49,17 +57,60 @@ export class DrizzleRepository<T extends object, ID> {
      * Retrieves an entity by its primary identifier.
      *
      * @param id - The entity's primary identifier.
+     * @param options - Optional relation loading (eager fetch).
      * @returns The entity, or `undefined` when not found.
      */
-    findById(id: ID): Promise<T | undefined> {
-        return this.#entityManager.find(this.#entityClass, id);
+    async findById(id: ID, options: RelationFetchOptions = {}): Promise<T | undefined> {
+        const entity = await this.#entityManager.find(this.#entityClass, id);
+        return entity === undefined ? undefined : this.#fetchRelations(entity, options);
     }
 
     /**
      * Retrieves all entities of the managed type.
+     *
+     * @param options - Optional relation loading (eager fetch).
      */
-    findAll(): Promise<T[]> {
-        return this.#entityManager.findAll(this.#entityClass);
+    async findAll(options: RelationFetchOptions = {}): Promise<T[]> {
+        const all = await this.#entityManager.findAll(this.#entityClass);
+        return Promise.all(all.map((entity) => this.#fetchRelations(entity, options)));
+    }
+
+    /**
+     * Loads a declared relation of an entity lazily and assigns it onto the
+     * entity's field.
+     *
+     * @param entity - The entity whose relation is loaded.
+     * @param relationName - The declared relation field name.
+     * @returns The loaded relation value (entity, array, or undefined/[] when
+     *   nothing relates).
+     */
+    async loadRelation(entity: T, relationName: string): Promise<unknown> {
+        const value = await this.#entityManager.fetchRelation(entity, relationName);
+        (entity as Record<string, unknown>)[relationName] = value;
+        return value;
+    }
+
+    async #fetchRelations(entity: T, options: RelationFetchOptions): Promise<T> {
+        // Relations are independent of each other — fetch concurrently.
+        await Promise.all(
+            (options.relations ?? []).map(async (relationName) => {
+                (entity as Record<string, unknown>)[relationName] = await this.#entityManager.fetchRelation(
+                    entity,
+                    relationName
+                );
+            })
+        );
+        return entity;
+    }
+
+    /**
+     * Retrieves one page of entities; ordering and slicing happen in SQL.
+     *
+     * @param request - The page index (1-based), size, and optional sort orders.
+     * @returns The requested page with totals.
+     */
+    findPage(request: PageRequest): Promise<Page<T>> {
+        return this.#entityManager.findPage(this.#entityClass, request);
     }
 
     /**

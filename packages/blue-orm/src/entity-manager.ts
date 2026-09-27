@@ -6,6 +6,7 @@
 import { Constructable, IllegalStateError } from '@blue/core';
 import { DataSource } from './data-source';
 import { getEntityMetadata, isEntity } from './metadata';
+import type { EntityMetadata } from './metadata';
 import { validateEntity } from './entity-schema';
 
 /**
@@ -36,6 +37,19 @@ export interface EntityManager {
      * @param entity - The entity to remove.
      */
     remove<T extends object>(entity: T): void;
+    /**
+     * Loads one declared relation of an entity: the related entity for the
+     * owning side (many-to-one, one-to-one) or the related entities for the
+     * inverse side (one-to-many, one-to-one). Does not mutate the entity.
+     * @param entity - The entity whose relation is loaded.
+     * @param relationName - The declared relation field name.
+     * @returns The related entity, an array of related entities, or
+     *   `undefined`/`[]` when nothing relates.
+     * @throws {IllegalStateError} When the relation or its join column is not
+     *   declared, or for many-to-many relations (join-table semantics not
+     *   implemented).
+     */
+    fetchRelation(entity: object, relationName: string): unknown;
     /**
      * Flushes any pending changes to the data source.
      */
@@ -166,6 +180,63 @@ export class InMemoryEntityManager implements EntityManager {
         if (primaryId !== undefined && primaryId !== null) {
             this.#dataSource.getStore<T>(metadata.entityName).delete(primaryId);
             this.#callLifecycleHooks(entity, 'postRemove');
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    fetchRelation(entity: object, relationName: string): unknown {
+        const entityClass = entity.constructor as Constructable<object>;
+        const metadata = getEntityMetadata(this.#assertEntityClass(entityClass));
+        const relation = metadata.relations.find((candidate) => candidate.fieldName === relationName);
+
+        if (!relation) {
+            throw new IllegalStateError(`Entity '${metadata.entityName}' declares no relation '${relationName}'.`);
+        }
+        if (relation.kind === 'many-to-many') {
+            throw new IllegalStateError(
+                `Relation '${relationName}' is many-to-many; join-table fetch is not implemented.`
+            );
+        }
+
+        const targetClass = relation.targetEntity() as unknown as Constructable<object>;
+        const targetMetadata = getEntityMetadata(this.#assertEntityClass(targetClass));
+        const record = entity as Record<string, unknown>;
+
+        if (relation.joinColumn !== undefined) {
+            const fkField = relation.joinColumn;
+            this.#assertDeclaredColumn(metadata, fkField, relationName);
+            const fk = record[fkField];
+            return fk === undefined || fk === null ? undefined : this.find(targetClass, fk);
+        }
+
+        if (relation.inverseJoinColumn !== undefined) {
+            const fkField = relation.inverseJoinColumn;
+            this.#assertDeclaredColumn(targetMetadata, fkField, relationName);
+            if (!this.#dataSource.hasStore(targetMetadata.entityName)) {
+                return [];
+            }
+
+            const pk = record[metadata.primaryColumn];
+            if (pk === undefined || pk === null) {
+                return [];
+            }
+
+            return Array.from(this.#dataSource.getStore<object>(targetMetadata.entityName).values()).filter(
+                (row) => (row as Record<string, unknown>)[fkField] === pk
+            );
+        }
+
+        throw new IllegalStateError(`Relation '${relationName}' declares neither joinColumn nor inverseJoinColumn.`);
+    }
+
+    #assertDeclaredColumn(metadata: EntityMetadata, fieldName: string, relationName: string): void {
+        const declared = metadata.columns.some((column) => column.fieldName === fieldName);
+        if (!declared) {
+            throw new IllegalStateError(
+                `Relation '${relationName}' join column '${fieldName}' is not a declared @column of '${metadata.entityName}'.`
+            );
         }
     }
 

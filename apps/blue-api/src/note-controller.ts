@@ -7,6 +7,7 @@ import '@tsmetadata/polyfill';
 import { getMapping, postMapping, parameters, headerValue, validatedBody, requestMapping } from '@blue/dispatcher';
 import { ResponseEntity } from '@blue/platform-node';
 import { insertSchemaForEntity, InMemoryDataSource, InMemoryEntityManager } from '@blue/orm';
+import { HTTPHeaders } from '@blue/http';
 import { Note } from './note.entity';
 import { lookupPrincipal } from './auth-store';
 
@@ -18,9 +19,9 @@ const entityManager = new InMemoryEntityManager(dataSource);
 export class NoteController {
     @getMapping('/')
     @parameters({ token: headerValue('authorization') })
-    list(token: string | undefined) {
-        const bearer = token?.replace(/^Bearer\s+/i, '');
-        if (!bearer || !lookupPrincipal(bearer)) {
+    async list(token: string | undefined) {
+        const bearer = HTTPHeaders.AUTHORIZATION.bearerToken(token);
+        if (!bearer || !(await lookupPrincipal(bearer))) {
             return ResponseEntity.unauthorized({ error: 'Unauthorized' }, { 'WWW-Authenticate': 'Bearer' });
         }
         return { notes: entityManager.findAll(Note) };
@@ -35,9 +36,9 @@ export class NoteController {
         // entity column as the single source of truth.
         data: validatedBody(insertSchemaForEntity(Note)),
     })
-    create(token: string | undefined, data: Record<string, unknown>) {
-        const bearer = token?.replace(/^Bearer\s+/i, '');
-        if (!bearer || !lookupPrincipal(bearer)) {
+    async create(token: string | undefined, data: Record<string, unknown>) {
+        const bearer = HTTPHeaders.AUTHORIZATION.bearerToken(token);
+        if (!bearer || !(await lookupPrincipal(bearer))) {
             return ResponseEntity.unauthorized({ error: 'Unauthorized' }, { 'WWW-Authenticate': 'Bearer' });
         }
         const note = new Note();

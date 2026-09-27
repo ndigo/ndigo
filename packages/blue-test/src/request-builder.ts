@@ -39,6 +39,12 @@ export interface MockRequest {
     cookies?: Record<string, string>;
     /** Session data. */
     session?: Record<string, unknown>;
+    /**
+     * Client socket address for the rate limiter's key. Defaults to a
+     * fresh per-request `mock-peer-<n>` address — tests are isolated from
+     * each other's budgets unless they deliberately share an address.
+     */
+    remoteAddress?: string;
 }
 
 /**
@@ -82,6 +88,9 @@ function splitPath(pathname: string): { cleanedPath: string; segments: RouteSegm
     return { cleanedPath: cleanedPath ? `/${cleanedPath}` : '/', segments };
 }
 
+/** Module-level counter giving each mock request a distinct peer address. */
+let mockPeerCounter = 0;
+
 /**
  * Builds a {@link Route} with `NODE_REQUEST_ATTRIBUTE` / `NODE_RESPONSE_ATTRIBUTE`
  * attributes and the path/query/body/segments populated.
@@ -106,6 +115,7 @@ export function buildRoute(request: MockRequest, responseSink: ResponseSink): Pr
         body: request.body ?? {},
         cookies: request.cookies ?? {},
         session: request.session ?? {},
+        remoteAddress: request.remoteAddress ?? `mock-peer-${(mockPeerCounter += 1)}`,
     };
 
     // Query params go into route.data (NamePathHandlerMapping expects `data`).

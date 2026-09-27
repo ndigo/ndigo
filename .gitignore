@@ -82,3 +82,6 @@ test-results/
 
 # Throwaway TypeDoc configs from scripts/doc-api.mjs (.nx<random>/typedoc.json)
 .nx?*
+
+# Local opencode configuration (machine-specific agent/model settings)
+opencode.json

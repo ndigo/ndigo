@@ -257,11 +257,11 @@ This will prevent `TypeError` exceptions at runtime. The build process may not a
 | Package        | Encapsulates         | Import From    |
 | :------------- | :------------------- | :------------- |
 | `@blue/util`   | `seedrandom`, `slug` | `@blue/util`   |
-| `@blue/parser` | `arcsecond`          | `@blue/parser` |
+| `@blue/dom`    | `linkedom`           | `@blue/dom`    |
 
 **Import Rules by Package Type:**
 
-1. **Integration Layer Packages** (`@blue/util`, `@blue/parser`):
+1. **Integration Layer Packages** (`@blue/util`, `@blue/dom`):
 
     - ✅ May import directly from their encapsulated libraries
     - ✅ Must re-export functionality through `src/index.ts`
@@ -280,11 +280,11 @@ This will prevent `TypeError` exceptions at runtime. The build process may not a
 ```typescript
 // ✅ CORRECT: Import from integration layer
 import { slugify } from '@blue/util';
-import { choice, sequenceOf } from '@blue/parser';
+import { createDOMProvider } from '@blue/dom';
 
 // ❌ INCORRECT: Direct import bypasses integration layer
 import { format } from 'date-fns'; // Wrong! Use @blue/util
-import { choice } from 'arcsecond'; // Wrong! Use @blue/parser
+import { parseHTML } from 'linkedom'; // Wrong! Use @blue/dom
 ```
 
 **Common Violations to Avoid:**
@@ -296,11 +296,11 @@ import { format } from 'date-fns'; // WRONG: Not in integration layer
 // ✅ Correct version:
 import { format } from '@blue/util';
 
-// ❌ In @blue/router/src/matcher.ts
-import { choice, sequenceOf } from 'arcsecond'; // WRONG
+// ❌ In @blue/view/src/renderer.ts
+import { parse } from 'linkedom'; // WRONG
 
 // ✅ Correct version:
-import { choice, sequenceOf } from '@blue/parser';
+import { createDOMProvider } from '@blue/dom';
 ```
 
 **Enforcement:**
@@ -309,7 +309,7 @@ These rules are **automatically enforced** by `@blue/oxlint-plugin`, which provi
 
 | Rule                                  | Severity | Description                                                                                                                                                           |
 | :------------------------------------ | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@blue/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (seedrandom, slug, arcsecond, etc.) outside their integration layer packages. Allows in integration packages and test files. |
+| `@blue/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (seedrandom, slug, linkedom, etc.) outside their integration layer packages. Allows in integration packages and test files. |
 | `@blue/no-internal-file-imports`      | error    | Forbids `@blue/<pkg>/_*` cross-package imports of internal files.                                                                                                     |
 | `@blue/no-internal-file-exports`      | error    | Forbids `export * from './_*'` barrel re-exports in `*/src/index.ts`. Named re-exports (`export { foo } from './_*'`) are allowed (deliberate/controlled).            |
 
@@ -430,7 +430,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
         - **Step 1 - Scan target package:** Search for related functionality, established patterns, internal utilities (`_util.ts`, `_parsers.ts`), naming conventions, and design patterns currently in use.
         - **Step 2 - Scan related packages:** Check common utilities and specialized tools:
             - `@blue/util` - Common utilities (string utils, seedrandom, slug) - **Check first!**
-            - `@blue/parser` - String parsing (arcsecond wrappers) - Use for parsing URLs, queries, expressions
+            - `@blue/dom` - Isomorphic DOM parsing/creation (linkedom wrappers) - For HTML parsing, element creation
             - `@blue/validate` - (retired 2026-09-05 per AD-7; use `zod` via `@blue/orm` entity schemas / `@blue/dispatcher` `validatedBy`)
             - `@blue/core` - Core primitives, containers, patterns - Use for application context, DI, base types
     - **After big changes:** refresh the graph with `graft build`.

@@ -58,6 +58,11 @@ complex.
 
 ## Packages
 
+> The authoritative **package map** — every package's purpose, layer, platform,
+> and runtime dependencies — lives in
+> [ARCHITECTURE.md § Package Map](ARCHITECTURE.md#package-map). This list is a
+> quick index with one-line purposes.
+
 Core & infrastructure:
 
 - [blue-core](packages/blue-core/README.md) — primitives, radix tree, media types
@@ -67,6 +72,8 @@ Core & infrastructure:
 - [blue-boot](packages/blue-boot/README.md) — application bootstrap, profiles, typed config
 - [blue-signals](packages/blue-signals/README.md) — reactive state
 - [blue-dom](packages/blue-dom/README.md) — isomorphic DOM providers
+- [blue-cache](packages/blue-cache/README.md) — cache manager + `@cached` decorator
+- [blue-scheduler](packages/blue-scheduler/README.md) — cron scheduling (`@scheduled`), task registry
 
 Content & i18n:
 
@@ -77,6 +84,7 @@ HTTP & routing:
 
 - [blue-http](packages/blue-http/README.md) — fetch-based client, interceptors, parsers
 - [blue-router](packages/blue-router/README.md) — routes, feature/partition routing
+- [blue-socket](packages/blue-socket/README.md) — WebSocket domain: STOMP client, session contracts
 - [blue-service](packages/blue-service/README.md) — typed service clients, SSE
 
 Dispatch & views:

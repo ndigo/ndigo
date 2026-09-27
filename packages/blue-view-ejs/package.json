@@ -1,7 +1,7 @@
 {
   "name": "@blue/view-ejs",
   "version": "0.0.1",
-  "description": "Blue View EJS \u2014 server-side EJS template rendering as an isomorphic Blue view technology.",
+  "description": "Blue View EJS — server-side EJS template rendering as an isomorphic Blue view technology.",
   "type": "module",
   "files": [
     "doc",
@@ -29,22 +29,15 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
+    "@blue/content": "~0.0.1",
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/view": "~0.0.1",
     "ejs": "^3.1.10"
   },
   "devDependencies": {
-    "@blue/context": "~0.0.1",
-    "@blue/core": "~0.0.1",
-    "@blue/router": "~0.0.1",
-    "@blue/view": "~0.0.1",
-    "@types/ejs": "^3.1.5",
-    "@blue/content": "~0.0.1"
-  },
-  "peerDependencies": {
-    "@blue/context": "~0.0.1",
-    "@blue/core": "~0.0.1",
-    "@blue/router": "~0.0.1",
-    "@blue/view": "~0.0.1",
-    "@blue/content": "~0.0.1"
+    "@types/ejs": "^3.1.5"
   },
   "sideEffects": false
 }

@@ -1,7 +1,7 @@
 {
   "name": "@blue/socket",
   "version": "0.0.1",
-  "description": "Blue Socket \u2014 isomorphic WebSocket domain: client contract + implementation and server-side session contracts (AD-22)",
+  "description": "Blue Socket — isomorphic WebSocket domain: client contract + implementation and server-side session contracts (AD-22)",
   "type": "module",
   "files": [
     "lib"
@@ -31,8 +31,6 @@
     "@blue/core": "~0.0.1",
     "@blue/signals": "~0.0.1"
   },
-  "peerDependencies": {
-    "@blue/signals": "~0.0.1"
-  },
-  "sideEffects": false
+  "sideEffects": false,
+  "devDependencies": {}
 }

@@ -1,7 +1,7 @@
 {
   "name": "@blue/orm-drizzle",
   "version": "0.0.1",
-  "description": "Blue ORM Drizzle \u2013 Drizzle ORM adapter for @blue/orm",
+  "description": "Blue ORM Drizzle – Drizzle ORM adapter for @blue/orm",
   "type": "module",
   "files": [
     "lib"
@@ -28,19 +28,16 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
-    "@blue/core": "~0.0.1",
-    "@blue/orm": "~0.0.1",
-    "zod": "^4.5.4"
-  },
-  "peerDependencies": {
-    "@blue/core": "~0.0.1",
-    "@blue/orm": "~0.0.1"
+    "@tsmetadata/polyfill": "^1.1.3"
   },
   "dependencies": {
+    "@blue/core": "~0.0.1",
+    "@blue/orm": "~0.0.1",
     "@blue/socket": "~0.0.1",
     "@libsql/client": "0.17.4",
     "drizzle-orm": "0.45.2",
-    "drizzle-zod": "^0.8.3"
+    "drizzle-zod": "^0.8.3",
+    "zod": "^4.5.4"
   },
   "sideEffects": false
 }

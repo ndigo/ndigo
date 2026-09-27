@@ -30,13 +30,11 @@
   ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
-  "devDependencies": {
+  "devDependencies": {},
+  "sideEffects": false,
+  "dependencies": {
     "@blue/core": "~0.0.1",
-    "@blue/util": "~0.0.1"
-  },
-  "peerDependencies": {
-    "@blue/core": "~0.0.1",
-    "@blue/util": "~0.0.1"
-  },
-  "sideEffects": false
+    "@blue/util": "~0.0.1",
+    "@tsmetadata/polyfill": "^1.1.3"
+  }
 }

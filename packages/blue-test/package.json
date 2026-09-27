@@ -1,7 +1,7 @@
 {
   "name": "@blue/test",
   "version": "0.0.1",
-  "description": "Blue integration test harness \u2014 MockMVC-style in-process request dispatch",
+  "description": "Blue integration test harness — MockMVC-style in-process request dispatch",
   "type": "module",
   "files": [
     "doc",
@@ -29,9 +29,7 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
-    "@blue/boot": "~0.0.1",
     "@blue/context": "~0.0.1",
-    "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
     "@blue/platform-web": "~0.0.1",
@@ -39,17 +37,8 @@
     "@blue/util": "~0.0.1",
     "@blue/view": "~0.0.1"
   },
-  "peerDependencies": {
-    "@blue/context": "~0.0.1",
-    "@blue/core": "~0.0.1",
-    "@blue/dispatcher": "~0.0.1",
-    "@blue/platform-node": "~0.0.1",
-    "@blue/router": "~0.0.1",
-    "@blue/util": "~0.0.1"
-  },
   "sideEffects": false,
   "devDependencies": {
-    "@blue/view-webcomponent": "~0.0.1",
-    "@blue/util": "~0.0.1"
+    "@blue/view-webcomponent": "~0.0.1"
   }
 }

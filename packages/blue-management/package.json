@@ -1,7 +1,7 @@
 {
   "name": "@blue/management",
   "version": "0.0.1",
-  "description": "Blue management endpoints \u2014 /health and /metrics (actuator-style)",
+  "description": "Blue management endpoints — /health and /metrics (actuator-style)",
   "type": "module",
   "files": [
     "doc",
@@ -33,21 +33,10 @@
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
-    "@blue/http": "~0.0.1",
-    "@blue/platform-node": "~0.0.1",
-    "@blue/router": "~0.0.1",
-    "@blue/telemetry": "~0.0.1",
-    "@blue/view": "~0.0.1"
+    "@blue/telemetry": "~0.0.1"
   },
-  "peerDependencies": {
-    "@blue/context": "~0.0.1",
-    "@blue/core": "~0.0.1",
-    "@blue/dispatcher": "~0.0.1",
-    "@blue/http": "~0.0.1",
-    "@blue/platform-node": "~0.0.1",
-    "@blue/router": "~0.0.1",
-    "@blue/telemetry": "~0.0.1",
-    "@blue/view": "~0.0.1"
-  },
-  "sideEffects": false
+  "sideEffects": false,
+  "devDependencies": {
+    "@blue/platform-node": "~0.0.1"
+  }
 }

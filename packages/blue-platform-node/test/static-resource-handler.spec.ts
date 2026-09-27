@@ -132,7 +132,7 @@ describe('StaticResourceHandler — plain + conditional GET (D-2)', () => {
     test('serves 200 with validators and the default Cache-Control', async () => {
         const res = await serve('/app.js');
         expect(res.status).toBe(200);
-        expect(res.headers['content-type']).toBe('text/javascript; charset=utf-8');
+        expect(res.headers['content-type']).toBe('text/javascript;charset=utf-8');
         expect(res.headers['etag']).toMatch(/^"/);
         expect(res.headers['last-modified']).toBeDefined();
         expect(res.headers['cache-control']).toBe('public, max-age=3600');
@@ -280,7 +280,7 @@ describe('StaticResourceHandler — directories, listing, SPA (D-6/D-7)', () => 
     test('SPA fallback never shadows an existing file', async () => {
         const res = await serve('/app.js', { spaFallback: true }, 'GET', { accept: 'text/html' });
         expect(res.status).toBe(200);
-        expect(res.headers['content-type']).toBe('text/javascript; charset=utf-8');
+        expect(res.headers['content-type']).toBe('text/javascript;charset=utf-8');
     });
 
     test('spaFallback off keeps 404s', async () => {

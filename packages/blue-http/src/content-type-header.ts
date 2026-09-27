@@ -1,25 +1,24 @@
 /**
- * Content-Type specific {@link HTTPHeader} category (Wave 5, 2026-09-27):
- * the parsing helpers the request pipeline and the mock harness share.
- * Node lower-cases incoming header names but not values, so every consumer
- * of a `Content-Type` value needs the same normalization: strip parameters
- * (the part after `;`), trim, and case-fold the media type.
- * `multipart/form-data` additionally carries a `boundary` parameter whose
- * parameter NAME is case-insensitive per RFC 2045 §5.1 (`BOUNDARY=x` is
- * legal); the extraction here case-folds the parameter name and strips
- * optional quotes.
+ * Content-Type specific {@link HTTPHeader} category (Wave 5, 2026-09-27).
  *
- * The functions are the primitives; the {@link ContentTypeHeader} subclass
- * is the typed constant surface (`HTTPHeaders.CONTENT_TYPE`).
+ * The parsing is owned by `@blue/core`'s {@link MediaType} (Wave 6,
+ * 2026-09-27): `for()` folds type/subtype and parameter-name case,
+ * unquotes quoted parameter values, and interns — so raw header values
+ * parse safely and case variants converge on one instance. The module
+ * keeps the functional surface the request pipeline and the mock harness
+ * share; new code can use the `HTTPHeaders.CONTENT_TYPE` constant's
+ * typed methods or `MediaType` directly.
  *
  * @module blue-http
  * @since 1.0.0
  * @author Jeff Rose
  */
+import { MediaType, MediaTypes } from '@blue/core';
 import { HTTPHeader } from './http-header';
 
-/** The recognized multipart media type. */
-export const MULTIPART_FORM_DATA = 'multipart/form-data';
+/** The recognized multipart media type (canonical base-type string; single
+ * source is `@blue/core`'s `MediaTypes.MULTIPART_FORM_DATA`). */
+export const MULTIPART_FORM_DATA = String(MediaTypes.MULTIPART_FORM_DATA);
 
 /**
  * Extracts the bare media type from a `Content-Type` header value: the part
@@ -33,26 +32,26 @@ export function contentTypeBase(contentType: string | undefined | null): string 
     if (!contentType) {
         return null;
     }
-    const base = contentType.split(';')[0]?.trim().toLowerCase() ?? '';
-    return base === '' ? null : base;
+    return MediaType.for(contentType)?.baseType ?? null;
 }
 
 /**
  * Extracts the multipart boundary from a `Content-Type` value, or `null`.
  * The media type must be `multipart/form-data`; the `boundary` parameter
  * name is matched case-insensitively (RFC 2045 §5.1) and quoted values are
- * accepted. A pre-check only — the parser (busboy) remains the authority on
- * boundary syntax and validity.
+ * unquoted by the MediaType parser. A pre-check only — the parser (busboy)
+ * remains the authority on boundary syntax and validity.
  *
  * @param contentType - The raw `Content-Type` header value.
  * @returns The boundary value, or `null` when absent or no multipart type.
  */
 export function multipartBoundary(contentType: string | undefined | null): string | null {
-    if (contentTypeBase(contentType) !== MULTIPART_FORM_DATA) {
+    const mediaType = MediaType.for(contentType ?? '');
+    if (mediaType === null || mediaType.baseType !== MULTIPART_FORM_DATA) {
         return null;
     }
-    const match = /boundary=(?:"([^"]+)"|([^\s;]+))/i.exec(contentType ?? '');
-    return match ? (match[1] ?? match[2]) : null;
+    const boundary = mediaType.parameters['boundary'];
+    return typeof boundary === 'string' && boundary !== '' ? boundary : null;
 }
 
 /**

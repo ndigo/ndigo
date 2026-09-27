@@ -6,6 +6,7 @@
  */
 import { readdir, realpath, stat } from 'node:fs/promises';
 import { sep, resolve, isAbsolute } from 'node:path';
+import { MediaType, MediaTypes } from '@blue/core';
 
 /** Outcome kinds for a static-resource lookup. */
 export type StaticResourceKind = 'forbidden' | 'not-found' | 'internal-error' | 'ok';
@@ -46,28 +47,36 @@ export interface StaticResourceResult {
     readonly variantAware?: boolean;
 }
 
-/** MIME allowlist — extensions outside this map are not served. */
-const MIME_BY_EXTENSION: Record<string, string> = {
-    '.html': 'text/html; charset=utf-8',
-    '.htm': 'text/html; charset=utf-8',
-    '.css': 'text/css; charset=utf-8',
-    '.js': 'text/javascript; charset=utf-8',
-    '.mjs': 'text/javascript; charset=utf-8',
-    '.json': 'application/json',
-    '.png': 'image/png',
-    '.jpg': 'image/jpeg',
-    '.jpeg': 'image/jpeg',
-    '.gif': 'image/gif',
-    '.svg': 'image/svg+xml',
-    '.ico': 'image/x-icon',
-    '.webp': 'image/webp',
-    '.woff': 'font/woff',
-    '.woff2': 'font/woff2',
-    '.ttf': 'font/ttf',
-    '.txt': 'text/plain; charset=utf-8',
-    '.xml': 'application/xml',
-    '.pdf': 'application/pdf',
-    '.wasm': 'application/wasm',
+/**
+ * MIME allowlist — extensions outside this map are not served. Values are
+ * `@blue/core` {@link MediaType} instances (Wave 6, 2026-09-27): text-ish
+ * entries carry an explicit `utf-8` charset via `withCharset`, serialized
+ * canonically (parameter lists without the RFC-permitted optional space —
+ * `text/html;charset=utf-8`).
+ */
+const utf8 = (mediaType: MediaType): MediaType => mediaType.withCharset('utf-8');
+
+const MIME_BY_EXTENSION: Record<string, MediaType> = {
+    '.html': utf8(MediaTypes.TEXT_HTML),
+    '.htm': utf8(MediaTypes.TEXT_HTML),
+    '.css': utf8(MediaTypes.TEXT_CSS),
+    '.js': utf8(MediaTypes.TEXT_JAVASCRIPT),
+    '.mjs': utf8(MediaTypes.TEXT_JAVASCRIPT),
+    '.json': MediaTypes.APPLICATION_JSON,
+    '.png': MediaTypes.IMAGE_PNG,
+    '.jpg': MediaTypes.IMAGE_JPEG,
+    '.jpeg': MediaTypes.IMAGE_JPEG,
+    '.gif': MediaTypes.IMAGE_GIF,
+    '.svg': MediaTypes.IMAGE_SVG_XML,
+    '.ico': MediaTypes.IMAGE_X_ICON,
+    '.webp': MediaTypes.IMAGE_WEBP,
+    '.woff': MediaTypes.FONT_WOFF,
+    '.woff2': MediaTypes.FONT_WOFF2,
+    '.ttf': MediaTypes.FONT_TTF,
+    '.txt': utf8(MediaTypes.TEXT_PLAIN),
+    '.xml': MediaTypes.APPLICATION_XML,
+    '.pdf': MediaTypes.APPLICATION_PDF,
+    '.wasm': MediaTypes.APPLICATION_WASM,
 };
 
 /**
@@ -242,11 +251,12 @@ export class StaticResourceResolver {
         options?: StaticResolveOptions
     ): Promise<StaticResourceResult> {
         const extension = real.slice(real.lastIndexOf('.')).toLowerCase();
-        const contentType = MIME_BY_EXTENSION[extension];
-        if (!contentType) {
+        const mediaType = MIME_BY_EXTENSION[extension];
+        if (!mediaType) {
             // Serving unknown types risks content-type confusion; deny.
             return { kind: 'forbidden' };
         }
+        const contentType = String(mediaType);
         // Size cap enforced from stat alone, before any open or read (SEC-8).
         const maxFileSizeBytes = options?.maxFileSizeBytes;
         if (maxFileSizeBytes !== undefined && maxFileSizeBytes > 0 && stats.size > maxFileSizeBytes) {
@@ -352,7 +362,7 @@ export class StaticResourceResolver {
         return {
             kind: 'ok',
             data,
-            contentType: 'text/html; charset=utf-8',
+            contentType: String(utf8(MediaTypes.TEXT_HTML)),
             size: data.length,
             // Generated payloads have no file validator — no ETag/Last-Modified.
             encoding: undefined,

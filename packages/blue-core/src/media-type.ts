@@ -34,7 +34,6 @@ export type SupportedMediaType =
 const { freeze, keys } = Object,
     { parseFloat } = Number,
     typeRegistry = new Map<string, MediaType>(),
-    splitOnEquals = (value: `${string}=${string}`) => value.split('=') as [string, string],
     WILDCARD: SupportedMediaType = '*',
     QUALITY_FACTOR_PARAM = 'q';
 
@@ -48,15 +47,27 @@ export type MediaTypeParameters = {
 };
 
 /**
- * Converts a `MediaTypeParameters` object into a formatted string suitable for a media type header.
- * Parameters are joined with semicolons, e.g., ";charset=utf-8;level=1".
+ * Parameter values needing quotes when serialized (RFC 2045 §5.1
+ * tspecials-impacting-subset: whitespace, `;`, `"`, `=`, `,`, parens).
+ */
+const requiresQuoting = /[\s;"=(),]/;
+
+/**
+ * Converts a `MediaTypeParameters` object into a formatted string suitable
+ * for a media type header. Parameters are joined with semicolons, e.g.
+ * ";charset=utf-8;level=1". Values containing header separators are quoted
+ * per RFC 2045 §5.1 so parsing is round-trip safe (Wave 6, 2026-09-27).
  * @param value - The `MediaTypeParameters` object to stringify.
  * @returns A string representation of the parameters, or an empty string if no parameters are present.
  */
 const stringifyParameters = (value: MediaTypeParameters): string => {
     const pairs = Object.entries(value);
     if (!pairs.length) return '';
-    return pairs.reduce((result, [key, val]) => `${result};${key}=${val}`, '');
+    return pairs.reduce((result, [key, val]) => {
+        const stringValue = String(val);
+        const serialized = requiresQuoting.test(stringValue) ? `"${stringValue.replaceAll('"', '\\"')}"` : stringValue;
+        return `${result};${key}=${serialized}`;
+    }, '');
 };
 
 /**
@@ -118,6 +129,54 @@ class QualityFactorComparator implements Comparator<MediaType> {
  */
 const qualityFactorComparator = new QualityFactorComparator();
 
+/**
+ * Normalizes a raw media-type expression for registry interning: folds the
+ * type and subtype to lower case (RFC 6838 §4.2 — both are case-insensitive
+ * in HTTP 1.x), folds parameter NAMES to lower case (RFC 2045 §5.1), and
+ * unquotes quoted parameter values. Parameter VALUES keep their case. The
+ * result is the canonical key that interning uses, so header-case variants
+ * converge on one {@link MediaType} instance (Wave 6, 2026-09-27).
+ *
+ * @param expression - A full `type/subtype;param=value;…` expression.
+ * @returns The canonical key plus the normalized parse pieces, or `null`
+ *   when the expression has no `/`.
+ */
+function normalizeMediaTypeExpression(
+    expression: string
+): { key: string; type: string; subtype: string; parameters: MediaTypeParameters } | null {
+    const slashIndex = expression.indexOf('/');
+    if (slashIndex === -1) {
+        return null;
+    }
+    const type = expression.substring(0, slashIndex).trim().toLowerCase();
+    if (type === '') {
+        return null;
+    }
+    const parts: string[] = expression.substring(slashIndex + 1).split(';');
+    let subtype = (parts.shift() as string).trim().toLowerCase();
+    if (subtype === '') {
+        subtype = WILDCARD;
+    }
+    const parameters: MediaTypeParameters = {};
+    for (const part of parts) {
+        const equalsIndex = part.indexOf('=');
+        if (equalsIndex <= 0) {
+            // Bare or empty-name parameters cannot be parsed safely — skip.
+            continue;
+        }
+        const name = part.substring(0, equalsIndex).trim().toLowerCase();
+        if (name === '') {
+            continue;
+        }
+        let value = part.substring(equalsIndex + 1).trim();
+        if (value.length >= 2 && value.startsWith('"') && value.endsWith('"')) {
+            value = value.substring(1, value.length - 1);
+        }
+        parameters[name] = value;
+    }
+    return { key: `${type}/${subtype}${stringifyParameters(parameters)}`, type, subtype, parameters };
+}
+
 export default class MediaType extends Null implements Serializable, StringComparable<MediaType>, Matchable<MediaType> {
     readonly experimental: boolean;
     readonly facets: string[];
@@ -149,6 +208,41 @@ export default class MediaType extends Null implements Serializable, StringCompa
             return value as number;
         }
         return 1;
+    }
+
+    /**
+     * Whether this media type is JSON: `application/json`, `text/json`,
+     * or any `+json`-suffixed type (e.g. `application/problem+json`).
+     * The single source for JSON-sniffing decisions previously
+     * re-implemented in `http-request-limits` and the transform
+     * interceptor (Wave 6, 2026-09-27).
+     */
+    get isJSON(): boolean {
+        return this.suffix === 'json' || this.baseType === 'application/json' || this.baseType === 'text/json';
+    }
+
+    /**
+     * Parses an `Accept` header value into {@link MediaType} instances in
+     * header order. Each entry keeps its quality factor in
+     * `parameters.q` — use the {@link qualityFactor} getter and
+     * `MediaType.qualityFactorComparator` for negotiation decisions
+     * (`qualityFactor === 0` means "never"). Malformed entries are dropped.
+     *
+     * @param accept - The raw `Accept` header value.
+     * @returns The parsed media types (empty when absent or all-malformed).
+     */
+    static parseAccept(accept: string | null | undefined): MediaType[] {
+        if (!accept) {
+            return [];
+        }
+        const result: MediaType[] = [];
+        for (const part of accept.split(',')) {
+            const mediaType = MediaType.for(part.trim());
+            if (mediaType !== null) {
+                result.push(mediaType);
+            }
+        }
+        return result;
     }
 
     /**
@@ -184,37 +278,27 @@ export default class MediaType extends Null implements Serializable, StringCompa
                 : typeOrExpression;
 
         if (mediaTypeExpression?.length) {
-            if (!typeRegistry.has(mediaTypeExpression)) {
+            const normalized = isParsed ? null : normalizeMediaTypeExpression(mediaTypeExpression);
+            const mediaTypeKey = isParsed ? mediaTypeExpression : (normalized?.key ?? mediaTypeExpression);
+
+            if (!typeRegistry.has(mediaTypeKey)) {
                 if (isParsed) {
                     const mediaType = new MediaType(typeOrExpression as SupportedMediaType, subtype, parameters);
-                    typeRegistry.set(mediaTypeExpression, mediaType);
+                    typeRegistry.set(mediaTypeKey, mediaType);
+                } else if (normalized === null) {
+                    // No slash found - treat as type only with wildcard subtype
+                    const mediaType = new MediaType(typeOrExpression as SupportedMediaType, WILDCARD, parameters);
+                    typeRegistry.set(mediaTypeKey, mediaType);
                 } else {
-                    const slashIndex = mediaTypeExpression.indexOf('/');
-                    if (slashIndex === -1) {
-                        // No slash found - treat as type only with wildcard subtype
-                        const mediaType = new MediaType(typeOrExpression as SupportedMediaType, WILDCARD, parameters);
-                        typeRegistry.set(mediaTypeExpression, mediaType);
-                    } else {
-                        const type = mediaTypeExpression.substring(0, slashIndex) as SupportedMediaType,
-                            fullSubtype = mediaTypeExpression.substring(slashIndex + 1),
-                            parts: string[] = fullSubtype.split(';'),
-                            sub = parts[0] || WILDCARD;
-
-                        // Remove the subtype
-                        parts.shift();
-
-                        const parsedParameters: MediaTypeParameters = parts.length
-                            ? (Object.fromEntries(
-                                  parts.map(splitOnEquals as (value: string) => [string, string])
-                              ) as MediaTypeParameters)
-                            : {};
-                        const mediaType = new MediaType(type, sub, parsedParameters);
-
-                        typeRegistry.set(mediaTypeExpression, mediaType);
-                    }
+                    const mediaType = new MediaType(
+                        normalized.type as SupportedMediaType,
+                        normalized.subtype,
+                        normalized.parameters
+                    );
+                    typeRegistry.set(mediaTypeKey, mediaType);
                 }
             }
-            return typeRegistry.get(mediaTypeExpression) as MediaType;
+            return typeRegistry.get(mediaTypeKey) as MediaType;
         }
 
         return null;
@@ -223,6 +307,30 @@ export default class MediaType extends Null implements Serializable, StringCompa
     static qualityFactorComparator = qualityFactorComparator;
 
     static specificityComparator = specificityComparator;
+
+    /**
+     * Registers/retrieves a media type by authored components, guaranteed
+     * non-null: the interned-registry path for programmatic construction
+     * (`MediaTypes.*` constants) where a missing entry is a programming
+     * error, not a parse outcome. Use {@link MediaType.for} for parsing
+     * user/header values — those can legitimately return `null`.
+     *
+     * @param type - The top-level type (e.g. `'application'`).
+     * @param subtype - The subtype or wildcard (default `'*'`).
+     * @param parameters - Optional parameters.
+     * @throws {IllegalStateError} When the composed expression is empty.
+     */
+    static registered(
+        type: SupportedMediaType | string,
+        subtype: string = WILDCARD,
+        parameters: MediaTypeParameters = {}
+    ): MediaType {
+        const mediaType = MediaType.for(type as SupportedMediaType, subtype, parameters);
+        if (mediaType === null) {
+            throw new IllegalStateError(`Invalid registered media type: ${String(type)}/${String(subtype)}`);
+        }
+        return mediaType;
+    }
 
     constructor(type: SupportedMediaType = WILDCARD, subtype: string = WILDCARD, parameters: MediaTypeParameters = {}) {
         super();

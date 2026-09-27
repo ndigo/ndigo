@@ -21,30 +21,30 @@ import { bootApp, MockHTTP } from '@blue/test';
 import { TodoController } from '../src/todo-controller';
 
 describe('Todo API', () => {
-    let mockMVC: MockHTTP;
+    let mockHTTP: MockHTTP;
     let close: () => void;
 
     beforeAll(() => {
         const app = bootApp([TodoController]); // boots context + dispatcher
-        mockMVC = new MockHTTP(app);
+        mockHTTP = new MockHTTP(app);
         close = app.close;
     });
 
     afterAll(() => close());
 
     test('GET /todos lists items', async () => {
-        const res = await mockMVC.get('/todos').exec();
+        const res = await mockHTTP.get('/todos').exec();
         expect(res.response.status).toBe(200);
         expect(res.json()).toEqual([{ text: 'buy milk', checked: false }]);
     });
 
     test('POST /todos binds the JSON body', async () => {
-        const res = await mockMVC.post('/todos').body({ text: 'write docs' }).exec();
+        const res = await mockHTTP.post('/todos').body({ text: 'write docs' }).exec();
         expect(res.json()).toEqual({ text: 'write docs', checked: false });
     });
 
     test('unknown route yields 404', async () => {
-        const res = await mockMVC.get('/nope').exec();
+        const res = await mockHTTP.get('/nope').exec();
         expect(res.response.status).toBe(404);
     });
 });

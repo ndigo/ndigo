@@ -28,7 +28,7 @@ const TOKEN_MARKER = cipher.encrypt('demo-secret-token', 'api.secretToken');
 
 describe('blue-api config-secrets demo (AD-29 Wave 2, SEC-4 gated)', () => {
     let context: Awaited<ReturnType<ApplicationBuilder['run']>>;
-    let mockMVC: MockHTTP;
+    let mockHTTP: MockHTTP;
 
     beforeAll(async () => {
         initAuth();
@@ -45,7 +45,7 @@ describe('blue-api config-secrets demo (AD-29 Wave 2, SEC-4 gated)', () => {
             .run();
 
         const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
-        mockMVC = new MockHTTP({ dispatcher });
+        mockHTTP = new MockHTTP({ dispatcher });
     });
 
     afterAll(() => {
@@ -58,7 +58,7 @@ describe('blue-api config-secrets demo (AD-29 Wave 2, SEC-4 gated)', () => {
     });
 
     test('GET /api/config/secrets without a token is rejected (SEC-4)', async () => {
-        const res = await mockMVC.get('/api/config/secrets').exec();
+        const res = await mockHTTP.get('/api/config/secrets').exec();
 
         expect(res.response.status).toBe(401);
         // The plaintext must never leak to an unauthenticated caller.
@@ -69,11 +69,11 @@ describe('blue-api config-secrets demo (AD-29 Wave 2, SEC-4 gated)', () => {
 
     test('GET /api/config/secrets with the demo token serves the decrypted value', async () => {
         // Acquire a valid demo token through the app's own login endpoint.
-        const login = await mockMVC.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        const login = await mockHTTP.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
         const { token } = login.json() as { token?: string };
         expect(token).toBeDefined();
 
-        const res = await mockMVC
+        const res = await mockHTTP
             .get('/api/config/secrets')
             .headers({ authorization: `Bearer ${token}` })
             .exec();
@@ -83,7 +83,7 @@ describe('blue-api config-secrets demo (AD-29 Wave 2, SEC-4 gated)', () => {
     });
 
     test('GET /api/config/secrets rejects an unknown bearer token (SEC-4)', async () => {
-        const res = await mockMVC
+        const res = await mockHTTP
             .get('/api/config/secrets')
             .headers({ authorization: 'Bearer not-a-real-token' })
             .exec();

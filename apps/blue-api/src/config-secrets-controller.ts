@@ -18,6 +18,7 @@ import '@tsmetadata/polyfill';
 import { AsApplicationContextAware, ApplicationContext, ApplicationContextAware } from '@blue/context';
 import { getMapping, requestMapping, parameters, headerValue } from '@blue/dispatcher';
 import { ResponseEntity } from '@blue/platform-node';
+import { HTTPHeaders } from '@blue/http';
 import { SecretsConfig } from './server-config';
 import { lookupPrincipal } from './auth-store';
 
@@ -42,9 +43,9 @@ export class ConfigSecretsController extends AsApplicationContextAware(Object) i
      */
     @getMapping('/secrets')
     @parameters({ token: headerValue('authorization') })
-    secrets(token: string | undefined) {
-        const bearer = token?.replace(/^Bearer\s+/i, '');
-        if (!bearer || !lookupPrincipal(bearer)) {
+    async secrets(token: string | undefined) {
+        const bearer = HTTPHeaders.AUTHORIZATION.bearerToken(token);
+        if (!bearer || !(await lookupPrincipal(bearer))) {
             return ResponseEntity.unauthorized({ error: 'Unauthorized' }, { 'WWW-Authenticate': 'Bearer' });
         }
         const config = this.#context?.getValue<SecretsConfig>('secretsConfig');

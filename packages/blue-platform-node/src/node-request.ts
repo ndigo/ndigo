@@ -26,6 +26,14 @@ export interface NodeRequest {
     /** Pre-parsed cookies from the `Cookie` header. */
     cookies: Record<string, string>;
     /**
+     * The client's socket address (`req.socket.remoteAddress`), populated
+     * by the adapter. The rate limiter keys on this (SEC-6, Wave 3);
+     * `X-Forwarded-For` is deliberately NOT consulted — trusted-proxy
+     * resolution is a Tier-2 deferral (gap analysis), and trusting the
+     * header unconditionally is a spoofing hole.
+     */
+    remoteAddress?: string;
+    /**
      * Server-side session data keyed by session variable name.
      *
      * **Reserved — always empty in the built-in pipeline.** The adapter

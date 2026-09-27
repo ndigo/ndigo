@@ -5,16 +5,15 @@
  */
 import {
     jwtVerify,
+    SignJWT,
     importSPKI,
     exportJWK,
     createLocalJWKSet,
     createRemoteJWKSet,
-    JWTPayload,
-    JWTVerifyGetKey,
+    type JWTPayload,
+    type JWTVerifyGetKey,
 } from 'jose';
-import { type AuthAdapter } from '@blue/auth-core';
-import { type Principal } from '@blue/auth-core';
-import { type AuthResult } from '@blue/auth-core';
+import { type AuthAdapter, type AuthResult, type Principal, type UserStore, DefaultPrincipal } from '@blue/auth-core';
 
 /**
  * Configuration for the JWT adapter.
@@ -39,7 +38,70 @@ export interface JWTAdapterConfig {
     jwksUrl?: string;
     /** The algorithm used for signing (e.g., 'HS256', 'RS256'). */
     algorithm: string;
+    /**
+     * User store backing `ver`-claim revocation (AD-33 D-7). When present:
+     * `validate` checks the `ver` claim of framework-issued tokens against
+     * the account's `tokenVersion`, `issueTokens` snapshots the current
+     * version, and `refresh`/`logout` advance it (rotating the family and
+     * invalidating every older token). Tokens WITHOUT a `ver` claim (e.g.
+     * external IdP tokens) skip the check — revocation never rejects
+     * tokens this adapter did not version.
+     */
+    userStore?: UserStore;
+    /**
+     * Short-TTL cache for `tokenVersion` reads during validation (ms).
+     * `0` (default) reads the store on every validation — revocation is
+     * visible immediately at the cost of one user-record read per request;
+     * a positive value trades revocation latency for throughput.
+     */
+    revocationCacheTtlMs?: number;
+    /** Lifetime of issued access tokens (default 15 minutes). */
+    accessTokenTtlMs?: number;
+    /** Lifetime of issued refresh tokens (default 7 days). */
+    refreshTokenTtlMs?: number;
 }
+
+/**
+ * Error for refresh/issue/revocation failures: invalid, superseded or
+ * revoked tokens, unknown/disabled accounts, and configuration that
+ * cannot issue tokens. Always a `401`-class outcome at the flow level.
+ */
+export class JWTTokenError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'JWTTokenError';
+    }
+}
+
+/**
+ * The result of {@link JWTAdapter.refresh}: the `AuthResult` contract
+ * (`token` = the new access token) plus the rotated refresh token.
+ */
+export interface JWTRefreshResult extends AuthResult {
+    /** New access token. */
+    token: string;
+    /** New (rotated) refresh token — the old one is dead. */
+    refreshToken: string;
+}
+
+/**
+ * The identity to issue tokens for (`JWTAdapter.issueTokens`). When a
+ * user store is wired, the store's record wins (roles + current
+ * `tokenVersion`); the subject fields are the store-less fallback.
+ */
+export interface TokenSubject {
+    /** Account id (the `sub` claim). */
+    id: string;
+    /** Display name (store-less mode). */
+    name?: string;
+    /** Roles (store-less mode). */
+    roles?: readonly string[];
+    /** Token version (store-less mode; store mode reads the live value). */
+    tokenVersion?: number;
+}
+
+const DEFAULT_ACCESS_TTL_MS = 15 * 60 * 1000;
+const DEFAULT_REFRESH_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 /**
  * A reference implementation of {@link AuthAdapter} for JWT-based authentication.
@@ -50,15 +112,36 @@ export interface JWTAdapterConfig {
  *   endpoint (`jwksUrl`, auto-rotating + cached)
  *
  * Issuer, audience, and expiration are validated on every token.
+ *
+ * With a `userStore` wired (AD-33 D-7), the adapter also owns issuance and
+ * revocation: `issueTokens` mints access + refresh JWTs snapshotting the
+ * account's `tokenVersion` (`ver` claim); `refresh` advances the version —
+ * every older access AND refresh token dies, so reuse of a rotated-out
+ * refresh is rejected by construction (no ledger needed — the family
+ * moves forward); `logout` advances the version outright.
  */
 export class JWTAdapter implements AuthAdapter {
     readonly id = 'jwt';
     #config: JWTAdapterConfig;
     #localJwks: JWTVerifyGetKey | null = null;
     #remoteJwks: JWTVerifyGetKey | null = null;
+    readonly #userStore: UserStore | undefined;
+    readonly #revocationCacheTtlMs: number;
+    readonly #accessTtlMs: number;
+    readonly #refreshTtlMs: number;
+    readonly #versionCache = new Map<string, { version: number; expiresAt: number }>();
 
     constructor(config: JWTAdapterConfig) {
+        if (config.algorithm.startsWith('HS') && !config.secret) {
+            throw new JWTTokenError(
+                `JWTAdapter: HMAC algorithm "${config.algorithm}" requires "secret" — validation and issuance fail without it`
+            );
+        }
         this.#config = config;
+        this.#userStore = config.userStore;
+        this.#revocationCacheTtlMs = config.revocationCacheTtlMs ?? 0;
+        this.#accessTtlMs = config.accessTokenTtlMs ?? DEFAULT_ACCESS_TTL_MS;
+        this.#refreshTtlMs = config.refreshTokenTtlMs ?? DEFAULT_REFRESH_TTL_MS;
         if (config.jwksUrl) {
             this.#remoteJwks = createRemoteJWKSet(new URL(config.jwksUrl));
         }
@@ -106,6 +189,14 @@ export class JWTAdapter implements AuthAdapter {
                     ? await jwtVerify(token, key, this.#verifyOptions())
                     : await jwtVerify(token, key, this.#verifyOptions());
 
+            // AD-33 D-7: framework-issued tokens carry `ver`; when a store is
+            // wired, the claim must equal the account's current version.
+            // Tokens without `ver` (external IdP) skip the check entirely.
+            if (this.#userStore && typeof payload.ver === 'number' && typeof payload.sub === 'string') {
+                const current = await this.#currentVersion(payload.sub);
+                if (current === null || current !== payload.ver) return null;
+            }
+
             return principalFromPayload(payload);
         } catch {
             return null;
@@ -148,12 +239,184 @@ export class JWTAdapter implements AuthAdapter {
         throw new Error('JWTAdapter.authenticate() not implemented - use a proper auth flow');
     }
 
-    async refresh(_token: string): Promise<AuthResult> {
-        throw new Error('JWTAdapter.refresh() not implemented - use a proper token refresh flow');
+    /**
+     * Mints an access + refresh token pair (AD-33 D-7).
+     *
+     * HMAC (HS*) configurations only: asymmetric configs hold a public
+     * key for validation, not a signing key — external IdPs own issuance
+     * there. With a user store wired, the account must exist, be enabled,
+     * and the `ver` claim snapshots the store's CURRENT `tokenVersion`
+     * (never a caller-supplied value).
+     */
+    async issueTokens(
+        subject: TokenSubject
+    ): Promise<{ accessToken: string; refreshToken: string; expiresAt: number }> {
+        const secret = this.#signingSecret();
+        const identity = this.#userStore
+            ? await this.#storeIdentity(subject.id)
+            : {
+                  id: subject.id,
+                  name: subject.name ?? subject.id,
+                  roles: subject.roles ?? [],
+                  tokenVersion: subject.tokenVersion ?? 0,
+              };
+        const now = Date.now();
+        const accessToken = await this.#sign(
+            {
+                sub: identity.id,
+                name: identity.name,
+                roles: [...identity.roles],
+                ver: identity.tokenVersion,
+                token_use: 'access',
+            },
+            secret,
+            now + this.#accessTtlMs
+        );
+        const refreshToken = await this.#sign(
+            { sub: identity.id, ver: identity.tokenVersion, token_use: 'refresh' },
+            secret,
+            now + this.#refreshTtlMs
+        );
+        return { accessToken, refreshToken, expiresAt: now + this.#accessTtlMs };
     }
 
-    async logout(_token: string): Promise<void> {
-        // Stateless JWT — logout is client-side token discard.
+    /**
+     * Rotates a refresh token (AD-33 D-7): issues a new access + refresh
+     * pair AFTER advancing the account's `tokenVersion` — every older
+     * token (access and refresh alike) is dead the moment a refresh lands,
+     * so replaying a rotated-out refresh token is rejected by the version
+     * comparison. No rotation ledger needed: the family moves forward.
+     */
+    async refresh(token: string): Promise<JWTRefreshResult> {
+        const store = this.#userStoreOrThrow('refresh');
+        let payload: JWTPayload;
+        try {
+            ({ payload } = await jwtVerify(token, await this.#resolveKey(), this.#verifyOptions()));
+        } catch {
+            throw new JWTTokenError('Invalid refresh token');
+        }
+        if (payload.token_use !== 'refresh') {
+            throw new JWTTokenError('Token is not a refresh token');
+        }
+        if (typeof payload.sub !== 'string' || typeof payload.ver !== 'number') {
+            throw new JWTTokenError('Malformed refresh token');
+        }
+        const user = await store.findById(payload.sub);
+        if (!user || user.disabled === true) {
+            throw new JWTTokenError('Account unknown or disabled');
+        }
+        if (payload.ver !== (user.tokenVersion ?? 0)) {
+            throw new JWTTokenError('Refresh token superseded or revoked');
+        }
+        const nextVer = await store.incrementTokenVersion(user.id);
+        this.#cacheVersion(user.id, nextVer);
+        const issued = await this.issueTokens({ id: user.id });
+        return {
+            principal: new DefaultPrincipal(user.id, user.username, user.roles ?? []),
+            token: issued.accessToken,
+            refreshToken: issued.refreshToken,
+            expiresAt: issued.expiresAt,
+        };
+    }
+
+    /**
+     * Revokes every outstanding token for the token's account by
+     * advancing `tokenVersion` (AD-33 D-7). The presented token (access
+     * or refresh) must verify — an unverifiable token revokes nothing and
+     * throws (fail closed).
+     */
+    async logout(token: string): Promise<void> {
+        const store = this.#userStoreOrThrow('logout');
+        let payload: JWTPayload;
+        try {
+            ({ payload } = await jwtVerify(token, await this.#resolveKey(), this.#verifyOptions()));
+        } catch {
+            throw new JWTTokenError('Invalid token');
+        }
+        if (typeof payload.sub !== 'string') {
+            throw new JWTTokenError('Malformed token');
+        }
+        const nextVer = await store.incrementTokenVersion(payload.sub);
+        this.#cacheVersion(payload.sub, nextVer);
+    }
+
+    #signingSecret(): Uint8Array {
+        const algorithm = this.#config.algorithm;
+        if (!algorithm.startsWith('HS') || !this.#config.secret) {
+            throw new JWTTokenError(
+                `Token issuance requires an HMAC secret (HS* algorithms); "${algorithm}" holds no signing key`
+            );
+        }
+        return new TextEncoder().encode(this.#config.secret);
+    }
+
+    async #storeIdentity(id: string): Promise<{
+        id: string;
+        name: string;
+        roles: readonly string[];
+        tokenVersion: number;
+    }> {
+        const store = this.#userStore;
+        if (store === undefined) {
+            throw new JWTTokenError(
+                'issueTokens requires a userStore — revocation is user-record token versioning (AD-33 D-7)'
+            );
+        }
+        const user = await store.findById(id);
+        if (!user || user.disabled === true) {
+            throw new JWTTokenError(`Cannot issue tokens for user "${id}": unknown or disabled`);
+        }
+        return {
+            id: user.id,
+            name: user.username,
+            roles: user.roles ?? [],
+            tokenVersion: user.tokenVersion ?? 0,
+        };
+    }
+
+    async #sign(payload: Record<string, unknown>, secret: Uint8Array, expiresAtMs: number): Promise<string> {
+        return new SignJWT(payload)
+            .setProtectedHeader({ alg: this.#config.algorithm })
+            .setIssuer(this.#config.issuer)
+            .setAudience(this.#config.audience)
+            .setIssuedAt(Math.floor(Date.now() / 1000))
+            .setExpirationTime(Math.floor(expiresAtMs / 1000))
+            .sign(secret);
+    }
+
+    #userStoreOrThrow(flow: string): UserStore {
+        if (!this.#userStore) {
+            throw new JWTTokenError(
+                `${flow} requires a userStore — revocation is user-record token versioning (AD-33 D-7)`
+            );
+        }
+        return this.#userStore;
+    }
+
+    /**
+     * Reads the account's current `tokenVersion` for the `ver` check,
+     * honoring the short-TTL cache when configured.
+     */
+    async #currentVersion(sub: string): Promise<number | null> {
+        const ttl = this.#revocationCacheTtlMs;
+        if (ttl > 0) {
+            const hit = this.#versionCache.get(sub);
+            if (hit && hit.expiresAt > Date.now()) return hit.version;
+        }
+        const store = this.#userStore;
+        if (store === undefined) return null;
+        const user = await store.findById(sub);
+        const version = user === null ? null : (user.tokenVersion ?? 0);
+        if (ttl > 0 && version !== null) {
+            this.#versionCache.set(sub, { version, expiresAt: Date.now() + ttl });
+        }
+        return version;
+    }
+
+    #cacheVersion(sub: string, version: number): void {
+        if (this.#revocationCacheTtlMs > 0) {
+            this.#versionCache.set(sub, { version, expiresAt: Date.now() + this.#revocationCacheTtlMs });
+        }
     }
 }
 

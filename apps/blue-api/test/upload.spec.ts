@@ -40,13 +40,13 @@ function multipartBody(parts: Array<{ name: string; filename?: string; contentTy
 }
 
 describe('blue-api multipart upload (AD-26)', () => {
-    let mockMVC: MockHTTP;
+    let mockHTTP: MockHTTP;
     let close: () => void;
 
     beforeAll(() => {
         initAuth();
         const app = bootApp([ManagementAutoConfiguration, NodeAppConfiguration]);
-        mockMVC = new MockHTTP(app);
+        mockHTTP = new MockHTTP(app);
         close = app.close;
     });
 
@@ -60,7 +60,7 @@ describe('blue-api multipart upload (AD-26)', () => {
             { name: 'file', filename: 'hello.txt', contentType: 'text/plain', value: content },
         ]);
 
-        const res = await mockMVC
+        const res = await mockHTTP
             .post('/api/upload')
             .rawBody(body)
             .headers({ 'content-type': `multipart/form-data; boundary=${BOUNDARY}` })
@@ -83,7 +83,7 @@ describe('blue-api multipart upload (AD-26)', () => {
             { name: 'file', filename: 'meta.txt', contentType: 'text/plain', value: content },
         ]);
 
-        const res = await mockMVC
+        const res = await mockHTTP
             .post('/api/upload')
             .rawBody(body)
             .headers({ 'content-type': `multipart/form-data; boundary=${BOUNDARY}` })
@@ -102,7 +102,7 @@ describe('blue-api multipart upload (AD-26)', () => {
     test('POST /api/upload rejects an empty file part with 400', async () => {
         const body = multipartBody([{ name: 'file', filename: 'empty.txt', contentType: 'text/plain', value: '' }]);
 
-        const res = await mockMVC
+        const res = await mockHTTP
             .post('/api/upload')
             .rawBody(body)
             .headers({ 'content-type': `multipart/form-data; boundary=${BOUNDARY}` })

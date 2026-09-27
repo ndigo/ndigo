@@ -64,6 +64,9 @@ import ResponseStatus from './response-status';
 
 export * from './http';
 export * from './http-header';
+export * from './authorization-header';
+export * from './content-type-header';
+export * from './set-cookie-header';
 export * from './interceptors';
 export { TraceHeaderInterceptor, TraceHeaderInterceptorOptions } from './interceptors/trace-header-interceptor';
 export { ResponseStatus };

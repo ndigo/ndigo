@@ -26,7 +26,7 @@ import { TodoModelStore } from '../src/todo-model-store';
  */
 
 describe('blue-island hybrid demo', () => {
-    let mockMVC: MockHTTP;
+    let mockHTTP: MockHTTP;
     let close: () => void;
 
     beforeAll(() => {
@@ -34,7 +34,7 @@ describe('blue-island hybrid demo', () => {
         const app = bootApp([IslandConfiguration]);
         // Same wiring as the app bootstrap: entry-resolved message source.
         app.context.setMessageSource(app.context.getValue('messageSource'));
-        mockMVC = new MockHTTP(app);
+        mockHTTP = new MockHTTP(app);
         close = app.close;
     });
 
@@ -44,7 +44,7 @@ describe('blue-island hybrid demo', () => {
     });
 
     test('GET / serves the shell with the server-rendered island', async () => {
-        const res = await mockMVC.get('/').exec();
+        const res = await mockHTTP.get('/').exec();
         expect(res.response.status).toBe(200);
         const html = res.text();
         // The island markup + serialized model are present in the served doc.
@@ -53,7 +53,7 @@ describe('blue-island hybrid demo', () => {
     });
 
     test('GET / renders the serialized model into data-blue-model', async () => {
-        const res = await mockMVC.get('/').exec();
+        const res = await mockHTTP.get('/').exec();
         const html = res.text();
         const match = /data-blue-model="([^"]+)"/.exec(html);
         expect(match).not.toBeNull();
@@ -69,7 +69,7 @@ describe('blue-island hybrid demo', () => {
     });
 
     test('GET /static/client.js serves the built client bundle', async () => {
-        const res = await mockMVC.get('/static/client.js').exec();
+        const res = await mockHTTP.get('/static/client.js').exec();
         expect(res.response.status).toBe(200);
         const body = res.text();
         // Bundle contains the hydrate logic + the todo-app component tag.
@@ -78,7 +78,7 @@ describe('blue-island hybrid demo', () => {
     });
 
     test('GET / negotiates the shell language from Accept-Language', async () => {
-        const res = await mockMVC.get('/').headers({ 'accept-language': 'fr, en;q=0.8' }).exec();
+        const res = await mockHTTP.get('/').headers({ 'accept-language': 'fr, en;q=0.8' }).exec();
         const html = res.text();
 
         expect(html).toContain('data-blue-locale="fr"');
@@ -89,7 +89,7 @@ describe('blue-island hybrid demo', () => {
     });
 
     test('GET / defaults to English without an Accept-Language header', async () => {
-        const res = await mockMVC.get('/').exec();
+        const res = await mockHTTP.get('/').exec();
         const html = res.text();
 
         expect(html).toContain('data-blue-locale="en-US"');

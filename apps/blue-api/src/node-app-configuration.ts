@@ -113,11 +113,9 @@ export class NodeAppConfiguration {
                 if (token === null) {
                     return {};
                 }
-                const principal = lookupPrincipal(token);
-                if (principal === null) {
-                    return null;
-                }
-                return { principal, user: principal.id };
+                return lookupPrincipal(token).then((principal) =>
+                    principal === null ? null : { principal, user: principal.id }
+                );
             },
         };
     }

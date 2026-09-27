@@ -9,3 +9,5 @@ export { signal, computed, effect, batch, untracked, Signal } from '@preact/sign
 export type { SignalOptions } from '@preact/signals-core';
 
 export { streamToSignal } from './stream-to-signal';
+export { eventsToSignal, signalToEvents } from './event-bridge';
+export type { EventSource, EventSink, SignalToEventsOptions } from './event-bridge';

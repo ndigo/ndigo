@@ -852,6 +852,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 headers: req.headers as Record<string, string | string[] | undefined>,
                 body: bodyRecord,
                 cookies: parseCookies(typeof req.headers['cookie'] === 'string' ? req.headers['cookie'] : undefined),
+                remoteAddress: req.socket?.remoteAddress,
                 session: {},
             };
             if (multipart) {

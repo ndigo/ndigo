@@ -118,14 +118,32 @@ export function generated() {
 }
 
 /**
+ * Options for relation decorators. The join column must name an existing
+ * `@column` field — the FK lives in a declared column so it persists and
+ * reads through the normal column pipeline (ORM completion plan, Wave 3).
+ */
+export interface RelationOptions {
+    /** Owning side (many-to-one, one-to-one): the `@column` field on this entity holding the target's primary key. */
+    joinColumn?: string;
+    /** Inverse side (one-to-many, one-to-one): the `@column` field on the target entity holding this entity's primary key. */
+    inverseJoinColumn?: string;
+}
+
+/**
  * @internal
  * Shared factory for relation decorators. Records a {@link RelationDefinition}
  * on the class field's `Symbol.metadata` under the `relationsMetadataKey` key.
  */
-function relationDecorator(kind: RelationKind, targetEntity: () => ClassType) {
+function relationDecorator(kind: RelationKind, targetEntity: () => ClassType, options: RelationOptions = {}) {
     return function (_value: undefined, context: ClassFieldDecoratorContext): void {
         const relations = ((context.metadata[relationsMetadataKey] as RelationDefinition[]) ?? []).slice();
-        relations.push({ kind, fieldName: String(context.name), targetEntity });
+        relations.push({
+            kind,
+            fieldName: String(context.name),
+            targetEntity,
+            joinColumn: options.joinColumn,
+            inverseJoinColumn: options.inverseJoinColumn,
+        });
         context.metadata[relationsMetadataKey] = relations;
     };
 }
@@ -148,8 +166,8 @@ function relationDecorator(kind: RelationKind, targetEntity: () => ClassType) {
  * }
  * ```
  */
-export function oneToMany(targetEntity: () => ClassType) {
-    return relationDecorator('one-to-many', targetEntity);
+export function oneToMany(targetEntity: () => ClassType, options: RelationOptions = {}) {
+    return relationDecorator('one-to-many', targetEntity, options);
 }
 
 /**
@@ -166,8 +184,8 @@ export function oneToMany(targetEntity: () => ClassType) {
  * }
  * ```
  */
-export function manyToOne(targetEntity: () => ClassType) {
-    return relationDecorator('many-to-one', targetEntity);
+export function manyToOne(targetEntity: () => ClassType, options: RelationOptions = {}) {
+    return relationDecorator('many-to-one', targetEntity, options);
 }
 
 /**
@@ -184,8 +202,8 @@ export function manyToOne(targetEntity: () => ClassType) {
  * }
  * ```
  */
-export function manyToMany(targetEntity: () => ClassType) {
-    return relationDecorator('many-to-many', targetEntity);
+export function manyToMany(targetEntity: () => ClassType, options: RelationOptions = {}) {
+    return relationDecorator('many-to-many', targetEntity, options);
 }
 
 /**
@@ -202,8 +220,8 @@ export function manyToMany(targetEntity: () => ClassType) {
  * }
  * ```
  */
-export function oneToOne(targetEntity: () => ClassType) {
-    return relationDecorator('one-to-one', targetEntity);
+export function oneToOne(targetEntity: () => ClassType, options: RelationOptions = {}) {
+    return relationDecorator('one-to-one', targetEntity, options);
 }
 
 /**

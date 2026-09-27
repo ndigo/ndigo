@@ -31,9 +31,8 @@ export class NodeHeaderValueMethodArgumentResolver extends AbstractPlatformArgum
             return request.headers;
         }
         // HTTPHeader folds the key against lowercase Node-server records
-        // (DSG-5); multi-value headers still join into a comma list.
-        const value = new HTTPHeader(name).get(request.headers as unknown as Record<string, string>);
-        return Array.isArray(value) ? value.join(', ') : value;
+        // (DSG-5); multi-value headers join into a comma list (Wave 5).
+        return new HTTPHeader(name).getJoined(request.headers as unknown as Record<string, string>);
     }
 
     supportsParameter(parameter: MethodParameter): boolean {

@@ -7,6 +7,16 @@ import { Constructable } from '@blue/core';
 import { EntityManager } from './entity-manager';
 import { getEntityMetadata } from './metadata';
 import { parseDerivedQuery } from './derived-query-repository';
+import { Page, PageRequest, pageFromAll, sortComparator } from './page';
+
+/**
+ * Options controlling relation loading for find operations
+ * (ORM completion plan, Wave 3). Names must match declared relation fields.
+ */
+export interface RelationFetchOptions {
+    /** Relations to load eagerly and assign onto each returned entity. */
+    relations?: string[];
+}
 
 /**
  * Defines the basic contract for a repository, providing common data access operations for entities.
@@ -23,14 +33,32 @@ export interface Repository<T extends object, ID> {
     /**
      * Retrieves an entity by its ID.
      * @param id - The ID of the entity to retrieve.
+     * @param options - Optional relation loading (eager fetch).
      * @returns The entity with the given ID or `undefined` if not found.
      */
-    findById(id: ID): T | undefined;
+    findById(id: ID, options?: RelationFetchOptions): T | undefined;
     /**
      * Retrieves all entities.
+     * @param options - Optional relation loading (eager fetch).
      * @returns An array containing all entities.
      */
-    findAll(): T[];
+    findAll(options?: RelationFetchOptions): T[];
+    /**
+     * Loads a declared relation of an entity lazily and assigns it onto the
+     * entity's field.
+     * @param entity - The entity whose relation is loaded.
+     * @param relationName - The declared relation field name.
+     * @returns The loaded relation value (entity, array, or undefined/[] when
+     *   nothing relates).
+     */
+    loadRelation(entity: T, relationName: string): unknown;
+    /**
+     * Retrieves one page of entities, sorted and sliced per the request.
+     * Sort properties must name declared entity fields; anything else fails loud.
+     * @param request - The page index (1-based), size, and optional sort orders.
+     * @returns The requested page with totals. Pages beyond the last are empty.
+     */
+    findPage(request: PageRequest): Page<T>;
     /**
      * Deletes an entity by its ID.
      * @param id - The ID of the entity to delete.
@@ -90,18 +118,49 @@ export abstract class AbstractRepository<T extends object, ID> implements Reposi
     /**
      * Retrieves an entity by its ID using the `EntityManager`.
      * @param id - The ID of the entity to retrieve.
+     * @param options - Optional relation loading (eager fetch).
      * @returns The entity with the given ID or `undefined` if not found.
      */
-    findById(id: ID): T | undefined {
-        return this.#entityManager.find(this.#entityClass, id);
+    findById(id: ID, options: RelationFetchOptions = {}): T | undefined {
+        const entity = this.#entityManager.find(this.#entityClass, id);
+        return entity === undefined ? undefined : this.#fetchRelations(entity, options);
     }
 
     /**
      * Retrieves all entities of the managed type using the `EntityManager`.
-     * @returns An array containing all entities.
+     * @param options - Optional relation loading (eager fetch).
+     * @returns All entities of the managed type.
      */
-    findAll(): T[] {
-        return this.#entityManager.findAll(this.#entityClass);
+    findAll(options: RelationFetchOptions = {}): T[] {
+        return this.#entityManager.findAll(this.#entityClass).map((entity) => this.#fetchRelations(entity, options));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    loadRelation(entity: T, relationName: string): unknown {
+        const value = this.#entityManager.fetchRelation(entity, relationName);
+        (entity as Record<string, unknown>)[relationName] = value;
+        return value;
+    }
+
+    #fetchRelations(entity: T, options: RelationFetchOptions): T {
+        for (const relationName of options.relations ?? []) {
+            (entity as Record<string, unknown>)[relationName] = this.#entityManager.fetchRelation(entity, relationName);
+        }
+        return entity;
+    }
+
+    /**
+     * Retrieves one page of entities, sorted and sliced per the request.
+     * Sort properties must name declared entity fields; anything else fails loud.
+     * @param request - The page index (1-based), size, and optional sort orders.
+     * @returns The requested page with totals. Pages beyond the last are empty.
+     */
+    findPage(request: PageRequest): Page<T> {
+        const meta = getEntityMetadata(this.#entityClass);
+        const allowed = new Set(meta.columns.map((column) => column.fieldName));
+        return pageFromAll(this.findAll(), request, allowed);
     }
 
     /**
@@ -165,17 +224,20 @@ export class InMemoryDerivedQueryRepository<T extends object, ID> extends Abstra
      */
     derive(methodName: string, args: unknown[]): T[] {
         const columns = getEntityMetadata(this.getEntityClass()).columns;
-        const filters = parseDerivedQuery(methodName, columns);
-        if (!filters) {
+        const query = parseDerivedQuery(methodName, columns);
+        if (!query) {
             throw new TypeError(`Unsupported derived query method: ${methodName}`);
         }
 
-        return this.findAll().filter((entity) =>
-            filters.every(({ property, valueIndex }) => {
+        const matched = this.findAll().filter((entity) =>
+            query.filters.every(({ property, valueIndex }) => {
                 const actual = (entity as Record<string, unknown>)[property];
                 return actual === args[valueIndex];
             })
         );
+
+        const ordered = query.orderBy === undefined ? matched : [...matched].sort(sortComparator(query.orderBy));
+        return query.limit === undefined ? ordered : ordered.slice(0, query.limit);
     }
 }
 

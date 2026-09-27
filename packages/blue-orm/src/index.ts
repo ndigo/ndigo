@@ -35,6 +35,7 @@ export {
     postRemove,
     transactional,
 } from './decorators';
+export type { RelationOptions } from './decorators';
 
 // Metadata utilities
 export { getEntityMetadata, isEntity } from './metadata';
@@ -54,5 +55,10 @@ export { InMemoryEntityManager } from './entity-manager';
 export { InMemoryUnitOfWork } from './unit-of-work';
 export { InMemoryTransactionManager } from './transaction-manager';
 export { AbstractRepository, InMemoryRepository, InMemoryDerivedQueryRepository } from './repository';
+export type { RelationFetchOptions } from './repository';
 export { parseDerivedQuery } from './derived-query-repository';
-export type { DerivedQueryResult } from './derived-query-repository';
+export type { DerivedQuery, DerivedQueryResult } from './derived-query-repository';
+
+// Pagination & sorting (ORM completion plan, Wave 2)
+export type { Page, PageRequest, SortDirection, SortOrder } from './page';
+export { pageFromAll, sortComparator, validatePageRequest } from './page';

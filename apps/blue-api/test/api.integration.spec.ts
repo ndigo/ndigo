@@ -20,13 +20,13 @@ import { getDrizzleDataSource } from '../src/drizzle-note-controller';
  */
 
 describe('blue-api through @blue/test', () => {
-    let mockMVC: MockHTTP;
+    let mockHTTP: MockHTTP;
     let close: () => void;
 
     beforeAll(() => {
         initAuth();
         const app = bootApp([ManagementAutoConfiguration, NodeAppConfiguration]);
-        mockMVC = new MockHTTP(app);
+        mockHTTP = new MockHTTP(app);
         close = app.close;
     });
 
@@ -35,29 +35,29 @@ describe('blue-api through @blue/test', () => {
     });
 
     test('GET /api/hello binds the name query parameter', async () => {
-        const res = await mockMVC.get('/api/hello').query({ name: 'Alice' }).exec();
+        const res = await mockHTTP.get('/api/hello').query({ name: 'Alice' }).exec();
         expect(res.response.status).toBe(200);
         expect(res.json()).toEqual({ message: 'Hello, Alice!' });
     });
 
     test('GET /api/hello without name defaults to World', async () => {
-        const res = await mockMVC.get('/api/hello').exec();
+        const res = await mockHTTP.get('/api/hello').exec();
         expect(res.json()).toEqual({ message: 'Hello, World!' });
     });
 
     test('GET /api/greet/:name binds a path segment', async () => {
-        const res = await mockMVC.get('/api/greet/Alice').exec();
+        const res = await mockHTTP.get('/api/greet/Alice').exec();
         expect(res.json()).toEqual({ greeting: 'Greetings, Alice!' });
     });
 
     test('POST /api/echo echoes the full JSON body', async () => {
-        const res = await mockMVC.post('/api/echo').body({ hello: 'world', n: 42 }).exec();
+        const res = await mockHTTP.post('/api/echo').body({ hello: 'world', n: 42 }).exec();
         expect(res.response.status).toBe(200);
         expect(res.json()).toEqual({ echo: { hello: 'world', n: 42 } });
     });
 
     test('unknown route yields 404 JSON', async () => {
-        const res = await mockMVC.get('/no-such-route').exec();
+        const res = await mockHTTP.get('/no-such-route').exec();
         expect(res.response.status).toBe(404);
         const problem = res.json() as { status?: number; type?: string; title?: string; instance?: string };
         expect(problem.status).toBe(404);
@@ -66,7 +66,7 @@ describe('blue-api through @blue/test', () => {
     });
 
     test('POST /auth/login returns 401 on bad credentials', async () => {
-        const res = await mockMVC.post('/auth/login').body({ username: 'bob', password: 'wrong' }).exec();
+        const res = await mockHTTP.post('/auth/login').body({ username: 'bob', password: 'wrong' }).exec();
         // AD-10 / RFC 9110 §15.5.2: authentication failure is 401, not 400.
         expect(res.response.status).toBe(401);
         // Handler-returned errors wrap to an about:blank problem (no `type`).
@@ -78,11 +78,11 @@ describe('blue-api through @blue/test', () => {
     });
 
     test('Drizzle-backed POST /drizzle/notes persists to SQL and lists it', async () => {
-        const login = await mockMVC.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        const login = await mockHTTP.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
         const { token } = login.json() as { token?: string };
         expect(token).toBeDefined();
 
-        const create = await mockMVC
+        const create = await mockHTTP
             .post('/drizzle/notes')
             .headers({ authorization: `Bearer ${token}` })
             .body({ title: 'SQL Note', body: 'persisted via libSQL' })
@@ -93,7 +93,7 @@ describe('blue-api through @blue/test', () => {
         expect(created.note?.title).toBe('SQL Note');
         expect(created.note?.createdAt).toBeDefined(); // @prePersist filled it
 
-        const list = await mockMVC
+        const list = await mockHTTP
             .get('/drizzle/notes')
             .headers({ authorization: `Bearer ${token}` })
             .exec();
@@ -103,7 +103,7 @@ describe('blue-api through @blue/test', () => {
 
     test('Drizzle-backed notes list + get-by-id read from SQL', async () => {
         // Acquire a valid demo token
-        const login = await mockMVC.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        const login = await mockHTTP.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
         const { token } = login.json() as { token?: string };
         expect(token).toBeDefined();
 
@@ -118,7 +118,7 @@ describe('blue-api through @blue/test', () => {
         await seedEm.persist(seeded);
 
         // LIST via the framework route
-        const list = await mockMVC
+        const list = await mockHTTP
             .get('/drizzle/notes')
             .headers({ authorization: `Bearer ${token}` })
             .exec();
@@ -128,7 +128,7 @@ describe('blue-api through @blue/test', () => {
         expect(notes?.some((n) => n.title === 'Seeded SQL Note')).toBe(true);
 
         // GET by-id via the framework route
-        const byId = await mockMVC
+        const byId = await mockHTTP
             .get(`/drizzle/notes/${seeded.id}`)
             .headers({ authorization: `Bearer ${token}` })
             .exec();
@@ -138,7 +138,7 @@ describe('blue-api through @blue/test', () => {
         expect(note?.title).toBe('Seeded SQL Note');
 
         // Missing id → not found
-        const missing = await mockMVC
+        const missing = await mockHTTP
             .get('/drizzle/notes/999999')
             .headers({ authorization: `Bearer ${token}` })
             .exec();
@@ -146,14 +146,14 @@ describe('blue-api through @blue/test', () => {
     });
 
     test('Drizzle-backed notes require authentication', async () => {
-        const res = await mockMVC.get('/drizzle/notes').exec();
+        const res = await mockHTTP.get('/drizzle/notes').exec();
         // Without an auth header the handler rejects; the key assertion is it
         // is not a 200 listing.
         expect([400, 401, 403]).toContain(res.response.status);
     });
 
     test('POST /drizzle/notes validates the body against the entity-derived schema', async () => {
-        const login = await mockMVC.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        const login = await mockHTTP.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
         const { token } = login.json() as { token?: string };
         expect(token).toBeDefined();
 
@@ -161,7 +161,7 @@ describe('blue-api through @blue/test', () => {
         // derived insert schema (insertSchemaForEntity + validatedBody) must
         // reject it with a 422 validation-failed problem document (AD-10)
         // before any SQL write, carrying the structured issues (Phase 4A).
-        const bad = await mockMVC
+        const bad = await mockHTTP
             .post('/drizzle/notes')
             .headers({ authorization: `Bearer ${token}` })
             .body({ title: '', body: 'no title' })
@@ -178,7 +178,7 @@ describe('blue-api through @blue/test', () => {
     });
 
     test('GET /api/report serves the report model as JSON by default', async () => {
-        const res = await mockMVC.get('/api/report').exec();
+        const res = await mockHTTP.get('/api/report').exec();
         expect(res.response.status).toBe(200);
         expect(res.json()).toEqual({
             rows: [
@@ -189,19 +189,19 @@ describe('blue-api through @blue/test', () => {
     });
 
     test('GET /api/report.csv serves the same model as CSV via negotiation', async () => {
-        const res = await mockMVC.get('/api/report.csv').exec();
+        const res = await mockHTTP.get('/api/report.csv').exec();
         expect(res.response.status).toBe(200);
         expect(res.text()).toBe('name,role\r\nAda,admin\r\nGrace,user');
     });
 
     test('GET /api/report honors the Accept header (CSV without extension)', async () => {
-        const res = await mockMVC.get('/api/report').headers({ accept: 'text/csv' }).exec();
+        const res = await mockHTTP.get('/api/report').headers({ accept: 'text/csv' }).exec();
         expect(res.response.status).toBe(200);
         expect(res.text()).toBe('name,role\r\nAda,admin\r\nGrace,user');
     });
 
     test('GET /api/report honors the Accept header (JSON explicitly)', async () => {
-        const res = await mockMVC.get('/api/report').headers({ accept: 'application/json' }).exec();
+        const res = await mockHTTP.get('/api/report').headers({ accept: 'application/json' }).exec();
         expect(res.response.status).toBe(200);
         expect(res.json()).toEqual({
             rows: [
@@ -212,7 +212,7 @@ describe('blue-api through @blue/test', () => {
     });
 
     test('GET /health reports the registry status', async () => {
-        const res = await mockMVC.get('/health').exec();
+        const res = await mockHTTP.get('/health').exec();
         expect(res.response.status).toBe(200);
         const body = res.json() as { status?: string; components?: Record<string, unknown> };
         expect(typeof body.status).toBe('string');
@@ -220,14 +220,14 @@ describe('blue-api through @blue/test', () => {
     });
 
     test('GET /metrics returns the aggregator snapshot', async () => {
-        const res = await mockMVC.get('/metrics').exec();
+        const res = await mockHTTP.get('/metrics').exec();
         expect(res.response.status).toBe(200);
         const body = res.json() as { features?: Record<string, unknown> };
         expect(typeof body.features).toBe('object');
     });
 
     test('GET /api/greeting resolves the language from Accept-Language', async () => {
-        const res = await mockMVC
+        const res = await mockHTTP
             .get('/api/greeting')
             .query({ name: 'Ada' })
             .headers({ 'accept-language': 'de-DE,de;q=0.9' })
@@ -237,7 +237,7 @@ describe('blue-api through @blue/test', () => {
     });
 
     test('GET /api/greeting falls back to English without the header', async () => {
-        const res = await mockMVC.get('/api/greeting').query({ name: 'Ada' }).exec();
+        const res = await mockHTTP.get('/api/greeting').query({ name: 'Ada' }).exec();
         expect(res.json()).toEqual({ message: 'Hello, Ada!', language: 'en' });
     });
 });

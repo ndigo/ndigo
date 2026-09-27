@@ -32,6 +32,12 @@ describe('JWTAdapter', () => {
         adapter = new JWTAdapter(config);
     });
 
+    test('construction fails loud for HMAC without a secret (SEC-2)', () => {
+        expect(
+            () => new JWTAdapter({ issuer: 'https://auth.example.com', audience: 'my-app', algorithm: 'HS256' })
+        ).toThrow(/secret/);
+    });
+
     describe('validate', () => {
         test('returns null for malformed token (not 3 parts)', async () => {
             expect(await adapter.validate('not-a-jwt')).toBeNull();
@@ -175,20 +181,6 @@ describe('JWTAdapter', () => {
             await expect(adapter.authenticate({})).rejects.toThrow(
                 'JWTAdapter.authenticate() not implemented - use a proper auth flow'
             );
-        });
-    });
-
-    describe('refresh', () => {
-        test('throws error as not implemented', async () => {
-            await expect(adapter.refresh('token')).rejects.toThrow(
-                'JWTAdapter.refresh() not implemented - use a proper token refresh flow'
-            );
-        });
-    });
-
-    describe('logout', () => {
-        test('completes without error (stateless)', async () => {
-            await expect(adapter.logout('token')).resolves.toBeUndefined();
         });
     });
 

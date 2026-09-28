@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, beforeEach, afterEach, expect, vi } from 'vitest';
+import { ContextToken } from '@blue/factory';
 import {
     NamePathHandlerMapping,
     SimplePathHandlerMapping,
@@ -81,6 +82,18 @@ describe('RouteHandlerMapping', () => {
 
             chain = handlerMapping.getHandler({ path: '/bar' });
             expect(chain.handler.id).toBe(barController.id);
+        });
+
+        test('it should resolve token handlers (AD-34 D1)', () => {
+            const fooToken = new ContextToken<TestController>('fooControllerToken');
+            applicationContext.setValue(fooToken, fooController);
+
+            const handlerMapping = new SimplePathHandlerMapping();
+            handlerMapping.setMappings({ '/tok': fooToken });
+            handlerMapping.setApplicationContext(applicationContext);
+
+            const chain = handlerMapping.getHandler({ path: '/tok' });
+            expect(chain.handler.id).toBe(fooController.id);
         });
     });
 

@@ -70,6 +70,23 @@ export class ProductController {
 }
 ```
 
+Typed cache handles (AD-34 D7): a `ContextToken`-identified store works
+everywhere a cache name does — `@cached({ cache: CATALOG })` and
+`cacheManager.getCache(CATALOG)` address the identical store (the token
+description is the store name), so renames and store types are
+compile-checked:
+
+```ts
+import { ContextToken } from '@blue/context';
+import { cached } from '@blue/cache';
+import type { Cache } from '@blue/cache';
+
+export const CATALOG = new ContextToken<Cache<string, Product>>('catalog');
+
+@cached({ cache: CATALOG, ttl: 60_000 })
+rankedProducts(): Product { … }   // getCache(CATALOG).delete(key) for eviction
+```
+
 Semantics:
 
 - **Hits** return the stored settled value; **misses** call the method.

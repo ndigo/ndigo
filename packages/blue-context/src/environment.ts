@@ -4,13 +4,17 @@
  * @author Jeff Rose
  */
 import { Constructable, Null, JSONValue, JSONObject } from '@blue/core';
+import type { z } from 'zod';
 import { like, isNil } from '@blue/util/types';
 import { AsAware, Aware, likeAwareAnd } from '@blue/factory';
 import { likePropertyResolver, PropertyResolver, PrototypalPropertyResolver } from './property-resolver';
 import type { ResolverOptions } from './property-resolver';
 import { MutablePropertySources } from './property-sources';
 import { evaluateProfileExpression } from './profile-expression';
-import { AsEventEmitter, EventEmitter } from './event-emitter';
+import { ProfileTerm } from './profile';
+import { resolveSchemaConfig } from './schema-config';
+import { AsEventEmitter, EventEmitter, EventType, EventHandlers } from './event-emitter';
+import type { EnvironmentEvents } from './context-events';
 import type { SecretDecryptor } from './secret-cipher';
 
 /**
@@ -49,11 +53,12 @@ export interface Environment extends PropertyResolver {
      * Evaluates a profile expression against the effective active set
      * (explicit profiles, or defaults when none are explicit).
      *
-     * @param expression - The profile expression (`dev`, `!prod`, `a & b`, `(a | b) & c`).
+     * @param expression - The profile expression (`dev`, `!prod`, `a & b`,
+     *   `(a | b) & c`) or a composed {@link ProfileTerm} (AD-34 D5).
      * @returns `true` when the expression matches.
      * @throws {IllegalStateError} On malformed expressions.
      */
-    acceptsProfiles(expression: string): boolean;
+    acceptsProfiles(expression: string | ProfileTerm): boolean;
     /**
      * Returns the name of the source that won the given property key, or
      * `null` when unknown or the active index retains no origins.
@@ -62,6 +67,20 @@ export interface Environment extends PropertyResolver {
      * @returns The winning source name, or `null`.
      */
     originOf(key: string): string | null;
+    /**
+     * Resolves a schema-typed configuration value from this environment
+     * (AD-34 D3): object-shaped schemas read each key under `prefix`
+     * (`server.port` for `('server', z.object({ port: ... }))`); coercion,
+     * defaults and required checks follow the schema. A missing required key
+     * throws the zod error; an absent value with no default yields
+     * `undefined`.
+     *
+     * @param prefix - Property prefix (the keypath when the schema is a
+     *   top-level scalar).
+     * @param schema - The zod schema describing the value.
+     * @returns The parsed typed value, or `undefined` when absent.
+     */
+    typedConfig<S extends z.ZodType>(prefix: string, schema: S): z.infer<S> | undefined;
     /**
      * Recomputes the environment from its current sources: rebuilds the
      * lookup index and clears caches. Environment-scope only (AD-16 D3).
@@ -115,6 +134,26 @@ export interface ConfigurableEnvironment extends Environment, EventEmitter {
      * @param environment - The environment to merge.
      */
     merge(environment: ConfigurableEnvironment): void;
+
+    /**
+     * Typed event overloads (AD-34 D2): the refresh event delivers its
+     * {@link EnvironmentEvents} payload (empty) to the listener; any other
+     * event type falls through to the raw `EventEmitter` surface.
+     *
+     * @example
+     * ```ts
+     * environment.on(CONFIG_REFRESH_EVENT, () => {});   // typed, payload []
+     * environment.on('custom:event', (...data: unknown[]) => {}); // raw
+     * ```
+     */
+    on<K extends keyof EnvironmentEvents>(type: K, listener: (...payload: EnvironmentEvents[K]) => void): this;
+    // Raw fallback (last overload = implementation): any other event type
+    // keeps the string-typed EventEmitter surface.
+    on(type: EventType | EventHandlers, listener?: Function): this;
+    off<K extends keyof EnvironmentEvents>(type: K, listener: (...payload: EnvironmentEvents[K]) => void): this;
+    off(type: EventType, listener: Function): this;
+    emit<K extends keyof EnvironmentEvents>(type: K, ...payload: EnvironmentEvents[K]): boolean;
+    emit(type: EventType, ...data: unknown[]): boolean;
 }
 
 /**
@@ -237,8 +276,8 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
         return this.#activeProfiles.size ? [...this.#activeProfiles] : [...this.#defaultProfiles];
     }
 
-    acceptsProfiles(expression: string): boolean {
-        return evaluateProfileExpression(expression, new Set(this.activeProfilesOrDefaults));
+    acceptsProfiles(expression: string | ProfileTerm): boolean {
+        return evaluateProfileExpression(String(expression), new Set(this.activeProfilesOrDefaults));
     }
 
     hasProperty(key: string): boolean {
@@ -265,8 +304,12 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
         return this.#propertyResolver.getRequiredPropertyAs(key, targetType);
     }
 
+    typedConfig<S extends z.ZodType>(prefix: string, schema: S): z.infer<S> | undefined {
+        return resolveSchemaConfig(schema, prefix, this);
+    }
+
     getRawProperty(key: string): JSONValue | undefined {
-        return this.#propertyResolver.getRawProperty(key);
+        return this.#propertyResolver.getProperty(key);
     }
 
     originOf(key: string): string | null {

@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { I18nextMessageSource } from '@blue/content-i18next';
 import { StaticController, FileSystemResourceLoader } from '@blue/platform-node';
 import { EJSViewResolver } from '@blue/view-ejs';
+import { MESSAGE_SOURCE, MODEL_STORE } from './context-tokens';
 import { IslandController } from './island-controller';
 import { TodoModelStore } from './todo-model-store';
 
@@ -67,7 +68,7 @@ export class IslandConfiguration {
         return new StaticController(resolve('dist'));
     }
 
-    @entry
+    @entry(MODEL_STORE)
     modelStore() {
         return this.#modelStore;
     }
@@ -76,7 +77,7 @@ export class IslandConfiguration {
      * The application message source (registered on the context by the
      * bootstrap, which calls `context.setMessageSource`).
      */
-    @entry
+    @entry(MESSAGE_SOURCE)
     messageSource() {
         return this.#messages;
     }

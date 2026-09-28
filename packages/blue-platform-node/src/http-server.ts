@@ -6,14 +6,12 @@
  */
 import { $aware, type SmartLifecycle } from '@blue/factory';
 import type { ApplicationContext, ApplicationContextAware } from '@blue/context';
+import { DISPATCHER } from '@blue/dispatcher';
 import type { NodeDispatcher } from './node-dispatcher';
-import {
-    NodeHTTPServerAdapter,
-    type NodeHTTPServerAdapterOptions,
-    type SocketRequestAuthenticator,
-} from './node-http-server-adapter';
+import { NodeHTTPServerAdapter, type NodeHTTPServerAdapterOptions } from './node-http-server-adapter';
 import type { SocketLimits } from './node-socket-session';
 import { NodeSocketSessionRegistry } from './node-socket-session-registry';
+import { SOCKET_SESSION_REGISTRY, SOCKET_REQUEST_AUTHENTICATOR } from './context-tokens';
 
 /**
  * Adapter interface for platform HTTP servers.
@@ -253,7 +251,7 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
             return this.#dispatcher;
         }
         if (this.#applicationContext) {
-            return this.#applicationContext.getValue<NodeDispatcher>('dispatcher');
+            return this.#applicationContext.getValue(DISPATCHER) as NodeDispatcher;
         }
         throw new Error(
             'HTTPServer: no dispatcher provided and no application context available — pass a dispatcher to the ' +
@@ -262,8 +260,8 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
     }
 
     #resolveSocketRegistry(): NodeSocketSessionRegistry | null {
-        if (this.#applicationContext?.hasValue?.('socketSessionRegistry')) {
-            return this.#applicationContext.getValue<NodeSocketSessionRegistry>('socketSessionRegistry');
+        if (this.#applicationContext?.hasValue?.(SOCKET_SESSION_REGISTRY)) {
+            return this.#applicationContext.getValue(SOCKET_SESSION_REGISTRY);
         }
         return null;
     }
@@ -281,9 +279,8 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         if (this.#authenticate) {
             return this.#authenticate;
         }
-        if (this.#applicationContext?.hasValue?.('socketRequestAuthenticator')) {
-            const authenticator =
-                this.#applicationContext.getValue<SocketRequestAuthenticator>('socketRequestAuthenticator');
+        if (this.#applicationContext?.hasValue?.(SOCKET_REQUEST_AUTHENTICATOR)) {
+            const authenticator = this.#applicationContext.getValue(SOCKET_REQUEST_AUTHENTICATOR);
             return (sources) => authenticator.authenticate(sources);
         }
         return undefined;

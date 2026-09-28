@@ -6,10 +6,10 @@
 import '@tsmetadata/polyfill';
 import 'node:process';
 import { resolve } from 'node:path';
-import { configuration, entry, profile } from '@blue/context';
+import { configuration, entry, profile, Profile } from '@blue/context';
 import { StaticContentSource } from '@blue/content';
 import { MediaTypes } from '@blue/core';
-import { StaticController, type SocketRequestAuthenticator } from '@blue/platform-node';
+import { StaticController, SOCKET_REQUEST_AUTHENTICATOR, type SocketRequestAuthenticator } from '@blue/platform-node';
 import type { SocketRequestSources } from '@blue/dispatcher';
 import {
     ContentNegotiationManager,
@@ -98,7 +98,7 @@ export class NodeAppConfiguration {
      * anonymity: `authenticate` returns `null` and the upgrade is refused
      * with `1008`.
      */
-    @entry
+    @entry(SOCKET_REQUEST_AUTHENTICATOR)
     socketRequestAuthenticator(): SocketRequestAuthenticator {
         return {
             authenticate(sources: SocketRequestSources) {
@@ -169,7 +169,7 @@ export class NodeAppConfiguration {
      * Profile-gated bean (AD-14): registered only when the `dev` profile is
      * active — `ApplicationBuilder.profiles('dev')` in the app entry.
      */
-    @profile('dev')
+    @profile(Profile.and('dev', Profile.not('staging')))
     @entry
     devInfo() {
         return { flavor: 'dev', note: 'profile-gated bean (AD-14)' };

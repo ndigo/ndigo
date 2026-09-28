@@ -14,7 +14,7 @@ import { BrowserDispatcher, HashRouter } from '@blue/platform-web';
 import { Route, restorePartitionPrefix, RouteDefinition, RouteRegistry } from '@blue/router';
 import { HostManager } from '@blue/host';
 import { FeatureMetricAggregator, getLogger } from '@blue/telemetry';
-import { DISPATCHER, ROUTER } from './context-tokens';
+import { DISPATCHER, ROUTER, ROUTE_REGISTRY } from './context-tokens';
 import IndexController from './index-controller';
 import AccountController from './account-controller';
 import { authClient, initAuth } from './auth-store';
@@ -252,7 +252,7 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
     // authoring pattern: typed definitions derived from @routeMapping
     // metadata, with manual fallbacks for feature partitions (which have no
     // controller route of their own).
-    const registry = (todoContext.getValue('routeRegistry') as RouteRegistry | undefined) ?? new RouteRegistry();
+    const registry = (todoContext.getValue(ROUTE_REGISTRY) as RouteRegistry | undefined) ?? new RouteRegistry();
     registry.scanSources([IndexController, AccountController], todoContext);
     if (registry) {
         routes.todoAll = new RouteDefinition('/todo', todoContext);

@@ -27,6 +27,10 @@
  *   - Large gap between warm and miss would indicate unexpected work on the miss path.
  */
 
+// oxlint-disable @blue/no-string-registry-lookup -- benchmark fixtures: the
+// string-literal lookup hot path is a measured axis (ADR-34 D1 benches both
+// handles; tokens and strings share the description-keyed registry).
+
 import { bench, describe } from 'vitest';
 import { DefaultFactory } from '@blue/factory';
 

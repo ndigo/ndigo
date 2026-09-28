@@ -8,6 +8,9 @@ import { MemoryCacheManager } from '../src/cache-manager';
 import { CacheMiss } from '../src/cache';
 import type { CachedSpec } from '../src/cached';
 import { DEFAULT_CACHE_NAME, cached, getCachedSpec, resolveCachedSpec } from '../src/cached';
+import { serializeCacheKey } from '../src/keys';
+import { ContextToken } from '@blue/context';
+import type { Cache } from '../src/cache';
 
 describe('resolveCachedSpec', () => {
     test('defaults cacheName and accepts an omitted spec', () => {
@@ -26,6 +29,51 @@ describe('resolveCachedSpec', () => {
         expect(() => resolveCachedSpec({ cacheName: '' })).toThrow(TypeError);
         expect(() => resolveCachedSpec({ key: 42 } as unknown as CachedSpec)).toThrow(TypeError);
         expect(() => resolveCachedSpec(null as unknown as CachedSpec)).toThrow(TypeError);
+    });
+
+    test('resolves a cache-store token to its description (AD-34 D7)', () => {
+        const reports = new ContextToken<Cache<string, string>>('reports');
+
+        expect(resolveCachedSpec({ cache: reports })).toEqual({
+            cacheName: 'reports',
+            key: undefined,
+            ttl: undefined,
+        });
+        // Explicit cacheName is overridden by the token.
+        expect(resolveCachedSpec({ cache: reports, cacheName: 'other' })).toEqual({
+            cacheName: 'reports',
+            key: undefined,
+            ttl: undefined,
+        });
+    });
+});
+
+describe('cache-store tokens (AD-34 D7)', () => {
+    const REPORTS_CACHE = new ContextToken<Cache<string, string>>('reports');
+
+    class Service {
+        cacheManager = new MemoryCacheManager();
+        invocations = 0;
+
+        @cached({ cache: REPORTS_CACHE, ttl: 60_000 })
+        report(id: string): string {
+            this.invocations += 1;
+            return `${id}-${this.invocations}`;
+        }
+    }
+
+    test('token-keyed caching shares the store with the string form', () => {
+        const service = new Service();
+        const first = service.report('a');
+
+        // The token and the string name resolve to the same underlying store.
+        expect(service.cacheManager.getCache(REPORTS_CACHE).get(serializeCacheKey('a'))).toBe(first);
+        expect(service.cacheManager.hasCache(REPORTS_CACHE)).toBe(true);
+        expect(service.cacheManager.hasCache('reports')).toBe(true);
+
+        // Manual eviction through the token wipes the entry.
+        service.cacheManager.getCache(REPORTS_CACHE).delete(serializeCacheKey('a'));
+        expect(service.report('a')).not.toBe(first);
     });
 });
 

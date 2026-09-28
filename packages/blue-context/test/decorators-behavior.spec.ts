@@ -6,6 +6,7 @@
  */
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Enumerable, JSONObject, JSONValue } from '@blue/core';
+import { ContextToken } from '@blue/factory';
 import {
     configuration,
     entry,
@@ -327,7 +328,7 @@ describe('@entry Decorator', () => {
         }
 
         const metadata = metadataOf(TestConfig);
-        expect(metadata['config:entry:myMethod']).toBe('myMethod');
+        expect(metadata['config:entry:myMethod']).toEqual({ name: 'myMethod', token: undefined });
     });
 
     it('stores entry metadata with custom name when used with argument', () => {
@@ -340,7 +341,22 @@ describe('@entry Decorator', () => {
         }
 
         const metadata = metadataOf(TestConfig);
-        expect(metadata['config:entry:myMethod']).toBe('customName');
+        expect(metadata['config:entry:myMethod']).toEqual({ name: 'customName', token: undefined });
+    });
+
+    it('stores entry metadata with a ContextToken when used with a token (AD-34 D1)', () => {
+        const methodToken = new ContextToken<string>('methodToken');
+
+        @configuration
+        class TestConfig {
+            @entry(methodToken)
+            myMethod() {
+                return 'result';
+            }
+        }
+
+        const metadata = metadataOf(TestConfig);
+        expect(metadata['config:entry:myMethod']).toEqual({ name: 'methodToken', token: methodToken });
     });
 
     it('makes method enumerable', () => {

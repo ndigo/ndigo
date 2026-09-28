@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { JSONObject } from '@blue/core';
+import type { z } from 'zod';
 import {
     ContentSource,
     MessageSource,
@@ -13,7 +14,8 @@ import {
     likeMessageSource,
 } from '@blue/content';
 import { like } from '@blue/util/types';
-import { EventEmitter, likeEventEmitter, EventType } from './event-emitter';
+import { EventEmitter, likeEventEmitter, EventType, EventHandlers } from './event-emitter';
+import type { ContextEvents } from './context-events';
 import {
     ConfigurableFactory,
     Destroyable,
@@ -137,6 +139,36 @@ export interface ApplicationContext
      * @returns True if the child was successfully removed, false otherwise.
      */
     removeChild(node: ApplicationContext): boolean;
+
+    /**
+     * Resolves a schema-typed configuration value from the context's
+     * environment (AD-34 D3) — convenience mirror of
+     * `Environment.typedConfig` for context-held callers.
+     *
+     * @param prefix - Property prefix (a keypath for scalar schemas).
+     * @param schema - The zod schema describing the value.
+     * @returns The parsed typed value, or `undefined` when absent.
+     */
+    typedConfig<S extends z.ZodType>(prefix: string, schema: S): z.infer<S> | undefined;
+
+    /**
+     * Typed event overloads (AD-34 D2): lifecycle events deliver their
+     * {@link ContextEvents} payloads to the listener; any other event type
+     * falls through to the raw `EventEmitter` surface.
+     * @example
+     * ```ts
+     * context.on('context:refresh', (refreshed) => refreshed.isActive); // typed
+     * context.on('custom:event', (...data: unknown[]) => {});            // raw
+     * ```
+     */
+    on<K extends keyof ContextEvents>(type: K, listener: (...payload: ContextEvents[K]) => void): this;
+    // Raw fallback (last overload = implementation): any other event type
+    // keeps the string-typed EventEmitter surface.
+    on(type: EventType | EventHandlers, listener?: Function): this;
+    off<K extends keyof ContextEvents>(type: K, listener: (...payload: ContextEvents[K]) => void): this;
+    off(type: EventType, listener: Function): this;
+    emit<K extends keyof ContextEvents>(type: K, ...payload: ContextEvents[K]): boolean;
+    emit(type: EventType, ...data: unknown[]): boolean;
 }
 
 /**

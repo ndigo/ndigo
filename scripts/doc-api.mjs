@@ -31,14 +31,14 @@ const PACKAGES = join(ROOT, 'packages');
 const WATCH = process.argv.includes('--watch');
 
 const EXTERNAL_SYMBOL_LINK_MAPPINGS = JSON.parse(
-    readFileSync(join(ROOT, 'scripts', 'external-symbol-links.json'), 'utf8'),
+    readFileSync(join(ROOT, 'scripts', 'external-symbol-links.json'), 'utf8')
 );
 
 /** Map `exports` values to source entry points (`./lib/x.js` -> `src/x.ts`). */
 function entryPointsFor(manifest, pkgDir) {
     const points = [];
     for (const [subpath, target] of Object.entries(manifest.exports ?? {})) {
-        const value = typeof target === 'string' ? target : target?.default ?? target?.import;
+        const value = typeof target === 'string' ? target : (target?.default ?? target?.import);
         if (!value) continue;
         const source = toSourcePath(value);
         if (source && existsSync(join(pkgDir, source))) points.push(source);
@@ -101,7 +101,12 @@ function runTypedoc(configPath, watch = false) {
  * @returns undocumented symbols [{name, kind, file}] — empty when clean.
  */
 function coverageViolations(jsonPath, pkgDir, packageName) {
-    const GATE_KINDS = new Map([[4, 'class'], [8, 'interface'], [64, 'function'], [262144, 'type-alias']]);
+    const GATE_KINDS = new Map([
+        [4, 'class'],
+        [8, 'interface'],
+        [64, 'function'],
+        [262144, 'type-alias'],
+    ]);
     const hasComment = (n) => !!n.comment || (n.signatures ?? []).some((s) => !!s.comment);
     const isInternal = (n) =>
         (n.comment?.blockTags ?? []).some((t) => t.tag === '@internal') ||
@@ -118,8 +123,8 @@ function coverageViolations(jsonPath, pkgDir, packageName) {
                 const src = child.sources?.[0];
                 const file = src?.fileName ?? '';
                 const base = file.split('/').pop() ?? '';
-                if (child.name.startsWith('[')) continue;      // synthetic keys
-                if (base.startsWith('_')) continue;            // internal files
+                if (child.name.startsWith('[')) continue; // synthetic keys
+                if (base.startsWith('_')) continue; // internal files
                 if (!file.startsWith(pkgDir.replaceAll('\\', '/'))) continue; // external
                 violations.push({ name: child.name, kind, file: `${base}:${src?.line ?? '?'}` });
             }
@@ -157,12 +162,14 @@ for (const dir of packages) {
         const config = typedocConfig(pkgDir, manifest);
         config.json = jsonPath;
         writeFileSync(configPath, JSON.stringify(config, null, 2));
-        await runTypedoc(configPath);
+        await runTypedoc(configPath); // eslint-disable-line no-await-in-loop -- sequential per-package runs keep log/violation output ordered and match the WATCH short-circuit; parallelizing would interleave diagnostics
         const violations = coverageViolations(jsonPath, pkgDir, manifest.name);
         rmSync(tmp, { recursive: true, force: true });
         if (violations.length) {
             coverageFailures += violations.length;
-            console.error(`✗ ${manifest.name}: ${violations.length} public ${violations.length === 1 ? 'symbol has' : 'symbols have'} no doc comment:`);
+            console.error(
+                `✗ ${manifest.name}: ${violations.length} public ${violations.length === 1 ? 'symbol has' : 'symbols have'} no doc comment:`
+            );
             for (const v of violations.slice(0, 12)) console.error(`    ${v.kind} ${v.name} (${v.file})`);
             if (violations.length > 12) console.error(`    … and ${violations.length - 12} more`);
         } else {
@@ -193,7 +200,7 @@ const indexLines = [
 for (const dir of packages) {
     const manifest = JSON.parse(readFileSync(join(PACKAGES, dir, 'package.json'), 'utf8'));
     indexLines.push(
-        `| \`${manifest.name}\` | ${(manifest.description ?? '').replaceAll('|', '\\|')} | [doc/api/README.md](../packages/${dir}/doc/api/README.md) |`,
+        `| \`${manifest.name}\` | ${(manifest.description ?? '').replaceAll('|', '\\|')} | [doc/api/README.md](../packages/${dir}/doc/api/README.md) |`
     );
 }
 indexLines.push('', 'Tooling notes:', '', '- `pnpm doc:api` regenerates everything (TypeDoc, zero-warning standard).');

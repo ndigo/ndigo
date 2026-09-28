@@ -10,8 +10,21 @@ import { Environment, AsEnvironmentAware, StandardEnvironment, ConfigurableEnvir
 import { EntryRegistryProcessor, Registry } from '@blue/factory';
 import { AsResourceLoaderAware } from './resource';
 import { Enumerable, Null, JSONObject, likeEnumerable, createNull, JSONValue } from '@blue/core';
+import { ContextToken, isContextToken } from '@blue/factory';
+import { ProfileTerm } from './profile';
 
 type ProfileMetadata = string[];
+
+/**
+ * Decorator-recorded metadata for an `@entry` method: the registry name and
+ * the optional {@link ContextToken} the entry was declared with (AD-34 D1 —
+ * tokens are the canonical bean handle; strings remain a compatibility and
+ * data path).
+ */
+interface EntryMetadata {
+    name: string;
+    token?: ContextToken<unknown>;
+}
 
 const { defineProperty, getOwnPropertyDescriptor } = Reflect,
     CONFIG_CONSTRUCTOR = 'config:constructor',
@@ -78,10 +91,9 @@ const { defineProperty, getOwnPropertyDescriptor } = Reflect,
         // The decorator wrote the property source array under this key
         return getMetadata(target)[CONFIG_PROPERTY_SOURCE] as JSONObject[];
     },
-    getEntryMetadata = (target: unknown, propertyKey: string | symbol): string => {
+    getEntryMetadataRecord = (target: unknown, propertyKey: string | symbol): EntryMetadata => {
         const metadata = getInstanceMetadata(target) || getMetadata(target);
-        // The decorator wrote the entry name string under this key
-        return metadata[`${CONFIG_ENTRY}:${String(propertyKey)}`] as string;
+        return metadata[`${CONFIG_ENTRY}:${String(propertyKey)}`] as EntryMetadata;
     };
 
 /**
@@ -123,13 +135,15 @@ export function configuration<T extends new (...args: never[]) => unknown>(
  *
  * @param expressions - Profile name(s) for which the decorated target stays
  *   active (`@profile('prod')` or `@profile('a', 'b')` for either-of).
+ *   Composed {@link ProfileTerm} expressions (AD-34 D5) are accepted and
+ *   coerced to their canonical string.
  * @returns A decorator that stores profile metadata.
  */
-export function profile(...expressions: string[]) {
+export function profile(...expressions: Array<string | ProfileTerm>) {
     // Generic target keeps the decorator's return type assignable to the
     // decorated class/method (TS1270 would reject a bare `Function` return).
     return function <M extends Function>(target: M, context: ClassDecoratorContext | ClassMethodDecoratorContext): M {
-        const profiles = toUniqueArray(expressions.join(','));
+        const profiles = toUniqueArray(expressions.map(String).join(','));
 
         if (context.kind === 'class') {
             context.metadata[CONFIG_PROFILE] = profiles;
@@ -254,7 +268,7 @@ export function propertySource(source: JSONObject | Enumerable<string, JSONValue
  * @param maybeContext - Decorator context for legacy usage.
  * @returns A method decorator or the legacy decorator result.
  */
-function createEntryDecorator(entryName?: string) {
+function createEntryDecorator(entryName?: string | ContextToken<unknown>) {
     // Generic target keeps the decorator's return type assignable to the
     // decorated method (TS1270 would reject a bare `Function` return).
     return function <M extends Function>(target: M, context: ClassMethodDecoratorContext): M {
@@ -262,7 +276,19 @@ function createEntryDecorator(entryName?: string) {
             throw new FrameworkError('@entry can only be applied to methods');
         }
 
-        context.metadata[`${CONFIG_ENTRY}:${String(context.name)}`] = entryName ?? String(context.name);
+        // Token-declared entries register under the token's description (the
+        // registry's backing key), so `getValue(TOKEN)` and `getValue('name')`
+        // agree — AD-34 D1: the token is the handle, the string stays an alias.
+        let name: string;
+        let token: ContextToken<unknown> | undefined;
+        if (isContextToken(entryName)) {
+            token = entryName;
+            name = entryName.description;
+        } else {
+            name = entryName ?? String(context.name);
+        }
+        const metadata: EntryMetadata = { name, token };
+        context.metadata[`${CONFIG_ENTRY}:${String(context.name)}`] = metadata;
 
         // Make the method enumerable so it can be found by for...in loops
         context.addInitializer(function (this: unknown) {
@@ -300,14 +326,14 @@ type EntryDecorator = <M extends Function>(target: M, context: ClassMethodDecora
 // Overloads keep each usage's return type assignable to the decorated method
 // (a bare `Function` return would trip TS1270 on the `@entry` legacy form).
 export function entry<M extends Function>(nameOrTarget: M, maybeContext: ClassMethodDecoratorContext): M;
-export function entry(nameOrTarget: string): EntryDecorator;
+export function entry(nameOrTarget: string | ContextToken<unknown>): EntryDecorator;
 export function entry(): EntryDecorator;
 export function entry<M extends Function>(
-    nameOrTarget?: string | M,
+    nameOrTarget?: string | ContextToken<unknown> | M,
     maybeContext?: ClassMethodDecoratorContext
 ): M | EntryDecorator {
-    // @entry('customName')
-    if (typeof nameOrTarget === 'string') {
+    // @entry('customName') / @entry(TOKEN)
+    if (typeof nameOrTarget === 'string' || isContextToken(nameOrTarget)) {
         return createEntryDecorator(nameOrTarget);
     }
 
@@ -374,8 +400,8 @@ class ConfigurationParser {
         for (const key in entries) {
             if (!hasProfileMetadata(config, key) || this._isActiveProfile(getProfileMetadata(config, key))) {
                 if (hasEntryMetadata(config, key)) {
-                    const name: string = getEntryMetadata(config, key);
-                    this.processEntry(name, (entries[key] as Function).bind(config));
+                    const metadata: EntryMetadata = getEntryMetadataRecord(config, key);
+                    this.processEntry(metadata.token ?? metadata.name, (entries[key] as Function).bind(config));
                 }
             }
         }
@@ -411,8 +437,13 @@ class ConfigurationParser {
     /**
      * Process the given the `entry` decorator decorator metadata.
      */
-    processEntry(name: string, value: () => unknown) {
-        this.registry.setValue(name, value());
+    processEntry(nameOrToken: string | ContextToken<unknown>, value: () => unknown) {
+        const result = value();
+        if (typeof nameOrToken === 'string') {
+            this.registry.setValue(nameOrToken, result);
+        } else {
+            this.registry.setValue(nameOrToken, result);
+        }
     }
 
     /**

@@ -6,10 +6,10 @@
  */
 import 'node:process';
 import { ApplicationBuilder } from '@blue/boot';
-import { NodeAutoConfiguration, HTTPServer, gracefulShutdown } from '@blue/platform-node';
+import { NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@blue/platform-node';
 import { getLogger } from '@blue/telemetry';
 import { IslandConfiguration } from './island-configuration';
-import { TodoModelStore } from './todo-model-store';
+import { MESSAGE_SOURCE, MODEL_STORE } from './context-tokens';
 
 // The managed server reads its port from process.env.PORT, so surface the
 // app's default there before any context is created.
@@ -25,17 +25,17 @@ async function main() {
 
     // The application message source (i18next resources) backs the shell's
     // locale helpers; negotiated per request via the Accept-Language header.
-    context.setMessageSource(context.getValue('messageSource'));
+    context.setMessageSource(context.getValue(MESSAGE_SOURCE));
 
     // The reactive half of the demo pushes model updates to connected islands
     // over SSE until the ticker completes.
-    const modelStore = context.getValue<TodoModelStore>('modelStore');
+    const modelStore = context.getValue(MODEL_STORE);
     modelStore.startTicker();
 
     // Resolve the managed server and await its start so "listening" fires
     // once the socket is bound. It reads the port from process.env.PORT
     // (defaulted to 3200 above) and stops on close.
-    const server = context.getValue<HTTPServer>('httpServer');
+    const server = context.getValue(HTTP_SERVER);
     await server.start();
     gracefulShutdown(context, { resources: [server] });
 

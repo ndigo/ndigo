@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { Cache, CacheOptions, MemoryCache } from './cache';
+import { ContextToken } from '@blue/factory';
 
 /**
  * Named-cache registry. The application-level seam: `@cached` resolves its
@@ -21,9 +22,20 @@ export interface CacheManager {
      */
     getCache<V = unknown>(name: string): Cache<V>;
     /**
+     * Returns the cache identified by a typed store token (AD-34 D7) —
+     * description-backed, same store as the string form.
+     *
+     * @param token - The cache store token.
+     */
+    getCache<V = unknown>(token: ContextToken<Cache<V>>): Cache<V>;
+    /**
      * Returns whether the named cache exists (no creation).
      */
     hasCache(name: string): boolean;
+    /**
+     * Returns whether the token-identified cache exists (no creation).
+     */
+    hasCache(token: ContextToken<Cache<unknown>>): boolean;
 }
 
 /**
@@ -53,7 +65,10 @@ export class MemoryCacheManager implements CacheManager {
         this.#defaults = options.defaults ?? {};
     }
 
-    getCache<V = unknown>(name: string): Cache<V> {
+    getCache<V = unknown>(name: string): Cache<V>;
+    getCache<V = unknown>(token: ContextToken<Cache<V>>): Cache<V>;
+    getCache<V = unknown>(nameOrToken: string | ContextToken<Cache<V>>): Cache<V> {
+        const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
         if (typeof name !== 'string' || name.length === 0) {
             throw new TypeError(`MemoryCacheManager: cache name must be a non-empty string — got ${String(name)}`);
         }
@@ -65,7 +80,10 @@ export class MemoryCacheManager implements CacheManager {
         return cache as Cache<V>;
     }
 
-    hasCache(name: string): boolean {
+    hasCache(name: string): boolean;
+    hasCache(token: ContextToken<Cache<unknown>>): boolean;
+    hasCache(nameOrToken: string | ContextToken<Cache<unknown>>): boolean {
+        const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
         return this.#caches.has(name);
     }
 }

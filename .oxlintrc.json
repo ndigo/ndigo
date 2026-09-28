@@ -74,6 +74,7 @@
     "@blue/no-cross-paradigm-decorators": "error",
     "@blue/no-scheduled-in-browser": "error",
     "@blue/no-signals-in-entity": "error",
+    "@blue/no-string-registry-lookup": "error",
     "no-shadow": "warn",
     "no-useless-escape": "warn",
     "no-unsafe-optional-chaining": "warn",

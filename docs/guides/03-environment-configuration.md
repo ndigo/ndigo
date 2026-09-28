@@ -81,6 +81,20 @@ env.addDefaultProfile('base');
 env.acceptsProfiles('base'); // true — nothing explicit set
 ```
 
+In-code gates compose with the `Profile` builder (AD-34 D5) — canonical
+strings, validated by the grammar at build time, parenthesized when
+precedence would change the meaning:
+
+```ts
+import { Profile } from '@blue/context';
+
+@profile(Profile.and('dev', Profile.not('ci'))) // 'dev & !ci'
+@entry
+devTools() { … }
+
+env.acceptsProfiles(Profile.and(Profile.or('a', 'b'), 'c')); // '(a | b) & c'
+```
+
 `application-prod.json` loads above `application.json` when `prod` is active.
 
 ## 3. Bind configuration to typed classes
@@ -113,6 +127,53 @@ const port = serverConfig.getValue('serverConfig').port; // number, fail-loud
 - `@defaultValue('...')` is string-then-converted, same path as real values.
 - `@nested` binds a sub-object under the field name (`db` → `server.db.url`).
 - Missing-required or conversion failure **fails refresh** naming class.field.
+
+### 3.1 Schema mode (AD-34 D3)
+
+Declare the shape once as a zod schema and the class binds from it — keys,
+coercion, requiredness and defaults all come from the schema:
+
+```ts
+import { z } from 'zod';
+import { configurationProperties } from '@blue/boot';
+
+const serverSchema = z.object({
+    name: z.string().default('blue-api'),
+    port: z.coerce.number().default(3000),
+});
+
+@configurationProperties('server', { schema: serverSchema })
+class ServerConfig {
+    name!: string; // no @property / @defaultValue needed
+    port!: number;
+}
+```
+
+- Each schema key resolves `${prefix}.${key}`; `z.coerce` converts the
+  stringly env values, `z.default()` fills missing keys, required keys fail
+  boot naming the class (fail-loud, same as field mode).
+- `@property`/`@defaultValue`/`@nested` are ignored in schema mode — the
+  schema is the single source of truth.
+- The relaxed (kebab/snake) fallback applies to schema keys too.
+
+### 3.2 Typed reads — `typedConfig` and `propertyKeys` (AD-34 D3/D4)
+
+Programmatic reads get the same schema semantics on the context or
+environment:
+
+```ts
+context.typedConfig('server', serverSchema); // z.infer → { name, port } | undefined
+context.environment.typedConfig('server.port', z.coerce.number()); // leaf mode → number
+```
+
+`propertyKeys(shape)` types `@property` paths as template literals, so a
+typo fails at compile time:
+
+```ts
+import { propertyKeys } from '@blue/context';
+const keys = propertyKeys({ server: { name: '', port: 0 } });
+@property(keys.server.port, Number) port!: number; // 'server.port'
+```
 
 ## 4. Placeholders & typed reads
 

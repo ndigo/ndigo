@@ -64,6 +64,7 @@ export * from './session-cookie';
 export * from './node-session-interceptor';
 export * from './rate-limit';
 export * from './rate-limit-interceptor';
+export * from './trusted-proxy';
 export * from './cors-interceptor';
 export * from './security-headers-interceptor';
 export * from './server-sent-event-view';

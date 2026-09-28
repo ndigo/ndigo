@@ -1,0 +1,69 @@
+/**
+ * `@apiDocs` — optional per-handler documentation metadata (AD-35 D-4).
+ *
+ * Purely additive: routes document themselves without it; with it, the
+ * OpenAPI generator can carry summary, tags, operation ids and deprecation
+ * into the spec. Stored in the same `Symbol.metadata` store as
+ * `@routeMapping` / `@parameters`.
+ * * @module blue-openapi
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+import { FrameworkError, getSymbolMetadata } from '@blue/core';
+
+/**
+ * Documentation metadata for a single handler method.
+ */
+export interface APIDocsMetadata {
+    /** Short operation label (OpenAPI `summary`). */
+    summary?: string;
+    /** Long-form operation description (OpenAPI `description`). */
+    description?: string;
+    /** Tags grouping this operation in the docs UI. */
+    tags?: string[];
+    /** Explicit `operationId`; otherwise one is derived from method + path. */
+    operationId?: string;
+    /** Marks the operation deprecated in the spec. */
+    deprecated?: boolean;
+    /** Excludes the operation from the generated spec entirely. */
+    hidden?: boolean;
+}
+
+const API_DOCS_KEY = (name: string | symbol) => `api:docs:${String(name)}`;
+
+/**
+ * Decorator: attach documentation metadata to a handler method.
+ *
+ * Method-only — the spec generator reads it off the handler's prototype, so
+ * class-level docs have no carrier (annotate each method).
+ *
+ * @param docs - The metadata to attach.
+ * @returns A method decorator.
+ *
+ * @example
+ * ```ts
+ * @getMapping('/reports')
+ * @parameters({ from: queryValue('from') })
+ * @apiDocs({ summary: 'List reports', tags: ['reports'] })
+ * list(from: string | undefined) { … }
+ * ```
+ */
+export function apiDocs(docs: APIDocsMetadata) {
+    return (_target: unknown, context: ClassMethodDecoratorContext): void => {
+        if (context.kind !== 'method') {
+            throw new FrameworkError('@apiDocs is method-only — annotate each handler method (AD-35 D-4).');
+        }
+        context.metadata[API_DOCS_KEY(context.name)] = docs;
+    };
+}
+
+/**
+ * Read the `@apiDocs` metadata declared on a handler method.
+ *
+ * @param target - The class prototype or constructor.
+ * @param propertyKey - The method name.
+ * @returns The metadata, or `undefined` when undeclared.
+ */
+export function getApiDocs(target: unknown, propertyKey: string | symbol): APIDocsMetadata | undefined {
+    return getSymbolMetadata(target)[API_DOCS_KEY(propertyKey)];
+}

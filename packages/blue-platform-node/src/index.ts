@@ -67,3 +67,6 @@ export * from './rate-limit-interceptor';
 export * from './cors-interceptor';
 export * from './security-headers-interceptor';
 export * from './server-sent-event-view';
+export * from './openapi-docs-auto-configuration';
+export * from './openapi-docs-controller';
+export * from './swagger-ui-controller';

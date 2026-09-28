@@ -1,7 +1,7 @@
 {
   "name": "@blue/platform-node",
   "version": "0.0.1",
-  "description": "Node.js platform adapter for BlueJS — HTTP server, auto-configuration, static files, multipart",
+  "description": "Node.js platform adapter for BlueJS \u2014 HTTP server, auto-configuration, static files, multipart",
   "type": "module",
   "files": [
     "doc",
@@ -47,6 +47,7 @@
     "@blue/dispatcher": "~0.0.1",
     "@blue/factory": "~0.0.1",
     "@blue/http": "~0.0.1",
+    "@blue/openapi": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/scheduler": "~0.0.1",
     "@blue/socket": "~0.0.1",
@@ -56,5 +57,8 @@
     "busboy": "^1.6.0",
     "helmet": "^8.3.0",
     "ws": "^8.18.0"
+  },
+  "peerDependencies": {
+    "swagger-ui-dist": "^5.33.0"
   }
 }

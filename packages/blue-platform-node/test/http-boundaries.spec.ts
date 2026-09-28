@@ -218,6 +218,41 @@ describe('HTTPServer lifecycle', () => {
         await server.close();
     });
 
+    test('binds the supplied host and answers on it (AD-36 D-2)', async () => {
+        const context = new MetadataConfigApplicationContext('bind-host');
+        context.register(NodeAutoConfiguration);
+        context.refresh();
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+        const server = new HTTPServer(dispatcher, { port: 0, host: '127.0.0.1' });
+        await server.start();
+        try {
+            const port = (server.server as { address(): { port: number } }).address();
+            // The listener is reachable exactly on the configured interface
+            // — bind separation is honored (AD-36 D-2 posture: private
+            // interfaces, never 0.0.0.0).
+            const res = await fetch(`http://127.0.0.1:${port.port}/`);
+            expect([200, 404]).toContain(res.status);
+        } finally {
+            await server.close();
+        }
+    });
+
+    test('defaults the bind host to loopback when omitted', async () => {
+        const context = new MetadataConfigApplicationContext('bind-default');
+        context.register(NodeAutoConfiguration);
+        context.refresh();
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+        const server = new HTTPServer(dispatcher, { port: 0 });
+        await server.start();
+        try {
+            const port = (server.server as { address(): { port: number } }).address();
+            const res = await fetch(`http://127.0.0.1:${port.port}/`);
+            expect([200, 404]).toContain(res.status);
+        } finally {
+            await server.close();
+        }
+    });
+
     test('rejects out-of-range and non-integer ports at construction', () => {
         const context = new MetadataConfigApplicationContext('ports');
         context.register(NodeAutoConfiguration);

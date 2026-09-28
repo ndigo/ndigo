@@ -150,6 +150,7 @@ This wave's own remediation convention (09-25 RUS-2, and HEAD at `csrf-intercept
 **Scope:** the static-file/MIME sniffing surfaces bypassed `@blue/core`'s `MediaType`; landed with it hardened for raw HTTP header values.
 
 **MediaType (blue-core):**
+
 - `for()`/`parseMediaType` raw-value path now **normalizes before interning**: type/subtype and parameter NAMES case-folded (RFC 6838 §4.2 / RFC 2045 §5.1), parameter values split on the first `=` (values containing `=` survive), quoted values unquoted. Header-case variants converge on one interned instance (`for('TEXT/HTML') === MediaTypes.TEXT_HTML`).
 - `stringifyParameters` re-quotes values containing header separators — parse/toString round-trip safe (`boundary="x y"`).
 - **`get isJSON`** — bases + `+json` suffix, absorbing the `endsWith('+json')`/`includes('application/json')` sniffing.
@@ -158,6 +159,7 @@ This wave's own remediation convention (09-25 RUS-2, and HEAD at `csrf-intercept
 - New constants: `TEXT_JAVASCRIPT`, `APPLICATION_WASM`, `FONT_WOFF2`.
 
 **Adoption (8 sites):**
+
 - `static-resource-resolver.ts` MIME allowlist → `MediaTypes` instances (`withCharset('utf-8')` for text entries; serialized canonically — served header dropped the RFC-permitted optional space; 5 pinned assertions updated); directory-listing contentType constant-sourced.
 - `static-resource-handler.ts` `acceptsHtml` → `parseAccept` + `matches()` + `qualityFactor > 0` — **fixes the documented q=0 approximation** (RUS-5 note retired); octet-stream fallback constant-sourced.
 - `http-request-limits.ts` JSON body gate → `MediaType.for(mime)?.isJSON`.

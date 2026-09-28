@@ -54,8 +54,10 @@ export function tokenize(source) {
             let j = i + 1;
             while (j < n) {
                 if (source[j] === '\\') j += 2;
-                else if (source[j] === quote) { j++; break; }
-                else j++;
+                else if (source[j] === quote) {
+                    j++;
+                    break;
+                } else j++;
             }
             tokens.push({ kind: 'str', text: source.slice(i, j) });
             i = j;
@@ -122,8 +124,14 @@ export function extractImports(source) {
                     // dynamic import elsewhere, e.g. `await import('x')` — captured
                     // either within this token or at the next string token
                     const dyn = /\bimport\s*\(\s*(['"])([^'"]+)\1\s*\)/.exec(rest);
-                    if (dyn) { specifiers.push(dyn[2]); break; }
-                    if (/\bimport\s*\(\s*$/.test(rest)) { expectDynamic = true; break; }
+                    if (dyn) {
+                        specifiers.push(dyn[2]);
+                        break;
+                    }
+                    if (/\bimport\s*\(\s*$/.test(rest)) {
+                        expectDynamic = true;
+                        break;
+                    }
                     break;
                 }
                 inStatement = true;
@@ -147,7 +155,10 @@ export function extractImports(source) {
                 const ch = rest[k];
                 if (ch === '{') brace++;
                 else if (ch === '}') brace = Math.max(0, brace - 1);
-                else if (ch === ';' && brace === 0) { ended = true; break; }
+                else if (ch === ';' && brace === 0) {
+                    ended = true;
+                    break;
+                }
             }
             if (inStatement && brace === 0 && /\bfrom\b(?:\s|\{|$)/.test(rest.slice(0, ended ? k : rest.length))) {
                 expectFrom = true;

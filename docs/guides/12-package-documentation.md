@@ -28,40 +28,49 @@ section order (drop optional ones):
 
 ```markdown
 # @blue/<name>
+
 > One-line tagline — what it does and who it's for.
 
 [2–3 sentences: the problem it solves, why it exists as a separate package.]
 
-## Installation        # pnpm add @blue/<name> + prerequisites
-## Getting Started     # smallest runnable example
-## Usage               # common patterns; ### subsections per feature
-## Configuration       # (optional) options table
-## API                 # link to doc/api/README.md; DO NOT re-list symbols
-## Development         # pnpm --filter @blue/<name> build:lib / test
-## See Also            # (optional) sibling packages
-## Contributing        # link to root CONTRIBUTING.md
-## License             # ISC
+## Installation # pnpm add @blue/<name> + prerequisites
+
+## Getting Started # smallest runnable example
+
+## Usage # common patterns; ### subsections per feature
+
+## Configuration # (optional) options table
+
+## API # link to doc/api/README.md; DO NOT re-list symbols
+
+## Development # pnpm --filter @blue/<name> build:lib / test
+
+## See Also # (optional) sibling packages
+
+## Contributing # link to root CONTRIBUTING.md
+
+## License # ISC
 ```
 
 Rules:
 
 - No internal references: no `AD-##` ids, decision-record links, commit
   notes, or audit citations in package READMEs — those belong in `docs/`.
-- The `## API` section is a *link*, not a dump. Hand-written symbol lists
+- The `## API` section is a _link_, not a dump. Hand-written symbol lists
   (e.g. `blue-scheduler`) are allowed only alongside the generated link.
 - Package READMEs link packages by relative path (`../blue-util/README.md`).
 
 ## package.json metadata
 
-| Field | Requirement | Why |
-| :---- | :---------- | :-- |
-| `description` | ≥ 25 chars, non-generic (not `"Blue Cache"`); one-sentence value statement | npm listing, doc index, search |
-| `keywords` | non-empty array incl. `"bluejs"` + domain tags | npm discoverability |
-| `author` | `"Jeff Rose <jeff_rose@outlook.com>"` | npm profile |
-| `license` | `"ISC"` | always |
-| `files` | `["doc", "lib"]` (`generators`: `["src", "generators.json"]`) | npm tarball ships only these + README |
-| `repository` / `homepage` / `bugs` | set at publish time, when a public remote exists | npm links |
-| `exports` / `sideEffects` / `type` / dep sections | enforced by `scripts/check-manifests.mjs` — see ARCHITECTURE.md "Manifest Dependency Sections" | install closure |
+| Field                                             | Requirement                                                                                    | Why                                   |
+| :------------------------------------------------ | :--------------------------------------------------------------------------------------------- | :------------------------------------ |
+| `description`                                     | ≥ 25 chars, non-generic (not `"Blue Cache"`); one-sentence value statement                     | npm listing, doc index, search        |
+| `keywords`                                        | non-empty array incl. `"bluejs"` + domain tags                                                 | npm discoverability                   |
+| `author`                                          | `"Jeff Rose <jeff_rose@outlook.com>"`                                                          | npm profile                           |
+| `license`                                         | `"ISC"`                                                                                        | always                                |
+| `files`                                           | `["doc", "lib"]` (`generators`: `["src", "generators.json"]`)                                  | npm tarball ships only these + README |
+| `repository` / `homepage` / `bugs`                | set at publish time, when a public remote exists                                               | npm links                             |
+| `exports` / `sideEffects` / `type` / dep sections | enforced by `scripts/check-manifests.mjs` — see ARCHITECTURE.md "Manifest Dependency Sections" | install closure                       |
 
 ## Generated API docs
 

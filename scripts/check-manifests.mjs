@@ -42,7 +42,17 @@ const PEER_ALLOWLIST = {
 
 /** Dev-tooling that is imported/invoked by config and tests but is not a package concern. */
 const TOOLING = new Set([
-    'typescript', 'vitest', 'tsx', 'nx', 'oxlint', 'oxfmt', 'jsdom', 'msw', 'debug', 'cross-env', 'glob',
+    'typescript',
+    'vitest',
+    'tsx',
+    'nx',
+    'oxlint',
+    'oxfmt',
+    'jsdom',
+    'msw',
+    'debug',
+    'cross-env',
+    'glob',
 ]);
 
 const failures = [];
@@ -77,7 +87,11 @@ for (const dir of readdirSync(PACKAGES)) {
     if (!manifest.exports?.['.']?.types || !(manifest.exports['.'].default || manifest.exports['.'].import)) {
         fail(name, `exports["."] must carry "types" plus a "default" or "import" entry`);
     }
-    for (const [section, deps] of [['dependencies', dependencies], ['devDependencies', devDependencies], ['peerDependencies', peerDependencies]]) {
+    for (const [section, deps] of [
+        ['dependencies', dependencies],
+        ['devDependencies', devDependencies],
+        ['peerDependencies', peerDependencies],
+    ]) {
         for (const [dep, version] of Object.entries(deps)) {
             if (dep.startsWith(BLUE_PREFIX) && !version.startsWith('~0.0.1')) {
                 fail(name, `${section}.${dep} uses ${version}, expected ~0.0.1`);

@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
+import { z } from 'zod';
 import type { JSONObject } from '@blue/core';
 import {
     ApplicationBuilder,
@@ -47,6 +48,74 @@ describe('configurationProperties decorator (AD-15)', () => {
 
     test('isConfigurationProperties returns false for undecorated class', () => {
         expect(isConfigurationProperties(UndecoratedConfig)).toBe(false);
+    });
+});
+
+describe('resolveConfigurationProperties schema mode (AD-34 D3)', () => {
+    const runBoot = async (properties: JSONObject) => {
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig]);
+        app.properties(properties);
+        return app.run();
+    };
+
+    const serverSchema = z.object({
+        name: z.string().default('blue-api'),
+        port: z.coerce.number().default(3000),
+    });
+
+    test('binds shape keys with coercion and zod defaults', async () => {
+        @configurationProperties('server', { schema: serverSchema })
+        class SchemaServerConfig {
+            name!: string;
+            port!: number;
+        }
+        const context = await runBoot({ server: { name: 'api.prod', port: '9090' } });
+
+        const { instance } = resolveConfigurationProperties(SchemaServerConfig, context);
+        expect(instance.name).toBe('api.prod');
+        expect(instance.port).toBe(9090); // '9090' → number via z.coerce
+    });
+
+    test('fills zod z.default() values when the property is missing', async () => {
+        @configurationProperties('server', { schema: serverSchema })
+        class SchemaServerConfig {
+            name!: string;
+            port!: number;
+        }
+        const context = await runBoot({});
+
+        const { instance } = resolveConfigurationProperties(SchemaServerConfig, context);
+        expect(instance.name).toBe('blue-api');
+        expect(instance.port).toBe(3000);
+    });
+
+    test('throws fail-loud when a required key is missing', async () => {
+        @configurationProperties('strict', {
+            schema: z.object({ token: z.string() }),
+        })
+        class SchemaStrictConfig {
+            token!: string;
+        }
+        const context = await runBoot({});
+
+        expect(() => resolveConfigurationProperties(SchemaStrictConfig, context)).toThrowError(
+            /Cannot bind SchemaStrictConfig from schema/
+        );
+    });
+
+    test('throws fail-loud when a coerced value violates the schema', async () => {
+        @configurationProperties('server', { schema: serverSchema })
+        class SchemaServerConfig {
+            name!: string;
+            port!: number;
+        }
+        const context = await runBoot({ server: { port: 'not-a-number' } });
+
+        expect(() => resolveConfigurationProperties(SchemaServerConfig, context)).toThrowError(
+            /Cannot bind SchemaServerConfig from schema/
+        );
     });
 });
 

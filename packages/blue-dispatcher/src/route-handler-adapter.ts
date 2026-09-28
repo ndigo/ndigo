@@ -11,6 +11,7 @@ import { Null, isNotPrimitive } from '@blue/core';
 import { Initializable, $aware } from '@blue/factory';
 import { RouteHandlerMethod } from './route-handler-method';
 import { AsApplicationContextAware, ApplicationContext } from '@blue/context';
+import { ARGUMENT_RESOLVERS, ARGUMENT_RESOLVER } from './context-tokens';
 import { getRouteMapping, hasRouteMapping, type RouteMappingConfiguration } from './route-mapping';
 import {
     HandlerMethodArgumentResolver,
@@ -252,8 +253,8 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
             return resolvers;
         }
 
-        if (applicationContext.hasValue('argumentResolvers')) {
-            const resolverCollection = applicationContext.getValue<unknown>('argumentResolvers');
+        if (applicationContext.hasValue(ARGUMENT_RESOLVERS)) {
+            const resolverCollection = applicationContext.getValue(ARGUMENT_RESOLVERS);
 
             if (Array.isArray(resolverCollection)) {
                 for (let index = 0; index < resolverCollection.length; index++) {
@@ -265,8 +266,8 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
             }
         }
 
-        if (applicationContext.hasValue('argumentResolver')) {
-            const resolver = applicationContext.getValue<unknown>('argumentResolver');
+        if (applicationContext.hasValue(ARGUMENT_RESOLVER)) {
+            const resolver = applicationContext.getValue(ARGUMENT_RESOLVER);
             if (likeArgumentResolver(resolver) && !resolvers.includes(resolver)) {
                 resolvers.push(resolver);
             }

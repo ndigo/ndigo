@@ -20,6 +20,7 @@ import {
     type SocketSession,
     type SocketSessionRegistry,
 } from '@blue/dispatcher';
+import { SOCKET_SESSION_REGISTRY } from '@blue/platform-node';
 import { scheduled } from '@blue/scheduler';
 
 /**
@@ -56,10 +57,10 @@ export class ChatController implements ApplicationContextAware {
      *   (e.g. unit-instantiated controller).
      */
     #registry(): SocketSessionRegistry | null {
-        if (!this.#context?.hasValue?.('socketSessionRegistry')) {
+        if (!this.#context?.hasValue?.(SOCKET_SESSION_REGISTRY)) {
             return null;
         }
-        return this.#context.getValue<SocketSessionRegistry>('socketSessionRegistry');
+        return this.#context.getValue(SOCKET_SESSION_REGISTRY);
     }
 
     /**

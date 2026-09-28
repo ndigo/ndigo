@@ -4,7 +4,8 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
-import { MetadataConfigApplicationContext } from '../src/configuration';
+import { ContextToken } from '@blue/factory';
+import { MetadataConfigApplicationContext, configuration, entry } from '../src/configuration';
 import testContext from './testContext';
 
 describe('Configuration', () => {
@@ -35,5 +36,47 @@ describe('MetadataConfigApplicationContext', () => {
         context.register(FakeConfig);
 
         expect(context.getValue('foo')).toBeUndefined();
+    });
+
+    test('it should register token-declared entries (AD-34 D1)', () => {
+        const tokenEntry = new ContextToken<number>('tokenEntry');
+
+        @configuration
+        class TokenConfiguration {
+            @entry(tokenEntry)
+            tokenEntry() {
+                return 42;
+            }
+
+            @entry('plainEntry')
+            namedEntry() {
+                return 'named';
+            }
+        }
+
+        const context = new MetadataConfigApplicationContext();
+        context.register(TokenConfiguration);
+
+        // Token lookup resolves; the string description stays an alias.
+        expect(context.getValue(tokenEntry)).toBe(42);
+        expect(context.getValue<number>('tokenEntry')).toBe(42);
+        expect(context.hasValue(tokenEntry)).toBe(true);
+        expect(context.getValue<string>('plainEntry')).toBe('named');
+    });
+
+    test('it should keep the string @entry name authoritative when no token is declared', () => {
+        @configuration
+        class NamedConfiguration {
+            @entry('custom:name')
+            method() {
+                return 'registered';
+            }
+        }
+
+        const context = new MetadataConfigApplicationContext();
+        context.register(NamedConfiguration);
+
+        expect(context.getValue<string>('custom:name')).toBe('registered');
+        expect(context.getValue<string>('method')).toBeUndefined();
     });
 });

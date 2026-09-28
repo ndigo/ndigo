@@ -5,13 +5,16 @@
  * @author Jeff Rose
  */
 import { IllegalStateError, JSONValue } from '@blue/core';
+import { z } from 'zod';
 import { property } from '@blue/context';
 import { defaultValue, nested } from '@blue/context';
+import { parseSchemaConfig } from '@blue/context';
 import type { ApplicationContext } from '@blue/context';
 
 const CONFIG_PROPS = 'boot:configurationProperties';
 const CONFIG_PROPS_PREFIX = 'boot:configurationProperties:prefix';
 const CONFIG_PROPS_RELAXED = 'boot:configurationProperties:relaxed';
+const CONFIG_PROPS_SCHEMA = 'boot:configurationProperties:schema';
 
 /** Field-level property metadata keys (set by the context decorators). */
 const PROPERTY_KEY = 'config:property:';
@@ -34,6 +37,17 @@ export interface ConfigurationPropertiesOptions {
      * Off by default — exact keypaths are the contract (AD-15 Q8).
      */
     relaxed?: boolean;
+    /**
+     * Zod schema describing the bound values (AD-34 D3). When present, the
+     * class binds in **schema mode**: every shape key resolves
+     * `${prefix}.${key}` from the environment, and coercion, requiredness
+     * and defaults all come from the schema (`z.default()` replaces
+     * `@defaultValue`; no `@property` decorators needed). A missing required
+     * key or a failed coercion throws at boot, naming the class. Schema mode
+     * ignores `@property`/`@defaultValue`/`@nested` decorators on the
+     * class — the schema is the single source of truth (D3).
+     */
+    schema?: z.ZodObject;
 }
 
 /**
@@ -78,6 +92,9 @@ export function configurationProperties(prefix?: string, options?: Configuration
         }
         if (options?.relaxed) {
             context.metadata[CONFIG_PROPS_RELAXED] = true;
+        }
+        if (options?.schema) {
+            context.metadata[CONFIG_PROPS_SCHEMA] = options.schema;
         }
         return target;
     };
@@ -157,7 +174,12 @@ export function resolveConfigurationProperties<T>(
     const meta = getMetadata(ctor);
     const prefix = meta[CONFIG_PROPS_PREFIX] as string | undefined;
     const relaxed = meta[CONFIG_PROPS_RELAXED] === true;
+    const schema = meta[CONFIG_PROPS_SCHEMA] as z.ZodObject | undefined;
     const instance = new ctor();
+
+    if (schema) {
+        return resolveFromSchema(ctor, instance, prefix, relaxed, schema, context);
+    }
 
     const bindings: Record<string, JSONValue | undefined> = {};
 
@@ -216,6 +238,63 @@ export function resolveConfigurationProperties<T>(
         bindings[fullPath] = value;
         defineProperty(instance as Record<string, unknown>, key, {
             value: typed,
+            configurable: true,
+            writable: true,
+            enumerable: true,
+        });
+    }
+
+    return { instance, isValid: true, bindings };
+}
+
+/**
+ * Resolves a schema-mode `@configurationProperties` class (AD-34 D3): every
+ * schema shape key binds `${prefix}.${key}` from the environment; coercion,
+ * requiredness and defaults follow the schema. Values materialize onto the
+ * instance (writable, enumerable) with the environment's values mirrored in
+ * `bindings`. Fail-loud: missing required keys and failed coercions throw an
+ * `IllegalStateError` naming the class and the offending value, matching the
+ * field-mode contract (AD-15 D4).
+ */
+function resolveFromSchema<T>(
+    ctor: new () => T,
+    instance: T,
+    prefix: string | undefined,
+    relaxed: boolean,
+    schema: z.ZodObject,
+    context: ApplicationContext
+): ConfigurationPropertiesResult<T> {
+    const environment = context.environment;
+    if (!environment) {
+        throw new IllegalStateError(`Cannot bind ${ctor.name}: the application context has no environment`);
+    }
+
+    const bindings: Record<string, JSONValue | undefined> = {};
+    const raw: Record<string, unknown> = {};
+    const shape = schema.shape;
+
+    for (const key of Object.keys(shape)) {
+        const value = valueAt(environment, prefix, key, relaxed);
+        if (value !== undefined) {
+            raw[key] = value;
+            bindings[prefix ? `${prefix}.${key}` : key] = value;
+        }
+    }
+
+    let parsed: Record<string, unknown>;
+    try {
+        parsed = parseSchemaConfig(schema, raw) as Record<string, unknown>;
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        throw new IllegalStateError(
+            `Cannot bind ${ctor.name} from schema (${JSON.stringify(raw)}): ${message}`,
+            error instanceof Error ? { cause: error } : undefined
+        );
+    }
+
+    for (const [key, value] of Object.entries(parsed)) {
+        defineProperty(instance as Record<string, unknown>, key, {
+            value,
             configurable: true,
             writable: true,
             enumerable: true,

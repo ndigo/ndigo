@@ -5,6 +5,7 @@
  */
 export * from './argument-resolver';
 export * from './abstract-platform-resolver';
+export * from './condition-builders';
 export * from './dotted-read';
 export * from './route-handler-method';
 export * from './context-tokens';

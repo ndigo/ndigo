@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
-import { getMapping, parameters, pathVariable, requestMapping } from '@blue/dispatcher';
+import { getMapping, parameters, pathVariable, requestMapping, matrixParamCondition } from '@blue/dispatcher';
 
 /**
  * Demonstration controller for matrix-parameter routing.
@@ -17,7 +17,7 @@ export class ProductController {
      * Only matches when the 'color' matrix parameter is present.
      * GET /api/products/:id;color=<value>
      */
-    @getMapping({ value: '/:id', matrixParams: 'color', private: false })
+    @getMapping({ value: '/:id', matrixParams: matrixParamCondition('color'), private: false })
     @parameters({ id: pathVariable('id') })
     getProduct(id: string) {
         return { product: { id, color: 'matched via matrix param' } };

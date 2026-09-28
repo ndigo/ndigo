@@ -4,6 +4,22 @@ Implementation plans for features and technical specifications.
 
 ## Completed Plans
 
+### 2026-09-27 - TypeScript-Native Layer
+
+TypeScript layer for Spring-heritage surfaces (AD-34): token-first bean
+handles (`@entry(TOKEN)`, typed handler resolution, framework + demo
+migration, `no-string-registry-lookup` oxlint rule), typed context and
+environment events (`ContextEvents`/`EnvironmentEvents` overlays),
+Zod-schema-bound configuration (`@configurationProperties` schema mode +
+`typedConfig`, `propertyKeys` typed paths), and typed DSL builders
+(`Profile` expressions, `queryParamCondition`/`matrixParamCondition`
+conditions, `ContextToken` cache stores). SpEL, `@Primary`/`@Qualifier`
+strings and predicate-form mapping tables remain rejected.
+
+[Read full plan](2026-09-27_TYPESCRIPT_NATIVE_LAYER.md)
+
+---
+
 ### 2026-09-25 - Configuration Completion
 
 Closes the Framework Gap Analysis Configuration row (AD-29): live rebind

@@ -4,10 +4,11 @@
  * @author Jeff Rose
  */
 import { Null } from '@blue/core';
-import { View, ViewTarget, clearCurrentRequest, setCurrentRequest } from '@blue/view';
+import { View, clearCurrentRequest, setCurrentRequest } from '@blue/view';
 import { Route, applyNegotiatedLanguage } from '@blue/router';
 import { $aware } from '@blue/factory';
 import { ApplicationContext, likeApplicationContextAware } from '@blue/context';
+import { VIEW_TARGET } from './context-tokens';
 
 import { NoHandlerFoundError, NoViewFoundError } from './error';
 import { RouteHandlerAdapter } from './route-handler-adapter';
@@ -224,7 +225,7 @@ export class AbstractDispatcher
             view.setApplicationContext(this.applicationContext);
         }
 
-        const viewTarget = this.applicationContext.getValue<ViewTarget>('viewTarget');
+        const viewTarget = this.applicationContext.getValue(VIEW_TARGET);
         await view.render(mv.model, route, viewTarget);
 
         const previousView = this.#activeView;

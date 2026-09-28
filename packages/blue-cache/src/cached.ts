@@ -4,9 +4,10 @@
  * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
-import { CacheMiss } from './cache';
+import { Cache, CacheMiss } from './cache';
 import type { CacheManager } from './cache-manager';
 import { isPromiseLike, serializeCacheKey } from './keys';
+import { ContextToken } from '@blue/factory';
 
 /**
  * Metadata key prefix under which `@cached` writes its per-method spec —
@@ -23,6 +24,12 @@ export const DEFAULT_CACHE_NAME = 'default';
  * User-supplied `@cached` specification.
  */
 export interface CachedSpec {
+    /**
+     * Typed cache-store handle (AD-34 D7): a `ContextToken`-identified cache
+     * under the instance's {@link CacheManager}. Takes precedence over
+     * `cacheName`; the token's description is the store name.
+     */
+    cache?: ContextToken<Cache<unknown>>;
     /**
      * Named cache under the instance's {@link CacheManager}. Defaults to
      * {@link DEFAULT_CACHE_NAME}. A shared manager isolates domains by name;
@@ -67,7 +74,7 @@ export function resolveCachedSpec(spec: CachedSpec = {}): NormalizedCachedSpec {
     if (spec === null || typeof spec !== 'object') {
         throw new TypeError(`@cached: expected a spec object — got ${spec === null ? 'null' : typeof spec}`);
     }
-    const cacheName = spec.cacheName ?? DEFAULT_CACHE_NAME;
+    const cacheName = spec.cache ? spec.cache.description : (spec.cacheName ?? DEFAULT_CACHE_NAME);
     const { key, ttl } = spec;
     if (typeof cacheName !== 'string' || cacheName.length === 0) {
         throw new TypeError(`@cached: cacheName must be a non-empty string — got ${String(cacheName)}`);

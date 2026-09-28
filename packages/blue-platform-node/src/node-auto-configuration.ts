@@ -7,12 +7,21 @@ import { configuration, entry } from '@blue/context';
 import { conditionalOnNode } from '@blue/core';
 import { MemoryCacheManager } from '@blue/cache';
 import type { CacheManager } from '@blue/cache';
-import { AcceptHeaderLanguageResolver, RadixMetadataHandlerMapping, MetadataErrorResolver } from '@blue/dispatcher';
+import { CACHE_MANAGER } from '@blue/cache';
+import {
+    AcceptHeaderLanguageResolver,
+    RadixMetadataHandlerMapping,
+    MetadataErrorResolver,
+    DISPATCHER,
+    ARGUMENT_RESOLVERS,
+    HANDLER_MAPPING,
+} from '@blue/dispatcher';
 import { ScheduleRegistry, TaskScheduler } from '@blue/scheduler';
 import { IslandViewResolver } from '@blue/view';
 import { NodeDispatcher } from './node-dispatcher';
 import { HTTPServer } from './http-server';
 import { NodeSocketSessionRegistry, resolveSocketRegistryOptions } from './node-socket-session-registry';
+import { HTTP_SERVER, SOCKET_SESSION_REGISTRY } from './context-tokens';
 import { SecurityHeadersInterceptor } from './security-headers-interceptor';
 import { NodeParameterBindingErrorResolver } from './parameter-binding-error-resolver';
 import { NodeLastResortErrorResolver } from './last-resort-error-resolver';
@@ -55,7 +64,7 @@ export class NodeAutoConfiguration {
      *
      * @returns The Node.js argument resolvers.
      */
-    @entry
+    @entry(ARGUMENT_RESOLVERS)
     argumentResolvers() {
         return [
             new NodeQueryValueMethodArgumentResolver(),
@@ -79,7 +88,7 @@ export class NodeAutoConfiguration {
      *
      * @returns The default metadata-driven handler mapping.
      */
-    @entry
+    @entry(HANDLER_MAPPING)
     handlerMapping() {
         const mapping = new RadixMetadataHandlerMapping();
         mapping.interceptors.unshift(new SecurityHeadersInterceptor());
@@ -104,7 +113,7 @@ export class NodeAutoConfiguration {
      *
      * @returns The Node dispatcher.
      */
-    @entry
+    @entry(DISPATCHER)
     dispatcher() {
         return new NodeDispatcher();
     }
@@ -150,7 +159,7 @@ export class NodeAutoConfiguration {
      *
      * @returns The cache manager.
      */
-    @entry
+    @entry(CACHE_MANAGER)
     cacheManager(): CacheManager {
         return new MemoryCacheManager();
     }
@@ -165,7 +174,7 @@ export class NodeAutoConfiguration {
      *
      * @returns The socket session registry.
      */
-    @entry
+    @entry(SOCKET_SESSION_REGISTRY)
     socketSessionRegistry() {
         return new NodeSocketSessionRegistry(resolveSocketRegistryOptions());
     }
@@ -196,7 +205,7 @@ export class NodeAutoConfiguration {
      *
      * @returns The managed HTTP server.
      */
-    @entry
+    @entry(HTTP_SERVER)
     httpServer(): HTTPServer {
         return new HTTPServer();
     }

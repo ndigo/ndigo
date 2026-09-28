@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { isString } from '@blue/util/types';
+import { ContextToken, isContextToken } from '@blue/factory';
 import type { ApplicationContext } from '@blue/context';
 
 const { toString } = Object.prototype;
@@ -14,12 +15,21 @@ const kind = /^\[object (.+)\]$/;
 const kindOf = (value: unknown): string | undefined => kind.exec(toString.call(value))?.[1];
 
 type Maybe<T> = string | T;
-type MaybeHandler = Maybe<object>;
+
+/**
+ * A handler reference: a live object, a bean-name string (deserialized mapping
+ * tables), or a {@link ContextToken} (typed programmatic mappings — AD-34 D1).
+ */
+type MaybeHandler = Maybe<object> | ContextToken<object>;
 
 const resolveHandlerWithContext =
     (context: ApplicationContext) =>
     (handler: MaybeHandler): object | undefined =>
-        isString(handler) ? context.getValue(handler as string) : (handler as object);
+        isContextToken(handler)
+            ? context.getValue<object>(handler)
+            : isString(handler)
+              ? context.getValue(handler as string)
+              : (handler as object);
 
 export { doesNotStartWithSlash, kindOf, resolveHandlerWithContext };
 export type { Maybe, MaybeHandler };

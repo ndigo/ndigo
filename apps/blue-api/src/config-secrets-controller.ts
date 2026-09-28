@@ -19,7 +19,7 @@ import { AsApplicationContextAware, ApplicationContext, ApplicationContextAware 
 import { getMapping, requestMapping, parameters, headerValue } from '@blue/dispatcher';
 import { ResponseEntity } from '@blue/platform-node';
 import { HTTPHeaders } from '@blue/http';
-import { SecretsConfig } from './server-config';
+import { SECRETS_CONFIG } from './server-config';
 import { lookupPrincipal } from './auth-store';
 
 @requestMapping('/api/config')
@@ -48,7 +48,7 @@ export class ConfigSecretsController extends AsApplicationContextAware(Object) i
         if (!bearer || !(await lookupPrincipal(bearer))) {
             return ResponseEntity.unauthorized({ error: 'Unauthorized' }, { 'WWW-Authenticate': 'Bearer' });
         }
-        const config = this.#context?.getValue<SecretsConfig>('secretsConfig');
+        const config = this.#context?.getValue(SECRETS_CONFIG);
         return { secretToken: config?.secretToken ?? 'unset' };
     }
 }

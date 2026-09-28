@@ -8,3 +8,4 @@ export * from './cache-manager';
 export * from './cached';
 export * from './keys';
 export * from './memoize';
+export * from './tokens';

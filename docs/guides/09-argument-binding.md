@@ -133,6 +133,24 @@ path segment (`/books;color=red`). Repeated params (`;tag=a;tag=b`) and
 comma-joined values (`;id=1,2,3`) bind as arrays; the single-value path is
 unchanged.
 
+### 4.1 Typed condition builders (AD-34 D6)
+
+Mapping conditions stay canonical expression strings (`queryParams:
+'filter=all'` — mapping tables deserialize from JSON and the registry
+orders/merges conditions by string form). In-code, the builders produce
+those strings with the real parser as the validator — a name or value that
+would change meaning under the grammar throws at build time:
+
+```ts
+import { matrixParamCondition } from '@blue/dispatcher';
+
+@getMapping({ value: '/:id', matrixParams: matrixParamCondition('color'), private: false })
+getProduct(id: string) { … }           // presence check → 'color'
+
+@requestMapping({ value: '/items', queryParams: queryParamCondition('filter', 'all', { negate: true }) })
+method() { … }                          // → 'filter!=all'
+```
+
 ## 5. Missing values → 400
 
 A required parameter missing from the request throws `MissingParameterError`

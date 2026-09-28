@@ -23,6 +23,7 @@ import { guid } from '@blue/util/math';
 import { createServer, IncomingMessage, ServerResponse, type Server } from 'node:http';
 import { WebSocketServer } from 'ws';
 import { Route, RouteSegment, ACCEPT_LANGUAGE_ATTRIBUTE } from '@blue/router';
+import { ARGUMENT_RESOLVERS } from '@blue/dispatcher';
 import {
     getInterceptorDenial,
     getMethodNotAllowed,
@@ -571,9 +572,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         const context = this.#dispatcher.applicationContext;
         if (!context) return undefined;
         const resolvers =
-            (context.hasValue?.('argumentResolvers')
-                ? context.getValue<HandlerMethodArgumentResolver[]>('argumentResolvers')
-                : undefined) ?? [];
+            (context.hasValue?.(ARGUMENT_RESOLVERS) ? context.getValue(ARGUMENT_RESOLVERS) : undefined) ?? [];
         return resolvers.find((candidate) => candidate.supportsParameter(parameter));
     }
 

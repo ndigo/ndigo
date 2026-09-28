@@ -6,11 +6,11 @@
 import 'node:process';
 import { ApplicationBuilder } from '@blue/boot';
 import { ManagementAutoConfiguration } from '@blue/management';
-import { AESGCMCipher, NodeAutoConfiguration, HTTPServer, gracefulShutdown } from '@blue/platform-node';
+import { AESGCMCipher, NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@blue/platform-node';
 import { configureTelemetry, HTTPServerInstrumentation, WebSocketServerInstrumentation } from '@blue/telemetry-node';
 import { getLogger } from '@blue/telemetry';
 import { NodeAppConfiguration } from './node-app-configuration';
-import { ServerConfig, SecretsConfig } from './server-config';
+import { ServerConfig, SecretsConfig, SERVER_CONFIG } from './server-config';
 import { initAuth } from './auth-store';
 
 const PORT = Number(process.env['PORT'] ?? '3000');
@@ -74,11 +74,11 @@ async function main() {
 
     const context = await builder.run();
 
-    const server = context.getValue<HTTPServer>('httpServer');
+    const server = context.getValue(HTTP_SERVER);
     await server.start();
     gracefulShutdown(context, { resources: [server] });
 
-    const serverConfig = context.getValue<ServerConfig>('serverConfig');
+    const serverConfig = context.getValue(SERVER_CONFIG);
     logger.info(`listening on http://localhost:${PORT}`);
     logger.info(`configured server: ${serverConfig.name} on :${serverConfig.port}`);
     logger.info('Available routes:');

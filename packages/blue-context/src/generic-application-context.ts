@@ -29,6 +29,8 @@ import { AsModuleResourceLoader } from './resource';
 import { ApplicationContext } from './context-interfaces';
 import { defineProperty, ownKeys } from './context-shared';
 import { ApplicationContextAwareProcessor } from './application-context-aware-processor';
+import { resolveSchemaConfig } from './schema-config';
+import type { z } from 'zod';
 
 let uuid = 0;
 
@@ -65,6 +67,13 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
             this.#wireRefreshScope(this.#environment as ConfigurableEnvironment);
         }
         return this.#environment;
+    }
+
+    /**
+     * Schema-typed configuration read off the context environment (AD-34 D3).
+     */
+    typedConfig<S extends z.ZodType>(prefix: string, schema: S): z.infer<S> | undefined {
+        return resolveSchemaConfig(schema, prefix, this.environment);
     }
 
     /**

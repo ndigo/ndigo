@@ -6,7 +6,7 @@
  */
 import 'node:process';
 import { ApplicationBuilder } from '@blue/boot';
-import { NodeAutoConfiguration, HTTPServer, gracefulShutdown } from '@blue/platform-node';
+import { NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@blue/platform-node';
 import { getLogger } from '@blue/telemetry';
 import { HelloConfiguration } from './hello-configuration';
 
@@ -21,7 +21,7 @@ async function main() {
 
     // Managed HTTP server: resolve it from the context and await its start so
     // "listening" fires once the socket is bound. The context stops it on close.
-    const server = context.getValue<HTTPServer>('httpServer');
+    const server = context.getValue(HTTP_SERVER);
     await server.start();
     gracefulShutdown(context, { resources: [server] });
 

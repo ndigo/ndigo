@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 export * from './context';
+export * from './context-events';
 export * from './context-hierarchy';
 export * from './configuration';
 export * from './environment';
@@ -15,11 +16,13 @@ export * from './placeholder-resolver';
 export * from './customizer';
 export * from './environment-schema';
 export * from './property-source';
+export * from './profile';
 export * from './property-sources';
 export * from './shared-dependency-registry';
 export * from './property-resolver';
 export * from './remote-property-source';
 export * from './resource';
+export * from './schema-config';
 export * from './secret-cipher';
 export * from './secret-scheme-registry';
 export { ContextToken, isContextToken } from '@blue/factory';

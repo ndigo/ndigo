@@ -10,6 +10,8 @@ import { HealthRegistry } from './health';
 import { MetricsController } from './metrics-controller';
 import { HealthController } from './health-controller';
 import { TelemetryHealthIndicator } from './telemetry-health-indicator';
+import { HEALTH_REGISTRY } from './health-registry-token';
+import { METRIC_AGGREGATOR } from './metric-aggregator-token';
 
 /**
  * Auto-configuration for management endpoints.
@@ -51,7 +53,7 @@ export class ManagementAutoConfiguration {
      *
      * @returns The shared aggregator.
      */
-    @entry
+    @entry(METRIC_AGGREGATOR)
     metricAggregator(): FeatureMetricAggregator {
         return this.#metricAggregator;
     }
@@ -63,7 +65,7 @@ export class ManagementAutoConfiguration {
      *
      * @returns The registry.
      */
-    @entry
+    @entry(HEALTH_REGISTRY)
     healthRegistry(): HealthRegistry {
         const registry = new HealthRegistry();
         registry.register(new TelemetryHealthIndicator(this.#metricAggregator));

@@ -39,6 +39,7 @@ import { METRIC_AGGREGATOR } from './metric-aggregator-token';
 @configuration
 export class ManagementAutoConfiguration {
     readonly #accessGuard: RouteHandlerInterceptor | undefined;
+    readonly #redactHealthErrors: boolean;
     readonly #metricAggregator = new FeatureMetricAggregator();
 
     constructor(options: ManagementAutoConfigurationOptions = {}) {
@@ -46,6 +47,7 @@ export class ManagementAutoConfiguration {
         // mapping (no per-route interceptors), so it must never deny (or
         // rewrite) non-management routes.
         this.#accessGuard = options.accessGuard ? scopedToManagementPaths(options.accessGuard) : undefined;
+        this.#redactHealthErrors = options.redactHealthErrors ?? true;
     }
 
     /**
@@ -67,7 +69,7 @@ export class ManagementAutoConfiguration {
      */
     @entry(HEALTH_REGISTRY)
     healthRegistry(): HealthRegistry {
-        const registry = new HealthRegistry();
+        const registry = new HealthRegistry({ redactHealthErrors: this.#redactHealthErrors });
         registry.register(new TelemetryHealthIndicator(this.#metricAggregator));
         return registry;
     }
@@ -127,11 +129,18 @@ export interface ManagementAutoConfigurationOptions {
      *
      * **Recommendation (gap analysis SEC-5):** wire a guard in production —
      * the auth completion guide's `AuthRouteGuard` over the `'credentials'
-     *` adapter (or a token-adapter guard) is the intended fit. Bind-address
-     * separation and response redaction remain open deferrals; keep the
-     * endpoints off public interfaces until then.
+     *` adapter (or a token-adapter guard) is the intended fit.
      */
     accessGuard?: RouteHandlerInterceptor;
+    /**
+     * Whether thrown health-indicator errors are redacted on `/health`
+     * (AD-36 D-1). Default `true`: the status stays `DOWN` and the component
+     * name is preserved, but the exception text is replaced with
+     * {@link HEALTH_ERROR_REDACTED} so indicator internals never reach the
+     * wire. Set `false` to expose the raw error messages (only sensible
+     * behind the `accessGuard`).
+     */
+    redactHealthErrors?: boolean;
 }
 
 /** The management route prefixes the access guard protects. */

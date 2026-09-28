@@ -164,13 +164,35 @@ first-party tokens:
 - `logout(token)` — verifies, then bumps the version: the whole family
   dies at once.
 
-## 8. Securing management endpoints (SEC-5)
+## 8. Securing management endpoints (SEC-5, AD-36)
 
-`/health` and `/metrics` are **open by default** (documented posture).
-Production recommendation: wire `ManagementAutoConfigurationOptions.
-accessGuard` — `AuthRouteGuard` over the `'credentials'` adapter is the
-intended fit. Bind-address separation and response redaction remain open
-deferrals; keep the endpoints off public interfaces until then.
+`/health` and `/metrics` are **open by default** (documented posture), with
+two hardening layers on by default since AD-36:
+
+- **Error redaction** — a throwing health indicator reports `DOWN` with the
+  stable marker `"error": "unavailable"`; the exception text never reaches
+  the wire. Opt into raw messages with
+  `ManagementAutoConfiguration({ redactHealthErrors: false })` — only
+  sensible behind a guard.
+- **Guarded endpoints** — wire
+  `ManagementAutoConfiguration({ accessGuard })`; `AuthRouteGuard` over the
+  `'credentials'` adapter is the intended fit.
+
+**Bind-address separation (AD-36 D-2).** Management routes share the
+application listener and follow its bind address — the platform server
+binds `HTTPServerOptions.host` (default `127.0.0.1`, loopback). Documented
+posture:
+
+1. Bind the whole server to a private interface (`host` option) or firewall
+   the management paths at the network boundary (reverse proxy routing
+   `/health|/metrics` to an internal listener).
+2. Never expose `/health`/`/metrics` on a public interface without the
+   `accessGuard`.
+
+A dedicated management listener (Spring `management.server.port`
+equivalent) is recorded as the post-1.0 follow-up; it needs a second
+dispatch stack on the platform, and guard + redaction cover the exposure
+in the meantime.
 
 ## 9. Deferrals (deliberate)
 

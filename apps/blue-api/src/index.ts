@@ -6,7 +6,13 @@
 import 'node:process';
 import { ApplicationBuilder } from '@blue/boot';
 import { ManagementAutoConfiguration } from '@blue/management';
-import { AESGCMCipher, NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@blue/platform-node';
+import {
+    AESGCMCipher,
+    NodeAutoConfiguration,
+    HTTP_SERVER,
+    OpenAPIDocsAutoConfiguration,
+    gracefulShutdown,
+} from '@blue/platform-node';
 import { configureTelemetry, HTTPServerInstrumentation, WebSocketServerInstrumentation } from '@blue/telemetry-node';
 import { getLogger } from '@blue/telemetry';
 import { NodeAppConfiguration } from './node-app-configuration';
@@ -41,6 +47,7 @@ async function main() {
     const builder = new ApplicationBuilder([
         NodeAutoConfiguration,
         ManagementAutoConfiguration,
+        OpenAPIDocsAutoConfiguration,
         ServerConfig,
         SecretsConfig,
         NodeAppConfiguration,
@@ -100,6 +107,8 @@ async function main() {
     logger.info(`  GET  http://localhost:${PORT}/static/    (serves ./public)`);
     logger.info(`  GET  http://localhost:${PORT}/health   (management)`);
     logger.info(`  GET  http://localhost:${PORT}/metrics  (management)`);
+    logger.info(`  GET  http://localhost:${PORT}/v3/api-docs   (OpenAPI spec, AD-35)`);
+    logger.info(`  GET  http://localhost:${PORT}/swagger-ui/   (Swagger UI, AD-35)`);
 }
 
 main().catch((err) => {

@@ -240,7 +240,8 @@ function toMethodParameter(paramName: string, extractor: ParameterExtractor): Me
             extractor.prefix,
             extractor.convert,
             paramName,
-            extractor.target
+            extractor.target,
+            extractor.schema
         );
     }
     return new MethodParameter(
@@ -252,7 +253,8 @@ function toMethodParameter(paramName: string, extractor: ParameterExtractor): Me
         extractor.prefix,
         extractor.convert,
         paramName,
-        extractor.target
+        extractor.target,
+        extractor.schema
     );
 }
 

@@ -16,6 +16,7 @@ Conceptual and hands-on guides for building applications with BlueJS. These comp
 10. [10 — Telemetry](10-telemetry.md) — logging, the OTel span/trace surface, metric counters, and the Node/browser wiring.
 11. [11 — Authentication & Sessions](11-authentication-and-sessions.md) — credentials + session storage, the auth decorators, and the admin-store workflow.
 12. [12 — Package Documentation](12-package-documentation.md) — the documentation standard every package must meet: README template, metadata fields, generated API references (`pnpm doc:api`), and CI freshness enforcement.
+13. [13 — OpenAPI & API Docs](13-openapi-and-api-docs.md) — the generated OpenAPI 3.0.3 spec from dispatch metadata, Swagger UI serving, `@apiDocs` metadata, and the `x-blue-*` extension surface.
 
 ## Reading Order
 

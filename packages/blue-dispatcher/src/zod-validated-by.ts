@@ -82,7 +82,10 @@ export function validatedBy<T>(schema: z.ZodType<T>, extractor: ParameterExtract
         }
         return result.data;
     };
-    return { ...extractor, convert };
+    // The schema rides along as a generation-time introspection seam (AD-35):
+    // the OpenAPI generator derives JSON Schema from it. Resolution still
+    // goes through `convert` only.
+    return { ...extractor, convert, schema };
 }
 
 /**

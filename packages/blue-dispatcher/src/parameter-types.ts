@@ -5,6 +5,7 @@
  */
 import { isString } from '@blue/util/types';
 import { Serializable, JSONObject, createNull, Equatable } from '@blue/core';
+import type { z } from 'zod';
 
 const { keys } = Object;
 const { defineProperty } = Reflect;
@@ -22,6 +23,13 @@ export type ParameterExtractor = {
     prefix?: string | null;
     /** Optional post-bind validator/converter (e.g. Zod via `validatedBy`). */
     convert?: (value: unknown) => unknown;
+    /**
+     * The Zod schema backing {@link ParameterExtractor.convert}, when the
+     * extractor was produced by `validatedBy` (AD-35). Generation-time
+     * introspection seam — the OpenAPI generator derives JSON Schema from it;
+     * never read by the resolvers (they go through `convert`).
+     */
+    schema?: z.ZodType<unknown>;
     /** Explicit multipart/form-data client field name, when it differs from the
      *  method-argument name. `fileValue('avatar_url')` sets this so the resolver
      *  reads that part instead of inferring from the argument name. */
@@ -176,6 +184,12 @@ export class MethodParameter implements Serializable {
      */
     readonly convert!: ((value: unknown) => unknown) | undefined;
     /**
+     * The Zod schema backing {@link MethodParameter.convert}, when the
+     * parameter was validated via `validatedBy` (AD-35). Generation-time
+     * introspection seam for API docs; never used by resolution.
+     */
+    readonly schema!: z.ZodType<unknown> | undefined;
+    /**
      * The `@parameters` map key this parameter was declared under. For HTTP
      * and browser mappings this equals the method-argument name (and usually
      * the extractor name); for socket mappings it is the `session.params`
@@ -200,7 +214,8 @@ export class MethodParameter implements Serializable {
         prefix: string | null = null,
         convert?: (value: unknown) => unknown,
         parameterName?: string,
-        target?: new () => object
+        target?: new () => object,
+        schema?: z.ZodType<unknown>
     ) {
         if (!isString(name)) {
             throw new TypeError(`"name" must be a string but was ${name}`);
@@ -214,6 +229,7 @@ export class MethodParameter implements Serializable {
         this.convert = convert ?? undefined;
         this.parameterName = parameterName ?? name;
         this.target = target;
+        this.schema = schema;
     }
 
     toJSON(): JSONObject {

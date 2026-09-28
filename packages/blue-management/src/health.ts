@@ -10,6 +10,26 @@
 export type HealthState = 'UP' | 'DOWN' | 'UNKNOWN';
 
 /**
+ * The marker `/health` reports when an indicator throws and error details
+ * are redacted (SEC-5/AD-36): the status stays `DOWN` and the component name
+ * is preserved, but the exception text never reaches the wire.
+ */
+export const HEALTH_ERROR_REDACTED = 'unavailable';
+
+/**
+ * Options for {@link HealthRegistry}.
+ */
+export interface HealthRegistryOptions {
+    /**
+     * Whether thrown indicator errors are redacted to
+     * {@link HEALTH_ERROR_REDACTED}. Default `false` — the registry is a
+     * shared API; the `/health` endpoint (AD-36) opts into redaction by
+     * default via `ManagementAutoConfigurationOptions.redactHealthErrors`.
+     */
+    redactHealthErrors?: boolean;
+}
+
+/**
  * The health result of a single indicator.
  */
 export interface HealthResult {
@@ -41,6 +61,14 @@ export interface HealthIndicator {
  */
 export class HealthRegistry {
     #indicators = new Map<string, HealthIndicator>();
+    readonly #redactHealthErrors: boolean;
+
+    /**
+     * @param options - Registry options (e.g. error redaction).
+     */
+    constructor(options: HealthRegistryOptions = {}) {
+        this.#redactHealthErrors = options.redactHealthErrors ?? false;
+    }
 
     /**
      * Registers (or replaces) an indicator by name.
@@ -88,11 +116,14 @@ export class HealthRegistry {
                     const result = await indicator.check();
                     return { name, result };
                 } catch (error) {
+                    const detail = error instanceof Error ? error.message : String(error);
                     return {
                         name,
                         result: {
                             status: 'DOWN',
-                            details: { error: error instanceof Error ? error.message : String(error) },
+                            details: {
+                                error: this.#redactHealthErrors ? HEALTH_ERROR_REDACTED : detail,
+                            },
                         },
                     };
                 }

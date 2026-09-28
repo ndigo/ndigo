@@ -64,6 +64,7 @@ export default defineConfig({
             { find: /^@blue\/auth-core$/, replacement: resolve(__dirname, './packages/blue-auth-core/src') },
             { find: /^@blue\/auth-server$/, replacement: resolve(__dirname, './packages/blue-auth-server/src') },
             { find: /^@blue\/auth-client$/, replacement: resolve(__dirname, './packages/blue-auth-client/src') },
+            { find: /^@blue\/openapi$/, replacement: resolve(__dirname, './packages/blue-openapi/src') },
         ],
     },
 });

@@ -38,6 +38,9 @@ const BLUE_PREFIX = '@blue/';
 const PEER_ALLOWLIST = {
     '@blue/oxlint-plugin': ['oxlint'],
     '@blue/telemetry-node': ['ws'],
+    // Asset-only runtime feature dep for the OpenAPI docs UI (see AD-35):
+    // the platform serves the files but code never imports the module.
+    '@blue/platform-node': ['swagger-ui-dist'],
 };
 
 /** Dev-tooling that is imported/invoked by config and tests but is not a package concern. */

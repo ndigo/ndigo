@@ -10,7 +10,9 @@ import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@b
 import { denialOf } from '@blue/dispatcher';
 import { ManagementAutoConfiguration } from '../src/management-auto-configuration';
 import { METRIC_AGGREGATOR } from '../src/metric-aggregator-token';
+import { HEALTH_REGISTRY } from '../src/health-registry-token';
 import { FeatureMetricAggregator } from '@blue/telemetry';
+import { HealthRegistry } from '../src/health';
 
 /**
  * End-to-end: boot a real context with NodeAutoConfiguration +
@@ -53,6 +55,79 @@ describe('ManagementAutoConfiguration endpoints', () => {
         const body = (await res.json()) as { status: string; components: Record<string, { status: string }> };
         expect(body.status).toBe('UP');
         expect(body.components['telemetry'].status).toBe('UP');
+    });
+});
+
+describe('ManagementAutoConfiguration health redaction (AD-36 D-1)', () => {
+    let base: string;
+    let registry: HealthRegistry;
+
+    beforeAll(async () => {
+        const context = new MetadataConfigApplicationContext('management-redacted');
+        context.register(NodeAutoConfiguration);
+        context.register(ManagementAutoConfiguration);
+        context.refresh();
+
+        registry = context.getValue<HealthRegistry>(HEALTH_REGISTRY);
+        registry.register({
+            name: 'boom',
+            check: () => {
+                throw new Error('read /etc/app/creds.sqlite: EACCES');
+            },
+        });
+
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+        const adapter = new NodeHTTPServerAdapter(dispatcher);
+        await adapter.listen(0, '127.0.0.1');
+        base = `http://127.0.0.1:${(adapter.server as { address(): { port: number } }).address().port}`;
+    });
+
+    test('GET /health redacts thrown indicator errors by default', async () => {
+        const res = await fetch(`${base}/health`);
+        expect(res.status).toBe(200);
+        const body = (await res.json()) as {
+            status: string;
+            components: Record<string, { status: string; details?: Record<string, unknown> }>;
+        };
+        expect(body.status).toBe('DOWN');
+        expect(body.components['boom'].details?.error).toBe('unavailable');
+        // Indicator internals must not reach the wire.
+        expect(JSON.stringify(body)).not.toContain('creds.sqlite');
+    });
+});
+
+describe('ManagementAutoConfiguration with redaction disabled', () => {
+    let base: string;
+
+    beforeAll(async () => {
+        const context = new MetadataConfigApplicationContext('management-verbose');
+        class VerboseManagementAutoConfiguration extends ManagementAutoConfiguration {
+            constructor() {
+                super({ redactHealthErrors: false });
+            }
+        }
+        context.register(NodeAutoConfiguration);
+        context.register(VerboseManagementAutoConfiguration);
+        context.refresh();
+
+        context.getValue<HealthRegistry>(HEALTH_REGISTRY).register({
+            name: 'boom',
+            check: () => {
+                throw new Error('read /etc/app/creds.sqlite: EACCES');
+            },
+        });
+
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+        const adapter = new NodeHTTPServerAdapter(dispatcher);
+        await adapter.listen(0, '127.0.0.1');
+        base = `http://127.0.0.1:${(adapter.server as { address(): { port: number } }).address().port}`;
+    });
+
+    test('GET /health exposes the raw error when opted in', async () => {
+        const res = await fetch(`${base}/health`);
+        expect(res.status).toBe(200);
+        const body = (await res.json()) as { components: Record<string, { details?: Record<string, unknown> }> };
+        expect(body.components['boom'].details?.error).toBe('read /etc/app/creds.sqlite: EACCES');
     });
 });
 

@@ -123,3 +123,17 @@ Session registry tracking open sockets (broadcast, rooms, heartbeat;
 AD-21). When omitted, the adapter creates a default registry with
 standard heartbeat defaults — heartbeats are on unless explicitly
 disabled.
+
+***
+
+### trustedProxies?
+
+> `optional` **trustedProxies?**: `string`[]
+
+Trusted-proxy addresses/ranges (IP literal or CIDR, IPv4/IPv6) whose
+`X-Forwarded-For` header the server may believe. The direct socket
+peer must match this set before the header is even read — a client
+reaching the server directly can never spoof an address (AD-37).
+Empty (default) trusts nobody: `NodeRequest.remoteAddress` stays the
+socket address. Malformed entries (hostnames, ports, bad prefixes)
+fail loud at construction.

@@ -52,7 +52,7 @@ Can be used as `@entry()`, `@entry('customName')`, or legacy the `entry` decorat
 
 #### nameOrTarget
 
-`string`
+`string` \| [`ContextToken`](../classes/ContextToken.md)\<`unknown`\>
 
 Entry name or the decorated method target.
 

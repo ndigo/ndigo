@@ -37,34 +37,65 @@ Manager options (see [CacheManagerOptions](../interfaces/CacheManagerOptions.md)
 
 ### getCache()
 
+#### Call Signature
+
 > **getCache**\<`V`\>(`name`): [`Cache`](../interfaces/Cache.md)\<`V`\>
 
 Returns the named cache, auto-creating it with the manager defaults
 when absent.
 
-#### Type Parameters
+##### Type Parameters
 
-##### V
+###### V
 
 `V` = `unknown`
 
-#### Parameters
+##### Parameters
 
-##### name
+###### name
 
 `string`
 
 Non-empty cache name.
 
-#### Returns
+##### Returns
 
 [`Cache`](../interfaces/Cache.md)\<`V`\>
 
-#### Throws
+##### Throws
 
 For a non-string or empty name.
 
-#### Implementation of
+##### Implementation of
+
+[`CacheManager`](../interfaces/CacheManager.md).[`getCache`](../interfaces/CacheManager.md#getcache)
+
+#### Call Signature
+
+> **getCache**\<`V`\>(`token`): [`Cache`](../interfaces/Cache.md)\<`V`\>
+
+Returns the cache identified by a typed store token (AD-34 D7) —
+description-backed, same store as the string form.
+
+##### Type Parameters
+
+###### V
+
+`V` = `unknown`
+
+##### Parameters
+
+###### token
+
+[`ContextToken`](#)\<[`Cache`](../interfaces/Cache.md)\<`V`\>\>
+
+The cache store token.
+
+##### Returns
+
+[`Cache`](../interfaces/Cache.md)\<`V`\>
+
+##### Implementation of
 
 [`CacheManager`](../interfaces/CacheManager.md).[`getCache`](../interfaces/CacheManager.md#getcache)
 
@@ -72,20 +103,42 @@ For a non-string or empty name.
 
 ### hasCache()
 
+#### Call Signature
+
 > **hasCache**(`name`): `boolean`
 
 Returns whether the named cache exists (no creation).
 
-#### Parameters
+##### Parameters
 
-##### name
+###### name
 
 `string`
 
-#### Returns
+##### Returns
 
 `boolean`
 
-#### Implementation of
+##### Implementation of
+
+[`CacheManager`](../interfaces/CacheManager.md).[`hasCache`](../interfaces/CacheManager.md#hascache)
+
+#### Call Signature
+
+> **hasCache**(`token`): `boolean`
+
+Returns whether the token-identified cache exists (no creation).
+
+##### Parameters
+
+###### token
+
+[`ContextToken`](#)\<[`Cache`](../interfaces/Cache.md)\<`unknown`\>\>
+
+##### Returns
+
+`boolean`
+
+##### Implementation of
 
 [`CacheManager`](../interfaces/CacheManager.md).[`hasCache`](../interfaces/CacheManager.md#hascache)

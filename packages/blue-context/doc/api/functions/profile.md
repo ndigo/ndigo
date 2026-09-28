@@ -14,10 +14,12 @@ Marks a class or method as active only for the named profile(s).
 
 ### expressions
 
-...`string`[]
+...(`string` \| [`ProfileTerm`](../classes/ProfileTerm.md))[]
 
 Profile name(s) for which the decorated target stays
   active (`@profile('prod')` or `@profile('a', 'b')` for either-of).
+  Composed [ProfileTerm](../classes/ProfileTerm.md) expressions (AD-34 D5) are accepted and
+  coerced to their canonical string.
 
 ## Returns
 

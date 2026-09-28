@@ -15,7 +15,15 @@ The aggregate is `UP` when every indicator is `UP`; `DOWN` when any is
 
 ### Constructor
 
-> **new HealthRegistry**(): `HealthRegistry`
+> **new HealthRegistry**(`options?`): `HealthRegistry`
+
+#### Parameters
+
+##### options?
+
+[`HealthRegistryOptions`](../interfaces/HealthRegistryOptions.md) = `{}`
+
+Registry options (e.g. error redaction).
 
 #### Returns
 

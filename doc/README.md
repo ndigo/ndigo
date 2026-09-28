@@ -26,6 +26,7 @@ package can be read — and installed — on its own.
 | `@blue/host` | Blue Host — centralized micro frontend orchestration in the shell context | [doc/api/README.md](../packages/blue-host/doc/api/README.md) |
 | `@blue/http` | Fetch-based HTTP client, interceptors, and content parsing for BlueJS | [doc/api/README.md](../packages/blue-http/doc/api/README.md) |
 | `@blue/management` | Blue management endpoints — /health and /metrics (actuator-style) | [doc/api/README.md](../packages/blue-management/doc/api/README.md) |
+| `@blue/openapi` | OpenAPI 3.0 documentation for BlueJS apps — spec generation from dispatch metadata + Swagger UI | [doc/api/README.md](../packages/blue-openapi/doc/api/README.md) |
 | `@blue/orm` | Blue ORM - Repository and Data Mapper persistence abstractions | [doc/api/README.md](../packages/blue-orm/doc/api/README.md) |
 | `@blue/orm-drizzle` | Blue ORM Drizzle – Drizzle ORM adapter for @blue/orm | [doc/api/README.md](../packages/blue-orm-drizzle/doc/api/README.md) |
 | `@blue/oxlint-plugin` | Custom oxlint rules for BlueJS architectural enforcement | [doc/api/README.md](../packages/blue-oxlint-plugin/doc/api/README.md) |

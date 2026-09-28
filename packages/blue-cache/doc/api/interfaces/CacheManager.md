@@ -15,47 +15,92 @@ touching call sites (the audit's planned extension point).
 
 ### getCache()
 
+#### Call Signature
+
 > **getCache**\<`V`\>(`name`): [`Cache`](Cache.md)\<`V`\>
 
 Returns the named cache, auto-creating it with the manager defaults
 when absent.
 
-#### Type Parameters
+##### Type Parameters
 
-##### V
+###### V
 
 `V` = `unknown`
 
-#### Parameters
+##### Parameters
 
-##### name
+###### name
 
 `string`
 
 Non-empty cache name.
 
-#### Returns
+##### Returns
 
 [`Cache`](Cache.md)\<`V`\>
 
-#### Throws
+##### Throws
 
 For a non-string or empty name.
+
+#### Call Signature
+
+> **getCache**\<`V`\>(`token`): [`Cache`](Cache.md)\<`V`\>
+
+Returns the cache identified by a typed store token (AD-34 D7) —
+description-backed, same store as the string form.
+
+##### Type Parameters
+
+###### V
+
+`V` = `unknown`
+
+##### Parameters
+
+###### token
+
+[`ContextToken`](#)\<[`Cache`](Cache.md)\<`V`\>\>
+
+The cache store token.
+
+##### Returns
+
+[`Cache`](Cache.md)\<`V`\>
 
 ***
 
 ### hasCache()
 
+#### Call Signature
+
 > **hasCache**(`name`): `boolean`
 
 Returns whether the named cache exists (no creation).
 
-#### Parameters
+##### Parameters
 
-##### name
+###### name
 
 `string`
 
-#### Returns
+##### Returns
+
+`boolean`
+
+#### Call Signature
+
+> **hasCache**(`token`): `boolean`
+
+Returns whether the token-identified cache exists (no creation).
+
+##### Parameters
+
+###### token
+
+[`ContextToken`](#)\<[`Cache`](Cache.md)\<`unknown`\>\>
+
+##### Returns
 
 `boolean`

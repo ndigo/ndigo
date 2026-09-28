@@ -16,6 +16,7 @@
     "EntryDecorator": "#",
     "EntryRegistryProcessor": "#",
     "LifecycleProcessor": "#",
+    "ProfileTerm": "#",
     "ResourceLoader": "#",
     "ResourceLoaderAware": "#",
     "SecretCipher": "#"

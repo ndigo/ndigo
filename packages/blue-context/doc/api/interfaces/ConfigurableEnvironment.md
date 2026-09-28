@@ -60,9 +60,10 @@ Evaluates a profile expression against the effective active set
 
 ##### expression
 
-`string`
+`string` \| [`ProfileTerm`](../classes/ProfileTerm.md)
 
-The profile expression (`dev`, `!prod`, `a & b`, `(a | b) & c`).
+The profile expression (`dev`, `!prod`, `a & b`,
+  `(a | b) & c`) or a composed [ProfileTerm](../classes/ProfileTerm.md) (AD-34 D5).
 
 #### Returns
 
@@ -152,33 +153,69 @@ The secret decryptor (e.g. a `SecretSchemeRegistry`).
 
 ### emit()
 
-> **emit**(`type`, ...`data`): `boolean`
+#### Call Signature
+
+> **emit**\<`K`\>(`type`, ...`payload`): `boolean`
 
 Emits an event to the listeners registered for the given type.
 
-#### Parameters
+##### Type Parameters
 
-##### type
+###### K
 
-[`EventType`](../type-aliases/EventType.md)
+`K` *extends* `"config:refresh"`
+
+##### Parameters
+
+###### type
+
+`K`
 
 The event type.
 
-##### data
+###### payload
 
-...`unknown`[]
+...[`EnvironmentEvents`](EnvironmentEvents.md)\[`K`\]
 
-Event payload values.
-
-#### Returns
+##### Returns
 
 `boolean`
 
 `true` when at least one listener ran.
 
-#### Inherited from
+##### Overrides
 
 [`EventEmitter`](EventEmitter.md).[`emit`](EventEmitter.md#emit)
+
+#### Call Signature
+
+> **emit**(`type`, ...`data`): `boolean`
+
+Emits an event to the listeners registered for the given type.
+
+##### Parameters
+
+###### type
+
+[`EventType`](../type-aliases/EventType.md)
+
+The event type.
+
+###### data
+
+...`unknown`[]
+
+Event payload values.
+
+##### Returns
+
+`boolean`
+
+`true` when at least one listener ran.
+
+##### Overrides
+
+`EventEmitter.emit`
 
 ***
 
@@ -491,65 +528,144 @@ The environment to merge.
 
 ### off()
 
+#### Call Signature
+
+> **off**\<`K`\>(`type`, `listener`): `this`
+
+Removes a listener for an event type.
+
+##### Type Parameters
+
+###### K
+
+`K` *extends* `"config:refresh"`
+
+##### Parameters
+
+###### type
+
+`K`
+
+The event type.
+
+###### listener
+
+(...`payload`) => `void`
+
+The listener to remove.
+
+##### Returns
+
+`this`
+
+This emitter.
+
+##### Overrides
+
+[`EventEmitter`](EventEmitter.md).[`off`](EventEmitter.md#off)
+
+#### Call Signature
+
 > **off**(`type`, `listener`): `this`
 
 Removes a listener for an event type.
 
-#### Parameters
+##### Parameters
 
-##### type
+###### type
 
 [`EventType`](../type-aliases/EventType.md)
 
 The event type.
 
-##### listener
+###### listener
 
 `Function`
 
 The listener to remove.
 
-#### Returns
+##### Returns
 
 `this`
 
 This emitter.
 
-#### Inherited from
+##### Overrides
 
-[`EventEmitter`](EventEmitter.md).[`off`](EventEmitter.md#off)
+`EventEmitter.off`
 
 ***
 
 ### on()
 
+#### Call Signature
+
+> **on**\<`K`\>(`type`, `listener`): `this`
+
+Typed event overloads (AD-34 D2): the refresh event delivers its
+[EnvironmentEvents](EnvironmentEvents.md) payload (empty) to the listener; any other
+event type falls through to the raw `EventEmitter` surface.
+
+##### Type Parameters
+
+###### K
+
+`K` *extends* `"config:refresh"`
+
+##### Parameters
+
+###### type
+
+`K`
+
+###### listener
+
+(...`payload`) => `void`
+
+##### Returns
+
+`this`
+
+##### Example
+
+```ts
+environment.on(CONFIG_REFRESH_EVENT, () => {});   // typed, payload []
+environment.on('custom:event', (...data: unknown[]) => {}); // raw
+```
+
+##### Overrides
+
+[`EventEmitter`](EventEmitter.md).[`on`](EventEmitter.md#on)
+
+#### Call Signature
+
 > **on**(`type`, `listener?`): `this`
 
 Adds a listener for an event type.
 
-#### Parameters
+##### Parameters
 
-##### type
+###### type
 
 [`EventType`](../type-aliases/EventType.md) \| [`EventHandlers`](../type-aliases/EventHandlers.md)
 
 The event type.
 
-##### listener?
+###### listener?
 
 `Function`
 
 The listener to register.
 
-#### Returns
+##### Returns
 
 `this`
 
 This emitter.
 
-#### Inherited from
+##### Overrides
 
-[`EventEmitter`](EventEmitter.md).[`on`](EventEmitter.md#on)
+`EventEmitter.on`
 
 ***
 
@@ -594,3 +710,47 @@ lookup index and clears caches. Environment-scope only (AD-16 D3).
 #### Inherited from
 
 [`Environment`](Environment.md).[`refresh`](Environment.md#refresh)
+
+***
+
+### typedConfig()
+
+> **typedConfig**\<`S`\>(`prefix`, `schema`): `output`\<`S`\> \| `undefined`
+
+Resolves a schema-typed configuration value from this environment
+(AD-34 D3): object-shaped schemas read each key under `prefix`
+(`server.port` for `('server', z.object({ port: ... }))`); coercion,
+defaults and required checks follow the schema. A missing required key
+throws the zod error; an absent value with no default yields
+`undefined`.
+
+#### Type Parameters
+
+##### S
+
+`S` *extends* `ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>
+
+#### Parameters
+
+##### prefix
+
+`string`
+
+Property prefix (the keypath when the schema is a
+  top-level scalar).
+
+##### schema
+
+`S`
+
+The zod schema describing the value.
+
+#### Returns
+
+`output`\<`S`\> \| `undefined`
+
+The parsed typed value, or `undefined` when absent.
+
+#### Inherited from
+
+[`Environment`](Environment.md).[`typedConfig`](Environment.md#typedconfig)

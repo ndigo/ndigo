@@ -73,12 +73,18 @@ export function resolveSchemaConfig<S extends z.ZodType>(
 }
 
 /**
- * Property keys for every leaf of an object shape, typed as the joined
- * keypath template literal (`{ server: { port: 0 } }` → `'server.port'`).
+ * The leaf values {@link PropertyKeyMap} terminates at: any primitive,
+ * plus `null`/`undefined`. Everything else is descended into.
  */
-type PrimitiveValue = string | number | boolean | null | undefined;
+export type PrimitiveValue = string | number | boolean | null | undefined;
 
-type DeepPropertyKey<T, P extends string> = T extends PrimitiveValue | readonly unknown[]
+/**
+ * Recursive mapped type materializing the leaf keypaths of a shape —
+ * the engine behind {@link PropertyKeyMap}. Leaves become their key path
+ * (`'server.port'`); objects descend. Exposed so the keypath shape of a
+ * configuration can be reasoned about in types.
+ */
+export type DeepPropertyKey<T, P extends string> = T extends PrimitiveValue | readonly unknown[]
     ? P
     : { [K in keyof T & string]: DeepPropertyKey<T[K], P extends '' ? K : `${P}.${K}`> };
 

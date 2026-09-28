@@ -108,3 +108,16 @@ Socket session registry shared with the default adapter (AD-21 D4).
 When omitted, the registry is resolved from the application context
 (`socketSessionRegistry` bean) at start, falling back to a fresh
 instance — so broadcasts from the bean reach the adapter's sessions.
+
+***
+
+### trustedProxies?
+
+> `optional` **trustedProxies?**: `string`[]
+
+Trusted-proxy allowlist handed to the default adapter (AD-37): IP
+literals and CIDR prefixes (IPv4/IPv6) whose `X-Forwarded-For`
+header the server may believe. Env-tunable via `BLUE_TRUSTED_PROXIES`
+(comma-separated) when the option is absent; an explicit option wins
+over the env. Empty = trust nobody: the socket address stands and
+the header is never consulted.

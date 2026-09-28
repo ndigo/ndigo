@@ -45,9 +45,10 @@ Evaluates a profile expression against the effective active set
 
 ##### expression
 
-`string`
+`string` \| [`ProfileTerm`](../classes/ProfileTerm.md)
 
-The profile expression (`dev`, `!prod`, `a & b`, `(a | b) & c`).
+The profile expression (`dev`, `!prod`, `a & b`,
+  `(a | b) & c`) or a composed [ProfileTerm](../classes/ProfileTerm.md) (AD-34 D5).
 
 #### Returns
 
@@ -343,3 +344,43 @@ lookup index and clears caches. Environment-scope only (AD-16 D3).
 #### Returns
 
 `void`
+
+***
+
+### typedConfig()
+
+> **typedConfig**\<`S`\>(`prefix`, `schema`): `output`\<`S`\> \| `undefined`
+
+Resolves a schema-typed configuration value from this environment
+(AD-34 D3): object-shaped schemas read each key under `prefix`
+(`server.port` for `('server', z.object({ port: ... }))`); coercion,
+defaults and required checks follow the schema. A missing required key
+throws the zod error; an absent value with no default yields
+`undefined`.
+
+#### Type Parameters
+
+##### S
+
+`S` *extends* `ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>
+
+#### Parameters
+
+##### prefix
+
+`string`
+
+Property prefix (the keypath when the schema is a
+  top-level scalar).
+
+##### schema
+
+`S`
+
+The zod schema describing the value.
+
+#### Returns
+
+`output`\<`S`\> \| `undefined`
+
+The parsed typed value, or `undefined` when absent.

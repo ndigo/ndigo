@@ -80,6 +80,17 @@ Explicit multipart/form-data client field name, when it differs from the
 
 ***
 
+### schema?
+
+> `optional` **schema?**: `z.ZodType`\<`unknown`\>
+
+The Zod schema backing [ParameterExtractor.convert](#convert), when the
+extractor was produced by `validatedBy` (AD-35). Generation-time
+introspection seam — the OpenAPI generator derives JSON Schema from it;
+never read by the resolvers (they go through `convert`).
+
+***
+
 ### target?
 
 > `optional` **target?**: () => `object`

@@ -194,11 +194,45 @@ equivalent) is recorded as the post-1.0 follow-up; it needs a second
 dispatch stack on the platform, and guard + redaction cover the exposure
 in the meantime.
 
-## 9. Deferrals (deliberate)
+## 9. Real client IP behind trusted proxies (AD-37)
+
+`NodeRequest.remoteAddress` — the rate limiter's key and the address
+handlers read — is the **socket address** unless you name your proxies.
+Trusting `X-Forwarded-For` from anyone is a spoofing hole; the server
+only believes the header when the **direct connection** comes from a
+trusted proxy.
+
+```ts
+// Wire in a controller/configuration class:
+new NodeHTTPServerAdapter(dispatcher, {
+    trustedProxies: ['127.0.0.1', '10.0.0.0/8', '::1'],
+});
+```
+
+Or deploy-time, no code change:
+
+```
+BLUE_TRUSTED_PROXIES=10.0.0.0/8,2001:db8::/32 node server.js
+```
+
+Rules (AD-37, following the MDN/Rails/Fastify industry approach):
+
+- **Default is trust nobody**; list proxy addresses/CIDRs explicitly where
+  they sit in front of the server.
+- The header is walked from the **rightmost** entry (the proxy closest to
+  the server appends last); trusted hops are skipped and the first
+  non-trusted valid IP wins — so a client's spoofed leftmost values can
+  never win.
+- Malformed config (hostnames, ports, bad prefixes) **fails at startup**,
+  not silently; RFC 7239 `Forwarded` and `X-Forwarded-Proto`/`-Host`
+  rewriting remain deferrals (AD-37 D-3).
+- Everything reading `remoteAddress` benefits automatically: rate limiting
+  keys per resolved client instead of collapsing into one proxy bucket.
+
+## 10. Deferrals (deliberate)
 
 WebAuthn/passkeys, MFA, SAML, provider federation (OIDC client exists for
 authorization-code + PKCE), RBAC beyond `@authorized`'s role list,
-trusted-proxy client-IP resolution, persistent session-store backends,
-argon2id (additive when needed), persistent JWT rotation ledger (needed
-only for long-lived access tokens). None blocks the 1.0 credential +
-session story.
+persistent session-store backends, argon2id (additive when needed),
+persistent JWT rotation ledger (needed only for long-lived access
+tokens). None blocks the 1.0 credential + session story.

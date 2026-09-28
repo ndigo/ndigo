@@ -17,8 +17,8 @@ no revocation, no server session auth"), §2.2 **server-side session store**
 landed") — the latter because credential auth without throttling is a
 brute-force exposure. Out of scope (documented deferrals): WebAuthn/
 passkeys, MFA, SAML, provider federation, RBAC beyond `@authorized`,
-trusted-proxy client-IP resolution (Tier-2 gap; limiter keys on socket
-remote address and documents the caveat).
+trusted-proxy client-IP resolution — **IMPLEMENTED 2026-09-28 (AD-37)**:
+the limiter keys on the resolved client behind explicitly trusted proxies.
 
 **Companion docs:** [AD-33](../decisions/2026-09-26_AD33_AUTH_CREDENTIALS_AND_SESSIONS.md)
 (decisions D-1..D-7), [Framework Gap Analysis](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md)
@@ -80,7 +80,7 @@ unsafe to ship.
 | Unknown-scheme strings at runtime                | Loud throw + `needsRehash` migration path                                     |
 | CSRF on cookie-session mutations                 | Existing double-submit-cookie interceptor; Wave 4 pins specs for login/logout |
 | Revocation costs a store read per JWT validation | Documented short-TTL cache option (implemented in Wave 4)                     |
-| Proxy deployments break IP keying                | Socket remote address + documented caveat; trusted-proxy stays Tier-2         |
+| Proxy deployments break IP keying                | **CLOSED 2026-09-28 (AD-37)** — allowlist-gated X-Forwarded-For chain walk; limiter keys on the resolved client                                          |
 
 ## 4. Sequencing
 
@@ -225,10 +225,10 @@ windowMs }`, `RateLimitResult { allowed, retryAfterMs }`, `RateLimiter`
 
 **As-built notes (execution-discovered):**
 
-- **`X-Forwarded-For` stays untouched** (Tier-2 deferral): trusting it
-  unconditionally is a spoofing hole, and the interceptor documents that
-  proxy deployments share the proxy's address until the trusted-proxy
-  feature lands (raise the limit or defer).
+- **`X-Forwarded-For` was untouched here** (a spoofing hole if trusted
+  unconditionally): the trusted-proxy feature (AD-37, 2026-09-28) later
+  added allowlist-gated resolution — until then, proxy deployments shared
+  the proxy's address (documented caveat: raise the limit or defer).
 - **Client address was not available anywhere** — `NodeRequest` gained
   `remoteAddress` (additive; the adapter populates it; sockets don't need
   it). Without this seam the interceptor would have keyed on nothing.

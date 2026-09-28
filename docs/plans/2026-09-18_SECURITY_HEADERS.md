@@ -5,7 +5,7 @@ decision record pending (AD-25); implementation sequenced below.
 **Scope:** `SecurityHeadersInterceptor` in `blue-platform-node` (Helmet-wrap,
 `RouteHandlerInterceptor`), default-on wiring in `NodeAutoConfiguration`,
 demo assertions, docs + audit status refresh. Rate limiting stays a separate
-wave (seq #3 half 2 — it awaits the trusted-proxy gap for client-IP trust).
+wave (seq #3 half 2 — client-IP trust landed separately, AD-37 2026-09-28).
 **Companion docs:** [Framework Gap Analysis](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md)
 §2.1 ("Security headers" row), [Repository Remediation](../plans/2026-09-04_REPOSITORY_REMEDIATION.md)
 SEC-6 ("security-header policy" item), [AD-10](../decisions/2026-09-07_AD10_RFC9457_ERROR_MODEL.md)
@@ -74,7 +74,7 @@ On by default (Helmet parity, minus COEP):
 | Header                              | Default                                                                                                                                                                                                                                                                |
 | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Content-Security-Policy`           | Helmet default directives (`default-src 'self'`, `object-src 'none'`, `script-src 'self'`, `frame-ancestors 'self'`, `upgrade-insecure-requests`, …) **with `connect-src 'self' ws: wss:`** — the framework ships a WebSocket server, so the default must not break it |
-| `Strict-Transport-Security`         | `max-age=31536000; includeSubDomains` (ignored by browsers over plain HTTP; proxy-caveat documented — trusted-proxy is a separate gap)                                                                                                                                 |
+| `Strict-Transport-Security`         | `max-age=31536000; includeSubDomains` (ignored by browsers over plain HTTP; proxy-caveat documented — client-IP trust landed in AD-37, scheme awareness still deferred)                                                                                                                                 |
 | `X-Frame-Options`                   | `SAMEORIGIN` (paired with `frame-ancestors` in CSP for non-CSP browsers)                                                                                                                                                                                               |
 | `X-Content-Type-Options`            | `nosniff`                                                                                                                                                                                                                                                              |
 | `Referrer-Policy`                   | `no-referrer`                                                                                                                                                                                                                                                          |
@@ -103,7 +103,7 @@ startup instead of first request.
 
 No CSP nonce/report-only integration (escape hatches only; `unsafe-inline`
 discouraged and documented), no HSTS preload-list submission, no
-proxy-scheme awareness (`X-Forwarded-Proto` waits on trusted-proxy), no
+proxy-scheme awareness (`X-Forwarded-Proto` remains deferred; AD-37 closed the client-IP half only), no
 rate limiting (next wave), no header helpers for SSE/WebSocket handshakes
 (CSP does not govern them server-side).
 
@@ -143,7 +143,7 @@ new SecurityHeadersInterceptor({
   pages ship.
 - **HSTS behind a TLS-terminating proxy on plain HTTP** → browsers ignore
   HSTS over insecure connections by spec; the X-Forwarded-Proto trust story
-  is the trusted-proxy gap; documented.
+  remains deferred (AD-37 closed client-IP trust only); documented.
 - **Header duplication with a hand-rolled app set** → `setHeader` is
   last-write-wins; the interceptor runs first, app overrides land later in
   the chain — an ordering contract to document, not a bug.

@@ -53,8 +53,8 @@ describe('Todo API', () => {
 `bootApp` accepts `@configuration` classes (registered via `context.register`) or plain `@getMapping` controller classes (stored by class name).
 
 ## API
-Complete generated reference (all exports, via `pnpm doc:api`): [`doc/api/README.md`](doc/api/README.md).
 
+Complete generated reference (all exports, via `pnpm doc:api`): [`doc/api/README.md`](doc/api/README.md).
 
 - **`bootApp(sources: Function[]): BlueTestApp`** — boots a real `MetadataConfigApplicationContext` with `NodeAutoConfiguration`, wires the handler mapping + dispatcher. Returns `{ context, dispatcher, close }`.
 - **`cachedBootApp(sources)` / `releaseCachedApp(sources)`** — same-sources dedupe within a worker: multiple suites booting the same sources share one context (ref-counted; released via `releaseCachedApp` or `app.close()`).

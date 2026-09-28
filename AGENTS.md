@@ -118,7 +118,7 @@ The project maintains two complementary documentation files for different purpos
 Every package must meet the documentation standard:
 
 - **README.md** — required sections (tagline, Installation, Getting Started,
-  Usage, API *link only*, Development, Contributing, License). No internal
+  Usage, API _link only_, Development, Contributing, License). No internal
   tracking IDs or decision-record links in package READMEs. Template:
   `packages/blue-generators/src/generators/readme/files/README.md.template`.
 - **Generated API reference** — `pnpm doc:api` writes
@@ -273,10 +273,10 @@ This will prevent `TypeError` exceptions at runtime. The build process may not a
 
 **Integration Layer Packages:**
 
-| Package        | Encapsulates         | Import From    |
-| :------------- | :------------------- | :------------- |
-| `@blue/util`   | `seedrandom`, `slug` | `@blue/util`   |
-| `@blue/dom`    | `linkedom`           | `@blue/dom`    |
+| Package      | Encapsulates         | Import From  |
+| :----------- | :------------------- | :----------- |
+| `@blue/util` | `seedrandom`, `slug` | `@blue/util` |
+| `@blue/dom`  | `linkedom`           | `@blue/dom`  |
 
 **Import Rules by Package Type:**
 
@@ -326,11 +326,11 @@ import { createDOMProvider } from '@blue/dom';
 
 These rules are **automatically enforced** by `@blue/oxlint-plugin`, which provides three oxlint rules:
 
-| Rule                                  | Severity | Description                                                                                                                                                           |
-| :------------------------------------ | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rule                                  | Severity | Description                                                                                                                                                          |
+| :------------------------------------ | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@blue/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (seedrandom, slug, linkedom, etc.) outside their integration layer packages. Allows in integration packages and test files. |
-| `@blue/no-internal-file-imports`      | error    | Forbids `@blue/<pkg>/_*` cross-package imports of internal files.                                                                                                     |
-| `@blue/no-internal-file-exports`      | error    | Forbids `export * from './_*'` barrel re-exports in `*/src/index.ts`. Named re-exports (`export { foo } from './_*'`) are allowed (deliberate/controlled).            |
+| `@blue/no-internal-file-imports`      | error    | Forbids `@blue/<pkg>/_*` cross-package imports of internal files.                                                                                                    |
+| `@blue/no-internal-file-exports`      | error    | Forbids `export * from './_*'` barrel re-exports in `*/src/index.ts`. Named re-exports (`export { foo } from './_*'`) are allowed (deliberate/controlled).           |
 
 Run `pnpm lint` to check for violations. These rules are integrated into the root `.oxlintrc.json`.
 

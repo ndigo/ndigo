@@ -37,6 +37,7 @@ import {
     MethodParameterType,
 } from '@blue/dispatcher';
 import { NodeRequest, NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from './node-request';
+import { TrustedProxySet, resolveClientAddress } from './trusted-proxy';
 import {
     nodeSocketSession,
     resolveSocketLimits,
@@ -181,6 +182,16 @@ export interface NodeHTTPServerAdapterOptions {
      */
     authenticateTimeoutMs?: number;
     /**
+     * Trusted-proxy addresses/ranges (IP literal or CIDR, IPv4/IPv6) whose
+     * `X-Forwarded-For` header the server may believe. The direct socket
+     * peer must match this set before the header is even read — a client
+     * reaching the server directly can never spoof an address (AD-37).
+     * Empty (default) trusts nobody: `NodeRequest.remoteAddress` stays the
+     * socket address. Malformed entries (hostnames, ports, bad prefixes)
+     * fail loud at construction.
+     */
+    trustedProxies?: string[];
+    /**
      * Session registry tracking open sockets (broadcast, rooms, heartbeat;
      * AD-21). When omitted, the adapter creates a default registry with
      * standard heartbeat defaults — heartbeats are on unless explicitly
@@ -262,6 +273,8 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     #server: Server | null;
     #websocket: WebSocketServer | null = null;
     readonly #socketRegistry: NodeSocketSessionRegistry;
+    /** Trusted-proxy allowlist (AD-37); empty = trust nobody. */
+    readonly #trustedProxies: TrustedProxySet;
 
     get server(): unknown {
         return this.#server;
@@ -301,6 +314,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         }
         this.#authenticateTimeoutMs = authenticateTimeoutMs;
         this.#server = null;
+        this.#trustedProxies = new TrustedProxySet(options.trustedProxies);
         this.#socketRegistry = options.socketRegistry ?? new NodeSocketSessionRegistry();
         const origins: Record<string, true> = {};
         for (const entry of options.allowedWebSocketOrigins ?? []) {
@@ -851,7 +865,13 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 headers: req.headers as Record<string, string | string[] | undefined>,
                 body: bodyRecord,
                 cookies: parseCookies(typeof req.headers['cookie'] === 'string' ? req.headers['cookie'] : undefined),
-                remoteAddress: req.socket?.remoteAddress,
+                // AD-37: resolved through the trusted-proxy allowlist; the
+                // direct socket address stands unless the peer is trusted.
+                remoteAddress: resolveClientAddress(
+                    req.socket?.remoteAddress,
+                    req.headers as Record<string, string | string[] | undefined>,
+                    this.#trustedProxies
+                ),
                 session: {},
             };
             if (multipart) {

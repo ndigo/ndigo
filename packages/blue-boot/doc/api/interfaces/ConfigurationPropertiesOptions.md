@@ -16,3 +16,18 @@ Options for [configurationProperties](../functions/configurationProperties.md).
 
 Enable relaxed binding (kebab/snake env keys match camelCase fields).
 Off by default — exact keypaths are the contract (AD-15 Q8).
+
+***
+
+### schema?
+
+> `optional` **schema?**: `ZodObject`\<`$ZodLooseShape`, `$strip`\>
+
+Zod schema describing the bound values (AD-34 D3). When present, the
+class binds in **schema mode**: every shape key resolves
+`${prefix}.${key}` from the environment, and coercion, requiredness
+and defaults all come from the schema (`z.default()` replaces
+`@defaultValue`; no `@property` decorators needed). A missing required
+key or a failed coercion throws at boot, naming the class. Schema mode
+ignores `@property`/`@defaultValue`/`@nested` decorators on the
+class — the schema is the single source of truth (D3).

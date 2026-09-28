@@ -1506,6 +1506,38 @@ The value to register.
 
 ***
 
+### typedConfig()
+
+> **typedConfig**\<`S`\>(`prefix`, `schema`): `output`\<`S`\> \| `undefined`
+
+Schema-typed configuration read off the context environment (AD-34 D3).
+
+#### Type Parameters
+
+##### S
+
+`S` *extends* `ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>
+
+#### Parameters
+
+##### prefix
+
+`string`
+
+##### schema
+
+`S`
+
+#### Returns
+
+`output`\<`S`\> \| `undefined`
+
+#### Inherited from
+
+[`GenericApplicationContext`](GenericApplicationContext.md).[`typedConfig`](GenericApplicationContext.md#typedconfig)
+
+***
+
 ### unsubscribeRefresh()
 
 > **unsubscribeRefresh**(): `void`

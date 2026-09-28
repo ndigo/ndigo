@@ -41,6 +41,8 @@ Jeff Rose
 - [NodeRequestSessionValueMethodArgumentResolver](classes/NodeRequestSessionValueMethodArgumentResolver.md)
 - [NodeSessionInterceptor](classes/NodeSessionInterceptor.md)
 - [NodeSocketSessionRegistry](classes/NodeSocketSessionRegistry.md)
+- [OpenAPIDocsAutoConfiguration](classes/OpenAPIDocsAutoConfiguration.md)
+- [OpenAPIDocsController](classes/OpenAPIDocsController.md)
 - [RateLimitInterceptor](classes/RateLimitInterceptor.md)
 - [RequestLimitError](classes/RequestLimitError.md)
 - [ResponseEntity](classes/ResponseEntity.md)
@@ -51,6 +53,8 @@ Jeff Rose
 - [StaticFileView](classes/StaticFileView.md)
 - [StaticResourceHandler](classes/StaticResourceHandler.md)
 - [StaticResourceResolver](classes/StaticResourceResolver.md)
+- [SwaggerUIController](classes/SwaggerUIController.md)
+- [TrustedProxySet](classes/TrustedProxySet.md)
 
 ## Interfaces
 
@@ -69,12 +73,14 @@ Jeff Rose
 - [NodeHTTPServerAdapterOptions](interfaces/NodeHTTPServerAdapterOptions.md)
 - [NodeRequest](interfaces/NodeRequest.md)
 - [NodeSocketSessionRegistryOptions](interfaces/NodeSocketSessionRegistryOptions.md)
+- [OpenAPIDocsAutoConfigurationOptions](interfaces/OpenAPIDocsAutoConfigurationOptions.md)
 - [ProblemDetails](interfaces/ProblemDetails.md)
 - [ProblemResponseWriter](interfaces/ProblemResponseWriter.md)
 - [RateLimiter](interfaces/RateLimiter.md)
 - [RateLimitPolicy](interfaces/RateLimitPolicy.md)
 - [RateLimitResult](interfaces/RateLimitResult.md)
 - [ResolvedHTTPRequestLimits](interfaces/ResolvedHTTPRequestLimits.md)
+- [ResolvedOpenAPIDocsOptions](interfaces/ResolvedOpenAPIDocsOptions.md)
 - [ResolvedSocketLimits](interfaces/ResolvedSocketLimits.md)
 - [SecurityHeadersInterceptorOptions](interfaces/SecurityHeadersInterceptorOptions.md)
 - [SessionCookieOptions](interfaces/SessionCookieOptions.md)
@@ -108,6 +114,7 @@ Jeff Rose
 - [DEFAULT\_MAX\_COOKIE\_VALUE\_BYTES](variables/DEFAULT_MAX_COOKIE_VALUE_BYTES.md)
 - [DEFAULT\_MAX\_COOKIES](variables/DEFAULT_MAX_COOKIES.md)
 - [DEFAULT\_SOCKET\_LIMITS](variables/DEFAULT_SOCKET_LIMITS.md)
+- [HTTP\_SERVER](variables/HTTP_SERVER.md)
 - [identityArgumentValueConverter](variables/identityArgumentValueConverter.md)
 - [MULTIPART\_FORM\_DATA](variables/MULTIPART_FORM_DATA.md)
 - [NODE\_REQUEST\_ATTRIBUTE](variables/NODE_REQUEST_ATTRIBUTE.md)
@@ -116,6 +123,8 @@ Jeff Rose
 - [ProblemTypes](variables/ProblemTypes.md)
 - [RATE\_LIMIT\_KEY](variables/RATE_LIMIT_KEY.md)
 - [SESSION\_COOKIE](variables/SESSION_COOKIE.md)
+- [SOCKET\_REQUEST\_AUTHENTICATOR](variables/SOCKET_REQUEST_AUTHENTICATOR.md)
+- [SOCKET\_SESSION\_REGISTRY](variables/SOCKET_SESSION_REGISTRY.md)
 
 ## Functions
 
@@ -140,8 +149,12 @@ Jeff Rose
 - [parseMultipart](functions/parseMultipart.md)
 - [problemEntity](functions/problemEntity.md)
 - [rateLimit](functions/rateLimit.md)
+- [relativeSpecUrl](functions/relativeSpecUrl.md)
+- [renderSwaggerUiPage](functions/renderSwaggerUiPage.md)
+- [resolveClientAddress](functions/resolveClientAddress.md)
 - [resolveConverter](functions/resolveConverter.md)
 - [resolveHTTPRequestLimits](functions/resolveHTTPRequestLimits.md)
+- [resolveOpenAPIDocsOptions](functions/resolveOpenAPIDocsOptions.md)
 - [resolveSocketLimits](functions/resolveSocketLimits.md)
 - [resolveSocketRegistryOptions](functions/resolveSocketRegistryOptions.md)
 - [setSessionCookie](functions/setSessionCookie.md)

@@ -16,7 +16,7 @@ Method parameter metadata
 
 ### Constructor
 
-> **new MethodParameter**(`type`, `name`, `required?`, `defaultValue?`, `convertType?`, `prefix?`, `convert?`, `parameterName?`, `target?`): `MethodParameter`
+> **new MethodParameter**(`type`, `name`, `required?`, `defaultValue?`, `convertType?`, `prefix?`, `convert?`, `parameterName?`, `target?`, `schema?`): `MethodParameter`
 
 #### Parameters
 
@@ -61,6 +61,10 @@ Method parameter metadata
 ##### target?
 
 () => `object`
+
+##### schema?
+
+`ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>
 
 #### Returns
 
@@ -117,6 +121,16 @@ key, which may differ from the extractor's source name (e.g.
 ### required
 
 > `readonly` **required**: `boolean`
+
+***
+
+### schema
+
+> `readonly` **schema**: `ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\> \| `undefined`
+
+The Zod schema backing [MethodParameter.convert](#convert), when the
+parameter was validated via `validatedBy` (AD-35). Generation-time
+introspection seam for API docs; never used by resolution.
 
 ***
 

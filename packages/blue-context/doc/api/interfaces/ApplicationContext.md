@@ -276,33 +276,69 @@ Calling `close()` on an already-destroyed context is a safe no-op.
 
 ### emit()
 
-> **emit**(`type`, ...`data`): `boolean`
+#### Call Signature
+
+> **emit**\<`K`\>(`type`, ...`payload`): `boolean`
 
 Emits an event to the listeners registered for the given type.
 
-#### Parameters
+##### Type Parameters
 
-##### type
+###### K
 
-[`EventType`](../type-aliases/EventType.md)
+`K` *extends* keyof [`ContextEvents`](ContextEvents.md)
+
+##### Parameters
+
+###### type
+
+`K`
 
 The event type.
 
-##### data
+###### payload
 
-...`unknown`[]
+...[`ContextEvents`](ContextEvents.md)\[`K`\]
 
-Event payload values.
-
-#### Returns
+##### Returns
 
 `boolean`
 
 `true` when at least one listener ran.
 
-#### Inherited from
+##### Overrides
 
 [`EventEmitter`](EventEmitter.md).[`emit`](EventEmitter.md#emit)
+
+#### Call Signature
+
+> **emit**(`type`, ...`data`): `boolean`
+
+Emits an event to the listeners registered for the given type.
+
+##### Parameters
+
+###### type
+
+[`EventType`](../type-aliases/EventType.md)
+
+The event type.
+
+###### data
+
+...`unknown`[]
+
+Event payload values.
+
+##### Returns
+
+`boolean`
+
+`true` when at least one listener ran.
+
+##### Overrides
+
+`EventEmitter.emit`
 
 ***
 
@@ -696,65 +732,144 @@ The newly created child application context.
 
 ### off()
 
+#### Call Signature
+
+> **off**\<`K`\>(`type`, `listener`): `this`
+
+Removes a listener for an event type.
+
+##### Type Parameters
+
+###### K
+
+`K` *extends* keyof [`ContextEvents`](ContextEvents.md)
+
+##### Parameters
+
+###### type
+
+`K`
+
+The event type.
+
+###### listener
+
+(...`payload`) => `void`
+
+The listener to remove.
+
+##### Returns
+
+`this`
+
+This emitter.
+
+##### Overrides
+
+[`EventEmitter`](EventEmitter.md).[`off`](EventEmitter.md#off)
+
+#### Call Signature
+
 > **off**(`type`, `listener`): `this`
 
 Removes a listener for an event type.
 
-#### Parameters
+##### Parameters
 
-##### type
+###### type
 
 [`EventType`](../type-aliases/EventType.md)
 
 The event type.
 
-##### listener
+###### listener
 
 `Function`
 
 The listener to remove.
 
-#### Returns
+##### Returns
 
 `this`
 
 This emitter.
 
-#### Inherited from
+##### Overrides
 
-[`EventEmitter`](EventEmitter.md).[`off`](EventEmitter.md#off)
+`EventEmitter.off`
 
 ***
 
 ### on()
 
+#### Call Signature
+
+> **on**\<`K`\>(`type`, `listener`): `this`
+
+Typed event overloads (AD-34 D2): lifecycle events deliver their
+[ContextEvents](ContextEvents.md) payloads to the listener; any other event type
+falls through to the raw `EventEmitter` surface.
+
+##### Type Parameters
+
+###### K
+
+`K` *extends* keyof [`ContextEvents`](ContextEvents.md)
+
+##### Parameters
+
+###### type
+
+`K`
+
+###### listener
+
+(...`payload`) => `void`
+
+##### Returns
+
+`this`
+
+##### Example
+
+```ts
+context.on('context:refresh', (refreshed) => refreshed.isActive); // typed
+context.on('custom:event', (...data: unknown[]) => {});            // raw
+```
+
+##### Overrides
+
+[`EventEmitter`](EventEmitter.md).[`on`](EventEmitter.md#on)
+
+#### Call Signature
+
 > **on**(`type`, `listener?`): `this`
 
 Adds a listener for an event type.
 
-#### Parameters
+##### Parameters
 
-##### type
+###### type
 
 [`EventType`](../type-aliases/EventType.md) \| [`EventHandlers`](../type-aliases/EventHandlers.md)
 
 The event type.
 
-##### listener?
+###### listener?
 
 `Function`
 
 The listener to register.
 
-#### Returns
+##### Returns
 
 `this`
 
 This emitter.
 
-#### Inherited from
+##### Overrides
 
-[`EventEmitter`](EventEmitter.md).[`on`](EventEmitter.md#on)
+`EventEmitter.on`
 
 ***
 
@@ -881,3 +996,39 @@ The parent factory.
 ##### Inherited from
 
 `ConfigurableFactory.setValue`
+
+***
+
+### typedConfig()
+
+> **typedConfig**\<`S`\>(`prefix`, `schema`): `output`\<`S`\> \| `undefined`
+
+Resolves a schema-typed configuration value from the context's
+environment (AD-34 D3) — convenience mirror of
+`Environment.typedConfig` for context-held callers.
+
+#### Type Parameters
+
+##### S
+
+`S` *extends* `ZodType`\<`unknown`, `unknown`, `$ZodTypeInternals`\<`unknown`, `unknown`\>\>
+
+#### Parameters
+
+##### prefix
+
+`string`
+
+Property prefix (a keypath for scalar schemas).
+
+##### schema
+
+`S`
+
+The zod schema describing the value.
+
+#### Returns
+
+`output`\<`S`\> \| `undefined`
+
+The parsed typed value, or `undefined` when absent.

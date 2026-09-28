@@ -30,6 +30,7 @@ Jeff Rose
 
 ## Variables
 
+- [CACHE\_MANAGER](variables/CACHE_MANAGER.md)
 - [CACHED\_METADATA\_PREFIX](variables/CACHED_METADATA_PREFIX.md)
 - [DEFAULT\_CACHE\_NAME](variables/DEFAULT_CACHE_NAME.md)
 

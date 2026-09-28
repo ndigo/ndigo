@@ -27,7 +27,7 @@ import { evaluateProfileExpression } from './profile-expression';
  * names and raw strings are treated as loose compounds when they contain
  * operator characters, so they parenthesize safely under every context.
  */
-type TermKind = 'name' | 'not' | 'and' | 'or' | 'compound';
+export type TermKind = 'name' | 'not' | 'and' | 'or' | 'compound';
 
 const namePattern = /^[a-zA-Z0-9_.:-]+$/u;
 

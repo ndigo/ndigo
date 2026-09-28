@@ -104,6 +104,7 @@ Data & management:
 - [blue-orm](packages/blue-orm/README.md) — repository/data-mapper persistence
 - [blue-orm-drizzle](packages/blue-orm-drizzle/README.md) — Drizzle ORM adapter
 - [blue-management](packages/blue-management/README.md) — `/health`, `/metrics` endpoints
+- [blue-openapi](packages/blue-openapi/README.md) — OpenAPI 3.0 spec from dispatch metadata + Swagger UI
 
 Auth:
 

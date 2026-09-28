@@ -57,6 +57,15 @@ export interface HTTPServerOptions {
      */
     authenticate?: NodeHTTPServerAdapterOptions['authenticate'];
     /**
+     * Trusted-proxy allowlist handed to the default adapter (AD-37): IP
+     * literals and CIDR prefixes (IPv4/IPv6) whose `X-Forwarded-For`
+     * header the server may believe. Env-tunable via `BLUE_TRUSTED_PROXIES`
+     * (comma-separated) when the option is absent; an explicit option wins
+     * over the env. Empty = trust nobody: the socket address stands and
+     * the header is never consulted.
+     */
+    trustedProxies?: string[];
+    /**
      * Maximum concurrent socket connections for the default adapter — see
      * {@link NodeHTTPServerAdapterOptions.maxConnections}.
      */
@@ -105,6 +114,7 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
     #authenticate: NodeHTTPServerAdapterOptions['authenticate'];
     #maxConnections: number | undefined;
     #authenticateTimeoutMs: number | undefined;
+    #trustedProxies: string[] | undefined;
     #applicationContext: ApplicationContext | null = null;
     #startPromise: Promise<void> | null = null;
 
@@ -172,10 +182,14 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         // both, any origin may upgrade — the explicit public-socket
         // posture.
         this.#allowedWebSocketOrigins =
-            options.allowedWebSocketOrigins ?? parseOriginEnv(process.env['BLUE_SOCKET_ALLOWED_ORIGINS']);
+            options.allowedWebSocketOrigins ?? parseCSVEnv(process.env['BLUE_SOCKET_ALLOWED_ORIGINS']);
         this.#authenticate = options.authenticate ?? undefined;
         this.#maxConnections = options.maxConnections;
         this.#authenticateTimeoutMs = options.authenticateTimeoutMs;
+        // Env-tunable trusted-proxy allowlist for the default adapter:
+        // comma-separated IPs/CIDRs (`BLUE_TRUSTED_PROXIES`). Explicit
+        // option wins over the env. Empty = trust nobody (AD-37).
+        this.#trustedProxies = options.trustedProxies ?? parseCSVEnv(process.env['BLUE_TRUSTED_PROXIES']);
         this.#adapter = options.adapter ?? null;
         this.#started = false;
     }
@@ -213,6 +227,7 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
                 authenticate: this.#resolveAuthenticateHook(),
                 maxConnections: this.#maxConnections,
                 authenticateTimeoutMs: this.#authenticateTimeoutMs,
+                trustedProxies: this.#trustedProxies,
             });
         }
         await this.#adapter.listen(this.#port, this.#host);
@@ -288,19 +303,19 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
 }
 
 /**
- * Parses `BLUE_SOCKET_ALLOWED_ORIGINS` into an origin list: comma-separated
- * bare origins (`http://a.example,https://b.example`). Empty/whitespace
- * entries are dropped; `undefined`/empty string → `undefined` (unconstrained,
- * the adapter's public-socket posture). Malformed entries surface as a
- * `RangeError` when the adapter validates them at construction.
+ * Parses a comma-separated env list (e.g. `BLUE_SOCKET_ALLOWED_ORIGINS`,
+ * `BLUE_TRUSTED_PROXIES`) into trimmed entries. Empty/whitespace input →
+ * `undefined` (unconstrained / trust-nobody posture); empty entries are
+ * dropped. Malformed entries surface as a `RangeError` when the consumer
+ * validates them at construction.
  */
-function parseOriginEnv(raw: string | undefined): string[] | undefined {
+function parseCSVEnv(raw: string | undefined): string[] | undefined {
     if (raw === undefined || raw.trim() === '') {
         return undefined;
     }
-    const origins = raw
+    const entries = raw
         .split(',')
         .map((entry) => entry.trim())
         .filter((entry) => entry.length > 0);
-    return origins.length > 0 ? origins : undefined;
+    return entries.length > 0 ? entries : undefined;
 }

@@ -81,8 +81,6 @@ test-results/
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 /graft/
 
-# Throwaway TypeDoc configs from scripts/doc-api.mjs (.nx<random>/typedoc.json)
-.nx?*
 
 # Local opencode configuration (machine-specific agent/model settings)
 opencode.json

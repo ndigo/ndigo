@@ -21,6 +21,7 @@
 
 import { readdirSync, readFileSync, writeFileSync, existsSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 
@@ -150,7 +151,7 @@ for (const dir of packages) {
     const pkgDir = join(PACKAGES, dir);
     const manifest = JSON.parse(readFileSync(join(pkgDir, 'package.json'), 'utf8'));
     try {
-        const tmp = mkdtempSync(join(ROOT, '.nx'));
+        const tmp = mkdtempSync(join(tmpdir(), 'blue-doc-'));
         const configPath = join(tmp, 'typedoc.json');
         const jsonPath = join(tmp, 'symbols.json');
         const config = typedocConfig(pkgDir, manifest);

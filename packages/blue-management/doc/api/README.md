@@ -26,6 +26,7 @@ Jeff Rose
 ## Interfaces
 
 - [HealthIndicator](interfaces/HealthIndicator.md)
+- [HealthRegistryOptions](interfaces/HealthRegistryOptions.md)
 - [HealthResult](interfaces/HealthResult.md)
 - [HealthStatus](interfaces/HealthStatus.md)
 
@@ -35,5 +36,6 @@ Jeff Rose
 
 ## Variables
 
+- [HEALTH\_ERROR\_REDACTED](variables/HEALTH_ERROR_REDACTED.md)
 - [HEALTH\_REGISTRY](variables/HEALTH_REGISTRY.md)
 - [METRIC\_AGGREGATOR](variables/METRIC_AGGREGATOR.md)

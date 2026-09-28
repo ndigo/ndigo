@@ -10,6 +10,16 @@ User-supplied `@cached` specification.
 
 ## Properties
 
+### cache?
+
+> `optional` **cache?**: [`ContextToken`](#)\<[`Cache`](Cache.md)\<`unknown`\>\>
+
+Typed cache-store handle (AD-34 D7): a `ContextToken`-identified cache
+under the instance's [CacheManager](CacheManager.md). Takes precedence over
+`cacheName`; the token's description is the store name.
+
+***
+
 ### cacheName?
 
 > `optional` **cacheName?**: `string`

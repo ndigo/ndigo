@@ -7,32 +7,55 @@
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { bootApp, MockHTTP } from '@blue/test';
 import { ManagementAutoConfiguration } from '@blue/management';
-import { OpenAPIDocsAutoConfiguration } from '@blue/platform-node';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
+import { SecureDocsConfiguration } from '../src/secure-docs-configuration';
 import { initAuth } from '../src/auth-store';
 
 /**
  * End-to-end API docs (AD-35): the real demo app serves the generated spec
- * (derived from the live route tables) and the Swagger UI page + assets.
+ * (derived from the live route tables) and the Swagger UI page + assets —
+ * gated behind the demo's Bearer guard (SEC-4): anonymous callers are
+ * denied 401, the demo token (login `admin`/`demo` via `/auth/login`, the
+ * established fixture) is admitted.
  */
 
 describe('blue-api OpenAPI docs (AD-35)', () => {
     let mockHTTP: MockHTTP;
     let close: () => void;
+    let token: string;
 
-    beforeAll(() => {
+    beforeAll(async () => {
         initAuth();
-        const app = bootApp([ManagementAutoConfiguration, OpenAPIDocsAutoConfiguration, NodeAppConfiguration]);
+        const app = bootApp([ManagementAutoConfiguration, SecureDocsConfiguration, NodeAppConfiguration]);
         mockHTTP = new MockHTTP(app);
         close = app.close;
+        // The same demo-login fixture the auth spec uses.
+        const login = await mockHTTP.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        expect(login.response.status).toBe(200);
+        token = (login.json() as { token: string }).token;
     });
 
     afterAll(() => {
         close();
     });
 
-    test('GET /v3/api-docs serves a parseable spec with the demo operations', async () => {
+    test('anonymous GET /v3/api-docs is denied 401 (SEC-4)', async () => {
         const res = await mockHTTP.get('/v3/api-docs').exec();
+        expect(res.response.status).toBe(401);
+        expect(res.json()).toMatchObject({ title: 'Unauthorized', status: 401 });
+        expect(res.response.headers['www-authenticate']).toBe('Bearer');
+    });
+
+    test('anonymous GET /swagger-ui/ is denied 401 (SEC-4)', async () => {
+        const res = await mockHTTP.get('/swagger-ui/').exec();
+        expect(res.response.status).toBe(401);
+    });
+
+    test('GET /v3/api-docs with a demo token serves a parseable spec with the demo operations', async () => {
+        const res = await mockHTTP
+            .get('/v3/api-docs')
+            .headers({ Authorization: `Bearer ${token}` })
+            .exec();
         expect(res.response.status).toBe(200);
         const doc = res.json() as {
             openapi: string;
@@ -62,16 +85,24 @@ describe('blue-api OpenAPI docs (AD-35)', () => {
         expect(doc.paths['/swagger-ui/']).toBeUndefined();
     });
 
-    test('GET /swagger-ui/ renders the UI page wired to the spec', async () => {
-        const res = await mockHTTP.get('/swagger-ui/').exec();
+    test('GET /swagger-ui/ with a demo token renders the UI page wired to the spec', async () => {
+        const res = await mockHTTP
+            .get('/swagger-ui/')
+            .headers({ Authorization: `Bearer ${token}` })
+            .exec();
         expect(res.response.status).toBe(200);
         const page = res.text();
+        // SEC-2: the spec-wiring bootstrap is a same-origin asset (CSP
+        // `script-src 'self'` admits no inline script), not inline HTML.
         expect(page).toContain('swagger-ui-bundle.js');
-        expect(page).toContain('/v3/api-docs');
+        expect(page).toContain('swagger-ui-init.js');
     });
 
-    test('GET /swagger-ui/swagger-ui-bundle.js serves the UI bundle', async () => {
-        const res = await mockHTTP.get('/swagger-ui/swagger-ui-bundle.js').exec();
+    test('GET /swagger-ui/swagger-ui-bundle.js with a demo token serves the UI bundle', async () => {
+        const res = await mockHTTP
+            .get('/swagger-ui/swagger-ui-bundle.js')
+            .headers({ Authorization: `Bearer ${token}` })
+            .exec();
         expect(res.response.status).toBe(200);
         expect(res.text().length).toBeGreaterThan(100_000);
     });

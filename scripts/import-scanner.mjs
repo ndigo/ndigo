@@ -2,20 +2,22 @@
  * Shared import-specifier scanner for scripts.
  *
  * Tokenizes source into code/string/comment tokens, then walks the code
- * tokens for import/export statements. Real import specifiers are captured
+ * tokens for import/export statements — plus CJS `require()` — so committed
+ * .js bench/scripts can be gated too. Real import specifiers are captured
  * only from code context — fixture code inside string/template literals
  * (e.g. oxlint rule samples) can never be mistaken for real imports.
  *
  * Returns the normalized specifier set (bare package names; `@scope/name`
- * kept whole; `node:` and relative imports dropped; subpaths collapsed).
+ * kept whole; `node:`-prefixed, bare builtins and relative imports dropped;
+ * subpaths collapsed).
  */
 
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 export const SKIP_DIRS = new Set(['node_modules', '.vitest', 'lib', 'doc']);
 export const SOURCE_DIRS = new Set(['src']);
-export const DEV_DIRS = new Set(['test', 'bench', 'profile', 'scripts']);
+export const DEV_DIRS = new Set(['test', 'bench', 'benchmark', 'profile', 'scripts']);
 
 /**
  * @returns {Array<{kind: 'code'|'str'|'comment', text: string}>}
@@ -70,10 +72,59 @@ export function tokenize(source) {
     return tokens;
 }
 
+/**
+ * Bare spellings of Node core modules (e.g. `require('events')` in committed
+ * CJS bench files) are host-provided, like their `node:`-prefixed forms.
+ */
+const NODE_BUILTINS = new Set([
+    'assert',
+    'async_hooks',
+    'buffer',
+    'child_process',
+    'cluster',
+    'console',
+    'constants',
+    'crypto',
+    'dgram',
+    'diagnostics_channel',
+    'dns',
+    'domain',
+    'events',
+    'fs',
+    'http',
+    'http2',
+    'https',
+    'inspector',
+    'module',
+    'net',
+    'os',
+    'path',
+    'perf_hooks',
+    'process',
+    'punycode',
+    'querystring',
+    'readline',
+    'repl',
+    'stream',
+    'string_decoder',
+    'sys',
+    'timers',
+    'tls',
+    'trace_events',
+    'tty',
+    'url',
+    'util',
+    'v8',
+    'vm',
+    'wasi',
+    'worker_threads',
+    'zlib',
+]);
+
 function normalize(specs) {
     const out = new Set();
     for (const name of specs) {
-        if (!name || name.startsWith('.') || name.startsWith('node:')) continue;
+        if (!name || name.startsWith('.') || name.startsWith('node:') || NODE_BUILTINS.has(name)) continue;
         if (name.startsWith('@')) out.add(name.split('/').slice(0, 2).join('/'));
         else out.add(name.split('/')[0]);
     }
@@ -132,6 +183,17 @@ export function extractImports(source) {
                         expectDynamic = true;
                         break;
                     }
+                    // CJS require() — the import mechanism of committed .js
+                    // bench/scripts; same shape as dynamic import
+                    const req = /\brequire(?:\.resolve)?\s*\(\s*(['"])([^'"]+)\1\s*\)/.exec(rest);
+                    if (req) {
+                        specifiers.push(req[2]);
+                        break;
+                    }
+                    if (/\brequire(?:\.resolve)?\s*\(\s*$/.test(rest)) {
+                        expectDynamic = true;
+                        break;
+                    }
                     break;
                 }
                 inStatement = true;
@@ -174,8 +236,12 @@ export function extractImports(source) {
     return normalize(specifiers);
 }
 
-/** Collect imports from every .ts/.mjs file under `dir` (recursively). */
-export function collectImports(dir, acc = new Set()) {
+/**
+ * Collect imports from every file under `dir` (recursively): .ts/.mts/.mjs
+ * always; plus .js/.cjs when `scanJs` is set and the file has no TS twin
+ * (compiled siblings are skipped so emitted output is never double-counted).
+ */
+export function collectImports(dir, acc = new Set(), scanJs = false) {
     let entries;
     try {
         entries = readdirSync(dir);
@@ -186,12 +252,20 @@ export function collectImports(dir, acc = new Set()) {
         const path = join(dir, entry);
         const stat = statSync(path);
         if (stat.isDirectory()) {
-            if (!SKIP_DIRS.has(entry)) collectImports(path, acc);
-        } else if (/\.(ts|mjs)$/.test(entry)) {
+            if (!SKIP_DIRS.has(entry)) collectImports(path, acc, scanJs);
+        } else if (/\.(ts|mts|mjs)$/.test(entry)) {
+            for (const spec of extractImports(readFileSync(path, 'utf8'))) acc.add(spec);
+        } else if (scanJs && /\.(js|cjs)$/.test(entry) && !hasTsTwin(dir, entry)) {
             for (const spec of extractImports(readFileSync(path, 'utf8'))) acc.add(spec);
         }
     }
     return acc;
+}
+
+/** True when a .ts/.mts sibling exists (the .js/.cjs is then emitted output). */
+function hasTsTwin(dir, file) {
+    const base = file.replace(/\.(js|cjs)$/, '');
+    return ['.ts', '.mts'].some((ext) => existsSync(join(dir, base + ext)));
 }
 
 /**
@@ -200,13 +274,19 @@ export function collectImports(dir, acc = new Set()) {
  */
 export function importsOf(pkgDir, dirs) {
     const acc = new Set();
-    for (const dir of dirs) collectImports(join(pkgDir, dir), acc);
+    for (const dir of dirs) {
+        // Committed CJS/ESM .js bench/benchmark/scripts files (no .ts twin)
+        // are gated too; the other dev dirs (test/profile) stay .ts/.mjs-only.
+        collectImports(join(pkgDir, dir), acc, dir === 'bench' || dir === 'benchmark' || dir === 'scripts');
+    }
     if (dirs !== DEV_DIRS) return acc; // root vitest/vite configs are dev-time only
-    for (const file of ['vitest.config.ts', 'vite.config.ts']) {
-        try {
-            for (const spec of extractImports(readFileSync(join(pkgDir, file), 'utf8'))) acc.add(spec);
-        } catch {
-            // config absent — fine
+    for (const ext of ['ts', 'js', 'mjs', 'cjs']) {
+        for (const file of [`vitest.config.${ext}`, `vite.config.${ext}`]) {
+            try {
+                for (const spec of extractImports(readFileSync(join(pkgDir, file), 'utf8'))) acc.add(spec);
+            } catch {
+                // config absent — fine
+            }
         }
     }
     return acc;

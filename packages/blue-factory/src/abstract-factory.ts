@@ -15,7 +15,7 @@ import {
 import { Destroyable, Initializable, likeCloseable, likeDestroyable, likeInitializable } from './lifecycle';
 import { isConstructor, isNumber, isString } from '@blue/util/types';
 import { Aware, likeAware, likeNameAware } from './aware';
-import { ContextToken } from './context-token';
+import { ContextToken } from './context-tokens';
 import {
     getScope,
     HashScope,

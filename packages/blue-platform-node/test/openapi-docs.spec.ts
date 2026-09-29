@@ -10,10 +10,11 @@ import { describe, test, expect, beforeAll } from 'vitest';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { getMapping, parameters, postMapping, queryValue, requestMapping, validatedBody } from '@blue/dispatcher';
 import { configuration, entry } from '@blue/context';
-import { denialOf } from '@blue/dispatcher';
+import { denialOf, RouteHandlerMethod } from '@blue/dispatcher';
 import { z } from 'zod';
 import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '../src/index';
 import { OpenAPIDocsAutoConfiguration } from '../src/openapi-docs-auto-configuration';
+import { OpenAPIDocsController } from '../src/openapi-docs-controller';
 
 const NoteSchema = z.object({ title: z.string().min(1), body: z.string() });
 
@@ -92,7 +93,20 @@ describe('OpenAPIDocsAutoConfiguration', () => {
         expect(res.headers.get('content-type')).toContain('text/html');
         const page = await res.text();
         expect(page).toContain('swagger-ui-bundle.js');
-        expect(page).toContain('../v3/api-docs');
+        // SEC-2: the bootstrap is external — the default-on CSP
+        // (`script-src 'self'`) admits no inline script, so the page only
+        // references the generated init asset.
+        expect(page).toContain('swagger-ui-init.js');
+        expect(page).not.toContain('SwaggerUIBundle(');
+    });
+
+    test('GET /swagger-ui/swagger-ui-init.js serves the spec-wired bootstrap', async () => {
+        const res = await fetch(`${base}/swagger-ui/swagger-ui-init.js`);
+        expect(res.status).toBe(200);
+        expect(res.headers.get('content-type')).toContain('javascript');
+        const script = await res.text();
+        expect(script).toContain('../v3/api-docs');
+        expect(script).toContain('SwaggerUIBundle');
     });
 
     test('GET /swagger-ui/{asset} serves the UI assets', async () => {
@@ -107,6 +121,31 @@ describe('OpenAPIDocsAutoConfiguration', () => {
         expect([200, 404, 403]).toContain(res.status);
         const known = await fetch(`${base}/swagger-ui/not-a-file.js`);
         expect(known.status).toBe(404);
+    });
+});
+
+describe('OpenAPIDocsAutoConfiguration — security headers on docs endpoints (SEC-2)', () => {
+    let base: string;
+
+    beforeAll(async () => {
+        base = await boot();
+    });
+
+    test('spec, UI page and assets carry the default security-header set', async () => {
+        // The docs mapping carries its own SecurityHeadersInterceptor (the
+        // platform mapping's interceptor never sees these routes) — the
+        // default set: CSP with Helmet 8's `script-src 'self'` (no inline
+        // scripts on the page), nosniff, XFO, HSTS.
+        for (const path of ['/v3/api-docs', '/swagger-ui/', '/swagger-ui/swagger-ui-init.js']) {
+            // oxlint-disable-next-line no-await-in-loop -- each path is an isolated request; assertions stay independent.
+            const res = await fetch(`${base}${path}`);
+            expect(res.status).toBe(200);
+            const csp = res.headers.get('content-security-policy') ?? '';
+            expect(csp).toContain("script-src 'self'");
+            expect(res.headers.get('x-content-type-options')).toBe('nosniff');
+            expect(res.headers.get('x-frame-options')).toBeDefined();
+            expect(res.headers.get('strict-transport-security')).toBeDefined();
+        }
     });
 });
 
@@ -140,5 +179,101 @@ describe('OpenAPIDocsAutoConfiguration with an access guard', () => {
     test('non-docs routes still dispatch with a guard configured', async () => {
         const res = await fetch(`${guardedBase}/api/notes`);
         expect(res.status).toBe(200);
+    });
+});
+
+describe('OpenAPIDocsAutoConfiguration guard: handler forwarding + hook scoping (SEC-1/COR-3)', () => {
+    type GuardRecord = {
+        hook: 'preHandle' | 'postHandle' | 'completeHandle';
+        path: string;
+        handler: object | undefined;
+    };
+    const isDocsPath = (path: string): boolean => path === '/v3/api-docs' || path.startsWith('/swagger-ui');
+    let base: string;
+    let seen: GuardRecord[] = [];
+
+    beforeAll(async () => {
+        const spy = {
+            async preHandle(route: { path: string }, handler: object | undefined) {
+                seen.push({ hook: 'preHandle', path: route.path, handler });
+                return true;
+            },
+            async postHandle(route: { path: string }, handler: object | undefined) {
+                seen.push({ hook: 'postHandle', path: route.path, handler });
+            },
+            async completeHandle(route: { path: string }, handler: object | undefined) {
+                seen.push({ hook: 'completeHandle', path: route.path, handler });
+            },
+        };
+        class SpyDocsConfiguration extends OpenAPIDocsAutoConfiguration {
+            constructor() {
+                super({ accessGuard: spy });
+            }
+        }
+        base = await boot(SpyDocsConfiguration);
+        // A docs route (the guard sees the real handler) and a non-docs route
+        // (the guard must not run at all — COR-3).
+        const docs = await fetch(`${base}/v3/api-docs`);
+        expect(docs.status).toBe(200);
+        const notes = await fetch(`${base}/api/notes`);
+        expect(notes.status).toBe(200);
+        expect(seen.length).toBeGreaterThan(0);
+    });
+
+    test('the real docs controller is forwarded to every hook, never undefined (SEC-1)', () => {
+        const docsRows = seen.filter((row) => row.hook === 'preHandle' && row.path === '/v3/api-docs');
+        expect(docsRows).toHaveLength(1);
+        // The chain forwards the route's resolved handler — the RouteHandlerMethod
+        // for `spec` wrapping the registered OpenAPIDocsController instance.
+        const forwarded = docsRows[0]?.handler as RouteHandlerMethod | undefined;
+        expect(forwarded).toBeDefined();
+        expect(forwarded?.method).toBe('spec');
+        expect(forwarded?.handler).toBeInstanceOf(OpenAPIDocsController);
+        // No hook may ever receive `undefined` in place of the handler.
+        expect(seen.find((row) => row.handler === undefined)).toBeUndefined();
+    });
+
+    test('no guard hook runs for non-docs routes (COR-3)', () => {
+        const nonDocs = seen.filter((row) => !isDocsPath(row.path));
+        expect(nonDocs).toEqual([]);
+    });
+});
+
+describe('OpenAPIDocsAutoConfiguration: spec generation failure (COR-4)', () => {
+    let base: string;
+
+    beforeAll(async () => {
+        // zod's toJSONSchema cannot represent z.custom schemas, so generation
+        // fails deterministically on every request.
+        const CustomBody = z.custom(() => true);
+        @requestMapping('/api')
+        class BrokenSchemaController {
+            @postMapping('/broken')
+            @parameters({ data: validatedBody(CustomBody) })
+            create(data: unknown) {
+                return { created: data };
+            }
+        }
+        @configuration
+        class BrokenSchemaConfiguration {
+            @entry
+            brokenApi() {
+                return new BrokenSchemaController();
+            }
+        }
+        base = await boot(BrokenSchemaConfiguration);
+    });
+
+    test('a non-serializable schema yields a 500 problem document on every request (COR-4)', async () => {
+        // Two attempts: the failure is never memoized, so each request
+        // re-runs generation and repeats the deterministic problem document.
+        for (let attempt = 0; attempt < 2; attempt++) {
+            // oxlint-disable-next-line no-await-in-loop -- each request is an isolated attempt; the loop proves the failure repeats.
+            const res = await fetch(`${base}/v3/api-docs`);
+            expect(res.status).toBe(500);
+            expect(res.headers.get('content-type')).toBe('application/problem+json');
+            // oxlint-disable-next-line no-await-in-loop -- response body follows its own request in the loop above.
+            expect(await res.json()).toMatchObject({ type: 'urn:blue:internal-error', status: 500 });
+        }
     });
 });

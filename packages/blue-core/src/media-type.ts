@@ -34,6 +34,9 @@ export type SupportedMediaType =
 const { freeze, keys } = Object,
     { parseFloat } = Number,
     typeRegistry = new Map<string, MediaType>(),
+    PARAMETERIZED_CACHE_LIMIT = 128,
+    parameterizedRegistry = new Map<string, MediaType>(),
+    parameterizedOrder: string[] = [],
     WILDCARD: SupportedMediaType = '*',
     QUALITY_FACTOR_PARAM = 'q';
 
@@ -53,19 +56,101 @@ export type MediaTypeParameters = {
 const requiresQuoting = /[\s;"=(),]/;
 
 /**
+ * Splits a `;`-separated media-type parameter section into parts, honoring
+ * quoted strings (RFC 2045 §5.1): a `;` inside `"…"` is parameter data, not
+ * a delimiter — splitting naively corrupts quoted values (COR-5).
+ */
+const splitParameters = (section: string): string[] => {
+    const parts: string[] = [];
+    let start = 0,
+        inQuotes = false;
+    for (let index = 0; index < section.length; index++) {
+        const char = section[index];
+        if (inQuotes && char === '\\') {
+            // Escaped character inside a quoted string (e.g. `\"`) — skip
+            // it so a quoted `"` is not mistaken for the closing quote.
+            index++;
+        } else if (char === '"') {
+            inQuotes = !inQuotes;
+        } else if (char === ';' && !inQuotes) {
+            parts.push(section.substring(start, index));
+            start = index + 1;
+        }
+    }
+    parts.push(section.substring(start));
+    return parts;
+};
+
+/**
+ * Removes surrounding quotes from a parameter value, unescaping `\"` and
+ * `\\` (RFC 2045 §5.1, COR-5). The quote-escape is undone before the
+ * backslash-escape so any literal `\"` in the original value round-trips.
+ */
+const unquote = (value: string): string => {
+    if (value.length < 2 || value[0] !== '"' || value[value.length - 1] !== '"') {
+        return value;
+    }
+    return value
+        .substring(1, value.length - 1)
+        .replaceAll('\\"', '"')
+        .replaceAll('\\\\', '\\');
+};
+
+/**
+ * Returns a copy of `value` with entries ordered by parameter name, so two
+ * media types carrying the same parameters serialize, key, and compare
+ * identically regardless of the order the parameters were provided (DSG-1).
+ */
+const sortParameters = (value: MediaTypeParameters): MediaTypeParameters => {
+    const sorted: MediaTypeParameters = {};
+    for (const name of Object.keys(value).sort((nameA, nameB) => stringComparator.compare(nameA, nameB))) {
+        sorted[name] = value[name];
+    }
+    return sorted;
+};
+
+/**
+ * Returns the interned instance for `key`, constructing it via `factory`
+ * on a miss. Parameterless expressions are interned process-lifetime in
+ * `typeRegistry` (a finite type/subtype space); parameterized expressions
+ * go through the bounded FIFO cache so attacker-controlled header values
+ * cannot grow the registry unboundedly (DSG-1).
+ */
+const intern = (key: string, factory: () => MediaType, parameterized: boolean): MediaType => {
+    const cached = typeRegistry.get(key) ?? parameterizedRegistry.get(key);
+    if (cached !== undefined) {
+        return cached;
+    }
+    const mediaType = factory();
+    if (parameterized) {
+        parameterizedRegistry.set(key, mediaType);
+        parameterizedOrder.push(key);
+        if (parameterizedOrder.length > PARAMETERIZED_CACHE_LIMIT) {
+            parameterizedRegistry.delete(parameterizedOrder.shift() as string);
+        }
+    } else {
+        typeRegistry.set(key, mediaType);
+    }
+    return mediaType;
+};
+
+/**
  * Converts a `MediaTypeParameters` object into a formatted string suitable
- * for a media type header. Parameters are joined with semicolons, e.g.
- * ";charset=utf-8;level=1". Values containing header separators are quoted
- * per RFC 2045 §5.1 so parsing is round-trip safe (Wave 6, 2026-09-27).
+ * for a media type header. Parameters are joined with semicolons in
+ * canonical (name-sorted) order, e.g. ";charset=utf-8;level=1". Values
+ * containing header separators are quoted with `"` and `\` escaped per
+ * RFC 2045 §5.1 so parsing is round-trip safe (Wave 6, 2026-09-27; COR-5).
  * @param value - The `MediaTypeParameters` object to stringify.
  * @returns A string representation of the parameters, or an empty string if no parameters are present.
  */
 const stringifyParameters = (value: MediaTypeParameters): string => {
-    const pairs = Object.entries(value);
+    const pairs = Object.entries(value).sort(([nameA], [nameB]) => stringComparator.compare(nameA, nameB));
     if (!pairs.length) return '';
     return pairs.reduce((result, [key, val]) => {
         const stringValue = String(val);
-        const serialized = requiresQuoting.test(stringValue) ? `"${stringValue.replaceAll('"', '\\"')}"` : stringValue;
+        const serialized = requiresQuoting.test(stringValue)
+            ? `"${stringValue.replaceAll('\\', '\\\\').replaceAll('"', '\\"')}"`
+            : stringValue;
         return `${result};${key}=${serialized}`;
     }, '');
 };
@@ -133,9 +218,11 @@ const qualityFactorComparator = new QualityFactorComparator();
  * Normalizes a raw media-type expression for registry interning: folds the
  * type and subtype to lower case (RFC 6838 §4.2 — both are case-insensitive
  * in HTTP 1.x), folds parameter NAMES to lower case (RFC 2045 §5.1), and
- * unquotes quoted parameter values. Parameter VALUES keep their case. The
- * result is the canonical key that interning uses, so header-case variants
- * converge on one {@link MediaType} instance (Wave 6, 2026-09-27).
+ * unquotes quoted parameter values (`;` inside quotes is data, not a
+ * delimiter; `\"` and `\\` are unescaped — COR-5). Parameter VALUES keep
+ * their case. The result is the canonical key that interning uses, so
+ * header-case variants converge on one {@link MediaType} instance (Wave 6,
+ * 2026-09-27).
  *
  * @param expression - A full `type/subtype;param=value;…` expression.
  * @returns The canonical key plus the normalized parse pieces, or `null`
@@ -149,13 +236,15 @@ function normalizeMediaTypeExpression(
         return null;
     }
     const type = expression.substring(0, slashIndex).trim().toLowerCase();
-    if (type === '') {
+    if (type === '' || /[\s;]/.test(type)) {
         return null;
     }
-    const parts: string[] = expression.substring(slashIndex + 1).split(';');
+    const parts = splitParameters(expression.substring(slashIndex + 1));
     let subtype = (parts.shift() as string).trim().toLowerCase();
     if (subtype === '') {
         subtype = WILDCARD;
+    } else if (/[\s;]/.test(subtype)) {
+        return null;
     }
     const parameters: MediaTypeParameters = {};
     for (const part of parts) {
@@ -168,13 +257,15 @@ function normalizeMediaTypeExpression(
         if (name === '') {
             continue;
         }
-        let value = part.substring(equalsIndex + 1).trim();
-        if (value.length >= 2 && value.startsWith('"') && value.endsWith('"')) {
-            value = value.substring(1, value.length - 1);
-        }
-        parameters[name] = value;
+        parameters[name] = unquote(part.substring(equalsIndex + 1).trim());
     }
-    return { key: `${type}/${subtype}${stringifyParameters(parameters)}`, type, subtype, parameters };
+    const sortedParameters = sortParameters(parameters);
+    return {
+        key: `${type}/${subtype}${stringifyParameters(sortedParameters)}`,
+        type,
+        subtype,
+        parameters: sortedParameters,
+    };
 }
 
 export default class MediaType extends Null implements Serializable, StringComparable<MediaType>, Matchable<MediaType> {
@@ -202,7 +293,11 @@ export default class MediaType extends Null implements Serializable, StringCompa
     get qualityFactor(): number {
         const value = this.parameters[QUALITY_FACTOR_PARAM];
         if (isString(value)) {
-            return parseFloat(value) as number;
+            // Malformed weights (e.g. `q=abc`) fall back to the default of 1
+            // (RFC 7231 §5.3.1) — a parse artifact must never silently mean
+            // "never" in negotiation (COR-7).
+            const quality = parseFloat(value) as number;
+            return Number.isFinite(quality) ? quality : 1;
         }
         if (typeof value === 'number') {
             return value as number;
@@ -272,36 +367,62 @@ export default class MediaType extends Null implements Serializable, StringCompa
         subtype: string = WILDCARD,
         parameters: MediaTypeParameters = {}
     ): MediaType | null {
-        const isParsed = isString(subtype) && subtype !== WILDCARD,
-            mediaTypeExpression = isParsed
-                ? `${typeOrExpression as SupportedMediaType}/${subtype}${stringifyParameters(parameters)}`
-                : typeOrExpression;
+        if (isString(subtype) && subtype !== WILDCARD) {
+            // Component form (DSG-2): fold type, subtype, and parameter
+            // names to lower case before keying/construction so this path
+            // converges with expression parsing; parameter VALUES keep
+            // their case (matching the expression path). The canonical key
+            // is the same one expression parsing produces.
+            const canonicalType = typeOrExpression.toLowerCase(),
+                canonicalSubtype = subtype.toLowerCase(),
+                canonicalParameters = sortParameters(
+                    Object.fromEntries(Object.entries(parameters).map(([name, value]) => [name.toLowerCase(), value]))
+                ),
+                mediaTypeKey = `${canonicalType}/${canonicalSubtype}${stringifyParameters(canonicalParameters)}`;
 
-        if (mediaTypeExpression?.length) {
-            const normalized = isParsed ? null : normalizeMediaTypeExpression(mediaTypeExpression);
-            const mediaTypeKey = isParsed ? mediaTypeExpression : (normalized?.key ?? mediaTypeExpression);
-
-            if (!typeRegistry.has(mediaTypeKey)) {
-                if (isParsed) {
-                    const mediaType = new MediaType(typeOrExpression as SupportedMediaType, subtype, parameters);
-                    typeRegistry.set(mediaTypeKey, mediaType);
-                } else if (normalized === null) {
-                    // No slash found - treat as type only with wildcard subtype
-                    const mediaType = new MediaType(typeOrExpression as SupportedMediaType, WILDCARD, parameters);
-                    typeRegistry.set(mediaTypeKey, mediaType);
-                } else {
-                    const mediaType = new MediaType(
-                        normalized.type as SupportedMediaType,
-                        normalized.subtype,
-                        normalized.parameters
-                    );
-                    typeRegistry.set(mediaTypeKey, mediaType);
-                }
-            }
-            return typeRegistry.get(mediaTypeKey) as MediaType;
+            return intern(
+                mediaTypeKey,
+                () => new MediaType(canonicalType as SupportedMediaType, canonicalSubtype, canonicalParameters),
+                keys(canonicalParameters).length > 0
+            );
         }
 
-        return null;
+        if (!typeOrExpression?.length) {
+            return null;
+        }
+
+        const normalized = normalizeMediaTypeExpression(typeOrExpression as string);
+
+        if (normalized === null) {
+            // No slash found — treat as type only with wildcard subtype.
+            // The type token must be plausible: empty/whitespace, a `;`,
+            // or a stray `/` would serialize into an unparseable entry
+            // (COR-6; `/foo` reaches here via the empty-type normalize null).
+            const rawType = (typeOrExpression as string).trim();
+            if (rawType === '' || /[/\s;]/.test(rawType)) {
+                return null;
+            }
+            return intern(
+                rawType.toLowerCase(),
+                () => new MediaType(rawType.toLowerCase() as SupportedMediaType, WILDCARD, parameters),
+                false
+            );
+        }
+
+        return intern(
+            normalized.key,
+            () => new MediaType(normalized.type as SupportedMediaType, normalized.subtype, normalized.parameters),
+            keys(normalized.parameters).length > 0
+        );
+    }
+
+    /**
+     * Number of instances currently held by the process-wide intern
+     * registry: parameterless entries plus the bounded parameterized cache.
+     * Exposed so the registry's boundedness is observable in tests (DSG-1).
+     */
+    static get registrySize(): number {
+        return typeRegistry.size + parameterizedRegistry.size;
     }
 
     static qualityFactorComparator = qualityFactorComparator;

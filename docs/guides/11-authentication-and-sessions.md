@@ -113,10 +113,12 @@ async login(credentials: unknown, route: Route) { … }
 `NodeAutoConfiguration.handlerMapping`, like security headers) enforces it
 — routes without metadata are untouched. Denial: **429** +
 `Retry-After` (seconds) problem document (`urn:blue:rate-limited`). The
-key is the socket remote address (`NodeRequest.remoteAddress`);
-`X-Forwarded-For` is deliberately NOT trusted (Tier-2 deferral) — behind a
-proxy all clients share the proxy's address until trusted-proxy support
-lands.
+key is `NodeRequest.remoteAddress` — the socket peer unless the direct
+connection comes from a `trustedProxies` allowlist entry
+(`BLUE_TRUSTED_PROXIES` env): then `X-Forwarded-For` is walked
+rightmost-first and the first non-trusted valid IP wins, so spoofed
+headers never win; with no trusted proxies configured the socket peer is
+used (see §9).
 
 ## 6. CSRF on auth mutations
 

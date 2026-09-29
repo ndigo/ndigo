@@ -49,10 +49,9 @@ describe('condition builders (AD-34 D6)', () => {
         // A name ending in '!' parses as a negation marker.
         expect(() => queryParamCondition('a!', 'x')).toThrowError();
         expect(() => matrixParamCondition('a=b', 'x')).toThrowError();
-    });
-
-    test('allows grammar-legal value characters, verified by round-trip', () => {
-        // The parser splits on the FIRST '=' — later ones live in the value.
-        expect(queryParamCondition('a', 'x=y')).toBe('a=x=y');
+        // Values containing '=' or '!' are rejected outright (builder contract).
+        expect(() => queryParamCondition('filter', 'a=b')).toThrowError();
+        expect(() => matrixParamCondition('color', 'a!b')).toThrowError();
+        expect(() => queryParamCondition('filter', 'a=b', { negate: true })).toThrowError();
     });
 });

@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
-import { ContextToken } from '../src/context-token';
+import { ContextToken } from '../src/context-tokens';
 import { AsFactoryAware, DefaultFactory, ProxiedFactory } from '../src/factory';
 import { $aware } from '../src/aware';
 import { prototypeScope, scope, singletonScope, type Scope } from '../src/scope';

@@ -44,6 +44,11 @@ class SecureDocsConfiguration extends OpenAPIDocsAutoConfiguration {
 ```
 
 The guard is scoped to the docs paths — it never touches other routes.
+Because the docs endpoints carry no `@authenticated`/`@authorized`
+metadata, a metadata-driven guard such as `AuthRouteGuard` (which derives
+every requirement from handler metadata) would always permit them — use an
+_unconditional_ guard that checks the request itself (a token-presence or
+token-adapter guard) to actually require authentication.
 Paths, the info block, servers, and per-route filters are options:
 
 ```ts
@@ -90,8 +95,31 @@ For every public handler method the generator emits an operation with:
   of silently dropped.
 
 Excluded by design: methodless catch-alls, `@privateMapping` routes, and
-`@apiDocs({ hidden: true })` handlers — the docs endpoints mark themselves
-hidden, so the spec never self-references.
+`@apiDocs({ hidden: true })` handlers. The docs endpoints are excluded via
+a **private access-condition marker** — dispatch never evaluates access
+conditions, so the marker is documentation-of-exclusion only: it keeps the
+spec from self-referencing and changes nothing about live dispatch.
+
+> **Disclosure scope (SEC-4):** the spec documents the route table, not the
+> protection posture. Routes gated only **in-handler** (no access
+> condition — e.g. the demo's `/api/config/secrets`, `/notes` and
+> `/drizzle/notes`, where the handler checks the Bearer token itself) still
+> appear in the **anonymous** spec, complete with their `authorization`
+> header parameters. Options:
+>
+> - `@apiDocs({ hidden: true })` on the handler — omit the operation from
+>   the spec entirely (right for endpoints sensitive enough not to be
+>   discoverable at all);
+> - deploy the docs behind an `accessGuard` — the whole spec becomes
+>   private, but is not redacted. The demo demonstrates this: it registers
+>   `SecureDocsConfiguration` (`apps/blue-api/src/secure-docs-configuration.ts`),
+>   whose guard accepts only an `Authorization: Bearer <token>` that
+>   resolves through the same `lookupPrincipal` check the protected
+>   handlers apply, so anonymous `/v3/api-docs` and `/swagger-ui/` are 401.
+>
+> Guarding the docs still leaves the in-handler routes' shapes discoverable
+> to anyone with the demo token — pair the guard with `@apiDocs({hidden:true})`
+> per endpoint when the route structure itself is sensitive.
 
 ## 3. `@apiDocs` — optional documentation metadata
 

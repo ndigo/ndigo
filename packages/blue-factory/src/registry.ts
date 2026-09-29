@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { like } from '@blue/util/types';
-import { ContextToken } from './context-token';
+import { ContextToken } from './context-tokens';
 
 export interface Registry {
     destroyValue<T = unknown>(token: ContextToken<T>): void;

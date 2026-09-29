@@ -26,6 +26,9 @@ export const APPLICATION_JSON = MediaType.registered('application', 'json');
 export const APPLICATION_PDF = MediaType.registered('application', 'pdf');
 /**
  */
+export const APPLICATION_PROBLEM_JSON = MediaType.registered('application', 'problem+json');
+/**
+ */
 export const APPLICATION_SSML_XML = MediaType.registered('application', 'ssml+xml');
 /**
  */

@@ -6,16 +6,11 @@
 import 'node:process';
 import { ApplicationBuilder } from '@blue/boot';
 import { ManagementAutoConfiguration } from '@blue/management';
-import {
-    AESGCMCipher,
-    NodeAutoConfiguration,
-    HTTP_SERVER,
-    OpenAPIDocsAutoConfiguration,
-    gracefulShutdown,
-} from '@blue/platform-node';
+import { AESGCMCipher, NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@blue/platform-node';
 import { configureTelemetry, HTTPServerInstrumentation, WebSocketServerInstrumentation } from '@blue/telemetry-node';
 import { getLogger } from '@blue/telemetry';
 import { NodeAppConfiguration } from './node-app-configuration';
+import { SecureDocsConfiguration } from './secure-docs-configuration';
 import { ServerConfig, SecretsConfig, SERVER_CONFIG } from './server-config';
 import { initAuth } from './auth-store';
 
@@ -44,10 +39,13 @@ async function main() {
     // environment property sources (AD-13/14/15): the `devInfo` bean exists
     // only under the `dev` profile, and `server.port`/`server.name` bind
     // from the builder property source with `@defaultValue` fallbacks.
+    // The OpenAPI docs run behind `SecureDocsConfiguration` (SEC-4): the
+    // same Bearer-token check the protected handlers apply, so anonymous
+    // `/v3/api-docs` + `/swagger-ui/` are denied 401.
     const builder = new ApplicationBuilder([
         NodeAutoConfiguration,
         ManagementAutoConfiguration,
-        OpenAPIDocsAutoConfiguration,
+        SecureDocsConfiguration,
         ServerConfig,
         SecretsConfig,
         NodeAppConfiguration,
@@ -107,8 +105,8 @@ async function main() {
     logger.info(`  GET  http://localhost:${PORT}/static/    (serves ./public)`);
     logger.info(`  GET  http://localhost:${PORT}/health   (management)`);
     logger.info(`  GET  http://localhost:${PORT}/metrics  (management)`);
-    logger.info(`  GET  http://localhost:${PORT}/v3/api-docs   (OpenAPI spec, AD-35)`);
-    logger.info(`  GET  http://localhost:${PORT}/swagger-ui/   (Swagger UI, AD-35)`);
+    logger.info(`  GET  http://localhost:${PORT}/v3/api-docs   (OpenAPI spec, AD-35; Bearer-gated, SEC-4)`);
+    logger.info(`  GET  http://localhost:${PORT}/swagger-ui/   (Swagger UI, AD-35; Bearer-gated, SEC-4)`);
 }
 
 main().catch((err) => {

@@ -84,17 +84,35 @@ function parseIPv6(value: string): ParsedIP | null {
     const tail = marker === -1 ? '' : value.slice(marker + 2);
     const headGroups: number[] = [];
     const tailGroups: number[] = [];
-    for (const [side, into] of [[head, headGroups], [tail, tailGroups]] as const) {
+    // Validates one side of the address, appending its 16-bit groups.
+    // Rules (RFC 4291 §2.2/§2.5.5.1): an embedded dotted-quad is legal only
+    // as the final group of the whole address (never after `::`, never in a
+    // leading position); empty groups cannot occur within a side because the
+    // single `::` marker was already consumed — `1:::2` or `a::b::`-style
+    // spellings must fail loud rather than silently widen the zero run.
+    const parseSide = (side: string, into: number[], quadAllowed: boolean): boolean => {
         if (side === '') {
-            continue;
+            return true;
         }
-        for (const part of side.split(':')) {
-            const parsed = parseIPv6Group(part);
+        const parts = side.split(':');
+        for (let index = 0; index < parts.length; index++) {
+            if (parts[index].length === 0) {
+                return false;
+            }
+            const parsed = parseIPv6Group(parts[index], quadAllowed && index === parts.length - 1);
             if (parsed === null) {
-                return null;
+                return false;
             }
             into.push(...parsed);
         }
+        return true;
+    };
+    // A dotted-quad may terminate the address only when no `::` follows it.
+    if (!parseSide(head, headGroups, marker === -1)) {
+        return null;
+    }
+    if (!parseSide(tail, tailGroups, true)) {
+        return null;
     }
     if (marker === -1) {
         if (!value.includes(':') || headGroups.length !== 8) {
@@ -147,16 +165,19 @@ function parseIPv6(value: string): ParsedIP | null {
     return { bytes, family: 6 };
 }
 
-function parseIPv6Group(group: string): number[] | null {
+function parseIPv6Group(group: string, quadAllowed: boolean): number[] | null {
     // An embedded IPv4 tail (`…:192.168.0.1`) must be the last group.
     if (group.includes('.')) {
+        if (!quadAllowed) {
+            return null;
+        }
         const ipv4 = parseIPv4(group);
         if (ipv4 === null || ipv4.family !== 4) {
             return null;
         }
         return [ipv4.bytes[0] * 256 + ipv4.bytes[1], ipv4.bytes[2] * 256 + ipv4.bytes[3]];
     }
-    if (group.length > 4) {
+    if (group.length === 0 || group.length > 4) {
         return null;
     }
     let value = 0;
@@ -256,7 +277,7 @@ export class TrustedProxySet implements Matchable<string> {
             }
             const network = this.#entries[index];
             const prefix = this.#prefixBits[index];
-            const fullBytes = prefix / 8;
+            const fullBytes = prefix >> 3;
             const partialBits = prefix % 8;
             let matched = true;
             for (let byte = 0; byte < fullBytes; byte++) {

@@ -28,11 +28,14 @@ import { METRIC_AGGREGATOR } from './metric-aggregator-token';
  * const app = new ApplicationBuilder([NodeAutoConfiguration, ManagementAutoConfiguration]);
  * ```
  *
- * The endpoints are **open by default** — on an untrusted network, pass a
- * guard to `ManagementAutoConfiguration(options)` (e.g. the auth-server's
- * `AuthRouteGuard` or any `RouteHandlerInterceptor`) so `/metrics` and
- * `/health` require authentication, and/or firewall the management routes at
- * the network boundary.
+ * The endpoints are **open by default** — on an untrusted network, pass an
+ * *unconditional* guard (a token-presence / token-adapter
+ * `RouteHandlerInterceptor`; metadata-driven guards like the auth-server's
+ * `AuthRouteGuard` cannot protect these handlers, which carry no
+ * `@authenticated`/`@authorized` metadata) to
+ * `ManagementAutoConfiguration(options)` so `/metrics` and `/health`
+ * require authentication, and/or firewall the management routes at the
+ * network boundary.
  *
  * @since 1.0.0
  */
@@ -127,9 +130,12 @@ export interface ManagementAutoConfigurationOptions {
      * endpoints are **open to any caller** (default posture — documented
      * in the package README).
      *
-     * **Recommendation (gap analysis SEC-5):** wire a guard in production —
-     * the auth completion guide's `AuthRouteGuard` over the `'credentials'
-     *` adapter (or a token-adapter guard) is the intended fit.
+     * **Recommendation:** the health/metrics handlers carry no
+     * `@authenticated`/`@authorized` metadata, so a metadata-driven guard
+     * (e.g. the auth-server's `AuthRouteGuard`, which derives every
+     * requirement from handler metadata) would always permit these
+     * endpoints. Use an **unconditional** guard that checks the request
+     * itself — a token-presence or token-adapter guard.
      */
     accessGuard?: RouteHandlerInterceptor;
     /**
@@ -154,17 +160,23 @@ const MANAGEMENT_PATHS = ['/health', '/metrics'];
  */
 function scopedToManagementPaths(guard: RouteHandlerInterceptor): RouteHandlerInterceptor {
     return {
-        async preHandle(route) {
+        async preHandle(route, handler) {
             if (!MANAGEMENT_PATHS.some((path) => route.path === path || route.path.startsWith(`${path}/`))) {
                 return true;
             }
-            return guard.preHandle(route, undefined);
+            return guard.preHandle(route, handler);
         },
-        async postHandle(route, _handler, modelAndView) {
-            await guard.postHandle?.(route, undefined, modelAndView);
+        async postHandle(route, handler, modelAndView) {
+            if (!MANAGEMENT_PATHS.some((path) => route.path === path || route.path.startsWith(`${path}/`))) {
+                return;
+            }
+            await guard.postHandle?.(route, handler, modelAndView);
         },
-        async completeHandle(route, _handler, error) {
-            await guard.completeHandle?.(route, undefined, error);
+        async completeHandle(route, handler, error) {
+            if (!MANAGEMENT_PATHS.some((path) => route.path === path || route.path.startsWith(`${path}/`))) {
+                return;
+            }
+            await guard.completeHandle?.(route, handler, error);
         },
     };
 }

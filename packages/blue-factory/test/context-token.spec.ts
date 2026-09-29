@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, expect, test } from 'vitest';
-import { ContextToken, isContextToken } from '../src/context-token';
+import { ContextToken, isContextToken } from '../src/context-tokens';
 
 describe('ContextToken', () => {
     test('it should set description', () => {

@@ -439,6 +439,8 @@ class ConfigurationParser {
      */
     processEntry(nameOrToken: string | ContextToken<unknown>, value: () => unknown) {
         const result = value();
+        // Overload dispatch: `setValue` is overloaded on `string` vs
+        // `ContextToken<T>` — the union needs the typeof narrowing.
         if (typeof nameOrToken === 'string') {
             this.registry.setValue(nameOrToken, result);
         } else {

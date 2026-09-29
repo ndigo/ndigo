@@ -13,10 +13,12 @@ import type { ServerResponse } from 'node:http';
 import '@tsmetadata/polyfill';
 import { type ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { DISPATCHER, type AbstractDispatcher, parameters, routeValue } from '@blue/dispatcher';
+import { HTTPHeaders } from '@blue/http';
 import { Null } from '@blue/core';
 import { OpenAPISpecGenerator, type OpenAPIDocument, type RouteMappingTable } from '@blue/openapi';
 import type { Route } from '@blue/router';
 import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
+import { ProblemTypes, writeProblem } from './problem-details';
 import { type ResolvedOpenAPIDocsOptions } from './openapi-docs-auto-configuration';
 
 /**
@@ -25,7 +27,8 @@ import { type ResolvedOpenAPIDocsOptions } from './openapi-docs-auto-configurati
  * The document is generated lazily on first request and memoized — the
  * route table is stable after context refresh, so the document cannot go
  * stale within a running application (a `config:refresh`-time invalidation
- * is a recorded follow-up).
+ * is a recorded follow-up). A failed generation (see {@link OpenAPIDocsController.spec})
+ * writes a 500 problem document; only successful documents are memoized.
  */
 export class OpenAPIDocsController extends AsApplicationContextAware(Null) {
     readonly applicationContext!: ApplicationContext;
@@ -43,17 +46,37 @@ export class OpenAPIDocsController extends AsApplicationContextAware(Null) {
     /**
      * Writes the spec document with `application/json` content type.
      *
+     * Generation runs zod's `toJSONSchema` over every documented schema, so a
+     * dev-supplied non-serializable schema (cyclic `z.lazy`, `z.custom`)
+     * fails deterministically per request; the failure is written as an RFC
+     * 9457 `urn:blue:internal-error` problem document and logged server-side
+     * (internals never reach the wire). Only successful documents are
+     * memoized — a failed (or fixed) schema is retried on the next request.
+     *
      * @param route - The current route (carries the Node response).
      */
     @parameters({ route: routeValue() })
     async spec(route: Route): Promise<void> {
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
         if (!res || res.headersSent) return;
-        if (this.#cached === null) this.#cached = this.#generate();
+        if (this.#cached === null) {
+            try {
+                this.#cached = this.#generate();
+            } catch (error) {
+                const message = error instanceof Error ? (error.stack ?? error.message) : String(error);
+                console.error('[OpenAPIDocsController] spec generation failed:', message);
+                writeProblem(res, {
+                    type: ProblemTypes.internalError,
+                    title: 'Internal Server Error',
+                    status: 500,
+                });
+                return;
+            }
+        }
         const body = JSON.stringify(this.#cached);
         res.writeHead(200, {
-            'content-type': 'application/json; charset=utf-8',
-            'cache-control': 'no-cache',
+            [HTTPHeaders.CONTENT_TYPE.name]: 'application/json; charset=utf-8',
+            [HTTPHeaders.CACHE_CONTROL.name]: 'no-cache',
         });
         res.end(body);
     }

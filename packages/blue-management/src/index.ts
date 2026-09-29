@@ -5,13 +5,7 @@
  * @author Jeff Rose
  */
 export { HealthRegistry, HEALTH_ERROR_REDACTED } from './health';
-export type {
-    HealthRegistryOptions,
-    HealthState,
-    HealthResult,
-    HealthIndicator,
-    HealthStatus,
-} from './health';
+export type { HealthRegistryOptions, HealthState, HealthResult, HealthIndicator, HealthStatus } from './health';
 export { METRIC_AGGREGATOR } from './metric-aggregator-token';
 export { HEALTH_REGISTRY } from './health-registry-token';
 export { MetricsController } from './metrics-controller';

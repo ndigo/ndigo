@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { base64url, createRemoteJWKSet, decodeJwt, jwtVerify, type JWTPayload } from 'jose';
+import { HTTPHeaders } from '@blue/http';
 import { type AuthAdapter } from '@blue/auth-core';
 import { type Principal } from '@blue/auth-core';
 import { type AuthResult } from '@blue/auth-core';
@@ -342,7 +343,7 @@ export class OIDCAdapter implements AuthAdapter {
             if (!response.ok) {
                 throw new OIDCError('network', `${label} fetch failed with status ${response.status}`);
             }
-            const contentLength = Number(response.headers.get('content-length'));
+            const contentLength = Number(HTTPHeaders.CONTENT_LENGTH.get(response.headers));
             if (Number.isFinite(contentLength) && contentLength > maxBytes) {
                 throw new OIDCError('network', `${label} exceeds the ${maxBytes}-byte limit`);
             }

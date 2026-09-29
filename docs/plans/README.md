@@ -117,6 +117,7 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 
 ## Active Plans
 
+- [2026-09-28_CODE_REVIEW_AND_MITIGATION.md](2026-09-28_CODE_REVIEW_AND_MITIGATION.md) - Review of the Wave 6 / AD-34 / AD-35-36 / AD-37 wave with remediation plan (2 Must Fix, 22 Should Fix, 16 Optional)
 - [2026-09-18_CODE_REVIEW_AND_MITIGATION.md](2026-09-18_CODE_REVIEW_AND_MITIGATION.md) - Architecture, security, and quality review with remediation plan
 - [2026-09-17_REVIEW_AND_REMEDIATION.md](2026-09-17_REVIEW_AND_REMEDIATION.md) - Review of the WebSocket/STOMP wave with repository gate remediation
 - [2026-09-16_STOMP.md](2026-09-16_STOMP.md) - STOMP 1.2 protocol layer: frame codec, server broker, client, and demo gate

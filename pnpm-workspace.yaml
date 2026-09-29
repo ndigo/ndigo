@@ -20,7 +20,9 @@ onlyBuiltDependencies:
   - protobufjs
 
 allowBuilds:
-  '@scarf/scarf': set this to true or false
+  # @scarf/scarf (swagger-ui-dist telemetry) — postinstall is `node ./report.js`
+  # (machine fingerprinting); deliberately never executed (SEC-3, 2026-09-28).
+  '@scarf/scarf': false
   esbuild: true
   msw: true
   nx: true

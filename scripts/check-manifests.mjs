@@ -24,9 +24,10 @@
 
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { importsOf, SOURCE_DIRS, DEV_DIRS } from './import-scanner.mjs';
 
-const ROOT = new URL('..', import.meta.url).pathname;
+const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const PACKAGES = join(ROOT, 'packages');
 const BLUE_PREFIX = '@blue/';
 
@@ -43,20 +44,8 @@ const PEER_ALLOWLIST = {
     '@blue/platform-node': ['swagger-ui-dist'],
 };
 
-/** Dev-tooling that is imported/invoked by config and tests but is not a package concern. */
-const TOOLING = new Set([
-    'typescript',
-    'vitest',
-    'tsx',
-    'nx',
-    'oxlint',
-    'oxfmt',
-    'jsdom',
-    'msw',
-    'debug',
-    'cross-env',
-    'glob',
-]);
+/** Dev-tooling that is imported/invoked by configs and tests but is not a package concern. */
+const TOOLING = new Set(['typescript', 'vitest', 'tsx', 'nx', 'oxlint', 'oxfmt', 'jsdom', 'msw']);
 
 const failures = [];
 
@@ -115,12 +104,12 @@ for (const dir of readdirSync(PACKAGES)) {
     if (!Array.isArray(manifest.keywords) || manifest.keywords.length === 0) {
         fail(name, `keywords must be a non-empty array (docs standard)`);
     }
-    if (name === '@blue/generators') {
-        const files = manifest.files ?? [];
-        if (!files.includes('src') || !files.includes('generators.json')) {
-            fail(name, `files must include "src" and "generators.json" (docs standard)`);
-        }
-    } else if (!Array.isArray(manifest.files) || !manifest.files.includes('doc') || !manifest.files.includes('lib')) {
+    // Documentation standard (see docs/guides/package-documentation.md): every
+    // publishable package ships its compiled lib/ and generated doc/. (No
+    // @blue/generators exemption — it is a normal build-output package: its
+    // exports point at lib/ and its files include lib alongside the Nx-runtime
+    // assets src/ and generators.json.)
+    if (!Array.isArray(manifest.files) || !manifest.files.includes('doc') || !manifest.files.includes('lib')) {
         fail(name, `files must include "doc" and "lib" (docs standard)`);
     }
 

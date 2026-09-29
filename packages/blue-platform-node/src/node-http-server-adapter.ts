@@ -50,7 +50,7 @@ import type { MultipartLimits } from './parse-multipart';
 import type { MultipartContext } from './multipart-file';
 import { contentTypeBase, MULTIPART_FORM_DATA } from './content-type';
 import { ProblemTypes, writeProblem } from './problem-details';
-import { ResponseStatus } from '@blue/http';
+import { HTTPHeaders, ResponseStatus } from '@blue/http';
 import type { NodeDispatcher } from './node-dispatcher';
 import type { HTTPServerAdapter } from './http-server';
 import type { WebSocket } from 'ws';
@@ -443,9 +443,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 const sources: SocketRequestSources = {
                     query,
                     headers: req.headers as Record<string, string | string[] | undefined>,
-                    cookies: parseCookies(
-                        typeof req.headers['cookie'] === 'string' ? req.headers['cookie'] : undefined
-                    ),
+                    cookies: parseCookies(HTTPHeaders.COOKIE.get(req.headers) ?? undefined),
                 };
                 const accepts = this.#findSocketHandler(path, query) !== null;
                 // Only track accepted upgrades: when `shouldHandle` returns
@@ -852,7 +850,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         try {
             const urlObj = this.#buildUrl(req);
             this.#assertHeaderLimits(req);
-            const contentType = String(req.headers['content-type'] ?? '').toLowerCase();
+            const contentType = String(HTTPHeaders.CONTENT_TYPE.get(req.headers) ?? '').toLowerCase();
             let bodyRecord: Record<string, unknown>;
             if (contentTypeBase(contentType) === MULTIPART_FORM_DATA) {
                 multipart = await parseMultipart(req, { limits: this.#multipartLimits });
@@ -864,7 +862,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             const nodeRequest: NodeRequest = {
                 headers: req.headers as Record<string, string | string[] | undefined>,
                 body: bodyRecord,
-                cookies: parseCookies(typeof req.headers['cookie'] === 'string' ? req.headers['cookie'] : undefined),
+                cookies: parseCookies(HTTPHeaders.COOKIE.get(req.headers) ?? undefined),
                 // AD-37: resolved through the trusted-proxy allowlist; the
                 // direct socket address stands unless the peer is trusted.
                 remoteAddress: resolveClientAddress(
@@ -904,7 +902,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 attributes: {
                     [NODE_REQUEST_ATTRIBUTE]: nodeRequest,
                     [NODE_RESPONSE_ATTRIBUTE]: res,
-                    [ACCEPT_LANGUAGE_ATTRIBUTE]: req.headers['accept-language'],
+                    [ACCEPT_LANGUAGE_ATTRIBUTE]: HTTPHeaders.ACCEPT_LANGUAGE.get(req.headers) ?? undefined,
                 },
             };
 
@@ -1103,7 +1101,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      * Builds the request URL, rejecting malformed `Host` headers with `400`.
      */
     #buildUrl(req: IncomingMessage): URL {
-        const host = req.headers['host'];
+        const host = HTTPHeaders.HOST.get(req.headers);
         const url = req.url ?? '/';
         try {
             return new URL(url, `http://${host ?? 'localhost'}`);
@@ -1202,7 +1200,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      * back to raw text under the `'*'` key (no silent reshaping).
      */
     #parseBodyRecord(req: IncomingMessage, raw: Buffer): Record<string, unknown> {
-        return parseBodyRecord(req.headers['content-type'], raw);
+        return parseBodyRecord(HTTPHeaders.CONTENT_TYPE.get(req.headers) ?? undefined, raw);
     }
 
     /**

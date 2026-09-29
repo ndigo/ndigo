@@ -6,6 +6,7 @@
 import { Transform, TransformContext } from '../transformers/http-transformer';
 import { MediaType } from '@blue/core';
 import { RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '../http';
+import * as HTTPHeaders from '../http-headers';
 
 /**
  * Applies request and response body transforms at the interceptor boundary.
@@ -52,7 +53,7 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
         return new Request(request.url, {
             method: request.method,
             headers: request.headers,
-            body: this.serializeBody(body, request.headers.get('content-type') || ''),
+            body: this.serializeBody(body, HTTPHeaders.CONTENT_TYPE.get(request.headers) || ''),
             // ... copy other request properties
         });
     }
@@ -84,7 +85,7 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
             }
         }
 
-        const contentType = response.headers.get('content-type') || '';
+        const contentType = HTTPHeaders.CONTENT_TYPE.get(response.headers) || '';
         const transformedBody = this.serializeBody(body, contentType);
 
         return new Response(transformedBody, {
@@ -98,7 +99,7 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
      * Extracts body from Request or Response.
      */
     private async extractBody(source: Request | Response): Promise<unknown> {
-        const contentType = source.headers.get('content-type') || '';
+        const contentType = HTTPHeaders.CONTENT_TYPE.get(source.headers) || '';
         const mediaType = mediaTypeOf(contentType);
 
         if (mediaType?.isJSON === true) {
@@ -124,7 +125,7 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
      */
     private createContext(source: Request | Response, direction: 'request' | 'response'): TransformContext {
         const url = source instanceof Request ? source.url : ''; // Response doesn't have URL
-        const contentType = source.headers.get('content-type') || '';
+        const contentType = HTTPHeaders.CONTENT_TYPE.get(source.headers) || '';
 
         return {
             url,

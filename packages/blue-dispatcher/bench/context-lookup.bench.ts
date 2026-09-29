@@ -28,8 +28,9 @@
  */
 
 // oxlint-disable @blue/no-string-registry-lookup -- benchmark fixtures: the
-// string-literal lookup hot path is a measured axis (ADR-34 D1 benches both
-// handles; tokens and strings share the description-keyed registry).
+// string-literal lookup hot path is a measured axis; AD-34 D1 tokens and
+// strings share the description-keyed registry (same-cost claim pinned in
+// packages/blue-context/bench/context-lookup.bench.ts's token case).
 
 import { bench, describe } from 'vitest';
 import { DefaultFactory } from '@blue/factory';

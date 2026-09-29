@@ -12,6 +12,9 @@ const { defineProperty, deleteProperty, get, set } = Reflect,
 
 type HeaderEntries = Array<[string, string]>;
 
+/** Node `IncomingMessage`-style header record (lower-cased name → value or lines). */
+type HeaderRecord = Record<string, string | string[] | undefined>;
+
 function deletePair(entries: HeaderEntries, name: string): void {
     const length = entries.length;
 
@@ -70,7 +73,7 @@ function setPair(entries: HeaderEntries, name: string, value: string): void {
     }
 }
 
-function deleteHeader(headers: HeadersInit, name: string): void {
+function deleteHeader(headers: HeadersInit | HeaderRecord, name: string): void {
     if (isHeaders(headers)) {
         (headers as Headers).delete(name);
     } else if (isEntries(headers)) {
@@ -81,7 +84,7 @@ function deleteHeader(headers: HeadersInit, name: string): void {
     }
 }
 
-function getHeader(headers: HeadersInit, name: string): string | null {
+function getHeader(headers: HeadersInit | HeaderRecord, name: string): string | null {
     if (isHeaders(headers)) {
         return (headers as Headers).get(name);
     } else if (isEntries(headers)) {
@@ -102,11 +105,11 @@ function getHeader(headers: HeadersInit, name: string): string | null {
     return null;
 }
 
-function hasHeader(headers: HeadersInit, name: string): boolean {
+function hasHeader(headers: HeadersInit | HeaderRecord, name: string): boolean {
     return isString(getHeader(headers, name));
 }
 
-function setHeader(headers: HeadersInit, name: string, value: unknown): void {
+function setHeader(headers: HeadersInit | HeaderRecord, name: string, value: unknown): void {
     const stringValue = String(value);
     if (isHeaders(headers)) {
         (headers as Headers).set(name, stringValue);
@@ -155,7 +158,7 @@ export class HTTPHeader implements Serializable {
      *
      * @param headers - The header collection to mutate.
      */
-    delete(headers: HeadersInit): void {
+    delete(headers: HeadersInit | HeaderRecord): void {
         if (headers) {
             deleteHeader(headers, this.name);
         }
@@ -167,7 +170,7 @@ export class HTTPHeader implements Serializable {
      * @param headers - The header collection to read from.
      * @returns The header value, or `null` when missing.
      */
-    get(headers: HeadersInit): string | null {
+    get(headers: HeadersInit | HeaderRecord): string | null {
         return headers ? getHeader(headers, this.name) : null;
     }
 
@@ -179,7 +182,7 @@ export class HTTPHeader implements Serializable {
      * @param separator - The join separator (default `', '`).
      * @returns The header value, or `null` when missing.
      */
-    getJoined(headers: HeadersInit, separator = ', '): string | null {
+    getJoined(headers: HeadersInit | HeaderRecord, separator = ', '): string | null {
         const value = headers ? getHeader(headers, this.name) : null;
         if (value === null) {
             return null;
@@ -193,7 +196,7 @@ export class HTTPHeader implements Serializable {
      * @param headers - The header collection to inspect.
      * @returns `true` when the header exists.
      */
-    has(headers: HeadersInit): boolean {
+    has(headers: HeadersInit | HeaderRecord): boolean {
         return headers ? hasHeader(headers, this.name) : false;
     }
 
@@ -204,7 +207,7 @@ export class HTTPHeader implements Serializable {
      * @param value - The header value to store.
      * @throws {TypeError} When `headers` is not provided.
      */
-    set(headers: HeadersInit, value: unknown): void {
+    set(headers: HeadersInit | HeaderRecord, value: unknown): void {
         if (!headers) {
             throw new TypeError('headers is undefined');
         }

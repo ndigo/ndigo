@@ -309,7 +309,7 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
     }
 
     getRawProperty(key: string): JSONValue | undefined {
-        return this.#propertyResolver.getProperty(key);
+        return this.#propertyResolver.getRawProperty(key);
     }
 
     originOf(key: string): string | null {

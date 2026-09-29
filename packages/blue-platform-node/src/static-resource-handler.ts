@@ -7,7 +7,8 @@
  * `Content-Length`s: nothing whole-file-buffers, and conditional GETs / HEAD
  * are answered from stat metadata alone without opening the file (SEC-8).
  * Write-side header names come from the `@blue/http` `HTTPHeader` constants
- * (RUS-2); request-header reads use lowercase literals because Node
+ * (RUS-2), except `X-Content-Type-Options: nosniff`, reused verbatim from the
+ * resolver (SEC-2); request-header reads use lowercase literals because Node
  * normalizes `IncomingMessage` header names to lowercase records.
  * * @module blue-platform-node
  * @since 1.0.0
@@ -30,7 +31,7 @@ import {
     VARY,
 } from '@blue/http';
 import { getNodeRequest, NODE_RESPONSE_ATTRIBUTE } from './node-request';
-import { StaticResourceResolver, type StaticResourceResult } from './static-resource-resolver';
+import { NOSNIFF_HEADER, StaticResourceResolver, type StaticResourceResult } from './static-resource-resolver';
 import { ProblemTypes, writeProblem } from './problem-details';
 
 /** Handler options (D-6) — defaults preserve today's plain-file behavior. */
@@ -234,6 +235,11 @@ export class StaticResourceHandler {
         const successHeaders: Record<string, string> = {
             [CONTENT_TYPE.name]: result.contentType ?? String(MediaTypes.APPLICATION_OCTET_STREAM),
         };
+        // SEC-2: never let a browser MIME-sniff a static payload. The
+        // resolver's constant is the canonical `name: value` line; split it
+        // once so the header key stays in lockstep with its value.
+        const [nosniffName, nosniffValue] = NOSNIFF_HEADER.split(/:\s*/, 2) as [string, string];
+        successHeaders[nosniffName] = nosniffValue;
         // `undefined` → default; `null` → opt out of the header entirely.
         const cacheControl =
             this.#options.cacheControl === undefined ? DEFAULT_CACHE_CONTROL : this.#options.cacheControl;

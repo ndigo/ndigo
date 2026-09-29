@@ -5,7 +5,8 @@
  * @author Jeff Rose
  */
 import { ValidationIssue } from '@blue/dispatcher';
-import { ResponseStatus } from '@blue/http';
+import { MediaTypes } from '@blue/core';
+import { HTTPHeaders, ResponseStatus } from '@blue/http';
 import { ResponseEntity } from './response-entity';
 
 /**
@@ -83,9 +84,9 @@ export function writeProblem(
     if (details.instance) payload['instance'] = details.instance;
     if (details.errors && details.errors.length > 0) payload['errors'] = details.errors;
     res.writeHead(details.status, {
-        'Content-Type': 'application/problem+json',
-        'Cache-Control': 'no-store',
-        Vary: 'Accept',
+        [HTTPHeaders.CONTENT_TYPE.name]: String(MediaTypes.APPLICATION_PROBLEM_JSON),
+        [HTTPHeaders.CACHE_CONTROL.name]: 'no-store',
+        [HTTPHeaders.VARY.name]: 'Accept',
         ...headers,
     });
     res.end(JSON.stringify(payload));

@@ -59,6 +59,6 @@
     "ws": "^8.18.0"
   },
   "peerDependencies": {
-    "swagger-ui-dist": "^5.33.0"
+    "swagger-ui-dist": "5.33.0"
   }
 }

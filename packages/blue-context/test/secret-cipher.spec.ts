@@ -137,6 +137,30 @@ describe('resolver secret integration (AD-29 D-5)', () => {
         expect(env.getPropertyAs('db.password', String)).toBe('s3cret-pass');
     });
 
+    test('getRawProperty returns the raw cipher marker while getProperty decrypts', () => {
+        const registry = new SecretSchemeRegistry();
+        const cipher = fakeCipher();
+        registry.register(cipher);
+        const marker = cipher.encrypt('s3cret-pass', 'db.password');
+
+        const env = new StandardEnvironment([{ db: { password: marker } }]);
+        env.applySecretDecryptor(registry);
+
+        // Raw index lookup: the {cipher:...} marker must be distinguishable
+        // from the resolved value (COR-8) — ciphertext intact, no decryption.
+        expect(env.getRawProperty('db.password')).toBe(marker);
+        expect(env.getProperty('db.password')).toBe('s3cret-pass');
+    });
+
+    test('getRawProperty bypasses placeholder resolution while getProperty resolves', () => {
+        const env = new StandardEnvironment([
+            { db: { password: '${secrets.stored}' }, secrets: { stored: 'real-value' } },
+        ]);
+
+        expect(env.getRawProperty('db.password')).toBe('${secrets.stored}');
+        expect(env.getProperty('db.password')).toBe('real-value');
+    });
+
     test('non-marker values pass through even with a decryptor wired', () => {
         const registry = new SecretSchemeRegistry();
         registry.register(fakeCipher());

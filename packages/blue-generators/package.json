@@ -10,17 +10,19 @@
   ],
   "type": "module",
   "generators": "./generators.json",
-  "main": "./src/index.js",
-  "types": "./src/index.d.ts",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.d.ts",
-      "default": "./src/index.js"
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
     },
     "./package.json": "./package.json"
   },
   "files": [
     "src",
+    "lib",
+    "doc",
     "generators.json"
   ],
   "scripts": {

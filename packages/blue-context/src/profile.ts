@@ -97,9 +97,10 @@ export function and(...terms: ProfileExpressionInput[]): ProfileTerm {
     if (terms.length === 0) {
         throw new IllegalStateError('Profile.and requires at least one term');
     }
-    const parts = terms.map((value) =>
-        wrapIf(asTerm(value), asTerm(value).kind === 'or' || asTerm(value).kind === 'compound')
-    );
+    const parts = terms.map((value) => {
+        const term = asTerm(value);
+        return wrapIf(term, term.kind === 'or' || term.kind === 'compound');
+    });
     return new ProfileTerm(parts.join(' & '), 'and');
 }
 
@@ -111,7 +112,10 @@ export function or(...terms: ProfileExpressionInput[]): ProfileTerm {
     if (terms.length === 0) {
         throw new IllegalStateError('Profile.or requires at least one term');
     }
-    const parts = terms.map((value) => wrapIf(asTerm(value), asTerm(value).kind === 'compound'));
+    const parts = terms.map((value) => {
+        const term = asTerm(value);
+        return wrapIf(term, term.kind === 'compound');
+    });
     return new ProfileTerm(parts.join(' | '), 'or');
 }
 

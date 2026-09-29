@@ -77,10 +77,9 @@ test-results/
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 **/graft/
 
-"'"
-# graft's local graph cache — regenerable, not committed (run `graft build`).
-/graft/
-
 
 # Local opencode configuration (machine-specific agent/model settings)
 opencode.json
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/

@@ -49,6 +49,39 @@ describe('TrustedProxySet', () => {
         expect(matcher.matches('fe00::1')).toBe(false);
     });
 
+    test('matches non-octet-aligned CIDR prefixes with exact bit semantics', () => {
+        // Regression (2026-09-28 review COR-1): the mask loop used float
+        // division (`prefix / 8`), so /25 ≡ /32, /9 ≡ /16, /1 ≡ /8 and the
+        // partial-bit check read a fractional index. Every prefix not a
+        // multiple of 8 silently narrowed the trusted set.
+        const v4 = new TrustedProxySet(['10.0.0.0/25', '172.16.0.0/9', '192.168.1.0/31']);
+        expect(v4.matches('10.0.0.127')).toBe(true); // last /25 octet, top bit 0
+        expect(v4.matches('10.0.0.128')).toBe(false); // first bit of the /25 tail
+        expect(v4.matches('10.0.1.0')).toBe(false); // beyond byte[2]
+        expect(v4.matches('172.127.255.255')).toBe(true); // /9: second octet ≤ 0x7f
+        expect(v4.matches('172.128.0.1')).toBe(false); // /9: second octet ≥ 0x80
+        expect(v4.matches('192.168.1.0')).toBe(true); // /31 pair
+        expect(v4.matches('192.168.1.1')).toBe(true);
+        expect(v4.matches('192.168.1.2')).toBe(false);
+        const v4Whole = new TrustedProxySet(['0.0.0.0/1']);
+        expect(v4Whole.matches('63.255.255.255')).toBe(true); // /1: leading bit 0
+        expect(v4Whole.matches('128.0.0.1')).toBe(false); // /1: leading bit 1
+        const v33 = new TrustedProxySet(['fd00::/33']);
+        expect(v33.matches('fd00:0:0:7fff:ffff:ffff:ffff:ffff')).toBe(true); // /33: group 2 ≤ 0x7fff
+        expect(v33.matches('fd00:0:8000::')).toBe(false); // /33: group 2 ≥ 0x8000
+        const v97 = new TrustedProxySet(['fd00::/97']);
+        expect(v97.matches('fd00:0:0:0:0:0:7fff:ffff')).toBe(true); // /97: group 6 ≤ 0x7fff
+        expect(v97.matches('fd00:0:0:0:0:0:8000::')).toBe(false); // /97: group 6 ≥ 0x8000
+    });
+
+    test('uppercase-hex IPv6 entries and probes match (case-folded groups)', () => {
+        const matcher = new TrustedProxySet(['2001:db8::1', 'fd00::CAFE']);
+        expect(matcher.matches('2001:DB8::1')).toBe(true);
+        expect(matcher.matches('2001:db8::1')).toBe(true);
+        expect(matcher.matches('fd00::cafe')).toBe(true);
+        expect(matcher.matches('fd00::CAFE')).toBe(true);
+    });
+
     test('IPv4-mapped IPv6 forms match IPv4 entries and vice versa', () => {
         const matcher = new TrustedProxySet(['127.0.0.1', '::ffff:10.0.0.7/32']);
         expect(matcher.matches('::ffff:127.0.0.1')).toBe(true);
@@ -76,6 +109,14 @@ describe('TrustedProxySet', () => {
             '1.2.3.4:8080',
             '',
             ' 192.168.1.1 ',
+            // RFC 4291 grammar (regression COR-2): dots only in the final
+            // group, no empty groups outside the single `::` marker.
+            '192.168.0.1::',
+            '192.168.0.1:2:3:4:5:6:7',
+            '1:::2',
+            '1:2::3:',
+            ':1:2:3:4:5:6:7',
+            '1:2:3:4:5:6:7:',
         ];
         for (const entry of invalid) {
             expect(() => new TrustedProxySet([entry])).toThrow(RangeError);
@@ -113,6 +154,14 @@ describe('resolveClientAddress', () => {
         expect(resolveClientAddress(undefined, headers('6.6.6.6'), trusted)).toBeUndefined();
     });
 
+    test('mid-chain empty entries are skipped, not attributed', () => {
+        // Regression coverage (review COV-1): a hole between hops
+        // (`203.0.113.7,,10.0.0.3`) must not stop or poison the walk.
+        expect(resolveClientAddress(peer, headers('203.0.113.7,,10.0.0.3'), trusted)).toBe('203.0.113.7');
+        expect(resolveClientAddress(peer, headers('203.0.113.7, ,10.0.0.3'), trusted)).toBe('203.0.113.7');
+        expect(resolveClientAddress(peer, headers('bad,,,203.0.113.7,10.0.0.3'), trusted)).toBe('203.0.113.7');
+    });
+
     test('trusted peer with no XFF header → peer', () => {
         expect(resolveClientAddress(peer, headers(), trusted)).toBe(peer);
         expect(resolveClientAddress(peer, {}, trusted)).toBe(peer);
@@ -131,18 +180,12 @@ describe('resolveClientAddress', () => {
         // Attacker sends `X-Forwarded-For: 6.6.6.6, 7.7.7.7`; the trusted
         // proxy appends the real client. The walk starts at the rightmost
         // (proxy-added) entry.
-        expect(
-            resolveClientAddress(peer, headers('6.6.6.6, 7.7.7.7, 203.0.113.7'), trusted)
-        ).toBe('203.0.113.7');
+        expect(resolveClientAddress(peer, headers('6.6.6.6, 7.7.7.7, 203.0.113.7'), trusted)).toBe('203.0.113.7');
     });
 
     test('chain of trusted proxies is skipped to reach the client', () => {
-        expect(
-            resolveClientAddress(peer, headers('203.0.113.7, 10.0.0.4, 10.0.0.3'), trusted)
-        ).toBe('203.0.113.7');
-        expect(
-            resolveClientAddress(peer, headers('203.0.113.7 , 10.0.0.4 , 10.0.0.3 '), trusted)
-        ).toBe('203.0.113.7');
+        expect(resolveClientAddress(peer, headers('203.0.113.7, 10.0.0.4, 10.0.0.3'), trusted)).toBe('203.0.113.7');
+        expect(resolveClientAddress(peer, headers('203.0.113.7 , 10.0.0.4 , 10.0.0.3 '), trusted)).toBe('203.0.113.7');
     });
 
     test('all hops trusted → peer (nothing indicates a real client)', () => {
@@ -150,19 +193,13 @@ describe('resolveClientAddress', () => {
     });
 
     test('invalid entries are skipped, never attributed', () => {
-        expect(resolveClientAddress(peer, headers('6.6.6.6, garbage, 203.0.113.7'), trusted)).toBe(
-            '203.0.113.7'
-        );
-        expect(resolveClientAddress(peer, headers('6.6.6.6, 203.0.113.7:8080, 10.0.0.3'), trusted)).toBe(
-            '6.6.6.6'
-        );
+        expect(resolveClientAddress(peer, headers('6.6.6.6, garbage, 203.0.113.7'), trusted)).toBe('203.0.113.7');
+        expect(resolveClientAddress(peer, headers('6.6.6.6, 203.0.113.7:8080, 10.0.0.3'), trusted)).toBe('6.6.6.6');
     });
 
     test('IPv6 clients and proxies resolve', () => {
         const ipv6 = new TrustedProxySet(['fd00::/8']);
-        expect(resolveClientAddress('fd00::1', headers('2001:db8::7, fd00::2'), ipv6)).toBe(
-            '2001:db8::7'
-        );
+        expect(resolveClientAddress('fd00::1', headers('2001:db8::7, fd00::2'), ipv6)).toBe('2001:db8::7');
         // IPv4-mapped IPv6 peer normalizes against an IPv4 trust entry.
         expect(
             resolveClientAddress('::ffff:127.0.0.1', headers('203.0.113.7'), new TrustedProxySet(['127.0.0.1']))
@@ -183,9 +220,7 @@ describe('resolveClientAddress', () => {
     });
 
     test('canonical-name lookups hit lower-cased node records', () => {
-        expect(resolveClientAddress(peer, { 'X-Forwarded-For': '203.0.113.7' }, trusted)).toBe(
-            '203.0.113.7'
-        );
+        expect(resolveClientAddress(peer, { 'X-Forwarded-For': '203.0.113.7' }, trusted)).toBe('203.0.113.7');
     });
 });
 
@@ -203,9 +238,7 @@ class LimitedController {
     }
 }
 
-async function bootServer(
-    trustedProxies: string[] | undefined
-): Promise<{ base: string; close: () => Promise<void> }> {
+async function bootServer(trustedProxies: string[] | undefined): Promise<{ base: string; close: () => Promise<void> }> {
     const context = new MetadataConfigApplicationContext('trusted-proxy');
     context.register(NodeAutoConfiguration);
     context.setValue(LimitedController.name, new LimitedController());
@@ -273,9 +306,7 @@ describe('trusted-proxy resolution over a real server', () => {
 
             // Client A exhausts its own bucket (limit 3)…
             expect([await request('203.0.113.7'), await request('203.0.113.7'), await request('203.0.113.7')]).toEqual([
-                200,
-                200,
-                200,
+                200, 200, 200,
             ]);
             expect(await request('203.0.113.7')).toBe(429);
             // …while client B still has a fresh bucket — separate keys.

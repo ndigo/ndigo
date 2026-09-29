@@ -12,6 +12,8 @@ import {
     ACCESS_CONTROL_ALLOW_ORIGIN,
     ACCESS_CONTROL_EXPOSE_HEADERS,
     ACCESS_CONTROL_MAX_AGE,
+    ACCESS_CONTROL_REQUEST_METHOD,
+    ORIGIN,
     VARY,
 } from '@blue/http';
 import { type InterceptorDenial, type RouteHandlerInterceptor, type ModelAndView, denialOf } from '@blue/dispatcher';
@@ -105,7 +107,7 @@ export class CORSInterceptor implements RouteHandlerInterceptor {
         if (!res || res.headersSent) return true;
 
         const request = getNodeRequest(route);
-        const originHeader = request?.headers?.['origin'];
+        const originHeader = request?.headers ? ORIGIN.get(request.headers) : null;
         const origin = typeof originHeader === 'string' ? normalizeOrigin(originHeader) : null;
 
         // No Origin → same-origin request: no CORS processing.
@@ -116,7 +118,7 @@ export class CORSInterceptor implements RouteHandlerInterceptor {
         this.#attachAllowHeaders(res, origin);
 
         const method = route.method ?? '';
-        const requestedMethod = request?.headers?.['access-control-request-method'];
+        const requestedMethod = request?.headers ? ACCESS_CONTROL_REQUEST_METHOD.get(request.headers) : undefined;
         const isPreflight = method === 'OPTIONS' && typeof requestedMethod === 'string';
 
         if (isPreflight) {
@@ -136,7 +138,7 @@ export class CORSInterceptor implements RouteHandlerInterceptor {
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as ServerResponse | undefined;
         if (!res || res.headersSent) return;
         const request = getNodeRequest(route);
-        const originHeader = request?.headers?.['origin'];
+        const originHeader = request?.headers ? ORIGIN.get(request.headers) : null;
         const origin = typeof originHeader === 'string' ? normalizeOrigin(originHeader) : null;
         if (origin !== null && this.#allows(origin)) {
             this.#attachAllowHeaders(res, origin);

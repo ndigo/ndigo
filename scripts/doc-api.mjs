@@ -125,7 +125,7 @@ function coverageViolations(jsonPath, pkgDir, packageName) {
                 const base = file.split('/').pop() ?? '';
                 if (child.name.startsWith('[')) continue; // synthetic keys
                 if (base.startsWith('_')) continue; // internal files
-                if (!file.startsWith(pkgDir.replaceAll('\\', '/'))) continue; // external
+                if (!file.startsWith(`${pkgDir.replaceAll('\\', '/')}/`)) continue; // external
                 violations.push({ name: child.name, kind, file: `${base}:${src?.line ?? '?'}` });
             }
             if (child.kind === 16384 && child.children) walkTopLevel(child, true); // namespaces
@@ -155,8 +155,9 @@ let coverageFailures = 0;
 for (const dir of packages) {
     const pkgDir = join(PACKAGES, dir);
     const manifest = JSON.parse(readFileSync(join(pkgDir, 'package.json'), 'utf8'));
+    let tmp;
     try {
-        const tmp = mkdtempSync(join(tmpdir(), 'blue-doc-'));
+        tmp = mkdtempSync(join(tmpdir(), 'blue-doc-'));
         const configPath = join(tmp, 'typedoc.json');
         const jsonPath = join(tmp, 'symbols.json');
         const config = typedocConfig(pkgDir, manifest);
@@ -164,7 +165,6 @@ for (const dir of packages) {
         writeFileSync(configPath, JSON.stringify(config, null, 2));
         await runTypedoc(configPath); // eslint-disable-line no-await-in-loop -- sequential per-package runs keep log/violation output ordered and match the WATCH short-circuit; parallelizing would interleave diagnostics
         const violations = coverageViolations(jsonPath, pkgDir, manifest.name);
-        rmSync(tmp, { recursive: true, force: true });
         if (violations.length) {
             coverageFailures += violations.length;
             console.error(
@@ -178,6 +178,10 @@ for (const dir of packages) {
     } catch (error) {
         failures++;
         console.error(`✗ ${manifest.name}: ${error.message}`);
+    } finally {
+        // Never leak blue-doc-* dirs under OS tmp: typedoc non-zero exit, JSON
+        // parse and coverage failures all throw above — clean up on every path.
+        if (tmp) rmSync(tmp, { recursive: true, force: true });
     }
     if (WATCH) break; // watch mode: first package only, hangs by design
 }

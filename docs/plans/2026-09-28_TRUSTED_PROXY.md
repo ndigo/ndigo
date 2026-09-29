@@ -27,7 +27,7 @@ gap-analysis Tier-2 row and removes the SEC-6 rate-limiter keying caveat.
 1. **Resolver + unit tests** (`packages/blue-platform-node/src/trusted-proxy.ts`,
    `test/trusted-proxy.spec.ts`) — `TrustedProxySet` (allowlist,
    `implements Matchable<string>`) and `resolveClientAddress(peer,
-   headers, set)`. TDD: spoofing matrix first (no config, untrusted peer,
+headers, set)`. TDD: spoofing matrix first (no config, untrusted peer,
    proxy-appended tail, trusted chains, invalid entries, IPv6/mapped
    forms, repeated header lines, CIDR boundaries).
 2. **Wiring** — `NodeHTTPServerAdapterOptions.trustedProxies` +

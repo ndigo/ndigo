@@ -41,6 +41,7 @@ import {
 import { type OpenAPIGeneratorOptions } from '@blue/openapi';
 import { OpenAPIDocsController } from './openapi-docs-controller';
 import { SwaggerUIController } from './swagger-ui-controller';
+import { SecurityHeadersInterceptor } from './security-headers-interceptor';
 
 /**
  * Options for {@link OpenAPIDocsAutoConfiguration}.
@@ -54,8 +55,13 @@ export interface OpenAPIDocsAutoConfigurationOptions extends OpenAPIGeneratorOpt
     uiPath?: string;
     /**
      * Interceptor applying only to the docs endpoints (spec, UI page and
-     * assets) — the `ManagementAutoConfiguration` guard pattern. Wire e.g.
-     * the auth-server's `AuthRouteGuard` to require authentication.
+     * assets) — the `ManagementAutoConfiguration` guard pattern.
+     *
+     * The docs controllers carry no `@authenticated`/`@authorized` metadata,
+     * so a metadata-driven guard (e.g. the auth-server's `AuthRouteGuard`,
+     * which derives every requirement from handler metadata) would always
+     * permit these endpoints. Use an **unconditional** guard that checks the
+     * request itself — a token-presence or token-adapter guard.
      */
     accessGuard?: RouteHandlerInterceptor;
 }
@@ -109,15 +115,17 @@ function scopedToDocsPaths(
     const isDocsPath = (route: Route) =>
         prefixes.some((prefix) => route.path === prefix.slice(0, -1) || route.path.startsWith(prefix));
     return {
-        async preHandle(route) {
+        async preHandle(route, handler) {
             if (!isDocsPath(route)) return true;
-            return guard.preHandle(route, undefined);
+            return guard.preHandle(route, handler);
         },
-        async postHandle(route, _handler, modelAndView) {
-            await guard.postHandle?.(route, undefined, modelAndView);
+        async postHandle(route, handler, modelAndView) {
+            if (!isDocsPath(route)) return;
+            await guard.postHandle?.(route, handler, modelAndView);
         },
-        async completeHandle(route, _handler, error) {
-            await guard.completeHandle?.(route, undefined, error);
+        async completeHandle(route, handler, error) {
+            if (!isDocsPath(route)) return;
+            await guard.completeHandle?.(route, handler, error);
         },
     };
 }
@@ -179,6 +187,11 @@ export class OpenAPIDocsAutoConfiguration {
     handlerMappings(): RadixMetadataHandlerMapping[] {
         if (!this.#options.enabled) return [];
         const mapping = new RadixMetadataHandlerMapping();
+        // SEC-2: the default-on security-header set for every Node response
+        // (same instance shape as the main mapping in NodeAutoConfiguration) —
+        // /v3/api-docs, the UI page and its assets otherwise bypass the
+        // interceptor attached to the *platform* mapping.
+        mapping.interceptors.unshift(new SecurityHeadersInterceptor());
         if (this.#options.accessGuard) {
             mapping.interceptors.push(scopedToDocsPaths(this.#options.accessGuard, this.#options));
         }

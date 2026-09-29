@@ -59,8 +59,10 @@ exists only on the two framework emitters.
 each shape key resolves `${prefix}.${key}`; coercion, requiredness and
 defaults come from the schema (`z.default()` replaces `@defaultValue`;
 `z.coerce` replaces the conversion-service target). Fail-loud at boot,
-naming the class. The relaxed camelized fallback applies to schema keys
-too. Field-decorator mode (`@property`/`@nested`) is unchanged and remains
+naming the class. The relaxed camelized fallback applies to kebab/snake
+field paths in field-decorator mode; schema keys are camelCase shape keys
+resolved exactly as `${prefix}.${key}` — schema mode does not probe kebab
+spellings. Field-decorator mode (`@property`/`@nested`) is unchanged and remains
 the default. The same parse semantics power `Environment.typedConfig` /
 `ApplicationContext.typedConfig` (blue-context `schema-config.ts`) — one
 module, one behavior, shared by blue-boot. Flat and nested-object shapes are

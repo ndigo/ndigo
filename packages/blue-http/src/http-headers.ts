@@ -182,6 +182,11 @@ export const ACCEPT_CHARSET = new HTTPHeader('Accept-Charset');
 export const ACCEPT_ENCODING = new HTTPHeader('Accept-Encoding');
 
 /**
+ * @readonly The constant value documented by the code.
+ */
+export const ACCEPT_LANGUAGE = new HTTPHeader('Accept-Language');
+
+/**
  * Controls
  */
 

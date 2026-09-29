@@ -11,8 +11,9 @@
  */
 
 // oxlint-disable @blue/no-string-registry-lookup -- benchmark fixtures: the
-// string-literal lookup hot path is a measured axis (ADR-34 D1 benches both
-// handles; tokens and strings share the description-keyed registry).
+// string-literal lookup hot path is a measured axis; AD-34 D1 tokens and
+// strings share the description-keyed registry (a token case is benched
+// below to pin the same-cost claim).
 
 import { bench, describe } from 'vitest';
 import '@tsmetadata/polyfill';
@@ -21,6 +22,7 @@ import {
     ApplicationContextAwareProcessor,
     configuration,
     entry,
+    ContextToken,
 } from '@blue/context';
 
 /* ------------------------------------------------------------------ */
@@ -81,6 +83,17 @@ describe('ApplicationContext – getValue hit (first bean)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += ctx.getValue('bean1') ? 1 : 0;
+        }
+        _sink = accumulator;
+    });
+});
+
+describe('ApplicationContext – getValue via ContextToken (D1 same-cost claim)', () => {
+    const bean1Token = ContextToken('bean1');
+    bench('getValue(bean1Token)', () => {
+        let accumulator = 0;
+        for (let i = 0; i < 1000; i++) {
+            accumulator += ctx.getValue(bean1Token) ? 1 : 0;
         }
         _sink = accumulator;
     });

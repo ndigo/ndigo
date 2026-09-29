@@ -27,6 +27,7 @@ import { randomBytes } from 'node:crypto';
 import { RequestLimitError } from './http-request-limits';
 import { multipartBoundary } from './content-type';
 import { NodeMultipartContext, NodeMultipartFile, type Backing, type MultipartFile } from './multipart-file';
+import { HTTPHeaders } from '@blue/http';
 
 /** Per-upload bounds. Every field is optional; {@link DEFAULT_MPART_LIMITS} fills the rest. */
 export interface MultipartLimits {
@@ -113,7 +114,7 @@ function resolveMultipartLimits(limits?: MultipartLimits): ResolvedMultipartLimi
  * can be an array in degenerate cases (RFC 9110 folds); the first value wins.
  */
 function contentLengthOf(req: IncomingMessage): number | null {
-    const raw = req.headers['content-length'];
+    const raw = HTTPHeaders.CONTENT_LENGTH.get(req.headers);
     const value = Array.isArray(raw) ? raw[0] : raw;
     if (value === undefined || !/^\d+$/.test(value)) {
         return null;
@@ -163,7 +164,7 @@ export async function parseMultipart(
     req: IncomingMessage,
     options: MultipartParseOptions = {}
 ): Promise<NodeMultipartContext> {
-    if (!extractBoundary(req.headers['content-type'])) {
+    if (!extractBoundary(HTTPHeaders.CONTENT_TYPE.get(req.headers) ?? undefined)) {
         throw new RequestLimitError(400, 'missing_boundary', 'Request is not a valid multipart/form-data body');
     }
 

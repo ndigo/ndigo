@@ -16,8 +16,7 @@ consulted because trusting it unconditionally is a spoofing hole. The
 industry question — is XFF still the standard answer, or is something
 better? — was researched against primary sources before this AD:
 
-- **X-Forwarded-For is the de facto standard**, predating Spring (Squid
-  1998) and emitted by every proxy/CDN/load balancer. MDN documents it as
+- **X-Forwarded-For is the de facto standard**, predating Spring (Squid 1998) and emitted by every proxy/CDN/load balancer. MDN documents it as
   the reference implementation of client-IP propagation, including the
   security rules ([MDN X-Forwarded-For](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Forwarded-For)).
 - **RFC 7239 `Forwarded` is the IETF-standardized successor** (2014;
@@ -67,13 +66,13 @@ silently narrow the trusted set.
    to the server appends last), skipping entries that match the trusted
    set; the first remaining entry that is a **valid IP literal** is the
    client.
-   - Malformed entries are skipped, never attributed (Rails sanitizes
-     before walking; MDN: spoofed values may not be real addresses).
-   - Empty, missing, or all-trusted chains fall back to the peer.
-   - Leftmost client-supplied values can never win: they are only reached
-     after every entry right of them proved to be a trusted hop.
+    - Malformed entries are skipped, never attributed (Rails sanitizes
+      before walking; MDN: spoofed values may not be real addresses).
+    - Empty, missing, or all-trusted chains fall back to the peer.
+    - Leftmost client-supplied values can never win: they are only reached
+      after every entry right of them proved to be a trusted hop.
 
-Deliberately **not** using trusted-proxy *count* (hop-count) trust:
+Deliberately **not** using trusted-proxy _count_ (hop-count) trust:
 Fastify v5 removed it because it cannot validate the immediate peer.
 
 ### D-3 — `X-Forwarded-For` only; no RFC 7239 `Forwarded`, no `Client-Ip`
@@ -98,7 +97,7 @@ chain — MDN's required parsing rule; Node surfaces repeated lines as
 The set implements `@blue/core`'s `Matchable<TValue>` (`matches(value):
 boolean`) — the value-matching half of the core matcher family. It does
 **not** implement `PatternMatcher` / `PathMatcher` / `URLMatcher`: those
-match a caller-supplied pattern against a value, while the set *owns* its
+match a caller-supplied pattern against a value, while the set _owns_ its
 entries (patterns are constructor state). Forces a useless pattern
 parameter and implies polymorphic pattern matching that no consumer
 performs.

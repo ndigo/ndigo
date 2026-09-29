@@ -154,7 +154,7 @@ class ServerConfig {
   boot naming the class (fail-loud, same as field mode).
 - `@property`/`@defaultValue`/`@nested` are ignored in schema mode — the
   schema is the single source of truth.
-- The relaxed (kebab/snake) fallback applies to schema keys too.
+- The relaxed (kebab/snake) fallback applies to kebab/snake _field paths_ in field-decorator mode; schema keys are camelCase shape keys resolved exactly as `${prefix}.${key}` — schema mode does not probe kebab spellings (D-3).
 
 ### 3.2 Typed reads — `typedConfig` and `propertyKeys` (AD-34 D3/D4)
 

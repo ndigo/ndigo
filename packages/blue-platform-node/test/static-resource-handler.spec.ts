@@ -139,6 +139,15 @@ describe('StaticResourceHandler — plain + conditional GET (D-2)', () => {
         expect(res.headers['accept-ranges']).toBe('bytes');
     });
 
+    test('every successful representation carries X-Content-Type-Options: nosniff (SEC-2)', async () => {
+        const res = await serve('/app.js');
+        expect(res.headers['x-content-type-options']).toBe('nosniff');
+        // The generated directory-listing representation gets it too.
+        const listing = await serve('/files', { listDirectories: true });
+        expect(listing.status).toBe(200);
+        expect(listing.headers['x-content-type-options']).toBe('nosniff');
+    });
+
     test('cacheControl: null omits the header; a custom value is honored', async () => {
         expect((await serve('/app.js', { cacheControl: null })).headers['cache-control']).toBeUndefined();
         expect((await serve('/app.js', { cacheControl: 'public, max-age=60' })).headers['cache-control']).toBe(

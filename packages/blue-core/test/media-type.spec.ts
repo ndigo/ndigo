@@ -360,3 +360,108 @@ describe('MediaType raw-header parsing (Wave 6)', () => {
         expect(MediaType.parseAccept('')).toEqual([]);
     });
 });
+
+describe('MediaType registry round-trip (COR-5 / DSG-1 / DSG-2)', () => {
+    test('quoted parameter values containing separators round-trip (COR-5)', () => {
+        const values = ['a;b', 'a"b', 'a\\b', 'a,b', 'a"b\\c', 'a\\b;c,d'];
+        for (const value of values) {
+            const component = MediaType.for('text/html', 'x', { v: value }),
+                reparsed = MediaType.for(component.toString());
+
+            expect(reparsed.parameters).toEqual({ v: value });
+            expect(reparsed.toString()).toBe(component.toString());
+            // Serialized → parse lands on the same interned instance.
+            expect(reparsed).toBe(component);
+        }
+    });
+
+    test('quoted values with quotes and backslashes round-trip through parseAccept (COR-5)', () => {
+        const accepted = MediaType.parseAccept(`multipart/form-data;boundary="a\\"b\\\\c", text/html`),
+            boundary = accepted[0];
+
+        expect(boundary.parameters).toEqual({ boundary: 'a"b\\c' });
+        expect(boundary.toString()).toBe('multipart/form-data;boundary="a\\"b\\\\c"');
+        expect(accepted[1].toString()).toBe('text/html');
+    });
+
+    test('component form folds type/subtype case and converges with the expression path (DSG-2)', () => {
+        expect(MediaType.for('Text', 'HTML')).toBe(MediaTypes.TEXT_HTML);
+        expect(MediaType.for('Text', 'HTML').toString()).toBe('text/html');
+        expect(MediaType.for('text', 'html')).toBe(MediaTypes.TEXT_HTML);
+
+        const problemJson = MediaType.for('APPLICATION', 'Problem+JSON'),
+            problemJsonExpression = MediaType.for('application/problem+json');
+        expect(problemJson.isJSON).toBe(true);
+        expect(problemJsonExpression.isJSON).toBe(true);
+        expect(problemJson).toBe(problemJsonExpression);
+        expect(problemJson.toString()).toBe('application/problem+json');
+    });
+
+    test('component form folds parameter names and preserves parameter values (DSG-2)', () => {
+        const component = MediaType.for('Text', 'HTML', { Charset: 'UTF-8' }),
+            expression = MediaType.for('text/html;CHARSET=UTF-8');
+
+        expect(component.parameters).toEqual({ charset: 'UTF-8' });
+        expect(component.toString()).toBe('text/html;charset=UTF-8');
+        expect(component).toBe(expression);
+        expect(component).toBe(MediaType.for('text/html;charset=UTF-8'));
+    });
+
+    test('parameter order is canonicalized before keying and comparison (DSG-1)', () => {
+        const first = MediaType.for('text/html;charset=utf-8;x=1'),
+            second = MediaType.for('text/html;x=1;charset=utf-8');
+
+        expect(second).toBe(first);
+        expect(first.compareTo(second)).toBe(0);
+        expect(second.compareTo(first)).toBe(0);
+        expect(second.toString()).toBe('text/html;charset=utf-8;x=1');
+        expect(second.toString()).toBe(first.toString());
+    });
+
+    test('parameterized expressions do not accumulate registry entries unboundedly (DSG-1)', () => {
+        const baseline = MediaType.registrySize;
+
+        for (let index = 0; index < 300; index++) {
+            MediaType.for(`text/html;x=${index};y=${index}`);
+            MediaType.parseAccept(`text/html;q=0.5;r=${index}, text/plain`);
+        }
+        const afterFirstBatch = MediaType.registrySize;
+        expect(afterFirstBatch).toBeLessThan(baseline + 300);
+
+        for (let index = 300; index < 600; index++) {
+            MediaType.for(`text/html;x=${index};y=${index}`);
+            MediaType.parseAccept(`text/html;q=0.5;r=${index}`);
+        }
+        // The FIFO cache evicts oldest entries once full, so the registry
+        // size stays constant under continued unique parameterized input.
+        expect(MediaType.registrySize).toBe(afterFirstBatch);
+    });
+
+    test('garbage type tokens are rejected, not interned as wildcard entries (COR-6)', () => {
+        expect(MediaType.for(' /foo')).toBeNull();
+        expect(MediaType.for('a;b')).toBeNull();
+        expect(MediaType.for('a b/c')).toBeNull(); // whitespace inside a type token
+        expect(MediaType.for('image/jpeg')).not.toBeNull(); // clean tokens still parse
+        expect(MediaType.for('')).toBeNull();
+        expect(MediaType.for('   ')).toBeNull();
+    });
+
+    test('type-only expressions trim, fold case, and converge (COR-6)', () => {
+        expect(MediaType.for(' JPEG').toString()).toBe('jpeg/*');
+        expect(MediaType.for('JPEG')).toBe(MediaType.for('jpeg'));
+    });
+
+    test('malformed quality factors fall back to 1, never NaN/exclusion (COR-7)', () => {
+        const malformed = MediaType.for('text/html;q=abc');
+        expect(Number.isFinite(malformed.qualityFactor)).toBe(true);
+        expect(malformed.qualityFactor).toBe(1);
+        expect(MediaType.for('text/html;q=0.5').qualityFactor).toBe(0.5);
+        expect(MediaType.for('text/html;q=0').qualityFactor).toBe(0);
+        expect(MediaType.for('text/html').qualityFactor).toBe(1);
+
+        const accepted = MediaType.parseAccept('text/html;q=abc, application/json;q=0');
+        expect(accepted).toHaveLength(2);
+        expect(accepted[0].qualityFactor).toBe(1);
+        expect(accepted[1].qualityFactor).toBe(0);
+    });
+});

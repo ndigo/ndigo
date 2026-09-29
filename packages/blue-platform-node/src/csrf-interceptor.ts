@@ -120,7 +120,10 @@ export class CSRFInterceptor implements RouteHandlerInterceptor {
         const token = randomBytes(this.#tokenBytes).toString('base64url');
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as ServerResponse | undefined;
         if (res && !res.headersSent) {
-            res.setHeader('Set-Cookie', `${this.#cookieName}=${token}; ${this.#cookieOptions}`);
+            res.setHeader(
+                HTTPHeaders.SET_COOKIE.name,
+                HTTPHeaders.SET_COOKIE.buildValue(this.#cookieName, token, [this.#cookieOptions])
+            );
         }
         return token;
     }

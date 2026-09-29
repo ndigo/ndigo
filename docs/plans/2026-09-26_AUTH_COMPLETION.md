@@ -72,15 +72,15 @@ unsafe to ship.
 
 ## 3. Risks
 
-| Risk                                             | Mitigation                                                                    |
-| ------------------------------------------------ | ----------------------------------------------------------------------------- |
-| Brute force on login                             | Wave 3 rate limiter; login routes carry `@rateLimit` in the demo              |
-| User enumeration via timing/messages             | Dummy-hash verify; one generic 401 message                                    |
-| Session fixation/hijack                          | Rotation on login; cookie flags; Secure in prod config                        |
-| Unknown-scheme strings at runtime                | Loud throw + `needsRehash` migration path                                     |
-| CSRF on cookie-session mutations                 | Existing double-submit-cookie interceptor; Wave 4 pins specs for login/logout |
-| Revocation costs a store read per JWT validation | Documented short-TTL cache option (implemented in Wave 4)                     |
-| Proxy deployments break IP keying                | **CLOSED 2026-09-28 (AD-37)** — allowlist-gated X-Forwarded-For chain walk; limiter keys on the resolved client                                          |
+| Risk                                             | Mitigation                                                                                                      |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| Brute force on login                             | Wave 3 rate limiter; login routes carry `@rateLimit` in the demo                                                |
+| User enumeration via timing/messages             | Dummy-hash verify; one generic 401 message                                                                      |
+| Session fixation/hijack                          | Rotation on login; cookie flags; Secure in prod config                                                          |
+| Unknown-scheme strings at runtime                | Loud throw + `needsRehash` migration path                                                                       |
+| CSRF on cookie-session mutations                 | Existing double-submit-cookie interceptor; Wave 4 pins specs for login/logout                                   |
+| Revocation costs a store read per JWT validation | Documented short-TTL cache option (implemented in Wave 4)                                                       |
+| Proxy deployments break IP keying                | **CLOSED 2026-09-28 (AD-37)** — allowlist-gated X-Forwarded-For chain walk; limiter keys on the resolved client |
 
 ## 4. Sequencing
 

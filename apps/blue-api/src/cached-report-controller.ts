@@ -15,7 +15,7 @@ import type { ApplicationContext } from '@blue/context';
  * The reports store — typed cache handle (AD-34 D7): used by `@cached` and
  * by manual eviction (`cacheManager.getCache(REPORTS).delete(key)`).
  */
-export const REPORTS = new ContextToken<Cache<string, { invocations: number; value: string }>>('reports');
+export const REPORTS = new ContextToken<Cache<{ invocations: number; value: string }>>('reports');
 
 /**
  * `@cached` zero-wiring demo (AD-24):

@@ -6,9 +6,10 @@
  * tables and drive the registry's merge/compare ordering, so the string form
  * stays. These builders produce those canonical strings with the parser as
  * the validator: every built expression round-trips through the real
- * `AbstractNameValueExpression` grammar (name/value/negation verified), so
- * an unsupported name or value (one containing `=` / `!`) fails at build
- * time instead of silently parsing wrong.
+ * `AbstractNameValueExpression` grammar (name/value/negation verified) with
+ * names and values scanned for the grammar characters, so a name containing
+ * `=` or ending with `!` — or a value containing `=` / `!` — fails at build
+ * time instead of silently changing meaning.
  *
  * ```ts
  * @requestMapping({ value: '/items/:id', queryParams: queryParamCondition('filter', 'all') })
@@ -35,8 +36,8 @@ export interface ConditionBuilderOptions {
 /**
  * Round-trip validation: build the canonical string, then require the real
  * parser to recover exactly the requested name, value and negation. Any
- * drift (a name or value containing the `=`/`!` grammar characters) throws
- * instead of silently changing meaning.
+ * drift — a name containing `=` or ending with `!`, or a value containing
+ * the `=`/`!` characters — throws instead of silently changing meaning.
  */
 function buildCondition(
     kind: 'query' | 'matrix',
@@ -48,10 +49,11 @@ function buildCondition(
     const canonical = value === undefined ? `${negate ? '!' : ''}${name}` : `${name}${negate ? '!' : ''}=${value}`;
 
     const parsed = kind === 'query' ? new QueryParamExpression(canonical) : new MatrixParamExpression(canonical);
-    if (parsed.name !== name || parsed.isNegated !== negate) {
+    const valueHasGrammarCharacter = typeof value === 'string' && (value.includes('=') || value.includes('!'));
+    if (parsed.name !== name || parsed.isNegated !== negate || parsed.value !== value || valueHasGrammarCharacter) {
         throw new IllegalStateError(
             `Cannot build ${kind}-param condition from name ${JSON.stringify(name)} value ${JSON.stringify(value)}: ` +
-                'names and values must not contain the expression characters = or !'
+                'names must not contain "=" or end with "!", and values must not contain the = or ! characters'
         );
     }
     return canonical;

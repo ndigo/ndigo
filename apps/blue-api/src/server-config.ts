@@ -54,12 +54,14 @@ const secretsSchema = z.object({
 /**
  * At-rest secrets demo (AD-29 Wave 2): a bound config value that is
  * `{cipher:...}`-encrypted in the environment. With `BLUE_SECRET_KEY` set,
- * `api.secret-token` resolves to its plaintext; without it, the raw marker
+ * `api.secretToken` resolves to its plaintext; without it, the raw marker
  * binds (a reverse-proxy/deployer sets the key, never the repo).
  *
  * The value rides the `properties` source so nothing secret is committed:
- * the *ciphertext* itself may live in env (`BLUE_API_SECRET_TOKEN`), with
- * the key in `BLUE_SECRET_KEY` — two separate channels, per the threat model.
+ * the *ciphertext* itself may live in any property source under the
+ * `api.secretToken` key (env vars reach the property index under their
+ * literal names, so no `BLUE_*` variable is probed), with the key in
+ * `BLUE_SECRET_KEY` — two separate channels, per the threat model.
  */
 @configurationProperties('api', { schema: secretsSchema })
 export class SecretsConfig {

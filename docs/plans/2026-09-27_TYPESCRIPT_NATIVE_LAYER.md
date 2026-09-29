@@ -51,7 +51,7 @@ BlueJS ports Spring solutions deliberately; the evaluation found the framework a
     Decorator metadata records the token; `ConfigurationParser.processEntry` registers under the token (registry is description-keyed — `setValue(token)`/`getValue(token)` already resolve; verified in `factory.spec.ts:256-276`). String form stays.
 2. `resolveHandlerWithContext` (blue-dispatcher `_shared.ts:19-22`) accepts `ContextToken<object>`; `MaybeHandler` widens. String handlers stay for deserialized mapping tables.
 3. Framework beans migrate to tokens: existing 7 (`DISPATCHER`, `ROUTER`, `HOST_MANAGER_TOKEN`, `HEALTH_REGISTRY`, `METRIC_AGGREGATOR`, `SHARED_DEPENDENCY_REGISTRY_TOKEN`) + beans from auto-configurations discovered in the task (`cacheManager`, `rateLimiter`, …). App lookups in `apps/blue-api` migrate (S1 demo gate).
-4. New oxlint rule `no-string-registry-lookup` (`blue-oxlint-plugin`), v1 semantics: flag string-literal `getValue`/`getInstance`/`hasValue`/`destroyValue` calls whose literal names a declared `ContextToken` (same-module declaration scan; framework exports for v2 package-scope); documented `oxlint-disable-next-line` for intentional dynamic lookups.
+4. New oxlint rule `no-string-registry-lookup` (`blue-oxlint-plugin`), v1 semantics: flag string-literal `getValue`/`getInstance`/`hasValue`/`destroyValue` calls (any receiver; no declaration scan — the same-module declaration-scan scope from the plan draft was dropped at implementation; documented `oxlint-disable-next-line` for intentional dynamic lookups; v2 candidates: receiver/declaration awareness + static template-literal args).
 
 **Tasks**
 

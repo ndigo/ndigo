@@ -5,14 +5,15 @@
  */
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
-import { MetadataConfigApplicationContext } from '@blue/context';
+import { configuration, entry, MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@blue/platform-node';
-import { denialOf } from '@blue/dispatcher';
+import { denialOf, getMapping, requestMapping, RouteHandlerMethod } from '@blue/dispatcher';
 import { ManagementAutoConfiguration } from '../src/management-auto-configuration';
 import { METRIC_AGGREGATOR } from '../src/metric-aggregator-token';
 import { HEALTH_REGISTRY } from '../src/health-registry-token';
 import { FeatureMetricAggregator } from '@blue/telemetry';
 import { HealthRegistry } from '../src/health';
+import { HealthController } from '../src/health-controller';
 
 /**
  * End-to-end: boot a real context with NodeAutoConfiguration +
@@ -172,5 +173,88 @@ describe('ManagementAutoConfiguration with an access guard', () => {
         // The scoped guard must never touch routes outside /health and /metrics.
         const res = await fetch(`${guardedBase}/`);
         expect([200, 404]).toContain(res.status);
+    });
+});
+
+// A real non-management handler so the COR-3 scoping assertions exercise a
+// route that dispatches through the shared mapping.
+@requestMapping('/app')
+class ProbeController {
+    @getMapping('/probe')
+    probe() {
+        return { ok: true };
+    }
+}
+
+@configuration
+class ProbeConfiguration {
+    @entry
+    probeApi() {
+        return new ProbeController();
+    }
+}
+
+describe('ManagementAutoConfiguration guard: handler forwarding + hook scoping (SEC-1/COR-3)', () => {
+    type GuardRecord = {
+        hook: 'preHandle' | 'postHandle' | 'completeHandle';
+        path: string;
+        handler: object | undefined;
+    };
+    const isManagementPath = (path: string): boolean => path === '/health' || path === '/metrics';
+    let guardedBase: string;
+    let seen: GuardRecord[] = [];
+
+    beforeAll(async () => {
+        const spy = {
+            async preHandle(route: { path: string }, handler: object | undefined) {
+                seen.push({ hook: 'preHandle', path: route.path, handler });
+                return true;
+            },
+            async postHandle(route: { path: string }, handler: object | undefined) {
+                seen.push({ hook: 'postHandle', path: route.path, handler });
+            },
+            async completeHandle(route: { path: string }, handler: object | undefined) {
+                seen.push({ hook: 'completeHandle', path: route.path, handler });
+            },
+        };
+        class SpyManagementAutoConfiguration extends ManagementAutoConfiguration {
+            constructor() {
+                super({ accessGuard: spy });
+            }
+        }
+        const context = new MetadataConfigApplicationContext('management-guard-spy');
+        context.register(NodeAutoConfiguration);
+        context.register(SpyManagementAutoConfiguration);
+        context.register(ProbeConfiguration);
+        context.refresh();
+
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+        const adapter = new NodeHTTPServerAdapter(dispatcher);
+        await adapter.listen(0, '127.0.0.1');
+        guardedBase = `http://127.0.0.1:${(adapter.server as { address(): { port: number } }).address().port}`;
+
+        // A management route (the guard sees the real handler) and a
+        // non-management route through the same mapping (guard must not run).
+        const health = await fetch(`${guardedBase}/health`);
+        expect(health.status).toBe(200);
+        const probe = await fetch(`${guardedBase}/app/probe`);
+        expect(probe.status).toBe(200);
+        expect(seen.length).toBeGreaterThan(0);
+    });
+
+    test('the real controller instance is forwarded to every hook, never undefined (SEC-1)', () => {
+        const healthRow = seen.find((row) => row.hook === 'preHandle' && row.path === '/health');
+        // The chain forwards the route's resolved handler — the
+        // RouteHandlerMethod for `health` wrapping the HealthController.
+        const forwarded = healthRow?.handler as RouteHandlerMethod | undefined;
+        expect(forwarded).toBeDefined();
+        expect(forwarded?.method).toBe('health');
+        expect(forwarded?.handler).toBeInstanceOf(HealthController);
+        expect(seen.find((row) => row.handler === undefined)).toBeUndefined();
+    });
+
+    test('no guard hook runs for non-management routes (COR-3)', () => {
+        const nonManagement = seen.filter((row) => !isManagementPath(row.path));
+        expect(nonManagement).toEqual([]);
     });
 });

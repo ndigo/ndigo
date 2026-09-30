@@ -11,6 +11,7 @@ import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { initAuth } from '../src/auth-store';
 import { DrizzleNote } from '../src/drizzle-note.entity';
 import { getDrizzleDataSource } from '../src/drizzle-note-controller';
+import type { NoteDTO } from '../src/note.dto';
 
 /**
  * Integration test for the real blue-api app through @blue/test.
@@ -77,6 +78,32 @@ describe('blue-api through @blue/test', () => {
         });
     });
 
+    test('in-memory notes project to the DTO shape (AD-38)', async () => {
+        const login = await mockHTTP.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        const { token } = login.json() as { token?: string };
+        expect(token).toBeDefined();
+
+        const create = await mockHTTP
+            .post('/notes')
+            .headers({ authorization: `Bearer ${token}` })
+            .body({ title: 'Memory Note', body: 'a longer body worth summarizing' })
+            .exec();
+        expect(create.response.status).toBe(200);
+        const created = create.json() as { note?: NoteDTO };
+        expect(created.note?.title).toBe('Memory Note');
+        expect(created.note?.summary).toBe('a longer body worth summarizing');
+        // The mapper emits plain objects; raw entity field layout never leaks.
+        expect('body' in (created.note ?? {})).toBe(false);
+
+        const list = await mockHTTP
+            .get('/notes')
+            .headers({ authorization: `Bearer ${token}` })
+            .exec();
+        const { notes } = list.json() as { notes?: NoteDTO[] };
+        expect(notes?.some((n) => n.title === 'Memory Note' && typeof n.summary === 'string')).toBe(true);
+        expect('body' in (notes?.[0] ?? {})).toBe(false);
+    });
+
     test('Drizzle-backed POST /drizzle/notes persists to SQL and lists it', async () => {
         const login = await mockHTTP.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
         const { token } = login.json() as { token?: string };
@@ -88,17 +115,21 @@ describe('blue-api through @blue/test', () => {
             .body({ title: 'SQL Note', body: 'persisted via libSQL' })
             .exec();
         expect(create.response.status).toBe(200);
-        const created = create.json() as { note?: { id?: number; title?: string; createdAt?: string } };
+        const created = create.json() as { note?: NoteDTO };
         expect(created.note?.id).toBeGreaterThan(0); // generated PK read back from SQL
         expect(created.note?.title).toBe('SQL Note');
         expect(created.note?.createdAt).toBeDefined(); // @prePersist filled it
+        expect(created.note?.summary).toBe('persisted via libSQL'); // AD-38 projection
+        expect('body' in (created.note ?? {})).toBe(false); // entity columns never reach the wire
 
         const list = await mockHTTP
             .get('/drizzle/notes')
             .headers({ authorization: `Bearer ${token}` })
             .exec();
-        const { notes } = list.json() as { notes?: Array<{ id: number; title: string }> };
+        const { notes } = list.json() as { notes?: NoteDTO[] };
         expect(notes?.some((n) => n.title === 'SQL Note')).toBe(true);
+        expect(notes?.some((n) => typeof n.summary === 'string')).toBe(true); // AD-38 projection
+        expect('body' in (notes?.[0] ?? {})).toBe(false);
     });
 
     test('Drizzle-backed notes list + get-by-id read from SQL', async () => {
@@ -123,7 +154,7 @@ describe('blue-api through @blue/test', () => {
             .headers({ authorization: `Bearer ${token}` })
             .exec();
         expect(list.response.status).toBe(200);
-        const { notes } = list.json() as { notes?: Array<{ id: number; title: string }> };
+        const { notes } = list.json() as { notes?: NoteDTO[] };
         expect(notes).toBeDefined();
         expect(notes?.some((n) => n.title === 'Seeded SQL Note')).toBe(true);
 
@@ -133,9 +164,11 @@ describe('blue-api through @blue/test', () => {
             .headers({ authorization: `Bearer ${token}` })
             .exec();
         expect(byId.response.status).toBe(200);
-        const { note } = byId.json() as { note?: { id: number; title: string } };
+        const { note } = byId.json() as { note?: NoteDTO };
         expect(note?.id).toBe(seeded.id);
         expect(note?.title).toBe('Seeded SQL Note');
+        expect(note?.summary).toBe('from adapter'); // AD-38: body projected into summary
+        expect('body' in (note ?? {})).toBe(false);
 
         // Missing id → not found
         const missing = await mockHTTP

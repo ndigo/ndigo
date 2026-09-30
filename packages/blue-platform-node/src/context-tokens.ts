@@ -5,6 +5,7 @@
  * @author Jeff Rose
  */
 import { ContextToken } from '@blue/factory';
+import type { ConversionService } from '@blue/core';
 import type { HTTPServer } from './http-server';
 import type { NodeSocketSessionRegistry } from './node-socket-session-registry';
 import type { SocketRequestAuthenticator } from './node-http-server-adapter';
@@ -23,3 +24,9 @@ export const SOCKET_SESSION_REGISTRY = new ContextToken<NodeSocketSessionRegistr
  * Token for the socket upgrade authenticator bean (SEC-3).
  */
 export const SOCKET_REQUEST_AUTHENTICATOR = new ContextToken<SocketRequestAuthenticator>('socketRequestAuthenticator');
+
+/**
+ * Token for the shared conversion service bean (schema targets included,
+ * AD-38) — leaf conversions and schema-driven DTO projection in one bean.
+ */
+export const CONVERSION_SERVICE = new ContextToken<ConversionService>('conversionService');

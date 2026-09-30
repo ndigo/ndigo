@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { Parser, Stringifier } from './parser';
+import { z } from 'zod';
 
 // ---------------------------------------------------------------------------
 // Converter<S, T> — Spring-style single-direction class-based converter
@@ -254,19 +255,37 @@ export interface ConversionServiceOptions {
 }
 
 /**
- * Central type-conversion service (modelled on Spring's `ConversionService`).
+ * The registry key for a value's runtime source type, used by the
+ * source-aware lookup in {@link ConversionService.convert}: primitives key
+ * by their wrapper constructor, objects by their constructor, and
+ * `undefined`/`null` have no key (the String fallback applies — the
+ * environment/config binding convention).
+ */
+function sourceTypeOf(source: unknown): unknown {
+    if (typeof source === 'string') return String;
+    if (typeof source === 'number') return Number;
+    if (typeof source === 'boolean') return Boolean;
+    if (source !== null && typeof source === 'object' && 'constructor' in source) return source.constructor;
+    return undefined;
+}
+
+/**
+ * Central type-conversion service (modelled on Spring's `ConversionService`,
+ * extended with schema targets — AD-38).
  *
  * Provides a unified API for registering, looking up, and executing type
- * conversions at runtime. Built-in converters are registered automatically
- * when the service is created with default options.
+ * conversions at runtime: leaf conversions (string ↔ typed, constructor
+ * keyed) and contract-enforced object projection (zod schema targets) share
+ * one method. Built-in converters are registered automatically when the
+ * service is created with default options.
  *
  * @example
  * ```typescript
- * // Get the shared singleton instance
  * import { conversionService } from '@blue/core';
  *
- * const date = conversionService.convert('2024-01-15', Date);
- * const uuid = conversionService.convert('a1b2c3d4-e5f6-7890-abcd-ef1234567890', String);
+ * const date = conversionService.convert('2024-01-15', Date);      // leaf: registered converter
+ * const dto = conversionService.convert(entity, noteDtoSchema);    // shape: schema parse (fail-fast)
+ * const dtos = conversionService.convert(entities, noteDtoSchema.array()); // arrays: schema-defined
  * ```
  */
 export interface ConversionService {
@@ -276,11 +295,24 @@ export interface ConversionService {
     canConvert(sourceType: unknown, targetType: unknown): boolean;
 
     /**
-     * Converts a value from one type to another using the registered converter.
+     * Converts a value to a target type or shape.
+     *
+     * Two target kinds:
+     * - **Zod schema** — contract-enforced projection: the value is parsed
+     *   through the schema (fail-fast `ZodError` on any mismatch, no partial
+     *   result), producing the `z.infer` shape. Covers object/entity → DTO
+     *   projection; arrays convert via `schema.array()`.
+     * - **Constructor** — leaf conversion through the registered converter
+     *   (e.g. `Date`, `Number`), looked up by the value's runtime source
+     *   type with a String fallback (the environment/config binding
+     *   convention).
+     *
      * @param source - The value to convert.
-     * @param targetType - The target type constructor (e.g., `Date`, `Number`).
-     * @returns The converted value, or throws if no converter is found.
+     * @param targetType - The target zod schema or type constructor.
+     * @returns The converted value; throws when no converter is registered
+     *   (constructor targets) or the schema rejects the value (`ZodError`).
      */
+    convert<T>(source: unknown, targetType: z.ZodType<T>): T;
     convert(source: unknown, targetType: unknown): unknown;
 
     /**
@@ -321,16 +353,35 @@ export function createConversionService(options: ConversionServiceOptions = {}):
 
     const service: ConversionService = {
         canConvert(sourceType: unknown, targetType: unknown): boolean {
-            return registry.hasConverter(sourceType, targetType);
+            return targetType instanceof z.ZodType || registry.hasConverter(sourceType, targetType);
         },
 
+        // Schema target → contract-enforced parse (fail-fast); constructor
+        // target → source-aware registry lookup with the String fallback
+        // (the environment/config binding convention).
         convert(source: unknown, targetType: unknown): unknown {
-            const converter = registry.getConverter(String, targetType);
+            if (targetType instanceof z.ZodType) {
+                return targetType.parse(source);
+            }
+
+            const sourceType = sourceTypeOf(source);
+            const converter =
+                registry.getConverter(sourceType, targetType) ?? registry.getConverter(String, targetType);
 
             if (!converter) {
-                throw new TypeError(
-                    `No converter registered for String → ${(targetType as { name?: string })?.name ?? 'unknown'}`
-                );
+                const sourceName =
+                    sourceType !== null &&
+                    (typeof sourceType === 'function' || typeof sourceType === 'object') &&
+                    'name' in sourceType
+                        ? String(sourceType.name)
+                        : typeof source;
+                const targetName =
+                    targetType !== null &&
+                    (typeof targetType === 'function' || typeof targetType === 'object') &&
+                    'name' in targetType
+                        ? String(targetType.name)
+                        : 'unknown';
+                throw new TypeError(`No converter registered for ${sourceName} → ${targetName}`);
             }
 
             return converter.convert(source);

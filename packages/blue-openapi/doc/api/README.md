@@ -31,6 +31,7 @@ Jeff Rose
 ## Type Aliases
 
 - [OpenAPIPathItem](type-aliases/OpenAPIPathItem.md)
+- [OpenAPIResponseDocs](type-aliases/OpenAPIResponseDocs.md)
 
 ## Functions
 

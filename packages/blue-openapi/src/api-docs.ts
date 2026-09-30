@@ -9,7 +9,18 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import type { z } from 'zod';
 import { FrameworkError, getSymbolMetadata } from '@blue/core';
+
+/**
+ * Documentation for one response status (AD-38 D-4).
+ *
+ * A bare zod schema is shorthand for `{ description: 'OK', schema }` — the
+ * typical case: the DTO schema the handler converts through (AD-38), which
+ * the generator embeds via Zod's `toJSONSchema` seam. The object form
+ * additionally allows a custom `description`.
+ */
+export type OpenAPIResponseDocs = z.ZodType<unknown> | { description?: string; schema?: z.ZodType<unknown> };
 
 /**
  * Documentation metadata for a single handler method.
@@ -27,6 +38,12 @@ export interface APIDocsMetadata {
     deprecated?: boolean;
     /** Excludes the operation from the generated spec entirely. */
     hidden?: boolean;
+    /**
+     * Optional per-status response documentation; bare schemas embed into
+     * `content['application/json']`. Without it the generator emits the
+     * default `200: { description: 'OK' }`.
+     */
+    responses?: Record<string, OpenAPIResponseDocs>;
 }
 
 const API_DOCS_KEY = (name: string | symbol) => `api:docs:${String(name)}`;

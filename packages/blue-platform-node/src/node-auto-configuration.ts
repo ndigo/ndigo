@@ -4,10 +4,11 @@
  * @author Jeff Rose
  */
 import { configuration, entry } from '@blue/context';
-import { conditionalOnNode } from '@blue/core';
+import { conditionalOnNode, createConversionService, type ConversionService } from '@blue/core';
 import { MemoryCacheManager } from '@blue/cache';
 import type { CacheManager } from '@blue/cache';
 import { CACHE_MANAGER } from '@blue/cache';
+import { CONVERSION_SERVICE } from './context-tokens';
 import {
     AcceptHeaderLanguageResolver,
     RadixMetadataHandlerMapping,
@@ -162,6 +163,20 @@ export class NodeAutoConfiguration {
     @entry(CACHE_MANAGER)
     cacheManager(): CacheManager {
         return new MemoryCacheManager();
+    }
+
+    /**
+     * The shared conversion service (AD-38): leaf conversions (string ↔
+     * typed) and schema-driven DTO projection (`convert(value, schema)`)
+     * in one bean — zero wiring for Node apps, mirror of the cache manager
+     * beans above. Apps with custom converter registries override the bean
+     * with their own `createConversionService`.
+     *
+     * @returns The conversion service.
+     */
+    @entry(CONVERSION_SERVICE)
+    conversionService(): ConversionService {
+        return createConversionService();
     }
 
     /**

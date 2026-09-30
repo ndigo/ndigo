@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
+import { z } from 'zod';
 import { Route, ACCEPT_LANGUAGE_ATTRIBUTE } from '@blue/router';
 import { AcceptHeaderLanguageResolver } from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
@@ -21,6 +22,15 @@ describe('NodeAutoConfiguration', () => {
         const config = new NodeAutoConfiguration();
         const converters = config.argumentValueConverterRegistry();
         expect(converters).toBeDefined();
+    });
+
+    test('provides a shared conversion service with schema targets (AD-38)', () => {
+        const config = new NodeAutoConfiguration();
+        const conversion = config.conversionService();
+        // Schema target: contract-enforced projection…
+        expect(conversion.convert({ id: 7, secret: 'x' }, z.object({ id: z.number() }))).toEqual({ id: 7 });
+        // …and leaf target: registered converters still work.
+        expect(conversion.convert('2026-09-29T00:00:00.000Z', Date)).toBeInstanceOf(Date);
     });
 
     test('provides 9 argument resolvers, including multipart file + part binding', () => {

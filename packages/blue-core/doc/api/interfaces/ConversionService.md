@@ -6,20 +6,23 @@
 
 # Interface: ConversionService
 
-Central type-conversion service (modelled on Spring's `ConversionService`).
+Central type-conversion service (modelled on Spring's `ConversionService`,
+extended with schema targets — AD-38).
 
 Provides a unified API for registering, looking up, and executing type
-conversions at runtime. Built-in converters are registered automatically
-when the service is created with default options.
+conversions at runtime: leaf conversions (string ↔ typed, constructor
+keyed) and contract-enforced object projection (zod schema targets) share
+one method. Built-in converters are registered automatically when the
+service is created with default options.
 
 ## Example
 
 ```typescript
-// Get the shared singleton instance
 import { conversionService } from '@blue/core';
 
-const date = conversionService.convert('2024-01-15', Date);
-const uuid = conversionService.convert('a1b2c3d4-e5f6-7890-abcd-ef1234567890', String);
+const date = conversionService.convert('2024-01-15', Date);      // leaf: registered converter
+const dto = conversionService.convert(entity, noteDtoSchema);    // shape: schema parse (fail-fast)
+const dtos = conversionService.convert(entities, noteDtoSchema.array()); // arrays: schema-defined
 ```
 
 ## Properties
@@ -56,29 +59,66 @@ Checks whether a converter exists for the given source/target type pair.
 
 ### convert()
 
-> **convert**(`source`, `targetType`): `unknown`
+#### Call Signature
 
-Converts a value from one type to another using the registered converter.
+> **convert**\<`T`\>(`source`, `targetType`): `T`
 
-#### Parameters
+Converts a value to a target type or shape.
 
-##### source
+Two target kinds:
+- **Zod schema** — contract-enforced projection: the value is parsed
+  through the schema (fail-fast `ZodError` on any mismatch, no partial
+  result), producing the `z.infer` shape. Covers object/entity → DTO
+  projection; arrays convert via `schema.array()`.
+- **Constructor** — leaf conversion through the registered converter
+  (e.g. `Date`, `Number`), looked up by the value's runtime source
+  type with a String fallback (the environment/config binding
+  convention).
+
+##### Type Parameters
+
+###### T
+
+`T`
+
+##### Parameters
+
+###### source
 
 `unknown`
 
 The value to convert.
 
-##### targetType
+###### targetType
+
+`ZodType`\<`T`\>
+
+The target zod schema or type constructor.
+
+##### Returns
+
+`T`
+
+The converted value; throws when no converter is registered
+  (constructor targets) or the schema rejects the value (`ZodError`).
+
+#### Call Signature
+
+> **convert**(`source`, `targetType`): `unknown`
+
+##### Parameters
+
+###### source
 
 `unknown`
 
-The target type constructor (e.g., `Date`, `Number`).
-
-#### Returns
+###### targetType
 
 `unknown`
 
-The converted value, or throws if no converter is found.
+##### Returns
+
+`unknown`
 
 ***
 

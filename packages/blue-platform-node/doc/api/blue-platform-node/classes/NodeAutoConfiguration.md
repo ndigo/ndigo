@@ -69,6 +69,24 @@ The cache manager.
 
 ***
 
+### conversionService()
+
+> **conversionService**(): `ConversionService`
+
+The shared conversion service (AD-38): leaf conversions (string ↔
+typed) and schema-driven DTO projection (`convert(value, schema)`)
+in one bean — zero wiring for Node apps, mirror of the cache manager
+beans above. Apps with custom converter registries override the bean
+with their own `createConversionService`.
+
+#### Returns
+
+`ConversionService`
+
+The conversion service.
+
+***
+
 ### dispatcher()
 
 > **dispatcher**(): [`NodeDispatcher`](NodeDispatcher.md)

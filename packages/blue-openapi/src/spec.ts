@@ -18,7 +18,7 @@ import {
     MethodParameterType,
     type MethodParameter,
 } from '@blue/dispatcher';
-import { getApiDocs, type APIDocsMetadata } from './api-docs';
+import { getApiDocs, type APIDocsMetadata, type OpenAPIResponseDocs } from './api-docs';
 
 /**
  * What the generator needs from a handler mapping: the registered route
@@ -60,6 +60,11 @@ export interface OpenAPIRequestBody {
  */
 export interface OpenAPIResponse {
     description: string;
+    /**
+     * Response content — e.g. `{ 'application/json': { schema } }` when the
+     * handler declares its DTO via `@apiDocs({ responses })` (AD-38 D-4).
+     */
+    content?: Record<string, { schema?: OpenAPISchemaObject }>;
 }
 
 /**
@@ -122,6 +127,18 @@ export interface OpenAPIGeneratorOptions {
 }
 
 const { toJSONSchema } = z;
+
+/**
+ * Normalizes an `@apiDocs` responses entry: a bare schema is
+ * `{ description: 'OK', schema }`; the object form carries an optional
+ * description and schema (AD-38 D-4).
+ */
+function responseDocsOf(entry: OpenAPIResponseDocs): { description: string; schema?: z.ZodType<unknown> } {
+    if (entry instanceof z.ZodType) {
+        return { description: 'OK', schema: entry };
+    }
+    return { description: entry.description ?? 'OK', schema: entry.schema };
+}
 
 /**
  * Converts a zod schema to a JSON Schema object (embedded: no `$schema`
@@ -239,6 +256,16 @@ export class OpenAPISpecGenerator {
             if (docs.description !== undefined) operation.description = docs.description;
             if (docs.tags !== undefined && docs.tags.length > 0) operation.tags = docs.tags;
             if (docs.deprecated !== undefined) operation.deprecated = docs.deprecated;
+        }
+        if (docs?.responses !== undefined) {
+            for (const [status, entry] of Object.entries(docs.responses)) {
+                const { description, schema } = responseDocsOf(entry);
+                const response: OpenAPIResponse = { description };
+                if (schema !== undefined) {
+                    response.content = { 'application/json': { schema: jsonSchemaOf(schema) } };
+                }
+                operation.responses[status] = response;
+            }
         }
         if (operation.operationId === undefined) operation.operationId = `${method.toLowerCase()}-${path}`;
 

@@ -341,6 +341,9 @@ importers:
       '@blue/management':
         specifier: ~0.0.1
         version: link:../../packages/blue-management
+      '@blue/openapi':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-openapi
       '@blue/orm':
         specifier: ~0.0.1
         version: link:../../packages/blue-orm
@@ -800,6 +803,10 @@ importers:
       zod:
         specifier: ^4.5.4
         version: 4.5.4
+    devDependencies:
+      benchmark:
+        specifier: ~2.1.4
+        version: 2.1.4
 
   packages/blue-core:
     dependencies:
@@ -812,6 +819,9 @@ importers:
       semver:
         specifier: ^7.8.5
         version: 7.8.5
+      zod:
+        specifier: ^4.5.4
+        version: 4.5.4
     devDependencies:
       '@types/semver':
         specifier: ^7.8.0

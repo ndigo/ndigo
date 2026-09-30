@@ -65,6 +65,12 @@ describe('blue-api OpenAPI docs (AD-35)', () => {
                     post?: {
                         requestBody?: { content: Record<string, { schema: { properties?: Record<string, unknown> } }> };
                     };
+                    get?: {
+                        responses?: Record<
+                            string,
+                            { content?: Record<string, { schema?: { properties?: Record<string, unknown> } }> }
+                        >;
+                    };
                 }
             >;
         };
@@ -79,6 +85,13 @@ describe('blue-api OpenAPI docs (AD-35)', () => {
         expect(schema?.type).toBe('object');
         expect(schema?.properties).toHaveProperty('title');
         expect(schema?.required).toContain('title');
+        // The GET response is documented from the same DTO schema the mapper
+        // projects with (AD-38 D-4) — handler output and spec cannot drift.
+        const list = doc.paths['/notes']?.get;
+        expect(list).toBeDefined();
+        const responseSchema = list?.responses?.['200']?.content?.['application/json']?.schema;
+        expect(responseSchema?.properties).toHaveProperty('summary');
+        expect(responseSchema?.properties).toHaveProperty('title');
         // Framework-internal routes never leak into the spec.
         expect(doc.paths['/error']).toBeUndefined();
         expect(doc.paths['/v3/api-docs']).toBeUndefined();

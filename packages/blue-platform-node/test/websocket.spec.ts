@@ -934,3 +934,67 @@ describe('socket connection cap (SEC-9)', () => {
         }
     });
 });
+
+// SEC-3: cookie-bound violations (51-cookie / 4 KiB-value limits) must reject
+// the upgrade cleanly — the RangeError must never escape `shouldHandle`.
+describe('WebSocket cookie bound rejection', () => {
+    let context: MetadataConfigApplicationContext;
+    let adapter: NodeHTTPServerAdapter;
+    let wsUrl: string;
+    let uncaught: Array<unknown>;
+    const onUncaught = (error: unknown): void => {
+        uncaught.push(error);
+    };
+
+    @requestMapping('/cookie-bound')
+    class CookieBoundSocketController {
+        @socketMapping('/open')
+        async *open() {
+            yield { ok: true };
+        }
+    }
+
+    const handshakeStatus = (ws: WebSocket): Promise<number | null> =>
+        new Promise<number | null>((resolve) => {
+            ws.once('unexpected-response', (_request: unknown, response: { statusCode?: number }) =>
+                resolve(response.statusCode ?? null)
+            );
+            setTimeout(() => resolve(null), 400);
+        });
+
+    beforeAll(async () => {
+        uncaught = [];
+        process.on('uncaughtExceptionMonitor', onUncaught);
+        context = new MetadataConfigApplicationContext('ws-cookie-bounds');
+        context.register(NodeAutoConfiguration);
+        context.setValue(CookieBoundSocketController.name, new CookieBoundSocketController());
+        context.refresh();
+        adapter = new NodeHTTPServerAdapter(context.getValue<NodeDispatcher>('dispatcher'));
+        await adapter.listen(0, '127.0.0.1');
+        const boundAddress = adapter.server as { address: () => { port: number } | null };
+        const boundPort = boundAddress.address()?.port;
+        wsUrl = `ws://127.0.0.1:${boundPort}`;
+    });
+
+    afterAll(async () => {
+        process.off('uncaughtExceptionMonitor', onUncaught);
+        await adapter?.close();
+    });
+
+    test('an over-limit cookie header aborts the upgrade with 400, never throwing (SEC-3)', async () => {
+        const cookies = Array.from({ length: 51 }, (_, i) => `c${i}=v`).join('; ');
+        const ws = new WebSocket(`${wsUrl}/cookie-bound/open`, { headers: { cookie: cookies } });
+        const status = await handshakeStatus(ws);
+        expect(status).toBe(400);
+        expect(uncaught).toEqual([]);
+    });
+
+    test('an oversized cookie value aborts the upgrade with 400, never throwing (SEC-3)', async () => {
+        const ws = new WebSocket(`${wsUrl}/cookie-bound/open`, {
+            headers: { cookie: `big=${'x'.repeat(4097)}` },
+        });
+        const status = await handshakeStatus(ws);
+        expect(status).toBe(400);
+        expect(uncaught).toEqual([]);
+    });
+});

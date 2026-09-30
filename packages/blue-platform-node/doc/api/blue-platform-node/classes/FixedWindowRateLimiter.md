@@ -9,8 +9,10 @@
 In-memory fixed-window reference implementation: one counter per
 (key, window) pair, sliding to a fresh window once `windowMs` elapses.
 
-Memory is bounded: expired buckets are swept opportunistically once the
-map passes `maxEntries` (default 10 000).
+Memory is bounded: expired buckets are swept once the map passes
+`maxEntries` (default 10 000); at the cap with no expired buckets the
+oldest bucket is evicted, so `size` never exceeds `maxEntries` and new
+keys stay ~O(1) to insert (SEC-2).
 
 ## Implements
 

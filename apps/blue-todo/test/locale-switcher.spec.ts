@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 // @vitest-environment jsdom
-import { describe, test, expect, beforeEach, afterEach } from 'vitest';
+import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import { LOCALE_COOKIE_NAME, currentLocale } from '@blue/platform-web';
 import { MessageSource } from '@blue/content';
 import { I18nextMessageSource } from '@blue/content-i18next';
@@ -44,13 +44,17 @@ describe('locale-switcher view (AD-19 demo)', () => {
         return switcher;
     };
 
-    test('renders the current locale label from the message source', () => {
+    test('renders the current locale label from the message source', async () => {
         const switcher = createSwitcher();
 
-        expect(switcher.querySelector('.locale-label')?.textContent).toBe('Language: EN-US');
+        // `getMessage` is async by convention, so the label updates on the
+        // microtask queue after the message promise resolves.
+        await vi.waitFor(() => {
+            expect(switcher.querySelector('.locale-label')?.textContent).toBe('Language: EN-US');
+        });
     });
 
-    test('switching locale re-renders without a reload and persists the cookie', () => {
+    test('switching locale re-renders without a reload and persists the cookie', async () => {
         const switcher = createSwitcher();
 
         const frButton = [...switcher.querySelectorAll<HTMLButtonElement>('button[data-locale]')].find(
@@ -61,7 +65,9 @@ describe('locale-switcher view (AD-19 demo)', () => {
         }
         frButton.click();
 
-        expect(switcher.querySelector('.locale-label')?.textContent).toBe('Langue : FR');
+        await vi.waitFor(() => {
+            expect(switcher.querySelector('.locale-label')?.textContent).toBe('Langue : FR');
+        });
         expect(currentLocale.value).toBe('fr');
         expect(document.cookie).toContain(`${LOCALE_COOKIE_NAME}=fr`);
     });

@@ -262,17 +262,26 @@ export function bodyValue(name?: string, options: ParameterExtractorOptions = {}
  * name only when the form field differs from the JS variable. Resolved by
  * `NodeMultipartFileMethodArgumentResolver` (blue-platform-node).
  *
+ * A missing part resolves to the extractor's `defaultValue` (`null`) unless
+ * the part is declared required: `fileValue('avatar', { required: true })`
+ * makes a missing upload a {@link MissingParameterError} (HTTP 400) instead
+ * of a late TypeError (DOC-5).
+ *
  * @example
  * `parameters`({
  *   avatar: fileValue(),
- *   profile: fileValue('avatar_url')
+ *   profile: fileValue('avatar_url'),
+ *   cv: fileValue('cv', { required: true })
  * })
+ *
+ * @param partName - The multipart field name; defaults to the argument name.
+ * @param options - Extractor options (`required`).
  */
-export function fileValue(partName?: string): ParameterExtractor {
+export function fileValue(partName?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.MULTIPART_FILE,
         name: partName ?? '',
-        required: false,
+        required: options.required ?? false,
         defaultValue: null,
         partName,
     };
@@ -296,6 +305,12 @@ export function fileValue(partName?: string): ParameterExtractor {
  *
  * Resolved by `NodeRequestPartMethodArgumentResolver` (blue-platform-node).
  *
+ * A missing part resolves to the extractor's `defaultValue` (`null`) unless
+ * the part is declared required: `requestPart('meta', undefined, { required:
+ * true })` / `requestPart(MetaDto, { required: true })` make a missing part
+ * a {@link MissingParameterError} (HTTP 400) instead of a late TypeError
+ * (DOC-5).
+ *
  * @example
  * `parameters`({
  *   meta: requestPart(MetaDto),
@@ -303,21 +318,35 @@ export function fileValue(partName?: string): ParameterExtractor {
  *   file: fileValue()
  * })
  */
-export function requestPart(partName?: string, target?: new () => object): ParameterExtractor;
-export function requestPart(target: new () => object): ParameterExtractor;
+export function requestPart(
+    partName?: string,
+    target?: new () => object,
+    options?: ParameterExtractorOptions
+): ParameterExtractor;
+export function requestPart(target: new () => object, options?: ParameterExtractorOptions): ParameterExtractor;
 export function requestPart(
     partNameOrTarget?: string | (new () => object),
-    target?: new () => object
+    targetOrOptions?: (new () => object) | ParameterExtractorOptions,
+    options: ParameterExtractorOptions = {}
 ): ParameterExtractor {
+    // Normalize the overloads: `(partName[, target][, options])` vs
+    // `(target[, options])` — in the target-first form the options arrive in
+    // the `targetOrOptions` slot.
     const partName = typeof partNameOrTarget === 'function' ? undefined : partNameOrTarget;
-    const targetConstructor = typeof partNameOrTarget === 'function' ? partNameOrTarget : target;
+    const target =
+        typeof partNameOrTarget === 'function'
+            ? partNameOrTarget
+            : typeof targetOrOptions === 'function'
+              ? targetOrOptions
+              : undefined;
+    const resolvedOptions = typeof targetOrOptions === 'object' && targetOrOptions !== null ? targetOrOptions : options;
     return {
         type: MethodParameterType.REQUEST_PART,
         name: partName ?? '',
-        required: false,
+        required: resolvedOptions.required ?? false,
         defaultValue: null,
         partName,
-        target: targetConstructor,
+        target,
     };
 }
 

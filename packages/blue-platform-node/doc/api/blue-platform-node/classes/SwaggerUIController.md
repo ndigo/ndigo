@@ -9,6 +9,10 @@
 The UI controller. Registered without decorator metadata by
 [OpenAPIDocsAutoConfiguration](OpenAPIDocsAutoConfiguration.md) (per-instance paths).
 
+`swagger-ui-dist` is a peer dependency resolved lazily: a missing or
+unresolvable peer fails only the docs endpoints (500 problem document),
+never boot of the whole docs auto-configuration (SEC-3).
+
 ## Constructors
 
 ### Constructor

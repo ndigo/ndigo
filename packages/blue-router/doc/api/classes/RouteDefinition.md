@@ -12,6 +12,10 @@
 
 `TPattern` *extends* `string` = `string`
 
+## Implements
+
+- [`Matchable`](#)\<`string`\>
+
 ## Constructors
 
 ### Constructor
@@ -60,6 +64,8 @@
 
 > **matches**(`path`): `boolean`
 
+Determines if this object matches the specified value.
+
 #### Parameters
 
 ##### path
@@ -69,6 +75,12 @@
 #### Returns
 
 `boolean`
+
+`true` if the object matches the value, `false` otherwise.
+
+#### Implementation of
+
+`Matchable.matches`
 
 ***
 

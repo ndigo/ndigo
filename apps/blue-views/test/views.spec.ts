@@ -140,12 +140,14 @@ describe('blue-views composite resolver demo', () => {
         await vi.waitFor(() => expect(renderText(app.viewTarget.lastRender?.output)).toContain('alpha, beta'));
         expect(renderText(output)).toContain('online');
 
-        // Refresh hits the in-memory cache: no second network fetch.
+        // Credentialed requests bypass the HTTP cache by design (SEC-8:
+        // cross-user cache hits) — the refresh re-fetches rather than
+        // replaying the stored entry for a Bearer-token request.
         const refresh = output instanceof HTMLElement ? (output.querySelector('button') as HTMLButtonElement) : null;
         expect(refresh).not.toBeNull();
         refresh?.click();
         await vi.waitFor(() => expect(renderText(app.viewTarget.lastRender?.output)).toContain('requests: 2'));
-        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect(fetchMock).toHaveBeenCalledTimes(2);
         expect(renderText(app.viewTarget.lastRender?.output)).toContain('alpha, beta');
 
         vi.unstubAllGlobals();

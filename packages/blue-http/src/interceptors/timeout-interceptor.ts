@@ -18,6 +18,12 @@ import { REQUEST_TIMEOUT } from '../response-statuses';
  */
 export type TimeoutInit = HTTPInit & { timeout?: number };
 
+/**
+ * Platform `setTimeout` handle — `number` in DOM environments,
+ * `NodeJS.Timeout` under Node's typings.
+ */
+type TimeoutId = ReturnType<typeof setTimeout>;
+
 const { defineProperty } = Reflect,
     { isInteger } = Number,
     greaterThanZero = (value: number): boolean => value > 0,
@@ -26,6 +32,12 @@ const { defineProperty } = Reflect,
 
 /**
  * Aborts slow requests and converts aborts into timeout responses.
+ *
+ * Each request gets its own timer keyed by its `AbortSignal`, so one
+ * request settling (success or failure) never clears another request's
+ * pending timeout. Only `AbortError` failures are translated into 408
+ * responses — transport failures (DNS, TLS, CORS, TypeError) fall through
+ * to other error-aware interceptors or propagate to the caller.
  */
 export class TimeoutInterceptor
     implements
@@ -33,7 +45,7 @@ export class TimeoutInterceptor
         ErrorAwareHTTPInterceptor,
         CompletionAwareHTTPInterceptor
 {
-    #timeoutId: number | null = null;
+    #timeouts = new Map<AbortSignal, TimeoutId>();
 
     readonly timeout!: number;
 
@@ -50,8 +62,6 @@ export class TimeoutInterceptor
             configurable: true,
             enumerable: true,
         });
-
-        this.#timeoutId = null;
     }
 
     /**
@@ -66,21 +76,26 @@ export class TimeoutInterceptor
         settings.signal = controller.signal;
         settings.timeout = isPositiveNumber(settings.timeout) ? settings.timeout : this.timeout;
 
-        // @ts-ignore: TypeScript is confusing Web setTimeout with Node setTimeout
-        this.#timeoutId = setTimeout(fetchTimeout, settings.timeout);
+        // Track the timer per request signal so settling one request never
+        // cancels another request's pending timeout.
+        this.#timeouts.set(controller.signal, setTimeout(fetchTimeout, settings.timeout));
         return true;
     }
 
     /**
-
      * @param {Error} error The error that was thrown
      * @param {Request} request The HTTP request
-     * @returns {exteral:Promise<external:Response | external:undefined>}
+     * @returns {Promise<external:Response | undefined>} A 408 response for
+     *   aborted requests, or `undefined` so other error-aware interceptors
+     *   can handle transport failures.
      */
     async postError(error: Error, request: Request): Promise<Response | undefined> {
-        if (error.name === 'AbortError') {
-            this._clearTimeout();
+        if (error.name !== 'AbortError') {
+            // DNS/TLS/CORS/TypeError failures are not timeouts; let the rest
+            // of the error-aware chain (and finally the caller) handle them.
+            return undefined;
         }
+        this._clearTimeout(request.signal);
         return new ResponseError(REQUEST_TIMEOUT.createResponse(''), error);
     }
 
@@ -89,15 +104,14 @@ export class TimeoutInterceptor
      * @param {Response} response The HTTP response
      */
     postComplete(request: Request, response: Response): void {
-        if (this.#timeoutId !== null) {
-            this._clearTimeout();
-        }
+        this._clearTimeout(request.signal);
     }
 
-    private _clearTimeout() {
-        if (this.#timeoutId !== null) {
-            clearTimeout(this.#timeoutId);
-            this.#timeoutId = null;
+    private _clearTimeout(signal: AbortSignal): void {
+        const timeoutId = this.#timeouts.get(signal);
+        if (timeoutId !== undefined) {
+            clearTimeout(timeoutId);
+            this.#timeouts.delete(signal);
         }
     }
 }

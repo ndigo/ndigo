@@ -4,10 +4,19 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
+import type { Matchable } from '@blue/core';
 import { PathRoute } from '../src/path-route';
 import { Route } from '../src/route';
 
 describe('PathRoute', () => {
+    test('it should satisfy the Matchable<string> contract', () => {
+        const route = new PathRoute('/users/123');
+        const matchable: Matchable<string> = route;
+        expect(typeof matchable.matches).toBe('function');
+        expect(matchable.matches('/users/:id')).toBe(true);
+        expect(matchable.matches('/posts/:id')).toBe(false);
+    });
+
     test('it should parse route strings', () => {
         const routeString = '/foo;a=1;b=2/bar;c=3;d=4/baz';
         const route = new PathRoute(routeString);

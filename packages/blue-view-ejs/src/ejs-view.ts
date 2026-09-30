@@ -35,8 +35,9 @@ export interface EJSLocaleHelpers {
     locale: string;
     /**
      * Formats a message key; falls back to the key when unavailable.
+     * Async by convention — templates call it as `await t(…)`.
      */
-    t(key: string, params?: MessageParams): string;
+    t(key: string, params?: MessageParams): Promise<string>;
     /**
      * Formats a date value in the request locale.
      */
@@ -152,10 +153,12 @@ export class EJSView extends AbstractTemplateView implements ProducerView {
      */
     async #renderHTML(model: unknown, route: Route): Promise<string> {
         const helpers = this.#localeHelpers(route);
-        const locals =
-            model !== null && typeof model === 'object' && !Array.isArray(model)
-                ? { ...(model as object), ...helpers }
-                : helpers;
+        // Spread the model first (arrays, objects, and scalar strings all
+        // contribute their enumerable slots) so non-object models keep their
+        // data accessible; helpers win on collision. A `null`/undefined model
+        // contributes nothing (spreading null throws).
+        const base = model != null ? { ...(model as object) } : {};
+        const locals = { ...base, ...helpers };
 
         return this.#engine.render(await this.#resolveSource(), locals);
     }
@@ -176,7 +179,7 @@ export class EJSView extends AbstractTemplateView implements ProducerView {
 
         return {
             locale,
-            t: (key: string, params?: MessageParams) => messages?.getMessage(key, params, locale) ?? key,
+            t: async (key: string, params?: MessageParams) => (await messages?.getMessage(key, params, locale)) ?? key,
             formatDate: (value: Date | string | number, options?: DateTimeFormatOptions) =>
                 format.date(options).format(value),
             formatNumber: (value: number, options?: NumberFormatOptions) => format.number(options).format(value),

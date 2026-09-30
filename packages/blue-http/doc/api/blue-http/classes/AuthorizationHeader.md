@@ -106,7 +106,7 @@ Removes this header from a header collection when present.
 
 ##### headers
 
-`HeadersInit`
+`HeadersInit` \| [`HeaderRecord`](../type-aliases/HeaderRecord.md)
 
 The header collection to mutate.
 
@@ -130,7 +130,7 @@ Reads this header from a header collection.
 
 ##### headers
 
-`HeadersInit`
+`HeadersInit` \| [`HeaderRecord`](../type-aliases/HeaderRecord.md)
 
 The header collection to read from.
 
@@ -157,7 +157,7 @@ entries (`string[]` — Node server records) into one string.
 
 ##### headers
 
-`HeadersInit`
+`HeadersInit` \| [`HeaderRecord`](../type-aliases/HeaderRecord.md)
 
 The header collection to read from.
 
@@ -189,7 +189,7 @@ Tests whether this header exists in a header collection.
 
 ##### headers
 
-`HeadersInit`
+`HeadersInit` \| [`HeaderRecord`](../type-aliases/HeaderRecord.md)
 
 The header collection to inspect.
 
@@ -215,7 +215,7 @@ Writes this header into a mutable header collection.
 
 ##### headers
 
-`HeadersInit`
+`HeadersInit` \| [`HeaderRecord`](../type-aliases/HeaderRecord.md)
 
 The header collection to mutate.
 

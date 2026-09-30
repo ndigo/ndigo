@@ -454,6 +454,25 @@ describe('fileValue() multipart extractor', () => {
             /not available for that mapping kind/
         );
     });
+
+    it('accepts a required option and threads it into the resolved parameter (DOC-5)', () => {
+        expect(fileValue().required).toBe(false);
+        expect(fileValue('avatar', { required: true }).required).toBe(true);
+
+        class UploadController {
+            @routeMapping({ value: '/upload', method: 'POST' })
+            @parameters({ avatar: fileValue('avatar', { required: true }) })
+            upload(avatar: unknown) {}
+        }
+        const params = resolveParameters(
+            UploadController.prototype,
+            'upload',
+            UploadController.prototype.upload as Function
+        );
+        expect(params[0].type).toEqual(MethodParameterType.MULTIPART_FILE);
+        expect(params[0].name).toBe('avatar');
+        expect(params[0].required).toBe(true);
+    });
 });
 
 describe('requestPart() multipart JSON-part extractor (D-6)', () => {
@@ -516,6 +535,17 @@ describe('requestPart() multipart JSON-part extractor (D-6)', () => {
         expect(() => resolveParameters(SocketController.prototype, 'room', fn)).toThrow(
             /not available for that mapping kind/
         );
+    });
+
+    it('accepts a required option, with and without a target constructor (DOC-5)', () => {
+        class MetaDTO {}
+        expect(requestPart('meta').required).toBe(false);
+        expect(requestPart('meta', undefined, { required: true }).required).toBe(true);
+        expect(requestPart('meta', undefined, { required: true }).partName).toBe('meta');
+        expect(requestPart(MetaDTO, { required: true }).required).toBe(true);
+        expect(requestPart(MetaDTO, { required: true }).target).toBe(MetaDTO);
+        expect(requestPart('meta', MetaDTO, { required: true }).required).toBe(true);
+        expect(requestPart('meta', MetaDTO, { required: true }).target).toBe(MetaDTO);
     });
 });
 

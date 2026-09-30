@@ -8,6 +8,12 @@
 
 Aborts slow requests and converts aborts into timeout responses.
 
+Each request gets its own timer keyed by its `AbortSignal`, so one
+request settling (success or failure) never clears another request's
+pending timeout. Only `AbortError` failures are translated into 408
+responses — transport failures (DNS, TLS, CORS, TypeError) fall through
+to other error-aware interceptors or propagate to the caller.
+
 ## Implements
 
 - [`InitializationAwareHTTPInterceptor`](../interfaces/InitializationAwareHTTPInterceptor.md)\<[`TimeoutInit`](../type-aliases/TimeoutInit.md)\>
@@ -87,6 +93,10 @@ The HTTP request
 #### Returns
 
 `Promise`\<`Response` \| `undefined`\>
+
+A 408 response for
+  aborted requests, or `undefined` so other error-aware interceptors
+  can handle transport failures.
 
 #### Implementation of
 

@@ -6,6 +6,7 @@
 import { describe, expect, test } from 'vitest';
 import { HTTP } from '../../src/http';
 import type { TransformContext } from '../../src/transformers/http-transformer';
+import { TimeoutInterceptor } from '../../src/interceptors/timeout-interceptor';
 
 describe('TransformInterceptor', () => {
     test('applies request transforms through HTTP.create config', async () => {
@@ -72,5 +73,43 @@ describe('TransformInterceptor', () => {
         const payload = await response.json();
 
         expect(payload).toEqual({ value: 42, parsed: true });
+    });
+
+    test('preserves the timeout signal across a request transform (COR-9)', async () => {
+        // The TimeoutInterceptor arms an AbortController in preInit; the
+        // TransformInterceptor rebuilds the request. The rebuild must keep
+        // that signal, or a slow transformed POST would never abort.
+        const http = HTTP.create({
+            baseURL: 'http://localhost/',
+            interceptors: [new TimeoutInterceptor(50)],
+            requestTransforms: [
+                (body: unknown) => {
+                    return body;
+                },
+            ],
+            fetch: async (input: RequestInfo | URL) => {
+                const request = input instanceof Request ? input : new Request(input);
+                return new Promise<Response>((resolve, reject) => {
+                    const timer = setTimeout(() => resolve(new Response('late but alive')), 300);
+                    request.signal.addEventListener(
+                        'abort',
+                        () => {
+                            clearTimeout(timer);
+                            reject(new DOMException('The operation was aborted.', 'AbortError'));
+                        },
+                        { once: true }
+                    );
+                });
+            },
+        });
+
+        const response = await http.post('api/slow', {
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ message: 'hello' }),
+        });
+
+        // The timeout fired through the rebuilt request: 408, not a late 200.
+        expect(response.status).toBe(408);
+        expect(response.statusText).toBe('Request Timeout');
     });
 });

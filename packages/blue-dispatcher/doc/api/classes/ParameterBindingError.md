@@ -11,7 +11,7 @@ Analogous to Spring's ServletRequestBindingException.
 
 ## Extends
 
-- `FrameworkError`
+- [`FrameworkError`](#)
 
 ## Extended by
 

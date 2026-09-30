@@ -39,14 +39,16 @@ export interface SecurityHeadersInterceptorOptions {
 
 /**
  * The framework's default CSP `connect-src`: Helmet's defaults admit
- * `'self'` only, and WebSocket `ws:`/`wss:` streams against the same origin
- * are not reliably covered by `'self'` (browser-divergent). Blue ships a
- * WebSocket server, so the default must not break it.
+ * `'self'` only. Per CSP3, `'self'` also covers WebSocket (`ws:`/`wss:`)
+ * streams to the same host-origin, so a co-located WebSocket server needs
+ * no widening (SEC-4).
  */
-// NOTE (D1): bare `ws:`/`wss:` admit WebSocket connections to ANY origin — scope
-// this per app via `SecurityHeadersInterceptorOptions.headers.contentSecurityPolicy`
-// (`directives['connect-src']`) when the endpoint is not co-located with the WS server.
-const DEFAULT_CONNECT_SRC = ["'self'", 'ws:', 'wss:'];
+// NOTE (D1): `'self'` covers same-host WebSockets under CSP3. A socket server
+// on a *different* host opts in by widening `connect-src` explicitly — e.g.
+// `directives: { 'connect-src': ["'self'", 'wss://<ws-host>'] }` via
+// `SecurityHeadersInterceptorOptions.headers.contentSecurityPolicy` — never
+// bare `ws:`/`wss:`, which admit connections to ANY origin.
+const DEFAULT_CONNECT_SRC = ["'self'"];
 
 /**
  * A {@link RouteHandlerInterceptor} that attaches the security-header set on
@@ -57,11 +59,11 @@ const DEFAULT_CONNECT_SRC = ["'self'", 'ws:', 'wss:'];
  * instance, so every Node app gets the set without wiring) — the CORS
  * short-circuit and CSRF denial run after it, and the fallback chain covers
  * unmatched routes (404s and errors included).
- * - **CSP `connect-src` admits bare `ws:`/`wss:`** by default so same-origin
- *   WebSocket streams are not broken (D1); this also permits WebSockets to any
- *   origin — scope it per app via the Helmet `contentSecurityPolicy` option
- *   (`directives['connect-src']`) when the endpoint is not co-located with the
- *   WebSocket server.
+ * - **CSP `connect-src` defaults to `'self'`** (SEC-4/D1), which covers
+ *   same-origin WebSocket streams under CSP3. A socket server on a different
+ *   host opts in by widening `directives['connect-src']` to
+ *   `wss://<ws-host>` via the Helmet `contentSecurityPolicy` option —
+ *   explicitly, never bare `ws:`/`wss:`.
  * - Never denies: always returns `true`; skips when no response is attached
  *   (socket upgrades) or headers were already flushed.
  * - Error handling: middleware invocation failures propagate synchronously
@@ -83,9 +85,9 @@ export class SecurityHeadersInterceptor implements RouteHandlerInterceptor {
         const headers = options.headers ?? {};
         const middlewares: HeaderMiddleware[] = [];
 
-        // Content-Security-Policy — the default deviates from Helmet's only
-        // in `connect-src` (see DEFAULT_CONNECT_SRC); supplied directives
-        // are the caller's full directive set unless they opt into
+        // Content-Security-Policy — the default pins `connect-src` to
+        // `'self'` explicitly (SEC-4, see DEFAULT_CONNECT_SRC); supplied
+        // directives are the caller's full directive set unless they opt into
         // `useDefaults: true`.
         const csp = headers.contentSecurityPolicy;
         if (csp !== false) {

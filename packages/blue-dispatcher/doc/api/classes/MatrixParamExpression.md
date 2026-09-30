@@ -113,6 +113,34 @@ The current route.
 
 ***
 
+### matches()
+
+> **matches**(`value`): `boolean`
+
+Implements [Matchable](#): equivalent to [match](#match). Gives the
+matcher family (`RouteDefinition`, `PathRoute`, …) a single name
+(MTC-1).
+
+#### Parameters
+
+##### value
+
+[`Route`](#)
+
+The route to test.
+
+#### Returns
+
+`boolean`
+
+`true` when this expression matches the route.
+
+#### Inherited from
+
+[`AbstractNameValueExpression`](AbstractNameValueExpression.md).[`matches`](AbstractNameValueExpression.md#matches)
+
+***
+
 ### matchName()
 
 > **matchName**(`route`): `boolean`

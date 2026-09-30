@@ -231,6 +231,23 @@ describe('StaticResourceHandler — Range (D-4)', () => {
         expect(res.headers['content-encoding']).toBe('gzip');
         expect(res.headers['content-range']).toBe(`bytes 0-1/${JS_GZ.length}`);
     });
+
+    test('matching If-Range ETag keeps the 206 (RFC 7233 §3.2)', async () => {
+        const etag = String((await serve('/app.js')).headers['etag']);
+        const res = await serve('/app.js', undefined, 'GET', { range: 'bytes=0-3', 'if-range': etag });
+        expect(res.status).toBe(206);
+        expect(res.headers['content-range']).toBe(`bytes 0-3/${body.length}`);
+    });
+
+    test('stale If-Range ETag → full 200, never a misaligned 206 (COR-20)', async () => {
+        const res = await serve('/app.js', undefined, 'GET', {
+            range: 'bytes=0-3',
+            'if-range': '"deadbeef-deadbeef"',
+        });
+        expect(res.status).toBe(200);
+        expect(res.headers['content-range']).toBeUndefined();
+        expect((res.body as Buffer).toString('utf-8')).toBe(body);
+    });
 });
 
 describe('StaticResourceHandler — variants + Vary (D-3)', () => {
@@ -279,8 +296,11 @@ describe('StaticResourceHandler — directories, listing, SPA (D-6/D-7)', () => 
         const fallback = (headers: Record<string, string> = {}) =>
             serve('/some/client/route', { spaFallback: true }, 'GET', headers);
 
-        expect((await fallback({ accept: 'text/html' })).status).toBe(200);
+        const html = await fallback({ accept: 'text/html' });
+        expect(html.status).toBe(200);
         expect((await fallback()).status).toBe(200); // no Accept → HTML assumed
+        // COR-19: a shared cache must key the fallback on Accept.
+        expect(html.headers['vary']).toContain('Accept');
         const nonHtml = await fallback({ accept: 'application/json' });
         expect(nonHtml.status).toBe(404);
         expect(nonHtml.headers['content-type']).toBe('application/problem+json');

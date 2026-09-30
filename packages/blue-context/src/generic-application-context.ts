@@ -281,19 +281,25 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Resolves content locally and then delegates to the parent if needed.
+     * Missing content resolves to the key itself, matching the content
+     * layer's fallback convention.
      *
      * @param key - The content key.
      * @param language - The language identifier.
      * @returns The resolved content.
      */
-    getContent(key: string, language: string): string {
-        const value = this.#contentSource?.getContent(key, language);
+    async getContent(key: string, language: string): Promise<string> {
+        const local = this.#contentSource ? await this.#contentSource.getContent(key, language) : undefined;
 
-        if (value !== key || !this.parent) {
-            return value;
+        if (local !== undefined && local !== key) {
+            return local;
         }
 
-        return this.parent.getContent(key, language);
+        if (this.parent) {
+            return this.parent.getContent(key, language);
+        }
+
+        return local ?? key;
     }
 
     /**
@@ -306,19 +312,19 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
      * @param language - The language to use.
      * @returns The formatted message, or the key when nothing resolves it.
      */
-    getMessage(key: string, params?: MessageParams, language?: string): string {
+    async getMessage(key: string, params?: MessageParams, language?: string): Promise<string> {
         let value: string | undefined;
         if (this.#messageSource) {
-            value = this.#messageSource.getMessage(key, params, language);
+            value = await this.#messageSource.getMessage(key, params, language);
         }
         if (value === undefined || value === key) {
-            value = this.#contentSource.getContent(key, language ?? '');
+            value = await this.#contentSource.getContent(key, language ?? '');
         }
         if (value !== undefined && value !== key) {
             return value;
         }
         if (this.parent) {
-            const parentValue = this.parent.getMessage(key, params, language);
+            const parentValue = await this.parent.getMessage(key, params, language);
             if (parentValue !== undefined && parentValue !== key) {
                 return parentValue;
             }

@@ -110,19 +110,19 @@ export class NegotiatingContentSource implements ContentSource {
      * @param language - An `Accept-Language` header value or bare language code.
      * @returns The translated content, or the key when no translation is found.
      */
-    getContent(key: string, language: string): string {
+    async getContent(key: string, language: string): Promise<string> {
         let lang = language.includes(',') ? (parseAcceptLanguage(language) ?? this.#defaultLanguage) : language;
 
         // Strip region subtag (e.g. fr-CH → fr) for content lookup
         const baseLang = lang.split('-')[0];
         if (baseLang !== lang) {
-            const result = this.#source.getContent(key, baseLang);
+            const result = await this.#source.getContent(key, baseLang);
             if (result !== key) {
                 return result;
             }
         }
 
-        const result = this.#source.getContent(key, lang);
+        const result = await this.#source.getContent(key, lang);
         if (result !== key) {
             return result;
         }

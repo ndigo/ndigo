@@ -26,9 +26,9 @@ const messages = new I18nextMessageSource({
     language: 'en',
     fallbackLanguage: 'en',
 });
-messages.getMessage('greeting', { values: { name: 'Ada' } });          // 'Hello Ada!'
-messages.getMessage('items', { count: 3 });                            // '3 items'
-messages.getMessage('greeting', { values: { name: 'Ada' } }, 'fr');    // 'Bonjour Ada !'
+await messages.getMessage('greeting', { values: { name: 'Ada' } });          // 'Hello Ada!'
+await messages.getMessage('items', { count: 3 });                            // '3 items'
+await messages.getMessage('greeting', { values: { name: 'Ada' } }, 'fr');    // 'Bonjour Ada !'
 ```
 
 ## Implements
@@ -101,7 +101,7 @@ The language to activate.
 
 ### getMessage()
 
-> **getMessage**(`key`, `params?`, `language?`): `string`
+> **getMessage**(`key`, `params?`, `language?`): `Promise`\<`string`\>
 
 Resolves and formats the message for the requested key.
 
@@ -128,7 +128,7 @@ Language override; the active language when omitted.
 
 #### Returns
 
-`string`
+`Promise`\<`string`\>
 
 The formatted message, or the key itself when missing.
 

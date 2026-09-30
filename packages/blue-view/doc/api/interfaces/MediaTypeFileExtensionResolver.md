@@ -10,9 +10,9 @@ Resolves file extensions for a media type and can enumerate all known extensions
 
 ## Methods
 
-### getAllFileExtenstions()
+### getAllFileExtensions()
 
-> **getAllFileExtenstions**(): `string`[]
+> **getAllFileExtensions**(): `string`[]
 
 Returns every known file extension.
 

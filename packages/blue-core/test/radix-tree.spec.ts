@@ -175,6 +175,38 @@ describe('RadixTree', () => {
             expect(result?.params).toEqual({ id: '5', rest: 'y/z' });
         });
 
+        test('greedy fallback never leaks sibling params captured deeper in the tree (COR-3)', () => {
+            tree.insert('/u/{x}/a/{*rest}', 'greedy');
+            tree.insert('/u/{x}/a/{p}/b', 'precise');
+
+            const result = tree.lookup('/u/9/a/42/zzz');
+            expect(result?.value).toBe('greedy');
+            // {p: '42'} belongs to the failed precise branch — the fallback
+            // must only carry the params captured above the greedy segment.
+            expect(result?.params).toEqual({ x: '9', rest: '42/zzz' });
+
+            // The precise pattern still wins for its own path.
+            expect(tree.lookup('/u/9/a/42/b')?.params).toEqual({ x: '9', p: '42' });
+        });
+
+        test('greedy fallback above a static branch leaks no deeper captures (COR-3)', () => {
+            tree.insert('/a/{x}/b/{*rest}', 'greedy');
+            tree.insert('/a/{x}/b/c/{p}/d', 'precise');
+
+            const result = tree.lookup('/a/1/b/c/2/zzz');
+            expect(result?.value).toBe('greedy');
+            expect(result?.params).toEqual({ x: '1', rest: 'c/2/zzz' });
+        });
+
+        test('greedy fallback above a wildcard branch leaks no deeper captures (COR-3)', () => {
+            tree.insert('/w/{x}/*/{*rest}', 'greedy');
+            tree.insert('/w/{x}/*/{p}/b', 'precise');
+
+            const result = tree.lookup('/w/1/x/42/zzz');
+            expect(result?.value).toBe('greedy');
+            expect(result?.params).toEqual({ x: '1', rest: '42/zzz' });
+        });
+
         test('a greedy segment must be the last segment of its pattern', () => {
             expect(() => tree.insert('/a/{*x}/b', 'bad')).toThrow(/must be the last segment/);
         });

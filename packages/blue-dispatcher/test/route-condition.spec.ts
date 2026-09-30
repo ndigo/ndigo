@@ -4,7 +4,8 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
-import { RouteCondition, RouteConditionHolder } from '../src/route-condition';
+import { RouteCondition, RouteConditionHolder, AbstractNameValueExpression } from '../src/route-condition';
+import { QueryParamExpression } from '../src/route-mapping-info';
 import { PathRoute } from '@blue/router';
 
 class NumericCondition implements RouteCondition<NumericCondition> {
@@ -51,5 +52,30 @@ describe('RouteConditionHolder', () => {
 
         expect(match).toBeTruthy();
         expect((match.condition as NumericCondition).value).toBe(7);
+    });
+});
+
+describe('AbstractNameValueExpression implements Matchable<Route> (MTC-1)', () => {
+    test('expressions expose the matcher-family entry point', () => {
+        const expression = new QueryParamExpression('lang=en');
+        expect(expression).toBeInstanceOf(AbstractNameValueExpression);
+    });
+
+    test('matches() is equivalent to match() for matching routes', () => {
+        const expression = new QueryParamExpression('lang=en');
+        const route = { path: '/', method: 'GET', data: { lang: 'en' }, attributes: {} } as unknown as PathRoute;
+
+        expect(expression.match(route)).toBe(true);
+        expect(expression.matches(route)).toBe(true);
+        expect(expression.matches(route)).toBe(expression.match(route));
+    });
+
+    test('matches() reports non-matching routes like match()', () => {
+        const expression = new QueryParamExpression('lang=en');
+        const route = { path: '/', method: 'GET', data: { lang: 'de' }, attributes: {} } as unknown as PathRoute;
+
+        expect(expression.match(route)).toBe(false);
+        expect(expression.matches(route)).toBe(false);
+        expect(expression.matches(route)).toBe(expression.match(route));
     });
 });

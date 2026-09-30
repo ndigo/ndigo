@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { randomBytes } from 'node:crypto';
+import { randomToken } from '@blue/util';
 import { type SessionRecord, type SessionStore } from '@blue/auth-core';
 
 /** Options for the in-memory session store. */
@@ -53,13 +53,7 @@ export class InMemorySessionStore implements SessionStore {
     }
 
     async create(record: SessionRecord, ttlMs: number): Promise<string> {
-        if (this.#sessions.size >= this.#maxSessions) this.#sweep();
-        if (this.#sessions.size >= this.#maxSessions) {
-            throw new Error(`Session store at capacity (${this.#maxSessions} live sessions)`);
-        }
-        const sessionId = randomBytes(32).toString('base64url');
-        this.#sessions.set(sessionId, { record, expiresAt: Date.now() + ttlMs });
-        return sessionId;
+        return this.#insert(record, ttlMs).id;
     }
 
     async get(sessionId: string): Promise<SessionRecord | null> {
@@ -72,18 +66,32 @@ export class InMemorySessionStore implements SessionStore {
         return entry.record;
     }
 
-    async rotate(sessionId: string, record: SessionRecord): Promise<string> {
+    async rotate(sessionId: string, record: SessionRecord): Promise<{ id: string; expiresAt: number }> {
         const entry = this.#sessions.get(sessionId);
         if (!entry) {
             throw new Error(`Session store: session "${sessionId}" not found`);
         }
+        // COR-13: preserve the remaining TTL (absolute expiry kept) and report
+        // the effective expiry back to the caller.
         const ttlMs = Math.max(1, entry.expiresAt - Date.now());
         this.#sessions.delete(sessionId);
-        return this.create(record, ttlMs);
+        return this.#insert(record, ttlMs);
     }
 
     async delete(sessionId: string): Promise<void> {
         this.#sessions.delete(sessionId);
+    }
+
+    /** Bounds the store, sweeps at the cap, and stores `record` for `ttlMs`. */
+    #insert(record: SessionRecord, ttlMs: number): { id: string; expiresAt: number } {
+        if (this.#sessions.size >= this.#maxSessions) this.#sweep();
+        if (this.#sessions.size >= this.#maxSessions) {
+            throw new Error(`Session store at capacity (${this.#maxSessions} live sessions)`);
+        }
+        const id = randomToken(32);
+        const expiresAt = Date.now() + ttlMs;
+        this.#sessions.set(id, { record, expiresAt });
+        return { id, expiresAt };
     }
 
     #sweep(): void {

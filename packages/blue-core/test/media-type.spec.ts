@@ -437,6 +437,37 @@ describe('MediaType registry round-trip (COR-5 / DSG-1 / DSG-2)', () => {
         expect(MediaType.registrySize).toBe(afterFirstBatch);
     });
 
+    test('parameterless parse-originated expressions are bounded; constants stay process-lifetime (SEC-7)', () => {
+        const baseline = MediaType.registrySize,
+            firstInstance = MediaType.for('a/0');
+
+        for (let index = 0; index < 5000; index++) {
+            MediaType.for(`a/${index}`);
+            MediaType.parseAccept(`b/${index}, c/${index}`);
+        }
+        const afterFirstBatch = MediaType.registrySize;
+
+        for (let index = 5000; index < 10000; index++) {
+            MediaType.for(`a/${index}`);
+            MediaType.parseAccept(`b/${index}, c/${index}`);
+        }
+
+        // Both parse paths (for/parseAccept) are capped FIFOs: 10k distinct
+        // parameterless expressions cannot grow the registry past the bound.
+        expect(MediaType.registrySize).toBe(afterFirstBatch);
+        expect(MediaType.registrySize).toBeLessThan(baseline + 10000);
+
+        // The earliest entry was evicted — re-interning yields a fresh
+        // instance — while a recent one is still the cached instance.
+        expect(MediaType.for('a/0')).not.toBe(firstInstance);
+        const recent = MediaType.for('a/9999');
+        expect(MediaType.for('a/9999')).toBe(recent);
+
+        // Registered constants are exempt: process-lifetime via registered().
+        expect(MediaType.for('application/json')).toBe(MediaTypes.APPLICATION_JSON);
+        expect(MediaType.for('text/html')).toBe(MediaTypes.TEXT_HTML);
+    });
+
     test('garbage type tokens are rejected, not interned as wildcard entries (COR-6)', () => {
         expect(MediaType.for(' /foo')).toBeNull();
         expect(MediaType.for('a;b')).toBeNull();

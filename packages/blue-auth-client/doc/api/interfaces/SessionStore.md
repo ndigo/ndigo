@@ -89,17 +89,20 @@ Returns the session record, or `null` when unknown or expired
 
 ### rotate()
 
-> **rotate**(`sessionId`, `record`): `Promise`\<`string`\>
+> **rotate**(`sessionId`, `record`): `Promise`\<\{ `expiresAt`: `number`; `id`: `string`; \}\>
 
 Replaces `sessionId` with a new id carrying `record` (session
 fixation protection: login rotates the id so an attacker-chosen id
 can never be adopted). The old id must stop working immediately.
 Throws when `sessionId` is unknown (fail closed).
 
-TTL semantics are implementation-documented: the reference
-`InMemorySessionStore` preserves the **remaining** TTL (absolute
-expiry preserved — a refresh near expiry yields a short-lived
-session); a sliding-window store would reset to a full window.
+Returns the new session's id together with its **effective absolute
+expiry** (COR-13): the caller must report this exact timestamp rather
+than derive one from `issuedAt` + TTL — TTL semantics are
+implementation-documented (the reference `InMemorySessionStore`
+preserves the **remaining** TTL, so a refresh near expiry yields a
+short-lived session; a sliding-window store would reset to a full
+window).
 
 #### Parameters
 
@@ -113,4 +116,4 @@ session); a sliding-window store would reset to a full window.
 
 #### Returns
 
-`Promise`\<`string`\>
+`Promise`\<\{ `expiresAt`: `number`; `id`: `string`; \}\>

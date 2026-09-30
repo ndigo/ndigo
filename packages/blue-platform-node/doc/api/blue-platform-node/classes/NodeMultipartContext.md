@@ -26,7 +26,7 @@ A parsed multipart request that can dispose any temp files it created.
 
 ### fields
 
-> `readonly` **fields**: `Record`\<`string`, `string` \| `string`[]\> = `{}`
+> `readonly` **fields**: `Record`\<`string`, `string` \| `string`[]\>
 
 Text fields keyed by form field name; repeated names collapse to an array.
 

@@ -120,8 +120,10 @@ export class CredentialsAuthAdapter implements AuthAdapter {
             throw new InvalidCredentialsError();
         }
         const issuedAt = Date.now();
+        // COR-13: report the store's effective expiry (rotate preserves the
+        // remaining TTL), never a fresh `issuedAt + ttlMs`.
         const next = await this.#sessionStore.rotate(token, { ...record, issuedAt });
-        return { principal: record.principal, token: next, expiresAt: issuedAt + this.#sessionTtlMs };
+        return { principal: record.principal, token: next.id, expiresAt: next.expiresAt };
     }
 
     async logout(token: string): Promise<void> {

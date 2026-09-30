@@ -10,6 +10,10 @@
 
 ## Type Declaration
 
+### crypto
+
+> **crypto**: [`blue-util`](../namespaces/blue-util/README.md)
+
 ### math
 
 > **math**: [`blue-util`](../README-1.md)

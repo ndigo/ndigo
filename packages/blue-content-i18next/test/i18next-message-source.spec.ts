@@ -38,95 +38,92 @@ const resources = {
 };
 
 describe('@blue/content-i18next I18nextMessageSource', () => {
-    test('resolves messages with interpolation from the active language', () => {
+    test('resolves messages with interpolation from the active language', async () => {
         const source = new I18nextMessageSource({ resources, language: 'en' });
 
-        expect(source.getMessage('greeting', { values: { name: 'Ada' } })).toBe('Hello Ada!');
-        expect(source.getMessage('nested.deep.label')).toBe('Deep value');
+        expect(await source.getMessage('greeting', { values: { name: 'Ada' } })).toBe('Hello Ada!');
+        expect(await source.getMessage('nested.deep.label')).toBe('Deep value');
     });
 
-    test('per-call language override wins over the active language', () => {
+    test('per-call language override wins over the active language', async () => {
         const source = new I18nextMessageSource({ resources, language: 'en' });
 
-        expect(source.getMessage('greeting', { values: { name: 'Ada' } }, 'fr')).toBe('Bonjour Ada !');
+        expect(await source.getMessage('greeting', { values: { name: 'Ada' } }, 'fr')).toBe('Bonjour Ada !');
         expect(source.language).toBe('en');
     });
 
-    test('selects plural forms via Intl.PluralRules', () => {
+    test('selects plural forms via Intl.PluralRules', async () => {
         const source = new I18nextMessageSource({ resources, language: 'en' });
 
-        expect(source.getMessage('items', { count: 1 })).toBe('one item');
-        expect(source.getMessage('items', { count: 3 })).toBe('3 items');
+        expect(await source.getMessage('items', { count: 1 })).toBe('one item');
+        expect(await source.getMessage('items', { count: 3 })).toBe('3 items');
     });
 
-    test('applies language-specific plural categories', () => {
+    test('applies language-specific plural categories', async () => {
         const source = new I18nextMessageSource({ resources, language: 'ru' });
 
-        expect(source.getMessage('items', { count: 1 })).toBe('1 предмет');
-        expect(source.getMessage('items', { count: 3 })).toBe('3 предмета');
-        expect(source.getMessage('items', { count: 5 })).toBe('5 предметов');
+        expect(await source.getMessage('items', { count: 1 })).toBe('1 предмет');
+        expect(await source.getMessage('items', { count: 3 })).toBe('3 предмета');
+        expect(await source.getMessage('items', { count: 5 })).toBe('5 предметов');
     });
 
-    test('selects context variants', () => {
+    test('selects context variants', async () => {
         const source = new I18nextMessageSource({ resources, language: 'en' });
 
-        expect(source.getMessage('items', { context: 'male' })).toBe('his items');
-        expect(source.getMessage('items', { context: 'female' })).toBe('her items');
+        expect(await source.getMessage('items', { context: 'male' })).toBe('his items');
+        expect(await source.getMessage('items', { context: 'female' })).toBe('her items');
     });
 
-    test('falls back through the fallback chain to the key', () => {
+    test('falls back through the fallback chain to the key', async () => {
         const source = new I18nextMessageSource({
             resources,
             language: 'de',
             fallbackLanguage: ['de', 'fr', 'en'],
         });
 
-        expect(source.getMessage('greeting', { values: { name: 'Ada' } })).toBe('Bonjour Ada !');
-        expect(source.getMessage('missing.key', { values: { name: 'Ada' } })).toBe('missing.key');
+        expect(await source.getMessage('greeting', { values: { name: 'Ada' } })).toBe('Bonjour Ada !');
+        expect(await source.getMessage('missing.key', { values: { name: 'Ada' } })).toBe('missing.key');
     });
 
-    test('returns the key for missing and empty translations', () => {
+    test('returns the key for missing and empty translations', async () => {
         const source = new I18nextMessageSource({ resources, language: 'en' });
 
-        expect(source.getMessage('unknown.key')).toBe('unknown.key');
-        expect(source.getMessage('empty')).toBe('empty');
+        expect(await source.getMessage('unknown.key')).toBe('unknown.key');
+        expect(await source.getMessage('empty')).toBe('empty');
     });
 
-    test('junk per-call languages never throw and resolve via the instance language', () => {
+    test('junk per-call languages never throw and resolve via the instance language', async () => {
         const source = new I18nextMessageSource({ resources, language: 'en' });
 
-        expect(() =>
-            source.getMessage('greeting', { values: { name: 'Ada' } }, '" autofocus onfocus="alert(1)')
-        ).not.toThrow();
         // Unusable languages collapse onto the instance language (fallback),
         // so resolution still succeeds without throwing inside i18next.
-        expect(source.getMessage('greeting', { values: { name: 'Ada' } }, '" autofocus onfocus="alert(1)')).toBe(
+        expect(await source.getMessage('greeting', { values: { name: 'Ada' } }, '" autofocus onfocus="alert(1)')).toBe(
             'Hello Ada!'
         );
-        expect(source.getMessage('greeting', { values: { name: 'Ada' } }, '')).toBe('Hello Ada!');
+        expect(await source.getMessage('greeting', { values: { name: 'Ada' } }, '')).toBe('Hello Ada!');
     });
 
     test('changeLanguage switches the active language', async () => {
         const source = new I18nextMessageSource({ resources, language: 'en' });
 
-        expect(source.getMessage('greeting', { values: { name: 'Ada' } })).toBe('Hello Ada!');
+        expect(await source.getMessage('greeting', { values: { name: 'Ada' } })).toBe('Hello Ada!');
 
         await source.changeLanguage('fr');
         expect(source.language).toBe('fr');
-        expect(source.getMessage('greeting', { values: { name: 'Ada' } })).toBe('Bonjour Ada !');
+        expect(await source.getMessage('greeting', { values: { name: 'Ada' } })).toBe('Bonjour Ada !');
     });
 
     test('preload resolves languages without a backend', async () => {
         const source = new I18nextMessageSource({ resources, language: 'en' });
 
         await expect(source.preload(['fr', 'de'])).resolves.toBeUndefined();
-        expect(source.getMessage('greeting', { values: { name: 'Ada' } }, 'fr')).toBe('Bonjour Ada !');
+        expect(await source.getMessage('greeting', { values: { name: 'Ada' } }, 'fr')).toBe('Bonjour Ada !');
     });
 
-    test('satisfies the MessageSource contract guard', () => {
+    test('satisfies the MessageSource contract guard', async () => {
         const source = new I18nextMessageSource({ resources, language: 'en' });
 
         expect(likeMessageSource(source)).toBe(true);
-        expect(source.getMessage('items', { count: 2 })).toBe('2 items');
+        expect(await source.getMessage('items', { count: 2 })).toBe('2 items');
     });
 });

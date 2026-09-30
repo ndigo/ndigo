@@ -35,9 +35,10 @@ export class CompositeContentSource implements ContentSource {
      * @param language - The requested language code.
      * @returns The first translated value, or the key when none is found.
      */
-    getContent(key: string, language: string): string {
+    async getContent(key: string, language: string): Promise<string> {
         for (const source of this.#sources) {
-            const result = source.getContent(key, language);
+            // oxlint-disable-next-line no-await-in-loop -- sources resolve in priority order with first-match-wins; parallelizing would change which translation wins.
+            const result = await source.getContent(key, language);
             if (result !== key) {
                 return result;
             }

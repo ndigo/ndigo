@@ -5,9 +5,9 @@
  */
 import '@tsmetadata/polyfill';
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { InMemoryDataSource } from '../src/data-source';
-import { column, entity, generated, manyToOne, oneToMany, primaryColumn } from '../src/decorators';
+import { column, entity, generated, manyToOne, oneToMany, postLoad, primaryColumn } from '../src/decorators';
 import { InMemoryEntityManager } from '../src/entity-manager';
 import { InMemoryDerivedQueryRepository } from '../src/repository';
 
@@ -42,6 +42,9 @@ class RelNote {
 
     @manyToOne(() => RelAuthor, { joinColumn: 'authorId' })
     author: RelAuthor | undefined;
+
+    @postLoad()
+    onPostLoad() {}
 
     constructor(title: string, authorId: number | undefined) {
         this.title = title;
@@ -157,5 +160,23 @@ describe('relation fetch (Wave 3)', () => {
         expect(() => looseNotes.findById(1, { relations: ['author'] })).toThrow(
             'declares neither joinColumn nor inverseJoinColumn'
         );
+    });
+
+    it('fires postLoad on inverse-side loaded entities, matching direct find', () => {
+        const noteSpy = vi.spyOn(RelNote.prototype, 'onPostLoad');
+
+        // Direct find fires postLoad once per loaded entity.
+        noteSpy.mockClear();
+        const direct = notes.findById(1, { relations: ['author'] }) as RelNote;
+        expect(noteSpy).toHaveBeenCalledTimes(1);
+        expect(direct.id).toBe(1);
+
+        // Loading the inverse side (one-to-many from author) also fires postLoad
+        // on each matched row, for parity with the owning side via find.
+        noteSpy.mockClear();
+        const ada = authors.findById(adaId, { relations: ['notes'] }) as RelAuthor;
+        expect(ada.notes.map((note) => note.title)).toEqual(['First', 'Second']);
+        expect(ada.notes.every((note) => note instanceof RelNote)).toBe(true);
+        expect(noteSpy).toHaveBeenCalledTimes(2);
     });
 });

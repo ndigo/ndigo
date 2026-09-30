@@ -147,4 +147,13 @@ describe('CSRFInterceptor', () => {
 
         expect(interceptor.preHandle(route)).toBe(true);
     });
+
+    test('rejects a token of a different length (SEC-9 length guard, no throw)', () => {
+        const interceptor = new CSRFInterceptor();
+        // cookie-token is 12 chars; an 8-char submission must be rejected by
+        // the explicit length guard before any constant-time compare.
+        const route = makeRoute('POST', { cookies: { 'blue-csrf': 'cookie-token' } }, { 'x-csrf-token': '12345678' });
+
+        expect(interceptor.preHandle(route)).toBe(false);
+    });
 });

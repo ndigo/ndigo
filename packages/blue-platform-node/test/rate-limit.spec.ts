@@ -96,6 +96,38 @@ describe('FixedWindowRateLimiter', () => {
         expect(() => limiter.consume('a', { limit: 1.5, windowMs: 1000 })).toThrow(RangeError);
         expect(() => limiter.consume('a', { limit: 1, windowMs: -1 })).toThrow(RangeError);
     });
+
+    test('at the cap with no expired buckets the oldest live bucket is evicted (SEC-2)', () => {
+        const limiter = new FixedWindowRateLimiter({ maxEntries: 3 });
+        const policy = { limit: 1, windowMs: 60_000 };
+        expect(limiter.consume('a', policy).allowed).toBe(true);
+        expect(limiter.consume('b', policy).allowed).toBe(true);
+        expect(limiter.consume('c', policy).allowed).toBe(true);
+        // 'b' is live and over its budget.
+        expect(limiter.consume('b', policy).allowed).toBe(false);
+        // At the cap with zero expired buckets, a new key evicts the oldest
+        // ('a') instead of growing the map past maxEntries.
+        expect(limiter.consume('d', policy).allowed).toBe(true);
+        // 'a' was evicted → fresh budget; 'd' is live → still denied.
+        expect(limiter.consume('a', policy).allowed).toBe(true);
+        expect(limiter.consume('d', policy).allowed).toBe(false);
+    });
+
+    test('a distinct-key flood never exceeds maxEntries and keeps insertion ~O(1) (SEC-2)', () => {
+        const limiter = new FixedWindowRateLimiter({ maxEntries: 64 });
+        const policy = { limit: 1, windowMs: 60_000 };
+        const started = Date.now();
+        for (let i = 0; i < 5_000; i++) {
+            expect(limiter.consume(`ip-${i}`, policy).allowed).toBe(true);
+        }
+        // Every bucket from the first wave has long been evicted — an old key
+        // gets a fresh budget (size never grew past maxEntries)…
+        expect(limiter.consume('ip-0', policy).allowed).toBe(true);
+        expect(limiter.consume('ip-1', policy).allowed).toBe(true);
+        // …while the newest key is still live and over its budget.
+        expect(limiter.consume('ip-4999', policy).allowed).toBe(false);
+        expect(Date.now() - started).toBeLessThan(2_000);
+    });
 });
 
 describe('@rateLimit decorator + RateLimitInterceptor', () => {

@@ -10,7 +10,7 @@ import { AsMessageSourceAware, MessageParams, likeMessageSource, likeMessageSour
 class FakeMessageSource {
     lastLanguage: string | undefined = undefined;
 
-    getMessage(key: string, params?: MessageParams, language?: string): string {
+    async getMessage(key: string, params?: MessageParams, language?: string): Promise<string> {
         this.lastLanguage = language;
         const template = { greeting: 'Hello {name}!', items: 'count={count}' }[key];
         if (!template) return key;
@@ -26,20 +26,20 @@ class FakeMessageSource {
 }
 
 describe('@blue/content message source contract', () => {
-    test('getMessage passes values, count, and language to the source', () => {
+    test('getMessage passes values, count, and language to the source', async () => {
         const source = new FakeMessageSource();
 
-        expect(source.getMessage('greeting', { values: { name: 'Ada' } }, 'fr')).toBe('Hello Ada!');
+        expect(await source.getMessage('greeting', { values: { name: 'Ada' } }, 'fr')).toBe('Hello Ada!');
         expect(source.lastLanguage).toBe('fr');
-        expect(source.getMessage('items', { count: 3 }, 'en')).toBe('count=3');
+        expect(await source.getMessage('items', { count: 3 }, 'en')).toBe('count=3');
     });
 
-    test('missing keys fall back to the key itself', () => {
+    test('missing keys fall back to the key itself', async () => {
         const source = new FakeMessageSource();
-        expect(source.getMessage('unknown.message', {}, 'en')).toBe('unknown.message');
+        expect(await source.getMessage('unknown.message', {}, 'en')).toBe('unknown.message');
     });
 
-    test('AsMessageSourceAware injects message source on instances', () => {
+    test('AsMessageSourceAware injects message source on instances', async () => {
         class Plain {}
 
         class AwareExample extends AsMessageSourceAware(Plain) {}
@@ -60,7 +60,7 @@ describe('@blue/content message source contract', () => {
         }
 
         expect(attached).toBe(source);
-        expect(attached.getMessage('greeting', { values: { name: 'Ada' } }, 'en')).toBe('Hello Ada!');
+        expect(await attached.getMessage('greeting', { values: { name: 'Ada' } }, 'en')).toBe('Hello Ada!');
     });
 
     test('duck typing guards for message source and aware objects', () => {

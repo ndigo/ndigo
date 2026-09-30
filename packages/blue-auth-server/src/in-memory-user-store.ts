@@ -32,10 +32,30 @@ export class InMemoryUserStore implements UserStore {
             throw new Error(`User "${id}" not found`);
         }
         const next = (record.tokenVersion ?? 0) + 1;
-        const updated: UserRecord = { ...record, tokenVersion: next };
-        this.#byId.set(id, updated);
-        this.#byUsername.set(record.username, updated);
+        this.#writeVersion(record, next);
         return next;
+    }
+
+    async incrementTokenVersionIfCurrent(id: string, expected: number): Promise<number | null> {
+        const record = this.#byId.get(id);
+        if (!record) {
+            throw new Error(`User "${id}" not found`);
+        }
+        // Check and swap in one synchronous step: no `await` between the read
+        // and the write, so a concurrent refresh cannot interleave here
+        // (mirrors the atomic conditional UPDATE of a SQL-backed store).
+        if ((record.tokenVersion ?? 0) !== expected) {
+            return null;
+        }
+        const next = expected + 1;
+        this.#writeVersion(record, next);
+        return next;
+    }
+
+    #writeVersion(record: UserRecord, next: number): void {
+        const updated: UserRecord = { ...record, tokenVersion: next };
+        this.#byId.set(record.id, updated);
+        this.#byUsername.set(record.username, updated);
     }
 
     /** Adds or replaces a record (test/demo setup helper). */

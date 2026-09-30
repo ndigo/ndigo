@@ -1,9 +1,9 @@
 # @blue/api — Blue API
 
-> Node server showcase: controllers, JWT auth, ORM-backed notes, content negotiation, and problem+json errors.
+> Node server showcase: controllers, opaque session-token auth, ORM-backed notes, content negotiation, and problem+json errors.
 
-Node server showcase built on `@blue/platform-node`: controllers, JWT auth,
-ORM-backed notes (+Drizzle), content negotiation, RFC 9457 problem+json
+Node server showcase built on `@blue/platform-node`: controllers, opaque session-token
+auth (AD-33), ORM-backed notes (+Drizzle), content negotiation, RFC 9457 problem+json
 errors, and actuator-style management endpoints.
 
 ## Run
@@ -19,13 +19,25 @@ GET  /api/hello?name=Alice     greeting (JSON)
 GET  /api/greet/:name          path-parameter binding
 GET  /api/report               negotiated JSON view (JSONView)
 GET  /api/report.csv           CSV representation (CSVView)
-POST /auth/login               {"username":"admin","password":"demo"} → JWT
+POST /auth/login               {"username":"admin","password":"demo"} → opaque session token + session cookie
+POST /auth/logout              terminate session, clear cookie
+GET  /auth/me                  resolve session cookie → { name, roles }
 GET  /notes                    (Authorization: Bearer <token>) ORM-backed notes
-     /drizzle/notes/*          Drizzle-backed notes (SQL)
+POST /notes                    (Authorization: Bearer <token>) create note (ORM)
+GET  /drizzle/notes            (Authorization: Bearer <token>) Drizzle-backed notes (SQL)
+GET  /drizzle/notes/:id        (Authorization: Bearer <token>) one Drizzle note (SQL)
+POST /drizzle/notes            (Authorization: Bearer <token>) create note (Drizzle)
+POST /api/upload               multipart/form-data (file + optional meta)
+GET  /api/config.json          self-served remote config document
+GET  /api/config/remote        live resolved remote config value
+GET  /api/config/secrets       (Authorization: Bearer <token>) decrypted binding
+GET  /api/cached-report        60 s cached report (AD-24)
 WS   /stomp/chat?token=<token> STOMP 1.2 chat (@authenticated)
 WS   /ws/chat                  raw socket chat (public contrast)
 GET  /health                   liveness/readiness (management)
 GET  /metrics                  live telemetry counters (management)
+GET  /v3/api-docs              OpenAPI spec (AD-35; Bearer-gated, SEC-4)
+GET  /swagger-ui/              Swagger UI (AD-35; Bearer-gated, SEC-4)
 ```
 
 ## Demonstrates
@@ -34,7 +46,7 @@ GET  /metrics                  live telemetry counters (management)
   (path/query/body/attribute binding)
 - Content negotiation by path extension and `Accept` header
 - `ResponseEntity` for status/header control and static file serving
-- JWT auth (`@blue/auth-server`) and profile-gated dev beans (`@profile('dev')`)
+- Opaque session-token auth (`@blue/auth-server`, AD-33) and profile-gated dev beans (`@profile('dev')`)
 - In-memory and Drizzle ORM entity managers
 - RFC 9457 problem+json error envelope
 - Scheduled heartbeat task (`@scheduled`, auto-discovered and auto-started; see the [scheduling guide](../../docs/guides/05-scheduling.md))

@@ -72,4 +72,15 @@ describe('MatrixValueMethodArgumentResolver (D-7 parity)', () => {
 
         expect(resolver.resolveArgument(param, route, mapping)).toBe('default');
     });
+
+    test('asNumber(matrixValue(...)) converts the raw matrix string (COR-11)', () => {
+        // /books;size=42  →  segment.data.size === '42'; convertType converts.
+        const route = makeRoute({ size: '42' });
+        const param = new MethodParameter(MethodParameterType.MATRIX, 'size', false, null, {
+            source: String,
+            target: Number,
+        });
+
+        expect(resolver.resolveArgument(param, route, mapping)).toBe(42);
+    });
 });

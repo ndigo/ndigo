@@ -40,7 +40,7 @@ Sources ordered by priority, highest first.
 
 ### getContent()
 
-> **getContent**(`key`, `language`): `string`
+> **getContent**(`key`, `language`): `Promise`\<`string`\>
 
 Resolves the first real translation across all sources.
 
@@ -60,7 +60,7 @@ The requested language code.
 
 #### Returns
 
-`string`
+`Promise`\<`string`\>
 
 The first translated value, or the key when none is found.
 

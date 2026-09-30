@@ -40,9 +40,9 @@ export interface MessageParams {
  * @example
  * ```ts
  * const messages = new I18nextMessageSource({ … });
- * messages.getMessage('greeting', { values: { name: 'Ada' } }, 'en');
+ * await messages.getMessage('greeting', { values: { name: 'Ada' } }, 'en');
  * // → 'Hello, Ada!'
- * messages.getMessage('items', { count: 3 }, 'en');
+ * await messages.getMessage('items', { count: 3 }, 'en');
  * // → '3 items'  (plural key `items_other`)
  * ```
  */
@@ -50,12 +50,15 @@ export interface MessageSource {
     /**
      * Resolves and formats the message for the requested key.
      *
+     * Methods are async by default; implementations may be synchronous
+     * under the hood.
+     *
      * @param key - The message key to resolve.
      * @param params - Optional formatting parameters (interpolation values, plural count, variant).
      * @param language - The language to use; the source's active language when omitted.
-     * @returns The formatted message, or the key itself when no translation exists.
+     * @returns A promise of the formatted message, or the key itself when no translation exists.
      */
-    getMessage(key: string, params?: MessageParams, language?: string): string;
+    getMessage(key: string, params?: MessageParams, language?: string): Promise<string>;
 }
 
 /**

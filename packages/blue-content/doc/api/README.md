@@ -24,7 +24,6 @@ Jeff Rose
 
 ## Interfaces
 
-- [AsyncContentSource](interfaces/AsyncContentSource.md)
 - [ContentSource](interfaces/ContentSource.md)
 - [ContentSourceAware](interfaces/ContentSourceAware.md)
 - [MessageParams](interfaces/MessageParams.md)
@@ -36,8 +35,8 @@ Jeff Rose
 
 ## Type Aliases
 
-- [AsyncContentLoader](type-aliases/AsyncContentLoader.md)
 - [ContentDictionary](type-aliases/ContentDictionary.md)
+- [ContentLoader](type-aliases/ContentLoader.md)
 
 ## Variables
 

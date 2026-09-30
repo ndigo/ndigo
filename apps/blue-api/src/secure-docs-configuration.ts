@@ -12,7 +12,6 @@
  * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
-import { entry } from '@blue/context';
 import { denialOf, type RouteHandlerInterceptor } from '@blue/dispatcher';
 import {
     getNodeRequest,
@@ -33,7 +32,7 @@ import { lookupPrincipal } from './auth-store';
  */
 export const docsAccessGuard: RouteHandlerInterceptor = {
     async preHandle(route) {
-        const authorization = getNodeRequest(route)?.headers['authorization'];
+        const authorization = HTTPHeaders.AUTHORIZATION.get(getNodeRequest(route)?.headers);
         const header = Array.isArray(authorization) ? authorization[0] : authorization;
         const bearer = HTTPHeaders.AUTHORIZATION.bearerToken(header);
         if (bearer && (await lookupPrincipal(bearer))) {
@@ -66,29 +65,12 @@ export const docsAccessGuard: RouteHandlerInterceptor = {
  * Docs auto-configuration registered with the demo's Bearer guard — the
  * SEC-4 posture: anonymous `/v3/api-docs` and `/swagger-ui/` are 401.
  *
- * The entry factories are re-declared (forwarding to the base) because the
- * `@entry` initializer marks a method enumerable only on the *defining*
- * class's prototype: without re-declaration, subclass instances inherit
- * non-enumerable descriptors, the context parser's `for...in` never sees
- * the beans, and the docs mapping silently fails to register.
+ * Only the constructor override is kept: the `@entry` factories inherit from
+ * `OpenAPIDocsAutoConfiguration` and register through the prototype chain
+ * (FOLLOW-1) — no re-declaration is needed.
  */
 export class SecureDocsConfiguration extends OpenAPIDocsAutoConfiguration {
     constructor() {
         super({ accessGuard: docsAccessGuard });
-    }
-
-    @entry
-    docsController() {
-        return super.docsController();
-    }
-
-    @entry
-    swaggerUiController() {
-        return super.swaggerUiController();
-    }
-
-    @entry
-    handlerMappings() {
-        return super.handlerMappings();
     }
 }

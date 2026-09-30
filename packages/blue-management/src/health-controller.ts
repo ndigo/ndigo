@@ -7,7 +7,7 @@ import { getMapping, requestMapping } from '@blue/dispatcher';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Null } from '@blue/core';
 import { HealthRegistry } from './health';
-import { HEALTH_REGISTRY } from './health-registry-token';
+import { HEALTH_REGISTRY } from './health-registry-tokens';
 
 /**
  * Serves application health under `/health`.

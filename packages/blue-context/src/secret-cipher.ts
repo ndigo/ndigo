@@ -31,6 +31,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import { FrameworkError } from '@blue/core';
 
 /**
  * Caps the marker's scheme segment (`cipher`, `jwe`, `age`, `kms`, …):
@@ -65,10 +66,13 @@ export interface SecretMarker {
 /**
  * Parses a secret marker in `{scheme[:version]:payload}` form.
  *
- * Returns `null` for any string that is not a well-formed marker — such
- * values pass through the decrypt path untouched (never an error). A marker
- * with an unknown scheme / version is the caller's business: decryption
- * fails loud there.
+ * Returns `null` for any string that is not in marker form — such values
+ * pass through the decrypt path untouched. A marker that IS in marker form
+ * but has a malformed version segment (e.g. `{cipher:1:payload}`, where the
+ * version must be letter-first like `v1`) throws a {@link FrameworkError}
+ * instead of being silently folded into the payload. A marker with an
+ * unknown scheme / version is the caller's business: decryption fails loud
+ * there.
  *
  * @param value - The candidate marker string.
  *
@@ -95,9 +99,13 @@ export function parseSecretMarker(value: string): SecretMarker | null {
         return { scheme, version: null, payload: rest };
     }
     const version = rest.slice(0, secondColon);
-    // Only digits qualify as the version segment; anything else is payload.
+    // A segment after `scheme:` claims to be the version, so it must be
+    // well-formed: lowercase alphanumerics with a letter first (`v1`,
+    // `2026.1`, …). A non-conforming segment (e.g. numeric `1`) is a
+    // malformed marker — fail loud rather than silently folding `1:` into
+    // the payload and misinterpreting the intended format.
     if (!versionRe.test(version)) {
-        return { scheme, version: null, payload: rest };
+        throw new FrameworkError(`Malformed secret marker: version segment must start with a letter (${version})`);
     }
     return { scheme, version, payload: rest.slice(secondColon + 1) };
 }

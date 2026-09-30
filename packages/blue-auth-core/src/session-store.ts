@@ -63,12 +63,15 @@ export interface SessionStore {
      * can never be adopted). The old id must stop working immediately.
      * Throws when `sessionId` is unknown (fail closed).
      *
-     * TTL semantics are implementation-documented: the reference
-     * `InMemorySessionStore` preserves the **remaining** TTL (absolute
-     * expiry preserved — a refresh near expiry yields a short-lived
-     * session); a sliding-window store would reset to a full window.
+     * Returns the new session's id together with its **effective absolute
+     * expiry** (COR-13): the caller must report this exact timestamp rather
+     * than derive one from `issuedAt` + TTL — TTL semantics are
+     * implementation-documented (the reference `InMemorySessionStore`
+     * preserves the **remaining** TTL, so a refresh near expiry yields a
+     * short-lived session; a sliding-window store would reset to a full
+     * window).
      */
-    rotate(sessionId: string, record: SessionRecord): Promise<string>;
+    rotate(sessionId: string, record: SessionRecord): Promise<{ id: string; expiresAt: number }>;
 
     /**
      * Terminates the session. Unknown ids are a no-op.

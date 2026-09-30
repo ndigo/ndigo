@@ -6,12 +6,15 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect, vi } from 'vitest';
 import type { AddressInfo } from 'node:net';
+import type { ServerResponse } from 'node:http';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { getMapping, requestMapping } from '@blue/dispatcher';
+import type { Route } from '@blue/router';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
 import { HTTPServer } from '../src/http-server';
+import { NODE_RESPONSE_ATTRIBUTE } from '../src/node-request';
 import { resolveHTTPRequestLimits, parseBody, RequestLimitError } from '../src/http-request-limits';
 
 /**
@@ -163,6 +166,31 @@ describe('HTTP request pipeline boundaries', () => {
         const res = await fetch(`${base}/probe?tag=a&tag=b&tag=c`);
         expect(res.status).toBe(200);
     });
+
+    test('a cookie header past the parser bound returns 431, not 500 (SEC-3)', async () => {
+        await boot();
+        const cookies = Array.from({ length: 51 }, (_, i) => `c${i}=v`).join('; ');
+        const res = await fetch(base + '/probe', { headers: { cookie: cookies } });
+        expect(res.status).toBe(431);
+        expect(await res.json()).toMatchObject({
+            type: 'urn:blue:headers_too_large',
+            status: 431,
+            detail: 'headers_too_large',
+        });
+    });
+
+    test('an oversized cookie value returns 431, not 500 (SEC-3)', async () => {
+        await boot();
+        // 4097 bytes > the 4 KiB cookie-value bound, under Node's header cap
+        // and the adapter's 16 KiB maxHeaderBytes — only the parser rejects.
+        const res = await fetch(base + '/probe', { headers: { cookie: `big=${'x'.repeat(4097)}` } });
+        expect(res.status).toBe(431);
+        expect(await res.json()).toMatchObject({
+            type: 'urn:blue:headers_too_large',
+            status: 431,
+            detail: 'headers_too_large',
+        });
+    });
 });
 
 describe('resolveHTTPRequestLimits', () => {
@@ -191,6 +219,38 @@ describe('parseBody', () => {
     test('urlencoded bodies parse into records with repeated keys as arrays', () => {
         const result = parseBody('application/x-www-form-urlencoded', Buffer.from('a=1&b=2&a=3'));
         expect(result).toEqual({ kind: 'json', value: { a: ['1', '3'], b: '2' } });
+    });
+
+    test('a urlencoded field named __proto__ lands as an ordinary key on a null-prototype record (SEC-1)', () => {
+        const result = parseBody('application/x-www-form-urlencoded', Buffer.from('__proto__=x&a=1'));
+        expect(result.kind).toBe('json');
+        const value = result.value;
+        // The body stays a usable null-prototype record — no inherited accessor
+        // was hit, so no hasOwnProperty TypeError, and __proto__ is a plain key.
+        expect(Object.getPrototypeOf(value)).toBeNull();
+        expect(Object.hasOwn(value, '__proto__')).toBe(true);
+        expect(value['__proto__']).toBe('x');
+        expect(Object.hasOwn(value, 'a')).toBe(true);
+    });
+
+    test('repeated urlencoded __proto__ keys accumulate into an array, not a prototype swap (SEC-1)', () => {
+        const result = parseBody('application/x-www-form-urlencoded', Buffer.from('__proto__=a&__proto__=b'));
+        expect(result.kind).toBe('json');
+        const value = result.value;
+        expect(Object.getPrototypeOf(value)).toBeNull();
+        expect(Array.isArray(value['__proto__'])).toBe(true);
+        expect(value['__proto__']).toEqual(['a', 'b']);
+    });
+
+    test('JSON bodies with a __proto__-named key stay plain objects (SEC-1)', () => {
+        // JSON.parse defines own data properties, so this path was never at
+        // risk — pin it so the contract cannot regress.
+        const result = parseBody('application/json', Buffer.from('{"__proto__": 1, "a": 2}'));
+        expect(result.kind).toBe('json');
+        const value = result.value;
+        expect(Object.getPrototypeOf(value)).toBe(Object.prototype);
+        expect(Object.hasOwn(value, '__proto__')).toBe(true);
+        expect(value['__proto__']).toBe(1);
     });
 
     test('unknown content types fall back to raw text', () => {
@@ -283,5 +343,44 @@ describe('HTTPServer lifecycle', () => {
         await vi.waitFor(() => {
             expect(server.isRunning).toBe(false);
         });
+    });
+});
+
+// COR-14: the graceful-shutdown drain deadline must bound `close()`, not just
+// run after it — an open SSE/streaming connection cannot hang close() forever.
+describe('adapter close drains within shutdownTimeoutMs', () => {
+    test('close() resolves within the deadline even with an open SSE stream (COR-14)', async () => {
+        let streamOpen = false;
+        const dispatcher = {
+            getHandler() {
+                return { handler: { __noop() {} } };
+            },
+            dispatch(route: Route) {
+                const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as ServerResponse | undefined;
+                if (res && !res.writableEnded) {
+                    // Open an SSE-style stream and never end it.
+                    streamOpen = true;
+                    res.writeHead(200, { 'content-type': 'text/event-stream' });
+                    res.write('data: hello\n\n');
+                }
+                // Never resolves — the response (and its socket) stays open.
+                return new Promise<void>(() => {});
+            },
+        } as unknown as NodeDispatcher;
+        const adapter = new NodeHTTPServerAdapter(dispatcher, { limits: { shutdownTimeoutMs: 200 } });
+        await adapter.listen(0, '127.0.0.1');
+        const base = `http://127.0.0.1:${(adapter.server as { address(): AddressInfo }).address().port}`;
+
+        const response = await fetch(base + '/events');
+        await vi.waitFor(() => expect(streamOpen).toBe(true));
+
+        const started = Date.now();
+        await adapter.close();
+        // Close resolves once the deadline force-destroys the lingering
+        // connection, far inside a generous 2 s bound (the old code hung here).
+        expect(Date.now() - started).toBeLessThan(2_000);
+
+        // The forced teardown kills the client's stream.
+        await expect(response.text()).rejects.toBeDefined();
     });
 });

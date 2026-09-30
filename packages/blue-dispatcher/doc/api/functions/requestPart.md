@@ -8,7 +8,7 @@
 
 ## Call Signature
 
-> **requestPart**(`partName?`, `target?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
+> **requestPart**(`partName?`, `target?`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
 Factory function: Create a multipart JSON/text-part extractor (D-6).
 
@@ -27,6 +27,12 @@ given, otherwise the method-argument name. Mirrors Spring's
 
 Resolved by `NodeRequestPartMethodArgumentResolver` (blue-platform-node).
 
+A missing part resolves to the extractor's `defaultValue` (`null`) unless
+the part is declared required: `requestPart('meta', undefined, { required:
+true })` / `requestPart(MetaDto, { required: true })` make a missing part
+a [MissingParameterError](../classes/MissingParameterError.md) (HTTP 400) instead of a late TypeError
+(DOC-5).
+
 ### Parameters
 
 #### partName?
@@ -36,6 +42,10 @@ Resolved by `NodeRequestPartMethodArgumentResolver` (blue-platform-node).
 #### target?
 
 () => `object`
+
+#### options?
+
+[`ParameterExtractorOptions`](../interfaces/ParameterExtractorOptions.md)
 
 ### Returns
 
@@ -53,7 +63,7 @@ Resolved by `NodeRequestPartMethodArgumentResolver` (blue-platform-node).
 
 ## Call Signature
 
-> **requestPart**(`target`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
+> **requestPart**(`target`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
 Factory function: Create a multipart JSON/text-part extractor (D-6).
 
@@ -72,11 +82,21 @@ given, otherwise the method-argument name. Mirrors Spring's
 
 Resolved by `NodeRequestPartMethodArgumentResolver` (blue-platform-node).
 
+A missing part resolves to the extractor's `defaultValue` (`null`) unless
+the part is declared required: `requestPart('meta', undefined, { required:
+true })` / `requestPart(MetaDto, { required: true })` make a missing part
+a [MissingParameterError](../classes/MissingParameterError.md) (HTTP 400) instead of a late TypeError
+(DOC-5).
+
 ### Parameters
 
 #### target
 
 () => `object`
+
+#### options?
+
+[`ParameterExtractorOptions`](../interfaces/ParameterExtractorOptions.md)
 
 ### Returns
 

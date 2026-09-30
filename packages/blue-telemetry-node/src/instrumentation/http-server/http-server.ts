@@ -28,7 +28,7 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
         this._wrap(
             HTTPServer.prototype,
             'start',
-            this._patchAsync({
+            this._patch({
                 name: 'HTTPServer.start',
                 kind: SpanKind.SERVER,
                 attributes: (instance: unknown) => {
@@ -42,7 +42,7 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
         this._wrap(
             HTTPServer.prototype,
             'close',
-            this._patchAsync({
+            this._patch({
                 name: 'HTTPServer.close',
                 kind: SpanKind.INTERNAL,
                 attributes: (instance: unknown) => {

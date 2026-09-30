@@ -7,7 +7,7 @@ import { describe, test, expect } from 'vitest';
 import { AsContentSourceAware, StaticContentSource, likeContentSource, likeContentSourceAware } from '../src/content';
 
 describe('@blue/content content utilities', () => {
-    test('StaticContentSource resolves language with fallback', () => {
+    test('StaticContentSource resolves language with fallback', async () => {
         const source = new StaticContentSource(
             {
                 welcome: {
@@ -18,12 +18,12 @@ describe('@blue/content content utilities', () => {
             'en'
         );
 
-        expect(source.getContent('welcome', 'es')).toBe('Bienvenido');
-        expect(source.getContent('welcome', 'fr')).toBe('Welcome');
-        expect(source.getContent('missing', 'en')).toBe('missing');
+        expect(await source.getContent('welcome', 'es')).toBe('Bienvenido');
+        expect(await source.getContent('welcome', 'fr')).toBe('Welcome');
+        expect(await source.getContent('missing', 'en')).toBe('missing');
     });
 
-    test('AsContentSourceAware injects content source on instances', () => {
+    test('AsContentSourceAware injects content source on instances', async () => {
         class Plain {}
 
         class AwareExample extends AsContentSourceAware(Plain) {}
@@ -47,7 +47,7 @@ describe('@blue/content content utilities', () => {
         }
 
         expect(attached).toBe(source);
-        expect(attached.getContent('hello', 'en')).toBe('Hello');
+        expect(await attached.getContent('hello', 'en')).toBe('Hello');
     });
 
     test('duck typing guards for content source and aware objects', () => {

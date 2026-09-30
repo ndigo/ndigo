@@ -6,10 +6,10 @@
  * Payloads are streamed from disk (`createReadStream`) with stat-derived
  * `Content-Length`s: nothing whole-file-buffers, and conditional GETs / HEAD
  * are answered from stat metadata alone without opening the file (SEC-8).
- * Write-side header names come from the `@blue/http` `HTTPHeader` constants
- * (RUS-2), except `X-Content-Type-Options: nosniff`, reused verbatim from the
- * resolver (SEC-2); request-header reads use lowercase literals because Node
- * normalizes `IncomingMessage` header names to lowercase records.
+ * Header names come from the `@blue/http` `HTTPHeader` constants (RUS-2,
+ * REUSE-1), except `X-Content-Type-Options: nosniff`, reused verbatim from the
+ * resolver (SEC-2); request-header reads go through the constants' `get()`,
+ * which case-folds over Node's lower-cased `IncomingMessage` records.
  * * @module blue-platform-node
  * @since 1.0.0
  * @author Jeff Rose
@@ -20,6 +20,8 @@ import { once } from 'node:events';
 import { MediaType, MediaTypes } from '@blue/core';
 import { Route } from '@blue/router';
 import {
+    ACCEPT,
+    ACCEPT_ENCODING,
     ACCEPT_RANGES,
     CACHE_CONTROL,
     CONTENT_ENCODING,
@@ -27,7 +29,11 @@ import {
     CONTENT_RANGE,
     CONTENT_TYPE,
     ETAG,
+    IF_MODIFIED_SINCE,
+    IF_NONE_MATCH,
+    IF_RANGE,
     LAST_MODIFIED,
+    RANGE,
     VARY,
 } from '@blue/http';
 import { getNodeRequest, NODE_RESPONSE_ATTRIBUTE } from './node-request';
@@ -72,14 +78,13 @@ function isBodylessMethod(method: string | undefined): boolean {
  * @returns `true` when the client's validators match → respond 304.
  */
 function isNotModified(headers: Record<string, string | string[] | undefined>, result: StaticResourceResult): boolean {
-    const ifNoneMatch = headers['if-none-match'];
-    if (ifNoneMatch !== undefined) {
+    const ifNoneMatch = IF_NONE_MATCH.get(headers);
+    if (ifNoneMatch !== null) {
         const etag = result.etag;
         if (!etag) {
             return false;
         }
-        const candidates = (Array.isArray(ifNoneMatch) ? ifNoneMatch : [ifNoneMatch]).join(',');
-        for (const candidate of candidates.split(',')) {
+        for (const candidate of ifNoneMatch.split(',')) {
             const tag = candidate.trim().replace(/^W\//, '');
             if (tag === '*' || tag === etag) {
                 return true;
@@ -87,9 +92,9 @@ function isNotModified(headers: Record<string, string | string[] | undefined>, r
         }
         return false;
     }
-    const ifModifiedSince = headers['if-modified-since'];
-    if (ifModifiedSince !== undefined && result.mtimeMs !== undefined) {
-        const since = Date.parse(Array.isArray(ifModifiedSince) ? ifModifiedSince[0] : ifModifiedSince);
+    const ifModifiedSince = IF_MODIFIED_SINCE.get(headers);
+    if (ifModifiedSince !== null && result.mtimeMs !== undefined) {
+        const since = Date.parse(ifModifiedSince);
         // HTTP-date granularity is seconds — an mtime within the same second
         // as the client's cached copy counts as not modified.
         if (Number.isFinite(since) && Math.floor(result.mtimeMs / 1000) <= Math.floor(since / 1000)) {
@@ -154,6 +159,40 @@ function parseSingleRange(rangeHeader: string, length: number): ByteRange | 'uns
 }
 
 /**
+ * RFC 7233 §3.2 validator check for `If-Range` (COR-20). A range request is
+ * honored only when the client's validator still matches the current
+ * representation; a stale validator means the client holds an out-of-date
+ * partial copy, so the server MUST send the full 200 instead of a misaligned
+ * 206.
+ *
+ * @returns `null` when `If-Range` is absent (the range proceeds); `true`
+ *   when the validator matches (206 allowed); `false` when it is stale
+ *   (the range MUST be ignored → full 200).
+ */
+function ifRangeMatches(
+    headers: Record<string, string | string[] | undefined>,
+    result: StaticResourceResult
+): boolean | null {
+    const ifRange = IF_RANGE.get(headers);
+    if (ifRange === null) {
+        return null;
+    }
+    const candidate = ifRange.trim();
+    // An entity-tag validator (quoted or weak `W/"..."`): strong compare.
+    if (candidate.startsWith('"') || candidate.startsWith('W/')) {
+        const tag = candidate.replace(/^W\//, '').trim();
+        return result.etag !== undefined && tag === result.etag;
+    }
+    // Otherwise it is an RFC 1123 HTTP-date: the range stands only when the
+    // current representation is at least as new as the client's validator.
+    if (result.mtimeMs !== undefined) {
+        const since = Date.parse(candidate);
+        return Number.isFinite(since) && Math.floor(result.mtimeMs / 1000) >= Math.floor(since / 1000);
+    }
+    return false;
+}
+
+/**
  * The HTTP half of static serving: one `handle(route, requestPath)` call
  * turns a path into a complete response (D-5).
  *
@@ -200,12 +239,20 @@ export class StaticResourceHandler {
         let result = await this.#resolver.resolve(requestPath, {
             indexNames: this.#options.indexNames ?? DEFAULT_INDEX_NAMES,
             listDirectories: this.#options.listDirectories,
-            acceptEncoding: typeof headers['accept-encoding'] === 'string' ? headers['accept-encoding'] : undefined,
+            acceptEncoding: ACCEPT_ENCODING.get(headers) ?? undefined,
             maxFileSizeBytes: this.#options.maxFileSizeBytes,
         });
 
+        // COR-19: a shared cache must key an SPA fallback on `Accept` so it is
+        // never replayed to clients that did not accept HTML.
+        let spaFallbackServed = false;
+
         if (result.kind !== 'ok') {
-            if (result.kind === 'not-found' && this.#options.spaFallback && acceptsHtml(headers['accept'])) {
+            if (
+                result.kind === 'not-found' &&
+                this.#options.spaFallback &&
+                acceptsHtml(ACCEPT.get(headers) ?? undefined)
+            ) {
                 const indexName = this.#options.indexNames?.[0] ?? DEFAULT_INDEX_NAMES[0];
                 const index = await this.#resolver.resolve(indexName, {
                     acceptEncoding: undefined,
@@ -213,6 +260,7 @@ export class StaticResourceHandler {
                 });
                 if (index.kind === 'ok') {
                     result = index;
+                    spaFallbackServed = true;
                 }
             }
             if (result.kind !== 'ok') {
@@ -249,6 +297,12 @@ export class StaticResourceHandler {
         if (result.variantAware) {
             successHeaders[VARY.name] = 'Accept-Encoding';
         }
+        if (spaFallbackServed) {
+            // Extend (never overwrite) any existing Vary value so the shared
+            // cache keys the fallback on both variant dimensions.
+            successHeaders[VARY.name] =
+                successHeaders[VARY.name] === undefined ? 'Accept' : `${successHeaders[VARY.name]}, Accept`;
+        }
         if (etag) {
             successHeaders[ETAG.name] = etag;
         }
@@ -269,8 +323,11 @@ export class StaticResourceHandler {
             return;
         }
 
-        if (fileBacked && typeof headers['range'] === 'string') {
-            const range = parseSingleRange(headers['range'], result.size ?? 0);
+        const rangeHeader = RANGE.get(headers);
+        // COR-20: a stale If-Range validator cancels the range entirely (full
+        // 200), per RFC 7233 §3.2.
+        if (fileBacked && rangeHeader !== null && ifRangeMatches(headers, result) !== false) {
+            const range = parseSingleRange(rangeHeader, result.size ?? 0);
             if (range === 'unsatisfiable') {
                 this.#send(
                     res,

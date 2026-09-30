@@ -9,6 +9,7 @@
  */
 import { describe, test, expect, vi } from 'vitest';
 import { parseSecretMarker, SecretCipher } from '../src/secret-cipher';
+import { FrameworkError } from '@blue/core';
 import { SecretSchemeRegistry } from '../src/secret-scheme-registry';
 import { StandardEnvironment } from '../src/environment';
 
@@ -63,6 +64,21 @@ describe('parseSecretMarker', () => {
         expect(parseSecretMarker('{UPPER:x}')).toBeNull(); // scheme charset
         expect(parseSecretMarker('')).toBeNull();
         expect(parseSecretMarker(undefined as unknown as string)).toBeNull();
+    });
+
+    test('fails loud on a non-conforming numeric version segment', () => {
+        // A segment after `scheme:` claims to be the version; a numeric one
+        // such as `1` must not be silently folded into the payload.
+        expect(() => parseSecretMarker('{cipher:1:payload}')).toThrow(FrameworkError);
+        expect(() => parseSecretMarker('{cipher:123:payload}')).toThrow(/Malformed secret marker/);
+    });
+
+    test('parses a conforming letter-first version segment', () => {
+        expect(parseSecretMarker('{cipher:v1:payload}')).toEqual({
+            scheme: 'cipher',
+            version: 'v1',
+            payload: 'payload',
+        });
     });
 
     test('payload may contain colons (scheme payload carries the rest)', () => {

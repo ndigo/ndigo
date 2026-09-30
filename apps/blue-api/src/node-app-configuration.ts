@@ -9,6 +9,7 @@ import { resolve } from 'node:path';
 import { configuration, entry, profile, Profile } from '@blue/context';
 import { StaticContentSource } from '@blue/content';
 import { MediaTypes } from '@blue/core';
+import { HTTPHeaders } from '@blue/http';
 import { StaticController, SOCKET_REQUEST_AUTHENTICATOR, type SocketRequestAuthenticator } from '@blue/platform-node';
 import type { SocketRequestSources } from '@blue/dispatcher';
 import {
@@ -47,13 +48,10 @@ function upgradeToken(sources: SocketRequestSources): string | null {
     if (typeof fromQuery === 'string' && fromQuery !== '') {
         return fromQuery;
     }
-    const authorization = sources.headers['authorization'];
+    const authorization = HTTPHeaders.AUTHORIZATION.get(sources.headers);
     const header = Array.isArray(authorization) ? authorization[0] : authorization;
-    if (typeof header === 'string' && header.startsWith('Bearer ')) {
-        const token = header.slice('Bearer '.length).trim();
-        return token === '' ? null : token;
-    }
-    return null;
+    const bearer = HTTPHeaders.AUTHORIZATION.bearerToken(header);
+    return bearer ?? null;
 }
 
 @configuration

@@ -75,7 +75,7 @@ The default language configured for this source.
 
 ### getContent()
 
-> **getContent**(`key`, `language`): `string`
+> **getContent**(`key`, `language`): `Promise`\<`string`\>
 
 Resolves content using the language from the Accept-Language header.
 
@@ -100,7 +100,7 @@ An `Accept-Language` header value or bare language code.
 
 #### Returns
 
-`string`
+`Promise`\<`string`\>
 
 The translated content, or the key when no translation is found.
 

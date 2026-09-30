@@ -14,7 +14,7 @@ import {
     likeRequestAwareHTTPInterceptor,
     likeResponseAwareHTTPInterceptor,
 } from './http-interceptor-guards';
-import type ResponseError from './response-error';
+import ResponseError from './response-error';
 import { isRequest } from './http-shared';
 import { likeResponse } from './like-response';
 import { is } from '@blue/util/types';
@@ -110,28 +110,43 @@ export class HTTPExecutionChain {
     }
 
     /**
-     * Runs the first error-aware interceptor that can recover from a failure.
+     * Runs the error-aware interceptors in order, accumulating a recovery.
+     *
+     * Interceptors that return `undefined` (they do not handle the error) let
+     * later interceptors run. An interceptor that returns a response recovers
+     * the request — and that recovery becomes the error context handed to the
+     * remaining interceptors (as a {@link ResponseError}), so a chain like
+     * `[Timeout, Retry]` can retry a timeout produced by an earlier
+     * interceptor, while `[Retry, Timeout]` still translates an abort into a
+     * 408. Interceptors that decline leave the most recent recovery in place.
      *
      * @param error - The request failure.
      * @param request - The request that failed.
      * @param http - The HTTP client executing the request.
-     * @returns A replacement response, or \`undefined\` when no interceptor handles the error.
+     * @returns The most recent replacement response, or \`undefined\` when no interceptor handles the error.
      */
     async applyPostError(error: Error, request: Request, http: HTTP): Promise<Response | undefined> {
         if (this.#hasErrorAwareInterceptors) {
             const interceptors = this.#interceptors,
                 length = interceptors.length;
-            let index = 0;
+            let currentError: Error = error;
+            let recovered: Response | undefined;
+
             if (length) {
-                for (; index < length; index++) {
+                for (let index = 0; index < length; index++) {
                     const interceptor = interceptors[index];
                     if (likeErrorAwareHTTPInterceptor(interceptor)) {
-                        // First error-aware interceptor wins; later interceptors must not run.
                         // oxlint-disable-next-line no-await-in-loop
-                        return await interceptor.postError(error, request, http);
+                        const result = await interceptor.postError(currentError, request, http);
+                        if (result !== undefined) {
+                            recovered = result;
+                            currentError = new ResponseError(result, result.statusText);
+                        }
                     }
                 }
             }
+
+            return recovered;
         }
     }
 

@@ -62,8 +62,10 @@ export function validateRateLimitPolicy(policy: RateLimitPolicy, where = 'rate l
  * In-memory fixed-window reference implementation: one counter per
  * (key, window) pair, sliding to a fresh window once `windowMs` elapses.
  *
- * Memory is bounded: expired buckets are swept opportunistically once the
- * map passes `maxEntries` (default 10 000).
+ * Memory is bounded: expired buckets are swept once the map passes
+ * `maxEntries` (default 10 000); at the cap with no expired buckets the
+ * oldest bucket is evicted, so `size` never exceeds `maxEntries` and new
+ * keys stay ~O(1) to insert (SEC-2).
  */
 export class FixedWindowRateLimiter implements RateLimiter {
     readonly kind = 'fixed-window';
@@ -86,8 +88,23 @@ export class FixedWindowRateLimiter implements RateLimiter {
         const bucketKey = `${policy.windowMs}:${key}`;
         let bucket = this.#buckets.get(bucketKey);
         if (!bucket || bucket.windowStart + bucket.windowMs <= now) {
+            if (this.#buckets.size >= this.#maxEntries) {
+                this.#sweep(now);
+                // SEC-2: the sweep reclaims only *expired* buckets; a flood of
+                // live distinct keys would otherwise grow the map without
+                // bound and turn every new key into an O(n) no-op sweep —
+                // the limiter itself becoming a DoS amplifier. Rate-limit
+                // state is a cache, not durable accounting: at the cap the
+                // oldest bucket is evicted deterministically, keeping the
+                // documented memory bound and insertion ~O(1).
+                if (this.#buckets.size >= this.#maxEntries) {
+                    const oldest = this.#buckets.keys().next();
+                    if (!oldest.done) {
+                        this.#buckets.delete(oldest.value as string);
+                    }
+                }
+            }
             bucket = { windowStart: now, windowMs: policy.windowMs, count: 0 };
-            if (this.#buckets.size >= this.#maxEntries) this.#sweep(now);
             this.#buckets.set(bucketKey, bucket);
         }
         bucket.count += 1;

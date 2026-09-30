@@ -152,6 +152,57 @@ describe('HostManager', () => {
         expect(recorder.setGauge).toHaveBeenCalledWith('catalog', 'catalog.isMounted', 1);
     });
 
+    test('it should report a failed lazy activation through the sink, not drop it', async () => {
+        const recorder = { incrementCounter: vi.fn(), setGauge: vi.fn() };
+        const onActivationError = vi.fn();
+        const { host } = createHost({ metricRecorder: recorder, onActivationError });
+
+        const boom = new Error('loader boom');
+        host.registerFeature({
+            name: 'broken',
+            prefix: '/broken',
+            loader: () => Promise.reject(boom),
+        });
+
+        host.navigate('/broken');
+
+        // Let the fire-and-forget activation settle; the rejection must be
+        // observed via the sink rather than surfacing as an unhandled error.
+        await vi.waitFor(() => {
+            expect(onActivationError).toHaveBeenCalledTimes(1);
+        });
+
+        expect(onActivationError.mock.calls[0]?.[0]).toBe('broken');
+        expect(onActivationError.mock.calls[0]?.[1]).toBe(boom);
+        expect(recorder.incrementCounter).toHaveBeenCalledWith('broken', 'broken.activationErrorCount');
+
+        // The routing registry's active flag is retained — retry on next activate.
+        expect(host.activeFeature).toBe('broken');
+    });
+
+    test('it should report a lazy activation rejected by dependency validation', async () => {
+        const onActivationError = vi.fn();
+        const { host, shellContext } = createHost({ onActivationError });
+        shellContext.setValue(SHARED_DEPENDENCY_REGISTRY_TOKEN, new DefaultSharedDependencyRegistry());
+
+        host.registerFeature({
+            name: 'checkout',
+            prefix: '/checkout',
+            loader: () => Promise.resolve({ createContext: (parent) => parent.newChild('lazy') }),
+            dependencies: { requires: { router: '^1.0.0' } },
+        });
+
+        host.navigate('/checkout');
+
+        await vi.waitFor(() => {
+            expect(onActivationError).toHaveBeenCalledTimes(1);
+        });
+
+        expect(onActivationError.mock.calls[0]?.[0]).toBe('checkout');
+        expect(onActivationError.mock.calls[0]?.[1]).toBeInstanceOf(TypeError);
+        expect(host.isMounted('checkout')).toBe(false);
+    });
+
     test('it should be resolvable from the shell context via HOST_MANAGER_TOKEN', () => {
         const { host, shellContext } = createHost();
 

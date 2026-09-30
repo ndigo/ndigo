@@ -27,7 +27,7 @@ export class HTTPResponseViewTargetInstrumentation extends AbstractBaseInstrumen
         this._wrap(
             HTTPResponseViewTarget.prototype,
             'commit',
-            this._patchAsync({
+            this._patch({
                 name: 'HTTPResponseViewTarget.commit',
                 kind: SpanKind.SERVER,
                 attributes: (_instance: unknown, args: unknown[]) => {

@@ -15,6 +15,7 @@ objects created on each retry call.
 ## Implements
 
 - [`ErrorAwareHTTPInterceptor`](../interfaces/ErrorAwareHTTPInterceptor.md)
+- [`RequestAwareHTTPInterceptor`](../interfaces/RequestAwareHTTPInterceptor.md)
 
 ## Constructors
 
@@ -79,3 +80,30 @@ A promise that resolves to the retried response, or `undefined`.
 #### Implementation of
 
 [`ErrorAwareHTTPInterceptor`](../interfaces/ErrorAwareHTTPInterceptor.md).[`postError`](../interfaces/ErrorAwareHTTPInterceptor.md#posterror)
+
+***
+
+### preRequest()
+
+> **preRequest**(`request`): `Promise`\<`void` \| `Request`\>
+
+Captures an undisturbed clone of each outgoing request so a later
+retry can re-issue it with the original body intact.
+
+#### Parameters
+
+##### request
+
+`Request`
+
+The request being sent.
+
+#### Returns
+
+`Promise`\<`void` \| `Request`\>
+
+Nothing; the request passes through unchanged.
+
+#### Implementation of
+
+[`RequestAwareHTTPInterceptor`](../interfaces/RequestAwareHTTPInterceptor.md).[`preRequest`](../interfaces/RequestAwareHTTPInterceptor.md#prerequest)

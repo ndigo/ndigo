@@ -139,10 +139,11 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
     }
 
     /**
-     * Returns an asynchronous patch function that wraps the original method
-     * in an active span with the given configuration.
+     * Returns a patch function that wraps the original method in an active
+     * span with the given configuration. Async by convention; the sync
+     * variant is the explicitly-named `_patchSync`.
      */
-    protected _patchAsync(config: SpanConfig) {
+    protected _patch(config: SpanConfig) {
         return <This, Args extends unknown[], Return>(
             original: (this: This, ...args: Args) => Promise<Return>
         ): ((this: This, ...args: Args) => Promise<Return>) => {

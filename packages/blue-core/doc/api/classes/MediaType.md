@@ -200,6 +200,23 @@ interceptor (Wave 6, 2026-09-27).
 
 `number`
 
+***
+
+### registrySize
+
+#### Get Signature
+
+> **get** `static` **registrySize**(): `number`
+
+Number of instances currently held by the process-wide intern
+registry: the permanent registered entries plus the bounded
+parameterless and parameterized caches. Exposed so the registry's
+boundedness is observable in tests (DSG-1, SEC-7).
+
+##### Returns
+
+`number`
+
 ## Methods
 
 ### compareTo()
@@ -491,8 +508,10 @@ The parsed media types (empty when absent or all-malformed).
 Registers/retrieves a media type by authored components, guaranteed
 non-null: the interned-registry path for programmatic construction
 (`MediaTypes.*` constants) where a missing entry is a programming
-error, not a parse outcome. Use [MediaType.for](#for) for parsing
-user/header values — those can legitimately return `null`.
+error, not a parse outcome. Registered entries are interned
+process-lifetime — they are exempt from the bounded FIFO caches that
+cap parse-originated entries (SEC-7). Use [MediaType.for](#for) for
+parsing user/header values — those can legitimately return `null`.
 
 #### Parameters
 

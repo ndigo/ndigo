@@ -20,11 +20,14 @@ Register alongside `NodeAutoConfiguration` in a Node application:
 const app = new ApplicationBuilder([NodeAutoConfiguration, ManagementAutoConfiguration]);
 ```
 
-The endpoints are **open by default** — on an untrusted network, pass a
-guard to `ManagementAutoConfiguration(options)` (e.g. the auth-server's
-`AuthRouteGuard` or any `RouteHandlerInterceptor`) so `/metrics` and
-`/health` require authentication, and/or firewall the management routes at
-the network boundary.
+The endpoints are **open by default** — on an untrusted network, pass an
+*unconditional* guard (a token-presence / token-adapter
+`RouteHandlerInterceptor`; metadata-driven guards like the auth-server's
+`AuthRouteGuard` cannot protect these handlers, which carry no
+`@authenticated`/`@authorized` metadata) to
+`ManagementAutoConfiguration(options)` so `/metrics` and `/health`
+require authentication, and/or firewall the management routes at the
+network boundary.
 
 ## Since
 

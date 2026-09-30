@@ -26,7 +26,7 @@ describe('telemetry decorators (TC39)', () => {
 
     class TraceAsyncService {
         @traced()
-        async runAsync(value: string): Promise<string> {
+        async run(value: string): Promise<string> {
             return value;
         }
     }
@@ -47,11 +47,11 @@ describe('telemetry decorators (TC39)', () => {
 
     it('stores trace metadata for @traced()', async () => {
         const instance = new TraceAsyncService();
-        const result = await instance.runAsync('ok');
+        const result = await instance.run('ok');
 
         expect(result).toBe('ok');
-        expect(hasTraced(instance, 'runAsync')).toBe(true);
-        expect(getTraced(instance, 'runAsync')).toBe('runAsync');
+        expect(hasTraced(instance, 'run')).toBe(true);
+        expect(getTraced(instance, 'run')).toBe('run');
     });
 
     it('stores trace metadata for @traced(name)', () => {

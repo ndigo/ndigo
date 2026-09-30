@@ -31,7 +31,7 @@ class LocaleSwitcherView extends HTMLElement {
      */
     set messages(source: unknown) {
         this.#messages = likeMessageSource(source) ? source : null;
-        this._render();
+        void this._render();
     }
 
     constructor() {
@@ -54,9 +54,9 @@ class LocaleSwitcherView extends HTMLElement {
         // Reactive: re-render whenever the locale signal changes.
         this.#stop = effect(() => {
             void currentLocale.value;
-            this._render();
+            void this._render();
         });
-        this._render();
+        void this._render();
     }
 
     disconnectedCallback() {
@@ -65,13 +65,13 @@ class LocaleSwitcherView extends HTMLElement {
     }
 
     /** Updates the label for the current locale. */
-    _render(): void {
+    async _render(): Promise<void> {
         if (!this.$label) {
             return;
         }
         const locale = currentLocale.value;
         const message = this.#messages
-            ? this.#messages.getMessage('locale.current', { values: { language: locale.toUpperCase() } }, locale)
+            ? await this.#messages.getMessage('locale.current', { values: { language: locale.toUpperCase() } }, locale)
             : locale;
         this.$label.textContent = message;
     }

@@ -19,8 +19,17 @@ export interface BrowserTelemetryConfig {
      * OTLP/HTTP trace endpoint (e.g. a local OpenTelemetry Collector:
      * `http://localhost:4318/v1/traces`). When set, spans are exported
      * there; otherwise the console exporter is used (dev posture).
+     * A configured `traceUrl` always enables trace export, even when
+     * `useConsoleExporters` is `false`.
      */
     traceUrl?: string;
+    /**
+     * When `false`, disables the console exporters. This is NOT a global
+     * "export off" switch: a configured `traceUrl` still exports spans over
+     * OTLP/HTTP regardless of this flag (console and OTLP are independent).
+     * No OTLP targets exist for metrics or logs, so those signals are gated
+     * solely by this flag and remain console-only.
+     */
     useConsoleExporters?: boolean;
     minimumSeverity?: SeverityNumber;
     enableDiagnostics?: boolean;
@@ -42,14 +51,16 @@ export function configureBrowserTelemetry(config: BrowserTelemetryConfig): void 
 
     // OpenTelemetry SDK 2.x: processors/readers are constructor options and
     // global registration uses the API registry (providers no longer self-register).
-    const traceProcessors: SimpleSpanProcessor[] =
-        config.useConsoleExporters === false
-            ? []
-            : [
-                  new SimpleSpanProcessor(
-                      config.traceUrl ? new OTLPTraceExporter({ url: config.traceUrl }) : new ConsoleSpanExporter()
-                  ),
-              ];
+    // Console exporters are gated by `useConsoleExporters`, but OTLP trace
+    // export is independent: a configured `traceUrl` always exports spans.
+    const spanExportEnabled = config.useConsoleExporters !== false || config.traceUrl !== undefined;
+    const traceProcessors: SimpleSpanProcessor[] = spanExportEnabled
+        ? [
+              new SimpleSpanProcessor(
+                  config.traceUrl ? new OTLPTraceExporter({ url: config.traceUrl }) : new ConsoleSpanExporter()
+              ),
+          ]
+        : [];
     const tracerProvider = new BasicTracerProvider({
         resource,
         spanProcessors: traceProcessors,

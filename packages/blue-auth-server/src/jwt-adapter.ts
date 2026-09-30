@@ -182,12 +182,10 @@ export class JWTAdapter implements AuthAdapter {
     async validate(token: string): Promise<Principal | null> {
         try {
             const key = await this.#resolveKey();
-            // jose's jwtVerify has separate overloads for a concrete key vs a
-            // JWKS getKey function — pick the overload by runtime kind.
-            const { payload } =
-                typeof key === 'function'
-                    ? await jwtVerify(token, key, this.#verifyOptions())
-                    : await jwtVerify(token, key, this.#verifyOptions());
+            // jose's jwtVerify overloads (a concrete key vs a JWKS getKey
+            // function) resolve statically on the `Uint8Array | JWTVerifyGetKey`
+            // union — a single call picks the union-aware overload.
+            const { payload } = await jwtVerify(token, key, this.#verifyOptions());
 
             // AD-33 D-7: framework-issued tokens carry `ver`; when a store is
             // wired, the claim must equal the account's current version.
@@ -305,10 +303,14 @@ export class JWTAdapter implements AuthAdapter {
         if (!user || user.disabled === true) {
             throw new JWTTokenError('Account unknown or disabled');
         }
-        if (payload.ver !== (user.tokenVersion ?? 0)) {
+        // SEC-6: a compare-and-swap closes the check-then-bump TOCTOU. The
+        // version advances only if it is still `payload.ver`; a concurrent
+        // rotation that bumps it in between makes this refresh lose the race
+        // (CAS returns null) instead of both refreshes succeeding.
+        const nextVer = await store.incrementTokenVersionIfCurrent(user.id, payload.ver);
+        if (nextVer === null) {
             throw new JWTTokenError('Refresh token superseded or revoked');
         }
-        const nextVer = await store.incrementTokenVersion(user.id);
         this.#cacheVersion(user.id, nextVer);
         const issued = await this.issueTokens({ id: user.id });
         return {

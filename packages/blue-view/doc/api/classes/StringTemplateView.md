@@ -8,6 +8,17 @@
 
 Renders a simple string template into HTML by replacing {{variable}} placeholders.
 
+**Warning — RAW interpolation, security-sensitive.** Model values are
+interpolated into the output without any HTML escaping. If a model value can
+be influenced by end users, an unescaped `<script>`/attribute payload could
+execute in the browser (stored/reflected XSS). Callers **must** pre-escape
+HTML for any model value that is not fully trusted before passing it to this
+view (or render user HTML through a dedicated slot like EJS `<%- … %>`). This
+is a known, documented gap — see
+`docs/migrations/Wave_3_Content_Negotiation_and_Template_View_Contract.md`.
+This view renders HTML snippets (e.g. `{{title}}` → `&lt;em&gt;Hi&lt;/em&gt;`)
+and intentionally does not encode, so escaping is the caller's responsibility.
+
 ## Param
 
 **path**

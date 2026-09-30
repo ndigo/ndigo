@@ -16,9 +16,6 @@ export interface EJSTemplateEngineOptions {
     options?: ejs.Options;
 }
 
-/** A compiled EJS template function: model in, rendered string out. */
-type CompiledTemplate = (data: object) => string;
-
 /** Cap on concurrently compiled template sources. */
 const MAX_COMPILED = 64;
 
@@ -31,6 +28,11 @@ const MAX_COMPILED = 64;
  * `ResourceLoader` (see `@blue/context`), keeping this package free of
  * platform I/O.
  *
+ * Templates are compiled in **async mode** (`async: true`): methods are async
+ * by convention in BlueJS, so locale helpers like `t` resolve to promises and
+ * template expressions await them (`<%= await t('key') %>`). Plain synchronous
+ * interpolations are unaffected.
+ *
  * Templates are **compiled once per source string** and the compiled function
  * reused for every subsequent render — `ejs.render` re-compiles on every call,
  * and ejs's own cache requires a `filename` (+ `cache: true`), which the
@@ -42,10 +44,12 @@ const MAX_COMPILED = 64;
  */
 export class EJSTemplateEngine {
     readonly #options: ejs.Options;
-    readonly #compiled = new Map<string, CompiledTemplate>();
+    readonly #compiled = new Map<string, ejs.AsyncTemplateFunction>();
 
     constructor(options: EJSTemplateEngineOptions = {}) {
-        this.#options = options.options ?? {};
+        // `async: true` is non-negotiable: locale helpers resolve to promises,
+        // so `await` must be legal in template bodies.
+        this.#options = { ...options.options, async: true };
     }
 
     /**
@@ -58,8 +62,10 @@ export class EJSTemplateEngine {
     async render(template: string, model: object | null | undefined): Promise<string> {
         let compiled = this.#compiled.get(template);
         if (compiled === undefined) {
-            const compileSync = ejs.compile as (source: string, options?: ejs.Options) => CompiledTemplate;
-            compiled = compileSync(template, this.#options);
+            const asyncOptions = this.#options as ejs.Options & { async: true; client?: false };
+            // Options always carry `async: true` (forced in the constructor),
+            // so the compile overload resolution picks the async template fn.
+            compiled = ejs.compile(template, asyncOptions) as ejs.AsyncTemplateFunction;
             if (this.#compiled.size >= MAX_COMPILED) {
                 this.#compiled.clear();
             }

@@ -413,12 +413,16 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             });
             websocket.on('error', () => undefined);
             websocket.shouldHandle = (req: IncomingMessage): boolean => {
-                // SEC-10: the upgrade path runs the same header/cookie bound
-                // as `handleRequest` (Node's 16 KiB `maxHeaderSize` is the
-                // only other bound). A `false` return aborts the handshake
-                // with `400` — an oversized handshake is never upgraded.
+                // SEC-10/SEC-3: the upgrade path runs the same header/cookie
+                // bounds as `handleRequest` (Node's 16 KiB `maxHeaderSize`
+                // is the only other bound). A `false` return aborts the
+                // handshake with `400` — an oversized handshake is never
+                // upgraded, and a cookie-bound `RangeError` can never escape
+                // the handshake.
+                let cookies: Record<string, string>;
                 try {
                     this.#assertHeaderLimits(req);
+                    cookies = this.#parseRequestCookies(req);
                 } catch {
                     return false;
                 }
@@ -443,7 +447,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 const sources: SocketRequestSources = {
                     query,
                     headers: req.headers as Record<string, string | string[] | undefined>,
-                    cookies: parseCookies(HTTPHeaders.COOKIE.get(req.headers) ?? undefined),
+                    cookies,
                 };
                 const accepts = this.#findSocketHandler(path, query) !== null;
                 // Only track accepted upgrades: when `shouldHandle` returns
@@ -574,7 +578,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                     cookies: sources.cookies,
                     session: {},
                 },
-                [ACCEPT_LANGUAGE_ATTRIBUTE]: sources.headers['accept-language'],
+                [ACCEPT_LANGUAGE_ATTRIBUTE]: HTTPHeaders.ACCEPT_LANGUAGE.get(sources.headers) ?? undefined,
             },
             length: 0,
         };
@@ -835,14 +839,37 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             clients?.forEach((client) => client.close(1001, 'server shutting down'));
         }
         this.#socketRegistry.stop();
+        // COR-14: `server.close()` resolves only once every connection ends —
+        // an open SSE stream, slow download, or stalled request would hang
+        // `close()` forever. Arm the drain deadline *before* the wait and race
+        // it: when the deadline wins, destroy the remaining connections and
+        // let the server's own completion callback resolve the await.
+        const deadline = this.#limits.shutdownTimeoutMs;
+        const forceClose = deadline > 0 && typeof server.closeAllConnections === 'function';
         await new Promise<void>((resolve) => {
-            server.close(() => resolve());
+            let timer: NodeJS.Timeout | null = null;
+            let finished = false;
+            const finish = (): void => {
+                if (finished) {
+                    return;
+                }
+                finished = true;
+                if (timer !== null) {
+                    clearTimeout(timer);
+                    timer = null;
+                }
+                resolve();
+            };
+            server.close(() => finish());
+            if (forceClose && !finished) {
+                timer = setTimeout(() => {
+                    if (!finished) {
+                        server.closeAllConnections();
+                    }
+                }, deadline);
+                timer.unref?.();
+            }
         });
-        // `closeAllConnections` requires Node 18.2+; guard for older runtimes.
-        if (this.#limits.shutdownTimeoutMs > 0 && typeof server.closeAllConnections === 'function') {
-            const timer = setTimeout(() => server.closeAllConnections(), this.#limits.shutdownTimeoutMs);
-            timer.unref?.();
-        }
     }
 
     async handleRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
@@ -862,7 +889,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             const nodeRequest: NodeRequest = {
                 headers: req.headers as Record<string, string | string[] | undefined>,
                 body: bodyRecord,
-                cookies: parseCookies(HTTPHeaders.COOKIE.get(req.headers) ?? undefined),
+                cookies: this.#parseRequestCookies(req),
                 // AD-37: resolved through the trusted-proxy allowlist; the
                 // direct socket address stands unless the peer is trusted.
                 remoteAddress: resolveClientAddress(
@@ -937,7 +964,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                             status: 405,
                             instance: route.path,
                         },
-                        { Allow: allowed }
+                        { [HTTPHeaders.ALLOW.name]: allowed }
                     );
                     return;
                 }
@@ -1007,7 +1034,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         if (res.writableEnded || res.destroyed) return;
         const statusCode = denial.statusCode ?? 403;
         if (denial.redirect) {
-            res.writeHead(statusCode <= 399 ? 302 : statusCode, { Location: denial.redirect });
+            res.writeHead(statusCode <= 399 ? 302 : statusCode, { [HTTPHeaders.LOCATION.name]: denial.redirect });
             res.end();
             return;
         }
@@ -1025,7 +1052,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                     title: 'Unauthorized',
                     status: 401,
                 },
-                { 'WWW-Authenticate': 'Bearer' }
+                { [HTTPHeaders.WWW_AUTHENTICATE.name]: 'Bearer' }
             );
             return;
         }
@@ -1107,6 +1134,23 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             return new URL(url, `http://${host ?? 'localhost'}`);
         } catch {
             throw new RequestLimitError(400, 'malformed_url', `Malformed request URL: ${url}`);
+        }
+    }
+
+    /**
+     * Parses the request's `Cookie` header under the parser's bounds,
+     * re-classifying a bound violation (`RangeError` past 50 entries or
+     * 4 KiB values) as the same `431` {@link RequestLimitError} the
+     * header-size check produces — never a generic 500 (SEC-3).
+     */
+    #parseRequestCookies(req: IncomingMessage): Record<string, string> {
+        try {
+            return parseCookies(HTTPHeaders.COOKIE.get(req.headers) ?? undefined);
+        } catch (error) {
+            if (error instanceof RangeError) {
+                throw new RequestLimitError(431, 'headers_too_large', 'Cookie header exceeds the configured limit');
+            }
+            throw error;
         }
     }
 

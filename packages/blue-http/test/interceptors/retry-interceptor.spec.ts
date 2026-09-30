@@ -160,4 +160,35 @@ describe('RetryInterceptor', () => {
         expect(result?.status).toBe(200);
         expect(mockHTTP.request).toHaveBeenCalledTimes(1);
     });
+
+    test('should preserve the request body across retries (COR-7)', async () => {
+        const interceptor = new RetryInterceptor({ retryLimit: 1 });
+        const http = new HTTP([interceptor, new NotOKInterceptor()]);
+
+        let callCount = 0;
+        const bodies: string[] = [];
+        server.use(
+            mswHttp.post('http://localhost/retry/with-body', async ({ request }) => {
+                callCount++;
+                bodies.push(await request.text());
+                if (callCount === 1) {
+                    return HttpResponse.text('failed', { status: 503 });
+                }
+                return HttpResponse.text('success');
+            })
+        );
+
+        const response = await http.post('http://localhost/retry/with-body', {
+            headers: { 'content-type': 'text/plain' },
+            body: 'the-payload',
+        });
+
+        expect(response.status).toBe(200);
+        expect(await response.text()).toBe('success');
+        expect(callCount).toBe(2);
+
+        // Both attempts must deliver the original payload — the retried
+        // request must not be sent with an empty body.
+        expect(bodies).toEqual(['the-payload', 'the-payload']);
+    });
 });

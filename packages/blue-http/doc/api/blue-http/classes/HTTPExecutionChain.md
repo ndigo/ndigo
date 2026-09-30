@@ -146,7 +146,15 @@ The final response or error wrapper.
 
 > **applyPostError**(`error`, `request`, `http`): `Promise`\<`Response` \| `undefined`\>
 
-Runs the first error-aware interceptor that can recover from a failure.
+Runs the error-aware interceptors in order, accumulating a recovery.
+
+Interceptors that return `undefined` (they do not handle the error) let
+later interceptors run. An interceptor that returns a response recovers
+the request — and that recovery becomes the error context handed to the
+remaining interceptors (as a [ResponseError](#)), so a chain like
+`[Timeout, Retry]` can retry a timeout produced by an earlier
+interceptor, while `[Retry, Timeout]` still translates an abort into a
+408. Interceptors that decline leave the most recent recovery in place.
 
 #### Parameters
 
@@ -172,7 +180,7 @@ The HTTP client executing the request.
 
 `Promise`\<`Response` \| `undefined`\>
 
-A replacement response, or `undefined` when no interceptor handles the error.
+The most recent replacement response, or `undefined` when no interceptor handles the error.
 
 ***
 

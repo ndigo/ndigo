@@ -39,7 +39,11 @@ Returns the underlying converter registry.
 
 > **canConvert**(`sourceType`, `targetType`): `boolean`
 
-Checks whether a converter exists for the given source/target type pair.
+Checks whether a converter exists for the given source/target type
+pair, mirroring [convert](#convert)'s lookup: a pair is convertible when
+an exactly-registered converter exists, or a String-source converter
+is registered for the target type (the environment/config binding
+fallback `convert` applies). Schema targets are always convertible.
 
 #### Parameters
 

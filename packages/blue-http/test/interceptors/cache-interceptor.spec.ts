@@ -166,4 +166,70 @@ describe('CacheInterceptor', () => {
         await httpClient.get('http://localhost/notfound');
         expect(callCount).toBe(2);
     });
+
+    test('should never serve a POST response to a later GET (SEC-8)', async () => {
+        const interceptor = new CacheInterceptor();
+        const httpClient = new HTTP([interceptor]);
+
+        let postCount = 0;
+        let getCount = 0;
+        server.use(
+            http.post('*/same-url', () => {
+                postCount++;
+                return HttpResponse.json({ message: 'post response' });
+            }),
+            http.get('*/same-url', () => {
+                getCount++;
+                return HttpResponse.json({ message: 'get response' });
+            })
+        );
+
+        await httpClient.post('http://localhost/same-url', { body: 'payload' });
+        expect(postCount).toBe(1);
+
+        // The GET must hit the network and receive the GET handler's body —
+        // not the POST payload cached under a GET-derived key.
+        const getResponse = await httpClient.get('http://localhost/same-url');
+        expect(getCount).toBe(1);
+        expect(await getResponse.json()).toEqual({ message: 'get response' });
+
+        // A second GET is served from the GET cache entry.
+        const cached = await httpClient.get('http://localhost/same-url');
+        expect(getCount).toBe(1);
+        expect(await cached.json()).toEqual({ message: 'get response' });
+    });
+
+    test('should not cache credentialed responses or serve them cross-user (SEC-8)', async () => {
+        const interceptor = new CacheInterceptor();
+        const httpClient = new HTTP([interceptor]);
+
+        let callCount = 0;
+        server.use(
+            http.get('*/me', ({ request }) => {
+                callCount++;
+                return HttpResponse.json({ user: request.headers.get('authorization') });
+            })
+        );
+
+        // User A's authenticated GET is never written to the shared cache.
+        const userA = await httpClient.get('http://localhost/me', {
+            headers: { Authorization: 'Bearer user-a' },
+        });
+        expect(await userA.json()).toEqual({ user: 'Bearer user-a' });
+
+        // User B (no credentials) must hit the network, not user A's payload.
+        const userB = await httpClient.get('http://localhost/me');
+        expect(callCount).toBe(2);
+        expect(await userB.json()).toEqual({ user: null });
+
+        // And a credentialed request is never served a prior cached response:
+        // a client with a warm cache still goes to the network.
+        const warm = new HTTP([new CacheInterceptor()]);
+        await warm.get('http://localhost/me');
+        const authed = await warm.get('http://localhost/me', {
+            headers: { Authorization: 'Bearer user-a' },
+        });
+        expect(await authed.json()).toEqual({ user: 'Bearer user-a' });
+        expect(callCount).toBe(4);
+    });
 });

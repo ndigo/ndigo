@@ -10,7 +10,7 @@ An error that represents a failure to retrieve a required [Route](#) property.
 
 ## Extends
 
-- `FrameworkError`
+- [`FrameworkError`](#)
 
 ## Constructors
 

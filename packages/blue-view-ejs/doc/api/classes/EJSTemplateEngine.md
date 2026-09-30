@@ -14,6 +14,11 @@ environment. File resolution for path-backed views is owned by an injected
 `ResourceLoader` (see `@blue/context`), keeping this package free of
 platform I/O.
 
+Templates are compiled in **async mode** (`async: true`): methods are async
+by convention in BlueJS, so locale helpers like `t` resolve to promises and
+template expressions await them (`<%= await t('key') %>`). Plain synchronous
+interpolations are unaffected.
+
 Templates are **compiled once per source string** and the compiled function
 reused for every subsequent render — `ejs.render` re-compiles on every call,
 and ejs's own cache requires a `filename` (+ `cache: true`), which the

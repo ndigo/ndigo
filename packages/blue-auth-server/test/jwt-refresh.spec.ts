@@ -156,6 +156,21 @@ describe('JWTAdapter refresh rotation (AD-33 D-7)', () => {
         await expect(adapter.validate(accessToken)).resolves.toBeNull();
     });
 
+    test('concurrent refreshes of one token: exactly one wins (SEC-6 CAS)', async () => {
+        const { adapter, userStore } = buildAdapter();
+        const { refreshToken } = await adapter.issueTokens({ id: 'alice' });
+        const results = await Promise.allSettled([adapter.refresh(refreshToken), adapter.refresh(refreshToken)]);
+        const ok = results.filter((r) => r.status === 'fulfilled');
+        const rejected = results.filter((r) => r.status === 'rejected');
+        expect(ok).toHaveLength(1);
+        expect(rejected).toHaveLength(1);
+        const reason = rejected[0].reason;
+        expect(reason).toBeInstanceOf(JWTTokenError);
+        expect((reason as Error).message).toMatch(/superseded|revoked/i);
+        // The family advanced exactly once — one atomic bump, not two.
+        expect((await userStore.findById('alice'))?.tokenVersion).toBe(4);
+    });
+
     test('an access token cannot be used as refresh input', async () => {
         const { adapter } = buildAdapter();
         const { accessToken } = await adapter.issueTokens({ id: 'alice' });

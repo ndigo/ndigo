@@ -596,9 +596,11 @@ The registered event types.
 
 ### getContent()
 
-> **getContent**(`key`, `language`): `string`
+> **getContent**(`key`, `language`): `Promise`\<`string`\>
 
 Resolves content locally and then delegates to the parent if needed.
+Missing content resolves to the key itself, matching the content
+layer's fallback convention.
 
 #### Parameters
 
@@ -616,7 +618,7 @@ The language identifier.
 
 #### Returns
 
-`string`
+`Promise`\<`string`\>
 
 The resolved content.
 
@@ -668,7 +670,7 @@ An instance of the value.
 
 ### getMessage()
 
-> **getMessage**(`key`, `params?`, `language?`): `string`
+> **getMessage**(`key`, `params?`, `language?`): `Promise`\<`string`\>
 
 Resolves and formats a message, delegating to the registered message
 source when present, the content source otherwise, and the parent
@@ -696,7 +698,7 @@ The language to use.
 
 #### Returns
 
-`string`
+`Promise`\<`string`\>
 
 The formatted message, or the key when nothing resolves it.
 

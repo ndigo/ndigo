@@ -5,6 +5,7 @@
  */
 import { FrameworkError, getSymbolMetadata } from '@blue/core';
 import type { ApplicationContext } from '@blue/context';
+import { TASK_SCHEDULER } from './context-tokens';
 import { SCHEDULED_METADATA_PREFIX } from './scheduled';
 import { NormalizedScheduledSpec } from './spec';
 import { scheduleFromSpec } from './schedule';
@@ -30,8 +31,12 @@ const likeNormalizedSpec = (value: unknown): value is NormalizedScheduledSpec =>
 /**
  * The context bean name the node platform registers its {@link TaskScheduler}
  * under.
+ *
+ * @deprecated Use the {@link TASK_SCHEDULER} {@link @blue/factory!ContextToken}
+ *   instead of a raw string for registry lookup (AD-34 D1). Kept as an alias
+ *   for compatibility with prior exported API.
  */
-export const TASK_SCHEDULER_BEAN = 'taskScheduler';
+export const TASK_SCHEDULER_BEAN = TASK_SCHEDULER.description;
 
 /**
  * Discovers `@scheduled` methods on application-context beans, registers
@@ -113,14 +118,14 @@ export class ScheduleRegistry {
                 'ScheduleRegistry: no application context — the container injects it via ApplicationContextAware before start'
             );
         }
-        if (!context.hasValue(TASK_SCHEDULER_BEAN)) {
+        if (!context.hasValue(TASK_SCHEDULER)) {
             throw new FrameworkError(
-                `ScheduleRegistry: no '${TASK_SCHEDULER_BEAN}' bean — register the Node auto-configuration (NodeAutoConfiguration) to provision the scheduler`
+                `ScheduleRegistry: no '${TASK_SCHEDULER.description}' bean — register the Node auto-configuration (NodeAutoConfiguration) to provision the scheduler`
             );
         }
-        const scheduler = context.getValue(TASK_SCHEDULER_BEAN);
+        const scheduler = context.getValue(TASK_SCHEDULER);
         if (!likeTaskScheduler(scheduler)) {
-            throw new FrameworkError(`ScheduleRegistry: '${TASK_SCHEDULER_BEAN}' is not a TaskScheduler`);
+            throw new FrameworkError(`ScheduleRegistry: '${TASK_SCHEDULER.description}' is not a TaskScheduler`);
         }
 
         this.#scheduler = scheduler;

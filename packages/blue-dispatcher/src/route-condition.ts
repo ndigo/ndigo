@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { Serializable, Equatable, JSONValue } from '@blue/core';
+import { Serializable, Equatable, JSONValue, Matchable } from '@blue/core';
 import { like } from '@blue/util/types';
 import { Route } from '@blue/router';
 
@@ -61,7 +61,7 @@ export const likeRouteCondition = like({ merge: Function, getMatchingCondition: 
 /**
  * Base class for parsed name/value expressions.
  */
-export abstract class AbstractNameValueExpression<T> implements NameValueExpression<T>, Serializable {
+export abstract class AbstractNameValueExpression<T> implements NameValueExpression<T>, Serializable, Matchable<Route> {
     readonly isNegated!: boolean;
     readonly name!: string;
     readonly value?: T;
@@ -119,6 +119,18 @@ export abstract class AbstractNameValueExpression<T> implements NameValueExpress
     match(route: Route): boolean {
         let isMatch = this.value ? this.matchValue(route) : this.matchName(route);
         return this.isNegated !== isMatch;
+    }
+
+    /**
+     * Implements {@link Matchable}: equivalent to {@link match}. Gives the
+     * matcher family (`RouteDefinition`, `PathRoute`, …) a single name
+     * (MTC-1).
+     *
+     * @param value - The route to test.
+     * @returns `true` when this expression matches the route.
+     */
+    matches(value: Route): boolean {
+        return this.match(value);
     }
 
     /**

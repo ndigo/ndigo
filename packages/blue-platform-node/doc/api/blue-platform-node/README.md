@@ -109,6 +109,7 @@ Jeff Rose
 
 - [argumentValueConverters](variables/argumentValueConverters.md)
 - [BLUE\_SECRET\_KEY](variables/BLUE_SECRET_KEY.md)
+- [CONVERSION\_SERVICE](variables/CONVERSION_SERVICE.md)
 - [CSRF\_COOKIE](variables/CSRF_COOKIE.md)
 - [DEFAULT\_HTTP\_REQUEST\_LIMITS](variables/DEFAULT_HTTP_REQUEST_LIMITS.md)
 - [DEFAULT\_MAX\_COOKIE\_VALUE\_BYTES](variables/DEFAULT_MAX_COOKIE_VALUE_BYTES.md)
@@ -150,6 +151,7 @@ Jeff Rose
 - [problemEntity](functions/problemEntity.md)
 - [rateLimit](functions/rateLimit.md)
 - [relativeSpecUrl](functions/relativeSpecUrl.md)
+- [renderSwaggerUiInitScript](functions/renderSwaggerUiInitScript.md)
 - [renderSwaggerUiPage](functions/renderSwaggerUiPage.md)
 - [resolveClientAddress](functions/resolveClientAddress.md)
 - [resolveConverter](functions/resolveConverter.md)

@@ -42,6 +42,16 @@ Explicit `operationId`; otherwise one is derived from method + path.
 
 ***
 
+### responses?
+
+> `optional` **responses?**: `Record`\<`string`, [`OpenAPIResponseDocs`](../type-aliases/OpenAPIResponseDocs.md)\>
+
+Optional per-status response documentation; bare schemas embed into
+`content['application/json']`. Without it the generator emits the
+default `200: { description: 'OK' }`.
+
+***
+
 ### summary?
 
 > `optional` **summary?**: `string`

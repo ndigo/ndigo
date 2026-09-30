@@ -98,6 +98,12 @@ class APIController {
     hidden(data: z.infer<typeof EchoSchema>) {
         return { data };
     }
+
+    @getMapping('/docs-response')
+    @apiDocs({ responses: { '200': EchoSchema, '404': { description: 'Not found' } } })
+    docsResponse() {
+        return { ok: true };
+    }
 }
 
 describe('OpenAPISpecGenerator (AD-35)', () => {
@@ -147,6 +153,23 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
         expect(schema.required).toEqual(['message', 'count']);
         expect(schema.properties.message.minLength).toBe(1);
         expect(schema.properties.count.type).toBe('integer');
+    });
+
+    it('embeds @apiDocs response schemas via the zod seam (AD-38 D-4)', () => {
+        const mapping = register(new APIController());
+        const doc = new OpenAPISpecGenerator().generate([mapping]);
+        const op = doc.paths['/api/docs-response'].get;
+        const response = op.responses['200'];
+        expect(response.description).toBe('OK');
+        const schema = response.content?.['application/json']?.schema;
+        expect(schema?.type).toBe('object');
+        expect(schema?.required).toEqual(['message', 'count']);
+        expect(schema?.properties?.message?.minLength).toBe(1);
+        // Object-form statuses pass their description through without content.
+        expect(op.responses['404']).toEqual({ description: 'Not found' });
+        // Handlers without declared responses keep the default.
+        const hello = doc.paths['/api/hello'].get;
+        expect(hello.responses['200']).toEqual({ description: 'OK' });
     });
 
     it('honors @apiDocs metadata and hidden exclusion', () => {

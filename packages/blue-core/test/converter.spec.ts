@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect, beforeEach } from 'vitest';
+import { z } from 'zod';
 import {
     ConverterRegistry,
     ConversionService,
@@ -428,5 +429,113 @@ describe('Integration: ConversionService + built-in converters', () => {
     test('converts comma-separated string to array', () => {
         const result = service.convert('a,b,c', Array) as string[];
         expect(result).toEqual(['a', 'b', 'c']);
+    });
+});
+
+describe('ConversionService schema targets (AD-38)', () => {
+    const noteSchema = z.object({
+        id: z.number(),
+        title: z.string(),
+        body: z.string().nullable(),
+    });
+    const noteDtoSchema = noteSchema
+        .pick({ id: true, title: true, body: true })
+        .transform(({ id, title, body }) => ({ id, title, summary: (body ?? '').slice(0, 20) || title }));
+
+    test('identity projection: same-shape schema returns an equivalent value', () => {
+        const service = createConversionService();
+        const source = { id: 1, title: 'a', body: 'b' };
+        expect(service.convert(source, noteSchema)).toEqual(source);
+    });
+
+    test('pick/omit: dropped fields are absent from the result', () => {
+        const result = createConversionService().convert(
+            { id: 1, title: 'a', body: 'b' },
+            noteSchema.pick({ id: true, title: true })
+        );
+        expect(result).toEqual({ id: 1, title: 'a' });
+        expect('body' in result).toBe(false);
+    });
+
+    test('transform computes a derived field from the source shape', () => {
+        const result = createConversionService().convert({ id: 1, title: 'hello', body: null }, noteDtoSchema);
+        expect(result).toEqual({ id: 1, title: 'hello', summary: 'hello' });
+    });
+
+    test('z.default fills a missing field', () => {
+        const schema = z.object({ name: z.string(), role: z.string().default('user') });
+        expect(createConversionService().convert({ name: 'a' }, schema)).toEqual({ name: 'a', role: 'user' });
+    });
+
+    test('nested schemas project nested objects', () => {
+        const schema = z.object({ user: z.object({ id: z.number(), email: z.string() }) });
+        expect(createConversionService().convert({ user: { id: 7, email: 'x@y.z', internal: true } }, schema)).toEqual({
+            user: { id: 7, email: 'x@y.z' },
+        });
+    });
+
+    test('z.coerce handles string-to-primitive leaf coercion', () => {
+        const schema = z.object({ count: z.coerce.number() });
+        expect(createConversionService().convert({ count: '42' }, schema)).toEqual({ count: 42 });
+    });
+
+    test('arrays convert via schema.array()', () => {
+        const service = createConversionService();
+        const sources = [
+            { id: 1, title: 'a', body: null },
+            { id: 2, title: 'b', body: 'x' },
+        ];
+        expect(service.convert(sources, noteSchema.array())).toHaveLength(2);
+        expect(service.convert([], noteSchema.array())).toEqual([]);
+        expect(() =>
+            service.convert(
+                [
+                    { id: 1, title: 'a' },
+                    { id: 'nope', title: 'b', body: null },
+                ],
+                noteSchema.array()
+            )
+        ).toThrow(z.ZodError);
+    });
+
+    test('fail-fast: missing or wrong-typed field throws the structured ZodError, no partial result', () => {
+        const service = createConversionService();
+        expect(() => service.convert({ id: 1 }, noteSchema)).toThrow(z.ZodError);
+        expect(() => service.convert({ id: 'not-a-number', title: 'a', body: null }, noteSchema)).toThrow(z.ZodError);
+        let error: unknown;
+        try {
+            service.convert({ id: 1 }, noteSchema);
+        } catch (caught) {
+            error = caught;
+        }
+        expect(error).toBeInstanceOf(z.ZodError);
+        expect((error as z.ZodError).issues.some((issue) => issue.path.join('.') === 'title')).toBe(true);
+    });
+
+    test('null/undefined follow the schema: nullable passes, non-nullable rejects', () => {
+        const service = createConversionService();
+        expect(service.convert({ id: 1, title: 'a', body: null }, noteSchema).body).toBeNull();
+        expect(() => service.convert({ id: 1, title: 'a', body: undefined }, noteSchema)).toThrow(z.ZodError);
+    });
+
+    test('canConvert reports schema targets as convertible', () => {
+        const service = createConversionService();
+        expect(service.canConvert(String, noteSchema)).toBe(true);
+        expect(service.canConvert(String, Date)).toBe(true);
+    });
+
+    test('constructor targets resolve by the value source type (source-aware lookup)', () => {
+        const service = createConversionService({
+            converters: [
+                { converter: { convert: (value: Date) => value.toISOString() }, sourceType: Date, targetType: String },
+            ],
+        });
+        expect(service.convert(new Date('2024-01-15T10:30:00.000Z'), String)).toBe('2024-01-15T10:30:00.000Z');
+    });
+
+    test('unconvertible object without a schema target throws, naming the source type', () => {
+        const service = createConversionService();
+        // Symbol has no registered converter (and no String fallback either).
+        expect(() => service.convert({ id: 1 }, Symbol)).toThrow('No converter registered for Object → Symbol');
     });
 });

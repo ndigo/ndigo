@@ -14,15 +14,11 @@
 
 Jeff Rose
 
-## Variables
+## Crypto
 
-- [default](variables/default.md)
+- [randomToken](functions/randomToken.md)
 
-## Functions
-
-- [like](functions/like.md)
-
-## References
+## Other
 
 ### is
 

@@ -8,17 +8,17 @@
 
 Resolves localized content for a given key and language.
 
-## Extended by
-
-- [`AsyncContentSource`](AsyncContentSource.md)
-
 ## Methods
 
 ### getContent()
 
-> **getContent**(`key`, `language`): `string`
+> **getContent**(`key`, `language`): `Promise`\<`string`\>
 
 Gets translated content for the requested key and language.
+
+Methods are async by default; implementations may be synchronous
+under the hood. Resolves to the content string, or the key itself
+when no translation exists.
 
 #### Parameters
 
@@ -36,6 +36,6 @@ The requested language code.
 
 #### Returns
 
-`string`
+`Promise`\<`string`\>
 
-The resolved content string.
+A promise of the resolved content string.

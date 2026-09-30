@@ -17,7 +17,7 @@ narrow the trusted set.
 
 ## Implements
 
-- `Matchable`\<`string`\>
+- [`Matchable`](#)\<`string`\>
 
 ## Constructors
 

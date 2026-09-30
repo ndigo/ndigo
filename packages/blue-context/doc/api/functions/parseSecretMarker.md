@@ -10,10 +10,13 @@
 
 Parses a secret marker in `{scheme[:version]:payload}` form.
 
-Returns `null` for any string that is not a well-formed marker — such
-values pass through the decrypt path untouched (never an error). A marker
-with an unknown scheme / version is the caller's business: decryption
-fails loud there.
+Returns `null` for any string that is not in marker form — such values
+pass through the decrypt path untouched. A marker that IS in marker form
+but has a malformed version segment (e.g. `{cipher:1:payload}`, where the
+version must be letter-first like `v1`) throws a [FrameworkError](#)
+instead of being silently folded into the payload. A marker with an
+unknown scheme / version is the caller's business: decryption fails loud
+there.
 
 ## Parameters
 

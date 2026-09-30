@@ -14,11 +14,11 @@ invoked against the route's `ServerResponse` in `preHandle`.
 instance, so every Node app gets the set without wiring) — the CORS
 short-circuit and CSRF denial run after it, and the fallback chain covers
 unmatched routes (404s and errors included).
-- **CSP `connect-src` admits bare `ws:`/`wss:`** by default so same-origin
-  WebSocket streams are not broken (D1); this also permits WebSockets to any
-  origin — scope it per app via the Helmet `contentSecurityPolicy` option
-  (`directives['connect-src']`) when the endpoint is not co-located with the
-  WebSocket server.
+- **CSP `connect-src` defaults to `'self'`** (SEC-4/D1), which covers
+  same-origin WebSocket streams under CSP3. A socket server on a different
+  host opts in by widening `directives['connect-src']` to
+  `wss://<ws-host>` via the Helmet `contentSecurityPolicy` option —
+  explicitly, never bare `ws:`/`wss:`.
 - Never denies: always returns `true`; skips when no response is attached
   (socket upgrades) or headers were already flushed.
 - Error handling: middleware invocation failures propagate synchronously

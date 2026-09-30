@@ -176,6 +176,11 @@ export abstract class AbstractWebComponent
             typeMap = new Map();
             this.#wrappedListeners.set(typeStr, typeMap);
         }
+        // Registering the same listener twice must be idempotent: the
+        // wrapped-listeners map and the DOM listener stay in sync, so a
+        // duplicate registration is a no-op instead of stacking a second DOM
+        // listener (which would fire the handler once per registration).
+        if (typeMap.has(listener as Function)) return this;
         typeMap.set(listener as Function, actualListener);
 
         this.addEventListener(typeStr, actualListener);

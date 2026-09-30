@@ -4,6 +4,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import { HTTPHeaders } from '@blue/http';
 import { NodeDispatcher } from '@blue/platform-node';
 import { getMethodNotAllowed } from '@blue/dispatcher';
 import {
@@ -246,7 +247,7 @@ export class MockHTTP {
             // round-trip). Parse/limit errors land in the catch below and map
             // to the same problem responses the live adapter writes.
             if (req.rawBody !== undefined) {
-                const contentType = String(req.headers?.['content-type'] ?? '').toLowerCase();
+                const contentType = String(HTTPHeaders.CONTENT_TYPE.get(req.headers ?? {}) ?? '').toLowerCase();
                 if (contentTypeBase(contentType) === MULTIPART_FORM_DATA) {
                     multipart = await parseMultipart(asIncoming(req.rawBody, req.headers ?? {}), {
                         limits: this.#multipartLimits,

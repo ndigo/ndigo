@@ -50,6 +50,14 @@ export interface HostManagerOptions {
      * Feature activation policy; defaults to `'tracked'`.
      */
     activationPolicy?: FeatureActivationPolicy;
+    /**
+     * Optional callback invoked when a dynamically loaded feature's
+     * activation fails — e.g. a rejected loader or dependency-validation
+     * failure. Receives the feature name and the rejected error. Only fired
+     * for the fire-and-forget lazy activation; the routing registry retains
+     * its retry-on-next-activate semantics.
+     */
+    onActivationError?: (name: string, error: unknown) => void;
 }
 
 /**
@@ -83,6 +91,8 @@ export class HostManager {
     #mountManager: FeatureContextMountManager;
     #routingRegistry: FeatureRoutingRegistry;
     #names: Set<string>;
+    #metricRecorder?: FeatureMetricRecorder;
+    #onActivationError?: (name: string, error: unknown) => void;
 
     /**
      * Creates the host orchestrator above `parent` (the shell context).
@@ -96,6 +106,8 @@ export class HostManager {
             metricRecorder: options.metricRecorder,
         });
         this.#names = new Set();
+        this.#metricRecorder = options.metricRecorder;
+        this.#onActivationError = options.onActivationError;
     }
 
     /**
@@ -131,7 +143,12 @@ export class HostManager {
             prefix,
             onActivate: () => {
                 if (options.loader) {
-                    void this.mountLazy(options.name);
+                    // Fire-and-forget: a failed lazy load must be observed,
+                    // not dropped as an unhandled rejection. The routing
+                    // registry's active-flag keeps retry-on-next-activate.
+                    void this.mountLazy(options.name).catch((error: unknown) => {
+                        this.#reportActivationError(options.name, error);
+                    });
                     return;
                 }
                 this.mount(options.name);
@@ -161,6 +178,17 @@ export class HostManager {
      */
     mountLazy(name: string): Promise<FeatureContextComposition> {
         return this.#mountManager.mountLazy(name);
+    }
+
+    /**
+     * Reports a failed lazy activation through the host's metric recorder and
+     * the optional {@link HostManagerOptions.onActivationError} handler, so a
+     * rejected loader never surfaces as an unhandled rejection. The routing
+     * registry retains its retry-on-next-activate semantics.
+     */
+    #reportActivationError(name: string, error: unknown): void {
+        this.#metricRecorder?.incrementCounter(name, `${name}.activationErrorCount`);
+        this.#onActivationError?.(name, error);
     }
 
     /**

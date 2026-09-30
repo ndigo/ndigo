@@ -7,8 +7,9 @@ import { describe, test, expect, beforeAll, beforeEach, afterAll } from 'vitest'
 import { GenericApplicationContext } from '@blue/context';
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { trace } from '@opentelemetry/api';
+import { TASK_SCHEDULER } from '../src/context-tokens';
 import { scheduled } from '../src/scheduled';
-import { ScheduleRegistry, TASK_SCHEDULER_BEAN } from '../src/schedule-registry';
+import { ScheduleRegistry } from '../src/schedule-registry';
 import { IntervalSchedule } from '../src/schedule';
 import { TaskScheduler } from '../src/task-scheduler';
 import { instrumentTask } from '../src/telemetry';
@@ -32,7 +33,7 @@ describe('@blue/scheduler lifecycle (container bean)', () => {
     beforeEach(() => {
         context = new GenericApplicationContext('test');
         scheduler = new TaskScheduler({ clock: () => T0 });
-        context.setValue(TASK_SCHEDULER_BEAN, scheduler);
+        context.setValue(TASK_SCHEDULER, scheduler);
     });
 
     afterEach(async () => {

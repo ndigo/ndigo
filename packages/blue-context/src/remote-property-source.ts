@@ -300,6 +300,10 @@ export class RemotePropertySource {
         } catch (err) {
             return this.#lastBody === null ? this.#handleBootFailure('<body>', err) : this.#keepLastGood(err);
         }
+        // Intentional no-dep exception (REUSE-5): `@blue/http`'s ETAG constant is not
+        // adopted to avoid adding a new base-package dependency for a single
+        // read. Fetch `Headers.get` is case-insensitive per spec, so the
+        // literal is spec-safe.
         const etag = response.headers.get('etag');
         if (etag) {
             this.#etag = etag;

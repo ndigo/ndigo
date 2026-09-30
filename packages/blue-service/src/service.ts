@@ -431,7 +431,15 @@ export class Service implements AsyncDestroyable {
         }
 
         const url = new URL(endpoint);
-        const correlationId = this.#correlation.getCorrelationId();
+
+        // Each call gets a FRESH correlation id for that call only: set it
+        // before stamping X-Correlation-ID (so the id is observable via
+        // getCorrelationId() for the duration of the call) and restore the
+        // previous value afterwards. Concurrent calls therefore carry
+        // distinct ids rather than reusing one id for the service lifetime.
+        const previousCorrelationId = this.#correlation.getCorrelationId();
+        const correlationId = this.#correlation.generateRequestId();
+        this.#correlation.setCorrelationId(correlationId);
 
         const headers = new Headers(init.headers);
         headers.set('X-Correlation-ID', correlationId);
@@ -446,6 +454,8 @@ export class Service implements AsyncDestroyable {
         } catch (error) {
             this.#telemetry.onError(error as Error);
             throw error;
+        } finally {
+            this.#correlation.setCorrelationId(previousCorrelationId);
         }
     }
 

@@ -35,8 +35,11 @@ const { freeze, keys } = Object,
     { parseFloat } = Number,
     typeRegistry = new Map<string, MediaType>(),
     PARAMETERIZED_CACHE_LIMIT = 128,
+    PARAMETERLESS_CACHE_LIMIT = 256,
     parameterizedRegistry = new Map<string, MediaType>(),
     parameterizedOrder: string[] = [],
+    parameterlessRegistry = new Map<string, MediaType>(),
+    parameterlessOrder: string[] = [],
     WILDCARD: SupportedMediaType = '*',
     QUALITY_FACTOR_PARAM = 'q';
 
@@ -110,17 +113,45 @@ const sortParameters = (value: MediaTypeParameters): MediaTypeParameters => {
 };
 
 /**
- * Returns the interned instance for `key`, constructing it via `factory`
- * on a miss. Parameterless expressions are interned process-lifetime in
- * `typeRegistry` (a finite type/subtype space); parameterized expressions
- * go through the bounded FIFO cache so attacker-controlled header values
- * cannot grow the registry unboundedly (DSG-1).
+ * Removes `key` from a FIFO eviction order, if present — used when a
+ * bounded-cache entry is promoted to the permanent registry (SEC-7).
  */
-const intern = (key: string, factory: () => MediaType, parameterized: boolean): MediaType => {
-    const cached = typeRegistry.get(key) ?? parameterizedRegistry.get(key);
+const removeFromOrder = (order: string[], key: string): void => {
+    const index = order.indexOf(key);
+    if (index !== -1) {
+        order.splice(index, 1);
+    }
+};
+
+/**
+ * Returns the interned instance for `key`, constructing it via `factory`
+ * on a miss. Parse-originated expressions — parameterless and parameterized
+ * alike — go through bounded FIFO caches so attacker-controlled header
+ * values cannot grow the registry unboundedly (DSG-1, SEC-7). Entries
+ * interned via the `registered()` path (`permanent`) live process-lifetime
+ * in `typeRegistry`, so the `MediaTypes.*` constants always resolve.
+ */
+const intern = (key: string, factory: () => MediaType, parameterized: boolean, permanent = false): MediaType => {
+    const cached = typeRegistry.get(key) ?? parameterlessRegistry.get(key) ?? parameterizedRegistry.get(key);
     if (cached !== undefined) {
         return cached;
     }
+
+    if (permanent) {
+        // Promote a bounded-cache instance parsed earlier so the constant
+        // becomes process-lifetime; otherwise intern it permanently (SEC-7).
+        const bounded = parameterizedRegistry.get(key) ?? parameterlessRegistry.get(key);
+        if (bounded !== undefined) {
+            removeFromOrder(parameterlessOrder, key);
+            removeFromOrder(parameterizedOrder, key);
+            typeRegistry.set(key, bounded);
+            return bounded;
+        }
+        const mediaType = factory();
+        typeRegistry.set(key, mediaType);
+        return mediaType;
+    }
+
     const mediaType = factory();
     if (parameterized) {
         parameterizedRegistry.set(key, mediaType);
@@ -129,7 +160,11 @@ const intern = (key: string, factory: () => MediaType, parameterized: boolean): 
             parameterizedRegistry.delete(parameterizedOrder.shift() as string);
         }
     } else {
-        typeRegistry.set(key, mediaType);
+        parameterlessRegistry.set(key, mediaType);
+        parameterlessOrder.push(key);
+        if (parameterlessOrder.length > PARAMETERLESS_CACHE_LIMIT) {
+            parameterlessRegistry.delete(parameterlessOrder.shift() as string);
+        }
     }
     return mediaType;
 };
@@ -268,6 +303,76 @@ function normalizeMediaTypeExpression(
     };
 }
 
+/**
+ * Interns `typeOrExpression` with the same normalization `for` performs,
+ * shared by both public entry points: parse/`for` intern into the bounded
+ * FIFO caches, while `registered()` (`permanent`) interns into
+ * `typeRegistry` so `MediaTypes.*` constants stay process-lifetime (SEC-7).
+ *
+ * @param typeOrExpression - Type/subtype components or a full expression.
+ * @param subtype - The subtype (component form) or wildcard default.
+ * @param parameters - The parameters (component form).
+ * @param permanent - Whether the entry is process-lifetime (`registered()`).
+ * @returns The interned instance, or `null` for an invalid expression.
+ */
+function internComponents(
+    typeOrExpression: SupportedMediaType | string,
+    subtype: string,
+    parameters: MediaTypeParameters,
+    permanent: boolean
+): MediaType | null {
+    if (isString(subtype) && subtype !== WILDCARD) {
+        // Component form (DSG-2): fold type, subtype, and parameter
+        // names to lower case before keying/construction so this path
+        // converges with expression parsing; parameter VALUES keep
+        // their case (matching the expression path). The canonical key
+        // is the same one expression parsing produces.
+        const canonicalType = typeOrExpression.toLowerCase(),
+            canonicalSubtype = subtype.toLowerCase(),
+            canonicalParameters = sortParameters(
+                Object.fromEntries(Object.entries(parameters).map(([name, value]) => [name.toLowerCase(), value]))
+            ),
+            mediaTypeKey = `${canonicalType}/${canonicalSubtype}${stringifyParameters(canonicalParameters)}`;
+
+        return intern(
+            mediaTypeKey,
+            () => new MediaType(canonicalType as SupportedMediaType, canonicalSubtype, canonicalParameters),
+            keys(canonicalParameters).length > 0,
+            permanent
+        );
+    }
+
+    if (!typeOrExpression?.length) {
+        return null;
+    }
+
+    const normalized = normalizeMediaTypeExpression(typeOrExpression as string);
+
+    if (normalized === null) {
+        // No slash found — treat as type only with wildcard subtype.
+        // The type token must be plausible: empty/whitespace, a `;`,
+        // or a stray `/` would serialize into an unparseable entry
+        // (COR-6; `/foo` reaches here via the empty-type normalize null).
+        const rawType = (typeOrExpression as string).trim();
+        if (rawType === '' || /[/\s;]/.test(rawType)) {
+            return null;
+        }
+        return intern(
+            rawType.toLowerCase(),
+            () => new MediaType(rawType.toLowerCase() as SupportedMediaType, WILDCARD, parameters),
+            false,
+            permanent
+        );
+    }
+
+    return intern(
+        normalized.key,
+        () => new MediaType(normalized.type as SupportedMediaType, normalized.subtype, normalized.parameters),
+        keys(normalized.parameters).length > 0,
+        permanent
+    );
+}
+
 export default class MediaType extends Null implements Serializable, StringComparable<MediaType>, Matchable<MediaType> {
     readonly experimental: boolean;
     readonly facets: string[];
@@ -367,62 +472,17 @@ export default class MediaType extends Null implements Serializable, StringCompa
         subtype: string = WILDCARD,
         parameters: MediaTypeParameters = {}
     ): MediaType | null {
-        if (isString(subtype) && subtype !== WILDCARD) {
-            // Component form (DSG-2): fold type, subtype, and parameter
-            // names to lower case before keying/construction so this path
-            // converges with expression parsing; parameter VALUES keep
-            // their case (matching the expression path). The canonical key
-            // is the same one expression parsing produces.
-            const canonicalType = typeOrExpression.toLowerCase(),
-                canonicalSubtype = subtype.toLowerCase(),
-                canonicalParameters = sortParameters(
-                    Object.fromEntries(Object.entries(parameters).map(([name, value]) => [name.toLowerCase(), value]))
-                ),
-                mediaTypeKey = `${canonicalType}/${canonicalSubtype}${stringifyParameters(canonicalParameters)}`;
-
-            return intern(
-                mediaTypeKey,
-                () => new MediaType(canonicalType as SupportedMediaType, canonicalSubtype, canonicalParameters),
-                keys(canonicalParameters).length > 0
-            );
-        }
-
-        if (!typeOrExpression?.length) {
-            return null;
-        }
-
-        const normalized = normalizeMediaTypeExpression(typeOrExpression as string);
-
-        if (normalized === null) {
-            // No slash found — treat as type only with wildcard subtype.
-            // The type token must be plausible: empty/whitespace, a `;`,
-            // or a stray `/` would serialize into an unparseable entry
-            // (COR-6; `/foo` reaches here via the empty-type normalize null).
-            const rawType = (typeOrExpression as string).trim();
-            if (rawType === '' || /[/\s;]/.test(rawType)) {
-                return null;
-            }
-            return intern(
-                rawType.toLowerCase(),
-                () => new MediaType(rawType.toLowerCase() as SupportedMediaType, WILDCARD, parameters),
-                false
-            );
-        }
-
-        return intern(
-            normalized.key,
-            () => new MediaType(normalized.type as SupportedMediaType, normalized.subtype, normalized.parameters),
-            keys(normalized.parameters).length > 0
-        );
+        return internComponents(typeOrExpression, subtype, parameters, false);
     }
 
     /**
      * Number of instances currently held by the process-wide intern
-     * registry: parameterless entries plus the bounded parameterized cache.
-     * Exposed so the registry's boundedness is observable in tests (DSG-1).
+     * registry: the permanent registered entries plus the bounded
+     * parameterless and parameterized caches. Exposed so the registry's
+     * boundedness is observable in tests (DSG-1, SEC-7).
      */
     static get registrySize(): number {
-        return typeRegistry.size + parameterizedRegistry.size;
+        return typeRegistry.size + parameterlessRegistry.size + parameterizedRegistry.size;
     }
 
     static qualityFactorComparator = qualityFactorComparator;
@@ -433,8 +493,10 @@ export default class MediaType extends Null implements Serializable, StringCompa
      * Registers/retrieves a media type by authored components, guaranteed
      * non-null: the interned-registry path for programmatic construction
      * (`MediaTypes.*` constants) where a missing entry is a programming
-     * error, not a parse outcome. Use {@link MediaType.for} for parsing
-     * user/header values — those can legitimately return `null`.
+     * error, not a parse outcome. Registered entries are interned
+     * process-lifetime — they are exempt from the bounded FIFO caches that
+     * cap parse-originated entries (SEC-7). Use {@link MediaType.for} for
+     * parsing user/header values — those can legitimately return `null`.
      *
      * @param type - The top-level type (e.g. `'application'`).
      * @param subtype - The subtype or wildcard (default `'*'`).
@@ -446,7 +508,7 @@ export default class MediaType extends Null implements Serializable, StringCompa
         subtype: string = WILDCARD,
         parameters: MediaTypeParameters = {}
     ): MediaType {
-        const mediaType = MediaType.for(type as SupportedMediaType, subtype, parameters);
+        const mediaType = internComponents(type, subtype, parameters, true);
         if (mediaType === null) {
             throw new IllegalStateError(`Invalid registered media type: ${String(type)}/${String(subtype)}`);
         }

@@ -223,9 +223,12 @@ export class InMemoryEntityManager implements EntityManager {
                 return [];
             }
 
-            return Array.from(this.#dataSource.getStore<object>(targetMetadata.entityName).values()).filter(
-                (row) => (row as Record<string, unknown>)[fkField] === pk
-            );
+            return Array.from(this.#dataSource.getStore<object>(targetMetadata.entityName).values())
+                .filter((row) => (row as Record<string, unknown>)[fkField] === pk)
+                .map((row) => {
+                    this.#callLifecycleHooks(row, 'postLoad');
+                    return row;
+                });
         }
 
         throw new IllegalStateError(`Relation '${relationName}' declares neither joinColumn nor inverseJoinColumn.`);

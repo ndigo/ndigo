@@ -98,10 +98,11 @@ class StubSessionStore implements SessionStore {
         return this.#sessions.get(sessionId) ?? null;
     }
 
-    async rotate(sessionId: string, record: SessionRecord): Promise<string> {
+    async rotate(sessionId: string, record: SessionRecord): Promise<{ id: string; expiresAt: number }> {
         this.#sessions.delete(sessionId);
         this.#expiresAt.delete(sessionId);
-        return this.create(record, 60_000);
+        const id = await this.create(record, 60_000);
+        return { id, expiresAt: Date.now() + 60_000 };
     }
 
     async delete(sessionId: string): Promise<void> {

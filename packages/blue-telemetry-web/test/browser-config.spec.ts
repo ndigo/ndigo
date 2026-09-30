@@ -5,9 +5,26 @@
  */
 import { trace, metrics, diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { configureBrowserTelemetry } from '../src/browser-config';
 import { LoggerFactory } from '@blue/telemetry';
+
+// Capture the exporter each SimpleSpanProcessor is built with so tests can
+// assert on the processor list without reaching into the registered provider.
+const spanProcessors: { exporter: unknown }[] = [];
+vi.mock('@opentelemetry/sdk-trace-base', async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        SimpleSpanProcessor: class extends actual.SimpleSpanProcessor {
+            constructor(exporter: unknown) {
+                super(exporter);
+                spanProcessors.push({ exporter });
+            }
+        },
+    };
+});
 
 describe('configureBrowserTelemetry', () => {
     afterEach(() => {
@@ -65,5 +82,35 @@ describe('configureBrowserTelemetry', () => {
         configureBrowserTelemetry({ serviceName: 'test' });
 
         expect(diagSpy).not.toHaveBeenCalled();
+    });
+
+    describe('SPAN exporter gating (DSG-1)', () => {
+        beforeEach(() => {
+            spanProcessors.length = 0;
+        });
+
+        it('configures the OTLP processor when traceUrl is set even with useConsoleExporters false', () => {
+            configureBrowserTelemetry({
+                serviceName: 'test',
+                traceUrl: 'http://collector:4318/v1/traces',
+                useConsoleExporters: false,
+            });
+
+            expect(spanProcessors).toHaveLength(1);
+            expect(spanProcessors[0].exporter).toBeInstanceOf(OTLPTraceExporter);
+        });
+
+        it('configures no span processors when useConsoleExporters false and no traceUrl (unchanged)', () => {
+            configureBrowserTelemetry({ serviceName: 'test', useConsoleExporters: false });
+
+            expect(spanProcessors).toHaveLength(0);
+        });
+
+        it('configures the OTLP processor when traceUrl is set and console exporters enabled', () => {
+            configureBrowserTelemetry({ serviceName: 'test', traceUrl: 'http://collector:4318/v1/traces' });
+
+            expect(spanProcessors).toHaveLength(1);
+            expect(spanProcessors[0].exporter).toBeInstanceOf(OTLPTraceExporter);
+        });
     });
 });

@@ -5,7 +5,7 @@
  */
 import '@tsmetadata/polyfill';
 
-import { describe, expect, test, vi, beforeEach } from 'vitest';
+import { describe, expect, test, vi, beforeEach, beforeAll } from 'vitest';
 import { z } from 'zod';
 import { HTTP } from '@blue/http';
 import { service, getCall, postCall, putCall, deleteCall, patchCall, queryCall, serviceClient } from '../src';
@@ -169,6 +169,33 @@ class TickerAPI {
 }
 
 describe('serviceClient stream calls (AD-9)', () => {
+    /** Minimal facet of the finished spans surfaced by the shared exporter. */
+    type FinishedSpan = {
+        name: string;
+        kind: number;
+        attributes: Record<string, unknown>;
+    };
+    /** InMemorySpanExporter shared by the span-asserting tests. */
+    let streamExporter: { reset(): void; getFinishedSpans(): FinishedSpan[] } | undefined;
+
+    /** Guards the exporter assigned in beforeAll (lint rule forbids `!`). */
+    const requireExporter = (): NonNullable<typeof streamExporter> => {
+        if (!streamExporter) throw new Error('shared span exporter not installed');
+        return streamExporter;
+    };
+
+    // @opentelemetry/api registers only ONE global tracer provider per process,
+    // so a single provider + exporter is installed once and shared by all
+    // span-asserting tests in this suite.
+    beforeAll(async () => {
+        const { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } =
+            await import('@opentelemetry/sdk-trace-base');
+        const { trace } = await import('@opentelemetry/api');
+        streamExporter = new InMemorySpanExporter();
+        const provider = new BasicTracerProvider({ spanProcessors: [new SimpleSpanProcessor(streamExporter)] });
+        trace.setGlobalTracerProvider(provider);
+    });
+
     /** Builds an SSE response whose body is enqueued in the given chunks. */
     function sseResponse(chunks: string[], status = 200): Response {
         const encoder = new TextEncoder();
@@ -239,20 +266,16 @@ describe('serviceClient stream calls (AD-9)', () => {
     });
 
     test('emits a ServiceClient.streamCall CLIENT span with event count', async () => {
-        const { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } =
-            await import('@opentelemetry/sdk-trace-base');
-        const { trace } = await import('@opentelemetry/api');
-        const exporter = new InMemorySpanExporter();
-        const provider = new BasicTracerProvider({ spanProcessors: [new SimpleSpanProcessor(exporter)] });
-        trace.setGlobalTracerProvider(provider);
-
+        requireExporter().reset();
         fetchMock.mockResolvedValue(sseResponse(['event: tick\ndata: {"n":1}\n\n', 'event: tick\ndata: {"n":2}\n\n']));
         const client = serviceClient(TickerAPI, http);
 
         await collect(client.ticks());
 
         await new Promise((r) => setTimeout(r, 50));
-        const spans = exporter.getFinishedSpans().filter((s) => s.name === 'ServiceClient.streamCall');
+        const spans = requireExporter()
+            .getFinishedSpans()
+            .filter((s) => s.name === 'ServiceClient.streamCall');
         expect(spans).toHaveLength(1);
         const span = spans[0];
         expect(span).toBeDefined();
@@ -261,5 +284,67 @@ describe('serviceClient stream calls (AD-9)', () => {
         expect(span?.attributes['http.route']).toBe('/ticks');
         expect(span?.attributes['stream.events']).toBe(2);
         expect(Number(span?.attributes['stream.duration_ms'])).toBeGreaterThanOrEqual(0);
+    });
+
+    /** Builds an SSE response whose body enqueues `firstChunk` and stays open. */
+    function inflightSseResponse(firstChunk: string): Response {
+        const encoder = new TextEncoder();
+        return new Response(
+            new ReadableStream({
+                start(controller) {
+                    controller.enqueue(encoder.encode(firstChunk));
+                    // Never close: the stream stays open mid-flight.
+                },
+            }),
+            { status: 200, headers: { 'Content-Type': 'text/event-stream' } }
+        );
+    }
+
+    test('completes the generator and ends the span when the consumer breaks mid-stream', async () => {
+        // The stream buffered a trailing, not-yet-terminated event when the
+        // consumer breaks: against the old implementation `parser.finish()`
+        // yielded inside the finally, parking the generator forever and leaking
+        // the reader lock and span.
+        requireExporter().reset();
+        fetchMock.mockResolvedValue(inflightSseResponse('event: tick\ndata: {"n":1}\n\ndata: {"n":2}'));
+        const client = serviceClient(TickerAPI, http);
+
+        const seen: unknown[] = [];
+        let completed = false;
+        const sink = (async () => {
+            for await (const value of client.ticks()) {
+                seen.push(value);
+                break; // dispose the generator mid-stream
+            }
+            completed = true;
+        })();
+        const outcome = await Promise.race([
+            sink,
+            new Promise((resolve) => setTimeout(() => resolve('timeout'), 1000)),
+        ]);
+
+        expect(outcome).not.toBe('timeout');
+        expect(completed).toBe(true);
+        expect(seen).toEqual([{ event: 'tick', data: { n: 1 } }]);
+
+        // The outer finally ran (releasing the reader lock / cancelling the
+        // stream) because the span was ended and exported.
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        const spans = requireExporter()
+            .getFinishedSpans()
+            .filter((s) => s.name === 'ServiceClient.streamCall');
+        expect(spans).toHaveLength(1);
+        expect(spans[0].attributes['stream.events']).toBe(1);
+        expect(Number(spans[0].attributes['stream.duration_ms'])).toBeGreaterThanOrEqual(0);
+    });
+
+    test('delivers a trailing event buffered without a final newline on normal EOF', async () => {
+        fetchMock.mockResolvedValue(sseResponse(['event: tick\ndata: {"n":1}\n\n', 'data: {"n":2}']));
+        const client = serviceClient(TickerAPI, http);
+
+        expect(await collect(client.ticks())).toEqual([
+            { event: 'tick', data: { n: 1 } },
+            { event: 'message', data: { n: 2 } },
+        ]);
     });
 });

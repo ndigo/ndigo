@@ -6,14 +6,14 @@
 
 # Class: TtlContentSource
 
-Content source that wraps an async loader with a TTL-based in-memory cache.
+Content source that wraps a loader with a TTL-based in-memory cache.
 
-Synchronous `getContent` returns the cached value when available, or the key
-itself as a fallback until the first async load completes.
+`getContent` is async by contract; the loader runs once per key+language
+pair and the result is cached until it expires.
 
 ## Implements
 
-- [`AsyncContentSource`](../interfaces/AsyncContentSource.md)
+- [`ContentSource`](../interfaces/ContentSource.md)
 
 ## Constructors
 
@@ -27,7 +27,7 @@ Creates a TTL content source.
 
 ##### loader
 
-[`AsyncContentLoader`](../type-aliases/AsyncContentLoader.md)
+[`ContentLoader`](../type-aliases/ContentLoader.md)
 
 Async function that loads content by key and language.
 
@@ -45,37 +45,10 @@ Cache lifetime in milliseconds. Defaults to 60 000 ms.
 
 ### getContent()
 
-> **getContent**(`key`, `language`): `string`
+> **getContent**(`key`, `language`): `Promise`\<`string`\>
 
-Returns the cached content for the key+language pair, or the key itself
-when no cached value is present.
-
-#### Parameters
-
-##### key
-
-`string`
-
-##### language
-
-`string`
-
-#### Returns
-
-`string`
-
-#### Implementation of
-
-[`AsyncContentSource`](../interfaces/AsyncContentSource.md).[`getContent`](../interfaces/AsyncContentSource.md#getcontent)
-
-***
-
-### getContentAsync()
-
-> **getContentAsync**(`key`, `language`): `Promise`\<`string`\>
-
-Loads content via the async loader, stores it in the cache, and returns it.
-Uses the cached value when it has not yet expired.
+Loads content via the loader when no unexpired cached value exists,
+stores it, and returns it.
 
 #### Parameters
 
@@ -83,17 +56,23 @@ Uses the cached value when it has not yet expired.
 
 `string`
 
+The content key to resolve.
+
 ##### language
 
 `string`
+
+The requested language code.
 
 #### Returns
 
 `Promise`\<`string`\>
 
+The resolved content value.
+
 #### Implementation of
 
-[`AsyncContentSource`](../interfaces/AsyncContentSource.md).[`getContentAsync`](../interfaces/AsyncContentSource.md#getcontentasync)
+[`ContentSource`](../interfaces/ContentSource.md).[`getContent`](../interfaces/ContentSource.md#getcontent)
 
 ***
 

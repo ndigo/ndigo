@@ -4,7 +4,8 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { randomBytes } from 'node:crypto';
+import { timingSafeEqual } from 'node:crypto';
+import { randomToken } from '@blue/util';
 import { Route } from '@blue/router';
 import { RouteHandlerInterceptor } from '@blue/dispatcher';
 import { HTTPHeaders } from '@blue/http';
@@ -105,7 +106,15 @@ export class CSRFInterceptor implements RouteHandlerInterceptor {
                 ? (request.body[this.#fieldName] as string | undefined)
                 : undefined);
 
-        if (typeof submitted === 'string' && submitted.length > 0 && submitted === token) {
+        // SEC-9: constant-time compare of the bearer secret. A length guard
+        // runs first so a length-mismatched token is rejected (no throw) —
+        // `timingSafeEqual` itself throws on unequal buffer lengths.
+        if (
+            typeof submitted === 'string' &&
+            submitted.length > 0 &&
+            submitted.length === token.length &&
+            timingSafeEqual(Buffer.from(submitted), Buffer.from(token))
+        ) {
             return true;
         }
 
@@ -117,7 +126,7 @@ export class CSRFInterceptor implements RouteHandlerInterceptor {
      * Issues a fresh CSRF cookie (via `Set-Cookie`) and returns the token.
      */
     #issueToken(route: Route, request: NodeRequest | undefined): string {
-        const token = randomBytes(this.#tokenBytes).toString('base64url');
+        const token = randomToken(this.#tokenBytes);
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as ServerResponse | undefined;
         if (res && !res.headersSent) {
             res.setHeader(

@@ -9,8 +9,8 @@ import { configuration, entry, MetadataConfigApplicationContext } from '@blue/co
 import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@blue/platform-node';
 import { denialOf, getMapping, requestMapping, RouteHandlerMethod } from '@blue/dispatcher';
 import { ManagementAutoConfiguration } from '../src/management-auto-configuration';
-import { METRIC_AGGREGATOR } from '../src/metric-aggregator-token';
-import { HEALTH_REGISTRY } from '../src/health-registry-token';
+import { METRIC_AGGREGATOR } from '../src/metric-aggregator-tokens';
+import { HEALTH_REGISTRY } from '../src/health-registry-tokens';
 import { FeatureMetricAggregator } from '@blue/telemetry';
 import { HealthRegistry } from '../src/health';
 import { HealthController } from '../src/health-controller';

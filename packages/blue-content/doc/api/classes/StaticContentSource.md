@@ -42,9 +42,12 @@ Fallback language used when a translation is missing.
 
 ### getContent()
 
-> **getContent**(`key`, `language`): `string`
+> **getContent**(`key`, `language`): `Promise`\<`string`\>
 
 Resolves content with a language fallback to the default language and then the key itself.
+
+Async by contract (see [ContentSource](../interfaces/ContentSource.md)); the lookup itself is
+synchronous, so the promise resolves on the next microtask.
 
 #### Parameters
 
@@ -62,7 +65,7 @@ The requested language code.
 
 #### Returns
 
-`string`
+`Promise`\<`string`\>
 
 The localized content or the key when no translation exists.
 

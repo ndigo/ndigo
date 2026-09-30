@@ -30,7 +30,8 @@ const theme: Theme = {
 };
 
 const resolver = new StaticThemeResolver([theme], 'default');
-resolver.getTheme().contentSource.getContent('welcome', 'en');
+const welcome = await resolver.getTheme().contentSource.getContent('welcome', 'en');
+// 'Welcome'
 ```
 
 ## API

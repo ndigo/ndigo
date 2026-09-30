@@ -11,6 +11,12 @@ HTTP interceptor that provides in-memory response caching.
 This interceptor can return a cached response in `preRequest` to avoid
 unnecessary network calls, and stores successful responses in `postResponse`.
 
+Only 200 OK responses to GET/HEAD requests are cached, keyed by
+`method:url`. Credentialed requests — those carrying an `Authorization`
+or `Cookie` header — are never cached and never served from cache, so one
+user's authenticated response can never leak to another user through the
+shared in-memory cache.
+
 ## Implements
 
 - [`RequestAwareHTTPInterceptor`](../interfaces/RequestAwareHTTPInterceptor.md)

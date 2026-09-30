@@ -290,7 +290,11 @@ function sourceTypeOf(source: unknown): unknown {
  */
 export interface ConversionService {
     /**
-     * Checks whether a converter exists for the given source/target type pair.
+     * Checks whether a converter exists for the given source/target type
+     * pair, mirroring {@link convert}'s lookup: a pair is convertible when
+     * an exactly-registered converter exists, or a String-source converter
+     * is registered for the target type (the environment/config binding
+     * fallback `convert` applies). Schema targets are always convertible.
      */
     canConvert(sourceType: unknown, targetType: unknown): boolean;
 
@@ -353,7 +357,14 @@ export function createConversionService(options: ConversionServiceOptions = {}):
 
     const service: ConversionService = {
         canConvert(sourceType: unknown, targetType: unknown): boolean {
-            return targetType instanceof z.ZodType || registry.hasConverter(sourceType, targetType);
+            return (
+                targetType instanceof z.ZodType ||
+                registry.hasConverter(sourceType, targetType) ||
+                // convert() falls back to String-source converters (the
+                // environment/config binding convention) — canConvert agrees
+                // so the two never disagree (COR-23).
+                registry.hasConverter(String, targetType)
+            );
         },
 
         // Schema target → contract-enforced parse (fail-fast); constructor

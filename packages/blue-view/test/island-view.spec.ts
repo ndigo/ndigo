@@ -3,12 +3,27 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-// @vitest-environment node
-import { describe, test, expect } from 'vitest';
+// @vitest-environment jsdom
+import { describe, test, expect, beforeEach } from 'vitest';
 import { LANGUAGE_ATTRIBUTE } from '@blue/router';
-import { IslandView, serializeModel } from '../src/island-view';
+import { IslandView, parseModel, serializeModel } from '../src/island-view';
 
 const stringifyHtml = (html: string) => html;
+
+/**
+ * Drives a serialized model through real markup the way the production
+ * hydration path does: embed the escaped attribute value, let the DOM parser
+ * decode entities once, then read it back via `getAttribute`. This is the
+ * ONE-LEVEL-decoded input `parseModel` is contracted to receive.
+ */
+const decodedAttributeValue = (escapedAttributeValue: string): string => {
+    document.body.innerHTML = `<div data-blue-model="${escapedAttributeValue}"></div>`;
+    return document.querySelector<HTMLDivElement>('div')?.getAttribute('data-blue-model') ?? '';
+};
+
+beforeEach(() => {
+    document.body.innerHTML = '';
+});
 
 describe('IslandView (server-side island render)', () => {
     test('renders an inert custom element with a serialized model attribute', async () => {
@@ -70,19 +85,42 @@ describe('IslandView (server-side island render)', () => {
         expect(committed).not.toContain('onfocus="alert(1)"');
     });
 
-    test('serialized model round-trips via parseModel', async () => {
+    test('serialized model round-trips via parseModel through real markup', () => {
         const model = { n: 1, s: 'x<&"y', list: [1, 2] };
         const encoded = serializeModel(model);
         expect(encoded).not.toContain('"'); // attribute-safe (quotes escaped)
-        const { parseModel } = await import('../src/island-view');
-        expect(parseModel(encoded)).toEqual(model);
+
+        // The browser decodes attribute entities once before parseModel sees
+        // the value — feed that already-decoded form, not the escaped string.
+        const decoded = decodedAttributeValue(encoded);
+        expect(parseModel(decoded)).toEqual(model);
     });
 
-    test('model survives HTML-entity escaping', async () => {
+    test('model survives HTML-entity escaping', () => {
         const model = { text: '<b>&</b>' };
         const encoded = serializeModel(model);
         expect(encoded).toContain('&lt;b&gt;');
-        const { parseModel } = await import('../src/island-view');
-        expect(parseModel(encoded)).toEqual(model);
+
+        const decoded = decodedAttributeValue(encoded);
+        expect(parseModel(decoded)).toEqual(model);
+    });
+
+    test('does not double-decode entity literals in the model', () => {
+        // Original model text intentionally contains entity *literals* — the
+        // text `&lt;b&gt;` is data, not markup. serializeModel escapes the
+        // JSON once; the DOM parser decodes attribute entities once; parseModel
+        // must stop there and not decode a second time.
+        const model = { html: '<b>&amp; &lt;b&gt;</b>' };
+        const encoded = serializeModel(model);
+
+        const decoded = decodedAttributeValue(encoded);
+        expect(parseModel(decoded)).toEqual(model);
+
+        // And the hydration safety invariant: a literal `&lt;script&gt;` in the
+        // model stays literal text after parsing — it must never come back as
+        // a real `<script>` element, nor decode to `null`.
+        const scriptText = '&lt;script&gt;alert(1)&lt;/script&gt;';
+        const fromMarkup = parseModel(decodedAttributeValue(serializeModel({ payload: scriptText })));
+        expect(fromMarkup).toEqual({ payload: scriptText });
     });
 });

@@ -261,14 +261,17 @@ export class RadixTree<V> implements Serializable {
 
         // Backtracking fallback: the deepest greedy child passed on the way
         // down, with the params captured above it and the path offset where
-        // its capture begins (the current segment onward).
+        // its capture begins (the current segment onward). `params` is
+        // snapshotted ({ ...params } or null) at every record site — captures
+        // made deeper down the tree must never leak into the fallback match
+        // (COR-3).
         let greedy: { node: RadixNode<V>; restStart: number; params: Record<string, string> | null } | null = null;
 
         const takeGreedy = (restStart: number): RadixMatch<V> | null => {
             if (!greedy) {
                 return null;
             }
-            let captured: Record<string, string> | null = greedy.params ? { ...greedy.params } : null;
+            let captured: Record<string, string> | null = greedy.params;
             const rest = path.slice(restStart).replace(/\/+$/, '');
             if (greedy.node.label !== '') {
                 if (captured === null) {
@@ -302,7 +305,11 @@ export class RadixTree<V> implements Serializable {
             const staticMatch = node.staticChildren.get(segment);
             if (staticMatch !== undefined) {
                 if (node.greedyChild !== null) {
-                    greedy = { node: node.greedyChild, restStart: segmentStart, params };
+                    greedy = {
+                        node: node.greedyChild,
+                        restStart: segmentStart,
+                        params: params === null ? null : { ...params },
+                    };
                 }
                 node = staticMatch;
                 continue;
@@ -310,7 +317,11 @@ export class RadixTree<V> implements Serializable {
 
             if (node.paramChild !== null) {
                 if (node.greedyChild !== null) {
-                    greedy = { node: node.greedyChild, restStart: segmentStart, params };
+                    greedy = {
+                        node: node.greedyChild,
+                        restStart: segmentStart,
+                        params: params === null ? null : { ...params },
+                    };
                 }
                 if (params === null) {
                     params = {};
@@ -322,14 +333,22 @@ export class RadixTree<V> implements Serializable {
 
             if (node.wildcardChild !== null) {
                 if (node.greedyChild !== null) {
-                    greedy = { node: node.greedyChild, restStart: segmentStart, params };
+                    greedy = {
+                        node: node.greedyChild,
+                        restStart: segmentStart,
+                        params: params === null ? null : { ...params },
+                    };
                 }
                 node = node.wildcardChild;
                 continue;
             }
 
             if (node.greedyChild !== null) {
-                greedy = { node: node.greedyChild, restStart: segmentStart, params };
+                greedy = {
+                    node: node.greedyChild,
+                    restStart: segmentStart,
+                    params: params === null ? null : { ...params },
+                };
                 return takeGreedy(segmentStart);
             }
 
@@ -343,7 +362,11 @@ export class RadixTree<V> implements Serializable {
             return { value: node.value, params, pattern: node.pattern };
         }
         if (node.greedyChild !== null) {
-            greedy = { node: node.greedyChild, restStart: segStart, params };
+            greedy = {
+                node: node.greedyChild,
+                restStart: segStart,
+                params: params === null ? null : { ...params },
+            };
             return takeGreedy(segStart);
         }
         return greedy ? takeGreedy(greedy.restStart) : null;

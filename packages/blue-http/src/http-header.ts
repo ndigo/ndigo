@@ -4,25 +4,38 @@
  * @author Jeff Rose
  */
 import { isEntries, isJSONObject, JSONValue, Serializable } from '@blue/core';
-import { is, isString } from '@blue/util/types';
+import { is } from '@blue/util/types';
 
 const { defineProperty, deleteProperty, get, set } = Reflect,
     isHeaders = is(Headers) as (value: unknown) => value is Headers,
-    isRecord = isJSONObject as (value: unknown) => value is Record<string, string>;
+    isRecord = isJSONObject as (value: unknown) => value is HeaderRecord;
 
 type HeaderEntries = Array<[string, string]>;
 
 /** Node `IncomingMessage`-style header record (lower-cased name → value or lines). */
-type HeaderRecord = Record<string, string | string[] | undefined>;
+export type HeaderRecord = Record<string, string | string[] | undefined>;
 
 function deletePair(entries: HeaderEntries, name: string): void {
     const length = entries.length;
 
     if (length) {
         for (let index = 0; index < length; index++) {
-            if (entries[index][0] === name) {
+            if (entries[index] && entries[index][0] === name) {
                 deleteProperty(entries, index);
-                break;
+                return;
+            }
+        }
+
+        // Case-folded retry (DSG-5): Node-server header tuples are
+        // lower-cased, so a canonical extractor name must still match.
+        const folded = name.toLowerCase();
+
+        if (folded !== name) {
+            for (let index = 0; index < length; index++) {
+                if (entries[index] && entries[index][0] === folded) {
+                    deleteProperty(entries, index);
+                    return;
+                }
             }
         }
     }
@@ -56,21 +69,30 @@ function getPair(entries: HeaderEntries, name: string): string | null {
 
 function setPair(entries: HeaderEntries, name: string, value: string): void {
     const length = entries.length;
-    let found = false;
 
     if (length) {
         for (let index = 0; index < length; index++) {
-            if (entries[index][0] === name) {
+            if (entries[index] && entries[index][0] === name) {
                 entries[index][1] = value;
-                found = true;
-                break;
+                return;
+            }
+        }
+
+        // Case-folded retry (DSG-5): update the lower-cased tuple in place
+        // instead of pushing a second, canonically-cased entry.
+        const folded = name.toLowerCase();
+
+        if (folded !== name) {
+            for (let index = 0; index < length; index++) {
+                if (entries[index] && entries[index][0] === folded) {
+                    entries[index][1] = value;
+                    return;
+                }
             }
         }
     }
 
-    if (!found) {
-        entries.push([name, value]);
-    }
+    entries.push([name, value]);
 }
 
 function deleteHeader(headers: HeadersInit | HeaderRecord, name: string): void {
@@ -80,17 +102,31 @@ function deleteHeader(headers: HeadersInit | HeaderRecord, name: string): void {
         // isEntries narrows to the core Entry shape; the pair helpers only read [name, value] tuples.
         deletePair(headers as unknown as HeaderEntries, name);
     } else if (isRecord(headers)) {
-        deleteProperty(headers as Record<string, string>, name);
+        const record = headers;
+        // Node-server records are lower-cased; remove both this name and its
+        // folded form so the header is gone for every read spelling.
+        deleteProperty(record, name);
+        const folded = name.toLowerCase();
+        if (folded !== name) {
+            deleteProperty(record, folded);
+        }
     }
 }
 
-function getHeader(headers: HeadersInit | HeaderRecord, name: string): string | null {
+/**
+ * Reads a header value without folding multi-value (`string[]`) entries.
+ *
+ * @param headers - The header collection to read from.
+ * @param name - The header name to read.
+ * @returns The raw value (joined arrays preserved), or `null` when absent.
+ */
+function getHeaderValue(headers: HeadersInit | HeaderRecord, name: string): string | string[] | null {
     if (isHeaders(headers)) {
         return (headers as Headers).get(name);
     } else if (isEntries(headers)) {
         return getPair(headers as unknown as HeaderEntries, name);
     } else if (isRecord(headers)) {
-        const record = headers as Record<string, string>;
+        const record = headers;
         let value = get(record, name);
 
         if (value === undefined) {
@@ -100,13 +136,19 @@ function getHeader(headers: HeadersInit | HeaderRecord, name: string): string | 
             value = get(record, name.toLowerCase());
         }
 
-        return value === undefined ? null : (value as string);
+        return value === undefined ? null : value;
     }
     return null;
 }
 
-function hasHeader(headers: HeadersInit | HeaderRecord, name: string): boolean {
-    return isString(getHeader(headers, name));
+function getHeader(headers: HeadersInit | HeaderRecord, name: string): string | null {
+    const value = getHeaderValue(headers, name);
+    if (value === null) {
+        return null;
+    }
+    // Array-valued entries (Node `set-cookie` records) count as present;
+    // `get()` joins them just like `getJoined()`.
+    return Array.isArray(value) ? value.join(', ') : value;
 }
 
 function setHeader(headers: HeadersInit | HeaderRecord, name: string, value: unknown): void {
@@ -116,7 +158,15 @@ function setHeader(headers: HeadersInit | HeaderRecord, name: string, value: unk
     } else if (isEntries(headers)) {
         setPair(headers as unknown as HeaderEntries, name, stringValue);
     } else if (isRecord(headers)) {
-        set(headers as Record<string, string>, name, stringValue);
+        const record = headers;
+        const folded = name.toLowerCase();
+        // Write to the key reads will find (exact first, folded retry for
+        // lower-cased Node records) instead of creating a second entry.
+        if (get(record, name) === undefined && folded !== name && get(record, folded) !== undefined) {
+            set(record, folded, stringValue);
+        } else {
+            set(record, name, stringValue);
+        }
     }
 }
 
@@ -183,7 +233,7 @@ export class HTTPHeader implements Serializable {
      * @returns The header value, or `null` when missing.
      */
     getJoined(headers: HeadersInit | HeaderRecord, separator = ', '): string | null {
-        const value = headers ? getHeader(headers, this.name) : null;
+        const value = headers ? getHeaderValue(headers, this.name) : null;
         if (value === null) {
             return null;
         }
@@ -197,7 +247,7 @@ export class HTTPHeader implements Serializable {
      * @returns `true` when the header exists.
      */
     has(headers: HeadersInit | HeaderRecord): boolean {
-        return headers ? hasHeader(headers, this.name) : false;
+        return headers ? getHeaderValue(headers, this.name) !== null : false;
     }
 
     /**

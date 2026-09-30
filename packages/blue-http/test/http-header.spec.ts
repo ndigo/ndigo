@@ -5,6 +5,7 @@
  */
 import { describe, test, expect } from 'vitest';
 import { HTTPHeader } from '../src/http-header';
+import * as HTTPHeaders from '../src/http-headers';
 import { AuthorizationHeader } from '../src/authorization-header';
 import { ContentTypeHeader, contentTypeBase, multipartBoundary } from '../src/content-type-header';
 import { SetCookieHeader } from '../src/set-cookie-header';
@@ -106,6 +107,56 @@ describe('HTTPHeader', () => {
 
         expect(new HTTPHeader('Content-Type').get(headers)).toBe('text/html');
         expect(new HTTPHeader('Content-Type').has(headers)).toBe(true);
+    });
+
+    test('it should fold case when writing to lowercased records (COR-4)', () => {
+        const headers: Record<string, string> = { 'content-type': 'text/plain' };
+        const contentType = new HTTPHeader('Content-Type');
+
+        // A canonical set() must overwrite the folded key, not add a second one.
+        contentType.set(headers, 'application/json');
+        expect(headers).toEqual({ 'content-type': 'application/json' });
+        expect(Object.keys(headers)).toHaveLength(1);
+        expect(contentType.get(headers)).toBe('application/json');
+
+        // A canonical delete() must remove the lowercased entry
+        // (SET_COOKIE.delete(req.headers) on a Node server record).
+        contentType.delete(headers);
+        expect(contentType.has(headers)).toBe(false);
+        expect(headers).toEqual({});
+
+        const setCookieHeaders: Record<string, string> = { 'set-cookie': 'a=1' };
+        HTTPHeaders.SET_COOKIE.delete(setCookieHeaders);
+        expect(setCookieHeaders).toEqual({});
+    });
+
+    test('it should fold case when writing to header tuples (COR-4)', () => {
+        const headers: Array<[string, string]> = [['content-type', 'text/html']];
+        const contentType = new HTTPHeader('Content-Type');
+
+        contentType.set(headers, 'application/json');
+        expect(headers).toEqual([['content-type', 'application/json']]);
+
+        contentType.delete(headers);
+        expect(contentType.has(headers)).toBe(false);
+    });
+
+    test('it should treat array-valued records as present (COR-4)', () => {
+        const headers: Record<string, string> = { 'set-cookie': 'ignored' };
+        (headers as Record<string, unknown>)['set-cookie'] = ['a=1', 'b=2'];
+        const setCookie = new HTTPHeader('Set-Cookie');
+
+        expect(setCookie.has(headers)).toBe(true);
+        expect(setCookie.get(headers)).toBe('a=1, b=2');
+        expect(setCookie.getJoined(headers)).toBe('a=1, b=2');
+        expect(setCookie.getJoined(headers, '; ')).toBe('a=1; b=2');
+
+        // A single-value record still reads as-is.
+        const pragma = new HTTPHeader('Pragma');
+        expect(pragma.get({ pragma: 'no-cache' })).toBe('no-cache');
+        expect(pragma.has({ pragma: 'no-cache' })).toBe(true);
+        expect(pragma.get({ other: 'x' })).toBeNull();
+        expect(pragma.has({ other: 'x' })).toBe(false);
     });
 });
 

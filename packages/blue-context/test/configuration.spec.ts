@@ -79,4 +79,62 @@ describe('MetadataConfigApplicationContext', () => {
         expect(context.getValue<string>('custom:name')).toBe('registered');
         expect(context.getValue<string>('method')).toBeUndefined();
     });
+
+    test('FOLLOW-1: a bare subclass of a @configuration registers @entry factories declared only on the base', () => {
+        @configuration
+        class BaseOnlyConfiguration {
+            @entry
+            alpha() {
+                return 'alpha-bean';
+            }
+
+            @entry('beta')
+            betaEntry() {
+                return 21;
+            }
+        }
+
+        class BareSubConfiguration extends BaseOnlyConfiguration {}
+
+        const context = new MetadataConfigApplicationContext();
+        context.register(BareSubConfiguration);
+
+        // Both base-declared beans register on the subclass instance.
+        expect(context.getValue<string>('alpha')).toBe('alpha-bean');
+        expect(context.getValue<number>('beta')).toBe(21);
+    });
+
+    test('FOLLOW-1: subclass-declared @entry factories still register, alongside the inherited base ones, once each', () => {
+        let baseCalls = 0;
+        let subCalls = 0;
+
+        @configuration
+        class OutlineConfiguration {
+            @entry
+            outline() {
+                baseCalls += 1;
+                return 'outline-bean';
+            }
+        }
+
+        class WorkingConfiguration extends OutlineConfiguration {
+            @entry
+            works() {
+                subCalls += 1;
+                return 'works-bean';
+            }
+        }
+
+        const context = new MetadataConfigApplicationContext();
+        context.register(WorkingConfiguration);
+
+        // Subclass-declared and inherited base entries both resolve...
+        expect(context.getValue<string>('outline')).toBe('outline-bean');
+        expect(context.getValue<string>('works')).toBe('works-bean');
+
+        // ...and each factory runs exactly once (no double registration from
+        // the prototype-chain enumerability walk).
+        expect(baseCalls).toBe(1);
+        expect(subCalls).toBe(1);
+    });
 });

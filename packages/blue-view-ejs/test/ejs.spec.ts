@@ -72,6 +72,26 @@ describe('EJSView', () => {
         expect(target.last?.output).toBe('<p>Ada</p>');
     });
 
+    it('keeps an array model accessible through the locals', async () => {
+        const view = new EJSView('home', { template: '<%= locals[0] %>-<%= locals[1] %>' });
+        const target = new CaptureViewTarget();
+
+        await view.render(['Ada', 'Grace'] as unknown as Record<string, unknown>, {} as Route, target);
+
+        expect(target.last?.output).toBe('Ada-Grace');
+    });
+
+    it('keeps a scalar model accessible through the locals', async () => {
+        const view = new EJSView('home', {
+            template: '<%= locals[0] %><%= locals[1] %><%= locals[2] %><%= locals[3] %><%= locals[4] %>',
+        });
+        const target = new CaptureViewTarget();
+
+        await view.render('world' as unknown as Record<string, unknown>, {} as Route, target);
+
+        expect(target.last?.output).toBe('world');
+    });
+
     it('forwards the projected model to the target commit', async () => {
         const view = new EJSView('home', { template: '<p><%= name %></p>' });
         const target = new CaptureViewTarget();
@@ -174,7 +194,7 @@ describe('EJSView locale helpers', () => {
         greeting: { en: 'Hello {name}!', fr: 'Bonjour {name} !' },
     };
     const fakeMessageSource = {
-        getMessage(key: string, params?: { values?: Record<string, unknown> }, language?: string) {
+        async getMessage(key: string, params?: { values?: Record<string, unknown> }, language?: string) {
             const template = messages[key as keyof typeof messages]?.[(language ?? 'en') as 'en' | 'fr'];
             if (!template) return key;
             const value = params?.values?.name ?? '';
@@ -188,7 +208,7 @@ describe('EJSView locale helpers', () => {
 
         const view = new EJSView('home', {
             template:
-                "<h1><%= t('greeting', { values: { name: 'Ada' } }) %></h1>" +
+                "<h1><%= await t('greeting', { values: { name: 'Ada' } }) %></h1>" +
                 "<time><%= formatDate(when, { timeZone: 'UTC', dateStyle: 'medium' }) %></time>" +
                 '<span><%= locale %></span>',
         });
@@ -212,7 +232,7 @@ describe('EJSView locale helpers', () => {
         context.setMessageSource(fakeMessageSource);
 
         const view = new EJSView('home', {
-            template: "<p><%= t('missing.key') %>|<%= locale %></p>",
+            template: "<p><%= await t('missing.key') %>|<%= locale %></p>",
         });
         view.setApplicationContext(context);
         const target = new CaptureViewTarget();

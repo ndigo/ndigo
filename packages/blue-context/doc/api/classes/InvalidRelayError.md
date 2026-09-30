@@ -10,7 +10,7 @@ Error thrown when a relay is rejected and throw-on-invalid mode is enabled.
 
 ## Extends
 
-- `FrameworkError`
+- [`FrameworkError`](#)
 
 ## Constructors
 

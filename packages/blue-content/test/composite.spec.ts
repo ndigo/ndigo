@@ -10,21 +10,21 @@ import { CompositeContentSource } from '../src/composite';
 import { CompositeThemeResolver } from '../src/composite';
 
 describe('CompositeContentSource', () => {
-    test('returns the first real translation', () => {
+    test('returns the first real translation', async () => {
         const primary = new StaticContentSource({ greeting: { en: 'Hello' } });
         const fallback = new StaticContentSource({ greeting: { en: 'Hi' }, farewell: { en: 'Bye' } });
         const composite = new CompositeContentSource([primary, fallback]);
 
-        expect(composite.getContent('greeting', 'en')).toBe('Hello');
-        expect(composite.getContent('farewell', 'en')).toBe('Bye');
+        expect(await composite.getContent('greeting', 'en')).toBe('Hello');
+        expect(await composite.getContent('farewell', 'en')).toBe('Bye');
     });
 
-    test('falls back to key when no source has a translation', () => {
+    test('falls back to key when no source has a translation', async () => {
         const a = new StaticContentSource({});
         const b = new StaticContentSource({});
         const composite = new CompositeContentSource([a, b]);
 
-        expect(composite.getContent('unknown', 'en')).toBe('unknown');
+        expect(await composite.getContent('unknown', 'en')).toBe('unknown');
     });
 
     test('throws when constructed with no sources', () => {

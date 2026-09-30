@@ -316,9 +316,19 @@ describe('ConversionService', () => {
         expect(service.canConvert(String, Date)).toBe(true);
     });
 
-    test('canConvert returns false for unregistered type pairs', () => {
-        // Object and String are not directly convertible (no converter registered)
-        expect(service.canConvert(Object, String)).toBe(false);
+    test('canConvert returns false only when neither an exact pair nor a String fallback exists (COR-23)', () => {
+        // Object→String has no exact converter, but convert() would resolve
+        // the String-source fallback — canConvert mirrors that lookup.
+        expect(service.canConvert(Object, String)).toBe(true);
+
+        // No exact pair and no String-source fallback for the target: false.
+        expect(service.canConvert(Object, Symbol)).toBe(false);
+        expect(service.canConvert(Date, Symbol)).toBe(false);
+    });
+
+    test('canConvert(Number, Date) is true via the String fallback, matching convert (COR-23)', () => {
+        expect(service.canConvert(Number, Date)).toBe(true);
+        expect(service.convert(42, Date)).toBeInstanceOf(Date);
     });
 
     test('converts using registered converters', () => {

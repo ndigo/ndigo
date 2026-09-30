@@ -7,7 +7,7 @@ import { getMapping, requestMapping } from '@blue/dispatcher';
 import { FeatureMetricAggregator } from '@blue/telemetry';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Null } from '@blue/core';
-import { METRIC_AGGREGATOR } from './metric-aggregator-token';
+import { METRIC_AGGREGATOR } from './metric-aggregator-tokens';
 
 /**
  * Serves aggregated application metrics under `/metrics`.

@@ -402,9 +402,13 @@ The registered event types.
 
 ### getContent()
 
-> **getContent**(`key`, `language`): `string`
+> **getContent**(`key`, `language`): `Promise`\<`string`\>
 
 Gets translated content for the requested key and language.
+
+Methods are async by default; implementations may be synchronous
+under the hood. Resolves to the content string, or the key itself
+when no translation exists.
 
 #### Parameters
 
@@ -422,9 +426,9 @@ The requested language code.
 
 #### Returns
 
-`string`
+`Promise`\<`string`\>
 
-The resolved content string.
+A promise of the resolved content string.
 
 #### Inherited from
 
@@ -466,9 +470,12 @@ An instance of the value specified by the `name`.
 
 ### getMessage()
 
-> **getMessage**(`key`, `params?`, `language?`): `string`
+> **getMessage**(`key`, `params?`, `language?`): `Promise`\<`string`\>
 
 Resolves and formats the message for the requested key.
+
+Methods are async by default; implementations may be synchronous
+under the hood.
 
 #### Parameters
 
@@ -492,9 +499,9 @@ The language to use; the source's active language when omitted.
 
 #### Returns
 
-`string`
+`Promise`\<`string`\>
 
-The formatted message, or the key itself when no translation exists.
+A promise of the formatted message, or the key itself when no translation exists.
 
 #### Inherited from
 

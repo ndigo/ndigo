@@ -78,9 +78,9 @@ The registered media types by normalized file extension.
 
 ## Methods
 
-### getAllFileExtenstions()
+### getAllFileExtensions()
 
-> **getAllFileExtenstions**(): `string`[]
+> **getAllFileExtensions**(): `string`[]
 
 Returns all known file extensions.
 
@@ -92,7 +92,7 @@ The known file extensions.
 
 #### Inherited from
 
-[`MappingMediaTypeFileExtensionResolver`](MappingMediaTypeFileExtensionResolver.md).[`getAllFileExtenstions`](MappingMediaTypeFileExtensionResolver.md#getallfileextenstions)
+[`MappingMediaTypeFileExtensionResolver`](MappingMediaTypeFileExtensionResolver.md).[`getAllFileExtensions`](MappingMediaTypeFileExtensionResolver.md#getallfileextensions)
 
 ***
 

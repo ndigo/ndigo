@@ -19,8 +19,13 @@ Options for [OpenAPIDocsAutoConfiguration](../classes/OpenAPIDocsAutoConfigurati
 > `optional` **accessGuard?**: [`RouteHandlerInterceptor`](#)
 
 Interceptor applying only to the docs endpoints (spec, UI page and
-assets) — the `ManagementAutoConfiguration` guard pattern. Wire e.g.
-the auth-server's `AuthRouteGuard` to require authentication.
+assets) — the `ManagementAutoConfiguration` guard pattern.
+
+The docs controllers carry no `@authenticated`/`@authorized` metadata,
+so a metadata-driven guard (e.g. the auth-server's `AuthRouteGuard`,
+which derives every requirement from handler metadata) would always
+permit these endpoints. Use an **unconditional** guard that checks the
+request itself — a token-presence or token-adapter guard.
 
 ***
 

@@ -54,7 +54,7 @@ export interface MediaTypeFileExtensionResolver {
      *
      * @returns The known file extensions.
      */
-    getAllFileExtenstions(): string[];
+    getAllFileExtensions(): string[];
 
     /**
      * Resolves the file extensions associated with the given media type.
@@ -88,11 +88,11 @@ const hasFunction =
         (prop: string) =>
         (obj: unknown): boolean =>
             isFunction((obj as Record<string, unknown> | null)?.[prop]),
-    hasGetAllFileExtenstions = hasFunction('getAllFileExtenstions'),
+    hasGetAllFileExtensions = hasFunction('getAllFileExtensions'),
     hasResolveFileExtensions = hasFunction('resolveFileExtensions');
 
 export const likeMediaTypeFileExtensionResolver = (value: unknown): value is MediaTypeFileExtensionResolver =>
-    isNotNil(value) && hasGetAllFileExtenstions(value) && hasResolveFileExtensions(value);
+    isNotNil(value) && hasGetAllFileExtensions(value) && hasResolveFileExtensions(value);
 
 /**
  * Resolves file extensions from a map of extension-to-media-type pairs.
@@ -136,7 +136,7 @@ export class MappingMediaTypeFileExtensionResolver implements MediaTypeFileExten
      *
      * @returns The known file extensions.
      */
-    getAllFileExtenstions(): string[] {
+    getAllFileExtensions(): string[] {
         return this.allFileExtensions;
     }
 
@@ -200,6 +200,21 @@ export class FixedContentNegotiationStrategy implements ContentNegotiationStrate
 }
 
 /**
+ * Parses an `Accept` header value into ordered media ranges for negotiation.
+ *
+ * Comma-splits the header, drops `q=0` ("never") ranges, and sorts by
+ * descending q-value with the header order breaking ties (RFC 9110 §12.4.2 —
+ * a stable sort keeps first-listed preference for equal weights).
+ *
+ * @param accept - The raw `Accept` header value.
+ * @returns The accepted media types in client-preference order.
+ */
+const parseAcceptedRanges = (accept: string): MediaType[] => {
+    const ranges = MediaType.parseAccept(accept).filter((mediaType) => mediaType.qualityFactor > 0);
+    return ranges.sort((a, b) => b.qualityFactor - a.qualityFactor);
+};
+
+/**
  * Base class for content negotiation strategies that also resolve file extensions.
  */
 export abstract class AbstractMappingContentNegotiationStrategy
@@ -217,14 +232,12 @@ export abstract class AbstractMappingContentNegotiationStrategy
         const hint = (request as { mediaTypeHint?: string } | undefined)?.mediaTypeHint;
         if (!hint) return all;
 
-        // Filter by media type hint from the request (e.g., Accept header).
-        // Compare the primary media type (parameters stripped, lower-cased)
-        // against either the top-level type or the full base type.
-        const primary = hint.split(';')[0].trim().toLowerCase();
-        for (const mediaType of all) {
-            if (mediaType.type === primary || mediaType.baseType === primary) return [mediaType];
-        }
-        return all;
+        // Parse the FULL Accept header (not merely the first range, stripped
+        // at its `;`) into ordered, q-value-prioritized media ranges. The
+        // client's preference order, not the server's registration order,
+        // drives negotiation; ranges the client rejects (q=0) are dropped, and
+        // an accepted set nothing matches yields the resolver's 406 path.
+        return parseAcceptedRanges(hint);
     }
 
     /**
@@ -268,14 +281,18 @@ export class PathExtensionContentNegotiationStrategy
 
         // No extension: honor an Accept-header hint (set by the negotiation
         // manager) so the same logical view can be requested by media type.
-        // Mirrors AbstractMappingContentNegotiationStrategy's filter — this
-        // class does not extend it (sibling hierarchy).
+        // Mirrors AbstractMappingContentNegotiationStrategy — this class does
+        // not extend it (sibling hierarchy). Walk the parsed, q-prioritized
+        // ranges in order and return the highest-priority one this resolver
+        // can serve (wildcards cannot name an extension).
         const hint = (request as { mediaTypeHint?: string } | undefined)?.mediaTypeHint;
         if (hint) {
-            const primary = hint.split(';')[0].trim().toLowerCase();
-            for (const mediaType of this.getAllMediaTypes()) {
-                if (mediaType.type === primary || mediaType.baseType === primary) {
-                    return [mediaType];
+            const registered = this.getAllMediaTypes();
+            for (const accepted of parseAcceptedRanges(hint)) {
+                for (const mediaType of registered) {
+                    if (mediaType.includes(accepted) || accepted.includes(mediaType) || mediaType.matches(accepted)) {
+                        return [mediaType];
+                    }
                 }
             }
         }
@@ -316,12 +333,12 @@ export class ContentNegotiationManager implements ContentNegotiationStrategy, Me
      *
      * @returns The union of all extensions from every resolver, deduplicated by insertion order.
      */
-    getAllFileExtenstions(): string[] {
+    getAllFileExtensions(): string[] {
         const seen = new Set<string>();
         const result: string[] = [];
         for (const resolver of this.resolvers) {
             if (!(resolver instanceof MappingMediaTypeFileExtensionResolver)) continue;
-            for (const ext of resolver.getAllFileExtenstions()) {
+            for (const ext of resolver.getAllFileExtensions()) {
                 if (!seen.has(ext)) {
                     seen.add(ext);
                     result.push(ext);
@@ -445,30 +462,39 @@ export class ContentNegotiationViewResolver implements ViewResolver {
             return this.defaultViews?.[0] ?? null;
         }
 
-        // 3. Negotiate the request's accepted media types. Without an active
-        //    request (non-HTTP context, or no strategy matched) take the first.
-        const requested = this.resolveRequestedMediaTypes();
-        if (requested.length === 0) {
+        // 3. Without an active request there is nothing to negotiate — serve
+        //    the first candidate.
+        if (getCurrentRequest() === undefined) {
             return candidates[0];
         }
 
-        // 4. Pick the first candidate whose media type is compatible with an accepted type.
-        for (const view of candidates) {
-            const mediaType = view.mediaType;
-            if (!mediaType) {
-                continue;
-            }
-            const supported = requested.some(
-                (accepted) =>
-                    mediaType.includes(accepted) || accepted.includes(mediaType) || mediaType.matches(accepted)
-            );
-            if (supported) {
-                return view;
+        // 4. Resolve the request's accepted media types, already ordered by
+        //    client priority (descending q-value, header order breaking ties).
+        const requested = this.resolveRequestedMediaTypes();
+        if (requested.length === 0) {
+            // A live request whose accepted set could not be determined:
+            // degrade to the first candidate rather than refusing.
+            return candidates[0];
+        }
+
+        // 5. Pick the first candidate matching the HIGHEST-priority accepted
+        //    range — the client's preference order drives the choice, not the
+        //    server's registration order.
+        for (const accepted of requested) {
+            for (const candidate of candidates) {
+                const mediaType = candidate.mediaType;
+                if (!mediaType) {
+                    continue;
+                }
+                if (mediaType.includes(accepted) || accepted.includes(mediaType) || mediaType.matches(accepted)) {
+                    return candidate;
+                }
             }
         }
 
-        // 5. No representation matched — use the first default, else the last candidate.
-        return this.defaultViews?.[0] ?? candidates[candidates.length - 1];
+        // 6. No representation matched the accepted ranges — 406 (no
+        //    acceptable representation), not a silent default.
+        return null;
     }
 
     /**

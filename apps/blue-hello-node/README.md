@@ -14,7 +14,8 @@ cd apps/blue-hello-node && pnpm start
 
 ## Demonstrates
 
-- `HTTPServer` + `NodeDispatcher` wiring without a full boot
+- A minimal `ApplicationBuilder` + `NodeAutoConfiguration` boot with one
+  controller
 - A single `@getMapping` controller and query-parameter binding
 
 ## See Also

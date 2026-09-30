@@ -142,6 +142,35 @@ describe('Node multipart request wiring', () => {
         expect(nodeRequest?.multipart).toBeUndefined();
     });
 
+    test('a multipart text field named __proto__ merges into the body as an ordinary key (SEC-1)', async () => {
+        const payload = [
+            `--${BOUNDARY}`,
+            'Content-Disposition: form-data; name="__proto__"',
+            '',
+            'polluted',
+            `--${BOUNDARY}--`,
+            '',
+        ].join('\r\n');
+        const res = await post('/upload', Buffer.from(payload), `multipart/form-data; boundary=${BOUNDARY}`);
+
+        expect(res.status).toBe(200);
+        const nodeRequest = cap.last?.attributes?.[NODE_REQUEST_ATTRIBUTE] as NodeRequest | undefined;
+        expect(nodeRequest).toBeDefined();
+        const context = nodeRequest?.multipart;
+
+        // The body record is a plain null-prototype record whose __proto__ is
+        // an ordinary key — no hasOwnProperty TypeError, no prototype swap.
+        const body = nodeRequest?.body;
+        expect(Object.getPrototypeOf(body)).toBeNull();
+        expect(Object.hasOwn(body, '__proto__')).toBe(true);
+        expect(body?.['__proto__']).toBe('polluted');
+        // The record stays fully usable end to end.
+        expect(JSON.stringify(body)).toBe('{"__proto__":"polluted"}');
+        expect(Object.keys(body ?? {})).toEqual(['__proto__']);
+
+        await context?.cleanup();
+    });
+
     test('413 over-cap multipart requests leave no blue-upload-* temp files after dispatch (SEC-6)', async () => {
         const spill = (): string[] => readdirSync(tmpdir()).filter((name) => name.startsWith('blue-upload-'));
         const before = new Set(spill());

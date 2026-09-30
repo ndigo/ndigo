@@ -7,6 +7,7 @@ import { Route } from '@blue/router';
 import { MethodParameter, MethodParameterType } from './parameters';
 import { isNil, like } from '@blue/util/types';
 import { readDottedValue } from './dotted-read';
+import { convertArgumentValue } from './argument-value-converter';
 import { MissingParameterError } from './error';
 
 /**
@@ -63,6 +64,26 @@ export abstract class AbstractNamedValueMethodArgumentResolver implements Handle
     }
 
     /**
+     * Converts a resolved named value through the parameter's `convertType`
+     * (type-based conversion installed by `asNumber`/`as*`/`withConversion`).
+     *
+     * Uses the same shared `convertArgumentValue` the platform resolvers run
+     * (`AbstractPlatformArgumentResolver.#convertFn`): ConversionService-backed
+     * with an identity default when no `convertType` is set. That keeps the
+     * dispatcher resolvers — matrix, query, path, attribute, route — honoring
+     * conversions exactly like every platform (COR-11).
+     *
+     * @param parameter - The method parameter being resolved.
+     * @param value - The resolved (defaulted) value.
+     * @param route - The current route.
+     * @param mapping - The route handler mapping.
+     * @returns The converted value.
+     */
+    protected convertValue(parameter: MethodParameter, value: unknown, route: Route, mapping: unknown): unknown {
+        return convertArgumentValue(parameter.convertType, value, parameter, route, mapping);
+    }
+
+    /**
      * Resolves a method parameter into an argument value from a given route.
      * @param parameter - The method parameter to resolve.
      * @param route - The current route.
@@ -72,10 +93,12 @@ export abstract class AbstractNamedValueMethodArgumentResolver implements Handle
     resolveArgument(parameter: MethodParameter, route: Route, mapping: unknown): unknown {
         const resolveValue = (v: unknown) => v ?? parameter.defaultValue,
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
-            // The convert hook (installed by validatedBy, AD-7) runs after
-            // named resolution so Zod schemas see the field value. Mirrors
-            // the AbstractPlatformArgumentResolver pipeline.
-            validatedValue = parameter.convert ? parameter.convert(value) : value;
+            // convertType conversion (asNumber/as*/withConversion, COR-11)
+            // runs after named resolution — mirrors the platform pipeline.
+            // The Zod `convert` hook (installed by validatedBy, AD-7) then
+            // sees the converted value.
+            convertedValue = this.convertValue(parameter, value, route, mapping),
+            validatedValue = parameter.convert ? parameter.convert(convertedValue) : convertedValue;
 
         if (isNil(validatedValue) && parameter.required) {
             this.handleMissingValue(parameter);

@@ -292,16 +292,25 @@ function createEntryDecorator(entryName?: string | ContextToken<unknown>) {
 
         // Make the method enumerable so it can be found by for...in loops
         context.addInitializer(function (this: unknown) {
-            // `this` is the decorated method's instance (runtime-provided)
-            const instance = this as object;
-            const descriptor =
-                getOwnPropertyDescriptor(instance, context.name) ||
-                getOwnPropertyDescriptor(Object.getPrototypeOf(instance), context.name);
-            if (descriptor && !descriptor.enumerable) {
-                defineProperty(Object.getPrototypeOf(instance), context.name, {
-                    ...descriptor,
-                    enumerable: true,
-                });
+            // `this` is the decorated method's instance (runtime-provided).
+            // Walk the entire prototype chain: on a subclassed configuration
+            // the `@entry` method descriptor lives on the *base* class's
+            // prototype, not the instance or its immediate prototype
+            // (FOLLOW-1). Mark it enumerable where it is actually declared so
+            // the parser's `for...in` discovers inherited factories too.
+            let owner: object | null = this as object;
+            while (owner !== null) {
+                const descriptor = getOwnPropertyDescriptor(owner, context.name);
+                if (descriptor) {
+                    if (!descriptor.enumerable) {
+                        defineProperty(owner, context.name, {
+                            ...descriptor,
+                            enumerable: true,
+                        });
+                    }
+                    break;
+                }
+                owner = Object.getPrototypeOf(owner) as object | null;
             }
         });
 

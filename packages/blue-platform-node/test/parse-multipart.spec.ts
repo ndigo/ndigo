@@ -4,10 +4,10 @@
  * @author Jeff Rose
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { Readable, PassThrough } from 'node:stream';
 import type { IncomingMessage } from 'node:http';
-import { mkdtempSync, readdirSync, existsSync } from 'node:fs';
+import { mkdtempSync, readdirSync, existsSync, readlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parseMultipart } from '../src/parse-multipart';
@@ -224,5 +224,76 @@ describe('parseMultipart', () => {
         const promise = parseMultipart(r, { limits: { maxRequestSize: 1_000, fileThreshold: 64 } });
         source.end(body([{ name: 'a', value: 'y'.repeat(4_000), filename: 'a.txt' }]));
         await expectLimit(promise, 413, 'request_too_large');
+    });
+
+    it('a text field named __proto__ is an ordinary key on the null-prototype fields record (SEC-1)', async () => {
+        const ctx = await parseMultipart(req(body([{ name: '__proto__', value: 'x' }])), {});
+        expect(Object.getPrototypeOf(ctx.fields)).toBeNull();
+        expect(Object.hasOwn(ctx.fields, '__proto__')).toBe(true);
+        expect(ctx.fields['__proto__']).toBe('x');
+    });
+
+    it('counts every request byte exactly once — 0.75×cap uploads succeed, over-cap ones fail (COR-15)', async () => {
+        const cap = 100_000;
+        const workDir = mkdtempSync(join(tmpdir(), 'blue-multipart-test-'));
+        // An all-file upload at 0.75×cap: the old double-counting gate + file
+        // chunks summed ~1.5×cap and rejected mid-stream. With one counter
+        // every body byte is seen exactly once.
+        const fits = body([{ name: 'blob', value: 'f'.repeat(Math.floor(cap * 0.75)), filename: 'f.bin' }]);
+        const ok = await parseMultipart(req(fits), {
+            limits: { maxRequestSize: cap, maxFileSize: 1_000_000, fileThreshold: 64 },
+            tmpDir: workDir,
+        });
+        expect(ok.files.get('blob')).toHaveLength(1);
+        await ok.cleanup();
+
+        const overflow = body([{ name: 'blob', value: 'f'.repeat(cap + 100), filename: 'f.bin' }]);
+        await expectLimit(
+            parseMultipart(req(overflow), {
+                limits: { maxRequestSize: cap, maxFileSize: 1_000_000, fileThreshold: 64 },
+                tmpDir: workDir,
+            }),
+            413,
+            'request_too_large'
+        );
+    });
+
+    it('cleans up temp spill files when the client aborts mid-upload (COR-16)', async () => {
+        const workDir = mkdtempSync(join(tmpdir(), 'blue-multipart-test-'));
+        const source = new PassThrough();
+        const r = reqStream(source, { 'content-type': 'multipart/form-data; boundary=----blueTest' });
+        const promise = parseMultipart(r, {
+            limits: { fileThreshold: 1024, maxFileSize: 1_000_000, maxRequestSize: 1_000_000 },
+            tmpDir: workDir,
+        });
+
+        // Start a file part (delimiter = `--` + boundary → 6 dashes) and spill it
+        // over the 1 KiB threshold.
+        source.write(
+            Buffer.from('------blueTest\r\nContent-Disposition: form-data; name="blob"; filename="b.bin"\r\n\r\n')
+        );
+        source.write(Buffer.from('y'.repeat(20_000)));
+        await vi.waitFor(() => expect(readdirSync(workDir)).toHaveLength(1));
+        const spilled = join(workDir, readdirSync(workDir)[0]);
+
+        // The client aborts before the closing boundary ever arrives.
+        r.emit('aborted');
+
+        await expectLimit(promise, 400, 'request_aborted');
+        // The parser settles and its 'close' handler unlinks the temp file
+        // (the rejection lands as soon as the abort fires; the async busboy
+        // 'close' cleanup completes right behind it).
+        await vi.waitFor(() => expect(readdirSync(workDir)).toHaveLength(0));
+        // …and the spill WriteStream's fd is released (POSIX).
+        const openFdsFor = (path: string): string[] => {
+            try {
+                return readdirSync('/proc/self/fd')
+                    .map((fd) => readlinkSync(join('/proc/self/fd', fd)))
+                    .filter((target) => target.startsWith(path));
+            } catch {
+                return []; // non-Linux: skip the fd half of the assertion
+            }
+        };
+        expect(openFdsFor(spilled)).toEqual([]);
     });
 });

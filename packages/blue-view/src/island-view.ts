@@ -32,19 +32,21 @@ export function serializeModel(model: unknown): string {
 /**
  * Parses a serialized island model back into a JS value.
  *
- * @param raw - The `data-blue-model` attribute value.
+ * The input MUST already be the browser-delivered, ONE-LEVEL-decoded attribute
+ * value: the HTML parser decodes `&quot;`/`&amp;`/`&lt;`/`&gt;` when it reads
+ * `data-blue-model`, so this function treats `raw` as plain JSON and parses it
+ * directly. Decoding a second time here would corrupt any model text that was
+ * entity-escaped by {@link serializeModel} (e.g. a literal `&lt;script&gt;`
+ * would become a live element after hydration).
+ *
+ * @param raw - The `data-blue-model` attribute value as returned by
+ *   `getAttribute` (one-level HTML-decoded by the DOM parser).
  * @returns The parsed model, or `null` when absent/invalid.
  */
 export function parseModel(raw: string | undefined): unknown {
     if (!raw) return null;
     try {
-        return JSON.parse(
-            raw
-                .replace(/&quot;/g, '"')
-                .replace(/&lt;/g, '<')
-                .replace(/&gt;/g, '>')
-                .replace(/&amp;/g, '&')
-        );
+        return JSON.parse(raw);
     } catch {
         return null;
     }

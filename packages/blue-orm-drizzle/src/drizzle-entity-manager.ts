@@ -80,7 +80,17 @@ export class DrizzleEntityManager {
             }
 
             const updateSql = `UPDATE "${tableName}" SET ${setClauses} WHERE "${pkColumn.columnName}" = ?`;
-            await this.#client.execute(updateSql, [...values, pkValue] as InValue[]);
+            const updateResult = await this.#client.execute(updateSql, [...values, pkValue] as InValue[]);
+
+            // A duplicate-primary-key conflict makes the UPDATE match the
+            // existing row (rowsAffected = 1) and should be treated as an
+            // upsert. Any other INSERT failure (e.g. a UNIQUE violation on a
+            // different column held by another row) leaves the UPDATE matching
+            // zero rows — rethrow the original error rather than silently
+            // discarding the save.
+            if (Number(updateResult.rowsAffected) === 0) {
+                throw error;
+            }
         }
     }
 

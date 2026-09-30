@@ -61,7 +61,7 @@ When no sources are provided.
 
 ### getContent()
 
-> **getContent**(`key`, `language`): `string`
+> **getContent**(`key`, `language`): `Promise`\<`string`\>
 
 Resolves content by trying each source in priority order.
 
@@ -85,7 +85,7 @@ The requested language code.
 
 #### Returns
 
-`string`
+`Promise`\<`string`\>
 
 The translated value from the highest-priority source, or the key.
 

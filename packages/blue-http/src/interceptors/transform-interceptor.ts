@@ -49,13 +49,17 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
             }
         }
 
-        // Create new request with transformed body
-        return new Request(request.url, {
-            method: request.method,
-            headers: request.headers,
-            body: this.serializeBody(body, HTTPHeaders.CONTENT_TYPE.get(request.headers) || ''),
-            // ... copy other request properties
-        });
+        // Create new request from the original Request so signal,
+        // credentials, mode, redirect, cache and integrity survive the
+        // transform — only the body is replaced. The body is always a
+        // concrete value for body-bearing methods: the input's own body was
+        // consumed above, so omitting `body` would try to copy a disturbed
+        // stream. GET/HEAD carry no body (and fetch rejects one).
+        const replacedBody =
+            request.method === 'GET' || request.method === 'HEAD'
+                ? null
+                : (this.serializeBody(body, HTTPHeaders.CONTENT_TYPE.get(request.headers) || '') ?? '');
+        return new Request(request, replacedBody === null ? {} : { body: replacedBody });
     }
 
     /**

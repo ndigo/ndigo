@@ -147,7 +147,7 @@ describe('blue-api full bootstrap (ApplicationBuilder path)', () => {
             expect(res.headers.get('strict-transport-security')).toBe('max-age=31536000; includeSubDomains');
             const csp = res.headers.get('content-security-policy');
             expect(csp).toContain("default-src 'self'");
-            expect(csp).toContain("connect-src 'self' ws: wss:");
+            expect(csp).toContain("connect-src 'self'");
         } finally {
             await adapter.close();
         }

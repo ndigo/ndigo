@@ -54,10 +54,23 @@ describe('InMemorySessionStore', () => {
     test('rotate replaces the id and invalidates the old one', async () => {
         const store = new InMemorySessionStore();
         const oldId = await store.create(record, 60_000);
-        const newId = await store.rotate(oldId, { ...record, issuedAt: Date.now() });
-        expect(newId).not.toBe(oldId);
+        const rotated = await store.rotate(oldId, { ...record, issuedAt: Date.now() });
+        expect(rotated.id).not.toBe(oldId);
         await expect(store.get(oldId)).resolves.toBeNull();
-        await expect(store.get(newId)).resolves.toEqual({ ...record, issuedAt: expect.any(Number) });
+        await expect(store.get(rotated.id)).resolves.toEqual({ ...record, issuedAt: expect.any(Number) });
+    });
+
+    test('rotate preserves the remaining TTL and reports the effective expiry (COR-13)', async () => {
+        const store = new InMemorySessionStore();
+        const id = await store.create(record, 200);
+        await delay(100); // burn half the 200ms window
+        const rotated = await store.rotate(id, { ...record, issuedAt: Date.now() });
+        const remainingMs = rotated.expiresAt - Date.now();
+        // Effective expiry preserves the original absolute window...
+        expect(remainingMs).toBeGreaterThan(40);
+        // …and is far short of a fresh full 200ms TTL.
+        expect(remainingMs).toBeLessThan(150);
+        await expect(store.get(rotated.id)).resolves.toEqual({ ...record, issuedAt: expect.any(Number) });
     });
 
     test('rotate throws for an unknown id (fail closed)', async () => {

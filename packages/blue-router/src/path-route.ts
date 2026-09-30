@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { RouteSegment, Route } from './route';
-import { JSONValue, Serializable, JSONObject, createNull } from '@blue/core';
+import { JSONValue, Serializable, JSONObject, createNull, type Matchable } from '@blue/core';
 import { isNil } from '@blue/util/types';
 import type { HTTPMethod } from '@blue/http';
 import { QueryString, MatrixString } from '@blue/http';
@@ -147,7 +147,7 @@ export class PathRouteSegment implements RouteSegment, Serializable {
  * @template TParams - A type representing the route parameters, defaulting to `Record<string, string>`.
  * @since 1.0.0
  */
-export class PathRoute implements Route<Record<string, string>>, Serializable {
+export class PathRoute implements Route<Record<string, string>>, Serializable, Matchable<string> {
     [n: number]: RouteSegment;
 
     readonly data!: JSONObject;

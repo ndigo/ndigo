@@ -115,9 +115,13 @@ export function parseBody(contentType: string | undefined, raw: Buffer): BodyPar
 
     if (mime === 'application/x-www-form-urlencoded') {
         const params = new URLSearchParams(raw.toString('utf-8'));
-        const value: Record<string, unknown> = {};
+        // SEC-1: null-prototype record + `Object.hasOwn`, mirroring the
+        // query/upgrade codecs — a field named `__proto__` must land as an
+        // ordinary own key, never through the inherited `__proto__` accessor
+        // (which would replace the record's prototype with an array).
+        const value: Record<string, unknown> = Object.create(null);
         for (const [key, val] of params) {
-            if (key in value) {
+            if (Object.hasOwn(value, key)) {
                 const existing = value[key];
                 value[key] = Array.isArray(existing) ? [...existing, val] : [existing, val];
             } else {

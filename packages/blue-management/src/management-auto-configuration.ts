@@ -10,8 +10,8 @@ import { HealthRegistry } from './health';
 import { MetricsController } from './metrics-controller';
 import { HealthController } from './health-controller';
 import { TelemetryHealthIndicator } from './telemetry-health-indicator';
-import { HEALTH_REGISTRY } from './health-registry-token';
-import { METRIC_AGGREGATOR } from './metric-aggregator-token';
+import { HEALTH_REGISTRY } from './health-registry-tokens';
+import { METRIC_AGGREGATOR } from './metric-aggregator-tokens';
 
 /**
  * Auto-configuration for management endpoints.

@@ -1,6 +1,6 @@
 /**
  * Represents an authenticated user or entity in the system.
- * * @module blue-auth-core
+ * @module blue-auth-core
  * @since 1.0.0
  * @author Jeff Rose
  */

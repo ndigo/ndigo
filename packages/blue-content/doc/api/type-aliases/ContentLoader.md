@@ -2,11 +2,11 @@
 
 ***
 
-[@blue/content](../README.md) / AsyncContentLoader
+[@blue/content](../README.md) / ContentLoader
 
-# Type Alias: AsyncContentLoader
+# Type Alias: ContentLoader
 
-> **AsyncContentLoader** = (`key`, `language`) => `Promise`\<`string`\>
+> **ContentLoader** = (`key`, `language`) => `Promise`\<`string`\>
 
 An async loader function that resolves content for a given key and language.
 

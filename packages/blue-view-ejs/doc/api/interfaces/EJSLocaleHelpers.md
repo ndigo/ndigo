@@ -116,9 +116,10 @@ Formats a relative-time delta in the request locale.
 
 ### t()
 
-> **t**(`key`, `params?`): `string`
+> **t**(`key`, `params?`): `Promise`\<`string`\>
 
 Formats a message key; falls back to the key when unavailable.
+Async by convention — templates call it as `await t(…)`.
 
 #### Parameters
 
@@ -132,4 +133,4 @@ Formats a message key; falls back to the key when unavailable.
 
 #### Returns
 
-`string`
+`Promise`\<`string`\>

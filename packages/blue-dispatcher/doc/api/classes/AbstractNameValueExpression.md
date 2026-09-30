@@ -23,6 +23,7 @@ Base class for parsed name/value expressions.
 
 - [`NameValueExpression`](../interfaces/NameValueExpression.md)\<`T`\>
 - `Serializable`
+- [`Matchable`](#)\<[`Route`](#)\>
 
 ## Constructors
 
@@ -101,6 +102,34 @@ The current route.
 `boolean`
 
 `true` when the expression matches.
+
+***
+
+### matches()
+
+> **matches**(`value`): `boolean`
+
+Implements [Matchable](#): equivalent to [match](#match). Gives the
+matcher family (`RouteDefinition`, `PathRoute`, …) a single name
+(MTC-1).
+
+#### Parameters
+
+##### value
+
+[`Route`](#)
+
+The route to test.
+
+#### Returns
+
+`boolean`
+
+`true` when this expression matches the route.
+
+#### Implementation of
+
+`Matchable.matches`
 
 ***
 

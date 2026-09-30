@@ -38,8 +38,11 @@ interface CacheEntry {
  * This interceptor can return a cached response in `preRequest` to avoid
  * unnecessary network calls, and stores successful responses in `postResponse`.
  *
-
-
+ * Only 200 OK responses to GET/HEAD requests are cached, keyed by
+ * `method:url`. Credentialed requests — those carrying an `Authorization`
+ * or `Cookie` header — are never cached and never served from cache, so one
+ * user's authenticated response can never leak to another user through the
+ * shared in-memory cache.
  */
 export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor {
     #config: CacheInterceptorConfig;
@@ -66,7 +69,7 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
             return;
         }
 
-        if (this.#shouldBypassCache(request)) {
+        if (this.#hasCredentials(request.headers) || this.#shouldBypassCache(request.headers)) {
             return;
         }
 
@@ -100,10 +103,19 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
         }
 
         const request = new Request(response.url, {
-            method: response.headers.get('X-HTTP-Method') || 'GET',
+            method: settings.method ?? 'GET',
         });
 
-        if (this.#shouldBypassCache(request)) {
+        const requestHeaders =
+            settings.headers instanceof Headers ? settings.headers : new Headers(settings.headers || {});
+
+        // Only idempotent GET/HEAD responses are cached, and credentialed
+        // responses never enter the shared cache (see the class docs).
+        if ((request.method !== 'GET' && request.method !== 'HEAD') || this.#hasCredentials(requestHeaders)) {
+            return response;
+        }
+
+        if (this.#shouldBypassCache(requestHeaders)) {
             return response;
         }
 
@@ -121,11 +133,18 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
         return response;
     }
 
-    #shouldBypassCache(request: Request): boolean {
+    /**
+     * Tests whether the request carries credentials that must not be cached.
+     */
+    #hasCredentials(headers: Headers): boolean {
+        return headers.get('authorization') !== null || headers.get('cookie') !== null;
+    }
+
+    #shouldBypassCache(headers: Headers): boolean {
         const bustingHeaders = this.#config.cacheBustingHeaders ?? ['Cache-Control: no-cache'];
         for (const header of bustingHeaders) {
             const [name, value] = header.split(':').map((s) => s.trim());
-            if (request.headers.get(name) === value) {
+            if (headers.get(name) === value) {
                 return true;
             }
         }

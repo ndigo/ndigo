@@ -23,3 +23,29 @@ Feature activation policy; defaults to `'tracked'`.
 > `optional` **metricRecorder?**: `FeatureMetricRecorder`
 
 Records feature mount/activation metrics.
+
+***
+
+### onActivationError?
+
+> `optional` **onActivationError?**: (`name`, `error`) => `void`
+
+Optional callback invoked when a dynamically loaded feature's
+activation fails — e.g. a rejected loader or dependency-validation
+failure. Receives the feature name and the rejected error. Only fired
+for the fire-and-forget lazy activation; the routing registry retains
+its retry-on-next-activate semantics.
+
+#### Parameters
+
+##### name
+
+`string`
+
+##### error
+
+`unknown`
+
+#### Returns
+
+`void`

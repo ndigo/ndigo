@@ -113,6 +113,14 @@ async function* streamCall(
             return result.data;
         };
 
+        // Trailing events flushed by `parser.finish()` are collected here and
+        // delivered only on the normal EOF path (below). They must never be
+        // yielded from inside a `finally`: a consumer that disposes the
+        // generator early (`for await` break → `iterator.return()`) resumes it
+        // at the pending yield and would otherwise park it forever, leaking the
+        // body reader and the open OTel span (COR-8).
+        const trailing: ServerSentEvent[] = [];
+
         try {
             for (;;) {
                 // oxlint-disable-next-line no-await-in-loop -- stream consumption is inherently sequential
@@ -145,15 +153,25 @@ async function* streamCall(
             // Flush any event buffered without a trailing newline, then release
             // the reader so the underlying stream can be reused/cancelled.
             for (const event of parser.finish()) {
-                events += 1;
-                yield deliver(event);
+                trailing.push(event);
             }
             try {
                 reader.releaseLock();
             } catch {
-                // A read is still pending (consumer disposed mid-flight); the
-                // stream is released by GC once the connection settles.
+                // A read is still pending: the consumer disposed the generator
+                // mid-flight. Cancel the underlying stream so the connection
+                // settles and the reader lock is released promptly.
+                void reader.cancel();
             }
+        }
+
+        // Deliver flushed trailing events on normal EOF only. When the consumer
+        // disposed the generator early, `iterator.return()` short-circuits to
+        // the outer finally, so this loop is skipped and the reader/span still
+        // settle.
+        for (const event of trailing) {
+            events += 1;
+            yield deliver(event);
         }
     } finally {
         span.setAttribute('stream.events', events);

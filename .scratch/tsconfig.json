@@ -1,5 +1,0 @@
-{
-  "extends": "../tsconfig.base.json",
-  "compilerOptions": { "outDir": "dist", "noEmit": false },
-  "include": ["dec.ts"]
-}

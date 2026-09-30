@@ -49,20 +49,31 @@ class StubUserStore implements UserStore {
     }
 
     async findById(id: string): Promise<UserRecord | null> {
+        return this.#byId(id);
+    }
+
+    async incrementTokenVersion(id: string): Promise<number> {
+        const user = this.#byId(id);
+        if (user === null) throw new Error(`User "${id}" not found`);
+        const next = (user.tokenVersion ?? 0) + 1;
+        this.#users.set(user.username, { ...user, tokenVersion: next });
+        return next;
+    }
+
+    async incrementTokenVersionIfCurrent(id: string, expected: number): Promise<number | null> {
+        const user = this.#byId(id);
+        if (user === null) throw new Error(`User "${id}" not found`);
+        if ((user.tokenVersion ?? 0) !== expected) return null;
+        const next = expected + 1;
+        this.#users.set(user.username, { ...user, tokenVersion: next });
+        return next;
+    }
+
+    #byId(id: string): UserRecord | null {
         for (const user of this.#users.values()) {
             if (user.id === id) return user;
         }
         return null;
-    }
-
-    async incrementTokenVersion(id: string): Promise<number> {
-        for (const user of this.#users.values()) {
-            if (user.id !== id) continue;
-            const next = (user.tokenVersion ?? 0) + 1;
-            this.#users.set(user.username, { ...user, tokenVersion: next });
-            return next;
-        }
-        throw new Error(`User "${id}" not found`);
     }
 }
 
@@ -172,6 +183,22 @@ describe('CredentialsAuthAdapter', () => {
     test('refresh fails closed on an unknown token', async () => {
         const { adapter } = buildAdapter();
         await expect(adapter.refresh('nope')).rejects.toBeInstanceOf(InvalidCredentialsError);
+    });
+
+    test("refresh reports the store's effective expiry, not a fresh full TTL (COR-13)", async () => {
+        const { adapter } = buildAdapter({ sessionTtlMs: 60_000 });
+        const authenticated = await adapter.authenticate({ username: 'alice', password: 's3cret' });
+        const token = authenticated.token as string;
+        // Burn most of the TTL: rotating must preserve the remaining window.
+        await delay(50);
+        const refreshed = await adapter.refresh(token);
+        // The reported expiry preserves the original session's absolute
+        // expiry (within a few ms of clock drift) instead of `issuedAt + ttl`.
+        expect(refreshed.expiresAt).toBeGreaterThanOrEqual(authenticated.expiresAt - 5);
+        expect(refreshed.expiresAt).toBeLessThanOrEqual(authenticated.expiresAt + 5);
+        // …and the refreshed session is actually live with that expiry, still
+        // well short of the 50ms-already-elapsed full TTL would be.
+        expect(await adapter.validate(refreshed.token)).toMatchObject({ id: 'alice' });
     });
 
     test('logout invalidates the session', async () => {

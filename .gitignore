@@ -1,5 +1,6 @@
 .awcache
 .nyc_output
+.scratch/
 .vscode
 .omp/
 archive

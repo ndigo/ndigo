@@ -14,11 +14,15 @@ export interface ContentSource {
     /**
      * Gets translated content for the requested key and language.
      *
+     * Methods are async by default; implementations may be synchronous
+     * under the hood. Resolves to the content string, or the key itself
+     * when no translation exists.
+     *
      * @param key - The content key to resolve.
      * @param language - The requested language code.
-     * @returns The resolved content string.
+     * @returns A promise of the resolved content string.
      */
-    getContent(key: string, language: string): string;
+    getContent(key: string, language: string): Promise<string>;
 }
 
 /**
@@ -47,11 +51,14 @@ export class StaticContentSource implements ContentSource {
     /**
      * Resolves content with a language fallback to the default language and then the key itself.
      *
+     * Async by contract (see {@link ContentSource}); the lookup itself is
+     * synchronous, so the promise resolves on the next microtask.
+     *
      * @param key - The content key to resolve.
      * @param language - The requested language code.
      * @returns The localized content or the key when no translation exists.
      */
-    getContent(key: string, language: string): string {
+    async getContent(key: string, language: string): Promise<string> {
         const entry = this.#content[key] || {};
 
         if (typeof entry[language] === 'string') {

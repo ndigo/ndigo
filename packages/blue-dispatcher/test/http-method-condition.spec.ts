@@ -34,3 +34,34 @@ describe('HTTPMethodCondition (D-8: HEAD falls back to GET)', () => {
         expect(new HTTPMethodCondition('GET').getMatchingCondition(routeFor(undefined))).not.toBeNull();
     });
 });
+
+describe('HTTPMethodCondition.compareTo (COR-10: explicit HEAD beats the GET fallback)', () => {
+    const headRoute = routeFor('HEAD');
+    const headCondition = new HTTPMethodCondition('HEAD');
+    const getCondition = new HTTPMethodCondition('GET');
+
+    test('an explicit HEAD mapping sorts before a GET-only mapping for a HEAD request', () => {
+        expect(headCondition.compareTo(getCondition, headRoute)).toBeLessThan(0);
+    });
+
+    test('registration order does not matter — the GET-mapping side reports the HEAD mapping as more specific', () => {
+        expect(getCondition.compareTo(headCondition, headRoute)).toBeGreaterThan(0);
+    });
+
+    test('the HEAD→GET fallback still serves HEAD when only a GET mapping is registered', () => {
+        expect(getCondition.getMatchingCondition(headRoute)).toBe(getCondition);
+    });
+
+    test('without a HEAD request (or without a route) the two concrete conditions remain equally specific', () => {
+        const getRoute = routeFor('GET');
+        expect(headCondition.compareTo(getCondition, getRoute)).toBe(0);
+        expect(getCondition.compareTo(headCondition, getRoute)).toBe(0);
+        expect(headCondition.compareTo(getCondition)).toBe(0);
+    });
+
+    test('the any-method condition still loses to a concrete method', () => {
+        const anyCondition = new HTTPMethodCondition();
+        expect(anyCondition.compareTo(getCondition, headRoute)).toBeGreaterThan(0);
+        expect(getCondition.compareTo(anyCondition, headRoute)).toBeLessThan(0);
+    });
+});

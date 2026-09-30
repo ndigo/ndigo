@@ -5,6 +5,7 @@
  */
 import { describe, expect, test, vi } from 'vitest';
 import {
+    AbstractMappingContentNegotiationStrategy,
     ContentNegotiationViewResolver,
     MappingMediaTypeFileExtensionResolver,
     FixedContentNegotiationStrategy,
@@ -38,14 +39,14 @@ describe('ContentNegotiationViewResolver', () => {
 
         const resolver = new MappingMediaTypeFileExtensionResolver(mediaTypes);
 
-        expect(resolver.getAllFileExtenstions()).toEqual(['html', 'json']);
+        expect(resolver.getAllFileExtensions()).toEqual(['html', 'json']);
         expect(resolver.lookupMediaType('HTML')).toBe(MediaTypes.TEXT_HTML);
         expect(resolver.resolveFileExtensions(MediaTypes.APPLICATION_JSON)).toEqual(['json']);
     });
 
     test('it should support likeMediaTypeFileExtensionResolver predicate', () => {
         const candidate = {
-            getAllFileExtenstions: () => ['html'],
+            getAllFileExtensions: () => ['html'],
             resolveFileExtensions: () => ['html'],
         };
 
@@ -119,16 +120,85 @@ describe('ContentNegotiationViewResolver.resolveViewName', () => {
         await expect(resolver.resolveViewName('page', '')).resolves.toBe(json);
     });
 
-    test('falls back to the first default view when no candidate matches', async () => {
+    test('returns null (406) when no candidate matches the accepted type', async () => {
         const html = view(MediaTypes.TEXT_HTML);
         const fallback = view(MediaTypes.APPLICATION_JSON);
         const resolver = new ContentNegotiationViewResolver({
             resolveMediaTypes: () => [MediaTypes.APPLICATION_JSON],
         } as unknown as ContentNegotiationManager);
         resolver.viewResolvers = [staticResolver(html)];
-        resolver.defaultViews = [fallback];
+        resolver.defaultViews = [fallback]; // defaults must NOT mask a 406
 
         setCurrentRequest({ headers: { accept: 'application/json' } });
-        await expect(resolver.resolveViewName('page', '')).resolves.toBe(fallback);
+        await expect(resolver.resolveViewName('page', '')).resolves.toBeNull();
+    });
+});
+
+/** A concrete mapping strategy for end-to-end Accept-header tests. */
+class AcceptStrategy extends AbstractMappingContentNegotiationStrategy {}
+
+/** Builds a manager with a single mapping strategy over the given types. */
+const mappingManager = (map: Map<string, MediaType>): ContentNegotiationManager =>
+    new ContentNegotiationManager([new AcceptStrategy(map)]);
+
+describe('ContentNegotiationViewResolver Accept-header negotiation', () => {
+    afterEach(() => {
+        clearCurrentRequest();
+    });
+
+    test('honors the highest-priority range across a multi-range Accept header', async () => {
+        const html = view(MediaTypes.TEXT_HTML);
+        const json = view(MediaTypes.APPLICATION_JSON);
+        const txt = view(MediaTypes.TEXT_PLAIN);
+        const resolver = new ContentNegotiationViewResolver(
+            mappingManager(
+                new Map([
+                    ['html', MediaTypes.TEXT_HTML],
+                    ['json', MediaTypes.APPLICATION_JSON],
+                    ['txt', MediaTypes.TEXT_PLAIN],
+                ])
+            )
+        );
+        resolver.viewResolvers = [staticResolver(html), staticResolver(json), staticResolver(txt)];
+
+        // `application/json, text/plain, */*` — JSON is listed first (and
+        // highest specificity) so it beats HTML despite HTML's registration.
+        setCurrentRequest({ headers: { accept: 'application/json, text/plain, */*' } });
+        await expect(resolver.resolveViewName('page', '')).resolves.toBe(json);
+    });
+
+    test('serves the q-value-preferred type, not the first registered one', async () => {
+        const json = view(MediaTypes.APPLICATION_JSON);
+        const html = view(MediaTypes.TEXT_HTML);
+        const resolver = new ContentNegotiationViewResolver(
+            mappingManager(
+                new Map([
+                    ['json', MediaTypes.APPLICATION_JSON],
+                    ['html', MediaTypes.TEXT_HTML],
+                ])
+            )
+        );
+        // JSON is registered (and would win under first-registered semantics)
+        // but the client prefers HTML.
+        resolver.viewResolvers = [staticResolver(json), staticResolver(html)];
+
+        setCurrentRequest({ headers: { accept: 'application/json;q=0.5, text/html;q=1' } });
+        await expect(resolver.resolveViewName('page', '')).resolves.toBe(html);
+    });
+
+    test('rejects with 406 when no candidate matches any accepted range', async () => {
+        const html = view(MediaTypes.TEXT_HTML);
+        const resolver = new ContentNegotiationViewResolver(
+            mappingManager(
+                new Map([
+                    ['html', MediaTypes.TEXT_HTML],
+                    ['json', MediaTypes.APPLICATION_JSON],
+                ])
+            )
+        );
+        resolver.viewResolvers = [staticResolver(html)];
+
+        setCurrentRequest({ headers: { accept: 'application/xml' } });
+        await expect(resolver.resolveViewName('page', '')).resolves.toBeNull();
     });
 });

@@ -16,9 +16,9 @@ fallback convention.
 
 ```ts
 const messages = new I18nextMessageSource({ … });
-messages.getMessage('greeting', { values: { name: 'Ada' } }, 'en');
+await messages.getMessage('greeting', { values: { name: 'Ada' } }, 'en');
 // → 'Hello, Ada!'
-messages.getMessage('items', { count: 3 }, 'en');
+await messages.getMessage('items', { count: 3 }, 'en');
 // → '3 items'  (plural key `items_other`)
 ```
 
@@ -26,9 +26,12 @@ messages.getMessage('items', { count: 3 }, 'en');
 
 ### getMessage()
 
-> **getMessage**(`key`, `params?`, `language?`): `string`
+> **getMessage**(`key`, `params?`, `language?`): `Promise`\<`string`\>
 
 Resolves and formats the message for the requested key.
+
+Methods are async by default; implementations may be synchronous
+under the hood.
 
 #### Parameters
 
@@ -52,6 +55,6 @@ The language to use; the source's active language when omitted.
 
 #### Returns
 
-`string`
+`Promise`\<`string`\>
 
-The formatted message, or the key itself when no translation exists.
+A promise of the formatted message, or the key itself when no translation exists.

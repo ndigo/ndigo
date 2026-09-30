@@ -40,10 +40,10 @@ const messages = new I18nextMessageSource({
     fallbackLanguage: 'en',
 });
 
-messages.getMessage('greeting', { values: { name: 'Ada' } }); // 'Hello Ada!'
-messages.getMessage('items', { count: 3 }); // '3 items'
-messages.getMessage('greeting', { values: { name: 'Ada' } }, 'fr'); // 'Bonjour Ada !'
-messages.getMessage('missing.key'); // 'missing.key'
+await messages.getMessage('greeting', { values: { name: 'Ada' } }); // 'Hello Ada!'
+await messages.getMessage('items', { count: 3 }); // '3 items'
+await messages.getMessage('greeting', { values: { name: 'Ada' } }, 'fr'); // 'Bonjour Ada !'
+await messages.getMessage('missing.key'); // 'missing.key'
 ```
 
 ## Usage

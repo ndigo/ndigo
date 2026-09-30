@@ -8,12 +8,14 @@ import { AbstractDispatcher } from '../src/dispatcher';
 import argumemtResolverContext from './assets/argument-resolver-context';
 import { Route } from '@blue/router';
 import {
+    AbstractNamedValueMethodArgumentResolver,
     AttributeValueMethodArgumentResolver,
     MethodParameter,
     MethodParameterType,
     QueryValueMethodArgumentResolver,
     RouteValueMethodArgumentResolver,
 } from '../src/index';
+import { MissingParameterError } from '../src/error';
 
 describe('ArgumentResolver', () => {
     // Mirrors the segment-shaped Route produced by the router for /hello/there.
@@ -101,6 +103,90 @@ describe('ArgumentResolver', () => {
             expect(resolver.resolveArgument(new MethodParameter(MethodParameterType.ROUTE, 'route'), route, {})).toBe(
                 null
             );
+        });
+    });
+
+    describe('convertType conversion through the shared pipeline (COR-11)', () => {
+        const query = new QueryValueMethodArgumentResolver();
+        const attribute = new AttributeValueMethodArgumentResolver();
+        const numberConvert = { source: String, target: Number };
+
+        test('asNumber(queryValue(...)) converts the raw string to a number', () => {
+            const param = new MethodParameter(MethodParameterType.QUERY, 'age', false, null, numberConvert);
+            const route = { data: { age: '42' }, attributes: {} } as unknown as Route;
+            expect(query.resolveArgument(param, route, {})).toBe(42);
+        });
+
+        test('withConversion(Number, attributeValue(...)) converts raw attribute strings', () => {
+            const param = new MethodParameter(MethodParameterType.ATTRIBUTE, 'userId', false, null, numberConvert);
+            const route = { attributes: { userId: '7' } } as unknown as Route;
+            expect(attribute.resolveArgument(param, route, {})).toBe(7);
+        });
+
+        test('default values flow through conversion (asNumber + defaultValue)', () => {
+            const param = new MethodParameter(MethodParameterType.QUERY, 'page', false, '3', numberConvert);
+            const route = { data: {}, attributes: {} } as unknown as Route;
+            expect(query.resolveArgument(param, route, {})).toBe(3);
+        });
+
+        test('without a convertType the pipeline stays identity (unchanged behavior)', () => {
+            const param = new MethodParameter(MethodParameterType.ATTRIBUTE, 'tag');
+            const route = { attributes: { tag: 'x' } } as unknown as Route;
+            expect(attribute.resolveArgument(param, route, {})).toBe('x');
+        });
+
+        test('a pair convertible only via the String fallback converts instead of throwing (COR-23)', () => {
+            // No converter is registered for this source type → Date, but the
+            // ConversionService falls back to the String-source converter for
+            // the target (the config/env binding convention), so canConvert
+            // agrees. Resolution must use the same fallback, not throw.
+            const unresolvedSourceType = class UnregisteredSource {};
+            const param = new MethodParameter(MethodParameterType.QUERY, 'happenedAt', false, null, {
+                source: unresolvedSourceType,
+                target: Date,
+            });
+            const route = { data: { happenedAt: '2024-01-15' }, attributes: {} } as unknown as Route;
+            expect(query.resolveArgument(param, route, {})).toEqual(new Date('2024-01-15'));
+        });
+
+        test('an exact source→target pair still resolves its own converter (COR-23)', () => {
+            // Exact-pair conversion is unchanged: with both the source and the
+            // String fallback registered, the exact converter must win.
+            const param = new MethodParameter(MethodParameterType.QUERY, 'age', false, null, numberConvert);
+            const route = { data: { age: '42' }, attributes: {} } as unknown as Route;
+            expect(query.resolveArgument(param, route, {})).toBe(42);
+        });
+    });
+
+    describe('Required multipart parts (DOC-5)', () => {
+        // Mirrors a platform part resolver: the shared named-value pipeline
+        // reading an absent part. The `required` flag reaches it via
+        // toMethodParameter → MethodParameter (specs in route-params.spec.ts).
+        class StubPartResolver extends AbstractNamedValueMethodArgumentResolver {
+            protected resolveName(): unknown {
+                return undefined;
+            }
+
+            supportsParameter(parameter: MethodParameter): boolean {
+                return MethodParameterType.REQUEST_PART.equals(parameter.type);
+            }
+        }
+
+        const stub = new StubPartResolver();
+        const route = { path: '/upload', method: 'POST', data: {}, params: {}, attributes: {} } as unknown as Route;
+
+        test('a missing required part throws MissingParameterError (the HTTP 400 path)', () => {
+            const param = new MethodParameter(MethodParameterType.REQUEST_PART, 'avatar', true);
+            expect(() => stub.resolveArgument(param, route, {})).toThrow(MissingParameterError);
+        });
+
+        test('a missing optional part still binds the extractor default — null — unchanged', () => {
+            // `defaultValue` is null for file parts; the shared pipeline
+            // honors it (the plan's "undefined" wording predates the
+            // defaultValue=(null) convention — missing optional values have
+            // always bound null here).
+            const param = new MethodParameter(MethodParameterType.REQUEST_PART, 'avatar');
+            expect(stub.resolveArgument(param, route, {})).toBeNull();
         });
     });
 });

@@ -206,7 +206,7 @@ describe('GenericApplicationContext', () => {
         expect(context.getValue('foo')).toBe('bar');
     });
 
-    test('it should resolve content from local content source', () => {
+    test('it should resolve content from local content source', async () => {
         context.setContentSource(
             new StaticContentSource({
                 greeting: {
@@ -215,10 +215,10 @@ describe('GenericApplicationContext', () => {
             })
         );
 
-        expect(context.getContent('greeting', 'en')).toBe('Hello');
+        expect(await context.getContent('greeting', 'en')).toBe('Hello');
     });
 
-    test('it should resolve content from parent context fallback', () => {
+    test('it should resolve content from parent context fallback', async () => {
         const parent = new GenericApplicationContext('parent');
         parent.setContentSource(
             new StaticContentSource({
@@ -229,7 +229,7 @@ describe('GenericApplicationContext', () => {
         );
 
         context.setParent(parent);
-        expect(context.getContent('welcome', 'en')).toBe('Welcome parent');
+        expect(await context.getContent('welcome', 'en')).toBe('Welcome parent');
     });
 
     test('it should support re-parenting and root recomputation', () => {

@@ -80,7 +80,7 @@ async create(token: string | undefined, data: z.infer<typeof noteInsertSchema>) 
     const note = new Note();
     Object.assign(note, data); // @prePersist fills the rest
     entityManager.persist(note);
-    return { note: conversionService.convert(note, noteResponseSchema) };
+    return { note: conversionService.convert(note, noteDtoSchema) };
 }
 ```
 

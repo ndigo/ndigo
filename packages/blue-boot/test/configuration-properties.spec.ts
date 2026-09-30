@@ -117,6 +117,32 @@ describe('resolveConfigurationProperties schema mode (AD-34 D3)', () => {
             /Cannot bind SchemaServerConfig from schema/
         );
     });
+
+    test('SEC-5: bind failure message redacts raw values, exposing key names only', async () => {
+        @configurationProperties('server', { schema: serverSchema })
+        class SchemaServerConfig {
+            name!: string;
+            port!: number;
+        }
+        const context = await runBoot({
+            server: { port: { cipher: 'ENC(SECRET-TOKEN-7f3a)' } },
+        });
+
+        const capture = (): string => {
+            try {
+                resolveConfigurationProperties(SchemaServerConfig, context);
+            } catch (error) {
+                return error instanceof Error ? error.message : String(error);
+            }
+            return '';
+        };
+        const message = capture();
+
+        expect(message).toMatch(/Cannot bind SchemaServerConfig from schema keys \(port\)/);
+        expect(message).not.toContain('SECRET-TOKEN-7f3a');
+        expect(message).not.toContain('ENC(');
+        expect(message).not.toContain('cipher');
+    });
 });
 
 describe('resolveConfigurationProperties v2', () => {

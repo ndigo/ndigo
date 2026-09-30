@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { base64url, createRemoteJWKSet, decodeJwt, jwtVerify, type JWTPayload } from 'jose';
+import { randomToken } from '@blue/util';
 import { HTTPHeaders } from '@blue/http';
 import { type AuthAdapter } from '@blue/auth-core';
 import { type Principal } from '@blue/auth-core';
@@ -183,12 +184,6 @@ function assertTrustedUrl(url: URL, label: string): void {
             `${label} must use HTTPS (loopback exempt): ${url.protocol} is not allowed`
         );
     }
-}
-
-function randomToken(bytes: number): string {
-    const buffer = new Uint8Array(bytes);
-    crypto.getRandomValues(buffer);
-    return base64url.encode(buffer);
 }
 
 async function pkceCodeChallenge(verifier: string): Promise<string> {

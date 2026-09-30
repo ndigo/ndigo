@@ -57,9 +57,9 @@ export interface I18nextMessageSourceOptions {
  *     language: 'en',
  *     fallbackLanguage: 'en',
  * });
- * messages.getMessage('greeting', { values: { name: 'Ada' } });          // 'Hello Ada!'
- * messages.getMessage('items', { count: 3 });                            // '3 items'
- * messages.getMessage('greeting', { values: { name: 'Ada' } }, 'fr');    // 'Bonjour Ada !'
+ * await messages.getMessage('greeting', { values: { name: 'Ada' } });          // 'Hello Ada!'
+ * await messages.getMessage('items', { count: 3 });                            // '3 items'
+ * await messages.getMessage('greeting', { values: { name: 'Ada' } }, 'fr');    // 'Bonjour Ada !'
  * ```
  */
 export class I18nextMessageSource implements MessageSource {
@@ -118,7 +118,7 @@ export class I18nextMessageSource implements MessageSource {
      * @param language - Language override; the active language when omitted.
      * @returns The formatted message, or the key itself when missing.
      */
-    getMessage(key: string, params?: MessageParams, language?: string): string {
+    async getMessage(key: string, params?: MessageParams, language?: string): Promise<string> {
         const t = language === undefined ? this.instance.t : this.#fixedT(language);
 
         return t(key, {

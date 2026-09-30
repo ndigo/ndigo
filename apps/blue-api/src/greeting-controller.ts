@@ -46,9 +46,10 @@ export class GreetingController {
      */
     @getMapping('/greeting')
     @parameters({ name: queryValue('name'), languageTag: headerValue('accept-language') })
-    greeting(name: string | undefined, languageTag: string | undefined) {
+    async greeting(name: string | undefined, languageTag: string | undefined) {
         const language = this.#languageOf(languageTag);
-        const message = this.#content.getContent('greeting', language).replace('{name}', name ?? 'World');
+        const content = await this.#content.getContent('greeting', language);
+        const message = content.replace('{name}', name ?? 'World');
         return { message, language };
     }
 

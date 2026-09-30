@@ -9,6 +9,7 @@ import { PathRoute } from './path-route';
 import { type Registry } from '@blue/factory';
 import { ROUTER } from './context-tokens';
 import type { Router } from './router';
+import type { Matchable } from '@blue/core';
 
 // ── Type helpers ────────────────────────────────────────────────────────────
 
@@ -18,7 +19,7 @@ export type RouteParams<T extends string> = T extends `${string}{${infer P}}${in
 
 // ── RouteDefinition ─────────────────────────────────────────────────────────
 
-export class RouteDefinition<TPattern extends string = string> {
+export class RouteDefinition<TPattern extends string = string> implements Matchable<string> {
     readonly pattern: TPattern;
     readonly #context: Registry;
 

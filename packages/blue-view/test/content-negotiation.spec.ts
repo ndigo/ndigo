@@ -30,8 +30,8 @@ describe('ContentNegotiationManager', () => {
         ]);
     });
 
-    it('getAllFileExtenstions returns unique extensions in order', () => {
-        const result = manager.getAllFileExtenstions();
+    it('getAllFileExtensions returns unique extensions in order', () => {
+        const result = manager.getAllFileExtensions();
         expect(result).toEqual(['json', 'xml', 'txt']);
     });
 
@@ -117,7 +117,7 @@ describe('AbstractMappingContentNegotiationStrategy', () => {
         expect(result[0]).toEqual(MediaTypes.APPLICATION_JSON);
     });
 
-    it('returns all types when hint does not match any', () => {
+    it('returns the parsed accepted range even when the server does not register it', () => {
         class TestMappingStrategy extends AbstractMappingContentNegotiationStrategy {
             // Concrete subclass for testing the abstract class
         }
@@ -125,8 +125,23 @@ describe('AbstractMappingContentNegotiationStrategy', () => {
         const mediaTypes = new Map<string, MediaType>([['json', MediaTypes.APPLICATION_JSON]]);
         const strategy = new TestMappingStrategy(mediaTypes);
 
+        // The hint names an unregistered type — the strategy still reports the
+        // client's requested range (in priority order); the resolver translates
+        // "accepted but unservable" into a 406 rather than a silent default.
         const result = strategy.resolveMediaTypes({ mediaTypeHint: 'application/xml' });
-        expect(result).toHaveLength(1);
+        expect(result).toEqual([MediaTypes.APPLICATION_XML]);
+    });
+
+    it('orders multi-range hints by q-value with header order breaking ties', () => {
+        class TestMappingStrategy extends AbstractMappingContentNegotiationStrategy {
+            // Concrete subclass for testing the abstract class
+        }
+
+        const mediaTypes = new Map<string, MediaType>([['json', MediaTypes.APPLICATION_JSON]]);
+        const strategy = new TestMappingStrategy(mediaTypes);
+
+        const result = strategy.resolveMediaTypes({ mediaTypeHint: 'application/json;q=0.5, text/html;q=1' });
+        expect(result.map((mediaType) => mediaType.baseType)).toEqual(['text/html', 'application/json']);
     });
 });
 

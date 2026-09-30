@@ -51,9 +51,9 @@ The strategies consulted to resolve media types.
 
 ## Methods
 
-### getAllFileExtenstions()
+### getAllFileExtensions()
 
-> **getAllFileExtenstions**(): `string`[]
+> **getAllFileExtensions**(): `string`[]
 
 Returns every file extension known to the registered resolvers.
 
@@ -65,7 +65,7 @@ The union of all extensions from every resolver, deduplicated by insertion order
 
 #### Implementation of
 
-[`MediaTypeFileExtensionResolver`](../interfaces/MediaTypeFileExtensionResolver.md).[`getAllFileExtenstions`](../interfaces/MediaTypeFileExtensionResolver.md#getallfileextenstions)
+[`MediaTypeFileExtensionResolver`](../interfaces/MediaTypeFileExtensionResolver.md).[`getAllFileExtensions`](../interfaces/MediaTypeFileExtensionResolver.md#getallfileextensions)
 
 ***
 

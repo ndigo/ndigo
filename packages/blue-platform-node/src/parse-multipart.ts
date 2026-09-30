@@ -255,7 +255,9 @@ export async function parseMultipart(
         if (aborted) {
             return;
         }
-        totalBytes += Buffer.byteLength(value);
+        // COR-15: the counting gate above already saw every body byte — field
+        // values must NOT be added again (that would double count and reject
+        // uploads at ~half the configured cap). Only re-check the totals.
         if (info.valueTruncated) {
             // SEC-9: busboy truncated this field at the field-size limit —
             // bind nothing; the abort rejects with 413 field_too_large.
@@ -289,8 +291,10 @@ export async function parseMultipart(
                 stream,
                 { ...info, filename: safeName },
                 limits,
-                (bytes) => {
-                    totalBytes += bytes;
+                () => {
+                    // COR-15: the counting gate is the single byte counter;
+                    // this only re-checks the accumulated total (adding here
+                    // would double-count file chunks against the cap).
                     if (totalBytes > limits.maxRequestSize) {
                         flagAbort('request_too_large', 'Total multipart request exceeds the maximum allowed size');
                     }
@@ -327,6 +331,12 @@ export async function parseMultipart(
         // Register every part before resolving so a caller that awaits the
         // parser sees the complete field + file map.
         await Promise.all(pending);
+        if (settled) {
+            // Abort-settled (client abort, socket loss; COR-16): the error is
+            // already recorded — discard temp parts so nothing leaks on disk.
+            await context.cleanup();
+            return;
+        }
         if (aborted) {
             // Overflowed upload: discard temp parts so nothing leaks on disk.
             await context.cleanup();
@@ -341,6 +351,23 @@ export async function parseMultipart(
     });
 
     req.pipe(gate).pipe(bb);
+
+    // COR-16: mirror #readBody's abort wiring. A client abort mid-upload must
+    // settle the parser and destroy the gate/busboy pipeline so busboy's
+    // 'close' handler above runs the temp cleanup — otherwise `parseMultipart`
+    // would hang forever with spilled `blue-upload-*` files and open fds
+    // behind it.
+    const onAbort = (): void => {
+        settleError(new RequestLimitError(400, 'request_aborted', 'Request aborted before completion'));
+        gate.destroy();
+        bb.destroy();
+    };
+    req.once('aborted', onAbort);
+    req.once('close', () => {
+        if (!settled && req.errored) {
+            onAbort();
+        }
+    });
 
     return settle;
 }
@@ -357,7 +384,7 @@ function collectFile(
     stream: Readable & { truncated?: boolean },
     info: { filename: string; mimeType: string },
     limits: ResolvedMultipartLimits,
-    onByte: (bytes: number) => void,
+    onData: () => void,
     onOverLimit: () => void
 ): Promise<MultipartFile> {
     return new Promise<MultipartFile>((resolve, reject) => {
@@ -367,6 +394,7 @@ function collectFile(
         let ws: WriteStream | null = null;
         let tempPath: string | null = null;
         let settled = false;
+        let ended = false;
 
         const done = (backing: Backing): void => {
             if (settled) {
@@ -375,10 +403,19 @@ function collectFile(
             settled = true;
             resolve(new NodeMultipartFile(name, info.filename, info.mimeType, backing));
         };
+        // COR-16: a part stream destroyed mid-upload (client abort, parser
+        // teardown, overflow) never emits 'end' — release the spill target's
+        // file descriptor immediately so it cannot leak.
+        const closeSpill = (): void => {
+            if (ws) {
+                ws.destroy();
+                ws = null;
+            }
+        };
 
         stream.on('data', (chunk: Buffer) => {
             size += chunk.length;
-            onByte(chunk.length);
+            onData();
             if (stream.truncated || size > limits.maxFileSize) {
                 // Over the per-file cap: abort, keep draining, stop storing.
                 onOverLimit();
@@ -401,6 +438,7 @@ function collectFile(
             }
         });
         stream.on('end', () => {
+            ended = true;
             if (mode === 'buffer') {
                 done({ kind: 'buffer', data: Buffer.concat(chunks) });
             } else if (ws) {
@@ -411,9 +449,22 @@ function collectFile(
             }
         });
         stream.on('error', (error) => {
+            closeSpill();
             if (!settled) {
                 reject(error);
             }
+        });
+        stream.on('close', () => {
+            if (settled || ended) {
+                // 'end' already ran — normal completion (the temp file's
+                // async 'finish' may still be landing); nothing to abort.
+                return;
+            }
+            // Destroyed before 'end' (abort/teardown): settle the part as an
+            // abort so the pending bookkeeping clears; the parser-level
+            // cleanup unlinks the temp file (COR-16).
+            closeSpill();
+            reject(new RequestLimitError(400, 'request_aborted', 'Request aborted before completion'));
         });
     });
 }

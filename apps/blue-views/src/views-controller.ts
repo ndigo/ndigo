@@ -26,7 +26,7 @@ class ViewsController {
 
     /** Context-bean location → NameViewResolver (English footer default). */
     @routeMapping('/widget')
-    handleWidget() {
+    async handleWidget() {
         return this.#footerModel('en');
     }
 
@@ -37,7 +37,7 @@ class ViewsController {
      */
     @routeMapping('/widget/:lang')
     @parameters({ lang: pathVariable('lang') })
-    handleWidgetLang(lang: string) {
+    async handleWidgetLang(lang: string) {
         return this.#footerModel(lang);
     }
 
@@ -59,9 +59,9 @@ class ViewsController {
         return new ModelAndView('nope');
     }
 
-    #footerModel(language: string): ModelAndView {
+    async #footerModel(language: string): Promise<ModelAndView> {
         return new ModelAndView('footer', {
-            message: this.#content.getContent('footer', language),
+            message: await this.#content.getContent('footer', language),
             language,
         });
     }

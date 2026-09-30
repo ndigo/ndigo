@@ -5,7 +5,8 @@
  */
 // @vitest-environment jsdom
 import { describe, test, expect, beforeEach } from 'vitest';
-import { hydrateIslands, parseModel } from '../src/hydrate';
+import { hydrateIslands } from '../src/hydrate';
+import { serializeModel } from '@blue/view';
 import { AbstractWebComponent } from '../src/abstract-web-component';
 
 /**
@@ -47,6 +48,26 @@ describe('hydrateIslands', () => {
         }
         expect(live.textContent).toBe('42'); // model set → render ran
         expect(live.hasAttribute('data-blue-island')).toBe(true);
+    });
+
+    test('hydrates entity literals as original content, not a live element', () => {
+        // Fresh class + name: jsdom's registry persists across tests and
+        // rejects re-registering a constructor under another name.
+        class ModelElement extends HTMLElement {}
+        customElements.define('entity-island', ModelElement);
+        // The model carries entity *literals* as data: a literal `&lt;b&gt;`
+        // and a literal `&lt;script&gt;alert(1)&lt;/script&gt;` string that must
+        // survive hydration as inert text — never a real element, never null.
+        const model = { count: 42, html: '<b>&amp; &lt;b&gt;</b>' };
+        document.body.innerHTML = `<entity-island data-blue-island data-blue-model="${serializeModel(model)}"></entity-island>`;
+
+        const n = hydrateIslands(document);
+        expect(n).toBe(1);
+
+        const live = document.querySelector('entity-island') as HTMLElement & { model?: unknown };
+        expect(live.model).toEqual(model);
+        // No real `<script>` / `<b>` element was injected by hydration.
+        expect(live.querySelector('script, b')).toBeNull();
     });
 
     test('leaves undefined elements as inert markup', () => {

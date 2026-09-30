@@ -46,6 +46,12 @@ Re-exports [ACCEPT_ENCODING](../../variables/ACCEPT_ENCODING.md)
 
 ***
 
+### ACCEPT\_LANGUAGE
+
+Re-exports [ACCEPT_LANGUAGE](../../variables/ACCEPT_LANGUAGE.md)
+
+***
+
 ### ACCEPT\_PUSH\_POLICY
 
 Re-exports [ACCEPT_PUSH_POLICY](../../variables/ACCEPT_PUSH_POLICY.md)

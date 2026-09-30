@@ -11,7 +11,7 @@ This typically indicates a misconfiguration or an unhandled route.
 
 ## Extends
 
-- `FrameworkError`
+- [`FrameworkError`](#)
 
 ## Constructors
 

@@ -5,6 +5,7 @@
  */
 import { describe, expect, test, vi } from 'vitest';
 import { WebComponentView } from '../src/view';
+import { AbstractWebComponent } from '../src/abstract-web-component';
 
 /**
  * Structural view of WebComponentView's protected internals, so tests can
@@ -40,5 +41,46 @@ describe('WebComponentView', () => {
         expect(element.tagName.toLowerCase()).toBe('test-view');
         expect(element.model).toBe(model);
         expect(committedModel).toBe(model);
+    });
+});
+
+describe('AbstractWebComponent event registration', () => {
+    // jsdom's custom-element registry persists across tests in a file, so the
+    // tag is defined exactly once and each test creates fresh instances.
+    customElements.define('event-test-component', class TestComponent extends AbstractWebComponent {});
+
+    function makeComponent(): AbstractWebComponent {
+        return document.createElement('event-test-component') as AbstractWebComponent;
+    }
+
+    test('it should register a DOM listener only once per unique listener', () => {
+        const comp = makeComponent();
+        let count = 0;
+        const handler = () => {
+            count++;
+        };
+
+        comp.on('click', handler);
+        comp.on('click', handler); // duplicate registration must be a no-op
+
+        comp.dispatchEvent(new Event('click'));
+
+        expect(count).toBe(1);
+    });
+
+    test('it should re-register a listener after off()', () => {
+        const comp = makeComponent();
+        let count = 0;
+        const handler = () => {
+            count++;
+        };
+
+        comp.on('click', handler);
+        comp.off('click', handler);
+        comp.on('click', handler);
+
+        comp.dispatchEvent(new Event('click'));
+
+        expect(count).toBe(1);
     });
 });

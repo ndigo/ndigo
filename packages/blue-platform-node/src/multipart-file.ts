@@ -89,12 +89,10 @@ class NodeMultipartFile implements MultipartFile {
 
     async bytes(): Promise<Uint8Array> {
         if (this.#backing.kind === 'buffer') {
-            // Copy out so callers cannot mutate the parser's buffer.
-            return new Uint8Array(
-                this.#backing.data.buffer,
-                this.#backing.data.byteOffset,
-                this.#backing.data.byteLength
-            );
+            // DSG-2: copy out (never a view) so callers cannot mutate the
+            // parser's buffer — the documented copy-out contract holds across
+            // repeated calls.
+            return new Uint8Array(this.#backing.data);
         }
         return new Uint8Array(await readFile(this.#backing.path));
     }
@@ -130,18 +128,23 @@ class NodeMultipartFile implements MultipartFile {
  * A parsed multipart request that can dispose any temp files it created.
  */
 class NodeMultipartContext implements MultipartContext {
-    readonly fields: Record<string, string | string[]> = {};
+    // SEC-1: null-prototype record + `Object.hasOwn` — a field named
+    // `__proto__` must land as an ordinary own key (see also the urlencoded
+    // codec in http-request-limits.ts), never through the inherited accessor.
+    readonly fields: Record<string, string | string[]> = Object.create(null);
     readonly files = new Map<string, MultipartFile[]>();
     #tempPaths = new Set<string>();
 
     setField(name: string, value: string): void {
-        const existing = this.fields[name];
-        if (existing === undefined) {
-            this.fields[name] = value;
-        } else if (Array.isArray(existing)) {
-            existing.push(value);
+        if (Object.hasOwn(this.fields, name)) {
+            const existing = this.fields[name];
+            if (Array.isArray(existing)) {
+                existing.push(value);
+            } else {
+                this.fields[name] = [existing, value];
+            }
         } else {
-            this.fields[name] = [existing, value];
+            this.fields[name] = value;
         }
     }
 

@@ -287,7 +287,7 @@ function resolveFromSchema<T>(
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         throw new IllegalStateError(
-            `Cannot bind ${ctor.name} from schema (${JSON.stringify(raw)}): ${message}`,
+            `Cannot bind ${ctor.name} from schema keys (${Object.keys(raw).join(', ')}): ${message}`,
             error instanceof Error ? { cause: error } : undefined
         );
     }

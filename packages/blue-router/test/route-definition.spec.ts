@@ -4,9 +4,20 @@
  * @author Jeff Rose
  */
 import { describe, it, expect } from 'vitest';
+import type { Matchable } from '@blue/core';
 import { RouteDefinition } from '../src/route-definition';
 
 describe('RouteDefinition', () => {
+    describe('Matchable conformance', () => {
+        it('satisfies the Matchable<string> contract', () => {
+            const def = new RouteDefinition('/users/{id}', {} as never);
+            const matchable: Matchable<string> = def;
+            expect(typeof matchable.matches).toBe('function');
+            expect(matchable.matches('/users/123')).toBe(true);
+            expect(matchable.matches('/posts/123')).toBe(false);
+        });
+    });
+
     describe('url()', () => {
         it('generates URL for parameterized route', () => {
             const def = new RouteDefinition('/users/{id}', {} as never);

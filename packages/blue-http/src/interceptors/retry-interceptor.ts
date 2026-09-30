@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { HTTPInit, ErrorAwareHTTPInterceptor, HTTP } from '../http';
+import { HTTPInit, ErrorAwareHTTPInterceptor, RequestAwareHTTPInterceptor, HTTP } from '../http';
 import ResponseError from '../response-error';
 
 /**
@@ -53,8 +53,15 @@ const RETRY_ATTEMPT_HEADER = 'x-retry-attempt';
  *
 
  */
-export class RetryInterceptor implements ErrorAwareHTTPInterceptor {
+export class RetryInterceptor implements ErrorAwareHTTPInterceptor, RequestAwareHTTPInterceptor {
     readonly #config: RetryInit;
+    /**
+     * Undisturbed `Request.clone()` per live request, captured in
+     * `preRequest` before fetch reads the body stream. The failed request's
+     * body is consumed/disturbed by the time `postError` runs, so a retry
+     * must be rebuilt from this clone to keep the original payload.
+     */
+    readonly #pristineClones = new WeakMap<Request, Request>();
 
     /**
      * Creates a new retry interceptor.
@@ -64,6 +71,17 @@ export class RetryInterceptor implements ErrorAwareHTTPInterceptor {
      */
     constructor(config: RetryInit = {}) {
         this.#config = config;
+    }
+
+    /**
+     * Captures an undisturbed clone of each outgoing request so a later
+     * retry can re-issue it with the original body intact.
+     *
+     * @param request - The request being sent.
+     * @returns Nothing; the request passes through unchanged.
+     */
+    async preRequest(request: Request): Promise<Request | void> {
+        this.#pristineClones.set(request, request.clone());
     }
 
     /**
@@ -120,17 +138,29 @@ export class RetryInterceptor implements ErrorAwareHTTPInterceptor {
                     const retryHeaders = new Headers(request.headers);
                     retryHeaders.set(RETRY_ATTEMPT_HEADER, String(currentAttempt + 1));
 
-                    const response = await http.request(request.url, {
-                        method: request.method as RetryInit['method'],
+                    // Rebuild from the undisturbed clone captured in
+                    // preRequest — the live request's body was already read
+                    // by the failed attempt, so cloning it here would throw.
+                    const retryBase = this.#pristineClones.get(request) ?? request;
+                    const retryBody = retryBase.body;
+
+                    const retryInit: RetryInit & { duplex?: 'half' } = {
+                        method: retryBase.method as RetryInit['method'],
                         headers: retryHeaders,
-                        mode: request.mode,
-                        credentials: request.credentials,
-                        cache: request.cache,
-                        redirect: request.redirect,
-                        referrer: request.referrer,
-                        referrerPolicy: request.referrerPolicy,
-                        integrity: request.integrity,
-                    });
+                        body: retryBody,
+                        // Node's fetch refuses to send a ReadableStream body
+                        // (the clone's) without an explicit half-duplex mode.
+                        duplex: retryBody !== null ? 'half' : undefined,
+                        mode: retryBase.mode,
+                        credentials: retryBase.credentials,
+                        cache: retryBase.cache,
+                        redirect: retryBase.redirect,
+                        referrer: retryBase.referrer,
+                        referrerPolicy: retryBase.referrerPolicy,
+                        integrity: retryBase.integrity,
+                    };
+
+                    const response = await http.request(retryBase.url, retryInit);
                     resolve(response);
                 } catch (retryError) {
                     reject(retryError);

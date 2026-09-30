@@ -55,6 +55,9 @@ Jeff Rose
 
 - [argumentValueConverters](variables/argumentValueConverters.md)
 - [currentLocale](variables/currentLocale.md)
+- [DEFAULT\_MAX\_RETRY\_INTERVAL](variables/DEFAULT_MAX_RETRY_INTERVAL.md)
+- [DEFAULT\_QUEUE\_CAP](variables/DEFAULT_QUEUE_CAP.md)
+- [DEFAULT\_RETRY\_INTERVAL](variables/DEFAULT_RETRY_INTERVAL.md)
 - [identityArgumentValueConverter](variables/identityArgumentValueConverter.md)
 - [LOCALE\_COOKIE\_NAME](variables/LOCALE_COOKIE_NAME.md)
 

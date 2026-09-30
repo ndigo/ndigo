@@ -17,62 +17,62 @@ class FakeMessageSource implements MessageSource {
         this.translations = translations;
     }
 
-    getMessage(key: string, params?: unknown, language?: string): string {
+    async getMessage(key: string, params?: unknown, language?: string): Promise<string> {
         this.calls.push({ key, params, language });
         return this.translations[key] ?? key;
     }
 }
 
 describe('GenericApplicationContext — message source', () => {
-    test('getMessage falls back to the content source when no message source is registered', () => {
+    test('getMessage falls back to the content source when no message source is registered', async () => {
         const context = new GenericApplicationContext('test');
         context.setContentSource(
             new (class {
-                getContent(key: string, language: string): string {
+                async getContent(key: string, language: string): Promise<string> {
                     return key === 'welcome' ? `Welcome (${language})` : key;
                 }
             })()
         );
 
-        expect(context.getMessage('welcome', undefined, 'fr')).toBe('Welcome (fr)');
-        expect(context.getMessage('missing')).toBe('missing');
+        expect(await context.getMessage('welcome', undefined, 'fr')).toBe('Welcome (fr)');
+        expect(await context.getMessage('missing')).toBe('missing');
     });
 
-    test('setMessageSource delegates formatting with params and language', () => {
+    test('setMessageSource delegates formatting with params and language', async () => {
         const context = new GenericApplicationContext('test');
         const messages = new FakeMessageSource({ greeting: 'Hello {name}!' });
         context.setMessageSource(messages);
 
-        expect(context.getMessage('greeting', { values: { name: 'Ada' } }, 'fr')).toBe('Hello {name}!');
+        expect(await context.getMessage('greeting', { values: { name: 'Ada' } }, 'fr')).toBe('Hello {name}!');
         expect(messages.calls).toEqual([{ key: 'greeting', params: { values: { name: 'Ada' } }, language: 'fr' }]);
     });
 
-    test('a message source returning the key falls back to content, then the key', () => {
+    test('a message source returning the key falls back to content, then the key', async () => {
         const context = new GenericApplicationContext('test');
         const content = new (class {
-            getContent(key: string, _language: string): string {
+            async getContent(key: string, _language: string): Promise<string> {
                 return key === 'title' ? 'Raw title' : key;
             }
         })();
         context.setContentSource(content);
         context.setMessageSource(new FakeMessageSource({}));
 
-        expect(context.getMessage('title')).toBe('Raw title');
-        expect(context.getMessage('unknown.key')).toBe('unknown.key');
+        expect(await context.getMessage('title')).toBe('Raw title');
+        expect(await context.getMessage('unknown.key')).toBe('unknown.key');
     });
 
-    test('child contexts delegate message lookups to the parent', () => {
+    test('child contexts delegate message lookups to the parent', async () => {
         const parent = new GenericApplicationContext('parent');
         const messages = new FakeMessageSource({ shared: 'Shared value' });
         parent.setMessageSource(messages);
 
         const child = parent.newChild('child');
-        expect(child.getMessage('shared')).toBe('Shared value');
+        expect(await child.getMessage('shared')).toBe('Shared value');
 
         // Child-level message source wins over the parent.
         const childMessages = new FakeMessageSource({ shared: 'Child value' });
         child.setMessageSource(childMessages);
-        expect(child.getMessage('shared')).toBe('Child value');
+        expect(await child.getMessage('shared')).toBe('Child value');
     });
 
     test('context satisfies the message-source contract guard', () => {

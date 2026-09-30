@@ -130,7 +130,13 @@ export default defineConfig({
         const packageJson = JSON.parse(packageJsonContent);
         expect(packageJson.name).toBe('@blue/my-feature');
         expect(packageJson.type).toBe('module');
-        expect(packageJson.exports).toBe('./lib/index.js');
+        // Manifest-gate rule 6: `exports["."]` must carry `types` + `default`.
+        expect(packageJson.exports).toEqual({
+            '.': {
+                types: './lib/index.d.ts',
+                default: './lib/index.js',
+            },
+        });
         expect(packageJson.sideEffects).toBe(false);
     });
 

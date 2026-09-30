@@ -86,8 +86,15 @@ export class HTTPMethodCondition extends AbstractRouteCondition<HTTPMethodCondit
     /**
      * A concrete method is more specific than the any-method condition.
      *
+     * For a `HEAD` request, an explicit `HEAD` mapping is more specific than
+     * a `GET` mapping reached only through the HEAD→GET fallback — RFC 9110
+     * §9.3.2 requires the explicit mapping to win regardless of registration
+     * order (COR-10). The fallback still serves HEAD when no HEAD mapping
+     * exists: without a `route` (or for non-HEAD requests) the two concrete
+     * conditions remain equally specific.
+     *
      * @param value - The condition to compare.
-     * @param route - Unused, part of the shared contract.
+     * @param route - The current route, when known.
      * @returns A comparison result.
      */
     compareTo(value: HTTPMethodCondition, route?: Route): number {
@@ -96,6 +103,14 @@ export class HTTPMethodCondition extends AbstractRouteCondition<HTTPMethodCondit
         }
         if (this.method !== undefined && value.method === undefined) {
             return -1;
+        }
+        if (route?.method === 'HEAD') {
+            if (this.method === 'HEAD' && value.method === 'GET') {
+                return -1;
+            }
+            if (this.method === 'GET' && value.method === 'HEAD') {
+                return 1;
+            }
         }
         return 0;
     }

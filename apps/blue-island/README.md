@@ -9,8 +9,8 @@ hydrates it; model updates push from the server over SSE.
 
 ```bash
 cd apps/blue-island && pnpm dev
-# GET http://127.0.0.1:3001/
-# GET http://127.0.0.1:3001/events   (SSE stream)
+# GET http://127.0.0.1:3200/
+# GET http://127.0.0.1:3200/events   (SSE stream)
 ```
 
 ## Demonstrates

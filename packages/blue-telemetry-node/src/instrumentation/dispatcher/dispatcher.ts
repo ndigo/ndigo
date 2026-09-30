@@ -46,7 +46,7 @@ export class DispatcherInstrumentation extends AbstractBaseInstrumentation {
         this._wrap(
             target,
             'dispatch',
-            this._patchAsync({
+            this._patch({
                 name: 'Dispatcher.dispatch',
                 kind: SpanKind.SERVER,
                 attributes: (_instance: unknown, args: unknown[]) => {
@@ -76,7 +76,7 @@ export class DispatcherInstrumentation extends AbstractBaseInstrumentation {
         this._wrap(
             target,
             '_resolveViewName',
-            this._patchAsync({
+            this._patch({
                 name: 'Dispatcher.resolveViewName',
                 kind: SpanKind.INTERNAL,
                 attributes: (_instance: unknown, args: unknown[]) => ({

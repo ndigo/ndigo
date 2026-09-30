@@ -67,7 +67,10 @@ describe('SecurityHeadersInterceptor (default-on)', () => {
             expect(res.status).toBe(200);
             const headers = res.headers;
             expect(headers.get('content-security-policy')).toContain("default-src 'self'");
-            expect(headers.get('content-security-policy')).toContain("connect-src 'self' ws: wss:");
+            // SEC-4: the default connect-src is 'self' only — bare ws:/wss: are
+            // gone unless the app explicitly opts in.
+            expect(headers.get('content-security-policy')).toContain("connect-src 'self'");
+            expect(headers.get('content-security-policy')).not.toContain('ws:');
             expect(headers.get('strict-transport-security')).toBe('max-age=31536000; includeSubDomains');
             expect(headers.get('x-frame-options')).toBe('SAMEORIGIN');
             expect(headers.get('x-content-type-options')).toBe('nosniff');
@@ -123,6 +126,28 @@ describe('SecurityHeadersInterceptor (default-on)', () => {
             const csp = res.headers.get('content-security-policy');
             expect(csp).toContain('connect-src');
             expect(csp).not.toContain('ws:');
+        } finally {
+            await close();
+        }
+    });
+
+    test('non-co-located WebSocket host opts in via an explicit wss:// source (SEC-4)', async () => {
+        const { base, close } = await boot({
+            headers: {
+                contentSecurityPolicy: {
+                    useDefaults: true,
+                    directives: { 'connect-src': ["'self'", 'wss://sockets.example.com'] },
+                },
+            },
+        });
+        try {
+            const res = await fetch(`${base}/api/quote`);
+            const csp = res.headers.get('content-security-policy');
+            expect(csp).toContain('connect-src');
+            expect(csp).toContain('wss://sockets.example.com');
+            // The explicit source, not a bare scheme, is what servers.
+            expect(csp).not.toContain('ws: wss:');
+            expect(csp).not.toContain("connect-src 'self' ws:");
         } finally {
             await close();
         }

@@ -125,8 +125,16 @@ function resolveTypeConverter(sourceType: unknown, targetType: unknown): Argumen
         return undefined;
     }
 
-    // Get the underlying Converter<S,T> from ConversionService
-    const converter = conversionService.registry.getConverter(sourceType, targetType);
+    // Get the underlying Converter<S,T> from ConversionService. canConvert() mirrors
+    // the String-source fallback (blue-core COR-23), so resolve with the same fallback
+    // the service's convert() uses; skip conversion (identity) only when both are absent.
+    const converter =
+        conversionService.registry.getConverter(sourceType, targetType) ??
+        conversionService.registry.getConverter(String, targetType);
+
+    if (!converter) {
+        return undefined;
+    }
 
     return (value: unknown, _context: ArgumentValueConversionContext) => {
         try {

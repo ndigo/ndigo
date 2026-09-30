@@ -31,6 +31,7 @@
   "dependencies": {
     "@blue/context": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
+    "@blue/http": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
     "@blue/platform-web": "~0.0.1",
     "@blue/router": "~0.0.1",

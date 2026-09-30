@@ -23,6 +23,7 @@ A type representing the route parameters, defaulting to `Record<string, string>`
 
 - [`Route`](../interfaces/Route.md)\<`Record`\<`string`, `string`\>\>
 - `Serializable`
+- [`Matchable`](#)\<`string`\>
 
 ## Indexable
 
@@ -183,6 +184,10 @@ The route pattern to match against.
 #### Since
 
 1.0.0
+
+#### Implementation of
+
+`Matchable.matches`
 
 ***
 

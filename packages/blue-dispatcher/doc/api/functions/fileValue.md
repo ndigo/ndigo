@@ -6,18 +6,31 @@
 
 # Function: fileValue()
 
-> **fileValue**(`partName?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
+> **fileValue**(`partName?`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
 Factory function: Create a multipart/form-data file-part extractor.
 The client field name defaults to the method-argument name; pass an explicit
 name only when the form field differs from the JS variable. Resolved by
 `NodeMultipartFileMethodArgumentResolver` (blue-platform-node).
 
+A missing part resolves to the extractor's `defaultValue` (`null`) unless
+the part is declared required: `fileValue('avatar', { required: true })`
+makes a missing upload a [MissingParameterError](../classes/MissingParameterError.md) (HTTP 400) instead
+of a late TypeError (DOC-5).
+
 ## Parameters
 
 ### partName?
 
 `string`
+
+The multipart field name; defaults to the argument name.
+
+### options?
+
+[`ParameterExtractorOptions`](../interfaces/ParameterExtractorOptions.md) = `{}`
+
+Extractor options (`required`).
 
 ## Returns
 
@@ -28,6 +41,7 @@ name only when the form field differs from the JS variable. Resolved by
 ```ts
 `parameters`({
   avatar: fileValue(),
-  profile: fileValue('avatar_url')
+  profile: fileValue('avatar_url'),
+  cv: fileValue('cv', { required: true })
 })
 ```

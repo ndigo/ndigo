@@ -829,7 +829,7 @@ full-repo gates green at HEAD.
   (lint rule). Signal-survives-transform spec.
 - **COR-10 (HEAD mapping wins):** `compareTo` prefers exact HEAD over the GET
   fallback; both registration orders spec'd.
-- **COR-11 (as*/withConversion):** `convertValue` hook threaded through the
+- _*COR-11 (as*/withConversion):_* `convertValue` hook threaded through the
   shared named-value pipeline (identity default); matrix/attribute/query/path
   all convert on every platform. 7 new specs.
 - **COR-12 (persist honesty):** fallback UPDATE `rowsAffected === 0` rethrows
@@ -837,7 +837,7 @@ full-repo gates green at HEAD.
   specs (unique index created raw; `createTableStatements` emits no UNIQUE
   constraints from `@column` metadata — noted for ORM follow-up).
 - **COR-13 (refresh TTL truth):** `SessionStore.rotate` returns `{ id,
-  expiresAt }`; adapter reports the store's effective expiry. Refresh-near-
+expiresAt }`; adapter reports the store's effective expiry. Refresh-near-
   expiry ±5ms spec; blue-platform-node test stub updated for the contract.
 - **COR-17 (host activation):** lazy activation rejects report via
   `onActivationError` sink + `metricRecorder` counter — no unhandled
@@ -881,7 +881,7 @@ full-repo gates green at HEAD.
   cross-package importers.
 - **COR-23 (+ dispatcher ripple):** `canConvert` mirrors the String fallback;
   `resolveTypeConverter` resolves `getConverter(source, target) ??
-  getConverter(String, target)` so gated pairs convert (String-fallback spec).
+getConverter(String, target)` so gated pairs convert (String-fallback spec).
 
 ### Wave 6 — Docs, hygiene, optional backlog ✅
 
@@ -948,16 +948,16 @@ full-repo gates green at HEAD.
   signature type; `@warning` block tag replaced with inline markdown).
 - **Graft:** structure rebuilt (`graft build --deep`).
 - **Follow-ups recorded (not bugs, deliberate):**
-  - `createTableStatements` emits no UNIQUE constraints from `@column`
-    metadata (COR-12 spec constructs its unique index raw) — ORM follow-up.
-  - `InMemorySessionStore.rotate` per-signal console exporters for
-    metrics/logs remain console-only (no OTLP targets exist for those signals;
-    documented on the config type).
-  - Lint rule extension is conservative by design: computed lookups and
-    name-typed constants remain out of scope (soundness over recall).
-  - `@entry` metadata scan still keyed on `for...in` enumerability; prototype
-    walk fixed the subclass case — a metadata-based rewrite stays a future
-    option.
+    - `createTableStatements` emits no UNIQUE constraints from `@column`
+      metadata (COR-12 spec constructs its unique index raw) — ORM follow-up.
+    - `InMemorySessionStore.rotate` per-signal console exporters for
+      metrics/logs remain console-only (no OTLP targets exist for those signals;
+      documented on the config type).
+    - Lint rule extension is conservative by design: computed lookups and
+      name-typed constants remain out of scope (soundness over recall).
+    - `@entry` metadata scan still keyed on `for...in` enumerability; prototype
+      walk fixed the subclass case — a metadata-based rewrite stays a future
+      option.
 
 ---
 

@@ -79,6 +79,7 @@ export class MetadataScanner {
         // Scan ALL metadata keys in Symbol.metadata and cache them all at once
         // This matches the legacy behavior where the cache is primed with all metadata
         const allMetadataKeys = Object.keys(symbolMetadata);
+        const allMetadataKeysLength = allMetadataKeys.length;
 
         // Group metadata keys by their base pattern
         // We need to identify which keys are "base" keys (class-level) vs "extended" keys (method-level)
@@ -87,7 +88,7 @@ export class MetadataScanner {
         const methodKeys = new Map<string, string[]>(); // baseKey -> [propertyName, ...]
 
         // First pass: identify all unique base keys
-        for (let i = 0; i < allMetadataKeys.length; i++) {
+        for (let i = 0; i < allMetadataKeysLength; i++) {
             const fullKey = allMetadataKeys[i];
             const metadataValue = symbolMetadata[fullKey];
 
@@ -98,7 +99,7 @@ export class MetadataScanner {
             // Check if this key is a class-level key (no property suffix)
             // by seeing if other keys start with this key + ':'
             let isClassLevel = false;
-            for (let j = 0; j < allMetadataKeys.length; j++) {
+            for (let j = 0; j < allMetadataKeysLength; j++) {
                 if (i !== j && allMetadataKeys[j].startsWith(`${fullKey}:`)) {
                     isClassLevel = true;
                     baseKeys.add(fullKey);

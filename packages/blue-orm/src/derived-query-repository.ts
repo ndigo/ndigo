@@ -100,7 +100,8 @@ export function parseDerivedQuery(methodName: string, columns: ColumnDefinition[
     }
 
     const filters: Array<{ property: string; valueIndex: number }> = [];
-    for (let index = 0; index < bodies.length; index += 1) {
+    const length = bodies.length;
+    for (let index = 0; index < length; index += 1) {
         const prop = matchProperty(bodies[index] ?? '');
         if (prop === undefined || bodies[index]?.length === 0) {
             return null;

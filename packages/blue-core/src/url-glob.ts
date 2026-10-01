@@ -258,8 +258,8 @@ function splitByTopLevelPipe(content: string): string[] {
     const parts: string[] = [];
     let depth = 0,
         start = 0;
-
-    for (let i = 0; i < content.length; i++) {
+    const length = content.length;
+    for (let i = 0; i < length; i++) {
         if (content[i] === '(') {
             depth++;
         } else if (content[i] === ')') {

@@ -70,8 +70,8 @@ function splitPath(pathname: string): { cleanedPath: string; segments: RouteSegm
     const parts = pathname.split('/').filter((part) => part !== '');
 
     let cleanedPath = '';
-
-    for (let index = 0; index < parts.length; index++) {
+    const length = parts.length;
+    for (let index = 0; index < length; index++) {
         const part = parts[index];
         const [segmentValue, ...matrixParams] = part.split(';');
 
@@ -142,7 +142,8 @@ export function buildRoute(request: MockRequest, responseSink: ResponseSink): Pr
     } as unknown as Route;
 
     // Per-segment matrix data so matrix-param conditions can match.
-    for (let index = 0; index < segments.length; index++) {
+    const length = segments.length;
+    for (let index = 0; index < length; index++) {
         route[index] = segments[index];
     }
 

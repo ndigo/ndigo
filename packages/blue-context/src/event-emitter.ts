@@ -514,7 +514,8 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
         const types = keys((this as EmitterWithStore)[$events] || createNull());
 
         const listenerCount: { [type: string]: number } = createNull();
-        for (let index = 0; index < types.length; index += 1) {
+        const length = types.length;
+        for (let index = 0; index < length; index += 1) {
             const type = types[index];
             listenerCount[type] = this.listenerCount(type);
         }

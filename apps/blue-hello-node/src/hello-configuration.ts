@@ -9,7 +9,7 @@ import { HelloController } from './hello-controller';
 
 @configuration
 export class HelloConfiguration {
-    @entry
+    @entry()
     helloController() {
         return new HelloController();
     }

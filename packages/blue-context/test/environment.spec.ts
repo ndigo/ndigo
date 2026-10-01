@@ -22,7 +22,7 @@ describe('StandardEnvironment', () => {
     beforeEach(() => {
         env = new StandardEnvironment();
         env.activeProfiles = ['foo', 'bar'];
-        env.propertySources = [jsonData1];
+        env.getPropertySources().addLast('custom', jsonData1);
     });
 
     afterEach(() => {
@@ -86,7 +86,7 @@ describe('StandardEnvironment', () => {
         env.defaultProfiles = ['base'];
         env.merge(incoming);
 
-        expect(env.propertySources).toHaveLength(2);
+        expect(env.getPropertySources().size).toBe(2);
         expect(env.getProperty('a')).toBe(1);
         expect(env.getProperty('d')).toBe(4);
         expect(env.activeProfiles).toEqual(expect.arrayContaining(['foo', 'bar', 'baz']));
@@ -99,14 +99,14 @@ describe('StandardEnvironment', () => {
         const snapshot = {
             activeProfiles: [...env.activeProfiles],
             defaultProfiles: [...env.defaultProfiles],
-            propertySourcesLength: env.propertySources.length,
+            propertySourcesLength: env.getPropertySources().size,
         };
 
         env.merge(new StandardEnvironment());
 
         expect(env.activeProfiles).toEqual(snapshot.activeProfiles);
         expect(env.defaultProfiles).toEqual(snapshot.defaultProfiles);
-        expect(env.propertySources).toHaveLength(snapshot.propertySourcesLength);
+        expect(env.getPropertySources().size).toBe(snapshot.propertySourcesLength);
     });
 });
 

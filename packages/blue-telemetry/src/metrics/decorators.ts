@@ -175,8 +175,3 @@ export function counted(
 
     return createCountedDecorator();
 }
-
-export const getCountedConfig = getCounted;
-
-/** @deprecated Use `counted` instead. */
-export const Counted = counted;

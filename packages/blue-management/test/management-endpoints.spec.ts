@@ -188,7 +188,7 @@ class ProbeController {
 
 @configuration
 class ProbeConfiguration {
-    @entry
+    @entry()
     probeApi() {
         return new ProbeController();
     }

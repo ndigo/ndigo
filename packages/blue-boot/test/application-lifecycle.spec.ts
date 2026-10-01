@@ -13,7 +13,7 @@ vi.stubGlobal('window', undefined);
 
 @configuration
 class TestConfiguration {
-    @entry
+    @entry()
     testValue() {
         return 'test';
     }
@@ -92,7 +92,7 @@ describe('Application.run() failure cause preservation', () => {
     it('wraps startup failures with an inspectable cause', async () => {
         @configuration
         class ExplodingConfiguration {
-            @entry
+            @entry()
             boom() {
                 throw new TypeError('boom-on-startup');
             }

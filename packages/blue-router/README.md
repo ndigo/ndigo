@@ -15,12 +15,13 @@ Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 ## Getting Started
 
 ```ts
-import { Router, fromQueryString, toQueryString } from '@blue/router';
+import { Router } from '@blue/router';
+import { QueryString } from '@blue/http';
 
 const router = new Router();
 router.use('/users/:id', (route) => {
     const id = route.resolveParam('id');
-    const query = fromQueryString(route.queryString);
+    const query = QueryString.parse(route.queryString);
 });
 ```
 

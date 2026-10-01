@@ -160,7 +160,7 @@ export class OpenAPIDocsAutoConfiguration {
      *
      * @returns The docs controller.
      */
-    @entry
+    @entry()
     docsController(): OpenAPIDocsController {
         return this.#docs;
     }
@@ -170,7 +170,7 @@ export class OpenAPIDocsAutoConfiguration {
      *
      * @returns The UI controller.
      */
-    @entry
+    @entry()
     swaggerUiController(): SwaggerUIController {
         return this.#ui;
     }
@@ -183,7 +183,7 @@ export class OpenAPIDocsAutoConfiguration {
      *
      * @returns The docs mapping.
      */
-    @entry
+    @entry()
     handlerMappings(): RadixMetadataHandlerMapping[] {
         if (!this.#options.enabled) return [];
         const mapping = new RadixMetadataHandlerMapping();

@@ -77,8 +77,8 @@ describe('HTTP baseURL', () => {
         });
     });
 
-    describe('Backward compatibility', () => {
-        test('should work without baseURL (existing behavior)', async () => {
+    describe('Absolute URL requests', () => {
+        test('should leave an absolute URL unchanged', async () => {
             const http = new HTTP();
             const response = await http.get('http://localhost/request');
             expect(response.url).toBe('http://localhost/request');

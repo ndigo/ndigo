@@ -6,9 +6,7 @@
 
 # Interface: ConfigurableEnvironment
 
-Environment variant that allows property source replacement and merging.
-Configurable environments are also [EventEmitter](EventEmitter.md) instances:
-`refresh()` emits `config:refresh` (AD-29 D-1).
+Environment variant that exposes its property registry and merge operations.
 
 ## Extends
 
@@ -37,15 +35,6 @@ The default profiles used when no active profile is configured.
 #### Inherited from
 
 [`Environment`](Environment.md).[`defaultProfiles`](Environment.md#defaultprofiles)
-
-***
-
-### propertySources
-
-> **propertySources**: `JSONObject`[]
-
-Compatibility alias (deprecated): the captured property sources.
-Mutating the returned array is a no-op; use the registry instead.
 
 ## Methods
 
@@ -133,17 +122,13 @@ The profile name.
 
 > **applySecretDecryptor**(`decryptor`): `void`
 
-Applies at-rest secret decryption (AD-29 Wave 2): `{cipher:...}`
-markers resolve to plaintext via the given decryptor on every lookup.
-Replaces the resolver's options (replace-not-mutate) — idempotent.
+Applies at-rest secret decryption to property lookups.
 
 #### Parameters
 
 ##### decryptor
 
 [`SecretDecryptor`](SecretDecryptor.md)
-
-The secret decryptor (e.g. a `SecretSchemeRegistry`).
 
 #### Returns
 
@@ -510,15 +495,13 @@ The registered listeners.
 
 > **merge**(`environment`): `void`
 
-Merges another environment into this one.
+Merges property sources and profiles from another configurable environment.
 
 #### Parameters
 
 ##### environment
 
 `ConfigurableEnvironment`
-
-The environment to merge.
 
 #### Returns
 
@@ -602,9 +585,7 @@ This emitter.
 
 > **on**\<`K`\>(`type`, `listener`): `this`
 
-Typed event overloads (AD-34 D2): the refresh event delivers its
-[EnvironmentEvents](EnvironmentEvents.md) payload (empty) to the listener; any other
-event type falls through to the raw `EventEmitter` surface.
+Adds a listener for an event type.
 
 ##### Type Parameters
 
@@ -618,20 +599,19 @@ event type falls through to the raw `EventEmitter` surface.
 
 `K`
 
+The event type.
+
 ###### listener
 
 (...`payload`) => `void`
+
+The listener to register.
 
 ##### Returns
 
 `this`
 
-##### Example
-
-```ts
-environment.on(CONFIG_REFRESH_EVENT, () => {});   // typed, payload []
-environment.on('custom:event', (...data: unknown[]) => {}); // raw
-```
+This emitter.
 
 ##### Overrides
 

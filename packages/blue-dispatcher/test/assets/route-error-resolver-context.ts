@@ -64,23 +64,23 @@ class GlobalErrorHandler {
 
 @configuration
 class TestConfiguration {
-    @entry
+    @entry()
     badController() {
         return new BadController();
     }
 
-    @entry
+    @entry()
     errorResolvers() {
         const metadataErrorResolver = new MetadataErrorResolver();
         return [metadataErrorResolver];
     }
 
-    @entry
+    @entry()
     globalErrorResolver() {
         return new GlobalErrorHandler();
     }
 
-    @entry
+    @entry()
     viewResolver() {
         return new TestViewResolver();
     }

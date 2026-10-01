@@ -55,7 +55,7 @@ export class NodeAutoConfiguration {
      *
      * @returns The Node.js argument-value converter registry.
      */
-    @entry
+    @entry()
     argumentValueConverterRegistry() {
         return argumentValueConverters;
     }
@@ -104,7 +104,7 @@ export class NodeAutoConfiguration {
      *
      * @returns The default fixed-window rate limiter.
      */
-    @entry
+    @entry()
     rateLimiter(): RateLimiter {
         return new FixedWindowRateLimiter();
     }
@@ -124,7 +124,7 @@ export class NodeAutoConfiguration {
      *
      * @returns The accept-header language resolver.
      */
-    @entry
+    @entry()
     languageResolver() {
         return new AcceptHeaderLanguageResolver('en-US');
     }
@@ -135,7 +135,7 @@ export class NodeAutoConfiguration {
      *
      * @returns The task scheduler.
      */
-    @entry
+    @entry()
     taskScheduler() {
         return new TaskScheduler();
     }
@@ -147,7 +147,7 @@ export class NodeAutoConfiguration {
      *
      * @returns The schedule registry.
      */
-    @entry
+    @entry()
     scheduleRegistry() {
         return new ScheduleRegistry();
     }
@@ -201,7 +201,7 @@ export class NodeAutoConfiguration {
      *
      * @returns The error resolvers.
      */
-    @entry
+    @entry()
     errorResolvers() {
         return [
             new NodeParameterBindingErrorResolver(),
@@ -231,7 +231,7 @@ export class NodeAutoConfiguration {
      *
      * @returns The island view resolver.
      */
-    @entry
+    @entry()
     viewResolver() {
         return new IslandViewResolver();
     }

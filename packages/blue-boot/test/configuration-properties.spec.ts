@@ -209,7 +209,7 @@ describe('@configurationProperties auto-registration (AD-15 D1)', () => {
     test('registers a bound singleton under the camelCase class name', async () => {
         @configuration
         class AppConfigWithProps {
-            @entry ignored() {
+            @entry() ignored() {
                 return 'ignored';
             }
         }

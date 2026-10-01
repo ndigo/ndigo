@@ -6,43 +6,11 @@
 
 # Class: PrototypalPropertyResolver
 
-Property resolver that layers sources through a configured index.
-
-Preferred construction is [PrototypalPropertyResolver.create](#create), which
-backs the resolver with a live `PropertySources` registry (mutations
-are picked up lazily). The plain constructor stays for compatibility: the
-source array is captured once and replaced via the `propertySources`
-setter.
+Property resolver that layers sources through a live property source registry.
 
 ## Implements
 
-- [`ConfigurablePropertyResolver`](../interfaces/ConfigurablePropertyResolver.md)
-
-## Constructors
-
-### Constructor
-
-> **new PrototypalPropertyResolver**(`propertySources?`, `options?`): `PrototypalPropertyResolver`
-
-Creates a resolver over the given sources (compatibility path).
-
-#### Parameters
-
-##### propertySources?
-
-`JSONObject`[] = `[]`
-
-The ordered property sources.
-
-##### options?
-
-[`ResolverOptions`](../interfaces/ResolverOptions.md) = `{}`
-
-Resolver options (index strategy).
-
-#### Returns
-
-`PrototypalPropertyResolver`
+- [`PropertyResolver`](../interfaces/PropertyResolver.md)
 
 ## Accessors
 
@@ -52,49 +20,9 @@ Resolver options (index strategy).
 
 > **get** **options**(): [`ResolverOptions`](../interfaces/ResolverOptions.md)
 
-The options this resolver was created with.
-
 ##### Returns
 
 [`ResolverOptions`](../interfaces/ResolverOptions.md)
-
-***
-
-### propertySources
-
-#### Get Signature
-
-> **get** **propertySources**(): `JSONObject`[]
-
-The ordered set of configured property sources (snapshot).
-
-##### Returns
-
-`JSONObject`[]
-
-#### Set Signature
-
-> **set** **propertySources**(`propertySources`): `void`
-
-Replaces the property sources and rebuilds the lookup index.
-
-##### Parameters
-
-###### propertySources
-
-`JSONObject`[]
-
-The new property sources.
-
-##### Returns
-
-`void`
-
-The ordered set of property sources used during resolution.
-
-#### Implementation of
-
-[`ConfigurablePropertyResolver`](../interfaces/ConfigurablePropertyResolver.md).[`propertySources`](../interfaces/ConfigurablePropertyResolver.md#propertysources)
 
 ***
 
@@ -104,18 +32,11 @@ The ordered set of property sources used during resolution.
 
 > **get** **registry**(): [`MutablePropertySources`](MutablePropertySources.md)
 
-The live registry backing this resolver, when created via
-[PrototypalPropertyResolver.create](#create).
-
-##### Throws
-
-When the resolver was not created from a registry.
-
 ##### Returns
 
 [`MutablePropertySources`](MutablePropertySources.md)
 
-The registry, or throws when this resolver is array-backed.
+The registry backing this resolver.
 
 ## Methods
 
@@ -147,7 +68,7 @@ The resolved property value or the default value.
 
 #### Implementation of
 
-[`ConfigurablePropertyResolver`](../interfaces/ConfigurablePropertyResolver.md).[`getProperty`](../interfaces/ConfigurablePropertyResolver.md#getproperty)
+[`PropertyResolver`](../interfaces/PropertyResolver.md).[`getProperty`](../interfaces/PropertyResolver.md#getproperty)
 
 ***
 
@@ -195,7 +116,7 @@ When a present value cannot be converted.
 
 #### Implementation of
 
-[`ConfigurablePropertyResolver`](../interfaces/ConfigurablePropertyResolver.md).[`getPropertyAs`](../interfaces/ConfigurablePropertyResolver.md#getpropertyas)
+[`PropertyResolver`](../interfaces/PropertyResolver.md).[`getPropertyAs`](../interfaces/PropertyResolver.md#getpropertyas)
 
 ***
 
@@ -225,7 +146,7 @@ The raw value or `undefined`.
 
 #### Implementation of
 
-[`ConfigurablePropertyResolver`](../interfaces/ConfigurablePropertyResolver.md).[`getRawProperty`](../interfaces/ConfigurablePropertyResolver.md#getrawproperty)
+[`PropertyResolver`](../interfaces/PropertyResolver.md).[`getRawProperty`](../interfaces/PropertyResolver.md#getrawproperty)
 
 ***
 
@@ -255,7 +176,7 @@ When the property cannot be resolved.
 
 #### Implementation of
 
-[`ConfigurablePropertyResolver`](../interfaces/ConfigurablePropertyResolver.md).[`getRequiredProperty`](../interfaces/ConfigurablePropertyResolver.md#getrequiredproperty)
+[`PropertyResolver`](../interfaces/PropertyResolver.md).[`getRequiredProperty`](../interfaces/PropertyResolver.md#getrequiredproperty)
 
 ***
 
@@ -297,7 +218,7 @@ When missing, unresolved, or unconvertible.
 
 #### Implementation of
 
-[`ConfigurablePropertyResolver`](../interfaces/ConfigurablePropertyResolver.md).[`getRequiredPropertyAs`](../interfaces/ConfigurablePropertyResolver.md#getrequiredpropertyas)
+[`PropertyResolver`](../interfaces/PropertyResolver.md).[`getRequiredPropertyAs`](../interfaces/PropertyResolver.md#getrequiredpropertyas)
 
 ***
 
@@ -323,7 +244,7 @@ The property name to resolve.
 
 #### Implementation of
 
-[`ConfigurablePropertyResolver`](../interfaces/ConfigurablePropertyResolver.md).[`hasProperty`](../interfaces/ConfigurablePropertyResolver.md#hasproperty)
+[`PropertyResolver`](../interfaces/PropertyResolver.md).[`hasProperty`](../interfaces/PropertyResolver.md#hasproperty)
 
 ***
 
@@ -351,7 +272,7 @@ The winning source name, or `null`.
 
 #### Implementation of
 
-[`ConfigurablePropertyResolver`](../interfaces/ConfigurablePropertyResolver.md).[`originOf`](../interfaces/ConfigurablePropertyResolver.md#originof)
+[`PropertyResolver`](../interfaces/PropertyResolver.md).[`originOf`](../interfaces/PropertyResolver.md#originof)
 
 ***
 

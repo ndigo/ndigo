@@ -9,6 +9,5 @@
 > `const` **TASK\_SCHEDULER**: [`ContextToken`](#)\<[`TaskScheduler`](../classes/TaskScheduler.md)\>
 
 Token for the node platform's [TaskScheduler](../classes/TaskScheduler.md) bean. The node
-auto-configuration registers the entry (`@entry taskScheduler()`); the
-registry and consumers resolve it without a string:
-`context.getValue(TASK_SCHEDULER)`.
+auto-configuration registers the `taskScheduler()` entry;
+consumers resolve it with `context.getValue(TASK_SCHEDULER)`.

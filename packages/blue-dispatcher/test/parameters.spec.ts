@@ -24,7 +24,7 @@ import {
 function bootWith(controller: object): void {
     @configuration
     class Harness {
-        @entry handlerMapping() {
+        @entry() handlerMapping() {
             return new RadixMetadataHandlerMapping();
         }
     }

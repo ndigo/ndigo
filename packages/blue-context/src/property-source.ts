@@ -3,9 +3,10 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { JSONObject, JSONValue, createNull, parseKeypath } from '@blue/core';
+import { JSONObject, JSONValue, createNull, KeypathConverter } from '@blue/core';
 import { isNil } from '@blue/util/types';
 
+const keypathConverter = new KeypathConverter();
 /**
  * A named, ordered property source backed by a plain object.
  *
@@ -75,7 +76,7 @@ export class MapPropertySource implements PropertySource {
     }
 
     getProperty(key: string): JSONValue | undefined {
-        const keypath = parseKeypath(key);
+        const keypath = keypathConverter.convert(key);
         if (!keypath) return undefined;
         let value: unknown = this.#properties;
         for (const token of keypath) {
@@ -87,7 +88,7 @@ export class MapPropertySource implements PropertySource {
     }
 
     containsProperty(key: string): boolean {
-        const keypath = parseKeypath(key);
+        const keypath = keypathConverter.convert(key);
         if (!keypath) return false;
         return !isNil(this.getProperty(key));
     }

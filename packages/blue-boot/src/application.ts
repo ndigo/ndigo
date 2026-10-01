@@ -27,7 +27,7 @@ import { isConfigurationProperties, resolveConfigurationProperties } from './con
 
 /**
  * Derives the entry bean name from a class name (`ServerConfig` →
- * `serverConfig` — the repo's `@entry serverConfig()` bean idiom).
+ * `serverConfig` — the repo's `@entry()` `serverConfig()` idiom).
  */
 const camelCaseName = (className: string): string => className.charAt(0).toLowerCase() + className.slice(1);
 

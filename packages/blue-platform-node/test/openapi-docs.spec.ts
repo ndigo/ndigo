@@ -20,7 +20,7 @@ const NoteSchema = z.object({ title: z.string().min(1), body: z.string() });
 
 @configuration
 class DemoAPIConfiguration {
-    @entry
+    @entry()
     noteApi() {
         return new NoteAPIController();
     }
@@ -256,7 +256,7 @@ describe('OpenAPIDocsAutoConfiguration: spec generation failure (COR-4)', () => 
         }
         @configuration
         class BrokenSchemaConfiguration {
-            @entry
+            @entry()
             brokenApi() {
                 return new BrokenSchemaController();
             }

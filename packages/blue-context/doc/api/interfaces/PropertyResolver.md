@@ -11,7 +11,6 @@ Resolves property values from a configured set of sources.
 ## Extended by
 
 - [`Environment`](Environment.md)
-- [`ConfigurablePropertyResolver`](ConfigurablePropertyResolver.md)
 
 ## Methods
 

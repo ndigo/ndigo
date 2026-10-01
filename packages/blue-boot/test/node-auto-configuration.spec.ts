@@ -40,7 +40,7 @@ describe('Application node auto-configuration', () => {
 
 @configuration
 class NodeDefiningConfiguration {
-    @entry
+    @entry()
     handlerMapping() {
         return { custom: true };
     }

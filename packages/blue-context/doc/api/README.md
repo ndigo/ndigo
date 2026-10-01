@@ -56,7 +56,6 @@ Jeff Rose
 - [ConditionalEventEmitter](interfaces/ConditionalEventEmitter.md)
 - [ConfigurableApplicationContext](interfaces/ConfigurableApplicationContext.md)
 - [ConfigurableEnvironment](interfaces/ConfigurableEnvironment.md)
-- [ConfigurablePropertyResolver](interfaces/ConfigurablePropertyResolver.md)
 - [ContextEventGatewayOptions](interfaces/ContextEventGatewayOptions.md)
 - [ContextEventRelay](interfaces/ContextEventRelay.md)
 - [ContextEvents](interfaces/ContextEvents.md)

@@ -13,7 +13,7 @@ import { HandlerMethodArgumentResolver } from '@blue/dispatcher';
 @configuration
 @profile('dev')
 class ProfiledConfiguration {
-    @entry
+    @entry()
     appMode() {
         return 'dev';
     }
@@ -21,7 +21,7 @@ class ProfiledConfiguration {
 
 @configuration
 class SourceConfiguration {
-    @entry
+    @entry()
     appTitle() {
         return 'Blue';
     }

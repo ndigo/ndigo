@@ -35,17 +35,17 @@ class HelloController {
 
 @configuration
 class TestConfiguration {
-    @entry
+    @entry()
     errorResolvers() {
         return [new TestErrorResolver()];
     }
 
-    @entry
+    @entry()
     helloController() {
         return new HelloController();
     }
 
-    @entry
+    @entry()
     viewResolver() {
         return new TestViewResolver();
     }

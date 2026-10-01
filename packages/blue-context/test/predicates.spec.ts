@@ -19,6 +19,7 @@ import {
     likeEnvironmentSource,
 } from '../src/environment';
 import { PrototypalPropertyResolver, likePropertyResolver } from '../src/property-resolver';
+import { MutablePropertySources } from '../src/property-sources';
 import {
     DefaultResourceLoader,
     Resource,
@@ -102,7 +103,8 @@ describe('environment predicates', () => {
 
 describe('property resolver predicate', () => {
     test('it should detect property resolvers', () => {
-        expect(likePropertyResolver(new PrototypalPropertyResolver([{}]))).toBe(true);
+        const resolver = PrototypalPropertyResolver.create(new MutablePropertySources().addLast('test', {}));
+        expect(likePropertyResolver(resolver)).toBe(true);
         expect(likePropertyResolver({ getProperty: () => null })).toBe(false);
     });
 });

@@ -3,16 +3,17 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { IllegalStateError, JSONValue, JSONObject, createNull, parseKeypath } from '@blue/core';
+import { IllegalStateError, JSONValue, JSONObject, createNull, KeypathConverter } from '@blue/core';
 import type { KeypathToken } from '@blue/core';
 import type { ConversionService } from '@blue/core';
 import { createConversionService } from '@blue/core';
 import { like, isNil } from '@blue/util/types';
-import { PropertySource, wrapSource } from './property-source';
+import { PropertySource } from './property-source';
 import type { MutablePropertySources } from './property-sources';
 import { resolvePlaceholders } from './placeholder-resolver';
 import { parseSecretMarker, SecretDecryptor } from './secret-cipher';
 
+const keypathConverter = new KeypathConverter();
 type PrimitiveLike = 'string' | 'number' | 'boolean';
 
 /**
@@ -103,16 +104,6 @@ export interface PropertyResolver {
 }
 
 /**
- * Property resolver that exposes mutable property sources.
- */
-export interface ConfigurablePropertyResolver extends PropertyResolver {
-    /**
-     * The ordered set of property sources used during resolution.
-     */
-    propertySources: JSONObject[];
-}
-
-/**
  * @param {*} value The value to be tested.
  * @returns {boolean} Whether or not the value is like a {@link PropertyResolver|PropertyResolver}.
  */
@@ -157,7 +148,7 @@ class TokenCache {
     get(key: string): KeypathToken[] | null {
         const cached = this.#entries.get(key);
         if (cached) return cached;
-        const tokens = parseKeypath(key);
+        const tokens = keypathConverter.convert(key);
         if (tokens) {
             if (this.#entries.size >= this.#cap) {
                 // Evict the oldest entry (Map preserves insertion order).
@@ -336,76 +327,21 @@ export interface ResolverOptions {
 }
 
 /**
- * Property resolver that layers sources through a configured index.
- *
- * Preferred construction is {@link PrototypalPropertyResolver.create}, which
- * backs the resolver with a live `PropertySources` registry (mutations
- * are picked up lazily). The plain constructor stays for compatibility: the
- * source array is captured once and replaced via the `propertySources`
- * setter.
+ * Property resolver that layers sources through a live property source registry.
  */
-export class PrototypalPropertyResolver implements ConfigurablePropertyResolver {
-    #sources!: PropertySource[];
+export class PrototypalPropertyResolver implements PropertyResolver {
+    #sources: PropertySource[] = [];
     #index: PropertyIndex;
-    #registry: MutablePropertySources | null = null;
+    #registry!: MutablePropertySources;
     #seenVersion = -1;
     #options: ResolverOptions;
     #placeholderCache = new Map<string, JSONValue>();
     #conversionService: ConversionService | null = null;
     #forceRebuild = false;
-
-    /**
-     * The live registry backing this resolver, when created via
-     * {@link PrototypalPropertyResolver.create}.
-     *
-     * @returns The registry, or throws when this resolver is array-backed.
-     * @throws {IllegalStateError} When the resolver was not created from a registry.
-     */
-    get registry(): MutablePropertySources {
-        if (!this.#registry) {
-            throw new IllegalStateError('Resolver is not backed by a property source registry');
-        }
-        return this.#registry;
-    }
-
-    /**
-     * The options this resolver was created with.
-     */
-    get options(): ResolverOptions {
-        return this.#options;
-    }
-
-    /**
-     * The ordered set of configured property sources (snapshot).
-     */
-    get propertySources(): JSONObject[] {
-        this.#syncRegistry();
-        return this.#sources.map((source) => source.properties);
-    }
-
-    /**
-     * Replaces the property sources and rebuilds the lookup index.
-     *
-     * @param propertySources - The new property sources.
-     */
-    set propertySources(propertySources) {
-        this.#sources = propertySources.map((source, index) => wrapSource(`source:${index}`, source));
-        this.#registry = null; // explicit array replaces any live registry binding
-        this.#index.build(this.#sources);
-    }
-
-    /**
-     * Creates a resolver over the given sources (compatibility path).
-     *
-     * @param propertySources - The ordered property sources.
-     * @param options - Resolver options (index strategy).
-     */
-    constructor(propertySources: JSONObject[] = [], options: ResolverOptions = {}) {
+    private constructor(options: ResolverOptions) {
         this.#options = options;
         this.#index = options.index === 'flat' ? new FlatMergedIndex() : new PrototypeChainIndex();
-        this.propertySources = propertySources;
     }
-
     /**
      * Creates a resolver backed by a live property source registry.
      *
@@ -417,10 +353,20 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
      * @returns The registry-backed resolver.
      */
     static create(registry: MutablePropertySources, options: ResolverOptions = {}): PrototypalPropertyResolver {
-        const resolver = new PrototypalPropertyResolver([], options);
+        const resolver = new PrototypalPropertyResolver(options);
         resolver.#registry = registry;
         resolver.#syncRegistry();
         return resolver;
+    }
+
+    /**
+     * @returns The registry backing this resolver.
+     */
+    get registry(): MutablePropertySources {
+        return this.#registry;
+    }
+    get options(): ResolverOptions {
+        return this.#options;
     }
 
     getProperty(key: string, defaultValue?: JSONValue): JSONValue | undefined {
@@ -521,13 +467,9 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
      */
     refresh(): void {
         this.#placeholderCache.clear();
-        if (this.#registry) {
-            this.#forceRebuild = true;
-            this.#syncRegistry();
-            this.#forceRebuild = false;
-        } else {
-            this.#index.build(this.#sources);
-        }
+        this.#forceRebuild = true;
+        this.#syncRegistry();
+        this.#forceRebuild = false;
     }
 
     #missingMessage(key: string): string {

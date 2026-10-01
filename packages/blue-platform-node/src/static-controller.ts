@@ -19,7 +19,7 @@ import { StaticResourceHandler, type StaticHandlerOptions } from './static-resou
  *
  * @example
  * ```ts
- * @entry
+ * @entry()
  * staticController() {
  *     return new StaticController(resolve('dist'), { spaFallback: true });
  * }

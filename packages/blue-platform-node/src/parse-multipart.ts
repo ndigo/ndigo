@@ -25,7 +25,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { randomBytes } from 'node:crypto';
 import { RequestLimitError } from './http-request-limits';
-import { multipartBoundary } from './content-type';
+import { multipartBoundary } from '@blue/http';
 import { NodeMultipartContext, NodeMultipartFile, type Backing, type MultipartFile } from './multipart-file';
 import { HTTPHeaders } from '@blue/http';
 

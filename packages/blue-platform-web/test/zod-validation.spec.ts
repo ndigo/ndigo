@@ -61,13 +61,13 @@ describe('Zod Validation Integration', () => {
 
         @configuration
         class TestConfig {
-            @entry controller() {
+            @entry() controller() {
                 return new UserController();
             }
-            @entry viewResolver() {
+            @entry() viewResolver() {
                 return new TestViewResolver();
             }
-            @entry argumentResolvers() {
+            @entry() argumentResolvers() {
                 return [new BrowserDataBindingMethodArgumentResolver()];
             }
         }
@@ -121,16 +121,16 @@ describe('Zod Validation Integration', () => {
 
         @configuration
         class TestConfig {
-            @entry controller() {
+            @entry() controller() {
                 return new UserController();
             }
-            @entry viewResolver() {
+            @entry() viewResolver() {
                 return new TestViewResolver();
             }
-            @entry errorResolvers() {
+            @entry() errorResolvers() {
                 return [new ErrorCapturingResolver()];
             }
-            @entry argumentResolvers() {
+            @entry() argumentResolvers() {
                 return [new BrowserDataBindingMethodArgumentResolver()];
             }
         }
@@ -173,13 +173,13 @@ describe('Zod Validation Integration', () => {
 
         @configuration
         class TestConfig {
-            @entry controller() {
+            @entry() controller() {
                 return new SubscribeController();
             }
-            @entry viewResolver() {
+            @entry() viewResolver() {
                 return new TestViewResolver();
             }
-            @entry argumentResolvers() {
+            @entry() argumentResolvers() {
                 return [new QueryValueMethodArgumentResolver()];
             }
         }

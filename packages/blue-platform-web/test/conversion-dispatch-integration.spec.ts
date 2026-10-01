@@ -75,12 +75,12 @@ describe('conversion + error flow integration', () => {
 
         @configuration
         class TestConfiguration {
-            @entry
+            @entry()
             checkoutController() {
                 return new CheckoutController();
             }
 
-            @entry
+            @entry()
             argumentResolvers() {
                 return [
                     new BrowserCookieValueMethodArgumentResolver(),
@@ -88,12 +88,12 @@ describe('conversion + error flow integration', () => {
                 ];
             }
 
-            @entry
+            @entry()
             errorResolver() {
                 return new ConversionCapturingErrorResolver();
             }
 
-            @entry
+            @entry()
             viewResolver() {
                 return new TestViewResolver();
             }

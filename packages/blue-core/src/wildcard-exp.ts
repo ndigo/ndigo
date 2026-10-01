@@ -3,8 +3,9 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { parseWildcard } from './wildcard-expression.js';
+import { WildcardConverter } from './wildcard-expression.js';
 
+const wildcardConverter = new WildcardConverter();
 /**
  * A regular expression compiled from a wildcard pattern.
  */
@@ -15,6 +16,6 @@ export default class WildcardExp extends RegExp {
      * @param pattern - Wildcard pattern to compile.
      */
     constructor(pattern: string = '*') {
-        super(parseWildcard(pattern));
+        super(wildcardConverter.convert(pattern));
     }
 }

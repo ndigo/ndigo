@@ -34,6 +34,7 @@ Jeff Rose
 - [IllegalStateError](classes/IllegalStateError.md)
 - [IndexedIterator](classes/IndexedIterator.md)
 - [JSONConverter](classes/JSONConverter.md)
+- [KeypathConverter](classes/KeypathConverter.md)
 - [ListFormatter](classes/ListFormatter.md)
 - [MediaType](classes/MediaType.md)
 - [MultiValueMap](classes/MultiValueMap.md)
@@ -47,6 +48,7 @@ Jeff Rose
 - [RingBuffer](classes/RingBuffer.md)
 - [URLGlobPathMatcher](classes/URLGlobPathMatcher.md)
 - [UUIDConverter](classes/UUIDConverter.md)
+- [WildcardConverter](classes/WildcardConverter.md)
 - [WildcardExp](classes/WildcardExp.md)
 
 ## Interfaces
@@ -124,8 +126,6 @@ Jeff Rose
 - [likePropertyValues](variables/likePropertyValues.md)
 - [naturalComparison](variables/naturalComparison.md)
 - [numberComparator](variables/numberComparator.md)
-- [parseKeypath](variables/parseKeypath.md)
-- [parseWildcard](variables/parseWildcard.md)
 - [SHARED\_KEY](variables/SHARED_KEY.md)
 - [stringComparator](variables/stringComparator.md)
 

@@ -52,11 +52,7 @@ Jeff Rose
 
 ## Variables
 
-- [~~Counted~~](variables/Counted.md)
-- [getCountedConfig](variables/getCountedConfig.md)
-- [getTracedSpanName](variables/getTracedSpanName.md)
 - [loggerSeverityMethodNames](variables/loggerSeverityMethodNames.md)
-- [~~Traced~~](variables/Traced.md)
 
 ## Functions
 

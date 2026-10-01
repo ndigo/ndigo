@@ -59,16 +59,16 @@ describe('Interceptor Lifecycle Guarantees', () => {
 
         @configuration
         class TestConfig {
-            @entry controller() {
+            @entry() controller() {
                 return new TestController();
             }
-            @entry viewResolver() {
+            @entry() viewResolver() {
                 return new TestViewResolver();
             }
-            @entry errorResolver() {
+            @entry() errorResolver() {
                 return new TestErrorResolver();
             }
-            @entry handlerMappings() {
+            @entry() handlerMappings() {
                 const mapping = new RadixMetadataHandlerMapping();
                 mapping.interceptors.push(i1, i2, i3);
                 return [mapping];
@@ -120,16 +120,16 @@ describe('Interceptor Lifecycle Guarantees', () => {
 
         @configuration
         class TestConfig {
-            @entry controller() {
+            @entry() controller() {
                 return new TestController();
             }
-            @entry viewResolver() {
+            @entry() viewResolver() {
                 return new TestViewResolver();
             }
-            @entry errorResolver() {
+            @entry() errorResolver() {
                 return new TestErrorResolver();
             }
-            @entry handlerMappings() {
+            @entry() handlerMappings() {
                 const mapping = new RadixMetadataHandlerMapping();
                 mapping.interceptors.push(interceptor);
                 return [mapping];

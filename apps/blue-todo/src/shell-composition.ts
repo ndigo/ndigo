@@ -17,9 +17,8 @@ import { FeatureMetricAggregator, getLogger } from '@blue/telemetry';
 import { DISPATCHER, ROUTER, ROUTE_REGISTRY } from './context-tokens';
 import IndexController from './index-controller';
 import AccountController from './account-controller';
-import { authClient, initAuth } from './auth-store';
+import { initAuth } from './auth-store';
 import { AuthRouterInterceptor } from './auth-router-interceptor';
-import { ClientAuthGuard } from '@blue/auth-client';
 
 export const TODO_ROUTE_PREFIX = '/todo';
 export const ACCOUNT_ROUTE_PREFIX = '/account';
@@ -194,10 +193,9 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
     const shellRouter = new HashRouter((route) => {
         host.navigate(route.toString());
     });
+    const authInterceptor = new AuthRouterInterceptor();
 
     // ── Register auth interceptor on the shell router ─────────────────────────
-    const authGuard = new ClientAuthGuard(authClient, '/auth/login', '/auth/forbidden');
-    const authInterceptor = new AuthRouterInterceptor(authGuard);
     shellRouter.addInterceptor(authInterceptor);
 
     // ── Auth-related features ─────────────────────────────────────────────────

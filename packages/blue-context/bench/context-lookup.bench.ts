@@ -31,27 +31,27 @@ import {
 
 @configuration
 class BenchConfig {
-    @entry
+    @entry()
     bean1() {
         return { id: 1, name: 'bean1' };
     }
 
-    @entry
+    @entry()
     bean2() {
         return { id: 2, name: 'bean2' };
     }
 
-    @entry
+    @entry()
     bean3() {
         return { id: 3, name: 'bean3' };
     }
 
-    @entry
+    @entry()
     bean4() {
         return { id: 4, name: 'bean4' };
     }
 
-    @entry
+    @entry()
     bean5() {
         return { id: 5, name: 'bean5' };
     }

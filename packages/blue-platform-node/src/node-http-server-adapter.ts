@@ -48,9 +48,8 @@ import { NodeSocketSessionRegistry } from './node-socket-session-registry';
 import { parseMultipart } from './parse-multipart';
 import type { MultipartLimits } from './parse-multipart';
 import type { MultipartContext } from './multipart-file';
-import { contentTypeBase, MULTIPART_FORM_DATA } from './content-type';
+import { contentTypeBase, MULTIPART_FORM_DATA, HTTPHeaders, ResponseStatus } from '@blue/http';
 import { ProblemTypes, writeProblem } from './problem-details';
-import { HTTPHeaders, ResponseStatus } from '@blue/http';
 import type { NodeDispatcher } from './node-dispatcher';
 import type { HTTPServerAdapter } from './http-server';
 import type { WebSocket } from 'ws';
@@ -933,7 +932,8 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 },
             };
 
-            for (let index = 0; index < segments.length; index++) {
+            const segmentsLength = segments.length;
+            for (let index = 0; index < segmentsLength; index++) {
                 route[index] = segments[index];
             }
 
@@ -1157,7 +1157,8 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     #assertHeaderLimits(req: IncomingMessage): void {
         const rawHeaders = req.rawHeaders;
         let cookieBytes = 0;
-        for (let index = 0; index < rawHeaders.length; index += 2) {
+        const rawHeadersLength = rawHeaders.length;
+        for (let index = 0; index < rawHeadersLength; index += 2) {
             if (rawHeaders[index].toLowerCase() === 'cookie') {
                 cookieBytes += Buffer.byteLength(rawHeaders[index + 1] ?? '', 'utf-8');
             }
@@ -1259,8 +1260,8 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         const pathParts = pathname.split('/').filter((part) => part !== '');
 
         let cleanedPath = '';
-
-        for (let index = 0; index < pathParts.length; index++) {
+        const pathPartsLength = pathParts.length;
+        for (let index = 0; index < pathPartsLength; index++) {
             const part = pathParts[index];
             const [segmentValue, ...matrixParams] = part.split(';');
 

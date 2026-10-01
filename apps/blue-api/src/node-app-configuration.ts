@@ -56,7 +56,7 @@ function upgradeToken(sources: SocketRequestSources): string | null {
 
 @configuration
 export class NodeAppConfiguration {
-    @entry greetingController() {
+    @entry() greetingController() {
         return new GreetingController(
             new StaticContentSource({
                 greeting: {
@@ -67,13 +67,13 @@ export class NodeAppConfiguration {
             })
         );
     }
-    @entry authController() {
+    @entry() authController() {
         return new AuthController();
     }
-    @entry chatController() {
+    @entry() chatController() {
         return new ChatController();
     }
-    @entry stompChatController() {
+    @entry() stompChatController() {
         return new StompChatController();
     }
 
@@ -111,25 +111,25 @@ export class NodeAppConfiguration {
         };
     }
 
-    @entry noteController() {
+    @entry() noteController() {
         return new NoteController();
     }
-    @entry drizzleNoteController() {
+    @entry() drizzleNoteController() {
         return new DrizzleNoteController();
     }
-    @entry productController() {
+    @entry() productController() {
         return new ProductController();
     }
-    @entry uploadController() {
+    @entry() uploadController() {
         return new UploadController();
     }
-    @entry cachedReportController() {
+    @entry() cachedReportController() {
         return new CachedReportController();
     }
-    @entry configSecretsController() {
+    @entry() configSecretsController() {
         return new ConfigSecretsController();
     }
-    @entry configServerDemoController() {
+    @entry() configServerDemoController() {
         return new ConfigServerDemoController();
     }
     /**
@@ -140,7 +140,7 @@ export class NodeAppConfiguration {
      * explicit `STATIC_DIR` env override wins, matching the controller's
      * own env contract.
      */
-    @entry
+    @entry()
     staticController() {
         return new StaticController(
             process.env['STATIC_DIR'] ? resolve(process.env['STATIC_DIR']) : resolve(process.cwd(), 'public')
@@ -151,7 +151,7 @@ export class NodeAppConfiguration {
      * The scheduled heartbeat (AD-20 demo gate): a registered bean picked
      * up by the node platform's scheduler auto-discovery — zero wiring.
      */
-    @entry
+    @entry()
     heartbeat() {
         return new Heartbeat();
     }
@@ -168,7 +168,7 @@ export class NodeAppConfiguration {
      * active — `ApplicationBuilder.profiles('dev')` in the app entry.
      */
     @profile(Profile.and('dev', Profile.not('staging')))
-    @entry
+    @entry()
     devInfo() {
         return { flavor: 'dev', note: 'profile-gated bean (AD-14)' };
     }
@@ -178,7 +178,7 @@ export class NodeAppConfiguration {
      * served as JSON (default) or CSV (`.csv` path extension) — the
      * representation-family demo (JSONView / CSVView).
      */
-    @entry
+    @entry()
     viewResolver() {
         const jsonReport: ViewResolver = {
             resolveViewName: async (name: string) => (name === 'report' ? new JSONView() : null),

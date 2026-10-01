@@ -20,7 +20,7 @@ import { MetadataConfigApplicationContext, configuration, entry } from '@blue/co
 
 @configuration
 class AppConfig {
-    @entry greetingService() {
+    @entry() greetingService() {
         return new GreetingService();
     }
 }
@@ -40,7 +40,7 @@ The full API is generated from JSDoc via `pnpm doc:api` into
 how it fits with the rest of BlueJS.
 
 - **Application context** — `ApplicationContext`, `MetadataConfigApplicationContext`
-- **Configuration decorators** — `@configuration`, `@entry`, `@profile`, `@environment`, `@configurationProperties`
+- **Configuration decorators** — `@configuration`, `@entry()`, `@profile`, `@environment`, `@configurationProperties`
 - **Property sources** — named, ordered sources with placeholder resolution and `@Value`-style typed lookup
 - **Environment + profiles** — profile activation and typed config binding
 - **Resource & events** — `ResourceLoader`/`Resource` abstractions, event emitters

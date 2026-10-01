@@ -9,9 +9,6 @@
 A standard interceptor that logs the execution time and outcome of a route handler.
 Useful for performance monitoring and debugging.
 
-Accepts an optional [InterceptorLogger](../interfaces/InterceptorLogger.md) via the constructor. When no logger
-is provided, falls back to `console`-based logging for backward compatibility.
-
 ## Implements
 
 - [`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md)
@@ -20,17 +17,17 @@ is provided, falls back to `console`-based logging for backward compatibility.
 
 ### Constructor
 
-> **new LoggingRouteHandlerInterceptor**(`logger?`): `LoggingRouteHandlerInterceptor`
+> **new LoggingRouteHandlerInterceptor**(`logger`): `LoggingRouteHandlerInterceptor`
 
 Create a logging interceptor.
 
 #### Parameters
 
-##### logger?
+##### logger
 
 [`InterceptorLogger`](../interfaces/InterceptorLogger.md)
 
-Optional structured logger implementation.
+Structured logger implementation.
 
 #### Returns
 

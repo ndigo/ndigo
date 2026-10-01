@@ -39,7 +39,7 @@ ruleTester.run('no-cross-paradigm-decorators', noCrossParadigmDecorators, {
         {
             code: `@configuration
                     class Config {
-                        @entry
+                        @entry()
                         make() {}
                     }`,
             filename: '/packages/blue-app/src/config.ts',

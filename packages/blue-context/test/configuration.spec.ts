@@ -57,7 +57,7 @@ describe('MetadataConfigApplicationContext', () => {
         const context = new MetadataConfigApplicationContext();
         context.register(TokenConfiguration);
 
-        // Token lookup resolves; the string description stays an alias.
+        // Token lookup uses the typed handle; the backing name remains readable as a string.
         expect(context.getValue(tokenEntry)).toBe(42);
         expect(context.getValue<number>('tokenEntry')).toBe(42);
         expect(context.hasValue(tokenEntry)).toBe(true);
@@ -83,7 +83,7 @@ describe('MetadataConfigApplicationContext', () => {
     test('FOLLOW-1: a bare subclass of a @configuration registers @entry factories declared only on the base', () => {
         @configuration
         class BaseOnlyConfiguration {
-            @entry
+            @entry()
             alpha() {
                 return 'alpha-bean';
             }
@@ -110,7 +110,7 @@ describe('MetadataConfigApplicationContext', () => {
 
         @configuration
         class OutlineConfiguration {
-            @entry
+            @entry()
             outline() {
                 baseCalls += 1;
                 return 'outline-bean';
@@ -118,7 +118,7 @@ describe('MetadataConfigApplicationContext', () => {
         }
 
         class WorkingConfiguration extends OutlineConfiguration {
-            @entry
+            @entry()
             works() {
                 subCalls += 1;
                 return 'works-bean';

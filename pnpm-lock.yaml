@@ -1443,6 +1443,9 @@ importers:
       '@blue/factory':
         specifier: ~0.0.1
         version: link:../blue-factory
+      '@blue/http':
+        specifier: ~0.0.1
+        version: link:../blue-http
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router

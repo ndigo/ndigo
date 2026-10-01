@@ -41,19 +41,19 @@ describe('Asynchronous Interceptors', () => {
 
         @configuration
         class TestConfig {
-            @entry
+            @entry()
             controller() {
                 return new TestController();
             }
-            @entry
+            @entry()
             viewResolver() {
                 return new TestViewResolver();
             }
-            @entry
+            @entry()
             errorResolver() {
                 return new TestErrorResolver();
             }
-            @entry
+            @entry()
             handlerMappings() {
                 const mapping = new RadixMetadataHandlerMapping();
                 mapping.interceptors.push(asyncInterceptor);
@@ -103,19 +103,19 @@ describe('Asynchronous Interceptors', () => {
 
         @configuration
         class TestConfig {
-            @entry
+            @entry()
             controller() {
                 return new TestController();
             }
-            @entry
+            @entry()
             viewResolver() {
                 return new TestViewResolver();
             }
-            @entry
+            @entry()
             errorResolver() {
                 return new TestErrorResolver();
             }
-            @entry
+            @entry()
             handlerMappings() {
                 const mapping = new RadixMetadataHandlerMapping();
                 mapping.interceptors.push(asyncInterceptor);
@@ -168,19 +168,19 @@ describe('Asynchronous Interceptors', () => {
 
         @configuration
         class TestConfig {
-            @entry
+            @entry()
             controller() {
                 return new TestController();
             }
-            @entry
+            @entry()
             viewResolver() {
                 return new TestViewResolver();
             }
-            @entry
+            @entry()
             errorResolver() {
                 return new TestErrorResolver();
             }
-            @entry
+            @entry()
             handlerMappings() {
                 const mapping = new RadixMetadataHandlerMapping();
                 mapping.interceptors.push(asyncInterceptor);

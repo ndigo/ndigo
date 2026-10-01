@@ -9,8 +9,7 @@ import type { TaskScheduler } from './task-scheduler';
 
 /**
  * Token for the node platform's {@link TaskScheduler} bean. The node
- * auto-configuration registers the entry (`@entry taskScheduler()`); the
- * registry and consumers resolve it without a string:
- * `context.getValue(TASK_SCHEDULER)`.
+ * auto-configuration registers the `taskScheduler()` entry;
+ * consumers resolve it with `context.getValue(TASK_SCHEDULER)`.
  */
 export const TASK_SCHEDULER = new ContextToken<TaskScheduler>('taskScheduler');

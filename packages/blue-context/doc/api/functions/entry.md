@@ -8,45 +8,9 @@
 
 ## Call Signature
 
-> **entry**\<`M`\>(`nameOrTarget`, `maybeContext`): `M`
-
-Marks a method as a configuration entry factory.
-
-Can be used as `@entry()`, `@entry('customName')`, or legacy the `entry` decorator.
-
-### Type Parameters
-
-#### M
-
-`M` *extends* `Function`
-
-### Parameters
-
-#### nameOrTarget
-
-`M`
-
-Entry name or the decorated method target.
-
-#### maybeContext
-
-`ClassMethodDecoratorContext`
-
-Decorator context for legacy usage.
-
-### Returns
-
-`M`
-
-A method decorator when called with a name, or the legacy decorator result.
-
-## Call Signature
-
 > **entry**(`nameOrTarget`): [`EntryDecorator`](#)
 
-Marks a method as a configuration entry factory.
-
-Can be used as `@entry()`, `@entry('customName')`, or legacy the `entry` decorator.
+Can be used as `@entry()` or `@entry('customName')`.
 
 ### Parameters
 
@@ -54,24 +18,22 @@ Can be used as `@entry()`, `@entry('customName')`, or legacy the `entry` decorat
 
 `string` \| [`ContextToken`](../classes/ContextToken.md)\<`unknown`\>
 
-Entry name or the decorated method target.
+Entry name.
 
 ### Returns
 
 [`EntryDecorator`](#)
 
-A method decorator when called with a name, or the legacy decorator result.
+A method decorator.
 
 ## Call Signature
 
 > **entry**(): [`EntryDecorator`](#)
 
-Marks a method as a configuration entry factory.
-
-Can be used as `@entry()`, `@entry('customName')`, or legacy the `entry` decorator.
+Can be used as `@entry()` or `@entry('customName')`.
 
 ### Returns
 
 [`EntryDecorator`](#)
 
-A method decorator when called with a name, or the legacy decorator result.
+A method decorator.

@@ -106,56 +106,24 @@ export interface EnvironmentSource {
 }
 
 /**
- * Environment variant that allows property source replacement and merging.
- * Configurable environments are also {@link EventEmitter} instances:
- * `refresh()` emits `config:refresh` (AD-29 D-1).
+ * Environment variant that exposes its property registry and merge operations.
  */
 export interface ConfigurableEnvironment extends Environment, EventEmitter {
     /**
      * The ordered, named property source registry.
      */
     getPropertySources(): MutablePropertySources;
-    /**
-     * Compatibility alias (deprecated): the captured property sources.
-     * Mutating the returned array is a no-op; use the registry instead.
-     */
-    propertySources: JSONObject[];
-    /**
-     * Applies at-rest secret decryption (AD-29 Wave 2): `{cipher:...}`
-     * markers resolve to plaintext via the given decryptor on every lookup.
-     * Replaces the resolver's options (replace-not-mutate) — idempotent.
-     *
-     * @param decryptor - The secret decryptor (e.g. a `SecretSchemeRegistry`).
-     */
+    /** Applies at-rest secret decryption to property lookups. */
     applySecretDecryptor(decryptor: SecretDecryptor): void;
-    /**
-     * Merges another environment into this one.
-     *
-     * @param environment - The environment to merge.
-     */
+    /** Merges property sources and profiles from another configurable environment. */
     merge(environment: ConfigurableEnvironment): void;
-
-    /**
-     * Typed event overloads (AD-34 D2): the refresh event delivers its
-     * {@link EnvironmentEvents} payload (empty) to the listener; any other
-     * event type falls through to the raw `EventEmitter` surface.
-     *
-     * @example
-     * ```ts
-     * environment.on(CONFIG_REFRESH_EVENT, () => {});   // typed, payload []
-     * environment.on('custom:event', (...data: unknown[]) => {}); // raw
-     * ```
-     */
     on<K extends keyof EnvironmentEvents>(type: K, listener: (...payload: EnvironmentEvents[K]) => void): this;
-    // Raw fallback (last overload = implementation): any other event type
-    // keeps the string-typed EventEmitter surface.
     on(type: EventType | EventHandlers, listener?: Function): this;
     off<K extends keyof EnvironmentEvents>(type: K, listener: (...payload: EnvironmentEvents[K]) => void): this;
     off(type: EventType, listener: Function): this;
     emit<K extends keyof EnvironmentEvents>(type: K, ...payload: EnvironmentEvents[K]): boolean;
     emit(type: EventType, ...data: unknown[]): boolean;
 }
-
 /**
  * Interface representing the environment in which the current application is running.
  * Two key aspects of the application environment: **profiles** and **properties**.
@@ -204,16 +172,6 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
     #activeProfiles: Set<string>;
     #defaultProfiles: Set<string>;
 
-    get propertySources(): JSONObject[] {
-        // Compatibility alias (deprecated): fresh snapshot per call; mutating
-        // the returned array is a documented no-op. Use the registry instead.
-        return this.#propertyResolver.propertySources;
-    }
-
-    set propertySources(propertySources) {
-        this.#replaceAll(propertySources);
-    }
-
     /**
      * The ordered, named property source registry (Phase 0).
      *
@@ -256,8 +214,12 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
         super();
         this.#activeProfiles = new Set<string>();
         this.#defaultProfiles = new Set<string>();
-        this.#propertyResolver = PrototypalPropertyResolver.create(new MutablePropertySources(), options);
-        this.#replaceAll(propertySources);
+        const sources = new MutablePropertySources();
+        const length = propertySources.length;
+        for (let index = 0; index < length; index++) {
+            sources.addLast(`source:${index}`, propertySources[index]);
+        }
+        this.#propertyResolver = PrototypalPropertyResolver.create(sources, options);
     }
 
     addActiveProfile(profile: string): void {
@@ -343,10 +305,7 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
     merge(environment: ConfigurableEnvironment): void {
         const sources = this.getPropertySources();
         for (const source of environment.getPropertySources()) {
-            // The registry allows unique names only; a colliding name is
-            // appended under a merged marker (previous concat appended the
-            // duplicate, with this environment's entry winning — preserved:
-            // this entry stays earlier in precedence).
+            // Preserve precedence when merging a source with a colliding name.
             sources.addLast(sources.contains(source.name) ? `${source.name}:merged` : source.name, source.properties);
         }
         // eslint-disable-next-line no-unused-expressions -- guarded dispatch: merge profiles only when present
@@ -355,14 +314,6 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
         // eslint-disable-next-line no-unused-expressions -- guarded dispatch: merge profiles only when present
         environment.defaultProfiles.length &&
             environment.defaultProfiles.forEach((profile) => this.addDefaultProfile(profile));
-    }
-
-    #replaceAll(propertySources: JSONObject[]): void {
-        const sources = new MutablePropertySources();
-        for (let index = 0; index < propertySources.length; index++) {
-            sources.addLast(`source:${index}`, propertySources[index]);
-        }
-        this.#propertyResolver = PrototypalPropertyResolver.create(sources, this.#propertyResolver.options);
     }
 
     protected _isActiveProfile(profile: string): boolean {

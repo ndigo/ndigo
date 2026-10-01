@@ -5,7 +5,7 @@
  * @author Jeff Rose
  */
 import { MediaType } from '@blue/core';
-import { contentTypeBase } from './content-type';
+import { contentTypeBase } from '@blue/http';
 /**
  * Tunable bounds for the Node HTTP request pipeline.
  */

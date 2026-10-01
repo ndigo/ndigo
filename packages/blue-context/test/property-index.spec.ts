@@ -115,8 +115,11 @@ describe('FlatMergedIndex origin + rebuild semantics', () => {
 
 describe('index selection', () => {
     test('both strategies resolve identically through the resolver (selection is behavior-neutral)', () => {
-        const flat = new PrototypalPropertyResolver([{ a: 1, nested: { b: 2 } }], { index: 'flat' });
-        const prototype = new PrototypalPropertyResolver([{ a: 1, nested: { b: 2 } }]);
+        const registry = new MutablePropertySources().addLast('test', { a: 1, nested: { b: 2 } });
+        const flat = PrototypalPropertyResolver.create(registry, { index: 'flat' });
+        const prototype = PrototypalPropertyResolver.create(
+            new MutablePropertySources().addLast('test', { a: 1, nested: { b: 2 } })
+        );
 
         expect(flat.getProperty('a')).toBe(prototype.getProperty('a'));
         expect(flat.getProperty('nested.b')).toBe(prototype.getProperty('nested.b'));

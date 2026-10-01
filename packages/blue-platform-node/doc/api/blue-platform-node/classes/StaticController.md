@@ -16,7 +16,7 @@ fallback — is delegated to [StaticResourceHandler](StaticResourceHandler.md).
 ## Example
 
 ```ts
-@entry
+@entry()
 staticController() {
     return new StaticController(resolve('dist'), { spaFallback: true });
 }

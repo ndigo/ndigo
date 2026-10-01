@@ -80,13 +80,13 @@ async function boot(configClass: ConfigClass): Promise<TestApp> {
 const dispatcherConfig = (controller: ConfigClass, errorResolvers: RouteErrorResolver[] = []): ConfigClass => {
     @configuration
     class C {
-        @entry controller() {
+        @entry() controller() {
             return new controller();
         }
-        @entry argumentResolvers() {
+        @entry() argumentResolvers() {
             return [new NodeBodyValueMethodArgumentResolver(), new NodeQueryValueMethodArgumentResolver()];
         }
-        @entry errorResolvers() {
+        @entry() errorResolvers() {
             return errorResolvers;
         }
     }

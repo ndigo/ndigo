@@ -7,7 +7,8 @@ import { AsNameAware } from '@blue/factory';
 import { IllegalStateError, JSONObject, MediaType, MediaTypes, Serializable, createNull, Null } from '@blue/core';
 import { AsApplicationContextAware } from '@blue/context';
 import type { ApplicationContext } from '@blue/context';
-import { toMatrixString, toQueryString, ROUTER } from '@blue/router';
+import { QueryString, MatrixString } from '@blue/http';
+import { ROUTER } from '@blue/router';
 import type { Route } from '@blue/router';
 
 import { ViewTarget } from './view-target.js';
@@ -256,7 +257,7 @@ export class RerouteView extends AbstractPathBasedView {
      * @protected
      */
     protected _createTargetPath(model: unknown, request: unknown): string {
-        const data: string = this.contextRelative ? toMatrixString(model) : toQueryString(model);
+        const data: string = this.contextRelative ? MatrixString.stringify(model) : QueryString.stringify(model);
         return `${this.path}${data}`;
     }
 

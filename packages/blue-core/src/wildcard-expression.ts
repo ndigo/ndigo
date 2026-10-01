@@ -15,14 +15,12 @@ import type { Converter } from './converter.js';
  * @returns A regular-expression source string anchored with `^` and `$`.
  *
  * @example
- * parseWildcard('foo*bar') // '^foo.*?bar$'
- * parseWildcard('*')       // '^.*?$'
+ * const wildcards = new WildcardConverter();
+ * wildcards.convert('foo*bar') // '^foo.*?bar$'
+ * wildcards.convert('*')       // '^.*?$'
  */
 export class WildcardConverter implements Converter<string, string> {
     convert(pattern: string): string {
         return `^${pattern.replace(/\*/g, '.*?')}$`;
     }
 }
-
-/** Singleton instance for backward compatibility. */
-export const parseWildcard = new WildcardConverter().convert.bind(new WildcardConverter());

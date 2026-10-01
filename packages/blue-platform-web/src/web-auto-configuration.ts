@@ -27,7 +27,7 @@ export class WebAutoConfiguration {
      *
      * @returns The browser argument-value converter registry.
      */
-    @entry
+    @entry()
     argumentValueConverterRegistry() {
         return argumentValueConverters;
     }
@@ -37,7 +37,7 @@ export class WebAutoConfiguration {
      *
      * @returns The browser argument resolvers.
      */
-    @entry
+    @entry()
     argumentResolvers() {
         return [
             new BrowserDataBindingMethodArgumentResolver(),
@@ -62,7 +62,7 @@ export class WebAutoConfiguration {
      *
      * @returns The default metadata-driven handler mapping.
      */
-    @entry
+    @entry()
     handlerMapping() {
         return new RadixMetadataHandlerMapping();
     }
@@ -74,7 +74,7 @@ export class WebAutoConfiguration {
      *
      * @returns The composite view resolver.
      */
-    @entry
+    @entry()
     viewResolver() {
         return new ViewResolverComposite([new WebComponentViewResolver(), new NameViewResolver()]);
     }
@@ -86,7 +86,7 @@ export class WebAutoConfiguration {
      *
      * @returns The cookie-backed language resolver.
      */
-    @entry
+    @entry()
     languageResolver() {
         return new CookieLanguageResolver();
     }

@@ -26,11 +26,10 @@ function isIdentPart(ch: string): boolean {
  * @returns An array of {@link KeypathToken} values, or `null` if the input is not a valid keypath.
  *
  * @example
- * parseKeypath('user.name')        // ['user', 'name']
- * parseKeypath('items[0].title')   // ['items', 0, 'title']
- * parseKeypath('a["key"]')         // ['a', 'key']
- * parseKeypath('')                 // null
- * parseKeypath('123invalid')       // null
+ * const keypaths = new KeypathConverter();
+ * keypaths.convert('user.name')        // ['user', 'name']
+ * keypaths.convert('items[0].title')   // ['items', 0, 'title']
+ * keypaths.convert('a["key"]')         // ['a', 'key']
  */
 export class KeypathConverter implements Converter<string, KeypathToken[] | null> {
     convert(input: string): KeypathToken[] | null {
@@ -84,8 +83,3 @@ export class KeypathConverter implements Converter<string, KeypathToken[] | null
         return tokens.length === 0 ? null : tokens;
     }
 }
-
-/** Singleton instance for backward compatibility. */
-export const parseKeypath: (input: string) => KeypathToken[] | null = new KeypathConverter().convert.bind(
-    new KeypathConverter()
-);

@@ -72,7 +72,7 @@ Reflect.defineProperty(TestConfiguration.prototype, 'baz', {
 const metadataTarget = TestConfiguration as { [Symbol.metadata]?: Record<string, unknown> };
 const metadata = metadataTarget[Symbol.metadata] || {};
 metadataTarget[Symbol.metadata] = metadata;
-// AD-34 D1: @entry records `{ name, token? }` (plain string legacy shape is accepted by the parser too)
+// String entry names are stored directly; ContextTokens add typed lookup metadata.
 metadata['config:entry:baz'] = { name: 'baz', token: undefined };
 
 context.register(TestConfiguration);

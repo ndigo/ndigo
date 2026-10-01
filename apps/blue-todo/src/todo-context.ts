@@ -20,17 +20,17 @@ import TodoService from './todo-service';
 
 @configuration
 class ToDoconfiguration {
-    @entry
+    @entry()
     accountController() {
         return new AccountController();
     }
 
-    @entry
+    @entry()
     indexController() {
         return new IndexController();
     }
 
-    @entry
+    @entry()
     handlerMapping() {
         // TODO Fix the default handler mappings
         const mapping = new RadixMetadataHandlerMapping();
@@ -38,7 +38,7 @@ class ToDoconfiguration {
         return mapping;
     }
 
-    @entry
+    @entry()
     viewTarget() {
         const target = new DOMElementViewTarget(document.getElementById('app'));
         target.setEventMap({
@@ -49,7 +49,7 @@ class ToDoconfiguration {
         return target;
     }
 
-    @entry
+    @entry()
     todoService() {
         return new TodoService([
             { text: 'Build a micro frontend', checked: false },

@@ -6,8 +6,7 @@
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { scheduled } from '@blue/scheduler';
-import { TaskScheduler } from '@blue/scheduler';
+import { scheduled, TASK_SCHEDULER, TaskScheduler } from '@blue/scheduler';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 
 /** A `@scheduled` bean registered before refresh (AD-20 demo shape). */
@@ -30,7 +29,7 @@ describe('NodeAutoConfiguration scheduler wiring (AD-20)', () => {
         context.setValue('heartbeat', new Heartbeat());
         context.refresh();
 
-        scheduler = context.getValue<TaskScheduler>('taskScheduler');
+        scheduler = context.getValue<TaskScheduler>(TASK_SCHEDULER);
     });
 
     afterAll(() => {
@@ -38,7 +37,7 @@ describe('NodeAutoConfiguration scheduler wiring (AD-20)', () => {
     });
 
     test('provisions a taskScheduler and an auto-starting schedule registry', () => {
-        expect(context.hasValue('taskScheduler')).toBe(true);
+        expect(context.hasValue(TASK_SCHEDULER)).toBe(true);
         expect(context.hasValue('scheduleRegistry')).toBe(true);
 
         const registry = context.getValue('scheduleRegistry');

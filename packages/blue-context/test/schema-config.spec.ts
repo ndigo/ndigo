@@ -82,7 +82,7 @@ describe('typedConfig (AD-34 D3)', () => {
 
     test('context mirrors the environment read', () => {
         const context = new GenericApplicationContext('typed-config');
-        (context.environment as ConfigurableEnvironment).propertySources = [{ server: { name: 'n', port: '1234' } }];
+        context.environment.getPropertySources().addLast('test', { server: { name: 'n', port: '1234' } });
 
         const value = context.typedConfig('server', serverSchema);
         expect(value).toEqual({ name: 'n', port: 1234 });

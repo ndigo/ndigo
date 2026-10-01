@@ -5,9 +5,9 @@
  */
 import { FrameworkError, IllegalStateError } from './error.js';
 import { MutablePropertyValues, PropertyValues } from './property-value.js';
-import { parseKeypath } from './keypath-expression.js';
-import { KeypathToken } from './keypath-expression.js';
+import { KeypathConverter, KeypathToken } from './keypath-expression.js';
 
+const keypathConverter = new KeypathConverter();
 const { keys } = Object;
 
 /**
@@ -119,7 +119,7 @@ export class DataBinder {
                 const key = propertyKeys[index],
                     property = properties[Number(key)];
                 if (property) {
-                    const keypath = parseKeypath(property.name);
+                    const keypath = keypathConverter.convert(property.name);
                     if (keypath) {
                         result = _assocPath(keypath, property.value, result);
                     }

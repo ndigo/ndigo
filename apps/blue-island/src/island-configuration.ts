@@ -57,12 +57,12 @@ export class IslandConfiguration {
         fallbackLanguage: 'en',
     });
 
-    @entry
+    @entry()
     islandController() {
         return new IslandController(this.#modelStore);
     }
 
-    @entry
+    @entry()
     staticController() {
         // Serve the Vite-built client bundle (dist/) — explicit base, no env.
         return new StaticController(resolve('dist'));
@@ -88,7 +88,7 @@ export class IslandConfiguration {
      * through the framework `ResourceLoader` seam, so this demo exercises
      * the full source → engine → producer pipeline.
      */
-    @entry
+    @entry()
     viewResolver() {
         return new EJSViewResolver({
             loader: new FileSystemResourceLoader(),

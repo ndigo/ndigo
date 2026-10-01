@@ -29,16 +29,6 @@ const likeNormalizedSpec = (value: unknown): value is NormalizedScheduledSpec =>
 };
 
 /**
- * The context bean name the node platform registers its {@link TaskScheduler}
- * under.
- *
- * @deprecated Use the {@link TASK_SCHEDULER} {@link @blue/factory!ContextToken}
- *   instead of a raw string for registry lookup (AD-34 D1). Kept as an alias
- *   for compatibility with prior exported API.
- */
-export const TASK_SCHEDULER_BEAN = TASK_SCHEDULER.description;
-
-/**
  * Discovers `@scheduled` methods on application-context beans, registers
  * them (telemetry-wrapped) with the context's `taskScheduler` bean, and
  * manages the scheduler's lifecycle.

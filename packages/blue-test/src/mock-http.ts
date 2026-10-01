@@ -4,7 +4,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { HTTPHeaders } from '@blue/http';
+import { HTTPHeaders, contentTypeBase, MULTIPART_FORM_DATA } from '@blue/http';
 import { NodeDispatcher } from '@blue/platform-node';
 import { getMethodNotAllowed } from '@blue/dispatcher';
 import {
@@ -15,8 +15,6 @@ import {
     RequestLimitError,
     type MultipartLimits,
     type NodeMultipartContext,
-    contentTypeBase,
-    MULTIPART_FORM_DATA,
 } from '@blue/platform-node';
 import { PassThrough } from 'node:stream';
 import type { IncomingMessage } from 'node:http';

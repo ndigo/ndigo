@@ -40,7 +40,6 @@ Jeff Rose
 - [likeTaskScheduler](variables/likeTaskScheduler.md)
 - [SCHEDULED\_METADATA\_PREFIX](variables/SCHEDULED_METADATA_PREFIX.md)
 - [TASK\_SCHEDULER](variables/TASK_SCHEDULER.md)
-- [~~TASK\_SCHEDULER\_BEAN~~](variables/TASK_SCHEDULER_BEAN.md)
 - [TimeZones](variables/TimeZones.md)
 
 ## Functions

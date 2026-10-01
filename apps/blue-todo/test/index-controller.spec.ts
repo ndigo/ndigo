@@ -23,12 +23,12 @@ const starterTodos = [
  */
 @configuration
 class IndexTestConfiguration {
-    @entry
+    @entry()
     indexController() {
         return new IndexController();
     }
 
-    @entry
+    @entry()
     todoService() {
         return new TodoService(starterTodos);
     }

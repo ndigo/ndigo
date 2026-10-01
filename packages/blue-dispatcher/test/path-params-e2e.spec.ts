@@ -35,17 +35,17 @@ describe('path params e2e', () => {
 
         @configuration
         class TestConfiguration {
-            @entry
+            @entry()
             errorResolvers() {
                 return [new TestErrorResolver()];
             }
 
-            @entry
+            @entry()
             usersController() {
                 return new UsersController();
             }
 
-            @entry
+            @entry()
             viewResolver() {
                 return new TestViewResolver();
             }

@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { describe, it, expect, vi, beforeEach, type MockInstance } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Route } from '@blue/router';
 import { ModelAndView } from '../src/model-and-view';
 import { LoggingRouteHandlerInterceptor, type InterceptorLogger } from '../src/logging-interceptor';
@@ -73,36 +73,6 @@ describe('LoggingRouteHandlerInterceptor', () => {
             await interceptor.completeHandle(route, {}, null as unknown as Error);
 
             expect(mockLogger.error).not.toHaveBeenCalled();
-        });
-    });
-
-    describe('with default console fallback', () => {
-        let interceptor: LoggingRouteHandlerInterceptor;
-        let consoleLogSpy: MockInstance;
-        let consoleErrorSpy: MockInstance;
-
-        beforeEach(() => {
-            interceptor = new LoggingRouteHandlerInterceptor();
-            consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-            consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-        });
-
-        it('should fall back to console.log when no logger is provided', async () => {
-            const route = { path: '/test/fallback' } as unknown as Route;
-
-            await interceptor.preHandle(route, {});
-
-            expect(consoleLogSpy).toHaveBeenCalledWith('[Dispatcher] -> Handling route');
-        });
-
-        it('should fall back to console.error on error', async () => {
-            const route = { path: '/test/fallback-error' } as unknown as Route;
-            const error = new Error('Fallback Error');
-
-            await interceptor.preHandle(route, {});
-            await interceptor.completeHandle(route, {}, error);
-
-            expect(consoleErrorSpy).toHaveBeenCalledWith('[Dispatcher] x- Failed route', error);
         });
     });
 });

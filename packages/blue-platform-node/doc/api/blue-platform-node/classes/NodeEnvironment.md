@@ -159,42 +159,6 @@ The default profiles used when no active profile is configured.
 
 `StandardEnvironment.defaultProfiles`
 
-***
-
-### propertySources
-
-#### Get Signature
-
-> **get** **propertySources**(): `JSONObject`[]
-
-Compatibility alias (deprecated): the captured property sources.
-Mutating the returned array is a no-op; use the registry instead.
-
-##### Returns
-
-`JSONObject`[]
-
-#### Set Signature
-
-> **set** **propertySources**(`propertySources`): `void`
-
-Compatibility alias (deprecated): the captured property sources.
-Mutating the returned array is a no-op; use the registry instead.
-
-##### Parameters
-
-###### propertySources
-
-`JSONObject`[]
-
-##### Returns
-
-`void`
-
-#### Inherited from
-
-`StandardEnvironment.propertySources`
-
 ## Methods
 
 ### acceptsProfiles()
@@ -637,15 +601,13 @@ The registered listeners.
 
 > **merge**(`environment`): `void`
 
-Merges another environment into this one.
+Merges property sources and profiles from another configurable environment.
 
 #### Parameters
 
 ##### environment
 
 `ConfigurableEnvironment`
-
-The environment to merge.
 
 #### Returns
 

@@ -47,14 +47,8 @@ Jeff Rose
 ## Variables
 
 - [ACCEPT\_LANGUAGE\_ATTRIBUTE](variables/ACCEPT_LANGUAGE_ATTRIBUTE.md)
-- [fromMatrixString](variables/fromMatrixString.md)
-- [fromQueryString](variables/fromQueryString.md)
 - [LANGUAGE\_ATTRIBUTE](variables/LANGUAGE_ATTRIBUTE.md)
-- [MatrixString](variables/MatrixString.md)
-- [QueryString](variables/QueryString.md)
 - [ROUTER](variables/ROUTER.md)
-- [toMatrixString](variables/toMatrixString.md)
-- [toQueryString](variables/toQueryString.md)
 
 ## Functions
 

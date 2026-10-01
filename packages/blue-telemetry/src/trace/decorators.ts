@@ -139,8 +139,3 @@ export function traced(
 
     return createTracedDecorator();
 }
-
-export const getTracedSpanName = getTraced;
-
-/** @deprecated Use `traced` instead. */
-export const Traced = traced;

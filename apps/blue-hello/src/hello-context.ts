@@ -10,7 +10,7 @@ import HelloController from './hello-controller';
 
 @configuration
 class HelloConfiguration {
-    @entry
+    @entry()
     helloController() {
         return new HelloController();
     }
@@ -19,7 +19,7 @@ class HelloConfiguration {
      * The render destination. Everything else (handler mapping, view
      * resolver chain, web-component engine) comes from WebAutoConfiguration.
      */
-    @entry
+    @entry()
     viewTarget() {
         return new DOMElementViewTarget(document.getElementById('app'));
     }

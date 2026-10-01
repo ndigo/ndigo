@@ -17,9 +17,8 @@ type ProfileMetadata = string[];
 
 /**
  * Decorator-recorded metadata for an `@entry` method: the registry name and
- * the optional {@link ContextToken} the entry was declared with (AD-34 D1 —
- * tokens are the canonical bean handle; strings remain a compatibility and
- * data path).
+ * the optional {@link ContextToken} the entry was declared with.
+ * Context tokens are canonical handles; string names remain supported.
  */
 interface EntryMetadata {
     name: string;
@@ -261,12 +260,10 @@ export function propertySource(source: JSONObject | Enumerable<string, JSONValue
 
 /**
  * Marks a method as a configuration entry factory.
+ * Can be used as `@entry()` or `@entry('customName')`.
  *
- * Can be used as `@entry()`, `@entry('customName')`, or legacy the `entry` decorator.
- *
- * @param nameOrTarget - Entry name or the decorated method target.
- * @param maybeContext - Decorator context for legacy usage.
- * @returns A method decorator or the legacy decorator result.
+ * @param nameOrTarget - Entry name.
+ * @returns A method decorator.
  */
 function createEntryDecorator(entryName?: string | ContextToken<unknown>) {
     // Generic target keeps the decorator's return type assignable to the
@@ -276,9 +273,8 @@ function createEntryDecorator(entryName?: string | ContextToken<unknown>) {
             throw new FrameworkError('@entry can only be applied to methods');
         }
 
-        // Token-declared entries register under the token's description (the
-        // registry's backing key), so `getValue(TOKEN)` and `getValue('name')`
-        // agree — AD-34 D1: the token is the handle, the string stays an alias.
+        // Registry tokens use their description as the runtime string key;
+        // the token supplies the compile-time type association.
         let name: string;
         let token: ContextToken<unknown> | undefined;
         if (isContextToken(entryName)) {
@@ -324,34 +320,17 @@ function createEntryDecorator(entryName?: string | ContextToken<unknown>) {
 type EntryDecorator = <M extends Function>(target: M, context: ClassMethodDecoratorContext) => M;
 
 /**
- * Marks a method as a configuration entry factory.
+ * Can be used as `@entry()` or `@entry('customName')`.
  *
- * Can be used as `@entry()`, `@entry('customName')`, or legacy the `entry` decorator.
- *
- * @param nameOrTarget - Entry name or the decorated method target.
- * @param maybeContext - Decorator context for legacy usage.
- * @returns A method decorator when called with a name, or the legacy decorator result.
+ * @param nameOrTarget - Entry name.
+ * @returns A method decorator.
  */
-// Overloads keep each usage's return type assignable to the decorated method
-// (a bare `Function` return would trip TS1270 on the `@entry` legacy form).
-export function entry<M extends Function>(nameOrTarget: M, maybeContext: ClassMethodDecoratorContext): M;
 export function entry(nameOrTarget: string | ContextToken<unknown>): EntryDecorator;
 export function entry(): EntryDecorator;
-export function entry<M extends Function>(
-    nameOrTarget?: string | ContextToken<unknown> | M,
-    maybeContext?: ClassMethodDecoratorContext
-): M | EntryDecorator {
-    // @entry('customName') / @entry(TOKEN)
+export function entry(nameOrTarget?: string | ContextToken<unknown>): EntryDecorator {
     if (typeof nameOrTarget === 'string' || isContextToken(nameOrTarget)) {
         return createEntryDecorator(nameOrTarget);
     }
-
-    // @entry (no parentheses) legacy usage support
-    if (typeof maybeContext === 'object' && maybeContext !== null) {
-        return createEntryDecorator()(nameOrTarget as M, maybeContext);
-    }
-
-    // @entry()
     return createEntryDecorator();
 }
 
@@ -438,9 +417,13 @@ class ConfigurationParser {
 
     /**
      * Process the given `@propertySource` decorator metadata.
+     * Sources from this configuration receive the highest available precedence.
      */
     processPropertySource(sources: JSONObject[]) {
-        (this.environment as ConfigurableEnvironment).propertySources = sources;
+        const propertySources = (this.environment as ConfigurableEnvironment).getPropertySources();
+        for (let index = sources.length - 1; index >= 0; index--) {
+            propertySources.addFirst(`source:${index}`, sources[index]);
+        }
     }
 
     /**
@@ -448,8 +431,6 @@ class ConfigurationParser {
      */
     processEntry(nameOrToken: string | ContextToken<unknown>, value: () => unknown) {
         const result = value();
-        // Overload dispatch: `setValue` is overloaded on `string` vs
-        // `ContextToken<T>` — the union needs the typeof narrowing.
         if (typeof nameOrToken === 'string') {
             this.registry.setValue(nameOrToken, result);
         } else {

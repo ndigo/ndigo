@@ -552,9 +552,6 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
     }
 }
 
-// Back-compat alias: older API exposed `EventEmitter` behavior as a function mixin name.
-// The current mixin is `AsEventEmitter` and the public class is `Emitter`.
-
 /**
  * Internal target shape used by the object mixin helper.
  */
@@ -562,9 +559,6 @@ export type EventEmitterTarget = EventEmitter & {
     '@@emitter/events'?: Emitter;
 };
 
-/**
- * Mixes event emitter behavior into an existing object.
- */
 /**
  * Mixes event emitter behavior into an existing object.
  *

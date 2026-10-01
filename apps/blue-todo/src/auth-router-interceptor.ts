@@ -3,9 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { RouterInterceptor, type RouterMiddleware } from '@blue/router';
-import { Route } from '@blue/router';
-import { ClientAuthGuard } from '@blue/auth-client';
+import { RouterInterceptor, Route, type RouterMiddleware } from '@blue/router';
 import { authClient } from './auth-store';
 
 /**
@@ -20,21 +18,14 @@ const ROUTE_AUTH: Record<string, { requiresAuth: boolean; requiredRoles?: string
 };
 
 /**
- * Adapts the `ClientAuthGuard` to work as a `RouterInterceptor`.
+ * Adapts authentication checks to the router interceptor contract.
  *
- * This adapter intercepts route changes and checks authentication/authorization
- * requirements before allowing navigation. If access is denied, it redirects
- * to the configured login or forbidden page.
+ * The demo applies its route requirements from {@link ROUTE_AUTH} using
+ * shared `authClient` state.
  *
  * @since 0.0.1
  */
 export class AuthRouterInterceptor implements RouterInterceptor {
-    /**
-     * @param _guard - Accepted for API compatibility; auth state is read
-     * from the shared {@link authClient} that the guard also wraps.
-     */
-    constructor(_guard: ClientAuthGuard) {}
-
     /**
      * Intercepts route navigation before it proceeds.
      * Checks auth requirements configured in {@link ROUTE_AUTH}.

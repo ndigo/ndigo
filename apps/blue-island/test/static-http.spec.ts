@@ -26,7 +26,7 @@ const BODY = 'console.log("island");\n'; // 21 bytes
 function bootStatic(dir: string): { mockHTTP: MockHTTP; close: () => void } {
     @configuration
     class StaticFixtureConfiguration {
-        @entry
+        @entry()
         staticController() {
             return new StaticController(dir);
         }

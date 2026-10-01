@@ -52,27 +52,27 @@ Reflect.defineMetadata( 'route:mapping', true, LegacyController, 'index' );
 
 @configuration
 class TestConfiguration {
-    @entry
+    @entry()
     ['/foo /bar']() {
         return new TestController();
     }
 
-    @entry
+    @entry()
     helloController() {
         return new HelloController();
     }
 
-    @entry
+    @entry()
     quxController() {
         return new TestController();
     }
 
-    @entry
+    @entry()
     handlerAdapters() {
         return [new MetadataHandlerAdapter(), new TestControllerHandlerAdapter()];
     }
 
-    @entry
+    @entry()
     handlerMappings() {
         const simplePathHandlerMapping = new SimplePathHandlerMapping();
         simplePathHandlerMapping.interceptors.push(new TestHandlerInterceptor());
@@ -83,17 +83,17 @@ class TestConfiguration {
         return [new NamePathHandlerMapping(), simplePathHandlerMapping, new RadixMetadataHandlerMapping()];
     }
 
-    @entry
+    @entry()
     languageResolver() {
         return new TestLanguageResolver();
     }
 
-    @entry
+    @entry()
     themeResolver() {
         return new TestThemeResolver();
     }
 
-    @entry
+    @entry()
     viewResolver() {
         return new TestViewResolver();
     }

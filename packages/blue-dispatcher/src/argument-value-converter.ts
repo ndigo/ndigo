@@ -42,9 +42,7 @@ export type ResolverConverterOption =
           use: ArgumentValueConverter | keyof typeof argumentValueConverters;
       };
 
-// ---------------------------------------------------------------------------
-// Built-in converters (backward compatible)
-// ---------------------------------------------------------------------------
+// Built-in converters
 
 /** Identity converter used when no conversion is required. */
 export const identityArgumentValueConverter: ArgumentValueConverter = (value) => value;

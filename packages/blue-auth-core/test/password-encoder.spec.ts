@@ -52,7 +52,7 @@ describe('ScryptPasswordEncoder', () => {
         const encoder = freshScrypt({ ln: 15, r: 8, p: 1 });
         const hash = encoder.encode('pw');
         expect(hash).toMatch(/^\$ln=15,r=8,p=1\$/);
-        // A default-parameter encoder still verifies the cheaper hash (backward compat).
+        // A default-parameter encoder accepts hashes produced with cheaper cost parameters.
         expect(freshScrypt().verify('pw', hash)).toBe(true);
     });
 

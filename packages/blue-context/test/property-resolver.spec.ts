@@ -3,8 +3,9 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { describe, test, expect, beforeEach, afterEach } from 'vitest';
+import { describe, test, expect, beforeEach } from 'vitest';
 import { JSONObject } from '@blue/core';
+import { MutablePropertySources } from '../src/property-sources';
 import { PrototypalPropertyResolver } from '../src/property-resolver';
 
 describe('PrototypalPropertyResolver', () => {
@@ -12,17 +13,13 @@ describe('PrototypalPropertyResolver', () => {
         jsonData2 = { d: 4, e: 5, f: 6 },
         jsonData3 = { g: 7, h: 8, i: 9 },
         jsonData4 = { j: { k: 10, l: 11 } };
-    let propertySources: JSONObject[];
     let propertyResolver: PrototypalPropertyResolver;
 
     beforeEach(() => {
-        propertySources = [jsonData1, jsonData2, jsonData3, jsonData4];
-        propertyResolver = new PrototypalPropertyResolver(propertySources);
-    });
-
-    afterEach(() => {
-        propertySources = undefined as unknown as JSONObject[];
-        propertyResolver = undefined as unknown as PrototypalPropertyResolver;
+        const sources = new MutablePropertySources();
+        sources.addLast('source:0', jsonData1).addLast('source:1', jsonData2);
+        sources.addLast('source:2', jsonData3).addLast('source:3', jsonData4);
+        propertyResolver = PrototypalPropertyResolver.create(sources);
     });
 
     test('it should check whether properties exist', () => {

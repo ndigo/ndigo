@@ -48,22 +48,22 @@ describe('custom argument resolvers', () => {
 
         @configuration
         class TestConfiguration {
-            @entry
+            @entry()
             argumentResolvers() {
                 return [new CustomQueryArgumentResolver()];
             }
 
-            @entry
+            @entry()
             errorResolvers() {
                 return [new TestErrorResolver()];
             }
 
-            @entry
+            @entry()
             helloController() {
                 return new HelloController();
             }
 
-            @entry
+            @entry()
             viewResolver() {
                 return new TestViewResolver();
             }

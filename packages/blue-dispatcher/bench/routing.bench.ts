@@ -43,12 +43,12 @@ class BenchController {
 
 @configuration
 class BenchConfig {
-    @entry
+    @entry()
     benchController() {
         return new BenchController();
     }
 
-    @entry
+    @entry()
     handlerMappings() {
         return [new RadixMetadataHandlerMapping()];
     }

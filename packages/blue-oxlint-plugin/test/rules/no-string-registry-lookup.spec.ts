@@ -126,8 +126,8 @@ ruleTester.run('no-string-registry-lookup', noStringRegistryLookup, {
         // Identifier const initialized directly from a string literal — the
         // ADR-34 identifier gap the rule now closes.
         {
-            code: `const TASK_SCHEDULER_BEAN = 'taskScheduler';
-                    const scheduler = context.getValue(TASK_SCHEDULER_BEAN);`,
+            code: `const TASK_SCHEDULER_NAME = 'taskScheduler';
+                    const scheduler = context.getValue(TASK_SCHEDULER_NAME);`,
             filename: '/packages/blue-scheduler/src/schedule-registry.ts',
             errors: [
                 {

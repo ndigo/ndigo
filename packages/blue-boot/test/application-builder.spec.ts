@@ -9,7 +9,7 @@ import { StandardEnvironment, configuration, entry } from '@blue/context';
 
 @configuration
 class BuilderConfiguration {
-    @entry
+    @entry()
     builderName() {
         return 'builder';
     }
@@ -17,7 +17,7 @@ class BuilderConfiguration {
 
 @configuration
 class ExtraConfiguration {
-    @entry
+    @entry()
     extraValue() {
         return 'extra';
     }
@@ -25,7 +25,7 @@ class ExtraConfiguration {
 
 @configuration
 class ChildConfiguration {
-    @entry
+    @entry()
     childValue() {
         return 'child';
     }
@@ -33,7 +33,7 @@ class ChildConfiguration {
 
 @configuration
 class ParentConfiguration {
-    @entry
+    @entry()
     parentValue() {
         return 'parent';
     }

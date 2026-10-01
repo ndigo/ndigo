@@ -36,9 +36,6 @@ export interface InterceptorLogger {
 /**
  * A standard interceptor that logs the execution time and outcome of a route handler.
  * Useful for performance monitoring and debugging.
- *
- * Accepts an optional {@link InterceptorLogger} via the constructor. When no logger
- * is provided, falls back to `console`-based logging for backward compatibility.
  */
 export class LoggingRouteHandlerInterceptor implements RouteHandlerInterceptor {
     /**
@@ -54,18 +51,11 @@ export class LoggingRouteHandlerInterceptor implements RouteHandlerInterceptor {
     /**
      * Create a logging interceptor.
      *
-     * @param logger - Optional structured logger implementation.
+     * @param logger - Structured logger implementation.
      */
-    constructor(logger?: InterceptorLogger) {
+    constructor(logger: InterceptorLogger) {
         this.#startTimeMap = new WeakMap();
-        this.#logger = logger ?? {
-            info(message: string): void {
-                console.log(message);
-            },
-            error(message: string, error?: unknown): void {
-                console.error(message, error ?? '');
-            },
-        };
+        this.#logger = logger;
     }
 
     /**

@@ -31,7 +31,7 @@ import { ReportViewResolver } from './report-view-resolver';
  */
 @configuration
 export class ViewsAppConfiguration {
-    @entry
+    @entry()
     viewsController() {
         return new ViewsController(
             new StaticContentSource({
@@ -45,12 +45,12 @@ export class ViewsAppConfiguration {
     }
 
     /** Context-bean view for NameViewResolver. */
-    @entry
+    @entry()
     footer() {
         return new FooterView();
     }
 
-    @entry
+    @entry()
     viewResolvers() {
         return [
             // viewNames filter: only the component names resolve here —

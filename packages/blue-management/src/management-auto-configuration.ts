@@ -83,7 +83,7 @@ export class ManagementAutoConfiguration {
      *
      * @returns The metrics controller.
      */
-    @entry
+    @entry()
     metricsController(): MetricsController {
         return new MetricsController();
     }
@@ -93,7 +93,7 @@ export class ManagementAutoConfiguration {
      *
      * @returns The health controller.
      */
-    @entry
+    @entry()
     healthController(): HealthController {
         return new HealthController();
     }
@@ -109,7 +109,7 @@ export class ManagementAutoConfiguration {
      *
      * @returns The metadata mapping (guard-attached when configured).
      */
-    @entry
+    @entry()
     handlerMappings(): RadixMetadataHandlerMapping[] {
         const mapping = new RadixMetadataHandlerMapping();
         if (this.#accessGuard) {

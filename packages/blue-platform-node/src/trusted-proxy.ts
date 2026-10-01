@@ -59,7 +59,8 @@ function parseIPv4(value: string): ParsedIP | null {
             return null;
         }
         let octet = 0;
-        for (let index = 0; index < part.length; index++) {
+        const length = part.length;
+        for (let index = 0; index < length; index++) {
             const digit = part.charCodeAt(index) - 48;
             if (digit < 0 || digit > 9) {
                 return null;
@@ -95,7 +96,8 @@ function parseIPv6(value: string): ParsedIP | null {
             return true;
         }
         const parts = side.split(':');
-        for (let index = 0; index < parts.length; index++) {
+        const length = parts.length;
+        for (let index = 0; index < length; index++) {
             if (parts[index].length === 0) {
                 return false;
             }
@@ -125,10 +127,12 @@ function parseIPv6(value: string): ParsedIP | null {
         }
         // Lay out the full 8 groups, inserting the zeros at the marker.
         const expanded: (number | null)[] = new Array<number | null>(8).fill(null);
-        for (let index = 0; index < headGroups.length; index++) {
+        const headGroupsLength = headGroups.length;
+        for (let index = 0; index < headGroupsLength; index++) {
             expanded[index] = headGroups[index];
         }
-        for (let index = 0; index < tailGroups.length; index++) {
+        const tailGroupsLength = tailGroups.length;
+        for (let index = 0; index < tailGroupsLength; index++) {
             expanded[headGroups.length + missing + index] = tailGroups[index];
         }
         headGroups.length = 0;
@@ -181,7 +185,8 @@ function parseIPv6Group(group: string, quadAllowed: boolean): number[] | null {
         return null;
     }
     let value = 0;
-    for (let index = 0; index < group.length; index++) {
+    const length = group.length;
+    for (let index = 0; index < length; index++) {
         const code = group.charCodeAt(index);
         let nibble: number;
         if (code >= 48 && code <= 57) {
@@ -271,7 +276,8 @@ export class TrustedProxySet implements Matchable<string> {
         if (ip === null) {
             return false;
         }
-        for (let index = 0; index < this.#entries.length; index++) {
+        const entriesLength = this.#entries.length;
+        for (let index = 0; index < entriesLength; index++) {
             if (this.#families[index] !== ip.family) {
                 continue;
             }

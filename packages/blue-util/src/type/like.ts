@@ -93,7 +93,8 @@ function computeDescriptor(descriptor: LikeDescriptor): {
     const types = new Array(entries.length);
     const isTrue = new Array(entries.length);
 
-    for (let i = 0; i < entries.length; i++) {
+    const length = entries.length;
+    for (let i = 0; i < length; i++) {
         keys[i] = entries[i][0];
         types[i] = entries[i][1];
         isTrue[i] = entries[i][1] === true;
@@ -118,7 +119,8 @@ function checkLike(cached: { keys: string[]; types: (Function | true)[]; isTrue:
 
     const { keys, types, isTrue } = cached;
 
-    for (let i = 0; i < keys.length; i++) {
+    const length = keys.length;
+    for (let i = 0; i < length; i++) {
         if (isTrue[i]) {
             // Property presence check
             if (!(keys[i] in value)) return false;

@@ -67,7 +67,8 @@ const splitParameters = (section: string): string[] => {
     const parts: string[] = [];
     let start = 0,
         inQuotes = false;
-    for (let index = 0; index < section.length; index++) {
+    const length = section.length;
+    for (let index = 0; index < length; index++) {
         const char = section[index];
         if (inQuotes && char === '\\') {
             // Escaped character inside a quoted string (e.g. `\"`) — skip

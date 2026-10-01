@@ -50,7 +50,8 @@ const setNested = (target: JSONObject, key: string, value: JSONValue): void => {
 export function parseCommandLineArgs(args: string[]): JSONObject {
     const parsed: JSONObject = {};
     let positionals = false;
-    for (let index = 0; index < args.length; index++) {
+    const length = args.length;
+    for (let index = 0; index < length; index++) {
         const arg = args[index];
         if (positionals || !arg.startsWith('--')) continue; // positionals ignored
         if (arg === '--') {

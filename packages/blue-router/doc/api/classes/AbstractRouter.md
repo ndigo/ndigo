@@ -121,7 +121,7 @@ If `interceptorOrPatterns` is a string or array of strings, it defines include p
 
 ##### interceptorOrPatterns
 
-`string` \| `string`[] \| [`RouterInterceptor`](../interfaces/RouterInterceptor.md) \| [`RouterMiddleware`](../type-aliases/RouterMiddleware.md)
+`string` \| [`RouterInterceptor`](../interfaces/RouterInterceptor.md) \| [`RouterMiddleware`](../type-aliases/RouterMiddleware.md) \| `string`[]
 
 Either a `RouterInterceptor`, `RouterMiddleware`, a single include pattern string, or an array of include pattern strings.
 

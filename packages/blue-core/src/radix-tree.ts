@@ -146,7 +146,8 @@ export class RadixTree<V> implements Serializable {
             return;
         }
 
-        for (let i = 0; i < segments.length; i++) {
+        const length = segments.length;
+        for (let i = 0; i < length; i++) {
             const segment = segments[i];
             const kind = this._classifySegment(segment);
 
@@ -393,7 +394,8 @@ export class RadixTree<V> implements Serializable {
         }
 
         // Navigate to the terminal node
-        for (let i = 0; i < segments.length; i++) {
+        const length = segments.length;
+        for (let i = 0; i < length; i++) {
             const segment = segments[i];
             const kind = this._classifySegment(segment);
             let child: RadixNode<V> | null;

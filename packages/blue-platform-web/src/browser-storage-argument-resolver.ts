@@ -22,7 +22,8 @@ export function dumpStorage(storage: Storage | null | undefined): Record<string,
     const jar: Record<string, unknown> = {};
 
     if (storage) {
-        for (let i = 0; i < storage.length; i++) {
+        const storageLength = storage.length;
+        for (let i = 0; i < storageLength; i++) {
             const key = storage.key(i);
 
             if (key) {

@@ -48,7 +48,8 @@ const _deepEqual = (a: unknown, b: unknown): boolean => {
     if (Array.isArray(a)) {
         const bArray = b as unknown[];
         if (a.length !== bArray.length) return false;
-        for (let i = 0; i < a.length; i++) {
+        const length = a.length;
+        for (let i = 0; i < length; i++) {
             if (!_deepEqual(a[i], bArray[i])) return false;
         }
         return true;

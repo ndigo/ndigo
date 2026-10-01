@@ -113,7 +113,8 @@ function escapeHeaderValue(value: string): string {
  */
 function unescapeHeaderValue(value: string): string {
     let out = '';
-    for (let i = 0; i < value.length; i += 1) {
+    const length = value.length;
+    for (let i = 0; i < length; i += 1) {
         const char = value[i] as string;
         if (char !== '\\') {
             out += char;
@@ -163,7 +164,8 @@ function parseHeaderBlock(headerBlock: string): { command: string; headers: Reco
     // Null-prototype map: untrusted header names (`__proto__`, `constructor`, …)
     // must land as ordinary keys, never touch the object prototype.
     const headers: Record<string, string> = Object.create(null);
-    for (let i = 1; i < lines.length; i += 1) {
+    const length = lines.length;
+    for (let i = 1; i < length; i += 1) {
         const rawLine = lines[i] as string;
         const line = rawLine.endsWith('\r') ? rawLine.slice(0, -1) : rawLine;
         // STOMP 1.2 forbids raw CR and NUL in header lines.
@@ -196,7 +198,8 @@ function parseHeaderBlock(headerBlock: string): { command: string; headers: Reco
  */
 function headerTerminatorAt(units: ArrayLike<string | number>): number {
     let lineStart = 0;
-    for (let i = 0; i < units.length; i += 1) {
+    const length = units.length;
+    for (let i = 0; i < length; i += 1) {
         const unit = units[i];
         if (unit !== '\n' && unit !== 0x0a) {
             continue;
@@ -245,7 +248,8 @@ function headerBlockEnd(units: ArrayLike<string | number>, terminator: number): 
  * @throws {@link StompProtocolError} on any octet that is not an EOL.
  */
 function assertTrailingEols(units: ArrayLike<string | number>, from: number): void {
-    for (let i = from; i < units.length; i += 1) {
+    const length = units.length;
+    for (let i = from; i < length; i += 1) {
         const unit = units[i];
         if (unit === '\n' || unit === 0x0a) {
             continue;
@@ -280,7 +284,8 @@ export function parseStompFrame(frame: StompWireInput): StompFrame {
     const bytes = toBytes(frame);
     // Heart-beat ping: nothing but EOLs, optionally with NULs.
     let hasText = false;
-    for (let i = 0; i < bytes.length; i += 1) {
+    const bytesLength = bytes.length;
+    for (let i = 0; i < bytesLength; i += 1) {
         const byte = bytes[i];
         if (byte === 0x0a || byte === 0x00) {
             continue;
@@ -328,7 +333,7 @@ export function parseStompFrame(frame: StompWireInput): StompFrame {
     }
     // NUL-terminated body.
     let nul = -1;
-    for (let i = bodyStart; i < bytes.length; i += 1) {
+    for (let i = bodyStart; i < bytesLength; i += 1) {
         if (bytes[i] === 0x00) {
             nul = i;
             break;

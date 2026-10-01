@@ -64,7 +64,8 @@ export function addConditionalEventListener(emitter: EventEmitter, type: EventTy
 
 export function addEventHandler(emitter: EventEmitter, type: EventType, handler: EventHandler): void {
     if (Array.isArray(handler)) {
-        for (let index = 0; index < handler.length; index += 1) {
+        const length = handler.length;
+        for (let index = 0; index < length; index += 1) {
             addEventListener(emitter, type, handler[index], NaN);
         }
     } else {
@@ -174,7 +175,8 @@ export function emitAllEvents(emitter: EventEmitter, type: EventType, data: unkn
 }
 
 export function emitErrors(emitter: EventEmitter, errors: Error[]): void {
-    for (let index = 0; index < errors.length; index += 1) {
+    const length = errors.length;
+    for (let index = 0; index < length; index += 1) {
         emitEvent(emitter, 'error', [errors[index]], false);
     }
 }
@@ -267,7 +269,8 @@ function handleEmpty(handler: EventHandler, isFn: boolean, emitter: EventEmitter
         }
     } else {
         const listeners: EventListener[] = (handler as EventListener[]).slice();
-        for (let index = 0; index < listeners.length; index += 1) {
+        const length = listeners.length;
+        for (let index = 0; index < length; index += 1) {
             try {
                 listeners[index].call(emitter);
             } catch (error) {
@@ -292,7 +295,8 @@ function handleOne(handler: EventHandler, isFn: boolean, emitter: EventEmitter, 
         }
     } else {
         const listeners: EventListener[] = (handler as EventListener[]).slice();
-        for (let index = 0; index < listeners.length; index += 1) {
+        const length = listeners.length;
+        for (let index = 0; index < length; index += 1) {
             try {
                 listeners[index].call(emitter, arg1);
             } catch (error) {
@@ -317,7 +321,8 @@ function handleTwo(handler: EventHandler, isFn: boolean, emitter: EventEmitter, 
         }
     } else {
         const listeners: EventListener[] = (handler as EventListener[]).slice();
-        for (let index = 0; index < listeners.length; index += 1) {
+        const length = listeners.length;
+        for (let index = 0; index < length; index += 1) {
             try {
                 listeners[index].call(emitter, arg1, arg2);
             } catch (error) {
@@ -349,7 +354,8 @@ function handleThree(
         }
     } else {
         const listeners: EventListener[] = (handler as EventListener[]).slice();
-        for (let index = 0; index < listeners.length; index += 1) {
+        const length = listeners.length;
+        for (let index = 0; index < length; index += 1) {
             try {
                 listeners[index].call(emitter, arg1, arg2, arg3);
             } catch (error) {
@@ -374,7 +380,8 @@ function handleMany(handler: EventHandler, isFn: boolean, emitter: EventEmitter,
         }
     } else {
         const listeners: EventListener[] = (handler as EventListener[]).slice();
-        for (let index = 0; index < listeners.length; index += 1) {
+        const length = listeners.length;
+        for (let index = 0; index < length; index += 1) {
             try {
                 listeners[index].apply(emitter, args);
             } catch (error) {
@@ -411,7 +418,8 @@ export function removeAllEventListeners(emitter: EventEmitter, type?: EventType)
             }
         } else if (isEventType(type)) {
             const types: EventType[] = getEventTypes(emitter);
-            for (let index = 0; index < types.length; index += 1) {
+            const length = types.length;
+            for (let index = 0; index < length; index += 1) {
                 if (types[index] === ':off') {
                     continue;
                 }

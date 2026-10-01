@@ -193,7 +193,8 @@ export function resolveParameters(
         // code can still read the true parameter names.
         const original = getSymbolMetadata(target)[`telemetry:traced:${String(propertyKey)}:original`] ?? handlerMethod;
         const paramNames = getFunctionParamNames(original);
-        for (let index = 0; index < paramNames.length; index++) nameToIndex.set(paramNames[index], index);
+        const length = paramNames.length;
+        for (let index = 0; index < length; index++) nameToIndex.set(paramNames[index], index);
     }
     const resolved: MethodParameter[] = [];
     for (const [paramName, extractor] of Object.entries(map)) {

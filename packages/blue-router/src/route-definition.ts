@@ -57,7 +57,8 @@ export class RouteDefinition<TPattern extends string = string> implements Matcha
 
         if (patternSegments.length !== pathSegments.length) return null;
 
-        for (let i = 0; i < patternSegments.length; i++) {
+        const length = patternSegments.length;
+        for (let i = 0; i < length; i++) {
             const ps = patternSegments[i];
             if (ps.startsWith('{') && ps.endsWith('}')) continue;
             if (ps !== pathSegments[i]) return null;

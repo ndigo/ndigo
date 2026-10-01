@@ -3376,6 +3376,47 @@ create(user: z.infer<typeof UserSchema>) { /* ... */ }
 
 ---
 
+### 3.16. Loop Iteration [CONVENTION: Code Review]
+
+**Pattern:** Index-based `for` loops over a list that does not change during the loop cache the length in a constant.
+
+```typescript
+// ✅ Correct: cache the length; the iterated list is not mutated by the body
+const length = arr.length;
+for (let index = 0; index < length; index += 1) {
+    // …
+}
+
+// ✅ Correct: counted-down idioms read the length exactly once
+for (let i = arr.length - 1; i >= 0; i -= 1) { … }
+let i = arr.length;
+while (i--) { … }
+
+// ✅ Correct: for-of caches the collection implicitly — prefer it when the
+//    body only needs the element, not an index
+for (const item of arr) { … }
+```
+
+```typescript
+// ❌ Wrong: re-reads `arr.length` on every iteration
+for (let index = 0; index < arr.length; index += 1) { … }
+```
+
+**When the live length check is required:** if the loop body mutates the
+iterated collection (splices/removes/`push`es into it) or **reassigns** it,
+the condition must keep re-reading `.length` — caching would change the
+iteration semantics. Default to a snapshot (e.g. `items.slice()`) when the
+body performs listener-style removal, so the cacheable pattern applies.
+
+**Rationale:** Modern engines hoist plain-array `.length` loads in simple
+loops, so the win is consistency and the pathological cases (accessor-backed
+collections like `Storage.length`, live `NodeList`s, or bodies that hide
+mutation) rather than raw array throughput. One convention across the
+codebase avoids per-reviewer debates and makes the rare live-length loop
+stand out as intentional.
+
+---
+
 ## 4. Module Organization
 
 ### Directory Structure [CONVENTION: Code Review]

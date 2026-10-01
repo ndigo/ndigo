@@ -257,7 +257,8 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
             const resolverCollection = applicationContext.getValue(ARGUMENT_RESOLVERS);
 
             if (Array.isArray(resolverCollection)) {
-                for (let index = 0; index < resolverCollection.length; index++) {
+                const length = resolverCollection.length;
+                for (let index = 0; index < length; index++) {
                     const resolver = resolverCollection[index];
                     if (likeArgumentResolver(resolver) && !resolvers.includes(resolver)) {
                         resolvers.push(resolver);

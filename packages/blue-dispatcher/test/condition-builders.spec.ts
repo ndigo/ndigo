@@ -39,8 +39,8 @@ describe('condition builders (AD-34 D6)', () => {
 
     test('matches routes exactly like the hand-written strings', () => {
         const condition = new QueryParamCondition(queryParamCondition('filter', 'all'));
-        expect(condition.getMatchingCondition(routeWith({ filter: 'all' }))).not.toBeNull();
-        expect(condition.getMatchingCondition(routeWith({ filter: 'other' }))).toBeNull();
+        expect(condition.match(routeWith({ filter: 'all' }))).not.toBeNull();
+        expect(condition.match(routeWith({ filter: 'other' }))).toBeNull();
     });
 
     test('rejects names and values that would change meaning', () => {

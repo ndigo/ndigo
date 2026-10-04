@@ -147,7 +147,7 @@ export class QueryParamCondition extends AbstractRouteCondition<QueryParamCondit
      * @param route - The current route.
      * @returns This condition, or `null`.
      */
-    getMatchingCondition(route: Route): QueryParamCondition | null {
+    match(route: Route): QueryParamCondition | null {
         for (const expression of this.expressions) {
             if (!expression.match(route)) {
                 return null;

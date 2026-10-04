@@ -11,27 +11,27 @@ const routeFor = (method?: string): Route => ({ method, path: '/x', data: {}, pa
 
 describe('HTTPMethodCondition (D-8: HEAD falls back to GET)', () => {
     test('exact method matches', () => {
-        expect(new HTTPMethodCondition('GET').getMatchingCondition(routeFor('GET'))).not.toBeNull();
-        expect(new HTTPMethodCondition('POST').getMatchingCondition(routeFor('GET'))).toBeNull();
+        expect(new HTTPMethodCondition('GET').match(routeFor('GET'))).not.toBeNull();
+        expect(new HTTPMethodCondition('POST').match(routeFor('GET'))).toBeNull();
     });
 
     test('a HEAD request matches a GET-constrained mapping (RFC 9110 §9.3.2)', () => {
         const condition = new HTTPMethodCondition('GET');
-        const match = condition.getMatchingCondition(routeFor('HEAD'));
+        const match = condition.match(routeFor('HEAD'));
         expect(match).toBe(condition);
     });
 
     test('HEAD does not match non-GET constraints', () => {
-        expect(new HTTPMethodCondition('POST').getMatchingCondition(routeFor('HEAD'))).toBeNull();
+        expect(new HTTPMethodCondition('POST').match(routeFor('HEAD'))).toBeNull();
     });
 
     test('an unconstrained condition matches anything', () => {
-        expect(new HTTPMethodCondition().getMatchingCondition(routeFor('HEAD'))).not.toBeNull();
-        expect(new HTTPMethodCondition().getMatchingCondition(routeFor('DELETE'))).not.toBeNull();
+        expect(new HTTPMethodCondition().match(routeFor('HEAD'))).not.toBeNull();
+        expect(new HTTPMethodCondition().match(routeFor('DELETE'))).not.toBeNull();
     });
 
     test('the method-less route matches a constrained condition (any method on the mapping)', () => {
-        expect(new HTTPMethodCondition('GET').getMatchingCondition(routeFor(undefined))).not.toBeNull();
+        expect(new HTTPMethodCondition('GET').match(routeFor(undefined))).not.toBeNull();
     });
 });
 
@@ -49,7 +49,7 @@ describe('HTTPMethodCondition.compareTo (COR-10: explicit HEAD beats the GET fal
     });
 
     test('the HEAD→GET fallback still serves HEAD when only a GET mapping is registered', () => {
-        expect(getCondition.getMatchingCondition(headRoute)).toBe(getCondition);
+        expect(getCondition.match(headRoute)).toBe(getCondition);
     });
 
     test('without a HEAD request (or without a route) the two concrete conditions remain equally specific', () => {

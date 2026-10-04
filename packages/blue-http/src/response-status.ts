@@ -5,6 +5,8 @@
  */
 import {
     Comparable,
+    chainComparisons,
+    compareBy,
     createNull,
     Equatable,
     JSONObject,
@@ -16,7 +18,11 @@ import { likeResponse } from './like-response';
 
 const { assign } = Object,
     { defineProperty } = Reflect,
-    statuses = new Map<number, ResponseStatus>();
+    statuses = new Map<number, ResponseStatus>(),
+    responseStatusComparison = chainComparisons(
+        compareBy((status: ResponseStatus) => status.code, numberComparator.compare),
+        compareBy((status: ResponseStatus) => status.text, stringComparator.compare)
+    );
 
 /**
  * Represents an HTTP response status code and reason phrase.
@@ -144,21 +150,7 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
      * @returns A negative, zero, or positive comparison result.
      */
     compareTo(value: ResponseStatus): number {
-        let comparison: number;
-
-        // Compare code
-        comparison = numberComparator.compare(this.code, value.code);
-        if (comparison !== 0) {
-            return comparison;
-        }
-
-        // Compare text
-        comparison = stringComparator.compare(this.text, value.text);
-        if (comparison !== 0) {
-            return comparison;
-        }
-
-        return 0;
+        return responseStatusComparison(this, value);
     }
 
     /**

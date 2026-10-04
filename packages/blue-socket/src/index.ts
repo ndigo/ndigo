@@ -17,3 +17,4 @@ export * from './stomp-broker';
 export * from './stomp-client';
 export * from './message-store';
 export { AsyncReader } from './async-reader';
+export * from './socket-fanout';

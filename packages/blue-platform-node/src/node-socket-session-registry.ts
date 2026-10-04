@@ -5,6 +5,7 @@
  * @author Jeff Rose
  */
 import type { SocketSession, SocketSessionRegistry } from '@blue/dispatcher';
+import type { SocketFanout } from '@blue/socket';
 import type { WebSocket } from 'ws';
 import { assertCloseFrame } from './node-socket-session';
 
@@ -77,6 +78,8 @@ export type SocketFanoutEvent = {
  * Options for {@link NodeSocketSessionRegistry}.
  */
 export interface NodeSocketSessionRegistryOptions {
+    /** Application-owned cross-node transport. Await {@link NodeSocketSessionRegistry.connect} before publishing. */
+    fanout?: SocketFanout;
     /**
      * Heartbeat ping interval in milliseconds: the registry pings every open
      * session on this cadence and reaps sessions whose pong is missing past
@@ -175,6 +178,12 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
     #timer: NodeJS.Timeout | null = null;
     /** Sessions already asked to close on overflow — skip re-firing while CLOSING. */
     #overflowClosed: Set<SocketSession> = new Set();
+    readonly #fanout: SocketFanout | undefined;
+    #connectPromise: Promise<void> | undefined;
+    #closePromise: Promise<void> | undefined;
+    #connected = false;
+    #closed = false;
+    #unsubscribe: Array<() => Promise<void>> = [];
 
     /**
      * @param options - Heartbeat/backpressure knobs and clock.
@@ -192,8 +201,89 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
         this.#idleTimeoutMs = options.idleTimeoutMs ?? 60_000;
         this.#now = options.now ?? Date.now;
         this.#backpressure = options.backpressure === undefined ? DEFAULT_BACKPRESSURE : options.backpressure;
+        this.#fanout = options.fanout;
         if (options.onOverflow) {
             this.#onOverflow.add(options.onOverflow);
+        }
+    }
+
+    /**
+     * Subscribe both registry scopes once. With a configured transport, callers
+     * must await this before publishing. A failed connection rolls back partial
+     * subscriptions and remains observable on subsequent connect calls.
+     */
+    connect(): Promise<void> {
+        if (this.#closed) {
+            return Promise.reject(new Error('Socket session registry is closed'));
+        }
+        return (this.#connectPromise ??= Promise.resolve().then(() => this.#connect()));
+    }
+
+    async #connect(): Promise<void> {
+        if (this.#closed) {
+            throw new Error('Socket session registry is closed');
+        }
+        if (!this.#fanout) {
+            return;
+        }
+        try {
+            const unsubscribePath = await this.#fanout.subscribe('path', (message) => {
+                if (this.#connected && !this.#closed) {
+                    this.#deliver('path', message.key, message.body);
+                }
+            });
+            this.#unsubscribe.push(unsubscribePath);
+            if (this.#closed) {
+                throw new Error('Socket session registry is closed');
+            }
+            const unsubscribeRoom = await this.#fanout.subscribe('room', (message) => {
+                if (this.#connected && !this.#closed) {
+                    this.#deliver('room', message.key, message.body);
+                }
+            });
+            this.#unsubscribe.push(unsubscribeRoom);
+            if (this.#closed) {
+                throw new Error('Socket session registry is closed');
+            }
+            this.#connected = true;
+        } catch (error) {
+            try {
+                await this.#unsubscribeAll();
+            } catch (cleanupError) {
+                throw new AggregateError([error, cleanupError], 'Socket fanout connection and rollback failed', {
+                    cause: cleanupError,
+                });
+            }
+            throw error;
+        }
+    }
+
+    /** Release registry subscriptions and heartbeat, not the application-owned transport. */
+    close(): Promise<void> {
+        if (this.#closePromise) {
+            return this.#closePromise;
+        }
+        this.#closed = true;
+        this.#connected = false;
+        this.stop();
+        return (this.#closePromise = this.#close());
+    }
+
+    async #close(): Promise<void> {
+        try {
+            await this.#connectPromise;
+        } catch {
+            // connect reports its failure and awaits partial-subscription rollback.
+        }
+        await this.#unsubscribeAll();
+    }
+
+    async #unsubscribeAll(): Promise<void> {
+        const subscriptions = this.#unsubscribe.splice(0);
+        const results = await Promise.allSettled(subscriptions.map(async (unsubscribe) => unsubscribe()));
+        const errors = results.filter((result) => result.status === 'rejected').map((result) => result.reason);
+        if (errors.length > 0) {
+            throw new AggregateError(errors, 'Socket fanout unsubscribe failed');
         }
     }
 
@@ -292,27 +382,22 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
      *
      * @param path - The routing path (e.g. `/ws/room`).
      * @param payload - The payload to send.
+     * @returns Transport acceptance followed by best-effort local delivery.
      */
-    broadcast(path: string, payload: unknown): void {
-        const members = this.#paths.get(path);
-        if (!members) {
+    async broadcast(path: string, payload: unknown): Promise<void> {
+        this.#assertPublishing();
+        if (!this.#fanout && !this.#paths.has(path)) {
             return;
         }
-        // Serialize once per broadcast, not once per member (each session
-        // would re-`JSON.stringify` the same payload).
         const wire = serializeFanout(payload);
-        let recipients = 0;
-        for (const session of members) {
-            if (session.isClosed) {
-                continue;
-            }
-            recipients += 1;
-            this.#safeSend(session, wire);
+        if (this.#fanout) {
+            await this.#fanout.publish('path', {
+                key: path,
+                body: wire instanceof ArrayBuffer ? new Uint8Array(wire) : wire,
+            });
         }
-        // Only a fan-out that reached at least one session is a sent message
-        // (an empty path/room, or one whose members all closed, sends nothing).
-        if (recipients > 0) {
-            this.#emitFanout({ scope: 'path', key: path, bytes: fanoutBytes(wire), recipients });
+        if (!this.#closed) {
+            this.#deliver('path', path, wire);
         }
     }
 
@@ -322,13 +407,39 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
      *
      * @param room - The room name.
      * @param payload - The payload to send.
+     * @returns Transport acceptance followed by best-effort local delivery.
      */
-    broadcastTo(room: string, payload: unknown): void {
-        const members = this.#rooms.get(room);
-        if (!members) {
+    async broadcastTo(room: string, payload: unknown): Promise<void> {
+        this.#assertPublishing();
+        if (!this.#fanout && !this.#rooms.has(room)) {
             return;
         }
         const wire = serializeFanout(payload);
+        if (this.#fanout) {
+            await this.#fanout.publish('room', {
+                key: room,
+                body: wire instanceof ArrayBuffer ? new Uint8Array(wire) : wire,
+            });
+        }
+        if (!this.#closed) {
+            this.#deliver('room', room, wire);
+        }
+    }
+
+    #assertPublishing(): void {
+        if (this.#closed) {
+            throw new Error('Socket session registry is closed');
+        }
+        if (this.#fanout && !this.#connected) {
+            throw new Error('Await Socket session registry connect() before publishing');
+        }
+    }
+
+    #deliver(scope: 'path' | 'room', key: string, wire: string | Uint8Array | ArrayBuffer): void {
+        const members = (scope === 'path' ? this.#paths : this.#rooms).get(key);
+        if (!members) {
+            return;
+        }
         let recipients = 0;
         for (const session of members) {
             if (session.isClosed) {
@@ -338,7 +449,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
             this.#safeSend(session, wire);
         }
         if (recipients > 0) {
-            this.#emitFanout({ scope: 'room', key: room, bytes: fanoutBytes(wire), recipients });
+            this.#emitFanout({ scope, key, bytes: fanoutBytes(wire), recipients });
         }
     }
 
@@ -447,7 +558,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
     }
 
     #ensureHeartbeat(): void {
-        if (this.#heartbeatIntervalMs === null || this.#timer !== null) {
+        if (this.#closed || this.#heartbeatIntervalMs === null || this.#timer !== null) {
             return;
         }
         this.#timer = setInterval(() => this.#sweep(), this.#heartbeatIntervalMs);

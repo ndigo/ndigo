@@ -76,6 +76,7 @@ import {
     type StompBody,
 } from './stomp-frame';
 import type { SocketSession } from './socket-session';
+import type { SocketFanout } from './socket-fanout';
 
 /** STOMP ack modes (STOMP 1.2 §1.3.1). */
 export type StompAckMode = 'auto' | 'client' | 'client-individual';
@@ -195,6 +196,8 @@ interface TransactionBuffer {
 
 /** Options for {@link StompBroker}. */
 export interface StompBrokerOptions {
+    /** Optional application-owned live transport; only `/topic/*` crosses nodes. */
+    fanout?: SocketFanout;
     /**
      * Application routing seam for SEND frames. Invoked with the frame's
      * destination/body/headers and the sending session. Return `false` to
@@ -404,11 +407,18 @@ export class StompBroker {
     readonly #sessionState = new Map<SocketSession, SessionState>();
     /** Monotonic delivery tag — makes the oldest tracked delivery knowable. */
     #deliverySeq = 0;
+    readonly #fanout: SocketFanout | undefined;
+    #fanoutReady = false;
+    #fanoutConnecting: Promise<void> | undefined;
+    #fanoutUnsubscribe: (() => Promise<void>) | undefined;
+    #fanoutClosing: Promise<void> | undefined;
+    #closed = false;
 
     /**
      * @param options - Routing seam and test hooks.
      */
     constructor(options: StompBrokerOptions = {}) {
+        this.#fanout = options.fanout;
         this.#onMessage = options.onMessage ?? null;
         this.#nextMessageId = options.nextMessageId ?? ((): string => crypto.randomUUID());
         this.#resolveUser =
@@ -468,6 +478,34 @@ export class StompBroker {
                       maxDestinations: options.maxBacklogDestinations ?? DEFAULT_MAX_BACKLOG_DESTINATIONS,
                       maxBytes: options.maxBacklogBytes ?? DEFAULT_MAX_BACKLOG_BYTES,
                   }));
+    }
+
+    /** Await live topic subscription readiness before accepting traffic. */
+    connect(): Promise<void> {
+        if (this.#closed) return Promise.reject(new Error('StompBroker is closed'));
+        this.#fanoutConnecting ??= (async () => {
+            if (this.#fanout) {
+                this.#fanoutUnsubscribe = await this.#fanout.subscribe('topic', (message) => {
+                    if (!this.#closed && message.key.startsWith('/topic/')) {
+                        this.#fanoutLocal(message.key, message.body, message.headers ?? {});
+                    }
+                });
+            }
+            this.#fanoutReady = true;
+        })();
+        return this.#fanoutConnecting;
+    }
+
+    /** Close sessions and unsubscribe; the application owns transport shutdown. */
+    close(): Promise<void> {
+        if (this.#fanoutClosing) return this.#fanoutClosing;
+        this.#closed = true;
+        this.closeAll();
+        this.#fanoutClosing = (async () => {
+            if (this.#fanoutConnecting) await this.#fanoutConnecting.catch(() => undefined);
+            await this.#fanoutUnsubscribe?.();
+        })();
+        return this.#fanoutClosing;
     }
 
     /** Total subscription count across all sessions (observability). */
@@ -600,6 +638,9 @@ export class StompBroker {
      * @param session - The socket session (any transport).
      */
     async handleSocket(session: SocketSession): Promise<void> {
+        if (this.#closed || (this.#fanout && !this.#fanoutReady)) {
+            throw new Error('StompBroker is not ready; await connect()');
+        }
         const state: { connected: boolean; version: string | null; sessionId: string | null } = {
             connected: false,
             version: null,
@@ -620,13 +661,14 @@ export class StompBroker {
     /**
      * Server-initiated fan-out: send a `MESSAGE` frame to every
      * subscription of `destination`, each carrying the subscriber's own
-     * `subscription` id and the same fresh `message-id` (one id per
-     * logical message — acks are scoped by subscription, so sharing is
-     * safe and redelivery keeps the id). `/queue` destinations persist
+     * `subscription` id and the same fresh `message-id` per receiving broker
+     * (acks and redelivery remain local to that broker). `/queue` destinations persist
      * through the store (the durable-queue seam) before fan-out; the
      * returned value is the stored message — `undefined` for non-`/queue`
      * destinations, disabled storage, or a store failure (the caller
      * decides the failure signal; live fan-out happens either way).
+     * Configured `/topic/*` fan-out awaits transport acceptance before local
+     * delivery and rejects backend failures; it has no replay or peer acknowledgement.
      *
      * @param destination - The destination (e.g. `/topic/chat`).
      * @param body - The message body (text or bytes — D8).
@@ -638,6 +680,11 @@ export class StompBroker {
         body: StompBody,
         headers: Record<string, string> = {}
     ): Promise<StoredQueueMessage | undefined> {
+        if (this.#closed) throw new Error('StompBroker is closed');
+        if (this.#fanout && destination.startsWith('/topic/')) {
+            if (!this.#fanoutReady) throw new Error('StompBroker is not ready; await connect()');
+            await this.#fanout.publish('topic', { key: destination, body, headers });
+        }
         const messageId = this.#nextMessageId();
         let stored: StoredQueueMessage | undefined;
         if (destination.startsWith('/queue/') && this.#queueBacklog > 0) {
@@ -662,19 +709,25 @@ export class StompBroker {
                 }
             }
         }
+        if (this.#closed) throw new Error('StompBroker is closed');
+        this.#fanoutLocal(destination, body, headers, messageId);
+        return stored;
+    }
+
+    #fanoutLocal(
+        destination: string,
+        body: StompBody,
+        headers: Record<string, string>,
+        messageId = this.#nextMessageId()
+    ): void {
         const subscribers = this.#byDestination.get(destination);
         if (subscribers) {
-            // Snapshot before iterating: a send may synchronously close a
-            // subscriber, whose close path removes it from the index while
-            // we walk it (Array.from, not the live array).
             for (const subscription of Array.from(subscribers)) {
-                if (subscription.session.isClosed) {
-                    continue;
+                if (!subscription.session.isClosed) {
+                    this.#deliver(subscription, messageId, destination, body, headers, false);
                 }
-                this.#deliver(subscription, messageId, destination, body, headers, false);
             }
         }
-        return stored;
     }
 
     /**
@@ -1146,7 +1199,12 @@ export class StompBroker {
         destination: string,
         headers: Record<string, string>
     ): Promise<boolean> {
-        const stored = await this.publish(destination, frame.body, headers);
+        let stored: StoredQueueMessage | undefined;
+        try {
+            stored = await this.publish(destination, frame.body, headers);
+        } catch {
+            return this.#fail(session, frame, 'topic fanout unavailable', 1011);
+        }
         const storeManaged = destination.startsWith('/queue/') && this.#queueStore !== null;
         if (storeManaged && stored === undefined) {
             return this.#fail(session, frame, 'queue store unavailable', 1011);
@@ -1450,7 +1508,12 @@ export class StompBroker {
                     }
                 } else {
                     const storeManaged = op.destination.startsWith('/queue/') && this.#queueStore !== null;
-                    const stored = await this.publish(op.destination, op.body, op.headers);
+                    let stored: StoredQueueMessage | undefined;
+                    try {
+                        stored = await this.publish(op.destination, op.body, op.headers);
+                    } catch {
+                        return this.#fail(session, frame, 'topic fanout unavailable', 1011);
+                    }
                     if (storeManaged && stored === undefined) {
                         // Same posture as the live SEND path (COR-8): the
                         // append did not persist, so the transaction cannot

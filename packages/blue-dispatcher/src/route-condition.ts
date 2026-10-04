@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { Serializable, Equatable, JSONValue, Matchable } from '@blue/core';
+import { Serializable, Equatable, JSONValue, Matchable, ResultMatcher } from '@blue/core';
 import { like } from '@blue/util/types';
 import { Route } from '@blue/router';
 
@@ -19,7 +19,7 @@ export interface NameValueExpression<T> {
 /**
  * Contract for route matching conditions.
  */
-export interface RouteCondition<T = unknown> {
+export interface RouteCondition<T = unknown> extends ResultMatcher<Route, T> {
     /**
      * Merge this condition with another condition of the same type.
      *
@@ -34,7 +34,7 @@ export interface RouteCondition<T = unknown> {
      * @param route - The current route.
      * @returns A matching condition instance or `null`.
      */
-    getMatchingCondition(route: Route): T | null;
+    match(route: Route): T | null;
 
     /**
      * Compare this condition with another condition.
@@ -54,7 +54,7 @@ const { defineProperty } = Reflect;
  * @param value - The value to test.
  * @returns `true` when the value is a RouteCondition.
  */
-export const likeRouteCondition = like({ merge: Function, getMatchingCondition: Function }) as (
+export const likeRouteCondition = like({ merge: Function, match: Function }) as (
     value: unknown
 ) => value is RouteCondition;
 
@@ -206,7 +206,7 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
 
     abstract merge(other: T): T;
 
-    abstract getMatchingCondition(route: Route): T | null;
+    abstract match(route: Route): T | null;
 
     abstract compareTo(value: T, route?: Route): number;
 }
@@ -286,13 +286,13 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
      * @param route - The current route.
      * @returns A matching holder, or `null`.
      */
-    getMatchingCondition(route: Route): RouteConditionHolder | null {
+    match(route: Route): RouteConditionHolder | null {
         if (!this.condition) {
             return this;
         }
         // A matching condition is the same concrete type this holder wraps;
         // the RouteCondition<unknown> interface is widened only here.
-        const match = this.condition.getMatchingCondition(route) as RouteCondition | null;
+        const match = this.condition.match(route) as RouteCondition | null;
         return match ? new RouteConditionHolder(match) : null;
     }
 
@@ -404,14 +404,14 @@ export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRou
      * @param route - The current route.
      * @returns A matching composite condition, or `null`.
      */
-    getMatchingCondition(route: Route): CompositeRouteCondition | null {
+    match(route: Route): CompositeRouteCondition | null {
         if (this.isEmpty) {
             return this;
         }
         const length = this.length,
             matchingConditions: (RouteConditionHolder | null)[] = new Array<RouteConditionHolder | null>(length);
         for (let index = 0; index < length; index++) {
-            matchingConditions[index] = this.routeConditions[index].getMatchingCondition(route);
+            matchingConditions[index] = this.routeConditions[index].match(route);
             if (matchingConditions[index] === null) {
                 return null;
             }

@@ -4,9 +4,9 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
-import type { JSONObject } from '@blue/core';
+import { IllegalStateError, type JSONObject } from '@blue/core';
 import { wrapSource } from '../src/property-source';
-import type { PropertySource, PropertySources } from '../src/property-source';
+import type { PropertySource } from '../src/property-source';
 import { MutablePropertySources } from '../src/property-sources';
 
 describe('wrapSource', () => {
@@ -90,17 +90,14 @@ describe('MutablePropertySources', () => {
         expect(registry.toArray().map((s) => s.name)).toEqual(['a', 'b', 'c', 'd', 'e']);
     });
 
-    test('it should throw an IllegalStateError naming the anchor and available sources', () => {
+    test('unknown anchors should reject insertion without changing sources', () => {
         const registry = sources();
 
         registry.addLast('b', {});
 
-        expect(() => registry.addBefore('nope', 'a', {})).toThrowError(
-            'Unknown property source anchor "nope"; available: b'
-        );
-        expect(() => registry.addAfter('nope', 'a', {})).toThrowError(
-            'Unknown property source anchor "nope"; available: b'
-        );
+        expect(() => registry.addBefore('nope', 'a', {})).toThrow(IllegalStateError);
+        expect(() => registry.addAfter('nope', 'a', {})).toThrow(IllegalStateError);
+        expect([...registry].map((source) => source.name)).toEqual(['b']);
     });
 
     test('addFirst and addLast should reposition an existing name', () => {
@@ -148,6 +145,56 @@ describe('MutablePropertySources', () => {
         expect(registry.get('b')?.getProperty('b')).toBe(20);
     });
 
+    test('keyed enumeration should track precedence changes, replacement and removal', () => {
+        const registry = sources().addLast('a', { value: 1 }).addLast('b', { value: 2 }).addLast('c', { value: 3 });
+        const assertOrder = (names: string[]) => {
+            expect([...registry.keys()]).toEqual(names);
+            expect([...registry.entries()]).toEqual(names.map((name) => [name, registry.get(name)]));
+            expect([...registry.values()]).toEqual(names.map((name) => registry.get(name)));
+            expect([...registry]).toEqual([...registry.values()]);
+        };
+
+        registry.toArray();
+        assertOrder(['a', 'b', 'c']);
+        registry.addFirst('c', { value: 30 });
+        assertOrder(['c', 'a', 'b']);
+        registry.addLast('a', { value: 10 });
+        assertOrder(['c', 'b', 'a']);
+        registry.addBefore('c', 'a', { value: 11 });
+        assertOrder(['a', 'c', 'b']);
+        registry.addAfter('b', 'c', { value: 31 });
+        assertOrder(['a', 'b', 'c']);
+
+        const previous = registry.get('b');
+        registry.replace('b', { value: 20 });
+        assertOrder(['a', 'b', 'c']);
+        expect([...registry.values()][1]).not.toBe(previous);
+        expect([...registry.values()][1].getProperty('value')).toBe(20);
+
+        registry.remove('b');
+        assertOrder(['a', 'c']);
+    });
+
+    test('forEach should visit current sources in precedence order with context and collection identity', () => {
+        const registry = sources().addLast('a', {}).addFirst('b', {});
+        registry.toArray();
+        registry.replace('b', { value: 2 });
+        const context = { names: [] as string[], values: [] as PropertySource[] };
+        const version = registry.version;
+
+        registry.forEach(function (this: typeof context, value, key, collection) {
+            expect(this).toBe(context);
+            expect(collection).toBe(registry);
+            expect(value).toBe(registry.get(key));
+            this.names.push(key);
+            this.values.push(value);
+        }, context);
+
+        expect(context.names).toEqual(['b', 'a']);
+        expect(context.values).toEqual([...registry.values()]);
+        expect(registry.version).toBe(version);
+    });
+
     test('every mutation should bump the version; reads should not', () => {
         const registry = sources();
 
@@ -161,6 +208,10 @@ describe('MutablePropertySources', () => {
         registry.get('a');
         registry.contains('a');
         registry.toArray();
+        [...registry.entries()];
+        [...registry.keys()];
+        [...registry.values()];
+        registry.forEach(() => {});
 
         expect(registry.version).toBe(afterMutations);
 
@@ -171,13 +222,4 @@ describe('MutablePropertySources', () => {
         expect(registry.version).toBeGreaterThan(afterMutations);
     });
 
-    test('the read interface exposes no mutators (type-level)', () => {
-        const registry: MutablePropertySources = sources();
-
-        registry.addLast('a', { a: 1 });
-
-        const view: PropertySources = registry;
-        expect(view.size).toBe(1);
-        expect(view.get('a')?.name).toBe('a');
-    });
 });

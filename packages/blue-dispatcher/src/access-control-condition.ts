@@ -92,7 +92,7 @@ export class AccessControlCondition
      * @param route - The current route.
      * @returns This condition when the route meets the access level, or `null`.
      */
-    getMatchingCondition(route: Route): AccessControlCondition | null {
+    match(route: Route): AccessControlCondition | null {
         if (this.access === 'public') {
             return this;
         }

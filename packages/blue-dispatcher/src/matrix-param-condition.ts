@@ -129,7 +129,7 @@ export class MatrixParamCondition extends AbstractRouteCondition<MatrixParamCond
      * @param route - The current route.
      * @returns This condition, or `null`.
      */
-    getMatchingCondition(route: Route): MatrixParamCondition | null {
+    match(route: Route): MatrixParamCondition | null {
         for (const expression of this.expressions) {
             if (!expression.match(route)) {
                 return null;

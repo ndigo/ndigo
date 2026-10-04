@@ -6,6 +6,7 @@
 import { describe, test, expect } from 'vitest';
 import ResponseStatus from '../src/response-status';
 import * as ResponseStatuses from '../src/response-statuses';
+import { comparableComparison } from '@blue/core';
 
 /**
  * RFC 9110 (HTTP Semantics) status codes and canonical reason phrases.
@@ -169,6 +170,18 @@ describe('ResponseStatus', () => {
 
         expect(okStatus.equals(okStatus)).toBe(true);
         expect(okStatus.equals(createdStatus)).toBe(false);
+    });
+
+    test('sorts by code first, then case-sensitive reason phrase, preserving complete ties', () => {
+        const firstOk = new ResponseStatus(200, 'OK');
+        const secondOk = new ResponseStatus(200, 'OK');
+        const lowerCase = new ResponseStatus(200, 'ok');
+        const created = new ResponseStatus(201, 'A');
+        const accepted = new ResponseStatus(202, 'A');
+        const statuses = [accepted, lowerCase, firstOk, created, secondOk];
+        expect(statuses.sort(comparableComparison)).toEqual([firstOk, secondOk, lowerCase, created, accepted]);
+        expect(statuses[0]).toBe(firstOk);
+        expect(statuses[1]).toBe(secondOk);
     });
 
     test('it should create responses', () => {

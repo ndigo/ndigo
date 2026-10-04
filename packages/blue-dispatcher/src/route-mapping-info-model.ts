@@ -106,37 +106,37 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
      * @param route - The current route.
      * @returns A matching mapping info, or `null`.
      */
-    getMatchingCondition(route: Route): RouteMappingInfo | null {
+    match(route: Route): RouteMappingInfo | null {
         // Check patterns first — most discriminating filter, eliminates non-matching
         // routes before the cheaper param/matrix/method checks run.
-        const patterns = this.patternsCondition.getMatchingCondition(route);
+        const patterns = this.patternsCondition.match(route);
         if (!patterns) {
             return null;
         }
 
-        const params = this.queryCondition.getMatchingCondition(route);
+        const params = this.queryCondition.match(route);
         if (!params) {
             return null;
         }
 
-        const matrix = this.matrixCondition.getMatchingCondition(route);
+        const matrix = this.matrixCondition.match(route);
         if (!matrix) {
             return null;
         }
 
-        const method = this.methodCondition.getMatchingCondition(route);
+        const method = this.methodCondition.match(route);
         if (!method) {
             return null;
         }
 
-        const custom = this.customConditionHolder.getMatchingCondition(route);
+        const custom = this.customConditionHolder.match(route);
         if (!custom) {
             return null;
         }
 
         // Check access control — private routes require an authenticated principal.
         if (this.accessCondition) {
-            const accessMatch = this.accessCondition.getMatchingCondition(route);
+            const accessMatch = this.accessCondition.match(route);
             if (!accessMatch) {
                 return null;
             }

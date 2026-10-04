@@ -13,6 +13,7 @@ import {
     MatrixParamCondition,
 } from '../src/route-mapping-info';
 import { Route } from '@blue/router';
+import { AccessControlCondition } from '../src/access-control-condition';
 
 const createRoute = (path: string, data?: Record<string, string | null>): Route =>
     ({
@@ -60,9 +61,9 @@ describe('QueryParamCondition', () => {
             foo = new QueryParamCondition('foo'),
             bar = new QueryParamCondition('bar'),
             baz = new QueryParamCondition('baz'),
-            matchingFoo = foo.getMatchingCondition(route),
-            matchingBar = bar.getMatchingCondition(route),
-            matchingBaz = baz.getMatchingCondition(route);
+            matchingFoo = foo.match(route),
+            matchingBar = bar.match(route),
+            matchingBaz = baz.match(route);
 
         expect(matchingFoo).not.toBeNull();
         expect(matchingBar).not.toBeNull();
@@ -72,7 +73,7 @@ describe('QueryParamCondition', () => {
     test('it should match negated parameter names', () => {
         const route = createRoute('/'),
             notFoo = new QueryParamCondition('!foo'),
-            matchingNotFoo = notFoo.getMatchingCondition(route);
+            matchingNotFoo = notFoo.match(route);
 
         expect(matchingNotFoo).not.toBeNull();
     });
@@ -81,8 +82,8 @@ describe('QueryParamCondition', () => {
         const route = createRoute('/', { foo: 'bar', baz: 'qux' }),
             fooBar = new QueryParamCondition('foo=bar'),
             bazBar = new QueryParamCondition('baz=bar'),
-            matchingFooBar = fooBar.getMatchingCondition(route),
-            matchingBazBar = bazBar.getMatchingCondition(route);
+            matchingFooBar = fooBar.match(route),
+            matchingBazBar = bazBar.match(route);
 
         expect(matchingFooBar).not.toBeNull();
         expect(matchingBazBar).toBeNull();
@@ -157,28 +158,28 @@ describe('PatternsRouteCondition', () => {
 
     test('it should match direct path', () => {
         const cond = new PatternsRouteCondition('/foo'),
-            match = cond.getMatchingCondition(createRoute('/foo'));
+            match = cond.match(createRoute('/foo'));
 
         expect(match).not.toBeNull();
     });
 
     test('it should match patterns', () => {
         const cond = new PatternsRouteCondition('/foo/*'),
-            match = cond.getMatchingCondition(createRoute('/foo/bar'));
+            match = cond.match(createRoute('/foo/bar'));
 
         expect(match).not.toBeNull();
     });
 
     test('it should match root pattern to empty path', () => {
         const cond = new PatternsRouteCondition('/'),
-            match = cond.getMatchingCondition(createRoute(''));
+            match = cond.match(createRoute(''));
 
         expect(match).not.toBeNull();
     });
 
     test('it should not match root pattern to non-empty path', () => {
         const cond = new PatternsRouteCondition('/'),
-            match = cond.getMatchingCondition(createRoute('/foo'));
+            match = cond.match(createRoute('/foo'));
 
         expect(match).toBeNull();
     });
@@ -194,7 +195,7 @@ describe('PatternsRouteCondition', () => {
         const cond1 = new PatternsRouteCondition('/'),
             cond2 = new PatternsRouteCondition('/'),
             merged = cond1.merge(cond2),
-            match = merged.getMatchingCondition(createRoute(''));
+            match = merged.match(createRoute(''));
 
         expect(match).not.toBeNull();
     });
@@ -217,7 +218,7 @@ describe('PatternsRouteCondition', () => {
 
     test('it should return this when all patterns match', () => {
         const cond = new PatternsRouteCondition('/foo');
-        const match = cond.getMatchingCondition(createRoute('/foo'));
+        const match = cond.match(createRoute('/foo'));
         expect(match).toStrictEqual(cond);
     });
 });
@@ -225,8 +226,49 @@ describe('PatternsRouteCondition', () => {
 describe('RouteMappingInfo', () => {
     test('it should return this when all sub-conditions are satisfied', () => {
         const info = new RouteMappingInfo('/foo', new PatternsRouteCondition('/foo'));
-        const match = info.getMatchingCondition(createRoute('/foo'));
+        const match = info.match(createRoute('/foo'));
         expect(match).toStrictEqual(info);
+    });
+
+    test('returns only matching patterns without changing the registered mapping', () => {
+        const info = new RouteMappingInfo('items', new PatternsRouteCondition('/foo', '/bar'));
+        const match = info.match(createRoute('/foo'));
+
+        expect(match).not.toBeNull();
+        if (match === null) throw new Error('Expected a matching mapping');
+        expect([...match.patternsCondition.patterns]).toEqual(['/foo']);
+        expect([...info.patternsCondition.patterns]).toEqual(['/foo', '/bar']);
+        expect(match.name).toBe('items');
+    });
+
+    test('rejects a route when its query condition fails', () => {
+        const info = new RouteMappingInfo(
+            null,
+            new PatternsRouteCondition('/foo'),
+            new QueryParamCondition('lang=en')
+        );
+
+        expect(info.match(createRoute('/foo', { lang: 'de' }))).toBeNull();
+    });
+
+    test('requires a principal for a private mapping and preserves the access result', () => {
+        const access = new AccessControlCondition('private');
+        const info = new RouteMappingInfo(
+            null,
+            new PatternsRouteCondition('/foo'),
+            new QueryParamCondition(),
+            new MatrixParamCondition(),
+            null,
+            access
+        );
+
+        expect(info.match(createRoute('/foo'))).toBeNull();
+        const authenticated = { ...createRoute('/foo'), principal: { id: 'user' } } as Route;
+        const match = info.match(authenticated);
+
+        expect(match).not.toBeNull();
+        if (match === null) throw new Error('Expected an authenticated matching mapping');
+        expect(match.accessCondition).toBe(access);
     });
 
     test('merge propagates matrix conditions from both sides', () => {
@@ -246,7 +288,7 @@ describe('RouteMappingInfo', () => {
         expect(merged.matrixCondition.expressions.size).toBe(2);
     });
 
-    test('getMatchingCondition returns null when matrix condition fails', () => {
+    test('match returns null when matrix condition fails', () => {
         const info = new RouteMappingInfo(
             null,
             new PatternsRouteCondition('/foo'),
@@ -255,7 +297,7 @@ describe('RouteMappingInfo', () => {
         );
         // No segments — matrix condition cannot match
         const route = createRouteWithSegments('/foo', []);
-        expect(info.getMatchingCondition(route)).toBeNull();
+        expect(info.match(route)).toBeNull();
     });
 });
 
@@ -338,25 +380,25 @@ describe('MatrixParamCondition', () => {
     test('it should match matrix parameter names', () => {
         const route = createRouteWithSegments('/foo', [{ data: { color: '' } }]);
         const condition = new MatrixParamCondition('color');
-        expect(condition.getMatchingCondition(route)).not.toBeNull();
+        expect(condition.match(route)).not.toBeNull();
 
         const condition2 = new MatrixParamCondition('size');
-        expect(condition2.getMatchingCondition(route)).toBeNull();
+        expect(condition2.match(route)).toBeNull();
     });
 
     test('it should match negated matrix parameter names', () => {
         const route = createRouteWithSegments('/foo', []);
         const condition = new MatrixParamCondition('!color');
-        expect(condition.getMatchingCondition(route)).not.toBeNull();
+        expect(condition.match(route)).not.toBeNull();
     });
 
     test('it should match matrix parameter values', () => {
         const route = createRouteWithSegments('/foo', [{ data: { color: 'red', size: 'L' } }]);
         const condition = new MatrixParamCondition('color=red');
-        expect(condition.getMatchingCondition(route)).not.toBeNull();
+        expect(condition.match(route)).not.toBeNull();
 
         const condition2 = new MatrixParamCondition('color=blue');
-        expect(condition2.getMatchingCondition(route)).toBeNull();
+        expect(condition2.match(route)).toBeNull();
     });
 
     test('it should be comparable', () => {

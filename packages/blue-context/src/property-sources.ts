@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { IllegalStateError, JSONObject } from '@blue/core';
+import { IllegalStateError, JSONObject, type Enumerable } from '@blue/core';
 import { PropertySource, wrapSource } from './property-source';
 
 /**
@@ -14,7 +14,7 @@ import { PropertySource, wrapSource } from './property-source';
  *
  * @see module:context.ConfigurableEnvironment
  */
-export interface PropertySources extends Iterable<PropertySource> {
+export interface PropertySources extends Enumerable<string, PropertySource>, Iterable<PropertySource> {
     /**
      * The number of registered sources.
      */
@@ -42,12 +42,13 @@ export interface PropertySources extends Iterable<PropertySource> {
 }
 
 /**
- * Ordered, named property sources with O(1) name operations and cached order
- * iteration.
+ * Ordered, named property sources with O(1) name operations and keyed
+ * enumeration in precedence order (first = highest precedence).
  *
- * Backed by a `Map` (name ops O(1), insertion order) plus a lazily rebuilt
- * array for ordering work. Every mutation bumps {@link version} so index
- * strategies can rebuild lazily on the next lookup instead of eagerly.
+ * Backed by a `Map` (name ops O(1), precedence order) plus a lazily rebuilt
+ * array for ordering work. Enumeration uses the map directly. Every mutation
+ * bumps {@link version} so index strategies can rebuild lazily on the next
+ * lookup instead of eagerly.
  *
  * Error semantics: `addBefore`/`addAfter` with an unknown anchor throw
  * `IllegalStateError` naming the anchor and listing the registered names
@@ -84,6 +85,26 @@ export class MutablePropertySources implements PropertySources {
 
     contains(name: string): boolean {
         return this.#byName.has(name);
+    }
+
+    /** Returns name/source pairs in precedence order. */
+    entries(): IterableIterator<[string, PropertySource]> {
+        return this.#byName.entries();
+    }
+
+    /** Returns source names in precedence order. */
+    keys(): IterableIterator<string> {
+        return this.#byName.keys();
+    }
+
+    /** Returns sources in precedence order. */
+    values(): IterableIterator<PropertySource> {
+        return this.#byName.values();
+    }
+
+    /** Visits each source in precedence order, using `context` as callback `this`. */
+    forEach(callback: (value: PropertySource, key: string, list: this) => void, context?: unknown): void {
+        this.#byName.forEach((value, key) => callback.call(context, value, key, this));
     }
 
     toArray(): PropertySource[] {
@@ -177,7 +198,7 @@ export class MutablePropertySources implements PropertySources {
         return true;
     }
 
-    *[Symbol.iterator](): Iterator<PropertySource> {
+    *[Symbol.iterator](): IterableIterator<PropertySource> {
         yield* this.toArray();
     }
 

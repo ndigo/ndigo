@@ -44,7 +44,7 @@ export class RadixMetadataHandlerMapping
 
     match(route: Route, pattern: string): RouteMatchResult | null {
         const info: RouteMappingInfo = new RouteMappingInfo(pattern),
-            matchingInfo = info.getMatchingCondition(route);
+            matchingInfo = info.match(route);
         if (!matchingInfo) {
             return null;
         }
@@ -59,7 +59,7 @@ export class RadixMetadataHandlerMapping
     }
 
     protected _getMatchingMapping(mapping: RouteMappingInfo, route: Route): RouteMappingInfo | null {
-        return mapping.getMatchingCondition(route);
+        return mapping.match(route);
     }
 
     protected override _getHandler(route: Route): RouteHandlerMethod | null {
@@ -77,15 +77,15 @@ export class RadixMetadataHandlerMapping
         }
 
         // Retrieve all handlers registered at this pattern and filter by conditions.
-        // Note: we do NOT call mapping.getMatchingCondition(route) here because the full
+        // Note: we do NOT call mapping.match(route) here because the full
         // PatternsRouteCondition check uses GlobPathMatcher which does not understand
         // :param-style patterns — the radix tree already validated the path.
         const candidates = this.#candidatesByPattern.get(match.pattern) ?? [];
         const matching = candidates.filter(
             ({ mapping }) =>
-                mapping.queryCondition.getMatchingCondition(route) !== null &&
-                mapping.matrixCondition.getMatchingCondition(route) !== null &&
-                mapping.methodCondition.getMatchingCondition(route) !== null
+                mapping.queryCondition.match(route) !== null &&
+                mapping.matrixCondition.match(route) !== null &&
+                mapping.methodCondition.match(route) !== null
         );
 
         if (matching.length === 0) {
@@ -98,8 +98,8 @@ export class RadixMetadataHandlerMapping
             if (route.method !== 'OPTIONS') {
                 const nonMethodMatches = candidates.filter(
                     ({ mapping }) =>
-                        mapping.queryCondition.getMatchingCondition(route) !== null &&
-                        mapping.matrixCondition.getMatchingCondition(route) !== null
+                        mapping.queryCondition.match(route) !== null &&
+                        mapping.matrixCondition.match(route) !== null
                 );
                 if (nonMethodMatches.length > 0) {
                     const allowed = [

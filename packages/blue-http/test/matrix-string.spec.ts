@@ -132,5 +132,11 @@ describe('MatrixString', () => {
         test('it should sort objects by key', () => {
             expect(MatrixString.stringify({ zar: 'zargle', bar: 'bargle' })).toBe('bar=bargle;zar=zargle');
         });
+
+        test('sorts raw keys case-sensitively before encoding, retaining array value order', () => {
+            expect(MatrixString.stringify({ z: ['second', 'first'], a: 'lower', Z: 'upper', 'é': 'accent' })).toBe(
+                'Z=upper;a=lower;z=second,first;%C3%A9=accent'
+            );
+        });
     });
 });

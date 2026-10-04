@@ -79,6 +79,55 @@ export interface Repository<T extends object, ID> {
 }
 
 /**
+ * Promise-based counterpart to {@link Repository} for backend-neutral async consumers.
+ * Missing entities resolve to `undefined`; operation failures reject the promise.
+ */
+export interface AsyncRepository<T extends object, ID> {
+    save(entity: T): Promise<T>;
+    findById(id: ID, options?: RelationFetchOptions): Promise<T | undefined>;
+    findAll(options?: RelationFetchOptions): Promise<T[]>;
+    loadRelation(entity: T, relationName: string): Promise<unknown>;
+    findPage(request: PageRequest): Promise<Page<T>>;
+    deleteById(id: ID): Promise<boolean>;
+    count(): Promise<number>;
+    existsById(id: ID): Promise<boolean>;
+}
+
+/**
+ * Adapts a synchronous repository to {@link AsyncRepository} without changing its
+ * behavior. Calls retain the repository receiver, and synchronous exceptions
+ * become promise rejections. Async repositories cannot be adapted back to sync.
+ */
+export function toAsyncRepository<T extends object, ID>(repository: Repository<T, ID>): AsyncRepository<T, ID> {
+    return {
+        async save(entity) {
+            return repository.save(entity);
+        },
+        async findById(id, options) {
+            return repository.findById(id, options);
+        },
+        async findAll(options) {
+            return repository.findAll(options);
+        },
+        async loadRelation(entity, relationName) {
+            return repository.loadRelation(entity, relationName);
+        },
+        async findPage(request) {
+            return repository.findPage(request);
+        },
+        async deleteById(id) {
+            return repository.deleteById(id);
+        },
+        async count() {
+            return repository.count();
+        },
+        async existsById(id) {
+            return repository.existsById(id);
+        },
+    };
+}
+
+/**
  * An abstract base class for implementing the `Repository` interface.
  * Provides common functionality for interacting with an `EntityManager`.
  * @template T - The type of the entity.

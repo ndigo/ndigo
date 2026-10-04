@@ -8,6 +8,7 @@ import '@tsmetadata/polyfill';
 import { describe, expect, test } from 'vitest';
 import { z } from 'zod';
 import { entity, column, generated, primaryColumn } from '@blue/orm';
+import type { AsyncRepository } from '@blue/orm';
 import { DrizzleDataSource } from '../src/drizzle-data-source';
 import { DrizzleEntityManager } from '../src/drizzle-entity-manager';
 import { DrizzleTransactionManager } from '../src/drizzle-transaction-manager';
@@ -141,7 +142,11 @@ describe('DrizzleUnitOfWork', () => {
 describe('DrizzleRepository', () => {
     test('performs CRUD and counts', async () => {
         const manager = new DrizzleEntityManager(dataSource);
-        const repo = new DrizzleRepository<Note, number>(Note, manager);
+        const repo: AsyncRepository<Note, number> = new DrizzleRepository(Note, manager);
+
+        expect(await repo.findById(999)).toBeUndefined();
+        expect(await repo.existsById(999)).toBe(false);
+        expect(await repo.deleteById(999)).toBe(false);
 
         const note = new Note();
         note.title = 'repo';
@@ -152,6 +157,7 @@ describe('DrizzleRepository', () => {
         expect(await repo.count()).toBe(1);
         expect(await repo.findAll()).toHaveLength(1);
         expect(await repo.deleteById(saved.id)).toBe(true);
+        expect(await repo.findById(saved.id)).toBeUndefined();
         expect(await repo.count()).toBe(0);
         expect(await repo.deleteById(saved.id)).toBe(false);
     });

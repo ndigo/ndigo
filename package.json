@@ -4,20 +4,14 @@
   "version": "0.0.1",
   "description": "The BlueJS framework",
   "type": "module",
-  "files": [
-    "doc",
-    "lib"
-  ],
-  "exports": "./lib/index.js",
-  "types": "lib/index.d.ts",
   "scripts": {
     "build": "nx run-many -t build:lib",
     "build:all": "pnpm --filter @blue/todomvc build && pnpm --filter todomvc-svelte build && pnpm --filter todomvc-vue build && pnpm --filter todomvc-react build && pnpm --filter todomvc-javascript-es6-webpack build",
-    "test:benchmark": "pnpm --filter @blue/todomvc run preview & sleep 5 && pnpm exec node --experimental-specifier-resolution=node --import ./node_modules/.pnpm/tsx@4.22.3/node_modules/tsx/dist/esm/index.mjs ../todomvc/examples/bluejs/benchmark-runner.ts",
-    "test:benchmark:react": "pnpm exec node --experimental-specifier-resolution=node --import ./node_modules/.pnpm/tsx@4.22.3/node_modules/tsx/dist/esm/index.mjs benchmark-react.ts",
-    "test:benchmark:svelte": "pnpm exec node --experimental-specifier-resolution=node --import ./node_modules/.pnpm/tsx@4.22.3/node_modules/tsx/dist/esm/index.mjs benchmark-svelte.ts",
-    "test:benchmark:vue": "pnpm exec node --experimental-specifier-resolution=node --import ./node_modules/.pnpm/tsx@4.22.3/node_modules/tsx/dist/esm/index.mjs benchmark-vue.ts",
-    "test:benchmark:vanilla": "pnpm exec node --experimental-specifier-resolution=node --import ./node_modules/.pnpm/tsx@4.22.3/node_modules/tsx/dist/esm/index.mjs benchmark-vanilla.ts",
+    "test:benchmark": "pnpm --filter @blue/todomvc run preview & sleep 5 && pnpm exec tsx ../todomvc/examples/bluejs/benchmark-runner.ts",
+    "test:benchmark:react": "pnpm exec tsx scripts/benchmark-dom.ts --impl react",
+    "test:benchmark:svelte": "pnpm exec tsx scripts/benchmark-dom.ts --impl svelte",
+    "test:benchmark:vue": "pnpm exec tsx scripts/benchmark-dom.ts --impl vue",
+    "test:benchmark:vanilla": "pnpm exec tsx scripts/benchmark-dom.ts --impl vanilla",
     "build:bluejs": "pnpm --filter ../todomvc/examples/bluejs run build",
     "build:todomvc": "nx run @blue/todomvc:build:lib",
     "test": "nx run-many -t test",
@@ -69,9 +63,7 @@
     "typedoc": "^0.28.20",
     "typedoc-plugin-markdown": "^4.13.0",
     "typescript": "~7.0.2",
-    "vitest": "~4.0.18"
-  },
-  "msw": {
-    "workerDirectory": "test"
+    "vitest": "~4.0.18",
+    "tsx": "^4.22.3"
   }
 }

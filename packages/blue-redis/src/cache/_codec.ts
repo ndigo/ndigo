@@ -41,14 +41,29 @@ function validate(value: unknown, ancestors: Set<object>, depth: number): void {
     }
 }
 
-/** Versioned tagged envelope; undefined is supported only as the whole cached value. */
+/**
+ * Serializes a cached value into the versioned envelope. `undefined` is
+ * supported only as the whole cached value; every other value must be a
+ * finite plain JSON value (cycles, accessors, non-enumerable or symbol keys,
+ * negative zero and excessive depth are rejected).
+ *
+ * @param value - The value to persist.
+ * @returns The envelope string stored in Redis.
+ */
 export function encode(value: unknown): string {
     if (value === undefined) return '["blue-cache",1,"undefined"]';
     validate(value, new Set(), 0);
     return JSON.stringify(['blue-cache', 1, 'value', value]);
 }
 
-/** Corrupt/unknown formats are errors, never misses. */
+/**
+ * Deserializes a value from the versioned envelope. Corrupt or unknown
+ * formats are errors, never cache misses — a poisoned entry must surface
+ * rather than silently read as absent.
+ *
+ * @param payload - The envelope string read from Redis.
+ * @returns The stored value.
+ */
 export function decode(payload: string): unknown {
     let envelope: unknown;
     try {

@@ -5,7 +5,13 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
-import { HealthRegistry, HEALTH_ERROR_REDACTED, type HealthIndicator, type HealthResult, type HealthState } from '../src/health';
+import {
+    HealthRegistry,
+    HEALTH_ERROR_REDACTED,
+    type HealthIndicator,
+    type HealthResult,
+    type HealthState,
+} from '../src/health';
 
 const throwingIndicator: HealthIndicator = {
     name: 'boom',
@@ -58,7 +64,10 @@ describe('HealthRegistry', () => {
             this.entries.push([key, value]);
         }, context);
 
-        expect(context.entries).toEqual([['ok', replacement], ['boom', throwingIndicator]]);
+        expect(context.entries).toEqual([
+            ['ok', replacement],
+            ['boom', throwingIndicator],
+        ]);
         expect(context.entries[0][1]).toBe(replacement);
         expect(registry.names).toEqual(['ok', 'boom']);
     });

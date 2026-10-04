@@ -242,11 +242,7 @@ describe('RouteMappingInfo', () => {
     });
 
     test('rejects a route when its query condition fails', () => {
-        const info = new RouteMappingInfo(
-            null,
-            new PatternsRouteCondition('/foo'),
-            new QueryParamCondition('lang=en')
-        );
+        const info = new RouteMappingInfo(null, new PatternsRouteCondition('/foo'), new QueryParamCondition('lang=en'));
 
         expect(info.match(createRoute('/foo', { lang: 'de' }))).toBeNull();
     });

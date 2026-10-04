@@ -36,7 +36,12 @@ export interface LibSQLSessionStoreOptions {
     /** URL for an owned client; defaults to ':memory:'. */
     url?: string;
     authToken?: string;
-    /** Shared-table live-session cap (default 512); enforced atomically on create. */
+    /**
+     * Shared-table live-session cap (default 512); enforced on create via a
+     * count-gated insert in one `batch()` — single-file SQLite serializes
+     * writers, but two racing creates against a remote libsql server can
+     * over-admit by one.
+     */
     maxSessions?: number;
 }
 
@@ -85,15 +90,18 @@ export class LibSQLSessionStore implements SessionStore {
             throw new RangeError('LibSQLSessionStore ttlMs must produce a positive safe integer expiry');
         }
         const id = randomToken(32);
-        const results = await this.#client.batch([
-            { sql: `DELETE FROM ${TABLE} WHERE expires_at <= ?`, args: [now] },
-            {
-                sql: `INSERT INTO ${TABLE} (session_id, ${COLUMNS})
+        const results = await this.#client.batch(
+            [
+                { sql: `DELETE FROM ${TABLE} WHERE expires_at <= ?`, args: [now] },
+                {
+                    sql: `INSERT INTO ${TABLE} (session_id, ${COLUMNS})
                       SELECT ?, ?, ?, ?, ?, ?, ? WHERE (SELECT COUNT(*) FROM ${TABLE}) < ?
                       RETURNING session_id`,
-                args: [id, ...values, expiresAt, this.#maxSessions],
-            },
-        ], 'write');
+                    args: [id, ...values, expiresAt, this.#maxSessions],
+                },
+            ],
+            'write'
+        );
         if (results[1].rows.length !== 1) throw new Error('LibSQL session store at capacity');
         return id;
     }
@@ -101,7 +109,8 @@ export class LibSQLSessionStore implements SessionStore {
     async get(sessionId: string): Promise<SessionRecord | null> {
         this.#assertOpen();
         const result = await this.#client.execute({
-            sql: `SELECT ${COLUMNS} FROM ${TABLE} WHERE session_id = ?`, args: [sessionId],
+            sql: `SELECT ${COLUMNS} FROM ${TABLE} WHERE session_id = ?`,
+            args: [sessionId],
         });
         const row = result.rows[0];
         if (row === undefined) return null;
@@ -109,7 +118,8 @@ export class LibSQLSessionStore implements SessionStore {
         const now = Date.now();
         if (entry.expiresAt <= now) {
             await this.#client.execute({
-                sql: `DELETE FROM ${TABLE} WHERE session_id = ? AND expires_at <= ?`, args: [sessionId, now],
+                sql: `DELETE FROM ${TABLE} WHERE session_id = ? AND expires_at <= ?`,
+                args: [sessionId, now],
             });
             return null;
         }
@@ -122,7 +132,8 @@ export class LibSQLSessionStore implements SessionStore {
         // Validate persisted identity before replacing it; corruption is an error,
         // never an authentication miss or an opportunity to repair a credential.
         const result = await this.#client.execute({
-            sql: `SELECT ${COLUMNS} FROM ${TABLE} WHERE session_id = ?`, args: [sessionId],
+            sql: `SELECT ${COLUMNS} FROM ${TABLE} WHERE session_id = ?`,
+            args: [sessionId],
         });
         const row = result.rows[0];
         if (row === undefined) throw new Error('LibSQL session not found or expired');
@@ -130,7 +141,8 @@ export class LibSQLSessionStore implements SessionStore {
         const now = Date.now();
         if (expiresAt <= now) {
             await this.#client.execute({
-                sql: `DELETE FROM ${TABLE} WHERE session_id = ? AND expires_at <= ?`, args: [sessionId, now],
+                sql: `DELETE FROM ${TABLE} WHERE session_id = ? AND expires_at <= ?`,
+                args: [sessionId, now],
             });
             throw new Error('LibSQL session not found or expired');
         }
@@ -204,10 +216,17 @@ function decodeRow(row: Row): { record: SessionRecord; expiresAt: number } {
 }
 
 function assertFields(id: unknown, name: unknown, roles: unknown, tokenVersion: unknown, issuedAt: unknown): void {
-    if (typeof id !== 'string' || typeof name !== 'string' ||
-        !Array.isArray(roles) || !roles.every((role: unknown) => typeof role === 'string') ||
-        typeof tokenVersion !== 'number' || !Number.isSafeInteger(tokenVersion) || tokenVersion < 0 ||
-        typeof issuedAt !== 'number' || !Number.isSafeInteger(issuedAt)) {
+    if (
+        typeof id !== 'string' ||
+        typeof name !== 'string' ||
+        !Array.isArray(roles) ||
+        !roles.every((role: unknown) => typeof role === 'string') ||
+        typeof tokenVersion !== 'number' ||
+        !Number.isSafeInteger(tokenVersion) ||
+        tokenVersion < 0 ||
+        typeof issuedAt !== 'number' ||
+        !Number.isSafeInteger(issuedAt)
+    ) {
         throw new Error('Malformed LibSQL session record');
     }
 }

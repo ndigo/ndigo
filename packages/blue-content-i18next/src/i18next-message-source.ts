@@ -94,8 +94,8 @@ export class I18nextMessageSource implements MessageSource {
                     fallbackLanguage === undefined
                         ? undefined
                         : Array.isArray(fallbackLanguage)
-                            ? fallbackLanguage.map(String)
-                            : String(fallbackLanguage),
+                          ? fallbackLanguage.map(String)
+                          : String(fallbackLanguage),
                 returnEmptyString: false,
                 initImmediate: false,
                 ...(ns ? { ns } : {}),

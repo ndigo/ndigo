@@ -1,8 +1,30 @@
 # Plans
 
+### 2026-10-01 - Shared Persistence and Distributed Backends
+
+Roadmap for durable sessions, Redis-backed shared cache, cross-node
+WebSocket/STOMP pub-sub, and a separately scoped decision on persisted or
+distributed scheduling; staged around shared backend lifecycle dependencies.
+
+[Read full roadmap](2026-10-01_SHARED_PERSISTENCE_ROADMAP.md)
+
+---
+
 Implementation plans for features and technical specifications.
 
 ## Completed Plans
+
+### 2026-10-03 - Shared Persistence and Distributed Backends
+
+Dependency-ordered persistence roadmap, complete: durable LibSQL sessions
+(Phase 1), awaitable cache cutover + `@blue/redis` cache (Phase 2), cross-node
+WebSocket/STOMP fan-out (Phase 3), distributed scheduling deferred with
+evidence (Phase 4, AD-41), backend-matrix review closed (Phase 5). Memory
+remains the default everywhere; external backends are opt-in.
+
+[Read roadmap](2026-10-01_SHARED_PERSISTENCE_ROADMAP.md)
+
+---
 
 ### 2026-09-27 - TypeScript-Native Layer
 

@@ -194,7 +194,7 @@ negotiation is a pure function on the request header + candidate files.
 
 ### D-8 — Dispatcher: HEAD falls back to GET
 
-`HTTPMethodCondition.getMatchingCondition` treats `route.method === 'HEAD'`
+`HTTPMethodCondition.match` treats `route.method === 'HEAD'`
 as matching a `GET`-constrained mapping when no HEAD mapping exists (RFC 9110
 §9.3.2 — HEAD is GET without the body). Node's `ServerResponse` suppresses the
 body natively for HEAD while keeping headers/content-length. This is what

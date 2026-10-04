@@ -229,18 +229,18 @@ Values containing parser metacharacters (`=`, `!`, `,`, `;`) escape per the exis
 
 **Problem.** `cacheName: 'reports'` + `cacheManager.getCache('reports')` are unchecked strings (`blue-cache/src/cached.ts:36-45`, `cache-manager.ts`).
 
-**Shape.** `ContextToken<Cache<string, T>>` as the cache handle:
+**Shape.** `ContextToken<Cache<T>>` as the cache handle (data operations awaitable since the AD-40 async-cache cutover):
 
 ```ts
-export const REPORTS = new ContextToken<Cache<string, Report>>('reports');
+export const REPORTS = new ContextToken<Cache<Report>>('reports');
 
 @cached({ cache: REPORTS, ttl: 60_000 })
-reportValue() { ... }
+async reportValue(): Promise<Report> { ... }
 
-cacheManager.getCache(REPORTS).delete(key);   // typed store
+await cacheManager.getCache(REPORTS).delete(key);   // typed store
 ```
 
-`CachedSpec.cache?: ContextToken<Cache<string, unknown>>` + `CacheManager.getCache` token overload; `cacheName` stays for compat.
+`CachedSpec.cache?: ContextToken<Cache<unknown>>` + `CacheManager.getCache` token overload; named lookup remains supported. Manager lookup is local/synchronous; store operations return promises.
 
 **Tasks**
 

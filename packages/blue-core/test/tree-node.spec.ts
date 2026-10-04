@@ -3,58 +3,134 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
-import { direct, escalate, indexOf } from '../src/tree-node';
+import { describe, test, expect } from 'vitest';
+import { direct, escalate, indexOf, type ChildNode, type ParentNode, type TreeNode } from '../src/tree-node';
+
+interface Descendant extends ParentNode<Descendant> {
+    name: string;
+}
+
+interface Ancestor extends ChildNode<Ancestor> {
+    name: string;
+}
 
 describe('direct', () => {
-    const tree = { children: [{ children: [] }, { children: [] }] };
-    let directSpy: ReturnType<typeof vi.fn>;
+    const tree: Descendant = {
+        name: 'root',
+        children: [
+            { name: 'first', children: [{ name: 'nested', children: [] }] },
+            { name: 'second', children: [] },
+        ],
+    };
 
-    beforeEach(() => {
-        directSpy = vi.fn();
+    test('visits descendants depth-first in child order, excluding the starting node', () => {
+        const visited: string[] = [];
+        direct(tree, (node) => visited.push(node.name));
+        expect(visited).toEqual(['first', 'nested', 'second']);
     });
 
-    afterEach(() => {
-        directSpy = undefined as unknown as ReturnType<typeof vi.fn>;
+    test('includes the starting node before its descendants', () => {
+        const visited: string[] = [];
+        direct(tree, (node) => visited.push(node.name), true);
+        expect(visited).toEqual(['root', 'first', 'nested', 'second']);
     });
 
-    test('it should exclude the root node by default', () => {
-        direct(tree, directSpy);
-        expect(directSpy).toHaveBeenCalledTimes(2);
+    test('false prunes only the visited branch, not later siblings', () => {
+        const visited: string[] = [];
+        direct(tree, (node) => {
+            visited.push(node.name);
+            return node.name !== 'first';
+        });
+        expect(visited).toEqual(['first', 'second']);
     });
 
-    test('it should include the root node', () => {
-        direct(tree, directSpy, true);
-        expect(directSpy).toHaveBeenCalledTimes(3);
+    test('false at an inclusive starting node prunes all descendants', () => {
+        const visited: string[] = [];
+        direct(tree, (node) => {
+            visited.push(node.name);
+            return false;
+        }, true);
+        expect(visited).toEqual(['root']);
+    });
+
+    test('does not visit siblings appended after a child list traversal starts', () => {
+        const children: Descendant[] = [{ name: 'first', children: [] }];
+        const root: Descendant = { name: 'root', children };
+        const visited: string[] = [];
+
+        direct(root, (node) => {
+            visited.push(node.name);
+            children.push({ name: 'appended', children: [] });
+        });
+
+        expect(visited).toEqual(['first']);
     });
 });
 
 describe('escalate', () => {
-    const tree = { parent: { parent: { parent: null } } };
-    let escalateSpy: ReturnType<typeof vi.fn>;
+    const root: Ancestor = { name: 'root', parent: null };
+    const parent: Ancestor = { name: 'parent', parent: root };
+    const child: Ancestor = { name: 'child', parent };
 
-    beforeEach(() => {
-        escalateSpy = vi.fn();
+    test('visits ancestors nearest-first, excluding the starting node', () => {
+        const visited: string[] = [];
+        escalate(child, (node) => visited.push(node.name));
+        expect(visited).toEqual(['parent', 'root']);
     });
 
-    afterEach(() => {
-        escalateSpy = undefined as unknown as ReturnType<typeof vi.fn>;
+    test('includes the starting node before its ancestors', () => {
+        const visited: string[] = [];
+        escalate(child, (node) => visited.push(node.name), true);
+        expect(visited).toEqual(['child', 'parent', 'root']);
     });
 
-    test('it should exclude the root node by default', () => {
-        escalate(tree, escalateSpy);
-        expect(escalateSpy).toHaveBeenCalledTimes(2);
+    test('false stops traversal before any further ancestor', () => {
+        const visited: string[] = [];
+        escalate(child, (node) => {
+            visited.push(node.name);
+            return false;
+        });
+        expect(visited).toEqual(['parent']);
     });
 
-    test('it should include the root node', () => {
-        escalate(tree, escalateSpy, true);
-        expect(escalateSpy).toHaveBeenCalledTimes(3);
+    test('an inclusive false result stops before the starting node parent', () => {
+        const visited: string[] = [];
+        escalate(child, (node) => {
+            visited.push(node.name);
+            return false;
+        }, true);
+        expect(visited).toEqual(['child']);
+    });
+
+    test('a root with no parent has no ancestors', () => {
+        const root: Ancestor = { name: 'root', parent: undefined };
+        const visited: string[] = [];
+        escalate(root, (node) => visited.push(node.name));
+        expect(visited).toEqual([]);
+    });
+
+    test('visits a deep ancestor chain without overflowing the call stack', () => {
+        let node: Ancestor = root;
+        for (let depth = 0; depth < 20_000; depth++) {
+            node = { name: 'ancestor', parent: node };
+        }
+        let count = 0;
+        let last: Ancestor | undefined;
+        escalate(node, (ancestor) => {
+            count++;
+            last = ancestor;
+        }, true);
+        expect(count).toBe(20_001);
+        expect(last).toBe(root);
     });
 });
 
 describe('indexOf', () => {
-    const child = { children: [] };
-    const tree = { children: [{ children: [] }, { children: [] }, child] };
+    const child: TreeNode = {
+        children: [], parent: null, root: null,
+        hasChild: () => false, newChild: () => undefined, removeChild: () => false,
+    };
+    const tree = { children: [{ ...child }, { ...child }, child] };
 
     test('it should return the index of', () => {
         expect(indexOf(tree.children, child)).toBe(2);

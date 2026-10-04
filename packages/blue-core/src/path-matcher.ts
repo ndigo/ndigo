@@ -9,7 +9,7 @@ import { Constructable } from './constructable.js';
 import { FrameworkError } from './error.js';
 import { parseUrlGlob } from './url-glob.js';
 import { LRUCache } from './_lru-cache.js';
-import { PatternMatcher } from './matchable.js';
+import { Matchable, PatternMatcher } from './matchable.js';
 
 const DOT = '.',
     SLASH = '/',
@@ -55,7 +55,7 @@ export interface PathMatcher extends PatternMatcher<string, string> {
  * Defines a contract for filtering paths based on include and exclude patterns.
  * This interface is typically implemented by mixins or classes that need path filtering capabilities.
  */
-export interface PathMatcherFilter {
+export interface PathMatcherFilter extends Matchable<string> {
     /**
      * The `PathMatcher` instance used for matching patterns.
      */

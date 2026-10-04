@@ -42,6 +42,8 @@ const PEER_ALLOWLIST = {
     // Asset-only runtime feature dep for the OpenAPI docs UI (see AD-35):
     // the platform serves the files but code never imports the module.
     '@blue/platform-node': ['swagger-ui-dist'],
+    // Node-only capability subpaths: connection-only consumers need none of these.
+    '@blue/redis': ['@blue/cache', '@blue/factory', '@blue/socket'],
 };
 
 /** Dev-tooling that is imported/invoked by configs and tests but is not a package concern. */

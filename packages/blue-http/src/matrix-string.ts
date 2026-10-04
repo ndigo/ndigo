@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { JSONObject, Parser, Stringifier } from '@blue/core';
+import { JSONObject, Parser, Stringifier, stringComparator } from '@blue/core';
 import { decodeURIComponent as decode, encodeURIComponent as encodeValue } from '@blue/util/string';
 
 /**
@@ -115,7 +115,7 @@ const isNull = (value: unknown): boolean => value === null,
         }
         const object = value as Record<string, unknown>;
         const encode = encodeParam(object);
-        const sortedKeys = Object.keys(object).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+        const sortedKeys = Object.keys(object).sort(stringComparator.compare);
         return sortedKeys
             .map(encode)
             .filter((s) => s.length > 0)

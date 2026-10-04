@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { like } from '@blue/util/types';
-import { Comparator, PatternMatcher } from '@blue/core';
+import { AbstractValueComparator, Comparator, PatternMatcher } from '@blue/core';
 
 /**
  * Matcher contract for URL-aware pattern ordering.
@@ -32,8 +32,6 @@ export interface URLMatcher extends PatternMatcher<string, string> {
  * @returns {boolean} Whether or not the `url` matched.
  */
 
-const { defineProperty } = Reflect;
-
 /**
  * Tests whether a value implements {@link URLMatcher}.
  *
@@ -44,26 +42,11 @@ export const likeURLMatcher = like({ getPatternComparator: Function, match: Func
     value: unknown
 ) => value is URLMatcher;
 
-abstract class AbstractURLComparator implements Comparator<string> {
-    readonly url!: string;
-
-    constructor(url: string) {
-        defineProperty(this, 'url', {
-            value: url,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
-    }
-
-    abstract compare(pattern1: string, pattern2: string): number;
-}
-
-class EqualsURLComparator extends AbstractURLComparator {
+class EqualsURLComparator extends AbstractValueComparator {
     compare(pattern1: string, pattern2: string): number {
-        const { url } = this,
-            pattern1EqualsURL = pattern1 === url,
-            pattern2EqualsURL = pattern2 === url;
+        const { value } = this,
+            pattern1EqualsURL = pattern1 === value,
+            pattern2EqualsURL = pattern2 === value;
 
         if (pattern1EqualsURL && pattern2EqualsURL) {
             return 0;

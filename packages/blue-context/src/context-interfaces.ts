@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { JSONObject } from '@blue/core';
+import { JSONObject, type ChildNode, type ParentNode } from '@blue/core';
 import type { z } from 'zod';
 import {
     ContentSource,
@@ -30,6 +30,8 @@ import { ResourceLoader, likeResourceLoader } from './resource';
 
 export interface ApplicationContext
     extends
+        ChildNode<ApplicationContext>,
+        ParentNode<ApplicationContext>,
         ConfigurableFactory,
         ContentSource,
         MessageSource,

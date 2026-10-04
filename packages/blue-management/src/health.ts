@@ -4,6 +4,8 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import type { Enumerable } from '@blue/core';
+
 /**
  * The overall health of a subsystem.
  */
@@ -58,8 +60,10 @@ export interface HealthIndicator {
  *
  * The aggregate is `UP` when every indicator is `UP`; `DOWN` when any is
  * `DOWN` (or a check throws); otherwise `UNKNOWN`.
+ * Indicators can be enumerated by name in registration order without
+ * exposing the backing collection. Replacing an indicator keeps its position.
  */
-export class HealthRegistry {
+export class HealthRegistry implements Enumerable<string, HealthIndicator> {
     #indicators = new Map<string, HealthIndicator>();
     readonly #redactHealthErrors: boolean;
 
@@ -89,6 +93,26 @@ export class HealthRegistry {
      */
     unregister(name: string): boolean {
         return this.#indicators.delete(name);
+    }
+
+    /** Returns name/indicator pairs in registration order. */
+    entries(): IterableIterator<[string, HealthIndicator]> {
+        return this.#indicators.entries();
+    }
+
+    /** Returns indicator names in registration order. */
+    keys(): IterableIterator<string> {
+        return this.#indicators.keys();
+    }
+
+    /** Returns indicators in registration order. */
+    values(): IterableIterator<HealthIndicator> {
+        return this.#indicators.values();
+    }
+
+    /** Visits registrations in order, using `context` as callback `this`. */
+    forEach(callback: (value: HealthIndicator, key: string, list: this) => void, context?: unknown): void {
+        this.#indicators.forEach((value, key) => callback.call(context, value, key, this));
     }
 
     /**

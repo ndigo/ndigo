@@ -16,8 +16,8 @@ const { defineProperty } = Reflect;
  * @example
  * // A GET-only mapping
  * const condition = new HTTPMethodCondition('GET');
- * condition.getMatchingCondition({ method: 'GET', … } as Route) // this
- * condition.getMatchingCondition({ method: 'POST', … } as Route) // null
+ * condition.match({ method: 'GET', … } as Route) // this
+ * condition.match({ method: 'POST', … } as Route) // null
  */
 export class HTTPMethodCondition extends AbstractRouteCondition<HTTPMethodCondition> {
     /**
@@ -73,7 +73,7 @@ export class HTTPMethodCondition extends AbstractRouteCondition<HTTPMethodCondit
      * @param route - The current route.
      * @returns This condition, or `null`.
      */
-    getMatchingCondition(route: Route): HTTPMethodCondition | null {
+    match(route: Route): HTTPMethodCondition | null {
         if (this.method === undefined || route.method === undefined) {
             return this;
         }

@@ -5,6 +5,8 @@
  */
 import { describe, expect, test, vi } from 'vitest';
 import { StaticContentSource } from '@blue/content';
+import type { ChildNode, ParentNode } from '@blue/core';
+import type { ApplicationContext } from '../src/context-interfaces';
 import { GenericApplicationContext } from '../src/context';
 import {
     createFeatureContext,
@@ -188,6 +190,78 @@ describe('context hierarchy helpers', () => {
 
         expect(visited).toEqual(['root', 'featureA', 'featureA-nested', 'featureB']);
 
+        root.destroy();
+    });
+
+    test('traverseToRoot ignores false visitor results and remains inclusive', () => {
+        const root = new GenericApplicationContext('root');
+        const child = root.newChild('child');
+        const grandchild = child.newChild('grandchild');
+        const start: ChildNode<ApplicationContext> = grandchild;
+        const visited: string[] = [];
+
+        traverseToRoot(grandchild, (node) => {
+            visited.push(node.name);
+            return false;
+        });
+
+        expect(start.parent).toBe(child);
+        expect(visited).toEqual(['grandchild', 'child', 'root']);
+        root.destroy();
+    });
+
+    test('traverseSubtree ignores false visitor results without pruning descendants or siblings', () => {
+        const root = new GenericApplicationContext('root');
+        const first = root.newChild('first');
+        first.newChild('nested');
+        root.newChild('second');
+        const start: ParentNode<ApplicationContext> = root;
+        const visited: string[] = [];
+
+        traverseSubtree(root, (node) => {
+            visited.push(node.name);
+            return false;
+        });
+
+        expect(start.children.map((node) => node.name)).toEqual(['first', 'second']);
+        expect(visited).toEqual(['root', 'first', 'nested', 'second']);
+        root.destroy();
+    });
+
+    test('traverseSubtree visits siblings appended during traversal', () => {
+        const root = new GenericApplicationContext('root');
+        root.newChild('first');
+        const visited: string[] = [];
+
+        traverseSubtree(root, (node) => {
+            visited.push(node.name);
+            if (node.name === 'first') {
+                root.newChild('appended');
+            }
+        });
+
+        expect(visited).toEqual(['root', 'first', 'appended']);
+        root.destroy();
+    });
+
+    test('findAncestor excludes self and returns the nearest matching ancestor', () => {
+        const root = new GenericApplicationContext('match-root');
+        const parent = root.newChild('match-parent');
+        const child = parent.newChild('match-child');
+
+        expect(findAncestor(child, (node) => node.name.startsWith('match'))).toBe(parent);
+        expect(findAncestor(root, () => true)).toBeUndefined();
+        root.destroy();
+    });
+
+    test('findDescendants searches through nonmatching ancestors in depth-first order', () => {
+        const root = new GenericApplicationContext('match-root');
+        const first = root.newChild('first');
+        first.newChild('match-nested');
+        root.newChild('match-sibling');
+
+        expect(findDescendants(root, (node) => node.name.startsWith('match')).map((node) => node.name))
+            .toEqual(['match-nested', 'match-sibling']);
         root.destroy();
     });
 

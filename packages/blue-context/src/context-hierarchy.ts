@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { ContentSource, ThemeResolver } from '@blue/content';
-import { JSONObject } from '@blue/core';
+import { JSONObject, escalate } from '@blue/core';
 import { ConfigurableEnvironment } from './environment';
 import { ApplicationContext, GenericApplicationContext } from './context';
 import { ContextEventGateway, ContextEventGatewayOptions, ContextEventRelay } from './event-gateway';
@@ -159,26 +159,22 @@ export const unmountFeatureContext = (
  * Walk from `context` up to root (inclusive), invoking `visitor` for each node.
  *
  * @param {module:context.ApplicationContext} context The starting context.
- * @param {Function} visitor A callback invoked for each visited context.
+ * @param {Function} visitor A callback invoked for each visited context; its return value is ignored.
  */
 export const traverseToRoot = (context: ApplicationContext, visitor: (context: ApplicationContext) => void): void => {
-    let node: ApplicationContext = context;
-
-    visitor(node);
-
-    while (node.parent) {
-        node = node.parent;
+    escalate(context, (node) => {
         visitor(node);
-    }
+    }, true);
 };
 
 /**
  * Walk a subtree depth-first from `context` (inclusive), invoking `visitor` for each node.
  *
  * @param {module:context.ApplicationContext} context The subtree root.
- * @param {Function} visitor A callback invoked for each visited context.
+ * @param {Function} visitor A callback invoked for each visited context; its return value is ignored.
  */
 export const traverseSubtree = (context: ApplicationContext, visitor: (context: ApplicationContext) => void): void => {
+    // Keep live child iteration: visitors may append siblings that must also be visited.
     visitor(context);
 
     for (const child of context.children) {

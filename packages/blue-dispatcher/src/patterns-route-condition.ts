@@ -218,7 +218,7 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
      * @param route - The current route.
      * @returns A matching condition, or `null`.
      */
-    getMatchingCondition(route: Route): PatternsRouteCondition | null {
+    match(route: Route): PatternsRouteCondition | null {
         if (this.patterns.size === 0) {
             return this;
         }

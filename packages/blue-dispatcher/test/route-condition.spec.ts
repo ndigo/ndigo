@@ -4,8 +4,8 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
-import { RouteCondition, RouteConditionHolder, AbstractNameValueExpression } from '../src/route-condition';
-import { QueryParamExpression } from '../src/route-mapping-info';
+import { RouteCondition, RouteConditionHolder, CompositeRouteCondition } from '../src/route-condition';
+import { QueryParamExpression, QueryParamCondition, PatternsRouteCondition } from '../src/route-mapping-info';
 import { PathRoute } from '@blue/router';
 
 class NumericCondition implements RouteCondition<NumericCondition> {
@@ -19,7 +19,7 @@ class NumericCondition implements RouteCondition<NumericCondition> {
         return new NumericCondition(this.value + other.value);
     }
 
-    getMatchingCondition(): NumericCondition {
+    match(): NumericCondition {
         return this;
     }
 
@@ -48,19 +48,45 @@ describe('RouteConditionHolder', () => {
     test('it should return matching condition when route matches', () => {
         const cond = new RouteConditionHolder(new NumericCondition(7));
 
-        const match = cond.getMatchingCondition(new PathRoute('/foo'));
+        const match = cond.match(new PathRoute('/foo'));
 
-        expect(match).toBeTruthy();
+        expect(match).not.toBeNull();
+        if (match === null) throw new Error('Expected a matching condition');
         expect((match.condition as NumericCondition).value).toBe(7);
     });
 });
 
-describe('AbstractNameValueExpression implements Matchable<Route> (MTC-1)', () => {
-    test('expressions expose the matcher-family entry point', () => {
-        const expression = new QueryParamExpression('lang=en');
-        expect(expression).toBeInstanceOf(AbstractNameValueExpression);
+describe('CompositeRouteCondition', () => {
+    test('narrows every condition to its matching result', () => {
+        const patterns = new PatternsRouteCondition('/foo', '/bar');
+        const params = new QueryParamCondition('lang=en');
+        const composite = new CompositeRouteCondition(patterns, params);
+        const route = { path: '/foo', data: { lang: 'en' }, attributes: {} } as unknown as PathRoute;
+        const match = composite.match(route);
+
+        expect(match).not.toBeNull();
+        if (match === null) throw new Error('Expected a matching composite');
+        const otherPath = { ...route, path: '/bar' } as PathRoute;
+        const otherQuery = { ...route, data: { lang: 'de' } } as unknown as PathRoute;
+        expect(composite.match(otherPath)).not.toBeNull();
+        expect(match.match(otherPath)).toBeNull();
+        expect(match.match(otherQuery)).toBeNull();
+        expect(match.match(route)).not.toBeNull();
+        expect([...patterns.patterns]).toEqual(['/foo', '/bar']);
     });
 
+    test('rejects the route when any condition fails', () => {
+        const composite = new CompositeRouteCondition(
+            new PatternsRouteCondition('/foo'),
+            new QueryParamCondition('lang=en')
+        );
+        const route = { path: '/foo', data: { lang: 'de' }, attributes: {} } as unknown as PathRoute;
+
+        expect(composite.match(route)).toBeNull();
+    });
+});
+
+describe('AbstractNameValueExpression implements Matchable<Route> (MTC-1)', () => {
     test('matches() is equivalent to match() for matching routes', () => {
         const expression = new QueryParamExpression('lang=en');
         const route = { path: '/', method: 'GET', data: { lang: 'en' }, attributes: {} } as unknown as PathRoute;

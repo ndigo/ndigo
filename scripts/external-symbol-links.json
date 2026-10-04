@@ -111,6 +111,9 @@
   },
   "@blue/socket": {
     "ReconnectTrigger": "#",
+    "SocketFanout": "#",
+    "SocketFanoutMessage": "#",
+    "SocketFanoutScope": "#",
     "SocketSession": "#",
     "WebSocketClient": "#"
   },

@@ -60,9 +60,7 @@ export class StompChatController {
      * Periodic tick — the scheduler → broker fan-out path (AD-23 D5).
      */
     @scheduled('*/2 * * * * *')
-    chatTick() {
-        // The broker never rejects (a store fault is surfaced inside the
-        // protocol), so the tick is fire-and-forget.
-        void this.broker.publish(CHAT_DESTINATION, JSON.stringify({ event: 'chat-tick', at: Date.now() }));
+    async chatTick() {
+        await this.broker.publish(CHAT_DESTINATION, JSON.stringify({ event: 'chat-tick', at: Date.now() }));
     }
 }

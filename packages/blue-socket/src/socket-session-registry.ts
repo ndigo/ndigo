@@ -44,20 +44,23 @@ export interface SocketSessionRegistry {
      * frames; any other value is JSON-encoded. Best-effort fan-out —
      * sessions that close mid-broadcast are skipped and transport write
      * errors are tolerated (D5).
+     * Await transport acceptance when cross-node fan-out is configured;
+     * backend failures reject. This does not acknowledge peer delivery.
      *
      * @param path - The routing path (e.g. `/ws/room`).
      * @param payload - The payload to send.
      */
-    broadcast(path: string, payload: unknown): void;
+    broadcast(path: string, payload: unknown): Promise<void>;
 
     /**
      * Send a payload to every session in the named room
      * (`session.join(room)` — D5).
+     * Await acceptance; configured backend failures reject.
      *
      * @param room - The room name.
      * @param payload - The payload to send.
      */
-    broadcastTo(room: string, payload: unknown): void;
+    broadcastTo(room: string, payload: unknown): Promise<void>;
 
     /**
      * Add a session to a named room.

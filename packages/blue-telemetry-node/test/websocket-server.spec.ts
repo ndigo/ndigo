@@ -184,7 +184,7 @@ describe('WebSocketServerInstrumentation', () => {
         const received = new Promise<void>((resolve) => {
             ws.once('message', () => resolve());
         });
-        adapter.socketRegistry.broadcast('/echo', { event: 'tick' });
+        await adapter.socketRegistry.broadcast('/echo', { event: 'tick' });
         await received;
 
         expect(await counterValue(metricReader, 'blue.socket.sessions.opened')).toBe(2); // this + prior test
@@ -200,13 +200,13 @@ describe('WebSocketServerInstrumentation', () => {
     test('measures binary fan-out payloads by byte length, not JSON encoding', async () => {
         const ws = await openEchoSocket();
         const bytesBefore = await counterValue(metricReader, 'blue.socket.messages.bytes');
-        adapter.socketRegistry.broadcast('/echo', 'abc'); // text frame: 3 bytes
+        await adapter.socketRegistry.broadcast('/echo', 'abc'); // text frame: 3 bytes
         expect(await counterValue(metricReader, 'blue.socket.messages.bytes')).toBe(bytesBefore + 3);
         // Binary frames: exact payload bytes. JSON-encoding them would record
         // 31 (index-key object) and 2 (`'{}'`) instead.
-        adapter.socketRegistry.broadcast('/echo', new Uint8Array([1, 2, 3, 4, 5]));
+        await adapter.socketRegistry.broadcast('/echo', new Uint8Array([1, 2, 3, 4, 5]));
         expect(await counterValue(metricReader, 'blue.socket.messages.bytes')).toBe(bytesBefore + 8);
-        adapter.socketRegistry.broadcast('/echo', new ArrayBuffer(8));
+        await adapter.socketRegistry.broadcast('/echo', new ArrayBuffer(8));
         expect(await counterValue(metricReader, 'blue.socket.messages.bytes')).toBe(bytesBefore + 16);
         ws.close(1000, 'done');
         await delay(150);
@@ -219,7 +219,7 @@ describe('WebSocketServerInstrumentation', () => {
         adapter.socketRegistry.join(session, room);
         const sentBefore = await datapointValue(metricReader, 'blue.socket.messages.sent', {});
         const bytesBefore = await datapointValue(metricReader, 'blue.socket.messages.bytes', {});
-        adapter.socketRegistry.broadcastTo(room, 'room-tin'); // 8 bytes
+        await adapter.socketRegistry.broadcastTo(room, 'room-tin'); // 8 bytes
 
         expect(await datapointValue(metricReader, 'blue.socket.messages.sent', {})).toBe(sentBefore + 1);
         expect(await datapointValue(metricReader, 'blue.socket.messages.bytes', {})).toBe(bytesBefore + 8);
@@ -242,7 +242,7 @@ describe('WebSocketServerInstrumentation', () => {
             const room = 'TEL-3-opt-in-room';
             const session = adapter.socketRegistry.sessions('/echo')[0];
             adapter.socketRegistry.join(session, room);
-            adapter.socketRegistry.broadcastTo(room, 'room-tin'); // 8 bytes
+            await adapter.socketRegistry.broadcastTo(room, 'room-tin'); // 8 bytes
 
             expect(await datapointValue(metricReader, 'blue.socket.messages.sent', { 'socket.room': room })).toBe(1);
             expect(await datapointValue(metricReader, 'blue.socket.messages.bytes', { 'socket.room': room })).toBe(8);

@@ -215,7 +215,7 @@ describe('Node WebSocket pipeline', () => {
         // Out-of-handler push: any service with the registry can fan out.
         const ra = waitMessage(a);
         const rb = waitMessage(b);
-        adapter.socketRegistry.broadcast('/echo', { event: 'server', data: 'fan' });
+        await adapter.socketRegistry.broadcast('/echo', { event: 'server', data: 'fan' });
         await expect(ra).resolves.toEqual({ event: 'server', data: 'fan' });
         await expect(rb).resolves.toEqual({ event: 'server', data: 'fan' });
 
@@ -233,7 +233,7 @@ describe('Node WebSocket pipeline', () => {
         await delay(50);
 
         const received = waitMessage(ws);
-        adapter.socketRegistry.broadcastTo('lobby', { event: 'push', data: 'tick' });
+        await adapter.socketRegistry.broadcastTo('lobby', { event: 'push', data: 'tick' });
         await expect(received).resolves.toEqual({ event: 'push', data: 'tick' });
         ws.close(1000, 'done');
     });

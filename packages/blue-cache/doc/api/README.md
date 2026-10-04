@@ -39,7 +39,6 @@ Jeff Rose
 - [cached](functions/cached.md)
 - [getCachedSpec](functions/getCachedSpec.md)
 - [isCacheMiss](functions/isCacheMiss.md)
-- [isPromiseLike](functions/isPromiseLike.md)
 - [memoize](functions/memoize.md)
 - [resolveCachedSpec](functions/resolveCachedSpec.md)
 - [serializeCacheKey](functions/serializeCacheKey.md)

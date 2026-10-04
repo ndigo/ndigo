@@ -49,7 +49,7 @@ The underlying content source providing translations.
 
 ##### defaultLanguage?
 
-`string` = `'en'`
+`string` \| [`LanguageCode`](LanguageCode.md)
 
 Fallback language when the header cannot be parsed.
 
@@ -94,7 +94,7 @@ The content key to resolve.
 
 ##### language
 
-`string`
+`string` \| [`LanguageCode`](LanguageCode.md)
 
 An `Accept-Language` header value or bare language code.
 

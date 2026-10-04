@@ -555,7 +555,7 @@ The content key.
 
 ##### language
 
-`string`
+`string` \| `LanguageCode`
 
 The language identifier.
 
@@ -631,7 +631,7 @@ Optional formatting parameters.
 
 ##### language?
 
-`string`
+`string` \| `LanguageCode`
 
 The language to use.
 

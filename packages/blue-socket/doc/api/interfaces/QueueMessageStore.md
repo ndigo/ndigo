@@ -55,8 +55,9 @@ lifetime is the broker's, so an owner that shut a broker built with a
 durable store down SHOULD call this at shutdown. Idempotent.
 
 Backends document what a call after disposal does: the libsql backend
-closes its client and every later operation rejects (`CLIENT_CLOSED`);
-the in-memory backend only forgets its data and stays usable.
+rejects later operations and closes only owned clients (injected
+clients are borrowed by default); the in-memory backend forgets its
+data and stays usable. Stop and drain producers before disposal.
 
 #### Returns
 

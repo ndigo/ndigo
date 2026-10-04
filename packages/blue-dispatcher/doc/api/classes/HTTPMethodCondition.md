@@ -13,8 +13,8 @@ Matches a route's `method` against a required HTTP method.
 ```ts
 // A GET-only mapping
 const condition = new HTTPMethodCondition('GET');
-condition.getMatchingCondition({ method: 'GET', … } as Route) // this
-condition.getMatchingCondition({ method: 'POST', … } as Route) // null
+condition.match({ method: 'GET', … } as Route) // this
+condition.match({ method: 'POST', … } as Route) // null
 ```
 
 ## Extends
@@ -170,9 +170,9 @@ The value to compare.
 
 ***
 
-### getMatchingCondition()
+### match()
 
-> **getMatchingCondition**(`route`): `HTTPMethodCondition` \| `null`
+> **match**(`route`): `HTTPMethodCondition` \| `null`
 
 Return this condition when the route's method matches (or this condition
 has no method constraint); `null` otherwise.
@@ -199,7 +199,7 @@ This condition, or `null`.
 
 #### Overrides
 
-[`AbstractRouteCondition`](AbstractRouteCondition.md).[`getMatchingCondition`](AbstractRouteCondition.md#getmatchingcondition)
+[`AbstractRouteCondition`](AbstractRouteCondition.md).[`match`](AbstractRouteCondition.md#match)
 
 ***
 

@@ -12,7 +12,7 @@ User-supplied `@cached` specification.
 
 ### cache?
 
-> `optional` **cache?**: [`ContextToken`](#)\<[`Cache`](Cache.md)\<`unknown`\>\>
+> `optional` **cache?**: `ContextToken`\<[`Cache`](Cache.md)\<`unknown`\>\>
 
 Typed cache-store handle (AD-34 D7): a `ContextToken`-identified cache
 under the instance's [CacheManager](CacheManager.md). Takes precedence over

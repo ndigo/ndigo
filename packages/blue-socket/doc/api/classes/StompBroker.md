@@ -94,6 +94,18 @@ gauge.
 
 ## Methods
 
+### close()
+
+> **close**(): `Promise`\<`void`\>
+
+Close sessions and unsubscribe; the application owns transport shutdown.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+***
+
 ### closeAll()
 
 > **closeAll**(`code?`, `reason?`): `void`
@@ -119,6 +131,18 @@ Human-readable close reason.
 #### Returns
 
 `void`
+
+***
+
+### connect()
+
+> **connect**(): `Promise`\<`void`\>
+
+Await live topic subscription readiness before accepting traffic.
+
+#### Returns
+
+`Promise`\<`void`\>
 
 ***
 
@@ -193,13 +217,14 @@ The stored messages, append-ordered.
 
 Server-initiated fan-out: send a `MESSAGE` frame to every
 subscription of `destination`, each carrying the subscriber's own
-`subscription` id and the same fresh `message-id` (one id per
-logical message — acks are scoped by subscription, so sharing is
-safe and redelivery keeps the id). `/queue` destinations persist
+`subscription` id and the same fresh `message-id` per receiving broker
+(acks and redelivery remain local to that broker). `/queue` destinations persist
 through the store (the durable-queue seam) before fan-out; the
 returned value is the stored message — `undefined` for non-`/queue`
 destinations, disabled storage, or a store failure (the caller
 decides the failure signal; live fan-out happens either way).
+Configured `/topic/*` fan-out awaits transport acceptance before local
+delivery and rejects backend failures; it has no replay or peer acknowledgement.
 
 #### Parameters
 

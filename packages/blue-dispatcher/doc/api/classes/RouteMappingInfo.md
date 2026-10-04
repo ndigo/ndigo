@@ -156,9 +156,9 @@ A comparison result.
 
 ***
 
-### getMatchingCondition()
+### match()
 
-> **getMatchingCondition**(`route`): `RouteMappingInfo` \| `null`
+> **match**(`route`): `RouteMappingInfo` \| `null`
 
 Return a condition instance that matches the current route.
 
@@ -178,7 +178,7 @@ A matching mapping info, or `null`.
 
 #### Implementation of
 
-[`RouteCondition`](../interfaces/RouteCondition.md).[`getMatchingCondition`](../interfaces/RouteCondition.md#getmatchingcondition)
+[`RouteCondition`](../interfaces/RouteCondition.md).[`match`](../interfaces/RouteCondition.md#match)
 
 ***
 

@@ -48,6 +48,11 @@ how it fits with the rest of BlueJS.
 - `MetricsController` / `HealthController` — the two endpoints.
 - `METRIC_AGGREGATOR` / `HEALTH_REGISTRY` — context tokens for the shared beans.
 
+`HealthRegistry` implements `Enumerable<string, HealthIndicator>`: `entries`,
+`keys`, `values`, and `forEach` enumerate registrations in order without exposing
+the backing map. Replacements keep their position; `names` remains a frozen
+snapshot. Enumeration does not change concurrent health-check execution.
+
 ## Development
 
 ```bash

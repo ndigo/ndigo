@@ -32,6 +32,9 @@ package can be read — and installed — on its own.
 | `@blue/oxlint-plugin` | Custom oxlint rules for BlueJS architectural enforcement | [doc/api/README.md](../packages/blue-oxlint-plugin/doc/api/README.md) |
 | `@blue/platform-node` | Node.js platform adapter for BlueJS — HTTP server, auto-configuration, static files, multipart | [doc/api/README.md](../packages/blue-platform-node/doc/api/README.md) |
 | `@blue/platform-web` | Browser platform adapter for BlueJS — dispatcher glue, history/cookie resolvers, themes | [doc/api/README.md](../packages/blue-platform-web/doc/api/README.md) |
+| `@blue/proxy` | Container-managed method interception for BlueJS — metadata annotations, interceptor chains, and Proxy-based weaving | [doc/api/README.md](../packages/blue-proxy/doc/api/README.md) |
+| `@blue/redis` | Node-only Redis connections, namespaced shared cache adapters, and WebSocket pub/sub fanout for BlueJS | [doc/api/README.md](../packages/blue-redis/doc/api/README.md) |
+| `@blue/resilience` | Retry, circuit breaking, and backoff policies for BlueJS — interceptors built on @blue/proxy | [doc/api/README.md](../packages/blue-resilience/doc/api/README.md) |
 | `@blue/router` | Route registry, path partitions, and feature routing for BlueJS | [doc/api/README.md](../packages/blue-router/doc/api/README.md) |
 | `@blue/scheduler` | Cron scheduling for Node.js — @scheduled tasks and the task registry | [doc/api/README.md](../packages/blue-scheduler/doc/api/README.md) |
 | `@blue/service` | Typed service clients and server-sent event streaming for BlueJS | [doc/api/README.md](../packages/blue-service/doc/api/README.md) |

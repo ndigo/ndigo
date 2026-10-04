@@ -14,7 +14,7 @@ Traverses descendants depth-first from the supplied node.
 
 ### T
 
-`T` *extends* [`ParentNode`](../interfaces/ParentNode.md)\<`unknown`\>
+`T` *extends* [`ParentNode`](../interfaces/ParentNode.md)\<`T`\>
 
 ## Parameters
 
@@ -28,7 +28,7 @@ Starting node.
 
 (`node`) => `unknown`
 
-Function invoked for each visited node.
+Function invoked for each visited node; returning `false` prunes that node's descendants.
 
 ### inclusive?
 

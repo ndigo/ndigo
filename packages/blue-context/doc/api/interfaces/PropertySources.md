@@ -17,7 +17,7 @@ module:context.ConfigurableEnvironment
 
 ## Extends
 
-- `Iterable`\<[`PropertySource`](PropertySource.md)\>
+- `Enumerable`\<`string`, [`PropertySource`](PropertySource.md)\>.`Iterable`\<[`PropertySource`](PropertySource.md)\>
 
 ## Properties
 
@@ -51,6 +51,54 @@ The source name.
 
 ***
 
+### entries()
+
+> **entries**(): `Iterator`\<\[`string`, [`PropertySource`](PropertySource.md)\]\>
+
+Returns an iterator for the key-value pairs in the collection.
+
+#### Returns
+
+`Iterator`\<\[`string`, [`PropertySource`](PropertySource.md)\]\>
+
+An iterator that yields `[key, value]` pairs.
+
+#### Inherited from
+
+`Enumerable.entries`
+
+***
+
+### forEach()
+
+> **forEach**(`callback`, `context?`): `void`
+
+Executes a provided function once for each key-value pair in the collection.
+
+#### Parameters
+
+##### callback
+
+(`value`, `key`, `list`) => `void`
+
+Function to execute for each element. It receives `value`, `key`, and the `list` itself as arguments.
+
+##### context?
+
+`unknown`
+
+Value to use as `this` when executing the `callback`.
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+`Enumerable.forEach`
+
+***
+
 ### get()
 
 > **get**(`name`): [`PropertySource`](PropertySource.md) \| `undefined`
@@ -73,6 +121,24 @@ The matching source, or `undefined`.
 
 ***
 
+### keys()
+
+> **keys**(): `Iterator`\<`string`\>
+
+Returns an iterator for the keys in the collection.
+
+#### Returns
+
+`Iterator`\<`string`\>
+
+An iterator that yields keys.
+
+#### Inherited from
+
+`Enumerable.keys`
+
+***
+
 ### toArray()
 
 > **toArray**(): [`PropertySource`](PropertySource.md)[]
@@ -84,3 +150,21 @@ Returns the sources in precedence order (first = highest precedence).
 [`PropertySource`](PropertySource.md)[]
 
 A fresh snapshot of the ordered sources.
+
+***
+
+### values()
+
+> **values**(): `Iterator`\<[`PropertySource`](PropertySource.md)\>
+
+Returns an iterator for the values in the collection.
+
+#### Returns
+
+`Iterator`\<[`PropertySource`](PropertySource.md)\>
+
+An iterator that yields values.
+
+#### Inherited from
+
+`Enumerable.values`

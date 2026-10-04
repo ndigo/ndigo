@@ -82,6 +82,7 @@ Jeff Rose
 - [PropertyValues](interfaces/PropertyValues.md)
 - [RadixMatch](interfaces/RadixMatch.md)
 - [RelativeTimeFormatterOptions](interfaces/RelativeTimeFormatterOptions.md)
+- [ResultMatcher](interfaces/ResultMatcher.md)
 - [Serializable](interfaces/Serializable.md)
 - [ServerSentEvent](interfaces/ServerSentEvent.md)
 - [SharedOptions](interfaces/SharedOptions.md)
@@ -133,6 +134,9 @@ Jeff Rose
 
 - [AsPathMatcherFilter](functions/AsPathMatcherFilter.md)
 - [AsSerializableError](functions/AsSerializableError.md)
+- [chainComparisons](functions/chainComparisons.md)
+- [comparableComparison](functions/comparableComparison.md)
+- [compareBy](functions/compareBy.md)
 - [conditionalOnBrowser](functions/conditionalOnBrowser.md)
 - [conditionalOnMissingEntry](functions/conditionalOnMissingEntry.md)
 - [conditionalOnNode](functions/conditionalOnNode.md)

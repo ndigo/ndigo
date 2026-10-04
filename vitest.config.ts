@@ -56,6 +56,8 @@ export default defineConfig({
             { find: /^@blue\/service$/, replacement: resolve(__dirname, './packages/blue-service/src') },
             { find: /^@blue\/scheduler$/, replacement: resolve(__dirname, './packages/blue-scheduler/src') },
             { find: /^@blue\/cache$/, replacement: resolve(__dirname, './packages/blue-cache/src') },
+            { find: /^@blue\/proxy$/, replacement: resolve(__dirname, './packages/blue-proxy/src') },
+            { find: /^@blue\/resilience$/, replacement: resolve(__dirname, './packages/blue-resilience/src') },
             { find: /^@blue\/redis\/cache$/, replacement: resolve(__dirname, './packages/blue-redis/src/cache') },
             { find: /^@blue\/redis\/pubsub$/, replacement: resolve(__dirname, './packages/blue-redis/src/pubsub') },
             { find: /^@blue\/redis$/, replacement: resolve(__dirname, './packages/blue-redis/src') },

@@ -53,8 +53,8 @@ Removes an entry. Returns whether the entry existed.
 > **get**(`key`): `Promise`\<`V` \| [`CacheMiss`](../classes/CacheMiss.md)\>
 
 Returns the live cached value or the [CacheMiss](../classes/CacheMiss.md) sentinel.
-Expired entries are removed on access. A hit updates recency under
-`lru` eviction (Map-order promotion); `fifo` order is untouched.
+Expiry and recency handling follow the backend's documented policy;
+MemoryCache removes expired entries lazily and promotes LRU hits.
 
 #### Parameters
 
@@ -72,8 +72,8 @@ Expired entries are removed on access. A hit updates recency under
 
 > **has**(`key`): `Promise`\<`boolean`\>
 
-Returns whether the key holds a live entry (expired entries are
-removed on the check). Does not update recency.
+Returns whether the key holds a live entry. Does not update recency
+in MemoryCache; remote expiry follows the backend's clock.
 
 #### Parameters
 
@@ -91,8 +91,8 @@ removed on the check). Does not update recency.
 
 > **set**(`key`, `value`, `ttl?`): `Promise`\<`void`\>
 
-Stores a value, optionally overriding the store default TTL. Evicts
-per the configured policy when at [CacheOptions.maxSize](CacheOptions.md#maxsize).
+Stores a value, optionally overriding the backend default TTL.
+Capacity and eviction policy are backend-specific configuration.
 
 #### Parameters
 
@@ -123,7 +123,7 @@ When the value is the [CacheMiss](../classes/CacheMiss.md) sentinel or
 
 > **size**(): `Promise`\<`number`\>
 
-Entry count; expiry remains lazy until get/has removes expired entries.
+Entry count under the backend's documented expiry/concurrency policy.
 
 #### Returns
 

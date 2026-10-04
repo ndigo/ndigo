@@ -22,7 +22,7 @@ The subtree root.
 
 (`context`) => `void`
 
-A callback invoked for each visited context.
+A callback invoked for each visited context; its return value is ignored.
 
 ## Returns
 

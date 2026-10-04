@@ -13,7 +13,7 @@ borrowed and remains usable after manager shutdown.
 
 ## Implements
 
-- [`CacheManager`](../../../../blue-cache/doc/api/README.md)
+- `CacheManager`
 
 ## Constructors
 
@@ -117,7 +117,7 @@ description-backed, same store as the string form.
 
 ###### token
 
-`ContextToken`\<[`Cache`](../../../../blue-cache/doc/api/README.md)\<`V`\>\>
+[`ContextToken`](#)\<`Cache`\<`V`\>\>
 
 The cache store token.
 
@@ -163,7 +163,7 @@ Returns whether the token-identified cache exists (no creation).
 
 ###### token
 
-`ContextToken`\<[`Cache`](../../../../blue-cache/doc/api/README.md)\<`unknown`\>\>
+[`ContextToken`](#)\<`Cache`\<`unknown`\>\>
 
 ##### Returns
 

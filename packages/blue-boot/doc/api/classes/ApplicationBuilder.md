@@ -303,6 +303,46 @@ The parent builder.
 
 ***
 
+### processors()
+
+> **processors**(...`processors`): `ApplicationBuilder`
+
+Registers entry processors on the application context before it
+refreshes. Every entry the context creates is processed — including
+constructor entries eagerly created at refresh end.
+
+The natural consumer is container-managed method interception
+(`@blue/proxy`):
+
+```ts
+const audit = new AuditInterceptor();
+const builder = new ApplicationBuilder([NodeAppConfiguration])
+    .processors(interception([audit]));
+```
+
+Replaces any previously registered processors (chained calls do not
+accumulate). Register **at most one** `interception(...)` processor
+and combine all interceptors in that single call — combining across
+calls silently drops advice, and a second `interception(...)`
+processor fails loudly when it meets an already-woven entry (see
+`@blue/proxy`).
+
+#### Parameters
+
+##### processors
+
+...`EntryProcessor`[]
+
+The entry processors to register.
+
+#### Returns
+
+`ApplicationBuilder`
+
+This builder for chaining.
+
+***
+
 ### profiles()
 
 > **profiles**(...`profiles`): `ApplicationBuilder`

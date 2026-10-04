@@ -5,6 +5,9 @@
     "Principal": "#",
     "SessionStore": "#"
   },
+  "@blue/cache": {
+    "CacheMiss": "#"
+  },
   "@blue/content": {
     "ContentSource": "#",
     "MessageSource": "#"

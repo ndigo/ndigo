@@ -27,6 +27,8 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
+    "@blue/proxy": "~0.0.1",
+    "@blue/resilience": "~0.0.1",
     "@opentelemetry/sdk-trace-base": "~2.11.0",
     "@tsmetadata/polyfill": "^1.1.3"
   },

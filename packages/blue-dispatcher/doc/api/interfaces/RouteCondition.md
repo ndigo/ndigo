@@ -10,7 +10,7 @@ Contract for route matching conditions.
 
 ## Extends
 
-- `ResultMatcher<Route, T>` from `@blue/core`
+- `ResultMatcher`\<[`Route`](#), `T`\>
 
 ## Type Parameters
 
@@ -67,6 +67,10 @@ The current route.
 `T` \| `null`
 
 A matching condition instance or `null`.
+
+#### Overrides
+
+`ResultMatcher.match`
 
 ***
 

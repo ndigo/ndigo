@@ -289,7 +289,8 @@ Value to compare.
 
 `boolean`
 
-`true` when both collections contain the same property names and values.
+`true` when both collections contain the same multiset of name/value pairs,
+regardless of order; duplicate pairs must occur equally often.
 
 #### Implementation of
 

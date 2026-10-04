@@ -439,6 +439,32 @@ The default property values.
 
 ***
 
+### setEntryProcessors()
+
+> **setEntryProcessors**(`processors`): `void`
+
+Registers entry processors, applied to every entry instance the
+context creates — including constructor entries eagerly created at
+refresh end (`_finishFactoryInitialization`). Registration replaces
+any previous processors (chained `processors(...)` calls do not
+accumulate). Register at most one `@blue/proxy` interception
+processor (see `ApplicationBuilder.processors`).
+
+#### Parameters
+
+##### processors
+
+readonly `EntryProcessor`[]
+
+The entry processors to register on the context
+  before it refreshes.
+
+#### Returns
+
+`void`
+
+***
+
 ### setEnvironment()
 
 > **setEnvironment**(`environment`): `void`

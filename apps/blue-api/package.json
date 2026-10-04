@@ -27,6 +27,7 @@
     "@blue/orm": "~0.0.1",
     "@blue/orm-drizzle": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
+    "@blue/proxy": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/telemetry": "~0.0.1",
     "@blue/util": "~0.0.1",

@@ -14,7 +14,7 @@ Traverses ancestors upward from the supplied node.
 
 ### T
 
-`T` *extends* [`ChildNode`](../interfaces/ChildNode.md)\<`unknown`\>
+`T` *extends* [`ChildNode`](../interfaces/ChildNode.md)\<`T`\>
 
 ## Parameters
 
@@ -28,7 +28,7 @@ Starting node.
 
 (`node`) => `unknown`
 
-Function invoked for each visited node.
+Function invoked for each visited node; returning `false` stops traversal.
 
 ### inclusive?
 

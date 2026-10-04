@@ -6,12 +6,13 @@
 
 # Class: MutablePropertySources
 
-Ordered, named property sources with O(1) name operations and cached order
-iteration.
+Ordered, named property sources with O(1) name operations and keyed
+enumeration in precedence order (first = highest precedence).
 
-Backed by a `Map` (name ops O(1), insertion order) plus a lazily rebuilt
-array for ordering work. Every mutation bumps [version](#version) so index
-strategies can rebuild lazily on the next lookup instead of eagerly.
+Backed by a `Map` (name ops O(1), precedence order) plus a lazily rebuilt
+array for ordering work. Enumeration uses the map directly. Every mutation
+bumps [version](#version) so index strategies can rebuild lazily on the next
+lookup instead of eagerly.
 
 Error semantics: `addBefore`/`addAfter` with an unknown anchor throw
 `IllegalStateError` naming the anchor and listing the registered names
@@ -71,11 +72,11 @@ staleness and rebuild lazily.
 
 ### \[iterator\]()
 
-> **\[iterator\]**(): `Iterator`\<[`PropertySource`](../interfaces/PropertySource.md)\>
+> **\[iterator\]**(): `IterableIterator`\<[`PropertySource`](../interfaces/PropertySource.md)\>
 
 #### Returns
 
-`Iterator`\<[`PropertySource`](../interfaces/PropertySource.md)\>
+`IterableIterator`\<[`PropertySource`](../interfaces/PropertySource.md)\>
 
 #### Implementation of
 
@@ -243,6 +244,48 @@ The source name.
 
 ***
 
+### entries()
+
+> **entries**(): `IterableIterator`\<\[`string`, [`PropertySource`](../interfaces/PropertySource.md)\]\>
+
+Returns name/source pairs in precedence order.
+
+#### Returns
+
+`IterableIterator`\<\[`string`, [`PropertySource`](../interfaces/PropertySource.md)\]\>
+
+#### Implementation of
+
+[`PropertySources`](../interfaces/PropertySources.md).[`entries`](../interfaces/PropertySources.md#entries)
+
+***
+
+### forEach()
+
+> **forEach**(`callback`, `context?`): `void`
+
+Visits each source in precedence order, using `context` as callback `this`.
+
+#### Parameters
+
+##### callback
+
+(`value`, `key`, `list`) => `void`
+
+##### context?
+
+`unknown`
+
+#### Returns
+
+`void`
+
+#### Implementation of
+
+[`PropertySources`](../interfaces/PropertySources.md).[`forEach`](../interfaces/PropertySources.md#foreach)
+
+***
+
 ### get()
 
 > **get**(`name`): [`PropertySource`](../interfaces/PropertySource.md) \| `undefined`
@@ -266,6 +309,22 @@ The matching source, or `undefined`.
 #### Implementation of
 
 [`PropertySources`](../interfaces/PropertySources.md).[`get`](../interfaces/PropertySources.md#get)
+
+***
+
+### keys()
+
+> **keys**(): `IterableIterator`\<`string`\>
+
+Returns source names in precedence order.
+
+#### Returns
+
+`IterableIterator`\<`string`\>
+
+#### Implementation of
+
+[`PropertySources`](../interfaces/PropertySources.md).[`keys`](../interfaces/PropertySources.md#keys)
 
 ***
 
@@ -335,3 +394,19 @@ A fresh snapshot of the ordered sources.
 #### Implementation of
 
 [`PropertySources`](../interfaces/PropertySources.md).[`toArray`](../interfaces/PropertySources.md#toarray)
+
+***
+
+### values()
+
+> **values**(): `IterableIterator`\<[`PropertySource`](../interfaces/PropertySource.md)\>
+
+Returns sources in precedence order.
+
+#### Returns
+
+`IterableIterator`\<[`PropertySource`](../interfaces/PropertySource.md)\>
+
+#### Implementation of
+
+[`PropertySources`](../interfaces/PropertySources.md).[`values`](../interfaces/PropertySources.md#values)

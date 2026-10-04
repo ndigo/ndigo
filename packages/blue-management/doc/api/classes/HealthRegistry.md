@@ -10,6 +10,12 @@ Collects [HealthIndicator](../interfaces/HealthIndicator.md) results into a sing
 
 The aggregate is `UP` when every indicator is `UP`; `DOWN` when any is
 `DOWN` (or a check throws); otherwise `UNKNOWN`.
+Indicators can be enumerated by name in registration order without
+exposing the backing collection. Replacing an indicator keeps its position.
+
+## Implements
+
+- `Enumerable`\<`string`, [`HealthIndicator`](../interfaces/HealthIndicator.md)\>
 
 ## Constructors
 
@@ -59,6 +65,64 @@ The aggregate health status with per-indicator details.
 
 ***
 
+### entries()
+
+> **entries**(): `IterableIterator`\<\[`string`, [`HealthIndicator`](../interfaces/HealthIndicator.md)\]\>
+
+Returns name/indicator pairs in registration order.
+
+#### Returns
+
+`IterableIterator`\<\[`string`, [`HealthIndicator`](../interfaces/HealthIndicator.md)\]\>
+
+#### Implementation of
+
+`Enumerable.entries`
+
+***
+
+### forEach()
+
+> **forEach**(`callback`, `context?`): `void`
+
+Visits registrations in order, using `context` as callback `this`.
+
+#### Parameters
+
+##### callback
+
+(`value`, `key`, `list`) => `void`
+
+##### context?
+
+`unknown`
+
+#### Returns
+
+`void`
+
+#### Implementation of
+
+`Enumerable.forEach`
+
+***
+
+### keys()
+
+> **keys**(): `IterableIterator`\<`string`\>
+
+Returns indicator names in registration order.
+
+#### Returns
+
+`IterableIterator`\<`string`\>
+
+#### Implementation of
+
+`Enumerable.keys`
+
+***
+
 ### register()
 
 > **register**(`indicator`): `this`
@@ -100,3 +164,19 @@ The indicator name.
 `boolean`
 
 `true` when an indicator was removed.
+
+***
+
+### values()
+
+> **values**(): `IterableIterator`\<[`HealthIndicator`](../interfaces/HealthIndicator.md)\>
+
+Returns indicators in registration order.
+
+#### Returns
+
+`IterableIterator`\<[`HealthIndicator`](../interfaces/HealthIndicator.md)\>
+
+#### Implementation of
+
+`Enumerable.values`

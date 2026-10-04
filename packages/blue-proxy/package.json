@@ -1,0 +1,38 @@
+{
+  "name": "@blue/proxy",
+  "version": "0.0.1",
+  "description": "Container-managed method interception for BlueJS — metadata annotations, interceptor chains, and Proxy-based weaving",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-proxy",
+    "proxy",
+    "interception",
+    "aop"
+  ],
+  "type": "module",
+  "files": [
+    "doc",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "sideEffects": false,
+  "dependencies": {
+    "@blue/core": "~0.0.1",
+    "@blue/factory": "~0.0.1",
+    "@tsmetadata/polyfill": "^1.1.3"
+  }
+}

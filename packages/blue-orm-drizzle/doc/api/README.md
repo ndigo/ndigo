@@ -22,11 +22,13 @@ Jeff Rose
 - [DrizzleTransactionManager](classes/DrizzleTransactionManager.md)
 - [DrizzleUnitOfWork](classes/DrizzleUnitOfWork.md)
 - [LibSQLQueueMessageStore](classes/LibSQLQueueMessageStore.md)
+- [LibSQLSessionStore](classes/LibSQLSessionStore.md)
 
 ## Interfaces
 
 - [DrizzleDataSourceOptions](interfaces/DrizzleDataSourceOptions.md)
 - [LibSQLQueueMessageStoreOptions](interfaces/LibSQLQueueMessageStoreOptions.md)
+- [LibSQLSessionStoreOptions](interfaces/LibSQLSessionStoreOptions.md)
 - [Migration](interfaces/Migration.md)
 - [MigrationContext](interfaces/MigrationContext.md)
 - [MigrationStatus](interfaces/MigrationStatus.md)

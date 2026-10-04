@@ -3,7 +3,7 @@
 Caching for BlueJS — one isomorphic, dependency-free package for both sides
 of the stack:
 
-- **`Cache` / `CacheMiss` / `MemoryCache`** — the store: TTL expiry (lazy,
+- **`Cache` / `CacheMiss` / `MemoryCache`** — awaitable store: TTL expiry (lazy,
   timer-free), bounded-size eviction (Map-order LRU default, `fifo`
   option), and a branded miss sentinel that makes a stored `undefined`
   distinguishable from "absent/expired".
@@ -19,17 +19,25 @@ of the stack:
   the raw method when absent, caches fulfilled results only, and records its
   spec under `cache:<method>` metadata (read via `getCachedSpec`).
 
+All cache data operations return promises: `get`, `set`, `has`, `delete`,
+`clear`, and `size()`. `CacheManager` remains a synchronous local handle
+registry. `memoize` always returns an awaitable function, even for a sync
+input. `@cached` methods must declare a Promise return type. Single-flight
+covers backend reads, computation, and completed writes; backend read
+errors reject, while decorator write errors retain the existing warning
+and best-effort result policy. No synchronous cache compatibility API.
+
 ## Quickstart
 
 ```ts
 import { MemoryCache, MemoryCacheManager, memoize, cached, CacheMiss } from '@blue/cache';
 
 const cache = new MemoryCache<string>({ defaultTtl: 60_000, maxSize: 1_000 });
-cache.set('k', 'v');
-cache.get('k') !== CacheMiss.INSTANCE; // hit
+await cache.set('k', 'v');
+(await cache.get('k')) !== CacheMiss.INSTANCE; // hit
 
 const manager = new MemoryCacheManager({ defaults: { defaultTtl: 30_000 } });
-manager.getCache('users').set('a', { id: 'a' });
+await manager.getCache('users').set('a', { id: 'a' });
 
 const load = memoize(async (id: string) => fetchUser(id), { ttl: 30_000 });
 
@@ -50,7 +58,7 @@ class UserService {
 - `memoize`, `MemoizeOptions`
 - `cached`, `CachedSpec`, `NormalizedCachedSpec`, `resolveCachedSpec`,
   `getCachedSpec`, `CACHED_METADATA_PREFIX`, `DEFAULT_CACHE_NAME`
-- `serializeCacheKey`, `isPromiseLike`
+- `serializeCacheKey`
 
 ## API
 

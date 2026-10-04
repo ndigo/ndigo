@@ -28,7 +28,7 @@ The default namespace.
 
 ### fallbackLanguage?
 
-> `optional` **fallbackLanguage?**: `string` \| `string`[]
+> `optional` **fallbackLanguage?**: `string` \| `LanguageCode` \| (`string` \| `LanguageCode`)[]
 
 Fallback language or ordered fallback chain.
 
@@ -36,7 +36,7 @@ Fallback language or ordered fallback chain.
 
 ### language?
 
-> `optional` **language?**: `string`
+> `optional` **language?**: `string` \| `LanguageCode`
 
 The active language when no per-call language is given.
 

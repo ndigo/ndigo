@@ -45,6 +45,12 @@ class AppConfig {
 
 Handlers match on route conditions (matrix params, query params, patterns), run interceptor chains (`applyPreHandle`/`applyPostHandle`), and resolve errors through pluggable resolvers (401/403 denials, binding errors, last-resort 500). Route lookup through a radix tree is 3–6x faster than popular router libraries on parameterized paths.
 
+Route conditions and `RouteMappingInfo` implement the core
+`ResultMatcher<Route, Result>` contract: `match(route)` returns a narrowed result
+or `null`. Use that result directly; there is no separate boolean matching pass.
+The former `getMatchingCondition` method has been removed. Custom conditions must
+implement `match` instead. Context-dependent `compareTo(other, route)` is unchanged.
+
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into

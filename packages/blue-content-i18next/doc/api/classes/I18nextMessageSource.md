@@ -89,7 +89,7 @@ Switches the active language.
 
 ##### language
 
-`string`
+`string` \| `LanguageCode`
 
 The language to activate.
 
@@ -122,7 +122,7 @@ Interpolation values, plural count, and context.
 
 ##### language?
 
-`string`
+`string` \| `LanguageCode`
 
 Language override; the active language when omitted.
 
@@ -149,7 +149,7 @@ already provided as static resources).
 
 ##### languages
 
-`string`[]
+(`string` \| `LanguageCode`)[]
 
 The languages to load.
 

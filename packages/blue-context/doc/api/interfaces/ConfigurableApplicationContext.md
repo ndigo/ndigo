@@ -420,7 +420,7 @@ The content key to resolve.
 
 ##### language
 
-`string`
+`string` \| `LanguageCode`
 
 The requested language code.
 
@@ -493,7 +493,7 @@ Optional formatting parameters (interpolation values, plural count, variant).
 
 ##### language?
 
-`string`
+`string` \| `LanguageCode`
 
 The language to use; the source's active language when omitted.
 

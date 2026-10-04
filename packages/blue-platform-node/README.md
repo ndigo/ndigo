@@ -88,6 +88,52 @@ default `10000`, overflow closes `1013`, `Infinity` disables),
 See the [websockets guide](../../docs/guides/06-websockets.md) and
 [Socket authentication](#socket-authentication).
 
+### Opt-in cross-node paths and rooms
+
+The default registry remains process-local. Supply an application-owned fanout
+transport explicitly; `HTTPServer` does not register it or connect it for you:
+
+```ts
+import { RedisConnection } from '@blue/redis';
+import { RedisSocketFanout } from '@blue/redis/pubsub';
+import { HTTPServer, NodeSocketSessionRegistry } from '@blue/platform-node';
+
+const url = process.env.REDIS_URL!;
+const publisher = new RedisConnection({ url });
+const fanout = new RedisSocketFanout({
+    connection: publisher,
+    subscriberUrl: url,
+    namespace: 'my-app.production',
+});
+const registry = new NodeSocketSessionRegistry({ fanout });
+const server = new HTTPServer(dispatcher, { socketRegistry: registry });
+await publisher.connect();
+await fanout.connect();
+await registry.connect(); // path + room subscriptions ready before serving
+await server.start();
+await registry.broadcast('/ws/chat', { event: 'notice' });
+await registry.broadcastTo('lobby', new Uint8Array([0, 1, 255]));
+```
+
+`dispatcher` is your existing `NodeDispatcher`. The `socketRegistry` option is
+for the default adapter only; a custom adapter must receive its registry itself.
+Without the explicit option, the managed server resolves the
+`socketSessionRegistry` context bean. Either way, services must publish through
+the **same** registry used by the adapter. Joins, counts and socket ownership
+remain local; only path/room payloads cross nodes. `broadcast` and `broadcastTo`
+return `Promise<void>` even in local mode; await them. Configured transport
+failure rejects before best-effort local delivery, never falls back silently.
+
+Stop producers and close the server, then await `registry.close()` (unsubscribe
+and stop heartbeat), `fanout.close()` (owned subscriber), and
+`publisher.close()` before synchronous context shutdown. Ensure later cleanup
+runs with `finally` even on failure, including failed startup. The registry does
+not own/close the transport. `StompBroker({ fanout })` can share it for topics;
+await `broker.connect()` before serving and `broker.close()` before transport
+shutdown. Each transport permits one consumer per scope. See the
+[websockets guide](../../docs/guides/06-websockets.md#cross-node-live-fan-out-opt-in)
+for complete composition, failure semantics, Redis limits and deployment policy.
+
 ## Socket authentication
 
 HTTP requests get authentication from the interceptor chain: `AuthRouteGuard`

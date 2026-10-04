@@ -42,8 +42,15 @@ The full API is generated from JSDoc via `pnpm doc:api` into
 how it fits with the rest of BlueJS.
 
 - **Sources** — `ContentSource`, `StaticContentSource` (default-language fallback), `ThemeSource`
+- **Language codes** — `LanguageCode` (validated, canonicalized BCP 47 tags) and the `LanguageCodes` constant catalog (`LanguageCodes.EN_US` instead of `'en-US'` magic strings)
 - **Themes** — `Theme`, `StaticThemeResolver`
 - **Mixins & guards** — `AsContentSourceAware` awareness mixins and duck-type guards
+
+`LanguageCode` implements `Equatable<LanguageCode>` and `StringComparable<LanguageCode>`.
+`equals()` compares complete canonical tags: `EN-us` equals `en-US`, but `en`
+does not equal `en-US`. `compareTo()` and `compareToIgnoreCase()` order tags
+lexicographically, not by language preference or specificity. Native `Map` and
+`Set` still use object identity; use canonical `.code` strings as value keys.
 
 ## Development
 

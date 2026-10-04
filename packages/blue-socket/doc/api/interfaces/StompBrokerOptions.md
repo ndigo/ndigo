@@ -47,6 +47,14 @@ the frame outright and the connection closes.
 
 ***
 
+### fanout?
+
+> `optional` **fanout?**: [`SocketFanout`](SocketFanout.md)
+
+Optional application-owned live transport; only `/topic/*` crosses nodes.
+
+***
+
 ### maxBacklogBytes?
 
 > `optional` **maxBacklogBytes?**: `number`

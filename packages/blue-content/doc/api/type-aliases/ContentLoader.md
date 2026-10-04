@@ -18,7 +18,7 @@ An async loader function that resolves content for a given key and language.
 
 ### language
 
-`string`
+`string` \| [`LanguageCode`](../classes/LanguageCode.md)
 
 ## Returns
 

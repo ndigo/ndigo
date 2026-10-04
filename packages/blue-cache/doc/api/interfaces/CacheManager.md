@@ -6,10 +6,9 @@
 
 # Interface: CacheManager
 
-Named-cache registry. The application-level seam: `@cached` resolves its
-named cache through this contract (`this.cacheManager`), and a
-distributed/Redis implementation can replace the in-memory manager without
-touching call sites (the audit's planned extension point).
+Named-cache registry. Acquires local backend handles synchronously without
+performing data I/O; the returned Cache operations are awaited. `@cached`
+resolves its named cache through this contract (`this.cacheManager`).
 
 ## Methods
 
@@ -61,7 +60,7 @@ description-backed, same store as the string form.
 
 ###### token
 
-[`ContextToken`](#)\<[`Cache`](Cache.md)\<`V`\>\>
+`ContextToken`\<[`Cache`](Cache.md)\<`V`\>\>
 
 The cache store token.
 
@@ -99,7 +98,7 @@ Returns whether the token-identified cache exists (no creation).
 
 ###### token
 
-[`ContextToken`](#)\<[`Cache`](Cache.md)\<`unknown`\>\>
+`ContextToken`\<[`Cache`](Cache.md)\<`unknown`\>\>
 
 ##### Returns
 

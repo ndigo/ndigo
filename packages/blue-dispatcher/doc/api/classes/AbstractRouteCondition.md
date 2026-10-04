@@ -126,9 +126,9 @@ The value to compare.
 
 ***
 
-### getMatchingCondition()
+### match()
 
-> `abstract` **getMatchingCondition**(`route`): `T` \| `null`
+> `abstract` **match**(`route`): `T` \| `null`
 
 Return the condition that matches a route, or `null` when no match exists.
 
@@ -148,7 +148,7 @@ A matching condition instance or `null`.
 
 #### Implementation of
 
-[`RouteCondition`](../interfaces/RouteCondition.md).[`getMatchingCondition`](../interfaces/RouteCondition.md#getmatchingcondition)
+[`RouteCondition`](../interfaces/RouteCondition.md).[`match`](../interfaces/RouteCondition.md#match)
 
 ***
 

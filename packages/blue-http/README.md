@@ -52,6 +52,8 @@ how it fits with the rest of BlueJS.
 - **Parsers** — `QueryString` (WHATWG `URLSearchParams` parity), `MatrixString` for path-segment parameters
 - **Body transforms** — request/response transform pipelines
 - **HTTP vocabulary** — status code and header constants
+- **URL matching** — `EqualsURLMatcher` matches exact URLs and ranks exact matches
+  first through the core `AbstractValueComparator` base; nonmatching patterns tie.
 
 ## Development
 

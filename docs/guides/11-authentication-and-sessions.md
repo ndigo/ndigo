@@ -92,10 +92,18 @@ without a hash never authenticate.
 
 `SessionStore` (`kind`, `create`, `get`, `rotate`, `delete`) with TTL
 enforced on read. Opaque 32-byte tokens — not JWTs: trivially revocable,
-no replay window. `InMemorySessionStore` is the reference; Redis/LibSQL
-implement the same contract later (the `kind` identifier matches
-`QueueMessageStore`). Session **rotation** on login (fixation protection):
-`rotate` deletes the old id before issuing the new one. Cookies:
+no replay window. `InMemorySessionStore` is the reference; the durable
+[`LibSQLSessionStore`](../../packages/blue-orm-drizzle/README.md) (`kind:
+'libsql'`) implements the same contract: explicit `initialize()` to
+provision the `blue_sessions` table, atomic rotation (exactly one contender;
+absolute expiry preserved), strict record decoding, and `close()` for
+container shutdown (owned clients close exactly once; injected clients are
+borrowed unless `ownsClient: true`). Injected clients must use
+`intMode: 'number'` — strict decoding rejects bigint/string modes. Redis can
+use the same contract later (the `kind` identifier matches
+`QueueMessageStore`). Session **rotation** on login (fixation protection): the
+in-memory store deletes the old id before issuing the new one; the LibSQL
+store replaces it atomically in one guarded update. Cookies:
 HttpOnly + SameSite=Lax (+ Secure in production), `Max-Age=0` clear on
 logout. Naming: `SESSION_COOKIE = 'blue-session'`.
 

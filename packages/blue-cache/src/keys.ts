@@ -84,14 +84,3 @@ function tagValue(value: unknown): string {
             return `o:${JSON.stringify(value)}`;
     }
 }
-
-/**
- * Narrower for thenable values (Promises and Promise-likes).
- *
- * @param value - The value to test.
- * @returns Whether the value exposes a `then` method.
- */
-export const isPromiseLike = (value: unknown): value is PromiseLike<unknown> =>
-    value !== null &&
-    (typeof value === 'object' || typeof value === 'function') &&
-    typeof (value as PromiseLike<unknown>).then === 'function';

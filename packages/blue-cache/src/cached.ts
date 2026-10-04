@@ -6,7 +6,7 @@
 import '@tsmetadata/polyfill';
 import { Cache, CacheMiss } from './cache';
 import type { CacheManager } from './cache-manager';
-import { isPromiseLike, serializeCacheKey } from './keys';
+import { serializeCacheKey } from './keys';
 import { ContextToken } from '@blue/factory';
 
 /**
@@ -92,8 +92,8 @@ export function resolveCachedSpec(spec: CachedSpec = {}): NormalizedCachedSpec {
  * Marks a method as cached (AD-24). The non-AOP interception mechanism
  * mirrors `@transactional`: the decorator returns a wrapper that resolves
  * the {@link CacheManager} off the instance (`this.cacheManager`), calling
- * the raw method when absent — graceful degradation, so unit tests without a
- * cache see the plain method.
+ * the raw method when absent — caching is disabled, but the method remains
+ * async. Decorated methods must declare a Promise return type.
  *
  * Semantics:
  * - **Hits** return the stored settled value; **misses** call the target and
@@ -101,12 +101,10 @@ export function resolveCachedSpec(spec: CachedSpec = {}): NormalizedCachedSpec {
  * - **Fulfilled results only**: method rejections/throws propagate to the
  *   caller and are never stored — the in-flight slot is freed and the next
  *   call retries.
- * - **Async methods** return a promise callers await; the cache is written on
- *   settle. Concurrent misses for the same key are coalesced behind one
- *   in-flight computation (single-flight, mirroring {@link memoize}): only the
- *   first caller invokes the target while it is pending. A cache write that
- *   throws is logged and swallowed so a caching failure never breaks or hides
- *   the primary result (S2).
+ * - **Single-flight** spans backend read, computation and awaited write.
+ *   Concurrent calls for the same store/key share one computation. Cache
+ *   read failures reject; write failures are logged and the computed result
+ *   is returned (the existing best-effort write policy).
  * - Self-invocation through `this.method()` **is** cached: the wrapper
  *   replaces the prototype method (stronger than Spring proxy semantics,
  *   where self-invocation bypasses the cache).
@@ -122,23 +120,22 @@ export function cached(spec: CachedSpec = {}) {
     let methodName: string | undefined;
 
     return function <This, Args extends unknown[], Return>(
-        value: (this: This, ...args: Args) => Return,
-        context: ClassMethodDecoratorContext<This, (this: This, ...args: Args) => Return>
-    ): (this: This, ...args: Args) => Return {
+        value: (this: This, ...args: Args) => Promise<Return>,
+        context: ClassMethodDecoratorContext<This, (this: This, ...args: Args) => Promise<Return>>
+    ): (this: This, ...args: Args) => Promise<Return> {
         if (context.kind !== 'method') {
             throw new TypeError(`@cached can only be applied to a method — received '${context.kind}'.`);
         }
         methodName = String(context.name);
         context.metadata[`${CACHED_METADATA_PREFIX}${methodName}`] = normalized;
 
-        let asyncMode: 'sync' | 'async' | undefined;
-        // In-flight promises for the async single-flight path (S1): keyed by
-        // cache key, cleared on settle/reject so it cannot grow unbounded.
-        const inflight = new Map<string, Promise<unknown>>();
+        // Isolate flights by the actual store, not only the string key: two
+        // instances with separate managers must never share results.
+        const flights = new WeakMap<Cache<unknown>, Map<string, Promise<Return>>>();
         // One-time guard for the graceful-degradation warning (S3).
         let degradationWarned = false;
 
-        return function (this: This, ...args: Args): Return {
+        return async function (this: This, ...args: Args): Promise<Return> {
             // Structural contract, mirroring `@transactional`: the decorated
             // instance optionally carries the manager (constructor-injected);
             // absent → graceful call-through.
@@ -162,51 +159,31 @@ export function cached(spec: CachedSpec = {}) {
                       ? normalized.key(...args)
                       : serializeCacheKey(...args);
 
-            const hit: unknown = store.get(key);
-            if (hit === CacheMiss.INSTANCE) {
-                // S1: coalesce concurrent async computations behind one in-flight
-                // promise — check before invoking the target so a second caller
-                // does not re-run it.
-                const pending = inflight.get(key);
-                if (pending !== undefined) {
-                    return pending as Return;
-                }
-                const result = value.apply(this, args);
-                if (isPromiseLike(result)) {
-                    if (asyncMode === undefined) {
-                        asyncMode = 'async';
-                    }
-                    const settled = Promise.resolve(result).then(
-                        (resolved) => {
-                            inflight.delete(key);
-                            // S2: a store write must not break or hide the result.
-                            try {
-                                store.set(key, resolved, normalized.ttl);
-                            } catch (error) {
-                                console.warn(`[@blue/cache] failed to cache "${methodName}" (${key}):`, error);
-                            }
-                            return resolved;
-                        },
-                        (reason) => {
-                            // Never cache rejections; free the slot and re-throw so
-                            // the caller's await still rejects.
-                            inflight.delete(key);
-                            throw reason;
-                        }
-                    );
-                    inflight.set(key, settled);
-                    return settled as Return;
-                }
-                if (asyncMode === undefined) {
-                    asyncMode = 'sync';
-                }
-                store.set(key, result, normalized.ttl);
-                return result;
+            let inflight = flights.get(store);
+            if (inflight === undefined) {
+                inflight = new Map();
+                flights.set(store, inflight);
             }
+            const pending = inflight.get(key);
+            if (pending !== undefined) return pending;
 
-            // Hits under async mode hold the settled value, not a promise —
-            // re-wrap so the declared async signature is honored.
-            return asyncMode === 'async' ? (Promise.resolve(hit) as Return) : (hit as Return);
+            const work = (async () => {
+                const hit = await store.get(key);
+                if (hit !== CacheMiss.INSTANCE) return hit as Return;
+                const result = await value.apply(this, args);
+                try {
+                    await store.set(key, result, normalized.ttl);
+                } catch (error) {
+                    console.warn(`[@blue/cache] failed to cache "${methodName}" (${key}):`, error);
+                }
+                return result;
+            })();
+            inflight.set(key, work);
+            try {
+                return await work;
+            } finally {
+                inflight.delete(key);
+            }
         };
     };
 }

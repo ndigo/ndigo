@@ -128,7 +128,7 @@ export class ClientDemoComponent extends HTMLElement {
             const data: unknown = await response.json();
             // Memoized derivation: identical payloads within the TTL reuse
             // the extracted items instead of re-scanning (AD-24).
-            this.#payload = derivePayload(data);
+            this.#payload = await derivePayload(data);
             this.#status = 'online';
         } catch (error) {
             if (!(error instanceof Error) || error.name !== 'AbortError') {

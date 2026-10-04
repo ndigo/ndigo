@@ -68,7 +68,7 @@ export class CachedReportController extends AsApplicationContextAware(Object) {
      * (no) arguments.
      */
     @cached({ cache: REPORTS, ttl: 60_000 })
-    reportValue(): { invocations: number; value: string } {
+    async reportValue(): Promise<{ invocations: number; value: string }> {
         this.#invocations += 1;
         return { invocations: this.#invocations, value: `report-${this.#invocations}` };
     }

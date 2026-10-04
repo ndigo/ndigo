@@ -60,7 +60,7 @@ description-backed, same store as the string form.
 
 ###### token
 
-`ContextToken`\<[`Cache`](Cache.md)\<`V`\>\>
+[`ContextToken`](#)\<[`Cache`](Cache.md)\<`V`\>\>
 
 The cache store token.
 
@@ -98,7 +98,7 @@ Returns whether the token-identified cache exists (no creation).
 
 ###### token
 
-`ContextToken`\<[`Cache`](Cache.md)\<`unknown`\>\>
+[`ContextToken`](#)\<[`Cache`](Cache.md)\<`unknown`\>\>
 
 ##### Returns
 

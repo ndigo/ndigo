@@ -15,7 +15,7 @@ It extends `AsPathMatcherFilter` to leverage path matching capabilities.
 
 ## Extends
 
-- `PathMatcherFilter` & `Null`\<`this`\>
+- `PathMatcherFilter`\<`this`\> & `Null`\<`this`\>
 
 ## Implements
 

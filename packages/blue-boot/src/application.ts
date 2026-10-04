@@ -21,6 +21,7 @@ import { isActive } from '@blue/core';
 import { parseCommandLineArgs, getEnvironmentSchema, validateEnvironment } from '@blue/context';
 import { applyCustomizers } from '@blue/context';
 import type { EnvironmentCustomizer } from '@blue/context';
+import type { EntryProcessor } from '@blue/factory';
 import { z } from 'zod';
 import { StandardConfigFileLoader } from './config-file-loader';
 import { isConfigurationProperties, resolveConfigurationProperties } from './configuration-properties';
@@ -61,6 +62,7 @@ export class Application extends Emitter {
     #defaults: JSONObject | null = null;
     #configFileLoader: StandardConfigFileLoader | null = null;
     #customizers: EnvironmentCustomizer[] = [];
+    #entryProcessors: EntryProcessor[] = [];
     #schema: z.ZodType | null = null;
     #sources: Set<Function>;
 
@@ -177,6 +179,21 @@ export class Application extends Emitter {
      */
     setCustomizers(customizers: readonly EnvironmentCustomizer[]): void {
         this.#customizers = [...customizers];
+    }
+
+    /**
+     * Registers entry processors, applied to every entry instance the
+     * context creates — including constructor entries eagerly created at
+     * refresh end (`_finishFactoryInitialization`). Registration replaces
+     * any previous processors (chained `processors(...)` calls do not
+     * accumulate). Register at most one `@blue/proxy` interception
+     * processor (see `ApplicationBuilder.processors`).
+     *
+     * @param processors - The entry processors to register on the context
+     *   before it refreshes.
+     */
+    setEntryProcessors(processors: readonly EntryProcessor[]): void {
+        this.#entryProcessors = [...processors];
     }
 
     /**
@@ -366,6 +383,13 @@ export class Application extends Emitter {
     protected _prepareContext(environment: ConfigurableEnvironment, args: string[]): ConfigurableApplicationContext {
         const context = new MetadataConfigApplicationContext(this.#name ?? 'blue-application');
         context.setEnvironment(environment);
+
+        // Entry processors register before sources are parsed and entries are
+        // eagerly created at refresh end — every entry the context creates is
+        // processed, including constructor entries.
+        for (const processor of this.#entryProcessors) {
+            context.addProcessor(processor);
+        }
 
         // Conditions are evaluated against the environment + entry registry.
         const conditionContext = {

@@ -98,7 +98,7 @@ A value that can safely be converted to a string or JSON payload.
 
 ### qualityFactorComparator
 
-> `static` **qualityFactorComparator**: [`QualityFactorComparator`](#)
+> `static` **qualityFactorComparator**: [`Comparator`](../interfaces/Comparator.md)\<`MediaType`\>
 
 ***
 

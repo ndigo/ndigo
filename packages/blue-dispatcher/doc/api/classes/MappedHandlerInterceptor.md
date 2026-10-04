@@ -11,7 +11,7 @@ an appropriate handler object, but before RouteHandlerAdapter invokes the handle
 
 ## Extends
 
-- `PathMatcherFilter` & `Null`\<`this`\>
+- `PathMatcherFilter`\<`this`\> & `Null`\<`this`\>
 
 ## Implements
 

@@ -24,6 +24,7 @@ Jeff Rose
 
 ## Interfaces
 
+- [AsyncRepository](interfaces/AsyncRepository.md)
 - [ColumnDefinition](interfaces/ColumnDefinition.md)
 - [ColumnOptions](interfaces/ColumnOptions.md)
 - [DataSource](interfaces/DataSource.md)
@@ -72,6 +73,7 @@ Jeff Rose
 - [schemaForColumn](functions/schemaForColumn.md)
 - [schemaForEntity](functions/schemaForEntity.md)
 - [sortComparator](functions/sortComparator.md)
+- [toAsyncRepository](functions/toAsyncRepository.md)
 - [transactional](functions/transactional.md)
 - [validateEntity](functions/validateEntity.md)
 - [validatePageRequest](functions/validatePageRequest.md)

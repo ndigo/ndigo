@@ -9,6 +9,10 @@
 Defines a contract for filtering paths based on include and exclude patterns.
 This interface is typically implemented by mixins or classes that need path filtering capabilities.
 
+## Extends
+
+- [`Matchable`](Matchable.md)\<`string`\>
+
 ## Properties
 
 ### pathMatcher
@@ -44,6 +48,10 @@ An optional `PathMatcher` to use for matching. If not provided, `this.pathMatche
 `boolean`
 
 `true` if the path matches the include patterns and does not match any exclude patterns, `false` otherwise.
+
+#### Overrides
+
+[`Matchable`](Matchable.md).[`matches`](Matchable.md#matches)
 
 ***
 

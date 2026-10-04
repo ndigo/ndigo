@@ -22,7 +22,7 @@ a room (scheduler → room, HTTP → room) — AD-21 D4.
 
 ### broadcast()
 
-> **broadcast**(`path`, `payload`): `void`
+> **broadcast**(`path`, `payload`): `Promise`\<`void`\>
 
 Send a payload to every open session at the given endpoint path.
 
@@ -30,6 +30,8 @@ Payload parity with `SocketSession.send`: strings are sent as text
 frames; any other value is JSON-encoded. Best-effort fan-out —
 sessions that close mid-broadcast are skipped and transport write
 errors are tolerated (D5).
+Await transport acceptance when cross-node fan-out is configured;
+backend failures reject. This does not acknowledge peer delivery.
 
 #### Parameters
 
@@ -47,16 +49,17 @@ The payload to send.
 
 #### Returns
 
-`void`
+`Promise`\<`void`\>
 
 ***
 
 ### broadcastTo()
 
-> **broadcastTo**(`room`, `payload`): `void`
+> **broadcastTo**(`room`, `payload`): `Promise`\<`void`\>
 
 Send a payload to every session in the named room
 (`session.join(room)` — D5).
+Await acceptance; configured backend failures reject.
 
 #### Parameters
 
@@ -74,7 +77,7 @@ The payload to send.
 
 #### Returns
 
-`void`
+`Promise`\<`void`\>
 
 ***
 

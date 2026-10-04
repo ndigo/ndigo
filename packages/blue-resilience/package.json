@@ -1,0 +1,36 @@
+{
+  "name": "@blue/resilience",
+  "version": "0.0.1",
+  "description": "Retry, circuit breaking, and backoff policies for BlueJS — interceptors built on @blue/proxy",
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-resilience",
+    "retry",
+    "circuit-breaker",
+    "backoff"
+  ],
+  "type": "module",
+  "files": [
+    "doc",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "sideEffects": false,
+  "dependencies": {
+    "@blue/proxy": "~0.0.1"
+  }
+}

@@ -20,6 +20,14 @@ remains the final backstop.
 
 ***
 
+### fanout?
+
+> `optional` **fanout?**: [`SocketFanout`](#)
+
+Application-owned cross-node transport. Await [NodeSocketSessionRegistry.connect](../classes/NodeSocketSessionRegistry.md#connect) before publishing.
+
+***
+
 ### heartbeatIntervalMs?
 
 > `optional` **heartbeatIntervalMs?**: `number` \| `null`

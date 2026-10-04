@@ -10,7 +10,7 @@ Emits and manages event listeners.
 
 ## Extends
 
-- `ConfigurableFactory`.[`ContentSource`](#).[`MessageSource`](#).`Destroyable`.[`EventEmitter`](EventEmitter.md).[`EnvironmentSource`](EnvironmentSource.md).[`ResourceLoader`](ResourceLoader.md)
+- `ChildNode`\<`ApplicationContext`\>.`ParentNode`\<`ApplicationContext`\>.`ConfigurableFactory`.[`ContentSource`](#).[`MessageSource`](#).`Destroyable`.[`EventEmitter`](EventEmitter.md).[`EnvironmentSource`](EnvironmentSource.md).[`ResourceLoader`](ResourceLoader.md)
 
 ## Extended by
 
@@ -23,6 +23,10 @@ Emits and manages event listeners.
 > `readonly` **children**: readonly `ApplicationContext`[]
 
 A read-only array of child contexts.
+
+#### Overrides
+
+`ParentNode.children`
 
 ***
 
@@ -96,7 +100,7 @@ The parent context in the hierarchy.
 
 #### Overrides
 
-`ConfigurableFactory.parent`
+`ChildNode.parent`
 
 ***
 

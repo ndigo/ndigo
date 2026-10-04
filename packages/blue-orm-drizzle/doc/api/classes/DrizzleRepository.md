@@ -30,6 +30,10 @@ The entity type.
 
 The entity's primary identifier type.
 
+## Implements
+
+- `AsyncRepository`\<`T`, `ID`\>
+
 ## Constructors
 
 ### Constructor
@@ -66,6 +70,10 @@ Returns the number of entities of the managed type.
 
 `Promise`\<`number`\>
 
+#### Implementation of
+
+`AsyncRepository.count`
+
 ***
 
 ### deleteById()
@@ -88,6 +96,10 @@ The entity's primary identifier.
 
 `true` when the entity was found and deleted, `false` otherwise.
 
+#### Implementation of
+
+`AsyncRepository.deleteById`
+
 ***
 
 ### existsById()
@@ -105,6 +117,10 @@ Checks whether an entity with the given primary identifier exists.
 #### Returns
 
 `Promise`\<`boolean`\>
+
+#### Implementation of
+
+`AsyncRepository.existsById`
 
 ***
 
@@ -125,6 +141,10 @@ Optional relation loading (eager fetch).
 #### Returns
 
 `Promise`\<`T`[]\>
+
+#### Implementation of
+
+`AsyncRepository.findAll`
 
 ***
 
@@ -154,6 +174,10 @@ Optional relation loading (eager fetch).
 
 The entity, or `undefined` when not found.
 
+#### Implementation of
+
+`AsyncRepository.findById`
+
 ***
 
 ### findPage()
@@ -175,6 +199,10 @@ The page index (1-based), size, and optional sort orders.
 `Promise`\<`Page`\<`T`\>\>
 
 The requested page with totals.
+
+#### Implementation of
+
+`AsyncRepository.findPage`
 
 ***
 
@@ -206,6 +234,10 @@ The declared relation field name.
 The loaded relation value (entity, array, or undefined/[] when
   nothing relates).
 
+#### Implementation of
+
+`AsyncRepository.loadRelation`
+
 ***
 
 ### save()
@@ -227,3 +259,7 @@ The entity to save.
 `Promise`\<`T`\>
 
 The saved entity.
+
+#### Implementation of
+
+`AsyncRepository.save`

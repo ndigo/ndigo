@@ -9,7 +9,9 @@ import { ManagementAutoConfiguration } from '@blue/management';
 import { AESGCMCipher, NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@blue/platform-node';
 import { configureTelemetry, HTTPServerInstrumentation, WebSocketServerInstrumentation } from '@blue/telemetry-node';
 import { getLogger } from '@blue/telemetry';
+import { interception } from '@blue/proxy';
 import { NodeAppConfiguration } from './node-app-configuration';
+import { AuditInterceptor } from './audit-interceptor';
 import { SecureDocsConfiguration } from './secure-docs-configuration';
 import { ServerConfig, SecretsConfig, SERVER_CONFIG } from './server-config';
 import { initAuth } from './auth-store';
@@ -76,6 +78,13 @@ async function main() {
                 : undefined,
         });
     }
+
+    // Method-interception demo gate (AD-42 D-8): the audit interceptor is a
+    // first-class builder registration — the context receives it before
+    // refresh, so even constructor entries eagerly created at refresh end
+    // (like `orderService`) are woven at creation.
+    const audit = new AuditInterceptor();
+    builder.processors(interception([audit]));
 
     const context = await builder.run();
 

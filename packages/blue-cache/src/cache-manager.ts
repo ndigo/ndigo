@@ -7,10 +7,9 @@ import { Cache, CacheOptions, MemoryCache } from './cache';
 import { ContextToken } from '@blue/factory';
 
 /**
- * Named-cache registry. The application-level seam: `@cached` resolves its
- * named cache through this contract (`this.cacheManager`), and a
- * distributed/Redis implementation can replace the in-memory manager without
- * touching call sites (the audit's planned extension point).
+ * Named-cache registry. Acquires local backend handles synchronously without
+ * performing data I/O; the returned Cache operations are awaited. `@cached`
+ * resolves its named cache through this contract (`this.cacheManager`).
  */
 export interface CacheManager {
     /**

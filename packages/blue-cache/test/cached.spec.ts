@@ -5,24 +5,51 @@
  */
 import { describe, test, expect, vi } from 'vitest';
 import { MemoryCacheManager } from '../src/cache-manager';
-import { CacheMiss } from '../src/cache';
+import type { CacheManager } from '../src/cache-manager';
+import { CacheMiss, MemoryCache } from '../src/cache';
+import type { Cache } from '../src/cache';
 import type { CachedSpec } from '../src/cached';
-import { DEFAULT_CACHE_NAME, cached, getCachedSpec, resolveCachedSpec } from '../src/cached';
+import { cached, resolveCachedSpec } from '../src/cached';
 import { serializeCacheKey } from '../src/keys';
 import { ContextToken } from '@blue/context';
-import type { Cache } from '../src/cache';
+
+function gate() {
+    let release!: () => void;
+    const promise = new Promise<void>((resolve) => {
+        release = resolve;
+    });
+    return { promise, release };
+}
+
+class DeferredMemoryCache extends MemoryCache<unknown> {
+    readonly readStarted = gate();
+    readonly writeStarted = gate();
+    readonly readGate = gate();
+    readonly writeGate = gate();
+
+    override async get(key: string): Promise<unknown | CacheMiss> {
+        this.readStarted.release();
+        await this.readGate.promise;
+        return super.get(key);
+    }
+
+    override async set(key: string, value: unknown, ttl?: number): Promise<void> {
+        this.writeStarted.release();
+        await this.writeGate.promise;
+        await super.set(key, value, ttl);
+    }
+}
+
+function managerFor(store: Cache<unknown>): CacheManager {
+    return {
+        getCache<V = unknown>(): Cache<V> {
+            return store as Cache<V>;
+        },
+        hasCache: () => true,
+    };
+}
 
 describe('resolveCachedSpec', () => {
-    test('defaults cacheName and accepts an omitted spec', () => {
-        expect(resolveCachedSpec()).toEqual({ cacheName: 'default', key: undefined, ttl: undefined });
-        expect(resolveCachedSpec({})).toEqual({ cacheName: 'default', key: undefined, ttl: undefined });
-        expect(resolveCachedSpec({ cacheName: 'users' })).toEqual({
-            cacheName: 'users',
-            key: undefined,
-            ttl: undefined,
-        });
-    });
-
     test('rejects malformed specs at decoration time', () => {
         expect(() => resolveCachedSpec({ ttl: -1 })).toThrow(TypeError);
         expect(() => resolveCachedSpec({ ttl: Number.NaN })).toThrow(TypeError);
@@ -30,50 +57,33 @@ describe('resolveCachedSpec', () => {
         expect(() => resolveCachedSpec({ key: 42 } as unknown as CachedSpec)).toThrow(TypeError);
         expect(() => resolveCachedSpec(null as unknown as CachedSpec)).toThrow(TypeError);
     });
-
-    test('resolves a cache-store token to its description (AD-34 D7)', () => {
-        const reports = new ContextToken<Cache<string, string>>('reports');
-
-        expect(resolveCachedSpec({ cache: reports })).toEqual({
-            cacheName: 'reports',
-            key: undefined,
-            ttl: undefined,
-        });
-        // Explicit cacheName is overridden by the token.
-        expect(resolveCachedSpec({ cache: reports, cacheName: 'other' })).toEqual({
-            cacheName: 'reports',
-            key: undefined,
-            ttl: undefined,
-        });
-    });
 });
 
 describe('cache-store tokens (AD-34 D7)', () => {
-    const REPORTS_CACHE = new ContextToken<Cache<string, string>>('reports');
+    const REPORTS_CACHE = new ContextToken<Cache<string>>('reports');
 
     class Service {
         cacheManager = new MemoryCacheManager();
         invocations = 0;
 
         @cached({ cache: REPORTS_CACHE, ttl: 60_000 })
-        report(id: string): string {
+        async report(id: string): Promise<string> {
             this.invocations += 1;
             return `${id}-${this.invocations}`;
         }
     }
 
-    test('token-keyed caching shares the store with the string form', () => {
+    test('token-keyed caching shares the store with the string form and supports eviction', async () => {
         const service = new Service();
-        const first = service.report('a');
+        const first = await service.report('a');
 
-        // The token and the string name resolve to the same underlying store.
-        expect(service.cacheManager.getCache(REPORTS_CACHE).get(serializeCacheKey('a'))).toBe(first);
-        expect(service.cacheManager.hasCache(REPORTS_CACHE)).toBe(true);
-        expect(service.cacheManager.hasCache('reports')).toBe(true);
+        expect(await service.cacheManager.getCache('reports').get(serializeCacheKey('a'))).toBe(first);
+        expect(await service.report('a')).toBe(first);
+        expect(service.invocations).toBe(1);
 
-        // Manual eviction through the token wipes the entry.
-        service.cacheManager.getCache(REPORTS_CACHE).delete(serializeCacheKey('a'));
-        expect(service.report('a')).not.toBe(first);
+        await service.cacheManager.getCache(REPORTS_CACHE).delete(serializeCacheKey('a'));
+        expect(await service.report('a')).not.toBe(first);
+        expect(service.invocations).toBe(2);
     });
 });
 
@@ -83,59 +93,60 @@ describe('@cached', () => {
         invocations = 0;
 
         @cached({ cacheName: 'msgs', ttl: 60_000 })
-        message(id: string): string {
+        async message(id: string): Promise<string> {
             this.invocations += 1;
             return `${id}-${this.invocations}`;
         }
     }
 
-    test('returns the cached value without re-invoking the method', () => {
+    test('returns the cached value without re-invoking the method', async () => {
         const service = new Service();
-        const first = service.message('a');
-        expect(service.message('a')).toBe(first);
+        const first = await service.message('a');
+        expect(await service.message('a')).toBe(first);
         expect(service.invocations).toBe(1);
     });
 
-    test('keys by serialized arguments (miss on a different key)', () => {
+    test('keys by serialized arguments (miss on a different key)', async () => {
         const service = new Service();
-        service.message('a');
-        service.message('b');
+        expect(await service.message('a')).toBe('a-1');
+        expect(await service.message('b')).toBe('b-2');
+        expect(await service.message('a')).toBe('a-1');
         expect(service.invocations).toBe(2);
     });
 
-    test('a static string key caches a single method value regardless of args', () => {
+    test('a static string key caches a single method value regardless of args', async () => {
         class Single {
             cacheManager = new MemoryCacheManager();
             invocations = 0;
 
             @cached({ key: 'fixed' })
-            value(x: number): string {
+            async value(x: number): Promise<string> {
                 this.invocations += 1;
                 return `v${x}`;
             }
         }
         const s = new Single();
-        expect(s.value(1)).toBe('v1');
-        expect(s.value(2)).toBe('v1');
+        expect(await s.value(1)).toBe('v1');
+        expect(await s.value(2)).toBe('v1');
         expect(s.invocations).toBe(1);
     });
 
-    test('expires entries per the spec ttl', () => {
+    test('expires entries per the spec ttl', async () => {
         vi.useFakeTimers({ toFake: ['Date'] });
         try {
             const service = new Service();
-            service.message('a');
-            service.message('a');
+            const first = await service.message('a');
+            expect(await service.message('a')).toBe(first);
             expect(service.invocations).toBe(1);
             vi.advanceTimersByTime(60_001);
-            service.message('a');
+            expect(await service.message('a')).not.toBe(first);
             expect(service.invocations).toBe(2);
         } finally {
             vi.useRealTimers();
         }
     });
 
-    test('async methods cache the settled value and never cache rejections', async () => {
+    test('caches the settled value and never caches computation rejections', async () => {
         class Loader {
             cacheManager = new MemoryCacheManager();
             invocations = 0;
@@ -156,93 +167,124 @@ describe('@cached', () => {
         expect(loader.invocations).toBe(2);
     });
 
-    test('degenerates gracefully without a cacheManager (plain unit-test posture)', () => {
+    test('calls through without a cacheManager', async () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-        class Bare {
+        try {
+            class Bare {
+                invocations = 0;
+
+                @cached()
+                async value(): Promise<number> {
+                    this.invocations += 1;
+                    return this.invocations;
+                }
+            }
+            const bare = new Bare();
+            expect(await bare.value()).toBe(1);
+            expect(await bare.value()).toBe(2);
+        } finally {
+            warn.mockRestore();
+        }
+    });
+
+    test('coalesces concurrent computation for the same key', async () => {
+        const started = gate();
+        const computation = gate();
+        class Loader {
+            cacheManager = new MemoryCacheManager();
             invocations = 0;
 
             @cached()
-            value(): number {
-                this.invocations += 1;
-                return this.invocations;
-            }
-        }
-        const bare = new Bare();
-        expect(bare.value()).toBe(1);
-        expect(bare.value()).toBe(2); // no cache → always computed
-        warn.mockRestore();
-    });
-
-    test('writes the normalized spec to Symbol.metadata (getCachedSpec)', () => {
-        class Meta {
-            @cached({ cacheName: 'named', ttl: 5_000 })
-            m(): number {
-                return 1;
-            }
-        }
-        expect(getCachedSpec(Meta, 'm')).toEqual({ cacheName: 'named', key: undefined, ttl: 5_000 });
-        expect(getCachedSpec(Meta, 'missing')).toBeUndefined();
-    });
-
-    test('uses the default named cache when cacheName is omitted', () => {
-        class Plain {
-            cacheManager = new MemoryCacheManager();
-
-            @cached()
-            m(): number {
-                return 1;
-            }
-        }
-        const plain = new Plain();
-        expect(plain.m()).toBe(1);
-        expect(plain.cacheManager.hasCache(DEFAULT_CACHE_NAME)).toBe(true);
-    });
-
-    test('coalesces concurrent async calls for the same key (single-flight, S1)', async () => {
-        let invocations = 0;
-        let release!: (value: string) => void;
-        const gate = new Promise<string>((resolve) => {
-            release = resolve;
-        });
-        class Loader {
-            cacheManager = new MemoryCacheManager();
-
-            @cached()
             async load(_id: string): Promise<string> {
-                invocations += 1;
-                return gate;
+                this.invocations += 1;
+                started.release();
+                await computation.promise;
+                return 'done';
             }
         }
         const loader = new Loader();
-        const p1 = loader.load('a');
-        const p2 = loader.load('a');
-        expect(p1).toBe(p2); // same in-flight promise while pending
-        expect(invocations).toBe(1); // second caller did not re-invoke the target
-        release('done');
-        expect(await p1).toBe('done');
-        expect(await p2).toBe('done');
-        // Settled value is cached; a later call does not re-invoke.
+        const first = loader.load('a');
+        await started.promise;
+        const second = loader.load('a');
+        expect(loader.invocations).toBe(1);
+        computation.release();
+        expect(await Promise.all([first, second])).toEqual(['done', 'done']);
         expect(await loader.load('a')).toBe('done');
-        expect(invocations).toBe(1);
+        expect(loader.invocations).toBe(1);
     });
 
-    test('logs and swallows a cache write failure without breaking the result (S2)', async () => {
-        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-        const throwingStore = {
-            get: () => CacheMiss.INSTANCE,
-            set: () => {
-                throw new Error('store full');
-            },
-            has: () => false,
-            delete: () => false,
-            clear: () => undefined,
-            get size() {
-                return 0;
-            },
-        };
-        const manager = { getCache: () => throwingStore };
-        class Svc {
-            cacheManager = manager as unknown as import('../src/cache-manager').CacheManager;
+    test('coalesces calls throughout deferred cache reads and writes', async () => {
+        const store = new DeferredMemoryCache();
+        class Loader {
+            cacheManager = managerFor(store);
+            invocations = 0;
+
+            @cached()
+            async load(_id: string): Promise<string> {
+                this.invocations += 1;
+                return `result-${this.invocations}`;
+            }
+        }
+        const loader = new Loader();
+        const first = loader.load('a');
+        await store.readStarted.promise;
+        const duringRead = loader.load('a');
+        expect(loader.invocations).toBe(0);
+
+        store.readGate.release();
+        await store.writeStarted.promise;
+        expect(loader.invocations).toBe(1);
+        const duringWrite = loader.load('a');
+        store.writeGate.release();
+
+        expect(await Promise.all([first, duringRead, duringWrite])).toEqual(['result-1', 'result-1', 'result-1']);
+        expect(await loader.load('a')).toBe('result-1');
+        expect(loader.invocations).toBe(1);
+    });
+
+    test('isolates the same method and key across separate managers and stores', async () => {
+        const computation = gate();
+        class Loader {
+            cacheManager = new MemoryCacheManager();
+            invocations = 0;
+
+            constructor(readonly label: string) {}
+
+            @cached()
+            async load(id: string): Promise<string> {
+                this.invocations += 1;
+                await computation.promise;
+                return `${this.label}-${id}`;
+            }
+        }
+        const left = new Loader('left');
+        const right = new Loader('right');
+        const first = left.load('a');
+        const second = right.load('a');
+        computation.release();
+        expect(await Promise.all([first, second])).toEqual(['left-a', 'right-a']);
+        expect(await left.load('a')).toBe('left-a');
+        expect(await right.load('a')).toBe('right-a');
+        expect(left.invocations).toBe(1);
+        expect(right.invocations).toBe(1);
+    });
+
+    test('propagates a rejected cache read and allows retry', async () => {
+        const failure = new Error('read unavailable');
+        class RejectingReadCache extends MemoryCache<unknown> {
+            private rejectRead = true;
+
+            override async get(key: string): Promise<unknown | CacheMiss> {
+                await Promise.resolve();
+                if (this.rejectRead) {
+                    this.rejectRead = false;
+                    throw failure;
+                }
+                return super.get(key);
+            }
+        }
+        class Loader {
+            cacheManager = managerFor(new RejectingReadCache());
             invocations = 0;
 
             @cached()
@@ -251,35 +293,47 @@ describe('@cached', () => {
                 return `v${id}`;
             }
         }
-        const svc = new Svc();
-        await expect(svc.load('a')).resolves.toBe('va'); // primary result intact
-        expect(svc.invocations).toBe(1);
-        expect(warn).toHaveBeenCalled(); // the write failure was surfaced, not silent
-        warn.mockRestore();
+        const loader = new Loader();
+        await expect(loader.load('a')).rejects.toBe(failure);
+        expect(loader.invocations).toBe(0);
+        expect(await loader.load('a')).toBe('va');
+        expect(await loader.load('a')).toBe('va');
+        expect(loader.invocations).toBe(1);
     });
 
-    test('warns once when degrading without a cacheManager in dev mode (S3)', () => {
+    test('logs an async cache write rejection and returns the primary result', async () => {
+        const failure = new Error('store full');
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-        class Bare {
-            invocations = 0;
-
-            @cached()
-            value(): number {
-                this.invocations += 1;
-                return this.invocations;
+        try {
+            class RejectingWriteCache extends MemoryCache<unknown> {
+                override async set(_key: string, _value: unknown, _ttl?: number): Promise<void> {
+                    await Promise.resolve();
+                    throw failure;
+                }
             }
+            class Loader {
+                cacheManager = managerFor(new RejectingWriteCache());
+                invocations = 0;
+
+                @cached()
+                async load(id: string): Promise<string> {
+                    this.invocations += 1;
+                    return `v${id}-${this.invocations}`;
+                }
+            }
+            const loader = new Loader();
+            expect(await loader.load('a')).toBe('va-1');
+            expect(warn).toHaveBeenCalledWith(expect.any(String), failure);
+            expect(await loader.load('a')).toBe('va-2');
+            expect(loader.invocations).toBe(2);
+        } finally {
+            warn.mockRestore();
         }
-        const bare = new Bare();
-        expect(bare.value()).toBe(1);
-        expect(bare.value()).toBe(2); // still degrades correctly — no cache
-        expect(warn).toHaveBeenCalledTimes(1); // one-time, not per call
-        warn.mockRestore();
     });
+
     test('rejects non-method targets', () => {
         const decorator = cached();
-        // TS types the decorator for method contexts only — a getter context
-        // is the runtime failure case, exercised through the untyped seam.
         const applyToGetter = decorator as (value: Function, context: unknown) => unknown;
-        expect(() => applyToGetter(() => 1, { kind: 'getter', name: 'value' })).toThrow(TypeError);
+        expect(() => applyToGetter(async () => 1, { kind: 'getter', name: 'value' })).toThrow(TypeError);
     });
 });

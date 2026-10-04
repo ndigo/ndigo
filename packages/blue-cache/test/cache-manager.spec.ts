@@ -16,15 +16,15 @@ describe('MemoryCacheManager', () => {
         expect(manager.getCache('users')).toBe(users);
     });
 
-    test('applies manager defaults to auto-created caches', () => {
+    test('applies manager defaults to auto-created caches', async () => {
         vi.useFakeTimers({ toFake: ['Date'] });
         try {
             const manager = new MemoryCacheManager({ defaults: { defaultTtl: 5_000 } });
             const cache = manager.getCache<string>('ttl');
-            cache.set('k', 'v');
-            expect(cache.get('k')).toBe('v');
+            await cache.set('k', 'v');
+            expect(await cache.get('k')).toBe('v');
             vi.advanceTimersByTime(5_001);
-            expect(cache.get('k')).toBe(CacheMiss.INSTANCE);
+            expect(await cache.get('k')).toBe(CacheMiss.INSTANCE);
         } finally {
             vi.useRealTimers();
         }

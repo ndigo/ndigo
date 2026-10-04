@@ -77,7 +77,7 @@ export class ChatController implements ApplicationContextAware {
         // the hot path).
         const registry = this.#registry();
         for await (const message of session.messages) {
-            registry?.broadcastTo('room', { event: 'chat', data: String(message) });
+            await registry?.broadcastTo('room', { event: 'chat', data: String(message) });
         }
     }
 
@@ -85,7 +85,7 @@ export class ChatController implements ApplicationContextAware {
      * Periodic room tick — the scheduler → registry fan-out path (AD-21 D4).
      */
     @scheduled('*/2 * * * * *')
-    chatTick() {
-        this.#registry()?.broadcastTo('room', { event: 'chat-tick', at: Date.now() });
+    async chatTick() {
+        await this.#registry()?.broadcastTo('room', { event: 'chat-tick', at: Date.now() });
     }
 }

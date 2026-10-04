@@ -157,7 +157,7 @@ describe('socket auto-configuration wiring (AD-21 D4)', () => {
         const received = new Promise<unknown>((resolve) => {
             ws.once('message', (data: unknown) => resolve(JSON.parse(String(data))));
         });
-        bean.broadcast('/echo', { event: 'server', data: 'via-bean' });
+        await bean.broadcast('/echo', { event: 'server', data: 'via-bean' });
         expect(await received).toEqual({ event: 'server', data: 'via-bean' });
         expect(bean.count('/echo')).toBe(1);
         ws.close(1000, 'done');

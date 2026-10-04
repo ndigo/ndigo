@@ -75,54 +75,54 @@ describe('NodeSocketSessionRegistry', () => {
         expect(registry.sessions('/room')).toEqual([b]);
     });
 
-    test('broadcast fans out to the path set: strings as text, others JSON, closed skipped', () => {
+    test('broadcast fans out to the path set: strings as text, others JSON, closed skipped', async () => {
         sessionAt('/echo');
         sessionAt('/echo');
         sessionAt('/elsewhere');
 
-        registry.broadcast('/echo', 'hello');
+        await registry.broadcast('/echo', 'hello');
         expect(transports[0].send).toHaveBeenCalledWith('hello');
         expect(transports[1].send).toHaveBeenCalledWith('hello');
         expect(transports[2].send).not.toHaveBeenCalled();
 
-        registry.broadcast('/echo', { event: 'tick' });
+        await registry.broadcast('/echo', { event: 'tick' });
         expect(transports[0].send).toHaveBeenLastCalledWith(JSON.stringify({ event: 'tick' }));
 
         // Peer closes a: subsequent broadcasts skip the closed session.
         transports[0].emit('close', 1000, 'done');
-        registry.broadcast('/echo', 'again');
+        await registry.broadcast('/echo', 'again');
         expect(transports[0].send).toHaveBeenLastCalledWith(JSON.stringify({ event: 'tick' }));
         expect(transports[1].send).toHaveBeenLastCalledWith('again');
     });
 
-    test('a throwing session transport does not break the broadcast', () => {
+    test('a throwing session transport does not break the broadcast', async () => {
         sessionAt('/echo');
         sessionAt('/echo');
         transports[1].send.mockImplementation(() => {
             throw new Error('socket not open');
         });
 
-        expect(() => registry.broadcast('/echo', 'x')).not.toThrow();
+        await registry.broadcast('/echo', 'x');
         expect(transports[0].send).toHaveBeenCalledWith('x');
     });
 
-    test('rooms: join/leave/broadcastTo, empty rooms pruned, invalid names rejected', () => {
+    test('rooms: join/leave/broadcastTo, empty rooms pruned, invalid names rejected', async () => {
         const a = sessionAt('/echo');
         const b = sessionAt('/echo');
 
         registry.join(a, 'chat');
         registry.join(b, 'chat');
-        registry.broadcastTo('chat', 'hi');
+        await registry.broadcastTo('chat', 'hi');
         expect(transports[0].send).toHaveBeenCalledWith('hi');
         expect(transports[1].send).toHaveBeenCalledWith('hi');
 
         registry.leave(a, 'chat');
-        registry.broadcastTo('chat', 'single');
+        await registry.broadcastTo('chat', 'single');
         expect(transports[0].send).toHaveBeenLastCalledWith('hi');
         expect(transports[1].send).toHaveBeenLastCalledWith('single');
 
         registry.leave(b, 'chat');
-        registry.broadcastTo('chat', 'nobody'); // pruned room → no-op
+        await registry.broadcastTo('chat', 'nobody'); // pruned room → no-op
         expect(transports[0].send).toHaveBeenLastCalledWith('hi');
         expect(transports[1].send).toHaveBeenLastCalledWith('single');
 
@@ -132,19 +132,19 @@ describe('NodeSocketSessionRegistry', () => {
         expect(() => registry.join(a, '')).toThrow(RangeError);
     });
 
-    test('backpressure default closes the overloaded session at the 1 MiB watermark', () => {
+    test('backpressure default closes the overloaded session at the 1 MiB watermark', async () => {
         registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: null });
         sessionAt('/echo');
         sessionAt('/echo');
         transports[0].bufferedAmount = 2_000_000; // > default 1 MiB
 
-        registry.broadcast('/echo', 'x');
+        await registry.broadcast('/echo', 'x');
         expect(transports[0].close).toHaveBeenCalledWith(1013, 'consumer too slow');
         expect(transports[0].send).not.toHaveBeenCalled();
         expect(transports[1].send).toHaveBeenCalledWith('x');
     });
 
-    test('backpressure drop policy skips the overloaded session silently', () => {
+    test('backpressure drop policy skips the overloaded session silently', async () => {
         registry = new NodeSocketSessionRegistry({
             heartbeatIntervalMs: null,
             backpressure: { maxBufferedBytes: 1024, onOverflow: 'drop' },
@@ -153,13 +153,13 @@ describe('NodeSocketSessionRegistry', () => {
         sessionAt('/echo');
         transports[0].bufferedAmount = 4096;
 
-        registry.broadcast('/echo', 'y');
+        await registry.broadcast('/echo', 'y');
         expect(transports[0].send).not.toHaveBeenCalled();
         expect(transports[0].close).not.toHaveBeenCalled();
         expect(transports[1].send).toHaveBeenCalledWith('y');
     });
 
-    test('backpressure null disables the watermark guard', () => {
+    test('backpressure null disables the watermark guard', async () => {
         registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: null, backpressure: null });
         // Disable the session-level guard too so this test isolates the
         // registry's policy seam (the session guard now enforces the same
@@ -173,22 +173,22 @@ describe('NodeSocketSessionRegistry', () => {
         transports.push(transport);
         transport.bufferedAmount = 100_000_000;
 
-        registry.broadcast('/echo', 'z');
+        await registry.broadcast('/echo', 'z');
         expect(transports[0].send).toHaveBeenCalledWith('z');
     });
 
-    test('onOverflow observer reports close decisions with path and bytes', () => {
+    test('onOverflow observer reports close decisions with path and bytes', async () => {
         const onOverflow = vi.fn();
         registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: null, onOverflow });
         sessionAt('/echo');
         transports[0].bufferedAmount = 2_000_000;
 
-        registry.broadcast('/echo', 'x');
+        await registry.broadcast('/echo', 'x');
         expect(onOverflow).toHaveBeenCalledWith({ path: '/echo', action: 'close', bufferedBytes: 2_000_000 });
         expect(transports[0].close).toHaveBeenCalledWith(1013, 'consumer too slow');
     });
 
-    test('onOverflow observer reports drop decisions', () => {
+    test('onOverflow observer reports drop decisions', async () => {
         const onOverflow = vi.fn();
         registry = new NodeSocketSessionRegistry({
             heartbeatIntervalMs: null,
@@ -198,7 +198,7 @@ describe('NodeSocketSessionRegistry', () => {
         sessionAt('/echo');
         transports[0].bufferedAmount = 4096;
 
-        registry.broadcast('/echo', 'y');
+        await registry.broadcast('/echo', 'y');
         expect(onOverflow).toHaveBeenCalledWith({ path: '/echo', action: 'drop', bufferedBytes: 4096 });
         expect(transports[0].close).not.toHaveBeenCalled();
     });
@@ -321,20 +321,20 @@ describe('NodeSocketSessionRegistry', () => {
         expect(vi.getTimerCount()).toBe(1);
     });
 
-    test('overflow close decision is memoized — no repeat observers or close(1013) per broadcast', () => {
+    test('overflow close decision is memoized — no repeat observers or close(1013) per broadcast', async () => {
         const onOverflow = vi.fn();
         registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: null, onOverflow });
         sessionAt('/echo');
         transports[0].bufferedAmount = 2_000_000;
 
         // First broadcast: decision made once.
-        registry.broadcast('/echo', 'x');
+        await registry.broadcast('/echo', 'x');
         expect(onOverflow).toHaveBeenCalledTimes(1);
         expect(transports[0].close).toHaveBeenCalledTimes(1);
         expect(transports[0].close).toHaveBeenCalledWith(1013, 'consumer too slow');
 
         // Second broadcast while the close handshake is pending: no re-fire.
-        registry.broadcast('/echo', 'y');
+        await registry.broadcast('/echo', 'y');
         expect(onOverflow).toHaveBeenCalledTimes(1);
         expect(transports[0].close).toHaveBeenCalledTimes(1);
 
@@ -343,29 +343,29 @@ describe('NodeSocketSessionRegistry', () => {
         const replacement = fakeTransport();
         sessionAt('/echo', replacement);
         replacement.bufferedAmount = 2_000_000;
-        registry.broadcast('/echo', 'z');
+        await registry.broadcast('/echo', 'z');
         expect(onOverflow).toHaveBeenCalledTimes(2);
     });
 
-    test('backpressure observer list is dynamic (add/remove after construction)', () => {
+    test('backpressure observer list is dynamic (add/remove after construction)', async () => {
         const observer = vi.fn();
         registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: null });
         sessionAt('/echo');
         transports[0].bufferedAmount = 2_000_000;
 
         const unsubscribe = registry.addOverflowObserver(observer);
-        registry.broadcast('/echo', 'x');
+        await registry.broadcast('/echo', 'x');
         expect(observer).toHaveBeenCalledWith({ path: '/echo', action: 'close', bufferedBytes: 2_000_000 });
 
         unsubscribe();
-        registry.broadcast('/echo', 'y');
+        await registry.broadcast('/echo', 'y');
         expect(observer).toHaveBeenCalledTimes(1);
     });
 
-    test('broadcast serializes the payload once, not once per session (O2)', () => {
+    test('broadcast serializes the payload once, not once per session (O2)', async () => {
         const session = sessionAt('/echo');
         const spy = vi.spyOn(JSON, 'stringify');
-        registry.broadcast('/echo', { event: 'tick', n: 1 });
+        await registry.broadcast('/echo', { event: 'tick', n: 1 });
         // One serialization for the broadcast; each session sends the
         // pre-built wire string directly.
         expect(spy).toHaveBeenCalledTimes(1);
@@ -397,7 +397,7 @@ describe('NodeSocketSessionRegistry', () => {
     });
 
     describe('overflow observers', () => {
-        test('a throwing overflow observer cannot abort the broadcast', () => {
+        test('a throwing overflow observer cannot abort the broadcast', async () => {
             const onOverflow = vi.fn(() => {
                 throw new Error('telemetry down');
             });
@@ -406,7 +406,7 @@ describe('NodeSocketSessionRegistry', () => {
             transports[0].bufferedAmount = 2_000_000;
             // The observer fault must not skip the policy decision (close 1013)
             // or break the surplus of the broadcast.
-            expect(() => registry.broadcast('/echo', 'x')).not.toThrow();
+            await registry.broadcast('/echo', 'x');
             expect(transports[0].close).toHaveBeenCalledWith(1013, 'consumer too slow');
         });
     });

@@ -6,9 +6,10 @@
 import '@tsmetadata/polyfill';
 
 import { InMemoryDataSource } from '../src/data-source';
-import { column, entity, generated, primaryColumn } from '../src/decorators';
+import { column, entity, generated, manyToOne, primaryColumn } from '../src/decorators';
 import { InMemoryEntityManager } from '../src/entity-manager';
-import { InMemoryRepository } from '../src/repository';
+import { InMemoryRepository, toAsyncRepository } from '../src/index';
+import type { AsyncRepository } from '../src/index';
 
 @entity()
 class TestUser {
@@ -18,6 +19,12 @@ class TestUser {
 
     @column()
     name: string;
+
+    @column({ nullable: true })
+    mentorId: number | undefined;
+
+    @manyToOne(() => TestUser, { joinColumn: 'mentorId' })
+    mentor: TestUser | undefined;
 
     constructor(name: string) {
         this.id = undefined;
@@ -120,6 +127,69 @@ describe('InMemoryRepository', () => {
             expect(repository.deleteById(user.id as number)).toBe(true);
             expect(repository.findById(user.id as number)).toBeUndefined();
         });
+    });
+});
+
+describe('toAsyncRepository', () => {
+    let repository: AsyncRepository<TestUser, number>;
+
+    beforeEach(() => {
+        const entityManager = new InMemoryEntityManager(new InMemoryDataSource());
+        repository = toAsyncRepository(new InMemoryRepository(TestUser, entityManager));
+    });
+
+    it('supports awaitable CRUD, pages and relations with the real memory repository', async () => {
+        expect(await repository.findById(999)).toBeUndefined();
+        expect(await repository.existsById(999)).toBe(false);
+        expect(await repository.deleteById(999)).toBe(false);
+
+        const ada = await repository.save(new TestUser('Ada'));
+        const grace = new TestUser('Grace');
+        grace.mentorId = ada.id;
+        expect(await repository.save(grace)).toBe(grace);
+        expect(await repository.count()).toBe(2);
+        expect(await repository.existsById(grace.id as number)).toBe(true);
+
+        const page = await repository.findPage({ page: 1, size: 1, sort: [{ property: 'name', direction: 'desc' }] });
+        expect(page.content).toEqual([grace]);
+        expect(page.totalElements).toBe(2);
+        expect(page.totalPages).toBe(2);
+
+        expect(await repository.loadRelation(grace, 'mentor')).toBe(ada);
+        expect(grace.mentor).toBe(ada);
+        grace.mentor = undefined;
+        expect((await repository.findById(grace.id as number, { relations: ['mentor'] }))?.mentor).toBe(ada);
+        expect((await repository.findAll({ relations: ['mentor'] })).map((user) => user.mentor)).toEqual([
+            undefined,
+            ada,
+        ]);
+
+        grace.name = 'Grace Hopper';
+        await repository.save(grace);
+        expect((await repository.findById(grace.id as number))?.name).toBe('Grace Hopper');
+        expect(await repository.deleteById(grace.id as number)).toBe(true);
+        expect(await repository.findById(grace.id as number)).toBeUndefined();
+        expect(await repository.count()).toBe(1);
+        expect(await repository.deleteById(grace.id as number)).toBe(false);
+    });
+
+    it('returns rejected promises instead of letting synchronous validation errors escape', async () => {
+        const user = await repository.save(new TestUser('Ada'));
+        const invalidPage = repository.findPage({
+            page: 1,
+            size: 1,
+            sort: [{ property: 'missing', direction: 'asc' }],
+        });
+        expect(invalidPage).toBeInstanceOf(Promise);
+        await expect(invalidPage).rejects.toThrow();
+
+        const invalidRelation = repository.loadRelation(user, 'missing');
+        expect(invalidRelation).toBeInstanceOf(Promise);
+        await expect(invalidRelation).rejects.toThrow("declares no relation 'missing'");
+        await expect(repository.findById(user.id as number, { relations: ['missing'] })).rejects.toThrow(
+            "declares no relation 'missing'"
+        );
+        await expect(repository.findAll({ relations: ['missing'] })).rejects.toThrow("declares no relation 'missing'");
     });
 });
 

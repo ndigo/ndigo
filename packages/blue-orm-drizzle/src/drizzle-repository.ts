@@ -5,7 +5,7 @@
  * @author Jeff Rose
  */
 import { Constructable } from '@blue/core';
-import type { PageRequest, Page, RelationFetchOptions } from '@blue/orm';
+import type { AsyncRepository, PageRequest, Page, RelationFetchOptions } from '@blue/orm';
 import { DrizzleEntityManager } from './drizzle-entity-manager';
 
 /**
@@ -15,7 +15,7 @@ import { DrizzleEntityManager } from './drizzle-entity-manager';
  * @template ID - The entity's primary identifier type.
  * @since 1.0.0
  */
-export class DrizzleRepository<T extends object, ID> {
+export class DrizzleRepository<T extends object, ID> implements AsyncRepository<T, ID> {
     readonly #entityClass: Constructable<T>;
     readonly #entityManager: DrizzleEntityManager;
 

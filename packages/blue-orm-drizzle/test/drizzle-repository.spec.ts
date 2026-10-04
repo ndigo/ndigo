@@ -6,6 +6,7 @@
 import '@tsmetadata/polyfill';
 import { describe, test, expect } from 'vitest';
 import { entity, generated, primaryColumn, column } from '@blue/orm';
+import type { AsyncRepository } from '@blue/orm';
 import { DrizzleDataSource } from '../src/drizzle-data-source';
 import { DrizzleEntityManager } from '../src/drizzle-entity-manager';
 import { DrizzleRepository } from '../src/drizzle-repository';
@@ -36,13 +37,13 @@ const SEED: Array<[string, number]> = [
     ['alpha', 1],
 ];
 
-async function seededRepository(): Promise<DrizzleRepository<PagedNote, number>> {
+async function seededRepository(): Promise<AsyncRepository<PagedNote, number>> {
     const dataSource = new DrizzleDataSource({ url: ':memory:' });
     await dataSource.init([PagedNote]);
     return new DrizzleRepository(PagedNote, new DrizzleEntityManager(dataSource));
 }
 
-async function seed(repository: DrizzleRepository<PagedNote, number>): Promise<void> {
+async function seed(repository: AsyncRepository<PagedNote, number>): Promise<void> {
     await Promise.all(SEED.map(([title, priority]) => repository.save(new PagedNote(title, priority))));
 }
 

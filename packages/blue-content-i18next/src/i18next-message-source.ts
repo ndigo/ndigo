@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { createInstance, i18n, Resource, TFunction } from 'i18next';
-import { MessageParams, MessageSource, normalizeLocale } from '@blue/content';
+import { LanguageCode, MessageParams, MessageSource, normalizeLocale } from '@blue/content';
 
 /**
  * Options for constructing an {@link I18nextMessageSource}.
@@ -18,11 +18,11 @@ export interface I18nextMessageSourceOptions {
     /**
      * The active language when no per-call language is given.
      */
-    language?: string;
+    language?: string | LanguageCode;
     /**
      * Fallback language or ordered fallback chain.
      */
-    fallbackLanguage?: string | string[];
+    fallbackLanguage?: string | LanguageCode | Array<string | LanguageCode>;
     /**
      * Lazy-loading backend instance (e.g. `i18next-http-backend`).
      */
@@ -89,8 +89,13 @@ export class I18nextMessageSource implements MessageSource {
         void this.instance
             .init({
                 resources,
-                lng: language,
-                fallbackLng: fallbackLanguage,
+                lng: language === undefined ? undefined : String(language),
+                fallbackLng:
+                    fallbackLanguage === undefined
+                        ? undefined
+                        : Array.isArray(fallbackLanguage)
+                            ? fallbackLanguage.map(String)
+                            : String(fallbackLanguage),
                 returnEmptyString: false,
                 initImmediate: false,
                 ...(ns ? { ns } : {}),
@@ -118,7 +123,7 @@ export class I18nextMessageSource implements MessageSource {
      * @param language - Language override; the active language when omitted.
      * @returns The formatted message, or the key itself when missing.
      */
-    async getMessage(key: string, params?: MessageParams, language?: string): Promise<string> {
+    async getMessage(key: string, params?: MessageParams, language?: string | LanguageCode): Promise<string> {
         const t = language === undefined ? this.instance.t : this.#fixedT(language);
 
         return t(key, {
@@ -133,8 +138,8 @@ export class I18nextMessageSource implements MessageSource {
      *
      * @param language - The language to activate.
      */
-    async changeLanguage(language: string): Promise<void> {
-        await this.instance.changeLanguage(language);
+    async changeLanguage(language: string | LanguageCode): Promise<void> {
+        await this.instance.changeLanguage(String(language));
         this.#fixedTByLanguage.clear();
     }
 
@@ -144,14 +149,14 @@ export class I18nextMessageSource implements MessageSource {
      *
      * @param languages - The languages to load.
      */
-    async preload(languages: string[]): Promise<void> {
-        await this.instance.loadLanguages(languages);
+    async preload(languages: Array<string | LanguageCode>): Promise<void> {
+        await this.instance.loadLanguages(languages.map(String));
     }
 
-    #fixedT(language: string): TFunction {
+    #fixedT(language: string | LanguageCode): TFunction {
         // Normalize first: junk languages (request-derived values) collapse
         // onto the instance language, keeping the cache key space small.
-        const resolvedLanguage = normalizeLocale(language) ?? this.instance.language ?? language;
+        const resolvedLanguage = normalizeLocale(String(language)) ?? this.instance.language ?? String(language);
         let t = this.#fixedTByLanguage.get(resolvedLanguage);
         if (!t) {
             t = this.instance.getFixedT(resolvedLanguage);

@@ -6,6 +6,8 @@
 import { like } from '@blue/util/types';
 import { Constructable } from '@blue/core';
 import { likeAwareAnd, Aware, AsAware } from '@blue/factory';
+import { LanguageCode } from './language-code';
+import * as LanguageCodes from './language-codes';
 
 /**
  * Resolves localized content for a given key and language.
@@ -22,7 +24,7 @@ export interface ContentSource {
      * @param language - The requested language code.
      * @returns A promise of the resolved content string.
      */
-    getContent(key: string, language: string): Promise<string>;
+    getContent(key: string, language: string | LanguageCode): Promise<string>;
 }
 
 /**
@@ -43,9 +45,9 @@ export class StaticContentSource implements ContentSource {
      * @param content - Localized content keyed by content id and language.
      * @param defaultLanguage - Fallback language used when a translation is missing.
      */
-    constructor(content: ContentDictionary = {}, defaultLanguage = 'en') {
+    constructor(content: ContentDictionary = {}, defaultLanguage: string | LanguageCode = LanguageCodes.EN) {
         this.#content = content;
-        this.#defaultLanguage = defaultLanguage;
+        this.#defaultLanguage = String(defaultLanguage);
     }
 
     /**
@@ -58,11 +60,12 @@ export class StaticContentSource implements ContentSource {
      * @param language - The requested language code.
      * @returns The localized content or the key when no translation exists.
      */
-    async getContent(key: string, language: string): Promise<string> {
+    async getContent(key: string, language: string | LanguageCode): Promise<string> {
+        const lang = String(language);
         const entry = this.#content[key] || {};
 
-        if (typeof entry[language] === 'string') {
-            return entry[language];
+        if (typeof entry[lang] === 'string') {
+            return entry[lang];
         }
 
         if (typeof entry[this.#defaultLanguage] === 'string') {
@@ -79,9 +82,10 @@ export class StaticContentSource implements ContentSource {
      * @param language - The requested language code.
      * @returns `true` when a translation is available.
      */
-    hasContent(key: string, language: string): boolean {
+    hasContent(key: string, language: string | LanguageCode): boolean {
+        const lang = String(language);
         const entry = this.#content[key] || {};
-        return typeof entry[language] === 'string' || typeof entry[this.#defaultLanguage] === 'string';
+        return typeof entry[lang] === 'string' || typeof entry[this.#defaultLanguage] === 'string';
     }
 }
 

@@ -4,11 +4,12 @@
  * @author Jeff Rose
  */
 import { ContentSource } from './content';
+import { LanguageCode } from './language-code';
 
 /**
  * An async loader function that resolves content for a given key and language.
  */
-export type ContentLoader = (key: string, language: string) => Promise<string>;
+export type ContentLoader = (key: string, language: string | LanguageCode) => Promise<string>;
 
 /**
  * Content source that wraps a loader with a TTL-based in-memory cache.
@@ -41,15 +42,16 @@ export class TtlContentSource implements ContentSource {
      * @param language - The requested language code.
      * @returns The resolved content value.
      */
-    async getContent(key: string, language: string): Promise<string> {
-        const cacheKey = `${key}:${language}`;
+    async getContent(key: string, language: string | LanguageCode): Promise<string> {
+        const lang = String(language);
+        const cacheKey = `${key}:${lang}`;
         const entry = this.#cache.get(cacheKey);
 
         if (entry && Date.now() < entry.expiresAt) {
             return entry.value;
         }
 
-        const value = await this.#loader(key, language);
+        const value = await this.#loader(key, lang);
 
         this.#cache.set(cacheKey, {
             value,
@@ -69,7 +71,7 @@ export class TtlContentSource implements ContentSource {
     /**
      * Evicts the cache entry for a specific key+language pair.
      */
-    invalidateEntry(key: string, language: string): void {
-        this.#cache.delete(`${key}:${language}`);
+    invalidateEntry(key: string, language: string | LanguageCode): void {
+        this.#cache.delete(`${key}:${String(language)}`);
     }
 }

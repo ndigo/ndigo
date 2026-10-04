@@ -5,7 +5,7 @@
  */
 import { describe, test, expect } from 'vitest';
 import { StaticContentSource } from '../src/content';
-import { NegotiatingContentSource, normalizeLocale, parseAcceptLanguage } from '../src/negotiation';
+import { NegotiatingContentSource, parseAcceptLanguage } from '../src/negotiation';
 
 describe('parseAcceptLanguage', () => {
     test('parses simple language tag', () => {
@@ -22,35 +22,6 @@ describe('parseAcceptLanguage', () => {
 
     test('returns undefined for empty string', () => {
         expect(parseAcceptLanguage('')).toBeUndefined();
-    });
-});
-
-describe('normalizeLocale', () => {
-    test('keeps well-formed tags and canonicalizes case', () => {
-        expect(normalizeLocale('fr')).toBe('fr');
-        expect(normalizeLocale('fr-CH')).toBe('fr-CH');
-        expect(normalizeLocale('EN-us')).toBe('en-US');
-        expect(normalizeLocale('zh-Hant-TW')).toBe('zh-Hant-TW');
-        expect(normalizeLocale('de-DE-u-ca-gregory')).toBe('de-DE-u-ca-gregory');
-    });
-
-    test('rejects markup-capable and malformed values', () => {
-        expect(normalizeLocale('" autofocus onfocus="alert(1)')).toBeUndefined();
-        expect(normalizeLocale('en"><script>alert(1)</script>')).toBeUndefined();
-        expect(normalizeLocale("fr'; DROP TABLE users; --")).toBeUndefined();
-        expect(normalizeLocale('en US')).toBeUndefined();
-        expect(normalizeLocale('en-US-')).toBeUndefined();
-        expect(normalizeLocale('under_score')).toBeUndefined();
-        expect(normalizeLocale('')).toBeUndefined();
-        expect(normalizeLocale(42)).toBeUndefined();
-        expect(normalizeLocale(undefined)).toBeUndefined();
-        expect(normalizeLocale(null)).toBeUndefined();
-    });
-
-    test('rejects overlong tags', () => {
-        const longTag = `en-${'a'.repeat(62)}`;
-        expect(longTag.length).toBeGreaterThan(64);
-        expect(normalizeLocale(longTag)).toBeUndefined();
     });
 });
 

@@ -37,9 +37,10 @@
  * binary frames byte-exact as `Uint8Array`. `headers` round-trips as
  * JSON.
  *
- * One instance owns one libsql connection: {@link LibSQLQueueMessageStore.dispose}
- * closes it (every later operation then rejects with `CLIENT_CLOSED`), so
- * an owner that shut a broker built on this store down must dispose it.
+ * The store owns clients it creates. Injected clients are borrowed unless
+ * `ownsClient: true` explicitly transfers ownership. {@link LibSQLQueueMessageStore.dispose}
+ * closes only owned clients and rejects later store operations; it does not
+ * drain pending writes. Stop and drain the broker before disposing the store.
  * @module blue-orm-drizzle
  * @since 1.0.0
  * @author Jeff Rose
@@ -72,11 +73,12 @@ const SELECT_COLUMNS = 'destination, id, message_id, body, body_kind, headers, s
  */
 export interface LibSQLQueueMessageStoreOptions {
     /**
-     * A shared libsql client (reuse an existing connection).
-     * {@link LibSQLQueueMessageStore.dispose} closes it, so only inject a
-     * client whose lifetime this store may end.
+     * A borrowed libsql client (reuse an existing connection). Disposal
+     * leaves it open unless `ownsClient` explicitly transfers ownership.
      */
     client?: Client;
+    /** Transfer ownership of an injected client; defaults to false. */
+    ownsClient?: boolean;
     /** LibSQL URL (`'file:queues.db'`, `':memory:'`, remote `libsql://` URL). */
     url?: string;
     /** Authentication token for remote libsql servers. */
@@ -84,28 +86,35 @@ export interface LibSQLQueueMessageStoreOptions {
 }
 
 /**
- * Durable `/queue` backend on libsql. One instance owns one connection;
- * every method awaits a lazily-created schema. Multi-writer processes on
- * one database are safe by virtue of atomic AUTOINCREMENT — seq issuance
- * is a single INSERT.
+ * Durable `/queue` backend on libsql. Every method awaits schema creation.
+ * Multi-writer processes on one database are safe by virtue of atomic
+ * AUTOINCREMENT — seq issuance is a single INSERT. Clients created by the
+ * store are owned; injected clients are borrowed by default.
  */
 export class LibSQLQueueMessageStore implements QueueMessageStore {
     readonly kind = 'libsql';
     readonly #client: Client;
     readonly #ready: Promise<void>;
+    readonly #ownsClient: boolean;
+    #disposed = false;
 
     /**
-     * @param options - A shared client, or url/authToken to create one
-     *   (url defaults to `':memory:'`, matching `DrizzleDataSource`).
+     * @param options - A borrowed client, or url/authToken to create an owned
+     *   client (url defaults to `':memory:'`, matching `DrizzleDataSource`).
      */
     constructor(options: LibSQLQueueMessageStoreOptions = {}) {
         this.#client = options.client ?? createClient({ url: options.url ?? ':memory:', authToken: options.authToken });
+        this.#ownsClient = options.client === undefined || options.ownsClient === true;
         this.#ready = this.#client.batch(SCHEMA.map((sql) => ({ sql }))).then(() => undefined);
+        // Attach a handler immediately; methods still await the original
+        // promise and propagate schema errors, even when first used later.
+        void this.#ready.catch(() => undefined);
     }
 
     async append(message: Omit<StoredQueueMessage, 'seq' | 'storedAt'>): Promise<StoredQueueMessage> {
         const destination = assertDestination(message.destination);
         await this.#ready;
+        this.#assertOpen();
         const { body, bodyKind } = encodeBody(message.body);
         const storedAt = Date.now();
         const result = await this.#client.execute({
@@ -145,6 +154,7 @@ export class LibSQLQueueMessageStore implements QueueMessageStore {
     ): Promise<StoredQueueMessage[]> {
         const name = assertDestination(destination);
         await this.#ready;
+        this.#assertOpen();
         const afterSeq = Math.max(0, Math.floor(options.afterSeq ?? 0));
         // Contract parity with the memory store: absent / `NaN` / `+Infinity`
         // are unbounded (LIMIT -1 in SQLite), other values floor and clamp
@@ -169,6 +179,7 @@ export class LibSQLQueueMessageStore implements QueueMessageStore {
     async prune(destination: string, retention: { ttlMs?: number; maxMessages?: number }): Promise<number> {
         const name = assertDestination(destination);
         await this.#ready;
+        this.#assertOpen();
         let pruned = 0;
         if (retention.ttlMs !== undefined) {
             const cutoff = Date.now() - retention.ttlMs;
@@ -200,6 +211,7 @@ export class LibSQLQueueMessageStore implements QueueMessageStore {
     async has(destination: string): Promise<boolean> {
         const name = assertDestination(destination);
         await this.#ready;
+        this.#assertOpen();
         const result = await this.#client.execute({
             sql: `SELECT 1 FROM ${TABLE} WHERE destination = ? LIMIT 1`,
             args: [name],
@@ -208,17 +220,19 @@ export class LibSQLQueueMessageStore implements QueueMessageStore {
     }
 
     /**
-     * Close the libsql connection (this store owns its lifetime). Idempotent;
-     * every later operation rejects with the client's `CLIENT_CLOSED` error.
-     * A store constructed with an injected `client` closes that shared
-     * client too.
+     * Release this store. Idempotent; closes only owned clients. Later
+     * operations reject with a disposed-store error, including when the
+     * client is borrowed. Pending operations are not drained; callers must
+     * stop and drain the broker first.
      */
     dispose(): void {
-        // The constructor's schema batch can still be in flight here; mark a
-        // failure handled so a shutdown race never surfaces as an unhandled
-        // rejection.
-        void this.#ready.catch(() => undefined);
-        this.#client.close();
+        if (this.#disposed) return;
+        this.#disposed = true;
+        if (this.#ownsClient) this.#client.close();
+    }
+
+    #assertOpen(): void {
+        if (this.#disposed) throw new Error('libsql queue store is disposed');
     }
 }
 

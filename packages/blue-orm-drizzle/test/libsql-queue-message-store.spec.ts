@@ -7,15 +7,26 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { createClient, type Client } from '@libsql/client';
-import { describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test } from 'vitest';
 import { LibSQLQueueMessageStore } from '../src/index';
-import type { QueueMessageStore, StoredQueueMessage } from '@blue/socket';
+import type { StoredQueueMessage } from '@blue/socket';
+
+const stores: LibSQLQueueMessageStore[] = [];
+afterEach(() => {
+    for (const store of stores) store.dispose();
+    stores.length = 0;
+});
 
 /** A fresh store on a fresh in-memory connection. */
 function openStore(): { store: LibSQLQueueMessageStore; client: Client } {
     const client = createClient({ url: ':memory:' });
-    return { store: new LibSQLQueueMessageStore({ client }), client };
+    const store = new LibSQLQueueMessageStore({ client, ownsClient: true });
+    stores.push(store);
+    return { store, client };
 }
 
 const message = (destination: string, body: string, id = 'm'): Omit<StoredQueueMessage, 'seq' | 'storedAt'> => ({
@@ -133,28 +144,68 @@ describe('LibSQLQueueMessageStore (QueueMessageStore contract)', () => {
         await expect(store.has('')).rejects.toThrow(RangeError);
     });
 
-    test('dispose closes the client and later operations reject predictably', async () => {
-        const { store } = openStore();
-        await store.append({ ...message('/queue/x', 'a', 'a') });
-        expect(() => store.dispose()).not.toThrow();
-        expect(() => store.dispose()).not.toThrow(); // idempotent
-        // Documented post-dispose posture: the client's CLIENT_CLOSED error.
-        await expect(store.append({ ...message('/queue/x', 'b', 'b') })).rejects.toThrow(/closed/i);
-        await expect(store.replay('/queue/x')).rejects.toThrow(/closed/i);
-        await expect(store.prune('/queue/x', { maxMessages: 0 })).rejects.toThrow(/closed/i);
-        await expect(store.has('/queue/x')).rejects.toThrow(/closed/i);
+    test('disposing a borrowed client leaves other stores and database access usable', async () => {
+        const client = createClient({ url: ':memory:' });
+        const first = new LibSQLQueueMessageStore({ client });
+        const second = new LibSQLQueueMessageStore({ client });
+        try {
+            await first.append(message('/queue/shared', 'retained', 'shared'));
+            first.dispose();
+            first.dispose();
+            expect((await second.replay('/queue/shared')).map((m) => m.body)).toEqual(['retained']);
+            await expect(first.has('/queue/shared')).rejects.toThrow(/disposed/i);
+            expect((await client.execute('SELECT COUNT(*) FROM blue_queue_messages')).rows[0]?.[0]).toBe(1);
+        } finally {
+            second.dispose();
+            client.close();
+        }
     });
 
-    test('appends persist across store instances on the same database file', async () => {
+    test('dispose closes the client and later operations reject predictably', async () => {
+        const { store, client } = openStore();
+        await store.append({ ...message('/queue/x', 'a', 'a') });
+        store.dispose();
+        store.dispose();
+        await expect(client.execute('SELECT 1')).rejects.toThrow(/closed/i);
+        await expect(store.append(message('/queue/x', 'b', 'b'))).rejects.toThrow(/disposed/i);
+        await expect(store.replay('/queue/x')).rejects.toThrow(/disposed/i);
+        await expect(store.prune('/queue/x', { maxMessages: 0 })).rejects.toThrow(/disposed/i);
+        await expect(store.has('/queue/x')).rejects.toThrow(/disposed/i);
+    });
+
+    test('appends survive closing and reopening independent connections to a database file', async () => {
+        const directory = await mkdtemp(join(tmpdir(), 'blue-queue-'));
+        const url = `file:${join(directory, 'queues.db')}`;
+        const first = new LibSQLQueueMessageStore({ url });
+        let second: LibSQLQueueMessageStore | undefined;
+        try {
+            const saved = await first.append(message('/queue/persist', 'durable', 'p1'));
+            first.dispose();
+            second = new LibSQLQueueMessageStore({ url });
+            expect(await second.replay('/queue/persist')).toEqual([saved]);
+            const next = await second.append(message('/queue/persist', 'next', 'p2'));
+            expect(next.seq).toBeGreaterThan(saved.seq);
+        } finally {
+            first.dispose();
+            second?.dispose();
+            await rm(directory, { recursive: true, force: true });
+        }
+    });
+
+    test('schema and operational failures reject instead of returning an empty queue', async () => {
         const client = createClient({ url: ':memory:' });
-        // Two store instances share one client — but persistence across
-        // REOPENED connections needs a file; simulate cross-instance reads
-        // on one connection (the durable property libsql gives a new
-        // process is the same table layout + rows).
-        const firstStore: QueueMessageStore = new LibSQLQueueMessageStore({ client });
-        await firstStore.append({ ...message('/queue/persist', 'v', 'p1') });
-        const second = new LibSQLQueueMessageStore({ client });
-        expect(await second.has('/queue/persist')).toBe(true);
-        expect((await second.replay('/queue/persist')).map((m) => m.body)).toEqual(['v']);
+        await client.execute('CREATE VIEW blue_queue_messages AS SELECT 1 AS id');
+        const broken = new LibSQLQueueMessageStore({ client, ownsClient: true });
+        stores.push(broken);
+        await expect(broken.replay('/queue/failure')).rejects.toThrow();
+        await expect(broken.append(message('/queue/failure', 'lost'))).rejects.toThrow();
+
+        const { store, client: healthyClient } = openStore();
+        await store.append(message('/queue/failure', 'retained'));
+        healthyClient.close();
+        await expect(store.append(message('/queue/failure', 'lost', 'lost'))).rejects.toThrow(/closed/i);
+        await expect(store.replay('/queue/failure')).rejects.toThrow(/closed/i);
+        await expect(store.prune('/queue/failure', { maxMessages: 0 })).rejects.toThrow(/closed/i);
+        await expect(store.has('/queue/failure')).rejects.toThrow(/closed/i);
     });
 });

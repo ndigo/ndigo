@@ -5,7 +5,7 @@
  */
 import { RingBuffer } from './ring-buffer.js';
 import { JSONValue, Serializable, serialize } from './serializable.js';
-import { Equatable, equates, equatable } from './equatable.js';
+import { Equatable, equates } from './equatable.js';
 import { is, like } from '@blue/util/types';
 import { likeIterable } from './iterable.js';
 import { createNull } from './null.js';
@@ -23,7 +23,7 @@ export interface PropertyValues extends Iterable<PropertyValue> {
      * @param propertyName - Property name to resolve.
      * @returns The matching property value, or `null` when no match exists.
      */
-    getPropertyValue(propertyName: string): PropertyValue;
+    getPropertyValue(propertyName: string): PropertyValue | null;
 }
 
 const isString = is(String) as (value: unknown) => value is string;
@@ -92,8 +92,7 @@ export class PropertyValue implements Equatable, Serializable {
         if (!(value instanceof PropertyValue)) {
             return false;
         }
-        // Wrapped values may be arbitrary; `equates` falls back to deep equality for unknown shapes.
-        return this.name === value.name && equates(this.value as equatable, value.value as equatable);
+        return this.name === value.name && equates(this.value, value.value);
     }
 
     /**
@@ -178,29 +177,47 @@ export class MutablePropertyValues
      * Compares this collection to another property collection.
      *
      * @param value - Value to compare.
-     * @returns `true` when both collections contain the same property names and values.
+     * @returns `true` when both collections contain the same multiset of name/value pairs,
+     * regardless of order; duplicate pairs must occur equally often.
      */
     equals(value: unknown): boolean {
-        let result = value === this;
-
-        if (!result && likePropertyValues(value) && this.length === value.propertyValues.length) {
-            const length = this.length;
-            for (let index = 0; index < length; index++) {
-                const pv = this[index];
-                if (!pv) {
-                    result = false;
-                    break;
-                }
-                // Wrapped values may be arbitrary; `equates` handles any shape via deep equality.
-                const other = value.getPropertyValue(pv.name)?.value;
-                result = equates(other as equatable, pv.value as equatable);
-                if (!result) {
+        if (value === this) {
+            return true;
+        }
+        if (!likeIterable(value)) {
+            return false;
+        }
+        const collection = value as Partial<PropertyValues>;
+        const properties = collection.propertyValues;
+        if (!Array.isArray(properties) || typeof collection.getPropertyValue !== 'function') {
+            return false;
+        }
+        const length = this.length;
+        if (length !== properties.length) {
+            return false;
+        }
+        if (length === 0) {
+            return true;
+        }
+        const matched = new Uint8Array(length);
+        for (let index = 0; index < length; index++) {
+            const property = this[index];
+            if (!property) {
+                return false;
+            }
+            let match = -1;
+            for (let otherIndex = 0; otherIndex < length; otherIndex++) {
+                if (!matched[otherIndex] && property.equals(properties[otherIndex])) {
+                    match = otherIndex;
                     break;
                 }
             }
+            if (match === -1) {
+                return false;
+            }
+            matched[match] = 1;
         }
-
-        return result;
+        return true;
     }
 
     /**

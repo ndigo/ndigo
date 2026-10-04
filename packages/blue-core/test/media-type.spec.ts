@@ -243,6 +243,30 @@ describe('MediaType', () => {
         expect(comparator.compare(wildcardType, audio03Type)).toBe(-1);
     });
 
+    test('sorts by descending quality before wildcard and parameter specificity', () => {
+        const expressions = [
+            'audio/basic;level=1;q=0.4',
+            '*/*;q=0.8',
+            'audio/basic;q=0.8',
+            'audio/basic;level=1;q=0.8',
+            'audio/*;q=0.8',
+        ];
+        const sorted = expressions.map((expression) => MediaType.for(expression)).sort(MediaType.qualityFactorComparator.compare);
+        expect(sorted.map((mediaType) => mediaType.toString())).toEqual([
+            'audio/basic;level=1;q=0.8',
+            'audio/basic;q=0.8',
+            'audio/*;q=0.8',
+            '*/*;q=0.8',
+            'audio/basic;level=1;q=0.4',
+        ]);
+    });
+
+    test('retains input order for equal-quality unrelated types and subtypes', () => {
+        const expressions = ['text/plain;q=0.8', 'audio/wave;q=0.8', 'audio/basic;q=0.8'];
+        const sorted = expressions.map((expression) => MediaType.for(expression)).sort(MediaType.qualityFactorComparator.compare);
+        expect(sorted.map((mediaType) => mediaType.toString())).toEqual(expressions);
+    });
+
     test('it should provide a custom toString tag', () => {
         const parameters = { charset: 'UTF-8' },
             textHtmlType = new MediaType('text', 'html', parameters);

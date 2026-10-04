@@ -4,7 +4,15 @@
  * @author Jeff Rose
  */
 import { Serializable, JSONValue } from './serializable.js';
-import { Comparator, StringComparable, stringComparator, numberComparator } from './comparable.js';
+import {
+    Comparator,
+    StringComparable,
+    chainComparisons,
+    compareBy,
+    invertComparison,
+    stringComparator,
+    numberComparator,
+} from './comparable.js';
 import { Null } from './null.js';
 import { isString } from '@blue/util/types';
 import { Matchable } from './matchable.js';
@@ -234,21 +242,12 @@ class SpecificityComparator<T extends MediaType> implements Comparator<T> {
 
 const specificityComparator = new SpecificityComparator();
 
-class QualityFactorComparator implements Comparator<MediaType> {
-    compare(mediaType1: MediaType, mediaType2: MediaType): number {
-        const quality1 = mediaType1.qualityFactor,
-            quality2 = mediaType2.qualityFactor,
-            qualityComparison = numberComparator.compare(quality2, quality1);
-        return qualityComparison !== 0
-            ? // audio/*;q=0.7 < audio/*;q=0.3
-              qualityComparison
-            : specificityComparator.compare(mediaType1, mediaType2);
-    }
-}
-
-/**
- */
-const qualityFactorComparator = new QualityFactorComparator();
+const qualityFactorComparator: Comparator<MediaType> = {
+    compare: chainComparisons(
+        invertComparison(compareBy((mediaType: MediaType) => mediaType.qualityFactor, numberComparator.compare)),
+        specificityComparator.compare.bind(specificityComparator)
+    ),
+};
 
 /**
  * Normalizes a raw media-type expression for registry interning: folds the

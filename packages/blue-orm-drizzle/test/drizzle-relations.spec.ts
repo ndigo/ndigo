@@ -6,6 +6,7 @@
 import '@tsmetadata/polyfill';
 import { describe, test, expect } from 'vitest';
 import { entity, generated, primaryColumn, column, manyToOne, oneToMany } from '@blue/orm';
+import type { AsyncRepository } from '@blue/orm';
 import { DrizzleDataSource } from '../src/drizzle-data-source';
 import { DrizzleEntityManager } from '../src/drizzle-entity-manager';
 import { DrizzleRepository } from '../src/drizzle-repository';
@@ -51,7 +52,11 @@ class DrizzleRelNote {
 class AuthorRepository extends DrizzleRepository<DrizzleRelAuthor, number> {}
 class NoteRepository extends DrizzleRepository<DrizzleRelNote, number> {}
 
-async function seeded(): Promise<{ authors: AuthorRepository; notes: NoteRepository; adaId: number }> {
+async function seeded(): Promise<{
+    authors: AsyncRepository<DrizzleRelAuthor, number>;
+    notes: AsyncRepository<DrizzleRelNote, number>;
+    adaId: number;
+}> {
     const dataSource = new DrizzleDataSource({ url: ':memory:' });
     await dataSource.init([DrizzleRelAuthor, DrizzleRelNote]);
     const entityManager = new DrizzleEntityManager(dataSource);

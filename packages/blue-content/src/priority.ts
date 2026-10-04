@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { ContentSource } from './content';
+import { LanguageCode } from './language-code';
 
 /**
  * Content source that merges multiple sources in priority order.
@@ -55,7 +56,7 @@ export class PriorityContentSource implements ContentSource {
      * @param language - The requested language code.
      * @returns The translated value from the highest-priority source, or the key.
      */
-    async getContent(key: string, language: string): Promise<string> {
+    async getContent(key: string, language: string | LanguageCode): Promise<string> {
         for (const source of this.#sources) {
             // oxlint-disable-next-line no-await-in-loop -- sources resolve in priority order with first-match-wins; parallelizing would change which translation wins.
             const result = await source.getContent(key, language);

@@ -6,6 +6,7 @@
 import { like } from '@blue/util/types';
 import { Constructable } from '@blue/core';
 import { likeAwareAnd, Aware, AsAware } from '@blue/factory';
+import { LanguageCode } from './language-code';
 
 /**
  * Parameters controlling message formatting.
@@ -58,7 +59,7 @@ export interface MessageSource {
      * @param language - The language to use; the source's active language when omitted.
      * @returns A promise of the formatted message, or the key itself when no translation exists.
      */
-    getMessage(key: string, params?: MessageParams, language?: string): Promise<string>;
+    getMessage(key: string, params?: MessageParams, language?: string | LanguageCode): Promise<string>;
 }
 
 /**

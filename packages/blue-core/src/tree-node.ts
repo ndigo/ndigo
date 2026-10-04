@@ -53,16 +53,15 @@ export interface TreeNode<T = unknown> extends ChildNode<T>, ParentNode<T> {
  * Traverses descendants depth-first from the supplied node.
  *
  * @param node - Starting node.
- * @param callback - Function invoked for each visited node.
+ * @param callback - Function invoked for each visited node; returning `false` prunes that node's descendants.
  * @param inclusive - When `true`, include the starting node in the traversal.
  */
-export function direct<T extends ParentNode>(
+export function direct<T extends ParentNode<T>>(
     node: T,
     callback: (node: T) => unknown,
     inclusive: boolean = false
 ): void {
-    // The `ParentNode` constraint erases the element type; a node's own `children` are always `T[]`.
-    const targets: readonly T[] = inclusive ? [node] : (node.children as readonly T[]);
+    const targets: readonly T[] = inclusive ? [node] : node.children;
 
     if (targets?.length) {
         targets.forEach((target: T) => callback(target) !== false && direct<T>(target, callback));
@@ -73,21 +72,21 @@ export function direct<T extends ParentNode>(
  * Traverses ancestors upward from the supplied node.
  *
  * @param node - Starting node.
- * @param callback - Function invoked for each visited node.
+ * @param callback - Function invoked for each visited node; returning `false` stops traversal.
  * @param inclusive - When `true`, include the starting node in the traversal.
  */
-export function escalate<T extends ChildNode>(
+export function escalate<T extends ChildNode<T>>(
     node: T,
     callback: (node: T) => unknown,
     inclusive: boolean = false
 ): void {
-    // The `ChildNode` constraint erases the parent type; a node's own `parent` is always `T`.
-    const target: T | null | undefined = inclusive ? node : (node.parent as T | null | undefined);
+    let target: T | null | undefined = inclusive ? node : node.parent;
 
-    if (target) {
-        if (callback(target) !== false) {
-            escalate<T>(target, callback);
+    while (target) {
+        if (callback(target) === false) {
+            return;
         }
+        target = target.parent;
     }
 }
 

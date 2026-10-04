@@ -144,6 +144,35 @@ export const invertComparison =
         -compare(value1, value2);
 
 /**
+ * Compares values using their Comparable ordering, without coercing them.
+ */
+export const comparableComparison = <T extends Comparable<T>>(a: T, b: T): number => a.compareTo(b);
+
+/**
+ * Creates a comparison for a selected key using an explicit key ordering.
+ */
+export const compareBy =
+    <T, K>(select: (value: T) => K, compare: comparison<K>): comparison<T> =>
+    (a: T, b: T): number =>
+        compare(select(a), select(b));
+
+/**
+ * Applies comparisons in order, returning the first nonzero result.
+ * Returns zero when every comparison ties, including an empty chain.
+ */
+export const chainComparisons =
+    <T>(...comparisons: comparison<T>[]): comparison<T> =>
+    (a: T, b: T): number => {
+        for (let index = 0; index < comparisons.length; index++) {
+            const result = comparisons[index](a, b);
+            if (result !== 0) {
+                return result;
+            }
+        }
+        return 0;
+    };
+
+/**
  * A comparator that uses a predicate function to determine order.
  * @template T - The type of values being compared.
  */

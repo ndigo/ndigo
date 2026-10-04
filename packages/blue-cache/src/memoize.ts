@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { CacheMiss, MemoryCache } from './cache';
-import { isPromiseLike, serializeCacheKey } from './keys';
+import { serializeCacheKey } from './keys';
 
 /**
  * Options for {@link memoize}.
@@ -42,9 +42,8 @@ export interface MemoizeOptions<A extends unknown[] = unknown[]> {
  *   in-flight promise; the settled **value** is cached.
  * - **Rejections are never cached**: a rejected promise clears the in-flight
  *   slot and the next call re-invokes the function.
- * - The wrapped function must be consistently sync or async; the mode is
- *   recorded from the first computed call and governs how cache hits are
- *   returned (settled value vs. resolved promise).
+ * - Always returns a promise, including for synchronous functions. Cache
+ *   reads and writes are awaited; backend failures reject the call.
  *
  * @param fn - The function to memoize (documented contract: no side effects
  *   the caller relies on — results must be a pure function of the arguments
@@ -55,53 +54,32 @@ export interface MemoizeOptions<A extends unknown[] = unknown[]> {
 export function memoize<A extends unknown[], R>(
     fn: (...args: A) => R,
     options: MemoizeOptions = {}
-): (...args: A) => R {
-    const cache = new MemoryCache<unknown>({
+): (...args: A) => Promise<Awaited<R>> {
+    const cache = new MemoryCache<Awaited<R>>({
         defaultTtl: options.ttl,
         maxSize: options.maxSize,
         eviction: options.eviction,
     });
-    const inflight = new Map<string, Promise<unknown>>();
+    const inflight = new Map<string, Promise<Awaited<R>>>();
     const keyOf = options.key ?? serializeCacheKey;
-    let asyncMode: 'sync' | 'async' | undefined;
 
-    return (...args: A): R => {
+    return async (...args: A): Promise<Awaited<R>> => {
         const key = keyOf(...args);
-
         const pending = inflight.get(key);
-        if (pending !== undefined) {
-            return pending as R;
-        }
+        if (pending !== undefined) return pending;
 
-        const hit = cache.get(key);
-        if (hit !== CacheMiss.INSTANCE) {
-            // A hit under async mode holds the settled value, not a promise.
-            return asyncMode === 'async' ? (Promise.resolve(hit) as R) : (hit as R);
+        const work = (async (): Promise<Awaited<R>> => {
+            const hit = await cache.get(key);
+            if (hit !== CacheMiss.INSTANCE) return hit as Awaited<R>;
+            const result = await fn(...args);
+            await cache.set(key, result, options.ttl);
+            return result;
+        })();
+        inflight.set(key, work);
+        try {
+            return await work;
+        } finally {
+            inflight.delete(key);
         }
-
-        const result = fn(...args);
-        if (isPromiseLike(result)) {
-            if (asyncMode === undefined) {
-                asyncMode = 'async';
-            }
-            const promise = Promise.resolve(result);
-            inflight.set(key, promise);
-            void promise.then(
-                (resolved) => {
-                    inflight.delete(key);
-                    cache.set(key, resolved, options.ttl);
-                },
-                () => {
-                    inflight.delete(key); // never cache rejections
-                }
-            );
-            return promise as R;
-        }
-
-        if (asyncMode === undefined) {
-            asyncMode = 'sync';
-        }
-        cache.set(key, result, options.ttl);
-        return result;
     };
 }

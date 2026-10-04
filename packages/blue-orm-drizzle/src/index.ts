@@ -9,6 +9,8 @@ export { DrizzleMigrator } from './drizzle-migrator';
 export type { Migration, MigrationContext, MigrationState, MigrationStatus } from './drizzle-migrator';
 export { LibSQLQueueMessageStore } from './libsql-queue-message-store';
 export type { LibSQLQueueMessageStoreOptions } from './libsql-queue-message-store';
+export { LibSQLSessionStore } from './libsql-session-store';
+export type { LibSQLSessionStoreOptions } from './libsql-session-store';
 export { DrizzleEntityManager } from './drizzle-entity-manager';
 export { DrizzleTransactionManager } from './drizzle-transaction-manager';
 export { DrizzleUnitOfWork } from './drizzle-unit-of-work';

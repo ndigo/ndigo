@@ -1,0 +1,70 @@
+{
+  "name": "@blue/redis",
+  "version": "0.0.1",
+  "description": "Node-only Redis connections, namespaced shared cache adapters, and WebSocket pub/sub fanout for BlueJS",
+  "type": "module",
+  "files": [
+    "doc",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./cache": {
+      "types": "./lib/cache/index.d.ts",
+      "default": "./lib/cache/index.js"
+    },
+    "./pubsub": {
+      "types": "./lib/pubsub/index.d.ts",
+      "default": "./lib/pubsub/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "keywords": [
+    "bluejs",
+    "redis",
+    "cache",
+    "pubsub",
+    "websocket",
+    "node"
+  ],
+  "dependencies": {
+    "@redis/client": "6.3.0"
+  },
+  "devDependencies": {
+    "@blue/platform-node": "~0.0.1",
+    "@types/node": "~24.13.5",
+    "@types/ws": "^8.18.0",
+    "vitest": "~4.0.18",
+    "ws": "^8.18.0"
+  },
+  "peerDependencies": {
+    "@blue/cache": "~0.0.1",
+    "@blue/factory": "~0.0.1",
+    "@blue/socket": "~0.0.1"
+  },
+  "peerDependenciesMeta": {
+    "@blue/cache": {
+      "optional": true
+    },
+    "@blue/factory": {
+      "optional": true
+    },
+    "@blue/socket": {
+      "optional": true
+    }
+  },
+  "sideEffects": false
+}

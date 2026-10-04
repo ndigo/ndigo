@@ -64,7 +64,7 @@ import { type SocketSessionRegistry } from '@blue/dispatcher';
 
 // any bean: fetch the registry from the context (or inject it)
 const registry = context.getValue<SocketSessionRegistry>('socketSessionRegistry');
-registry.broadcast('/ws/room', { event: 'server', data: 'maintenance window' });
+await registry.broadcast('/ws/room', { event: 'server', data: 'maintenance window' });
 registry.count('/ws/room'); // 0 if nobody is connected
 registry.closeAll(1001, 'bye'); // graceful server shutdown
 ```
@@ -72,8 +72,10 @@ registry.closeAll(1001, 'bye'); // graceful server shutdown
 Every session auto-joins a set keyed by its endpoint path, so
 `broadcast(path, …)` is zero-setup. Named rooms are the finer grouping:
 `session.join('room')` / `session.leave('room')` in the handler, and
-`broadcastTo('room', …)` from anywhere. Fan-out is best-effort — closed
-sessions are skipped, transport errors tolerated. Backpressure is on by
+`broadcastTo('room', …)` from anywhere. Both return `Promise<void>` and must
+be awaited. Local delivery is best-effort — closed sessions are skipped,
+transport errors tolerated — but configured cross-node publish failures reject
+before local delivery; they never silently fall back to local-only mode. Backpressure is on by
 default: a session whose transport buffer exceeds 1 MiB is closed with
 `1013` ("try again later", Spring's `SESSION_NOT_RELIABLE`) —
 client reconnects and resyncs. Tune per registry:
@@ -137,13 +139,13 @@ export class ChatController implements ApplicationContextAware {
     async chat(session: SocketSession) {
         session.join('room');
         for await (const message of session.messages) {
-            this.#registry()?.broadcastTo('room', { event: 'chat', data: String(message) });
+            await this.#registry()?.broadcastTo('room', { event: 'chat', data: String(message) });
         }
     }
 
     @scheduled('*/2 * * * * *')
-    chatTick() {
-        this.#registry()?.broadcastTo('room', { event: 'chat-tick', at: Date.now() });
+    async chatTick() {
+        await this.#registry()?.broadcastTo('room', { event: 'chat-tick', at: Date.now() });
     }
 }
 ```
@@ -332,8 +334,8 @@ async chat(session: SocketSession) {
 
 // any service: scheduler → destination (SimpMessagingTemplate parity)
 @scheduled('*/2 * * * * *')
-tick() {
-    broker.publish('/topic/chat', JSON.stringify({ at: Date.now() }));
+async tick() {
+    await broker.publish('/topic/chat', JSON.stringify({ at: Date.now() }));
 }
 ```
 
@@ -397,9 +399,10 @@ already owns liveness. The second wave rounds out the protocol:
 - **Durable-queue seam (store-read phase)** — the store is the single
   source of truth for `/queue`: every append persists through it and
   subscribe replay reads from it. The default is an
-  `InMemoryQueueMessageStore` built from the backlog caps above; a libsql
-  (or Redis, cross-node, post-1.0) implementation swaps in as the broker's
-  `queueStore` option with no broker changes — and **a `RECEIPT` now means
+  `InMemoryQueueMessageStore` built from the backlog caps above;
+  `LibSQLQueueMessageStore` from `@blue/orm-drizzle` provides durable storage
+  through the broker's `queueStore` option. This is separate from live Redis
+  fan-out, not a distributed queue — **a `RECEIPT` means
   "persisted"** for `/queue` destinations (the receipt follows the append; a
   store fault withholds it and fails closed with an `ERROR` frame followed
   by a `1011` close, per the STOMP rule that an ERROR is always followed by
@@ -435,13 +438,97 @@ passcode, session)` validates CONNECT credentials — and a CONNECT that
   `ERROR` frame is always followed by a close (the stream is over when an
   ERROR arrives).
 
-Still deferred, documented: durable persistence behind `/queue` (needs the
-audit's store contract — post-1.0), cross-node pub/sub, message history
-beyond the bounded backlog. `@stompMapping` paths negotiate the
+Still deferred: cross-node queue consumption/coordination and message history
+beyond the configured retained window. Durable LibSQL `/queue` storage and
+live Redis path/room/topic fan-out are implemented separately. `@stompMapping` paths negotiate the
 `v12.stomp`/`v11.stomp`/`v10.stomp` WebSocket subprotocol on upgrade;
 other socket paths keep the stock behavior. **STOMP over TCP is never** —
 no consumer base (browsers, STOMP.js, and Spring all use WebSocket), and
 like SockJS it is a non-feature, not a gap.
+
+### Cross-node live fan-out (opt-in)
+
+The memory/local default is unchanged. Compose external resources explicitly;
+install `@blue/redis` and its `@blue/socket` capability peer. This example uses
+an existing `NodeDispatcher` named `dispatcher` and an application context named
+`context`; the endpoint controller must use this same `broker` for
+`handleSocket(session)`, and room handlers use the server's shared registry:
+
+```ts
+import { RedisConnection } from '@blue/redis';
+import { RedisSocketFanout } from '@blue/redis/pubsub';
+import { StompBroker } from '@blue/socket';
+import { HTTPServer, NodeSocketSessionRegistry } from '@blue/platform-node';
+
+const url = process.env.REDIS_URL!; // explicit redis:// or rediss://
+const publisher = new RedisConnection({ url });
+const fanout = new RedisSocketFanout({
+    connection: publisher,
+    subscriberUrl: url, // adapter creates a separate owned subscriber
+    namespace: 'my-app.production',
+});
+const registry = new NodeSocketSessionRegistry({ fanout });
+const broker = new StompBroker({ fanout });
+const server = new HTTPServer(dispatcher, { socketRegistry: registry });
+
+await publisher.connect();
+await fanout.connect();
+await registry.connect(); // subscribes path + room
+await broker.connect(); // subscribes topic
+await server.start(); // serve only after subscriptions are ready
+
+await registry.broadcast('/ws/chat', { event: 'notice' });
+await registry.broadcastTo('lobby', new Uint8Array([0, 1, 255]));
+await broker.publish('/topic/chat', 'hello', { kind: 'notice' });
+
+// Stop scheduled/HTTP producers first; close all resources even if one fails.
+try {
+    await server.close();
+} finally {
+    try {
+        await Promise.all([registry.close(), broker.close()]);
+    } finally {
+        try {
+            await fanout.close();
+        } finally {
+            await publisher.close();
+            context.close(); // synchronous: cannot await these resources for you
+        }
+    }
+}
+```
+
+`HTTPServer`'s `socketRegistry` option passes this registry to its **default**
+adapter; it does not register beans or discover the broker. Without that option,
+the managed server resolves the `socketSessionRegistry` context bean. For a custom
+adapter pass the registry to that adapter, not simultaneously to `HTTPServer`.
+Startup failure also requires the same owner-managed cleanup before exiting.
+
+One transport permits one consumer per scope: a registry owns `path`/`room`, a
+broker owns `topic`. For additional registries/brokers on one node, compose
+separate transports. Each node uses the same namespace and envelope schema.
+Registry joins/counts and sockets stay local; only already-serialized text or
+binary payloads cross Redis. Only STOMP `/topic/*` crosses nodes, including SEND
+and transaction-applied topic SEND; `/queue/*` and `/user/*` remain local. Each
+broker assigns its own MESSAGE/ACK IDs. Queue persistence/replay is independent.
+
+Publishing resolves on Redis acceptance, **not** delivery to every client.
+Random transport origins suppress the publisher's Redis echo; the consumer then
+delivers locally once. Delivery is live at-most-once, with no reconnect, offline
+queue, replay, global ordering or exactly-once guarantee. A closed/unready
+publisher or subscriber rejects publication before local delivery; inbound
+STOMP publish failure sends ERROR then closes `1011`. Replace and explicitly
+connect failed resources rather than expecting retry or a local fallback.
+
+Redis namespaces are 1–128 ASCII characters matching
+`[A-Za-z0-9][A-Za-z0-9._-]*` (unlike cache namespaces, no colon). The default
+`maxMessageBytes` is 1 MiB of the complete UTF-8 JSON envelope, including headers
+and binary base64 overhead, not 1 MiB of raw body. Keys are 1–1024 characters;
+headers have at most 128 entries, names 1–1024 characters and string values up
+to 8192 characters. Malformed inbound envelopes are dropped and exposed through
+`fanout.lastError`; invalid outbound envelopes reject before Redis I/O. Redis
+access must be trusted: ACLs/network isolation (and `rediss://` remotely) protect
+channels; a namespace is isolation convention, not authorization.
 
 ## 8. Design boundaries
 
@@ -457,11 +544,12 @@ like SockJS it is a non-feature, not a gap.
   (`SocketClient`, reconnect + status signal) — see
   [WebSocket client](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md) and
   [plan](../plans/2026-09-15_WEBSOCKET_CLIENT.md).
-- **Deferred, not built**: cross-node pub/sub (needs a store contract),
-  durable `/queue` persistence beyond the swappable store seam — **STOMP:
-  built**, including NACK redelivery and bounded message history;
-  **SockJS: never** (pre-2015 fallback-transport workaround; third-party
-  territory.
+- **Cross-node live fan-out: opt-in**, through `SocketFanout` and
+  `@blue/redis/pubsub`; socket ownership, room membership, queue consumption
+  and ACK/message IDs remain local. Durable `/queue` persistence is available
+  through `LibSQLQueueMessageStore`; it is not durable pub/sub.
+- **SockJS: never** (pre-2015 fallback-transport workaround; third-party
+  territory). STOMP-over-TCP is also deliberately not provided.
 
 ## 9. References
 

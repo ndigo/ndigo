@@ -18,25 +18,31 @@ import { MemoryCache, MemoryCacheManager, CacheMiss } from '@blue/cache';
 
 const cache = new MemoryCache<string>({ defaultTtl: 60_000, maxSize: 1_000 });
 
-cache.set('greeting', 'hello', 30_000); // per-entry TTL overrides the default
-const value = cache.get('greeting');
+await cache.set('greeting', 'hello', 30_000); // per-entry TTL overrides the default
+const value = await cache.get('greeting');
 if (value !== CacheMiss.INSTANCE) {
     // value: string — CacheMiss distinguishes "absent/expired" from a stored undefined
 }
-cache.has('greeting'); // false once expired
-cache.delete('greeting');
-cache.clear();
+await cache.has('greeting'); // false once expired
+await cache.delete('greeting');
+await cache.clear();
+const count = await cache.size(); // live entries; size is a method, not a property
 ```
+
+All `Cache` operations are asynchronous, including the in-memory implementation:
+`get(key): Promise<V | CacheMiss>`, `set(key, value, ttl?): Promise<void>`,
+`has(key): Promise<boolean>`, `delete(key): Promise<boolean>`,
+`clear(): Promise<void>`, and `size(): Promise<number>`.
 
 - **Expiry is lazy** — expired entries are dropped on access; no timers, safe
   in browsers and workers.
 - **Eviction** — `maxSize` set → the size cap evicts per `eviction`:
   `'lru'` (default; hits promote) or `'fifo'` (oldest insertion first).
   `maxSize` omitted → TTL-only, no size eviction.
-- **`MemoryCacheManager`** — named-cache registry: `getCache('users')`
-  auto-creates a store with the manager defaults and returns the same
-  instance thereafter. This is the seam `@cached` resolves through, and the
-  plug point for a future distributed store.
+- **`MemoryCacheManager`** — synchronous local named-cache handle registry:
+  `getCache('users')` auto-creates a store with the manager defaults and
+  returns the same instance thereafter; `hasCache('users')` checks the registry.
+  Neither requires `await`. Backend operations on the returned store do.
 
 ## 2. Server: `@cached`
 
@@ -63,7 +69,7 @@ export class ProductController {
     }
 
     @cached({ cacheName: 'catalog', ttl: 60_000 })
-    rankedProducts() {
+    async rankedProducts(): Promise<Product[]> {
         // invoked once per TTL window; every other call is served from cache
         return expensiveRanking();
     }
@@ -84,17 +90,22 @@ import type { Cache } from '@blue/cache';
 export const CATALOG = new ContextToken<Cache<string, Product>>('catalog');
 
 @cached({ cache: CATALOG, ttl: 60_000 })
-rankedProducts(): Product { … }   // getCache(CATALOG).delete(key) for eviction
+async rankedProducts(): Promise<Product> { … } // await getCache(CATALOG).delete(key) for eviction
 ```
 
 Semantics:
 
-- **Hits** return the stored settled value; **misses** call the method.
-- **Only fulfilled results are cached** — a throwing/rejecting method
-  propagates the error and the next call retries. (Deliberate: unlike HTTP
-  caching, method caching never stores failures.)
-- **Async methods** return the live promise; the settled value is written
-  when it resolves.
+- **Promise-only methods** — decorated methods must explicitly return a
+  `Promise` (use `async` even for pure computation); hits and misses both
+  return promises resolving to settled values.
+- **Only fulfilled results are cached** — method failures reject the call and
+  are not cached; the next call retries.
+- **Single-flight** — overlapping calls for a key share work scoped to the
+  actual store, from backend read through computation and awaited write.
+  Separate stores never share results; promise identity is not a contract.
+- **Backend errors** — read failures reject without invoking the method.
+  Decorator write failures emit a best-effort warning but still return the
+  computed value.
 - **Keys** — default: JSON-serialized arguments (`{a:1,b:2}` ≠ `{b:2,a:1}`;
   `undefined`/`null` collapse). Customize with `key` — a static string (the
   method caches one value) or a `(...args) => string` function. No SpEL —
@@ -102,13 +113,14 @@ Semantics:
 - **Self-invocation is cached** — the wrapper replaces the prototype method,
   so `this.method()` calls inside the class hit the cache too.
 - **Invalidation** — TTL expiry plus manual eviction:
-  `this.cacheManager.getCache('catalog').delete('…')` or `.clear()`.
+  `await this.cacheManager.getCache('catalog').delete('…')` or
+  `await this.cacheManager.getCache('catalog').clear()`.
   A `@cacheEvict` annotation is deliberately not in v1.
 
 ## 3. Client: `memoize`
 
-Plain-function memoization for browsers and Node — no DI, no beans, same
-semantics as the decorator:
+Plain-function memoization for browsers and Node — no DI, no beans. The
+wrapper always returns `Promise<Awaited<R>>`, even for synchronous inputs:
 
 ```ts
 import { memoize } from '@blue/cache';
@@ -120,18 +132,23 @@ const loadUser = memoize(async (id: string) => fetch(`/users/${id}`).then((r) =>
 
 await Promise.all([loadUser('a'), loadUser('a')]); // one fetch — single-flight
 await loadUser('a'); // cache hit
+
+const double = memoize((value: number) => value * 2);
+const result = await double(21); // 42; double(21) returns Promise<number>
 ```
 
-- Concurrent calls for the same key share one in-flight promise.
-- Rejections are never cached; the next call re-invokes.
+- Concurrent calls for the same key share work from cache read through
+  computation and write; promise identity is not a contract.
+- Rejections are never cached; the next call re-invokes. Unlike the decorator's
+  best-effort writes, `memoize` propagates cache write failures.
 - Options: `ttl`, `maxSize`, `eviction`, `key` (as in `@cached`).
 
 ## 4. Manual invalidation
 
 ```ts
 const catalog = context.getValue<CacheManager>('cacheManager'); // server
-catalog.getCache('catalog').delete('…'); // named-entry eviction
-catalog.getCache('catalog').clear(); // whole-store eviction
+await catalog.getCache('catalog').delete('…'); // named-entry eviction
+await catalog.getCache('catalog').clear(); // whole-store eviction
 ```
 
 ## 5. Pitfalls
@@ -150,3 +167,48 @@ Reference: `apps/blue-api` (`GET /api/cached-report` demo gate, counter spec
 in `app-bootstrap.spec.ts`) and the `blue-views` client demo (memoized
 payload derivation next to the HTTP cache-hit refresh). Design rationale:
 [caching decision](../decisions/2026-09-17_AD24_CACHING.md).
+
+## 6. Shared Node cache with Redis
+
+`@blue/redis/cache` supplies `RedisCacheManager` and `RedisCache` against the
+same awaitable contract. The memory backend remains the framework default;
+register/select a Redis manager explicitly in your application's configuration.
+
+```ts
+import { RedisCacheManager } from '@blue/redis/cache';
+
+const manager = new RedisCacheManager({
+    url: process.env.REDIS_URL!,
+    namespace: 'catalog-app:production',
+    defaults: { defaultTtl: 60_000 },
+});
+await manager.connect();
+const catalog = manager.getCache('catalog'); // local synchronous handle lookup
+await catalog.set('top', [{ id: 42 }]);
+// Another manager with the same namespace/name sees the same value and expiry.
+await manager.close(); // stop consumers, then await before context.close()
+```
+
+Requires Node 22+ and standalone Redis 7.2+. Values must be JSON-value trees;
+whole-entry undefined is separately tagged so it is not a miss. Unsupported
+objects (Date/classes/cycles/functions/bigint/nonfinite numbers, nested undefined,
+accessors/sparse arrays) and corrupt stored values reject rather than silently
+losing information. TTL fractions round upward to millisecond precision. With
+no TTL/default, entries have no expiry. Redis uses server-side expiry; `size()`
+counts live namespace keys rather than memory's lazy entry count.
+
+No per-cache `maxSize` or LRU/FIFO options are supported. Namespace-scoped SCAN
+and bounded DEL/EXISTS batches implement `clear()` and `size()`; neither is an
+atomic snapshot during concurrent writes. Namespace/cache/key components are
+unambiguously encoded, and clear never runs FLUSHDB. Stop writers for stable
+bulk clearing/counting. Redis maxmemory eviction is global deployment policy.
+
+URL-created clients are owned, fail fast without reconnect/offline queues, and
+are drained/closed by awaited `close()`. A ready injected `{ client }` is borrowed
+and keeps its application's reconnect policy; wrapper shutdown leaves it open.
+Backend errors propagate (the existing `@cached` best-effort _write_ policy still
+applies). The synchronous context teardown does not await async close hooks, so
+await the manager before closing the context. Supply URLs/credentials through
+application environment/secrets binding; the adapter never logs them or
+connects automatically to localhost. See the [Redis package README](../../packages/blue-redis/README.md)
+for the full codec, failure, ACL, lifecycle and live verification contracts.

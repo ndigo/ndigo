@@ -12,6 +12,7 @@ import {
     SecretSchemeRegistry,
 } from '@blue/context';
 import type { EnvironmentCustomizer } from '@blue/context';
+import type { EntryProcessor } from '@blue/factory';
 import { JSONObject } from '@blue/core';
 import { z } from 'zod';
 import { Application } from './application';
@@ -237,6 +238,35 @@ export class ApplicationBuilder {
      */
     customizers(...customizers: EnvironmentCustomizer[]): ApplicationBuilder {
         this.#application.setCustomizers(customizers);
+        return this;
+    }
+
+    /**
+     * Registers entry processors on the application context before it
+     * refreshes. Every entry the context creates is processed — including
+     * constructor entries eagerly created at refresh end.
+     *
+     * The natural consumer is container-managed method interception
+     * (`@blue/proxy`):
+     *
+     * ```ts
+     * const audit = new AuditInterceptor();
+     * const builder = new ApplicationBuilder([NodeAppConfiguration])
+     *     .processors(interception([audit]));
+     * ```
+     *
+     * Replaces any previously registered processors (chained calls do not
+     * accumulate). Register **at most one** `interception(...)` processor
+     * and combine all interceptors in that single call — combining across
+     * calls silently drops advice, and a second `interception(...)`
+     * processor fails loudly when it meets an already-woven entry (see
+     * `@blue/proxy`).
+     *
+     * @param processors - The entry processors to register.
+     * @returns This builder for chaining.
+     */
+    processors(...processors: EntryProcessor[]): ApplicationBuilder {
+        this.#application.setEntryProcessors(processors);
         return this;
     }
 

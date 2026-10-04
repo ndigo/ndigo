@@ -266,6 +266,28 @@ The value to compare.
 
 ***
 
+### getMatchingPatterns()
+
+> **getMatchingPatterns**(`path`): `string`[]
+
+Return the patterns that match a path.
+
+#### Parameters
+
+##### path
+
+`string`
+
+The path to test.
+
+#### Returns
+
+`string`[]
+
+The matching patterns, sorted when necessary.
+
+***
+
 ### match()
 
 > **match**(`route`): `PatternsRouteCondition` \| `null`
@@ -289,28 +311,6 @@ A matching condition, or `null`.
 #### Overrides
 
 [`AbstractRouteCondition`](AbstractRouteCondition.md).[`match`](AbstractRouteCondition.md#match)
-
-***
-
-### getMatchingPatterns()
-
-> **getMatchingPatterns**(`path`): `string`[]
-
-Return the patterns that match a path.
-
-#### Parameters
-
-##### path
-
-`string`
-
-The path to test.
-
-#### Returns
-
-`string`[]
-
-The matching patterns, sorted when necessary.
 
 ***
 

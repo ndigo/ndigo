@@ -18,6 +18,7 @@ Conceptual and hands-on guides for building applications with BlueJS. These comp
 12. [12 — Package Documentation](12-package-documentation.md) — the documentation standard every package must meet: README template, metadata fields, generated API references (`pnpm doc:api`), and CI freshness enforcement.
 13. [13 — OpenAPI & API Docs](13-openapi-and-api-docs.md) — the generated OpenAPI 3.0.3 spec from dispatch metadata, Swagger UI serving, `@apiDocs` metadata, and the `x-blue-*` extension surface.
 14. [14 — DTO & Conversion](14-dto-conversion.md) — `ConversionService` schema targets: entity-derived DTOs, fail-fast semantics, and the OpenAPI response contract (`@apiDocs({ responses })`).
+15. [15 — Method Interception & Resilience](15-method-interception.md) — metadata annotations, the interceptor chain (`@blue/proxy`), registration paths, weaving semantics, and retry + circuit breaking (`@blue/resilience`).
 
 ## Reading Order
 

@@ -24,7 +24,7 @@ All property values in iteration order.
 
 ### getPropertyValue()
 
-> **getPropertyValue**(`propertyName`): [`PropertyValue`](../classes/PropertyValue.md)
+> **getPropertyValue**(`propertyName`): [`PropertyValue`](../classes/PropertyValue.md) \| `null`
 
 Returns the property value for the given name.
 
@@ -38,6 +38,6 @@ Property name to resolve.
 
 #### Returns
 
-[`PropertyValue`](../classes/PropertyValue.md)
+[`PropertyValue`](../classes/PropertyValue.md) \| `null`
 
 The matching property value, or `null` when no match exists.

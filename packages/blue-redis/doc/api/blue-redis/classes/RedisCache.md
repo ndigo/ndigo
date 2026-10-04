@@ -19,7 +19,7 @@ keyspace-wide KEYS command, cluster guarantee or per-cache eviction simulation.
 
 ## Implements
 
-- [`Cache`](../../../../blue-cache/doc/api/README.md)\<`V`\>
+- `Cache`\<`V`\>
 
 ## Constructors
 
@@ -83,11 +83,11 @@ Removes an entry. Returns whether the entry existed.
 
 ### get()
 
-> **get**(`key`): `Promise`\<`V` \| [`CacheMiss`](../../../../blue-cache/doc/api/classes/CacheMiss.md)\>
+> **get**(`key`): `Promise`\<`V` \| [`CacheMiss`](#)\>
 
-Returns the live cached value or the [CacheMiss](../../../../blue-cache/doc/api/classes/CacheMiss.md) sentinel.
-Expired entries are removed on access. A hit updates recency under
-`lru` eviction (Map-order promotion); `fifo` order is untouched.
+Returns the live cached value or the [CacheMiss](#) sentinel.
+Expiry and recency handling follow the backend's documented policy;
+MemoryCache removes expired entries lazily and promotes LRU hits.
 
 #### Parameters
 
@@ -97,7 +97,7 @@ Expired entries are removed on access. A hit updates recency under
 
 #### Returns
 
-`Promise`\<`V` \| [`CacheMiss`](../../../../blue-cache/doc/api/classes/CacheMiss.md)\>
+`Promise`\<`V` \| [`CacheMiss`](#)\>
 
 #### Implementation of
 
@@ -109,8 +109,8 @@ Expired entries are removed on access. A hit updates recency under
 
 > **has**(`key`): `Promise`\<`boolean`\>
 
-Returns whether the key holds a live entry (expired entries are
-removed on the check). Does not update recency.
+Returns whether the key holds a live entry. Does not update recency
+in MemoryCache; remote expiry follows the backend's clock.
 
 #### Parameters
 
@@ -132,8 +132,8 @@ removed on the check). Does not update recency.
 
 > **set**(`key`, `value`, `ttl?`): `Promise`\<`void`\>
 
-Stores a value, optionally overriding the store default TTL. Evicts
-per the configured policy when at [CacheOptions.maxSize](../../../../blue-cache/doc/api/interfaces/CacheOptions.md#maxsize).
+Stores a value, optionally overriding the backend default TTL.
+Capacity and eviction policy are backend-specific configuration.
 
 #### Parameters
 
@@ -155,7 +155,7 @@ per the configured policy when at [CacheOptions.maxSize](../../../../blue-cache/
 
 #### Throws
 
-When the value is the [CacheMiss](../../../../blue-cache/doc/api/classes/CacheMiss.md) sentinel or
+When the value is the [CacheMiss](#) sentinel or
   the TTL is not a positive finite number of milliseconds.
 
 #### Implementation of

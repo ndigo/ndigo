@@ -6,6 +6,10 @@
 
 # Interface: Matchable\<TValue\>
 
+## Extended by
+
+- [`PathMatcherFilter`](PathMatcherFilter.md)
+
 ## Type Parameters
 
 ### TValue

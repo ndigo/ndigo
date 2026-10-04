@@ -10,7 +10,7 @@ Redis Pub/Sub live fan-out: at-most-once, no replay, reconnect, or offline queue
 
 ## Implements
 
-- `SocketFanout`
+- [`SocketFanout`](#)
 
 ## Constructors
 
@@ -74,11 +74,11 @@ Explicit readiness; construction never opens sockets.
 
 ##### scope
 
-`SocketFanoutScope`
+[`SocketFanoutScope`](#)
 
 ##### message
 
-`SocketFanoutMessage`
+[`SocketFanoutMessage`](#)
 
 #### Returns
 
@@ -98,7 +98,7 @@ Explicit readiness; construction never opens sockets.
 
 ##### scope
 
-`SocketFanoutScope`
+[`SocketFanoutScope`](#)
 
 ##### receive
 

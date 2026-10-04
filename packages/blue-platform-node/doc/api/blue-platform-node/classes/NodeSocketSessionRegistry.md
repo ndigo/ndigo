@@ -90,7 +90,7 @@ An unsubscribe function.
 
 ### broadcast()
 
-> **broadcast**(`path`, `payload`): `void`
+> **broadcast**(`path`, `payload`): `Promise`\<`void`\>
 
 Send a payload to every open session at the given endpoint path.
 
@@ -117,7 +117,9 @@ The payload to send.
 
 #### Returns
 
-`void`
+`Promise`\<`void`\>
+
+Transport acceptance followed by best-effort local delivery.
 
 #### Implementation of
 
@@ -127,7 +129,7 @@ The payload to send.
 
 ### broadcastTo()
 
-> **broadcastTo**(`room`, `payload`): `void`
+> **broadcastTo**(`room`, `payload`): `Promise`\<`void`\>
 
 Send a payload to every session in the named room
 (`session.join(room)` — AD-21 D5).
@@ -148,11 +150,25 @@ The payload to send.
 
 #### Returns
 
-`void`
+`Promise`\<`void`\>
+
+Transport acceptance followed by best-effort local delivery.
 
 #### Implementation of
 
 `SocketSessionRegistry.broadcastTo`
+
+***
+
+### close()
+
+> **close**(): `Promise`\<`void`\>
+
+Release registry subscriptions and heartbeat, not the application-owned transport.
+
+#### Returns
+
+`Promise`\<`void`\>
 
 ***
 
@@ -188,6 +204,20 @@ Human-readable close reason.
 #### Implementation of
 
 `SocketSessionRegistry.closeAll`
+
+***
+
+### connect()
+
+> **connect**(): `Promise`\<`void`\>
+
+Subscribe both registry scopes once. With a configured transport, callers
+must await this before publishing. A failed connection rolls back partial
+subscriptions and remains observable on subsequent connect calls.
+
+#### Returns
+
+`Promise`\<`void`\>
 
 ***
 

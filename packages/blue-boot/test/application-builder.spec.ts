@@ -6,6 +6,7 @@
 import { describe, test, expect, vi } from 'vitest';
 import { ApplicationBuilder } from '../src/application-builder';
 import { StandardEnvironment, configuration, entry } from '@blue/context';
+import type { InitializationAwareProcessor } from '@blue/factory';
 
 @configuration
 class BuilderConfiguration {
@@ -167,5 +168,65 @@ describe('ApplicationBuilder.fromConfig', () => {
         expect(builder).toBeInstanceOf(ApplicationBuilder);
         // Should run without error
         await expect(builder.run()).resolves.toBeInstanceOf(Object);
+    });
+});
+
+describe('ApplicationBuilder.processors', () => {
+    test('returns this for chaining', () => {
+        const builder = new ApplicationBuilder([BuilderConfiguration]);
+        expect(builder.processors({})).toBe(builder);
+    });
+
+    test('processors() registers entry processors before the context refresh', async () => {
+        @configuration
+        class ConstructorConfiguration {
+            @entry()
+            processedService() {
+                return ProcessedService;
+            }
+        }
+
+        class ProcessedService {
+            value(): string {
+                return 'processed';
+            }
+        }
+
+        const seen: string[] = [];
+        const processor: InitializationAwareProcessor = {
+            processBeforeInitialization: <T>(_name: string, instance: T): T => instance,
+            processAfterInitialization: <T>(name: string, instance: T): T => {
+                seen.push(name);
+                return instance;
+            },
+        };
+
+        const builder = new ApplicationBuilder([ConstructorConfiguration]).processors(processor);
+        const context = await builder.run();
+
+        // The constructor entry — eagerly created at refresh end — was
+        // processed, which was impossible before processors() existed.
+        expect(context.getValue<ProcessedService>('processedService').value()).toBe('processed');
+        expect(seen).toContain('processedService');
+    });
+
+    test('processors() replacement: chained calls do not accumulate', async () => {
+        const first: string[] = [];
+        const second: string[] = [];
+        const building = (log: string[]): InitializationAwareProcessor => ({
+            processBeforeInitialization: <T>(_name: string, instance: T): T => instance,
+            processAfterInitialization: <T>(name: string, instance: T): T => {
+                log.push(name);
+                return instance;
+            },
+        });
+
+        const builder = new ApplicationBuilder([BuilderConfiguration]).processors(building(first), building(second));
+        builder.processors(building(second));
+        const context = await builder.run();
+
+        await context.getValue('builderName');
+        expect(first).toEqual([]);
+        expect(second).not.toEqual([]);
     });
 });

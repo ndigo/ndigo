@@ -21,6 +21,7 @@ import {
     JSONView,
 } from '@blue/view';
 import { GreetingController } from './greeting-controller';
+import { OrderService } from './order-service';
 import { Heartbeat } from './heartbeat';
 import { AuthController } from './auth-controller';
 import { ChatController } from './chat-controller';
@@ -119,6 +120,17 @@ export class NodeAppConfiguration {
     }
     @entry() productController() {
         return new ProductController();
+    }
+
+    /**
+     * Method-interception demo gate (AD-42 D-8): the class is the entry, so
+     * the container instantiates it — eagerly at refresh end, by which time
+     * the audit processor registered via `builder.processors(...)` is
+     * already in place and the instance is woven at creation.
+     */
+    @entry()
+    orderService() {
+        return OrderService;
     }
     @entry() uploadController() {
         return new UploadController();

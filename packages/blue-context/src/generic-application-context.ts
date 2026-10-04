@@ -6,6 +6,7 @@
 import { JSONObject, direct, escalate } from '@blue/core';
 import {
     ContentSource,
+    LanguageCode,
     MessageParams,
     MessageSource,
     StaticContentSource,
@@ -207,7 +208,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
      */
     broadcast(type: EventType, ...data: unknown[]): void {
         direct<ApplicationContext>(
-            this as unknown as ApplicationContext,
+            this,
             (targetContext) => targetContext.emit(type, ...data),
             true
         );
@@ -288,7 +289,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
      * @param language - The language identifier.
      * @returns The resolved content.
      */
-    async getContent(key: string, language: string): Promise<string> {
+    async getContent(key: string, language: string | LanguageCode): Promise<string> {
         const local = this.#contentSource ? await this.#contentSource.getContent(key, language) : undefined;
 
         if (local !== undefined && local !== key) {
@@ -312,7 +313,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
      * @param language - The language to use.
      * @returns The formatted message, or the key when nothing resolves it.
      */
-    async getMessage(key: string, params?: MessageParams, language?: string): Promise<string> {
+    async getMessage(key: string, params?: MessageParams, language?: string | LanguageCode): Promise<string> {
         let value: string | undefined;
         if (this.#messageSource) {
             value = await this.#messageSource.getMessage(key, params, language);

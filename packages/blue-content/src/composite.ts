@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { ContentSource } from './content';
+import { LanguageCode } from './language-code';
 import { Theme, ThemeResolver } from './theme';
 
 /**
@@ -35,7 +36,7 @@ export class CompositeContentSource implements ContentSource {
      * @param language - The requested language code.
      * @returns The first translated value, or the key when none is found.
      */
-    async getContent(key: string, language: string): Promise<string> {
+    async getContent(key: string, language: string | LanguageCode): Promise<string> {
         for (const source of this.#sources) {
             // oxlint-disable-next-line no-await-in-loop -- sources resolve in priority order with first-match-wins; parallelizing would change which translation wins.
             const result = await source.getContent(key, language);

@@ -66,8 +66,9 @@ describe('CompositeRouteCondition', () => {
 
         expect(match).not.toBeNull();
         if (match === null) throw new Error('Expected a matching composite');
-        const otherPath = { ...route, path: '/bar' } as PathRoute;
-        const otherQuery = { ...route, data: { lang: 'de' } } as unknown as PathRoute;
+        // Plain literals — spreading the `route` instance would lose its prototype.
+        const otherPath = { path: '/bar', data: { lang: 'en' }, attributes: {} } as PathRoute;
+        const otherQuery = { path: '/foo', data: { lang: 'de' }, attributes: {} } as unknown as PathRoute;
         expect(composite.match(otherPath)).not.toBeNull();
         expect(match.match(otherPath)).toBeNull();
         expect(match.match(otherQuery)).toBeNull();

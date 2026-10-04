@@ -251,7 +251,9 @@ describe('MediaType', () => {
             'audio/basic;level=1;q=0.8',
             'audio/*;q=0.8',
         ];
-        const sorted = expressions.map((expression) => MediaType.for(expression)).sort(MediaType.qualityFactorComparator.compare);
+        const sorted = expressions
+            .map((expression) => MediaType.for(expression))
+            .sort(MediaType.qualityFactorComparator.compare);
         expect(sorted.map((mediaType) => mediaType.toString())).toEqual([
             'audio/basic;level=1;q=0.8',
             'audio/basic;q=0.8',
@@ -263,7 +265,9 @@ describe('MediaType', () => {
 
     test('retains input order for equal-quality unrelated types and subtypes', () => {
         const expressions = ['text/plain;q=0.8', 'audio/wave;q=0.8', 'audio/basic;q=0.8'];
-        const sorted = expressions.map((expression) => MediaType.for(expression)).sort(MediaType.qualityFactorComparator.compare);
+        const sorted = expressions
+            .map((expression) => MediaType.for(expression))
+            .sort(MediaType.qualityFactorComparator.compare);
         expect(sorted.map((mediaType) => mediaType.toString())).toEqual(expressions);
     });
 

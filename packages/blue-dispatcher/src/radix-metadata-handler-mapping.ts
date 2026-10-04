@@ -98,8 +98,7 @@ export class RadixMetadataHandlerMapping
             if (route.method !== 'OPTIONS') {
                 const nonMethodMatches = candidates.filter(
                     ({ mapping }) =>
-                        mapping.queryCondition.match(route) !== null &&
-                        mapping.matrixCondition.match(route) !== null
+                        mapping.queryCondition.match(route) !== null && mapping.matrixCondition.match(route) !== null
                 );
                 if (nonMethodMatches.length > 0) {
                     const allowed = [

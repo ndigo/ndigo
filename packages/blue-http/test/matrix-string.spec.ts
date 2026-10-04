@@ -134,7 +134,7 @@ describe('MatrixString', () => {
         });
 
         test('sorts raw keys case-sensitively before encoding, retaining array value order', () => {
-            expect(MatrixString.stringify({ z: ['second', 'first'], a: 'lower', Z: 'upper', 'é': 'accent' })).toBe(
+            expect(MatrixString.stringify({ z: ['second', 'first'], a: 'lower', Z: 'upper', é: 'accent' })).toBe(
                 'Z=upper;a=lower;z=second,first;%C3%A9=accent'
             );
         });

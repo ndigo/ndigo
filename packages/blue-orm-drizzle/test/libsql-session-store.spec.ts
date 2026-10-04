@@ -1,4 +1,8 @@
-/** @module blue-orm-drizzle */
+/**
+ * @module blue-orm-drizzle
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import '@tsmetadata/polyfill';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -55,7 +59,13 @@ function adapter(store: LibSQLSessionStore): CredentialsAuthAdapter {
     const encoder = new ScryptPasswordEncoder({ ln: 14 });
     return new CredentialsAuthAdapter({
         userStore: new InMemoryUserStore([
-            { id: 'alice', username: 'alice', roles: ['user'], tokenVersion: 3, passwordHash: encoder.encode('secret') },
+            {
+                id: 'alice',
+                username: 'alice',
+                roles: ['user'],
+                tokenVersion: 3,
+                passwordHash: encoder.encode('secret'),
+            },
         ]),
         passwordEncoder: encoder,
         sessionStore: store,
@@ -133,31 +143,51 @@ describe('LibSQLSessionStore', () => {
         const { store, client } = await openStore();
         const id = await store.create(record(), 60_000);
         const expiresAt = Date.now() + 2000;
-        await client.execute({ sql: 'UPDATE blue_sessions SET expires_at = ? WHERE session_id = ?', args: [expiresAt, id] });
+        await client.execute({
+            sql: 'UPDATE blue_sessions SET expires_at = ? WHERE session_id = ?',
+            args: [expiresAt, id],
+        });
         const next = await store.rotate(id, record());
         expect(next.expiresAt).toBe(expiresAt);
-        expect((await client.execute({ sql: 'SELECT expires_at FROM blue_sessions WHERE session_id = ?', args: [next.id] })).rows[0]?.[0]).toBe(expiresAt);
+        expect(
+            (
+                await client.execute({
+                    sql: 'SELECT expires_at FROM blue_sessions WHERE session_id = ?',
+                    args: [next.id],
+                })
+            ).rows[0]?.[0]
+        ).toBe(expiresAt);
     });
 
     test('capacity rejects extra live sessions and reclaims expired rows', async () => {
         const { store, client } = await openStore(1);
         const first = await store.create(record(), 60_000);
         await expect(store.create(record(), 60_000)).rejects.toThrow(/capacity/i);
-        await client.execute({ sql: 'UPDATE blue_sessions SET expires_at = ? WHERE session_id = ?', args: [Date.now() - 1, first] });
+        await client.execute({
+            sql: 'UPDATE blue_sessions SET expires_at = ? WHERE session_id = ?',
+            args: [Date.now() - 1, first],
+        });
         const next = await store.create(record(), 60_000);
         expect(await store.get(first)).toBeNull();
         expect((await store.get(next))?.principal.id).toBe('alice');
     });
 
-    test.each([0, -1, Number.NaN, Number.POSITIVE_INFINITY, 0.5])('invalid TTL %s cannot persist a session', async (ttl) => {
-        const { store, client } = await openStore();
-        await expect(store.create(record(), ttl)).rejects.toThrow(RangeError);
-        expect((await client.execute('SELECT COUNT(*) FROM blue_sessions')).rows[0]?.[0]).toBe(0);
-    });
+    test.each([0, -1, Number.NaN, Number.POSITIVE_INFINITY, 0.5])(
+        'invalid TTL %s cannot persist a session',
+        async (ttl) => {
+            const { store, client } = await openStore();
+            await expect(store.create(record(), ttl)).rejects.toThrow(RangeError);
+            expect((await client.execute('SELECT COUNT(*) FROM blue_sessions')).rows[0]?.[0]).toBe(0);
+        }
+    );
 
     test.each([
-        ['roles', '{bad-json'], ['roles', '{}'], ['roles', '["user",1]'],
-        ['token_version', 'bad'], ['issued_at', 'bad'], ['expires_at', 'bad'],
+        ['roles', '{bad-json'],
+        ['roles', '{}'],
+        ['roles', '["user",1]'],
+        ['token_version', 'bad'],
+        ['issued_at', 'bad'],
+        ['expires_at', 'bad'],
     ])('corrupt %s fails closed without revoking or replacing the session', async (column, value) => {
         const { store, client } = await openStore();
         const id = await store.create(record(), 60_000);
@@ -231,7 +261,10 @@ describe('LibSQLSessionStore', () => {
         const direct = createClient({ url });
         clients.push(direct);
         const expiresAt = Date.now() + 2000;
-        await direct.execute({ sql: 'UPDATE blue_sessions SET expires_at = ? WHERE session_id = ?', args: [expiresAt, login.token] });
+        await direct.execute({
+            sql: 'UPDATE blue_sessions SET expires_at = ? WHERE session_id = ?',
+            args: [expiresAt, login.token],
+        });
         const refreshed = await reader.refresh(login.token);
         expect(refreshed.expiresAt).toBe(expiresAt);
         expect(await adapter(second).validate(login.token)).toBeNull();
@@ -240,7 +273,10 @@ describe('LibSQLSessionStore', () => {
         expect(await reader.validate(refreshed.token)).toBeNull();
         await expect(reader.refresh(refreshed.token)).rejects.toThrow(/invalid credentials/i);
         const expiring = await reader.authenticate({ username: 'alice', password: 'secret' });
-        await direct.execute({ sql: 'UPDATE blue_sessions SET expires_at = ? WHERE session_id = ?', args: [Date.now() - 1, expiring.token] });
+        await direct.execute({
+            sql: 'UPDATE blue_sessions SET expires_at = ? WHERE session_id = ?',
+            args: [Date.now() - 1, expiring.token],
+        });
         expect(await reader.validate(expiring.token)).toBeNull();
         await expect(reader.refresh(expiring.token)).rejects.toThrow(/invalid credentials/i);
     });

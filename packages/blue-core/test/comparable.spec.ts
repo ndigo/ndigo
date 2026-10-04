@@ -49,7 +49,12 @@ describe('comparison adapters', () => {
             compareBy((value: (typeof records)[number]) => value.name, stringComparator.compare)
         );
         expect([...records].sort(compare).map((value) => value.name)).toEqual(['Beta', 'Beta again', 'Zulu', 'Alpha']);
-        expect([...records].sort(invertComparison(compare)).map((value) => value.name)).toEqual(['Alpha', 'Zulu', 'Beta again', 'Beta']);
+        expect([...records].sort(invertComparison(compare)).map((value) => value.name)).toEqual([
+            'Alpha',
+            'Zulu',
+            'Beta again',
+            'Beta',
+        ]);
     });
 
     test('retains input order when every comparison ties or no comparisons are provided', () => {
@@ -65,7 +70,10 @@ describe('comparison adapters', () => {
         class Ranked implements Comparable<Ranked> {
             readonly #rank: number;
 
-            constructor(readonly label: string, rank: number) {
+            constructor(
+                readonly label: string,
+                rank: number
+            ) {
                 this.#rank = rank;
             }
 

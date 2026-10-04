@@ -54,7 +54,12 @@ export { InMemoryDataSource } from './data-source';
 export { InMemoryEntityManager } from './entity-manager';
 export { InMemoryUnitOfWork } from './unit-of-work';
 export { InMemoryTransactionManager } from './transaction-manager';
-export { AbstractRepository, InMemoryRepository, InMemoryDerivedQueryRepository, toAsyncRepository } from './repository';
+export {
+    AbstractRepository,
+    InMemoryRepository,
+    InMemoryDerivedQueryRepository,
+    toAsyncRepository,
+} from './repository';
 export type { RelationFetchOptions } from './repository';
 export { parseDerivedQuery } from './derived-query-repository';
 export type { DerivedQuery, DerivedQueryResult } from './derived-query-repository';

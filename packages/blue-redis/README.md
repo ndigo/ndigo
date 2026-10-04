@@ -108,6 +108,12 @@ timeout (default 10 seconds). Use trusted Redis access, channel ACLs for
 PUBLISH/SUBSCRIBE/UNSUBSCRIBE plus handshake commands, and `rediss://` for remote
 TLS. Namespace isolation is not authorization.
 
+Fan-out messages carry **no authenticity or integrity**: the `origin` marker
+only excludes a node from re-delivering its own messages — any publisher that
+can reach the namespace channels can inject arbitrary bodies consumers will
+deliver. As with the cache, the authorization boundary is the Redis ACL, not
+the payload.
+
 ## Connection ownership and shutdown
 
 `RedisConnection({ url, connectTimeout? })` constructs but does not connect; await

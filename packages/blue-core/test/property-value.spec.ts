@@ -86,10 +86,14 @@ describe('MutablePropertyValues', () => {
 
     test('retains every duplicate pair when reordered', () => {
         const left = new MutablePropertyValues([
-            new PropertyValue('a', 1), new PropertyValue('a', 2), new PropertyValue('a', 1),
+            new PropertyValue('a', 1),
+            new PropertyValue('a', 2),
+            new PropertyValue('a', 1),
         ]);
         const right = new MutablePropertyValues([
-            new PropertyValue('a', 1), new PropertyValue('a', 1), new PropertyValue('a', 2),
+            new PropertyValue('a', 1),
+            new PropertyValue('a', 1),
+            new PropertyValue('a', 2),
         ]);
 
         expect(left.equals(right)).toBe(true);
@@ -98,10 +102,14 @@ describe('MutablePropertyValues', () => {
 
     test('distinguishes duplicate pair multiplicity at the same collection length', () => {
         const left = new MutablePropertyValues([
-            new PropertyValue('a', 1), new PropertyValue('a', 1), new PropertyValue('b', 2),
+            new PropertyValue('a', 1),
+            new PropertyValue('a', 1),
+            new PropertyValue('b', 2),
         ]);
         const right = new MutablePropertyValues([
-            new PropertyValue('a', 1), new PropertyValue('b', 2), new PropertyValue('b', 2),
+            new PropertyValue('a', 1),
+            new PropertyValue('b', 2),
+            new PropertyValue('b', 2),
         ]);
 
         expect(left.equals(right)).toBe(false);

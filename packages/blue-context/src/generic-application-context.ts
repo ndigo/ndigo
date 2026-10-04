@@ -207,11 +207,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
      * @param data - Event payload values.
      */
     broadcast(type: EventType, ...data: unknown[]): void {
-        direct<ApplicationContext>(
-            this,
-            (targetContext) => targetContext.emit(type, ...data),
-            true
-        );
+        direct<ApplicationContext>(this, (targetContext) => targetContext.emit(type, ...data), true);
     }
 
     /**

@@ -60,7 +60,7 @@ export class RedisCacheManager implements CacheManager {
         if (this.#closed) throw new Error('RedisCacheManager is closed');
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
         if (typeof name !== 'string' || name.length === 0) {
-            throw new TypeError('RedisCacheManager: cache name must be a non-empty string');
+            throw new TypeError(`RedisCacheManager: cache name must be a non-empty string — got ${String(name)}`);
         }
         let cache = this.#caches.get(name);
         if (cache === undefined) {

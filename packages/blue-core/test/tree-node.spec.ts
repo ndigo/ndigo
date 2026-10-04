@@ -46,10 +46,14 @@ describe('direct', () => {
 
     test('false at an inclusive starting node prunes all descendants', () => {
         const visited: string[] = [];
-        direct(tree, (node) => {
-            visited.push(node.name);
-            return false;
-        }, true);
+        direct(
+            tree,
+            (node) => {
+                visited.push(node.name);
+                return false;
+            },
+            true
+        );
         expect(visited).toEqual(['root']);
     });
 
@@ -95,10 +99,14 @@ describe('escalate', () => {
 
     test('an inclusive false result stops before the starting node parent', () => {
         const visited: string[] = [];
-        escalate(child, (node) => {
-            visited.push(node.name);
-            return false;
-        }, true);
+        escalate(
+            child,
+            (node) => {
+                visited.push(node.name);
+                return false;
+            },
+            true
+        );
         expect(visited).toEqual(['child']);
     });
 
@@ -116,10 +124,14 @@ describe('escalate', () => {
         }
         let count = 0;
         let last: Ancestor | undefined;
-        escalate(node, (ancestor) => {
-            count++;
-            last = ancestor;
-        }, true);
+        escalate(
+            node,
+            (ancestor) => {
+                count++;
+                last = ancestor;
+            },
+            true
+        );
         expect(count).toBe(20_001);
         expect(last).toBe(root);
     });
@@ -127,8 +139,12 @@ describe('escalate', () => {
 
 describe('indexOf', () => {
     const child: TreeNode = {
-        children: [], parent: null, root: null,
-        hasChild: () => false, newChild: () => undefined, removeChild: () => false,
+        children: [],
+        parent: null,
+        root: null,
+        hasChild: () => false,
+        newChild: () => undefined,
+        removeChild: () => false,
     };
     const tree = { children: [{ ...child }, { ...child }, child] };
 

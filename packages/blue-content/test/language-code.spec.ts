@@ -89,7 +89,12 @@ describe('LanguageCode', () => {
     test('orders tags lexicographically rather than by preference or specificity', () => {
         const codes = ['fr', 'en-US', 'en', 'en-GB', 'de'].map((tag) => new LanguageCode(tag));
         expect(codes.sort(comparableComparison).map(String)).toEqual(['de', 'en', 'en-GB', 'en-US', 'fr']);
-        expect(codes.reverse().sort((a, b) => a.compareToIgnoreCase(b)).map(String)).toEqual(['de', 'en', 'en-GB', 'en-US', 'fr']);
+        expect(
+            codes
+                .reverse()
+                .sort((a, b) => a.compareToIgnoreCase(b))
+                .map(String)
+        ).toEqual(['de', 'en', 'en-GB', 'en-US', 'fr']);
         const en = new LanguageCode('en');
         const fr = new LanguageCode('fr');
         expect(en.compareTo(fr)).toBeLessThan(0);

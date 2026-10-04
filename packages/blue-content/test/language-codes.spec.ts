@@ -36,7 +36,7 @@ describe('LanguageCode in content sources', () => {
     });
 
     test('uses the recommended default language', async () => {
-        expect((await source.getContent('title', LanguageCodes.DE))).toBe('Hello');
+        expect(await source.getContent('title', LanguageCodes.DE)).toBe('Hello');
     });
 
     test('NegotiatingContentSource accepts LanguageCode constants', async () => {

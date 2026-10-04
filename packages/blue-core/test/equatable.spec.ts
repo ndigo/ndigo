@@ -143,7 +143,18 @@ describe('equates', () => {
         expect(equates(new Map([[{}, 1]]), new Map([[{}, 1]]))).toBe(false);
         expect(equates(new Map([['a', undefined]]), new Map([['b', undefined]]))).toBe(false);
         expect(equates(new Map(), new Map([['a', 1]]))).toBe(false);
-        expect(equates(new Map([[NaN, 1], [0, 2]]), new Map([[-0, 2], [NaN, 1]]))).toBe(true);
+        expect(
+            equates(
+                new Map([
+                    [NaN, 1],
+                    [0, 2],
+                ]),
+                new Map([
+                    [-0, 2],
+                    [NaN, 1],
+                ])
+            )
+        ).toBe(true);
         expect(equates(new Map([['a', new SecretValue(1)]]), new Map([['a', new SecretValue(2)]]))).toBe(false);
     });
 

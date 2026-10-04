@@ -260,8 +260,10 @@ describe('context hierarchy helpers', () => {
         first.newChild('match-nested');
         root.newChild('match-sibling');
 
-        expect(findDescendants(root, (node) => node.name.startsWith('match')).map((node) => node.name))
-            .toEqual(['match-nested', 'match-sibling']);
+        expect(findDescendants(root, (node) => node.name.startsWith('match')).map((node) => node.name)).toEqual([
+            'match-nested',
+            'match-sibling',
+        ]);
         root.destroy();
     });
 

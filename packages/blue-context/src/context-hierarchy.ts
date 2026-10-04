@@ -162,9 +162,13 @@ export const unmountFeatureContext = (
  * @param {Function} visitor A callback invoked for each visited context; its return value is ignored.
  */
 export const traverseToRoot = (context: ApplicationContext, visitor: (context: ApplicationContext) => void): void => {
-    escalate(context, (node) => {
-        visitor(node);
-    }, true);
+    escalate(
+        context,
+        (node) => {
+            visitor(node);
+        },
+        true
+    );
 };
 
 /**

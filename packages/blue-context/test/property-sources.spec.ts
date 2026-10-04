@@ -205,13 +205,14 @@ describe('MutablePropertySources', () => {
         expect(registry.version).toBeGreaterThan(initial);
         const afterMutations = registry.version;
 
-        registry.get('a');
-        registry.contains('a');
-        registry.toArray();
-        [...registry.entries()];
-        [...registry.keys()];
-        [...registry.values()];
-        registry.forEach(() => {});
+        // Read paths must keep working after mutations — assert, not just call.
+        expect(() => registry.get('a')).not.toThrow();
+        expect(() => registry.contains('a')).not.toThrow();
+        expect(() => registry.toArray()).not.toThrow();
+        expect(() => [...registry.entries()]).not.toThrow();
+        expect(() => [...registry.keys()]).not.toThrow();
+        expect(() => [...registry.values()]).not.toThrow();
+        expect(() => registry.forEach(() => {})).not.toThrow();
 
         expect(registry.version).toBe(afterMutations);
 
@@ -221,5 +222,4 @@ describe('MutablePropertySources', () => {
 
         expect(registry.version).toBeGreaterThan(afterMutations);
     });
-
 });

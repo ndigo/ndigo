@@ -38,24 +38,23 @@ export const noteResponseSchema = z.object({
  */
 export const noteDtoSchema = schemaForEntity(Note)
     .pick({ id: true, title: true, body: true, createdAt: true })
-    .transform(
-        ({
-            id,
-            title,
-            body,
-            createdAt,
-        }: {
+    .transform((input) => {
+        // Entity-derived schemas erase their input type (`Record<string,
+        // never>`), so the column shape is recovered with an explicit cast —
+        // the schema itself still validates the values at parse time.
+        const { id, title, body, createdAt } = input as unknown as {
             id: number;
             title: string;
             body: string | null;
             createdAt: string | null;
-        }) => ({
+        };
+        return {
             id,
             title,
             summary: (body ?? '').slice(0, 80) || title,
             createdAt,
-        })
-    )
+        };
+    })
     .pipe(noteResponseSchema);
 
 /** Static type of the note response DTO. */

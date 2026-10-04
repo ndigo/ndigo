@@ -126,7 +126,10 @@ const compare = (a: unknown, b: unknown, ancestors?: Ancestors): boolean => {
         } else {
             const left = a as Record<string | symbol, unknown>;
             const right = b as Record<string | symbol, unknown>;
-            for (const key of keys!) {
+            // keys are only collected in this (non-map) branch; the guard is
+            // unreachable but keeps the type narrow without an assertion.
+            if (keys === undefined) return false;
+            for (const key of keys) {
                 if (!compare(left[key], right[key], ancestors)) return false;
             }
         }

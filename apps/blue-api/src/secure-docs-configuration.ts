@@ -32,7 +32,9 @@ import { lookupPrincipal } from './auth-store';
  */
 export const docsAccessGuard: RouteHandlerInterceptor = {
     async preHandle(route) {
-        const authorization = HTTPHeaders.AUTHORIZATION.get(getNodeRequest(route)?.headers);
+        // `?? {}`: no native request (in-process clients) means no headers — the
+        // denial below still applies.
+        const authorization = HTTPHeaders.AUTHORIZATION.get(getNodeRequest(route)?.headers ?? {});
         const header = Array.isArray(authorization) ? authorization[0] : authorization;
         const bearer = HTTPHeaders.AUTHORIZATION.bearerToken(header);
         if (bearer && (await lookupPrincipal(bearer))) {

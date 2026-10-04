@@ -52,37 +52,17 @@ Store configuration (see [CacheOptions](../interfaces/CacheOptions.md)).
 For a non-integer/negative `maxSize`, a
   non-positive `defaultTtl`, or an unknown `eviction` policy.
 
-## Accessors
-
-### size
-
-#### Get Signature
-
-> **get** **size**(): `number`
-
-Current live-entry count.
-
-##### Returns
-
-`number`
-
-Current live-entry count.
-
-#### Implementation of
-
-[`Cache`](../interfaces/Cache.md).[`size`](../interfaces/Cache.md#size)
-
 ## Methods
 
 ### clear()
 
-> **clear**(): `void`
+> **clear**(): `Promise`\<`void`\>
 
 Removes all entries.
 
 #### Returns
 
-`void`
+`Promise`\<`void`\>
 
 #### Implementation of
 
@@ -92,7 +72,7 @@ Removes all entries.
 
 ### delete()
 
-> **delete**(`key`): `boolean`
+> **delete**(`key`): `Promise`\<`boolean`\>
 
 Removes an entry. Returns whether the entry existed.
 
@@ -104,7 +84,7 @@ Removes an entry. Returns whether the entry existed.
 
 #### Returns
 
-`boolean`
+`Promise`\<`boolean`\>
 
 #### Implementation of
 
@@ -114,7 +94,7 @@ Removes an entry. Returns whether the entry existed.
 
 ### get()
 
-> **get**(`key`): [`CacheMiss`](CacheMiss.md) \| `V`
+> **get**(`key`): `Promise`\<[`CacheMiss`](CacheMiss.md) \| `V`\>
 
 Returns the live cached value or the [CacheMiss](CacheMiss.md) sentinel.
 Expired entries are removed on access. A hit updates recency under
@@ -128,7 +108,7 @@ Expired entries are removed on access. A hit updates recency under
 
 #### Returns
 
-[`CacheMiss`](CacheMiss.md) \| `V`
+`Promise`\<[`CacheMiss`](CacheMiss.md) \| `V`\>
 
 #### Implementation of
 
@@ -138,7 +118,7 @@ Expired entries are removed on access. A hit updates recency under
 
 ### has()
 
-> **has**(`key`): `boolean`
+> **has**(`key`): `Promise`\<`boolean`\>
 
 Returns whether the key holds a live entry (expired entries are
 removed on the check). Does not update recency.
@@ -151,7 +131,7 @@ removed on the check). Does not update recency.
 
 #### Returns
 
-`boolean`
+`Promise`\<`boolean`\>
 
 #### Implementation of
 
@@ -161,7 +141,7 @@ removed on the check). Does not update recency.
 
 ### set()
 
-> **set**(`key`, `value`, `ttl?`): `void`
+> **set**(`key`, `value`, `ttl?`): `Promise`\<`void`\>
 
 Stores a value, optionally overriding the store default TTL. Evicts
 per the configured policy when at [CacheOptions.maxSize](../interfaces/CacheOptions.md#maxsize).
@@ -182,7 +162,7 @@ per the configured policy when at [CacheOptions.maxSize](../interfaces/CacheOpti
 
 #### Returns
 
-`void`
+`Promise`\<`void`\>
 
 #### Throws
 
@@ -192,3 +172,19 @@ When the value is the [CacheMiss](CacheMiss.md) sentinel or
 #### Implementation of
 
 [`Cache`](../interfaces/Cache.md).[`set`](../interfaces/Cache.md#set)
+
+***
+
+### size()
+
+> **size**(): `Promise`\<`number`\>
+
+Entry count; expiry is lazy.
+
+#### Returns
+
+`Promise`\<`number`\>
+
+#### Implementation of
+
+[`Cache`](../interfaces/Cache.md).[`size`](../interfaces/Cache.md#size)

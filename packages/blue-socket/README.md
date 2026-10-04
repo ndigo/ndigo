@@ -70,8 +70,8 @@ async chat(session: SocketSession) {
 }
 
 @scheduled('*/2 * * * * *')
-tick() {
-    broker.publish('/topic/chat', JSON.stringify({ at: Date.now() }));
+async tick() {
+    await broker.publish('/topic/chat', JSON.stringify({ at: Date.now() }));
 }
 ```
 
@@ -96,11 +96,46 @@ const broker = new StompBroker({
     resolveUser: (session) => session.attributes.user, // maps the session to /user routing
 });
 broker.sendToUser('alice', '/queue/events', JSON.stringify({ kind: 'alert' })); // /user scope
-broker.publish('/queue/jobs', 'work'); // backlog; late subscribers replay it
-broker.publish('/topic/bin', new Uint8Array([0, 1, 255])); // binary MESSAGE
+await broker.publish('/queue/jobs', 'work'); // backlog; late subscribers replay it
+await broker.publish('/topic/bin', new Uint8Array([0, 1, 255])); // binary MESSAGE
 ```
 
-Semantics include transactions (BEGIN/COMMIT/ABORT, per-session buffers), ack tracking + NACK redelivery (`redelivered: true`), and `/user` scoped routing. Durable persistence behind `/queue` and STOMP-over-TCP are not built in — see the [websockets guide](../../docs/guides/06-websockets.md) for the full semantics.
+Semantics include transactions (BEGIN/COMMIT/ABORT, per-session buffers), ack tracking + NACK redelivery (`redelivered: true`), and `/user` scoped routing. Durable `/queue` storage is available through `LibSQLQueueMessageStore` from `@blue/orm-drizzle`; it is separate from cross-node live delivery. STOMP-over-TCP and SockJS are deliberately not provided — see the [websockets guide](../../docs/guides/06-websockets.md) for the full semantics.
+
+## Cross-node live delivery
+
+`SocketFanout` is the optional application-owned transport contract:
+
+```ts
+interface SocketFanout {
+    subscribe(
+        scope: 'path' | 'room' | 'topic',
+        receive: (message: SocketFanoutMessage) => void
+    ): Promise<() => Promise<void>>;
+    publish(scope: 'path' | 'room' | 'topic', message: SocketFanoutMessage): Promise<void>;
+}
+// SocketFanoutMessage: { key: string; body: string | Uint8Array; headers?: Record<string, string> }
+```
+
+`StompBroker({ fanout })` crosses **only `/topic/*`**, including inbound SEND.
+Await the transport's explicit connection, then `broker.connect()` before
+serving; await `broker.publish()` to observe publish failure. It returns
+`Promise<StoredQueueMessage | undefined>` (stored queue record when applicable),
+not a client-delivery acknowledgement. Without fanout, the local default remains.
+`/queue/*`, `/user/*`, transactions, MESSAGE/ACK IDs and queue replay remain
+broker-local; `QueueMessageStore` is a separate persistence seam, not a
+distributed consumer queue.
+
+The contract excludes the publishing transport's subscribers; consumers deliver
+locally once after backend acceptance. Failed topic publication rejects before
+local delivery; inbound SEND sends ERROR then closes `1011`, never a silent
+local-only fallback. Delivery/reconnect/limits belong to the adapter: the
+Node-only `RedisSocketFanout` in `@blue/redis/pubsub` is live at-most-once with
+no reconnect, replay, global ordering or exactly-once promise. Each transport
+supports one consumer per scope; a registry (`path`/`room`) and broker (`topic`)
+can share one. Await `broker.close()` to close sessions and unsubscribe before
+the owner closes the transport/publisher; it does not close either transport or
+queue store. See the [opt-in composition and limits](../../docs/guides/06-websockets.md#cross-node-live-fan-out-opt-in).
 
 ## API
 
@@ -111,7 +146,7 @@ how it fits with the rest of BlueJS.
 
 - **Client** — `WebSocketClient`, `StompClient`
 - **Server** — `StompBroker`
-- **Contracts** — `SocketSession`, `SocketRequestSources`, `SocketSessionRegistry` (type-only; re-exported by `@blue/dispatcher`)
+- **Contracts** — `SocketSession`, `SocketRequestSources`, `SocketSessionRegistry` (type-only; re-exported by `@blue/dispatcher`), `SocketFanout`, `SocketFanoutScope`, `SocketFanoutMessage`
 
 ## Development
 

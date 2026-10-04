@@ -178,9 +178,9 @@ The value to compare.
 
 ***
 
-### getMatchingCondition()
+### match()
 
-> **getMatchingCondition**(`route`): `CompositeRouteCondition` \| `null`
+> **match**(`route`): `CompositeRouteCondition` \| `null`
 
 Return the subset of conditions that match the route.
 
@@ -200,7 +200,7 @@ A matching composite condition, or `null`.
 
 #### Overrides
 
-[`AbstractRouteCondition`](AbstractRouteCondition.md).[`getMatchingCondition`](AbstractRouteCondition.md#getmatchingcondition)
+[`AbstractRouteCondition`](AbstractRouteCondition.md).[`match`](AbstractRouteCondition.md#match)
 
 ***
 

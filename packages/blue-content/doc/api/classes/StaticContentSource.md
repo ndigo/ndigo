@@ -30,7 +30,7 @@ Localized content keyed by content id and language.
 
 ##### defaultLanguage?
 
-`string` = `'en'`
+`string` \| [`LanguageCode`](LanguageCode.md)
 
 Fallback language used when a translation is missing.
 
@@ -59,7 +59,7 @@ The content key to resolve.
 
 ##### language
 
-`string`
+`string` \| [`LanguageCode`](LanguageCode.md)
 
 The requested language code.
 
@@ -91,7 +91,7 @@ The content key to look up.
 
 ##### language
 
-`string`
+`string` \| [`LanguageCode`](LanguageCode.md)
 
 The requested language code.
 

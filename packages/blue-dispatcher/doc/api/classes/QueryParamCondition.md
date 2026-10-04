@@ -176,9 +176,9 @@ The value to compare.
 
 ***
 
-### getMatchingCondition()
+### match()
 
-> **getMatchingCondition**(`route`): `QueryParamCondition` \| `null`
+> **match**(`route`): `QueryParamCondition` \| `null`
 
 Return this condition when every expression matches the route.
 
@@ -198,7 +198,7 @@ This condition, or `null`.
 
 #### Overrides
 
-[`AbstractRouteCondition`](AbstractRouteCondition.md).[`getMatchingCondition`](AbstractRouteCondition.md#getmatchingcondition)
+[`AbstractRouteCondition`](AbstractRouteCondition.md).[`match`](AbstractRouteCondition.md#match)
 
 ***
 

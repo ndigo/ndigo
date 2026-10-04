@@ -6,7 +6,7 @@
 
 # Function: memoize()
 
-> **memoize**\<`A`, `R`\>(`fn`, `options?`): (...`args`) => `R`
+> **memoize**\<`A`, `R`\>(`fn`, `options?`): (...`args`) => `Promise`\<`Awaited`\<`R`\>\>
 
 Memoizes a function: results are cached by (serialized) arguments — the
 client-side half of the caching story, usable in browsers and Node with no
@@ -18,9 +18,8 @@ Semantics:
   in-flight promise; the settled **value** is cached.
 - **Rejections are never cached**: a rejected promise clears the in-flight
   slot and the next call re-invokes the function.
-- The wrapped function must be consistently sync or async; the mode is
-  recorded from the first computed call and governs how cache hits are
-  returned (settled value vs. resolved promise).
+- Always returns a promise, including for synchronous functions. Cache
+  reads and writes are awaited; backend failures reject the call.
 
 ## Type Parameters
 
@@ -52,4 +51,4 @@ Cache behavior (see [MemoizeOptions](../interfaces/MemoizeOptions.md)).
 
 The memoized function.
 
-(...`args`) => `R`
+(...`args`) => `Promise`\<`Awaited`\<`R`\>\>

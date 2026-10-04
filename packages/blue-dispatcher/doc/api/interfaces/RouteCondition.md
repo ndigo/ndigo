@@ -8,6 +8,10 @@
 
 Contract for route matching conditions.
 
+## Extends
+
+- `ResultMatcher<Route, T>` from `@blue/core`
+
 ## Type Parameters
 
 ### T
@@ -44,9 +48,9 @@ A comparison result compatible with `Array.prototype.sort`.
 
 ***
 
-### getMatchingCondition()
+### match()
 
-> **getMatchingCondition**(`route`): `T` \| `null`
+> **match**(`route`): `T` \| `null`
 
 Return the condition that matches a route, or `null` when no match exists.
 

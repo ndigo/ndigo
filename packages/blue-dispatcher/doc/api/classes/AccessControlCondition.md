@@ -175,9 +175,9 @@ The value to compare.
 
 ***
 
-### getMatchingCondition()
+### match()
 
-> **getMatchingCondition**(`route`): `AccessControlCondition` \| `null`
+> **match**(`route`): `AccessControlCondition` \| `null`
 
 Determine whether this condition matches the given route.
 
@@ -201,11 +201,11 @@ This condition when the route meets the access level, or `null`.
 
 #### Implementation of
 
-[`RouteCondition`](../interfaces/RouteCondition.md).[`getMatchingCondition`](../interfaces/RouteCondition.md#getmatchingcondition)
+[`RouteCondition`](../interfaces/RouteCondition.md).[`match`](../interfaces/RouteCondition.md#match)
 
 #### Overrides
 
-[`AbstractRouteCondition`](AbstractRouteCondition.md).[`getMatchingCondition`](AbstractRouteCondition.md#getmatchingcondition)
+[`AbstractRouteCondition`](AbstractRouteCondition.md).[`match`](AbstractRouteCondition.md#match)
 
 ***
 

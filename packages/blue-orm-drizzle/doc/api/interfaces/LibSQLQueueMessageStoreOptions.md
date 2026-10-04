@@ -22,9 +22,16 @@ Authentication token for remote libsql servers.
 
 > `optional` **client?**: `Client`
 
-A shared libsql client (reuse an existing connection).
-[LibSQLQueueMessageStore.dispose](../classes/LibSQLQueueMessageStore.md#dispose) closes it, so only inject a
-client whose lifetime this store may end.
+A borrowed libsql client (reuse an existing connection). Disposal
+leaves it open unless `ownsClient` explicitly transfers ownership.
+
+***
+
+### ownsClient?
+
+> `optional` **ownsClient?**: `boolean`
+
+Transfer ownership of an injected client; defaults to false.
 
 ***
 

@@ -6,10 +6,10 @@
 
 # Class: LibSQLQueueMessageStore
 
-Durable `/queue` backend on libsql. One instance owns one connection;
-every method awaits a lazily-created schema. Multi-writer processes on
-one database are safe by virtue of atomic AUTOINCREMENT — seq issuance
-is a single INSERT.
+Durable `/queue` backend on libsql. Every method awaits schema creation.
+Multi-writer processes on one database are safe by virtue of atomic
+AUTOINCREMENT — seq issuance is a single INSERT. Clients created by the
+store are owned; injected clients are borrowed by default.
 
 ## Implements
 
@@ -27,8 +27,8 @@ is a single INSERT.
 
 [`LibSQLQueueMessageStoreOptions`](../interfaces/LibSQLQueueMessageStoreOptions.md) = `{}`
 
-A shared client, or url/authToken to create one
-  (url defaults to `':memory:'`, matching `DrizzleDataSource`).
+A borrowed client, or url/authToken to create an owned
+  client (url defaults to `':memory:'`, matching `DrizzleDataSource`).
 
 #### Returns
 
@@ -81,10 +81,10 @@ The stored message.
 
 > **dispose**(): `void`
 
-Close the libsql connection (this store owns its lifetime). Idempotent;
-every later operation rejects with the client's `CLIENT_CLOSED` error.
-A store constructed with an injected `client` closes that shared
-client too.
+Release this store. Idempotent; closes only owned clients. Later
+operations reject with a disposed-store error, including when the
+client is borrowed. Pending operations are not drained; callers must
+stop and drain the broker first.
 
 #### Returns
 

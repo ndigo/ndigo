@@ -49,7 +49,7 @@ Optional formatting parameters (interpolation values, plural count, variant).
 
 ##### language?
 
-`string`
+`string` \| [`LanguageCode`](../classes/LanguageCode.md)
 
 The language to use; the source's active language when omitted.
 

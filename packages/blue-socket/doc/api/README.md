@@ -38,6 +38,8 @@ Jeff Rose
 - [ReconnectPolicy](interfaces/ReconnectPolicy.md)
 - [ReconnectTrigger](interfaces/ReconnectTrigger.md)
 - [SocketClient](interfaces/SocketClient.md)
+- [SocketFanout](interfaces/SocketFanout.md)
+- [SocketFanoutMessage](interfaces/SocketFanoutMessage.md)
 - [SocketRequestSources](interfaces/SocketRequestSources.md)
 - [SocketSession](interfaces/SocketSession.md)
 - [SocketSessionRegistry](interfaces/SocketSessionRegistry.md)
@@ -52,6 +54,7 @@ Jeff Rose
 
 ## Type Aliases
 
+- [SocketFanoutScope](type-aliases/SocketFanoutScope.md)
 - [SocketStatus](type-aliases/SocketStatus.md)
 - [StompAckMode](type-aliases/StompAckMode.md)
 - [StompBody](type-aliases/StompBody.md)

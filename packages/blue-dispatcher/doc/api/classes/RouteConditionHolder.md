@@ -154,9 +154,9 @@ The value to compare.
 
 ***
 
-### getMatchingCondition()
+### match()
 
-> **getMatchingCondition**(`route`): `RouteConditionHolder` \| `null`
+> **match**(`route`): `RouteConditionHolder` \| `null`
 
 Return a holder for the wrapped condition when it matches the route.
 
@@ -176,7 +176,7 @@ A matching holder, or `null`.
 
 #### Overrides
 
-[`AbstractRouteCondition`](AbstractRouteCondition.md).[`getMatchingCondition`](AbstractRouteCondition.md#getmatchingcondition)
+[`AbstractRouteCondition`](AbstractRouteCondition.md).[`match`](AbstractRouteCondition.md#match)
 
 ***
 

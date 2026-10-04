@@ -266,9 +266,9 @@ The value to compare.
 
 ***
 
-### getMatchingCondition()
+### match()
 
-> **getMatchingCondition**(`route`): `PatternsRouteCondition` \| `null`
+> **match**(`route`): `PatternsRouteCondition` \| `null`
 
 Return a condition containing only the patterns that match the route.
 
@@ -288,7 +288,7 @@ A matching condition, or `null`.
 
 #### Overrides
 
-[`AbstractRouteCondition`](AbstractRouteCondition.md).[`getMatchingCondition`](AbstractRouteCondition.md#getmatchingcondition)
+[`AbstractRouteCondition`](AbstractRouteCondition.md).[`match`](AbstractRouteCondition.md#match)
 
 ***
 

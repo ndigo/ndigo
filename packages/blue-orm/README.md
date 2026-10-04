@@ -86,6 +86,18 @@ The full API is generated from JSDoc via `pnpm doc:api` into
 [`src/index.ts`](src/index.ts); see the [package index](../../doc/README.md) for
 how it fits with the rest of BlueJS.
 
+### Asynchronous repository consumers
+
+`AsyncRepository<T, ID>` exposes Promise-based save, lookup, relation loading,
+pagination, deletion, count, and existence operations. Missing entities resolve
+to `undefined`; operation errors reject.
+
+Use `toAsyncRepository(repository)` to consume a synchronous in-memory repository
+through this contract. The adapter preserves the repository receiver and turns
+synchronous exceptions into rejected promises. There is no async-to-sync adapter.
+`DrizzleRepository` implements the same contract directly, without changing SQL
+ordering or relation-loading semantics.
+
 ## Development
 
 ```bash

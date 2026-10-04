@@ -60,7 +60,7 @@ The content key to resolve.
 
 ##### language
 
-`string`
+`string` \| [`LanguageCode`](LanguageCode.md)
 
 The requested language code.
 
@@ -102,7 +102,7 @@ Evicts the cache entry for a specific key+language pair.
 
 ##### language
 
-`string`
+`string` \| [`LanguageCode`](LanguageCode.md)
 
 #### Returns
 

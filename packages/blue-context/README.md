@@ -45,6 +45,19 @@ how it fits with the rest of BlueJS.
 - **Environment + profiles** — profile activation and typed config binding
 - **Resource & events** — `ResourceLoader`/`Resource` abstractions, event emitters
 
+### Generic collection and tree consumers
+
+`PropertySources` extends `Enumerable<string, PropertySource>`. Its `entries`,
+`keys`, `values`, and `forEach` follow precedence order; replacing a source
+preserves its position. These methods use native map iteration, while the
+existing value-only iterator retains its snapshot behavior.
+
+`ApplicationContext` extends the read-only core `ParentNode<ApplicationContext>`
+and `ChildNode<ApplicationContext>` navigation contracts. `traverseToRoot` shares
+the iterative core ancestor traversal. Context visitors still ignore return
+values; subtree traversal retains live child iteration so appended siblings
+are visited.
+
 ## Development
 
 ```bash

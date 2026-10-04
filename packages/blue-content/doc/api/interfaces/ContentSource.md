@@ -30,7 +30,7 @@ The content key to resolve.
 
 ##### language
 
-`string`
+`string` \| [`LanguageCode`](../classes/LanguageCode.md)
 
 The requested language code.
 

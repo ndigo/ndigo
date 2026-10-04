@@ -79,7 +79,7 @@ The content key.
 
 ##### language
 
-`string`
+`string` \| [`LanguageCode`](LanguageCode.md)
 
 The requested language code.
 

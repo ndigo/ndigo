@@ -1,5 +1,5 @@
 /**
- * Zod-backed request validation (AD-7).
+ * Zod-backed request validation (AD-07).
  * * @module blue-dispatcher
  * @since 1.0.0
  * @author Jeff Rose

@@ -40,7 +40,7 @@ parsed body is validated and the typed data is returned; the raw
 
 > `optional` **stream?**: `boolean`
 
-Declares a streaming (SSE) call (AD-9): the method returns an
+Declares a streaming (SSE) call (AD-09): the method returns an
 `AsyncIterable` of parsed Server-Sent Events instead of a single
 response, with `Accept: text/event-stream` sent on the request. When
 combined with `responseSchema`, each event's `data` payload is

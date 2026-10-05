@@ -51,7 +51,7 @@ describe('DrizzleEntityManager', () => {
         expect(await manager.find(Note, note.id)).toBeUndefined();
     });
 
-    test('validates entities against column schemas before persisting (AD-7)', async () => {
+    test('validates entities against column schemas before persisting (AD-07)', async () => {
         const manager = new DrizzleEntityManager(dataSource);
 
         const note = new Note();

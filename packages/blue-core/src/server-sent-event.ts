@@ -1,5 +1,5 @@
 /**
- * The shared Server-Sent Event wire envelope (AD-9 naming cleanup).
+ * The shared Server-Sent Event wire envelope (AD-09 naming cleanup).
  * * @module blue-core
  * @since 1.0.0
  * @author Jeff Rose

@@ -40,7 +40,7 @@ export type { RelationOptions } from './decorators';
 // Metadata utilities
 export { getEntityMetadata, isEntity } from './metadata';
 
-// Zod schema derivation (AD-7)
+// Zod schema derivation (AD-07)
 export {
     schemaForEntity,
     schemaForColumn,

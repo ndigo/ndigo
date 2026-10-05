@@ -11,7 +11,7 @@
 Singleton scope implementation — creates at most one instance per named value.
 Destruction callbacks can be registered when an instance is created.
 
- AD-6: Implementation detail — see [PrototypeScope](PrototypeScope.md) for rationale.
+ AD-06: Implementation detail — see [PrototypeScope](PrototypeScope.md) for rationale.
 
 ## Implements
 

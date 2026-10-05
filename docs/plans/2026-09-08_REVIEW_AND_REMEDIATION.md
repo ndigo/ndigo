@@ -140,7 +140,7 @@ bind rejection, 401/403 denial finalization: all verified fixed.
 | H-3 | Generated config artifacts are committed in `packages/blue-util`: `vitest.config.js`, `vitest.config.d.ts`, `vitest.config.d.ts.map` are tracked (the `.ts` source is the maintained one).                                                                                                 | `git ls-files`            |
 | H-4 | Tooling left `packages/blue-boot/graft/` (632 KB wiring cache + `.ignore`/`.gitignore`) untracked; root `.gitignore` ignores only root-anchored `/graft/`, so nested graft caches are unignored and appear in `format:check`. Either ignore `**/graft/` or move the cache out of the tree. | `git status` + format run |
 | H-5 | Root `README.md` versions are stale (TS 5.7.2 → 6.0.3, Nx 20.3.2 → 23.2.0, Vitest 2.1.8 → 4.0.18, Vite 6.0.7) and the package list still includes deleted `blue-domain` and `blue-parser`.                                                                                                 | file + doc run            |
-| H-6 | `@blue/page` is a package-shaped concept stub (README: "no code", AD-3). It fails the manifest check and adds a workspace project with no build. Move it to `docs/decisions`/`archive` or add a manifest-check allowlist entry.                                                            | manifest run              |
+| H-6 | `@blue/page` is a package-shaped concept stub (README: "no code", AD-03). It fails the manifest check and adds a workspace project with no build. Move it to `docs/decisions`/`archive` or add a manifest-check allowlist entry.                                                           | manifest run              |
 
 ## 3. Remediation plan
 
@@ -206,7 +206,7 @@ bind rejection, 401/403 denial finalization: all verified fixed.
    via the existing `typedoc-tags-plugin`/CI lane.
     - Acceptance: `pnpm doc` emits 0 warnings and fails otherwise.
 10. **`@blue/page` decision (CI-3, H-6).**
-    Move the stub into `docs/decisions/AD-3` (delete the package dir) or
+    Move the stub into `docs/decisions/AD-03` (delete the package dir) or
     allowlist private stubs in `check-manifests.mjs`. Recommend the former —
     the workspace gains a real project and the manifest gate is restored.
     - Verify: `pnpm manifest:check` passes; `nx graph` no longer contains
@@ -301,7 +301,7 @@ All items implemented. Notable decisions and results:
 - **CI-2**: `.prettierignore` covers `**/graft/`; full baseline formatted.
 - **CI-4**: TypeDoc dead links/symbols fixed, `treatWarningsAsErrors: true`,
   docs lane added to CI.
-- **CI-3/H-6**: `@blue/page` stub deleted; AD-3 is the single source of truth.
+- **CI-3/H-6**: `@blue/page` stub deleted; AD-03 is the single source of truth.
 - **H-1/H-2/H-3**: cypress placeholder removed, dead `label-*` scripts removed,
   generated vitest config artifacts untracked.
 - **ARCH-4**: sibling `../todomvc` documented as a hard prerequisite (README),

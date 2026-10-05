@@ -98,7 +98,7 @@ that capability to Blue's resolver/interceptor model.
 
 BlueJS owns the `MultipartFile` + request-access contract and wraps **busboy** as the streaming
 parser. This follows the repo's three prior "own the contract, wrap the standard" settlements:
-`blue-signals` re-exports `@preact/signals-core`, validation adopted Zod (AD-7), telemetry wraps
+`blue-signals` re-exports `@preact/signals-core`, validation adopted Zod (AD-07), telemetry wraps
 OpenTelemetry. busboy is the zero-dep canonical primitive; multer/fastify-multipart add framework
 glue (Express/Fastify middleware shapes) that does not fit Blue's resolver/interceptor model, so we
 wrap the primitive directly and build the Blue-shaped contract on top. One new runtime dependency,

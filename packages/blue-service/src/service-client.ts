@@ -1,5 +1,5 @@
 /**
- * Runtime proxy generator for declarative service clients (AD-8).
+ * Runtime proxy generator for declarative service clients (AD-08).
  * * @module blue-service
  * @since 1.0.0
  * @author Jeff Rose
@@ -56,7 +56,7 @@ export function resolveCallBody(method: string, args: unknown[]): unknown {
 /**
  * Executes a `stream: true` call: performs the HTTP request, decodes the
  * response body chunks as they arrive, and yields each parsed Server-Sent
- * Event (AD-9). With a declared `responseSchema`, each event's `data` payload
+ * Event (AD-09). With a declared `responseSchema`, each event's `data` payload
  * is validated and the typed value is yielded instead of the raw event.
  *
  * @param config - The service config (name used in error messages).

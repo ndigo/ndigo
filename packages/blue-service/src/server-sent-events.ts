@@ -1,5 +1,5 @@
 /**
- * Server-Sent Events parsing for streaming service calls (AD-9).
+ * Server-Sent Events parsing for streaming service calls (AD-09).
  * * @module blue-service
  * @since 1.0.0
  * @author Jeff Rose

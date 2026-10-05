@@ -95,7 +95,7 @@ export abstract class AbstractNamedValueMethodArgumentResolver implements Handle
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
             // convertType conversion (asNumber/as*/withConversion, COR-11)
             // runs after named resolution — mirrors the platform pipeline.
-            // The Zod `convert` hook (installed by validatedBy, AD-7) then
+            // The Zod `convert` hook (installed by validatedBy, AD-07) then
             // sees the converted value.
             convertedValue = this.convertValue(parameter, value, route, mapping),
             validatedValue = parameter.convert ? parameter.convert(convertedValue) : convertedValue;

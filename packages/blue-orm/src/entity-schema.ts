@@ -1,5 +1,5 @@
 /**
- * Zod schema derivation for `@blue/orm` entities (AD-7).
+ * Zod schema derivation for `@blue/orm` entities (AD-07).
  * * @module blue-orm
  * @since 1.0.0
  * @author Jeff Rose

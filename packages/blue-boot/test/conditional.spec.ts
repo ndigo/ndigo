@@ -4,23 +4,18 @@
  * @author Jeff Rose
  */
 import { describe, test, expect, vi, afterEach } from 'vitest';
-import {
-    conditionalOnBrowser,
-    conditionalOnNode,
-    getConditionalPlatform,
-    isActiveForCurrentPlatform,
-} from '@blue/core';
+import { whenBrowser, whenNode, getConditionalPlatform, isActiveForCurrentPlatform } from '@blue/core';
 import { Application } from '../src/application';
 import { WebAutoConfiguration } from '@blue/platform-web';
 import { NodeAutoConfiguration } from '@blue/platform-node';
 
-describe('conditionalOnBrowser', () => {
+describe('whenBrowser', () => {
     afterEach(() => {
         vi.unstubAllGlobals();
     });
 
     test('stores browser platform in metadata', () => {
-        @conditionalOnBrowser
+        @whenBrowser
         class TestConfig {}
 
         expect(getConditionalPlatform(TestConfig)).toBe('browser');
@@ -31,7 +26,7 @@ describe('conditionalOnBrowser', () => {
         const win = typeof window !== 'undefined' ? window : vi.stubGlobal('window', {});
         expect(typeof window).toBe('object');
 
-        @conditionalOnBrowser
+        @whenBrowser
         class TestConfig {}
 
         expect(isActiveForCurrentPlatform(TestConfig)).toBe(true);
@@ -40,20 +35,20 @@ describe('conditionalOnBrowser', () => {
     test('isActiveForCurrentPlatform returns false when window is undefined', () => {
         vi.stubGlobal('window', undefined);
 
-        @conditionalOnBrowser
+        @whenBrowser
         class TestConfig {}
 
         expect(isActiveForCurrentPlatform(TestConfig)).toBe(false);
     });
 });
 
-describe('conditionalOnNode', () => {
+describe('whenNode', () => {
     afterEach(() => {
         vi.unstubAllGlobals();
     });
 
     test('stores node platform in metadata', () => {
-        @conditionalOnNode
+        @whenNode
         class TestConfig {}
 
         expect(getConditionalPlatform(TestConfig)).toBe('node');
@@ -62,14 +57,14 @@ describe('conditionalOnNode', () => {
     test('isActiveForCurrentPlatform returns true when window is not defined', () => {
         vi.stubGlobal('window', undefined);
 
-        @conditionalOnNode
+        @whenNode
         class TestConfig {}
 
         expect(isActiveForCurrentPlatform(TestConfig)).toBe(true);
     });
 
     test('isActiveForCurrentPlatform returns false when window is defined', () => {
-        @conditionalOnNode
+        @whenNode
         class TestConfig {}
 
         expect(isActiveForCurrentPlatform(TestConfig)).toBe(false);

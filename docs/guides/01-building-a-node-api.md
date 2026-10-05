@@ -31,7 +31,7 @@ const context = new ApplicationBuilder([NodeAutoConfiguration, AppConfiguration]
 
 1. prepares a `StandardEnvironment` (Node apps can pass their own — see
    `NodeEnvironment`), applying any `@propertySource` / profiles,
-2. registers each source conditionally (`@conditionalOnNode` gates platform
+2. registers each source conditionally (`@whenNode` gates platform
    configs),
 3. `refresh()`es the context: entries are created, and the lifecycle
    processor initializes managed beans (see 5),

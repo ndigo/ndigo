@@ -2,11 +2,11 @@
 
 ***
 
-[@blue/core](../README.md) / conditionalOnProperty
+[@blue/core](../README.md) / whenProperty
 
-# Function: conditionalOnProperty()
+# Function: whenProperty()
 
-> **conditionalOnProperty**(`options`): (`target`, `context`) => `void`
+> **whenProperty**(`options`): (`target`, `context`) => `void`
 
 Marks a configuration class as active only when an environment property is
 present (and, when `havingValue` is set, matches it).
@@ -15,7 +15,7 @@ present (and, when `havingValue` is set, matches it).
 
 ### options
 
-[`ConditionalOnPropertyOptions`](../interfaces/ConditionalOnPropertyOptions.md)
+[`WhenPropertyOptions`](../interfaces/WhenPropertyOptions.md)
 
 ## Returns
 
@@ -24,7 +24,7 @@ present (and, when `havingValue` is set, matches it).
 ## Example
 
 ```ts
-@conditionalOnProperty({ name: 'app.management.enabled' })
+@whenProperty({ name: 'app.management.enabled' })
 @class
 class ManagementConfiguration { … }
 ```

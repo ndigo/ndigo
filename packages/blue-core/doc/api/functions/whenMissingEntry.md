@@ -2,11 +2,11 @@
 
 ***
 
-[@blue/core](../README.md) / conditionalOnMissingEntry
+[@blue/core](../README.md) / whenMissingEntry
 
-# Function: conditionalOnMissingEntry()
+# Function: whenMissingEntry()
 
-> **conditionalOnMissingEntry**(`entryName`): (`target`, `context`) => `void`
+> **whenMissingEntry**(`entryName`): (`target`, `context`) => `void`
 
 Marks a configuration class as active only when an entry is NOT already
 registered — the "provide your own override" guarantee for auto-configs.
@@ -24,7 +24,7 @@ registered — the "provide your own override" guarantee for auto-configs.
 ## Example
 
 ```ts
-@conditionalOnMissingEntry('metricsController')
+@whenMissingEntry('metricsController')
 @class
 class ManagementAutoConfiguration { … }
 ```

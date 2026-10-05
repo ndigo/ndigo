@@ -2,11 +2,11 @@
 
 ***
 
-[@blue/core](../README.md) / ConditionalOnPropertyOptions
+[@blue/core](../README.md) / WhenPropertyOptions
 
-# Interface: ConditionalOnPropertyOptions
+# Interface: WhenPropertyOptions
 
-Options for [conditionalOnProperty](../functions/conditionalOnProperty.md).
+Options for [whenProperty](../functions/whenProperty.md).
 
 ## Properties
 

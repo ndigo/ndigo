@@ -12,6 +12,9 @@ distributed scheduling; staged around shared backend lifecycle dependencies.
 
 Implementation plans for features and technical specifications.
 
+Every implemented plan has its **decision recorded** in
+[docs/decisions/README.md](../decisions/README.md) (ADR index, AD-01..AD-65).
+
 ## Completed Plans
 
 ### 2026-10-03 - Shared Persistence and Distributed Backends
@@ -137,21 +140,47 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 
 ---
 
-## Active Plans
+## Implemented Plans (decision recorded)
+
+### 2026-09-15/16 — WebSocket & STOMP wave
+
+[Session registry & broadcast](2026-09-15_WEBSOCKET_BROADCAST.md),
+[isomorphic client](2026-09-15_WEBSOCKET_CLIENT.md), and
+[STOMP 1.2 protocol layer](2026-09-16_STOMP.md) — ratified by
+[AD-21](../decisions/2026-09-15_AD21_WEBSOCKET_SESSION_REGISTRY.md),
+[AD-22](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md),
+[AD-23](../decisions/2026-09-16_AD23_STOMP.md).
+
+### Pre-ADR era (records backfilled as AD-44..AD-65)
+
+- [2026-02-07 HTTP Transform Pipeline](2026-02-07_HTTP_TRANSFORM_PIPELINE.md) — body transform pipeline — [AD-49](../decisions/2026-02-07_AD49_HTTP_TRANSFORM_PIPELINE.md)
+- [2026-03-08 Validate Design](2026-03-08_VALIDATE_DESIGN.md) — superseded by AD-07 — [AD-52](../decisions/2026-03-08_AD52_VALIDATION_ARCHITECTURE_DESIGN.md)
+- [2026-03-30 ORM MVP](2026-03-30_ORM_MVP.md) — [AD-55](../decisions/2026-03-30_AD55_ORM_MVP.md)
+- [2026-05-28 Auth & ORM Post-MVP](2026-05-28_AUTH_DESIGN.md) — [AD-56](../decisions/2026-05-28_AD56_AUTH_ORM_POST_MVP.md)
+- [2026-06-02 Native-First Refactor](2026-06-02_NATIVE_FIRST_REFACTOR.md) — [AD-57](../decisions/2026-06-02_AD57_NATIVE_FIRST_REFACTOR.md)
+- [2026-08-12/19 OXC Evaluation & Migration](2026-08-19_OXC_EVALUATION_AND_MIGRATION_PLAN.md) — oxlint/oxfmt adoption — [AD-58](../decisions/2026-08-19_AD58_OXC_TOOLCHAIN_MIGRATION.md)
+- [2026-09-01 Signals](2026-09-01_SIGNALS.md) — [AD-59](../decisions/2026-09-01_AD59_SIGNALS_MODERNIZATION.md)
+- [2026-09-03 Node Platform Foundation](2026-09-03_NODE_PLATFORM_FOUNDATION.md) — [AD-60](../decisions/2026-09-03_AD60_NODE_PLATFORM_FOUNDATION.md)
+- [2026-09-03 RouteRegistry](2026-09-03_ROUTE_REGISTRY.md) — [AD-61](../decisions/2026-09-03_AD61_ROUTE_REGISTRY.md)
+- [2026-09-03 Shared Dependency Contract](2026-09-03_SHARED_DEPENDENCY_CONTRACT.md) — [AD-62](../decisions/2026-09-03_AD62_SHARED_DEPENDENCY_CONTRACT.md)
+- [2026-09-04 Test Harness](2026-09-04_BLUE_TEST_HARNESS.md) — [AD-63](../decisions/2026-09-04_AD63_BLUE_TEST_HARNESS.md)
+- [2026-09-04 Package Separation](2026-09-04_PACKAGE_SEPARATION.md) — [AD-64](../decisions/2026-09-04_AD64_PLATFORM_SEPARATION.md)
+- [2026-09-06 View Resolution Strategy](2026-09-06_VIEW_RESOLUTION_STRATEGY.md) — [AD-65](../decisions/2026-09-06_AD65_VIEW_RESOLUTION_STRATEGY.md)
+- [2026-09-06 Telemetry Gaps](2026-09-06_TELEMETRY_GAPS.md) — folded into [AD-32](../decisions/2026-09-26_AD32_TELEMETRY_COMPLETION.md)
+- [2026-09-08 Environment Phases 0–6](2026-09-08_ENVIRONMENT_PHASE0.md) — [AD-11](../decisions/2026-09-08_AD11_ENVIRONMENT_PROPERTY_SOURCES.md)–[AD-17](../decisions/2026-09-08_AD17_ENVIRONMENT_VALIDATION.md)
+
+## Completed Reviews
 
 - [2026-10-04_CODE_REVIEW_AND_MITIGATION.md](2026-10-04_CODE_REVIEW_AND_MITIGATION.md) - Review of the AD-42/AD-43 wave (blue-proxy, blue-resilience) and recent committed features with remediation plan (2 Must Fix, 3 Should Fix, 1 Block, 8 Medium, 10 Nit/FYI)
 - [2026-09-28_CODE_REVIEW_AND_MITIGATION.md](2026-09-28_CODE_REVIEW_AND_MITIGATION.md) - Review of the Wave 6 / AD-34 / AD-35-36 / AD-37 wave with remediation plan (2 Must Fix, 22 Should Fix, 16 Optional)
 - [2026-09-18_CODE_REVIEW_AND_MITIGATION.md](2026-09-18_CODE_REVIEW_AND_MITIGATION.md) - Architecture, security, and quality review with remediation plan
 - [2026-09-17_REVIEW_AND_REMEDIATION.md](2026-09-17_REVIEW_AND_REMEDIATION.md) - Review of the WebSocket/STOMP wave with repository gate remediation
-- [2026-09-16_STOMP.md](2026-09-16_STOMP.md) - STOMP 1.2 protocol layer: frame codec, server broker, client, and demo gate
-- [2026-09-15_WEBSOCKET_BROADCAST.md](2026-09-15_WEBSOCKET_BROADCAST.md) - WebSocket session registry, rooms/broadcast, heartbeat reaping, auto-config wiring
-- [2026-09-15_WEBSOCKET_CLIENT.md](2026-09-15_WEBSOCKET_CLIENT.md) - Isomorphic socket package: client + reconnect, dispatcher seam, demo gate rewire
-- [2026-09-04_REPOSITORY_REMEDIATION.md](2026-09-04_REPOSITORY_REMEDIATION.md) - Comprehensive architecture, security, quality, documentation, and release remediation plan
-- [2026-05-27_FEATURE_COMPLETENESS_ROADMAP.md](2026-05-27_FEATURE_COMPLETENESS_ROADMAP.md) - Full 10-wave framework feature completeness roadmap
-- [2026-03-08_PACKAGE_ROADMAP.md](2026-03-08_PACKAGE_ROADMAP.md)
-- [2026-03-08_VALIDATE_DESIGN.md](2026-03-08_VALIDATE_DESIGN.md)
-- [2026-03-30_ORM_MVP.md](2026-03-30_ORM_MVP.md)
-- [2026-02-07_HTTP_TRANSFORM_PIPELINE.md](2026-02-07_HTTP_TRANSFORM_PIPELINE.md)
+
+## Historical Roadmaps
+
+- [2026-05-27_FEATURE_COMPLETENESS_ROADMAP.md](2026-05-27_FEATURE_COMPLETENESS_ROADMAP.md) - Full 10-wave framework feature completeness roadmap — decisions mined into AD-01..AD-06; all waves shipped
+- [2026-03-08_PACKAGE_ROADMAP.md](2026-03-08_PACKAGE_ROADMAP.md) - Package scope roadmap — completed ✅ (delivered package set)
+- [2026-09-04_REPOSITORY_REMEDIATION.md](2026-09-04_REPOSITORY_REMEDIATION.md) - Comprehensive remediation plan — proposed; superseded by the weekly review series
 
 ## Archived Plans
 

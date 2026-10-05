@@ -1,5 +1,11 @@
 # 2026-03-08 Architecture Roadmap
 
+> **⚠️ ARCHIVED** — superseded by the living [ARCHITECTURE.md](../../ARCHITECTURE.md)
+> (kept current) and the decision record series
+> [docs/decisions/README.md](../decisions/README.md). The package-maturity
+> and sequencing content shipped via the 2026-05-27 feature-completeness
+> roadmap (AD-01..AD-06). Kept for history.
+
 ## Objective
 
 Provide a strategic architecture roadmap for BlueJS that documents:

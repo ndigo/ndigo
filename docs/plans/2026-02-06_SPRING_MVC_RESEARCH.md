@@ -16,7 +16,7 @@
 5. [Deliverables](#deliverables)
 6. [Timeline Estimate](#timeline-estimate)
 7. [Success Criteria](#success-criteria)
-8. [Questions to Resolve](#questions-to-resolve)
+8. [Questions to Resolve](#questions-to-resolve-during-research)
 9. [References](#references)
 10. [Appendix: Research Template](#appendix-research-template)
 

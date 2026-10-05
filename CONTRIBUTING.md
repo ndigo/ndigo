@@ -148,6 +148,23 @@ last build.
 - CI runs `graft build` (tier-1, deterministic, $0) + `graft check` on every
   PR; `graft check` failing means a fingerprint/wiring regression.
 
+## Agent configuration (`.opencode/`, `.claude/`, `.omp/`)
+
+The repository's AI-agent definitions are **generated, not hand-edited**.
+
+- Source of truth: the neutral store in
+  [`development-agents`](https://github.com/jeff/development-agents)
+  (agents, skills, per-harness shims) plus this repo's `agent-local/`
+  (repo-specific overrides, e.g. the `graft` skill).
+- Regenerate: `pnpm agents:sync` — renders all harness copies + the
+  `.agent-gen.json` sha256 manifest.
+- Validate: `pnpm agents:check` — manifest + structural invariants
+  (CI-gated).
+- Edit `development-agents/` or `agent-local/` and regenerate; never edit
+  generated files under `.opencode/agents`, `.claude/agents`, `.omp/agents`.
+- Models: `.agent-models.json` (stamped into OMP agents only; opencode and
+  Claude inherit the session model).
+
 ## Releases
 
 Release process is per-package via npm. Before publishing:

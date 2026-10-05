@@ -1115,10 +1115,13 @@ Canonical reference for every publishable package: purpose · layer · platform 
 
 ### Reactive state vs. application events
 
-| Facility                                                     | Canonical use                                                                                                                              | Anti-pattern                                                                                        |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
-| `@blue/signals` (`signal`/`computed`/`effect`)               | **Local, synchronous, derived state** within one component or service — a value that other code reads and reacts to immediately.           | Using signals to broadcast asynchronous cross-component notifications (a "signal as an event bus"). |
-| `@blue/context` `EventEmitter` (`Emitter`, `AsEventEmitter`) | **Cross-component, asynchronous application events** — decoupled publish/subscribe with `:`-hierarchy dispatch (`ApplicationEvent` style). | Using an emitter to model derived/inline state that components read synchronously.                  |
+| Facility                                                                      | Canonical use                                                                                                                                           | Anti-pattern                                                                                        |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `@blue/signals` (`signal`/`computed`/`effect`)                                | **Local, synchronous, derived state** within one component or service — a value that other code reads and reacts to immediately.                        | Using signals to broadcast asynchronous cross-component notifications (a "signal as an event bus"). |
+| `@blue/context` `EventEmitter` (`Emitter`, `AsEventEmitter`)                  | **Cross-component, asynchronous application events** — decoupled publish/subscribe with `:`-hierarchy dispatch (`ApplicationEvent` style).              | Using an emitter to model derived/inline state that components read synchronously.                  |
+| SSE (`ServerSentEventView`, `serviceClient` `stream: true`)                   | **Server→client one-way event stream** — the island-reactivity channel; handler-owned, per-request state (AD-09).                                       | Using WebSockets for one-way notifications that SSE already covers.                                 |
+| WebSocket + STOMP (`@socketMapping`, `SocketSession` rooms, STOMP `/topic/*`) | **Bidirectional, session-scoped channels** — rooms/broadcast, heartbeat reaping, STOMP destinations; cross-node via opt-in fanout (AD-21/22/23, AD-40). | Broadcasting application-wide events over a socket channel instead of the context event bus.        |
+| Async iterables (`ServiceClient.stream`, `SocketSession.messages`)            | **Consumer-driven consumption of an open stream** — typed, backpressured iteration over pushed values.                                                  | Materializing a whole stream into an array before reading it.                                       |
 
 **Rule of thumb:** derived value you read → signal; thing that happened that others should react to → event.
 
@@ -1722,36 +1725,48 @@ Guides: [`docs/guides/`](docs/guides/README.md).
 
 ## Roadmap
 
-### Current Status (March 2026)
+### Current Status (2026-10-05)
 
-- **Foundation is stable**: `@blue/util`, `@blue/core`, and `@blue/signals` are mature and broadly reusable.
-- **IoC/context are functional**: `@blue/factory` and `@blue/context` provide working DI/context patterns, with some infrastructure stubs still open.
-- **Web stack is operational**: `@blue/http`, `@blue/router`, and `@blue/dispatcher` support a complete dispatch flow demonstrated in `blue-todo`.
-- **Observability migrated**: `@blue/telemetry` now owns tracing/metrics/logging concerns; `@blue/logger` has been removed.
-- **View/application layers are partial**: `@blue/view`, `@blue/view-webcomponent`, `@blue/service`, `@blue/domain`, and `@blue/boot` require focused completion work.
+- **The 10-wave program shipped.** Foundation (`@blue/util`, `@blue/core`,
+  `@blue/signals`), IoC/context, the web stack (`@blue/http`,
+  `@blue/router`, `@blue/dispatcher`), observability, and the
+  view/application layers are complete; the 1.0 checkpoint (Wave 10) is
+  reached and decision records run AD-01..AD-65.
+- **Auth shipped** (AD-33, AD-56): credentials + session stores (memory
+  and durable LibSQL), OIDC authorization-code + PKCE, JWTs, role guards,
+  rate limiting, trusted-proxy client-IP resolution.
+- **ORM shipped** (AD-30/31/55): decorator entities, Drizzle adapter,
+  relations, journaled migrations, Zod-derived schemas (AD-07).
+- **Persistence baseline landed** (AD-40): durable sessions, shared Redis
+  cache, cross-node WebSocket/STOMP fan-out; distributed scheduling
+  explicitly deferred (AD-41).
+- **ConversionService shipped** (AD-38) — schema-target conversion is the
+  supported binding/conversion path; the former handwritten
+  `Converter<S,T>` design note is obsolete.
 
-### Near-Term Priorities
+### Near-Term (1.0)
 
-1. ~~End-to-end telemetry integration in `blue-todo`~~ ✅
-2. ~~Convention automation via `@blue/oxlint-plugin`~~ ✅
-3. `@blue/auth` MVP definition and implementation
-4. ~~`@blue/orm` MVP definition and implementation~~ ✅
+- **API-freeze consistency review** — the participatory decorator family
+  (`@scheduled`, `@authenticated`, `@authorized`, `@generated`,
+  `@transactional`, `@cached` — AD-20 D8) gets one deliberate naming
+  review, including renames if rejected, before the 1.0 freeze.
+- **Full time-zone catalog generator** — conditional (AD-20 D6): only if
+  the curated `@blue/scheduler` constants prove insufficient.
+- **Page concept design** — the open AD-03 question (independently
+  bootable presentation container) on its own design conversation if a
+  concrete consumer appears.
+- **Release gate** — changelog cuts `1.0.0`
+  ([Keep a Changelog](./CHANGELOG.md)), package README/API docs
+  re-verified (`pnpm doc:check`), CI gates green.
 
-### Future Architectural Items
+### Closed / Deferred
 
-- **Decorator naming review (pre-1.0).** `@scheduled`, `@authenticated`,
-  `@authorized`, `@generated`, and `@transactional` are all
-  past-participle/adjectival names. The convention ships documented
-  (AD-20 D8), but deserves one deliberate consistency review — including a
-  rename if rejected — before the 1.0 API freeze.
-- **Full time-zone catalog generator.** `TimeZones` in `@blue/scheduler`
-  ships as curated constants + `Intl` validation (AD-20 D6). If the curated
-  set proves insufficient, generate a full IANA catalog at build time
-  (tzdata dependency) instead of hand-maintaining ~400 entries.
-
-- **`ConversionService`** — A registry-backed type conversion service (a long-established DI-framework pattern) for registering `Converter<S,T>` implementations and resolving them by source/target type at runtime. Primarily useful for HTTP argument binding (e.g. `String → UUID`, `String → Date`, `String → domain type`) and `@ConfigurationProperties`-style binding. Would be registered in `ApplicationContext` and consumed by the dispatcher's argument resolver chain. The `Converter<S, T>`, `Parser<T...`
-
-For strategic architecture direction (platform portability, boot lifecycle, boundary decisions, and package maturity), see [2026-03-08_ARCHITECTURE_ROADMAP.md](./docs/reference/2026-03-08_ARCHITECTURE_ROADMAP.md).
+- Distributed scheduling (AD-41) and cross-node queue consumption — closed
+  with revisit triggers; not speculative scope.
+- The 2026-03-08 architecture roadmap reference and the 2026-05-27
+  feature-completeness roadmap (10-wave program) are archived history —
+  the decision records carry the current design intent
+  ([ADR index](./docs/decisions/README.md), [plans](./docs/plans/README.md)).
 
 ---
 

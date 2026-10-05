@@ -16,7 +16,7 @@ package?
 The decisive fact: **WHATWG `WebSocket` is a global in browsers _and_ Node
 ≥22** (undici ships it) — the same interface surface on both runtimes,
 exactly like `fetch`. A client written against it is isomorphic. The repo's
-boundary rule (AD-4 / `no-browser-globals-in-isomorphic`) says browser-only
+boundary rule (AD-04 / `no-browser-globals-in-isomorphic`) says browser-only
 code lives in `blue-platform-web`; an isomorphic abstraction does **not**
 belong there, and it is not HTTP (so not `blue-http`). The client is also a
 **second surface** of the socket domain (server contract + client

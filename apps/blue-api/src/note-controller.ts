@@ -43,7 +43,7 @@ export class NoteController {
     @parameters({
         token: headerValue('authorization'),
         // Validate the request body against the entity's derived insert
-        // schema (AD-7 + Phase 3 dogfood): rejects an empty title with a 400
+        // schema (AD-07 + Phase 3 dogfood): rejects an empty title with a 400
         // before persist() runs, with the zod constraint declared on the
         // entity column as the single source of truth.
         data: validatedBody(noteInsertSchema),

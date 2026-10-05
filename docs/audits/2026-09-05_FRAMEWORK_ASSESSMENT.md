@@ -47,11 +47,11 @@ It also accepts the second framing: a public API that "meets most needs" is legi
 
 `apps/blue-todo` uses both `@blue/signals` (item state in `todo-service.ts`) and the context emitter (controllers) — now with a documented boundary.
 
-**R2 — Two validation systems: `blue-model` vs `blue-validate`.** ✅ _RESOLVED 2026-09-05 → AD-7 executed_
+**R2 — Two validation systems: `blue-model` vs `blue-validate`.** ✅ _RESOLVED 2026-09-05 → AD-07 executed_
 
 Corrected: `blue-validate` is the _legacy_ constraint/decorator system; `blue-model`/objectmodel was the intended modernization that never landed. **Both deleted**; `blue-orm` derives Zod schemas from `@entity`/`@column` metadata; `blue-dispatcher` route params are Zod-backed (and `blue-domain` — archived 2026-09-05 — had been migrated to Zod before archiving).
 
-**R3 — `blue-service` duplicates `blue-http`'s interceptor pattern (not a full redundancy).** ✅ _RESOLVED 2026-09-05 → AD-8_
+**R3 — `blue-service` duplicates `blue-http`'s interceptor pattern (not a full redundancy).** ✅ _RESOLVED 2026-09-05 → AD-08_
 
 Corrected from the initial read: `blue-service` is a _typed service client_ (`Service.call(token, data)` via a `ServiceRegistry`, with request-id correlation and telemetry hooks) — a legitimate layer over `blue-http`, exactly the "meets most needs, drop to the underlying package for edge cases" pattern. The smell is narrower: it re-declares five interceptor interfaces (`CompletionAwareServiceInterceptor`, …) that mirror `blue-http`'s five, and its `postSuccess` differs from `postResponse` only semantically. **Action:** either reuse/extend the `@blue/http` interceptor contracts where the lifecycle is the same, or document the service lifecycle as intentionally distinct. Not a deletion candidate.
 
@@ -59,7 +59,7 @@ Corrected from the initial read: `blue-service` is a _typed service client_ (`Se
 
 **M1 — `blue-domain` has no consumer; cohesion unproven.** ✅ _RESOLVED 2026-09-05 — ARCHIVED_
 
-`blue-domain` (the legacy `DomainComponent`/`BusinessComponent`/`ViewComponent` + `ComponentAndView` concept — a business object as a union of content/data/behavior, paired with a view component at render time) never gained a consumer and its roadmap items were superseded by the client-first pivot. The concept's modern equivalents already exist: business objects → `@blue/orm` entities / Zod classes (AD-7); stateful event-emitting rendering components → `AbstractWebComponent`/`BlueElement`; composition → dispatcher `ModelAndView`. Moved to `archive/blue-domain` with a decision note.
+`blue-domain` (the legacy `DomainComponent`/`BusinessComponent`/`ViewComponent` + `ComponentAndView` concept — a business object as a union of content/data/behavior, paired with a view component at render time) never gained a consumer and its roadmap items were superseded by the client-first pivot. The concept's modern equivalents already exist: business objects → `@blue/orm` entities / Zod classes (AD-07); stateful event-emitting rendering components → `AbstractWebComponent`/`BlueElement`; composition → dispatcher `ModelAndView`. Moved to `archive/blue-domain` with a decision note.
 
 **M2 — `blue-orm` is in-memory only in practice.** ✅ _RESOLVED 2026-09-05 — Drizzle demo path_
 
@@ -72,7 +72,7 @@ Surfaced two framework gaps while wiring the SQL path:
 
 **M3 — `blue-orm-drizzle` is incomplete (2 of 5 interfaces) and un-consumed.** ✅ _RESOLVED 2026-09-05_
 
-`blue-orm` defines five contracts (`DataSource`, `EntityManager`, `UnitOfWork`, `TransactionManager`, `Repository`); `blue-orm-drizzle` originally implemented only `DataSource` + `EntityManager`. **Now complete:** `DrizzleTransactionManager` (BEGIN/COMMIT/ROLLBACK), `DrizzleUnitOfWork` (async tracking batched with `Promise.all`), and `DrizzleRepository` (async CRUD) landed in `1518ae0c`, with 12 libSQL in-memory integration tests. Entity `persist` also validates against the Zod schema derived from `@column` metadata (AD-7). Remaining gap: no migrations/schema management yet. `drizzle-zod` (zod v4 compatible, `0.8.3`) remains deferred until the adapter adopts Drizzle table schemas — the derivation is direct from metadata today.
+`blue-orm` defines five contracts (`DataSource`, `EntityManager`, `UnitOfWork`, `TransactionManager`, `Repository`); `blue-orm-drizzle` originally implemented only `DataSource` + `EntityManager`. **Now complete:** `DrizzleTransactionManager` (BEGIN/COMMIT/ROLLBACK), `DrizzleUnitOfWork` (async tracking batched with `Promise.all`), and `DrizzleRepository` (async CRUD) landed in `1518ae0c`, with 12 libSQL in-memory integration tests. Entity `persist` also validates against the Zod schema derived from `@column` metadata (AD-07). Remaining gap: no migrations/schema management yet. `drizzle-zod` (zod v4 compatible, `0.8.3`) remains deferred until the adapter adopts Drizzle table schemas — the derivation is direct from metadata today.
 
 **M4 — No real persistence, scheduling, websockets/SSE, server-side template engine, or session _store_.** Session _argument resolvers_ exist in both platforms, but no backing store package. These are gaps to record, not necessarily to fill now.
 

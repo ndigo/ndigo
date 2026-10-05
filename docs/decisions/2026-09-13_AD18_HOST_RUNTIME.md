@@ -39,13 +39,13 @@ customProps)` — one call covering registration, lifecycle, and URL
   activation — is real: Blue splits it across two registries joined by
   boilerplate.
 
-AD-3 (Site/Page model) already flags the missing registration API:
+AD-03 (Site/Page model) already flags the missing registration API:
 
 > Q3. What is the registration API (decorator? builder? mount call)?
 
 and defers it to a design conversation. This AD makes that decision for the
 **host orchestration** half. The Page _concept_, TTFB-vs-TTI contract, and
-island name↔tag↔schema binding remain AD-3's open questions (see
+island name↔tag↔schema binding remain AD-03's open questions (see
 §Non-goals).
 
 ## Decision
@@ -136,13 +136,13 @@ change later, but the default remains "host declares features at boot."
 
 ### D5 — Non-goals (explicitly out of scope)
 
-- **Page concept / TTFB-vs-TTI contract** — remains AD-3's open design
+- **Page concept / TTFB-vs-TTI contract** — remains AD-03's open design
   conversation; this AD only answers its registration-API question for the
   host/feature seam.
 - **Island registration** — unchanged: `IslandViewResolver` (server, by
   name) + `@TagMapping`/`customElements.define` (client) + `hydrateIslands()`.
   The name↔tag↔model-schema triple stays a documented contract
-  (view-resolution strategy, AD-9), not a registry.
+  (view-resolution strategy, AD-09), not a registry.
 - **Module federation / build-level sharing** — unchanged; shared
   dependencies remain the runtime `SharedDependencyRegistry` contract
   (shared-dependency plan, 2026-09-03).
@@ -161,7 +161,7 @@ change later, but the default remains "host declares features at boot."
 - **New small public surface** in `@blue/router`: `PartitionRouter.unmount`,
   `FeatureRoutingRegistry.unregister`.
 - **`PartitionRouter` rename (2026-09-13).** `SiteRouter` was renamed in the
-  same session: "Site" was vestigial vocabulary — AD-3 retired the Site
+  same session: "Site" was vestigial vocabulary — AD-03 retired the Site
   model, and `SiteRouter` was its only live bearer. `HostRouter` was
   rejected for one-keystroke collision with `HashRouter` in shared import
   blocks; `PartitionRouter` matches the existing `route-partition.ts`
@@ -172,7 +172,7 @@ change later, but the default remains "host declares features at boot."
   `apps/blue-host` was npm-renamed `@blue/host` → **`@blue/host-demo`** to
   free the scope name for the package.
 - **Documentation:** `apps/README.md` matrix updated; this AD
-  cross-references AD-3 (registration API resolved for the host seam, Page
+  cross-references AD-03 (registration API resolved for the host seam, Page
   question untouched).
 
 ## Sequencing
@@ -190,7 +190,7 @@ change later, but the default remains "host declares features at boot."
    leaves behind: `createTodoPartitionRouter` and
    `TodoRuntimeComposition.partitionRouter` (the registry's
    `partitionRouter` getter remains as the documented escape hatch).
-5. **Docs**: `apps/README.md`; cross-link AD-3 ↔ AD-18.
+5. **Docs**: `apps/README.md`; cross-link AD-03 ↔ AD-18.
 
 **Acceptance:** zero `mountOnActivate`-style closure joins remain in
 `apps/`; every feature is registered by exactly one `registerFeature` call;
@@ -234,6 +234,6 @@ manifest gate green (`node scripts/check-manifests.mjs`); graft rebuilt.
 - **Independently deployed features self-register at runtime** (distributed
   feature ownership) → the registry becomes a platform contract; revisit
   activation policies, error boundaries, and deployment coupling.
-- **AD-3's Page design conversation lands** → reconcile the `Page`
+- **AD-03's Page design conversation lands** → reconcile the `Page`
   registration API with `HostManager.registerFeature` rather than
   introducing a second registration seam.

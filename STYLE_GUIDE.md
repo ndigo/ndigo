@@ -2769,7 +2769,7 @@ If still unsure, **check similar methods in the codebase** for established patte
 
 Type-safe enums use classes to create enumeration constants with enhanced capabilities beyond built-in TypeScript enums. This pattern provides methods, inheritance, factory functions, and full serialization control.
 
-**See also:** [ARCHITECTURE.md Type-Safe Enum Pattern](./ARCHITECTURE.md#type-safe-enum-pattern) for when to use this pattern vs built-in enums.
+**See also:** [Type-Safe Enums](#314-type-safe-enums-convention-code-review) — the pattern's home in this guide.
 
 #### Class Naming
 
@@ -3344,7 +3344,7 @@ export class HttpMethod implements Equatable, Serializable {
 
 ### 3.15. Validation [CONVENTION: Code Review]
 
-**Pattern:** Zod is the single runtime-schema primitive. There is exactly one way to validate a value at each level — no parallel constraint/decorator APIs. (`blue-validate` and `blue-model`/objectmodel were retired 2026-09-05 per AD-7; do not re-introduce them.)
+**Pattern:** Zod is the single runtime-schema primitive. There is exactly one way to validate a value at each level — no parallel constraint/decorator APIs. (`blue-validate` and `blue-model`/objectmodel were retired 2026-09-05 per AD-07; do not re-introduce them.)
 
 **Pick the shape by what you are validating:**
 

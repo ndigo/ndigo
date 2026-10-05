@@ -1,5 +1,5 @@
 /**
- * The island demo's server-side todo model (AD-9).
+ * The island demo's server-side todo model (AD-09).
  * * @module blue-island
  * @since 1.0.0
  * @author Jeff Rose

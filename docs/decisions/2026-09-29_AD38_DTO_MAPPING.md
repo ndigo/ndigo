@@ -19,7 +19,7 @@ hand-copied fields (`note.title = String(data?.['title'] ?? '')`).
 
 The industry options were surveyed against the repo's established pattern
 (**own the contract, wrap the ecosystem standard, use platform APIs
-directly** — AD-7 Zod, AD-19 i18n, AD-24 caching, AD-35 OpenAPI):
+directly** — AD-07 Zod, AD-19 i18n, AD-24 caching, AD-35 OpenAPI):
 
 - **Spring `BeanUtils`/ModelMapper, .NET AutoMapper** — implicit
   reflection conventions; Java's workaround for erased types; silently
@@ -30,7 +30,7 @@ directly** — AD-7 Zod, AD-19 i18n, AD-24 caching, AD-35 OpenAPI):
   already removed (AD-34); slow maintenance.
 - **`typia`** — AOT compiler layer; same AD-34 D-8 rejection.
 - **`effect/schema`** — ecosystem gravity disproportionate to the gap.
-- **Zod** — already Blue's validation stack (AD-7), already a dependency
+- **Zod** — already Blue's validation stack (AD-07), already a dependency
   of 9 packages, already drives request DTOs (`validatedBody`
   `insertSchemaForEntity`), ORM schemas (`schemaForEntity`), config
   schema mode (AD-34 D-3), and OpenAPI schema derivation (`toJSONSchema`,
@@ -153,5 +153,5 @@ RFC 9457 `default` response entry in the spec (separate AD-35 follow-up).
 - Gap analysis: [`docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md`](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) §2.2
 - AD-35 (OpenAPI, response-schema follow-up): [`2026-09-28_AD35_OPENAPI_DOCS.md`](2026-09-28_AD35_OPENAPI_DOCS.md)
 - AD-34 (TypeScript-native layer): [`2026-09-27_AD34_TYPESCRIPT_NATIVE_LAYER.md`](2026-09-27_AD34_TYPESCRIPT_NATIVE_LAYER.md)
-- AD-7 (Zod validation): [`2026-09-05_AD7_ZOD_VALIDATION.md`](2026-09-05_AD7_ZOD_VALIDATION.md)
+- AD-07 (Zod validation): [`2026-09-05_AD07_ZOD_VALIDATION.md`](2026-09-05_AD07_ZOD_VALIDATION.md)
 - Guide: [`docs/guides/14-dto-conversion.md`](../guides/14-dto-conversion.md)

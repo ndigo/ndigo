@@ -121,7 +121,7 @@ rebinding (no storms). Proven end-to-end by the boot full-loop spec.
 
 This wave uses the Emitter path (server, synchronous, zero deps). The
 unification direction — a signal-backed environment (`refreshed` signal fed
-from the event via `streamToSignal`, AD-9) so client-side reactive views
+from the event via `streamToSignal`, AD-09) so client-side reactive views
 consume configuration changes without a server visit — ships as its **own
 ADR when a client-side consumer exists**. Explicitly NOT this wave.
 

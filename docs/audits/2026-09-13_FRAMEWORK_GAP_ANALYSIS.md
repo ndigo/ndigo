@@ -163,7 +163,7 @@ react-i18next, http backend, language detectors, resource JSON) and
 
 BlueJS has already settled this question three times: `blue-signals`
 re-exports `@preact/signals-core`; validation replaced a home-grown system
-with **Zod** (AD-7); telemetry wraps **OpenTelemetry**. Reinventing plural
+with **Zod** (AD-07); telemetry wraps **OpenTelemetry**. Reinventing plural
 rules, ICU syntax, or a resource loader would violate the repo's own
 pattern. The split:
 

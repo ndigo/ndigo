@@ -12,7 +12,7 @@ const initial = {
     filter: 'all',
 };
 
-describe('TodoModelStore (AD-9 demo)', () => {
+describe('TodoModelStore (AD-09 demo)', () => {
     test('get() returns an immutable snapshot', () => {
         const store = new TodoModelStore(initial);
         const snapshot = store.get();

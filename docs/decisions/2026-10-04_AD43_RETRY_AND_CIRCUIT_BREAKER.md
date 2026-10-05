@@ -60,5 +60,5 @@ secures the first policy consumer of `@blue/proxy`.
 
 - Plan: `docs/plans/2026-10-04_RETRY_AND_CIRCUIT_BREAKER.md`
 - Interception: [AD-42](2026-10-03_AD42_METHOD_INTERCEPTION.md) (D-3 re-entrancy)
-- Service client: `packages/blue-service/src/service-client.ts` (AD-8)
+- Service client: `packages/blue-service/src/service-client.ts` (AD-08)
 - Consumer: `apps/blue-island/client/main.ts`

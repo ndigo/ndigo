@@ -9,7 +9,7 @@ import { TodoModel, TodoModelStore } from './todo-model-store';
 
 /**
  * Serves the hybrid shell (the server-rendered island + client bundle) and
- * the reactive half of the demo (AD-9): `GET /events` pushes source-of-truth
+ * the reactive half of the demo (AD-09): `GET /events` pushes source-of-truth
  * model updates to the client as Server-Sent Events, which the hydrated
  * island consumes into its local reactive state (`@blue/signals`).
  */

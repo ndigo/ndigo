@@ -22,7 +22,7 @@ import { TodoModelStore } from '../src/todo-model-store';
  * Hybrid island demo integration: the server renders a full shell document
  * containing the server-side island markup (`<todo-app data-blue-island
  * data-blue-model="…">`), serves the built client bundle that hydrates it,
- * and pushes source-of-truth model updates to islands over SSE (AD-9).
+ * and pushes source-of-truth model updates to islands over SSE (AD-09).
  */
 
 describe('blue-island hybrid demo', () => {
@@ -99,7 +99,7 @@ describe('blue-island hybrid demo', () => {
     });
 });
 
-describe('GET /events pushes model updates over SSE (AD-9)', () => {
+describe('GET /events pushes model updates over SSE (AD-09)', () => {
     let adapter: NodeHTTPServerAdapter;
     let base: string;
     let store: TodoModelStore;

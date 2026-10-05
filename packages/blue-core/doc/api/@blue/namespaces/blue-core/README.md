@@ -48,5 +48,6 @@ Jeff Rose
 - [TEXT\_JAVASCRIPT](variables/TEXT_JAVASCRIPT.md)
 - [TEXT\_JSON](variables/TEXT_JSON.md)
 - [TEXT\_PLAIN](variables/TEXT_PLAIN.md)
+- [TEXT\_TOON](variables/TEXT_TOON.md)
 - [TEXT\_XML](variables/TEXT_XML.md)
 - [WILDCARD](variables/WILDCARD.md)

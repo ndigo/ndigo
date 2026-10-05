@@ -17,6 +17,21 @@ Every implemented plan has its **decision recorded** in
 
 ## Completed Plans
 
+### 2026-10-05 - TOON Support (opt-in authoring format)
+
+Opt-in, decode-only TOON support (AD-66): inert `MediaTypes.TEXT_TOON`
+token in `@blue/core`; `application.toon` / `application-{profile}.toon`
+config files in `StandardConfigFileLoader` (`format: 'auto' | 'json' |
+'toon'`, JSON wins collisions, `required:` covers the format pair) — the
+`@toon-format/toon` decoder is an optional peer loaded lazily, and
+everything downstream (merge, secrets, zod, binding) sees the plain JSON
+model. Wire/storage/config-server surfaces stay permanently JSON. Phase 3
+(`fromConfig`) deferred until a consumer asks.
+
+[Read plan](2026-10-05_TOON_SUPPORT.md)
+
+---
+
 ### 2026-10-03 - Shared Persistence and Distributed Backends
 
 Dependency-ordered persistence roadmap, complete: durable LibSQL sessions

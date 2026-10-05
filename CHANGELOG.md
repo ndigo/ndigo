@@ -22,6 +22,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- TOON support (AD-66): `MediaTypes.TEXT_TOON` media token and opt-in
+  `application.toon` config files — `StandardConfigFileLoader` probes JSON
+  first, then TOON (`format: 'auto' | 'json' | 'toon'`); the
+  `@toon-format/toon` decoder is an optional peer, loaded lazily only when a
+  `.toon` file is actually found. JSON stays the default everywhere.
 - Framework core: application contexts, DI/factory with scopes and entry
   processors, profiles and typed configuration binding
   (`@configurationProperties`), placeholder resolution, CLI args, live

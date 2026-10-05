@@ -3,6 +3,11 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+// TodoMVC common base (css class + style tweaks). Bundled through the entry
+// because vite only processes module scripts in index.html — a classic
+// <script src="node_modules/..."> survives the build, 404s under preview,
+// and the SPA-fallback HTML then executes as JS (breaks e2e).
+import 'todomvc-common/base.js';
 import './telemetry-setup';
 import { composeTodoRuntime } from './shell-composition';
 import { createTodoContext } from './todo-context';

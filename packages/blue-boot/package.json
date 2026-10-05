@@ -33,9 +33,18 @@
   "devDependencies": {
     "@blue/dispatcher": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
-    "@blue/platform-web": "~0.0.1"
+    "@blue/platform-web": "~0.0.1",
+    "@toon-format/toon": "4.1.1"
   },
   "sideEffects": false,
+  "peerDependencies": {
+    "@toon-format/toon": "4.1.1"
+  },
+  "peerDependenciesMeta": {
+    "@toon-format/toon": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",

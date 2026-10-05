@@ -44,6 +44,10 @@ const PEER_ALLOWLIST = {
     '@blue/platform-node': ['swagger-ui-dist'],
     // Node-only capability subpaths: connection-only consumers need none of these.
     '@blue/redis': ['@blue/cache', '@blue/factory', '@blue/socket'],
+    // OPTIONAL peer (AD-66): .toon config files decode through a lazy
+    // variable-specifier dynamic import; consumers who never use TOON
+    // install nothing and bundlers never resolve the module.
+    '@blue/boot': ['@toon-format/toon'],
 };
 
 /** Dev-tooling that is imported/invoked by configs and tests but is not a package concern. */

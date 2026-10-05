@@ -19,6 +19,36 @@ The base file name (without directory or extension). Defaults to
 
 ***
 
+### decodeToon?
+
+> `optional` **decodeToon?**: (`content`) => `JSONObject` \| `Promise`\<`JSONObject`\>
+
+TOON decoder seam. Defaults to a lazy `import('@toon-format/toon')`
+(the optional peer). Injectable for specs and alternative validators;
+must return the plain JSON object the document decodes to. TOON strict
+mode (spec §14) is the default of the reference decoder.
+
+#### Parameters
+
+##### content
+
+`string`
+
+#### Returns
+
+`JSONObject` \| `Promise`\<`JSONObject`\>
+
+***
+
+### format?
+
+> `optional` **format?**: [`ConfigFileFormat`](../type-aliases/ConfigFileFormat.md)
+
+Which file format(s) to probe. Defaults to `'auto'` (JSON first, then
+TOON). See [ConfigFileFormat](../type-aliases/ConfigFileFormat.md).
+
+***
+
 ### locations?
 
 > `optional` **locations?**: `string`[]

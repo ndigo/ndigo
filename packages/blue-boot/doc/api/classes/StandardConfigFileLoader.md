@@ -6,9 +6,13 @@
 
 # Class: StandardConfigFileLoader
 
-Loads `application.json` / `application-{profile}.json` config files into a
-`ConfigurableEnvironment`, orchestrated by boot AFTER profiles are applied
-and BEFORE CLI/builder wiring (CLI > boot > files > env > defaults).
+Loads `application.json` / `application-{profile}.json` (and, when
+`format` is `'auto'` or `'toon'`, `application.toon` /
+`application-{profile}.toon` — JSON wins the collision) config files into
+a `ConfigurableEnvironment`, orchestrated by boot AFTER profiles are
+applied and BEFORE CLI/builder wiring (CLI > boot > files > env >
+defaults). See AD-66: TOON is an opt-in, decode-only authoring format;
+JSON stays the default.
 
 ## Constructors
 

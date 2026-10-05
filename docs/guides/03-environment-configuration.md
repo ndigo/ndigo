@@ -38,7 +38,7 @@ Sources are **named and ordered** — higher wins:
 | Builder properties | `boot`              | `builder.properties({ server: { port: 8080 } })`   |
 | Process env        | `systemEnvironment` | `process.env` (snapshot at construction)           |
 | `.env` file        | `dotenv`            | auto-loaded (never overrides a set env var)        |
-| Config files       | `application`       | `./config/application.json` + profile variants     |
+| Config files       | `application`       | `./config/application.json` + profile variants (`.toon` opt-in, see below) |
 | Defaults           | `defaults`          | `builder.defaults({...})` (always present, lowest) |
 
 `getProperty('server.port')` consults this order; `originOf('server')` tells
@@ -96,6 +96,32 @@ env.acceptsProfiles(Profile.and(Profile.or('a', 'b'), 'c')); // '(a | b) & c'
 ```
 
 `application-prod.json` loads above `application.json` when `prod` is active.
+
+### TOON config files (opt-in, AD-66)
+
+Config files may be authored in [TOON](https://github.com/toon-format/toon)
+(spec v4.1) instead of JSON — same files, same deep-merge, same profiles:
+
+```toon
+# comments are allowed — the main reason to choose TOON
+server:
+  port: 8080
+  host: localhost
+environments[2:]{region,replicas}:
+  production: eu-central-1,6
+  staging: eu-central-1,2
+```
+
+`./config/application.toon` and `application-{profile}.toon` are probed when
+no `.json` file of the same name wins the collision; the loader option
+`format: 'json' | 'toon' | 'auto'` (default `auto`) restricts probing.
+TOON documents decode to the JSON model, so everything downstream — merge
+semantics, `{cipher:…}` secrets, zod schema validation, typed binding —
+behaves identically. `@toon-format/toon` is an **optional** dependency,
+loaded lazily only when a `.toon` file is found; install it
+(`npm i @toon-format/toon@4.1.1`) to use TOON files. The `text/toon` media
+type is provisional (not IANA-registered) — this opt-in is a pre-1.0
+authoring option, not a framework default.
 
 ## 3. Bind configuration to typed classes
 

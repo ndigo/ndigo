@@ -113,7 +113,7 @@ BlueJS already mirrors most of this; the bullets note where it does and where fo
   idea for BlueJS is **runtime plain→class transformation driven by an explicit DTO type**, producing a
   real instance (not just a typed view over a plain object).
 - **The extensible seam is pipes.** Every value flows through transform+validate pipes. BlueJS's
-  equivalent seam is the `parameter.convert` hook (`validatedBy`, AD-7) plus `convertType`. We already
+  equivalent seam is the `parameter.convert` hook (`validatedBy`, AD-07) plus `convertType`. We already
   have the pipe; we need to bind _into_ an object first, then let the existing pipe validate.
 - **Reflection vs explicit.** NestJS infers the DTO type from `reflect-metadata` `design:type` (and
   `@Type()` for nesting). BlueJS's established convention is **explicit markers, not reflection** —
@@ -128,7 +128,7 @@ BlueJS already mirrors most of this; the bullets note where it does and where fo
 2. Bean binding = `DataBinder` + `ConversionService`, both owned and present — **reuse, never rebuild**.
 3. plain→class: NestJS wraps `class-transformer`; BlueJS can lean on `DataBinder` (builds nested objects
    from keypaths) + optional target-constructor instantiation + Zod for validation/whitelist — **no new
-   runtime dependency**, consistent with the "own-the-contract" pattern (`blue-signals`, AD-7, AD-24).
+   runtime dependency**, consistent with the "own-the-contract" pattern (`blue-signals`, AD-07, AD-24).
 4. Explicit marker over reflection — precedent is `@file()` / `validatedBy`.
 
 ---
@@ -358,7 +358,7 @@ sources (D-2).
 - **Conversion failures on bound objects.** A bad field (e.g. non-numeric `age`) throws
   `ParameterConversionError` from the shared pipeline — consistent with existing resolvers, but it is a
   hard error, not a per-field `BindingResult`. If per-field validation aggregation is wanted later, that
-  sits on the existing Zod `convert` hook (`validatedBy`, AD-7), not the binder.
+  sits on the existing Zod `convert` hook (`validatedBy`, AD-07), not the binder.
 - **Whitelist surface.** Stripping is the _default_: a `validatedBy` object schema drops unknown keys on
   zod ^4.5.4 (no `.stripUnknown()` method exists). The pass-through case is the no-schema path —
   `dataBinderValue(source)` without `validatedBy` binds everything in the source. Document that pairing

@@ -172,14 +172,14 @@ if (likeView(mv)) {
 1. `likeView` in `blue-view` + unit tests.
 2. `WebComponentViewResolver` in `blue-view-webcomponent` + tests (resolution, caching, `viewNames` filter, non-matching name → null; eager metadata registry; lazy module-path loader).
 3. `IslandViewResolver` in `blue-view` + tests.
-4. Rename `EventStreamView` → `SSEEmitter` (`blue-platform-node`; update index export, `event-stream-view.spec.ts`, AD-9 doc, island demo).
+4. Rename `EventStreamView` → `SSEEmitter` (`blue-platform-node`; update index export, `event-stream-view.spec.ts`, AD-09 doc, island demo).
 5. `NodeDispatcher.render` direct-View branch + test (real HTTP: SSEEmitter returned directly).
 6. `WebAutoConfiguration` composite resolver (`[WebComponentViewResolver, NameViewResolver]`); `NodeAutoConfiguration` `IslandViewResolver` entry.
 7. Migrate `blue-todo` controllers to names; audit/remove dead element-class beans; drop `ToDoconfiguration.viewResolver` override.
 8. `blue-island /events` → direct `SSEEmitter` return.
 9. `blue-hello`: keep concrete view; add pointing comment.
 10. **New demo app `blue-views`** (browser): `WebAutoConfiguration` + composite `[WebComponentViewResolver, NameViewResolver, ImportViewResolver]`; routes `/` (component name), `/report` (imported module view `views/report-view.ts`), context-bean footer view composed into the shell; a `'nope'` route proving chain fall-through. Tests: three resolutions + fall-through.
-11. Docs: AD-9 follow-up amendment (SSEEmitter rename + imperative rationale); optional AD-10 recording this strategy.
+11. Docs: AD-09 follow-up amendment (SSEEmitter rename + imperative rationale); optional AD-10 recording this strategy.
 12. `graft build` refresh.
 
 **Follow-on (not in this slice):** engine capability negotiation — `ViewEngine`/`TargetingViewEngine` split (D7) + `supports(view)` registry selection (so engines stop being bean-name-hardwired and React/Handlebars engines coexist) **and** target negotiation (`supportsTarget`) with the target family (shadow-root, iframe, document targets). All are engine-capability work; none is a prerequisite for the resolvers.
@@ -217,7 +217,7 @@ All resolvers, the direct-View return, the auto-config chains, and both demo mig
 1. **`likeView(…)`** (`blue-view`) — structural guard for View-shaped handler returns.
 2. **`WebComponentViewResolver`** (`blue-view-webcomponent`) — config registry (`name → component class | module path`) + `@TagMapping` tag derivation; zero-config `name === tag`; `viewNames` filter; eager/lazy modes; cached via `AbstractCachingViewResolver`.
 3. **`IslandViewResolver`** (`blue-view`) — name → `IslandView` marker for node rendering.
-4. **`SSEEmitter`** (renamed from `EventStreamView`, per the acronym rule) — imperative emitter owned by the handler; `NodeDispatcher.render` gained the direct-View branch (`likeView`) so `return new SSEEmitter(events)` works (Spring `ViewMethodReturnValueHandler` parity). AD-9 updated.
+4. **`SSEEmitter`** (renamed from `EventStreamView`, per the acronym rule) — imperative emitter owned by the handler; `NodeDispatcher.render` gained the direct-View branch (`likeView`) so `return new SSEEmitter(events)` works (Spring `ViewMethodReturnValueHandler` parity). AD-09 updated.
 5. **Auto-config chains** — `WebAutoConfiguration.viewResolver` → `ViewResolverComposite([WebComponentViewResolver, NameViewResolver])`; `NodeAutoConfiguration` gained an `IslandViewResolver` entry.
 6. **blue-todo migrated** — controllers return names; dead element-class beans removed; component modules moved from manual `customElements.define` to `@TagMapping`; redundant `viewResolver`/`webComponentViewEngine` overrides deleted.
 7. **blue-hello migrated** — builds on `WebAutoConfiguration`; keeps one intentionally-concrete `WebComponentView` with a pointing comment (the "concrete is an option" sample).

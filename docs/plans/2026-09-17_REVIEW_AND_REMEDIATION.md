@@ -15,7 +15,7 @@ subsystems are out of scope.
 **Method:** Read of every new/changed source in the wave (codec, broker,
 client, store, transport, telemetry) against the STOMP 1.2 specification
 ([stomp.github.io](https://stomp.github.io/stomp-specification-1.2.html)),
-the ADRs (`docs/decisions/2026-09-1{5,6}_AD2{1,2,3}_*.md`) and the plans;
+the ADRs (`docs/decisions/2026-09-1{5,6}_AD02{1,2,3}_*.md`) and the plans;
 live execution of every repository gate (`pnpm lint`, `pnpm format:check`,
 package `tsc -b`, package `vitest run`); targeted throwaway probes for the
 defects marked **[exec]** (each probe reproduced a concrete wrong

@@ -36,7 +36,7 @@ function gatedStream<T>(values: T[]): { stream: AsyncIterable<T>; release: () =>
 /** Flushes all pending microtasks and the current macrotask. */
 const settle = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 0));
 
-describe('streamToSignal (AD-9)', () => {
+describe('streamToSignal (AD-09)', () => {
     it('writes each streamed value into the signal as it arrives', async () => {
         const target = signal(0);
         const { stream, release } = gatedStream([1, 2, 3]);

@@ -47,7 +47,7 @@ on the AD-11..17 environment stack.
 semantics, the contract this extends),
 [AD-20](../decisions/2026-09-13_AD20_SCHEDULING.md) (auto-config bean
 pattern), [AD-24](../decisions/2026-09-17_AD24_CACHING.md) (managed-bean +
-demo-gate pattern), [AD-9](../decisions/2026-09-05_AD9_SERVER_PUSH.md)
+demo-gate pattern), [AD-09](../decisions/2026-09-05_AD09_SERVER_PUSH.md)
 (`streamToSignal` — the Emitter↔Signals bridge), Feature Assessment
 `docs/reference/2026-09-01_FEATURE_ASSESSMENT.md` (status refresh).
 
@@ -378,7 +378,7 @@ change → no event → no rebinding (no storms). Spring Cloud Config publishing
 
 The repo now has two reactive vocabularies: **Emitter** events (context
 lifecycle, this wave's `config:refresh`) and **blue-signals**
-(`signal`/`computed`/`effect`), bridged by `streamToSignal` (AD-9). This wave
+(`signal`/`computed`/`effect`), bridged by `streamToSignal` (AD-09). This wave
 uses the Emitter path on the server (synchronous, zero new deps). The future
 direction is a **unification ADR** — a signal-backed environment (e.g. a
 `refreshed` signal fed from the emitter event via `streamToSignal`) so

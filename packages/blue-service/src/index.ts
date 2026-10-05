@@ -28,7 +28,7 @@ export * from './service-registry';
 export * from './telemetry-hooks';
 export * from './request-id-correlation';
 
-// Declarative service clients (AD-8)
+// Declarative service clients (AD-08)
 export { service, getCall, postCall, putCall, deleteCall, patchCall, queryCall } from './service-decorators';
 export {
     getServiceConfig,

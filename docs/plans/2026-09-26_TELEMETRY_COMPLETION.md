@@ -43,7 +43,7 @@ D-5). The gap-analysis Telemetry row is flipped to IMPLEMENTED.
 [Framework Gap Analysis](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) §3
 (Telemetry row), [AD-32](../decisions/2026-09-26_AD32_TELEMETRY_COMPLETION.md)
 (decisions D-1..D-5), `@blue/telemetry-web` `browser-config.ts` (the
-ergonomics precedent), AD-7-adjacent OTel sweep (Otel SDK 2.x option
+ergonomics precedent), AD-07-adjacent OTel sweep (Otel SDK 2.x option
 shapes).
 
 ---

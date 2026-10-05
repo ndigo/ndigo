@@ -180,7 +180,7 @@ export class MethodParameter implements Serializable {
     readonly prefix!: string | null;
     /**
      * Optional post-bind validator/converter applied to the resolved value.
-     * Set by {@link validatedBy} (Zod-backed, AD-7).
+     * Set by {@link validatedBy} (Zod-backed, AD-07).
      */
     readonly convert!: ((value: unknown) => unknown) | undefined;
     /**

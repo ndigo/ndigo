@@ -81,7 +81,7 @@ export class InMemoryEntityManager implements EntityManager {
      * Persists a new entity or updates an existing one in the in-memory store.
      * Automatically assigns generated primary IDs if applicable.
      * Runs any `@prePersist` / `@preUpdate` lifecycle hooks, then validates the
-     * entity against its Zod schema derived from `@column` metadata (AD-7).
+     * entity against its Zod schema derived from `@column` metadata (AD-07).
      *
      * @param entity - The entity to persist.
      * @throws {IllegalStateError} If the entity class is not decorated with `@entity`,
@@ -118,7 +118,7 @@ export class InMemoryEntityManager implements EntityManager {
             this.#callLifecycleHooks(entity, 'preUpdate');
         }
 
-        // Validate against the Zod schema derived from @column metadata (AD-7)
+        // Validate against the Zod schema derived from @column metadata (AD-07)
         this.#validateEntity(entityClass, entity);
 
         store.set(primaryId, entity);
@@ -297,7 +297,7 @@ export class InMemoryEntityManager implements EntityManager {
     }
 
     /**
-     * Validates the entity against its derived Zod schema (AD-7).
+     * Validates the entity against its derived Zod schema (AD-07).
      * Throws a `FrameworkError` when validation fails.
      *
      * @param entityClass - The entity constructor.

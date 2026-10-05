@@ -3,7 +3,7 @@
  *
  * The browser-global half of the client reconnect wiring: `@blue/socket`'s
  * `WebSocketClient` stays isomorphic while this package provides the
- * window/`navigator` surface (AD-4 boundary).
+ * window/`navigator` surface (AD-04 boundary).
  * * @module blue-platform-web
  * @since 1.0.0
  * @author Jeff Rose

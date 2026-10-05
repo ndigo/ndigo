@@ -17,7 +17,7 @@ Destruction callbacks are registered by the container for lifecycle-bearing
 values; `clear()` runs them before discarding so `@destroyable`/`@closeable`
 values tear down properly (mirrors `SingletonScope.destroyValue`).
 
- AD-6: Implementation detail — see [PrototypeScope](#) for rationale.
+ AD-06: Implementation detail — see [PrototypeScope](#) for rationale.
 
 ## Implements
 

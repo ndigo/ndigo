@@ -14,7 +14,7 @@ import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
 import { ServerSentEventView } from '../src/server-sent-event-view';
 
 /**
- * SSE server push (AD-9): `ServerSentEventView` streams an async-iterable
+ * SSE server push (AD-09): `ServerSentEventView` streams an async-iterable
  * event source to a real `node:http` response as `text/event-stream` frames,
  * one per yielded value, ending the response when the source completes.
  * Handlers return the view directly (producing-View branch — Spring

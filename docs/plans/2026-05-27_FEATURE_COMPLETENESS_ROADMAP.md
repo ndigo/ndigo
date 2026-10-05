@@ -11,7 +11,7 @@
 
 The following six decisions were ratified on 2026-05-27 and govern all subsequent wave work.
 
-### AD-1: `@blue/http` vs `@blue/service` Boundary
+### AD-01: `@blue/http` vs `@blue/service` Boundary
 
 **Decision:** Push CSRF, retry, error normalization, cache, and offline-detection into `@blue/http` as
 interceptors. `@blue/service` remains a thin domain-aware façade: service registry, service-call telemetry,
@@ -25,7 +25,7 @@ cross-cutting concerns, not business logic.
 
 ---
 
-### AD-2: `@blue/domain` vs `@blue/model` Reconciliation
+### AD-02: `@blue/domain` vs `@blue/model` Reconciliation
 
 **Decision:** `@blue/domain` is an optional MVVM layer that depends on `@blue/model` for validation and
 `@blue/context` for event emission. `@blue/model` stays pure (validation/data shape). A domain component is
@@ -39,7 +39,7 @@ decision. Reusing `@blue/model` avoids duplicating constraint logic.
 
 ---
 
-### AD-3: Minimal Viable `Site` Model
+### AD-03: Minimal Viable `Site` Model
 
 **Decision:** Defer `Site` to post-1.0. Ship a single-`Application` model first. `SiteBuilder` remains in
 `@blue/boot` marked `@experimental` but is not on the critical path.
@@ -50,7 +50,7 @@ decision. Reusing `@blue/model` avoids duplicating constraint logic.
 
 ---
 
-### AD-4: Browser-Only Code → `@blue/platform-web`
+### AD-04: Browser-Only Code → `@blue/platform-web`
 
 **Decision:** Audit and migrate browser-only globals (`window`, `document`, `navigator`, `HTMLElement`,
 `history`) from isomorphic-core packages (`@blue/router`, `@blue/dispatcher`, `@blue/view`,
@@ -63,7 +63,7 @@ decision. Reusing `@blue/model` avoids duplicating constraint logic.
 
 ---
 
-### AD-5: `@blue/platform-node` MVP Scope
+### AD-05: `@blue/platform-node` MVP Scope
 
 **Decision:** MVP includes: server environment binding, Node-side request/response argument resolvers,
 server-side cookie/session adapters, and file-system resource loader. Excludes: server-side rendering of
@@ -75,7 +75,7 @@ Web Components (deferred to future view adapters) and database concerns (`@blue/
 
 ---
 
-### AD-6: `@blue/factory` Scoping Split
+### AD-06: `@blue/factory` Scoping Split
 
 **Decision:** Defer. Leave scoped factory integrated until real non-scoped consumers emerge. Document the
 integration point. Revisit at 1.0 checkpoint.
@@ -157,7 +157,7 @@ integration point. Revisit at 1.0 checkpoint.
 
 ### Wave 2 — Isomorphic Core Audit (2 weeks)
 
-**Goal:** Apply AD-4. Enforce browser-only code boundary.
+**Goal:** Apply AD-04. Enforce browser-only code boundary.
 
 #### Tasks
 
@@ -213,7 +213,7 @@ with correct transaction lifecycle (start → commit/rollback).
 
 ### Wave 4 — Service Layer Boundary (2–3 weeks)
 
-**Goal:** Apply AD-1. Port legacy service interceptors into `@blue/http` and `@blue/platform-web`.
+**Goal:** Apply AD-01. Port legacy service interceptors into `@blue/http` and `@blue/platform-web`.
 
 #### Tasks
 
@@ -249,7 +249,7 @@ in console/OTel span.
 
 ### Wave 5 — Domain/Model Reconciliation (3 weeks)
 
-**Goal:** Apply AD-2. Bring `@blue/domain` to production-ready state.
+**Goal:** Apply AD-02. Bring `@blue/domain` to production-ready state.
 
 #### Tasks
 
@@ -269,7 +269,7 @@ a working action that mutates the model and re-renders.
 
 ### Wave 6 — Boot & Auto-Configuration (2 weeks)
 
-**Goal:** Apply AD-3 (single-app focus). Complete `@blue/boot` lifecycle.
+**Goal:** Apply AD-03 (single-app focus). Complete `@blue/boot` lifecycle.
 
 #### Tasks
 
@@ -316,7 +316,7 @@ and demonstrates context refresh on navigation.
 
 ### Wave 8 — Platform Expansion: `@blue/platform-node` (3–4 weeks)
 
-**Goal:** Apply AD-5. Enable hybrid (browser + Node) deployment topology.
+**Goal:** Apply AD-05. Enable hybrid (browser + Node) deployment topology.
 
 #### Tasks
 
@@ -365,7 +365,7 @@ server-side in Node, rendering a route and returning the view model as JSON.
 
 #### Tasks
 
-- [ ] Revisit AD-6 (`@blue/factory` scoping split decision)
+- [ ] Revisit AD-06 (`@blue/factory` scoping split decision)
 - [ ] Full architectural audit (architecture-reviewer)
 - [ ] Security review (security-reviewer)
 - [ ] Documentation completeness pass (all packages have README + TSDoc on public APIs)
@@ -412,8 +412,8 @@ server-side in Node, rendering a route and returning the view model as JSON.
 | Legacy port loses subtle behavior              | High       | Medium | Write characterization tests before porting        |
 | Architectural decision proves wrong mid-wave   | Medium     | High   | ADR per decision; explicit reversal record allowed |
 | Demo integration drift                         | High       | Medium | Demo is wave acceptance gate (enforced)            |
-| Wave 8 platform-node scope creep               | Medium     | Medium | Hold strict MVP line per AD-5                      |
-| Wave 5 domain blocked on view-engine ambiguity | Medium     | High   | AD-2 locked before Wave 5 starts                   |
+| Wave 8 platform-node scope creep               | Medium     | Medium | Hold strict MVP line per AD-05                     |
+| Wave 5 domain blocked on view-engine ambiguity | Medium     | High   | AD-02 locked before Wave 5 starts                  |
 | pnpm 11 build approval friction recurring      | Low        | Low    | One-time `pnpm approve-builds` resolves            |
 
 ---

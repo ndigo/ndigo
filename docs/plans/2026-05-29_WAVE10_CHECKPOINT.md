@@ -43,7 +43,7 @@ Waves 1–9 are complete and committed. The full package matrix is now:
 
 ## Architecture Decisions Revisited
 
-### AD-6 — `@blue/factory` Scoping Split (Deferred)
+### AD-06 — `@blue/factory` Scoping Split (Deferred)
 
 **Review findings:** The `Scope` interface and `ScopedFactory` interface are clean, well-bounded abstractions already present in `scope.ts`. The concrete scope implementations (`SingletonScope`, `HashScope`, `PrototypeScope`) are implementation details. A future split could expose only the interfaces in a core module while keeping the concrete implementations in a separate package.
 
@@ -66,7 +66,7 @@ Mark clearly unstable / forward-looking APIs so consumers know what to trust.
 
 **Already marked `@experimental`:**
 
-- `SiteBuilder` in `@blue/boot` — multi-app composition deferred to post-1.0 (AD-3)
+- `SiteBuilder` in `@blue/boot` — multi-app composition deferred to post-1.0 (AD-03)
 
 **`@internal` to add:**
 

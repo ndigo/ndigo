@@ -1,4 +1,4 @@
-# AD-8: blue-service — rebase interceptors onto @blue/http, roadmap to declarative service clients
+# AD-08: blue-service — rebase interceptors onto @blue/http, roadmap to declarative service clients
 
 **Date:** 2026-09-05
 **Status:** Accepted (near-term rebase ✅); declarative service-client proxy pattern landed 2026-09-05 (see follow-up below)
@@ -7,7 +7,7 @@
 
 `blue-service` was designed as a _service layer_ on top of `@blue/http` (the low-level client, in the spirit of fetch/axios): declare a common HTTP config plus a list of service names → their URLs, then reference endpoints by name. It was intentionally HTTP-agnostic at the call site.
 
-The design accumulated a problem: it **re-declared five interceptor interfaces** that mirror `@blue/http`'s (`CompletionAwareServiceInterceptor` / `CompletionAwareHTTPInterceptor`, …, `ResponseAwareServiceInterceptor` / `ResponseAwareHTTPInterceptor`), because the author "didn't want to expose HTTP at all." That duplication is the redundancy called out in the framework assessment (R3). Development of `blue-service` paused, and the framework gained Zod validation (AD-7), so the layer is worth re-evaluating.
+The design accumulated a problem: it **re-declared five interceptor interfaces** that mirror `@blue/http`'s (`CompletionAwareServiceInterceptor` / `CompletionAwareHTTPInterceptor`, …, `ResponseAwareServiceInterceptor` / `ResponseAwareHTTPInterceptor`), because the author "didn't want to expose HTTP at all." That duplication is the redundancy called out in the framework assessment (R3). Development of `blue-service` paused, and the framework gained Zod validation (AD-07), so the layer is worth re-evaluating.
 
 ## Decisions
 
@@ -55,7 +55,7 @@ class AccountsAPI {
 Planned work items (deferred):
 
 1. **Proxy generation** — `@service` reads method metadata (`Symbol.metadata`) and builds a client whose methods resolve `name → URL`, map params/path template, and call `@blue/http`.
-2. **Zod response/request schemas** — method metadata carries `zod` schemas (consistent with AD-7) for request serialization and response validation.
+2. **Zod response/request schemas** — method metadata carries `zod` schemas (consistent with AD-07) for request serialization and response validation.
 3. **Service-name correlation** — the generated client propagates the service name as a header/tag so `RequestIdCorrelation` and telemetry hooks work unchanged.
 4. **Remove the name→URL registry indirection** — `@service` _is_ the registration; `MapServiceRegistry` becomes an internal detail or is deleted.
 5. **Drop the remaining service-specific interceptor surface** — with HTTP's contracts reused (near-term), the proxy delegates to `@blue/http`'s execution chain directly; no `ServiceExecutionChain` fork.
@@ -66,7 +66,7 @@ The roadmap proxy pattern is implemented in `blue-service` (commit pending):
 `@service(name, config)` + `@getCall`/`@postCall`/`@putCall`/`@deleteCall`/`@patchCall`/`@queryCall` write
 `Symbol.metadata`; `serviceClient(API, http)` (exported from the package index) reads it and returns a
 `Proxy` delegating to `@blue/http` with path-param substitution (`:id`), JSON body serialization,
-service-name correlation header (`X-Blue-Service`), and optional Zod response validation (AD-7).
+service-name correlation header (`X-Blue-Service`), and optional Zod response validation (AD-07).
 `resolveCallBody` and `fillPathTemplate` are exported for custom calls.
 
 Remaining deferred from the original plan (unbuilt by design, YAGNI):
@@ -78,7 +78,7 @@ Remaining deferred from the original plan (unbuilt by design, YAGNI):
 
 - **Removes the R3 redundancy**: `blue-service` no longer parallel-declares five interceptor contracts.
 - **Preserves the layer intent**: call sites reference services by name; HTTP specifics stay under `@blue/http` (the `@service`-decorated API is the developer-facing surface).
-- **Deferred work is explicit**: the full proxy is not half-built; it is a documented AD-8 roadmap item gated on a real consumer (YAGNI).
+- **Deferred work is explicit**: the full proxy is not half-built; it is a documented AD-08 roadmap item gated on a real consumer (YAGNI).
 
 ## Revisit Trigger
 

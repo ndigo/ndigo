@@ -1,11 +1,11 @@
-# AD-6 Resolution: @blue/factory Scoping Split
+# AD-06 Resolution: @blue/factory Scoping Split
 
 **Date:** 2026-08-22  
 **Status:** Reviewed — No split needed at 1.0
 
 ## Background
 
-AD-6 proposed splitting `@blue/factory` into a scoped and non-scoped part. The concern was that `Scope`, `ScopedFactory`, `PrototypeScope`, `SingletonScope`, `HashScope`, and `ScopeRegistry` add complexity that not all consumers need.
+AD-06 proposed splitting `@blue/factory` into a scoped and non-scoped part. The concern was that `Scope`, `ScopedFactory`, `PrototypeScope`, `SingletonScope`, `HashScope`, and `ScopeRegistry` add complexity that not all consumers need.
 
 ## Analysis
 

@@ -19,6 +19,7 @@ Conceptual and hands-on guides for building applications with BlueJS. These comp
 13. [13 — OpenAPI & API Docs](13-openapi-and-api-docs.md) — the generated OpenAPI 3.0.3 spec from dispatch metadata, Swagger UI serving, `@apiDocs` metadata, and the `x-blue-*` extension surface.
 14. [14 — DTO & Conversion](14-dto-conversion.md) — `ConversionService` schema targets: entity-derived DTOs, fail-fast semantics, and the OpenAPI response contract (`@apiDocs({ responses })`).
 15. [15 — Method Interception & Resilience](15-method-interception.md) — metadata annotations, the interceptor chain (`@blue/proxy`), registration paths, weaving semantics, and retry + circuit breaking (`@blue/resilience`).
+16. [16 — Persistence & Distributed Backends](16-persistence-and-distributed-backends.md) — the memory-first doctrine, durable LibSQL sessions, the shared Redis cache, cross-node WebSocket/STOMP fan-out, shutdown ordering, and the deferred items (distributed scheduling).
 
 ## Reading Order
 

@@ -67,6 +67,12 @@ jobs:
       - name: Manifest conformance
         run: pnpm manifest:check
 
+      - name: Agent config integrity
+        # Generated agents/skills (.opencode/, .claude/, .omp/) must match the
+        # committed sha256 manifest. Regenerate with `pnpm agents:sync` from
+        # the development-agents neutral store — never hand-edit generated dirs.
+        run: pnpm agents:check
+
       - name: Strict type-check
         # Per-project tsc -b with the build config (packages + the three
         # tsc-built apps). Scoped with --filter so out-of-tree workspace

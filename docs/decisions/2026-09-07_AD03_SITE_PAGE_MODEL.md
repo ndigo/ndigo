@@ -1,4 +1,4 @@
-# AD-3: The legacy Site/Page model — lineage, successors, and the Page question
+# AD-03: The legacy Site/Page model — lineage, successors, and the Page question
 
 **Date:** 2026-09-07
 **Status:** Accepted — Site model retired; modern equivalents documented; Page
@@ -30,7 +30,7 @@ Two properties defined the model's value:
    were separate mountable units, not one monolithic context.
 
 The current generation chose **not** to build Page; `SiteBuilder` remained
-as a no-op `@experimental` stub ("Not yet implemented — see AD-3") — the
+as a no-op `@experimental` stub ("Not yet implemented — see AD-03") — the
 only surviving remnant of the model. This AD replaces that missing record:
 it documents the lineage into the modern architecture and records the fate
 of SiteBuilder.
@@ -58,7 +58,7 @@ legacy Site model _became_.
 - `SiteBuilder` (no-op `@experimental` stub, `packages/blue-boot/src/site-builder.ts`)
   is **deleted** (2026-09-07). It was a false promise: `run()` did nothing,
   `child()` stored nothing, and the single `ApplicationBuilder` model plus
-  the context tree already cover the documented intent (AD-7-era docs even
+  the context tree already cover the documented intent (AD-07-era docs even
   read "use `ApplicationBuilder`").
 - **No `Site`/`SiteBuilder` re-export remains** in `@blue/boot`.
 - Applications needing multi-context composition use either

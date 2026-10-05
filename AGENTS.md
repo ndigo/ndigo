@@ -450,7 +450,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
         - **Step 2 - Scan related packages:** Check common utilities and specialized tools:
             - `@blue/util` - Common utilities (string utils, seedrandom, slug) - **Check first!**
             - `@blue/dom` - Isomorphic DOM parsing/creation (linkedom wrappers) - For HTML parsing, element creation
-            - `@blue/validate` - (retired 2026-09-05 per AD-7; use `zod` via `@blue/orm` entity schemas / `@blue/dispatcher` `validatedBy`)
+            - `@blue/validate` - (retired 2026-09-05 per AD-07; use `zod` via `@blue/orm` entity schemas / `@blue/dispatcher` `validatedBy`)
             - `@blue/core` - Core primitives, containers, patterns - Use for application context, DI, base types
     - **After big changes:** refresh the graph with `graft build`.
 3.  **Plan:** Check `docs/migrations/` or `ARCHITECTURE.md` for recent architectural shifts.

@@ -16,7 +16,7 @@ API**, **relation fetch semantics / lazy loading**, and the thin
 **`DerivedQueryRepository`** (equality filters only).
 Builds on the existing five-contract ORM (`DataSource`, `EntityManager`,
 `UnitOfWork`, `TransactionManager`, `Repository` — all complete in
-`blue-orm-drizzle` since AD-7/M3 resolution).
+`blue-orm-drizzle` since AD-07/M3 resolution).
 
 **Working-session notes (as-built, Wave 1):**
 
@@ -43,9 +43,9 @@ NOT NULL, applied_at TEXT NOT NULL)`; `migrate()` is idempotent; `status()`
 
 **Companion docs:**
 [Framework Gap Analysis](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) §2.1
-(migrations row) + §3 (ORM row), [AD-7](../decisions/2026-09-05_AD7_ZOD_VALIDATION.md)
+(migrations row) + §3 (ORM row), [AD-07](../decisions/2026-09-05_AD07_ZOD_VALIDATION.md)
 (entity metadata → Zod schema, the ORM stack's base),
-[AD-30](2026-09-26_AD30_ORM_MIGRATIONS.md) (Wave-1 decisions),
+[AD-30](../decisions/2026-09-26_AD30_ORM_MIGRATIONS.md) (Wave-1 decisions),
 
 ---
 

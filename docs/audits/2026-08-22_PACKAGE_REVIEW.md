@@ -297,4 +297,4 @@ _(Finding retracted — no change needed.)_
 - **Holistic Audit (2026-03-30):** Previously reported layer violations, import issues, naming inconsistencies — all confirmed fixed in Waves 1–10.
 - **OXC Adoption Assessment (2026-08-21):** Lint migration complete; decorator spike blocked on TS 5.7 oxlint support.
 - **Migration Guide (2026-08-22):** Documents decorator naming (PascalCase→camelCase), OXC migration, package reorganization.
-- **AD-6 Decision (2026-08-22):** No factory scoping split needed.
+- **AD-06 Decision (2026-08-22):** No factory scoping split needed.

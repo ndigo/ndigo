@@ -26,7 +26,7 @@ framework already owns everything generation needs at runtime:
   `convert` closure, unreachable at generation time (D-3 fixes this seam).
 
 No new parser or source-of-truth is needed: BlueJS's declaration IS the
-metadata. This mirrors how AD-7 (Zod), AD-19/24 (wrap the ecosystem standard),
+metadata. This mirrors how AD-07 (Zod), AD-19/24 (wrap the ecosystem standard),
 and the springdoc/NestJS model work — own the contract, wrap the standard.
 
 ## Decisions

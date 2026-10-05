@@ -1,7 +1,7 @@
 # 2026-09-18 Security Headers
 
-**Status:** Proposed — approved shape (wrap Helmet, default-on); design
-decision record pending (AD-25); implementation sequenced below.
+**Status:** Completed — implementation landed 2026-09-18; decision record
+[AD-25](../decisions/2026-09-18_AD25_SECURITY_HEADERS.md).
 **Scope:** `SecurityHeadersInterceptor` in `blue-platform-node` (Helmet-wrap,
 `RouteHandlerInterceptor`), default-on wiring in `NodeAutoConfiguration`,
 demo assertions, docs + audit status refresh. Rate limiting stays a separate

@@ -1,4 +1,4 @@
-# AD-7: Zod as the canonical runtime-schema primitive
+# AD-07: Zod as the canonical runtime-schema primitive
 
 **Date:** 2026-09-05
 **Status:** Executed — all 7 migration steps landed 2026-09-05
@@ -70,7 +70,7 @@ Completed the remaining `blue-orm` persistence contracts in `blue-orm-drizzle`:
 `DrizzleTransactionManager` (BEGIN/COMMIT/ROLLBACK, nested-run rejection),
 `DrizzleUnitOfWork` (async new/dirty/removed tracking, `Promise.all` flush), and
 `DrizzleRepository` (async CRUD). `DrizzleEntityManager.persist` validates
-against the AD-7-derived Zod schema. 12 libSQL in-memory integration tests.
+against the AD-07-derived Zod schema. 12 libSQL in-memory integration tests.
 
 ## Revisit Trigger
 
@@ -80,7 +80,7 @@ Revisit if a requirement emerges that Zod cannot express (e.g. class-instance id
 
 **Silently-dead `validatedBy` on the shared resolver pipeline — fixed.**
 
-AD-7 step 5 wired `validatedBy`'s `convert` hook through the browser **BIND**
+AD-07 step 5 wired `validatedBy`'s `convert` hook through the browser **BIND**
 resolver only. When the 11 per-platform resolver implementations were later
 deduplicated into `AbstractPlatformArgumentResolver` (the shared
 `resolveArgument` pipeline in `blue-dispatcher`), the `parameter.convert`
@@ -88,7 +88,7 @@ invocation was not carried over. Result: every resolver extending the shared
 base — all six Node resolvers (body, query, path, header, cookie, session)
 and the web query/cookie/model/session/state resolvers — silently ignored
 Zod validation. Only the BIND path (`BrowserBindMethodArgumentResolver`)
-validated. The AD-7 "structurally dead" failure (from the legacy system) had
+validated. The AD-07 "structurally dead" failure (from the legacy system) had
 partially returned.
 
 **Fix:** `AbstractPlatformArgumentResolver.resolveArgument` now runs

@@ -55,6 +55,12 @@ jobs:
       - name: Maintained-file formatting
         run: pnpm format:check
 
+      - name: Docs relative-link integrity
+        # Zero-dependency checker over docs/ + root markdown
+        # (scripts/check-doc-links.mjs): catches renamed/moved files, wrong
+        # relative paths, and dead heading anchors. No network.
+        run: pnpm docs:links
+
       - name: Production dependency audit (no known vulnerabilities)
         run: pnpm audit --prod
 

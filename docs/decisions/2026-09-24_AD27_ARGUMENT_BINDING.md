@@ -22,7 +22,7 @@ NestJS does with `@Body(DTO)` + `ValidationPipe`.
 Crucially, every primitive already existed (see the plan §2): the resolver
 strategy pattern, a browser-only whole-source bind resolver, `DataBinder`
 (keypath-aware, core/isomorphic), `ConversionService`, and the Zod `convert`
-hook (AD-7). The gap was a missing Node-path resolver + extractor naming a
+hook (AD-07). The gap was a missing Node-path resolver + extractor naming a
 target shape — not a missing engine.
 
 The research (plan §3) found no framework behavior worth copying wholesale:
@@ -136,7 +136,7 @@ properties (`path`, `method`, `id`, plus `attributes` — the old
   `NodeParameterBindingErrorResolver` instead of an unmapped `TypeError`
   (500). Socket dispatch unchanged (its catch-all still closes 1008).
 - `BindingResult`-style per-field aggregation is deliberately not built;
-  the Zod `convert` hook (AD-7) is the documented validation surface.
+  the Zod `convert` hook (AD-07) is the documented validation surface.
 
 **Supersedes:** the stale "Argument binding" row of the
 [Framework Gap Analysis](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) §3

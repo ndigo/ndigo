@@ -12,27 +12,16 @@ BlueJS is a JavaScript-first application framework built on the enduring archite
 4. [Paradigm Selection Rules](#paradigm-selection-rules)
 5. [Dependency Management Strategy](#dependency-management-strategy)
 6. [Design Patterns](#design-patterns)
-7. [Type-Safe Enum Pattern](#type-safe-enum-pattern)
-    - [Overview](#overview-1)
-    - [When to Use](#when-to-use)
-    - [Pattern Variations](#pattern-variations)
-    - [Inheritance Hierarchies](#inheritance-hierarchies)
-    - [Factory Methods](#factory-methods)
-    - [Common Interfaces](#common-interfaces)
-    - [Implementation Checklist](#implementation-checklist)
-    - [Related Pattern: Factory Registry](#related-pattern-factory-registry)
-    - [Usage Examples](#usage-examples)
-    - [Examples from Codebase](#examples-from-codebase)
-8. [Decorators & Separation of Concerns](#decorators--separation-of-concerns)
+7. [Decorators & Separation of Concerns](#decorators--separation-of-concerns)
     - [Cross-Cutting Concerns](#cross-cutting-concerns)
     - [Decorator Metadata](#decorator-metadata)
-    - [Performance Considerations](#performance-considerations-2)
+    - [Performance Considerations](#performance-considerations)
     - [Creating Custom Decorators](#creating-custom-decorators)
     - [Standards Compliance](#standards-compliance)
-9. [Naming Conventions](#naming-conventions)
-10. [Module Visibility & API Design](#module-visibility--api-design)
-11. [Node Platform & Application Lifecycle](#node-platform--application-lifecycle)
-12. [Roadmap](#roadmap)
+8. [Naming Conventions](#naming-conventions)
+9. [Module Visibility & API Design](#module-visibility--api-design)
+10. [Node Platform & Application Lifecycle](#node-platform--application-lifecycle)
+11. [Roadmap](#roadmap)
 
 ## Core Philosophy
 
@@ -1133,13 +1122,13 @@ Canonical reference for every publishable package: purpose · layer · platform 
 
 **Rule of thumb:** derived value you read → signal; thing that happened that others should react to → event.
 
-> **Removed (2026-09-05):** `@blue/model`'s `EventModel`/`asMinimalEventEmitter` — the legacy pre-signals "observable model" emitter — has been deleted. Reactive models are now `@blue/signals`' `@reactive`/`@signal` decorators, with validation via Zod schemas (AD-7).
+> **Removed (2026-09-05):** `@blue/model`'s `EventModel`/`asMinimalEventEmitter` — the legacy pre-signals "observable model" emitter — has been deleted. Reactive models are now `@blue/signals`' `@reactive`/`@signal` decorators, with validation via Zod schemas (AD-07).
 
 ### Validation
 
-- **Zod is the canonical runtime-schema primitive** (`safeParse`/`parse` + `z.infer`). Schemas validate DTOs, route params, domain value objects, and signal state; `drizzle-zod` derives entity schemas from `blue-orm`'s decorator metadata so persistence, validation, and typing share one definition. See `docs/decisions/2026-09-05_AD7_ZOD_VALIDATION.md`.
+- **Zod is the canonical runtime-schema primitive** (`safeParse`/`parse` + `z.infer`). Schemas validate DTOs, route params, domain value objects, and signal state; `drizzle-zod` derives entity schemas from `blue-orm`'s decorator metadata so persistence, validation, and typing share one definition. See `docs/decisions/2026-09-05_AD07_ZOD_VALIDATION.md`.
 - `blue-orm` entities stay decorator-annotated (`@entity`/`@column`/`@primaryColumn`); validation is _derived from_ those annotations, not a parallel decorator API.
-- `blue-validate` (constraint/decorator system) and `blue-model` (objectmodel) were retired 2026-09-05 per AD-7; do not re-add them.
+- `blue-validate` (constraint/decorator system) and `blue-model` (objectmodel) were retired 2026-09-05 per AD-07; do not re-add them.
 
 ### Route → handler mapping
 
@@ -1252,7 +1241,7 @@ When adding or modifying integration layer rules, remember to update:
 - The "Library Integration Layer Pattern" section in `AGENTS.md`
 - The "Dependency Management Strategy" section in `ARCHITECTURE.md`
 
-**See also:** [STYLE_GUIDE.md Section 4.5](./STYLE_GUIDE.md#45-utility-function-organization) for concrete implementation guidelines on organizing utilities within packages, including the critical rule that internal files (`_util.ts`, `_parser.ts`) must contain actual local utilities, not just re-exports.
+**See also:** [STYLE_GUIDE.md §4.5](./STYLE_GUIDE.md#45-utility-function-organization-convention-code-review) for concrete implementation guidelines on organizing utilities within packages, including the critical rule that internal files (`_util.ts`, `_parser.ts`) must contain actual local utilities, not just re-exports.
 
 ## Design Patterns
 
@@ -1464,7 +1453,7 @@ class RequestHandler {
 
 #### 4. Data Validation
 
-Entity decorators carry validation metadata that the framework derives into a Zod schema — validation logic is co-located with the field it protects, and the derived schema is the single source of truth (AD-7).
+Entity decorators carry validation metadata that the framework derives into a Zod schema — validation logic is co-located with the field it protects, and the derived schema is the single source of truth (AD-07).
 
 - **Decorators**: `@column({ schema })`, `@primaryColumn`, `@generated`
 - **Problem Solved**: Keeps validation with the data it protects while producing a runtime schema _and_ a static type (`z.infer`) from one declaration. Route params use `validatedBy(schema, dataBinderValue('query'))` from `@blue/dispatcher`; domain components override `validationSchemas`.

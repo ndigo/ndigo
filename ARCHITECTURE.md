@@ -1659,7 +1659,7 @@ Applications are assembled through `ApplicationBuilder.run()`
 (`@blue/boot`): it prepares the environment, registers platform
 auto-configuration (`NodeAutoConfiguration`) plus the app's
 `@configuration` classes, and refreshes the context. Registration is
-conditional on platform (`@conditionalOnNode`) and environment.
+conditional on platform (`@whenNode`) and environment.
 
 ### Lifecycle model
 

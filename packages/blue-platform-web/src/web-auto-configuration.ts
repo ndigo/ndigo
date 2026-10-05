@@ -13,13 +13,13 @@ import { BrowserStorageValueMethodArgumentResolver } from './browser-storage-arg
 import { RadixMetadataHandlerMapping, MethodParameterType } from '@blue/dispatcher';
 import { NameViewResolver, ViewResolverComposite } from '@blue/view';
 import { WebComponentViewResolver } from '@blue/view-webcomponent';
-import { conditionalOnBrowser } from '@blue/core';
+import { whenBrowser } from '@blue/core';
 
 /**
  * Auto-configuration for browser-based applications.
  * Provisions argument resolvers and converter registries.
  */
-@conditionalOnBrowser
+@whenBrowser
 @configuration
 export class WebAutoConfiguration {
     /**

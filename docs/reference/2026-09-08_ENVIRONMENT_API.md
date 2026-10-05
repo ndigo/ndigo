@@ -49,7 +49,7 @@ The BlueJS environment, in one place. Built across Phases 0–6.
 Grammar: `name` | `!expr` | `expr & expr` | `expr | expr` | `( expr )`. `&`
 binds tighter than `|`. Whitespace tolerated. Malformed expressions and
 nesting beyond depth 10 throw naming the expression. `@profile(...)` takes one
-or more expressions, **OR**-across entries. `@conditionalOnProfile(expr)`
+or more expressions, **OR**-across entries. `@whenProfile(expr)`
 (blue-core) gates DI registration.
 
 ## Decorators (all camelCase per JS convention)
@@ -62,7 +62,7 @@ or more expressions, **OR**-across entries. `@conditionalOnProfile(expr)`
 | `@profile(...expr)`                               | blue-context | class/method | OR-gate entries by expression                                              |
 | `@configurationProperties(prefix[, { relaxed }])` | blue-boot    | class        | Type-safe binding + auto-registration (`ServerConfig` → `serverConfig`)    |
 | `@environment(zodSchema)`                         | blue-context | class        | Declare the environment's shape; auto-validated at boot                    |
-| `@conditionalOnProfile(expr)`                     | blue-core    | class        | Condition for registration                                                 |
+| `@whenProfile(expr)`                              | blue-core    | class        | Condition for registration                                                 |
 
 `{ relaxed: true }` enables kebab/snake → camel fallback matching
 (`server.host-name` ↔ `hostName`); exact keypaths are the default.

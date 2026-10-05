@@ -2,11 +2,11 @@
 
 ***
 
-[@blue/core](../README.md) / conditionalOnNode
+[@blue/core](../README.md) / whenNode
 
-# Function: conditionalOnNode()
+# Function: whenNode()
 
-> **conditionalOnNode**(`target`, `context`): `void`
+> **whenNode**(`target`, `context`): `void`
 
 Marks a configuration class as node-only.
 
@@ -27,7 +27,7 @@ Marks a configuration class as node-only.
 ## Example
 
 ```ts
-@conditionalOnNode
+@whenNode
 @class
 class NodeAutoConfiguration { … }
 ```

@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { configuration, entry } from '@blue/context';
-import { conditionalOnNode, createConversionService, type ConversionService } from '@blue/core';
+import { whenNode, createConversionService, type ConversionService } from '@blue/core';
 import { MemoryCacheManager } from '@blue/cache';
 import type { CacheManager } from '@blue/cache';
 import { CACHE_MANAGER } from '@blue/cache';
@@ -47,7 +47,7 @@ import { RateLimitInterceptor } from './rate-limit-interceptor';
  * Register this configuration class with your `ApplicationContext` alongside
  * NodeEnvironment to enable full server-side request handling.
  */
-@conditionalOnNode
+@whenNode
 @configuration
 export class NodeAutoConfiguration {
     /**

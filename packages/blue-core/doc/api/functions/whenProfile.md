@@ -2,11 +2,11 @@
 
 ***
 
-[@blue/core](../README.md) / conditionalOnProfile
+[@blue/core](../README.md) / whenProfile
 
-# Function: conditionalOnProfile()
+# Function: whenProfile()
 
-> **conditionalOnProfile**(`expression`): (`target`, `context`) => `void`
+> **whenProfile**(`expression`): (`target`, `context`) => `void`
 
 Class decorator that marks a configuration class as active only when a
 profile expression matches the environment's effective active set (AD-14).
@@ -28,6 +28,6 @@ A class decorator.
 ## Example
 
 ```ts
-@conditionalOnProfile('!prod & (dev | test)')
+@whenProfile('!prod & (dev | test)')
 class DevOnlyConfiguration { ... }
 ```

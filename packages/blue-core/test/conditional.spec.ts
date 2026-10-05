@@ -6,10 +6,10 @@
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';
 import {
-    conditionalOnNode,
-    conditionalOnProperty,
-    conditionalOnMissingEntry,
-    conditionalOnProfile,
+    whenNode,
+    whenProperty,
+    whenMissingEntry,
+    whenProfile,
     isActive,
     isActiveForCurrentPlatform,
     type ConditionContext,
@@ -27,15 +27,15 @@ describe('isActiveForCurrentPlatform', () => {
     });
 
     test('node platform gating', () => {
-        @conditionalOnNode
+        @whenNode
         class NodeOnly {}
         expect(isActiveForCurrentPlatform(NodeOnly)).toBe(true);
     });
 });
 
-describe('conditionalOnProperty', () => {
+describe('whenProperty', () => {
     test('present truthy property is active', () => {
-        @conditionalOnProperty({ name: 'app.metrics.enabled' })
+        @whenProperty({ name: 'app.metrics.enabled' })
         class C {}
         expect(isActive(C, ctx({ 'app.metrics.enabled': true }))).toBe(true);
         expect(isActive(C, ctx({ 'app.metrics.enabled': false }))).toBe(false);
@@ -43,23 +43,23 @@ describe('conditionalOnProperty', () => {
     });
 
     test('havingValue requires an exact match', () => {
-        @conditionalOnProperty({ name: 'server.port', havingValue: '8080' })
+        @whenProperty({ name: 'server.port', havingValue: '8080' })
         class C {}
         expect(isActive(C, ctx({ 'server.port': '8080' }))).toBe(true);
         expect(isActive(C, ctx({ 'server.port': '9000' }))).toBe(false);
     });
 
     test('matchIfMissing activates when the property is absent', () => {
-        @conditionalOnProperty({ name: 'app.flag', matchIfMissing: true })
+        @whenProperty({ name: 'app.flag', matchIfMissing: true })
         class C {}
         expect(isActive(C, ctx({}))).toBe(true);
         expect(isActive(C, ctx({ 'app.flag': 0 }))).toBe(false);
     });
 });
 
-describe('conditionalOnMissingEntry', () => {
+describe('whenMissingEntry', () => {
     test('active when the entry is absent', () => {
-        @conditionalOnMissingEntry('metricsController')
+        @whenMissingEntry('metricsController')
         class C {}
         expect(isActive(C, ctx({}))).toBe(true);
         expect(isActive(C, ctx({}, ['metricsController']))).toBe(false);
@@ -68,17 +68,17 @@ describe('conditionalOnMissingEntry', () => {
 
 describe('isActive combines conditions', () => {
     test('platform AND property must both pass', () => {
-        @conditionalOnNode
-        @conditionalOnProperty({ name: 'app.feature' })
+        @whenNode
+        @whenProperty({ name: 'app.feature' })
         class C {}
         expect(isActive(C, ctx({ 'app.feature': true }))).toBe(true);
         expect(isActive(C, ctx({}))).toBe(false);
     });
 });
 
-describe('conditionalOnProfile', () => {
+describe('whenProfile', () => {
     test('matches when the profile is active', () => {
-        @conditionalOnProfile('prod')
+        @whenProfile('prod')
         class C {}
         const ctxProfiles = (members: Set<string>): ConditionContext => ({
             getProperty: () => undefined,
@@ -90,7 +90,7 @@ describe('conditionalOnProfile', () => {
     });
 
     test('supports expressions (delegated to the context evaluator)', () => {
-        @conditionalOnProfile('!prod & (dev | test)')
+        @whenProfile('!prod & (dev | test)')
         class C {}
         // The core decorator forwards the raw expression to the context's
         // acceptsProfiles; full grammar verification lives in blue-context's
@@ -120,14 +120,14 @@ describe('conditionalOnProfile', () => {
     });
 
     test('no acceptsProfiles in context passes through (ctx-less behavior)', () => {
-        @conditionalOnProfile('prod')
+        @whenProfile('prod')
         class C {}
         expect(isActive(C)).toBe(true);
     });
 
     test('combines with property conditions', () => {
-        @conditionalOnProfile('dev')
-        @conditionalOnProperty({ name: 'app.feature' })
+        @whenProfile('dev')
+        @whenProperty({ name: 'app.feature' })
         class C {}
         const ctxDev: ConditionContext = {
             getProperty: () => undefined,

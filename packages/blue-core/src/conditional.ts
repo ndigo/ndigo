@@ -9,10 +9,10 @@ import '@tsmetadata/polyfill';
 /** Platform types for conditional auto-configuration. */
 export type ConditionalPlatform = 'browser' | 'node';
 
-const CONDITIONAL_ON = 'boot:conditionalOn';
-const CONDITIONAL_PROPERTY = 'boot:conditionalOnProperty';
-const CONDITIONAL_PROFILE = 'boot:conditionalOnProfile';
-const CONDITIONAL_MISSING = 'boot:conditionalOnMissingEntry';
+const WHEN_PLATFORM = 'boot:whenPlatform';
+const WHEN_PROPERTY = 'boot:whenProperty';
+const WHEN_PROFILE = 'boot:whenProfile';
+const WHEN_MISSING = 'boot:whenMissingEntry';
 
 /**
  * The runtime surface an active-condition evaluation needs: the environment
@@ -61,13 +61,13 @@ function conditionalDecorator(key: string, value: unknown, target: Function, con
  *
  * @example
  * ```ts
- * @conditionalOnBrowser
+ * @whenBrowser
  * @class
  * class WebAutoConfiguration { … }
  * ```
  */
-export function conditionalOnBrowser(target: Function, context: ClassDecoratorContext): void {
-    conditionalDecorator(CONDITIONAL_ON, 'browser', target, context);
+export function whenBrowser(target: Function, context: ClassDecoratorContext): void {
+    conditionalDecorator(WHEN_PLATFORM, 'browser', target, context);
 }
 
 /**
@@ -75,19 +75,19 @@ export function conditionalOnBrowser(target: Function, context: ClassDecoratorCo
  *
  * @example
  * ```ts
- * @conditionalOnNode
+ * @whenNode
  * @class
  * class NodeAutoConfiguration { … }
  * ```
  */
-export function conditionalOnNode(target: Function, context: ClassDecoratorContext): void {
-    conditionalDecorator(CONDITIONAL_ON, 'node', target, context);
+export function whenNode(target: Function, context: ClassDecoratorContext): void {
+    conditionalDecorator(WHEN_PLATFORM, 'node', target, context);
 }
 
 /**
- * Options for {@link conditionalOnProperty}.
+ * Options for {@link whenProperty}.
  */
-export interface ConditionalOnPropertyOptions {
+export interface WhenPropertyOptions {
     /** The property name to check, e.g. `'app.management.enabled'`. */
     name: string;
     /** Required value; when omitted the property must be present and truthy. */
@@ -102,14 +102,14 @@ export interface ConditionalOnPropertyOptions {
  *
  * @example
  * ```ts
- * @conditionalOnProperty({ name: 'app.management.enabled' })
+ * @whenProperty({ name: 'app.management.enabled' })
  * @class
  * class ManagementConfiguration { … }
  * ```
  */
-export function conditionalOnProperty(options: ConditionalOnPropertyOptions) {
+export function whenProperty(options: WhenPropertyOptions) {
     return function (target: Function, context: ClassDecoratorContext): void {
-        conditionalDecorator(CONDITIONAL_PROPERTY, options, target, context);
+        conditionalDecorator(WHEN_PROPERTY, options, target, context);
     };
 }
 
@@ -122,13 +122,13 @@ export function conditionalOnProperty(options: ConditionalOnPropertyOptions) {
  *
  * @example
  * ```ts
- * @conditionalOnProfile('!prod & (dev | test)')
+ * @whenProfile('!prod & (dev | test)')
  * class DevOnlyConfiguration { ... }
  * ```
  */
-export function conditionalOnProfile(expression: string) {
+export function whenProfile(expression: string) {
     return function (target: Function, context: ClassDecoratorContext): void {
-        conditionalDecorator(CONDITIONAL_PROFILE, expression, target, context);
+        conditionalDecorator(WHEN_PROFILE, expression, target, context);
     };
 }
 
@@ -138,14 +138,14 @@ export function conditionalOnProfile(expression: string) {
  *
  * @example
  * ```ts
- * @conditionalOnMissingEntry('metricsController')
+ * @whenMissingEntry('metricsController')
  * @class
  * class ManagementAutoConfiguration { … }
  * ```
  */
-export function conditionalOnMissingEntry(entryName: string) {
+export function whenMissingEntry(entryName: string) {
     return function (target: Function, context: ClassDecoratorContext): void {
-        conditionalDecorator(CONDITIONAL_MISSING, entryName, target, context);
+        conditionalDecorator(WHEN_MISSING, entryName, target, context);
     };
 }
 
@@ -165,7 +165,7 @@ const getMetadata = (target: unknown): Record<string, unknown> => {
  */
 export function getConditionalPlatform(target: unknown): ConditionalPlatform | undefined {
     const meta = getMetadata(target);
-    return meta[CONDITIONAL_ON] as ConditionalPlatform | undefined;
+    return meta[WHEN_PLATFORM] as ConditionalPlatform | undefined;
 }
 
 /**
@@ -211,7 +211,7 @@ export function isActive(target: unknown, ctx?: ConditionContext): boolean {
 
     const meta: Record<string, unknown> = getMetadata(target);
 
-    const property = meta[CONDITIONAL_PROPERTY] as ConditionalOnPropertyOptions | undefined;
+    const property = meta[WHEN_PROPERTY] as WhenPropertyOptions | undefined;
     if (property) {
         if (!ctx) {
             return true;
@@ -221,7 +221,7 @@ export function isActive(target: unknown, ctx?: ConditionContext): boolean {
         }
     }
 
-    const profile = meta[CONDITIONAL_PROFILE] as string | undefined;
+    const profile = meta[WHEN_PROFILE] as string | undefined;
     if (profile) {
         if (!ctx?.acceptsProfiles) {
             return true;
@@ -231,7 +231,7 @@ export function isActive(target: unknown, ctx?: ConditionContext): boolean {
         }
     }
 
-    const missing = meta[CONDITIONAL_MISSING] as string | undefined;
+    const missing = meta[WHEN_MISSING] as string | undefined;
     if (missing) {
         if (!ctx) {
             return true;
@@ -247,7 +247,7 @@ export function isActive(target: unknown, ctx?: ConditionContext): boolean {
 /**
  * Evaluates a property condition against the environment.
  */
-function propertyActive(options: ConditionalOnPropertyOptions, ctx: ConditionContext): boolean {
+function propertyActive(options: WhenPropertyOptions, ctx: ConditionContext): boolean {
     const value = ctx.getProperty(options.name);
     const present = value !== undefined && value !== null && value !== '';
 

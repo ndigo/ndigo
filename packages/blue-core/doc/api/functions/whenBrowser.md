@@ -2,11 +2,11 @@
 
 ***
 
-[@blue/core](../README.md) / conditionalOnBrowser
+[@blue/core](../README.md) / whenBrowser
 
-# Function: conditionalOnBrowser()
+# Function: whenBrowser()
 
-> **conditionalOnBrowser**(`target`, `context`): `void`
+> **whenBrowser**(`target`, `context`): `void`
 
 Marks a configuration class as browser-only.
 
@@ -27,7 +27,7 @@ Marks a configuration class as browser-only.
 ## Example
 
 ```ts
-@conditionalOnBrowser
+@whenBrowser
 @class
 class WebAutoConfiguration { … }
 ```

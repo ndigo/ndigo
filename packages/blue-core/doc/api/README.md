@@ -56,7 +56,6 @@ Jeff Rose
 - [ChildNode](interfaces/ChildNode.md)
 - [Comparable](interfaces/Comparable.md)
 - [Comparator](interfaces/Comparator.md)
-- [ConditionalOnPropertyOptions](interfaces/ConditionalOnPropertyOptions.md)
 - [ConditionContext](interfaces/ConditionContext.md)
 - [ConversionService](interfaces/ConversionService.md)
 - [ConversionServiceOptions](interfaces/ConversionServiceOptions.md)
@@ -89,6 +88,7 @@ Jeff Rose
 - [StringComparable](interfaces/StringComparable.md)
 - [Stringifier](interfaces/Stringifier.md)
 - [TreeNode](interfaces/TreeNode.md)
+- [WhenPropertyOptions](interfaces/WhenPropertyOptions.md)
 
 ## Type Aliases
 
@@ -137,11 +137,6 @@ Jeff Rose
 - [chainComparisons](functions/chainComparisons.md)
 - [comparableComparison](functions/comparableComparison.md)
 - [compareBy](functions/compareBy.md)
-- [conditionalOnBrowser](functions/conditionalOnBrowser.md)
-- [conditionalOnMissingEntry](functions/conditionalOnMissingEntry.md)
-- [conditionalOnNode](functions/conditionalOnNode.md)
-- [conditionalOnProfile](functions/conditionalOnProfile.md)
-- [conditionalOnProperty](functions/conditionalOnProperty.md)
 - [createConversionService](functions/createConversionService.md)
 - [createFormattingService](functions/createFormattingService.md)
 - [createNull](functions/createNull.md)
@@ -169,3 +164,8 @@ Jeff Rose
 - [satisfiesVersion](functions/satisfiesVersion.md)
 - [serialize](functions/serialize.md)
 - [shared](functions/shared.md)
+- [whenBrowser](functions/whenBrowser.md)
+- [whenMissingEntry](functions/whenMissingEntry.md)
+- [whenNode](functions/whenNode.md)
+- [whenProfile](functions/whenProfile.md)
+- [whenProperty](functions/whenProperty.md)

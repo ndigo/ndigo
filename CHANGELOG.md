@@ -73,6 +73,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Decorators migrated from legacy experimental to TC39 Stage 3 standard
   (AD-44).
+- Conditional auto-configuration decorators renamed `@conditionalOn*` →
+  `@when*`: `@whenBrowser`, `@whenNode`, `@whenProperty`,
+  `@whenProfile`, `@whenMissingEntry`; options interface now
+  `WhenPropertyOptions`.
 - Cache API became fully awaitable, including `size()` (AD-39).
 - `@blue/reactive` modernized into `@blue/signals` (AD-59).
 - Toolchain migrated from ESLint/Prettier to oxlint/oxfmt; `tsc -b` build

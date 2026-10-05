@@ -77,7 +77,7 @@ Method parameter metadata
 > `readonly` **convert**: ((`value`) => `unknown`) \| `undefined`
 
 Optional post-bind validator/converter applied to the resolved value.
-Set by [validatedBy](../functions/validatedBy.md) (Zod-backed, AD-7).
+Set by [validatedBy](../functions/validatedBy.md) (Zod-backed, AD-07).
 
 ***
 

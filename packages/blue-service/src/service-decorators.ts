@@ -1,5 +1,5 @@
 /**
- * Declarative service-client decorators (AD-8).
+ * Declarative service-client decorators (AD-08).
  * * @module blue-service
  * @since 1.0.0
  * @author Jeff Rose
@@ -42,7 +42,7 @@ export interface ServiceCallConfig {
      */
     responseSchema?: z.ZodType;
     /**
-     * Declares a streaming (SSE) call (AD-9): the method returns an
+     * Declares a streaming (SSE) call (AD-09): the method returns an
      * `AsyncIterable` of parsed Server-Sent Events instead of a single
      * response, with `Accept: text/event-stream` sent on the request. When
      * combined with `responseSchema`, each event's `data` payload is

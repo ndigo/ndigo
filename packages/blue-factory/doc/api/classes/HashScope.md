@@ -11,7 +11,7 @@
 Hash (route) scope implementation — one instance per scope key.
 Activate a scope context by calling `setCurrentKey(key)` before `getValue()`.
 
- AD-6: Implementation detail — see [PrototypeScope](PrototypeScope.md) for rationale.
+ AD-06: Implementation detail — see [PrototypeScope](PrototypeScope.md) for rationale.
 
 ## Implements
 

@@ -10,7 +10,7 @@
 
 Prototype scope implementation — creates a fresh instance on every `getValue()` call.
 
- AD-6: This is an implementation detail of the scoped factory. Only the
+ AD-06: This is an implementation detail of the scoped factory. Only the
 [Scope](../interfaces/Scope.md) and [ScopedFactory](../interfaces/ScopedFactory.md) interfaces are part of the stable public API.
 A future scoping split may move concrete scope implementations to a separate module.
 

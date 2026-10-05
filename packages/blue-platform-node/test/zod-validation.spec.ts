@@ -25,7 +25,7 @@ import { NodeQueryValueMethodArgumentResolver } from '../src/query-argument-reso
 import { NODE_REQUEST_ATTRIBUTE } from '../src/node-request';
 
 /**
- * Zod-backed request validation over the Node argument pipeline (AD-7).
+ * Zod-backed request validation over the Node argument pipeline (AD-07).
  *
  * Regression: `validatedBy` attaches a `convert` hook to a parameter
  * extractor, but `AbstractPlatformArgumentResolver.resolveArgument` never

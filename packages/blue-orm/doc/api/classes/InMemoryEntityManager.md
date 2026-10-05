@@ -185,7 +185,7 @@ Flushes any pending changes to the data source. No operation for `InMemoryEntity
 Persists a new entity or updates an existing one in the in-memory store.
 Automatically assigns generated primary IDs if applicable.
 Runs any `@prePersist` / `@preUpdate` lifecycle hooks, then validates the
-entity against its Zod schema derived from `@column` metadata (AD-7).
+entity against its Zod schema derived from `@column` metadata (AD-07).
 
 #### Type Parameters
 

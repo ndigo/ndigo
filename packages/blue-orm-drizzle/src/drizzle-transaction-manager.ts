@@ -1,5 +1,5 @@
 /**
- * LibSQL/Drizzle-backed transaction manager (AD-7 completion).
+ * LibSQL/Drizzle-backed transaction manager (AD-07 completion).
  * * @module blue-orm-drizzle
  * @since 1.0.0
  * @author Jeff Rose

@@ -88,7 +88,7 @@ Resolves and converts a method argument value.
 Pipeline: resolveName → defaultValue fallback → convertType lookup → conversion → extractor validation → nil check.
 
 The `parameter.convert` hook (installed by `validatedBy` for Zod
-validation, AD-7) runs after type conversion so schemas see coerced
+validation, AD-07) runs after type conversion so schemas see coerced
 values. Without this invocation the hook was dead on every resolver
 extending this base — only the BIND path invoked it.
 

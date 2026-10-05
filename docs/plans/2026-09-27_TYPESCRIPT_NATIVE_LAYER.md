@@ -9,7 +9,7 @@
 
 ## 1. Background
 
-BlueJS ports Spring solutions deliberately; the evaluation found the framework already TS-native where it replaced Java machinery (Zod over Bean Validation AD-7; extractor-factory binding over reflection `@RequestParam`; wrapper decorators over AOP proxies — self-invocation works, stronger than Spring; SpEL rejected, "no expression language" D-5). The remaining Spring-isms are **stringly-typed handles and expression DSLs** — exactly where TypeScript's compile-time layer pays.
+BlueJS ports Spring solutions deliberately; the evaluation found the framework already TS-native where it replaced Java machinery (Zod over Bean Validation AD-07; extractor-factory binding over reflection `@RequestParam`; wrapper decorators over AOP proxies — self-invocation works, stronger than Spring; SpEL rejected, "no expression language" D-5). The remaining Spring-isms are **stringly-typed handles and expression DSLs** — exactly where TypeScript's compile-time layer pays.
 
 ### 1.1 Boundaries — explicitly out of scope (decided)
 

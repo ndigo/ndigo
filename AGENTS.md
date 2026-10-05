@@ -21,7 +21,7 @@ pnpm lint            # Check code quality
 
 ⚠️ **Section 4.7 (Decorator Naming)** - All decorators MUST use camelCase
 
-⚠️ **STYLE_GUIDE.md Sections 3.5–3.6 (is\* vs like\*)** - `is*` for type/identity checks (`typeof`, `instanceof`); `like*` for structural/duck-typing checks (property shape). Never use `instanceof` in a `like*` function.
+⚠️ **STYLE_GUIDE.md Predicate (is\*) vs Duck-Typing (like\*) Functions** - `is*` for type/identity checks (`typeof`, `instanceof`); `like*` for structural/duck-typing checks (property shape). Never use `instanceof` in a `like*` function.
 
 ⚠️ **STYLE_GUIDE.md Section 3.9 (Acronym Casing)** - Use all-uppercase in types (HTTPTransformer), all-lowercase or all-uppercase in identifiers (httpTransformer or myHTTPData)
 
@@ -40,22 +40,13 @@ pnpm lint            # Check code quality
 **Pre-Commit Validation:**
 
 ```bash
-# Integration layer, internal imports, and internal exports are enforced by @blue/oxlint-plugin.
-# Run `pnpm lint` to check — no manual rg needed for those.
-
-# Verify no mixed-case acronyms
-rg "(class|interface|type) \w*(Http|Json|Xml|Url|Api|Html|Dto|Uuid|Uri)\w*" --type ts  # Should return nothing
-
-# Verify Abstract prefix usage
-rg "^(export )?abstract class [A-Z]" --type ts | rg -v "^(export )?abstract class Abstract"  # Should return nothing
-
-# Verify no UPPER_SNAKE_CASE RegExp constants (objects, not primitives per @blue/core/primitive.ts)
-rg "^export const [A-Z_]+.*= /" packages/*/src --type ts  # Should return nothing
-rg "^const [A-Z_]+.*= /" packages/*/src --type ts        # Should return nothing
-
-# Verify factory function naming (create* vs get*)
-rg "export function get[A-Z]" packages/blue-*/src --type ts | rg -v "LoggerFactory.getLogger"  # Should return nothing
+pnpm lint   # enforces integration-layer imports, internal-file imports/exports
 ```
+
+Naming conventions (acronym casing, Abstract prefix, UPPER_SNAKE_CASE
+regex constants, factory naming create\* vs get\*) are review-time checks
+from STYLE_GUIDE.md §3; migrating them into `@blue/oxlint-plugin` rules is
+tracked separately.
 
 ---
 
@@ -302,7 +293,7 @@ import { slugify } from '@blue/util';
 import { createDOMProvider } from '@blue/dom';
 
 // ❌ INCORRECT: Direct import bypasses integration layer
-import { format } from 'date-fns'; // Wrong! Use @blue/util
+import { random } from 'seedrandom'; // Wrong! Use @blue/util
 import { parseHTML } from 'linkedom'; // Wrong! Use @blue/dom
 ```
 
@@ -310,10 +301,10 @@ import { parseHTML } from 'linkedom'; // Wrong! Use @blue/dom
 
 ```typescript
 // ❌ In @blue/core/src/container.ts
-import { format } from 'date-fns'; // WRONG: Not in integration layer
+import { random } from 'seedrandom'; // WRONG: Not in integration layer
 
 // ✅ Correct version:
-import { format } from '@blue/util';
+import { random } from '@blue/util';
 
 // ❌ In @blue/view/src/renderer.ts
 import { parse } from 'linkedom'; // WRONG
@@ -523,6 +514,22 @@ Where:
 - Include comparison tables
 
 **Each directory has a README.md** that indexes all documents in that category.
+
+## 7. Agent Configuration
+
+This repository's AI-agent definitions are **generated, not hand-edited**:
+
+- **Source of truth:** the neutral store in `development-agents/` (agents,
+  skills, per-harness shims) plus this repo's `agent-local/` (repo-specific
+  overrides, e.g. the `graft` skill).
+- **Regenerate:** `pnpm agents:sync` (runs `gen.mjs`; emits `.opencode/`,
+  `.claude/`, `.omp/` copies + `.agent-gen.json`)
+- **Validate:** `pnpm agents:check` — committed files vs. the sha256
+  manifest + structural invariants (CI-gated)
+- Edit `development-agents/` or `agent-local/` and regenerate — never edit
+  generated files under `.opencode/agents`, `.claude/agents`, `.omp/agents`.
+- Models: pinned in `.agent-models.json` (stamped into OMP agents; other
+  harnesses inherit the session model).
 
 <!-- graft:start -->
 

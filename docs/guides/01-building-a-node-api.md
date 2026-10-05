@@ -292,5 +292,5 @@ Run it with `pnpm --filter @blue/hello-node exec tsx src/index.ts` and set
   `validatedBody`, and entity-derived schemas.
 - Package READMEs: `@blue/platform-node`, `@blue/dispatcher`, `@blue/boot`,
   `@blue/orm` for the full symbol surface.
-- Decision records: [Zod validation](../decisions/2026-09-05_AD7_ZOD_VALIDATION.md),
+- Decision records: [Zod validation](../decisions/2026-09-05_AD07_ZOD_VALIDATION.md),
   [RFC 9457 problem+json error model](../decisions/2026-09-07_AD10_RFC9457_ERROR_MODEL.md).

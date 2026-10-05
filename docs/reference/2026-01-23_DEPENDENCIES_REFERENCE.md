@@ -1,5 +1,10 @@
 # Dependency Versions (January 2025)
 
+> **⚠️ ARCHIVED** — snapshot from 2026-01-23, superseded by the
+> `package.json` manifests (root + `packages/*`). Packages have since
+> changed materially (Ramda/Arcsecond/objectmodel removed; `zod`, `helmet`,
+> `drizzle-orm`, `oxlint`/`oxfmt` added). Kept for history.
+
 This document provides a quick reference for all dependency versions after the 2025 modernization.
 
 ## System Requirements

@@ -1,5 +1,9 @@
 # Style Guide Best Practices Research
 
+> **⚠️ ARCHIVED** — 2026-02/03 research that fed the living
+> [STYLE_GUIDE.md](../../STYLE_GUIDE.md); its tooling sections predate the
+> OXC migration (ESLint/Prettier retired — AD-58). Kept for history.
+
 **Date:** February 6, 2026  
 **Purpose:** Research findings on effective STYLE_GUIDE.md organization and content for TypeScript/JavaScript projects
 
@@ -524,7 +528,7 @@ standard --fix  # One command to rule them all
 
 - Config: `eslint.config.mjs`
 - Run: `pnpm lint`
-- Rules: See [ESLint Configuration](../config/eslint-rules.md)
+- Rules: See [oxlint rules](../../packages/blue-oxlint-plugin/README.md) (ESLint retired in the OXC migration, AD-58)
 
 ### TypeScript (Type Safety)
 

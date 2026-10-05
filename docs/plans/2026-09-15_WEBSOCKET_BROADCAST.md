@@ -1,6 +1,6 @@
 # 2026-09-15 WebSocket Session Registry & Broadcast
 
-**Status:** Implemented (ratified by [AD-21](../decisions/2026-09-13_AD21_WEBSOCKET_SESSION_REGISTRY.md);
+**Status:** Implemented (ratified by [AD-21](../decisions/2026-09-15_AD21_WEBSOCKET_SESSION_REGISTRY.md);
 shipped in `6eafdf05`, `d76eed8f`, `f5fd6d8b`, `f0a67c98`, `f0718252`; review-hardening `2026-09-15`)
 **As-built deviations (surface changed after this plan was written):**
 

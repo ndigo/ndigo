@@ -119,12 +119,12 @@ a graph of call sites. Both demo hosts exercise this discipline.
 - **host runtime** — host orchestration decision + implementation
   status: `docs/decisions/2026-09-13_AD18_HOST_RUNTIME.md`
 - **Site/Page model** — legacy Site/Page lineage; the open **Page concept / TTFB-vs-TTI**
-  question: `docs/decisions/2026-09-07_AD3_SITE_PAGE_MODEL.md`
-- **SSE server push** — SSE-first island reactivity: `docs/decisions/2026-09-05_AD9_SERVER_PUSH.md`
-- **Shared dependency contract** (implemented): `docs/plans/2026-09-03_SHARED_DEPENDENCY_CONTRACT.md`
-- **Scale 2 context + routing** (completed): `docs/plans/2026-03-24_SCALE2_CONTEXT_ROUTING_ARCHITECTURE.md`
-- **View resolution strategy** (island resolver): `docs/plans/2026-09-06_VIEW_RESOLUTION_STRATEGY.md`
-- **Route registry** (type-safe URLs): `docs/plans/2026-09-03_ROUTE_REGISTRY.md`
+  question: `docs/decisions/2026-09-07_AD03_SITE_PAGE_MODEL.md`
+- **SSE server push** — SSE-first island reactivity: `docs/decisions/2026-09-05_AD09_SERVER_PUSH.md`
+- **Shared dependency contract** (AD-62): `docs/decisions/2026-09-03_AD62_SHARED_DEPENDENCY_CONTRACT.md`
+- **Scale 2 context + routing** (AD-54): `docs/decisions/2026-03-24_AD54_HIERARCHICAL_CONTEXTS_ROUTE_PARTITIONING.md`
+- **View resolution strategy** (AD-65): `docs/decisions/2026-09-06_AD65_VIEW_RESOLUTION_STRATEGY.md`
+- **Route registry** (AD-61): `docs/decisions/2026-09-03_AD61_ROUTE_REGISTRY.md`
 - **Framework assessment** (partial hydration ✅, MFE shell status):
   `docs/reference/2026-09-01_FEATURE_ASSESSMENT.md`
 - **Demo hosts**: `apps/blue-host` (@blue/host-demo), `apps/blue-todo`,

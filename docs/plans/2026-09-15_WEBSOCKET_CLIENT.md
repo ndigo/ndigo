@@ -13,7 +13,7 @@ shipped in `5472171a`, `6e7ddbf9`, `d2aa32d1`, `184c5ceb`, `f0718252`, `af3857ab
   `blue-dispatcher` (re-export seam), `blue-platform-web` (online trigger),
   `apps/blue-api` (demo gate)
   **Companion docs:** [AD-22](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md),
-  [AD-21](../decisions/2026-09-13_AD21_WEBSOCKET_SESSION_REGISTRY.md),
+  [AD-21](../decisions/2026-09-15_AD21_WEBSOCKET_SESSION_REGISTRY.md),
   [broadcast plan](2026-09-15_WEBSOCKET_BROADCAST.md)
 
 ---

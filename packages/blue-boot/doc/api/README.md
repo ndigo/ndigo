@@ -26,6 +26,7 @@ Jeff Rose
 
 ## Type Aliases
 
+- [ConfigFileFormat](type-aliases/ConfigFileFormat.md)
 - [ConfigFileReader](type-aliases/ConfigFileReader.md)
 - [PrecedenceSource](type-aliases/PrecedenceSource.md)
 

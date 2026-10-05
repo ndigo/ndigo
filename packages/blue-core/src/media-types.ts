@@ -109,5 +109,12 @@ export const TEXT_XML = MediaType.registered('text', 'xml');
  */
 export const TEXT_PLAIN = MediaType.registered('text', 'plain');
 /**
+ * Provisional media type per the TOON specification §17
+ * (https://github.com/toon-format/spec) — `text/toon`, always UTF-8. Not yet
+ * registered with IANA; kept as an inert token so user views/interceptors can
+ * compose with it until the format settles (BlueJS pre-1.0).
+ */
+export const TEXT_TOON = MediaType.registered('text', 'toon');
+/**
  */
 export const WILDCARD = MediaType.registered('*', '*');

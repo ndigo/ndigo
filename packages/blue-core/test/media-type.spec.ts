@@ -302,6 +302,18 @@ describe('MediaType', () => {
         expect(MediaTypes.TEXT_HTML.toContentType({ autoCharset: false })).toBe('text/html');
     });
 
+    test('it should expose the provisional TOON media type (spec §17)', () => {
+        expect(MediaType.for('text/toon')).toBe(MediaTypes.TEXT_TOON);
+        expect(MediaTypes.TEXT_TOON.baseType).toBe('text/toon');
+        // TOON is always UTF-8 and the spec allows the charset parameter, so
+        // the existing text/* default-charset rule aligns with it.
+        expect(MediaTypes.TEXT_TOON.getDefaultCharset()).toBe('utf-8');
+        expect(MediaTypes.TEXT_TOON.toContentType()).toBe('text/toon;charset=utf-8');
+        expect(MediaTypes.TEXT_TOON.toContentType({ autoCharset: false })).toBe('text/toon');
+        // Negotiates like any text subtype: acceptable under a text/* range.
+        expect(MediaTypes.TEXT_TOON.matches(MediaType.for('text/*'))).toBe(true);
+    });
+
     test('it should fix withCharset bug and preserve parameters', () => {
         const mt = MediaType.for('multipart/form-data;boundary=abc123');
         const withCharset = mt.withCharset('utf-8');

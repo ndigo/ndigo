@@ -68,6 +68,38 @@ const files = collectMarkdownFiles();
 const broken = [];
 let linkCount = 0;
 
+/**
+ * Decodes a percent-encoded link segment; malformed input (`%zz`, bare `%`)
+ * must not crash the gate — returning the raw value lets it fail (or
+ * resolve) like a literal.
+ */
+function safeDecode(value) {
+    try {
+        return decodeURIComponent(value);
+    } catch {
+        return value;
+    }
+}
+
+/** statSync that reports absence instead of throwing. */
+function statOrNull(path) {
+    try {
+        return statSync(path);
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Joins `target` onto `base` and confines the result to the repo root:
+ * `%2F`/`%2e%2e`-encoded escapes decode before the join, so a hostile link
+ * cannot point the checker outside the repository.
+ */
+function joinWithinRoot(base, target) {
+    const joined = normalize(join(base, target));
+    return joined === root || joined.startsWith(`${root}/`) ? joined : null;
+}
+
 for (const file of files) {
     const raw = readFileSync(file, 'utf8');
     const text = withoutCodeFences(raw);
@@ -84,15 +116,20 @@ for (const file of files) {
         if (!target || target === '#' || /^(https?:|mailto:|data:)/i.test(target)) continue;
         linkCount++;
         const [pathPart, fragPart] = target.split('#');
-        const fragment = fragPart ? decodeURIComponent(fragPart) : null;
-        const resolved = normalize(join(dirname(file), decodeURIComponent(pathPart || '')));
+        const fragment = fragPart ? safeDecode(fragPart) : null;
         if (!pathPart) {
             if (fragment && !ownSlugs.has(slugify(fragment))) {
                 broken.push(`${file} -> #${fragment}`);
             }
             continue;
         }
-        if (!statSync(resolved).isDirectory() && !statSync(resolved).isFile()) {
+        const resolved = joinWithinRoot(dirname(file), safeDecode(pathPart || ''));
+        if (resolved === null) {
+            broken.push(`${file} -> ${target} (outside repo root)`);
+            continue;
+        }
+        const stat = statOrNull(resolved);
+        if (stat === null || (!stat.isDirectory() && !stat.isFile())) {
             broken.push(`${file} -> ${target} (missing)`);
             continue;
         }

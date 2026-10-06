@@ -55,4 +55,42 @@ describe('FetchCredentialsInterceptor', () => {
         expect(result).toBeInstanceOf(Request);
         expect((result as Request).url).toBe('http://localhost/same-origin');
     });
+
+    test('preserves signal, mode, redirect, cache and integrity', async () => {
+        const interceptor = new FetchCredentialsInterceptor({ credentials: 'include' });
+        const controller = new AbortController();
+        const request = new Request('https://api.example.com/data', {
+            method: 'GET',
+            mode: 'cors',
+            redirect: 'manual',
+            cache: 'no-store',
+            integrity: 'sha256-abc',
+            signal: controller.signal,
+        });
+
+        const result = (await interceptor.preRequest(request, undefined as never)) as Request;
+
+        expect(result.mode).toBe('cors');
+        expect(result.redirect).toBe('manual');
+        expect(result.cache).toBe('no-store');
+        expect(result.integrity).toBe('sha256-abc');
+        expect(result.credentials).toBe('include');
+
+        controller.abort();
+        expect(result.signal.aborted).toBe(true);
+    });
+
+    test('preserves the body of a POST request', async () => {
+        const interceptor = new FetchCredentialsInterceptor({ credentials: 'include' });
+        const request = new Request('https://api.example.com/data', {
+            method: 'POST',
+            body: JSON.stringify({ name: 'blue' }),
+        });
+
+        const result = (await interceptor.preRequest(request, undefined as never)) as Request;
+
+        expect(result.method).toBe('POST');
+        expect(result.credentials).toBe('include');
+        expect(await result.text()).toBe('{"name":"blue"}');
+    });
 });

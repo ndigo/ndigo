@@ -25,4 +25,5 @@ cookies/authentication on cross-origin requests (requires the server's
 
 #### Default Value
 
-`'omit'` — the fetch default; safe for public APIs.
+`'omit'` — the interceptor default. Note that the native
+`fetch` default is `'same-origin'`.

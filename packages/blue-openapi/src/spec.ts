@@ -141,12 +141,15 @@ function responseDocsOf(entry: OpenAPIResponseDocs): { description: string; sche
 }
 
 /**
- * Converts a zod schema to a JSON Schema object (embedded: no `$schema`
- * header). The zod library owns the conversion (AD-35 D-3) — the framework
- * only strips the document-level key and forwards.
+ * Converts a zod schema to a JSON Schema object compatible with the served
+ * OpenAPI 3.0.3 document (embedded: no `$schema` header). The zod library
+ * owns the conversion (AD-35 D-3); the `openapi-3.0` target keeps constructs
+ * such as nullable, literal and tuple fields valid for that version
+ * (`nullable`/`enum`/`items` instead of `type: ['x', 'null']`/`const`/
+ * `prefixItems`).
  */
 function jsonSchemaOf(schema: z.ZodType<unknown>): OpenAPISchemaObject {
-    const converted = toJSONSchema(schema) as OpenAPISchemaObject;
+    const converted = toJSONSchema(schema, { target: 'openapi-3.0' }) as OpenAPISchemaObject;
     // Embedded schemas carry no document-level `$schema` header.
     const { ['$schema']: _drop, ...embedded } = converted;
     return embedded;

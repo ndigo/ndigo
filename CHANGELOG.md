@@ -145,6 +145,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CacheInterceptor` no longer stores or serves responses whose credentials
   were attached by a request-time interceptor — the cache gates on the
   request that was actually sent (HT-1).
+- `HashRouter` public navigation now mirrors the route into `location.hash`
+  (suppressing the self-caused `hashchange` echo) and restores it on rejected
+  navigations (PL-1).
+- Multipart `fileThreshold: 0` now really forces every part to disk, and
+  negative/non-finite `MultipartLimits` throw a descriptive `RangeError`
+  instead of silently falling back to defaults (PL-2).
+- `FetchCredentialsInterceptor` clones the outgoing request, preserving
+  signal/mode/redirect/cache/integrity and no longer throwing on bodied
+  requests in Node (PL-3).
+- `Cookies.getJSON`/`Cookies.get` return `undefined` for a missing key
+  instead of throwing (PL-4).
+- Drizzle DDL derives SQLite storage types from the declared column metadata
+  (varchar/boolean/json → TEXT, real/float → REAL, blob → BLOB) and string
+  primary keys round-trip (`NUMERIC` affinity for caller-assigned keys; only
+  generated INTEGER keys auto-increment) — matching `drizzle-zod`'s mapping
+  (DA-1).
+- `@counted` counters resolve lazily on first call, so instrumentations
+  constructed before the global meter provider no longer bind to the
+  NoopMeter and drop datapoints (OP-1).
+- The scheduler's `maxRunTime` cap timer is cleared when a run settles, so a
+  completed run no longer pins the event loop for the rest of the cap (OP-2).
+- `WebSocketClient.send` copies binary payloads (Buffer/subarray views) to the
+  exact byte window instead of shipping the whole ArrayBuffer pool slab
+  (PR-1).
+- OpenAPI documents convert Zod schemas with the `openapi-3.0` target
+  (`nullable`/`enum`/`items` instead of draft-2020-12 `type` arrays,
+  `const`, `prefixItems`) (PR-2).
 
 ### Security
 

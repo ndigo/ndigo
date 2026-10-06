@@ -3,7 +3,6 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { metrics } from '@opentelemetry/api';
 import { AbstractBaseInstrumentation } from './base';
 import { CountedRegistry } from '../metrics/_registry';
 import { getCounted } from '../metrics/decorators';
@@ -64,29 +63,37 @@ export class CountedInstrumentation extends AbstractBaseInstrumentation {
 
     /**
      * Creates a patch function that increments the counter and handles feature aggregation.
+     *
+     * The counter increment is delegated to `AbstractBaseInstrumentation._patchCount`,
+     * which resolves the counter lazily on the first patched call: `enable()`
+     * (and therefore this factory) runs from `InstrumentationBase`'s
+     * constructor, before the SDK registers a global MeterProvider — an eager
+     * `createCounter` here would capture the NoopMeter and silently drop every
+     * datapoint.
      */
     private _createCountPatch(config: CountedMethodConfig) {
+        const countPatch = this._patchCount(config);
+
         return <This, Args extends unknown[], Return>(
             original: (this: This, ...args: Args) => Return
         ): ((this: This, ...args: Args) => Return) => {
-            const meter = metrics.getMeter('@blue/telemetry');
-            const counter = meter.createCounter(config.name);
+            const { featureAggregator } = config;
 
-            return function (this: This, ...args: Args): Return {
-                // Increment the OTel counter
-                counter.add(1, config.attributes);
+            // Feature aggregation runs after the counter increment and before
+            // the original call; wrapping `original` keeps the shared lazy
+            // counter wrapper as the outer layer.
+            const instrumented = featureAggregator
+                ? function (this: This, ...args: Args): Return {
+                      const featureKey = config.featureKey ?? 'feature';
+                      const feature = config.attributes?.[featureKey];
+                      if (typeof feature === 'string') {
+                          featureAggregator.incrementCounter(feature, config.name);
+                      }
+                      return original.apply(this, args);
+                  }
+                : original;
 
-                // Handle feature aggregation if configured
-                if (config.featureAggregator) {
-                    const featureKey = config.featureKey ?? 'feature';
-                    const feature = config.attributes?.[featureKey];
-                    if (typeof feature === 'string') {
-                        config.featureAggregator.incrementCounter(feature, config.name);
-                    }
-                }
-
-                return original.apply(this, args);
-            };
+            return countPatch(instrumented);
         };
     }
 }

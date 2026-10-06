@@ -15,10 +15,11 @@ against the clean tree: `pnpm build` failure reproduced after `nx reset`;
 dependency-cycle regression computed across `HEAD~1..HEAD~3`; `toRegExp`
 crash, Drizzle DDL type mapping, and JWT exp/sub/short-secret acceptance
 reproduced with `tsx` probes. Full gates were run before the review (§0).
-**Status:** Findings recorded; **Waves 1–2 EXECUTED (2026-10-06)** —
-`@blue/log` leaf + cycle-free build (AD-67), and the Must-Fix correctness
-cluster (CF-1..3, IN-1..2, HT-1) fixed with fail-before/pass-after regression
-specs (results in §4). Waves 3–6 pending.
+**Status:** Findings recorded; **Waves 1–3 EXECUTED (2026-10-06)** —
+`@blue/log` leaf + cycle-free build (AD-67), the Must-Fix correctness cluster
+(CF-1..3, IN-1..2, HT-1), and the remaining Must-Fix wave (PL-1..4, DA-1,
+OP-1..2, PR-1..2) — each with fail-before/pass-after regression specs (results
+in §4). Waves 4–6 pending.
 **Legend:** `[code]` established by reading cited lines · `[exec]` reproduced
 by execution · `[inference]` reasoned without execution.
 **Source IDs:** each finding keeps its slice-local origin where useful
@@ -781,3 +782,26 @@ layering contract.
   parameter threaded by the execution chain); `CacheInterceptor` gates on it,
   so credentialed responses are neither stored nor served.
 - Focused specs: 6 files / 44 tests green; full gates re-run after integration.
+
+### Wave 3 execution (2026-10-06)
+
+- **PL-1** `HashRouter` writes `location.hash` on successful public routes
+  (with self-echo suppression) and restores it on rejection; `_restoreHash`
+  now compares route-form values. **PL-3** `FetchCredentialsInterceptor`
+  clones the request (signal/mode/redirect/cache/integrity preserved; bodied
+  POST works under undici). **PL-4** `Cookies.get/getJSON` return `undefined`
+  for absent keys; the verified-dead parser-failure fallback was deleted.
+- **PL-2** `fileThreshold: 0` forces disk (`size > threshold` gate);
+  negative/non-finite `MultipartLimits` fail loud with a `RangeError`.
+- **DA-1** shared metadata→SQLite mapping (`_column-types.ts`) used by both
+  `createTableStatements` and `drizzleTableForEntity`; string PKs round-trip
+  (integrator re-probe: `id NUMERIC PRIMARY KEY`, `title TEXT`).
+- **OP-1** `@counted` counters resolve lazily via the previously dead
+  `_patchCount`; export verified with a real meter provider registered after
+  construction. **OP-2** the `maxRunTime` cap timer is cleared when the run
+  settles (exit-probe: 2003 ms → 12 ms).
+- **PR-1** binary sends copy the exact view window (Buffer slab 8192 → 5
+  bytes in the transport-double spec). **PR-2** schemas convert with the
+  `openapi-3.0` target (`nullable`/`enum`/`items`).
+- Integration fix-ups: doc-header order in the socket spec; `Promise.all`
+  over limit cases to satisfy `no-await-in-loop`.

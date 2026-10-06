@@ -1,6 +1,6 @@
 /**
  * View that serves static files from the filesystem.
- * * @module blue-platform-node
+ * @module blue-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */

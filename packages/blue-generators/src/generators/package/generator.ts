@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { formatFiles, generateFiles, type Tree } from '@nx/devkit';
+import { toPascal } from '@blue/util/string';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -14,13 +15,6 @@ export interface PackageGeneratorSchema {
     description?: string;
 }
 
-function toPascalCase(str: string): string {
-    return str
-        .split('-')
-        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-        .join('');
-}
-
 export default async function packageGenerator(tree: Tree, schema: PackageGeneratorSchema): Promise<void> {
     const { name, description } = schema;
 
@@ -29,7 +23,7 @@ export default async function packageGenerator(tree: Tree, schema: PackageGenera
     }
 
     const projectRoot = `packages/blue-${name}`;
-    const className = toPascalCase(name);
+    const className = toPascal(name);
     // Manifest gate (`scripts/check-manifests.mjs`): the description must be
     // >= 25 chars and must not be the rejected `Blue <Name>` placeholder.
     const resolvedDescription = description || `${className} — BlueJS framework package`;

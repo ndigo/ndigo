@@ -1,6 +1,6 @@
 /**
  * Runtime proxy generator for declarative service clients (AD-08).
- * * @module blue-service
+ * @module blue-service
  * @since 1.0.0
  * @author Jeff Rose
  */

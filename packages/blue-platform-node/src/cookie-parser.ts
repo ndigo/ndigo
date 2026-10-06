@@ -1,6 +1,6 @@
 /**
  * RFC 6265-style cookie parsing for `NodeRequest.cookies`.
- * * @module blue-platform-node
+ * @module blue-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */

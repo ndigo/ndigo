@@ -8,7 +8,7 @@
  * spec-wiring bootstrap (`swagger-ui-init.js`) is rendered server-side and
  * served by this controller (SEC-2): external, so the default-on CSP
  * (`script-src 'self'`) needs no `'unsafe-inline'`.
- * * @module blue-platform-node
+ * @module blue-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */

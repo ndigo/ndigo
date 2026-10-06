@@ -1,6 +1,6 @@
 /**
  * Rule that blocks direct imports from libraries wrapped by BlueJS integration packages.
- * * @module blue-oxlint-plugin
+ * @module blue-oxlint-plugin
  * @since 1.0.0
  * @author Jeff Rose
  */

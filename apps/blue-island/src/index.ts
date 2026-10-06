@@ -1,6 +1,6 @@
 /**
  * Blue Island — hybrid island demo server.
- * * @module blue-island
+ * @module blue-island
  * @since 1.0.0
  * @author Jeff Rose
  */

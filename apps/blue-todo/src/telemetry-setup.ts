@@ -1,6 +1,6 @@
 /**
  * Browser telemetry bootstrap for the Blue Demo application.
- * * @module blue-todo
+ * @module blue-todo
  * @since 1.0.0
  * @author Jeff Rose
  */

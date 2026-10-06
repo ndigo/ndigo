@@ -1,6 +1,6 @@
 /**
  * Rule that prevents public index files from re-exporting internal underscore-prefixed files.
- * * @module blue-oxlint-plugin
+ * @module blue-oxlint-plugin
  * @since 1.0.0
  * @author Jeff Rose
  */

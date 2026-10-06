@@ -1,6 +1,6 @@
 /**
  * Blue Hello Node — minimal HTTP server.
- * * @module blue-hello-node
+ * @module blue-hello-node
  * @since 1.0.0
  * @author Jeff Rose
  */

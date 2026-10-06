@@ -7,7 +7,6 @@
 # blue-platform-web
 
 Browser-flavored dispatcher.
-*
 
 ## Since
 

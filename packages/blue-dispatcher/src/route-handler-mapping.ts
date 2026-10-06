@@ -1,6 +1,6 @@
 /**
  * Barrel file — re-exports all public types from the split handler-mapping modules.
- * * @module blue-dispatcher
+ * @module blue-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */

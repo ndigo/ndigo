@@ -31,6 +31,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@blue/util": "~0.0.1",
     "@nx/devkit": "catalog:"
   },
   "devDependencies": {

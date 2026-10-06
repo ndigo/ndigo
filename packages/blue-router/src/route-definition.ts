@@ -1,6 +1,6 @@
 /**
  * A type-safe route definition that can generate URLs, navigate, parse, and match routes.
- * * @module blue-router
+ * @module blue-router
  * @since 1.0.0
  * @author Jeff Rose
  */

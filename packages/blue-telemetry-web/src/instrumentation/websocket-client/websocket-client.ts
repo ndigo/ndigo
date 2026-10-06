@@ -1,6 +1,6 @@
 /**
  * OpenTelemetry instrumentation for the `@blue/socket` client.
- * * @module blue-telemetry-web
+ * @module blue-telemetry-web
  * @since 1.0.0
  * @author Jeff Rose
  */

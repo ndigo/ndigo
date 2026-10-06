@@ -10,7 +10,6 @@ Owns the socket contracts (`SocketSession`, `SocketSessionRegistry` —
 moved from `blue-dispatcher`, which re-exports them for handler
 signatures) and the client story: `SocketClient`/`WebSocketClient` on
 the WHATWG `WebSocket` global, with signal-based status and reconnect.
-*
 
 ## Since
 

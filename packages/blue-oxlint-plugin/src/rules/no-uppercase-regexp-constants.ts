@@ -1,6 +1,6 @@
 /**
  * Rule that flags UPPER_SNAKE_CASE constants initialized with a RegExp literal.
- * * @module blue-oxlint-plugin
+ * @module blue-oxlint-plugin
  * @since 1.0.0
  * @author Jeff Rose
  */

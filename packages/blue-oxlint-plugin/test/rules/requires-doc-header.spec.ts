@@ -74,5 +74,18 @@ export const x = 1;`,
             filename: '/apps/blue-todo/src/index.ts',
             errors: [{ messageId: 'missingTags' }],
         },
+        {
+            // Copy-paste artifact: the stray '*' renders in generated docs.
+            code: `/**
+ * Widget utilities.
+ *
+ * * @module blue-core
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+export const x = 1;`,
+            filename: '/packages/blue-core/src/widget.ts',
+            errors: [{ messageId: 'malformedTagLine' }],
+        },
     ],
 });

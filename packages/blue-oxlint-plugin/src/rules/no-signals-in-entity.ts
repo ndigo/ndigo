@@ -1,6 +1,6 @@
 /**
  * Rule that flags `@blue/signals` imports inside `@blue/orm` entity files.
- * * @module blue-oxlint-plugin
+ * @module blue-oxlint-plugin
  * @since 1.0.0
  * @author Jeff Rose
  */

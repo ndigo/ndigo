@@ -5,7 +5,6 @@
 # @blue/view-ejs v0.0.1
 
 Server-side EJS template rendering expressed as an isomorphic Blue view.
-*
 
 ## Since
 

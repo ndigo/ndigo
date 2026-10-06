@@ -5,7 +5,7 @@
  * OpenAPI generator can carry summary, tags, operation ids and deprecation
  * into the spec. Stored in the same `Symbol.metadata` store as
  * `@routeMapping` / `@parameters`.
- * * @module blue-openapi
+ * @module blue-openapi
  * @since 1.0.0
  * @author Jeff Rose
  */

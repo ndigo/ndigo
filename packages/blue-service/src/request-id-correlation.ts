@@ -1,6 +1,6 @@
 /**
  * Interface for request-ID correlation across service calls.
- * * @module blue-service
+ * @module blue-service
  * @since 1.0.0
  * @author Jeff Rose
  */

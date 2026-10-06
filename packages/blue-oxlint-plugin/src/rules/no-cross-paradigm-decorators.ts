@@ -1,6 +1,6 @@
 /**
  * Rule that flags cross-paradigm decorator misuse.
- * * @module blue-oxlint-plugin
+ * @module blue-oxlint-plugin
  * @since 1.0.0
  * @author Jeff Rose
  */

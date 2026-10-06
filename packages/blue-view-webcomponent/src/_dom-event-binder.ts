@@ -1,6 +1,6 @@
 /**
  * Utility for managing DOM event listeners on a specific element.
- * * @module blue-view-webcomponent
+ * @module blue-view-webcomponent
  * @since 1.0.0
  * @author Jeff Rose
  */

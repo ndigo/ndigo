@@ -1,6 +1,6 @@
 /**
  * Conditional auto-configuration metadata helpers.
- * * @module blue-core
+ * @module blue-core
  * @since 1.0.0
  * @author Jeff Rose
  */

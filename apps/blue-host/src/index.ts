@@ -1,6 +1,6 @@
 /**
  * Blue Micro Frontend Host entry point.
- * * @module blue-host
+ * @module blue-host
  * @since 1.0.0
  * @author Jeff Rose
  */

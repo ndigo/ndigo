@@ -1,6 +1,6 @@
 /**
  * Reports feature module — lazy-loaded by the host via dynamic import.
- * * @module blue-host
+ * @module blue-host
  * @since 1.0.0
  * @author Jeff Rose
  */

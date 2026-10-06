@@ -1,6 +1,6 @@
 /**
  * Host orchestration — the centralized micro frontend host (AD-18).
- * * @module blue-host
+ * @module blue-host
  * @since 1.0.0
  * @author Jeff Rose
  */

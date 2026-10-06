@@ -1,6 +1,6 @@
 /**
  * Server-side EJS template rendering expressed as an isomorphic Blue view.
- * * @module blue-view-ejs
+ * @module blue-view-ejs
  * @since 1.0.0
  * @author Jeff Rose
  */

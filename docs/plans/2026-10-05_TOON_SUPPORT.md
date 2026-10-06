@@ -38,7 +38,7 @@ contracts, or defaults?
 | Surface | Where | Verdict |
 | :------ | :---- | :------ |
 | `MediaTypes` token (`text/toon`) | `@blue/core` `media-types.ts` | ✅ **Phase 0 — landed.** Inert, typed, zero-dep; negotiable only when a user composes it (view/interceptor). `getDefaultCharset()` already yields `utf-8` for `text/*` → `text/toon;charset=utf-8`, matching spec §17. |
-| `application.json` config files | `@blue/boot` `StandardConfigFileLoader` | ✅ **Phase 1 — proposal.** Decode-only `.toon` variant feeding the same `JSONObject` merge pipeline. Opt-in, reversible, no default change. |
+| `application.json` config files | `@blue/boot` `StandardConfigFileLoader` | ✅ **Phase 1 — landed.** Decode-only `.toon` variant feeding the same `JSONObject` merge pipeline. Opt-in, reversible, no default change. |
 | `ApplicationBuilder.fromConfig(url)` | `@blue/boot` | 🟡 **Phase 3 — optional.** Auto-detect by URL extension / `format` option; single-shot bootstrap, low value. |
 | Config server wire format | `@blue/context` `RemotePropertySource` | ❌ Never — external contract; ETag/last-good/304 logic is JSON-shaped. |
 | Wire formats (HTTP views, SSE, WebSocket/STOMP, mock-http) | blue-view, blue-service, blue-socket, blue-test | ❌ Never — interop surface, IANA-registered media-types territory. |
@@ -62,7 +62,7 @@ plain JSON model); no IANA-dependent behavior.
 **No framework behavior change** — the token is material only when a user
 composes it.
 
-### Phase 1 — decode-only `.toon` config files (proposal)
+### Phase 1 — decode-only `.toon` config files (landed)
 
 - `StandardConfigFileLoader.addLocation` probes `${fileName}.json` then
   `${fileName}.toon` (JSON wins on collision; formats never mix within one

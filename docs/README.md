@@ -8,7 +8,7 @@ referenced from the ADR index.
 
 ### [Decisions](./decisions/README.md)
 
-Architecture Decision Records — AD-01..AD-65, contiguous. Numbered by
+Architecture Decision Records — AD-01..AD-66, contiguous. Numbered by
 decision-sequence, filenames use the decision date
 (`YYYY-MM-DD_AD##_TITLE.md`). The README is the index: status legend,
 supersession markers, links.
@@ -29,7 +29,8 @@ status lines.
 
 ### [Architecture](./architecture/)
 
-Living architecture topics (micro-frontends, environment) as dated-free
+Living architecture topics (micro-frontends, environment, security,
+lifecycle-and-ownership) as dated-free
 slugs. The canonical system design lives in the root
 [ARCHITECTURE.md](../ARCHITECTURE.md).
 

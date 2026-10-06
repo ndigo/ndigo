@@ -42,10 +42,12 @@ Browser (untrusted) ──HTTPS──▶ TLS-terminating proxy ──▶ Node se
   insecure connections by spec); `X-Forwarded-Proto` awareness stays
   deferred — documented, not assumed.
 - **Node server**: every response carries the security-header set by
-  default (CSP with `connect-src 'self' ws: wss:`, HSTS, frame/referrer/
-  sniffing controls — `security-headers-interceptor.ts`, AD-25). The CSP
-  `ws:`/`wss:` admission is explicit: the framework ships its own
-  WebSocket server against an unknown origin at build time (AD-25 D1).
+  default (CSP with `connect-src 'self'`, HSTS, frame/referrer/sniffing
+  controls — `security-headers-interceptor.ts`, AD-25 D1). The `'self'`
+  default covers same-origin WebSocket streams under CSP3; a socket server
+  on a different host widens `connect-src` to `wss://<host>` explicitly —
+  never bare `ws:`/`wss:`, which admit connections to any origin (SEC-4,
+  supersedes the permissive AD-25 D1 default).
 - **Backends** (LibSQL files, Redis): trusted-network + ACL/TLS protected;
   Redis namespaces are isolation, never authorization.
 
@@ -74,9 +76,10 @@ Browser (untrusted) ──HTTPS──▶ TLS-terminating proxy ──▶ Node se
 - **Trusted proxies vs. spoofing.** Client-IP trust is all-or-nothing per
   peer: either the peer is allowlisted (its XFF can name a client) or it
   is not (its XFF is ignored). No middle ground, no heuristics.
-- **CSP strictness vs. framework WebSockets.** `ws:`/`wss:` are explicit
-  connect-src admissions until per-app origins are warranted — recorded in
-  AD-25 D1 rather than left implicit.
+- **CSP strictness vs. framework WebSockets.** `connect-src` defaults to
+  `'self'` (SEC-4): same-origin socket upgrades are covered; a cross-host
+  socket server widens explicitly to `wss://<host>` — bare `ws:`/`wss:`
+  are never admissions (supersedes AD-25 D1's permissive default).
 - **Problem-type URIs.** `urn:blue:*` is a self-contained placeholder;
   real HTTPS URIs before first public release (AD-10).
 
@@ -87,4 +90,6 @@ Browser (untrusted) ──HTTPS──▶ TLS-terminating proxy ──▶ Node se
   AD-40 (durable sessions), AD-56 (auth design)
 - How-to: guides 03 (secrets/config), 11 (auth & sessions),
   15 (interception/resilience)
-- History: SEC-1..SEC-6 in `docs/audits/` (remediation records)
+- History: SEC-1..SEC-6 remediation records in
+  `docs/plans/*CODE_REVIEW_AND_MITIGATION.md`; the gap analysis that seeded
+  them: `docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md`

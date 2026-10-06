@@ -63,10 +63,7 @@ export default defineConfig({
             { find: /^@blue\/redis$/, replacement: resolve(__dirname, './packages/blue-redis/src') },
             { find: /^@blue\/socket$/, replacement: resolve(__dirname, './packages/blue-socket/src') },
             { find: /^@blue\/signals$/, replacement: resolve(__dirname, './packages/blue-signals/src') },
-            {
-                find: /^@blue\/telemetry\/logger$/,
-                replacement: resolve(__dirname, './packages/blue-telemetry/src/logger'),
-            },
+            { find: /^@blue\/log$/, replacement: resolve(__dirname, './packages/blue-log/src') },
             { find: /^@blue\/telemetry$/, replacement: resolve(__dirname, './packages/blue-telemetry/src') },
             { find: /^@blue\/eslint-plugin$/, replacement: resolve(__dirname, './packages/blue-eslint-plugin/src') },
             { find: /^@blue\/orm$/, replacement: resolve(__dirname, './packages/blue-orm/src') },

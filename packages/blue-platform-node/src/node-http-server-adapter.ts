@@ -63,7 +63,7 @@ import {
 import { parseCookies } from './cookie-parser';
 import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@blue/auth-core';
 import { getSymbolMetadata } from '@blue/core';
-import { getLogger } from '@blue/telemetry/logger';
+import { getLogger } from '@blue/log';
 
 const logger = getLogger('blue-platform-node:node-http-server-adapter');
 

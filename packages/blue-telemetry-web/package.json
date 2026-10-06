@@ -29,10 +29,7 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "sideEffects": false,
   "dependencies": {
-    "@blue/context": "~0.0.1",
-    "@blue/dispatcher": "~0.0.1",
     "@blue/platform-web": "~0.0.1",
-    "@blue/router": "~0.0.1",
     "@blue/socket": "~0.0.1",
     "@blue/telemetry": "~0.0.1",
     "@opentelemetry/api": "~1.9.1",

@@ -18,7 +18,7 @@ import {
 } from '@blue/platform-node';
 import { PassThrough } from 'node:stream';
 import type { IncomingMessage } from 'node:http';
-import { getLogger } from '@blue/telemetry/logger';
+import { getLogger } from '@blue/log';
 import { buildRoute, MockRequest, PreparedRoute } from './request-builder';
 import { createMemoryResponse, MemoryResponse } from './memory-response';
 

@@ -87,7 +87,8 @@ diagnostics output.
 
 ## Package surfaces
 
-- `@blue/telemetry` — loggers, `currentTraceContext`, metrics, severity,
-  tracing decorators (API-only)
+- `@blue/log` — loggers, severity mappings (dependency-light leaf)
+- `@blue/telemetry` — `currentTraceContext`, metrics, tracing decorators,
+  framework instrumentations; re-exports the logging surface from `@blue/log`
 - `@blue/telemetry-node` — `configureTelemetry`, node instrumentations
 - `@blue/telemetry-web` — `configureBrowserTelemetry`

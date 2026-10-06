@@ -9,7 +9,7 @@ import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '
 import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
 import { context as otelContext, trace } from '@opentelemetry/api';
 import { HTTPServerInstrumentation } from '../src/instrumentation/http-server/http-server';
-import { DispatcherInstrumentation } from '../src/instrumentation/dispatcher/dispatcher';
+import { DispatcherInstrumentation } from '@blue/telemetry';
 import { getMapping, ModelAndView, requestMapping } from '@blue/dispatcher';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, HTTPServer } from '@blue/platform-node';

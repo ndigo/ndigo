@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `@blue/log` — dependency-light logging core (Logger contract,
+  `getLogger`/`LoggerFactory`, console + OpenTelemetry appenders, severity
+  mappings) extracted so framework internals can log without the telemetry
+  stack (AD-67).
 - Environment accessors `getEnv(name, fallback?)` / `isDevMode()` in
   `@blue/util`, re-exported from `@blue/context` — centralized env reads for
   framework and app code (replaces scattered `process.env` lookups).
@@ -85,6 +89,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Framework diagnostics (`@blue/factory`, `@blue/platform-node`, `@blue/test`)
+  now import the logger from `@blue/log`; `@blue/telemetry` re-exports the
+  logging surface, and the `@blue/telemetry/logger` subpath is gone — import
+  `getLogger` from `@blue/log` (or the `@blue/telemetry` root).
+- OpenTelemetry `ContextInstrumentation`/`DispatcherInstrumentation` are
+  single implementations in `@blue/telemetry` (the node/web packages
+  re-export them; the core dispatcher instrumentation gains the
+  `_resolveViewName` span). The forked copies and the unused node
+  `CountedInstrumentation` duplicate are removed.
 - Decorators migrated from legacy experimental to TC39 Stage 3 standard
   (AD-44).
 - Conditional auto-configuration decorators renamed `@conditionalOn*` →
@@ -103,6 +116,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- `@blue/telemetry`'s `./logger` subpath — use `@blue/log` (AD-67).
 - Legacy validation: `@blue/validate` constraint system and
   `@blue/model`/objectmodel, replaced by Zod (AD-07).
 - `@blue/domain` MVVM layer, archived (AD-02 supersession).

@@ -270,7 +270,7 @@ describe('Scope Decorators - TC39 Behavioral Tests', () => {
             refresh.clear();
 
             // The failing callback was reported (best-effort teardown)...
-            // The report now flows through the @blue/telemetry logger; assert
+            // The report now flows through the @blue/log logger; assert
             // the essence (one report, mentioning the callback) without pinning
             // the logger's argument layout.
             expect(consoleError).toHaveBeenCalledTimes(1);

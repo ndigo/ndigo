@@ -5,7 +5,7 @@
  */
 import '@tsmetadata/polyfill';
 import { IllegalStateError } from '@blue/core';
-import { getLogger } from '@blue/telemetry/logger';
+import { getLogger } from '@blue/log';
 
 const logger = getLogger('blue-factory:scope');
 

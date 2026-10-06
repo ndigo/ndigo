@@ -32,10 +32,10 @@
     "@blue/context": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/http": "~0.0.1",
+    "@blue/log": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
     "@blue/platform-web": "~0.0.1",
     "@blue/router": "~0.0.1",
-    "@blue/telemetry": "~0.0.1",
     "@blue/util": "~0.0.1",
     "@blue/view": "~0.0.1"
   },

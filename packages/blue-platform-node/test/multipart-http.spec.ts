@@ -171,8 +171,14 @@ describe('Node multipart request wiring', () => {
         await context?.cleanup();
     });
 
-    test('413 over-cap multipart requests leave no blue-upload-* temp files after dispatch (SEC-6)', async () => {
-        const spill = (): string[] => readdirSync(tmpdir()).filter((name) => name.startsWith('blue-upload-'));
+    test('spilled multipart requests leave no blue-upload-* temp files after dispatch (SEC-6)', async () => {
+        // `os.tmpdir()` is shared with parallel suites (the blue-api uploads
+        // spill through this same parser), so transient foreign spill files
+        // must be waited out — a real leak from this request never clears.
+        const spill = (): string[] =>
+            readdirSync(tmpdir(), { withFileTypes: true })
+                .filter((entry) => entry.isFile() && entry.name.startsWith('blue-upload-'))
+                .map((entry) => entry.name);
         const before = new Set(spill());
 
         const payload = [
@@ -189,8 +195,18 @@ describe('Node multipart request wiring', () => {
         expect(res.status).toBe(200);
         // The adapter disposes the parsed context after dispatch — no temp
         // files survive the request.
-        const after = spill().filter((name) => !before.has(name));
-        expect(after).toEqual([]);
+        const delay = (ms: number): Promise<void> => {
+            const { promise, resolve } = Promise.withResolvers<void>();
+            setTimeout(resolve, ms);
+            return promise;
+        };
+        const leftoverAfter = async (until: number): Promise<string[]> => {
+            const found = spill().filter((name) => !before.has(name));
+            if (found.length === 0 || Date.now() >= until) return found;
+            await delay(25);
+            return leftoverAfter(until);
+        };
+        await expect(leftoverAfter(Date.now() + 2_000)).resolves.toEqual([]);
     });
 
     test('Content-Length over the multipart cap rejects 413 before the body is read (SEC-5)', async () => {

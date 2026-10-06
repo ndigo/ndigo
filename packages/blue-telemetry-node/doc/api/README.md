@@ -4,8 +4,7 @@
 
 # @blue/telemetry-node v0.0.1
 
-NodeSDK configuration and the Node platform instrumentations:.
-*
+NodeSDK configuration and the Node platform instrumentations.
 
 ## Since
 

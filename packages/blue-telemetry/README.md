@@ -4,11 +4,11 @@
 
 Blue Telemetry provides tracing, metrics, and logging integrations for BlueJS using OpenTelemetry. The surface is split by platform so the isomorphic core carries zero installation weight:
 
-| Package                | Contents                                                                                                                                                                                                                |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@blue/telemetry`      | Isomorphic API core: `getLogger`, `FeatureMetricAggregator`, `@traced`/`@counted` decorators, severity mapping, platform-free instrumentation bases. Installs only `@opentelemetry/api`, `api-logs`, `instrumentation`. |
-| `@blue/telemetry-node` | Node setup: `configureTelemetry()` (NodeSDK), `HTTPServerInstrumentation`, `HTTPResponseViewTargetInstrumentation`, `SeverityFilterLogRecordProcessor`.                                                                 |
-| `@blue/telemetry-web`  | Browser setup: `configureBrowserTelemetry()`, `RouterInstrumentation`, `DispatcherInstrumentation`.                                                                                                                     |
+| Package                | Contents                                                                                                                                                               |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@blue/telemetry`      | Isomorphic API core: `FeatureMetricAggregator`, `@traced`/`@counted` decorators, platform-free instrumentation bases; re-exports the logging surface from `@blue/log`. |
+| `@blue/telemetry-node` | Node setup: `configureTelemetry()` (NodeSDK), `HTTPServerInstrumentation`, `HTTPResponseViewTargetInstrumentation`, `SeverityFilterLogRecordProcessor`.                |
+| `@blue/telemetry-web`  | Browser setup: `configureBrowserTelemetry()`, `RouterInstrumentation`, `DispatcherInstrumentation`.                                                                    |
 
 ## Installation
 
@@ -23,7 +23,7 @@ Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 ```typescript
 import { SeverityNumber } from '@opentelemetry/api-logs';
 import { configureTelemetry } from '@blue/telemetry-node';
-import { getLogger } from '@blue/telemetry';
+import { getLogger } from '@blue/log';
 
 configureTelemetry({
     minimumSeverity: SeverityNumber.INFO,
@@ -55,6 +55,7 @@ pnpm --filter @blue/telemetry test
 
 ## See Also
 
+- [@blue/log](../blue-log/README.md) — logging core (logger + severity) re-exported here
 - [@blue/telemetry-node](../blue-telemetry-node/README.md) — Node setup
 - [@blue/telemetry-web](../blue-telemetry-web/README.md) — browser setup
 

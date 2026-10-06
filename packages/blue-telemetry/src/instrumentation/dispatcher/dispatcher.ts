@@ -16,6 +16,7 @@ import { AbstractBaseInstrumentation } from '../base';
  */
 interface DispatcherPatchTarget {
     dispatch(route: Route): Promise<void>;
+    _resolveViewName(viewName: string, language: string): Promise<unknown>;
     /** Missing on the mixin prototype chain; restored before shimmer wraps. */
     propertyIsEnumerable?(propertyName: string | symbol): boolean;
 }
@@ -33,7 +34,7 @@ export class DispatcherInstrumentation extends AbstractBaseInstrumentation {
 
     enable(): void {
         // Patch slots live on the mixin-built prototype; the declared class
-        // type hides that runtime shape from shimmer's `_wrap` contract.
+        // type hides `_resolveViewName` (protected) and the runtime chain shape.
         const target = AbstractDispatcher.prototype as unknown as DispatcherPatchTarget;
         // The decorator-mixin prototype chain does not derive from
         // Object.prototype (its `propertyIsEnumerable` is absent), which
@@ -69,10 +70,34 @@ export class DispatcherInstrumentation extends AbstractBaseInstrumentation {
                 },
             })
         );
+
+        // View-name resolution: which resolver served the name (and whether
+        // the chain fell through) is otherwise invisible.
+        this._wrap(
+            target,
+            '_resolveViewName',
+            this._patch({
+                name: 'Dispatcher.resolveViewName',
+                kind: SpanKind.INTERNAL,
+                attributes: (_instance: unknown, args: unknown[]) => ({
+                    'view.name': args[0],
+                }),
+                onEnd(span, outcome) {
+                    const resolved = outcome.ok && outcome.value !== null;
+                    span.setAttribute('view.resolved', resolved);
+                    if (resolved && typeof outcome.value === 'object' && outcome.value !== null) {
+                        // The winning resolver owns the instance → its
+                        // constructor names the view type it produced.
+                        span.setAttribute('view.resolved_by', outcome.value.constructor.name);
+                    }
+                },
+            })
+        );
     }
 
     disable(): void {
         const target = AbstractDispatcher.prototype as unknown as DispatcherPatchTarget;
         this._unwrap(target, 'dispatch');
+        this._unwrap(target, '_resolveViewName');
     }
 }

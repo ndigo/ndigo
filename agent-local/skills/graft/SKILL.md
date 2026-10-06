@@ -150,7 +150,23 @@ total is parsed from.
   `graft/INDEX.md` indexes the nodes), but the tools above are faster and
   exhaustive where it matters, so reach for them first.
 
-When the graft MCP server is connected, these are exposed as tools too:
-`graft_find_code`, `graft_find_all`, `graft_file_api`, `graft_trace_calls` (with
-`direction` / `depth`), `graft_repo_map`, `graft_check_freshness`. Use whichever surface is
-available; the guidance is identical.
+### MCP tool surface (when the graft MCP server is connected)
+
+The same graph is exposed as host tools, **registered under the harness prefix
+— never call them by bare name**. Resolve each call against the session's tool
+list first; in omp the names are `mcp__graft_find_code`, `mcp__graft_find_all`,
+`mcp__graft_file_api`, `mcp__graft_trace_calls`, `mcp__graft_repo_map`,
+`mcp__graft_check_freshness`; in Claude Code they get an extra segment
+(`mcp__graft__graft_find_code`). Call them with a JSON args object — regex
+backslashes must be JSON-escaped (`"\."` → `"\\."`):
+
+- `mcp__graft_find_code`: `{"query": "…", "limit": 5, "full": false, "in": "path/"}` — like `graft ask`.
+- `mcp__graft_find_all`: `{"pattern": "…", "in": "path/", "ignore_case": false, "fixed": false}` — like `graft grep`; **`pattern` is required**.
+- `mcp__graft_file_api`: `{"file": "path/to/file.ts"}` — like `graft skeleton`.
+- `mcp__graft_trace_calls`: `{"symbol": "Foo", "direction": "in"|"out", "depth": 1|"all", "in": "path/"}` — like `graft callers`.
+- `mcp__graft_repo_map`: `{"max_dirs": 16}` — like `graft map`.
+- `mcp__graft_check_freshness`: `{}` — like `graft check`.
+
+The CLI flags from the sections above do **not** map to MCP argument names; use
+the exact keys shown. The rest of the guidance (pick one tool, spend fewest
+calls, `[graft] tokens saved` reporting) is identical.

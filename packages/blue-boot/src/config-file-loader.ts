@@ -6,15 +6,31 @@
 import { IllegalStateError, JSONObject } from '@blue/core';
 import type { ConfigurableEnvironment } from '@blue/context';
 import type { ConfigFileReader } from '@blue/context';
-// Type-only reference to the OPTIONAL peer (AD-66): the runtime module is
-// loaded lazily below because statically importing it would fail builds for
-// consumers who never use .toon files.
-import type { decode as toonDecode } from '@toon-format/toon';
 
 /**
- * The config-file format to probe. `'auto'` (default) probes
+ * Exact version of the optional `@toon-format/toon` peer (AD-66 D-4) — keep
+ * in sync with the `peerDependencies`/`devDependencies` pin in
+ * `packages/blue-boot/package.json`; the install hint in
+ * {@link loadToonDecoder} references it.
+ */
+const TOON_PEER_VERSION = '4.1.1';
+
+/**
+ * Runtime shape of the optional `@toon-format/toon` peer. Declared locally
+ * instead of `import type`-ed so that building `@blue/boot` from source never
+ * requires the optional peer to resolve (AD-66): the lazy dynamic import in
+ * {@link loadToonDecoder} is the only load site.
+ */
+interface ToonDecoderModule {
+    decode(content: string): unknown;
+}
+
+/**
+ * The config-file format to load. `'auto'` (default) probes
  * `application.json` then `application.toon` per location — JSON wins on
- * collision; the other values restrict probing to one format. TOON files
+ * collision; the other values restrict probing to one format, and
+ * `BLUE_CONFIG_IMPORT` paths whose extension contradicts a restricted
+ * `format` error out (imports inherit the rule, AD-66 D-2). TOON files
  * follow spec v4.1 and decode through the optional `@toon-format/toon` peer
  * (see {@link StandardConfigFileLoader}).
  */
@@ -64,18 +80,27 @@ const DEFAULT_LOCATIONS = ['./config/', './'];
  * `toon-spec: 4.1` (https://github.com/toon-format/spec).
  */
 const loadToonDecoder = async (): Promise<(content: string) => JSONObject> => {
+    let peer: ToonDecoderModule;
     try {
-        const mod = (await import(/* @vite-ignore */ '@toon-format/toon')) as {
-            decode: typeof toonDecode;
-        };
-        return mod.decode as unknown as (content: string) => JSONObject;
+        peer = (await import(/* @vite-ignore */ '@toon-format/toon')) as ToonDecoderModule;
     } catch (cause) {
+        // Every resolution failure maps to "not installed": the peer is
+        // optional, so a missing/corrupt install is the expected case. A
+        // version whose exports changed surfaces through the shape check
+        // below instead of a misleading "not valid TOON" at parse time.
         throw new IllegalStateError(
             'A .toon config file was found, but the optional "@toon-format/toon" dependency is not installed. ' +
-                'Install it (e.g. `npm i @toon-format/toon@4.1.1`) to use TOON config files.',
+                `Install it (e.g. \`npm i @toon-format/toon@${TOON_PEER_VERSION}\`) to use TOON config files.`,
             { cause }
         );
     }
+    if (typeof peer.decode !== 'function') {
+        throw new IllegalStateError(
+            `The installed "@toon-format/toon" does not expose the expected decode() export — expected v${TOON_PEER_VERSION}. ` +
+                `Reinstall it (e.g. \`npm i @toon-format/toon@${TOON_PEER_VERSION}\`).`
+        );
+    }
+    return peer.decode as unknown as (content: string) => JSONObject;
 };
 
 const withTrailingSlash = (location: string): string => (location.endsWith('/') ? location : `${location}/`);
@@ -105,6 +130,21 @@ export function mergeConfig(base: JSONObject, override: JSONObject): JSONObject 
 }
 
 const isPlainObject = (value: unknown): boolean => value !== null && typeof value === 'object' && !Array.isArray(value);
+
+/**
+ * Decoder diagnostics quote input slices, and config files routinely hold
+ * credentials — bound the message and strip control characters before it
+ * enters an error/log (AD-66, SEC parity with the JSON path's bounded
+ * `JSON.parse` message).
+ */
+const MAX_DECODER_MESSAGE_CHARS = 200;
+const sanitizeDecoderMessage = (message: string): string => {
+    // oxlint-disable-next-line no-control-regex -- stripping control characters from diagnostics is the purpose of this sanitizer.
+    const printable = message.replace(/[\u0000-\u001f\u007f]/g, ' ');
+    return printable.length > MAX_DECODER_MESSAGE_CHARS
+        ? `${printable.slice(0, MAX_DECODER_MESSAGE_CHARS - 3)}...`
+        : printable;
+};
 
 /**
  * Loads `application.json` / `application-{profile}.json` (and, when
@@ -173,13 +213,15 @@ export class StandardConfigFileLoader {
             return true;
         };
 
-        const addLocation = async (fileName: string, required = false): Promise<boolean> => {
+        const addLocation = async (fileName: string): Promise<boolean> => {
             // First-present-wins per file across locations; no cross-location merge.
             const probes: ConfigFileFormat[] = this.#format === 'auto' ? ['json', 'toon'] : [this.#format];
             const probeNames = probes.map((format) => `${fileName}.${format}`);
             for (const rawLocation of this.#locations) {
-                const { path: location, optional, required: requiredLocation } = stripPrefix(rawLocation.trim());
-                required ||= requiredLocation;
+                const { path: location, optional, required } = stripPrefix(rawLocation.trim());
+                // `required:` covers the probed formats as a pair: fail fast for
+                // this location only after both probes missed it, so a later
+                // location cannot silently substitute (original semantics).
                 const effectiveRequired = required && !optional;
                 for (const format of probes) {
                     // oxlint-disable-next-line no-await-in-loop -- formats are probed in order so JSON wins the collision; locations must be probed in order so an earlier hit stops the search.
@@ -187,19 +229,11 @@ export class StandardConfigFileLoader {
                         return true;
                     }
                 }
-                // `required:` covers the probed formats as a pair: fail fast for
-                // this location only after both probes missed it, so a later
-                // location cannot silently substitute (original semantics).
                 if (effectiveRequired) {
                     throw new IllegalStateError(
                         `Required config file not found: ${probeNames.join(' / ')} in ${this.#locations.join(', ')}`
                     );
                 }
-            }
-            if (required) {
-                throw new IllegalStateError(
-                    `Required config file not found: ${probeNames.join(' / ')} in ${this.#locations.join(', ')}`
-                );
             }
             return false;
         };
@@ -220,6 +254,18 @@ export class StandardConfigFileLoader {
                 const trimmed = spec.trim();
                 if (!trimmed) continue;
                 const { path, optional } = stripPrefix(trimmed);
+                // A restricted `format` admits one parser; an import whose
+                // extension contradicts it must not sidestep the option
+                // (AD-66 D-2: imports inherit the `format` rule).
+                if (this.#format !== 'auto') {
+                    const actual = path.endsWith('.toon') ? 'toon' : 'json';
+                    if (actual !== this.#format) {
+                        throw new IllegalStateError(
+                            `BLUE_CONFIG_IMPORT file "${path}" is ${actual.toUpperCase()} but the loader's format option is '${this.#format}'. ` +
+                                'Remove the format option or convert the file.'
+                        );
+                    }
+                }
                 // oxlint-disable-next-line no-await-in-loop -- imports resolve into one ordered source chain; parallel loads would race last-writer semantics.
                 await loadFile(path, !optional);
             }
@@ -235,17 +281,31 @@ export class StandardConfigFileLoader {
      * (§14) — cross-file profile merging is unaffected: it happens after
      * decode, on the `application` source, with the usual object-merge /
      * array-replace semantics. The JSON path intentionally keeps its raw
-     * `JSON.parse` errors; TOON errors carry the file path and the decoder's
-     * message.
+     * `JSON.parse` errors; TOON errors carry the file path and a sanitized,
+     * truncated decoder message.
      */
     async #parseToon(content: string, path: string): Promise<JSONObject> {
+        // A JSON document pasted or renamed into a .toon file is the format's
+        // most plausible authoring slip. TOON would decode `{"a": 1}` as an
+        // ordinary key: value line (key `{"a"`, value `1}`) — a silent,
+        // garbage object — so reject `{`/`[`-leading documents up front with
+        // a rename hint. `[N]:` array-form roots also start with `[`; they
+        // are invalid for config anyway (shape guard below), so the hint
+        // costs nothing on the valid-to-TOON path.
+        const first = content.trimStart()[0];
+        if (first === '{' || first === '[') {
+            throw new IllegalStateError(
+                `Config file "${path}" starts like a JSON document but has a .toon extension. ` +
+                    'TOON is line/indentation-based: rename the file to .json or convert its contents.'
+            );
+        }
         const decode = this.#decodeToon ?? (await loadToonDecoder());
         let parsed: unknown;
         try {
             parsed = await decode(content);
         } catch (cause) {
             throw new IllegalStateError(
-                `Config file "${path}" is not valid TOON: ${cause instanceof Error ? cause.message : String(cause)}`,
+                `Config file "${path}" is not valid TOON: ${sanitizeDecoderMessage(cause instanceof Error ? cause.message : String(cause))}`,
                 { cause }
             );
         }

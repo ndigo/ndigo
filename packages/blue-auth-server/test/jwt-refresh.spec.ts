@@ -95,6 +95,15 @@ describe('JWTAdapter revocation via ver claim (AD-33 D-7)', () => {
         expect(principal).toMatchObject({ id: 'alice', roles: ['user'] });
     });
 
+    test('validate rejects a refresh token: only access tokens authenticate (SE-7)', async () => {
+        const { adapter } = buildAdapter();
+        const { accessToken, refreshToken } = await adapter.issueTokens({ id: 'alice' });
+        await expect(adapter.validate(accessToken)).resolves.toMatchObject({ id: 'alice' });
+        // The refresh token carries sub/ver/exp and a signature — without a
+        // token_use gate it would authenticate for its full 7-day TTL.
+        await expect(adapter.validate(refreshToken)).resolves.toBeNull();
+    });
+
     test('a version bump revokes every outstanding token', async () => {
         const { adapter, userStore } = buildAdapter();
         const { accessToken, refreshToken } = await adapter.issueTokens({ id: 'alice' });

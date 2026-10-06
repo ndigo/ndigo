@@ -36,6 +36,9 @@ The authenticated principal.
 
 > `readonly` **tokenVersion**: `number`
 
-Token version at issue time (AD-33 D-7): the JWT `ver` claim must
-match the user record's `tokenVersion`; sessions snapshot the value
-they were issued under.
+Account `tokenVersion` snapshot at issue time (AD-33 D-7). The JWT
+`ver` claim is compared against the live account value on every
+validation; opaque sessions deliberately do NOT compare it, because
+that counter advances on JWT refresh rotation and must never log out
+server sessions. Sessions revoke by deletion — see
+[SessionStore.deleteForUser](SessionStore.md#deleteforuser).

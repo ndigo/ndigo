@@ -18,9 +18,12 @@ export interface SessionRecord {
     /** The authenticated principal. */
     readonly principal: Principal;
     /**
-     * Token version at issue time (AD-33 D-7): the JWT `ver` claim must
-     * match the user record's `tokenVersion`; sessions snapshot the value
-     * they were issued under.
+     * Account `tokenVersion` snapshot at issue time (AD-33 D-7). The JWT
+     * `ver` claim is compared against the live account value on every
+     * validation; opaque sessions deliberately do NOT compare it, because
+     * that counter advances on JWT refresh rotation and must never log out
+     * server sessions. Sessions revoke by deletion — see
+     * {@link SessionStore.deleteForUser}.
      */
     readonly tokenVersion: number;
     /** Issue timestamp in milliseconds. */
@@ -77,4 +80,17 @@ export interface SessionStore {
      * Terminates the session. Unknown ids are a no-op.
      */
     delete(sessionId: string): Promise<void>;
+
+    /**
+     * Terminates every **live** session belonging to `userId` and returns
+     * how many were removed (expired-but-unswept entries are purged without
+     * being counted as live). This is the user-wide revocation primitive:
+     * the two shipped stores implement it as an indexed sweep (`DELETE …
+     * WHERE principal_id = ?`); callers that also want outstanding JWTs of
+     * the account revoked should bump the account's `tokenVersion` — see
+     * `CredentialsAuthAdapter.logoutAll`.
+     *
+     * Idempotent: an account with no live sessions returns `0`.
+     */
+    deleteForUser(userId: string): Promise<number>;
 }

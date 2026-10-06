@@ -205,6 +205,10 @@ export class JWTAdapter implements AuthAdapter {
      * `tokenVersion` or a disabled/deleted account rejects the token
      * (SE-7). External IdP tokens without `ver` skip the store check.
      *
+     * Framework-issued **refresh** tokens (`token_use: 'refresh'`) are
+     * never accepted here — only access tokens authenticate requests
+     * (`token_use: 'access'`, or absent for external IdP tokens).
+     *
      * @param token - The JWT to validate.
      * @returns The authenticated {@link Principal}, or `null` if validation fails.
      */
@@ -215,6 +219,15 @@ export class JWTAdapter implements AuthAdapter {
             // function) resolve statically on the `Uint8Array | JWTVerifyGetKey`
             // union — a single call picks the union-aware overload.
             const { payload } = await jwtVerify(token, key, this.#verifyOptions());
+
+            // Only access tokens are credentials. Framework refresh tokens
+            // carry `token_use: 'refresh'` (7-day TTL) and must never
+            // authenticate an API request; a present claim that is anything
+            // but 'access' fails closed. External IdP tokens without the
+            // claim are unaffected.
+            if (payload.token_use !== undefined && payload.token_use !== 'access') {
+                return null;
+            }
 
             // AD-33 D-7: framework-issued tokens carry `ver`; when a store is
             // wired, the claim must equal the account's current version.

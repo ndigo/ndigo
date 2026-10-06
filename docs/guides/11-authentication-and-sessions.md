@@ -90,8 +90,8 @@ without a hash never authenticate.
 
 ## 4. Server sessions (audit M4)
 
-`SessionStore` (`kind`, `create`, `get`, `rotate`, `delete`) with TTL
-enforced on read. Opaque 32-byte tokens — not JWTs: trivially revocable,
+`SessionStore` (`kind`, `create`, `get`, `rotate`, `delete`,
+`deleteForUser`) with TTL enforced on read. Opaque 32-byte tokens — not JWTs: trivially revocable,
 no replay window. `InMemorySessionStore` is the reference; the durable
 [`LibSQLSessionStore`](../../packages/blue-orm-drizzle/README.md) (`kind:
 'libsql'`) implements the same contract: explicit `initialize()` to
@@ -106,6 +106,26 @@ in-memory store deletes the old id before issuing the new one; the LibSQL
 store replaces it atomically in one guarded update. Cookies:
 HttpOnly + SameSite=Lax (+ Secure in production), `Max-Age=0` clear on
 logout. Naming: `SESSION_COOKIE = 'blue-session'`.
+
+### Revoking a user everywhere (AD-68)
+
+```ts
+import { AuthRegistry, type CredentialsAuthAdapter } from '@blue/auth-core';
+// (the concrete adapter is exported by @blue/auth-server)
+
+const credentials = AuthRegistry.getAdapter('credentials') as CredentialsAuthAdapter;
+const { sessions, tokenVersion } = await credentials.logoutAll(userId);
+```
+
+`logoutAll(userId)` deletes every live session of the account
+(`SessionStore.deleteForUser`) and advances its `tokenVersion`, which also
+invalidates every outstanding JWT the `JWTAdapter` issued for the account.
+Disabling or deleting the account has the same effect without an explicit
+call: `validate`/`refresh` consult the live user record, so a disabled
+account's sessions and JWTs stop validating immediately (SE-7). Opaque
+sessions deliberately do **not** compare `tokenVersion` — JWT refresh
+rotation advances that counter and must never log server sessions out;
+sessions revoke by deletion.
 
 ## 5. Rate limiting login (SEC-6)
 
@@ -167,7 +187,9 @@ first-party tokens:
   `ver` (external IdP) skip the check, so revocation never rejects tokens
   the adapter didn't version. Cost: one user-record read per validation —
   `revocationCacheTtlMs` trades revocation latency for throughput
-  (default 0 = always read, invalidated on refresh/logout).
+  (default 0 = always read, invalidated on refresh/logout). Only access
+  tokens authenticate: a framework refresh token (`token_use: 'refresh'`)
+  is rejected, as is any present claim that is not `'access'` (AD-68).
 - `refresh(token)` — **version-advancing rotation**: every refresh bumps
   `tokenVersion` and issues a new pair; all older tokens die. Reuse of a
   rotated-out refresh is rejected by construction — no ledger. This means
@@ -175,7 +197,8 @@ first-party tokens:
   access tokens (refresh happens on expiry); long-lived access tokens
   would need a `jti` ledger (follow-up).
 - `logout(token)` — verifies, then bumps the version: the whole family
-  dies at once.
+  dies at once. For an explicit user-wide revoke that also deletes every
+  live session, use `CredentialsAuthAdapter.logoutAll` (§4, AD-68).
 
 ## 8. Securing management endpoints (SEC-5, AD-36)
 

@@ -112,6 +112,21 @@ describe('LibSQLSessionStore', () => {
         await second.delete(winners[0].value.id);
     });
 
+    test('deleteForUser removes every live session of one account and reports the count (AD-68)', async () => {
+        const { store } = await openStore();
+        const alice = record();
+        const bob = { ...record(), principal: new DefaultPrincipal('bob', 'Bob', ['user']) };
+        const aliceSessions = await Promise.all([store.create(alice, 60_000), store.create(alice, 60_000)]);
+        const bobSession = await store.create(bob, 60_000);
+
+        await expect(store.deleteForUser('alice')).resolves.toBe(2);
+        await expect(store.get(aliceSessions[0])).resolves.toBeNull();
+        await expect(store.get(aliceSessions[1])).resolves.toBeNull();
+        await expect(store.get(bobSession)).resolves.toEqual(bob);
+        // Idempotent for an account with nothing left.
+        await expect(store.deleteForUser('alice')).resolves.toBe(0);
+    });
+
     test('session identity and role methods survive closing and reopening a real file', async () => {
         const { first, second, url } = await fileStores();
         const original = record();

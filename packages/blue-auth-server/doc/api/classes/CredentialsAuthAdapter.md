@@ -23,10 +23,13 @@ explicit-scheme discipline without framework changes:
 - `validate` — `SessionStore.get` **plus a live account check** (`SE-7`),
   or `null` (expired/unknown/revoked session, or a disabled/deleted
   account): disabling an account revokes its outstanding opaque sessions
-  at the next validation. User-wide revocation of live sessions without
-  an account-store read remains an open contract (needs an ADR).
-- `refresh` — session **rotation**: new id, old id dead (fixation-safe).
-- `logout` — session delete.
+  at the next validation.
+- `refresh` — session **rotation**: new id, old id dead (fixation-safe);
+  a disabled or deleted account cannot rotate.
+- `logout` — session delete (single device).
+- `logoutAll` — user-wide revocation (AD-68): every live session of the
+  account is deleted and its `tokenVersion` advances, which also kills
+  every outstanding JWT the `JWTAdapter` issued for the account.
 
 The rehash-on-login migration hook (`needsRehash`) is consumed at the
 application layer (the `UserStore` contract has no password write in
@@ -114,6 +117,37 @@ The token to invalidate.
 #### Implementation of
 
 `AuthAdapter.logout`
+
+***
+
+### logoutAll()
+
+> **logoutAll**(`userId`): `Promise`\<\{ `sessions`: `number`; `tokenVersion`: `number`; \}\>
+
+Revokes every live credential of the account (AD-68): deletes all of
+its opaque sessions and advances its `tokenVersion`, which invalidates
+every outstanding JWT issued for the account by `JWTAdapter`. Sessions
+are removed first so a failing version bump can never leave tokens
+dead while sessions stay alive.
+
+#### Parameters
+
+##### userId
+
+`string`
+
+The account's stable id (`principal.id`).
+
+#### Returns
+
+`Promise`\<\{ `sessions`: `number`; `tokenVersion`: `number`; \}\>
+
+The number of live sessions removed and the new token version.
+
+#### Throws
+
+When the account is unknown (`UserStore.incrementTokenVersion`
+  fails closed).
 
 ***
 

@@ -170,6 +170,15 @@ export class LibSQLSessionStore implements SessionStore {
         await this.#client.execute({ sql: `DELETE FROM ${TABLE} WHERE session_id = ?`, args: [sessionId] });
     }
 
+    async deleteForUser(userId: string): Promise<number> {
+        this.#assertOpen();
+        const result = await this.#client.execute({
+            sql: `DELETE FROM ${TABLE} WHERE principal_id = ? AND expires_at > ?`,
+            args: [userId, Date.now()],
+        });
+        return result.rowsAffected;
+    }
+
     /** Idempotent: only owned clients close; all later store operations reject. */
     dispose(): void {
         if (this.#disposed) return;

@@ -18,9 +18,10 @@ reproduced with `tsx` probes. Full gates were run before the review (§0).
 **Status:** Findings recorded; **ALL WAVES EXECUTED AND VERIFIED
 (2026-10-06)** — Waves 1–5 plus the close-out batch (HG-4 pnpm catalogs +
 TypeScript normalization, HG-6 shared `delay`, SE-7..SE-12, HG-9/HG-10);
-final gates and a live boot smoke are in §4 (Wave 6). Accepted at closure:
-SE-7's user-wide revocation API needs an ADR (disabled-account revocation is
-in); TO-14 (rule catalogue is complete but hand-maintained); a
+final gates and a live boot smoke are in §4 (Wave 6). Post-closure: SE-7's
+user-wide revocation landed with AD-68 (`SessionStore.deleteForUser`,
+`CredentialsAuthAdapter.logoutAll`, refresh-token `token_use` gate — see §4).
+Still accepted: TO-14 (rule catalogue is complete but hand-maintained); a
 `@vitest/coverage-v8` peer-drift follow-up; `pnpm audit --prod`'s single
 remaining high advisory lives in the sibling todomvc checkout.
 **Legend:** `[code]` established by reading cited lines · `[exec]` reproduced
@@ -927,3 +928,21 @@ fail-before/pass-after spec (evidence in the slice reports). Highlights:
 - **Live smoke:** `apps/blue-hello-node` booted on tsx and served
   `GET /` → `200 {"message":"Hello, Node!"}` with the SEC-4-hardened header
   set on the wire (CSP `connect-src 'self'`, HSTS, nosniff, …).
+
+### Post-closure: SE-7 deep dive (2026-10-06, AD-68)
+
+- **User-wide revocation:** `SessionStore.deleteForUser(userId)` (required
+  contract method; in-memory sweep + LibSQL `DELETE … WHERE principal_id = ?
+AND expires_at > ?`) and `CredentialsAuthAdapter.logoutAll(userId)`
+  (sessions deleted + `tokenVersion` bumped ⇒ every outstanding JWT dies).
+  `refresh` now rejects disabled/deleted accounts; `SessionRecord.tokenVersion`
+  is documented as informational only (JWT rotation advances the counter, so
+  sessions must not compare it).
+- **Refresh-token credential leak (found while digging):** `validate` had no
+  `token_use` gate, so a framework refresh token (7-day TTL, `sub`+`ver`+`exp`)
+  authenticated API requests. Fixed: only `token_use: 'access'` (or an absent
+  claim, for external IdP tokens) validates.
+- **Probe:** access vs refresh claims decoded side by side; `validate(refresh)`
+  → `null`; `logoutAll('alice')` → `{sessions: 2, tokenVersion: 1}`, both
+  sessions and the access token dead afterwards.
+- Gates re-run after the change (build/test/typecheck/lint/manifest/doc).

@@ -79,6 +79,22 @@ Denials fail closed with an explicit `InterceptorDenial` — `401` for a
 missing or invalid token, `403` for missing roles — overridable through the
 fourth constructor argument (`{ unauthenticatedStatus, forbiddenStatus }`).
 
+### Revoking every credential of a user
+
+`CredentialsAuthAdapter.logoutAll(userId)` deletes all of the account's
+opaque sessions and advances its `tokenVersion`, which also invalidates
+every outstanding JWT issued for the account. Disabling or deleting the
+account revokes without a call (validation consults the live account); the
+explicit call is for password changes, lost devices, and admin actions.
+
+```typescript
+import { AuthRegistry } from '@blue/auth-core';
+import { type CredentialsAuthAdapter } from '@blue/auth-server';
+
+const credentials = AuthRegistry.getAdapter('credentials') as CredentialsAuthAdapter;
+const { sessions, tokenVersion } = await credentials.logoutAll('user-42');
+```
+
 ### JWT Adapter
 
 `issuer`, `audience`, and `algorithm` are required. HMAC algorithms need a

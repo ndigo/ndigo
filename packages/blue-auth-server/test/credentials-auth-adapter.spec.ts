@@ -3,6 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+// @vitest-environment node
 import { describe, test, expect } from 'vitest';
 import {
     type UserRecord,
@@ -14,6 +15,7 @@ import {
 import { delay } from '@blue/test';
 import { CredentialsAuthAdapter, InvalidCredentialsError } from '../src/credentials-auth-adapter';
 import { InMemorySessionStore } from '../src/in-memory-session-store';
+import { JWTAdapter } from '../src/jwt-adapter';
 
 /** Fast test-cost scrypt (ln=14 ≈ 16 MiB) — parameter drift is not under test here. */
 const encoder = new DelegatingPasswordEncoder({ scrypt: new ScryptPasswordEncoder({ ln: 14 }) }, 'scrypt');
@@ -101,6 +103,7 @@ function buildAdapter(options: { sessionTtlMs?: number } = {}) {
             disabled: true,
         },
         { id: 'claire', username: 'claire', passwordHash: null },
+        { id: 'dave', username: 'dave', passwordHash: encoder.encode('davepass'), roles: ['user'] },
     ]);
     const adapter = new CredentialsAuthAdapter({
         userStore: users,
@@ -211,6 +214,51 @@ describe('CredentialsAuthAdapter', () => {
     test('refresh fails closed on an unknown token', async () => {
         const { adapter } = buildAdapter();
         await expect(adapter.refresh('nope')).rejects.toBeInstanceOf(InvalidCredentialsError);
+    });
+
+    test('refresh rejects a disabled account (SE-7 parity)', async () => {
+        const { adapter, users } = buildAdapter();
+        const token = await sessionToken(adapter, 'alice', 's3cret');
+        users.disable('alice');
+        await expect(adapter.refresh(token)).rejects.toBeInstanceOf(InvalidCredentialsError);
+    });
+
+    test('logoutAll deletes every live session of the account and advances tokenVersion (SE-7)', async () => {
+        const { adapter } = buildAdapter();
+        const first = await sessionToken(adapter, 'alice', 's3cret');
+        const second = await sessionToken(adapter, 'alice', 's3cret');
+        const other = await sessionToken(adapter, 'dave', 'davepass');
+
+        await expect(adapter.logoutAll('alice')).resolves.toEqual({ sessions: 2, tokenVersion: 1 });
+        await expect(adapter.validate(first)).resolves.toBeNull();
+        await expect(adapter.validate(second)).resolves.toBeNull();
+        // Other accounts are untouched.
+        await expect(adapter.validate(other)).resolves.toMatchObject({ id: 'dave' });
+        // Idempotent: nothing left to delete, the version keeps advancing.
+        await expect(adapter.logoutAll('alice')).resolves.toEqual({ sessions: 0, tokenVersion: 2 });
+    });
+
+    test('logoutAll revokes outstanding JWTs of the account through the shared user store (AD-68)', async () => {
+        const { adapter, users } = buildAdapter();
+        const jwt = new JWTAdapter({
+            issuer: 'https://auth.example.com',
+            audience: 'app',
+            algorithm: 'HS256',
+            secret: 'close-out-secret-0123456789abcdefghij',
+            userStore: users,
+        });
+        const issued = await jwt.issueTokens({ id: 'alice' });
+        await expect(jwt.validate(issued.accessToken)).resolves.toMatchObject({ id: 'alice' });
+
+        await adapter.logoutAll('alice');
+
+        await expect(jwt.validate(issued.accessToken)).resolves.toBeNull();
+        await expect(jwt.refresh(issued.refreshToken)).rejects.toBeInstanceOf(Error);
+    });
+
+    test('logoutAll fails closed for an unknown account', async () => {
+        const { adapter } = buildAdapter();
+        await expect(adapter.logoutAll('ghost')).rejects.toThrow(/not found/i);
     });
 
     test("refresh reports the store's effective expiry, not a fresh full TTL (COR-13)", async () => {

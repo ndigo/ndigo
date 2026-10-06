@@ -67,10 +67,13 @@ export class InvalidCredentialsError extends Error {
  * - `validate` — `SessionStore.get` **plus a live account check** (`SE-7`),
  *   or `null` (expired/unknown/revoked session, or a disabled/deleted
  *   account): disabling an account revokes its outstanding opaque sessions
- *   at the next validation. User-wide revocation of live sessions without
- *   an account-store read remains an open contract (needs an ADR).
- * - `refresh` — session **rotation**: new id, old id dead (fixation-safe).
- * - `logout` — session delete.
+ *   at the next validation.
+ * - `refresh` — session **rotation**: new id, old id dead (fixation-safe);
+ *   a disabled or deleted account cannot rotate.
+ * - `logout` — session delete (single device).
+ * - `logoutAll` — user-wide revocation (AD-68): every live session of the
+ *   account is deleted and its `tokenVersion` advances, which also kills
+ *   every outstanding JWT the `JWTAdapter` issued for the account.
  *
  * The rehash-on-login migration hook (`needsRehash`) is consumed at the
  * application layer (the `UserStore` contract has no password write in
@@ -133,6 +136,13 @@ export class CredentialsAuthAdapter implements AuthAdapter {
         if (!record) {
             throw new InvalidCredentialsError();
         }
+        // SE-7 parity: a disabled or deleted account must not be able to
+        // rotate a session, even though the rotated token would then fail
+        // validation — reject at the source.
+        const user = await this.#userStore.findById(record.principal.id);
+        if (user === null || user.disabled === true) {
+            throw new InvalidCredentialsError();
+        }
         const issuedAt = Date.now();
         // COR-13: report the store's effective expiry (rotate preserves the
         // remaining TTL), never a fresh `issuedAt + ttlMs`.
@@ -142,6 +152,24 @@ export class CredentialsAuthAdapter implements AuthAdapter {
 
     async logout(token: string): Promise<void> {
         await this.#sessionStore.delete(token);
+    }
+
+    /**
+     * Revokes every live credential of the account (AD-68): deletes all of
+     * its opaque sessions and advances its `tokenVersion`, which invalidates
+     * every outstanding JWT issued for the account by `JWTAdapter`. Sessions
+     * are removed first so a failing version bump can never leave tokens
+     * dead while sessions stay alive.
+     *
+     * @param userId - The account's stable id (`principal.id`).
+     * @returns The number of live sessions removed and the new token version.
+     * @throws When the account is unknown (`UserStore.incrementTokenVersion`
+     *   fails closed).
+     */
+    async logoutAll(userId: string): Promise<{ sessions: number; tokenVersion: number }> {
+        const sessions = await this.#sessionStore.deleteForUser(userId);
+        const tokenVersion = await this.#userStore.incrementTokenVersion(userId);
+        return { sessions, tokenVersion };
     }
 
     /**

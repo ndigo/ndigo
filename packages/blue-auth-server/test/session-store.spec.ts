@@ -80,6 +80,33 @@ describe('InMemorySessionStore', () => {
         await expect(store.delete('nope')).resolves.toBeUndefined();
     });
 
+    test('deleteForUser removes only the account live sessions and reports the count (AD-68)', async () => {
+        const store = new InMemorySessionStore();
+        const alice = { ...record, principal: { ...record.principal, id: 'alice' } };
+        const bob = { ...record, principal: { ...record.principal, id: 'bob' } };
+        const a1 = await store.create(alice, 60_000);
+        const a2 = await store.create(alice, 60_000);
+        const b1 = await store.create(bob, 60_000);
+
+        await expect(store.deleteForUser('alice')).resolves.toBe(2);
+        await expect(store.get(a1)).resolves.toBeNull();
+        await expect(store.get(a2)).resolves.toBeNull();
+        await expect(store.get(b1)).resolves.toEqual(bob);
+        // Idempotent for an account with nothing left.
+        await expect(store.deleteForUser('alice')).resolves.toBe(0);
+    });
+
+    test('deleteForUser purges expired entries without counting them as live', async () => {
+        const store = new InMemorySessionStore();
+        const alice = { ...record, principal: { ...record.principal, id: 'alice' } };
+        await store.create(alice, 1);
+        await delay(5);
+        const live = await store.create(alice, 60_000);
+
+        await expect(store.deleteForUser('alice')).resolves.toBe(1);
+        await expect(store.get(live)).resolves.toBeNull();
+    });
+
     test('a store at the session cap rejects new sessions (SEC-4)', async () => {
         const store = new InMemorySessionStore();
         await Promise.all(Array.from({ length: 512 }, () => store.create(record, 60_000)));

@@ -1,6 +1,6 @@
 # BlueJS Decision Records (ADRs)
 
-Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-65**,
+Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-66**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 

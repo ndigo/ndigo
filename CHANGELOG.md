@@ -84,7 +84,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conditional auto-configuration decorators renamed `@conditionalOn*` →
   `@when*`: `@whenBrowser`, `@whenNode`, `@whenProperty`,
   `@whenProfile`, `@whenMissingEntry`; options interface now
-  `WhenPropertyOptions`.
+  `WhenPropertyOptions`. The runtime `Symbol.metadata` keys follow the
+  rename (`boot:whenPlatform`, `boot:whenProperty`, `boot:whenProfile`,
+  `boot:whenMissingEntry`) — code reading the old `boot:conditionalOn*`
+  keys must be updated.
 - Cache API became fully awaitable, including `size()` (AD-39).
 - `@blue/reactive` modernized into `@blue/signals` (AD-59).
 - Toolchain migrated from ESLint/Prettier to oxlint/oxfmt; `tsc -b` build

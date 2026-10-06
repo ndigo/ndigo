@@ -374,28 +374,39 @@ export class TaskScheduler {
      * observed by the caller (the race has already settled), so it is
      * recorded here instead of being swallowed.
      *
+     * The cap's timer is cleared as soon as the race settles, so a run that
+     * finishes first never pins the event loop for the remainder of the cap.
+     *
      * @param state - The task state.
      * @param runPromise - The running task.
      * @param maxRunTimeMs - The cap in milliseconds.
      */
     async #raceMaxRunTime(state: TaskState, runPromise: Promise<void>, maxRunTimeMs: number): Promise<void> {
         let timedOut = false;
+        let capTimer: NodeJS.Timeout | undefined;
         const timer = new Promise<void>((resolve) => {
-            setTimeout(() => resolve(), maxRunTimeMs);
+            capTimer = setTimeout(() => resolve(), maxRunTimeMs);
         });
 
-        await Promise.race([
-            runPromise.catch((error) => {
-                if (timedOut) {
-                    this.#recordFailure(state, error);
-                    return;
-                }
-                throw error;
-            }),
-            timer.then(() => {
-                timedOut = true;
-            }),
-        ]);
+        try {
+            await Promise.race([
+                runPromise.catch((error) => {
+                    if (timedOut) {
+                        this.#recordFailure(state, error);
+                        return;
+                    }
+                    throw error;
+                }),
+                timer.then(() => {
+                    timedOut = true;
+                }),
+            ]);
+        } finally {
+            // The race settled: an armed cap has no remaining purpose and
+            // would keep the process alive until it fired (clearing an
+            // already-fired timer is a no-op).
+            clearTimeout(capTimer);
+        }
 
         if (timedOut) {
             this.#warn(

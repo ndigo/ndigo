@@ -10,7 +10,7 @@ import type { IncomingMessage } from 'node:http';
 import { mkdtempSync, readdirSync, existsSync, readlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { parseMultipart } from '../src/parse-multipart';
+import { parseMultipart, type MultipartLimits } from '../src/parse-multipart';
 
 /** Wrap a raw multipart body in an IncomingMessage with the matching Content-Type. */
 function req(body: Buffer, boundary = '----blueTest'): IncomingMessage {
@@ -89,6 +89,45 @@ describe('parseMultipart', () => {
         expect(readdirSync(workDir)).toHaveLength(1);
         await ctx.cleanup();
         expect(readdirSync(workDir)).toHaveLength(0);
+    });
+
+    it('forces a small part to disk when fileThreshold is 0 (PL-2)', async () => {
+        const workDir = mkdtempSync(join(tmpdir(), 'blue-multipart-test-'));
+        const ctx = await parseMultipart(req(body([{ name: 'tiny', value: 'hello world', filename: 'tiny.txt' }])), {
+            limits: { fileThreshold: 0, maxFileSize: 1_000_000, maxRequestSize: 1_000_000 },
+            tmpDir: workDir,
+        });
+
+        const part = ctx.files.get('tiny')?.[0];
+        expect(part?.size).toBe('hello world'.length);
+        expect(Buffer.from((await part?.bytes()) as Uint8Array).toString()).toBe('hello world');
+        // An 11-byte part spills to a temp file despite being far below the default threshold.
+        expect(readdirSync(workDir)).toHaveLength(1);
+        await ctx.cleanup();
+        expect(readdirSync(workDir)).toHaveLength(0);
+    });
+
+    it('rejects negative and non-finite limits with a descriptive RangeError (PL-2)', async () => {
+        const cases: Array<[Partial<MultipartLimits>, string]> = [
+            [{ fileThreshold: -1 }, 'MultipartLimits.fileThreshold must be a non-negative finite number, received -1'],
+            [
+                { fileThreshold: Number.NaN },
+                'MultipartLimits.fileThreshold must be a non-negative finite number, received NaN',
+            ],
+            [
+                { maxFileSize: Number.POSITIVE_INFINITY },
+                'MultipartLimits.maxFileSize must be a non-negative finite number, received Infinity',
+            ],
+            [
+                { maxRequestSize: -1 },
+                'MultipartLimits.maxRequestSize must be a non-negative finite number, received -1',
+            ],
+        ];
+        await Promise.all(
+            cases.map(async ([limits, message]) => {
+                await expect(parseMultipart(req(body([])), { limits })).rejects.toThrow(message);
+            })
+        );
     });
 
     it('rejects a per-file overflow with 413 file_too_large', async () => {

@@ -10,15 +10,36 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { Constructable } from '@blue/core';
 import { getEntityMetadata } from '@blue/orm';
+import { type SqliteStorageType, sqliteTypeForColumnType } from './_column-types';
+
+/**
+ * Builds the sqlite-core column builder for a resolved storage type. The
+ * concrete builders are generic over their data type, so the shared
+ * `SQLiteColumnBuilder` base cannot type the variable; the inferred union
+ * keeps every builder's own API available.
+ */
+function builderForSqliteType(name: string, sqlType: SqliteStorageType) {
+    switch (sqlType) {
+        case 'INTEGER':
+            return integer(name);
+        case 'REAL':
+            return real(name);
+        case 'BLOB':
+            return blob(name);
+        default:
+            // TEXT — and NUMERIC, which only the DDL primary-key resolver emits.
+            return text(name);
+    }
+}
 
 /**
  * Maps an entity class to a Drizzle `sqliteTable`.
  *
- * Column SQL types from `@column({ type })` map to sqlite-core builders:
- * `int*` → `integer`, `real`/`float`/`double` → `real`, `blob` → `blob`,
- * everything else → `text`. The primary key is marked
- * `primaryKey({ autoIncrement })` when the entity declares a generated
- * column.
+ * Column SQL types come from the shared metadata → SQLite storage mapping
+ * also used by `createTableStatements` for DDL (`int*` → `integer`,
+ * `real`/`float`/`double` → `real`, `blob` → `blob`, everything else →
+ * `text`). The primary key is marked `primaryKey({ autoIncrement })` when the
+ * entity declares a generated `INTEGER` column.
  *
  * @param entityClass - The `@entity`-decorated class.
  * @returns A Drizzle sqlite table.
@@ -29,29 +50,21 @@ export function drizzleTableForEntity<E extends object>(entityClass: Constructab
 
     for (const col of metadata.columns) {
         const isPrimary = col.fieldName === metadata.primaryColumn;
-        const type = (col.type ?? 'text').toLowerCase();
         const generated = metadata.generatedColumns.includes(col.fieldName);
         const name = col.columnName;
+        const sqlType = sqliteTypeForColumnType(col.type);
 
-        let builder: ReturnType<typeof text>;
-        if (type.includes('int')) {
-            builder = integer(name);
-        } else if (type.includes('real') || type.includes('float') || type.includes('double')) {
-            builder = real(name);
-        } else if (type.includes('blob')) {
-            builder = blob(name);
-        } else {
-            builder = text(name);
-        }
+        const builder = builderForSqliteType(name, sqlType);
 
         if (isPrimary) {
-            columns[col.fieldName] = generated
-                ? (builder as ReturnType<typeof integer>).primaryKey({ autoIncrement: true })
-                : (builder as ReturnType<typeof integer>).primaryKey();
+            columns[col.fieldName] =
+                generated && sqlType === 'INTEGER'
+                    ? integer(name).primaryKey({ autoIncrement: true })
+                    : builder.primaryKey();
         } else if (col.nullable === true) {
             columns[col.fieldName] = builder;
         } else {
-            columns[col.fieldName] = (builder as ReturnType<typeof text>).notNull();
+            columns[col.fieldName] = builder.notNull();
         }
     }
 

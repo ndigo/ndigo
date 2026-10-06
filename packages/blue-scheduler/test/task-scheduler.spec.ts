@@ -212,6 +212,29 @@ describe('@blue/scheduler TaskScheduler', () => {
         await scheduler.close();
     });
 
+    test('maxRunTime clears its cap timer once the run settles', async () => {
+        vi.useFakeTimers();
+        try {
+            const { scheduler } = makeScheduler();
+            scheduler.register({
+                name: 'quick',
+                schedule: new IntervalSchedule('fixedRate', 10_000),
+                maxRunTimeMs: 2_000,
+                run: () => Promise.resolve(),
+            });
+
+            expect(await scheduler.tick(at(10))).toBe(1); // run settles well within the cap
+            await scheduler.close();
+
+            // Pre-fix the uncleared 2 s cap stayed armed after the run (and
+            // close()) — pinning the event loop. A settled race must leave
+            // no timer behind.
+            expect(vi.getTimerCount()).toBe(0);
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
     test('schedules farther out than 2^31 ms never busy-loop the timer chain', async () => {
         const scheduler = new TaskScheduler();
         scheduler.register({

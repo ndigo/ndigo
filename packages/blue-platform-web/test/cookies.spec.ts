@@ -39,4 +39,18 @@ describe('Cookies', () => {
 
         expect(Cookies.get(null as unknown as string)).toEqual({ valid: 'ok' });
     });
+
+    test('it should return undefined for a missing key instead of throwing', () => {
+        expect(Cookies.get('missing')).toBeUndefined();
+        expect(Cookies.getJSON('missing')).toBeUndefined();
+    });
+
+    test('it should still parse present JSON cookie values with getJSON()', () => {
+        Object.defineProperty(document, 'cookie', {
+            configurable: true,
+            get: () => 'prefs=%7B%22theme%22%3A%22dark%22%7D',
+        });
+
+        expect(Cookies.getJSON('prefs')).toEqual({ theme: 'dark' });
+    });
 });

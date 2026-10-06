@@ -32,6 +32,12 @@ const EchoSchema = z.object({
     count: z.coerce.number().int(),
 });
 
+const ShapeSchema = z.object({
+    label: z.string().nullable(),
+    kind: z.literal('circle'),
+    point: z.tuple([z.number(), z.number()]),
+});
+
 /** Register a controller class into a fresh radix mapping, exactly like dispatch. */
 function register(controller: object): RadixMetadataHandlerMapping {
     const ctx = new GenericApplicationContext('openapi-fixture');
@@ -60,6 +66,12 @@ class APIController {
     @parameters({ data: validatedBody(EchoSchema), trace: headerValue('x-trace') })
     echo(data: z.infer<typeof EchoSchema>, trace: string | undefined) {
         return { data, trace };
+    }
+
+    @postMapping('/shapes')
+    @parameters({ data: validatedBody(ShapeSchema) })
+    shapes(data: z.infer<typeof ShapeSchema>) {
+        return { data };
     }
 
     @getMapping('/filtered')
@@ -153,6 +165,27 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
         expect(schema.required).toEqual(['message', 'count']);
         expect(schema.properties.message.minLength).toBe(1);
         expect(schema.properties.count.type).toBe('integer');
+    });
+
+    it('emits OpenAPI 3.0 schema keywords for nullable/literal/tuple fields', () => {
+        const mapping = register(new APIController());
+        const doc = new OpenAPISpecGenerator().generate([mapping]);
+        const operation = doc.paths['/api/shapes'].post;
+        const schema = operation?.requestBody?.content['application/json']?.schema as {
+            $schema?: unknown;
+            properties: Record<string, Record<string, unknown>>;
+        };
+        expect(schema.$schema).toBeUndefined();
+        // Draft 2020-12 (zod's default) would emit type: ['string','null'],
+        // const and prefixItems — none valid in OpenAPI 3.0.3.
+        expect(schema.properties.label).toEqual({ type: 'string', nullable: true });
+        expect(schema.properties.kind).toEqual({ type: 'string', enum: ['circle'] });
+        expect(schema.properties.point).toEqual({
+            type: 'array',
+            items: { anyOf: [{ type: 'number' }, { type: 'number' }] },
+            minItems: 2,
+            maxItems: 2,
+        });
     });
 
     it('embeds @apiDocs response schemas via the zod seam (AD-38 D-4)', () => {

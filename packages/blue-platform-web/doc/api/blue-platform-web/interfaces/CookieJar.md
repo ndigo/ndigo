@@ -12,7 +12,7 @@ Minimal cookie-jar API exposed by the platform-web package.
 
 ### get()
 
-> **get**(`key`): `JSONValue`
+> **get**(`key`): `JSONValue` \| `undefined`
 
 #### Parameters
 
@@ -22,13 +22,13 @@ Minimal cookie-jar API exposed by the platform-web package.
 
 #### Returns
 
-`JSONValue`
+`JSONValue` \| `undefined`
 
 ***
 
 ### getJSON()
 
-> **getJSON**(`key`): `JSONValue`
+> **getJSON**(`key`): `JSONValue` \| `undefined`
 
 #### Parameters
 
@@ -38,7 +38,7 @@ Minimal cookie-jar API exposed by the platform-web package.
 
 #### Returns
 
-`JSONValue`
+`JSONValue` \| `undefined`
 
 ***
 
@@ -64,7 +64,7 @@ Minimal cookie-jar API exposed by the platform-web package.
 
 ### run()
 
-> **run**(`input`): \{ `data`: `unknown`; `error`: `string`; `index`: `number`; `isError`: `true`; \} \| \{ `data`: `unknown`; `index`: `number`; `isError`: `false`; `result`: `JSONObject`; \}
+> **run**(`input`): [`CookieParseResult`](../type-aliases/CookieParseResult.md)
 
 #### Parameters
 
@@ -74,7 +74,7 @@ Minimal cookie-jar API exposed by the platform-web package.
 
 #### Returns
 
-\{ `data`: `unknown`; `error`: `string`; `index`: `number`; `isError`: `true`; \} \| \{ `data`: `unknown`; `index`: `number`; `isError`: `false`; `result`: `JSONObject`; \}
+[`CookieParseResult`](../type-aliases/CookieParseResult.md)
 
 ***
 

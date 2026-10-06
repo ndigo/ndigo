@@ -103,6 +103,17 @@ class StubSessionStore implements SessionStore {
         this.#sessions.delete(sessionId);
         this.#expiresAt.delete(sessionId);
     }
+
+    async deleteForUser(userId: string): Promise<number> {
+        let removed = 0;
+        for (const [sessionId, record] of this.#sessions) {
+            if (record.principal.id !== userId) continue;
+            this.#sessions.delete(sessionId);
+            this.#expiresAt.delete(sessionId);
+            removed += 1;
+        }
+        return removed;
+    }
 }
 
 describe('NodeSessionInterceptor', () => {

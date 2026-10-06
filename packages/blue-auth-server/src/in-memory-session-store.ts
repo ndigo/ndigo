@@ -82,6 +82,17 @@ export class InMemorySessionStore implements SessionStore {
         this.#sessions.delete(sessionId);
     }
 
+    async deleteForUser(userId: string): Promise<number> {
+        const now = Date.now();
+        let removed = 0;
+        for (const [sessionId, entry] of this.#sessions) {
+            if (entry.record.principal.id !== userId) continue;
+            this.#sessions.delete(sessionId);
+            if (entry.expiresAt > now) removed += 1;
+        }
+        return removed;
+    }
+
     /** Bounds the store, sweeps at the cap, and stores `record` for `ttlMs`. */
     #insert(record: SessionRecord, ttlMs: number): { id: string; expiresAt: number } {
         if (this.#sessions.size >= this.#maxSessions) this.#sweep();

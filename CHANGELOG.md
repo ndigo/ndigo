@@ -271,9 +271,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
-- Disabled or deleted accounts now revoke live sessions and JWTs at
-  validation; the user-wide revocation API remains a documented follow-up
-  (SE-7).
+- Disabled or deleted accounts revoke live sessions and JWTs at validation,
+  and on-demand user-wide revocation is available through
+  `CredentialsAuthAdapter.logoutAll(userId)` +
+  `SessionStore.deleteForUser(userId)` (AD-68, SE-7).
+- JWT `validate` accepts only access tokens: framework refresh tokens
+  (`token_use: 'refresh'`, 7-day TTL) can no longer authenticate an API
+  request; a present claim that is not `'access'` fails closed (SE-7).
 - The CSRF double-submit cookie is hardened to the `__Host-` prefix with a
   spoofed-cookie rejection spec (SE-8).
 - Remote config sources gain a fetch timeout (10 s) and a response-size cap

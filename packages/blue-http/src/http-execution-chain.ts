@@ -177,9 +177,10 @@ export class HTTPExecutionChain {
      *
      * @param response - The response returned by fetch.
      * @param settings - The request settings used for the call.
+     * @param request - The final request that was sent, when available.
      * @returns The transformed response, or the original response when no transformer applies.
      */
-    async applyPostResponse(response: Response, settings: HTTPInit): Promise<Response> {
+    async applyPostResponse(response: Response, settings: HTTPInit, request?: Request): Promise<Response> {
         if (this.#hasResponseAwareInterceptors) {
             const interceptors = this.#interceptors,
                 length = interceptors.length;
@@ -191,7 +192,7 @@ export class HTTPExecutionChain {
                     if (likeResponseAwareHTTPInterceptor(interceptor)) {
                         // Each response transform consumes the previous result; pipeline is sequential.
                         // oxlint-disable-next-line no-await-in-loop
-                        const transformed = await interceptor.postResponse(currentResponse, settings);
+                        const transformed = await interceptor.postResponse(currentResponse, settings, request);
                         if (likeResponse(transformed)) {
                             currentResponse = transformed;
                         }

@@ -186,7 +186,7 @@ The most recent replacement response, or `undefined` when no interceptor handles
 
 ### applyPostResponse()
 
-> **applyPostResponse**(`response`, `settings`): `Promise`\<`Response`\>
+> **applyPostResponse**(`response`, `settings`, `request?`): `Promise`\<`Response`\>
 
 Runs response-aware interceptors and returns the final response.
 
@@ -203,6 +203,12 @@ The response returned by fetch.
 [`HTTPInit`](../type-aliases/HTTPInit.md)
 
 The request settings used for the call.
+
+##### request?
+
+`Request`
+
+The final request that was sent, when available.
 
 #### Returns
 

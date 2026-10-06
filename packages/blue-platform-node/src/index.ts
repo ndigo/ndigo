@@ -41,6 +41,7 @@ export * from './node-auto-configuration';
 export * from './parameter-binding-error-resolver';
 export * from './last-resort-error-resolver';
 export * from './problem-details';
+export * from './finalize-denial';
 export * from './node-socket-session';
 export * from './node-socket-session-registry';
 export * from './file-system-router';

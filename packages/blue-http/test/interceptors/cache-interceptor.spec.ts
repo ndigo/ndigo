@@ -6,8 +6,67 @@
 import { describe, test, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { server } from '../_worker';
 import { HTTP } from '../../src/http';
+import type { RequestAwareHTTPInterceptor } from '../../src/http';
 import { CacheInterceptor } from '../../src/interceptors/cache-interceptor';
 import { http, HttpResponse } from 'msw';
+
+/**
+ * Request-time credential injection mirroring `AuthHeaderInterceptor`: the
+ * `Authorization` header is attached after request settings have been frozen,
+ * so the executed request — not the settings snapshot — carries the credential.
+ */
+class CredentialInterceptor implements RequestAwareHTTPInterceptor {
+    token: string | undefined;
+
+    async preRequest(request: Request): Promise<Request | void> {
+        if (!this.token) {
+            return;
+        }
+
+        const headers = new Headers(request.headers);
+        headers.set('Authorization', `Bearer ${this.token}`);
+
+        return new Request(request, { headers });
+    }
+}
+
+/**
+ * Runs the authenticated → logged-out probe for one interceptor order:
+ * the credential-injected response must not be cached, and a later
+ * unauthenticated request must both re-fetch and become cacheable itself.
+ *
+ * @param cacheFirst - When `true`, the cache interceptor precedes the credential interceptor.
+ */
+async function expectCredentialedResponseNotCached(cacheFirst: boolean): Promise<void> {
+    const credentials = new CredentialInterceptor();
+    const httpClient = new HTTP(
+        cacheFirst ? [new CacheInterceptor(), credentials] : [credentials, new CacheInterceptor()]
+    );
+
+    let callCount = 0;
+    server.use(
+        http.get('*/me-interceptor', ({ request }) => {
+            callCount++;
+            return HttpResponse.json({ user: request.headers.get('authorization') });
+        })
+    );
+
+    credentials.token = 'session-token';
+    const authed = await httpClient.get('http://localhost/me-interceptor');
+    expect(await authed.json()).toEqual({ user: 'Bearer session-token' });
+    expect(callCount).toBe(1);
+
+    // Logged out: the credential-injected response must never be served.
+    credentials.token = undefined;
+    const loggedOut = await httpClient.get('http://localhost/me-interceptor');
+    expect(await loggedOut.json()).toEqual({ user: null });
+    expect(callCount).toBe(2);
+
+    // Unauthenticated responses are still cached (no regression).
+    const cached = await httpClient.get('http://localhost/me-interceptor');
+    expect(callCount).toBe(2);
+    expect(await cached.json()).toEqual({ user: null });
+}
 
 describe('CacheInterceptor', () => {
     beforeAll(() => server.listen());
@@ -231,5 +290,13 @@ describe('CacheInterceptor', () => {
         });
         expect(await authed.json()).toEqual({ user: 'Bearer user-a' });
         expect(callCount).toBe(4);
+    });
+
+    test('should not cache responses credentialed by a request-time interceptor (HT-1, cache first)', async () => {
+        await expectCredentialedResponseNotCached(true);
+    });
+
+    test('should not cache responses credentialed by a request-time interceptor (HT-1, credential interceptor first)', async () => {
+        await expectCredentialedResponseNotCached(false);
     });
 });

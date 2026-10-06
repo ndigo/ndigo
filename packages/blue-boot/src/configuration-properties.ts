@@ -230,8 +230,12 @@ export function resolveConfigurationProperties<T>(
         try {
             typed = getValueAs(environment, fullPath, targetType, true) as JSONValue;
         } catch (error) {
+            // The key path identifies the binding; the value is deliberately
+            // NOT interpolated — it may be a decrypted secret (SEC-11/CF-2),
+            // and the underlying resolver error already names the attempted
+            // value (redacted when a decryptor is wired).
             throw new IllegalStateError(
-                `Cannot bind ${ctor.name}.${key} from "${fullPath}" (value ${JSON.stringify(value)}): ${(error as Error).message}`,
+                `Cannot bind ${ctor.name}.${key} from "${fullPath}": ${(error as Error).message}`,
                 error instanceof Error ? { cause: error } : undefined
             );
         }

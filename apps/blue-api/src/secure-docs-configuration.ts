@@ -13,14 +13,7 @@
  */
 import '@tsmetadata/polyfill';
 import { denialOf, type RouteHandlerInterceptor } from '@blue/dispatcher';
-import {
-    getNodeRequest,
-    NODE_RESPONSE_ATTRIBUTE,
-    OpenAPIDocsAutoConfiguration,
-    ProblemTypes,
-    writeProblem,
-} from '@blue/platform-node';
-import type { ServerResponse } from 'node:http';
+import { getNodeRequest, OpenAPIDocsAutoConfiguration } from '@blue/platform-node';
 import { HTTPHeaders } from '@blue/http';
 import { lookupPrincipal } from './auth-store';
 
@@ -40,19 +33,9 @@ export const docsAccessGuard: RouteHandlerInterceptor = {
         if (bearer && (await lookupPrincipal(bearer))) {
             return true;
         }
-        // Write the denial here AND return it: in-process clients such as
-        // MockHTTP never finalize bare `denialOf` outcomes (only the live
-        // adapter does), while the adapter skips already-ended responses —
-        // so both the mock and the wire see the same RFC 9110 401 with the
-        // `WWW-Authenticate: Bearer` challenge.
-        const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as ServerResponse | undefined;
-        if (res && !res.writableEnded && !res.destroyed) {
-            writeProblem(
-                res,
-                { type: ProblemTypes.unauthorized, title: 'Unauthorized', status: 401 },
-                { 'WWW-Authenticate': 'Bearer' }
-            );
-        }
+        // Return the denial: both the live node adapter and the in-process
+        // MockHTTP client finalize a bare `denialOf` outcome into the same
+        // RFC 9110 401 with the `WWW-Authenticate: Bearer` challenge (IN-1).
         return denialOf(401);
     },
     async postHandle() {

@@ -9,6 +9,10 @@
 Minimal response writer accepted by [writeProblem](../functions/writeProblem.md) — compatible with
 Node's `ServerResponse` and the in-memory MockHTTP sink.
 
+## Extended by
+
+- [`DenialResponseWriter`](DenialResponseWriter.md)
+
 ## Methods
 
 ### end()

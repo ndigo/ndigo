@@ -44,6 +44,26 @@ describe('toRegExp', function () {
         expect(regexp).toHaveProperty('source', 'foo');
     });
 
+    test('it should treat plain patterns containing flag letters as literals', function () {
+        for (const pattern of ['my-pattern', 'input:checked', 'greedy']) {
+            const regexp = toRegExp(pattern);
+            expect(regexp).toBeInstanceOf(RegExp);
+            expect(regexp).toHaveProperty('flags', '');
+            expect(regexp).toHaveProperty('source', pattern);
+            expect(pattern).toMatch(regexp);
+        }
+    });
+
+    test('it should treat malformed slash patterns as literals', function () {
+        for (const pattern of ['/foo/garbage', '/foo/gg', '/foo']) {
+            const regexp = toRegExp(pattern);
+            expect(regexp).toBeInstanceOf(RegExp);
+            expect(regexp).toHaveProperty('flags', '');
+            expect(regexp).toHaveProperty('source', pattern.replaceAll('/', '\\/'));
+            expect(pattern).toMatch(regexp);
+        }
+    });
+
     test('it should cache regexps', function () {
         // Cache the regular expression
         toRegExp('foo');

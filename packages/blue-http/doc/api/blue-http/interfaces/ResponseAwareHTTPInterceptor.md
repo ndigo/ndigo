@@ -18,7 +18,7 @@ Allows a response to be replaced after fetch completes.
 
 ### postResponse()
 
-> **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
+> **postResponse**(`response`, `settings`, `request?`): `Promise`\<`void` \| `Response`\>
 
 Transforms the response after fetch succeeds and before completion hooks run.
 
@@ -35,6 +35,14 @@ The response returned by fetch.
 `T`
 
 The request settings used for the call.
+
+##### request?
+
+`Request`
+
+The final request that was sent, after request-aware
+interceptors ran. The execution chain always supplies it; callers that
+invoke the hook directly may omit it.
 
 #### Returns
 

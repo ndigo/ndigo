@@ -230,7 +230,15 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                 scopeName = getScope(constructor) ?? 'singleton',
                 scope = this.getScope(scopeName);
 
-            const value = scope.getValue<T>(name, () => this._create<T>(name, argumentsList));
+            const value = scope.getValue<T>(name, () => {
+                const instance = this._create<T>(name, argumentsList);
+
+                // CF-3 / AD-29 D-2: the scope's value factory runs only when a
+                // new instance is created, so lifecycle teardown is registered
+                // exactly once per instance (never on cache hits).
+                this._registerRefreshDestructionCallback(scope, name, instance);
+                return instance;
+            });
 
             if (scopeName === 'singleton') {
                 defineProperty(this, name, {
@@ -253,6 +261,30 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
         // Last resort: the value (if any) was stored under `name` via `setValue<T>`.
         return this[name] as T;
+    }
+
+    /**
+     * Registers a destruction callback for a lifecycle-bearing value created
+     * by the refresh scope, so the scope's `clear()` (environment
+     * `config:refresh`, AD-29 D-2) runs `destroy()`/`close()` before discarding.
+     *
+     * Only the refresh scope opts in. `SingletonScope` also declares the hook,
+     * but singleton values are torn down by {@link destroyValue} itself; a
+     * factory-registered callback there would run `destroy()`/`close()` twice.
+     * Prototype/hash values are never cached, so no scope outlives them.
+     */
+    private _registerRefreshDestructionCallback(scope: Scope, name: string, value: unknown): void {
+        if (!(scope instanceof RefreshScope)) {
+            return;
+        }
+
+        if (likeDestroyable(value)) {
+            const destroyable = value;
+            scope.registerDestructionCallback(name, () => destroyable.destroy());
+        } else if (likeCloseable(value)) {
+            const closeable = value;
+            scope.registerDestructionCallback(name, () => closeable.close());
+        }
     }
 
     /**

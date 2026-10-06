@@ -7,25 +7,27 @@ import safeRegex from 'safe-regex';
 import { isDevMode } from '../env.js';
 
 const MAX_CACHE_SIZE = 1000;
-const regExpFlags = /[gimsuy]+/,
-    leadingSlash = /^\//,
-    trailingSlashAndFlags = /\/([gimsuy]*)$/,
-    patternWithTrailingSlashAndFlags = /.+\/([gimsuy]*)$/,
+const slashedPattern = /^\/(.*)\/([gimsuy]*)$/,
+    repeatedFlag = /(.).*\1/,
     cache = new Map<string, RegExp>(),
-    hasValidFlags = (value: string) => regExpFlags.test(value),
-    removeLeadingSlash = (val: string) => val.replace(leadingSlash, ''),
-    removeTrailingSlashAndFlags = (val: string) => val.replace(trailingSlashAndFlags, ''),
-    extractFlags = (val: string) => val.replace(patternWithTrailingSlashAndFlags, '$1'),
-    removeSlashesAndFlags = (val: string) => {
-        val = removeLeadingSlash(val);
-        return removeTrailingSlashAndFlags(val);
+    parsePattern = (value: string): [pattern: string, flags: string] => {
+        const match = slashedPattern.exec(value);
+        if (match === null || repeatedFlag.test(match[2])) {
+            return [value, ''];
+        }
+        return [match[1], match[2]];
     };
 
 /**
  * Returns a regular expression for the given `pattern`.
+ * Input of the `/pattern/flags` form is split into a source and flags, where the
+ * flags may contain only `g`, `i`, `m`, `s`, `u` or `y`, without duplicates. Any
+ * other input - including plain patterns that merely contain flag letters
+ * (`greedy`) and malformed slash forms (`/foo/garbage`, `/foo/gg`) - is compiled
+ * as a literal pattern, slashes included, so it never fails on its flags.
  * @param {string} value - The pattern string (with optional /pattern/flags format)
  * @returns {RegExp}
- * @throws {Error} If the pattern is malformed
+ * @throws {Error} If the pattern is not valid regular expression syntax
  * `security` WARNING: This function accepts arbitrary regex patterns.
  *   Do not use with untrusted user input without validation.
  *   Patterns with nested quantifiers (e.g., /(a+)+/) can cause ReDoS.
@@ -38,8 +40,7 @@ const toRegExp = (value: string): RegExp => {
     if (cached !== undefined) {
         regex = cached;
     } else {
-        const flags = extractFlags(value),
-            pattern = removeSlashesAndFlags(value);
+        const [pattern, flags] = parsePattern(value);
 
         // Security check for ReDoS vulnerabilities (SEC-002)
         const isSafe = safeRegex(pattern);
@@ -50,7 +51,7 @@ const toRegExp = (value: string): RegExp => {
             }
         }
 
-        regex = hasValidFlags(flags) ? new RegExp(pattern, flags) : new RegExp(pattern);
+        regex = new RegExp(pattern, flags);
 
         // LRU cache with size cap (SEC-008)
         if (cache.size >= MAX_CACHE_SIZE) {

@@ -29,7 +29,6 @@ import {
     getMethodNotAllowed,
     isSocketMapping,
     isStompMapping,
-    type InterceptorDenial,
     type SocketRequestSources,
     type SocketSession,
     type MethodParameter,
@@ -48,8 +47,9 @@ import { NodeSocketSessionRegistry } from './node-socket-session-registry';
 import { parseMultipart } from './parse-multipart';
 import type { MultipartLimits } from './parse-multipart';
 import type { MultipartContext } from './multipart-file';
-import { contentTypeBase, MULTIPART_FORM_DATA, HTTPHeaders, ResponseStatus } from '@blue/http';
+import { contentTypeBase, MULTIPART_FORM_DATA, HTTPHeaders } from '@blue/http';
 import { ProblemTypes, writeProblem } from './problem-details';
+import { finalizeInterceptorDenial } from './finalize-denial';
 import type { NodeDispatcher } from './node-dispatcher';
 import type { HTTPServerAdapter } from './http-server';
 import type { WebSocket } from 'ws';
@@ -998,7 +998,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             // the request never stays open.
             const denial = getInterceptorDenial(route);
             if (denial) {
-                this.#finalizeDenial(res, denial);
+                finalizeInterceptorDenial(res, denial);
                 return;
             }
 
@@ -1024,54 +1024,6 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 await multipart.cleanup();
             }
         }
-    }
-
-    /**
-     * Finalizes an interceptor denial. A `401` denial carries
-     * `WWW-Authenticate: Bearer` (RFC 9110 §15.5.2); `401`/`403` are problem
-     * documents with registered types; other `4xx/5xx` denials are an
-     * about:blank problem at the given status; a status `<= 399` (CORS
-     * preflight `204`, browser redirects) writes headers with no body.
-     */
-    #finalizeDenial(res: ServerResponse, denial: InterceptorDenial): void {
-        if (res.writableEnded || res.destroyed) return;
-        const statusCode = denial.statusCode ?? 403;
-        if (denial.redirect) {
-            res.writeHead(statusCode <= 399 ? 302 : statusCode, { [HTTPHeaders.LOCATION.name]: denial.redirect });
-            res.end();
-            return;
-        }
-        if (statusCode <= 399) {
-            // CORS preflight (204): headers were set by the interceptor; no body.
-            res.writeHead(statusCode, {});
-            res.end();
-            return;
-        }
-        if (statusCode === 401) {
-            writeProblem(
-                res,
-                {
-                    type: ProblemTypes.unauthorized,
-                    title: 'Unauthorized',
-                    status: 401,
-                },
-                { [HTTPHeaders.WWW_AUTHENTICATE.name]: 'Bearer' }
-            );
-            return;
-        }
-        if (statusCode === 403) {
-            writeProblem(res, {
-                type: ProblemTypes.forbidden,
-                title: 'Forbidden',
-                status: 403,
-            });
-            return;
-        }
-        const statusText = ResponseStatus.for(statusCode)?.text;
-        writeProblem(res, {
-            status: statusCode,
-            title: statusText,
-        });
     }
 
     /**

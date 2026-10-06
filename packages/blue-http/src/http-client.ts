@@ -193,7 +193,7 @@ export class HTTP {
                 const request = preRequestResult as Request;
                 try {
                     response = await this.#fetch(request);
-                    response = await chain.applyPostResponse(response as Response, settings);
+                    response = await chain.applyPostResponse(response as Response, settings, request);
                 } catch (error) {
                     response = await chain.applyPostError(error as Error, request, this);
 

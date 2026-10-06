@@ -114,14 +114,17 @@ environments[2:]{region,replicas}:
 
 `./config/application.toon` and `application-{profile}.toon` are probed when
 no `.json` file of the same name wins the collision; the loader option
-`format: 'json' | 'toon' | 'auto'` (default `auto`) restricts probing.
-TOON documents decode to the JSON model, so everything downstream — merge
-semantics, `{cipher:…}` secrets, zod schema validation, typed binding —
-behaves identically. `@toon-format/toon` is an **optional** dependency,
-loaded lazily only when a `.toon` file is found; install it
-(`npm i @toon-format/toon@4.1.1`) to use TOON files. The `text/toon` media
-type is provisional (not IANA-registered) — this opt-in is a pre-1.0
-authoring option, not a framework default.
+`format: 'json' | 'toon' | 'auto'` (default `auto`) restricts probing, and
+`BLUE_CONFIG_IMPORT` paths whose extension contradicts a restricted
+`format` error out instead of silently parsing (imports inherit the rule).
+A `.toon` document that starts like JSON (`{` or `[` at the first column)
+errors with a rename hint. TOON documents decode to the JSON model, so
+everything downstream — merge semantics, `{cipher:…}` secrets, zod schema
+validation, typed binding — behaves identically. `@toon-format/toon` is an
+**optional** dependency, loaded lazily only when a `.toon` file is found;
+install it (`npm i @toon-format/toon@4.1.1`) to use TOON files. The
+`text/toon` media type is provisional (not IANA-registered) — this opt-in
+is a pre-1.0 authoring option, not a framework default.
 
 ## 3. Bind configuration to typed classes
 

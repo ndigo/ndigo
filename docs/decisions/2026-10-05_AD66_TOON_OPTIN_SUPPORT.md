@@ -40,8 +40,11 @@ behavior; decode-only usage of the format.**
   probes `application.json` then `application.toon` (JSON wins on
   collision; `require`d/`optional` location semantics cover the probed
   formats as a pair); profile variants and `BLUE_CONFIG_IMPORT` inherit the
-  rule (`format: 'auto' | 'json' | 'toon'`). Files decode (strict mode,
-  spec §14) to `JSONObject` — with a root-object shape guard — and enter
+  rule (`format: 'auto' | 'json' | 'toon'`) — an imported path whose
+  extension contradicts a non-`auto` format errors instead of silently
+  parsing. Files decode (strict mode, spec §14) to `JSONObject` — with a
+  root-object shape guard (JSON-looking `{`/`[`-leading documents error
+  with a rename hint; previously they decoded to garbage) — and enter
   the existing `application` source deep-merge: precedence, binding,
   `{cipher:…}` secrets, and zod schema validation are untouched. Dependency
   shape (owner-confirmed): **optional peer** (`peerDependenciesMeta`),

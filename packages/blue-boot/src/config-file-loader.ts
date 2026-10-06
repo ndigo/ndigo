@@ -72,7 +72,7 @@ const loadToonDecoder = async (): Promise<(content: string) => JSONObject> => {
     } catch (cause) {
         throw new IllegalStateError(
             'A .toon config file was found, but the optional "@toon-format/toon" dependency is not installed. ' +
-                "Install it (e.g. `npm i @toon-format/toon@4.1.1`) to use TOON config files.",
+                'Install it (e.g. `npm i @toon-format/toon@4.1.1`) to use TOON config files.',
             { cause }
         );
     }
@@ -173,7 +173,7 @@ export class StandardConfigFileLoader {
             return true;
         };
 
-const addLocation = async (fileName: string, required = false): Promise<boolean> => {
+        const addLocation = async (fileName: string, required = false): Promise<boolean> => {
             // First-present-wins per file across locations; no cross-location merge.
             const probes: ConfigFileFormat[] = this.#format === 'auto' ? ['json', 'toon'] : [this.#format];
             const probeNames = probes.map((format) => `${fileName}.${format}`);

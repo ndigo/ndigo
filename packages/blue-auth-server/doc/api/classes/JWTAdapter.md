@@ -13,7 +13,7 @@ Uses `jose` for cryptographic signature verification:
 - Asymmetric algorithms (RS256/ES256/…) via a PEM `publicKey` or a JWKS
   endpoint (`jwksUrl`, auto-rotating + cached)
 
-Issuer, audience, and expiration are validated on every token.
+Issuer, audience, `exp`, and `sub` are required and validated on every token.
 
 With a `userStore` wired (AD-33 D-7), the adapter also owns issuance and
 revocation: `issueTokens` mints access + refresh JWTs snapshotting the
@@ -178,9 +178,9 @@ The authenticated [Principal](#), or `null` if validation fails.
 #### Remarks
 
 Verifies the signature cryptographically via `jose` for both
-HMAC and asymmetric algorithms (RS256/ES256…), and enforces issuer,
-audience, and expiration claims. Trailing whitespace and other spec
-allowances are handled by `jose`.
+HMAC and asymmetric algorithms (RS256/ES256…), and requires the
+issuer, audience, `exp`, and `sub` claims. Trailing whitespace and
+other spec allowances are handled by `jose`.
 
 #### Implementation of
 

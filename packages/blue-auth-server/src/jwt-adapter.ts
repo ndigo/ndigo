@@ -12,6 +12,7 @@ import {
     createRemoteJWKSet,
     type JWTPayload,
     type JWTVerifyGetKey,
+    type JWTVerifyOptions,
 } from 'jose';
 import { type AuthAdapter, type AuthResult, type Principal, type UserStore, DefaultPrincipal } from '@blue/auth-core';
 
@@ -23,7 +24,10 @@ export interface JWTAdapterConfig {
     issuer: string;
     /** The audience (aud) claim to validate. */
     audience: string;
-    /** HMAC shared secret (HS256/HS384/HS512). Required when `algorithm` is an HS* alg. */
+    /**
+     * HMAC shared secret (HS256/HS384/HS512). Required when `algorithm` is
+     * an HS* alg, and must be at least 32 bytes (256 bits) of UTF-8.
+     */
     secret?: string;
     /**
      * PEM-encoded public key (RS256/ES256/etc.). Required when `algorithm` is
@@ -59,6 +63,12 @@ export interface JWTAdapterConfig {
     accessTokenTtlMs?: number;
     /** Lifetime of issued refresh tokens (default 7 days). */
     refreshTokenTtlMs?: number;
+    /**
+     * Clock skew tolerance (seconds) applied to the `exp`/`nbf` claim checks
+     * (default 0). Raise it when token issuers and this verifier disagree on
+     * the current time.
+     */
+    clockToleranceSeconds?: number;
 }
 
 /**
@@ -103,6 +113,9 @@ export interface TokenSubject {
 const DEFAULT_ACCESS_TTL_MS = 15 * 60 * 1000;
 const DEFAULT_REFRESH_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
+/** Minimum HMAC secret size in UTF-8 bytes (256 bits, matching SHA-256's block security). */
+const MIN_HMAC_SECRET_BYTES = 32;
+
 /**
  * A reference implementation of {@link AuthAdapter} for JWT-based authentication.
  *
@@ -111,7 +124,7 @@ const DEFAULT_REFRESH_TTL_MS = 7 * 24 * 60 * 60 * 1000;
  * - Asymmetric algorithms (RS256/ES256/…) via a PEM `publicKey` or a JWKS
  *   endpoint (`jwksUrl`, auto-rotating + cached)
  *
- * Issuer, audience, and expiration are validated on every token.
+ * Issuer, audience, `exp`, and `sub` are required and validated on every token.
  *
  * With a `userStore` wired (AD-33 D-7), the adapter also owns issuance and
  * revocation: `issueTokens` mints access + refresh JWTs snapshotting the
@@ -132,10 +145,21 @@ export class JWTAdapter implements AuthAdapter {
     readonly #versionCache = new Map<string, { version: number; expiresAt: number }>();
 
     constructor(config: JWTAdapterConfig) {
-        if (config.algorithm.startsWith('HS') && !config.secret) {
-            throw new JWTTokenError(
-                `JWTAdapter: HMAC algorithm "${config.algorithm}" requires "secret" — validation and issuance fail without it`
-            );
+        if (config.algorithm.startsWith('HS')) {
+            if (!config.secret) {
+                throw new JWTTokenError(
+                    `JWTAdapter: HMAC algorithm "${config.algorithm}" requires "secret" — validation and issuance fail without it`
+                );
+            }
+            // SEC-2: HMAC security is bounded by the key's entropy; a short
+            // secret is brute-forceable offline from a single signed token.
+            const secretBytes = new TextEncoder().encode(config.secret).length;
+            if (secretBytes < MIN_HMAC_SECRET_BYTES) {
+                throw new JWTTokenError(
+                    `JWTAdapter: HMAC algorithm "${config.algorithm}" requires a "secret" of at least ` +
+                        `${MIN_HMAC_SECRET_BYTES} bytes (256 bits); got ${secretBytes} bytes`
+                );
+            }
         }
         this.#config = config;
         this.#userStore = config.userStore;
@@ -172,9 +196,9 @@ export class JWTAdapter implements AuthAdapter {
      * Validates a JWT token and returns the associated principal.
      *
      * @remarks Verifies the signature cryptographically via `jose` for both
-     * HMAC and asymmetric algorithms (RS256/ES256…), and enforces issuer,
-     * audience, and expiration claims. Trailing whitespace and other spec
-     * allowances are handled by `jose`.
+     * HMAC and asymmetric algorithms (RS256/ES256…), and requires the
+     * issuer, audience, `exp`, and `sub` claims. Trailing whitespace and
+     * other spec allowances are handled by `jose`.
      *
      * @param token - The JWT to validate.
      * @returns The authenticated {@link Principal}, or `null` if validation fails.
@@ -202,17 +226,17 @@ export class JWTAdapter implements AuthAdapter {
     }
 
     /**
-     * The issuer/audience/algorithms options enforced on every token.
+     * The claims, issuer, audience, and algorithm options enforced on every
+     * token. `requiredClaims` is what turns an absent `exp` (or `sub`) into
+     * a verification failure instead of an unvalidated token.
      */
-    #verifyOptions(): {
-        issuer: string;
-        audience: string;
-        algorithms: string[];
-    } {
+    #verifyOptions(): JWTVerifyOptions {
         return {
             issuer: this.#config.issuer,
             audience: this.#config.audience,
             algorithms: [this.#config.algorithm],
+            requiredClaims: ['exp', 'sub'],
+            clockTolerance: this.#config.clockToleranceSeconds ?? 0,
         };
     }
 
@@ -426,12 +450,16 @@ export class JWTAdapter implements AuthAdapter {
  * Maps verified JWT claims to a {@link Principal}.
  *
  * @param payload - The verified JWT payload.
- * @returns The principal.
+ * @returns The principal, or `null` when `sub` is absent or not a non-empty string.
  */
-function principalFromPayload(payload: JWTPayload): Principal {
+function principalFromPayload(payload: JWTPayload): Principal | null {
+    const sub = payload.sub;
+    if (typeof sub !== 'string' || sub.length === 0) {
+        return null;
+    }
     const roles = Array.isArray(payload.roles) ? (payload.roles as unknown[]) : [];
     return {
-        id: String(payload.sub ?? 'unknown'),
+        id: sub,
         name: String(payload.name ?? payload.email ?? 'Unknown'),
         roles: roles.map((r) => String(r)),
         hasRole: (role: string) => roles.includes(role),

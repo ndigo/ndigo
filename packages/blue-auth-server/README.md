@@ -19,7 +19,8 @@ import { AuthServer } from '@blue/auth-server';
 
 const authServer = new AuthServer();
 
-// Validate a token with a registered adapter
+// The adapter must already be registered via `AuthRegistry.register` —
+// an unknown adapter id throws instead of allowing the token through.
 const principal = await authServer.validate('oidc', 'eyJhbGc...');
 
 if (principal) {
@@ -48,30 +49,52 @@ if (principal) {
 
 ### Using the Route Guard
 
+`AuthRouteGuard` is a `RouteHandlerInterceptor`: register it on the handler
+mapping and it enforces the `@authenticated` / `@authorized` metadata that
+`@blue/auth-core` writes onto handlers, before dispatch. Handlers without
+that metadata pass untouched.
+
 ```typescript
-import { AuthRouteGuard } from '@blue/auth-server';
-import { AuthRegistry } from '@blue/auth-core';
+import { AuthRouteGuard, AuthServer } from '@blue/auth-server';
+import { HTTPHeaders } from '@blue/http';
+import { getNodeRequest } from '@blue/platform-node';
+import { type Route } from '@blue/router';
 
-const guard = new AuthRouteGuard('jwt');
+const authServer = new AuthServer();
 
-guard.canActivate('/api/admin').then((allowed) => {
-    if (!allowed) {
-        return { status: 401, body: 'Unauthorized' };
-    }
-    return { status: 200, body: 'Authorized' };
-});
+// Token extractor: return the credential for the route, or `null` to deny.
+const bearerToken = (route: Route): string | null => {
+    const authorization = HTTPHeaders.AUTHORIZATION.get(getNodeRequest(route)?.headers ?? {});
+    return HTTPHeaders.AUTHORIZATION.bearerToken(authorization) ?? null;
+};
+
+// One guard validates against exactly one adapter id — never a fallback list.
+const guard = new AuthRouteGuard(authServer, bearerToken, 'jwt');
+
+// `mapping` is the application's handler mapping.
+mapping.interceptors.push(guard);
 ```
 
+Denials fail closed with an explicit `InterceptorDenial` — `401` for a
+missing or invalid token, `403` for missing roles — overridable through the
+fourth constructor argument (`{ unauthenticatedStatus, forbiddenStatus }`).
+
 ### JWT Adapter
+
+`issuer`, `audience`, and `algorithm` are required. HMAC algorithms need a
+`secret` of at least 32 bytes; asymmetric algorithms take a PEM `publicKey`
+or a `jwksUrl`. With a `userStore` wired, the adapter also issues and rotates
+first-party access/refresh tokens (`issueTokens`, `refresh`, `logout`).
 
 ```typescript
 import { JWTAdapter } from '@blue/auth-server';
 import { AuthRegistry } from '@blue/auth-core';
 
 const adapter = new JWTAdapter({
-    secretOrKey: 'your-secret-key',
-    algorithms: ['HS256', 'RS256'],
     issuer: 'https://auth.example.com',
+    audience: 'my-app',
+    algorithm: 'HS256', // HMAC configs require a >= 32-byte secret
+    secret: 'replace-me-with-a-32-byte-minimum-secret',
 });
 
 AuthRegistry.register(adapter);

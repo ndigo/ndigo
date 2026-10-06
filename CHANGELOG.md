@@ -126,6 +126,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- JWT verification now requires the `exp` and `sub` claims (exp-less tokens
+  are rejected instead of authenticating indefinitely; a missing/empty `sub`
+  no longer maps to the shared `'unknown'` id), with an optional
+  `clockToleranceSeconds`; HMAC configs now reject secrets shorter than
+  32 bytes at construction (SE-1, SE-2).
 - Refresh-scoped beans with `destroy()`/`close()` now tear down when the
   refresh scope clears on environment refresh (`config:refresh`): the
   container registers the destruction callback at creation time, exactly once
@@ -172,6 +177,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenAPI documents convert Zod schemas with the `openapi-3.0` target
   (`nullable`/`enum`/`items` instead of draft-2020-12 `type` arrays,
   `const`, `prefixItems`) (PR-2).
+- `/health` and `/metrics` responses now carry the default security-header
+  set (`SecurityHeadersInterceptor` prepended to the management mapping,
+  matching the API-docs mapping) (SE-4).
 
 ### Security
 

@@ -34,6 +34,16 @@ The audience (aud) claim to validate.
 
 ***
 
+### clockToleranceSeconds?
+
+> `optional` **clockToleranceSeconds?**: `number`
+
+Clock skew tolerance (seconds) applied to the `exp`/`nbf` claim checks
+(default 0). Raise it when token issuers and this verifier disagree on
+the current time.
+
+***
+
 ### issuer
 
 > **issuer**: `string`
@@ -84,7 +94,8 @@ a positive value trades revocation latency for throughput.
 
 > `optional` **secret?**: `string`
 
-HMAC shared secret (HS256/HS384/HS512). Required when `algorithm` is an HS* alg.
+HMAC shared secret (HS256/HS384/HS512). Required when `algorithm` is
+an HS* alg, and must be at least 32 bytes (256 bits) of UTF-8.
 
 ***
 

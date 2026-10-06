@@ -66,3 +66,14 @@ not a guideline.
 Revisit if a package legitimately needs to share an internal utility across
 packages (promote it to a public API instead) or if barreling moves to
 directory-based `src/internal/` organization that the rule must learn to allow.
+
+## Update (2026-10-06)
+
+- The `no-internal-file-exports` rule now also flags **named re-exports**
+  (`ExportNamedDeclaration` with a `./_`-prefixed source), not only `export *`
+  (`ExportAllDeclaration`); the companion `no-internal-file-imports` rule now
+  also covers `export * from '@blue/<pkg>/_…'`.
+- The one live violation this surfaced — `blue-auth-core` re-exporting
+  `./_decorators` from its barrel — was fixed per the revisit trigger by
+  promoting the file to a public filename: `src/decorators.ts` (spec renamed to
+  `test/decorators.spec.ts`; the barrel now exports `./decorators`).

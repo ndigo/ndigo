@@ -69,7 +69,11 @@ describe('blue-api config-secrets demo (AD-29 Wave 2, SEC-4 gated)', () => {
 
     test('GET /api/config/secrets with the demo token serves the decrypted value', async () => {
         // Acquire a valid demo token through the app's own login endpoint.
-        const login = await mockHTTP.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        const login = await mockHTTP
+            .post('/auth/login')
+            .headers({ 'content-type': 'application/json' })
+            .body({ username: 'admin', password: 'demo' })
+            .exec();
         const { token } = login.json() as { token?: string };
         expect(token).toBeDefined();
 

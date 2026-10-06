@@ -400,8 +400,10 @@ The newest element, or `undefined` if the buffer is empty.
 
 > **put**(...`items`): `number`
 
-Adds one or more elements to the ring buffer. If the buffer is full,
-the oldest elements will be overwritten.
+Adds one or more property values, growing the backing buffer instead of
+silently evicting the oldest entries. Unlike `RingBuffer`, a
+`MutablePropertyValues` is an unbounded collection — a form can legitimately
+carry far more than the ring's 32-slot default (KRN-REV-CORE-02).
 
 #### Parameters
 
@@ -409,15 +411,15 @@ the oldest elements will be overwritten.
 
 ...[`PropertyValue`](PropertyValue.md)[]
 
-The elements to add.
+The property values to add.
 
 #### Returns
 
 `number`
 
-The new length of the ring buffer.
+The new length of the collection.
 
-#### Inherited from
+#### Overrides
 
 [`RingBuffer`](RingBuffer.md).[`put`](RingBuffer.md#put)
 

@@ -10,7 +10,7 @@
  *   (singular) is deprecated in favor of `metricReaders` — both resolved.
  *   Constructors here use only current option names.
  */
-import { SpanKind, SpanStatusCode, trace, metrics } from '@opentelemetry/api';
+import { diag, SpanKind, SpanStatusCode, trace, metrics } from '@opentelemetry/api';
 import type { Attributes, Counter, Span } from '@opentelemetry/api';
 import { InstrumentationBase } from '@opentelemetry/instrumentation';
 import type { InstrumentationModuleDefinition } from '@opentelemetry/instrumentation';
@@ -62,6 +62,58 @@ export interface CountConfig {
  * — so the constructor-time call cannot be recorded on the instance.
  */
 const ENABLED = new WeakSet<AbstractBaseInstrumentation>();
+
+/**
+ * Evaluates a span's `attributes` callback defensively: the callback builds
+ * an arbitrary bag from runtime arguments, so a throw must never escape into
+ * the wrapped method (it would otherwise propagate before/around the original
+ * call and crash the request path). A failure degrades to no attributes.
+ *
+ * @param config - The span configuration carrying the callback.
+ * @param instance - The patched instance.
+ * @param args - The original method arguments.
+ * @returns The callback's attributes, or `undefined` when absent/throwing.
+ */
+function evaluateAttributes(config: SpanConfig, instance: unknown, args: unknown[]): Attributes | undefined {
+    if (config.attributes === undefined) {
+        return undefined;
+    }
+    try {
+        // Config callbacks build arbitrary bags from runtime args; OTel
+        // accepts only AttributeValues — assert at the boundary.
+        return config.attributes(instance, args) as Attributes;
+    } catch (error) {
+        diag.warn(`span attributes callback for "${config.name}" threw; continuing without attributes`, error);
+        return undefined;
+    }
+}
+
+/**
+ * Invokes a span's `onEnd` callback defensively so its failure cannot replace
+ * the method outcome or skip `span.end()`.
+ *
+ * @param config - The span configuration carrying the callback.
+ * @param span - The span about to end.
+ * @param outcome - Either `{ ok: true, value }` or `{ ok: false, error }`.
+ * @param instance - The patched instance.
+ * @param args - The original method arguments.
+ */
+function invokeOnEnd(
+    config: SpanConfig,
+    span: Span,
+    outcome: { ok: boolean; value?: unknown; error?: unknown },
+    instance: unknown,
+    args: unknown[]
+): void {
+    if (config.onEnd === undefined) {
+        return;
+    }
+    try {
+        config.onEnd(span, outcome, instance, args);
+    } catch (error) {
+        diag.warn(`span onEnd callback for "${config.name}" threw; the span still ends`, error);
+    }
+}
 
 /**
  * Base class for BlueJS OpenTelemetry instrumentations.
@@ -163,19 +215,19 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
                 const tracer = trace.getTracer('@blue/telemetry');
                 const span = tracer.startSpan(config.name, {
                     kind: config.kind,
-                    // Config callbacks build arbitrary bags from runtime args;
-                    // OTel accepts only AttributeValues — assert at the boundary.
-                    attributes: config.attributes?.(this, args) as Attributes | undefined,
+                    attributes: evaluateAttributes(config, this, args),
                 });
                 try {
                     const result = original.apply(this, args);
-                    span.end();
+                    invokeOnEnd(config, span, { ok: true, value: result }, this, args);
                     return result;
                 } catch (error) {
                     span.recordException(error as Error);
                     span.setStatus({ code: SpanStatusCode.ERROR });
-                    span.end();
+                    invokeOnEnd(config, span, { ok: false, error }, this, args);
                     throw error;
+                } finally {
+                    span.end();
                 }
             };
         };
@@ -196,25 +248,24 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
                     config.name,
                     {
                         kind: config.kind,
-                        // Config callbacks build arbitrary bags from runtime args;
-                        // OTel accepts only AttributeValues — assert at the boundary.
-                        attributes: config.attributes?.(this, args) as Attributes | undefined,
+                        attributes: evaluateAttributes(config, this, args),
                     },
                     (span) => {
                         return original
                             .apply(this, args)
-                            .then((result) => {
-                                config.onEnd?.(span, { ok: true, value: result }, this, args);
-                                span.end();
-                                return result;
-                            })
-                            .catch((error) => {
-                                span.recordException(error);
-                                span.setStatus({ code: SpanStatusCode.ERROR });
-                                config.onEnd?.(span, { ok: false, error }, this, args);
-                                span.end();
-                                throw error;
-                            });
+                            .then(
+                                (result) => {
+                                    invokeOnEnd(config, span, { ok: true, value: result }, this, args);
+                                    return result;
+                                },
+                                (error) => {
+                                    span.recordException(error);
+                                    span.setStatus({ code: SpanStatusCode.ERROR });
+                                    invokeOnEnd(config, span, { ok: false, error }, this, args);
+                                    throw error;
+                                }
+                            )
+                            .finally(() => span.end());
                     }
                 );
             };

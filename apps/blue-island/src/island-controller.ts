@@ -5,6 +5,7 @@
  */
 import { getMapping, ModelAndView, requestMapping } from '@blue/dispatcher';
 import { ServerSentEventView } from '@blue/platform-node';
+import { serializeModel } from '@blue/view';
 import { TodoModel, TodoModelStore } from './todo-model-store';
 
 /**
@@ -26,7 +27,11 @@ export class IslandController {
         // Whole-page document mode: the shell is an EJS template resolved by
         // name through the EJSViewResolver — servlet/JSP-style, no inline HTML.
         return new ModelAndView('shell', {
-            islandModel: encodeURIComponent(JSON.stringify(this.#modelStore.get())),
+            // Same contract as `IslandView`/`parseModel`/`hydrateIslands`:
+            // JSON stringified then HTML-attribute-escaped. The shell emits it
+            // raw (`<%- %>`); the DOM decodes the entities once and hydration
+            // JSON-parses it (DSV-WEBCOMP-1).
+            islandModel: serializeModel(this.#modelStore.get()),
             // Fixed sample timestamp so the localized date rendering stays
             // deterministic across runs (locale helpers format it).
             today: new Date('2026-09-13T12:00:00Z'),

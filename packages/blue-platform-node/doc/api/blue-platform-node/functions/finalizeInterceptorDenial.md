@@ -13,7 +13,9 @@ Finalizes an interceptor denial. A `401` denial carries
 documents with registered types; other `4xx/5xx` denials are an
 about:blank problem at the given status; a status `<= 399` (CORS
 preflight `204`, browser redirects) writes headers with no body.
-An already-finalized response (`writableEnded`/`destroyed`) is left alone.
+An already-finalized response (`writableEnded`/`destroyed`) is left alone;
+one whose headers were already flushed cannot carry a status line, so its
+socket is destroyed rather than attempting `writeHead`.
 
 ## Parameters
 

@@ -46,6 +46,16 @@ const { isArray } = Array,
     hasToString = hasFunction('toString'),
     isNotArray = (value: unknown) => !isArray(value),
     _T = (): boolean => true,
+    // `JSON.stringify` throws on cyclic structures and BigInt; a value that
+    // cannot survive a JSON round trip is simply not a JSON value, so the
+    // throw is folded into `false` rather than escaping the predicate.
+    _jsonRoundTrips = (value: unknown): boolean => {
+        try {
+            return _deepEqual(parse(stringify(value)), value);
+        } catch {
+            return false;
+        }
+    },
     _deepEqual = (a: unknown, b: unknown): boolean => {
         if (a === b) return true;
         if (a === null || b === null) return false;
@@ -65,7 +75,7 @@ const { isArray } = Array,
  * @param value - Value to test.
  * @returns `true` when the value is an array that survives a JSON round trip unchanged.
  */
-export const isJSONArray = ((value: unknown) => isArray(value) && _deepEqual(parse(stringify(value)), value)) as (
+export const isJSONArray = ((value: unknown) => isArray(value) && _jsonRoundTrips(value)) as (
     value: unknown
 ) => value is JSONArray;
 
@@ -76,9 +86,7 @@ export const isJSONArray = ((value: unknown) => isArray(value) && _deepEqual(par
  * @returns `true` when the value is a non-primitive, non-array object that survives a JSON round trip unchanged.
  */
 export const isJSONObject = ((value: unknown) =>
-    isNotPrimitive(value) && isNotArray(value) && _deepEqual(parse(stringify(value)), value)) as (
-    value: unknown
-) => value is JSONObject;
+    isNotPrimitive(value) && isNotArray(value) && _jsonRoundTrips(value)) as (value: unknown) => value is JSONObject;
 
 /**
  * Tests whether a value is directly representable in JSON.
@@ -93,7 +101,7 @@ export const isJSONValue = (value: unknown): value is JSONValue => {
         case 'string':
             return true;
         case 'object':
-            return value === null || _deepEqual(parse(stringify(value)), value);
+            return value === null || _jsonRoundTrips(value);
         default:
             return false;
     }
@@ -117,8 +125,11 @@ export const serialize = (value: unknown): JSONValue => {
     // `hasToJSON`/`hasToString` already established the shape; cast past the boolean predicate.
     if (hasToJSON(value)) return (value as { toJSON(): JSONValue }).toJSON();
     if (isJSONValue(value)) return value;
-    if (hasToString(value)) return (value as { toString(): string }).toString();
+    // Arrays are recursed element-wise *before* the `toString` check — arrays
+    // expose `toString`, so checking it first made this branch dead and
+    // flattened any non-JSON array into its `"a,b"` string form.
     if (isArray(value)) return value.map((v) => serialize(v));
+    if (hasToString(value)) return (value as { toString(): string }).toString();
     return { ...(value as object) } as JSONValue;
 };
 

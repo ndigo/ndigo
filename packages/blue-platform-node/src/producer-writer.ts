@@ -8,6 +8,29 @@ import { once } from 'node:events';
 import { RenderResult } from '@blue/view';
 
 /**
+ * Waits for a saturated response to become writable again, or to close
+ * (PLN-F3). A backpressured client that aborts emits `close` — never `drain`
+ * — so awaiting `drain` alone would park the writer forever and leak the
+ * suspended producer.
+ *
+ * @param res - The response awaiting backpressure relief.
+ * @returns `true` when the response drained, `false` when it closed (or
+ *   errored) first.
+ */
+function waitForDrainOrClose(res: ServerResponse): Promise<boolean> {
+    return Promise.race([
+        once(res, 'drain').then(
+            () => true,
+            () => false
+        ),
+        once(res, 'close').then(
+            () => false,
+            () => false
+        ),
+    ]);
+}
+
+/**
  * Writes a {@link RenderResult} to an HTTP response.
  *
  * @param res - The response to write to; a no-op when absent or already sent.
@@ -39,20 +62,38 @@ export async function writeRenderResult(res: ServerResponse | undefined, result:
         res.end(Buffer.from(body));
         return;
     }
-    for await (const chunk of body) {
-        if (res.destroyed) {
-            return;
-        }
-        try {
-            if (!res.write(typeof chunk === 'string' ? chunk : Buffer.from(chunk as Uint8Array))) {
-                // The consumer is saturated — wait for it to drain before
-                // pushing the next chunk (mirrors StaticResourceHandler).
-                await once(res, 'drain');
+    const iterator = body[Symbol.asyncIterator]();
+    try {
+        for (;;) {
+            // eslint-disable-next-line no-await-in-loop -- frames are produced and written strictly in order
+            const { done, value } = await iterator.next();
+            if (done) {
+                break;
             }
-        } catch {
-            // The client disconnected mid-stream; stop pushing.
-            return;
+            if (res.destroyed) {
+                return;
+            }
+            try {
+                if (!res.write(typeof value === 'string' ? value : Buffer.from(value as Uint8Array))) {
+                    // The consumer is saturated — wait for it to drain, or for
+                    // the client to go away (PLN-F3), before pushing more.
+                    // eslint-disable-next-line no-await-in-loop -- backpressure relief is per-write
+                    const drained = await waitForDrainOrClose(res);
+                    if (!drained || res.destroyed) {
+                        return;
+                    }
+                }
+            } catch {
+                // The client disconnected mid-stream; stop pushing.
+                return;
+            }
+        }
+        res.end();
+    } finally {
+        // Close the producer on every exit path (abort included) so its
+        // `finally` blocks run instead of leaking a suspended generator.
+        if (typeof iterator.return === 'function') {
+            await iterator.return();
         }
     }
-    res.end();
 }

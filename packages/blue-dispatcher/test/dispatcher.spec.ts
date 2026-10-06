@@ -5,7 +5,7 @@
  */
 import { describe, test, beforeEach, afterEach, expect, vi } from 'vitest';
 import { DISPATCHER } from '../src/context-tokens';
-import { AbstractDispatcher } from '../src/dispatcher';
+import { AbstractDispatcher, DISPATCH_ERROR_ATTRIBUTE, getDispatchError } from '../src/dispatcher';
 import { ModelAndView } from '../src/model-and-view';
 import dispatcherContext from './assets/dispatcher-context';
 import errorContext from './assets/route-error-resolver-context';
@@ -133,5 +133,53 @@ describe('Error View Dispatch', () => {
         await dispatcher.dispatch({ path: '/bad/bad' } as unknown as Route);
 
         expect(renderSpy).toHaveBeenCalledWith(undefined, expect.objectContaining({ path: '/bad/bad' }), undefined);
+    });
+});
+
+describe('Dispatch error attribute (DSV-B1)', () => {
+    const routeWithAttributes = (path: string): Route => ({ path, attributes: {} }) as unknown as Route;
+
+    afterEach(() => {
+        // `renderSpy` carries a one-shot rejection between tests; reset it so
+        // later renders resolve again (the shared handler spy keeps its default).
+        renderSpy.mockReset();
+    });
+
+    test('records a swallowed render failure on the route and still resolves', async () => {
+        const dispatcher = new AbstractDispatcher();
+        dispatcher.initStrategies(dispatcherContext);
+        const failure = new Error('view render blew up');
+        renderSpy.mockRejectedValueOnce(failure);
+
+        const route = routeWithAttributes('/foo');
+        // The dispatcher must not reject — browser callers fire and forget.
+        await expect(dispatcher.dispatch(route)).resolves.toBeUndefined();
+
+        expect(route.attributes[DISPATCH_ERROR_ATTRIBUTE]).toBe(failure);
+        expect(getDispatchError(route)).toBe(failure);
+    });
+
+    test('leaves the attribute absent after a clean render', async () => {
+        const dispatcher = new AbstractDispatcher();
+        dispatcher.initStrategies(dispatcherContext);
+
+        const route = routeWithAttributes('/foo');
+        await dispatcher.dispatch(route);
+
+        expect(route.attributes).not.toHaveProperty(DISPATCH_ERROR_ATTRIBUTE);
+        expect(getDispatchError(route)).toBeNull();
+    });
+
+    test('does not record an error that an error resolver already rendered', async () => {
+        const dispatcher = new AbstractDispatcher();
+        dispatcher.initStrategies(errorContext);
+
+        const route = routeWithAttributes('/bad/bad');
+        await dispatcher.dispatch(route);
+
+        // The global error handler produced an error view that rendered — the
+        // original failure is not an unhandled dispatch error.
+        expect(route.attributes).not.toHaveProperty(DISPATCH_ERROR_ATTRIBUTE);
+        expect(getDispatchError(route)).toBeNull();
     });
 });

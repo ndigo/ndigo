@@ -320,6 +320,33 @@ describe('MediaType', () => {
         expect(withCharset.toString()).toBe('multipart/form-data;boundary=abc123;charset=utf-8');
         expect(withCharset.parameters).toEqual({ boundary: 'abc123', charset: 'utf-8' });
     });
+
+    test('withCharset keeps the +suffix (KRN-REV-MEDIA-06)', () => {
+        const problemJson = MediaType.for('application/problem+json');
+        const withCharset = problemJson.withCharset('utf-8');
+        expect(withCharset.toString()).toBe('application/problem+json;charset=utf-8');
+        expect(withCharset.subtype).toBe('problem');
+        expect(withCharset.suffix).toBe('json');
+    });
+
+    test('includes is suffix-specific for type/*+suffix (KRN-REV-MEDIA-08)', () => {
+        const xmlWildcard = MediaType.for('application/*+xml');
+        expect(xmlWildcard.includes(MediaType.for('application/soap+xml'))).toBe(true);
+        expect(xmlWildcard.includes(MediaType.for('application/json'))).toBe(false);
+        expect(xmlWildcard.includes(MediaType.for('application/*'))).toBe(false);
+        expect(MediaType.for('application/*').includes(MediaType.for('application/json'))).toBe(true);
+    });
+
+    test('wildcard-subtype component form keys on its parameters (KRN-REV-MEDIA-07)', () => {
+        const with03 = MediaType.for('application', '*', { q: '0.3' });
+        const with07 = MediaType.for('application', '*', { q: '0.7' });
+        expect(with03).not.toBeNull();
+        expect(with07).not.toBeNull();
+        expect(with03).not.toBe(with07);
+        expect(with03?.parameters).toEqual({ q: '0.3' });
+        expect(with07?.parameters).toEqual({ q: '0.7' });
+        expect(MediaType.for('application', '*', { q: '0.3' })).toBe(with03);
+    });
 });
 
 describe('parseMediaType', () => {
@@ -398,6 +425,14 @@ describe('MediaType raw-header parsing (Wave 6)', () => {
         expect(accepted[1].qualityFactor).toBe(0.5);
         expect(MediaType.parseAccept(undefined)).toEqual([]);
         expect(MediaType.parseAccept('')).toEqual([]);
+    });
+
+    test('parseAccept splits on commas outside quoted parameter values (KRN-REV-MEDIA-18)', () => {
+        const accepted = MediaType.parseAccept('text/html;profile="a,b", application/json');
+        expect(accepted).toHaveLength(2);
+        expect(accepted[0].parameters).toEqual({ profile: 'a,b' });
+        expect(accepted[0].type).toBe('text');
+        expect(accepted[1].toString()).toBe('application/json');
     });
 });
 

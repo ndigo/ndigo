@@ -234,6 +234,47 @@ describe('OIDCAdapter full authorization-code flow', () => {
         }
     });
 
+    test('a signed ID token without a sub claim is rejected', async () => {
+        const adapter = makeAdapter();
+        const token = await new SignJWT({ name: 'No Subject' })
+            .setProtectedHeader({ alg: 'RS256' })
+            .setIssuer(issuer())
+            .setAudience('my-client')
+            .setExpirationTime('1h')
+            .sign(privateKey);
+
+        expect(await adapter.validate(token)).toBeNull();
+    });
+
+    test('a signed ID token with an empty sub claim is rejected', async () => {
+        const adapter = makeAdapter();
+        const token = await new SignJWT({ name: 'Empty Subject' })
+            .setProtectedHeader({ alg: 'RS256' })
+            .setIssuer(issuer())
+            .setAudience('my-client')
+            .setSubject('')
+            .setExpirationTime('1h')
+            .sign(privateKey);
+
+        expect(await adapter.validate(token)).toBeNull();
+    });
+
+    test('a signed ID token with a sub claim yields the correct principal', async () => {
+        const adapter = makeAdapter();
+        const token = await new SignJWT({ name: 'Signed User', roles: ['admin'] })
+            .setProtectedHeader({ alg: 'RS256' })
+            .setIssuer(issuer())
+            .setAudience('my-client')
+            .setSubject('99')
+            .setExpirationTime('1h')
+            .sign(privateKey);
+
+        const principal = await adapter.validate(token);
+        expect(principal?.id).toBe('99');
+        expect(principal?.name).toBe('Signed User');
+        expect(principal?.hasRole('admin')).toBe(true);
+    });
+
     test('malformed token responses (missing id_token) are rejected', async () => {
         const adapter = makeAdapter();
         const request = await adapter.createAuthorizationRequest();

@@ -104,6 +104,10 @@ function buildAdapter(options: { sessionTtlMs?: number } = {}) {
         },
         { id: 'claire', username: 'claire', passwordHash: null },
         { id: 'dave', username: 'dave', passwordHash: encoder.encode('davepass'), roles: ['user'] },
+        // SEC-B1 probes: a federated account with no local hash, and an
+        // account whose stored hash is the empty string.
+        { id: 'u1', username: 'federated-user', passwordHash: null, roles: ['user'] },
+        { id: 'erin', username: 'erin', passwordHash: '', roles: ['user'] },
     ]);
     const adapter = new CredentialsAuthAdapter({
         userStore: users,
@@ -161,6 +165,50 @@ describe('CredentialsAuthAdapter', () => {
     test('accounts without a password hash never match', async () => {
         const { adapter } = buildAdapter();
         await expect(adapter.authenticate({ username: 'claire', password: '' })).rejects.toBeInstanceOf(
+            InvalidCredentialsError
+        );
+    });
+
+    // SEC-B1: the dummy hash exists only to equalize timing on the
+    // unknown/no-hash path. Before the fix the probe below authenticates,
+    // because `passwordHash: null` fell through `??` to the dummy constant
+    // and `user === null` was false for a real (hash-less) account. An
+    // empty-string hash was worse still: it was passed to the encoder as-is
+    // and threw `UnknownPasswordSchemeError` instead of the generic denial.
+    test('SEC-B1: the timing dummy constant never authenticates a null-hash account', async () => {
+        const { adapter } = buildAdapter();
+        await expect(
+            adapter.authenticate({
+                username: 'federated-user',
+                password: 'bluejs-dummy-password-for-timing-equalization',
+            })
+        ).rejects.toBeInstanceOf(InvalidCredentialsError);
+        // The hash-less account can never log in with any other password either.
+        await expect(
+            adapter.authenticate({ username: 'federated-user', password: 'correct horse battery staple' })
+        ).rejects.toBeInstanceOf(InvalidCredentialsError);
+    });
+
+    test('SEC-B1: an empty-string hash is denied, not surfaced as a scheme error', async () => {
+        const { adapter } = buildAdapter();
+        const error = await adapter
+            .authenticate({ username: 'erin', password: 'bluejs-dummy-password-for-timing-equalization' })
+            .catch((e: unknown) => e);
+        expect(error).toBeInstanceOf(InvalidCredentialsError);
+        expect((error as Error).name).not.toBe('UnknownPasswordSchemeError');
+        expect((error as Error).message).toBe(INVALID);
+    });
+
+    test('SEC-B1: valid login, wrong password, and unknown user are unchanged', async () => {
+        const { adapter } = buildAdapter();
+        // Valid credentials still mint a session.
+        await expect(sessionToken(adapter, 'alice', 's3cret')).resolves.toBeTypeOf('string');
+        // Wrong password on a real hash still fails closed.
+        await expect(adapter.authenticate({ username: 'alice', password: 'wrong' })).rejects.toBeInstanceOf(
+            InvalidCredentialsError
+        );
+        // Unknown user still runs the dummy verify path and throws the generic denial.
+        await expect(adapter.authenticate({ username: 'nobody', password: 'x' })).rejects.toBeInstanceOf(
             InvalidCredentialsError
         );
     });

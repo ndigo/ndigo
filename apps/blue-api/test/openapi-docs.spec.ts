@@ -30,7 +30,11 @@ describe('blue-api OpenAPI docs (AD-35)', () => {
         mockHTTP = new MockHTTP(app);
         close = app.close;
         // The same demo-login fixture the auth spec uses.
-        const login = await mockHTTP.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        const login = await mockHTTP
+            .post('/auth/login')
+            .headers({ 'content-type': 'application/json' })
+            .body({ username: 'admin', password: 'demo' })
+            .exec();
         expect(login.response.status).toBe(200);
         token = (login.json() as { token: string }).token;
     });

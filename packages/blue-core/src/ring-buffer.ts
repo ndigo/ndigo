@@ -57,7 +57,7 @@ export class RingBuffer<T = unknown> implements ArrayLike<T | undefined>, Iterab
      * @param newCapacity - The desired new capacity.
      */
     set capacity(newCapacity: number) {
-        if (typeof newCapacity !== 'number') {
+        if (typeof newCapacity !== 'number' || Number.isNaN(newCapacity)) {
             this._capacity = RingBuffer.MIN_CAPACITY;
         } else {
             this._capacity = pow2AtLeast(min(max(RingBuffer.MIN_CAPACITY, newCapacity), RingBuffer.MAX_CAPACITY));

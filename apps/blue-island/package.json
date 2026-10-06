@@ -21,6 +21,7 @@
     "@blue/service": "~0.0.1",
     "@blue/signals": "~0.0.1",
     "@blue/telemetry": "~0.0.1",
+    "@blue/view": "~0.0.1",
     "@blue/view-ejs": "~0.0.1",
     "@blue/view-webcomponent": "~0.0.1",
     "@blue/content-i18next": "~0.0.1",

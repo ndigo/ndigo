@@ -16,4 +16,15 @@ describe('WildcardExp', () => {
         const wce = new WildcardExp();
         expect(wce.test('abb')).toBe(true);
     });
+
+    test('it should escape regex metacharacters (KRN-REV-WILD-09)', () => {
+        expect(new WildcardExp('a.b').test('a.b')).toBe(true);
+        expect(new WildcardExp('a.b').test('axb')).toBe(false);
+        expect(new WildcardExp('a+b').test('a+b')).toBe(true);
+        expect(new WildcardExp('a+b').test('aab')).toBe(false);
+        expect(new WildcardExp('[x]').test('[x]')).toBe(true);
+        expect(new WildcardExp('[x]').test('x')).toBe(false);
+        expect(new WildcardExp('a?b').test('a?b')).toBe(true);
+        expect(new WildcardExp('a?b').test('ab')).toBe(false);
+    });
 });

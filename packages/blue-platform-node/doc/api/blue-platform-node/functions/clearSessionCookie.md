@@ -6,16 +6,21 @@
 
 # Function: clearSessionCookie()
 
-> **clearSessionCookie**(`route`): `void`
+> **clearSessionCookie**(`route`, `options?`): `void`
 
 Clears the session cookie on the request's node response. No-op after
-headers were sent or without a response.
+headers were sent or without a response. Pass the same `name`/`secure`
+options used to set the cookie so the clear targets it exactly.
 
 ## Parameters
 
 ### route
 
 [`Route`](#)
+
+### options?
+
+[`SessionCookieOptions`](../interfaces/SessionCookieOptions.md)
 
 ## Returns
 

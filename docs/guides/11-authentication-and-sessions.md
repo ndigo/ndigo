@@ -31,9 +31,12 @@ The adapter implements the existing `AuthAdapter` seam — `AuthServer`,
 `AuthRouteGuard` and `validateAny` explicit-scheme selection consume it
 unchanged. Login/logout/`/me` wiring (cookie in, cookie out):
 `setSessionCookie(route, token)` / `clearSessionCookie(route)` from
-`@blue/platform-node`; the `blue-session` cookie is HttpOnly +
-SameSite=Lax + Path=/ + **Secure by default** (pass `{ secure: false }`
-for localhost only). `NodeSessionInterceptor(sessionStore)` fills the
+`@blue/platform-node`; the `__Host-blue-session` cookie is HttpOnly +
+SameSite=Lax + Path=/ + **Secure by default**. The `__Host-` prefix
+_mandates_ `Secure` (alongside `Path=/` and no `Domain`), so
+`{ secure: false }` with the default name fails loudly; for plain-HTTP dev
+pass an explicit unprefixed `name` and read it back with the same name.
+`NodeSessionInterceptor(sessionStore)` fills the
 `request.session` bag (`principal`/`token`) before dispatch so
 `requestSessionValue('principal')` binds for cookie-authenticated
 requests.
@@ -104,8 +107,9 @@ use the same contract later (the `kind` identifier matches
 `QueueMessageStore`). Session **rotation** on login (fixation protection): the
 in-memory store deletes the old id before issuing the new one; the LibSQL
 store replaces it atomically in one guarded update. Cookies:
-HttpOnly + SameSite=Lax (+ Secure in production), `Max-Age=0` clear on
-logout. Naming: `SESSION_COOKIE = 'blue-session'`.
+HttpOnly + SameSite=Lax + Secure, `Max-Age=0` clear on logout. Naming:
+`SESSION_COOKIE = '__Host-blue-session'` (the `__Host-` prefix mandates
+`Secure`; see §1).
 
 ### Revoking a user everywhere (AD-68)
 
@@ -134,8 +138,20 @@ Credential endpoints are the brute-force surface — throttle them:
 ```ts
 @postMapping('/login')
 @rateLimit({ limit: 5, windowMs: 60_000 })
-async login(credentials: unknown, route: Route) { … }
+@parameters({ credentials: bodyValue(), route: routeValue(), contentType: headerValue('content-type') })
+async login(credentials: unknown, route: Route, contentType: string | undefined) {
+    if (contentTypeBase(contentType) !== String(MediaTypes.APPLICATION_JSON)) {
+        return ResponseEntity.unsupportedMediaType({ error: 'Only application/json request bodies are accepted' });
+    }
+    // …authenticate…
+}
 ```
+
+Login is **JSON-body only**: the handler requires
+`Content-Type: application/json` and returns **415** problem+json
+(`ResponseEntity.unsupportedMediaType`) otherwise — a cross-site HTML form
+cannot send that media type, so this is the CSRF defense when the
+interceptor is unwired (see §6).
 
 `@rateLimit` is passive metadata; `RateLimitInterceptor` (default-on in
 `NodeAutoConfiguration.handlerMapping`, like security headers) enforces it
@@ -168,11 +184,19 @@ Every POST/PUT/DELETE/PATCH then requires a matching `X-CSRF-Token` header
 cookie attributes. Without a matching token, login/logout never run — the
 interceptor denies before the handler.
 
-**Posture note (2026-09-27 review, SEC-7):** where the interceptor is not
-wired, a cross-site form POST can still carry the SameSite=Lax session
-cookie to `POST /auth/logout` — forcing a logout (nuisance only: there is
-no state to mutate and login is JSON-body + token). Use the interceptor
-for any additional cookie-authenticated mutating route.
+**Posture note (2026-10-06 review, SEC-AUD2-SEC-3):** the interceptor is
+opt-in and **unwired by default**, so a cookie-session app **must** wire
+`CSRFInterceptor` (or keep every mutating route JSON-only). A cross-site
+HTML form always sends `application/x-www-form-urlencoded` (or
+`multipart/form-data` / `text/plain`) — it can never send
+`application/json` — so `POST /auth/login`'s mandatory
+`Content-Type: application/json` gate makes login itself **not
+cross-site-postable**: a form post is rejected **415** before
+authentication (see §5). `POST /auth/logout` is not JSON-gated, however:
+without the interceptor a cross-site form POST still carries the
+SameSite=Lax session cookie and forces a logout (nuisance only — no state
+to mutate). Wire the interceptor for logout and any additional
+cookie-authenticated mutating route.
 
 ## 7. JWT issuance, refresh and revocation (AD-33 D-7)
 

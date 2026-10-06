@@ -29,6 +29,13 @@ const flush = (): Promise<void> => {
     return promise;
 };
 
+/** Rejects if `promise` has not settled within `ms` — a hang, not a race. */
+const withDeadline = <T>(promise: Promise<T>, ms = 500): Promise<T> => {
+    const { promise: timeout, reject } = Promise.withResolvers<never>();
+    const timer = setTimeout(() => reject(new Error(`did not settle within ${ms}ms`)), ms);
+    return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+};
+
 describe('writeRenderResult backpressure', () => {
     test('waits for drain before writing the next streamed chunk', async () => {
         const sink = new BackpressureSink();
@@ -76,5 +83,36 @@ describe('writeRenderResult backpressure', () => {
 
         expect(sink.write).toHaveBeenCalledTimes(1);
         expect(sink.end).not.toHaveBeenCalled();
+    });
+
+    test('settles and runs the generator finally when a backpressured client closes without draining', async () => {
+        const sink = new BackpressureSink();
+        sink.write.mockReturnValueOnce(false);
+        let finalized = false;
+
+        async function* body(): AsyncGenerator<string> {
+            try {
+                yield 'first';
+                yield 'second';
+            } finally {
+                finalized = true;
+            }
+        }
+
+        const pending = writeRenderResult(sink as unknown as ServerResponse, { headers: {}, body: body() });
+
+        // First chunk delivered; the writer is parked on the drain wait.
+        await flush();
+        expect(sink.write).toHaveBeenCalledTimes(1);
+
+        // Abort: `close` arrives, `drain` never does (PLN-F3).
+        sink.destroyed = true;
+        sink.emit('close');
+
+        await withDeadline(pending);
+
+        expect(sink.write).toHaveBeenCalledTimes(1);
+        expect(sink.end).not.toHaveBeenCalled();
+        expect(finalized).toBe(true);
     });
 });

@@ -12,11 +12,12 @@ Reads a whole wire source (the parsed `request.body` — form-urlencoded or
 JSON — or `request.cookies`) and binds it into one nested object via
 `DataBinder`, optionally through a target constructor
 (`dataBinderValue('body', ProfileForm)` → a real `ProfileForm` instance),
-then through the shared conversion + Zod `convert` hook pipeline.
+then through the shared conversion + Zod `convert` hook pipeline of the
+`AbstractDataBindingArgumentResolver` base.
 
 ## Extends
 
-- `AbstractPlatformArgumentResolver`
+- `AbstractDataBindingArgumentResolver`
 
 ## Constructors
 
@@ -24,13 +25,15 @@ then through the shared conversion + Zod `convert` hook pipeline.
 
 > **new NodeDataBindingMethodArgumentResolver**(): `NodeDataBindingMethodArgumentResolver`
 
+Creates a whole-source data-binding resolver.
+
 #### Returns
 
 `NodeDataBindingMethodArgumentResolver`
 
-#### Overrides
+#### Inherited from
 
-`AbstractPlatformArgumentResolver.constructor`
+`AbstractDataBindingArgumentResolver.constructor`
 
 ## Accessors
 
@@ -74,7 +77,7 @@ if the argument is undefined or null.
 
 #### Inherited from
 
-`AbstractPlatformArgumentResolver.handleMissingValue`
+`AbstractDataBindingArgumentResolver.handleMissingValue`
 
 ***
 
@@ -109,9 +112,9 @@ extending this base — only the BIND path invoked it.
 
 `unknown`
 
-#### Overrides
+#### Inherited from
 
-`AbstractPlatformArgumentResolver.resolveArgument`
+`AbstractDataBindingArgumentResolver.resolveArgument`
 
 ***
 
@@ -135,6 +138,6 @@ The method parameter to check.
 
 Whether or not the given method parameter is supported by this resolver.
 
-#### Overrides
+#### Inherited from
 
-`AbstractPlatformArgumentResolver.supportsParameter`
+`AbstractDataBindingArgumentResolver.supportsParameter`

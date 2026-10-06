@@ -113,8 +113,6 @@ export const likeResourceLoaderAware = like({ setResourceLoader: Function }) as 
 ) => value is ResourceLoaderAware;
 
 /**
- */
-/**
  * Resource implementation backed by a URL.
  */
 export class URLResource<T = unknown> implements Resource<T> {

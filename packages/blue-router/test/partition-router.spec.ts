@@ -93,4 +93,19 @@ describe('PartitionRouter', () => {
         expect(router.unmount('todo')).toBe(true);
         expect(router.unmount('todo')).toBe(false);
     });
+
+    test('it should reject a duplicate normalized prefix at mount (HT-10)', () => {
+        const todoCallback = vi.fn();
+        const router = new PartitionRouter();
+
+        router.mount('/todo', todoCallback);
+        expect(() => router.mount('todo', vi.fn())).toThrowError("A feature is already mounted at prefix '/todo'");
+
+        // The original mount is intact and still the only one: unmounting it
+        // cannot take a sibling with it.
+        expect(router.navigate('/todo/active')).toBe(true);
+        expect(todoCallback).toHaveBeenCalledTimes(1);
+        expect(router.unmount('/todo')).toBe(true);
+        expect(router.navigate('/todo/active')).toBe(false);
+    });
 });

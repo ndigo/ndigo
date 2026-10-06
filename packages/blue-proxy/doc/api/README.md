@@ -38,3 +38,4 @@ Jeff Rose
 - [methodAnnotation](functions/methodAnnotation.md)
 - [sortInterceptors](functions/sortInterceptors.md)
 - [weaveMethodProxy](functions/weaveMethodProxy.md)
+- [wovenBy](functions/wovenBy.md)

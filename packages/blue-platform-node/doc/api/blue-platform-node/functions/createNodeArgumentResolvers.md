@@ -1,0 +1,18 @@
+[**@blue/platform-node v0.0.1**](../../README.md)
+
+***
+
+[@blue/platform-node](../../README.md) / [blue-platform-node](../README.md) / createNodeArgumentResolvers
+
+# Function: createNodeArgumentResolvers()
+
+> **createNodeArgumentResolvers**(): `HandlerMethodArgumentResolver`[]
+
+Builds the Node.js argument-resolver list in registration order (first
+match wins). Single source of truth shared by
+[configureNodeArgumentResolvers](configureNodeArgumentResolvers.md) and the auto-configuration entry, so
+the two lists can never drift (HG-7).
+
+## Returns
+
+`HandlerMethodArgumentResolver`[]

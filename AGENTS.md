@@ -54,9 +54,9 @@ tracked separately.
 
 - **Type:** Nx Monorepo with pnpm workspaces.
 - **Module System:** **ESM Only**. No CommonJS (`require`) allowed.
-- **Language:** TypeScript 5.7+ (Target: ES2022).
-- **Package Manager:** pnpm >= 8.0.0.
-- **Node Version:** >= 18.0.0.
+- **Language:** TypeScript (Target: `ES2022`; root native compiler line `~7.0.2`, packages pin `~6.0.3`).
+- **Package Manager:** pnpm >= 11.0.0.
+- **Node Version:** >= 22.0.0.
 
 ## 2. Documentation Guide
 
@@ -71,7 +71,7 @@ The project maintains two complementary documentation files for different purpos
 - **Content:**
     - File naming conventions (kebab-case, underscore prefix, etc.)
     - Code naming conventions (camelCase, PascalCase, UPPER_SNAKE_CASE)
-    - Prettier formatting rules (indentation, quotes, semicolons, etc.)
+    - oxfmt formatting rules (indentation, quotes, semicolons, etc.)
     - Module organization structure
     - Special patterns (internal files, test helpers, mixins)
     - Before/after examples of correct usage
@@ -96,7 +96,7 @@ The project maintains two complementary documentation files for different purpos
 
 | Concern               | ARCHITECTURE.md                                           | STYLE_GUIDE.md                                            |
 | :-------------------- | :-------------------------------------------------------- | :-------------------------------------------------------- |
-| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @blue/util, not from ramda"                  |
+| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @blue/util, not from seedrandom"             |
 | Code Organization     | "Use Strategy Pattern for parsers"                        | "Name parser files: kebab-case.ts in src/"                |
 | Module Visibility     | "Internal modules are implementation details"             | "Prefix internal files with underscore: \_util.ts"        |
 | Naming Philosophy     | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean"            |
@@ -195,7 +195,7 @@ pnpm vitest run packages/blue-core/test/deferred.spec.ts
 # Linting (oxlint)
 pnpm lint
 
-# Formatting (Prettier)
+# Formatting (oxfmt)
 pnpm format
 ```
 
@@ -247,16 +247,6 @@ pnpm format
 - **Polyfill:** The `@tsmetadata/polyfill` is used to support `Symbol.metadata`.
 - **Legacy:** `reflect-metadata` and the old `experimentalDecorators` flag are **no longer used**.
 - **Further Reading:** For a deep dive into the architecture, see the "Decorators & Separation of Concerns" section in `ARCHITECTURE.md`.
-
-### Dependency Import Rules
-
-A common source of errors in this repository is incorrectly importing dependencies that have complex or inconsistent ESM/CJS dual-exports. To avoid this, follow these rules:
-
-- **`ramda`**: This library's ESM type definitions are structured in a way that requires a namespace import.
-    - ❌ **Incorrect**: `import R from 'ramda';`
-    - ✅ **Correct**: `import * as R from 'ramda';`
-
-This will prevent `TypeError` exceptions at runtime. The build process may not always catch this, so it is critical to adhere to this rule during development and code review.
 
 ### Library Integration Layer Pattern
 
@@ -315,13 +305,13 @@ import { createDOMProvider } from '@blue/dom';
 
 **Enforcement:**
 
-These rules are **automatically enforced** by `@blue/oxlint-plugin`, which provides three oxlint rules:
+These rules are **automatically enforced** by `@blue/oxlint-plugin`, which ships these dependency-boundary rules:
 
-| Rule                                  | Severity | Description                                                                                                                                                          |
-| :------------------------------------ | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@blue/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (seedrandom, slug, linkedom, etc.) outside their integration layer packages. Allows in integration packages and test files. |
-| `@blue/no-internal-file-imports`      | error    | Forbids `@blue/<pkg>/_*` cross-package imports of internal files.                                                                                                    |
-| `@blue/no-internal-file-exports`      | error    | Forbids `export * from './_*'` barrel re-exports in `*/src/index.ts`. Named re-exports (`export { foo } from './_*'`) are allowed (deliberate/controlled).           |
+| Rule                                  | Severity | Description                                                                                                                                                |
+| :------------------------------------ | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@blue/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (seedrandom, slug, etc.) outside their integration layer packages. Allows in integration packages and test files. |
+| `@blue/no-internal-file-imports`      | error    | Forbids cross-package imports of internal files (`@blue/<pkg>/_*`), including `export * from '@blue/<pkg>/_*'`.                                            |
+| `@blue/no-internal-file-exports`      | error    | Forbids re-exporting internal files (`./_*`) — both `export * from './_*'` and named re-exports (`export { foo } from './_*'`).                            |
 
 Run `pnpm lint` to check for violations. These rules are integrated into the root `.oxlintrc.json`.
 

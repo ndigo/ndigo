@@ -526,7 +526,8 @@ Redis namespaces are 1–128 ASCII characters matching
 and binary base64 overhead, not 1 MiB of raw body. Keys are 1–1024 characters;
 headers have at most 128 entries, names 1–1024 characters and string values up
 to 8192 characters. Malformed inbound envelopes are dropped and exposed through
-`fanout.lastError`; invalid outbound envelopes reject before Redis I/O. Redis
+`fanout.lastDecodeError` (and through `fanout.lastError` when they are the most
+recent failure); invalid outbound envelopes reject before Redis I/O. Redis
 access must be trusted: ACLs/network isolation (and `rediss://` remotely) protect
 channels; a namespace is isolation convention, not authorization.
 

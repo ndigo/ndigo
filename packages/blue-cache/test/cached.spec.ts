@@ -187,6 +187,27 @@ describe('@cached', () => {
         }
     });
 
+    test('calls through on a detached invocation with an undefined receiver', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        try {
+            let invocations = 0;
+            class Detached {
+                @cached()
+                async value(): Promise<number> {
+                    invocations += 1;
+                    return invocations;
+                }
+            }
+            const { value } = new Detached();
+            // Before the guard this threw "Cannot read properties of undefined
+            // (reading 'cacheManager')"; it must degrade like @transactional.
+            await expect(value()).resolves.toBe(1);
+            await expect(value()).resolves.toBe(2);
+        } finally {
+            warn.mockRestore();
+        }
+    });
+
     test('coalesces concurrent computation for the same key', async () => {
         const started = gate();
         const computation = gate();

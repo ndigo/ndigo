@@ -1,19 +1,9 @@
 # Plans
 
-### 2026-10-01 - Shared Persistence and Distributed Backends
-
-Roadmap for durable sessions, Redis-backed shared cache, cross-node
-WebSocket/STOMP pub-sub, and a separately scoped decision on persisted or
-distributed scheduling; staged around shared backend lifecycle dependencies.
-
-[Read full roadmap](2026-10-01_SHARED_PERSISTENCE_ROADMAP.md)
-
----
-
 Implementation plans for features and technical specifications.
 
 Every implemented plan has its **decision recorded** in
-[docs/decisions/README.md](../decisions/README.md) (ADR index, AD-01..AD-65).
+[docs/decisions/README.md](../decisions/README.md) (ADR index, AD-01..AD-67).
 
 ## Completed Plans
 
@@ -32,6 +22,18 @@ model. Wire/storage/config-server surfaces stay permanently JSON. Phase 3
 
 ---
 
+### 2026-10-04 - Resilience: Retry and Circuit Breaking
+
+New isomorphic package `@blue/resilience` (AD-43): annotation-driven
+`@retry(...)` / `@circuitBreaker(...)` policy interceptors on the
+`@blue/proxy` chain, plain-function backoffs (`fixedBackoff`,
+`exponentialBackoff`), per-method circuit cells with half-open probes, and
+standalone weaving via `interceptMethods(instance, interceptors)`.
+
+[Read plan](2026-10-04_RETRY_AND_CIRCUIT_BREAKER.md)
+
+---
+
 ### 2026-10-03 - Shared Persistence and Distributed Backends
 
 Dependency-ordered persistence roadmap, complete: durable LibSQL sessions
@@ -41,6 +43,53 @@ evidence (Phase 4, AD-41), backend-matrix review closed (Phase 5). Memory
 remains the default everywhere; external backends are opt-in.
 
 [Read roadmap](2026-10-01_SHARED_PERSISTENCE_ROADMAP.md)
+
+---
+
+### 2026-10-03 - Method Interception (`@blue/proxy`)
+
+Container-managed method interception on JavaScript `Proxy` (AD-42): the new
+`@blue/proxy` package — annotation keys (`methodAnnotation`), the
+`MethodInterceptor` chain (`invokeChain`; `next()` re-entry added with
+AD-43), and weaving via `InitializationAwareProcessor` (`interception(...)`).
+No AspectJ pointcut language; existing method decorators stay as they are.
+
+[Read plan](2026-10-03_METHOD_INTERCEPTION.md)
+
+---
+
+### 2026-09-29 - DTO / Object Mapping
+
+Model-to-model projection as schema targets in `ConversionService` (AD-38):
+`convert(value, schema)` is the single verb — fail-fast projection with
+`z.infer` typing, entity-derived DTO schemas, and `@apiDocs({ responses })`
+response documentation (closing AD-35's response-schema follow-up at the
+explicit-contract level). No new mapper package.
+
+[Read plan](2026-09-29_DTO_MAPPING.md)
+
+---
+
+### 2026-09-28 - OpenAPI Docs + Management Hardening
+
+The last Tier-1 gap row closes: `@blue/openapi` generates a spec from
+dispatch metadata (zod-native `toJSONSchema`) and serves it at
+`/v3/api-docs` with Swagger UI at `/swagger-ui/` (no CDN, optional guard);
+management hardening adds `/health` redaction and documents the bind posture
+(SEC-5). AD-35/AD-36.
+
+[Read plan](2026-09-28_OPENAPI_AND_MANAGEMENT_HARDENING.md)
+
+---
+
+### 2026-09-28 - Trusted-Proxy Client-IP Resolution
+
+`TrustedProxySet` (IP/CIDR allowlist, empty = trust nobody) plus a
+peer-gated rightmost-first `X-Forwarded-For` walk resolving
+`NodeRequest.remoteAddress` — spoofed leftmost values never win; the rate
+limiter keys on the real client (AD-37).
+
+[Read plan](2026-09-28_TRUSTED_PROXY.md)
 
 ---
 
@@ -57,6 +106,38 @@ conditions, `ContextToken` cache stores). SpEL, `@Primary`/`@Qualifier`
 strings and predicate-form mapping tables remain rejected.
 
 [Read full plan](2026-09-27_TYPESCRIPT_NATIVE_LAYER.md)
+
+---
+
+### 2026-09-26 - Telemetry Completion
+
+Trace sampling (presets + ratio, parent-based), exporter ergonomics
+(headers/timeouts/compression/console fallback/disable), and log↔trace
+correlation — the gap-analysis Telemetry row flipped to implemented (AD-32).
+
+[Read plan](2026-09-26_TELEMETRY_COMPLETION.md)
+
+---
+
+### 2026-09-26 - ORM Completion
+
+Migrations (`DrizzleMigrator`: journaled, versioned, forward-only over
+`@blue/orm-drizzle`, AD-30), pagination/sorting, explicit-opt-in relation
+fetch (AD-31), and derived-query expansion beyond equality — closing the
+Framework Gap Analysis ORM rows.
+
+[Read plan](2026-09-26_ORM_COMPLETION.md)
+
+---
+
+### 2026-09-26 - Auth Completion
+
+Credentials (scrypt with timing equalization), server-side sessions
+(fixation-safe rotation, HttpOnly cookies), default rate limiting, and JWT
+refresh/revocation (AD-33, superseding the credentials/sessions subset of
+AD-56) — the gap-analysis Auth and rate-limiting rows close.
+
+[Read plan](2026-09-26_AUTH_COMPLETION.md)
 
 ---
 
@@ -100,6 +181,27 @@ required params now throw `MissingParameterError` → 400.
 
 ---
 
+### 2026-09-22 - Multipart / File Upload
+
+Tier-1 gap closed: streaming busboy parser with threshold-to-disk,
+`MultipartFile` contract + `@file`/`fileValue()` binding, per-file/total
+limits → 413, and filename sanitization (AD-26).
+
+[Read plan](2026-09-22_MULTIPART_FILE_UPLOAD.md)
+
+---
+
+### 2026-09-18 - Security Headers
+
+`SecurityHeadersInterceptor` wraps Helmet and is prepended by
+`NodeAutoConfiguration`, so every default Node response carries CSP, HSTS,
+frame/referrer/sniffing controls and no `X-Powered-By` (AD-25; the CSP
+`connect-src` default was later hardened to `'self'` by SEC-4).
+
+[Read plan](2026-09-18_SECURITY_HEADERS.md)
+
+---
+
 ### 2026-09-17 - Caching
 
 `@blue/cache`: `Cache`/`MemoryCache` (TTL + LRU/FIFO eviction), `CacheManager`
@@ -128,6 +230,17 @@ Content/i18n completion: `MessageSource` contract, i18next adapter
 client), EJS/island integration, and both demo gates.
 
 [Read full plan](2026-09-13_CONTENT_I18N.md)
+
+---
+
+### 2026-06-08 - TypeScript 6.0 Migration Remediation
+
+Post-migration fix-up, all four waves landed: restored `@blue/domain`
+property delegation and `RouteHandlerAdapter.supports()`, replaced
+type-lie casts with runtime checks, stabilized widened return types across
+consumers, and refactored the `@blue/validate` constraints.
+
+[Read plan](2026-06-08_TS6_REMEDIATION.md)
 
 ---
 
@@ -173,7 +286,7 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 - [2026-03-30 ORM MVP](2026-03-30_ORM_MVP.md) — [AD-55](../decisions/2026-03-30_AD55_ORM_MVP.md)
 - [2026-05-28 Auth & ORM Post-MVP](2026-05-28_AUTH_DESIGN.md) — [AD-56](../decisions/2026-05-28_AD56_AUTH_ORM_POST_MVP.md)
 - [2026-06-02 Native-First Refactor](2026-06-02_NATIVE_FIRST_REFACTOR.md) — [AD-57](../decisions/2026-06-02_AD57_NATIVE_FIRST_REFACTOR.md)
-- [2026-08-12/19 OXC Evaluation & Migration](2026-08-19_OXC_EVALUATION_AND_MIGRATION_PLAN.md) — oxlint/oxfmt adoption — [AD-58](../decisions/2026-08-19_AD58_OXC_TOOLCHAIN_MIGRATION.md)
+- [2026-08-12/19 OXC Evaluation & Migration](2026-08-19_OXC_EVALUATION_AND_MIGRATION_PLAN.md) — oxlint/oxfmt adoption — [AD-58](../decisions/2026-08-19_AD58_OXC_TOOLCHAIN_MIGRATION.md); earlier research: [2026-08-12 evaluation](2026-08-12_OXC_EVALUATION.md) (toolchain audit + phased-adoption recommendation), [2026-08-19 migration plan](2026-08-19_OXC_MIGRATION.md) (proposed ESLint/Prettier replacement, folded into AD-58)
 - [2026-09-01 Signals](2026-09-01_SIGNALS.md) — [AD-59](../decisions/2026-09-01_AD59_SIGNALS_MODERNIZATION.md)
 - [2026-09-03 Node Platform Foundation](2026-09-03_NODE_PLATFORM_FOUNDATION.md) — [AD-60](../decisions/2026-09-03_AD60_NODE_PLATFORM_FOUNDATION.md)
 - [2026-09-03 RouteRegistry](2026-09-03_ROUTE_REGISTRY.md) — [AD-61](../decisions/2026-09-03_AD61_ROUTE_REGISTRY.md)
@@ -182,19 +295,27 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 - [2026-09-04 Package Separation](2026-09-04_PACKAGE_SEPARATION.md) — [AD-64](../decisions/2026-09-04_AD64_PLATFORM_SEPARATION.md)
 - [2026-09-06 View Resolution Strategy](2026-09-06_VIEW_RESOLUTION_STRATEGY.md) — [AD-65](../decisions/2026-09-06_AD65_VIEW_RESOLUTION_STRATEGY.md)
 - [2026-09-06 Telemetry Gaps](2026-09-06_TELEMETRY_GAPS.md) — folded into [AD-32](../decisions/2026-09-26_AD32_TELEMETRY_COMPLETION.md)
-- [2026-09-08 Environment Phases 0–6](2026-09-08_ENVIRONMENT_PHASE0.md) — [AD-11](../decisions/2026-09-08_AD11_ENVIRONMENT_PROPERTY_SOURCES.md)–[AD-17](../decisions/2026-09-08_AD17_ENVIRONMENT_VALIDATION.md)
+- [2026-09-08 Environment Phases 0–6](2026-09-08_ENVIRONMENT_PHASE0.md) — [P1](2026-09-08_ENVIRONMENT_PHASE1.md) (placeholders, typed lookup, CLI args), [P2](2026-09-08_ENVIRONMENT_PHASE2.md) (config files, `.env`, browser sources, precedence), [P3](2026-09-08_ENVIRONMENT_PHASE3.md) (profile defaults/expressions/activation), [P4](2026-09-08_ENVIRONMENT_PHASE4.md) (typed binding v2), [P5](2026-09-08_ENVIRONMENT_PHASE5.md) (origins, customizers, refresh), [P6](2026-09-08_ENVIRONMENT_PHASE6.md) (zod validation) — [AD-11](../decisions/2026-09-08_AD11_ENVIRONMENT_PROPERTY_SOURCES.md)–[AD-17](../decisions/2026-09-08_AD17_ENVIRONMENT_VALIDATION.md)
 
 ## Completed Reviews
 
 - [2026-10-06_CODE_REVIEW_AND_MITIGATION.md](2026-10-06_CODE_REVIEW_AND_MITIGATION.md) - Full-repository review (42 packages, 7 apps, docs, tooling, hygiene) with remediation waves (1 Block build-breaker + 4 architecture findings + 18 Must Fix, ~60 Should Fix, remainder Optional/Nit/FYI)
 - [2026-10-04_CODE_REVIEW_AND_MITIGATION.md](2026-10-04_CODE_REVIEW_AND_MITIGATION.md) - Review of the AD-42/AD-43 wave (blue-proxy, blue-resilience) and recent committed features with remediation plan (2 Must Fix, 3 Should Fix, 1 Block, 8 Medium, 10 Nit/FYI)
+- [2026-09-29_CODE_REVIEW_AND_MITIGATION.md](2026-09-29_CODE_REVIEW_AND_MITIGATION.md) - Post-AD-38 comprehensive sweep (35 packages, 7 apps; 11 review slices) with Waves 1–6 remediation
 - [2026-09-28_CODE_REVIEW_AND_MITIGATION.md](2026-09-28_CODE_REVIEW_AND_MITIGATION.md) - Review of the Wave 6 / AD-34 / AD-35-36 / AD-37 wave with remediation plan (2 Must Fix, 22 Should Fix, 16 Optional)
+- [2026-09-27_CODE_REVIEW_AND_MITIGATION.md](2026-09-27_CODE_REVIEW_AND_MITIGATION.md) - Review of the AD-30..33 wave (ORM, telemetry, auth) with Waves 1–4 remediation
+- [2026-09-25_CODE_REVIEW_AND_MITIGATION.md](2026-09-25_CODE_REVIEW_AND_MITIGATION.md) - Review of the AD-26..29 wave (multipart, argument binding, static files, config) with Waves 1–4 remediation
 - [2026-09-18_CODE_REVIEW_AND_MITIGATION.md](2026-09-18_CODE_REVIEW_AND_MITIGATION.md) - Architecture, security, and quality review with remediation plan
 - [2026-09-17_REVIEW_AND_REMEDIATION.md](2026-09-17_REVIEW_AND_REMEDIATION.md) - Review of the WebSocket/STOMP wave with repository gate remediation
+- [2026-09-08_REVIEW_AND_REMEDIATION.md](2026-09-08_REVIEW_AND_REMEDIATION.md) - Repository-wide review (gates, security, architecture) with remediation plan — every item landed 2026-09-09
 
 ## Historical Roadmaps
 
 - [2026-05-27_FEATURE_COMPLETENESS_ROADMAP.md](2026-05-27_FEATURE_COMPLETENESS_ROADMAP.md) - Full 10-wave framework feature completeness roadmap — decisions mined into AD-01..AD-06; all waves shipped
+- [2026-05-29_WAVE10_CHECKPOINT.md](2026-05-29_WAVE10_CHECKPOINT.md) - Wave 10 — 1.0 checkpoint of the 10-wave feature-completeness roadmap (package matrix, API stability commitment)
+- [2026-05-29_WAVE11_PLAN.md](2026-05-29_WAVE11_PLAN.md) - Wave 11 follow-on: benchmark coverage, hot-path native replacements, API hardening
+- [2026-06-18_CLIENT_FIRST_ROADMAP.md](2026-06-18_CLIENT_FIRST_ROADMAP.md) - Client-first roadmap (10 waves, 6–12 month horizon; all waves complete) — legacy ports, runtime stabilization, 1.0 checkpoint
+- [2026-06-18_WAVE_4_SERVICE_BOUNDARY.md](2026-06-18_WAVE_4_SERVICE_BOUNDARY.md) - Wave 4 spec of the client-first roadmap: legacy service interceptors ported into `@blue/http`/`@blue/platform-web`; `@blue/service` registry + telemetry hooks
 - [2026-03-08_PACKAGE_ROADMAP.md](2026-03-08_PACKAGE_ROADMAP.md) - Package scope roadmap — completed ✅ (delivered package set)
 - [2026-09-04_REPOSITORY_REMEDIATION.md](2026-09-04_REPOSITORY_REMEDIATION.md) - Comprehensive remediation plan — proposed; superseded by the weekly review series
 
@@ -218,6 +339,7 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 - [2026-02-06_SPRING_MVC_RESEARCH.md](2026-02-06_SPRING_MVC_RESEARCH.md) - Spring MVC Research Plan
 - [2026-02-07_HTTP_TRANSFORMER_GENERICS.md](2026-02-07_HTTP_TRANSFORMER_GENERICS.md) - HTTPTransformer Generic Type Parameter Decision
 - [2026-02-07_MEDIATYPE_LOCATION_ANALYSIS.md](2026-02-07_MEDIATYPE_LOCATION_ANALYSIS.md) - MediaType Location and Architecture Analysis
+- [2026-02-07_REGEX_NAMING_CONVENTION.md](2026-02-07_REGEX_NAMING_CONVENTION.md) - RegExp Naming Convention Plan (draft; implemented by the 2026-02-08 pass — AD-50)
 - [2026-02-07_TYPE_SAFE_ENUM_PATTERN.md](2026-02-07_TYPE_SAFE_ENUM_PATTERN.md) - Type-Safe Enum Pattern Documentation
 - [2026-02-08_MEDIATYPE_ENHANCEMENT_SUMMARY.md](2026-02-08_MEDIATYPE_ENHANCEMENT_SUMMARY.md) - MediaType Enhancements - Implementation Complete
 - [2026-02-11_SUBPATH_EXPORTS_ANALYSIS.md](2026-02-11_SUBPATH_EXPORTS_ANALYSIS.md) - Architectural Plan: Subpath Export Analysis

@@ -33,6 +33,7 @@ export class RedisSocketFanout implements SocketFanout {
     #ready = false;
     #closed = false;
     #decodeError: Error | undefined;
+    #decodeErrorAt: number | undefined;
 
     constructor(options: RedisSocketFanoutOptions) {
         if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(options.namespace)) {
@@ -50,8 +51,36 @@ export class RedisSocketFanout implements SocketFanout {
         this.#namespace = options.namespace;
     }
 
+    /**
+     * Most recent error across the subscriber connection, the publisher
+     * connection, and inbound malformed-envelope decodes — compared by
+     * observation time, so no source permanently masks another. Use
+     * {@link lastDecodeError} to observe decode failures directly.
+     */
     get lastError(): Error | undefined {
-        return this.#subscriber.lastError ?? this.#publisher.lastError ?? this.#decodeError;
+        const candidates: Array<{ at: number; error: Error }> = [];
+        if (this.#subscriber.lastError !== undefined && this.#subscriber.lastErrorAt !== undefined) {
+            candidates.push({ at: this.#subscriber.lastErrorAt, error: this.#subscriber.lastError });
+        }
+        if (this.#publisher.lastError !== undefined && this.#publisher.lastErrorAt !== undefined) {
+            candidates.push({ at: this.#publisher.lastErrorAt, error: this.#publisher.lastError });
+        }
+        if (this.#decodeError !== undefined && this.#decodeErrorAt !== undefined) {
+            candidates.push({ at: this.#decodeErrorAt, error: this.#decodeError });
+        }
+
+        let latest: { at: number; error: Error } | undefined;
+        for (const candidate of candidates) {
+            // `>=` lets a later-scanned source win same-millisecond ties
+            // (subscriber < publisher < decode).
+            if (latest === undefined || candidate.at >= latest.at) latest = candidate;
+        }
+        return latest?.error;
+    }
+
+    /** Most recent malformed-envelope decode error; never masked by connection errors. */
+    get lastDecodeError(): Error | undefined {
+        return this.#decodeError;
     }
 
     /** Explicit readiness; construction never opens sockets. */
@@ -79,6 +108,7 @@ export class RedisSocketFanout implements SocketFanout {
                 if (decoded.origin !== this.#origin) receive(decoded.message);
             } catch (error) {
                 this.#decodeError = error instanceof Error ? error : new Error('Invalid socket fanout message');
+                this.#decodeErrorAt = Date.now();
             }
         };
         const subscribed = this.#subscriber.run(async (client) => {

@@ -23,7 +23,7 @@ import type { WriteStream } from 'node:fs';
 import type { IncomingMessage } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { randomBytes } from 'node:crypto';
+import { randomHex } from '@blue/util';
 import { RequestLimitError } from './http-request-limits';
 import { multipartBoundary } from '@blue/http';
 import { NodeMultipartContext, NodeMultipartFile, type Backing, type MultipartFile } from './multipart-file';
@@ -442,7 +442,7 @@ function collectFile(
                 // PL-2: a threshold of 0 means "force disk for every part" —
                 // `size > 0` spills on the first byte.
                 if (size > limits.fileThreshold) {
-                    tempPath = join(tmpDir, `blue-upload-${randomBytes(8).toString('hex')}`);
+                    tempPath = join(tmpDir, `blue-upload-${randomHex(8)}`);
                     context.trackTemp(tempPath);
                     ws = createWriteStream(tempPath);
                     for (const buffered of chunks) {

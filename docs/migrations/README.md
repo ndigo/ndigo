@@ -4,6 +4,11 @@ This directory contains migration guides documenting breaking changes and upgrad
 
 ## Available Migrations
 
+- [2026-08-22_MIGRATION_TO_1.0.md](./2026-08-22_MIGRATION_TO_1.0.md) - Legacy → BlueJS 1.0 migration guide (TC39 decorators, API surface changes)
+- [2026-08-12_ESLINT_TO_OXLINT.md](./2026-08-12_ESLINT_TO_OXLINT.md) - ESLint → oxlint migration
+- [2026-06-18_CONTENT_NEGOTIATION_AND_TEMPLATE_VIEW_CONTRACT.md](./2026-06-18_CONTENT_NEGOTIATION_AND_TEMPLATE_VIEW_CONTRACT.md) - Wave 3 summary: content negotiation framework + template-view contract
+- [2026-06-12_NATIVE_FIRST_REFACTOR.md](./2026-06-12_NATIVE_FIRST_REFACTOR.md) - Native-first refactor: Ramda/date-fns removed from `@blue/util`
+- [2026-05-29_V1_MIGRATION.md](./2026-05-29_V1_MIGRATION.md) - V1 migration guide: breaking changes from the 10-wave roadmap
 - [2026-05-27_PNPM_11_UPGRADE.md](./2026-05-27_PNPM_11_UPGRADE.md) - pnpm 11 upgrade (8.15.0→11.4.0), workspace config migration
 - [2026-01-23_DEPENDENCIES.md](./2026-01-23_DEPENDENCIES.md) - Dependency modernization (Ramda, date-fns, etc.)
 - [2026-01-23_PRETTIER.md](./2026-01-23_PRETTIER.md) - Prettier code formatting setup

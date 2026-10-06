@@ -19,7 +19,10 @@ map against the method and its mapping kind.
   name); the array is in declaration order.
 
 Throws `InvalidParameterMappingError` when a `*Value` extractor has no
-source for the mapping kind (e.g. `bodyValue` on a socket mapping).
+source for the mapping kind (e.g. `bodyValue` on a socket mapping), or when
+the map omits an argument between two declared ones (positional dispatch
+cannot skip a slot: the undeclared argument would be invoked as
+`undefined`). Arguments after the last mapped one may stay undeclared.
 
 ## Parameters
 
@@ -49,4 +52,4 @@ The converted parameters (may be the empty array).
 
 ## Throws
 
-On source/kind incompatibility.
+On source/kind incompatibility or a sparse positional map.

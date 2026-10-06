@@ -1,8 +1,8 @@
 # Blue Utility
 
-> Zero-dependency BlueJS helpers for strings, types, math, and structure matching — fully native, no third-party runtime deps.
+> Native-first BlueJS helpers for strings, types, math, and structure matching — the framework's integration layer for its small third-party helper libraries.
 
-`@blue/util` is the BlueJS utility library: zero-dependency helpers for strings, types, math, and structure matching, with no third-party runtime dependencies. It ships fully native, benchmarked implementations.
+`@blue/util` is the BlueJS utility library: native-first helpers for strings, types, math, and structure matching. Most utilities are implemented natively and benchmarked; the few third-party libraries it wraps (`seedrandom`, `slug`, `safe-regex`) are confined to internal modules and stay behind the public wrapper surface — consume them through `@blue/util`, never by direct import.
 
 ## Installation
 
@@ -23,7 +23,9 @@ like({ then: Function }, thenable); // true — duck-type check
 const id = guid();
 ```
 
-## Categories
+## Usage
+
+### Categories
 
 - **Type guards** — `isString`, `isNumber`, `isNumeric`, `isFunction`, `isValidDate`, `isConstructor`, `type()`, and structural matching with `like` (WeakMap-cached descriptors)
 - **String utilities** — encoding/decoding, slugify, camel/Pascal/proper/sentence case, diacritics removal, interpolation, regex builders
@@ -37,9 +39,13 @@ The full API is generated from JSDoc via `pnpm doc:api` into
 [`src/index.ts`](src/index.ts); see the [package index](../../doc/README.md) for
 how it fits with the rest of BlueJS.
 
-## Performance notes
-
-The `bench/` suites guard the native implementations against regression, run via Vitest's benchmark runner (`vitest bench`).
+Every symbol in the generated reference is supported public API — including
+helpers the framework itself does not call (`decodeHtml`, `encodeHtml`,
+`trailingSplit`, `toProper`, `randHex`, `randInt`, `isValidDate`,
+`isNumeric`). They are covered by this package's test suite and versioned
+with it; nothing in `doc/api/` should be treated as private. Note that
+`rand`/`randInt`/`randHex` are seeded pseudo-random helpers — use
+`randomToken`/`randomHex` when the output must be cryptographically secure.
 
 ## Development
 
@@ -47,6 +53,10 @@ The `bench/` suites guard the native implementations against regression, run via
 pnpm --filter @blue/util build:lib
 pnpm --filter @blue/util test
 ```
+
+### Performance notes
+
+The `bench/` suites guard the native implementations against regression, run via Vitest's benchmark runner (`vitest bench`).
 
 ## See Also
 

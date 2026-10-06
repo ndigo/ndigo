@@ -38,8 +38,10 @@ All of these must pass; CI runs them on every PR:
 ```bash
 pnpm build               # all library packages (tsc -b per package)
 pnpm test                # unit + integration suites (per package)
+pnpm typecheck           # per-project tsc -b (packages + every app)
 pnpm lint                # Oxlint — must report ZERO warnings
-pnpm format:check        # Prettier over maintained files only
+pnpm format:check        # oxfmt over maintained files only
+pnpm docs:links          # relative-link integrity (docs + package/app READMEs)
 pnpm audit --prod        # production advisories — must be clean
 pnpm manifest:check      # package manifest conformance
 pnpm doc                 # TypeDoc — must emit 0 errors, 0 warnings
@@ -48,7 +50,7 @@ pnpm doc                 # TypeDoc — must emit 0 errors, 0 warnings
 Format the code you touched:
 
 ```bash
-pnpm exec prettier --write <changed files>
+pnpm exec oxfmt <changed files>
 ```
 
 ## Changing a package
@@ -64,9 +66,7 @@ pnpm exec prettier --write <changed files>
 5. **Sequential-await loops**: if a loop must stay sequential (ordering is
    contractual), add a line-scoped `oxlint-disable-next-line no-await-in-loop`
    with a reason — never silently parallelize ordering-sensitive code.
-6. If you change a public signature, run `pnpm --filter @blue/<name> api-report`
-   (API Extractor) and review the report diff.
-7. Run the full validation list above before opening a PR.
+6. Run the full validation list above before opening a PR.
 
 ## READMEs
 
@@ -180,8 +180,7 @@ Release process is per-package via npm. Before publishing:
 1. All validation gates green (above).
 2. `pnpm pack --dry-run` for the package and import it from a clean consumer
    to verify the exports map resolves.
-3. Version bumps are semver; the repository tag documents the API report diff
-   (API Extractor) — breaking changes require a major bump.
+3. Version bumps are semver — breaking changes require a major bump.
 
 ## Reporting issues
 

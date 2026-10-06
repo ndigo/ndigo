@@ -52,6 +52,11 @@ section order (drop optional ones):
 ## License # ISC
 ```
 
+`pnpm manifest:check` enforces this skeleton: the required H2 set —
+Installation, Getting Started, Usage, API, Development, Contributing,
+License — must be present and in order. `Configuration` and `See Also`
+stay optional.
+
 Rules:
 
 - No internal references: no `AD-##` ids, decision-record links, commit

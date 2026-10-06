@@ -10,9 +10,9 @@ This document defines the concrete implementation rules, naming conventions, and
 
 ## 1. Formatting Rules
 
-These rules are enforced by Prettier (`prettier.config.mjs`). When Prettier configuration changes, this section must be updated.
+These rules are enforced by oxfmt (`.oxfmtrc.json`). When the oxfmt configuration changes, this section must be updated.
 
-### Indentation [AUTOMATED: Prettier]
+### Indentation [AUTOMATED: oxfmt]
 
 - **TypeScript/JavaScript:** 4 spaces
 - **JSON/YAML:** 2 spaces
@@ -35,13 +35,13 @@ function example() {
 }
 ```
 
-### Line Endings [AUTOMATED: Prettier]
+### Line Endings [AUTOMATED: oxfmt]
 
 - **Always use LF** (`\n`) on all platforms
 - **Never use CRLF** (`\r\n`)
 - Configured: `endOfLine: 'lf'`
 
-### Semicolons [AUTOMATED: Prettier]
+### Semicolons [AUTOMATED: oxfmt]
 
 - **Always required** at the end of statements
 - Configured: `semi: true`
@@ -56,7 +56,7 @@ const value = 42;
 export default MyClass;
 ```
 
-### Quotes [AUTOMATED: Prettier]
+### Quotes [AUTOMATED: oxfmt]
 
 - **Single quotes** for strings in TypeScript/JavaScript
 - **Double quotes** for JSX attributes
@@ -72,7 +72,7 @@ const message = 'Hello, world!';
 import { foo } from '@blue/util';
 ```
 
-### Trailing Commas [AUTOMATED: Prettier]
+### Trailing Commas [AUTOMATED: oxfmt]
 
 - **ES5 style** - Use trailing commas where valid in ES5
 - Helps with cleaner git diffs
@@ -94,17 +94,17 @@ const arr = [
 // ❌ Wrong: No trailing comma in function parameters (not valid in ES5)
 function example(
     arg1: string,
-    arg2: number // ← Prettier will remove this
+    arg2: number // ← oxfmt will remove this
 ) {}
 ```
 
-### Print Width [AUTOMATED: Prettier]
+### Print Width [AUTOMATED: oxfmt]
 
 - **Maximum 120 characters** per line
-- Prettier will automatically wrap at this width
+- oxfmt will automatically wrap at this width
 - Configured: `printWidth: 120`
 
-### Arrow Functions [AUTOMATED: Prettier]
+### Arrow Functions [AUTOMATED: oxfmt]
 
 - **Always use parentheses** around parameters
 - Configured: `arrowParens: 'always'`
@@ -118,7 +118,7 @@ const fn2 = (x, y) => x + y;
 const fn = (x) => x * 2;
 ```
 
-### Bracket Spacing [AUTOMATED: Prettier]
+### Bracket Spacing [AUTOMATED: oxfmt]
 
 - **Use spaces inside object literal braces**
 - **Arrays do not get spaces** (standard JavaScript)
@@ -134,7 +134,7 @@ const obj = { name: 'example', value: 42 }; // missing spaces
 const arr = [1, 2, 3]; // extra spaces
 ```
 
-### Markdown Files [AUTOMATED: Prettier]
+### Markdown Files [AUTOMATED: oxfmt]
 
 - **Preserve prose wrapping** - Do not reflow markdown text
 - Configured: `proseWrap: 'preserve'`
@@ -267,8 +267,8 @@ TypeScript declaration files use kebab-case with `.d.ts` extension.
 **Examples:**
 
 ```
-✅ ramda.d.ts
-✅ ramda-extensions.d.ts
+✅ seedrandom.d.ts
+✅ _safe-regex.d.ts
 ```
 
 ### Configuration Files [CONVENTION: Code Review]
@@ -281,12 +281,12 @@ Configuration files use kebab-case with appropriate extensions.
 
 ```
 ✅ vitest.config.ts
-✅ vite.config.lib.ts
+✅ vite.config.ts
 ✅ tsconfig.json
 ✅ tsconfig.build.json
 ✅ pnpm-workspace.yaml
-✅ prettier.config.mjs
-✅ eslint.config.mjs
+✅ .oxfmtrc.json
+✅ .oxlintrc.json
 ```
 
 ### Documentation Files [CONVENTION: Code Review]
@@ -963,17 +963,21 @@ The description-first pattern prevents conflicts when implementing multiple inte
 
 ```typescript
 // ✅ Correct: No import conflicts with description-first pattern
-import { HTTPTransformer } from '@blue/http';
-import { DataTransformer } from '@blue/data';
+import { HTTPTransformer, type TransformContext } from '@blue/http';
+import { JSONObject, type Serializable } from '@blue/core';
 
-class PaymentProcessor implements HTTPTransformer, DataTransformer {
+class PaymentProcessor implements HTTPTransformer, Serializable {
     // Implements both interfaces
-    transform(request: HTTPRequest): HTTPResponse {
-        // HTTP transformation
+    canTransform(body: JSONObject, _context: TransformContext): boolean {
+        // Applicability check
     }
 
-    transform(data: RawData): CleanData {
-        // Data transformation (overload)
+    transform(body: JSONObject, _context: TransformContext): JSONObject {
+        // Request/response transformation
+    }
+
+    toJSON(): JSONObject {
+        // Serialization
     }
 }
 
@@ -3326,11 +3330,7 @@ export class HttpMethod implements Equatable, Serializable {
 
 **Simple Type-Safe Enum:**
 
-- `MethodParameterType` - `@blue/dispatcher/src/parameters.ts`
-
-**Enum Hierarchy:**
-
-- `Level` (base), `SyslogLevel`, `CLILevel`, `NPMLevel`, `ApacheLevel` - `@blue/logger/src/*.ts` (historical, now in `@blue/telemetry`)
+- `MethodParameterType` - `@blue/dispatcher/src/parameter-types.ts`
 
 **Factory Registry Pattern:**
 
@@ -3557,14 +3557,14 @@ This 21-line utility is imported by `to-camel.ts`, `to-pascal.ts`, `slugify.ts`,
 
 ```typescript
 // ✅ Correct: Extracted because used by 3+ string utilities
-import { replace } from 'ramda';
 
 /**
  * Remove non-word characters.
  * @param {string} value The string to be transformed.
  * @returns {string} The `value` with the non-word characters removed.
  */
-const removeNonWord: (value: string) => string = replace(/[^\x20\x2D0-9A-Z\x5Fa-z\xC0-\xD6\xD8-\xF6\xF8-\xFF]/g, '');
+const removeNonWord: (value: string) => string = (val: string) =>
+    val.replace(/[^\x20\x2D0-9A-Z\x5Fa-z\xC0-\xD6\xD8-\xF6\xF8-\xFF]/g, '');
 
 export default removeNonWord;
 ```
@@ -4525,19 +4525,19 @@ export type { MediaTypeParams, Comparable };
 
 ## 8. Maintenance
 
-### When Prettier Config Changes
+### When oxfmt Config Changes
 
-**IMPORTANT:** When `prettier.config.mjs` is modified, update Section 1 of this guide to reflect the new formatting rules.
+**IMPORTANT:** When `.oxfmtrc.json` is modified, update Section 1 of this guide to reflect the new formatting rules.
 
 **Process:**
 
-1. Make changes to `prettier.config.mjs`
+1. Make changes to `.oxfmtrc.json`
 2. Update corresponding section in `STYLE_GUIDE.md`
 3. Run `pnpm format` to apply new formatting
 4. Document the change in commit message:
 
     ```
-    style: update prettier config and style guide
+    style: update oxfmt config and style guide
 
     Changed [setting] from [old] to [new].
 

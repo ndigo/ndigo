@@ -12,10 +12,8 @@
   "dependencies": {
     "@blue/boot": "~0.0.1",
     "@blue/context": "~0.0.1",
-    "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
-    "@blue/router": "~0.0.1",
     "@blue/telemetry": "~0.0.1",
     "@blue/util": "~0.0.1"
   },
@@ -23,10 +21,8 @@
     "tsx": "^4.23.13",
     "@blue/boot": "~0.0.1",
     "@blue/context": "~0.0.1",
-    "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
-    "@blue/router": "~0.0.1",
     "@blue/telemetry": "~0.0.1",
     "@blue/util": "~0.0.1"
   }

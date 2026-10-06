@@ -89,7 +89,7 @@ Initialization arguments forwarded to delegates.
 
 ### resolveViewName()
 
-> **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md) \| `null`\>
+> **resolveViewName**(`name`, `language?`, `request?`): `Promise`\<[`View`](../interfaces/View.md) \| `null`\>
 
 Resolves the requested view by querying delegates in order.
 
@@ -106,6 +106,13 @@ The view name to resolve.
 `unknown`
 
 Optional locale or language hint.
+
+##### request?
+
+`unknown`
+
+Optional per-call request forwarded to delegates that
+  negotiate by request data.
 
 #### Returns
 

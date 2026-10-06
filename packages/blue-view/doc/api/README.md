@@ -56,11 +56,8 @@ Jeff Rose
 
 ## Functions
 
-- [clearCurrentRequest](functions/clearCurrentRequest.md)
-- [getCurrentRequest](functions/getCurrentRequest.md)
 - [likeMediaTypeFileExtensionResolver](functions/likeMediaTypeFileExtensionResolver.md)
 - [likeProducerView](functions/likeProducerView.md)
 - [likeView](functions/likeView.md)
 - [parseModel](functions/parseModel.md)
 - [serializeModel](functions/serializeModel.md)
-- [setCurrentRequest](functions/setCurrentRequest.md)

@@ -15,7 +15,7 @@ import {
 import { Route } from '@blue/router';
 import { AccessControlCondition } from '../src/access-control-condition';
 
-const createRoute = (path: string, data?: Record<string, string | null>): Route =>
+const createRoute = (path: string, data?: Record<string, string | string[] | null>): Route =>
     ({
         attributes: {},
         data: data ?? {},
@@ -26,7 +26,7 @@ const createRoute = (path: string, data?: Record<string, string | null>): Route 
         raw: path,
     }) as unknown as Route;
 
-const createRouteWithSegments = (path: string, segments: Array<{ data: Record<string, string> }>): Route => {
+const createRouteWithSegments = (path: string, segments: Array<{ data: Record<string, string | string[]> }>): Route => {
     const route: unknown = {
         attributes: {},
         data: {},
@@ -321,6 +321,21 @@ describe('QueryParamExpression', () => {
         expect(expression.matchValue(route)).toBe(false);
     });
 
+    test('empty-value expression matches an explicit empty value, not a missing key (HT-7)', () => {
+        const expression = new QueryParamExpression('q=');
+        expect(expression.match(createRoute('/', { q: '' }))).toBe(true);
+        expect(expression.match(createRoute('/'))).toBe(false);
+        expect(expression.match(createRoute('/', { q: 'x' }))).toBe(false);
+    });
+
+    test('repeated query keys match when any aggregated value equals the expression (HT-7)', () => {
+        const route = createRoute('/', { q: ['a', 'b'] });
+        expect(new QueryParamExpression('q=a').match(route)).toBe(true);
+        expect(new QueryParamExpression('q=b').match(route)).toBe(true);
+        expect(new QueryParamExpression('q=c').match(route)).toBe(false);
+        expect(new QueryParamExpression('q=').match(route)).toBe(false);
+    });
+
     test('negated expression matches when param is absent', () => {
         const route = createRoute('/');
         const expression = new QueryParamExpression('!foo');
@@ -357,6 +372,18 @@ describe('MatrixParamExpression', () => {
         const route = createRouteWithSegments('/foo', [{ data: { color: 'red' } }]);
         const expression = new MatrixParamExpression('color=blue');
         expect(expression.matchValue(route)).toBe(false);
+    });
+
+    test('matchValue matches when any element of a repeated-key value equals (HT-7)', () => {
+        const route = createRouteWithSegments('/foo', [{ data: { color: ['red', 'blue'] } }]);
+        expect(new MatrixParamExpression('color=red').match(route)).toBe(true);
+        expect(new MatrixParamExpression('color=blue').match(route)).toBe(true);
+        expect(new MatrixParamExpression('color=green').match(route)).toBe(false);
+    });
+
+    test('matchValue does not match a missing key or a differing segment (HT-7)', () => {
+        const route = createRouteWithSegments('/foo', [{ data: { size: 'L' } }]);
+        expect(new MatrixParamExpression('color=red').match(route)).toBe(false);
     });
 
     test('matchName works across multiple segments', () => {

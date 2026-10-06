@@ -18,6 +18,7 @@ export default defineConfig({
         // Use ordered aliases so package-root aliases don't accidentally
         // capture subpath imports like `@blue/util/types`.
         alias: [
+            { find: /^@blue\/util\/crypto/, replacement: resolve(__dirname, './packages/blue-util/src/crypto') },
             { find: /^@blue\/util\/function/, replacement: resolve(__dirname, './packages/blue-util/src/function') },
             { find: /^@blue\/util\/list/, replacement: resolve(__dirname, './packages/blue-util/src/list') },
             { find: /^@blue\/util\/logic/, replacement: resolve(__dirname, './packages/blue-util/src/logic') },

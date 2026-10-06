@@ -11,11 +11,10 @@ import {
     FixedContentNegotiationStrategy,
     ContentNegotiationManager,
     likeMediaTypeFileExtensionResolver,
-    setCurrentRequest,
-    clearCurrentRequest,
 } from '../src/content-negotiation-view-resolver';
 import { MediaTypes, type MediaType } from '@blue/core';
-import type { View, ViewResolver } from '../src/view';
+import type { View } from '../src/view';
+import type { ViewResolver } from '../src/view-resolver';
 
 describe('ContentNegotiationViewResolver', () => {
     test('it should delegate media type resolution to the content negotiation manager', () => {
@@ -69,17 +68,13 @@ const staticResolver = (viewToReturn: View): ViewResolver => ({
 });
 
 describe('ContentNegotiationViewResolver.resolveViewName', () => {
-    afterEach(() => {
-        clearCurrentRequest();
-    });
     test('returns null when no delegate resolves and there are no defaults', async () => {
         const resolver = new ContentNegotiationViewResolver({
             resolveMediaTypes: () => [],
         } as unknown as ContentNegotiationManager);
         resolver.viewResolvers = [{ resolveViewName: async (): Promise<View | null> => null }];
 
-        setCurrentRequest({ headers: {} });
-        await expect(resolver.resolveViewName('missing', '')).resolves.toBeNull();
+        await expect(resolver.resolveViewName('missing', '', { headers: {} })).resolves.toBeNull();
     });
 
     test('returns the first candidate when no request is active', async () => {
@@ -101,9 +96,10 @@ describe('ContentNegotiationViewResolver.resolveViewName', () => {
         } as unknown as ContentNegotiationManager);
         resolver.viewResolvers = [{ resolveViewName }];
 
-        setCurrentRequest({ headers: { accept: 'application/json' } });
-        await resolver.resolveViewName('report', '');
-        await resolver.resolveViewName('report', '');
+        // Two different per-call requests still share the per-name candidate
+        // aggregation — delegates are queried once per name, not per request.
+        await resolver.resolveViewName('report', '', { headers: { accept: 'application/json' } });
+        await resolver.resolveViewName('report', '', { headers: { accept: 'text/html' } });
 
         expect(resolveViewName).toHaveBeenCalledTimes(1);
     });
@@ -116,8 +112,9 @@ describe('ContentNegotiationViewResolver.resolveViewName', () => {
         } as unknown as ContentNegotiationManager);
         resolver.viewResolvers = [staticResolver(html), staticResolver(json)];
 
-        setCurrentRequest({ headers: { accept: 'application/json' } });
-        await expect(resolver.resolveViewName('page', '')).resolves.toBe(json);
+        await expect(resolver.resolveViewName('page', '', { headers: { accept: 'application/json' } })).resolves.toBe(
+            json
+        );
     });
 
     test('returns null (406) when no candidate matches the accepted type', async () => {
@@ -129,8 +126,9 @@ describe('ContentNegotiationViewResolver.resolveViewName', () => {
         resolver.viewResolvers = [staticResolver(html)];
         resolver.defaultViews = [fallback]; // defaults must NOT mask a 406
 
-        setCurrentRequest({ headers: { accept: 'application/json' } });
-        await expect(resolver.resolveViewName('page', '')).resolves.toBeNull();
+        await expect(
+            resolver.resolveViewName('page', '', { headers: { accept: 'application/json' } })
+        ).resolves.toBeNull();
     });
 });
 
@@ -142,10 +140,6 @@ const mappingManager = (map: Map<string, MediaType>): ContentNegotiationManager 
     new ContentNegotiationManager([new AcceptStrategy(map)]);
 
 describe('ContentNegotiationViewResolver Accept-header negotiation', () => {
-    afterEach(() => {
-        clearCurrentRequest();
-    });
-
     test('honors the highest-priority range across a multi-range Accept header', async () => {
         const html = view(MediaTypes.TEXT_HTML);
         const json = view(MediaTypes.APPLICATION_JSON);
@@ -163,8 +157,9 @@ describe('ContentNegotiationViewResolver Accept-header negotiation', () => {
 
         // `application/json, text/plain, */*` — JSON is listed first (and
         // highest specificity) so it beats HTML despite HTML's registration.
-        setCurrentRequest({ headers: { accept: 'application/json, text/plain, */*' } });
-        await expect(resolver.resolveViewName('page', '')).resolves.toBe(json);
+        await expect(
+            resolver.resolveViewName('page', '', { headers: { accept: 'application/json, text/plain, */*' } })
+        ).resolves.toBe(json);
     });
 
     test('serves the q-value-preferred type, not the first registered one', async () => {
@@ -182,8 +177,9 @@ describe('ContentNegotiationViewResolver Accept-header negotiation', () => {
         // but the client prefers HTML.
         resolver.viewResolvers = [staticResolver(json), staticResolver(html)];
 
-        setCurrentRequest({ headers: { accept: 'application/json;q=0.5, text/html;q=1' } });
-        await expect(resolver.resolveViewName('page', '')).resolves.toBe(html);
+        await expect(
+            resolver.resolveViewName('page', '', { headers: { accept: 'application/json;q=0.5, text/html;q=1' } })
+        ).resolves.toBe(html);
     });
 
     test('rejects with 406 when no candidate matches any accepted range', async () => {
@@ -198,7 +194,8 @@ describe('ContentNegotiationViewResolver Accept-header negotiation', () => {
         );
         resolver.viewResolvers = [staticResolver(html)];
 
-        setCurrentRequest({ headers: { accept: 'application/xml' } });
-        await expect(resolver.resolveViewName('page', '')).resolves.toBeNull();
+        await expect(
+            resolver.resolveViewName('page', '', { headers: { accept: 'application/xml' } })
+        ).resolves.toBeNull();
     });
 });

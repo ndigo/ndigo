@@ -20,6 +20,16 @@ const el = provider.createElement('div');
 el.textContent = 'Hello';
 ```
 
+## Usage
+
+### Runtime detection
+
+```ts
+import { createDOMProvider } from '@blue/dom';
+
+const provider = await createDOMProvider(); // BrowserDOMProvider, or LinkedomDOMProvider on Node
+```
+
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into

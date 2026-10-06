@@ -56,6 +56,32 @@ you _which source won_ (the observability payoff):
 environment.originOf('server'); // → 'commandLine' | 'systemEnvironment' | ...
 ```
 
+### Raw env reads — `getEnv` and `isDevMode`
+
+Read `process.env` through the two accessors, never directly. Both live in
+`@blue/util` and are re-exported from `@blue/context` (the C-14 single
+accessor):
+
+```ts
+import { getEnv, isDevMode } from '@blue/context';
+
+getEnv('PORT'); // undefined when unset
+getEnv('PORT', '3000'); // fallback when unset
+getEnv('DEBUG'); // '' is preserved — only a missing variable falls back
+isDevMode(); // true unless NODE_ENV === 'production'
+```
+
+- `getEnv(name, fallback?)` returns `process.env[name]`, or `fallback` when
+  the variable is unset. It is safe where no `process` global exists
+  (browser/worker bundles) — the fallback (or `undefined`) is returned
+  instead of throwing.
+- `isDevMode()` is the same guard applied to `NODE_ENV`: true in any
+  environment except an explicit production build. It gates runtime
+  warnings and dev-only code paths.
+
+A direct `process.env.X` read bypasses this guard and breaks isomorphic
+bundles — route every read through `getEnv`.
+
 ## 2. Profiles
 
 Profiles gate config with expressions, and file loading is profile-aware:

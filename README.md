@@ -16,7 +16,7 @@ servers, ORM, telemetry (OpenTelemetry), auth, and micro frontend hosting.
   pinned 6.0.3 toolchain — see `scripts/typedoc-ts-shim.mjs`)
 - **Oxlint** (`pnpm lint`) + **oxfmt** (`pnpm format`) — formatting and
   linting
-- **Nx:** 23.2.0 (monorepo management)
+- **Nx:** 23.2.1 (monorepo management)
 - **pnpm:** 11.4.0 (package manager)
 - **Vitest:** 4.0.18 (testing + `vitest bench` benchmarks)
 - **Vite:** 8.2.2 (bundler)
@@ -67,7 +67,10 @@ Core & infrastructure:
 
 - [blue-core](packages/blue-core/README.md) — primitives, radix tree, media types
 - [blue-util](packages/blue-util/README.md) — native helper utilities
+- [blue-log](packages/blue-log/README.md) — logging core, severity mappings, thresholds (re-exported by `@blue/telemetry`)
 - [blue-factory](packages/blue-factory/README.md) — IoC factory + scopes
+- [blue-proxy](packages/blue-proxy/README.md) — method interception: annotation-driven advice weaving
+- [blue-resilience](packages/blue-resilience/README.md) — resilience policies: `@retry`, `@circuitBreaker`
 - [blue-context](packages/blue-context/README.md) — application context, configuration, environments
 - [blue-boot](packages/blue-boot/README.md) — application bootstrap, profiles, typed config
 - [blue-signals](packages/blue-signals/README.md) — reactive state
@@ -103,6 +106,7 @@ Data & management:
 
 - [blue-orm](packages/blue-orm/README.md) — repository/data-mapper persistence
 - [blue-orm-drizzle](packages/blue-orm-drizzle/README.md) — Drizzle ORM adapter
+- [blue-redis](packages/blue-redis/README.md) — shared Redis cache + cross-node pub/sub fan-out (Node)
 - [blue-management](packages/blue-management/README.md) — `/health`, `/metrics` endpoints
 - [blue-openapi](packages/blue-openapi/README.md) — OpenAPI 3.0 spec from dispatch metadata + Swagger UI
 

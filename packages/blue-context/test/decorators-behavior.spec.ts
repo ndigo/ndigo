@@ -1,6 +1,6 @@
 /**
  * Behavioral tests for @blue/context decorators.
- * * @module blue-context
+ * @module blue-context
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -260,6 +260,25 @@ describe('@property Decorator', () => {
         context.register(TestConfig);
 
         expect(context.getValue('getItem')).toBe(2);
+    });
+
+    it('binds @property fields without @propertySource (CF-9)', () => {
+        @configuration
+        class TestConfig {
+            @property('foo')
+            fooValue: unknown;
+
+            @entry()
+            getFoo() {
+                return this.fooValue;
+            }
+        }
+
+        const context = new MetadataConfigApplicationContext();
+        context.environment.getPropertySources().addFirst('test', { foo: 'bar' });
+        context.register(TestConfig);
+
+        expect(context.getValue('getFoo')).toBe('bar');
     });
 });
 

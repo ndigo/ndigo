@@ -49,6 +49,38 @@ describe('ContentNegotiationManager', () => {
         const emptyManager = new ContentNegotiationManager([]);
         expect(() => emptyManager.resolveMediaTypes({})).toThrow();
     });
+
+    it('bridges a canonically-cased Accept header into mediaTypeHint (HT-9)', () => {
+        class TestMappingStrategy extends AbstractMappingContentNegotiationStrategy {}
+        const strategy = new TestMappingStrategy(
+            new Map<string, MediaType>([
+                ['json', MediaTypes.APPLICATION_JSON],
+                ['xml', MediaTypes.APPLICATION_XML],
+            ])
+        );
+        const headerManager = new ContentNegotiationManager([strategy]);
+
+        const result = headerManager.resolveMediaTypes({ headers: { Accept: 'application/xml' } });
+
+        expect(result).toEqual([MediaTypes.APPLICATION_XML]);
+    });
+
+    it('joins multi-value Accept header entries into mediaTypeHint (HT-9)', () => {
+        class TestMappingStrategy extends AbstractMappingContentNegotiationStrategy {}
+        const strategy = new TestMappingStrategy(
+            new Map<string, MediaType>([
+                ['json', MediaTypes.APPLICATION_JSON],
+                ['xml', MediaTypes.APPLICATION_XML],
+            ])
+        );
+        const headerManager = new ContentNegotiationManager([strategy]);
+
+        const result = headerManager.resolveMediaTypes({
+            headers: { accept: ['application/json', 'application/xml'] },
+        });
+
+        expect(result.map((mediaType) => mediaType.baseType)).toEqual(['application/json', 'application/xml']);
+    });
 });
 
 describe('PathExtensionContentNegotiationStrategy', () => {

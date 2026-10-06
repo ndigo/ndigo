@@ -6,6 +6,8 @@
 
 # Interface: SmartLifecycle
 
+A [Lifecycle](Lifecycle.md) that starts automatically and runs in a declared phase.
+
 ## Extends
 
 - [`Lifecycle`](Lifecycle.md).[`Phased`](Phased.md)

@@ -99,6 +99,20 @@ Maximum accepted size of discovery/JWKS responses (default 1 MiB).
 
 ***
 
+### pendingStore?
+
+> `optional` **pendingStore?**: [`PendingAuthorizationStore`](PendingAuthorizationStore.md)
+
+Persistence seam for pending authorization requests (`state`, `nonce`,
+PKCE verifier) between the redirect and the callback. Defaults to an
+in-memory store scoped to this adapter instance: a callback handled by
+another instance — a fresh page load, a restart, or another server
+instance — fails with `invalid_state` unless a store over shared
+storage is supplied (for example `sessionStorage` in a browser or
+Redis server-side).
+
+***
+
 ### redirectUri
 
 > **redirectUri**: `string`

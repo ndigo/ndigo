@@ -73,7 +73,9 @@ For every public handler method the generator emits an operation with:
 - **Parameters** — from `@parameters`: `queryValue`/`pathVariable`/
   `headerValue`/`cookieValue` map to the matching OpenAPI locations; path
   parameters are always required; `required`/`defaultValue` follow the
-  extractor.
+  extractor. A path template variable with no matching extractor (a route
+  that matches on `:id` without binding it) is synthesized as a required
+  string path parameter — the spec declares every `{name}` the path uses.
 - **Request bodies** — `validatedBody` / `validatedBy` carry the **Zod
   schema** onto the parameter (the AD-35 seam), and the generator renders it
   via zod's own `toJSONSchema`:
@@ -86,7 +88,9 @@ For every public handler method the generator emits an operation with:
 
     produces `requestBody.content['application/json'].schema` with
     `properties.title`, `required: ['title']`, `minLength: 1`, … — constraints
-    declared once on the entity, documented automatically.
+    declared once on the entity, documented automatically. Recursive schemas
+    (zod's cycle `$ref`s) are hoisted into `components.schemas` and
+    referenced by pointer, so every pointer in the document resolves.
 
 - **Multipart** — `fileValue`/`requestPart` parameters become
   `multipart/form-data` parts (`type: string, format: binary` for files).

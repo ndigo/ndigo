@@ -39,6 +39,22 @@ resolver.viewResolvers = [
 ];
 ```
 
+## Usage
+
+### Rendering a view directly
+
+```ts
+import { JSONView } from '@blue/view';
+
+const view = new JSONView();
+const result = await view.renderTo({ name: 'Ada', count: 3 }, route);
+// result: { status, headers, body }
+```
+
+### Performance
+
+Candidate aggregation is cached per (view name, language) — the `Promise.all` over delegate resolvers runs once per name, not per request. Only the media type selection reads the current request.
+
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into
@@ -50,10 +66,6 @@ how it fits with the rest of BlueJS.
 - **Serializing views** — `AbstractSerializingView` family: `JSONView`, `CSVView`, `TextView`, `OctetStreamView`
 - **View targets** — `ViewTarget` abstraction for fragment rendering (DOM, HTTP response)
 - **Resolution** — `ContentNegotiationManager` + strategies, `ContentNegotiationViewResolver`, path-based resolvers with per-name caching, `IslandViewResolver`/`IslandView`
-
-## Performance
-
-Candidate aggregation is cached per (view name, language) — the `Promise.all` over delegate resolvers runs once per name, not per request. Only the media type selection reads the current request.
 
 ## Development
 

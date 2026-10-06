@@ -383,13 +383,19 @@ export class InMemoryQueueMessageStore implements QueueMessageStore {
     }
 
     #capacityFor(): number {
-        // Reserve at least the count bound; with bounds disabled, reserve
-        // the maximum (2^30 — the ring's lazy allocation means no memory
-        // cost until written). The exact bounds are enforced by the
-        // watermark guards, never by ring-full overwrite.
-        const countCap = this.#maxMessagesPerDestination ?? Number.POSITIVE_INFINITY;
-        const byteCap = this.#maxBytes ?? Number.POSITIVE_INFINITY;
-        return Math.min(countCap, byteCap);
+        // The ring must be large enough that the watermark guards — not a
+        // full-ring overwrite — decide eviction: `countCap` slots for the
+        // count guard, and `byteCap` slots for the byte guard's worst case
+        // (the ring can hold at most `byteCap` ≥1-octet messages before the
+        // budget is exceeded). A disabled count bound leaves the byte bound
+        // as the only cap; with both disabled the ring reserves the maximum
+        // (2^30 — allocation is lazy, so no memory cost until written).
+        const countCap = this.#maxMessagesPerDestination;
+        const byteCap = this.#maxBytes;
+        if (countCap === null) {
+            return byteCap ?? Number.POSITIVE_INFINITY;
+        }
+        return byteCap === null ? countCap : Math.max(countCap, byteCap);
     }
 
     #assertDestination(destination: string): string {

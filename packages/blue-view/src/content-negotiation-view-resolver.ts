@@ -4,46 +4,10 @@
  * @author Jeff Rose
  */
 import { FrameworkError, MediaType, MultiValueMap } from '@blue/core';
+import { HTTPHeaders } from '@blue/http';
 import { isFunction, isNotNil } from '@blue/util/types';
 import { View } from './view.js';
 import { ViewResolver } from './view-resolver.js';
-/**
- * Per-request context for content negotiation.
- *
- * `ViewResolver.resolveViewName` receives only a name and language, never the
- * live request. Spring supplies it through a request-scoped holder; this mirrors
- * that model. The dispatcher stores the current request (typically the platform
- * request carrying `Accept` headers, or the {@link Route}) around dispatch and
- * clears it afterwards, so negotiation strategies can read request data.
- *
- * This is shared per-process state: it must be set and cleared around a single
- * request's resolution. Concurrency-safe deployments should scope it to the
- * async request context rather than a module-level variable.
- */
-let currentRequest: unknown = undefined;
-
-/**
- * Stores the current request used for content negotiation.
- *
- * @param request - The current request (or route).
- */
-export function setCurrentRequest(request: unknown): void {
-    currentRequest = request;
-}
-
-/**
- * Returns the current request, or `undefined` when none is active.
- */
-export function getCurrentRequest(): unknown {
-    return currentRequest;
-}
-
-/**
- * Clears the current request. Call once a dispatch completes.
- */
-export function clearCurrentRequest(): void {
-    currentRequest = undefined;
-}
 
 /**
  * Resolves file extensions for a media type and can enumerate all known extensions.
@@ -373,12 +337,15 @@ export class ContentNegotiationManager implements ContentNegotiationStrategy, Me
         // Node requests carry headers but not the strategy protocol's
         // `mediaTypeHint` — bridge the Accept header here so header-driven
         // negotiation works for every app (the strategies are unchanged).
-        const nodeHeaders = (request as { headers?: Record<string, string> } | undefined)?.headers;
-        const hint = (request as { mediaTypeHint?: string } | undefined)?.mediaTypeHint;
-        if (!hint && nodeHeaders && typeof nodeHeaders === 'object') {
-            const accept = Array.isArray(nodeHeaders) ? nodeHeaders.join(', ') : nodeHeaders['accept'];
+        // `HTTPHeaders.ACCEPT` folds case and joins multi-value entries.
+        // The negotiation request is an untyped protocol object, so cast it
+        // once here (rather than per member access) and probe the members.
+        const nodeRequest = request as { headers?: Record<string, string>; mediaTypeHint?: string } | undefined;
+        const hint = nodeRequest?.mediaTypeHint;
+        if (!hint && nodeRequest?.headers && typeof nodeRequest.headers === 'object') {
+            const accept = HTTPHeaders.ACCEPT.get(nodeRequest.headers);
             if (accept) {
-                (request as { mediaTypeHint?: string }).mediaTypeHint = accept;
+                nodeRequest.mediaTypeHint = accept;
             }
         }
 
@@ -437,14 +404,18 @@ export class ContentNegotiationViewResolver implements ViewResolver {
 
     /**
      * Resolves a view name by aggregating candidate views from every delegate
-     * resolver and selecting one by the request's negotiated media types — the
-     * Spring ContentNegotiatingViewResolver model.
+     * resolver and selecting one by the given request's negotiated media types
+     * — the Spring ContentNegotiatingViewResolver model.
      *
      * @param name - The view name to resolve.
      * @param language - Optional locale or language hint.
+     * @param request - Optional per-call request (typically the route) carrying
+     *   the negotiation data — `Accept` header, path extension. Passed
+     *   explicitly so interleaved async resolutions never share state; when
+     *   omitted, the first candidate is served without negotiation.
      * @returns The matching view, or `null` when none is available.
      */
-    async resolveViewName(name: string, language?: unknown): Promise<View | null> {
+    async resolveViewName(name: string, language?: unknown, request?: unknown): Promise<View | null> {
         // 1. Aggregate candidate views from every delegate resolver — once
         //    per view name: aggregation never depends on the request.
         const cacheKey = `${name}\u0000${language ?? ''}`;
@@ -462,15 +433,15 @@ export class ContentNegotiationViewResolver implements ViewResolver {
             return this.defaultViews?.[0] ?? null;
         }
 
-        // 3. Without an active request there is nothing to negotiate — serve
+        // 3. Without a per-call request there is nothing to negotiate — serve
         //    the first candidate.
-        if (getCurrentRequest() === undefined) {
+        if (request === undefined) {
             return candidates[0];
         }
 
         // 4. Resolve the request's accepted media types, already ordered by
         //    client priority (descending q-value, header order breaking ties).
-        const requested = this.resolveRequestedMediaTypes();
+        const requested = this.resolveRequestedMediaTypes(request);
         if (requested.length === 0) {
             // A live request whose accepted set could not be determined:
             // degrade to the first candidate rather than refusing.
@@ -498,15 +469,13 @@ export class ContentNegotiationViewResolver implements ViewResolver {
     }
 
     /**
-     * Resolves the accepted media types for the current request, or an empty
-     * array when none can be determined (no active request, or no strategy
-     * matched). Degrades gracefully so negotiation never breaks resolution.
+     * Resolves the accepted media types for the given request, or an empty
+     * array when no strategy matched. Degrades gracefully so negotiation never
+     * breaks resolution.
+     *
+     * @param request - The per-call request to negotiate for.
      */
-    private resolveRequestedMediaTypes(): MediaType[] {
-        const request = getCurrentRequest();
-        if (request === undefined) {
-            return [];
-        }
+    private resolveRequestedMediaTypes(request: unknown): MediaType[] {
         try {
             return this.contentNegotiationManager.resolveMediaTypes(request) ?? [];
         } catch {

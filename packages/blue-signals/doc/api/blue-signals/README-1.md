@@ -7,7 +7,6 @@
 # blue-signals
 
 Entry point for `@blue/signals/decorators`.
-*
 
 ## Since
 

@@ -86,7 +86,10 @@ describe('parseMultipart', () => {
         expect(part?.size).toBe(big.length);
         expect((await part?.bytes())?.length).toBe(big.length);
         // The spilled temp file survives to the caller (not deleted pre-read), then is removed on cleanup.
-        expect(readdirSync(workDir)).toHaveLength(1);
+        const tempFiles = readdirSync(workDir);
+        expect(tempFiles).toHaveLength(1);
+        // HG-8: temp names use @blue/util's crypto randomHex(8) — 16 hex chars, never the client filename.
+        expect(tempFiles[0]).toMatch(/^blue-upload-[0-9a-f]{16}$/);
         await ctx.cleanup();
         expect(readdirSync(workDir)).toHaveLength(0);
     });

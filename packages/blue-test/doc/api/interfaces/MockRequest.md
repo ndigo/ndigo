@@ -52,9 +52,11 @@ Path, e.g. `/todos/42`. Map params like `/todos/{id}` are resolved by the framew
 
 ### query?
 
-> `optional` **query?**: `Record`\<`string`, `string`\>
+> `optional` **query?**: `Record`\<`string`, `string` \| `string`[]\>
 
-Query parameters, e.g. `{ filter: 'active' }`.
+Query parameters, e.g. `{ filter: 'active' }`. A repeated parameter is
+passed as an array (`{ tag: ['a', 'b'] }`), matching the live adapter's
+multi-value contract for `?tag=a&tag=b`.
 
 ***
 

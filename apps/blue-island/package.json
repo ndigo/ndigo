@@ -15,37 +15,31 @@
     "zod": "^4.5.4",
     "@blue/boot": "~0.0.1",
     "@blue/context": "~0.0.1",
-    "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/http": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
-    "@blue/router": "~0.0.1",
     "@blue/service": "~0.0.1",
     "@blue/signals": "~0.0.1",
     "@blue/telemetry": "~0.0.1",
-    "@blue/util": "~0.0.1",
-    "@blue/view": "~0.0.1",
     "@blue/view-ejs": "~0.0.1",
     "@blue/view-webcomponent": "~0.0.1",
-    "@blue/content-i18next": "~0.0.1"
+    "@blue/content-i18next": "~0.0.1",
+    "@blue/util": "~0.0.1"
   },
   "devDependencies": {
     "tsx": "^4.23.13",
     "vite": "^8.2.2",
     "@blue/boot": "~0.0.1",
     "@blue/context": "~0.0.1",
-    "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/http": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
-    "@blue/router": "~0.0.1",
     "@blue/service": "~0.0.1",
     "@blue/signals": "~0.0.1",
     "@blue/telemetry": "~0.0.1",
     "@blue/test": "~0.0.1",
-    "@blue/util": "~0.0.1",
-    "@blue/view": "~0.0.1",
     "@blue/view-ejs": "~0.0.1",
-    "@blue/view-webcomponent": "~0.0.1"
+    "@blue/view-webcomponent": "~0.0.1",
+    "@blue/util": "~0.0.1"
   }
 }

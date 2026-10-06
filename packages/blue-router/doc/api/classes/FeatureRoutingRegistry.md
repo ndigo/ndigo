@@ -152,7 +152,8 @@ The current `FeatureRoutingRegistry` instance for chaining.
 
 #### Throws
 
-If a feature with the same name is already registered.
+If a feature with the same name is already registered,
+  or another feature already occupies the same route prefix.
 
 #### Since
 

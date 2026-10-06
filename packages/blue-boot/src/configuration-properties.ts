@@ -1,10 +1,11 @@
 /**
  * `@configurationProperties` — type-safe binding from environment properties.
- * * @module blue-boot
+ * @module blue-boot
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { IllegalStateError, JSONValue } from '@blue/core';
+import { getErrorMessage } from '@blue/util';
 import { z } from 'zod';
 import { property } from '@blue/context';
 import { defaultValue, nested } from '@blue/context';
@@ -289,7 +290,7 @@ function resolveFromSchema<T>(
     try {
         parsed = parseSchemaConfig(schema, raw) as Record<string, unknown>;
     } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
+        const message = getErrorMessage(error);
         throw new IllegalStateError(
             `Cannot bind ${ctor.name} from schema keys (${Object.keys(raw).join(', ')}): ${message}`,
             error instanceof Error ? { cause: error } : undefined

@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { Cache, CacheOptions, MemoryCache } from './cache';
+import { resolveCacheName } from './cache-name';
 import { ContextToken } from '@blue/factory';
 
 /**
@@ -29,10 +30,16 @@ export interface CacheManager {
     getCache<V = unknown>(token: ContextToken<Cache<V>>): Cache<V>;
     /**
      * Returns whether the named cache exists (no creation).
+     *
+     * @param name - Non-empty cache name.
+     * @throws {TypeError} For a non-string or empty name.
      */
     hasCache(name: string): boolean;
     /**
      * Returns whether the token-identified cache exists (no creation).
+     *
+     * @param token - The cache store token.
+     * @throws {TypeError} For an empty token description.
      */
     hasCache(token: ContextToken<Cache<unknown>>): boolean;
 }
@@ -67,10 +74,7 @@ export class MemoryCacheManager implements CacheManager {
     getCache<V = unknown>(name: string): Cache<V>;
     getCache<V = unknown>(token: ContextToken<Cache<V>>): Cache<V>;
     getCache<V = unknown>(nameOrToken: string | ContextToken<Cache<V>>): Cache<V> {
-        const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
-        if (typeof name !== 'string' || name.length === 0) {
-            throw new TypeError(`MemoryCacheManager: cache name must be a non-empty string — got ${String(name)}`);
-        }
+        const name = resolveCacheName(nameOrToken, 'MemoryCacheManager');
         let cache = this.#caches.get(name);
         if (cache === undefined) {
             cache = new MemoryCache(this.#defaults);
@@ -82,7 +86,7 @@ export class MemoryCacheManager implements CacheManager {
     hasCache(name: string): boolean;
     hasCache(token: ContextToken<Cache<unknown>>): boolean;
     hasCache(nameOrToken: string | ContextToken<Cache<unknown>>): boolean {
-        const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
+        const name = resolveCacheName(nameOrToken, 'MemoryCacheManager');
         return this.#caches.has(name);
     }
 }

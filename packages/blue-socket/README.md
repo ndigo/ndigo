@@ -12,7 +12,27 @@ pnpm add @blue/socket
 
 Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 
-## Client
+## Getting Started
+
+```ts
+import { WebSocketClient } from '@blue/socket';
+
+const chat = new WebSocketClient('ws://localhost:3000/ws/chat', {
+    reconnect: { baseMs: 1000, maxMs: 30_000, jitter: 0.2 },
+});
+
+chat.send({ room: 'lobby', text: 'hello' });
+
+for await (const message of chat.messages) {
+    applyMessage(JSON.parse(String(message)));
+}
+
+chat.close(); // deliberate — never reconnects
+```
+
+## Usage
+
+### Client
 
 ```ts
 import { WebSocketClient } from '@blue/socket';
@@ -52,7 +72,7 @@ const chat = new WebSocketClient(url, { reconnectTrigger: trigger });
 
 - Status observability — the telemetry seam: pass `onStatusChange: countSocketClientStatus()` (from `@blue/telemetry-web`) to count `connecting/open/reconnecting/closed` transitions, or any observer of your own (a throwing observer cannot wedge the client).
 
-## STOMP
+### STOMP
 
 The same package hosts the protocol layer: the frame codec plus the two sides of the wire.
 
@@ -102,7 +122,7 @@ await broker.publish('/topic/bin', new Uint8Array([0, 1, 255])); // binary MESSA
 
 Semantics include transactions (BEGIN/COMMIT/ABORT, per-session buffers), ack tracking + NACK redelivery (`redelivered: true`), and `/user` scoped routing. Durable `/queue` storage is available through `LibSQLQueueMessageStore` from `@blue/orm-drizzle`; it is separate from cross-node live delivery. STOMP-over-TCP and SockJS are deliberately not provided — see the [websockets guide](../../docs/guides/06-websockets.md) for the full semantics.
 
-## Cross-node live delivery
+### Cross-node live delivery
 
 `SocketFanout` is the optional application-owned transport contract:
 

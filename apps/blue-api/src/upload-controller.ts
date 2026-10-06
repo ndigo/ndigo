@@ -7,7 +7,7 @@ import '@tsmetadata/polyfill';
 import { fileValue, postMapping, parameters, requestMapping, requestPart } from '@blue/dispatcher';
 import { ResponseEntity } from '@blue/platform-node';
 import type { MultipartFile } from '@blue/platform-node';
-import { randomBytes } from 'node:crypto';
+import { randomHex } from '@blue/util';
 import { mkdtemp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -59,7 +59,7 @@ export class UploadController {
             return ResponseEntity.badRequest({ error: 'no_file_uploaded' });
         }
         const dir = await uploadDirectory();
-        const dest = join(dir, `${randomBytes(8).toString('hex')}.bin`);
+        const dest = join(dir, `${randomHex(8)}.bin`);
         await file.transferTo(dest);
         return { size: file.size, name: file.originalFilename, meta: meta ?? null };
     }

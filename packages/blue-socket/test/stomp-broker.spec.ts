@@ -789,6 +789,35 @@ describe('StompBroker ack tracking + redelivery (AD-23 D9)', () => {
         expect(session.sent.length).toBe(2); // no redelivery without tracking
     });
 
+    test('maxUnacked: 0 accepts an id-only ACK/NACK as a receipted no-op (PR-3 regression)', async () => {
+        const broker = new StompBroker({ maxUnacked: 0 });
+        const session = new FakeSession();
+        void session.handled(broker);
+        connect(broker, session);
+        session.push('SUBSCRIBE', { destination: '/topic/no-track', id: 's', ack: 'client-individual' });
+        await vi.waitFor(() => expect(broker.subscriptions).toBe(1));
+        await broker.publish('/topic/no-track', 'x');
+        await vi.waitFor(() => expect(session.sent.filter((f) => f.command === 'MESSAGE')).toHaveLength(1));
+        const messageId = session.sent.find((f) => f.command === 'MESSAGE')?.headers['message-id'] as string;
+
+        // The MESSAGE still advertises the `ack` id (the client's
+        // spec-mandated anchor); with tracking off the id resolves no
+        // entry — a receipted no-op, not ERROR + close(1002).
+        session.push('ACK', { id: messageId, receipt: 'r-ack' });
+        await vi.waitFor(() =>
+            expect(session.sent.some((f) => f.command === 'RECEIPT' && f.headers['receipt-id'] === 'r-ack')).toBe(true)
+        );
+        expect(session.closedCalls).toHaveLength(0);
+
+        // NACK is the same no-op: nothing tracked, nothing redelivered.
+        session.push('NACK', { id: messageId, receipt: 'r-nack' });
+        await vi.waitFor(() =>
+            expect(session.sent.some((f) => f.command === 'RECEIPT' && f.headers['receipt-id'] === 'r-nack')).toBe(true)
+        );
+        expect(session.sent.filter((f) => f.headers['redelivered'] === 'true')).toHaveLength(0);
+        expect(session.closedCalls).toHaveLength(0);
+    });
+
     test('redelivery keeps an empty-queue broker consistent', async () => {
         const broker = new StompBroker();
         const session = new FakeSession();

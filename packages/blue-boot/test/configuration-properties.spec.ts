@@ -6,6 +6,7 @@
 import { describe, test, expect } from 'vitest';
 import { z } from 'zod';
 import type { JSONObject } from '@blue/core';
+import { getErrorMessage } from '@blue/util';
 import {
     ApplicationBuilder,
     configurationProperties,
@@ -134,7 +135,7 @@ describe('resolveConfigurationProperties schema mode (AD-34 D3)', () => {
             try {
                 resolveConfigurationProperties(SchemaServerConfig, context);
             } catch (error) {
-                return error instanceof Error ? error.message : String(error);
+                return getErrorMessage(error);
             }
             return '';
         };

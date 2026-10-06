@@ -10,7 +10,7 @@ import { Route, applyNegotiatedLanguage } from '@blue/router';
 import { likeApplicationContextAware } from '@blue/context';
 import { MediaTypes } from '@blue/core';
 import { HTTPHeaders } from '@blue/http';
-import { View, clearCurrentRequest, likeProducerView, setCurrentRequest } from '@blue/view';
+import { View, likeProducerView } from '@blue/view';
 import type { ServerResponse } from 'node:http';
 import { NODE_RESPONSE_ATTRIBUTE, getNodeRequest } from './node-request';
 import { ProblemTypes, writeProblem } from './problem-details';
@@ -79,21 +79,16 @@ export class NodeDispatcher extends AbstractDispatcher {
         let view: View | null = null;
 
         if (viewName) {
-            // Content negotiation reads the current request; scope it to
-            // resolution so strategies can match path extensions / Accept.
+            // Content negotiation reads per-call request data (Accept header,
+            // path extension) from the route threaded through resolution.
+            // `HTTPHeaders.ACCEPT` folds case and joins multi-value entries,
+            // mirroring the resolver-side bridge.
             const nodeRequest = getNodeRequest(route);
-            const accept = nodeRequest?.headers?.['accept'];
+            const accept = nodeRequest?.headers ? HTTPHeaders.ACCEPT.get(nodeRequest.headers) : null;
             if (accept) {
-                (route as { mediaTypeHint?: string }).mediaTypeHint = Array.isArray(accept)
-                    ? accept.join(', ')
-                    : accept;
+                Object.assign(route, { mediaTypeHint: accept });
             }
-            setCurrentRequest(route);
-            try {
-                view = await this._resolveViewName(viewName, language);
-            } finally {
-                clearCurrentRequest();
-            }
+            view = await this._resolveViewName(viewName, language, route);
             if (!view) {
                 if (res && !res.headersSent) {
                     writeProblem(res, {

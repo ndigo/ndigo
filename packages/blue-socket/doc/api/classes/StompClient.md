@@ -117,7 +117,10 @@ The message body.
 `Record`\<`string`, `string`\> = `{}`
 
 Extra headers (`content-type`, caller-supplied
-  `receipt`, …).
+  `receipt`, …). A `receipt` id a pending send already carries
+  rejects this send with a `StompProtocolError` — reusing it would
+  overwrite the receipt correlation and strand the first promise;
+  the id is reusable once its RECEIPT settles.
 
 #### Returns
 

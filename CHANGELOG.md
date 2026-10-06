@@ -224,6 +224,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   removed and `build:todomvc` rewired; scaffold manifests pass the docs
   gate; generated headers use `@module blue-<name>`; the dead JSDoc
   migration script is gone (TO-2..TO-7, HG-5).
+- STOMP/SSE/service: `maxUnacked: 0` accepts the spec-mandated id-only ACK as
+  a receipted no-op; duplicate caller receipt ids reject instead of stranding
+  a send; in-memory queue capacity no longer shrinks to the byte budget;
+  SSE parsers stop emitting phantom `message` events for `retry:`/id-only
+  blocks; the service proxy delegates `Object.prototype` members; stream
+  spans flag request-level failures (PR-3..PR-8, PR-10).
+- OpenAPI: recursive schemas hoist into `components.schemas` with resolvable
+  pointers, and path template variables without a declared extractor get
+  synthesized parameters (PR-9, PR-11).
+- Auth client: OIDC pending state is a pluggable store — a callback can be
+  completed by another adapter instance (or process) sharing it (SE-5).
+- Reuse: `getErrorMessage` is promoted to `@blue/util` and used at all inline
+  sites (HG-3).
+- Platform/dispatcher: streamed renders honor response backpressure;
+  formatting services fail loud without a locale; `HTTPResponseViewTarget`
+  delegates entity serialization (problem+json parity); `OfflineInterceptor`
+  gains `dispose()`; content negotiation threads the request per call instead
+  of a process global; empty-value and repeated-key route conditions behave
+  as documented; mapping-name lookups are live; duplicate feature prefixes
+  and sparse parameter maps fail loud (PL-9..PL-12, HT-7..HT-11, A-4).
+- Test harness: MockHTTP mirrors query fidelity (repeated params,
+  null-prototype data), socket-only 404s, OPTIONS dispatch, and 405 + Allow
+  (IN-4, IN-5).
+- Context/factory: `@property` binds without `@propertySource` and follows
+  environment changes; exported contracts documented; dead code removed;
+  `getInstance` returns registered non-constructor values as-is (CF-9..CF-12).
+- Data: set-based `count`/`existsById`/`deleteById`; Redis fanout reports the
+  most recent error (decode errors never masked); one shared
+  `resolveCacheName`; `@cached` tolerates a detached receiver (DA-7..DA-9,
+  DA-11).
+- Tooling/hygiene: root `lint` builds the oxlint plugin first; benchmarks
+  resolve hashed bundles and reap their preview server; dead root devDeps and
+  `vite.config.lib.ts` removed; a root `typecheck` script covers every
+  package and app (CI widened); the docs-link gate now checks package/app
+  READMEs; `.DS_Store` untracked; audit moderates cleared (TO-8..TO-13,
+  HG-12, SE-9). Every package README now meets the enforced section standard
+  (docs gate widened with it).
+- Docs: plans/migrations indexes completed; CSP docs aligned with SEC-4;
+  root README inventories refreshed; new Guide 17 (static files) and Guide 18
+  (signals & islands); removed-tooling references swept (DO-3..DO-9).
+- Demos: app READMEs corrected; unused app deps pruned; dead auth helpers
+  removed; blue-api route list + matrix tests (AP-5..AP-9).
 
 ### Security
 

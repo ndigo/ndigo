@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import type { ServerResponse } from 'node:http';
+import { once } from 'node:events';
 import { RenderResult } from '@blue/view';
 
 /**
@@ -43,7 +44,11 @@ export async function writeRenderResult(res: ServerResponse | undefined, result:
             return;
         }
         try {
-            res.write(typeof chunk === 'string' ? chunk : Buffer.from(chunk as Uint8Array));
+            if (!res.write(typeof chunk === 'string' ? chunk : Buffer.from(chunk as Uint8Array))) {
+                // The consumer is saturated — wait for it to drain before
+                // pushing the next chunk (mirrors StaticResourceHandler).
+                await once(res, 'drain');
+            }
         } catch {
             // The client disconnected mid-stream; stop pushing.
             return;

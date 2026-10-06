@@ -30,11 +30,30 @@ Redis Pub/Sub live fan-out: at-most-once, no replay, reconnect, or offline queue
 
 ## Accessors
 
+### lastDecodeError
+
+#### Get Signature
+
+> **get** **lastDecodeError**(): `Error` \| `undefined`
+
+Most recent malformed-envelope decode error; never masked by connection errors.
+
+##### Returns
+
+`Error` \| `undefined`
+
+***
+
 ### lastError
 
 #### Get Signature
 
 > **get** **lastError**(): `Error` \| `undefined`
+
+Most recent error across the subscriber connection, the publisher
+connection, and inbound malformed-envelope decodes — compared by
+observation time, so no source permanently masks another. Use
+[lastDecodeError](#lastdecodeerror) to observe decode failures directly.
 
 ##### Returns
 

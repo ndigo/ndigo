@@ -5,7 +5,13 @@
  */
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';
-import { OIDCAdapter, OIDCError } from '../src/oidc-adapter';
+import {
+    InMemoryPendingAuthorizationStore,
+    OIDCAdapter,
+    OIDCError,
+    type PendingAuthorization,
+    type PendingAuthorizationStore,
+} from '../src/oidc-adapter';
 
 /**
  * Unit behavior of the fail-closed OIDC adapter. Full authorization-code
@@ -159,6 +165,32 @@ describe('OIDCAdapter exchangeCodeForTokens state handling', () => {
             code: 'invalid_state',
         });
     });
+
+    test('an expired entry in a configured store is rejected and purged', async () => {
+        const entries = new Map<string, PendingAuthorization>();
+        const pendingStore: PendingAuthorizationStore = {
+            kind: 'test',
+            get: async (state) => entries.get(state) ?? null,
+            set: async (state, pending) => {
+                entries.set(state, pending);
+            },
+            delete: async (state) => {
+                entries.delete(state);
+            },
+        };
+        const adapter = new OIDCAdapter({ ...baseConfig, pendingStore });
+        await pendingStore.set('stale-state', {
+            state: 'stale-state',
+            nonce: 'stale-nonce',
+            codeVerifier: 'stale-verifier',
+            expiresAt: Date.now() - 1,
+        });
+
+        await expect(adapter.exchangeCodeForTokens('code', 'stale-state')).rejects.toMatchObject({
+            code: 'invalid_state',
+        });
+        expect(entries.has('stale-state')).toBe(false);
+    });
 });
 
 describe('OIDCAdapter.createAuthorizationRequest', () => {
@@ -182,5 +214,34 @@ describe('OIDCAdapter.createAuthorizationRequest', () => {
         const challenge = Buffer.from(digest).toString('base64url');
         const url = new URL(request.url);
         expect(url.searchParams.get('code_challenge')).toBe(challenge);
+    });
+});
+
+describe('InMemoryPendingAuthorizationStore', () => {
+    const entry = (state: string): PendingAuthorization => ({
+        state,
+        nonce: `nonce-${state}`,
+        codeVerifier: `verifier-${state}`,
+        expiresAt: Date.now() + 60_000,
+    });
+
+    test('round-trips entries and deletes idempotently', async () => {
+        const store = new InMemoryPendingAuthorizationStore();
+        await store.set('state-1', entry('state-1'));
+        expect(await store.get('state-1')).toMatchObject({ state: 'state-1', nonce: 'nonce-state-1' });
+        expect(await store.get('unknown')).toBeNull();
+        await store.delete('state-1');
+        expect(await store.get('state-1')).toBeNull();
+        await store.delete('state-1'); // unknown keys are a no-op
+    });
+
+    test('bounds storage at the pending cap by evicting the oldest entry', async () => {
+        const store = new InMemoryPendingAuthorizationStore();
+        for (let i = 0; i <= 20; i++) {
+            // oxlint-disable-next-line no-await-in-loop -- insertion order defines which entry is evicted as the oldest.
+            await store.set(`state-${i}`, entry(`state-${i}`));
+        }
+        expect(await store.get('state-0')).toBeNull(); // the 21st set evicted the oldest
+        expect(await store.get('state-20')).toMatchObject({ state: 'state-20' });
     });
 });

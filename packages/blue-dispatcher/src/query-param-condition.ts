@@ -11,6 +11,8 @@ const { defineProperty } = Reflect;
  * Parses and matches a single URL query-string parameter expression against a route.
  *
  * Query parameters are the `?key=value` pairs carried in `Route.data`.
+ * Repeated keys aggregate into arrays, and a `key=value` expression matches
+ * when any element equals `value` (`?q=a&q=b` matches `q=a` and `q=b`).
  * For path-segment matrix parameters (`/path;key=value`), see {@link MatrixParamExpression}.
  */
 export class QueryParamExpression extends AbstractNameValueExpression<string> {
@@ -59,11 +61,17 @@ export class QueryParamExpression extends AbstractNameValueExpression<string> {
     /**
      * Check whether the route parameter value matches this expression.
      *
+     * A route value may be an array when the query string repeats a key
+     * (`?q=a&q=b` parses to `['a', 'b']`); the expression matches when any
+     * element equals the expected value. A single value matches by strict
+     * equality, so `q=` matches only an explicit empty-string value.
+     *
      * @param route - The current route.
      * @returns `true` when the parameter value matches.
      */
     matchValue(route: Route): boolean {
-        return this.value === route.data[this.name];
+        const routeValue = route.data[this.name];
+        return Array.isArray(routeValue) ? routeValue.some((value) => value === this.value) : this.value === routeValue;
     }
 
     /**

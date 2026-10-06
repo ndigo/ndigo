@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { Null } from '@blue/core';
-import { View, clearCurrentRequest, setCurrentRequest } from '@blue/view';
+import { View } from '@blue/view';
 import { Route, applyNegotiatedLanguage } from '@blue/router';
 import { $aware } from '@blue/factory';
 import { ApplicationContext, likeApplicationContextAware } from '@blue/context';
@@ -200,14 +200,9 @@ export class AbstractDispatcher
         let view: View | null = null;
 
         if (viewName) {
-            // Content negotiation reads the current request; scope it to
-            // resolution so strategies can match path extensions / Accept.
-            setCurrentRequest(route);
-            try {
-                view = await this._resolveViewName(viewName, language);
-            } finally {
-                clearCurrentRequest();
-            }
+            // Content negotiation reads per-call request data (Accept header,
+            // path extension) from the route threaded through resolution.
+            view = await this._resolveViewName(viewName, language, route);
             if (!view) {
                 throw new NoViewFoundError(viewName as string, route);
             }
@@ -278,16 +273,17 @@ export class AbstractDispatcher
      * Resolves a view name into a {@link View} object using registered view resolvers.
      * @param viewName - The name of the view to resolve.
      * @param language - The language to use for view resolution.
+     * @param request - The request/route carrying negotiation data for this resolution.
      * @returns A Promise that resolves to the {@link View} object, or `null` if not found.
      */
-    protected async _resolveViewName(viewName: string, language: string): Promise<View | null> {
+    protected async _resolveViewName(viewName: string, language: string, request?: unknown): Promise<View | null> {
         let index = 0,
             view: View | null = null;
         const length = this.viewResolvers.length;
 
         for (; index < length; index++) {
             // oxlint-disable-next-line no-await-in-loop -- resolvers run in priority order with first-match-wins; parallelizing would execute every resolver and change which view wins.
-            view = await this.viewResolvers[index].resolveViewName(viewName, language);
+            view = await this.viewResolvers[index].resolveViewName(viewName, language, request);
             if (view) {
                 return view;
             }

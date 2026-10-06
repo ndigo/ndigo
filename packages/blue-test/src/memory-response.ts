@@ -1,6 +1,6 @@
 /**
  * In-memory HTTP response captured by a {@link MockMvcDispatch}.
- * * @module blue-test
+ * @module blue-test
  * @since 1.0.0
  * @author Jeff Rose
  */

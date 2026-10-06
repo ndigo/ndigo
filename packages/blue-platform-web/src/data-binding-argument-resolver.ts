@@ -3,13 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import {
-    MethodParameter,
-    MethodParameterType,
-    AbstractPlatformArgumentResolver,
-    convertArgumentValue,
-    type DataBindingSource,
-} from '@blue/dispatcher';
+import { AbstractDataBindingArgumentResolver, type DataBindingSource } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import Cookies from './cookies';
 import { dumpStorage } from './browser-storage-argument-resolver';
@@ -28,27 +22,19 @@ const BROWSER_BINDABLE_SOURCES: readonly DataBindingSource[] = ['query', 'cookie
  * Resolves whole browser data sources (`data-query:value`,
  * `data-cookie:value`, `data-session-storage:value`,
  * `data-local-storage:value` — see `dataBinderValue`, D-3) and binds them to
- * objects using the shared `DataBinder` pipeline
- * ({@link AbstractPlatformArgumentResolver.resolveBoundArgument}): source
- * data → prefix filter → `DataBinder` → conversion → Zod hook.
+ * objects using the shared `DataBinder` pipeline (the
+ * `AbstractDataBindingArgumentResolver` base): source data → prefix filter
+ * → `DataBinder` → conversion → Zod hook.
  */
-export class BrowserDataBindingMethodArgumentResolver extends AbstractPlatformArgumentResolver {
-    constructor() {
-        super(convertArgumentValue);
-    }
+export class BrowserDataBindingMethodArgumentResolver extends AbstractDataBindingArgumentResolver {
+    protected readonly bindableSources = BROWSER_BINDABLE_SOURCES;
 
     get [Symbol.toStringTag](): string {
         return 'BrowserDataBindingMethodArgumentResolver';
     }
 
-    resolveArgument(parameter: MethodParameter, route: Route, mapping: unknown): unknown {
-        return this.resolveBoundArgument(parameter, route, mapping, (source, currentRoute) =>
-            this.getSourceData(source, currentRoute)
-        );
-    }
-
     /** Retrieves the browser data source identified by the source name. */
-    private getSourceData(source: string, route: Route): Record<string, unknown> | undefined {
+    protected getSourceData(source: string, route: Route): Record<string, unknown> | undefined {
         switch (source) {
             case 'query':
                 return route.data;
@@ -63,15 +49,5 @@ export class BrowserDataBindingMethodArgumentResolver extends AbstractPlatformAr
             default:
                 return {};
         }
-    }
-
-    supportsParameter(parameter: MethodParameter): boolean {
-        return BROWSER_BINDABLE_SOURCES.some((source) => MethodParameterType.data(source).equals(parameter.type));
-    }
-
-    protected resolveName(): null {
-        // Whole-source binding overrides `resolveArgument` entirely; this
-        // stub satisfies the abstract named-value contract and is never called.
-        return null;
     }
 }

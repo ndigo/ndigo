@@ -23,13 +23,13 @@ Provisions argument resolvers and converter registries.
 
 ### argumentResolvers()
 
-> **argumentResolvers**(): ([`BrowserDataBindingMethodArgumentResolver`](BrowserDataBindingMethodArgumentResolver.md) \| [`BrowserCookieValueMethodArgumentResolver`](BrowserCookieValueMethodArgumentResolver.md) \| [`BrowserHistoryStateValueMethodArgumentResolver`](BrowserHistoryStateValueMethodArgumentResolver.md) \| [`BrowserStorageValueMethodArgumentResolver`](BrowserStorageValueMethodArgumentResolver.md))[]
+> **argumentResolvers**(): `HandlerMethodArgumentResolver`[]
 
 Creates the browser argument resolvers used for request binding.
 
 #### Returns
 
-([`BrowserDataBindingMethodArgumentResolver`](BrowserDataBindingMethodArgumentResolver.md) \| [`BrowserCookieValueMethodArgumentResolver`](BrowserCookieValueMethodArgumentResolver.md) \| [`BrowserHistoryStateValueMethodArgumentResolver`](BrowserHistoryStateValueMethodArgumentResolver.md) \| [`BrowserStorageValueMethodArgumentResolver`](BrowserStorageValueMethodArgumentResolver.md))[]
+`HandlerMethodArgumentResolver`[]
 
 The browser argument resolvers.
 

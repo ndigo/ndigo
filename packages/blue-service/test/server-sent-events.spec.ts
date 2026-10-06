@@ -59,6 +59,22 @@ describe('ServerSentEventParser', () => {
         ]);
     });
 
+    test('ignores a retry-only block instead of dispatching a phantom message', () => {
+        const parser = new ServerSentEventParser();
+        expect(parser.feed('retry: 3000\n\n')).toEqual([]);
+        expect(parser.finish()).toEqual([]);
+    });
+
+    test('ignores an id-only block instead of dispatching a phantom message', () => {
+        const parser = new ServerSentEventParser();
+        expect(parser.feed('id: 17\n\n')).toEqual([]);
+    });
+
+    test('a retry field does not swallow the event that follows it', () => {
+        const parser = new ServerSentEventParser();
+        expect(parser.feed('retry: 3000\ndata: {"n":1}\n\n')).toEqual([{ event: 'message', data: { n: 1 } }]);
+    });
+
     test('handles CRLF line endings', () => {
         const parser = new ServerSentEventParser();
         expect(parser.feed('data: {"a":1}\r\n\r\n')).toEqual([{ event: 'message', data: { a: 1 } }]);

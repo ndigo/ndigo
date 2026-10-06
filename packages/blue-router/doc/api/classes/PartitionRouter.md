@@ -114,6 +114,10 @@ The `RouterInterceptor` to add.
 Mounts a feature route at a specified URL prefix.
 When a route matching the prefix is navigated, the provided callback will be invoked with the stripped route.
 
+Prefixes are unique per router: navigation dispatches to the first
+matching mount and `unmount` removes by prefix, so a second mount at an
+existing prefix would be unreachable and could unmount its sibling.
+
 #### Parameters
 
 ##### prefix
@@ -133,6 +137,10 @@ The `FeatureRouteCallback` to execute when the prefix matches.
 `this`
 
 The current `PartitionRouter` instance for chaining.
+
+#### Throws
+
+When a mount already exists at the normalized prefix.
 
 #### Since
 

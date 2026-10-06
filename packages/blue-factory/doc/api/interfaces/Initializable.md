@@ -6,6 +6,8 @@
 
 # Interface: Initializable
 
+A value with a post-construction `init()` hook.
+
 ## Methods
 
 ### init()

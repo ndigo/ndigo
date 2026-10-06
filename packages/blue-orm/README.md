@@ -25,7 +25,7 @@ import {
     primaryColumn,
 } from '@blue/orm';
 
-@Entity('users')
+@entity('users')
 class User {
     @primaryColumn()
     @generated()
@@ -63,7 +63,7 @@ Column metadata — including an optional `@column({ schema })` constraint — d
 import { entity, column } from '@blue/orm';
 import { z } from 'zod';
 
-@Entity('notes')
+@entity('notes')
 export class Note {
     @column({ type: 'varchar', schema: z.string().min(1) })
     title!: string;

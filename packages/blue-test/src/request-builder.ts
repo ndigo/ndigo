@@ -28,8 +28,12 @@ export interface MockRequest {
     method?: string;
     /** Path, e.g. `/todos/42`. Map params like `/todos/{id}` are resolved by the framework. */
     path: string;
-    /** Query parameters, e.g. `{ filter: 'active' }`. */
-    query?: Record<string, string>;
+    /**
+     * Query parameters, e.g. `{ filter: 'active' }`. A repeated parameter is
+     * passed as an array (`{ tag: ['a', 'b'] }`), matching the live adapter's
+     * multi-value contract for `?tag=a&tag=b`.
+     */
+    query?: Record<string, string | string[]>;
     /** Request body (JSON object). Bound as `'*'` for the whole object, or by field name. */
     body?: Record<string, unknown>;
     /** Raw request body sent verbatim (string or Buffer). `multipart/form-data` streams through the real parser before dispatch; any other Content-Type is parsed like a live body (JSON / urlencoded / raw text). */
@@ -120,7 +124,14 @@ export function buildRoute(request: MockRequest, responseSink: ResponseSink): Pr
     };
 
     // Query params go into route.data (NamePathHandlerMapping expects `data`).
-    const data: Record<string, string> = { ...request.query };
+    // SEC-8 parity with NodeHTTPServerAdapter: a null-prototype map keeps
+    // `__proto__` an ordinary parameter (assignment on a plain `{}` would hit
+    // the inherited accessor), and repeated values stay arrays (multi-value
+    // contract, `?a=1&a=2` → `['1', '2']`).
+    const data: Record<string, string | string[]> = Object.create(null);
+    for (const [key, value] of Object.entries(request.query ?? {})) {
+        data[key] = Array.isArray(value) ? [...value] : value;
+    }
 
     // Build the route, then assign per-segment matrix data below. The numeric
     // index members come from `ArrayLike<RouteSegment>`; they are populated

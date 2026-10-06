@@ -292,6 +292,69 @@ export class DrizzleEntityManager {
     }
 
     /**
+     * Returns the number of rows of an entity type, counted in SQL (DA-7)
+     * instead of materializing every row.
+     *
+     * @param entityClass - The entity class to count.
+     */
+    async count<T extends object>(entityClass: Constructable<T>): Promise<number> {
+        if (!isEntity(entityClass)) {
+            throw new FrameworkError(`Class '${entityClass.name}' is not decorated with @entity.`);
+        }
+
+        const meta = getEntityMetadata(entityClass);
+        const result = await this.#client.execute(`SELECT COUNT(*) AS total FROM "${meta.entityName}"`);
+        return Number((result.rows[0] as Record<string, unknown>).total);
+    }
+
+    /**
+     * Checks whether a row with the given primary identifier exists using an
+     * SQL probe (`SELECT 1 … LIMIT 1`) rather than loading the entity.
+     *
+     * @param entityClass - The entity class to probe.
+     * @param id - The primary identifier value.
+     */
+    async existsById<T extends object>(entityClass: Constructable<T>, id: unknown): Promise<boolean> {
+        if (!isEntity(entityClass)) {
+            throw new FrameworkError(`Class '${entityClass.name}' is not decorated with @entity.`);
+        }
+
+        const meta = getEntityMetadata(entityClass);
+        const pkColumn = meta.columns.find((c) => c.fieldName === meta.primaryColumn);
+        if (!pkColumn) return false;
+
+        const result = await this.#client.execute(
+            `SELECT 1 FROM "${meta.entityName}" WHERE "${pkColumn.columnName}" = ? LIMIT 1`,
+            [id] as InValue[]
+        );
+        return result.rows.length > 0;
+    }
+
+    /**
+     * Deletes a row by primary identifier in a single `DELETE` statement,
+     * reporting whether a row matched.
+     *
+     * @param entityClass - The entity class to delete from.
+     * @param id - The primary identifier value.
+     * @returns `true` when a row was deleted, `false` otherwise.
+     */
+    async deleteById<T extends object>(entityClass: Constructable<T>, id: unknown): Promise<boolean> {
+        if (!isEntity(entityClass)) {
+            throw new FrameworkError(`Class '${entityClass.name}' is not decorated with @entity.`);
+        }
+
+        const meta = getEntityMetadata(entityClass);
+        const pkColumn = meta.columns.find((c) => c.fieldName === meta.primaryColumn);
+        if (!pkColumn) return false;
+
+        const result = await this.#client.execute(
+            `DELETE FROM "${meta.entityName}" WHERE "${pkColumn.columnName}" = ?`,
+            [id] as InValue[]
+        );
+        return Number(result.rowsAffected) > 0;
+    }
+
+    /**
      * Maps one SQL row to a fresh entity instance, decoding each cell per its
      * declared column type (DA-2) so a load→modify→save cycle sees booleans
      * and json values in the shape the entity's Zod schema validates.

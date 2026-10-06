@@ -10,6 +10,8 @@ import { MediaTypes } from '@blue/core';
 import { HTTPHeaders } from '@blue/http';
 import { ViewTarget } from '@blue/view';
 import { isResponseEntity } from './response-entity';
+import { ResponseEntityView } from './response-entity-view';
+import { writeRenderResult } from './producer-writer';
 
 /**
  * A `ViewTarget` implementation that writes rendered view output to an HTTP
@@ -36,20 +38,11 @@ export class HTTPResponseViewTarget implements ViewTarget {
             return;
         }
 
-        // Check if the model contains a ResponseEntity for status/headers
+        // Check if the model contains a ResponseEntity for status/headers.
+        // Delegates to ResponseEntityView so entity serialization (notably
+        // the 4xx/5xx problem+json shape) has a single implementation.
         if (isResponseEntity(model)) {
-            const headers: Record<string, string> = {
-                [HTTPHeaders.CONTENT_TYPE.name]: String(MediaTypes.APPLICATION_JSON),
-                ...model.headers,
-            };
-            this.#response.writeHead(model.status.code, headers);
-            if (model.body === undefined || model.body === null) {
-                this.#response.end();
-            } else if (typeof model.body === 'string' && !headers['Content-Type']?.includes('application/json')) {
-                this.#response.end(model.body);
-            } else {
-                this.#response.end(JSON.stringify(model.body));
-            }
+            await writeRenderResult(this.#response, await new ResponseEntityView().renderTo(model, route));
             return;
         }
 

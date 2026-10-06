@@ -12,7 +12,7 @@ Resolves a view name to a concrete [View](View.md) instance.
 
 ### resolveViewName()
 
-> **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](View.md) \| `null`\>
+> **resolveViewName**(`name`, `language?`, `request?`): `Promise`\<[`View`](View.md) \| `null`\>
 
 Resolves the requested view name.
 
@@ -29,6 +29,15 @@ The view name to resolve.
 `unknown`
 
 Optional locale or language hint used during resolution.
+
+##### request?
+
+`unknown`
+
+Optional per-call request (typically the route) carrying
+  request-scoped data such as the `Accept` header or path extension.
+  Threaded explicitly by the dispatcher so negotiation never relies on
+  shared process state; resolvers that do not negotiate ignore it.
 
 #### Returns
 

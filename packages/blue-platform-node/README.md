@@ -10,200 +10,6 @@ Blue Platform Node provides Node.js HTTP argument resolvers and environment inte
 pnpm add @blue/platform-node
 ```
 
-## Features
-
-### Argument Resolvers
-
-The package provides 9 argument resolvers for binding request data to controller method parameters:
-
-- `NodeQueryValueMethodArgumentResolver`: Binds query parameters from the URL
-- `NodePathValueMethodArgumentResolver`: Binds path parameters from the route
-- `NodeHeaderValueMethodArgumentResolver`: Binds HTTP headers
-- `NodeBodyValueMethodArgumentResolver`: Binds request body data
-- `NodeDataBindingMethodArgumentResolver`: Binds a whole source (`body` / `cookie`) into an object
-- `NodeRequestPartMethodArgumentResolver`: Binds multipart JSON/text parts
-- `NodeMultipartFileMethodArgumentResolver`: Binds multipart file parts
-- `NodeCookieValueMethodArgumentResolver`: Binds cookies from the request
-- `NodeRequestSessionValueMethodArgumentResolver`: Binds request-session data
-
-### NodeEnvironment
-
-A Node.js environment implementation that includes `process.env` as the first property source, extending `StandardEnvironment`.
-
-### NodeAutoConfiguration
-
-Auto-configuration for Node.js-based applications that provisions:
-
-- Argument-value converter registry
-- All 9 argument resolvers
-- Default handler mapping for metadata-driven dispatch
-- The error-resolver chain (400 binding, 401/403 denials, 422 validation,
-  500 last-resort)
-  :- An `Accept-Language` language resolver (`AcceptHeaderLanguageResolver`,
-  default `en-US`) — the negotiated language reaches views, templates,
-  and islands via the route's `language` attribute
-  :- A `taskScheduler` + `scheduleRegistry` pair: `@scheduled` methods on
-  registered beans are auto-discovered and auto-started with zero wiring
-  :- A managed `httpServer` entry (`HTTPServer`, a `SmartLifecycle` bean)
-  :- A `socketSessionRegistry` bean (`SocketSessionRegistry`): rooms, path
-  broadcast, heartbeat, and backpressure for `@socketMapping` endpoints —
-  shared with the managed server's adapter, so any service can push to a
-  socket room
-  :- An optional `socketRequestAuthenticator` bean: upgrade-time identity for
-  sockets, and with it the socket-side `@authenticated`/`@authorized`
-  enforcement — see [Socket authentication](#socket-authentication)
-
-Applications that previously relied on no language negotiation now render
-with the header-negotiated locale (`en-US` default) — see
-
-## WebSockets (`@socketMapping`)
-
-The managed server serves WebSocket endpoints alongside HTTP routes with
-the same dispatcher, `@parameters` binding, and Zod validation. The
-registry bean auto-joins every session to its endpoint path and offers
-broadcast, named rooms, heartbeats, and a slow-consumer guard.
-
-Transport bounds and behavior are env-tunable:
-
-| Env var                             | Default   | Meaning                                                                                   |
-| ----------------------------------- | --------- | ----------------------------------------------------------------------------------------- |
-| `BLUE_SOCKET_HEARTBEAT_INTERVAL_MS` | `30000`   | Ping cadence; `0` disables the heartbeat                                                  |
-| `BLUE_SOCKET_IDLE_TIMEOUT_MS`       | `60000`   | Reap sessions silent past this (close `1001`)                                             |
-| `BLUE_SOCKET_MAX_PAYLOAD_BYTES`     | `1048576` | WS frame payload cap (violations close `1009`)                                            |
-| `BLUE_SOCKET_MAX_QUEUED_MESSAGES`   | `1024`    | Inbound queue cap per session (overflow closes `1013`)                                    |
-| `BLUE_SOCKET_MAX_QUEUED_BYTES`      | `4194304` | Inbound byte budget per session (overflow closes `1013`); `0` disables                    |
-| `BLUE_SOCKET_MAX_BUFFERED_BYTES`    | `1048576` | Outbound buffered-bytes watermark (per `onOverflow`); `0` disables                        |
-| `BLUE_SOCKET_ON_OVERFLOW`           | `close`   | Over-watermark policy: `close` (`1013`) or `drop`                                         |
-| `BLUE_SOCKET_ALLOWED_ORIGINS`       | unset     | Comma-separated bare origins for upgrade checks; unset allows any origin (public sockets) |
-
-Programmatic knobs (`NodeHTTPServerAdapter` / `HTTPServer` options):
-`backpressure` (1 MiB watermark, `close` `1013` / `drop` / disabled),
-`onOverflow` observer (`addOverflowObserver` for post-construction wiring),
-`authenticate(sources)` upgrade hook (populates `session.attributes`,
-`null` rejects with `1008`), `authenticateTimeoutMs` (milliseconds the hook
-may take before the socket closes `1011`; default `10000`), `maxConnections`
-(concurrent connections, counted from the accepted upgrade until close;
-default `10000`, overflow closes `1013`, `Infinity` disables),
-`allowedWebSocketOrigins`, and `socketLimits`.
-See the [websockets guide](../../docs/guides/06-websockets.md) and
-[Socket authentication](#socket-authentication).
-
-### Opt-in cross-node paths and rooms
-
-The default registry remains process-local. Supply an application-owned fanout
-transport explicitly; `HTTPServer` does not register it or connect it for you:
-
-```ts
-import { RedisConnection } from '@blue/redis';
-import { RedisSocketFanout } from '@blue/redis/pubsub';
-import { HTTPServer, NodeSocketSessionRegistry } from '@blue/platform-node';
-
-const url = process.env.REDIS_URL!;
-const publisher = new RedisConnection({ url });
-const fanout = new RedisSocketFanout({
-    connection: publisher,
-    subscriberUrl: url,
-    namespace: 'my-app.production',
-});
-const registry = new NodeSocketSessionRegistry({ fanout });
-const server = new HTTPServer(dispatcher, { socketRegistry: registry });
-await publisher.connect();
-await fanout.connect();
-await registry.connect(); // path + room subscriptions ready before serving
-await server.start();
-await registry.broadcast('/ws/chat', { event: 'notice' });
-await registry.broadcastTo('lobby', new Uint8Array([0, 1, 255]));
-```
-
-`dispatcher` is your existing `NodeDispatcher`. The `socketRegistry` option is
-for the default adapter only; a custom adapter must receive its registry itself.
-Without the explicit option, the managed server resolves the
-`socketSessionRegistry` context bean. Either way, services must publish through
-the **same** registry used by the adapter. Joins, counts and socket ownership
-remain local; only path/room payloads cross nodes. `broadcast` and `broadcastTo`
-return `Promise<void>` even in local mode; await them. Configured transport
-failure rejects before best-effort local delivery, never falls back silently.
-
-Stop producers and close the server, then await `registry.close()` (unsubscribe
-and stop heartbeat), `fanout.close()` (owned subscriber), and
-`publisher.close()` before synchronous context shutdown. Ensure later cleanup
-runs with `finally` even on failure, including failed startup. The registry does
-not own/close the transport. `StompBroker({ fanout })` can share it for topics;
-await `broker.connect()` before serving and `broker.close()` before transport
-shutdown. Each transport permits one consumer per scope. See the
-[websockets guide](../../docs/guides/06-websockets.md#cross-node-live-fan-out-opt-in)
-for complete composition, failure semantics, Redis limits and deployment policy.
-
-## Socket authentication
-
-HTTP requests get authentication from the interceptor chain: `AuthRouteGuard`
-reads the `@authenticated` / `@authorized` metadata that `@blue/auth-core`
-writes onto the controller class. **Sockets do not run interceptors** — they
-are dispatched straight to the handler — so the adapter enforces the same
-metadata at dispatch time:
-
-- a `@socketMapping` / `@stompMapping` method (or its controller class)
-  marked `@authenticated` requires a principal: the upgrade is closed with
-  `1008` when `session.attributes['principal']` is missing or is not an
-  object with a `hasRole` method;
-- `@authorized('role')` additionally requires every declared role on that
-  principal (`1008` otherwise); roles imply authentication, as on the HTTP
-  path;
-- a socket method without auth metadata behaves exactly as before (a public
-  endpoint).
-
-Identity comes from one of two places:
-
-1. the `authenticate(sources)` option (`NodeHTTPServerAdapter` /
-   `HTTPServer`) — return the attribute bag to merge into
-   `session.attributes`, or `null` to refuse the upgrade with `1008`;
-2. an application-context bean named `socketRequestAuthenticator`
-   implementing the exported `SocketRequestAuthenticator` interface
-   (`authenticate(sources)`, same contract). `HTTPServer` resolves it at
-   start, so bean-based applications wire identity declaratively; the
-   explicit option wins when both are present.
-
-The returned bag MUST carry `principal` for `@authenticated` /
-`@authorized` endpoints — any object with `hasRole(role)` works, and
-`@blue/auth-core`'s `Principal` satisfies it — and SHOULD carry `user` (a
-string id), which the STOMP broker uses for its `/user/*` scope. With no
-authenticator configured, sockets accept any client: the explicit
-public-endpoint posture.
-
-`apps/blue-api` is the reference wiring: a `socketRequestAuthenticator` bean
-resolves a demo token from `?token=` on the upgrade URL or an
-`Authorization: Bearer …` header (through the app's own
-`lookupPrincipal`), and `/stomp/chat` is marked `@authenticated` while the
-raw `/ws/chat` endpoint stays public as the documented contrast.
-
-## Managed server + graceful shutdown
-
-`HTTPServer` is provisioned by `NodeAutoConfiguration` (not constructed
-manually). Start it explicitly and wire signals:
-
-```ts
-const context = new ApplicationBuilder([NodeAutoConfiguration, AppConfig]).run();
-const server = context.getValue<HTTPServer>('httpServer');
-await server.start();
-gracefulShutdown(context, { resources: [server] });
-```
-
-`context.close()` also stops the server via the lifecycle processor.
-`gracefulShutdown` drains the server then closes the context on
-`SIGINT`/`SIGTERM`, exiting `0`.
-
-## RFC 9457 error documents
-
-Every 4xx/5xx response is `application/problem+json`: `type`
-(`urn:blue:*` placeholder), `title`, `status`, `detail`, `instance`, and an
-`errors` extension for validation issues. `ProblemDetails`, `ProblemTypes`,
-and `writeProblem` are exported for custom errors.
-
-## Guides
-
-- [Building a Node API](../../docs/guides/01-building-a-node-api.md)
-- [Request Validation](../../docs/guides/02-request-validation.md)
-
 ## Getting Started
 
 ### With @blue/boot
@@ -219,6 +25,8 @@ const context = new GenericApplicationContext('my-app');
 context.registerConfiguration(NodeAutoConfiguration);
 context.setValue('environment', new NodeEnvironment());
 ```
+
+## Usage
 
 ### Request Limits and Error Semantics
 
@@ -292,6 +100,199 @@ import { configureNodeArgumentResolvers } from '@blue/platform-node';
 
 configureNodeArgumentResolvers(context);
 ```
+
+### Argument Resolvers
+
+The package provides 9 argument resolvers for binding request data to controller method parameters:
+
+- `NodeQueryValueMethodArgumentResolver`: Binds query parameters from the URL
+- `NodePathValueMethodArgumentResolver`: Binds path parameters from the route
+- `NodeHeaderValueMethodArgumentResolver`: Binds HTTP headers
+- `NodeBodyValueMethodArgumentResolver`: Binds request body data
+- `NodeDataBindingMethodArgumentResolver`: Binds a whole source (`body` / `cookie`) into an object
+- `NodeRequestPartMethodArgumentResolver`: Binds multipart JSON/text parts
+- `NodeMultipartFileMethodArgumentResolver`: Binds multipart file parts
+- `NodeCookieValueMethodArgumentResolver`: Binds cookies from the request
+- `NodeRequestSessionValueMethodArgumentResolver`: Binds request-session data
+
+### NodeEnvironment
+
+A Node.js environment implementation that includes `process.env` as the first property source, extending `StandardEnvironment`.
+
+### NodeAutoConfiguration
+
+Auto-configuration for Node.js-based applications that provisions:
+
+- Argument-value converter registry
+- All 9 argument resolvers
+- Default handler mapping for metadata-driven dispatch
+- The error-resolver chain (400 binding, 401/403 denials, 422 validation,
+  500 last-resort)
+  :- An `Accept-Language` language resolver (`AcceptHeaderLanguageResolver`,
+  default `en-US`) — the negotiated language reaches views, templates,
+  and islands via the route's `language` attribute
+  :- A `taskScheduler` + `scheduleRegistry` pair: `@scheduled` methods on
+  registered beans are auto-discovered and auto-started with zero wiring
+  :- A managed `httpServer` entry (`HTTPServer`, a `SmartLifecycle` bean)
+  :- A `socketSessionRegistry` bean (`SocketSessionRegistry`): rooms, path
+  broadcast, heartbeat, and backpressure for `@socketMapping` endpoints —
+  shared with the managed server's adapter, so any service can push to a
+  socket room
+  :- An optional `socketRequestAuthenticator` bean: upgrade-time identity for
+  sockets, and with it the socket-side `@authenticated`/`@authorized`
+  enforcement — see [Socket authentication](#socket-authentication)
+
+Applications that previously relied on no language negotiation now render
+with the header-negotiated locale (`en-US` default) — see the
+[content and i18n guide](../../docs/guides/04-i18n-and-content.md).
+
+### WebSockets (`@socketMapping`)
+
+The managed server serves WebSocket endpoints alongside HTTP routes with
+the same dispatcher, `@parameters` binding, and Zod validation. The
+registry bean auto-joins every session to its endpoint path and offers
+broadcast, named rooms, heartbeats, and a slow-consumer guard.
+
+Transport bounds and behavior are env-tunable:
+
+| Env var                             | Default   | Meaning                                                                                   |
+| ----------------------------------- | --------- | ----------------------------------------------------------------------------------------- |
+| `BLUE_SOCKET_HEARTBEAT_INTERVAL_MS` | `30000`   | Ping cadence; `0` disables the heartbeat                                                  |
+| `BLUE_SOCKET_IDLE_TIMEOUT_MS`       | `60000`   | Reap sessions silent past this (close `1001`)                                             |
+| `BLUE_SOCKET_MAX_PAYLOAD_BYTES`     | `1048576` | WS frame payload cap (violations close `1009`)                                            |
+| `BLUE_SOCKET_MAX_QUEUED_MESSAGES`   | `1024`    | Inbound queue cap per session (overflow closes `1013`)                                    |
+| `BLUE_SOCKET_MAX_QUEUED_BYTES`      | `4194304` | Inbound byte budget per session (overflow closes `1013`); `0` disables                    |
+| `BLUE_SOCKET_MAX_BUFFERED_BYTES`    | `1048576` | Outbound buffered-bytes watermark (per `onOverflow`); `0` disables                        |
+| `BLUE_SOCKET_ON_OVERFLOW`           | `close`   | Over-watermark policy: `close` (`1013`) or `drop`                                         |
+| `BLUE_SOCKET_ALLOWED_ORIGINS`       | unset     | Comma-separated bare origins for upgrade checks; unset allows any origin (public sockets) |
+
+Programmatic knobs (`NodeHTTPServerAdapter` / `HTTPServer` options):
+`backpressure` (1 MiB watermark, `close` `1013` / `drop` / disabled),
+`onOverflow` observer (`addOverflowObserver` for post-construction wiring),
+`authenticate(sources)` upgrade hook (populates `session.attributes`,
+`null` rejects with `1008`), `authenticateTimeoutMs` (milliseconds the hook
+may take before the socket closes `1011`; default `10000`), `maxConnections`
+(concurrent connections, counted from the accepted upgrade until close;
+default `10000`, overflow closes `1013`, `Infinity` disables),
+`allowedWebSocketOrigins`, and `socketLimits`.
+See the [websockets guide](../../docs/guides/06-websockets.md) and
+[Socket authentication](#socket-authentication).
+
+#### Opt-in cross-node paths and rooms
+
+The default registry remains process-local. Supply an application-owned fanout
+transport explicitly; `HTTPServer` does not register it or connect it for you:
+
+```ts
+import { RedisConnection } from '@blue/redis';
+import { RedisSocketFanout } from '@blue/redis/pubsub';
+import { HTTPServer, NodeSocketSessionRegistry } from '@blue/platform-node';
+
+const url = process.env.REDIS_URL!;
+const publisher = new RedisConnection({ url });
+const fanout = new RedisSocketFanout({
+    connection: publisher,
+    subscriberUrl: url,
+    namespace: 'my-app.production',
+});
+const registry = new NodeSocketSessionRegistry({ fanout });
+const server = new HTTPServer(dispatcher, { socketRegistry: registry });
+await publisher.connect();
+await fanout.connect();
+await registry.connect(); // path + room subscriptions ready before serving
+await server.start();
+await registry.broadcast('/ws/chat', { event: 'notice' });
+await registry.broadcastTo('lobby', new Uint8Array([0, 1, 255]));
+```
+
+`dispatcher` is your existing `NodeDispatcher`. The `socketRegistry` option is
+for the default adapter only; a custom adapter must receive its registry itself.
+Without the explicit option, the managed server resolves the
+`socketSessionRegistry` context bean. Either way, services must publish through
+the **same** registry used by the adapter. Joins, counts and socket ownership
+remain local; only path/room payloads cross nodes. `broadcast` and `broadcastTo`
+return `Promise<void>` even in local mode; await them. Configured transport
+failure rejects before best-effort local delivery, never falls back silently.
+
+Stop producers and close the server, then await `registry.close()` (unsubscribe
+and stop heartbeat), `fanout.close()` (owned subscriber), and
+`publisher.close()` before synchronous context shutdown. Ensure later cleanup
+runs with `finally` even on failure, including failed startup. The registry does
+not own/close the transport. `StompBroker({ fanout })` can share it for topics;
+await `broker.connect()` before serving and `broker.close()` before transport
+shutdown. Each transport permits one consumer per scope. See the
+[websockets guide](../../docs/guides/06-websockets.md#cross-node-live-fan-out-opt-in)
+for complete composition, failure semantics, Redis limits and deployment policy.
+
+### Socket authentication
+
+HTTP requests get authentication from the interceptor chain: `AuthRouteGuard`
+reads the `@authenticated` / `@authorized` metadata that `@blue/auth-core`
+writes onto the controller class. **Sockets do not run interceptors** — they
+are dispatched straight to the handler — so the adapter enforces the same
+metadata at dispatch time:
+
+- a `@socketMapping` / `@stompMapping` method (or its controller class)
+  marked `@authenticated` requires a principal: the upgrade is closed with
+  `1008` when `session.attributes['principal']` is missing or is not an
+  object with a `hasRole` method;
+- `@authorized('role')` additionally requires every declared role on that
+  principal (`1008` otherwise); roles imply authentication, as on the HTTP
+  path;
+- a socket method without auth metadata behaves exactly as before (a public
+  endpoint).
+
+Identity comes from one of two places:
+
+1. the `authenticate(sources)` option (`NodeHTTPServerAdapter` /
+   `HTTPServer`) — return the attribute bag to merge into
+   `session.attributes`, or `null` to refuse the upgrade with `1008`;
+2. an application-context bean named `socketRequestAuthenticator`
+   implementing the exported `SocketRequestAuthenticator` interface
+   (`authenticate(sources)`, same contract). `HTTPServer` resolves it at
+   start, so bean-based applications wire identity declaratively; the
+   explicit option wins when both are present.
+
+The returned bag MUST carry `principal` for `@authenticated` /
+`@authorized` endpoints — any object with `hasRole(role)` works, and
+`@blue/auth-core`'s `Principal` satisfies it — and SHOULD carry `user` (a
+string id), which the STOMP broker uses for its `/user/*` scope. With no
+authenticator configured, sockets accept any client: the explicit
+public-endpoint posture.
+
+`apps/blue-api` is the reference wiring: a `socketRequestAuthenticator` bean
+resolves a demo token from `?token=` on the upgrade URL or an
+`Authorization: Bearer …` header (through the app's own
+`lookupPrincipal`), and `/stomp/chat` is marked `@authenticated` while the
+raw `/ws/chat` endpoint stays public as the documented contrast.
+
+### Managed server + graceful shutdown
+
+`HTTPServer` is provisioned by `NodeAutoConfiguration` (not constructed
+manually). Start it explicitly and wire signals:
+
+```ts
+const context = new ApplicationBuilder([NodeAutoConfiguration, AppConfig]).run();
+const server = context.getValue<HTTPServer>('httpServer');
+await server.start();
+gracefulShutdown(context, { resources: [server] });
+```
+
+`context.close()` also stops the server via the lifecycle processor.
+`gracefulShutdown` drains the server then closes the context on
+`SIGINT`/`SIGTERM`, exiting `0`.
+
+### RFC 9457 error documents
+
+Every 4xx/5xx response is `application/problem+json`: `type`
+(`urn:blue:*` placeholder), `title`, `status`, `detail`, `instance`, and an
+`errors` extension for validation issues. `ProblemDetails`, `ProblemTypes`,
+and `writeProblem` are exported for custom errors.
+
+### Guides
+
+- [Building a Node API](../../docs/guides/01-building-a-node-api.md)
+- [Request Validation](../../docs/guides/02-request-validation.md)
 
 ## API
 

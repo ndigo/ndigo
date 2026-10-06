@@ -6,6 +6,9 @@
 
 # Class: MetadataConfigApplicationContext
 
+Application context that parses `@configuration` classes and registers
+their `@entry` values.
+
 ## Extends
 
 - [`GenericApplicationContext`](GenericApplicationContext.md)
@@ -618,7 +621,11 @@ The resolved content.
 
 > **getInstance**\<`T`\>(`name`, `argumentsList?`): `T`
 
-Returns an instance of the specified value.
+Returns the value registered under `name`. Constructor-registered
+values are constructed (and configured) through the internal
+`_create` path; non-constructor values (instances, primitives) are
+returned as-is, preserving identity (CF-12). An unregistered name
+resolves to `undefined`.
 
 #### Type Parameters
 
@@ -1185,6 +1192,12 @@ Initializes the context lifecycle if it is not already active.
 > **register**(`configClass`): `void`
 
 Registers a configuration class for metadata-driven initialization.
+
+Parsing runs against the environment current at this call: a fresh
+`ConfigurationParser` is created per registration. Callers may replace
+the environment between registrations (`setEnvironment`), so a memoized
+parser would evaluate `@profile` gates, `@propertySource` and
+`@property` binding against a stale environment (CF-9).
 
 #### Parameters
 

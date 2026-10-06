@@ -21,8 +21,6 @@ import random from './random.js';
  * @example
  * add( 2, 3 );
  * //=>  5
- * add( 7 )( 10 );
- * //=> 17
  */
 export const add = (a: number, b: number): number => a + b;
 
@@ -47,14 +45,8 @@ export const dec = (n: number): number => n - 1;
  * @returns {number} The result of `a / b`.
  * @see {@link multiply|multiply}
  * @example
- * import { __, divide } from '@blue/util';
  * divide( 71, 100 ); //=> 0.71
- *
- * const half = divide( __, 2 );
- * half( 42 ); //=> 21
- *
- * const reciprocal = divide( 1 );
- * reciprocal( 4 );   //=> 0.25
+ * divide( 1, 4 );    //=> 0.25
  */
 export const divide = (a: number, b: number): number => a / b;
 
@@ -72,7 +64,7 @@ export const inc = (n: number): number => n + 1;
 
 /**
  * `mathMod` behaves like the modulo operator should mathematically, unlike the
- * `%` operator (and by extension, [`R.modulo`](#modulo)). So while
+ * `%` operator (and by extension, [`modulo`](#modulo)). So while
  * `-17 % 5` is `-2`, `mathMod(-17, 5)` is `3`. `mathMod` requires Integer
  * arguments, and returns NaN when the modulus is zero or negative.
  *
@@ -82,22 +74,12 @@ export const inc = (n: number): number => n + 1;
  * @returns {number} The result of `b mod a`.
  * @see {@link modulo|modulo}
  * @example
- * import { __, mathMod } from '@blue/util';
  * mathMod( -17, 5 );  //=> 3
  * mathMod( 17, 5 );   //=> 2
  * mathMod( 17, -5 );  //=> NaN
  * mathMod( 17, 0 );   //=> NaN
  * mathMod( 17.2, 5 ); //=> NaN
  * mathMod( 17, 5.3 ); //=> NaN
- *
- * const clock = mathMod( __, 12 );
- * clock( 15 ); //=> 3
- * clock( 24 ); //=> 0
- *
- * const seventeenMod = mathMod( 17 );
- * seventeenMod( 3 );  //=> 2
- * seventeenMod( 4 );  //=> 1
- * seventeenMod( 10 ); //=> 7
  */
 export const mathMod = (m: number, p: number): number => {
     if (!Number.isInteger(m) || !Number.isInteger(p) || p <= 0) return NaN;
@@ -147,7 +129,6 @@ export const median = (list: number[]): number => {
  * @returns {number} The result of `b % a`.
  * @see {@link mathMod|mathMod}
  * @example
- * import { __, modulo } from '@blue/util';
  * modulo( 17, 3 );
  * //=> 2
  * // JS behavior:
@@ -155,17 +136,11 @@ export const median = (list: number[]): number => {
  * //=> -2
  * modulo( 17, -3 );
  * //=> 2
- *
- * const isOdd = modulo( __, 2 );
- * isOdd( 42 );
- * //=> 0
- * isOdd( 21 );
- * //=> 1
  */
 export const modulo = (a: number, b: number): number => a % b;
 
 /**
- * Multiplies two numbers. Equivalent to `a * b` but curried.
+ * Multiplies two numbers. Equivalent to `a * b`.
  *
  * @category Math
  * @param {number} a The first value.
@@ -173,14 +148,10 @@ export const modulo = (a: number, b: number): number => a % b;
  * @returns {number} The result of `a * b`.
  * @see {@link divide|divide}
  * @example
- * const double = multiply( 2 );
- * const triple = multiply( 3 );
- * double( 3 );
- * //=>  6
- * triple( 4 );
- * //=> 12
  * multiply( 2, 5 );
  * //=> 10
+ * multiply( 3, 4 );
+ * //=> 12
  */
 export const multiply = (a: number, b: number): number => a * b;
 
@@ -218,19 +189,10 @@ export const product = (list: number[]): number => list.reduce((a, b) => a * b, 
  * @returns {number} The result of `a - b`.
  * @see {@link add|add}
  * @example
- * import { __, subtract } from '@blue/util';
  * subtract( 10, 8 );
  * //=> 2
- *
- * const minus5 = subtract( __, 5 );
- * minus5( 17 );
- * //=> 12
- *
- * const complementaryAngle = subtract( 90 );
- * complementaryAngle( 30 );
+ * subtract( 90, 30 );
  * //=> 60
- * complementaryAngle( 72 );
- * //=> 18
  */
 export const subtract = (a: number, b: number): number => a - b;
 

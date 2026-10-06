@@ -11,13 +11,13 @@ import { BrowserHistoryStateValueMethodArgumentResolver } from './history-state-
 import { BrowserStorageValueMethodArgumentResolver } from './browser-storage-argument-resolver';
 
 /**
- * Registers browser-specific argument resolvers into the application context.
+ * Builds the browser argument-resolver list in registration order (first
+ * match wins). Single source of truth shared by
+ * {@link configureBrowserArgumentResolvers} and the auto-configuration entry,
+ * so the two lists can never drift (HG-7).
  */
-export function configureBrowserArgumentResolvers(
-    applicationContext: ApplicationContext,
-    _options?: unknown
-): HandlerMethodArgumentResolver[] {
-    const resolvers: HandlerMethodArgumentResolver[] = [
+export function createBrowserArgumentResolvers(): HandlerMethodArgumentResolver[] {
+    return [
         new BrowserDataBindingMethodArgumentResolver(),
         new BrowserCookieValueMethodArgumentResolver(),
         new BrowserHistoryStateValueMethodArgumentResolver(),
@@ -32,6 +32,14 @@ export function configureBrowserArgumentResolvers(
             'BrowserLocalStorageValueMethodArgumentResolver'
         ),
     ];
+}
 
-    return registerArgumentResolvers(applicationContext, resolvers);
+/**
+ * Registers browser-specific argument resolvers into the application context.
+ */
+export function configureBrowserArgumentResolvers(
+    applicationContext: ApplicationContext,
+    _options?: unknown
+): HandlerMethodArgumentResolver[] {
+    return registerArgumentResolvers(applicationContext, createBrowserArgumentResolvers());
 }

@@ -5,7 +5,12 @@
  */
 import { metrics, trace, DiagConsoleLogger, DiagLogLevel, diag, propagation } from '@opentelemetry/api';
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
-import { BasicTracerProvider, SimpleSpanProcessor, ConsoleSpanExporter } from '@opentelemetry/sdk-trace-base';
+import {
+    BasicTracerProvider,
+    SimpleSpanProcessor,
+    BatchSpanProcessor,
+    ConsoleSpanExporter,
+} from '@opentelemetry/sdk-trace-base';
 import { W3CTraceContextPropagator } from '@opentelemetry/core';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { resourceFromAttributes } from '@opentelemetry/resources';
@@ -54,11 +59,14 @@ export function configureBrowserTelemetry(config: BrowserTelemetryConfig): void 
     // Console exporters are gated by `useConsoleExporters`, but OTLP trace
     // export is independent: a configured `traceUrl` always exports spans.
     const spanExportEnabled = config.useConsoleExporters !== false || config.traceUrl !== undefined;
-    const traceProcessors: SimpleSpanProcessor[] = spanExportEnabled
+    // OTLP spans are batched — one POST per flush window instead of one per
+    // span (OP-14). Console stays on the SimpleSpanProcessor so dev spans
+    // appear immediately.
+    const traceProcessors: (SimpleSpanProcessor | BatchSpanProcessor)[] = spanExportEnabled
         ? [
-              new SimpleSpanProcessor(
-                  config.traceUrl ? new OTLPTraceExporter({ url: config.traceUrl }) : new ConsoleSpanExporter()
-              ),
+              config.traceUrl
+                  ? new BatchSpanProcessor(new OTLPTraceExporter({ url: config.traceUrl }))
+                  : new SimpleSpanProcessor(new ConsoleSpanExporter()),
           ]
         : [];
     const tracerProvider = new BasicTracerProvider({

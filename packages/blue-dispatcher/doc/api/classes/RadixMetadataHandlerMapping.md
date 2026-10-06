@@ -120,9 +120,12 @@ The name of the value in the factory.
 
 ### namingStrategy
 
-> **namingStrategy**: [`RouteHandlerMethodMappingNamingStrategy`](../interfaces/RouteHandlerMethodMappingNamingStrategy.md)\<[`RouteMappingInfo`](RouteMappingInfo.md)\>
+> **namingStrategy**: [`RouteHandlerMethodMappingNamingStrategy`](../interfaces/RouteHandlerMethodMappingNamingStrategy.md)\<[`RouteMappingInfo`](RouteMappingInfo.md)\> = `defaultNamingStrategy`
 
 Naming strategy used when exposing handler methods by name.
+
+Defaults to [RouteMappingInfoHandlerMethodMappingNamingStrategy](RouteMappingInfoHandlerMethodMappingNamingStrategy.md)
+(the mapping's own name, falling back to the handler + method).
 
 #### Inherited from
 
@@ -241,6 +244,9 @@ The mapping-to-handler-method registry.
 > **getHandlerMethodsForMappingName**(`name`): [`RouteHandlerMethod`](RouteHandlerMethod.md)[]
 
 Return handler methods registered under a mapping name.
+
+Names are assigned at registration by [namingStrategy](#namingstrategy) (by
+default the mapping's own name, e.g. its route pattern).
 
 #### Parameters
 

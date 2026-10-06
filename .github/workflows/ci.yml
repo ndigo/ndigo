@@ -56,9 +56,9 @@ jobs:
         run: pnpm format:check
 
       - name: Docs relative-link integrity
-        # Zero-dependency checker over docs/ + root markdown
-        # (scripts/check-doc-links.mjs): catches renamed/moved files, wrong
-        # relative paths, and dead heading anchors. No network.
+        # Zero-dependency checker over docs/ + root markdown + package/app
+        # READMEs (scripts/check-doc-links.mjs): catches renamed/moved files,
+        # wrong relative paths, and dead heading anchors. No network.
         run: pnpm docs:links
 
       - name: Production dependency audit (no known vulnerabilities)
@@ -80,12 +80,12 @@ jobs:
         run: pnpm agents:check
 
       - name: Strict type-check
-        # Per-project tsc -b with the build config (packages + the three
-        # tsc-built apps). Scoped with --filter so out-of-tree workspace
-        # members and JS-only apps (blue-hello, blue-host, blue-island,
-        # blue-views) never abort the lane; pnpm -r alone would TS5083 on
-        # any project without tsconfig.build.json.
-        run: pnpm --filter './packages/**' --filter './apps/blue-todo' --filter './apps/blue-api' --filter './apps/blue-hello-node' -r exec tsc -b tsconfig.build.json
+        # Per-project tsc -b with the build config over every package and
+        # app (`pnpm typecheck`). Scoped with --filter so out-of-tree
+        # workspace members (the sibling todomvc examples) never abort the
+        # lane; pnpm -r alone would TS5083 on any project without
+        # tsconfig.build.json.
+        run: pnpm typecheck
 
       - name: API docs (TypeDoc, zero warnings)
         # treatWarningsAsErrors is on: dead links, missing params, or

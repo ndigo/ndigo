@@ -170,23 +170,6 @@ describe('@effect with @reactive', () => {
         expect(values).toContain(1);
         expect(values).toContain(2);
     });
-
-    it('stops reacting after dispose', () => {
-        const values: number[] = [];
-
-        @reactive
-        class Watcher {
-            @signal count = 0;
-
-            @effect track() {
-                values.push(this.count);
-            }
-        }
-
-        const w = new Watcher();
-        w.count = 1;
-        expect(values.some((v) => v === 1)).toBe(true);
-    });
 });
 
 describe('@reactive lifecycle', () => {

@@ -3,6 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import { resolveCacheName } from '@blue/cache';
 import type { Cache, CacheManager } from '@blue/cache';
 import type { ContextToken } from '@blue/factory';
 import { RedisConnection, type RedisConnectionOptions } from '../connection';
@@ -58,10 +59,7 @@ export class RedisCacheManager implements CacheManager {
     getCache<V = unknown>(token: ContextToken<Cache<V>>): RedisCache<V>;
     getCache<V = unknown>(nameOrToken: string | ContextToken<Cache<V>>): RedisCache<V> {
         if (this.#closed) throw new Error('RedisCacheManager is closed');
-        const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
-        if (typeof name !== 'string' || name.length === 0) {
-            throw new TypeError(`RedisCacheManager: cache name must be a non-empty string — got ${String(name)}`);
-        }
+        const name = resolveCacheName(nameOrToken, 'RedisCacheManager');
         let cache = this.#caches.get(name);
         if (cache === undefined) {
             cache = new RedisCache(this.#connection, {
@@ -78,7 +76,7 @@ export class RedisCacheManager implements CacheManager {
     hasCache(token: ContextToken<Cache<unknown>>): boolean;
     hasCache(nameOrToken: string | ContextToken<Cache<unknown>>): boolean {
         if (this.#closed) throw new Error('RedisCacheManager is closed');
-        const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
+        const name = resolveCacheName(nameOrToken, 'RedisCacheManager');
         return this.#caches.has(name);
     }
 

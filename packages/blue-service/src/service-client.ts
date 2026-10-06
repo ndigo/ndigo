@@ -86,6 +86,7 @@ async function* streamCall(
     });
     const began = Date.now();
     let events = 0;
+    let failureRecorded = false;
 
     try {
         const response = await http.request(url, init);
@@ -143,6 +144,7 @@ async function* streamCall(
                 }
             }
         } catch (error: unknown) {
+            failureRecorded = true;
             span.recordException(error as Error);
             span.setStatus({ code: SpanStatusCode.ERROR });
             if (error instanceof IllegalStateError) {
@@ -173,6 +175,15 @@ async function* streamCall(
             events += 1;
             yield deliver(event);
         }
+    } catch (error: unknown) {
+        // Request-level failures (a non-OK response, transport/setup errors)
+        // never reach the reader-loop catch; record them here so the span
+        // always ends ERROR rather than UNSET.
+        if (!failureRecorded) {
+            span.recordException(error as Error);
+            span.setStatus({ code: SpanStatusCode.ERROR });
+        }
+        throw error;
     } finally {
         span.setAttribute('stream.events', events);
         span.setAttribute('stream.duration_ms', Date.now() - began);
@@ -207,7 +218,10 @@ export function serviceClient<T extends object>(target: T, http: HTTP): T {
             if (typeof prop !== 'string') {
                 return Reflect.get(target as object, prop);
             }
-            const call: ServiceCallConfig | undefined = calls[prop];
+            // `calls` inherits from Object.prototype: only own entries are
+            // call configs, everything else (`toString`, `hasOwnProperty`, …)
+            // must delegate to the target.
+            const call: ServiceCallConfig | undefined = Object.hasOwn(calls, prop) ? calls[prop] : undefined;
             if (!call) {
                 return Reflect.get(target as object, prop);
             }

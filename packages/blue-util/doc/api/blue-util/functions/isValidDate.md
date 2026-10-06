@@ -24,10 +24,6 @@ The date to validate
 
 the date is valid
 
-## Throws
-
-1 argument required
-
 ## Examples
 
 ```ts

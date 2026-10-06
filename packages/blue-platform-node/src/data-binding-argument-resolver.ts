@@ -3,13 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import {
-    MethodParameter,
-    MethodParameterType,
-    AbstractPlatformArgumentResolver,
-    convertArgumentValue,
-    type DataBindingSource,
-} from '@blue/dispatcher';
+import { AbstractDataBindingArgumentResolver, type DataBindingSource } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { getNodeRequest } from './node-request';
 
@@ -30,25 +24,18 @@ const NODE_BINDABLE_SOURCES: readonly DataBindingSource[] = ['body', 'cookie'];
  * JSON — or `request.cookies`) and binds it into one nested object via
  * `DataBinder`, optionally through a target constructor
  * (`dataBinderValue('body', ProfileForm)` → a real `ProfileForm` instance),
- * then through the shared conversion + Zod `convert` hook pipeline.
+ * then through the shared conversion + Zod `convert` hook pipeline of the
+ * `AbstractDataBindingArgumentResolver` base.
  */
-export class NodeDataBindingMethodArgumentResolver extends AbstractPlatformArgumentResolver {
-    constructor() {
-        super(convertArgumentValue);
-    }
+export class NodeDataBindingMethodArgumentResolver extends AbstractDataBindingArgumentResolver {
+    protected readonly bindableSources = NODE_BINDABLE_SOURCES;
 
     get [Symbol.toStringTag](): string {
         return 'NodeDataBindingMethodArgumentResolver';
     }
 
-    resolveArgument(parameter: MethodParameter, route: Route, mapping: unknown): unknown {
-        return this.resolveBoundArgument(parameter, route, mapping, (source, currentRoute) =>
-            this.getSourceData(source, currentRoute)
-        );
-    }
-
     /** Retrieves the Node wire source identified by the source name. */
-    private getSourceData(source: string, route: Route): Record<string, unknown> | undefined {
+    protected getSourceData(source: string, route: Route): Record<string, unknown> | undefined {
         const request = getNodeRequest(route);
         if (!request) {
             return undefined;
@@ -61,15 +48,5 @@ export class NodeDataBindingMethodArgumentResolver extends AbstractPlatformArgum
             default:
                 return undefined;
         }
-    }
-
-    supportsParameter(parameter: MethodParameter): boolean {
-        return NODE_BINDABLE_SOURCES.some((source) => MethodParameterType.data(source).equals(parameter.type));
-    }
-
-    protected resolveName(): null {
-        // Whole-source binding overrides `resolveArgument` entirely; this
-        // stub satisfies the abstract named-value contract and is never called.
-        return null;
     }
 }

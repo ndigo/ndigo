@@ -12,15 +12,6 @@ pnpm add @blue/generators
 
 Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 
-## Generators
-
-| Generator   | Purpose                                                                                                           |
-| ----------- | ----------------------------------------------------------------------------------------------------------------- |
-| `package`   | Scaffold a new `@blue/*` package: manifest, tsconfigs, empty `src/`/`test/`, and a standard-header `src/index.ts` |
-| `component` | Generate a source + test file pair in an existing package, with the standard doc header                           |
-| `header`    | Add or replace the standard documentation header on an existing source file                                       |
-| `readme`    | Scaffold a new package `README.md` on the standard BlueJS template                                                |
-
 ## Getting Started
 
 ```bash
@@ -32,6 +23,15 @@ pnpm exec nx generate @blue/generators:readme --name my-package
 ```
 
 ## Usage
+
+### Generators
+
+| Generator   | Purpose                                                                                                           |
+| ----------- | ----------------------------------------------------------------------------------------------------------------- |
+| `package`   | Scaffold a new `@blue/*` package: manifest, tsconfigs, empty `src/`/`test/`, and a standard-header `src/index.ts` |
+| `component` | Generate a source + test file pair in an existing package, with the standard doc header                           |
+| `header`    | Add or replace the standard documentation header on an existing source file                                       |
+| `readme`    | Scaffold a new package `README.md` on the standard BlueJS template                                                |
 
 ### Component + header generators
 

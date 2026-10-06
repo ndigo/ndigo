@@ -6,6 +6,8 @@
 
 # Interface: Phased
 
+A component that runs in a numeric startup phase.
+
 ## Extended by
 
 - [`SmartLifecycle`](SmartLifecycle.md)

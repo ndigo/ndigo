@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi } from 'vitest';
 import { entity, generated, primaryColumn, column } from '@blue/orm';
 import type { AsyncRepository } from '@blue/orm';
 import { DrizzleDataSource } from '../src/drizzle-data-source';
@@ -128,5 +128,59 @@ describe('DrizzleRepository.findPage', () => {
         // The declared-column path still works.
         const rows = await manager.findAllWhere(PagedNote, [{ columnName: 'priority', value: 1 }]);
         expect(rows).toEqual([]);
+    });
+});
+
+describe('DrizzleRepository set-based operations (DA-7)', () => {
+    async function seeded(): Promise<{
+        repository: DrizzleRepository<PagedNote, number>;
+        dataSource: DrizzleDataSource;
+    }> {
+        const dataSource = new DrizzleDataSource({ url: ':memory:' });
+        await dataSource.init([PagedNote]);
+        const repository = new DrizzleRepository(PagedNote, new DrizzleEntityManager(dataSource));
+        await seed(repository);
+        return { repository, dataSource };
+    }
+
+    test('count() counts in SQL instead of materializing every row', async () => {
+        const { repository, dataSource } = await seeded();
+        const execute = vi.spyOn(dataSource.client, 'execute');
+
+        expect(await repository.count()).toBe(SEED.length);
+        expect(execute.mock.calls).toEqual([[`SELECT COUNT(*) AS total FROM "paged_notes"`]]);
+    });
+
+    test('existsById() probes in SQL with LIMIT 1 instead of loading the entity', async () => {
+        const { repository, dataSource } = await seeded();
+        const [note] = await repository.findAll();
+        const existingId = note.id as number;
+        const missingId = existingId + 10_000;
+        const execute = vi.spyOn(dataSource.client, 'execute');
+
+        expect(await repository.existsById(existingId)).toBe(true);
+        expect(await repository.existsById(missingId)).toBe(false);
+        expect(execute.mock.calls).toEqual([
+            [`SELECT 1 FROM "paged_notes" WHERE "id" = ? LIMIT 1`, [existingId]],
+            [`SELECT 1 FROM "paged_notes" WHERE "id" = ? LIMIT 1`, [missingId]],
+        ]);
+    });
+
+    test('deleteById() issues one DELETE and reports rowsAffected', async () => {
+        const { repository, dataSource } = await seeded();
+        const [note] = await repository.findAll();
+        const existingId = note.id as number;
+        const execute = vi.spyOn(dataSource.client, 'execute');
+
+        expect(await repository.deleteById(existingId)).toBe(true);
+        expect(await repository.deleteById(existingId)).toBe(false);
+        expect(execute.mock.calls).toEqual([
+            [`DELETE FROM "paged_notes" WHERE "id" = ?`, [existingId]],
+            [`DELETE FROM "paged_notes" WHERE "id" = ?`, [existingId]],
+        ]);
+
+        execute.mockRestore();
+        expect(await repository.count()).toBe(SEED.length - 1);
+        expect(await repository.findById(existingId)).toBeUndefined();
     });
 });

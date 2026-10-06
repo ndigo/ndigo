@@ -12,7 +12,7 @@ Conceptual and hands-on guides for building applications with BlueJS. These comp
 6. [06 — WebSockets](06-websockets.md) — the `@socketMapping` contract, the session registry (`SocketSessionRegistry` bean: rooms, broadcast, heartbeat), the isomorphic client, and STOMP destinations/subscriptions/receipts.
 7. [07 — Caching](07-caching.md) — the `@blue/cache` store (TTL + LRU/FIFO eviction), the `@cached` decorator for server methods, and `memoize` for client functions — the same semantics on both sides.
 8. [08 — Multipart & File Upload](08-multipart-and-file-upload.md) — server-side acceptance of `multipart/form-data`: the `MultipartFile` contract, `fileValue()` binding, threshold-to-disk streaming, limits → 413, and filename-safety.
-9. [09 — Argument Binding](09-argument-binding.md) — the handler binding surface: per-source extractors, whole-source data binding (`dataBinderValue` — the form/model story), `requestPart` JSON parts, matrix parity, and missing-value → 400.
+9. [09 — Argument Binding](09-argument-binding.md) — the handler binding surface: per-source extractors, whole-source data binding (`dataBinderValue` — the form/model story), `requestPart` JSON parts, matrix parity, missing-value → 400, and registering custom resolvers (`registerArgumentResolvers`, `passthroughArgumentValue`).
 10. [10 — Telemetry](10-telemetry.md) — logging, the OTel span/trace surface, metric counters, and the Node/browser wiring.
 11. [11 — Authentication & Sessions](11-authentication-and-sessions.md) — credentials + session storage, the auth decorators, and the admin-store workflow.
 12. [12 — Package Documentation](12-package-documentation.md) — the documentation standard every package must meet: README template, metadata fields, generated API references (`pnpm doc:api`), and CI freshness enforcement.
@@ -20,6 +20,8 @@ Conceptual and hands-on guides for building applications with BlueJS. These comp
 14. [14 — DTO & Conversion](14-dto-conversion.md) — `ConversionService` schema targets: entity-derived DTOs, fail-fast semantics, and the OpenAPI response contract (`@apiDocs({ responses })`).
 15. [15 — Method Interception & Resilience](15-method-interception.md) — metadata annotations, the interceptor chain (`@blue/proxy`), registration paths, weaving semantics, and retry + circuit breaking (`@blue/resilience`).
 16. [16 — Persistence & Distributed Backends](16-persistence-and-distributed-backends.md) — the memory-first doctrine, durable LibSQL sessions, the shared Redis cache, cross-node WebSocket/STOMP fan-out, shutdown ordering, and the deferred items (distributed scheduling).
+17. [17 — Static Files](17-static-files.md) — filesystem serving over HTTP: the greedy `/static/{*file}` controller, ETag/conditional GET, single-range requests, precompressed variants, SPA fallback, directory control, and the security model.
+18. [18 — Signals & Islands](18-signals-and-islands.md) — reactive state with `@blue/signals` (`signal`/`computed`/`effect`, the `@reactive` decorators, stream and event bridges) and the island lifecycle: `IslandView` marker → `hydrateIslands()` → SSE-driven re-render.
 
 ## Reading Order
 

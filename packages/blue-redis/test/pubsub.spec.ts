@@ -338,6 +338,32 @@ live('Redis socket fan-out (live standalone Redis)', () => {
         expect(remote.received).toEqual(['before outage', 'remote room fence']);
     });
 
+    it('surfaces the most recent error across connections and malformed inbound envelopes', async () => {
+        const namespace = randomUUID();
+        const a = transport(namespace);
+        const b = transport(namespace);
+        await Promise.all([a.fanout.connect(), b.fanout.connect()]);
+        const received: unknown[] = [];
+        await a.fanout.subscribe('path', (message) => received.push(message.body));
+
+        // Record an older error on `a` by killing its command connection.
+        const publisherId = await a.connection.run((client) => client.clientId());
+        expect(await b.connection.run((client) => client.clientKill({ filter: 'ID', id: publisherId }))).toBe(1);
+        await vi.waitFor(() => expect(a.connection.lastError).toBeInstanceOf(Error));
+
+        // A later malformed envelope on `a`'s subscriber must win over the
+        // older publisher error — decode failures are never permanently masked.
+        await b.connection.run((client) => client.publish(`blue:socket:${namespace}:path`, 'not-an-envelope'));
+        await vi.waitFor(() => expect(a.fanout.lastDecodeError).toBeInstanceOf(Error));
+        expect(a.fanout.lastError).toBe(a.fanout.lastDecodeError);
+        expect(received).toEqual([]);
+
+        // Decoding failures do not poison the subscription: the next valid
+        // remote message still delivers.
+        await b.fanout.publish('path', { key: '/chat', body: 'still live' });
+        await vi.waitFor(() => expect(received).toEqual(['still live']));
+    });
+
     it('routes real STOMP topic SEND frames once with each node subscription ID and keeps queues local', async () => {
         const namespace = randomUUID();
         const a = transport(namespace);

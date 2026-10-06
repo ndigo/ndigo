@@ -16,6 +16,12 @@ Jeff Rose
 
 ## References
 
+### randomHex
+
+Re-exports [randomHex](../../functions/randomHex.md)
+
+***
+
 ### randomToken
 
 Re-exports [randomToken](../../functions/randomToken.md)

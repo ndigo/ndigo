@@ -13,7 +13,7 @@
  */
 import type { InitializationAwareProcessor } from '@blue/factory';
 import type { MethodInterceptor } from './interceptor';
-import { collectMethodSpecs, interceptAndRegister, isIntercepted } from './weave';
+import { collectMethodSpecs, interceptAndRegister, isIntercepted, wovenBy } from './weave';
 
 /**
  * Builds an initialization-aware entry processor advising every method an
@@ -23,11 +23,16 @@ import { collectMethodSpecs, interceptAndRegister, isIntercepted } from './weave
  *   like any other singleton).
  * - Entries where nothing matches keep their identity.
  * - Re-processing an already-woven instance by *this same* processor is
- *   idempotent: the proxy passes through unchanged.
+ *   idempotent: the proxy passes through unchanged (weaving provenance
+ *   records which processor owns the proxy).
  * - A *different* `interception(...)` result meeting an already-woven
  *   instance throws: a container may register exactly one interception
  *   processor, and all advice must be combined in that one call. A silent
  *   second registration would look configured but never run.
+ * - An instance already woven standalone (`interceptMethods`) passes through
+ *   with a warning: there is no duplicate registration to fail on, and the
+ *   warning names the real cause instead of the misleading "register exactly
+ *   one interception(...) processor" error.
  *
  * Interceptor ordering is applied per entry inside {@link collectMethodSpecs}
  * (`order`, stable — missing order counts as 0), so the `order` contract
@@ -36,7 +41,9 @@ import { collectMethodSpecs, interceptAndRegister, isIntercepted } from './weave
  * @param interceptors - The advice to apply.
  */
 export function interception(interceptors: readonly MethodInterceptor[]): InitializationAwareProcessor {
-    const woven = new WeakSet<object>();
+    // Identity token recorded as weaving provenance: distinguishes proxies
+    // this processor wove from standalone-woven and foreign-processor proxies.
+    const owner = {};
 
     return {
         processBeforeInitialization<T>(_entryName: string, instance: T): T {
@@ -53,7 +60,14 @@ export function interception(interceptors: readonly MethodInterceptor[]): Initia
                 return instance;
             }
             if (isIntercepted(instance)) {
-                if (woven.has(instance)) {
+                const woveBy = wovenBy(instance);
+                if (woveBy === owner) {
+                    return instance;
+                }
+                if (woveBy === undefined) {
+                    console.warn(
+                        `entry '${entryName}' was already woven standalone (interceptMethods) — the interception(...) processor leaves it unchanged, so its interceptors do not run on this instance`
+                    );
                     return instance;
                 }
                 throw new Error(
@@ -61,8 +75,7 @@ export function interception(interceptors: readonly MethodInterceptor[]): Initia
                 );
             }
 
-            const proxy = interceptAndRegister(instance, specs);
-            woven.add(proxy);
+            const proxy = interceptAndRegister(instance, specs, owner);
             return proxy as T;
         },
     };

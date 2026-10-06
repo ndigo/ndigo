@@ -3,36 +3,24 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import {
-    MethodParameter,
-    MethodParameterType,
-    AbstractPlatformArgumentResolver,
-    convertArgumentValue,
-} from '@blue/dispatcher';
+import { AbstractCookieValueArgumentResolver } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { getNodeRequest } from './node-request';
 
 /**
  * Node.js cookie argument resolver.
+ *
+ * Binds `cookieValue()` (no name → the whole `request.cookies` jar) and
+ * named cookie values through the shared
+ * `AbstractCookieValueArgumentResolver` base.
  */
-export class NodeCookieValueMethodArgumentResolver extends AbstractPlatformArgumentResolver {
-    constructor() {
-        super(convertArgumentValue);
-    }
-
+export class NodeCookieValueMethodArgumentResolver extends AbstractCookieValueArgumentResolver {
     get [Symbol.toStringTag](): string {
         return 'NodeCookieValueMethodArgumentResolver';
     }
 
-    protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: unknown): unknown {
-        // `cookieValue()` (no name) binds the whole cookie jar.
-        if (name === '') {
-            return getNodeRequest(route)?.cookies;
-        }
-        return getNodeRequest(route)?.cookies?.[name];
-    }
-
-    supportsParameter(parameter: MethodParameter): boolean {
-        return MethodParameterType.COOKIE.equals(parameter.type);
+    /** Reads the parsed cookies off the Node request attached to the route. */
+    protected getCookieJar(route: Route): Record<string, unknown> | undefined {
+        return getNodeRequest(route)?.cookies;
     }
 }

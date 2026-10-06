@@ -51,14 +51,41 @@ export function isIntercepted(instance: object): boolean {
 }
 
 /**
+ * Provenance of woven proxies: the `interception(...)` processor that wove
+ * each proxy. Recorded only when a processor owns the weaving; standalone
+ * {@link interceptMethods} leaves no entry. The container processor reads it
+ * to tell "already woven by another processor" (a configuration error) from
+ * "woven standalone" (leave the instance alone, warn) — IN-9.
+ */
+const WOVEN_BY = new WeakMap<object, object>();
+
+/**
+ * The `interception(...)` processor known to have woven `instance`, or
+ * `undefined` when it was woven standalone (`interceptMethods`) or by an
+ * unrecorded producer. Not an interception check — see {@link isIntercepted}.
+ */
+export function wovenBy(instance: object): object | undefined {
+    return WOVEN_BY.get(instance);
+}
+
+/**
  * The prototype object whose methods make up `instance`'s surface. Proxies
  * over a class — service clients (`serviceClient(API, http)`) — are
  * function-typed and their declared methods live on the class's `.prototype`
  * (`ResilientAPI.prototype`), not on the proxy's own chain
  * (`Function.prototype`).
+ *
+ * Arrow and bound functions have no `.prototype` and therefore no
+ * prototype-owned method surface; `undefined` reports exactly that instead of
+ * handing `enumeratePrototypeMethods` an opaque `TypeError` (IN-8). Callers
+ * treat it as "nothing to weave" and pass the target through unchanged.
  */
-function methodSurfaceOf(instance: object): object {
-    return typeof instance === 'function' ? (instance as Function).prototype : instance;
+function methodSurfaceOf(instance: object): object | undefined {
+    if (typeof instance !== 'function') {
+        return instance;
+    }
+    const prototype: unknown = (instance as Function).prototype;
+    return typeof prototype === 'object' && prototype !== null ? prototype : undefined;
 }
 
 /**
@@ -102,6 +129,11 @@ export function collectMethodSpecs(
 ): MethodChainSpec[] {
     const targetType = classOf(instance);
     const surface = methodSurfaceOf(instance);
+    if (surface === undefined) {
+        // Function targets without a prototype (arrow/bound) expose no method
+        // surface: nothing can match, so weaving passes the target through.
+        return [];
+    }
     const ordered = sortInterceptors(interceptors);
 
     const specs: MethodChainSpec[] = [];
@@ -119,10 +151,20 @@ export function collectMethodSpecs(
  * Weaves `target` and records the result as intercepted — the single
  * registration point for the double-wrap guard, shared by the container
  * processor and standalone {@link interceptMethods}.
+ *
+ * @param target - The object to weave.
+ * @param specs - The pre-matched method specs.
+ * @param owner - The `interception(...)` processor that owns this weaving,
+ *   when there is one; standalone weaving omits it so provenance stays
+ *   empty (`wovenBy` returns `undefined`).
+ * @returns The woven proxy.
  */
-export function interceptAndRegister(target: object, specs: readonly MethodChainSpec[]): object {
+export function interceptAndRegister(target: object, specs: readonly MethodChainSpec[], owner?: object): object {
     const proxy = weaveMethodProxy(target, specs);
     INTERCEPTED.add(proxy);
+    if (owner !== undefined) {
+        WOVEN_BY.set(proxy, owner);
+    }
     return proxy;
 }
 
@@ -133,6 +175,10 @@ export function interceptAndRegister(target: object, specs: readonly MethodChain
  * Service clients and other hand-constructed objects use this where factory
  * processors (`interception(...)`) cannot see them. The instance is
  * described under its constructor name.
+ *
+ * Function targets are treated as class proxies and advised through their
+ * `.prototype`. Arrow and bound functions have no prototype surface, so —
+ * like any target whose methods do not match — they pass through unchanged.
  *
  * @param instance - The object to advise.
  * @param interceptors - The advice to apply (matched per method).
@@ -201,7 +247,7 @@ export function weaveMethodProxy(target: object, specs: readonly MethodChainSpec
     }
 
     // Prototype methods that need target-bound pass-through wrappers.
-    const prototypeMethods = new Set(enumeratePrototypeMethods(methodSurfaceOf(target)));
+    const prototypeMethods = new Set(enumeratePrototypeMethods(methodSurfaceOf(target) ?? target));
 
     // Wrapper per key, so `proxy.method === proxy.method` holds for callers
     // that capture method references.

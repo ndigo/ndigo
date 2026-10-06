@@ -107,4 +107,37 @@ describe('OfflineInterceptor', () => {
 
         expect(emitCount).toBe(0);
     });
+
+    test('dispose removes window listeners and stops the heartbeat', () => {
+        const interceptor = new OfflineInterceptor({ checkInterval: 1000 }, emitter);
+
+        let emitCount = 0;
+        emitter.on('offline', () => {
+            emitCount++;
+        });
+
+        interceptor.dispose();
+
+        // Window events no longer update the status.
+        onLineSpy.mockReturnValue(false);
+        window.dispatchEvent(new Event('offline'));
+        expect(interceptor.isOnline).toBe(true);
+
+        // The heartbeat no longer polls.
+        vi.advanceTimersByTime(5000);
+        expect(emitCount).toBe(0);
+    });
+
+    test('dispose is idempotent', () => {
+        const removeSpy = vi.spyOn(window, 'removeEventListener');
+        const interceptor = new OfflineInterceptor({ checkInterval: 1000 }, emitter);
+
+        interceptor.dispose();
+        expect(removeSpy).toHaveBeenCalledWith('online', expect.any(Function));
+        expect(removeSpy).toHaveBeenCalledWith('offline', expect.any(Function));
+        const callsAfterFirstDispose = removeSpy.mock.calls.length;
+
+        interceptor.dispose();
+        expect(removeSpy.mock.calls.length).toBe(callsAfterFirstDispose);
+    });
 });

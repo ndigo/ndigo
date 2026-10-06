@@ -223,4 +223,28 @@ describe('FeatureRoutingRegistry', () => {
         expect(registry.navigate('/todo')).toBe(false);
         expect(registry.unregister('todo')).toBe(false);
     });
+
+    test('it should reject a duplicate route prefix and leave the registry consistent (HT-10)', () => {
+        const registry = new FeatureRoutingRegistry();
+
+        registry.registerFeature({
+            name: 'todo',
+            prefix: '/todo',
+            onRoute: vi.fn(),
+        });
+
+        expect(() =>
+            registry.registerFeature({
+                name: 'todo-v2',
+                prefix: 'todo',
+                onRoute: vi.fn(),
+            })
+        ).toThrowError("A feature is already mounted at prefix '/todo'");
+
+        // The failed registration left no feature behind, and the original
+        // feature still routes and can be unregistered on its own.
+        expect(() => registry.setActiveFeature('todo-v2')).toThrowError("Feature 'todo-v2' is not registered");
+        expect(registry.navigate('/todo/active')).toBe(true);
+        expect(registry.unregister('todo')).toBe(true);
+    });
 });

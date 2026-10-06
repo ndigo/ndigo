@@ -51,6 +51,21 @@ applied DDL from a mid-migration failure is the documented degradation —
 migrations should be authored idempotent (`IF NOT EXISTS` style) or the
 database restored from backup.
 
+**Update (2026-10-06) — the recorded reason was wrong; the decision stands.**
+Re-verification with `@libsql/client` 0.17.4 showed SQLite does support
+transactional DDL: a `CREATE TABLE` between `BEGIN` and `ROLLBACK`
+disappears cleanly, so "SQLite implicitly COMMITs an open transaction when
+DDL runs" is not the constraint. The real constraint is
+`MigrationContext.batch()`: libSQL executes `client.batch()` in its own
+implicit transaction, so a body that batches while an explicit transaction
+is open fails with "cannot start a transaction within a transaction", and
+that failure rolls the outer transaction back (the later `ROLLBACK` then
+reports "cannot rollback - no transaction is active" — the as-built
+observation that motivated this decision). Migration bodies may mix
+`execute` (per-statement atomicity) and `batch` (atomic as a group), so no
+explicit transaction can wrap `up()`; the journal insert still executes
+only after `up()` returns.
+
 ### D-3 — Baseline DDL is generated from entity metadata
 
 The DDL mapping in `DrizzleDataSource.init` is extracted verbatim into

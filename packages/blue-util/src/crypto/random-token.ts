@@ -4,17 +4,13 @@
  * @author Jeff Rose
  */
 
+import { assertCryptoAvailable } from './_crypto.js';
+
 // RFC 4648 §5 base64url alphabet (URL- and filename-safe, `-` and `_`).
 const BASE64URL_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
 
 /** Character codes for each 6-bit group emitted by the encoder. */
 const BASE64URL_CHARS: ReadonlyArray<number> = Array.from(BASE64URL_ALPHABET, (ch) => ch.codePointAt(0) as number);
-
-function assertCryptoAvailable(): void {
-    if (typeof globalThis.crypto === 'undefined' || typeof globalThis.crypto.getRandomValues !== 'function') {
-        throw new Error('randomToken requires Web Cryptography (globalThis.crypto.getRandomValues)');
-    }
-}
 
 /**
  * Encodes `bytes` as unpadded base64url (RFC 4648 §5). Padding `=` characters

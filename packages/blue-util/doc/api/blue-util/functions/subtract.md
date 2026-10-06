@@ -37,17 +37,8 @@ The result of `a - b`.
 ## Example
 
 ```ts
-import { __, subtract } from '@blue/util';
 subtract( 10, 8 );
 //=> 2
-
-const minus5 = subtract( __, 5 );
-minus5( 17 );
-//=> 12
-
-const complementaryAngle = subtract( 90 );
-complementaryAngle( 30 );
+subtract( 90, 30 );
 //=> 60
-complementaryAngle( 72 );
-//=> 18
 ```

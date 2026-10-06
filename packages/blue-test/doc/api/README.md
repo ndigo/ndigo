@@ -5,7 +5,6 @@
 # @blue/test v0.0.1
 
 Blue integration test harness — MockHTTP-style in-process dispatch.
-*
 
 ## Since
 

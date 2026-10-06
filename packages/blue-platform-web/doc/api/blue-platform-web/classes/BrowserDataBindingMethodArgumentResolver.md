@@ -11,13 +11,13 @@ Browser whole-source data-binding resolver.
 Resolves whole browser data sources (`data-query:value`,
 `data-cookie:value`, `data-session-storage:value`,
 `data-local-storage:value` — see `dataBinderValue`, D-3) and binds them to
-objects using the shared `DataBinder` pipeline
-([AbstractPlatformArgumentResolver.resolveBoundArgument](#)): source
-data → prefix filter → `DataBinder` → conversion → Zod hook.
+objects using the shared `DataBinder` pipeline (the
+`AbstractDataBindingArgumentResolver` base): source data → prefix filter
+→ `DataBinder` → conversion → Zod hook.
 
 ## Extends
 
-- `AbstractPlatformArgumentResolver`
+- `AbstractDataBindingArgumentResolver`
 
 ## Constructors
 
@@ -25,13 +25,15 @@ data → prefix filter → `DataBinder` → conversion → Zod hook.
 
 > **new BrowserDataBindingMethodArgumentResolver**(): `BrowserDataBindingMethodArgumentResolver`
 
+Creates a whole-source data-binding resolver.
+
 #### Returns
 
 `BrowserDataBindingMethodArgumentResolver`
 
-#### Overrides
+#### Inherited from
 
-`AbstractPlatformArgumentResolver.constructor`
+`AbstractDataBindingArgumentResolver.constructor`
 
 ## Accessors
 
@@ -75,7 +77,7 @@ if the argument is undefined or null.
 
 #### Inherited from
 
-`AbstractPlatformArgumentResolver.handleMissingValue`
+`AbstractDataBindingArgumentResolver.handleMissingValue`
 
 ***
 
@@ -110,9 +112,9 @@ extending this base — only the BIND path invoked it.
 
 `unknown`
 
-#### Overrides
+#### Inherited from
 
-`AbstractPlatformArgumentResolver.resolveArgument`
+`AbstractDataBindingArgumentResolver.resolveArgument`
 
 ***
 
@@ -136,6 +138,6 @@ The method parameter to check.
 
 Whether or not the given method parameter is supported by this resolver.
 
-#### Overrides
+#### Inherited from
 
-`AbstractPlatformArgumentResolver.supportsParameter`
+`AbstractDataBindingArgumentResolver.supportsParameter`

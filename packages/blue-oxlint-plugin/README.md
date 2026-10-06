@@ -12,7 +12,21 @@ pnpm add -D @blue/oxlint-plugin
 
 Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 
-## Rules
+## Getting Started
+
+```jsonc
+// .oxlintrc.json — load the plugin and enable a rule
+{
+    "jsPlugins": ["@blue/oxlint-plugin"],
+    "rules": {
+        "@blue/no-internal-file-imports": "error",
+    },
+}
+```
+
+## Usage
+
+### Rules
 
 | Rule                                     | Enforces                                                                                                                           |
 | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
@@ -23,7 +37,9 @@ Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 | `@blue/no-mixed-case-acronyms`           | Acronyms follow `STYLE_GUIDE` casing                                                                                               |
 | `@blue/no-uppercase-regexp-constants`    | RegExp instances are objects — camelCase                                                                                           |
 | `@blue/no-cross-paradigm-decorators`     | Decorator families stay within their paradigm                                                                                      |
+| `@blue/no-scheduled-in-browser`          | Disallow `@blue/scheduler` imports in browser-platform files                                                                       |
 | `@blue/no-signals-in-entity`             | `@blue/signals` reactivity does not leak into entities                                                                             |
+| `@blue/no-string-registry-lookup`        | Disallow string-literal registry lookups in source files                                                                           |
 | `@blue/no-abstract-class-without-prefix` | Abstract classes use the `Abstract`/`As` prefix convention                                                                         |
 | `@blue/requires-doc-header`              | Source files begin with the canonical doc header (`@module`/`@since`/`@author`); repair with `nx generate @blue/generators:header` |
 

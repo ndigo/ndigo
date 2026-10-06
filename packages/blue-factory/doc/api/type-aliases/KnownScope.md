@@ -7,3 +7,5 @@
 # Type Alias: KnownScope
 
 > **KnownScope** = `"singleton"` \| `"prototype"` \| `"route"` \| `"hash"` \| `"refresh"`
+
+Scope names shipped by the factory.

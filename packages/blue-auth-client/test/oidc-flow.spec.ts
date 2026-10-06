@@ -7,7 +7,7 @@
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { createServer, IncomingMessage, Server } from 'node:http';
 import { generateKeyPair, exportSPKI, exportJWK, importSPKI, SignJWT } from 'jose';
-import { OIDCAdapter, OIDCError } from '../src/oidc-adapter';
+import { OIDCAdapter, OIDCError, type PendingAuthorization, type PendingAuthorizationStore } from '../src/oidc-adapter';
 
 /**
  * Full authorization-code flow against a local stub identity provider:
@@ -124,6 +124,24 @@ function makeAdapter(overrides: Record<string, unknown> = {}): OIDCAdapter {
     });
 }
 
+/**
+ * A caller-persisted {@link PendingAuthorizationStore} shared across adapter
+ * instances — the shape a browser sessionStorage / server Redis store has.
+ */
+function createSharedPendingStore(): PendingAuthorizationStore {
+    const entries = new Map<string, PendingAuthorization>();
+    return {
+        kind: 'test-shared',
+        get: async (state) => entries.get(state) ?? null,
+        set: async (state, pending) => {
+            entries.set(state, pending);
+        },
+        delete: async (state) => {
+            entries.delete(state);
+        },
+    };
+}
+
 describe('OIDCAdapter full authorization-code flow', () => {
     test('happy path: discovery → authorization request → code exchange → verified principal', async () => {
         const adapter = makeAdapter();
@@ -155,6 +173,37 @@ describe('OIDCAdapter full authorization-code flow', () => {
         noncesByCode.set('code-1', request.nonce);
         await adapter.exchangeCodeForTokens('code-1', request.state);
         await expect(adapter.exchangeCodeForTokens('code-2', request.state)).rejects.toMatchObject({
+            code: 'invalid_state',
+        });
+    });
+
+    test('a callback on a second adapter instance completes when both share a pendingStore', async () => {
+        const pendingStore = createSharedPendingStore();
+        const creatingPage = makeAdapter({ pendingStore });
+        const request = await creatingPage.createAuthorizationRequest();
+        noncesByCode.set('survives-redirect', request.nonce);
+
+        // The provider redirect reloads the app: the creating adapter instance
+        // is gone and a fresh one handles the callback.
+        const callbackPage = makeAdapter({ pendingStore });
+        const result = await callbackPage.exchangeCodeForTokens('survives-redirect', request.state);
+
+        expect(result.principal?.id).toBe('42');
+        expect(result.principal?.hasRole('user')).toBe(true);
+        expect(result.token).toBe('at-123');
+    });
+
+    test('a shared pendingStore keeps state single-use across instances', async () => {
+        const pendingStore = createSharedPendingStore();
+        const creator = makeAdapter({ pendingStore });
+        const request = await creator.createAuthorizationRequest();
+        noncesByCode.set('shared-once', request.nonce);
+
+        const callback = makeAdapter({ pendingStore });
+        await callback.exchangeCodeForTokens('shared-once', request.state);
+
+        const replay = makeAdapter({ pendingStore });
+        await expect(replay.exchangeCodeForTokens('shared-once-again', request.state)).rejects.toMatchObject({
             code: 'invalid_state',
         });
     });

@@ -1,12 +1,12 @@
 /**
  * MockHTTP — in-process, socket-free integration-test client for Blue applications.
- * * @module blue-test
+ * @module blue-test
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { HTTPHeaders, contentTypeBase, MULTIPART_FORM_DATA } from '@blue/http';
 import { NodeDispatcher } from '@blue/platform-node';
-import { getMethodNotAllowed, getInterceptorDenial } from '@blue/dispatcher';
+import { getMethodNotAllowed, getInterceptorDenial, isSocketMapping } from '@blue/dispatcher';
 import {
     ProblemTypes,
     writeProblem,
@@ -19,6 +19,8 @@ import {
 } from '@blue/platform-node';
 import { PassThrough } from 'node:stream';
 import type { IncomingMessage } from 'node:http';
+import { guid } from '@blue/util/math';
+import type { Route } from '@blue/router';
 import { getLogger } from '@blue/log';
 import { buildRoute, MockRequest, PreparedRoute } from './request-builder';
 import { createMemoryResponse, MemoryResponse } from './memory-response';
@@ -111,12 +113,31 @@ export class MockHTTPRequestBuilder {
     }
 
     /**
-     * Add query parameters.
+     * Add query parameters. Supplying a key again (or an array value)
+     * accumulates: the value is promoted to an array on repeats, matching the
+     * live adapter's `?a=1&a=2` multi-value contract.
      * @param query - Query parameter map.
      * @returns This builder.
      */
-    query(query: Record<string, string>): this {
-        this.#request.query = { ...this.#request.query, ...query };
+    query(query: Record<string, string | string[]>): this {
+        // Null prototype: a `__proto__` key must stay an ordinary entry here
+        // too (SEC-8), never swap the accumulator's prototype.
+        const merged: Record<string, string | string[]> = Object.create(null);
+        for (const [key, value] of Object.entries(this.#request.query ?? {})) {
+            merged[key] = value;
+        }
+        for (const [key, value] of Object.entries(query)) {
+            const existing = merged[key];
+            const incoming = Array.isArray(value) ? value : [value];
+            if (existing === undefined) {
+                merged[key] = value;
+            } else if (Array.isArray(existing)) {
+                merged[key] = [...existing, ...incoming];
+            } else {
+                merged[key] = [existing, ...incoming];
+            }
+        }
+        this.#request.query = merged;
         return this;
     }
 
@@ -232,9 +253,13 @@ export class MockHTTP {
      *
      * Replicates `NodeHTTPServerAdapter`'s request→dispatch contract so the
      * in-process behavior matches a real HTTP hit: an unmatched route yields
-     * `404` JSON; a dispatcher error yields `500` JSON; an interceptor denial
-     * yields the adapter's deterministic denial response (`401`/`403` problem
-     * document, redirect `302` with `Location`, or an empty `<= 399` status).
+     * `404` JSON; a path whose handlers reject the method yields `405` with an
+     * `Allow` header; a socket-only endpoint (`@socketMapping`) yields `404`;
+     * an unmatched `OPTIONS` dispatches so interceptor-only concerns (CORS
+     * preflight) can finalize, defaulting to `404` when none does; a
+     * dispatcher error yields `500` JSON; an interceptor denial yields the
+     * adapter's deterministic denial response (`401`/`403` problem document,
+     * redirect `302` with `Location`, or an empty `<= 399` status).
      *
      * @param req - The request spec.
      * @returns The mock result.
@@ -272,6 +297,18 @@ export class MockHTTP {
             // The mapping strategy returns an empty execution chain (`handler: {}`)
             // when nothing matches — detect a real handler by its own keys.
             const noHandler = !chain?.handler || Object.keys(chain.handler).length === 0;
+            // IN-5 parity with NodeHTTPServerAdapter.handleRequest: a
+            // WebSocket-only endpoint (`@socketMapping`) reached over plain
+            // HTTP is 404 — the path is not served by the HTTP pipeline.
+            if (!noHandler && this.#hasSocketHandler(prepared.route)) {
+                writeProblem(sink, {
+                    type: ProblemTypes.notFound,
+                    title: 'Not Found',
+                    status: 404,
+                    instance: prepared.route.path,
+                });
+                return toResult(prepared, response);
+            }
             if (noHandler) {
                 // RFC 9110 §15.5.6: a path whose handlers reject the request
                 // method is 405 with an Allow header, not 404. Short-circuit
@@ -291,13 +328,19 @@ export class MockHTTP {
                     );
                     return toResult(prepared, response);
                 }
-                writeProblem(sink, {
-                    type: ProblemTypes.notFound,
-                    title: 'Not Found',
-                    status: 404,
-                    instance: prepared.route.path,
-                });
-                return toResult(prepared, response);
+                if (prepared.route.method !== 'OPTIONS') {
+                    writeProblem(sink, {
+                        type: ProblemTypes.notFound,
+                        title: 'Not Found',
+                        status: 404,
+                        instance: prepared.route.path,
+                    });
+                    return toResult(prepared, response);
+                }
+                // OPTIONS is always allowable (RFC 9110 §9.3.7) and the
+                // mapping's fallback chain carries interceptors even for
+                // unmatched routes (CORS preflight), so dispatch it; the 404
+                // default below applies only when nothing finalized it.
             }
             // Dispatch through the real pipeline; the handler writes to the sink.
             await this.#dispatcher.dispatch(prepared.route);
@@ -308,8 +351,19 @@ export class MockHTTP {
             // already ended (e.g. the CSRF guard's own problem document) is left
             // untouched, matching the adapter's ended-response skip.
             const denial = getInterceptorDenial(prepared.route);
-            if (denial && !response.completed) {
-                finalizeInterceptorDenial(sink, denial);
+            if (denial) {
+                if (!response.completed) {
+                    finalizeInterceptorDenial(sink, denial);
+                }
+            } else if (noHandler && !response.completed) {
+                // Unmatched OPTIONS that no interceptor finalized: default 404,
+                // exactly like the live adapter's post-dispatch fallback.
+                writeProblem(sink, {
+                    type: ProblemTypes.notFound,
+                    title: 'Not Found',
+                    status: 404,
+                    instance: prepared.route.path,
+                });
             }
         } catch (err: unknown) {
             if (!response.completed) {
@@ -375,5 +429,38 @@ export class MockHTTP {
 
     #method(method: string, path: string): MockHTTPRequestBuilder {
         return new MockHTTPRequestBuilder(this, { method, path });
+    }
+
+    /**
+     * IN-5 parity with `NodeHTTPServerAdapter`'s `#hasSocketHandler` probe: a
+     * method-less mapping lookup tells a `@socketMapping`-only path (404 over
+     * plain HTTP) from a real HTTP route. The adapter memoizes the probe per
+     * static path; the mock re-probes per request — negligible for in-process
+     * test dispatch.
+     *
+     * @param route - The matched request route.
+     * @returns Whether the path resolves to a socket handler.
+     */
+    #hasSocketHandler(route: Route): boolean {
+        const probe: Route = {
+            length: 0,
+            id: guid(),
+            path: route.path,
+            raw: route.raw,
+            data: {},
+            params: null,
+            attributes: {},
+        };
+        const chain = this.#dispatcher.getHandler(probe);
+        // The chain's handler is a RouteHandlerMethod wrapping the controller
+        // instance + the selected method name (same shape the adapter probes).
+        const candidate = chain?.handler as { handler: object; method: string } | undefined;
+        const controller = candidate?.handler;
+        const methodName = candidate?.method;
+        return (
+            !!controller &&
+            typeof methodName === 'string' &&
+            isSocketMapping(Object.getPrototypeOf(controller), methodName)
+        );
     }
 }

@@ -61,6 +61,24 @@ describe('interceptMethods', () => {
         expect(interceptMethods<Unmatched>(unmatched, [recordingInterceptor([])])).toBe(unmatched);
     });
 
+    it('passes arrow-function targets through unchanged instead of throwing', () => {
+        const arrow = (): string => 'arrow';
+        const permissive: MethodInterceptor = { matches: () => true, invoke: (_invocation, next) => next() };
+
+        expect(interceptMethods(arrow, [permissive])).toBe(arrow);
+        expect(arrow()).toBe('arrow');
+    });
+
+    it('passes bound-function targets through unchanged instead of throwing', () => {
+        const bound = function bound(): string {
+            return 'bound';
+        }.bind(null);
+        const permissive: MethodInterceptor = { matches: () => true, invoke: (_invocation, next) => next() };
+
+        expect(interceptMethods(bound, [permissive])).toBe(bound);
+        expect(bound()).toBe('bound');
+    });
+
     it('is idempotent — already-woven proxies pass through', () => {
         const service = new StandaloneService();
         const proxy = interceptMethods<StandaloneService>(service, [recordingInterceptor([])]);

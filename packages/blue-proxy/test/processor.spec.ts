@@ -4,9 +4,9 @@
  * @author Jeff Rose
  */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { DefaultFactory } from '@blue/factory';
-import { interception, methodAnnotation, MethodInterceptor } from '@blue/proxy';
+import { interceptMethods, interception, methodAnnotation, MethodInterceptor } from '@blue/proxy';
 
 describe('interception() container integration', () => {
     const audited = methodAnnotation<{ action: string }>('audited');
@@ -105,6 +105,26 @@ describe('interception() container integration', () => {
         expect(() => factory.getValue<OrderService>('orders')).toThrow(
             /already intercepted — register exactly one interception\(\.\.\.\) processor/
         );
+    });
+
+    it('passes standalone-woven instances through with a warning instead of a false duplicate-processor error', () => {
+        const standaloneLog: string[] = [];
+        const processor = interception([audit([])]);
+        const standalone = interceptMethods(new OrderService(), [audit(standaloneLog)]);
+
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        try {
+            const result = processor.processAfterInitialization('orders', standalone);
+
+            expect(result).toBe(standalone);
+            expect(warn).toHaveBeenCalledTimes(1);
+            expect(warn.mock.calls[0]?.[0]).toContain('already woven standalone');
+            // The standalone proxy keeps its own advice; the container's never ran on it.
+            expect(standalone.place('solo')).toBe('ok:solo');
+            expect(standaloneLog).toEqual(['order.place:place']);
+        } finally {
+            warn.mockRestore();
+        }
     });
 
     it('does not advise self-invocations of matched methods', () => {

@@ -82,17 +82,20 @@ class MappingRegistry<T = unknown> {
      *
      * @param mapping - The mapping key.
      * @param handlerMethod - The handler method to associate.
+     * @param mappingName - The name the handler method is exposed under, if any.
      * @param directPaths - Paths that map directly to this entry.
      */
-    register(mapping: T, handlerMethod: RouteHandlerMethod, directPaths: string[] = []): void {
+    register(mapping: T, handlerMethod: RouteHandlerMethod, mappingName: string, directPaths: string[] = []): void {
         this.#mappingLookup.set(mapping, handlerMethod);
         const length = directPaths.length;
         for (let i = 0; i < length; i++) {
             this.#pathLookup.add(directPaths[i], mapping);
         }
-        let name: string = '';
+        if (mappingName) {
+            this.#nameLookup.add(mappingName, handlerMethod);
+        }
 
-        this.#registry.set(mapping, new MappingEntry(mapping, handlerMethod, name, directPaths));
+        this.#registry.set(mapping, new MappingEntry(mapping, handlerMethod, mappingName, directPaths));
     }
 
     unregister(mapping: T): void {

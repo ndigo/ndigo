@@ -114,6 +114,23 @@ describe('QueueMessageStore contract (in-memory backend)', () => {
         expect(replayed[0]?.seq).toBe(2);
     });
 
+    test('the count bound governs when the byte budget is smaller (PR-10 regression)', async () => {
+        // Pre-fix the ring capacity was min(count, bytes) = 100 slots
+        // (rounded to 128), so the 129th empty-body append silently
+        // overwrote the first: the count bound (1000) never fired, and an
+        // empty body cannot trip the byte budget (0 octets). Empty bodies
+        // outlive the byte bound, so the ring must reserve the count bound.
+        const store = new InMemoryQueueMessageStore({ maxMessagesPerDestination: 1000, maxBytes: 100 });
+        for (let i = 1; i <= 200; i++) {
+            // oxlint-disable-next-line no-await-in-loop -- appends must be sequential: the store contract applies them in call order.
+            await store.append({ ...message('/queue/empty', ''), messageId: `e${i}` });
+        }
+        const replayed = await store.replay('/queue/empty');
+        expect(replayed).toHaveLength(200);
+        expect(replayed[0]?.messageId).toBe('e1');
+        expect(store.stats.retainedBytes).toBe(0); // empty bodies are free — only the count bound applies
+    });
+
     test('destination cap evicts the oldest destination whole', async () => {
         const store = new InMemoryQueueMessageStore({ maxDestinations: 2, maxMessagesPerDestination: 100 });
         await store.append({ ...message('/queue/a'), messageId: 'a1' });

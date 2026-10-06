@@ -27,15 +27,7 @@ import { HTTP_SERVER, SOCKET_SESSION_REGISTRY } from './context-tokens';
 import { SecurityHeadersInterceptor } from './security-headers-interceptor';
 import { NodeParameterBindingErrorResolver } from './parameter-binding-error-resolver';
 import { NodeLastResortErrorResolver } from './last-resort-error-resolver';
-import { NodeQueryValueMethodArgumentResolver } from './query-argument-resolver';
-import { NodePathValueMethodArgumentResolver } from './path-argument-resolver';
-import { NodeHeaderValueMethodArgumentResolver } from './header-argument-resolver';
-import { NodeBodyValueMethodArgumentResolver } from './body-argument-resolver';
-import { NodeDataBindingMethodArgumentResolver } from './data-binding-argument-resolver';
-import { NodeRequestPartMethodArgumentResolver } from './request-part-argument-resolver';
-import { NodeMultipartFileMethodArgumentResolver } from './multipart-file-argument-resolver';
-import { NodeCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
-import { NodeRequestSessionValueMethodArgumentResolver } from './request-session-argument-resolver';
+import { createNodeArgumentResolvers } from './configure-argument-resolvers';
 import { FixedWindowRateLimiter } from './rate-limit';
 import type { RateLimiter } from './rate-limit';
 import { RateLimitInterceptor } from './rate-limit-interceptor';
@@ -67,17 +59,7 @@ export class NodeAutoConfiguration {
      */
     @entry(ARGUMENT_RESOLVERS)
     argumentResolvers() {
-        return [
-            new NodeQueryValueMethodArgumentResolver(),
-            new NodePathValueMethodArgumentResolver(),
-            new NodeHeaderValueMethodArgumentResolver(),
-            new NodeBodyValueMethodArgumentResolver(),
-            new NodeDataBindingMethodArgumentResolver(),
-            new NodeRequestPartMethodArgumentResolver(),
-            new NodeMultipartFileMethodArgumentResolver(),
-            new NodeCookieValueMethodArgumentResolver(),
-            new NodeRequestSessionValueMethodArgumentResolver(),
-        ];
+        return createNodeArgumentResolvers();
     }
 
     /**

@@ -15,12 +15,14 @@ against the clean tree: `pnpm build` failure reproduced after `nx reset`;
 dependency-cycle regression computed across `HEAD~1..HEAD~3`; `toRegExp`
 crash, Drizzle DDL type mapping, and JWT exp/sub/short-secret acceptance
 reproduced with `tsx` probes. Full gates were run before the review (§0).
-**Status:** Findings recorded; **Waves 1–4 EXECUTED (2026-10-06)** — Wave 1
-(`@blue/log` leaf + cycle-free build, AD-67); all Must-Fix correctness items
-(CF-1..3, IN-1..2, HT-1, PL-1..4, DA-1, OP-1..2, PR-1..2); Wave 4a (SE-1..4,
-SE-6, TO-1, DO-1/DO-2); Wave 4b (CF-4..8, HT-2..6, IN-3, PL-5..8, DA-2..4,
-OP-3..10, TO-2..7, AP-1..4, HG-5). Remaining Should-Fix: SE-5, PR-3..7,
-HG-3, HG-4 (plus Wave 5 hygiene/docs and Wave 6 verification).
+**Status:** Findings recorded; **Waves 1–5 EXECUTED (2026-10-06)** — Wave 1
+(`@blue/log` leaf + cycle-free build, AD-67); all Must-Fix items; Wave 4a
+(SE-1..4, SE-6, TO-1, DO-1/DO-2); Wave 4b (CF-4..8, HT-2..6, IN-3, PL-5..8,
+DA-2..4, OP-3..10, TO-2..7, AP-1..4, HG-5); waves 4c/5 (SE-5, PR-3..12,
+HG-3, TO-8..13, DO-3..9, AP-5..9, CF-9..12, HT-7..11, PL-9..12, DA-5..12,
+OP-11..14, IN-4..12, HG-7/8/11/12, A-4, README alignment + gate widening).
+Close-out pending: HG-4 (catalogs), HG-6 (shared delay), SE-7..SE-12
+optional hardening, and Wave 6 final verification.
 **Legend:** `[code]` established by reading cited lines · `[exec]` reproduced
 by execution · `[inference]` reasoned without execution.
 **Source IDs:** each finding keeps its slice-local origin where useful
@@ -867,3 +869,37 @@ fail-before/pass-after spec (evidence in the slice reports).
   `dev` flow).
 - Integration fix-ups: three `no-await-in-loop` spec restructurings
   (timeout ×2, socket-probe ×3 loops).
+
+### Wave 4c/5 execution (2026-10-06)
+
+Eighteen package-disjoint slices; every code item landed with a
+fail-before/pass-after spec (evidence in the slice reports). Highlights:
+
+- **Protocol/service:** STOMP `maxUnacked: 0` id-only ACK no longer closes;
+  duplicate receipt ids reject; queue capacity no longer byte-budgeted;
+  SSE phantom events gone; service proxy delegates `Object.prototype`
+  members; `streamCall` spans flag failures; OpenAPI hoists recursive
+  schemas into `components.schemas` and synthesizes path parameters.
+- **Auth/data:** OIDC injection `pendingStore` seam (cross-instance callback
+  spec); `getErrorMessage` promoted to `@blue/util` and migrated at all 12
+  sites; set-based repository count/exists/delete; Redis error recency +
+  `lastDecodeError`; shared `resolveCacheName`; `@cached` detached receiver.
+- **Framework/platform:** `@property` binds without `@propertySource`;
+  parser follows environment changes; factory contracts documented;
+  `getInstance` returns registered values as-is; streamed renders honor
+  backpressure; formatting fails loud without a locale; node view target
+  delegates entity serialization; `OfflineInterceptor.dispose()`; content
+  negotiation threads the request per call (global holder deleted);
+  condition semantics (empty value/repeated keys), mapping-name registry,
+  canonical Accept folding, duplicate-prefix and sparse-map fail-loud.
+- **Harness/tooling/docs:** MockHTTP query/socket/OPTIONS/405 parity;
+  root `lint` builds the plugin first; benchmark bundle resolution + preview
+  reaping; root dead devDeps and `vite.config.lib.ts` removed; root
+  `typecheck` script + CI lane covering every app; docs-link gate widened to
+  package/app READMEs; audit moderates cleared; plans/migrations indexes
+  completed; CSP docs aligned with SEC-4; guides 17 (static files) and 18
+  (signals & islands) added; every package README now meets the enforced
+  section standard (gate widened with it); app READMEs/deps corrected;
+  blue-api matrix tests.
+- Integration fix-up: one `no-await-in-loop` restructure (scheduler
+  wall-clock poll helper).

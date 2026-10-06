@@ -11,9 +11,11 @@ import { EntryProcessor } from './entry-processor';
 
 export interface Factory {
     /**
-     * Return an instance of the specified value.
+     * Returns the value registered under `name`: constructor-registered
+     * values are instantiated, while values registered as instances (or
+     * primitives) are returned as-is, preserving identity (CF-12).
      * @param name The name of the value.
-     * @returns An instance of the value specified by the `name`.
+     * @returns The instance (or registered value) specified by the `name`.
      */
     getInstance<T = unknown>(name: string): T;
 }
@@ -62,15 +64,6 @@ export interface FactoryAware extends Aware {
 }
 
 const { defineProperty } = Reflect;
-
-/**
- * Returns the error message from an unknown error type.
- * @param e The unknown error.
- * @returns The error message as a string.
- */
-export const getErrorMessage = (e: unknown): string => {
-    return e instanceof Error ? e.message : String(e);
-};
 
 /**
  * A mixin that adds {@link FactoryAware} capabilities to a class.

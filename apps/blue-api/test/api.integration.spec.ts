@@ -51,6 +51,18 @@ describe('blue-api through @blue/test', () => {
         expect(res.json()).toEqual({ greeting: 'Greetings, Alice!' });
     });
 
+    test('GET /api/products/:id;color=red selects the matrix-parameter mapping', async () => {
+        const res = await mockHTTP.get('/api/products/42;color=red').exec();
+        expect(res.response.status).toBe(200);
+        expect(res.json()).toEqual({ product: { id: '42', color: 'matched via matrix param' } });
+    });
+
+    test('GET /api/products/:id without a matrix param falls back to the plain mapping', async () => {
+        const res = await mockHTTP.get('/api/products/42').exec();
+        expect(res.response.status).toBe(200);
+        expect(res.json()).toEqual({ product: { id: '42', color: null } });
+    });
+
     test('POST /api/echo echoes the full JSON body', async () => {
         const res = await mockHTTP.post('/api/echo').body({ hello: 'world', n: 42 }).exec();
         expect(res.response.status).toBe(200);

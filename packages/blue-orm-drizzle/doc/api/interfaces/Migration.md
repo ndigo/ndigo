@@ -8,11 +8,16 @@
 
 A single versioned schema change. Versions are unique positive integers;
 the runner applies them in ascending order regardless of input order.
-`up` runs outside any explicit transaction: SQLite implicitly commits an
-open transaction when DDL runs, so statements are atomic individually,
-not as a group. A failing `up` leaves no journal row, so the migration is
-retried on the next run; author idempotent DDL (`IF NOT EXISTS` style) or
-restore from backup when a migration fails partway.
+`up` runs outside any explicit transaction. SQLite itself supports
+transactional DDL, but a migration body may use `ctx.batch(...)`, and
+libSQL runs a batch in its own implicit transaction: with an explicit
+transaction open, that nested batch fails ("cannot start a transaction
+within a transaction") and takes the outer transaction down with it.
+Statements are therefore atomic individually — a single `execute`
+autocommits, a `batch` is atomic as a group. A failing `up` leaves no
+journal row, so the migration is retried on the next run; author
+idempotent DDL (`IF NOT EXISTS` style) or restore from backup when a
+migration fails partway.
 
 ## Properties
 

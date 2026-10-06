@@ -25,6 +25,24 @@ router.use('/users/:id', (route) => {
 });
 ```
 
+## Usage
+
+### Feature-scoped routing
+
+```ts
+import { FeatureRoutingRegistry } from '@blue/router';
+
+const registry = new FeatureRoutingRegistry();
+registry.registerFeature({
+    name: 'todo',
+    prefix: '/todo',
+    onActivate: () => activateTodoFeature(),
+    onRoute: (route) => renderTodoRoute(route),
+});
+
+registry.navigate('/todo/active'); // activates 'todo' and routes '/active'
+```
+
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into

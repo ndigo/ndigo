@@ -368,11 +368,13 @@ class ConfigurationParser {
                     // such as registries are skipped by the metadata check above)
                     const config = new (configClass as new (...args: never[]) => object)();
                     if (hasPropertySourceMetadata(configClass)) {
-                        const sources = getPropertySourceMetadata(configClass);
-                        this.processPropertySource(sources);
-                        this.processProperty(config);
+                        this.processPropertySource(getPropertySourceMetadata(configClass));
                     }
 
+                    // CF-9: bind `@property` fields even without
+                    // `@propertySource` — the environment is always a valid
+                    // resolution source; the decorator alone declares intent.
+                    this.processProperty(config);
                     this.processConfiguration(config);
                 }
             }
@@ -430,12 +432,11 @@ class ConfigurationParser {
      * Process the given the `entry` decorator decorator metadata.
      */
     processEntry(nameOrToken: string | ContextToken<unknown>, value: () => unknown) {
-        const result = value();
-        if (typeof nameOrToken === 'string') {
-            this.registry.setValue(nameOrToken, result);
-        } else {
-            this.registry.setValue(nameOrToken, result);
-        }
+        // CF-11: the former if/else arms were identical. Tokens are keyed by
+        // `description` (the `Registry` contract), so narrow once and register
+        // through the string overload.
+        const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
+        this.registry.setValue(name, value());
     }
 
     /**
@@ -482,10 +483,10 @@ export class ConfigurationProcessor
 }
 
 /**
+ * Application context that parses `@configuration` classes and registers
+ * their `@entry` values.
  */
 export class MetadataConfigApplicationContext extends GenericApplicationContext {
-    #configurationParser: ConfigurationParser | null = null;
-
     constructor(name: string) {
         super(name);
         // Register the ApplicationContextAwareProcessor before any @entry
@@ -498,26 +499,17 @@ export class MetadataConfigApplicationContext extends GenericApplicationContext 
     }
 
     /**
-     * Parses configuration classes against the CURRENT environment.
-     *
-     * The parser is created lazily per use: `ApplicationBuilder` prepares
-     * (profiles, property sources) and replaces the environment before
-     * registration, so a parser captured at construction would evaluate
-     * `@profile` gates and `@propertySource` against a stale environment.
-     *
-     * @returns The parser bound to the current environment.
-     */
-    #parser(): ConfigurationParser {
-        this.#configurationParser ??= new ConfigurationParser(this, this.environment);
-        return this.#configurationParser;
-    }
-
-    /**
      * Registers a configuration class for metadata-driven initialization.
+     *
+     * Parsing runs against the environment current at this call: a fresh
+     * `ConfigurationParser` is created per registration. Callers may replace
+     * the environment between registrations (`setEnvironment`), so a memoized
+     * parser would evaluate `@profile` gates, `@propertySource` and
+     * `@property` binding against a stale environment (CF-9).
      *
      * @param configClass - The configuration class to parse.
      */
     register(configClass: unknown): void {
-        this.#parser().parse([configClass]);
+        new ConfigurationParser(this, this.environment).parse([configClass]);
     }
 }

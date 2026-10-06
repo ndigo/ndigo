@@ -34,6 +34,17 @@ const welcome = await resolver.getTheme().contentSource.getContent('welcome', 'e
 // 'Welcome'
 ```
 
+## Usage
+
+### Canonical language codes
+
+```ts
+import { LanguageCode } from '@blue/content';
+
+new LanguageCode('EN-us').code; // 'en-US' — canonicalized
+LanguageCode.for('en_us'); // null — invalid tags never become codes
+```
+
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into

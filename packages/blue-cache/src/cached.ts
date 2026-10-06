@@ -6,6 +6,7 @@
 import '@tsmetadata/polyfill';
 import { isDevMode } from '@blue/context';
 import { Cache, CacheMiss } from './cache';
+import { resolveCacheName } from './cache-name';
 import type { CacheManager } from './cache-manager';
 import { serializeCacheKey } from './keys';
 import { ContextToken } from '@blue/factory';
@@ -75,11 +76,8 @@ export function resolveCachedSpec(spec: CachedSpec = {}): NormalizedCachedSpec {
     if (spec === null || typeof spec !== 'object') {
         throw new TypeError(`@cached: expected a spec object — got ${spec === null ? 'null' : typeof spec}`);
     }
-    const cacheName = spec.cache ? spec.cache.description : (spec.cacheName ?? DEFAULT_CACHE_NAME);
+    const cacheName = resolveCacheName(spec.cache ?? spec.cacheName ?? DEFAULT_CACHE_NAME, '@cached');
     const { key, ttl } = spec;
-    if (typeof cacheName !== 'string' || cacheName.length === 0) {
-        throw new TypeError(`@cached: cacheName must be a non-empty string — got ${String(cacheName)}`);
-    }
     if (key !== undefined && typeof key !== 'string' && typeof key !== 'function') {
         throw new TypeError(`@cached: key must be a string or a (...args) => string function — got ${typeof key}`);
     }
@@ -139,9 +137,10 @@ export function cached(spec: CachedSpec = {}) {
         return async function (this: This, ...args: Args): Promise<Return> {
             // Structural contract, mirroring `@transactional`: the decorated
             // instance optionally carries the manager (constructor-injected);
-            // absent → graceful call-through.
-            const cacheAware = this as unknown as { cacheManager?: CacheManager };
-            const manager = cacheAware.cacheManager;
+            // absent — including a detached call with no receiver — degrades
+            // to a graceful call-through.
+            const cacheAware = this as unknown as { cacheManager?: CacheManager } | undefined;
+            const manager = cacheAware?.cacheManager;
             if (!manager) {
                 if (!degradationWarned && isDevMode()) {
                     degradationWarned = true;

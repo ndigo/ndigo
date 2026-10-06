@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 export * from './cache';
+export * from './cache-name';
 export * from './cache-manager';
 export * from './cached';
 export * from './keys';

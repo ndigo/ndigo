@@ -41,6 +41,20 @@ Most recent socket error; retained without logging secrets.
 
 `Error` \| `undefined`
 
+***
+
+### lastErrorAt
+
+#### Get Signature
+
+> **get** **lastErrorAt**(): `number` \| `undefined`
+
+`Date.now()` of the most recent observed error; `undefined` before any.
+
+##### Returns
+
+`number` \| `undefined`
+
 ## Methods
 
 ### close()

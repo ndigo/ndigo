@@ -9,6 +9,8 @@
 Parses and matches a single matrix-parameter expression against a route segment.
 
 Matrix parameters are per-segment key=value pairs carried in `RouteSegment.data`.
+Repeated keys and comma-separated lists aggregate into arrays; a `key=value`
+expression matches when any element equals `value`.
 This expression walks every segment of the route looking for a matching name/value pair.
 
 ## Extends
@@ -93,6 +95,12 @@ The expression to parse.
 
 Determine whether this expression matches the given route.
 
+A `name` expression (no `=`) matches on the name alone; a `name=`
+expression — including the empty value — matches on value. The branch
+uses `!== undefined` rather than truthiness so `name=` is not silently
+treated as a name-only expression (which would accept any route
+carrying the name, whatever its value).
+
 #### Parameters
 
 ##### route
@@ -172,6 +180,11 @@ The current route.
 > **matchValue**(`route`): `boolean`
 
 Check whether any route segment carries the expected matrix-parameter value.
+
+A segment value may be an array when the segment repeats the key
+(`;color=red;color=blue`) or lists values (`;color=red,blue`); the
+expression matches when any element equals the expected value. A single
+value matches by strict equality.
 
 #### Parameters
 

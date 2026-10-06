@@ -13,6 +13,7 @@ import {
     satisfiesVersion,
 } from '@blue/core';
 import { Destroyable, Initializable, likeCloseable, likeDestroyable, likeInitializable } from './lifecycle';
+import { getErrorMessage } from '@blue/util';
 import { isConstructor, isNumber, isString } from '@blue/util/types';
 import { Aware, likeAware, likeNameAware } from './aware';
 import { ContextToken } from './context-tokens';
@@ -33,8 +34,8 @@ import {
     likeDestructionAwareProcessor,
     likeInitializationAwareProcessor,
 } from './entry-processor';
-import { Factory, ConfigurableFactory, FactoryAware, likeFactoryAware, getErrorMessage } from './factory-contract';
-import { create, keys, construct, defineProperty, deleteProperty } from './factory-shared';
+import { Factory, ConfigurableFactory, FactoryAware, likeFactoryAware } from './factory-contract';
+import { keys, construct, defineProperty, deleteProperty } from './factory-shared';
 import { getLogger } from '@blue/log';
 
 const logger = getLogger('blue-factory:abstract-factory');
@@ -197,16 +198,21 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
     }
 
     /**
-     * Returns an instance of the specified value.
+     * Returns the value registered under `name`. Constructor-registered
+     * values are constructed (and configured) through the internal
+     * `_create` path; non-constructor values (instances, primitives) are
+     * returned as-is, preserving identity (CF-12). An unregistered name
+     * resolves to `undefined`.
      * @param name The name of the value.
      * @param argumentsList (constructor arguments) Optional arguments to pass to the constructor if the value is a constructor.
      * @returns An instance of the value.
      * @template T The type of the instance.
      */
     getInstance<T = unknown>(name: string, argumentsList: unknown[] = []): T {
-        const value = this[name];
-        // Non-constructor values are stored directly under `name`.
-        return this.hasConstructor(name) ? this._create<T>(name, argumentsList) : create(value as object | null);
+        // Non-constructor values are stored directly under `name`; return them
+        // as-is — no `Object.create` wrapper (which threw for primitives and
+        // broke identity for objects).
+        return this.hasConstructor(name) ? this._create<T>(name, argumentsList) : (this[name] as T);
     }
 
     /**

@@ -120,24 +120,20 @@ export class DrizzleRepository<T extends object, ID> implements AsyncRepository<
      * @returns `true` when the entity was found and deleted, `false` otherwise.
      */
     async deleteById(id: ID): Promise<boolean> {
-        const entity = await this.findById(id);
-        if (!entity) return false;
-        await this.#entityManager.remove(entity);
-        return true;
+        return this.#entityManager.deleteById(this.#entityClass, id);
     }
 
     /**
      * Returns the number of entities of the managed type.
      */
     async count(): Promise<number> {
-        const all = await this.findAll();
-        return all.length;
+        return this.#entityManager.count(this.#entityClass);
     }
 
     /**
      * Checks whether an entity with the given primary identifier exists.
      */
     async existsById(id: ID): Promise<boolean> {
-        return (await this.findById(id)) !== undefined;
+        return this.#entityManager.existsById(this.#entityClass, id);
     }
 }

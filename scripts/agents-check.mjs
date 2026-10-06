@@ -11,11 +11,40 @@
 //
 // Regenerate with `pnpm agents:sync`; edit in the store or agent-local/, never
 // in the generated directories. Zero dependencies. Exit 1 on any failure.
+//
+// Repo-owned deployment files (opencode.json, .opencode/plugins/**, AGENTS.md)
+// are also hashed — they are hand-authored in this repo (not gen.mjs output)
+// but carry code-execution reach inside the editor, so they sit under the
+// same drift gate via `.agent-local.json`. Regenerate that manifest with:
+//   node scripts/agents-check.mjs --update
 import { createHash } from 'node:crypto';
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const root = new URL('..', import.meta.url).pathname;
+
+// Repo-owned deployment surface covered by the secondary manifest.
+const LOCAL_COVERED = ['opencode.json', '.opencode/plugins', 'AGENTS.md'];
+
+/** Recursively walks `dir`, returning paths relative to it (sorted). */
+function walkFiles(dir, prefix = '') {
+  const out = [];
+  for (const name of readdirSync(dir).sort()) {
+    const full = join(dir, name);
+    const stat = statSync(full, { throwIfNoEntry: false });
+    if (!stat) continue;
+    if (stat.isDirectory()) out.push(...walkFiles(full, join(prefix, name)));
+    else out.push(join(prefix, name));
+  }
+  return out;
+}
+
+function sha256(text) {
+  return createHash('sha256').update(text, 'utf8').digest('hex');
+}
+
+const update = process.argv.includes('--update');
+const localManifestPath = join(root, '.agent-local.json');
 
 let errors = 0;
 const report = (msg) => {
@@ -72,6 +101,33 @@ const ompAgents = join(root, '.omp/agents');
 for (const file of readdirSync(ompAgents).filter((f) => f.endsWith('.md'))) {
   const head = readFileSync(join(ompAgents, file), 'utf8').split('\n---', 1)[0];
   if (!head.includes('\nmodel:')) report(`.omp/agents/${file}: missing stamped model (check .agent-models.json)`);
+}
+
+// 3. Repo-owned deployment manifest (.agent-local.json). Unlike .agent-gen.json
+//    (gen.mjs output), these files are authored in-repo — but they execute in
+//    the editor (opencode plugin, LSP config, AGENTS.md instructions), so they
+//    get the same drift gate. `--update` regenerates the manifest.
+const localFiles = [];
+for (const entry of LOCAL_COVERED) {
+  const abs = join(root, entry);
+  if (!existsSync(abs)) continue;
+  if (statSync(abs).isDirectory()) {
+    for (const rel of walkFiles(abs)) localFiles.push([join(entry, rel), readFileSync(join(abs, rel), 'utf8')]);
+  } else {
+    localFiles.push([entry, readFileSync(abs, 'utf8')]);
+  }
+}
+localFiles.sort((a, b) => a[0].localeCompare(b[0]));
+const expectedLocal = JSON.stringify({ files: Object.fromEntries(localFiles.map(([rel, content]) => [rel, sha256(content)])) }, null, 2) + '\n';
+if (update) {
+  writeFileSync(localManifestPath, expectedLocal);
+  console.log(`agents:check: wrote ${localFiles.length} repo-owned files to .agent-local.json`);
+} else if (!existsSync(localManifestPath) || readFileSync(localManifestPath, 'utf8') !== expectedLocal) {
+  report(
+    '.agent-local.json out of sync — after changing AGENTS.md, opencode.json, or .opencode/plugins/, run `node scripts/agents-check.mjs --update` and commit the manifest'
+  );
+} else {
+  console.log(`agents:check: ${localFiles.length} repo-owned deployment files match .agent-local.json`);
 }
 
 if (errors > 0) process.exit(1);

@@ -162,6 +162,11 @@ The repository's AI-agent definitions are **generated, not hand-edited**.
   (CI-gated).
 - Edit `development-agents/` or `agent-local/` and regenerate; never edit
   generated files under `.opencode/agents`, `.claude/agents`, `.omp/agents`.
+- Repo-owned deployment files (`opencode.json`, `.opencode/plugins/`,
+  `AGENTS.md`) are authored in-repo but carry editor code-execution reach, so
+  they sit under the same drift gate: hashes live in `.agent-local.json`,
+  refreshed with `node scripts/agents-check.mjs --update` after any edit to
+  those files (commit the manifest alongside).
 - Models: `.agent-models.json` (stamped into OMP agents only; opencode and
   Claude inherit the session model).
 

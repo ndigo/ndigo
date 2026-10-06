@@ -46,7 +46,7 @@ Cache interceptor configuration.
 
 ### postResponse()
 
-> **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
+> **postResponse**(`response`, `settings`, `request?`): `Promise`\<`void` \| `Response`\>
 
 Stores a successful response in the cache.
 
@@ -63,6 +63,16 @@ The response to cache.
 [`HTTPInit`](../type-aliases/HTTPInit.md)
 
 The request settings used for the call.
+
+##### request?
+
+`Request`
+
+The final request that was sent, when the execution
+chain supplies it. Request-time interceptors may attach an
+`Authorization` or `Cookie` header after `settings` is frozen, so the
+credential and bypass gates read the sent request rather than the
+settings snapshot.
 
 #### Returns
 

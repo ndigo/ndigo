@@ -117,4 +117,32 @@ describe('builder.secrets (AD-29 Wave 2)', () => {
         expect(db.password.length).toBeGreaterThan(0);
         expect(db.password).toBe('s3cret-pass');
     });
+
+    test('CF-2: conversion failure never echoes the decrypted plaintext in the bind message', async () => {
+        @configurationProperties('dbnum')
+        class SecretNumberConfig {
+            @property('token', Number) token!: number;
+        }
+        const cipher = fakeCipher();
+        const marker = cipher.encrypt('super-secret-hunter2', 'dbnum.token');
+
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig, SecretNumberConfig]);
+        app.properties({ dbnum: { token: marker } });
+        app.secrets(cipher);
+
+        // The marker decrypts to a non-numeric string, so the Number
+        // conversion fails; the wrapped boot error is the leak surface.
+        const err = await app.run().then(
+            () => null,
+            (e: Error & { cause?: Error }) => e
+        );
+        const messages = `${err?.message ?? ''}\n${err?.cause?.message ?? ''}`;
+
+        expect(err).not.toBeNull();
+        expect(messages).toMatch(/Cannot bind SecretNumberConfig\.token from "dbnum\.token"/);
+        expect(messages).not.toContain('super-secret-hunter2');
+        expect(messages).not.toContain(marker);
+    });
 });

@@ -15,10 +15,10 @@ against the clean tree: `pnpm build` failure reproduced after `nx reset`;
 dependency-cycle regression computed across `HEAD~1..HEAD~3`; `toRegExp`
 crash, Drizzle DDL type mapping, and JWT exp/sub/short-secret acceptance
 reproduced with `tsx` probes. Full gates were run before the review (§0).
-**Status:** Findings recorded; **Wave 1 EXECUTED (2026-10-06)** — `@blue/log`
-leaf extracted, factory rewired off telemetry, instrumentation copies
-consolidated; `pnpm build` + zero-cycle scan green (AD-67; results in §4).
-Waves 2–6 pending.
+**Status:** Findings recorded; **Waves 1–2 EXECUTED (2026-10-06)** —
+`@blue/log` leaf + cycle-free build (AD-67), and the Must-Fix correctness
+cluster (CF-1..3, IN-1..2, HT-1) fixed with fail-before/pass-after regression
+specs (results in §4). Waves 3–6 pending.
 **Legend:** `[code]` established by reading cited lines · `[exec]` reproduced
 by execution · `[inference]` reasoned without execution.
 **Source IDs:** each finding keeps its slice-local origin where useful
@@ -758,3 +758,26 @@ layering contract.
   `blue-platform-node` SEC-6 temp-file spec scanned the shared `os.tmpdir()`
   and raced parallel blue-api spills — now file-filtered with a bounded
   quiesce (`packages/blue-platform-node/test/multipart-http.spec.ts:174-210`).
+
+### Wave 2 execution (2026-10-06)
+
+- **CF-1** conditional gates now also cover `@configurationProperties`
+  auto-registration, refresh rebind, and `@environment` schema collection
+  (`blue-boot/src/application.ts`); the four new specs reproduced the boot
+  failure before the fix.
+- **CF-2** bind-error messages no longer interpolate the property value
+  (`blue-boot/src/configuration-properties.ts`); the secrets spec asserts
+  neither marker nor plaintext appears in the failure chain.
+- **CF-3** refresh-scoped `@destroyable`/`@closeable` values tear down exactly
+  once on `clear()` (`blue-factory/src/abstract-factory.ts`); registration is
+  gated to the refresh scope because the singleton hook would double-run via
+  `destroyValue`.
+- **IN-1** MockHTTP finalizes interceptor denials through the adapter's shared
+  `finalizeInterceptorDenial` (`blue-platform-node/src/finalize-denial.ts`);
+  the blue-api workaround is deleted; 3 specs cover 403/401+challenge/302.
+- **IN-2** `toRegExp` parses only a strict `/pattern/flags` shape; plain
+  patterns containing flag letters compile as literals (integrator re-probe).
+- **HT-1** `postResponse` now receives the final sent Request (optional third
+  parameter threaded by the execution chain); `CacheInterceptor` gates on it,
+  so credentialed responses are neither stored nor served.
+- Focused specs: 6 files / 44 tests green; full gates re-run after integration.

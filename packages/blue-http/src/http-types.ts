@@ -133,9 +133,12 @@ export interface ResponseAwareHTTPInterceptor<T extends HTTPInit = HTTPInit> {
      *
      * @param response - The response returned by fetch.
      * @param settings - The request settings used for the call.
+     * @param request - The final request that was sent, after request-aware
+     * interceptors ran. The execution chain always supplies it; callers that
+     * invoke the hook directly may omit it.
      * @returns A replacement response, or `void` to keep the original.
      */
-    postResponse(response: Response, settings: T): Promise<Response | void>;
+    postResponse(response: Response, settings: T, request?: Request): Promise<Response | void>;
 }
 
 /**

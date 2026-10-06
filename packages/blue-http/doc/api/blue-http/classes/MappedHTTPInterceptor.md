@@ -170,7 +170,7 @@ A replacement response, or `undefined` if the interceptor does not handle errors
 
 ### postResponse()
 
-> **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
+> **postResponse**(`response`, `settings`, `request?`): `Promise`\<`void` \| `Response`\>
 
 Delegates response handling to the wrapped interceptor when supported.
 
@@ -187,6 +187,12 @@ The response returned by fetch.
 [`HTTPInit`](../type-aliases/HTTPInit.md)
 
 The request settings used for the call.
+
+##### request?
+
+`Request`
+
+The final request that was sent, when available.
 
 #### Returns
 

@@ -124,6 +124,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   dependencies (AD-57).
 - `SiteBuilder` stub and the legacy Site/Page model remnants (AD-03).
 
+### Fixed
+
+- Refresh-scoped beans with `destroy()`/`close()` now tear down when the
+  refresh scope clears on environment refresh (`config:refresh`): the
+  container registers the destruction callback at creation time, exactly once
+  per instance (AD-29).
+- Conditional sources are now gated consistently: an inactive
+  `@whenBrowser`/`@whenNode`/`@whenProperty`/… `@configurationProperties`
+  class no longer binds, no longer rebinds on refresh, and no longer
+  contributes `@environment` schemas (CF-1).
+- Boot bind errors no longer interpolate the property value, so a decrypted
+  secret can no longer leak into the failure message (CF-2).
+- `@blue/test` `MockHTTP` finalizes interceptor denials exactly like the live
+  Node adapter (`401`/`403` problem documents, `302` redirects), so guards are
+  testable without writing the response themselves (IN-1).
+- `@blue/util` `toRegExp` treats plain patterns that merely contain flag
+  letters (`my-pattern`, `greedy`) as literals instead of throwing a
+  `SyntaxError` (IN-2).
+- `CacheInterceptor` no longer stores or serves responses whose credentials
+  were attached by a request-time interceptor — the cache gates on the
+  request that was actually sent (HT-1).
+
 ### Security
 
 - Security headers default-on in `NodeAutoConfiguration` (CSP, HSTS,

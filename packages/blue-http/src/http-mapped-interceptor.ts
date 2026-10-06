@@ -164,12 +164,13 @@ export class MappedHTTPInterceptor
      *
      * @param response - The response returned by fetch.
      * @param settings - The request settings used for the call.
+     * @param request - The final request that was sent, when available.
      * @returns A replacement response, or \`void\` to keep the original.
      */
-    async postResponse(response: Response, settings: HTTPInit): Promise<Response | void> {
+    async postResponse(response: Response, settings: HTTPInit, request?: Request): Promise<Response | void> {
         const interceptor = this.#interceptor;
         if (likeResponseAwareHTTPInterceptor(interceptor)) {
-            return await interceptor.postResponse(response, settings);
+            return await interceptor.postResponse(response, settings, request);
         }
     }
 

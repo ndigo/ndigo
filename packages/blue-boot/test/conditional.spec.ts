@@ -4,8 +4,12 @@
  * @author Jeff Rose
  */
 import { describe, test, expect, vi, afterEach } from 'vitest';
+import { z } from 'zod';
 import { whenBrowser, whenNode, getConditionalPlatform, isActiveForCurrentPlatform } from '@blue/core';
 import { Application } from '../src/application';
+import { ApplicationBuilder, configurationProperties } from '../src/index';
+import { property, defaultValue, configuration, environment, refreshScope } from '@blue/context';
+import type { ConfigurableEnvironment } from '@blue/context';
 import { WebAutoConfiguration } from '@blue/platform-web';
 import { NodeAutoConfiguration } from '@blue/platform-node';
 
@@ -116,5 +120,102 @@ describe('Application integration', () => {
         expect(context.hasValue('argumentResolvers')).toBe(true);
         const resolvers = context.getValue<object[]>('argumentResolvers');
         expect(resolvers.some((r) => r.constructor.name.includes('Node'))).toBe(true);
+    });
+});
+
+describe('Application integration — conditional gate coverage (CF-1)', () => {
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
+    test('skips binding for an inactive @whenBrowser @configurationProperties source on Node', async () => {
+        vi.stubGlobal('window', undefined);
+
+        // Probe (CF-1): before the fix the ungated auto-registration loop
+        // bound this class and boot threw `Missing required property
+        // "browseronly.token"`.
+        @whenBrowser
+        @configurationProperties('browseronly')
+        class BrowserOnlyConfig {
+            @property('token', String) token!: string;
+        }
+
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig, BrowserOnlyConfig]);
+        const context = await app.run();
+
+        expect(context.hasValue('browserOnlyConfig')).toBe(false);
+    });
+
+    test('still binds an active @whenNode @configurationProperties source (control)', async () => {
+        vi.stubGlobal('window', undefined);
+
+        @whenNode
+        @configurationProperties('nodeonly')
+        class NodeOnlyConfig {
+            @property('token', String) token!: string;
+        }
+
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig, NodeOnlyConfig]);
+        app.properties({ nodeonly: { token: 'node-token' } });
+        const context = await app.run();
+
+        expect(context.getValue<NodeOnlyConfig>('nodeOnlyConfig').token).toBe('node-token');
+    });
+
+    test('skips @environment schema collection for an inactive @whenBrowser source', async () => {
+        vi.stubGlobal('window', undefined);
+
+        @whenBrowser
+        @environment(z.object({ browseronly: z.object({ token: z.string() }) }))
+        @configuration
+        class BrowserSchemaConfig {}
+
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig, BrowserSchemaConfig]);
+        const context = await app.run();
+
+        // Before the fix the ungated schema loop validated the browser-only
+        // schema on Node and boot failed with `Environment validation failed`.
+        expect(context).toBeDefined();
+    });
+
+    test('does not rebind an inactive @refreshScope source on environment refresh', async () => {
+        vi.stubGlobal('window', undefined);
+
+        @whenBrowser
+        @refreshScope
+        @configurationProperties('browser-refresh')
+        class BrowserRefreshConfig {
+            @property('token', String) @defaultValue('unset') token!: string;
+        }
+
+        @whenNode
+        @refreshScope
+        @configurationProperties('node-refresh')
+        class NodeRefreshConfig {
+            @property('token', String) @defaultValue('node-default') token!: string;
+        }
+
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig, BrowserRefreshConfig, NodeRefreshConfig]);
+        const context = await app.run();
+        const env = context.environment as ConfigurableEnvironment;
+
+        expect(context.hasValue('browserRefreshConfig')).toBe(false);
+        const before = context.getValue<NodeRefreshConfig>('nodeRefreshConfig');
+
+        env.refresh();
+
+        // The inactive class was excluded from the refresh-scoped rebind list;
+        // the active one rebound to a fresh instance.
+        expect(context.hasValue('browserRefreshConfig')).toBe(false);
+        const after = context.getValue<NodeRefreshConfig>('nodeRefreshConfig');
+        expect(after).not.toBe(before);
     });
 });

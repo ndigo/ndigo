@@ -401,16 +401,24 @@ export class Application extends Emitter {
         // isomorphic and must not import @blue/platform-node or DOM code.
         // Node apps pass NodeAutoConfiguration explicitly; browser apps pass
         // WebAutoConfiguration. Conditions still gate the user's own sources.
-        this.#sources.forEach((source) => {
+        // The active list is built during this registration pass (order
+        // matters: `register` materializes entries immediately, so a later
+        // source's `@whenMissingEntry` may observe an earlier one) and is
+        // reused below so inactive sources are also skipped by
+        // config-properties binding, refresh rebinding, and schema collection
+        // (CF-1).
+        const activeSources: Function[] = [];
+        for (const source of this.#sources) {
             if (isActive(source, conditionContext)) {
+                activeSources.push(source);
                 context.register(source);
             }
-        });
+        }
         context.refresh();
 
         // Auto-register @configurationProperties classes as bound entry beans
         // (AD-15 D1): after refresh so the environment is fully prepared.
-        for (const source of this.#sources) {
+        for (const source of activeSources) {
             if (isConfigurationProperties(source)) {
                 const name = camelCaseName(source.name);
                 // Structural cast: `source` is a ctor (decorator-verified).
@@ -422,7 +430,7 @@ export class Application extends Emitter {
         // AD-29 D-2: live rebind — `@refreshScope` configuration classes
         // re-bind on every environment refresh (`config:refresh` event).
         // Unmarked classes keep the boot-time instance (snapshot identity).
-        const refreshScoped = [...this.#sources].filter(
+        const refreshScoped = activeSources.filter(
             (source) => isConfigurationProperties(source) && getScope(source) === 'refresh'
         );
         if (refreshScoped.length > 0) {
@@ -465,10 +473,11 @@ export class Application extends Emitter {
 
         // Validate the environment against declared schemas (AD-17 D3):
         // explicit validateWith schema first, then @environment schemas on
-        // registered sources. Invalid → fail boot loudly with the report.
+        // registered (active) sources. Invalid → fail boot loudly with the
+        // report.
         const schemas: z.ZodType[] = [];
         if (this.#schema) schemas.push(this.#schema);
-        for (const source of this.#sources) {
+        for (const source of activeSources) {
             const declared = getEnvironmentSchema(source as new () => unknown);
             if (declared) schemas.push(declared);
         }

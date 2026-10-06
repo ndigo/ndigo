@@ -982,13 +982,12 @@ importers:
       '@blue/dispatcher':
         specifier: ~0.0.1
         version: link:../blue-dispatcher
-      '@blue/telemetry':
-        specifier: ~0.0.1
-        version: link:../blue-telemetry
-    devDependencies:
       '@blue/platform-node':
         specifier: ~0.0.1
         version: link:../blue-platform-node
+      '@blue/telemetry':
+        specifier: ~0.0.1
+        version: link:../blue-telemetry
 
   packages/blue-openapi:
     dependencies:

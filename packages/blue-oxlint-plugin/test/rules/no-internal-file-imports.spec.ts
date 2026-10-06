@@ -33,6 +33,10 @@ ruleTester.run('no-internal-file-imports', noInternalFileImports, {
             code: "import { bar } from '@blue/core/container';",
             filename: '/packages/blue-core/src/container.ts',
         },
+        {
+            code: "export * from '@blue/http';",
+            filename: '/packages/blue-core/src/container.ts',
+        },
     ],
     invalid: [
         {
@@ -61,6 +65,18 @@ ruleTester.run('no-internal-file-imports', noInternalFileImports, {
         },
         {
             code: "export { baz } from '@blue/http/_internal';",
+            filename: '/packages/blue-core/src/container.ts',
+            errors: [
+                {
+                    messageId: 'internalImport',
+                    data: {
+                        source: '@blue/http/_internal',
+                    },
+                },
+            ],
+        },
+        {
+            code: "export * from '@blue/http/_internal';",
             filename: '/packages/blue-core/src/container.ts',
             errors: [
                 {

@@ -59,6 +59,50 @@ describe('ManagementAutoConfiguration endpoints', () => {
     });
 });
 
+describe('ManagementAutoConfiguration security headers (SE-4)', () => {
+    let base: string;
+
+    beforeAll(async () => {
+        const context = new MetadataConfigApplicationContext('management-headers');
+        context.register(NodeAutoConfiguration);
+        context.register(ManagementAutoConfiguration);
+        context.refresh();
+
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+        const adapter = new NodeHTTPServerAdapter(dispatcher);
+        await adapter.listen(0, '127.0.0.1');
+        const server = adapter.server;
+        if (
+            typeof server !== 'object' ||
+            server === null ||
+            !('address' in server) ||
+            typeof server.address !== 'function'
+        ) {
+            throw new Error('Expected the adapter to expose a bound Node server');
+        }
+        const address: unknown = server.address();
+        if (
+            typeof address !== 'object' ||
+            address === null ||
+            !('port' in address) ||
+            typeof address.port !== 'number'
+        ) {
+            throw new Error('Expected the adapter server to be bound to a TCP port');
+        }
+        base = `http://127.0.0.1:${address.port}`;
+    });
+
+    test('management responses carry the default security-header set', async () => {
+        for (const path of ['/health', '/metrics']) {
+            // oxlint-disable-next-line no-await-in-loop -- each path is an isolated request; assertions stay independent.
+            const res = await fetch(`${base}${path}`);
+            expect(res.status).toBe(200);
+            expect(res.headers.get('x-content-type-options')).toBe('nosniff');
+            expect(res.headers.get('content-security-policy')).toContain("default-src 'self'");
+        }
+    });
+});
+
 describe('ManagementAutoConfiguration health redaction (AD-36 D-1)', () => {
     let base: string;
     let registry: HealthRegistry;

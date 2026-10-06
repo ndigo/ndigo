@@ -11,7 +11,10 @@ import { type UserRecord, DefaultPrincipal } from '@blue/auth-core';
 import { JWTAdapter, JWTTokenError } from '../src/jwt-adapter';
 import { InMemoryUserStore } from '../src/in-memory-user-store';
 
-function createJWT(payload: JWTPayload, secret = 'demo-secret'): string {
+/** 32+ byte HMAC secret (SE-2 rejects keys below 256 bits). */
+const TEST_SECRET = 'demo-secret-0123456789abcdefghijklmnop';
+
+function createJWT(payload: JWTPayload, secret = TEST_SECRET): string {
     const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
     const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
     const signature = createHmac('sha256', secret).update(`${header}.${body}`).digest('base64url');
@@ -28,7 +31,7 @@ function delay(ms: number): Promise<void> {
 const CONFIG = {
     issuer: 'https://blue.example.com',
     audience: 'blue-api',
-    secret: 'demo-secret',
+    secret: TEST_SECRET,
     algorithm: 'HS256',
 };
 

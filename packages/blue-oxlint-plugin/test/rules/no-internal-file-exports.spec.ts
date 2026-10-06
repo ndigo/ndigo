@@ -34,8 +34,8 @@ ruleTester.run('no-internal-file-exports', noInternalFileExports, {
             filename: '/packages/blue-core/test/index.ts',
         },
         {
-            code: "export { foo } from './_helpers';",
-            filename: '/packages/blue-util/src/index.ts',
+            code: 'const foo = 1;\nexport { foo };',
+            filename: '/packages/blue-core/src/index.ts',
         },
     ],
     invalid: [
@@ -59,6 +59,18 @@ ruleTester.run('no-internal-file-exports', noInternalFileExports, {
                     messageId: 'internalExport',
                     data: {
                         source: './_constants',
+                    },
+                },
+            ],
+        },
+        {
+            code: "export { foo } from './_helpers';",
+            filename: '/packages/blue-util/src/index.ts',
+            errors: [
+                {
+                    messageId: 'internalExport',
+                    data: {
+                        source: './_helpers',
                     },
                 },
             ],

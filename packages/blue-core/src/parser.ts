@@ -1,6 +1,6 @@
 /**
  * Class-based interface for parsing a string into a structured value of type `T`.
- * * @module blue-core
+ * @module blue-core
  * @since 1.0.0
  * @author Jeff Rose
  */

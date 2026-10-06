@@ -5,7 +5,7 @@
  * moved from `blue-dispatcher`, which re-exports them for handler
  * signatures) and the client story: `SocketClient`/`WebSocketClient` on
  * the WHATWG `WebSocket` global, with signal-based status and reconnect.
- * * @module blue-socket
+ * @module blue-socket
  * @since 1.0.0
  * @author Jeff Rose
  */

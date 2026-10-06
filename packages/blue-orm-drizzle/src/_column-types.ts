@@ -2,7 +2,7 @@
  * Internal metadata → SQLite storage-type mapping shared by the DDL emitter
  * (`createTableStatements`) and the Drizzle table builder
  * (`drizzleTableForEntity`), so both paths agree on the type of every column.
- * * @module blue-orm-drizzle
+ * @module blue-orm-drizzle
  * @since 1.0.0
  * @author Jeff Rose
  */

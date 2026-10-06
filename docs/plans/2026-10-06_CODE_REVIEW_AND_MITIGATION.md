@@ -21,9 +21,10 @@ TypeScript normalization, HG-6 shared `delay`, SE-7..SE-12, HG-9/HG-10);
 final gates and a live boot smoke are in §4 (Wave 6). Post-closure: SE-7's
 user-wide revocation landed with AD-68 (`SessionStore.deleteForUser`,
 `CredentialsAuthAdapter.logoutAll`, refresh-token `token_use` gate — see §4).
-Still accepted: TO-14 (rule catalogue is complete but hand-maintained); a
-`@vitest/coverage-v8` peer-drift follow-up; `pnpm audit --prod`'s single
-remaining high advisory lives in the sibling todomvc checkout.
+Still accepted: TO-14 (rule catalogue is complete but hand-maintained); the
+`typedoc>typescript` peer warning is a known upstream limitation handled by
+`scripts/typedoc-ts-shim.mjs` (documented there). Residual register A1–A5
+landed — see §4.
 **Legend:** `[code]` established by reading cited lines · `[exec]` reproduced
 by execution · `[inference]` reasoned without execution.
 **Source IDs:** each finding keeps its slice-local origin where useful
@@ -946,3 +947,20 @@ AND expires_at > ?`) and `CredentialsAuthAdapter.logoutAll(userId)`
   → `null`; `logoutAll('alice')` → `{sessions: 2, tokenVersion: 1}`, both
   sessions and the access token dead afterwards.
 - Gates re-run after the change (build/test/typecheck/lint/manifest/doc).
+
+### Residual cleanup (2026-10-06, register A1–A5)
+
+- **A1:** 115 tracked files carried a malformed `* * @module` header (the
+  review's IN-12 under-reported it as 10) — swept, and
+  `requires-doc-header` now rejects a stray `*` before a tag line, so it
+  cannot be copy-pasted back in (`lint` green over the swept tree).
+- **A2 (HG-2, lost in the plan's hygiene renumbering):** `blue-generators`
+  uses the shared `@blue/util/string` `toPascal` instead of two local copies.
+- **A3 (AP-11):** `todo-item.checked` returns the assigned value (`#checked`),
+  with a round-trip spec.
+- **A4:** `@vitest/coverage-v8` pinned to `~4.0.18` (was resolving 4.1.11
+  against vitest 4.0.18). **A5:** `source-map-js >= 1.2.2` override —
+  `pnpm audit --prod` reports zero vulnerabilities.
+- **Environment note:** the `typedoc>typescript` peer warning stands as a
+  known upstream limitation (TypeDoc 0.28 has no TS 7 support; the repo shim
+  relinks its resolver to 6.0.3 — see `scripts/typedoc-ts-shim.mjs`).

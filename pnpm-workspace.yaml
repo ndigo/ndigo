@@ -88,3 +88,4 @@ overrides:
   tmp: '>=0.2.7'
   react-router: '>=7.18.2'
   smol-toml: '>=1.8.1' # GHSA-r4xh-jqrq-34v2 — quadratic-time parse() key rescan (nx · @nx/devkit chain)
+  source-map-js: '>=1.2.2' # GHSA-68fv-2mgg-jv7q — ReDoS in source-map parsing (sibling todomvc Vue build chain)

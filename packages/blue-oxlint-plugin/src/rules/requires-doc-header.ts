@@ -18,6 +18,13 @@ import type { Context } from '@oxlint/plugins';
 /** Tags the canonical header must carry. */
 const REQUIRED_TAGS = ['@module', '@since', '@author'] as const;
 
+/**
+ * A stray `*` before a tag line (` * * @module …`) — a copy-paste artifact
+ * that renders as a literal asterisk in generated module docs. Tag-presence
+ * checks alone accept it, so it spread across the tree once (115 files).
+ */
+const malformedTagLinePattern = /^[ \t]*\*[ \t]+\*[ \t]+@/mu;
+
 /** Sniffs a top-of-file TSDoc block (slash-star-star … star-slash). */
 function topDocBlock(source: string): string | null {
     const match = /^\s*\/\*\*[\s\S]*?\*\//u.exec(source);
@@ -43,6 +50,8 @@ export const requiresDocHeader = {
                 "Source file is missing the canonical doc header. Run 'nx generate @blue/generators:header --file {{file}}'.",
             missingTags:
                 "Doc header is missing the {{tags}} tag(s); run 'nx generate @blue/generators:header --file {{file}} --force'.",
+            malformedTagLine:
+                "Doc header has a stray '*' before a tag line (reads '* * @…'); repair with 'nx generate @blue/generators:header --file {{file}} --force'.",
         },
         schema: [],
     } as const,
@@ -60,6 +69,15 @@ export const requiresDocHeader = {
                     context.report({
                         node: context.sourceCode.ast,
                         messageId: 'missingHeader',
+                        data: { file: filename },
+                    });
+                    return;
+                }
+
+                if (malformedTagLinePattern.test(block)) {
+                    context.report({
+                        node: context.sourceCode.ast,
+                        messageId: 'malformedTagLine',
                         data: { file: filename },
                     });
                     return;

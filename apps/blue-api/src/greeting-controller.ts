@@ -1,6 +1,6 @@
 /**
  * Demonstration controller for the Node.js platform demo.
- * * @module blue-api
+ * @module blue-api
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,6 +1,6 @@
 /**
  * Structural guard for the {@link View} contract.
- * * @module blue-view
+ * @module blue-view
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -91,6 +91,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The `@blue/requires-doc-header` oxlint rule now rejects stray `* * @…`
+  header lines; a repo-wide sweep repaired 115 files (the artifact rendered as
+  a literal `*` in generated module docs).
 - Framework diagnostics (`@blue/factory`, `@blue/platform-node`, `@blue/test`)
   now import the logger from `@blue/log`; `@blue/telemetry` re-exports the
   logging surface, and the `@blue/telemetry/logger` subpath is gone — import
@@ -278,6 +281,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - JWT `validate` accepts only access tokens: framework refresh tokens
   (`token_use: 'refresh'`, 7-day TTL) can no longer authenticate an API
   request; a present claim that is not `'access'` fails closed (SE-7).
+- blue-todo's `todo-item.checked` getter now reflects the value assigned to
+  the property (it previously read a host attribute nothing ever set) (AP-11).
+- Dependency override `source-map-js >= 1.2.2` (GHSA-68fv-2mgg-jv7q):
+  `pnpm audit --prod` reports zero known vulnerabilities again.
 - The CSRF double-submit cookie is hardened to the `__Host-` prefix with a
   spoofed-cookie rejection spec (SE-8).
 - Remote config sources gain a fetch timeout (10 s) and a response-size cap

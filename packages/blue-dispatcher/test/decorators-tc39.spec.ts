@@ -1,6 +1,6 @@
 /**
  * Behavioral tests for @blue/dispatcher decorators (TC39).
- * * @module blue-dispatcher
+ * @module blue-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */

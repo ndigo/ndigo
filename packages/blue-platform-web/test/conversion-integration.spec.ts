@@ -1,6 +1,6 @@
 /**
  * Integration tests for the full conversion pipeline:.
- * * @module blue-platform-web
+ * @module blue-platform-web
  * @since 1.0.0
  * @author Jeff Rose
  */

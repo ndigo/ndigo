@@ -1,6 +1,6 @@
 /**
  * Unit of work for the Drizzle-backed persistence layer.
- * * @module blue-orm-drizzle
+ * @module blue-orm-drizzle
  * @since 1.0.0
  * @author Jeff Rose
  */

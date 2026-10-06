@@ -2,7 +2,7 @@
  * WebSocket session contract — the handler's view of a live connection
  * (moved from `blue-dispatcher`, which re-exports these for `@socketMapping`
  * handler signatures — AD-22 D2).
- * * @module blue-socket
+ * @module blue-socket
  * @since 1.0.0
  * @author Jeff Rose
  */

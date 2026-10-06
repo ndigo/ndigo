@@ -1,6 +1,6 @@
 /**
  * Behavioral tests for @parameters pattern (TC39 parameter injection).
- * * @module blue-dispatcher
+ * @module blue-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */

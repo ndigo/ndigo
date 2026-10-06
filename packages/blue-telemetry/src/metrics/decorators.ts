@@ -5,7 +5,7 @@
  */
 import '@tsmetadata/polyfill';
 import { getSymbolMetadata } from '@blue/core';
-import { LogAttributes } from '../logger/logger';
+import type { LogAttributes } from '@blue/log';
 import { FeatureMetricAggregator } from './feature-metric-aggregator';
 import { CountedRegistry } from './_registry';
 

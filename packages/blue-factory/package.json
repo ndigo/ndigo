@@ -34,7 +34,7 @@
   "sideEffects": false,
   "dependencies": {
     "@blue/core": "~0.0.1",
-    "@blue/telemetry": "~0.0.1",
+    "@blue/log": "~0.0.1",
     "@blue/util": "~0.0.1",
     "@tsmetadata/polyfill": "^1.1.3"
   }

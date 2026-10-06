@@ -815,16 +815,16 @@ When reviewing code, check for:
 
 The framework is organized into 8 architectural layers with clear dependency direction and platform-aware boundaries:
 
-| Layer                      | Packages                                                                                                                                                                                                                 | Description                                                                                                                                             | Design Analogue                       |
-| :------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------ |
-| **7: Bootstrap**           | `@blue/boot`                                                                                                                                                                                                             | Application bootstrap, startup orchestration, and context assembly                                                                                      | Application bootstrap entrypoint      |
-| **6: Application**         | `@blue/service`, `@blue/management`, `@blue/platform-node`, `@blue/platform-web`, `@blue/auth-core`, `@blue/auth-client`, `@blue/auth-server`, `@blue/host`, `@blue/telemetry-node`, `@blue/telemetry-web`, `@blue/test` | Business services, platform adapters, auth (contracts + client + server), micro-frontend shell, Node/browser telemetry wiring, integration test harness | App services + platform adapters      |
-| **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent`, `@blue/view-ejs`                                                                                                                                            | Front controller, handler execution, view resolution and rendering adapters (Web Components, EJS)                                                       | Front controller + view resolution    |
-| **4: Web & Runtime Infra** | `@blue/http`, `@blue/router`, `@blue/telemetry`, `@blue/socket`, `@blue/scheduler`                                                                                                                                       | HTTP client/interceptors/transforms, routing primitives, websocket domain, cron scheduling, observability                                               | HTTP vocabulary + routing + telemetry |
-| **3: Application Context** | `@blue/context`                                                                                                                                                                                                          | Application context, environment, events, configuration metadata                                                                                        | DI container + application context    |
-| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/content-i18next`, `@blue/cache`, `@blue/orm`, `@blue/orm-drizzle`                                                                                                               | IoC container internals, i18n/theming, caching, persistence abstractions + Drizzle adapter                                                              | IoC container internals + theme/i18n  |
-| **1: Foundation**          | `@blue/core`, `@blue/signals`                                                                                                                                                                                            | Core primitives, collection types, path matching, reactive state                                                                                        | Core primitives + reactive state      |
-| **0: Integration Layer**   | `@blue/util`, `@blue/dom` (+ tooling: `@blue/oxlint-plugin`, `@blue/generators`)                                                                                                                                         | Encapsulated third-party libraries via stable BlueJS wrappers                                                                                           | Third-party facade + utility layer    |
+| Layer                      | Packages                                                                                                                                                                                                                                  | Description                                                                                                                                                                  | Design Analogue                       |
+| :------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------ |
+| **7: Bootstrap**           | `@blue/boot`                                                                                                                                                                                                                              | Application bootstrap, startup orchestration, and context assembly                                                                                                           | Application bootstrap entrypoint      |
+| **6: Application**         | `@blue/service`, `@blue/management`, `@blue/openapi`, `@blue/platform-node`, `@blue/platform-web`, `@blue/auth-core`, `@blue/auth-client`, `@blue/auth-server`, `@blue/host`, `@blue/telemetry-node`, `@blue/telemetry-web`, `@blue/test` | Business services, platform adapters, API docs generation, auth (contracts + client + server), micro-frontend shell, Node/browser telemetry wiring, integration test harness | App services + platform adapters      |
+| **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent`, `@blue/view-ejs`                                                                                                                                                             | Front controller, handler execution, view resolution and rendering adapters (Web Components, EJS)                                                                            | Front controller + view resolution    |
+| **4: Web & Runtime Infra** | `@blue/http`, `@blue/router`, `@blue/telemetry`, `@blue/socket`, `@blue/scheduler`, `@blue/redis`                                                                                                                                         | HTTP client/interceptors/transforms, routing primitives, websocket domain, cron scheduling, observability, distributed backends                                              | HTTP vocabulary + routing + telemetry |
+| **3: Application Context** | `@blue/context`                                                                                                                                                                                                                           | Application context, environment, events, configuration metadata                                                                                                             | DI container + application context    |
+| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/content-i18next`, `@blue/cache`, `@blue/orm`, `@blue/orm-drizzle`, `@blue/proxy`, `@blue/resilience`                                                                                             | IoC container internals, i18n/theming, caching, persistence abstractions + Drizzle adapter, method interception + resilience                                                 | IoC container internals + theme/i18n  |
+| **1: Foundation**          | `@blue/core`, `@blue/signals`, `@blue/log`                                                                                                                                                                                                | Core primitives, collection types, path matching, reactive state, logging core                                                                                               | Core primitives + reactive state      |
+| **0: Integration Layer**   | `@blue/util`, `@blue/dom` (+ tooling: `@blue/oxlint-plugin`, `@blue/generators`)                                                                                                                                                          | Encapsulated third-party libraries via stable BlueJS wrappers                                                                                                                | Third-party facade + utility layer    |
 
 > **Package Map:** the canonical per-package reference (purpose · platform ·
 > runtime deps) — see [§ Package Map](#package-map) below.
@@ -856,6 +856,7 @@ graph TD
     subgraph L6["Layer 6: Application"]
         Service[@blue/service]
         Management[@blue/management]
+        OpenAPI[@blue/openapi]
         PlatformNode[@blue/platform-node]
         PlatformWeb[@blue/platform-web]
         AuthCore[@blue/auth-core]
@@ -880,6 +881,7 @@ graph TD
         Telemetry[@blue/telemetry]
         Socket[@blue/socket]
         Scheduler[@blue/scheduler]
+        Redis[@blue/redis]
     end
 
     subgraph L3["Layer 3: Application Context"]
@@ -893,11 +895,14 @@ graph TD
         Cache[@blue/cache]
         Orm[@blue/orm]
         OrmDrizzle[@blue/orm-drizzle]
+        Proxy[@blue/proxy]
+        Resilience[@blue/resilience]
     end
 
     subgraph L1["Layer 1: Foundation"]
         Core[@blue/core]
         Signals[@blue/signals]
+        Log[@blue/log]
     end
 
     subgraph L0["Layer 0: Integration Layer"]
@@ -1001,6 +1006,7 @@ graph TD
     Telemetry --> Context
     Telemetry --> Core
     Telemetry --> Dispatcher
+    Telemetry --> Log
     Telemetry --> Router
     Router --> Core
     Router --> Factory
@@ -1014,6 +1020,15 @@ graph TD
     OrmDrizzle --> Core
     OrmDrizzle --> Orm
     OrmDrizzle --> Socket
+    Proxy --> Core
+    Proxy --> Factory
+    Resilience --> Proxy
+    Redis --> Cache
+    Redis --> Factory
+    Redis --> Socket
+    OpenAPI --> Core
+    OpenAPI --> Dispatcher
+    OpenAPI --> Http
     Content --> Core
     Content --> Factory
     Content --> Util
@@ -1023,6 +1038,7 @@ graph TD
     Context --> Factory
     Context --> Util
     Factory --> Core
+    Factory --> Log
     Factory --> Util
     Core --> Util
 
@@ -1056,58 +1072,70 @@ graph TD
     style OrmDrizzle fill:#ffe1e1
     style Core fill:#fff9e1
     style Signals fill:#fff9e1
+    style Log fill:#fff9e1
+    style Proxy fill:#ffe1e1
+    style Resilience fill:#ffe1e1
+    style Redis fill:#e1f5ff
+    style OpenAPI fill:#fff4e1
     style Util fill:#e1f0ff
     style Dom fill:#e1f0ff
 ```
 
-> Edges are runtime (`src/`) imports — verified and kept in sync by
-> `scripts/check-manifests.mjs` (CI). `@blue/cache`, `@blue/signals`,
-> `@blue/dom`, `@blue/auth-core`, `@blue/util` depend on no BlueJS package.
+> Edges mirror runtime (`src/`) imports. `scripts/check-manifests.mjs` (CI)
+> enforces import ↔ manifest consistency in both directions; keep this
+> diagram and the Package Map in step with the manifests when they change.
+> `@blue/cache`, `@blue/signals`, `@blue/dom`, `@blue/auth-core`,
+> `@blue/util`, and `@blue/log` depend on no BlueJS package.
 
-**Key Principle:** Higher layers depend on lower layers, never the reverse. Some cross-layer dependencies inside adjacent architectural tiers are intentional for integration and orchestration. The stack is acyclic (verified via the Nx dependency graph).
+**Key Principle:** Higher layers depend on lower layers, never the reverse. Some cross-layer dependencies inside adjacent architectural tiers are intentional for integration and orchestration. The stack is acyclic — `pnpm build` fails on any cycle in the Nx task graph.
 
 ### Package Map
 
-Canonical reference for every publishable package: purpose · layer · platform · runtime dependencies (BlueJS only; externals in parentheses). The dependency columns are machine-verified by `scripts/check-manifests.mjs` (CI, `pnpm manifest:check`); when editing manifests or imports, update the code — not this table.
+Canonical reference for every publishable package: purpose · layer · platform · runtime dependencies (BlueJS only; externals in parentheses). `scripts/check-manifests.mjs` (CI, `pnpm manifest:check`) enforces that every runtime import is declared and every declared dependency is used; the columns below are maintained by hand from the manifests — update this table whenever manifests or imports change.
 
-| Package                   | Layer   | Platform | Purpose                                                                                                    | Runtime deps                                                                              |
-| :------------------------ | :------ | :------- | :--------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------- |
-| `@blue/util`              | 0       | iso      | Utility helpers: types, string, math, object (`safe-regex`, `seedrandom`, `slug`)                          | —                                                                                         |
-| `@blue/dom`               | 0       | iso      | Isomorphic DOM parsing/creation (`linkedom`)                                                               | —                                                                                         |
-| `@blue/core`              | 1       | iso      | Primitives, collections, radix tree, metadata, events (`semver`)                                           | `util`                                                                                    |
-| `@blue/signals`           | 1       | iso      | Reactive state: signals, computed, effects (`@preact/signals-core`)                                        | —                                                                                         |
-| `@blue/factory`           | 2       | iso      | IoC container: scopes, lifecycle, entry/aware processors                                                   | `core`, `util`                                                                            |
-| `@blue/content`           | 2       | iso      | i18n content keys, themes, `MessageSource` contract                                                        | `core`, `factory`, `util`                                                                 |
-| `@blue/content-i18next`   | 2       | iso      | i18next `MessageSource` adapter                                                                            | `content`                                                                                 |
-| `@blue/cache`             | 2       | iso      | Cache manager + `@cached` decorator (AD-24)                                                                | —                                                                                         |
-| `@blue/orm`               | 2       | iso      | Repository/data-mapper persistence abstractions, `@entity` decorators (`zod`)                              | `core`, `factory`                                                                         |
-| `@blue/orm-drizzle`       | 2       | node     | Drizzle ORM adapter for `@blue/orm` (`drizzle-orm`, `drizzle-zod`, `@libsql/client`)                       | `orm`, `socket`, `core`                                                                   |
-| `@blue/context`           | 3       | iso      | Application context, environments, configuration, events (`zod`)                                           | `content`, `core`, `factory`, `util`                                                      |
-| `@blue/http`              | 4       | iso      | Fetch client, interceptors, content parsing, transforms (`@opentelemetry/api`)                             | `core`, `factory`, `util`                                                                 |
-| `@blue/router`            | 4       | iso      | Route registry, path partitions, feature routing                                                           | `core`, `factory`, `http`, `util`                                                         |
-| `@blue/telemetry`         | 4       | iso      | OTel surface: logger, metrics, severity, tracing decorators, framework instrumentations                    | `context`, `core`, `dispatcher`, `router`                                                 |
-| `@blue/socket`            | 4       | iso      | WebSocket domain: STOMP client, session contracts (AD-21/22/23)                                            | `core`, `signals`                                                                         |
-| `@blue/scheduler`         | 4       | node     | Cron scheduling: `@scheduled`, task registry, tracing (`croner`)                                           | `context`, `core`, `util`                                                                 |
-| `@blue/view`              | 5       | iso      | Views, `ViewTarget`s, content negotiation, serialization                                                   | `context`, `core`, `factory`, `router`, `util`                                            |
-| `@blue/view-webcomponent` | 5       | browser  | Web Component view technology                                                                              | `view`, `context`, `core`, `factory`, `router`                                            |
-| `@blue/view-ejs`          | 5       | node     | EJS server-side template view technology                                                                   | `view`, `content`, `context`, `core`, `router`                                            |
-| `@blue/dispatcher`        | 5       | iso      | Front controller: request dispatch, parameter binding, radix handler mappings                              | `view`, `router`, `http`, `socket`, `context`, `content`, `core`, `factory`, `util`       |
-| `@blue/service`           | 6       | iso      | Typed service clients, SSE/streaming                                                                       | `http`, `context`, `core`, `factory`, `util`                                              |
-| `@blue/management`        | 6       | node     | Actuator endpoints: `/health`, `/metrics`                                                                  | `dispatcher`, `context`, `core`, `telemetry`                                              |
-| `@blue/host`              | 6       | browser  | Micro-frontend shell orchestration, feature mounting (AD-18)                                               | `context`, `core`, `router`                                                               |
-| `@blue/auth-core`         | 6       | iso      | Auth contracts: principal, sessions, password encoders, `@authenticated`/`@authorized`                     | —                                                                                         |
-| `@blue/auth-client`       | 6       | browser  | Client auth: `AuthClient`, `ClientAuthGuard`, OIDC (`jose`)                                                | `auth-core`, `http`                                                                       |
-| `@blue/auth-server`       | 6       | node     | Server auth: `AuthServer`, `AuthRouteGuard`, JWT (`jose`)                                                  | `auth-core`, `dispatcher`, `router`                                                       |
-| `@blue/platform-node`     | 6       | node     | Node platform: HTTP server adapter, auto-configuration, static files, multipart (`busboy`, `helmet`, `ws`) | 12 BlueJS deps — hub                                                                      |
-| `@blue/platform-web`      | 6       | browser  | Browser platform glue: dispatcher, history/cookie/data-binding resolvers, theme                            | 11 BlueJS deps — hub                                                                      |
-| `@blue/telemetry-node`    | 6       | node     | OTel NodeSDK wiring + Node instrumentations (8 OTel packages)                                              | `telemetry`, `platform-node`, `dispatcher`, `router`, `socket`, `view`, `context`, `core` |
-| `@blue/telemetry-web`     | 6       | browser  | Browser SDK wiring + web instrumentations (8 OTel packages)                                                | `telemetry`, `platform-web`, `dispatcher`, `router`, `socket`, `context`                  |
-| `@blue/test`              | 6       | iso      | In-process request dispatch test harness (MockMVC-style)                                                   | `platform-node`, `platform-web`, `dispatcher`, `router`, `view`, `context`, `util`        |
-| `@blue/boot`              | 7       | node     | Application bootstrap: profiles, typed config, `run()` (`zod`)                                             | `context`, `core`, `router`                                                               |
-| `@blue/oxlint-plugin`     | tooling | —        | Architecture-enforcing oxlint rules (CI) (`@oxlint/plugins`; peer `oxlint`)                                | —                                                                                         |
-| `@blue/generators`        | tooling | —        | Nx generators: package/component/readme scaffolding (`@nx/devkit`)                                         | —                                                                                         |
+| Package                   | Layer   | Platform | Purpose                                                                                                    | Runtime deps                                                                                      |
+| :------------------------ | :------ | :------- | :--------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ |
+| `@blue/util`              | 0       | iso      | Utility helpers: types, string, math, object (`safe-regex`, `seedrandom`, `slug`)                          | —                                                                                                 |
+| `@blue/dom`               | 0       | iso      | Isomorphic DOM parsing/creation (`linkedom`)                                                               | —                                                                                                 |
+| `@blue/core`              | 1       | iso      | Primitives, collections, radix tree, metadata, events (`semver`, `zod`)                                    | `util`                                                                                            |
+| `@blue/signals`           | 1       | iso      | Reactive state: signals, computed, effects (`@preact/signals-core`)                                        | —                                                                                                 |
+| `@blue/log`               | 1       | iso      | Logging core: logger abstraction, severity mappings, threshold filtering (`@opentelemetry/api`)            | —                                                                                                 |
+| `@blue/factory`           | 2       | iso      | IoC container: scopes, lifecycle, entry/aware processors                                                   | `core`, `log`, `util`                                                                             |
+| `@blue/content`           | 2       | iso      | i18n content keys, themes, `MessageSource` contract                                                        | `core`, `factory`, `util`                                                                         |
+| `@blue/content-i18next`   | 2       | iso      | i18next `MessageSource` adapter (`i18next`)                                                                | `content`                                                                                         |
+| `@blue/cache`             | 2       | iso      | Cache manager + `@cached` decorator (AD-24)                                                                | `context`, `factory`                                                                              |
+| `@blue/orm`               | 2       | iso      | Repository/data-mapper persistence abstractions, `@entity` decorators (`zod`)                              | `core`, `factory`                                                                                 |
+| `@blue/orm-drizzle`       | 2       | node     | Drizzle ORM adapter for `@blue/orm` (`drizzle-orm`, `drizzle-zod`, `@libsql/client`)                       | `auth-core`, `core`, `orm`, `socket`, `util`                                                      |
+| `@blue/proxy`             | 2       | iso      | Method interception: annotation-driven advice weaving (`@tsmetadata/polyfill`)                             | `core`, `factory`                                                                                 |
+| `@blue/resilience`        | 2       | iso      | Resilience policies: `@retry` + `@circuitBreaker` interceptors                                             | `proxy`                                                                                           |
+| `@blue/context`           | 3       | iso      | Application context, environments, configuration, events (`zod`)                                           | `content`, `core`, `factory`, `util`                                                              |
+| `@blue/http`              | 4       | iso      | Fetch client, interceptors, content parsing, transforms (`@opentelemetry/api`)                             | `core`, `factory`, `util`                                                                         |
+| `@blue/router`            | 4       | iso      | Route registry, path partitions, feature routing                                                           | `core`, `factory`, `http`, `util`                                                                 |
+| `@blue/telemetry`         | 4       | iso      | OTel surface: metrics, tracing decorators, framework instrumentations; re-exports `@blue/log`              | `context`, `core`, `dispatcher`, `log`, `router`                                                  |
+| `@blue/socket`            | 4       | iso      | WebSocket domain: STOMP client, session contracts (AD-21/22/23)                                            | `core`, `signals`                                                                                 |
+| `@blue/scheduler`         | 4       | node     | Cron scheduling: `@scheduled`, task registry, tracing (`croner`)                                           | `context`, `core`, `factory`, `util`                                                              |
+| `@blue/redis`             | 4       | node     | Redis backends: shared cache + pub/sub fan-out (`@redis/client`; peers `cache`, `factory`, `socket`)       | —                                                                                                 |
+| `@blue/view`              | 5       | iso      | Views, `ViewTarget`s, content negotiation, serialization                                                   | `context`, `core`, `factory`, `http`, `router`, `util`                                            |
+| `@blue/view-webcomponent` | 5       | browser  | Web Component view technology                                                                              | `view`, `context`, `core`, `factory`, `router`                                                    |
+| `@blue/view-ejs`          | 5       | node     | EJS server-side template view technology (`ejs`)                                                           | `view`, `content`, `context`, `core`, `router`                                                    |
+| `@blue/dispatcher`        | 5       | iso      | Front controller: request dispatch, parameter binding, radix handler mappings (`zod`)                      | `view`, `router`, `http`, `socket`, `context`, `content`, `core`, `factory`, `util`               |
+| `@blue/service`           | 6       | iso      | Typed service clients, SSE/streaming (`zod`)                                                               | `http`, `context`, `core`, `factory`, `util`                                                      |
+| `@blue/management`        | 6       | node     | Actuator endpoints: `/health`, `/metrics`                                                                  | `dispatcher`, `context`, `core`, `telemetry`                                                      |
+| `@blue/openapi`           | 6       | iso      | OpenAPI 3.0.3 generation from dispatch metadata (`zod`)                                                    | `core`, `dispatcher`, `http`                                                                      |
+| `@blue/host`              | 6       | browser  | Micro-frontend shell orchestration, feature mounting (AD-18)                                               | `context`, `core`, `router`                                                                       |
+| `@blue/auth-core`         | 6       | iso      | Auth contracts: principal, sessions, password encoders, `@authenticated`/`@authorized`                     | —                                                                                                 |
+| `@blue/auth-client`       | 6       | browser  | Client auth: `AuthClient`, `ClientAuthGuard`, OIDC (`jose`)                                                | `auth-core`, `http`, `util`                                                                       |
+| `@blue/auth-server`       | 6       | node     | Server auth: `AuthServer`, `AuthRouteGuard`, JWT (`jose`)                                                  | `auth-core`, `dispatcher`, `router`, `util`                                                       |
+| `@blue/platform-node`     | 6       | node     | Node platform: HTTP server adapter, auto-configuration, static files, multipart (`busboy`, `helmet`, `ws`) | 14 BlueJS deps — hub                                                                              |
+| `@blue/platform-web`      | 6       | browser  | Browser platform glue: dispatcher, history/cookie/data-binding resolvers, theme                            | 11 BlueJS deps — hub                                                                              |
+| `@blue/telemetry-node`    | 6       | node     | OTel NodeSDK wiring + Node instrumentations (10 OTel packages; peer `ws`)                                  | `telemetry`, `platform-node`, `router`, `socket`, `view`                                          |
+| `@blue/telemetry-web`     | 6       | browser  | Browser SDK wiring + web instrumentations (8 OTel packages)                                                | `telemetry`, `platform-web`, `socket`                                                             |
+| `@blue/test`              | 6       | iso      | In-process request dispatch test harness (MockMVC-style)                                                   | `platform-node`, `platform-web`, `dispatcher`, `router`, `view`, `context`, `http`, `log`, `util` |
+| `@blue/boot`              | 7       | node     | Application bootstrap: profiles, typed config, `run()` (`zod`; peer `@toon-format/toon`)                   | `context`, `core`, `factory`, `router`                                                            |
+| `@blue/oxlint-plugin`     | tooling | —        | Architecture-enforcing oxlint rules (CI) (`@oxlint/plugins`; peer `oxlint`)                                | —                                                                                                 |
+| `@blue/generators`        | tooling | —        | Nx generators: package/component/readme scaffolding (`@nx/devkit`)                                         | —                                                                                                 |
 
-**Standalone use:** every package resolves its own install closure — `npm install @blue/http` pulls exactly `core`, `factory`, `util` and its external deps; no hand-assembled peer list. `peerDependencies` exists only for host-provided contracts (`oxlint-plugin → oxlint`, `telemetry-node → ws`). See [Manifest Dependency Sections](#manifest-dependency-sections).
+**Standalone use:** every package resolves its own install closure — `npm install @blue/http` pulls exactly `core`, `factory`, `util` and its external deps; no hand-assembled peer list. `peerDependencies` is allowlisted per package for host-provided contracts (`oxlint-plugin → oxlint`, `telemetry-node → ws`, `platform-node → swagger-ui-dist`, `boot → @toon-format/toon`, `redis → cache`/`factory`/`socket`). See [Manifest Dependency Sections](#manifest-dependency-sections).
 
 ## Paradigm Selection Rules
 

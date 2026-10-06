@@ -1,6 +1,6 @@
 # BlueJS Decision Records (ADRs)
 
-Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-66**,
+Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-67**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -88,3 +88,4 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-64** | 2026-09-04    | Accepted   | [Platform separation — isomorphic packages stay platform-free](2026-09-04_AD64_PLATFORM_SEPARATION.md)                                                          |
 | **AD-65** | 2026-09-06    | Accepted   | [View resolution strategy — controllers return names, resolvers return views](2026-09-06_AD65_VIEW_RESOLUTION_STRATEGY.md)                                      |
 | **AD-66** | 2026-10-05    | Accepted   | [TOON support as an opt-in authoring format — token + decode-only config files, JSON default intact](2026-10-05_AD66_TOON_OPTIN_SUPPORT.md)                     |
+| **AD-67** | 2026-10-06    | Accepted   | [Logging core extraction — `@blue/log` leaf package, telemetry re-exports, single instrumentation set](2026-10-06_AD67_LOG_LEAF_PACKAGE.md)                     |

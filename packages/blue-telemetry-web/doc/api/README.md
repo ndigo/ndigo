@@ -4,8 +4,7 @@
 
 # @blue/telemetry-web v0.0.1
 
-Browser telemetry configuration and web instrumentations:.
-*
+Browser telemetry configuration and web instrumentations.
 
 ## Since
 

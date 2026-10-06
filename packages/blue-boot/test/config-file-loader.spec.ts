@@ -348,9 +348,7 @@ describe('StandardConfigFileLoader', () => {
                 format: 'toon',
             });
 
-            await expect(loader.load(env)).rejects.toThrowError(
-                /Required config file not found: application\.toon in/
-            );
+            await expect(loader.load(env)).rejects.toThrowError(/Required config file not found: application\.toon in/);
         });
 
         test('required auto format reports both probed names', async () => {

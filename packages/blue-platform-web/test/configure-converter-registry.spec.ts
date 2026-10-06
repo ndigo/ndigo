@@ -6,7 +6,7 @@
 import { describe, expect, test } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
 import { configureArgumentValueConverterRegistry } from '../src/configure-converter-registry';
-import { argumentValueConverters } from '../src/_resolver-util';
+import { argumentValueConverters } from '@blue/dispatcher';
 
 describe('configureArgumentValueConverterRegistry', () => {
     test('registers converter registry under context key', () => {

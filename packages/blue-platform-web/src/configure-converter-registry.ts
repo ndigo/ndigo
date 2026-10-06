@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { ApplicationContext } from '@blue/context';
-import { ArgumentValueConverterRegistry } from './_resolver-util';
+import { ArgumentValueConverterRegistry } from '@blue/dispatcher';
 
 /**
  * Registers a named converter registry used by argument resolvers.

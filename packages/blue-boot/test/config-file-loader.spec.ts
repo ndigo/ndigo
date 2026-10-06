@@ -299,10 +299,42 @@ describe('StandardConfigFileLoader', () => {
             );
         });
 
-        test('documents that do not decode to an object are rejected', async () => {
+        test('JSON documents in .toon files error with a rename hint (object)', async () => {
+            const env = envWithProfiles();
+            const loader = new StandardConfigFileLoader({
+                reader: files({ './application.toon': '{"server": {"port": 8080}}' }),
+            });
+
+            await expect(loader.load(env)).rejects.toThrowError(
+                /starts like a JSON document[\s\S]*rename the file to \.json/
+            );
+        });
+
+        test('JSON arrays in .toon files error with a rename hint (array)', async () => {
+            const env = envWithProfiles();
+            const loader = new StandardConfigFileLoader({
+                reader: files({ './application.toon': '[1, 2]' }),
+            });
+
+            await expect(loader.load(env)).rejects.toThrowError(/starts like a JSON document/);
+        });
+
+        test('TOON array-form roots are rejected up front', async () => {
+            // `[1]: a` is valid TOON (§9 index form) but decodes to an array
+            // root — invalid for config either way; the pre-parse guard
+            // rejects `[`-leading documents before decode.
             const env = envWithProfiles();
             const loader = new StandardConfigFileLoader({
                 reader: files({ './application.toon': '[1]: a' }),
+            });
+
+            await expect(loader.load(env)).rejects.toThrowError(/starts like a JSON document/);
+        });
+
+        test('scalar roots are rejected by the object-shape guard', async () => {
+            const env = envWithProfiles();
+            const loader = new StandardConfigFileLoader({
+                reader: files({ './application.toon': '1' }),
             });
 
             await expect(loader.load(env)).rejects.toThrowError(/must decode to a TOON object/);
@@ -352,6 +384,73 @@ describe('StandardConfigFileLoader', () => {
             } finally {
                 delete process.env.BLUE_CONFIG_IMPORT;
             }
+        });
+
+        test("format: 'json' rejects a .toon import", async () => {
+            const env = envWithProfiles();
+            const loader = new StandardConfigFileLoader({
+                reader: files({ './extra/secrets.toon': 'secret: s3cret' }),
+                locations: ['./'],
+                format: 'json',
+            });
+            try {
+                process.env.BLUE_CONFIG_IMPORT = './extra/secrets.toon';
+
+                await expect(loader.load(env)).rejects.toThrowError(
+                    /BLUE_CONFIG_IMPORT file "\.\/extra\/secrets\.toon" is TOON but the loader's format option is 'json'/
+                );
+            } finally {
+                delete process.env.BLUE_CONFIG_IMPORT;
+            }
+        });
+
+        test("format: 'toon' rejects a .json import", async () => {
+            const env = envWithProfiles();
+            const loader = new StandardConfigFileLoader({
+                reader: files({ './extra/extra.json': '{"secret": "s3cret"}' }),
+                locations: ['./'],
+                format: 'toon',
+            });
+            try {
+                process.env.BLUE_CONFIG_IMPORT = './extra/extra.json';
+
+                await expect(loader.load(env)).rejects.toThrowError(
+                    /BLUE_CONFIG_IMPORT file "\.\/extra\/extra\.json" is JSON but the loader's format option is 'toon'/
+                );
+            } finally {
+                delete process.env.BLUE_CONFIG_IMPORT;
+            }
+        });
+
+        test("format: 'json' accepts a .json import", async () => {
+            const env = envWithProfiles();
+            const loader = new StandardConfigFileLoader({
+                reader: files({ './extra/extra.json': '{"secret": "s3cret"}' }),
+                locations: ['./'],
+                format: 'json',
+            });
+            try {
+                process.env.BLUE_CONFIG_IMPORT = './extra/extra.json';
+
+                await loader.load(env);
+
+                expect(env.getProperty('secret')).toBe('s3cret');
+            } finally {
+                delete process.env.BLUE_CONFIG_IMPORT;
+            }
+        });
+
+        test('a required location accepts a present .toon file', async () => {
+            const env = envWithProfiles();
+            const loader = new StandardConfigFileLoader({
+                reader: files({ './etc/application.toon': 'server:\n  port: 8080' }),
+                locations: ['required:./etc/'],
+                format: 'toon',
+            });
+
+            await loader.load(env);
+
+            expect(env.getProperty('server.port')).toBe(8080);
         });
 
         test('the decodeToon seam replaces the lazy decoder', async () => {

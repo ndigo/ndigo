@@ -26,7 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `application.toon` config files — `StandardConfigFileLoader` probes JSON
   first, then TOON (`format: 'auto' | 'json' | 'toon'`); the
   `@toon-format/toon` decoder is an optional peer, loaded lazily only when a
-  `.toon` file is actually found. JSON stays the default everywhere.
+  `.toon` file is actually found. A restricted `format` also applies to
+  `BLUE_CONFIG_IMPORT` paths (extension mismatch errors), and JSON-looking
+  `.toon` documents error with a rename hint instead of decoding to
+  garbage. JSON stays the default everywhere.
 - Framework core: application contexts, DI/factory with scopes and entry
   processors, profiles and typed configuration binding
   (`@configurationProperties`), placeholder resolution, CLI args, live

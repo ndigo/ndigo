@@ -47,6 +47,45 @@ export interface RouteRenderer {
 }
 
 /**
+ * Route attribute key under which the dispatcher records a dispatch/render
+ * failure that it swallowed (DSV-B1).
+ *
+ * The dispatcher must not reject `dispatch()` — browser callers invoke
+ * `void dispatcher.dispatch(route)` — so a handler-adapter, view-resolution,
+ * or render failure that remains after `completeHandle` interceptors have run
+ * is written to `route.attributes[DISPATCH_ERROR_ATTRIBUTE]` instead. A
+ * platform adapter that owns an HTTP response reads it back with
+ * {@link getDispatchError} to finalize a deterministic error response rather
+ * than leaving the request open. The value is the `Error` that remained
+ * unhandled; the attribute is absent when dispatch completed cleanly (or when
+ * a resolved error view / streaming view already produced a response).
+ */
+export const DISPATCH_ERROR_ATTRIBUTE = '__dispatch:error';
+
+/**
+ * Records a swallowed dispatch failure on the route (DSV-B1).
+ *
+ * @param route - The route the dispatch was processing.
+ * @param error - The error that remained unhandled after `completeHandle`.
+ */
+export function setDispatchError(route: Route, error: Error): void {
+    if (route.attributes) {
+        route.attributes[DISPATCH_ERROR_ATTRIBUTE] = error;
+    }
+}
+
+/**
+ * Reads the swallowed dispatch failure recorded on the route, if any.
+ *
+ * @param route - The route the dispatch was processing.
+ * @returns The recorded error, or `null` when dispatch completed
+ *   without an unhandled failure.
+ */
+export function getDispatchError(route: Route): Error | null {
+    return (route.attributes?.[DISPATCH_ERROR_ATTRIBUTE] as Error | undefined) ?? null;
+}
+
+/**
  * An abstract, platform-independent application dispatcher.
  *
  * Dispatches routes to registered handlers, providing mapping, interceptors,
@@ -321,7 +360,11 @@ export class AbstractDispatcher
         mv: ModelAndView | null,
         error: Error | null
     ): Promise<void> {
-        let dispatchError = error;
+        let dispatchError = error,
+            // A successful render already produced the response, so a lingering
+            // dispatch error (interceptors still observe the original handler
+            // failure) must not be recorded as unhandled.
+            rendered = false;
 
         if (dispatchError) {
             const handler = mappedHandler instanceof RouteHandlerExecutionChain ? mappedHandler.handler : null;
@@ -335,12 +378,22 @@ export class AbstractDispatcher
         if (mv) {
             try {
                 await this.render(mv, route);
+                rendered = true;
             } catch (err) {
                 dispatchError = err as Error;
             }
         }
 
         await mappedHandler?.triggerCompleteHandle(route, dispatchError ?? undefined);
+
+        // DSV-B1: the dispatcher must not reject `dispatch()` (browser callers
+        // invoke it fire-and-forget), so record the failure that remained after
+        // `completeHandle` for the platform adapter to finalize. A resolved
+        // error view or a completed streaming view already produced a response,
+        // so only record when nothing rendered.
+        if (dispatchError && !rendered) {
+            setDispatchError(route, dispatchError);
+        }
     }
 }
 

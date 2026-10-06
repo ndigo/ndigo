@@ -46,6 +46,12 @@ beforeAll(async () => {
     await writeFile(join(root, 'app.js.br'), JS_BR);
     // Compressed-twin for a non-compressible type — must be ignored.
     await writeFile(join(root, 'pixel.png.gz'), JS_GZ);
+    // Precompressed twins that symlink outside the root must be refused,
+    // never served (PLN-F1) — mirrors the escape.lnk case.
+    await writeFile(join(root, 'data.txt'), 'plain text data');
+    await writeFile(join(secretDir, 'variant-secret.txt'), 'VARIANT SECRET');
+    await symlink(join(secretDir, 'variant-secret.txt'), join(root, 'data.txt.br'));
+    await symlink(join(secretDir, 'variant-secret.txt'), join(root, 'data.txt.gz'));
     // Directory fixtures for index/listing (D-7).
     await mkdir(join(root, 'docs'));
     await writeFile(join(root, 'docs', 'a.txt'), 'alpha');
@@ -196,6 +202,18 @@ describe('StaticResourceResolver metadata + variants (D-2/D-3)', () => {
         const result = await makeResolver().resolve('/pixel.png', { acceptEncoding: 'gzip' });
         expect(result.encoding).toBeUndefined();
         expect(result.contentType).toBe('image/png');
+    });
+
+    test('refuses a .br variant whose symlink escapes the root (PLN-F1)', async () => {
+        const result = await makeResolver().resolve('/data.txt', { acceptEncoding: 'br' });
+        expect(result.kind).toBe('forbidden');
+        expect(result.path).toBeUndefined();
+    });
+
+    test('refuses a .gz variant whose symlink escapes the root (PLN-F1)', async () => {
+        const result = await makeResolver().resolve('/data.txt', { acceptEncoding: 'gzip' });
+        expect(result.kind).toBe('forbidden');
+        expect(result.path).toBeUndefined();
     });
 
     test('missing variant falls back to the original', async () => {

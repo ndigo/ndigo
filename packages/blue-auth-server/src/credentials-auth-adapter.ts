@@ -101,9 +101,15 @@ export class CredentialsAuthAdapter implements AuthAdapter {
         }
         const { username, password } = credentials;
         const user = await this.#userStore.findByUsername(username);
-        const hash = user?.passwordHash ?? this.#dummyHashValue();
-        const valid = this.#passwordEncoder.verify(password, hash);
-        if (!valid || user === null || user.disabled === true) {
+        // SEC-B1: the dummy hash is a timing sink only — it must never
+        // authenticate. `stored` is the account's real hash when it is a
+        // non-empty string, else `null` (null/undefined/empty hash all fail
+        // closed). The verify still runs against the dummy constant on that
+        // path so unknown/no-hash users cost the same as a real account.
+        const stored =
+            typeof user?.passwordHash === 'string' && user.passwordHash.length > 0 ? user.passwordHash : null;
+        const valid = this.#passwordEncoder.verify(password, stored ?? this.#dummyHashValue());
+        if (!valid || user === null || stored === null || user.disabled === true) {
             throw new InvalidCredentialsError();
         }
 

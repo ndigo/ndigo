@@ -140,6 +140,13 @@ jobs:
       - name: Install dependencies (frozen lockfile)
         run: pnpm install --frozen-lockfile
 
+      - name: Build workspace libraries
+        # The todo app resolves @blue/* through package `exports` -> `lib/`,
+        # and `**/lib/` is gitignored: a fresh runner has no built workspace
+        # libraries, so the app build below would fail to resolve every
+        # @blue/* import without this step (review CI-B1).
+        run: pnpm build
+
       - name: Build the todo app
         # vite preview (started by Playwright) serves dist/, which is
         # gitignored — the app must be built before the E2E run.

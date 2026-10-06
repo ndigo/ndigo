@@ -7,8 +7,8 @@
 # Class: NodeSessionInterceptor
 
 Bridges the session cookie into the documented `request.session` seam:
-reads the `blue-session` cookie, resolves it through a [SessionStore](#)
-and populates the session bag with `principal` and `token` **before**
+reads the `__Host-blue-session` cookie, resolves it through a
+[SessionStore](#) and populates the session bag with `principal` and `token` **before**
 dispatch — so `requestSessionValue('principal')` / `@session` bindings
 work for cookie-authenticated requests.
 
@@ -23,6 +23,8 @@ mapping.interceptors.push(new AuthRouteGuard(authServer, cookieTokenExtractor, '
 Security contract:
 - an absent, unknown or expired session leaves the bag **empty**
   (anonymous) — the guard then denies; nothing is ever fabricated;
+- a request presenting the session cookie name more than once is treated
+  as unauthenticated (cookie tossing / planting fails closed);
 - the interceptor only reads cookies + the store; it never sets cookies
   (login/logout own that — see `setSessionCookie`/`clearSessionCookie`);
 - token values are the opaque ids issued by the store.
@@ -35,13 +37,23 @@ Security contract:
 
 ### Constructor
 
-> **new NodeSessionInterceptor**(`sessionStore`): `NodeSessionInterceptor`
+> **new NodeSessionInterceptor**(`sessionStore`, `cookieName?`): `NodeSessionInterceptor`
 
 #### Parameters
 
 ##### sessionStore
 
 [`SessionStore`](#)
+
+Resolves opaque session ids to records.
+
+##### cookieName?
+
+`string` = `SESSION_COOKIE`
+
+The session cookie name to read (default
+  [SESSION\_COOKIE](../variables/SESSION_COOKIE.md)); pass the same name given to
+  `setSessionCookie` when a deployment overrides it.
 
 #### Returns
 

@@ -39,7 +39,11 @@ describe('blue-api cookie sessions (AD-33 Wave 2)', () => {
     }
 
     async function login(): Promise<{ token: string; setCookie: string }> {
-        const res = await mockHTTP.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        const res = await mockHTTP
+            .post('/auth/login')
+            .headers({ 'content-type': 'application/json' })
+            .body({ username: 'admin', password: 'demo' })
+            .exec();
         expect(res.response.status).toBe(200);
         const { token } = res.json() as { token?: string };
         expect(token).toBeDefined();
@@ -48,10 +52,12 @@ describe('blue-api cookie sessions (AD-33 Wave 2)', () => {
 
     test('login issues the session as an HttpOnly SameSite=Lax cookie', async () => {
         const { setCookie } = await login();
-        expect(setCookie).toContain('blue-session=');
+        expect(setCookie).toContain('__Host-blue-session=');
         expect(setCookie).toContain('HttpOnly');
         expect(setCookie).toContain('SameSite=Lax');
         expect(setCookie).toContain('Path=/');
+        // The `__Host-` prefix mandates Secure — the cookie must carry it.
+        expect(setCookie).toContain('Secure');
     });
 
     test('every login issues a fresh session (fixation-safe rotation)', async () => {
@@ -99,9 +105,41 @@ describe('blue-api cookie sessions (AD-33 Wave 2)', () => {
     });
 
     test('login keeps its API-client contract: token in the body, 401 on bad credentials', async () => {
-        const bad = await mockHTTP.post('/auth/login').body({ username: 'bob', password: 'wrong' }).exec();
+        const bad = await mockHTTP
+            .post('/auth/login')
+            .headers({ 'content-type': 'application/json' })
+            .body({ username: 'bob', password: 'wrong' })
+            .exec();
         expect(bad.response.status).toBe(401);
         expect(bad.json()).toMatchObject({ title: 'Unauthorized', status: 401, detail: 'Invalid credentials' });
+    });
+
+    test('login rejects form-encoded and other non-JSON bodies with 415 (SEC-AUD2-SEC-3)', async () => {
+        // A cross-site HTML form cannot send `application/json` — browsers use
+        // urlencoded, multipart, or text/plain. Rejecting those media types
+        // closes the login-CSRF vector when a cookie-session app leaves the
+        // opt-in `CSRFInterceptor` unwired.
+        const form = await mockHTTP
+            .post('/auth/login')
+            .headers({ 'content-type': 'application/x-www-form-urlencoded' })
+            .rawBody('username=admin&password=demo')
+            .exec();
+        expect(form.response.status).toBe(415);
+        expect(String(form.response.headers['content-type'])).toContain('application/problem+json');
+        expect(form.json()).toMatchObject({ status: 415, title: 'Unsupported Media Type' });
+        // No session is issued for a rejected body.
+        expect(cookieHeader(form)).not.toContain('__Host-blue-session=');
+
+        const textPlain = await mockHTTP
+            .post('/auth/login')
+            .headers({ 'content-type': 'text/plain' })
+            .rawBody('username=admin&password=demo')
+            .exec();
+        expect(textPlain.response.status).toBe(415);
+
+        // The header is required: a body-bearing POST without it is rejected.
+        const missingType = await mockHTTP.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        expect(missingType.response.status).toBe(415);
     });
 
     test('POST /auth/login is rate limited per client address (SEC-6)', async () => {
@@ -110,6 +148,7 @@ describe('blue-api cookie sessions (AD-33 Wave 2)', () => {
             // oxlint-disable-next-line no-await-in-loop -- each attempt is a full request round trip that must land before the next so the fixed-window budget is genuinely exhausted.
             const res = await mockHTTP
                 .post('/auth/login')
+                .headers({ 'content-type': 'application/json' })
                 .remoteAddress('203.0.113.7')
                 .body({ username: 'bob', password: 'wrong' })
                 .exec();
@@ -118,6 +157,7 @@ describe('blue-api cookie sessions (AD-33 Wave 2)', () => {
         // …the sixth is blocked with 429 + Retry-After.
         const blocked = await mockHTTP
             .post('/auth/login')
+            .headers({ 'content-type': 'application/json' })
             .remoteAddress('203.0.113.7')
             .body({ username: 'admin', password: 'demo' })
             .exec();
@@ -132,6 +172,7 @@ describe('blue-api cookie sessions (AD-33 Wave 2)', () => {
         // A different address is unaffected.
         const other = await mockHTTP
             .post('/auth/login')
+            .headers({ 'content-type': 'application/json' })
             .remoteAddress('203.0.113.8')
             .body({ username: 'admin', password: 'demo' })
             .exec();
@@ -149,7 +190,11 @@ describe('blue-api cookie sessions (AD-33 Wave 2)', () => {
         try {
             // A first POST without a token is blocked 403 — and the
             // double-submit cookie is minted on the denial.
-            const blocked = await mvc.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+            const blocked = await mvc
+                .post('/auth/login')
+                .headers({ 'content-type': 'application/json' })
+                .body({ username: 'admin', password: 'demo' })
+                .exec();
             expect(blocked.response.status).toBe(403);
             const cookie = String(blocked.response.headers['set-cookie'] ?? '');
             expect(cookie).toContain('__Host-blue-csrf=');
@@ -160,6 +205,7 @@ describe('blue-api cookie sessions (AD-33 Wave 2)', () => {
             // login proceeds.
             const ok = await mvc
                 .post('/auth/login')
+                .headers({ 'content-type': 'application/json' })
                 .cookies({ '__Host-blue-csrf': token as string })
                 .headers({ 'x-csrf-token': token as string })
                 .body({ username: 'admin', password: 'demo' })
@@ -170,6 +216,7 @@ describe('blue-api cookie sessions (AD-33 Wave 2)', () => {
             // without a genuine token.
             const bad = await mvc
                 .post('/auth/login')
+                .headers({ 'content-type': 'application/json' })
                 .cookies({ '__Host-blue-csrf': token as string })
                 .headers({ 'x-csrf-token': 'different' })
                 .body({ username: 'admin', password: 'demo' })

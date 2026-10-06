@@ -25,6 +25,14 @@ completion (MockHTTP's `ResponseSink`) is still accepted.
 
 ***
 
+### headersSent?
+
+> `readonly` `optional` **headersSent?**: `boolean`
+
+`ServerResponse`: the status line/headers were flushed.
+
+***
+
 ### writableEnded?
 
 > `readonly` `optional` **writableEnded?**: `boolean`
@@ -32,6 +40,18 @@ completion (MockHTTP's `ResponseSink`) is still accepted.
 `ServerResponse`: the response was fully finalized.
 
 ## Methods
+
+### destroy()?
+
+> `optional` **destroy**(): `void`
+
+`ServerResponse`: abort an already-streaming response.
+
+#### Returns
+
+`void`
+
+***
 
 ### end()
 

@@ -11,7 +11,7 @@ import {
 } from '@blue/context';
 import { IllegalStateError } from '@blue/core';
 import { BrowserDispatcher, HashRouter } from '@blue/platform-web';
-import { Route, restorePartitionPrefix, RouteDefinition, RouteRegistry } from '@blue/router';
+import { PathRoute, Route, restorePartitionPrefix, RouteDefinition, RouteRegistry } from '@blue/router';
 import { HostManager } from '@blue/host';
 import { FeatureMetricAggregator, getLogger } from '@blue/telemetry';
 import { DISPATCHER, ROUTER, ROUTE_REGISTRY } from './context-tokens';
@@ -170,7 +170,14 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
             title: 'Account',
         },
         unmountPolicy: 'close',
-        onRoute: dispatchRoute('account', dispatcher),
+        // The partition router strips the mount prefix before `onRoute`, so a
+        // naively dispatched route reaches the shared dispatcher as `/` or
+        // `/settings`. Unlike the todo feature (whose IndexController is
+        // root-relative), AccountController is registered at its `/account`
+        // shell path — restore the prefix so `#/account` → `/account` and
+        // `#/account/settings` → `/account/settings` reach the account
+        // controller instead of the todo root.
+        onRoute: (route) => dispatchRoute('account', dispatcher)(new PathRoute(toAccountShellRoute(route.path))),
     });
 
     const mountedFeature = host.mount('todo');

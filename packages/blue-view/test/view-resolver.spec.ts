@@ -6,6 +6,7 @@
 import { describe, expect, test } from 'vitest';
 import {
     AbstractPathBasedViewResolver,
+    ImportViewResolver,
     NameViewResolver,
     ViewResolverComposite,
     AbstractCachingViewResolver,
@@ -105,5 +106,56 @@ describe('AbstractPathBasedViewResolver', () => {
         const composite = new ViewResolverComposite([first, second]);
 
         expect(await composite.resolveViewName('home')).toBe(secondView);
+    });
+});
+
+/** Exposes the protected containment guard for direct testing. */
+class ExposedPathResolver extends AbstractPathBasedViewResolver {
+    protected async _loadView(_name: string, _language?: unknown): Promise<View | null> {
+        return null;
+    }
+
+    isSafe(name: string): boolean {
+        return this.isSafeViewName(name);
+    }
+}
+
+describe('AbstractPathBasedViewResolver name containment', () => {
+    test('allows legitimate nested, dotted, and underscored names', () => {
+        const resolver = new ExposedPathResolver();
+
+        for (const name of ['home', 'admin/user', 'v1.2', 'my.file', 'user_profile', 'a/b/c']) {
+            expect(resolver.isSafe(name)).toBe(true);
+        }
+    });
+
+    test('rejects traversal, absolute, and NUL names', () => {
+        const resolver = new ExposedPathResolver();
+
+        for (const name of [
+            '/../../etc/passwd',
+            '../etc/passwd',
+            'a/../../b',
+            '..;x=1/..;x=1/tmp/traversed',
+            '..',
+            '..\\windows',
+            '\\absolute',
+            'C:\\absolute',
+            'a//..;x=1/b',
+            'nul\u0000byte',
+        ]) {
+            expect(resolver.isSafe(name)).toBe(false);
+        }
+    });
+
+    test('ImportViewResolver resolves unsafe names to null without importing', async () => {
+        const resolver = new ImportViewResolver();
+        resolver.prefix = './views/';
+        resolver.suffix = '.js';
+        resolver.isCaching = false;
+
+        expect(await resolver.resolveViewName('/../../../etc/passwd')).toBeNull();
+        expect(await resolver.resolveViewName('..;x=1/..;x=1/tmp/traversed')).toBeNull();
+        expect(await resolver.resolveViewName('nul\u0000byte')).toBeNull();
     });
 });

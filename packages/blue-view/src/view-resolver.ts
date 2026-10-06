@@ -154,6 +154,39 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
 
         return isSupported;
     }
+
+    /**
+     * Returns whether a view name is safe to interpolate into a resolver path.
+     *
+     * View names can reach resolvers from request-derived data (default route
+     * names, path extensions), so a name must never escape the resolver's
+     * `prefix` once joined with it. Rejected forms:
+     *
+     * - NUL bytes, which truncate paths in native syscalls;
+     * - absolute paths (`/x`, `\x`, `C:\x`), which discard the prefix;
+     * - any path segment that is `..`, including its matrix-param and
+     *   trailing-space spellings (`..;x=1`, `.. `), which climb out of the
+     *   prefix.
+     *
+     * Separators are otherwise allowed so nested names (`admin/user`) keep
+     * resolving, and dots inside a segment (`v1.2`, `my.file`) stay valid.
+     *
+     * @param name - The view name to validate.
+     * @returns `true` when the name is safe to use as a relative path.
+     */
+    protected isSafeViewName(name: string): boolean {
+        if (name.includes('\0')) {
+            return false;
+        }
+
+        if (name.startsWith('/') || name.startsWith('\\') || /^[a-zA-Z]:[\\/]/.test(name)) {
+            return false;
+        }
+
+        // A segment escapes only when, after dropping any matrix-parameter
+        // suffix and trailing spaces (Windows), it is exactly `..`.
+        return name.split(/[\\/]+/).every((segment) => segment.split(';', 1)[0].replace(/\s+$/, '') !== '..');
+    }
 }
 
 /**
@@ -187,9 +220,19 @@ export class ImportViewResolver extends AbstractPathBasedViewResolver {
      *
      * @param name - The view name to resolve.
      * @param language - Optional locale or language hint.
-     * @returns A promise that resolves to the imported view instance.
+     * @returns A promise that resolves to the imported view instance, or `null`
+     *   when the name is unsafe to import.
      */
-    protected async _loadView(name: string, language?: unknown): Promise<View> {
+    protected async _loadView(name: string, language?: unknown): Promise<View | null> {
+        // The module specifier is runtime-selected (a view name from the
+        // application, not known at author time), so a static import cannot
+        // express it. A request-derived name must never traverse out of the
+        // prefix: a `..`/absolute/NUL name is unresolved (not-found), never
+        // imported.
+        if (!this.isSafeViewName(name)) {
+            return null;
+        }
+
         const path: string = `${this.prefix}${name}${this.suffix}`,
             ViewClass: Constructable<View> = await import(/* @vite-ignore */ path).then((module) => module.default);
         return new ViewClass();

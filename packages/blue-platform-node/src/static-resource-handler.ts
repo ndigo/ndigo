@@ -64,6 +64,29 @@ function toHttpDate(ms: number): string {
     return new Date(ms).toUTCString();
 }
 
+/**
+ * Waits for a saturated response to become writable again, or to close
+ * (PLN-F2). A backpressured client that aborts emits `close` — never `drain`
+ * — so awaiting `drain` alone would wedge the handler and leak the read
+ * stream's fd.
+ *
+ * @param res - The response awaiting backpressure relief.
+ * @returns `true` when the response drained, `false` when it closed (or
+ *   errored) first.
+ */
+function waitForDrainOrClose(res: ServerResponse): Promise<boolean> {
+    return Promise.race([
+        once(res, 'drain').then(
+            () => true,
+            () => false
+        ),
+        once(res, 'close').then(
+            () => false,
+            () => false
+        ),
+    ]);
+}
+
 /** True when the request method may receive a body (GET/HEAD only, D-8). */
 function isBodylessMethod(method: string | undefined): boolean {
     return method === 'GET' || method === 'HEAD';
@@ -398,14 +421,26 @@ export class StaticResourceHandler {
         const stream = createReadStream(path, range);
         try {
             for await (const chunk of stream) {
+                if (res.destroyed) {
+                    return;
+                }
                 if (!res.write(chunk)) {
-                    await once(res, 'drain');
+                    // The client is saturated — wait for it to drain, or for
+                    // it to abort (PLN-F2), before pushing the next chunk.
+                    const drained = await waitForDrainOrClose(res);
+                    if (!drained || res.destroyed) {
+                        return;
+                    }
                 }
             }
             res.end();
         } catch (error) {
             void error;
             res.destroy();
+        } finally {
+            // Always release the fd: the loop can exit early on abort, and the
+            // response destroy path must never keep the read stream open.
+            stream.destroy();
         }
     }
 

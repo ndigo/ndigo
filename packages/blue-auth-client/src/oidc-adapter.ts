@@ -283,9 +283,16 @@ function readRoles(payload: JWTPayload): string[] {
 }
 
 function principalFromPayload(payload: JWTPayload): Principal {
+    const sub = payload.sub;
+    // #assertClaims rejects any token without a non-empty string `sub`; this guard
+    // keeps that invariant explicit and fails closed if the helper is ever reached
+    // from an unverified path.
+    if (typeof sub !== 'string' || sub.length === 0) {
+        throw new OIDCError('invalid_token', 'ID token is missing a non-empty subject (sub) claim');
+    }
     const roles = readRoles(payload);
     return {
-        id: typeof payload.sub === 'string' && payload.sub.length > 0 ? payload.sub : 'unknown',
+        id: sub,
         name:
             (typeof payload.name === 'string' && payload.name) ||
             (typeof payload.preferred_username === 'string' && payload.preferred_username) ||
@@ -476,6 +483,9 @@ export class OIDCAdapter implements AuthAdapter {
         }
         if (Array.isArray(payload.aud) && payload.aud.length > 1 && payload.azp !== this.#config.clientId) {
             throw new OIDCError('invalid_token', 'ID token azp does not match the client ID');
+        }
+        if (typeof payload.sub !== 'string' || payload.sub.length === 0) {
+            throw new OIDCError('invalid_token', 'ID token is missing a non-empty subject (sub) claim');
         }
         const now = Date.now() / 1000;
         const skew = 60;

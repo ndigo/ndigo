@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
-import { EqualsPathMatcher, URLGlobPathMatcher } from '../src/path-matcher';
+import { EqualsPathMatcher, GlobPatternInfo, URLGlobPathMatcher } from '../src/path-matcher';
 
 describe('URLGlobPathMatcher', () => {
     const matcher = new URLGlobPathMatcher();
@@ -38,6 +38,21 @@ describe('URLGlobPathMatcher', () => {
         test('it should merge non-root paths normally', () => {
             expect(matcher.merge('/foo', '/bar')).toBe('/foo/bar');
         });
+    });
+});
+
+describe('GlobPatternInfo (KRN-REV-GLOB-15)', () => {
+    test('counts a mid-pattern `.*` as a single wildcard', () => {
+        expect(new GlobPatternInfo('.*/foo').singleWildcards).toBe(1);
+        expect(new GlobPatternInfo('a/.*/b').singleWildcards).toBe(1);
+        expect(new GlobPatternInfo('.*').singleWildcards).toBe(1);
+    });
+
+    test('uses the mid-pattern wildcard count for specificity comparison', () => {
+        const comparator = new URLGlobPathMatcher().getPatternComparator('/target');
+        // Both patterns carry exactly one `.*` wildcard, so neither is more
+        // specific; before mid-pattern detection, `.*/x` counted zero and lost.
+        expect(comparator.compare('.*/x', 'a/.*')).toBe(0);
     });
 });
 

@@ -61,6 +61,24 @@ describe('DataBinder', () => {
         expect(instance).toEqual({ email: 'a@b.c', age: '42', address: { street: 'Main St', city: 'York' } });
     });
 
+    test('it should accept required fields that are present by name', () => {
+        db.requiredFields = ['foo', 'bar.qux'];
+        const mpv = new MutablePropertyValues();
+        mpv.addPropertyValue('foo', 123);
+        mpv.addPropertyValue('bar.qux', 456);
+
+        expect(() => db.bind(mpv)).not.toThrow();
+        expect(db.result).toEqual({ foo: 123, bar: { qux: 456 } });
+    });
+
+    test('it should reject a missing required field by name', () => {
+        db.requiredFields = ['foo', 'missing'];
+        const mpv = new MutablePropertyValues();
+        mpv.addPropertyValue('foo', 123);
+
+        expect(() => db.bind(mpv)).toThrow(/Required field "missing" is missing/);
+    });
+
     test('it should bind array keypaths into instance fields', () => {
         class TagsForm {
             tags: string[] = [];

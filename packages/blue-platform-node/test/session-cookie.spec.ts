@@ -8,6 +8,7 @@ import { type SessionRecord, type SessionStore, DefaultPrincipal } from '@blue/a
 import type { ServerResponse } from 'node:http';
 import type { Route } from '@blue/router';
 import { delay } from '@blue/util';
+import { IllegalStateError } from '@blue/core';
 import { NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE, getNodeRequest, type NodeRequest } from '../src/node-request';
 import {
     buildSessionCookie,
@@ -33,21 +34,36 @@ function requireNodeRequest(route: Route): NodeRequest {
 }
 
 describe('session cookie helpers', () => {
-    test('default cookie value carries HttpOnly, SameSite=Lax, Path and Secure', () => {
+    test('default cookie is __Host- prefixed and carries HttpOnly, SameSite=Lax, Path and Secure', () => {
+        expect(SESSION_COOKIE).toBe('__Host-blue-session');
         const value = buildSessionCookie('tok123');
-        expect(value).toBe('blue-session=tok123; HttpOnly; SameSite=Lax; Path=/; Secure');
+        expect(value).toBe('__Host-blue-session=tok123; HttpOnly; SameSite=Lax; Path=/; Secure');
     });
 
-    test('secure can be disabled (dev/localhost over plain HTTP)', () => {
-        const value = buildSessionCookie('tok123', { secure: false });
+    test('a __Host- name with Secure disabled fails loudly instead of emitting an invalid cookie', () => {
+        expect(() => buildSessionCookie('tok123', { secure: false })).toThrow(IllegalStateError);
+        expect(() => buildSessionCookieClear({ secure: false })).toThrow(IllegalStateError);
+    });
+
+    test('the cookie name is configurable (unprefixed name permits plain-HTTP dev)', () => {
+        const value = buildSessionCookie('tok123', { name: 'blue-session', secure: false });
         expect(value).toBe('blue-session=tok123; HttpOnly; SameSite=Lax; Path=/');
     });
 
-    test('clear value expires the cookie immediately', () => {
+    test('clear value expires the same cookie name immediately (no Domain)', () => {
         const value = buildSessionCookieClear();
-        expect(value).toContain('blue-session=;');
+        expect(value).toContain('__Host-blue-session=;');
         expect(value).toContain('Max-Age=0');
         expect(value).toContain('Expires=Thu, 01 Jan 1970 00:00:00 GMT');
+        expect(value).toContain('Secure');
+        expect(value).not.toContain('Domain');
+    });
+
+    test('clear targets a configured cookie name', () => {
+        const value = buildSessionCookieClear({ name: 'blue-session', secure: false });
+        expect(value).toContain('blue-session=;');
+        expect(value).toContain('Max-Age=0');
+        expect(value).not.toContain('Secure');
     });
 
     test('setSessionCookie writes Set-Cookie on the node response', () => {
@@ -56,7 +72,17 @@ describe('session cookie helpers', () => {
             headersSent: false,
             setHeader: (name: string, value: string) => void (written = value),
         } as unknown as ServerResponse;
-        setSessionCookie(fakeRoute(res), 'tok', { secure: false });
+        setSessionCookie(fakeRoute(res), 'tok');
+        expect(written).toBe('__Host-blue-session=tok; HttpOnly; SameSite=Lax; Path=/; Secure');
+    });
+
+    test('setSessionCookie honors a configured name', () => {
+        let written: string | undefined;
+        const res = {
+            headersSent: false,
+            setHeader: (name: string, value: string) => void (written = value),
+        } as unknown as ServerResponse;
+        setSessionCookie(fakeRoute(res), 'tok', { name: 'blue-session', secure: false });
         expect(written).toBe('blue-session=tok; HttpOnly; SameSite=Lax; Path=/');
     });
 
@@ -120,10 +146,11 @@ describe('NodeSessionInterceptor', () => {
     const principal = new DefaultPrincipal('u1', 'alice', ['user']);
     const record: SessionRecord = { principal, tokenVersion: 0, issuedAt: Date.now() };
 
-    function routeWithCookie(cookie?: string): Route {
+    function routeWithCookie(cookie?: string, rawHeader?: string): Route {
         return {
             attributes: {
                 [NODE_REQUEST_ATTRIBUTE]: {
+                    headers: rawHeader === undefined ? {} : { cookie: rawHeader },
                     cookies: cookie === undefined ? {} : { [SESSION_COOKIE]: cookie },
                     session: {},
                 } as NodeRequest,
@@ -147,6 +174,52 @@ describe('NodeSessionInterceptor', () => {
         const route = routeWithCookie(undefined);
         expect(await interceptor.preHandle(route)).toBe(true);
         expect(requireNodeRequest(route).session).toEqual({});
+    });
+
+    test('authenticates a single session cookie present in the raw header', async () => {
+        const store = new StubSessionStore();
+        const token = await store.create(record, 60_000);
+        const interceptor = new NodeSessionInterceptor(store);
+        const route = routeWithCookie(token, `${SESSION_COOKIE}=${token}`);
+        expect(await interceptor.preHandle(route)).toBe(true);
+        expect(requireNodeRequest(route).session['token']).toBe(token);
+    });
+
+    test('fails closed (anonymous) when the session cookie name is duplicated (cookie tossing)', async () => {
+        const store = new StubSessionStore();
+        const token = await store.create(record, 60_000);
+        const interceptor = new NodeSessionInterceptor(store);
+        // The jar kept the first (valid) token, but the header plants a twin:
+        // the request must resolve anonymous rather than trust either value.
+        const route = routeWithCookie(token, `${SESSION_COOKIE}=${token}; ${SESSION_COOKIE}=planted`);
+        expect(await interceptor.preHandle(route)).toBe(true);
+        expect(requireNodeRequest(route).session).toEqual({});
+    });
+
+    test('fails closed for a comma-joined duplicate header line', async () => {
+        const store = new StubSessionStore();
+        const token = await store.create(record, 60_000);
+        const interceptor = new NodeSessionInterceptor(store);
+        const route = routeWithCookie(token, `${SESSION_COOKIE}=${token}, ${SESSION_COOKIE}=planted`);
+        expect(await interceptor.preHandle(route)).toBe(true);
+        expect(requireNodeRequest(route).session).toEqual({});
+    });
+
+    test('honors a configured cookie name for reads and duplicate detection', async () => {
+        const store = new StubSessionStore();
+        const token = await store.create(record, 60_000);
+        const interceptor = new NodeSessionInterceptor(store, 'blue-session');
+        const route = {
+            attributes: {
+                [NODE_REQUEST_ATTRIBUTE]: {
+                    headers: { cookie: `blue-session=${token}` },
+                    cookies: { 'blue-session': token },
+                    session: {},
+                } as NodeRequest,
+            },
+        } as unknown as Route;
+        expect(await interceptor.preHandle(route)).toBe(true);
+        expect(requireNodeRequest(route).session['token']).toBe(token);
     });
 
     test('leaves the bag empty for an unknown or expired token', async () => {

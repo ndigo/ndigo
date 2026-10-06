@@ -11,8 +11,11 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, afterEach, vi } from 'vitest';
+import { SpanKind, trace } from '@opentelemetry/api';
+import type { Span, SpanStatus, Tracer } from '@opentelemetry/api';
 import { AbstractBaseInstrumentation } from '../src/instrumentation/base';
+import type { SpanConfig } from '../src/instrumentation/base';
 
 /**
  * Builds an isolated target class plus an instrumentation whose
@@ -90,5 +93,170 @@ describe('AbstractBaseInstrumentation enable latch', () => {
         expect(events).toEqual(['enable', 'disable', 'enable']);
         expect(target.greet()).toBe('hello');
         expect(events).toEqual(['enable', 'disable', 'enable', 'wrapped']);
+    });
+});
+
+/**
+ * Observable state of a fake span, for asserting that a span still ends even
+ * when a `SpanConfig` callback throws.
+ */
+interface SpanRecord {
+    ended: number;
+    exceptions: unknown[];
+    statuses: SpanStatus[];
+}
+
+/**
+ * Creates a fake span that records `end`/`recordException`/`setStatus` calls.
+ *
+ * @returns The span and its recorded state.
+ */
+function recordingSpan(): { span: Span; record: SpanRecord } {
+    const record: SpanRecord = { ended: 0, exceptions: [], statuses: [] };
+    const span = {
+        end: () => {
+            record.ended += 1;
+        },
+        recordException: (error: unknown) => {
+            record.exceptions.push(error);
+        },
+        setStatus: (status: SpanStatus) => {
+            record.statuses.push(status);
+        },
+    } as unknown as Span;
+    return { span, record };
+}
+
+/**
+ * Installs a fake global tracer that hands out one recording span and captures
+ * the options passed to `startSpan`.
+ *
+ * @returns The recorded span state plus the captured start options.
+ */
+function installFakeTracer(): { record: SpanRecord; started: { attributes?: unknown }[] } {
+    const { span, record } = recordingSpan();
+    const started: { attributes?: unknown }[] = [];
+    const tracer = {
+        startSpan: (_name: string, options?: { attributes?: unknown }) => {
+            started.push(options ?? {});
+            return span;
+        },
+        startActiveSpan: (_name: string, _options: unknown, callback: (activeSpan: Span) => unknown) => callback(span),
+    } as unknown as Tracer;
+    vi.spyOn(trace, 'getTracer').mockReturnValue(tracer);
+    return { record, started };
+}
+
+/** Exposes the protected `_patch`/`_patchSync` factories for direct testing. */
+class PatchHarness extends AbstractBaseInstrumentation {
+    constructor() {
+        super('test-patch');
+    }
+
+    enable(): void {}
+
+    disable(): void {}
+
+    asyncPatch(
+        config: SpanConfig,
+        original: (this: unknown, ...args: unknown[]) => Promise<unknown>
+    ): (this: unknown, ...args: unknown[]) => Promise<unknown> {
+        return this._patch(config)(original);
+    }
+
+    syncPatch(
+        config: SpanConfig,
+        original: (this: unknown, ...args: unknown[]) => unknown
+    ): (this: unknown, ...args: unknown[]) => unknown {
+        return this._patchSync(config)(original);
+    }
+}
+
+describe('AbstractBaseInstrumentation span callback safety (TEL-B1/TEL-10)', () => {
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    const throwingAttributes = (): SpanConfig => ({
+        name: 'op',
+        kind: SpanKind.INTERNAL,
+        attributes: () => {
+            throw new Error('attrs boom');
+        },
+    });
+
+    it('a throwing attributes callback does not break the wrapped async method', async () => {
+        const { record, started } = installFakeTracer();
+        const patched = new PatchHarness().asyncPatch(throwingAttributes(), async () => 'ok');
+
+        await expect(patched()).resolves.toBe('ok');
+        expect(record.ended).toBe(1);
+        expect(started[0]?.attributes).toBeUndefined();
+    });
+
+    it('a throwing attributes callback does not break the wrapped sync method', () => {
+        const { record, started } = installFakeTracer();
+        const patched = new PatchHarness().syncPatch(throwingAttributes(), () => 42);
+
+        expect(patched()).toBe(42);
+        expect(record.ended).toBe(1);
+        expect(started[0]?.attributes).toBeUndefined();
+    });
+
+    const throwingOnEnd = (): SpanConfig => ({
+        name: 'op',
+        kind: SpanKind.INTERNAL,
+        onEnd: () => {
+            throw new Error('onEnd boom');
+        },
+    });
+
+    it('a throwing onEnd still ends the async span and preserves the result', async () => {
+        const { record } = installFakeTracer();
+        const patched = new PatchHarness().asyncPatch(throwingOnEnd(), async () => 'ok');
+
+        await expect(patched()).resolves.toBe('ok');
+        expect(record.ended).toBe(1);
+    });
+
+    it('a throwing onEnd still ends the async span and propagates the method error', async () => {
+        const { record } = installFakeTracer();
+        const failure = new Error('method boom');
+        const patched = new PatchHarness().asyncPatch(throwingOnEnd(), async () => {
+            throw failure;
+        });
+
+        await expect(patched()).rejects.toBe(failure);
+        expect(record.ended).toBe(1);
+        expect(record.exceptions).toContain(failure);
+    });
+
+    it('implements onEnd for the sync path', () => {
+        const { record } = installFakeTracer();
+        const outcomes: unknown[] = [];
+        const config: SpanConfig = {
+            name: 'op',
+            kind: SpanKind.INTERNAL,
+            onEnd: (_span, outcome) => {
+                outcomes.push(outcome);
+            },
+        };
+        const patched = new PatchHarness().syncPatch(config, () => 'value');
+
+        expect(patched()).toBe('value');
+        expect(outcomes).toEqual([{ ok: true, value: 'value' }]);
+        expect(record.ended).toBe(1);
+    });
+
+    it('a throwing onEnd still ends the sync span and propagates the method error', () => {
+        const { record } = installFakeTracer();
+        const failure = new Error('method boom');
+        const patched = new PatchHarness().syncPatch(throwingOnEnd(), () => {
+            throw failure;
+        });
+
+        expect(() => patched()).toThrow(failure);
+        expect(record.ended).toBe(1);
+        expect(record.exceptions).toContain(failure);
     });
 });

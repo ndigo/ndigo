@@ -4,13 +4,34 @@
  * @author Jeff Rose
  */
 // @vitest-environment node
-import { describe, test, expect, beforeAll, afterAll } from 'vitest';
+import { describe, test, expect, beforeAll, afterAll, vi } from 'vitest';
 import { mkdtemp, mkdir, writeFile, rm, chmod, symlink } from 'node:fs/promises';
+import { EventEmitter } from 'node:events';
+import type * as NodeFs from 'node:fs';
+import type { Readable } from 'node:stream';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Route } from '@blue/router';
 import { StaticResourceHandler } from '../src/static-resource-handler';
 import { NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE, type NodeRequest } from '../src/node-request';
+
+// Capture every read stream the handler opens (PLN-F2) so a spec can prove
+// the fd is released on abort. Only `node:fs` (sync) is mocked; the spec and
+// the resolver use `node:fs/promises`, which is a distinct specifier.
+const { createdStreams } = vi.hoisted(() => ({ createdStreams: [] as Readable[] }));
+
+vi.mock('node:fs', async (importOriginal) => {
+    const actual = await importOriginal<typeof NodeFs>();
+    const createReadStream = ((
+        path: Parameters<typeof NodeFs.createReadStream>[0],
+        options?: Parameters<typeof NodeFs.createReadStream>[1]
+    ) => {
+        const stream = actual.createReadStream(path, options);
+        createdStreams.push(stream);
+        return stream;
+    }) as typeof NodeFs.createReadStream;
+    return { ...actual, createReadStream };
+});
 
 /**
  * HTTP semantics of static serving (D-2/D-4/D-6): conditional GET (304),
@@ -67,6 +88,57 @@ function memorySink() {
     };
     return { captured, sink };
 }
+
+/**
+ * `ServerResponse`-shaped sink that is permanently saturated: `write()`
+ * always returns `false` and `drain` never fires. Backed by a real
+ * `EventEmitter` so a spec can drive `close` (client abort) directly.
+ */
+class BackpressureSink extends EventEmitter {
+    headersSent = false;
+    destroyed = false;
+    ended = false;
+    writes = 0;
+    writeHead(): void {
+        // headers are irrelevant to the backpressure path.
+    }
+    write(): boolean {
+        this.writes += 1;
+        return false;
+    }
+    end(): void {
+        this.ended = true;
+    }
+    destroy(): void {
+        this.destroyed = true;
+    }
+}
+
+/** Yields to the event loop so a pending handler write can be observed. */
+const flush = (): Promise<void> => {
+    const { promise, resolve } = Promise.withResolvers<void>();
+    setImmediate(resolve);
+    return promise;
+};
+
+/** Rejects if `promise` has not settled within `ms` — a hang, not a race. */
+const withDeadline = <T>(promise: Promise<T>, ms = 500): Promise<T> => {
+    const { promise: timeout, reject } = Promise.withResolvers<never>();
+    const timer = setTimeout(() => reject(new Error(`did not settle within ${ms}ms`)), ms);
+    return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+};
+
+/** Polls `predicate` on the event loop until it holds or `ms` elapses. */
+const waitFor = async (predicate: () => boolean, ms = 500): Promise<void> => {
+    const deadline = Date.now() + ms;
+    while (!predicate()) {
+        if (Date.now() > deadline) {
+            throw new Error('condition not met within deadline');
+        }
+        // eslint-disable-next-line no-await-in-loop -- polling must observe each prior tick
+        await flush();
+    }
+};
 
 let root: string;
 let outsideDir: string;
@@ -437,5 +509,43 @@ describe('StaticResourceHandler — traversal regression matrix (TST-3)', () => 
         const res = await serve('/.env');
         expect(res.status).toBe(403);
         expect(res.headers['content-type']).toBe('application/problem+json');
+    });
+});
+
+describe('StaticResourceHandler — backpressure abort (PLN-F2)', () => {
+    test('a non-draining client close settles the handler and destroys the file stream', async () => {
+        createdStreams.length = 0;
+        const sink = new BackpressureSink();
+        const req = { headers: {}, body: {}, cookies: {}, session: {} } as NodeRequest;
+        const route = {
+            method: 'GET',
+            path: '/app.js',
+            attributes: {
+                [NODE_REQUEST_ATTRIBUTE]: req,
+                [NODE_RESPONSE_ATTRIBUTE]: sink,
+            },
+            data: {},
+            params: {},
+            raw: '/app.js',
+            id: 't',
+            length: 0,
+        } as unknown as Route;
+
+        const pending = new StaticResourceHandler(root).handle(route, 'app.js');
+
+        // First chunk written; the sink returns `false`, so the handler is
+        // parked on the drain/close race with the file stream open.
+        await waitFor(() => sink.writes >= 1);
+        expect(createdStreams).toHaveLength(1);
+
+        // Abort: `close` arrives, `drain` never does (PLN-F2).
+        sink.destroyed = true;
+        sink.emit('close');
+
+        await withDeadline(pending);
+
+        expect(sink.writes).toBe(1);
+        expect(sink.ended).toBe(false);
+        expect(createdStreams[0]?.destroyed).toBe(true);
     });
 });

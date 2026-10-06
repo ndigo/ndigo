@@ -299,6 +299,7 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 
 ## Completed Reviews
 
+- [2026-10-06_COMPREHENSIVE_REVIEW_AND_MITIGATION.md](2026-10-06_COMPREHENSIVE_REVIEW_AND_MITIGATION.md) - Second full-repository sweep (39 packages, 7 apps, docs, tooling, CI; 16 slices) at `96337f24`: all gates green, 5 Block / 28 High / 71 Medium / 63 Low / 12 Nit new findings (incl. a passwordless-account auth bypass, a telemetry remote process-crash, a view-name path traversal, a render-hang, and a fresh-checkout CI e2e failure), plus 10 inventory-reconciliation items and 13 framework gaps — remediation waves proposed, not yet executed
 - [2026-10-06_CODE_REVIEW_AND_MITIGATION.md](2026-10-06_CODE_REVIEW_AND_MITIGATION.md) - Full-repository review (42 packages, 7 apps, docs, tooling, hygiene) with remediation waves (1 Block build-breaker + 4 architecture findings + 18 Must Fix, ~60 Should Fix, remainder Optional/Nit/FYI)
 - [2026-10-04_CODE_REVIEW_AND_MITIGATION.md](2026-10-04_CODE_REVIEW_AND_MITIGATION.md) - Review of the AD-42/AD-43 wave (blue-proxy, blue-resilience) and recent committed features with remediation plan (2 Must Fix, 3 Should Fix, 1 Block, 8 Medium, 10 Nit/FYI)
 - [2026-09-29_CODE_REVIEW_AND_MITIGATION.md](2026-09-29_CODE_REVIEW_AND_MITIGATION.md) - Post-AD-38 comprehensive sweep (35 packages, 7 apps; 11 review slices) with Waves 1–6 remediation

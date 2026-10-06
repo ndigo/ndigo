@@ -249,11 +249,14 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      */
     #pendingUpgrades: Map<IncomingMessage, { path: string; sources: SocketRequestSources }> = new Map();
     /**
-     * Path → has-socket-handler memo (probe cache). `handleRequest` runs a
-     * second full radix lookup per request to distinguish socket-only paths
-     * (404) from HTTP 405s; handler mappings are static for the lifetime of
-     * the dispatcher, so the probe result is stable — cache it and clear on
-     * close so re-listening re-resolves.
+     * Static-path → has-socket-handler memo (probe cache). `handleRequest`
+     * runs a second full radix lookup per request to distinguish socket-only
+     * paths (404) from HTTP 405s; handler mappings are static for the
+     * lifetime of the dispatcher, so the probe result is stable — cache it
+     * and clear on close so re-listening re-resolves. Only static paths are
+     * keyed (see {@link #hasSocketHandler}); a
+     * parameterized mapping matches every concrete path, so memoizing it
+     * would add one entry per distinct request path (unbounded growth).
      */
     #socketPathMemo: Map<string, boolean> = new Map();
     #dispatcher: NodeDispatcher;
@@ -486,10 +489,21 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      * `handleRequest` needs this probe on every request (the memo turns a
      * full second radix lookup into a Map read after the first hit).
      *
+     * Parameterized matches are deliberately not memoized: their `path` is
+     * the concrete request path (`/items/1`, `/items/2`, …), so caching
+     * would add one entry per distinct path — unbounded growth from
+     * ordinary traffic. Re-probing costs the same radix lookup a first-time
+     * static path already pays, and keeps the memo bounded by the
+     * registered static patterns.
+     *
      * @param path - The request path.
+     * @param parameterized - Whether the matched mapping captured path params.
      * @returns Whether the path resolves to a socket handler.
      */
-    #hasSocketHandler(path: string): boolean {
+    #hasSocketHandler(path: string, parameterized: boolean): boolean {
+        if (parameterized) {
+            return this.#findSocketHandler(path) !== null;
+        }
         if (!this.#socketPathMemo.has(path)) {
             this.#socketPathMemo.set(path, this.#findSocketHandler(path) !== null);
         }
@@ -943,7 +957,10 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             const chain = this.#dispatcher.getHandler(route);
             const noHandler = !chain?.handler || Object.keys(chain.handler).length === 0;
 
-            if (!noHandler && this.#hasSocketHandler(route.path)) {
+            // `route.params` is non-null exactly when the matched mapping is
+            // parameterized (the radix mapping writes the captured segments),
+            // so those probes stay out of the path-keyed memo (PL-8).
+            if (!noHandler && this.#hasSocketHandler(route.path, route.params !== null)) {
                 // A WebSocket-only endpoint (socketMapped) reached through a
                 // plain HTTP request: the method exists but only for upgraded
                 // sockets. Respond 404 — this path is not served over HTTP.

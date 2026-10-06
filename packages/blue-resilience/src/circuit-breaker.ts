@@ -25,12 +25,14 @@ export const circuitBreaker = methodAnnotation<CircuitBreakerSpec>('circuitBreak
  */
 export interface CircuitBreakerSpec {
     /**
-     * Consecutive failures that open the circuit. Defaults to `5`.
+     * Consecutive failures that open the circuit. Defaults to `5`. Must be
+     * a positive integer — invalid values fail loudly at weave time.
      */
     failureThreshold?: number;
     /**
      * Milliseconds the circuit stays open before the next call becomes a
-     * probe. Defaults to `10_000`.
+     * probe. Defaults to `10_000`. Must be a positive finite number —
+     * invalid values fail loudly at weave time.
      */
     resetMs?: number;
 }
@@ -74,6 +76,28 @@ const DEFAULT_FAILURE_THRESHOLD = 5;
 const DEFAULT_RESET_MS = 10_000;
 
 /**
+ * Rejects invalid {@link CircuitBreakerSpec} values at weave time (and on
+ * hand-built chains) instead of letting them silently invert the policy:
+ * `failureThreshold: 0` would open the circuit on the first failure,
+ * `NaN` would leave it permanently closed, and `resetMs <= 0` would turn
+ * every call after opening into a probe.
+ */
+function validateCircuitBreakerSpec(spec: CircuitBreakerSpec): void {
+    const { failureThreshold, resetMs } = spec;
+    if (
+        failureThreshold !== undefined &&
+        (typeof failureThreshold !== 'number' || !Number.isInteger(failureThreshold) || failureThreshold < 1)
+    ) {
+        throw new TypeError(
+            `@circuitBreaker failureThreshold must be a positive integer — got ${String(failureThreshold)}`
+        );
+    }
+    if (resetMs !== undefined && (typeof resetMs !== 'number' || !Number.isFinite(resetMs) || resetMs <= 0)) {
+        throw new TypeError(`@circuitBreaker resetMs must be a positive finite number — got ${String(resetMs)}`);
+    }
+}
+
+/**
  * Around-advice keeping a per-(entry, method) circuit. Awaits `next()` so it
  * observes the final outcome of the inner chain (AD-43 D-5) — when composed
  * outside a retry interceptor, one chain pass counts as one failure, not one
@@ -88,7 +112,13 @@ export class CircuitBreakerInterceptor implements MethodInterceptor {
     }
 
     matches(method: MethodDescriptor): boolean {
-        return method.annotation(circuitBreaker) !== undefined;
+        const spec = method.annotation(circuitBreaker);
+        if (spec !== undefined) {
+            // Fail loud at weave time, not per call.
+            validateCircuitBreakerSpec(spec);
+            return true;
+        }
+        return false;
     }
 
     async invoke(invocation: MethodInvocation, next: () => unknown): Promise<unknown> {
@@ -97,6 +127,7 @@ export class CircuitBreakerInterceptor implements MethodInterceptor {
             // matches() gates the chain; keep hand-built chains safe.
             return next();
         }
+        validateCircuitBreakerSpec(spec);
 
         const threshold = spec.failureThreshold ?? DEFAULT_FAILURE_THRESHOLD;
         const resetMs = spec.resetMs ?? DEFAULT_RESET_MS;

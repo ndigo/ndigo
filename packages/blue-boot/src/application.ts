@@ -65,6 +65,9 @@ export class Application extends Emitter {
     #entryProcessors: EntryProcessor[] = [];
     #schema: z.ZodType | null = null;
     #sources: Set<Function>;
+    // CF-6: the context created by `_prepareContext` during `run()`; closed in
+    // `run()`'s catch when boot fails after creation, cleared once boot succeeds.
+    #pendingContext: ConfigurableApplicationContext | null = null;
 
     /**
      * The active remote config source, when configured (AD-29 Wave 3).
@@ -114,8 +117,16 @@ export class Application extends Emitter {
                 context.on('context:close', () => this.#configServerSource?.stop());
             }
             this.emit('started', context);
+            // Boot succeeded — the caller now owns the context.
+            this.#pendingContext = null;
             return context;
         } catch (error: unknown) {
+            // CF-6: a boot failure after context creation (binding, validation,
+            // route scan) must not leak the context's listeners/beans — close
+            // it first, then run the remaining cleanup.
+            this.#pendingContext?.close();
+            this.#pendingContext = null;
+            this.#detachRebindListeners();
             // A polling source started before a later boot failure has no context
             // to stop it — tear it down here to avoid dangling intervals.
             this.#configServerSource?.stop();
@@ -382,6 +393,9 @@ export class Application extends Emitter {
      */
     protected _prepareContext(environment: ConfigurableEnvironment, args: string[]): ConfigurableApplicationContext {
         const context = new MetadataConfigApplicationContext(this.#name ?? 'blue-application');
+        // CF-6: track the context for `run()`'s failure path — a throw later in
+        // this method (binding, validation, route scan) must close it.
+        this.#pendingContext = context;
         context.setEnvironment(environment);
 
         // Entry processors register before sources are parsed and entries are
@@ -559,6 +573,17 @@ export class Application extends Emitter {
         this.emit('closed');
         // ARC-6: detach the rebind listener (+ fail-loud handler) so a closed
         // application is not reachable through the environment.
+        this.#detachRebindListeners();
+        super.destroy();
+    }
+
+    /**
+     * Detaches the rebind listener and its fail-loud handler from the wired
+     * environment (ARC-6/CF-6): neither a closed application nor one whose
+     * boot failed after the listeners were registered must stay reachable
+     * through the environment — a later `refresh()` must not write into it.
+     */
+    #detachRebindListeners(): void {
         if (this.#refreshEnvironment && this.#refreshListener) {
             this.#refreshEnvironment.off(CONFIG_REFRESH_EVENT, this.#refreshListener);
         }
@@ -568,6 +593,5 @@ export class Application extends Emitter {
         this.#refreshEnvironment = null;
         this.#refreshListener = null;
         this.#refreshFailHandler = null;
-        super.destroy();
     }
 }

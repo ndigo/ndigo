@@ -155,8 +155,9 @@ export class HTTPExecutionChain {
      *
      * @param request - The request that completed.
      * @param response - The final response or error wrapper.
+     * @param settings - The request settings the request was prepared from, when available.
      */
-    applyPostComplete(request: Request, response: Response | ResponseError): void {
+    applyPostComplete(request: Request, response: Response | ResponseError, settings?: HTTPInit): void {
         if (this.#hasCompletionAwareInterceptors) {
             const interceptors = this.#interceptors,
                 length = interceptors.length;
@@ -165,7 +166,7 @@ export class HTTPExecutionChain {
                 for (; index < length; index++) {
                     const interceptor = interceptors[index];
                     if (likeCompletionAwareHTTPInterceptor(interceptor)) {
-                        interceptor.postComplete(request, response);
+                        interceptor.postComplete(request, response, settings);
                     }
                 }
             }

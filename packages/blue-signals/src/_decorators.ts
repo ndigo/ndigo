@@ -21,25 +21,43 @@ const effectDisposers = new WeakMap<object, Array<() => void>>();
 const pendingSignals = new WeakMap<object, Map<string | symbol, unknown>>();
 const pendingEffects = new WeakMap<object, Array<() => void>>();
 
+// Explains the two ways `@signal`/`@effect` metadata can stay pending: the
+// declaring class lacks `@reactive`, or the member is declared in a subclass of
+// a `@reactive` class (activation happens before subclass initializers run).
+const REACTIVATION_HINT =
+    'either the class is missing the @reactive class decorator, or the member is declared on a subclass ' +
+    'of a @reactive class — decorators are not inherited, so every class that declares @signal/@effect ' +
+    'members needs its own @reactive decorator.';
+
+/**
+ * Returns the backing `Signal` for a `@signal` field activated by `@reactive`,
+ * or `undefined` when the field has no backing signal.
+ *
+ * Throws when the instance still carries pending `@signal`/`@effect` metadata:
+ * the declaring class is missing the `@reactive` class decorator, or the member
+ * was declared on a subclass of a `@reactive` class — `@reactive` only
+ * activates members declared in its own class.
+ */
 export function getSignal<T>(instance: object, field: string): Signal<T> | undefined {
     // Anti-pattern detection (A2): a @signal/@effect field registered without
     // the @reactive class decorator is silently inert — the decorators store
     // pending metadata that never activates. Fail loudly instead of returning
     // undefined with a "working" appearance.
+    const ctorName = (instance as object).constructor?.name ?? 'object';
     const pending = pendingSignals.get(instance);
     if (pending && pending.size > 0) {
+        const names = [...pending.keys()].join(', ');
         throw new Error(
-            `@signal/@effect fields (${[...pending.keys()].join(', ')}) are pending on an instance of ` +
-                `${(instance as object).constructor?.name ?? 'object'} but were never activated — ` +
-                `the class is missing the @reactive class decorator.`
+            pending.has(field)
+                ? `@signal '${field}' is pending on an instance of ${ctorName} but was never activated — ${REACTIVATION_HINT}`
+                : `@signal/@effect fields (${names}) are pending on an instance of ${ctorName} but were never activated — ${REACTIVATION_HINT}`
         );
     }
     const effectsPending = pendingEffects.get(instance);
     if (effectsPending && effectsPending.length > 0) {
         throw new Error(
-            `@effect methods (${effectsPending.length}) are pending on an instance of ` +
-                `${(instance as object).constructor?.name ?? 'object'} but were never activated — ` +
-                `the class is missing the @reactive class decorator.`
+            `@effect methods (${effectsPending.length}) are pending on an instance of ${ctorName} but were ` +
+                `never activated — ${REACTIVATION_HINT}`
         );
     }
     return signalMap.get(instance)?.get(field) as Signal<T> | undefined;
@@ -50,7 +68,10 @@ export function getSignal<T>(instance: object, field: string): Signal<T> | undef
 /**
  * Class field decorator that wraps the field with a reactive signal.
  *
- * Requires the `@reactive` class decorator to be applied to the class.
+ * Requires the `@reactive` class decorator on the class that declares the
+ * field. Decorators are not inherited: a `@signal` field declared in a
+ * subclass of a `@reactive` class stays a plain property — and `getSignal`
+ * throws — unless the subclass is decorated with `@reactive` as well.
  */
 export function signal<T extends object, V>(
     _target: undefined,
@@ -98,7 +119,10 @@ export function computed<T>(target: () => T, context: ClassGetterDecoratorContex
 /**
  * Method decorator that wraps the method with a reactive effect.
  *
- * Requires the `@reactive` class decorator to be applied to the class.
+ * Requires the `@reactive` class decorator on the class that declares the
+ * method. Decorators are not inherited: an `@effect` method declared in a
+ * subclass of a `@reactive` class never runs unless the subclass is decorated
+ * with `@reactive` as well.
  */
 export function effect(target: (...args: unknown[]) => void, context: ClassMethodDecoratorContext<object>): void {
     // Store the method reference for @reactive to process
@@ -115,11 +139,17 @@ export function effect(target: (...args: unknown[]) => void, context: ClassMetho
 // ── @reactive ────────────────────────────────────────────────────────────────
 
 /**
- * Class decorator that activates all `@signal` and `@effect` decorators.
+ * Class decorator that activates the `@signal` and `@effect` members declared
+ * on the decorated class.
  *
  * This decorator processes the signal/effect metadata stored by the
  * `@signal`, `@effect`, and `@computed` decorators. It creates the
  * signals, installs getter/setters, and wires up effects.
+ *
+ * Activation runs at the end of the decorated class's construction — before
+ * subclass field initializers — so reactive members declared in subclasses are
+ * not activated. Apply `@reactive` to every class in the hierarchy that
+ * declares `@signal`/`@effect` members:
  *
  * ```ts
  * @reactive
@@ -127,6 +157,11 @@ export function effect(target: (...args: unknown[]) => void, context: ClassMetho
  *     @signal count = 0;
  *     @computed get doubled() { return this.count * 2; }
  *     @effect log() { console.log(this.count); }
+ * }
+ *
+ * @reactive
+ * class NamedCounter extends Counter {
+ *     @signal label = 'unnamed';
  * }
  * ```
  */

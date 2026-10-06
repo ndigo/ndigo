@@ -80,7 +80,13 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
                             original
                                 .apply(this, [req, res])
                                 .then(() => {
-                                    span.setStatus(resultStatus({ ok: true }));
+                                    // OP-5: the adapter converts dispatch errors
+                                    // into problem responses (5xx) before
+                                    // resolving, so `res.statusCode` — not the
+                                    // settle state — carries the outcome. 4xx
+                                    // stays OK (client error, OTel HTTP semconv).
+                                    span.setAttribute('http.response.status_code', res.statusCode);
+                                    span.setStatus(resultStatus({ ok: res.statusCode < 500 }));
                                     span.end();
                                 })
                                 .catch((error: unknown) => {

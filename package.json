@@ -13,7 +13,7 @@
     "test:benchmark:vue": "pnpm exec tsx scripts/benchmark-dom.ts --impl vue",
     "test:benchmark:vanilla": "pnpm exec tsx scripts/benchmark-dom.ts --impl vanilla",
     "build:bluejs": "pnpm --filter ../todomvc/examples/bluejs run build",
-    "build:todomvc": "nx run @blue/todomvc:build:lib",
+    "build:todomvc": "pnpm --filter @blue/todomvc run build",
     "test": "nx run-many -t test",
     "test:bench": "vitest bench --run --reporter verbose",
     "test:e2e": "nx run @blue/todo:test:e2e",

@@ -102,7 +102,7 @@ Optional matcher to reuse for pattern checks.
 
 ### postComplete()
 
-> **postComplete**(`request`, `response`): `void`
+> **postComplete**(`request`, `response`, `settings?`): `void`
 
 Delegates completion handling to the wrapped interceptor when supported.
 
@@ -119,6 +119,12 @@ The request that completed.
 `Response` \| [`ResponseError`](#)
 
 The final response or error wrapper.
+
+##### settings?
+
+[`HTTPInit`](../type-aliases/HTTPInit.md)
+
+The request settings the request was prepared from, when available.
 
 #### Returns
 

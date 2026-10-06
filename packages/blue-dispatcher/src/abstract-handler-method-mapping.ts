@@ -205,10 +205,20 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
         const resolvedHandler = resolveHandlerWithContext(this.applicationContext)(handler);
 
         if (resolvedHandler) {
-            const handlerPrototype = getPrototypeOf(resolvedHandler);
-
-            if (handlerPrototype !== null) {
-                keys(handlerPrototype).forEach((key) => {
+            // Walk the whole prototype chain: a method decorated on a base
+            // class is an own enumerable property of the base prototype, not
+            // of the instance's immediate prototype. Each key is handled once,
+            // at the nearest prototype level where it is declared.
+            let handlerPrototype: object | null = getPrototypeOf(resolvedHandler) as object | null;
+            const detectedKeys = new Set<string>();
+            while (handlerPrototype !== null) {
+                const handlerKeys = keys(handlerPrototype);
+                for (let index = 0; index < handlerKeys.length; index++) {
+                    const key = handlerKeys[index];
+                    if (detectedKeys.has(key)) {
+                        continue;
+                    }
+                    detectedKeys.add(key);
                     if (
                         isFunction((handlerPrototype as Record<string, unknown>)[key]) &&
                         hasRouteMapping(resolvedHandler, key)
@@ -218,7 +228,8 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
                             this._registerHandlerMethod(resolvedHandler, key, info);
                         }
                     }
-                });
+                }
+                handlerPrototype = getPrototypeOf(handlerPrototype) as object | null;
             }
         }
     }

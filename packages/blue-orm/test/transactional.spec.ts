@@ -44,6 +44,16 @@ class AccountService {
         this.#em.persist(account);
         throw new Error('boom');
     }
+
+    @transactional()
+    async mutateThenThrow(id: string, name: string): Promise<void> {
+        const account = this.#em.find(Account, id);
+        if (!account) {
+            throw new Error(`account '${id}' not found`);
+        }
+        account.name = name;
+        throw new Error('boom');
+    }
 }
 
 describe('@transactional with InMemoryTransactionManager snapshot rollback', () => {
@@ -77,6 +87,27 @@ describe('@transactional with InMemoryTransactionManager snapshot rollback', () 
         expect(em.find(Account, 'b2')).toBeUndefined();
         // Pre-existing data survived.
         expect(em.find(Account, 'seed')).toMatchObject({ id: 'seed' });
+
+        em.clear();
+        ds.destroy();
+    });
+
+    test('rollback reverts in-place mutations of pre-existing entities', async () => {
+        const ds = new InMemoryDataSource();
+        ds.init();
+        const em = new InMemoryEntityManager(ds);
+        const service = new AccountService(ds, em);
+
+        const seeded = new Account();
+        seeded.id = 'seed';
+        seeded.name = 'Seed';
+        em.persist(seeded);
+
+        await expect(service.mutateThenThrow('seed', 'Mutated')).rejects.toThrow('boom');
+
+        // The store-visible row is back to its pre-transaction values; reads
+        // after a restore return clones, so metadata lookups must still work.
+        expect(em.find(Account, 'seed')).toMatchObject({ id: 'seed', name: 'Seed' });
 
         em.clear();
         ds.destroy();

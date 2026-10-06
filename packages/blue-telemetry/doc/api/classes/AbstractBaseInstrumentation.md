@@ -16,6 +16,11 @@ Subclasses only declare:
 - the target class/method to patch
 - the span name, kind, and attributes
 
+`enable()`/`disable()` are latched: the constructor-time enable counts as
+the first cycle, a repeated `enable()` (the SDK's `registerInstrumentations`)
+is a no-op, and `disable()` unwinds the wrappers once and re-arms the next
+`enable()`.
+
 ## Extends
 
 - `InstrumentationBase`

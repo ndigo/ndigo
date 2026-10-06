@@ -82,3 +82,74 @@ describe('InMemoryDataSource', () => {
         });
     });
 });
+
+// DA-3: rollback is a deep snapshot, not just store membership — entities are
+// cloned so in-place mutations of pre-existing rows are reverted on restore.
+class Account {
+    constructor(
+        public id: string,
+        public name: string
+    ) {}
+}
+
+describe('InMemoryDataSource snapshot/restore', () => {
+    let dataSource: InMemoryDataSource;
+
+    beforeEach(() => {
+        dataSource = new InMemoryDataSource();
+        dataSource.createStore('accounts');
+    });
+
+    it('rolls back in-place entity mutations on prototype-preserving clones', () => {
+        const store = dataSource.getStore<Account>('accounts');
+        const account = new Account('a1', 'Alice');
+        store.set('a1', account);
+
+        const snapshot = dataSource.snapshot();
+        account.name = 'Mutated';
+        store.set('a2', new Account('a2', 'Bob'));
+        dataSource.restore(snapshot);
+
+        const restoredStore = dataSource.getStore<Account>('accounts');
+        expect(restoredStore.get('a2')).toBeUndefined();
+
+        const restored = restoredStore.get('a1');
+        expect(restored).toBeInstanceOf(Account);
+        expect(restored).toMatchObject({ id: 'a1', name: 'Alice' });
+        // Rollback reads return clones, not the mutated original reference.
+        expect(restored).not.toBe(account);
+    });
+
+    it('re-points store keys when a primary key was reassigned', () => {
+        const store = dataSource.getStore<Account>('accounts');
+        const account = new Account('a1', 'Alice');
+        store.set('a1', account);
+
+        const snapshot = dataSource.snapshot();
+        account.id = 'a2';
+        store.delete('a1');
+        store.set('a2', account);
+        dataSource.restore(snapshot);
+
+        const restoredStore = dataSource.getStore<Account>('accounts');
+        expect(restoredStore.get('a2')).toBeUndefined();
+        expect(restoredStore.get('a1')).toMatchObject({ id: 'a1', name: 'Alice' });
+    });
+
+    it('keeps the snapshot handle pristine across repeated restores', () => {
+        const store = dataSource.getStore<Account>('accounts');
+        store.set('a1', new Account('a1', 'Alice'));
+
+        const snapshot = dataSource.snapshot();
+
+        dataSource.restore(snapshot);
+        const first = dataSource.getStore<Account>('accounts').get('a1');
+        if (first === undefined) {
+            throw new Error('snapshot restore lost the entity');
+        }
+        first.name = 'Mutated';
+
+        dataSource.restore(snapshot);
+        expect(dataSource.getStore<Account>('accounts').get('a1')).toMatchObject({ name: 'Alice' });
+    });
+});

@@ -140,6 +140,27 @@ export default defineConfig({
         expect(packageJson.sideEffects).toBe(false);
     });
 
+    it('should generate a manifest that satisfies the docs-standard rules', async () => {
+        // Short name on purpose: the description fallback must clear the gate's
+        // 25-char minimum, not just avoid the "Blue <Name>" placeholder.
+        await packageGenerator(tree, { name: 'tiny' });
+
+        const packageJsonContent = tree.read('packages/blue-tiny/package.json', 'utf-8');
+        if (packageJsonContent === null) {
+            throw new Error('expected generated package.json to exist');
+        }
+        const packageJson = JSON.parse(packageJsonContent);
+        // Manifest gate (`scripts/check-manifests.mjs`): non-empty keywords array.
+        expect(Array.isArray(packageJson.keywords)).toBe(true);
+        expect(packageJson.keywords.length).toBeGreaterThan(0);
+        expect(packageJson.keywords).toContain('bluejs');
+        // Manifest gate: description >= 25 chars and not `Blue <Name>`.
+        expect(packageJson.description.length).toBeGreaterThanOrEqual(25);
+        expect(packageJson.description).not.toMatch(/^blue\s+\w+$/i);
+        // Manifest gate: `files` must include doc + lib.
+        expect(packageJson.files).toEqual(expect.arrayContaining(['doc', 'lib']));
+    });
+
     it('should use custom description when provided', async () => {
         await packageGenerator(tree, { name: 'auth', description: 'Authentication utilities' });
 
@@ -158,7 +179,7 @@ export default defineConfig({
         if (indexContent === null) {
             throw new Error('expected generated index.ts to exist');
         }
-        expect(indexContent).toContain('@module test-pkg');
+        expect(indexContent).toContain('@module blue-test-pkg');
         expect(indexContent).toContain('@since 1.0.0');
         expect(indexContent).toContain('@author Jeff Rose');
         expect(indexContent).not.toContain('TODO');

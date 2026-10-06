@@ -17,6 +17,8 @@ import { property, defaultValue, nested, configuration, entry } from '@blue/cont
 
 class DbConfig {
     @property('url', String) @defaultValue('mongodb://localhost') url!: string;
+    @property('port', Number) @defaultValue('5432') port!: number;
+    @property('pooled', Boolean) @defaultValue('true') pooled!: boolean;
 }
 
 @configurationProperties('server')
@@ -172,6 +174,16 @@ describe('resolveConfigurationProperties v2', () => {
         expect(instance.port).toBe(8080); // '8080' → number via conversion
         expect(instance.host).toBe('localhost');
         expect(instance.db.url).toBe('mongodb://localhost');
+    });
+
+    test('CF-4: converts nested @defaultValue through the same path as top-level fields', async () => {
+        const context = await runBoot({});
+
+        const { instance } = resolveConfigurationProperties(ServerConfig, context);
+        // Same conversion as the top-level `port` above — the nested default
+        // must not bind its raw string.
+        expect(instance.db.port).toBe(5432); // '5432' → number
+        expect(instance.db.pooled).toBe(true); // 'true' → boolean
     });
 
     test('throws fail-loud when a required property is missing', async () => {

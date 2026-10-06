@@ -152,4 +152,66 @@ describe('Interceptor Lifecycle Guarantees', () => {
 
         expect(capturedError).toBe(testError);
     });
+
+    it('should pass the original error to completeHandle when no error resolver handles it', async () => {
+        let capturedError: Error | null = null;
+
+        const interceptor: RouteHandlerInterceptor = {
+            preHandle: () => true,
+            postHandle: () => {},
+            completeHandle: (route, handler, error) => {
+                capturedError = error;
+            },
+        };
+
+        const testError = new Error('Unmapped handler failure');
+
+        @routeMapping('/test')
+        class TestController {
+            @routeMapping('/unmapped')
+            handle() {
+                throw testError;
+            }
+        }
+
+        class DecliningErrorResolver {
+            resolveError() {
+                return null;
+            }
+        }
+
+        @configuration
+        class TestConfig {
+            @entry() controller() {
+                return new TestController();
+            }
+            @entry() viewResolver() {
+                return new TestViewResolver();
+            }
+            @entry() errorResolver() {
+                return new DecliningErrorResolver();
+            }
+            @entry() handlerMappings() {
+                const mapping = new RadixMetadataHandlerMapping();
+                mapping.interceptors.push(interceptor);
+                return [mapping];
+            }
+        }
+
+        context.register(TestConfig);
+        dispatcher.initStrategies(context);
+
+        const route = {
+            path: '/test/unmapped',
+            params: {},
+            data: {},
+            0: { name: 'test', raw: 'test', data: null },
+            1: { name: 'unmapped', raw: 'unmapped', data: null },
+            length: 2,
+        };
+
+        await dispatcher.dispatch(route as unknown as Route);
+
+        expect(capturedError).toBe(testError);
+    });
 });

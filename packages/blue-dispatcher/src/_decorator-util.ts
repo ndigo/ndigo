@@ -60,3 +60,36 @@ export function getFunctionParamNames(fn: Function): string[] {
         })
         .filter((param) => param && param.length > 0) as string[];
 }
+
+const { defineProperty, getOwnPropertyDescriptor, getPrototypeOf } = Reflect;
+
+/**
+ * Makes a decorated method enumerable on the prototype level where it is
+ * actually declared.
+ *
+ * Discovery loops scan prototype levels with `Object.keys`, which reports own
+ * enumerable properties only. A base-class-declared method's descriptor lives
+ * on the base prototype, not on the instance's immediate prototype, so the
+ * previous one-level lookup silently no-opped for subclassed handlers. Walk
+ * the chain and upgrade enumerability where the descriptor is found (the same
+ * walk blue-context applies for `@entry`).
+ *
+ * @param instance - The decorated instance the method initializer runs on.
+ * @param method - The decorated method name.
+ */
+export function makeMethodEnumerable(instance: object, method: PropertyKey): void {
+    let owner: object | null = instance;
+    while (owner !== null) {
+        const descriptor = getOwnPropertyDescriptor(owner, method);
+        if (descriptor) {
+            if (!descriptor.enumerable) {
+                defineProperty(owner, method, {
+                    ...descriptor,
+                    enumerable: true,
+                });
+            }
+            return;
+        }
+        owner = getPrototypeOf(owner) as object | null;
+    }
+}

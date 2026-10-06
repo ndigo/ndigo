@@ -51,10 +51,10 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
 
         // Create new request from the original Request so signal,
         // credentials, mode, redirect, cache and integrity survive the
-        // transform — only the body is replaced. The body is always a
-        // concrete value for body-bearing methods: the input's own body was
-        // consumed above, so omitting `body` would try to copy a disturbed
-        // stream. GET/HEAD carry no body (and fetch rejects one).
+        // transform — only the body is replaced. A concrete body is always
+        // supplied for body-bearing methods so the rebuild never copies the
+        // original (possibly streaming) body. GET/HEAD carry no body (and
+        // fetch rejects one).
         const replacedBody =
             request.method === 'GET' || request.method === 'HEAD'
                 ? null
@@ -73,8 +73,9 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
             return response;
         }
 
-        // Clone for safe body reads
-        let body: unknown = await this.extractBody(response.clone());
+        // The payload is read through an internal clone, leaving the
+        // original response's body readable for the caller.
+        let body: unknown = await this.extractBody(response);
         if (body === null) {
             return response;
         }
@@ -101,23 +102,36 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
 
     /**
      * Extracts body from Request or Response.
+     *
+     * Returns `null` when there is nothing to parse: bodyless requests
+     * (GET/HEAD), null-body responses (204/304), or a zero-length payload.
+     * Parsing those would throw before any transform could run. The payload is
+     * read through a clone so a `null` result leaves the caller's body intact
+     * for the actual request.
      */
     private async extractBody(source: Request | Response): Promise<unknown> {
-        const contentType = HTTPHeaders.CONTENT_TYPE.get(source.headers) || '';
-        const mediaType = mediaTypeOf(contentType);
+        if (source.body === null) {
+            return null;
+        }
+
+        const readable = source.clone(),
+            contentType = HTTPHeaders.CONTENT_TYPE.get(readable.headers) || '',
+            mediaType = mediaTypeOf(contentType);
 
         if (mediaType?.isJSON === true) {
-            return await source.json();
+            const text = await readable.text();
+            return text.trim() === '' ? null : JSON.parse(text);
         }
         if (mediaType?.type === 'text') {
-            return await source.text();
+            const text = await readable.text();
+            return text === '' ? null : text;
         }
         if (mediaType?.baseType === 'application/x-www-form-urlencoded') {
-            const text = await source.text();
-            return new URLSearchParams(text);
+            const text = await readable.text();
+            return text === '' ? null : new URLSearchParams(text);
         }
         if (mediaType?.baseType === 'multipart/form-data') {
-            return await source.formData();
+            return await readable.formData();
         }
 
         // Unknown/unsupported content type

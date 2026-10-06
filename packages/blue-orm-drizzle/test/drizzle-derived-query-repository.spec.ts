@@ -73,6 +73,17 @@ describe('DrizzleDerivedQueryRepository', () => {
         expect(first.map((note) => note.title)).toEqual(['second']);
     });
 
+    test('evaluates the documented Top-N example and rejects Spring prefix syntax', async () => {
+        const repository = await seededRepository();
+
+        // DA-4: the class docs document the trailing-suffix grammar.
+        const documented = await repository.derive('findByPriorityTop3', [2]);
+        expect(documented.map((note) => note.title)).toEqual(['second', 'third']);
+
+        // The Spring prefix form the docs used to show is not implemented.
+        await expect(repository.derive('findTop3ByPriority', [2])).rejects.toThrow('unsupported derived query');
+    });
+
     test('rejects unsupported method names', async () => {
         const repository = await seededRepository();
 

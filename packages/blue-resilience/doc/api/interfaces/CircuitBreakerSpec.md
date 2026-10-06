@@ -17,7 +17,8 @@ success closes the circuit, failure re-opens it with a fresh window.
 
 > `optional` **failureThreshold?**: `number`
 
-Consecutive failures that open the circuit. Defaults to `5`.
+Consecutive failures that open the circuit. Defaults to `5`. Must be
+a positive integer — invalid values fail loudly at weave time.
 
 ***
 
@@ -26,4 +27,5 @@ Consecutive failures that open the circuit. Defaults to `5`.
 > `optional` **resetMs?**: `number`
 
 Milliseconds the circuit stays open before the next call becomes a
-probe. Defaults to `10_000`.
+probe. Defaults to `10_000`. Must be a positive finite number —
+invalid values fail loudly at weave time.

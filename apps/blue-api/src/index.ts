@@ -28,14 +28,14 @@ async function main() {
     // instrument inbound HTTP — the server span CONTINUES the client trace
     // carried by `TraceHeaderInterceptor`-injected traceparent headers.
     const otelEndpoint = getEnv('OTEL_EXPORTER_OTLP_ENDPOINT');
-    if (otelEndpoint) {
-        configureTelemetry({
-            traceExporter: {
-                url: `${otelEndpoint}/v1/traces`,
-            },
-            instrumentations: [new HTTPServerInstrumentation(), new WebSocketServerInstrumentation()],
-        });
-    }
+    const sdk = otelEndpoint
+        ? configureTelemetry({
+              traceExporter: {
+                  url: `${otelEndpoint}/v1/traces`,
+              },
+              instrumentations: [new HTTPServerInstrumentation(), new WebSocketServerInstrumentation()],
+          })
+        : undefined;
 
     // Spring-style bootstrap: platform auto-config + app config (management
     // endpoints wired in NodeAppConfiguration) + `ServerConfig`
@@ -90,7 +90,12 @@ async function main() {
 
     const server = context.getValue(HTTP_SERVER);
     await server.start();
-    gracefulShutdown(context, { resources: [server] });
+    // OP-9: batched telemetry is dropped on exit unless the SDK shuts down.
+    // Flush after the server stops (capturing its shutdown spans) and before
+    // the context tears its beans down.
+    gracefulShutdown(context, {
+        resources: [server, ...(sdk ? [{ close: () => sdk.shutdown() }] : [])],
+    });
 
     const serverConfig = context.getValue(SERVER_CONFIG);
     logger.info(`listening on http://localhost:${PORT}`);

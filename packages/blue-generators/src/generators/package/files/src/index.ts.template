@@ -1,7 +1,7 @@
 /**
- * <%= description || className + ' — BlueJS ' + className + ' package' %>.
+ * <%= description %>.
  *
- * @module <%= name %>
+ * @module blue-<%= name %>
  * @since 1.0.0
  * @author Jeff Rose
  */

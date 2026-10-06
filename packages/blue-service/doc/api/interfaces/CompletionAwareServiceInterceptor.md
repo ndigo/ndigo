@@ -19,7 +19,7 @@ is the service-level "request completed" hook (HTTP's `postComplete`).
 
 ### postComplete()
 
-> **postComplete**(`request`, `response`): `void`
+> **postComplete**(`request`, `response`, `settings?`): `void`
 
 Observes the final request/response pair after all other hooks complete.
 
@@ -36,6 +36,14 @@ The original request.
 `Response` \| [`ResponseError`](#)
 
 The final response or error wrapper.
+
+##### settings?
+
+`HTTPInit`
+
+The request settings the request was prepared from.
+The execution chain always supplies it; callers that invoke the hook
+directly may omit it.
 
 #### Returns
 

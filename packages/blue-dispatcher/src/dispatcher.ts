@@ -250,8 +250,10 @@ export class AbstractDispatcher
      * @param route - The current route.
      * @param handler - The handler that caused the error.
      * @param error - The error that occurred.
-     * @returns A {@link ModelAndView} if the error was resolved, otherwise throws a TypeError.
-     * @throws {TypeError} If no view name can be determined for the error.
+     * @returns A {@link ModelAndView} if the error was resolved; when every resolver
+     * declines, the original error is rethrown so `completeHandle` interceptors
+     * observe the handler failure rather than a synthetic TypeError.
+     * @throws {Error} The original handler error when no resolver handles it.
      */
     protected _processHandlerError(route: Route, handler: object | null, error: Error): ModelAndView | null {
         // Handle the case where handler might be null
@@ -267,7 +269,9 @@ export class AbstractDispatcher
             }
         }
 
-        throw new TypeError('view name is undefined');
+        // No resolver claimed the error: surface the original failure (same
+        // object, stack and `cause` intact) instead of a synthetic TypeError.
+        throw error;
     }
 
     /**

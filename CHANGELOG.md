@@ -180,6 +180,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `/health` and `/metrics` responses now carry the default security-header
   set (`SecurityHeadersInterceptor` prepended to the management mapping,
   matching the API-docs mapping) (SE-4).
+- Boot: nested `@defaultValue` converts like top-level defaults (numbers and
+  booleans bind typed), and a failure after context creation closes the
+  context instead of leaking listeners/beans (CF-4, CF-6).
+- `@blue/factory`: `init()` failures now propagate as `FrameworkError`
+  instead of warning and serving the half-initialized instance (CF-5).
+- HTTP client: `TimeoutInterceptor` releases its timer when a request settles
+  and composes a caller-supplied `AbortSignal` with its own (caller cancels
+  propagate as cancels; only real timeouts yield 408) (HT-2, HT-5);
+  `TransformInterceptor` leaves bodyless/empty bodies untouched (HEAD/204,
+  empty POSTs) and routes `preRequest` failures through the documented
+  error/completion hooks (HT-3).
+- Dispatcher: base-class-declared `@routeMapping`/`@errorMapping` members are
+  discovered on subclasses (no more 404s), and an unmapped handler error is
+  rethrown instead of being replaced by `TypeError('view name is undefined')`
+  (HT-4, HT-6).
+- `BrowserRouter` runs the full preHandle → postHandle → afterCompletion
+  chain with mapped-interceptor param binding; the offline retry replays the
+  original request (method/headers/body) instead of a bare GET (PL-5, PL-7);
+  the node adapter's socket-probe memo no longer retains an entry per
+  distinct parameterized path (PL-8).
+- Web components: delegated events keep working after
+  disconnect → reconnect (PL-6).
+- ORM: Drizzle reads decode declared `boolean`/`json` columns (load → modify
+  → save round-trips), and in-memory transactions snapshot/restore
+  deep-cloned stores so rollback reverts in-place mutations (DA-2, DA-3).
+- Telemetry: router spans cover the async navigation and flag failures;
+  inbound HTTP spans carry `http.response.status_code` and ERROR on 5xx; a
+  configured `logExporter` switches `LoggerFactory` to the OpenTelemetry
+  appender; `fatal`/`critical` map to FATAL severities; instrumentations get
+  a base-class enable latch (no double-wrap on re-enable); `sdk.shutdown()`
+  is documented and wired into the blue-api graceful shutdown
+  (OP-3, OP-5, OP-6, OP-8, OP-9, OP-10). `/metrics` returns duration
+  summaries again (OP-4).
+- Resilience: invalid circuit-breaker specs fail loud at weave/invoke time
+  instead of silently inverting the policy (OP-7).
+- Signals: subclass reactivation limitation documented; the activation error
+  names both possible causes (IN-3).
+- Demos: blue-todo's signals counter renders; blue-host nav uses real hash
+  links; blue-views `/report` loads from a production bundle; blue-island's
+  documented `dev` flow works (AP-1..AP-4).
+- Tooling: `@blue/generators` gains `build:lib`; nx legacy project blocks
+  removed and `build:todomvc` rewired; scaffold manifests pass the docs
+  gate; generated headers use `@module blue-<name>`; the dead JSDoc
+  migration script is gone (TO-2..TO-7, HG-5).
 
 ### Security
 

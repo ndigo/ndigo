@@ -16,7 +16,8 @@ JavaScript-native structures with fail-loud semantics throughout.
         ┌───────── CLI ─────────┐   (highest precedence)
         ├─ builder properties ─┤
         ├─ process.env ────────┤
-        ├─ .env ───────────────┤
+        ├─ configServer ───────┤   (remote JSON, §9)
+        ├─ .env ───────────────┤   (reserved slot; no built-in reader)
         ├─ application-{profile}.json ─┐
         ├─ application.json ───────────┤  (deep-merged, profile-aware)
         └─ defaults ──────────────────┘   (lowest)
@@ -32,14 +33,21 @@ JavaScript-native structures with fail-loud semantics throughout.
 
 Sources are **named and ordered** — higher wins:
 
-| Source             | Name                | How it's set                                                               |
-| ------------------ | ------------------- | -------------------------------------------------------------------------- |
-| Command line       | `commandLine`       | `app.run('--server.port=9000', '--debug')`                                 |
-| Builder properties | `boot`              | `builder.properties({ server: { port: 8080 } })`                           |
-| Process env        | `systemEnvironment` | `process.env` (snapshot at construction)                                   |
-| `.env` file        | `dotenv`            | auto-loaded (never overrides a set env var)                                |
-| Config files       | `application`       | `./config/application.json` + profile variants (`.toon` opt-in, see below) |
-| Defaults           | `defaults`          | `builder.defaults({...})` (always present, lowest)                         |
+| Source             | Name                | How it's set                                                                       |
+| ------------------ | ------------------- | ---------------------------------------------------------------------------------- |
+| Command line       | `commandLine`       | `app.run('--server.port=9000', '--debug')`                                         |
+| Builder properties | `boot`              | `builder.properties({ server: { port: 8080 } })`                                   |
+| Process env        | `systemEnvironment` | `process.env` (snapshot at construction)                                           |
+| Config server      | `configServer`      | `builder.configServer({ url, pollMs })` — remote JSON (see §9)                     |
+| `.env` file        | `dotenv`            | reserved slot — **not auto-loaded** (no built-in reader; user-supplied, see below) |
+| Config files       | `application`       | `./config/application.json` + profile variants (`.toon` opt-in, see below)         |
+| Defaults           | `defaults`          | `builder.defaults({...})` (always present, lowest)                                 |
+
+`dotenv` is a **reserved slot** in the documented chain (`PRECEDENCE` in
+`@blue/boot`), not an auto-loaded source: nothing reads `.env` today (AD-13
+D3 is not shipped — see its Update note). A stack that needs `.env` values
+can parse the file in an environment customizer (§6) and register the values
+as a named source in the reserved slot.
 
 `getProperty('server.port')` consults this order; `originOf('server')` tells
 you _which source won_ (the observability payoff):
@@ -361,7 +369,8 @@ builder.configServer({
 
 - Precedence slot: `commandLine > boot > systemEnvironment > configServer >
 dotenv > application-{profile} > application > defaults` (documented
-  chain, pinned by a real-boot order spec).
+  chain, pinned by a real-boot order spec; the `dotenv` entry is a reserved
+  slot — nothing reads `.env`, see §1).
 - **Change detection**: ETag/`If-None-Match` (304 → nothing happens) or
   body-text comparison. A real change replaces the source in place and
   fires `environment.refresh()` → `config:refresh` → `@refreshScope` beans

@@ -186,28 +186,32 @@ export class HTTP {
 
             freeze(settings);
 
-            const preRequestResult = await chain.applyPreRequest(new Request(url.toString(), settings), this);
-            if (likeResponse(preRequestResult)) {
-                response = preRequestResult;
-            } else {
-                const request = preRequestResult as Request;
-                try {
+            let request = new Request(url.toString(), settings);
+
+            try {
+                const preRequestResult = await chain.applyPreRequest(request, this);
+                if (likeResponse(preRequestResult)) {
+                    response = preRequestResult;
+                } else {
+                    request = preRequestResult as Request;
                     response = await this.#fetch(request);
                     response = await chain.applyPostResponse(response as Response, settings, request);
-                } catch (error) {
-                    response = await chain.applyPostError(error as Error, request, this);
+                }
+            } catch (error) {
+                // Failures raised before fetch (e.g. by a request transform)
+                // follow the same error/completion contract as transport ones.
+                response = await chain.applyPostError(error as Error, request, this);
 
-                    if (!likeResponse(response)) {
-                        response = likeResponse(error)
-                            ? error
-                            : error instanceof ResponseError
-                              ? error
-                              : new ResponseError(undefined, error as Error);
-                    }
-                } finally {
-                    if (response) {
-                        chain.applyPostComplete(request, response as Response);
-                    }
+                if (!likeResponse(response)) {
+                    response = likeResponse(error)
+                        ? error
+                        : error instanceof ResponseError
+                          ? error
+                          : new ResponseError(undefined, error as Error);
+                }
+            } finally {
+                if (response) {
+                    chain.applyPostComplete(request, response as Response, settings);
                 }
             }
         }

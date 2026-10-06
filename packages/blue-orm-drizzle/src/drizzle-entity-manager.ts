@@ -291,12 +291,17 @@ export class DrizzleEntityManager {
         await this.#client.execute(sql, [pkValue] as InValue[]);
     }
 
+    /**
+     * Maps one SQL row to a fresh entity instance, decoding each cell per its
+     * declared column type (DA-2) so a load→modify→save cycle sees booleans
+     * and json values in the shape the entity's Zod schema validates.
+     */
     #mapRowToEntity<T extends object>(entityClass: Constructable<T>, row: Record<string, unknown>): T {
         const meta = getEntityMetadata(entityClass);
         const entity = new entityClass() as Record<string, unknown>;
 
         for (const col of meta.columns) {
-            entity[col.fieldName] = row[col.columnName];
+            entity[col.fieldName] = decodeColumnValue(col.type, row[col.columnName]);
         }
 
         return entity as T;
@@ -339,4 +344,47 @@ function orderByClause(meta: EntityMetadata, sort: SortOrder[]): string {
             return `"${columnName}" ${direction}`;
         })
         .join(', ');
+}
+
+/**
+ * Decodes one raw SQLite cell to the JS shape declared by `@column({ type })`,
+ * mirroring `baseSchemaForType` (`@blue/orm`): boolean columns coerce their
+ * stored representations (`0`/`1`, `'0'`/`'1'`, `'0.0'`/`'1.0'`, `'true'`/
+ * `'false'`) to booleans, and json columns parse their text representation
+ * back into the stored value. Other declared types pass through unchanged —
+ * SQLite already returns ints, reals, and text natively.
+ *
+ * @param type - The declared column type; `undefined` for untyped columns.
+ * @param value - The raw cell value.
+ * @returns The decoded value; `null`/`undefined` pass through.
+ */
+function decodeColumnValue(type: string | undefined, value: unknown): unknown {
+    if (value === null || value === undefined) return value;
+
+    const normalized = (type ?? '').toLowerCase();
+
+    if (normalized.includes('bool')) {
+        if (typeof value === 'boolean') return value;
+        if (typeof value === 'number') return value !== 0;
+        if (typeof value === 'bigint') return value !== 0n;
+        if (typeof value === 'string') {
+            if (value === 'true') return true;
+            if (value === 'false') return false;
+            const numeric = Number(value);
+            if (!Number.isNaN(numeric)) return numeric !== 0;
+        }
+        return value;
+    }
+
+    if (normalized.includes('json') && typeof value === 'string') {
+        try {
+            return JSON.parse(value) as unknown;
+        } catch {
+            // Non-JSON text in a json column (legacy rows, raw strings) stays
+            // readable instead of failing the whole read.
+            return value;
+        }
+    }
+
+    return value;
 }

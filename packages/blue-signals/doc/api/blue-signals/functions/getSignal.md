@@ -8,6 +8,14 @@
 
 > **getSignal**\<`T`\>(`instance`, `field`): `Signal`\<`T`\> \| `undefined`
 
+Returns the backing `Signal` for a `@signal` field activated by `@reactive`,
+or `undefined` when the field has no backing signal.
+
+Throws when the instance still carries pending `@signal`/`@effect` metadata:
+the declaring class is missing the `@reactive` class decorator, or the member
+was declared on a subclass of a `@reactive` class — `@reactive` only
+activates members declared in its own class.
+
 ## Type Parameters
 
 ### T

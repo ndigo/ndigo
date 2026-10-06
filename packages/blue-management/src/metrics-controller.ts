@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { getMapping, requestMapping } from '@blue/dispatcher';
-import { FeatureMetricAggregator } from '@blue/telemetry';
+import { DurationSummary, FeatureMetricAggregator } from '@blue/telemetry';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Null } from '@blue/core';
 import { METRIC_AGGREGATOR } from './metric-aggregator-tokens';
@@ -25,7 +25,7 @@ export class MetricsController extends AsApplicationContextAware(Null) {
     /**
      * Returns the full metrics snapshot.
      *
-     * @returns `{ features: { <feature>: { counters, gauges, updatedAt } } }`,
+     * @returns `{ features: { <feature>: { counters, gauges, durations, updatedAt } } }`,
      *   or `{ error }` when no aggregator is wired.
      */
     @getMapping('/')
@@ -39,6 +39,7 @@ export class MetricsController extends AsApplicationContextAware(Null) {
             string,
             {
                 counters: Record<string, number>;
+                durations: Record<string, DurationSummary>;
                 gauges: Record<string, number>;
                 updatedAt: string;
             }
@@ -51,6 +52,7 @@ export class MetricsController extends AsApplicationContextAware(Null) {
             }
             features[name] = {
                 counters: Object.fromEntries(metrics.counters),
+                durations: Object.fromEntries(metrics.durations),
                 gauges: Object.fromEntries(metrics.gauges),
                 updatedAt: metrics.updatedAt.toISOString(),
             };

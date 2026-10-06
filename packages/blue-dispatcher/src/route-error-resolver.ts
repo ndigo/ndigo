@@ -29,14 +29,21 @@ export interface RouteErrorResolver {
 const { defineProperty, getPrototypeOf } = Reflect,
     { keys } = Object,
     getErrorHandlerMethodForError = function (errorHandler: object, error: Error): ErrorHandlerMethod | null {
-        const /**
-             * ! THIS DID NOT WORK UNLESS getPrototypeOf WAS USED!!!!
-             */
-            handlerKeys = keys(getPrototypeOf(errorHandler) as object),
-            length = handlerKeys.length;
-        if (length) {
+        // Walk the whole prototype chain: a base-class-declared error handler
+        // is an own enumerable property of the base prototype, not of the
+        // instance's immediate prototype. Each key is checked once, at the
+        // nearest prototype level where it is declared.
+        let errorHandlerPrototype: object | null = getPrototypeOf(errorHandler) as object | null;
+        const checkedKeys = new Set<string>();
+        while (errorHandlerPrototype !== null) {
+            const handlerKeys = keys(errorHandlerPrototype),
+                length = handlerKeys.length;
             for (let index = 0; index < length; index++) {
                 const key = handlerKeys[index];
+                if (checkedKeys.has(key)) {
+                    continue;
+                }
+                checkedKeys.add(key);
                 if (errorMapping.has(errorHandler, key)) {
                     const errorClasses = errorMapping.get(errorHandler, key);
                     if (errorClasses.some((errorClass) => error instanceof errorClass)) {
@@ -44,6 +51,7 @@ const { defineProperty, getPrototypeOf } = Reflect,
                     }
                 }
             }
+            errorHandlerPrototype = getPrototypeOf(errorHandlerPrototype) as object | null;
         }
 
         return null;

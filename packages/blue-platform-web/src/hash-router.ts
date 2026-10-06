@@ -10,6 +10,7 @@ import { AbstractRouter, RouterCallback } from '@blue/router';
 import { RingBuffer } from '@blue/core';
 import { RouterExecutionChain } from '@blue/router';
 import { MappedRouterInterceptor, RouterInterceptor } from '@blue/router';
+import { commitRoute } from './_commit-route';
 
 //type RouteSource = 'private' | 'public' | 'external';
 //type RouteResult = 'aborted' | 'completed';
@@ -271,23 +272,14 @@ export class HashRouter extends AbstractRouter {
             oldRoute = syncHash ? this.route : this.#lastPublicRoute,
             chain = new RouterExecutionChain(this._resolveInterceptors(route));
 
-        try {
-            if ((await chain.applyPreHandle(route)) === false) {
-                this._restoreHash(oldRoute, syncHash);
-                return false;
-            }
-
-            this.#route = route;
-
-            await chain.applyPostHandle(route);
-
-            return true;
-        } catch {
-            this._restoreHash(oldRoute, syncHash);
-            return false;
-        } finally {
-            await chain.applyAfterCompletion(route);
-        }
+        return commitRoute(
+            route,
+            chain,
+            () => {
+                this.#route = route;
+            },
+            () => this._restoreHash(oldRoute, syncHash)
+        );
     }
 
     /**

@@ -12,7 +12,7 @@
 
 > **processAfterInitialization**\<`T`\>(`name`, `instance`): `T`
 
-Apply this [EntryProcessor](../type-aliases/EntryProcessor.md) to the given new instance _before_ any initialization callbacks. The instance will already be populated with property values. The returned instance may be a wrapper around the original.
+Apply this [EntryProcessor](../type-aliases/EntryProcessor.md) to the given new instance _after_ any initialization callbacks. The instance will already be populated with property values. The returned instance may be a wrapper around the original.
 
 The default implementation returns the given instance as-is.
 
@@ -48,7 +48,7 @@ The instance to use, either the original or a wrapped one; if `null`, no subsequ
 
 > **processBeforeInitialization**\<`T`\>(`name`, `instance`): `T`
 
-Apply this [EntryProcessor](../type-aliases/EntryProcessor.md) to the given new instance _after_ any initialization callbacks. The instance will already be populated with property values. The returned instance may be a wrapper around the original.
+Apply this [EntryProcessor](../type-aliases/EntryProcessor.md) to the given new instance _before_ any initialization callbacks. The instance will already be populated with property values. The returned instance may be a wrapper around the original.
 
 The default implementation returns the given instance as-is.
 

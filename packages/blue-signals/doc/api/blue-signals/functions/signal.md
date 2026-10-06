@@ -10,7 +10,10 @@
 
 Class field decorator that wraps the field with a reactive signal.
 
-Requires the `@reactive` class decorator to be applied to the class.
+Requires the `@reactive` class decorator on the class that declares the
+field. Decorators are not inherited: a `@signal` field declared in a
+subclass of a `@reactive` class stays a plain property — and `getSignal`
+throws — unless the subclass is decorated with `@reactive` as well.
 
 ## Type Parameters
 

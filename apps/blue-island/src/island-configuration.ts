@@ -5,7 +5,6 @@
  */
 import '@tsmetadata/polyfill';
 import { configuration, entry } from '@blue/context';
-import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { I18nextMessageSource } from '@blue/content-i18next';
 import { StaticController, FileSystemResourceLoader } from '@blue/platform-node';
@@ -64,8 +63,9 @@ export class IslandConfiguration {
 
     @entry()
     staticController() {
-        // Serve the Vite-built client bundle (dist/) — explicit base, no env.
-        return new StaticController(resolve('dist'));
+        // Serve the Vite-built client bundle (dist/) — resolved from this file
+        // so the server works regardless of the process working directory.
+        return new StaticController(fileURLToPath(new URL('../dist/', import.meta.url)));
     }
 
     @entry(MODEL_STORE)

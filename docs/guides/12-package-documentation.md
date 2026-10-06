@@ -62,15 +62,15 @@ Rules:
 
 ## package.json metadata
 
-| Field                                             | Requirement                                                                                    | Why                                   |
-| :------------------------------------------------ | :--------------------------------------------------------------------------------------------- | :------------------------------------ |
-| `description`                                     | ≥ 25 chars, non-generic (not `"Blue Cache"`); one-sentence value statement                     | npm listing, doc index, search        |
-| `keywords`                                        | non-empty array incl. `"bluejs"` + domain tags                                                 | npm discoverability                   |
-| `author`                                          | `"Jeff Rose <jeff_rose@outlook.com>"`                                                          | npm profile                           |
-| `license`                                         | `"ISC"`                                                                                        | always                                |
-| `files`                                           | `["doc", "lib"]` (`generators`: `["src", "generators.json"]`)                                  | npm tarball ships only these + README |
-| `repository` / `homepage` / `bugs`                | set at publish time, when a public remote exists                                               | npm links                             |
-| `exports` / `sideEffects` / `type` / dep sections | enforced by `scripts/check-manifests.mjs` — see ARCHITECTURE.md "Manifest Dependency Sections" | install closure                       |
+| Field                                             | Requirement                                                                                            | Why                                   |
+| :------------------------------------------------ | :----------------------------------------------------------------------------------------------------- | :------------------------------------ |
+| `description`                                     | ≥ 25 chars, non-generic (not `"Blue Cache"`); one-sentence value statement                             | npm listing, doc index, search        |
+| `keywords`                                        | non-empty array incl. `"bluejs"` + domain tags                                                         | npm discoverability                   |
+| `author`                                          | `"Jeff Rose <jeff_rose@outlook.com>"`                                                                  | npm profile                           |
+| `license`                                         | `"ISC"`                                                                                                | always                                |
+| `files`                                           | `["doc", "lib"]` for every package; `@blue/generators` additionally ships `["src", "generators.json"]` | npm tarball ships only these + README |
+| `repository` / `homepage` / `bugs`                | set at publish time, when a public remote exists                                                       | npm links                             |
+| `exports` / `sideEffects` / `type` / dep sections | enforced by `scripts/check-manifests.mjs` — see ARCHITECTURE.md "Manifest Dependency Sections"         | install closure                       |
 
 ## Generated API docs
 

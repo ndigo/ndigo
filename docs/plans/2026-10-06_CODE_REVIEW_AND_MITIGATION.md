@@ -15,12 +15,12 @@ against the clean tree: `pnpm build` failure reproduced after `nx reset`;
 dependency-cycle regression computed across `HEAD~1..HEAD~3`; `toRegExp`
 crash, Drizzle DDL type mapping, and JWT exp/sub/short-secret acceptance
 reproduced with `tsx` probes. Full gates were run before the review (§0).
-**Status:** Findings recorded; **Waves 1–3 and 4a EXECUTED (2026-10-06)** —
-`@blue/log` leaf + cycle-free build (AD-67); all Must-Fix correctness items
-(CF-1..3, IN-1..2, HT-1, PL-1..4, DA-1, OP-1..2, PR-1..2); and the security /
-standards batch (SE-1..4, SE-6, TO-1, DO-1/DO-2 — package READMEs for the six
-flagged packages; wider README-gate alignment deferred to Wave 5). Waves
-4b–6 pending.
+**Status:** Findings recorded; **Waves 1–4 EXECUTED (2026-10-06)** — Wave 1
+(`@blue/log` leaf + cycle-free build, AD-67); all Must-Fix correctness items
+(CF-1..3, IN-1..2, HT-1, PL-1..4, DA-1, OP-1..2, PR-1..2); Wave 4a (SE-1..4,
+SE-6, TO-1, DO-1/DO-2); Wave 4b (CF-4..8, HT-2..6, IN-3, PL-5..8, DA-2..4,
+OP-3..10, TO-2..7, AP-1..4, HG-5). Remaining Should-Fix: SE-5, PR-3..7,
+HG-3, HG-4 (plus Wave 5 hygiene/docs and Wave 6 verification).
 **Legend:** `[code]` established by reading cited lines · `[exec]` reproduced
 by execution · `[inference]` reasoned without execution.
 **Source IDs:** each finding keeps its slice-local origin where useful
@@ -832,3 +832,38 @@ layering contract.
 - **SE-6** auth-client/auth-server READMEs rewritten against the real guard
   APIs; the new snippets were type-checked against package sources
   (fail-before: the old snippets produced five TS errors).
+
+### Wave 4b execution (2026-10-06)
+
+Fifteen package-disjoint slices; every code item landed with a
+fail-before/pass-after spec (evidence in the slice reports).
+
+- **Kernel/boot/factory:** nested `@defaultValue` conversion and post-context
+  boot cleanup (CF-4, CF-6); `init()` failures now propagate (CF-5);
+  `InitializationAwareProcessor` TSDoc corrected (CF-8); guide 03 + AD-13
+  aligned on the unshipped dotenv slot (CF-7).
+- **HTTP/dispatcher:** timeout timer release + caller-signal composition
+  (HT-2, HT-5); bodyless/empty-body handling and `preRequest` failure routing
+  (HT-3); base-class mapping discovery and preserved unmapped errors
+  (HT-4, HT-6).
+- **Platform/views:** BrowserRouter full interceptor phases + mapped params
+  (PL-5); offline replay preserves method/headers/body (PL-7); socket-probe
+  memo no longer grows per parameterized path (PL-8); delegated events
+  survive reconnect (PL-6); signals inheritance limitation documented with a
+  two-cause error (IN-3).
+- **Data:** Drizzle boolean/json decode with re-save round-trip (DA-2);
+  in-memory transaction snapshot/restore deep-clones stores (DA-3, decision
+  recorded); derived-query docs corrected (DA-4).
+- **Telemetry/ops:** router spans promise-aware (OP-3); `/metrics` durations
+  restored (OP-4); HTTP span status/ERROR (OP-5); base-class enable latch
+  (OP-6); circuit-breaker validation (OP-7); node log-exporter switches
+  `LoggerFactory` (OP-8); `sdk.shutdown()` documented + wired in blue-api
+  (OP-9); `fatal`/`critical` severity (OP-10).
+- **Tooling/apps:** generators `build:lib` (TO-2), nx cleanup + `build:todomvc`
+  rewiring (TO-3), scaffold manifest conformance (TO-4), `@module blue-<name>`
+  (TO-5), dead migration script removed (TO-6), guide-12 files row (TO-7),
+  blue-util stale scripts deleted (HG-5); AP-1..AP-4 (counter renders, host
+  nav links, `/report` production chunk verified via build+preview, island
+  `dev` flow).
+- Integration fix-ups: three `no-await-in-loop` spec restructurings
+  (timeout ×2, socket-probe ×3 loops).

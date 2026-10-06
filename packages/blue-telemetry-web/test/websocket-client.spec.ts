@@ -120,9 +120,8 @@ describe('WebSocketClientInstrumentation', () => {
         });
         metrics.setGlobalMeterProvider(new MeterProvider({ readers: [reader] }));
         // Constructor already enabled the instrumentation (module scope);
-        // a second enable() is a no-op (the ENABLED latch — the base class
-        // latch can't engage because `enable()` is called from its
-        // constructor, before SDK registration).
+        // a second enable() is a no-op (the `AbstractBaseInstrumentation`
+        // latch records the constructor-time enable).
         instrumentation.enable();
     });
 

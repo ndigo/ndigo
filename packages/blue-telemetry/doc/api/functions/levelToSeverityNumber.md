@@ -11,6 +11,11 @@
 Converts a string-based log level name to its corresponding OpenTelemetry `SeverityNumber`.
 If a scheme is not provided, it attempts to detect the scheme automatically.
 
+An unknown level name falls back to the resolved scheme's default level
+(`SeverityNumber.INFO` for every built-in scheme) rather than throwing —
+pass the level in the scheme's own vocabulary (or an explicit `scheme`)
+to avoid an unintended INFO downgrade of a severe record.
+
 ## Parameters
 
 ### levelName

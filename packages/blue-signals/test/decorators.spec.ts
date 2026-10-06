@@ -267,3 +267,83 @@ describe('getSignal', () => {
         expect(sig.value).toBe(10);
     });
 });
+
+describe('@reactive inheritance', () => {
+    it('does not activate @signal/@effect members declared in an undecorated subclass', () => {
+        let subclassEffectRuns = 0;
+
+        @reactive
+        class Base {
+            @signal x = 1;
+        }
+
+        class Sub extends Base {
+            @signal y = 2;
+
+            @effect trackY() {
+                subclassEffectRuns++;
+                void this.y;
+            }
+        }
+
+        const s = new Sub();
+
+        // Documented limitation: the subclass field stays a plain data property
+        // and its effect never runs, while the decorated base class still works.
+        const descriptor = Object.getOwnPropertyDescriptor(s, 'y');
+        expect(descriptor?.value).toBe(2);
+        expect(descriptor?.get).toBeUndefined();
+        expect(subclassEffectRuns).toBe(0);
+
+        s.x = 7;
+        expect(s.x).toBe(7);
+
+        // getSignal names the pending member and both possible causes.
+        expect(() => getSignal(s, 'y')).toThrow(/@signal 'y' is pending on an instance of Sub/);
+        expect(() => getSignal(s, 'y')).toThrow(
+            /either the class is missing the @reactive class decorator, or the member is declared on a subclass of a @reactive class/
+        );
+        // Requesting a sibling member still reports the pending set.
+        expect(() => getSignal(s, 'x')).toThrow(/@signal\/@effect fields \(y\) are pending on an instance of Sub/);
+    });
+
+    it('activates subclass members when the subclass is decorated with @reactive too', () => {
+        @reactive
+        class Base {
+            @signal x = 1;
+        }
+
+        @reactive
+        class Sub extends Base {
+            @signal y = 2;
+
+            @computed get sum(): number {
+                return this.x + this.y;
+            }
+        }
+
+        const s = new Sub();
+        expect(s.sum).toBe(3);
+
+        s.y = 20;
+        expect(s.y).toBe(20);
+        expect(s.sum).toBe(21);
+        expect(getSignal<number>(s, 'y')?.value).toBe(20);
+    });
+
+    it('reports pending @effect methods with both possible causes', () => {
+        class Undecorated {
+            @effect track(): void {
+                /* never runs — the class is missing @reactive */
+            }
+        }
+
+        const u = new Undecorated();
+        expect(() => getSignal(u, 'anything')).toThrow(
+            /@effect methods \(1\) are pending on an instance of Undecorated/
+        );
+        expect(() => getSignal(u, 'anything')).toThrow(
+            /either the class is missing the @reactive class decorator, or the member is declared on a subclass of a @reactive class/
+        );
+    });
+});

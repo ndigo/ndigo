@@ -7,7 +7,7 @@
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
-import { context as otelContext, trace } from '@opentelemetry/api';
+import { context as otelContext, SpanStatusCode, trace } from '@opentelemetry/api';
 import { HTTPServerInstrumentation } from '../src/instrumentation/http-server/http-server';
 import { DispatcherInstrumentation } from '@blue/telemetry';
 import { getMapping, ModelAndView, requestMapping } from '@blue/dispatcher';
@@ -32,6 +32,11 @@ class APIController {
     @getMapping('/view')
     view() {
         return new ModelAndView('test');
+    }
+
+    @getMapping('/boom')
+    boom(): never {
+        throw new Error('boom');
     }
 }
 
@@ -92,6 +97,8 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
         const requestSpan = requestSpans[requestSpans.length - 1];
         expect(requestSpan.attributes['http.request.method']).toBe('GET');
         expect(requestSpan.attributes['http.route']).toBe('/');
+        expect(requestSpan.attributes['http.response.status_code']).toBe(200);
+        expect(requestSpan.status.code).toBe(SpanStatusCode.OK);
 
         // Dispatch span emitted with route/method attrs and nested under the
         // request span (trace correlation).
@@ -115,5 +122,17 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
         expect(span.attributes['view.resolved']).toBe(true);
         // The node default resolver (IslandViewResolver) served an IslandView.
         expect(span.attributes['view.resolved_by']).toBe('IslandView');
+    });
+
+    test('a throwing route marks the request span ERROR with the response status (OP-5)', async () => {
+        // The adapter converts the dispatch failure into a problem response
+        // (500) and resolves, so the span outcome must come from res.statusCode.
+        const res = await fetch(`${base}/boom`);
+        expect(res.status).toBe(500);
+
+        const requestSpans = exporter.getFinishedSpans().filter((s) => s.name === 'HTTPServer.handleRequest');
+        const span = requestSpans[requestSpans.length - 1];
+        expect(span.attributes['http.response.status_code']).toBe(500);
+        expect(span.status.code).toBe(SpanStatusCode.ERROR);
     });
 });

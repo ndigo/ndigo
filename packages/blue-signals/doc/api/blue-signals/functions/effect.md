@@ -10,7 +10,10 @@
 
 Method decorator that wraps the method with a reactive effect.
 
-Requires the `@reactive` class decorator to be applied to the class.
+Requires the `@reactive` class decorator on the class that declares the
+method. Decorators are not inherited: an `@effect` method declared in a
+subclass of a `@reactive` class never runs unless the subclass is decorated
+with `@reactive` as well.
 
 ## Parameters
 

@@ -1,8 +1,12 @@
 {
     "name": "@blue/<%= name %>",
     "version": "0.0.1",
-    "description": "<%= description || 'Blue ' + className %>",
+    "description": "<%= description %>",
     "type": "module",
+    "keywords": [
+        "bluejs",
+        "blue-<%= name %>"
+    ],
     "files": [
         "doc",
         "lib"

@@ -40,6 +40,28 @@ describe('RadixMetadataHandlerMapping', () => {
         expect(chain.handler.method).toBe('world');
     });
 
+    test('base-class-declared route resolves on a bare subclass', () => {
+        @routeMapping('/hello')
+        class BaseController {
+            @routeMapping('/world')
+            world() {
+                return 'ok';
+            }
+        }
+
+        class SubController extends BaseController {}
+
+        ctx.setValue('subController', new SubController());
+
+        const mapping = new RadixMetadataHandlerMapping();
+        mapping.setApplicationContext(ctx);
+        mapping.init();
+
+        const chain = mapping.getHandler({ path: '/hello/world' } as unknown as Route);
+        expect(chain).not.toBeNull();
+        expect(chain.handler.method).toBe('world');
+    });
+
     test('parameterized route :id resolves handler', () => {
         @routeMapping('/users')
         class UsersController {

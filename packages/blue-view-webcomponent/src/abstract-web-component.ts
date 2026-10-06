@@ -25,10 +25,29 @@ export abstract class AbstractWebComponent
     #applicationContext?: ApplicationContext;
     #binder: DOMEventBinder;
 
+    /**
+     * Shared root listener for every delegated event type.
+     *
+     * A single stable function reference keeps binding idempotent: the DOM
+     * ignores a duplicate listener with the same type and callback, so
+     * re-attaching it never stacks a second dispatch.
+     */
+    #handleDelegatedEvent = (event: Event): void => {
+        this.#dispatchDelegatedEvent(event);
+    };
+
     constructor() {
         super();
         this.#binder = new DOMEventBinder(this);
-        this.#setupDelegation();
+    }
+
+    /**
+     * Re-attaches the root listeners for all registered delegated event types.
+     */
+    #bindDelegatedEvents(): void {
+        for (const eventType of this.#eventDelegation.keys()) {
+            this.#binder.bind(eventType, this.#handleDelegatedEvent);
+        }
     }
 
     /**
@@ -48,14 +67,6 @@ export abstract class AbstractWebComponent
             throw new Error('ApplicationContext has not been set for this AbstractWebComponent.');
         }
         return this.#applicationContext;
-    }
-
-    /**
-     * Sets up the root event listeners for delegation.
-     */
-    #setupDelegation(): void {
-        // We don't know the events yet, so we'll add listeners dynamically
-        // in on() if they aren't already present.
     }
 
     /**
@@ -153,9 +164,7 @@ export abstract class AbstractWebComponent
                 typeMap = new Map();
                 this.#eventDelegation.set(eventType, typeMap);
 
-                this.#binder.bind(eventType, (event: Event) => {
-                    this.#dispatchDelegatedEvent(event);
-                });
+                this.#binder.bind(eventType, this.#handleDelegatedEvent);
             }
 
             typeMap.set(selector, methodName);
@@ -298,6 +307,9 @@ export abstract class AbstractWebComponent
     }
 
     connectedCallback(): void {
+        // disconnectedCallback() unbinds every DOM listener; re-attach the
+        // delegated root listeners so delegation survives a reconnect.
+        this.#bindDelegatedEvents();
         this.emit('connect');
         this.handleConnect();
     }

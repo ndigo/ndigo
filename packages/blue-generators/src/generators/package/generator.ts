@@ -30,11 +30,14 @@ export default async function packageGenerator(tree: Tree, schema: PackageGenera
 
     const projectRoot = `packages/blue-${name}`;
     const className = toPascalCase(name);
+    // Manifest gate (`scripts/check-manifests.mjs`): the description must be
+    // >= 25 chars and must not be the rejected `Blue <Name>` placeholder.
+    const resolvedDescription = description || `${className} — BlueJS framework package`;
 
     generateFiles(tree, join(__dirname, 'files'), projectRoot, {
         name,
         className,
-        description: description || `Blue ${className}`,
+        description: resolvedDescription,
         tmpl: '',
     });
 

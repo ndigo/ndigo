@@ -25,6 +25,10 @@ const sdk = configureTelemetry({
 });
 ```
 
+Save the returned `sdk` handle: traces, metrics, and logs are batched, so
+call `sdk.shutdown()` during graceful teardown or the last batch is dropped
+on exit (§6).
+
 ## 2. Sampling (traces)
 
 `sampler` tunes how many root spans are kept — child spans inherit the root
@@ -52,6 +56,11 @@ Each signal (`traceExporter` / `metricExporter` / `logExporter`) accepts:
 OTLP urls are validated at configuration time — typos fail loud instead of
 failing at export time.
 
+Configuring a `logExporter` (anything but `'none'`) also switches
+`LoggerFactory` to the OpenTelemetry logger (browser parity), so
+`getLogger(...)` output flows through the configured log pipeline. Without a
+`logExporter` the factory keeps its console default.
+
 ## 4. Correlation
 
 Logs already carry trace context: set `LoggerFactory.contextAware = true`
@@ -74,6 +83,36 @@ await queue.push({ ...payload, 'trace.id': correlation?.traceId });
 side: W3C trace context on the wire, `traceUrl`-missing → console exporter,
 `useConsoleExporters: false` to disable, `enableDiagnostics` for OTel
 diagnostics output.
+
+## 6. Graceful shutdown (node)
+
+`configureTelemetry` returns the started OTel `NodeSDK`. Its trace/log
+processors and metric readers are batched, so anything not yet exported is
+dropped when the process exits — shut the SDK down on the way out to flush
+the final batch and stop the export timers:
+
+```ts
+import { gracefulShutdown, HTTP_SERVER } from '@blue/platform-node';
+
+const sdk = configureTelemetry({
+    traceExporter: { url: 'http://collector:4318/v1/traces' },
+});
+const server = context.getValue(HTTP_SERVER);
+await server.start();
+
+gracefulShutdown(context, {
+    resources: [
+        server,
+        // Flush batched telemetry after the server stops — its shutdown
+        // spans are still exported — and before the context closes.
+        { close: () => sdk.shutdown() },
+    ],
+});
+```
+
+When no collector is configured (`sdk` is `undefined`), omit the shutdown
+resource. Apps that never call `shutdown()` lose whatever the batch
+processors had not yet exported.
 
 ## Limits
 

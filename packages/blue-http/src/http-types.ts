@@ -77,8 +77,11 @@ export interface CompletionAwareHTTPInterceptor {
      *
      * @param request - The original request.
      * @param response - The final response or error wrapper.
+     * @param settings - The request settings the request was prepared from.
+     * The execution chain always supplies it; callers that invoke the hook
+     * directly may omit it.
      */
-    postComplete(request: Request, response: Response | ResponseError): void;
+    postComplete(request: Request, response: Response | ResponseError, settings?: HTTPInit): void;
 }
 
 /**

@@ -56,15 +56,15 @@ A symbol indicating that the value is aware.
 
 ### metrics()
 
-> **metrics**(): \{ `error`: `string`; `features?`: `undefined`; \} \| \{ `error?`: `undefined`; `features`: `Record`\<`string`, \{ `counters`: `Record`\<`string`, `number`\>; `gauges`: `Record`\<`string`, `number`\>; `updatedAt`: `string`; \}\>; \}
+> **metrics**(): \{ `error`: `string`; `features?`: `undefined`; \} \| \{ `error?`: `undefined`; `features`: `Record`\<`string`, \{ `counters`: `Record`\<`string`, `number`\>; `durations`: `Record`\<`string`, `DurationSummary`\>; `gauges`: `Record`\<`string`, `number`\>; `updatedAt`: `string`; \}\>; \}
 
 Returns the full metrics snapshot.
 
 #### Returns
 
-\{ `error`: `string`; `features?`: `undefined`; \} \| \{ `error?`: `undefined`; `features`: `Record`\<`string`, \{ `counters`: `Record`\<`string`, `number`\>; `gauges`: `Record`\<`string`, `number`\>; `updatedAt`: `string`; \}\>; \}
+\{ `error`: `string`; `features?`: `undefined`; \} \| \{ `error?`: `undefined`; `features`: `Record`\<`string`, \{ `counters`: `Record`\<`string`, `number`\>; `durations`: `Record`\<`string`, `DurationSummary`\>; `gauges`: `Record`\<`string`, `number`\>; `updatedAt`: `string`; \}\>; \}
 
-`{ features: { <feature>: { counters, gauges, updatedAt } } }`,
+`{ features: { <feature>: { counters, gauges, durations, updatedAt } } }`,
   or `{ error }` when no aggregator is wired.
 
 ***

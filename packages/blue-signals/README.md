@@ -58,7 +58,23 @@ const c = new Counter();
 c.count++; // logs "count = 1"
 ```
 
-**`@reactive` is required** — it activates the `@signal` and `@effect` decorators after field initialization.
+**`@reactive` is required** — it activates the `@signal` and `@effect` decorators after the decorated class's fields are initialized.
+
+**Reactive members are not inherited.** `@reactive` activates the `@signal` and `@effect` members declared in its own class only — activation runs at the end of that class's construction, before subclass field initializers. A subclass that declares its own reactive members must apply `@reactive` as well:
+
+```ts
+@reactive
+class Counter {
+    @signal count = 0;
+}
+
+@reactive
+class NamedCounter extends Counter {
+    @signal label = 'unnamed';
+}
+```
+
+Without the subclass `@reactive`, a subclass `@signal` field stays a plain property and subclass `@effect` methods never run; `getSignal` throws to point this out.
 
 ### Lifecycle Disposal
 
@@ -112,12 +128,12 @@ how it fits with the rest of BlueJS.
 
 ### Decorators (`@blue/signals/decorators`)
 
-| Decorator   | Target | Description                                     |
-| ----------- | ------ | ----------------------------------------------- |
-| `@reactive` | Class  | Activates `@signal`/`@effect`; adds `dispose()` |
-| `@signal`   | Field  | Wraps field with reactive signal                |
-| `@computed` | Getter | Wraps getter with memoized computed signal      |
-| `@effect`   | Method | Wraps method with reactive effect               |
+| Decorator   | Target | Description                                                      |
+| ----------- | ------ | ---------------------------------------------------------------- |
+| `@reactive` | Class  | Activates `@signal`/`@effect` in its own class; adds `dispose()` |
+| `@signal`   | Field  | Wraps field with reactive signal                                 |
+| `@computed` | Getter | Wraps getter with memoized computed signal                       |
+| `@effect`   | Method | Wraps method with reactive effect                                |
 
 ### Utilities
 

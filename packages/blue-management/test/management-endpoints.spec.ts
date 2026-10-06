@@ -36,6 +36,8 @@ describe('ManagementAutoConfiguration endpoints', () => {
         const aggregator = context.getValue<FeatureMetricAggregator>(METRIC_AGGREGATOR);
         aggregator.incrementCounter('todo', 'mountCount', 1);
         aggregator.incrementCounter('api', 'requestCount', 3);
+        aggregator.recordDuration('todo', 'mountMs', 8);
+        aggregator.recordDuration('todo', 'mountMs', 12);
 
         const adapter = new NodeHTTPServerAdapter(dispatcher);
         await adapter.listen(0, '127.0.0.1');
@@ -48,6 +50,25 @@ describe('ManagementAutoConfiguration endpoints', () => {
         const body = (await res.json()) as { features: Record<string, { counters: Record<string, number> }> };
         expect(body.features['todo'].counters['mountCount']).toBe(1);
         expect(body.features['api'].counters['requestCount']).toBe(3);
+    });
+
+    test('GET /metrics returns duration summaries (OP-4)', async () => {
+        const res = await fetch(`${base}/metrics`);
+        expect(res.status).toBe(200);
+        const body = (await res.json()) as {
+            features: Record<
+                string,
+                {
+                    counters: Record<string, number>;
+                    durations: Record<string, { count: number; max: number; mean: number; min: number; p50: number }>;
+                    gauges: Record<string, number>;
+                    updatedAt: string;
+                }
+            >;
+        };
+        expect(body.features['todo'].durations['mountMs']).toEqual({ count: 2, max: 12, mean: 10, min: 8, p50: 10 });
+        // Full per-feature shape promised by the controller JSDoc.
+        expect(Object.keys(body.features['todo']).sort()).toEqual(['counters', 'durations', 'gauges', 'updatedAt']);
     });
 
     test('GET /health reports UP with the telemetry component', async () => {

@@ -9,9 +9,14 @@
 An in-memory implementation of [TransactionManager](../interfaces/TransactionManager.md) with snapshot
 rollback.
 
-On `run()`, the backing [InMemoryDataSource](InMemoryDataSource.md)'s stores are snapshotted;
-if `fn` throws, the stores are restored to that snapshot (rollback).
-Otherwise the transaction commits (writes stay).
+On `run()`, the backing [InMemoryDataSource](InMemoryDataSource.md)'s stores are
+deep-snapshotted; if `fn` throws, the stores are restored to that snapshot
+(rollback). Otherwise the transaction commits (writes stay).
+
+Rollback restores the store-visible state: entities read back afterwards
+are clones of their pre-transaction values. References callers held to
+entities before the transaction keep their own later mutations — the stores
+no longer alias them after a rollback.
 
 ## Since
 

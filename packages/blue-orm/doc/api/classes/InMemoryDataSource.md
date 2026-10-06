@@ -178,6 +178,13 @@ Initializes the data source. No operation for `InMemoryDataSource`.
 Restores entity stores to a previously captured snapshot, discarding any
 writes made after it. Used for transaction rollback.
 
+Entities are re-cloned from the snapshot, so the handle stays pristine
+and can be restored repeatedly. Rollback restores the store-visible
+state: entities read back after a restore are clones of their
+pre-snapshot values. References callers held to entities before the
+snapshot still observe their own later mutations — after a restore the
+stores no longer alias those objects.
+
 #### Parameters
 
 ##### snapshot
@@ -200,8 +207,11 @@ The snapshot from `snapshot()`.
 
 Captures a deep snapshot of all entity stores (for transaction rollback).
 
-Entity instances are shallow-cloned into new Maps so restore can rewind
-to this exact point.
+Every stored entity is deep-cloned — values and nested references are
+copied, object prototypes are preserved so restored entities remain
+valid class instances, and cycles/shared references are kept intact.
+Store keys are kept as-is (primary identifiers), and the snapshot is
+isolated from mutations made after this call.
 
 #### Returns
 

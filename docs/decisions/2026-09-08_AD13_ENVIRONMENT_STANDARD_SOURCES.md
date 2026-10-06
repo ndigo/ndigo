@@ -1,7 +1,7 @@
 # AD-13: Environment standard sources — config files, .env, browser, precedence (Phase 2)
 
 **Date:** 2026-09-08
-**Status:** Accepted — decisions D1–D6 + Q1–Q9 closed; implementation tracked in `docs/plans/2026-09-08_ENVIRONMENT_PHASE2.md`
+**Status:** Accepted — decisions D1–D6 + Q1–Q9 closed; implementation tracked in `docs/plans/2026-09-08_ENVIRONMENT_PHASE2.md`. **D3 not shipped — see Update (2026-10-06).**
 
 ## Background
 
@@ -82,6 +82,21 @@ unused (structural uniformity; no conditional in the Q7 assertion).
   environments expose `importMetaEnv`/`bootstrap`.
 - Precedence is now a documented, tested contract — a violation is a failing
   spec, not a surprise.
+
+## Update (2026-10-06)
+
+**D3 (`.env` via the `dotenv` npm package) is not shipped.** No `.env` source
+exists in the codebase: `@blue/context` never reads a `.env` file, no
+workspace package depends on `dotenv` (the lockfile copy is a transitive
+tooling dependency), and nothing registers a `dotenv` source at boot. The
+`dotenv` name remains in `PRECEDENCE` (D1/D6) as a **reserved
+slot** — a stack that never registers it simply skips it, and the real-boot
+order spec asserts order over the sources actually present.
+
+Guide 03 §1 previously claimed `.env` was auto-loaded and omitted the shipped
+`configServer` slot; it now lists `configServer` (AD-29 Wave 3) in the chain
+and marks `dotenv` as reserved/user-supplied. Landing D3 is deferred; the
+settled decisions above are otherwise unchanged.
 
 ## Revisit Trigger
 

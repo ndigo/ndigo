@@ -20,10 +20,16 @@ export class DOMEventBinder {
     /**
      * Binds a listener to a DOM event.
      *
+     * Re-binding the same handler is a no-op, so callers can safely re-attach
+     * listeners without stacking duplicate dispatches.
+     *
      * @param eventName - The name of the DOM event (e.g., 'click').
      * @param handler - The listener function.
      */
     bind(eventName: string, handler: EventListener): void {
+        if (this.#listeners.get(eventName) === handler) {
+            return;
+        }
         this.#element.addEventListener(eventName, handler);
         this.#listeners.set(eventName, handler);
     }

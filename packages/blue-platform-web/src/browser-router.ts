@@ -10,6 +10,7 @@ import { AbstractRouter, RouterCallback } from '@blue/router';
 import { RingBuffer } from '@blue/core';
 import { RouterExecutionChain } from '@blue/router';
 import { MappedRouterInterceptor, RouterInterceptor } from '@blue/router';
+import { commitRoute } from './_commit-route';
 
 /**
  * A type alias for the native `PopStateEvent` handler function.
@@ -195,30 +196,44 @@ export class BrowserRouter extends AbstractRouter {
 
     /**
      * Internal method to set a new route, apply interceptors, and manage the transaction.
+     *
+     * Runs the full interceptor pipeline (`preHandle` → `postHandle` →
+     * `afterCompletion`); the route is only committed once `preHandle` accepts
+     * it and is restored when the route change is rejected or fails.
      */
     protected async _setRoute(newRoute: string, syncHash = true): Promise<boolean> {
         const route = new PathRoute(newRoute),
             oldRoute = syncHash ? this.route : this.#lastPublicRoute,
             chain = new RouterExecutionChain(this._resolveInterceptors(route));
 
-        this.#route = route;
-
-        if (await chain.applyPreHandle(route)) {
-            return true;
-        }
-
-        this.#route = new PathRoute(oldRoute);
-        return false;
+        return commitRoute(
+            route,
+            chain,
+            () => {
+                this.#route = route;
+            },
+            () => {
+                this.#route = new PathRoute(oldRoute);
+            }
+        );
     }
 
     /**
      * Resolves matching interceptors for the given route.
+     *
+     * Mapped interceptors are matched with named-parameter support, and their
+     * parameters are bound onto the route before any phase runs.
      */
     protected _resolveInterceptors(route: PathRoute): RouterInterceptor[] {
         return this.interceptors.filter((interceptor) => {
             if (interceptor instanceof MappedRouterInterceptor) {
-                return interceptor.matches(route.path);
+                const matches = interceptor.matchesRoute(route);
+                if (matches) {
+                    interceptor.resolveRouteParams(route);
+                }
+                return matches;
             }
+
             return true;
         });
     }

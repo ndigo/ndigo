@@ -20,6 +20,7 @@ import { metrics, trace, type Attributes } from '@opentelemetry/api';
 import { parameters, requestMapping, socketMapping, socketSessionValue, type SocketSession } from '@blue/dispatcher';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@blue/platform-node';
+import { delay } from '@blue/test';
 import { WebSocketServerInstrumentation } from '../src/instrumentation/websocket-server/websocket-server';
 import { WebSocket } from 'ws';
 
@@ -106,12 +107,6 @@ async function datapointValue(reader: PeriodicExportingMetricReader, name: strin
     }
     return total;
 }
-
-const delay = (ms: number): Promise<void> => {
-    const { promise, resolve } = Promise.withResolvers<void>();
-    setTimeout(resolve, ms);
-    return promise;
-};
 
 describe('WebSocketServerInstrumentation', () => {
     let spanExporter: InMemorySpanExporter;

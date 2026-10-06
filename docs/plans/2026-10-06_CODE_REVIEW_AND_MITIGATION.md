@@ -15,14 +15,14 @@ against the clean tree: `pnpm build` failure reproduced after `nx reset`;
 dependency-cycle regression computed across `HEAD~1..HEAD~3`; `toRegExp`
 crash, Drizzle DDL type mapping, and JWT exp/sub/short-secret acceptance
 reproduced with `tsx` probes. Full gates were run before the review (§0).
-**Status:** Findings recorded; **Waves 1–5 EXECUTED (2026-10-06)** — Wave 1
-(`@blue/log` leaf + cycle-free build, AD-67); all Must-Fix items; Wave 4a
-(SE-1..4, SE-6, TO-1, DO-1/DO-2); Wave 4b (CF-4..8, HT-2..6, IN-3, PL-5..8,
-DA-2..4, OP-3..10, TO-2..7, AP-1..4, HG-5); waves 4c/5 (SE-5, PR-3..12,
-HG-3, TO-8..13, DO-3..9, AP-5..9, CF-9..12, HT-7..11, PL-9..12, DA-5..12,
-OP-11..14, IN-4..12, HG-7/8/11/12, A-4, README alignment + gate widening).
-Close-out pending: HG-4 (catalogs), HG-6 (shared delay), SE-7..SE-12
-optional hardening, and Wave 6 final verification.
+**Status:** Findings recorded; **ALL WAVES EXECUTED AND VERIFIED
+(2026-10-06)** — Waves 1–5 plus the close-out batch (HG-4 pnpm catalogs +
+TypeScript normalization, HG-6 shared `delay`, SE-7..SE-12, HG-9/HG-10);
+final gates and a live boot smoke are in §4 (Wave 6). Accepted at closure:
+SE-7's user-wide revocation API needs an ADR (disabled-account revocation is
+in); TO-14 (rule catalogue is complete but hand-maintained); a
+`@vitest/coverage-v8` peer-drift follow-up; `pnpm audit --prod`'s single
+remaining high advisory lives in the sibling todomvc checkout.
 **Legend:** `[code]` established by reading cited lines · `[exec]` reproduced
 by execution · `[inference]` reasoned without execution.
 **Source IDs:** each finding keeps its slice-local origin where useful
@@ -903,3 +903,27 @@ fail-before/pass-after spec (evidence in the slice reports). Highlights:
   blue-api matrix tests.
 - Integration fix-up: one `no-await-in-loop` restructure (scheduler
   wall-clock poll helper).
+
+### Wave 6 — close-out and final verification (2026-10-06)
+
+- **HG-4**: 30 pnpm catalog entries (108 references across 35 manifests),
+  lockfile catalog blocks, frozen install green; TypeScript normalized to
+  `~7.0.2` for all workspace packages (the 5 residual `6.0.3` pins were
+  pre-Sep-10 leftovers; every package compiles under 7.0.2 — verified before
+  and after — and the TypeDoc store pin is preserved).
+- **HG-6**: `delay(ms)` implemented once in `@blue/util` and re-exported from
+  `@blue/test` (the literal @blue/test devDep for platform-node would have
+  re-closed an Nx task-graph cycle — proven, then avoided; 9 sites migrated).
+- **SE-7..SE-12, HG-9/HG-10**: disabled/deleted accounts revoke sessions and
+  JWTs at validation; `__Host-blue-csrf` CSRF hardening; remote-config fetch
+  timeout + size cap; cookie attribute writing hardened; session JSDoc;
+  shared `readIntEnv`; mock header-folding cross-reference.
+- **Final gates at close-out:** `pnpm format:check`, `pnpm lint`
+  (build-first plugin), `pnpm manifest:check` (README-section + root-devDep
+  rules), `pnpm typecheck` (every package + app), `pnpm build` (39/39),
+  `pnpm test` (43/43), `pnpm doc` freshness, `pnpm docs:links`,
+  `pnpm agents:check` — all green; `pnpm audit --prod` reduced to the single
+  accepted sibling-checkout advisory.
+- **Live smoke:** `apps/blue-hello-node` booted on tsx and served
+  `GET /` → `200 {"message":"Hello, Node!"}` with the SEC-4-hardened header
+  set on the wire (CSP `connect-src 'self'`, HSTS, nosniff, …).

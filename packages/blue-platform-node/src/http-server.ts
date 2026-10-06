@@ -1,6 +1,7 @@
 /**
  * Managed HTTP server for Node.js platform applications.
- * * @module blue-platform-node
+ *
+ * @module blue-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -12,6 +13,7 @@ import { NodeHTTPServerAdapter, type NodeHTTPServerAdapterOptions } from './node
 import type { SocketLimits } from './node-socket-session';
 import { NodeSocketSessionRegistry } from './node-socket-session-registry';
 import { SOCKET_SESSION_REGISTRY, SOCKET_REQUEST_AUTHENTICATOR } from './context-tokens';
+import { readIntEnv } from './read-int-env';
 
 /**
  * Adapter interface for platform HTTP servers.
@@ -168,7 +170,9 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
                 'HTTPServer: socketRegistry is shared with the default adapter only — pass it to your custom adapter instead'
             );
         }
-        const rawPort = options.port ?? Number(getEnv('PORT', '3000'));
+        // HG-9: strict env parse (`Number('')`/`Number(' 80 ')` traps) — 0 is
+        // still a valid ephemeral-port request, so `allowZero` is set.
+        const rawPort = options.port ?? readIntEnv(process.env, 'PORT', { allowZero: true }) ?? 3000;
         if (!Number.isInteger(rawPort) || rawPort < 0 || rawPort > 65_535) {
             throw new RangeError(`HTTPServer: invalid port ${String(rawPort)} — must be an integer in [0, 65535]`);
         }

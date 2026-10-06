@@ -14,7 +14,9 @@ Options for the CSRF interceptor.
 
 > `optional` **cookieName?**: `string`
 
-Cookie name; defaults to `'blue-csrf'`.
+Cookie name; defaults to `'__Host-blue-csrf'`. A name without the
+`__Host-` prefix gives up the sibling-subdomain cookie-tossing
+protection — see the module docs.
 
 ***
 

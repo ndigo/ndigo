@@ -182,6 +182,11 @@ HMAC and asymmetric algorithms (RS256/ES256…), and requires the
 issuer, audience, `exp`, and `sub` claims. Trailing whitespace and
 other spec allowances are handled by `jose`.
 
+With a `userStore` wired, framework-issued tokens (`ver` claim) are
+additionally checked against the live account: a bumped
+`tokenVersion` or a disabled/deleted account rejects the token
+(SE-7). External IdP tokens without `ver` skip the store check.
+
 #### Implementation of
 
 `AuthAdapter.validate`

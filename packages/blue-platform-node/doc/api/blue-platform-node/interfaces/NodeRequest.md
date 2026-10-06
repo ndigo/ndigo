@@ -64,11 +64,14 @@ never consulted. The rate limiter keys on this (SEC-6, Wave 3).
 
 > **session**: `Record`\<`string`, `unknown`\>
 
-Server-side session data keyed by session variable name.
+Server-side session data keyed by session variable name, populated
+**before dispatch** by `NodeSessionInterceptor` when the request
+carries a valid `blue-session` cookie: `principal` (the resolved
+`@blue/auth-core` principal) and `token` (the opaque session id).
+An absent, unknown, or expired session leaves the bag **empty**
+(anonymous) — nothing is ever fabricated; `AuthRouteGuard` then
+denies protected routes (401/403).
 
-**Reserved — always empty in the built-in pipeline.** The adapter
-creates requests with `session: {}` and no session provider populates
-it yet; session persistence/restoration is an open contract (see the
-repo's remediation plan, "Session contract"). Middleware may fill this
-record before dispatch (e.g. from a signed cookie or a session store);
-the `session()` argument extractor reads it.
+Middleware may also fill this record before dispatch (e.g. from a
+signed cookie or another session store); the `session()` argument
+extractor (`requestSessionValue`) reads it.

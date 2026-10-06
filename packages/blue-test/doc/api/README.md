@@ -38,4 +38,5 @@ Jeff Rose
 - [buildRoute](functions/buildRoute.md)
 - [cachedBootApp](functions/cachedBootApp.md)
 - [createMemoryResponse](functions/createMemoryResponse.md)
+- [delay](functions/delay.md)
 - [releaseCachedApp](functions/releaseCachedApp.md)

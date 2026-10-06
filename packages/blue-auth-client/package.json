@@ -14,7 +14,7 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^6.0.3"
+    "typescript": "catalog:"
   },
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
@@ -25,7 +25,7 @@
     "@blue/auth-core": "~0.0.1",
     "@blue/http": "~0.0.1",
     "@blue/util": "~0.0.1",
-    "jose": "^6.2.12"
+    "jose": "catalog:"
   },
   "exports": {
     ".": {

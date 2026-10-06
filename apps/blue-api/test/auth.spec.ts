@@ -152,15 +152,15 @@ describe('blue-api cookie sessions (AD-33 Wave 2)', () => {
             const blocked = await mvc.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
             expect(blocked.response.status).toBe(403);
             const cookie = String(blocked.response.headers['set-cookie'] ?? '');
-            expect(cookie).toContain('blue-csrf=');
-            const token = /blue-csrf=([^;]+)/.exec(cookie)?.[1];
+            expect(cookie).toContain('__Host-blue-csrf=');
+            const token = /__Host-blue-csrf=([^;]+)/.exec(cookie)?.[1];
             expect(token).toBeDefined();
 
             // Cookie + matching header: the (rate-unlimited, distinct-peer)
             // login proceeds.
             const ok = await mvc
                 .post('/auth/login')
-                .cookies({ 'blue-csrf': token as string })
+                .cookies({ '__Host-blue-csrf': token as string })
                 .headers({ 'x-csrf-token': token as string })
                 .body({ username: 'admin', password: 'demo' })
                 .exec();
@@ -170,7 +170,7 @@ describe('blue-api cookie sessions (AD-33 Wave 2)', () => {
             // without a genuine token.
             const bad = await mvc
                 .post('/auth/login')
-                .cookies({ 'blue-csrf': token as string })
+                .cookies({ '__Host-blue-csrf': token as string })
                 .headers({ 'x-csrf-token': 'different' })
                 .body({ username: 'admin', password: 'demo' })
                 .exec();

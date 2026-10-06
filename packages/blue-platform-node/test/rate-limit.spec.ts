@@ -6,16 +6,10 @@
 import { describe, test, expect } from 'vitest';
 import type { ServerResponse } from 'node:http';
 import type { Route } from '@blue/router';
+import { delay } from '@blue/util';
 import { FixedWindowRateLimiter } from '../src/rate-limit';
 import { RateLimitInterceptor, RATE_LIMIT_KEY, rateLimit } from '../src/rate-limit-interceptor';
 import { NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE, type NodeRequest } from '../src/node-request';
-
-/** Test-only delay helper (Promise.withResolvers pattern). */
-function delay(ms: number): Promise<void> {
-    const { promise, resolve } = Promise.withResolvers<void>();
-    setTimeout(resolve, ms);
-    return promise;
-}
 
 /** A route whose request carries `remoteAddress` (the key source). */
 function routeFrom(address?: string): Route {

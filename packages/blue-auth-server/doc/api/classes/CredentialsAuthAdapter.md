@@ -20,7 +20,11 @@ explicit-scheme discipline without framework changes:
   **the token is the id issued by the `SessionStore`** (single source of
   truth for session keys; `InMemorySessionStore` uses 32-byte
   `randomBytes` tokens).
-- `validate` — `SessionStore.get`, or `null` (expired/unknown/revoked).
+- `validate` — `SessionStore.get` **plus a live account check** (`SE-7`),
+  or `null` (expired/unknown/revoked session, or a disabled/deleted
+  account): disabling an account revokes its outstanding opaque sessions
+  at the next validation. User-wide revocation of live sessions without
+  an account-store read remains an open contract (needs an ADR).
 - `refresh` — session **rotation**: new id, old id dead (fixation-safe).
 - `logout` — session delete.
 

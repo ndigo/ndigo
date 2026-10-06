@@ -54,12 +54,15 @@ describe('CSRFInterceptor', () => {
 
         expect(interceptor.preHandle(route)).toBe(true);
         const cookie = headers['Set-Cookie'];
-        expect(cookie).toMatch(/^blue-csrf=[A-Za-z0-9_-]+; SameSite=Lax; Secure; Path=\/$/);
+        expect(cookie).toMatch(/^__Host-blue-csrf=[A-Za-z0-9_-]+; SameSite=Lax; Secure; Path=\/$/);
     });
 
     test('Secure flag is overridable while defaulting on', () => {
         const headers: Record<string, string> = {};
-        const interceptor = new CSRFInterceptor({ cookieOptions: 'SameSite=None; Path=/' });
+        // A `__Host-` cookie must be Secure, so opting out uses a custom name
+        // (the documented trade-off: no sibling-subdomain cookie tossing
+        // protection — the deployment trusts its subdomains).
+        const interceptor = new CSRFInterceptor({ cookieName: 'blue-csrf', cookieOptions: 'SameSite=None; Path=/' });
         const response = {
             headersSent: false,
             setHeader: (name: string, value: string) => {
@@ -86,7 +89,7 @@ describe('CSRFInterceptor', () => {
     test('allows a mutating request with a matching header token', () => {
         const token = 'abc123def456';
         const interceptor = new CSRFInterceptor();
-        const route = makeRoute('POST', { cookies: { 'blue-csrf': token } }, { 'x-csrf-token': token });
+        const route = makeRoute('POST', { cookies: { '__Host-blue-csrf': token } }, { 'x-csrf-token': token });
 
         expect(interceptor.preHandle(route)).toBe(true);
     });
@@ -95,7 +98,7 @@ describe('CSRFInterceptor', () => {
         const token = 'token-body';
         const interceptor = new CSRFInterceptor();
         const route = makeRoute('POST', {
-            cookies: { 'blue-csrf': token },
+            cookies: { '__Host-blue-csrf': token },
             body: { csrf_token: token },
         });
 
@@ -117,7 +120,7 @@ describe('CSRFInterceptor', () => {
                 body = b;
             },
         };
-        const route = makeRoute('DELETE', { cookies: { 'blue-csrf': 'real-token' } }) as unknown as Route;
+        const route = makeRoute('DELETE', { cookies: { '__Host-blue-csrf': 'real-token' } }) as unknown as Route;
         (route.attributes as Record<string, unknown>)[NODE_RESPONSE_ATTRIBUTE] = response;
 
         mode.rejected = interceptor.preHandle(route) === false;
@@ -134,7 +137,7 @@ describe('CSRFInterceptor', () => {
         const interceptor = new CSRFInterceptor();
         const route = makeRoute(
             'PATCH',
-            { cookies: { 'blue-csrf': 'cookie-token' } },
+            { cookies: { '__Host-blue-csrf': 'cookie-token' } },
             { 'x-csrf-token': 'different-token' }
         );
 
@@ -152,7 +155,27 @@ describe('CSRFInterceptor', () => {
         const interceptor = new CSRFInterceptor();
         // cookie-token is 12 chars; an 8-char submission must be rejected by
         // the explicit length guard before any constant-time compare.
-        const route = makeRoute('POST', { cookies: { 'blue-csrf': 'cookie-token' } }, { 'x-csrf-token': '12345678' });
+        const route = makeRoute(
+            'POST',
+            { cookies: { '__Host-blue-csrf': 'cookie-token' } },
+            { 'x-csrf-token': '12345678' }
+        );
+
+        expect(interceptor.preHandle(route)).toBe(false);
+    });
+
+    test('a spoofed non-__Host cookie is ignored (cookie tossing rejected, SE-8)', () => {
+        const spoofed = 'spoofed-token';
+        const interceptor = new CSRFInterceptor();
+        // A sibling subdomain can set a `blue-csrf` cookie for the parent
+        // domain and echo the same value in the body/header. The interceptor
+        // reads only `__Host-blue-csrf`, so the tossed cookie is invisible and
+        // the submission cannot match the freshly minted token.
+        const route = makeRoute(
+            'POST',
+            { cookies: { 'blue-csrf': spoofed }, body: { csrf_token: spoofed } },
+            { 'x-csrf-token': spoofed }
+        );
 
         expect(interceptor.preHandle(route)).toBe(false);
     });

@@ -54,7 +54,7 @@ tracked separately.
 
 - **Type:** Nx Monorepo with pnpm workspaces.
 - **Module System:** **ESM Only**. No CommonJS (`require`) allowed.
-- **Language:** TypeScript (Target: `ES2022`; root native compiler line `~7.0.2`, packages pin `~6.0.3`).
+- **Language:** TypeScript (Target: `ES2022`; single compiler line `~7.0.2` pinned in the pnpm catalog — root, packages, and apps resolve it from there; TypeDoc still runs on the shimmed 6.0.3 toolchain, see `scripts/typedoc-ts-shim.mjs`).
 - **Package Manager:** pnpm >= 11.0.0.
 - **Node Version:** >= 22.0.0.
 

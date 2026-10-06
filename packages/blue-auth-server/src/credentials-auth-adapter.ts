@@ -64,7 +64,11 @@ export class InvalidCredentialsError extends Error {
  *   **the token is the id issued by the `SessionStore`** (single source of
  *   truth for session keys; `InMemorySessionStore` uses 32-byte
  *   `randomBytes` tokens).
- * - `validate` — `SessionStore.get`, or `null` (expired/unknown/revoked).
+ * - `validate` — `SessionStore.get` **plus a live account check** (`SE-7`),
+ *   or `null` (expired/unknown/revoked session, or a disabled/deleted
+ *   account): disabling an account revokes its outstanding opaque sessions
+ *   at the next validation. User-wide revocation of live sessions without
+ *   an account-store read remains an open contract (needs an ADR).
  * - `refresh` — session **rotation**: new id, old id dead (fixation-safe).
  * - `logout` — session delete.
  *
@@ -111,7 +115,17 @@ export class CredentialsAuthAdapter implements AuthAdapter {
 
     async validate(token: string): Promise<Principal | null> {
         const record = await this.#sessionStore.get(token);
-        return record?.principal ?? null;
+        if (!record) {
+            return null;
+        }
+        // SE-7: sessions outlive account-state changes — consult the account
+        // record so disabling (or deleting) an account revokes its live
+        // sessions instead of leaving them valid until TTL expiry.
+        const user = await this.#userStore.findById(record.principal.id);
+        if (user === null || user.disabled === true) {
+            return null;
+        }
+        return record.principal;
     }
 
     async refresh(token: string): Promise<AuthResult> {

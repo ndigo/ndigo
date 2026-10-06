@@ -8,6 +8,7 @@ import { describe, test, expect } from 'vitest';
 import { jwtVerify, type JWTPayload } from 'jose';
 import { createHmac } from 'node:crypto';
 import { type UserRecord, DefaultPrincipal } from '@blue/auth-core';
+import { delay } from '@blue/test';
 import { JWTAdapter, JWTTokenError } from '../src/jwt-adapter';
 import { InMemoryUserStore } from '../src/in-memory-user-store';
 
@@ -19,13 +20,6 @@ function createJWT(payload: JWTPayload, secret = TEST_SECRET): string {
     const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
     const signature = createHmac('sha256', secret).update(`${header}.${body}`).digest('base64url');
     return `${header}.${body}.${signature}`;
-}
-
-/** Test-only delay helper (Promise.withResolvers pattern). */
-function delay(ms: number): Promise<void> {
-    const { promise, resolve } = Promise.withResolvers<void>();
-    setTimeout(resolve, ms);
-    return promise;
 }
 
 const CONFIG = {
@@ -123,9 +117,36 @@ describe('JWTAdapter revocation via ver claim (AD-33 D-7)', () => {
         await expect(adapter.validate(external)).resolves.toMatchObject({ id: 'alice', name: 'Alice' });
     });
 
-    test('a disabled account is denied at validation', async () => {
+    test('a disabled account cannot be issued tokens', async () => {
         const { adapter } = buildAdapter();
         await expect(adapter.issueTokens({ id: 'bob' })).rejects.toBeInstanceOf(JWTTokenError);
+    });
+
+    test('disabling an account revokes its outstanding tokens at validation (SE-7)', async () => {
+        const { adapter, userStore } = buildAdapter();
+        const { accessToken, refreshToken } = await adapter.issueTokens({ id: 'alice' });
+        await expect(adapter.validate(accessToken)).resolves.toMatchObject({ id: 'alice' });
+
+        const alice = await userStore.findById('alice');
+        expect(alice).not.toBeNull();
+        userStore.upsert({ ...(alice as UserRecord), disabled: true });
+
+        await expect(adapter.validate(accessToken)).resolves.toBeNull();
+        await expect(adapter.refresh(refreshToken)).rejects.toBeInstanceOf(JWTTokenError);
+    });
+
+    test('a token for an already-disabled account never validates (SE-7)', async () => {
+        const { adapter } = buildAdapter();
+        const futureTime = Math.floor(Date.now() / 1000) + 3600;
+        const token = createJWT({
+            sub: 'bob',
+            ver: 0,
+            iss: CONFIG.issuer,
+            aud: CONFIG.audience,
+            exp: futureTime,
+        });
+
+        await expect(adapter.validate(token)).resolves.toBeNull();
     });
 });
 

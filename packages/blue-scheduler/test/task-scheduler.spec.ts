@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect, vi } from 'vitest';
+import { delay } from '@blue/util';
 import { CronSchedule, IntervalSchedule } from '../src/schedule';
 import { TaskScheduler } from '../src/task-scheduler';
 
@@ -321,18 +322,10 @@ describe('@blue/scheduler TaskScheduler wall-clock loop (OP-13)', () => {
             if (Date.now() >= deadline) {
                 throw new Error('waitFor: condition did not become true in time');
             }
-            const { promise, resolve } = Promise.withResolvers<void>();
-            setTimeout(resolve, 5);
-            await promise;
+            await delay(5);
             return poll();
         };
         return poll();
-    };
-
-    const delay = (ms: number): Promise<void> => {
-        const { promise, resolve } = Promise.withResolvers<void>();
-        setTimeout(resolve, ms);
-        return promise;
     };
 
     test('start() fires a fixedRate task repeatedly on the wall clock', async () => {

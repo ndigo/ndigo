@@ -4,6 +4,96 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@nx/devkit':
+      specifier: ~23.2.1
+      version: 23.2.1
+    '@opentelemetry/api':
+      specifier: ~1.9.1
+      version: 1.9.1
+    '@opentelemetry/api-logs':
+      specifier: ~0.222.0
+      version: 0.222.0
+    '@opentelemetry/context-async-hooks':
+      specifier: ~2.11.0
+      version: 2.11.0
+    '@opentelemetry/core':
+      specifier: ~2.11.0
+      version: 2.11.0
+    '@opentelemetry/exporter-logs-otlp-http':
+      specifier: ~0.222.0
+      version: 0.222.0
+    '@opentelemetry/exporter-metrics-otlp-http':
+      specifier: ~0.222.0
+      version: 0.222.0
+    '@opentelemetry/exporter-trace-otlp-http':
+      specifier: ~0.222.0
+      version: 0.222.0
+    '@opentelemetry/instrumentation':
+      specifier: ~0.222.0
+      version: 0.222.0
+    '@opentelemetry/resources':
+      specifier: ~2.11.0
+      version: 2.11.0
+    '@opentelemetry/sdk-logs':
+      specifier: ~0.222.0
+      version: 0.222.0
+    '@opentelemetry/sdk-metrics':
+      specifier: ~2.11.0
+      version: 2.11.0
+    '@opentelemetry/sdk-node':
+      specifier: ~0.222.0
+      version: 0.222.0
+    '@opentelemetry/sdk-trace-base':
+      specifier: ~2.11.0
+      version: 2.11.0
+    '@oxlint/plugins':
+      specifier: ^1.85.0
+      version: 1.85.0
+    '@toon-format/toon':
+      specifier: 4.1.1
+      version: 4.1.1
+    '@tsmetadata/polyfill':
+      specifier: ^1.1.3
+      version: 1.1.3
+    '@types/node':
+      specifier: ~24.13.5
+      version: 24.13.5
+    '@types/ws':
+      specifier: ^8.18.0
+      version: 8.18.1
+    jose:
+      specifier: ^6.2.12
+      version: 6.2.12
+    oxlint:
+      specifier: ^1.85.0
+      version: 1.85.0
+    safe-regex:
+      specifier: ~2.1.1
+      version: 2.1.1
+    swagger-ui-dist:
+      specifier: 5.33.0
+      version: 5.33.0
+    tsx:
+      specifier: ^4.23.13
+      version: 4.23.13
+    typescript:
+      specifier: ~7.0.2
+      version: 7.0.2
+    vite:
+      specifier: ~8.2.2
+      version: 8.2.2
+    vitest:
+      specifier: ~4.0.18
+      version: 4.0.18
+    ws:
+      specifier: ^8.18.0
+      version: 8.21.3
+    zod:
+      specifier: ^4.5.4
+      version: 4.5.4
+
 overrides:
   axios: '>=1.18.0'
   minimatch: '>=9.0.7'
@@ -24,16 +114,16 @@ importers:
   .:
     devDependencies:
       '@nx/devkit':
-        specifier: ~23.2.1
+        specifier: 'catalog:'
         version: 23.2.1(nx@23.2.1)
       '@oxlint/plugins':
-        specifier: ^1.85.0
+        specifier: 'catalog:'
         version: 1.85.0
       '@tsmetadata/polyfill':
-        specifier: ^1.1.3
+        specifier: 'catalog:'
         version: 1.1.3
       '@types/node':
-        specifier: ~24.13.5
+        specifier: 'catalog:'
         version: 24.13.5
       '@vitest/coverage-v8':
         specifier: ^4.0.18
@@ -54,16 +144,16 @@ importers:
         specifier: ^0.70.0
         version: 0.70.0(svelte@5.57.0)
       oxlint:
-        specifier: ^1.85.0
+        specifier: 'catalog:'
         version: 1.85.0(oxlint-tsgolint@7.0.2003)
       oxlint-tsgolint:
         specifier: ^7.0.2003
         version: 7.0.2003
       safe-regex:
-        specifier: ^2.1.1
+        specifier: 'catalog:'
         version: 2.1.1
       tsx:
-        specifier: ^4.22.3
+        specifier: 'catalog:'
         version: 4.23.13
       typedoc:
         specifier: ^0.28.20
@@ -72,10 +162,10 @@ importers:
         specifier: ^4.13.0
         version: 4.13.0(typedoc@0.28.20(typescript@7.0.2))
       typescript:
-        specifier: ~7.0.2
+        specifier: 'catalog:'
         version: 7.0.2
       vitest:
-        specifier: ~4.0.18
+        specifier: 'catalog:'
         version: 4.0.18(@opentelemetry/api@1.9.1)(@types/node@24.13.5)(jsdom@30.1.0)(lightningcss@1.33.0)(msw@2.15.0(@types/node@24.13.5)(typescript@7.0.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
 
   ../todomvc/examples/bluejs:
@@ -365,26 +455,26 @@ importers:
         specifier: ~0.0.1
         version: link:../../packages/blue-view
       '@tsmetadata/polyfill':
-        specifier: ^1.1.3
+        specifier: 'catalog:'
         version: 1.1.3
       swagger-ui-dist:
-        specifier: 5.33.0
+        specifier: 'catalog:'
         version: 5.33.0
       zod:
-        specifier: ^4.5.4
+        specifier: 'catalog:'
         version: 4.5.4
     devDependencies:
       '@blue/test':
         specifier: ~0.0.1
         version: link:../../packages/blue-test
       '@types/ws':
-        specifier: ^8.18.0
+        specifier: 'catalog:'
         version: 8.18.1
       tsx:
-        specifier: ^4.23.13
+        specifier: 'catalog:'
         version: 4.23.13
       ws:
-        specifier: ^8.18.0
+        specifier: 'catalog:'
         version: 8.21.3
 
   apps/blue-hello:
@@ -406,7 +496,7 @@ importers:
         version: link:../../packages/blue-view-webcomponent
     devDependencies:
       vite:
-        specifier: ~8.2.2
+        specifier: 'catalog:'
         version: 8.2.2(@types/node@26.6.1)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
 
   apps/blue-hello-node:
@@ -431,7 +521,7 @@ importers:
         version: link:../../packages/blue-util
     devDependencies:
       tsx:
-        specifier: ^4.23.13
+        specifier: 'catalog:'
         version: 4.23.13
 
   apps/blue-host:
@@ -450,7 +540,7 @@ importers:
         version: link:../../packages/blue-router
     devDependencies:
       vite:
-        specifier: ~8.2.2
+        specifier: 'catalog:'
         version: 8.2.2(@types/node@26.6.1)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
 
   apps/blue-island:
@@ -492,17 +582,17 @@ importers:
         specifier: ~0.0.1
         version: link:../../packages/blue-view-webcomponent
       zod:
-        specifier: ^4.5.4
+        specifier: 'catalog:'
         version: 4.5.4
     devDependencies:
       '@blue/test':
         specifier: ~0.0.1
         version: link:../../packages/blue-test
       tsx:
-        specifier: ^4.23.13
+        specifier: 'catalog:'
         version: 4.23.13
       vite:
-        specifier: ^8.2.2
+        specifier: 'catalog:'
         version: 8.2.2(@types/node@26.6.1)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
 
   apps/blue-todo:
@@ -563,7 +653,7 @@ importers:
         specifier: ^1.63.0
         version: 1.63.0
       vite:
-        specifier: ~8.2.2
+        specifier: 'catalog:'
         version: 8.2.2(@types/node@26.6.1)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
       vite-plugin-dts:
         specifier: ~5.1.0
@@ -605,20 +695,20 @@ importers:
         specifier: ~0.0.1
         version: link:../../packages/blue-view-webcomponent
       '@opentelemetry/api':
-        specifier: ~1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       '@opentelemetry/core':
-        specifier: ~2.11.0
+        specifier: 'catalog:'
         version: 2.11.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-trace-base':
-        specifier: ~2.11.0
+        specifier: 'catalog:'
         version: 2.11.0(@opentelemetry/api@1.9.1)
     devDependencies:
       '@blue/test':
         specifier: ~0.0.1
         version: link:../../packages/blue-test
       vite:
-        specifier: ~8.2.2
+        specifier: 'catalog:'
         version: 8.2.2(@types/node@26.6.1)(esbuild@0.28.2)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
 
   packages/blue-auth-client:
@@ -633,22 +723,22 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-util
       jose:
-        specifier: ^6.2.12
+        specifier: 'catalog:'
         version: 6.2.12
     devDependencies:
       typescript:
-        specifier: ^6.0.3
-        version: 6.0.3
+        specifier: 'catalog:'
+        version: 7.0.2
 
   packages/blue-auth-core:
     dependencies:
       '@tsmetadata/polyfill':
-        specifier: ^1.1.3
+        specifier: 'catalog:'
         version: 1.1.3
     devDependencies:
       typescript:
-        specifier: ^6.0.3
-        version: 6.0.3
+        specifier: 'catalog:'
+        version: 7.0.2
 
   packages/blue-auth-server:
     dependencies:
@@ -665,12 +755,15 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-util
       jose:
-        specifier: ^6.2.12
+        specifier: 'catalog:'
         version: 6.2.12
     devDependencies:
+      '@blue/test':
+        specifier: ~0.0.1
+        version: link:../blue-test
       typescript:
-        specifier: ^6.0.3
-        version: 6.0.3
+        specifier: 'catalog:'
+        version: 7.0.2
 
   packages/blue-boot:
     dependencies:
@@ -690,7 +783,7 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-util
       zod:
-        specifier: ^4.5.4
+        specifier: 'catalog:'
         version: 4.5.4
     devDependencies:
       '@blue/dispatcher':
@@ -703,7 +796,7 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-platform-web
       '@toon-format/toon':
-        specifier: 4.1.1
+        specifier: 'catalog:'
         version: 4.1.1
 
   packages/blue-cache:
@@ -715,7 +808,7 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-factory
       '@tsmetadata/polyfill':
-        specifier: ^1.1.3
+        specifier: 'catalog:'
         version: 1.1.3
 
   packages/blue-content:
@@ -754,10 +847,10 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-util
       '@tsmetadata/polyfill':
-        specifier: ^1.1.3
+        specifier: 'catalog:'
         version: 1.1.3
       zod:
-        specifier: ^4.5.4
+        specifier: 'catalog:'
         version: 4.5.4
     devDependencies:
       benchmark:
@@ -770,13 +863,13 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-util
       '@tsmetadata/polyfill':
-        specifier: ^1.1.3
+        specifier: 'catalog:'
         version: 1.1.3
       semver:
         specifier: ^7.8.5
         version: 7.8.5
       zod:
-        specifier: ^4.5.4
+        specifier: 'catalog:'
         version: 4.5.4
     devDependencies:
       '@types/semver':
@@ -813,10 +906,10 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-view
       '@tsmetadata/polyfill':
-        specifier: ^1.1.3
+        specifier: 'catalog:'
         version: 1.1.3
       zod:
-        specifier: ^4.5.4
+        specifier: 'catalog:'
         version: 4.5.4
     devDependencies:
       find-my-way:
@@ -844,24 +937,24 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-util
       '@tsmetadata/polyfill':
-        specifier: ^1.1.3
+        specifier: 'catalog:'
         version: 1.1.3
 
   packages/blue-generators:
     dependencies:
       '@nx/devkit':
-        specifier: ~23.2.0
-        version: 23.2.0(nx@23.2.1)
+        specifier: 'catalog:'
+        version: 23.2.1(nx@23.2.1)
     devDependencies:
       nx:
         specifier: '>=23.2.1'
         version: 23.2.1
       typescript:
-        specifier: ~6.0.3
-        version: 6.0.3
+        specifier: 'catalog:'
+        version: 7.0.2
       vitest:
-        specifier: ~4.0.18
-        version: 4.0.18(@opentelemetry/api@1.9.1)(@types/node@26.6.1)(jsdom@30.1.0)(lightningcss@1.33.0)(msw@2.15.0(@types/node@26.6.1)(typescript@6.0.3))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
+        specifier: 'catalog:'
+        version: 4.0.18(@opentelemetry/api@1.9.1)(@types/node@26.6.1)(jsdom@30.1.0)(lightningcss@1.33.0)(msw@2.15.0(@types/node@26.6.1)(typescript@7.0.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
 
   packages/blue-host:
     dependencies:
@@ -887,26 +980,26 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-util
       '@opentelemetry/api':
-        specifier: ~1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
     devDependencies:
       '@opentelemetry/context-async-hooks':
-        specifier: ~2.11.0
+        specifier: 'catalog:'
         version: 2.11.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/core':
-        specifier: ~2.11.0
+        specifier: 'catalog:'
         version: 2.11.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-trace-base':
-        specifier: ~2.11.0
+        specifier: 'catalog:'
         version: 2.11.0(@opentelemetry/api@1.9.1)
 
   packages/blue-log:
     dependencies:
       '@opentelemetry/api':
-        specifier: ~1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       '@opentelemetry/api-logs':
-        specifier: ~0.222.0
+        specifier: 'catalog:'
         version: 0.222.0
 
   packages/blue-management:
@@ -942,7 +1035,7 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-http
       zod:
-        specifier: ^4.5.4
+        specifier: 'catalog:'
         version: 4.5.4
     devDependencies:
       '@blue/context':
@@ -958,10 +1051,10 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-factory
       '@tsmetadata/polyfill':
-        specifier: ^1.1.3
+        specifier: 'catalog:'
         version: 1.1.3
       zod:
-        specifier: ^4.5.4
+        specifier: 'catalog:'
         version: 4.5.4
 
   packages/blue-orm-drizzle:
@@ -991,7 +1084,7 @@ importers:
         specifier: ^0.8.3
         version: 0.8.3(drizzle-orm@0.45.2(@libsql/client@0.17.4)(@opentelemetry/api@1.9.1))(zod@4.5.4)
       zod:
-        specifier: ^4.5.4
+        specifier: 'catalog:'
         version: 4.5.4
     devDependencies:
       '@blue/auth-server':
@@ -1001,24 +1094,24 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-context
       '@tsmetadata/polyfill':
-        specifier: ^1.1.3
+        specifier: 'catalog:'
         version: 1.1.3
 
   packages/blue-oxlint-plugin:
     dependencies:
       '@oxlint/plugins':
-        specifier: ^1.85.0
+        specifier: 'catalog:'
         version: 1.85.0
     devDependencies:
       oxlint:
-        specifier: ^1.85.0
+        specifier: 'catalog:'
         version: 1.85.0(oxlint-tsgolint@7.0.2003)
       typescript:
-        specifier: ~6.0.3
-        version: 6.0.3
+        specifier: 'catalog:'
+        version: 7.0.2
       vitest:
-        specifier: ~4.0.18
-        version: 4.0.18(@opentelemetry/api@1.9.1)(@types/node@26.6.1)(jsdom@30.1.0)(lightningcss@1.33.0)(msw@2.15.0(@types/node@26.6.1)(typescript@6.0.3))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
+        specifier: 'catalog:'
+        version: 4.0.18(@opentelemetry/api@1.9.1)(@types/node@26.6.1)(jsdom@30.1.0)(lightningcss@1.33.0)(msw@2.15.0(@types/node@26.6.1)(typescript@7.0.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
 
   packages/blue-platform-node:
     dependencies:
@@ -1065,7 +1158,7 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-view
       '@tsmetadata/polyfill':
-        specifier: ^1.1.3
+        specifier: 'catalog:'
         version: 1.1.3
       busboy:
         specifier: ^1.6.0
@@ -1077,17 +1170,17 @@ importers:
         specifier: 5.33.0
         version: 5.33.0
       ws:
-        specifier: ^8.18.0
+        specifier: 'catalog:'
         version: 8.21.3
     devDependencies:
       '@types/busboy':
         specifier: ^1.5.4
         version: 1.5.4
       '@types/ws':
-        specifier: ^8.18.0
+        specifier: 'catalog:'
         version: 8.18.1
       zod:
-        specifier: ^4.5.4
+        specifier: 'catalog:'
         version: 4.5.4
 
   packages/blue-platform-web:
@@ -1127,7 +1220,7 @@ importers:
         version: link:../blue-view-webcomponent
     devDependencies:
       zod:
-        specifier: ^4.5.4
+        specifier: 'catalog:'
         version: 4.5.4
 
   packages/blue-proxy:
@@ -1139,7 +1232,7 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-factory
       '@tsmetadata/polyfill':
-        specifier: ^1.1.3
+        specifier: 'catalog:'
         version: 1.1.3
 
   packages/blue-redis:
@@ -1161,16 +1254,16 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-platform-node
       '@types/node':
-        specifier: ~24.13.5
+        specifier: 'catalog:'
         version: 24.13.5
       '@types/ws':
-        specifier: ^8.18.0
+        specifier: 'catalog:'
         version: 8.18.1
       vitest:
-        specifier: ~4.0.18
+        specifier: 'catalog:'
         version: 4.0.18(@opentelemetry/api@1.9.1)(@types/node@24.13.5)(jsdom@30.1.0)(lightningcss@1.33.0)(msw@2.15.0(@types/node@24.13.5)(typescript@7.0.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
       ws:
-        specifier: ^8.18.0
+        specifier: 'catalog:'
         version: 8.21.3
 
   packages/blue-resilience:
@@ -1209,17 +1302,17 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-util
       '@opentelemetry/api':
-        specifier: ~1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       '@tsmetadata/polyfill':
-        specifier: ^1.1.3
+        specifier: 'catalog:'
         version: 1.1.3
       croner:
         specifier: ^10.0.1
         version: 10.0.1
     devDependencies:
       '@opentelemetry/sdk-trace-base':
-        specifier: ~2.11.0
+        specifier: 'catalog:'
         version: 2.11.0(@opentelemetry/api@1.9.1)
 
   packages/blue-service:
@@ -1240,10 +1333,10 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-util
       '@opentelemetry/api':
-        specifier: ~1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       zod:
-        specifier: ^4.5.4
+        specifier: 'catalog:'
         version: 4.5.4
     devDependencies:
       '@blue/proxy':
@@ -1253,10 +1346,10 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-resilience
       '@opentelemetry/sdk-trace-base':
-        specifier: ~2.11.0
+        specifier: 'catalog:'
         version: 2.11.0(@opentelemetry/api@1.9.1)
       '@tsmetadata/polyfill':
-        specifier: ^1.1.3
+        specifier: 'catalog:'
         version: 1.1.3
 
   packages/blue-signals:
@@ -1292,13 +1385,13 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-router
       '@opentelemetry/api':
-        specifier: ~1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       '@opentelemetry/instrumentation':
-        specifier: ~0.222.0
+        specifier: 'catalog:'
         version: 0.222.0(@opentelemetry/api@1.9.1)
       '@tsmetadata/polyfill':
-        specifier: ^1.1.3
+        specifier: 'catalog:'
         version: 1.1.3
 
   packages/blue-telemetry-node:
@@ -1319,34 +1412,34 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-view
       '@opentelemetry/api':
-        specifier: ~1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       '@opentelemetry/api-logs':
-        specifier: ~0.222.0
+        specifier: 'catalog:'
         version: 0.222.0
       '@opentelemetry/exporter-logs-otlp-http':
-        specifier: ~0.222.0
+        specifier: 'catalog:'
         version: 0.222.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/exporter-metrics-otlp-http':
-        specifier: ~0.222.0
+        specifier: 'catalog:'
         version: 0.222.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/exporter-trace-otlp-http':
-        specifier: ~0.222.0
+        specifier: 'catalog:'
         version: 0.222.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/instrumentation':
-        specifier: ~0.222.0
+        specifier: 'catalog:'
         version: 0.222.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-logs':
-        specifier: ~0.222.0
+        specifier: 'catalog:'
         version: 0.222.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-metrics':
-        specifier: ~2.11.0
+        specifier: 'catalog:'
         version: 2.11.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-node':
-        specifier: ~0.222.0
+        specifier: 'catalog:'
         version: 0.222.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-trace-base':
-        specifier: ~2.11.0
+        specifier: 'catalog:'
         version: 2.11.0(@opentelemetry/api@1.9.1)
       ws:
         specifier: ^8.18.0
@@ -1358,14 +1451,17 @@ importers:
       '@blue/dispatcher':
         specifier: ~0.0.1
         version: link:../blue-dispatcher
+      '@blue/test':
+        specifier: ~0.0.1
+        version: link:../blue-test
       '@opentelemetry/context-async-hooks':
-        specifier: ~2.11.0
+        specifier: 'catalog:'
         version: 2.11.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/core':
-        specifier: ~2.11.0
+        specifier: 'catalog:'
         version: 2.11.0(@opentelemetry/api@1.9.1)
       '@types/ws':
-        specifier: ^8.18.0
+        specifier: 'catalog:'
         version: 8.18.1
 
   packages/blue-telemetry-web:
@@ -1380,28 +1476,28 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-telemetry
       '@opentelemetry/api':
-        specifier: ~1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       '@opentelemetry/api-logs':
-        specifier: ~0.222.0
+        specifier: 'catalog:'
         version: 0.222.0
       '@opentelemetry/core':
-        specifier: ~2.11.0
+        specifier: 'catalog:'
         version: 2.11.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/exporter-trace-otlp-http':
-        specifier: ~0.222.0
+        specifier: 'catalog:'
         version: 0.222.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/resources':
-        specifier: ~2.11.0
+        specifier: 'catalog:'
         version: 2.11.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-logs':
-        specifier: ~0.222.0
+        specifier: 'catalog:'
         version: 0.222.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-metrics':
-        specifier: ~2.11.0
+        specifier: 'catalog:'
         version: 2.11.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-trace-base':
-        specifier: ~2.11.0
+        specifier: 'catalog:'
         version: 2.11.0(@opentelemetry/api@1.9.1)
 
   packages/blue-test:
@@ -1441,7 +1537,7 @@ importers:
   packages/blue-util:
     dependencies:
       safe-regex:
-        specifier: ~2.1.1
+        specifier: 'catalog:'
         version: 2.1.1
       seedrandom:
         specifier: ~3.0.5
@@ -1521,7 +1617,7 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-view
       '@tsmetadata/polyfill':
-        specifier: ^1.1.3
+        specifier: 'catalog:'
         version: 1.1.3
 
 packages:
@@ -2657,11 +2753,6 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
-
-  '@nx/devkit@23.2.0':
-    resolution: {integrity: sha512-srj04UsYqq2nG7Z9DxM00D8XpSpmSM7XQafCkD4FIOE2NPMCu0QvypJLe8S7a1/YAW9rqlnYrdadaQte687eAw==}
-    peerDependencies:
-      nx: '>=23.2.1'
 
   '@nx/devkit@23.2.1':
     resolution: {integrity: sha512-uMGbMJpCi+y7eHBEWqygA8JITNgzFZdzVmcKX17EXnFreu14aWZ1kyo6Qh9pKIcbJigO3F46w6ANlYp6wgCovQ==}
@@ -8702,7 +8793,7 @@ snapshots:
 
   '@jest/pattern@30.5.0':
     dependencies:
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
       jest-regex-util: 30.5.0
 
   '@jest/schemas@29.6.3':
@@ -8718,7 +8809,7 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
       '@types/yargs': 17.0.35
       chalk: 4.1.2
 
@@ -8728,7 +8819,7 @@ snapshots:
       '@jest/schemas': 30.5.0
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
       '@types/yargs': 17.0.35
       chalk: 4.1.2
 
@@ -8984,15 +9075,6 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.3
-
-  '@nx/devkit@23.2.0(nx@23.2.1)':
-    dependencies:
-      ejs: 5.0.1
-      minimatch: 10.2.6
-      nx: 23.2.1
-      semver: 7.8.5
-      tslib: 2.8.1
-      yargs-parser: 21.1.1
 
   '@nx/devkit@23.2.1(nx@23.2.1)':
     dependencies:
@@ -9702,15 +9784,15 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
 
   '@types/bonjour@3.5.13':
     dependencies:
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
 
   '@types/busboy@1.5.4':
     dependencies:
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
 
   '@types/chai@5.2.3':
     dependencies:
@@ -9720,11 +9802,11 @@ snapshots:
   '@types/connect-history-api-fallback@1.5.4':
     dependencies:
       '@types/express-serve-static-core': 5.1.3
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
 
   '@types/deep-eql@4.0.2': {}
 
@@ -9734,14 +9816,14 @@ snapshots:
 
   '@types/express-serve-static-core@4.19.9':
     dependencies:
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
       '@types/qs': 6.15.1
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
 
   '@types/express-serve-static-core@5.1.3':
     dependencies:
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
       '@types/qs': 6.15.1
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
@@ -9769,7 +9851,7 @@ snapshots:
 
   '@types/http-proxy@1.17.17':
     dependencies:
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
 
   '@types/istanbul-lib-coverage@2.0.6': {}
 
@@ -9783,13 +9865,13 @@ snapshots:
 
   '@types/jsdom@20.0.1':
     dependencies:
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
       '@types/tough-cookie': 4.0.5
       parse5: 7.3.0
 
   '@types/jsdom@28.0.3':
     dependencies:
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
       '@types/tough-cookie': 4.0.5
       parse5: 8.0.1
       undici-types: 7.29.1
@@ -9800,7 +9882,7 @@ snapshots:
 
   '@types/node-forge@1.3.14':
     dependencies:
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
 
   '@types/node@24.13.5':
     dependencies:
@@ -9825,11 +9907,11 @@ snapshots:
   '@types/send@0.17.6':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
 
   '@types/send@1.2.1':
     dependencies:
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
 
   '@types/serve-index@1.9.4':
     dependencies:
@@ -9838,23 +9920,23 @@ snapshots:
   '@types/serve-static@1.15.10':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
       '@types/send': 0.17.6
 
   '@types/serve-static@2.2.0':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
 
   '@types/set-cookie-parser@2.4.10':
     dependencies:
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
 
   '@types/slug@5.0.9': {}
 
   '@types/sockjs@0.3.36':
     dependencies:
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
 
   '@types/statuses@2.0.6': {}
 
@@ -9972,13 +10054,13 @@ snapshots:
       msw: 2.15.0(@types/node@24.13.5)(typescript@7.0.2)
       vite: 7.3.6(@types/node@24.13.5)(lightningcss@1.33.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
 
-  '@vitest/mocker@4.0.18(msw@2.15.0(@types/node@26.6.1)(typescript@6.0.3))(vite@7.3.6(@types/node@24.13.5)(lightningcss@1.33.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))':
+  '@vitest/mocker@4.0.18(msw@2.15.0(@types/node@26.6.1)(typescript@7.0.2))(vite@7.3.6(@types/node@24.13.5)(lightningcss@1.33.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))':
     dependencies:
       '@vitest/spy': 4.0.18
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      msw: 2.15.0(@types/node@26.6.1)(typescript@6.0.3)
+      msw: 2.15.0(@types/node@26.6.1)(typescript@7.0.2)
       vite: 7.3.6(@types/node@24.13.5)(lightningcss@1.33.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
 
   '@vitest/pretty-format@4.0.18':
@@ -11590,7 +11672,7 @@ snapshots:
   jest-util@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -11599,7 +11681,7 @@ snapshots:
   jest-util@30.5.1:
     dependencies:
       '@jest/types': 30.5.1
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
       chalk: 4.1.2
       ci-info: 4.4.0
       graceful-fs: 4.2.11
@@ -11607,20 +11689,20 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
   jest-worker@29.7.0:
     dependencies:
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
   jest-worker@30.5.1:
     dependencies:
-      '@types/node': 24.13.5
+      '@types/node': 26.6.1
       '@ungap/structured-clone': 1.4.0
       jest-util: 30.5.1
       merge-stream: 2.0.0
@@ -12028,7 +12110,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  msw@2.15.0(@types/node@26.6.1)(typescript@6.0.3):
+  msw@2.15.0(@types/node@26.6.1)(typescript@7.0.2):
     dependencies:
       '@inquirer/confirm': 6.3.2(@types/node@26.6.1)
       '@mswjs/interceptors': 0.41.9
@@ -12049,7 +12131,7 @@ snapshots:
       until-async: 3.0.2
       yargs: 17.7.3
     optionalDependencies:
-      typescript: 6.0.3
+      typescript: 7.0.2
     transitivePeerDependencies:
       - '@types/node'
     optional: true
@@ -13720,10 +13802,10 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@4.0.18(@opentelemetry/api@1.9.1)(@types/node@26.6.1)(jsdom@30.1.0)(lightningcss@1.33.0)(msw@2.15.0(@types/node@26.6.1)(typescript@6.0.3))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1):
+  vitest@4.0.18(@opentelemetry/api@1.9.1)(@types/node@26.6.1)(jsdom@30.1.0)(lightningcss@1.33.0)(msw@2.15.0(@types/node@26.6.1)(typescript@7.0.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1):
     dependencies:
       '@vitest/expect': 4.0.18
-      '@vitest/mocker': 4.0.18(msw@2.15.0(@types/node@26.6.1)(typescript@6.0.3))(vite@7.3.6(@types/node@24.13.5)(lightningcss@1.33.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))
+      '@vitest/mocker': 4.0.18(msw@2.15.0(@types/node@26.6.1)(typescript@7.0.2))(vite@7.3.6(@types/node@24.13.5)(lightningcss@1.33.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))
       '@vitest/pretty-format': 4.0.18
       '@vitest/runner': 4.0.18
       '@vitest/snapshot': 4.0.18

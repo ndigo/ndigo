@@ -25,6 +25,7 @@ export { is, like } from './type/index.js';
 export { randomHex, randomToken } from './crypto/index.js';
 export { getEnv, isDevMode } from './env.js';
 export { getErrorMessage } from './error.js';
+export { delay } from './timing.js';
 
 // Named category exports
 export { crypto, math, string, types };

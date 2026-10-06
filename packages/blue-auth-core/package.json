@@ -14,10 +14,10 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
-    "@tsmetadata/polyfill": "^1.1.3"
+    "@tsmetadata/polyfill": "catalog:"
   },
   "devDependencies": {
-    "typescript": "^6.0.3"
+    "typescript": "catalog:"
   },
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",

@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `getLogger`/`LoggerFactory`, console + OpenTelemetry appenders, severity
   mappings) extracted so framework internals can log without the telemetry
   stack (AD-67).
+- `delay(ms)` — shared async delay helper in `@blue/util`, re-exported from
+  `@blue/test` (replaces copy-pasted test helpers across packages) (HG-6).
 - Environment accessors `getEnv(name, fallback?)` / `isDevMode()` in
   `@blue/util`, re-exported from `@blue/context` — centralized env reads for
   framework and app code (replaces scattered `process.env` lookups).
@@ -269,6 +271,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- Disabled or deleted accounts now revoke live sessions and JWTs at
+  validation; the user-wide revocation API remains a documented follow-up
+  (SE-7).
+- The CSRF double-submit cookie is hardened to the `__Host-` prefix with a
+  spoofed-cookie rejection spec (SE-8).
+- Remote config sources gain a fetch timeout (10 s) and a response-size cap
+  (1 MiB) with the existing keep-last-good policy (SE-10).
+- Cookie attribute writing truncates values at the first `;` and rejects
+  `;`/CR/LF in attribute names (SE-11).
 - Security headers default-on in `NodeAutoConfiguration` (CSP, HSTS,
   X-Frame-Options, nosniff, …) (AD-25).
 - Rate limiting with fixed-window limiter and real client IP behind

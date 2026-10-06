@@ -15,3 +15,4 @@ export { bootBrowserApp, BrowserMockClient } from './browser-mock-client';
 export type { BrowserTestApp } from './browser-mock-client';
 export { MemoryViewTarget } from './memory-view-target';
 export type { CapturedRender } from './memory-view-target';
+export { delay } from './timing';

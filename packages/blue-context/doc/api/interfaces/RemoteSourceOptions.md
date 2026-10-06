@@ -60,12 +60,33 @@ runtimes). Defaults to `globalThis.fetch`. Injecting a fetch skips the
 
 ***
 
+### fetchTimeoutMs?
+
+> `optional` **fetchTimeoutMs?**: `number`
+
+Timeout for one fetch exchange (request + body read) in milliseconds
+(default `10_000`). On expiry the request is aborted and the failure
+follows the standard `optional`/keep-last-good policy (SE-10).
+
+***
+
 ### headers?
 
 > `optional` **headers?**: `Record`\<`string`, `string`\>
 
 Static headers sent on every request (e.g.
 `Authorization: Bearer …` sourced from env at the wiring site).
+
+***
+
+### maxResponseBytes?
+
+> `optional` **maxResponseBytes?**: `number`
+
+Maximum accepted response size in bytes (default 1 MiB). Enforced
+against `Content-Length` when the server declares one, then by
+counting streamed bytes; an oversized document follows the standard
+`optional`/keep-last-good policy (SE-10).
 
 ***
 

@@ -151,6 +151,44 @@ export class MutablePropertyValues
     }
 
     /**
+     * Adds one or more property values, growing the backing buffer instead of
+     * silently evicting the oldest entries. Unlike `RingBuffer`, a
+     * `MutablePropertyValues` is an unbounded collection — a form can legitimately
+     * carry far more than the ring's 32-slot default (KRN-REV-CORE-02).
+     *
+     * @param items - The property values to add.
+     * @returns The new length of the collection.
+     */
+    override put(...items: PropertyValue[]): number {
+        const required = this.length + items.length;
+        if (required > this._capacity) {
+            this._grow(required);
+        }
+        return super.put(...items);
+    }
+
+    /**
+     * Re-buckets the ring into a larger power-of-two capacity, preserving the
+     * oldest-first order, so no previously bound property is lost to the wrap.
+     *
+     * @param minimum - The smallest capacity that must fit the current contents.
+     */
+    private _grow(minimum: number): void {
+        const existing: PropertyValue[] = [...this];
+        const previousCapacity = this._capacity;
+        this.capacity = minimum;
+        this._head = 0;
+        this._tail = 0;
+        this._full = 0;
+        // Drop the old slots so `Object.keys()` (used by the binder's keypath
+        // walk) does not resurrect evicted or duplicate entries.
+        for (let index = 0; index < previousCapacity; index++) {
+            delete this[index];
+        }
+        super.put(...existing);
+    }
+
+    /**
      * Adds a property value to the collection.
      *
      * @param name - Property name.

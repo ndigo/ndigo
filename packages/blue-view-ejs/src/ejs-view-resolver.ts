@@ -54,6 +54,13 @@ export class EJSViewResolver extends AbstractPathBasedViewResolver {
             return null;
         }
 
+        // A request-derived name must never escape the prefix: a
+        // `..`/absolute/NUL name is unresolved (not-found), so the template
+        // outside the views root is never read or evaluated.
+        if (!this.isSafeViewName(name)) {
+            return null;
+        }
+
         return new EJSView(`${this.prefix}${name}${this.suffix}`, {
             engine: this.#options.engine,
             loader: this.#options.loader,

@@ -30,7 +30,7 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
             'start',
             this._patch({
                 name: 'HTTPServer.start',
-                kind: SpanKind.SERVER,
+                kind: SpanKind.INTERNAL,
                 attributes: (instance: unknown) => {
                     // The patched `start`/`close` target is always the server.
                     const server = instance as HTTPServer;
@@ -73,7 +73,11 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
                             kind: SpanKind.SERVER,
                             attributes: {
                                 'http.request.method': req.method ?? 'GET',
-                                'http.route': req.url ? String(new URL(req.url, 'http://local').pathname) : undefined,
+                                // Concrete request path (semconv `url.path`).
+                                // No route template is known at this layer, so
+                                // `http.route` is deliberately omitted instead
+                                // of being faked from the raw request target.
+                                'url.path': requestPath(req.url),
                             },
                         },
                         (span) =>
@@ -110,4 +114,29 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
 
 function resultStatus(outcome: { ok: boolean }): { code: SpanStatusCode } {
     return outcome.ok ? { code: SpanStatusCode.OK } : { code: SpanStatusCode.ERROR };
+}
+
+/**
+ * Extracts the concrete request path (semconv `url.path`) without ever
+ * throwing.
+ *
+ * This runs synchronously in the shimmer wrapper — before `original.apply`
+ * and outside any try/catch — so it must not throw: `new URL('http://[',
+ * 'http://local')` raises `Invalid URL`, and Node delivers exactly that
+ * request target for a raw `GET http://[ HTTP/1.1` (remote process kill).
+ * Falls back to the raw target before the query string.
+ *
+ * @param target - The request target (`req.url`).
+ * @returns The path, or `undefined` when the target is absent.
+ */
+function requestPath(target: string | undefined): string | undefined {
+    if (target === undefined || target === '') {
+        return undefined;
+    }
+    try {
+        return new URL(target, 'http://local').pathname;
+    } catch {
+        const queryIndex = target.indexOf('?');
+        return queryIndex === -1 ? target : target.slice(0, queryIndex);
+    }
 }

@@ -137,9 +137,11 @@ export class DataBinder {
      */
     protected _checkRequiredFields(properties: MutablePropertyValues): void {
         if (this.#requiredFields?.size) {
-            const propertyKeys = keys(properties);
             for (const field of this.#requiredFields) {
-                if (propertyKeys.indexOf(field) === -1) {
+                // Compare against the property *names*, not the buffer's numeric
+                // slot indices — `keys()` on an ArrayLike returns "0", "1", …,
+                // so a name lookup could never succeed (KRN-REV-BINDER-05).
+                if (properties.getPropertyValue(field) === null) {
                     throw new FrameworkError(`Required field "${field}" is missing`);
                 }
             }

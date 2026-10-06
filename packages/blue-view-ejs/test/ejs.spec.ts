@@ -187,6 +187,29 @@ describe('EJSViewResolver', () => {
         const view = await resolver.resolveViewName('allowed', '');
         expect(view).not.toBeNull();
     });
+
+    it('resolves traversal/absolute/NUL names to not-found without reading a template', async () => {
+        const loader = new InMemoryResourceLoader().set('views/home.html', '<h1>secret</h1>');
+        const resolver = new EJSViewResolver({ loader, prefix: 'views/', suffix: '.html' });
+        const spy = vi.spyOn(loader, 'getResource');
+
+        for (const name of ['/../../etc/passwd', '../home', '..;x=1/..;x=1/tmp/traversed', 'nul\u0000name']) {
+            // eslint-disable-next-line no-await-in-loop -- each name must resolve before the next is attempted
+            expect(await resolver.resolveViewName(name, '')).toBeNull();
+        }
+        expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('still resolves legitimate nested names', async () => {
+        const loader = new InMemoryResourceLoader().set('views/admin/users.html', '<h1><%= title %></h1>');
+        const resolver = new EJSViewResolver({ loader, prefix: 'views/', suffix: '.html' });
+        const view = await resolver.resolveViewName('admin/users', '');
+        const target = new CaptureViewTarget();
+
+        expect(view).not.toBeNull();
+        await view?.render({ title: 'Users' }, {} as Route, target);
+        expect(target.last?.output).toBe('<h1>Users</h1>');
+    });
 });
 
 describe('EJSView locale helpers', () => {

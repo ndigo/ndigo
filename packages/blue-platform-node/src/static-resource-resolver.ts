@@ -235,7 +235,7 @@ export class StaticResourceResolver {
                 return this._resolveDirectory(base, real, relative, options);
             }
 
-            return this._resolveFile(real, stats, options);
+            return this._resolveFile(base, real, stats, options);
         } catch (error) {
             // Unexpected filesystem failure (permissions, I/O): classified,
             // never leaked.
@@ -246,6 +246,7 @@ export class StaticResourceResolver {
 
     /** Serves a plain file, optionally through a precompressed variant. */
     private async _resolveFile(
+        base: string,
         real: string,
         stats: { size: number; mtimeMs: number },
         options?: StaticResolveOptions
@@ -265,7 +266,12 @@ export class StaticResourceResolver {
         const variantAware = COMPRESSIBLE_EXTENSIONS.has(extension);
         const encoding = variantAware ? negotiateEncoding(options?.acceptEncoding) : null;
         if (encoding) {
-            const variant = await this._statVariant(real, encoding);
+            const variant = await this._statVariant(base, real, encoding);
+            // An existing-but-escaping variant forbids the request outright —
+            // never fall back to (or serve) the target outside the root.
+            if (variant === 'forbidden') {
+                return { kind: 'forbidden' };
+            }
             if (variant) {
                 if (maxFileSizeBytes !== undefined && maxFileSizeBytes > 0 && variant.stats.size > maxFileSizeBytes) {
                     return { kind: 'forbidden' };
@@ -294,15 +300,32 @@ export class StaticResourceResolver {
         };
     }
 
-    /** Stats `<file>.<codec>` when it exists; null otherwise (`.gz`, not `.gzip`). */
+    /**
+     * Resolves `<file>.<codec>` (`.gz`, not `.gzip`) when it exists inside the
+     * base root — null when absent or not a file (serve the original) — and
+     * `'forbidden'` when its real path escapes the root through a symlink. The
+     * same realpath + `base + sep` containment the main path enforces is
+     * applied here; an escaping variant must never be served (PLN-F1).
+     */
     private async _statVariant(
+        base: string,
         real: string,
         encoding: StaticEncoding
-    ): Promise<{ path: string; stats: { size: number; mtimeMs: number } } | null> {
+    ): Promise<{ path: string; stats: { size: number; mtimeMs: number } } | 'forbidden' | null> {
         const variantPath = `${real}.${encoding === 'br' ? 'br' : 'gz'}`;
+        let resolved: string;
         try {
-            const stats = await stat(variantPath);
-            return stats.isFile() ? { path: variantPath, stats } : null;
+            resolved = await realpath(variantPath);
+        } catch {
+            // Missing variant (or a broken symlink): nothing to serve.
+            return null;
+        }
+        if (resolved !== base && !resolved.startsWith(base + sep)) {
+            return 'forbidden';
+        }
+        try {
+            const stats = await stat(resolved);
+            return stats.isFile() ? { path: resolved, stats } : null;
         } catch {
             return null;
         }

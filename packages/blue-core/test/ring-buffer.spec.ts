@@ -204,6 +204,11 @@ describe('RingBuffer', () => {
             expect(rb.capacity).toBe(RingBuffer.MIN_CAPACITY);
         });
 
+        test('it should clamp a NaN capacity to the minimum', () => {
+            const nan = new RingBuffer<number>(Number.NaN);
+            expect(nan.capacity).toBe(RingBuffer.MIN_CAPACITY);
+        });
+
         describe('peek / peekHead', () => {
             test('peek() should return undefined on empty buffer', () => {
                 expect(rb.peek()).toBeUndefined();

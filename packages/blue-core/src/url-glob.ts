@@ -314,6 +314,16 @@ function parseExtGlob(ctx: ParseContext): string {
         const alternatives = splitByTopLevelPipe(patternContent);
         const innerPattern = alternatives.map((alt) => parseGlobFull({ pattern: alt, pos: 0 })).join('|');
 
+        // `+(…)`, `*(…)` and `?(…)` wrap the inner pattern in a quantifier. If
+        // the inner pattern already contains a quantifier (e.g. `+(*)` expands
+        // to `(?:[^/]*?)+`) the result is a nested quantifier with catastrophic
+        // backtracking (ReDoS). Such patterns fail closed — `parseUrlGlob`
+        // returns `null` — rather than compiling a hazardous regex
+        // (KRN-REV-URLGLOB-04).
+        if ((operator === '+' || operator === '*' || operator === '?') && hasQuantifier(innerPattern)) {
+            throw new Error(`Nested quantifier in extglob "${operator}(…)" is not supported`);
+        }
+
         // Handle different extGlob operators
         switch (operator) {
             case '@':
@@ -339,6 +349,39 @@ function parseExtGlob(ctx: ParseContext): string {
         // Not followed by '(', treat as literal
         return `\\${operator}`;
     }
+}
+
+/**
+ * Reports whether a generated regex fragment contains an unbounded quantifier
+ * (`*`, `+`, or a `?` following a quantifiable atom) outside a character class.
+ * Escaped characters and class members (`[+*]`) are literals and ignored.
+ */
+function hasQuantifier(source: string): boolean {
+    let inClass = false;
+    for (let index = 0; index < source.length; index++) {
+        const char = source[index];
+        if (char === '\\') {
+            index++;
+            continue;
+        }
+        if (inClass) {
+            if (char === ']') {
+                inClass = false;
+            }
+            continue;
+        }
+        if (char === '[') {
+            inClass = true;
+            continue;
+        }
+        if (char === '*' || char === '+') {
+            return true;
+        }
+        if (char === '?' && index > 0 && ')*+]'.includes(source[index - 1])) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function escapeForRegex(char: string): string {

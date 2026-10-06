@@ -13,6 +13,7 @@ import { DispatcherInstrumentation } from '@blue/telemetry';
 import { getMapping, ModelAndView, requestMapping } from '@blue/dispatcher';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, HTTPServer } from '@blue/platform-node';
+import { connect } from 'node:net';
 
 /**
  * Trace correlation over a real HTTP request: the inbound request span
@@ -38,6 +39,30 @@ class APIController {
     boom(): never {
         throw new Error('boom');
     }
+}
+
+/**
+ * Sends a raw `GET http://[ HTTP/1.1` over a socket (Node delivers exactly
+ * `req.url === 'http://['`) and resolves once the server responds (or the
+ * connection closes / times out — the point is that it must not throw).
+ *
+ * @param base - The server origin, e.g. `http://127.0.0.1:1234`.
+ */
+async function rawMalformedRequest(base: string): Promise<void> {
+    const { hostname, port } = new URL(base);
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const socket = connect(Number(port), hostname);
+    socket.setTimeout(3000, () => {
+        socket.destroy();
+        reject(new Error('raw malformed request timed out'));
+    });
+    socket.on('data', () => resolve());
+    socket.on('error', reject);
+    socket.on('close', () => resolve());
+    socket.on('connect', () => {
+        socket.write('GET http://[ HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n');
+    });
+    return promise;
 }
 
 describe('telemetry request→dispatch correlation (real HTTP)', () => {
@@ -96,7 +121,10 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
         expect(requestSpans.length).toBeGreaterThan(0);
         const requestSpan = requestSpans[requestSpans.length - 1];
         expect(requestSpan.attributes['http.request.method']).toBe('GET');
-        expect(requestSpan.attributes['http.route']).toBe('/');
+        // TEL-06: the request-target layer has no route template, so it emits
+        // the concrete path as `url.path` and omits `http.route` (no fake).
+        expect(requestSpan.attributes['url.path']).toBe('/');
+        expect(requestSpan.attributes['http.route']).toBeUndefined();
         expect(requestSpan.attributes['http.response.status_code']).toBe(200);
         expect(requestSpan.status.code).toBe(SpanStatusCode.OK);
 
@@ -134,5 +162,22 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
         const span = requestSpans[requestSpans.length - 1];
         expect(span.attributes['http.response.status_code']).toBe(500);
         expect(span.status.code).toBe(SpanStatusCode.ERROR);
+    });
+
+    test('a malformed request target never throws and still completes the request span (TEL-B1)', async () => {
+        // `new URL('http://[', base)` throws `Invalid URL`; the parse runs in the
+        // shimmer wrapper before the adapter and outside any try/catch, so a
+        // raw malformed target used to kill the process. The request must
+        // survive and the span must still be created and ended.
+        await rawMalformedRequest(base);
+        await new Promise((r) => setTimeout(r, 50));
+
+        const requestSpans = exporter.getFinishedSpans().filter((s) => s.name === 'HTTPServer.handleRequest');
+        expect(requestSpans.length).toBeGreaterThan(0);
+        const span = requestSpans[requestSpans.length - 1];
+        // No route template is known — never fabricated from the raw target.
+        expect(span.attributes['http.route']).toBeUndefined();
+        // The defensive fallback records the target verbatim (bounded to it).
+        expect(span.attributes['url.path']).toBe('http://[');
     });
 });

@@ -328,7 +328,7 @@ export class GlobPatternInfo {
                         if (index + 1 < length && pattern[index + 1] === STAR) {
                             this.doubleWildcards++;
                             index++;
-                        } else if (index > 0 && pattern.substring(index - 1) === DOT_STAR) {
+                        } else if (index > 0 && pattern.substring(index - 1, index + 1) === DOT_STAR) {
                             this.singleWildcards++;
                         }
                     default:

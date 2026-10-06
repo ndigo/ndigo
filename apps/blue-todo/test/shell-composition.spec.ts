@@ -110,8 +110,10 @@ describe('todo shell composition', () => {
 
         await composition.shellRouter.setRoute('/account');
         expect(composition.host.isMounted('account')).toBe(true);
-        // The todo feature is unmounted (its view target no longer active) —
-        // the account partition is a marker feature without a view.
+        // The todo feature is unmounted and the account partition's controller
+        // renders into the shared view target (the dispatch is fire-and-forget,
+        // so drain it before navigating away to keep the switch deterministic).
+        await vi.waitFor(() => expect(document.querySelector('#app account-app')).not.toBeNull());
 
         await composition.shellRouter.setRoute('/todo/active');
 
@@ -119,6 +121,39 @@ describe('todo shell composition', () => {
         expect(composition.host.isMounted('account')).toBe(false);
         // The dispatch renders asynchronously (resolver chain) — wait for it.
         await vi.waitFor(() => expect(document.querySelector('#app todo-app')).not.toBeNull());
+
+        dispose();
+    });
+
+    test('it should render the account feature for the #/account shell route', async () => {
+        const { composition, dispose } = await composeRealRuntime();
+
+        // Regression (APP-B1): the partition router strips `/account` to `/`
+        // before the feature callback, so a prefix-prefixed AccountController
+        // was never reached and the todo root rendered instead.
+        await composition.shellRouter.setRoute('/account');
+
+        await vi.waitFor(() => expect(document.querySelector('#app account-app')).not.toBeNull());
+        expect(document.querySelector('#app todo-app')).toBeNull();
+
+        dispose();
+    });
+
+    test('it should dispatch #/account/settings to the settings handler without a dispatch error', async () => {
+        const { composition, dispose } = await composeRealRuntime();
+
+        // Regression (APP-B1): the stripped `/settings` path matched no handler
+        // (IllegalStateError — recorded and swallowed by the dispatcher), so
+        // nothing rendered. The restored `/account/settings` path reaches the
+        // settings handler and renders its section — asserted by the settings
+        // copy, not the overview default.
+        await composition.shellRouter.setRoute('/account/settings');
+
+        await vi.waitFor(() => expect(document.querySelector('#app account-app')).not.toBeNull());
+        expect(document.querySelector('#app account-app .account-content')?.textContent).toBe(
+            'Manage your account preferences and profile settings.'
+        );
+        expect(document.querySelector('#app todo-app')).toBeNull();
 
         dispose();
     });

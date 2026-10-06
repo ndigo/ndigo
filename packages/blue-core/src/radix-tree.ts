@@ -20,6 +20,13 @@ export interface RadixMatch<V> {
     readonly pattern: string;
 }
 
+/** A recorded greedy (`**` / `{*name}`) fallback: the child, the path offset it captures from, and the params captured above it. */
+interface GreedyCandidate<V> {
+    node: RadixNode<V>;
+    restStart: number;
+    params: Record<string, string> | null;
+}
+
 const { defineProperty } = Reflect;
 
 class RadixNode<V> {
@@ -28,9 +35,9 @@ class RadixNode<V> {
     declare value: V | null;
     declare pattern: string | null;
     declare staticChildren: Map<string, RadixNode<V>>;
-    declare paramChild: RadixNode<V> | null;
+    declare paramChildren: Map<string, RadixNode<V>>;
     declare wildcardChild: RadixNode<V> | null;
-    declare greedyChild: RadixNode<V> | null;
+    declare greedyChildren: Map<string, RadixNode<V>>;
 
     constructor(kind: NodeKind, label: string) {
         defineProperty(this, 'kind', {
@@ -68,11 +75,11 @@ class RadixNode<V> {
             writable: false,
         });
 
-        defineProperty(this, 'paramChild', {
-            value: null,
+        defineProperty(this, 'paramChildren', {
+            value: new Map<string, RadixNode<V>>(),
             configurable: true,
             enumerable: false,
-            writable: true,
+            writable: false,
         });
 
         defineProperty(this, 'wildcardChild', {
@@ -82,11 +89,11 @@ class RadixNode<V> {
             writable: true,
         });
 
-        defineProperty(this, 'greedyChild', {
-            value: null,
+        defineProperty(this, 'greedyChildren', {
+            value: new Map<string, RadixNode<V>>(),
             configurable: true,
             enumerable: false,
-            writable: true,
+            writable: false,
         });
     }
 }
@@ -112,9 +119,10 @@ export class RadixTree<V> implements Serializable {
      * Splits a path into segments using single-pass manual scan, removing leading slash and filtering empty strings.
      *
      * @param path - The path to split.
+     * @param starts - Optional collector receiving each segment's start offset.
      * @returns An array of path segments.
      */
-    private _splitPath(path: string): string[] {
+    private _splitPath(path: string, starts?: number[]): string[] {
         const segments: string[] = [];
         let start = path.charCodeAt(0) === 47 /* '/' */ ? 1 : 0;
         const len = path.length;
@@ -122,6 +130,7 @@ export class RadixTree<V> implements Serializable {
             if (i === len || path.charCodeAt(i) === 47) {
                 if (i > start) {
                     segments.push(path.slice(start, i));
+                    starts?.push(start);
                 }
                 start = i + 1;
             }
@@ -163,23 +172,30 @@ export class RadixTree<V> implements Serializable {
                     }
                     break;
                 }
-                case 'param':
-                    if (node.paramChild === null) {
-                        node.paramChild = new RadixNode<V>('param', this._extractParamLabel(segment));
+                case 'param': {
+                    const label = this._extractParamLabel(segment);
+                    let child = node.paramChildren.get(label);
+                    if (child === undefined) {
+                        child = new RadixNode<V>('param', label);
+                        node.paramChildren.set(label, child);
                     }
-                    node = node.paramChild;
+                    node = child;
                     break;
+                }
                 case 'wildcard':
                     if (node.wildcardChild === null) {
                         node.wildcardChild = new RadixNode<V>('wildcard', '*');
                     }
                     node = node.wildcardChild;
                     break;
-                case 'greedy':
-                    if (node.greedyChild === null) {
-                        node.greedyChild = new RadixNode<V>('greedy', this._extractGreedyLabel(segment));
+                case 'greedy': {
+                    const label = this._extractGreedyLabel(segment);
+                    let child = node.greedyChildren.get(label);
+                    if (child === undefined) {
+                        child = new RadixNode<V>('greedy', label);
+                        node.greedyChildren.set(label, child);
                     }
-                    node = node.greedyChild;
+                    node = child;
                     if (i < segments.length - 1) {
                         throw new TypeError(
                             `Greedy segment "${segment}" must be the last segment of a path pattern, ` +
@@ -187,6 +203,7 @@ export class RadixTree<V> implements Serializable {
                         );
                     }
                     break;
+                }
             }
         }
 
@@ -243,6 +260,23 @@ export class RadixTree<V> implements Serializable {
     }
 
     /**
+     * Returns the greedy child to record as a backtracking fallback: the first
+     * registered with a live value, else the first registered. Preferring a
+     * live value keeps a deleted greedy registration (`**` vs `{*name}`) from
+     * masking a surviving sibling on a deeper dead-end (KRN-REV-RADIX-01).
+     */
+    private _firstGreedy(node: RadixNode<V>): RadixNode<V> | null {
+        let fallback: RadixNode<V> | null = null;
+        for (const child of node.greedyChildren.values()) {
+            if (child.value !== null) {
+                return child;
+            }
+            fallback ??= child;
+        }
+        return fallback;
+    }
+
+    /**
      * Looks up a path in the radix tree and returns the matching value with parameters.
      *
      * Probe order per segment is static → param → single-segment wildcard →
@@ -255,122 +289,128 @@ export class RadixTree<V> implements Serializable {
      * @returns A match object if found, otherwise null.
      */
     lookup(path: string): RadixMatch<V> | null {
-        let node = this.#root;
-        let params: Record<string, string> | null = null;
-        const len = path.length;
-        let segStart = path.charCodeAt(0) === 47 ? 1 : 0;
+        const starts: number[] = [];
+        const segments = this._splitPath(path, starts);
+        return this._match(this.#root, path, segments, starts, 0, null, null);
+    }
 
-        // Backtracking fallback: the deepest greedy child passed on the way
-        // down, with the params captured above it and the path offset where
-        // its capture begins (the current segment onward). `params` is
-        // snapshotted ({ ...params } or null) at every record site — captures
-        // made deeper down the tree must never leak into the fallback match
-        // (COR-3).
-        let greedy: { node: RadixNode<V>; restStart: number; params: Record<string, string> | null } | null = null;
+    /**
+     * Recursive path walk. Each node tries its candidates in precedence order
+     * (static → param → wildcard → greedy) and descends into the first one that
+     * yields a match; distinct registrations at the same position (different
+     * param labels, `**` vs `{*name}`) are independent siblings, so a failed
+     * branch falls through to the next. `greedy` is the deepest greedy child
+     * passed on the way down, used as a backtracking fallback once every
+     * specific branch dead-ends — its params are a snapshot, so captures made
+     * deeper in the tree never leak into the fallback match (COR-3).
+     */
+    private _match(
+        node: RadixNode<V>,
+        path: string,
+        segments: string[],
+        starts: number[],
+        index: number,
+        params: Record<string, string> | null,
+        greedy: GreedyCandidate<V> | null
+    ): RadixMatch<V> | null {
+        const segmentStart = index < starts.length ? starts[index] : path.length;
 
-        const takeGreedy = (restStart: number): RadixMatch<V> | null => {
-            if (!greedy) {
+        if (index === segments.length) {
+            if (node.value !== null && node.pattern !== null) {
+                return { value: node.value, params, pattern: node.pattern };
+            }
+            // A node's own zero-segment greedy (`/static/{*file}` vs `/static`)
+            // takes precedence over any recorded fallback; once one is present
+            // its result is final (matching the single-child semantics).
+            let terminalGreedy = false;
+            for (const greedyChild of node.greedyChildren.values()) {
+                terminalGreedy = true;
+                const match = this._takeGreedy(
+                    { node: greedyChild, restStart: segmentStart, params: params === null ? null : { ...params } },
+                    path
+                );
+                if (match !== null) {
+                    return match;
+                }
+            }
+            if (terminalGreedy) {
                 return null;
             }
-            let captured: Record<string, string> | null = greedy.params;
-            const rest = path.slice(restStart).replace(/\/+$/, '');
-            if (greedy.node.label !== '') {
-                if (captured === null) {
-                    captured = {};
-                }
-                captured[greedy.node.label] = rest;
-            }
-            if (greedy.node.value === null || greedy.node.pattern === null) {
-                return null;
-            }
-            return { value: greedy.node.value, params: captured, pattern: greedy.node.pattern };
-        };
-
-        for (let i = segStart; i <= len; i++) {
-            // Advance until slash or end
-            if (i < len && path.charCodeAt(i) !== 47) {
-                continue;
-            }
-
-            // Skip empty segments (leading slash, double slash)
-            if (i === segStart) {
-                segStart = i + 1;
-                continue;
-            }
-
-            const segmentStart = segStart;
-            const segment = path.slice(segStart, i);
-            segStart = i + 1;
-
-            // Single Map probe: static > param > wildcard > greedy
-            const staticMatch = node.staticChildren.get(segment);
-            if (staticMatch !== undefined) {
-                if (node.greedyChild !== null) {
-                    greedy = {
-                        node: node.greedyChild,
-                        restStart: segmentStart,
-                        params: params === null ? null : { ...params },
-                    };
-                }
-                node = staticMatch;
-                continue;
-            }
-
-            if (node.paramChild !== null) {
-                if (node.greedyChild !== null) {
-                    greedy = {
-                        node: node.greedyChild,
-                        restStart: segmentStart,
-                        params: params === null ? null : { ...params },
-                    };
-                }
-                if (params === null) {
-                    params = {};
-                }
-                params[node.paramChild.label] = segment;
-                node = node.paramChild;
-                continue;
-            }
-
-            if (node.wildcardChild !== null) {
-                if (node.greedyChild !== null) {
-                    greedy = {
-                        node: node.greedyChild,
-                        restStart: segmentStart,
-                        params: params === null ? null : { ...params },
-                    };
-                }
-                node = node.wildcardChild;
-                continue;
-            }
-
-            if (node.greedyChild !== null) {
-                greedy = {
-                    node: node.greedyChild,
-                    restStart: segmentStart,
-                    params: params === null ? null : { ...params },
-                };
-                return takeGreedy(segmentStart);
-            }
-
-            // No branch at this node — fall back to the deepest recorded greedy.
-            return greedy ? takeGreedy(greedy.restStart) : null;
+            return greedy === null ? null : this._takeGreedy(greedy, path);
         }
 
-        // All segments consumed — terminal value, else a terminal-zero-segment
-        // greedy (`/static/{*file}` vs `/static`), else recorded greedy.
-        if (node.value !== null && node.pattern !== null) {
-            return { value: node.value, params, pattern: node.pattern };
+        const segment = segments[index];
+        const firstGreedyChild = this._firstGreedy(node);
+        const descendGreedy: GreedyCandidate<V> | null =
+            firstGreedyChild === null
+                ? greedy
+                : { node: firstGreedyChild, restStart: segmentStart, params: params === null ? null : { ...params } };
+
+        // Strict per-node kind precedence: the most specific kind present wins
+        // and its result is final. Distinct registrations within a kind —
+        // several param labels, or `**` alongside `{*name}` — are tried in
+        // registration order until one yields a match.
+        const staticChild = node.staticChildren.get(segment);
+        if (staticChild !== undefined) {
+            return this._match(staticChild, path, segments, starts, index + 1, params, descendGreedy);
         }
-        if (node.greedyChild !== null) {
-            greedy = {
-                node: node.greedyChild,
-                restStart: segStart,
-                params: params === null ? null : { ...params },
-            };
-            return takeGreedy(segStart);
+
+        if (node.paramChildren.size > 0) {
+            for (const paramChild of node.paramChildren.values()) {
+                const nextParams: Record<string, string> = params === null ? {} : { ...params };
+                nextParams[paramChild.label] = segment;
+                const match = this._match(paramChild, path, segments, starts, index + 1, nextParams, descendGreedy);
+                if (match !== null) {
+                    return match;
+                }
+            }
+            return null;
         }
-        return greedy ? takeGreedy(greedy.restStart) : null;
+
+        if (node.wildcardChild !== null) {
+            return this._match(node.wildcardChild, path, segments, starts, index + 1, params, descendGreedy);
+        }
+
+        // This node's own greedy children take precedence over the recorded
+        // fallback; once one exists its (possibly null) result is final, so a
+        // deleted greedy route does not silently defer to an ancestor's `**`.
+        let ownGreedy = false;
+        for (const greedyChild of node.greedyChildren.values()) {
+            ownGreedy = true;
+            const match = this._takeGreedy(
+                { node: greedyChild, restStart: segmentStart, params: params === null ? null : { ...params } },
+                path
+            );
+            if (match !== null) {
+                return match;
+            }
+        }
+        if (ownGreedy) {
+            return null;
+        }
+
+        // No branch at this node — fall back to the deepest recorded greedy.
+        return greedy === null ? null : this._takeGreedy(greedy, path);
+    }
+
+    /**
+     * Builds a match from a greedy fallback candidate, capturing the rest of
+     * the path into the candidate's label (`''` — a bare `**` — captures
+     * nothing).
+     */
+    private _takeGreedy(candidate: GreedyCandidate<V>, path: string): RadixMatch<V> | null {
+        let captured = candidate.params;
+        const rest = path.slice(candidate.restStart).replace(/\/+$/, '');
+        if (candidate.node.label !== '') {
+            if (captured === null) {
+                captured = {};
+            }
+            captured[candidate.node.label] = rest;
+        }
+        if (candidate.node.value === null || candidate.node.pattern === null) {
+            return null;
+        }
+        return { value: candidate.node.value, params: captured, pattern: candidate.node.pattern };
     }
 
     /**
@@ -385,7 +425,7 @@ export class RadixTree<V> implements Serializable {
 
         if (segments.length === 0) {
             // Special case for root pattern '/'
-            if (node.value !== null) {
+            if (node.value !== null && node.pattern === pattern) {
                 node.value = null;
                 node.pattern = null;
                 return true;
@@ -409,7 +449,7 @@ export class RadixTree<V> implements Serializable {
                     node = child;
                     break;
                 case 'param':
-                    child = node.paramChild;
+                    child = node.paramChildren.get(this._extractParamLabel(segment)) ?? null;
                     if (!child) {
                         return false;
                     }
@@ -423,7 +463,7 @@ export class RadixTree<V> implements Serializable {
                     node = child;
                     break;
                 case 'greedy':
-                    child = node.greedyChild;
+                    child = node.greedyChildren.get(this._extractGreedyLabel(segment)) ?? null;
                     if (!child) {
                         return false;
                     }
@@ -432,8 +472,10 @@ export class RadixTree<V> implements Serializable {
             }
         }
 
-        // Check if the terminal node has a value
-        if (node.value === null) {
+        // Only clear the exact pattern registered at this node — distinct
+        // patterns sharing a shape (e.g. `:id` vs `:name`) are independent
+        // registrations, so a delete must not clear a different one.
+        if (node.value === null || node.pattern !== pattern) {
             return false;
         }
 
@@ -457,15 +499,11 @@ export class RadixTree<V> implements Serializable {
             }
 
             node.staticChildren.forEach((child) => traverse(child));
-            if (node.paramChild) {
-                traverse(node.paramChild);
-            }
+            node.paramChildren.forEach((child) => traverse(child));
             if (node.wildcardChild) {
                 traverse(node.wildcardChild);
             }
-            if (node.greedyChild) {
-                traverse(node.greedyChild);
-            }
+            node.greedyChildren.forEach((child) => traverse(child));
         };
 
         traverse(this.#root);

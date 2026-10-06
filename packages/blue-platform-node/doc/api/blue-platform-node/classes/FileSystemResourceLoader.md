@@ -11,6 +11,13 @@
 
 Returns an `UnresolvedResource` (with `exists === false`) if the file cannot be read.
 
+When constructed with a `root`, every lookup is contained inside that
+canonical directory: `location` is resolved against it and both the
+lexical and real (symlink-resolved) paths MUST stay under `root + sep`, so
+a traversal (`../`) or absolute location resolves to an unresolved resource
+instead of reading outside the root. Without a `root` the loader stays
+generic and reads the given path as-is.
+
 ## Implements
 
 - [`ResourceLoader`](#)
@@ -19,7 +26,16 @@ Returns an `UnresolvedResource` (with `exists === false`) if the file cannot be 
 
 ### Constructor
 
-> **new FileSystemResourceLoader**(): `FileSystemResourceLoader`
+> **new FileSystemResourceLoader**(`root?`): `FileSystemResourceLoader`
+
+#### Parameters
+
+##### root?
+
+`string` \| `null`
+
+Optional directory that confines every lookup. Pass
+  `null` (the default) to load arbitrary paths.
 
 #### Returns
 
@@ -46,7 +62,7 @@ Absolute or relative file path.
 `Promise`\<`Resource`\<`unknown`\>\>
 
 A resolved `Resource` containing the file contents as a string,
-         or an `UnresolvedResource` if the read fails.
+         or an `UnresolvedResource` if the read fails or escapes `root`.
 
 #### Implementation of
 

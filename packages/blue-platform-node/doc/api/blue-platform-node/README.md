@@ -140,6 +140,7 @@ Jeff Rose
 - [finalizeInterceptorDenial](functions/finalizeInterceptorDenial.md)
 - [getNodeRequest](functions/getNodeRequest.md)
 - [gracefulShutdown](functions/gracefulShutdown.md)
+- [hasDuplicateCookie](functions/hasDuplicateCookie.md)
 - [isProblemDetails](functions/isProblemDetails.md)
 - [isResponseEntity](functions/isResponseEntity.md)
 - [negotiateEncoding](functions/negotiateEncoding.md)

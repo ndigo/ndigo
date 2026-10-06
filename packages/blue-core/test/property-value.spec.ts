@@ -148,4 +148,27 @@ describe('MutablePropertyValues', () => {
         expect(properties.getPropertyValue('present')).toBe(property);
         expect(missing).toBeNull();
     });
+
+    test('binds more than the ring default of 32 fields without dropping older keys', () => {
+        const properties = new MutablePropertyValues();
+        const names = Array.from({ length: 40 }, (_, index) => `field${index}`);
+        for (const [index, name] of names.entries()) {
+            properties.addPropertyValue(name, index);
+        }
+
+        expect(properties.length).toBe(40);
+        expect(properties.propertyValues.map((value) => value.name)).toEqual(names);
+        expect(properties.getValue('field0')).toBe(0);
+        expect(properties.getValue('field39')).toBe(39);
+    });
+
+    test('preserves insertion order across the growth boundary', () => {
+        const properties = new MutablePropertyValues();
+        for (let index = 0; index < 33; index++) {
+            properties.addPropertyValue(`key${index}`, index);
+        }
+        expect([...properties].map((value) => value.name)).toEqual(
+            Array.from({ length: 33 }, (_, index) => `key${index}`)
+        );
+    });
 });

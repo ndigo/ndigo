@@ -38,7 +38,7 @@ export interface NodeRequest {
     /**
      * Server-side session data keyed by session variable name, populated
      * **before dispatch** by `NodeSessionInterceptor` when the request
-     * carries a valid `blue-session` cookie: `principal` (the resolved
+     * carries a valid `__Host-blue-session` cookie: `principal` (the resolved
      * `@blue/auth-core` principal) and `token` (the opaque session id).
      * An absent, unknown, or expired session leaves the bag **empty**
      * (anonymous) — nothing is ever fabricated; `AuthRouteGuard` then

@@ -480,11 +480,19 @@ function principalFromPayload(payload: JWTPayload): Principal | null {
     if (typeof sub !== 'string' || sub.length === 0) {
         return null;
     }
-    const roles = Array.isArray(payload.roles) ? (payload.roles as unknown[]) : [];
+    // SEC-AUD2-SEC-4/6: normalize the raw claim to strings ONCE and share the
+    // result between the `roles` field and the predicates. Previously the field
+    // stringified every element (`[["admin"]]` → `['admin']`) while the
+    // predicates matched the raw elements, so a nested/non-string claim gave a
+    // principal whose declared roles disagreed with `hasRole`/`hasAnyRole` —
+    // a guard-vs-principal authorization mismatch. Filter (drop non-strings),
+    // matching `blue-auth-client/oidc-adapter.ts`'s `readRoles`.
+    const rawRoles = Array.isArray(payload.roles) ? (payload.roles as unknown[]) : [];
+    const roles = rawRoles.filter((role): role is string => typeof role === 'string');
     return {
         id: sub,
         name: String(payload.name ?? payload.email ?? 'Unknown'),
-        roles: roles.map((r) => String(r)),
+        roles,
         hasRole: (role: string) => roles.includes(role),
         hasAnyRole: (...asked: string[]) => asked.some((r) => roles.includes(r)),
     };

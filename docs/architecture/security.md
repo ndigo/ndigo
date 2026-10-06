@@ -53,19 +53,19 @@ Browser (untrusted) ──HTTPS──▶ TLS-terminating proxy ──▶ Node se
 
 ## The defense layers
 
-| Layer               | Mechanism                                                                                                       | Where                                                                          | Decision     |
-| ------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------ |
-| Transport hardening | Security headers default-on; `X-Powered-By` removed                                                             | `security-headers-interceptor.ts`, `NodeAutoConfiguration`                     | AD-25        |
-| Client identity     | `TrustedProxySet` CIDR allowlist; rightmost-first XFF walk; `NodeRequest.remoteAddress`                         | `trusted-proxy.ts`, `node-request.ts`                                          | AD-37        |
-| Abuse throttling    | Fixed-window `@rateLimit`, 429 + `Retry-After`, keyed on real client IP                                         | `rate-limit-interceptor.ts`                                                    | AD-33        |
-| Request forgery     | CSRF interceptor (state-changing requests); CORS interceptor                                                    | `csrf-interceptor.ts`, `cors-interceptor.ts`                                   | AD-33 wave   |
-| Session theft       | HttpOnly cookie sessions, fixation rotation (atomic, expiry-preserving), live-session cap, durable LibSQL store | `session-cookie.ts`, `session-store.ts`, `libsql-session-store.ts`             | AD-33, AD-40 |
-| Authentication      | Credentials (scrypt, constant-ish time) + OIDC authorization-code + PKCE + nonce, fail-closed `validateAny`     | `credentials-auth-adapter.ts`, `oidc-adapter.ts`, `scrypt-password-encoder.ts` | AD-56, AD-33 |
-| Authorization       | `@authenticated`/`@authorized`, `AuthRouteGuard` 401/403, socket-auth 1008 close                                | `route-guard`, `node-http-server-adapter.ts`                                   | AD-33        |
-| Token service       | JWT with explicit scheme selection                                                                              | `jwt-adapter.ts`                                                               | AD-56        |
-| Input validation    | Zod schemas (route params, bodies, entity-derived `insertSchemaForEntity`); malformed never persists            | `zod-validated-by.ts`, `entity-schema.ts`                                      | AD-07        |
-| Error disclosure    | RFC 9457 `application/problem+json`, `urn:blue:*` placeholders, no HTML/reflection on 404/405                   | `problem-details.ts`, `last-resort-error-resolver.ts`                          | AD-10        |
-| Secrets             | At-rest `{cipher:...}` AES-256-GCM with key-path AAD, `BLUE_SECRET_KEY`, capability-gated wiring                | `aes-gcm-cipher.ts`                                                            | AD-29        |
+| Layer               | Mechanism                                                                                                                                                              | Where                                                                          | Decision                   |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | -------------------------- |
+| Transport hardening | Security headers default-on; `X-Powered-By` removed                                                                                                                    | `security-headers-interceptor.ts`, `NodeAutoConfiguration`                     | AD-25                      |
+| Client identity     | `TrustedProxySet` CIDR allowlist; rightmost-first XFF walk; `NodeRequest.remoteAddress`                                                                                | `trusted-proxy.ts`, `node-request.ts`                                          | AD-37                      |
+| Abuse throttling    | Fixed-window `@rateLimit`, 429 + `Retry-After`, keyed on real client IP                                                                                                | `rate-limit-interceptor.ts`                                                    | AD-33                      |
+| Request forgery     | Opt-in CSRF double-submit interceptor (**unwired by default**); JSON-only `POST /auth/login` (415 on any non-JSON body) closes the login-CSRF vector; CORS interceptor | `csrf-interceptor.ts`, `auth-controller.ts`, `cors-interceptor.ts`             | AD-33 wave, SEC-AUD2-SEC-3 |
+| Session theft       | HttpOnly `__Host-blue-session` cookie (`__Host-` prefix mandates `Secure`), fixation rotation (atomic, expiry-preserving), live-session cap, durable LibSQL store      | `session-cookie.ts`, `session-store.ts`, `libsql-session-store.ts`             | AD-33, AD-40               |
+| Authentication      | Credentials (scrypt, constant-ish time) + OIDC authorization-code + PKCE + nonce, fail-closed `validateAny`                                                            | `credentials-auth-adapter.ts`, `oidc-adapter.ts`, `scrypt-password-encoder.ts` | AD-56, AD-33               |
+| Authorization       | `@authenticated`/`@authorized`, `AuthRouteGuard` 401/403, socket-auth 1008 close                                                                                       | `route-guard`, `node-http-server-adapter.ts`                                   | AD-33                      |
+| Token service       | JWT with explicit scheme selection                                                                                                                                     | `jwt-adapter.ts`                                                               | AD-56                      |
+| Input validation    | Zod schemas (route params, bodies, entity-derived `insertSchemaForEntity`); malformed never persists                                                                   | `zod-validated-by.ts`, `entity-schema.ts`                                      | AD-07                      |
+| Error disclosure    | RFC 9457 `application/problem+json`, `urn:blue:*` placeholders, no HTML/reflection on 404/405                                                                          | `problem-details.ts`, `last-resort-error-resolver.ts`                          | AD-10                      |
+| Secrets             | At-rest `{cipher:...}` AES-256-GCM with key-path AAD, `BLUE_SECRET_KEY`, capability-gated wiring                                                                       | `aes-gcm-cipher.ts`                                                            | AD-29                      |
 
 ## Key tensions (resolved)
 
@@ -74,6 +74,13 @@ Browser (untrusted) ──HTTPS──▶ TLS-terminating proxy ──▶ Node se
   `connect-src` default was hardened to `'self'` by SEC-4; a cross-host
   socket server widens it explicitly to `wss://<host>`, and `unsafe-inline`
   is never the default).
+- **CSRF interceptor is opt-in vs. login forgery.** The double-submit
+  interceptor is not wired by default, so a cookie-session app must wire
+  it — or keep every mutating route JSON-only. `POST /auth/login` enforces
+  `Content-Type: application/json` (415 problem+json otherwise); a
+  cross-site HTML form cannot send that media type, so login is **not**
+  cross-site-postable even with the interceptor unwired. Logout and any
+  other cookie-authenticated mutation still need the interceptor.
 - **Trusted proxies vs. spoofing.** Client-IP trust is all-or-nothing per
   peer: either the peer is allowlisted (its XFF can name a client) or it
   is not (its XFF is ignored). No middle ground, no heuristics.

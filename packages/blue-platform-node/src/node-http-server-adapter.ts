@@ -25,6 +25,7 @@ import { WebSocketServer } from 'ws';
 import { Route, RouteSegment, ACCEPT_LANGUAGE_ATTRIBUTE } from '@blue/router';
 import { ARGUMENT_RESOLVERS } from '@blue/dispatcher';
 import {
+    getDispatchError,
     getInterceptorDenial,
     getMethodNotAllowed,
     isSocketMapping,
@@ -1029,6 +1030,17 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 });
                 res.end();
             }
+
+            // DSV-B1: the dispatcher swallows a handler-adapter, view-resolution,
+            // or render failure (it must not reject fire-and-forget callers) and
+            // records it on the route. Finalize a deterministic 500 when the
+            // response is still open and nothing else finalized it — a denial is
+            // handled above, and `noHandler` keeps its own 404/405 contract.
+            const dispatchError = getDispatchError(route);
+            if (dispatchError && !noHandler) {
+                this.#writeErrorResponse(res, dispatchError);
+                return;
+            }
         } catch (error: unknown) {
             this.#writeErrorResponse(res, error);
         } finally {
@@ -1050,6 +1062,18 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      */
     #writeErrorResponse(res: ServerResponse, error: unknown): void {
         if (res.writableEnded || res.destroyed) return;
+        if (res.headersSent) {
+            // The response already began streaming, so a problem document can
+            // no longer be written: `writeHead` would throw
+            // ERR_HTTP_HEADERS_SENT and escape as an unhandled rejection
+            // (PLN-F5). A mid-stream failure is not a 500 candidate (PLN-F4) —
+            // log and abort the socket so the client sees a closed connection,
+            // never a hang.
+            const streamMessage = error instanceof Error ? (error.stack ?? error.message) : String(error);
+            logger.error('dispatch failure after headers were sent; destroying response:', streamMessage);
+            res.destroy();
+            return;
+        }
         if (error instanceof RequestLimitError) {
             if (error.code === 'malformed_body') {
                 // Same registered problem type as the JSON-syntax path so

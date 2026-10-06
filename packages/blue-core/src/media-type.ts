@@ -67,11 +67,11 @@ export type MediaTypeParameters = {
 const requiresQuoting = /[\s;"=(),]/;
 
 /**
- * Splits a `;`-separated media-type parameter section into parts, honoring
- * quoted strings (RFC 2045 §5.1): a `;` inside `"…"` is parameter data, not
- * a delimiter — splitting naively corrupts quoted values (COR-5).
+ * Splits a header section on `delimiter`, honoring quoted strings
+ * (RFC 2045 §5.1): a delimiter inside `"…"` is data, not a separator —
+ * splitting naively corrupts quoted values (COR-5, KRN-REV-MEDIA-18).
  */
-const splitParameters = (section: string): string[] => {
+const splitQuoted = (section: string, delimiter: string): string[] => {
     const parts: string[] = [];
     let start = 0,
         inQuotes = false;
@@ -84,7 +84,7 @@ const splitParameters = (section: string): string[] => {
             index++;
         } else if (char === '"') {
             inQuotes = !inQuotes;
-        } else if (char === ';' && !inQuotes) {
+        } else if (char === delimiter && !inQuotes) {
             parts.push(section.substring(start, index));
             start = index + 1;
         }
@@ -274,7 +274,7 @@ function normalizeMediaTypeExpression(
     if (type === '' || /[\s;]/.test(type)) {
         return null;
     }
-    const parts = splitParameters(expression.substring(slashIndex + 1));
+    const parts = splitQuoted(expression.substring(slashIndex + 1), ';');
     let subtype = (parts.shift() as string).trim().toLowerCase();
     if (subtype === '') {
         subtype = WILDCARD;
@@ -357,10 +357,17 @@ function internComponents(
         if (rawType === '' || /[/\s;]/.test(rawType)) {
             return null;
         }
+        // The wildcard-subtype component form (`for(type, '*', params)`) must
+        // fold its parameters into the intern key, otherwise a later call with
+        // different parameters is served the first instance (KRN-REV-MEDIA-07).
+        const canonicalType = rawType.toLowerCase(),
+            canonicalParameters = sortParameters(
+                Object.fromEntries(Object.entries(parameters).map(([name, value]) => [name.toLowerCase(), value]))
+            );
         return intern(
-            rawType.toLowerCase(),
-            () => new MediaType(rawType.toLowerCase() as SupportedMediaType, WILDCARD, parameters),
-            false,
+            `${canonicalType}${stringifyParameters(canonicalParameters)}`,
+            () => new MediaType(canonicalType as SupportedMediaType, WILDCARD, canonicalParameters),
+            keys(canonicalParameters).length > 0,
             permanent
         );
     }
@@ -436,7 +443,9 @@ export default class MediaType extends Null implements Serializable, StringCompa
             return [];
         }
         const result: MediaType[] = [];
-        for (const part of accept.split(',')) {
+        // A comma inside a quoted parameter value (e.g. `boundary="a,b"`) is
+        // data, not an entry separator.
+        for (const part of splitQuoted(accept, ',')) {
             const mediaType = MediaType.for(part.trim());
             if (mediaType !== null) {
                 result.push(mediaType);
@@ -525,11 +534,15 @@ export default class MediaType extends Null implements Serializable, StringCompa
         this.personal = false;
         this.experimental = false;
 
-        if (subtype.indexOf('+') !== -1 && subtype.slice(-1) !== '+') {
-            const fixes = subtype.split('+', 2);
-            this.subtype = fixes[0];
-            this.facets = fixes[0].split('.');
-            this.suffix = fixes[1];
+        // The structured-syntax suffix is whatever follows the *last* `+`
+        // (RFC 6838 §4.2): a subtype such as `x.y+z+xml` keeps `x.y+z` as the
+        // base and `xml` as the suffix, so `type/*+xml` can match it.
+        const plusIndex = subtype.lastIndexOf('+');
+        if (plusIndex !== -1 && plusIndex < subtype.length - 1) {
+            const base = subtype.substring(0, plusIndex);
+            this.subtype = base;
+            this.facets = base.split('.');
+            this.suffix = subtype.substring(plusIndex + 1);
         } else {
             this.subtype = subtype;
             this.facets = subtype.split('.');
@@ -688,26 +701,17 @@ export default class MediaType extends Null implements Serializable, StringCompa
             // */* includes anything
             return true;
         } else if (this.type === value.type) {
-            if (this.subtype === value.subtype) {
+            if (this.isWildcardSubtype) {
+                // A suffix-specific wildcard such as `application/*+xml` includes
+                // only values carrying the same suffix; a plain `application/*`
+                // (suffix `null`) includes every subtype.
+                if (this.suffix !== null) {
+                    return value.suffix === this.suffix;
+                }
                 return true;
             }
-            if (this.isWildcardSubtype) {
-                // Wildcard with suffix, e.g. application/*+xml
-                const thisPlusIndex = this.subtype.lastIndexOf('+');
-                if (thisPlusIndex === -1) {
-                    return true;
-                } else {
-                    // application/*+xml includes application/soap+xml
-                    const valuePlusIndex = value.subtype.lastIndexOf('+');
-                    if (valuePlusIndex !== -1) {
-                        const thisSubtypeNoSuffix = this.subtype.substring(0, thisPlusIndex),
-                            thisSubtypeSuffix = this.subtype.substring(thisPlusIndex + 1),
-                            valueSubtypeSuffix = value.subtype.substring(valuePlusIndex + 1);
-                        if (thisSubtypeSuffix === valueSubtypeSuffix && WILDCARD === thisSubtypeNoSuffix) {
-                            return true;
-                        }
-                    }
-                }
+            if (this.subtype === value.subtype) {
+                return true;
             }
         }
         return false;
@@ -768,7 +772,10 @@ export default class MediaType extends Null implements Serializable, StringCompa
     }
 
     withCharset(charset: string): MediaType {
-        return new MediaType(this.type, this.subtype, { ...this.parameters, charset });
+        // The constructor splits `subtype+suffix`; re-join them so
+        // `application/problem+json` does not degrade to `application/problem`.
+        const subtype = this.suffix === null ? this.subtype : `${this.subtype}+${this.suffix}`;
+        return new MediaType(this.type, subtype, { ...this.parameters, charset });
     }
 }
 

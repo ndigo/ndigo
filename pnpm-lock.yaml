@@ -576,6 +576,9 @@ importers:
       '@blue/util':
         specifier: ~0.0.1
         version: link:../../packages/blue-util
+      '@blue/view':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-view
       '@blue/view-ejs':
         specifier: ~0.0.1
         version: link:../../packages/blue-view-ejs

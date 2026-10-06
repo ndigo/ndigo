@@ -10,7 +10,10 @@
  */
 import type { InterceptorDenial } from '@blue/dispatcher';
 import { HTTPHeaders, ResponseStatus } from '@blue/http';
+import { getLogger } from '@blue/log';
 import { ProblemTypes, writeProblem, type ProblemResponseWriter } from './problem-details';
+
+const logger = getLogger('blue-platform-node:finalize-denial');
 
 /**
  * Minimal response writer accepted by {@link finalizeInterceptorDenial} —
@@ -23,6 +26,10 @@ export interface DenialResponseWriter extends ProblemResponseWriter {
     readonly writableEnded?: boolean;
     /** `ServerResponse`: the socket was destroyed. */
     readonly destroyed?: boolean;
+    /** `ServerResponse`: the status line/headers were flushed. */
+    readonly headersSent?: boolean;
+    /** `ServerResponse`: abort an already-streaming response. */
+    destroy?(): void;
 }
 
 /**
@@ -31,13 +38,25 @@ export interface DenialResponseWriter extends ProblemResponseWriter {
  * documents with registered types; other `4xx/5xx` denials are an
  * about:blank problem at the given status; a status `<= 399` (CORS
  * preflight `204`, browser redirects) writes headers with no body.
- * An already-finalized response (`writableEnded`/`destroyed`) is left alone.
+ * An already-finalized response (`writableEnded`/`destroyed`) is left alone;
+ * one whose headers were already flushed cannot carry a status line, so its
+ * socket is destroyed rather than attempting `writeHead`.
  *
  * @param res - The response writer (ServerResponse or MockHTTP sink).
  * @param denial - The denial recorded on the route.
  */
 export function finalizeInterceptorDenial(res: DenialResponseWriter, denial: InterceptorDenial): void {
     if (res.writableEnded || res.destroyed) return;
+    if (res.headersSent) {
+        // A denial finalized after headers were flushed cannot set a status
+        // line: `writeHead` would throw ERR_HTTP_HEADERS_SENT and escape as an
+        // unhandled rejection (PLN-F5). Abort the streaming response instead.
+        logger.error(
+            `interceptor denial after headers were sent (status ${denial.statusCode ?? 403}); destroying response`
+        );
+        res.destroy?.();
+        return;
+    }
     const statusCode = denial.statusCode ?? 403;
     if (denial.redirect) {
         res.writeHead(statusCode <= 399 ? 302 : statusCode, { [HTTPHeaders.LOCATION.name]: denial.redirect });

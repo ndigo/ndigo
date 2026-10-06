@@ -79,7 +79,11 @@ describe('blue-api through @blue/test', () => {
     });
 
     test('POST /auth/login returns 401 on bad credentials', async () => {
-        const res = await mockHTTP.post('/auth/login').body({ username: 'bob', password: 'wrong' }).exec();
+        const res = await mockHTTP
+            .post('/auth/login')
+            .headers({ 'content-type': 'application/json' })
+            .body({ username: 'bob', password: 'wrong' })
+            .exec();
         // AD-10 / RFC 9110 §15.5.2: authentication failure is 401, not 400.
         expect(res.response.status).toBe(401);
         // Handler-returned errors wrap to an about:blank problem (no `type`).
@@ -91,7 +95,11 @@ describe('blue-api through @blue/test', () => {
     });
 
     test('in-memory notes project to the DTO shape (AD-38)', async () => {
-        const login = await mockHTTP.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        const login = await mockHTTP
+            .post('/auth/login')
+            .headers({ 'content-type': 'application/json' })
+            .body({ username: 'admin', password: 'demo' })
+            .exec();
         const { token } = login.json() as { token?: string };
         expect(token).toBeDefined();
 
@@ -117,7 +125,11 @@ describe('blue-api through @blue/test', () => {
     });
 
     test('Drizzle-backed POST /drizzle/notes persists to SQL and lists it', async () => {
-        const login = await mockHTTP.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        const login = await mockHTTP
+            .post('/auth/login')
+            .headers({ 'content-type': 'application/json' })
+            .body({ username: 'admin', password: 'demo' })
+            .exec();
         const { token } = login.json() as { token?: string };
         expect(token).toBeDefined();
 
@@ -146,7 +158,11 @@ describe('blue-api through @blue/test', () => {
 
     test('Drizzle-backed notes list + get-by-id read from SQL', async () => {
         // Acquire a valid demo token
-        const login = await mockHTTP.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        const login = await mockHTTP
+            .post('/auth/login')
+            .headers({ 'content-type': 'application/json' })
+            .body({ username: 'admin', password: 'demo' })
+            .exec();
         const { token } = login.json() as { token?: string };
         expect(token).toBeDefined();
 
@@ -198,7 +214,11 @@ describe('blue-api through @blue/test', () => {
     });
 
     test('POST /drizzle/notes validates the body against the entity-derived schema', async () => {
-        const login = await mockHTTP.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        const login = await mockHTTP
+            .post('/auth/login')
+            .headers({ 'content-type': 'application/json' })
+            .body({ username: 'admin', password: 'demo' })
+            .exec();
         const { token } = login.json() as { token?: string };
         expect(token).toBeDefined();
 

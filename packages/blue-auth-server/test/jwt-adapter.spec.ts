@@ -115,6 +115,53 @@ describe('JWTAdapter', () => {
             expect(result.hasAnyRole('moderator', 'admin')).toBe(true);
         });
 
+        test('SEC-AUD2-SEC-4/6: non-string role claims are filtered so roles and predicates agree', async () => {
+            const futureTime = Math.floor(Date.now() / 1000) + 3600;
+            const cases: unknown[][] = [[['admin']], [1], [null], ['admin', 1, null, 'user'], [undefined], [true]];
+            for (const roles of cases) {
+                const token = createJWT({
+                    sub: '42',
+                    name: 'Alice',
+                    iss: 'https://auth.example.com',
+                    aud: 'my-app',
+                    roles,
+                    exp: futureTime,
+                });
+                // eslint-disable-next-line no-await-in-loop -- each case validates its own token in order
+                const result = (await adapter.validate(token)) as Principal;
+                expect(result).not.toBeNull();
+                // The declared roles array holds only strings…
+                for (const role of result.roles) {
+                    expect(typeof role).toBe('string');
+                }
+                // …and every predicate answer is consistent with that array —
+                // no role that is "declared" but fails `hasRole`, or vice versa.
+                for (const probed of ['admin', 'user', '1', 'null', 'undefined', 'true']) {
+                    expect(result.hasRole(probed)).toBe(result.roles.includes(probed));
+                }
+                const wanted = ['admin', 'user', 'moderator'];
+                expect(result.hasAnyRole(...wanted)).toBe(result.roles.some((role) => wanted.includes(role)));
+            }
+        });
+
+        test('SEC-AUD2-SEC-4: a nested array claim is dropped, not stringified into a matching role', async () => {
+            const futureTime = Math.floor(Date.now() / 1000) + 3600;
+            const token = createJWT({
+                sub: '42',
+                name: 'Alice',
+                iss: 'https://auth.example.com',
+                aud: 'my-app',
+                roles: [['admin']],
+                exp: futureTime,
+            });
+            const result = (await adapter.validate(token)) as Principal;
+            // Before the fix `roles` was `String([['admin']])`'s element =>
+            // `['admin']` while `hasRole('admin')` matched the raw `['admin']`
+            // element, so the principal advertised a role it did not have.
+            expect(result.roles).toEqual([]);
+            expect(result.hasRole('admin')).toBe(false);
+        });
+
         test('extracts email as name when name is missing', async () => {
             const futureTime = Math.floor(Date.now() / 1000) + 3600;
             const token = createJWT({

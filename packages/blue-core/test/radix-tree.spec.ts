@@ -346,4 +346,72 @@ describe('RadixTree', () => {
             expect(Object.prototype.toString.call(tree)).toBe('[object RadixTree]');
         });
     });
+
+    describe('registration isolation (KRN-REV-RADIX-01)', () => {
+        test('renaming a param after delete re-registers under the new label', () => {
+            tree.insert('/a/:id', 'first');
+            expect(tree.delete('/a/:id')).toBe(true);
+            tree.insert('/a/:name', 'second');
+
+            const result = tree.lookup('/a/z');
+            expect(result).not.toBeNull();
+            expect(result?.pattern).toBe('/a/:name');
+            expect(result?.value).toBe('second');
+            expect(result?.params).toEqual({ name: 'z' });
+        });
+
+        test('two labels at one position are independent registrations', () => {
+            tree.insert('/b/:foo', 'first');
+            tree.insert('/b/:bar', 'second');
+
+            // First registration wins lookup precedence, and its params are
+            // keyed by its own label — never the other pattern's label.
+            const first = tree.lookup('/b/z');
+            expect(first?.pattern).toBe('/b/:foo');
+            expect(first?.value).toBe('first');
+            expect(first?.params).toEqual({ foo: 'z' });
+
+            // Deleting one leaves the other intact.
+            expect(tree.delete('/b/:foo')).toBe(true);
+            const second = tree.lookup('/b/z');
+            expect(second?.pattern).toBe('/b/:bar');
+            expect(second?.value).toBe('second');
+            expect(second?.params).toEqual({ bar: 'z' });
+
+            expect(tree.delete('/b/:bar')).toBe(true);
+            expect(tree.lookup('/b/z')).toBeNull();
+        });
+
+        test('deleting a renamed pattern does not clear a different label', () => {
+            tree.insert('/a/:id', 'v1');
+            // No `:name` registration exists — the delete must not fall through
+            // to the `:id` node and clear it.
+            expect(tree.delete('/a/:name')).toBe(false);
+            expect(tree.lookup('/a/z')?.params).toEqual({ id: 'z' });
+        });
+
+        test('** and {*name} coexist in either registration order', () => {
+            const namedFirst = new RadixTree<string>();
+            namedFirst.insert('/p/{*rest}', 'named');
+            namedFirst.insert('/p/**', 'anon');
+            let result = namedFirst.lookup('/p/x/y');
+            expect(result?.pattern).toBe('/p/{*rest}');
+            expect(result?.params).toEqual({ rest: 'x/y' });
+            expect(namedFirst.delete('/p/{*rest}')).toBe(true);
+            result = namedFirst.lookup('/p/x/y');
+            expect(result?.pattern).toBe('/p/**');
+            expect(result?.params).toBeNull();
+
+            const anonFirst = new RadixTree<string>();
+            anonFirst.insert('/p/**', 'anon');
+            anonFirst.insert('/p/{*rest}', 'named');
+            result = anonFirst.lookup('/p/x/y');
+            expect(result?.pattern).toBe('/p/**');
+            expect(result?.params).toBeNull();
+            expect(anonFirst.delete('/p/**')).toBe(true);
+            result = anonFirst.lookup('/p/x/y');
+            expect(result?.pattern).toBe('/p/{*rest}');
+            expect(result?.params).toEqual({ rest: 'x/y' });
+        });
+    });
 });

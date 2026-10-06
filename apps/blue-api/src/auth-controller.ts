@@ -10,10 +10,13 @@ import {
     requestMapping,
     parameters,
     bodyValue,
+    headerValue,
     routeValue,
     cookieValue,
 } from '@blue/dispatcher';
 import type { Route } from '@blue/router';
+import { MediaTypes } from '@blue/core';
+import { contentTypeBase } from '@blue/http';
 import { ResponseEntity, SESSION_COOKIE, setSessionCookie, clearSessionCookie, rateLimit } from '@blue/platform-node';
 import { authenticate, lookupPrincipal, invalidateToken } from './auth-store';
 
@@ -26,13 +29,26 @@ export class AuthController {
      * it as an HttpOnly session cookie (server-rendered flows).
      * Returns 401 with an error body on bad credentials.
      *
+     * JSON-body only (SEC-AUD2-SEC-3): the handler requires
+     * `Content-Type: application/json` and answers `415 problem+json`
+     * otherwise. A cross-site HTML form cannot set that media type (browsers
+     * send `application/x-www-form-urlencoded`, `multipart/form-data`, or
+     * `text/plain`), so this closes the login-CSRF vector even when a
+     * cookie-session app leaves `CSRFInterceptor` unwired.
+     *
      * Rate-limited (SEC-6 Wave 3): 5 attempts per minute per client
      * address — credential endpoints are the brute-force surface.
      */
     @postMapping('/login')
     @rateLimit({ limit: 5, windowMs: 60_000 })
-    @parameters({ credentials: bodyValue(), route: routeValue() })
-    async login(credentials: unknown, route: Route) {
+    @parameters({ credentials: bodyValue(), route: routeValue(), contentType: headerValue('content-type') })
+    async login(credentials: unknown, route: Route, contentType: string | undefined) {
+        if (contentTypeBase(contentType) !== String(MediaTypes.APPLICATION_JSON)) {
+            return ResponseEntity.unsupportedMediaType({
+                error: 'Only application/json request bodies are accepted',
+            });
+        }
+
         const value = credentials as { username?: unknown; password?: unknown } | null;
         const token = await authenticate(String(value?.username ?? ''), String(value?.password ?? ''));
 
@@ -40,10 +56,12 @@ export class AuthController {
             return ResponseEntity.unauthorized({ error: 'Invalid credentials' }, { 'WWW-Authenticate': 'Bearer' });
         }
 
-        // HttpOnly session cookie for cookie-based flows. `Secure` is
-        // disabled for the localhost demo; the framework default is
-        // Secure-on (see buildSessionCookie).
-        setSessionCookie(route, token, { secure: false });
+        // HttpOnly session cookie for cookie-based flows. The cookie is
+        // named `__Host-blue-session`, whose `__Host-` prefix mandates the
+        // `Secure` attribute — emitting it without Secure fails loudly. Secure
+        // is safe for the localhost demo: browsers treat http://localhost as a
+        // secure context and accept Secure cookies there.
+        setSessionCookie(route, token, { secure: true });
         const principal = await lookupPrincipal(token);
         return { token, name: principal?.name, roles: principal?.roles ?? [] };
     }

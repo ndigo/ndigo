@@ -21,6 +21,10 @@ import type { Converter } from './converter.js';
  */
 export class WildcardConverter implements Converter<string, string> {
     convert(pattern: string): string {
-        return `^${pattern.replace(/\*/g, '.*?')}$`;
+        // Every regex metacharacter is escaped so a wildcard pattern matches
+        // literally except for `*`, which becomes the wildcard group `.*?`.
+        // Without this, patterns such as `a.b`, `a+b` or `[x]` would be
+        // interpreted as regular-expression syntax.
+        return `^${pattern.replace(/[.*+?^${}()|[\]\\]/g, (match) => (match === '*' ? '.*?' : `\\${match}`))}$`;
     }
 }

@@ -10,6 +10,17 @@ Options for the session cookie.
 
 ## Properties
 
+### name?
+
+> `optional` **name?**: `string`
+
+Cookie name escape hatch for deployments (migrations, dev over plain
+HTTP). Defaults to [SESSION\_COOKIE](../variables/SESSION_COOKIE.md). A `__Host-`-prefixed name
+with `secure: false` is invalid by construction and fails loudly —
+choose an unprefixed name (and set it consistently when reading).
+
+***
+
 ### secure?
 
 > `optional` **secure?**: `boolean`

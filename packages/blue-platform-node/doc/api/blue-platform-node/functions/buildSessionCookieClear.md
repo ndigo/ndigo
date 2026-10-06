@@ -6,11 +6,23 @@
 
 # Function: buildSessionCookieClear()
 
-> **buildSessionCookieClear**(): `string`
+> **buildSessionCookieClear**(`options?`): `string`
 
 Builds the `Set-Cookie` value that expires the session cookie
-immediately (`Max-Age=0` + epoch `Expires`).
+immediately (`Max-Age=0` + epoch `Expires`) under the same name and
+`Secure`/`Path` attributes it was set with (no `Domain`).
+
+## Parameters
+
+### options?
+
+[`SessionCookieOptions`](../interfaces/SessionCookieOptions.md) = `{}`
 
 ## Returns
 
 `string`
+
+## Throws
+
+When a `__Host-`-prefixed `name` is combined
+with `secure: false` (the browser would reject the clear).

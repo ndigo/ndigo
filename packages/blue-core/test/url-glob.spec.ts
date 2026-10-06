@@ -56,4 +56,29 @@ describe('parseUrlGlob', () => {
             expect(actual).toBe(expected);
         });
     }
+
+    describe('extglob ReDoS hardening (KRN-REV-URLGLOB-04)', () => {
+        it('fails closed on quantified extglob groups with nested quantifiers', () => {
+            // Each would otherwise expand to a nested quantifier such as
+            // `(?:[^/]*?)+` with catastrophic backtracking.
+            expect(parseUrlGlob('+(*)')).toBeNull();
+            expect(parseUrlGlob('*(**)')).toBeNull();
+            expect(parseUrlGlob('+(a*)')).toBeNull();
+            expect(parseUrlGlob('?(a|b*)')).toBeNull();
+        });
+
+        it('still compiles quantified groups over quantifier-free alternatives', () => {
+            const regexSrc = parseUrlGlob('+(a|b)');
+            expect(regexSrc).not.toBeNull();
+            const regex = new RegExp(String(regexSrc));
+            expect(regex.test('a')).toBe(true);
+            expect(regex.test('ab')).toBe(true);
+        });
+
+        it('rejects a previously catastrophic pattern without backtracking', () => {
+            // The rejected input returns `null` immediately instead of
+            // compiling a regex that would hang on adversarial paths.
+            expect(parseUrlGlob('*(*)')).toBeNull();
+        });
+    });
 });

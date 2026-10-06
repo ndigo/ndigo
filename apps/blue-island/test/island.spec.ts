@@ -15,6 +15,7 @@ import type { AddressInfo } from 'node:net';
 import { bootApp, MockHTTP } from '@blue/test';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@blue/platform-node';
+import { parseModel, serializeModel } from '@blue/view';
 import { IslandConfiguration } from '../src/island-configuration';
 import { TodoModelStore } from '../src/todo-model-store';
 
@@ -57,15 +58,26 @@ describe('blue-island hybrid demo', () => {
         const html = res.text();
         const match = /data-blue-model="([^"]+)"/.exec(html);
         expect(match).not.toBeNull();
-        const decoded = match ? decodeURIComponent(match[1]) : '';
-        const model = JSON.parse(decoded);
-        expect(model).toEqual({
+
+        const expected = {
             items: [
                 { text: 'Server-rendered island', done: true },
                 { text: 'Hydrated on the client', done: false },
             ],
             filter: 'all',
-        });
+        };
+
+        // The server emits the framework serializer's HTML-attribute-escaped
+        // JSON (the same contract `hydrateIslands` parses); the DOM decodes
+        // entities once before hydration JSON-parses the attribute value.
+        expect(match?.[1]).toBe(serializeModel(expected));
+
+        const attributeValue = (match?.[1] ?? '')
+            .replace(/&quot;/g, '"')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        expect(parseModel(attributeValue)).toEqual(expected);
     });
 
     test('GET /static/client.js serves the built client bundle', async () => {

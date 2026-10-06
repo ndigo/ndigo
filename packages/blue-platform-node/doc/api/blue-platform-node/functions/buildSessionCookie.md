@@ -9,7 +9,8 @@
 > **buildSessionCookie**(`token`, `options?`): `string`
 
 Builds the `Set-Cookie` value for a session token:
-`blue-session=<token>; HttpOnly; SameSite=Lax; Path=/[; Secure]`.
+`__Host-blue-session=<token>; HttpOnly; SameSite=Lax; Path=/[; Secure]`.
+The name is configurable via `options.name`.
 
 ## Parameters
 
@@ -24,3 +25,8 @@ Builds the `Set-Cookie` value for a session token:
 ## Returns
 
 `string`
+
+## Throws
+
+When a `__Host-`-prefixed `name` is combined
+with `secure: false` (the browser would reject the cookie).

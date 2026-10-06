@@ -117,6 +117,20 @@ describe('OIDCAdapter.validate', () => {
         expect(principal?.hasRole('admin')).toBe(true);
         expect(principal?.hasRole('nobody')).toBe(false);
     });
+
+    test('rejects a token with no sub claim', async () => {
+        const adapter = new OIDCAdapter({ ...baseConfig, tokenValidator: async () => true });
+        expect(
+            await adapter.validate(forgeToken({ iss: baseConfig.issuer, aud: 'my-client', exp: futureExp() }))
+        ).toBeNull();
+    });
+
+    test('rejects a token with an empty sub claim', async () => {
+        const adapter = new OIDCAdapter({ ...baseConfig, tokenValidator: async () => true });
+        expect(
+            await adapter.validate(forgeToken({ iss: baseConfig.issuer, aud: 'my-client', sub: '', exp: futureExp() }))
+        ).toBeNull();
+    });
 });
 
 describe('OIDCAdapter exchangeCodeForTokens state handling', () => {

@@ -200,6 +200,11 @@ export class JWTAdapter implements AuthAdapter {
      * issuer, audience, `exp`, and `sub` claims. Trailing whitespace and
      * other spec allowances are handled by `jose`.
      *
+     * With a `userStore` wired, framework-issued tokens (`ver` claim) are
+     * additionally checked against the live account: a bumped
+     * `tokenVersion` or a disabled/deleted account rejects the token
+     * (SE-7). External IdP tokens without `ver` skip the store check.
+     *
      * @param token - The JWT to validate.
      * @returns The authenticated {@link Principal}, or `null` if validation fails.
      */
@@ -214,6 +219,8 @@ export class JWTAdapter implements AuthAdapter {
             // AD-33 D-7: framework-issued tokens carry `ver`; when a store is
             // wired, the claim must equal the account's current version.
             // Tokens without `ver` (external IdP) skip the check entirely.
+            // SE-7: `#currentVersion` returns null for disabled/deleted
+            // accounts too, so the same gate revokes their live tokens.
             if (this.#userStore && typeof payload.ver === 'number' && typeof payload.sub === 'string') {
                 const current = await this.#currentVersion(payload.sub);
                 if (current === null || current !== payload.ver) return null;
@@ -421,7 +428,10 @@ export class JWTAdapter implements AuthAdapter {
 
     /**
      * Reads the account's current `tokenVersion` for the `ver` check,
-     * honoring the short-TTL cache when configured.
+     * honoring the short-TTL cache when configured. Returns `null` for an
+     * unknown or disabled/deleted account (SE-7), failing validation closed;
+     * a cache hit answers within `revocationCacheTtlMs`, so a disable takes
+     * effect with the same bounded staleness as a version bump.
      */
     async #currentVersion(sub: string): Promise<number | null> {
         const ttl = this.#revocationCacheTtlMs;
@@ -432,7 +442,7 @@ export class JWTAdapter implements AuthAdapter {
         const store = this.#userStore;
         if (store === undefined) return null;
         const user = await store.findById(sub);
-        const version = user === null ? null : (user.tokenVersion ?? 0);
+        const version = user === null || user.disabled === true ? null : (user.tokenVersion ?? 0);
         if (ttl > 0 && version !== null) {
             this.#versionCache.set(sub, { version, expiresAt: Date.now() + ttl });
         }

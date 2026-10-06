@@ -141,9 +141,12 @@ mapping.interceptors.push(new CSRFInterceptor());
 ```
 
 Every POST/PUT/DELETE/PATCH then requires a matching `X-CSRF-Token` header
-(or `csrf_token` body field) against the `blue-csrf` cookie
-(SameSite=Lax + Secure by default); safe GETs mint the cookie. Without it,
-login/logout never run — the interceptor denies before the handler.
+(or `csrf_token` body field) against the `__Host-blue-csrf` cookie
+(SameSite=Lax + Secure + Path=/ by default); safe GETs mint the cookie. The
+`__Host-` prefix stops a sibling subdomain from overwriting the cookie
+(cookie tossing) — keep `Secure`/`Path=/` and no `Domain` when overriding the
+cookie attributes. Without a matching token, login/logout never run — the
+interceptor denies before the handler.
 
 **Posture note (2026-09-27 review, SEC-7):** where the interceptor is not
 wired, a cross-site form POST can still carry the SameSite=Lax session

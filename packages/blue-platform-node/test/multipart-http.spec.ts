@@ -13,6 +13,7 @@ import type { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
 import { NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE, type NodeRequest } from '../src/node-request';
 import type { Route } from '@blue/router';
+import { delay } from '@blue/util';
 
 /**
  * Round-trip test for the adapter's multipart wiring: a real `node:http` server
@@ -195,11 +196,6 @@ describe('Node multipart request wiring', () => {
         expect(res.status).toBe(200);
         // The adapter disposes the parsed context after dispatch — no temp
         // files survive the request.
-        const delay = (ms: number): Promise<void> => {
-            const { promise, resolve } = Promise.withResolvers<void>();
-            setTimeout(resolve, ms);
-            return promise;
-        };
         const leftoverAfter = async (until: number): Promise<string[]> => {
             const found = spill().filter((name) => !before.has(name));
             if (found.length === 0 || Date.now() >= until) return found;

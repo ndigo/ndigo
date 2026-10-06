@@ -7,6 +7,7 @@ import { describe, test, expect } from 'vitest';
 import { type SessionRecord, type SessionStore, DefaultPrincipal } from '@blue/auth-core';
 import type { ServerResponse } from 'node:http';
 import type { Route } from '@blue/router';
+import { delay } from '@blue/util';
 import { NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE, getNodeRequest, type NodeRequest } from '../src/node-request';
 import {
     buildSessionCookie,
@@ -20,13 +21,6 @@ import { NodeSessionInterceptor } from '../src/node-session-interceptor';
 /** Minimal route stand-in carrying attributes (like the real Route). */
 function fakeRoute(res?: ServerResponse): Route {
     return { attributes: { [NODE_RESPONSE_ATTRIBUTE]: res } } as unknown as Route;
-}
-
-/** Test-only delay helper (Promise.withResolvers pattern). */
-function delay(ms: number): Promise<void> {
-    const { promise, resolve } = Promise.withResolvers<void>();
-    setTimeout(resolve, ms);
-    return promise;
 }
 
 /** Asserts the fixture route carries a node request and returns it. */

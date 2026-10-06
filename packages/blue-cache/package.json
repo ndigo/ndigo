@@ -31,7 +31,7 @@
   "license": "ISC",
   "sideEffects": false,
   "dependencies": {
-    "@tsmetadata/polyfill": "^1.1.3",
+    "@tsmetadata/polyfill": "catalog:",
     "@blue/context": "~0.0.1",
     "@blue/factory": "~0.0.1"
   }

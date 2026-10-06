@@ -11,16 +11,20 @@ import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import { CONFIG_SERVER_SOURCE_NAME, RemotePropertySource } from '../src/remote-property-source';
 import { CONFIG_REFRESH_EVENT, StandardEnvironment } from '../src/environment';
 
-/** Builds a content-addressable fake fetch without global state. */
-type fakeFetch = (
-    url: string,
-    init?: { headers?: Record<string, string> }
-) => Promise<{
+/** The response shape the fake fetch resolves (a structural `Response`). */
+type FakeResponse = {
     ok: boolean;
     status: number;
     headers: { get(name: string): string | null };
+    body?: ReadableStream<Uint8Array> | null;
     text(): Promise<string>;
-}>;
+};
+
+/** Builds a content-addressable fake fetch without global state. */
+type fakeFetch = (
+    url: string,
+    init?: { headers?: Record<string, string>; signal?: AbortSignal }
+) => Promise<FakeResponse>;
 
 const response = (status: number, body: string, etag: string | null = null) => ({
     ok: status >= 200 && status < 300,
@@ -29,6 +33,28 @@ const response = (status: number, body: string, etag: string | null = null) => (
         get: (name: string) => (name.toLowerCase() === 'etag' ? etag : null),
     },
     text: async () => body,
+});
+
+/** A response stub with an explicit `Content-Length` header (SE-10). */
+const sizedResponse = (status: number, body: string, contentLength: number) => ({
+    ...response(status, body),
+    headers: {
+        get: (name: string) => (name.toLowerCase() === 'content-length' ? String(contentLength) : null),
+    },
+});
+
+/** A streaming response stub without a `Content-Length` (SE-10). */
+const streamedResponse = (status: number, chunks: readonly Uint8Array[]) => ({
+    ok: status >= 200 && status < 300,
+    status,
+    headers: { get: () => null },
+    body: new ReadableStream<Uint8Array>({
+        start(controller) {
+            for (const chunk of chunks) controller.enqueue(chunk);
+            controller.close();
+        },
+    }),
+    text: async () => '',
 });
 
 describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
@@ -466,6 +492,106 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
                 (e: { message?: string }) => e
             );
             expect(err?.message).toMatch(/https:\/\/cfg\.example\/app\.json/);
+        });
+    });
+
+    describe('fetch hardening (SE-10)', () => {
+        test('a Content-Length over maxResponseBytes is rejected before reading (optional:false)', async () => {
+            fetchImpl.mockResolvedValue(sizedResponse(200, 'x'.repeat(200), 200));
+            const source = new RemotePropertySource(env, {
+                url: 'https://cfg.example/app.json',
+                optional: false,
+                maxResponseBytes: 64,
+                fetch: fetchImpl,
+            });
+
+            const err = await source.load().then(
+                () => null,
+                (e: { message?: string }) => e
+            );
+            expect(err?.message).toMatch(/exceeds the 64-byte limit/);
+        });
+
+        test('streamed bytes over maxResponseBytes are counted and rejected (chunked, no Content-Length)', async () => {
+            fetchImpl.mockResolvedValue(streamedResponse(200, [new Uint8Array(40), new Uint8Array(40)]));
+            const source = new RemotePropertySource(env, {
+                url: 'https://cfg.example/app.json',
+                optional: false,
+                maxResponseBytes: 64,
+                fetch: fetchImpl,
+            });
+
+            const err = await source.load().then(
+                () => null,
+                (e: { message?: string }) => e
+            );
+            expect(err?.message).toMatch(/exceeds the 64-byte limit/);
+        });
+
+        test('a document exactly at the cap still loads', async () => {
+            const body = '{"a":"1"}';
+            fetchImpl.mockResolvedValue(streamedResponse(200, [new TextEncoder().encode(body)]));
+            const source = new RemotePropertySource(env, {
+                url: 'https://cfg.example/app.json',
+                maxResponseBytes: body.length,
+                fetch: fetchImpl,
+            });
+
+            expect(await source.load()).toBe(true);
+            expect(env.getProperty('a')).toBe('1');
+        });
+
+        test('an oversized poll keeps last-good values and warns', async () => {
+            fetchImpl.mockResolvedValueOnce(response(200, '{"a":"1"}'));
+            const source = new RemotePropertySource(env, {
+                url: 'https://cfg.example/app.json',
+                maxResponseBytes: 64,
+                fetch: fetchImpl,
+            });
+            await source.load();
+
+            fetchImpl.mockResolvedValueOnce(sizedResponse(200, 'x'.repeat(200), 200));
+            const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+            try {
+                expect(await source.load()).toBe(false);
+                expect(env.getProperty('a')).toBe('1'); // last-good preserved
+                expect(warnSpy).toHaveBeenCalled();
+            } finally {
+                warnSpy.mockRestore();
+            }
+        });
+
+        test('a stalled fetch aborts after fetchTimeoutMs and keeps last-good', async () => {
+            vi.useFakeTimers();
+            try {
+                fetchImpl.mockResolvedValueOnce(response(200, '{"a":"1"}'));
+                const source = new RemotePropertySource(env, {
+                    url: 'https://cfg.example/app.json',
+                    fetchTimeoutMs: 1_000,
+                    fetch: fetchImpl,
+                });
+                await source.load();
+                expect(vi.getTimerCount()).toBe(0); // timeout cleared after success
+
+                fetchImpl.mockImplementationOnce((_url, init) => {
+                    const { promise, reject } = Promise.withResolvers<FakeResponse>();
+                    init?.signal?.addEventListener('abort', () => reject(init.signal?.reason));
+                    return promise;
+                });
+                const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+                try {
+                    const pending = source.load();
+                    await vi.advanceTimersByTimeAsync(1_000);
+                    await expect(pending).resolves.toBe(false); // warn + keep-last-good, no throw
+                    expect(env.getProperty('a')).toBe('1');
+                    expect(warnSpy).toHaveBeenCalled();
+                    expect(vi.getTimerCount()).toBe(0);
+                } finally {
+                    warnSpy.mockRestore();
+                }
+            } finally {
+                vi.useRealTimers();
+            }
         });
     });
 

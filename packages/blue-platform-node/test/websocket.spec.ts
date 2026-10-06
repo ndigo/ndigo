@@ -17,6 +17,7 @@ import {
     headerValue,
     type SocketSession,
 } from '@blue/dispatcher';
+import { delay } from '@blue/util';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -146,9 +147,7 @@ describe('Node WebSocket pipeline', () => {
             failed = true;
         });
         // Allow a brief window for the refusal; the socket must not open.
-        await new Promise<void>((resolve) => {
-            setTimeout(resolve, 300);
-        });
+        await delay(300);
         expect(failed).toBe(true);
     });
 
@@ -181,9 +180,7 @@ describe('Node WebSocket pipeline', () => {
         ws.on('error', () => {
             failed = true;
         });
-        await new Promise<void>((resolve) => {
-            setTimeout(resolve, 300);
-        });
+        await delay(300);
         // Either the handshake errors (refused) or never opens — the socket
         // must not be usable.
         expect(failed).toBe(true);
@@ -198,11 +195,6 @@ describe('Node WebSocket pipeline', () => {
     const waitMessage = (ws: WebSocket): Promise<unknown> => {
         const { promise, resolve } = Promise.withResolvers<unknown>();
         ws.once('message', (data: unknown) => resolve(JSON.parse(String(data))));
-        return promise;
-    };
-    const delay = (ms: number): Promise<void> => {
-        const { promise, resolve } = Promise.withResolvers<void>();
-        setTimeout(resolve, ms);
         return promise;
     };
 

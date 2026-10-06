@@ -37,9 +37,9 @@
     "@blue/dispatcher": "~0.0.1",
     "@blue/log": "~0.0.1",
     "@blue/router": "~0.0.1",
-    "@opentelemetry/api": "~1.9.1",
-    "@opentelemetry/instrumentation": "~0.222.0",
-    "@tsmetadata/polyfill": "^1.1.3"
+    "@opentelemetry/api": "catalog:",
+    "@opentelemetry/instrumentation": "catalog:",
+    "@tsmetadata/polyfill": "catalog:"
   },
   "devDependencies": {},
   "sideEffects": false

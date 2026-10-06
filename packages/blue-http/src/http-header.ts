@@ -15,6 +15,23 @@ type HeaderEntries = Array<[string, string]>;
 /** Node `IncomingMessage`-style header record (lower-cased name → value or lines). */
 export type HeaderRecord = Record<string, string | string[] | undefined>;
 
+/**
+ * Folds a header name to the lower-cased spelling used by Node server
+ * header records (DSG-5).
+ *
+ * This is the package's single folding rule: `Headers` folds
+ * case-insensitively itself, while plain records are written lower-cased by
+ * the Node server — so every exact-match read retries with this folded
+ * spelling. Shared with `@blue/test`'s response mock (HG-10) so the captured
+ * map and the readers can never drift.
+ *
+ * @param name - The header name to fold.
+ * @returns The lower-cased name.
+ */
+export function foldHeaderName(name: string): string {
+    return name.toLowerCase();
+}
+
 function deletePair(entries: HeaderEntries, name: string): void {
     const length = entries.length;
 
@@ -28,7 +45,7 @@ function deletePair(entries: HeaderEntries, name: string): void {
 
         // Case-folded retry (DSG-5): Node-server header tuples are
         // lower-cased, so a canonical extractor name must still match.
-        const folded = name.toLowerCase();
+        const folded = foldHeaderName(name);
 
         if (folded !== name) {
             for (let index = 0; index < length; index++) {
@@ -53,7 +70,7 @@ function getPair(entries: HeaderEntries, name: string): string | null {
 
         // Case-folded retry (DSG-5): Node-server header tuples are
         // lower-cased, so a canonical extractor name must still match.
-        const folded = name.toLowerCase();
+        const folded = foldHeaderName(name);
 
         if (folded !== name) {
             for (let index = 0; index < length; index++) {
@@ -80,7 +97,7 @@ function setPair(entries: HeaderEntries, name: string, value: string): void {
 
         // Case-folded retry (DSG-5): update the lower-cased tuple in place
         // instead of pushing a second, canonically-cased entry.
-        const folded = name.toLowerCase();
+        const folded = foldHeaderName(name);
 
         if (folded !== name) {
             for (let index = 0; index < length; index++) {
@@ -106,7 +123,7 @@ function deleteHeader(headers: HeadersInit | HeaderRecord, name: string): void {
         // Node-server records are lower-cased; remove both this name and its
         // folded form so the header is gone for every read spelling.
         deleteProperty(record, name);
-        const folded = name.toLowerCase();
+        const folded = foldHeaderName(name);
         if (folded !== name) {
             deleteProperty(record, folded);
         }
@@ -133,7 +150,7 @@ function getHeaderValue(headers: HeadersInit | HeaderRecord, name: string): stri
             // Case-folded retry (DSG-5): Node-server request/response headers
             // are lower-cased records, so a canonical extractor name must
             // still match.
-            value = get(record, name.toLowerCase());
+            value = get(record, foldHeaderName(name));
         }
 
         return value === undefined ? null : value;
@@ -159,7 +176,7 @@ function setHeader(headers: HeadersInit | HeaderRecord, name: string, value: unk
         setPair(headers as unknown as HeaderEntries, name, stringValue);
     } else if (isRecord(headers)) {
         const record = headers;
-        const folded = name.toLowerCase();
+        const folded = foldHeaderName(name);
         // Write to the key reads will find (exact first, folded retry for
         // lower-cased Node records) instead of creating a second entry.
         if (get(record, name) === undefined && folded !== name && get(record, folded) !== undefined) {

@@ -4,6 +4,8 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import { foldHeaderName } from '@blue/http';
+
 /**
  * A captured HTTP response: status code, headers, and body.
  *
@@ -22,9 +24,6 @@ export interface MemoryResponse {
 }
 
 const okStatus = 200;
-
-/** Lower-cases a header name (the captured map documents lower-cased keys). */
-const normalizeHeaderName = (name: string): string => name.toLowerCase();
 
 /**
  * The `ServerResponse`-shaped sink the pipeline writes to: the members
@@ -73,18 +72,18 @@ export function createMemoryResponse(): { response: MemoryResponse; sink: Respon
         },
 
         setHeader(name: string, value: string | string[]): void {
-            response.headers[normalizeHeaderName(name)] = value;
+            response.headers[foldHeaderName(name)] = value;
         },
 
         removeHeader(name: string): void {
-            delete response.headers[normalizeHeaderName(name)];
+            delete response.headers[foldHeaderName(name)];
         },
 
         writeHead(status: number, headers?: Record<string, string | string[]>): void {
             response.status = status;
             if (headers) {
                 for (const [name, value] of Object.entries(headers)) {
-                    response.headers[normalizeHeaderName(name)] = value;
+                    response.headers[foldHeaderName(name)] = value;
                 }
             }
             headersSent = true;

@@ -60,6 +60,27 @@ JSON bodies are parsed strictly against their `Content-Type` — malformed JSON
 is a `400`, never silently reshaped. `listen()` rejects on bind errors, and
 `close()` drains in-flight requests up to `shutdownTimeoutMs`.
 
+### CSRF Protection
+
+`CSRFInterceptor` enforces double-submit-cookie validation on mutating
+requests (`POST`/`PUT`/`DELETE`/`PATCH`/`QUERY`): the `X-CSRF-Token` header
+(or `csrf_token` body field) must match the `__Host-blue-csrf` cookie,
+compared in constant time. Safe requests mint the cookie when it is absent.
+
+The `__Host-` prefix is the server-side binding: browsers only accept such a
+cookie when it is `Secure`, `Path=/`, and has no `Domain` attribute (the
+interceptor's defaults), so a sibling subdomain cannot overwrite it — the
+cookie-tossing attack that defeats an unprefixed double-submit cookie.
+**Trust assumption:** this protection holds only while the prefix and the
+`Secure`/`Path=/` attributes are kept. Overriding `cookieName` with a
+non-prefixed name gives up the host pinning: any sibling subdomain can then
+set the cookie and forge a matching submission — do that only when every
+subdomain is trusted. Dropping `Secure`/`Path=/` (or adding a `Domain`)
+while keeping the prefix makes browsers reject the cookie, so mutating
+requests fail closed. Pair the interceptor with
+`NodeSessionInterceptor` and `AuthRouteGuard` for cookie-authenticated
+routes; see the [authentication guide](../../docs/guides/11-authentication-and-sessions.md#6-csrf-on-auth-mutations).
+
 ### Controller Example
 
 ```typescript

@@ -3,7 +3,7 @@
  * code-composed `Migration[]` in ascending version order, journaled in
  * `_blue_migrations`, applied outside any explicit transaction (see
  * {@link Migration.up} for the `batch()` constraint).
- * * @module blue-orm-drizzle
+ * @module blue-orm-drizzle
  * @since 1.0.0
  * @author Jeff Rose
  */

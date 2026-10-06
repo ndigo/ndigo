@@ -1,6 +1,6 @@
 /**
  * Blue management endpoints — actuator-style `/health` and `/metrics`.
- * * @module blue-management
+ * @module blue-management
  * @since 1.0.0
  * @author Jeff Rose
  */

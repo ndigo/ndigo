@@ -1,6 +1,6 @@
 /**
  * Rule that blocks unguarded access to browser globals in isomorphic packages.
- * * @module blue-oxlint-plugin
+ * @module blue-oxlint-plugin
  * @since 1.0.0
  * @author Jeff Rose
  */

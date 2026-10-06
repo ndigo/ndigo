@@ -1,6 +1,6 @@
 /**
  * Drizzle table + Zod schema derivation from `@blue/orm` entity metadata.
- * * @module blue-orm-drizzle
+ * @module blue-orm-drizzle
  * @since 1.0.0
  * @author Jeff Rose
  */

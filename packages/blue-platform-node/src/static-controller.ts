@@ -1,6 +1,6 @@
 /**
  * Static file serving controller.
- * * @module blue-platform-node
+ * @module blue-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */

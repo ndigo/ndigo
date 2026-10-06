@@ -1,6 +1,6 @@
 /**
  * Scans `routeMapping` decorator metadata from registered beans and builds.
- * * @module blue-router
+ * @module blue-router
  * @since 1.0.0
  * @author Jeff Rose
  */

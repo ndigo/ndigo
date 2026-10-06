@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { formatFiles, generateFiles, type Tree } from '@nx/devkit';
+import { toPascal } from '@blue/util/string';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -19,16 +20,9 @@ export interface ComponentGeneratorSchema {
     author?: string;
 }
 
-function toPascalCase(str: string): string {
-    return str
-        .split('-')
-        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-        .join('');
-}
-
 export default async function componentGenerator(tree: Tree, schema: ComponentGeneratorSchema): Promise<void> {
     const { name, package: pkg, author = 'Jeff Rose' } = schema;
-    const className = schema.className || toPascalCase(name);
+    const className = schema.className || toPascal(name);
     const projectRoot = `packages/blue-${pkg}`;
 
     if (!tree.exists(`${projectRoot}/package.json`)) {

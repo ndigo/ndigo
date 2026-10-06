@@ -1,6 +1,6 @@
 /**
  * Demo component showing the @blue/signals decorator API.
- * * @module blue-todo
+ * @module blue-todo
  * @since 1.0.0
  * @author Jeff Rose
  */

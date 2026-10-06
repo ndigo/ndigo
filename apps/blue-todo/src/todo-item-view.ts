@@ -43,7 +43,7 @@ export default class TodoItem extends AbstractWebComponent {
     }
 
     get checked(): boolean {
-        return this.hasAttribute('checked');
+        return this.#checked;
     }
 
     handleConnect(): void {

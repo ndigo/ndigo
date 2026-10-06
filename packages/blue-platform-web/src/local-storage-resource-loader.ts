@@ -1,6 +1,6 @@
 /**
  * Resource loader that persists data to `localStorage`.
- * * @module blue-platform-web
+ * @module blue-platform-web
  * @since 1.0.0
  * @author Jeff Rose
  */

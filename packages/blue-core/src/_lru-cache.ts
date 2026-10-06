@@ -1,6 +1,6 @@
 /**
  * A generic Least-Recently-Used (LRU) cache backed by insertion-order Map semantics.
- * * @module blue-core
+ * @module blue-core
  * @since 1.0.0
  * @author Jeff Rose
  */

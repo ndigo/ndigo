@@ -5,7 +5,6 @@
 # @blue/management v0.0.1
 
 Blue management endpoints — actuator-style `/health` and `/metrics`.
-*
 
 ## Since
 

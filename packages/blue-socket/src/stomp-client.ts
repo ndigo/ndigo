@@ -24,7 +24,7 @@
  * connection just after the frame), so it rejects all outstanding sends,
  * completes every subscription stream and surfaces through the `onError`
  * observer.
- * * @module blue-socket
+ * @module blue-socket
  * @since 1.0.0
  * @author Jeff Rose
  */

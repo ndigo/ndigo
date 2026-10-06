@@ -1,6 +1,6 @@
 /**
  * HTTP verb route mapping decorators — sugar over `requestMapping` with the.
- * * @module blue-dispatcher
+ * @module blue-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */

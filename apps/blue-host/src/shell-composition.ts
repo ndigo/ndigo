@@ -1,6 +1,6 @@
 /**
  * Host shell composition — sets up the micro frontend shell, a shared.
- * * @module blue-host
+ * @module blue-host
  * @since 1.0.0
  * @author Jeff Rose
  */

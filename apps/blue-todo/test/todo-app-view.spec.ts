@@ -105,3 +105,21 @@ describe('todo-app view filtering', () => {
         expect(toggleSpy).toHaveBeenCalledTimes(1);
     });
 });
+
+describe('todo-item checked property (AP-11)', () => {
+    test('get reflects the last set value and render syncs the inner checkbox', () => {
+        const item = document.createElement('todo-item') as HTMLElement & { checked: boolean };
+        document.body.appendChild(item);
+
+        expect(item.checked).toBe(false);
+
+        item.checked = true;
+        expect(item.checked).toBe(true);
+        const toggle = item.querySelector('.toggle') as HTMLInputElement;
+        expect(toggle.hasAttribute('checked')).toBe(true);
+
+        item.checked = false;
+        expect(item.checked).toBe(false);
+        expect(toggle.hasAttribute('checked')).toBe(false);
+    });
+});

@@ -1,6 +1,6 @@
 /**
  * Rule that prevents cross-package imports of underscore-prefixed internal files.
- * * @module blue-oxlint-plugin
+ * @module blue-oxlint-plugin
  * @since 1.0.0
  * @author Jeff Rose
  */

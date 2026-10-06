@@ -60,6 +60,5 @@ async function main() {
 
 main().catch((err) => {
     $status.textContent = `Host failed to start: ${String(err)}`;
-    // eslint-disable-next-line no-console
     console.error('[blue-host] failed to start:', err);
 });

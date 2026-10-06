@@ -32,14 +32,14 @@ JavaScript-native structures with fail-loud semantics throughout.
 
 Sources are **named and ordered** — higher wins:
 
-| Source             | Name                | How it's set                                       |
-| ------------------ | ------------------- | -------------------------------------------------- |
-| Command line       | `commandLine`       | `app.run('--server.port=9000', '--debug')`         |
-| Builder properties | `boot`              | `builder.properties({ server: { port: 8080 } })`   |
-| Process env        | `systemEnvironment` | `process.env` (snapshot at construction)           |
-| `.env` file        | `dotenv`            | auto-loaded (never overrides a set env var)        |
+| Source             | Name                | How it's set                                                               |
+| ------------------ | ------------------- | -------------------------------------------------------------------------- |
+| Command line       | `commandLine`       | `app.run('--server.port=9000', '--debug')`                                 |
+| Builder properties | `boot`              | `builder.properties({ server: { port: 8080 } })`                           |
+| Process env        | `systemEnvironment` | `process.env` (snapshot at construction)                                   |
+| `.env` file        | `dotenv`            | auto-loaded (never overrides a set env var)                                |
 | Config files       | `application`       | `./config/application.json` + profile variants (`.toon` opt-in, see below) |
-| Defaults           | `defaults`          | `builder.defaults({...})` (always present, lowest) |
+| Defaults           | `defaults`          | `builder.defaults({...})` (always present, lowest)                         |
 
 `getProperty('server.port')` consults this order; `originOf('server')` tells
 you _which source won_ (the observability payoff):

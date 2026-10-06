@@ -59,7 +59,7 @@ behavior; decode-only usage of the format.**
   transport, `fromConfig` defaults, or content-negotiation defaults
   (`.toon` extension mapping, default views). These surfaces are interop or
   durability contracts; a Working-Draft format has no place there.
-- D-4 — Pinning: the provisional status is accepted as a *priced* risk, not
+- D-4 — Pinning: the provisional status is accepted as a _priced_ risk, not
   ignored — exact version pin, decode-conformance fixtures (including
   `__proto__` own-entry safety, SEC-1 parity), and documented behavior
   deltas vs `JSON.parse` (empty doc → `{}`; `#` comments; CRLF; BOM;
@@ -80,7 +80,7 @@ behavior; decode-only usage of the format.**
   before release costs one diff. Post-1.0, the same decision would carry
   compatibility weight — this ADR pre-records the boundary so the format
   cannot creep into defaults later.
-- Token efficiency — TOON's raison d'être — is explicitly *not* a driver
+- Token efficiency — TOON's raison d'être — is explicitly _not_ a driver
   here (BlueJS has no LLM surface; config files are small, nested, ~0%
   tabular-eligible). The win is authoring ergonomics; the decision would
   not change if the format never gained a token advantage.

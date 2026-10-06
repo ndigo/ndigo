@@ -5,6 +5,7 @@
  */
 import 'node:process';
 import { ApplicationBuilder } from '@blue/boot';
+import { getEnv } from '@blue/context';
 import { ManagementAutoConfiguration } from '@blue/management';
 import { AESGCMCipher, NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@blue/platform-node';
 import { configureTelemetry, HTTPServerInstrumentation, WebSocketServerInstrumentation } from '@blue/telemetry-node';
@@ -16,7 +17,7 @@ import { SecureDocsConfiguration } from './secure-docs-configuration';
 import { ServerConfig, SecretsConfig, SERVER_CONFIG } from './server-config';
 import { initAuth } from './auth-store';
 
-const PORT = Number(process.env['PORT'] ?? '3000');
+const PORT = Number(getEnv('PORT', '3000'));
 const logger = getLogger('blue-api');
 
 async function main() {
@@ -26,10 +27,11 @@ async function main() {
     // configured (standard env var), export traces/metrics/logs there and
     // instrument inbound HTTP — the server span CONTINUES the client trace
     // carried by `TraceHeaderInterceptor`-injected traceparent headers.
-    if (process.env['OTEL_EXPORTER_OTLP_ENDPOINT']) {
+    const otelEndpoint = getEnv('OTEL_EXPORTER_OTLP_ENDPOINT');
+    if (otelEndpoint) {
         configureTelemetry({
             traceExporter: {
-                url: `${process.env['OTEL_EXPORTER_OTLP_ENDPOINT']}/v1/traces`,
+                url: `${otelEndpoint}/v1/traces`,
             },
             instrumentations: [new HTTPServerInstrumentation(), new WebSocketServerInstrumentation()],
         });
@@ -59,23 +61,21 @@ async function main() {
     // {cipher:...} values anywhere in the environment resolve to plaintext.
     // Without the key, boot still proceeds — markers would bind raw and only
     // fail loud if a lookup/binding actually requires decryption.
-    if (process.env['BLUE_SECRET_KEY']) {
+    if (getEnv('BLUE_SECRET_KEY')) {
         builder.secrets(AESGCMCipher.fromEnvironment());
     }
     // Remote config source (AD-29 Wave 3): when a config-server URL is set,
     // fetch (and poll) a plain JSON document at the `configServer`
     // precedence slot. The self-served demo endpoint `/api/config.json`
     // works out of the box; point this at a real server in production.
-    if (process.env['BLUE_CONFIG_SERVER_URL']) {
+    const configServerUrl = getEnv('BLUE_CONFIG_SERVER_URL');
+    if (configServerUrl) {
+        const pollMs = Number(getEnv('BLUE_CONFIG_SERVER_POLL_MS', '0'));
+        const token = getEnv('BLUE_CONFIG_SERVER_TOKEN');
         builder.configServer({
-            url: process.env['BLUE_CONFIG_SERVER_URL'],
-            pollMs:
-                Number(process.env['BLUE_CONFIG_SERVER_POLL_MS'] ?? '0') > 0
-                    ? Number(process.env['BLUE_CONFIG_SERVER_POLL_MS'] ?? '0')
-                    : undefined,
-            headers: process.env['BLUE_CONFIG_SERVER_TOKEN']
-                ? { Authorization: `Bearer ${process.env['BLUE_CONFIG_SERVER_TOKEN']}` }
-                : undefined,
+            url: configServerUrl,
+            pollMs: pollMs > 0 ? pollMs : undefined,
+            headers: token ? { Authorization: `Bearer ${token}` } : undefined,
         });
     }
 

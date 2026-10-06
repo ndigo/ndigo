@@ -28,19 +28,19 @@ const LOCAL_COVERED = ['opencode.json', '.opencode/plugins', 'AGENTS.md'];
 
 /** Recursively walks `dir`, returning paths relative to it (sorted). */
 function walkFiles(dir, prefix = '') {
-  const out = [];
-  for (const name of readdirSync(dir).sort()) {
-    const full = join(dir, name);
-    const stat = statSync(full, { throwIfNoEntry: false });
-    if (!stat) continue;
-    if (stat.isDirectory()) out.push(...walkFiles(full, join(prefix, name)));
-    else out.push(join(prefix, name));
-  }
-  return out;
+    const out = [];
+    for (const name of readdirSync(dir).sort()) {
+        const full = join(dir, name);
+        const stat = statSync(full, { throwIfNoEntry: false });
+        if (!stat) continue;
+        if (stat.isDirectory()) out.push(...walkFiles(full, join(prefix, name)));
+        else out.push(join(prefix, name));
+    }
+    return out;
 }
 
 function sha256(text) {
-  return createHash('sha256').update(text, 'utf8').digest('hex');
+    return createHash('sha256').update(text, 'utf8').digest('hex');
 }
 
 const update = process.argv.includes('--update');
@@ -48,59 +48,59 @@ const localManifestPath = join(root, '.agent-local.json');
 
 let errors = 0;
 const report = (msg) => {
-  console.error(`agents:check FAIL: ${msg}`);
-  errors++;
+    console.error(`agents:check FAIL: ${msg}`);
+    errors++;
 };
 
 // 1. Manifest integrity.
 const manifestPath = join(root, '.agent-gen.json');
 if (!existsSync(manifestPath)) report('missing .agent-gen.json — run `pnpm agents:sync`');
 else {
-  const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
-  let checked = 0;
-  for (const [rel, expected] of Object.entries(manifest.files)) {
-    const path = join(root, rel);
-    if (!existsSync(path)) {
-      report(`missing generated file ${rel}`);
-      continue;
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+    let checked = 0;
+    for (const [rel, expected] of Object.entries(manifest.files)) {
+        const path = join(root, rel);
+        if (!existsSync(path)) {
+            report(`missing generated file ${rel}`);
+            continue;
+        }
+        const actual = createHash('sha256').update(readFileSync(path, 'utf8')).digest('hex');
+        if (actual !== expected) {
+            report(`drift in ${rel} — edit the neutral store and run \`pnpm agents:sync\`, not this file`);
+            continue;
+        }
+        checked++;
     }
-    const actual = createHash('sha256').update(readFileSync(path, 'utf8')).digest('hex');
-    if (actual !== expected) {
-      report(`drift in ${rel} — edit the neutral store and run \`pnpm agents:sync\`, not this file`);
-      continue;
-    }
-    checked++;
-  }
-  console.log(`agents:check: ${checked} generated files match .agent-gen.json`);
+    console.log(`agents:check: ${checked} generated files match .agent-gen.json`);
 }
 
 // 2. Structural invariants over the generated tree.
 const dirs = ['.opencode/agents', '.claude/agents', '.omp/agents'];
 for (const dir of dirs) {
-  const abs = join(root, dir);
-  if (!existsSync(abs)) {
-    report(`missing generated directory ${dir}`);
-    continue;
-  }
-  for (const file of readdirSync(abs).filter((f) => f.endsWith('.md'))) {
-    const text = readFileSync(join(abs, file), 'utf8');
-    if (!text.startsWith('---')) report(`${dir}/${file}: missing YAML frontmatter`);
-    if (text.includes('for the.')) report(`${dir}/${file}: template placeholder 'for the.'`);
-    if (text.includes('${') && text.includes('}')) report(`${dir}/${file}: unexpanded template interpolation`);
-  }
+    const abs = join(root, dir);
+    if (!existsSync(abs)) {
+        report(`missing generated directory ${dir}`);
+        continue;
+    }
+    for (const file of readdirSync(abs).filter((f) => f.endsWith('.md'))) {
+        const text = readFileSync(join(abs, file), 'utf8');
+        if (!text.startsWith('---')) report(`${dir}/${file}: missing YAML frontmatter`);
+        if (text.includes('for the.')) report(`${dir}/${file}: template placeholder 'for the.'`);
+        if (text.includes('${') && text.includes('}')) report(`${dir}/${file}: unexpanded template interpolation`);
+    }
 }
 // Models are stamped into OMP agents only.
 for (const dir of ['.opencode/agents', '.claude/agents']) {
-  const abs = join(root, dir);
-  for (const file of readdirSync(abs).filter((f) => f.endsWith('.md'))) {
-    const head = readFileSync(join(abs, file), 'utf8').split('\n---', 1)[0];
-    if (head.includes('\nmodel:')) report(`${dir}/${file}: model field must not appear outside OMP`);
-  }
+    const abs = join(root, dir);
+    for (const file of readdirSync(abs).filter((f) => f.endsWith('.md'))) {
+        const head = readFileSync(join(abs, file), 'utf8').split('\n---', 1)[0];
+        if (head.includes('\nmodel:')) report(`${dir}/${file}: model field must not appear outside OMP`);
+    }
 }
 const ompAgents = join(root, '.omp/agents');
 for (const file of readdirSync(ompAgents).filter((f) => f.endsWith('.md'))) {
-  const head = readFileSync(join(ompAgents, file), 'utf8').split('\n---', 1)[0];
-  if (!head.includes('\nmodel:')) report(`.omp/agents/${file}: missing stamped model (check .agent-models.json)`);
+    const head = readFileSync(join(ompAgents, file), 'utf8').split('\n---', 1)[0];
+    if (!head.includes('\nmodel:')) report(`.omp/agents/${file}: missing stamped model (check .agent-models.json)`);
 }
 
 // 3. Repo-owned deployment manifest (.agent-local.json). Unlike .agent-gen.json
@@ -109,25 +109,27 @@ for (const file of readdirSync(ompAgents).filter((f) => f.endsWith('.md'))) {
 //    get the same drift gate. `--update` regenerates the manifest.
 const localFiles = [];
 for (const entry of LOCAL_COVERED) {
-  const abs = join(root, entry);
-  if (!existsSync(abs)) continue;
-  if (statSync(abs).isDirectory()) {
-    for (const rel of walkFiles(abs)) localFiles.push([join(entry, rel), readFileSync(join(abs, rel), 'utf8')]);
-  } else {
-    localFiles.push([entry, readFileSync(abs, 'utf8')]);
-  }
+    const abs = join(root, entry);
+    if (!existsSync(abs)) continue;
+    if (statSync(abs).isDirectory()) {
+        for (const rel of walkFiles(abs)) localFiles.push([join(entry, rel), readFileSync(join(abs, rel), 'utf8')]);
+    } else {
+        localFiles.push([entry, readFileSync(abs, 'utf8')]);
+    }
 }
 localFiles.sort((a, b) => a[0].localeCompare(b[0]));
-const expectedLocal = JSON.stringify({ files: Object.fromEntries(localFiles.map(([rel, content]) => [rel, sha256(content)])) }, null, 2) + '\n';
+const expectedLocal =
+    JSON.stringify({ files: Object.fromEntries(localFiles.map(([rel, content]) => [rel, sha256(content)])) }, null, 2) +
+    '\n';
 if (update) {
-  writeFileSync(localManifestPath, expectedLocal);
-  console.log(`agents:check: wrote ${localFiles.length} repo-owned files to .agent-local.json`);
+    writeFileSync(localManifestPath, expectedLocal);
+    console.log(`agents:check: wrote ${localFiles.length} repo-owned files to .agent-local.json`);
 } else if (!existsSync(localManifestPath) || readFileSync(localManifestPath, 'utf8') !== expectedLocal) {
-  report(
-    '.agent-local.json out of sync — after changing AGENTS.md, opencode.json, or .opencode/plugins/, run `node scripts/agents-check.mjs --update` and commit the manifest'
-  );
+    report(
+        '.agent-local.json out of sync — after changing AGENTS.md, opencode.json, or .opencode/plugins/, run `node scripts/agents-check.mjs --update` and commit the manifest'
+    );
 } else {
-  console.log(`agents:check: ${localFiles.length} repo-owned deployment files match .agent-local.json`);
+    console.log(`agents:check: ${localFiles.length} repo-owned deployment files match .agent-local.json`);
 }
 
 if (errors > 0) process.exit(1);

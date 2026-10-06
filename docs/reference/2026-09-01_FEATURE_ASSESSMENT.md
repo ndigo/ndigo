@@ -54,7 +54,7 @@ Framework defects surfaced by the Wave-A work — **all resolved 2026-09-13**:
 | **IoC / DI**           | `@blue/context` + `@blue/factory` — context hierarchy, bean lifecycle, scopes, TC39 decorators. Comparable to Spring `ApplicationContext`.                                                               |
 | **Dispatcher / MVC**   | `@blue/dispatcher` — handler mappings, interceptors (pre/post/complete), argument resolvers (6 browser + 6 Node), error dispatch, view resolution. Mirror of Spring MVC's `DispatcherServlet`.           |
 | **View Layer**         | 2 engines: template views (content-negotiated) and Web Components. `ContentNegotiationViewResolver`.                                                                                                     |
-| **Auto-Configuration** | `@blue/boot` — `ApplicationBuilder`, `@ConditionalOnBrowser`/`@ConditionalOnNode`, `@ConfigurationProperties`. Comparable to Spring Boot auto-config.                                                    |
+| **Auto-Configuration** | `@blue/boot` — `ApplicationBuilder`, `@whenBrowser`/`@whenNode`, `@ConfigurationProperties`. Comparable to Spring Boot auto-config.                                                    |
 | **Validation**         | Zod schemas — `@blue/orm` entity `@column({ schema })` derivation, dispatcher `validatedBy` for route params, `@blue/service` response schemas.                                                          |
 | **HTTP Client**        | `@blue/http` — interceptor chain (cache, retry, CORS, offline, auth header, error normalization).                                                                                                        |
 | **Platforms**          | Browser (`@blue/platform-web`: `HashRouter`, `BrowserRouter`, `IndexedDB`, `LocalStorage`, argument resolvers) and Node.js (`@blue/platform-node`: `FileSystemRouter`, argument resolvers, environment). |
@@ -130,7 +130,7 @@ No integration test support. Every package tests in isolation via Vitest. No equ
 | **YAML config**                  | `fromConfig()` supports JSON. YAML/TOML can be added as a reader plugin.                                                                                                                                                                                          |
 | **CLI scaffold (`create-blue`)** | Post-1.0 polish. Generators exist for packages.                                                                                                                                                                                                                   |
 | **OpenAPI generation**           | ✅ Landed 2026-09-28 as **`@blue/openapi`** (AD-35): spec from dispatch metadata + Swagger UI; typed-client generation stays post-1.0 (ecosystem generators).                                                                                                     |
-| **Configuration profiles**       | Environment-based conditional beans (`@ConditionalOnNode`) exist. Spring-style `@Profile` adds little.                                                                                                                                                            |
+| **Configuration profiles**       | Environment-based conditional beans (`@whenNode`) exist. Spring-style `@Profile` adds little.                                                                                                                                                            |
 
 ---
 

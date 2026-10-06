@@ -60,7 +60,7 @@ Returns the number of currently queued requests.
 
 ### postResponse()
 
-> **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
+> **postResponse**(`response`, `settings`, `request?`): `Promise`\<`void` \| `Response`\>
 
 Handles failed responses by queuing them for retry when offline.
 
@@ -78,6 +78,12 @@ The response from the server.
 
 The request settings.
 
+##### request?
+
+`Request`
+
+The final request that was sent, when available.
+
 #### Returns
 
 `Promise`\<`void` \| `Response`\>
@@ -94,7 +100,8 @@ The response, or a queued promise when offline.
 
 > **preRequest**(`request`, `http`): `Promise`\<`void` \| `Response`\>
 
-Checks the cache for a matching response before the request is sent.
+Captures an undisturbed clone of each outgoing request for offline
+replay, then queues the request when the browser is already offline.
 
 #### Parameters
 
@@ -114,7 +121,7 @@ The HTTP client.
 
 `Promise`\<`void` \| `Response`\>
 
-A cached response when available, otherwise void.
+A queued promise while offline, otherwise void.
 
 #### Implementation of
 

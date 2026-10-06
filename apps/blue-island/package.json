@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "build:client": "vite build",
+    "dev": "npm run start:full",
     "start": "STATIC_DIR=dist tsx src/index.ts",
     "start:full": "npm run build:client && STATIC_DIR=dist tsx src/index.ts",
     "test": "vitest run"

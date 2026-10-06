@@ -15,16 +15,17 @@ class NoteRepository extends DrizzleDerivedQueryRepository<Note, number> {
     findByTitle(title: string): Promise<Note[]> {
         return this.derive('findByTitle', [title]);
     }
-    findTop3ByPriority(priority: number): Promise<Note[]> {
-        return this.derive('findTop3ByPriority', [priority]);
+    findByPriorityTop3(priority: number): Promise<Note[]> {
+        return this.derive('findByPriorityTop3', [priority]);
     }
 }
 ```
 
-Supported method names match `parseDerivedQuery`: equality filters
-joined by `And`, optional `OrderBy<Property>[Asc|Desc]`, optional
-`First`/`Top<N>`. Every matched property is a declared entity column,
-so the generated SQL is allowlisted and parameterized.
+Supported method names match `parseDerivedQuery`: equality filters joined
+by `And`, an optional trailing `OrderBy<Property>[Asc|Desc]`, and an
+optional trailing `First`/`Top<N>` limit (`findByPriorityTop3`). Every
+matched property is a declared entity column, so the generated SQL is
+allowlisted and parameterized.
 
 ## Extends
 

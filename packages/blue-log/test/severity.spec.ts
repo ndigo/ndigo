@@ -33,6 +33,25 @@ describe('severity mapping', () => {
         expect(severityNumberToLevel(SeverityNumber.INFO2, 'cli')).toBe('data');
     });
 
+    it('maps fatal and critical names to FATAL severities, not INFO', () => {
+        expect(levelToSeverityNumber('fatal')).toBe(SeverityNumber.FATAL);
+        expect(levelToSeverityNumber('FATAL')).toBe(SeverityNumber.FATAL);
+        expect(levelToSeverityNumber('critical')).toBe(SeverityNumber.FATAL);
+        expect(levelToSeverityNumber('fatal', 'syslog')).toBe(SeverityNumber.FATAL);
+        expect(levelToSeverityNumber('critical', 'syslog')).toBe(SeverityNumber.FATAL);
+        expect(levelToSeverityNumber('fatal', 'apache')).toBe(SeverityNumber.FATAL);
+        expect(levelToSeverityNumber('critical', 'apache')).toBe(SeverityNumber.FATAL);
+    });
+
+    it('documents unknown level names as an INFO fallback', () => {
+        // The fallback is deliberate — an unrecognized name must not throw
+        // inside logging; pass the scheme that knows the name to avoid the
+        // unintended downgrade.
+        expect(levelToSeverityNumber('bogus')).toBe(SeverityNumber.INFO);
+        expect(levelToSeverityNumber('bogus', 'syslog')).toBe(SeverityNumber.INFO);
+        expect(getSeverityMapping('apache').toSeverityNumber('bogus')).toBe(SeverityNumber.INFO);
+    });
+
     it('returns mapping objects by scheme', () => {
         const mapping = getSeverityMapping('syslog');
         expect(mapping.toSeverityNumber('err')).toBe(SeverityNumber.ERROR);

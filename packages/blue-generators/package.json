@@ -26,6 +26,7 @@
     "generators.json"
   ],
   "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run",
     "test:watch": "vitest"
   },

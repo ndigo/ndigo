@@ -5,7 +5,7 @@
  */
 import { describe, test, expect, beforeAll, beforeEach, afterEach, afterAll } from 'vitest';
 import { server } from '../_worker';
-import { HTTP } from '../../src/http';
+import { HTTP, HTTPInit } from '../../src/http';
 import { TimeoutInit, TimeoutInterceptor } from '../../src/interceptors/timeout-interceptor';
 import { RetryInterceptor } from '../../src/interceptors/retry-interceptor';
 import ResponseError from '../../src/response-error';
@@ -25,8 +25,8 @@ class TestTimeoutInterceptor extends TimeoutInterceptor {
         return response;
     }
 
-    async postComplete(request: Request, response: Response) {
-        return super.postComplete(request, response);
+    async postComplete(request: Request, response: Response, settings?: HTTPInit) {
+        return super.postComplete(request, response, settings);
     }
 }
 
@@ -133,5 +133,132 @@ describe('TimeoutInterceptor', () => {
         expect(result).toBeInstanceOf(ResponseError);
         expect(result.status).toBe(408);
         expect(callCount).toBe(1);
+    });
+
+    test('it releases each timer when its request completes (HT-2)', async () => {
+        // A completed request must clear its timeout: an unresolved timer
+        // counts as a live `Timeout` resource and keeps the event loop alive.
+        const completing = new HTTP([new TimeoutInterceptor(1000)], {}, async () => new Response('ok'));
+        const baseline = process.getActiveResourcesInfo().filter((resource) => resource === 'Timeout').length;
+
+        await Promise.all(
+            Array.from({ length: 3 }, async () => {
+                const result = await completing.request('http://localhost/completed');
+                expect(await result.text()).toBe('ok');
+            })
+        );
+
+        expect(
+            process.getActiveResourcesInfo().filter((resource) => resource === 'Timeout').length
+        ).toBeLessThanOrEqual(baseline);
+    });
+
+    test('it releases each timer when a request transform replaces the request (HT-2)', async () => {
+        // HTTP.create appends its TransformInterceptor after the timeout, so
+        // the request handed to fetch is a different object; cleanup must not
+        // depend on that identity.
+        const transforming = HTTP.create({
+            baseURL: 'http://localhost/',
+            interceptors: [new TimeoutInterceptor(1000)],
+            requestTransforms: [(body: unknown) => body],
+            fetch: async () => new Response('ok'),
+        });
+        const baseline = process.getActiveResourcesInfo().filter((resource) => resource === 'Timeout').length;
+
+        await Promise.all(
+            Array.from({ length: 3 }, async (_unused, index) => {
+                const result = await transforming.post('api/completed', {
+                    headers: { 'content-type': 'application/json' },
+                    body: JSON.stringify({ index }),
+                });
+                expect(await result.text()).toBe('ok');
+            })
+        );
+
+        expect(
+            process.getActiveResourcesInfo().filter((resource) => resource === 'Timeout').length
+        ).toBeLessThanOrEqual(baseline);
+    });
+
+    test('it releases the timer when a request fails (HT-2)', async () => {
+        const failing = new HTTP([new TimeoutInterceptor(1000)], {}, async () => {
+            throw new TypeError('fetch failed');
+        });
+        const baseline = process.getActiveResourcesInfo().filter((resource) => resource === 'Timeout').length;
+
+        const result = await failing.request('http://localhost/failing');
+
+        expect(result.status).not.toBe(408);
+        expect(
+            process.getActiveResourcesInfo().filter((resource) => resource === 'Timeout').length
+        ).toBeLessThanOrEqual(baseline);
+    });
+
+    test('it propagates a pre-aborted caller signal as a cancel (HT-5)', async () => {
+        const caller = new AbortController();
+        const aborting = new HTTP([new TimeoutInterceptor(1000)], {}, async (input) => {
+            const request = input as Request;
+            const { promise, resolve, reject } = Promise.withResolvers<Response>();
+            const lateResponse = setTimeout(() => resolve(new Response('completed')), 25);
+            const abort = (): void => {
+                clearTimeout(lateResponse);
+                reject(request.signal.reason);
+            };
+
+            if (request.signal.aborted) {
+                abort();
+            } else {
+                request.signal.addEventListener('abort', abort, { once: true });
+            }
+
+            return promise;
+        });
+
+        caller.abort(new DOMException('caller cancelled', 'AbortError'));
+
+        const result = await aborting.request('http://localhost/slow', { signal: caller.signal });
+
+        expect(result).toBeInstanceOf(ResponseError);
+        expect(result.status).not.toBe(408);
+        expect(result.message).toContain('caller cancelled');
+    });
+
+    test('it aborts in-flight requests when the caller aborts (HT-5)', async () => {
+        const caller = new AbortController();
+        const aborting = new HTTP([new TimeoutInterceptor(1000)], {}, async (input) => {
+            const request = input as Request;
+            const { promise, resolve, reject } = Promise.withResolvers<Response>();
+            const lateResponse = setTimeout(() => resolve(new Response('completed')), 100);
+
+            request.signal.addEventListener(
+                'abort',
+                () => {
+                    clearTimeout(lateResponse);
+                    reject(request.signal.reason);
+                },
+                { once: true }
+            );
+            setTimeout(() => caller.abort(new DOMException('caller cancelled later', 'AbortError')), 10);
+
+            return promise;
+        });
+
+        const result = await aborting.request('http://localhost/slow', { signal: caller.signal });
+
+        expect(result).toBeInstanceOf(ResponseError);
+        expect(result.status).not.toBe(408);
+        expect(result.message).toContain('caller cancelled later');
+    });
+
+    test('it still yields 408 when the caller signal never aborts (HT-5)', async () => {
+        const caller = new AbortController();
+        response = await http?.request('http://localhost/timeout/1000', {
+            signal: caller.signal,
+            timeout: 50,
+        } as TimeoutInit);
+
+        expect(response).toBeInstanceOf(ResponseError);
+        expect(response?.status).toBe(408);
+        expect(response?.statusText).toBe('Request Timeout');
     });
 });

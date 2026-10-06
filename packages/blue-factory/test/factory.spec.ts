@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
+import { FrameworkError } from '@blue/core';
 import { ContextToken } from '../src/context-tokens';
 import { AsFactoryAware, DefaultFactory, ProxiedFactory } from '../src/factory';
 import { $aware } from '../src/aware';
@@ -201,6 +202,29 @@ describe('DefaultFactory', () => {
         expect(test.init).toHaveBeenCalled();
         expect(p.processBeforeInitialization).toHaveBeenCalledWith('test', test);
         expect(p.processAfterInitialization).toHaveBeenCalledWith('test', test);
+    });
+
+    test('it should propagate init failures and never serve the instance (CF-5)', () => {
+        const f = defined(factory);
+        const p = defined(processor);
+
+        class FailingPrototype {
+            init = vi.fn(() => {
+                throw new Error('boom');
+            });
+        }
+
+        f.setValue('boom', FailingPrototype);
+
+        // Fail loud on both resolution paths...
+        expect(() => f.getValue('boom')).toThrow(FrameworkError);
+        expect(() => f.getValue('boom')).toThrow(/Initialization failed for entry 'boom'/);
+        expect(() => f.getInstance('boom')).toThrow(FrameworkError);
+
+        // ...and never serve or cache the half-initialized instance: the
+        // post-initialization processors did not run either.
+        expect(f.hasInstance('boom')).toBe(false);
+        expect(p.processAfterInitialization).not.toHaveBeenCalled();
     });
 
     test('it should destoy destroyable instances', () => {

@@ -7,7 +7,9 @@ import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { AbstractDispatcher } from '../src/dispatcher';
 import routeErrorResolverContext from './assets/route-error-resolver-context';
 import { handleRouteSpy, renderSpy } from './test-strategies';
-import { SimpleMappingErrorResolver } from '../src/route-error-resolver';
+import { MetadataErrorResolver, SimpleMappingErrorResolver } from '../src/route-error-resolver';
+import { RouteHandlerMethod } from '../src/route-handler-method';
+import { errorMapping } from '../src/error-mapping';
 import { ModelAndView } from '../src/model-and-view';
 import { Route } from '@blue/router';
 
@@ -43,6 +45,32 @@ describe('MetadataErrorResolver', () => {
             expect(renderSpy).toHaveBeenCalledWith(undefined, badRangeRoute, undefined);
             expect(renderSpy).toHaveBeenCalledWith(undefined, badReferenceRoute, undefined);
             expect(renderSpy).toHaveBeenCalledWith(undefined, badSyntaxRoute, undefined);
+        });
+    });
+
+    describe('inherited mappings', () => {
+        class CustomError extends Error {}
+
+        class BaseErrorHandler {
+            @errorMapping(CustomError)
+            handleCustomError() {
+                return new ModelAndView('error');
+            }
+        }
+
+        class SubErrorHandler extends BaseErrorHandler {}
+
+        test('it should resolve a base-declared error mapping on a bare subclass handler', () => {
+            const errorResolver = new MetadataErrorResolver();
+
+            const mav = errorResolver.resolveError(
+                { path: '/bad/custom' } as unknown as Route,
+                new RouteHandlerMethod(new SubErrorHandler(), 'handleRequest'),
+                new CustomError('custom')
+            );
+
+            expect(mav).not.toBeNull();
+            expect(mav?.viewName).toBe('error');
         });
     });
 });

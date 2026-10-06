@@ -10,7 +10,7 @@ import { Factory } from './factory';
 
 export interface InitializationAwareProcessor {
     /**
-     * Apply this {@link EntryProcessor} to the given new instance _before_ any initialization callbacks. The instance will already be populated with property values. The returned instance may be a wrapper around the original.
+     * Apply this {@link EntryProcessor} to the given new instance _after_ any initialization callbacks. The instance will already be populated with property values. The returned instance may be a wrapper around the original.
      *
      * The default implementation returns the given instance as-is.
      * @param name The name of instance
@@ -19,7 +19,7 @@ export interface InitializationAwareProcessor {
      */
     processAfterInitialization<T = unknown>(name: string, instance: T): T;
     /**
-     * Apply this {@link EntryProcessor} to the given new instance _after_ any initialization callbacks. The instance will already be populated with property values. The returned instance may be a wrapper around the original.
+     * Apply this {@link EntryProcessor} to the given new instance _before_ any initialization callbacks. The instance will already be populated with property values. The returned instance may be a wrapper around the original.
      *
      * The default implementation returns the given instance as-is.
      * @param name The name of instance

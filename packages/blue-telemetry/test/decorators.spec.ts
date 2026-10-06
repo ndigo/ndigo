@@ -89,7 +89,9 @@ describe('telemetry decorators (TC39)', () => {
         // Manually register the class prototype with the registry
         CountedRegistry.register(FeatureService.prototype);
 
-        // Re-enable instrumentation to pick up the registered class
+        // The enable latch makes a bare second enable a no-op; cycle
+        // disable→enable to re-scan the registry and pick up the class.
+        instrumentation.disable();
         instrumentation.enable();
 
         const instance = new FeatureService();

@@ -83,4 +83,48 @@ describe('AbstractWebComponent event registration', () => {
 
         expect(count).toBe(1);
     });
+
+    test('it should dispatch delegated events again after disconnect and reconnect', () => {
+        const comp = makeComponent();
+        const handler = vi.fn();
+        Object.assign(comp, { handleBtn: handler });
+        comp.on('click .btn', 'handleBtn');
+
+        const button = document.createElement('button');
+        button.className = 'btn';
+        comp.appendChild(button);
+
+        document.body.appendChild(comp);
+        button.dispatchEvent(new Event('click', { bubbles: true }));
+        expect(handler).toHaveBeenCalledTimes(1);
+
+        document.body.removeChild(comp);
+        document.body.appendChild(comp);
+        button.dispatchEvent(new Event('click', { bubbles: true }));
+        expect(handler).toHaveBeenCalledTimes(2);
+
+        document.body.removeChild(comp);
+    });
+
+    test('it should keep delegated listeners idempotent across repeated reconnects', () => {
+        const comp = makeComponent();
+        const handler = vi.fn();
+        Object.assign(comp, { handleBtn: handler });
+        comp.on('click .btn', 'handleBtn');
+
+        const button = document.createElement('button');
+        button.className = 'btn';
+        comp.appendChild(button);
+
+        for (let cycle = 0; cycle < 3; cycle++) {
+            document.body.appendChild(comp);
+            // A redundant connect must not stack a second root listener.
+            comp.connectedCallback();
+
+            button.dispatchEvent(new Event('click', { bubbles: true }));
+            expect(handler).toHaveBeenCalledTimes(cycle + 1);
+
+            document.body.removeChild(comp);
+        }
+    });
 });

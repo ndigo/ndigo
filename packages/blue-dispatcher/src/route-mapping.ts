@@ -7,6 +7,7 @@ import '@tsmetadata/polyfill';
 import { FrameworkError, getSymbolMetadata } from '@blue/core';
 import type { HTTPMethod } from '@blue/http';
 import { isString } from '@blue/util/types';
+import { makeMethodEnumerable } from './_decorator-util';
 
 /**
  * Basic value shared by route mapping metadata objects.
@@ -49,8 +50,6 @@ export type RouteMappingConfiguration = RouteMappingValue & {
     private: boolean;
     path?: string; // Computed path combining class and method routes
 };
-
-const { defineProperty, getOwnPropertyDescriptor } = Reflect;
 
 const defaultMapping: RouteMappingConfiguration = {
     value: '/**',
@@ -123,15 +122,10 @@ export function routeMapping(route: string | RouteMappingConfiguration = default
             // Method decorator
             context.metadata[`route:mapping:${String(context.name)}`] = conf;
 
-            // Make method enumerable so it can be discovered via for...in
+            // Make the method enumerable where it is declared so `Object.keys`
+            // and for...in discovery find base-class-declared methods too.
             context.addInitializer(function (this: unknown) {
-                const descriptor = getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
-                if (descriptor && !descriptor.enumerable) {
-                    defineProperty(Object.getPrototypeOf(this), context.name, {
-                        ...descriptor,
-                        enumerable: true,
-                    });
-                }
+                makeMethodEnumerable(this as object, context.name);
             });
         }
     };

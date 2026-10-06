@@ -656,20 +656,18 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Initializes an instance by applying initialization processors and invoking the `init` method if available.
+     * Initialization is fail-loud: an `init()` failure propagates, so a half-initialized instance is never served.
      * @param name The name of the instance.
      * @param instance The instance to initialize.
      * @returns The initialized instance.
+     * @throws {FrameworkError} If initialization fails.
      * @template T The type of the instance.
      */
     protected _initialize<T>(name: string, instance: T): T {
         instance = this._applyProcessorsBeforeInitialization(name, instance);
 
-        try {
-            if (likeInitializable(instance)) {
-                this._invokeInit(name, instance);
-            }
-        } catch (e) {
-            logger.warn(`Failed to initialize entry '${name}':`, { error: e instanceof Error ? e.message : String(e) });
+        if (likeInitializable(instance)) {
+            this._invokeInit(name, instance);
         }
 
         instance = this._applyProcessorsAfterInitialization(name, instance);

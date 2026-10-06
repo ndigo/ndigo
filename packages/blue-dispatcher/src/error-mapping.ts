@@ -6,13 +6,13 @@
 import '@tsmetadata/polyfill';
 import { Constructable, getSymbolMetadata } from '@blue/core';
 import { propIs, isNotNil } from '@blue/util/types';
+import { makeMethodEnumerable } from './_decorator-util';
 
 function _hasFunction(key: string, obj: unknown): boolean {
     return propIs(Function, key, obj);
 }
 
-const { assign, getOwnPropertyDescriptor } = Object;
-const { defineProperty } = Reflect;
+const { assign } = Object;
 
 /**
  * Invoked via the `errorHandler` decorator.
@@ -44,15 +44,10 @@ function errorMappingDecorator(errorClass: Constructable<Error> | Constructable<
         const errors = Array.isArray(errorClass) ? errorClass : [errorClass];
         context.metadata[`error:mapping:${String(context.name)}`] = errors;
 
-        // Make method enumerable
+        // Make the method enumerable where it is declared so `Object.keys`
+        // and for...in discovery find base-class-declared methods too.
         context.addInitializer(function (this: unknown) {
-            const descriptor = getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
-            if (descriptor && !descriptor.enumerable) {
-                defineProperty(Object.getPrototypeOf(this), context.name, {
-                    ...descriptor,
-                    enumerable: true,
-                });
-            }
+            makeMethodEnumerable(this as object, context.name);
         });
     };
 }

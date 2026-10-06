@@ -54,6 +54,16 @@ export interface CountConfig {
 }
 
 /**
+ * Instrumentations whose wrappers are currently live, and therefore whose
+ * next `enable()` must be a no-op.
+ *
+ * Module-level because `InstrumentationBase` runs the subclass `enable()`
+ * from its own constructor — before this class's instance field initializers
+ * — so the constructor-time call cannot be recorded on the instance.
+ */
+const ENABLED = new WeakSet<AbstractBaseInstrumentation>();
+
+/**
  * Base class for BlueJS OpenTelemetry instrumentations.
  *
  * Eliminates the copy-pasted span lifecycle boilerplate (getTracer, startSpan,
@@ -63,6 +73,11 @@ export interface CountConfig {
  * Subclasses only declare:
  * - the target class/method to patch
  * - the span name, kind, and attributes
+ *
+ * `enable()`/`disable()` are latched: the constructor-time enable counts as
+ * the first cycle, a repeated `enable()` (the SDK's `registerInstrumentations`)
+ * is a no-op, and `disable()` unwinds the wrappers once and re-arms the next
+ * `enable()`.
  */
 export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
     /**
@@ -72,6 +87,34 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
      */
     constructor(component: string) {
         super(`@blue/instrumentation-${component}`, '0.0.1', {});
+
+        // `InstrumentationBase`'s constructor has already run the subclass
+        // `enable()` exactly once (`enabled` defaults to true), and the
+        // platform `_wrap` is not idempotent everywhere — the browser build
+        // is plain `shimmer.wrap`, so a second enable nests a wrapper that a
+        // single `disable()` would leave live. Record the constructor-time
+        // call, then seal `enable`/`disable` on this instance so every later
+        // trigger (the SDK's `registerInstrumentations`, a manual re-enable)
+        // hits the latch here. Subclasses keep implementing `enable`/
+        // `disable`; they cannot forget the latch because it lives in this
+        // base class.
+        ENABLED.add(this);
+        const enable = this.enable;
+        const disable = this.disable;
+        this.enable = () => {
+            if (ENABLED.has(this)) {
+                return;
+            }
+            ENABLED.add(this);
+            enable.call(this);
+        };
+        this.disable = () => {
+            if (!ENABLED.has(this)) {
+                return;
+            }
+            ENABLED.delete(this);
+            disable.call(this);
+        };
     }
 
     /** @inheritdoc */

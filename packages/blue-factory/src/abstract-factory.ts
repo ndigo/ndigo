@@ -35,7 +35,7 @@ import {
 } from './entry-processor';
 import { Factory, ConfigurableFactory, FactoryAware, likeFactoryAware, getErrorMessage } from './factory-contract';
 import { create, keys, construct, defineProperty, deleteProperty } from './factory-shared';
-import { getLogger } from '@blue/telemetry/logger';
+import { getLogger } from '@blue/log';
 
 const logger = getLogger('blue-factory:abstract-factory');
 

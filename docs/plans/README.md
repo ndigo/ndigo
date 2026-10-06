@@ -186,6 +186,7 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 
 ## Completed Reviews
 
+- [2026-10-06_CODE_REVIEW_AND_MITIGATION.md](2026-10-06_CODE_REVIEW_AND_MITIGATION.md) - Full-repository review (42 packages, 7 apps, docs, tooling, hygiene) with remediation waves (1 Block build-breaker + 4 architecture findings + 18 Must Fix, ~60 Should Fix, remainder Optional/Nit/FYI)
 - [2026-10-04_CODE_REVIEW_AND_MITIGATION.md](2026-10-04_CODE_REVIEW_AND_MITIGATION.md) - Review of the AD-42/AD-43 wave (blue-proxy, blue-resilience) and recent committed features with remediation plan (2 Must Fix, 3 Should Fix, 1 Block, 8 Medium, 10 Nit/FYI)
 - [2026-09-28_CODE_REVIEW_AND_MITIGATION.md](2026-09-28_CODE_REVIEW_AND_MITIGATION.md) - Review of the Wave 6 / AD-34 / AD-35-36 / AD-37 wave with remediation plan (2 Must Fix, 22 Should Fix, 16 Optional)
 - [2026-09-18_CODE_REVIEW_AND_MITIGATION.md](2026-09-18_CODE_REVIEW_AND_MITIGATION.md) - Architecture, security, and quality review with remediation plan

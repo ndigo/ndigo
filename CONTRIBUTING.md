@@ -97,6 +97,9 @@ Minimum requirements before a plan is ready to build:
   wave (e.g. "Wave 2 lands the DataBinder change before the `instanceof`
   gate"). A gate the current code cannot satisfy means the plan is still a
   proposal — say so.
+- **Verification runs the CI lane, not a subset.** Wave gates list the
+  commands CI runs, starting with `pnpm build` — an Nx dependency cycle fails
+  there before any test executes, so a green test run alone is not evidence.
 - **Lifecycle is tracked**: `Proposal` → review (record findings and fixes in
   the doc) → `Accepted` (ADR recorded) → `Implemented` (status header updated,
   gap-analysis rows refreshed, index entry moved in `docs/plans/README.md`).

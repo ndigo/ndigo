@@ -1,6 +1,7 @@
 /**
- * NodeSDK configuration and the Node platform instrumentations:.
- * * @module blue-telemetry-node
+ * NodeSDK configuration and the Node platform instrumentations.
+ *
+ * @module blue-telemetry-node
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -19,5 +20,5 @@ export {
     WebSocketServerInstrumentation,
     type WebSocketServerInstrumentationOptions,
 } from './instrumentation/websocket-server/websocket-server';
-export { ContextInstrumentation } from './instrumentation/context/context';
+export { ContextInstrumentation } from '@blue/telemetry';
 export { SeverityFilterLogRecordProcessor } from './severity-filter-log-record-processor';

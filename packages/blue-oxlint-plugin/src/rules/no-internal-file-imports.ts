@@ -51,6 +51,9 @@ export const noInternalFileImports = {
                     checkSource(node.source);
                 }
             },
+            ExportAllDeclaration(node: ESTree.ExportAllDeclaration) {
+                checkSource(node.source);
+            },
         };
     },
 };

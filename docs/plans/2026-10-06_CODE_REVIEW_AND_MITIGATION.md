@@ -15,11 +15,12 @@ against the clean tree: `pnpm build` failure reproduced after `nx reset`;
 dependency-cycle regression computed across `HEAD~1..HEAD~3`; `toRegExp`
 crash, Drizzle DDL type mapping, and JWT exp/sub/short-secret acceptance
 reproduced with `tsx` probes. Full gates were run before the review (§0).
-**Status:** Findings recorded; **Waves 1–3 EXECUTED (2026-10-06)** —
-`@blue/log` leaf + cycle-free build (AD-67), the Must-Fix correctness cluster
-(CF-1..3, IN-1..2, HT-1), and the remaining Must-Fix wave (PL-1..4, DA-1,
-OP-1..2, PR-1..2) — each with fail-before/pass-after regression specs (results
-in §4). Waves 4–6 pending.
+**Status:** Findings recorded; **Waves 1–3 and 4a EXECUTED (2026-10-06)** —
+`@blue/log` leaf + cycle-free build (AD-67); all Must-Fix correctness items
+(CF-1..3, IN-1..2, HT-1, PL-1..4, DA-1, OP-1..2, PR-1..2); and the security /
+standards batch (SE-1..4, SE-6, TO-1, DO-1/DO-2 — package READMEs for the six
+flagged packages; wider README-gate alignment deferred to Wave 5). Waves
+4b–6 pending.
 **Legend:** `[code]` established by reading cited lines · `[exec]` reproduced
 by execution · `[inference]` reasoned without execution.
 **Source IDs:** each finding keeps its slice-local origin where useful
@@ -805,3 +806,29 @@ layering contract.
   `openapi-3.0` target (`nullable`/`enum`/`items`).
 - Integration fix-ups: doc-header order in the socket spec; `Promise.all`
   over limit cases to satisfy `no-await-in-loop`.
+
+### Wave 4a execution (2026-10-06)
+
+- **SE-1/SE-2** `JWTAdapter` requires `exp` + `sub` (`requiredClaims`),
+  rejects missing/empty `sub` instead of `'unknown'`, adds
+  `clockToleranceSeconds`, and rejects HS* secrets under 32 bytes at
+  construction; all test secrets migrated. Integrator re-probe: exp-less →
+  `null`, sub-less → `null`, 1-byte secret → constructor error.
+- **SE-4/SE-3** the management mapping prepends
+  `SecurityHeadersInterceptor` (`@blue/platform-node` dependency added,
+  acyclic — verified by `pnpm build`); `/health` + `/metrics` spec asserts
+  nosniff + CSP; guide 11 §8 and the management README now prescribe an
+  unconditional guard (AuthRouteGuard called out as metadata-driven/inert).
+- **TO-1** `blue-auth-core`'s decorators file promoted to
+  `src/decorators.ts` (AD-46 revisit trigger); the oxlint
+  `no-internal-file-exports` rule now flags named re-exports and
+  `no-internal-file-imports` flags `export *` — one whole-repo lint run
+  proves no other violations; AD-46 gained an Update note.
+- **DO-1/DO-2** proxy/resilience/redis/cache/openapi/orm-drizzle READMEs
+  rewritten to the package-documentation standard (no AD/plan/verification
+  references; standard H2 sets; exports/signatures verified against src).
+  Widening `check-manifests` to assert the H2 set is deferred to Wave 5,
+  when the remaining READMEs are aligned.
+- **SE-6** auth-client/auth-server READMEs rewritten against the real guard
+  APIs; the new snippets were type-checked against package sources
+  (fail-before: the old snippets produced five TS errors).

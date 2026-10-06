@@ -5,6 +5,7 @@
  */
 import { configuration, entry } from '@blue/context';
 import { type RouteHandlerInterceptor, RadixMetadataHandlerMapping } from '@blue/dispatcher';
+import { SecurityHeadersInterceptor } from '@blue/platform-node';
 import { FeatureMetricAggregator } from '@blue/telemetry';
 import { HealthRegistry } from './health';
 import { MetricsController } from './metrics-controller';
@@ -99,19 +100,22 @@ export class ManagementAutoConfiguration {
     }
 
     /**
-     * The metadata handler mapping(s), with the configured access guard
-     * pushed onto the interceptor chain when present. Declared as the
-     * `handlerMappings` collection (the resolution the strategy checks
-     * first), so it is immune to registration-order clobbering by
-     * `NodeAutoConfiguration.handlerMapping`; controllers still register
-     * through it via handler detection. Without a guard the mapping behaves
-     * like the platform default.
+     * The metadata handler mapping(s): the default security-header set is
+     * prepended (same instance shape as the platform mapping — `/health` and
+     * `/metrics` otherwise bypass the interceptor attached to the *platform*
+     * mapping), then the configured access guard pushed onto the interceptor
+     * chain when present. Declared as the `handlerMappings` collection (the
+     * resolution the strategy checks first), so it is immune to
+     * registration-order clobbering by `NodeAutoConfiguration.handlerMapping`;
+     * controllers still register through it via handler detection. Without a
+     * guard the mapping behaves like the platform default plus headers.
      *
-     * @returns The metadata mapping (guard-attached when configured).
+     * @returns The metadata mapping (security headers default-on, guard-attached when configured).
      */
     @entry()
     handlerMappings(): RadixMetadataHandlerMapping[] {
         const mapping = new RadixMetadataHandlerMapping();
+        mapping.interceptors.unshift(new SecurityHeadersInterceptor());
         if (this.#accessGuard) {
             mapping.interceptors.push(this.#accessGuard);
         }

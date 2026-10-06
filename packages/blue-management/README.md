@@ -26,12 +26,13 @@ const app = new ApplicationBuilder([ManagementAutoConfiguration]).run();
 - `GET /health` → `{ status, components, timestamp }`
 - `GET /metrics` → `{ features: { <feature>: { counters, gauges, updatedAt } } }`
 
-> **⚠️ Open by default.** These endpoints carry no authentication: **any caller that can reach the port can read them.** On an untrusted network, pass an access guard to `ManagementAutoConfiguration({ accessGuard })` (any `RouteHandlerInterceptor` — e.g. the `AuthRouteGuard` from `@blue/auth-server`) so every management request is denied before its handler runs, and/or firewall the management routes at the network boundary. Indicator error messages are surfaced in `/health` responses — guard or firewall when they may reveal sensitive subsystem details.
+> **⚠️ Open by default.** These endpoints carry no authentication: **any caller that can reach the port can read them.** On an untrusted network, pass an _unconditional_ guard to `ManagementAutoConfiguration({ accessGuard })` so every management request is denied before its handler runs — a guard that checks the request itself (a token-presence or token-adapter guard), because the handlers carry no `@authenticated`/`@authorized` metadata and a metadata-driven guard such as `AuthRouteGuard` would always permit them. Also firewall the management routes at the network boundary. Indicator error messages are surfaced in `/health` responses — guard or firewall when they may reveal sensitive subsystem details.
 
 ## How it works
 
 - `ManagementAutoConfiguration` registers a shared `FeatureMetricAggregator` entry (the same one `@counted` and feature code populate), a `HealthRegistry` pre-wired with a `TelemetryHealthIndicator`, and the two controllers.
 - When `accessGuard` is configured, a `handlerMappings` entry attaches the guard to the dispatch interceptor chain, scoped to management paths only — `/health` and `/metrics` are denied before their handlers run while every other route is untouched.
+- The mapping prepends `SecurityHeadersInterceptor` — management responses carry the platform's default security-header set (CSP, `X-Content-Type-Options: nosniff`, …) even though these routes bypass the platform mapping.
 - `MetricsController` (`/metrics`) reads the aggregator from the application context and serializes per-feature counters/gauges.
 - `HealthController` (`/health`) runs the context `HealthRegistry` — the registry is wired once at context refresh and never mutated per request.
 - Custom `HealthIndicator`s can be registered on the `HealthRegistry` entry for other subsystems (data sources, external deps).
@@ -63,7 +64,7 @@ pnpm --filter @blue/management test
 ## See Also
 
 - [@blue/telemetry](../blue-telemetry/README.md) — produces the telemetry counters management serves
-- [@blue/auth-server](../blue-auth-server/README.md) — `AuthRouteGuard` as a management access guard
+- [@blue/platform-node](../blue-platform-node/README.md) — `SecurityHeadersInterceptor`, attached to management responses by default
 
 ## Contributing
 

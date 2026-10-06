@@ -33,23 +33,32 @@ export const noInternalFileExports = {
             return {};
         }
 
+        function checkSource(sourceNode: ESTree.StringLiteral): void {
+            // Only flag exports of internal underscore-prefixed relative files (e.g. './_foo').
+            if (!sourceNode.value.startsWith('./_')) {
+                return;
+            }
+
+            context.report({
+                node: sourceNode,
+                messageId: 'internalExport',
+                data: {
+                    source: sourceNode.value,
+                },
+            });
+        }
+
         return {
             before() {
                 // Per-file setup if needed in the future
             },
             ExportAllDeclaration(node: ESTree.ExportAllDeclaration) {
-                // Only flag exports of internal underscore-prefixed relative files (e.g. './_foo').
-                if (!node.source.value.startsWith('./_')) {
-                    return;
+                checkSource(node.source);
+            },
+            ExportNamedDeclaration(node: ESTree.ExportNamedDeclaration) {
+                if (node.source !== null) {
+                    checkSource(node.source);
                 }
-
-                context.report({
-                    node: node.source,
-                    messageId: 'internalExport',
-                    data: {
-                        source: node.source.value,
-                    },
-                });
             },
         };
     },

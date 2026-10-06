@@ -184,9 +184,12 @@ two hardening layers on by default since AD-36:
   the wire. Opt into raw messages with
   `ManagementAutoConfiguration({ redactHealthErrors: false })` — only
   sensible behind a guard.
-- **Guarded endpoints** — wire
-  `ManagementAutoConfiguration({ accessGuard })`; `AuthRouteGuard` over the
-  `'credentials'` adapter is the intended fit.
+- **Guarded endpoints** — wire an _unconditional_ guard into
+  `ManagementAutoConfiguration({ accessGuard })`. The handlers carry no
+  `@authenticated`/`@authorized` metadata, so a metadata-driven guard such as
+  `AuthRouteGuard` would always permit them — use a guard that checks the
+  request itself (a token-presence or token-adapter guard) to actually require
+  authentication.
 
 **Bind-address separation (AD-36 D-2).** Management routes share the
 application listener and follow its bind address — the platform server

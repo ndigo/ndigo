@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
-import { authenticated, authorized, AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '../src/_decorators';
+import { authenticated, authorized, AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '../src/decorators';
 
 type DecoratorContext = ClassDecoratorContext | ClassMethodDecoratorContext;
 

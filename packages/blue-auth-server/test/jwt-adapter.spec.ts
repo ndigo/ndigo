@@ -6,12 +6,15 @@
 // @vitest-environment node
 // Helper to create a minimal JWT token string with a real HMAC signature
 import { describe, test, expect, beforeEach } from 'vitest';
-import { JWTAdapter } from '../src/jwt-adapter';
+import { JWTAdapter, JWTTokenError } from '../src/jwt-adapter';
 import { Principal } from '@blue/auth-core';
 import { generateKeyPair, exportSPKI, SignJWT, type JWTPayload } from 'jose';
 import { createHmac } from 'node:crypto';
 
-function createJWT(payload: JWTPayload, secret = 'test-secret'): string {
+/** 32+ byte HMAC secret (SE-2 rejects keys below 256 bits). */
+const TEST_SECRET = 'test-secret-0123456789abcdefghijklmn';
+
+function createJWT(payload: JWTPayload, secret = TEST_SECRET): string {
     const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
     const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
     const signature = createHmac('sha256', secret).update(`${header}.${body}`).digest('base64url');
@@ -22,7 +25,7 @@ describe('JWTAdapter', () => {
     const config = {
         issuer: 'https://auth.example.com',
         audience: 'my-app',
-        secret: 'test-secret',
+        secret: TEST_SECRET,
         algorithm: 'HS256',
     };
 
@@ -36,6 +39,14 @@ describe('JWTAdapter', () => {
         expect(
             () => new JWTAdapter({ issuer: 'https://auth.example.com', audience: 'my-app', algorithm: 'HS256' })
         ).toThrow(/secret/);
+    });
+
+    test('construction rejects an HMAC secret below 32 bytes (SEC-2)', () => {
+        const short = { ...config, secret: 'x'.repeat(31) };
+        expect(() => new JWTAdapter(short)).toThrow(JWTTokenError);
+        expect(() => new JWTAdapter(short)).toThrow(/at least 32 bytes/);
+        // 32 bytes is the floor: a full-length key still constructs.
+        expect(() => new JWTAdapter({ ...config, secret: 'x'.repeat(32) })).not.toThrow();
     });
 
     describe('validate', () => {
@@ -119,7 +130,7 @@ describe('JWTAdapter', () => {
             expect(result?.name).toBe('alice@example.com');
         });
 
-        test('uses unknown as id when sub is missing', async () => {
+        test('returns null when sub is missing (SE-1)', async () => {
             const futureTime = Math.floor(Date.now() / 1000) + 3600;
             const token = createJWT({
                 name: 'Test',
@@ -128,9 +139,20 @@ describe('JWTAdapter', () => {
                 exp: futureTime,
             });
 
-            const result = await adapter.validate(token);
-            expect(result).toBeDefined();
-            expect(result?.id).toBe('unknown');
+            expect(await adapter.validate(token)).toBeNull();
+        });
+
+        test('returns null when sub is an empty string (SE-1)', async () => {
+            const futureTime = Math.floor(Date.now() / 1000) + 3600;
+            const token = createJWT({
+                sub: '',
+                name: 'Test',
+                iss: 'https://auth.example.com',
+                aud: 'my-app',
+                exp: futureTime,
+            });
+
+            expect(await adapter.validate(token)).toBeNull();
         });
 
         test('uses Unknown as name when name and email are missing', async () => {
@@ -162,7 +184,7 @@ describe('JWTAdapter', () => {
             expect(result?.roles).toEqual([]);
         });
 
-        test('returns null when no exp claim (no expiration check)', async () => {
+        test('returns null when the exp claim is missing (SE-1)', async () => {
             const token = createJWT({
                 sub: '1',
                 name: 'Test',
@@ -170,9 +192,22 @@ describe('JWTAdapter', () => {
                 aud: 'my-app',
             });
 
-            const result = await adapter.validate(token);
-            expect(result).not.toBeNull();
-            expect(result?.id).toBe('1');
+            expect(await adapter.validate(token)).toBeNull();
+        });
+
+        test('clockToleranceSeconds admits recently expired tokens (SE-1)', async () => {
+            const justExpired = Math.floor(Date.now() / 1000) - 5;
+            const token = createJWT({
+                sub: '1',
+                name: 'Test',
+                iss: 'https://auth.example.com',
+                aud: 'my-app',
+                exp: justExpired,
+            });
+
+            expect(await adapter.validate(token)).toBeNull();
+            const tolerant = new JWTAdapter({ ...config, clockToleranceSeconds: 30 });
+            await expect(tolerant.validate(token)).resolves.toMatchObject({ id: '1' });
         });
     });
 

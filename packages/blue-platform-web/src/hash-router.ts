@@ -100,6 +100,8 @@ export class HashRouter extends AbstractRouter {
     #history: RouteHistory;
     #route: PathRoute;
     #lastPublicRoute: string;
+    /** Routes whose `location.hash` write is still awaiting its `hashchange` echo. */
+    #pendingHashEchoes: string[];
 
     readonly callback!: RouterCallback;
 
@@ -144,6 +146,7 @@ export class HashRouter extends AbstractRouter {
 
         this.#handler = (event: HashChangeEvent) => this._onHashChange(event);
         this.#history = new RingBuffer<RouteTransaction>(256);
+        this.#pendingHashEchoes = [];
 
         const currentRoute = removeFirstCharacter(location.hash) || '/',
             routeTx = new RouteTransaction(currentRoute, RouteAccess.PUBLIC, RouteSource.EXTERNAL);
@@ -196,6 +199,7 @@ export class HashRouter extends AbstractRouter {
             this.#history.put(routeTx);
             if (isPublic) {
                 this.#lastPublicRoute = this.route;
+                this._syncHash();
             }
             this.callback(this.#route);
         }
@@ -228,12 +232,21 @@ export class HashRouter extends AbstractRouter {
 
     /**
      * Handles the native `hashchange` event, extracting the new route and initiating the routing process.
+     * The echo of a hash written by {@link setRoute} is ignored — that route change has already been
+     * recorded and dispatched, so re-running the pipeline would duplicate it.
      * @param event - The `HashChangeEvent` object.
      * @protected
      * @since 1.0.0
      */
     protected _onHashChange(event: HashChangeEvent) {
-        const newRoute = extractRouteFromURL(event.newURL);
+        const newRoute = extractRouteFromURL(event.newURL),
+            echoIndex = this.#pendingHashEchoes.indexOf(newRoute);
+
+        if (echoIndex !== -1) {
+            this.#pendingHashEchoes.splice(echoIndex, 1);
+            return;
+        }
+
         void this._setRoute(newRoute, true).then((success) => {
             if (success) {
                 const route = this.route,
@@ -278,12 +291,39 @@ export class HashRouter extends AbstractRouter {
     }
 
     /**
+     * Mirrors the current route into `location.hash`, recording the written hash so the
+     * `hashchange` event the browser emits for it is not re-dispatched.
+     * Does nothing outside a browser environment.
+     * @private
+     * @since 1.0.0
+     */
+    private _syncHash(): void {
+        if (typeof location === 'undefined') {
+            return;
+        }
+
+        const route = this.route,
+            hash = `#${route}`;
+
+        if (location.hash === hash) {
+            return;
+        }
+
+        location.hash = route;
+        this.#pendingHashEchoes.push(removeFirstCharacter(location.hash));
+    }
+
+    /**
      * Restores the browser hash to the given route when a navigation is rejected or fails.
-     * Only acts when syncHash is enabled and the hash has actually changed.
+     * Only acts when syncHash is enabled and the hash no longer represents the given route.
      */
     private _restoreHash(oldRoute: string, syncHash: boolean): void {
-        if (syncHash && typeof location !== 'undefined' && location.hash !== oldRoute) {
-            location.hash = oldRoute;
+        if (syncHash && typeof location !== 'undefined') {
+            const currentRoute = removeFirstCharacter(location.hash) || '/';
+
+            if (currentRoute !== oldRoute) {
+                location.hash = oldRoute;
+            }
         }
     }
 

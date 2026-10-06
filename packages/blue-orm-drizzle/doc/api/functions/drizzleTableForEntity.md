@@ -10,11 +10,11 @@
 
 Maps an entity class to a Drizzle `sqliteTable`.
 
-Column SQL types from `@column({ type })` map to sqlite-core builders:
-`int*` → `integer`, `real`/`float`/`double` → `real`, `blob` → `blob`,
-everything else → `text`. The primary key is marked
-`primaryKey({ autoIncrement })` when the entity declares a generated
-column.
+Column SQL types come from the shared metadata → SQLite storage mapping
+also used by `createTableStatements` for DDL (`int*` → `integer`,
+`real`/`float`/`double` → `real`, `blob` → `blob`, everything else →
+`text`). The primary key is marked `primaryKey({ autoIncrement })` when the
+entity declares a generated `INTEGER` column.
 
 ## Type Parameters
 

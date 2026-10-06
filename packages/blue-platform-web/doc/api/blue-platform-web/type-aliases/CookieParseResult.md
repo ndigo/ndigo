@@ -6,6 +6,6 @@
 
 # Type Alias: CookieParseResult
 
-> **CookieParseResult** = `ReturnType`\<[`Parser`](#)\<`JSONObject`\>\[`"run"`\]\>
+> **CookieParseResult** = \{ `data`: `unknown`; `index`: `number`; `isError`: `false`; `result`: `JSONObject`; \} \| \{ `data`: `unknown`; `error`: `string`; `index`: `number`; `isError`: `true`; \}
 
 Parsed result returned by the cookie parser.

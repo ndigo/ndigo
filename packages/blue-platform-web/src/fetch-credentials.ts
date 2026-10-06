@@ -18,7 +18,8 @@ export interface FetchCredentialsInterceptorConfig {
      * Fetch credentials mode for cross-origin requests: `'include'` sends
      * cookies/authentication on cross-origin requests (requires the server's
      * `Access-Control-Allow-Credentials`), `'omit'` suppresses them.
-     * @defaultValue `'omit'` — the fetch default; safe for public APIs.
+     * @defaultValue `'omit'` — the interceptor default. Note that the native
+     * `fetch` default is `'same-origin'`.
      */
     credentials?: RequestCredentials;
 }
@@ -45,16 +46,13 @@ export class FetchCredentialsInterceptor implements RequestAwareHTTPInterceptor 
     /**
      * Applies the configured credentials mode to the outgoing request.
      *
+     * Clones the request so method, headers, body, signal, mode, redirect,
+     * cache, integrity and keepalive are preserved, overriding only `credentials`.
+     *
      * @param request - The outgoing request.
-     * @returns The modified request carrying the credentials mode.
+     * @returns A clone of the request carrying the credentials mode.
      */
     async preRequest(request: Request, _http: HTTP): Promise<Request | void> {
-        const init: RequestInit = {
-            method: request.method,
-            headers: new Headers(request.headers),
-            body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : undefined,
-        };
-        init.credentials = this.#credentials;
-        return new Request(request.url, init);
+        return new Request(request, { credentials: this.#credentials });
     }
 }

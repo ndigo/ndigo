@@ -239,7 +239,11 @@ export class WebSocketClient implements SocketClient {
         } else if (data instanceof ArrayBuffer) {
             payload = data;
         } else if (data instanceof Uint8Array) {
-            payload = (data as Uint8Array).slice().buffer;
+            // Copy the view window: a Node `Buffer` is a `Uint8Array` over
+            // the shared 8 KiB pool — `Buffer.prototype.slice()` returns a
+            // view (it does not copy) and `.buffer` is the whole slab, so
+            // passing either through would put pooled memory on the wire.
+            payload = new Uint8Array(data).buffer;
         } else {
             const serialized = JSON.stringify(data);
             if (serialized === undefined) {

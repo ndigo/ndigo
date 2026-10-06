@@ -2,11 +2,14 @@
  * `WebSocketClient` unit tests — WHATWG-shaped transport doubles + fake
  * timers (no real sockets). Covers connect/message parity, reconnect
  * backoff + jitter, deliberate-close latching, the optional outbound queue,
- * and the reconnect trigger (AD-22 D3).
+ * binary payload framing, and the reconnect trigger (AD-22 D3). Node
+ * environment: the binary specs need the same-realm `Buffer` (jsdom's
+ * cross-realm intrinsics make `Buffer instanceof Uint8Array` false).
  * @module blue-socket
  * @since 1.0.0
  * @author Jeff Rose
  */
+// @vitest-environment node
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
     WebSocketClient,
@@ -25,10 +28,10 @@ class FakeTransport implements SocketTransport {
     onmessage: ((event: { data: unknown }) => void) | null = null;
     onclose: ((event: { code: number; reason: string; wasClean: boolean }) => void) | null = null;
     onerror: ((event: unknown) => void) | null = null;
-    readonly sent: string[] = [];
+    readonly sent: Array<string | ArrayBuffer> = [];
     closed: { code: number; reason: string } | null = null;
 
-    send(data: string): void {
+    send(data: string | ArrayBuffer): void {
         this.sent.push(data);
     }
 
@@ -245,6 +248,51 @@ describe('WebSocketClient', () => {
         client.close();
         client.send('late');
         expect(created[0].sent).toEqual([]);
+    });
+
+    test('binary send copies a Node Buffer payload — no pool slab on the wire', () => {
+        const { client, created } = createHarness();
+        created[0].fireOpen();
+
+        // `Buffer.from` carves out of the shared 8 KiB pool: its `.buffer`
+        // is the whole slab and `Buffer.prototype.slice()` returns a view,
+        // so a naive pass-through shipped 8192 bytes for `'hello'` — wrong
+        // frame bytes plus pooled-memory disclosure.
+        const buffer = Buffer.from('hello');
+        client.send(buffer);
+
+        const sent = created[0].sent[0] as ArrayBuffer;
+        expect(sent).toBeInstanceOf(ArrayBuffer);
+        expect(sent.byteLength).toBe(5);
+        expect([...new Uint8Array(sent)]).toEqual([...buffer]);
+
+        // The frame must be an owned copy, not a view into the caller's
+        // (pooled) memory: mutating the source later must not rewrite it.
+        buffer[0] = 0x7a;
+        expect([...new Uint8Array(sent)]).toEqual([104, 101, 108, 108, 111]);
+    });
+
+    test('binary send copies only the subarray window of a view', () => {
+        const { client, created } = createHarness();
+        created[0].fireOpen();
+
+        const base = Uint8Array.from([0, 1, 2, 3, 4, 5]);
+        client.send(base.subarray(2, 5));
+
+        const sent = created[0].sent[0] as ArrayBuffer;
+        expect(sent.byteLength).toBe(3);
+        expect([...new Uint8Array(sent)]).toEqual([2, 3, 4]);
+    });
+
+    test('binary send copies a plain Uint8Array exactly', () => {
+        const { client, created } = createHarness();
+        created[0].fireOpen();
+
+        client.send(new Uint8Array([1, 2, 3]));
+
+        const sent = created[0].sent[0] as ArrayBuffer;
+        expect(sent.byteLength).toBe(3);
+        expect([...new Uint8Array(sent)]).toEqual([1, 2, 3]);
     });
 
     test('reconnect trigger retries immediately while reconnecting', () => {

@@ -7,6 +7,7 @@ import { createClient, Client } from '@libsql/client';
 import { drizzle as createDrizzle, LibSQLDatabase } from 'drizzle-orm/libsql';
 import { Constructable } from '@blue/core';
 import { getEntityMetadata, isEntity } from '@blue/orm';
+import { primaryKeyStorageType, sqliteTypeForColumnType } from './_column-types';
 
 export type { LibSQLDatabase } from 'drizzle-orm/libsql';
 
@@ -69,6 +70,14 @@ export class DrizzleDataSource {
  * by {@link DrizzleDataSource.init} (fresh-DB auto-init) and baseline
  * migrations (AD-30 D-3).
  *
+ * Column storage types follow the shared metadata → SQLite mapping:
+ * `int*` → `INTEGER`, `real`/`float`/`double` → `REAL`, `blob` → `BLOB`,
+ * everything else → `TEXT`. A primary key derives its storage class from the
+ * declared column type; an undeclared generated key stays `INTEGER`
+ * (auto-increment) and an undeclared caller-assigned key is `NUMERIC`, so
+ * both string and numeric keys round-trip. `AUTOINCREMENT` is only emitted
+ * for generated `INTEGER` keys.
+ *
  * @param entities - The entity classes declared with `@blue/orm` decorators.
  * @returns One statement per entity with declared columns; entities with no
  *   columns contribute nothing.
@@ -86,15 +95,17 @@ export function createTableStatements(entities: Constructable[]): string[] {
         for (const col of meta.columns) {
             const parts: string[] = [`"${col.columnName}"`];
             const isPk = col.fieldName === meta.primaryColumn;
+            const isGenerated = meta.generatedColumns.includes(col.fieldName);
 
-            const sqlType = isPk ? 'INTEGER' : (col.type ?? 'TEXT').toUpperCase();
-            const sqlNormalized = sqlType === 'TEXT' || sqlType === 'STRING' ? 'TEXT' : 'INTEGER';
+            // Primary keys resolve their storage class separately: declared
+            // type first, then the generated/caller-assigned defaults.
+            const sqlType = isPk ? primaryKeyStorageType(col.type, isGenerated) : sqliteTypeForColumnType(col.type);
 
-            parts.push(sqlNormalized);
+            parts.push(sqlType);
 
             if (isPk) {
                 parts.push('PRIMARY KEY');
-                if (meta.generatedColumns.includes(col.fieldName)) {
+                if (isGenerated && sqlType === 'INTEGER') {
                     parts.push('AUTOINCREMENT');
                 }
             }

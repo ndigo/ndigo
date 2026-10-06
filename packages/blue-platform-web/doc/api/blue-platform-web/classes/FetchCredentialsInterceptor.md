@@ -46,6 +46,9 @@ await http.get('https://api.example.com/data');
 
 Applies the configured credentials mode to the outgoing request.
 
+Clones the request so method, headers, body, signal, mode, redirect,
+cache, integrity and keepalive are preserved, overriding only `credentials`.
+
 #### Parameters
 
 ##### request
@@ -62,7 +65,7 @@ The outgoing request.
 
 `Promise`\<`void` \| `Request`\>
 
-The modified request carrying the credentials mode.
+A clone of the request carrying the credentials mode.
 
 #### Implementation of
 

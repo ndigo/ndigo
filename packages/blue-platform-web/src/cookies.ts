@@ -5,16 +5,6 @@
  */
 import { createNull, JSONObject, JSONValue } from '@blue/core';
 import cookieExpression from './parser/cookie-expression';
-import { decodeURIComponent as decode } from '@blue/util/string';
-
-/** Minimal parser shape: an object with a run method returning a success or failure. */
-type Parser<T> = {
-    run: (
-        input: string
-    ) =>
-        | { isError: false; result: T; index: number; data: unknown }
-        | { isError: true; error: string; index: number; data: unknown };
-};
 
 /** Parsed cookie structure returned by cookie parsing helpers. */
 export interface Cookie {
@@ -30,8 +20,8 @@ export interface Cookie {
 
 /** Minimal cookie-jar API exposed by the platform-web package. */
 export interface CookieJar {
-    get(key: string): JSONValue;
-    getJSON(key: string): JSONValue;
+    get(key: string): JSONValue | undefined;
+    getJSON(key: string): JSONValue | undefined;
     remove(key: string, attributes?: CookieAttributes): string;
     set(key: string, value: string, attributes?: CookieAttributes): string;
     run(input: string): CookieParseResult;
@@ -50,26 +40,26 @@ type CookieConverter = {
     write?: (value: string, key: string) => string;
 };
 
-type CookieParser = Parser<JSONObject>;
-
 /**
  * Parsed result returned by the cookie parser.
  */
-export type CookieParseResult = ReturnType<Parser<JSONObject>['run']>;
+export type CookieParseResult =
+    | { isError: false; result: JSONObject; index: number; data: unknown }
+    | { isError: true; error: string; index: number; data: unknown };
 type CookieParseSuccess = Extract<CookieParseResult, { isError: false }>;
+
+/** Parser shape of the cookie-expression parser, which always succeeds. */
+type CookieParser = {
+    run: (input: string) => CookieParseSuccess;
+};
 
 const cookieParser = cookieExpression as CookieParser;
 
 const { assign } = Object;
 
 /** Parses the browser cookie string using the package parser. */
-function parseCookieJar(input: string): CookieParseResult {
+function parseCookieJar(input: string): CookieParseSuccess {
     return cookieParser.run(input);
-}
-
-/** Narrows a parse result to a successful parse. */
-function isCookieParseSuccess(result: CookieParseResult): result is CookieParseSuccess {
-    return result.isError === false;
 }
 
 /** Creates a cookie-jar API bound to the current browser environment. */
@@ -135,37 +125,21 @@ function init(converter: CookieConverter = {}): CookieJar {
         return (document.cookie = key + '=' + value + stringifiedAttributes);
     }
 
-    function get(key: string, json: boolean): JSONValue {
-        const parseResult = parseCookieJar(document.cookie);
-        if (!isCookieParseSuccess(parseResult)) {
-            const fallbackCookies = String(document.cookie || '').trim();
-            if (!fallbackCookies) {
-                return key ? null : createNull();
-            }
+    function get(key: string, json: boolean): JSONValue | undefined {
+        const jar: JSONObject = parseCookieJar(document.cookie).result;
 
-            const pairs = fallbackCookies.split('; ');
-            const jar = pairs.reduce((result: JSONObject, pair: string): JSONObject => {
-                const separatorIndex = pair.indexOf('=');
-                if (separatorIndex < 0) {
-                    return result;
-                }
-
-                const rawKey = pair.slice(0, separatorIndex);
-                const rawValue = pair.slice(separatorIndex + 1);
-                result[decode(rawKey)] = decode(rawValue);
-
-                return result;
-            }, createNull() as JSONObject);
-
-            return key ? (json ? JSON.parse(jar[key] as string) : jar[key]) : jar;
+        if (!key) {
+            return jar;
         }
-        const jar: JSONObject = parseResult.result;
-        return key ? (json ? JSON.parse(jar[key] as string) : jar[key]) : jar;
+
+        const value = jar[key] as JSONValue | undefined;
+
+        return json && value !== undefined ? JSON.parse(value as string) : value;
     }
 
     api.set = set;
-    api.get = (key: string): JSONValue => get(key, false /* read as raw */);
-    api.getJSON = (key: string): JSONValue => get(key, true /* read as json */);
+    api.get = (key: string): JSONValue | undefined => get(key, false /* read as raw */);
+    api.getJSON = (key: string): JSONValue | undefined => get(key, true /* read as json */);
     api.remove = (key: string, attributes?: CookieAttributes): string =>
         set(key, '', assign(attributes || {}, { expires: -1 }));
 

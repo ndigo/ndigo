@@ -6,7 +6,9 @@
 
 # Interface: MultipartLimits
 
-Per-upload bounds. Every field is optional; [DEFAULT\_MPART\_LIMITS](#) fills the rest.
+Per-upload bounds. Every field is optional; [DEFAULT\_MPART\_LIMITS](#)
+fills the rest. `0` is a valid bound; negative or non-finite values throw
+a `RangeError` (fail-loud boot configuration).
 
 ## Properties
 

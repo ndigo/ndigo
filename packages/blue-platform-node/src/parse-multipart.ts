@@ -29,7 +29,11 @@ import { multipartBoundary } from '@blue/http';
 import { NodeMultipartContext, NodeMultipartFile, type Backing, type MultipartFile } from './multipart-file';
 import { HTTPHeaders } from '@blue/http';
 
-/** Per-upload bounds. Every field is optional; {@link DEFAULT_MPART_LIMITS} fills the rest. */
+/**
+ * Per-upload bounds. Every field is optional; {@link DEFAULT_MPART_LIMITS}
+ * fills the rest. `0` is a valid bound; negative or non-finite values throw
+ * a `RangeError` (fail-loud boot configuration).
+ */
 export interface MultipartLimits {
     /** Maximum size of a single file part, in bytes (default 10 MiB). */
     maxFileSize?: number;
@@ -86,25 +90,37 @@ const DEFAULT_MPART_LIMITS: ResolvedMultipartLimits = {
     fileThreshold: 128 * 1024,
 };
 
-function pickLimit(value: number | undefined, fallback: number): number {
+/**
+ * Apply the default when a limit is genuinely absent; reject values that
+ * cannot mean anything (negative or non-finite) instead of silently swapping
+ * in the default — misconfigured boot-time limits fail loud. `0` is a valid
+ * bound for every limit (for {@link MultipartLimits.fileThreshold} it means
+ * "force disk for every part").
+ */
+function pickLimit(field: keyof MultipartLimits, value: number | undefined, fallback: number): number {
     if (value === undefined) {
         return fallback;
     }
-    return typeof value !== 'number' || !Number.isFinite(value) || value <= 0 ? fallback : value;
+    if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
+        throw new RangeError(
+            `MultipartLimits.${field} must be a non-negative finite number, received ${String(value)}`
+        );
+    }
+    return value;
 }
 
 function resolveMultipartLimits(limits?: MultipartLimits): ResolvedMultipartLimits {
     const d = DEFAULT_MPART_LIMITS;
-    const maxFiles = pickLimit(limits?.maxFiles, d.maxFiles);
-    const maxFields = pickLimit(limits?.maxFields, d.maxFields);
+    const maxFiles = pickLimit('maxFiles', limits?.maxFiles, d.maxFiles);
+    const maxFields = pickLimit('maxFields', limits?.maxFields, d.maxFields);
     return {
-        maxFileSize: pickLimit(limits?.maxFileSize, d.maxFileSize),
+        maxFileSize: pickLimit('maxFileSize', limits?.maxFileSize, d.maxFileSize),
         maxFiles,
         maxFields,
-        maxParts: pickLimit(limits?.maxParts, maxFiles + maxFields),
-        maxFieldSize: pickLimit(limits?.maxFieldSize, d.maxFieldSize),
-        maxRequestSize: pickLimit(limits?.maxRequestSize, d.maxRequestSize),
-        fileThreshold: pickLimit(limits?.fileThreshold, d.fileThreshold),
+        maxParts: pickLimit('maxParts', limits?.maxParts, maxFiles + maxFields),
+        maxFieldSize: pickLimit('maxFieldSize', limits?.maxFieldSize, d.maxFieldSize),
+        maxRequestSize: pickLimit('maxRequestSize', limits?.maxRequestSize, d.maxRequestSize),
+        fileThreshold: pickLimit('fileThreshold', limits?.fileThreshold, d.fileThreshold),
     };
 }
 
@@ -423,7 +439,9 @@ function collectFile(
             }
             if (mode === 'buffer') {
                 chunks.push(chunk);
-                if (limits.fileThreshold > 0 && size > limits.fileThreshold) {
+                // PL-2: a threshold of 0 means "force disk for every part" —
+                // `size > 0` spills on the first byte.
+                if (size > limits.fileThreshold) {
                     tempPath = join(tmpDir, `blue-upload-${randomBytes(8).toString('hex')}`);
                     context.trackTemp(tempPath);
                     ws = createWriteStream(tempPath);

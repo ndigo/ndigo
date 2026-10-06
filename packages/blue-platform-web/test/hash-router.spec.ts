@@ -206,4 +206,71 @@ describe('HashRouter', () => {
         expect(secondCallRoute).toBe(firstCallRoute);
         expect(router.history.length).toBe(before);
     });
+
+    test('it should sync the URL hash on a successful public route change', async () => {
+        const onComplete = vi.fn((_route: Route) => null);
+        router = new HashRouter(onComplete);
+
+        await router.setRoute('/foo');
+
+        expect(router.route).toBe('/foo');
+        expect(location.hash).toBe('#/foo');
+    });
+
+    test('it should sync the URL hash when navigating', async () => {
+        const onComplete = vi.fn((_route: Route) => null);
+        router = new HashRouter(onComplete);
+
+        await router.navigate('/bar');
+
+        expect(router.route).toBe('/bar');
+        expect(location.hash).toBe('#/bar');
+    });
+
+    test('it should restore the hash when a public route change is rejected', async () => {
+        const onComplete = vi.fn((_route: Route) => null);
+        router = new HashRouter(onComplete);
+        await router.setRoute('/original');
+
+        expect(location.hash).toBe('#/original');
+
+        router.use({ preHandle: () => false });
+        await router.setRoute('/blocked');
+
+        expect(router.route).toBe('/original');
+        expect(location.hash).toBe('#/original');
+    });
+
+    test('it should ignore its own hashchange echo while still dispatching external changes', async () => {
+        // Flush any hashchange event left pending by the shared jsdom location before wiring listeners.
+        const { promise: hashChangeFlushed, resolve: flushHashChange } = Promise.withResolvers<void>();
+        setTimeout(flushHashChange, 50);
+        await hashChangeFlushed;
+
+        const onComplete = vi.fn((_route: Route) => null);
+        router = new HashRouter(onComplete);
+
+        const preHandle = vi.fn(() => true);
+        router.use({ preHandle });
+
+        const hashChangeSeen = vi.fn();
+        window.addEventListener('hashchange', hashChangeSeen);
+
+        await router.navigate('/synced');
+        expect(location.hash).toBe('#/synced');
+
+        // The echo of the write above must not run the pipeline a second time.
+        await vi.waitFor(() => expect(hashChangeSeen).toHaveBeenCalled());
+        expect(router.route).toBe('/synced');
+        expect(preHandle).toHaveBeenCalledTimes(1);
+        expect(onComplete).toHaveBeenCalledTimes(1);
+
+        // External hash changes keep dispatching.
+        location.hash = '/external';
+        await vi.waitFor(() => expect(router?.route).toBe('/external'));
+        expect(preHandle).toHaveBeenCalledTimes(2);
+        expect(onComplete).toHaveBeenCalledTimes(2);
+
+        window.removeEventListener('hashchange', hashChangeSeen);
+    });
 });

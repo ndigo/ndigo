@@ -6,13 +6,14 @@
  */
 import { HTTPHeaders, contentTypeBase, MULTIPART_FORM_DATA } from '@blue/http';
 import { NodeDispatcher } from '@blue/platform-node';
-import { getMethodNotAllowed } from '@blue/dispatcher';
+import { getMethodNotAllowed, getInterceptorDenial } from '@blue/dispatcher';
 import {
     ProblemTypes,
     writeProblem,
     parseMultipart,
     parseBodyRecord,
     RequestLimitError,
+    finalizeInterceptorDenial,
     type MultipartLimits,
     type NodeMultipartContext,
 } from '@blue/platform-node';
@@ -231,7 +232,9 @@ export class MockHTTP {
      *
      * Replicates `NodeHTTPServerAdapter`'s request→dispatch contract so the
      * in-process behavior matches a real HTTP hit: an unmatched route yields
-     * `404` JSON; a dispatcher error yields `500` JSON.
+     * `404` JSON; a dispatcher error yields `500` JSON; an interceptor denial
+     * yields the adapter's deterministic denial response (`401`/`403` problem
+     * document, redirect `302` with `Location`, or an empty `<= 399` status).
      *
      * @param req - The request spec.
      * @returns The mock result.
@@ -298,6 +301,16 @@ export class MockHTTP {
             }
             // Dispatch through the real pipeline; the handler writes to the sink.
             await this.#dispatcher.dispatch(prepared.route);
+            // Mirror NodeHTTPServerAdapter.handleRequest: an interceptor denial
+            // (auth guard, CSRF, CORS preflight) leaves no rendered view —
+            // finalize the same deterministic denial response here too, instead
+            // of returning the default empty 200. A response an interceptor
+            // already ended (e.g. the CSRF guard's own problem document) is left
+            // untouched, matching the adapter's ended-response skip.
+            const denial = getInterceptorDenial(prepared.route);
+            if (denial && !response.completed) {
+                finalizeInterceptorDenial(sink, denial);
+            }
         } catch (err: unknown) {
             if (!response.completed) {
                 if (err instanceof RequestLimitError) {

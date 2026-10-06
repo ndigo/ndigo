@@ -181,7 +181,9 @@ Dispatch an arbitrary mock request.
 
 Replicates `NodeHTTPServerAdapter`'s request→dispatch contract so the
 in-process behavior matches a real HTTP hit: an unmatched route yields
-`404` JSON; a dispatcher error yields `500` JSON.
+`404` JSON; a dispatcher error yields `500` JSON; an interceptor denial
+yields the adapter's deterministic denial response (`401`/`403` problem
+document, redirect `302` with `Location`, or an empty `<= 399` status).
 
 #### Parameters
 

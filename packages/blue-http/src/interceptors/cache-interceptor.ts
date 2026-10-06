@@ -92,9 +92,14 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
      *
      * @param response - The response to cache.
      * @param settings - The request settings used for the call.
+     * @param request - The final request that was sent, when the execution
+     * chain supplies it. Request-time interceptors may attach an
+     * `Authorization` or `Cookie` header after `settings` is frozen, so the
+     * credential and bypass gates read the sent request rather than the
+     * settings snapshot.
      * @returns The response.
      */
-    async postResponse(response: Response, settings: HTTPInit): Promise<Response | void> {
+    async postResponse(response: Response, settings: HTTPInit, request?: Request): Promise<Response | void> {
         // A response without a URL (stubbed/mock responses, some in-process
         // sources) cannot be keyed — and `new Request('')` throws. Skip
         // caching rather than breaking the caller.
@@ -102,16 +107,17 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
             return response;
         }
 
-        const request = new Request(response.url, {
-            method: settings.method ?? 'GET',
-        });
+        const sentRequest = request ?? new Request(response.url, { method: settings.method ?? 'GET' });
 
-        const requestHeaders =
-            settings.headers instanceof Headers ? settings.headers : new Headers(settings.headers || {});
+        const requestHeaders = request
+            ? request.headers
+            : settings.headers instanceof Headers
+              ? settings.headers
+              : new Headers(settings.headers || {});
 
         // Only idempotent GET/HEAD responses are cached, and credentialed
         // responses never enter the shared cache (see the class docs).
-        if ((request.method !== 'GET' && request.method !== 'HEAD') || this.#hasCredentials(requestHeaders)) {
+        if ((sentRequest.method !== 'GET' && sentRequest.method !== 'HEAD') || this.#hasCredentials(requestHeaders)) {
             return response;
         }
 
@@ -119,7 +125,7 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
             return response;
         }
 
-        const cacheKey = this.#generateCacheKey(request);
+        const cacheKey = this.#generateCacheKey(sentRequest);
         const ttl = this.#config.defaultTtl ?? 300000;
 
         this.#cache.set(cacheKey, {

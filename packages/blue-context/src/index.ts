@@ -28,3 +28,4 @@ export * from './secret-scheme-registry';
 export { ContextToken, isContextToken } from '@blue/factory';
 export { getScope, hasScope, RefreshScope, refreshScope } from '@blue/factory';
 export { EntryRegistryProcessor, likeEntryRegistryProcessor, Registry } from '@blue/factory';
+export { getEnv, isDevMode } from '@blue/util';

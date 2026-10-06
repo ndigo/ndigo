@@ -63,6 +63,9 @@ import {
 import { parseCookies } from './cookie-parser';
 import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@blue/auth-core';
 import { getSymbolMetadata } from '@blue/core';
+import { getLogger } from '@blue/telemetry/logger';
+
+const logger = getLogger('blue-platform-node:node-http-server-adapter');
 
 /**
  * STOMP WebSocket subprotocols, best to worst (AD-23 D4). Spring and
@@ -781,7 +784,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 await (result as Promise<unknown>);
             }
         } catch (error) {
-            console.log(`[socket] handler failed: ${(error as Error).message}`);
+            logger.error(`handler failed: ${(error as Error).message}`);
             session.close(1011, 'handler error');
         }
     }
@@ -812,7 +815,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             // close it so the registry drops the session and the inbound
             // queue stops accumulating (the per-yield send tolerance above
             // only applies to individual sends, which send() absorbs).
-            console.error('[NodeHTTPServerAdapter] socket generator error:', (error as Error).message);
+            logger.error('socket generator error:', (error as Error).message);
             session.close(1011, 'handler error');
         }
     }
@@ -1116,7 +1119,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             return;
         }
         const message = error instanceof Error ? (error.stack ?? error.message) : String(error);
-        console.error('[NodeHTTPServerAdapter] dispatch failure:', message);
+        logger.error('dispatch failure:', message);
         writeProblem(res, {
             type: ProblemTypes.internalError,
             title: 'Internal Server Error',

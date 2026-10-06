@@ -23,6 +23,7 @@ import * as types from './type/index.js';
 
 export { is, like } from './type/index.js';
 export { randomToken } from './crypto/index.js';
+export { getEnv, isDevMode } from './env.js';
 
 // Named category exports
 export { crypto, math, string, types };

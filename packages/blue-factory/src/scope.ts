@@ -5,6 +5,9 @@
  */
 import '@tsmetadata/polyfill';
 import { IllegalStateError } from '@blue/core';
+import { getLogger } from '@blue/telemetry/logger';
+
+const logger = getLogger('blue-factory:scope');
 
 export type KnownScope = 'singleton' | 'prototype' | 'route' | 'hash' | 'refresh';
 export type PossibleScope = KnownScope | string;
@@ -264,7 +267,7 @@ export class RefreshScope implements Scope {
      * The instance map is cleared FIRST so a throwing destruction callback
      * can never leave a stale instance cached — `clear()` is the refresh
      * teardown edge (ARC-1) and must always complete. Callbacks are best
-     * effort: each failure is reported via `console.error` and never
+     * effort: each failure is reported via the logger and never
      * aborts the sweep.
      */
     clear(): void {
@@ -273,9 +276,9 @@ export class RefreshScope implements Scope {
             try {
                 callback();
             } catch (error) {
-                console.error(
-                    `[blue-factory] RefreshScope destruction callback for "${name}" failed during clear():`,
-                    error
+                logger.error(
+                    `RefreshScope destruction callback for "${name}" failed during clear():`,
+                    error instanceof Error ? error : String(error)
                 );
             }
             this.#destructionCallbacks.delete(name);

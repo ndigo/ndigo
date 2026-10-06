@@ -5,6 +5,7 @@
  * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
+import { getEnv } from '@blue/context';
 import { getMapping, parameters, pathVariable, requestMapping, routeValue } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { StaticResourceHandler, type StaticHandlerOptions } from './static-resource-handler';
@@ -34,7 +35,7 @@ export class StaticController {
      * @param options - Static handler options (D-6).
      */
     constructor(baseDir?: string, options: StaticHandlerOptions = {}) {
-        const base = baseDir ?? process.env['STATIC_DIR'] ?? `${process.cwd()}/public`;
+        const base = baseDir ?? getEnv('STATIC_DIR') ?? `${process.cwd()}/public`;
         this.#handler = new StaticResourceHandler(base, options);
     }
 

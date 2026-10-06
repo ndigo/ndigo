@@ -21,6 +21,10 @@
     ".": {
       "types": "./lib/index.d.ts",
       "default": "./lib/index.js"
+    },
+    "./logger": {
+      "types": "./lib/logger/index.d.ts",
+      "default": "./lib/logger/index.js"
     }
   },
   "types": "lib/index.d.ts",

@@ -32,7 +32,8 @@ class ToDoconfiguration {
 
     @entry()
     handlerMapping() {
-        // TODO Fix the default handler mappings
+        // Demo default handler mapping: controllers extend it; the logging
+        // interceptor surfaces request coverage in dev.
         const mapping = new RadixMetadataHandlerMapping();
         mapping.interceptors.push(new LoggingRouteHandlerInterceptor(getLogger('blue-todo:dispatcher')));
         return mapping;

@@ -61,7 +61,7 @@ function collectMarkdownFiles() {
     for (const f of readdirSync(root)) {
         if (f.endsWith('.md')) files.push(join(root, f));
     }
-    return files.sort();
+    return files.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 }
 
 const files = collectMarkdownFiles();

@@ -6,7 +6,7 @@
 import '@tsmetadata/polyfill';
 import 'node:process';
 import { resolve } from 'node:path';
-import { configuration, entry, profile, Profile } from '@blue/context';
+import { configuration, entry, getEnv, profile, Profile } from '@blue/context';
 import { StaticContentSource } from '@blue/content';
 import { MediaTypes } from '@blue/core';
 import { HTTPHeaders } from '@blue/http';
@@ -154,9 +154,8 @@ export class NodeAppConfiguration {
      */
     @entry()
     staticController() {
-        return new StaticController(
-            process.env['STATIC_DIR'] ? resolve(process.env['STATIC_DIR']) : resolve(process.cwd(), 'public')
-        );
+        const staticDir = getEnv('STATIC_DIR');
+        return new StaticController(staticDir ? resolve(staticDir) : resolve(process.cwd(), 'public'));
     }
 
     /**

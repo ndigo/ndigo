@@ -6,11 +6,12 @@
  */
 import 'node:process';
 import { ApplicationBuilder } from '@blue/boot';
+import { getEnv } from '@blue/context';
 import { NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@blue/platform-node';
 import { getLogger } from '@blue/telemetry';
 import { HelloConfiguration } from './hello-configuration';
 
-const PORT = Number(process.env['PORT'] ?? '3000');
+const PORT = Number(getEnv('PORT', '3000'));
 const logger = getLogger('blue-hello-node');
 
 async function main() {

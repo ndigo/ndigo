@@ -22,6 +22,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Environment accessors `getEnv(name, fallback?)` / `isDevMode()` in
+  `@blue/util`, re-exported from `@blue/context` — centralized env reads for
+  framework and app code (replaces scattered `process.env` lookups).
+- `@blue/dispatcher`: `registerArgumentResolvers()` and
+  `passthroughArgumentValue()` exports (consolidated platform resolver
+  utilities).
 - TOON support (AD-66): `MediaTypes.TEXT_TOON` media token and opt-in
   `application.toon` config files — `StandardConfigFileLoader` probes JSON
   first, then TOON (`format: 'auto' | 'json' | 'toon'`); the

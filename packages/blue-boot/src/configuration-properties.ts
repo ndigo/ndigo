@@ -465,8 +465,17 @@ function resolveNested<T>(
         if (value === undefined) {
             const rawDefault = nestedMeta[`${DEFAULT_KEY}${key}`] as string | undefined;
             if (rawDefault !== undefined) {
-                const typed = (getValueAs(environment, fullPath, targetFor(nestedInstance, key, nestedMeta), false) ??
-                    rawDefault) as JSONValue;
+                // CF-4: the nested default goes through `convertRaw` — the
+                // same conversion path as top-level defaults (and real
+                // values) — so `@defaultValue('5432')` binds a number, not
+                // the raw string.
+                const typed = convertRaw(
+                    environment,
+                    fullPath,
+                    targetFor(nestedInstance, key, nestedMeta),
+                    rawDefault,
+                    false
+                ) as JSONValue;
                 defineProperty(nestedInstance as Record<string, unknown>, key, {
                     value: typed,
                     configurable: true,

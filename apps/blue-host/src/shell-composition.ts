@@ -13,6 +13,25 @@ export const CHECKOUT_PREFIX = '/checkout';
 export const REPORTS_PREFIX = '/reports';
 
 /**
+ * Maps a router path to the feature the shell activates for it.
+ *
+ * @param path - The router path (with leading slash).
+ * @returns The feature name, or `null` for the home/unknown route.
+ */
+export function featureForPath(path: string): string | null {
+    if (path.startsWith(CATALOG_PREFIX)) {
+        return 'catalog';
+    }
+    if (path.startsWith(CHECKOUT_PREFIX)) {
+        return 'checkout';
+    }
+    if (path.startsWith(REPORTS_PREFIX)) {
+        return 'reports';
+    }
+    return null;
+}
+
+/**
  * Compose the host runtime: shell context + shared registry + HostManager.
  *
  * @returns A composition with the shell context, host manager, and cart.

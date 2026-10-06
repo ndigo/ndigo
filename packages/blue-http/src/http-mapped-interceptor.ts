@@ -151,11 +151,12 @@ export class MappedHTTPInterceptor
      *
      * @param request - The request that completed.
      * @param response - The final response or error wrapper.
+     * @param settings - The request settings the request was prepared from, when available.
      */
-    postComplete(request: Request, response: Response | ResponseError): void {
+    postComplete(request: Request, response: Response | ResponseError, settings?: HTTPInit): void {
         const interceptor = this.#interceptor;
         if (likeCompletionAwareHTTPInterceptor(interceptor)) {
-            interceptor.postComplete(request, response);
+            interceptor.postComplete(request, response, settings);
         }
     }
 

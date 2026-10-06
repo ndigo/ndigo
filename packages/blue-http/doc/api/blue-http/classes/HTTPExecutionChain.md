@@ -118,7 +118,7 @@ Interceptors to append.
 
 ### applyPostComplete()
 
-> **applyPostComplete**(`request`, `response`): `void`
+> **applyPostComplete**(`request`, `response`, `settings?`): `void`
 
 Runs all completion-aware interceptors after the request settles.
 
@@ -135,6 +135,12 @@ The request that completed.
 `Response` \| [`ResponseError`](#)
 
 The final response or error wrapper.
+
+##### settings?
+
+[`HTTPInit`](../type-aliases/HTTPInit.md)
+
+The request settings the request was prepared from, when available.
 
 #### Returns
 

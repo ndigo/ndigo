@@ -22,6 +22,7 @@ import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
 import { ConsoleMetricExporter, PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { BatchLogRecordProcessor, ConsoleLogRecordExporter, SimpleLogRecordProcessor } from '@opentelemetry/sdk-logs';
 import { Instrumentation } from '@opentelemetry/instrumentation';
+import { LoggerFactory } from '@blue/telemetry';
 import { SeverityFilterLogRecordProcessor } from './severity-filter-log-record-processor';
 
 /**
@@ -181,6 +182,15 @@ export function configureTelemetry(config: TelemetryConfig) {
     });
 
     sdk.start();
+
+    // OP-8: the log processor is inert until app loggers emit through the
+    // OpenTelemetry API. Web parity: once an explicit `logExporter` is
+    // configured, route `LoggerFactory` output through the OTel logger.
+    // `'none'` deliberately means "no log pipeline" — app logs stay on the
+    // console bridge rather than silently vanishing into a disabled provider.
+    if (config.logExporter !== undefined && log.kind !== 'none') {
+        LoggerFactory.setType('open-telemetry');
+    }
 
     return sdk;
 }

@@ -31,6 +31,12 @@ function createSeverityMapping(
 
 const syslogLevelToSeverity: Readonly<Record<string, SeverityNumber>> = {
     emerg: SeverityNumber.FATAL,
+    // Application-logger names for the top severity (`fatal` from
+    // pino/bunyan, `critical` from Python/.NET logging) — RFC 5424 has no
+    // equivalents, and without them the bare names fall back to INFO and
+    // severe records get filtered.
+    fatal: SeverityNumber.FATAL,
+    critical: SeverityNumber.FATAL,
     alert: SeverityNumber.FATAL2,
     crit: SeverityNumber.FATAL3,
     err: SeverityNumber.ERROR,
@@ -52,6 +58,9 @@ const npmLevelToSeverity: Readonly<Record<string, SeverityNumber>> = {
 
 const apacheLevelToSeverity: Readonly<Record<string, SeverityNumber>> = {
     emerg: SeverityNumber.FATAL,
+    // Application-logger aliases for the top severity (see the syslog table).
+    fatal: SeverityNumber.FATAL,
+    critical: SeverityNumber.FATAL,
     alert: SeverityNumber.FATAL2,
     crit: SeverityNumber.ERROR2,
     error: SeverityNumber.ERROR,

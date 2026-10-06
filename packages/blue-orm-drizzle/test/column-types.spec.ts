@@ -164,7 +164,10 @@ describe('declared-type round trips (DA-1)', () => {
         const found = await entityManager.find(ReviewNote, 'note-1');
         expect(found?.id).toBe('note-1');
         expect(found?.title).toBe('hello');
-        expect(found?.payload).toBe(JSON.stringify({ tag: 'x' }));
+        // DA-2: declared column types decode on read (boolean 1/0 → boolean,
+        // json text → value), so the round trip matches the entity shape.
+        expect(found?.active).toBe(true);
+        expect(found?.payload).toEqual({ tag: 'x' });
     });
 
     test('numeric-looking strings round-trip as strings', async () => {

@@ -6,7 +6,7 @@
  */
 import { HashRouter } from '@blue/platform-web';
 import type { Route } from '@blue/router';
-import { composeHostRuntime } from './shell-composition';
+import { composeHostRuntime, featureForPath } from './shell-composition';
 
 const $feature = document.getElementById('feature') as HTMLElement;
 const $status = document.getElementById('status') as HTMLElement;
@@ -23,7 +23,7 @@ async function main() {
         // Host manager activates/deactivates features by prefix partition.
         host.navigate(path);
 
-        void renderFeature(currentFeatureFor(path));
+        void renderFeature(featureForPath(path));
     });
 
     // Navigate to home on load.
@@ -31,13 +31,6 @@ async function main() {
         router.refresh();
     } else {
         location.hash = '/';
-    }
-
-    function currentFeatureFor(path: string): string | null {
-        if (path.startsWith('/catalog')) return 'catalog';
-        if (path.startsWith('/checkout')) return 'checkout';
-        if (path.startsWith('/reports')) return 'reports';
-        return null;
     }
 
     async function renderFeature(name: string | null): Promise<void> {

@@ -131,7 +131,7 @@ describe('WebSocketServerInstrumentation', () => {
         metrics.setGlobalMeterProvider(new MeterProvider({ readers: [metricReader] }));
 
         // Constructor already enabled the instrumentation (module scope);
-        // a second enable() is a no-op (`InstrumentationBase` latches).
+        // a second enable() is a no-op (`AbstractBaseInstrumentation` latches).
         instrumentation.enable();
 
         const context = new MetadataConfigApplicationContext('ws-telemetry');

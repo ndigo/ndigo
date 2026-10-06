@@ -29,6 +29,8 @@ class SignalsCounterView extends AbstractWebComponent {
 
     constructor() {
         super();
+        const shadow = this.attachShadow({ mode: 'open' });
+        shadow.appendChild(template.content.cloneNode(true));
     }
 
     /** Updates the displayed count and doubled values in the shadow DOM. */

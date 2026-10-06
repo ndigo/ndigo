@@ -66,6 +66,50 @@ describe('CircuitBreakerInterceptor', () => {
         expect(interceptor.matches(plainDescriptor)).toBe(false);
     });
 
+    it('fails loudly on invalid failureThreshold/resetMs instead of silently inverting the policy', async () => {
+        const interceptor = new CircuitBreakerInterceptor();
+        const invalid: CircuitBreakerSpec[] = [
+            { failureThreshold: 0 },
+            { failureThreshold: NaN },
+            { failureThreshold: -1 },
+            { failureThreshold: 1.5 },
+            { resetMs: 0 },
+            { resetMs: NaN },
+            { resetMs: -1 },
+            { resetMs: Infinity },
+        ];
+
+        // Weave-time validation (matches), naming the offending field/value.
+        for (const spec of invalid) {
+            expect(() => interceptor.matches(breakerInvocation(spec))).toThrow(TypeError);
+        }
+        expect(() => interceptor.matches(breakerInvocation({ failureThreshold: 0 }))).toThrow(
+            '@circuitBreaker failureThreshold must be a positive integer — got 0'
+        );
+        expect(() => interceptor.matches(breakerInvocation({ resetMs: -5 }))).toThrow(
+            '@circuitBreaker resetMs must be a positive finite number — got -5'
+        );
+
+        // Hand-built chains validate at invoke time too — the tail never runs.
+        const { tail, runs } = failingTail(99);
+        await expect(invokeChain([interceptor], breakerInvocation({ failureThreshold: 0 }), tail)).rejects.toThrow(
+            TypeError
+        );
+        await expect(invokeChain([interceptor], breakerInvocation({ resetMs: NaN }), tail)).rejects.toThrow(TypeError);
+        expect(runs()).toBe(0);
+    });
+
+    it('accepts valid specs unchanged', async () => {
+        const interceptor = new CircuitBreakerInterceptor();
+        expect(interceptor.matches(breakerInvocation({ failureThreshold: 1, resetMs: 1 }))).toBe(true);
+
+        const { tail, runs } = failingTail(99);
+        await expect(
+            invokeChain([interceptor], breakerInvocation({ failureThreshold: 2, resetMs: 10_000 }), tail)
+        ).rejects.toThrow('down');
+        expect(runs()).toBe(1);
+    });
+
     it('opens after failureThreshold consecutive failures and fails fast', async () => {
         const { tail, runs } = failingTail(99);
         const interceptor = new CircuitBreakerInterceptor();

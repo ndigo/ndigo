@@ -81,6 +81,13 @@ type OfflineQueueEntry = {
  */
 export class RetryOnOfflineInterceptor implements RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor {
     readonly #config: RetryOnOfflineConfig;
+    /**
+     * Undisturbed `Request.clone()` per live request, captured in `preRequest`
+     * before fetch reads the body stream. The failed request's body is
+     * consumed/disturbed by the time `postResponse` runs, so a queued replay
+     * must be rebuilt from this clone to keep method, headers, and body.
+     */
+    readonly #pristineClones = new WeakMap<Request, Request>();
     #queue: OfflineQueueEntry[];
     #timer: ReturnType<typeof setInterval> | null;
 
@@ -98,14 +105,16 @@ export class RetryOnOfflineInterceptor implements RequestAwareHTTPInterceptor, R
     }
 
     /**
-     * Checks the cache for a matching response before the request is sent.
+     * Captures an undisturbed clone of each outgoing request for offline
+     * replay, then queues the request when the browser is already offline.
      *
      * @param request - The outgoing request.
      * @param http - The HTTP client.
-     * @returns A cached response when available, otherwise void.
+     * @returns A queued promise while offline, otherwise void.
      */
     async preRequest(request: Request, http: HTTP): Promise<Response | void> {
         if (navigator.onLine) {
+            this.#pristineClones.set(request, request.clone());
             return;
         }
 
@@ -124,26 +133,35 @@ export class RetryOnOfflineInterceptor implements RequestAwareHTTPInterceptor, R
      *
      * @param response - The response from the server.
      * @param settings - The request settings.
+     * @param request - The final request that was sent, when available.
      * @returns The response, or a queued promise when offline.
      */
-    async postResponse(response: Response, settings: HTTPInit): Promise<Response | void> {
+    async postResponse(response: Response, settings: HTTPInit, request?: Request): Promise<Response | void> {
         if (response.ok) {
             return response;
         }
 
         if (!navigator.onLine) {
-            if (!response.url) {
+            // Replay the undisturbed clone captured in preRequest: synthesizing
+            // a request from the response headers would drop the original
+            // method, headers, and body.
+            const replay = (request && this.#pristineClones.get(request)) ?? request;
+
+            if (!replay && !response.url) {
                 // Unkeyable response (mock/stub) — no replay possible.
                 return response;
             }
-            const request = new Request(response.url, {
-                method: response.headers.get('X-HTTP-Method') || 'GET',
-            });
+
+            const queued =
+                replay ??
+                new Request(response.url, {
+                    method: response.headers.get('X-HTTP-Method') || 'GET',
+                });
 
             return new Promise<Response>((resolve, reject) => {
                 // postResponse has no HTTP client; the queue is drained over fetch().
                 try {
-                    this.#enqueue({ request, http: undefined, resolve, reject, retries: 0, nextRetryAt: 0 });
+                    this.#enqueue({ request: queued, http: undefined, resolve, reject, retries: 0, nextRetryAt: 0 });
                 } catch (error) {
                     reject(error as Error);
                 }

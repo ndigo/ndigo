@@ -148,4 +148,90 @@ describe('RetryOnOfflineInterceptor', () => {
             vi.useRealTimers();
         }
     });
+
+    test('replays a queued failed request with its original method, headers, and body', async () => {
+        vi.useFakeTimers();
+        try {
+            vi.stubGlobal('navigator', { onLine: true });
+            const interceptor = new RetryOnOfflineInterceptor({ retryInterval: 1000 });
+            const request = new Request('http://localhost/api/items', {
+                method: 'POST',
+                headers: { Authorization: 'Bearer secret', 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: 'widget' }),
+            });
+
+            // Online preRequest captures the undisturbed clone; the browser then
+            // goes offline before the failed response is handled.
+            await interceptor.preRequest(request, new HTTP());
+            vi.stubGlobal('navigator', { onLine: false });
+
+            const failed = new Response('Bad Gateway', { status: 503 });
+            Object.defineProperty(failed, 'url', { value: 'http://localhost/api/items', configurable: true });
+
+            const queued = interceptor.postResponse(failed, {}, request);
+            expect(queued).toBeInstanceOf(Promise);
+            expect(interceptor.queuedCount).toBe(1);
+
+            const replayed: Request[] = [];
+            const fetchMock = vi.fn(async (input: Request) => {
+                replayed.push(input);
+                return new Response('ok', { status: 200 });
+            });
+            vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
+
+            vi.stubGlobal('navigator', { onLine: true });
+            vi.advanceTimersByTime(1000);
+
+            const response = (await queued) as Response;
+            expect(response.status).toBe(200);
+            expect(replayed).toHaveLength(1);
+            expect(replayed[0].method).toBe('POST');
+            expect(replayed[0].headers.get('authorization')).toBe('Bearer secret');
+            expect(await replayed[0].clone().text()).toBe(JSON.stringify({ name: 'widget' }));
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
+    test('replays a failed POST with its original method, headers, and body through the HTTP pipeline', async () => {
+        try {
+            vi.stubGlobal('navigator', { onLine: true });
+            const replayed: Request[] = [];
+            let sentOriginal = false;
+            const fetchMock = vi.fn((input: Request) => {
+                if (!sentOriginal) {
+                    sentOriginal = true;
+                    // The request went out while online; drop the connection
+                    // before the failed response is handled so it is queued.
+                    vi.stubGlobal('navigator', { onLine: false });
+                    const failed = new Response('Bad Gateway', { status: 503 });
+                    Object.defineProperty(failed, 'url', { value: 'http://localhost/api/items', configurable: true });
+                    return Promise.resolve(failed);
+                }
+                replayed.push(input);
+                return Promise.resolve(new Response('ok', { status: 200 }));
+            });
+            vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
+
+            const interceptor = new RetryOnOfflineInterceptor({ retryInterval: 1 });
+            const http = new HTTP([interceptor]);
+            const pending = http.post('http://localhost/api/items', {
+                headers: { Authorization: 'Bearer secret' },
+                body: JSON.stringify({ name: 'widget' }),
+            });
+
+            await vi.waitFor(() => expect(interceptor.queuedCount).toBe(1));
+
+            vi.stubGlobal('navigator', { onLine: true });
+            const response = await pending;
+
+            expect(response.status).toBe(200);
+            expect(replayed).toHaveLength(1);
+            expect(replayed[0].method).toBe('POST');
+            expect(replayed[0].headers.get('authorization')).toBe('Bearer secret');
+            expect(await replayed[0].clone().text()).toBe(JSON.stringify({ name: 'widget' }));
+        } finally {
+            vi.useRealTimers();
+        }
+    });
 });

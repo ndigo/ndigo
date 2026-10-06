@@ -12,7 +12,7 @@ Runs after a request finishes, whether it succeeded or failed.
 
 ### postComplete()
 
-> **postComplete**(`request`, `response`): `void`
+> **postComplete**(`request`, `response`, `settings?`): `void`
 
 Observes the final request/response pair after all other hooks complete.
 
@@ -29,6 +29,14 @@ The original request.
 `Response` \| [`ResponseError`](#)
 
 The final response or error wrapper.
+
+##### settings?
+
+[`HTTPInit`](../type-aliases/HTTPInit.md)
+
+The request settings the request was prepared from.
+The execution chain always supplies it; callers that invoke the hook
+directly may omit it.
 
 #### Returns
 

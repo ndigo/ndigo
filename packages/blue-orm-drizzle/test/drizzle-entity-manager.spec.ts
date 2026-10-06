@@ -43,6 +43,28 @@ class ConflictedUser {
     }
 }
 
+// DA-2: declared column types must be decoded on read — boolean cells arrive
+// as SQLite 0/1 representations ('0.0'/'1.0' under the boolean column's TEXT
+// affinity) and json cells as their stringified text, so a load→modify→save
+// flow failed boolean validation.
+@entity('typed_flags')
+class TypedFlag {
+    @generated()
+    @primaryColumn()
+    id: number | undefined;
+
+    @column({ type: 'boolean' })
+    enabled: boolean;
+
+    @column({ type: 'json' })
+    payload: Record<string, unknown>;
+
+    constructor(enabled: boolean = false, payload: Record<string, unknown> = {}) {
+        this.enabled = enabled;
+        this.payload = payload;
+    }
+}
+
 describe('DrizzleEntityManager CRUD', () => {
     let ds: DrizzleDataSource;
     let em: DrizzleEntityManager;
@@ -141,5 +163,52 @@ describe('DrizzleEntityManager persist conflict handling (COR-12)', () => {
 
         // Nothing was written for the failed save.
         expect(await em.find(ConflictedUser, 21)).toBeUndefined();
+    });
+});
+
+describe('DrizzleEntityManager column-type decoding (DA-2)', () => {
+    let ds: DrizzleDataSource;
+    let em: DrizzleEntityManager;
+
+    beforeAll(async () => {
+        ds = new DrizzleDataSource({ url: ':memory:' });
+        await ds.init([TypedFlag]);
+        em = new DrizzleEntityManager(ds);
+    });
+
+    test('round-trips declared boolean and json column values', async () => {
+        const onFlag = new TypedFlag(true, { tags: ['alpha'], count: 2 });
+        const offFlag = new TypedFlag(false, { tags: [] });
+        await em.persist(onFlag);
+        await em.persist(offFlag);
+
+        const reloadedOn = await em.find(TypedFlag, onFlag.id);
+        expect(reloadedOn?.enabled).toBe(true);
+        expect(reloadedOn?.payload).toEqual({ tags: ['alpha'], count: 2 });
+
+        // false must come back as boolean false, not 0/'0.0'.
+        const reloadedOff = await em.find(TypedFlag, offFlag.id);
+        expect(reloadedOff?.enabled).toBe(false);
+    });
+
+    test('load-modify-save round-trips decoded values through validation', async () => {
+        const flag = new TypedFlag(false, { tags: [] });
+        await em.persist(flag);
+
+        const loaded = await em.find(TypedFlag, flag.id);
+        if (loaded === undefined) {
+            throw new Error('persisted entity could not be read back');
+        }
+        expect(loaded.enabled).toBe(false);
+
+        loaded.enabled = true;
+        (loaded.payload.tags as string[]).push('beta');
+
+        // Before decoding, the raw '0.0' cell string failed boolean validation here.
+        await em.persist(loaded);
+
+        const reloaded = await em.find(TypedFlag, flag.id);
+        expect(reloaded?.enabled).toBe(true);
+        expect(reloaded?.payload).toEqual({ tags: ['beta'] });
     });
 });

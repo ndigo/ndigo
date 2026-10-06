@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { AbstractPathBasedViewResolver, View } from '@blue/view';
+import { AbstractPathBasedViewResolver, type View } from '@blue/view';
 
 /**
  * The demo's module-on-disk resolver: resolves a name to the view class
@@ -13,8 +13,10 @@ import { AbstractPathBasedViewResolver, View } from '@blue/view';
  * first resolution.
  */
 
-const MODULES: Record<string, string> = {
-    report: './views/report-view.ts',
+type ViewModule = { default?: new () => View };
+
+const MODULES: Record<string, () => Promise<ViewModule>> = {
+    report: () => import('./views/report-view'),
 };
 
 /**
@@ -22,19 +24,19 @@ const MODULES: Record<string, string> = {
  */
 export class ReportViewResolver extends AbstractPathBasedViewResolver {
     /**
-     * Dynamically imports the view module for a name and instantiates its
-     * default export.
+     * Loads the statically analysable view-module thunk for a name and
+     * instantiates its default export.
      *
      * @param name - The view name.
      * @returns The resolved view.
      */
     protected async _loadView(name: string): Promise<View | null> {
-        const specifier = MODULES[name];
-        if (!specifier) {
+        const load = MODULES[name];
+        if (!load) {
             return null;
         }
-        const module = await import(/* @vite-ignore */ specifier);
-        const ViewClass = (module as { default?: new () => View }).default;
+        const module = await load();
+        const ViewClass = module.default;
         return ViewClass ? new ViewClass() : null;
     }
 }

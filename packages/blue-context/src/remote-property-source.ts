@@ -19,8 +19,14 @@
  * proceeds (env/files still run the app); `optional: false` fails boot
  * loudly naming the URL. After a document has been applied at least once
  * (`#lastBody !== null`), a poll failure — HTTP error, transport rejection,
- * or unparseable body — keeps the last-good document with a warning; the
- * source retries on the next tick.
+ * timeout, oversized body, or unparseable body — keeps the last-good
+ * document with a warning; the source retries on the next tick.
+ *
+ * Fetch hardening mirrors the OIDC adapter (SE-10): `fetchTimeoutMs`
+ * (default 10s) bounds the whole exchange via `AbortController`, and
+ * `maxResponseBytes` (default 1 MiB) is enforced against `Content-Length`
+ * when present plus by counting streamed bytes; breaches route through the
+ * same `optional`/keep-last-good policy as every other fetch failure.
  *
  * Auth: static headers via `headers` (sourced from env at the wiring site —
  * e.g. `BLUE_CONFIG_SERVER_TOKEN` — never from `application.json`; the
@@ -101,7 +107,26 @@ export interface RemoteSourceOptions {
      * The poll scheduler seam. Defaults to `globalThis.setInterval`/`clearInterval`.
      */
     scheduler?: RemoteSourceScheduler;
+    /**
+     * Timeout for one fetch exchange (request + body read) in milliseconds
+     * (default `10_000`). On expiry the request is aborted and the failure
+     * follows the standard `optional`/keep-last-good policy (SE-10).
+     */
+    fetchTimeoutMs?: number;
+    /**
+     * Maximum accepted response size in bytes (default 1 MiB). Enforced
+     * against `Content-Length` when the server declares one, then by
+     * counting streamed bytes; an oversized document follows the standard
+     * `optional`/keep-last-good policy (SE-10).
+     */
+    maxResponseBytes?: number;
 }
+
+/** Default fetch timeout for one remote config exchange (10 s; mirrors the OIDC adapter). */
+const DEFAULT_FETCH_TIMEOUT_MS = 10_000;
+
+/** Default maximum accepted remote config response size (1 MiB; mirrors the OIDC adapter). */
+const DEFAULT_MAX_RESPONSE_BYTES = 1_048_576;
 
 /**
  * A named remote property source: fetches a JSON document, merges changes
@@ -117,6 +142,8 @@ export class RemotePropertySource {
         optional: boolean;
         fetch?: typeof globalThis.fetch;
         scheduler?: RemoteSourceScheduler;
+        fetchTimeoutMs?: number;
+        maxResponseBytes?: number;
     };
     #lastBody: string | null = null;
     #etag: string | null = null;
@@ -251,9 +278,10 @@ export class RemotePropertySource {
      * Fetches and, when the document changed (ETag/body-text gate), merges it
      * into the environment and refreshes. The body gate is always active
      * (identical to the previous body → skip). One failure policy for all
-     * failure classes (SEC-3): HTTP errors, transport rejections and
-     * body/JSON-parse failures all route through `optional`/last-good — after
-     * the first successful apply, `optional: false` keeps last-good too.
+     * failure classes (SEC-3): HTTP errors, transport rejections, timeouts,
+     * oversized documents and body/JSON-parse failures all route through
+     * `optional`/last-good — after the first successful apply,
+     * `optional: false` keeps last-good too.
      *
      * @returns The applied document, or `null` when skipped/failed-optional.
      * @throws {IllegalStateError} When `optional: false` and no document has
@@ -269,42 +297,65 @@ export class RemotePropertySource {
         }
 
         const doFetch = this.#options.fetch ?? globalThis.fetch;
-        let response: {
-            ok: boolean;
-            status: number;
-            headers: { get(name: string): string | null };
-            text(): Promise<string>;
-        };
-        try {
-            response = await doFetch(this.#options.url, { headers });
-        } catch (err) {
-            // Transport rejection (DNS/TLS/refused): same policy as an HTTP
-            // error — throw only while nothing has been applied yet.
-            return this.#lastBody === null ? this.#handleBootFailure('<transport>', err) : this.#keepLastGood(err);
-        }
-        if (response.status === 304) {
-            return null; // unchanged — no re-merge, no event
-        }
-        if (!response.ok) {
-            // `optional: false` fails boot only on the FIRST (never-applied)
-            // fetch; later poll failures keep last-good.
-            const cause = new IllegalStateError(`HTTP ${response.status}`);
-            return this.#lastBody === null
-                ? this.#handleBootFailure(String(response.status), cause)
-                : this.#keepLastGood(cause);
-        }
-
+        const timeoutMs = this.#options.fetchTimeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS;
+        const maxBytes = this.#options.maxResponseBytes ?? DEFAULT_MAX_RESPONSE_BYTES;
+        // SE-10: bound the whole exchange (request + body read) so a stalled
+        // config server cannot pin a poll tick or boot; the abort rejects the
+        // fetch and routes through the standard failure policy below.
+        const controller = new AbortController();
+        const timer = setTimeout(
+            () => controller.abort(new IllegalStateError(`Remote config fetch timed out after ${timeoutMs}ms`)),
+            timeoutMs
+        );
         let body: string;
+        let etag: string | null;
         try {
-            body = await response.text();
-        } catch (err) {
-            return this.#lastBody === null ? this.#handleBootFailure('<body>', err) : this.#keepLastGood(err);
+            let response: {
+                ok: boolean;
+                status: number;
+                headers: { get(name: string): string | null };
+                body?: ReadableStream<Uint8Array> | null;
+                text(): Promise<string>;
+            };
+            try {
+                response = await doFetch(this.#options.url, { headers, signal: controller.signal });
+            } catch (err) {
+                // Transport rejection (DNS/TLS/refused/timeout): same policy
+                // as an HTTP error — throw only while nothing was applied yet.
+                return this.#lastBody === null ? this.#handleBootFailure('<transport>', err) : this.#keepLastGood(err);
+            }
+            if (response.status === 304) {
+                return null; // unchanged — no re-merge, no event
+            }
+            if (!response.ok) {
+                // `optional: false` fails boot only on the FIRST (never-applied)
+                // fetch; later poll failures keep last-good.
+                const cause = new IllegalStateError(`HTTP ${response.status}`);
+                return this.#lastBody === null
+                    ? this.#handleBootFailure(String(response.status), cause)
+                    : this.#keepLastGood(cause);
+            }
+            // Content-Length pre-check: refuse an oversized document before
+            // reading a byte; a missing/unparseable length falls through to
+            // the streamed accounting in `#readBody`.
+            const contentLength = Number(response.headers.get('content-length'));
+            if (Number.isFinite(contentLength) && contentLength > maxBytes) {
+                const cause = this.#oversizedError(maxBytes);
+                return this.#lastBody === null ? this.#handleBootFailure('<size>', cause) : this.#keepLastGood(cause);
+            }
+            try {
+                body = await this.#readBody(response, maxBytes);
+            } catch (err) {
+                return this.#lastBody === null ? this.#handleBootFailure('<body>', err) : this.#keepLastGood(err);
+            }
+            // Intentional no-dep exception (REUSE-5): `@blue/http`'s ETAG constant is not
+            // adopted to avoid adding a new base-package dependency for a single
+            // read. Fetch `Headers.get` is case-insensitive per spec, so the
+            // literal is spec-safe.
+            etag = response.headers.get('etag');
+        } finally {
+            clearTimeout(timer);
         }
-        // Intentional no-dep exception (REUSE-5): `@blue/http`'s ETAG constant is not
-        // adopted to avoid adding a new base-package dependency for a single
-        // read. Fetch `Headers.get` is case-insensitive per spec, so the
-        // literal is spec-safe.
-        const etag = response.headers.get('etag');
         if (etag) {
             this.#etag = etag;
         }
@@ -332,6 +383,61 @@ export class RemotePropertySource {
         this.#lastBody = body;
         this.#apply(document as JSONObject);
         return document as JSONObject;
+    }
+
+    /**
+     * Reads a response body with `maxBytes` enforced while streaming (SE-10).
+     * The caller's `Content-Length` pre-check is the fast path; counting
+     * actual bytes also bounds chunked responses and servers that lie about
+     * the length. Without a streaming body (spec stubs, legacy fetch),
+     * `text()` is the only read path and the encoded size is checked after
+     * the fact.
+     *
+     * @param response - The fetch response (streaming body optional).
+     * @param maxBytes - The byte cap; exceeding it cancels the stream and
+     * throws, so the caller can apply the `optional`/keep-last-good policy.
+     * @throws {IllegalStateError} When the document exceeds `maxBytes`.
+     */
+    async #readBody(
+        response: { body?: ReadableStream<Uint8Array> | null; text(): Promise<string> },
+        maxBytes: number
+    ): Promise<string> {
+        const stream = response.body;
+        if (!stream) {
+            const text = await response.text();
+            if (new TextEncoder().encode(text).byteLength > maxBytes) {
+                throw this.#oversizedError(maxBytes);
+            }
+            return text;
+        }
+        const reader = stream.getReader();
+        const chunks: Uint8Array[] = [];
+        let received = 0;
+        for (;;) {
+            // oxlint-disable-next-line no-await-in-loop -- a ReadableStream must be consumed sequentially; chunks are validated and accumulated in order.
+            const { done, value } = await reader.read();
+            if (done) break;
+            received += value.byteLength;
+            if (received > maxBytes) {
+                void reader.cancel();
+                throw this.#oversizedError(maxBytes);
+            }
+            chunks.push(value);
+        }
+        const bytes = new Uint8Array(received);
+        let offset = 0;
+        for (const chunk of chunks) {
+            bytes.set(chunk, offset);
+            offset += chunk.byteLength;
+        }
+        return new TextDecoder().decode(bytes);
+    }
+
+    /** The single oversized-document failure shared by every size gate (SE-10). */
+    #oversizedError(maxBytes: number): IllegalStateError {
+        return new IllegalStateError(
+            `Remote config from "${this.#options.url}" exceeds the ${maxBytes}-byte limit (source "${this.#name}")`
+        );
     }
 
     /**

@@ -1,6 +1,7 @@
 /**
  * Node WebSocket session registry — tracks live connections, rooms, broadcast.
- * * @module blue-platform-node
+ *
+ * @module blue-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -8,6 +9,7 @@ import type { SocketSession, SocketSessionRegistry } from '@blue/dispatcher';
 import type { SocketFanout } from '@blue/socket';
 import type { WebSocket } from 'ws';
 import { assertCloseFrame } from './node-socket-session';
+import { readIntEnv } from './read-int-env';
 
 /**
  * Server-side fan-out backpressure policy — the slow-consumer guard
@@ -130,24 +132,15 @@ export interface NodeSocketSessionRegistryOptions {
 export function resolveSocketRegistryOptions(
     env: Readonly<Record<string, string | undefined>> = process.env
 ): NodeSocketSessionRegistryOptions {
-    const heartbeatRaw = env['BLUE_SOCKET_HEARTBEAT_INTERVAL_MS'];
-    const idleRaw = env['BLUE_SOCKET_IDLE_TIMEOUT_MS'];
     const options: NodeSocketSessionRegistryOptions = {};
-    if (heartbeatRaw !== undefined && heartbeatRaw !== '') {
-        if (!/^\d+$/.test(heartbeatRaw)) {
-            throw new RangeError(
-                `BLUE_SOCKET_HEARTBEAT_INTERVAL_MS must be a non-negative integer (ms), got: ${heartbeatRaw}`
-            );
-        }
-        const value = Number(heartbeatRaw);
+    const heartbeat = readIntEnv(env, 'BLUE_SOCKET_HEARTBEAT_INTERVAL_MS', { allowZero: true });
+    if (heartbeat !== undefined) {
         // `0` explicitly disables the heartbeat (D6).
-        options.heartbeatIntervalMs = value === 0 ? null : value;
+        options.heartbeatIntervalMs = heartbeat === 0 ? null : heartbeat;
     }
-    if (idleRaw !== undefined && idleRaw !== '') {
-        if (!/^\d+$/.test(idleRaw) || Number(idleRaw) === 0) {
-            throw new RangeError(`BLUE_SOCKET_IDLE_TIMEOUT_MS must be a positive integer (ms), got: ${idleRaw}`);
-        }
-        options.idleTimeoutMs = Number(idleRaw);
+    const idle = readIntEnv(env, 'BLUE_SOCKET_IDLE_TIMEOUT_MS');
+    if (idle !== undefined) {
+        options.idleTimeoutMs = idle;
     }
     return options;
 }

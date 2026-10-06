@@ -11,15 +11,9 @@ import {
     ScryptPasswordEncoder,
     DefaultPrincipal,
 } from '@blue/auth-core';
+import { delay } from '@blue/test';
 import { CredentialsAuthAdapter, InvalidCredentialsError } from '../src/credentials-auth-adapter';
 import { InMemorySessionStore } from '../src/in-memory-session-store';
-
-/** Test-only delay helper (Promise.withResolvers pattern). */
-function delay(ms: number): Promise<void> {
-    const { promise, resolve } = Promise.withResolvers<void>();
-    setTimeout(resolve, ms);
-    return promise;
-}
 
 /** Fast test-cost scrypt (ln=14 ≈ 16 MiB) — parameter drift is not under test here. */
 const encoder = new DelegatingPasswordEncoder({ scrypt: new ScryptPasswordEncoder({ ln: 14 }) }, 'scrypt');
@@ -42,6 +36,20 @@ class StubUserStore implements UserStore {
         for (const user of users) {
             this.#users.set(user.username, user);
         }
+    }
+
+    /** Test helper: flips the account's `disabled` flag (SE-7). */
+    disable(id: string): void {
+        const user = this.#byId(id);
+        if (user === null) throw new Error(`User "${id}" not found`);
+        this.#users.set(user.username, { ...user, disabled: true });
+    }
+
+    /** Test helper: removes the account (deleted-account revocation, SE-7). */
+    remove(id: string): void {
+        const user = this.#byId(id);
+        if (user === null) throw new Error(`User "${id}" not found`);
+        this.#users.delete(user.username);
     }
 
     async findByUsername(username: string): Promise<UserRecord | null> {
@@ -79,27 +87,28 @@ class StubUserStore implements UserStore {
 
 function buildAdapter(options: { sessionTtlMs?: number } = {}) {
     const store = new InMemorySessionStore();
+    const users = new StubUserStore([
+        {
+            id: 'alice',
+            username: 'alice',
+            passwordHash: encoder.encode('s3cret'),
+            roles: ['user'],
+        },
+        {
+            id: 'bob',
+            username: 'bob',
+            passwordHash: encoder.encode('hunter2'),
+            disabled: true,
+        },
+        { id: 'claire', username: 'claire', passwordHash: null },
+    ]);
     const adapter = new CredentialsAuthAdapter({
-        userStore: new StubUserStore([
-            {
-                id: 'alice',
-                username: 'alice',
-                passwordHash: encoder.encode('s3cret'),
-                roles: ['user'],
-            },
-            {
-                id: 'bob',
-                username: 'bob',
-                passwordHash: encoder.encode('hunter2'),
-                disabled: true,
-            },
-            { id: 'claire', username: 'claire', passwordHash: null },
-        ]),
+        userStore: users,
         passwordEncoder: encoder,
         sessionStore: store,
         sessionTtlMs: options.sessionTtlMs ?? 60_000,
     });
-    return { store, adapter };
+    return { store, users, adapter };
 }
 
 const INVALID = 'Invalid credentials';
@@ -168,6 +177,25 @@ describe('CredentialsAuthAdapter', () => {
         const token = await sessionToken(adapter, 'alice', 's3cret');
         await expect(adapter.validate(token)).resolves.toMatchObject({ id: 'alice' });
         await expect(adapter.validate('unknown')).resolves.toBeNull();
+    });
+
+    test('a live session is revoked when its account is disabled (SE-7)', async () => {
+        const { adapter, users } = buildAdapter();
+        const token = await sessionToken(adapter, 'alice', 's3cret');
+        await expect(adapter.validate(token)).resolves.toMatchObject({ id: 'alice' });
+
+        users.disable('alice');
+        // The opaque session record still exists — the account check is what
+        // revokes it (no user-wide revocation API needed for the disable case).
+        await expect(adapter.validate(token)).resolves.toBeNull();
+    });
+
+    test('a live session is revoked when its account is deleted (SE-7)', async () => {
+        const { adapter, users } = buildAdapter();
+        const token = await sessionToken(adapter, 'alice', 's3cret');
+
+        users.remove('alice');
+        await expect(adapter.validate(token)).resolves.toBeNull();
     });
 
     test('refresh rotates the session: new token works, old one is dead', async () => {

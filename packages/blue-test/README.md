@@ -74,6 +74,7 @@ Complete generated reference (all exports, via `pnpm doc:api`): [`doc/api/README
 - **`cachedBootApp(sources)` / `releaseCachedApp(sources)`** — same-sources dedupe within a worker: multiple suites booting the same sources share one context (ref-counted; released via `releaseCachedApp` or `app.close()`).
 - **`MockHTTP(dispatcher | app)`** — socket-free request client. Methods `get/post/put/delete/patch/query`, then fluent `.query()/.body()/.headers()/.cookies()/.session()`, then `.exec()` → `MockResult`.
 - **`MockResult`** — `{ response, route, json(), text() }`. `response` is a `MemoryResponse` `{ status, headers, body, completed }`.
+- **`delay(ms)`** — shared promise-based timing helper for specs awaiting real or fake timers; re-exported from `@blue/util` (where packages the harness itself depends on import it directly).
 
 ## Development
 

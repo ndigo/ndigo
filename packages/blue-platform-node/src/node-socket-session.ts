@@ -1,12 +1,14 @@
 /**
  * Node WebSocket session — wraps a `ws` (RFC 6455) connection as a.
- * * @module blue-platform-node
+ *
+ * @module blue-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */
 import type { SocketSession, SocketRequestSources, SocketSessionRegistry } from '@blue/dispatcher';
 import type { WebSocket } from 'ws';
 import { AsyncReader } from '@blue/socket';
+import { readIntEnv } from './read-int-env';
 
 /**
  * Tunable bounds for the WebSocket transport (frames + inbound buffering).
@@ -112,12 +114,10 @@ export function resolveSocketLimits(
             resolved[key] = Math.floor(explicit);
             continue;
         }
-        const raw = env[envNames[key] as string];
-        if (raw === undefined || raw === '') continue;
-        if (!/^\d+$/.test(raw) || Number(raw) <= 0) {
-            throw new RangeError(`SocketLimits.${key} must be a positive integer, received ${raw}`);
+        const value = readIntEnv(env, envNames[key]);
+        if (value !== undefined) {
+            resolved[key] = value;
         }
-        resolved[key] = Number(raw);
     }
     // Byte budgets: `0`/null explicitly disables the bound; absent means
     // "use the env var", absent there means "use the default".
@@ -134,13 +134,10 @@ export function resolveSocketLimits(
             resolved[key] = null;
             continue;
         }
-        const raw = env[envNames[key] as string];
-        if (raw === undefined || raw === '') continue;
-        if (!/^\d+$/.test(raw)) {
-            throw new RangeError(`SocketLimits.${key} must be a non-negative integer, received ${raw}`);
+        const value = readIntEnv(env, envNames[key], { allowZero: true });
+        if (value !== undefined) {
+            resolved[key] = value === 0 ? null : value;
         }
-        const value = Number(raw);
-        resolved[key] = value === 0 ? null : value;
     }
     const overflowRaw = limits.onOverflow ?? env['BLUE_SOCKET_ON_OVERFLOW'] ?? undefined;
     if (overflowRaw !== undefined) {

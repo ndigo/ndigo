@@ -252,5 +252,6 @@ Jeff Rose
 ## Functions
 
 - [contentTypeBase](functions/contentTypeBase.md)
+- [foldHeaderName](functions/foldHeaderName.md)
 - [likeHTTPInterceptor](functions/likeHTTPInterceptor.md)
 - [multipartBoundary](functions/multipartBoundary.md)

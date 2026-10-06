@@ -107,6 +107,12 @@ function init(converter: CookieConverter = {}): CookieJar {
             if (!finalAttributes[attributeName]) {
                 continue;
             }
+            // SE-11: attribute names are inserted verbatim, so a name carrying
+            // `;`/CR/LF would inject further attributes. Names are code-owned
+            // (`path`, `domain`, …) — reject loudly instead of sanitizing.
+            if (/[;\r\n]/.test(attributeName)) {
+                throw new TypeError(`Cookie attribute name "${attributeName}" must not contain ";", CR, or LF`);
+            }
             stringifiedAttributes += '; ' + attributeName;
             if (finalAttributes[attributeName] === true) {
                 continue;
@@ -119,7 +125,9 @@ function init(converter: CookieConverter = {}): CookieJar {
             // Consume the characters of the unparsed-attributes up to,
             // not including, the first %x3B (";") character.
             // ...
-            stringifiedAttributes += '=' + String(finalAttributes[attributeName]).split(' ;')[0];
+            // SE-11: split on the first ";" — `.split(' ;')` only stripped
+            // space-preceded injections (`;evil=1` passed through untouched).
+            stringifiedAttributes += '=' + String(finalAttributes[attributeName]).split(';')[0];
         }
 
         return (document.cookie = key + '=' + value + stringifiedAttributes);

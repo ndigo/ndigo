@@ -53,4 +53,34 @@ describe('Cookies', () => {
 
         expect(Cookies.getJSON('prefs')).toEqual({ theme: 'dark' });
     });
+
+    test('it should truncate a semicolon payload in an attribute value (SE-11)', () => {
+        let written = '';
+        Object.defineProperty(document, 'cookie', {
+            configurable: true,
+            get: () => '',
+            set: (value: string) => {
+                written = value;
+            },
+        });
+
+        // The old `.split(' ;')` kept `; Domain=evil.example` intact (no space
+        // before the semicolon), injecting an attacker-supplied attribute.
+        Cookies.set('theme', 'dark', { path: '/; Domain=evil.example' });
+        expect(written).toBe('theme=dark; path=/');
+
+        Cookies.set('theme', 'dark', { domain: 'example.com; Secure' });
+        expect(written).toBe('theme=dark; path=/; domain=example.com');
+    });
+
+    test('it should reject attribute names carrying ";" or CR/LF (SE-11)', () => {
+        Object.defineProperty(document, 'cookie', {
+            configurable: true,
+            get: () => '',
+            set: () => undefined,
+        });
+
+        expect(() => Cookies.set('theme', 'dark', { ['x; Domain=evil.example']: '1' })).toThrow(TypeError);
+        expect(() => Cookies.set('theme', 'dark', { ['x\r\nSet-Cookie: y=1']: '1' })).toThrow(TypeError);
+    });
 });

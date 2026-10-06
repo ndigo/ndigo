@@ -42,7 +42,7 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
-    "zod": "^4.5.4"
+    "zod": "catalog:"
   },
   "dependencies": {
     "@blue/content": "~0.0.1",

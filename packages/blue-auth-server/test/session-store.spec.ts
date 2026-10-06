@@ -4,14 +4,8 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
+import { delay } from '@blue/test';
 import { InMemorySessionStore } from '../src/in-memory-session-store';
-
-/** Test-only delay helper (Promise.withResolvers pattern). */
-function delay(ms: number): Promise<void> {
-    const { promise, resolve } = Promise.withResolvers<void>();
-    setTimeout(resolve, ms);
-    return promise;
-}
 
 describe('InMemorySessionStore', () => {
     const record = {

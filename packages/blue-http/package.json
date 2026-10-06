@@ -37,15 +37,15 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
-    "@opentelemetry/context-async-hooks": "~2.11.0",
-    "@opentelemetry/core": "~2.11.0",
-    "@opentelemetry/sdk-trace-base": "~2.11.0"
+    "@opentelemetry/context-async-hooks": "catalog:",
+    "@opentelemetry/core": "catalog:",
+    "@opentelemetry/sdk-trace-base": "catalog:"
   },
   "sideEffects": false,
   "dependencies": {
     "@blue/core": "~0.0.1",
     "@blue/factory": "~0.0.1",
     "@blue/util": "~0.0.1",
-    "@opentelemetry/api": "~1.9.1"
+    "@opentelemetry/api": "catalog:"
   }
 }

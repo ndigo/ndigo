@@ -1,6 +1,18 @@
 /**
  * CSRF protection for Node applications (Double-Submit Cookie pattern).
- * * @module blue-platform-node
+ *
+ * The default cookie name is `__Host-`-prefixed (`__Host-blue-csrf`):
+ * browsers only accept a `__Host-` cookie when it is `Secure`, `Path=/`,
+ * and carries no `Domain` attribute — the interceptor's defaults satisfy
+ * all three. The prefix pins the cookie to the exact host, so a sibling
+ * subdomain (or any origin able to set cookies for a parent domain) cannot
+ * toss a forged token into the double-submit comparison. Overriding
+ * `cookieName` with a non-prefixed name gives the pinning up — only do so
+ * when every sibling subdomain is trusted. Dropping `Secure`/`Path=/` (or
+ * adding a `Domain`) while keeping the prefix makes browsers reject the
+ * cookie outright, so mutating requests fail closed.
+ *
+ * @module blue-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -13,8 +25,14 @@ import { getNodeRequest, NODE_RESPONSE_ATTRIBUTE, NodeRequest } from './node-req
 import { ProblemTypes, writeProblem } from './problem-details';
 import type { ServerResponse } from 'node:http';
 
-/** The cookie name holding the CSRF token. */
-export const CSRF_COOKIE = 'blue-csrf';
+/**
+ * The cookie name holding the CSRF token.
+ *
+ * `__Host-`-prefixed (Secure + `Path=/` + no `Domain` are required by
+ * browsers for the prefix; the defaults here provide them) so a sibling
+ * subdomain cannot overwrite the cookie — see the module docs.
+ */
+export const CSRF_COOKIE = '__Host-blue-csrf';
 
 /** Mutating HTTP methods that require CSRF validation. */
 const MUTATING_METHODS = new Set(['POST', 'PUT', 'DELETE', 'PATCH', 'QUERY']);
@@ -26,7 +44,11 @@ const CSRF_HEADER = String(HTTPHeaders.X_CSRF_TOKEN);
  * Options for the CSRF interceptor.
  */
 export interface CSRFInterceptorOptions {
-    /** Cookie name; defaults to `'blue-csrf'`. */
+    /**
+     * Cookie name; defaults to `'__Host-blue-csrf'`. A name without the
+     * `__Host-` prefix gives up the sibling-subdomain cookie-tossing
+     * protection — see the module docs.
+     */
     cookieName?: string;
     /** Body/form field accepted as an alternative to the header. */
     fieldName?: string;

@@ -14,7 +14,7 @@ tabular). Purpose-built for LLM prompts/token economy. Reference SDK
 unpacked, `sideEffects: false`, MIT, SLSA-provenance npm.
 
 **Provisional status (spec §17–§19):** Working Draft; `text/toon` is a
-*provisional* media type, no IANA registration requested yet; community
+_provisional_ media type, no IANA registration requested yet; community
 spec, not standards-track; no formal patent review. Reserved structural
 characters retain meaning across versions (§18).
 
@@ -35,16 +35,16 @@ contracts, or defaults?
 
 ## 2. Candidate surface & verdict
 
-| Surface | Where | Verdict |
-| :------ | :---- | :------ |
-| `MediaTypes` token (`text/toon`) | `@blue/core` `media-types.ts` | ✅ **Phase 0 — landed.** Inert, typed, zero-dep; negotiable only when a user composes it (view/interceptor). `getDefaultCharset()` already yields `utf-8` for `text/*` → `text/toon;charset=utf-8`, matching spec §17. |
-| `application.json` config files | `@blue/boot` `StandardConfigFileLoader` | ✅ **Phase 1 — landed.** Decode-only `.toon` variant feeding the same `JSONObject` merge pipeline. Opt-in, reversible, no default change. |
-| `ApplicationBuilder.fromConfig(url)` | `@blue/boot` | 🟡 **Phase 3 — optional.** Auto-detect by URL extension / `format` option; single-shot bootstrap, low value. |
-| Config server wire format | `@blue/context` `RemotePropertySource` | ❌ Never — external contract; ETag/last-good/304 logic is JSON-shaped. |
-| Wire formats (HTTP views, SSE, WebSocket/STOMP, mock-http) | blue-view, blue-service, blue-socket, blue-test | ❌ Never — interop surface, IANA-registered media-types territory. |
-| Storage (Redis codec envelope, LibSQL session/roles, cookies, local-storage resource loader) | blue-redis, blue-orm-drizzle, platform-web | ❌ Never — existing data, no format migration. |
-| OIDC discovery/JWKS, `parseBody('application/json')` | auth-client, platform-node | ❌ Never — external protocols. |
-| Content-negotiation defaults (`.toon` path-extension mapping, default view) | blue-view | ❌ Never — would make an unregistered type framework-negotiable globally. |
+| Surface                                                                                      | Where                                           | Verdict                                                                                                                                                                                                                |
+| :------------------------------------------------------------------------------------------- | :---------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MediaTypes` token (`text/toon`)                                                             | `@blue/core` `media-types.ts`                   | ✅ **Phase 0 — landed.** Inert, typed, zero-dep; negotiable only when a user composes it (view/interceptor). `getDefaultCharset()` already yields `utf-8` for `text/*` → `text/toon;charset=utf-8`, matching spec §17. |
+| `application.json` config files                                                              | `@blue/boot` `StandardConfigFileLoader`         | ✅ **Phase 1 — landed.** Decode-only `.toon` variant feeding the same `JSONObject` merge pipeline. Opt-in, reversible, no default change.                                                                              |
+| `ApplicationBuilder.fromConfig(url)`                                                         | `@blue/boot`                                    | 🟡 **Phase 3 — optional.** Auto-detect by URL extension / `format` option; single-shot bootstrap, low value.                                                                                                           |
+| Config server wire format                                                                    | `@blue/context` `RemotePropertySource`          | ❌ Never — external contract; ETag/last-good/304 logic is JSON-shaped.                                                                                                                                                 |
+| Wire formats (HTTP views, SSE, WebSocket/STOMP, mock-http)                                   | blue-view, blue-service, blue-socket, blue-test | ❌ Never — interop surface, IANA-registered media-types territory.                                                                                                                                                     |
+| Storage (Redis codec envelope, LibSQL session/roles, cookies, local-storage resource loader) | blue-redis, blue-orm-drizzle, platform-web      | ❌ Never — existing data, no format migration.                                                                                                                                                                         |
+| OIDC discovery/JWKS, `parseBody('application/json')`                                         | auth-client, platform-node                      | ❌ Never — external protocols.                                                                                                                                                                                         |
+| Content-negotiation defaults (`.toon` path-extension mapping, default view)                  | blue-view                                       | ❌ Never — would make an unregistered type framework-negotiable globally.                                                                                                                                              |
 
 Non-negotiable invariants (recheck on every phase): JSON remains the
 default; **decode-only** (no encoder in framework internals); merge
@@ -68,7 +68,7 @@ composes it.
   `${fileName}.toon` (JSON wins on collision; formats never mix within one
   logical file). Profile variants and `BLUE_CONFIG_IMPORT` files inherit the
   probing rule. Optional explicit override: `baseName` → `format: 'json' |
-  'toon' | 'auto'` (default `auto`).
+'toon' | 'auto'` (default `auto`).
 - Parse via `decode()` from `@toon-format/toon` (strict mode, default),
   producing a `JSONObject`; feed existing `mergeConfig` deep-merge and the
   `application` source slot — zero changes to precedence, binding, secrets
@@ -81,16 +81,16 @@ composes it.
   statically — not, with dynamic import).
 - Pin `@toon-format/toon` to an exact version; document `toon-spec: 4.1`.
 - **Specs (new, pinned):**
-  - SEC-1 parity: `.toon` doc with `__proto__`/`constructor` keys decodes to
-    ordinary own entries; `wrapSource`/`mergeConfig` do not pollute (spec
-    §15 mandates this for decoders; pin our consumption).
-  - Behavior deltas vs `JSON.parse`: empty `.toon` → `{}` (JSON throws);
-    full-line `#` comments stripped before structure; CRLF accepted; BOM
-    stripped; `key: []` empty-array form; `application-{profile}.toon`
-    stacking + arrays-replace merge identical to JSON path.
-  - Duplicate sibling keys: strict-mode error in a single file (§14.3) vs
-    cross-file scalars-override merge — document the distinction.
-  - `doc:check` + `platform-boundary` (no node-platform dep) stay green.
+    - SEC-1 parity: `.toon` doc with `__proto__`/`constructor` keys decodes to
+      ordinary own entries; `wrapSource`/`mergeConfig` do not pollute (spec
+      §15 mandates this for decoders; pin our consumption).
+    - Behavior deltas vs `JSON.parse`: empty `.toon` → `{}` (JSON throws);
+      full-line `#` comments stripped before structure; CRLF accepted; BOM
+      stripped; `key: []` empty-array form; `application-{profile}.toon`
+      stacking + arrays-replace merge identical to JSON path.
+    - Duplicate sibling keys: strict-mode error in a single file (§14.3) vs
+      cross-file scalars-override merge — document the distinction.
+    - `doc:check` + `platform-boundary` (no node-platform dep) stay green.
 - **Reject criteria:** if the spec's next minor/major breaks decode on any
   fixture, the phase dies without migration — rename files back to `.json`.
 

@@ -770,16 +770,15 @@ importers:
 
   packages/blue-cache:
     dependencies:
+      '@blue/context':
+        specifier: ~0.0.1
+        version: link:../blue-context
       '@blue/factory':
         specifier: ~0.0.1
         version: link:../blue-factory
       '@tsmetadata/polyfill':
         specifier: ^1.1.3
         version: 1.1.3
-    devDependencies:
-      '@blue/context':
-        specifier: ~0.0.1
-        version: link:../blue-context
 
   packages/blue-content:
     dependencies:
@@ -900,6 +899,9 @@ importers:
       '@blue/core':
         specifier: ~0.0.1
         version: link:../blue-core
+      '@blue/telemetry':
+        specifier: ~0.0.1
+        version: link:../blue-telemetry
       '@blue/util':
         specifier: ~0.0.1
         version: link:../blue-util
@@ -1104,6 +1106,9 @@ importers:
       '@blue/socket':
         specifier: ~0.0.1
         version: link:../blue-socket
+      '@blue/telemetry':
+        specifier: ~0.0.1
+        version: link:../blue-telemetry
       '@blue/util':
         specifier: ~0.0.1
         version: link:../blue-util
@@ -1482,6 +1487,9 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
+      '@blue/telemetry':
+        specifier: ~0.0.1
+        version: link:../blue-telemetry
       '@blue/util':
         specifier: ~0.0.1
         version: link:../blue-util

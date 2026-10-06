@@ -6,6 +6,9 @@
 
 # Interface: Scope
 
+A caching strategy: resolves named values through the supplied object
+factory and can destroy cached values.
+
 ## Methods
 
 ### destroyValue()

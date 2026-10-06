@@ -5,6 +5,7 @@
  */
 import { Cron } from 'croner';
 import { FrameworkError } from '@blue/core';
+import { getErrorMessage } from '@blue/util';
 import { NormalizedScheduledSpec } from './spec';
 
 /**
@@ -77,10 +78,9 @@ export class CronSchedule implements Schedule {
         try {
             this.#cron = new Cron(expression, timeZone === undefined ? undefined : { timezone: timeZone });
         } catch (error) {
-            throw new TypeError(
-                `CronSchedule: invalid cron expression '${expression}' — ${error instanceof Error ? error.message : String(error)}`,
-                { cause: error }
-            );
+            throw new TypeError(`CronSchedule: invalid cron expression '${expression}' — ${getErrorMessage(error)}`, {
+                cause: error,
+            });
         }
     }
 

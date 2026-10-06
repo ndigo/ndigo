@@ -8,7 +8,7 @@ referenced from the ADR index.
 
 ### [Decisions](./decisions/README.md)
 
-Architecture Decision Records — AD-01..AD-66, contiguous. Numbered by
+Architecture Decision Records — AD-01..AD-67, contiguous. Numbered by
 decision-sequence, filenames use the decision date
 (`YYYY-MM-DD_AD##_TITLE.md`). The README is the index: status legend,
 supersession markers, links.
@@ -16,7 +16,7 @@ supersession markers, links.
 ### [Guides](./guides/README.md)
 
 How-to guides (numbered `NN-slug.md`, living documents — no dates). Guide 01
-is the end-to-end tutorial/integration path; 02–16 cover one feature area
+is the end-to-end tutorial/integration path; 02–18 cover one feature area
 each.
 
 ### [Plans](./plans/README.md)

@@ -145,9 +145,15 @@ Returns whether the named cache exists (no creation).
 
 `string`
 
+Non-empty cache name.
+
 ##### Returns
 
 `boolean`
+
+##### Throws
+
+For a non-string or empty name.
 
 ##### Implementation of
 
@@ -165,9 +171,15 @@ Returns whether the token-identified cache exists (no creation).
 
 [`ContextToken`](#)\<`Cache`\<`unknown`\>\>
 
+The cache store token.
+
 ##### Returns
 
 `boolean`
+
+##### Throws
+
+For an empty token description.
 
 ##### Implementation of
 

@@ -23,6 +23,22 @@ configureTelemetry({
 });
 ```
 
+## Usage
+
+### Export tuning and teardown
+
+```ts
+import { configureTelemetry, HTTPServerInstrumentation, WebSocketServerInstrumentation } from '@blue/telemetry-node';
+
+const sdk = configureTelemetry({
+    traceExporter: { url: 'http://collector:4318/v1/traces' },
+    sampler: { ratio: 0.1 }, // keep ~10% of root spans
+    instrumentations: [new HTTPServerInstrumentation(), new WebSocketServerInstrumentation()],
+});
+
+await sdk?.shutdown(); // batched signals — flush before exit
+```
+
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into

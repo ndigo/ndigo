@@ -134,6 +134,7 @@ Jeff Rose
 - [buildSessionCookieClear](functions/buildSessionCookieClear.md)
 - [clearSessionCookie](functions/clearSessionCookie.md)
 - [configureNodeArgumentResolvers](functions/configureNodeArgumentResolvers.md)
+- [createNodeArgumentResolvers](functions/createNodeArgumentResolvers.md)
 - [createOptionalConverter](functions/createOptionalConverter.md)
 - [createStringSplitConverter](functions/createStringSplitConverter.md)
 - [finalizeInterceptorDenial](functions/finalizeInterceptorDenial.md)

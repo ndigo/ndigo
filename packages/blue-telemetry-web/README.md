@@ -15,12 +15,28 @@ Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 ## Getting Started
 
 ```ts
-import { configureBrowserTelemetry } from '@blue/telemetry-web';
+import { configureBrowserTelemetry, RouterInstrumentation } from '@blue/telemetry-web';
 
+// Providers first — a configured traceUrl exports over OTLP/HTTP; without it
+// spans go to the console exporter (dev posture).
 configureBrowserTelemetry({
     serviceName: 'todo-app',
-    instrumentations: [...],
 });
+
+// Instrumentations self-enable on construction — no registration call needed.
+new RouterInstrumentation();
+```
+
+## Usage
+
+### Instrumentations
+
+```ts
+import { DispatcherInstrumentation, WebSocketClientInstrumentation } from '@blue/telemetry-web';
+
+// Self-enable on construction, like RouterInstrumentation above.
+new DispatcherInstrumentation(); // client-side dispatch spans
+new WebSocketClientInstrumentation(); // socket outbound messages/bytes + deliberate-close counters
 ```
 
 ## API

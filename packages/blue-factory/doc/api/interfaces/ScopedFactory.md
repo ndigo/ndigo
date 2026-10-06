@@ -6,6 +6,8 @@
 
 # Interface: ScopedFactory
 
+A factory that exposes named [Scope](Scope.md) strategies and destroys scoped values.
+
 ## Methods
 
 ### destroyScopedValue()

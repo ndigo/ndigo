@@ -87,7 +87,8 @@ export class FeatureRoutingRegistry {
      * Each feature is associated with a unique name and a URL prefix.
      * @param feature - The `FeatureRouteRegistration` object containing feature details and callbacks.
      * @returns The current `FeatureRoutingRegistry` instance for chaining.
-     * @throws {TypeError} If a feature with the same name is already registered.
+     * @throws {TypeError} If a feature with the same name is already registered,
+     *   or another feature already occupies the same route prefix.
      * @since 1.0.0
      */
     registerFeature(feature: FeatureRouteRegistration): this {
@@ -95,13 +96,15 @@ export class FeatureRoutingRegistry {
             throw new TypeError(`Feature '${feature.name}' is already registered`);
         }
 
-        this.#featureMap.set(feature.name, feature);
-        this.#recordCounter(feature.name, 'registeredCount');
+        // Mount first: a duplicate-prefix TypeError from the partition router
+        // must not leave a feature registered without a mount behind.
         this.#partitionRouter.mount(feature.prefix, (route) => {
             this.#activate(feature.name);
             this.#recordCounter(feature.name, 'routeHandledCount');
             feature.onRoute(route);
         });
+        this.#featureMap.set(feature.name, feature);
+        this.#recordCounter(feature.name, 'registeredCount');
 
         return this;
     }

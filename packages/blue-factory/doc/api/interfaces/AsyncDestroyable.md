@@ -6,6 +6,8 @@
 
 # Interface: AsyncDestroyable
 
+A [Destroyable](Destroyable.md) whose destruction is asynchronous.
+
 ## Extends
 
 - [`Destroyable`](Destroyable.md)

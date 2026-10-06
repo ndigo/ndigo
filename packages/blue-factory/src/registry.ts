@@ -6,6 +6,9 @@
 import { like } from '@blue/util/types';
 import { ContextToken } from './context-tokens';
 
+/**
+ * Interface that defines a registry for shared instances.
+ */
 export interface Registry {
     destroyValue<T = unknown>(token: ContextToken<T>): void;
     destroyValue(name: string): void;
@@ -16,10 +19,6 @@ export interface Registry {
     setValue<T = unknown>(token: ContextToken<T>, value: T): void;
     setValue<T = unknown>(name: string, value: T): void;
 }
-
-/**
- * Interface that defines a registry for shared instances
- */
 
 /**
  * @param {*} value The value to be tested
@@ -36,7 +35,7 @@ export const likeRegistry = (value: unknown): value is Registry =>
 /**
  * A handler implementation that when applied to a {@link Registry|Registry} instance via {@link external:Proxy|Proxy} causes the registry
  * to behave like a plain object. This is used to implement `ProxiedFactory`.
-
+ *
  * @see {@link ProxiedFactory}
  */
 export class RegistryProxyHandler<T extends Registry> implements ProxyHandler<T> {

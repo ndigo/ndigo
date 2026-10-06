@@ -1,6 +1,6 @@
 /**
  * Re-exports from `@preact/signals-core` — the underlying signals engine.
- * * @module blue-signals
+ * @module blue-signals
  * @since 1.0.0
  * @author Jeff Rose
  */

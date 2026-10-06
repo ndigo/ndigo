@@ -36,7 +36,7 @@ const ModelUpdateSchema = z.object({ model: TodoModelSchema });
 class IslandPushAPI {
     @getCall('/events', { stream: true, responseSchema: ModelUpdateSchema })
     modelUpdates(): AsyncIterable<{ model: TodoModel }> {
-        return undefined as unknown;
+        return undefined as unknown as AsyncIterable<{ model: TodoModel }>;
     }
 }
 
@@ -65,7 +65,9 @@ class TodoIsland extends AbstractWebComponent {
                 this.render();
             }
         });
-        const api = serviceClient(IslandPushAPI, new HTTP());
+        // serviceClient's generic binds to the constructor it receives, so the
+        // proxy is typed as the instance shape explicitly (runtime returns one).
+        const api = serviceClient(IslandPushAPI, new HTTP()) as unknown as IslandPushAPI;
         streamToSignal(api.modelUpdates(), modelSignal);
     }
 

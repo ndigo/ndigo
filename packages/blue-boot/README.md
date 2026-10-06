@@ -21,6 +21,26 @@ import { MyConfiguration } from './my-configuration';
 const app = new ApplicationBuilder([MyConfiguration]).profiles('dev').run();
 ```
 
+## Usage
+
+### Typed configuration binding
+
+```ts
+import { configuration, property, defaultValue } from '@blue/context';
+import { ApplicationBuilder, configurationProperties } from '@blue/boot';
+
+@configurationProperties('server')
+class ServerConfig {
+    @property('port', Number) @defaultValue('8080') port!: number;
+}
+
+@configuration
+class AppConfig {}
+
+const app = await new ApplicationBuilder([AppConfig, ServerConfig]).profiles('dev').run();
+app.getValue<ServerConfig>('serverConfig').port; // number — fail-loud on invalid values
+```
+
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into

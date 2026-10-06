@@ -11,6 +11,8 @@ const { defineProperty } = Reflect;
  * Parses and matches a single matrix-parameter expression against a route segment.
  *
  * Matrix parameters are per-segment key=value pairs carried in `RouteSegment.data`.
+ * Repeated keys and comma-separated lists aggregate into arrays; a `key=value`
+ * expression matches when any element equals `value`.
  * This expression walks every segment of the route looking for a matching name/value pair.
  */
 export class MatrixParamExpression extends AbstractNameValueExpression<string> {
@@ -38,6 +40,11 @@ export class MatrixParamExpression extends AbstractNameValueExpression<string> {
     /**
      * Check whether any route segment carries the expected matrix-parameter value.
      *
+     * A segment value may be an array when the segment repeats the key
+     * (`;color=red;color=blue`) or lists values (`;color=red,blue`); the
+     * expression matches when any element equals the expected value. A single
+     * value matches by strict equality.
+     *
      * @param route - The current route.
      * @returns `true` when at least one segment matches both name and value.
      */
@@ -47,7 +54,14 @@ export class MatrixParamExpression extends AbstractNameValueExpression<string> {
         const length: number = route.length ?? 0;
         for (let i = 0; i < length; i++) {
             const segment: RouteSegment = route[i];
-            if (segment?.data && segment.data[this.name] === this.value) {
+            if (!segment?.data) {
+                continue;
+            }
+            const routeValue = segment.data[this.name];
+            const isMatch = Array.isArray(routeValue)
+                ? routeValue.some((value) => value === this.value)
+                : routeValue === this.value;
+            if (isMatch) {
                 return true;
             }
         }

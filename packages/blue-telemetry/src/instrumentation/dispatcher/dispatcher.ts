@@ -16,7 +16,7 @@ import { AbstractBaseInstrumentation } from '../base';
  */
 interface DispatcherPatchTarget {
     dispatch(route: Route): Promise<void>;
-    _resolveViewName(viewName: string, language: string): Promise<unknown>;
+    _resolveViewName(viewName: string, language: string, request?: unknown): Promise<unknown>;
     /** Missing on the mixin prototype chain; restored before shimmer wraps. */
     propertyIsEnumerable?(propertyName: string | symbol): boolean;
 }

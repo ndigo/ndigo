@@ -1,6 +1,6 @@
 /**
  * Canonical ordered list of property-source names from HIGHEST to LOWEST.
- * * @module blue-boot
+ * @module blue-boot
  * @since 1.0.0
  * @author Jeff Rose
  */

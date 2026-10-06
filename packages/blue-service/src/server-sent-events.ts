@@ -110,6 +110,12 @@ export class ServerSentEventParser {
             value = value.slice(1);
         }
 
+        // Only event-carrying fields may start a pending event: `retry:` (and
+        // unknown fields, which are ignored per spec) must not, or the blank
+        // line would dispatch a phantom `message` event.
+        if (field !== 'data' && field !== 'event' && field !== 'id') {
+            return;
+        }
         if (this.#current === null) {
             this.#current = { data: [] };
         }
@@ -123,9 +129,6 @@ export class ServerSentEventParser {
             case 'id':
                 this.#current.id = value;
                 break;
-            default:
-                // Unknown fields are ignored (spec-permitted).
-                break;
         }
     }
 
@@ -137,7 +140,9 @@ export class ServerSentEventParser {
     #emit(events: ServerSentEvent[]): void {
         const pending = this.#current;
         this.#current = null;
-        if (!pending) {
+        // An `id`-only block has no payload to dispatch; `event`-only blocks
+        // still do (the parser's documented behavior).
+        if (!pending || (pending.data.length === 0 && pending.event === undefined)) {
             return;
         }
         const { event = DEFAULT_EVENT, data, id } = pending;

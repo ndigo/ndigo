@@ -8,9 +8,12 @@
 
 Browser cookie argument resolver using `document.cookie` parsing.
 
+Binds `cookieValue()` (no name → the whole parsed jar) and named cookie
+values through the shared `AbstractCookieValueArgumentResolver` base.
+
 ## Extends
 
-- `AbstractPlatformArgumentResolver`
+- `AbstractCookieValueArgumentResolver`
 
 ## Constructors
 
@@ -18,13 +21,15 @@ Browser cookie argument resolver using `document.cookie` parsing.
 
 > **new BrowserCookieValueMethodArgumentResolver**(): `BrowserCookieValueMethodArgumentResolver`
 
+Creates a cookie-value resolver.
+
 #### Returns
 
 `BrowserCookieValueMethodArgumentResolver`
 
-#### Overrides
+#### Inherited from
 
-`AbstractPlatformArgumentResolver.constructor`
+`AbstractCookieValueArgumentResolver.constructor`
 
 ## Accessors
 
@@ -68,7 +73,7 @@ if the argument is undefined or null.
 
 #### Inherited from
 
-`AbstractPlatformArgumentResolver.handleMissingValue`
+`AbstractCookieValueArgumentResolver.handleMissingValue`
 
 ***
 
@@ -105,7 +110,7 @@ extending this base — only the BIND path invoked it.
 
 #### Inherited from
 
-`AbstractPlatformArgumentResolver.resolveArgument`
+`AbstractCookieValueArgumentResolver.resolveArgument`
 
 ***
 
@@ -113,7 +118,7 @@ extending this base — only the BIND path invoked it.
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Returns whether this resolver supports cookie parameters.
+Whether the given method parameter is supported by this resolver.
 
 #### Parameters
 
@@ -121,10 +126,14 @@ Returns whether this resolver supports cookie parameters.
 
 `MethodParameter`
 
+The method parameter to check.
+
 #### Returns
 
 `boolean`
 
-#### Overrides
+Whether or not the given method parameter is supported by this resolver.
 
-`AbstractPlatformArgumentResolver.supportsParameter`
+#### Inherited from
+
+`AbstractCookieValueArgumentResolver.supportsParameter`

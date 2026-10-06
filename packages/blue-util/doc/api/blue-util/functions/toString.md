@@ -8,14 +8,14 @@
 
 > **toString**(`value`): `string`
 
-Returns the string representation of the given value. `eval`'ing the output
-should result in a value equivalent to the input value. Many of the built-in
-`toString` methods do not satisfy this requirement.
+Returns the string representation of the given value.
 
-If the given value is an `[object Object]` with a `toString` method other
-than `Object.prototype.toString`, this method is invoked with no arguments
-to produce the return value. This means user-defined constructor functions
-can provide a suitable `toString` method. For example:
+`null` and `undefined` yield `''` and strings pass through unchanged. Any
+object with a callable `toString` (own or inherited, including
+`Array.prototype.toString`) is invoked with no arguments and its string
+result returned — so user-defined constructor functions can provide a
+suitable representation. Everything else falls back to `String(value)`.
+For example:
 
     function Point( x, y ){
       this.x = x;
@@ -27,6 +27,10 @@ can provide a suitable `toString` method. For example:
     };
 
     toString( new Point( 1, 2 ) ); //=> 'new Point(1, 2)'
+
+This is a display coercer, not a serializer: arrays become `'1,2,3'` and
+plain objects `'[object Object]'`, which do not round-trip through `eval`.
+Use `JSON.stringify` when you need a serialized representation.
 
 ## Parameters
 
@@ -41,20 +45,11 @@ can provide a suitable `toString` method. For example:
 ## Example
 
 ```ts
-toString( null );
-//=> ""
-toString( undefined );
-//=> ""
-toString( 42 );
-//=> '42'
-toString( 'abc' );
-//=> "abc"
-toString( [ 1, 2, 3 ] );
-//=> '[ 1, 2, 3 ]'
-toString( { toString: () => 'foo' } );
-//=> "foo"
-toString( { foo: 1, bar: 2, baz: 3 } );
-//=> '{ "bar": 2, "baz": 3, "foo": 1 }'
-toString( new Date('2001-02-03T04:05:06Z' ) );
-//=> 'new Date( "2001-02-03T04:05:06.000Z" )'
+toString( null );      //=> ''
+toString( undefined ); //=> ''
+toString( 42 );        //=> '42'
+toString( 'abc' );     //=> 'abc'
+toString( [ 1, 2, 3 ] ); //=> '1,2,3'
+toString( { toString: () => 'foo' } ); //=> 'foo'
+toString( { foo: 1, bar: 2 } ); //=> '[object Object]'
 ```

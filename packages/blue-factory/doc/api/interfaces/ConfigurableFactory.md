@@ -96,7 +96,9 @@ The entry processor to add.
 
 > **getInstance**\<`T`\>(`name`): `T`
 
-Return an instance of the specified value.
+Returns the value registered under `name`: constructor-registered
+values are instantiated, while values registered as instances (or
+primitives) are returned as-is, preserving identity (CF-12).
 
 #### Type Parameters
 
@@ -116,7 +118,7 @@ The name of the value.
 
 `T`
 
-An instance of the value specified by the `name`.
+The instance (or registered value) specified by the `name`.
 
 #### Inherited from
 

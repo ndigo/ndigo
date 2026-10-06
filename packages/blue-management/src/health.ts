@@ -5,6 +5,7 @@
  * @author Jeff Rose
  */
 import type { Enumerable } from '@blue/core';
+import { getErrorMessage } from '@blue/util';
 
 /**
  * The overall health of a subsystem.
@@ -140,7 +141,7 @@ export class HealthRegistry implements Enumerable<string, HealthIndicator> {
                     const result = await indicator.check();
                     return { name, result };
                 } catch (error) {
-                    const detail = error instanceof Error ? error.message : String(error);
+                    const detail = getErrorMessage(error);
                     return {
                         name,
                         result: {

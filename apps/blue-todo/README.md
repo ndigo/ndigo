@@ -17,7 +17,7 @@ cd apps/blue-todo && pnpm dev
   Web Components
 - Micro frontend shell: feature mount manager, relay gateway, and
   `FeatureRoutingRegistry` (`@blue/router`)
-- Auth-guarded routes (`@blue/auth-core`), feature metrics panel, and
+- Auth-guarded routes (`@blue/auth-client`), feature metrics panel, and
   browser telemetry
 - End-to-end Playwright suite under `e2e/`
 

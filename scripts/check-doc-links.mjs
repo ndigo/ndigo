@@ -2,10 +2,12 @@
 /**
  * Docs relative-link integrity checker (zero dependencies).
  *
- * Walks every markdown file under docs/ (recursively) plus root-level
- * markdown files, extracts markdown links, and verifies that every relative
- * target exists and every `#anchor` fragment resolves to a heading
- * (GitHub-style slug). External URLs are skipped (no network).
+ * Walks every markdown file under docs/ (recursively), root-level markdown
+ * files, every package README, and every app markdown file; extracts
+ * markdown links and verifies that every relative target exists and every
+ * `#anchor` fragment resolves to a heading (GitHub-style slug). External
+ * URLs are skipped (no network); generated trees (doc/, dist/, lib/,
+ * node_modules/) are not walked.
  *
  * Catches: renamed/moved files, wrong relative depth, wrong link dates,
  * and heading anchors that no longer exist. Run via `pnpm docs:links`.
@@ -48,19 +50,29 @@ function withoutCodeFences(text) {
     return text.replace(/```[\s\S]*?```/g, '');
 }
 
+/** Generated/installed trees that never contain maintained markdown. */
+const SKIP_DIRS = new Set(['node_modules', 'dist', 'lib', 'coverage', 'doc', 'test-results', 'playwright-report']);
+
 function collectMarkdownFiles() {
     const files = [];
-    const walk = (dir) => {
+    const walk = (dir, keep) => {
         for (const entry of readdirSync(dir)) {
             const full = join(dir, entry);
-            if (statSync(full).isDirectory()) walk(full);
-            else if (entry.endsWith('.md')) files.push(full);
+            if (statSync(full).isDirectory()) {
+                if (!SKIP_DIRS.has(entry)) walk(full, keep);
+            } else if (keep(entry)) {
+                files.push(full);
+            }
         }
     };
-    walk(join(root, 'docs'));
+    // Maintained prose end to end, plus the root-level documents.
+    walk(join(root, 'docs'), (entry) => entry.endsWith('.md'));
     for (const f of readdirSync(root)) {
         if (f.endsWith('.md')) files.push(join(root, f));
     }
+    // Package READMEs and every app document (TO-13 gate widening).
+    walk(join(root, 'packages'), (entry) => entry === 'README.md');
+    walk(join(root, 'apps'), (entry) => entry.endsWith('.md'));
     return files.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 }
 

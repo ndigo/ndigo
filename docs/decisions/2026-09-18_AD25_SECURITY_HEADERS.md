@@ -2,7 +2,8 @@
 
 **Date:** 2026-09-18
 **Status:** Accepted — implementation landed 2026-09-18 (reviewed in the
-2026-09-18 code review; still current).
+2026-09-18 code review; still current, except D-3's CSP `connect-src`
+default, superseded by SEC-4 (2026-09-29) — see the Update note).
 
 ## Context
 
@@ -84,3 +85,14 @@ auto-configuration machinery.
   D1 `connect-src` note)
 - Gap analysis row: `docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md` (SEC-6)
 - Trusted proxy (related deferral): [AD-37](2026-09-28_AD37_TRUSTED_PROXY.md)
+
+## Update (2026-09-29, SEC-4)
+
+- D-3's CSP default was hardened from `connect-src 'self' ws: wss:` to
+  `connect-src 'self'` (SEC-4, [2026-09-29 review](../plans/2026-09-29_CODE_REVIEW_AND_MITIGATION.md);
+  `security-headers-interceptor.ts` `DEFAULT_CONNECT_SRC`). Under CSP3
+  `'self'` covers WebSocket (`ws:`/`wss:`) streams to the same host-origin,
+  so the framework's co-located socket server keeps working; a socket server
+  on a different host widens `connect-src` explicitly (`wss://<host>`) —
+  bare `ws:`/`wss:` are never admissions. The D-3 text above is the
+  historical 2026-09-18 default, kept as the record of that decision.

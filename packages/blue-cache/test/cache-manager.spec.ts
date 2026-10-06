@@ -33,5 +33,7 @@ describe('MemoryCacheManager', () => {
     test('rejects non-string or empty cache names', () => {
         const manager = new MemoryCacheManager();
         expect(() => manager.getCache('')).toThrow(TypeError);
+        // hasCache shares the same resolution/validation (DA-9).
+        expect(() => manager.hasCache('')).toThrow(TypeError);
     });
 });

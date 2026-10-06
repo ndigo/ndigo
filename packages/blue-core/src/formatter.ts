@@ -3,6 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import { IllegalStateError } from './error.js';
 
 /**
  * Shared formatting options. The locale is always explicit; the time zone is
@@ -344,7 +345,9 @@ export class ListFormatter {
  */
 export interface FormattingServiceOptions {
     /**
-     * Default locale applied to formatters that do not specify one.
+     * Default locale applied to formatters that do not specify one. When
+     * neither this nor a per-formatter locale is set, creating a formatter
+     * throws — the ambient runtime locale is never used.
      */
     locale?: string;
     /**
@@ -408,6 +411,8 @@ export interface FormattingService {
  *
  * @param options - The service-wide defaults.
  * @returns A configured formatting service.
+ * @throws {IllegalStateError} When a formatter is created without a locale
+ * from either the service defaults or the per-formatter options.
  *
  * @example
  * ```ts
@@ -428,6 +433,13 @@ export function createFormattingService(options: FormattingServiceOptions = {}):
         }
         if (timeZone && !merged.timeZone) {
             merged.timeZone = timeZone;
+        }
+        if (!merged.locale) {
+            // The ambient runtime locale would render differently on server
+            // and client — a missing locale is a programming error.
+            throw new IllegalStateError(
+                'No locale resolved: pass a locale to createFormattingService or to the formatter options (the ambient runtime locale is never used)'
+            );
         }
         return merged;
     };

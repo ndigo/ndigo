@@ -24,13 +24,6 @@ function generateToken(principal: Principal): string {
 }
 
 /**
- * Looks up a principal by token.
- */
-export function lookupPrincipal(token: string): Principal | null {
-    return tokenStore.get(token) ?? null;
-}
-
-/**
  * Invalidates a token (logs out the user).
  */
 export function invalidateToken(token: string): void {

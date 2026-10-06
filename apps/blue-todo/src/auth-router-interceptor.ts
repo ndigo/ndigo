@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { RouterInterceptor, Route, type RouterMiddleware } from '@blue/router';
+import { RouterInterceptor, Route } from '@blue/router';
 import { authClient } from './auth-store';
 
 /**
@@ -63,28 +63,4 @@ export class AuthRouterInterceptor implements RouterInterceptor {
     async afterCompletion(_route: Route): Promise<void> {
         // no-op
     }
-}
-
-/**
- * Creates a simple auth middleware function for the router.
- *
- * This is a lighter-weight alternative to `AuthRouterInterceptor` that
- * only checks authentication status without role-based access control.
- *
- * @param requireAuth - Whether authentication is required for this route.
- * @param loginRedirect - The hash route to redirect to if unauthenticated.
- */
-export function authMiddleware(requireAuth: boolean, loginRedirect: string = '#/login'): RouterMiddleware {
-    return (route: Route): boolean => {
-        if (!requireAuth) {
-            return true;
-        }
-
-        if (!authClient.isAuthenticated) {
-            window.location.hash = loginRedirect;
-            return false;
-        }
-
-        return true;
-    };
 }

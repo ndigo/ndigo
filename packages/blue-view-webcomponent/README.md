@@ -27,6 +27,20 @@ class TodoItemView extends AbstractWebComponent {
 // element that reacts to @blue/signals state.
 ```
 
+## Usage
+
+### Hydrating islands
+
+```ts
+import { hydrateIslands } from '@blue/view-webcomponent';
+
+const hydrated = hydrateIslands(); // upgrades [data-blue-island] markup to live elements
+```
+
+### Performance
+
+The todomvc benchmark suite (Speedometer-3 style workload in jsdom) measures the engine against other frameworks — model updates re-render in place without replacing the element.
+
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into
@@ -38,10 +52,6 @@ how it fits with the rest of BlueJS.
 - **Engine** — per-element mount logic, model binding, DOM target (`DOMElementViewTarget`), and event bridging to BlueJS signals
 - **Hydration** — `hydrate` support for islands baked into server-rendered pages
 - **Mapping** — tag-name ↔ component mapping and view mapping layers
-
-## Performance
-
-The todomvc benchmark suite (Speedometer-3 style workload in jsdom) measures the engine against other frameworks — model updates re-render in place without replacing the element.
 
 ## Development
 

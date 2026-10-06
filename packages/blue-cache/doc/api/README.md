@@ -41,5 +41,6 @@ Jeff Rose
 - [isCacheMiss](functions/isCacheMiss.md)
 - [memoize](functions/memoize.md)
 - [resolveCachedSpec](functions/resolveCachedSpec.md)
+- [resolveCacheName](functions/resolveCacheName.md)
 - [serializeCacheKey](functions/serializeCacheKey.md)
 - [serializeCacheKeyStrict](functions/serializeCacheKeyStrict.md)

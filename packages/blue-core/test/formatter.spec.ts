@@ -11,6 +11,7 @@ import {
     NumberFormatter,
     RelativeTimeFormatter,
 } from '../src/formatter';
+import { IllegalStateError } from '../src/error';
 
 const UTC_NOON = new Date('2026-09-13T12:00:00Z');
 
@@ -125,5 +126,24 @@ describe('@blue/core createFormattingService', () => {
 
         const englishDate = format.date({ locale: 'en-US', dateStyle: 'medium' });
         expect(englishDate.format(UTC_NOON)).toContain('Sep 13, 2026');
+    });
+
+    test('fails loudly when no locale is resolved for a formatter', () => {
+        const format = createFormattingService();
+
+        // The ambient runtime locale is never used: a missing locale is a
+        // programming error, not a silent fallback (server/client hydration
+        // parity).
+        expect(() => format.date()).toThrow(IllegalStateError);
+        expect(() => format.date()).toThrow(/locale/i);
+        expect(() => format.number()).toThrow(/locale/i);
+        expect(() => format.relativeTime()).toThrow(/locale/i);
+        expect(() => format.list()).toThrow(/locale/i);
+    });
+
+    test('accepts a per-formatter locale when the service has no default', () => {
+        const format = createFormattingService();
+
+        expect(format.date({ locale: 'en-US', dateStyle: 'medium' }).format(UTC_NOON)).toContain('2026');
     });
 });

@@ -6,6 +6,8 @@
 
 # Interface: Registry
 
+Interface that defines a registry for shared instances.
+
 ## Extended by
 
 - [`ConfigurableFactory`](ConfigurableFactory.md)

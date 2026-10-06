@@ -41,8 +41,6 @@ Adds two values.
 ```ts
 add( 2, 3 );
 //=>  5
-add( 7 )( 10 );
-//=> 17
 ```
 
 #### dec
@@ -106,14 +104,8 @@ The result of `a / b`.
 ##### Example
 
 ```ts
-import { __, divide } from '@blue/util';
 divide( 71, 100 ); //=> 0.71
-
-const half = divide( __, 2 );
-half( 42 ); //=> 21
-
-const reciprocal = divide( 1 );
-reciprocal( 4 );   //=> 0.25
+divide( 1, 4 );    //=> 0.25
 ```
 
 #### guid
@@ -169,7 +161,7 @@ inc( 42 ); //=> 43
 > **mathMod**: (`m`, `p`) => `number`
 
 `mathMod` behaves like the modulo operator should mathematically, unlike the
-`%` operator (and by extension, [`R.modulo`](#modulo)). So while
+`%` operator (and by extension, [`modulo`](#modulo)). So while
 `-17 % 5` is `-2`, `mathMod(-17, 5)` is `3`. `mathMod` requires Integer
 arguments, and returns NaN when the modulus is zero or negative.
 
@@ -200,22 +192,12 @@ The result of `b mod a`.
 ##### Example
 
 ```ts
-import { __, mathMod } from '@blue/util';
 mathMod( -17, 5 );  //=> 3
 mathMod( 17, 5 );   //=> 2
 mathMod( 17, -5 );  //=> NaN
 mathMod( 17, 0 );   //=> NaN
 mathMod( 17.2, 5 ); //=> NaN
 mathMod( 17, 5.3 ); //=> NaN
-
-const clock = mathMod( __, 12 );
-clock( 15 ); //=> 3
-clock( 24 ); //=> 0
-
-const seventeenMod = mathMod( 17 );
-seventeenMod( 3 );  //=> 2
-seventeenMod( 4 );  //=> 1
-seventeenMod( 10 ); //=> 7
 ```
 
 #### mean
@@ -308,7 +290,6 @@ The result of `b % a`.
 ##### Example
 
 ```ts
-import { __, modulo } from '@blue/util';
 modulo( 17, 3 );
 //=> 2
 // JS behavior:
@@ -316,19 +297,13 @@ modulo( -17, 3 );
 //=> -2
 modulo( 17, -3 );
 //=> 2
-
-const isOdd = modulo( __, 2 );
-isOdd( 42 );
-//=> 0
-isOdd( 21 );
-//=> 1
 ```
 
 #### multiply
 
 > **multiply**: (`a`, `b`) => `number`
 
-Multiplies two numbers. Equivalent to `a * b` but curried.
+Multiplies two numbers. Equivalent to `a * b`.
 
 ##### Parameters
 
@@ -357,14 +332,10 @@ The result of `a * b`.
 ##### Example
 
 ```ts
-const double = multiply( 2 );
-const triple = multiply( 3 );
-double( 3 );
-//=>  6
-triple( 4 );
-//=> 12
 multiply( 2, 5 );
 //=> 10
+multiply( 3, 4 );
+//=> 12
 ```
 
 #### negate
@@ -570,19 +541,10 @@ The result of `a - b`.
 ##### Example
 
 ```ts
-import { __, subtract } from '@blue/util';
 subtract( 10, 8 );
 //=> 2
-
-const minus5 = subtract( __, 5 );
-minus5( 17 );
-//=> 12
-
-const complementaryAngle = subtract( 90 );
-complementaryAngle( 30 );
+subtract( 90, 30 );
 //=> 60
-complementaryAngle( 72 );
-//=> 18
 ```
 
 #### sum

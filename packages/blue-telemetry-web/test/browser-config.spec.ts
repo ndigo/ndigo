@@ -6,13 +6,15 @@
 import { trace, metrics, diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { ConsoleSpanExporter } from '@opentelemetry/sdk-trace-base';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { configureBrowserTelemetry } from '../src/browser-config';
 import { LoggerFactory } from '@blue/telemetry';
 
-// Capture the exporter each SimpleSpanProcessor is built with so tests can
-// assert on the processor list without reaching into the registered provider.
-const spanProcessors: { exporter: unknown }[] = [];
+// Capture the processor + exporter each span processor is built with so
+// tests can assert on the processor list without reaching into the
+// registered provider (DSG-1 gating + OP-14 batching).
+const spanProcessors: { kind: 'simple' | 'batch'; exporter: unknown }[] = [];
 vi.mock('@opentelemetry/sdk-trace-base', async (importOriginal) => {
     const actual = await importOriginal();
     return {
@@ -20,7 +22,13 @@ vi.mock('@opentelemetry/sdk-trace-base', async (importOriginal) => {
         SimpleSpanProcessor: class extends actual.SimpleSpanProcessor {
             constructor(exporter: unknown) {
                 super(exporter);
-                spanProcessors.push({ exporter });
+                spanProcessors.push({ kind: 'simple', exporter });
+            }
+        },
+        BatchSpanProcessor: class extends actual.BatchSpanProcessor {
+            constructor(exporter: unknown) {
+                super(exporter);
+                spanProcessors.push({ kind: 'batch', exporter });
             }
         },
     };
@@ -89,7 +97,7 @@ describe('configureBrowserTelemetry', () => {
             spanProcessors.length = 0;
         });
 
-        it('configures the OTLP processor when traceUrl is set even with useConsoleExporters false', () => {
+        it('configures a BatchSpanProcessor over OTLP when traceUrl is set even with useConsoleExporters false', () => {
             configureBrowserTelemetry({
                 serviceName: 'test',
                 traceUrl: 'http://collector:4318/v1/traces',
@@ -97,6 +105,7 @@ describe('configureBrowserTelemetry', () => {
             });
 
             expect(spanProcessors).toHaveLength(1);
+            expect(spanProcessors[0].kind).toBe('batch');
             expect(spanProcessors[0].exporter).toBeInstanceOf(OTLPTraceExporter);
         });
 
@@ -106,11 +115,20 @@ describe('configureBrowserTelemetry', () => {
             expect(spanProcessors).toHaveLength(0);
         });
 
-        it('configures the OTLP processor when traceUrl is set and console exporters enabled', () => {
+        it('configures a BatchSpanProcessor over OTLP when traceUrl is set and console exporters enabled', () => {
             configureBrowserTelemetry({ serviceName: 'test', traceUrl: 'http://collector:4318/v1/traces' });
 
             expect(spanProcessors).toHaveLength(1);
+            expect(spanProcessors[0].kind).toBe('batch');
             expect(spanProcessors[0].exporter).toBeInstanceOf(OTLPTraceExporter);
+        });
+
+        it('keeps a SimpleSpanProcessor for the console exporter when no traceUrl is set', () => {
+            configureBrowserTelemetry({ serviceName: 'test' });
+
+            expect(spanProcessors).toHaveLength(1);
+            expect(spanProcessors[0].kind).toBe('simple');
+            expect(spanProcessors[0].exporter).toBeInstanceOf(ConsoleSpanExporter);
         });
     });
 });

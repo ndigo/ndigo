@@ -5,15 +5,15 @@ from simple to complex. Each app demonstrates a distinct slice of the framework.
 
 ## Progression
 
-| #   | App               | Demonstrates                                                                                                                                                           |
-| --- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | `blue-hello`      | Browser — context + route + template/Web Component render                                                                                                              |
-| 2   | `blue-hello-node` | Node — `HTTPServer` + `NodeDispatcher` + `@getMapping`, JSON responses                                                                                                 |
-| 3   | `blue-todo`       | Browser — TodoMVC + micro frontend shell (`@blue/host` one-call registration, relay gateway)                                                                           |
-| 4   | `blue-api`        | Node — controllers, JWT auth, ORM (+Drizzle), content negotiation, problem+json errors, **management `/health`/`/metrics`**, **Accept-Language i18n**, config bindings |
-| 5   | `blue-host`       | Browser — micro frontend host: `@blue/host` `HostManager` + 3 lazy-loaded feature chunks, shared-dependency validation                                                 |
-| 6   | `blue-island`     | Node SSR — EJS shell + island hydration, SSE push → `@blue/signals`, typed service stream                                                                              |
-| 7   | `blue-views`      | Browser — view-resolution composite, i18n/themes (`@blue/content`), HTTP client with offline queueing                                                                  |
+| #   | App               | Demonstrates                                                                                                                                                                            |
+| --- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `blue-hello`      | Browser — context + route + template/Web Component render                                                                                                                               |
+| 2   | `blue-hello-node` | Node — `HTTPServer` + `NodeDispatcher` + `@getMapping`, JSON responses                                                                                                                  |
+| 3   | `blue-todo`       | Browser — TodoMVC + micro frontend shell (`@blue/host` one-call registration, relay gateway)                                                                                            |
+| 4   | `blue-api`        | Node — controllers, opaque session-token auth, ORM (+Drizzle), content negotiation, problem+json errors, **management `/health`/`/metrics`**, **Accept-Language i18n**, config bindings |
+| 5   | `blue-host`       | Browser — micro frontend host: `@blue/host` `HostManager` + 3 lazy-loaded feature chunks, shared-dependency validation                                                                  |
+| 6   | `blue-island`     | Node SSR — EJS shell + island hydration, SSE push → `@blue/signals`, typed service stream                                                                                               |
+| 7   | `blue-views`      | Browser — view-resolution composite (three view locations), i18n (`@blue/content`), HTTP client with cache + offline queueing                                                           |
 
 ## Applications
 
@@ -46,9 +46,9 @@ cd apps/blue-todo && pnpm dev
 
 ### blue-api
 
-Full Node server demo: greeting/echo controllers, JWT auth, ORM-backed notes,
-matrix-parameter product routes, `ResponseEntity` (status/headers), and static
-file serving.
+Full Node server demo: greeting/echo controllers, opaque session-token auth,
+ORM-backed notes, matrix-parameter product routes, `ResponseEntity`
+(status/headers), and static file serving.
 
 ```bash
 cd apps/blue-api && pnpm start
@@ -87,10 +87,10 @@ cd apps/blue-island && pnpm dev
 
 ### blue-views
 
-View-resolution demo: three resolvers, three view locations (component
-module, context bean, content-negotiated representation family). The same
-`report` view is served as JSON or CSV via
-`PathExtensionContentNegotiationStrategy`.
+View-resolution demo: one ordered resolver chain over three view locations
+(component module, context bean, module on disk). Content negotiation — one
+logical view served as JSON or CSV — lives in
+[blue-api](blue-api/README.md).
 
 ```bash
 cd apps/blue-views && pnpm dev

@@ -30,7 +30,8 @@ allowBuilds:
 
 # Security overrides — force patched versions of vulnerable transitive
 # dependencies (axios CRLF/DoS, minimatch ReDoS, brace-expansion DoS,
-# form-data CRLF, js-yaml DoS, nanoid, postcss, protobufjs, tmp, react-router).
+# form-data CRLF, js-yaml DoS, nanoid, nx, postcss, protobufjs, tmp,
+# react-router, smol-toml).
 overrides:
   axios: '>=1.18.0'
   minimatch: '>=9.0.7'
@@ -39,8 +40,9 @@ overrides:
   '@grpc/grpc-js': '>=1.14.5' # GHSA-m9gg-hp2v-232j / GHSA-f596-whhp-79r4 — auth-context bypass, error leakage (otel grpc exporter chain)
   js-yaml: '>=3.15.1'
   nanoid: '>=3.3.18'
+  nx: '>=23.2.1' # GHSA-hrvq-x7jp-36xv — path traversal in `nx migrate` package-migrations extraction (@nx/devkit chain)
   postcss: '>=8.5.23'
   protobufjs: '>=7.6.5'
   tmp: '>=0.2.7'
   react-router: '>=7.18.2'
-  smol-toml: '>=1.7.1' # GHSA-7w5x-hrqm-74c2 — DoS via malformed TOML (nx · @nx/devkit chain)
+  smol-toml: '>=1.8.1' # GHSA-r4xh-jqrq-34v2 — quadratic-time parse() key rescan (nx · @nx/devkit chain)

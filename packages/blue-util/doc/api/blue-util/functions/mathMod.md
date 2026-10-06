@@ -9,7 +9,7 @@
 > **mathMod**(`m`, `p`): `number`
 
 `mathMod` behaves like the modulo operator should mathematically, unlike the
-`%` operator (and by extension, [`R.modulo`](#modulo)). So while
+`%` operator (and by extension, [`modulo`](#modulo)). So while
 `-17 % 5` is `-2`, `mathMod(-17, 5)` is `3`. `mathMod` requires Integer
 arguments, and returns NaN when the modulus is zero or negative.
 
@@ -40,20 +40,10 @@ The result of `b mod a`.
 ## Example
 
 ```ts
-import { __, mathMod } from '@blue/util';
 mathMod( -17, 5 );  //=> 3
 mathMod( 17, 5 );   //=> 2
 mathMod( 17, -5 );  //=> NaN
 mathMod( 17, 0 );   //=> NaN
 mathMod( 17.2, 5 ); //=> NaN
 mathMod( 17, 5.3 ); //=> NaN
-
-const clock = mathMod( __, 12 );
-clock( 15 ); //=> 3
-clock( 24 ); //=> 0
-
-const seventeenMod = mathMod( 17 );
-seventeenMod( 3 );  //=> 2
-seventeenMod( 4 );  //=> 1
-seventeenMod( 10 ); //=> 7
 ```

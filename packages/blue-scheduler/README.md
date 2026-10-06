@@ -44,7 +44,9 @@ Schedules are declared on **any registered class** in a Node application.
 Provisioning comes from the node platform's auto-configuration (the
 `taskScheduler` entry) — no extra wiring.
 
-## Semantics
+## Usage
+
+### Semantics
 
 - **Single-flight**: a task whose previous run is still in-flight is skipped
   for that tick — the Nest/AdonisJS default.
@@ -54,7 +56,7 @@ Provisioning comes from the node platform's auto-configuration (the
   process; no distribution).
 - **Node-only**: the decorator throws in environments without `process`.
 
-## Guardrails
+### Guardrails
 
 Invalid spec → throws at decoration time (bad cron, malformed durations,
 unknown time zones via an `Intl` probe). Non-method application → throws.
@@ -73,16 +75,16 @@ Complete generated reference (all exports, via `pnpm doc:api`): [`doc/api/README
 - `isValidTimeZone(zone)` — `Intl`-backed validation
 - `parseDuration(value)` — `'10s'`-style → milliseconds
 
-## See Also
-
-- [@blue/platform-node](../blue-platform-node/README.md) — auto-provisions the scheduler in a Node app via its `taskScheduler` bean
-
 ## Development
 
 ```bash
 pnpm --filter @blue/scheduler build:lib
 pnpm --filter @blue/scheduler test
 ```
+
+## See Also
+
+- [@blue/platform-node](../blue-platform-node/README.md) — auto-provisions the scheduler in a Node app via its `taskScheduler` bean
 
 ## Contributing
 

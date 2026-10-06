@@ -38,6 +38,10 @@ const view = new EJSView('views/home.html', {
 const result = await view.renderTo({ name: 'Blue' }, route); // RenderResult
 ```
 
+### Caching semantics
+
+Path-backed views load their template source once and keep rendering it for the view's lifetime (views are cached per name by the resolver), and the engine compiles each source at most once. Template edits on disk therefore take effect on restart — the tradeoff that buys a filesystem read and a template compile off the render path.
+
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into
@@ -48,10 +52,6 @@ how it fits with the rest of BlueJS.
 - **`EJSView`** — a producer view that renders an EJS template into a fragment `ViewTarget` (islands, client-side DOM) or a whole document (servlet-style SSR), per the `ProducerView` contract
 - **`EJSTemplateEngine`** — compiles templates once per source string and reuses the compiled function; renders at ~1µs after the first pass
 - **`EJSViewResolver`** — path-based resolver mapping logical names through a prefix/suffix (e.g. `views/` + name + `.html`), with an explicit `viewNames` allow-list option
-
-## Caching semantics
-
-Path-backed views load their template source once and keep rendering it for the view's lifetime (views are cached per name by the resolver), and the engine compiles each source at most once. Template edits on disk therefore take effect on restart — the tradeoff that buys a filesystem read and a template compile off the render path.
 
 ## Development
 

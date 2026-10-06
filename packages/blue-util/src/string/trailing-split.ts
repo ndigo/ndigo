@@ -1,6 +1,6 @@
 /**
  * Splits a string into an array of strings based on the given separator.
- * * @module blue-util
+ * @module blue-util
  * @since 1.0.0
  * @author Jeff Rose
  */

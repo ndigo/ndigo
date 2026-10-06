@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { IllegalStateError, JSONObject } from '@blue/core';
+import { getErrorMessage } from '@blue/util';
 import type { ConfigurableEnvironment } from '@blue/context';
 import type { ConfigFileReader } from '@blue/context';
 
@@ -305,7 +306,7 @@ export class StandardConfigFileLoader {
             parsed = await decode(content);
         } catch (cause) {
             throw new IllegalStateError(
-                `Config file "${path}" is not valid TOON: ${sanitizeDecoderMessage(cause instanceof Error ? cause.message : String(cause))}`,
+                `Config file "${path}" is not valid TOON: ${sanitizeDecoderMessage(getErrorMessage(cause))}`,
                 { cause }
             );
         }

@@ -84,9 +84,15 @@ Returns whether the named cache exists (no creation).
 
 `string`
 
+Non-empty cache name.
+
 ##### Returns
 
 `boolean`
+
+##### Throws
+
+For a non-string or empty name.
 
 #### Call Signature
 
@@ -100,6 +106,12 @@ Returns whether the token-identified cache exists (no creation).
 
 [`ContextToken`](#)\<[`Cache`](Cache.md)\<`unknown`\>\>
 
+The cache store token.
+
 ##### Returns
 
 `boolean`
+
+##### Throws
+
+For an empty token description.

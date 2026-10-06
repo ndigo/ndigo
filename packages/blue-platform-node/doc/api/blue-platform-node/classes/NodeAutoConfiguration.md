@@ -26,13 +26,13 @@ NodeEnvironment to enable full server-side request handling.
 
 ### argumentResolvers()
 
-> **argumentResolvers**(): ([`NodeQueryValueMethodArgumentResolver`](NodeQueryValueMethodArgumentResolver.md) \| [`NodePathValueMethodArgumentResolver`](NodePathValueMethodArgumentResolver.md) \| [`NodeHeaderValueMethodArgumentResolver`](NodeHeaderValueMethodArgumentResolver.md) \| [`NodeBodyValueMethodArgumentResolver`](NodeBodyValueMethodArgumentResolver.md) \| [`NodeDataBindingMethodArgumentResolver`](NodeDataBindingMethodArgumentResolver.md) \| [`NodeRequestPartMethodArgumentResolver`](NodeRequestPartMethodArgumentResolver.md) \| [`NodeMultipartFileMethodArgumentResolver`](#) \| [`NodeCookieValueMethodArgumentResolver`](NodeCookieValueMethodArgumentResolver.md) \| [`NodeRequestSessionValueMethodArgumentResolver`](NodeRequestSessionValueMethodArgumentResolver.md))[]
+> **argumentResolvers**(): `HandlerMethodArgumentResolver`[]
 
 Creates the Node.js argument resolvers used for request binding.
 
 #### Returns
 
-([`NodeQueryValueMethodArgumentResolver`](NodeQueryValueMethodArgumentResolver.md) \| [`NodePathValueMethodArgumentResolver`](NodePathValueMethodArgumentResolver.md) \| [`NodeHeaderValueMethodArgumentResolver`](NodeHeaderValueMethodArgumentResolver.md) \| [`NodeBodyValueMethodArgumentResolver`](NodeBodyValueMethodArgumentResolver.md) \| [`NodeDataBindingMethodArgumentResolver`](NodeDataBindingMethodArgumentResolver.md) \| [`NodeRequestPartMethodArgumentResolver`](NodeRequestPartMethodArgumentResolver.md) \| [`NodeMultipartFileMethodArgumentResolver`](#) \| [`NodeCookieValueMethodArgumentResolver`](NodeCookieValueMethodArgumentResolver.md) \| [`NodeRequestSessionValueMethodArgumentResolver`](NodeRequestSessionValueMethodArgumentResolver.md))[]
+`HandlerMethodArgumentResolver`[]
 
 The Node.js argument resolvers.
 

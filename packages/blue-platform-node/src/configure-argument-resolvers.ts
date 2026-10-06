@@ -16,13 +16,13 @@ import { NodeCookieValueMethodArgumentResolver } from './cookie-argument-resolve
 import { NodeRequestSessionValueMethodArgumentResolver } from './request-session-argument-resolver';
 
 /**
- * Registers Node.js-specific argument resolvers into the application context.
+ * Builds the Node.js argument-resolver list in registration order (first
+ * match wins). Single source of truth shared by
+ * {@link configureNodeArgumentResolvers} and the auto-configuration entry, so
+ * the two lists can never drift (HG-7).
  */
-export function configureNodeArgumentResolvers(
-    applicationContext: ApplicationContext,
-    _options?: unknown
-): HandlerMethodArgumentResolver[] {
-    const resolvers: HandlerMethodArgumentResolver[] = [
+export function createNodeArgumentResolvers(): HandlerMethodArgumentResolver[] {
+    return [
         new NodeQueryValueMethodArgumentResolver(),
         new NodePathValueMethodArgumentResolver(),
         new NodeHeaderValueMethodArgumentResolver(),
@@ -33,6 +33,14 @@ export function configureNodeArgumentResolvers(
         new NodeCookieValueMethodArgumentResolver(),
         new NodeRequestSessionValueMethodArgumentResolver(),
     ];
+}
 
-    return registerArgumentResolvers(applicationContext, resolvers);
+/**
+ * Registers Node.js-specific argument resolvers into the application context.
+ */
+export function configureNodeArgumentResolvers(
+    applicationContext: ApplicationContext,
+    _options?: unknown
+): HandlerMethodArgumentResolver[] {
+    return registerArgumentResolvers(applicationContext, createNodeArgumentResolvers());
 }

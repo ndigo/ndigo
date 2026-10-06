@@ -14,14 +14,16 @@
  *   pnpm exec tsx scripts/benchmark-dom.ts --impl react
  */
 import { JSDOM } from 'jsdom';
-import { readFileSync } from 'fs';
+import { existsSync, globSync, readFileSync, statSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 interface BenchmarkTarget {
-    /** Bundle path relative to the repo root (the sibling todomvc checkout). */
+    /** Bundle directory relative to the repo root (the sibling todomvc checkout). */
+    bundleDir: string;
+    /** Bundle file name — a glob (`index-*.js`) for content-hashed Vite entries. */
     bundle: string;
     /** Page shell the bundle expects on load. */
     html: string;
@@ -33,30 +35,54 @@ interface BenchmarkTarget {
 
 const TARGETS: Record<string, BenchmarkTarget> = {
     react: {
-        bundle: '../todomvc/examples/react/dist/app.bundle.js',
+        bundleDir: '../todomvc/examples/react/dist',
+        bundle: 'app.bundle.js',
         html: '<!DOCTYPE html><html><body><div id="root"></div></body></html>',
         label: 'React',
         postId: 'todomvc-react',
     },
     svelte: {
-        bundle: '../todomvc/examples/svelte/dist/assets/index-B8pLLjQ0.js',
+        bundleDir: '../todomvc/examples/svelte/dist/assets',
+        bundle: 'index-*.js',
         html: '<!DOCTYPE html><html><body><section class="todoapp"></section></body></html>',
         label: 'Svelte',
         postId: 'todomvc-svelte',
     },
     vue: {
-        bundle: '../todomvc/examples/vue/dist/assets/index-BPaT6s9q.js',
+        bundleDir: '../todomvc/examples/vue/dist/assets',
+        bundle: 'index-*.js',
         html: '<!DOCTYPE html><html><body><section class="todoapp"></section></body></html>',
         label: 'Vue',
         postId: 'todomvc-vue',
     },
     vanilla: {
-        bundle: '../todomvc/examples/javascript-es6/dist/app.bundle.js',
+        bundleDir: '../todomvc/examples/javascript-es6/dist',
+        bundle: 'app.bundle.js',
         html: '<!DOCTYPE html><html><body><section class="todoapp"><header class="header"><h1>todos</h1><input class="new-todo" placeholder="What needs to be done?" autofocus/></header><main class="main"><div class="toggle-all-container"><input class="toggle-all" type="checkbox"/> <label class="toggle-all-label" for="toggle-all">Mark all as complete</label></div><ul class="todo-list"></ul></main><footer class="footer"><span class="todo-count"></span><ul class="filters"><li><a href="#/" class="selected">All</a></li><li><a href="#/active">Active</a></li><li><a href="#/completed">Completed</a></li></ul><button class="clear-completed">Clear completed</button></footer></section></body></html>',
         label: 'Vanilla JS',
         postId: 'todomvc-vanilla',
     },
 };
+
+/**
+ * Resolves a target's built bundle to an absolute path.
+ *
+ * Vite content-hashes the Svelte/Vue entry names, so those targets match by
+ * glob and the most recently written match wins — a hardcoded hash silently
+ * loads a stale bundle after the next sibling build. Missing bundles fail
+ * with the build hint instead of a bare ENOENT.
+ */
+function resolveBundle(target: BenchmarkTarget): string {
+    const dir = resolve(__dirname, '..', target.bundleDir);
+    const candidates = target.bundle.includes('*')
+        ? globSync(target.bundle, { cwd: dir }).map((file) => resolve(dir, file))
+        : [resolve(dir, target.bundle)];
+    const built = candidates.filter((file) => existsSync(file));
+    if (built.length === 0) {
+        throw new Error(`no built bundle at ${target.bundleDir}/${target.bundle} — run \`pnpm build:all\` first`);
+    }
+    return built.sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs || (a < b ? 1 : -1))[0];
+}
 
 const implFlag = process.argv.indexOf('--impl');
 const impl = implFlag !== -1 ? process.argv[implFlag + 1] : undefined;
@@ -121,10 +147,10 @@ windowSlots.parent = {
     },
 };
 
-const bundlePath = resolve(__dirname, '..', target.bundle);
+const bundlePath = resolveBundle(target);
 const bundleCode = readFileSync(bundlePath, 'utf-8');
 
-console.log(`Loading ${target.label} bundle...`);
+console.log(`Loading ${target.label} bundle (${bundlePath})...`);
 const scriptEl = window.document.createElement('script');
 scriptEl.textContent = bundleCode;
 window.document.body.appendChild(scriptEl);

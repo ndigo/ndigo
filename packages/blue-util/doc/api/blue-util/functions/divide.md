@@ -37,12 +37,6 @@ The result of `a / b`.
 ## Example
 
 ```ts
-import { __, divide } from '@blue/util';
 divide( 71, 100 ); //=> 0.71
-
-const half = divide( __, 2 );
-half( 42 ); //=> 21
-
-const reciprocal = divide( 1 );
-reciprocal( 4 );   //=> 0.25
+divide( 1, 4 );    //=> 0.25
 ```

@@ -5,6 +5,7 @@
  */
 import { Route } from '@blue/router';
 import { conversionService } from '@blue/core';
+import { getErrorMessage } from '@blue/util';
 import { MethodParameter, ParameterValueConversionContext } from './parameters';
 import { ParameterConversionError } from './error';
 
@@ -138,7 +139,7 @@ function resolveTypeConverter(sourceType: unknown, targetType: unknown): Argumen
         try {
             return converter.convert(value);
         } catch (error) {
-            throw new TypeError(`Conversion failed: ${error instanceof Error ? error.message : String(error)}`, {
+            throw new TypeError(`Conversion failed: ${getErrorMessage(error)}`, {
                 cause: error,
             });
         }

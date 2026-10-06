@@ -6,6 +6,8 @@
 
 # Interface: Lifecycle
 
+A component with an explicit start/stop lifecycle.
+
 ## Extended by
 
 - [`SmartLifecycle`](SmartLifecycle.md)

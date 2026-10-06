@@ -6,6 +6,8 @@
 
 # Interface: Destroyable
 
+A value that can be destroyed once it is no longer needed.
+
 ## Extended by
 
 - [`AsyncDestroyable`](AsyncDestroyable.md)

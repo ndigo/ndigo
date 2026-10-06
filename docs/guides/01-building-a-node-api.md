@@ -290,6 +290,9 @@ Run it with `pnpm --filter @blue/hello-node exec tsx src/index.ts` and set
 
 - [Guide 02 — Request Validation](02-request-validation.md): coercion,
   `validatedBody`, and entity-derived schemas.
+- [Guide 17 — Static Files](17-static-files.md): serving a directory over
+  HTTP — ETag/Range, precompressed variants, SPA fallback (the reference demo
+  is `apps/blue-api`'s `/static/`).
 - Package READMEs: `@blue/platform-node`, `@blue/dispatcher`, `@blue/boot`,
   `@blue/orm` for the full symbol surface.
 - Decision records: [Zod validation](../decisions/2026-09-05_AD07_ZOD_VALIDATION.md),

@@ -126,9 +126,10 @@ describe('DrizzleMigrator (AD-30)', () => {
             version: 1,
             description: 'should not land',
             up: async (): Promise<void> => {
-                // SQLite commits DDL implicitly, so this table may persist
-                // after the failure (per-statement atomicity only) — that is
-                // the documented degradation; the journal must not record it.
+                // The runner opens no transaction around `up`, so this
+                // statement autocommitted before the failure and the table
+                // persists (per-statement atomicity only) — the documented
+                // degradation; the journal must not record it.
                 await ds.client.execute('CREATE TABLE "rollback_target" (id INTEGER)');
                 throw new Error('boom');
             },

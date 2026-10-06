@@ -9,6 +9,7 @@ import { ApplicationBuilder } from '@blue/boot';
 import { getEnv } from '@blue/context';
 import { NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@blue/platform-node';
 import { getLogger } from '@blue/telemetry';
+import { getErrorMessage } from '@blue/util';
 import { HelloConfiguration } from './hello-configuration';
 
 const PORT = Number(getEnv('PORT', '3000'));
@@ -30,6 +31,6 @@ async function main() {
 }
 
 main().catch((err) => {
-    logger.error(`failed to start: ${err instanceof Error ? err.message : String(err)}`);
+    logger.error(`failed to start: ${getErrorMessage(err)}`);
     process.exit(1);
 });

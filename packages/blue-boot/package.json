@@ -50,6 +50,7 @@
     "@blue/core": "~0.0.1",
     "@blue/factory": "~0.0.1",
     "@blue/router": "~0.0.1",
+    "@blue/util": "~0.0.1",
     "zod": "^4.5.4"
   }
 }

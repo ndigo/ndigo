@@ -124,6 +124,9 @@ a graph of call sites. Both demo hosts exercise this discipline.
 - **Shared dependency contract** (AD-62): `docs/decisions/2026-09-03_AD62_SHARED_DEPENDENCY_CONTRACT.md`
 - **Scale 2 context + routing** (AD-54): `docs/decisions/2026-03-24_AD54_HIERARCHICAL_CONTEXTS_ROUTE_PARTITIONING.md`
 - **View resolution strategy** (AD-65): `docs/decisions/2026-09-06_AD65_VIEW_RESOLUTION_STRATEGY.md`
+- **Signals & islands how-to** — [Guide 18](../guides/18-signals-and-islands.md):
+  the reactive half in detail (`@blue/signals` primitives and decorators,
+  stream/event bridges, `hydrateIslands()` + SSE-driven re-render).
 - **Route registry** (AD-61): `docs/decisions/2026-09-03_AD61_ROUTE_REGISTRY.md`
 - **Framework assessment** (partial hydration ✅, MFE shell status):
   `docs/reference/2026-09-01_FEATURE_ASSESSMENT.md`

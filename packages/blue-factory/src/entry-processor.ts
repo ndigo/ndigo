@@ -161,27 +161,3 @@ export const likeEntryProcessor = (value: unknown): value is EntryProcessor =>
     likeInitializationAwareProcessor(value) ||
     likeDestructionAwareProcessor(value) ||
     likeEntryRegistryProcessor(value);
-
-/*
-export class InjectDecoratorEntryProcessor extends AsFactoryAware( Null ) implements ConstructionAwareProcessor {
-    processAfterConstruction<T = unknown>( name: string, instance: T ): boolean {
-        return true;
-    }
-
-    processBeforeConstruction<T = unknown>( name: string, constructor: Function, argumentsList?: any[] ): T {
-        return null;
-    }
-
-    processProperties<T = unknown>( properties: PropertyDescriptorMap, name: string, instance: T ): PropertyDescriptorMap {
-        return properties;
-    }
-
-    processAfterInitialization<T>( name: string, instance: T ): T {
-        return instance;
-    }
-
-    processBeforeInitialization<T>( name: string, instance: T ): T {
-        return instance;
-    }
-}
-*/

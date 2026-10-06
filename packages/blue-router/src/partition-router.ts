@@ -57,15 +57,25 @@ export class PartitionRouter extends AbstractRouter {
     /**
      * Mounts a feature route at a specified URL prefix.
      * When a route matching the prefix is navigated, the provided callback will be invoked with the stripped route.
+     *
+     * Prefixes are unique per router: navigation dispatches to the first
+     * matching mount and `unmount` removes by prefix, so a second mount at an
+     * existing prefix would be unreachable and could unmount its sibling.
+     *
      * @param prefix - The URL prefix at which to mount the feature route.
      * @param callback - The `FeatureRouteCallback` to execute when the prefix matches.
      * @returns The current `PartitionRouter` instance for chaining.
+     * @throws {TypeError} When a mount already exists at the normalized prefix.
      * @since 1.0.0
      */
     mount(prefix: string, callback: FeatureRouteCallback): this {
+        const normalized = normalizePartitionPrefix(prefix);
+        if (this.#mounts.some((mount) => mount.prefix === normalized)) {
+            throw new TypeError(`A feature is already mounted at prefix '${normalized}'`);
+        }
         this.#mounts.push({
             callback,
-            prefix: normalizePartitionPrefix(prefix),
+            prefix: normalized,
         });
         return this;
     }

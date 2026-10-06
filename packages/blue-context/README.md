@@ -32,6 +32,23 @@ context.refresh();
 const service = context.getValue<GreetingService>('greetingService');
 ```
 
+## Usage
+
+### Profile-gated entries
+
+```ts
+import { configuration, entry, profile } from '@blue/context';
+
+@configuration
+class AppConfiguration {
+    @entry
+    @profile('dev | (test & !ci)') // expressions, not just exact names
+    devTools() {
+        return new DevToolsGate();
+    }
+}
+```
+
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into

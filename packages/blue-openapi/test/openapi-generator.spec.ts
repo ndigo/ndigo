@@ -12,6 +12,7 @@ import { GenericApplicationContext } from '@blue/context';
 import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import {
     cookieValue,
+    fileValue,
     getMapping,
     headerValue,
     parameters,
@@ -20,6 +21,7 @@ import {
     privateMapping,
     queryValue,
     requestMapping,
+    requestPart,
     routeMapping,
     validatedBody,
 } from '@blue/dispatcher';
@@ -38,6 +40,30 @@ const ShapeSchema = z.object({
     point: z.tuple([z.number(), z.number()]),
 });
 
+/** Self-recursive DTO: zod converts the cycle to a root-relative `$ref: '#'`. */
+interface Category {
+    name: string;
+    children?: Category[];
+}
+
+const CategorySchema: z.ZodType<Category> = z.object({
+    name: z.string(),
+    children: z.array(z.lazy(() => CategorySchema)).optional(),
+});
+
+/** Self-recursive DTO registered with an `id`: zod bundles it as `definitions`. */
+interface Folder {
+    name: string;
+    children?: Folder[];
+}
+
+const FolderSchema: z.ZodType<Folder> = z
+    .object({
+        name: z.string(),
+        children: z.array(z.lazy(() => FolderSchema)).optional(),
+    })
+    .meta({ id: 'Folder' });
+
 /** Register a controller class into a fresh radix mapping, exactly like dispatch. */
 function register(controller: object): RadixMetadataHandlerMapping {
     const ctx = new GenericApplicationContext('openapi-fixture');
@@ -46,6 +72,29 @@ function register(controller: object): RadixMetadataHandlerMapping {
     mapping.setApplicationContext(ctx);
     mapping.init();
     return mapping;
+}
+
+/** Every `$ref` string in a document, for pointer-resolution assertions. */
+function collectRefs(node: unknown, found: string[] = []): string[] {
+    if (Array.isArray(node)) {
+        for (const item of node) collectRefs(item, found);
+        return found;
+    }
+    if (node === null || typeof node !== 'object') return found;
+    for (const [key, value] of Object.entries(node)) {
+        if (key === '$ref' && typeof value === 'string') found.push(value);
+        else collectRefs(value, found);
+    }
+    return found;
+}
+
+/** Resolve a `#/…` JSON pointer inside `document` (test-side resolver, PR-9). */
+function resolvePointer(document: unknown, ref: string): unknown {
+    const path = ref.startsWith('#/') ? ref.slice(2).split('/') : [];
+    return path.reduce<unknown>((node, segment) => {
+        if (node === null || typeof node !== 'object') return undefined;
+        return (node as Record<string, unknown>)[segment.replaceAll('~1', '/').replaceAll('~0', '~')];
+    }, document);
 }
 
 @requestMapping('/api')
@@ -115,6 +164,41 @@ class APIController {
     @apiDocs({ responses: { '200': EchoSchema, '404': { description: 'Not found' } } })
     docsResponse() {
         return { ok: true };
+    }
+
+    @getMapping('/categories')
+    @apiDocs({ responses: { '200': CategorySchema } })
+    categories() {
+        return [];
+    }
+
+    @getMapping('/folders')
+    @apiDocs({ responses: { '200': FolderSchema } })
+    folders() {
+        return [];
+    }
+
+    @getMapping('/files/:id/download')
+    download() {
+        return 'ok';
+    }
+
+    @getMapping('/files/:id/versions/:version/content')
+    @parameters({ id: pathVariable('id') })
+    content(id: string) {
+        return { id };
+    }
+
+    @postMapping('/uploads')
+    @parameters({ file: fileValue('file'), meta: requestPart('meta', undefined, { required: true }) })
+    upload(file: unknown, meta: unknown) {
+        return { file, meta };
+    }
+
+    @postMapping('/uploads-mixed')
+    @parameters({ data: validatedBody(EchoSchema), file: fileValue('file', { required: true }) })
+    uploadMixed(data: z.infer<typeof EchoSchema>, file: unknown) {
+        return { data, file };
     }
 }
 
@@ -245,5 +329,87 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
         expect(doc.paths['/api/hello']).toBeUndefined();
         expect(doc.paths['/api/products/{id}']).toBeUndefined();
         expect(doc.paths['/api/echo']).toBeDefined();
+    });
+
+    it('hoists recursive response schemas into components.schemas and rewrites $ref pointers (PR-9 regression)', () => {
+        const mapping = register(new APIController());
+        const doc = new OpenAPISpecGenerator().generate([mapping]);
+        const categorySchema = doc.paths['/api/categories'].get.responses['200'].content?.['application/json']?.schema;
+        expect(categorySchema).toEqual({ $ref: '#/components/schemas/get-api-categories-200' });
+        expect(doc.components?.schemas['get-api-categories-200']).toMatchObject({
+            type: 'object',
+            properties: {
+                name: { type: 'string' },
+                children: {
+                    type: 'array',
+                    items: { allOf: [{ $ref: '#/components/schemas/get-api-categories-200' }] },
+                },
+            },
+            required: ['name'],
+        });
+        // Every pointer must resolve inside the document — previously the
+        // cycle embedded `$ref: '#'`, which pointed at the document root.
+        const refs = collectRefs(doc);
+        expect(refs.length).toBeGreaterThan(0);
+        expect(refs).not.toContain('#');
+        for (const ref of refs) expect(resolvePointer(doc, ref), ref).toBeDefined();
+    });
+
+    it('promotes id-registered schema bundles to their own components (PR-9 regression)', () => {
+        const mapping = register(new APIController());
+        const doc = new OpenAPISpecGenerator().generate([mapping]);
+        const folderSchema = doc.paths['/api/folders'].get.responses['200'].content?.['application/json']?.schema;
+        expect(folderSchema).toEqual({ $ref: '#/components/schemas/Folder' });
+        expect(doc.components?.schemas['Folder']).toMatchObject({
+            type: 'object',
+            properties: {
+                name: { type: 'string' },
+                children: { type: 'array', items: { allOf: [{ $ref: '#/components/schemas/Folder' }] } },
+            },
+            required: ['name'],
+        });
+    });
+
+    it('synthesizes path parameters for template variables without a declared extractor (PR-11 regression)', () => {
+        const mapping = register(new APIController());
+        const doc = new OpenAPISpecGenerator().generate([mapping]);
+        // `/files/:id/download` declares no extractor at all — the spec must
+        // still declare the template variable as a required path parameter.
+        const download = doc.paths['/api/files/{id}/download'].get;
+        expect(download.parameters).toEqual([{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }]);
+        // Only the uncovered variable is synthesized; declared ones pass through.
+        const content = doc.paths['/api/files/{id}/versions/{version}/content'].get;
+        expect(content.parameters).toEqual([
+            { name: 'id', in: 'path', required: true, schema: { type: 'string' } },
+            { name: 'version', in: 'path', required: true, schema: { type: 'string' } },
+        ]);
+    });
+
+    it('builds multipart/form-data schemas from fileValue and requestPart parts (PR-12 regression)', () => {
+        const mapping = register(new APIController());
+        const doc = new OpenAPISpecGenerator().generate([mapping]);
+        const upload = doc.paths['/api/uploads'].post;
+        expect(upload.requestBody?.required).toBe(true);
+        expect(upload.requestBody?.content['multipart/form-data']?.schema).toEqual({
+            type: 'object',
+            properties: {
+                file: { type: 'string', format: 'binary' },
+                meta: { type: 'string' },
+            },
+            required: ['meta'],
+        });
+    });
+
+    it('merges multipart parts into a request body that also carries JSON (PR-12 regression)', () => {
+        const mapping = register(new APIController());
+        const doc = new OpenAPISpecGenerator().generate([mapping]);
+        const mixed = doc.paths['/api/uploads-mixed'].post;
+        expect(mixed.requestBody?.required).toBe(true);
+        expect(mixed.requestBody?.content['application/json']?.schema?.type).toBe('object');
+        expect(mixed.requestBody?.content['multipart/form-data']?.schema).toEqual({
+            type: 'object',
+            properties: { file: { type: 'string', format: 'binary' } },
+            required: ['file'],
+        });
     });
 });

@@ -307,3 +307,117 @@ describe('@blue/scheduler TaskScheduler', () => {
         expect(scheduler.taskNames()).toEqual([]);
     });
 });
+
+describe('@blue/scheduler TaskScheduler wall-clock loop (OP-13)', () => {
+    const INTERVAL_MS = 30;
+
+    /** Polls `predicate` every 5 ms on a real timer until true or timeout. */
+    const waitFor = async (predicate: () => boolean, timeoutMs = 2_000): Promise<void> => {
+        const deadline = Date.now() + timeoutMs;
+        const poll = async (): Promise<void> => {
+            if (predicate()) {
+                return;
+            }
+            if (Date.now() >= deadline) {
+                throw new Error('waitFor: condition did not become true in time');
+            }
+            const { promise, resolve } = Promise.withResolvers<void>();
+            setTimeout(resolve, 5);
+            await promise;
+            return poll();
+        };
+        return poll();
+    };
+
+    const delay = (ms: number): Promise<void> => {
+        const { promise, resolve } = Promise.withResolvers<void>();
+        setTimeout(resolve, ms);
+        return promise;
+    };
+
+    test('start() fires a fixedRate task repeatedly on the wall clock', async () => {
+        const scheduler = new TaskScheduler({ warn: () => {} });
+        let calls = 0;
+        scheduler.register({
+            name: 'beat',
+            schedule: new IntervalSchedule('fixedRate', INTERVAL_MS),
+            run: () => {
+                calls += 1;
+            },
+        });
+
+        try {
+            scheduler.start();
+            await waitFor(() => calls >= 3);
+        } finally {
+            scheduler.stop();
+        }
+        expect(calls).toBeGreaterThanOrEqual(3);
+        expect(scheduler.isRunning).toBe(false);
+        await scheduler.close();
+    });
+
+    test('stop() halts the loop: no further fires', async () => {
+        const scheduler = new TaskScheduler({ warn: () => {} });
+        let calls = 0;
+        scheduler.register({
+            name: 'beat',
+            schedule: new IntervalSchedule('fixedRate', INTERVAL_MS),
+            run: () => {
+                calls += 1;
+            },
+        });
+
+        try {
+            scheduler.start();
+            await waitFor(() => calls >= 1);
+            scheduler.stop();
+            const atStop = calls;
+            expect(scheduler.isRunning).toBe(false);
+            // Several intervals must elapse without another fire.
+            await delay(INTERVAL_MS * 4);
+            expect(calls).toBe(atStop);
+        } finally {
+            scheduler.stop();
+            await scheduler.close();
+        }
+    });
+
+    test('an in-flight fixedDelay run does not re-fire; the loop re-arms one interval after completion', async () => {
+        const scheduler = new TaskScheduler({ warn: () => {} });
+        const gate = deferred();
+        let calls = 0;
+        scheduler.register({
+            name: 'slow',
+            schedule: new IntervalSchedule('fixedDelay', INTERVAL_MS),
+            run: () => {
+                calls += 1;
+                return gate.promise;
+            },
+        });
+
+        try {
+            scheduler.start();
+            await waitFor(() => calls === 1);
+
+            // In flight and overdue by several intervals: single-flight holds
+            // — no extra fires (the 0-delay re-arm regression).
+            await delay(INTERVAL_MS * 3);
+            expect(calls).toBe(1);
+
+            const completedAt = Date.now();
+            gate.release();
+
+            // The next fire is anchored at completion + one interval: it
+            // must not fire immediately after the release.
+            await delay(INTERVAL_MS / 2);
+            expect(calls).toBe(1);
+
+            await waitFor(() => calls === 2);
+            expect(Date.now() - completedAt).toBeGreaterThanOrEqual(INTERVAL_MS - 5);
+        } finally {
+            gate.release();
+            await scheduler.close();
+        }
+    });
+});

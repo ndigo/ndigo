@@ -163,6 +163,11 @@ export class RadixMetadataHandlerMapping
             this.#candidatesByPattern.add(pattern, { handlerMethod, mapping });
         }
         // Register in mappingRegistry with empty directPaths for getHandlerMethods() API compat
-        this.mappingRegistry.register(mapping, handlerMethod, []);
+        this.mappingRegistry.register(
+            mapping,
+            handlerMethod,
+            this.namingStrategy?.getName(handlerMethod, mapping) ?? '',
+            []
+        );
     }
 }

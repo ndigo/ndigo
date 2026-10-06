@@ -64,7 +64,7 @@ const DEFAULT_MAX_RESPONSE_BYTES = 1_048_576;
 /** Default remote fetch timeout. */
 const DEFAULT_FETCH_TIMEOUT_MS = 10_000;
 
-/** Upper bound on concurrently pending authorization requests. */
+/** Upper bound on concurrently pending authorization requests (the default in-memory store's cap). */
 const MAX_PENDING_AUTHORIZATIONS = 20;
 
 /** PKCE code-verifier length in bytes (RFC 7636 recommends 32 octets of entropy). */
@@ -117,14 +117,25 @@ export interface OIDCAdapterConfig {
     maxResponseBytes?: number;
     /** Pending authorization-request lifetime in ms (default 10 minutes). */
     authorizationTtlMs?: number;
+    /**
+     * Persistence seam for pending authorization requests (`state`, `nonce`,
+     * PKCE verifier) between the redirect and the callback. Defaults to an
+     * in-memory store scoped to this adapter instance: a callback handled by
+     * another instance — a fresh page load, a restart, or another server
+     * instance — fails with `invalid_state` unless a store over shared
+     * storage is supplied (for example `sessionStorage` in a browser or
+     * Redis server-side).
+     */
+    pendingStore?: PendingAuthorizationStore;
 }
 
 /**
  * A pending authorization-code request created by {@link OIDCAdapter.createAuthorizationRequest}.
  *
- * Persist `state` (and re-read it on callback) so the adapter can bind the
- * authorization response to this request; `codeVerifier` and `nonce` are
- * consumed internally.
+ * `state` is the callback correlation value; re-read it from the
+ * authorization response. The nonce and PKCE verifier live in the adapter's
+ * configured {@link OIDCAdapterConfig.pendingStore} — see that option for
+ * surviving the redirect across adapter instances.
  */
 export interface AuthorizationRequest {
     /** The full authorization-endpoint URL to redirect the user to. */
@@ -155,11 +166,85 @@ interface TokenResponse {
     expiresIn: number | null;
 }
 
-interface PendingAuthorization {
+/**
+ * One pending authorization-code request: the values
+ * {@link OIDCAdapter.createAuthorizationRequest} generates and
+ * {@link OIDCAdapter.exchangeCodeForTokens} needs to redeem the code.
+ *
+ * `nonce` and `codeVerifier` are secrets — treat them like credentials when
+ * persisting; whoever holds them can bind a forged authorization response to
+ * this request.
+ */
+export interface PendingAuthorization {
+    /** The CSRF `state` value, used as the store key. */
     state: string;
+    /** The OIDC `nonce` the resulting ID token must carry. */
     nonce: string;
+    /** The PKCE S256 code verifier sent with the token exchange. */
     codeVerifier: string;
+    /** Epoch ms after which the request is no longer redeemable. */
     expiresAt: number;
+}
+
+/**
+ * Persistence seam for pending authorization requests.
+ *
+ * The adapter defaults to {@link InMemoryPendingAuthorizationStore}, an
+ * in-memory map **scoped to one adapter instance**. That default cannot
+ * survive the provider redirect when the callback is handled elsewhere — a
+ * fresh page load, a process restart, or another server instance — so those
+ * deployments MUST inject a store backed by shared storage (for example
+ * `sessionStorage` in a browser or Redis server-side). With the default
+ * store, only the instance that created the request can complete it.
+ *
+ * Redemption is single-use: the adapter deletes the entry after a successful
+ * or expired lookup. Expiry is enforced by the adapter on every exchange;
+ * implementations MAY additionally purge expired entries.
+ */
+export interface PendingAuthorizationStore {
+    /**
+     * Backend identifier for observability/diagnostics
+     * (e.g. `'in-memory'`, `'session-storage'`, `'redis'`).
+     */
+    readonly kind: string;
+    /** Returns the pending request for `state`, or `null` when unknown. */
+    get(state: string): Promise<PendingAuthorization | null>;
+    /** Stores `pending` under `state`, replacing any existing entry. */
+    set(state: string, pending: PendingAuthorization): Promise<void>;
+    /** Removes the entry for `state`; unknown keys are a no-op. */
+    delete(state: string): Promise<void>;
+}
+
+/**
+ * Default {@link PendingAuthorizationStore}: a bounded in-memory map scoped
+ * to a single adapter instance.
+ *
+ * At the cap (20 entries) `set` evicts the oldest entry — the same memory
+ * bound the adapter previously applied inline — so a creation flood cannot
+ * grow the map without limit. Entries persist until redeemed or evicted.
+ */
+export class InMemoryPendingAuthorizationStore implements PendingAuthorizationStore {
+    readonly kind = 'in-memory';
+
+    readonly #entries = new Map<string, PendingAuthorization>();
+
+    async get(state: string): Promise<PendingAuthorization | null> {
+        return this.#entries.get(state) ?? null;
+    }
+
+    async set(state: string, pending: PendingAuthorization): Promise<void> {
+        // Bound memory: evict the oldest pending request when full.
+        while (this.#entries.size >= MAX_PENDING_AUTHORIZATIONS) {
+            const oldestKey = this.#entries.keys().next().value;
+            if (oldestKey === undefined) break;
+            this.#entries.delete(oldestKey);
+        }
+        this.#entries.set(state, pending);
+    }
+
+    async delete(state: string): Promise<void> {
+        this.#entries.delete(state);
+    }
 }
 
 function isLoopbackHost(hostname: string): boolean {
@@ -223,6 +308,11 @@ function principalFromPayload(payload: JWTPayload): Principal {
  *
  * @remarks Verification is mandatory: construct with `jwksUrl`, `discovery`,
  * or `tokenValidator`. There is no claim-only mode.
+ *
+ * Pending authorization requests live in a {@link PendingAuthorizationStore}.
+ * The default store is in-memory and scoped to this adapter instance, so a
+ * flow that spans a redirect MUST reuse that instance or inject a shared
+ * store — see {@link OIDCAdapterConfig.pendingStore}.
  */
 export class OIDCAdapter implements AuthAdapter {
     readonly id = 'oidc';
@@ -230,7 +320,7 @@ export class OIDCAdapter implements AuthAdapter {
     readonly #discoveryUrl: string;
     #discoveryPromise: Promise<DiscoveryDocument> | null = null;
     #jwks: ReturnType<typeof createRemoteJWKSet> | null = null;
-    readonly #pending = new Map<string, PendingAuthorization>();
+    readonly #pending: PendingAuthorizationStore;
 
     constructor(config: OIDCAdapterConfig) {
         this.#config = config;
@@ -241,6 +331,7 @@ export class OIDCAdapter implements AuthAdapter {
                     'Accepting tokens without signature verification is not supported.'
             );
         }
+        this.#pending = config.pendingStore ?? new InMemoryPendingAuthorizationStore();
         this.#discoveryUrl = `${config.issuer.replace(/\/$/, '')}/.well-known/openid-configuration`;
     }
 
@@ -442,7 +533,8 @@ export class OIDCAdapter implements AuthAdapter {
 
     /**
      * Creates an authorization request: generates `state`, PKCE S256
-     * parameters, and `nonce`, stores the pending request, and returns the
+     * parameters, and `nonce`, stores the pending request in the configured
+     * {@link PendingAuthorizationStore}, and returns the
      * authorization-endpoint URL to redirect the user to.
      */
     async createAuthorizationRequest(): Promise<AuthorizationRequest> {
@@ -456,14 +548,7 @@ export class OIDCAdapter implements AuthAdapter {
         const codeVerifier = randomToken(CODE_VERIFIER_BYTES);
         const expiresAt = Date.now() + (this.#config.authorizationTtlMs ?? DEFAULT_AUTHORIZATION_TTL_MS);
 
-        // Bound memory: evict the oldest pending request when full.
-        while (this.#pending.size >= MAX_PENDING_AUTHORIZATIONS) {
-            // The loop condition guarantees a pending entry, so the oldest key is present.
-            const oldestKey = this.#pending.keys().next().value;
-            if (oldestKey === undefined) break;
-            this.#pending.delete(oldestKey);
-        }
-        this.#pending.set(state, { state, nonce, codeVerifier, expiresAt });
+        await this.#pending.set(state, { state, nonce, codeVerifier, expiresAt });
 
         const params = new URLSearchParams({
             response_type: 'code',
@@ -480,19 +565,23 @@ export class OIDCAdapter implements AuthAdapter {
     }
 
     /**
-     * Consumes the pending authorization request matching `state` and
-     * exchanges the authorization code for tokens at the token endpoint.
+     * Consumes the pending authorization request matching `state` from the
+     * configured {@link PendingAuthorizationStore} and exchanges the
+     * authorization code for tokens at the token endpoint.
      *
      * Fails closed: unknown/expired `state`, malformed responses, and any
-     * ID-token verification failure throw without mutating auth state.
+     * ID-token verification failure throw without mutating auth state. With
+     * the default in-memory store the callback must be handled by the same
+     * adapter instance that created the request; inject a shared store to
+     * survive redirects, restarts, or multiple instances.
      */
     async exchangeCodeForTokens(code: string, state: string): Promise<AuthResult> {
-        const pending = this.#pending.get(state);
+        const pending = await this.#pending.get(state);
         if (!pending || pending.expiresAt < Date.now()) {
-            this.#pending.delete(state);
+            await this.#pending.delete(state);
             throw new OIDCError('invalid_state', 'Unknown, expired, or already-used state parameter');
         }
-        this.#pending.delete(state);
+        await this.#pending.delete(state);
 
         const doc = this.#config.discovery ? await this.#ensureDiscovery() : null;
         const tokenEndpoint = doc ? doc.tokenEndpoint : `${this.#config.issuer.replace(/\/$/, '')}/token`;

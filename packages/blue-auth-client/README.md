@@ -94,8 +94,25 @@ The `OIDCAdapter` requires a trusted token-verification source at construction �
 
 It implements the authorization code flow with PKCE (S256), `state`, and `nonce`. `exchangeCodeForTokens(code, state)` consumes the pending `state` exactly once and verifies the ID token before returning an `AuthResult` — an unknown, expired, or replayed `state`, a malformed token response, or a signature/issuer/audience/nonce failure throws `OIDCError` without mutating authentication state. (`validate(token)` reports the same failures by returning `null`.) Public clients (SPAs) use PKCE without a secret; confidential servers add `clientSecret`.
 
+The pending `state`, `nonce`, and PKCE verifier live in a `pendingStore`. The default store is in-memory and gives the adapter **instance affinity**: only the adapter instance that created the request can complete it. A provider redirect normally reloads the page (or lands on another server instance), so inject a store backed by storage shared with the callback — `sessionStorage` in a browser, Redis server-side — via the `pendingStore` option. Entries are single-use: the adapter deletes the entry on redemption, and unknown or expired states fail closed with `invalid_state`.
+
 ```typescript
-import { OIDCAdapter, AuthRegistry } from '@blue/auth-client';
+import { OIDCAdapter, AuthRegistry, type PendingAuthorizationStore } from '@blue/auth-client';
+
+// Pending flow state must outlive the page load the redirect triggers.
+const pendingStore: PendingAuthorizationStore = {
+    kind: 'session-storage',
+    get: async (state) => {
+        const raw = sessionStorage.getItem(`oidc-pending:${state}`);
+        return raw ? JSON.parse(raw) : null;
+    },
+    set: async (state, pending) => {
+        sessionStorage.setItem(`oidc-pending:${state}`, JSON.stringify(pending));
+    },
+    delete: async (state) => {
+        sessionStorage.removeItem(`oidc-pending:${state}`);
+    },
+};
 
 const adapter = new OIDCAdapter({
     issuer: 'https://accounts.google.com',
@@ -104,18 +121,20 @@ const adapter = new OIDCAdapter({
     redirectUri: 'https://yourapp.com/callback',
     scopes: ['openid', 'profile', 'email'],
     discovery: true,
+    pendingStore,
 });
 AuthRegistry.register(adapter);
 
 // 1. Start the code flow and send the browser to the provider.
 const request = await adapter.createAuthorizationRequest();
-sessionStorage.setItem('oidc-state', request.state);
 window.location.assign(request.url);
 
-// 2. On the redirect URI, exchange the returned code. The `state` stored
-//    in step 1 is single-use.
-const code = new URLSearchParams(window.location.search).get('code');
-const state = sessionStorage.getItem('oidc-state');
+// 2. On the redirect URI — a fresh page load, and possibly a fresh adapter
+//    instance sharing the same `pendingStore` — exchange the returned code.
+//    The stored entry is single-use.
+const params = new URLSearchParams(window.location.search);
+const code = params.get('code');
+const state = params.get('state');
 if (code && state) {
     const result = await adapter.exchangeCodeForTokens(code, state);
     console.log(result.principal?.name); // "John Doe"

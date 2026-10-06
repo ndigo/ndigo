@@ -1294,7 +1294,10 @@ export class StompBroker {
      * A `client`/`client-individual` session whose bare `id` resolves to no
      * delivery this session ever made fails closed: the broker cannot know
      * which tracking set the frame settles, and silently discarding it
-     * would leave the delivery outstanding forever.
+     * would leave the delivery outstanding forever. The one exception is
+     * tracking disabled (`maxUnacked: 0`): no delivery is ever outstanding,
+     * so a bare id settles nothing and is a receipted no-op — a STOMP
+     * client ACKing the MESSAGE's `ack` header must not be closed out.
      *
      * Allowed inside transactions too (D7): buffered under the same
      * op/byte caps as SEND, applied at COMMIT.
@@ -1313,6 +1316,11 @@ export class StompBroker {
         if (subId === undefined) {
             subscription = this.#sessionState.get(session)?.messageIds.get(messageId);
             if (subscription === undefined) {
+                if (this.#maxUnacked <= 0) {
+                    // Tracking disabled: nothing is ever outstanding, so
+                    // the id settles nothing — accept and receipt it.
+                    return this.#receipt(session, frame);
+                }
                 return this.#fail(session, frame, `unknown message id: ${messageId}`);
             }
         } else {

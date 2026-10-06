@@ -14,7 +14,11 @@ import {
     queryValue,
     bodyValue,
     headerValue,
+    socketMapping,
+    HANDLER_MAPPING,
+    type RadixMetadataHandlerMapping,
 } from '@blue/dispatcher';
+import { CORSInterceptor } from '@blue/platform-node';
 import { IslandView } from '@blue/view';
 import { bootApp, MockHTTP } from '../src/index';
 
@@ -58,6 +62,25 @@ class GreetingController {
     @getMapping('/plain')
     plain() {
         return 'plain-text';
+    }
+
+    @getMapping('/multi')
+    @parameters({ a: queryValue('a') })
+    multi(a?: string | string[]) {
+        return { a };
+    }
+}
+
+@requestMapping('/socket')
+class SocketOnlyController {
+    @socketMapping('/channel')
+    async *channel(): AsyncGenerator<string> {
+        yield 'only-reachable-over-an-upgraded-connection';
+    }
+
+    @getMapping('/http')
+    http() {
+        return { route: 'http' };
     }
 }
 
@@ -113,6 +136,92 @@ describe('MockHTTP', () => {
             .exec();
         expect(res.response.status).toBe(200);
         expect(res.json()).toEqual({ echoed: 'raw-json' });
+    });
+
+    test('repeated query parameters accumulate through the fluent builder (IN-4)', async () => {
+        const res = await mockHTTP.get('/multi').query({ a: '1' }).query({ a: '2' }).exec();
+        expect(res.response.status).toBe(200);
+        expect(res.json()).toEqual({ a: ['1', '2'] });
+    });
+
+    test('a __proto__ query key stays an ordinary parameter, not a prototype write (IN-4, SEC-8)', async () => {
+        const res = await mockHTTP
+            .get('/multi')
+            .query({ ['__proto__']: 'x' })
+            .exec();
+        const data = res.route.route.data as Record<string, unknown>;
+        expect(res.response.status).toBe(200);
+        expect(Object.getPrototypeOf(data)).toBeNull();
+        expect(Object.getOwnPropertyDescriptor(data, '__proto__')?.value).toBe('x');
+    });
+
+    test('method mismatch on an existing path returns 405 with Allow (IN-5, adapter parity)', async () => {
+        const res = await mockHTTP.request({ method: 'POST', path: '/hello' });
+        expect(res.response.status).toBe(405);
+        expect(res.response.headers['allow']).toBe('GET');
+        expect(res.json()).toMatchObject({ type: 'urn:blue:method-not-allowed', status: 405 });
+    });
+
+    test('unmatched OPTIONS dispatches through interceptors so preflights finalize (IN-5)', async () => {
+        const app = bootApp([GreetingController]);
+        const mapping = app.context.getValue<RadixMetadataHandlerMapping>(HANDLER_MAPPING);
+        mapping.interceptors.push(new CORSInterceptor({ allowedOrigins: ['https://example.com'] }));
+        try {
+            const mock = new MockHTTP(app);
+            const res = await mock.request({
+                method: 'OPTIONS',
+                path: '/not/a/route',
+                headers: {
+                    origin: 'https://example.com',
+                    'access-control-request-method': 'POST',
+                },
+            });
+            expect(res.response.status).toBe(204);
+            expect(res.response.headers['access-control-allow-origin']).toBe('https://example.com');
+            expect(res.response.headers['access-control-allow-methods']).toContain('POST');
+        } finally {
+            app.close();
+        }
+    });
+
+    test('unmatched OPTIONS mirrors the live adapter when no interceptor finalizes (IN-5)', async () => {
+        // Live-verified parity: against NodeHTTPServerAdapter +
+        // NodeAutoConfiguration the same request returns 500 — the last-resort
+        // error resolver finalizes the unmatched dispatch (a method-less chain
+        // has no handler adapter) before the adapter's 404 default can land.
+        const res = await mockHTTP.request({ method: 'OPTIONS', path: '/not/a/route' });
+        expect(res.response.status).toBe(500);
+        expect(res.json()).toMatchObject({ type: 'urn:blue:internal-error', status: 500 });
+    });
+
+    test('unmatched OPTIONS with no error resolver falls back to the adapter 404 default (IN-5)', async () => {
+        const app = bootApp([GreetingController]);
+        // Without the Node error chain nothing finalizes the method-less
+        // dispatch, so the adapter's documented 404 default is what lands.
+        app.dispatcher.errorResolvers = [];
+        try {
+            const res = await new MockHTTP(app).request({ method: 'OPTIONS', path: '/not/a/route' });
+            expect(res.response.status).toBe(404);
+            expect(res.json()).toMatchObject({ type: 'urn:blue:not-found', status: 404 });
+        } finally {
+            app.close();
+        }
+    });
+
+    test('a socket-only endpoint 404s over plain HTTP (IN-5, adapter parity)', async () => {
+        const app = bootApp([SocketOnlyController]);
+        try {
+            const mock = new MockHTTP(app);
+            const res = await mock.get('/socket/channel').exec();
+            expect(res.response.status).toBe(404);
+            expect(res.json()).toMatchObject({ type: 'urn:blue:not-found', status: 404 });
+            // The sibling HTTP route on the same controller still dispatches.
+            const sibling = await mock.get('/socket/http').exec();
+            expect(sibling.response.status).toBe(200);
+            expect(sibling.json()).toEqual({ route: 'http' });
+        } finally {
+            app.close();
+        }
     });
 
     test('multipart part-limit rejection maps to the live 413 problem document (SEC-13)', async () => {

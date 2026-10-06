@@ -8,7 +8,7 @@
 
 > **multiply**(`a`, `b`): `number`
 
-Multiplies two numbers. Equivalent to `a * b` but curried.
+Multiplies two numbers. Equivalent to `a * b`.
 
 ## Parameters
 
@@ -37,12 +37,8 @@ The result of `a * b`.
 ## Example
 
 ```ts
-const double = multiply( 2 );
-const triple = multiply( 3 );
-double( 3 );
-//=>  6
-triple( 4 );
-//=> 12
 multiply( 2, 5 );
 //=> 10
+multiply( 3, 4 );
+//=> 12
 ```

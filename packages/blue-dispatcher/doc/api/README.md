@@ -14,6 +14,8 @@ Jeff Rose
 
 ## Classes
 
+- [AbstractCookieValueArgumentResolver](classes/AbstractCookieValueArgumentResolver.md)
+- [AbstractDataBindingArgumentResolver](classes/AbstractDataBindingArgumentResolver.md)
 - [AbstractDetectingPathHandlerMapping](classes/AbstractDetectingPathHandlerMapping.md)
 - [AbstractDispatcher](classes/AbstractDispatcher.md)
 - [AbstractHandlerMapping](classes/AbstractHandlerMapping.md)

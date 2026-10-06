@@ -169,13 +169,16 @@ export function getParameterMap(target: unknown, propertyKey: string | symbol): 
  *   name); the array is in declaration order.
  *
  * Throws `InvalidParameterMappingError` when a `*Value` extractor has no
- * source for the mapping kind (e.g. `bodyValue` on a socket mapping).
+ * source for the mapping kind (e.g. `bodyValue` on a socket mapping), or when
+ * the map omits an argument between two declared ones (positional dispatch
+ * cannot skip a slot: the undeclared argument would be invoked as
+ * `undefined`). Arguments after the last mapped one may stay undeclared.
  *
  * @param target - The class prototype or constructor.
  * @param propertyKey - The method name.
  * @param handlerMethod - The method function (for signature discovery).
  * @returns The converted parameters (may be the empty array).
- * @throws {InvalidParameterMappingError} On source/kind incompatibility.
+ * @throws {InvalidParameterMappingError} On source/kind incompatibility or a sparse positional map.
  */
 export function resolveParameters(
     target: unknown,
@@ -187,12 +190,13 @@ export function resolveParameters(
     const kind = parameterMappingKind(target, propertyKey);
     const allowed = SOURCES_BY_KIND[kind];
     const nameToIndex = new Map<string, number>();
+    let paramNames: string[] = [];
     if (kind !== 'socket') {
         // @traced wraps methods in a `(...args)` proxy that destroys the
         // declared signature; telemetry preserves the original so framework
         // code can still read the true parameter names.
         const original = getSymbolMetadata(target)[`telemetry:traced:${String(propertyKey)}:original`] ?? handlerMethod;
-        const paramNames = getFunctionParamNames(original);
+        paramNames = getFunctionParamNames(original);
         const length = paramNames.length;
         for (let index = 0; index < length; index++) nameToIndex.set(paramNames[index], index);
     }
@@ -217,6 +221,24 @@ export function resolveParameters(
             resolved[index] = toMethodParameter(paramName, extractor);
         } else {
             resolved.push(toMethodParameter(paramName, extractor));
+        }
+    }
+    if (kind !== 'socket') {
+        // Positional dispatch needs a contiguous map: a hole makes
+        // RouteHandlerMethod.invoke probe the resolver chain with
+        // `undefined` and fail with a TypeError. A hole means an argument
+        // between two declared ones is undeclared — a configuration error,
+        // so it is rejected here at registration time instead.
+        const declared = resolved.length;
+        for (let index = 0; index < declared; index++) {
+            if (resolved[index] === undefined) {
+                throw new InvalidParameterMappingError(
+                    `@parameters does not declare argument "${paramNames[index]}" at position ${index}. ` +
+                        'Declare every argument up to the last mapped one.',
+                    paramNames[index],
+                    String(propertyKey)
+                );
+            }
         }
     }
     return resolved;

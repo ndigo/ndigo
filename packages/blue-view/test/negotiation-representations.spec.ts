@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { describe, expect, it, afterEach } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { MediaType, MediaTypes } from '@blue/core';
 import type { View } from '../src/view';
 import type { ViewResolver } from '../src/view-resolver';
@@ -11,8 +11,6 @@ import {
     ContentNegotiationManager,
     ContentNegotiationViewResolver,
     PathExtensionContentNegotiationStrategy,
-    clearCurrentRequest,
-    setCurrentRequest,
 } from '../src/content-negotiation-view-resolver';
 import { CSVView } from '../src/csv-view';
 import { JSONView } from '../src/json-view';
@@ -38,10 +36,6 @@ const EXTENSIONS = new Map<string, MediaType>([
 ]);
 
 describe('representation negotiation with real views', () => {
-    afterEach(() => {
-        clearCurrentRequest();
-    });
-
     const buildResolver = () => {
         const html = new TextView();
         html.mediaType = MediaTypes.TEXT_HTML?.withCharset('UTF-8') ?? null;
@@ -58,26 +52,22 @@ describe('representation negotiation with real views', () => {
     };
 
     it('selects the CSV representation for a .csv request', async () => {
-        setCurrentRequest({ path: '/report.csv' });
-        const view = await buildResolver().resolveViewName('report', '');
+        const view = await buildResolver().resolveViewName('report', '', { path: '/report.csv' });
         expect(view).toBeInstanceOf(CSVView);
     });
 
     it('selects the JSON representation for a .json request', async () => {
-        setCurrentRequest({ path: '/report.json' });
-        const view = await buildResolver().resolveViewName('report', '');
+        const view = await buildResolver().resolveViewName('report', '', { path: '/report.json' });
         expect(view).toBeInstanceOf(JSONView);
     });
 
     it('selects the text representation for a .txt request', async () => {
-        setCurrentRequest({ path: '/report.txt' });
-        const view = await buildResolver().resolveViewName('report', '');
+        const view = await buildResolver().resolveViewName('report', '', { path: '/report.txt' });
         expect(view).toBeInstanceOf(TextView);
     });
 
     it('falls back to the first candidate for extensionless requests', async () => {
-        setCurrentRequest({ path: '/report' });
-        const view = await buildResolver().resolveViewName('report', '');
+        const view = await buildResolver().resolveViewName('report', '', { path: '/report' });
         expect(view).toBeInstanceOf(TextView);
     });
 });

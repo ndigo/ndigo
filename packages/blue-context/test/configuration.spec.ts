@@ -5,7 +5,8 @@
  */
 import { describe, test, expect } from 'vitest';
 import { ContextToken } from '@blue/factory';
-import { MetadataConfigApplicationContext, configuration, entry } from '../src/configuration';
+import { MetadataConfigApplicationContext, configuration, entry, profile, property } from '../src/configuration';
+import { StandardEnvironment } from '../src/environment';
 import testContext from './testContext';
 
 describe('Configuration', () => {
@@ -136,5 +137,53 @@ describe('MetadataConfigApplicationContext', () => {
         // the prototype-chain enumerability walk).
         expect(baseCalls).toBe(1);
         expect(subCalls).toBe(1);
+    });
+
+    test('CF-9: evaluates profile gates against the environment current at registration', () => {
+        @configuration
+        class ProdConfiguration {
+            @profile('prod')
+            @entry()
+            prodEntry() {
+                return 'prod-bean';
+            }
+        }
+
+        const context = new MetadataConfigApplicationContext();
+        context.environment.activeProfiles = ['dev'];
+        context.register(ProdConfiguration);
+        expect(context.getValue('prodEntry')).toBeUndefined();
+
+        const prodEnvironment = new StandardEnvironment();
+        prodEnvironment.activeProfiles = ['prod'];
+        context.setEnvironment(prodEnvironment);
+        context.register(ProdConfiguration);
+
+        expect(context.getValue<string>('prodEntry')).toBe('prod-bean');
+    });
+
+    test('CF-9: binds @property fields without @propertySource against the current environment', () => {
+        @configuration
+        class ValueConfiguration {
+            @property('foo')
+            fooValue: unknown;
+
+            @entry()
+            getFoo() {
+                return this.fooValue;
+            }
+        }
+
+        const context = new MetadataConfigApplicationContext();
+        context.environment.getPropertySources().addFirst('test', { foo: 'one' });
+        context.register(ValueConfiguration);
+        expect(context.getValue<string>('getFoo')).toBe('one');
+
+        const secondEnvironment = new StandardEnvironment();
+        secondEnvironment.getPropertySources().addFirst('test', { foo: 'two' });
+        context.setEnvironment(secondEnvironment);
+        context.register(ValueConfiguration);
+
+        expect(context.getValue<string>('getFoo')).toBe('two');
     });
 });

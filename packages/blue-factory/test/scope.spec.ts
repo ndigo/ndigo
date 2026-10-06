@@ -270,11 +270,16 @@ describe('Scope Decorators - TC39 Behavioral Tests', () => {
             refresh.clear();
 
             // The failing callback was reported (best-effort teardown)...
+            // The report now flows through the @blue/telemetry logger; assert
+            // the essence (one report, mentioning the callback) without pinning
+            // the logger's argument layout.
             expect(consoleError).toHaveBeenCalledTimes(1);
-            expect(consoleError).toHaveBeenCalledWith(
-                expect.stringContaining('RefreshScope destruction callback for "boom" failed'),
-                error
-            );
+            expect(
+                consoleError.mock.calls[0].some(
+                    (arg) =>
+                        typeof arg === 'string' && arg.includes('RefreshScope destruction callback for "boom" failed')
+                )
+            ).toBe(true);
             // ...and the instance map was STILL cleared — no stale instance
             // may survive a throwing callback (the pre-fix behavior aborted
             // before #instances.clear(), caching the old instance forever).

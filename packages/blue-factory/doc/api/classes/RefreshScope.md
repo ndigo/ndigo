@@ -45,7 +45,7 @@ Clears every cached instance, running registered destruction callbacks
 The instance map is cleared FIRST so a throwing destruction callback
 can never leave a stale instance cached — `clear()` is the refresh
 teardown edge (ARC-1) and must always complete. Callbacks are best
-effort: each failure is reported via `console.error` and never
+effort: each failure is reported via the logger and never
 aborts the sweep.
 
 #### Returns

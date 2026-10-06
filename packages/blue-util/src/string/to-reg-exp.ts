@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import safeRegex from 'safe-regex';
+import { isDevMode } from '../env.js';
 
 const MAX_CACHE_SIZE = 1000;
 const regExpFlags = /[gimsuy]+/,
@@ -44,7 +45,7 @@ const toRegExp = (value: string): RegExp => {
         const isSafe = safeRegex(pattern);
         if (!isSafe) {
             // In development, warn; in production, proceed but note the risk
-            if (process.env.NODE_ENV !== 'production') {
+            if (isDevMode()) {
                 console.warn(`[toRegExp] Potentially unsafe regex pattern detected: ${pattern}`);
             }
         }

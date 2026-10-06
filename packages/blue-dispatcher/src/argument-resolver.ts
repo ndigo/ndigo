@@ -3,10 +3,12 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import { ApplicationContext } from '@blue/context';
 import { Route } from '@blue/router';
 import { MethodParameter, MethodParameterType } from './parameters';
 import { isNil, like } from '@blue/util/types';
 import { readDottedValue } from './dotted-read';
+import { ARGUMENT_RESOLVERS } from './context-tokens';
 import { convertArgumentValue } from './argument-value-converter';
 import { MissingParameterError } from './error';
 
@@ -238,4 +240,25 @@ export class RouteValueMethodArgumentResolver extends AbstractNamedValueMethodAr
     supportsParameter(parameter: MethodParameter): boolean {
         return MethodParameterType.ROUTE.equals(parameter.type);
     }
+}
+
+/**
+ * Registers a collection of argument resolvers into the application context
+ * under the {@link ARGUMENT_RESOLVERS} token and returns them.
+ *
+ * Shared by the platform configuration functions
+ * (`configureNodeArgumentResolvers`, `configureBrowserArgumentResolvers`) so
+ * resolver registration behaves identically across platforms.
+ *
+ * @param applicationContext - The application context to register into.
+ * @param resolvers - The argument resolvers to register, in priority order.
+ * @returns The registered resolvers.
+ */
+export function registerArgumentResolvers(
+    applicationContext: ApplicationContext,
+    resolvers: HandlerMethodArgumentResolver[]
+): HandlerMethodArgumentResolver[] {
+    applicationContext.setValue(ARGUMENT_RESOLVERS, resolvers);
+
+    return resolvers;
 }

@@ -38,7 +38,6 @@ export function streamToSignal<T>(source: AsyncIterable<T>, target: Signal<T>): 
             }
         } catch (error: unknown) {
             if (!cancelled) {
-                // eslint-disable-next-line no-console
                 console.error('[blue-signals] streamToSignal failed:', error);
             }
         } finally {

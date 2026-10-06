@@ -7,10 +7,10 @@ import {
     MethodParameter,
     MethodParameterType,
     AbstractPlatformArgumentResolver,
+    convertArgumentValue,
     type DataBindingSource,
 } from '@blue/dispatcher';
 import { Route } from '@blue/router';
-import { convertArgumentValue } from './_resolver-util';
 import { getNodeRequest } from './node-request';
 
 /**

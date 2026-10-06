@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { ApplicationContext } from '@blue/context';
-import { HandlerMethodArgumentResolver, MethodParameterType } from '@blue/dispatcher';
+import { HandlerMethodArgumentResolver, MethodParameterType, registerArgumentResolvers } from '@blue/dispatcher';
 import { BrowserCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
 import { BrowserDataBindingMethodArgumentResolver } from './data-binding-argument-resolver';
 import { BrowserHistoryStateValueMethodArgumentResolver } from './history-state-argument-resolver';
@@ -33,7 +33,5 @@ export function configureBrowserArgumentResolvers(
         ),
     ];
 
-    applicationContext.setValue('argumentResolvers', resolvers);
-
-    return resolvers;
+    return registerArgumentResolvers(applicationContext, resolvers);
 }

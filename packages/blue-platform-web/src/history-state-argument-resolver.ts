@@ -8,9 +8,9 @@ import {
     MethodParameterType,
     AbstractPlatformArgumentResolver,
     readDottedValue,
+    convertArgumentValue,
 } from '@blue/dispatcher';
 import { Route } from '@blue/router';
-import { convertArgumentValue } from './_resolver-util';
 
 /**
  * Browser history-state argument resolver.

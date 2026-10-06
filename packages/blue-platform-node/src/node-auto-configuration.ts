@@ -13,6 +13,7 @@ import {
     AcceptHeaderLanguageResolver,
     RadixMetadataHandlerMapping,
     MetadataErrorResolver,
+    argumentValueConverters,
     DISPATCHER,
     ARGUMENT_RESOLVERS,
     HANDLER_MAPPING,
@@ -26,7 +27,6 @@ import { HTTP_SERVER, SOCKET_SESSION_REGISTRY } from './context-tokens';
 import { SecurityHeadersInterceptor } from './security-headers-interceptor';
 import { NodeParameterBindingErrorResolver } from './parameter-binding-error-resolver';
 import { NodeLastResortErrorResolver } from './last-resort-error-resolver';
-import { argumentValueConverters } from './_resolver-util';
 import { NodeQueryValueMethodArgumentResolver } from './query-argument-resolver';
 import { NodePathValueMethodArgumentResolver } from './path-argument-resolver';
 import { NodeHeaderValueMethodArgumentResolver } from './header-argument-resolver';

@@ -4,9 +4,10 @@
  * @author Jeff Rose
  */
 import { describe, expect, test } from 'vitest';
-import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import {
+    MethodParameter,
+    MethodParameterType,
     argumentValueConverters,
     createOptionalConverter,
     createStringSplitConverter,
@@ -16,7 +17,7 @@ import {
     toJSONStringValue,
     toNumberValue,
     ArgumentValueConversionContext,
-} from '../src/_resolver-util';
+} from '@blue/dispatcher';
 import { conversionService } from '@blue/core';
 
 /** Context is never read by the built-in converters under test. */

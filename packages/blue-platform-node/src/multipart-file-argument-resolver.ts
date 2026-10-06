@@ -3,9 +3,13 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { AbstractPlatformArgumentResolver, MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import {
+    AbstractPlatformArgumentResolver,
+    MethodParameter,
+    MethodParameterType,
+    passthroughArgumentValue,
+} from '@blue/dispatcher';
 import { Route } from '@blue/router';
-import { passthroughArgumentValue } from './_resolver-util';
 import { getNodeRequest } from './node-request';
 
 /**

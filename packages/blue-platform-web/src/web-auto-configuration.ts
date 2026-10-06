@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { configuration, entry } from '@blue/context';
-import { argumentValueConverters } from './_resolver-util';
+import { argumentValueConverters } from '@blue/dispatcher';
 import { BrowserDataBindingMethodArgumentResolver } from './data-binding-argument-resolver';
 import { BrowserCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
 import { CookieLanguageResolver } from './cookie-language-resolver';

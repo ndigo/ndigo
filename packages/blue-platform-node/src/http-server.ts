@@ -5,7 +5,7 @@
  * @author Jeff Rose
  */
 import { $aware, type SmartLifecycle } from '@blue/factory';
-import type { ApplicationContext, ApplicationContextAware } from '@blue/context';
+import { getEnv, type ApplicationContext, type ApplicationContextAware } from '@blue/context';
 import { DISPATCHER } from '@blue/dispatcher';
 import type { NodeDispatcher } from './node-dispatcher';
 import { NodeHTTPServerAdapter, type NodeHTTPServerAdapterOptions } from './node-http-server-adapter';
@@ -168,7 +168,7 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
                 'HTTPServer: socketRegistry is shared with the default adapter only — pass it to your custom adapter instead'
             );
         }
-        const rawPort = options.port ?? Number(process.env['PORT'] ?? '3000');
+        const rawPort = options.port ?? Number(getEnv('PORT', '3000'));
         if (!Number.isInteger(rawPort) || rawPort < 0 || rawPort > 65_535) {
             throw new RangeError(`HTTPServer: invalid port ${String(rawPort)} — must be an integer in [0, 65535]`);
         }
@@ -182,14 +182,14 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         // both, any origin may upgrade — the explicit public-socket
         // posture.
         this.#allowedWebSocketOrigins =
-            options.allowedWebSocketOrigins ?? parseCSVEnv(process.env['BLUE_SOCKET_ALLOWED_ORIGINS']);
+            options.allowedWebSocketOrigins ?? parseCSVEnv(getEnv('BLUE_SOCKET_ALLOWED_ORIGINS'));
         this.#authenticate = options.authenticate ?? undefined;
         this.#maxConnections = options.maxConnections;
         this.#authenticateTimeoutMs = options.authenticateTimeoutMs;
         // Env-tunable trusted-proxy allowlist for the default adapter:
         // comma-separated IPs/CIDRs (`BLUE_TRUSTED_PROXIES`). Explicit
         // option wins over the env. Empty = trust nobody (AD-37).
-        this.#trustedProxies = options.trustedProxies ?? parseCSVEnv(process.env['BLUE_TRUSTED_PROXIES']);
+        this.#trustedProxies = options.trustedProxies ?? parseCSVEnv(getEnv('BLUE_TRUSTED_PROXIES'));
         this.#adapter = options.adapter ?? null;
         this.#started = false;
     }

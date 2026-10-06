@@ -3,9 +3,13 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { MethodParameter, MethodParameterType, AbstractPlatformArgumentResolver } from '@blue/dispatcher';
+import {
+    MethodParameter,
+    MethodParameterType,
+    AbstractPlatformArgumentResolver,
+    convertArgumentValue,
+} from '@blue/dispatcher';
 import { Route } from '@blue/router';
-import { convertArgumentValue } from './_resolver-util';
 
 /**
  * Node.js query parameter argument resolver.

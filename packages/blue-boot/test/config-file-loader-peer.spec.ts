@@ -17,7 +17,8 @@ import type { ConfigFileReader } from '../src/config-file-loader';
 describe('TOON peer loading (AD-66)', () => {
     const files =
         (map: Record<string, string | null>): ConfigFileReader =>
-        async (path) => map[path] ?? null;
+        async (path) =>
+            map[path] ?? null;
 
     const envWithProfiles = () => {
         const env = new StandardEnvironment();

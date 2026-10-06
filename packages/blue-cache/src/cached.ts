@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
+import { isDevMode } from '@blue/context';
 import { Cache, CacheMiss } from './cache';
 import type { CacheManager } from './cache-manager';
 import { serializeCacheKey } from './keys';
@@ -142,7 +143,7 @@ export function cached(spec: CachedSpec = {}) {
             const cacheAware = this as unknown as { cacheManager?: CacheManager };
             const manager = cacheAware.cacheManager;
             if (!manager) {
-                if (!degradationWarned && isInDevMode()) {
+                if (!degradationWarned && isDevMode()) {
                     degradationWarned = true;
                     console.warn(
                         `[@blue/cache] @cached("${methodName}") ran without a CacheManager — caching is disabled for this method.`
@@ -186,15 +187,6 @@ export function cached(spec: CachedSpec = {}) {
             }
         };
     };
-}
-
-/**
- * True when runtime warnings are desired: any environment except an explicit
- * production build. Guards against referencing `process` in environments where
- * it is absent (e.g. some browser/worker bundles).
- */
-function isInDevMode(): boolean {
-    return typeof process !== 'undefined' && !!process.env && process.env.NODE_ENV !== 'production';
 }
 
 /**

@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { ApplicationContext } from '@blue/context';
-import { HandlerMethodArgumentResolver } from '@blue/dispatcher';
+import { HandlerMethodArgumentResolver, registerArgumentResolvers } from '@blue/dispatcher';
 import { NodeQueryValueMethodArgumentResolver } from './query-argument-resolver';
 import { NodePathValueMethodArgumentResolver } from './path-argument-resolver';
 import { NodeHeaderValueMethodArgumentResolver } from './header-argument-resolver';
@@ -34,7 +34,5 @@ export function configureNodeArgumentResolvers(
         new NodeRequestSessionValueMethodArgumentResolver(),
     ];
 
-    applicationContext.setValue('argumentResolvers', resolvers);
-
-    return resolvers;
+    return registerArgumentResolvers(applicationContext, resolvers);
 }

@@ -35,6 +35,9 @@ import {
 } from './entry-processor';
 import { Factory, ConfigurableFactory, FactoryAware, likeFactoryAware, getErrorMessage } from './factory-contract';
 import { create, keys, construct, defineProperty, deleteProperty } from './factory-shared';
+import { getLogger } from '@blue/telemetry/logger';
+
+const logger = getLogger('blue-factory:abstract-factory');
 
 /**
  * An abstract base class for implementing a {@link ConfigurableFactory} and {@link ScopedFactory}.
@@ -272,8 +275,8 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
         // Warn if the actual version doesn't satisfy the token's required range.
         if (!satisfiesVersion(actualVersion, requiredVersion)) {
-            console.warn(
-                `[blue] Dependency '${nameOrToken.description}' version ${actualVersion} does not satisfy ` +
+            logger.warn(
+                `Dependency '${nameOrToken.description}' version ${actualVersion} does not satisfy ` +
                     `required range '${requiredVersion}'`
             );
         }
@@ -634,7 +637,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                 this._invokeInit(name, instance);
             }
         } catch (e) {
-            console.warn(`[Factory] Failed to initialize entry '${name}':`, e);
+            logger.warn(`Failed to initialize entry '${name}':`, { error: e instanceof Error ? e.message : String(e) });
         }
 
         instance = this._applyProcessorsAfterInitialization(name, instance);

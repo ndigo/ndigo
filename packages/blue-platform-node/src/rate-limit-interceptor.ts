@@ -11,6 +11,7 @@ import {
     type RouteHandlerMethod,
     denialOf,
 } from '@blue/dispatcher';
+import { getSymbolMetadata } from '@blue/core';
 import { getNodeRequest } from './node-request';
 import { HTTPHeaders } from '@blue/http';
 import { type RateLimiter, type RateLimitPolicy, validateRateLimitPolicy } from './rate-limit';
@@ -98,9 +99,7 @@ export class RateLimitInterceptor implements RouteHandlerInterceptor {
      */
     #policyFor(handler: object | undefined): RateLimitPolicy | undefined {
         const methodHandler = handler as RouteHandlerMethod | undefined;
-        const metadata: Record<string, unknown> = ((
-            methodHandler?.handler?.constructor as unknown as { [key: symbol]: unknown } | undefined
-        )?.[Symbol.metadata] ?? {}) as Record<string, unknown>;
+        const metadata: Record<string, unknown> = getSymbolMetadata(methodHandler?.handler);
         const methodName: string | null = typeof methodHandler?.method === 'string' ? methodHandler.method : null;
 
         const methodPolicy = methodName

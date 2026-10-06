@@ -14,7 +14,7 @@ import {
     createOptionalConverter,
     argumentValueConverters,
     resolveConverter,
-} from '../src/_resolver-util';
+} from '@blue/dispatcher';
 
 describe('argument-value-converter', () => {
     describe('identityArgumentValueConverter', () => {

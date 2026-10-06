@@ -1,0 +1,16 @@
+# Dependency update automation (npm workspace).
+#
+# Scans every dependency in pnpm-lock.yaml — runtime, dev, and the optional
+# runtime-loaded peer `@toon-format/toon` — for known CVEs and version bumps.
+# The CI prod-audit lane (`pnpm audit --prod`) covers runtime deps at build
+# time; a hard dev-deps audit lane is not viable because the workspace's
+# dev/demo toolchain (vitest, webpack demo apps, svelte) carries pre-existing
+# upstream advisories that would fail CI. Dependabot is the complement: it
+# files security updates for any of these automatically.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5

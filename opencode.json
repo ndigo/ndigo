@@ -10,7 +10,7 @@
   },
   "lsp": {
     "typescript": {
-      "command": ["/home/jeff/Workspace/blue/node_modules/.bin/tsc", "--lsp", "--stdio"],
+      "command": ["tsc", "--lsp", "--stdio"],
       "extensions": [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".mts", ".cts"]
     }
   }

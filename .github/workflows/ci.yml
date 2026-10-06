@@ -71,6 +71,12 @@ jobs:
         # Generated agents/skills (.opencode/, .claude/, .omp/) must match the
         # committed sha256 manifest. Regenerate with `pnpm agents:sync` from
         # the development-agents neutral store — never hand-edit generated dirs.
+        # Repo-owned deployment files (opencode.json, .opencode/plugins/,
+        # AGENTS.md) are covered by a second manifest (.agent-local.json);
+        # refresh it with `node scripts/agents-check.mjs --update`.
+        # Boundary: the neutral store lives outside this repo and CI never runs
+        # gen.mjs, so this gate enforces self-consistency of committed content,
+        # not freshness against the store.
         run: pnpm agents:check
 
       - name: Strict type-check

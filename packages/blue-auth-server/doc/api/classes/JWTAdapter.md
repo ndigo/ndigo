@@ -187,6 +187,10 @@ additionally checked against the live account: a bumped
 `tokenVersion` or a disabled/deleted account rejects the token
 (SE-7). External IdP tokens without `ver` skip the store check.
 
+Framework-issued **refresh** tokens (`token_use: 'refresh'`) are
+never accepted here — only access tokens authenticate requests
+(`token_use: 'access'`, or absent for external IdP tokens).
+
 #### Implementation of
 
 `AuthAdapter.validate`

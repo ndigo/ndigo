@@ -114,6 +114,36 @@ Terminates the session. Unknown ids are a no-op.
 
 ***
 
+### deleteForUser()
+
+> **deleteForUser**(`userId`): `Promise`\<`number`\>
+
+Terminates every **live** session belonging to `userId` and returns
+how many were removed (expired-but-unswept entries are purged without
+being counted as live). This is the user-wide revocation primitive:
+the two shipped stores implement it as an indexed sweep (`DELETE …
+WHERE principal_id = ?`); callers that also want outstanding JWTs of
+the account revoked should bump the account's `tokenVersion` — see
+`CredentialsAuthAdapter.logoutAll`.
+
+Idempotent: an account with no live sessions returns `0`.
+
+#### Parameters
+
+##### userId
+
+`string`
+
+#### Returns
+
+`Promise`\<`number`\>
+
+#### Implementation of
+
+`SessionStore.deleteForUser`
+
+***
+
 ### dispose()
 
 > **dispose**(): `void`

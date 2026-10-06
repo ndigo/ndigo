@@ -1,6 +1,6 @@
 /**
  * Bridges an async event stream into a reactive signal (AD-09).
- * * @module blue-signals
+ * @module blue-signals
  * @since 1.0.0
  * @author Jeff Rose
  */

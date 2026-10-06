@@ -121,8 +121,8 @@ global ordering or exactly-once guarantee. Subscriber/publisher outages reject
 before local delivery, never silently downgrade to local-only; inbound STOMP
 SEND publish faults send ERROR then close `1011`. Construct/connect
 replacement resources after failure. Malformed inbound envelopes are dropped
-and observable through `lastError`; invalid outbound envelopes reject before
-Redis I/O.
+and observable through `lastDecodeError` (and through `lastError` when they are
+the most recent failure); invalid outbound envelopes reject before Redis I/O.
 
 Nodes must agree on namespace and version-1 envelope schema. Namespace is
 1–128 ASCII characters matching `[A-Za-z0-9][A-Za-z0-9._-]*`; unlike cache

@@ -1,6 +1,6 @@
 /**
  * Blue Signals decorator API.
- * * @module blue-signals
+ * @module blue-signals
  * @since 1.0.0
  * @author Jeff Rose
  */

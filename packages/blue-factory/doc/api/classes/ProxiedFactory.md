@@ -292,7 +292,11 @@ Destroys a value managed by the factory.
 
 > **getInstance**\<`T`\>(`name`, `argumentsList?`): `T`
 
-Returns an instance of the specified value.
+Returns the value registered under `name`. Constructor-registered
+values are constructed (and configured) through the internal
+`_create` path; non-constructor values (instances, primitives) are
+returned as-is, preserving identity (CF-12). An unregistered name
+resolves to `undefined`.
 
 #### Type Parameters
 

@@ -392,7 +392,10 @@ export class StompClient {
      * @param destination - The destination (e.g. `/topic/chat`).
      * @param body - The message body.
      * @param headers - Extra headers (`content-type`, caller-supplied
-     *   `receipt`, …).
+     *   `receipt`, …). A `receipt` id a pending send already carries
+     *   rejects this send with a `StompProtocolError` — reusing it would
+     *   overwrite the receipt correlation and strand the first promise;
+     *   the id is reusable once its RECEIPT settles.
      * @returns A promise resolving on RECEIPT.
      */
     send(destination: string, body: unknown, headers: Record<string, string> = {}): Promise<void> {
@@ -418,6 +421,15 @@ export class StompClient {
         // overwrite the map entry and strand the first send's promise).
         const receiptId = ownHeaders['receipt'] ?? `bluejs-${this.#nextReceiptId++}-${crypto.randomUUID()}`;
         ownHeaders['receipt'] = receiptId;
+        if (this.#receipts.has(receiptId)) {
+            // The id already awaits its own RECEIPT: letting this send
+            // overwrite the map entry would strand the first send's
+            // promise (its RECEIPT resolves the newer entry). Reject the
+            // newcomer instead.
+            const { promise, reject } = Promise.withResolvers<void>();
+            reject(new StompProtocolError('duplicate receipt id'));
+            return promise;
+        }
         const { promise, resolve, reject } = Promise.withResolvers<void>();
         const receipt: PendingReceipt = { resolve, reject, sent: false };
         this.#receipts.set(receiptId, receipt);

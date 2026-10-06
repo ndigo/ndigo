@@ -63,8 +63,8 @@ Configuring a `logExporter` (anything but `'none'`) also switches
 
 ## 4. Correlation
 
-Logs already carry trace context: set `LoggerFactory.contextAware = true`
-and the logger stamps `trace.id` / `span.id` attributes when a span is
+Logs already carry trace context: set `LoggerFactory.setContextAware(true)`
+and the logger stamps `traceId` / `spanId` attributes when a span is
 active. For non-logger consumers (queue payloads, outbound headers,
 custom sinks), read the ids directly:
 
@@ -72,7 +72,7 @@ custom sinks), read the ids directly:
 import { currentTraceContext } from '@blue/telemetry';
 
 const correlation = currentTraceContext(); // { traceId, spanId } | undefined
-await queue.push({ ...payload, 'trace.id': correlation?.traceId });
+await queue.push({ ...payload, traceId: correlation?.traceId, spanId: correlation?.spanId });
 ```
 
 `undefined` means no span is active — safe in pure-logging mode.

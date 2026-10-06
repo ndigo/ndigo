@@ -11,6 +11,7 @@ import { AESGCMCipher, NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } fr
 import { configureTelemetry, HTTPServerInstrumentation, WebSocketServerInstrumentation } from '@blue/telemetry-node';
 import { getLogger } from '@blue/telemetry';
 import { interception } from '@blue/proxy';
+import { getErrorMessage } from '@blue/util';
 import { NodeAppConfiguration } from './node-app-configuration';
 import { AuditInterceptor } from './audit-interceptor';
 import { SecureDocsConfiguration } from './secure-docs-configuration';
@@ -42,7 +43,7 @@ async function main() {
     // (`@configurationProperties`). Profiles and properties exercise the
     // environment property sources (AD-13/14/15): the `devInfo` bean exists
     // only under the `dev` profile, and `server.port`/`server.name` bind
-    // from the builder property source with `@defaultValue` fallbacks.
+    // from the builder property source with schema (`z.default()`) fallbacks.
     // The OpenAPI docs run behind `SecureDocsConfiguration` (SEC-4): the
     // same Bearer-token check the protected handlers apply, so anonymous
     // `/v3/api-docs` + `/swagger-ui/` are denied 401.
@@ -124,6 +125,6 @@ async function main() {
 }
 
 main().catch((err) => {
-    logger.error(`failed to start: ${err instanceof Error ? err.message : String(err)}`);
+    logger.error(`failed to start: ${getErrorMessage(err)}`);
     process.exit(1);
 });

@@ -6,6 +6,7 @@
 import '@tsmetadata/polyfill';
 import { Cron } from 'croner';
 import { FrameworkError } from '@blue/core';
+import { getErrorMessage } from '@blue/util';
 import { isValidTimeZone } from './time-zones';
 import { NormalizedScheduledSpec, ScheduledSpec, parseDuration } from './spec';
 
@@ -99,10 +100,9 @@ function validateCron(expression: string): void {
     try {
         new Cron(expression);
     } catch (error) {
-        throw new TypeError(
-            `@scheduled: invalid cron expression '${expression}' — ${error instanceof Error ? error.message : String(error)}`,
-            { cause: error }
-        );
+        throw new TypeError(`@scheduled: invalid cron expression '${expression}' — ${getErrorMessage(error)}`, {
+            cause: error,
+        });
     }
 }
 

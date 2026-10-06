@@ -159,5 +159,76 @@ from every resolver — a `ParameterBindingError`, mapped to `400` by
 Socket dispatch is unchanged (missing required params close the socket with
 `1008`).
 
+## 6. Extending the chain — `registerArgumentResolvers` and `passthroughArgumentValue`
+
+Each source in §1 is served by one `HandlerMethodArgumentResolver`, and the
+resolver collection lives under the `ARGUMENT_RESOLVERS` context token — the
+platform auto-configurations expose it (Node: `NodeAutoConfiguration.argumentResolvers`),
+and the standalone helpers `configureNodeArgumentResolvers` /
+`configureBrowserArgumentResolvers` register the same lists through
+`registerArgumentResolvers`:
+
+```ts
+registerArgumentResolvers(context, resolvers);
+```
+
+- `registerArgumentResolvers(applicationContext, resolvers)` writes the array
+  to `ARGUMENT_RESOLVERS` and returns it — the single registration entry point
+  both platform configure functions share, so custom registration behaves
+  identically on Node and browser.
+- **Resolution order is array order.** The adapter discovers the registered
+  resolvers (then a stand-alone resolver under the `ARGUMENT_RESOLVER` token)
+  and appends its built-ins — path, matrix, query, attribute, route. The first
+  `supportsParameter` match wins, so prepending a resolver is how you
+  specialize an existing source without replacing the chain:
+
+```ts
+import { ARGUMENT_RESOLVERS, registerArgumentResolvers } from '@blue/dispatcher';
+
+const current = context.getValue(ARGUMENT_RESOLVERS) ?? [];
+registerArgumentResolvers(context, [new TenantQueryArgumentResolver(), ...current]);
+```
+
+A custom resolver implements `HandlerMethodArgumentResolver`
+(`supportsParameter` + `resolveArgument` — both must be functions, the
+discovery guard is `likeArgumentResolver`), or extends
+`AbstractNamedValueMethodArgumentResolver` to reuse the shared named-value
+pipeline: name lookup → default → `convertType` conversion → Zod `convert`
+(`validatedBy`) → required-missing → `MissingParameterError` (400):
+
+```ts
+import { AbstractNamedValueMethodArgumentResolver, MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import type { Route } from '@blue/router';
+
+/** `queryValue('tenant.*')` params read the query first, then the framework context. */
+class TenantQueryArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
+    protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: unknown): unknown {
+        return route.data?.[name] ?? route.attributes?.[name.replace(/^tenant\./, '')];
+    }
+
+    supportsParameter(parameter: MethodParameter): boolean {
+        return MethodParameterType.QUERY.equals(parameter.type) && parameter.name.startsWith('tenant.');
+    }
+}
+```
+
+`passthroughArgumentValue` is the identity converter for resolvers whose
+values are already final — uploaded file parts, parsed JSON parts — so the
+pipeline still runs defaults and required handling but no type conversion.
+Hand it to `AbstractPlatformArgumentResolver`, the base the platform resolvers
+extend:
+
+```ts
+import { AbstractPlatformArgumentResolver, passthroughArgumentValue } from '@blue/dispatcher';
+
+class UploadArgumentResolver extends AbstractPlatformArgumentResolver {
+    constructor() {
+        super(passthroughArgumentValue); // values are final — skip ConversionService
+    }
+
+    // implement resolveName() + supportsParameter() as above
+}
+```
+
 See [AD-27](../decisions/2026-09-24_AD27_ARGUMENT_BINDING.md) for the full
 decision record and non-goals.

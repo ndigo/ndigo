@@ -1,6 +1,6 @@
 /**
  * Internal helper functions for the event emitter.
- * * @module blue-context
+ * @module blue-context
  * @since 1.0.0
  * @author Jeff Rose
  */

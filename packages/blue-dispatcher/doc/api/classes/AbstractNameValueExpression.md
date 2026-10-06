@@ -89,6 +89,12 @@ The expression to parse.
 
 Determine whether this expression matches the given route.
 
+A `name` expression (no `=`) matches on the name alone; a `name=`
+expression — including the empty value — matches on value. The branch
+uses `!== undefined` rather than truthiness so `name=` is not silently
+treated as a name-only expression (which would accept any route
+carrying the name, whatever its value).
+
 #### Parameters
 
 ##### route

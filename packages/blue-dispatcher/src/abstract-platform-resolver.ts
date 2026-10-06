@@ -7,7 +7,8 @@ import { isNil } from '@blue/util/types';
 import { Route } from '@blue/router';
 import { DataBinder, MutablePropertyValues, PropertyValues } from '@blue/core';
 import { AbstractNamedValueMethodArgumentResolver } from './argument-resolver';
-import { MethodParameter } from './parameters';
+import { convertArgumentValue } from './argument-value-converter';
+import { MethodParameter, MethodParameterType, type DataBindingSource } from './parameters';
 
 /**
  * Function signature for platform-specific argument value conversion.
@@ -35,6 +36,13 @@ export type ConvertArgumentValueFn = (
  * Subclasses only need to implement:
  * - `resolveName()` — where to fetch the raw value
  * - `supportsParameter()` — which `MethodParameterType` to match
+ *
+ * The two boilerplate-heavy families extend a narrower base instead, where
+ * each platform declares only its data:
+ * - whole-source binding ({@link AbstractDataBindingArgumentResolver}) —
+ *   the platform's bindable-source table and `getSourceData` lookup
+ * - cookie values ({@link AbstractCookieValueArgumentResolver}) — the
+ *   platform's whole-jar lookup
  */
 export abstract class AbstractPlatformArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     #convertFn: ConvertArgumentValueFn;
@@ -180,6 +188,92 @@ export abstract class AbstractPlatformArgumentResolver extends AbstractNamedValu
         }
 
         return finalValue;
+    }
+}
+
+/**
+ * Shared base for whole-source data-binding resolvers (`dataBinderValue`,
+ * D-3). The browser and Node resolvers had the same `resolveArgument`
+ * override, the same never-called `resolveName` stub, and the same
+ * bindable-source `supportsParameter` check — the only platform knowledge is
+ * the source table and the source lookup, which subclasses declare.
+ *
+ * @see {@link AbstractPlatformArgumentResolver.resolveBoundArgument}
+ */
+export abstract class AbstractDataBindingArgumentResolver extends AbstractPlatformArgumentResolver {
+    /** Whole-source names this platform can bind from. */
+    protected abstract readonly bindableSources: readonly DataBindingSource[];
+
+    /**
+     * Creates a whole-source data-binding resolver.
+     */
+    constructor() {
+        super(convertArgumentValue);
+    }
+
+    /**
+     * Fetches the whole wire source identified by a bindable-source name.
+     *
+     * @param source - One of {@link bindableSources}.
+     * @param route - The current route.
+     * @returns The flat source data, or `undefined` when the source is
+     *   absent/unavailable for this platform.
+     */
+    protected abstract getSourceData(source: string, route: Route): Record<string, unknown> | undefined;
+
+    resolveArgument(parameter: MethodParameter, route: Route, mapping: unknown): unknown {
+        return this.resolveBoundArgument(parameter, route, mapping, (source, currentRoute) =>
+            this.getSourceData(source, currentRoute)
+        );
+    }
+
+    supportsParameter(parameter: MethodParameter): boolean {
+        return this.bindableSources.some((source) => MethodParameterType.data(source).equals(parameter.type));
+    }
+
+    protected resolveName(): null {
+        // Whole-source binding overrides `resolveArgument` entirely; this stub
+        // satisfies the abstract named-value contract and is never called.
+        return null;
+    }
+}
+
+/**
+ * Shared base for cookie-value resolvers: the whole-jar case
+ * (`cookieValue()` with no name) and the cookie parameter match were
+ * duplicated across the browser and Node resolvers, which differed only in
+ * how the cookie jar is read.
+ */
+export abstract class AbstractCookieValueArgumentResolver extends AbstractPlatformArgumentResolver {
+    /**
+     * Creates a cookie-value resolver.
+     */
+    constructor() {
+        super(convertArgumentValue);
+    }
+
+    /**
+     * Reads the whole cookie jar for the current route.
+     *
+     * @param route - The current route.
+     * @returns The jar keyed by cookie name, or `undefined` when no
+     *   request/cookies are available.
+     */
+    protected abstract getCookieJar(route: Route): Record<string, unknown> | undefined;
+
+    protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: unknown): unknown {
+        const jar = this.getCookieJar(route);
+        if (name === '') {
+            // `cookieValue()` (no name) binds the whole cookie jar.
+            return jar;
+        }
+
+        const value = jar?.[name];
+        return typeof value === 'string' ? value : undefined;
+    }
+
+    supportsParameter(parameter: MethodParameter): boolean {
+        return MethodParameterType.COOKIE.equals(parameter.type);
     }
 }
 

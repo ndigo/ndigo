@@ -2,30 +2,108 @@
 
 > Service-layer abstractions for BlueJS: typed service clients, server-sent event streams, and service registration.
 
-`@blue/service` packages remote services behind BlueJS contracts: a `serviceClient` builds a typed client whose methods yield validated response data (or an async iterable of events for streaming endpoints); `@service` decorators declare service methods and schemas on a class; `feed`/`finish` helpers build SSE-style streams with request-id correlation; and a service registry locates service definitions at runtime.
+`@blue/service` packages remote services behind BlueJS contracts: `serviceClient` turns a `@service`-decorated class into a typed client whose methods resolve schema-validated JSON — or an async iterable of parsed Server-Sent Events for `{ stream: true }` calls. `ServerSentEventParser` and `parseServerSentEvents` decode `text/event-stream` bodies incrementally, while `MapServiceRegistry`, `EventEmitterTelemetryHooks`, and `CryptoRequestIdCorrelation` cover registration, telemetry, and request-id correlation.
 
 ## Installation
 
 ```bash
-pnpm add @blue/service
+pnpm add @blue/service @tsmetadata/polyfill
 ```
 
 Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 
+The decorators read and write TC39 decorator metadata (`Symbol.metadata`). Import the polyfill once, before any decorated class is evaluated:
+
+```ts
+import '@tsmetadata/polyfill';
+```
+
 ## Getting Started
 
 ```ts
-import { serviceClient, getCall } from '@blue/service';
+import '@tsmetadata/polyfill';
+import { service, getCall, serviceClient, type ServerSentEvent } from '@blue/service';
 import { HTTP } from '@blue/http';
 
+@service('ticker', { baseUrl: 'https://api.example.com' })
 class TickerAPI {
-    @getCall('/events')
-    events(): AsyncIterable<{ n: number }>;
+    @getCall('/ticks', { stream: true })
+    ticks(): AsyncIterable<ServerSentEvent> {
+        return undefined as never; // implemented by the serviceClient proxy
+    }
 }
 
-const client = serviceClient(TickerAPI, http);
-for await (const event of client.events()) {
-    console.log(event.n);
+const client = serviceClient(TickerAPI, new HTTP());
+
+for await (const event of client.ticks()) {
+    console.log(event.event, event.data);
+}
+```
+
+## Usage
+
+### JSON calls with a response schema
+
+Declare the expected body with `responseSchema` (any Zod schema); the client validates the JSON response and resolves the parsed data. Without a schema the raw `Response` is returned, and `:name` path slots are filled from the method arguments in order.
+
+```ts
+import { z } from 'zod';
+import { service, getCall, serviceClient } from '@blue/service';
+import { HTTP } from '@blue/http';
+
+const Account = z.object({ id: z.number(), name: z.string() });
+
+@service('accounts', { baseUrl: 'https://api.example.com' })
+class AccountsAPI {
+    @getCall('/accounts/:id', { responseSchema: Account })
+    getById(id: number): Promise<z.infer<typeof Account>> {
+        return undefined as never;
+    }
+}
+
+const accounts = serviceClient(AccountsAPI, new HTTP());
+const account = await accounts.getById(42);
+```
+
+`@postCall`, `@putCall`, `@patchCall`, `@deleteCall`, and `@queryCall` declare the other HTTP methods; the first object argument becomes the JSON request body.
+
+### Streaming SSE calls
+
+`{ stream: true }` sends `Accept: text/event-stream` and returns an `AsyncIterable` of parsed events. With a `responseSchema`, each event's `data` payload is validated and the typed value is yielded instead of the raw event:
+
+```ts
+import { z } from 'zod';
+import { service, getCall, serviceClient } from '@blue/service';
+import { HTTP } from '@blue/http';
+
+const Tick = z.object({ n: z.number() });
+
+@service('ticker', { baseUrl: 'https://api.example.com' })
+class TickerAPI {
+    @getCall('/ticks', { stream: true, responseSchema: Tick })
+    ticks(): AsyncIterable<z.infer<typeof Tick>> {
+        return undefined as never;
+    }
+}
+
+for await (const tick of serviceClient(TickerAPI, new HTTP()).ticks()) {
+    console.log(tick.n);
+}
+```
+
+### Parsing an event stream directly
+
+`parseServerSentEvents` turns an async iterable of decoded chunks into events; `ServerSentEventParser.feed()` / `.finish()` expose the same parsing incrementally when you own the read loop.
+
+```ts
+import { parseServerSentEvents } from '@blue/service';
+
+async function* chunks(): AsyncGenerator<string> {
+    yield 'event: tick\ndata: {"n":1}\n\n';
+}
+
+for await (const event of parseServerSentEvents(chunks())) {
+    console.log(event.event, event.data);
 }
 ```
 
@@ -36,8 +114,10 @@ The full API is generated from JSDoc via `pnpm doc:api` into
 [`src/index.ts`](src/index.ts); see the [package index](../../doc/README.md) for
 how it fits with the rest of BlueJS.
 
-- **Clients** — `serviceClient`, `getCall` (and related call decorators)
-- **SSE helpers** — `feed`, `finish`
+- **Clients** — `serviceClient`, `service`, the call decorators (`getCall`, `postCall`, `putCall`, `deleteCall`, `patchCall`, `queryCall`), `fillPathTemplate`, `resolveCallBody`, `SERVICE_NAME_HEADER`, `getServiceConfig` / `getServiceCalls`
+- **Streams** — `parseServerSentEvents`, `ServerSentEventParser`, `ServerSentEvent`
+- **Interceptors** — `MappedServiceInterceptor`, `ServiceExecutionChain`, the `like*ServiceInterceptor` guards
+- **Registry, telemetry, correlation** — `MapServiceRegistry`, `EventEmitterTelemetryHooks`, `CryptoRequestIdCorrelation`
 
 ## Development
 
@@ -49,7 +129,7 @@ pnpm --filter @blue/service test
 ## See Also
 
 - [@blue/http](../blue-http/README.md) — the underlying HTTP client
-- [apps/blue-island](../../apps/blue-island/README.md) — typed service streams bridged to signals
+- [apps/blue-island](../../apps/blue-island/README.md) — a server-push SSE demo bridged to signals
 
 ## Contributing
 

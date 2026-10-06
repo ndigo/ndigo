@@ -9,6 +9,8 @@
 Parses and matches a single URL query-string parameter expression against a route.
 
 Query parameters are the `?key=value` pairs carried in `Route.data`.
+Repeated keys aggregate into arrays, and a `key=value` expression matches
+when any element equals `value` (`?q=a&q=b` matches `q=a` and `q=b`).
 For path-segment matrix parameters (`/path;key=value`), see [MatrixParamExpression](MatrixParamExpression.md).
 
 ## Extends
@@ -101,6 +103,12 @@ Parameter names that may satisfy this expression.
 
 Determine whether this expression matches the given route.
 
+A `name` expression (no `=`) matches on the name alone; a `name=`
+expression — including the empty value — matches on value. The branch
+uses `!== undefined` rather than truthiness so `name=` is not silently
+treated as a name-only expression (which would accept any route
+carrying the name, whatever its value).
+
 #### Parameters
 
 ##### route
@@ -180,6 +188,11 @@ The current route.
 > **matchValue**(`route`): `boolean`
 
 Check whether the route parameter value matches this expression.
+
+A route value may be an array when the query string repeats a key
+(`?q=a&q=b` parses to `['a', 'b']`); the expression matches when any
+element equals the expected value. A single value matches by strict
+equality, so `q=` matches only an explicit empty-string value.
 
 #### Parameters
 

@@ -168,5 +168,69 @@ describe('RouteHandlerMapping', () => {
             expect(handlerMapping.isAutoStartup).toBe(true);
             expect(handlerMapping.phase).toBeLessThan(0);
         });
+
+        test('exposes handler methods by their mapping name (HT-8)', () => {
+            @routeMapping('/hello')
+            class NamedController {
+                @routeMapping('/world')
+                handle() {
+                    return 'ok';
+                }
+            }
+
+            const ctx = new GenericApplicationContext('named');
+            ctx.setValue('namedController', new NamedController());
+
+            const handlerMapping = new RadixMetadataHandlerMapping();
+            handlerMapping.setApplicationContext(ctx);
+            handlerMapping.init();
+
+            const methods = handlerMapping.getHandlerMethodsForMappingName('/hello/world');
+            expect(methods).toHaveLength(1);
+            expect(methods[0]?.method).toBe('handle');
+        });
+
+        test('honors a custom naming strategy (HT-8)', () => {
+            @routeMapping('/custom')
+            class CustomNamedController {
+                @routeMapping('/named')
+                handle() {
+                    return 'ok';
+                }
+            }
+
+            const ctx = new GenericApplicationContext('custom-named');
+            ctx.setValue('customNamedController', new CustomNamedController());
+
+            const handlerMapping = new RadixMetadataHandlerMapping();
+            handlerMapping.namingStrategy = { getName: () => 'custom-name' };
+            handlerMapping.setApplicationContext(ctx);
+            handlerMapping.init();
+
+            expect(handlerMapping.getHandlerMethodsForMappingName('custom-name')).toHaveLength(1);
+            expect(handlerMapping.getHandlerMethodsForMappingName('/custom/named')).toHaveLength(0);
+        });
+
+        test('unregistering a mapping removes it from the name lookup (HT-8)', () => {
+            @routeMapping('/gone')
+            class GoneController {
+                @routeMapping('/now')
+                handle() {
+                    return 'ok';
+                }
+            }
+
+            const ctx = new GenericApplicationContext('gone');
+            ctx.setValue('goneController', new GoneController());
+
+            const handlerMapping = new RadixMetadataHandlerMapping();
+            handlerMapping.setApplicationContext(ctx);
+            handlerMapping.init();
+
+            const mapping = [...handlerMapping.getHandlerMethods().keys()][0];
+            expect(handlerMapping.getHandlerMethodsForMappingName('/gone/now')).toHaveLength(1);
+            handlerMapping.unregisterMapping(mapping);
+            expect(handlerMapping.getHandlerMethodsForMappingName('/gone/now')).toHaveLength(0);
+        });
     });
 });

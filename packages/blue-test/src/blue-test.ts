@@ -1,6 +1,6 @@
 /**
  * Boot helpers for `@blue/test` — boot a Blue application context and wire a.
- * * @module blue-test
+ * @module blue-test
  * @since 1.0.0
  * @author Jeff Rose
  */

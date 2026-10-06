@@ -67,6 +67,8 @@ configureStrictBrowserArgumentResolvers(context, {
 configureCookieThemeResolver(context, 'theme');
 ```
 
+## Usage
+
 ### End-to-End Conversion Pattern
 
 ```typescript

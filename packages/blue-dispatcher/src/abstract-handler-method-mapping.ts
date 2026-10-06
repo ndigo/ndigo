@@ -8,6 +8,7 @@ import { Initializable, SmartLifecycle } from '@blue/factory';
 import { Route } from '@blue/router';
 import { isFunction } from '@blue/util/types';
 import { RouteHandlerMethod, RouteHandlerMethodMappingNamingStrategy } from './route-handler-method';
+import { RouteMappingInfoHandlerMethodMappingNamingStrategy } from './route-mapping-info-naming-strategy';
 import { resolveParameters, storeResolvedParameters, getMethodParameter, MethodParameter } from './parameters';
 import {
     RouteMappingInfo,
@@ -28,6 +29,11 @@ const { from } = Array,
     { keys } = Object;
 
 /**
+ * Shared default naming strategy — stateless, so one instance serves every mapping.
+ */
+const defaultNamingStrategy = new RouteMappingInfoHandlerMethodMappingNamingStrategy();
+
+/**
  * Base class for mappings that resolve handler methods from application context values.
  */
 export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
@@ -36,8 +42,11 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
 {
     /**
      * Naming strategy used when exposing handler methods by name.
+     *
+     * Defaults to {@link RouteMappingInfoHandlerMethodMappingNamingStrategy}
+     * (the mapping's own name, falling back to the handler + method).
      */
-    namingStrategy!: RouteHandlerMethodMappingNamingStrategy<T>;
+    namingStrategy: RouteHandlerMethodMappingNamingStrategy<T> = defaultNamingStrategy;
 
     /**
      * Registry of route mappings and their handler methods.
@@ -139,6 +148,9 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
     /**
      * Return handler methods registered under a mapping name.
      *
+     * Names are assigned at registration by {@link namingStrategy} (by
+     * default the mapping's own name, e.g. its route pattern).
+     *
      * @param name - The mapping name.
      * @returns The matching handler methods.
      */
@@ -155,7 +167,13 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
      * @param directPaths - Paths that map directly to this entry.
      */
     registerMapping(mapping: T, handler: MaybeHandler, method: string, directPaths?: string[]): void {
-        this.mappingRegistry.register(mapping, this._createRequestHandlerMethod(handler, method), directPaths);
+        const handlerMethod = this._createRequestHandlerMethod(handler, method);
+        this.mappingRegistry.register(
+            mapping,
+            handlerMethod,
+            this.namingStrategy?.getName(handlerMethod, mapping) ?? '',
+            directPaths
+        );
     }
 
     /**

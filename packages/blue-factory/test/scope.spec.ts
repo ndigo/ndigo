@@ -1,6 +1,6 @@
 /**
  * Behavioral tests for @blue/factory scope decorators (TC39).
- * * @module blue-factory
+ * @module blue-factory
  * @since 1.0.0
  * @author Jeff Rose
  */

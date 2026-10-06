@@ -304,10 +304,9 @@ export class Application extends Emitter {
 
         if (active) {
             environment.activeProfiles = active;
-        } else if (this.#profiles.length === 0) {
-            // No explicit activation anywhere → defaults may apply (P0 set).
-            // The env's own defaultProfiles (if set) are consulted by gates.
         }
+        // No explicit activation anywhere → defaults may apply (P0 set);
+        // the env's own defaultProfiles (if set) are consulted by gates.
 
         // Defaults as config (profiles.default / BLUE_PROFILES_DEFAULT).
         const envDefault = process.env.BLUE_PROFILES_DEFAULT;

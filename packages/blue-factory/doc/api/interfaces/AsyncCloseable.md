@@ -6,6 +6,8 @@
 
 # Interface: AsyncCloseable
 
+A [Closeable](Closeable.md) whose close is asynchronous.
+
 ## Extends
 
 - [`Closeable`](Closeable.md)

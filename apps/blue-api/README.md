@@ -17,6 +17,10 @@ cd apps/blue-api && pnpm start
 ```text
 GET  /api/hello?name=Alice     greeting (JSON)
 GET  /api/greet/:name          path-parameter binding
+GET  /api/greeting?name=Ada    Accept-Language-aware greeting (JSON)
+POST /api/echo                 echo the JSON body back
+GET  /api/products/:id;color=red matrix-parameter route (matches only with ;color=<value>)
+GET  /api/products/:id         plain fallback without matrix params
 GET  /api/report               negotiated JSON view (JSONView)
 GET  /api/report.csv           CSV representation (CSVView)
 POST /auth/login               {"username":"admin","password":"demo"} → opaque session token + session cookie
@@ -34,7 +38,7 @@ GET  /api/config/secrets       (Authorization: Bearer <token>) decrypted binding
 GET  /api/cached-report        60 s cached report (AD-24)
 WS   /stomp/chat?token=<token> STOMP 1.2 chat (@authenticated)
 WS   /ws/chat                  raw socket chat (public contrast)
-GET  /health                   liveness/readiness (management)
+GET  /health                   aggregate component health (management)
 GET  /metrics                  live telemetry counters (management)
 GET  /v3/api-docs              OpenAPI spec (AD-35; Bearer-gated, SEC-4)
 GET  /swagger-ui/              Swagger UI (AD-35; Bearer-gated, SEC-4)

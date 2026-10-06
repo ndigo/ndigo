@@ -323,6 +323,32 @@ describe('StompClient sends and receipts', () => {
         client.disconnect();
     });
 
+    test('two concurrent sends sharing one receipt id reject the second (PR-5 regression)', async () => {
+        const { socket, client } = openClient();
+        let firstResolved = false;
+        const first = client.send('/topic/x', 'a', { receipt: 'reused' }).then(() => {
+            firstResolved = true;
+        });
+        const duplicate = client.send('/topic/y', 'b', { receipt: 'reused' });
+        await expect(duplicate).rejects.toBeInstanceOf(StompProtocolError);
+        await expect(duplicate).rejects.toThrow('duplicate receipt id');
+        expect(firstResolved).toBe(false);
+        // Only the first SEND reached the wire; its receipt still resolves it
+        // (pre-fix the second overwrote the map entry and stranded `first`).
+        await vi.waitFor(() => expect(socket.frames.filter((f) => f.command === 'SEND')).toHaveLength(1));
+        expect(socket.frames.find((f) => f.command === 'SEND')?.body).toBe('a');
+        socket.push('RECEIPT', { 'receipt-id': 'reused' });
+        await first;
+        expect(firstResolved).toBe(true);
+
+        // The id is reusable once its receipt has settled.
+        const third = client.send('/topic/z', 'c', { receipt: 'reused' });
+        await vi.waitFor(() => expect(socket.frames.filter((f) => f.command === 'SEND')).toHaveLength(2));
+        socket.push('RECEIPT', { 'receipt-id': 'reused' });
+        await expect(third).resolves.toBeUndefined();
+        client.disconnect();
+    });
+
     test('JSON-encodes non-string bodies', async () => {
         const { socket, client } = openClient();
         const sent = client.send('/topic/chat', { event: 'chat', data: 1 });

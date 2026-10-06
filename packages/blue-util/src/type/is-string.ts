@@ -11,7 +11,7 @@
  * @example
  * isString( new String( 'hello' ) );
  * //=> true
- * isString( 'hello' } );
+ * isString( 'hello' );
  * //=> true
  * isString( {} );
  * //=> false

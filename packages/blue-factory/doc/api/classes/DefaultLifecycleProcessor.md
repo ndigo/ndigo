@@ -6,6 +6,10 @@
 
 # Class: DefaultLifecycleProcessor
 
+Default [LifecycleProcessor](../interfaces/LifecycleProcessor.md): on refresh starts auto-startup targets
+in ascending phase order; on close stops running targets in descending
+phase order.
+
 ## Implements
 
 - [`LifecycleProcessor`](../interfaces/LifecycleProcessor.md)

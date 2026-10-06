@@ -26,7 +26,7 @@ if (value !== CacheMiss.INSTANCE) {
 await cache.has('greeting'); // false once expired
 await cache.delete('greeting');
 await cache.clear();
-const count = await cache.size(); // live entries; size is a method, not a property
+const count = await cache.size(); // entry count — expiry is lazy, so expired entries may still be counted until swept; size is a method, not a property
 ```
 
 All `Cache` operations are asynchronous, including the in-memory implementation:
@@ -87,7 +87,7 @@ import { ContextToken } from '@blue/context';
 import { cached } from '@blue/cache';
 import type { Cache } from '@blue/cache';
 
-export const CATALOG = new ContextToken<Cache<string, Product>>('catalog');
+export const CATALOG = new ContextToken<Cache<Product>>('catalog');
 
 @cached({ cache: CATALOG, ttl: 60_000 })
 async rankedProducts(): Promise<Product> { … } // await getCache(CATALOG).delete(key) for eviction

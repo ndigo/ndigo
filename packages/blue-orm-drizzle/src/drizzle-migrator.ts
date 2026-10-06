@@ -1,7 +1,8 @@
 /**
  * Versioned schema migrations for Drizzle data sources (AD-30): applies
  * code-composed `Migration[]` in ascending version order, journaled in
- * `_blue_migrations`, each migration inside its own transaction.
+ * `_blue_migrations`, applied outside any explicit transaction (see
+ * {@link Migration.up} for the `batch()` constraint).
  * * @module blue-orm-drizzle
  * @since 1.0.0
  * @author Jeff Rose
@@ -12,11 +13,16 @@ import { DrizzleDataSource } from './drizzle-data-source';
 /**
  * A single versioned schema change. Versions are unique positive integers;
  * the runner applies them in ascending order regardless of input order.
- * `up` runs outside any explicit transaction: SQLite implicitly commits an
- * open transaction when DDL runs, so statements are atomic individually,
- * not as a group. A failing `up` leaves no journal row, so the migration is
- * retried on the next run; author idempotent DDL (`IF NOT EXISTS` style) or
- * restore from backup when a migration fails partway.
+ * `up` runs outside any explicit transaction. SQLite itself supports
+ * transactional DDL, but a migration body may use `ctx.batch(...)`, and
+ * libSQL runs a batch in its own implicit transaction: with an explicit
+ * transaction open, that nested batch fails ("cannot start a transaction
+ * within a transaction") and takes the outer transaction down with it.
+ * Statements are therefore atomic individually — a single `execute`
+ * autocommits, a `batch` is atomic as a group. A failing `up` leaves no
+ * journal row, so the migration is retried on the next run; author
+ * idempotent DDL (`IF NOT EXISTS` style) or restore from backup when a
+ * migration fails partway.
  */
 export interface Migration {
     version: number;
@@ -151,11 +157,14 @@ export class DrizzleMigrator {
 
         await migration.up(context);
 
-        // SQLite implicitly commits an open transaction when a DDL statement
-        // runs, so migration DDL cannot be wrapped atomically — per-statement
-        // atomicity only. The journal insert is therefore standalone
-        // (single-statement autocommit) and lands only after `up` returns: a
-        // failed migration leaves no journal row and is retried.
+        // Migration bodies cannot be wrapped in an explicit transaction: a
+        // body using `ctx.batch(...)` would nest libSQL's implicit batch
+        // transaction and fail ("cannot start a transaction within a
+        // transaction"), which rolls the outer transaction back. Atomicity
+        // is per statement (`execute` autocommit) or per batch. The journal
+        // insert is therefore standalone (single-statement autocommit) and
+        // lands only after `up` returns: a failed migration leaves no
+        // journal row and is retried.
         await this.#dataSource.client.execute(
             `INSERT INTO "${JOURNAL_TABLE}" (version, description, applied_at) VALUES (?, ?, ?)`,
             [migration.version, migration.description, new Date().toISOString()] as InValue[]

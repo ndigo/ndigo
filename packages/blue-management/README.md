@@ -1,8 +1,8 @@
 # @blue/management
 
-> Actuator-style management endpoints for Blue Node apps — `/health` (liveness/readiness) and `/metrics` (live telemetry counters, gauges, and durations).
+> Actuator-style management endpoints for Blue Node apps — `/health` (aggregate component health) and `/metrics` (live telemetry counters, gauges, and durations).
 
-Actuator-style management endpoints for Blue Node applications: `/health` (liveness/readiness) and `/metrics` (live telemetry counters, gauges, and durations). It complements `@blue/telemetry`: telemetry _produces_ metric data (`FeatureMetricAggregator`, `@counted`); management _serves_ it as HTTP.
+Actuator-style management endpoints for Blue Node applications: `/health` (the aggregate component health report) and `/metrics` (live telemetry counters, gauges, and durations). It complements `@blue/telemetry`: telemetry _produces_ metric data (`FeatureMetricAggregator`, `@counted`); management _serves_ it as HTTP.
 
 ## Installation
 
@@ -23,12 +23,14 @@ import { ManagementAutoConfiguration } from '@blue/management';
 const app = new ApplicationBuilder([ManagementAutoConfiguration]).run();
 ```
 
+## Usage
+
 - `GET /health` → `{ status, components, timestamp }`
 - `GET /metrics` → `{ features: { <feature>: { counters, gauges, durations, updatedAt } } }`
 
 > **⚠️ Open by default.** These endpoints carry no authentication: **any caller that can reach the port can read them.** On an untrusted network, pass an _unconditional_ guard to `ManagementAutoConfiguration({ accessGuard })` so every management request is denied before its handler runs — a guard that checks the request itself (a token-presence or token-adapter guard), because the handlers carry no `@authenticated`/`@authorized` metadata and a metadata-driven guard such as `AuthRouteGuard` would always permit them. Also firewall the management routes at the network boundary. Indicator error messages are surfaced in `/health` responses — guard or firewall when they may reveal sensitive subsystem details.
 
-## How it works
+### How it works
 
 - `ManagementAutoConfiguration` registers a shared `FeatureMetricAggregator` entry (the same one `@counted` and feature code populate), a `HealthRegistry` pre-wired with a `TelemetryHealthIndicator`, and the two controllers.
 - When `accessGuard` is configured, a `handlerMappings` entry attaches the guard to the dispatch interceptor chain, scoped to management paths only — `/health` and `/metrics` are denied before their handlers run while every other route is untouched.

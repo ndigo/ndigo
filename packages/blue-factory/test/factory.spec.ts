@@ -102,6 +102,22 @@ describe('DefaultFactory', () => {
         expect(Object.prototype.toString.call(f)).toBe('[object Factory]');
     });
 
+    test('it should return non-constructor values as-is from getInstance (CF-12)', () => {
+        const f = defined(factory);
+
+        const objectValue = { answer: 42 };
+        f.setValue('object', objectValue);
+        expect(f.getInstance('object')).toBe(objectValue);
+
+        f.setValue('number', 7);
+        expect(f.getInstance<number>('number')).toBe(7);
+
+        f.setValue('nothing', null);
+        expect(f.getInstance('nothing')).toBeNull();
+
+        expect(f.getInstance('missing')).toBeUndefined();
+    });
+
     test('it should respect singleton scope metadata in getValue', () => {
         const f = defined(factory);
 

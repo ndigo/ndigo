@@ -23,12 +23,17 @@ export interface OfflineInterceptorConfig {
  * This interceptor monitors the browser's online/offline state and can
  * be used to trigger retry logic or notify the application.
  *
-
+ * The window listeners and heartbeat interval run until
+ * {@link OfflineInterceptor.dispose | dispose()} is called.
  */
 export class OfflineInterceptor implements ResponseAwareHTTPInterceptor {
     #config: OfflineInterceptorConfig;
     #emitter: EventEmitter;
     #isOnline: boolean = navigator.onLine;
+    #heartbeat: ReturnType<typeof setInterval> | undefined;
+    #disposed = false;
+    #onOnline: () => void;
+    #onOffline: () => void;
 
     /**
      * Creates a new offline interceptor.
@@ -39,9 +44,27 @@ export class OfflineInterceptor implements ResponseAwareHTTPInterceptor {
     constructor(config: OfflineInterceptorConfig = {}, emitter: EventEmitter) {
         this.#config = config;
         this.#emitter = emitter;
+        this.#onOnline = () => this.#updateStatus(true);
+        this.#onOffline = () => this.#updateStatus(false);
 
         this.#setupListeners();
         this.#startHeartbeat();
+    }
+
+    /**
+     * Stops the heartbeat and removes the window listeners. Idempotent.
+     */
+    dispose(): void {
+        if (this.#disposed) {
+            return;
+        }
+        this.#disposed = true;
+        if (this.#heartbeat !== undefined) {
+            clearInterval(this.#heartbeat);
+            this.#heartbeat = undefined;
+        }
+        window.removeEventListener('online', this.#onOnline);
+        window.removeEventListener('offline', this.#onOffline);
     }
 
     /**
@@ -63,13 +86,13 @@ export class OfflineInterceptor implements ResponseAwareHTTPInterceptor {
     }
 
     #setupListeners(): void {
-        window.addEventListener('online', () => this.#updateStatus(true));
-        window.addEventListener('offline', () => this.#updateStatus(false));
+        window.addEventListener('online', this.#onOnline);
+        window.addEventListener('offline', this.#onOffline);
     }
 
     #startHeartbeat(): void {
         const interval = this.#config.checkInterval ?? 5000;
-        setInterval(() => {
+        this.#heartbeat = setInterval(() => {
             const currentStatus = navigator.onLine;
             if (currentStatus !== this.#isOnline) {
                 this.#updateStatus(currentStatus);

@@ -16,8 +16,6 @@
     "**/node_modules/**",
     "**/test/**/*.js",
     "apps/blue-todo/index.js",
-    "test/mockServiceWorker.js",
-    "packages/blue-domain/src/constraints.ts",
     "*.config.js",
     "*.config.mjs",
     "*.config.ts"

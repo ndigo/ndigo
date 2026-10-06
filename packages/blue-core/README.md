@@ -25,14 +25,9 @@ const match = tree.lookup('/users/42');
 match?.params; // { id: '42' }
 ```
 
-## API
+## Usage
 
-The full API is generated from JSDoc via `pnpm doc:api` into
-[`doc/api/`](doc/api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../doc/README.md) for
-how it fits with the rest of BlueJS.
-
-## Equality contracts
+### Equality contracts
 
 `equates(a, b)` accepts arbitrary values. Primitives use strict equality;
 two `Equatable` values use the left value's `equals` method, including when
@@ -48,7 +43,7 @@ they provide `equals`. JSON validation remains a separate contract.
 pairs: duplicate multiplicity matters, empty collections are equal, and a
 missing property is distinct from a present property containing `undefined`.
 
-## Matching and comparison contracts
+### Matching and comparison contracts
 
 `PathMatcherFilter` extends `Matchable<string>`, so include/exclude filters can
 be consumed through the generic `matches(path)` contract. Its optional matcher
@@ -74,6 +69,13 @@ semantics.
 construction or lifecycle APIs. `direct` walks descendants and prunes a branch
 when its callback returns `false`; iterative `escalate` walks ancestors and
 stops on `false`. Both exclude the starting node unless `inclusive` is true.
+
+## API
+
+The full API is generated from JSDoc via `pnpm doc:api` into
+[`doc/api/`](doc/api/README.md). Primary exports live in
+[`src/index.ts`](src/index.ts); see the [package index](../../doc/README.md) for
+how it fits with the rest of BlueJS.
 
 ## Development
 

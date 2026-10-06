@@ -20,6 +20,11 @@ This adapter implements the OIDC authorization code flow with PKCE:
 Verification is mandatory: construct with `jwksUrl`, `discovery`,
 or `tokenValidator`. There is no claim-only mode.
 
+Pending authorization requests live in a [PendingAuthorizationStore](../interfaces/PendingAuthorizationStore.md).
+The default store is in-memory and scoped to this adapter instance, so a
+flow that spans a redirect MUST reuse that instance or inject a shared
+store — see [OIDCAdapterConfig.pendingStore](../interfaces/OIDCAdapterConfig.md#pendingstore).
+
 ## Implements
 
 - [`AuthAdapter`](../interfaces/AuthAdapter.md)
@@ -83,7 +88,8 @@ An [AuthResult](../interfaces/AuthResult.md) containing the principal and sessio
 > **createAuthorizationRequest**(): `Promise`\<[`AuthorizationRequest`](../interfaces/AuthorizationRequest.md)\>
 
 Creates an authorization request: generates `state`, PKCE S256
-parameters, and `nonce`, stores the pending request, and returns the
+parameters, and `nonce`, stores the pending request in the configured
+[PendingAuthorizationStore](../interfaces/PendingAuthorizationStore.md), and returns the
 authorization-endpoint URL to redirect the user to.
 
 #### Returns
@@ -96,11 +102,15 @@ authorization-endpoint URL to redirect the user to.
 
 > **exchangeCodeForTokens**(`code`, `state`): `Promise`\<[`AuthResult`](../interfaces/AuthResult.md)\>
 
-Consumes the pending authorization request matching `state` and
-exchanges the authorization code for tokens at the token endpoint.
+Consumes the pending authorization request matching `state` from the
+configured [PendingAuthorizationStore](../interfaces/PendingAuthorizationStore.md) and exchanges the
+authorization code for tokens at the token endpoint.
 
 Fails closed: unknown/expired `state`, malformed responses, and any
-ID-token verification failure throw without mutating auth state.
+ID-token verification failure throw without mutating auth state. With
+the default in-memory store the callback must be handled by the same
+adapter instance that created the request; inject a shared store to
+survive redirects, restarts, or multiple instances.
 
 #### Parameters
 

@@ -15,6 +15,10 @@ Service clients and other hand-constructed objects use this where factory
 processors (`interception(...)`) cannot see them. The instance is
 described under its constructor name.
 
+Function targets are treated as class proxies and advised through their
+`.prototype`. Arrow and bound functions have no prototype surface, so —
+like any target whose methods do not match — they pass through unchanged.
+
 ## Type Parameters
 
 ### T

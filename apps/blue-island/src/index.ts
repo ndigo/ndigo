@@ -8,6 +8,7 @@ import 'node:process';
 import { ApplicationBuilder } from '@blue/boot';
 import { NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@blue/platform-node';
 import { getLogger } from '@blue/telemetry';
+import { getErrorMessage } from '@blue/util';
 import { IslandConfiguration } from './island-configuration';
 import { MESSAGE_SOURCE, MODEL_STORE } from './context-tokens';
 
@@ -46,6 +47,6 @@ async function main() {
 }
 
 main().catch((err) => {
-    logger.error(`failed to start: ${err instanceof Error ? err.message : String(err)}`);
+    logger.error(`failed to start: ${getErrorMessage(err)}`);
     process.exit(1);
 });

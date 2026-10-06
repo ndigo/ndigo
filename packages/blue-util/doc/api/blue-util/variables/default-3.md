@@ -304,7 +304,7 @@ Whether or not `value` is a string.
 ```ts
 isString( new String( 'hello' ) );
 //=> true
-isString( 'hello' } );
+isString( 'hello' );
 //=> true
 isString( {} );
 //=> false
@@ -329,10 +329,6 @@ The date to validate
 `value is Date`
 
 the date is valid
-
-##### Throws
-
-1 argument required
 
 ##### Examples
 

@@ -8,9 +8,13 @@
 
 Node.js cookie argument resolver.
 
+Binds `cookieValue()` (no name → the whole `request.cookies` jar) and
+named cookie values through the shared
+`AbstractCookieValueArgumentResolver` base.
+
 ## Extends
 
-- `AbstractPlatformArgumentResolver`
+- `AbstractCookieValueArgumentResolver`
 
 ## Constructors
 
@@ -18,13 +22,15 @@ Node.js cookie argument resolver.
 
 > **new NodeCookieValueMethodArgumentResolver**(): `NodeCookieValueMethodArgumentResolver`
 
+Creates a cookie-value resolver.
+
 #### Returns
 
 `NodeCookieValueMethodArgumentResolver`
 
-#### Overrides
+#### Inherited from
 
-`AbstractPlatformArgumentResolver.constructor`
+`AbstractCookieValueArgumentResolver.constructor`
 
 ## Accessors
 
@@ -68,7 +74,7 @@ if the argument is undefined or null.
 
 #### Inherited from
 
-`AbstractPlatformArgumentResolver.handleMissingValue`
+`AbstractCookieValueArgumentResolver.handleMissingValue`
 
 ***
 
@@ -105,7 +111,7 @@ extending this base — only the BIND path invoked it.
 
 #### Inherited from
 
-`AbstractPlatformArgumentResolver.resolveArgument`
+`AbstractCookieValueArgumentResolver.resolveArgument`
 
 ***
 
@@ -129,6 +135,6 @@ The method parameter to check.
 
 Whether or not the given method parameter is supported by this resolver.
 
-#### Overrides
+#### Inherited from
 
-`AbstractPlatformArgumentResolver.supportsParameter`
+`AbstractCookieValueArgumentResolver.supportsParameter`

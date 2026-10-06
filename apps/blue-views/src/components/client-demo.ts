@@ -8,13 +8,16 @@ import { CacheInterceptor, HTTP, TraceHeaderInterceptor } from '@blue/http';
 import { memoize } from '@blue/cache';
 import { RetryOnOfflineInterceptor } from '@blue/platform-web';
 import { TagMapping } from '@blue/view-webcomponent';
+import { getErrorMessage } from '@blue/util';
 
 /**
  * The client-side HTTP demo: a self-registering web component that fetches a
  * static asset through the `@blue/http` client with an interceptor chain —
  * an auth-style request stamp, the in-memory cache, and the offline-queueing
- * retry interceptor. A refresh button re-requests the same URL: the second
- * hit is served from the cache (network fetch count stays at one).
+ * retry interceptor. A refresh button re-requests the same URL; because the
+ * request carries credentials, the HTTP cache bypasses it by design
+ * (cross-user cache hits are a security bug) and the refresh reaches the
+ * network again.
  *
  * Resolved like the shell: `@TagMapping` metadata + eager registry entry
  * (`clientDemo` → this class) in ViewsAppConfiguration.
@@ -109,7 +112,7 @@ export class ClientDemoComponent extends HTMLElement {
         void this.#load();
     }
 
-    /** Re-requests the endpoint; the cache serves the repeat hit. */
+    /** Re-requests the endpoint (credentialed requests bypass the HTTP cache by design). */
     async #load(): Promise<void> {
         this.#count += 1;
         // The journey root on the browser side: the trace header injected
@@ -132,7 +135,7 @@ export class ClientDemoComponent extends HTMLElement {
             this.#status = 'online';
         } catch (error) {
             if (!(error instanceof Error) || error.name !== 'AbortError') {
-                this.#status = `offline or error: ${error instanceof Error ? error.message : String(error)}`;
+                this.#status = `offline or error: ${getErrorMessage(error)}`;
             }
         } finally {
             this.#activeSpan = null;

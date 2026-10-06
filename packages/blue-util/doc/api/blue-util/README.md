@@ -16,6 +16,7 @@ Jeff Rose
 
 ## Crypto
 
+- [randomHex](functions/randomHex.md)
 - [randomToken](functions/randomToken.md)
 
 ## Other

@@ -43,43 +43,44 @@ Browser (untrusted) ──HTTPS──▶ TLS-terminating proxy ──▶ Node se
   deferred — documented, not assumed.
 - **Node server**: every response carries the security-header set by
   default (CSP with `connect-src 'self'`, HSTS, frame/referrer/sniffing
-  controls — `security-headers-interceptor.ts`, AD-25 D1). The `'self'`
+  controls — `security-headers-interceptor.ts`, AD-25 D-3). The `'self'`
   default covers same-origin WebSocket streams under CSP3; a socket server
   on a different host widens `connect-src` to `wss://<host>` explicitly —
   never bare `ws:`/`wss:`, which admit connections to any origin (SEC-4,
-  supersedes the permissive AD-25 D1 default).
+  supersedes the permissive AD-25 D-3 default).
 - **Backends** (LibSQL files, Redis): trusted-network + ACL/TLS protected;
   Redis namespaces are isolation, never authorization.
 
 ## The defense layers
 
-| Layer               | Mechanism                                                                                                       | Where                                                                    | Decision     |
-| ------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------ |
-| Transport hardening | Security headers default-on; `X-Powered-By` removed                                                             | `security-headers-interceptor.ts`, `NodeAutoConfiguration`               | AD-25        |
-| Client identity     | `TrustedProxySet` CIDR allowlist; rightmost-first XFF walk; `NodeRequest.remoteAddress`                         | `trusted-proxy.ts`, `node-request.ts`                                    | AD-37        |
-| Abuse throttling    | Fixed-window `@rateLimit`, 429 + `Retry-After`, keyed on real client IP                                         | `rate-limit-interceptor.ts`                                              | AD-33        |
-| Request forgery     | CSRF interceptor (state-changing requests); CORS interceptor                                                    | `csrf-interceptor.ts`, `cors-interceptor.ts`                             | AD-33 wave   |
-| Session theft       | HttpOnly cookie sessions, fixation rotation (atomic, expiry-preserving), live-session cap, durable LibSQL store | `session-cookie.ts`, `session-store.ts`, `libsql-session-store.ts`       | AD-33, AD-40 |
-| Authentication      | Credentials (scrypt, constant-ish time) + OIDC authorization-code + PKCE + nonce, fail-closed `validateAny`     | `credentials-auth-adapter.ts`, `oidc-adapter.ts`, `password-encoders.ts` | AD-56, AD-33 |
-| Authorization       | `@authenticated`/`@authorized`, `AuthRouteGuard` 401/403, socket-auth 1008 close                                | `route-guard`, `node-http-server-adapter.ts`                             | AD-33        |
-| Token service       | JWT with explicit scheme selection                                                                              | `jwt-adapter.ts`                                                         | AD-56        |
-| Input validation    | Zod schemas (route params, bodies, entity-derived `insertSchemaForEntity`); malformed never persists            | `zod-validated-by.ts`, `entity-schema.ts`                                | AD-07        |
-| Error disclosure    | RFC 9457 `application/problem+json`, `urn:blue:*` placeholders, no HTML/reflection on 404/405                   | `problem-details.ts`, `last-resort-error-resolver.ts`                    | AD-10        |
-| Secrets             | At-rest `{cipher:...}` AES-256-GCM with key-path AAD, `BLUE_SECRET_KEY`, capability-gated wiring                | `aes-gcm-cipher.ts`                                                      | AD-29        |
+| Layer               | Mechanism                                                                                                       | Where                                                                          | Decision     |
+| ------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------ |
+| Transport hardening | Security headers default-on; `X-Powered-By` removed                                                             | `security-headers-interceptor.ts`, `NodeAutoConfiguration`                     | AD-25        |
+| Client identity     | `TrustedProxySet` CIDR allowlist; rightmost-first XFF walk; `NodeRequest.remoteAddress`                         | `trusted-proxy.ts`, `node-request.ts`                                          | AD-37        |
+| Abuse throttling    | Fixed-window `@rateLimit`, 429 + `Retry-After`, keyed on real client IP                                         | `rate-limit-interceptor.ts`                                                    | AD-33        |
+| Request forgery     | CSRF interceptor (state-changing requests); CORS interceptor                                                    | `csrf-interceptor.ts`, `cors-interceptor.ts`                                   | AD-33 wave   |
+| Session theft       | HttpOnly cookie sessions, fixation rotation (atomic, expiry-preserving), live-session cap, durable LibSQL store | `session-cookie.ts`, `session-store.ts`, `libsql-session-store.ts`             | AD-33, AD-40 |
+| Authentication      | Credentials (scrypt, constant-ish time) + OIDC authorization-code + PKCE + nonce, fail-closed `validateAny`     | `credentials-auth-adapter.ts`, `oidc-adapter.ts`, `scrypt-password-encoder.ts` | AD-56, AD-33 |
+| Authorization       | `@authenticated`/`@authorized`, `AuthRouteGuard` 401/403, socket-auth 1008 close                                | `route-guard`, `node-http-server-adapter.ts`                                   | AD-33        |
+| Token service       | JWT with explicit scheme selection                                                                              | `jwt-adapter.ts`                                                               | AD-56        |
+| Input validation    | Zod schemas (route params, bodies, entity-derived `insertSchemaForEntity`); malformed never persists            | `zod-validated-by.ts`, `entity-schema.ts`                                      | AD-07        |
+| Error disclosure    | RFC 9457 `application/problem+json`, `urn:blue:*` placeholders, no HTML/reflection on 404/405                   | `problem-details.ts`, `last-resort-error-resolver.ts`                          | AD-10        |
+| Secrets             | At-rest `{cipher:...}` AES-256-GCM with key-path AAD, `BLUE_SECRET_KEY`, capability-gated wiring                | `aes-gcm-cipher.ts`                                                            | AD-29        |
 
 ## Key tensions (resolved)
 
 - **Default-on vs. app surprise.** Headers and rate limiting are
-  default-on because both are safe to enable (permissive-by-default CSP
-  `connect-src` is the documented exception; per-header escapes exist,
-  `unsafe-inline` is never the default).
+  default-on because both are safe to enable (the original permissive CSP
+  `connect-src` default was hardened to `'self'` by SEC-4; a cross-host
+  socket server widens it explicitly to `wss://<host>`, and `unsafe-inline`
+  is never the default).
 - **Trusted proxies vs. spoofing.** Client-IP trust is all-or-nothing per
   peer: either the peer is allowlisted (its XFF can name a client) or it
   is not (its XFF is ignored). No middle ground, no heuristics.
 - **CSP strictness vs. framework WebSockets.** `connect-src` defaults to
   `'self'` (SEC-4): same-origin socket upgrades are covered; a cross-host
   socket server widens explicitly to `wss://<host>` — bare `ws:`/`wss:`
-  are never admissions (supersedes AD-25 D1's permissive default).
+  are never admissions (supersedes AD-25 D-3's permissive default).
 - **Problem-type URIs.** `urn:blue:*` is a self-contained placeholder;
   real HTTPS URIs before first public release (AD-10).
 

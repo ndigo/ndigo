@@ -27,8 +27,10 @@ export class RedisConnection {
     #closing: Promise<void> | undefined;
     #closed = false;
     #lastError: Error | undefined;
+    #lastErrorAt: number | undefined;
     readonly #observeError = (error: Error): void => {
         this.#lastError = error;
+        this.#lastErrorAt = Date.now();
     };
 
     constructor(options: RedisConnectionOptions) {
@@ -75,6 +77,11 @@ export class RedisConnection {
     /** Most recent socket error; retained without logging secrets. */
     get lastError(): Error | undefined {
         return this.#lastError;
+    }
+
+    /** `Date.now()` of the most recent observed error; `undefined` before any. */
+    get lastErrorAt(): number | undefined {
+        return this.#lastErrorAt;
     }
 
     /** Idempotent explicit connection; failed startup remains a rejected promise. */

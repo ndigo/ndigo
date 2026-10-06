@@ -153,6 +153,17 @@ describe('serviceClient', () => {
 
         expect(() => serviceClient(NotAService, http)).toThrow('not @service-decorated');
     });
+
+    test('delegates Object.prototype members instead of treating them as call configs', () => {
+        const client = serviceClient(AccountsAPI, http);
+
+        // `calls` inherits from Object.prototype: without an own-property
+        // check the proxy resolved `toString`/`hasOwnProperty` as generated
+        // calls and threw on the missing call config.
+        expect(() => String(client)).not.toThrow();
+        expect(typeof client.toString()).toBe('string');
+        expect(client.hasOwnProperty('toString')).toBe(false);
+    });
 });
 
 @service('ticker', { baseUrl: 'https://api.example.com' })
@@ -174,6 +185,7 @@ describe('serviceClient stream calls (AD-09)', () => {
         name: string;
         kind: number;
         attributes: Record<string, unknown>;
+        status: { code: number };
     };
     /** InMemorySpanExporter shared by the span-asserting tests. */
     let streamExporter: { reset(): void; getFinishedSpans(): FinishedSpan[] } | undefined;
@@ -263,6 +275,24 @@ describe('serviceClient stream calls (AD-09)', () => {
         const client = serviceClient(TickerAPI, http);
 
         await expect(collect(client.ticks())).rejects.toThrow('stream request failed');
+    });
+
+    test('ends the streamCall span with ERROR when the stream request fails', async () => {
+        requireExporter().reset();
+        fetchMock.mockResolvedValue(new Response('nope', { status: 500 }));
+        const client = serviceClient(TickerAPI, http);
+
+        await expect(collect(client.ticks())).rejects.toThrow('stream request failed');
+
+        const { promise, resolve } = Promise.withResolvers<void>();
+        setTimeout(resolve, 50);
+        await promise;
+        const spans = requireExporter()
+            .getFinishedSpans()
+            .filter((s) => s.name === 'ServiceClient.streamCall');
+        expect(spans).toHaveLength(1);
+        expect(spans[0].status.code).toBe(2 /* SpanStatusCode.ERROR */);
+        expect(spans[0].attributes['stream.events']).toBe(0);
     });
 
     test('emits a ServiceClient.streamCall CLIENT span with event count', async () => {

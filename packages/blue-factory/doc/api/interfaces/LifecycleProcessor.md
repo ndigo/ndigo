@@ -6,6 +6,8 @@
 
 # Interface: LifecycleProcessor
 
+Drives registered [SmartLifecycle](SmartLifecycle.md) targets on context refresh and close.
+
 ## Extends
 
 - [`Lifecycle`](Lifecycle.md)

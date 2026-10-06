@@ -8,9 +8,10 @@
 
 A pending authorization-code request created by [OIDCAdapter.createAuthorizationRequest](../classes/OIDCAdapter.md#createauthorizationrequest).
 
-Persist `state` (and re-read it on callback) so the adapter can bind the
-authorization response to this request; `codeVerifier` and `nonce` are
-consumed internally.
+`state` is the callback correlation value; re-read it from the
+authorization response. The nonce and PKCE verifier live in the adapter's
+configured [OIDCAdapterConfig.pendingStore](OIDCAdapterConfig.md#pendingstore) — see that option for
+surviving the redirect across adapter instances.
 
 ## Properties
 

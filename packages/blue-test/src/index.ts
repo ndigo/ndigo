@@ -1,6 +1,6 @@
 /**
  * Blue integration test harness — MockHTTP-style in-process dispatch.
- * * @module blue-test
+ * @module blue-test
  * @since 1.0.0
  * @author Jeff Rose
  */

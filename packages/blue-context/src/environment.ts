@@ -145,16 +145,7 @@ export interface ConfigurableEnvironment extends Environment, EventEmitter {
  */
 
 /**
- */
-
-/**
  * @param {module:context.Environment} environment The {@link Environment|Environment} to be set.
- */
-
-/**
- */
-
-/**
  */
 
 const { defineProperty } = Reflect;

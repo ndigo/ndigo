@@ -39,7 +39,6 @@ The result of `b % a`.
 ## Example
 
 ```ts
-import { __, modulo } from '@blue/util';
 modulo( 17, 3 );
 //=> 2
 // JS behavior:
@@ -47,10 +46,4 @@ modulo( -17, 3 );
 //=> -2
 modulo( 17, -3 );
 //=> 2
-
-const isOdd = modulo( __, 2 );
-isOdd( 42 );
-//=> 0
-isOdd( 21 );
-//=> 1
 ```

@@ -24,6 +24,11 @@ The service-wide defaults.
 
 A configured formatting service.
 
+## Throws
+
+When a formatter is created without a locale
+from either the service defaults or the per-formatter options.
+
 ## Example
 
 ```ts

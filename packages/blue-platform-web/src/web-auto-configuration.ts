@@ -4,13 +4,9 @@
  * @author Jeff Rose
  */
 import { configuration, entry } from '@blue/context';
-import { argumentValueConverters } from '@blue/dispatcher';
-import { BrowserDataBindingMethodArgumentResolver } from './data-binding-argument-resolver';
-import { BrowserCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
+import { argumentValueConverters, RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { CookieLanguageResolver } from './cookie-language-resolver';
-import { BrowserHistoryStateValueMethodArgumentResolver } from './history-state-argument-resolver';
-import { BrowserStorageValueMethodArgumentResolver } from './browser-storage-argument-resolver';
-import { RadixMetadataHandlerMapping, MethodParameterType } from '@blue/dispatcher';
+import { createBrowserArgumentResolvers } from './configure-argument-resolvers';
 import { NameViewResolver, ViewResolverComposite } from '@blue/view';
 import { WebComponentViewResolver } from '@blue/view-webcomponent';
 import { whenBrowser } from '@blue/core';
@@ -39,21 +35,7 @@ export class WebAutoConfiguration {
      */
     @entry()
     argumentResolvers() {
-        return [
-            new BrowserDataBindingMethodArgumentResolver(),
-            new BrowserCookieValueMethodArgumentResolver(),
-            new BrowserHistoryStateValueMethodArgumentResolver(),
-            new BrowserStorageValueMethodArgumentResolver(
-                () => globalThis.sessionStorage,
-                MethodParameterType.SESSION_STORAGE,
-                'BrowserSessionStorageValueMethodArgumentResolver'
-            ),
-            new BrowserStorageValueMethodArgumentResolver(
-                () => globalThis.localStorage,
-                MethodParameterType.LOCAL_STORAGE,
-                'BrowserLocalStorageValueMethodArgumentResolver'
-            ),
-        ];
+        return createBrowserArgumentResolvers();
     }
 
     /**

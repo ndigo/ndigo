@@ -6,6 +6,8 @@
 
 # Interface: Closeable
 
+A value that can be closed to release its resources.
+
 ## Extended by
 
 - [`AsyncCloseable`](AsyncCloseable.md)

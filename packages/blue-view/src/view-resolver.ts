@@ -22,9 +22,13 @@ export interface ViewResolver {
      *
      * @param name - The view name to resolve.
      * @param language - Optional locale or language hint used during resolution.
+     * @param request - Optional per-call request (typically the route) carrying
+     *   request-scoped data such as the `Accept` header or path extension.
+     *   Threaded explicitly by the dispatcher so negotiation never relies on
+     *   shared process state; resolvers that do not negotiate ignore it.
      * @returns A promise that resolves to the matching view, or `null` when none is available.
      */
-    resolveViewName(name: string, language?: unknown): Promise<View | null>;
+    resolveViewName(name: string, language?: unknown, request?: unknown): Promise<View | null>;
 }
 
 class UnresolvedView implements View {
@@ -274,16 +278,18 @@ export class ViewResolverComposite extends AsApplicationContextAware(Null) imple
      *
      * @param name - The view name to resolve.
      * @param language - Optional locale or language hint.
+     * @param request - Optional per-call request forwarded to delegates that
+     *   negotiate by request data.
      * @returns A promise that resolves to the first matching view, or `null` when none resolve.
      */
-    async resolveViewName(name: string, language?: unknown): Promise<View | null> {
+    async resolveViewName(name: string, language?: unknown, request?: unknown): Promise<View | null> {
         const { viewResolvers } = this;
         const length = viewResolvers.length;
         if (length) {
             for (let index = 0; index < length; index++) {
                 const viewResolver = viewResolvers[index],
                     // oxlint-disable-next-line no-await-in-loop -- delegates resolve in priority order with first-match-wins; parallelizing would run every delegate and change which view is returned.
-                    view = await viewResolver.resolveViewName(name, language);
+                    view = await viewResolver.resolveViewName(name, language, request);
                 if (view) {
                     return view;
                 }

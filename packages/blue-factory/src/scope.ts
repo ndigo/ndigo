@@ -9,15 +9,33 @@ import { getLogger } from '@blue/log';
 
 const logger = getLogger('blue-factory:scope');
 
+/**
+ * Scope names shipped by the factory.
+ */
 export type KnownScope = 'singleton' | 'prototype' | 'route' | 'hash' | 'refresh';
+
+/**
+ * Any scope name: a {@link KnownScope} or a custom registered scope.
+ */
 export type PossibleScope = KnownScope | string;
+
+/**
+ * Lazy factory callback invoked by a scope when it needs to create a value.
+ */
 export type ObjectFactory<T = unknown> = () => T;
 
+/**
+ * A caching strategy: resolves named values through the supplied object
+ * factory and can destroy cached values.
+ */
 export interface Scope {
     destroyValue(name: string): void;
     getValue<T = unknown>(name: string, objectFactory: ObjectFactory<T>): T;
 }
 
+/**
+ * A factory that exposes named {@link Scope} strategies and destroys scoped values.
+ */
 export interface ScopedFactory {
     destroyScopedValue(scopeName: string, valueName: string): void;
     getScope(name: string): Scope;

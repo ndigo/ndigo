@@ -1,6 +1,6 @@
 /**
  * Shared dependency registry for the application context hierarchy.
- * * @module blue-context
+ * @module blue-context
  * @since 1.0.0
  * @author Jeff Rose
  */

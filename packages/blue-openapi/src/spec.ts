@@ -103,6 +103,15 @@ export interface OpenAPIDocument {
     };
     servers?: Array<{ url: string }>;
     paths: Record<string, OpenAPIPathItem>;
+    /**
+     * Component schemas hoisted out of the operations: recursive DTOs (and
+     * schemas registered with an `id`) convert to schemas whose `$ref`
+     * pointers are document-root-relative, so they cannot embed inline.
+     * Present only when at least one schema was hoisted.
+     */
+    components?: {
+        schemas: Record<string, OpenAPISchemaObject>;
+    };
 }
 
 /**
@@ -181,6 +190,160 @@ function translatePath(pattern: string): string | null {
 }
 
 /**
+ * True for a `$ref` value that resolves against the converted schema's own
+ * document root — the shape zod emits for recursive schemas (`'#'`, the
+ * document root) and for schemas carrying a registered `id`
+ * (`'#/definitions/<id>'`, a root-level bundle).
+ */
+function isRootRelativeRef(value: unknown): value is string {
+    return typeof value === 'string' && value.startsWith('#');
+}
+
+/** Does the converted schema carry any root-relative `$ref` — i.e. need hoisting? */
+function containsRootRelativeRef(node: unknown): boolean {
+    if (Array.isArray(node)) return node.some(containsRootRelativeRef);
+    if (node === null || typeof node !== 'object') return false;
+    const record = node as Record<string, unknown>;
+    if (isRootRelativeRef(record['$ref'])) return true;
+    return Object.values(record).some(containsRootRelativeRef);
+}
+
+/** Collects zod's `definitions`/`$defs` bundles as component candidates, in order. */
+function schemaDefinitionsOf(schema: OpenAPISchemaObject): Map<string, OpenAPISchemaObject> {
+    const definitions = new Map<string, OpenAPISchemaObject>();
+    for (const key of ['definitions', '$defs'] as const) {
+        const bundle = schema[key];
+        if (bundle === null || typeof bundle !== 'object' || Array.isArray(bundle)) continue;
+        for (const [id, definition] of Object.entries(bundle as Record<string, OpenAPISchemaObject>)) {
+            definitions.set(id, definition);
+        }
+    }
+    return definitions;
+}
+
+/** The definition id of a root-relative `#/definitions/<id>` pointer, when it is one. */
+function definitionIdOf(ref: string): string | undefined {
+    const match = /^#\/(?:definitions|\$defs)\/(.+)$/.exec(ref);
+    return match === null ? undefined : match[1];
+}
+
+/** A component-key-safe name derived from a usage hint or a schema `id`. */
+function componentKeyOf(hint: string): string {
+    const key = hint.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    return key === '' ? 'Schema' : key;
+}
+
+/**
+ * Hoists schemas whose `$ref` pointers are document-root-relative into
+ * `components.schemas`, rewriting the pointers to absolute component
+ * locations. Embedded inline under `paths`, those pointers resolve against
+ * the whole document — `$ref: '#'` even targets the root document object —
+ * which no longer denotes the schema (zod's conversion is only valid for a
+ * standalone document).
+ *
+ * One instance per {@link OpenAPISpecGenerator.generate} call: a schema that
+ * converts to the same JSON is hoisted once and reused by pointer, and
+ * component names are allocated deterministically from the usage site
+ * (operation id) or the registered `id`.
+ */
+class SchemaComponents {
+    readonly #schemas: Record<string, OpenAPISchemaObject> = {};
+    readonly #byRef: Map<string, string> = new Map();
+    readonly #names: Set<string> = new Set();
+
+    /** Hoisted components, keyed by component name. */
+    get schemas(): Record<string, OpenAPISchemaObject> {
+        return this.#schemas;
+    }
+
+    /** Number of hoisted components. */
+    get size(): number {
+        return Object.keys(this.#schemas).length;
+    }
+
+    /**
+     * Embed a schema at a usage site: returned as converted when it is
+     * self-contained, otherwise hoisted and returned as a `$ref` to its
+     * component.
+     *
+     * @param schema - The zod schema to convert.
+     * @param hint - Deterministic component-name hint for the usage site.
+     * @returns The schema to embed.
+     */
+    embed(schema: z.ZodType<unknown>, hint: string): OpenAPISchemaObject {
+        const converted = jsonSchemaOf(schema);
+        if (!containsRootRelativeRef(converted)) return converted;
+        return this.#hoist(converted, hint);
+    }
+
+    #hoist(converted: OpenAPISchemaObject, hint: string): OpenAPISchemaObject {
+        const shape = JSON.stringify(converted);
+        const known = this.#byRef.get(shape);
+        if (known !== undefined) return { $ref: known };
+
+        const definitions = schemaDefinitionsOf(converted);
+        const definitionNames = new Map<string, string>();
+        for (const id of definitions.keys()) definitionNames.set(id, this.#allocate(id));
+
+        // A root that is nothing but a pointer into its own definition bundle
+        // (zod's `id` shape) already has a component: the promoted definition.
+        const rest = { ...converted };
+        delete rest['definitions'];
+        delete rest['$defs'];
+        const bareRefId =
+            Object.keys(rest).length === 1 && isRootRelativeRef(rest['$ref'])
+                ? definitionIdOf(rest['$ref'])
+                : undefined;
+        const promotedName = bareRefId === undefined ? undefined : definitionNames.get(bareRefId);
+        let rootName: string | undefined;
+        let embeddedRef: string;
+        if (promotedName !== undefined) {
+            embeddedRef = `#/components/schemas/${promotedName}`;
+        } else {
+            rootName = this.#allocate(hint);
+            embeddedRef = `#/components/schemas/${rootName}`;
+        }
+
+        const pointerOf = (ref: string): string => {
+            if (ref === '#') {
+                // A definition referencing the whole schema needs a root
+                // component even when the root itself is a bare pointer.
+                rootName ??= this.#allocate(hint);
+                return `#/components/schemas/${rootName}`;
+            }
+            const id = definitionIdOf(ref);
+            const name = id === undefined ? undefined : definitionNames.get(id);
+            return name === undefined ? ref : `#/components/schemas/${name}`;
+        };
+        const rewrite = (node: unknown): unknown => {
+            if (Array.isArray(node)) return node.map(rewrite);
+            if (node === null || typeof node !== 'object') return node;
+            const copy: Record<string, unknown> = {};
+            for (const [key, value] of Object.entries(node)) {
+                copy[key] = key === '$ref' && isRootRelativeRef(value) ? pointerOf(value) : rewrite(value);
+            }
+            return copy;
+        };
+
+        for (const [id, definition] of definitions) {
+            const name = definitionNames.get(id);
+            if (name !== undefined) this.#schemas[name] = rewrite(definition) as OpenAPISchemaObject;
+        }
+        if (rootName !== undefined) this.#schemas[rootName] = rewrite(rest) as OpenAPISchemaObject;
+        this.#byRef.set(shape, embeddedRef);
+        return { $ref: embeddedRef };
+    }
+
+    #allocate(hint: string): string {
+        const base = componentKeyOf(hint);
+        let name = base;
+        for (let suffix = 2; this.#names.has(name); suffix++) name = `${base}-${suffix}`;
+        this.#names.add(name);
+        return name;
+    }
+}
+
+/**
  * Builds OpenAPI documents from the framework's route tables.
  *
  * Thread-safe and pure: `generate` reads dispatch metadata and returns a
@@ -198,6 +361,7 @@ export class OpenAPISpecGenerator {
     generate(mappings: readonly RouteMappingTable[], options: OpenAPIGeneratorOptions = {}): OpenAPIDocument {
         const paths: Record<string, OpenAPIPathItem> = {};
         const seen = new Set<string>();
+        const components = new SchemaComponents();
 
         for (const mapping of mappings) {
             for (const [info, handlerMethod] of mapping.getHandlerMethods()) {
@@ -222,7 +386,8 @@ export class OpenAPISpecGenerator {
                         handlerMethod,
                         httpMethod,
                         path,
-                        docs
+                        docs,
+                        components
                     );
                 }
             }
@@ -240,6 +405,7 @@ export class OpenAPISpecGenerator {
         if (options.servers !== undefined && options.servers.length > 0) {
             document.servers = options.servers.map((url) => ({ url }));
         }
+        if (components.size > 0) document.components = { schemas: components.schemas };
         return document;
     }
 
@@ -248,7 +414,8 @@ export class OpenAPISpecGenerator {
         handlerMethod: RouteHandlerMethod,
         method: HTTPMethod,
         path: string,
-        docs: APIDocsMetadata | undefined
+        docs: APIDocsMetadata | undefined,
+        components: SchemaComponents
     ): OpenAPIOperation {
         const operation: OpenAPIOperation = {
             responses: { '200': { description: 'OK' } },
@@ -260,17 +427,20 @@ export class OpenAPISpecGenerator {
             if (docs.tags !== undefined && docs.tags.length > 0) operation.tags = docs.tags;
             if (docs.deprecated !== undefined) operation.deprecated = docs.deprecated;
         }
+        if (operation.operationId === undefined) operation.operationId = `${method.toLowerCase()}-${path}`;
+        const operationId = operation.operationId;
         if (docs?.responses !== undefined) {
             for (const [status, entry] of Object.entries(docs.responses)) {
                 const { description, schema } = responseDocsOf(entry);
                 const response: OpenAPIResponse = { description };
                 if (schema !== undefined) {
-                    response.content = { 'application/json': { schema: jsonSchemaOf(schema) } };
+                    response.content = {
+                        'application/json': { schema: components.embed(schema, `${operationId}-${status}`) },
+                    };
                 }
                 operation.responses[status] = response;
             }
         }
-        if (operation.operationId === undefined) operation.operationId = `${method.toLowerCase()}-${path}`;
 
         // Framework conditions the OpenAPI model cannot express are carried
         // as x-blue extensions instead of silently dropped (AD-35 D-2).
@@ -283,13 +453,17 @@ export class OpenAPISpecGenerator {
         for (const parameter of handlerMethod.parameters) {
             const location = this.#locationOf(parameter);
             if (location !== null) {
-                parameters.push(this.#parameterOf(parameter, location));
+                parameters.push(this.#parameterOf(parameter, location, components, operationId));
                 continue;
             }
             if (MethodParameterType.BODY.equals(parameter.type)) {
                 operation.requestBody = {
                     required: parameter.required,
-                    content: { 'application/json': { schema: this.#schemaOf(parameter) } },
+                    content: {
+                        'application/json': {
+                            schema: this.#schemaOf(parameter, components, `${operationId}-body`),
+                        },
+                    },
                 };
                 continue;
             }
@@ -297,9 +471,22 @@ export class OpenAPISpecGenerator {
                 MethodParameterType.MULTIPART_FILE.equals(parameter.type) ||
                 MethodParameterType.REQUEST_PART.equals(parameter.type)
             ) {
-                this.#addMultipartPart(operation, parameter);
+                this.#addMultipartPart(operation, parameter, components, operationId);
             }
         }
+
+        // OpenAPI 3.0 requires every path template variable to be declared as
+        // a `path` parameter; a route need not extract every variable the
+        // router matches on (`/files/:id/download` with no `pathVariable`).
+        const pathNames = new Set(
+            parameters.filter((parameter) => parameter.in === 'path').map((parameter) => parameter.name)
+        );
+        for (const match of path.matchAll(/\{([^{}]+)\}/g)) {
+            if (pathNames.has(match[1])) continue;
+            pathNames.add(match[1]);
+            parameters.push({ name: match[1], in: 'path', required: true, schema: { type: 'string' } });
+        }
+
         if (parameters.length > 0) operation.parameters = parameters;
         return operation;
     }
@@ -316,17 +503,23 @@ export class OpenAPISpecGenerator {
         return null;
     }
 
-    #parameterOf(parameter: MethodParameter, location: OpenAPIParameter['in']): OpenAPIParameter {
+    #parameterOf(
+        parameter: MethodParameter,
+        location: OpenAPIParameter['in'],
+        components: SchemaComponents,
+        operationId: string
+    ): OpenAPIParameter {
+        const name = parameter.name === '' ? parameter.parameterName : parameter.name;
         return {
-            name: parameter.name === '' ? parameter.parameterName : parameter.name,
+            name,
             in: location,
             required: location === 'path' ? true : parameter.required,
-            schema: this.#schemaOf(parameter),
+            schema: this.#schemaOf(parameter, components, `${operationId}-${location}-${name}`),
         };
     }
 
-    #schemaOf(parameter: MethodParameter): OpenAPISchemaObject {
-        if (parameter.schema !== undefined) return jsonSchemaOf(parameter.schema);
+    #schemaOf(parameter: MethodParameter, components: SchemaComponents, hint: string): OpenAPISchemaObject {
+        if (parameter.schema !== undefined) return components.embed(parameter.schema, hint);
         const schema = typeSchemaOf(parameter);
         if (parameter.defaultValue !== null && schema.default === undefined) {
             schema.default = parameter.defaultValue;
@@ -334,7 +527,12 @@ export class OpenAPISpecGenerator {
         return schema;
     }
 
-    #addMultipartPart(operation: OpenAPIOperation, parameter: MethodParameter): void {
+    #addMultipartPart(
+        operation: OpenAPIOperation,
+        parameter: MethodParameter,
+        components: SchemaComponents,
+        operationId: string
+    ): void {
         const body = (operation.requestBody ??= { required: parameter.required, content: {} });
         body.required ||= parameter.required;
         const media = (body.content['multipart/form-data'] ??= { schema: { type: 'object', properties: {} } });
@@ -342,7 +540,7 @@ export class OpenAPISpecGenerator {
         const properties = ((schema.properties as Record<string, OpenAPISchemaObject>) ??= {});
         properties[parameter.name] = MethodParameterType.MULTIPART_FILE.equals(parameter.type)
             ? { type: 'string', format: 'binary' }
-            : this.#schemaOf(parameter);
+            : this.#schemaOf(parameter, components, `${operationId}-part-${parameter.name}`);
         if (parameter.required) {
             const required = ((schema.required as string[] | undefined) ??= []);
             required.push(parameter.name);

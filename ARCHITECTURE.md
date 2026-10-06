@@ -1753,13 +1753,13 @@ Guides: [`docs/guides/`](docs/guides/README.md).
 
 ## Roadmap
 
-### Current Status (2026-10-05)
+### Current Status (2026-10-06)
 
 - **The 10-wave program shipped.** Foundation (`@blue/util`, `@blue/core`,
   `@blue/signals`), IoC/context, the web stack (`@blue/http`,
   `@blue/router`, `@blue/dispatcher`), observability, and the
   view/application layers are complete; the 1.0 checkpoint (Wave 10) is
-  reached and decision records run AD-01..AD-65.
+  reached and decision records run AD-01..AD-67.
 - **Auth shipped** (AD-33, AD-56): credentials + session stores (memory
   and durable LibSQL), OIDC authorization-code + PKCE, JWTs, role guards,
   rate limiting, trusted-proxy client-IP resolution.

@@ -24,6 +24,101 @@
 
 ## Methods
 
+### count()
+
+> **count**\<`T`\>(`entityClass`): `Promise`\<`number`\>
+
+Returns the number of rows of an entity type, counted in SQL (DA-7)
+instead of materializing every row.
+
+#### Type Parameters
+
+##### T
+
+`T` *extends* `object`
+
+#### Parameters
+
+##### entityClass
+
+`Constructable`\<`T`\>
+
+The entity class to count.
+
+#### Returns
+
+`Promise`\<`number`\>
+
+***
+
+### deleteById()
+
+> **deleteById**\<`T`\>(`entityClass`, `id`): `Promise`\<`boolean`\>
+
+Deletes a row by primary identifier in a single `DELETE` statement,
+reporting whether a row matched.
+
+#### Type Parameters
+
+##### T
+
+`T` *extends* `object`
+
+#### Parameters
+
+##### entityClass
+
+`Constructable`\<`T`\>
+
+The entity class to delete from.
+
+##### id
+
+`unknown`
+
+The primary identifier value.
+
+#### Returns
+
+`Promise`\<`boolean`\>
+
+`true` when a row was deleted, `false` otherwise.
+
+***
+
+### existsById()
+
+> **existsById**\<`T`\>(`entityClass`, `id`): `Promise`\<`boolean`\>
+
+Checks whether a row with the given primary identifier exists using an
+SQL probe (`SELECT 1 … LIMIT 1`) rather than loading the entity.
+
+#### Type Parameters
+
+##### T
+
+`T` *extends* `object`
+
+#### Parameters
+
+##### entityClass
+
+`Constructable`\<`T`\>
+
+The entity class to probe.
+
+##### id
+
+`unknown`
+
+The primary identifier value.
+
+#### Returns
+
+`Promise`\<`boolean`\>
+
+***
+
 ### fetchRelation()
 
 > **fetchRelation**(`entity`, `relationName`): `Promise`\<`unknown`\>

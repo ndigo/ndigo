@@ -11,6 +11,9 @@ HTTP interceptor that detects browser offline status.
 This interceptor monitors the browser's online/offline state and can
 be used to trigger retry logic or notify the application.
 
+The window listeners and heartbeat interval run until
+[dispose()](#dispose) is called.
+
 ## Implements
 
 - [`ResponseAwareHTTPInterceptor`](#)
@@ -56,6 +59,18 @@ Returns the current online status.
 `boolean`
 
 ## Methods
+
+### dispose()
+
+> **dispose**(): `void`
+
+Stops the heartbeat and removes the window listeners. Idempotent.
+
+#### Returns
+
+`void`
+
+***
 
 ### postResponse()
 

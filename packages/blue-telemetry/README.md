@@ -34,6 +34,22 @@ const logger = getLogger('example');
 logger.info('telemetry initialized');
 ```
 
+## Usage
+
+### Tracing and counting your own code
+
+```ts
+import { counted, traced } from '@blue/telemetry';
+
+class ReportService {
+    @traced('reports.generate')
+    @counted('reports.generated')
+    async generate() {
+        // one span and one counter per call
+    }
+}
+```
+
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into

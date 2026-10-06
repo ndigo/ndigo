@@ -31,7 +31,7 @@ import {
 import { socketMapping } from '../src/socket-mapping';
 import { routeMapping } from '../src/route-mapping';
 import { RouteHandlerMethod } from '../src/route-handler-method';
-import { ParameterBindingError } from '../src/error';
+import { ParameterBindingError, InvalidParameterMappingError } from '../src/error';
 import { QueryValueMethodArgumentResolver } from '../src/argument-resolver';
 
 describe('@parameters - TC39 Parameter Injection Pattern', () => {
@@ -265,23 +265,42 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
             expect(params[6].type).toEqual(MethodParameterType.PATH);
         });
 
-        it('should handle sparse parameters (not all decorated)', () => {
+        it('rejects a sparse parameter map at resolution, naming the argument position (HT-11)', () => {
             class TestController {
                 @parameters({
-                    page: queryValue('page'),
-                    session: cookieValue('SESSIONID'),
+                    first: queryValue('first'),
+                    third: queryValue('third'),
                 })
-                handleSparse(normal: string, page: string, another: number, session: string) {}
+                handleSparse(first: string, second: string, third: string) {}
+            }
+            expect(() =>
+                resolveParameters(
+                    TestController.prototype,
+                    'handleSparse',
+                    TestController.prototype.handleSparse as Function
+                )
+            ).toThrowError(InvalidParameterMappingError);
+            expect(() =>
+                resolveParameters(
+                    TestController.prototype,
+                    'handleSparse',
+                    TestController.prototype.handleSparse as Function
+                )
+            ).toThrowError(/argument "second" at position 1/);
+        });
+
+        it('allows arguments after the last mapped one to stay undeclared (HT-11)', () => {
+            class TestController {
+                @parameters({ first: queryValue('first') })
+                handleTrailing(first: string, untouched: string) {}
             }
             const params = resolveParameters(
                 TestController.prototype,
-                'handleSparse',
-                TestController.prototype.handleSparse as Function
+                'handleTrailing',
+                TestController.prototype.handleTrailing as Function
             );
-            expect(params[0]).toBeUndefined(); // normal
-            expect(params[1].name).toBe('page');
-            expect(params[2]).toBeUndefined(); // another
-            expect(params[3].name).toBe('SESSIONID');
+            expect(params).toHaveLength(1);
+            expect(params[0].name).toBe('first');
         });
 
         it('should preserve parameter options', () => {

@@ -16,9 +16,21 @@ Subclasses only need to implement:
 - `resolveName()` — where to fetch the raw value
 - `supportsParameter()` — which `MethodParameterType` to match
 
+The two boilerplate-heavy families extend a narrower base instead, where
+each platform declares only its data:
+- whole-source binding ([AbstractDataBindingArgumentResolver](AbstractDataBindingArgumentResolver.md)) —
+  the platform's bindable-source table and `getSourceData` lookup
+- cookie values ([AbstractCookieValueArgumentResolver](AbstractCookieValueArgumentResolver.md)) — the
+  platform's whole-jar lookup
+
 ## Extends
 
 - [`AbstractNamedValueMethodArgumentResolver`](AbstractNamedValueMethodArgumentResolver.md)
+
+## Extended by
+
+- [`AbstractDataBindingArgumentResolver`](AbstractDataBindingArgumentResolver.md)
+- [`AbstractCookieValueArgumentResolver`](AbstractCookieValueArgumentResolver.md)
 
 ## Constructors
 

@@ -13,8 +13,6 @@ import { like } from '@blue/util/types';
 // oxlint-disable-next-line typescript/no-explicit-any -- TS2545 requires mixin superclass ctors to be exactly `...args: any[]`; no erasable alternative.
 type Constructable<T = {}> = new (...args: any[]) => T;
 
-/**
- */
 export const $aware: unique symbol = Symbol.for('@@aware');
 
 /**

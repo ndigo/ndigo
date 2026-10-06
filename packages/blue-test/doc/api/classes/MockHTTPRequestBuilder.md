@@ -123,13 +123,15 @@ This builder.
 
 > **query**(`query`): `this`
 
-Add query parameters.
+Add query parameters. Supplying a key again (or an array value)
+accumulates: the value is promoted to an array on repeats, matching the
+live adapter's `?a=1&a=2` multi-value contract.
 
 #### Parameters
 
 ##### query
 
-`Record`\<`string`, `string`\>
+`Record`\<`string`, `string` \| `string`[]\>
 
 Query parameter map.
 

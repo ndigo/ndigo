@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { RuleTester } from 'oxlint/plugins-dev';
+import { canonicalizeRouteMappingPath } from '@blue/dispatcher';
 import { noDuplicateMappingPath } from '../../src/rules/no-duplicate-mapping-path';
 
 const ruleTester = new RuleTester({
@@ -14,6 +15,37 @@ const ruleTester = new RuleTester({
         },
     },
 });
+
+const FILENAME = '/packages/blue-app/src/controllers.ts';
+
+/**
+ * Shared path vector table for the rule⇄runtime canonicalizer parity check.
+ *
+ * Every unordered pair is driven through RuleTester: the rule must report a
+ * duplicate exactly when `canonicalizeRouteMappingPath` (the dispatcher's
+ * single source of truth) folds the two spellings onto the same radix node.
+ */
+const ROUTE_PATH_VECTORS = ['/a', '/a/', '//a', '/a/:id', '/a/{id}', '/a/{*rest}', '/a/**'] as const;
+
+const parityValid: RuleTester.ValidTestCase[] = [];
+const parityInvalid: RuleTester.InvalidTestCase[] = [];
+for (let left = 0; left < ROUTE_PATH_VECTORS.length; left++) {
+    for (let right = left + 1; right < ROUTE_PATH_VECTORS.length; right++) {
+        const first = ROUTE_PATH_VECTORS[left];
+        const second = ROUTE_PATH_VECTORS[right];
+        const code = `class Controller {
+                        @routeMapping(${JSON.stringify(first)})
+                        a() {}
+                        @routeMapping(${JSON.stringify(second)})
+                        b() {}
+                    }`;
+        if (canonicalizeRouteMappingPath(first) === canonicalizeRouteMappingPath(second)) {
+            parityInvalid.push({ code, filename: FILENAME, errors: [{ messageId: 'duplicateMappingPath' }] });
+        } else {
+            parityValid.push({ code, filename: FILENAME });
+        }
+    }
+}
 
 ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
     valid: [
@@ -26,7 +58,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         @getMapping('/users/:id')
                         getById() {}
                     }`,
-            filename: '/packages/blue-app/src/controllers.ts',
+            filename: FILENAME,
         },
         // Class-level path is a prefix merged with method paths — not a duplicate
         {
@@ -35,7 +67,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         @routeMapping('/')
                         handleRoot() {}
                     }`,
-            filename: '/packages/blue-app/src/controllers.ts',
+            filename: FILENAME,
         },
         {
             code: `@requestMapping('/')
@@ -43,7 +75,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         @getMapping('/')
                         home() {}
                     }`,
-            filename: '/packages/blue-app/src/controllers.ts',
+            filename: FILENAME,
         },
         // Same position, different parameter NAMES — distinct radix labels
         {
@@ -53,7 +85,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         @getMapping('/a/:name')
                         byName() {}
                     }`,
-            filename: '/packages/blue-app/src/controllers.ts',
+            filename: FILENAME,
         },
         // `{other}` folds to `:other` — a different label than `:id`
         {
@@ -63,7 +95,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         @getMapping('/a/{other}')
                         byOther() {}
                     }`,
-            filename: '/packages/blue-app/src/controllers.ts',
+            filename: FILENAME,
         },
         // Same path, different decorator kind (HTTP method) — disambiguated
         {
@@ -73,7 +105,28 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         @postMapping('/notes')
                         create() {}
                     }`,
-            filename: '/packages/blue-app/src/controllers.ts',
+            filename: FILENAME,
+        },
+        // Same path, verb vs method-less — different HTTP-method identity
+        {
+            code: `class NoteController {
+                        @getMapping('/notes')
+                        list() {}
+                        @requestMapping('/notes')
+                        create() {}
+                    }`,
+            filename: FILENAME,
+        },
+        // Same path, template vs string but same node IS a duplicate (see invalid);
+        // distinct template paths are not.
+        {
+            code: `class UserController {
+                        @getMapping(\`/users\`)
+                        list() {}
+                        @getMapping(\`/accounts\`)
+                        accounts() {}
+                    }`,
+            filename: FILENAME,
         },
         // Configuration form with extra conditions is skipped (disambiguates)
         {
@@ -83,7 +136,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         @getMapping('/:id')
                         getOne() {}
                     }`,
-            filename: '/packages/blue-app/src/controllers.ts',
+            filename: FILENAME,
         },
         // Same normalized path in two different classes is not a class-level duplicate
         {
@@ -95,7 +148,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         @getMapping('/shared')
                         b() {}
                     }`,
-            filename: '/packages/blue-app/src/controllers.ts',
+            filename: FILENAME,
         },
         // Dynamic path expressions are not statically comparable
         {
@@ -105,7 +158,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         @getMapping(basePath)
                         b() {}
                     }`,
-            filename: '/packages/blue-app/src/controllers.ts',
+            filename: FILENAME,
         },
         // Non-mapping decorators with the same argument are ignored
         {
@@ -115,8 +168,9 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         @getCall('/same')
                         b() {}
                     }`,
-            filename: '/packages/blue-app/src/controllers.ts',
+            filename: FILENAME,
         },
+        ...parityValid,
     ],
     invalid: [
         // Trailing slash normalizes to the same path (same kind)
@@ -127,7 +181,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         @getMapping('/users/')
                         listAll() {}
                     }`,
-            filename: '/packages/blue-app/src/controllers.ts',
+            filename: FILENAME,
             errors: [{ messageId: 'duplicateMappingPath' }],
         },
         // Duplicate slashes collapse
@@ -138,7 +192,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         @getMapping('/foo')
                         b() {}
                     }`,
-            filename: '/packages/blue-app/src/controllers.ts',
+            filename: FILENAME,
             errors: [{ messageId: 'duplicateMappingPath' }],
         },
         // `{name}` and `:name` are the same radix node
@@ -149,7 +203,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         @getMapping('/a/:id')
                         b() {}
                     }`,
-            filename: '/packages/blue-app/src/controllers.ts',
+            filename: FILENAME,
             errors: [{ messageId: 'duplicateMappingPath' }],
         },
         // Two identical method mappings
@@ -160,7 +214,7 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         @postMapping('/create')
                         b() {}
                     }`,
-            filename: '/packages/blue-app/src/controllers.ts',
+            filename: FILENAME,
             errors: [{ messageId: 'duplicateMappingPath' }],
         },
         // Optionless configuration form (`{ value }`) participates
@@ -171,8 +225,78 @@ ruleTester.run('no-duplicate-mapping-path', noDuplicateMappingPath, {
                         @routeMapping('/x/')
                         b() {}
                     }`,
-            filename: '/packages/blue-app/src/controllers.ts',
+            filename: FILENAME,
             errors: [{ messageId: 'duplicateMappingPath' }],
         },
+        // No-substitution template literal is a literal path (INS-2)
+        {
+            code: `class UserController {
+                        @getMapping(\`/users\`)
+                        a() {}
+                        @getMapping('/users/')
+                        b() {}
+                    }`,
+            filename: FILENAME,
+            errors: [{ messageId: 'duplicateMappingPath' }],
+        },
+        // Renamed import binding resolves to the mapping decorator (INS-2)
+        {
+            code: `import { getMapping as g } from '@blue/dispatcher';
+                    class UserController {
+                        @g('/users')
+                        a() {}
+                        @g('/users/')
+                        b() {}
+                    }`,
+            filename: FILENAME,
+            errors: [{ messageId: 'duplicateMappingPath' }],
+        },
+        // Local `const` alias of an imported decorator resolves (INS-2)
+        {
+            code: `import { getMapping } from '@blue/dispatcher';
+                    const alias = getMapping;
+                    class UserController {
+                        @alias('/users')
+                        a() {}
+                        @alias('/users/')
+                        b() {}
+                    }`,
+            filename: FILENAME,
+            errors: [{ messageId: 'duplicateMappingPath' }],
+        },
+        // `@queryMapping` (HTTP QUERY) registers in the same radix space (INS-2)
+        {
+            code: `class SearchController {
+                        @queryMapping('/search')
+                        a() {}
+                        @queryMapping('/search/')
+                        b() {}
+                    }`,
+            filename: FILENAME,
+            errors: [{ messageId: 'duplicateMappingPath' }],
+        },
+        // `@publicMapping` is method-less, same family as `@routeMapping` (INS-2/INS-3)
+        {
+            code: `class HomeController {
+                        @publicMapping('/home')
+                        a() {}
+                        @routeMapping('/home/')
+                        b() {}
+                    }`,
+            filename: FILENAME,
+            errors: [{ messageId: 'duplicateMappingPath' }],
+        },
+        // `@requestMapping` and `@routeMapping` are both method-less (INS-3)
+        {
+            code: `class UserController {
+                        @requestMapping('/y')
+                        a() {}
+                        @routeMapping('/y')
+                        b() {}
+                    }`,
+            filename: FILENAME,
+            errors: [{ messageId: 'duplicateMappingPath' }],
+        },
+        ...parityInvalid,
     ],
 });

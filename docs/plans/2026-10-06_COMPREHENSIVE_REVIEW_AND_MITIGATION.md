@@ -23,11 +23,15 @@ tree was clean before and after; throwaway probes were removed.
 **Status:** Findings recorded. **Execution in progress:** waves 1–5 landed —
 waves 1–2 in `91712f40` (security + availability), waves 3–4 in `8f54a402`
 (context/boot, HTTP, data, ops, protocols, telemetry/resilience, platform-web,
-kernel-2, tooling, docs, apps), wave 5 in the following commit (framework
-`console.*` → `@blue/log` migration across 10 packages, `@blue/test`
-synchronous-rAF helper with app-spec migration, skipped-test policy, OpenAPI
-auto-config security forwarding, app-manifest checker, Redis CI service lane,
-benchmark exit code). All 46 test projects and the full gate set are green.
+kernel-2, tooling, docs, apps), wave 5 in `fbb5233e` (framework `console.*` → `@blue/log` migration across 10
+packages, `@blue/test` synchronous-rAF helper with app-spec migration,
+skipped-test policy, OpenAPI auto-config security forwarding, app-manifest
+checker, Redis CI service lane, benchmark exit code), plus the wave-4
+dispatcher/views mop-up in the following commit (view-cache key collision +
+bound, dead interceptor guard, island-resolver defaults + custom-element
+validation, 406 negotiation, request-copy negotiation, error-name hierarchy
+mapping, EJS filename/includes, resolver dedup; CI graft pin; AD citation
+refresh). All 46 test projects and the full gate set are green.
 Residuals tracked for follow-up: the test-file typecheck lane (TOL-F5 —
 requires 46 per-project `tsconfig.spec.json` files plus triage of pre-existing
 test type errors), TEL-08's client byte-size seam is exposed by `@blue/socket`

@@ -64,6 +64,7 @@ import {
 import { parseCookies } from './cookie-parser';
 import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@blue/auth-core';
 import { getSymbolMetadata } from '@blue/core';
+import { NotAcceptableError } from '@blue/view';
 import { getLogger } from '@blue/log';
 
 const logger = getLogger('blue-platform-node:node-http-server-adapter');
@@ -1112,6 +1113,18 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 title: 'Bad Request',
                 status: 400,
                 detail: 'malformed_url',
+            });
+            return;
+        }
+        if (error instanceof NotAcceptableError) {
+            // Content negotiation resolved candidates but none served the
+            // request's accepted media types: the route/handler exists, so
+            // this is 406 — never the 404 used for a missing view.
+            writeProblem(res, {
+                type: ProblemTypes.notAcceptable,
+                title: 'Not Acceptable',
+                status: 406,
+                detail: error.message,
             });
             return;
         }

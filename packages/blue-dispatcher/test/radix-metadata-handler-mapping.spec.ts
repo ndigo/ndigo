@@ -215,6 +215,69 @@ describe('RadixMetadataHandlerMapping', () => {
         expect(chain.handler.method).toBe('getPost');
     });
 
+    describe('normalized duplicate registrations (DSV-DISP-2/3)', () => {
+        // Pre-fix these pairs silently shadowed each other: the radix tree
+        // collapses both spellings to one node, but candidates were keyed by
+        // the raw pattern, so only the last-inserted pattern's handlers were
+        // ever looked up.
+        const get = (mapping: RadixMetadataHandlerMapping, path: string, which: string) =>
+            mapping.getHandler({ path, data: { which }, length: 0 } as unknown as Route);
+
+        test('`/dup/:id` and `/dup/{id}` both stay reachable', () => {
+            @routeMapping('/dup')
+            class ColonController {
+                @routeMapping({ value: '/:id', queryParams: 'which=colon' })
+                colon() {
+                    return 'colon';
+                }
+            }
+            @routeMapping('/dup')
+            class BraceController {
+                @routeMapping({ value: '/{id}', queryParams: 'which=brace' })
+                brace() {
+                    return 'brace';
+                }
+            }
+
+            ctx.setValue('colonController', new ColonController());
+            ctx.setValue('braceController', new BraceController());
+
+            const mapping = new RadixMetadataHandlerMapping();
+            mapping.setApplicationContext(ctx);
+            mapping.init();
+
+            expect(get(mapping, '/dup/42', 'colon')?.handler.method).toBe('colon');
+            expect(get(mapping, '/dup/42', 'brace')?.handler.method).toBe('brace');
+        });
+
+        test('`/dup/:id` and `/dup/:id/` both stay reachable', () => {
+            @routeMapping('/dup')
+            class NoSlashController {
+                @routeMapping({ value: '/:id', queryParams: 'which=no-slash' })
+                noSlash() {
+                    return 'no-slash';
+                }
+            }
+            @routeMapping('/dup')
+            class SlashController {
+                @routeMapping({ value: '/:id/', queryParams: 'which=slash' })
+                slash() {
+                    return 'slash';
+                }
+            }
+
+            ctx.setValue('noSlashController', new NoSlashController());
+            ctx.setValue('slashController', new SlashController());
+
+            const mapping = new RadixMetadataHandlerMapping();
+            mapping.setApplicationContext(ctx);
+            mapping.init();
+
+            expect(get(mapping, '/dup/42', 'no-slash')?.handler.method).toBe('noSlash');
+            expect(get(mapping, '/dup/42', 'slash')?.handler.method).toBe('slash');
+        });
+    });
+
     describe('query/matrix param conditions', () => {
         test('handler selected when queryParams condition matches query string', () => {
             @routeMapping('/items')

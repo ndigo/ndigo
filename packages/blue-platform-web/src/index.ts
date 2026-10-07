@@ -25,7 +25,6 @@ export type {
 export * from './data-binding-argument-resolver';
 export * from './configure-argument-resolvers';
 export * from './configure-converter-registry';
-export * from './configure-strict-argument-resolvers';
 export * from './cookie-argument-resolver';
 export * from './cookie-language-resolver';
 export * from './cookie-theme-resolver';

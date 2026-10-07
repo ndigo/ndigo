@@ -69,7 +69,6 @@ Jeff Rose
 - [configureBrowserArgumentResolvers](functions/configureBrowserArgumentResolvers.md)
 - [configureCookieLanguageResolver](functions/configureCookieLanguageResolver.md)
 - [configureCookieThemeResolver](functions/configureCookieThemeResolver.md)
-- [configureStrictBrowserArgumentResolvers](functions/configureStrictBrowserArgumentResolvers.md)
 - [createBrowserArgumentResolvers](functions/createBrowserArgumentResolvers.md)
 - [createOnlineReconnectTrigger](functions/createOnlineReconnectTrigger.md)
 - [createOptionalConverter](functions/createOptionalConverter.md)

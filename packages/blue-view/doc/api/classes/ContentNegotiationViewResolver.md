@@ -115,7 +115,12 @@ Optional per-call request (typically the route) carrying
 
 `Promise`\<[`View`](../interfaces/View.md) \| `null`\>
 
-The matching view, or `null` when none is available.
+The matching view, or `null` when no resolver/default produced one.
+
+#### Throws
+
+When candidates exist but none serves the
+  request's accepted media types (HTTP 406).
 
 #### Implementation of
 

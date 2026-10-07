@@ -80,15 +80,13 @@ export class NodeDispatcher extends AbstractDispatcher {
 
         if (viewName) {
             // Content negotiation reads per-call request data (Accept header,
-            // path extension) from the route threaded through resolution.
-            // `HTTPHeaders.ACCEPT` folds case and joins multi-value entries,
-            // mirroring the resolver-side bridge.
+            // path extension) from the request threaded through resolution.
+            // Hand the negotiation manager the request headers on a shallow
+            // copy — the Accept→hint bridge lives there — so the route is
+            // never mutated and a reused route cannot carry a stale hint.
             const nodeRequest = getNodeRequest(route);
-            const accept = nodeRequest?.headers ? HTTPHeaders.ACCEPT.get(nodeRequest.headers) : null;
-            if (accept) {
-                Object.assign(route, { mediaTypeHint: accept });
-            }
-            view = await this._resolveViewName(viewName, language, route);
+            const negotiationRequest = nodeRequest?.headers ? { ...route, headers: nodeRequest.headers } : route;
+            view = await this._resolveViewName(viewName, language, negotiationRequest);
             if (!view) {
                 if (res && !res.headersSent) {
                     writeProblem(res, {

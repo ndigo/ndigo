@@ -7,7 +7,12 @@ import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { AbstractDispatcher } from '../src/dispatcher';
 import routeErrorResolverContext from './assets/route-error-resolver-context';
 import { handleRouteSpy, renderSpy } from './test-strategies';
-import { MetadataErrorResolver, SimpleMappingErrorResolver } from '../src/route-error-resolver';
+import {
+    DefaultRouteErrorResolver,
+    MetadataErrorResolver,
+    SimpleMappingErrorResolver,
+} from '../src/route-error-resolver';
+import { FrameworkError } from '@blue/core';
 import { RouteHandlerMethod } from '../src/route-handler-method';
 import { errorMapping } from '../src/error-mapping';
 import { ModelAndView } from '../src/model-and-view';
@@ -125,5 +130,55 @@ describe('SimpleMappingErrorResolver', () => {
             expect(mav).toHaveProperty('viewName');
             expect(mav.viewName).toBe('defaultError');
         });
+    });
+});
+
+describe('DefaultRouteErrorResolver (DSV-DISP-4)', () => {
+    class WidgetNotFoundError extends FrameworkError {}
+
+    test('maps a subclass through its preconfigured base-class mapping', () => {
+        const resolver = new DefaultRouteErrorResolver();
+
+        // Pre-fix only the exact constructor name was looked up, so the
+        // preconfigured `FrameworkError` mapping was dead for every subclass.
+        const mav = resolver.resolveError({} as Route, null, new WidgetNotFoundError('gone'));
+
+        expect(mav?.viewName).toBe('error/framework');
+    });
+
+    test('a subclass-specific mapping wins over the base mapping', () => {
+        const resolver = new DefaultRouteErrorResolver();
+        resolver.setErrorMapping('WidgetNotFoundError', 'widget/not-found');
+
+        const mav = resolver.resolveError({} as Route, null, new WidgetNotFoundError('gone'));
+
+        expect(mav?.viewName).toBe('widget/not-found');
+    });
+
+    test('an unmapped error falls back to the default view', () => {
+        const resolver = new DefaultRouteErrorResolver();
+
+        const mav = resolver.resolveError({} as Route, null, new TypeError('boom'));
+
+        expect(mav?.viewName).toBe('error/default');
+    });
+});
+
+describe('SimpleMappingErrorResolver substring hierarchy (DSV-DISP-4)', () => {
+    class TestHandler {
+        handleRoute = handleRouteSpy;
+    }
+
+    test('matches a base-class substring, preferring the deepest match', () => {
+        const resolver = new SimpleMappingErrorResolver();
+        resolver.mappedHandlerClasses = [TestHandler];
+        resolver.errorMappings?.set('SyntaxError', 'syntax');
+        resolver.errorMappings?.set('Error', 'any-error');
+
+        // Deepest match (the error's own class) beats the broad `Error` key.
+        expect(resolver.resolveError({} as Route, new TestHandler(), new SyntaxError())?.viewName).toBe('syntax');
+        // Pre-fix exact-name lookup ignored the `Error` substring entirely and
+        // fell through to the default (null here, as no default was set).
+        expect(resolver.resolveError({} as Route, new TestHandler(), new TypeError())?.viewName).toBe('any-error');
     });
 });

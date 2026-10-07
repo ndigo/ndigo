@@ -8,11 +8,18 @@
 
 Resolves view names to `IslandView` markers.
 
+Only names matching [IslandViewResolverOptions.viewNames](../interfaces/IslandViewResolverOptions.md#viewnames) (by default
+[customElementNamePattern](../variables/customElementNamePattern.md)) resolve; every other name returns
+`null` so the resolver chain continues (there is no implicit fallback — an
+unmatched name is only served if a later resolver claims it, otherwise the
+dispatcher's usual not-found path applies).
+
 ## Example
 
 ```ts
 const resolver = new IslandViewResolver();
 const view = await resolver.resolveViewName('todo-app'); // IslandView('todo-app')
+await resolver.resolveViewName('user'); // null — not a custom-element name
 ```
 
 ## Extends

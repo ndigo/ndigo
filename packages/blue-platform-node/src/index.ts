@@ -27,8 +27,6 @@ export * from './node-environment';
 export * from './node-request';
 export * from './multipart-file';
 export * from './parse-multipart';
-export * from './query-argument-resolver';
-export * from './path-argument-resolver';
 export * from './header-argument-resolver';
 export * from './body-argument-resolver';
 export * from './data-binding-argument-resolver';

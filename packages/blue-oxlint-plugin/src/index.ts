@@ -20,6 +20,7 @@ import { noStringRegistryLookup } from './rules/no-string-registry-lookup.js';
 import { noUnsafeViewNameLiteral } from './rules/no-unsafe-view-name-literal.js';
 import { noDuplicateMappingPath } from './rules/no-duplicate-mapping-path.js';
 import { requiresDocHeader } from './rules/requires-doc-header.js';
+import { noRawConsole } from './rules/no-raw-console.js';
 
 const plugin = eslintCompatPlugin({
     meta: {
@@ -40,6 +41,7 @@ const plugin = eslintCompatPlugin({
         'no-unsafe-view-name-literal': noUnsafeViewNameLiteral,
         'no-duplicate-mapping-path': noDuplicateMappingPath,
         'requires-doc-header': requiresDocHeader,
+        'no-raw-console': noRawConsole,
     },
 });
 

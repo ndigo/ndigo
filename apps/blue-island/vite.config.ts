@@ -1,10 +1,14 @@
-import { defineConfig } from 'vite';
-
 /**
  * Builds the client half of the island demo into `dist/` (a single module
  * bundle named `client.js`), which the Node server serves under `/static/`.
  */
+import { defineConfig } from 'vite';
+import { lowerDecorators } from '../../scripts/vite-plugin-lower-decorators.mjs';
+
 export default defineConfig({
+    // TC39 decorators (`@service`/`@getCall`) must be lowered for browsers;
+    // Vite 8's oxc transform passes them through unchanged (2026-10-06).
+    plugins: [lowerDecorators()],
     build: {
         outDir: 'dist',
         lib: {
@@ -18,16 +22,6 @@ export default defineConfig({
         // signatures) breaks under identifier-minifying builds — demo apps
         // must stay unminified (2026-10-04, e2e pre-existing failure).
         minify: false,
-    },
-    // TC39 decorators must be lowered: esbuild passes them through and
-    // browsers cannot parse `@decorator class` — vitest 4 already uses oxc.
-    oxc: {
-        tsconfigRaw: {
-            compilerOptions: {
-                target: 'ES2022',
-                experimentalDecorators: false,
-            },
-        },
     },
     resolve: {
         // Workspace packages resolve through vite's node resolution (pnpm

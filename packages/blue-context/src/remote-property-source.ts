@@ -50,6 +50,9 @@
 import { IllegalStateError, JSONObject } from '@blue/core';
 import { ConfigurableEnvironment } from './environment';
 import { MutablePropertySources } from './property-sources';
+import { getLogger } from '@blue/log';
+
+const logger = getLogger('blue-context:remote-property-source');
 
 /**
  * The default source name for the remote config source.
@@ -481,7 +484,7 @@ export class RemotePropertySource {
      */
     #keepLastGood(cause: unknown): null {
         const detail = cause instanceof Error ? `: ${cause.message}` : '';
-        console.warn(
+        logger.warn(
             `[@blue/context] Remote config poll failed for source "${this.#name}" — keeping last-good values` + detail
         );
         return null;
@@ -500,7 +503,7 @@ export class RemotePropertySource {
         const reason = cause instanceof Error ? ` (${cause.message})` : '';
         if (this.#options.optional) {
             // warn-level skip (boot proceeds)
-            console.warn(
+            logger.warn(
                 `[@blue/context] Remote config fetch failed at boot (${failure}) for source "${this.#name}" — ` +
                     `boot proceeds with env/files` +
                     reason

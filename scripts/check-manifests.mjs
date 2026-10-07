@@ -28,6 +28,11 @@
  *   9. Vitest alias targets: every `resolve(__dirname, '<path>')` replacement
  *      in a vitest config must exist on disk — the hand-maintained alias table
  *      silently drifts as packages are renamed or removed (TOL-F6).
+ *  10. App manifests (`apps/*`, private): the same closure/dead-dependency
+ *      discipline applies — every import in an app source dir (src/test/
+ *      client/views/e2e) must be declared, and no declared dependency may be
+ *      imported nowhere. Build tooling invoked by name (APP_TOOLING) and
+ *      asset-only runtime deps (APP_ASSET_DEPS) are exempt.
  *
  * Run: `node scripts/check-manifests.mjs` (wired into `pnpm manifest:check`
  * and `.github/workflows/ci.yml`).
@@ -75,6 +80,25 @@ const ROOT_TOOLING = new Set([
     'typedoc', // spawned by scripts/doc-api.mjs
     'typedoc-plugin-markdown', // typedoc `plugin` entry, loaded by name
     'oxlint-tsgolint', // oxlint --type-aware backend (declared peer of oxlint)
+]);
+
+/**
+ * App source dirs. `src`/`client`/`views` ship in the built bundle; `test`/
+ * `e2e` are dev-time inputs. A private app obeys the same closure discipline
+ * as a publishable package.
+ */
+const APP_SOURCE_DIRS = new Set(['src', 'client', 'views']);
+const APP_DEV_DIRS = new Set(['test', 'e2e']);
+
+/**
+ * App-only implicit dependencies the scanner cannot see: build/run tooling
+ * invoked by name from package scripts (never imported) and asset-only runtime
+ * deps copied by the bundler rather than imported by code.
+ */
+const APP_TOOLING = new Set([...TOOLING, 'vite', '@playwright/test']);
+const APP_ASSET_DEPS = new Set([
+    'swagger-ui-dist', // blue-api serves the docs UI assets (asset-only, like the platform peer)
+    'todomvc-app-css', // blue-todo copies the TodoMVC stylesheet
 ]);
 
 /**
@@ -225,12 +249,49 @@ for (const dir of readdirSync(PACKAGES)) {
     }
 }
 
-// Apps contribute to root tooling usage as well (vite, tsx, @types/*, …).
+// Rule 10: app manifests obey the closure/dead-dependency rules too, and
+// contribute to root tooling usage. `used` is the union of runtime and dev
+// imports, so a dependency consumed only by tests is not flagged dead.
 for (const dir of readdirSync(APPS)) {
     const pkgDir = join(APPS, dir);
-    if (!existsSync(join(pkgDir, 'package.json'))) continue;
-    for (const spec of importsOf(pkgDir, SOURCE_DIRS)) workspaceUsage.add(spec);
-    for (const spec of importsOf(pkgDir, DEV_DIRS)) workspaceUsage.add(spec);
+    const pkgPath = join(pkgDir, 'package.json');
+    if (!existsSync(pkgPath)) continue;
+    let manifest;
+    try {
+        manifest = JSON.parse(readFileSync(pkgPath, 'utf8'));
+    } catch {
+        fail(dir, 'unparseable package.json');
+        continue;
+    }
+    const name = manifest.name ?? dir;
+    const runtime = importsOf(pkgDir, APP_SOURCE_DIRS);
+    const dev = importsOf(pkgDir, APP_DEV_DIRS);
+    for (const spec of runtime) workspaceUsage.add(spec);
+    for (const spec of dev) workspaceUsage.add(spec);
+
+    const dependencies = manifest.dependencies ?? {};
+    const devDependencies = manifest.devDependencies ?? {};
+    const used = new Set([...runtime, ...dev]);
+
+    // Undeclared: every app-source import must resolve from the manifest.
+    for (const spec of used) {
+        if (APP_TOOLING.has(spec) || spec.startsWith('@types/')) continue;
+        if (!dependencies[spec] && !devDependencies[spec]) {
+            fail(name, `app import "${spec}" is not declared in dependencies or devDependencies`);
+        }
+    }
+
+    // Dead `dependencies`: declared but imported nowhere in the app.
+    for (const dep of Object.keys(dependencies)) {
+        if (APP_TOOLING.has(dep) || APP_ASSET_DEPS.has(dep)) continue;
+        if (!used.has(dep)) fail(name, `dependencies.${dep} is imported nowhere in app sources`);
+    }
+
+    // Dead `devDependencies`: declared but used by no app source.
+    for (const dep of Object.keys(devDependencies)) {
+        if (APP_TOOLING.has(dep) || APP_ASSET_DEPS.has(dep) || dep.startsWith('@types/')) continue;
+        if (!used.has(dep)) fail(name, `devDependencies.${dep} is imported nowhere in app sources`);
+    }
 }
 
 // Rule 9: every `resolve(__dirname, '<path>')` alias target in a vitest config

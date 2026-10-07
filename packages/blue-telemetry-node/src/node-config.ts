@@ -24,6 +24,9 @@ import { BatchLogRecordProcessor, ConsoleLogRecordExporter, SimpleLogRecordProce
 import { Instrumentation } from '@opentelemetry/instrumentation';
 import { LoggerFactory } from '@blue/telemetry';
 import { SeverityFilterLogRecordProcessor } from './severity-filter-log-record-processor';
+import { getLogger } from '@blue/log';
+
+const logger = getLogger('blue-telemetry-node:node-config');
 
 /**
  * Trace sampling configuration (AD-32 D-1). Presets resolve to parent-based
@@ -134,7 +137,7 @@ export function configureTelemetry(config: TelemetryConfig) {
     const log = resolveExporter(config.logExporter, 'log');
 
     if (configured) {
-        console.error(
+        logger.error(
             '[blue-telemetry-node] configureTelemetry called again — OpenTelemetry global providers are ' +
                 'registered once per process and the first call wins; this call is being ignored.'
         );

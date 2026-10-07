@@ -5,6 +5,9 @@
  * @author Jeff Rose
  */
 import { Signal } from '@preact/signals-core';
+import { getLogger } from '@blue/log';
+
+const logger = getLogger('blue-signals:stream-to-signal');
 
 /**
  * Bridges an async iterable into a `Signal`, updating it as values arrive.
@@ -38,7 +41,7 @@ export function streamToSignal<T>(source: AsyncIterable<T>, target: Signal<T>): 
             }
         } catch (error: unknown) {
             if (!cancelled) {
-                console.error('[blue-signals] streamToSignal failed:', error);
+                logger.error('[blue-signals] streamToSignal failed:', error instanceof Error ? error : String(error));
             }
         } finally {
             if (!cancelled) {

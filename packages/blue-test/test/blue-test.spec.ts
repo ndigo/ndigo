@@ -6,7 +6,7 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { requestMapping, getMapping } from '@blue/dispatcher';
-import { bootApp, cachedBootApp, releaseCachedApp, MockHTTP } from '../src/index';
+import { bootApp, cachedBootApp, installSynchronousAnimationFrames, releaseCachedApp, MockHTTP } from '../src/index';
 
 /**
  * Canonical usage: a real app context is booted once per suite (beforeAll) and
@@ -101,5 +101,23 @@ describe('cachedBootApp', () => {
             releaseCachedApp([MathController]);
             releaseCachedApp([OtherController]);
         }
+    });
+});
+
+describe('installSynchronousAnimationFrames', () => {
+    test('runs the callback synchronously with timestamp 0 and restores the prior global', () => {
+        const scope = globalThis as {
+            requestAnimationFrame?: (callback: (timestamp: number) => void) => number;
+        };
+        const before = scope.requestAnimationFrame;
+
+        const restore = installSynchronousAnimationFrames();
+        const seen: number[] = [];
+        const id = scope.requestAnimationFrame?.((timestamp) => seen.push(timestamp));
+        expect(seen).toEqual([0]);
+        expect(id).toBe(0);
+
+        restore();
+        expect(scope.requestAnimationFrame).toBe(before);
     });
 });

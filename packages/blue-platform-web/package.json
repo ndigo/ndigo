@@ -50,6 +50,7 @@
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/http": "~0.0.1",
+    "@blue/log": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/signals": "~0.0.1",
     "@blue/socket": "~0.0.1",

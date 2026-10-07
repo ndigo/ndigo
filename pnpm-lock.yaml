@@ -490,6 +490,9 @@ importers:
         specifier: ~0.0.1
         version: link:../../packages/blue-view-webcomponent
     devDependencies:
+      '@blue/test':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-test
       '@tsmetadata/polyfill':
         specifier: 'catalog:'
         version: 1.1.3
@@ -595,6 +598,9 @@ importers:
         specifier: 'catalog:'
         version: 4.5.4
     devDependencies:
+      '@blue/router':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-router
       '@blue/test':
         specifier: ~0.0.1
         version: link:../../packages/blue-test
@@ -789,6 +795,9 @@ importers:
       '@blue/factory':
         specifier: ~0.0.1
         version: link:../blue-factory
+      '@blue/log':
+        specifier: ~0.0.1
+        version: link:../blue-log
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
@@ -820,6 +829,9 @@ importers:
       '@blue/factory':
         specifier: ~0.0.1
         version: link:../blue-factory
+      '@blue/log':
+        specifier: ~0.0.1
+        version: link:../blue-log
       '@tsmetadata/polyfill':
         specifier: 'catalog:'
         version: 1.1.3
@@ -856,6 +868,9 @@ importers:
       '@blue/factory':
         specifier: ~0.0.1
         version: link:../blue-factory
+      '@blue/log':
+        specifier: ~0.0.1
+        version: link:../blue-log
       '@blue/util':
         specifier: ~0.0.1
         version: link:../blue-util
@@ -906,6 +921,9 @@ importers:
       '@blue/http':
         specifier: ~0.0.1
         version: link:../blue-http
+      '@blue/log':
+        specifier: ~0.0.1
+        version: link:../blue-log
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
@@ -1216,6 +1234,9 @@ importers:
       '@blue/http':
         specifier: ~0.0.1
         version: link:../blue-http
+      '@blue/log':
+        specifier: ~0.0.1
+        version: link:../blue-log
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
@@ -1247,6 +1268,9 @@ importers:
       '@blue/factory':
         specifier: ~0.0.1
         version: link:../blue-factory
+      '@blue/log':
+        specifier: ~0.0.1
+        version: link:../blue-log
       '@tsmetadata/polyfill':
         specifier: 'catalog:'
         version: 1.1.3
@@ -1314,6 +1338,9 @@ importers:
       '@blue/factory':
         specifier: ~0.0.1
         version: link:../blue-factory
+      '@blue/log':
+        specifier: ~0.0.1
+        version: link:../blue-log
       '@blue/util':
         specifier: ~0.0.1
         version: link:../blue-util
@@ -1370,6 +1397,9 @@ importers:
 
   packages/blue-signals:
     dependencies:
+      '@blue/log':
+        specifier: ~0.0.1
+        version: link:../blue-log
       '@preact/signals-core':
         specifier: ^1.14.4
         version: 1.14.4
@@ -1412,6 +1442,9 @@ importers:
 
   packages/blue-telemetry-node:
     dependencies:
+      '@blue/log':
+        specifier: ~0.0.1
+        version: link:../blue-log
       '@blue/platform-node':
         specifier: ~0.0.1
         version: link:../blue-platform-node

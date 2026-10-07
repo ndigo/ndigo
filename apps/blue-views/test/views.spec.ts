@@ -6,7 +6,7 @@
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';
 import { describe, expect, it, vi } from 'vitest';
-import { bootBrowserApp, BrowserMockClient } from '@blue/test';
+import { bootBrowserApp, BrowserMockClient, installSynchronousAnimationFrames } from '@blue/test';
 import { StaticContentSource, StaticThemeResolver } from '@blue/content';
 import { propagation, trace } from '@opentelemetry/api';
 import { W3CTraceContextPropagator } from '@opentelemetry/core';
@@ -15,10 +15,7 @@ import { ViewsAppConfiguration } from '../src/views-app-configuration';
 
 // The view engine attaches rendered elements on a requestAnimationFrame tick,
 // which never fires in jsdom — fire it synchronously so dispatches complete.
-vi.spyOn(global, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCallback) => {
-    cb(0);
-    return 0;
-});
+installSynchronousAnimationFrames();
 
 /**
  * Three resolvers, three view locations, one composite chain (view

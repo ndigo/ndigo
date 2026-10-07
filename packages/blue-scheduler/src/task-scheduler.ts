@@ -6,6 +6,9 @@
 import { FrameworkError } from '@blue/core';
 import { like } from '@blue/util/types';
 import { Schedule } from './schedule';
+import { getLogger } from '@blue/log';
+
+const logger = getLogger('blue-scheduler:task-scheduler');
 
 /**
  * A runnable scheduled task as registered with {@link TaskScheduler}.
@@ -41,8 +44,8 @@ export interface TaskSchedulerOptions {
      */
     clock?: () => Date;
     /**
-     * Warning sink (e.g. `maxRunTime` violations); defaults to
-     * `console.warn`.
+     * Warning sink (e.g. `maxRunTime` violations); defaults to the
+     * `blue-scheduler:task-scheduler` `@blue/log` warning channel.
      */
     warn?: (message: string) => void;
 }
@@ -145,7 +148,7 @@ export class TaskScheduler {
      */
     constructor(options: TaskSchedulerOptions = {}) {
         this.#clock = options.clock ?? (() => new Date());
-        this.#warn = options.warn ?? ((message: string) => console.warn(message));
+        this.#warn = options.warn ?? ((message: string) => logger.warn(message));
     }
 
     /**

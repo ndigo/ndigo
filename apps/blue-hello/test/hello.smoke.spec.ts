@@ -5,7 +5,8 @@
  */
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';
-import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
+import { afterAll, beforeAll, describe, expect, test } from 'vitest';
+import { installSynchronousAnimationFrames } from '@blue/test';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { HANDLER_MAPPING } from '@blue/dispatcher';
 import { WebAutoConfiguration, BrowserDispatcher } from '@blue/platform-web';
@@ -21,7 +22,8 @@ interface CapturedRender {
 
 /**
  * Minimal in-process view target (mirrors @blue/test's MemoryViewTarget) so
- * this app's smoke test does not depend on linking the test harness package.
+ * this app's smoke test boots the real platform rather than the test harness;
+ * only the synchronous-animation-frame shim is shared from `@blue/test`.
  */
 class CaptureTarget {
     #lastRender: CapturedRender | null = null;
@@ -76,10 +78,7 @@ describe('blue-hello smoke', () => {
 
         // AbstractWebComponent renders via requestAnimationFrame, which never
         // fires in jsdom — fire it synchronously (same as other app specs).
-        vi.spyOn(global, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCallback) => {
-            cb(0);
-            return 0;
-        });
+        installSynchronousAnimationFrames();
     });
 
     afterAll(() => {

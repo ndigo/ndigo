@@ -25,6 +25,9 @@ import { likeCloseable, likeDestroyable, type EntryProcessor } from '@blue/facto
 import { z } from 'zod';
 import { StandardConfigFileLoader } from './config-file-loader';
 import { isConfigurationProperties, resolveConfigurationProperties } from './configuration-properties';
+import { getLogger } from '@blue/log';
+
+const logger = getLogger('blue-boot:application');
 
 /**
  * Derives the entry bean name from a class name (`ServerConfig` →
@@ -464,7 +467,7 @@ export class Application extends Emitter {
             // (or worse, re-throw out of refresh() leaving the poll loop
             // responsible). Surface rebind failures to the console instead.
             this.#refreshFailHandler = (error: Error) => {
-                console.error(
+                logger.error(
                     '[blue-boot] config:refresh rebind failure — the refresh may have half-applied ' +
                         '(ARC-1(c)): some classes rebound, others kept stale instances. ' +
                         'Correct the refresh source; the next refresh retries.',

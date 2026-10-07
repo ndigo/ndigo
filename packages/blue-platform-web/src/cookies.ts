@@ -5,6 +5,9 @@
  */
 import { createNull, JSONObject, JSONValue } from '@blue/core';
 import cookieExpression from './parser/cookie-expression';
+import { getLogger } from '@blue/log';
+
+const logger = getLogger('blue-platform-web:cookies');
 
 /** Parsed cookie structure returned by cookie parsing helpers. */
 export interface Cookie {
@@ -88,7 +91,9 @@ function init(converter: CookieConverter = {}): CookieJar {
                 value = result;
             }
         } catch (e) {
-            console.warn('[Cookies] Failed to stringify cookie value:', e);
+            logger.warn('[Cookies] Failed to stringify cookie value:', {
+                error: e instanceof Error ? e.message : String(e),
+            });
         }
 
         value = converter.write

@@ -10,6 +10,9 @@ import { resolveCacheName } from './cache-name';
 import type { CacheManager } from './cache-manager';
 import { serializeCacheKey } from './keys';
 import { ContextToken } from '@blue/factory';
+import { getLogger } from '@blue/log';
+
+const logger = getLogger('blue-cache:cached');
 
 /**
  * Metadata key prefix under which `@cached` writes its per-method spec —
@@ -144,7 +147,7 @@ export function cached(spec: CachedSpec = {}) {
             if (!manager) {
                 if (!degradationWarned && isDevMode()) {
                     degradationWarned = true;
-                    console.warn(
+                    logger.warn(
                         `[@blue/cache] @cached("${methodName}") ran without a CacheManager — caching is disabled for this method.`
                     );
                 }
@@ -174,7 +177,9 @@ export function cached(spec: CachedSpec = {}) {
                 try {
                     await store.set(key, result, normalized.ttl);
                 } catch (error) {
-                    console.warn(`[@blue/cache] failed to cache "${methodName}" (${key}):`, error);
+                    logger.warn(`[@blue/cache] failed to cache "${methodName}" (${key}):`, {
+                        error: error instanceof Error ? error.message : String(error),
+                    });
                 }
                 return result;
             })();

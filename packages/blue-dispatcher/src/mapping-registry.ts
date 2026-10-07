@@ -78,6 +78,19 @@ class MappingRegistry<T = unknown> {
     }
 
     /**
+     * Return every registered entry, in registration order.
+     *
+     * Unlike {@link mappings}, an entry carries the mapping object, the
+     * handler method, its mapping name and any direct paths — the read model
+     * introspection tooling needs without touching dispatch behavior.
+     *
+     * @returns A snapshot array of the registered entries.
+     */
+    entries(): MappingEntry<T>[] {
+        return [...this.#registry.values()];
+    }
+
+    /**
      * Register a mapping and its handler method.
      *
      * @param mapping - The mapping key.

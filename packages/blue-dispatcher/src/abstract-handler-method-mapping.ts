@@ -19,7 +19,7 @@ import {
 import { HTTPMethodCondition } from './http-method-condition';
 import { hasRouteMapping, getRouteMapping } from './route-mapping';
 import { AbstractHandlerMapping } from './abstract-handler-mapping';
-import { MappingRegistry } from './_mapping-registry';
+import { type MappingEntry, MappingRegistry } from './mapping-registry';
 import { Match, MatchComparator } from './_match';
 import { resolveHandlerWithContext, kindOf } from './_shared';
 import type { MaybeHandler } from './_shared';
@@ -143,6 +143,21 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
      */
     getHandlerMethods(): Map<T, RouteHandlerMethod> {
         return this.mappingRegistry.mappings;
+    }
+
+    /**
+     * Return the registered mapping entries, in registration order.
+     *
+     * Read-only introspection seam over {@link mappingRegistry}: each entry
+     * carries the mapping object, its resolved handler method, the mapping
+     * name and any direct paths. Dispatch behavior is unchanged — this exists
+     * for tooling that needs a pattern → handler read model (API docs,
+     * `blue inspect`).
+     *
+     * @returns A snapshot array of the registered mapping entries.
+     */
+    getMappingEntries(): MappingEntry<T>[] {
+        return this.mappingRegistry.entries();
     }
 
     /**

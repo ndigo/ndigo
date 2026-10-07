@@ -14,6 +14,7 @@ import { GenericApplicationContext } from '@blue/context';
 import { type Route } from '@blue/router';
 import { TestController } from './test-strategies';
 import { routeMapping } from '../src/route-mapping';
+import { parameters, pathVariable } from '../src/parameters';
 
 describe('RouteHandlerMapping', () => {
     let applicationContext: GenericApplicationContext;
@@ -231,6 +232,35 @@ describe('RouteHandlerMapping', () => {
             expect(handlerMapping.getHandlerMethodsForMappingName('/gone/now')).toHaveLength(1);
             handlerMapping.unregisterMapping(mapping);
             expect(handlerMapping.getHandlerMethodsForMappingName('/gone/now')).toHaveLength(0);
+        });
+
+        test('enumerates mapping entries with pattern, method, handler and parameters', () => {
+            @routeMapping('/inspect')
+            class InspectController {
+                @routeMapping({ value: '/items/{id}', method: 'GET', private: false })
+                @parameters({ id: pathVariable('id') })
+                item(id: string) {
+                    return id;
+                }
+            }
+
+            const ctx = new GenericApplicationContext('inspect');
+            ctx.setValue('inspectController', new InspectController());
+
+            const handlerMapping = new RadixMetadataHandlerMapping();
+            handlerMapping.setApplicationContext(ctx);
+            handlerMapping.init();
+
+            const entries = handlerMapping.getMappingEntries();
+            expect(entries).toHaveLength(1);
+
+            const [entry] = entries;
+            expect([...entry.mapping.patternsCondition.patterns]).toContain('/inspect/items/{id}');
+            expect(entry.mapping.methodCondition.method).toBe('GET');
+            expect(entry.mappingName).toBe('/inspect/items/{id}');
+            expect(entry.handlerMethod.handler).toBeInstanceOf(InspectController);
+            expect(entry.handlerMethod.method).toBe('item');
+            expect(entry.handlerMethod.parameters.map((parameter) => parameter.type.type)).toEqual(['path:variable']);
         });
     });
 });

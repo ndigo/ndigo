@@ -412,6 +412,49 @@ dotenv > application-{profile} > application > defaults` (documented
   `vault://`-style URL — documented extension point, no Vault-specific
   code in v1 (AD-29 D-3 rung 5).
 
+## Editor support
+
+`@blue/boot` ships a JSON Schema for the config-file convention so editors give
+completion and validation for the framework keys with no language server:
+
+```json
+{
+    "$schema": "../node_modules/@blue/boot/schema/application.schema.json",
+    "server": { "port": 8080 },
+    "profiles": { "active": ["prod"] },
+    "api": { "secretToken": { "cipher": "v1:…" } }
+}
+```
+
+The `$schema` path is relative to the file that contains it: from an app's
+`config/` directory the schema lives one level up under `node_modules`, so
+`../node_modules/@blue/boot/schema/application.schema.json` is the correct
+reference (adjust the `../` count if `config/` sits deeper). The schema is
+**permissive by design** — application keys are unconstrained
+(`additionalProperties: true` for the document, and the framework sections
+accept arbitrary extra values) and no unknown key is ever rejected. It only
+documents the framework namespaces below; profile files
+(`application-{profile}.json`) are structurally identical and use the same
+schema. The `{cipher:…}` marker is modeled as a marker, not an ordinary object
+value (§8). The schema itself lives at
+[`packages/blue-boot/schema/application.schema.json`](../../packages/blue-boot/schema/application.schema.json).
+
+Documented framework keys:
+
+| Key                             | Type                                 | Default             | Meaning                                                                                         |
+| ------------------------------- | ------------------------------------ | ------------------- | ----------------------------------------------------------------------------------------------- |
+| `server.name`                   | string                               | `blue-api`          | Application/server name — bound by an app's `@configurationProperties('server')` class.         |
+| `server.port`                   | integer                              | `3000` (`PORT` env) | TCP port to listen on (`0` requests an ephemeral port).                                         |
+| `server.host`                   | string                               | `127.0.0.1`         | Host/interface to bind to (platform-node `HTTPServer` default).                                 |
+| `profiles.active`               | string[]                             | —                   | Profiles to activate (`--profiles.active` / `BLUE_PROFILES_ACTIVE`).                            |
+| `profiles.default`              | string[]                             | —                   | Fallback profiles used when nothing is active (`--profiles.default` / `BLUE_PROFILES_DEFAULT`). |
+| `profiles.group.<name>`         | string[]                             | —                   | Profile group name → member profiles (`--profiles.group.<name>` / `BLUE_PROFILES_GROUPS`).      |
+| `telemetry.sampler`             | `'always'` \| `'off'` \| `{ ratio }` | `always`            | Root-span sampling for `configureTelemetry` (ratio in `[0, 1]`).                                |
+| `telemetry.traceExporter`       | exporter spec                        | `console`           | Trace export: `console` \| `none` \| `{ url, headers? }` (OTLP/HTTP).                           |
+| `telemetry.metricExporter`      | exporter spec                        | `console`           | Metric export — same spec as `traceExporter`.                                                   |
+| `telemetry.logExporter`         | exporter spec                        | `console`           | Log export — same spec as `traceExporter`.                                                      |
+| `management.redactHealthErrors` | boolean                              | `true`              | Redact thrown health-indicator errors on `/health`.                                             |
+
 ## Recommended reading
 
 - Guide 01 (building a node API) for the surrounding bootstrap

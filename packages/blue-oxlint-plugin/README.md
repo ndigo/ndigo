@@ -40,8 +40,20 @@ Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
 | `@blue/no-scheduled-in-browser`          | Disallow `@blue/scheduler` imports in browser-platform files                                                                       |
 | `@blue/no-signals-in-entity`             | `@blue/signals` reactivity does not leak into entities                                                                             |
 | `@blue/no-string-registry-lookup`        | Disallow string-literal registry lookups in source files                                                                           |
+| `@blue/no-unsafe-view-name-literal`      | View-name literals are relative — no absolute prefixes, `..` segments, or NUL bytes (DSV-SEC-1)                                    |
+| `@blue/no-duplicate-mapping-path`        | Duplicate method-level mapping paths of the same decorator kind in one class (class-local, best-effort); disabled in specs         |
 | `@blue/no-abstract-class-without-prefix` | Abstract classes use the `Abstract`/`As` prefix convention                                                                         |
 | `@blue/requires-doc-header`              | Source files begin with the canonical doc header (`@module`/`@since`/`@author`); repair with `nx generate @blue/generators:header` |
+
+`no-duplicate-mapping-path` is method-level, class-local, and best-effort: it
+compares only mapping decorators syntactically attached to methods of a single
+class declaration, groups by normalized path AND decorator kind (so a
+`@getMapping` and a `@postMapping` on one path are fine), and skips any
+registration carrying extra conditions (`matrixParams`, `params`, …). Class-level
+decorator paths are prefixes merged with the method paths and are never compared.
+Paths composed dynamically, or contributed by a base class, are not seen. Deliberate
+duplicate-registration fixtures are legitimate, so the rule is `off` in the repo's
+spec/test override block.
 
 ## API
 

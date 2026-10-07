@@ -190,8 +190,13 @@ describe('AbstractPathBasedViewResolver name containment', () => {
         resolver.suffix = '.js';
         resolver.isCaching = false;
 
+        // These literals must be REJECTED by the resolver — the lint rule
+        // (no-unsafe-view-name-literal) is intentionally inverted proof here.
+        // eslint-disable-next-line @blue/no-unsafe-view-name-literal -- traversal probe must reach the resolver
         expect(await resolver.resolveViewName('/../../../etc/passwd')).toBeNull();
+        // eslint-disable-next-line @blue/no-unsafe-view-name-literal -- matrix-param traversal probe
         expect(await resolver.resolveViewName('..;x=1/..;x=1/tmp/traversed')).toBeNull();
+        // eslint-disable-next-line @blue/no-unsafe-view-name-literal -- NUL probe
         expect(await resolver.resolveViewName('nul\u0000byte')).toBeNull();
     });
 });

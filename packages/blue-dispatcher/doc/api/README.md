@@ -45,6 +45,8 @@ Jeff Rose
 - [InvalidParameterMappingError](classes/InvalidParameterMappingError.md)
 - [LoggingRouteHandlerInterceptor](classes/LoggingRouteHandlerInterceptor.md)
 - [MappedHandlerInterceptor](classes/MappedHandlerInterceptor.md)
+- [MappingEntry](classes/MappingEntry.md)
+- [MappingRegistry](classes/MappingRegistry.md)
 - [MatrixParamCondition](classes/MatrixParamCondition.md)
 - [MatrixParamExpression](classes/MatrixParamExpression.md)
 - [MatrixValueMethodArgumentResolver](classes/MatrixValueMethodArgumentResolver.md)

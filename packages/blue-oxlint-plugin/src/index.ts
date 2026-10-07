@@ -17,6 +17,8 @@ import { noCrossParadigmDecorators } from './rules/no-cross-paradigm-decorators.
 import { noScheduledInBrowser } from './rules/no-scheduled-in-browser.js';
 import { noSignalsInEntity } from './rules/no-signals-in-entity.js';
 import { noStringRegistryLookup } from './rules/no-string-registry-lookup.js';
+import { noUnsafeViewNameLiteral } from './rules/no-unsafe-view-name-literal.js';
+import { noDuplicateMappingPath } from './rules/no-duplicate-mapping-path.js';
 import { requiresDocHeader } from './rules/requires-doc-header.js';
 
 const plugin = eslintCompatPlugin({
@@ -35,6 +37,8 @@ const plugin = eslintCompatPlugin({
         'no-scheduled-in-browser': noScheduledInBrowser,
         'no-signals-in-entity': noSignalsInEntity,
         'no-string-registry-lookup': noStringRegistryLookup,
+        'no-unsafe-view-name-literal': noUnsafeViewNameLiteral,
+        'no-duplicate-mapping-path': noDuplicateMappingPath,
         'requires-doc-header': requiresDocHeader,
     },
 });

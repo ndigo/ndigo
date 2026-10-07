@@ -41,6 +41,10 @@ const app = await new ApplicationBuilder([AppConfig, ServerConfig]).profiles('de
 app.getValue<ServerConfig>('serverConfig').port; // number — fail-loud on invalid values
 ```
 
+### Editor support for config files
+
+- [`schema/application.schema.json`](schema/application.schema.json) — a permissive JSON Schema (2020-12) for the `./config/application.json` + `application-{profile}.json` convention. Reference it with `"$schema": "../node_modules/@blue/boot/schema/application.schema.json"` for completion and validation of the documented framework keys (`server`, `profiles`, `telemetry`, `management`); application keys are unconstrained and the `{cipher:…}` secret marker is modeled.
+
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into

@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bluejs.dev/schema/application.schema.json",
+  "title": "BlueJS application configuration",
+  "description": "Editor schema for the BlueJS config-file convention: ./config/application.json and ./config/application-{profile}.json (TOON variants decode to the same JSON model). PERMISSIVE BY DESIGN — application keys are unconstrained (additionalProperties: true); this schema documents only the framework namespaces and never rejects an unknown key. Profile files are structurally identical to the base file.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "server": {
+      "title": "HTTP server",
+      "description": "Managed HTTP server settings (platform-node HTTPServer). Extra keys are preserved as config values.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/configValue" },
+      "properties": {
+        "name": {
+          "type": "string",
+          "default": "blue-api",
+          "description": "Application/server name. Bound by an app's @configurationProperties('server') class (default 'blue-api' in the bundled example); the framework itself does not read it."
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535,
+          "default": 3000,
+          "description": "TCP port to listen on. Defaults to the PORT environment variable, then 3000. 0 requests an ephemeral port. An out-of-range value fails server construction."
+        },
+        "host": {
+          "type": "string",
+          "default": "127.0.0.1",
+          "description": "Host/interface to bind to (platform-node HTTPServer default is 127.0.0.1)."
+        }
+      }
+    },
+    "profiles": {
+      "title": "Profiles",
+      "description": "Profile activation, mirroring the CLI/env channels (AD-14): CLI --profiles.* > BLUE_PROFILES_* env > builder .profiles(). Extra keys are preserved as config values.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/configValue" },
+      "properties": {
+        "active": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Profiles to activate. Highest-precedence activation channel is the CLI (--profiles.active=prod) over env BLUE_PROFILES_ACTIVE; the last source wins."
+        },
+        "default": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Fallback profiles consulted only when nothing is explicitly active (--profiles.default / BLUE_PROFILES_DEFAULT)."
+        },
+        "group": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "description": "Profile group names expanded to their member profiles (--profiles.group.<name> / BLUE_PROFILES_GROUPS, 'name=m1,m2;other=…')."
+        }
+      }
+    },
+    "telemetry": {
+      "title": "Telemetry",
+      "description": "OpenTelemetry knobs mirrored from TelemetryConfig (@blue/telemetry-node), the object accepted by configureTelemetry(). Extra keys are preserved as config values.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/configValue" },
+      "properties": {
+        "sampler": {
+          "description": "Root-span sampling: 'always' (default, 100%), 'off', or { ratio: number } in [0, 1]. Ratios outside the range or NaN fail loud at configuration time. Child spans inherit the root decision.",
+          "default": "always",
+          "$ref": "#/$defs/samplerSpec"
+        },
+        "traceExporter": {
+          "$ref": "#/$defs/exporterSpec",
+          "description": "Trace export. undefined/'console'/{ console: true } selects the console exporter (dev default); 'none' disables the signal; { url, headers? } selects OTLP/HTTP. OTLP urls are validated at configuration time."
+        },
+        "metricExporter": {
+          "description": "Metric export — same exporter spec as traceExporter.",
+          "$ref": "#/$defs/exporterSpec"
+        },
+        "logExporter": {
+          "description": "Log export — same exporter spec as traceExporter. Configuring anything but 'none' also routes LoggerFactory through the OpenTelemetry logger.",
+          "$ref": "#/$defs/exporterSpec"
+        }
+      }
+    },
+    "management": {
+      "title": "Management endpoints",
+      "description": "Management endpoint settings (/health, /metrics — ManagementAutoConfiguration). The endpoints are open by default; extra keys are preserved as config values.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/configValue" },
+      "properties": {
+        "redactHealthErrors": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether thrown health-indicator errors are redacted on /health (default true): the status stays DOWN and the component name is preserved, but the exception text is replaced so indicator internals never reach the wire."
+        }
+      }
+    }
+  },
+  "$defs": {
+    "configValue": {
+      "title": "Config value",
+      "description": "Any JSON value. A plain object carrying a `cipher` key is the {cipher:…} at-rest secret marker: a MARKER interpreted by the secret resolver at lookup time (with BLUE_SECRET_KEY wired), not an ordinary object value — the ciphertext lives in the file, the key in a separate channel. With no decryptor wired, the marker passes through as raw text.",
+      "anyOf": [
+        { "type": ["string", "number", "boolean", "null"] },
+        { "type": "array", "items": { "$ref": "#/$defs/configValue" } },
+        { "type": "object", "additionalProperties": { "$ref": "#/$defs/configValue" } },
+        {
+          "type": "object",
+          "required": ["cipher"],
+          "properties": {
+            "cipher": {
+              "type": "string",
+              "description": "{cipher:…} secret marker, e.g. 'v1:<base64 ciphertext>'. The scheme segment dispatches the decryptor."
+            }
+          }
+        }
+      ]
+    },
+    "samplerSpec": {
+      "title": "Sampler spec",
+      "description": "Trace sampling configuration (SamplerSpec): a preset or a ratio object.",
+      "anyOf": [
+        { "type": "string", "enum": ["always", "off"] },
+        {
+          "type": "object",
+          "required": ["ratio"],
+          "properties": {
+            "ratio": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Fraction of root spans kept, in [0, 1]."
+            }
+          }
+        }
+      ]
+    },
+    "exporterSpec": {
+      "title": "Exporter spec",
+      "description": "Per-signal exporter configuration (ExporterSpec).",
+      "anyOf": [
+        { "type": "string", "enum": ["console", "none"] },
+        {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "description": "OTLP/HTTP endpoint; validated at configuration time. Omit for the default endpoint."
+            },
+            "headers": {
+              "type": "object",
+              "additionalProperties": { "type": "string" },
+              "description": "Headers forwarded on export (e.g. bearer auth); never logged."
+            },
+            "console": {
+              "const": true,
+              "description": "Explicitly select the console exporter (equiv. to 'console')."
+            }
+          }
+        }
+      ]
+    }
+  }
+}

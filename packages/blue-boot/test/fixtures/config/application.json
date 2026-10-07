@@ -1,0 +1,5 @@
+{
+  "server": { "name": "fixture-api", "port": 8080 },
+  "features": { "alpha": true, "beta": 1 },
+  "api": { "secretToken": "{cipher:v1:AAAA}" }
+}

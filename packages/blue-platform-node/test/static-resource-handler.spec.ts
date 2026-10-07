@@ -454,6 +454,8 @@ describe('StaticResourceHandler — streaming + stat-only serving (SEC-8)', () =
         }
     });
 
+    // Skipped under root: chmod(0o000) is bypassed by uid 0, so the unreadable-file
+    // precondition cannot be established (see IS_ROOT above).
     test.skipIf(IS_ROOT)('304 and HEAD are answered from stat alone — the file is never opened', async () => {
         const etag = String((await serve('/app.js')).headers['etag']);
         await chmod(join(root, 'app.js'), 0o000);

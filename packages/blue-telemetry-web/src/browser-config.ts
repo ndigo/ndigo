@@ -20,7 +20,10 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { MeterProvider, PeriodicExportingMetricReader, ConsoleMetricExporter } from '@opentelemetry/sdk-metrics';
 import { LoggerProvider, SimpleLogRecordProcessor, ConsoleLogRecordExporter } from '@opentelemetry/sdk-logs';
+import { getLogger } from '@blue/log';
 import { LoggerFactory } from '@blue/telemetry';
+
+const logger = getLogger('blue-telemetry-web:browser-config');
 
 export interface BrowserTelemetryConfig {
     serviceName: string;
@@ -135,7 +138,7 @@ function currentTracerProvider(): unknown {
  */
 export function configureBrowserTelemetry(config: BrowserTelemetryConfig): BrowserTelemetryHandle {
     if (activeTracerProvider !== undefined && currentTracerProvider() === activeTracerProvider) {
-        console.error(
+        logger.error(
             '[blue-telemetry-web] configureBrowserTelemetry called again — OpenTelemetry global providers are ' +
                 'registered once per process and the first call wins; this call is being ignored.'
         );

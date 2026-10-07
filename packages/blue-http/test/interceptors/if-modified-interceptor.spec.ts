@@ -54,7 +54,10 @@ describe('IfModifiedInterceptor', () => {
 
     afterAll(() => server.close());
 
-    test.skip('it should handle modification headers', async () => {
+    // Un-skipped (TST-C): the conditional-request round trip — first response caches
+    // ETag/Last-Modified, the second sends If-None-Match/If-Modified-Since — passes
+    // against the current interceptor and MSW 2.x; the skip was stale.
+    test('it should handle modification headers', async () => {
         await http?.request('http://localhost/ifModified', { ifModified: true } as IfModifiedInit);
         await http?.request('http://localhost/ifModified', { ifModified: true } as IfModifiedInit);
         const testInterceptor = http?.interceptors[0] as TestIfModifiedInterceptor | undefined;

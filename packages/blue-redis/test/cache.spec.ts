@@ -16,6 +16,8 @@ import { RedisConnection, type RedisClient } from '../src';
 import { RedisCache, RedisCacheManager, type RedisCacheManagerOptions } from '../src/cache';
 
 const url = process.env.BLUE_REDIS_TEST_URL;
+// Live integration lane — intentionally skipped unless BLUE_REDIS_TEST_URL points at a
+// running standalone Redis (see the file header); the in-memory unit lane covers the rest.
 const live = url === undefined ? describe.skip : describe;
 
 // Independent fixture encoding for raw corruption/expiry injection into our own namespace.

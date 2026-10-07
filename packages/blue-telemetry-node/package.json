@@ -21,7 +21,7 @@
   },
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
     "test:watch": "vitest"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",

@@ -253,6 +253,11 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
             return;
         }
         await this.#adapter.close();
+        // The adapter's teardown closes its socket registry (PLN-F10), and a
+        // closed registry cannot be reconnected — drop the adapter so the
+        // documented "fresh start can be issued after close" rebuilds one
+        // (with a fresh default registry) instead of reusing a dead one.
+        this.#adapter = null;
         this.#started = false;
         this.#startPromise = null;
     }

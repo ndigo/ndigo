@@ -26,7 +26,7 @@ BlueJS is a JavaScript-first application framework built on the enduring archite
 ## Core Philosophy
 
 1. **Universal JavaScript**: Designed to run anywhere—browser, Node.js, or hybrid environments.
-2. **Composition Over Inheritance**: Leveraging mixins and functional composition (via Ramda) for flexibility.
+2. **Composition Over Inheritance**: Leveraging mixins and functional composition for flexibility.
 3. **Convention Over Configuration**: Sensible defaults with powerful override capabilities.
 4. **Bottom-Up Development**: Building a rock-solid foundation of utility and parser layers before implementing high-level application logic.
 5. **Test-Driven Robustness**: High test coverage (>80%) is a requirement, not an afterthought.
@@ -661,16 +661,27 @@ type UserUpdate = Partial<UserDTO>;
 **4. Library Integration Layer (BlueJS Pattern):**
 
 ```typescript
-// @blue/util - encapsulates date-fns
-export { format, parseISO, addDays } from 'date-fns';
+// @blue/util - the integration layer for its encapsulated libraries.
+// The imports live inside @blue/util (e.g. src/string/slugify.ts,
+// src/math/random.ts, src/string/to-reg-exp.ts) and are re-exported through
+// stable category surfaces:
+import slug from 'slug';
+import alea from 'seedrandom/lib/alea.js';
+import safeRegex from 'safe-regex';
 
-// Custom utilities built on top
-export function formatUserDate(date: Date, timezone: string): string {
-    return formatInTimeZone(date, timezone, 'PP');
+export function uniqueSlug(title: string): string {
+    return `${slug(title)}-${alea().toString(36).slice(2, 8)}`;
 }
 
-// Application code imports from @blue/util, not date-fns directly
-import { formatUserDate } from '@blue/util';
+export function assertSafeRegex(source: string): boolean {
+    return safeRegex(source);
+}
+
+// Application code imports from @blue/util, not from the encapsulated libraries
+import { string, math } from '@blue/util';
+
+string.slugify('Hello World');
+math.random();
 ```
 
 **See also:** [Dependency Management Strategy](#dependency-management-strategy) for the Library Integration Layer pattern.
@@ -1091,7 +1102,7 @@ graph TD
 
 ### Package Map
 
-Canonical reference for every publishable package: purpose · layer · platform · runtime dependencies (BlueJS only; externals in parentheses). `scripts/check-manifests.mjs` (CI, `pnpm manifest:check`) enforces that every runtime import is declared and every declared dependency is used; the columns below are maintained by hand from the manifests — update this table whenever manifests or imports change.
+Canonical reference for every publishable package: purpose · layer · platform · runtime dependencies. The **Runtime deps** column lists BlueJS dependencies only; notable external libraries appear in parentheses in the **Purpose** column (illustrative, not exhaustive — the package manifest is the source of truth for externals). `scripts/check-manifests.mjs` (CI, `pnpm manifest:check`) enforces that every runtime import is declared and every declared dependency is used; the columns below are maintained by hand from the manifests — update this table whenever manifests or imports change.
 
 | Package                   | Layer   | Platform | Purpose                                                                                                    | Runtime deps                                                                                      |
 | :------------------------ | :------ | :------- | :--------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ |
@@ -1120,7 +1131,7 @@ Canonical reference for every publishable package: purpose · layer · platform 
 | `@blue/view-ejs`          | 5       | node     | EJS server-side template view technology (`ejs`)                                                           | `view`, `content`, `context`, `core`, `router`                                                    |
 | `@blue/dispatcher`        | 5       | iso      | Front controller: request dispatch, parameter binding, radix handler mappings (`zod`)                      | `view`, `router`, `http`, `socket`, `context`, `content`, `core`, `factory`, `util`               |
 | `@blue/service`           | 6       | iso      | Typed service clients, SSE/streaming (`zod`)                                                               | `http`, `context`, `core`, `factory`, `util`                                                      |
-| `@blue/management`        | 6       | node     | Actuator endpoints: `/health`, `/metrics`                                                                  | `dispatcher`, `context`, `core`, `telemetry`                                                      |
+| `@blue/management`        | 6       | node     | Actuator endpoints: `/health`, `/metrics`                                                                  | `dispatcher`, `context`, `core`, `platform-node`, `telemetry`, `util`                             |
 | `@blue/openapi`           | 6       | iso      | OpenAPI 3.0.3 generation from dispatch metadata (`zod`)                                                    | `core`, `dispatcher`, `http`                                                                      |
 | `@blue/host`              | 6       | browser  | Micro-frontend shell orchestration, feature mounting (AD-18)                                               | `context`, `core`, `router`                                                                       |
 | `@blue/auth-core`         | 6       | iso      | Auth contracts: principal, sessions, password encoders, `@authenticated`/`@authorized`                     | —                                                                                                 |
@@ -1131,9 +1142,9 @@ Canonical reference for every publishable package: purpose · layer · platform 
 | `@blue/telemetry-node`    | 6       | node     | OTel NodeSDK wiring + Node instrumentations (10 OTel packages; peer `ws`)                                  | `telemetry`, `platform-node`, `router`, `socket`, `view`                                          |
 | `@blue/telemetry-web`     | 6       | browser  | Browser SDK wiring + web instrumentations (8 OTel packages)                                                | `telemetry`, `platform-web`, `socket`                                                             |
 | `@blue/test`              | 6       | iso      | In-process request dispatch test harness (MockMVC-style)                                                   | `platform-node`, `platform-web`, `dispatcher`, `router`, `view`, `context`, `http`, `log`, `util` |
-| `@blue/boot`              | 7       | node     | Application bootstrap: profiles, typed config, `run()` (`zod`; peer `@toon-format/toon`)                   | `context`, `core`, `factory`, `router`                                                            |
+| `@blue/boot`              | 7       | node     | Application bootstrap: profiles, typed config, `run()` (`zod`; peer `@toon-format/toon`)                   | `context`, `core`, `factory`, `router`, `util`                                                    |
 | `@blue/oxlint-plugin`     | tooling | —        | Architecture-enforcing oxlint rules (CI) (`@oxlint/plugins`; peer `oxlint`)                                | —                                                                                                 |
-| `@blue/generators`        | tooling | —        | Nx generators: package/component/readme scaffolding (`@nx/devkit`)                                         | —                                                                                                 |
+| `@blue/generators`        | tooling | —        | Nx generators: package/component/readme scaffolding (`@nx/devkit`)                                         | `util`                                                                                            |
 
 **Standalone use:** every package resolves its own install closure — `npm install @blue/http` pulls exactly `core`, `factory`, `util` and its external deps; no hand-assembled peer list. `peerDependencies` is allowlisted per package for host-provided contracts (`oxlint-plugin → oxlint`, `telemetry-node → ws`, `platform-node → swagger-ui-dist`, `boot → @toon-format/toon`, `redis → cache`/`factory`/`socket`). See [Manifest Dependency Sections](#manifest-dependency-sections).
 
@@ -1175,10 +1186,16 @@ Canonical reference for every publishable package: purpose · layer · platform 
 
 **Current Integration Layers:**
 
-| Integration Layer | Encapsulated Libraries | Purpose                                     |
-| :---------------- | :--------------------- | :------------------------------------------ |
-| `@blue/util`      | `seedrandom`, `slug`   | Randomness, URL slugs                       |
-| `@blue/dom`       | `linkedom`             | Isomorphic DOM parsing and element creation |
+| Integration Layer | Encapsulated Libraries             | Purpose                                            |
+| :---------------- | :--------------------------------- | :------------------------------------------------- |
+| `@blue/util`      | `safe-regex`, `seedrandom`, `slug` | ReDoS-safe regex validation, randomness, URL slugs |
+| `@blue/dom`       | `linkedom`                         | Isomorphic DOM parsing and element creation        |
+
+The encapsulated-library set is the set enforced by the
+`@blue/no-direct-integration-imports` oxlint rule (`INTEGRATION_LAYER_MAP` in
+`@blue/oxlint-plugin`, wired through `.oxlintrc.json`; the lint lane runs
+`--deny-warnings`, so a violation fails CI). Add the library there first, then
+here.
 
 ### Manifest Dependency Sections
 
@@ -1190,10 +1207,14 @@ sections (`scripts/check-manifests.mjs` — CI, `pnpm manifest:check`):
    `core`, `factory`, `util`, and OTel's API automatically.
 2. **`devDependencies`** — imports used only by `test/`, `bench/`, and root
    `vitest.config.ts`/`vite.config.ts`, plus `@types/*` and build tooling.
-3. **`peerDependencies`** — reserved for host-provided contracts, currently
-   exactly two: `@blue/oxlint-plugin → oxlint` (plugin contract) and
-   `@blue/telemetry-node → ws` (host-provided types). Any new peer needs a
-   deliberate decision + allowlist entry in the checker.
+3. **`peerDependencies`** — reserved for host-provided contracts, allowlisted
+   per package in the checker (`PEER_ALLOWLIST` in
+   `scripts/check-manifests.mjs` — the single source of truth): `@blue/oxlint-plugin
+→ oxlint` (plugin contract), `@blue/telemetry-node → ws` (host-provided
+   types), `@blue/platform-node → swagger-ui-dist` (asset-only docs UI),
+   `@blue/redis → @blue/cache`/`@blue/factory`/`@blue/socket` (node-only
+   capability subpaths), and `@blue/boot → @toon-format/toon` (optional; AD-66).
+   Any new peer needs a deliberate decision + allowlist entry in the checker.
 
 **Rule of thumb:** if a package cannot run right after `npm install <pkg>`,
 the missing resolver is a manifest bug — not the consumer's job. There is no
@@ -1219,7 +1240,7 @@ import { slugify } from '@blue/util'; // ✅ Import from integration layer
 
 ```typescript
 // In @blue/core or any non-integration package
-import { format } from 'date-fns'; // ❌ Direct import bypasses integration layer
+import { random } from 'seedrandom'; // ❌ Direct import bypasses integration layer
 ```
 
 **✅ Allowed Exception (Tests):**
@@ -1759,7 +1780,8 @@ Guides: [`docs/guides/`](docs/guides/README.md).
   `@blue/signals`), IoC/context, the web stack (`@blue/http`,
   `@blue/router`, `@blue/dispatcher`), observability, and the
   view/application layers are complete; the 1.0 checkpoint (Wave 10) is
-  reached and decision records run AD-01..AD-67.
+  reached and the decision records are indexed in
+  [`docs/decisions/README.md`](docs/decisions/README.md).
 - **Auth shipped** (AD-33, AD-56): credentials + session stores (memory
   and durable LibSQL), OIDC authorization-code + PKCE, JWTs, role guards,
   rate limiting, trusted-proxy client-IP resolution.

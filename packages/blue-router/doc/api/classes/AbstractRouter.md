@@ -26,7 +26,13 @@ It includes mechanisms for managing route interceptors.
 
 ### Constructor
 
-> **new AbstractRouter**(): `AbstractRouter`
+> **new AbstractRouter**(`options?`): `AbstractRouter`
+
+#### Parameters
+
+##### options?
+
+[`RouterOptions`](../interfaces/RouterOptions.md) = `{}`
 
 #### Returns
 

@@ -15,7 +15,9 @@ Only 200 OK responses to GET/HEAD requests are cached, keyed by
 `method:url`. Credentialed requests — those carrying an `Authorization`
 or `Cookie` header — are never cached and never served from cache, so one
 user's authenticated response can never leak to another user through the
-shared in-memory cache.
+shared in-memory cache. Responses that forbid shared caching (`Set-Cookie`,
+`Cache-Control: private`/`no-store`/`no-cache`, `Vary: *`) are never stored,
+and a stored response is only replayed when its `Vary` request headers match.
 
 ## Implements
 

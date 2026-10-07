@@ -169,11 +169,42 @@ describe('FeatureRoutingRegistry', () => {
 
         registry.navigate('/todo');
 
-        expect(accountDeactivate).toHaveBeenCalledTimes(1);
+        // `account` was registered but never activated, so it must not be
+        // deactivated (PWB-REV-011).
+        expect(accountDeactivate).not.toHaveBeenCalled();
 
         registry.navigate('/account');
 
         expect(todoDeactivate).toHaveBeenCalledTimes(1);
+        expect(registry.activeFeatureName).toBe('account');
+    });
+
+    test('exclusive policy does not deactivate or count never-activated features (PWB-REV-011)', () => {
+        const incrementCounter = vi.fn();
+        const setGauge = vi.fn();
+        const neverActivatedDeactivate = vi.fn();
+        const registry = new FeatureRoutingRegistry(undefined, {
+            activationPolicy: 'exclusive',
+            metricRecorder: { incrementCounter, setGauge },
+        });
+
+        registry.registerFeature({
+            name: 'never',
+            prefix: '/never',
+            onDeactivate: neverActivatedDeactivate,
+            onRoute: vi.fn(),
+        });
+        registry.registerFeature({
+            name: 'todo',
+            prefix: '/todo',
+            onRoute: vi.fn(),
+        });
+
+        registry.navigate('/todo');
+
+        expect(neverActivatedDeactivate).not.toHaveBeenCalled();
+        expect(incrementCounter).not.toHaveBeenCalledWith('never', 'never.deactivateCount');
+        expect(setGauge).not.toHaveBeenCalledWith('never', 'never.isActive', 0);
     });
 
     test('it should emit standardized feature metrics when metric recorder is provided', () => {

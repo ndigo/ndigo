@@ -68,6 +68,28 @@ export interface OpenAPIResponse {
 }
 
 /**
+ * An OpenAPI security scheme object (the subset the generator carries).
+ * Declared through {@link OpenAPIGeneratorOptions.securitySchemes} and
+ * referenced by name from operation/`@apiDocs` `security` requirements.
+ */
+export interface OpenAPISecurityScheme {
+    type: 'apiKey' | 'http' | 'oauth2' | 'openIdConnect';
+    description?: string;
+    /** `apiKey`: the header/query/cookie name. */
+    name?: string;
+    /** `apiKey`: where the key travels. */
+    in?: 'query' | 'header' | 'cookie';
+    /** `http`: the scheme (e.g. `bearer`, `basic`). */
+    scheme?: string;
+    /** `http` bearer: the bearer format hint. */
+    bearerFormat?: string;
+    /** `oauth2`: flow definitions. */
+    flows?: Record<string, unknown>;
+    /** `openIdConnect`: discovery URL. */
+    openIdConnectUrl?: string;
+}
+
+/**
  * An OpenAPI operation object. Framework-specific conditions are preserved
  * under `x-blue-*` extensions rather than dropped.
  */
@@ -80,6 +102,12 @@ export interface OpenAPIOperation {
     parameters?: OpenAPIParameter[];
     requestBody?: OpenAPIRequestBody;
     responses: Record<string, OpenAPIResponse>;
+    /**
+     * Security requirements for this operation (scheme name → scopes). Set
+     * from `@apiDocs({ security })`; overrides the document-level default.
+     * An empty array documents an explicitly anonymous operation.
+     */
+    security?: Array<Record<string, string[]>>;
     /** Framework matrix-parameter conditions (AD-35 D-2). */
     'x-blue-matrixParams'?: string[];
     /** Framework query-parameter conditions (AD-35 D-2). */
@@ -104,13 +132,22 @@ export interface OpenAPIDocument {
     servers?: Array<{ url: string }>;
     paths: Record<string, OpenAPIPathItem>;
     /**
+     * Security requirements applied document-wide (scheme name → scopes);
+     * per-operation `security` overrides them. Present when
+     * {@link OpenAPIGeneratorOptions.security} is set.
+     */
+    security?: Array<Record<string, string[]>>;
+    /**
      * Component schemas hoisted out of the operations: recursive DTOs (and
      * schemas registered with an `id`) convert to schemas whose `$ref`
      * pointers are document-root-relative, so they cannot embed inline.
-     * Present only when at least one schema was hoisted.
+     * Present when at least one schema was hoisted or a security scheme is
+     * declared (`schemas` may then be empty).
      */
     components?: {
         schemas: Record<string, OpenAPISchemaObject>;
+        /** Named security schemes ({@link OpenAPIGeneratorOptions.securitySchemes}). */
+        securitySchemes?: Record<string, OpenAPISecurityScheme>;
     };
 }
 
@@ -126,6 +163,18 @@ export interface OpenAPIGeneratorOptions {
     description?: string;
     /** Static `servers` URLs; omitted when empty. */
     servers?: string[];
+    /**
+     * Named security schemes for `components.securitySchemes` (DAT-F12).
+     * Referenced by name from the document-level {@link security} default
+     * and per-operation `@apiDocs({ security })` requirements.
+     */
+    securitySchemes?: Record<string, OpenAPISecurityScheme>;
+    /**
+     * Document-level default security requirements (scheme names); a
+     * per-operation `@apiDocs({ security })` overrides them. Omitted when
+     * empty.
+     */
+    security?: string[];
     /** Explicit path denylist (matched after template translation). */
     excludePaths?: string[];
     /**
@@ -405,7 +454,15 @@ export class OpenAPISpecGenerator {
         if (options.servers !== undefined && options.servers.length > 0) {
             document.servers = options.servers.map((url) => ({ url }));
         }
-        if (components.size > 0) document.components = { schemas: components.schemas };
+        if (options.security !== undefined && options.security.length > 0) {
+            document.security = options.security.map((name) => ({ [name]: [] }));
+        }
+        const securitySchemes = options.securitySchemes;
+        const hasSecuritySchemes = securitySchemes !== undefined && Object.keys(securitySchemes).length > 0;
+        if (components.size > 0 || hasSecuritySchemes) {
+            document.components = { schemas: components.schemas };
+            if (hasSecuritySchemes) document.components.securitySchemes = securitySchemes;
+        }
         return document;
     }
 
@@ -417,19 +474,22 @@ export class OpenAPISpecGenerator {
         docs: APIDocsMetadata | undefined,
         components: SchemaComponents
     ): OpenAPIOperation {
-        const operation: OpenAPIOperation = {
-            responses: { '200': { description: 'OK' } },
-        };
+        const operation: OpenAPIOperation = { responses: {} };
         if (docs !== undefined) {
             if (docs.operationId !== undefined) operation.operationId = docs.operationId;
             if (docs.summary !== undefined) operation.summary = docs.summary;
             if (docs.description !== undefined) operation.description = docs.description;
             if (docs.tags !== undefined && docs.tags.length > 0) operation.tags = docs.tags;
             if (docs.deprecated !== undefined) operation.deprecated = docs.deprecated;
+            if (docs.security !== undefined) {
+                operation.security = docs.security.map((name) => ({ [name]: [] }));
+            }
         }
         if (operation.operationId === undefined) operation.operationId = `${method.toLowerCase()}-${path}`;
         const operationId = operation.operationId;
-        if (docs?.responses !== undefined) {
+        if (docs?.responses !== undefined && Object.keys(docs.responses).length > 0) {
+            // Declared responses REPLACE the implicit `200 OK` — the handler's
+            // own set is authoritative (DAT-F11).
             for (const [status, entry] of Object.entries(docs.responses)) {
                 const { description, schema } = responseDocsOf(entry);
                 const response: OpenAPIResponse = { description };
@@ -440,6 +500,8 @@ export class OpenAPISpecGenerator {
                 }
                 operation.responses[status] = response;
             }
+        } else {
+            operation.responses['200'] = { description: 'OK' };
         }
 
         // Framework conditions the OpenAPI model cannot express are carried

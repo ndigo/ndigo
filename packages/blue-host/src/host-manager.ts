@@ -137,7 +137,8 @@ export class HostManager {
 
         const { onDeactivate, onRoute, prefix, ...featureOptions } = options;
 
-        this.#mountManager.registerFeature(featureOptions);
+        // Register routing first: a duplicate-prefix rejection must not leave
+        // an orphaned mount registration behind (PWB-REV-010).
         this.#routingRegistry.registerFeature({
             name: options.name,
             prefix,
@@ -161,6 +162,15 @@ export class HostManager {
                 onRoute?.(route);
             },
         });
+
+        try {
+            this.#mountManager.registerFeature(featureOptions);
+        } catch (error) {
+            // Roll the routing half back so the two registries stay in sync.
+            this.#routingRegistry.unregister(options.name);
+            throw error;
+        }
+
         this.#names.add(options.name);
 
         return this;

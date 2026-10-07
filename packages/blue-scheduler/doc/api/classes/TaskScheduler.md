@@ -49,7 +49,11 @@ Clock and warning-sink injection.
 
 > **get** **isRunning**(): `boolean`
 
-Whether the wall-clock timer loop is armed.
+Whether the wall-clock timer loop is started.
+
+True from `start()` until `stop()` even while no timer is armed — a
+started loop with no registered tasks has nothing to wake for, but it
+will arm as soon as a task is registered.
 
 ##### Returns
 
@@ -117,6 +121,10 @@ The task statistics, or `undefined` when not registered.
 
 Registers a task; its first fire is computed from the current clock.
 
+When the loop is already started, the timer is re-armed so a task
+registered after `start()` (or one due earlier than the armed timer)
+fires on time.
+
 #### Parameters
 
 ##### definition
@@ -142,6 +150,9 @@ On duplicate names or after `close()`.
 Starts the wall-clock timer loop (idempotent). Fire-and-forget: ticks
 are not awaited, so long runs never delay the loop — single-flight
 prevents same-task overlap.
+
+The started latch is set even when no tasks are registered, so
+registering one later arms the loop.
 
 #### Returns
 
@@ -207,6 +218,10 @@ How many runs started.
 > **unregister**(`name`): `boolean`
 
 Removes a task.
+
+When the loop is started, the timer is re-armed so the next wake
+reflects the remaining tasks (a removed earliest task no longer
+leaves a stale timer).
 
 #### Parameters
 

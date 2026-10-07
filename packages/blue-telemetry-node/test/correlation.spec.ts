@@ -7,7 +7,7 @@
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
-import { context as otelContext, SpanStatusCode, trace } from '@opentelemetry/api';
+import { context as otelContext, SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
 import { HTTPServerInstrumentation } from '../src/instrumentation/http-server/http-server';
 import { DispatcherInstrumentation } from '@blue/telemetry';
 import { getMapping, ModelAndView, requestMapping } from '@blue/dispatcher';
@@ -120,6 +120,8 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
         // could not even wrap the mixin prototype; both must now emit).
         expect(requestSpans.length).toBeGreaterThan(0);
         const requestSpan = requestSpans[requestSpans.length - 1];
+        // The inbound HTTP request owns the SERVER boundary (TEL-11).
+        expect(requestSpan.kind).toBe(SpanKind.SERVER);
         expect(requestSpan.attributes['http.request.method']).toBe('GET');
         // TEL-06: the request-target layer has no route template, so it emits
         // the concrete path as `url.path` and omits `http.route` (no fake).
@@ -136,6 +138,8 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
         expect(dispatchSpan.parentSpanContext?.spanId).toBe(requestSpan.spanContext().spanId);
         expect(dispatchSpan.attributes['http.route']).toBe('/');
         expect(dispatchSpan.attributes['http.method']).toBe('GET');
+        // Route dispatch is internal (TEL-11), nested under the SERVER request span.
+        expect(dispatchSpan.kind).toBe(SpanKind.INTERNAL);
     });
 
     test('view-name resolution records the winning resolver', async () => {

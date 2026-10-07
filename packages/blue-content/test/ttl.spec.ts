@@ -56,6 +56,27 @@ describe('TtlContentSource', () => {
         expect(loader).toHaveBeenCalledTimes(3);
     });
 
+    test('sweeps expired entries on write so dynamic keys do not accumulate (PWB-REV-017)', async () => {
+        vi.useFakeTimers();
+        try {
+            const loader = vi.fn().mockResolvedValue('Hello');
+            const source = new TtlContentSource(loader, 1000);
+
+            await source.getContent('a', 'en');
+            await source.getContent('b', 'en');
+            await source.getContent('c', 'en');
+            expect(source.size).toBe(3);
+
+            vi.advanceTimersByTime(1001);
+
+            // The write sweeps the three expired entries before inserting.
+            await source.getContent('d', 'en');
+            expect(source.size).toBe(1);
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
     test('reloads after TTL expires', async () => {
         vi.useFakeTimers();
         const loader = vi.fn().mockResolvedValue('Hello');

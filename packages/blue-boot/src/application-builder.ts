@@ -28,7 +28,7 @@ export class ApplicationBuilder {
     #parent: ApplicationBuilder | null;
     #profiles: Set<string>;
     #properties: JSONObject;
-    #running: boolean;
+    #runPromise: Promise<ConfigurableApplicationContext> | null;
     #sources: Set<Function>;
 
     /**
@@ -60,7 +60,7 @@ export class ApplicationBuilder {
         this.#parent = parent;
         this.#profiles = new Set<string>();
         this.#properties = {};
-        this.#running = false;
+        this.#runPromise = null;
         this.#sources = new Set<Function>();
     }
 
@@ -210,12 +210,22 @@ export class ApplicationBuilder {
      * @returns A promise resolving to the application context (file loading is async).
      */
     async run(...args: string[]): Promise<ConfigurableApplicationContext> {
-        if (this.#running) {
-            return this.#context;
+        // CTX-09 single-flight: concurrent run() calls share one in-flight
+        // boot. Without caching the promise both calls await `#running`, boot
+        // twice, and leak the first context.
+        if (this.#runPromise) {
+            return this.#runPromise;
         }
-        this.#context = await this.build().run(...args);
-        this.#running = true;
-        return this.#context;
+        this.#runPromise = this.build().run(...args);
+        try {
+            this.#context = await this.#runPromise;
+            return this.#context;
+        } catch (error) {
+            // A failed boot is retryable: drop the in-flight promise so a
+            // later run() retries instead of replaying the rejection.
+            this.#runPromise = null;
+            throw error;
+        }
     }
 
     /**

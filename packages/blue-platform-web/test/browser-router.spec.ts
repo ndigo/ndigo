@@ -203,6 +203,7 @@ describe('BrowserRouter', () => {
     });
 
     test('restores the route and runs afterCompletion when postHandle throws', async () => {
+        const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
         const router = new BrowserRouter(callback);
         await router.setRoute('/original');
         callback.mockClear();
@@ -221,6 +222,65 @@ describe('BrowserRouter', () => {
         expect(afterCompletion).toHaveBeenCalledTimes(1);
         expect(router.route).toBe('/original');
         expect(callback).not.toHaveBeenCalled();
+        // The failure is surfaced rather than silently swallowed.
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+        errorSpy.mockRestore();
+        router.destroy();
+    });
+
+    test('a rejected private navigation restores the pre-call route, not the last public route (PWB-REV-004)', async () => {
+        const router = new BrowserRouter(callback);
+        await router.setRoute('/public');
+        await router.setRoute('/private-1', false);
+
+        router.use({ preHandle: () => false });
+        await router.setRoute('/private-2', false);
+
+        expect(router.route).toBe('/private-1');
+        router.destroy();
+    });
+
+    test('surfaces pipeline failures through the onError hook (PWB-REV-015)', async () => {
+        const onError = vi.fn();
+        const router = new BrowserRouter(callback, { onError });
+        await router.setRoute('/original');
+
+        router.use({
+            preHandle: () => true,
+            postHandle: () => {
+                throw new Error('postHandle boom');
+            },
+        });
+
+        await router.setRoute('/next');
+
+        expect(onError).toHaveBeenCalledTimes(1);
+        const captured = onError.mock.calls[0]?.[0] as Error | undefined;
+        expect(captured?.message).toBe('postHandle boom');
+        expect(router.route).toBe('/original');
+        router.destroy();
+    });
+
+    test('serializes concurrent navigations, last one winning (PWB-REV-005)', async () => {
+        const router = new BrowserRouter(callback);
+        const { promise: gate, resolve: release } = Promise.withResolvers<void>();
+        const preHandle = vi.fn(async (route: Route) => {
+            if (route.path === 'a') {
+                await gate;
+            }
+            return true;
+        });
+        router.use({ preHandle });
+
+        const first = router.setRoute('/a');
+        const second = router.setRoute('/b');
+
+        await vi.waitFor(() => expect(preHandle).toHaveBeenCalledTimes(1));
+        release();
+        await Promise.all([first, second]);
+
+        expect(router.route).toBe('/b');
+        expect(callback).toHaveBeenCalledTimes(2);
         router.destroy();
     });
 });

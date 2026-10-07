@@ -18,6 +18,10 @@ are clones of their pre-transaction values. References callers held to
 entities before the transaction keep their own later mutations — the stores
 no longer alias them after a rollback.
 
+Overlapping `run()` calls are rejected (the backing store can only hold one
+snapshot at a time); a second concurrent call fails loud rather than
+silently discarding the first run's commits on rollback (DAT-F2).
+
 ## Since
 
 1.0.0

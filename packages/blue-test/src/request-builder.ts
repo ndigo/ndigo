@@ -17,7 +17,7 @@ import { guid } from '@blue/util/math';
 
 import { HTTPHeaders } from '@blue/http';
 import { Route, RouteSegment, ACCEPT_LANGUAGE_ATTRIBUTE } from '@blue/router';
-import { NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE, NodeRequest } from '@blue/platform-node';
+import { NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE, NodeRequest, parseCookies } from '@blue/platform-node';
 import { ResponseSink } from './memory-response';
 
 /**
@@ -50,6 +50,12 @@ export interface MockRequest {
      * each other's budgets unless they deliberately share an address.
      */
     remoteAddress?: string;
+    /**
+     * Simulates a transport-level failure the in-process harness cannot
+     * otherwise reproduce: `'aborted'` mirrors the adapter's `400`
+     * `request_aborted`, `'timeout'` its `408` `request_timeout` (HTT-REV-014).
+     */
+    transport?: 'aborted' | 'timeout';
 }
 
 /**
@@ -115,10 +121,30 @@ export function buildRoute(request: MockRequest, responseSink: ResponseSink): Pr
         headers[name.toLowerCase()] = value;
     }
 
+    // HTT-REV-015: `.body()` is documented as a JSON object body, so default
+    // the Content-Type the live client would send when none is supplied.
+    if (request.body !== undefined && headers['content-type'] === undefined) {
+        headers['content-type'] = 'application/json';
+    }
+
+    // HTT-REV-015: honor a `Cookie` header like Node's `IncomingMessage`;
+    // explicit `.cookies()` entries win over the parsed header. A bounds
+    // violation (oversized cookie) is left for `MockHTTP.request` to surface
+    // as the adapter's 431 — the route builder stays usable for direct callers.
+    let headerCookies: Record<string, string> = {};
+    const cookieHeader = HTTPHeaders.COOKIE.get(headers);
+    if (cookieHeader !== null) {
+        try {
+            headerCookies = parseCookies(cookieHeader);
+        } catch {
+            headerCookies = {};
+        }
+    }
+
     const nodeRequest: NodeRequest = {
         headers,
         body: request.body ?? {},
-        cookies: request.cookies ?? {},
+        cookies: { ...headerCookies, ...request.cookies },
         session: request.session ?? {},
         remoteAddress: request.remoteAddress ?? `mock-peer-${(mockPeerCounter += 1)}`,
     };
@@ -133,6 +159,20 @@ export function buildRoute(request: MockRequest, responseSink: ResponseSink): Pr
         data[key] = Array.isArray(value) ? [...value] : value;
     }
 
+    // HTT-REV-015: `route.raw` mirrors the adapter's `req.url` — the original
+    // request target including the query string (`?a=1&a=2`).
+    const search = new URLSearchParams();
+    for (const [key, value] of Object.entries(request.query ?? {})) {
+        if (Array.isArray(value)) {
+            for (const item of value) {
+                search.append(key, item);
+            }
+        } else {
+            search.append(key, value);
+        }
+    }
+    const queryString = search.toString();
+
     // Build the route, then assign per-segment matrix data below. The numeric
     // index members come from `ArrayLike<RouteSegment>`; they are populated
     // incrementally after construction, so the literal cannot satisfy the type
@@ -141,7 +181,7 @@ export function buildRoute(request: MockRequest, responseSink: ResponseSink): Pr
         length: segments.length,
         id: guid(),
         path: cleanedPath,
-        raw: request.path,
+        raw: queryString.length > 0 ? `${request.path}?${queryString}` : request.path,
         data,
         params: null,
         method: request.method ?? 'GET',

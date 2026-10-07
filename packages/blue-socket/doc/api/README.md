@@ -62,6 +62,7 @@ Jeff Rose
 ## Functions
 
 - [bodyAsText](functions/bodyAsText.md)
+- [headerOctets](functions/headerOctets.md)
 - [materialOctets](functions/materialOctets.md)
 - [parseStompFrame](functions/parseStompFrame.md)
 - [parseTextFrame](functions/parseTextFrame.md)

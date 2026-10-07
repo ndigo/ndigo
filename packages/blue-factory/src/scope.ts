@@ -119,7 +119,9 @@ export const singletonScope = scope('singleton');
 export const prototypeScope = scope('prototype');
 
 /**
- * Decorator for hash/route scope (convenience factory)
+ * Decorator for hash/route scope (convenience factory): one cached instance
+ * per active scope key (`HashScope.setCurrentKey`), torn down when the route
+ * ends (`HashScope.endScope`) or the bean is destroyed (`destroyValue`).
  */
 export const hashScope = scope('hash');
 
@@ -151,13 +153,42 @@ export class PrototypeScope implements Scope {
  * Hash (route) scope implementation — one instance per scope key.
  * Activate a scope context by calling `setCurrentKey(key)` before `getValue()`.
  *
+ * Values are cached per key, so a route-scoped bean lives as long as its
+ * bucket: `destroyValue(name)` tears one down within the active key, and
+ * `endScope(key)` tears down the whole bucket. Lifecycle-bearing values
+ * (`@destroyable`/`@closeable`) register a destruction callback (see
+ * `registerDestructionCallback`, wired by the container) which runs before the
+ * value is discarded — mirroring `SingletonScope.destroyValue` and
+ * `RefreshScope.clear`.
+ *
  * @internal AD-06: Implementation detail — see {@link PrototypeScope} for rationale.
  */
 export class HashScope implements Scope {
     #scopeMap: Map<string, Map<string, unknown>> = new Map<string, Map<string, unknown>>();
+    #destructionCallbacks: Map<string, Map<string, () => void>> = new Map<string, Map<string, () => void>>();
     #currentKey: string | null = null;
 
+    /**
+     * Ends the scope identified by `key`: runs every registered destruction
+     * callback, then discards the key's bucket. Callbacks are best effort —
+     * a throwing callback is logged and never aborts the sweep, so no stale
+     * bucket survives `endScope`.
+     */
     endScope(key: string): void {
+        const callbacks = this.#destructionCallbacks.get(key);
+        if (callbacks) {
+            for (const [name, callback] of callbacks) {
+                try {
+                    callback();
+                } catch (error) {
+                    logger.error(
+                        `HashScope destruction callback for "${name}" failed during endScope("${key}"):`,
+                        error instanceof Error ? error : String(error)
+                    );
+                }
+            }
+            this.#destructionCallbacks.delete(key);
+        }
         this.#scopeMap.delete(key);
         if (this.#currentKey === key) {
             this.#currentKey = null;
@@ -181,10 +212,33 @@ export class HashScope implements Scope {
             throw new IllegalStateError('No active hash scope context. Call setCurrentKey() first.');
         }
 
+        const callback = this.#destructionCallbacks.get(this.#currentKey)?.get(name);
+        if (callback) {
+            callback();
+            this.#destructionCallbacks.get(this.#currentKey)?.delete(name);
+        }
+
         const bucket = this.#scopeMap.get(this.#currentKey);
         if (bucket) {
             bucket.delete(name);
         }
+    }
+
+    /**
+     * Registers a destruction callback for `name` within the active key's
+     * bucket; `destroyValue`/`endScope` run it before discarding the value.
+     */
+    registerDestructionCallback(name: string, callback: () => void): void {
+        if (!this.#currentKey) {
+            throw new IllegalStateError('No active hash scope context. Call setCurrentKey() first.');
+        }
+
+        let callbacks = this.#destructionCallbacks.get(this.#currentKey);
+        if (!callbacks) {
+            callbacks = new Map<string, () => void>();
+            this.#destructionCallbacks.set(this.#currentKey, callbacks);
+        }
+        callbacks.set(name, callback);
     }
 
     getValue<T = unknown>(name: string, objectFactory: ObjectFactory<T>): T {

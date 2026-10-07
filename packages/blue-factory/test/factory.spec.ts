@@ -8,7 +8,7 @@ import { FrameworkError } from '@blue/core';
 import { ContextToken } from '../src/context-tokens';
 import { AsFactoryAware, DefaultFactory, ProxiedFactory } from '../src/factory';
 import { $aware } from '../src/aware';
-import { prototypeScope, scope, singletonScope, type Scope } from '../src/scope';
+import { HashScope, prototypeScope, scope, singletonScope, type Scope } from '../src/scope';
 import type {
     ConstructionAwareProcessor,
     DestructionAwareProcessor,
@@ -142,6 +142,65 @@ describe('DefaultFactory', () => {
         expect(a).toBeInstanceOf(PrototypeScopedPrototype);
         expect(b).toBeInstanceOf(PrototypeScopedPrototype);
         expect(a).not.toBe(b);
+    });
+
+    test('it reports which beans a boot finish sweep may eagerly instantiate (KRN-REV-FACTORY-12)', () => {
+        const f = defined(factory);
+
+        @scope('route')
+        class RouteScoped {}
+
+        @scope('hash')
+        class HashScoped {}
+
+        @scope('refresh')
+        class RefreshScoped {}
+
+        f.setValue('singleton', SingletonScopedPrototype);
+        f.setValue('prototypeScoped', PrototypeScopedPrototype);
+        f.setValue('routeScoped', RouteScoped);
+        f.setValue('hashScoped', HashScoped);
+        f.setValue('refreshScoped', RefreshScoped);
+
+        // Caching scopes are safe to instantiate eagerly at boot.
+        expect(f.shouldEagerlyInstantiate('singleton')).toBe(true);
+        expect(f.shouldEagerlyInstantiate('refreshScoped')).toBe(true);
+        // Non-caching scopes would create-then-discard or throw (no active key).
+        expect(f.shouldEagerlyInstantiate('prototypeScoped')).toBe(false);
+        expect(f.shouldEagerlyInstantiate('routeScoped')).toBe(false);
+        expect(f.shouldEagerlyInstantiate('hashScoped')).toBe(false);
+        expect(f.shouldEagerlyInstantiate('missing')).toBe(false);
+    });
+
+    test('it does not treat Object.prototype members as registered values (KRN-REV-FACTORY-14)', () => {
+        const f = defined(factory);
+
+        expect(f.hasInstance('toString')).toBe(false);
+        expect(f.hasConstructor('toString')).toBe(false);
+        expect(f.hasValue('toString')).toBe(false);
+        expect(f.getValue('toString')).toBeUndefined();
+        expect(f.getInstance('constructor')).toBeUndefined();
+    });
+
+    test('it destroys lifecycle-bearing hash-scoped beans on endScope (KRN-REV-FACTORY-13)', () => {
+        const f = defined(factory);
+
+        @scope('hash')
+        class RouteBean {
+            destroyed = false;
+            destroy = (): void => {
+                this.destroyed = true;
+            };
+        }
+
+        f.setValue('bean', RouteBean);
+
+        const hash = f.getScope('hash') as HashScope;
+        hash.setCurrentKey('route-1');
+        const bean = f.getValue<RouteBean>('bean');
+        hash.endScope('route-1');
+
+        expect(bean.destroyed).toBe(true);
     });
 
     test('it should manage processors', () => {

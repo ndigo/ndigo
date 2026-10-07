@@ -5,7 +5,14 @@
  */
 import { describe, test, expect } from 'vitest';
 import { ContextToken } from '@blue/factory';
-import { MetadataConfigApplicationContext, configuration, entry, profile, property } from '../src/configuration';
+import {
+    MetadataConfigApplicationContext,
+    configuration,
+    entry,
+    profile,
+    property,
+    propertySource,
+} from '../src/configuration';
 import { StandardEnvironment } from '../src/environment';
 import testContext from './testContext';
 
@@ -185,5 +192,26 @@ describe('MetadataConfigApplicationContext', () => {
         context.register(ValueConfiguration);
 
         expect(context.getValue<string>('getFoo')).toBe('two');
+    });
+
+    test('CTX-07: @propertySource names are namespaced per class (no silent replacement)', () => {
+        @configuration
+        @propertySource({ shared: 'from-a' })
+        class SourceConfigA {}
+
+        @configuration
+        @propertySource({ shared: 'from-b' })
+        class SourceConfigB {}
+
+        const context = new MetadataConfigApplicationContext('ctx-07');
+        context.register(SourceConfigA);
+        context.register(SourceConfigB);
+
+        const names = [...context.environment.getPropertySources().toArray()].map((source) => source.name);
+        // Names are unique and carry the declaring class: before the fix both
+        // classes registered `source:0`, so the later one replaced the first.
+        expect(new Set(names).size).toBe(names.length);
+        expect(names).toContain('source:SourceConfigA:0');
+        expect(names).toContain('source:SourceConfigB:0');
     });
 });

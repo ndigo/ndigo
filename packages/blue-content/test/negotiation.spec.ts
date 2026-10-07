@@ -23,6 +23,24 @@ describe('parseAcceptLanguage', () => {
     test('returns undefined for empty string', () => {
         expect(parseAcceptLanguage('')).toBeUndefined();
     });
+
+    test('ranks tags by q-value, not header order (PWB-REV-014)', () => {
+        expect(parseAcceptLanguage('en;q=0.5, fr;q=0.9')).toBe('fr');
+        expect(parseAcceptLanguage('en;q=0.8, fr;q=0.8, de;q=0.9')).toBe('de');
+    });
+
+    test('ignores q=0 entries', () => {
+        expect(parseAcceptLanguage('de;q=0, en;q=0.8')).toBe('en');
+    });
+
+    test('ignores the wildcard', () => {
+        expect(parseAcceptLanguage('*')).toBeUndefined();
+        expect(parseAcceptLanguage('de;q=0.9, *')).toBe('de');
+    });
+
+    test('returns undefined when every entry is unacceptable', () => {
+        expect(parseAcceptLanguage('de;q=0, *')).toBeUndefined();
+    });
 });
 
 describe('NegotiatingContentSource', () => {

@@ -39,9 +39,12 @@ export class ServerSentEventViewInstrumentation extends AbstractBaseInstrumentat
                     // Parented implicitly: renderTo runs inside the request
                     // span's context when dispatched from HTTP handling.
                     const span = tracer.startSpan('ServerSentEventView.renderTo', {
-                        kind: SpanKind.SERVER,
+                        // The stream render is internal view lifecycle work;
+                        // the inbound HTTP request owns the SERVER boundary
+                        // (TEL-11). Status is numeric semconv.
+                        kind: SpanKind.INTERNAL,
                         attributes: {
-                            'http.response.status_code': '200',
+                            'http.response.status_code': 200,
                             'http.route': route?.path,
                         } as Attributes,
                     });

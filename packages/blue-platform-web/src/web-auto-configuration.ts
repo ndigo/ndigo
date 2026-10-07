@@ -8,8 +8,31 @@ import { argumentValueConverters, RadixMetadataHandlerMapping } from '@blue/disp
 import { CookieLanguageResolver } from './cookie-language-resolver';
 import { createBrowserArgumentResolvers } from './configure-argument-resolvers';
 import { NameViewResolver, ViewResolverComposite } from '@blue/view';
-import { WebComponentViewResolver } from '@blue/view-webcomponent';
+import type { ViewResolver, View } from '@blue/view';
 import { whenBrowser } from '@blue/core';
+
+/**
+ * Lazily instantiates the web-component view resolver on first resolution.
+ *
+ * `@blue/view-webcomponent` declares custom-element base classes that extend
+ * `HTMLElement` at module load, so a static import would make the whole
+ * `@blue/platform-web` barrel unimportable outside a DOM (PWB-REV-001). The
+ * resolver is only exercised while resolving a view — a browser-only path —
+ * so the import is deferred until then. The dynamic specifier is required
+ * because the module cannot be evaluated on a non-DOM platform.
+ */
+class LazyWebComponentViewResolver implements ViewResolver {
+    #delegate: ViewResolver | undefined;
+
+    async resolveViewName(name: string, language?: unknown, request?: unknown): Promise<View | null> {
+        if (!this.#delegate) {
+            const { WebComponentViewResolver } = await import('@blue/view-webcomponent');
+            this.#delegate = new WebComponentViewResolver();
+        }
+
+        return this.#delegate.resolveViewName(name, language, request);
+    }
+}
 
 /**
  * Auto-configuration for browser-based applications.
@@ -58,7 +81,7 @@ export class WebAutoConfiguration {
      */
     @entry()
     viewResolver() {
-        return new ViewResolverComposite([new WebComponentViewResolver(), new NameViewResolver()]);
+        return new ViewResolverComposite([new LazyWebComponentViewResolver(), new NameViewResolver()]);
     }
 
     /**

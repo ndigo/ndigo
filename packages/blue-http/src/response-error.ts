@@ -160,7 +160,16 @@ export class ResponseError extends FrameworkError implements Error, Response {
      * @returns A promise for the response form data.
      */
     formData(): Promise<FormData> {
-        return this.#response.formData();
+        // Route through the cached buffer (like text()/arrayBuffer()) so a
+        // prior read does not break the documented multi-read contract
+        // (HTT-REV-016). The content type/boundary come from the headers.
+        if (this.#bodyBuffer !== null) {
+            return new Response(this.#bodyBuffer, { headers: this.headers }).formData();
+        }
+        return this.#response.arrayBuffer().then((buffer) => {
+            this.#bodyBuffer = buffer;
+            return new Response(buffer, { headers: this.headers }).formData();
+        });
     }
 
     /**

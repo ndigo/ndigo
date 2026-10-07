@@ -51,9 +51,15 @@ export class ServerSentEventParser {
     #buffer = '';
     /** The event currently being assembled, if any field line was seen. */
     #current: PendingEvent | null = null;
+    /** No content consumed yet — a leading BOM is still strippable. */
+    #atStart = true;
 
     /**
      * Consume a transport chunk and return the complete events it contains.
+     *
+     * Lines end with `CRLF`, `LF` or a lone `CR` (WHATWG event-stream
+     * parsing), and one leading `U+FEFF` byte order mark is stripped from
+     * the very start of the stream (REV-007).
      *
      * @param chunk - A decoded chunk of the event stream.
      * @returns The events completed by this chunk.
@@ -62,10 +68,21 @@ export class ServerSentEventParser {
         const events: ServerSentEvent[] = [];
         this.#buffer += chunk;
 
+        if (this.#atStart && this.#buffer.length > 0) {
+            if (this.#buffer.charCodeAt(0) === 0xfeff) {
+                this.#buffer = this.#buffer.slice(1);
+            }
+            this.#atStart = false;
+        }
+
         let lineEnd: number;
-        while ((lineEnd = this.#buffer.search(/\r?\n/)) !== -1) {
+        while ((lineEnd = this.#buffer.search(/\r\n|\r|\n/)) !== -1) {
             const line = this.#buffer.slice(0, lineEnd);
-            this.#buffer = this.#buffer.slice(lineEnd + (this.#buffer[lineEnd] === '\r' ? 2 : 1));
+            // A CR immediately followed by LF is one CRLF terminator;
+            // otherwise the CR alone is the terminator (and a following LF
+            // in the next chunk reads as the blank line, as it should).
+            const width = this.#buffer[lineEnd] === '\r' && this.#buffer[lineEnd + 1] === '\n' ? 2 : 1;
+            this.#buffer = this.#buffer.slice(lineEnd + width);
             this.#processLine(line, events);
         }
         return events;

@@ -13,7 +13,7 @@
  *      host-provided types, allowlisted per package below. Consumers must not
  *      be required to hand-assemble the framework graph.
  *   5. `devDependencies` entries must be used by tests/bench or be tooling
- *      (`@types/*`, typescript, vitest, nx, oxlint, tsx, jsdom, msw, debug).
+ *      (`@types/*`, typescript, vitest, nx, oxlint, tsx, jsdom, msw).
  *   6. Legacy contract: license ISC, `type: module`, exports map with
  *      `.` -> `types` + `default`, explicit `sideEffects`, and `@blue/*`
  *      workspace deps pinned to `~0.0.1` in every section.
@@ -25,13 +25,16 @@
  *      judged against workspace-wide import usage (root scripts/configs plus
  *      every project's src/test/bench); implicitly-resolved tooling
  *      (ROOT_TOOLING) is allowlisted.
+ *   9. Vitest alias targets: every `resolve(__dirname, '<path>')` replacement
+ *      in a vitest config must exist on disk — the hand-maintained alias table
+ *      silently drifts as packages are renamed or removed (TOL-F6).
  *
  * Run: `node scripts/check-manifests.mjs` (wired into `pnpm manifest:check`
  * and `.github/workflows/ci.yml`).
  */
 
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { importsOf, SOURCE_DIRS, DEV_DIRS } from './import-scanner.mjs';
 
@@ -69,10 +72,8 @@ const TOOLING = new Set(['typescript', 'vitest', 'tsx', 'nx', 'oxlint', 'oxfmt',
  */
 const ROOT_TOOLING = new Set([
     ...TOOLING,
-    'debug', // documented as dev tooling in rule 5; deduped by the webpack demo chain
     'typedoc', // spawned by scripts/doc-api.mjs
     'typedoc-plugin-markdown', // typedoc `plugin` entry, loaded by name
-    '@vitest/coverage-v8', // vitest coverage provider resolved by name (`coverage.provider: 'v8'`)
     'oxlint-tsgolint', // oxlint --type-aware backend (declared peer of oxlint)
 ]);
 
@@ -230,6 +231,26 @@ for (const dir of readdirSync(APPS)) {
     if (!existsSync(join(pkgDir, 'package.json'))) continue;
     for (const spec of importsOf(pkgDir, SOURCE_DIRS)) workspaceUsage.add(spec);
     for (const spec of importsOf(pkgDir, DEV_DIRS)) workspaceUsage.add(spec);
+}
+
+// Rule 9: every `resolve(__dirname, '<path>')` alias target in a vitest config
+// must exist. The root alias table is hand-maintained, so a rename or removal
+// leaves a silently-dead entry (and an aspirational subpath alias can land
+// before its `src/` directory). Checked per-config so package-local configs
+// (whose `__dirname` differs) resolve their own relative targets.
+const vitestConfigs = [
+    join(ROOT, 'vitest.config.ts'),
+    ...readdirSync(PACKAGES).map((dir) => join(PACKAGES, dir, 'vitest.config.ts')),
+    ...readdirSync(APPS).map((dir) => join(APPS, dir, 'vitest.config.ts')),
+].filter((configPath) => existsSync(configPath));
+for (const configPath of vitestConfigs) {
+    const source = readFileSync(configPath, 'utf8');
+    for (const match of source.matchAll(/replacement:\s*resolve\(\s*__dirname\s*,\s*(['"])([^'"]+)\1\s*\)/g)) {
+        const target = resolve(dirname(configPath), match[2]);
+        if (!existsSync(target)) {
+            fail(relative(ROOT, configPath), `vitest alias target "${match[2]}" does not exist`);
+        }
+    }
 }
 
 // Root manifest — devDependencies are the workspace's shared tooling pool

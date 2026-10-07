@@ -84,4 +84,24 @@ describe('StatusInterceptor', () => {
         const result = await interceptor.postResponse(response400, {});
         expect(result?.headers.get('X-App-Status')).toBe('UNKNOWN');
     });
+
+    test('preserves url/redirected metadata on rebuild (HTT-REV-011)', async () => {
+        const interceptor = new StatusInterceptor({ statusMappings: { 302: 'REDIRECT' } });
+        const source = new Response('redirecting', {
+            status: 302,
+            headers: { location: 'http://localhost/final' },
+        });
+        // A followed redirect carries this metadata; `Response.redirect()`
+        // does not populate it, so set it directly on the source.
+        Object.defineProperty(source, 'url', { value: 'http://localhost/final', configurable: true });
+        Object.defineProperty(source, 'redirected', { value: true, configurable: true });
+
+        const result = await interceptor.postResponse(source, {});
+
+        // Pre-fix, `new Response(...)` reset these to '' / false.
+        expect(result?.url).toBe('http://localhost/final');
+        expect(result?.redirected).toBe(true);
+        expect(result?.headers.get('X-App-Status')).toBe('REDIRECT');
+        expect(result?.headers.get('location')).toBe('http://localhost/final');
+    });
 });

@@ -136,10 +136,14 @@ if (!webcrypto?.randomUUID) {
     };
 }
 
+/** Whether the bundle posted a `suite-complete` frame (TOL-F11). */
+let resultsReceived = false;
+
 windowSlots.parent = {
     postMessage: (message: unknown, _targetOrigin: string) => {
         const frame = message as { type?: string; result?: unknown } | null;
         if (frame && frame.type === 'suite-complete') {
+            resultsReceived = true;
             console.log(`\n=== ${target.label} Benchmark Results ===`);
             console.table(frame.result);
             console.log('========================\n');
@@ -168,6 +172,13 @@ setTimeout(() => {
     );
 
     setTimeout(() => {
+        if (!resultsReceived) {
+            // A missing `suite-complete` frame means the bundle never reported
+            // results (wrong target, broken harness, early failure): exiting 0
+            // would silently green a benchmark that measured nothing (TOL-F11).
+            console.error('No benchmark results were produced within the timeout — exiting non-zero.');
+            process.exit(1);
+        }
         console.log('Benchmark complete. Exiting.');
         process.exit(0);
     }, 3000);

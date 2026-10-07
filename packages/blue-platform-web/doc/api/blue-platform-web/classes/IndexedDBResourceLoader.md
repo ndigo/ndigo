@@ -49,6 +49,19 @@ Clears all values from the store.
 
 ***
 
+### close()
+
+> **close**(): `void`
+
+Closes the open connection and clears the memoized open promise.
+Idempotent — a subsequent operation reopens the database.
+
+#### Returns
+
+`void`
+
+***
+
 ### getItem()
 
 > **getItem**\<`T`\>(`key`): `Promise`\<`T` \| `null`\>

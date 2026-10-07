@@ -23,6 +23,6 @@ Returns the proper case version of a string.
 ## Example
 
 ```ts
-toProper( 'lorem-ipsum-dolor' );
+toProper( 'lorem ipsum dolor' );
 //=> "Lorem Ipsum Dolor"
 ```

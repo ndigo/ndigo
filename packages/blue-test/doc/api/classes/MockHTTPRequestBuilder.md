@@ -39,6 +39,21 @@ The base request spec.
 
 ## Methods
 
+### abort()
+
+> **abort**(): `this`
+
+Simulate a client abort before the request completes — the live
+adapter's `400` `request_aborted` problem (HTT-REV-014).
+
+#### Returns
+
+`this`
+
+This builder.
+
+***
+
 ### body()
 
 > **body**(`body`): `this`
@@ -199,6 +214,21 @@ Set session data.
 `Record`\<`string`, `unknown`\>
 
 Session map.
+
+#### Returns
+
+`this`
+
+This builder.
+
+***
+
+### timeout()
+
+> **timeout**(): `this`
+
+Simulate a request-body timeout — the live adapter's `408`
+`request_timeout` problem (HTT-REV-014).
 
 #### Returns
 

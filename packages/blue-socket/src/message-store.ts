@@ -46,6 +46,23 @@ export function materialOctets(body: StompBody): number {
     return typeof body === 'string' ? new TextEncoder().encode(body).length : body.length;
 }
 
+/**
+ * Serialized header size as transmitted: for every entry, the UTF-8 octets
+ * of its name and value plus the `:` separator and the line's EOL. Shared by
+ * the broker's header cap (REV-002) and any budget that opts to charge
+ * headers alongside the body.
+ *
+ * @param headers - The frame's headers.
+ * @returns The transmitted header octet count.
+ */
+export function headerOctets(headers: Readonly<Record<string, string>>): number {
+    let total = 0;
+    for (const [name, value] of Object.entries(headers)) {
+        total += materialOctets(name) + materialOctets(value) + 2; // ':' + EOL
+    }
+    return total;
+}
+
 /** A stored `/queue` message — the durable unit behind the backlog. */
 export interface StoredQueueMessage {
     /** Broker-issued id; the dedupe key on replay (at-least-once). */
@@ -246,18 +263,20 @@ export class InMemoryQueueMessageStore implements QueueMessageStore {
         queue.put(stored);
         this.#bytes += materialOctets(stored.body);
         this.#seqs.set(destination, nextSeq);
-        // Global byte budget: evict oldest messages anywhere until under.
+        // Global byte budget: evict the globally oldest message anywhere
+        // until under (REV-010) — not the head of the oldest *destination*,
+        // which can be a newer message than another destination's head.
         while (this.#maxBytes !== null && this.#bytes > this.#maxBytes) {
-            const oldestDestination = this.#byDestination.keys().next().value;
-            if (oldestDestination === undefined) {
+            const victim = this.#oldestDestination();
+            if (victim === undefined) {
                 break;
             }
-            const oldestQueue = this.#byDestination.get(oldestDestination) as RingBuffer<StoredQueueMessage>;
+            const oldestQueue = this.#byDestination.get(victim) as RingBuffer<StoredQueueMessage>;
             this.#dropOldest(oldestQueue);
             if (oldestQueue.length === 0) {
                 // A drained ring leaves the map so the budget loop advances
                 // instead of spinning on an empty head.
-                this.#release(oldestDestination, oldestQueue);
+                this.#release(victim, oldestQueue);
             }
         }
         return stored;
@@ -367,6 +386,26 @@ export class InMemoryQueueMessageStore implements QueueMessageStore {
         }
         this.#byDestination.delete(destination);
         this.#seqs.delete(destination);
+    }
+
+    /**
+     * The destination whose head message is the globally oldest by
+     * `storedAt` (ties resolve to the earliest-inserted destination, so
+     * selection is deterministic). Scans destinations — bounded by
+     * `maxDestinations` — because the per-destination rings hold no global
+     * ordering. Returns `undefined` when every ring is empty.
+     */
+    #oldestDestination(): string | undefined {
+        let victim: string | undefined;
+        let oldestAt = Number.POSITIVE_INFINITY;
+        for (const [destination, queue] of this.#byDestination) {
+            const head = queue.peek();
+            if (head !== undefined && head.storedAt < oldestAt) {
+                oldestAt = head.storedAt;
+                victim = destination;
+            }
+        }
+        return victim;
     }
 
     #evictDestinationsPastCap(newDestination: string): void {

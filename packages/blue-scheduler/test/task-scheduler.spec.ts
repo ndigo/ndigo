@@ -413,4 +413,86 @@ describe('@blue/scheduler TaskScheduler wall-clock loop (OP-13)', () => {
             await scheduler.close();
         }
     });
+
+    test('start() with no tasks latches, and a task registered afterwards fires (DAT-F6)', async () => {
+        const scheduler = new TaskScheduler({ warn: () => {} });
+        let calls = 0;
+
+        try {
+            // Pre-fix: start() with no tasks armed no timer and set no latch,
+            // so isRunning stayed false and register() never armed the loop.
+            scheduler.start();
+            expect(scheduler.isRunning).toBe(true);
+
+            scheduler.register({
+                name: 'late',
+                schedule: new IntervalSchedule('fixedRate', INTERVAL_MS),
+                run: () => {
+                    calls += 1;
+                },
+            });
+
+            await waitFor(() => calls >= 2);
+        } finally {
+            scheduler.stop();
+            await scheduler.close();
+        }
+
+        expect(calls).toBeGreaterThanOrEqual(2);
+    });
+
+    test('a task registered later with an earlier fire time re-arms the armed timer (DAT-F6)', async () => {
+        const scheduler = new TaskScheduler({ warn: () => {} });
+        let fastCalls = 0;
+
+        try {
+            scheduler.start();
+            // Arms the timer far in the future…
+            scheduler.register({
+                name: 'slow',
+                schedule: new IntervalSchedule('fixedRate', INTERVAL_MS * 100),
+                run: () => {},
+            });
+            // …and this one is due sooner: pre-fix the stale timer left it
+            // waiting behind the slow task's fire time.
+            scheduler.register({
+                name: 'fast',
+                schedule: new IntervalSchedule('fixedRate', INTERVAL_MS),
+                run: () => {
+                    fastCalls += 1;
+                },
+            });
+
+            await waitFor(() => fastCalls >= 2);
+        } finally {
+            scheduler.stop();
+            await scheduler.close();
+        }
+
+        expect(fastCalls).toBeGreaterThanOrEqual(2);
+    });
+
+    test('register() after stop() does not arm the loop (start latch cleared)', async () => {
+        const scheduler = new TaskScheduler({ warn: () => {} });
+        let calls = 0;
+
+        try {
+            scheduler.start();
+            scheduler.stop();
+            scheduler.register({
+                name: 'after-stop',
+                schedule: new IntervalSchedule('fixedRate', INTERVAL_MS),
+                run: () => {
+                    calls += 1;
+                },
+            });
+
+            await delay(INTERVAL_MS * 3);
+            expect(calls).toBe(0);
+            expect(scheduler.isRunning).toBe(false);
+        } finally {
+            scheduler.stop();
+            await scheduler.close();
+        }
+    });
 });

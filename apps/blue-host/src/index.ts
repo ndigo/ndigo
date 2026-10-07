@@ -36,6 +36,7 @@ async function main() {
     async function renderFeature(name: string | null): Promise<void> {
         $feature.innerHTML = '';
         if (!name) {
+            $status.textContent = '';
             $feature.textContent = 'Home — select a feature from the nav.';
             return;
         }

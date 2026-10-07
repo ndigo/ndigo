@@ -206,7 +206,21 @@ export default defineConfig({
         if (vitestConfig === null) {
             throw new Error('expected vitest.config.ts to exist');
         }
-        expect(vitestConfig).toContain('@blue\\/test\\\\-pkg');
+        // Regression (TOL-F3): build the emitted `find` regex and assert it
+        // actually matches the import specifier. The previous escaping doubled
+        // the backslash (`\\-`), so the regex required a literal `\` before
+        // `pkg` and never matched `@blue/test-pkg`.
+        const aliasSources = [...vitestConfig.matchAll(/find:\s*\/(.*?)\/,\s*replacement/g)].map((match) => match[1]);
+        const generated = aliasSources.filter((source) => source.includes('test-pkg'));
+        expect(generated).toHaveLength(1);
+        const [aliasSource] = generated;
+        if (aliasSource === undefined) {
+            throw new Error(`expected a generated @blue/test-pkg alias, got: ${aliasSources.join(', ')}`);
+        }
+        const aliasPattern = new RegExp(aliasSource);
+        expect(aliasPattern.test('@blue/test-pkg')).toBe(true);
+        // Anchored: the alias must not swallow sibling packages.
+        expect(aliasPattern.test('@blue/test-pkg-extra')).toBe(false);
         expect(vitestConfig).toContain('blue-test-pkg/src');
     });
 

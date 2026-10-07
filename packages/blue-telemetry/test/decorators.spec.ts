@@ -3,27 +3,13 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { describe, expect, it, beforeEach, afterEach } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import '@tsmetadata/polyfill';
 import { counted, getCounted, hasCounted } from '../src/metrics/decorators';
 import { FeatureMetricAggregator } from '../src/metrics/feature-metric-aggregator';
 import { getTraced, hasTraced, traced } from '../src/trace/decorators';
-import { CountedInstrumentation } from '../src/instrumentation/counted';
-import { CountedRegistry } from '../src/metrics/_registry';
 
 describe('telemetry decorators (TC39)', () => {
-    let instrumentation: CountedInstrumentation;
-
-    beforeEach(() => {
-        instrumentation = new CountedInstrumentation();
-        instrumentation.enable();
-    });
-
-    afterEach(() => {
-        instrumentation.disable();
-        CountedRegistry.clear();
-    });
-
     class TraceAsyncService {
         @traced()
         async run(value: string): Promise<string> {
@@ -70,6 +56,26 @@ describe('telemetry decorators (TC39)', () => {
         });
     });
 
+    it('wraps the method directly — no instrumentation/registry required', () => {
+        // The decorator itself wraps the method, so the counter runs even
+        // though no CountedInstrumentation exists (TEL-03: the old
+        // registry/enable-scan indirection was dead in production).
+        class WrappedService {
+            calls = 0;
+            @counted()
+            invoke(): string {
+                this.calls += 1;
+                return 'done';
+            }
+        }
+
+        const instance = new WrappedService();
+        expect(instance.invoke()).toBe('done');
+        expect(instance.invoke()).toBe('done');
+        expect(instance.calls).toBe(2);
+        expect(getCounted(instance, 'invoke')?.name).toBe('invoke.count');
+    });
+
     it('aggregates counted metrics per feature when featureAggregator is provided', () => {
         const featureAggregator = new FeatureMetricAggregator();
 
@@ -86,17 +92,10 @@ describe('telemetry decorators (TC39)', () => {
             }
         }
 
-        // Manually register the class prototype with the registry
-        CountedRegistry.register(FeatureService.prototype);
-
-        // The enable latch makes a bare second enable a no-op; cycle
-        // disable→enable to re-scan the registry and pick up the class.
-        instrumentation.disable();
-        instrumentation.enable();
-
         const instance = new FeatureService();
 
-        // Manually invoke the method twice to trigger the counter
+        // The decorator wraps the method, so the feature aggregation runs on
+        // each call without any instrumentation enable/disable cycle.
         instance.invoke();
         instance.invoke();
 

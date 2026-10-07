@@ -54,6 +54,7 @@ Jeff Rose
 ## Variables
 
 - [argumentValueConverters](variables/argumentValueConverters.md)
+- [Cookies](variables/Cookies.md)
 - [currentLocale](variables/currentLocale.md)
 - [DEFAULT\_MAX\_RETRY\_INTERVAL](variables/DEFAULT_MAX_RETRY_INTERVAL.md)
 - [DEFAULT\_QUEUE\_CAP](variables/DEFAULT_QUEUE_CAP.md)

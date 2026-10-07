@@ -37,6 +37,28 @@ keeps draining what was queued. Default: unbounded.
 
 ***
 
+### onSend?
+
+> `optional` **onSend?**: (`bytes`) => `void`
+
+Outbound-size observer: invoked with the UTF-8 byte length of every
+payload actually written to the transport (direct sends and buffered
+flushes alike, never for queued/dropped payloads) — the byte-counter
+seam for telemetry, which would otherwise re-serialize each payload.
+Constructor-injected like `onStatusChange`; a throw is isolated.
+
+#### Parameters
+
+##### bytes
+
+`number`
+
+#### Returns
+
+`void`
+
+***
+
 ### onStatusChange?
 
 > `optional` **onStatusChange?**: (`status`) => `void`

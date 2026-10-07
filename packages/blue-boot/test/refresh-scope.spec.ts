@@ -36,6 +36,22 @@ class SecondRefreshableConfig {
     @property('port', Number) port!: number;
 }
 
+/** Refresh-scoped config that records its own teardown across rebinds (CTX-13). */
+@configurationProperties('counting')
+@refreshScope
+class DestroyCountingConfig {
+    /** Test probe: how many previous instances were destroyed. */
+    static destroyedInstances = 0;
+
+    @property('port', Number) @defaultValue('8080') port!: number;
+    destroyed = false;
+
+    destroy(): void {
+        this.destroyed = true;
+        DestroyCountingConfig.destroyedInstances += 1;
+    }
+}
+
 describe('@refreshScope live rebind (AD-29 D-1/D-2)', () => {
     test('rebinds @refreshScope config classes with fresh values on refresh()', async () => {
         @configuration
@@ -143,7 +159,7 @@ describe('@refreshScope live rebind (AD-29 D-1/D-2)', () => {
         consoleError.mockRestore();
     });
 
-    test('close() detaches refresh listeners: refresh after close does not write into the closed context (ARC-6)', async () => {
+    test('close() detaches refresh listeners: refresh after close does not write into the closed context (ARC-6/CTX-05)', async () => {
         @configuration
         class BootConfig {}
         const app = new ApplicationBuilder([BootConfig, RefreshableServerConfig]);
@@ -153,12 +169,12 @@ describe('@refreshScope live rebind (AD-29 D-1/D-2)', () => {
         const environment = context.environment as ConfigurableEnvironment;
 
         const before = context.getValue<RefreshableServerConfig>('refreshableServerConfig'); // bind once
-        // ARC-6: BOTH refresh subscriptions detach on close — the context's
-        // scope-clear listener (context.close) and the app's rebind listener
-        // (Application.close).
+        // ARC-6/CTX-05: BOTH refresh subscriptions detach on CONTEXT close — the
+        // context's scope-clear listener (context.close) and the app's rebind
+        // listener (hooked to the context's own context:close event). No
+        // Application.close() call is needed any more.
         const beforePort = before.port;
         context.close();
-        app.build().close();
 
         // The rebind listener was detached: refresh after close must NOT
         // write a fresh bound instance into the closed context (a still-
@@ -174,5 +190,33 @@ describe('@refreshScope live rebind (AD-29 D-1/D-2)', () => {
         const after = context.getValue<RefreshableServerConfig>('refreshableServerConfig');
         expect(after).toBe(before);
         expect(after.port).toBe(beforePort); // 9090, not 7070 — no rebind write
+    });
+
+    test('CTX-13: a rebind destroys the previous @refreshScope instance before replacing it', async () => {
+        DestroyCountingConfig.destroyedInstances = 0;
+
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig, DestroyCountingConfig]);
+        app.properties({ counting: { port: '9090' } });
+
+        const context = await app.run();
+        const environment = context.environment as ConfigurableEnvironment;
+
+        const before = context.getValue<DestroyCountingConfig>('destroyCountingConfig');
+        expect(before.port).toBe(9090);
+        expect(before.destroyed).toBe(false);
+
+        environment.getPropertySources().replace('boot', { counting: { port: '7070' } });
+        environment.refresh();
+
+        // The replaced instance was torn down before `setValue` ...
+        expect(before.destroyed).toBe(true);
+        expect(DestroyCountingConfig.destroyedInstances).toBe(1);
+        // ... and a live fresh instance now reports the new value.
+        const after = context.getValue<DestroyCountingConfig>('destroyCountingConfig');
+        expect(after).not.toBe(before);
+        expect(after.port).toBe(7070);
+        expect(after.destroyed).toBe(false);
     });
 });

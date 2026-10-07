@@ -46,6 +46,7 @@ export interface FeatureRouteRegistration {
 export class FeatureRoutingRegistry {
     #activationPolicy: FeatureActivationPolicy;
     #activeFeatureName?: string;
+    #activated: Set<string>;
     #featureMap: Map<string, FeatureRouteRegistration>;
     #metricRecorder?: FeatureMetricRecorder;
     #partitionRouter: PartitionRouter;
@@ -77,6 +78,7 @@ export class FeatureRoutingRegistry {
     constructor(partitionRouter: PartitionRouter = new PartitionRouter(), options: FeatureRoutingRegistryOptions = {}) {
         this.#activationPolicy = options.activationPolicy ?? 'tracked';
         this.#activeFeatureName = undefined;
+        this.#activated = new Set();
         this.#featureMap = new Map();
         this.#metricRecorder = options.metricRecorder;
         this.#partitionRouter = partitionRouter;
@@ -193,15 +195,20 @@ export class FeatureRoutingRegistry {
         }
 
         this.#activeFeatureName = name;
+        this.#activated.add(name);
         this.#recordCounter(name, 'activateCount');
         this.#metricRecorder?.setGauge?.(name, `${name}.isActive`, 1);
         this.#featureMap.get(name)?.onActivate?.();
     }
 
     #deactivateAllExcept(name: string): void {
-        for (const [featureName, feature] of this.#featureMap) {
+        // Only features that were actually activated are deactivated — a
+        // registered-but-never-activated feature must not receive
+        // `onDeactivate` (or be counted as deactivated). Deleting the current
+        // element while iterating a Set is safe, so `#deactivate` may mutate it.
+        for (const featureName of this.#activated) {
             if (featureName !== name) {
-                feature.onDeactivate?.();
+                this.#deactivate(featureName);
             }
         }
     }
@@ -211,6 +218,7 @@ export class FeatureRoutingRegistry {
             return;
         }
 
+        this.#activated.delete(name);
         this.#recordCounter(name, 'deactivateCount');
         this.#metricRecorder?.setGauge?.(name, `${name}.isActive`, 0);
         this.#featureMap.get(name)?.onDeactivate?.();

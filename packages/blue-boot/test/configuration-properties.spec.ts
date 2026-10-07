@@ -236,3 +236,94 @@ describe('@configurationProperties auto-registration (AD-15 D1)', () => {
         expect((registered as ServerConfig).port).toBe(9090);
     });
 });
+
+describe('relaxed binding + untyped inference (CTX-01/CTX-10/CTX-11)', () => {
+    const runBoot = async (properties: JSONObject) => {
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig]);
+        app.properties(properties);
+        return app.run();
+    };
+
+    test('CTX-01: a kebab env key binds a camelCase field (forward)', async () => {
+        @configurationProperties('server', { relaxed: true })
+        class RelaxedCamel {
+            @property('hostName', String) hostName!: string;
+        }
+        const context = await runBoot({ server: { 'host-name': 'blue.dev' } });
+
+        const { instance } = resolveConfigurationProperties(RelaxedCamel, context);
+        expect(instance.hostName).toBe('blue.dev');
+    });
+
+    test('CTX-01: a camelCase env key binds a kebab field (reverse)', async () => {
+        @configurationProperties('srv', { relaxed: true })
+        class RelaxedKebab {
+            @property('host-name', String) hostName!: string;
+        }
+        const context = await runBoot({ srv: { hostName: 'blue.dev' } });
+
+        const { instance } = resolveConfigurationProperties(RelaxedKebab, context);
+        expect(instance.hostName).toBe('blue.dev');
+    });
+
+    test('CTX-01: the relaxed WINNING key is converted, not the declared path', async () => {
+        @configurationProperties('srv', { relaxed: true })
+        class RelaxedPort {
+            @property('listen-port', Number) listenPort!: number;
+        }
+        const context = await runBoot({ srv: { listenPort: '9090' } });
+
+        const { instance } = resolveConfigurationProperties(RelaxedPort, context);
+        expect(instance.listenPort).toBe(9090); // winning key: srv.listenPort
+    });
+
+    test('CTX-01: nested relaxed binding reads the winning key', async () => {
+        class NestedDb {
+            @property('userName', String) userName!: string;
+        }
+        @configurationProperties('db', { relaxed: true })
+        class RelaxedNested {
+            @nested connection: NestedDb = new NestedDb();
+        }
+        const context = await runBoot({ db: { connection: { 'user-name': 'app' } } });
+
+        const { instance } = resolveConfigurationProperties(RelaxedNested, context);
+        expect(instance.connection.userName).toBe('app');
+    });
+
+    test('CTX-10: a String-typed field binds a non-string property without crashing', async () => {
+        @configurationProperties('svc')
+        class StringTargetConfig {
+            @property('port', String) port!: string;
+        }
+        const context = await runBoot({ svc: { port: 9090 } });
+
+        const { instance } = resolveConfigurationProperties(StringTargetConfig, context);
+        expect(instance.port).toBe('9090');
+    });
+
+    test('CTX-11: an untyped field with no initializer binds as String (inference rule)', async () => {
+        @configurationProperties('untyped')
+        class UntypedConfig {
+            @property('port') port!: unknown;
+        }
+        const context = await runBoot({ untyped: { port: '9090' } });
+
+        const { instance } = resolveConfigurationProperties(UntypedConfig, context);
+        expect(instance.port).toBe('9090');
+        expect(typeof instance.port).toBe('string');
+    });
+
+    test('CTX-11: a field initializer infers the conversion target for an untyped field', async () => {
+        @configurationProperties('inferred')
+        class InferredConfig {
+            @property('port') port = 0;
+        }
+        const context = await runBoot({ inferred: { port: '9090' } });
+
+        const { instance } = resolveConfigurationProperties(InferredConfig, context);
+        expect(instance.port).toBe(9090);
+    });
+});

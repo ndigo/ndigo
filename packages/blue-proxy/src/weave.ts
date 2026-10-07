@@ -36,15 +36,19 @@ export interface MethodChainSpec {
 }
 
 /**
- * Instances this package has already woven. A second pass (duplicate
- * processor registration, entry re-processing, or double
- * `interceptMethods(...)`) must return the proxy unchanged.
+ * Instances this package has already woven, mapped to the proxy that advises
+ * them. Both the returned proxy *and* the raw target are recorded: keying only
+ * on the proxy would let a second weave of the raw target produce a second,
+ * independent proxy (KRN-REV-PROXY-17). A second pass (duplicate processor
+ * registration, entry re-processing, or double `interceptMethods(...)`) must
+ * return the existing proxy unchanged.
  */
-const INTERCEPTED = new WeakSet<object>();
+const INTERCEPTED = new WeakMap<object, object>();
 
 /**
- * Whether the instance was already woven by this package. Guards against
- * double-wrapping when processing runs twice.
+ * Whether the instance (a woven proxy or the raw target it advises) was
+ * already woven by this package. Guards against double-wrapping when
+ * processing runs twice.
  */
 export function isIntercepted(instance: object): boolean {
     return INTERCEPTED.has(instance);
@@ -161,7 +165,12 @@ export function collectMethodSpecs(
  */
 export function interceptAndRegister(target: object, specs: readonly MethodChainSpec[], owner?: object): object {
     const proxy = weaveMethodProxy(target, specs);
-    INTERCEPTED.add(proxy);
+    // Register both sides of the weave: re-weaving the raw target then returns
+    // this same proxy instead of a second, independent one (KRN-REV-PROXY-17).
+    if (proxy !== target) {
+        INTERCEPTED.set(target, proxy);
+        INTERCEPTED.set(proxy, proxy);
+    }
     if (owner !== undefined) {
         WOVEN_BY.set(proxy, owner);
     }
@@ -182,12 +191,14 @@ export function interceptAndRegister(target: object, specs: readonly MethodChain
  *
  * @param instance - The object to advise.
  * @param interceptors - The advice to apply (matched per method).
- * @returns A woven proxy, or `instance` itself when nothing matches or it
- *   was already intercepted.
+ * @returns A woven proxy; the existing proxy when `instance` (or the raw
+ *   target it advises) was already woven; or `instance` itself when nothing
+ *   matches.
  */
 export function interceptMethods<T extends object>(instance: T, interceptors: readonly MethodInterceptor[]): T {
-    if (INTERCEPTED.has(instance)) {
-        return instance;
+    const existing = INTERCEPTED.get(instance);
+    if (existing !== undefined) {
+        return existing as T;
     }
 
     const specs = collectMethodSpecs(instance, entryNameOf(instance), interceptors);

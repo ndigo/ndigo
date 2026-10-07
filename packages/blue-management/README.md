@@ -25,7 +25,7 @@ const app = new ApplicationBuilder([ManagementAutoConfiguration]).run();
 
 ## Usage
 
-- `GET /health` → `{ status, components, timestamp }`
+- `GET /health` → `{ status, components, timestamp }` at `200` when the aggregate is `UP`/`UNKNOWN`, and at **`503 Service Unavailable` when any component is `DOWN`** (the status code tracks the aggregate, so orchestrator probes can route on it alone; the body shape is identical either way)
 - `GET /metrics` → `{ features: { <feature>: { counters, gauges, durations, updatedAt } } }`
 
 > **⚠️ Open by default.** These endpoints carry no authentication: **any caller that can reach the port can read them.** On an untrusted network, pass an _unconditional_ guard to `ManagementAutoConfiguration({ accessGuard })` so every management request is denied before its handler runs — a guard that checks the request itself (a token-presence or token-adapter guard), because the handlers carry no `@authenticated`/`@authorized` metadata and a metadata-driven guard such as `AuthRouteGuard` would always permit them. Also firewall the management routes at the network boundary. Indicator error messages are surfaced in `/health` responses — guard or firewall when they may reveal sensitive subsystem details.
@@ -36,7 +36,7 @@ const app = new ApplicationBuilder([ManagementAutoConfiguration]).run();
 - When `accessGuard` is configured, a `handlerMappings` entry attaches the guard to the dispatch interceptor chain, scoped to management paths only — `/health` and `/metrics` are denied before their handlers run while every other route is untouched.
 - The mapping prepends `SecurityHeadersInterceptor` — management responses carry the platform's default security-header set (CSP, `X-Content-Type-Options: nosniff`, …) even though these routes bypass the platform mapping.
 - `MetricsController` (`/metrics`) reads the aggregator from the application context and serializes per-feature counters, gauges, and duration summaries.
-- `HealthController` (`/health`) runs the context `HealthRegistry` — the registry is wired once at context refresh and never mutated per request.
+- `HealthController` (`/health`) runs the context `HealthRegistry` — the registry is wired once at context refresh and never mutated per request. The response status mirrors the aggregate: `503` when a component is `DOWN`, `200` otherwise (the health document is written by a producing view so it survives at `503`, where a `ResponseEntity` would be re-shaped into a `problem+json` error body).
 - Custom `HealthIndicator`s can be registered on the `HealthRegistry` entry for other subsystems (data sources, external deps).
 
 ## API

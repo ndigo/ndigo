@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { PathRoute, RouterExecutionChain } from '@blue/router';
+import type { RouterErrorHandler } from '@blue/router';
 
 /**
  * Runs the full router interceptor pipeline for a candidate route:
@@ -16,10 +17,15 @@ import { PathRoute, RouterExecutionChain } from '@blue/router';
  * was optimistically synchronized (e.g. the URL hash). `afterCompletion`
  * always runs — also for rejected and failed route changes.
  *
+ * Failures are surfaced through the optional `onError` hook and turned into a
+ * `false` result: a throwing `postHandle` or `afterCompletion` must not escape
+ * the boolean contract or become an unhandled rejection (PWB-REV-015).
+ *
  * @param route - The candidate route.
  * @param chain - The execution chain resolved for the candidate route.
  * @param commit - Commits the candidate route as the current route.
  * @param restore - Rolls back a rejected or failed route change.
+ * @param onError - Surfaces a pipeline failure (defaults to silent when omitted).
  * @returns `true` when the route was accepted, `false` when rejected or failed.
  * @since 1.0.0
  */
@@ -27,7 +33,8 @@ async function commitRoute(
     route: PathRoute,
     chain: RouterExecutionChain,
     commit: () => void,
-    restore: () => void
+    restore: () => void,
+    onError?: RouterErrorHandler
 ): Promise<boolean> {
     try {
         if ((await chain.applyPreHandle(route)) === false) {
@@ -40,11 +47,16 @@ async function commitRoute(
         await chain.applyPostHandle(route);
 
         return true;
-    } catch {
+    } catch (error) {
+        onError?.(error, route);
         restore();
         return false;
     } finally {
-        await chain.applyAfterCompletion(route);
+        try {
+            await chain.applyAfterCompletion(route);
+        } catch (error) {
+            onError?.(error, route);
+        }
     }
 }
 

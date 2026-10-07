@@ -82,7 +82,7 @@ The settings the request was prepared from
 
 ### postError()
 
-> **postError**(`error`, `request`): `Promise`\<`Response` \| `undefined`\>
+> **postError**(`error`, `request`, `http`, `settings?`): `Promise`\<`Response` \| `undefined`\>
 
 #### Parameters
 
@@ -97,6 +97,20 @@ The error that was thrown
 `Request`
 
 The HTTP request
+
+##### http
+
+[`HTTP`](HTTP.md)
+
+The HTTP client executing the request
+
+##### settings?
+
+[`HTTPInit`](../type-aliases/HTTPInit.md)
+
+The per-request settings, used to
+  release the timer on the error exit path (which never reaches
+  `postComplete` when a later error-aware interceptor throws).
 
 #### Returns
 

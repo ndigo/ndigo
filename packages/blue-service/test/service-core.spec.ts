@@ -153,11 +153,13 @@ describe('Service.call correlation id', () => {
         expect(first).not.toBe(second);
     });
 
-    test("a call's own X-Correlation-ID matches the correlation id in effect during that call", async () => {
+    test('a call stamps a fresh id without mutating the shared correlation state', async () => {
+        const customId = 'root-correlation-id';
+        correlation.setCorrelationId(customId);
+
         const emitter = new Emitter();
-        // Sample the correlation id while each call is in flight — the
-        // telemetry emit point runs after Service.call sets the per-call id
-        // and before it restores the previous value.
+        // The telemetry emit point runs with the call in flight — the shared
+        // correlation id must be untouched (the id is local to the call, PLN-F7).
         const inCallIds: string[] = [];
         emitter.on('service:request:start', () => {
             inCallIds.push(correlation.getCorrelationId());
@@ -165,18 +167,45 @@ describe('Service.call correlation id', () => {
         const localService = new Service('svc', http, registry, new EventEmitterTelemetryHooks(emitter), correlation);
 
         await localService.call('users', null);
-        await localService.call('users', null);
 
-        expect(fetchMock).toHaveBeenCalledTimes(2);
+        const header = (fetchMock.mock.calls[0][0] as Request).headers.get('X-Correlation-ID');
+        expect(header).toMatch(uuidRe);
+        expect(inCallIds).toEqual([customId]);
+        expect(correlation.getCorrelationId()).toBe(customId);
+    });
+
+    test('concurrent calls cannot corrupt the shared correlation id (PLN-F7)', async () => {
+        const customId = 'root-correlation-id';
+        correlation.setCorrelationId(customId);
+
+        // Hold both requests open until both have been issued, so their
+        // in-flight windows overlap (the old save/restore captured the other
+        // call's id as its "previous" and left a per-call id behind).
+        const releases: Array<() => void> = [];
+        fetchMock.mockImplementation(
+            () =>
+                new Promise<Response>((resolve) => {
+                    releases.push(() => resolve(new Response('ok', { status: 200 })));
+                })
+        );
+
+        const first = service.call('users', null);
+        const second = service.call('users', null);
+        await vi.waitFor(() => expect(releases).toHaveLength(2));
+
         const firstHeader = (fetchMock.mock.calls[0][0] as Request).headers.get('X-Correlation-ID');
         const secondHeader = (fetchMock.mock.calls[1][0] as Request).headers.get('X-Correlation-ID');
-
-        expect(inCallIds).toHaveLength(2);
         expect(firstHeader).toMatch(uuidRe);
-        expect(firstHeader).toBe(inCallIds[0]);
         expect(secondHeader).toMatch(uuidRe);
-        expect(secondHeader).toBe(inCallIds[1]);
-        expect(inCallIds[0]).not.toBe(inCallIds[1]);
+        expect(firstHeader).not.toBe(secondHeader);
+
+        for (const release of releases) {
+            release();
+        }
+        await Promise.all([first, second]);
+
+        // The ambient id set before the calls survives both of them.
+        expect(correlation.getCorrelationId()).toBe(customId);
     });
 
     test('restores the previous correlation id after a call', async () => {

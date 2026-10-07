@@ -8,19 +8,51 @@ import { LanguageCode } from './language-code';
 import * as LanguageCodes from './language-codes';
 
 /**
- * Parses the first language tag from an `Accept-Language` header value.
+ * Parses the preferred language tag from an `Accept-Language` header value.
+ *
+ * Tags are ranked by their `q` weight (default `1`); `q=0` entries (explicitly
+ * unacceptable) and the `*` wildcard are ignored. Ties keep the header order.
  *
  * @param header - The raw `Accept-Language` header value.
- * @returns The primary language tag, or `undefined`.
+ * @returns The preferred language tag, or `undefined`.
  *
  * @example
  * ```ts
  * parseAcceptLanguage('fr-CH, fr;q=0.9, en;q=0.8'); // 'fr-CH'
- * parseAcceptLanguage('en-US,en;q=0.5');              // 'en-US'
+ * parseAcceptLanguage('en;q=0.5, fr;q=0.9');        // 'fr'
+ * parseAcceptLanguage('de;q=0, en;q=0.8');          // 'en'
+ * parseAcceptLanguage('*');                          // undefined
  * ```
  */
 export const parseAcceptLanguage = (header: string): string | undefined => {
-    return header.split(',')[0]?.split(';')[0]?.trim() || undefined;
+    const candidates: { tag: string; q: number }[] = [];
+
+    for (const part of header.split(',')) {
+        const [rawTag, ...params] = part.split(';');
+        const tag = rawTag?.trim();
+
+        if (!tag || tag === '*') {
+            continue;
+        }
+
+        const qParam = params.find((param) => param.trim().startsWith('q='));
+        const q = qParam ? Number.parseFloat(qParam.trim().slice(2)) : 1;
+
+        if (Number.isNaN(q) || q <= 0) {
+            continue;
+        }
+
+        candidates.push({ tag, q });
+    }
+
+    if (!candidates.length) {
+        return undefined;
+    }
+
+    // Stable sort: equal weights retain header order.
+    candidates.sort((a, b) => b.q - a.q);
+
+    return candidates[0]?.tag;
 };
 
 /**

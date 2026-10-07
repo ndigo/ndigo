@@ -29,17 +29,23 @@ export class HTTPResponseViewTargetInstrumentation extends AbstractBaseInstrumen
             'commit',
             this._patch({
                 name: 'HTTPResponseViewTarget.commit',
-                kind: SpanKind.SERVER,
+                // Committing a rendered view is internal lifecycle work; the
+                // inbound HTTP request owns the SERVER boundary (TEL-11).
+                kind: SpanKind.INTERNAL,
                 attributes: (_instance: unknown, args: unknown[]) => {
                     const output = args[0];
-                    const model = args[1] as { constructor?: { name?: string } } | undefined;
+                    // `commit(output, model)` — the model owns the response
+                    // status when it is an `ResponseEntity`.
+                    const model = args[1] as
+                        | { constructor?: { name?: string }; status?: { code?: number } }
+                        | undefined;
                     return {
                         'http.response.output': typeof output === 'string' ? 'text' : 'json',
                         ...(model?.constructor?.name === 'ResponseEntity'
                             ? {
-                                  'http.status_code': String(
-                                      (model as { status?: { code?: number } }).status?.code ?? 200
-                                  ),
+                                  // Numeric semconv key/type (was
+                                  // `http.status_code` string) — TEL-11.
+                                  'http.response.status_code': model.status?.code ?? 200,
                               }
                             : {}),
                     };

@@ -18,6 +18,7 @@ Jeff Rose
 
 - [HealthController](classes/HealthController.md)
 - [HealthRegistry](classes/HealthRegistry.md)
+- [HealthResponseView](classes/HealthResponseView.md)
 - [ManagementAutoConfiguration](classes/ManagementAutoConfiguration.md)
 - [MetricsController](classes/MetricsController.md)
 - [TelemetryHealthIndicator](classes/TelemetryHealthIndicator.md)

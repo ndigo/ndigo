@@ -134,6 +134,11 @@ function init(converter: CookieConverter = {}): CookieJar {
     }
 
     function get(key: string, json: boolean): JSONValue | undefined {
+        // Symmetric with `set()`: outside a DOM there is no cookie jar to read.
+        if (typeof document === 'undefined') {
+            return undefined;
+        }
+
         const jar: JSONObject = parseCookieJar(document.cookie).result;
 
         if (!key) {
@@ -142,14 +147,24 @@ function init(converter: CookieConverter = {}): CookieJar {
 
         const value = jar[key] as JSONValue | undefined;
 
-        return json && value !== undefined ? JSON.parse(value as string) : value;
+        if (value === undefined || !json) {
+            return value;
+        }
+
+        // A present-but-non-JSON cookie value must not throw on read.
+        try {
+            return JSON.parse(value as string) as JSONValue;
+        } catch {
+            return undefined;
+        }
     }
 
     api.set = set;
     api.get = (key: string): JSONValue | undefined => get(key, false /* read as raw */);
     api.getJSON = (key: string): JSONValue | undefined => get(key, true /* read as json */);
+    // Fresh attribute object: `remove` must not mutate the caller's attributes.
     api.remove = (key: string, attributes?: CookieAttributes): string =>
-        set(key, '', assign(attributes || {}, { expires: -1 }));
+        set(key, '', assign({}, attributes, { expires: -1 }));
 
     // Expose cookie parser for consumers/tests that want direct parsing.
     api.run = (input: string): CookieParseResult => parseCookieJar(input);
@@ -161,5 +176,12 @@ function init(converter: CookieConverter = {}): CookieJar {
     return api;
 }
 
-/** Default cookie jar bound to the current browser environment. */
-export default init();
+/**
+ * Default cookie jar bound to the current browser environment.
+ *
+ * Exported both as a named `Cookies` binding (the documented import) and as
+ * the module default.
+ */
+export const Cookies: CookieJar = init();
+
+export default Cookies;

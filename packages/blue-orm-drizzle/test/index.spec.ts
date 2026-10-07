@@ -98,6 +98,27 @@ describe('DrizzleTransactionManager', () => {
             return expect(tx.run(() => Promise.resolve())).rejects.toThrow('already active');
         });
     });
+
+    test('a concurrent run fails loud instead of racing a second BEGIN (DAT-F9)', async () => {
+        const tx = new DrizzleTransactionManager(dataSource);
+        let release: () => void = () => {};
+        const gate = new Promise<void>((resolve) => {
+            release = resolve;
+        });
+
+        const first = tx.run(async () => {
+            await gate;
+            return 'first';
+        });
+
+        // The latch must be claimed before BEGIN is awaited, so the concurrent
+        // call is rejected cleanly rather than opening a nested transaction.
+        await expect(tx.run(() => 'second')).rejects.toThrow('already active');
+
+        release();
+        await expect(first).resolves.toBe('first');
+        expect(tx.isActive()).toBe(false);
+    });
 });
 
 describe('DrizzleUnitOfWork', () => {

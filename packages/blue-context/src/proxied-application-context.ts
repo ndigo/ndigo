@@ -37,7 +37,14 @@ export class ProxiedGenericApplicationContext extends GenericApplicationContext 
             },
             get(_t, key: PropertyKey): unknown {
                 const value = target.getValue(key as string);
-                return typeof value === 'function' ? value.bind(target) : value;
+                if (typeof value === 'function') return value.bind(target);
+                if (value !== undefined) return value;
+                // Registry values no longer fall back to prototype members
+                // (KRN-REV-FACTORY-14), so the context's own API surface must
+                // resolve through Reflect: `context.setValue`/`destroy`/`name`
+                // reach the real members instead of `undefined`.
+                const member = Reflect.get(target, key);
+                return typeof member === 'function' ? member.bind(target) : member;
             },
             has(_t, key: PropertyKey): boolean {
                 return target.hasValue(key as string);

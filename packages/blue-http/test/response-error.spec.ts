@@ -26,4 +26,27 @@ describe('ResponseError', () => {
         expect(await response.text()).toBe('');
         expect(Object.prototype.toString.call(response)).toBe('[object ResponseError]');
     });
+
+    test('formData() reads through the cached buffer after another read (HTT-REV-016)', async () => {
+        const boundary = '----blueFormDataProbe';
+        const body = [
+            `--${boundary}`,
+            'Content-Disposition: form-data; name="field"',
+            '',
+            'value',
+            `--${boundary}--`,
+            '',
+        ].join('\r\n');
+        const response = new Response(body, {
+            headers: { 'content-type': `multipart/form-data; boundary=${boundary}` },
+        });
+        const error = new ResponseError(response, 'bad form');
+
+        // First read caches the body buffer...
+        expect(await error.text()).toContain('value');
+
+        // ...so formData() still works instead of throwing on a consumed body.
+        const form = await error.formData();
+        expect(form.get('field')).toBe('value');
+    });
 });

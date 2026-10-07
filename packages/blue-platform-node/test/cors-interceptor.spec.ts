@@ -6,12 +6,15 @@
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import type { AddressInfo } from 'node:net';
+import type { ServerResponse } from 'node:http';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { getMapping, RadixMetadataHandlerMapping, requestMapping } from '@blue/dispatcher';
+import { getMapping, RadixMetadataHandlerMapping, requestMapping, type ModelAndView } from '@blue/dispatcher';
+import type { Route } from '@blue/router';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
 import { CORSInterceptor } from '../src/cors-interceptor';
+import { NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from '../src/node-request';
 
 /**
  * Server-side CORS enforcement over a real socket: preflight short-circuit,
@@ -148,5 +151,38 @@ describe('CORSInterceptor (server side)', () => {
         } finally {
             await close();
         }
+    });
+
+    test('extends an existing Vary header instead of overwriting it (PLN-F8)', async () => {
+        const headers = new Map<string, string | string[]>();
+        const res = {
+            headersSent: false,
+            getHeader: (name: string) => headers.get(name.toLowerCase()),
+            setHeader: (name: string, value: string | string[]) => {
+                headers.set(name.toLowerCase(), value);
+            },
+        } as unknown as ServerResponse;
+        const route = {
+            method: 'GET',
+            path: '/api/quote',
+            attributes: {
+                [NODE_REQUEST_ATTRIBUTE]: { headers: { origin: 'https://app.example.com' } },
+                [NODE_RESPONSE_ATTRIBUTE]: res,
+            },
+        } as unknown as Route;
+
+        const interceptor = new CORSInterceptor({ allowedOrigins: ['https://app.example.com'] });
+        await interceptor.preHandle(route, undefined);
+        expect(headers.get('vary')).toBe('Origin');
+
+        // A later stage (static variants, compression) keys the response on
+        // Accept-Encoding; CORS must append its token, not clobber it.
+        headers.set('vary', 'Accept-Encoding');
+        await interceptor.postHandle(route, undefined, {} as ModelAndView);
+        expect(headers.get('vary')).toBe('Accept-Encoding, Origin');
+
+        // Re-running the hook must not duplicate the token.
+        await interceptor.postHandle(route, undefined, {} as ModelAndView);
+        expect(headers.get('vary')).toBe('Accept-Encoding, Origin');
     });
 });

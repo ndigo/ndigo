@@ -25,6 +25,7 @@ await http.get('/api/data');
 
 - [`RequestAwareHTTPInterceptor`](#)
 - [`ResponseAwareHTTPInterceptor`](#)
+- [`CompletionAwareHTTPInterceptor`](#)
 
 ## Constructors
 
@@ -57,6 +58,29 @@ Returns the number of currently queued requests.
 `number`
 
 ## Methods
+
+### postComplete()
+
+> **postComplete**(`request`): `void`
+
+Releases the method+url clone for a completed request so the map tracks
+only in-flight requests.
+
+#### Parameters
+
+##### request
+
+`Request`
+
+#### Returns
+
+`void`
+
+#### Implementation of
+
+`CompletionAwareHTTPInterceptor.postComplete`
+
+***
 
 ### postResponse()
 

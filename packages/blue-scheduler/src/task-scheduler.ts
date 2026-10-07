@@ -127,6 +127,14 @@ export class TaskScheduler {
      * (fixedDelay anchors land in run `finally` blocks).
      */
     #timerDelayMs: number | null = null;
+    /**
+     * The started latch — set by {@link TaskScheduler.start} and cleared by
+     * {@link TaskScheduler.stop}. Kept separate from `#timer` because a
+     * started loop with no (or only far-future) tasks has no armed timer:
+     * `#timer === null` must not be mistaken for "not started", or
+     * registering a task after `start()` would never arm the loop.
+     */
+    #started = false;
     #closed = false;
     destroyed = false;
 
@@ -142,6 +150,10 @@ export class TaskScheduler {
 
     /**
      * Registers a task; its first fire is computed from the current clock.
+     *
+     * When the loop is already started, the timer is re-armed so a task
+     * registered after `start()` (or one due earlier than the armed timer)
+     * fires on time.
      *
      * @param definition - The task to register.
      * @throws {FrameworkError} On duplicate names or after `close()`.
@@ -163,16 +175,25 @@ export class TaskScheduler {
             lastStartedAt: null,
             lastCompletedAt: null,
         });
+        this.#rearm();
     }
 
     /**
      * Removes a task.
      *
+     * When the loop is started, the timer is re-armed so the next wake
+     * reflects the remaining tasks (a removed earliest task no longer
+     * leaves a stale timer).
+     *
      * @param name - The task name.
      * @returns Whether a task was removed.
      */
     unregister(name: string): boolean {
-        return this.#tasks.delete(name);
+        const removed = this.#tasks.delete(name);
+        if (removed) {
+            this.#rearm();
+        }
+        return removed;
     }
 
     /**
@@ -253,21 +274,29 @@ export class TaskScheduler {
     }
 
     /**
-     * Whether the wall-clock timer loop is armed.
+     * Whether the wall-clock timer loop is started.
+     *
+     * True from `start()` until `stop()` even while no timer is armed — a
+     * started loop with no registered tasks has nothing to wake for, but it
+     * will arm as soon as a task is registered.
      */
     get isRunning(): boolean {
-        return this.#timer !== null;
+        return this.#started;
     }
 
     /**
      * Starts the wall-clock timer loop (idempotent). Fire-and-forget: ticks
      * are not awaited, so long runs never delay the loop — single-flight
      * prevents same-task overlap.
+     *
+     * The started latch is set even when no tasks are registered, so
+     * registering one later arms the loop.
      */
     start(): void {
-        if (this.#timer !== null || this.#closed) {
+        if (this.#started || this.#closed) {
             return;
         }
+        this.#started = true;
         this.#scheduleNext();
     }
 
@@ -276,11 +305,30 @@ export class TaskScheduler {
      * {@link TaskScheduler.close} to drain.
      */
     stop(): void {
+        this.#started = false;
         if (this.#timer !== null) {
             clearTimeout(this.#timer);
             this.#timer = null;
             this.#timerDelayMs = null;
         }
+    }
+
+    /**
+     * Recomputes the timer after a registry change (register/unregister)
+     * while the loop is started: clears any armed timer and re-arms for the
+     * new earliest due task, so a task due sooner than the previous earliest
+     * does not wait behind a stale timer.
+     */
+    #rearm(): void {
+        if (!this.#started || this.#closed) {
+            return;
+        }
+        if (this.#timer !== null) {
+            clearTimeout(this.#timer);
+            this.#timer = null;
+            this.#timerDelayMs = null;
+        }
+        this.#scheduleNext();
     }
 
     /**
@@ -424,7 +472,7 @@ export class TaskScheduler {
      * runs to settle.
      */
     #scheduleNext(): void {
-        if (this.#closed || this.#timer !== null) {
+        if (this.#closed || !this.#started || this.#timer !== null) {
             return;
         }
         const now = this.#clock();

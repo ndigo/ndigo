@@ -12,6 +12,7 @@ import { property, defaultValue, configuration, environment, refreshScope } from
 import type { ConfigurableEnvironment } from '@blue/context';
 import { WebAutoConfiguration } from '@blue/platform-web';
 import { NodeAutoConfiguration } from '@blue/platform-node';
+import type { RouteRegistry } from '@blue/router';
 
 describe('whenBrowser', () => {
     afterEach(() => {
@@ -218,4 +219,46 @@ describe('Application integration — conditional gate coverage (CF-1)', () => {
         const after = context.getValue<NodeRefreshConfig>('nodeRefreshConfig');
         expect(after).not.toBe(before);
     });
+
+    test('CTX-08: route scanning skips inactive (condition-gated) sources', async () => {
+        vi.stubGlobal('window', undefined);
+
+        @whenBrowser
+        @routeMapping('/browser-only')
+        class BrowserRouteConfig {}
+
+        @whenNode
+        @routeMapping('/node-only')
+        class NodeRouteConfig {}
+
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig, BrowserRouteConfig, NodeRouteConfig]);
+        const context = await app.run();
+
+        const routes = context.getValue<RouteRegistry>('routeRegistry');
+        const patterns = [...routes.entries()].map(([, definition]) => definition.pattern);
+
+        // Only the active source's route is registered; before the fix
+        // `scanSources(this.sources, ...)` also scanned the browser-only source.
+        expect(patterns).toContain('/node-only');
+        expect(patterns).not.toContain('/browser-only');
+    });
 });
+
+/**
+ * Minimal `@routeMapping` decorator mirroring `@blue/dispatcher`, emitting the
+ * metadata {@link RouteRegistry#scanSources} reads.
+ */
+function routeMapping(route: string | { value: string; name?: string }) {
+    const conf = typeof route === 'string' ? { value: route } : route;
+    return function (target: Function, context: ClassDecoratorContext | ClassMethodDecoratorContext): Function | void {
+        if (context.kind === 'class') {
+            context.metadata['route:mapping'] = conf;
+            return target;
+        }
+        if (context.kind === 'method') {
+            context.metadata[`route:mapping:${String(context.name)}`] = conf;
+        }
+    };
+}

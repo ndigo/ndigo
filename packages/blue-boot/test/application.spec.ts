@@ -8,6 +8,7 @@ import { Application } from '../src/application';
 import { WebAutoConfiguration } from '@blue/platform-web';
 import { NodeAutoConfiguration } from '@blue/platform-node';
 import { configuration, entry, profile } from '@blue/context';
+import { hashScope } from '@blue/factory';
 import { HandlerMethodArgumentResolver } from '@blue/dispatcher';
 
 @configuration
@@ -94,5 +95,29 @@ describe('Application', () => {
         expect(context.hasValue('argumentResolvers')).toBe(true);
         const resolvers = context.getValue<object[]>('argumentResolvers');
         expect(resolvers.some((r) => r.constructor.name.includes('Node'))).toBe(true);
+    });
+
+    test('FACTORY-12: a @hashScope constructor entry does not abort context refresh', async () => {
+        @hashScope
+        class HashScopedService {
+            value = 'hash';
+        }
+
+        @configuration
+        class HashScopeConfiguration {
+            @entry()
+            hashScoped() {
+                // Returning a constructor stores it as a `$hashScoped` entry;
+                // the refresh finish sweep must skip it (hash scope has no
+                // active key at boot, so eager getValue used to throw).
+                return HashScopedService;
+            }
+        }
+
+        const app = new Application([HashScopeConfiguration]);
+        const context = await app.run(); // before the fix: HashScope.getValue throws
+
+        expect(context.isActive).toBe(true);
+        expect(context.hasValue('hashScoped')).toBe(true);
     });
 });

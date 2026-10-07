@@ -49,6 +49,26 @@ Called once per registered handler method, before path expansion.
 
 ***
 
+### security?
+
+> `optional` **security?**: `string`[]
+
+Document-level default security requirements (scheme names); a
+per-operation `@apiDocs({ security })` overrides them. Omitted when
+empty.
+
+***
+
+### securitySchemes?
+
+> `optional` **securitySchemes?**: `Record`\<`string`, [`OpenAPISecurityScheme`](OpenAPISecurityScheme.md)\>
+
+Named security schemes for `components.securitySchemes` (DAT-F12).
+Referenced by name from the document-level [security](#security) default
+and per-operation `@apiDocs({ security })` requirements.
+
+***
+
 ### servers?
 
 > `optional` **servers?**: `string`[]

@@ -8,6 +8,7 @@ import {
     createShellContext,
     NamespaceRelayValidationStrategy,
     RelayValidationResult,
+    type ContextEventGateway,
 } from '@blue/context';
 import { IllegalStateError } from '@blue/core';
 import { BrowserDispatcher, HashRouter } from '@blue/platform-web';
@@ -17,6 +18,7 @@ import { FeatureMetricAggregator, getLogger } from '@blue/telemetry';
 import { DISPATCHER, ROUTER, ROUTE_REGISTRY } from './context-tokens';
 import IndexController from './index-controller';
 import AccountController from './account-controller';
+import AuthController from './auth-controller';
 import { initAuth } from './auth-store';
 import { AuthRouterInterceptor } from './auth-router-interceptor';
 
@@ -57,18 +59,11 @@ interface RelayMetrics {
     relayedEventCount: number;
 }
 
-const resolveRelayMetrics = (gateway: {
-    blockedRelays: readonly unknown[];
-    relays: readonly unknown[];
-}): RelayMetrics => {
-    const counter = gateway as { relayedEventCount?: number };
-
-    return {
-        activeRelayCount: gateway.relays.length,
-        blockedRelayCount: gateway.blockedRelays.length,
-        relayedEventCount: counter.relayedEventCount ?? 0,
-    };
-};
+const resolveRelayMetrics = (gateway: ContextEventGateway): RelayMetrics => ({
+    activeRelayCount: gateway.activeRelayCount,
+    blockedRelayCount: gateway.blockedRelayCount,
+    relayedEventCount: gateway.relayedEventCount,
+});
 
 const logRelayMetrics = (
     featureName: string,
@@ -117,7 +112,7 @@ const dispatchRoute =
         logger.info(`${feature} route handled`, { feature, path: route.path });
     };
 
-export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntimeComposition => {
+export const composeTodoRuntime = async (todoContext: ApplicationContext): Promise<TodoRuntimeComposition> => {
     // ── Initialize auth system ───────────────────────────────────────────────
     initAuth();
     const shellContext = createShellContext({
@@ -134,6 +129,10 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
         activationPolicy: 'exclusive',
         metricRecorder: featureMetricAggregator,
     });
+
+    // The relay gateway only exists after mount; captured here so the
+    // deactivation hook can report the real counters instead of zeros.
+    let todoGateway: ContextEventGateway | undefined;
 
     host.registerFeature({
         name: 'todo',
@@ -159,7 +158,17 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
             void dispatcher.dispatch(route);
         },
         onDeactivate: () => {
-            logRelayMetrics('todo', 'Todo feature relay metrics after unmount', 0, 0, 0);
+            const metrics = todoGateway
+                ? resolveRelayMetrics(todoGateway)
+                : { activeRelayCount: 0, blockedRelayCount: 0, relayedEventCount: 0 };
+
+            logRelayMetrics(
+                'todo',
+                'Todo feature relay metrics after unmount',
+                metrics.blockedRelayCount,
+                metrics.activeRelayCount,
+                metrics.relayedEventCount
+            );
         },
     });
 
@@ -180,22 +189,6 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
         onRoute: (route) => dispatchRoute('account', dispatcher)(new PathRoute(toAccountShellRoute(route.path))),
     });
 
-    const mountedFeature = host.mount('todo');
-
-    if (!mountedFeature.gateway) {
-        throw new IllegalStateError('Todo feature relay gateway was not created');
-    }
-
-    const mountedMetrics = resolveRelayMetrics(mountedFeature.gateway);
-
-    logRelayMetrics(
-        'todo',
-        'Todo feature relay metrics after mount',
-        mountedMetrics.blockedRelayCount,
-        mountedMetrics.activeRelayCount,
-        mountedMetrics.relayedEventCount
-    );
-
     // ── Shell router: hash URLs → host partition navigation ──────────────────
     const shellRouter = new HashRouter((route) => {
         host.navigate(route.toString());
@@ -205,45 +198,18 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
     // ── Register auth interceptor on the shell router ─────────────────────────
     shellRouter.addInterceptor(authInterceptor);
 
-    // ── Auth-related features ─────────────────────────────────────────────────
+    // ── Auth feature partition ────────────────────────────────────────────────
+    // One `/auth` partition for login/profile/admin/forbidden. The partition
+    // router strips the mount prefix before `onRoute`, so restore it (as the
+    // account feature does) to reach `AuthController`'s `/auth/...` mappings.
     host.registerFeature({
-        name: 'login',
-        prefix: '/auth/login',
+        name: 'auth',
+        prefix: AUTH_ROUTE_PREFIX,
         data: {
-            title: 'Login',
+            title: 'Authentication',
         },
         unmountPolicy: 'close',
-        onRoute: dispatchRoute('login', dispatcher),
-    });
-
-    host.registerFeature({
-        name: 'profile',
-        prefix: '/auth/profile',
-        data: {
-            title: 'Profile',
-        },
-        unmountPolicy: 'close',
-        onRoute: dispatchRoute('profile', dispatcher),
-    });
-
-    host.registerFeature({
-        name: 'admin',
-        prefix: '/auth/admin',
-        data: {
-            title: 'Admin Panel',
-        },
-        unmountPolicy: 'close',
-        onRoute: dispatchRoute('admin', dispatcher),
-    });
-
-    host.registerFeature({
-        name: 'forbidden',
-        prefix: '/auth/forbidden',
-        data: {
-            title: 'Forbidden',
-        },
-        unmountPolicy: 'close',
-        onRoute: dispatchRoute('forbidden', dispatcher),
+        onRoute: (route) => dispatchRoute('auth', dispatcher)(new PathRoute(toAuthShellRoute(route.path))),
     });
 
     shellContext.setValue(ROUTER, shellRouter);
@@ -258,7 +224,7 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
     // metadata, with manual fallbacks for feature partitions (which have no
     // controller route of their own).
     const registry = (todoContext.getValue(ROUTE_REGISTRY) as RouteRegistry | undefined) ?? new RouteRegistry();
-    registry.scanSources([IndexController, AccountController], todoContext);
+    registry.scanSources([IndexController, AccountController, AuthController], todoContext);
     if (registry) {
         routes.todoAll = new RouteDefinition('/todo', todoContext);
         routes.todoActive = new RouteDefinition('/todo/active', todoContext);
@@ -270,6 +236,31 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
         routes.authProfile = new RouteDefinition('/auth/profile', todoContext);
         routes.authAdmin = new RouteDefinition('/auth/admin', todoContext);
     }
+
+    // Boot on the todo partition: activate it through the routing registry
+    // (rather than a bare `host.mount`) so the host tracks it as the active
+    // feature, and so the shell router's current route matches the active
+    // partition — a later `refresh()` from the todo service's signal effect
+    // would otherwise navigate the home route and deactivate the feature.
+    await shellRouter.navigate(TODO_ROUTE_PREFIX);
+
+    const mountedFeature = host.getMountedFeature('todo');
+
+    if (!mountedFeature?.gateway) {
+        throw new IllegalStateError('Todo feature relay gateway was not created');
+    }
+
+    todoGateway = mountedFeature.gateway;
+
+    const mountedMetrics = resolveRelayMetrics(mountedFeature.gateway);
+
+    logRelayMetrics(
+        'todo',
+        'Todo feature relay metrics after mount',
+        mountedMetrics.blockedRelayCount,
+        mountedMetrics.activeRelayCount,
+        mountedMetrics.relayedEventCount
+    );
 
     return {
         dispatcher,

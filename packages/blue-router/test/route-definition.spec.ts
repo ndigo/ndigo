@@ -72,6 +72,20 @@ describe('RouteDefinition', () => {
             expect(result).not.toBeNull();
             expect(result?.path).toBe('users');
         });
+
+        it('binds the resolved params onto the parsed route (PWB-REV-016)', () => {
+            const def = new RouteDefinition('/users/{id}/orders/{orderId}', {} as never);
+            const result = def.parse('/users/42/orders/abc');
+
+            expect(result?.params).toEqual({ id: '42', orderId: 'abc' });
+        });
+
+        it('binds params for the colon syntax too', () => {
+            const def = new RouteDefinition('/users/:id', {} as never);
+            const result = def.parse('/users/7');
+
+            expect(result?.params).toEqual({ id: '7' });
+        });
     });
 
     describe('matches()', () => {

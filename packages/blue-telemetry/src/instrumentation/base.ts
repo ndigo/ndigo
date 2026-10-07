@@ -10,10 +10,11 @@
  *   (singular) is deprecated in favor of `metricReaders` — both resolved.
  *   Constructors here use only current option names.
  */
-import { diag, SpanKind, SpanStatusCode, trace, metrics } from '@opentelemetry/api';
-import type { Attributes, Counter, Span } from '@opentelemetry/api';
+import { diag, SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
+import type { Attributes, Span } from '@opentelemetry/api';
 import { InstrumentationBase } from '@opentelemetry/instrumentation';
 import type { InstrumentationModuleDefinition } from '@opentelemetry/instrumentation';
+import { createLazyCounter } from '../metrics/lazy-counter';
 
 /**
  * Shared span configuration for method instrumentation.
@@ -184,20 +185,18 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
      * Returns a synchronous patch function that increments a counter.
      */
     protected _patchCount(config: CountConfig) {
+        // Lazily resolved on first patched call: `InstrumentationBase` runs
+        // `enable()` (and this factory) in its constructor, before any SDK
+        // registers a global MeterProvider — an eager `createCounter` would
+        // capture the NoopMeter and silently drop every datapoint. First call
+        // happens post-init, so the global meter is real by then.
+        const counter = createLazyCounter();
+
         return <This, Args extends unknown[], Return>(
             original: (this: This, ...args: Args) => Return
         ): ((this: This, ...args: Args) => Return) => {
-            // Lazily resolved on first patched call: `InstrumentationBase`
-            // runs `enable()` (and this factory) in its constructor, before
-            // any SDK registers a global MeterProvider — an eager
-            // `createCounter` would capture the NoopMeter and silently drop
-            // every datapoint. First call happens post-init, so the global
-            // meter is real by then.
-            let counter: Counter | null = null;
-
             return function (this: This, ...args: Args): Return {
-                counter ??= metrics.getMeter('@blue/telemetry').createCounter(config.name);
-                counter.add(1, config.attributes);
+                counter(config.name, config.attributes);
                 return original.apply(this, args);
             };
         };

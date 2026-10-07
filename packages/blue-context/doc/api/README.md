@@ -136,6 +136,7 @@ Jeff Rose
 - [likeResourceLoader](variables/likeResourceLoader.md)
 - [likeResourceLoaderAware](variables/likeResourceLoaderAware.md)
 - [Profile](variables/Profile.md)
+- [REDACTED\_VALUE](variables/REDACTED_VALUE.md)
 - [refreshScope](variables/refreshScope.md)
 - [SHARED\_DEPENDENCY\_REGISTRY\_TOKEN](variables/SHARED_DEPENDENCY_REGISTRY_TOKEN.md)
 
@@ -163,6 +164,7 @@ Jeff Rose
 - [getEnv](functions/getEnv.md)
 - [getEnvironmentSchema](functions/getEnvironmentSchema.md)
 - [isDevMode](functions/isDevMode.md)
+- [isSecretMarkerLike](functions/isSecretMarkerLike.md)
 - [nested](functions/nested.md)
 - [not](functions/not.md)
 - [or](functions/or.md)
@@ -173,6 +175,7 @@ Jeff Rose
 - [property](functions/property.md)
 - [propertyKeys](functions/propertyKeys.md)
 - [propertySource](functions/propertySource.md)
+- [redactDiagnosticValue](functions/redactDiagnosticValue.md)
 - [resolvePlaceholders](functions/resolvePlaceholders.md)
 - [resolveSchemaConfig](functions/resolveSchemaConfig.md)
 - [traverseSubtree](functions/traverseSubtree.md)

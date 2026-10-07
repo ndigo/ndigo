@@ -1,16 +1,13 @@
 /**
- * `CountedInstrumentation` spec — a `@counted` counter must bind to the
- * global `MeterProvider` even when the instrumentation is enabled before
- * that provider is registered.
+ * `@counted` decorator spec — the counter must bind to the global
+ * `MeterProvider` even though the decorator wraps the method at
+ * class-definition time, before any SDK provider is registered.
  *
- * `InstrumentationBase` runs `enable()` from its constructor, so the
- * instrumentation below is constructed at module scope — before any
- * `MeterProvider` registration — matching production wiring
- * (`configureTelemetry({ instrumentations: [new CountedInstrumentation()] })`
- * constructs it first). The shimmer wrapper factory runs at that same
- * moment; resolving the counter there captures the NoopMeter and silently
- * drops every datapoint (OP-1). Lazily resolving it on the first patched
- * call binds the real global meter instead.
+ * The decorator resolves the counter lazily on the first recorded call
+ * (post-SDK-init), mirroring `@traced`; an eager `createCounter` at
+ * decoration time would capture the NoopMeter and silently drop every
+ * datapoint. There is no instrumentation/registry indirection to enable
+ * (TEL-03).
  *
  * @module blue-telemetry-node
  * @since 1.0.0
@@ -26,7 +23,7 @@ import {
     PeriodicExportingMetricReader,
 } from '@opentelemetry/sdk-metrics';
 import { metrics } from '@opentelemetry/api';
-import { CountedInstrumentation, CountedRegistry, counted } from '@blue/telemetry';
+import { counted } from '@blue/telemetry';
 
 class CountedProbeService {
     @counted('counted.probe.invocations')
@@ -34,20 +31,6 @@ class CountedProbeService {
         return 'done';
     }
 }
-
-// The decorator's `addInitializer` auto-registration runs under the
-// TypeScript build but not under vitest's esbuild TC39 transform (the
-// initializer is invoked without the class), so register the prototype
-// explicitly — the core decorators spec does the same.
-CountedRegistry.register(CountedProbeService.prototype);
-
-/**
- * Constructed at module scope — before any MeterProvider registration —
- * matching production wiring; see the module header. The constructor-driven
- * `enable()` wraps `CountedProbeService.invoke` while the global meter is
- * still the NoopMeter.
- */
-const instrumentation = new CountedInstrumentation();
 
 /**
  * Cumulative value of the counter via an explicit collect (counters
@@ -74,7 +57,7 @@ async function counterValue(reader: PeriodicExportingMetricReader, name: string)
     return 0;
 }
 
-describe('CountedInstrumentation counter resolution', () => {
+describe('@counted counter resolution', () => {
     let metricReader: PeriodicExportingMetricReader;
 
     beforeAll(() => {
@@ -85,21 +68,20 @@ describe('CountedInstrumentation counter resolution', () => {
         metrics.setGlobalMeterProvider(new MeterProvider({ readers: [metricReader] }));
     });
 
-    afterAll(() => {
-        instrumentation.disable();
-        CountedRegistry.clear();
+    afterAll(async () => {
+        await metricReader.shutdown();
     });
 
-    test('exports datapoints when the instrumentation precedes the global meter provider', async () => {
+    test('exports datapoints even though the decorated class precedes the global meter provider', async () => {
         const service = new CountedProbeService();
 
         expect(service.invoke()).toBe('done');
         expect(service.invoke()).toBe('done');
 
         // Control: a counter created after provider registration on the same
-        // meter proves the export pipeline works. The instrumented counter
+        // meter proves the export pipeline works. The decorated counter
         // would be absent (and this spec red) if it had bound to the
-        // NoopMeter during the constructor-time enable().
+        // NoopMeter when the decorator ran.
         metrics.getMeter('@blue/telemetry').createCounter('counted.probe.control').add(1);
 
         expect(await counterValue(metricReader, 'counted.probe.control')).toBe(1);

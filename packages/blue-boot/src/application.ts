@@ -18,10 +18,10 @@ import type { SecretDecryptor } from '@blue/context';
 import { IllegalStateError, JSONObject } from '@blue/core';
 import { RouteRegistry } from '@blue/router';
 import { isActive } from '@blue/core';
-import { parseCommandLineArgs, getEnvironmentSchema, validateEnvironment } from '@blue/context';
+import { parseCommandLineArgs, getEnvironmentSchema, validateEnvironment, redactDiagnosticValue } from '@blue/context';
 import { applyCustomizers } from '@blue/context';
 import type { EnvironmentCustomizer } from '@blue/context';
-import type { EntryProcessor } from '@blue/factory';
+import { likeCloseable, likeDestroyable, type EntryProcessor } from '@blue/factory';
 import { z } from 'zod';
 import { StandardConfigFileLoader } from './config-file-loader';
 import { isConfigurationProperties, resolveConfigurationProperties } from './configuration-properties';
@@ -328,20 +328,19 @@ export class Application extends Emitter {
     }
 
     /**
-     * Reads profile group mappings from CLI `--profiles.group.<name>=…` and
-     * env `BLUE_PROFILES_GROUPS` (comma-separated `name=members` pairs).
+     * Reads profile group mappings from env `BLUE_PROFILES_GROUPS`
+     * (comma-separated `name=members` pairs) and CLI
+     * `--profiles.group.<name>=…`.
+     *
+     * Precedence is the same as the active profile channels (AD-14): env
+     * first (deployment baseline), CLI last (most specific), so a CLI group
+     * mapping overrides an env one of the same name (CTX-12).
      *
      * @param cli - The parsed CLI arguments.
      * @returns The group name → member-profiles map.
      */
     #profileGroups(cli: Record<string, unknown>): Map<string, string[]> {
         const groups = new Map<string, string[]>();
-        const cliGroup = (cli as { profiles?: { group?: Record<string, unknown> } }).profiles?.group;
-        if (cliGroup) {
-            for (const [name, members] of Object.entries(cliGroup)) {
-                if (typeof members === 'string') groups.set(name, splitProfiles(members));
-            }
-        }
         const envGroups = process.env.BLUE_PROFILES_GROUPS;
         if (envGroups) {
             // Pairs are `;`-separated; members within a pair are `,`-separated
@@ -351,6 +350,12 @@ export class Application extends Emitter {
                 const eq = pair.indexOf('=');
                 if (eq === -1) continue;
                 groups.set(pair.slice(0, eq).trim(), splitProfiles(pair.slice(eq + 1)));
+            }
+        }
+        const cliGroup = (cli as { profiles?: { group?: Record<string, unknown> } }).profiles?.group;
+        if (cliGroup) {
+            for (const [name, members] of Object.entries(cliGroup)) {
+                if (typeof members === 'string') groups.set(name, splitProfiles(members));
             }
         }
         return groups;
@@ -477,11 +482,22 @@ export class Application extends Emitter {
                     // handler's message states it); the next refresh retries
                     // the full set.
                     const { instance } = resolveConfigurationProperties(source as new () => unknown, context);
+                    // CTX-13: the instance being replaced is torn down before
+                    // the new one is stored — a refresh must not leak the
+                    // previous @refreshScope instance (and its resources).
+                    const previous = context.hasValue(name) ? context.getValue(name) : undefined;
+                    if (previous && previous !== instance) {
+                        this.#destroyRefreshInstance(previous);
+                    }
                     context.setValue(name, instance);
                 }
             };
             environment.on(CONFIG_REFRESH_EVENT, this.#refreshListener);
             environment.on('error', this.#refreshFailHandler);
+            // CTX-05/ARC-6: a closed context must not stay reachable through
+            // the environment — detach the rebind listener when the CONTEXT
+            // closes, not only when Application.close() is called.
+            context.on('context:close', () => this.#detachRebindListeners());
         }
 
         // Validate the environment against declared schemas (AD-17 D3):
@@ -499,18 +515,25 @@ export class Application extends Emitter {
             if (!env) continue;
             const result = validateEnvironment(env, schema);
             if (!result.valid) {
+                // A resolved value may be decrypted secret plaintext; with a
+                // decryptor configured, redact every reported actual (CTX-02).
+                const secretContext = Boolean(this.#secretDecryptor);
                 const detail = result.issues
-                    .map(
-                        (issue) => `  - ${issue.path}: expected ${issue.expected}, got ${JSON.stringify(issue.actual)}`
-                    )
+                    .map((issue) => {
+                        const actual = redactDiagnosticValue(issue.actual, secretContext);
+                        return `  - ${issue.path}: expected ${issue.expected}, got ${actual}`;
+                    })
                     .join('\n');
                 throw new IllegalStateError(`Environment validation failed:\n${detail}`, undefined);
             }
         }
 
-        // Build the RouteRegistry from @routeMapping decorator metadata
+        // Build the RouteRegistry from @routeMapping decorator metadata.
+        // CTX-08: scan only ACTIVE sources — an inactive (condition-gated)
+        // source must not populate routeRegistry, or its routes become
+        // reachable despite the gate.
         const routes = new RouteRegistry();
-        routes.scanSources(this.sources, context);
+        routes.scanSources(activeSources, context);
         context.setValue('routeRegistry', routes);
         return context;
     }
@@ -566,7 +589,11 @@ export class Application extends Emitter {
 
     /**
      * Closes the application and releases resources.
-     * Emits the `'closed'` event, then destroys the emitter.
+     *
+     * Emits `'closed'`, detaches the config-refresh rebind listener (and its
+     * fail-loud handler) from the wired environment, then destroys the
+     * emitter. Detaching also happens automatically when the application
+     * context closes (CTX-05).
      */
     close(): void {
         this.emit('closed');
@@ -574,6 +601,21 @@ export class Application extends Emitter {
         // application is not reachable through the environment.
         this.#detachRebindListeners();
         super.destroy();
+    }
+
+    /**
+     * Tears down a `@refreshScope` instance being replaced by a rebind
+     * (CTX-13): a `Destroyable` is destroyed, else a `Closeable` is closed.
+     * Plain configuration bags with neither hook are left untouched.
+     *
+     * @param value - The previous bound instance.
+     */
+    #destroyRefreshInstance(value: unknown): void {
+        if (likeDestroyable(value)) {
+            value.destroy();
+        } else if (likeCloseable(value)) {
+            value.close();
+        }
     }
 
     /**

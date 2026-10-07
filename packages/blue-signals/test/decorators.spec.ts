@@ -330,3 +330,136 @@ describe('@reactive inheritance', () => {
         );
     });
 });
+
+describe('@reactive cleanup hardening (SIGNALS-10)', () => {
+    interface WithTeardown {
+        count: number;
+        dispose(): void;
+        destroy(): void;
+    }
+
+    it('does not throw at construction when the class declares a getter-only destroy', () => {
+        @reactive
+        class Widget {
+            @signal count = 0;
+
+            get destroy(): string {
+                return 'not-a-method';
+            }
+        }
+
+        expect(() => new Widget()).not.toThrow();
+    });
+
+    it('installs a working dispose when the class declares a getter-only dispose', () => {
+        const values: number[] = [];
+
+        @reactive
+        class Watcher {
+            @signal count = 0;
+
+            @effect track() {
+                values.push(this.count);
+            }
+
+            get dispose(): boolean {
+                return false;
+            }
+        }
+
+        const watcher = new Watcher() as unknown as WithTeardown;
+        watcher.count = 1;
+
+        expect(() => watcher.dispose()).not.toThrow();
+
+        watcher.count = 2;
+        expect(values.filter((v) => v === 2)).toHaveLength(0);
+    });
+
+    it('leaves an own non-configurable teardown property untouched instead of throwing', () => {
+        const locked = (): void => undefined;
+
+        class LockedBase {
+            constructor() {
+                Object.defineProperty(this, 'dispose', {
+                    value: locked,
+                    writable: false,
+                    enumerable: false,
+                    configurable: false,
+                });
+            }
+        }
+
+        @reactive
+        class Locked extends LockedBase {
+            @signal count = 0;
+        }
+
+        const instance = new Locked() as unknown as { dispose: () => void };
+        expect(instance.dispose).toBe(locked);
+    });
+
+    it('keeps the installed teardown wrappers non-enumerable', () => {
+        @reactive
+        class Counter {
+            @signal count = 0;
+        }
+
+        const counter = new Counter();
+
+        expect(Object.keys(counter)).not.toContain('destroy');
+        expect(Object.keys(counter)).not.toContain('dispose');
+        expect(Object.getOwnPropertyDescriptor(counter, 'destroy')?.enumerable).toBe(false);
+        expect(Object.getOwnPropertyDescriptor(counter, 'dispose')?.enumerable).toBe(false);
+    });
+
+    it('tears down base effects when a subclass declares destroy as a field', () => {
+        const values: number[] = [];
+        let subclassDestroyed = false;
+
+        @reactive
+        class Base {
+            @signal count = 0;
+
+            @effect track() {
+                values.push(this.count);
+            }
+        }
+
+        @reactive
+        class Sub extends Base {
+            destroy = (): void => {
+                subclassDestroyed = true;
+            };
+        }
+
+        const sub = new Sub() as unknown as WithTeardown;
+        sub.count = 1;
+        sub.destroy();
+
+        expect(subclassDestroyed).toBe(true);
+        sub.count = 2;
+        expect(values.filter((v) => v === 2)).toHaveLength(0);
+    });
+
+    it('runs teardown exactly once when dispose and destroy are both called', () => {
+        const values: number[] = [];
+
+        @reactive
+        class Watcher {
+            @signal count = 0;
+
+            @effect track() {
+                values.push(this.count);
+            }
+        }
+
+        const watcher = new Watcher() as unknown as WithTeardown;
+        watcher.count = 1;
+        watcher.dispose();
+        watcher.destroy();
+
+        watcher.count = 2;
+        expect(values.filter((v) => v === 2)).toHaveLength(0);
+    });
+});

@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
-import { describe, test, expect, beforeAll } from 'vitest';
+import { describe, test, expect, beforeAll, beforeEach } from 'vitest';
 import { DrizzleDataSource } from '../src/drizzle-data-source';
 import { DrizzleEntityManager } from '../src/drizzle-entity-manager';
 import { entity, primaryColumn, generated, column } from '@blue/orm';
@@ -23,8 +23,8 @@ class CrudUser {
     }
 }
 
-// Client-assigned PK so the upsert fallback's UPDATE targets a caller-chosen id
-// and can match zero rows when the INSERT failed for a non-PK reason.
+// Client-assigned PK so the upsert targets a caller-chosen id via
+// ON CONFLICT(id) rather than a rowid-derived one.
 @entity('crud_conflicted')
 class ConflictedUser {
     @primaryColumn()
@@ -145,9 +145,9 @@ describe('DrizzleEntityManager persist conflict handling (COR-12)', () => {
         await em.persist(new ConflictedUser(10, 'alice', 'alice@example.com'));
         await em.persist(new ConflictedUser(10, 'alice', 'alice@new.example.com'));
 
-        // Same client-assigned PK: the INSERT collides on the PK and the
-        // fallback UPDATE matches the existing row (rowsAffected = 1) — the
-        // save is treated as an upsert and must resolve without error.
+        // Same client-assigned PK: the INSERT collides on the PK and
+        // ON CONFLICT(id) DO UPDATE overwrites the existing row — the save is
+        // an upsert and must resolve without error.
         const found = await em.find(ConflictedUser, 10);
         expect(found?.id).toBe(10);
         expect(found?.email).toBe('alice@new.example.com');
@@ -157,12 +157,63 @@ describe('DrizzleEntityManager persist conflict handling (COR-12)', () => {
         await em.persist(new ConflictedUser(20, 'bob', 'bob@example.com'));
 
         // New PK (21) but a username already held by row 20: the INSERT fails on
-        // the UNIQUE username constraint, and the fallback UPDATE for id 21
-        // matches zero rows — the original error must propagate.
+        // the UNIQUE username constraint, which is not the ON CONFLICT target —
+        // the original error must propagate.
         await expect(em.persist(new ConflictedUser(21, 'bob', 'bob2@example.com'))).rejects.toThrow();
 
         // Nothing was written for the failed save.
         expect(await em.find(ConflictedUser, 21)).toBeUndefined();
+    });
+});
+
+// DAT-F8: the previous fallback treated ANY INSERT failure as a possible
+// PK-conflict upsert. Here a genuine NOT NULL violation on a column omitted by
+// persist would be swallowed because the fallback UPDATE matched the existing
+// row — the real error (and the missing write) was silently masked.
+@entity('masked_inserts')
+class MaskedInsert {
+    @generated()
+    @primaryColumn()
+    id: number | undefined;
+
+    @column()
+    name = '';
+
+    @generated()
+    @column()
+    stamp: string | undefined;
+}
+
+describe('DrizzleEntityManager upsert gating (DAT-F8)', () => {
+    let ds: DrizzleDataSource;
+    let em: DrizzleEntityManager;
+
+    beforeEach(async () => {
+        ds = new DrizzleDataSource({ url: ':memory:' });
+        // A migrated schema whose non-PK generated column is still NOT NULL.
+        await ds.client.execute(
+            'CREATE TABLE "masked_inserts" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "stamp" TEXT NOT NULL)'
+        );
+        em = new DrizzleEntityManager(ds);
+    });
+
+    test('a genuine INSERT failure is not masked by the upsert path', async () => {
+        const first = new MaskedInsert();
+        first.id = 10;
+        first.name = 'first';
+        first.stamp = 's1';
+        await em.persist(first);
+
+        const conflicting = new MaskedInsert();
+        conflicting.id = 10;
+        conflicting.name = 'second';
+        // stamp stays undefined, so it is omitted and the INSERT hits NOT NULL.
+
+        await expect(em.persist(conflicting)).rejects.toThrow();
+
+        // The failed save must not have silently overwritten the row.
+        const found = await em.find(MaskedInsert, 10);
+        expect(found?.name).toBe('first');
     });
 });
 

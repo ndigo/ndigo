@@ -16,6 +16,7 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
+    "@tsmetadata/polyfill": "catalog:",
     "@blue/cache": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/content": "~0.0.1",

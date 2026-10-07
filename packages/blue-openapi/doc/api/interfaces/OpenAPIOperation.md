@@ -47,6 +47,16 @@ under `x-blue-*` extensions rather than dropped.
 
 ***
 
+### security?
+
+> `optional` **security?**: `Record`\<`string`, `string`[]\>[]
+
+Security requirements for this operation (scheme name → scopes). Set
+from `@apiDocs({ security })`; overrides the document-level default.
+An empty array documents an explicitly anonymous operation.
+
+***
+
 ### summary?
 
 > `optional` **summary?**: `string`

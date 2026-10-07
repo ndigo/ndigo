@@ -45,4 +45,14 @@ describe('PrototypalPropertyResolver', () => {
         expect(propertyResolver.getRequiredProperty('j.l')).toBe(11);
         expect(() => propertyResolver.getRequiredProperty('z')).toThrow(Error);
     });
+
+    test('CTX-10: a non-string value converts to a String target without crashing', () => {
+        // `a` is the number 1. The registry's only (String, String) converter
+        // is the UUID converter, so the old path threw `value.trim is not a
+        // function`; String targets are pass-through (`String(value)`).
+        expect(propertyResolver.getPropertyAs('a', String)).toBe('1');
+        expect(propertyResolver.getRequiredPropertyAs('a', String)).toBe('1');
+        // An already-string value is untouched.
+        expect(propertyResolver.getPropertyAs('c', String)).toBe('3');
+    });
 });

@@ -7,12 +7,13 @@
   "scripts": {
     "build:client": "vite build",
     "dev": "npm run start:full",
-    "start": "STATIC_DIR=dist tsx src/index.ts",
-    "start:full": "npm run build:client && STATIC_DIR=dist tsx src/index.ts",
-    "test": "vitest run"
+    "start": "tsx src/index.ts",
+    "start:full": "npm run build:client && tsx src/index.ts",
+    "test": "pnpm build:client && vitest run"
   },
   "dependencies": {
     "zod": "catalog:",
+    "@tsmetadata/polyfill": "catalog:",
     "@blue/boot": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",

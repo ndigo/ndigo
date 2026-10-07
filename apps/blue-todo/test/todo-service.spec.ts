@@ -39,6 +39,7 @@ describe('TodoService', () => {
                     }
                     return undefined;
                 }),
+                emit: vi.fn(),
             } as ApplicationContext,
         };
     }
@@ -62,6 +63,13 @@ describe('TodoService', () => {
         ]);
         // Effect fires again on signal change
         expect(refresh).toHaveBeenCalledTimes(2);
+        // APP-N6: the mutation emits the relayed stats event (not just a
+        // registration) so the shell nav badge receives real counts.
+        expect(context.emit).toHaveBeenCalledWith('todo:stats:updated', {
+            active: 2,
+            completed: 0,
+            total: 2,
+        });
     });
 
     test('it should remove item on user:todo:removed and refresh route', () => {

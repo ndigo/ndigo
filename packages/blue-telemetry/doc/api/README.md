@@ -20,8 +20,6 @@ Jeff Rose
 - [AbstractBaseInstrumentation](classes/AbstractBaseInstrumentation.md)
 - [ContextAwareLogger](classes/ContextAwareLogger.md)
 - [ContextInstrumentation](classes/ContextInstrumentation.md)
-- [CountedInstrumentation](classes/CountedInstrumentation.md)
-- [CountedRegistry](classes/CountedRegistry.md)
 - [CounterRateResolver](classes/CounterRateResolver.md)
 - [DispatcherInstrumentation](classes/DispatcherInstrumentation.md)
 - [FeatureMetricAggregator](classes/FeatureMetricAggregator.md)
@@ -46,6 +44,7 @@ Jeff Rose
 
 ## Type Aliases
 
+- [LazyCounter](type-aliases/LazyCounter.md)
 - [LogAttributes](type-aliases/LogAttributes.md)
 - [LoggerType](type-aliases/LoggerType.md)
 - [SeverityScheme](type-aliases/SeverityScheme.md)
@@ -57,6 +56,7 @@ Jeff Rose
 ## Functions
 
 - [counted](functions/counted.md)
+- [createLazyCounter](functions/createLazyCounter.md)
 - [currentTraceContext](functions/currentTraceContext.md)
 - [detectSeverityScheme](functions/detectSeverityScheme.md)
 - [getCounted](functions/getCounted.md)

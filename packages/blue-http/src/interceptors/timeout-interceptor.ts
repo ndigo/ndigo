@@ -8,6 +8,7 @@ import { isNumber } from '@blue/util/types';
 import {
     CompletionAwareHTTPInterceptor,
     ErrorAwareHTTPInterceptor,
+    HTTP,
     HTTPInit,
     InitializationAwareHTTPInterceptor,
 } from '../http';
@@ -126,21 +127,32 @@ export class TimeoutInterceptor
 
         // Track the timer per request settings so settling one request never
         // cancels another request's pending timeout.
-        this.#timeouts.set(settings, {
-            controller,
-            timeoutId: setTimeout(fetchTimeout, settings.timeout),
-        });
+        const timeoutId = setTimeout(fetchTimeout, settings.timeout);
+        // Never let a pending timeout keep the process alive (HTT-REV-009).
+        // The DOM's numeric handle has no `unref`; Node's does.
+        const scheduled = timeoutId as { unref?: () => void };
+        scheduled.unref?.();
+        this.#timeouts.set(settings, { controller, timeoutId });
         return true;
     }
 
     /**
      * @param {Error} error The error that was thrown
      * @param {Request} request The HTTP request
+     * @param {module:http.HTTP} http The HTTP client executing the request
+     * @param {module:http.HTTPInit} [settings] The per-request settings, used to
+     *   release the timer on the error exit path (which never reaches
+     *   `postComplete` when a later error-aware interceptor throws).
      * @returns {Promise<external:Response | undefined>} A 408 response for
      *   timed-out requests, or `undefined` so other error-aware interceptors
      *   (and finally the caller) can handle cancels and transport failures.
      */
-    async postError(error: Error, request: Request): Promise<Response | undefined> {
+    async postError(error: Error, request: Request, http: HTTP, settings?: HTTPInit): Promise<Response | undefined> {
+        // The request settled with an error; its timer is no longer needed.
+        if (settings !== undefined) {
+            this._clearTimeout(settings);
+        }
+
         const timedOut = request.signal.reason === TIMEOUT_REASON || error === TIMEOUT_REASON;
 
         if (!timedOut) {

@@ -14,8 +14,10 @@ Options for [configurationProperties](../functions/configurationProperties.md).
 
 > `optional` **relaxed?**: `boolean`
 
-Enable relaxed binding (kebab/snake env keys match camelCase fields).
-Off by default — exact keypaths are the contract (AD-15 Q8).
+Enable relaxed binding: a field's declared keypath and its camelCase,
+kebab-case and snake_case spellings all match the environment either
+way (a camelCase field finds a kebab env key and vice versa). Off by
+default — exact keypaths are the contract (AD-15 Q8).
 
 ***
 

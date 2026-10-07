@@ -51,17 +51,12 @@ export class RouteDefinition<TPattern extends string = string> implements Matcha
 
     parse(path: string): Route<RouteParams<TPattern>> | null {
         const route = new PathRoute(path);
-        const routePath = route.path;
-        const patternSegments = this.pattern.replace(/^\//, '').split('/').filter(Boolean);
-        const pathSegments = routePath.replace(/^\//, '').split('/').filter(Boolean);
 
-        if (patternSegments.length !== pathSegments.length) return null;
-
-        const length = patternSegments.length;
-        for (let i = 0; i < length; i++) {
-            const ps = patternSegments[i];
-            if (ps.startsWith('{') && ps.endsWith('}')) continue;
-            if (ps !== pathSegments[i]) return null;
+        // `resolveParams` performs the match and binds the extracted parameters
+        // onto the route (`:id` and `{id}` syntaxes) — without it, a parsed
+        // route carried `params: null` (PWB-REV-016).
+        if (route.resolveParams(this.pattern) === null) {
+            return null;
         }
 
         return route as Route<RouteParams<TPattern>>;

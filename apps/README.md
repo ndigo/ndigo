@@ -118,12 +118,22 @@ cd apps/<app-name>
 pnpm dev     # or pnpm start for node apps
 ```
 
-**Build an application:**
+**Build an application** (per app type):
 
 ```bash
-cd apps/<app-name>
-pnpm build
+# Browser apps — blue-hello, blue-host, blue-todo, blue-views
+cd apps/<app-name> && pnpm build
+
+# blue-island — builds only the client bundle; the server runs from source
+cd apps/blue-island && pnpm build:client
+
+# Node apps — blue-api and blue-hello-node have no build step;
+# pnpm start runs src/index.ts directly through tsx.
 ```
+
+Not every app defines a `build` script (`blue-api`, `blue-hello-node`) and
+`blue-island` defines `build:client` instead, so the generic
+`cd apps/<app-name> && pnpm build` does not apply to all of them.
 
 ## Configuration
 

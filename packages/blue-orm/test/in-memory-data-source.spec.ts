@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { IllegalStateError } from '@blue/core';
-import { InMemoryDataSource } from '../src/data-source';
+import { ENTITY_CLONE, InMemoryDataSource } from '../src/data-source';
 
 describe('InMemoryDataSource', () => {
     let dataSource: InMemoryDataSource;
@@ -151,5 +151,75 @@ describe('InMemoryDataSource snapshot/restore', () => {
 
         dataSource.restore(snapshot);
         expect(dataSource.getStore<Account>('accounts').get('a1')).toMatchObject({ name: 'Alice' });
+    });
+});
+
+// DAT-F7: snapshot/restore clones own enumerable state, so entities with
+// ECMAScript private fields opt into the ENTITY_CLONE hook to copy it.
+class Vault {
+    #secret: string;
+
+    constructor(
+        public id: string,
+        secret: string
+    ) {
+        this.#secret = secret;
+    }
+
+    reveal(): string {
+        return this.#secret;
+    }
+
+    [ENTITY_CLONE](): Vault {
+        return new Vault(this.id, this.#secret);
+    }
+}
+
+class HooklessVault {
+    #secret: string;
+
+    constructor(
+        public id: string,
+        secret: string
+    ) {
+        this.#secret = secret;
+    }
+
+    reveal(): string {
+        return this.#secret;
+    }
+}
+
+describe('InMemoryDataSource private-state snapshot contract (DAT-F7)', () => {
+    let dataSource: InMemoryDataSource;
+
+    beforeEach(() => {
+        dataSource = new InMemoryDataSource();
+    });
+
+    it('preserves private state through snapshot/restore via the ENTITY_CLONE hook', () => {
+        dataSource.createStore('vault');
+        dataSource.getStore<Vault>('vault').set('k1', new Vault('k1', 'hunter2'));
+
+        const snapshot = dataSource.snapshot();
+        dataSource.restore(snapshot);
+
+        const restored = dataSource.getStore<Vault>('vault').get('k1');
+        expect(restored).toBeInstanceOf(Vault);
+        expect(restored?.reveal()).toBe('hunter2');
+    });
+
+    it('documents that hook-less private state is lost on restore', () => {
+        dataSource.createStore('hookless');
+        dataSource.getStore<HooklessVault>('hookless').set('k1', new HooklessVault('k1', 'hunter2'));
+
+        const snapshot = dataSource.snapshot();
+        dataSource.restore(snapshot);
+
+        const restored = dataSource.getStore<HooklessVault>('hookless').get('k1');
+        expect(restored).toBeInstanceOf(HooklessVault);
+        // The prototype is preserved but the private brand is not restored —
+        // documented limitation, hence the ENTITY_CLONE escape hatch.
+        expect(() => restored?.reveal()).toThrow(TypeError);
     });
 });

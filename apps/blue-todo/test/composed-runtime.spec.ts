@@ -37,7 +37,7 @@ describe('composed todo runtime end-to-end', () => {
         appEl.id = 'app';
         document.body.appendChild(appEl);
 
-        const runtime = composeTodoRuntime(await createTodoContext());
+        const runtime = await composeTodoRuntime(await createTodoContext());
         dispatch = (path: string) => runtime.dispatcher.dispatch(makeRoute(path));
         dispose = () => {
             runtime.shellContext.close();

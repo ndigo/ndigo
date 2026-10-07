@@ -21,6 +21,14 @@ const effectDisposers = new WeakMap<object, Array<() => void>>();
 const pendingSignals = new WeakMap<object, Map<string | symbol, unknown>>();
 const pendingEffects = new WeakMap<object, Array<() => void>>();
 
+// The instance's teardown, kept out of the destroy/dispose wrappers so any
+// wrapper (base class or @reactive subclass) still finds it, and so it runs at
+// most once. See installLifecycleMethod.
+const cleanupMap = new WeakMap<object, () => void>();
+
+/** The reserved teardown method names @reactive installs. */
+type LifecycleMethod = 'destroy' | 'dispose';
+
 // Explains the two ways `@signal`/`@effect` metadata can stay pending: the
 // declaring class lacks `@reactive`, or the member is declared in a subclass of
 // a `@reactive` class (activation happens before subclass initializers run).
@@ -28,6 +36,66 @@ const REACTIVATION_HINT =
     'either the class is missing the @reactive class decorator, or the member is declared on a subclass ' +
     'of a @reactive class — decorators are not inherited, so every class that declares @signal/@effect ' +
     'members needs its own @reactive decorator.';
+
+/**
+ * Runs `instance`'s registered teardown at most once. The map entry is deleted
+ * *before* the teardown runs, so a throwing disposer cannot make a later
+ * `destroy()`/`dispose()` re-run it (or a concurrent one double-run it).
+ */
+function runCleanup(instance: object): void {
+    const cleanup = cleanupMap.get(instance);
+    if (cleanup === undefined) {
+        return;
+    }
+    cleanupMap.delete(instance);
+    cleanup();
+}
+
+/**
+ * Installs (or re-points) the `destroy`/`dispose` wrapper on `instance`.
+ *
+ * The wrapper is *defined*, never assigned: a getter-only accessor inherited
+ * from the prototype would make a plain assignment throw during construction,
+ * while `Object.defineProperty` shadows it with an own data property instead.
+ * It is non-enumerable so it stays invisible to enumeration/`JSON`, like the
+ * prototype methods it replaces. The prior method (if any) is chained after
+ * teardown, so a subclass `destroy` field/method keeps running.
+ *
+ * Guard: an own non-configurable property cannot be redefined — redefining it
+ * would throw mid-construction — so it is left untouched.
+ */
+function installLifecycleMethod(instance: object, name: LifecycleMethod): void {
+    const descriptor = Object.getOwnPropertyDescriptor(instance, name);
+    if (descriptor !== undefined && !descriptor.configurable) {
+        return;
+    }
+
+    // Resolve the method the wrapper chains into. An own data property is read
+    // from its descriptor; anything else (including a getter-only accessor) is
+    // read defensively so a throwing getter cannot break construction.
+    let previous: unknown;
+    if (descriptor !== undefined && 'value' in descriptor) {
+        previous = descriptor.value;
+    } else {
+        try {
+            previous = (instance as Record<string, unknown>)[name];
+        } catch {
+            previous = undefined;
+        }
+    }
+
+    Object.defineProperty(instance, name, {
+        value: function (this: object, ...args: unknown[]): unknown {
+            runCleanup(instance);
+            return typeof previous === 'function'
+                ? (previous as (...callArgs: unknown[]) => unknown).apply(this, args)
+                : undefined;
+        },
+        writable: true,
+        enumerable: false,
+        configurable: true,
+    });
+}
 
 /**
  * Returns the backing `Signal` for a `@signal` field activated by `@reactive`,
@@ -224,10 +292,10 @@ export function reactive<T extends new (...args: unknown[]) => object>(
             }
 
             // ── Cleanup ────────────────────────────────────────────────────────
-            const origDestroy = instance.destroy as (() => void) | undefined;
-            const origDispose = instance.dispose as (() => void) | undefined;
-
-            const cleanup = (): void => {
+            // Teardown lives in `cleanupMap` (not in the wrappers), so every
+            // @reactive class in a hierarchy points at the same teardown and it
+            // runs exactly once — even when a subclass re-installs the wrapper.
+            cleanupMap.set(instance, (): void => {
                 const disposers = effectDisposers.get(instance);
                 if (disposers) {
                     for (const d of disposers) {
@@ -241,16 +309,10 @@ export function reactive<T extends new (...args: unknown[]) => object>(
                 }
                 signalMap.delete(instance);
                 computedMap.delete(instance);
-            };
+            });
 
-            instance.destroy = (): void => {
-                cleanup();
-                origDestroy?.call(instance);
-            };
-            instance.dispose = (): void => {
-                cleanup();
-                origDispose?.call(instance);
-            };
+            installLifecycleMethod(instance, 'destroy');
+            installLifecycleMethod(instance, 'dispose');
         }
     } as unknown as T;
 }

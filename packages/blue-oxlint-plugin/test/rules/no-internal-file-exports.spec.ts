@@ -37,6 +37,11 @@ ruleTester.run('no-internal-file-exports', noInternalFileExports, {
             code: 'const foo = 1;\nexport { foo };',
             filename: '/packages/blue-core/src/index.ts',
         },
+        // A sub-barrel under `src/` is also a public API entry point (TOL-F2).
+        {
+            code: "export * from './registry';",
+            filename: '/packages/blue-telemetry/src/metrics/index.ts',
+        },
     ],
     invalid: [
         {

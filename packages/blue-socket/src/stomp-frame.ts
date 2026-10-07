@@ -59,6 +59,19 @@ export class StompProtocolError extends Error {
     }
 }
 
+/**
+ * Frames whose header values are exempt from the STOMP 1.2 §1.2 escaping
+ * rules: "The CONNECT and CONNECTED frames do not escape the carriage
+ * return, line feed, or colon characters." `STOMP` is the STOMP 1.1 alias
+ * of `CONNECT`, so it is exempt for the same reason (credentials carrying
+ * `\`, `:` or `\n` must round-trip verbatim).
+ */
+const UNESCAPED_HEADER_COMMANDS: Record<string, true> = {
+    CONNECT: true,
+    STOMP: true,
+    CONNECTED: true,
+};
+
 /** STOMP 1.2 header-value escapes, in replacement order. */
 const ESCAPES: ReadonlyArray<{ raw: string; encoded: string }> = [
     { raw: '\\', encoded: '\\\\' },
@@ -146,6 +159,9 @@ function unescapeHeaderValue(value: string): string {
  * entry SHOULD be used" (§1.2, Repeated Header Entries) — which is what
  * store-and-forward hops that prepend or update a header rely on.
  *
+ * `CONNECT`/`STOMP`/`CONNECTED` values are exempt from the §1.2 escape
+ * rules and are taken verbatim.
+ *
  * @param headerBlock - The frame text before the blank line, EOLs excluded.
  * @returns The parsed command and header map.
  * @throws {@link StompProtocolError} on an empty command, a raw CR/NUL, a
@@ -164,6 +180,10 @@ function parseHeaderBlock(headerBlock: string): { command: string; headers: Reco
     // Null-prototype map: untrusted header names (`__proto__`, `constructor`, …)
     // must land as ordinary keys, never touch the object prototype.
     const headers: Record<string, string> = Object.create(null);
+    // CONNECT/STOMP/CONNECTED header values are exempt from escaping
+    // (STOMP 1.2 §1.2) — `\c` there is not an escape sequence, so the value
+    // is taken verbatim (still with the raw-CR/NUL guard below).
+    const exempt = UNESCAPED_HEADER_COMMANDS[command] === true;
     const length = lines.length;
     for (let i = 1; i < length; i += 1) {
         const rawLine = lines[i] as string;
@@ -181,7 +201,7 @@ function parseHeaderBlock(headerBlock: string): { command: string; headers: Reco
         if (name in headers) {
             continue;
         }
-        headers[name] = unescapeHeaderValue(line.slice(colon + 1));
+        headers[name] = exempt ? line.slice(colon + 1) : unescapeHeaderValue(line.slice(colon + 1));
     }
     return { command, headers };
 }
@@ -439,6 +459,10 @@ export function serializeStompFrame(frame: StompFrame): StompBody {
         );
     }
     const needsContentLength = (body instanceof Uint8Array || body.includes('\0')) && callerContentLength === undefined;
+    // CONNECT/STOMP/CONNECTED values are not escaped (STOMP 1.2 §1.2), so a
+    // CR/LF there cannot be framed at all (an escaped `\n` would be read
+    // back verbatim as a literal backslash-n on the peer).
+    const exempt = UNESCAPED_HEADER_COMMANDS[command] === true;
     const serializedHeaders: Array<[string, string]> = [];
     for (const [name, value] of Object.entries(headers)) {
         // `:` would re-split on parse, CR/LF would forge header lines, and
@@ -446,10 +470,10 @@ export function serializeStompFrame(frame: StompFrame): StompBody {
         if (name === '' || /[\n\r:\0]/.test(name)) {
             throw new StompProtocolError(`invalid header name: "${name}"`);
         }
-        if (value.includes('\0')) {
-            throw new StompProtocolError(`header value contains NUL: "${name}"`);
+        if (value.includes('\0') || (exempt && /[\n\r]/.test(value))) {
+            throw new StompProtocolError(`invalid header value for ${command}: "${name}"`);
         }
-        serializedHeaders.push([name, escapeHeaderValue(value)]);
+        serializedHeaders.push([name, exempt ? value : escapeHeaderValue(value)]);
     }
     if (needsContentLength) {
         serializedHeaders.push(['content-length', String(octets(body))]);

@@ -26,11 +26,30 @@ const resolveInitialLocale = (): string => {
     return DEFAULT_LOCALE;
 };
 
+let localeSignal: Signal<string> | undefined;
+
+/**
+ * Resolves (and memoizes) the locale signal, reading the persisted cookie /
+ * navigator language on first use. Deferring this keeps importing the barrel
+ * free of any browser-global access outside a DOM.
+ */
+const resolveLocaleSignal = (): Signal<string> => (localeSignal ??= signal(resolveInitialLocale()));
+
 /**
  * Reactive locale state for the browser — views subscribed to this signal
  * re-render and re-format when the locale changes.
+ *
+ * Backed by a lazily-created signal so importing the module outside a DOM
+ * never touches `document`/`navigator`.
  */
-export const currentLocale: Signal<string> = signal(resolveInitialLocale());
+export const currentLocale: Signal<string> = new Proxy(Object.create(null) as Signal<string>, {
+    get: (_target, property) => {
+        const target = resolveLocaleSignal();
+        const value = Reflect.get(target, property, target) as unknown;
+        return typeof value === 'function' ? value.bind(target) : value;
+    },
+    set: (_target, property, value) => Reflect.set(resolveLocaleSignal(), property, value, resolveLocaleSignal()),
+});
 
 /**
  * Sets the active locale on the client.

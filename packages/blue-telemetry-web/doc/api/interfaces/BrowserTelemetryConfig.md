@@ -46,4 +46,6 @@ When `false`, disables the console exporters. This is NOT a global
 "export off" switch: a configured `traceUrl` still exports spans over
 OTLP/HTTP regardless of this flag (console and OTLP are independent).
 No OTLP targets exist for metrics or logs, so those signals are gated
-solely by this flag and remain console-only.
+solely by this flag and remain console-only — and, with `false`, the
+log pipeline is disabled entirely, so application logs are **not**
+routed through OpenTelemetry (they stay on the console bridge).

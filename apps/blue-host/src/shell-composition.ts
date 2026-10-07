@@ -6,6 +6,7 @@
  */
 import { createShellContext, DefaultSharedDependencyRegistry, SHARED_DEPENDENCY_REGISTRY_TOKEN } from '@blue/context';
 import { HOST_MANAGER_TOKEN, HostManager } from '@blue/host';
+import { CART, type Cart } from './context-tokens';
 
 /** Feature route prefixes. */
 export const CATALOG_PREFIX = '/catalog';
@@ -49,13 +50,13 @@ export function composeHostRuntime() {
     shellContext.setValue(SHARED_DEPENDENCY_REGISTRY_TOKEN, sharedRegistry);
 
     // A shell-wide shared cart singleton features may resolve.
-    const cart = {
+    const cart: Cart = {
         items: [] as string[],
         add(item: string): void {
             this.items.push(item);
         },
     };
-    shellContext.setValue('cart', cart);
+    shellContext.setValue(CART, cart);
 
     // ── Host manager: one-call registration of the lazy features ───────────
     const host = new HostManager(shellContext, { activationPolicy: 'exclusive' });

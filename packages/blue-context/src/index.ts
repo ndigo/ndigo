@@ -20,6 +20,7 @@ export * from './profile';
 export * from './property-sources';
 export * from './shared-dependency-registry';
 export * from './property-resolver';
+export * from './redaction';
 export * from './remote-property-source';
 export * from './resource';
 export * from './schema-config';

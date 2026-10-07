@@ -11,7 +11,10 @@ import 'todomvc-common/base.js';
 import './telemetry-setup';
 import { composeTodoRuntime } from './shell-composition';
 import { createTodoContext } from './todo-context';
+import { authClient, logout } from './auth-store';
+import { renderAuthNav } from './auth-nav';
 import './account-app-view';
+import './auth-app-view';
 import './feature-metrics-panel-view';
 import './locale-switcher-view';
 import './shell-nav-view';
@@ -20,7 +23,7 @@ import './todo-input-view';
 import './todo-item-view';
 import './signals-counter-view';
 
-const composition = composeTodoRuntime(await createTodoContext());
+const composition = await composeTodoRuntime(await createTodoContext());
 const { routes } = composition;
 const metricsPanel = document.createElement('feature-metrics-panel') as HTMLElement & {
     aggregator?: unknown;
@@ -44,40 +47,30 @@ window.setInterval(() => {
 }, 250);
 
 // ── Update auth navigation based on auth state ──────────────────────────────
-async function updateAuthNav(): Promise<void> {
+function updateAuthNav(): void {
     const authNav = document.getElementById('auth-nav');
     if (!authNav) return;
 
-    const { authClient, logout } = await import('./auth-store');
-
-    if (authClient.isAuthenticated && authClient.principal) {
-        authNav.innerHTML = `
-            <span class="auth-label">Logged in as:</span>
-            <span class="auth-name">${authClient.principal.name}</span>
-            <a href="#/auth/profile">Profile</a>
-            <a href="#/auth/admin">Admin</a>
-            <button id="auth-logout-btn">Logout</button>
-        `;
-        authNav.querySelector('#auth-logout-btn')?.addEventListener('click', async () => {
+    renderAuthNav(
+        authNav,
+        {
+            isAuthenticated: authClient.isAuthenticated,
+            name: authClient.principal?.name,
+        },
+        async () => {
             await logout();
-            await updateAuthNav();
-        });
-    } else {
-        authNav.innerHTML = `
-            <a href="#/auth/login">Login</a>
-            <a href="#/auth/profile">Profile</a>
-            <a href="#/auth/admin">Admin</a>
-        `;
-    }
+            updateAuthNav();
+        }
+    );
 }
 
 // Initial auth nav update
-void updateAuthNav();
+updateAuthNav();
 
 // Re-check auth state on route changes
 composition.shellRouter.addInterceptor({
     async postHandle() {
-        await updateAuthNav();
+        updateAuthNav();
     },
 });
 

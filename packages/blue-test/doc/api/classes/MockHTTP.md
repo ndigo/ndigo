@@ -37,7 +37,12 @@ const res = await mockHTTP.get('/todos').exec();
 
 Optional harness configuration. `multipartLimits` is
 passed through to the multipart parser, mirroring
-`NodeHTTPServerAdapterOptions.multipart`.
+`NodeHTTPServerAdapterOptions.multipart`; `limits` are the transport
+request limits the live adapter enforces (HTT-REV-014).
+
+###### limits?
+
+`HTTPRequestLimits`
 
 ###### multipartLimits?
 

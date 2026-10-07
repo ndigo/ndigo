@@ -26,6 +26,7 @@ Jeff Rose
 - [OpenAPIRequestBody](interfaces/OpenAPIRequestBody.md)
 - [OpenAPIResponse](interfaces/OpenAPIResponse.md)
 - [OpenAPISchemaObject](interfaces/OpenAPISchemaObject.md)
+- [OpenAPISecurityScheme](interfaces/OpenAPISecurityScheme.md)
 - [RouteMappingTable](interfaces/RouteMappingTable.md)
 
 ## Type Aliases

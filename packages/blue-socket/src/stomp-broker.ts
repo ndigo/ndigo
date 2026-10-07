@@ -30,8 +30,9 @@
  * - **MESSAGE `ack` header (COR-4)**: non-`auto` subscriptions carry
  *   `ack: <message-id>`, and ACK/NACK may name the message with the `id`
  *   header alone — the per-session delivery index resolves the owning
- *   subscription. A `subscription` header, when present, must name the
- *   sender's own subscription.
+ *   subscription(s) (one id can be outstanding under several). A
+ *   `subscription` header, when present, must name the sender's own
+ *   subscription.
  * - **`/user` destinations (D10)**: principal-scoped subscriptions via
  *   `resolveUser`; `sendToUser` fans out to one user's scope; a client
  *   SEND to `/user/*` reaches only the sender's own scope.
@@ -63,6 +64,7 @@
  */
 import { RingBuffer } from '@blue/core';
 import {
+    headerOctets,
     InMemoryQueueMessageStore,
     materialOctets,
     type QueueMessageStore,
@@ -102,6 +104,13 @@ const DEFAULT_MAX_BACKLOG_DESTINATIONS = 1000;
 const DEFAULT_MAX_BACKLOG_BYTES = 64 * 1024 * 1024;
 /** Default cap on a protocol identifier's length in characters (SEC-2). */
 const DEFAULT_MAX_IDENTIFIER_LENGTH = 1024;
+/**
+ * Default cap on a frame's serialized header octets (REV-002) — the header
+ * counterpart of the body byte budgets. The transport payload cap is
+ * megabytes, so without this a frame could carry ~1 MiB of headers per
+ * body octet. Default `16384` (16 KiB); `0` disables.
+ */
+const DEFAULT_MAX_HEADER_BYTES = 16 * 1024;
 /** Default per-subscription bound on tracked unacked body octets (SEC-5). */
 const DEFAULT_MAX_UNACKED_BYTES = 1024 * 1024;
 /** Default per-session bound on tracked unacked body octets (SEC-5). */
@@ -110,7 +119,16 @@ const DEFAULT_MAX_UNACKED_SESSION_BYTES = 16 * 1024 * 1024;
 const DEFAULT_MAX_REPLAY_BYTES_PER_SESSION = 16 * 1024 * 1024;
 
 /** Headers whose value is a protocol identifier — capped by `maxIdentifierLength`. */
-const IDENTIFIER_HEADERS: readonly string[] = ['destination', 'id', 'subscription', 'transaction', 'receipt'];
+const IDENTIFIER_HEADERS: readonly string[] = [
+    'destination',
+    'id',
+    'subscription',
+    'transaction',
+    'receipt',
+    // `accept-version` is split on commas into the offered-version list, so
+    // an unbounded header is an unbounded allocation (REV-009).
+    'accept-version',
+];
 
 /**
  * SEND headers that are framing rather than user payload (COR-7, STOMP 1.2
@@ -129,6 +147,13 @@ interface Subscription {
     session: SocketSession;
     subId: string;
     destination: string;
+    /**
+     * The principal resolved at SUBSCRIBE time for a `/user/*` binding
+     * (REV-005) — the resolved identity is recorded on the subscription so
+     * removal cannot re-resolve to a different (or `null`) principal and
+     * leak the scope. `null` for non-`/user/` destinations.
+     */
+    user: string | null;
     ack: StompAckMode;
     /** Delivered-but-unacked messages (D9, ack ≠ auto) — head-indexed
      * ring: FIFO eviction at the `maxUnacked` bound is O(1). Created with
@@ -171,8 +196,14 @@ interface StoredMessage {
 
 /** Per-session delivery accounting: the ack index + the byte budgets. */
 interface SessionState {
-    /** Delivery `message-id` → owning subscription (COR-4 id-only acks). */
-    messageIds: Map<string, Subscription>;
+    /**
+     * Delivery `message-id` → owning subscriptions (COR-4 id-only acks).
+     * A list because one logical message fans out to every subscription of
+     * the destination — including two subscriptions of the same session —
+     * so the same id can be outstanding under more than one subscription
+     * (REV-004); an id-only ACK/NACK settles them all.
+     */
+    messageIds: Map<string, Subscription[]>;
     /** Tracked unacked body octets across the session's subscriptions (SEC-5). */
     unackedBytes: number;
     /** Replay + replay-buffer octets consumed by this session (SEC-6). */
@@ -263,6 +294,16 @@ export interface StompBrokerOptions {
      * Default `1024` characters; `0` disables.
      */
     maxIdentifierLength?: number;
+    /**
+     * Cap on a frame's serialized header octets (REV-002) — names, values
+     * and their separators/EOLs, on every non-ping inbound frame and on
+     * programmatic `publish`/`sendToUser` headers. The header counterpart
+     * of the body byte budgets: without it a peer could attach up to the
+     * transport payload cap of headers per message. Exceeding it fails
+     * closed (ERROR + close `1002`); a programmatic call throws a
+     * `StompProtocolError`. Default `16384` (16 KiB); `0` disables.
+     */
+    maxHeaderBytes?: number;
     /**
      * Credential verifier for CONNECT `login`/`passcode` (SEC-7). Invoked
      * with the two header values (empty string when absent) and the
@@ -382,6 +423,7 @@ export class StompBroker {
     readonly #maxUnackedSessionBytes: number;
     readonly #maxReplayBytesPerSession: number;
     readonly #maxIdentifierLength: number;
+    readonly #maxHeaderBytes: number;
     readonly #verifyCredentials: NonNullable<StompBrokerOptions['verifyCredentials']> | null;
     readonly #authorize: NonNullable<StompBrokerOptions['authorize']> | null;
     readonly #queueBacklog: number;
@@ -432,6 +474,7 @@ export class StompBroker {
         this.#maxUnackedSessionBytes = options.maxUnackedSessionBytes ?? DEFAULT_MAX_UNACKED_SESSION_BYTES;
         this.#maxReplayBytesPerSession = options.maxReplayBytesPerSession ?? DEFAULT_MAX_REPLAY_BYTES_PER_SESSION;
         this.#maxIdentifierLength = options.maxIdentifierLength ?? DEFAULT_MAX_IDENTIFIER_LENGTH;
+        this.#maxHeaderBytes = options.maxHeaderBytes ?? DEFAULT_MAX_HEADER_BYTES;
         this.#verifyCredentials = options.verifyCredentials ?? null;
         this.#authorize = options.authorize ?? null;
         this.#queueBacklog = options.queueBacklog ?? DEFAULT_QUEUE_BACKLOG;
@@ -681,6 +724,7 @@ export class StompBroker {
         headers: Record<string, string> = {}
     ): Promise<StoredQueueMessage | undefined> {
         if (this.#closed) throw new Error('StompBroker is closed');
+        this.#assertDeliverable(destination, headers);
         if (this.#fanout && destination.startsWith('/topic/')) {
             if (!this.#fanoutReady) throw new Error('StompBroker is not ready; await connect()');
             await this.#fanout.publish('topic', { key: destination, body, headers });
@@ -720,6 +764,10 @@ export class StompBroker {
         headers: Record<string, string>,
         messageId = this.#nextMessageId()
     ): void {
+        // REV-006: validate before touching subscribers so a
+        // peer/programmatic envelope that cannot be framed fails loudly
+        // (throws to the caller) instead of being dropped per subscriber.
+        this.#assertDeliverable(destination, headers);
         const subscribers = this.#byDestination.get(destination);
         if (subscribers) {
             for (const subscription of Array.from(subscribers)) {
@@ -744,6 +792,9 @@ export class StompBroker {
      */
     sendToUser(user: string, destination: string, body: StompBody, headers: Record<string, string> = {}): void {
         const suffix = destination.replace(/^\/+/, '');
+        // REV-006: surface an unframeable envelope here rather than letting
+        // `#deliverNow` swallow the serialization fault per subscriber.
+        this.#assertDeliverable(`/user/${suffix}`, headers);
         const scope = this.#byUser.get(user)?.get(suffix);
         if (!scope) {
             return;
@@ -807,6 +858,11 @@ export class StompBroker {
         // non-ping frame (including CONNECT — `login`/`passcode` are
         // credentials, capped by their own verifier).
         if (!this.#assertIdentifiers(session, frame)) {
+            return Promise.resolve(false);
+        }
+        // REV-002: the serialized header block is capped too, so headers
+        // cannot dwarf the body budgets the broker charges.
+        if (!this.#assertHeaderBudget(session, frame)) {
             return Promise.resolve(false);
         }
         if (!state.connected) {
@@ -886,20 +942,18 @@ export class StompBroker {
         state.connected = true;
         state.version = mutual;
         state.sessionId = this.#nextMessageId();
-        session.send(
-            serializeStompFrame({
-                command: 'CONNECTED',
-                headers: {
-                    version: mutual,
-                    session: state.sessionId,
-                    server: 'BlueJS',
-                    // Liveness is the WS layer's job (AD-21 D6); negotiate
-                    // STOMP heartbeats off (AD-23 D3).
-                    'heart-beat': '0,0',
-                },
-                body: '',
-            })
-        );
+        this.#controlSend(session, {
+            command: 'CONNECTED',
+            headers: {
+                version: mutual,
+                session: state.sessionId,
+                server: 'BlueJS',
+                // Liveness is the WS layer's job (AD-21 D6); negotiate
+                // STOMP heartbeats off (AD-23 D3).
+                'heart-beat': '0,0',
+            },
+            body: '',
+        });
         return true;
     }
 
@@ -958,6 +1012,7 @@ export class StompBroker {
                 session,
                 subId,
                 destination,
+                user,
                 ack,
                 unacked: new RingBuffer<StoredMessage>(this.#maxUnacked + 1),
                 unackedBytes: 0,
@@ -984,6 +1039,7 @@ export class StompBroker {
             session,
             subId,
             destination,
+            user: null,
             ack,
             unacked: new RingBuffer<StoredMessage>(this.#maxUnacked + 1),
             unackedBytes: 0,
@@ -1092,6 +1148,53 @@ export class StompBroker {
             }
         }
         return true;
+    }
+
+    /**
+     * Enforce `maxHeaderBytes` (REV-002) on a frame's serialized header
+     * block — the header counterpart of the body byte budgets.
+     *
+     * @param session - The sending session.
+     * @param frame - The frame to check.
+     * @returns `true` when within bounds, `false` after the fail-closed reply.
+     */
+    #assertHeaderBudget(session: SocketSession, frame: StompFrame): boolean {
+        const max = this.#maxHeaderBytes;
+        if (max <= 0 || headerOctets(frame.headers) <= max) {
+            return true;
+        }
+        return this.#fail(session, frame, `frame headers exceed ${max} octets`);
+    }
+
+    /**
+     * Reject a programmatic `publish`/`sendToUser` destination or headers
+     * that cannot be framed into a MESSAGE (REV-006). A header name
+     * containing `:`, CR, LF or NUL would re-split or forge a header line,
+     * and a NUL in a value (or the destination) would corrupt the frame;
+     * without this check the fault surfaces only as `serializeStompFrame`
+     * throwing inside `#deliverNow`, which swallows it per subscriber — the
+     * destination is blackholed with no signal to the publisher.
+     *
+     * @param destination - The destination the MESSAGE would carry.
+     * @param headers - The pass-through headers.
+     * @throws {@link StompProtocolError} on a value that cannot be framed.
+     */
+    #assertDeliverable(destination: string, headers: Record<string, string>): void {
+        if (destination.includes('\0')) {
+            throw new StompProtocolError('destination contains a NUL character');
+        }
+        const max = this.#maxHeaderBytes;
+        if (max > 0 && headerOctets(headers) > max) {
+            throw new StompProtocolError(`headers exceed ${max} octets`);
+        }
+        for (const [name, value] of Object.entries(headers)) {
+            if (name === '' || /[\n\r:\0]/.test(name)) {
+                throw new StompProtocolError(`invalid header name: "${name}"`);
+            }
+            if (value.includes('\0')) {
+                throw new StompProtocolError(`header value contains NUL: "${name}"`);
+            }
+        }
     }
 
     /**
@@ -1291,6 +1394,11 @@ export class StompBroker {
      * subscription no longer tracks (already acked or evicted past the
      * bounds) is a tolerated no-op.
      *
+     * An id-only ACK/NACK settles **every** subscription the id is
+     * outstanding under (REV-004): one logical message fans out to each
+     * subscription of the destination, so two subscriptions of one session
+     * can share the id — the second must not fail closed.
+     *
      * A `client`/`client-individual` session whose bare `id` resolves to no
      * delivery this session ever made fails closed: the broker cannot know
      * which tracking set the frame settles, and silently discarding it
@@ -1312,10 +1420,10 @@ export class StompBroker {
             return this.#fail(session, frame, 'ACK/NACK requires an id header');
         }
         const subId = frame.headers['subscription'];
-        let subscription: Subscription | undefined;
+        let owners: Subscription[];
         if (subId === undefined) {
-            subscription = this.#sessionState.get(session)?.messageIds.get(messageId);
-            if (subscription === undefined) {
+            const tracked = this.#sessionState.get(session)?.messageIds.get(messageId);
+            if (tracked === undefined) {
                 if (this.#maxUnacked <= 0) {
                     // Tracking disabled: nothing is ever outstanding, so
                     // the id settles nothing — accept and receipt it.
@@ -1323,12 +1431,18 @@ export class StompBroker {
                 }
                 return this.#fail(session, frame, `unknown message id: ${messageId}`);
             }
+            // REV-004: settle every subscription the id is outstanding
+            // under. Snapshot first — a NACK redelivery re-tracks and
+            // mutates the owner list.
+            owners = [...tracked];
         } else {
-            subscription = this.#subscriptions.get(session)?.get(subId);
+            const subscription = this.#subscriptions.get(session)?.get(subId);
             if (subscription === undefined) {
                 return this.#fail(session, frame, `unknown subscription: ${subId}`);
             }
+            owners = [subscription];
         }
+        const nack = frame.command === 'NACK';
         const txId = frame.headers['transaction'];
         if (txId !== undefined) {
             const buffer = this.#transactions.get(session)?.get(txId);
@@ -1339,24 +1453,27 @@ export class StompBroker {
             // it obeys the same op count and byte budget (its identifiers
             // are retained too, so they count toward the bytes).
             const receipt = frame.headers['receipt'] ?? null;
-            const octets =
-                materialOctets(messageId) +
-                materialOctets(subscription.subId) +
-                (receipt === null ? 0 : materialOctets(receipt));
-            if (buffer.ops.length >= this.#maxTransactionOps || buffer.bytes + octets > this.#maxTransactionBytes) {
-                return this.#fail(session, frame, 'transaction buffer limit reached');
+            for (let index = 0; index < owners.length; index += 1) {
+                const target = owners[index] as Subscription;
+                // One RECEIPT for the whole ACK/NACK: only the last buffered
+                // op carries the receipt id (a per-op receipt would emit
+                // duplicates at COMMIT).
+                const opReceipt = index === owners.length - 1 ? receipt : null;
+                const octets =
+                    materialOctets(messageId) +
+                    materialOctets(target.subId) +
+                    (opReceipt === null ? 0 : materialOctets(opReceipt));
+                if (buffer.ops.length >= this.#maxTransactionOps || buffer.bytes + octets > this.#maxTransactionBytes) {
+                    return this.#fail(session, frame, 'transaction buffer limit reached');
+                }
+                buffer.ops.push({ kind: 'ack', nack, messageId, subId: target.subId, receipt: opReceipt });
+                buffer.bytes += octets;
             }
-            buffer.ops.push({
-                kind: 'ack',
-                nack: frame.command === 'NACK',
-                messageId,
-                subId: subscription.subId,
-                receipt,
-            });
-            buffer.bytes += octets;
             return true;
         }
-        this.#resolveAck(subscription, messageId, frame.command === 'NACK');
+        for (const owner of owners) {
+            this.#resolveAck(owner, messageId, nack);
+        }
         return this.#receipt(session, frame);
     }
 
@@ -1537,12 +1654,7 @@ export class StompBroker {
             }
         }
         if (receipt !== null) {
-            try {
-                session.send(serializeStompFrame({ command: 'RECEIPT', headers: { 'receipt-id': receipt }, body: '' }));
-            } catch {
-                // Session mid-close — the receipt is lost with the session
-                // (the fail/close path is authoritative).
-            }
+            this.#controlSend(session, { command: 'RECEIPT', headers: { 'receipt-id': receipt }, body: '' });
         }
         return true;
     }
@@ -1671,7 +1783,15 @@ export class StompBroker {
         subscription.unacked.put(stored);
         subscription.unackedBytes += bytes;
         const state = this.#stateFor(subscription.session);
-        state.messageIds.set(messageId, subscription);
+        // REV-004: one logical message can be outstanding under several of
+        // the session's subscriptions (the same id fans out to each) — keep
+        // every owner so an id-only ACK/NACK settles them all.
+        const owners = state.messageIds.get(messageId);
+        if (owners === undefined) {
+            state.messageIds.set(messageId, [subscription]);
+        } else if (!owners.includes(subscription)) {
+            owners.push(subscription);
+        }
         state.unackedBytes += bytes;
 
         while (subscription.unacked.length > this.#maxUnacked) {
@@ -1769,8 +1889,15 @@ export class StompBroker {
             return;
         }
         state.unackedBytes = Math.max(0, state.unackedBytes - entry.bytes);
-        if (state.messageIds.get(entry.messageId) === subscription) {
-            state.messageIds.delete(entry.messageId);
+        const owners = state.messageIds.get(entry.messageId);
+        if (owners !== undefined) {
+            const index = owners.indexOf(subscription);
+            if (index >= 0) {
+                owners.splice(index, 1);
+            }
+            if (owners.length === 0) {
+                state.messageIds.delete(entry.messageId);
+            }
         }
     }
 
@@ -1824,6 +1951,29 @@ export class StompBroker {
     }
 
     /**
+     * Guarded control-path send (REV-011). The transport can race to
+     * CLOSING between the broker's status check and the write, so
+     * `session.send` may throw a mid-close `InvalidStateError`. A control
+     * reply (CONNECTED/RECEIPT/ERROR) that cannot be written must not
+     * reject `handleSocket` (which its owner may invoke without awaiting):
+     * the session is already closing and its close path is authoritative.
+     *
+     * @param session - The session to write to.
+     * @param frame - The control frame.
+     */
+    #controlSend(session: SocketSession, frame: StompFrame): void {
+        if (session.isClosed) {
+            return;
+        }
+        try {
+            session.send(serializeStompFrame(frame));
+        } catch {
+            // Raced close (or an unserializable frame): the session's
+            // close path owns the outcome — never reject the read loop.
+        }
+    }
+
+    /**
      * Emit a RECEIPT frame when the processed frame asked for one
      * (`receipt:` header, STOMP 1.2 §1.6).
      *
@@ -1833,13 +1983,11 @@ export class StompBroker {
      */
     #receipt(session: SocketSession, frame: StompFrame): boolean {
         if (frame.headers['receipt'] !== undefined) {
-            session.send(
-                serializeStompFrame({
-                    command: 'RECEIPT',
-                    headers: { 'receipt-id': frame.headers['receipt'] as string },
-                    body: '',
-                })
-            );
+            this.#controlSend(session, {
+                command: 'RECEIPT',
+                headers: { 'receipt-id': frame.headers['receipt'] as string },
+                body: '',
+            });
         }
         return true;
     }
@@ -1867,12 +2015,7 @@ export class StompBroker {
             headers['receipt-id'] = frame.headers['receipt'] as string;
         }
         if (!session.isClosed) {
-            try {
-                session.send(serializeStompFrame({ command: 'ERROR', headers, body: '' }));
-            } catch {
-                // Session may be mid-close (concurrent transport failure);
-                // the close below is the authoritative action.
-            }
+            this.#controlSend(session, { command: 'ERROR', headers, body: '' });
             session.close(code, 'protocol error');
         }
         return false;
@@ -1893,7 +2036,11 @@ export class StompBroker {
         subscription.buffered = [];
         this.#untrackAll(subscription);
         if (subscription.destination.startsWith('/user/')) {
-            const user = this.#resolveUser(session);
+            // REV-005: use the principal bound at SUBSCRIBE time — a
+            // re-resolve here could return a different (or `null`)
+            // principal and strand the subscription in the old scope
+            // (delivering after unsubscribe).
+            const user = subscription.user;
             if (user !== null) {
                 const suffix = subscription.destination.slice('/user/'.length);
                 const scope = this.#byUser.get(user)?.get(suffix);

@@ -11,8 +11,8 @@ const regex = /(^\w)|\.\s+(\w)/gm;
  * @returns {string}
  * @category String
  * @example
- * toSentence( 'lorem-ipsum-dolor' );
- * //=> "Lorem ipsum dolor"
+ * toSentence( 'lorem ipsum. dolor sit' );
+ * //=> "Lorem ipsum. Dolor sit"
  */
 const toSentence = (value: string): string =>
     value.toLowerCase().replace(regex, (c: string): string => c.toUpperCase());

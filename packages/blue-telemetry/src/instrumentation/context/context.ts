@@ -24,7 +24,9 @@ export class ContextInstrumentation extends AbstractBaseInstrumentation {
             'destroy',
             this._patchSync({
                 name: 'ApplicationContext.destroy',
-                kind: SpanKind.CLIENT,
+                // Lifecycle teardown is internal work — not a network
+                // boundary (TEL-11).
+                kind: SpanKind.INTERNAL,
                 attributes: (ctx: unknown) => {
                     // The patched `destroy` target is always the context instance.
                     const context = ctx as GenericApplicationContext;

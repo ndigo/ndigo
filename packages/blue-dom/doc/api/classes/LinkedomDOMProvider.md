@@ -87,6 +87,15 @@ A new `DocumentFragment`.
 
 Parses HTML using linkedom.
 
+linkedom only assembles a real document when given a whole document: a
+bare fragment like `<div>hello</div>` becomes the *document element*
+(with an empty `<head>`/`<body>` nested inside it), and plain text or an
+empty string leave `document.documentElement` null so any `body` access
+throws. A browser `DOMParser` always yields `<html><head></head><body>…
+fragment …</body></html>` instead. Fragments are therefore wrapped in
+that skeleton so the `DOMProvider` contract holds identically across
+providers.
+
 #### Parameters
 
 ##### html

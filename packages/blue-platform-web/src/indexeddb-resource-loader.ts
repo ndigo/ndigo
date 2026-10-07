@@ -41,13 +41,19 @@ export class IndexedDBResourceLoader {
 
     /**
      * Opens or creates the IndexedDB database.
+     *
+     * A failed open clears the memoized promise so a later call retries —
+     * one transient failure must not brick the loader for its lifetime
+     * (PWB-REV-008). A `versionchange` (another tab upgrading) closes this
+     * connection and clears the memo so the next call reopens; a `blocked`
+     * open is surfaced as an error instead of hanging (PWB-REV-009).
      */
     #openDB(): Promise<IDBDatabase> {
         if (this.#dbPromise) {
             return this.#dbPromise;
         }
 
-        this.#dbPromise = new Promise<IDBDatabase>((resolve, reject) => {
+        const openPromise = new Promise<IDBDatabase>((resolve, reject) => {
             const request = indexedDB.open(this.#dbName, this.#version);
 
             request.onupgradeneeded = () => {
@@ -57,11 +63,40 @@ export class IndexedDBResourceLoader {
                 }
             };
 
-            request.onsuccess = () => resolve(request.result);
+            request.onsuccess = () => {
+                const db = request.result;
+
+                // Another context wants to upgrade: release our connection so
+                // it is not blocked, and forget it so the next operation
+                // reopens at the new version.
+                db.onversionchange = () => {
+                    db.close();
+                    this.#dbPromise = null;
+                };
+
+                resolve(db);
+            };
             request.onerror = () => reject(request.error);
+            request.onblocked = () =>
+                reject(new Error(`IndexedDB open for "${this.#dbName}" is blocked by another connection`));
+        });
+
+        this.#dbPromise = openPromise.catch((error: unknown) => {
+            this.#dbPromise = null;
+            throw error;
         });
 
         return this.#dbPromise;
+    }
+
+    /**
+     * Closes the open connection and clears the memoized open promise.
+     * Idempotent — a subsequent operation reopens the database.
+     */
+    close(): void {
+        const pending = this.#dbPromise;
+        this.#dbPromise = null;
+        void pending?.then((db) => db.close()).catch(() => undefined);
     }
 
     /**

@@ -27,7 +27,7 @@ const router = new BrowserRouter((route) => {
 
 ### Constructor
 
-> **new BrowserRouter**(`callback`): `BrowserRouter`
+> **new BrowserRouter**(`callback`, `options?`): `BrowserRouter`
 
 Creates an instance of `BrowserRouter`.
 
@@ -39,6 +39,12 @@ Creates an instance of `BrowserRouter`.
 
 The `RouterCallback` to be invoked when the route changes.
   Called with a `PathRoute` representing the current URL path.
+
+##### options?
+
+`RouterOptions` = `{}`
+
+Router options, e.g. the navigation-error hook.
 
 #### Returns
 

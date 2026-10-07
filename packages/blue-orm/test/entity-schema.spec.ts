@@ -42,6 +42,15 @@ describe('baseSchemaForType', () => {
         expect(baseSchemaForType('boolean').safeParse(true).success).toBe(true);
     });
 
+    // DAT-N1: token matching, not substring matching — 'point'/'interval'
+    // contain 'int' but are not integer types.
+    test('does not read unrelated types as int', () => {
+        expect(baseSchemaForType('point').safeParse('x').success).toBe(true);
+        expect(baseSchemaForType('interval').safeParse('x').success).toBe(true);
+        expect(baseSchemaForType('bigint').safeParse('42').success).toBe(false);
+        expect(baseSchemaForType('varchar(255)').safeParse('x').success).toBe(true);
+    });
+
     test('maps text family to strings', () => {
         for (const type of ['varchar', 'TEXT', 'string', 'char']) {
             expect(baseSchemaForType(type).safeParse('hello').success).toBe(true, type);

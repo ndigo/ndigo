@@ -5,6 +5,7 @@
  */
 import { describe, test, expect, vi } from 'vitest';
 import { ApplicationBuilder } from '../src/application-builder';
+import { Application } from '../src/application';
 import { StandardEnvironment, configuration, entry } from '@blue/context';
 import type { InitializationAwareProcessor } from '@blue/factory';
 
@@ -54,6 +55,23 @@ describe('ApplicationBuilder', () => {
         const second = await builder.run();
 
         expect(first).toBe(second);
+    });
+
+    test('CTX-09: concurrent run() calls are single-flight (one boot, one context)', async () => {
+        const builder = new ApplicationBuilder([BuilderConfiguration]);
+        const runSpy = vi.spyOn(Application.prototype, 'run');
+
+        try {
+            const [first, second] = await Promise.all([builder.run(), builder.run()]);
+
+            // Both callers share the one in-flight boot; before the fix each
+            // call booted its own context and the first was leaked.
+            expect(runSpy).toHaveBeenCalledTimes(1);
+            expect(first).toBe(second);
+            expect(builder.context).toBe(first);
+        } finally {
+            runSpy.mockRestore();
+        }
     });
 
     test('it should create child builder without throwing', () => {

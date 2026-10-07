@@ -79,6 +79,20 @@ below remains the backstop).
 
 ***
 
+### maxHeaderBytes?
+
+> `optional` **maxHeaderBytes?**: `number`
+
+Cap on a frame's serialized header octets (REV-002) — names, values
+and their separators/EOLs, on every non-ping inbound frame and on
+programmatic `publish`/`sendToUser` headers. The header counterpart
+of the body byte budgets: without it a peer could attach up to the
+transport payload cap of headers per message. Exceeding it fails
+closed (ERROR + close `1002`); a programmatic call throws a
+`StompProtocolError`. Default `16384` (16 KiB); `0` disables.
+
+***
+
 ### maxIdentifierLength?
 
 > `optional` **maxIdentifierLength?**: `number`

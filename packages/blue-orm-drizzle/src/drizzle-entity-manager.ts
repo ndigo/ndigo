@@ -5,7 +5,7 @@
  */
 import type { InValue } from '@libsql/client';
 import { Constructable, FrameworkError } from '@blue/core';
-import { getEntityMetadata, isEntity, validateEntity, LifecycleEvent } from '@blue/orm';
+import { columnTypeFamily, getEntityMetadata, isEntity, runLifecycleHooks, validateEntity } from '@blue/orm';
 import type { EntityMetadata } from '@blue/orm';
 import { Page, PageRequest, SortOrder, validatePageRequest } from '@blue/orm';
 import { DrizzleDataSource } from './drizzle-data-source';
@@ -31,9 +31,20 @@ export class DrizzleEntityManager {
         const record = entity as Record<string, unknown>;
         const tableName = meta.entityName;
 
+        const pkColumn = meta.columns.find((c) => c.fieldName === meta.primaryColumn);
+        const pkValue = pkColumn ? record[pkColumn.fieldName] : undefined;
+        // A save is an update when the row already exists, matching the
+        // in-memory manager's store.has() check (DAT-F1). Generated keys are
+        // unset on first persist, so they are always inserts.
+        const exists =
+            pkColumn !== undefined &&
+            pkValue !== undefined &&
+            pkValue !== null &&
+            (await this.existsById(entityClass, pkValue));
+
         // Lifecycle hooks run first (e.g. @prePersist fills createdAt), then
         // validation — matching the in-memory manager's order.
-        this.#callLifecycleHooks(entity, 'prePersist');
+        runLifecycleHooks(entity, exists ? 'preUpdate' : 'prePersist');
 
         // Validate against the Zod schema derived from @column metadata (AD-07).
         validateEntity(entityClass, entity);
@@ -47,49 +58,30 @@ export class DrizzleEntityManager {
                 continue;
             }
             colNames.push(`"${col.columnName}"`);
-            // undefined (unset optional column, e.g. an empty FK) binds as NULL.
-            values.push(
-                value === undefined ? null : typeof value === 'object' && value !== null ? JSON.stringify(value) : value
-            );
+            values.push(encodeColumnValue(col.type, value));
         }
 
         if (colNames.length === 0) return;
 
         const placeholders = colNames.map(() => '?').join(', ');
-        const insertSql = `INSERT INTO "${tableName}" (${colNames.join(', ')}) VALUES (${placeholders})`;
+        let insertSql = `INSERT INTO "${tableName}" (${colNames.join(', ')}) VALUES (${placeholders})`;
 
-        try {
-            const result = await this.#client.execute(insertSql, values as InValue[]);
+        // A defined primary key makes the INSERT an upsert: the excluded row's
+        // values overwrite the conflicting row (DAT-F8). Conflicts on other
+        // unique columns still raise their own error, which is no longer
+        // masked by a fallback UPDATE.
+        if (pkColumn !== undefined && pkValue !== undefined && pkValue !== null) {
+            const setClauses = colNames.map((name) => `${name} = excluded.${name}`).join(', ');
+            insertSql += ` ON CONFLICT("${pkColumn.columnName}") DO UPDATE SET ${setClauses}`;
+        }
 
-            // Read back generated primary key for AUTOINCREMENT columns
-            if (meta.generatedColumns.includes(meta.primaryColumn)) {
-                const pkValue = (entity as Record<string, unknown>)[meta.primaryColumn];
-                if (pkValue === undefined && result.lastInsertRowid !== undefined && result.lastInsertRowid !== null) {
-                    (entity as Record<string, unknown>)[meta.primaryColumn] = Number(result.lastInsertRowid);
-                }
-            }
-        } catch (error) {
-            const setClauses = colNames.map((name) => `${name} = ?`).join(', ');
-            const pkColumn = meta.columns.find((c) => c.fieldName === meta.primaryColumn);
-            const pkValue = pkColumn ? record[pkColumn.fieldName] : undefined;
+        const result = await this.#client.execute(insertSql, values as InValue[]);
 
-            // Without a primary key the row cannot exist yet — rethrow the
-            // real insert failure instead of masking it with a bogus UPDATE.
-            if (!pkColumn || pkValue === undefined || pkValue === null) {
-                throw error;
-            }
-
-            const updateSql = `UPDATE "${tableName}" SET ${setClauses} WHERE "${pkColumn.columnName}" = ?`;
-            const updateResult = await this.#client.execute(updateSql, [...values, pkValue] as InValue[]);
-
-            // A duplicate-primary-key conflict makes the UPDATE match the
-            // existing row (rowsAffected = 1) and should be treated as an
-            // upsert. Any other INSERT failure (e.g. a UNIQUE violation on a
-            // different column held by another row) leaves the UPDATE matching
-            // zero rows — rethrow the original error rather than silently
-            // discarding the save.
-            if (Number(updateResult.rowsAffected) === 0) {
-                throw error;
+        // Read back generated primary key for AUTOINCREMENT columns
+        if (meta.generatedColumns.includes(meta.primaryColumn)) {
+            const assigned = record[meta.primaryColumn];
+            if (assigned === undefined && result.lastInsertRowid !== undefined && result.lastInsertRowid !== null) {
+                record[meta.primaryColumn] = Number(result.lastInsertRowid);
             }
         }
     }
@@ -267,6 +259,118 @@ export class DrizzleEntityManager {
         throw new FrameworkError(`Relation '${relationName}' declares neither joinColumn nor inverseJoinColumn.`);
     }
 
+    /**
+     * Eagerly loads declared relations for a batch of entities of the same
+     * class, issuing one query per relation over all distinct join keys rather
+     * than one query per entity (DAT-F5). Each entity's relation field is
+     * assigned the loaded value, mirroring {@link fetchRelation} semantics.
+     *
+     * @param entities - Entities of one class; an empty batch is a no-op.
+     * @param relationNames - Declared relation field names to load.
+     * @throws {FrameworkError} When a relation, its join column, or the
+     *   target class is not declared, or for many-to-many relations.
+     */
+    async fetchRelations(entities: object[], relationNames: string[]): Promise<void> {
+        if (entities.length === 0 || relationNames.length === 0) return;
+
+        const entityClass = entities[0].constructor as Constructable<object>;
+        if (!isEntity(entityClass)) {
+            throw new FrameworkError(`Class '${entityClass.name}' is not decorated with @entity.`);
+        }
+
+        const meta = getEntityMetadata(entityClass);
+        for (const relationName of relationNames) {
+            // oxlint-disable-next-line no-await-in-loop -- one batched query per relation, in caller order, so counts stay deterministic.
+            await this.#fetchRelationBatch(entities, meta, relationName);
+        }
+    }
+
+    async #fetchRelationBatch(entities: object[], meta: EntityMetadata, relationName: string): Promise<void> {
+        const relation = meta.relations.find((candidate) => candidate.fieldName === relationName);
+
+        if (!relation) {
+            throw new FrameworkError(`Entity '${meta.entityName}' declares no relation '${relationName}'.`);
+        }
+        if (relation.kind === 'many-to-many') {
+            throw new FrameworkError(
+                `Relation '${relationName}' is many-to-many; join-table fetch is not implemented.`
+            );
+        }
+
+        const targetClass = relation.targetEntity() as unknown as Constructable<object>;
+        if (!isEntity(targetClass)) {
+            throw new FrameworkError(
+                `Relation '${relationName}' target '${targetClass.name}' is not decorated with @entity.`
+            );
+        }
+        const targetMeta = getEntityMetadata(targetClass);
+        const records = entities as Array<Record<string, unknown>>;
+
+        if (relation.joinColumn !== undefined) {
+            const fkField = relation.joinColumn;
+            this.#assertDeclaredColumn(meta, fkField, relationName);
+            const targetPkColumn = targetMeta.columns.find((column) => column.fieldName === targetMeta.primaryColumn);
+            const keys = distinctKeys(records, fkField);
+            if (keys.size === 0 || targetPkColumn === undefined) {
+                for (const record of records) record[relationName] = undefined;
+                return;
+            }
+
+            const rows = await this.#selectByColumnIn(targetMeta.entityName, targetPkColumn.columnName, [
+                ...keys.values(),
+            ]);
+            const byId = new Map<string, object>();
+            for (const row of rows) {
+                byId.set(relationKey(row[targetPkColumn.columnName]), this.#mapRowToEntity(targetClass, row));
+            }
+
+            for (const record of records) {
+                const fk = record[fkField];
+                record[relationName] = fk === undefined || fk === null ? undefined : byId.get(relationKey(fk));
+            }
+            return;
+        }
+
+        if (relation.inverseJoinColumn !== undefined) {
+            const fkField = relation.inverseJoinColumn;
+            this.#assertDeclaredColumn(targetMeta, fkField, relationName);
+            const fkColumn = targetMeta.columns.find((column) => column.fieldName === fkField);
+            const keys = distinctKeys(records, meta.primaryColumn);
+            for (const record of records) record[relationName] = [];
+            if (keys.size === 0 || fkColumn === undefined) return;
+
+            const rows = await this.#selectByColumnIn(targetMeta.entityName, fkColumn.columnName, [...keys.values()]);
+            const grouped = new Map<string, object[]>();
+            for (const row of rows) {
+                const key = relationKey(row[fkColumn.columnName]);
+                const mapped = this.#mapRowToEntity(targetClass, row);
+                const bucket = grouped.get(key);
+                if (bucket === undefined) {
+                    grouped.set(key, [mapped]);
+                } else {
+                    bucket.push(mapped);
+                }
+            }
+
+            for (const record of records) {
+                const pk = record[meta.primaryColumn];
+                record[relationName] = pk === undefined || pk === null ? [] : (grouped.get(relationKey(pk)) ?? []);
+            }
+            return;
+        }
+
+        throw new FrameworkError(`Relation '${relationName}' declares neither joinColumn nor inverseJoinColumn.`);
+    }
+
+    async #selectByColumnIn(table: string, column: string, values: unknown[]): Promise<Array<Record<string, unknown>>> {
+        const placeholders = values.map(() => '?').join(', ');
+        const result = await this.#client.execute(
+            `SELECT * FROM "${table}" WHERE "${column}" IN (${placeholders})`,
+            values as InValue[]
+        );
+        return result.rows as Array<Record<string, unknown>>;
+    }
+
     #assertDeclaredColumn(meta: EntityMetadata, fieldName: string, relationName: string): void {
         const declared = meta.columns.some((column) => column.fieldName === fieldName);
         if (!declared) {
@@ -289,6 +393,9 @@ export class DrizzleEntityManager {
 
         const sql = `DELETE FROM "${meta.entityName}" WHERE "${pkColumn.columnName}" = ?`;
         await this.#client.execute(sql, [pkValue] as InValue[]);
+
+        // Match the in-memory manager: @postRemove fires after the delete.
+        runLifecycleHooks(entity, 'postRemove');
     }
 
     /**
@@ -367,27 +474,11 @@ export class DrizzleEntityManager {
             entity[col.fieldName] = decodeColumnValue(col.type, row[col.columnName]);
         }
 
-        return entity as T;
-    }
+        // Every loaded row is a load: fire @postLoad, matching the in-memory
+        // manager's find/findAll/fetchRelation behavior (DAT-F1).
+        runLifecycleHooks(entity, 'postLoad');
 
-    /**
-     * Invokes the registered lifecycle hooks for an event (e.g. `@prePersist`),
-     * mirroring the in-memory manager's behavior. Runs BEFORE schema
-     * validation so hooks can fill defaults (e.g. `createdAt`).
-     *
-     * @param entity - The entity instance.
-     * @param event - The lifecycle event name.
-     */
-    #callLifecycleHooks<T extends object>(entity: T, event: LifecycleEvent): void {
-        const entityClass = entity.constructor as Constructable<T>;
-        const metadata = getEntityMetadata(entityClass);
-        const hooks = metadata.lifecycleHooks.filter((h) => h.event === event);
-        const record = entity as Record<string, (...args: unknown[]) => unknown>;
-        for (const hook of hooks) {
-            if (typeof record[hook.methodName] === 'function') {
-                record[hook.methodName]();
-            }
-        }
+        return entity as T;
     }
 }
 
@@ -410,12 +501,66 @@ function orderByClause(meta: EntityMetadata, sort: SortOrder[]): string {
 }
 
 /**
+ * Canonical key for matching relation join values in JS the way SQLite
+ * compares them with numeric affinity: `1`, `1.0` and `'1'` collapse to `'1'`
+ * (a numeric FK stored in a TEXT-affinity column reads back as `'1.0'`),
+ * while non-numeric strings (`'note-1'`) stay themselves.
+ */
+function relationKey(value: unknown): string {
+    if (typeof value === 'string') {
+        const numeric = Number(value);
+        return value.trim() !== '' && !Number.isNaN(numeric) ? String(numeric) : value;
+    }
+    if (typeof value === 'boolean') return value ? '1' : '0';
+    return String(value);
+}
+
+/**
+ * Collects the distinct, non-null values of `field` across `records`, keyed by
+ * {@link relationKey}. Used to batch relation lookups into one `IN (…)` query
+ * (DAT-F5) while still matching SQLite's affinity rules in JS.
+ */
+function distinctKeys(records: Array<Record<string, unknown>>, field: string): Map<string, unknown> {
+    const keys = new Map<string, unknown>();
+    for (const record of records) {
+        const value = record[field];
+        if (value === undefined || value === null) continue;
+        const key = relationKey(value);
+        if (!keys.has(key)) {
+            keys.set(key, value);
+        }
+    }
+    return keys;
+}
+
+/**
+ * Encodes one JS value for binding, mirroring `decodeColumnValue`. `Date`
+ * values store as ISO-8601 text (DAT-F4), values of declared `json` columns as
+ * JSON text, and everything else passes to the driver unchanged (primitives
+ * natively; `Uint8Array`/`ArrayBuffer` as blobs). `undefined` binds as `NULL`.
+ *
+ * @param type - The declared column type; `undefined` for untyped columns.
+ * @param value - The entity field value.
+ * @returns The value to bind.
+ */
+function encodeColumnValue(type: string | undefined, value: unknown): unknown {
+    if (value === undefined) return null;
+    if (value instanceof Date) return value.toISOString();
+    if (value !== null && typeof value === 'object' && columnTypeFamily(type) === 'json') {
+        return JSON.stringify(value);
+    }
+    return value;
+}
+
+/**
  * Decodes one raw SQLite cell to the JS shape declared by `@column({ type })`,
  * mirroring `baseSchemaForType` (`@blue/orm`): boolean columns coerce their
  * stored representations (`0`/`1`, `'0'`/`'1'`, `'0.0'`/`'1.0'`, `'true'`/
- * `'false'`) to booleans, and json columns parse their text representation
- * back into the stored value. Other declared types pass through unchanged —
- * SQLite already returns ints, reals, and text natively.
+ * `'false'`) to booleans, json columns parse their text representation back
+ * into the stored value, and date-like columns parse ISO text back into a
+ * `Date` (DAT-F4). Other declared types pass through unchanged — SQLite
+ * already returns ints, reals, and text natively. Type matching is
+ * whole-word (DAT-N1), so `point` is not read as `int`.
  *
  * @param type - The declared column type; `undefined` for untyped columns.
  * @param value - The raw cell value.
@@ -424,30 +569,36 @@ function orderByClause(meta: EntityMetadata, sort: SortOrder[]): string {
 function decodeColumnValue(type: string | undefined, value: unknown): unknown {
     if (value === null || value === undefined) return value;
 
-    const normalized = (type ?? '').toLowerCase();
-
-    if (normalized.includes('bool')) {
-        if (typeof value === 'boolean') return value;
-        if (typeof value === 'number') return value !== 0;
-        if (typeof value === 'bigint') return value !== 0n;
-        if (typeof value === 'string') {
-            if (value === 'true') return true;
-            if (value === 'false') return false;
-            const numeric = Number(value);
-            if (!Number.isNaN(numeric)) return numeric !== 0;
-        }
-        return value;
-    }
-
-    if (normalized.includes('json') && typeof value === 'string') {
-        try {
-            return JSON.parse(value) as unknown;
-        } catch {
-            // Non-JSON text in a json column (legacy rows, raw strings) stays
-            // readable instead of failing the whole read.
+    switch (columnTypeFamily(type)) {
+        case 'boolean': {
+            if (typeof value === 'boolean') return value;
+            if (typeof value === 'number') return value !== 0;
+            if (typeof value === 'bigint') return value !== 0n;
+            if (typeof value === 'string') {
+                if (value === 'true') return true;
+                if (value === 'false') return false;
+                const numeric = Number(value);
+                if (!Number.isNaN(numeric)) return numeric !== 0;
+            }
             return value;
         }
+        case 'json': {
+            if (typeof value !== 'string') return value;
+            try {
+                return JSON.parse(value) as unknown;
+            } catch {
+                // Non-JSON text in a json column (legacy rows, raw strings)
+                // stays readable instead of failing the whole read.
+                return value;
+            }
+        }
+        case 'date': {
+            if (typeof value !== 'string') return value;
+            const parsed = new Date(value);
+            // A non-date string in a date-like column stays readable.
+            return Number.isNaN(parsed.getTime()) ? value : parsed;
+        }
+        default:
+            return value;
     }
-
-    return value;
 }

@@ -52,13 +52,22 @@ export class CircuitOpenError extends Error {
  * target class in a `WeakMap` — never by a string derived from class *name*
  * — so two distinct classes that happen to share a name can never share a
  * circuit.
+ *
+ * A cell is created once and **mutated in place** for its whole lifetime:
+ * replacing it on every outcome discarded concurrent in-flight reads (three
+ * parallel failures could all read `failures: 0` and each write back `1`,
+ * never reaching the threshold). `generation` is an epoch counter bumped on
+ * every state transition; an outcome whose captured generation no longer
+ * matches is stale and must not change the circuit (a slow success from a
+ * previous epoch must not re-close a circuit that has since opened).
  */
-type CircuitState = 'closed' | 'open';
+type CircuitState = 'closed' | 'open' | 'half-open';
 
 interface CircuitCell {
     state: CircuitState;
     failures: number;
     openedAt: number;
+    generation: number;
 }
 
 /**
@@ -139,34 +148,58 @@ export class CircuitBreakerInterceptor implements MethodInterceptor {
             this.#cells.set(invocation.targetType, byMethod);
         }
         const key = `${invocation.entryName}.${String(invocation.methodName)}`;
-        const cell = byMethod.get(key) ?? { state: 'closed', failures: 0, openedAt: 0 };
+        let cell = byMethod.get(key);
+        if (cell === undefined) {
+            cell = { state: 'closed', failures: 0, openedAt: 0, generation: 0 };
+            byMethod.set(key, cell);
+        }
 
         if (cell.state === 'open') {
             const remaining = resetMs - (this.#now() - cell.openedAt);
             if (remaining > 0) {
                 throw new CircuitOpenError(invocation.methodName, invocation.entryName, remaining);
             }
-            // Probe: the next attempt runs; on failure the circuit re-opens.
-            try {
-                const result = await next();
-                byMethod.set(key, { state: 'closed', failures: 0, openedAt: 0 });
-                return result;
-            } catch (error) {
-                byMethod.set(key, { state: 'open', failures: 0, openedAt: this.#now() });
-                throw error;
-            }
+            // Reset window elapsed: this caller claims the single half-open
+            // probe. Any caller arriving while the probe is in flight sees
+            // `half-open` and fails fast — exactly one attempt reaches the
+            // tail per window.
+            cell.state = 'half-open';
+            cell.generation += 1;
+        } else if (cell.state === 'half-open') {
+            throw new CircuitOpenError(invocation.methodName, invocation.entryName, resetMs);
         }
+
+        // Epoch captured after any claim: an outcome whose generation is no
+        // longer current belongs to a superseded circuit state (another
+        // call opened/closed/probed meanwhile) and must not change it.
+        const generation = cell.generation;
 
         try {
             const result = await next();
-            byMethod.set(key, { state: 'closed', failures: 0, openedAt: 0 });
+            if (cell.generation === generation) {
+                // Any success — including a half-open probe — closes the
+                // circuit and clears the failure streak.
+                cell.state = 'closed';
+                cell.failures = 0;
+                cell.openedAt = 0;
+            }
             return result;
         } catch (error) {
-            const failures = cell.failures + 1;
-            if (failures >= threshold) {
-                byMethod.set(key, { state: 'open', failures, openedAt: this.#now() });
-            } else {
-                byMethod.set(key, { state: 'closed', failures, openedAt: 0 });
+            if (cell.generation === generation) {
+                // Read/increment in place at outcome time: a concurrent
+                // failure that completed first is already reflected, so
+                // parallel failures accumulate instead of overwriting each
+                // other with a stale pre-await read.
+                cell.failures += 1;
+                if (cell.state === 'half-open' || cell.failures >= threshold) {
+                    // A failed probe re-opens immediately with a fresh window;
+                    // the generation bump discards the other in-flight outcomes
+                    // from the pre-open epoch.
+                    cell.state = 'open';
+                    cell.failures = 0;
+                    cell.openedAt = this.#now();
+                    cell.generation += 1;
+                }
             }
             throw error;
         }

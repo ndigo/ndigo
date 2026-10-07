@@ -47,8 +47,21 @@ Explicit `operationId`; otherwise one is derived from method + path.
 > `optional` **responses?**: `Record`\<`string`, [`OpenAPIResponseDocs`](../type-aliases/OpenAPIResponseDocs.md)\>
 
 Optional per-status response documentation; bare schemas embed into
-`content['application/json']`. Without it the generator emits the
-default `200: { description: 'OK' }`.
+`content['application/json']`. When declared, this set **replaces**
+the implicit `200: { description: 'OK' }` (declare `'200'` yourself to
+keep it); without it the generator emits the default `200 OK`.
+
+***
+
+### security?
+
+> `optional` **security?**: `string`[]
+
+Security scheme names this operation requires (OpenAPI `security`);
+names refer to schemes declared via
+`OpenAPIGeneratorOptions.securitySchemes`. Overrides the document-level
+default; an empty array documents an explicitly anonymous operation.
+Without it the operation inherits the document default.
 
 ***
 

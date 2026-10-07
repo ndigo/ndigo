@@ -150,7 +150,8 @@ describe('ManagementAutoConfiguration health redaction (AD-36 D-1)', () => {
 
     test('GET /health redacts thrown indicator errors by default', async () => {
         const res = await fetch(`${base}/health`);
-        expect(res.status).toBe(200);
+        // DAT-F10: a DOWN aggregate surfaces as 503, not 200.
+        expect(res.status).toBe(503);
         const body = (await res.json()) as {
             status: string;
             components: Record<string, { status: string; details?: Record<string, unknown> }>;
@@ -191,7 +192,8 @@ describe('ManagementAutoConfiguration with redaction disabled', () => {
 
     test('GET /health exposes the raw error when opted in', async () => {
         const res = await fetch(`${base}/health`);
-        expect(res.status).toBe(200);
+        // DAT-F10: the status code tracks the aggregate regardless of redaction.
+        expect(res.status).toBe(503);
         const body = (await res.json()) as { components: Record<string, { details?: Record<string, unknown> }> };
         expect(body.components['boom'].details?.error).toBe('read /etc/app/creds.sqlite: EACCES');
     });

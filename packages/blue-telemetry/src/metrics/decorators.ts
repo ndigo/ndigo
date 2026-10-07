@@ -7,9 +7,16 @@ import '@tsmetadata/polyfill';
 import { getSymbolMetadata } from '@blue/core';
 import type { LogAttributes } from '@blue/log';
 import { FeatureMetricAggregator } from './feature-metric-aggregator';
-import { CountedRegistry } from './_registry';
+import { createLazyCounter } from './lazy-counter';
 
 const COUNTED_KEY = 'telemetry:counted';
+
+/**
+ * Counter handle shared by every `@counted` method: instruments resolve
+ * lazily on first recorded call (the decorator runs at class-definition
+ * time, typically before any SDK registers a global `MeterProvider`).
+ */
+const counters = createLazyCounter();
 
 /**
  * The configuration recorded for a method decorated with `counted`: the
@@ -72,36 +79,41 @@ function createCountedDecorator(options: CountedOptions = {}) {
     return function <This, Args extends unknown[], Return>(
         target: (this: This, ...args: Args) => Return,
         context: ClassMethodDecoratorContext<This, (this: This, ...args: Args) => Return>
-    ) {
+    ): (this: This, ...args: Args) => Return {
         if (context.kind !== 'method') {
             throw new TypeError('@counted can only be applied to methods');
         }
 
         const counterName = options.name || `${String(context.name)}.count`;
 
+        // Metadata is kept for introspection (`getCounted`/`hasCounted`) and
+        // for framework code that inspects the decorated signature.
         context.metadata[`${COUNTED_KEY}:${String(context.name)}`] = {
             name: counterName,
             attributes: options.attributes,
             featureAggregator: options.featureAggregator,
             featureKey: options.featureKey,
         };
+        context.metadata[`${COUNTED_KEY}:${String(context.name)}:original`] = target;
 
-        // TS types method-context initializers as `(this: This) => void`; the
-        // tsmetadata polyfill instead hands the decorated class to the
-        // initializer, which is what the registry needs.
-        const addInitializer = context.addInitializer as unknown as (initializer: (cls: CountedClass) => void) => void;
-        addInitializer((cls) => {
-            if (cls) {
-                CountedRegistry.register(cls.prototype || cls);
+        // Wrap the method directly (like `@traced`) — a lazily resolved
+        // counter incremented per call. No registry/scan indirection: the
+        // wrapper is live the moment the class is defined, whether or not an
+        // instrumentation is registered.
+        const { featureAggregator, featureKey } = options;
+        return function (this: This, ...args: Args): Return {
+            counters(counterName, options.attributes);
+            if (featureAggregator !== undefined) {
+                const key = featureKey ?? 'feature';
+                const feature = options.attributes?.[key];
+                if (typeof feature === 'string') {
+                    featureAggregator.incrementCounter(feature, counterName);
+                }
             }
-        });
-
-        return target;
+            return target.apply(this, args);
+        };
     };
 }
-
-/** A decorated class (or its prototype) as handed to the registry initializer. */
-type CountedClass = { prototype?: object } | undefined;
 
 /**
  * A method decorator that increments a counter each time the decorated method is called.

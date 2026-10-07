@@ -17,14 +17,22 @@ cd apps/blue-todo && pnpm dev
   Web Components
 - Micro frontend shell: feature mount manager, relay gateway, and
   `FeatureRoutingRegistry` (`@blue/router`)
-- Auth-guarded routes (`@blue/auth-client`), feature metrics panel, and
-  browser telemetry
-- End-to-end Playwright suite under `e2e/`
+- Auth-guarded routes (`@blue/auth-client`): `/auth/profile` requires sign-in,
+  `/auth/admin` requires the `admin` role; rejected navigations redirect to
+  `/auth/login` / `/auth/forbidden` (demo credentials: `admin`/`demo`, `alice`/`demo`)
+- Feature metrics panel, browser telemetry, and real relay traffic
+  (`todo:stats:updated` → `site:nav:badge:update`)
 
 ## Development
 
 ```bash
 cd apps/blue-todo && pnpm test
+```
+
+## End-to-end tests
+
+```bash
+cd apps/blue-todo && pnpm test:e2e   # builds dist/ first, then Playwright
 ```
 
 ## See Also

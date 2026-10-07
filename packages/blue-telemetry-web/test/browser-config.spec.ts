@@ -6,7 +6,7 @@
 import { trace, metrics, diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { ConsoleSpanExporter } from '@opentelemetry/sdk-trace-base';
+import { BasicTracerProvider, ConsoleSpanExporter } from '@opentelemetry/sdk-trace-base';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { configureBrowserTelemetry } from '../src/browser-config';
 import { LoggerFactory } from '@blue/telemetry';
@@ -90,6 +90,54 @@ describe('configureBrowserTelemetry', () => {
         configureBrowserTelemetry({ serviceName: 'test' });
 
         expect(diagSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not switch LoggerFactory to OTel when the log pipeline is disabled (TEL-04)', () => {
+        const setTypeSpy = vi.spyOn(LoggerFactory, 'setType');
+
+        configureBrowserTelemetry({ serviceName: 'test', useConsoleExporters: false });
+
+        // No log exporter => routing app logs through OTel would strand them
+        // in a disabled provider. The factory must stay on the console bridge.
+        expect(setTypeSpy).not.toHaveBeenCalled();
+    });
+
+    it('is idempotent: a second configure warns and keeps the live providers (TEL-05)', () => {
+        const handle = configureBrowserTelemetry({ serviceName: 'first' });
+        const provider = trace.getTracerProvider();
+        const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+        const second = configureBrowserTelemetry({ serviceName: 'second' });
+
+        expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('called again'));
+        expect(trace.getTracerProvider()).toBe(provider);
+        expect(second).toBe(handle);
+    });
+
+    it('force-flushes on pagehide and when the document becomes hidden (TEL-05)', () => {
+        const handle = configureBrowserTelemetry({ serviceName: 'test' });
+        const flushSpy = vi.spyOn(BasicTracerProvider.prototype, 'forceFlush').mockResolvedValue();
+
+        window.dispatchEvent(new Event('pagehide'));
+        expect(flushSpy).toHaveBeenCalledTimes(1);
+
+        flushSpy.mockClear();
+        Object.defineProperty(document, 'visibilityState', { value: 'hidden', configurable: true });
+        document.dispatchEvent(new Event('visibilitychange'));
+        expect(flushSpy).toHaveBeenCalledTimes(1);
+
+        Object.defineProperty(document, 'visibilityState', { value: 'visible', configurable: true });
+        void handle.shutdown();
+    });
+
+    it('shutdown detaches the unload listeners and shuts the providers down (TEL-05)', async () => {
+        const handle = configureBrowserTelemetry({ serviceName: 'test' });
+        const flushSpy = vi.spyOn(BasicTracerProvider.prototype, 'forceFlush').mockResolvedValue();
+
+        await handle.shutdown();
+        window.dispatchEvent(new Event('pagehide'));
+
+        expect(flushSpy).not.toHaveBeenCalled();
     });
 
     describe('SPAN exporter gating (DSG-1)', () => {

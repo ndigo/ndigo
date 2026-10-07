@@ -51,6 +51,24 @@ Finalize the response with the given body.
 
 ***
 
+### getHeader()
+
+> **getHeader**(`name`): `string` \| `string`[] \| `undefined`
+
+Read a previously set header (case-insensitive), mirroring `ServerResponse`.
+
+#### Parameters
+
+##### name
+
+`string`
+
+#### Returns
+
+`string` \| `string`[] \| `undefined`
+
+***
+
 ### removeHeader()
 
 > **removeHeader**(`name`): `void`

@@ -48,7 +48,9 @@ export class DispatcherInstrumentation extends AbstractBaseInstrumentation {
             'dispatch',
             this._patch({
                 name: 'Dispatcher.dispatch',
-                kind: SpanKind.SERVER,
+                // Route dispatch is internal application work; the inbound
+                // HTTP request owns the SERVER boundary (TEL-11).
+                kind: SpanKind.INTERNAL,
                 attributes: (_instance: unknown, args: unknown[]) => {
                     // `dispatch`'s signature: the first argument is the route.
                     const route = args[0] as Route;

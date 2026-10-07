@@ -114,4 +114,16 @@ describe('Application profile activation (AD-14 D3/D4)', () => {
         const context = await app.run('--profiles.active=short', '--profiles.group.short=dev,test');
         expect(context.environment?.activeProfiles).toEqual(['short', 'dev', 'test']);
     });
+
+    test('CTX-12: CLI group mapping overrides an env group of the same name', async () => {
+        cleanEnv();
+        process.env.BLUE_PROFILES_ACTIVE = 'short';
+        process.env.BLUE_PROFILES_GROUPS = 'short=env-a,env-b';
+        const app = new Application([EmptyConfiguration]);
+
+        // Env groups are the deployment baseline; CLI is the most specific and
+        // lands last. Before the fix BLUE_PROFILES_GROUPS overwrote the CLI map.
+        const context = await app.run('--profiles.group.short=cli-x');
+        expect(context.environment?.activeProfiles).toEqual(['short', 'cli-x']);
+    });
 });

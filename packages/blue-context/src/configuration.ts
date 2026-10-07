@@ -368,7 +368,7 @@ class ConfigurationParser {
                     // such as registries are skipped by the metadata check above)
                     const config = new (configClass as new (...args: never[]) => object)();
                     if (hasPropertySourceMetadata(configClass)) {
-                        this.processPropertySource(getPropertySourceMetadata(configClass));
+                        this.processPropertySource(configClass, getPropertySourceMetadata(configClass));
                     }
 
                     // CF-9: bind `@property` fields even without
@@ -420,11 +420,20 @@ class ConfigurationParser {
     /**
      * Process the given `@propertySource` decorator metadata.
      * Sources from this configuration receive the highest available precedence.
+     *
+     * CTX-07: names are namespaced by declaring class + source index. The old
+     * bare `source:${index}` name collided across config classes (and with the
+     * environment's own constructor sources), so a later class silently
+     * replaced an earlier one. Registry names are unique per class now.
+     *
+     * @param sourceClass - The configuration class that declared the sources.
+     * @param sources - The source objects, in declaration order.
      */
-    processPropertySource(sources: JSONObject[]) {
+    processPropertySource(sourceClass: unknown, sources: JSONObject[]) {
         const propertySources = (this.environment as ConfigurableEnvironment).getPropertySources();
+        const className = (sourceClass as { name?: string }).name ?? 'anonymous';
         for (let index = sources.length - 1; index >= 0; index--) {
-            propertySources.addFirst(`source:${index}`, sources[index]);
+            propertySources.addFirst(`source:${className}:${index}`, sources[index]);
         }
     }
 

@@ -33,7 +33,7 @@ export {
     likeResponseAwareHTTPInterceptor,
     likeHTTPInterceptor,
 } from './http-interceptor-guards';
-export { assign, freeze, defineProperty, defaults, patternCache, isRequest } from './http-shared';
+export { assign, freeze, defineProperty, defaults, patternCache, isRequest, rebuildResponse } from './http-shared';
 export { WildcardMatcher, MappedHTTPInterceptor } from './http-mapped-interceptor';
 export { HTTPExecutionChain } from './http-execution-chain';
 export { HTTP } from './http-client';

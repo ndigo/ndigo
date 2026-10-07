@@ -138,8 +138,11 @@ describe('blue-api cookie sessions (AD-33 Wave 2)', () => {
         expect(textPlain.response.status).toBe(415);
 
         // The header is required: a body-bearing POST without it is rejected.
-        const missingType = await mockHTTP.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        // `.body()` defaults Content-Type to application/json (HTT-REV-015),
+        // so the genuinely header-less request uses `rawBody`.
+        const missingType = await mockHTTP.post('/auth/login').rawBody('{"username":"admin","password":"demo"}').exec();
         expect(missingType.response.status).toBe(415);
+        expect(cookieHeader(missingType)).not.toContain('__Host-blue-session=');
     });
 
     test('POST /auth/login is rate limited per client address (SEC-6)', async () => {

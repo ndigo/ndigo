@@ -40,14 +40,23 @@ export class DrizzleTransactionManager implements TransactionManager {
             throw new Error('DrizzleTransactionManager: a transaction is already active');
         }
 
-        await this.#dataSource.client.execute('BEGIN');
+        // Claim the boundary synchronously (no await in between) so a
+        // concurrent run() cannot slip another BEGIN onto the same connection
+        // while this one is starting up (DAT-F9).
         this.#active = true;
+        let begun = false;
         try {
+            await this.#dataSource.client.execute('BEGIN');
+            begun = true;
             const result = await fn();
             await this.#dataSource.client.execute('COMMIT');
             return result;
         } catch (error) {
-            await this.#dataSource.client.execute('ROLLBACK');
+            // Only roll back a transaction that actually opened; a failed
+            // BEGIN must surface its own error, not a masked ROLLBACK failure.
+            if (begun) {
+                await this.#dataSource.client.execute('ROLLBACK');
+            }
             throw error;
         } finally {
             this.#active = false;

@@ -3,7 +3,14 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { AuthClient, AuthRegistry, OIDCAdapter, Principal } from '@blue/auth-client';
+import {
+    AuthClient,
+    AuthRegistry,
+    DefaultPrincipal,
+    type AuthAdapter,
+    type AuthResult,
+    type Principal,
+} from '@blue/auth-client';
 
 // ── Demo credentials (in-memory, for demo only) ──────────────────────────────
 const DEMO_USERS = [
@@ -11,87 +18,91 @@ const DEMO_USERS = [
     { username: 'alice', password: 'demo', roles: ['user'] },
 ];
 
+const TOKEN_TTL_MS = 3_600_000;
+
 // ── In-memory token → Principal store ────────────────────────────────────────
-const tokenStore = new Map<string, Principal>();
+const tokenStore = new Map<string, { principal: Principal; expiresAt: number }>();
 
 /**
- * Generates a demo token for a principal.
+ * Demo auth adapter: in-memory credentials + tokens, for the browser demo only.
+ *
+ * It implements the framework {@link AuthAdapter} contract the way a real
+ * provider does — unlike `OIDCAdapter`, whose `authenticate()` by design throws
+ * (OIDC uses the authorization-code flow, not direct credentials). This is the
+ * seam the demo's login form drives.
  */
-function generateToken(principal: Principal): string {
-    const token = `demo-token-${principal.id}-${Date.now()}`;
-    tokenStore.set(token, principal);
-    return token;
-}
+class DemoAuthAdapter implements AuthAdapter {
+    readonly id = 'demo';
 
-/**
- * Invalidates a token (logs out the user).
- */
-export function invalidateToken(token: string): void {
-    tokenStore.delete(token);
+    async authenticate(credentials: unknown): Promise<AuthResult> {
+        const { username, password } = (credentials ?? {}) as { username?: string; password?: string };
+        const user = DEMO_USERS.find((candidate) => candidate.username === username && candidate.password === password);
+
+        if (!user) {
+            return { principal: null, token: null, expiresAt: null };
+        }
+
+        const principal = new DefaultPrincipal(user.username, user.username, user.roles);
+        const expiresAt = Date.now() + TOKEN_TTL_MS;
+        const token = `demo-token-${principal.id}-${expiresAt}`;
+        tokenStore.set(token, { principal, expiresAt });
+
+        return { principal, token, expiresAt };
+    }
+
+    async validate(token: string): Promise<Principal | null> {
+        const entry = tokenStore.get(token);
+
+        if (!entry || entry.expiresAt <= Date.now()) {
+            tokenStore.delete(token);
+            return null;
+        }
+
+        return entry.principal;
+    }
+
+    async refresh(token: string): Promise<AuthResult> {
+        const principal = await this.validate(token);
+        const expiresAt = Date.now() + TOKEN_TTL_MS;
+        return { principal, token, expiresAt: principal ? expiresAt : null };
+    }
+
+    async logout(token: string): Promise<void> {
+        tokenStore.delete(token);
+    }
 }
 
 // ── AuthClient instance ──────────────────────────────────────────────────────
 export const authClient = new AuthClient();
 
-// ── Initialize auth system (register adapters, set up client) ────────────────
+// ── Initialize auth system (register adapter, restore a stored token) ────────
 export function initAuth(): void {
-    // Demo adapter: explicit validator, NOT a real security boundary. Real
-    // deployments must use jwksUrl or discovery: true against a trusted IdP.
-    const oidcAdapter = new OIDCAdapter({
-        issuer: 'https://blue-todo.local',
-        clientId: 'blue-todo-client',
-        redirectUri: `${window.location.origin}/callback`,
-        scopes: ['openid', 'profile', 'email'],
-        tokenValidator: async () => true,
-    });
-    AuthRegistry.register(oidcAdapter);
+    AuthRegistry.register(new DemoAuthAdapter());
 
-    // Initialize client with a stored token if available
     const storedToken = sessionStorage.getItem('blue-todo-token');
     if (storedToken) {
-        void authClient.init('oidc', storedToken);
+        void authClient.init('demo', storedToken);
     }
 }
 
-// ── Login (demo: in-memory credential check) ─────────────────────────────────
+// ── Login (demo: in-memory credential check through the adapter) ─────────────
 export async function login(
     username: string,
     password: string
 ): Promise<{ token: string; principal: Principal } | null> {
-    const user = DEMO_USERS.find((u) => u.username === username && u.password === password);
-    if (!user) return null;
+    const result = await authClient.authenticate('demo', { username, password });
 
-    const principal: Principal = {
-        id: user.username,
-        name: user.username,
-        roles: user.roles,
-        hasRole(role: string) {
-            return this.roles.includes(role);
-        },
-        hasAnyRole(...roles: string[]) {
-            return roles.some((r) => this.roles.includes(r));
-        },
-    };
+    if (!result.principal || !result.token) {
+        return null;
+    }
 
-    const token = generateToken(principal);
-    sessionStorage.setItem('blue-todo-token', token);
+    sessionStorage.setItem('blue-todo-token', result.token);
 
-    await authClient.authenticate('oidc', { principal, token, expiresAt: Date.now() + 3600000 });
-
-    return { token, principal };
+    return { token: result.token, principal: result.principal };
 }
 
 // ── Logout ───────────────────────────────────────────────────────────────────
 export async function logout(): Promise<void> {
-    const token = authClient.state.token;
-    if (token) {
-        invalidateToken(token);
-    }
     sessionStorage.removeItem('blue-todo-token');
-    await authClient.logout('oidc');
-}
-
-// ── Check if current user has a role ─────────────────────────────────────────
-export function hasRole(role: string): boolean {
-    return authClient.principal?.hasRole(role) ?? false;
+    await authClient.logout('demo');
 }

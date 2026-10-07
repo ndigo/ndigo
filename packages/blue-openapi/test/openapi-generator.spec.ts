@@ -166,6 +166,24 @@ class APIController {
         return { ok: true };
     }
 
+    @getMapping('/accepted')
+    @apiDocs({ responses: { '202': { description: 'Accepted' } } })
+    accepted() {
+        return { ok: true };
+    }
+
+    @getMapping('/secure')
+    @apiDocs({ security: ['bearerAuth'] })
+    secure() {
+        return { ok: true };
+    }
+
+    @getMapping('/open')
+    @apiDocs({ security: [] })
+    open() {
+        return { ok: true };
+    }
+
     @getMapping('/categories')
     @apiDocs({ responses: { '200': CategorySchema } })
     categories() {
@@ -287,6 +305,60 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
         // Handlers without declared responses keep the default.
         const hello = doc.paths['/api/hello'].get;
         expect(hello.responses['200']).toEqual({ description: 'OK' });
+    });
+
+    it('declared @apiDocs responses replace the implicit 200 (DAT-F11)', () => {
+        const mapping = register(new APIController());
+        const doc = new OpenAPISpecGenerator().generate([mapping]);
+        const accepted = doc.paths['/api/accepted'].get;
+        // Pre-fix the implicit `200 OK` merged with the declared set, so a
+        // handler documenting only 202 still advertised a 200 it never returns.
+        expect(accepted.responses).toEqual({ '202': { description: 'Accepted' } });
+        expect(accepted.responses['200']).toBeUndefined();
+    });
+
+    it('emits declared securitySchemes and per-operation security (DAT-F12)', () => {
+        const mapping = register(new APIController());
+        const doc = new OpenAPISpecGenerator().generate([mapping], {
+            securitySchemes: { bearerAuth: { type: 'http', scheme: 'bearer' } },
+        });
+        expect(doc.components?.securitySchemes).toEqual({ bearerAuth: { type: 'http', scheme: 'bearer' } });
+        // @apiDocs({ security }) becomes the operation's requirement list…
+        expect(doc.paths['/api/secure'].get.security).toEqual([{ bearerAuth: [] }]);
+        // …an empty list documents an explicitly anonymous operation…
+        expect(doc.paths['/api/open'].get.security).toEqual([]);
+        // …and an operation without it inherits the (absent) document default.
+        expect(doc.paths['/api/hello'].get.security).toBeUndefined();
+    });
+
+    it('applies the document-level security default with per-operation override (DAT-F12)', () => {
+        const mapping = register(new APIController());
+        const doc = new OpenAPISpecGenerator().generate([mapping], {
+            securitySchemes: { bearerAuth: { type: 'http', scheme: 'bearer' } },
+            security: ['bearerAuth'],
+        });
+        expect(doc.security).toEqual([{ bearerAuth: [] }]);
+        // No operation-level `security` → inherits the document default.
+        expect(doc.paths['/api/hello'].get.security).toBeUndefined();
+        // Per-operation `@apiDocs({ security: [] })` overrides the default.
+        expect(doc.paths['/api/open'].get.security).toEqual([]);
+    });
+
+    it('emits components when only security schemes are declared (DAT-F12)', () => {
+        @requestMapping('/plain')
+        class PlainController {
+            @getMapping('/ping')
+            ping() {
+                return 'pong';
+            }
+        }
+        const doc = new OpenAPISpecGenerator().generate([register(new PlainController())], {
+            securitySchemes: { apiKey: { type: 'apiKey', name: 'x-api-key', in: 'header' } },
+        });
+        expect(doc.components).toEqual({
+            schemas: {},
+            securitySchemes: { apiKey: { type: 'apiKey', name: 'x-api-key', in: 'header' } },
+        });
     });
 
     it('honors @apiDocs metadata and hidden exclusion', () => {

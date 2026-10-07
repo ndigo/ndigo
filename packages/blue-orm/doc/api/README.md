@@ -29,6 +29,7 @@ Jeff Rose
 - [ColumnOptions](interfaces/ColumnOptions.md)
 - [DataSource](interfaces/DataSource.md)
 - [DerivedQuery](interfaces/DerivedQuery.md)
+- [EntityCloneHook](interfaces/EntityCloneHook.md)
 - [EntityManager](interfaces/EntityManager.md)
 - [EntityMetadata](interfaces/EntityMetadata.md)
 - [LifecycleHookDefinition](interfaces/LifecycleHookDefinition.md)
@@ -44,16 +45,22 @@ Jeff Rose
 
 ## Type Aliases
 
+- [ColumnTypeFamily](type-aliases/ColumnTypeFamily.md)
 - [DerivedQueryResult](type-aliases/DerivedQueryResult.md)
 - [EntityState](type-aliases/EntityState.md)
 - [LifecycleEvent](type-aliases/LifecycleEvent.md)
 - [RelationKind](type-aliases/RelationKind.md)
 - [SortDirection](type-aliases/SortDirection.md)
 
+## Variables
+
+- [ENTITY\_CLONE](variables/ENTITY_CLONE.md)
+
 ## Functions
 
 - [baseSchemaForType](functions/baseSchemaForType.md)
 - [column](functions/column.md)
+- [columnTypeFamily](functions/columnTypeFamily.md)
 - [entity](functions/entity.md)
 - [generated](functions/generated.md)
 - [getEntityMetadata](functions/getEntityMetadata.md)
@@ -70,6 +77,7 @@ Jeff Rose
 - [prePersist](functions/prePersist.md)
 - [preUpdate](functions/preUpdate.md)
 - [primaryColumn](functions/primaryColumn.md)
+- [runLifecycleHooks](functions/runLifecycleHooks.md)
 - [schemaForColumn](functions/schemaForColumn.md)
 - [schemaForEntity](functions/schemaForEntity.md)
 - [sortComparator](functions/sortComparator.md)

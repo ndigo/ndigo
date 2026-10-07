@@ -225,4 +225,31 @@ describe('QueueMessageStore contract (in-memory backend)', () => {
         expect(replayed).toHaveLength(1000);
         expect(replayed[0]?.body).toBe('m2');
     });
+
+    test('global byte budget evicts the globally oldest message, not the oldest destination head (PRT-REV-010)', async () => {
+        let now = 1_000;
+        const store = new InMemoryQueueMessageStore({
+            maxBytes: 25,
+            maxMessagesPerDestination: 2,
+            now: () => now,
+        });
+        const body = '0123456789'; // 10 octets
+        const appendAt = async (destination: string, messageId: string, at: number): Promise<void> => {
+            now = at;
+            await store.append({ ...message(destination, body), messageId });
+        };
+        await appendAt('/queue/a', 'a1', 1_000);
+        await appendAt('/queue/b', 'b1', 2_000);
+        // A's head (a2) is now NEWER than B's head (b1): A was created first
+        // but its first message was already evicted.
+        await appendAt('/queue/a', 'a2', 3_000);
+        expect((await store.replay('/queue/a')).map((m) => m.messageId)).toEqual(['a2']);
+        // The next append trips the byte budget. The globally oldest message
+        // is b1 (t=2s), not A's head a2 (t=3s) — the pre-fix policy evicted
+        // the head of the oldest *destination* and wrongly dropped a2.
+        await appendAt('/queue/a', 'a3', 4_000);
+        expect((await store.replay('/queue/a')).map((m) => m.messageId)).toEqual(['a2', 'a3']);
+        expect(await store.has('/queue/b')).toBe(false);
+        expect(store.stats).toEqual({ destinations: 1, retainedBytes: 20, seqEntries: 1 });
+    });
 });

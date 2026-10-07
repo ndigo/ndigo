@@ -12,7 +12,9 @@ Instrumentation for [NodeSocketSessionRegistry](#) (AD-21/AD-22):
   `SocketSession.connect` SERVER span (path, duration, close code) —
   the socket analog of the SSE stream-lifetime instrumentation.
 - **Counters**: sessions opened / closed (per path + close code),
-  fan-out messages + bytes (per path; per room only with
+  fan-out **delivered** messages + bytes — scaled by recipient count, so a
+  broadcast to N open sessions records N messages and N × wire bytes (per
+  path; per room only with
   [WebSocketServerInstrumentationOptions.roomAttribute](../interfaces/WebSocketServerInstrumentationOptions.md#roomattribute)),
   backpressure closes (close code `1013`).
 

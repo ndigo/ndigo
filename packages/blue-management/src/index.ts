@@ -9,6 +9,6 @@ export type { HealthRegistryOptions, HealthState, HealthResult, HealthIndicator,
 export { METRIC_AGGREGATOR } from './metric-aggregator-tokens';
 export { HEALTH_REGISTRY } from './health-registry-tokens';
 export { MetricsController } from './metrics-controller';
-export { HealthController } from './health-controller';
+export { HealthController, HealthResponseView } from './health-controller';
 export { TelemetryHealthIndicator } from './telemetry-health-indicator';
 export { ManagementAutoConfiguration } from './management-auto-configuration';

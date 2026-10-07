@@ -11,7 +11,7 @@ const regex = /^\w|\s\w/g;
  * @returns {string}
  * @category String
  * @example
- * toProper( 'lorem-ipsum-dolor' );
+ * toProper( 'lorem ipsum dolor' );
  * //=> "Lorem Ipsum Dolor"
  */
 const toProper = (value: string): string => value.toLowerCase().replace(regex, (c: string): string => c.toUpperCase());

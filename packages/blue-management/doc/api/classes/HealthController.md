@@ -13,6 +13,11 @@ including the telemetry indicator wired at context refresh by
 [ManagementAutoConfiguration](ManagementAutoConfiguration.md)). The registry is read-only here;
 it is never mutated per request.
 
+The HTTP status mirrors the aggregate: `503 Service Unavailable` when any
+component is `DOWN`, `200 OK` otherwise (`UP` or `UNKNOWN`) — so
+orchestrators (Kubernetes probes, load balancers) can route on the status
+code alone, per the actuator convention.
+
 ## Since
 
 1.0.0
@@ -57,16 +62,17 @@ A symbol indicating that the value is aware.
 
 ### health()
 
-> **health**(): `Promise`\<[`HealthStatus`](../interfaces/HealthStatus.md) \| \{ `components`: \{ \}; `status`: `string`; `timestamp`: `string`; \}\>
+> **health**(): `Promise`\<[`HealthResponseView`](HealthResponseView.md)\>
 
 Returns the aggregate health status.
 
 #### Returns
 
-`Promise`\<[`HealthStatus`](../interfaces/HealthStatus.md) \| \{ `components`: \{ \}; `status`: `string`; `timestamp`: `string`; \}\>
+`Promise`\<[`HealthResponseView`](HealthResponseView.md)\>
 
-`{ status, components, timestamp }`, or `{ status: 'UNKNOWN' }`
-  when no registry is wired.
+The health document at `503` when the aggregate is `DOWN`,
+  `200` otherwise; `{ status: 'UNKNOWN' }` at `200` when no registry
+  is wired.
 
 ***
 

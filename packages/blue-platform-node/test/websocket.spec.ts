@@ -990,3 +990,39 @@ describe('WebSocket cookie bound rejection', () => {
         expect(uncaught).toEqual([]);
     });
 });
+
+// PLN-F10: the adapter's teardown must release the socket registry's fanout
+// subscriptions — previously only `stop()` ran, so the path/room subscriptions
+// leaked on every closed adapter.
+describe('NodeHTTPServerAdapter socket registry teardown (PLN-F10)', () => {
+    test('close() closes the registry (unsubscribes fanout) and is idempotent', async () => {
+        const context = new MetadataConfigApplicationContext('ws-registry-teardown');
+        context.register(NodeAutoConfiguration);
+        context.setValue(SocketController.name, new SocketController());
+        context.refresh();
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+
+        const unsubscribed: string[] = [];
+        const registry = new NodeSocketSessionRegistry({
+            fanout: {
+                subscribe: async (scope) => async () => {
+                    unsubscribed.push(scope);
+                },
+                publish: async () => undefined,
+            },
+        });
+        await registry.connect();
+        expect(unsubscribed).toEqual([]);
+
+        const adapter = new NodeHTTPServerAdapter(dispatcher, { socketRegistry: registry });
+        await adapter.listen(0, '127.0.0.1');
+        await adapter.close();
+        expect([...unsubscribed].sort()).toEqual(['path', 'room']);
+
+        // Idempotent: a second teardown neither throws nor double-unsubscribes.
+        await adapter.close();
+        expect(unsubscribed).toHaveLength(2);
+
+        context.close();
+    });
+});

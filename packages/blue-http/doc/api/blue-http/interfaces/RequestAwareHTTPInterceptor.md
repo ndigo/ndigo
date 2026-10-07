@@ -12,7 +12,7 @@ Allows a request object to be replaced before fetch executes.
 
 ### preRequest()
 
-> **preRequest**(`request`, `http`): `Promise`\<`void` \| `Response` \| `Request`\>
+> **preRequest**(`request`, `http`, `settings?`): `Promise`\<`void` \| `Response` \| `Request`\>
 
 Transforms the request before it is passed to fetch.
 
@@ -29,6 +29,15 @@ The request to inspect or replace.
 [`HTTP`](../classes/HTTP.md)
 
 The HTTP client executing the request.
+
+##### settings?
+
+[`HTTPInit`](../type-aliases/HTTPInit.md)
+
+The per-request settings object. Unlike the `Request`,
+it is not replaced by later interceptors, so state that must survive a
+request rebuild (e.g. an undisturbed body clone for retries) is keyed on
+it.
 
 #### Returns
 

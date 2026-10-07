@@ -83,3 +83,13 @@ each other's budgets unless they deliberately share an address.
 > `optional` **session?**: `Record`\<`string`, `unknown`\>
 
 Session data.
+
+***
+
+### transport?
+
+> `optional` **transport?**: `"aborted"` \| `"timeout"`
+
+Simulates a transport-level failure the in-process harness cannot
+otherwise reproduce: `'aborted'` mirrors the adapter's `400`
+`request_aborted`, `'timeout'` its `408` `request_timeout` (HTT-REV-014).

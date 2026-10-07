@@ -24,6 +24,7 @@ Jeff Rose
 ## Interfaces
 
 - [BrowserTelemetryConfig](interfaces/BrowserTelemetryConfig.md)
+- [BrowserTelemetryHandle](interfaces/BrowserTelemetryHandle.md)
 
 ## Functions
 

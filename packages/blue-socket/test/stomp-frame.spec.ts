@@ -414,3 +414,52 @@ describe('frame boundary strictness', () => {
         expect(() => parseStompFrame(bytes)).toThrow(StompProtocolError);
     });
 });
+
+describe('CONNECT/CONNECTED header escaping exemption (STOMP 1.2 §1.2)', () => {
+    // "The CONNECT and CONNECTED frames do not escape the carriage return,
+    // line feed, or colon characters." `STOMP` is the 1.1 alias of CONNECT.
+
+    test('parses CONNECT header values verbatim (no unescaping)', () => {
+        const frame = parseStompFrame('CONNECT\naccept-version:1.2\nhost:x\nlogin:user\\cdept\npasscode:p\\nss\n\n\0');
+        // Pre-fix `\c` decoded to ':' and `\n` to a newline — both wrong for
+        // an unescaped frame.
+        expect(frame.headers['login']).toBe('user\\cdept');
+        expect(frame.headers['passcode']).toBe('p\\nss');
+    });
+
+    test('parses the STOMP 1.1 alias and CONNECTED verbatim', () => {
+        expect(parseStompFrame('STOMP\nhost:x\nlogin:a\\cb\n\n\0').headers['login']).toBe('a\\cb');
+        expect(parseStompFrame('CONNECTED\nversion:1.2\nsession:a\\cb\n\n\0').headers['session']).toBe('a\\cb');
+    });
+
+    test('serializes CONNECT header values without escaping', () => {
+        const wire = serializeStompFrame({ command: 'CONNECT', headers: { host: 'x', login: 'a:b' }, body: '' });
+        expect(wire).toContain('login:a:b\n');
+        expect(wire).not.toContain('a\\cb');
+        // A non-exempt frame still escapes (the SEND path is unchanged).
+        const send = serializeStompFrame({ command: 'SEND', headers: { note: 'a:b' }, body: '' });
+        expect(send).toContain('note:a\\cb');
+    });
+
+    test('round-trips CONNECT credentials containing backslashes and colons', () => {
+        const frame: StompFrame = {
+            command: 'CONNECT',
+            headers: { host: 'x', login: 'a:b', passcode: 'b\\c\\n' },
+            body: '',
+        };
+        expect(roundTrip(frame)).toEqual(frame);
+    });
+
+    test('still rejects NUL/CR in a CONNECT value and CR/LF on serialize', () => {
+        expect(() => parseStompFrame('CONNECT\nhost:x\nlogin:a\0b\n\n\0')).toThrow(StompProtocolError);
+        expect(() => parseStompFrame('CONNECT\nhost:x\nlogin:a\rb\n\n\0')).toThrow(StompProtocolError);
+        // No escaping is available for an exempt frame, so CR/LF cannot be
+        // framed at all.
+        expect(() => serializeStompFrame({ command: 'CONNECT', headers: { login: 'a\rb' }, body: '' })).toThrow(
+            StompProtocolError
+        );
+        expect(() => serializeStompFrame({ command: 'CONNECTED', headers: { session: 'a\nb' }, body: '' })).toThrow(
+            StompProtocolError
+        );
+    });
+});

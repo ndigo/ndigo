@@ -34,8 +34,10 @@ function getMetadata(target: unknown): Record<string, unknown> {
  */
 export interface ConfigurationPropertiesOptions {
     /**
-     * Enable relaxed binding (kebab/snake env keys match camelCase fields).
-     * Off by default — exact keypaths are the contract (AD-15 Q8).
+     * Enable relaxed binding: a field's declared keypath and its camelCase,
+     * kebab-case and snake_case spellings all match the environment either
+     * way (a camelCase field finds a kebab env key and vice versa). Off by
+     * default — exact keypaths are the contract (AD-15 Q8).
      */
     relaxed?: boolean;
     /**
@@ -62,6 +64,14 @@ export interface ConfigurationPropertiesOptions {
  * instance is auto-registered as an entry bean keyed by the camelCase-derived
  * class name (`ServerConfig` → `serverConfig`).
  *
+ * **Conversion target (CTX-11).** A field's target type is, in order: the
+ * explicit type passed to `@property(path, Type)`; else the type inferred
+ * from the field's initializer (`port = 0` → `number`, `flag = false` →
+ * `boolean`, `at = new Date()` → `date`); else `String`. An untyped field
+ * with NO initializer (`port!: number` is erased at runtime) therefore binds
+ * the raw value with no conversion — declare the type explicitly or
+ * initialize the field to get numeric/boolean/date conversion.
+ *
  * Use with `@property` (+ optional `@defaultValue` / `@nested`) from
  * `@blue/context`.
  *
@@ -76,7 +86,7 @@ export interface ConfigurationPropertiesOptions {
  *
  * @configurationProperties('server')
  * class ServerConfig {
- *     @property('port') @defaultValue('8080') port!: number;
+ *     @property('port', Number) @defaultValue('8080') port!: number;
  *     @property('db') @nested db!: DbConfig;
  * }
  *
@@ -139,21 +149,71 @@ const { defineProperty } = Reflect;
 const camelize = (key: string): string => key.replace(/[-_]([a-z])/g, (_match, letter: string) => letter.toUpperCase());
 
 /**
- * Resolves the property key for a field under a class prefix, returning the
- * environment value with relaxed fallback: exact keypath first (the default
- * contract), then the camelized kebab/snake form — only when the class opted
- * in via `{ relaxed: true }`.
+ * Rewrites a keypath into resolver-safe form: the keypath parser stops at a
+ * hyphen (it is not an identifier character), so a hyphenated segment must be
+ * expressed as a quoted bracket access (`server.host-name` →
+ * `server["host-name"]`). Every other segment is passed through untouched, so
+ * existing bracket syntax (`arr[1]`) is preserved (CTX-01).
+ *
+ * @param key - The dotted keypath.
+ * @returns The equivalent keypath the environment can resolve.
+ */
+function toLookupKey(key: string): string {
+    let lookup = '';
+    for (const segment of key.split('.')) {
+        const part = segment.includes('-') ? `["${segment}"]` : segment;
+        // Bracket segments attach directly (`server["host-name"]`); every
+        // other segment keeps its dot separator.
+        lookup += lookup === '' || part.startsWith('[') ? part : `.${part}`;
+    }
+    return lookup;
+}
+
+/**
+ * A field's resolved environment key plus its value. Relaxed binding can
+ * match a spelled variant, so the typed re-read MUST use the winning key —
+ * not the exact path the decorator declared (CTX-01).
+ */
+interface ResolvedProperty {
+    /** The resolver key that matched, or the exact declared key when absent. */
+    key: string;
+    /** The resolved value, or `undefined` when nothing matched. */
+    value: JSONValue | undefined;
+}
+
+/**
+ * Resolves the property key for a field under a class prefix.
+ *
+ * Exact keypath first (the default contract). With `{ relaxed: true }`, the
+ * key's camelCase, kebab-case, and snake_case spellings are also tried so a
+ * camelCase field finds a kebab/snake env key AND a kebab/snake field finds a
+ * camelCase env key — symmetric normalization (CTX-01). The returned `key` is
+ * the spelling that actually matched, so typed reads convert the right value.
  */
 function valueAt(
     environment: { getProperty(key: string): JSONValue | undefined },
     prefix: string | undefined,
     fieldPath: string,
     relaxed: boolean
-): JSONValue | undefined {
+): ResolvedProperty {
     const base = prefix ? `${prefix}.${fieldPath}` : fieldPath;
-    const exact = environment.getProperty(base);
-    if (exact !== undefined || !relaxed) return exact;
-    return environment.getProperty(camelize(base));
+    const candidates = relaxed
+        ? [
+              base,
+              camelize(base),
+              base.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`),
+              base.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`),
+          ]
+        : [base];
+    const seen = new Set<string>();
+    for (const candidate of candidates) {
+        const lookup = toLookupKey(candidate);
+        if (seen.has(lookup)) continue;
+        seen.add(lookup);
+        const value = environment.getProperty(lookup);
+        if (value !== undefined) return { key: lookup, value };
+    }
+    return { key: toLookupKey(base), value: undefined };
 }
 
 /**
@@ -206,8 +266,8 @@ export function resolveConfigurationProperties<T>(
             throw new IllegalStateError(`Cannot bind ${ctor.name}.${key}: the application context has no environment`);
         }
 
-        const value = valueAt(environment, prefix, fieldPath, relaxed);
-        if (value === undefined) {
+        const resolved = valueAt(environment, prefix, fieldPath, relaxed);
+        if (resolved.value === undefined) {
             const rawDefault = meta[`${DEFAULT_KEY}${key}`] as string | undefined;
             if (rawDefault !== undefined) {
                 // The resolver's getPropertyAs(key, type, default) converts a
@@ -229,18 +289,20 @@ export function resolveConfigurationProperties<T>(
         const targetType = targetFor(instance, key, meta);
         let typed: JSONValue;
         try {
-            typed = getValueAs(environment, fullPath, targetType, true) as JSONValue;
+            // Read through the WINNING key so a relaxed hit converts the same
+            // spelling that resolved (CTX-01).
+            typed = getValueAs(environment, resolved.key, targetType, true) as JSONValue;
         } catch (error) {
             // The key path identifies the binding; the value is deliberately
             // NOT interpolated — it may be a decrypted secret (SEC-11/CF-2),
             // and the underlying resolver error already names the attempted
             // value (redacted when a decryptor is wired).
             throw new IllegalStateError(
-                `Cannot bind ${ctor.name}.${key} from "${fullPath}": ${(error as Error).message}`,
+                `Cannot bind ${ctor.name}.${key} from "${resolved.key}": ${(error as Error).message}`,
                 error instanceof Error ? { cause: error } : undefined
             );
         }
-        bindings[fullPath] = value;
+        bindings[resolved.key] = resolved.value;
         defineProperty(instance as Record<string, unknown>, key, {
             value: typed,
             configurable: true,
@@ -279,10 +341,10 @@ function resolveFromSchema<T>(
     const shape = schema.shape;
 
     for (const key of Object.keys(shape)) {
-        const value = valueAt(environment, prefix, key, relaxed);
-        if (value !== undefined) {
-            raw[key] = value;
-            bindings[prefix ? `${prefix}.${key}` : key] = value;
+        const resolved = valueAt(environment, prefix, key, relaxed);
+        if (resolved.value !== undefined) {
+            raw[key] = resolved.value;
+            bindings[resolved.key] = resolved.value;
         }
     }
 
@@ -462,8 +524,8 @@ function resolveNested<T>(
             );
             continue;
         }
-        const value = valueAt(environment, undefined, fullPath, relaxed);
-        if (value === undefined) {
+        const resolved = valueAt(environment, undefined, fullPath, relaxed);
+        if (resolved.value === undefined) {
             const rawDefault = nestedMeta[`${DEFAULT_KEY}${key}`] as string | undefined;
             if (rawDefault !== undefined) {
                 // CF-4: the nested default goes through `convertRaw` — the
@@ -487,7 +549,13 @@ function resolveNested<T>(
             }
             throw new IllegalStateError(`Missing required property "${fullPath}" for ${root.name}.${fieldName}.${key}`);
         }
-        const typed = getValueAs(environment, fullPath, targetFor(nestedInstance, key, nestedMeta), true) as JSONValue;
+        // Winning-key read for nested relaxed hits too (CTX-01).
+        const typed = getValueAs(
+            environment,
+            resolved.key,
+            targetFor(nestedInstance, key, nestedMeta),
+            true
+        ) as JSONValue;
         defineProperty(nestedInstance as Record<string, unknown>, key, {
             value: typed,
             configurable: true,

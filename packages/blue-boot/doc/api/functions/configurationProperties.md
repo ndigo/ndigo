@@ -18,6 +18,14 @@ class is bound from the environment (converted via `getPropertyAs`). If a
 instance is auto-registered as an entry bean keyed by the camelCase-derived
 class name (`ServerConfig` → `serverConfig`).
 
+**Conversion target (CTX-11).** A field's target type is, in order: the
+explicit type passed to `@property(path, Type)`; else the type inferred
+from the field's initializer (`port = 0` → `number`, `flag = false` →
+`boolean`, `at = new Date()` → `date`); else `String`. An untyped field
+with NO initializer (`port!: number` is erased at runtime) therefore binds
+the raw value with no conversion — declare the type explicitly or
+initialize the field to get numeric/boolean/date conversion.
+
 Use with `@property` (+ optional `@defaultValue` / `@nested`) from
 `@blue/context`.
 
@@ -49,7 +57,7 @@ import { configurationProperties } from '@blue/boot';
 
 @configurationProperties('server')
 class ServerConfig {
-    @property('port') @defaultValue('8080') port!: number;
+    @property('port', Number) @defaultValue('8080') port!: number;
     @property('db') @nested db!: DbConfig;
 }
 

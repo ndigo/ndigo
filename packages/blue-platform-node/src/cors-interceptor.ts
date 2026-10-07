@@ -160,7 +160,11 @@ export class CORSInterceptor implements RouteHandlerInterceptor {
         // Echo the actual origin (never `*` with credentials); always Vary on
         // Origin so shared caches do not serve a cross-origin response.
         res.setHeader(ACCESS_CONTROL_ALLOW_ORIGIN.name, this.#allowAnyOrigin && !this.#allowCredentials ? '*' : origin);
-        res.setHeader(VARY.name, 'Origin');
+        // Extend (never overwrite) any existing `Vary` — other middleware
+        // (static variants, compression, negotiation) may already key the
+        // response on `Accept-Encoding`/`Accept`, and clobbering it would let
+        // a shared cache replay the wrong representation (PLN-F8).
+        appendVary(res, 'Origin');
         if (this.#allowCredentials) {
             res.setHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS.name, 'true');
         }
@@ -173,4 +177,30 @@ export class CORSInterceptor implements RouteHandlerInterceptor {
 /** Normalizes an origin for comparison: lowercase, trailing slash stripped. */
 function normalizeOrigin(origin: string): string {
     return origin.trim().toLowerCase().replace(/\/+$/, '');
+}
+
+/**
+ * Appends a `Vary` token to any value already on the response, preserving
+ * existing tokens (PLN-F8). Token comparison is case-insensitive and the
+ * result is deduplicated, so repeated `preHandle`/`postHandle` passes over the
+ * same response never grow the header.
+ *
+ * @param res - The response whose `Vary` header is extended.
+ * @param token - The field name to add (`Origin` for CORS).
+ */
+function appendVary(res: ServerResponse, token: string): void {
+    const existing = res.getHeader(VARY.name);
+    const tokens: string[] = [];
+    if (Array.isArray(existing)) {
+        for (const value of existing) {
+            tokens.push(...String(value).split(','));
+        }
+    } else if (existing !== undefined) {
+        tokens.push(...String(existing).split(','));
+    }
+    const trimmed = tokens.map((value) => value.trim()).filter((value) => value !== '');
+    if (!trimmed.some((value) => value.toLowerCase() === token.toLowerCase())) {
+        trimmed.push(token);
+    }
+    res.setHeader(VARY.name, trimmed.join(', '));
 }

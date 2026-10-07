@@ -79,6 +79,63 @@ async function renderIslandMarkup(island: IslandView, model: TodoModel, route: R
 }
 
 /**
+ * The SSE push stream for one client connection (AD-09): the current snapshot
+ * first (APP-N3 snapshot-on-connect), then one event per *coalesced* model
+ * change.
+ *
+ * Each event carries the whole model, so an update that arrives while a
+ * previous one is still pending supersedes it: the queue is a single slot
+ * holding the newest snapshot (bound 1). A slow consumer therefore never
+ * accumulates full-model frames — it sees the latest state, not a backlog
+ * (APP-D). Updates that land mid-yield coalesce into the next emission.
+ *
+ * Extracted from {@link IslandController.events} so the coalescing/bounding
+ * contract is directly testable without a socket.
+ *
+ * @param modelStore - The shared source-of-truth store to follow.
+ * @returns An async generator of validated `model` frames for one connection.
+ */
+export async function* modelUpdateStream(
+    modelStore: TodoModelStore
+): AsyncGenerator<{ event: string; data: { model: TodoModel } }> {
+    // The coalescing slot: only the newest pending snapshot is retained.
+    let pending: TodoModel | undefined;
+    let release: (() => void) | undefined;
+
+    const notify = async (): Promise<void> => {
+        pending = modelStore.get();
+        release?.();
+        release = undefined;
+    };
+    // Subscribe before the first yield: an update between the snapshot frame
+    // being written and the consumer asking for the next one must still be
+    // delivered (into the coalescing slot), not lost.
+    const unsubscribe = modelStore.subscribe(notify);
+    try {
+        // Snapshot-on-connect (APP-N3): a client that connects after the
+        // 3-second boot ticker has completed must still hydrate — the current
+        // model is sent as the first event of the stream.
+        yield { event: 'model', data: { model: modelStore.get() } };
+
+        for (;;) {
+            while (pending === undefined) {
+                const gate = Promise.withResolvers<void>();
+                release = gate.resolve;
+                // oxlint-disable-next-line no-await-in-loop -- a push channel is inherently sequential
+                await gate.promise;
+            }
+            const model = pending;
+            pending = undefined;
+            yield { event: 'model', data: { model } };
+        }
+    } finally {
+        // The client disconnected (ServerSentEventView closes the iterator);
+        // stop coalescing updates for it.
+        unsubscribe();
+    }
+}
+
+/**
  * Serves the hybrid shell (the server-rendered island + client bundle) and
  * the reactive half of the demo (AD-09): `GET /events` pushes source-of-truth
  * model updates to the client as Server-Sent Events, which the hydrated
@@ -140,49 +197,12 @@ export class IslandController {
     }
 
     /**
-     * The push endpoint: one SSE event per model update, as it happens. The
-     * view is a per-connection, imperative view — returned directly.
+     * The push endpoint: the coalesced model update stream, one SSE event per
+     * emission (APP-D) — see {@link modelUpdateStream}. The view is a
+     * per-connection, imperative view — returned directly.
      */
     @getMapping('/events')
     events(): ServerSentEventView {
-        const modelStore = this.#modelStore;
-
-        async function* pushUpdates(): AsyncGenerator<{ event: string; data: { model: TodoModel } }> {
-            // Snapshot-on-connect (APP-N3): a client that connects after the
-            // 3-second boot ticker has completed must still hydrate — the
-            // current model is sent as the first event of the stream.
-            yield { event: 'model', data: { model: modelStore.get() } };
-
-            const queue: TodoModel[] = [];
-            let release: (() => void) | undefined;
-
-            const notify = async (): Promise<void> => {
-                queue.push(modelStore.get());
-                release?.();
-                release = undefined;
-            };
-            const unsubscribe = modelStore.subscribe(notify);
-            try {
-                while (true) {
-                    if (queue.length === 0) {
-                        // oxlint-disable-next-line no-await-in-loop -- a push channel is inherently sequential
-                        await new Promise<void>((resolve) => {
-                            release = resolve;
-                        });
-                    }
-                    const model = queue.shift();
-                    if (model === undefined) {
-                        continue;
-                    }
-                    yield { event: 'model', data: { model } };
-                }
-            } finally {
-                // The client disconnected (ServerSentEventView closes the iterator);
-                // stop queueing updates for it.
-                unsubscribe();
-            }
-        }
-
-        return new ServerSentEventView(pushUpdates());
+        return new ServerSentEventView(modelUpdateStream(this.#modelStore));
     }
 }

@@ -96,3 +96,4 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-69** | 2026-10-06    | Accepted           | [Component integration contract — adopt the Web Component ecosystem; framework owns the DSD/FACE bridge](2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md)                 |
 | **AD-70** | 2026-10-06    | Accepted           | [Editor tooling — introspection first (`@blue/inspect` manifest, config schema, lint rules); no language server yet](2026-10-06_AD70_EDITOR_TOOLING_INTROSPECTION_FIRST.md) |
 | **AD-71** | 2026-10-07    | Accepted           | [Component library selection — Web Awesome for the reference integration](2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md)                                                   |
+| **AD-72** | 2026-10-07    | Accepted           | [Durable jobs and the transactional outbox — `@blue/jobs`](2026-10-07_AD72_JOBS_AND_OUTBOX.md)                                                                              |

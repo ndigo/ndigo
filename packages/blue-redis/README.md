@@ -4,8 +4,9 @@
 
 Standalone Redis for BlueJS: an explicit connection foundation
 (`RedisConnection`), cache adapters that share that connection (`RedisCache`,
-`RedisCacheManager`), and a cross-node socket transport
-(`RedisSocketFanout`). The default framework cache remains
+`RedisCacheManager`), a cross-node socket transport (`RedisSocketFanout`),
+and a durable job driver (`RedisJobDriver`) with atomic claims.
+The default framework cache remains
 `MemoryCacheManager`; installing this package never connects to Redis or
 changes auto-configuration.
 
@@ -15,17 +16,20 @@ changes auto-configuration.
 pnpm add @blue/redis @blue/cache @blue/factory
 # Socket fan-out additionally needs the capability contract:
 pnpm add @blue/socket
+# The job driver additionally needs the jobs contract:
+pnpm add @blue/jobs
 ```
 
 Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11, plus a
 standalone Redis server (integration tests run against 7.2). The package
-ships three entry points:
+ships four entry points:
 
 | Entry point          | Exports                             | Optional peers                 |
 | -------------------- | ----------------------------------- | ------------------------------ |
 | `@blue/redis`        | `RedisConnection` (foundation only) | —                              |
 | `@blue/redis/cache`  | `RedisCache`, `RedisCacheManager`   | `@blue/cache`, `@blue/factory` |
 | `@blue/redis/pubsub` | `RedisSocketFanout`                 | `@blue/socket`                 |
+| `@blue/redis/jobs`   | `RedisJobDriver`                    | `@blue/jobs`                   |
 
 The base dependency is pinned to `@redis/client` 6.3.0. No Redis modules,
 cluster/sentinel topology or scheduler are provided. The root export loads

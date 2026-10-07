@@ -154,6 +154,11 @@ Auto-configuration for Node.js-based applications that provisions:
   and islands via the route's `language` attribute
   :- A `taskScheduler` + `scheduleRegistry` pair: `@scheduled` methods on
   registered beans are auto-discovered and auto-started with zero wiring
+  :- A `jobDriver` + `jobQueue` + `jobHandlerRegistry` + `jobRunner` set
+  (`@blue/jobs`): `@jobHandler` methods are discovered at refresh, and the
+  runner starts explicitly (worker processes call `start()`; an unstarted
+  runner arms no timer) — see
+  [guide 22](../../docs/guides/22-jobs-and-outbox.md)
   :- A managed `httpServer` entry (`HTTPServer`, a `SmartLifecycle` bean)
   :- A `socketSessionRegistry` bean (`SocketSessionRegistry`): rooms, path
   broadcast, heartbeat, and backpressure for `@socketMapping` endpoints —

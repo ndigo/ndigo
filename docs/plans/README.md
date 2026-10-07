@@ -7,6 +7,24 @@ Every implemented plan has its **decision recorded** in
 
 ## Completed Plans
 
+### 2026-10-07 - Durable Jobs and Transactional Outbox
+
+`@blue/jobs` (AD-72), closing GAP-1: one `JobDriver` SPI (at-least-once,
+lease-based claim with self-healing reclamation), `JobQueue` producer facade,
+`JobRunner` worker engine (concurrency, timeout via `AbortSignal`, lease
+heartbeat, exponential backoff, `jobs.job.<type>` spans), `@jobHandler`
+discovery mirroring `@scheduled`, and the transactional outbox — `OutboxStore`
+
+- `OutboxRelay` + `JobOutboxPublisher` with the LibSQL store borrowing the
+  `DrizzleDataSource` client so `append()` joins the caller's `@transactional`
+  boundary. Backends: `InProcessJobDriver` (default), `LibSQLJobStore`
+  (`@blue/orm-drizzle`), `RedisJobDriver` (`@blue/redis/jobs` subpath).
+  Node-only, zero-wiring via `NodeAutoConfiguration`.
+
+[Read plan](2026-10-07_JOBS_AND_OUTBOX.md)
+
+---
+
 ### 2026-10-05 - TOON Support (opt-in authoring format)
 
 Opt-in, decode-only TOON support (AD-66): inert `MediaTypes.TEXT_TOON`

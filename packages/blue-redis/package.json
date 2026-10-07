@@ -19,6 +19,10 @@
     "./pubsub": {
       "types": "./lib/pubsub/index.d.ts",
       "default": "./lib/pubsub/index.js"
+    },
+    "./jobs": {
+      "types": "./lib/jobs/index.d.ts",
+      "default": "./lib/jobs/index.js"
     }
   },
   "types": "lib/index.d.ts",
@@ -41,6 +45,7 @@
     "node"
   ],
   "dependencies": {
+    "@blue/core": "~0.0.1",
     "@redis/client": "6.3.0"
   },
   "devDependencies": {
@@ -53,6 +58,7 @@
   "peerDependencies": {
     "@blue/cache": "~0.0.1",
     "@blue/factory": "~0.0.1",
+    "@blue/jobs": "~0.0.1",
     "@blue/socket": "~0.0.1"
   },
   "peerDependenciesMeta": {
@@ -60,6 +66,9 @@
       "optional": true
     },
     "@blue/factory": {
+      "optional": true
+    },
+    "@blue/jobs": {
       "optional": true
     },
     "@blue/socket": {

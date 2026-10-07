@@ -17,7 +17,7 @@ markers, links.
 ### [Guides](./guides/README.md)
 
 How-to guides (numbered `NN-slug.md`, living documents — no dates). Guide 01
-is the end-to-end tutorial/integration path; 02–21 cover one feature area
+is the end-to-end tutorial/integration path; 02–22 cover one feature area
 each.
 
 ### [Plans](./plans/README.md)

@@ -35,16 +35,24 @@ export default async function packageGenerator(tree: Tree, schema: PackageGenera
         tmpl: '',
     });
 
-    const vitestConfigPath = 'vitest.config.ts';
-    const vitestContent = tree.read(vitestConfigPath, 'utf-8');
-    if (vitestContent) {
+    const aliasesPath = 'vitest.aliases.ts';
+    const aliasesContent = tree.read(aliasesPath, 'utf-8');
+    if (aliasesContent) {
+        // The shared `blueAliases` table (vitest.aliases.ts) is the single
+        // alias source for the root config and every app config (HI-6);
+        // manifest-gate rule 11 requires an entry per workspace package.
         // `name` is validated kebab-case (`[a-z0-9-]`), so it is already
         // regex-safe: escaping the hyphen emitted a doubled backslash (`\\-`)
         // that made the alias regex demand a literal `\` and never match the
         // `@blue/<name>` import specifier (TOL-F3).
-        const aliasEntry = `            { find: /^@blue\\/${name}$/, replacement: resolve(__dirname, './packages/blue-${name}/src') },`;
-        const updatedContent = vitestContent.replace(/(\s*\],\s*\},\s*\}\);)/, `\n${aliasEntry}$1`);
-        tree.write(vitestConfigPath, updatedContent);
+        const aliasEntry = `    { find: /^@blue\\/${name}$/, replacement: resolve(repoRoot, 'packages/blue-${name}/src') },`;
+        const updatedContent = aliasesContent.replace(/\n\];\s*$/, `\n${aliasEntry}\n];\n`);
+        if (updatedContent === aliasesContent) {
+            throw new Error(
+                `Could not locate the blueAliases table in ${aliasesPath} — add the @blue/${name} alias manually`
+            );
+        }
+        tree.write(aliasesPath, updatedContent);
     }
 
     await formatFiles(tree);

@@ -22,6 +22,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `@blue/jobs` (AD-72): durable job queues and the transactional outbox — the
+  `JobDriver` SPI (lease-based at-least-once claims, attempts incremented at
+  claim, expired leases reclaimed by the next `claim`, terminal `fail` with
+  outcome telemetry/logs), the `JobQueue` producer facade, the `JobRunner`
+  engine (concurrency slots, abort-on-timeout, lease heartbeat, exponential
+  backoff, one `jobs.job.<type>` span and `@blue/log` outcome per execution),
+  `@jobHandler` discovery mirroring `@scheduled` (registry scans at refresh,
+  phase 0), and the outbox (`OutboxStore`, `OutboxRelay`,
+  `JobOutboxPublisher`). Backends: `InProcessJobDriver` (the non-durable
+  default), `LibSQLJobStore` + `LibSQLOutboxStore` in `@blue/orm-drizzle` (the
+  outbox store borrows the data-source client, so `append()` inside
+  `@transactional` commits or rolls back with the business data), and
+  `RedisJobDriver` in the new `@blue/redis/jobs` subpath (atomic claim via one
+  Lua script). `NodeAutoConfiguration` provides `jobDriver`, `jobQueue`,
+  `jobHandlerRegistry`, and `jobRunner`; the runner starts explicitly — an
+  unstarted runner arms no timer (worker processes call `start()`; see
+  [guide 22](docs/guides/22-jobs-and-outbox.md)).
 - `@blue/inspect` — programmatic inspection manifest (`inspectApplication`):
   a versioned, deterministic JSON view of routes, dispatcher mappings
   (pattern, HTTP methods/socket, handler class + method, parameters) and
@@ -207,6 +224,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `@blue/generators:package` emits the current package tsconfigs (strict +
+  `@blue/*` build paths; the stale `baseUrl` made every generated package fail
+  `tsc -b` under TypeScript 7) and registers the new alias in the shared
+  `vitest.aliases.ts` table instead of the obsolete `vitest.config.ts`
+  insertion (a generated package previously missed manifest-gate rule 11).
 - `@blue/auth-core` no longer exports the Node-only `ScryptPasswordEncoder`
   from its package root: the module imports `node:crypto` at evaluation time,
   and `@blue/auth-client` re-exported the whole root — so any browser app

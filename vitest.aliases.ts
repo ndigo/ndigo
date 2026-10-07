@@ -51,6 +51,7 @@ export const blueAliases: { find: RegExp; replacement: string }[] = [
     { find: /^@blue\/boot$/, replacement: resolve(repoRoot, 'packages/blue-boot/src') },
     { find: /^@blue\/service$/, replacement: resolve(repoRoot, 'packages/blue-service/src') },
     { find: /^@blue\/scheduler$/, replacement: resolve(repoRoot, 'packages/blue-scheduler/src') },
+    { find: /^@blue\/jobs$/, replacement: resolve(repoRoot, 'packages/blue-jobs/src') },
     { find: /^@blue\/cache$/, replacement: resolve(repoRoot, 'packages/blue-cache/src') },
     { find: /^@blue\/proxy$/, replacement: resolve(repoRoot, 'packages/blue-proxy/src') },
     { find: /^@blue\/resilience$/, replacement: resolve(repoRoot, 'packages/blue-resilience/src') },

@@ -154,6 +154,72 @@ The managed HTTP server.
 
 ***
 
+### jobDriver()
+
+> **jobDriver**(): `InProcessJobDriver`
+
+The default job driver (AD-72): in-process and **not durable** — jobs
+vanish with the process. Apps register their own `JobDriver` bean
+(`LibSQLJobStore`, `RedisJobDriver`) for work that must survive a
+restart; the queue, registry and runner follow whichever driver bean is
+registered here.
+
+#### Returns
+
+`InProcessJobDriver`
+
+The default in-process job driver.
+
+***
+
+### jobHandlerRegistry()
+
+> **jobHandlerRegistry**(): `JobHandlerRegistry`
+
+Discovers `@jobHandler` methods on registered beans and holds the
+registrations. Scans on refresh (`SmartLifecycle`, phase 0); arms no
+timer.
+
+#### Returns
+
+`JobHandlerRegistry`
+
+The job handler registry.
+
+***
+
+### jobQueue()
+
+> **jobQueue**(): `JobQueue`
+
+The producer-facing job queue (AD-72): resolves the `jobDriver` bean
+through the injected context at first use.
+
+#### Returns
+
+`JobQueue`
+
+The job queue facade.
+
+***
+
+### jobRunner()
+
+> **jobRunner**(): `JobRunner`
+
+The worker engine (AD-72). It is **not** refresh-started: a pending poll
+timer keeps the process alive, so worker processes call `start()` after
+boot (the `HTTPServer` precedent); API-only processes leave it stopped.
+Pass `autoStart: true` for refresh-driven start.
+
+#### Returns
+
+`JobRunner`
+
+The job runner.
+
+***
+
 ### languageResolver()
 
 > **languageResolver**(): `AcceptHeaderLanguageResolver`

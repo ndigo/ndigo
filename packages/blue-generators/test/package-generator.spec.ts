@@ -95,19 +95,18 @@ describe('package generator', () => {
 
     beforeEach(() => {
         tree = createTreeWithEmptyWorkspace();
-        // Add a minimal vitest.config.ts so the generator can update it
+        // Add a minimal vitest.aliases.ts so the generator can extend the
+        // shared `blueAliases` table (HI-6 moved aliases out of vitest.config.ts).
         tree.write(
-            'vitest.config.ts',
-            `import { defineConfig } from 'vitest/config';
-import { resolve } from 'node:path';
+            'vitest.aliases.ts',
+            `import { resolve } from 'node:path';
 
-export default defineConfig({
-    resolve: {
-        alias: [
-            { find: /^@blue\\/core$/, replacement: resolve(__dirname, './packages/blue-core/src') },
-        ],
-    },
-});`
+const repoRoot = resolve('.');
+
+export const blueAliases: { find: RegExp; replacement: string }[] = [
+    { find: /^@blue\\/core$/, replacement: resolve(repoRoot, 'packages/blue-core/src') },
+];
+`
         );
     });
 
@@ -199,18 +198,18 @@ export default defineConfig({
         expect(tsconfig.compilerOptions.rootDir).toBe('./src');
     });
 
-    it('should update vitest.config.ts with new alias', async () => {
+    it('should update vitest.aliases.ts with new alias', async () => {
         await packageGenerator(tree, { name: 'test-pkg' });
 
-        const vitestConfig = tree.read('vitest.config.ts', 'utf-8');
-        if (vitestConfig === null) {
-            throw new Error('expected vitest.config.ts to exist');
+        const aliases = tree.read('vitest.aliases.ts', 'utf-8');
+        if (aliases === null) {
+            throw new Error('expected vitest.aliases.ts to exist');
         }
         // Regression (TOL-F3): build the emitted `find` regex and assert it
         // actually matches the import specifier. The previous escaping doubled
         // the backslash (`\\-`), so the regex required a literal `\` before
         // `pkg` and never matched `@blue/test-pkg`.
-        const aliasSources = [...vitestConfig.matchAll(/find:\s*\/(.*?)\/,\s*replacement/g)].map((match) => match[1]);
+        const aliasSources = [...aliases.matchAll(/find:\s*\/(.*?)\/,\s*replacement/g)].map((match) => match[1]);
         const generated = aliasSources.filter((source) => source.includes('test-pkg'));
         expect(generated).toHaveLength(1);
         const [aliasSource] = generated;
@@ -221,7 +220,7 @@ export default defineConfig({
         expect(aliasPattern.test('@blue/test-pkg')).toBe(true);
         // Anchored: the alias must not swallow sibling packages.
         expect(aliasPattern.test('@blue/test-pkg-extra')).toBe(false);
-        expect(vitestConfig).toContain('blue-test-pkg/src');
+        expect(aliases).toContain('blue-test-pkg/src');
     });
 
     it('should reject non-kebab-case names', async () => {

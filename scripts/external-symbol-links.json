@@ -82,6 +82,10 @@
     "ResponseAwareHTTPInterceptor": "#",
     "ResponseError": "#"
   },
+  "@blue/jobs": {
+    "JobDriver": "#",
+    "OutboxStore": "#"
+  },
   "@blue/management": {
     "ManagementAutoConfigurationOptions": "#"
   },

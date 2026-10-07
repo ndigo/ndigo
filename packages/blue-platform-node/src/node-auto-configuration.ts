@@ -19,6 +19,16 @@ import {
     HANDLER_MAPPING,
 } from '@blue/dispatcher';
 import { ScheduleRegistry, TaskScheduler } from '@blue/scheduler';
+import {
+    InProcessJobDriver,
+    JOB_DRIVER,
+    JOB_HANDLER_REGISTRY,
+    JOB_QUEUE,
+    JOB_RUNNER,
+    JobHandlerRegistry,
+    JobQueue,
+    JobRunner,
+} from '@blue/jobs';
 import { IslandViewResolver } from '@blue/view';
 import { NodeDispatcher } from './node-dispatcher';
 import { HTTPServer } from './http-server';
@@ -132,6 +142,56 @@ export class NodeAutoConfiguration {
     @entry()
     scheduleRegistry() {
         return new ScheduleRegistry();
+    }
+
+    /**
+     * The default job driver (AD-72): in-process and **not durable** — jobs
+     * vanish with the process. Apps register their own `JobDriver` bean
+     * (`LibSQLJobStore`, `RedisJobDriver`) for work that must survive a
+     * restart; the queue, registry and runner follow whichever driver bean is
+     * registered here.
+     *
+     * @returns The default in-process job driver.
+     */
+    @entry(JOB_DRIVER)
+    jobDriver() {
+        return new InProcessJobDriver();
+    }
+
+    /**
+     * The producer-facing job queue (AD-72): resolves the `jobDriver` bean
+     * through the injected context at first use.
+     *
+     * @returns The job queue facade.
+     */
+    @entry(JOB_QUEUE)
+    jobQueue() {
+        return new JobQueue();
+    }
+
+    /**
+     * Discovers `@jobHandler` methods on registered beans and holds the
+     * registrations. Scans on refresh (`SmartLifecycle`, phase 0); arms no
+     * timer.
+     *
+     * @returns The job handler registry.
+     */
+    @entry(JOB_HANDLER_REGISTRY)
+    jobHandlerRegistry() {
+        return new JobHandlerRegistry();
+    }
+
+    /**
+     * The worker engine (AD-72). It is **not** refresh-started: a pending poll
+     * timer keeps the process alive, so worker processes call `start()` after
+     * boot (the `HTTPServer` precedent); API-only processes leave it stopped.
+     * Pass `autoStart: true` for refresh-driven start.
+     *
+     * @returns The job runner.
+     */
+    @entry(JOB_RUNNER)
+    jobRunner() {
+        return new JobRunner();
     }
 
     /**

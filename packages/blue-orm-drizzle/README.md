@@ -100,6 +100,29 @@ operations. `close()` is the supported application-context shutdown bridge;
 stop and drain session consumers first because disposal does not drain pending
 operations.
 
+### Durable jobs and the transactional outbox
+
+`LibSQLJobStore` implements the `JobDriver` contract from `@blue/jobs`, and
+`LibSQLOutboxStore` implements its `OutboxStore` contract. Together they close
+the "commit side effect with the data" gap: an `append()` made inside a
+`@transactional` method joins the open transaction when the store shares the
+`DrizzleDataSource` client.
+
+```ts
+import { LibSQLJobStore, LibSQLOutboxStore } from '@blue/orm-drizzle';
+
+// Worker processes: an isolated connection per runner.
+const jobs = new LibSQLJobStore({ url: 'file:./jobs.db' });
+
+// The application: append joins @transactional boundaries.
+const outbox = new LibSQLOutboxStore({ client: dataSource.client });
+```
+
+`claim` is a single `UPDATE … WHERE id IN (SELECT …) RETURNING` statement, so
+two workers on one database never lease the same job; expired leases are
+reclaimed by the next `claim`. Borrowed clients stay open on `close()` unless
+`ownsClient` transfers ownership.
+
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into

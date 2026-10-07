@@ -4,14 +4,51 @@
  * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
-import { configuration, entry } from '@blue/context';
+import { configuration, entry, type ApplicationContext } from '@blue/context';
 import { fileURLToPath } from 'node:url';
 import { I18nextMessageSource } from '@blue/content-i18next';
-import { StaticController, FileSystemResourceLoader } from '@blue/platform-node';
+import { HANDLER_MAPPING } from '@blue/dispatcher';
+import { SecurityHeadersInterceptor, StaticController, FileSystemResourceLoader } from '@blue/platform-node';
 import { EJSViewResolver } from '@blue/view-ejs';
 import { MESSAGE_SOURCE, MODEL_STORE } from './context-tokens';
 import { IslandController } from './island-controller';
 import { TodoModelStore } from './todo-model-store';
+
+/**
+ * SEC-C — widen the demo's CSP `connect-src` to admit `data:` URIs.
+ *
+ * The AD-71 reference integration keeps `with-clear` on the Web Awesome input;
+ * the library's `wa-icon` renders its system clear icon through
+ * `fetch('data:image/svg+xml,…')`, which the framework's default
+ * `connect-src 'self'` blocks (two console errors and a missing clear
+ * affordance). The documented seam is replacing the default-on
+ * {@link SecurityHeadersInterceptor} instance in the handler mapping's
+ * interceptor chain with one carrying explicit directives — the same seam a
+ * cross-host WebSocket uses to add `wss://<host>`. Every response keeps the
+ * full default header set (`useDefaults: true`) plus `data:` in `connect-src`.
+ *
+ * `img-src` needs no widening: the icon SVG is fetched as text and injected
+ * inline, so no URL is loaded as an image.
+ *
+ * Call after the context has refreshed (the handler mapping bean exists then).
+ *
+ * @param context - The refreshed application context to harden.
+ */
+export function applyDemoSecurityHeaders(context: ApplicationContext): void {
+    const mapping = context.getValue(HANDLER_MAPPING);
+    mapping.interceptors.splice(
+        0,
+        1,
+        new SecurityHeadersInterceptor({
+            headers: {
+                contentSecurityPolicy: {
+                    useDefaults: true,
+                    directives: { 'connect-src': ["'self'", 'data:'] },
+                },
+            },
+        })
+    );
+}
 
 /**
  * Blue Island configuration: the server-rendered island controller plus the

@@ -88,5 +88,9 @@ describe('blue-island SSR → hydration', () => {
         expect(shadow?.querySelector('form')).toBeTruthy();
         expect(shadow?.querySelector('wa-input')?.getAttribute('name')).toBe('text');
         expect(shadow?.querySelector('wa-button')?.getAttribute('type')).toBe('submit');
+
+        // Release the island's SSE subscription/reconnect loop (WC-F) so the
+        // test leaves no pending timers behind.
+        live?.remove();
     });
 });

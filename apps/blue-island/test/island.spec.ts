@@ -208,7 +208,7 @@ describe('GET /events pushes model updates over SSE (AD-09)', () => {
         expect(text).toContain('"text":"Server-rendered island"');
     });
 
-    test('streams one model event per store update, after the snapshot frame', async () => {
+    test('the snapshot frame is followed by the pending update frame', async () => {
         const res = await fetch(`${base}/events`);
         const body = res.body;
         if (body === null) {
@@ -232,7 +232,7 @@ describe('GET /events pushes model updates over SSE (AD-09)', () => {
         expect(frames[1]).toContain('"text":"pushed from test"');
     });
 
-    test('each store update reaches the connected client in order', async () => {
+    test('coalesces rapid store updates: the newest snapshot wins and the queue stays bounded (APP-D)', async () => {
         const res = await fetch(`${base}/events`);
         const body = res.body;
         if (body === null) {
@@ -241,6 +241,8 @@ describe('GET /events pushes model updates over SSE (AD-09)', () => {
         const reader = body.getReader();
         const decoder = new TextDecoder();
 
+        // Two updates land in the same tick, before the client reads the next
+        // frame: they coalesce into one pending snapshot (the newest).
         store.update((model) => {
             model.items.push({ text: 'first', done: false });
         });
@@ -248,14 +250,22 @@ describe('GET /events pushes model updates over SSE (AD-09)', () => {
             model.items.push({ text: 'second', done: false });
         });
 
-        const text = await readFrames(reader, decoder, 3);
-        await reader.cancel();
+        const text = await readFrames(reader, decoder, 2);
 
         const frames = text.split('\n\n').filter((frame) => frame.length > 0);
-        expect(frames).toHaveLength(3);
+        expect(frames).toHaveLength(2);
         expect(frames[0]).toContain('"text":"Server-rendered island"');
+        // One coalesced frame carries both appends — the latest model.
         expect(frames[1]).toContain('"first"');
-        expect(frames[2]).toContain('"second"');
+        expect(frames[1]).toContain('"second"');
+
+        // Bounded: no further frame is pending for the burst.
+        const pending = await Promise.race([
+            reader.read().then((result) => (result.done ? 'done' : 'frame')),
+            new Promise((resolve) => setTimeout(() => resolve('parked'), 50)),
+        ]);
+        expect(pending).toBe('parked');
+        await reader.cancel();
     });
 
     test('a client connecting after the boot ticker completes still hydrates (APP-N3)', async () => {

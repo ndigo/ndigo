@@ -21,7 +21,11 @@ cd apps/blue-island && pnpm dev
 - Web Component island hydration (`@blue/view-webcomponent`) from the baked-in
   model
 - Server-push model updates over Server-Sent Events (`ServerSentEventView`)
-  bridged to `@blue/signals` on the client
+  bridged to `@blue/signals` on the client. The server coalesces pending
+  snapshots (one newest snapshot per client, bound 1, APP-D); the client
+  resubscribes with bounded exponential backoff after the stream ends and shows
+  the connection state in its status line (WC-G). Disconnecting the island
+  releases its render effect and SSE subscription (WC-F).
 - **Component-library reference integration (AD-71)**: Web Awesome imported
   per component (no wrappers) — the add-item form's form-associated controls
   submit ordinary `application/x-www-form-urlencoded` data to `POST /items`,
@@ -29,11 +33,15 @@ cd apps/blue-island && pnpm dev
   the resulting model update reaches every client over SSE. The theme is the
   library's token stylesheet plus `--wa-*` overrides from the shell. See
   [guide 21](../../docs/guides/21-component-integration.md).
+- The library's `with-clear` icon is fetched from a `data:` URL, so the demo
+  widens the CSP `connect-src` (via the `SecurityHeadersInterceptor` seam) —
+  see guide 21 §9.
 
 ## Development
 
 ```bash
-cd apps/blue-island && pnpm test   # SSR shell, hydration, form endpoint, static client, SSE order
+cd apps/blue-island && pnpm test       # SSR shell, hydration, form endpoint, static client, SSE coalescing, lifecycle, CSP wiring
+cd apps/blue-island && pnpm test:e2e   # Playwright browser lane (starts the server on port 3280)
 ```
 
 ## See Also

@@ -15,6 +15,12 @@ maps `FrameworkError` to `'error/framework'` and `ApplicationError`
 to `'error/application'`.  Additional mappings can be added through
 [setErrorMapping](#seterrormapping).
 
+Mapping keys match a class name *exactly*, but the lookup walks the thrown
+error's prototype chain most-derived first, so a base-class mapping (e.g.
+`'FrameworkError'`) also covers its subclasses while a subclass-specific
+key takes precedence.  Unmapped errors fall back to
+[defaultErrorView](#defaulterrorview).
+
 ## Extends
 
 - [`AbstractRouteErrorResolver`](AbstractRouteErrorResolver.md)
@@ -144,6 +150,9 @@ A resolved model and view, or `null` when this resolver does not apply.
 > **setErrorMapping**(`errorName`, `viewName`): `void`
 
 Register an additional error-class-name-to-view-name mapping.
+
+The key is matched exactly against each class name on the error's
+prototype chain, most-derived first (see the class docs).
 
 #### Parameters
 

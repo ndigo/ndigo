@@ -105,6 +105,16 @@ describe('IslandView (server-side island render)', () => {
         expect(parseModel(decoded)).toEqual(model);
     });
 
+    test('rejects tag names that are not valid custom elements (DSV-WEBCOMP-2)', () => {
+        // The tag is interpolated raw into markup, so construction must fail
+        // loudly rather than emit attacker- or route-derived junk as a tag.
+        for (const name of ['user', 'Todo-App', '-todo', 'todo app', '<script>', 'a"b', 'font-face']) {
+            expect(() => new IslandView(name)).toThrow(/custom-element/);
+        }
+        expect(() => new IslandView('todo-app')).not.toThrow();
+        expect(() => new IslandView('x-foo')).not.toThrow();
+    });
+
     test('does not double-decode entity literals in the model', () => {
         // Original model text intentionally contains entity *literals* — the
         // text `&lt;b&gt;` is data, not markup. serializeModel escapes the

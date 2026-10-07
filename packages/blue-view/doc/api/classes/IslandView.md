@@ -41,6 +41,10 @@ return new ModelAndView(new IslandView('todo-app'), { items: [...], filter: 'all
 
 Creates an island view for the given custom element tag.
 
+The tag name is interpolated raw into the rendered markup, so it is
+validated against the custom-element grammar here — construction fails
+loudly instead of emitting attacker-controlled markup.
+
 #### Parameters
 
 ##### name
@@ -52,6 +56,10 @@ The custom element tag name.
 #### Returns
 
 `IslandView`
+
+#### Throws
+
+When `name` is not a valid custom-element name.
 
 #### Overrides
 

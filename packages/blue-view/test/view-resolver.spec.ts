@@ -107,7 +107,43 @@ describe('AbstractPathBasedViewResolver', () => {
 
         expect(await composite.resolveViewName('home')).toBe(secondView);
     });
+
+    test('does not collide the (user_en, US) and (user, en_US) cache keys (DSV-VIEW-3)', async () => {
+        const resolver = new KeyedCachingResolver();
+
+        const first = await resolver.resolveViewName('user_en', 'US');
+        const second = await resolver.resolveViewName('user', 'en_US');
+
+        // Pre-fix both pairs keyed to `user_en_US`, so the second call returned
+        // the first (wrong) view and never loaded the real one.
+        expect(first).not.toBe(second);
+        expect(resolver.loaded).toEqual(['user_en|US', 'user|en_US']);
+    });
+
+    test('bounds the cache, evicting the oldest entries (DSV-VIEW-3)', async () => {
+        const resolver = new KeyedCachingResolver();
+
+        for (let index = 0; index < 1100; index++) {
+            // eslint-disable-next-line no-await-in-loop -- each name must resolve before the next (FIFO-eviction assertion)
+            await resolver.resolveViewName(`view-${index}`);
+        }
+
+        expect(Object.keys(resolver.cache).length).toBeLessThanOrEqual(1024);
+        expect(resolver.cache[JSON.stringify(['view-0', ''])]).toBeUndefined();
+        expect(resolver.cache[JSON.stringify(['view-1099', ''])]).toBeDefined();
+    });
 });
+
+/** A caching resolver whose loaded view records the exact name/language pair. */
+class KeyedCachingResolver extends AbstractCachingViewResolver {
+    loaded: string[] = [];
+
+    protected async _loadView(name: string, language?: unknown): Promise<View | null> {
+        const pair = `${name}|${String(language ?? '')}`;
+        this.loaded.push(pair);
+        return { mediaType: null, render: () => null } as View;
+    }
+}
 
 /** Exposes the protected containment guard for direct testing. */
 class ExposedPathResolver extends AbstractPathBasedViewResolver {

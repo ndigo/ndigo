@@ -3,7 +3,10 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import type { Route } from '@blue/router';
 import { LANGUAGE_ATTRIBUTE } from '@blue/router';
 import type { ViewTarget } from '@blue/view';
@@ -59,6 +62,53 @@ describe('EJSTemplateEngine', () => {
             { items: ['a', 'b'] }
         );
         expect(html).toBe('<ul><li>a</li><li>b</li></ul>');
+    });
+});
+
+describe('EJSTemplateEngine includes (DSV-EJS-1)', () => {
+    let dir: string;
+
+    beforeEach(() => {
+        dir = mkdtempSync(join(tmpdir(), 'blue-ejs-'));
+    });
+
+    afterEach(() => {
+        rmSync(dir, { recursive: true, force: true });
+    });
+
+    it('resolves a relative include next to the template when a filename is supplied', async () => {
+        writeFileSync(join(dir, 'partial.ejs'), '<span><%= name %></span>');
+        const engine = new EJSTemplateEngine();
+
+        // Pre-fix the engine never received a filename, so ejs could not
+        // resolve the relative path and threw "Could not find the include file".
+        const html = await engine.render(
+            '<div><%- await include("partial.ejs") %></div>',
+            { name: 'Ada' },
+            join(dir, 'page.ejs')
+        );
+
+        expect(html).toBe('<div><span>Ada</span></div>');
+    });
+
+    it('resolves an absolute include', async () => {
+        const absolute = join(dir, 'absolute.ejs');
+        writeFileSync(absolute, 'ABS:<%= value %>');
+        const engine = new EJSTemplateEngine();
+
+        const html = await engine.render('<%- await include(absolutePath) %>', { value: 7, absolutePath: absolute });
+
+        expect(html).toBe('ABS:7');
+    });
+
+    it('renders [object Promise] for an un-awaited include (documented failure mode)', async () => {
+        writeFileSync(join(dir, 'partial.ejs'), 'partial');
+        const engine = new EJSTemplateEngine();
+
+        const html = await engine.render('<%- include("partial.ejs") %>', {}, join(dir, 'page.ejs'));
+
+        // Includes are async; an un-awaited include interpolates the Promise.
+        expect(html).toContain('[object Promise]');
     });
 });
 
@@ -134,6 +184,23 @@ describe('EJSView', () => {
         await view.render({ title: 'B' }, {} as Route, target);
 
         expect(target.last?.output).toBe('<h1>B</h1>');
+    });
+
+    it('passes its path as filename so relative includes resolve (DSV-EJS-1)', async () => {
+        const dir = mkdtempSync(join(tmpdir(), 'blue-ejs-view-'));
+        const pagePath = join(dir, 'page.ejs');
+        try {
+            writeFileSync(join(dir, 'partial.ejs'), '<em><%= name %></em>');
+            const loader = new InMemoryResourceLoader().set(pagePath, '<p><%- await include("partial.ejs") %></p>');
+            const view = new EJSView(pagePath, { loader });
+            const target = new CaptureViewTarget();
+
+            await view.render({ name: 'Ada' }, {} as Route, target);
+
+            expect(target.last?.output).toBe('<p><em>Ada</em></p>');
+        } finally {
+            rmSync(dir, { recursive: true, force: true });
+        }
     });
 
     it('throws when neither a template nor a path+loader is available', async () => {

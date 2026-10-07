@@ -4,9 +4,12 @@
  * @author Jeff Rose
  */
 import { ApplicationContext } from '@blue/context';
-import { HandlerMethodArgumentResolver, registerArgumentResolvers } from '@blue/dispatcher';
-import { NodeQueryValueMethodArgumentResolver } from './query-argument-resolver';
-import { NodePathValueMethodArgumentResolver } from './path-argument-resolver';
+import {
+    HandlerMethodArgumentResolver,
+    PathValueMethodArgumentResolver,
+    QueryValueMethodArgumentResolver,
+    registerArgumentResolvers,
+} from '@blue/dispatcher';
 import { NodeHeaderValueMethodArgumentResolver } from './header-argument-resolver';
 import { NodeBodyValueMethodArgumentResolver } from './body-argument-resolver';
 import { NodeMultipartFileMethodArgumentResolver } from './multipart-file-argument-resolver';
@@ -23,8 +26,11 @@ import { NodeRequestSessionValueMethodArgumentResolver } from './request-session
  */
 export function createNodeArgumentResolvers(): HandlerMethodArgumentResolver[] {
     return [
-        new NodeQueryValueMethodArgumentResolver(),
-        new NodePathValueMethodArgumentResolver(),
+        // Query/path binding uses the dispatcher's platform-independent
+        // defaults (DSV-DUP-1): the former Node shadows were byte-for-byte
+        // behavioral duplicates.
+        new QueryValueMethodArgumentResolver(),
+        new PathValueMethodArgumentResolver(),
         new NodeHeaderValueMethodArgumentResolver(),
         new NodeBodyValueMethodArgumentResolver(),
         new NodeDataBindingMethodArgumentResolver(),

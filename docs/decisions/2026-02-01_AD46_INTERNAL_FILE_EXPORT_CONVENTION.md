@@ -28,7 +28,7 @@ not a guideline.
   the rule — it only reports on `src/index.ts` (`/src\/index\.ts$/`) and flags
   `ExportAllDeclaration` whose source starts with `./_`.
   Registered in `packages/blue-oxlint-plugin/src/index.ts:29` and enabled as
-  `@blue/no-internal-file-exports: "error"` in `.oxlintrc.json:69`, run by the
+  `@blue/no-internal-file-exports: "error"` in `.oxlintrc.json` (rule entry), run by the
   repo global `lint` script (`package.json:20`, `oxlint --type-aware
 --deny-warnings .`).
 - Same-phase companion rules (`@blue/no-internal-file-imports: "error"`,

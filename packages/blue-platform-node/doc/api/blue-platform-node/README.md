@@ -35,8 +35,6 @@ Jeff Rose
 - [NodeMultipartContext](classes/NodeMultipartContext.md)
 - [NodeMultipartFile](classes/NodeMultipartFile.md)
 - [NodeParameterBindingErrorResolver](classes/NodeParameterBindingErrorResolver.md)
-- [NodePathValueMethodArgumentResolver](classes/NodePathValueMethodArgumentResolver.md)
-- [NodeQueryValueMethodArgumentResolver](classes/NodeQueryValueMethodArgumentResolver.md)
 - [NodeRequestPartMethodArgumentResolver](classes/NodeRequestPartMethodArgumentResolver.md)
 - [NodeRequestSessionValueMethodArgumentResolver](classes/NodeRequestSessionValueMethodArgumentResolver.md)
 - [NodeSessionInterceptor](classes/NodeSessionInterceptor.md)

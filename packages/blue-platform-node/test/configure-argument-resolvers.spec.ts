@@ -6,8 +6,7 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
 import { configureNodeArgumentResolvers } from '../src/configure-argument-resolvers';
-import { NodeQueryValueMethodArgumentResolver } from '../src/query-argument-resolver';
-import { NodePathValueMethodArgumentResolver } from '../src/path-argument-resolver';
+import { PathValueMethodArgumentResolver, QueryValueMethodArgumentResolver } from '@blue/dispatcher';
 import { NodeHeaderValueMethodArgumentResolver } from '../src/header-argument-resolver';
 import { NodeBodyValueMethodArgumentResolver } from '../src/body-argument-resolver';
 import { NodeDataBindingMethodArgumentResolver } from '../src/data-binding-argument-resolver';
@@ -32,8 +31,8 @@ describe('configureNodeArgumentResolvers', () => {
     test('should return resolvers in correct order', () => {
         const resolvers = configureNodeArgumentResolvers(context);
 
-        expect(resolvers[0]).toBeInstanceOf(NodeQueryValueMethodArgumentResolver);
-        expect(resolvers[1]).toBeInstanceOf(NodePathValueMethodArgumentResolver);
+        expect(resolvers[0]).toBeInstanceOf(QueryValueMethodArgumentResolver);
+        expect(resolvers[1]).toBeInstanceOf(PathValueMethodArgumentResolver);
         expect(resolvers[2]).toBeInstanceOf(NodeHeaderValueMethodArgumentResolver);
         expect(resolvers[3]).toBeInstanceOf(NodeBodyValueMethodArgumentResolver);
         expect(resolvers[4]).toBeInstanceOf(NodeDataBindingMethodArgumentResolver);

@@ -116,8 +116,9 @@ jobs:
 
       - name: Install graft
         # The repo graph tool is a global npm package on dev machines; make it
-        # available to the lanes below.
-        run: npm install -g @nanonets/graft
+        # available to the lanes below. Pinned: the graph format and parser
+        # behavior are version-sensitive (TOL-F13).
+        run: npm install -g @nanonets/graft@0.21.1
 
       - name: Repo graph build (graft)
         # Tier-1 graph: tree-sitter wiring + symbol spans across the whole

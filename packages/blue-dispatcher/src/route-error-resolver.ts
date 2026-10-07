@@ -15,6 +15,51 @@ import { getLogger } from '@blue/log';
 const logger = getLogger('blue-dispatcher:route-error-resolver');
 
 /**
+ * Collects the class names along an error's constructor prototype chain,
+ * most-derived first (the error's own class, then each base class), skipping
+ * anonymous mixin frames. Used to match an error against mappings keyed by any
+ * of its ancestor class names.
+ *
+ * @param error - The thrown error.
+ * @returns The non-empty class names, subclass before base.
+ */
+const collectErrorClassNames = (error: Error): string[] => {
+    const names: string[] = [];
+    let ctor: unknown = error.constructor;
+    while (typeof ctor === 'function' && ctor !== Function.prototype) {
+        const name = ctor.name;
+        if (name) names.push(name);
+        const parent: unknown = Object.getPrototypeOf(ctor);
+        if (parent === Function.prototype || parent === null) break;
+        ctor = parent;
+    }
+    return names;
+};
+
+/**
+ * Returns the depth (0 = the error's own class) of the first class along the
+ * error's prototype chain whose name *contains* the mapping key, or `-1` when
+ * no class matches. Mirrors Spring's `SimpleMappingExceptionResolver` depth
+ * search so the most specific (deepest) substring mapping wins.
+ *
+ * @param mapping - The substring mapping key.
+ * @param error - The thrown error.
+ * @returns The matched depth, or `-1`.
+ */
+const errorClassMatchDepth = (mapping: string, error: Error): number => {
+    let ctor: unknown = error.constructor,
+        depth = 0;
+    while (typeof ctor === 'function' && ctor !== Function.prototype) {
+        if (ctor.name.includes(mapping)) return depth;
+        const parent: unknown = Object.getPrototypeOf(ctor);
+        if (parent === Function.prototype || parent === null) break;
+        ctor = parent;
+        depth++;
+    }
+    return -1;
+};
+
+/**
  * Resolves exceptions into a route-specific response.
  */
 export interface RouteErrorResolver {
@@ -216,6 +261,11 @@ export abstract class AbstractHandlerMethodErrorResolver extends AbstractRouteEr
  * to `'error/application'`.  Additional mappings can be added through
  * {@link setErrorMapping}.
  *
+ * Mapping keys match a class name *exactly*, but the lookup walks the thrown
+ * error's prototype chain most-derived first, so a base-class mapping (e.g.
+ * `'FrameworkError'`) also covers its subclasses while a subclass-specific
+ * key takes precedence.  Unmapped errors fall back to
+ * {@link defaultErrorView}.
  */
 export class DefaultRouteErrorResolver extends AbstractRouteErrorResolver {
     /**
@@ -262,6 +312,9 @@ export class DefaultRouteErrorResolver extends AbstractRouteErrorResolver {
     /**
      * Register an additional error-class-name-to-view-name mapping.
      *
+     * The key is matched exactly against each class name on the error's
+     * prototype chain, most-derived first (see the class docs).
+     *
      * @param errorName - The error class name (e.g. `'IllegalStateError'`).
      * @param viewName - The view name to render for this error.
      */
@@ -282,10 +335,19 @@ export class DefaultRouteErrorResolver extends AbstractRouteErrorResolver {
      */
     protected _resolveError(route: Route, handler: object | null, error: Error): ModelAndView | null {
         try {
-            const errorName = error.constructor.name;
-            const errorView = this.errorMappings.get(errorName) ?? this.defaultErrorView;
+            // Exact key match, but against EVERY class name on the error's
+            // prototype chain (most-derived first): the preconfigured
+            // `FrameworkError`/`ApplicationError` mappings therefore apply to
+            // their subclasses, and a subclass-specific key still wins.
+            let errorView: string | undefined;
+            const errorNames = collectErrorClassNames(error),
+                length = errorNames.length;
+            for (let index = 0; index < length; index++) {
+                errorView = this.errorMappings.get(errorNames[index]);
+                if (errorView !== undefined) break;
+            }
 
-            return new ModelAndView(errorView);
+            return new ModelAndView(errorView ?? this.defaultErrorView);
         } catch (e) {
             // @blue/telemetry instruments @blue/dispatcher, so importing
             // telemetry here would create a circular dependency; @blue/log is
@@ -453,16 +515,35 @@ export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
      * @returns {module:dispatcher.ModelAndView} The corresponding `ModelAndView` to forward to or `null` for default processing in the resolution chain.
      */
     /**
-     * Resolve an error by matching its name against configured view mappings.
+     * Resolve an error by matching configured substring mappings against the
+     * error's class-name hierarchy (deepest match wins), falling back to
+     * {@link defaultErrorView}.
      *
      * @param route - The current route.
      * @param handler - The handler that was executing when the error occurred.
-     * @param error - The thrown error.
+     * @param error - The error that was thrown during execution.
      * @returns The mapped model and view, or `null` when no mapping applies.
      */
     protected _resolveError(route: Route, handler: object | null, error: Error): ModelAndView | null {
-        const { errorMappings } = this,
-            errorView: string | null = errorMappings?.get(error.name) ?? this.defaultErrorView;
+        const { errorMappings } = this;
+        let errorView: string | null = null;
+
+        if (errorMappings && errorMappings.size) {
+            // Documented substring semantics: a mapping key matches when it is
+            // a substring of any class name on the error's prototype chain,
+            // and the DEEPEST match wins (most specific). Insertion order
+            // breaks equal-depth ties (first declared wins).
+            let bestDepth = Number.POSITIVE_INFINITY;
+            for (const [mapping, view] of errorMappings) {
+                const depth = errorClassMatchDepth(mapping, error);
+                if (depth >= 0 && depth < bestDepth) {
+                    bestDepth = depth;
+                    errorView = view;
+                }
+            }
+        }
+
+        errorView ??= this.defaultErrorView;
 
         if (errorView) {
             const mv = new ModelAndView(errorView);

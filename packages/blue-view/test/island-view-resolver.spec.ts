@@ -31,4 +31,15 @@ describe('IslandViewResolver', () => {
         expect(await resolver.resolveViewName('todo-app')).toBeInstanceOf(IslandView);
         expect(await resolver.resolveViewName('report')).toBeNull();
     });
+
+    it('default resolver claims only valid custom-element names (DSV-WEBCOMP-2)', async () => {
+        const resolver = new IslandViewResolver();
+
+        expect(await resolver.resolveViewName('todo-app')).toBeInstanceOf(IslandView);
+        // Pre-fix the default had no filter and resolved every name — plain
+        // views (and route-derived names) would have been claimed as islands.
+        expect(await resolver.resolveViewName('user')).toBeNull();
+        expect(await resolver.resolveViewName('error/framework')).toBeNull();
+        expect(await resolver.resolveViewName('Todo-App')).toBeNull();
+    });
 });

@@ -17,11 +17,11 @@ import {
     ParameterConversionError,
     ZodValidationError,
     RouteErrorResolver,
+    QueryValueMethodArgumentResolver,
 } from '@blue/dispatcher';
 import { MetadataConfigApplicationContext, configuration, entry } from '@blue/context';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeBodyValueMethodArgumentResolver } from '../src/body-argument-resolver';
-import { NodeQueryValueMethodArgumentResolver } from '../src/query-argument-resolver';
 import { NODE_REQUEST_ATTRIBUTE } from '../src/node-request';
 
 /**
@@ -84,7 +84,7 @@ const dispatcherConfig = (controller: ConfigClass, errorResolvers: RouteErrorRes
             return new controller();
         }
         @entry() argumentResolvers() {
-            return [new NodeBodyValueMethodArgumentResolver(), new NodeQueryValueMethodArgumentResolver()];
+            return [new NodeBodyValueMethodArgumentResolver(), new QueryValueMethodArgumentResolver()];
         }
         @entry() errorResolvers() {
             return errorResolvers;

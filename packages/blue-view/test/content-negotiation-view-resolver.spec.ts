@@ -10,6 +10,7 @@ import {
     MappingMediaTypeFileExtensionResolver,
     FixedContentNegotiationStrategy,
     ContentNegotiationManager,
+    NotAcceptableError,
     likeMediaTypeFileExtensionResolver,
 } from '../src/content-negotiation-view-resolver';
 import { MediaTypes, type MediaType } from '@blue/core';
@@ -117,7 +118,7 @@ describe('ContentNegotiationViewResolver.resolveViewName', () => {
         );
     });
 
-    test('returns null (406) when no candidate matches the accepted type', async () => {
+    test('throws NotAcceptableError (406) when no candidate matches the accepted type', async () => {
         const html = view(MediaTypes.TEXT_HTML);
         const fallback = view(MediaTypes.APPLICATION_JSON);
         const resolver = new ContentNegotiationViewResolver({
@@ -126,9 +127,12 @@ describe('ContentNegotiationViewResolver.resolveViewName', () => {
         resolver.viewResolvers = [staticResolver(html)];
         resolver.defaultViews = [fallback]; // defaults must NOT mask a 406
 
+        // Pre-fix this returned `null`, which the platform rendered as the
+        // same 404 as a missing view. The route/handler resolved — only the
+        // representation is unavailable — so it must signal 406 distinctly.
         await expect(
             resolver.resolveViewName('page', '', { headers: { accept: 'application/json' } })
-        ).resolves.toBeNull();
+        ).rejects.toBeInstanceOf(NotAcceptableError);
     });
 });
 
@@ -196,6 +200,6 @@ describe('ContentNegotiationViewResolver Accept-header negotiation', () => {
 
         await expect(
             resolver.resolveViewName('page', '', { headers: { accept: 'application/xml' } })
-        ).resolves.toBeNull();
+        ).rejects.toBeInstanceOf(NotAcceptableError);
     });
 });

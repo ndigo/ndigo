@@ -72,9 +72,11 @@ export class MappedHandlerInterceptor extends AsPathMatcherFilter(Null) implemen
     }
 
     async preHandle(route: Route, handler: object | undefined): Promise<PreHandleOutcome> {
-        if (this.pathMatcher && !this.pathMatcher.match(route.path, route.path)) {
-            return true;
-        }
+        // Include/exclude filtering happens when the execution chain is built
+        // (`AbstractHandlerMapping._getHandlerExecutionChain` calls `matches`
+        // with the mapping's path matcher and unwraps this decorator), so the
+        // decorator itself always delegates. A guard here was dead — and wrong:
+        // `route.path` was matched against itself as a glob.
         return await this.#interceptor.preHandle(route, handler);
     }
 }

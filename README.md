@@ -43,18 +43,31 @@ pnpm format:check
 
 ## Applications
 
-| App                                               | What it demonstrates                                   |
-| ------------------------------------------------- | ------------------------------------------------------ |
-| [blue-hello](apps/blue-hello/README.md)           | Minimal browser SPA — context + route + Web Component  |
-| [blue-hello-node](apps/blue-hello-node/README.md) | Minimal Node HTTP server                               |
-| [blue-todo](apps/blue-todo/README.md)             | TodoMVC + micro frontend shell                         |
-| [blue-api](apps/blue-api/README.md)               | Node API server — auth, ORM, negotiation, problem+json |
-| [blue-host](apps/blue-host/README.md)             | Micro frontend host with lazy feature chunks           |
-| [blue-island](apps/blue-island/README.md)         | Node SSR — EJS shell + island hydration + SSE          |
-| [blue-views](apps/blue-views/README.md)           | View-resolution composite and negotiation              |
+| App                                                            | What it demonstrates                                                |
+| -------------------------------------------------------------- | ------------------------------------------------------------------- |
+| [blue-hello](apps/01-blue-hello/README.md)                     | Minimal browser SPA — context + route + Web Component               |
+| [blue-hello-node](apps/02-blue-hello-node/README.md)           | Minimal Node HTTP server                                            |
+| [blue-todo](apps/03-blue-todo/README.md)                       | TodoMVC + micro frontend shell                                      |
+| [blue-api](apps/04-blue-api/README.md)                         | Node API server — auth, ORM, negotiation, problem+json              |
+| [blue-host](apps/05-blue-host/README.md)                       | Micro frontend host with lazy feature chunks                        |
+| [blue-island](apps/06-blue-island/README.md)                   | Node SSR — EJS shell + island hydration + SSE                       |
+| [blue-views](apps/07-blue-views/README.md)                     | View-resolution composite and negotiation                           |
+| [blue-httpbin](apps/08-blue-httpbin/README.md)                 | HTTP semantics playground (binding, redirects, compression, limits) |
+| [blue-todobackend](apps/09-blue-todobackend/README.md)         | Todo-Backend REST spec implementation                               |
+| [blue-conduit-api](apps/10-blue-conduit-api/README.md)         | RealWorld (Conduit) API — JWT auth, CRUD, filters                   |
+| [blue-conduit-web](apps/11-blue-conduit-web/README.md)         | RealWorld frontend (routes, guards, optimistic UI)                  |
+| [blue-petclinic](apps/12-blue-petclinic/README.md)             | Server-rendered CRUD vertical (forms, i18n, JSON)                   |
+| [blue-chat](apps/13-blue-chat/README.md)                       | Real-time rooms: presence, history, STOMP interop                   |
+| [blue-kanban](apps/14-blue-kanban/README.md)                   | Collaborative board: versioned writes, optimistic UI                |
+| [blue-resilience-lab](apps/15-blue-resilience-lab/README.md)   | Retry + circuit breaker lab (`@blue/resilience`)                    |
+| [blue-redis-fanout](apps/16-blue-redis-fanout/README.md)       | Multi-node cache + socket fan-out (`@blue/redis`)                   |
+| [blue-telemetry-lab](apps/17-blue-telemetry-lab/README.md)     | End-to-end observability — traces, metrics, sampling                |
+| [blue-auth-playground](apps/18-blue-auth-playground/README.md) | Auth matrix — cookies, JWT, roles, OIDC + PKCE                      |
+| [blue-hn](apps/19-blue-hn/README.md)                           | Hacker News reader — cached/offline HTTP client, long lists         |
 
 The [apps/README](apps/README.md) documents the progression from simple to
-complex.
+complex. App directories are numbered in reading order (`apps/01-blue-hello` …);
+the number is reading order only — package names stay unnumbered and stable.
 
 ## Packages
 

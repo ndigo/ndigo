@@ -45,7 +45,7 @@ pnpm exec nx generate @blue/generators:header --file packages/blue-core/src/widg
     --summary "Widget utilities"
 
 # Replace a non-standard top doc block
-pnpm exec nx generate @blue/generators:header --file apps/blue-todo/src/index.ts --force
+pnpm exec nx generate @blue/generators:header --file apps/03-blue-todo/src/index.ts --force
 ```
 
 ### Header generator options

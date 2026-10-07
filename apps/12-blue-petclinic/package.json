@@ -1,0 +1,34 @@
+{
+  "name": "@blue/petclinic",
+  "version": "0.0.1",
+  "description": "Blue PetClinic — server-rendered owners/pets/vets/visits vertical on @blue/view-ejs + @blue/orm",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "zod": "catalog:",
+    "@tsmetadata/polyfill": "catalog:",
+    "@blue/boot": "~0.0.1",
+    "@blue/content-i18next": "~0.0.1",
+    "@blue/context": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/http": "~0.0.1",
+    "@blue/orm": "~0.0.1",
+    "@blue/platform-node": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/view": "~0.0.1",
+    "@blue/view-ejs": "~0.0.1",
+    "@blue/log": "~0.0.1"
+  },
+  "devDependencies": {
+    "@blue/test": "~0.0.1",
+    "tsx": "catalog:",
+    "vitest": "catalog:",
+    "@blue/log": "~0.0.1"
+  }
+}

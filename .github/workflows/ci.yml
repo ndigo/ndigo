@@ -65,6 +65,13 @@ jobs:
           BLUE_REDIS_TEST_URL: redis://127.0.0.1:6379
         run: pnpm test
 
+      - name: Example apps boot + probe (smoke)
+        # Boots every Node example app on its dedicated probe port, asserts its
+        # documented route (and the hello-node WebSocket echo), then requires a
+        # clean SIGTERM exit — real-process rot that in-process tests miss
+        # (socket bind, static files, view rendering, shutdown).
+        run: pnpm apps:smoke
+
       - name: Lint (zero warnings)
         run: pnpm lint
 
@@ -179,7 +186,7 @@ jobs:
         # The AD-71 reference integration: DSD first paint -> hydration -> FACE
         # form submit -> SSE. The browsers installed above are shared through
         # the Playwright cache, so this lane adds no install cost.
-        run: pnpm --filter blue-island test:e2e
+        run: pnpm --filter @blue/island test:e2e
 
       - name: Upload Playwright report
         if: always()
@@ -187,8 +194,8 @@ jobs:
         with:
           name: playwright-report
           path: |
-            apps/blue-todo/playwright-report
-            apps/blue-island/playwright-report
+            apps/03-blue-todo/playwright-report
+            apps/06-blue-island/playwright-report
           if-no-files-found: ignore
 
       - name: Upload test results
@@ -197,6 +204,6 @@ jobs:
         with:
           name: test-results
           path: |
-            apps/blue-todo/test-results
-            apps/blue-island/test-results
+            apps/03-blue-todo/test-results
+            apps/06-blue-island/test-results
           if-no-files-found: ignore

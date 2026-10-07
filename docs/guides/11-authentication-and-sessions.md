@@ -11,7 +11,8 @@ landed via [the auth completion plan](../plans/2026-09-26_AUTH_COMPLETION.md).
 ## 1. Quickstart (server-rendered cookie flow)
 
 ```ts
-import { AuthRegistry, DelegatingPasswordEncoder, ScryptPasswordEncoder } from '@blue/auth-core';
+import { AuthRegistry, DelegatingPasswordEncoder } from '@blue/auth-core';
+import { ScryptPasswordEncoder } from '@blue/auth-core/scrypt'; // Node-only (node:crypto)
 import { CredentialsAuthAdapter, InMemoryUserStore, InMemorySessionStore } from '@blue/auth-server';
 
 const encoder = new DelegatingPasswordEncoder({ scrypt: new ScryptPasswordEncoder() }, 'scrypt');

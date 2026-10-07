@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= appTitle %></title>
+    <link rel="stylesheet" href="/static/client.css" />
+</head>
+<body>
+    <h1><%= appTitle %> — <%= boardTitle %></h1>
+    <p class="intro">
+        Open this page in two tabs: drag cards between columns, rename them inline, add and
+        delete. Every write is versioned, so two racing edits cannot both win — the loser is
+        told it lost and rolls back to the server's card. Card events stream over
+        <code>/ws/board/<%= boardId %></code> and a reconnect re-syncs the whole board first.
+    </p>
+    <!-- The inert custom element is upgraded when the client module defines it. -->
+    <kanban-board data-board="<%= boardId %>" data-title="<%= boardTitle %>"></kanban-board>
+    <script type="module" src="/static/client.js"></script>
+</body>
+</html>

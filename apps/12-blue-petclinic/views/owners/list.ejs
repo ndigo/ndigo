@@ -1,0 +1,60 @@
+<%- await include('../partials/head.ejs', { title: await t('owners.title') }) %>
+<h1><%= await t('owners.title') %></h1>
+
+<form class="search" method="get" action="/owners" role="search">
+    <label for="lastName"><%= await t('owners.search.label') %></label>
+    <input
+        id="lastName"
+        name="lastName"
+        type="search"
+        value="<%= lastName %>"
+        placeholder="<%= await t('owners.search.placeholder') %>"
+        autocomplete="off"
+    />
+    <button type="submit"><%= await t('owners.search.submit') %></button>
+    <a class="link" href="/owners"><%= await t('owners.search.all') %></a>
+</form>
+
+<% if (owners.length === 0) { %>
+<p class="empty"><%= await t('owners.none', { values: { lastName } }) %></p>
+<% } else { %>
+<table class="table">
+    <thead>
+        <tr>
+            <th><%= await t('owners.table.name') %></th>
+            <th><%= await t('owners.table.address') %></th>
+            <th><%= await t('owners.table.city') %></th>
+            <th><%= await t('owners.table.telephone') %></th>
+            <th><%= await t('owners.table.pets') %></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for (const detail of owners) { const owner = detail.owner; %>
+        <tr>
+            <td><a href="/owners/<%= owner.id %>"><%= owner.lastName %>, <%= owner.firstName %></a></td>
+            <td><%= owner.address %></td>
+            <td><%= owner.city %></td>
+            <td><%= owner.telephone %></td>
+            <td><%= formatList(detail.pets.map((entry) => entry.pet.name)) %></td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>
+<% } %>
+
+<% if (totalElements > 0) { %>
+<nav class="paging">
+    <% if (hasPrevious) { %>
+    <a href="/owners?lastName=<%= encodeURIComponent(lastName) %>&amp;page=<%= page - 1 %>">← <%= await t('paging.previous') %></a>
+    <% } %>
+    <span class="muted">
+        <%= await t('paging.summary', { values: { page, totalPages } }) %>
+        · <%= await t('paging.totals', { values: { total: totalElements } }) %>
+    </span>
+    <% if (hasNext) { %>
+    <a href="/owners?lastName=<%= encodeURIComponent(lastName) %>&amp;page=<%= page + 1 %>"><%= await t('paging.next') %> →</a>
+    <% } %>
+</nav>
+<% } %>
+
+<%- await include('../partials/footer.ejs') %>

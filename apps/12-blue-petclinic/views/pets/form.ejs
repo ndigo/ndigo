@@ -1,0 +1,41 @@
+<%- await include('../partials/head.ejs', { title: await t(headingKey) }) %>
+<h1><%= await t(headingKey) %></h1>
+<p class="lead">
+    <a href="/owners/<%= owner.id %>"><%= owner.firstName %> <%= owner.lastName %></a>
+</p>
+
+<% if (Object.keys(errors).length > 0) { %>
+<p class="alert" role="alert"><%= await t('form.errors') %></p>
+<% } %>
+
+<form class="form" method="post" action="<%= action %>" novalidate>
+    <div class="field<%= errors.name ? ' field-error' : '' %>">
+        <label for="name"><%= await t('pet.name') %></label>
+        <input id="name" name="name" type="text" value="<%= values.name %>" required />
+        <% if (errors.name) { %><span class="error"><%= await t(errors.name.key) %></span><% } %>
+    </div>
+
+    <div class="field<%= errors.birthDate ? ' field-error' : '' %>">
+        <label for="birthDate"><%= await t('pet.birthDate') %></label>
+        <input id="birthDate" name="birthDate" type="date" value="<%= values.birthDate %>" required />
+        <% if (errors.birthDate) { %><span class="error"><%= await t(errors.birthDate.key) %></span><% } %>
+    </div>
+
+    <div class="field<%= errors.typeId ? ' field-error' : '' %>">
+        <label for="typeId"><%= await t('pet.type') %></label>
+        <select id="typeId" name="typeId" required>
+            <option value=""><%= await t('pet.type.select') %></option>
+            <% for (const type of petTypes) { %>
+            <option value="<%= type.id %>" <%= values.typeId === String(type.id) ? 'selected' : '' %>><%= type.name %></option>
+            <% } %>
+        </select>
+        <% if (errors.typeId) { %><span class="error"><%= await t(errors.typeId.key) %></span><% } %>
+    </div>
+
+    <p class="actions">
+        <button type="submit"><%= await t(submitKey) %></button>
+        <a class="link" href="/owners/<%= owner.id %>"><%= await t('form.cancel') %></a>
+    </p>
+</form>
+
+<%- await include('../partials/footer.ejs') %>

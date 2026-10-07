@@ -206,7 +206,7 @@ signal-driven re-rendering.
 
 - [Content/i18n decision](../decisions/2026-09-13_AD19_CONTENT_I18N.md)
 - [Content/i18n implementation plan](../plans/2026-09-13_CONTENT_I18N.md)
-- [blue-island demo](../../apps/blue-island/README.md) — localized SSR page
-- [blue-todo demo](../../apps/blue-todo/README.md) — reactive locale switcher
+- [blue-island demo](../../apps/06-blue-island/README.md) — localized SSR page
+- [blue-todo demo](../../apps/03-blue-todo/README.md) — reactive locale switcher
 - [`@blue/content-i18next`](../../packages/blue-content-i18next/README.md) —
   the i18next adapter

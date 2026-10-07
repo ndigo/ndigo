@@ -63,7 +63,7 @@ pnpm --filter @blue/view-ejs test
 ## See Also
 
 - [@blue/view](../blue-view/README.md) — view contracts, view targets, and content negotiation
-- [apps/blue-island](../../apps/blue-island/README.md) — EJS shell + island hydration demo
+- [apps/06-blue-island](../../apps/06-blue-island/README.md) — EJS shell + island hydration demo
 
 ## Contributing
 

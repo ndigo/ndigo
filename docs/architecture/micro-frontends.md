@@ -1,7 +1,7 @@
 # Micro Frontends in BlueJS — architecture map
 
 **Status:** Live — the patterns below are implemented (`@blue/host` since
-2026-09-13) and demonstrated by `apps/blue-host` and `apps/blue-todo`.
+2026-09-13) and demonstrated by `apps/05-blue-host` and `apps/03-blue-todo`.
 
 This is the cross-cutting map for BlueJS micro frontends: how the shell
 hosts feature contexts, how islands fit in, and where the seams,
@@ -130,8 +130,8 @@ a graph of call sites. Both demo hosts exercise this discipline.
 - **Route registry** (AD-61): `docs/decisions/2026-09-03_AD61_ROUTE_REGISTRY.md`
 - **Framework assessment** (partial hydration ✅, MFE shell status):
   `docs/reference/2026-09-01_FEATURE_ASSESSMENT.md`
-- **Demo hosts**: `apps/blue-host` (@blue/host-demo), `apps/blue-todo`,
-  reactive island: `apps/blue-island`
+- **Demo hosts**: `apps/05-blue-host` (@blue/host-demo), `apps/03-blue-todo`,
+  reactive island: `apps/06-blue-island`
 
 ## Known gaps (deliberate)
 

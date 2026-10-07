@@ -2,7 +2,7 @@
 
 > Micro frontend orchestration for BlueJS — register features from any context and mount them into a shared shell.
 
-`@blue/host` gives the shell one-call feature registration with dependency-validated mounting. Features are plain BlueJS contexts (or context factories); the shell owns their lifecycle and exclusive activation, declaring what they need from the shell and checking availability before mounting. The browser app shell demonstrates the pattern end to end (`apps/blue-host`).
+`@blue/host` gives the shell one-call feature registration with dependency-validated mounting. Features are plain BlueJS contexts (or context factories); the shell owns their lifecycle and exclusive activation, declaring what they need from the shell and checking availability before mounting. The browser app shell demonstrates the pattern end to end (`apps/05-blue-host`).
 
 ## Installation
 
@@ -56,7 +56,7 @@ pnpm --filter @blue/host test
 
 ## See Also
 
-- [apps/blue-host](../../apps/blue-host/README.md) — micro frontend host demo with three lazy-loaded feature chunks
+- [apps/05-blue-host](../../apps/05-blue-host/README.md) — micro frontend host demo with three lazy-loaded feature chunks
 - [@blue/router](../blue-router/README.md) — feature routing registry used by the shell
 
 ## Contributing

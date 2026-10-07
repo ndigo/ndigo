@@ -1,0 +1,37 @@
+<%- await include('../partials/head.ejs', { title: await t('vets.title') }) %>
+<h1><%= await t('vets.title') %></h1>
+
+<% if (vets.length === 0) { %>
+<p class="empty"><%= await t('vets.none') %></p>
+<% } else { %>
+<table class="table">
+    <thead>
+        <tr>
+            <th><%= await t('vets.table.name') %></th>
+            <th><%= await t('vets.table.specialties') %></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for (const entry of vets) { %>
+        <tr>
+            <td><%= entry.vet.firstName %> <%= entry.vet.lastName %></td>
+            <td><%= entry.specialties.length === 0 ? await t('vets.specialties.none') : formatList(entry.specialties.map((specialty) => specialty.name)) %></td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>
+<% } %>
+
+<% if (totalElements > 0) { %>
+<nav class="paging">
+    <% if (hasPrevious) { %>
+    <a href="/vets?page=<%= page - 1 %>">← <%= await t('paging.previous') %></a>
+    <% } %>
+    <span class="muted"><%= await t('paging.summary', { values: { page, totalPages } }) %></span>
+    <% if (hasNext) { %>
+    <a href="/vets?page=<%= page + 1 %>"><%= await t('paging.next') %> →</a>
+    <% } %>
+</nav>
+<% } %>
+
+<%- await include('../partials/footer.ejs') %>

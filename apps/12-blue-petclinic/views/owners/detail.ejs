@@ -1,0 +1,72 @@
+<%- await include('../partials/head.ejs', { title: `${detail.owner.firstName} ${detail.owner.lastName}` }) %>
+<div class="page-head">
+    <h1><%= detail.owner.firstName %> <%= detail.owner.lastName %></h1>
+    <a class="button" href="/owners/<%= detail.owner.id %>/edit"><%= await t('owner.edit') %></a>
+</div>
+
+<h2><%= await t('owner.heading') %></h2>
+<table class="kv">
+    <tr>
+        <th><%= await t('owner.firstName') %></th>
+        <td><%= detail.owner.firstName %></td>
+    </tr>
+    <tr>
+        <th><%= await t('owner.lastName') %></th>
+        <td><%= detail.owner.lastName %></td>
+    </tr>
+    <tr>
+        <th><%= await t('owner.address') %></th>
+        <td><%= detail.owner.address %></td>
+    </tr>
+    <tr>
+        <th><%= await t('owner.city') %></th>
+        <td><%= detail.owner.city %></td>
+    </tr>
+    <tr>
+        <th><%= await t('owner.telephone') %></th>
+        <td><%= detail.owner.telephone %></td>
+    </tr>
+</table>
+
+<h2><%= await t('owner.pets') %></h2>
+<% if (detail.pets.length === 0) { %>
+<p class="empty"><%= await t('owner.pets.none') %></p>
+<% } else { %> <% for (const entry of detail.pets) { %>
+<section class="pet">
+    <h3>
+        <%= entry.pet.name %>
+        <span class="muted">
+            (<%= entry.type === undefined ? '' : entry.type.name %>,
+            <%= formatDate(entry.pet.birthDate, { dateStyle: 'medium', timeZone: 'UTC' }) %>)
+        </span>
+    </h3>
+    <p class="actions">
+        <a class="link" href="/owners/<%= detail.owner.id %>/pets/<%= entry.pet.id %>/edit"><%= await t('pet.edit') %></a>
+        <a class="link" href="/owners/<%= detail.owner.id %>/pets/<%= entry.pet.id %>/visits/new"><%= await t('visit.add') %></a>
+    </p>
+    <% if (entry.visits.length === 0) { %>
+    <p class="empty"><%= await t('visit.none') %></p>
+    <% } else { %>
+    <table class="table">
+        <thead>
+            <tr>
+                <th><%= await t('visit.date') %></th>
+                <th><%= await t('visit.description') %></th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (const visit of entry.visits) { %>
+            <tr>
+                <td><%= formatDate(visit.visitDate, { dateStyle: 'medium', timeZone: 'UTC' }) %></td>
+                <td><%= visit.description %></td>
+            </tr>
+            <% } %>
+        </tbody>
+    </table>
+    <% } %>
+</section>
+<% } %> <% } %>
+
+<p><a class="button" href="/owners/<%= detail.owner.id %>/pets/new"><%= await t('owner.pets.add') %></a></p>
+
+<%- await include('../partials/footer.ejs') %>

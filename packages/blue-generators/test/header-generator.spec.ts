@@ -32,7 +32,8 @@ describe('header generator', () => {
 
     it('infers the module from the package directory', () => {
         expect(inferModule('packages/blue-core/src/widget.ts')).toBe('blue-core');
-        expect(inferModule('apps/blue-todo/src/index.ts')).toBe('blue-todo');
+        expect(inferModule('apps/03-blue-todo/src/index.ts')).toBe('blue-todo');
+        expect(inferModule('apps/blue-views/src/index.ts')).toBe('blue-views');
         expect(inferModule('src/tool.ts')).toBe('tool');
     });
 

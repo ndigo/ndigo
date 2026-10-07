@@ -11,6 +11,9 @@ import {
 } from './router-interceptor';
 import { Route } from './route';
 import { PathRoute } from './path-route';
+import { getLogger } from '@blue/log';
+
+const logger = getLogger('blue-router:router');
 
 /**
  * A callback function type that is invoked when a route changes.
@@ -36,7 +39,8 @@ export type RouterErrorHandler = (error: unknown, route: Route) => void;
  */
 export interface RouterOptions {
     /**
-     * Navigation-error hook. Defaults to logging through `console.error`.
+     * Navigation-error hook. Defaults to logging through the `@blue/log`
+     * logger for `blue-router:router`.
      */
     onError?: RouterErrorHandler;
 }
@@ -77,7 +81,10 @@ export abstract class AbstractRouter implements Router, RouterInterceptorRegistr
         this.#onError =
             options.onError ??
             ((error, route) => {
-                console.error(`[Router] navigation to "${route}" failed`, error);
+                logger.error(
+                    `[Router] navigation to "${route}" failed`,
+                    error instanceof Error ? error : String(error)
+                );
             });
     }
 

@@ -5,6 +5,7 @@
  */
 import { trace, metrics, diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
+import type { Logger } from '@opentelemetry/api-logs';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { BasicTracerProvider, ConsoleSpanExporter } from '@opentelemetry/sdk-trace-base';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -105,11 +106,15 @@ describe('configureBrowserTelemetry', () => {
     it('is idempotent: a second configure warns and keeps the live providers (TEL-05)', () => {
         const handle = configureBrowserTelemetry({ serviceName: 'first' });
         const provider = trace.getTracerProvider();
-        const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        // The first configure switched the logger factory to OpenTelemetry, so
+        // the ignore notice is emitted through the OTel log pipeline (not the
+        // console bridge). Capture it at the OTel logger seam.
+        const emit = vi.fn();
+        vi.spyOn(logs, 'getLogger').mockReturnValue({ emit } as unknown as Logger);
 
         const second = configureBrowserTelemetry({ serviceName: 'second' });
 
-        expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('called again'));
+        expect(emit).toHaveBeenCalledWith(expect.objectContaining({ body: expect.stringContaining('called again') }));
         expect(trace.getTracerProvider()).toBe(provider);
         expect(second).toBe(handle);
     });

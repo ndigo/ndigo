@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { EventEmitter, EventType, EventHandlers, ApplicationContext, ApplicationContextAware } from '@blue/context';
+import { IllegalStateError } from '@blue/core';
 import { $aware } from '@blue/factory';
 import { AsBlueElement } from './blue-element';
 import { DOMEventBinder } from './_dom-event-binder';
@@ -24,6 +25,13 @@ export abstract class AbstractWebComponent
     #updatePending: boolean = false;
     #applicationContext?: ApplicationContext;
     #binder: DOMEventBinder;
+
+    /**
+     * The shadow root this component acquired (via {@link ensureShadowRoot}),
+     * cached so a **closed** root — which `this.shadowRoot` cannot expose —
+     * is still returned on a second call instead of re-attaching (WC-C).
+     */
+    #shadowRoot?: ShadowRoot;
 
     /**
      * Shared root listener for every delegated event type.
@@ -305,11 +313,33 @@ export abstract class AbstractWebComponent
      * adopted as-is (the component's first render then replaces the
      * server-rendered fallback content); otherwise a root is attached.
      *
+     * The acquired root is cached in a private field (WC-C), so the round trip
+     * is stable even for a **closed** root: `this.shadowRoot` is `null` for a
+     * closed root, so a second `attachShadow()` would throw instead of
+     * returning it. A closed root attached *outside* this helper stays
+     * invisible to the component (the DOM exposes no read access to it) and
+     * therefore cannot be adopted.
+     *
      * @param init - Shadow root options; defaults to `{ mode: 'open' }`.
      * @returns The existing or newly attached shadow root.
+     * @throws {IllegalStateError} When a root already exists with a mode other
+     *   than the requested one — an attached root's mode cannot change, so
+     *   silently returning it would hide the mismatch.
      */
     protected ensureShadowRoot(init: ShadowRootInit = { mode: 'open' }): ShadowRoot {
-        return this.shadowRoot ?? this.attachShadow(init);
+        const root = this.#shadowRoot ?? this.shadowRoot;
+        if (root) {
+            if (root.mode !== init.mode) {
+                throw new IllegalStateError(
+                    `Cannot reuse the existing ${root.mode} shadow root for a ${init.mode} request on <${this.tagName.toLowerCase()}>`
+                );
+            }
+            this.#shadowRoot = root;
+            return root;
+        }
+        const attached = this.attachShadow(init);
+        this.#shadowRoot = attached;
+        return attached;
     }
 
     /**

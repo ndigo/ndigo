@@ -11,7 +11,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vite build && vitest run"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",

@@ -86,4 +86,72 @@ describe('AsFormAssociated', () => {
             expect(element.form).toBeNull();
         }
     });
+
+    test('observes the value attribute and records it as the reset default (WC-D)', () => {
+        expect(RatingInputElement.observedAttributes).toContain('value');
+
+        const element = document.createElement('rating-input');
+        element.setAttribute('value', '5');
+
+        expect(element.value).toBe('5');
+        expect(element.defaultValue).toBe('5');
+    });
+
+    test('formResetCallback restores the default value and re-publishes it (HI-3)', () => {
+        // jsdom-only claim: the restored value/default are asserted here;
+        // `setFormValue` is absent in jsdom, so the re-publication to FormData
+        // is only observable in the Chromium probe.
+        const element = document.createElement('rating-input');
+        element.setAttribute('value', '5');
+        element.value = '9';
+
+        element.formResetCallback();
+
+        expect(element.value).toBe('5');
+        expect(element.defaultValue).toBe('5');
+    });
+
+    test('formResetCallback clears a property-only value back to the empty default (HI-3)', () => {
+        const element = document.createElement('rating-input');
+        element.value = '9';
+
+        element.formResetCallback();
+
+        expect(element.value).toBe('');
+    });
+
+    test('reflects the platform disabled state to data-blue-disabled', () => {
+        // jsdom-only claim: jsdom implements no FACE disabled semantics, so the
+        // callback is invoked directly; the platform-driven invocation
+        // (`<fieldset disabled>`) is verified in the Chromium probe.
+        const element = document.createElement('rating-input');
+        expect(element.disabled).toBe(false);
+
+        element.formDisabledCallback(true);
+        expect(element.disabled).toBe(true);
+        expect(element.hasAttribute('data-blue-disabled')).toBe(true);
+
+        element.formDisabledCallback(false);
+        expect(element.disabled).toBe(false);
+        expect(element.hasAttribute('data-blue-disabled')).toBe(false);
+    });
+
+    test('adopts a restored string state as the live value', () => {
+        const element = document.createElement('rating-input');
+
+        element.formStateRestoreCallback('3', 'restore');
+
+        expect(element.value).toBe('3');
+    });
+
+    test('clears the name attribute on an empty assignment (WC-H)', () => {
+        const element = document.createElement('rating-input');
+        element.name = 'rating';
+        expect(element.getAttribute('name')).toBe('rating');
+
+        element.name = '';
+
+        expect(element.hasAttribute('name')).toBe(false);
+        expect(element.name).toBe('');
+    });
 });

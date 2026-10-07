@@ -3,7 +3,31 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { parseModel } from '@blue/view';
+import { getLogger } from '@blue/log';
+
+/**
+ * Module logger: hydration failures are logged per island, following the
+ * configured logger (console bridge or OpenTelemetry), instead of being thrown
+ * — one broken marker cannot take the page down (HI-2/WC-A).
+ */
+const logger = getLogger('blue-view-webcomponent:hydrate');
+
+/**
+ * Marker attribute set on an island once its hydration completed, so a
+ * repeated scan skips it (WC-B idempotence).
+ */
+const HYDRATED_ATTRIBUTE = 'data-blue-hydrated';
+
+/**
+ * Sentinel returned by {@link readModel} for a `data-blue-model` value that is
+ * present but not valid JSON.
+ *
+ * `@blue/view`'s `parseModel` returns `null` for both the absent/empty case and
+ * the malformed case; hydration must tell them apart so a garbage payload can
+ * keep the server fallback instead of being assigned to the component as
+ * `null` (WC-A).
+ */
+const UNPARSEABLE = Symbol('unparseable model');
 
 /**
  * Hydrates all islands in a root element: finds every `[data-blue-island]`
@@ -23,6 +47,15 @@ import { parseModel } from '@blue/view';
  * - **Legacy light-DOM markers.** Without a shadow root, the inert SSR
  *   markup is replaced with a freshly constructed live element, as before.
  *
+ * Each marker is hydrated in isolation: a component whose setter or render
+ * throws is logged and skipped, and hydration continues with the remaining
+ * markers instead of aborting the whole page (HI-2). A marker whose model is
+ * present but unparseable is not hydrated either — the server fallback stays
+ * in place and the tag is logged (WC-A). Only markers that hydrate are
+ * counted. Successfully hydrated markers are tagged `data-blue-hydrated` and
+ * excluded from later scans, so calling this function twice hydrates each
+ * island exactly once (WC-B).
+ *
  * Custom elements must already be defined (`customElements.define` via
  * `@TagMapping` at module import) for synchronous upgrade; otherwise the
  * element stays an `HTMLUnknownElement` and is left untouched.
@@ -39,7 +72,9 @@ import { parseModel } from '@blue/view';
  * @since 1.0.0
  */
 export function hydrateIslands(root: ParentNode = document): number {
-    const markers = root.querySelectorAll<HTMLElement>('[data-blue-island][data-blue-model]');
+    const markers = root.querySelectorAll<HTMLElement>(
+        `[data-blue-island][data-blue-model]:not([${HYDRATED_ATTRIBUTE}])`
+    );
     let hydrated = 0;
 
     markers.forEach((inert) => {
@@ -48,41 +83,95 @@ export function hydrateIslands(root: ParentNode = document): number {
             return; // not defined on the client — leave as static markup
         }
 
-        const model = parseModel(inert.getAttribute('data-blue-model') ?? undefined);
-        const locale = inert.getAttribute('data-blue-locale');
-
-        // DSD: the HTML parser already attached the declarative shadow root
-        // (`inert.shadowRoot`) before the element was defined. Upgrade the
-        // marker in place — re-creating it would drop the parsed root — and
-        // let the component's first render replace the server fallback.
-        if (inert.shadowRoot) {
-            customElements.upgrade(inert);
-            // Order matters: set the locale and model (which may read on
-            // connect) after upgrade, so the component's setters/render see them.
-            if (locale) {
-                assignLocale(inert, locale);
+        try {
+            if (hydrateMarker(inert, tagName)) {
+                hydrated += 1;
             }
-            assignModel(inert, model);
-            hydrated += 1;
-            return;
+        } catch (error) {
+            // HI-2: one misbehaving island MUST NOT abort hydration for the
+            // rest of the page. Log the tag, leave the marker as it was, and
+            // do not count it as a success.
+            logger.error(`island hydration failed for <${tagName}>`, error instanceof Error ? error : String(error));
         }
-
-        const live = document.createElement(tagName);
-        live.setAttribute('data-blue-island', '');
-        live.setAttribute('data-blue-model', inert.getAttribute('data-blue-model') ?? '');
-
-        // Order matters: set the locale and model (which may read on connect)
-        // before replacing, so connectedCallback sees them.
-        if (locale) {
-            assignLocale(live, locale);
-        }
-        assignModel(live, model);
-
-        inert.replaceWith(live);
-        hydrated += 1;
     });
 
     return hydrated;
+}
+
+/**
+ * Hydrates a single marker: parses its model, upgrades it in place (DSD) or
+ * replaces it with a live element (legacy), and records the hydrated marker.
+ *
+ * @param inert - The inert marker element.
+ * @param tagName - Its lowercased tag name (already known by the caller).
+ * @returns `true` when the marker hydrated; `false` when it was skipped
+ *   because the model payload was malformed.
+ */
+function hydrateMarker(inert: HTMLElement, tagName: string): boolean {
+    const serialized = inert.getAttribute('data-blue-model');
+    const model = readModel(serialized);
+    if (model === UNPARSEABLE) {
+        // WC-A: never hand a garbage payload to the component as `null` (its
+        // render would throw) and never abort the remaining markers.
+        logger.error(
+            `island <${tagName}> has an unparseable data-blue-model attribute; leaving the server fallback in place`
+        );
+        return false;
+    }
+
+    const locale = inert.getAttribute('data-blue-locale');
+
+    // DSD: the HTML parser already attached the declarative shadow root
+    // (`inert.shadowRoot`) before the element was defined. Upgrade the
+    // marker in place — re-creating it would drop the parsed root — and
+    // let the component's first render replace the server fallback.
+    if (inert.shadowRoot) {
+        customElements.upgrade(inert);
+        // Order matters: set the locale and model (which may read on
+        // connect) after upgrade, so the component's setters/render see them.
+        if (locale) {
+            assignLocale(inert, locale);
+        }
+        assignModel(inert, model);
+        inert.setAttribute(HYDRATED_ATTRIBUTE, '');
+        return true;
+    }
+
+    const live = document.createElement(tagName);
+    live.setAttribute('data-blue-island', '');
+    live.setAttribute('data-blue-model', serialized ?? '');
+    live.setAttribute(HYDRATED_ATTRIBUTE, '');
+
+    // Order matters: set the locale and model (which may read on connect)
+    // before replacing, so connectedCallback sees them.
+    if (locale) {
+        assignLocale(live, locale);
+    }
+    assignModel(live, model);
+    inert.replaceWith(live);
+    return true;
+}
+
+/**
+ * Reads the serialized model from a `data-blue-model` attribute value.
+ *
+ * Mirrors `@blue/view`'s `parseModel` (one-level HTML-decoded JSON) but
+ * reports a present-but-malformed payload with the {@link UNPARSEABLE}
+ * sentinel instead of conflating it with the absent/empty case.
+ *
+ * @param raw - The attribute value, or `null` when the attribute is absent.
+ * @returns The parsed model, `null` for an absent/empty attribute, or
+ *   {@link UNPARSEABLE} when the value is not valid JSON.
+ */
+function readModel(raw: string | null): unknown | typeof UNPARSEABLE {
+    if (raw === null || raw === '') {
+        return null;
+    }
+    try {
+        return JSON.parse(raw);
+    } catch {
+        return UNPARSEABLE;
+    }
 }
 
 /**

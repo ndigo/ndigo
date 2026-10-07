@@ -50,11 +50,27 @@ can parse the file in an environment customizer (§6) and register the values
 as a named source in the reserved slot.
 
 `getProperty('server.port')` consults this order; `originOf('server')` tells
-you _which source won_ (the observability payoff):
+you _which source won_ (the observability payoff). Origin tracking is a
+**flat-index** feature — the default prototype-chain index retains no origins,
+so the environment must be constructed with `{ index: 'flat' }` first (a
+`NodeEnvironment` for a real app), and `originOf` reports at **top-level
+granularity** (`server`, not `server.port`):
 
 ```ts
-environment.originOf('server'); // → 'commandLine' | 'systemEnvironment' | ...
+import { StandardEnvironment } from '@blue/context';
+
+// The flat index retains origins; the default prototype-chain index does not.
+const environment = new StandardEnvironment([], { index: 'flat' });
+environment.getPropertySources().addLast('application', { server: { port: 8080 } });
+// ...app.environment(environment) when booting through ApplicationBuilder...
+
+environment.originOf('server'); // → 'application' | 'systemEnvironment' | ... (winning source)
+environment.originOf('server.port'); // → 'application' — top-level granularity
+environment.originOf('missing'); // → null
 ```
+
+With the default index, `originOf` returns `null` (origins are not retained) —
+a flat index is the documented configuration the example requires.
 
 ### Raw env reads — `getEnv` and `isDevMode`
 
@@ -422,7 +438,7 @@ completion and validation for the framework keys with no language server:
     "$schema": "../node_modules/@blue/boot/schema/application.schema.json",
     "server": { "port": 8080 },
     "profiles": { "active": ["prod"] },
-    "api": { "secretToken": { "cipher": "v1:…" } }
+    "api": { "secretToken": "{cipher:v1:…}" }
 }
 ```
 
@@ -435,25 +451,32 @@ reference (adjust the `../` count if `config/` sits deeper). The schema is
 accept arbitrary extra values) and no unknown key is ever rejected. It only
 documents the framework namespaces below; profile files
 (`application-{profile}.json`) are structurally identical and use the same
-schema. The `{cipher:…}` marker is modeled as a marker, not an ordinary object
-value (§8). The schema itself lives at
+schema. The `{cipher:…}` marker is modeled as a marker **string**
+(`$defs.secretMarker`, e.g. `"{cipher:v1:…}"`), not an ordinary object value
+(§8). Sections that are **not** read from config files carry the custom
+annotation `"x-blue-read-from-config": false` — their keys are editor
+completion for a programmatic channel, not config-file keys (see the table).
+The schema itself lives at
 [`packages/blue-boot/schema/application.schema.json`](../../packages/blue-boot/schema/application.schema.json).
 
-Documented framework keys:
+Documented framework keys. The **Read from** column is the authority: keys
+marked with a CLI/env/builder/argument channel are _not_ read from
+`config/application.json` (the `profiles`, `telemetry` and `management`
+sections are annotated `"x-blue-read-from-config": false`):
 
-| Key                             | Type                                 | Default             | Meaning                                                                                         |
-| ------------------------------- | ------------------------------------ | ------------------- | ----------------------------------------------------------------------------------------------- |
-| `server.name`                   | string                               | `blue-api`          | Application/server name — bound by an app's `@configurationProperties('server')` class.         |
-| `server.port`                   | integer                              | `3000` (`PORT` env) | TCP port to listen on (`0` requests an ephemeral port).                                         |
-| `server.host`                   | string                               | `127.0.0.1`         | Host/interface to bind to (platform-node `HTTPServer` default).                                 |
-| `profiles.active`               | string[]                             | —                   | Profiles to activate (`--profiles.active` / `BLUE_PROFILES_ACTIVE`).                            |
-| `profiles.default`              | string[]                             | —                   | Fallback profiles used when nothing is active (`--profiles.default` / `BLUE_PROFILES_DEFAULT`). |
-| `profiles.group.<name>`         | string[]                             | —                   | Profile group name → member profiles (`--profiles.group.<name>` / `BLUE_PROFILES_GROUPS`).      |
-| `telemetry.sampler`             | `'always'` \| `'off'` \| `{ ratio }` | `always`            | Root-span sampling for `configureTelemetry` (ratio in `[0, 1]`).                                |
-| `telemetry.traceExporter`       | exporter spec                        | `console`           | Trace export: `console` \| `none` \| `{ url, headers? }` (OTLP/HTTP).                           |
-| `telemetry.metricExporter`      | exporter spec                        | `console`           | Metric export — same spec as `traceExporter`.                                                   |
-| `telemetry.logExporter`         | exporter spec                        | `console`           | Log export — same spec as `traceExporter`.                                                      |
-| `management.redactHealthErrors` | boolean                              | `true`              | Redact thrown health-indicator errors on `/health`.                                             |
+| Key                             | Type                                 | Default             | Read from                                                   | Meaning                                                               |
+| ------------------------------- | ------------------------------------ | ------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------- |
+| `server.name`                   | string                               | `blue-api`          | Application `@configurationProperties('server')` class      | Application/server name (the demo binds it; the framework does not).  |
+| `server.port`                   | integer                              | `3000` (`PORT` env) | Application `@configurationProperties('server')` class      | TCP port to listen on (`0` requests an ephemeral port).               |
+| `server.host`                   | string                               | `127.0.0.1`         | Not config-read — programmatic `HTTPServer({ host })`       | Host/interface to bind to (platform-node `HTTPServer` default).       |
+| `profiles.active`               | string[]                             | —                   | CLI `--profiles.active` / `BLUE_PROFILES_ACTIVE` / builder  | Profiles to activate.                                                 |
+| `profiles.default`              | string[]                             | —                   | CLI `--profiles.default` / `BLUE_PROFILES_DEFAULT`          | Fallback profiles used when nothing is active.                        |
+| `profiles.group.<name>`         | string[]                             | —                   | CLI `--profiles.group.<name>` / `BLUE_PROFILES_GROUPS`      | Profile group name → member profiles.                                 |
+| `telemetry.sampler`             | `'always'` \| `'off'` \| `{ ratio }` | `always`            | `configureTelemetry()` argument                             | Root-span sampling (ratio in `[0, 1]`).                               |
+| `telemetry.traceExporter`       | exporter spec                        | `console`           | `configureTelemetry()` argument                             | Trace export: `console` \| `none` \| `{ url, headers? }` (OTLP/HTTP). |
+| `telemetry.metricExporter`      | exporter spec                        | `console`           | `configureTelemetry()` argument                             | Metric export — same spec as `traceExporter`.                         |
+| `telemetry.logExporter`         | exporter spec                        | `console`           | `configureTelemetry()` argument                             | Log export — same spec as `traceExporter`.                            |
+| `management.redactHealthErrors` | boolean                              | `true`              | `ManagementAutoConfiguration(options)` constructor argument | Redact thrown health-indicator errors on `/health`.                   |
 
 ## Recommended reading
 

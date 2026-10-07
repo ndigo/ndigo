@@ -45,4 +45,5 @@ Jeff Rose
 - [mergeConfig](functions/mergeConfig.md)
 - [nested](functions/nested.md)
 - [property](functions/property.md)
+- [relaxedKeyCandidates](functions/relaxedKeyCandidates.md)
 - [resolveConfigurationProperties](functions/resolveConfigurationProperties.md)

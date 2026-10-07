@@ -13,7 +13,10 @@
     <p><%- await t('app.intro') %></p>
     <p><%= await t('app.today', { values: { date: formatDate(today, { dateStyle: 'long', timeZone: 'UTC' }) } }) %></p>
     <p><%= await t('app.mode.switched', { values: { language: locale.toUpperCase() } }) %></p>
-    <todo-app data-blue-island data-blue-locale="<%= locale %>" data-blue-model="<%- islandModel %>"></todo-app>
+    <!-- Island markup is rendered server-side by `IslandView` (with a
+         declarative shadow root for first paint) and interpolated raw. The
+         renderer runs now so it sees the request's negotiated language. -->
+    <%- await renderIslandHtml() %>
     <script type="module" src="/static/client.js"></script>
 </body>
 </html>

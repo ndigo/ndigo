@@ -41,6 +41,15 @@ actuator parity, OTel metrics, CLI, migration generation, shared rate-limit
 store, containerized test glue) which needs ADRs and owner sign-off before
 implementation.
 
+**Post-plan discoveries (fixed in follow-up commits):** the app client bundles
+shipped raw TC39 decorators — Vite 8's oxc transform cannot lower them and
+Vitest's esbuild pipeline masked it, so blue-island and blue-todo production
+bundles were invalid JavaScript — and blue-todo's todo routes omitted `items`,
+so the Playwright e2e lane was failing end-to-end (build order, bundle syntax,
+and seeding were all broken); both are fixed and the e2e passes locally.
+AD-69 records the component-integration contract (adopt the Web Component
+ecosystem; framework owns the DSD first-paint and FACE bridges) with its spike.
+
 **Legend:** `block` = release/CI or availability/security breaker · `high` = must fix before
 1.0 · `medium` = should fix · `low`/`nit` = cleanup.
 **Qualified finding IDs:** `<area>-<local id>` where area ∈ {KRN kernel, CTX context/boot,

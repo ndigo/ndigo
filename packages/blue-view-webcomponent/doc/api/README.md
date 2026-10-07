@@ -23,6 +23,7 @@ Jeff Rose
 
 - [BlueElement](interfaces/BlueElement.md)
 - [DOMViewTarget](interfaces/DOMViewTarget.md)
+- [FormAssociatedElement](interfaces/FormAssociatedElement.md)
 - [ModelAwareElement](interfaces/ModelAwareElement.md)
 - [WebComponentViewResolverOptions](interfaces/WebComponentViewResolverOptions.md)
 
@@ -38,5 +39,6 @@ Jeff Rose
 ## Functions
 
 - [AsBlueElement](functions/AsBlueElement.md)
+- [AsFormAssociated](functions/AsFormAssociated.md)
 - [hydrateIslands](functions/hydrateIslands.md)
 - [likeDOMViewTarget](functions/likeDOMViewTarget.md)

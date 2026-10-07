@@ -6,7 +6,7 @@
 // @vitest-environment jsdom
 import { resolve, sep } from 'node:path';
 import { describe, test, expect } from 'vitest';
-import type { Route } from '@blue/router';
+import { LANGUAGE_ATTRIBUTE, type Route } from '@blue/router';
 import { EJSViewResolver } from '@blue/view-ejs';
 import { FileSystemResourceLoader } from '@blue/platform-node';
 import { hydrateIslands } from '@blue/view-webcomponent';
@@ -37,7 +37,8 @@ describe('blue-island SSR → hydration', () => {
             ],
             filter: 'all',
         });
-        const modelAndView = new IslandController(store).index();
+        const route = { attributes: { [LANGUAGE_ATTRIBUTE]: 'en-US' } } as unknown as Route;
+        const modelAndView = new IslandController(store).index(route);
         const resolver = new EJSViewResolver({
             loader: new FileSystemResourceLoader(viewsDir),
             prefix: viewsDir + sep,
@@ -48,10 +49,17 @@ describe('blue-island SSR → hydration', () => {
         if (!view) {
             throw new Error('expected the shell view to resolve');
         }
-        const { body } = await view.renderTo(modelAndView.model, { attributes: {} } as Route);
+        const { body } = await view.renderTo(modelAndView.model, route);
 
-        const markup = /<todo-app[^>]*><\/todo-app>/.exec(body)?.[0] ?? '';
+        // The island now carries a declarative shadow root, so the marker has
+        // child markup (the browser would lift it into a real shadow root).
+        const markup = /<todo-app[^>]*>[\s\S]*?<\/todo-app>/.exec(body)?.[0] ?? '';
         expect(markup).toContain('data-blue-model=');
+        // DSD first paint: the negotiated locale rides along, and the island
+        // carries a declarative shadow root with the server-rendered fallback.
+        expect(markup).toContain('data-blue-locale="en-US"');
+        expect(markup).toContain('<template shadowrootmode="open">');
+        expect(markup).toContain('Server-rendered island');
 
         // Embedding the raw SSR markup lets the DOM parser decode the
         // attribute entities exactly once, as a browser does before hydration.
@@ -61,8 +69,10 @@ describe('blue-island SSR → hydration', () => {
         expect(hydrated).toBe(1);
 
         // The real demo island rendered from the parsed model — proof the
-        // model was non-null (its setter/render path throws on `null`).
+        // model was non-null (its setter/render path throws on `null`). It
+        // renders into its shadow root (jsdom does not parse DSD, so hydrate
+        // replaced the marker and the first render attached a fresh root).
         const live = document.querySelector('todo-app');
-        expect(live?.textContent).toContain('[hydrated on client] 2 item(s), filter: all');
+        expect(live?.shadowRoot?.textContent).toContain('[hydrated on client] 2 item(s), filter: all');
     });
 });

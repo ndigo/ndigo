@@ -14,10 +14,18 @@ Renders an inert custom-element marker carrying the serialized view model:
 <my-element data-blue-island data-blue-model="&quot;{...}&quot;"></my-element>
 ```
 
+When [IslandViewOptions.shadowHtml](../interfaces/IslandViewOptions.md#shadowhtml) is supplied, the marker also
+carries a declarative shadow root so the first paint shows real content:
+
+```html
+<my-element data-blue-island data-blue-model="&quot;{...}&quot;"><template shadowrootmode="open">…fallback…</template></my-element>
+```
+
 It is fully server-safe (no `customElements`, no DOM, no component-module
 import): it serializes only the model into markup. On the client,
 `hydrateIslands()` (from `@blue/view-webcomponent`) finds the marker,
-constructs the element, sets `.model`, and lets `connectedCallback` run.
+adopts the parser-created shadow root (when present) or constructs the
+element, sets `.model`, and lets `connectedCallback` run.
 
 ## Example
 
@@ -37,7 +45,7 @@ return new ModelAndView(new IslandView('todo-app'), { items: [...], filter: 'all
 
 ### Constructor
 
-> **new IslandView**(`name`): `IslandView`
+> **new IslandView**(`name`, `options?`): `IslandView`
 
 Creates an island view for the given custom element tag.
 
@@ -52,6 +60,12 @@ loudly instead of emitting attacker-controlled markup.
 `string`
 
 The custom element tag name.
+
+##### options?
+
+[`IslandViewOptions`](../interfaces/IslandViewOptions.md) = `{}`
+
+Island rendering options ([IslandViewOptions.shadowHtml](../interfaces/IslandViewOptions.md#shadowhtml)).
 
 #### Returns
 
@@ -124,6 +138,14 @@ The path associated with the view.
 #### Inherited from
 
 [`AbstractTemplateView`](AbstractTemplateView.md).[`path`](AbstractTemplateView.md#path)
+
+***
+
+### shadowHtml
+
+> `readonly` **shadowHtml**: `string` \| `undefined`
+
+Trusted first-paint markup for a declarative shadow root, when supplied.
 
 ***
 

@@ -46,6 +46,7 @@ Jeff Rose
 - [ContentNegotiationStrategy](interfaces/ContentNegotiationStrategy.md)
 - [CSVViewOptions](interfaces/CSVViewOptions.md)
 - [EventBridgeViewTarget](interfaces/EventBridgeViewTarget.md)
+- [IslandViewOptions](interfaces/IslandViewOptions.md)
 - [IslandViewResolverOptions](interfaces/IslandViewResolverOptions.md)
 - [MediaTypeFileExtensionResolver](interfaces/MediaTypeFileExtensionResolver.md)
 - [ProducerView](interfaces/ProducerView.md)

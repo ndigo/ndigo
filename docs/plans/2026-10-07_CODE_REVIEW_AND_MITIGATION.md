@@ -494,7 +494,8 @@ carries its regression test; the full gate set (§9) is green with regenerated A
   idempotence. WC-C: acquired shadow root cached, mode mismatch is an error. HI-3/WC-D/WC-H:
   FACE lifecycle (`formResetCallback`, `formDisabledCallback`, `formStateRestoreCallback`,
   `value` attribute reflection, `name` clearing). WC-E: a Playwright lane covers DSD first
-  paint → hydration → FACE submit → SSE with zero page errors. WC-F/WC-G: disposers in
+  paint → hydration → FACE submit → SSE with zero page errors, and runs in CI's e2e job
+  (browsers shared with the todo lane). WC-F/WC-G: disposers in
   `handleDisconnect`, bounded-backoff reconnect with visible state. APP-D: SSE snapshots
   coalesce into one bounded slot. SEC-C: the demo widens `connect-src` with `data:` (guide 21
   §9 documents the requirement); SEC-B/WC-I: `.cts` coverage + decorator pre-check.

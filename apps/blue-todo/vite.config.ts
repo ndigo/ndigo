@@ -1,18 +1,16 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite';
 import { lowerDecorators } from '../../scripts/vite-plugin-lower-decorators.mjs';
 
-export default defineConfig(({ command }) => ({
+export default defineConfig({
     root: '.',
-    // TC39 decorators (`@signal`/`@effect`) must be lowered for browsers;
-    // Vite 8's oxc transform passes them through unchanged (2026-10-06).
-    // Build only: Vitest transforms through esbuild, which already lowers them.
-    plugins: command === 'build' ? [lowerDecorators()] : [],
-    test: {
-        // Unit/integration suite only: Playwright specs in e2e/ are run by
-        // the Playwright runner, not vitest (mirrors root vitest.config.ts).
-        include: ['test/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-        exclude: ['**/node_modules/**', '**/dist/**', '**/lib/**', '**/coverage/**', '**/e2e/**'],
-    },
+    // Decorator policy (HI-1): every app with browser sources lowers TC39
+    // decorators with this plugin for BOTH `vite build` and `vite dev` —
+    // Vite 8's oxc transform passes `@decorator` syntax through unchanged, so
+    // any path that skips it (build bundle or dev-served module) ships
+    // JavaScript browsers cannot parse. Vitest needs no plugin: its own esbuild
+    // transform already lowers decorators, and the app `vitest.config.ts` only
+    // supplies the shared `@blue/*` aliases.
+    plugins: [lowerDecorators()],
     build: {
         outDir: 'dist',
         sourcemap: true,
@@ -25,4 +23,4 @@ export default defineConfig(({ command }) => ({
     server: {
         port: 3000,
     },
-}));
+});

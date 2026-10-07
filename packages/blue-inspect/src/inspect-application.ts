@@ -16,9 +16,11 @@ import type { InspectApp, InspectInput, InspectManifest } from './types';
 
 /**
  * The application identity block: context name (when set) and active profiles.
+ * Profiles are sorted and de-duplicated so the manifest is deterministic
+ * regardless of activation order or repeats.
  */
 function buildApp(context: ApplicationContext): InspectApp {
-    const profiles = [...(context.environment?.activeProfiles ?? [])];
+    const profiles = [...new Set(context.environment?.activeProfiles ?? [])].sort();
     const app: InspectApp = { profiles };
     if (typeof context.name === 'string' && context.name.length > 0) app.name = context.name;
     return app;

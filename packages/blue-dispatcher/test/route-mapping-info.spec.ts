@@ -14,6 +14,7 @@ import {
 } from '../src/route-mapping-info';
 import { Route } from '@blue/router';
 import { AccessControlCondition } from '../src/access-control-condition';
+import { HTTPMethodCondition } from '../src/http-method-condition';
 
 const createRoute = (path: string, data?: Record<string, string | string[] | null>): Route =>
     ({
@@ -228,6 +229,33 @@ describe('RouteMappingInfo', () => {
         const info = new RouteMappingInfo('/foo', new PatternsRouteCondition('/foo'));
         const match = info.match(createRoute('/foo'));
         expect(match).toStrictEqual(info);
+    });
+
+    test('patterns() exposes the registered patterns as a fresh array (REU-4)', () => {
+        const info = new RouteMappingInfo('items', new PatternsRouteCondition('/foo', '/bar'));
+
+        expect(info.patterns()).toEqual(['/foo', '/bar']);
+
+        // The returned array is a copy — mutating it must not touch the mapping.
+        const copy = info.patterns();
+        copy.push('/baz');
+        expect(info.patterns()).toEqual(['/foo', '/bar']);
+    });
+
+    test('method() exposes the fixed HTTP method, or undefined for any-method (REU-4)', () => {
+        const anyMethod = new RouteMappingInfo('/foo', new PatternsRouteCondition('/foo'));
+        const getOnly = new RouteMappingInfo(
+            '/foo',
+            new PatternsRouteCondition('/foo'),
+            new QueryParamCondition(),
+            new MatrixParamCondition(),
+            null,
+            null,
+            new HTTPMethodCondition('GET')
+        );
+
+        expect(anyMethod.method()).toBeUndefined();
+        expect(getOnly.method()).toBe('GET');
     });
 
     test('returns only matching patterns without changing the registered mapping', () => {

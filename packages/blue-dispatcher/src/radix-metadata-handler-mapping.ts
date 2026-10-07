@@ -20,6 +20,12 @@ import { setMethodNotAllowed } from './route-handler-denial';
 interface RadixEntry {
     readonly handlerMethod: RouteHandlerMethod;
     readonly mapping: RouteMappingInfo;
+    /**
+     * The canonical ({@link canonicalizeRouteMappingPath}) key of the radix
+     * node this entry lives at. Cached at registration so `_getHandler` never
+     * recomputes the canonicalization per request.
+     */
+    readonly canonicalKey: string;
 }
 
 /**
@@ -29,23 +35,35 @@ interface RadixEntry {
  * candidate bucket, or the later registration silently shadows the earlier:
  * empty segments are dropped (`/foo` ≡ `/foo/` ≡ `//foo`) and `{name}` param
  * segments are folded to `:name` (`/a/:id` ≡ `/a/{id}`). Param labels remain
- * distinct (`:id` ≠ `:userId`), as do wildcard/greedy kinds.
+ * distinct (`:id` ≠ `:userId`).
  *
- * @param pattern - The raw route pattern.
+ * Greedy segments are folded uniformly to `*:<label>`: `{*name}` → `*:name`,
+ * while the non-capturing spellings `{*}` and `**` (both zero-length labels in
+ * the radix tree) collapse to `*:`. A bare `*` stays the single-segment
+ * wildcard (distinct from every greedy label).
+ *
+ * This is the single source of truth for route-pattern canonicalization: both
+ * the radix mapping here and the `no-duplicate-mapping-path` lint rule consume
+ * it, so they cannot drift.
+ *
+ * @param path - The raw route pattern.
  * @returns The canonical key for the pattern's radix node.
  */
-const normalizePattern = (pattern: string): string => {
+export const canonicalizeRouteMappingPath = (path: string): string => {
     const segments: string[] = [];
-    let start = pattern.charCodeAt(0) === 47 /* '/' */ ? 1 : 0;
-    const length = pattern.length;
+    let start = path.charCodeAt(0) === 47 /* '/' */ ? 1 : 0;
+    const length = path.length;
     for (let index = start; index <= length; index++) {
-        if (index === length || pattern.charCodeAt(index) === 47) {
-            if (index > start) segments.push(pattern.slice(start, index));
+        if (index === length || path.charCodeAt(index) === 47) {
+            if (index > start) segments.push(path.slice(start, index));
             start = index + 1;
         }
     }
     if (segments.length === 0) return '/';
     const normalized = segments.map((segment) => {
+        // `**` is the non-capturing greedy match (`''` label in the tree);
+        // `{*}` folds to the same empty label.
+        if (segment === '**') return '*:';
         if (segment.startsWith('{*') && segment.endsWith('}')) {
             return `*:${segment.slice(2, -1)}`;
         }
@@ -89,8 +107,8 @@ export class RadixMetadataHandlerMapping
         if (!matchingInfo) {
             return null;
         }
-        const patterns = matchingInfo.patternsCondition.patterns;
-        return new RouteMatchResult(patterns[Symbol.iterator]().next().value as string, route.path);
+        const patterns = matchingInfo.patterns();
+        return new RouteMatchResult(patterns[0], route.path);
     }
 
     protected _getMappingComparator(route: Route): Comparator<RouteMappingInfo> {
@@ -123,7 +141,7 @@ export class RadixMetadataHandlerMapping
         // :param-style patterns — the radix tree already validated the path.
         // Candidates are keyed by the canonical pattern, so registrations whose
         // spellings normalize to this node all participate.
-        const candidates = this.#candidatesByPattern.get(normalizePattern(match.pattern)) ?? [];
+        const candidates = this.#candidatesByPattern.get(match.value.canonicalKey) ?? [];
         const matching = candidates.filter(
             ({ mapping }) =>
                 mapping.queryCondition.match(route) !== null &&
@@ -147,7 +165,7 @@ export class RadixMetadataHandlerMapping
                     const allowed = [
                         ...new Set(
                             nonMethodMatches
-                                .map(({ mapping }) => mapping.methodCondition.method)
+                                .map(({ mapping }) => mapping.method())
                                 .filter((method: HTTPMethod | undefined): method is HTTPMethod => method !== undefined)
                         ),
                     ].join(', ');
@@ -196,7 +214,7 @@ export class RadixMetadataHandlerMapping
 
     override registerMapping(mapping: RouteMappingInfo, handler: MaybeHandler, method: string): void {
         const handlerMethod = this._createRequestHandlerMethod(handler, method);
-        for (const pattern of mapping.patternsCondition.patterns) {
+        for (const pattern of mapping.patterns()) {
             // Key by the canonical pattern so spellings that normalize to one
             // radix node (`/foo` vs `/foo/`, `/a/:id` vs `/a/{id}`) share one
             // candidate bucket instead of shadowing each other. The tree is
@@ -204,12 +222,12 @@ export class RadixMetadataHandlerMapping
             // Registrations that remain equally specific after condition
             // filtering resolve first-registered-wins (`compareTo` ties keep
             // the earlier candidate) — a documented, deterministic precedence.
-            const key = normalizePattern(pattern);
+            const key = canonicalizeRouteMappingPath(pattern);
             if (!this.#candidatesByPattern.has(key)) {
-                this.#radixTree.insert(pattern, { handlerMethod, mapping });
+                this.#radixTree.insert(pattern, { handlerMethod, mapping, canonicalKey: key });
             }
             // Always register in the candidates map so _getHandler can disambiguate.
-            this.#candidatesByPattern.add(key, { handlerMethod, mapping });
+            this.#candidatesByPattern.add(key, { handlerMethod, mapping, canonicalKey: key });
         }
         // Register in mappingRegistry with empty directPaths for getHandlerMethods() API compat
         this.mappingRegistry.register(

@@ -7,7 +7,7 @@ import { FrameworkError, MediaType, MultiValueMap } from '@blue/core';
 import { HTTPHeaders } from '@blue/http';
 import { isFunction, isNotNil } from '@blue/util/types';
 import { View } from './view.js';
-import { ViewResolver } from './view-resolver.js';
+import { BoundedCache, createViewCacheKey, ViewResolver } from './view-resolver.js';
 
 /**
  * Resolves file extensions for a media type and can enumerate all known extensions.
@@ -192,6 +192,30 @@ export const canServeMediaType = (candidate: MediaType, accepted: MediaType): bo
     candidate.includes(accepted) || accepted.includes(candidate) || candidate.matches(accepted);
 
 /**
+ * Returns the first candidate media type that can serve one of the accepted
+ * ranges, honoring the client's priority order (accepted ranges are already
+ * ordered by descending q-value).
+ *
+ * Single source of truth for the candidate-vs-range walk shared by the
+ * extension negotiation strategy and the resolver's final negotiation pass,
+ * so both select the same representation for the same `Accept` header.
+ *
+ * @param candidates - The media types the server can produce, in registration order.
+ * @param acceptedRanges - The client-accepted ranges, in client-priority order.
+ * @returns The first servable candidate, or `undefined` when none matches.
+ */
+export function firstServableMediaType(candidates: MediaType[], acceptedRanges: MediaType[]): MediaType | undefined {
+    for (const accepted of acceptedRanges) {
+        for (const candidate of candidates) {
+            if (canServeMediaType(candidate, accepted)) {
+                return candidate;
+            }
+        }
+    }
+    return undefined;
+}
+
+/**
  * Raised when a view name resolves to candidate representations but none
  * satisfies the request's accepted media types (HTTP 406 — the route/handler
  * exists, only the representation is unavailable). Distinct from a missing
@@ -297,14 +321,8 @@ export class PathExtensionContentNegotiationStrategy
         // can serve (wildcards cannot name an extension).
         const hint = (request as { mediaTypeHint?: string } | undefined)?.mediaTypeHint;
         if (hint) {
-            const registered = this.getAllMediaTypes();
-            for (const accepted of parseAcceptedRanges(hint)) {
-                for (const mediaType of registered) {
-                    if (canServeMediaType(mediaType, accepted)) {
-                        return [mediaType];
-                    }
-                }
-            }
+            const mediaType = firstServableMediaType(this.getAllMediaTypes(), parseAcceptedRanges(hint));
+            return mediaType ? [mediaType] : [];
         }
         return [];
     }
@@ -434,8 +452,13 @@ export class ContentNegotiationViewResolver implements ViewResolver {
      * — only the final negotiation passes are per-request — so each name is
      * aggregated once and reused. Delegates must be configured before the
      * first resolution.
+     *
+     * Bounded FIFO ({@link BoundedCache}): view names are request-derived
+     * (`route.path`), so an unauthenticated scanner would otherwise grow this
+     * map without limit — the same eviction contract as
+     * {@link AbstractCachingViewResolver}.
      */
-    readonly #candidates = new Map<string, View[]>();
+    readonly #candidates = new BoundedCache<View[]>();
 
     /**
      * Creates a resolver backed by the given negotiation manager.
@@ -474,7 +497,7 @@ export class ContentNegotiationViewResolver implements ViewResolver {
     async resolveViewName(name: string, language?: unknown, request?: unknown): Promise<View | null> {
         // 1. Aggregate candidate views from every delegate resolver — once
         //    per view name: aggregation never depends on the request.
-        const cacheKey = `${name}\u0000${language ?? ''}`;
+        const cacheKey = createViewCacheKey(name, language);
         let candidates = this.#candidates.get(cacheKey);
         if (candidates === undefined) {
             const results = await Promise.all(
@@ -506,16 +529,19 @@ export class ContentNegotiationViewResolver implements ViewResolver {
 
         // 5. Pick the first candidate matching the HIGHEST-priority accepted
         //    range — the client's preference order drives the choice, not the
-        //    server's registration order.
-        for (const accepted of requested) {
-            for (const candidate of candidates) {
-                const mediaType = candidate.mediaType;
-                if (!mediaType) {
-                    continue;
-                }
-                if (canServeMediaType(mediaType, accepted)) {
-                    return candidate;
-                }
+        //    server's registration order. Shares the candidate-vs-range walk
+        //    with the extension strategy via `firstServableMediaType`.
+        const servable = candidates.filter(
+            (candidate): candidate is View & { mediaType: MediaType } => candidate.mediaType != null
+        );
+        const chosen = firstServableMediaType(
+            servable.map((candidate) => candidate.mediaType),
+            requested
+        );
+        if (chosen) {
+            const winner = servable.find((candidate) => candidate.mediaType === chosen);
+            if (winner) {
+                return winner;
             }
         }
 

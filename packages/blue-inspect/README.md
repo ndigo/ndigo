@@ -2,11 +2,13 @@
 
 > Programmatic manifest generator for BlueJS apps — a deterministic, versioned JSON description of a running application.
 
-`blue inspect` answers "what does this application actually expose?" without a
+`@blue/inspect` answers "what does this application actually expose?" without a
 language server or a second source of truth: routes, registered handler
 mappings, and declared configuration keys are read straight from the live
-context and dispatcher metadata. Configuration **values are never emitted** —
-only whether a key is present — so the manifest is safe to print and diff.
+context and dispatcher metadata. Configuration **values are never read or
+decrypted** — only whether a key is present and which source won it — so the
+manifest is safe to print and diff, and a wired secret decryptor is never
+consulted.
 
 ## Installation
 
@@ -70,9 +72,13 @@ drift checks).
 
 ### Routes
 
-Pass a `RouteRegistry`, an iterable of `RouteDefinition`s, or explicit
-`{ name, path, partition? }` descriptors. Registry entries contribute their
-dotted child keys as names; raw definitions use their pattern.
+Pass a `RouteRegistry`, an iterable of its `entries()` (`[key, RouteDefinition]`
+pairs), an iterable of bare `RouteDefinition`s, or explicit `{ name, path }`
+descriptors. The emitted `name` is input-shape independent for the same
+controller: a `RouteRegistry` and an iterable of its `entries()` both
+contribute the dotted registry key, and explicit descriptors contribute their
+`name`. Only a bare iterable of `RouteDefinition`s (no key supplied) falls back
+to `deriveKey(pattern)`.
 
 ### Mappings
 
@@ -81,13 +87,16 @@ of mapping tables, or a single table. Each `AbstractHandlerMethodMapping`
 exposes `getMappingEntries()` — the read-only enumeration seam this package
 reads — with a `getHandlerMethods()` fallback for structural compatibility.
 Rows are flattened per claimed pattern and de-duplicated first-registration
-wins, mirroring dispatch precedence.
+wins, mirroring dispatch precedence. An explicit `null` source is rejected with
+a `FrameworkError`; omit `mappings` (or pass `undefined`) to inspect none.
 
 ### Configuration
 
 Declared keys come from `@blue/boot`'s `declaredConfigurationProperties()`,
 which walks `@property`/`@nested` fields (or a schema-mode `schema` shape).
-Only key presence and the winning source origin are reported — never a value.
+Presence is probed with `hasProperty` over the exact key plus every
+relaxed-binding spelling (`relaxedKeyCandidates`), and the winning source origin
+is read from `originOf` — no value is ever read or decrypted.
 
 ## API
 

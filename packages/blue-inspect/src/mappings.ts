@@ -8,6 +8,7 @@
  * read model and flattens them into sorted {@link InspectMapping} rows.
  */
 
+import { FrameworkError } from '@blue/core';
 import { isSocketMapping } from '@blue/dispatcher';
 import type { RouteHandlerMethod, RouteMappingInfo } from '@blue/dispatcher';
 import type {
@@ -120,11 +121,25 @@ function tablesOf(source: MappingSource): InspectMappingTable[] {
  * directly. Rows are de-duplicated (first registration wins, mirroring
  * dispatch precedence) and sorted by pattern, then handler class, then method.
  *
- * @param source - The mapping source, or `undefined` for no mappings.
+ * `undefined` means "no mappings" (the optional input) and yields `[]`. An
+ * explicit `null` is a caller error and fails fast with a {@link FrameworkError}
+ * naming the accepted shapes, rather than an opaque `TypeError` from probing
+ * the null source.
+ *
+ * @param source - The mapping source, `undefined` for no mappings, or `null`
+ *   (rejected).
  * @returns The sorted mapping rows.
+ * @throws {FrameworkError} When `source` is `null`.
  */
-export function collectMappings(source?: MappingSource): InspectMapping[] {
+export function collectMappings(source?: MappingSource | null): InspectMapping[] {
     if (source === undefined) return [];
+    if (source === null) {
+        throw new FrameworkError(
+            '@blue/inspect collectMappings: expected a mapping source — a dispatcher (with a `handlerMappings` ' +
+                'collection), an array of mapping tables, or a single mapping table — but received null. ' +
+                'Pass undefined to inspect no mappings.'
+        );
+    }
 
     const rows = new Map<string, InspectMapping>();
     for (const table of tablesOf(source)) {

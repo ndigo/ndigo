@@ -4,7 +4,8 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
-import { GenericApplicationContext, type ApplicationContext } from '@blue/context';
+import { GenericApplicationContext, StandardEnvironment, type ApplicationContext } from '@blue/context';
+import { FrameworkError } from '@blue/core';
 import {
     RadixMetadataHandlerMapping,
     parameters,
@@ -16,7 +17,7 @@ import {
 import { RouteRegistry } from '@blue/router';
 import { configurationProperties } from '@blue/boot';
 import { property } from '@blue/context';
-import { inspectApplication } from '../src/index';
+import { inspectApplication, type MappingSource } from '../src/index';
 
 const FIXED_NOW = '2020-01-01T00:00:00.000Z';
 
@@ -48,13 +49,14 @@ class ServerConfig {
 /**
  * A minimal `ApplicationContext` stub: the manifest reads only `name`,
  * `environment.activeProfiles`, and the environment's presence/origin probes.
+ * Deliberately omits `getProperty`: the manifest must never read a value.
  */
-function contextWith(properties: Record<string, string> = {}): ApplicationContext {
+function contextWith(properties: Record<string, string> = {}, profiles: string[] = ['dev']): ApplicationContext {
     return {
         name: 'test-app',
         environment: {
-            activeProfiles: ['dev'],
-            getProperty: (key: string) => properties[key],
+            activeProfiles: profiles,
+            hasProperty: (key: string) => key in properties,
             originOf: (key: string) => (key in properties ? 'boot' : null),
         },
     } as unknown as ApplicationContext;
@@ -100,19 +102,48 @@ describe('inspectApplication', () => {
         ]);
     });
 
-    test('accepts explicit route descriptors with a partition and sorts them', () => {
+    test('accepts explicit route descriptors and sorts them', () => {
         const manifest = inspectApplication({
             context: contextWith(),
             routes: [
                 { name: 'b', path: '/b' },
-                { name: 'a', path: '/a', partition: 'shell' },
+                { name: 'a', path: '/a' },
             ],
             now: FIXED_NOW,
         });
 
         expect(manifest.routes).toEqual([
-            { name: 'a', path: '/a', partition: 'shell' },
+            { name: 'a', path: '/a' },
             { name: 'b', path: '/b' },
+        ]);
+    });
+
+    test('route names are input-shape independent: a registry and its keyed entries agree', () => {
+        const registry = new RouteRegistry();
+        registry.scanSources([DemoController], new GenericApplicationContext('routes'));
+
+        const fromRegistry = inspectApplication({ context: contextWith(), routes: registry, now: FIXED_NOW });
+        const fromEntries = inspectApplication({
+            context: contextWith(),
+            routes: [...registry.entries()],
+            now: FIXED_NOW,
+        });
+
+        expect(fromEntries.routes).toEqual(fromRegistry.routes);
+        expect(fromRegistry.routes.map((route) => route.name)).toEqual(['api.byId', 'api.chat', 'api.items']);
+    });
+
+    test('documents the deriveKey fallback for bare route definitions (no registry key)', () => {
+        const registry = new RouteRegistry();
+        registry.scanSources([DemoController], new GenericApplicationContext('routes'));
+        const definitions = [...registry.entries()].map(([, definition]) => definition);
+
+        const manifest = inspectApplication({ context: contextWith(), routes: definitions, now: FIXED_NOW });
+
+        expect(manifest.routes).toEqual([
+            { name: 'byId', path: '/api/items/{id}' },
+            { name: 'chat', path: '/api/chat' },
+            { name: 'items', path: '/api/items' },
         ]);
     });
 
@@ -171,5 +202,41 @@ describe('inspectApplication', () => {
             expect(Object.keys(entry)).not.toContain('value');
         }
         expect(JSON.stringify(manifest)).not.toContain(secret);
+    });
+
+    test('probes presence only: a cipher value with a counting/throwing decryptor is never decrypted', () => {
+        const environment = new StandardEnvironment([{ 'server.port': '{cipher:v1:AAAA}' }]);
+        let decryptCalls = 0;
+        environment.applySecretDecryptor({
+            decrypt() {
+                decryptCalls += 1;
+                throw new Error('decryptor must never be consulted by @blue/inspect');
+            },
+        });
+        const context = { name: 'secret-app', environment } as unknown as ApplicationContext;
+
+        const manifest = inspectApplication({ context, configurationClasses: [ServerConfig], now: FIXED_NOW });
+
+        expect(decryptCalls).toBe(0);
+        expect(manifest.config).toContainEqual({ key: 'server.port', type: 'number', hasValue: true });
+    });
+
+    test('sorts and de-duplicates active profiles', () => {
+        const manifest = inspectApplication({
+            context: contextWith({}, ['prod', 'dev', 'dev', 'test']),
+            now: FIXED_NOW,
+        });
+
+        expect(manifest.app.profiles).toEqual(['dev', 'prod', 'test']);
+    });
+
+    test('rejects a null mapping source with a typed FrameworkError naming the accepted shapes', () => {
+        expect(() =>
+            inspectApplication({
+                context: contextWith(),
+                mappings: null as unknown as MappingSource,
+                now: FIXED_NOW,
+            })
+        ).toThrow(FrameworkError);
     });
 });

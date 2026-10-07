@@ -5,19 +5,53 @@
  *
  * Configuration enumeration for the inspect manifest. Declares keys via
  * `@blue/boot`'s `declaredConfigurationProperties()` and reports only
- * *whether* the environment supplies a value — never the value itself.
+ * *whether* the environment supplies a value and which source won — values
+ * are never read or decrypted.
  */
 
-import { declaredConfigurationProperties } from '@blue/boot';
+import { declaredConfigurationProperties, relaxedKeyCandidates } from '@blue/boot';
 import type { Environment } from '@blue/context';
 import type { InspectConfigEntry } from './types';
 
 /**
+ * Whether the environment currently supplies a value for a declared key,
+ * probed by presence only: the exact declared key plus every relaxed-binding
+ * spelling (`relaxedKeyCandidates`), matching the keys `@blue/boot` binds.
+ *
+ * @param environment - The environment to probe.
+ * @param key - The declared keypath.
+ * @returns `true` when any candidate is present.
+ */
+function hasValue(environment: Environment, key: string): boolean {
+    if (environment.hasProperty(key)) return true;
+    return relaxedKeyCandidates(key).some((candidate) => environment.hasProperty(candidate));
+}
+
+/**
+ * The name of the source that won a declared key, probed over the same relaxed
+ * candidate set as {@link hasValue}. `originOf` is source-name only (no value
+ * read), so probing it cannot leak or decrypt a secret.
+ *
+ * @param environment - The environment to probe.
+ * @param key - The declared keypath.
+ * @returns The winning source name, or `null` when unknown.
+ */
+function originOf(environment: Environment, key: string): string | null {
+    for (const candidate of relaxedKeyCandidates(key)) {
+        const origin = environment.originOf(candidate);
+        if (origin !== null) return origin;
+    }
+    return null;
+}
+
+/**
  * Enumerate the configuration keys the given classes declare.
  *
- * Values are never read: `hasValue` is derived from presence and `origin` from
- * the winning source name, so secrets in the environment cannot leak into the
- * manifest. Keys are de-duplicated (first class wins) and sorted by key.
+ * Values are never read or decrypted: `hasValue` comes from presence-only
+ * probing (`hasProperty`, never `getProperty`) and `origin` from the winning
+ * source name, so secrets in the environment cannot leak into the manifest and
+ * a wired decryptor is never consulted. Keys are de-duplicated (first class
+ * wins) and sorted by key.
  *
  * @param classes - The `@configurationProperties` classes to enumerate.
  * @param environment - The environment to probe for presence, when available.
@@ -31,11 +65,11 @@ export function collectConfig(classes: readonly Function[], environment?: Enviro
             if (entries.has(declared.key)) continue;
             const entry: InspectConfigEntry = {
                 key: declared.key,
-                hasValue: environment !== undefined && environment.getProperty(declared.key) !== undefined,
+                hasValue: environment !== undefined && hasValue(environment, declared.key),
             };
             if (declared.type !== undefined) entry.type = declared.type;
             if (environment !== undefined) {
-                const origin = environment.originOf(declared.key);
+                const origin = originOf(environment, declared.key);
                 if (origin !== null) entry.origin = origin;
             }
             entries.set(declared.key, entry);

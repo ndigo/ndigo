@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  *
- * Public types for the `blue inspect` manifest.
+ * Public types for the `@blue/inspect` manifest.
  */
 
 import type { ApplicationContext } from '@blue/context';
@@ -35,8 +35,6 @@ export interface InspectRoute {
     name: string;
     /** The route pattern (e.g. `/users/{id}`). */
     path: string;
-    /** The partition prefix the route belongs to, when known. */
-    partition?: string;
 }
 
 /**
@@ -133,10 +131,16 @@ export interface InspectDispatcherLike {
 }
 
 /**
- * A source of declarative routes: a `RouteRegistry`, an iterable of
- * `RouteDefinition`s, or explicit {@link InspectRoute} descriptors.
+ * A source of declarative routes: a `RouteRegistry`, an iterable of keyed
+ * `[key, RouteDefinition]` entries (the shape `RouteRegistry.entries()`
+ * yields), an iterable of bare `RouteDefinition`s, or explicit
+ * {@link InspectRoute} descriptors.
  */
-export type RouteSource = RouteRegistry | Iterable<RouteDefinition> | Iterable<InspectRoute>;
+export type RouteSource =
+    | RouteRegistry
+    | Iterable<[string, RouteDefinition]>
+    | Iterable<RouteDefinition>
+    | Iterable<InspectRoute>;
 
 /**
  * A source of handler mappings: one or more mapping tables, or a dispatcher

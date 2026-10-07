@@ -154,7 +154,7 @@ malformed request targets with telemetry on, throwing view renders, and demo she
   `@blue/*` imports resolve through package `exports` → `lib/`.
 - **Evidence:** `[code]` (integrator, above) + slice probe: `git archive HEAD` to `/tmp`,
   `pnpm install`, `pnpm --filter @blue/todo build` → `Rolldown failed to resolve import
-"@blue/telemetry-web"`. The “fix broken E2E job” commit only worked on a workstation with
+  "@blue/telemetry-web"`. The “fix broken E2E job” commit only worked on a workstation with
   prebuilt `lib/`.
 - **Impact:** The e2e lane is red on any real GitHub runner; the workflow's green status is
   misleading.
@@ -185,7 +185,7 @@ malformed request targets with telemetry on, throwing view renders, and demo she
 - **KRN-REV-RADIX-01 `[exec]` RadixTree aliases distinct patterns onto shared nodes.**
   `radix-tree.ts:166-193,425-441`: param/greedy children are reused without label checks;
   integrator probe: `insert('/b/:foo'); insert('/b/:bar')` → `{value:'second',
-params:{foo:'z'}, pattern:'/b/:bar'}`; `delete('/a/:id'); insert('/a/:name')` → params keyed
+  params:{foo:'z'}, pattern:'/b/:bar'}`; `delete('/a/:id'); insert('/a/:name')` → params keyed
   `id`. Two controllers with the same shape but different variable names silently alias —
   one route unreachable, the survivor binds `undefined` path variables (dispatcher reads
   `route.params`, `radix-metadata-handler-mapping.ts:88-95`). Fix: one registration per
@@ -204,9 +204,9 @@ params:{foo:'z'}, pattern:'/b/:bar'}`; `delete('/a/:id'); insert('/a/:name')` �
 
 - **CTX-CTX-01 `[exec]` `{ relaxed: true }` binding can never work.** Every relaxed hit is
   followed by an exact-path typed re-read that fails boot (`configuration-properties.ts:139,
-209 vs 232, 282, 465 vs 490`): `server.host-name` + `@property('hostName')` →
+  209 vs 232, 282, 465 vs 490`): `server.host-name` + `@property('hostName')` →
   `Missing required property "server.hostName"`; reverse direction → `Required property
-"srv.host-name" missing`. Documented contract AD-15 D3. Fix: `valueAt` returns the winning
+  "srv.host-name" missing`. Documented contract AD-15 D3. Fix: `valueAt` returns the winning
   key and the typed read uses it; specs both directions. Wave 3.
 - **CTX-CTX-02 `[exec]` `[still-open]` Decrypted secret plaintext echoed by the boot
   environment-validation error.** Probe: `@environment` schema failure prints
@@ -302,7 +302,7 @@ params:{foo:'z'}, pattern:'/b/:bar'}`; `delete('/a/:id'); insert('/a/:name')` �
   buffered paths. Wave 3.
 - **PRT-REV-002 `[exec]` Retention/unacked byte budgets charge body octets only — header
   octets bypass every memory cap** (`message-store.ts:247,355`; `stomp-broker.ts:1661,1572,
-1149,1019`). Probe: 50 messages with 100 KB headers retained while `retainedBytes` reports
+  1149,1019`). Probe: 50 messages with 100 KB headers retained while `retainedBytes` reports
   50; ~1 GiB pinned per subscription vs a 1 MiB budget. Fix: charge serialized header octets
   wherever body octets are charged (or cap header bytes); specs with small bodies + large
   headers. Wave 3.

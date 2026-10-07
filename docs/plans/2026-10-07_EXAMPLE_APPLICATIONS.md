@@ -480,7 +480,7 @@ Framework/tooling findings, verified at source and left for the review process
 
 1. **`HTTPServer` ignores an app's documented default port unless it is seeded
    into `process.env`** — `options.port ?? readIntEnv(process.env, 'PORT') ??
-3000` (`packages/blue-platform-node/src/http-server.ts:175`). Three apps
+   3000` (`packages/blue-platform-node/src/http-server.ts:175`). Three apps
    (`02`, `08`, `13`) computed a default for logging only and therefore bound
    3000 while claiming another port; found by the `14` agent mirroring `13`.
    Fixed in the apps with `process.env['PORT'] ??= '<default>'` (the pattern

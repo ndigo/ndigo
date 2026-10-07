@@ -21,9 +21,9 @@ their packaging, not their code.
 
 - `pnpm build` at `5a7a9e20`, reproduced after `pnpm exec nx reset`:
   `NX Could not execute command because the task graph has a circular
-dependency: @blue/view-webcomponent:build:lib → @blue/context:build:lib →
-@blue/content:build:lib → @blue/factory:build:lib → @blue/telemetry:build:lib
-→ @blue/context:build:lib`.
+  dependency: @blue/view-webcomponent:build:lib → @blue/context:build:lib →
+  @blue/content:build:lib → @blue/factory:build:lib → @blue/telemetry:build:lib
+  → @blue/context:build:lib`.
 - Parsing every workspace manifest at `HEAD~1..HEAD~3` yields 0 cycles; HEAD
   yielded 5. The closing edge was `@blue/factory`'s `"@blue/telemetry"` entry,
   added for the `@blue/telemetry/logger` subpath import.

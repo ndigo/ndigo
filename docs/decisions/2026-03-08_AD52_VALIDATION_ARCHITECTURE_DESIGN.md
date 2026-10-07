@@ -29,7 +29,7 @@ the earlier design as history.
   exists; retired 2026-09-05 in commit `06c51978`
   (`refactor(validation): retire blue-validate + blue-model (AD-07 step 6)`),
   verified via `git log --diff-filter=D -- packages/blue-validate/package.json
-packages/blue-model/package.json`.
+  packages/blue-model/package.json`.
 - Zod became, and remains, the canonical runtime-schema primitive — no
   constraint/decorator `Validator` surface exists today.
 

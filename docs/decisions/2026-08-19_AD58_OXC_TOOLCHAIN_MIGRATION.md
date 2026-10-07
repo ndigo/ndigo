@@ -21,11 +21,14 @@ tools it is genuinely good at.
 ## Evidence
 
 - Root `package.json` scripts (verified today): `"lint": "oxlint --type-aware
---deny-warnings ."`, `"format": "oxfmt --write ."`,
+  --deny-warnings ."`, `"format": "oxfmt --write ."`,
   `"format:check": "oxfmt --check ."`, `"build": "nx run-many -t build:lib"`.
   No `eslint` or `prettier` script or entry remains.
-- Root devDependencies: `oxlint ^1.85.0`, `oxfmt ^0.70.0`,
-  `oxc-transform ^0.151.0`, `@oxlint/plugins ^1.85.0`, `oxlint-tsgolint ^7.0.2003`.
+- Root devDependencies (verified 2026-10-07): `oxlint ^1.87.0`,
+  `@oxlint/plugins ^1.87.0` (both via the catalog), `oxfmt ^0.72.0`,
+  `oxlint-tsgolint ^7.0.2003`. `oxc-transform` is **no longer a dependency**
+  — added as `^0.151.0` for the 08-19 spike and removed in `c6020142`
+  (2026-10-06), so the transform-emit path holds no standing dependency at all.
 - `build:lib` target is still `"tsc -b tsconfig.build.json"` (verified in
   `packages/blue-core/package.json` and `packages/blue-oxlint-plugin/package.json`)
   — the build/emit path was **not** migrated to `@oxc-transform`.
@@ -62,8 +65,9 @@ tools it is genuinely good at.
   proposed `tsc --noEmit` + `@oxc-transform` emit split (08-19 plans' "main
   event") was **rejected/deferred** — TC39-standard decorators +
   `Symbol.metadata` (via `@tsmetadata/polyfill`) and TypeScript project
-  references were the kill criteria. `oxc-transform` remains only as a
-  devDependency, unused in the build path.
+  references were the kill criteria. `oxc-transform` never entered the build
+  path and was dropped as a devDependency after the spike (`c6020142`,
+  2026-10-06) — it stands unadopted.
 - **D-5 Not migrated:** Vitest (test runner), Nx/pnpm, api-extractor all
   stay — no OXC equivalents (validated in the 08-19 evaluations).
 
@@ -95,3 +99,13 @@ Revisiting the transform-emit migration (Slice 4 / Phase 2 of the 08-19 plans)
 is worthwhile if OXC adds production-standard support for TC39 decorators +
 `Symbol.metadata` or if `tsgo` (the native compiler) reaches GA for the kept
 `tsc` type-check pass. Until then `tsc -b` stays authoritative for emit.
+
+**Re-assessed 2026-10-07** (`docs/audits/2026-10-07_OXC_UPDATE_AND_MATURITY_ASSESSMENT.md`):
+oxc-transform 0.153.0 still passes standard decorators through under every
+option shape, and `decorator.legacy` emits the pre-TC39 calling convention
+(decorators receive no TC39 context — runtime `TypeError`), so the decorator
+half of this trigger is **unmet** and D-4 stands. The `tsgo` half is **met**
+(`typescript ~7.0.2` native is the pinned compiler; the build is 40 tasks /
+~9 s), which further weakens the emit-speedup case. The unadopted tools were
+re-checked: `oxc-parser` is mature but has no consumer, `oxc-minify` and
+`oxc-resolver` have none either.

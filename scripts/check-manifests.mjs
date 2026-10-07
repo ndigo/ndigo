@@ -94,7 +94,7 @@ const ROOT_TOOLING = new Set([
     'typedoc', // spawned by scripts/doc-api.mjs
     'typedoc-plugin-markdown', // typedoc `plugin` entry, loaded by name
     'oxlint-tsgolint', // oxlint --type-aware backend (declared peer of oxlint)
-    'esbuild', // Vite's esbuild transform path (app client builds need decorator lowering; oxc 0.151 passes them through)
+    'esbuild', // Vite's esbuild transform path (app client builds need decorator lowering; oxc 0.153 passes them through)
 ]);
 
 /**

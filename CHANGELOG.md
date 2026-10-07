@@ -143,6 +143,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- OXC tooling updated to the 2026-10-05 releases: `oxlint` and
+  `@oxlint/plugins` `^1.87.0`, `oxfmt` `^0.72.0` (`oxlint-tsgolint` was
+  already current). oxfmt 0.72's native Markdown formatter (upstream breaking
+  change) reformatted 31 docs — wrapped-prose indentation only. The tools
+  AD-58 left unadopted were re-assessed at oxc 0.153: standard-decorator
+  lowering is still absent (and `legacy` mode mis-invokes TC39 decorators), so
+  `tsc -b` and the esbuild decorator pre-transform stand; oxc-parser is mature
+  but unnecessary, oxc-minify/oxc-resolver have no consumer
+  (`docs/audits/2026-10-07_OXC_UPDATE_AND_MATURITY_ASSESSMENT.md`).
 - Example-app directories are numbered in reading order
   (`apps/01-blue-hello` … `apps/07-blue-views`, new apps `08`–`19`); package
   names stay unnumbered (`@blue/hello` …) except the two unscoped demos, now

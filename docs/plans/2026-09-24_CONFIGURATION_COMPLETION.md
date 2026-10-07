@@ -12,7 +12,7 @@ status row). Demo gates: `blue-api` `/api/config/*`, `/api/config.json`,
 `/api/config/secrets`. Working-session notes (as-built):
 
 - The decryption seam sits on the **resolver** (`ResolverOptions.
-secretDecryptor`, `#decrypt` after placeholder resolution), not a
+  secretDecryptor`, `#decrypt` after placeholder resolution), not a
   registry-level `DecryptingPropertySource` wrapper — the index copies raw
   source values and key-path AAD requires the caller's key, which only the
   resolver sees; the plan's public surface (`builder.secrets`, marker
@@ -129,7 +129,7 @@ the ladder (D-3).
   one-line surface change; hot lookup paths are untouched (emit only inside
   `refresh()`).
 - **Scopes exist in blue-factory** (`scope.ts`): `KnownScope =
-'singleton' | 'prototype' | 'route' | 'hash'`, `defineScope`/`getScope`/
+  'singleton' | 'prototype' | 'route' | 'hash'`, `defineScope`/`getScope`/
   `hasScope`, decorators `singletonScope`/`prototypeScope`/`hashScope`, and
   per-scope classes (`SingletonScope`, `HashScope`, …). Spring's
   `@RefreshScope` _is_ a scope in Spring — the port is `scope('refresh')` +
@@ -259,7 +259,7 @@ for each rung: public-key write-without-read (JWE), hardware-backed keys
 
 - `SecretCipher` interface in `blue-context`:
   `encrypt(plain: string, aad?: string): string; decrypt(token: string,
-aad?: string): string`. Native token payload:
+  aad?: string): string`. Native token payload:
   `cipher:v1:<base64url(iv | tag | ct)>` (12-byte IV, 16-byte tag,
   AES-256-GCM). `scheme: string` identifies the implementation for marker
   dispatch (D-3); `capabilities: { aad: boolean }` gates wiring (an adapter

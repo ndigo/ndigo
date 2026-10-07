@@ -221,7 +221,8 @@ export interface HTTPTransformer<TInput = any, TOutput = any> {
  * User-provided transform function or transformer object.
  */
 export type Transform<TInput = any, TOutput = any> =
-    HTTPTransformer<TInput, TOutput> | ((body: TInput, context: TransformContext) => TOutput | Promise<TOutput>);
+    | HTTPTransformer<TInput, TOutput>
+    | ((body: TInput, context: TransformContext) => TOutput | Promise<TOutput>);
 ````
 
 **Checklist:**

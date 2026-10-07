@@ -378,7 +378,7 @@ already owns liveness. The second wave rounds out the protocol:
   strings (`SocketSession`/`SocketClient` JSDoc updated).
 - **`/user` destinations** — principal-scoped routing: subscribe
   `/user/queue/events`, then `broker.sendToUser('alice', '/queue/events',
-…)` delivers to that user's scope (Spring `convertAndSendToUser` parity).
+  …)` delivers to that user's scope (Spring `convertAndSendToUser` parity).
   `resolveUser(session)` (default: `session.attributes.user`) binds the
   scope; a client SEND to `/user/*` reaches only the sender's own scope,
   and sessions with no resolved user cannot bind `/user/*` (1008).
@@ -424,10 +424,10 @@ already owns liveness. The second wave rounds out the protocol:
 - **Policy seams** — `onMessage(destination, body, headers, session)` is the
   app-routing hook: return `false` to suppress the default fan-out (the
   frame still receipts — the app handled it). `authorize(destination,
-action, session)` is the _denial_ gate, consulted on SUBSCRIBE (before any
+  action, session)` is the _denial_ gate, consulted on SUBSCRIBE (before any
   replay) and on SEND in both the live and transactional paths; `false`
   fails closed with ERROR + close `1008`. `verifyCredentials(login,
-passcode, session)` validates CONNECT credentials — and a CONNECT that
+  passcode, session)` validates CONNECT credentials — and a CONNECT that
   carries `login`/`passcode` with **no** verifier configured is rejected
   (fail closed) rather than silently trusting them.
 - **Spec conformance** — the codec accepts `EOL = [CR] LF`, treats undefined

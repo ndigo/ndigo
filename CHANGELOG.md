@@ -131,6 +131,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- App client bundles are valid JavaScript again: Vite 8's oxc transform passes
+  TC39 decorators through unchanged (oxc 0.151 offers no lowering option), so
+  decorator-using bundles — `@service`/`@getCall` in `blue-island`,
+  `@signal`/`@effect` in `blue-todo` — shipped as syntax errors while Vitest
+  suites stayed green (Vitest transforms through esbuild). A shared
+  `scripts/vite-plugin-lower-decorators.mjs` esbuild pre-transform lowers them
+  for app builds; the built bundles are syntax-checked in CI-adjacent tests.
+- `blue-todo` renders its starter items on every todo route (`/`, `/active`,
+  `/completed`, `/index`): the root/route models previously omitted `items`,
+  so a fresh load or deep link showed an empty list. The Playwright e2e lane
+  passes end-to-end again (build order, bundle syntax, and seeding were all
+  broken).
 - JWT verification now requires the `exp` and `sub` claims (exp-less tokens
   are rejected instead of authenticating indefinitely; a missing/empty `sub`
   no longer maps to the shared `'unknown'` id), with an optional

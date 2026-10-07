@@ -15,11 +15,17 @@ const logger = getLogger('blue-todo:index-controller');
 class IndexController extends AsApplicationContextAware(Null) {
     readonly applicationContext!: ApplicationContext;
 
-    _createModel(filter: 'all' | 'active' | 'completed', includeItems: boolean = true) {
+    /**
+     * Builds the todo view model. Items are always included: the list is the
+     * view's source of truth for client-side filtering, so a deep link or
+     * reload on `/`, `/active`, `/completed` (or `/index`) must seed it —
+     * omitting items on filter routes left a fresh page with an empty list.
+     */
+    _createModel(filter: 'all' | 'active' | 'completed') {
         const todoService = this.applicationContext.getValue(TODO_SERVICE);
         return {
             filter,
-            ...(includeItems ? { items: todoService.items } : {}),
+            items: todoService.items,
         };
     }
 
@@ -37,7 +43,7 @@ class IndexController extends AsApplicationContextAware(Null) {
     @traced
     handleAll(path: string) {
         logger.info('Handling route', { path: path });
-        const model = this._createModel('all', false);
+        const model = this._createModel('all');
         return new ModelAndView('todo-app', model);
     }
 
@@ -46,7 +52,7 @@ class IndexController extends AsApplicationContextAware(Null) {
     @traced
     handleActive(path: string) {
         logger.info('Handling route', { path: path });
-        const model = this._createModel('active', false);
+        const model = this._createModel('active');
         return new ModelAndView('todo-app', model);
     }
 
@@ -55,7 +61,7 @@ class IndexController extends AsApplicationContextAware(Null) {
     @traced
     handleCompleted(path: string) {
         logger.info('Handling route', { path: path });
-        const model = this._createModel('completed', false);
+        const model = this._createModel('completed');
         return new ModelAndView('todo-app', model);
     }
 }

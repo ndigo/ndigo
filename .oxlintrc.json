@@ -72,6 +72,8 @@
     "@blue/no-scheduled-in-browser": "error",
     "@blue/no-signals-in-entity": "error",
     "@blue/no-string-registry-lookup": "error",
+    "@blue/no-unsafe-view-name-literal": "error",
+    "@blue/no-duplicate-mapping-path": "error",
     "no-shadow": "warn",
     "no-useless-escape": "warn",
     "no-unsafe-optional-chaining": "warn",
@@ -119,7 +121,8 @@
         "@typescript-eslint/no-unused-vars": "off",
         "no-shadow": "off",
         "no-useless-escape": "off",
-        "no-instanceof-builtins": "off"
+        "no-instanceof-builtins": "off",
+        "@blue/no-duplicate-mapping-path": "off"
       }
     },
     {

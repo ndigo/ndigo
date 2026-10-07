@@ -12,6 +12,7 @@ import {
     configurationProperties,
     isConfigurationProperties,
     getConfigurationPropertiesPrefix,
+    declaredConfigurationProperties,
     resolveConfigurationProperties,
 } from '../src/index';
 import { property, defaultValue, nested, configuration, entry } from '@blue/context';
@@ -51,6 +52,38 @@ describe('configurationProperties decorator (AD-15)', () => {
 
     test('isConfigurationProperties returns false for undecorated class', () => {
         expect(isConfigurationProperties(UndecoratedConfig)).toBe(false);
+    });
+});
+
+describe('declaredConfigurationProperties (value-free inspection seam)', () => {
+    test('enumerates field-mode keys with prefix, nesting and declared types, sorted', () => {
+        expect(declaredConfigurationProperties(ServerConfig)).toEqual([
+            { key: 'server.db.pooled', type: 'boolean' },
+            { key: 'server.db.port', type: 'number' },
+            { key: 'server.db.url', type: 'string' },
+            { key: 'server.host', type: 'string' },
+            { key: 'server.port', type: 'number' },
+        ]);
+    });
+
+    test('omits the type when the field declares none', () => {
+        class UntypedConfig {
+            @property('app.mode') mode: string | null = null;
+        }
+
+        expect(declaredConfigurationProperties(UntypedConfig)).toEqual([{ key: 'app.mode' }]);
+    });
+
+    test('enumerates schema-mode shape keys under the prefix without values', () => {
+        const schema = z.object({ name: z.string().default('x'), port: z.coerce.number() });
+
+        @configurationProperties('server', { schema })
+        class SchemaKeys {
+            name!: string;
+            port!: number;
+        }
+
+        expect(declaredConfigurationProperties(SchemaKeys)).toEqual([{ key: 'server.name' }, { key: 'server.port' }]);
     });
 });
 

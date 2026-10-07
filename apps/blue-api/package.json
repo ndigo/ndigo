@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "start": "tsx src/index.ts",
+    "inspect": "tsx src/inspect.ts",
     "test": "vitest run"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
@@ -51,6 +52,7 @@
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/http": "~0.0.1",
+    "@blue/inspect": "~0.0.1",
     "@blue/management": "~0.0.1",
     "@blue/orm": "~0.0.1",
     "@blue/platform-node": "~0.0.1",

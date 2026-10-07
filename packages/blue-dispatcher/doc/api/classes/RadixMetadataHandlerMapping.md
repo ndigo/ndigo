@@ -96,7 +96,7 @@ Interceptors applied to matched handlers.
 
 ### mappingRegistry
 
-> `readonly` **mappingRegistry**: [`MappingRegistry`](#)\<[`RouteMappingInfo`](RouteMappingInfo.md)\>
+> `readonly` **mappingRegistry**: [`MappingRegistry`](MappingRegistry.md)\<[`RouteMappingInfo`](RouteMappingInfo.md)\>
 
 Registry of route mappings and their handler methods.
 
@@ -265,6 +265,30 @@ The matching handler methods.
 #### Inherited from
 
 [`AbstractHandlerMethodMapping`](AbstractHandlerMethodMapping.md).[`getHandlerMethodsForMappingName`](AbstractHandlerMethodMapping.md#gethandlermethodsformappingname)
+
+***
+
+### getMappingEntries()
+
+> **getMappingEntries**(): [`MappingEntry`](MappingEntry.md)\<[`RouteMappingInfo`](RouteMappingInfo.md)\>[]
+
+Return the registered mapping entries, in registration order.
+
+Read-only introspection seam over [mappingRegistry](#mappingregistry): each entry
+carries the mapping object, its resolved handler method, the mapping
+name and any direct paths. Dispatch behavior is unchanged — this exists
+for tooling that needs a pattern → handler read model (API docs,
+`blue inspect`).
+
+#### Returns
+
+[`MappingEntry`](MappingEntry.md)\<[`RouteMappingInfo`](RouteMappingInfo.md)\>[]
+
+A snapshot array of the registered mapping entries.
+
+#### Inherited from
+
+[`AbstractHandlerMethodMapping`](AbstractHandlerMethodMapping.md).[`getMappingEntries`](AbstractHandlerMethodMapping.md#getmappingentries)
 
 ***
 

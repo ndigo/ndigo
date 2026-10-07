@@ -23,6 +23,7 @@ Jeff Rose
 - [ConfigFileLoaderOptions](interfaces/ConfigFileLoaderOptions.md)
 - [ConfigurationPropertiesOptions](interfaces/ConfigurationPropertiesOptions.md)
 - [ConfigurationPropertiesResult](interfaces/ConfigurationPropertiesResult.md)
+- [DeclaredConfigurationProperty](interfaces/DeclaredConfigurationProperty.md)
 
 ## Type Aliases
 
@@ -37,6 +38,7 @@ Jeff Rose
 ## Functions
 
 - [configurationProperties](functions/configurationProperties.md)
+- [declaredConfigurationProperties](functions/declaredConfigurationProperties.md)
 - [defaultValue](functions/defaultValue.md)
 - [getConfigurationPropertiesPrefix](functions/getConfigurationPropertiesPrefix.md)
 - [isConfigurationProperties](functions/isConfigurationProperties.md)

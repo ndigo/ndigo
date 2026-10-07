@@ -125,6 +125,99 @@ export function getConfigurationPropertiesPrefix(target: unknown): string | unde
     return getMetadata(target)[CONFIG_PROPS_PREFIX] as string | undefined;
 }
 
+/**
+ * A configuration property declared by a `@configurationProperties` class.
+ *
+ * Deliberately value-free: it describes what a class *declares*, never what
+ * the environment currently holds.
+ */
+export interface DeclaredConfigurationProperty {
+    /** The full environment keypath (`prefix.field`, e.g. `server.port`). */
+    key: string;
+    /** The declared conversion target (`number`/`boolean`/`date`/`string`), when derivable. */
+    type?: string;
+}
+
+/**
+ * The conversion target a `@property(path, Type)` field declares, as the
+ * binding path resolves it (a string typeverbatim, a constructor lowercased).
+ */
+function declaredTypeOf(declared: unknown): string | undefined {
+    if (typeof declared === 'string') return declared;
+    if (typeof declared === 'function') return declared.name.toLowerCase();
+    return undefined;
+}
+
+/**
+ * Collect a class instance's declared keys into `into`, recursing through
+ * `@nested` fields (the field name is the sub-prefix, mirroring
+ * {@link resolveConfigurationProperties}).
+ */
+function collectDeclaredProperties(
+    instance: Record<string, unknown>,
+    prefix: string | undefined,
+    into: Map<string, string | undefined>
+): void {
+    const meta = getMetadata(instance.constructor as new () => unknown);
+    for (const fieldName of Object.getOwnPropertyNames(instance)) {
+        if (meta[`${NESTED_KEY}${fieldName}`] === true) {
+            const nestedInstance = instance[fieldName];
+            if (nestedInstance !== null && typeof nestedInstance === 'object') {
+                collectDeclaredProperties(
+                    nestedInstance as Record<string, unknown>,
+                    prefix ? `${prefix}.${fieldName}` : fieldName,
+                    into
+                );
+            }
+            continue;
+        }
+        const fieldPath = meta[`${PROPERTY_KEY}${fieldName}`] as string | undefined;
+        if (!fieldPath) continue;
+        const key = prefix ? `${prefix}.${fieldPath}` : fieldPath;
+        if (!into.has(key)) into.set(key, declaredTypeOf(meta[`${PROPERTY_KEY_TYPE}${fieldName}`]));
+    }
+}
+
+/**
+ * Enumerate the configuration keys a `@configurationProperties` class declares,
+ * without resolving any value.
+ *
+ * Field mode walks `@property` fields (plus `@nested` sub-objects);
+ * schema mode walks the `schema` shape keys. Keys are the same full keypaths
+ * binding uses (`prefix.field`), deduplicated and sorted. This is the
+ * introspection seam for tooling that must list declared configuration
+ * without touching the environment — and so without ever exposing a value.
+ *
+ * @param ctor - The configuration properties class constructor.
+ * @returns The declared keys, sorted by key, with the declared type when known.
+ */
+export function declaredConfigurationProperties(ctor: new () => unknown): DeclaredConfigurationProperty[] {
+    const meta = getMetadata(ctor);
+    const prefix = meta[CONFIG_PROPS_PREFIX] as string | undefined;
+    const schema = meta[CONFIG_PROPS_SCHEMA] as z.ZodObject | undefined;
+    const declared = new Map<string, string | undefined>();
+
+    if (schema) {
+        for (const key of Object.keys(schema.shape)) {
+            declared.set(prefix ? `${prefix}.${key}` : key, undefined);
+        }
+    } else {
+        let instance: Record<string, unknown> = {};
+        try {
+            instance = new (ctor as new () => Record<string, unknown>)();
+        } catch {
+            // A constructor that throws still declares its keys via metadata;
+            // fall back to metadata-only enumeration (no `@nested` recursion).
+            instance = {};
+        }
+        collectDeclaredProperties(instance, prefix, declared);
+    }
+
+    return [...declared]
+        .map(([key, type]) => (type === undefined ? { key } : { key, type }))
+        .sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
+}
+
 export { property, defaultValue, nested };
 
 /**

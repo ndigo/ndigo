@@ -126,6 +126,7 @@ Testing & tooling:
 
 - [blue-test](packages/blue-test/README.md) — MockHTTP in-process test harness
 - [blue-oxlint-plugin](packages/blue-oxlint-plugin/README.md) — architecture-enforcing oxlint rules
+- [blue-inspect](packages/blue-inspect/README.md) — deterministic app manifest generator (routes, mappings, config keys)
 - [blue-generators](packages/blue-generators/README.md) — Nx scaffolding
 
 Micro frontends:

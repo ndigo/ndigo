@@ -22,6 +22,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `@blue/inspect` — programmatic inspection manifest (`inspectApplication`):
+  a versioned, deterministic JSON view of routes, dispatcher mappings
+  (pattern, HTTP methods/socket, handler class + method, parameters) and
+  declared config keys (type, origin, presence — values are never read) for
+  tooling, CI and docs. Seams: `MappingRegistry.entries()` /
+  `getMappingEntries()` in `@blue/dispatcher`, and
+  `declaredConfigurationProperties()` in `@blue/boot`; `apps/blue-api` gains
+  an `inspect` script (AD-70).
+- Config JSON Schema (`@blue/boot/schema/application.schema.json`) for
+  `config/application.json` and profile variants, including the `{cipher:…}`
+  at-rest secret marker, wired into `.vscode/settings.json`; the environment
+  guide documents the `$schema` reference (AD-70).
+- `@blue/oxlint-plugin`: `no-unsafe-view-name-literal` (the view-name
+  traversal guard) and `no-duplicate-mapping-path` (method-level duplicate
+  registrations), both enabled as errors; the duplicate rule is off in specs,
+  where duplicate-registration fixtures are deliberate (AD-70).
 - Component integration contract (AD-69): islands can paint server content
   before any script runs — `IslandView({ shadowHtml })` emits
   `<template shadowrootmode="open">`, `hydrateIslands` adopts the

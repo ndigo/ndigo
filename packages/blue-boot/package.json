@@ -14,13 +14,15 @@
   "type": "module",
   "files": [
     "doc",
-    "lib"
+    "lib",
+    "schema"
   ],
   "exports": {
     ".": {
       "default": "./lib/index.js",
       "types": "./lib/index.d.ts"
-    }
+    },
+    "./schema/application.schema.json": "./schema/application.schema.json"
   },
   "types": "lib/index.d.ts",
   "scripts": {

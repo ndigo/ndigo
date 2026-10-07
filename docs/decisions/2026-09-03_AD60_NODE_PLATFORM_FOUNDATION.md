@@ -19,7 +19,7 @@ server-pipeline design that AD-05 scoped at MVP level.
 ## Evidence
 
 - `packages/blue-platform-node/src/http-server.ts` — `export class HTTPServer
-implements SmartLifecycle, ApplicationContextAware` (line 105); born
+  implements SmartLifecycle, ApplicationContextAware` (line 105); born
   `0a212eb1` (2026-09-04). Adapter in `node-http-server-adapter.ts`
   (`NodeHTTPServerAdapter implements HTTPServerAdapter`, line 236).
 - `packages/blue-platform-node/src/node-dispatcher.ts` — `NodeDispatcher`

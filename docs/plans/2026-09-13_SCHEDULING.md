@@ -171,7 +171,7 @@ graft refreshed.
    (`@blue/platform-web`, `@blue/view-webcomponent`), registered + enabled;
    5 rule tests.
 10. `apps/blue-api` demo gate — `Heartbeat` bean (`@scheduled
-'*/30 * * * * *'`) auto-discovered + auto-started through the real
+    '*/30 * * * * *'`) auto-discovered + auto-started through the real
     ApplicationBuilder path; 8 bootstrap tests including deterministic
     scheduler ticks + real bean invocation.
 11. `docs/guides/05-scheduling.md` (quickstart, specs, semantics,

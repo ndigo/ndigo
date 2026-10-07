@@ -410,7 +410,7 @@ builder.configServer({
 ```
 
 - Precedence slot: `commandLine > boot > systemEnvironment > configServer >
-dotenv > application-{profile} > application > defaults` (documented
+  dotenv > application-{profile} > application > defaults` (documented
   chain, pinned by a real-boot order spec; the `dotenv` entry is a reserved
   slot — nothing reads `.env`, see §1).
 - **Change detection**: ETag/`If-None-Match` (304 → nothing happens) or

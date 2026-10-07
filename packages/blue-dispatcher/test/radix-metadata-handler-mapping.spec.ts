@@ -7,7 +7,14 @@ import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
 import { type Route } from '@blue/router';
 import { routeMapping } from '../src/route-mapping';
-import { RadixMetadataHandlerMapping } from '../src/radix-metadata-handler-mapping';
+import { canonicalizeRouteMappingPath, RadixMetadataHandlerMapping } from '../src/radix-metadata-handler-mapping';
+import { HTTPMethodCondition } from '../src/http-method-condition';
+import {
+    MatrixParamCondition,
+    PatternsRouteCondition,
+    QueryParamCondition,
+    RouteMappingInfo,
+} from '../src/route-mapping-info';
 
 describe('RadixMetadataHandlerMapping', () => {
     let ctx: GenericApplicationContext;
@@ -506,5 +513,67 @@ describe('RadixMetadataHandlerMapping', () => {
             expect(chain).not.toBeNull();
             expect(chain.handler.method).toBe('getProduct');
         });
+    });
+});
+
+describe('canonicalizeRouteMappingPath (REU-3)', () => {
+    test('folds spellings the radix tree collapses to one node', () => {
+        // empty segments are dropped
+        expect(canonicalizeRouteMappingPath('/a')).toBe('/a');
+        expect(canonicalizeRouteMappingPath('/a/')).toBe('/a');
+        expect(canonicalizeRouteMappingPath('//a')).toBe('/a');
+        // `{name}` and `:name` are one param node
+        expect(canonicalizeRouteMappingPath('/a/:id')).toBe('/a/:id');
+        expect(canonicalizeRouteMappingPath('/a/{id}')).toBe('/a/:id');
+        // greedy labels are canonicalized as `*:<label>`
+        expect(canonicalizeRouteMappingPath('/a/{*rest}')).toBe('/a/*:rest');
+        expect(canonicalizeRouteMappingPath('/a/**')).toBe('/a/*:');
+        // the degenerate `{*}` and `**` pair share the empty greedy label
+        expect(canonicalizeRouteMappingPath('/a/{*}')).toBe(canonicalizeRouteMappingPath('/a/**'));
+    });
+
+    test('keeps distinct param labels and greedy kinds in separate buckets', () => {
+        expect(canonicalizeRouteMappingPath('/a/:id')).not.toBe(canonicalizeRouteMappingPath('/a/:userId'));
+        expect(canonicalizeRouteMappingPath('/a/{*rest}')).not.toBe(canonicalizeRouteMappingPath('/a/**'));
+        // a bare `*` wildcard is distinct from the greedy `**`
+        expect(canonicalizeRouteMappingPath('/a/*')).not.toBe(canonicalizeRouteMappingPath('/a/**'));
+    });
+
+    test('the canonicalizer and real registration agree across the spelling table', () => {
+        const groups: Array<{ spellings: string[]; path: string }> = [
+            { spellings: ['/a', '/a/', '//a'], path: '/a' },
+            { spellings: ['/a/:id', '/a/{id}'], path: '/a/42' },
+            { spellings: ['/a/{*}', '/a/**'], path: '/a/x/y' },
+        ];
+
+        for (const { spellings, path } of groups) {
+            // The canonicalizer folds every spelling in the group to one key...
+            expect(new Set(spellings.map((spelling) => canonicalizeRouteMappingPath(spelling))).size).toBe(1);
+
+            // ...and real registration agrees: every spelling stays reachable,
+            // disambiguated by its own query condition, proving they share one
+            // radix candidate bucket rather than shadowing each other.
+            const mapping = new RadixMetadataHandlerMapping();
+            const handlers = spellings.map((spelling, index) => {
+                const handler = { handle: () => spelling };
+                const info = new RouteMappingInfo(
+                    null,
+                    new PatternsRouteCondition(spelling),
+                    new QueryParamCondition(`which=${index}`),
+                    new MatrixParamCondition(),
+                    null,
+                    null,
+                    new HTTPMethodCondition()
+                );
+                mapping.registerMapping(info, handler, 'handle');
+                return handler;
+            });
+
+            spellings.forEach((_spelling, index) => {
+                const route = { path, data: { which: String(index) }, length: 0 } as unknown as Route;
+                const chain = mapping.getHandler(route);
+                expect(chain?.handler.handler).toBe(handlers[index]);
+            });
+        }
     });
 });

@@ -59,6 +59,10 @@ export function parseModel(raw: string | undefined): unknown {
  * hyphens, spaces, and markup metacharacters are rejected — the name is
  * interpolated raw into generated markup, so an unvalidated name is an
  * injection vector.
+ *
+ * Deliberately a strict ASCII subset: the spec's non-ASCII PCENChar range
+ * (e.g. `x-føø`, `x-你好`) is rejected until the grammar is widened — see
+ * {@link isValidCustomElementName} (VIEW-6).
  */
 export const customElementNamePattern = /^[a-z][a-z0-9._]*-[a-z0-9._-]*$/;
 
@@ -79,6 +83,11 @@ const RESERVED_CUSTOM_ELEMENT_NAMES: Record<string, true> = {
 
 /**
  * Returns whether `name` is a valid, non-reserved custom-element tag name.
+ *
+ * The check is intentionally stricter than the platform grammar: only ASCII
+ * names are accepted (see `customElementNamePattern`), so a
+ * spec-valid non-ASCII component name is rejected (VIEW-6 — widen the
+ * grammar when a real consumer needs it).
  *
  * @param name - The candidate tag name.
  * @returns `true` when the name may be used as a custom element tag.

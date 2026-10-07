@@ -13,7 +13,7 @@ import type { ViewTarget } from '@blue/view';
 import { GenericApplicationContext, InMemoryResourceLoader } from '@blue/context';
 
 import { EJSView } from '../src/ejs-view';
-import { EJSTemplateEngine } from '../src/ejs-template-engine';
+import { EJSIncludeCycleError, EJSTemplateEngine } from '../src/ejs-template-engine';
 import { EJSViewResolver } from '../src/ejs-view-resolver';
 
 interface CapturedRender {
@@ -101,14 +101,35 @@ describe('EJSTemplateEngine includes (DSV-EJS-1)', () => {
         expect(html).toBe('ABS:7');
     });
 
-    it('renders [object Promise] for an un-awaited include (documented failure mode)', async () => {
-        writeFileSync(join(dir, 'partial.ejs'), 'partial');
+    // No test pins an un-awaited include. The engine compiles templates in
+    // async mode (AD-39 D-4) and its `render` TSDoc documents the contract:
+    // templates MUST write `<%- await include(...) %>`, because an un-awaited
+    // include interpolates the pending Promise as `[object Promise]`. That is
+    // a template-author error, not supported behaviour — asserting the garbage
+    // string would pin a defect. The supported awaited path is covered by the
+    // relative/absolute include cases above.
+
+    it('fails with a bounded, named error on an include cycle (a↔b) (VIEW-4)', async () => {
+        writeFileSync(join(dir, 'a.ejs'), 'A<%- await include("b.ejs") %>');
+        writeFileSync(join(dir, 'b.ejs'), 'B<%- await include("a.ejs") %>');
         const engine = new EJSTemplateEngine();
 
-        const html = await engine.render('<%- include("partial.ejs") %>', {}, join(dir, 'page.ejs'));
+        // Pre-fix this recursed until `RangeError: Maximum call stack size
+        // exceeded` (and leaked stray rejections); the guard fails fast with a
+        // named, bounded error instead.
+        await expect(engine.render('<%- await include("a.ejs") %>', {}, join(dir, 'page.ejs'))).rejects.toBeInstanceOf(
+            EJSIncludeCycleError
+        );
+    });
 
-        // Includes are async; an un-awaited include interpolates the Promise.
-        expect(html).toContain('[object Promise]');
+    it('resolves a non-cyclic nested include chain to completion (VIEW-4)', async () => {
+        writeFileSync(join(dir, 'leaf.ejs'), 'LEAF');
+        writeFileSync(join(dir, 'mid.ejs'), 'MID<%- await include("leaf.ejs") %>');
+        const engine = new EJSTemplateEngine();
+
+        expect(await engine.render('ROOT<%- await include("mid.ejs") %>', {}, join(dir, 'top.ejs'))).toBe(
+            'ROOTMIDLEAF'
+        );
     });
 });
 

@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { Route } from '@blue/router';
+import type { HTTPMethod } from '@blue/http';
 import { RouteCondition, RouteConditionHolder } from './route-condition';
 import { AccessControlCondition } from './access-control-condition';
 import { HTTPMethodCondition } from './http-method-condition';
@@ -75,6 +76,33 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
         this.methodCondition = method;
         this.customConditionHolder = new RouteConditionHolder(custom);
         this.accessCondition = access;
+    }
+
+    /**
+     * The route patterns this mapping matches, in registration order.
+     *
+     * Public read model for mapping inspection (`@blue/inspect` via the
+     * `getMappingEntries()` seam): consumers MUST NOT reach into the
+     * `patternsCondition` internal condition to read them.
+     *
+     * @returns A fresh array of the mapping's patterns.
+     */
+    patterns(): string[] {
+        return [...this.patternsCondition.patterns];
+    }
+
+    /**
+     * The required HTTP method, or `undefined` when the mapping matches any
+     * method.
+     *
+     * Public read model for mapping inspection (`@blue/inspect` via the
+     * `getMappingEntries()` seam): consumers MUST NOT reach into the
+     * `methodCondition` internal condition to read it.
+     *
+     * @returns The fixed method, or `undefined` for an any-method mapping.
+     */
+    method(): HTTPMethod | undefined {
+        return this.methodCondition.method;
     }
 
     /**

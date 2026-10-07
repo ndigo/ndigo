@@ -48,33 +48,103 @@ const defineProperty = Reflect.defineProperty,
  * vector; insertion-ordered FIFO eviction keeps the cache bounded without
  * changing observable resolution for a fixed name set.
  */
-const MAX_CACHE_ENTRIES = 1024;
+export const MAX_VIEW_CACHE_ENTRIES = 1024;
+
+/**
+ * Insertion-ordered, bounded FIFO cache.
+ *
+ * Shared by every view resolver that memoizes request-derived lookups
+ * ({@link AbstractCachingViewResolver} and `ContentNegotiationViewResolver`)
+ * so the eviction contract is defined once: never more than
+ * {@link MAX_VIEW_CACHE_ENTRIES} entries, the oldest key evicted first.
+ */
+export class BoundedCache<V> {
+    readonly #entries = new Map<string, V>();
+
+    /**
+     * Number of cached entries.
+     */
+    get size(): number {
+        return this.#entries.size;
+    }
+
+    /**
+     * Looks up a cached value.
+     *
+     * @param key - The cache key.
+     * @returns The cached value, or `undefined`.
+     */
+    get(key: string): V | undefined {
+        return this.#entries.get(key);
+    }
+
+    /**
+     * Stores a value, evicting the oldest entry first when a new key would
+     * exceed the bound. Re-setting an existing key keeps its position.
+     *
+     * @param key - The cache key.
+     * @param value - The value to cache.
+     */
+    set(key: string, value: V): void {
+        if (!this.#entries.has(key) && this.#entries.size >= MAX_VIEW_CACHE_ENTRIES) {
+            const oldest = this.#entries.keys().next().value;
+            if (oldest !== undefined) {
+                this.#entries.delete(oldest);
+            }
+        }
+        this.#entries.set(key, value);
+    }
+
+    /**
+     * A null-prototype plain object mirror of the cache entries, preserving
+     * insertion order.
+     *
+     * @returns The entries as a keyed object.
+     */
+    toObject(): { [key: string]: V } {
+        const result = createNull() as { [key: string]: V };
+        for (const [key, value] of this.#entries) {
+            result[key] = value;
+        }
+        return result;
+    }
+}
+
+/**
+ * Builds an unambiguous cache key for a view name/language pair.
+ *
+ * The key MUST distinguish every distinct pair: a naive
+ * `` `${name}_${language}` `` join collides — `('user_en', 'US')` and
+ * `('user', 'en_US')` both yield `user_en_US` — and would serve the first
+ * resolved view for the second pair. JSON-encoding the tuple preserves the
+ * `_` characters inside each component while keeping them separate.
+ *
+ * @param name - The view name.
+ * @param language - Optional language/locale hint.
+ * @returns A collision-free cache key.
+ */
+export function createViewCacheKey(name: string, language?: unknown): string {
+    return JSON.stringify([name, language == null ? '' : String(language)]);
+}
 
 export abstract class AbstractCachingViewResolver implements ViewResolver {
-    /**
-     * Cached views keyed by name and language.
-     */
-    readonly cache!: { [key: string]: View };
+    readonly #cache = new BoundedCache<View>();
     /**
      * Indicates whether resolved views should be cached.
      */
     isCaching: boolean;
+
     /**
-     * Insertion order of {@link cache} keys, for FIFO eviction at the bound.
+     * A read-only mirror of the cached views keyed by name and language.
      */
-    #cacheOrder: string[];
+    get cache(): { [key: string]: View } {
+        return this.#cache.toObject();
+    }
 
     /**
      * Creates a resolver with an empty cache.
      */
     constructor() {
-        defineProperty(this, 'cache', {
-            value: createNull(),
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
-        this.#cacheOrder = [];
         this.isCaching = true;
     }
 
@@ -91,20 +161,13 @@ export abstract class AbstractCachingViewResolver implements ViewResolver {
             view = await this._createView(name, language);
         } else {
             const key: string = this._createCacheKey(name, language);
-            view = this.cache[key] ?? null;
+            view = this.#cache.get(key) ?? null;
             if (!view) {
                 view = await this._createView(name, language);
                 if (!view) {
                     view = unresolvedView;
                 } else {
-                    this.cache[key] = view;
-                    // FIFO eviction: keys are distinct here (a hit skips this
-                    // branch), so the order list never duplicates a key.
-                    this.#cacheOrder.push(key);
-                    if (this.#cacheOrder.length > MAX_CACHE_ENTRIES) {
-                        const oldest = this.#cacheOrder.shift() as string;
-                        delete this.cache[oldest];
-                    }
+                    this.#cache.set(key, view);
                 }
             }
         }
@@ -116,23 +179,58 @@ export abstract class AbstractCachingViewResolver implements ViewResolver {
     }
 
     /**
-     * Builds an unambiguous cache key for a name/language pair.
-     *
-     * The key MUST distinguish every distinct pair: a naive
-     * `` `${name}_${language}` `` join collides — `('user_en', 'US')` and
-     * `('user', 'en_US')` both yield `user_en_US` — and would serve the first
-     * resolved view for the second pair. JSON-encoding the tuple preserves the
-     * `_` characters inside each component while keeping them separate.
+     * Builds an unambiguous cache key for a name/language pair. Delegates to
+     * the module-level {@link createViewCacheKey} so every resolver shares one
+     * key format.
      *
      * @param name - The view name.
      * @param language - Optional language/locale hint.
      * @returns A collision-free cache key.
      */
     protected _createCacheKey(name: string, language?: unknown): string {
-        return JSON.stringify([name, language == null ? '' : String(language)]);
+        return createViewCacheKey(name, language);
     }
 
     protected abstract _loadView(name: string, language?: unknown): Promise<View | null>;
+}
+
+/**
+ * Returns whether a view name is safe to interpolate into a resolver path.
+ *
+ * View names can reach resolvers from request-derived data (default route
+ * names, path extensions), so a name must never escape the resolver's
+ * `prefix` once joined with it. Rejected forms:
+ *
+ * - NUL bytes, which truncate paths in native syscalls;
+ * - absolute paths (`/x`, `\x`, `C:\x`), which discard the prefix;
+ * - any drive specifier (`C:`, `c:`), including drive-relative forms like
+ *   `C:foo` that lack a separator after the colon;
+ * - any path segment that is `..`, including its matrix-param and
+ *   trailing-space spellings (`..;x=1`, `.. `), which climb out of the
+ *   prefix.
+ *
+ * Separators are otherwise allowed so nested names (`admin/user`) keep
+ * resolving, and dots inside a segment (`v1.2`, `my.file`) stay valid.
+ *
+ * This is the single source of truth for the predicate: the resolver class
+ * delegates to it, and the `no-unsafe-view-name-literal` lint rule asserts the
+ * same vector table so the runtime and lint grammars cannot drift.
+ *
+ * @param name - The view name to validate.
+ * @returns `true` when the name is safe to use as a relative path.
+ */
+export function isSafeViewName(name: string): boolean {
+    if (name.includes('\0')) {
+        return false;
+    }
+
+    if (name.startsWith('/') || name.startsWith('\\') || /^[a-zA-Z]:/.test(name)) {
+        return false;
+    }
+
+    // A segment escapes only when, after dropping any matrix-parameter
+    // suffix and trailing spaces (Windows), it is exactly `..`.
+    return name.split(/[\\/]+/).every((segment) => segment.split(';', 1)[0].replace(/\s+$/, '') !== '..');
 }
 
 export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewResolver {
@@ -191,34 +289,15 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
     /**
      * Returns whether a view name is safe to interpolate into a resolver path.
      *
-     * View names can reach resolvers from request-derived data (default route
-     * names, path extensions), so a name must never escape the resolver's
-     * `prefix` once joined with it. Rejected forms:
-     *
-     * - NUL bytes, which truncate paths in native syscalls;
-     * - absolute paths (`/x`, `\x`, `C:\x`), which discard the prefix;
-     * - any path segment that is `..`, including its matrix-param and
-     *   trailing-space spellings (`..;x=1`, `.. `), which climb out of the
-     *   prefix.
-     *
-     * Separators are otherwise allowed so nested names (`admin/user`) keep
-     * resolving, and dots inside a segment (`v1.2`, `my.file`) stay valid.
+     * Delegates to the module-level {@link isSafeViewName} predicate — the
+     * single source of truth shared with the `no-unsafe-view-name-literal`
+     * lint rule.
      *
      * @param name - The view name to validate.
      * @returns `true` when the name is safe to use as a relative path.
      */
     protected isSafeViewName(name: string): boolean {
-        if (name.includes('\0')) {
-            return false;
-        }
-
-        if (name.startsWith('/') || name.startsWith('\\') || /^[a-zA-Z]:[\\/]/.test(name)) {
-            return false;
-        }
-
-        // A segment escapes only when, after dropping any matrix-parameter
-        // suffix and trailing spaces (Windows), it is exactly `..`.
-        return name.split(/[\\/]+/).every((segment) => segment.split(';', 1)[0].replace(/\s+$/, '') !== '..');
+        return isSafeViewName(name);
     }
 }
 

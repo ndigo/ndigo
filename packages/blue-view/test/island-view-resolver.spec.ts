@@ -42,4 +42,24 @@ describe('IslandViewResolver', () => {
         expect(await resolver.resolveViewName('error/framework')).toBeNull();
         expect(await resolver.resolveViewName('Todo-App')).toBeNull();
     });
+
+    it('falls through for reserved custom-element names instead of throwing (VIEW-1)', async () => {
+        const resolver = new IslandViewResolver();
+
+        // Pre-fix the raw `customElementNamePattern` admitted these, so
+        // `_loadView` called `new IslandView(name)` and threw a FrameworkError
+        // instead of the resolver chain falling through.
+        for (const name of ['font-face', 'annotation-xml', 'missing-glyph', 'color-profile']) {
+            // eslint-disable-next-line no-await-in-loop -- sequential fall-through assertion per name
+            await expect(resolver.resolveViewName(name)).resolves.toBeNull();
+        }
+    });
+
+    it('falls through for traversal names and still resolves valid tags (VIEW-1)', async () => {
+        const resolver = new IslandViewResolver();
+
+        // eslint-disable-next-line @blue/no-unsafe-view-name-literal -- traversal probe must reach the resolver
+        expect(await resolver.resolveViewName('../x')).toBeNull();
+        expect(await resolver.resolveViewName('todo-app')).toBeInstanceOf(IslandView);
+    });
 });

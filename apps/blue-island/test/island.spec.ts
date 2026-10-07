@@ -45,6 +45,17 @@ describe('blue-island hybrid demo', () => {
         expect(html).toContain('/static/client.js');
     });
 
+    test('GET / server-renders a declarative shadow root for first paint (ADR-69 D-3)', async () => {
+        const res = await mockHTTP.get('/').exec();
+        const html = res.text();
+        // The island carries DSD markup: real content parsed into a shadow
+        // root before any script runs, replaced by the component on upgrade.
+        expect(html).toContain('<template shadowrootmode="open">');
+        expect(html).toContain('<li>✅ Server-rendered island</li>');
+        expect(html).toContain('<li>⬜ Hydrated on the client</li>');
+        expect(html).toContain('[hydrated on client] 2 item(s), filter: all');
+    });
+
     test('GET / renders the serialized model into data-blue-model', async () => {
         const res = await mockHTTP.get('/').exec();
         const html = res.text();

@@ -22,6 +22,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Component integration contract (AD-69): islands can paint server content
+  before any script runs — `IslandView({ shadowHtml })` emits
+  `<template shadowrootmode="open">`, `hydrateIslands` adopts the
+  browser-parsed shadow root and upgrades the element in place, and
+  `AbstractWebComponent.ensureShadowRoot()` accepts a pre-existing root — plus
+  `AsFormAssociated(Base)` in `@blue/view-webcomponent` for form-associated
+  custom elements whose values submit as standard form data through the
+  existing binding/Zod path. No UI library is bundled; the decision record
+  defines the adoption checklist and the no-wrappers discipline.
 - `@blue/log` — dependency-light logging core (Logger contract,
   `getLogger`/`LoggerFactory`, console + OpenTelemetry appenders, severity
   mappings) extracted so framework internals can log without the telemetry

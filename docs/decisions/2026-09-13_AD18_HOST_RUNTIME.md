@@ -35,7 +35,7 @@ from the context. Consequences:
 - Every host re-implements shell composition; there is no shared seam to
   converge on or test against.
 - The gap vs. single-SPA's `registerApplication(name, app, activityFn,
-customProps)` — one call covering registration, lifecycle, and URL
+  customProps)` — one call covering registration, lifecycle, and URL
   activation — is real: Blue splits it across two registries joined by
   boilerplate.
 

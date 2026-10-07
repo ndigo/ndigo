@@ -577,7 +577,7 @@ all beans register; blue-api suite still green with the re-declarations removed.
 3. **SEC-2 — rate-limiter bound.** Refuse insertion (or LRU-evict) at
    `#maxEntries` when the sweep no-ops.
     - Acceptance: `consume` over ≥ maxEntries distinct keys keeps `size ≤
-maxEntries`; insertion stays bounded-cost.
+      maxEntries`; insertion stays bounded-cost.
     - Verify: `blue-platform-node` rate-limit suite.
 4. **SEC-3 — cookie bound classification.** Re-throw as
    `RequestLimitError(431/400)` from the adapter; wrap the upgrade-path
@@ -591,7 +591,7 @@ maxEntries`; insertion stays bounded-cost.
     - Acceptance: 0.75×cap all-file upload succeeds; >cap → 413.
     - Verify: `blue-platform-node` multipart suite.
 7. **COR-16 — multipart temp/stream leaks.** Abort wiring on `req.once
-('aborted'|'close')` → destroy gate (cleanup runs); WriteStream ended on
+   ('aborted'|'close')` → destroy gate (cleanup runs); WriteStream ended on
    part `error`/`close` as well as `end`. (Re-verify the claim with a failing
    probe before/after.)
     - Verify: abort-mid-upload spec asserting temp dir empty; fd count on POSIX.
@@ -837,7 +837,7 @@ full-repo gates green at HEAD.
   specs (unique index created raw; `createTableStatements` emits no UNIQUE
   constraints from `@column` metadata — noted for ORM follow-up).
 - **COR-13 (refresh TTL truth):** `SessionStore.rotate` returns `{ id,
-expiresAt }`; adapter reports the store's effective expiry. Refresh-near-
+  expiresAt }`; adapter reports the store's effective expiry. Refresh-near-
   expiry ±5ms spec; blue-platform-node test stub updated for the contract.
 - **COR-17 (host activation):** lazy activation rejects report via
   `onActivationError` sink + `metricRecorder` counter — no unhandled
@@ -881,7 +881,7 @@ expiresAt }`; adapter reports the store's effective expiry. Refresh-near-
   cross-package importers.
 - **COR-23 (+ dispatcher ripple):** `canConvert` mirrors the String fallback;
   `resolveTypeConverter` resolves `getConverter(source, target) ??
-getConverter(String, target)` so gated pairs convert (String-fallback spec).
+  getConverter(String, target)` so gated pairs convert (String-fallback spec).
 
 ### Wave 6 — Docs, hygiene, optional backlog ✅
 

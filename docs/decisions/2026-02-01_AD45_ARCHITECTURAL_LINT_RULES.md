@@ -25,7 +25,7 @@ dedicated plugin carrying custom rules to lock them down in CI.
   registers all three rules (plus `no-uppercase-regexp-constants` etc.) under
   plugin name `@blue/oxlint-plugin`, via `eslintCompatPlugin`.
 - Enforced through the repo lint gate: `package.json:20` `"lint": "oxlint
---type-aware --deny-warnings ."`, and `.oxlintrc.json` sets
+  --type-aware --deny-warnings ."`, and `.oxlintrc.json` sets
   `@blue/no-direct-integration-imports: "warn"`,
   `@blue/no-internal-file-imports: "error"`,
   `@blue/no-internal-file-exports: "error"`.

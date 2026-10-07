@@ -132,7 +132,7 @@ response entry (separate AD-35 follow-up).
   pick + computed summary transform piped into the `noteResponseSchema`
   contract); module-level `conversionService`.
 - Controllers: `convert(notes, noteDtoSchema.array())` / `convert(note,
-noteDtoSchema)`; typed `validatedBody` + `Object.assign` instantiation;
+  noteDtoSchema)`; typed `validatedBody` + `Object.assign` instantiation;
   `String(...)` hand-copy removed.
 - Integration specs: DTO shape assertions (summary present, entity
   columns absent), create 400/422 validation unchanged.
@@ -140,7 +140,7 @@ noteDtoSchema)`; typed `validatedBody` + `Object.assign` instantiation;
 ### Wave 3 — OpenAPI response schemas (`@blue/openapi`)
 
 - `@apiDocs({ responses })` metadata (bare schema | `{ description?,
-schema? }`); generator maps to operations via `toJSONSchema`; default
+  schema? }`); generator maps to operations via `toJSONSchema`; default
   `200 OK` unchanged without it.
 - Specs: schema embedded (properties/required), object-form description,
   default preserved; demo declares the contract on the note handlers

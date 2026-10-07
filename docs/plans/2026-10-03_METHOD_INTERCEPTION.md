@@ -51,7 +51,7 @@ pointcut expressions, introductions, or migrating existing method decorators.
 **Prior art (archived)**
 
 - `archive/blue-aspect/` — full imperative AOP API (`intercept(target, pointcut,
-aspect)`, pointcut/advice classes, property interception), 16 months old,
+  aspect)`, pointcut/advice classes, property interception), 16 months old,
   archived. Not resurrected (see AD-42).
 
 **Gap confirmed:** no automatic/global method interception exists anywhere in

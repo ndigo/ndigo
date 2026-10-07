@@ -68,7 +68,7 @@ composes it.
   `${fileName}.toon` (JSON wins on collision; formats never mix within one
   logical file). Profile variants and `BLUE_CONFIG_IMPORT` files inherit the
   probing rule. Optional explicit override: `baseName` → `format: 'json' |
-'toon' | 'auto'` (default `auto`).
+  'toon' | 'auto'` (default `auto`).
 - Parse via `decode()` from `@toon-format/toon` (strict mode, default),
   producing a `JSONObject`; feed existing `mergeConfig` deep-merge and the
   `application` source slot — zero changes to precedence, binding, secrets

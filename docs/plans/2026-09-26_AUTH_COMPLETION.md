@@ -94,7 +94,7 @@ unsafe to ship.
   length; params configurable; `needsRehash` true when scheme ≠ default or
   params differ (D-3).
 - `src/user-store.ts` — `UserRecord { id, username, passwordHash, roles?,
-tokenVersion?, disabled? }` + `UserStore { findByUsername, findById }`.
+  tokenVersion?, disabled? }` + `UserStore { findByUsername, findById }`.
   Apps implement the store over `blue-orm`/Drizzle entities;
   `test/fixtures/in-memory-user-store.ts` is the shipped test/demo fixture
   (no framework-owned reference store in v1 — user storage is app data).
@@ -132,8 +132,8 @@ tokenVersion?, disabled? }` + `UserStore { findByUsername, findById }`.
 ### Wave 2 — Server sessions + credentials adapter ✅ implemented 2026-09-27
 
 - `@blue/auth-core` `src/session-store.ts` — `SessionRecord { principal,
-tokenVersion?, issuedAt }` + `SessionStore { kind, create(record, ttlMs),
-get, rotate, delete }` (D-6). **As-built: the contract lives in
+  tokenVersion?, issuedAt }` + `SessionStore { kind, create(record, ttlMs),
+  get, rotate, delete }` (D-6). **As-built: the contract lives in
   `blue-auth-core`, not `blue-auth-server`** — the node platform's
   `NodeSessionInterceptor` types against it, and platform-node's
   peer-dependency surface is `auth-core` only.
@@ -148,7 +148,7 @@ get, rotate, delete }` (D-6). **As-built: the contract lives in
   store for tests/demos, **moved from the Wave-1 `auth-core/test/fixtures`
   location** so applications can import it.
 - `blue-platform-node` `src/session-cookie.ts` — `SESSION_COOKIE =
-'blue-session'`, HttpOnly + SameSite=Lax + Path=/ (+ Secure by default,
+  'blue-session'`, HttpOnly + SameSite=Lax + Path=/ (+ Secure by default,
   opt-out for localhost), clear value with Max-Age=0 + epoch Expires;
   `setSessionCookie`/`clearSessionCookie` write the node response.
 - `blue-platform-node` `src/node-session-interceptor.ts` — reads the cookie,
@@ -199,13 +199,13 @@ get, rotate, delete }` (D-6). **As-built: the contract lives in
 ### Wave 3 — Rate limiting ✅ implemented 2026-09-27 (SEC-6)
 
 - `blue-platform-node` `src/rate-limit.ts` — `RateLimitPolicy { limit,
-windowMs }`, `RateLimitResult { allowed, retryAfterMs }`, `RateLimiter`
+  windowMs }`, `RateLimitResult { allowed, retryAfterMs }`, `RateLimiter`
   contract (distributed-backend seam) + `FixedWindowRateLimiter` reference
   (per-(key, window) counters, window slides on expiry, opportunistic
   sweep past 10 000 entries, `validateRateLimitPolicy` shared
   decoration/call-time validation).
 - `blue-platform-node` `src/rate-limit-interceptor.ts` — `RATE_LIMIT_KEY
-= 'rate:limit'`, `@rateLimit({ limit, windowMs })` passive metadata
+  = 'rate:limit'`, `@rateLimit({ limit, windowMs })` passive metadata
   decorator (class- and method-scoped, method wins, validates at
   decoration), `RateLimitInterceptor` enforcing **429 + `Retry-After`
   (seconds)** problem documents (`ProblemTypes.rateLimited`, which already
@@ -256,7 +256,7 @@ windowMs }`, `RateLimitResult { allowed, retryAfterMs }`, `RateLimiter`
 ### Wave 4 — JWT refresh + revocation ✅ implemented 2026-09-27
 
 - `UserStore` contract (auth-core) gained `incrementTokenVersion(id):
-Promise<number>` — the revocation **write** the contract lacked (Wave 2
+  Promise<number>` — the revocation **write** the contract lacked (Wave 2
   deferred writes; revocation is impossible without one). Documented as a
   single atomic `UPDATE … SET token_version = token_version + 1`; the
   in-memory store + spec stubs implement it. Breaking-ish (pre-1.0,

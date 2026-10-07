@@ -168,7 +168,7 @@ bind rejection, 401/403 denial finalization: all verified fixed.
 4. **Route the OIDC token exchange through the guarded fetch (SEC-10).**
    Extract `#fetchJson`'s transport discipline (HTTPS assert, timeout, size
    cap, `redirect: 'error'`) into a shared `#fetchJson(url, label,
-{ method, body, headers })` and use it for the token-endpoint POST.
+   { method, body, headers })` and use it for the token-endpoint POST.
     - Acceptance: hanging/infinite token endpoints fail with `OIDCError`
       within `fetchTimeoutMs`; oversized responses reject; no redirect
       carries `client_secret`.
@@ -184,7 +184,7 @@ bind rejection, 401/403 denial finalization: all verified fixed.
 6. **Fix the strict type-check lane (COR-3).**
    Give `@blue/generators` and `@blue/page` build configs (page: resolve its
    fate first — see 10), or switch the lane to `pnpm -r --filter
-…/tsconfig.build.json`-scoped invocation / nx `build:lib` set. The lane
+   …/tsconfig.build.json`-scoped invocation / nx `build:lib` set. The lane
    must fail on a deliberate type error.
     - Verify: introduce a throwaway type error, expect lane failure, then
       remove it.

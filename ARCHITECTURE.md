@@ -1211,7 +1211,7 @@ sections (`scripts/check-manifests.mjs` — CI, `pnpm manifest:check`):
 3. **`peerDependencies`** — reserved for host-provided contracts, allowlisted
    per package in the checker (`PEER_ALLOWLIST` in
    `scripts/check-manifests.mjs` — the single source of truth): `@blue/oxlint-plugin
-→ oxlint` (plugin contract), `@blue/telemetry-node → ws` (host-provided
+   → oxlint` (plugin contract), `@blue/telemetry-node → ws` (host-provided
    types), `@blue/platform-node → swagger-ui-dist` (asset-only docs UI),
    `@blue/redis → @blue/cache`/`@blue/factory`/`@blue/socket` (node-only
    capability subpaths), and `@blue/boot → @toon-format/toon` (optional; AD-66).

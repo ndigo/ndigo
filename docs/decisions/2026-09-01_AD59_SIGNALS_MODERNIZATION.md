@@ -18,7 +18,7 @@ hierarchy patterns.
 
 - `packages/blue-signals/src/index.ts` re-exports the engine:
   `export { signal, computed, effect, batch, untracked, Signal } from
-'@preact/signals-core'` (plus `streamToSignal`, `eventsToSignal`,
+  '@preact/signals-core'` (plus `streamToSignal`, `eventsToSignal`,
   `signalToEvents`). First git entry: `d7f93e84` (2026-09-01).
 - Blue decorator layer: `packages/blue-signals/src/_decorators.ts` implements
   `@signal`/`@computed`/`@effect` field/method decorators over

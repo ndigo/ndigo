@@ -56,7 +56,7 @@ pnpm exec oxfmt <changed files>
 ## Changing a package
 
 1. Read the package README and the repo graph first: `graft map` / `graft ask
-"<question>"` give exact `file:line` spans — re-ask freely, it is cheap.
+   "<question>"` give exact `file:line` spans — re-ask freely, it is cheap.
 2. Follow existing conventions: `#private` fields, executor `new Promise`,
    `defineProperty` for readonly public fields, barrel-controlled exports.
 3. Run the package's own loop while working:

@@ -30,7 +30,7 @@ not a guideline.
   Registered in `packages/blue-oxlint-plugin/src/index.ts:29` and enabled as
   `@blue/no-internal-file-exports: "error"` in `.oxlintrc.json` (rule entry), run by the
   repo global `lint` script (`package.json:20`, `oxlint --type-aware
---deny-warnings .`).
+  --deny-warnings .`).
 - Same-phase companion rules (`@blue/no-internal-file-imports: "error"`,
   `@blue/no-direct-integration-imports: "warn"`) live in the same plugin
   directory (see [AD-45](2026-02-01_AD45_ARCHITECTURAL_LINT_RULES.md)).

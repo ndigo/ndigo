@@ -2,11 +2,13 @@
  * A Vite plugin that lowers TC39 decorators to ES2022 with esbuild.
  *
  * Vite 8 transforms modules with Oxc, whose transformer passes decorator
- * syntax through (verified against oxc-transform 0.151: no option shape —
- * `decorator.legacy`, `target`, `typescript.experimentalDecorators` — lowers
- * it), and its chunk-level `vite:esbuild-transpile` stage did not engage for
- * the app `build.lib` outputs (verified with a bundle syntax check,
- * 2026-10-06). Browsers cannot parse `@decorator` syntax, so decorator-using
+ * syntax through (re-verified 2026-10-07 against oxc-transform 0.153: no
+ * option shape lowers standard decorators, and `decorator.legacy` emits the
+ * pre-TC39 calling convention — decorators receive no TC39 context, so
+ * `context.kind`/`context.metadata` users throw at runtime), and its
+ * chunk-level `vite:esbuild-transpile` stage did not engage for the app
+ * `build.lib` outputs (verified with a bundle syntax check, 2026-10-06).
+ * Browsers cannot parse `@decorator` syntax, so decorator-using
  * client bundles (e.g. `@service`/`@getCall`, `@signal`/`@effect`) shipped as
  * invalid JavaScript while Vitest suites stayed green (Vitest transforms
  * through esbuild). This plugin runs before the default transforms and uses

@@ -75,7 +75,7 @@ conversion.convert('2026-09-29', Date); // leaf: registered converters (unchange
 - **`canConvert`** answers `true` for schema targets; constructor targets
   keep registry semantics.
 - **Type safety** via overloads: `convert<T>(source, targetType:
-z.ZodType<T>): T` — the output is `z.infer` at compile time.
+  z.ZodType<T>): T` — the output is `z.infer` at compile time.
 
 ### D-2 — Explicit schema-driven projection only
 

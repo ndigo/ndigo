@@ -69,7 +69,7 @@ in the audit row map to three waves.
 - **D-2 — Per-signal exporter options: headers, console, none; missing url
   means console (web parity).** Each of `traceExporter` / `metricExporter`
   / `logExporter` accepts `{ url?, headers?, console? } | 'console' |
-'none'`. `url` + `headers` → OTLP/HTTP with the headers forwarded (bearer
+  'none'`. `url` + `headers` → OTLP/HTTP with the headers forwarded (bearer
   auth etc.); `console: true` or a missing `url` → console exporter (the
   dev posture `browser-config.ts` already established — a misconfiguration
   can no longer silently phone `localhost:4318`); `'none'` disables the
@@ -128,7 +128,7 @@ in the audit row map to three waves.
 ### Wave 2 — Exporter ergonomics ✅ (implemented 2026-09-26)
 
 - Per-signal contract `ExporterSpec` (`{ url?, headers?, console? } |
-'console' | 'none'`); pure `resolveExporter(spec, signal)` resolves the
+  'console' | 'none'`); pure `resolveExporter(spec, signal)` resolves the
   shape table (unit-testable in one process): `undefined`/`'console'`/
   `{ console: true }` → console (dev default — web parity); `'none'` →
   disabled; `{ url, headers? }` → OTLP/HTTP with headers forwarded

@@ -35,7 +35,7 @@ Builds on the existing five-contract ORM (`DataSource`, `EntityManager`,
   applied DDL is the documented degradation — author idempotent DDL or
   restore from backup).
 - Journal: `_blue_migrations (version INTEGER PRIMARY KEY, description TEXT
-NOT NULL, applied_at TEXT NOT NULL)`; `migrate()` is idempotent; `status()`
+  NOT NULL, applied_at TEXT NOT NULL)`; `migrate()` is idempotent; `status()`
   reports applied/pending over the given migration list.
 - Versions are unique positive integers applied in ascending order; gaps in
   the applied set are allowed (a pending v2 applies after applied v1/v3).
@@ -123,9 +123,9 @@ and query-composition** layer on top.
 ### Wave 2 — Pagination & sorting ✅ (implemented 2026-09-26)
 
 - **Contracts** (in `@blue/orm`, `src/page.ts`): `SortOrder { property,
-direction: 'asc' | 'desc' }` (direction defaults `asc`), `PageRequest {
-page, size, sort? }` (1-based page, positive integer size), `Page<T> {
-content, page, size, totalElements, totalPages }`. `validatePageRequest`
+  direction: 'asc' | 'desc' }` (direction defaults `asc`), `PageRequest {
+  page, size, sort? }` (1-based page, positive integer size), `Page<T> {
+  content, page, size, totalElements, totalPages }`. `validatePageRequest`
   rejects malformed requests and unknown sort properties (allowlist =
   entity column field names) before any SQL runs; `pageFromAll` sorts +
   slices for in-memory backends (stable per clause, ties keep input order).
@@ -135,7 +135,7 @@ content, page, size, totalElements, totalPages }`. `validatePageRequest`
   allowlisted+quoted `ORDER BY`, `LIMIT`, `OFFSET`, and `COUNT(*) AS total`.
   No-sort paging returns insertion order (SQLite rowid order).
 - Specs: `blue-orm/test/page.spec.ts` (9) + `blue-orm-drizzle/test/
-drizzle-repository.spec.ts` (5): page math, beyond-last pages (empty
+  drizzle-repository.spec.ts` (5): page math, beyond-last pages (empty
   content, stable totals), asc/desc, multi-key clause order, allowlist
   rejection, direction validation.
 - **Gate:** `pnpm test` (blue-orm 96/96, blue-orm-drizzle 40/40, incl. Wave-1
@@ -150,11 +150,11 @@ owner-confirmed 2026-09-26 (explicit metadata + explicit opt-in).
   `inverseJoinColumn` (inverse side); all four relation decorators accept a
   second options argument. **As-built refinement:** join columns name
   existing `@column`s (e.g. `@manyToOne(() => User, { joinColumn:
-'authorId' })`) — no FK columns are generated, DDL is untouched, and FK
+  'authorId' })`) — no FK columns are generated, DDL is untouched, and FK
   nullability is the column's own (`@column({ nullable: true })`).
 - Fetch is explicit opt-in on both backends: `findById(id, { relations:
-[...] })` / `findAll({ relations: [...] })` eager; `loadRelation(entity,
-'field')` lazy (assigns + returns). Managers expose `fetchRelation`
+  [...] })` / `findAll({ relations: [...] })` eager; `loadRelation(entity,
+  'field')` lazy (assigns + returns). Managers expose `fetchRelation`
   (owning side: find by FK; inverse side: equality scan/WHERE). Missing or
   ambiguous metadata fails loud; many-to-many fetch rejected in v1
   (join tables out of scope).
@@ -162,7 +162,7 @@ owner-confirmed 2026-09-26 (explicit metadata + explicit opt-in).
   upsert fallback rethrows the original insert error when the entity has no
   primary key (previously masked).
 - Specs: `blue-orm/test/relations.spec.ts` (8) + `blue-orm-drizzle/test/
-drizzle-relations.spec.ts` (5): eager both directions, lazy, unset-FK /
+  drizzle-relations.spec.ts` (5): eager both directions, lazy, unset-FK /
   empty-inverse values, three fail-loud paths per backend.
 - **Gate:** `pnpm test` (blue-orm 113/113, blue-orm-drizzle 49/49, incl.
   Waves 1–2 + 4 suites), both `tsc -b` builds green.
@@ -175,7 +175,7 @@ drizzle-relations.spec.ts` (5): eager both directions, lazy, unset-FK /
   `First`/`Top<N>` limits. A declared property that itself contains a
   capitalized `And` still matches as one property (legacy fallback
   preserved). Return shape is now `DerivedQuery { filters, orderBy?,
-limit? }` — a **breaking change** to the public `parseDerivedQuery` return
+  limit? }` — a **breaking change** to the public `parseDerivedQuery` return
   type (pre-1.0, flag for the API-freeze review).
 - `InMemoryDerivedQueryRepository.derive` applies filters, then the shared
   `sortComparator` (now exported from `page.ts`), then the limit.
@@ -185,7 +185,7 @@ limit? }` — a **breaking change** to the public `parseDerivedQuery` return
   `DrizzleEntityManager.findAllWhere` building block; sort properties are
   validated against declared columns before any SQL runs.
 - Specs: `blue-orm/test/derived-query.spec.ts` (9) + `blue-orm-drizzle/
-test/drizzle-derived-query-repository.spec.ts` (4): grammar cases,
+  test/drizzle-derived-query-repository.spec.ts` (4): grammar cases,
   ordering/direction, limits, chains, `And`-fallback, unsupported-name
   rejection.
 - **Gate:** `pnpm test` (blue-orm 105/105, blue-orm-drizzle 44/44, incl.

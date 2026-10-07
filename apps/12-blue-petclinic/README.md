@@ -157,7 +157,7 @@ McArdle` — are included; that keeps the owner list at three pages of five.
   the i18n key, so a failure renders prose in the request's language.
 - `@blue/content-i18next` — the whole UI is keyed (`src/messages.ts`, `en` +
   `fr`), the language comes from `Accept-Language` (`curl -H 'Accept-Language:
-fr' /owners` renders French labels _and_ French validation messages).
+  fr' /owners` renders French labels _and_ French validation messages).
 - **Post/redirect/get** with a `302` + `Location` response, so a reload cannot
   re-post a form.
 - `@blue/platform-node` — `StaticController` serving the app's stylesheet and

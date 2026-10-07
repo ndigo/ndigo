@@ -936,7 +936,7 @@ fail-before/pass-after spec (evidence in the slice reports). Highlights:
 
 - **User-wide revocation:** `SessionStore.deleteForUser(userId)` (required
   contract method; in-memory sweep + LibSQL `DELETE … WHERE principal_id = ?
-AND expires_at > ?`) and `CredentialsAuthAdapter.logoutAll(userId)`
+  AND expires_at > ?`) and `CredentialsAuthAdapter.logoutAll(userId)`
   (sessions deleted + `tokenVersion` bumped ⇒ every outstanding JWT dies).
   `refresh` now rejects disabled/deleted accounts; `SessionRecord.tokenVersion`
   is documented as informational only (JWT rotation advances the counter, so

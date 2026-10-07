@@ -19,7 +19,7 @@ a socket.
 ## Evidence
 
 - `packages/blue-test/src/blue-test.ts` — `export function bootApp(sources:
-Function[]): BlueTestApp` (line 43), plus
+  Function[]): BlueTestApp` (line 43), plus
   `export function cachedBootApp(sources: Function[]): BlueTestApp` (line 124,
   per-worker context dedupe). Born `17a4dd85` (2026-09-04).
 - `packages/blue-test/src/mock-http.ts` — `MockHTTP` + `MockHTTPRequestBuilder`

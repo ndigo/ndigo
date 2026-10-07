@@ -20,7 +20,7 @@ host-runtime design references without itself deciding.
 
 - `packages/blue-core/src/shared.ts` — `@shared` class decorator + helpers.
   Verified: `export const SHARED_KEY = 'blue:shared'`, `export interface
-SharedOptions { singleton?; version? }`, `export function shared(options?)`,
+  SharedOptions { singleton?; version? }`, `export function shared(options?)`,
   `getSharedOptions`, `isShared`, and `satisfiesVersion(version, range)`.
   Born `5ebf6821` (2026-09-04).
 - `packages/blue-context/src/shared-dependency-registry.ts` —

@@ -2,7 +2,7 @@
 
 How to project models into API shapes with `ConversionService` (AD-38):
 one service converts both leaf values and whole objects — schema targets are
-contract-enforced projection, fail-fast. Reference application: `apps/blue-api`.
+contract-enforced projection, fail-fast. Reference application: `apps/04-blue-api`.
 
 ## One service, two target kinds
 

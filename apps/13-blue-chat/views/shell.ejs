@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= appTitle %></title>
+    <link rel="stylesheet" href="/static/client.css" />
+</head>
+<body>
+    <h1><%= appTitle %></h1>
+    <p class="intro">
+        Real-time rooms over WebSockets: history is replayed on join, presence and
+        typing are broadcast to the room, and the client reconnects with bounded
+        backoff. A third-party STOMP client may also connect to <code>/stomp/chat</code>
+        and subscribe to <code>/topic/chat</code>.
+    </p>
+    <!-- The inert custom element is upgraded when the client module defines it. -->
+    <chat-room
+        data-rooms="<%= JSON.stringify(rooms) %>"
+        data-default-room="<%= defaultRoom %>"
+        data-user="<%= defaultUser %>"
+    ></chat-room>
+    <script type="module" src="/static/client.js"></script>
+</body>
+</html>

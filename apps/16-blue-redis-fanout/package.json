@@ -1,0 +1,35 @@
+{
+  "name": "@blue/redis-fanout",
+  "version": "0.0.1",
+  "description": "Blue Redis Fanout — two-node demo: a shared @blue/redis cache and cross-node WebSocket fan-out, with a clean single-node fallback when Redis is absent",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@blue/boot": "~0.0.1",
+    "@blue/cache": "~0.0.1",
+    "@blue/context": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/http": "~0.0.1",
+    "@blue/management": "~0.0.1",
+    "@blue/platform-node": "~0.0.1",
+    "@blue/redis": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:",
+    "zod": "catalog:",
+    "@blue/log": "~0.0.1"
+  },
+  "devDependencies": {
+    "@blue/socket": "~0.0.1",
+    "@blue/test": "~0.0.1",
+    "tsx": "catalog:",
+    "vitest": "catalog:",
+    "@blue/log": "~0.0.1"
+  }
+}

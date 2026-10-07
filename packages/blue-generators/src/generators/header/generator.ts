@@ -73,7 +73,9 @@ export function inferModule(file: string): string {
     }
     const appsIndex = parts.indexOf('apps');
     if (appsIndex >= 0 && parts[appsIndex + 1]) {
-        return parts[appsIndex + 1];
+        // App directories are numbered in reading order (`01-blue-hello` …);
+        // the module name is the logical app name without the number.
+        return parts[appsIndex + 1].replace(/^\d\d-/, '');
     }
     return basename(file).replace(/\.(ts|mjs|js)$/, '');
 }

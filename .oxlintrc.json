@@ -15,7 +15,7 @@
     "**/coverage/**",
     "**/node_modules/**",
     "**/test/**/*.js",
-    "apps/blue-todo/index.js",
+    "apps/03-blue-todo/index.js",
     "*.config.js",
     "*.config.mjs",
     "*.config.ts"

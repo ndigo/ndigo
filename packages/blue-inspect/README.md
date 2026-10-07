@@ -116,7 +116,7 @@ pnpm --filter @blue/inspect test
 
 ## See Also
 
-- [apps/blue-api](../../apps/blue-api/README.md) — `pnpm --filter @blue/api inspect` prints a manifest for the demo API
+- [apps/04-blue-api](../../apps/04-blue-api/README.md) — `pnpm --filter @blue/api inspect` prints a manifest for the demo API
 - [@blue/openapi](../blue-openapi/README.md) — the served API document built from the same dispatch metadata
 - [@blue/dispatcher](../blue-dispatcher/README.md) — owns the handler-mapping read model
 

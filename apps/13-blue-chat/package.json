@@ -1,0 +1,40 @@
+{
+  "name": "@blue/chat",
+  "version": "0.0.1",
+  "description": "Blue Chat — real-time room chat: WebSocket rooms, presence, history replay, and a Web Component client",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build:client": "vite build",
+    "dev": "npm run start:full",
+    "start": "tsx src/index.ts",
+    "start:full": "npm run build:client && tsx src/index.ts",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@blue/boot": "~0.0.1",
+    "@blue/context": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/factory": "~0.0.1",
+    "@blue/management": "~0.0.1",
+    "@blue/platform-node": "~0.0.1",
+    "@blue/signals": "~0.0.1",
+    "@blue/socket": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@blue/view-ejs": "~0.0.1",
+    "@blue/view-webcomponent": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:",
+    "zod": "catalog:",
+    "@blue/log": "~0.0.1"
+  },
+  "devDependencies": {
+    "@blue/test": "~0.0.1",
+    "@stomp/stompjs": "7.3.0",
+    "tsx": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:",
+    "@blue/log": "~0.0.1"
+  }
+}

@@ -1,0 +1,8 @@
+<%- await include('../partials/head.ejs', { title: await t('error.notFound.title') }) %>
+<section class="hero">
+    <h1><%= await t('error.notFound.title') %></h1>
+    <p class="lead"><%= await t('error.notFound.message', { values: { resource, id } }) %></p>
+    <p class="muted"><%= await t('error.notFound.hint') %></p>
+    <p class="actions"><a class="button" href="/owners"><%= await t('owners.list.all') %></a></p>
+</section>
+<%- await include('../partials/footer.ejs') %>

@@ -129,7 +129,7 @@ pnpm --filter @blue/service test
 ## See Also
 
 - [@blue/http](../blue-http/README.md) — the underlying HTTP client
-- [apps/blue-island](../../apps/blue-island/README.md) — a server-push SSE demo bridged to signals
+- [apps/06-blue-island](../../apps/06-blue-island/README.md) — a server-push SSE demo bridged to signals
 
 ## Contributing
 

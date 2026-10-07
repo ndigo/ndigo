@@ -1,0 +1,8 @@
+/**
+ * Ambient declarations for the Vite-built client entry.
+ *
+ * @module blue-telemetry-lab
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+declare module '*.css';

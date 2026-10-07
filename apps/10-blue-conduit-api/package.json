@@ -1,0 +1,35 @@
+{
+  "name": "@blue/conduit-api",
+  "version": "0.0.1",
+  "description": "RealWorld (Conduit) API conformance app — JWT auth, articles, comments, tags over @blue/platform-node",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "zod": "catalog:",
+    "@tsmetadata/polyfill": "catalog:",
+    "@blue/auth-core": "~0.0.1",
+    "@blue/auth-server": "~0.0.1",
+    "@blue/boot": "~0.0.1",
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/orm": "~0.0.1",
+    "@blue/platform-node": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@blue/view": "~0.0.1",
+    "@blue/log": "~0.0.1"
+  },
+  "devDependencies": {
+    "tsx": "catalog:",
+    "vitest": "catalog:",
+    "@blue/test": "~0.0.1",
+    "@blue/log": "~0.0.1"
+  }
+}

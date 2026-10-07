@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title><%= title %> · <%= await t('app.title') %></title>
+        <link rel="icon" type="image/svg+xml" href="/static/logo.svg" />
+        <link rel="stylesheet" href="/static/petclinic.css" />
+    </head>
+    <body>
+        <header class="site-header">
+            <a class="brand" href="/">
+                <img src="/static/logo.svg" alt="" width="28" height="28" />
+                <span><%= await t('app.title') %></span>
+            </a>
+            <nav class="site-nav">
+                <a href="/"><%= await t('nav.home') %></a>
+                <a href="/owners"><%= await t('nav.owners') %></a>
+                <a href="/owners/new"><%= await t('nav.addOwner') %></a>
+                <a href="/vets"><%= await t('nav.vets') %></a>
+            </nav>
+        </header>
+        <main class="page">

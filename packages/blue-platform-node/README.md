@@ -281,7 +281,7 @@ string id), which the STOMP broker uses for its `/user/*` scope. With no
 authenticator configured, sockets accept any client: the explicit
 public-endpoint posture.
 
-`apps/blue-api` is the reference wiring: a `socketRequestAuthenticator` bean
+`apps/04-blue-api` is the reference wiring: a `socketRequestAuthenticator` bean
 resolves a demo token from `?token=` on the upgrade URL or an
 `Authorization: Bearer …` header (through the app's own
 `lookupPrincipal`), and `/stomp/chat` is marked `@authenticated` while the

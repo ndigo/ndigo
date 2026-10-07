@@ -137,7 +137,7 @@ promises so fake-timer suites stay deterministic.
 - Decision: [AD-63](../decisions/2026-09-04_AD63_BLUE_TEST_HARNESS.md) — the
   in-process, socket-free harness.
 - Generated API: [`@blue/test` doc/api](../../packages/blue-test/doc/api/README.md).
-- Demo usage: [`apps/blue-todo`](../../apps/blue-todo/README.md) —
+- Demo usage: [`apps/03-blue-todo`](../../apps/03-blue-todo/README.md) —
   harness-driven controller and shell-router specs.
 
 [Back to guides](./README.md)

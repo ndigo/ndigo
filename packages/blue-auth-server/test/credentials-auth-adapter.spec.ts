@@ -5,13 +5,8 @@
  */
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';
-import {
-    type UserRecord,
-    type UserStore,
-    DelegatingPasswordEncoder,
-    ScryptPasswordEncoder,
-    DefaultPrincipal,
-} from '@blue/auth-core';
+import { type UserRecord, type UserStore, DelegatingPasswordEncoder, DefaultPrincipal } from '@blue/auth-core';
+import { ScryptPasswordEncoder } from '@blue/auth-core/scrypt';
 import { delay } from '@blue/test';
 import { CredentialsAuthAdapter, InvalidCredentialsError } from '../src/credentials-auth-adapter';
 import { InMemorySessionStore } from '../src/in-memory-session-store';

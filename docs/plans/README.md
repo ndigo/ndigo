@@ -348,7 +348,7 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 
 ## Draft Plans
 
-- _(none)_
+- [2026-10-07_EXAMPLE_APPLICATIONS.md](2026-10-07_EXAMPLE_APPLICATIONS.md) - Example-application portfolio: number the app directories (`01-blue-hello` …), keep the existing seven in order, and grow the suite with externally-oracled conformance apps (httpbin, Todo-Backend, RealWorld/Conduit), verticals (Conduit web, PetClinic), realtime (STOMP chat, kanban), distributed (resilience lab, Redis fan-out), and operations (telemetry lab, auth playground) apps — plus a port registry, a boot-and-probe smoke gate, and the W0 rename sweep mechanics. **Executed 2026-10-07**: apps `08`–`19` landed with tests + smoke coverage; §11 records execution and the defects the exercise found (port seeding, ≥400 `ResponseEntity` headers, unregistered CORS, single-scheme auth guard, import-scanner `lib` skip, socket 1011 DX).
 
 ---
 

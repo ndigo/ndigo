@@ -1,0 +1,46 @@
+<%- await include('../partials/head.ejs', { title: await t(headingKey) }) %>
+<h1><%= await t(headingKey) %></h1>
+
+<% if (Object.keys(errors).length > 0) { %>
+<p class="alert" role="alert"><%= await t('form.errors') %></p>
+<% } %>
+
+<form class="form" method="post" action="<%= action %>" novalidate>
+    <div class="field<%= errors.firstName ? ' field-error' : '' %>">
+        <label for="firstName"><%= await t('owner.firstName') %></label>
+        <input id="firstName" name="firstName" type="text" value="<%= values.firstName %>" required autocomplete="given-name" />
+        <% if (errors.firstName) { %><span class="error"><%= await t(errors.firstName.key) %></span><% } %>
+    </div>
+
+    <div class="field<%= errors.lastName ? ' field-error' : '' %>">
+        <label for="lastName"><%= await t('owner.lastName') %></label>
+        <input id="lastName" name="lastName" type="text" value="<%= values.lastName %>" required autocomplete="family-name" />
+        <% if (errors.lastName) { %><span class="error"><%= await t(errors.lastName.key) %></span><% } %>
+    </div>
+
+    <div class="field<%= errors.address ? ' field-error' : '' %>">
+        <label for="address"><%= await t('owner.address') %></label>
+        <input id="address" name="address" type="text" value="<%= values.address %>" required autocomplete="street-address" />
+        <% if (errors.address) { %><span class="error"><%= await t(errors.address.key) %></span><% } %>
+    </div>
+
+    <div class="field<%= errors.city ? ' field-error' : '' %>">
+        <label for="city"><%= await t('owner.city') %></label>
+        <input id="city" name="city" type="text" value="<%= values.city %>" required autocomplete="address-level2" />
+        <% if (errors.city) { %><span class="error"><%= await t(errors.city.key) %></span><% } %>
+    </div>
+
+    <div class="field<%= errors.telephone ? ' field-error' : '' %>">
+        <label for="telephone"><%= await t('owner.telephone') %></label>
+        <input id="telephone" name="telephone" type="tel" value="<%= values.telephone %>" required autocomplete="tel" />
+        <% if (errors.telephone) { %><span class="error"><%= await t(errors.telephone.key) %></span><% } %>
+    </div>
+
+    <p class="muted"><%= await t('form.required') %></p>
+    <p class="actions">
+        <button type="submit"><%= await t(submitKey) %></button>
+        <a class="link" href="/owners"><%= await t('form.cancel') %></a>
+    </p>
+</form>
+
+<%- await include('../partials/footer.ejs') %>

@@ -25,7 +25,6 @@ Jeff Rose
 - [InMemoryPendingAuthorizationStore](classes/InMemoryPendingAuthorizationStore.md)
 - [OIDCAdapter](classes/OIDCAdapter.md)
 - [OIDCError](classes/OIDCError.md)
-- [ScryptPasswordEncoder](classes/ScryptPasswordEncoder.md)
 - [UnknownPasswordSchemeError](classes/UnknownPasswordSchemeError.md)
 
 ## Interfaces
@@ -41,7 +40,6 @@ Jeff Rose
 - [PendingAuthorization](interfaces/PendingAuthorization.md)
 - [PendingAuthorizationStore](interfaces/PendingAuthorizationStore.md)
 - [Principal](interfaces/Principal.md)
-- [ScryptOptions](interfaces/ScryptOptions.md)
 - [SessionRecord](interfaces/SessionRecord.md)
 - [SessionStore](interfaces/SessionStore.md)
 - [UserRecord](interfaces/UserRecord.md)

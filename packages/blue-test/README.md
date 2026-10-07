@@ -85,7 +85,7 @@ pnpm --filter @blue/test test
 
 ## See Also
 
-- [apps/blue-todo](../../apps/blue-todo/README.md) — harness-driven controller/pipeline tests
+- [apps/03-blue-todo](../../apps/03-blue-todo/README.md) — harness-driven controller/pipeline tests
 
 ## Contributing
 

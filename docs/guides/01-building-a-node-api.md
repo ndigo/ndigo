@@ -4,7 +4,7 @@ This guide walks through the primary BlueJS server-side workflow end-to-end:
 DI-scaffolded bootstrap, dependency configuration, controllers, request
 binding, validation, the error contract, and graceful shutdown.
 
-The finished shape of every pattern here lives in `apps/blue-api` — use it as
+The finished shape of every pattern here lives in `apps/04-blue-api` — use it as
 the canonical reference. Concepts link to the relevant decision record where the rationale
 is worth reading.
 
@@ -257,34 +257,44 @@ dispatch on either platform.
 
 ## 7. Putting it together
 
-`apps/blue-hello-node/src/index.ts` is the minimal complete app (~30 lines):
+`apps/02-blue-hello-node/src/index.ts` is the minimal complete app — the
+snippet below is that file:
 
 ```ts
 import 'node:process';
 import { ApplicationBuilder } from '@blue/boot';
-import { NodeAutoConfiguration, HTTPServer, gracefulShutdown } from '@blue/platform-node';
-import { getLogger } from '@blue/telemetry';
+import { getEnv } from '@blue/context';
+import { NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@blue/platform-node';
+import { getLogger } from '@blue/log';
+import { getErrorMessage } from '@blue/util';
 import { HelloConfiguration } from './hello-configuration';
 
-const PORT = Number(process.env['PORT'] ?? '3000');
-const logger = getLogger('my-app');
+// The managed server reads `process.env.PORT` (defaulting to 3000) when no
+// explicit port is passed — without this seeding line it would bind 3000 while
+// the log lines claim the app default.
+process.env['PORT'] ??= '3010';
+const PORT = Number(getEnv('PORT', '3010'));
+const logger = getLogger('blue-hello-node');
 
 async function main() {
-    const context = new ApplicationBuilder([NodeAutoConfiguration, HelloConfiguration]).run();
-    const server = context.getValue<HTTPServer>('httpServer');
+    const context = await new ApplicationBuilder([NodeAutoConfiguration, HelloConfiguration]).run();
+    const server = context.getValue(HTTP_SERVER);
     await server.start();
     gracefulShutdown(context, { resources: [server] });
-    logger.info(`listening on http://localhost:${PORT}`);
+    logger.info(`listening on http://127.0.0.1:${PORT}`);
 }
 
 main().catch((err) => {
-    logger.error(`failed to start: ${err instanceof Error ? err.message : String(err)}`);
+    logger.error(`failed to start: ${getErrorMessage(err)}`);
     process.exit(1);
 });
 ```
 
-Run it with `pnpm --filter @blue/hello-node exec tsx src/index.ts` and set
-`PORT` to override the default.
+Run it with `pnpm --filter @blue/hello-node start` (or
+`pnpm --filter @blue/hello-node exec tsx src/index.ts`) and set `PORT` to
+override the default. Logging comes from the dependency-light `@blue/log`
+leaf; `@blue/telemetry` re-exports the same surface when an app already
+depends on it (AD-67).
 
 ## Next steps
 
@@ -292,7 +302,7 @@ Run it with `pnpm --filter @blue/hello-node exec tsx src/index.ts` and set
   `validatedBody`, and entity-derived schemas.
 - [Guide 17 — Static Files](17-static-files.md): serving a directory over
   HTTP — ETag/Range, precompressed variants, SPA fallback (the reference demo
-  is `apps/blue-api`'s `/static/`).
+  is `apps/04-blue-api`'s `/static/`).
 - Package READMEs: `@blue/platform-node`, `@blue/dispatcher`, `@blue/boot`,
   `@blue/orm` for the full symbol surface.
 - Decision records: [Zod validation](../decisions/2026-09-05_AD07_ZOD_VALIDATION.md),

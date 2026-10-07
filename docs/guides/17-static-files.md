@@ -28,7 +28,7 @@ class AppConfiguration {
 }
 ```
 
-`apps/blue-api` registers exactly this and serves `/static/assets/logo.png`
+`apps/04-blue-api` registers exactly this and serves `/static/assets/logo.png`
 from `./public/assets/logo.png`.
 
 Greedy capture is raw and **undecoded**: nothing percent-decodes request

@@ -4,7 +4,7 @@ Conceptual and hands-on guides for building applications with BlueJS. These comp
 
 ## Available Guides
 
-1. [01 — Building a Node API](01-building-a-node-api.md) — the primary workflow end-to-end: DI bootstrap, configuration + entries, controllers, request binding, validation, errors, and shutdown. Reference application: `apps/blue-api`.
+1. [01 — Building a Node API](01-building-a-node-api.md) — the primary workflow end-to-end: DI bootstrap, configuration + entries, controllers, request binding, validation, errors, and shutdown. Reference application: `apps/04-blue-api`.
 2. [02 — Request Validation](02-request-validation.md) — how validation fits the request pipeline: `@parameters` extractor composition, the `validatedBy` / `validatedBody` / `validatedQuery` surface, and entity-derived schemas (`insertSchemaForEntity`).
 3. [03 — Environment & Configuration](03-environment-configuration.md) — the configuration pipeline: property sources + precedence, profiles, `@configurationProperties` typed binding, placeholders, customizers, `@environment` validation, live rebind (`@refreshScope`), at-rest secrets (`{cipher:...}` + `BLUE_SECRET_KEY`), and the remote config source (`configServer`, poll → refresh → rebind).
 4. [04 — Content, i18n, and Locale](04-i18n-and-content.md) — the message source contract, i18next resources, server negotiation (`Accept-Language`), EJS `t()`/formatter helpers, and island locale propagation.
@@ -24,7 +24,7 @@ Conceptual and hands-on guides for building applications with BlueJS. These comp
 18. [18 — Signals & Islands](18-signals-and-islands.md) — reactive state with `@blue/signals` (`signal`/`computed`/`effect`, the `@reactive` decorators, stream and event bridges) and the island lifecycle: `IslandView` marker → `hydrateIslands()` → SSE-driven re-render.
 19. [19 — Testing with `@blue/test`](19-testing.md) — the in-process harness (AD-63): `bootApp`/`cachedBootApp`, the `MockHTTP` request builder and `MockResult`, browser apps via `BrowserMockClient` + `MemoryViewTarget`, and what the harness deliberately is not.
 20. [20 — The HTTP Client](20-http-client.md) — `@blue/http`: `HTTP.create` settings, the verb surface, the interceptor lifecycle hooks and built-ins, body transform pipelines, and the `QueryString`/`MatrixString` parsers.
-21. [21 — Component Integration](21-component-integration.md) — adopting a Web Component library: the AD-69 vetting checklist, per-component imports without wrappers, the server-fallback pattern for first paint, FACE form submission into the existing binding/Zod path, token theming, and i18n wiring. Reference application: `apps/blue-island` (AD-71 — Web Awesome).
+21. [21 — Component Integration](21-component-integration.md) — adopting a Web Component library: the AD-69 vetting checklist, per-component imports without wrappers, the server-fallback pattern for first paint, FACE form submission into the existing binding/Zod path, token theming, and i18n wiring. Reference application: `apps/06-blue-island` (AD-71 — Web Awesome).
 
 ## Reading Order
 
@@ -32,7 +32,7 @@ Start with guide 01; it introduces every concept the other guides and the packag
 
 ## Conventions
 
-- Code snippets are written against the current framework surface and mirror the demo applications — treat `apps/blue-api` as the canonical reference.
+- Code snippets are written against the current framework surface and mirror the demo applications — treat `apps/04-blue-api` as the canonical reference.
 - API names link to nothing inline; the per-package TypeDoc references are
   generated (`pnpm doc:api` → `packages/<name>/doc/api/`; index
   `doc/README.md`) and the package READMEs link them.

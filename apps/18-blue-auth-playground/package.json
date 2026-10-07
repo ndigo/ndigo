@@ -1,0 +1,54 @@
+{
+  "name": "@blue/auth-playground",
+  "version": "0.0.1",
+  "description": "Blue Auth Playground — six authentication modes side by side: opaque cookie sessions, JWT + refresh, role matrices (HTTP + socket), login rate limiting, durable LibSQL sessions and OIDC authorization-code + PKCE against an embedded issuer",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build:client": "vite build",
+    "start": "tsx src/index.ts",
+    "start:full": "pnpm build:client && tsx src/index.ts",
+    "dev": "vite",
+    "test": "pnpm build:client && vitest run"
+  },
+  "keywords": [
+    "auth",
+    "sessions",
+    "jwt",
+    "oidc",
+    "pkce",
+    "bluejs"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@blue/auth-client": "~0.0.1",
+    "@blue/auth-core": "~0.0.1",
+    "@blue/auth-server": "~0.0.1",
+    "@blue/boot": "~0.0.1",
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/http": "~0.0.1",
+    "@blue/management": "~0.0.1",
+    "@blue/orm-drizzle": "~0.0.1",
+    "@blue/platform-node": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@blue/view-ejs": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:",
+    "jose": "catalog:",
+    "@blue/log": "~0.0.1"
+  },
+  "devDependencies": {
+    "@blue/test": "~0.0.1",
+    "@types/oidc-provider": "^9.12.1",
+    "@types/ws": "catalog:",
+    "oidc-provider": "^9.12.2",
+    "tsx": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:",
+    "ws": "catalog:",
+    "@blue/log": "~0.0.1"
+  }
+}

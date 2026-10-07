@@ -1,0 +1,21 @@
+:root {
+    color-scheme: light;
+}
+
+body {
+    font-family: system-ui, sans-serif;
+    max-width: 46rem;
+    margin: 3rem auto;
+    padding: 0 1rem;
+}
+
+.intro {
+    color: #555;
+}
+
+chat-room {
+    display: block;
+    border: 1px solid #d7d7d7;
+    border-radius: 10px;
+    padding: 1rem;
+}

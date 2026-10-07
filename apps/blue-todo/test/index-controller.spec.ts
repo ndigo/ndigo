@@ -54,18 +54,19 @@ describe('IndexController through BrowserMockClient', () => {
         expect(model).toMatchObject({ items: starterTodos });
     });
 
-    test('/ returns filter-only model', async () => {
+    test('/ returns the model with items and the all filter', async () => {
+        // Items are always included: the view filters locally, and a fresh
+        // load (or deep link) must seed its list from the model.
         const { model } = await browser.dispatch('/');
         expect(model).toMatchObject({ filter: 'all' });
-        expect((model as { items?: unknown }).items).toBeUndefined();
+        expect(model).toMatchObject({ items: starterTodos });
     });
 
-    test('/active and /completed return respective filters', async () => {
+    test('/active and /completed return their filters with the full list', async () => {
         const active = await browser.dispatch('/active');
         const completed = await browser.dispatch('/completed');
 
-        expect(active.model).toMatchObject({ filter: 'active' });
-        expect(completed.model).toMatchObject({ filter: 'completed' });
-        expect((active.model as { items?: unknown }).items).toBeUndefined();
+        expect(active.model).toMatchObject({ filter: 'active', items: starterTodos });
+        expect(completed.model).toMatchObject({ filter: 'completed', items: starterTodos });
     });
 });

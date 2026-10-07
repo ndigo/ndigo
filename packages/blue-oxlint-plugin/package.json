@@ -30,6 +30,8 @@
     "@oxlint/plugins": "catalog:"
   },
   "devDependencies": {
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/view": "~0.0.1",
     "oxlint": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"

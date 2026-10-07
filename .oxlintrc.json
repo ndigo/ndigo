@@ -94,7 +94,8 @@
     "typescript/unbound-method": "off",
     "typescript/no-redundant-type-constituents": "off",
     "typescript/no-implied-eval": "off",
-    "@blue/requires-doc-header": "error"
+    "@blue/requires-doc-header": "error",
+    "@blue/no-raw-console": "error"
   },
   "env": {
     "browser": true,
@@ -122,7 +123,8 @@
         "no-shadow": "off",
         "no-useless-escape": "off",
         "no-instanceof-builtins": "off",
-        "@blue/no-duplicate-mapping-path": "off"
+        "@blue/no-duplicate-mapping-path": "off",
+        "@blue/no-raw-console": "off"
       }
     },
     {

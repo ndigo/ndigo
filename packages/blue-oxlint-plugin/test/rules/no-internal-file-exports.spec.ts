@@ -42,6 +42,11 @@ ruleTester.run('no-internal-file-exports', noInternalFileExports, {
             code: "export * from './registry';",
             filename: '/packages/blue-telemetry/src/metrics/index.ts',
         },
+        // A two-level nested barrel re-exporting a public module is fine (RES-D).
+        {
+            code: "export * from './registry';",
+            filename: '/packages/blue-telemetry/src/metrics/http/index.ts',
+        },
     ],
     invalid: [
         {
@@ -76,6 +81,19 @@ ruleTester.run('no-internal-file-exports', noInternalFileExports, {
                     messageId: 'internalExport',
                     data: {
                         source: './_helpers',
+                    },
+                },
+            ],
+        },
+        // A two-level nested barrel re-exporting an internal file is flagged (RES-D).
+        {
+            code: "export * from './_x';",
+            filename: '/packages/blue-telemetry/src/metrics/http/index.ts',
+            errors: [
+                {
+                    messageId: 'internalExport',
+                    data: {
+                        source: './_x',
                     },
                 },
             ],

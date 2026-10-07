@@ -10,7 +10,8 @@ import type { ServerResponse } from 'node:http';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { getMapping, requestMapping, ModelAndView } from '@blue/dispatcher';
 import type { Route } from '@blue/router';
-import { View, ViewTarget } from '@blue/view';
+import { MediaTypes } from '@blue/core';
+import { NotAcceptableError, View, ViewTarget } from '@blue/view';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -53,6 +54,11 @@ class ThrowingViewResolver {
         if (name === 'boom-after-headers') {
             return new ThrowingView(true);
         }
+        if (name === 'no-rep') {
+            // Content negotiation resolved candidates but none served the
+            // accepted range — the route/handler exists, so this is 406.
+            throw new NotAcceptableError('no-rep', [MediaTypes.APPLICATION_JSON]);
+        }
         return null;
     }
 }
@@ -67,6 +73,11 @@ class FailingRenderController {
     @getMapping('/boom-stream')
     boomStream() {
         return new ModelAndView('boom-after-headers', {});
+    }
+
+    @getMapping('/no-rep')
+    noRep() {
+        return new ModelAndView('no-rep', {});
     }
 
     @getMapping('/events')
@@ -109,6 +120,17 @@ describe('dispatch failure response finalization', () => {
             type: 'urn:blue:internal-error',
             title: 'Internal Server Error',
             status: 500,
+        });
+    });
+
+    test('a not-acceptable negotiation failure returns 406, not 404 or 500 (DSV-VIEW-1)', async () => {
+        const res = await fetch(base + '/no-rep');
+
+        expect(res.status).toBe(406);
+        expect(await res.json()).toMatchObject({
+            type: 'urn:blue:not-acceptable',
+            title: 'Not Acceptable',
+            status: 406,
         });
     });
 

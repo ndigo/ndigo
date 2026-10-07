@@ -33,14 +33,14 @@ const MAX_COMPILED = 64;
  * template expressions await them (`<%= await t('key') %>`). Plain synchronous
  * interpolations are unaffected.
  *
- * Templates are **compiled once per source string** and the compiled function
- * reused for every subsequent render — `ejs.render` re-compiles on every call,
- * and ejs's own cache requires a `filename` (+ `cache: true`), which the
- * engine never had. The compiled cache is bounded: when it exceeds its cap
- * it resets so long-lived processes cannot grow
- * it without limit. A template's compiled form therefore reflects the first
- * source seen for that string; inline templates are immutable strings, so
- * this is unobservable for all practical usage.
+ * Templates are **compiled once per (filename, source) key** and the compiled
+ * function reused for every subsequent render — `ejs.render` re-compiles on
+ * every call, and ejs's own cache requires `cache: true`. The filename is part
+ * of the key because it changes how `include(...)` paths resolve. The compiled
+ * cache is bounded: when it exceeds its cap it resets so long-lived processes
+ * cannot grow it without limit. A template's compiled form therefore reflects
+ * the first source seen for that key; inline templates are immutable strings,
+ * so this is unobservable for all practical usage.
  */
 export class EJSTemplateEngine {
     readonly #options: ejs.Options;
@@ -57,19 +57,29 @@ export class EJSTemplateEngine {
      *
      * @param template - The EJS template source.
      * @param model - The data model exposed to the template.
+     * @param filename - Optional path of the template source. ejs uses it to
+     *   resolve `include(...)` paths: a relative include resolves next to this
+     *   file. Omit it for inline templates — relative includes then cannot
+     *   resolve. Includes are async in this engine, so templates MUST write
+     *   `<%- await include('partial') %>`; an un-awaited include interpolates a
+     *   `Promise` and renders as `[object Promise]`.
      * @returns The rendered HTML string.
      */
-    async render(template: string, model: object | null | undefined): Promise<string> {
-        let compiled = this.#compiled.get(template);
+    async render(template: string, model: object | null | undefined, filename?: string): Promise<string> {
+        const cacheKey = filename === undefined ? template : `${filename}\u0000${template}`;
+        let compiled = this.#compiled.get(cacheKey);
         if (compiled === undefined) {
-            const asyncOptions = this.#options as ejs.Options & { async: true; client?: false };
+            const asyncOptions = {
+                ...(this.#options as ejs.Options & { async: true; client?: false }),
+                filename,
+            };
             // Options always carry `async: true` (forced in the constructor),
             // so the compile overload resolution picks the async template fn.
             compiled = ejs.compile(template, asyncOptions) as ejs.AsyncTemplateFunction;
             if (this.#compiled.size >= MAX_COMPILED) {
                 this.#compiled.clear();
             }
-            this.#compiled.set(template, compiled);
+            this.#compiled.set(cacheKey, compiled);
         }
         return compiled(model ?? {});
     }

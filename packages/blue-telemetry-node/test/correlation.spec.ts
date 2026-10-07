@@ -32,7 +32,7 @@ class APIController {
 
     @getMapping('/view')
     view() {
-        return new ModelAndView('test');
+        return new ModelAndView('x-view');
     }
 
     @getMapping('/boom')
@@ -150,7 +150,9 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
         const resolveSpans = exporter.getFinishedSpans().filter((s) => s.name === 'Dispatcher.resolveViewName');
         expect(resolveSpans.length).toBeGreaterThan(0);
         const span = resolveSpans[resolveSpans.length - 1];
-        expect(span.attributes['view.name']).toBe('test');
+        // A custom-element-shaped name is what the default island resolver
+        // claims (WEBCOMP-2: plain names fall through to 404).
+        expect(span.attributes['view.name']).toBe('x-view');
         expect(span.attributes['view.resolved']).toBe(true);
         // The node default resolver (IslandViewResolver) served an IslandView.
         expect(span.attributes['view.resolved_by']).toBe('IslandView');

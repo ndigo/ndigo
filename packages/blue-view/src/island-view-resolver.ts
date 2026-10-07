@@ -6,15 +6,17 @@
  */
 import { AbstractPathBasedViewResolver } from './view-resolver.js';
 import { View } from './view.js';
-import { IslandView } from './island-view.js';
+import { customElementNamePattern, IslandView } from './island-view.js';
 
 /**
  * Configuration for {@link IslandViewResolver}.
  */
 export interface IslandViewResolverOptions {
     /**
-     * Optional name filter. When set, only names matching these patterns
-     * resolve; everything else falls through the resolver chain.
+     * Name filter. When set, only names matching these patterns resolve;
+     * everything else falls through the resolver chain. Defaults to
+     * {@link customElementNamePattern} so a default resolver claims only
+     * names that are valid custom-element tags, never every view name.
      */
     viewNames?: (string | RegExp)[];
 }
@@ -22,15 +24,20 @@ export interface IslandViewResolverOptions {
 /**
  * Resolves view names to `IslandView` markers.
  *
+ * Only names matching {@link IslandViewResolverOptions.viewNames} (by default
+ * {@link customElementNamePattern}) resolve; every other name returns
+ * `null` so the resolver chain continues (there is no implicit fallback — an
+ * unmatched name is only served if a later resolver claims it, otherwise the
+ * dispatcher's usual not-found path applies).
+ *
  * @example
  * ```ts
  * const resolver = new IslandViewResolver();
  * const view = await resolver.resolveViewName('todo-app'); // IslandView('todo-app')
+ * await resolver.resolveViewName('user'); // null — not a custom-element name
  * ```
  */
 export class IslandViewResolver extends AbstractPathBasedViewResolver {
-    readonly #viewNames: (string | RegExp)[] | null;
-
     /**
      * Creates an island resolver with an optional name filter.
      *
@@ -38,8 +45,7 @@ export class IslandViewResolver extends AbstractPathBasedViewResolver {
      */
     constructor(options: IslandViewResolverOptions = {}) {
         super();
-        this.#viewNames = options.viewNames ?? null;
-        this.viewNames = this.#viewNames;
+        this.viewNames = options.viewNames ?? [customElementNamePattern];
     }
 
     /**
@@ -50,7 +56,7 @@ export class IslandViewResolver extends AbstractPathBasedViewResolver {
      * @returns The view, or `null` when filtered out.
      */
     protected async _loadView(name: string, language?: unknown): Promise<View | null> {
-        if (this.viewNames && !this.supports(name, language)) {
+        if (!this.supports(name, language)) {
             return null;
         }
         return new IslandView(name);

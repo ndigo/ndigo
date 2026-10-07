@@ -179,6 +179,52 @@ const parseAcceptedRanges = (accept: string): MediaType[] => {
 };
 
 /**
+ * Whether a candidate media type can serve an accepted media range, honoring
+ * type/subtype inclusion and wildcard semantics. Single source of truth for
+ * the candidate-vs-range check shared by the extension strategy and the
+ * resolver's final negotiation pass.
+ *
+ * @param candidate - The media type a view produces.
+ * @param accepted - The client-accepted range.
+ * @returns `true` when the candidate satisfies the range.
+ */
+export const canServeMediaType = (candidate: MediaType, accepted: MediaType): boolean =>
+    candidate.includes(accepted) || accepted.includes(candidate) || candidate.matches(accepted);
+
+/**
+ * Raised when a view name resolves to candidate representations but none
+ * satisfies the request's accepted media types (HTTP 406 — the route/handler
+ * exists, only the representation is unavailable). Distinct from a missing
+ * view, which stays `NoViewFoundError`/404.
+ */
+export class NotAcceptableError extends FrameworkError {
+    /**
+     * The view name whose candidates were unacceptable.
+     */
+    readonly viewName: string;
+    /**
+     * The accepted media types considered, in client-priority order.
+     */
+    readonly acceptedMediaTypes: MediaType[];
+
+    /**
+     * Creates a not-acceptable signal for the resolved view name.
+     *
+     * @param viewName - The view name whose representations were refused.
+     * @param acceptedMediaTypes - The request's accepted media types.
+     */
+    constructor(viewName: string, acceptedMediaTypes: MediaType[]) {
+        super(
+            `No acceptable representation for view "${viewName}"; accepted: ${
+                acceptedMediaTypes.map((mediaType) => String(mediaType)).join(', ') || '(none)'
+            }`
+        );
+        this.viewName = viewName;
+        this.acceptedMediaTypes = acceptedMediaTypes;
+    }
+}
+
+/**
  * Base class for content negotiation strategies that also resolve file extensions.
  */
 export abstract class AbstractMappingContentNegotiationStrategy
@@ -254,7 +300,7 @@ export class PathExtensionContentNegotiationStrategy
             const registered = this.getAllMediaTypes();
             for (const accepted of parseAcceptedRanges(hint)) {
                 for (const mediaType of registered) {
-                    if (mediaType.includes(accepted) || accepted.includes(mediaType) || mediaType.matches(accepted)) {
+                    if (canServeMediaType(mediaType, accepted)) {
                         return [mediaType];
                     }
                 }
@@ -340,17 +386,25 @@ export class ContentNegotiationManager implements ContentNegotiationStrategy, Me
         // `HTTPHeaders.ACCEPT` folds case and joins multi-value entries.
         // The negotiation request is an untyped protocol object, so cast it
         // once here (rather than per member access) and probe the members.
-        const nodeRequest = request as { headers?: Record<string, string>; mediaTypeHint?: string } | undefined;
-        const hint = nodeRequest?.mediaTypeHint;
+        //
+        // The bridge MUST NOT mutate the caller's request: a reused route
+        // would otherwise keep a stale hint and negotiate against the first
+        // request's Accept forever. When a hint must be derived, inject it on
+        // a shallow copy and negotiate with that.
+        const nodeRequest = request as
+            | { headers?: Record<string, string | string[] | undefined>; mediaTypeHint?: string }
+            | undefined;
+        let hint = nodeRequest?.mediaTypeHint;
         if (!hint && nodeRequest?.headers && typeof nodeRequest.headers === 'object') {
-            const accept = HTTPHeaders.ACCEPT.get(nodeRequest.headers);
-            if (accept) {
-                nodeRequest.mediaTypeHint = accept;
-            }
+            hint = HTTPHeaders.ACCEPT.get(nodeRequest.headers) || undefined;
         }
+        const negotiationRequest =
+            hint === nodeRequest?.mediaTypeHint || hint === undefined
+                ? request
+                : Object.assign({}, request as object, { mediaTypeHint: hint });
 
         for (const strategy of this.strategies) {
-            const result = strategy.resolveMediaTypes(request);
+            const result = strategy.resolveMediaTypes(negotiationRequest);
             if (result && result.length > 0) return result;
         }
         throw new FrameworkError('No content negotiation strategy could resolve media types');
@@ -413,7 +467,9 @@ export class ContentNegotiationViewResolver implements ViewResolver {
      *   the negotiation data — `Accept` header, path extension. Passed
      *   explicitly so interleaved async resolutions never share state; when
      *   omitted, the first candidate is served without negotiation.
-     * @returns The matching view, or `null` when none is available.
+     * @returns The matching view, or `null` when no resolver/default produced one.
+     * @throws {NotAcceptableError} When candidates exist but none serves the
+     *   request's accepted media types (HTTP 406).
      */
     async resolveViewName(name: string, language?: unknown, request?: unknown): Promise<View | null> {
         // 1. Aggregate candidate views from every delegate resolver — once
@@ -457,15 +513,19 @@ export class ContentNegotiationViewResolver implements ViewResolver {
                 if (!mediaType) {
                     continue;
                 }
-                if (mediaType.includes(accepted) || accepted.includes(mediaType) || mediaType.matches(accepted)) {
+                if (canServeMediaType(mediaType, accepted)) {
                     return candidate;
                 }
             }
         }
 
-        // 6. No representation matched the accepted ranges — 406 (no
-        //    acceptable representation), not a silent default.
-        return null;
+        // 6. Candidates exist but no representation matched the accepted
+        //    ranges: signal 406 (not acceptable representation). Throwing
+        //    rather than returning `null` keeps this distinct from "no such
+        //    view" (404) — the route/handler resolved, only the representation
+        //    is unavailable — and stops the resolver chain from silently
+        //    falling through to an unrelated view.
+        throw new NotAcceptableError(name, requested);
     }
 
     /**

@@ -81,6 +81,28 @@ describe('ContentNegotiationManager', () => {
 
         expect(result.map((mediaType) => mediaType.baseType)).toEqual(['application/json', 'application/xml']);
     });
+
+    it('does not mutate the caller request; a reused request re-derives Accept (DSV-VIEW-2)', () => {
+        class TestMappingStrategy extends AbstractMappingContentNegotiationStrategy {}
+        const strategy = new TestMappingStrategy(
+            new Map<string, MediaType>([
+                ['json', MediaTypes.APPLICATION_JSON],
+                ['xml', MediaTypes.APPLICATION_XML],
+            ])
+        );
+        const headerManager = new ContentNegotiationManager([strategy]);
+        const request: { headers: Record<string, string>; mediaTypeHint?: string } = {
+            headers: { accept: 'application/xml' },
+        };
+
+        expect(headerManager.resolveMediaTypes(request)).toEqual([MediaTypes.APPLICATION_XML]);
+        // Pre-fix the bridge wrote `mediaTypeHint` onto the request, so the
+        // second call below resolved against the stale XML hint.
+        expect(request.mediaTypeHint).toBeUndefined();
+
+        request.headers.accept = 'application/json';
+        expect(headerManager.resolveMediaTypes(request)).toEqual([MediaTypes.APPLICATION_JSON]);
+    });
 });
 
 describe('PathExtensionContentNegotiationStrategy', () => {

@@ -27,7 +27,7 @@ public API via `@blue/validate`'s `formats.*` namespace).
   flags any `UPPER_SNAKE_CASE` identifier (`/^[A-Z][A-Z0-9_]*$/`) initialized
   with a RegExp literal; registered in
   `packages/blue-oxlint-plugin/src/index.ts:31` and enabled as
-  `@blue/no-uppercase-regexp-constants: "error"` in `.oxlintrc.json:71`, run
+  `@blue/no-uppercase-regexp-constants: "error"` in `.oxlintrc.json` (rule entry), run
   via the repo `lint` script (`package.json:20`). The rule cites
   STYLE_GUIDE §3.9.
 - Introduced as an enforced oxlint rule 2026-09-05 (`0e366d9b` "lint: enforce

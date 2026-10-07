@@ -33,6 +33,7 @@ Jeff Rose
 - [JSONView](classes/JSONView.md)
 - [MappingMediaTypeFileExtensionResolver](classes/MappingMediaTypeFileExtensionResolver.md)
 - [NameViewResolver](classes/NameViewResolver.md)
+- [NotAcceptableError](classes/NotAcceptableError.md)
 - [OctetStreamView](classes/OctetStreamView.md)
 - [PathExtensionContentNegotiationStrategy](classes/PathExtensionContentNegotiationStrategy.md)
 - [RerouteView](classes/RerouteView.md)
@@ -54,8 +55,14 @@ Jeff Rose
 - [ViewResolver](interfaces/ViewResolver.md)
 - [ViewTarget](interfaces/ViewTarget.md)
 
+## Variables
+
+- [customElementNamePattern](variables/customElementNamePattern.md)
+
 ## Functions
 
+- [canServeMediaType](functions/canServeMediaType.md)
+- [isValidCustomElementName](functions/isValidCustomElementName.md)
 - [likeMediaTypeFileExtensionResolver](functions/likeMediaTypeFileExtensionResolver.md)
 - [likeProducerView](functions/likeProducerView.md)
 - [likeView](functions/likeView.md)

@@ -53,6 +53,41 @@ export function parseModel(raw: string | undefined): unknown {
 }
 
 /**
+ * Pattern for a valid custom-element tag name (the autonomous-custom-element
+ * subset of the HTML "valid custom element name" grammar): a lowercase ASCII
+ * letter, then name characters with at least one hyphen. Uppercase, leading
+ * hyphens, spaces, and markup metacharacters are rejected — the name is
+ * interpolated raw into generated markup, so an unvalidated name is an
+ * injection vector.
+ */
+export const customElementNamePattern = /^[a-z][a-z0-9._]*-[a-z0-9._-]*$/;
+
+/**
+ * Custom element names the platform reserves for built-in elements; the HTML
+ * spec forbids registering these as custom elements.
+ */
+const RESERVED_CUSTOM_ELEMENT_NAMES: Record<string, true> = {
+    'annotation-xml': true,
+    'color-profile': true,
+    'font-face': true,
+    'font-face-src': true,
+    'font-face-uri': true,
+    'font-face-format': true,
+    'font-face-name': true,
+    'missing-glyph': true,
+};
+
+/**
+ * Returns whether `name` is a valid, non-reserved custom-element tag name.
+ *
+ * @param name - The candidate tag name.
+ * @returns `true` when the name may be used as a custom element tag.
+ */
+export function isValidCustomElementName(name: string): boolean {
+    return customElementNamePattern.test(name) && !(name in RESERVED_CUSTOM_ELEMENT_NAMES);
+}
+
+/**
  * A server-rendered HTML view for partial hydration ("islands").
  *
  * Renders an inert custom-element marker carrying the serialized view model:
@@ -82,10 +117,20 @@ export class IslandView extends AbstractTemplateView {
     /**
      * Creates an island view for the given custom element tag.
      *
+     * The tag name is interpolated raw into the rendered markup, so it is
+     * validated against the custom-element grammar here — construction fails
+     * loudly instead of emitting attacker-controlled markup.
+     *
      * @param name - The custom element tag name.
+     * @throws {FrameworkError} When `name` is not a valid custom-element name.
      */
     constructor(name: string) {
         super();
+        if (!isValidCustomElementName(name)) {
+            throw new FrameworkError(
+                `IslandView requires a valid custom-element tag name (lowercase, hyphenated, non-reserved): received "${name}".`
+            );
+        }
         this.tagName = name;
     }
 

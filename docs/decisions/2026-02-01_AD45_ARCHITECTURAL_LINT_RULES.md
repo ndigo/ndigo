@@ -45,7 +45,7 @@ dedicated plugin carrying custom rules to lock them down in CI.
 
 - The integration-layer and internal-file rules still exist verbatim in
   `packages/blue-oxlint-plugin/src/rules/`.
-- `@blue/no-internal-file-imports` remains `error` (`.oxlintrc.json:68`) as the
+- `@blue/no-internal-file-imports` remains `error` (`.oxlintrc.json`, rule entry) as the
   non-negotiable boundary; `no-direct-integration-imports` stays `warn`.
 
 ## References

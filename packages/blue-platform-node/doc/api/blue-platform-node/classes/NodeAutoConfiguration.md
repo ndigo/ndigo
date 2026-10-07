@@ -241,6 +241,10 @@ The task scheduler.
 Provides the default view resolver for server-side rendering:
 island markers (server-rendered pairs of the client web components).
 
+The default resolver claims only valid custom-element tag names
+(`hyphenated-lowercase`), not every view name — an app that renders
+ordinary named views adds its own resolver (e.g. EJS) to the chain.
+
 #### Returns
 
 `IslandViewResolver`

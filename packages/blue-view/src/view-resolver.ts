@@ -42,6 +42,14 @@ class UnresolvedView implements View {
 const defineProperty = Reflect.defineProperty,
     unresolvedView: View = new UnresolvedView();
 
+/**
+ * Upper bound on cached views. View names can be request-derived (default
+ * route names, path extensions), so an unbounded cache is a memory-growth
+ * vector; insertion-ordered FIFO eviction keeps the cache bounded without
+ * changing observable resolution for a fixed name set.
+ */
+const MAX_CACHE_ENTRIES = 1024;
+
 export abstract class AbstractCachingViewResolver implements ViewResolver {
     /**
      * Cached views keyed by name and language.
@@ -51,6 +59,10 @@ export abstract class AbstractCachingViewResolver implements ViewResolver {
      * Indicates whether resolved views should be cached.
      */
     isCaching: boolean;
+    /**
+     * Insertion order of {@link cache} keys, for FIFO eviction at the bound.
+     */
+    #cacheOrder: string[];
 
     /**
      * Creates a resolver with an empty cache.
@@ -62,6 +74,7 @@ export abstract class AbstractCachingViewResolver implements ViewResolver {
             enumerable: false,
             writable: false,
         });
+        this.#cacheOrder = [];
         this.isCaching = true;
     }
 
@@ -85,6 +98,13 @@ export abstract class AbstractCachingViewResolver implements ViewResolver {
                     view = unresolvedView;
                 } else {
                     this.cache[key] = view;
+                    // FIFO eviction: keys are distinct here (a hit skips this
+                    // branch), so the order list never duplicates a key.
+                    this.#cacheOrder.push(key);
+                    if (this.#cacheOrder.length > MAX_CACHE_ENTRIES) {
+                        const oldest = this.#cacheOrder.shift() as string;
+                        delete this.cache[oldest];
+                    }
                 }
             }
         }
@@ -95,8 +115,21 @@ export abstract class AbstractCachingViewResolver implements ViewResolver {
         return this._loadView(name, language);
     }
 
+    /**
+     * Builds an unambiguous cache key for a name/language pair.
+     *
+     * The key MUST distinguish every distinct pair: a naive
+     * `` `${name}_${language}` `` join collides — `('user_en', 'US')` and
+     * `('user', 'en_US')` both yield `user_en_US` — and would serve the first
+     * resolved view for the second pair. JSON-encoding the tuple preserves the
+     * `_` characters inside each component while keeping them separate.
+     *
+     * @param name - The view name.
+     * @param language - Optional language/locale hint.
+     * @returns A collision-free cache key.
+     */
     protected _createCacheKey(name: string, language?: unknown): string {
-        return `${name}${language ? '_' + String(language) : ''}`;
+        return JSON.stringify([name, language == null ? '' : String(language)]);
     }
 
     protected abstract _loadView(name: string, language?: unknown): Promise<View | null>;

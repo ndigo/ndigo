@@ -160,7 +160,11 @@ export class EJSView extends AbstractTemplateView implements ProducerView {
         const base = model != null ? { ...(model as object) } : {};
         const locals = { ...base, ...helpers };
 
-        return this.#engine.render(await this.#resolveSource(), locals);
+        // Thread the template path so `include(...)` can resolve relative
+        // includes next to the template. Inline templates have no path, so
+        // relative includes cannot resolve for them.
+        const filename = this.template != null ? undefined : (this.path ?? undefined);
+        return this.#engine.render(await this.#resolveSource(), locals, filename);
     }
 
     /**

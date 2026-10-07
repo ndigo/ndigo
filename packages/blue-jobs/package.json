@@ -1,0 +1,45 @@
+{
+  "name": "@blue/jobs",
+  "version": "0.0.1",
+  "description": "Durable job queues, worker execution, and the transactional outbox for Node.js",
+  "type": "module",
+  "keywords": [
+    "bluejs",
+    "blue-jobs",
+    "jobs",
+    "queue",
+    "outbox",
+    "worker"
+  ],
+  "files": [
+    "doc",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/factory": "~0.0.1",
+    "@blue/log": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@opentelemetry/api": "catalog:",
+    "@tsmetadata/polyfill": "catalog:"
+  },
+  "devDependencies": {
+    "@opentelemetry/sdk-trace-base": "catalog:"
+  },
+  "sideEffects": false
+}

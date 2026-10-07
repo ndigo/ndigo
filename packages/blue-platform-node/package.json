@@ -47,6 +47,7 @@
     "@blue/dispatcher": "~0.0.1",
     "@blue/factory": "~0.0.1",
     "@blue/http": "~0.0.1",
+    "@blue/jobs": "~0.0.1",
     "@blue/log": "~0.0.1",
     "@blue/openapi": "~0.0.1",
     "@blue/router": "~0.0.1",

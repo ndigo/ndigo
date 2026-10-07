@@ -25,6 +25,7 @@ Conceptual and hands-on guides for building applications with BlueJS. These comp
 19. [19 — Testing with `@blue/test`](19-testing.md) — the in-process harness (AD-63): `bootApp`/`cachedBootApp`, the `MockHTTP` request builder and `MockResult`, browser apps via `BrowserMockClient` + `MemoryViewTarget`, and what the harness deliberately is not.
 20. [20 — The HTTP Client](20-http-client.md) — `@blue/http`: `HTTP.create` settings, the verb surface, the interceptor lifecycle hooks and built-ins, body transform pipelines, and the `QueryString`/`MatrixString` parsers.
 21. [21 — Component Integration](21-component-integration.md) — adopting a Web Component library: the AD-69 vetting checklist, per-component imports without wrappers, the server-fallback pattern for first paint, FACE form submission into the existing binding/Zod path, token theming, and i18n wiring. Reference application: `apps/06-blue-island` (AD-71 — Web Awesome).
+22. [22 — Jobs and the Transactional Outbox](22-jobs-and-outbox.md) — `@blue/jobs`: the `JobDriver` SPI (at-least-once lease-based delivery), `@jobHandler` discovery, retries/timeouts/spans, the durable libSQL and Redis drivers, and the outbox that commits side effects with the data.
 
 ## Reading Order
 

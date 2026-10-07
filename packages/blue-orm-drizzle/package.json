@@ -36,6 +36,7 @@
   "dependencies": {
     "@blue/auth-core": "~0.0.1",
     "@blue/core": "~0.0.1",
+    "@blue/jobs": "~0.0.1",
     "@blue/orm": "~0.0.1",
     "@blue/socket": "~0.0.1",
     "@blue/util": "~0.0.1",

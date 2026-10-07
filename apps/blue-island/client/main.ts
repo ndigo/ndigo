@@ -72,24 +72,28 @@ class TodoIsland extends AbstractWebComponent {
     }
 
     render(): void {
-        this.replaceChildren();
+        // Render into the shadow root (adopting the server's declarative
+        // shadow root when present) — light-DOM children would be masked by a
+        // parsed DSD root, since the fallback markup has no `<slot>`.
+        const root = this.ensureShadowRoot();
+        root.replaceChildren();
         const list = document.createElement('ul');
         for (const item of this.#model.items) {
             const li = document.createElement('li');
             li.textContent = `${item.done ? '✅' : '⬜'} ${item.text}`;
             list.append(li);
         }
-        this.append(list);
+        root.append(list);
         const hint = document.createElement('p');
         hint.style.fontSize = '0.85rem';
         hint.style.color = '#666';
         hint.textContent = `[hydrated on client] ${this.#model.items.length} item(s), filter: ${this.#model.filter}`;
-        this.append(hint);
+        root.append(hint);
         const live = document.createElement('p');
         live.style.fontSize = '0.85rem';
         live.style.color = '#2a6';
         live.textContent = '[SSE] listening for server model updates…';
-        this.append(live);
+        root.append(live);
     }
 }
 

@@ -95,4 +95,39 @@ describe('hydrateIslands', () => {
         document.body.innerHTML = '<div>plain</div>';
         expect(hydrateIslands(document)).toBe(0);
     });
+
+    test('adopts a parser-created (DSD) shadow root in place instead of re-creating the element', () => {
+        // First render replaces the server-rendered fallback in the root the
+        // browser parsed from `<template shadowrootmode="open">`. jsdom does
+        // not parse DSD, so emulate the parsed state by attaching a root.
+        class DsdIsland extends AbstractWebComponent {
+            static get observedAttributes() {
+                return [];
+            }
+            set model(m: unknown) {
+                const count = typeof m === 'object' && m !== null && 'count' in m ? String(m.count) : '0';
+                this.ensureShadowRoot().innerHTML = `<p>client ${count}</p>`;
+            }
+            render(): void {}
+        }
+        customElements.define('dsd-island', DsdIsland);
+
+        document.body.innerHTML = '<dsd-island data-blue-island data-blue-model="{&quot;count&quot;:7}"></dsd-island>';
+        const marker = document.querySelector('dsd-island');
+        if (!marker) {
+            throw new Error('expected a dsd-island marker');
+        }
+        const parsedRoot = marker.attachShadow({ mode: 'open' });
+        parsedRoot.innerHTML = '<p>server fallback</p>';
+
+        const n = hydrateIslands(document);
+
+        expect(n).toBe(1);
+        // The very same element is kept (no replaceWith) and it keeps the root
+        // that hydration adopted rather than attaching a second one.
+        expect(document.querySelector('dsd-island')).toBe(marker);
+        expect(marker.shadowRoot).toBe(parsedRoot);
+        // The component's first render replaced the server fallback.
+        expect(parsedRoot.textContent).toBe('client 7');
+    });
 });

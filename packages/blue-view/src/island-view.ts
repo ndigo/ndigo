@@ -88,6 +88,27 @@ export function isValidCustomElementName(name: string): boolean {
 }
 
 /**
+ * Construction options for {@link IslandView}.
+ */
+export interface IslandViewOptions {
+    /**
+     * Trusted, author/design-system-supplied markup rendered inside a
+     * Declarative Shadow DOM `<template shadowrootmode="open">` wrapper
+     * (Baseline since 2024).
+     *
+     * **Trusted markup only — never user input.** The value is interpolated
+     * raw into the generated markup (exactly like an inline template), so an
+     * untrusted value would be a direct XSS vector. Its purpose is
+     * content-first paint — the first byte of HTML shows real content instead
+     * of an empty element — and third-party components that cannot
+     * server-render. Browsers parse the template into a real shadow root
+     * before any script runs; `hydrateIslands()` then upgrades the element in
+     * place and the component's first render replaces this fallback.
+     */
+    shadowHtml?: string;
+}
+
+/**
  * A server-rendered HTML view for partial hydration ("islands").
  *
  * Renders an inert custom-element marker carrying the serialized view model:
@@ -96,10 +117,18 @@ export function isValidCustomElementName(name: string): boolean {
  * <my-element data-blue-island data-blue-model="&quot;{...}&quot;"></my-element>
  * ```
  *
+ * When {@link IslandViewOptions.shadowHtml} is supplied, the marker also
+ * carries a declarative shadow root so the first paint shows real content:
+ *
+ * ```html
+ * <my-element data-blue-island data-blue-model="&quot;{...}&quot;"><template shadowrootmode="open">…fallback…</template></my-element>
+ * ```
+ *
  * It is fully server-safe (no `customElements`, no DOM, no component-module
  * import): it serializes only the model into markup. On the client,
  * `hydrateIslands()` (from `@blue/view-webcomponent`) finds the marker,
- * constructs the element, sets `.model`, and lets `connectedCallback` run.
+ * adopts the parser-created shadow root (when present) or constructs the
+ * element, sets `.model`, and lets `connectedCallback` run.
  *
  * @example
  * ```ts
@@ -115,6 +144,11 @@ export class IslandView extends AbstractTemplateView {
     readonly tagName: string;
 
     /**
+     * Trusted first-paint markup for a declarative shadow root, when supplied.
+     */
+    readonly shadowHtml: string | undefined;
+
+    /**
      * Creates an island view for the given custom element tag.
      *
      * The tag name is interpolated raw into the rendered markup, so it is
@@ -122,9 +156,10 @@ export class IslandView extends AbstractTemplateView {
      * loudly instead of emitting attacker-controlled markup.
      *
      * @param name - The custom element tag name.
+     * @param options - Island rendering options ({@link IslandViewOptions.shadowHtml}).
      * @throws {FrameworkError} When `name` is not a valid custom-element name.
      */
-    constructor(name: string) {
+    constructor(name: string, options: IslandViewOptions = {}) {
         super();
         if (!isValidCustomElementName(name)) {
             throw new FrameworkError(
@@ -132,6 +167,7 @@ export class IslandView extends AbstractTemplateView {
             );
         }
         this.tagName = name;
+        this.shadowHtml = options.shadowHtml;
     }
 
     /**
@@ -153,7 +189,13 @@ export class IslandView extends AbstractTemplateView {
         const rawLocale = (request as Route | null)?.attributes?.[LANGUAGE_ATTRIBUTE];
         const locale = typeof rawLocale === 'string' ? rawLocale : '';
 
-        const html = `<${this.tagName} data-blue-island data-blue-locale="${escapeAttributeValue(locale)}" data-blue-model="${serializeModel(templateModel)}"></${this.tagName}>`;
+        // `shadowHtml` is trusted markup (see {@link IslandViewOptions.shadowHtml});
+        // it is deliberately NOT escaped — the browser parses it into a real
+        // shadow root, giving the island a content-first paint.
+        const shadowRoot =
+            this.shadowHtml != null ? `<template shadowrootmode="open">${this.shadowHtml}</template>` : '';
+
+        const html = `<${this.tagName} data-blue-island data-blue-locale="${escapeAttributeValue(locale)}" data-blue-model="${serializeModel(templateModel)}">${shadowRoot}</${this.tagName}>`;
         // The view target's commit slot expects the route; the request is what the view pipeline supplies.
         await target.commit(html, templateModel, request as Route);
     }

@@ -66,6 +66,7 @@ how it fits with the rest of BlueJS.
 - **Serializing views** — `AbstractSerializingView` family: `JSONView`, `CSVView`, `TextView`, `OctetStreamView`
 - **View targets** — `ViewTarget` abstraction for fragment rendering (DOM, HTTP response)
 - **Resolution** — `ContentNegotiationManager` + strategies, `ContentNegotiationViewResolver`, path-based resolvers with per-name caching, `IslandViewResolver`/`IslandView`
+- **Island first paint** — `IslandView` accepts trusted `shadowHtml` (author/design-system markup, never user input) rendered as a Declarative Shadow DOM `<template shadowrootmode="open">`, so the first paint shows real content before any script runs
 
 ## Development
 

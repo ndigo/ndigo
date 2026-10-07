@@ -293,6 +293,26 @@ export abstract class AbstractWebComponent
     }
 
     /**
+     * Acquires the component's shadow root, attaching one only when none
+     * exists yet.
+     *
+     * Components that render into a shadow root MUST acquire it through this
+     * helper rather than a bare `attachShadow()`: Declarative Shadow DOM
+     * (DSD) makes the HTML parser create a real shadow root from a
+     * server-rendered `<template shadowrootmode>` *before* the element is
+     * defined, so an upgrade-time `attachShadow()` would otherwise throw
+     * "shadow root already exists". When a root is already present it is
+     * adopted as-is (the component's first render then replaces the
+     * server-rendered fallback content); otherwise a root is attached.
+     *
+     * @param init - Shadow root options; defaults to `{ mode: 'open' }`.
+     * @returns The existing or newly attached shadow root.
+     */
+    protected ensureShadowRoot(init: ShadowRootInit = { mode: 'open' }): ShadowRoot {
+        return this.shadowRoot ?? this.attachShadow(init);
+    }
+
+    /**
      * Schedules a render pass on the next animation frame.
      */
     requestUpdate(): void {

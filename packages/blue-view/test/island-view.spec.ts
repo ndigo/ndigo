@@ -133,4 +133,55 @@ describe('IslandView (server-side island render)', () => {
         const fromMarkup = parseModel(decodedAttributeValue(serializeModel({ payload: scriptText })));
         expect(fromMarkup).toEqual({ payload: scriptText });
     });
+
+    test('embeds trusted shadowHtml as a declarative shadow root (DSD first paint)', async () => {
+        const view = new IslandView('todo-app', { shadowHtml: '<ul><li>⬜ Buy milk</li></ul>' });
+        let committed = '';
+
+        await view._renderTemplate({ items: [{ text: 'Buy milk', done: false }] }, null, {
+            async commit(html: unknown) {
+                committed = stringifyHtml(html as string);
+            },
+            async prepare() {},
+            async clear() {},
+        });
+
+        expect(committed).toContain('<template shadowrootmode="open"><ul><li>⬜ Buy milk</li></ul></template>');
+        // The element shape is unchanged apart from the template child.
+        expect(committed).toMatch(
+            /^<todo-app data-blue-island data-blue-locale="" data-blue-model="[^"]*"><template shadowrootmode="open">.*<\/template><\/todo-app>$/
+        );
+    });
+
+    test('omits the declarative shadow root when no shadowHtml is supplied', async () => {
+        const view = new IslandView('todo-app');
+        let committed = '';
+
+        await view._renderTemplate({}, null, {
+            async commit(html: unknown) {
+                committed = stringifyHtml(html as string);
+            },
+            async prepare() {},
+            async clear() {},
+        });
+
+        expect(committed).not.toContain('<template');
+        expect(committed).toBe('<todo-app data-blue-island data-blue-locale="" data-blue-model="{}"></todo-app>');
+    });
+
+    test('passes shadowHtml through unescaped (trusted markup only)', async () => {
+        const view = new IslandView('x-panel', { shadowHtml: '<b>bold</b>' });
+        let committed = '';
+
+        await view._renderTemplate({}, null, {
+            async commit(html: unknown) {
+                committed = stringifyHtml(html as string);
+            },
+            async prepare() {},
+            async clear() {},
+        });
+
+        expect(committed).toContain('<template shadowrootmode="open"><b>bold</b></template>');
+        expect(committed).not.toContain('&lt;b&gt;');
+    });
 });

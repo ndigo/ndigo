@@ -48,9 +48,10 @@ The full API is generated from JSDoc via `pnpm doc:api` into
 [`src/index.ts`](src/index.ts); see the [package index](../../doc/README.md) for
 how it fits with the rest of BlueJS.
 
-- **`AbstractWebComponent`** — base class with the `create`/`emit` lifecycle for component-backed views
+- **`AbstractWebComponent`** — base class with the `create`/`emit` lifecycle for component-backed views; acquire a shadow root with `ensureShadowRoot()` so a parser-created declarative root is adopted (not re-attached) at upgrade
 - **Engine** — per-element mount logic, model binding, DOM target (`DOMElementViewTarget`), and event bridging to BlueJS signals
-- **Hydration** — `hydrate` support for islands baked into server-rendered pages
+- **Hydration** — `hydrateIslands` upgrades declarative-shadow islands in place (keeping the parser-created root) and replaces light-DOM markers otherwise
+- **Forms** — `AsFormAssociated(Base)` marks a component form-associated and routes its value through `ElementInternals.setFormValue`, so native form submission and the existing server binding/Zod path work unchanged
 - **Mapping** — tag-name ↔ component mapping and view mapping layers
 
 ## Development

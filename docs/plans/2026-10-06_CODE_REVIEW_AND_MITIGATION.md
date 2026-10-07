@@ -23,8 +23,10 @@ user-wide revocation landed with AD-68 (`SessionStore.deleteForUser`,
 `CredentialsAuthAdapter.logoutAll`, refresh-token `token_use` gate — see §4).
 Still accepted: TO-14 (rule catalogue is complete but hand-maintained); the
 `typedoc>typescript` peer warning is a known upstream limitation handled by
-`scripts/typedoc-ts-shim.mjs` (documented there). Residual register A1–A5
-landed — see §4.
+`scripts/typedoc-ts-shim.mjs` (documented there). Residual register A1–A3 and
+A5 landed — see §4; A4 (the `@vitest/coverage-v8` pin) is superseded: the
+coverage configuration was dead (TOL-F4 in the 2026-10-07 sweep), so the pin
+and the coverage lane were removed at HEAD.
 **Legend:** `[code]` established by reading cited lines · `[exec]` reproduced
 by execution · `[inference]` reasoned without execution.
 **Source IDs:** each finding keeps its slice-local origin where useful
@@ -959,8 +961,10 @@ AND expires_at > ?`) and `CredentialsAuthAdapter.logoutAll(userId)`
 - **A3 (AP-11):** `todo-item.checked` returns the assigned value (`#checked`),
   with a round-trip spec.
 - **A4:** `@vitest/coverage-v8` pinned to `~4.0.18` (was resolving 4.1.11
-  against vitest 4.0.18). **A5:** `source-map-js >= 1.2.2` override —
-  `pnpm audit --prod` reports zero vulnerabilities.
+  against vitest 4.0.18) — **superseded**: the coverage configuration was dead
+  and hid untested code (TOL-F4 in the 2026-10-07 sweep), so the pin and the
+  coverage lane were removed at HEAD. **A5:** `source-map-js >= 1.2.2`
+  override — `pnpm audit --prod` reports zero vulnerabilities.
 - **Environment note:** the `typedoc>typescript` peer warning stands as a
   known upstream limitation (TypeDoc 0.28 has no TS 7 support; the repo shim
   relinks its resolver to 6.0.3 — see `scripts/typedoc-ts-shim.mjs`).

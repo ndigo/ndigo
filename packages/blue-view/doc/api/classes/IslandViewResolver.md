@@ -9,10 +9,10 @@
 Resolves view names to `IslandView` markers.
 
 Only names matching [IslandViewResolverOptions.viewNames](../interfaces/IslandViewResolverOptions.md#viewnames) (by default
-[customElementNamePattern](../variables/customElementNamePattern.md)) resolve; every other name returns
-`null` so the resolver chain continues (there is no implicit fallback — an
-unmatched name is only served if a later resolver claims it, otherwise the
-dispatcher's usual not-found path applies).
+the [isValidCustomElementName](../functions/isValidCustomElementName.md) predicate) resolve; every other name
+returns `null` so the resolver chain continues (there is no implicit
+fallback — an unmatched name is only served if a later resolver claims it,
+otherwise the dispatcher's usual not-found path applies).
 
 ## Example
 
@@ -20,6 +20,7 @@ dispatcher's usual not-found path applies).
 const resolver = new IslandViewResolver();
 const view = await resolver.resolveViewName('todo-app'); // IslandView('todo-app')
 await resolver.resolveViewName('user'); // null — not a custom-element name
+await resolver.resolveViewName('font-face'); // null — reserved, not claimed
 ```
 
 ## Extends
@@ -51,22 +52,6 @@ Name filter options.
 [`AbstractPathBasedViewResolver`](AbstractPathBasedViewResolver.md).[`constructor`](AbstractPathBasedViewResolver.md#constructor)
 
 ## Properties
-
-### cache
-
-> `readonly` **cache**: `object`
-
-Cached views keyed by name and language.
-
-#### Index Signature
-
-\[`key`: `string`\]: [`View`](../interfaces/View.md)
-
-#### Inherited from
-
-[`AbstractPathBasedViewResolver`](AbstractPathBasedViewResolver.md).[`cache`](AbstractPathBasedViewResolver.md#cache)
-
-***
 
 ### isCaching
 
@@ -126,6 +111,24 @@ The set of names this resolver supports.
 
 [`AbstractPathBasedViewResolver`](AbstractPathBasedViewResolver.md).[`viewNames`](AbstractPathBasedViewResolver.md#viewnames)
 
+## Accessors
+
+### cache
+
+#### Get Signature
+
+> **get** **cache**(): `object`
+
+A read-only mirror of the cached views keyed by name and language.
+
+##### Returns
+
+`object`
+
+#### Inherited from
+
+[`AbstractPathBasedViewResolver`](AbstractPathBasedViewResolver.md).[`cache`](AbstractPathBasedViewResolver.md#cache)
+
 ## Methods
 
 ### resolveViewName()
@@ -164,7 +167,13 @@ A promise that resolves to the matching view, or `null` when none is available.
 
 > **supports**(`name`, `language?`): `boolean`
 
-Returns whether this resolver can handle the given view name.
+Returns whether this resolver claims the given name.
+
+With the default filter, a name must be a valid, non-reserved
+custom-element tag ([isValidCustomElementName](../functions/isValidCustomElementName.md)) — reserved names
+like `font-face` are NOT claimed and fall through as `null` instead of
+reaching `new IslandView(...)`, which would throw. An explicit
+`viewNames` filter keeps its own (string/RegExp) semantics.
 
 #### Parameters
 
@@ -178,14 +187,14 @@ The view name to test.
 
 `unknown`
 
-Optional locale or language hint.
+Optional locale hint (unused — tags are locale-free).
 
 #### Returns
 
 `boolean`
 
-`true` when the name is supported; otherwise `false`.
+`true` when the name should resolve to an `IslandView`.
 
-#### Inherited from
+#### Overrides
 
 [`AbstractPathBasedViewResolver`](AbstractPathBasedViewResolver.md).[`supports`](AbstractPathBasedViewResolver.md#supports)

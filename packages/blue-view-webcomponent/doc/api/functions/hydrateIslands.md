@@ -25,6 +25,15 @@ Two shapes are supported:
 - **Legacy light-DOM markers.** Without a shadow root, the inert SSR
   markup is replaced with a freshly constructed live element, as before.
 
+Each marker is hydrated in isolation: a component whose setter or render
+throws is logged and skipped, and hydration continues with the remaining
+markers instead of aborting the whole page (HI-2). A marker whose model is
+present but unparseable is not hydrated either — the server fallback stays
+in place and the tag is logged (WC-A). Only markers that hydrate are
+counted. Successfully hydrated markers are tagged `data-blue-hydrated` and
+excluded from later scans, so calling this function twice hydrates each
+island exactly once (WC-B).
+
 Custom elements must already be defined (`customElements.define` via
 `@TagMapping` at module import) for synchronous upgrade; otherwise the
 element stays an `HTMLUnknownElement` and is left untouched.

@@ -179,8 +179,11 @@ nx run-many -t test          # Nx directly
 nx run @blue/core:test
 cd packages/blue-core && pnpm test
 
-# Run tests in watch mode / with UI / with coverage
+# Run tests in watch mode
 pnpm vitest --watch
+
+# UI mode and coverage are optional and need their plugins installed first:
+#   pnpm add -w -D @vitest/ui @vitest/coverage-v8
 pnpm vitest --ui
 nx run-many -t test --coverage
 ```

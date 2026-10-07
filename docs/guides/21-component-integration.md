@@ -53,7 +53,7 @@ submit.setAttribute('appearance', 'filled');
 ```
 
 Per-component imports are also the bundle-budget mechanism: the demo adds
-button + input only, and pays for input + button only (§9 measures the cost).
+button + input only, and pays for input + button only (§10 measures the cost).
 
 ## 3. First paint: the server fallback pattern
 
@@ -158,14 +158,18 @@ its own labels from the island's negotiated locale (`data-blue-locale`).
 
 The demo wires every step above together:
 
-| Layer         | What it shows                                                                                             |
-| :------------ | :-------------------------------------------------------------------------------------------------------- |
-| Client island | Web Awesome input + button rendered directly into the island's shadow root; labels from the island locale |
-| Submission    | `FormData` from the FACE controls → `application/x-www-form-urlencoded` POST to `/items`                  |
-| Server        | `dataBinderValue('body')` + Zod (`validatedBy`) → store mutation → SSE push to every connected client     |
-| First paint   | Server-rendered fallback (list + form skeleton) in a declarative shadow root, replaced on hydration       |
-| Theming       | `client.css` theme + `--wa-*` token overrides from the shell                                              |
-| Bundle        | Per-component imports; see the measured cost below                                                        |
+| Layer         | What it shows                                                                                                                                                 |
+| :------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Client island | Web Awesome input + button rendered directly into the island's shadow root; labels from the island locale                                                     |
+| Submission    | `FormData` from the FACE controls → `application/x-www-form-urlencoded` POST to `/items`                                                                      |
+| Server        | `dataBinderValue('body')` + Zod (`validatedBy`) → store mutation → SSE push to every connected client                                                         |
+| First paint   | Server-rendered fallback (list + form skeleton) in a declarative shadow root, replaced on hydration                                                           |
+| Theming       | `client.css` theme + `--wa-*` token overrides from the shell                                                                                                  |
+| Lifecycle     | The client island releases its render effect and SSE subscription in `handleDisconnect()` (WC-F); a DOM move reconnects without stacking subscriptions        |
+| Reconnect     | The SSE client resubscribes with bounded exponential backoff after the stream ends, and shows the connection state in the status line (WC-G)                  |
+| Security      | The demo widens the CSP for the library's inline-icon fetch — see §9                                                                                          |
+| Browser lane  | A Playwright spec drives the real server: DSD fallback before hydration, FACE submit → `/items` → SSE delivery, clear affordance, zero page/CSP errors (WC-E) |
+| Bundle        | Per-component imports; see the measured cost below                                                                                                            |
 
 Run it:
 
@@ -173,9 +177,49 @@ Run it:
 cd apps/blue-island && pnpm dev
 # GET http://127.0.0.1:3200/        — the hybrid shell
 # POST http://127.0.0.1:3200/items  — urlencoded form endpoint (text=…)
+
+pnpm test        # unit/integration: shell, hydration, form endpoint, SSE coalescing, lifecycle, CSP wiring
+pnpm test:e2e    # browser lane (Playwright); starts the app server on port 3280
 ```
 
-## 9. Bundle budget reference
+## 9. Security: CSP for adopted libraries' inline assets
+
+The framework sends a restrictive default CSP, including `connect-src 'self'`
+(see [AD-25](../decisions/2026-09-18_AD25_SECURITY_HEADERS.md)). A library that
+`fetch()`es an inline asset — Web Awesome's `wa-icon` renders its system icons
+from a `data:image/svg+xml` URL, which `with-clear` triggers at runtime — is
+blocked by that default: the console logs a CSP violation and the asset is
+missing (here, the clear affordance).
+
+Adopted libraries may therefore need `connect-src` / `img-src` widening for
+inline assets. Widen it through the documented `SecurityHeadersInterceptor`
+directives seam (the same seam a cross-host WebSocket uses to add
+`wss://<host>`), keeping `useDefaults: true` so the rest of the header set is
+unchanged:
+
+```ts
+// apps/blue-island/src/island-configuration.ts (abridged)
+const mapping = context.getValue(HANDLER_MAPPING);
+mapping.interceptors.splice(
+    0,
+    1,
+    new SecurityHeadersInterceptor({
+        headers: {
+            contentSecurityPolicy: {
+                useDefaults: true,
+                directives: { 'connect-src': ["'self'", 'data:'] },
+            },
+        },
+    })
+);
+```
+
+Exact directives for this demo: `connect-src 'self' data:`. `img-src` needs no
+widening here because the icon SVG is fetched as text and injected inline; add
+`data:` to `img-src` too only if the library loads such URLs as images. Never
+add bare `ws:`/`wss:` — enumerate the host.
+
+## 10. Bundle budget reference
 
 Measured 2026-10-07 (Web Awesome 3.14.0): a tree-shaken bundle of
 button + input + switch + dialog is **174 KB raw / 43.5 KB gzip** (esbuild,

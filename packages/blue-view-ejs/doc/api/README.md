@@ -16,6 +16,7 @@ Jeff Rose
 
 ## Classes
 
+- [EJSIncludeCycleError](classes/EJSIncludeCycleError.md)
 - [EJSTemplateEngine](classes/EJSTemplateEngine.md)
 - [EJSView](classes/EJSView.md)
 - [EJSViewResolver](classes/EJSViewResolver.md)

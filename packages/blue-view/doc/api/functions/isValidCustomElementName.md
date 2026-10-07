@@ -10,6 +10,11 @@
 
 Returns whether `name` is a valid, non-reserved custom-element tag name.
 
+The check is intentionally stricter than the platform grammar: only ASCII
+names are accepted (see `customElementNamePattern`), so a
+spec-valid non-ASCII component name is rejected (VIEW-6 — widen the
+grammar when a real consumer needs it).
+
 ## Parameters
 
 ### name

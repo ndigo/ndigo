@@ -20,9 +20,31 @@ per-component wrapper**: expose `name`/`value`, write `value`, and the
 browser does the rest (the element also appears in `form.elements`).
 
 The mixin sets the `formAssociated` static flag (required by the platform),
-acquires `ElementInternals` in the constructor when the host supports it,
-and exposes `internals`/`form` plus `name`/`value` accessors; assigning
-`value` calls `ElementInternals.setFormValue`.
+observes the `value` attribute, acquires `ElementInternals` in the
+constructor when the host supports it, and exposes `internals`/`form`,
+`name`/`value`/`defaultValue`/`disabled` plus the FACE lifecycle callbacks.
+
+## Value semantics
+
+Like a native `<input>`, the **content attribute is the default** and the
+**IDL property is the live value**. A server-rendered or declarative
+`<rating-input name="rating" value="5">` therefore both submits `5` and
+makes `5` the reset target; assigning `.value = '9'` in script changes only
+the live/submitted value. `formResetCallback()` restores the default and
+re-publishes it through `setFormValue`, so a stale value is never submitted
+after `form.reset()`.
+
+## Lifecycle
+
+| Callback                   | When the platform invokes it                     | Effect                                             |
+| :------------------------- | :----------------------------------------------- | :------------------------------------------------- |
+| `attributeChangedCallback` | `value` attribute set/removed (incl. SSR parse)  | records the default, publishes the value           |
+| `formResetCallback`        | owning form `reset()`                            | restores the default value, re-`setFormValue`      |
+| `formDisabledCallback`     | a `<fieldset disabled>` ancestor toggles         | sets `disabled`, reflects `data-blue-disabled`     |
+| `formStateRestoreCallback` | browser restore / autofill                       | adopts a string state as the live value            |
+
+Assigning `value` calls `setFormValue`; the property never reflects back to
+the attribute, so there is no feedback loop.
 
 ## Type Parameters
 
@@ -54,7 +76,7 @@ class RatingInput extends AsFormAssociated(AbstractWebComponent) {
     }
     render(): void { … }
 }
-customElements.define('rating-input', RatingInput); // <form><rating-input name="rating">
+customElements.define('rating-input', RatingInput); // <form><rating-input name="rating" value="5">
 ```
 
 ## Since

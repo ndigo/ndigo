@@ -117,7 +117,9 @@ star extractor by hand:
 - `validatedQuery(schema)` — validates the whole query object; implements the
   matching `'*'` convention in both query resolvers (`QueryValueMethodArgumentResolver`
   in dispatcher and `NodeQueryValueMethodArgumentResolver` in platform-node),
-  binding all of `route.data`.
+  binding all of `route.data`. **(Historical note: `NodeQueryValueMethodArgumentResolver`
+  was later removed as a byte-for-byte duplicate — the dispatcher's
+  `QueryValueMethodArgumentResolver` now serves both platforms.)**
 - The shared `AbstractNamedValueMethodArgumentResolver` (browser query, path,
   matrix, attribute) now invokes `parameter.convert`, closing the same
   silent-death gap Phase 1 fixed for the platform base pipeline — per-field

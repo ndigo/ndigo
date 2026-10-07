@@ -66,7 +66,7 @@ Named converter resolution now supports three levels:
 Helper API:
 
 - `configureArgumentValueConverterRegistry(context, registry)`
-- `configureStrictBrowserArgumentResolvers(context, options?)`
+- `configureStrictBrowserArgumentResolvers(context, options?)` **(superseded — this helper has since been removed; strict named lookup is now the `strictNamedConverterLookup` option of `configureBrowserArgumentResolvers`)**
 
 ### 5) Strict named lookup mode
 

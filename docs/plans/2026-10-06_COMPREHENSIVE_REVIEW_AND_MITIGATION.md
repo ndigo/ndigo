@@ -20,14 +20,15 @@ independently re-verified headline claims: the passwordless-account auth bypass
 alias/param corruption (reproduced via `tsx`), the stale `AD-01..AD-67` ranges, the CI
 e2e fresh-checkout failure path, and the stale `vitest.config.ts` alias targets. Working
 tree was clean before and after; throwaway probes were removed.
-**Status:** Findings recorded. **Execution in progress:** waves 1–5 landed —
-waves 1–2 in `91712f40` (security + availability), waves 3–4 in `8f54a402`
-(context/boot, HTTP, data, ops, protocols, telemetry/resilience, platform-web,
-kernel-2, tooling, docs, apps), wave 5 in `fbb5233e` (framework `console.*` → `@blue/log` migration across 10
+**Status:** Findings recorded; **all waves executed and verified (2026-10-06).**
+Waves 1–2 landed in `91712f40` (security + availability), waves 3–4 in
+`8f54a402` (context/boot, HTTP, data, ops, protocols,
+telemetry/resilience, platform-web, kernel-2, tooling, docs, apps), wave 5 in
+`fbb5233e` (framework `console.*` → `@blue/log` migration across 10
 packages, `@blue/test` synchronous-rAF helper with app-spec migration,
 skipped-test policy, OpenAPI auto-config security forwarding, app-manifest
-checker, Redis CI service lane, benchmark exit code), plus the wave-4
-dispatcher/views mop-up in the following commit (view-cache key collision +
+checker, Redis CI service lane, benchmark exit code), and the wave-4
+dispatcher/views mop-up in `0c4becbd` (view-cache key collision +
 bound, dead interceptor guard, island-resolver defaults + custom-element
 validation, 406 negotiation, request-copy negotiation, error-name hierarchy
 mapping, EJS filename/includes, resolver dedup; CI graft pin; AD citation
@@ -46,13 +47,16 @@ shipped raw TC39 decorators — Vite 8's oxc transform cannot lower them and
 Vitest's esbuild pipeline masked it, so blue-island and blue-todo production
 bundles were invalid JavaScript — and blue-todo's todo routes omitted `items`,
 so the Playwright e2e lane was failing end-to-end (build order, bundle syntax,
-and seeding were all broken); both are fixed and the e2e passes locally.
-AD-69 records the component-integration contract (adopt the Web Component
-ecosystem; framework owns the DSD first-paint and FACE bridges) with its spike;
-AD-71 selects Web Awesome for the single reference integration and lands it in
+and seeding were all broken); both are fixed (`60d601ca` — valid client
+bundles, todo seeding, Vite lower-decorators plugin) and the e2e passes
+locally. AD-69 records the component-integration contract (adopt the Web
+Component ecosystem; framework owns the DSD first-paint and FACE bridges) with
+its spike (`4ee4a41f`); AD-70 adds the `@blue/inspect` configuration JSON
+Schema plus the two oxlint rules that enforce it (`f6cdf832`); AD-71 selects
+Web Awesome for the single reference integration and lands it in
 `apps/blue-island` (FACE form → `POST /items` → `dataBinderValue` + Zod → SSE)
-with [guide 21](../guides/21-component-integration.md) — framework packages
-stay library-free.
+with [guide 21](../guides/21-component-integration.md) (`76d28575`) — framework
+packages stay library-free.
 
 **Legend:** `block` = release/CI or availability/security breaker · `high` = must fix before
 1.0 · `medium` = should fix · `low`/`nit` = cleanup.

@@ -45,3 +45,4 @@ export * from './route-handler-interceptor';
 export * from './route-handler-denial';
 export * from './logging-interceptor';
 export * from './argument-value-converter';
+export { MappingEntry, MappingRegistry } from './mapping-registry';

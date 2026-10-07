@@ -4,10 +4,8 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { metrics } from '@opentelemetry/api';
-import type { Attributes, Counter } from '@opentelemetry/api';
 import { WebSocketClient, type SocketStatus } from '@blue/socket';
-import { AbstractBaseInstrumentation } from '@blue/telemetry';
+import { AbstractBaseInstrumentation, createLazyCounter } from '@blue/telemetry';
 
 /**
  * Instrumentation for {@link WebSocketClient} (AD-22): outbound message
@@ -38,35 +36,32 @@ export class WebSocketClientInstrumentation extends AbstractBaseInstrumentation 
         // every SDK `registerInstrumentations` — a second enable must not
         // re-wrap the already-wrapped methods (browser-platform `_wrap` is
         // plain shimmer.wrap: double-wrapping would double every counter and
-        // leave the inner wrapper in place after a single `disable`). The
-        // latch mirrors the sibling server instrumentation's ENABLED set.
-        if (ENABLED.has(this)) {
-            return;
-        }
-        ENABLED.add(this);
+        // leave the inner wrapper in place after a single `disable`). That
+        // latch lives once in `AbstractBaseInstrumentation`; this body runs
+        // exactly once per enable cycle.
+        //
         // Counters are resolved lazily on first use, not at `enable()` time:
         // `InstrumentationBase` calls `enable()` in its constructor, before
         // any SDK has registered a global MeterProvider — an eager
         // `metrics.getMeter(...).createCounter(...)` would capture the
         // NoopMeter and silently drop every datapoint. The first wrapped
         // call runs after SDK init, so the global meter is real by then.
-        const counter = (() => {
-            const cache = new Map<string, Counter>();
-            return (name: string, attributes?: Attributes, value: number = 1): void => {
-                let instrument = cache.get(name);
-                if (instrument === undefined) {
-                    instrument = metrics.getMeter('@blue/telemetry').createCounter(name);
-                    cache.set(name, instrument);
-                }
-                instrument.add(value, attributes);
-            };
-        })();
+        const counter = createLazyCounter();
 
         this._wrap(WebSocketClient.prototype, 'send', (original) => {
+            // Defensive optional seam: a client that reports the exact wire
+            // size it wrote (today the WHATWG `send` returns void) lets the
+            // byte counter skip re-serializing object payloads with a second
+            // `JSON.stringify`. Until such a seam exists, fall back to
+            // measuring the payload here (TEL-08 residual: the hook lives in
+            // `@blue/socket`, outside this package).
+            const send = original as unknown as (this: unknown, data: unknown) => unknown;
             return function (this: unknown, data: unknown): void {
+                const written = send.apply(this, [data]);
                 counter('blue.socket.client.messages.sent');
-                counter('blue.socket.client.messages.bytes', undefined, payloadBytes(data));
-                return original.apply(this, [data]);
+                const bytes = typeof written === 'number' && Number.isFinite(written) ? written : payloadBytes(data);
+                counter('blue.socket.client.messages.bytes', undefined, bytes);
+                return written as void;
             };
         });
 
@@ -92,14 +87,10 @@ export class WebSocketClientInstrumentation extends AbstractBaseInstrumentation 
     }
 
     disable(): void {
-        ENABLED.delete(this);
         this._unwrap(WebSocketClient.prototype, 'send');
         this._unwrap(WebSocketClient.prototype, 'close');
     }
 }
-
-/** Enable latch — see {@link WebSocketClientInstrumentation.enable}. */
-const ENABLED = new WeakSet<WebSocketClientInstrumentation>();
 
 /**
  * Clients whose terminal close has already been counted. `close()` latches
@@ -128,27 +119,19 @@ const COUNTED_CLOSES = new WeakSet<WebSocketClient>();
  * @returns An `onStatusChange` observer.
  */
 export function countSocketClientStatus(): (status: SocketStatus) => void {
-    // Lazy per-status counters: the factory may run before
+    // Lazy per-status counters (shared helper): the factory may run before
     // `configureBrowserTelemetry` registers the global MeterProvider, so an
     // eager `createCounter` would capture the NoopMeter and drop every
-    // datapoint. Resolve each status's instrument on first observation.
+    // datapoint. Instruments resolve on first observation.
+    const counter = createLazyCounter();
     const NAME: Record<SocketStatus, string> = {
         connecting: 'blue.socket.client.connecting',
         open: 'blue.socket.client.opened',
         reconnecting: 'blue.socket.client.reconnecting',
         closed: 'blue.socket.client.closed',
     };
-    const cache = new Map<SocketStatus, Counter>();
-    const counter = (status: SocketStatus): void => {
-        let instrument = cache.get(status);
-        if (instrument === undefined) {
-            instrument = metrics.getMeter('@blue/telemetry').createCounter(NAME[status]);
-            cache.set(status, instrument);
-        }
-        instrument.add(1, { 'socket.status': status });
-    };
     return (status: SocketStatus): void => {
-        counter(status);
+        counter(NAME[status], { 'socket.status': status });
     };
 }
 

@@ -434,6 +434,18 @@ Event payload values.
 
 Closes the context and all descendants.
 
+Teardown sequence: emit `context:close`, close each child, run the
+lifecycle processor's `onClose`, destroy managed values, detach the
+environment refresh subscription ([unsubscribeRefresh](GenericApplicationContext.md#unsubscriberefresh)), unhook
+from the parent, mark `destroyed`/`destroyedTimestamp`, emit
+`context:destroy`, then remove every listener.
+
+Exception-safe (CTX-06): a throwing listener or teardown hook is
+reported and swallowed so the remaining steps still run — `destroyed`
+is always set and children/beans are still torn down. Exceptions from
+`context:close`/`context:destroy` listeners otherwise abort teardown
+mid-way (the emitter re-throws when no `error` listener is attached).
+
 #### Returns
 
 `void`
@@ -1503,6 +1515,40 @@ The value to register.
 ##### Inherited from
 
 [`GenericApplicationContext`](GenericApplicationContext.md).[`setValue`](GenericApplicationContext.md#setvalue)
+
+***
+
+### shouldEagerlyInstantiate()
+
+> **shouldEagerlyInstantiate**(`name`): `boolean`
+
+Whether the constructor registered under `name` can be eagerly
+instantiated by a boot-time "finish sweep" without side effects.
+
+A sweep must skip non-caching scopes (KRN-REV-FACTORY-12): `prototype`
+would build an instance that is discarded immediately, and `hash`/
+`route` have no active scope key at boot, so `HashScope.getValue` throws
+`IllegalStateError` and aborts the sweep. Caching scopes (`singleton`,
+`refresh`) and custom scopes are instantiated as before. Unregistered
+names return `false`.
+
+#### Parameters
+
+##### name
+
+`string`
+
+The name of the value.
+
+#### Returns
+
+`boolean`
+
+`true` when eager instantiation is safe and non-wasteful.
+
+#### Inherited from
+
+[`GenericApplicationContext`](GenericApplicationContext.md).[`shouldEagerlyInstantiate`](GenericApplicationContext.md#shouldeagerlyinstantiate)
 
 ***
 

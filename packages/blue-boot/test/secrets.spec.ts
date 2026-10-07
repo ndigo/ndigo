@@ -7,6 +7,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
+import { z } from 'zod';
 import { ApplicationBuilder, configurationProperties } from '../src/index';
 import { property, defaultValue, configuration, SecretCipher } from '@blue/context';
 
@@ -142,6 +143,86 @@ describe('builder.secrets (AD-29 Wave 2)', () => {
 
         expect(err).not.toBeNull();
         expect(messages).toMatch(/Cannot bind SecretNumberConfig\.token from "dbnum\.token"/);
+        expect(messages).not.toContain('super-secret-hunter2');
+        expect(messages).not.toContain(marker);
+    });
+});
+
+describe('secret redaction invariant (CTX-02/CTX-03)', () => {
+    test('CTX-02: environment validation never echoes the decrypted plaintext', async () => {
+        const cipher = fakeCipher();
+        const marker = cipher.encrypt('super-secret-hunter2', 'token');
+
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig]);
+        app.properties({ token: marker });
+        app.secrets(cipher);
+        app.validateWith(z.object({ token: z.number() }));
+
+        // The marker decrypts to a string, the schema wants a number → the
+        // aggregate report previously printed `got "super-secret-hunter2"`.
+        const err = await app.run().then(
+            () => null,
+            (e: Error & { cause?: Error }) => e
+        );
+        const messages = `${err?.message ?? ''}\n${err?.cause?.message ?? ''}`;
+
+        expect(err).not.toBeNull();
+        expect(messages).toContain('Environment validation failed');
+        expect(messages).toContain('token');
+        expect(messages).not.toContain('super-secret-hunter2');
+        expect(messages).not.toContain(marker);
+    });
+
+    test('CTX-03: Boolean conversion failure never echoes the decrypted plaintext', async () => {
+        @configurationProperties('secbool')
+        class SecBoolConfig {
+            @property('enabled', Boolean) enabled!: boolean;
+        }
+        const cipher = fakeCipher();
+        const marker = cipher.encrypt('super-secret-hunter2', 'secbool.enabled');
+
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig, SecBoolConfig]);
+        app.properties({ secbool: { enabled: marker } });
+        app.secrets(cipher);
+
+        const err = await app.run().then(
+            () => null,
+            (e: Error & { cause?: Error }) => e
+        );
+        const messages = `${err?.message ?? ''}\n${err?.cause?.message ?? ''}`;
+
+        expect(err).not.toBeNull();
+        expect(messages).toContain('SecBoolConfig.enabled');
+        expect(messages).not.toContain('super-secret-hunter2');
+        expect(messages).not.toContain(marker);
+    });
+
+    test('CTX-03: Date conversion failure never echoes the decrypted plaintext', async () => {
+        @configurationProperties('secdate')
+        class SecDateConfig {
+            @property('at', Date) at!: Date;
+        }
+        const cipher = fakeCipher();
+        const marker = cipher.encrypt('super-secret-hunter2', 'secdate.at');
+
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig, SecDateConfig]);
+        app.properties({ secdate: { at: marker } });
+        app.secrets(cipher);
+
+        const err = await app.run().then(
+            () => null,
+            (e: Error & { cause?: Error }) => e
+        );
+        const messages = `${err?.message ?? ''}\n${err?.cause?.message ?? ''}`;
+
+        expect(err).not.toBeNull();
+        expect(messages).toContain('SecDateConfig.at');
         expect(messages).not.toContain('super-secret-hunter2');
         expect(messages).not.toContain(marker);
     });

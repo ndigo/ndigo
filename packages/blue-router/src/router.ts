@@ -20,6 +20,28 @@ import { PathRoute } from './path-route';
 export type RouterCallback = (route: Route) => void;
 
 /**
+ * Invoked when a navigation's interceptor pipeline throws or an
+ * `afterCompletion` hook rejects. Lets routers surface failures instead of
+ * swallowing them (PWB-REV-015).
+ *
+ * @param error - The error raised by the pipeline.
+ * @param route - The route whose navigation failed.
+ * @since 1.0.0
+ */
+export type RouterErrorHandler = (error: unknown, route: Route) => void;
+
+/**
+ * Options accepted by router implementations.
+ * @since 1.0.0
+ */
+export interface RouterOptions {
+    /**
+     * Navigation-error hook. Defaults to logging through `console.error`.
+     */
+    onError?: RouterErrorHandler;
+}
+
+/**
  * Defines the core interface for a router, providing access to the current route and a mechanism to refresh it.
  * @since 1.0.0
  */
@@ -48,9 +70,15 @@ export interface Router {
  */
 export abstract class AbstractRouter implements Router, RouterInterceptorRegistry {
     #interceptors: RouterInterceptor[];
+    #onError: RouterErrorHandler;
 
-    constructor() {
+    constructor(options: RouterOptions = {}) {
         this.#interceptors = [];
+        this.#onError =
+            options.onError ??
+            ((error, route) => {
+                console.error(`[Router] navigation to "${route}" failed`, error);
+            });
     }
 
     abstract get route(): string;
@@ -64,6 +92,17 @@ export abstract class AbstractRouter implements Router, RouterInterceptorRegistr
      */
     protected get interceptors(): RouterInterceptor[] {
         return this.#interceptors;
+    }
+
+    /**
+     * The navigation-error hook, passed to the commit pipeline so pipeline
+     * failures are surfaced rather than silently swallowed. Configured via
+     * {@link RouterOptions.onError}.
+     * @protected
+     * @since 1.0.0
+     */
+    protected get onError(): RouterErrorHandler {
+        return this.#onError;
     }
 
     /**

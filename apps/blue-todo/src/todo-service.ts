@@ -52,22 +52,40 @@ export default class TodoService extends AsApplicationContextAware(Null) {
 
         this.#onCreated = (text: string) => {
             this.#items.value = [...this.#items.value, { text, checked: false }];
+            this.#emitStats();
         };
 
         this.#onRemoved = (index: number) => {
             const updated = this.#items.value.filter((_, i) => i !== index);
             this.#items.value = updated;
+            this.#emitStats();
         };
 
         this.#onToggled = (index: number) => {
             this.#items.value = this.#items.value.map((item, i) =>
                 i === index ? { ...item, checked: !item.checked } : item
             );
+            this.#emitStats();
         };
 
         this.applicationContext.on('user:todo:created', this.#onCreated);
         this.applicationContext.on('user:todo:removed', this.#onRemoved);
         this.applicationContext.on('user:todo:toggled', this.#onToggled);
+    }
+
+    /**
+     * Emits the todo counts. The shell's relay gateway forwards this event
+     * (`todo:stats:updated` → `site:nav:badge:update`), so the relay genuinely
+     * carries traffic instead of only registering.
+     */
+    #emitStats(): void {
+        const items = this.#items.value;
+
+        this.applicationContext.emit('todo:stats:updated', {
+            active: items.filter((item) => !item.checked).length,
+            completed: items.filter((item) => item.checked).length,
+            total: items.length,
+        });
     }
 
     @traced

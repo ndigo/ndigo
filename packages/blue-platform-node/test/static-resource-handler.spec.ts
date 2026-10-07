@@ -161,8 +161,15 @@ beforeAll(async () => {
     await writeFile(join(root, 'files', 'notes.txt'), 'notes');
     // SEC-8: empty payloads must answer every Range with 416, never a 206.
     await writeFile(join(root, 'empty.txt'), '');
-    // TST-3: dotfiles are outside the MIME allowlist.
+    // PLN-F9: dotfile policy fixtures. `.env` has no allowlisted extension;
+    // `.hidden.html` and the nested `assets/.hidden.css` do — before the
+    // policy they were served, now they are refused unless opted in.
     await writeFile(join(root, '.env'), 'SECRET=1');
+    await writeFile(join(root, '.hidden.html'), HTML_BODY);
+    await writeFile(join(root, 'assets', '.hidden.css'), 'body{}');
+    // PLN-F9: the `.well-known` namespace is the built-in opt-in exception.
+    await mkdir(join(root, '.well-known'));
+    await writeFile(join(root, '.well-known', 'token.txt'), 'ok');
     // TST-3: a symlink pointing outside the root must be refused.
     outsideDir = await mkdtemp(join(tmpdir(), 'blue-static-outside-'));
     await writeFile(join(outsideDir, 'leak.txt'), 'leaked');
@@ -505,10 +512,38 @@ describe('StaticResourceHandler — traversal regression matrix (TST-3)', () => 
         expect(res.headers['content-type']).toBe('application/problem+json');
     });
 
-    test('dotfile (.env) is outside the MIME allowlist → 403', async () => {
+    test('dotfile (.env) is refused by the dotfile policy → 403', async () => {
+        // The old comment blamed the MIME allowlist; `.env` has no allowlisted
+        // extension, but the explicit dotfile policy is what refuses it — and
+        // it also refuses allowlisted-extension dotfiles (below, PLN-F9).
         const res = await serve('/.env');
         expect(res.status).toBe(403);
         expect(res.headers['content-type']).toBe('application/problem+json');
+    });
+});
+
+describe('StaticResourceHandler — dotfile policy (PLN-F9)', () => {
+    test('dotfiles with an allowlisted extension are refused by default → 403', async () => {
+        const hidden = await serve('/.hidden.html');
+        expect(hidden.status).toBe(403);
+        expect(hidden.headers['content-type']).toBe('application/problem+json');
+
+        // A dotfile segment anywhere in the path is refused, not just a
+        // leading one (`.vite/manifest.json` was the review's example).
+        const nested = await serve('/assets/.hidden.css');
+        expect(nested.status).toBe(403);
+    });
+
+    test('serveDotfiles: true opts in and serves them (200)', async () => {
+        const res = await serve('/.hidden.html', { serveDotfiles: true });
+        expect(res.status).toBe(200);
+        expect(res.headers['content-type']).toBe('text/html;charset=utf-8');
+    });
+
+    test('the .well-known namespace is the built-in opt-in exception (served by default)', async () => {
+        const res = await serve('/.well-known/token.txt');
+        expect(res.status).toBe(200);
+        expect(String(res.body)).toBe('ok');
     });
 });
 

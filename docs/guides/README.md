@@ -22,6 +22,8 @@ Conceptual and hands-on guides for building applications with BlueJS. These comp
 16. [16 — Persistence & Distributed Backends](16-persistence-and-distributed-backends.md) — the memory-first doctrine, durable LibSQL sessions, the shared Redis cache, cross-node WebSocket/STOMP fan-out, shutdown ordering, and the deferred items (distributed scheduling).
 17. [17 — Static Files](17-static-files.md) — filesystem serving over HTTP: the greedy `/static/{*file}` controller, ETag/conditional GET, single-range requests, precompressed variants, SPA fallback, directory control, and the security model.
 18. [18 — Signals & Islands](18-signals-and-islands.md) — reactive state with `@blue/signals` (`signal`/`computed`/`effect`, the `@reactive` decorators, stream and event bridges) and the island lifecycle: `IslandView` marker → `hydrateIslands()` → SSE-driven re-render.
+19. [19 — Testing with `@blue/test`](19-testing.md) — the in-process harness (AD-63): `bootApp`/`cachedBootApp`, the `MockHTTP` request builder and `MockResult`, browser apps via `BrowserMockClient` + `MemoryViewTarget`, and what the harness deliberately is not.
+20. [20 — The HTTP Client](20-http-client.md) — `@blue/http`: `HTTP.create` settings, the verb surface, the interceptor lifecycle hooks and built-ins, body transform pipelines, and the `QueryString`/`MatrixString` parsers.
 
 ## Reading Order
 

@@ -29,7 +29,6 @@ is a no-op, and `disable()` unwinds the wrappers once and re-arms the next
 
 - [`ContextInstrumentation`](ContextInstrumentation.md)
 - [`DispatcherInstrumentation`](DispatcherInstrumentation.md)
-- [`CountedInstrumentation`](CountedInstrumentation.md)
 
 ## Constructors
 

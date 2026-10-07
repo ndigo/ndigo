@@ -288,7 +288,7 @@ Returns the proper case version of a string.
 ##### Example
 
 ```ts
-toProper( 'lorem-ipsum-dolor' );
+toProper( 'lorem ipsum dolor' );
 //=> "Lorem Ipsum Dolor"
 ```
 
@@ -341,8 +341,8 @@ Returns the sentence case version of a string.
 ##### Example
 
 ```ts
-toSentence( 'lorem-ipsum-dolor' );
-//=> "Lorem ipsum dolor"
+toSentence( 'lorem ipsum. dolor sit' );
+//=> "Lorem ipsum. Dolor sit"
 ```
 
 #### toString

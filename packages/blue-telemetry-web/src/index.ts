@@ -5,7 +5,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-export { configureBrowserTelemetry, type BrowserTelemetryConfig } from './browser-config';
+export { configureBrowserTelemetry, type BrowserTelemetryConfig, type BrowserTelemetryHandle } from './browser-config';
 export { RouterInstrumentation } from './instrumentation/router/router';
 export { ContextInstrumentation, DispatcherInstrumentation } from '@blue/telemetry';
 export {

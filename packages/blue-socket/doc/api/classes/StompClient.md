@@ -167,3 +167,9 @@ Subscription policy (`id` defaults to an opaque uuid;
 [`StompSubscription`](../interfaces/StompSubscription.md)
 
 The subscription handle.
+
+#### Throws
+
+[StompProtocolError](StompProtocolError.md) when the session has ended
+  (disconnect, ERROR, transport closed) — a new subscription could
+  never receive frames.

@@ -110,6 +110,26 @@ describe('HostManager', () => {
         expect(() => host.registerFeature({ name: 'a', prefix: '/a2' })).toThrow(TypeError);
     });
 
+    test('a duplicate-prefix rejection leaves no orphaned mount registration (PWB-REV-010)', () => {
+        const recorder = { incrementCounter: vi.fn(), setGauge: vi.fn() };
+        const { host } = createHost({ metricRecorder: recorder });
+
+        host.registerFeature({ name: 'a', prefix: '/shared' });
+
+        expect(() => host.registerFeature({ name: 'b', prefix: '/shared' })).toThrowError(
+            "A feature is already mounted at prefix '/shared'"
+        );
+
+        // The mount half must not have been registered: no mount-registration
+        // counter for the failed feature.
+        expect(recorder.incrementCounter).not.toHaveBeenCalledWith('b', 'b.registeredCount');
+
+        // The name/prefix are free again.
+        host.registerFeature({ name: 'b', prefix: '/other' });
+        expect(host.navigate('/other')).toBe(true);
+        expect(host.activeFeature).toBe('b');
+    });
+
     test('it should dispatch the feature-local route through onRoute', () => {
         const { host } = createHost();
         const onRoute = vi.fn();

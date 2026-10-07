@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi } from 'vitest';
 import { entity, generated, primaryColumn, column, manyToOne, oneToMany } from '@blue/orm';
 import type { AsyncRepository } from '@blue/orm';
 import { DrizzleDataSource } from '../src/drizzle-data-source';
@@ -56,6 +56,7 @@ async function seeded(): Promise<{
     authors: AsyncRepository<DrizzleRelAuthor, number>;
     notes: AsyncRepository<DrizzleRelNote, number>;
     adaId: number;
+    dataSource: DrizzleDataSource;
 }> {
     const dataSource = new DrizzleDataSource({ url: ':memory:' });
     await dataSource.init([DrizzleRelAuthor, DrizzleRelNote]);
@@ -70,7 +71,7 @@ async function seeded(): Promise<{
     await notes.save(new DrizzleRelNote('Second', ada.id));
     await notes.save(new DrizzleRelNote('Orphan', undefined));
 
-    return { authors, notes, adaId: ada.id as number };
+    return { authors, notes, adaId: ada.id as number, dataSource };
 }
 
 describe('DrizzleRepository relation fetch (Wave 3)', () => {
@@ -121,5 +122,24 @@ describe('DrizzleRepository relation fetch (Wave 3)', () => {
         const { notes } = await seeded();
 
         await expect(notes.findById(1, { relations: ['nope'] })).rejects.toThrow("declares no relation 'nope'");
+    });
+
+    test('eager findAll batches one query per relation instead of one per entity (DAT-F5)', async () => {
+        const { authors, notes, dataSource } = await seeded();
+        const execute = vi.spyOn(dataSource.client, 'execute');
+        const inQueries = () => execute.mock.calls.filter(([sql]) => typeof sql === 'string' && sql.includes(' IN ('));
+
+        // Two authors: a per-entity inverse fetch would issue two lookups.
+        await authors.save(new DrizzleRelAuthor('Grace'));
+
+        const all = await authors.findAll({ relations: ['notes'] });
+        expect(all).toHaveLength(2);
+        expect(all.every((author) => Array.isArray(author.notes))).toBe(true);
+        expect(inQueries()).toHaveLength(1);
+
+        // Three notes sharing at most two distinct authors: one batched query.
+        const allNotes = await notes.findAll({ relations: ['author'] });
+        expect(allNotes[0].author).toBeInstanceOf(DrizzleRelAuthor);
+        expect(inQueries()).toHaveLength(2);
     });
 });

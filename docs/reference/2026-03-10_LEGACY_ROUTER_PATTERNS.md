@@ -1,5 +1,9 @@
 # Legacy Router Patterns (BlueJS)
 
+> **⚠️ ARCHIVED** — patterns recorded from the removed legacy AMD router
+> (`old-router.legacy.js`), kept for history. The living routing surface is
+> `@blue/router` ([AD-61](../decisions/2026-09-03_AD61_ROUTE_REGISTRY.md)).
+
 This document captures notable patterns from the legacy AMD router implementation (`old-router.legacy.js`) before removal.
 
 ## Preserved / Active Patterns

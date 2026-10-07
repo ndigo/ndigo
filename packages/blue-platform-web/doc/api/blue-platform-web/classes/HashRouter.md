@@ -23,7 +23,7 @@ so `likeDestroyable` checks can still identify it by duck typing.
 
 ### Constructor
 
-> **new HashRouter**(`callback`): `HashRouter`
+> **new HashRouter**(`callback`, `options?`): `HashRouter`
 
 Creates an instance of `HashRouter`.
 
@@ -34,6 +34,12 @@ Creates an instance of `HashRouter`.
 `RouterCallback`
 
 The `RouterCallback` to be invoked when the route changes.
+
+##### options?
+
+`RouterOptions` = `{}`
+
+Router options, e.g. the navigation-error hook.
 
 #### Returns
 

@@ -133,4 +133,44 @@ describe('GenericApplicationContext — remaining branch coverage', () => {
         expect(parent.children).toHaveLength(0);
         parent.destroy();
     });
+
+    test('close() completes teardown when a context:close listener throws (CTX-06)', () => {
+        const context = new GenericApplicationContext('throwing-close');
+        const child = context.newChild('child') as GenericApplicationContext;
+        const bean = {
+            destroyed: false,
+            destroy() {
+                this.destroyed = true;
+            },
+        };
+        context.setValue('bean', bean);
+        // No 'error' listener → the emitter re-throws the listener failure out
+        // of emit(), which previously aborted close() before any teardown.
+        context.on('context:close', () => {
+            throw new Error('listener boom');
+        });
+        const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+        expect(() => context.close()).not.toThrow();
+
+        expect(context.destroyed).toBe(true);
+        expect(child.destroyed).toBe(true);
+        expect(bean.destroyed).toBe(true);
+        expect(context.children).toHaveLength(0);
+        expect(consoleError).toHaveBeenCalled();
+        consoleError.mockRestore();
+    });
+
+    test('close() is exception-safe on a throwing context:destroy listener too (CTX-06)', () => {
+        const context = new GenericApplicationContext('throwing-destroy');
+        context.on('context:destroy', () => {
+            throw new Error('destroy boom');
+        });
+        const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+        expect(() => context.close()).not.toThrow();
+        expect(context.destroyed).toBe(true);
+        expect(context.listenerCount('context:destroy')).toBe(0);
+        consoleError.mockRestore();
+    });
 });

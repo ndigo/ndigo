@@ -137,7 +137,11 @@ This emitter.
 > **close**(): `void`
 
 Closes the application and releases resources.
-Emits the `'closed'` event, then destroys the emitter.
+
+Emits `'closed'`, detaches the config-refresh rebind listener (and its
+fail-loud handler) from the wired environment, then destroys the
+emitter. Detaching also happens automatically when the application
+context closes (CTX-05).
 
 #### Returns
 

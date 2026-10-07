@@ -5,7 +5,7 @@
  */
 import { beforeEach, describe, expect, test } from 'vitest';
 import type { CookieParseResult } from '../src/cookies';
-import Cookies from '../src/cookies';
+import Cookies, { Cookies as NamedCookies } from '../src/cookies';
 
 describe('Cookies', () => {
     beforeEach(() => {
@@ -82,5 +82,41 @@ describe('Cookies', () => {
 
         expect(() => Cookies.set('theme', 'dark', { ['x; Domain=evil.example']: '1' })).toThrow(TypeError);
         expect(() => Cookies.set('theme', 'dark', { ['x\r\nSet-Cookie: y=1']: '1' })).toThrow(TypeError);
+    });
+
+    test('it should expose a named Cookies export (PWB-REV-012)', () => {
+        expect(NamedCookies).toBe(Cookies);
+        expect(typeof NamedCookies.get).toBe('function');
+        expect(typeof NamedCookies.set).toBe('function');
+    });
+
+    test('it should not mutate the caller attributes on remove (PWB-REV-013)', () => {
+        const written: string[] = [];
+        Object.defineProperty(document, 'cookie', {
+            configurable: true,
+            get: () => '',
+            set: (value: string) => {
+                written.push(value);
+            },
+        });
+
+        const attributes = { path: '/app' };
+        Cookies.remove('theme', attributes);
+
+        expect(attributes).toEqual({ path: '/app' });
+        expect(attributes).not.toHaveProperty('expires');
+        expect(written[0]).toContain('theme=');
+        expect(written[0]).toContain('path=/app');
+        expect(written[0]).toContain('expires=');
+    });
+
+    test('it should not throw on a present but non-JSON value in getJSON (PWB-REV-013)', () => {
+        Object.defineProperty(document, 'cookie', {
+            configurable: true,
+            get: () => 'prefs=not-json',
+        });
+
+        expect(Cookies.getJSON('prefs')).toBeUndefined();
+        expect(Cookies.get('prefs')).toBe('not-json');
     });
 });

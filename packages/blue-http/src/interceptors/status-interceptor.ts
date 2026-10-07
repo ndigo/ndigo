@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { HTTPInit, ResponseAwareHTTPInterceptor } from '../http';
+import { HTTPInit, ResponseAwareHTTPInterceptor, rebuildResponse } from '../http';
 
 /**
  * Configuration options for the StatusInterceptor.
@@ -57,10 +57,6 @@ export class StatusInterceptor implements ResponseAwareHTTPInterceptor {
         const newHeaders = new Headers(response.headers);
         newHeaders.set('X-App-Status', normalizedStatus);
 
-        return new Response(response.body, {
-            status: response.status,
-            statusText: response.statusText,
-            headers: newHeaders,
-        });
+        return rebuildResponse(response, response.body, newHeaders);
     }
 }

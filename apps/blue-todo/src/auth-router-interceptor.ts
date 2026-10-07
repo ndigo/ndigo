@@ -21,17 +21,30 @@ const ROUTE_AUTH: Record<string, { requiresAuth: boolean; requiredRoles?: string
  * Adapts authentication checks to the router interceptor contract.
  *
  * The demo applies its route requirements from {@link ROUTE_AUTH} using
- * shared `authClient` state.
+ * shared `authClient` state. A rejected navigation is redirected in
+ * {@link afterCompletion}: the router's own rollback (`restore`) runs between
+ * `preHandle` and `afterCompletion`, so writing `location.hash` from
+ * `preHandle` would be clobbered. Setting it afterwards lets the router's
+ * `hashchange` listener commit the redirect.
  *
  * @since 0.0.1
  */
 export class AuthRouterInterceptor implements RouterInterceptor {
+    #redirectPath: string | null = null;
+
     /**
      * Intercepts route navigation before it proceeds.
      * Checks auth requirements configured in {@link ROUTE_AUTH}.
      */
     async preHandle(route: Route): Promise<boolean> {
-        const routeAuth = ROUTE_AUTH[route.path];
+        this.#redirectPath = null;
+        // `PathRoute.path` drops the leading slash (`auth/profile`); ROUTE_AUTH
+        // is keyed with absolute paths. Fold a trailing slash too so
+        // `/auth/profile/` matches.
+        const absolutePath = route.path.startsWith('/') ? route.path : `/${route.path}`;
+        const normalizedPath =
+            absolutePath.endsWith('/') && absolutePath.length > 1 ? absolutePath.slice(0, -1) : absolutePath;
+        const routeAuth = ROUTE_AUTH[normalizedPath];
 
         // No auth requirements -> route is public
         if (!routeAuth) {
@@ -40,7 +53,7 @@ export class AuthRouterInterceptor implements RouterInterceptor {
 
         // Requires authentication but user is not authenticated
         if (routeAuth.requiresAuth && !authClient.isAuthenticated) {
-            window.location.hash = '#/auth/login';
+            this.#redirectPath = '/auth/login';
             return false;
         }
 
@@ -48,7 +61,7 @@ export class AuthRouterInterceptor implements RouterInterceptor {
         if (routeAuth.requiredRoles && routeAuth.requiredRoles.length > 0) {
             const hasRoles = routeAuth.requiredRoles.every((role) => authClient.principal?.hasRole(role) ?? false);
             if (!hasRoles) {
-                window.location.hash = '#/auth/forbidden';
+                this.#redirectPath = '/auth/forbidden';
                 return false;
             }
         }
@@ -60,7 +73,16 @@ export class AuthRouterInterceptor implements RouterInterceptor {
         // no-op
     }
 
+    /**
+     * Performs any redirect requested by a rejected {@link preHandle}.
+     * Runs after the router has rolled back the rejected navigation.
+     */
     async afterCompletion(_route: Route): Promise<void> {
-        // no-op
+        const redirectPath = this.#redirectPath;
+        this.#redirectPath = null;
+
+        if (redirectPath) {
+            window.location.hash = `#${redirectPath}`;
+        }
     }
 }

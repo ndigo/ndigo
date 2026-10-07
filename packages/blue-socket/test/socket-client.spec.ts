@@ -75,7 +75,10 @@ class FakeTrigger implements ReconnectTrigger {
 
 function createHarness(
     options: Partial<
-        Pick<WebSocketClientOptions, 'reconnect' | 'bufferWhileDisconnected' | 'reconnectTrigger' | 'onStatusChange'>
+        Pick<
+            WebSocketClientOptions,
+            'reconnect' | 'bufferWhileDisconnected' | 'reconnectTrigger' | 'onStatusChange' | 'onSend'
+        >
     > = {}
 ) {
     const created: FakeTransport[] = [];
@@ -567,6 +570,52 @@ describe('WebSocketClient reconnect policy sanitization', () => {
         expect(created).toHaveLength(1);
         vi.advanceTimersByTime(1000);
         expect(created).toHaveLength(2);
+        client.close(1000, 'done');
+    });
+});
+
+describe('WebSocketClient outbound-size observer (TEL-08)', () => {
+    beforeEach(() => {
+        vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+        vi.restoreAllMocks();
+    });
+
+    test('reports the UTF-8 byte size of every written payload', () => {
+        const sizes: number[] = [];
+        const { client, created } = createHarness({ onSend: (bytes) => sizes.push(bytes) });
+        created[0].fireOpen();
+        client.send('héllo'); // é is two UTF-8 octets → 6
+        client.send(new Uint8Array([1, 2, 3]).buffer);
+        expect(sizes).toEqual([6, 3]);
+        client.close(1000, 'done');
+    });
+
+    test('reports flushed payloads but not queued ones', () => {
+        const sizes: number[] = [];
+        const { client, created } = createHarness({
+            onSend: (bytes) => sizes.push(bytes),
+            bufferWhileDisconnected: { maxMessages: 2 },
+        });
+        client.send('queued'); // not open yet → buffered, never written
+        expect(sizes).toEqual([]);
+        created[0].fireOpen();
+        expect(sizes).toEqual([6]);
+        client.close(1000, 'done');
+    });
+
+    test('an observer throw never wedges the send path', () => {
+        const { client, created } = createHarness({
+            onSend: () => {
+                throw new Error('observer fault');
+            },
+        });
+        created[0].fireOpen();
+        expect(() => client.send('x')).not.toThrow();
+        expect(created[0].sent).toEqual(['x']);
         client.close(1000, 'done');
     });
 });

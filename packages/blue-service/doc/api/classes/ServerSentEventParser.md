@@ -36,6 +36,10 @@ for (const event of parser.finish()) handle(event);
 
 Consume a transport chunk and return the complete events it contains.
 
+Lines end with `CRLF`, `LF` or a lone `CR` (WHATWG event-stream
+parsing), and one leading `U+FEFF` byte order mark is stripped from
+the very start of the stream (REV-007).
+
 #### Parameters
 
 ##### chunk

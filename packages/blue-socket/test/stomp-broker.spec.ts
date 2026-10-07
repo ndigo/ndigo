@@ -17,6 +17,7 @@ import {
     AsyncReader,
     InMemoryQueueMessageStore,
     StompBroker,
+    StompProtocolError,
     parseStompFrame,
     serializeStompFrame,
     type QueueMessageStore,
@@ -1789,5 +1790,164 @@ describe('StompBroker replay budget (SEC-6)', () => {
         expect(session.sent.at(-1)?.headers['message']).toBe('replay budget exhausted');
         expect(session.closedCalls[0]?.code).toBe(1013);
         expect(session.sent.some((f) => f.command === 'MESSAGE')).toBe(false);
+    });
+});
+
+describe('StompBroker header budget (PRT-REV-002)', () => {
+    test('a frame whose serialized headers exceed maxHeaderBytes fails closed', async () => {
+        const broker = new StompBroker({ maxHeaderBytes: 128 });
+        const session = new FakeSession();
+        const handling = session.handled(broker);
+        connect(broker, session);
+        session.push('SEND', { destination: '/topic/x', 'x-big': 'y'.repeat(300) });
+        await vi.waitFor(() => expect(session.sent.some((f) => f.command === 'ERROR')).toBe(true));
+        expect(session.sent.at(-1)?.headers['message']).toContain('frame headers exceed 128 octets');
+        expect(session.closedCalls.at(-1)?.code).toBe(1002);
+        await handling;
+    });
+
+    test('publish rejects programmatic headers over the cap', async () => {
+        const broker = new StompBroker({ maxHeaderBytes: 64 });
+        await expect(broker.publish('/topic/x', 'm', { 'x-big': 'y'.repeat(100) })).rejects.toBeInstanceOf(
+            StompProtocolError
+        );
+    });
+});
+
+describe('StompBroker duplicate message-id ACK indexing (PRT-REV-004)', () => {
+    test('an id-only ACK settles every subscription that received the id', async () => {
+        const broker = new StompBroker();
+        const session = new FakeSession();
+        void session.handled(broker);
+        connect(broker, session);
+        session.push('SUBSCRIBE', { destination: '/topic/dual', id: 's1', ack: 'client-individual', receipt: 'r1' });
+        session.push('SUBSCRIBE', { destination: '/topic/dual', id: 's2', ack: 'client-individual', receipt: 'r2' });
+        await vi.waitFor(() => expect(session.sent.filter((f) => f.command === 'RECEIPT').length).toBe(2));
+        await broker.publish('/topic/dual', 'm');
+        await vi.waitFor(() => expect(session.sent.filter((f) => f.command === 'MESSAGE').length).toBe(2));
+        const messages = session.sent.filter((f) => f.command === 'MESSAGE');
+        expect(messages[0]?.headers['message-id']).toBe(messages[1]?.headers['message-id']);
+        expect(broker.unackedMessages).toBe(2);
+
+        // Pre-fix the id->subscription index was a single slot, so only the
+        // last subscription's entry survived and this id-only ACK left the
+        // other obligation outstanding forever.
+        session.push('ACK', { id: messages[0]?.headers['message-id'] as string });
+        await vi.waitFor(() => expect(broker.unackedMessages).toBe(0));
+        expect(session.closedCalls).toHaveLength(0);
+    });
+
+    test('a dual-subscription id-only NACK redelivers to each owner', async () => {
+        const broker = new StompBroker();
+        const session = new FakeSession();
+        void session.handled(broker);
+        connect(broker, session);
+        session.push('SUBSCRIBE', {
+            destination: '/topic/dual-nack',
+            id: 's1',
+            ack: 'client-individual',
+            receipt: 'r1',
+        });
+        session.push('SUBSCRIBE', {
+            destination: '/topic/dual-nack',
+            id: 's2',
+            ack: 'client-individual',
+            receipt: 'r2',
+        });
+        await vi.waitFor(() => expect(session.sent.filter((f) => f.command === 'RECEIPT').length).toBe(2));
+        await broker.publish('/topic/dual-nack', 'm');
+        await vi.waitFor(() => expect(session.sent.filter((f) => f.command === 'MESSAGE').length).toBe(2));
+        const messageId = session.sent.find((f) => f.command === 'MESSAGE')?.headers['message-id'] as string;
+
+        session.push('NACK', { id: messageId });
+        await vi.waitFor(() => expect(session.sent.filter((f) => f.headers['redelivered'] === 'true').length).toBe(2));
+        expect(broker.unackedMessages).toBe(2);
+        expect(session.closedCalls).toHaveLength(0);
+    });
+});
+
+describe('StompBroker /user unsubscribe binding (PRT-REV-005)', () => {
+    test('UNSUBSCRIBE uses the principal bound at subscribe time', async () => {
+        const broker = new StompBroker();
+        const session = new FakeSession();
+        session.attributes['user'] = 'alice';
+        void session.handled(broker);
+        connect(broker, session);
+        session.push('SUBSCRIBE', { destination: '/user/queue/errors', id: 'u1', receipt: 'sub' });
+        await vi.waitFor(() => expect(session.sent.some((f) => f.command === 'RECEIPT')).toBe(true));
+        broker.sendToUser('alice', '/queue/errors', 'before');
+        expect(session.sent.filter((f) => f.command === 'MESSAGE')).toHaveLength(1);
+
+        // The identity changes before the unsubscribe (the adapter owns
+        // attributes). Pre-fix the removal re-resolved it to 'bob', left the
+        // subscription stranded in alice's scope, and delivered after
+        // unsubscribe.
+        session.attributes['user'] = 'bob';
+        session.push('UNSUBSCRIBE', { id: 'u1', receipt: 'unsub' });
+        await vi.waitFor(() => expect(session.sent.filter((f) => f.command === 'RECEIPT').length).toBe(2));
+        broker.sendToUser('alice', '/queue/errors', 'after');
+        expect(session.sent.filter((f) => f.command === 'MESSAGE')).toHaveLength(1);
+    });
+});
+
+describe('StompBroker serialization-fault surfacing (PRT-REV-006)', () => {
+    test('publish throws on a header value that cannot be framed', async () => {
+        const broker = new StompBroker();
+        await expect(broker.publish('/topic/x', 'm', { 'x-bad': 'a\u0000b' })).rejects.toBeInstanceOf(
+            StompProtocolError
+        );
+    });
+
+    test('publish throws on an invalid header name or a NUL destination', async () => {
+        const broker = new StompBroker();
+        await expect(broker.publish('/topic/x', 'm', { 'bad:name': 'v' })).rejects.toBeInstanceOf(StompProtocolError);
+        await expect(broker.publish('/topic/x\u0000y', 'm')).rejects.toBeInstanceOf(StompProtocolError);
+    });
+
+    test('sendToUser throws before fan-out on an unframeable header', () => {
+        const broker = new StompBroker();
+        expect(() => broker.sendToUser('alice', '/queue/errors', 'm', { 'x-bad': 'a\u0000b' })).toThrow(
+            StompProtocolError
+        );
+    });
+});
+
+describe('StompBroker accept-version cap (PRT-REV-009)', () => {
+    test('an over-long accept-version fails closed without splitting it', async () => {
+        const broker = new StompBroker({ maxIdentifierLength: 32 });
+        const session = new FakeSession();
+        const handling = session.handled(broker);
+        session.push('CONNECT', { 'accept-version': '1.2,'.repeat(40), host: 'x' });
+        await vi.waitFor(() => expect(session.sent.some((f) => f.command === 'ERROR')).toBe(true));
+        expect(session.sent.at(-1)?.headers['message']).toContain('accept-version header exceeds 32 characters');
+        expect(session.closedCalls.at(-1)?.code).toBe(1002);
+        await handling;
+    });
+});
+
+describe('StompBroker guarded control sends (PRT-REV-011)', () => {
+    test('a CONNECTED that cannot be written does not reject handleSocket', async () => {
+        const broker = new StompBroker();
+        const session = new FakeSession();
+        // The transport races to CLOSING before CONNECTED is written.
+        session.failSends = true;
+        const handling = session.handled(broker);
+        connect(broker, session);
+        session.closeFromPeer();
+        await expect(handling).resolves.toBeUndefined();
+    });
+
+    test('a control RECEIPT that cannot be written does not reject handleSocket', async () => {
+        const broker = new StompBroker();
+        const session = new FakeSession();
+        const handling = session.handled(broker);
+        connect(broker, session);
+        await vi.waitFor(() => expect(session.sent.some((f) => f.command === 'CONNECTED')).toBe(true));
+        session.failSends = true;
+        session.push('SUBSCRIBE', { destination: '/topic/x', id: 's', receipt: 'r1' });
+        session.closeFromPeer();
+        // Pre-fix the unguarded RECEIPT write threw out of #receipt and
+        // rejected the whole read loop.
+        await expect(handling).resolves.toBeUndefined();
     });
 });

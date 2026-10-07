@@ -209,10 +209,15 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @template T The type of the instance.
      */
     getInstance<T = unknown>(name: string, argumentsList: unknown[] = []): T {
+        if (this.hasConstructor(name)) {
+            return this._create<T>(name, argumentsList);
+        }
         // Non-constructor values are stored directly under `name`; return them
         // as-is — no `Object.create` wrapper (which threw for primitives and
-        // broke identity for objects).
-        return this.hasConstructor(name) ? this._create<T>(name, argumentsList) : (this[name] as T);
+        // broke identity for objects). The own-property guard keeps inherited
+        // `Object.prototype` members (`toString`, …) from leaking out as
+        // registered values (KRN-REV-FACTORY-14).
+        return (this.hasInstance(name) ? this[name] : undefined) as T;
     }
 
     /**
@@ -242,7 +247,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                 // CF-3 / AD-29 D-2: the scope's value factory runs only when a
                 // new instance is created, so lifecycle teardown is registered
                 // exactly once per instance (never on cache hits).
-                this._registerRefreshDestructionCallback(scope, name, instance);
+                this._registerScopeDestructionCallback(scope, name, instance);
                 return instance;
             });
 
@@ -265,22 +270,27 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             return value;
         }
 
-        // Last resort: the value (if any) was stored under `name` via `setValue<T>`.
-        return this[name] as T;
+        // Last resort: own instance values (`setValue<T>`) were already handled
+        // above, so only inherited `Object.prototype` members could resolve
+        // here — they are not registered and must not leak (KRN-REV-FACTORY-14).
+        return undefined as T;
     }
 
     /**
-     * Registers a destruction callback for a lifecycle-bearing value created
-     * by the refresh scope, so the scope's `clear()` (environment
-     * `config:refresh`, AD-29 D-2) runs `destroy()`/`close()` before discarding.
+     * Registers a destruction callback for a lifecycle-bearing value owned by
+     * a caching, scope-managed lifecycle, so that scope's teardown runs
+     * `destroy()`/`close()` before discarding the value: `RefreshScope.clear()`
+     * on environment `config:refresh` (AD-29 D-2) and `HashScope.endScope()` at
+     * the end of a route/request.
      *
-     * Only the refresh scope opts in. `SingletonScope` also declares the hook,
-     * but singleton values are torn down by {@link destroyValue} itself; a
-     * factory-registered callback there would run `destroy()`/`close()` twice.
-     * Prototype/hash values are never cached, so no scope outlives them.
+     * Only refresh and hash/route scopes opt in. `SingletonScope` also declares
+     * the hook, but singleton values are torn down by {@link destroyValue}
+     * itself; a factory-registered callback there would run `destroy()`/
+     * `close()` twice. Prototype-scoped values are never cached, so nothing
+     * outlives them.
      */
-    private _registerRefreshDestructionCallback(scope: Scope, name: string, value: unknown): void {
-        if (!(scope instanceof RefreshScope)) {
+    private _registerScopeDestructionCallback(scope: Scope, name: string, value: unknown): void {
+        if (!(scope instanceof RefreshScope || scope instanceof HashScope)) {
             return;
         }
 
@@ -352,7 +362,10 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @returns `true` if a constructor is registered, `false` otherwise.
      */
     hasConstructor(name: string): boolean {
-        return `$${name}` in this;
+        // Own-property check, not `in`: `in` also walks `Object.prototype`, so
+        // names like `toString`/`constructor` would be reported as registered
+        // factory values (KRN-REV-FACTORY-14).
+        return Object.prototype.hasOwnProperty.call(this, `$${name}`);
     }
 
     /**
@@ -361,7 +374,9 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @returns `true` if an instance is registered, `false` otherwise.
      */
     hasInstance(name: string): boolean {
-        return name in this;
+        // Own-property check (see {@link hasConstructor}): `in` would treat
+        // `Object.prototype` members such as `toString` as registered values.
+        return Object.prototype.hasOwnProperty.call(this, name);
     }
 
     /**
@@ -390,6 +405,29 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             this.hasConstructor(name) ||
             (this.#parent ? (this.#parent as unknown as AbstractFactory).hasValue(name) : false)
         );
+    }
+
+    /**
+     * Whether the constructor registered under `name` can be eagerly
+     * instantiated by a boot-time "finish sweep" without side effects.
+     *
+     * A sweep must skip non-caching scopes (KRN-REV-FACTORY-12): `prototype`
+     * would build an instance that is discarded immediately, and `hash`/
+     * `route` have no active scope key at boot, so `HashScope.getValue` throws
+     * `IllegalStateError` and aborts the sweep. Caching scopes (`singleton`,
+     * `refresh`) and custom scopes are instantiated as before. Unregistered
+     * names return `false`.
+     *
+     * @param name The name of the value.
+     * @returns `true` when eager instantiation is safe and non-wasteful.
+     */
+    shouldEagerlyInstantiate(name: string): boolean {
+        if (!this.hasConstructor(name)) {
+            return false;
+        }
+
+        const scopeName = getScope(this[`$${name}`]) ?? 'singleton';
+        return scopeName !== 'prototype' && scopeName !== 'route' && scopeName !== 'hash';
     }
 
     /**

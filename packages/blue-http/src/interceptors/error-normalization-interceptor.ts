@@ -6,6 +6,8 @@
 import { HTTP, HTTPInit, ResponseAwareHTTPInterceptor, ErrorAwareHTTPInterceptor } from '../http';
 import ResponseError from '../response-error';
 
+const { defineProperty } = Reflect;
+
 /**
  * Configuration options for the ErrorNormalizationInterceptor.
  */
@@ -64,15 +66,29 @@ export class ErrorNormalizationInterceptor implements ResponseAwareHTTPIntercept
      * @returns A normalized response or undefined.
      */
     async postError(error: Error, request: Request, http: HTTP): Promise<Response | undefined> {
-        // Normalize network errors (e.g., TypeError: Failed to fetch)
-        if (!(error instanceof ResponseError)) {
-            const normalizedError = new ResponseError(undefined, this.#config.defaultErrorType ?? 'NETWORK_ERROR');
-
-            // We can't return a Response here because it's a network error,
-            // but we can throw the normalized error.
-            throw normalizedError;
+        // Cancellation and timeouts are control flow, not network failures:
+        // leave them for the rest of the error-aware chain (e.g. the
+        // TimeoutInterceptor) so an abort is never relabeled a network error
+        // (HTT-REV-008).
+        if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+            return undefined;
         }
 
-        return undefined;
+        if (error instanceof ResponseError) {
+            return undefined;
+        }
+
+        // Normalize network errors (e.g., TypeError: Failed to fetch).
+        // The hook contract is "return a replacement response or undefined";
+        // throwing would preempt the later error-aware interceptors. A
+        // `ResponseError` is itself a `Response`, so returning it normalizes
+        // the failure for the caller while letting the chain continue.
+        const type = this.#config.defaultErrorType ?? 'NETWORK_ERROR';
+        const normalized = new Error(type, { cause: error });
+        normalized.stack = error.stack;
+        const responseError = new ResponseError(undefined, normalized);
+        // Preserve the original failure as the `cause` of the surfaced error.
+        defineProperty(responseError, 'cause', { value: error, configurable: true });
+        return responseError as unknown as Response;
     }
 }

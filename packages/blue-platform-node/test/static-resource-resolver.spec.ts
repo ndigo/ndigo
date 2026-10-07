@@ -56,6 +56,12 @@ beforeAll(async () => {
     await mkdir(join(root, 'docs'));
     await writeFile(join(root, 'docs', 'a.txt'), 'alpha');
     await writeFile(join(root, 'docs', '<b>&"quote".txt'), 'escaped');
+    // Dotfile-policy fixtures (PLN-F9).
+    await writeFile(join(root, '.env.json'), '{"secret":"hunter2"}');
+    await mkdir(join(root, 'assets', '.vite'));
+    await writeFile(join(root, 'assets', '.vite', 'manifest.json'), '{"chunks":["secret.ts"]}');
+    await mkdir(join(root, '.well-known'));
+    await writeFile(join(root, '.well-known', 'jwks.json'), '{"keys":[]}');
 });
 
 afterAll(async () => {
@@ -130,6 +136,35 @@ describe('StaticResourceResolver containment', () => {
 
     test('forbidden kind maps to 403', () => {
         expect(statusForKind('forbidden')).toBe(403);
+    });
+});
+
+describe('StaticResourceResolver dotfile policy (PLN-F9)', () => {
+    test('refuses a dotfile even when its extension is allowlisted (default)', async () => {
+        const result = await makeResolver().resolve('.env.json');
+        expect(result.kind).toBe('forbidden');
+        expect(statusForKind(result.kind)).toBe(403);
+    });
+
+    test('refuses a dotfile directory segment anywhere in the path', async () => {
+        const result = await makeResolver().resolve('assets/.vite/manifest.json');
+        expect(result.kind).toBe('forbidden');
+    });
+
+    test('serveDotfiles: true opts in to serving dotfiles', async () => {
+        const result = await makeResolver().resolve('.env.json', { serveDotfiles: true });
+        expect(result.kind).toBe('ok');
+        expect((await readFile(result.path ?? '')).toString('utf-8')).toBe('{"secret":"hunter2"}');
+    });
+
+    test('the .well-known namespace is exempt from the default policy', async () => {
+        const result = await makeResolver().resolve('.well-known/jwks.json');
+        expect(result.kind).toBe('ok');
+        expect(result.contentType).toBe('application/json');
+    });
+
+    test('a plain file is unaffected', async () => {
+        expect((await makeResolver().resolve('assets/style.css')).kind).toBe('ok');
     });
 });
 

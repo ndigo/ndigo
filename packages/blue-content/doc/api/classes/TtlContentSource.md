@@ -41,6 +41,21 @@ Cache lifetime in milliseconds. Defaults to 60 000 ms.
 
 `TtlContentSource`
 
+## Accessors
+
+### size
+
+#### Get Signature
+
+> **get** **size**(): `number`
+
+The number of entries currently held (expired entries are swept on
+write, so this reflects live-plus-not-yet-swept entries).
+
+##### Returns
+
+`number`
+
 ## Methods
 
 ### getContent()
@@ -49,6 +64,9 @@ Cache lifetime in milliseconds. Defaults to 60 000 ms.
 
 Loads content via the loader when no unexpired cached value exists,
 stores it, and returns it.
+
+Expired entries are swept on every write so dynamic keys cannot retain
+memory indefinitely (PWB-REV-017).
 
 #### Parameters
 

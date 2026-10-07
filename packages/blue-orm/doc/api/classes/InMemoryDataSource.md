@@ -213,6 +213,10 @@ valid class instances, and cycles/shared references are kept intact.
 Store keys are kept as-is (primary identifiers), and the snapshot is
 isolated from mutations made after this call.
 
+Own enumerable state is copied, so entities with ECMAScript private
+fields should implement the [ENTITY\_CLONE](../variables/ENTITY_CLONE.md) hook to carry that
+state across a snapshot/restore (DAT-F7).
+
 #### Returns
 
 `object`

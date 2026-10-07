@@ -707,3 +707,37 @@ The value to register.
 ##### Inherited from
 
 [`DefaultFactory`](DefaultFactory.md).[`setValue`](DefaultFactory.md#setvalue)
+
+***
+
+### shouldEagerlyInstantiate()
+
+> **shouldEagerlyInstantiate**(`name`): `boolean`
+
+Whether the constructor registered under `name` can be eagerly
+instantiated by a boot-time "finish sweep" without side effects.
+
+A sweep must skip non-caching scopes (KRN-REV-FACTORY-12): `prototype`
+would build an instance that is discarded immediately, and `hash`/
+`route` have no active scope key at boot, so `HashScope.getValue` throws
+`IllegalStateError` and aborts the sweep. Caching scopes (`singleton`,
+`refresh`) and custom scopes are instantiated as before. Unregistered
+names return `false`.
+
+#### Parameters
+
+##### name
+
+`string`
+
+The name of the value.
+
+#### Returns
+
+`boolean`
+
+`true` when eager instantiation is safe and non-wasteful.
+
+#### Inherited from
+
+[`DefaultFactory`](DefaultFactory.md).[`shouldEagerlyInstantiate`](DefaultFactory.md#shouldeagerlyinstantiate)

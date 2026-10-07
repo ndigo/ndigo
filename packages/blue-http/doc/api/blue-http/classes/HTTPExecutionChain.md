@@ -150,7 +150,7 @@ The request settings the request was prepared from, when available.
 
 ### applyPostError()
 
-> **applyPostError**(`error`, `request`, `http`): `Promise`\<`Response` \| `undefined`\>
+> **applyPostError**(`error`, `request`, `http`, `settings?`): `Promise`\<`Response` \| `undefined`\>
 
 Runs the error-aware interceptors in order, accumulating a recovery.
 
@@ -181,6 +181,14 @@ The request that failed.
 [`HTTP`](HTTP.md)
 
 The HTTP client executing the request.
+
+##### settings?
+
+[`HTTPInit`](../type-aliases/HTTPInit.md)
+
+The per-request settings object, threaded so error-aware
+interceptors can key state on an identity that survives request
+replacement.
 
 #### Returns
 
@@ -254,7 +262,7 @@ The request settings being prepared.
 
 ### applyPreRequest()
 
-> **applyPreRequest**(`request`, `http`): `Promise`\<`Response` \| `Request`\>
+> **applyPreRequest**(`request`, `http`, `settings?`): `Promise`\<`Response` \| `Request`\>
 
 Runs request-aware interceptors before fetch executes.
 
@@ -271,6 +279,14 @@ The request to inspect or replace.
 [`HTTP`](HTTP.md)
 
 The HTTP client executing the request.
+
+##### settings?
+
+[`HTTPInit`](../type-aliases/HTTPInit.md)
+
+The per-request settings object, threaded to
+request-aware interceptors that must key state on an identity surviving
+request replacement.
 
 #### Returns
 

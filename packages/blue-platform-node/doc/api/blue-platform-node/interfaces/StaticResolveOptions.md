@@ -40,3 +40,15 @@ Generate an HTML listing for directories with no index match.
 
 Reject files larger than this many bytes, checked at stat time before
 anything is opened or read. `0` (default) = unlimited.
+
+***
+
+### serveDotfiles?
+
+> `optional` **serveDotfiles?**: `boolean`
+
+Whether dotfiles (any path segment beginning with `.`) may be served.
+Default `false`: dotfile requests resolve `forbidden` (→ 403).
+The standard `.well-known` namespace is the built-in opt-in exception —
+it is served either way, so well-known URIs keep working without
+exposing every hidden file (PLN-F9).

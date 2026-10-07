@@ -4,7 +4,13 @@
  * @author Jeff Rose
  */
 import { describe, expect, it } from 'vitest';
-import { interceptMethods, methodAnnotation, type MethodDescriptor, type MethodInterceptor } from '@blue/proxy';
+import {
+    interceptMethods,
+    isIntercepted,
+    methodAnnotation,
+    type MethodDescriptor,
+    type MethodInterceptor,
+} from '@blue/proxy';
 
 const guarded = methodAnnotation<{ zone: string }>('guarded');
 
@@ -85,6 +91,21 @@ describe('interceptMethods', () => {
         const again = interceptMethods<StandaloneService>(proxy as StandaloneService, [recordingInterceptor([])]);
 
         expect(again).toBe(proxy);
+    });
+
+    it('returns the same proxy when the raw target is re-woven (KRN-REV-PROXY-17)', () => {
+        const log: string[] = [];
+        const service = new StandaloneService();
+        const proxy = interceptMethods<StandaloneService>(service, [recordingInterceptor(log)]);
+        const again = interceptMethods<StandaloneService>(service, [recordingInterceptor([])]);
+
+        // Keying idempotency on the proxy alone let this produce a second,
+        // independent proxy over the same target.
+        expect(again).toBe(proxy);
+        expect(isIntercepted(service)).toBe(true);
+
+        proxy.tell('s');
+        expect(log).toEqual(['StandaloneService:tell']);
     });
 
     it('honors the documented order field like the container path', () => {

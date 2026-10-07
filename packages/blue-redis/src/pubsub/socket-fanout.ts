@@ -19,6 +19,78 @@ export interface RedisSocketFanoutOptions {
     connectTimeout?: number;
 }
 
+/**
+ * Decode and validate a wire envelope (REV-006). Rejects anything the
+ * receiving broker could not frame into a MESSAGE: a header name
+ * containing `:`, CR, LF or NUL, a NUL in a header value or the key. The
+ * same validation runs on outgoing `publish` and inbound `subscribe`, so a
+ * malformed peer can never blackhole a destination silently.
+ *
+ * Exported (module-internal, not on the package barrel) so the framing
+ * rules are testable without a live Redis.
+ *
+ * @param wire - The JSON envelope.
+ * @param maxBytes - Reject envelopes above this serialized size.
+ * @returns The origin id and the message.
+ */
+export function decodeSocketFanoutEnvelope(
+    wire: string,
+    maxBytes: number
+): { origin: string; message: SocketFanoutMessage } {
+    if (Buffer.byteLength(wire) > maxBytes) {
+        throw new RangeError('Socket fanout message exceeds maxMessageBytes');
+    }
+    const value: unknown = JSON.parse(wire);
+    if (value === null || typeof value !== 'object') throw new TypeError('Invalid socket fanout envelope');
+    const envelope = value as Record<string, unknown>;
+    if (
+        envelope['version'] !== 1 ||
+        typeof envelope['origin'] !== 'string' ||
+        !/^[a-f0-9-]{36}$/.test(envelope['origin']) ||
+        typeof envelope['key'] !== 'string' ||
+        envelope['key'].length === 0 ||
+        envelope['key'].length > 1024 ||
+        envelope['key'].includes('\0') ||
+        typeof envelope['binary'] !== 'boolean' ||
+        typeof envelope['body'] !== 'string'
+    ) {
+        throw new TypeError('Invalid socket fanout envelope');
+    }
+    const headers = envelope['headers'];
+    if (
+        headers === null ||
+        typeof headers !== 'object' ||
+        Array.isArray(headers) ||
+        Object.keys(headers).length > 128 ||
+        Object.entries(headers).some(
+            ([key, headerValue]) =>
+                key.length === 0 ||
+                key.length > 1024 ||
+                // These would re-split (:) or forge (CR/LF) a header line,
+                // and NUL corrupts the frame — the MESSAGE serializer
+                // rejects them, so the peer must not accept them either.
+                /[\r\n:\0]/.test(key) ||
+                typeof headerValue !== 'string' ||
+                headerValue.length > 8192 ||
+                headerValue.includes('\0')
+        )
+    ) {
+        throw new TypeError('Invalid socket fanout headers');
+    }
+    const body = envelope['body'];
+    if (envelope['binary'] && !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(body)) {
+        throw new TypeError('Invalid socket fanout binary body');
+    }
+    return {
+        origin: envelope['origin'],
+        message: {
+            key: envelope['key'],
+            body: envelope['binary'] ? Buffer.from(body, 'base64') : body,
+            headers: headers as Record<string, string>,
+        },
+    };
+}
+
 /** Redis Pub/Sub live fan-out: at-most-once, no replay, reconnect, or offline queue. */
 export class RedisSocketFanout implements SocketFanout {
     readonly #publisher: RedisConnection;
@@ -195,50 +267,6 @@ export class RedisSocketFanout implements SocketFanout {
     }
 
     #decode(wire: string): { origin: string; message: SocketFanoutMessage } {
-        if (Buffer.byteLength(wire) > this.#maxBytes)
-            throw new RangeError('Socket fanout message exceeds maxMessageBytes');
-        const value: unknown = JSON.parse(wire);
-        if (value === null || typeof value !== 'object') throw new TypeError('Invalid socket fanout envelope');
-        const envelope = value as Record<string, unknown>;
-        if (
-            envelope['version'] !== 1 ||
-            typeof envelope['origin'] !== 'string' ||
-            !/^[a-f0-9-]{36}$/.test(envelope['origin']) ||
-            typeof envelope['key'] !== 'string' ||
-            envelope['key'].length === 0 ||
-            envelope['key'].length > 1024 ||
-            typeof envelope['binary'] !== 'boolean' ||
-            typeof envelope['body'] !== 'string'
-        ) {
-            throw new TypeError('Invalid socket fanout envelope');
-        }
-        const headers = envelope['headers'];
-        if (
-            headers === null ||
-            typeof headers !== 'object' ||
-            Array.isArray(headers) ||
-            Object.keys(headers).length > 128 ||
-            Object.entries(headers).some(
-                ([key, headerValue]) =>
-                    key.length === 0 ||
-                    key.length > 1024 ||
-                    typeof headerValue !== 'string' ||
-                    headerValue.length > 8192
-            )
-        ) {
-            throw new TypeError('Invalid socket fanout headers');
-        }
-        const body = envelope['body'];
-        if (envelope['binary'] && !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(body)) {
-            throw new TypeError('Invalid socket fanout binary body');
-        }
-        return {
-            origin: envelope['origin'],
-            message: {
-                key: envelope['key'],
-                body: envelope['binary'] ? Buffer.from(body, 'base64') : body,
-                headers: headers as Record<string, string>,
-            },
-        };
+        return decodeSocketFanoutEnvelope(wire, this.#maxBytes);
     }
 }

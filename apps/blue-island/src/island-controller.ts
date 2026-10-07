@@ -47,6 +47,11 @@ export class IslandController {
         const modelStore = this.#modelStore;
 
         async function* pushUpdates(): AsyncGenerator<{ event: string; data: { model: TodoModel } }> {
+            // Snapshot-on-connect (APP-N3): a client that connects after the
+            // 3-second boot ticker has completed must still hydrate — the
+            // current model is sent as the first event of the stream.
+            yield { event: 'model', data: { model: modelStore.get() } };
+
             const queue: TodoModel[] = [];
             let release: (() => void) | undefined;
 

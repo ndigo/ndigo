@@ -825,6 +825,72 @@ describe('StompClient lifecycle hardening', () => {
     });
 });
 
+describe('StompClient exception safety (PRT-REV-001/008)', () => {
+    test('an invalid header rejects the connected send without stranding a receipt', async () => {
+        const { socket, client } = openClient();
+        await vi.waitFor(() => expect(client.connected.value).toBe(true));
+        const sends = (): number => socket.frames.filter((frame) => frame.command === 'SEND').length;
+        const before = sends();
+        // Pre-fix this threw synchronously out of `send()` and stranded the
+        // receipt entry; now it is a rejected promise.
+        await expect(client.send('/topic/x', 'bad', { 'x-bad': 'a\u0000b' })).rejects.toBeInstanceOf(
+            StompProtocolError
+        );
+        expect(sends()).toBe(before); // the frame never left the wire
+        // The client stays usable: a later valid send is still receipted.
+        const ok = client.send('/topic/x', 'ok');
+        await vi.waitFor(() => expect(sends()).toBe(before + 1));
+        socket.replyLastSend();
+        await expect(ok).resolves.toBeUndefined();
+        client.disconnect();
+    });
+
+    test('an unframeable destination rejects instead of throwing synchronously', async () => {
+        const { client } = openClient();
+        await vi.waitFor(() => expect(client.connected.value).toBe(true));
+        // The destination becomes a MESSAGE header value; NUL cannot be framed.
+        await expect(client.send('/topic/x\u0000y', 'bad')).rejects.toBeInstanceOf(StompProtocolError);
+        client.disconnect();
+    });
+
+    test('a buffered send with an invalid header is fault-isolated during the flush', async () => {
+        const socket = new FakeSocket();
+        const client = new StompClient(socket);
+        socket.open();
+        socket.connected();
+        await vi.waitFor(() => expect(client.connected.value).toBe(true));
+        socket.drop();
+        await vi.waitFor(() => expect(client.connected.value).toBe(false));
+        const bad = client.send('/topic/x', 'bad', { 'x-bad': 'a\u0000b' });
+        const good = client.send('/topic/x', 'good');
+        socket.open();
+        socket.connected();
+        // Pre-fix the bad buffered send threw inside the flush loop,
+        // aborting the whole queue (the good send never went out) and
+        // leaving an unhandled rejection.
+        await expect(bad).rejects.toBeInstanceOf(StompProtocolError);
+        await vi.waitFor(() => expect(socket.frames.filter((frame) => frame.command === 'SEND').length).toBe(1));
+        expect(socket.frames.find((frame) => frame.command === 'SEND')?.body).toBe('good');
+        socket.replyLastSend();
+        await expect(good).resolves.toBeUndefined();
+        client.disconnect();
+    });
+
+    test('subscribe after a deliberate disconnect throws', async () => {
+        const { client } = openClient();
+        client.disconnect();
+        expect(() => client.subscribe('/topic/x')).toThrow(StompProtocolError);
+    });
+
+    test('subscribe after a server ERROR throws (session is terminal)', async () => {
+        const { socket, client } = openClient();
+        await vi.waitFor(() => expect(client.connected.value).toBe(true));
+        socket.push('ERROR', { message: 'boom' });
+        await vi.waitFor(() => expect(client.connected.value).toBe(false));
+        expect(() => client.subscribe('/topic/x')).toThrow(StompProtocolError);
+    });
+});
+
 describe('StompClient over the real WebSocketClient', () => {
     test('an unexpected transport drop rejects the in-flight send (COR-12)', async () => {
         const created: Array<FakeTransport> = [];

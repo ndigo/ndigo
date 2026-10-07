@@ -19,7 +19,7 @@ service-level "request failed" hook.
 
 ### postError()
 
-> **postError**(`error`, `request`, `http`): `Promise`\<`Response` \| `undefined`\>
+> **postError**(`error`, `request`, `http`, `settings?`): `Promise`\<`Response` \| `undefined`\>
 
 Recovers from a transport or interceptor error.
 
@@ -42,6 +42,15 @@ The request that failed.
 `HTTP`
 
 The HTTP client executing the request.
+
+##### settings?
+
+`HTTPInit`
+
+The per-request settings object. It is created once per
+`HTTP.request` call and survives the `Request` replacements performed by
+other interceptors, so error-aware state (retry clones, timers) can be
+keyed on an identity that outlives `new Request(...)`.
 
 #### Returns
 

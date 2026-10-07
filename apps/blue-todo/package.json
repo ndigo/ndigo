@@ -12,7 +12,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run test",
-    "test:e2e": "playwright test"
+    "test:e2e": "pnpm build && playwright test"
   },
   "keywords": [
     "todo",
@@ -51,7 +51,7 @@
     "@blue/telemetry": "~0.0.1",
     "@blue/test": "~0.0.1",
     "@playwright/test": "^1.63.0",
-    "vite": "catalog:",
-    "vite-plugin-dts": "~5.1.0"
+    "@tsmetadata/polyfill": "catalog:",
+    "vite": "catalog:"
   }
 }

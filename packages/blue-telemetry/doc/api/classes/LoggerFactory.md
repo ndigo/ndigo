@@ -10,6 +10,8 @@ A static factory class for creating `Logger` instances.
 
 This factory allows for global configuration of logger types, severity thresholds,
 and whether loggers should be context-aware (e.g., integrating with OpenTelemetry contexts).
+Configuration changes apply to every logger already handed out — loggers are
+lazily-resolved handles, not frozen snapshots.
 
 ## Constructors
 
@@ -27,8 +29,8 @@ and whether loggers should be context-aware (e.g., integrating with OpenTelemetr
 
 > `static` **getLogger**(`name`): [`Logger`](../interfaces/Logger.md)
 
-Creates and returns a `Logger` instance with the specified name,
-configured according to the current global settings of the factory.
+Creates and returns a `Logger` handle whose configuration follows this
+factory's current and future global settings.
 
 #### Parameters
 
@@ -65,7 +67,7 @@ Resets the `LoggerFactory` to its default configuration:
 
 > `static` **setContextAware**(`enabled`): `void`
 
-Enables or disables context-aware logging for all subsequent loggers.
+Enables or disables context-aware logging for all loggers.
 When enabled, loggers will automatically include context information (e.g., trace IDs)
 if an active OpenTelemetry context is available.
 
@@ -87,7 +89,8 @@ if an active OpenTelemetry context is available.
 
 > `static` **setThreshold**(`threshold`): `void`
 
-Sets the global minimum severity threshold for all subsequent loggers created by this factory.
+Sets the global minimum severity threshold for all loggers created by
+this factory — including those already handed out.
 
 #### Parameters
 
@@ -107,7 +110,8 @@ The new minimum `SeverityNumber`.
 
 > `static` **setType**(`type`): `void`
 
-Sets the global logger type for all subsequent loggers created by this factory.
+Sets the global logger type for all loggers created by this factory —
+including those already handed out.
 
 #### Parameters
 

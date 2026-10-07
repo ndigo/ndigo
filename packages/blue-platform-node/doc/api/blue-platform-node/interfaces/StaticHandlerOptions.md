@@ -42,6 +42,16 @@ Reject files larger than this many bytes, checked at stat time before the file i
 
 ***
 
+### serveDotfiles?
+
+> `optional` **serveDotfiles?**: `boolean`
+
+Serve dotfiles (any path segment beginning with `.`). Default `false`:
+dotfile requests answer 403. The standard `.well-known` namespace is
+always served as the built-in opt-in exception (PLN-F9).
+
+***
+
 ### spaFallback?
 
 > `optional` **spaFallback?**: `boolean`

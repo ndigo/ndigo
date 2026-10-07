@@ -255,3 +255,4 @@ Jeff Rose
 - [foldHeaderName](functions/foldHeaderName.md)
 - [likeHTTPInterceptor](functions/likeHTTPInterceptor.md)
 - [multipartBoundary](functions/multipartBoundary.md)
+- [rebuildResponse](functions/rebuildResponse.md)

@@ -33,7 +33,7 @@ async function composeRealRuntime() {
     appEl.id = 'app';
     document.body.appendChild(appEl);
 
-    const composition = composeTodoRuntime(await createTodoContext());
+    const composition = await composeTodoRuntime(await createTodoContext());
 
     return {
         composition,
@@ -154,6 +154,43 @@ describe('todo shell composition', () => {
             'Manage your account preferences and profile settings.'
         );
         expect(document.querySelector('#app todo-app')).toBeNull();
+
+        dispose();
+    });
+
+    test('it should relay a real todo:stats:updated event to the shell nav badge', async () => {
+        const { composition, dispose } = await composeRealRuntime();
+
+        const mountedTodo = composition.host.getMountedFeature('todo');
+        const todoContext = mountedTodo?.context;
+        expect(todoContext).toBeDefined();
+
+        const badgeUpdates: unknown[] = [];
+        composition.shellContext.on('site:nav:badge:update', (stats: unknown) => {
+            badgeUpdates.push(stats);
+        });
+
+        // A real user action on the feature context; TodoService emits
+        // `todo:stats:updated`, which the gateway relays to the shell.
+        todoContext?.emit('user:todo:created', 'relay me');
+
+        await vi.waitFor(() => expect(badgeUpdates).toHaveLength(1));
+        expect(badgeUpdates[0]).toEqual({ active: 2, completed: 1, total: 3 });
+        expect(mountedTodo?.gateway?.relayedEventCount).toBeGreaterThan(0);
+
+        dispose();
+    });
+
+    test('it should render the auth-app view for the #/auth/login shell route', async () => {
+        const { composition, dispose } = await composeRealRuntime();
+
+        // Let the boot route's fire-and-forget render settle before navigating.
+        await vi.waitFor(() => expect(document.querySelector('#app todo-app')).not.toBeNull());
+
+        await composition.shellRouter.setRoute('/auth/login');
+
+        await vi.waitFor(() => expect(document.querySelector('#app auth-app')).not.toBeNull());
+        expect(document.querySelector('#app auth-app h1.title')?.textContent).toBe('Sign in');
 
         dispose();
     });

@@ -455,4 +455,28 @@ describe('NodeSocketSessionRegistry', () => {
             expect(transport.send).toHaveBeenCalledWith('hello');
         });
     });
+
+    describe('teardown (PLN-F10)', () => {
+        test('close() unsubscribes the fanout scopes and is idempotent', async () => {
+            const unsubscribed: string[] = [];
+            const fanoutRegistry = new NodeSocketSessionRegistry({
+                fanout: {
+                    subscribe: async (scope) => async () => {
+                        unsubscribed.push(scope);
+                    },
+                    publish: async () => undefined,
+                },
+            });
+            await fanoutRegistry.connect();
+            expect(unsubscribed).toEqual([]);
+
+            await fanoutRegistry.close();
+            expect([...unsubscribed].sort()).toEqual(['path', 'room']);
+
+            // Second close returns the cached teardown — no re-subscribe and
+            // no double-unsubscribe.
+            await fanoutRegistry.close();
+            expect(unsubscribed).toHaveLength(2);
+        });
+    });
 });

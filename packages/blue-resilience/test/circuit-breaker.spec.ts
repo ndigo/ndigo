@@ -253,4 +253,92 @@ describe('CircuitBreakerInterceptor', () => {
         // fast before the tail could run.
         expect(runs()).toBe(6);
     });
+
+    it('accumulates concurrent in-flight failures and opens at the threshold (TEL-02)', async () => {
+        const interceptor = new CircuitBreakerInterceptor();
+        const invocation = breakerInvocation({ failureThreshold: 2, resetMs: 10_000 });
+        const pending = Array.from({ length: 3 }, () => Promise.withResolvers<string>());
+        let started = 0;
+        const tail = () => {
+            const deferred = pending[started];
+            started += 1;
+            return deferred.promise;
+        };
+
+        const calls = pending.map(() => invokeChain([interceptor], invocation, tail));
+        // Plain async `invoke()` runs synchronously up to its first `await`,
+        // so all three calls are suspended at the tail before any completes.
+        expect(started).toBe(3);
+
+        const boom = new Error('down');
+        for (const deferred of pending) {
+            deferred.reject(boom);
+        }
+        const results = await Promise.allSettled(calls);
+        expect(results.every((result) => result.status === 'rejected')).toBe(true);
+
+        // Two in-place failures opened the circuit; the third outcome belongs
+        // to the superseded epoch. A fresh call fails fast (pre-fix: each
+        // call read `failures: 0` and wrote back `1`, so it never opened).
+        await expect(invokeChain([interceptor], invocation, tail)).rejects.toBeInstanceOf(CircuitOpenError);
+        expect(started).toBe(3);
+    });
+
+    it('lets exactly one half-open probe through after the reset window (TEL-02)', async () => {
+        const time = clock();
+        const interceptor = new CircuitBreakerInterceptor({ now: time.now });
+        const invocation = breakerInvocation({ failureThreshold: 1, resetMs: 1_000 });
+        const boom = new Error('down');
+        let runs = 0;
+
+        // Trip the circuit.
+        await expect(
+            invokeChain([interceptor], invocation, () => {
+                runs += 1;
+                throw boom;
+            })
+        ).rejects.toThrow('down');
+        time.advance(1_001);
+
+        const probe = Promise.withResolvers<string>();
+        const tail = () => {
+            runs += 1;
+            return probe.promise;
+        };
+        const calls = Array.from({ length: 4 }, () => invokeChain([interceptor], invocation, tail));
+        // One claimed the probe and reached the tail; the rest fail fast
+        // instead of all probing at once (pre-fix: 4/4 reached the tail).
+        expect(runs).toBe(2);
+
+        probe.resolve('ok');
+        const results = await Promise.allSettled(calls);
+        expect(results.filter((result) => result.status === 'fulfilled')).toHaveLength(1);
+        expect(results.filter((result) => result.status === 'rejected')).toHaveLength(3);
+
+        // The successful probe closed the circuit.
+        expect(await invokeChain([interceptor], invocation, () => 'ok')).toBe('ok');
+    });
+
+    it('does not let a stale in-flight success re-close an open circuit (TEL-02)', async () => {
+        const interceptor = new CircuitBreakerInterceptor();
+        const invocation = breakerInvocation({ failureThreshold: 1, resetMs: 10_000 });
+        const slow = Promise.withResolvers<string>();
+        const boom = new Error('down');
+
+        // Call A starts and blocks in the tail.
+        const a = invokeChain([interceptor], invocation, () => slow.promise);
+        // Call B fails and trips the circuit (threshold 1).
+        await expect(
+            invokeChain([interceptor], invocation, () => {
+                throw boom;
+            })
+        ).rejects.toThrow('down');
+
+        // A's success arrives late — it belongs to the pre-open epoch and
+        // must not close the circuit (pre-fix: it unconditionally re-closed).
+        slow.resolve('late');
+        await expect(a).resolves.toBe('late');
+
+        await expect(invokeChain([interceptor], invocation, () => 'ok')).rejects.toBeInstanceOf(CircuitOpenError);
+    });
 });

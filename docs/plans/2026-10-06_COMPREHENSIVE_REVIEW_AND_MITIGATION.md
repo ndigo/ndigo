@@ -20,7 +20,16 @@ independently re-verified headline claims: the passwordless-account auth bypass
 alias/param corruption (reproduced via `tsx`), the stale `AD-01..AD-67` ranges, the CI
 e2e fresh-checkout failure path, and the stale `vitest.config.ts` alias targets. Working
 tree was clean before and after; throwaway probes were removed.
-**Status:** Findings recorded; **no remediation executed** — §9 proposes the waves.
+**Status:** Findings recorded. **Execution in progress:** waves 1–3 landed
+(commit `91712f40` for waves 1–2 security/availability; wave 3 in the following
+commit — context/boot, HTTP, data, ops, protocols, telemetry/resilience,
+platform-web, kernel-2, tooling, docs, apps and platform-misc clusters). All 46
+test projects green; full gate set green (build, test, lint, format, links,
+manifest, agents, typecheck, audit, doc freshness). Still open from the plan:
+the tooling leftovers (test-file typecheck lane TOL-F5, Redis CI lane DAT-F14,
+app-manifest checker extension), the TEL-08 wiring follow-up, the
+`@blue/log` migration of framework `console.*` call sites (wave 5), and the
+wave-6 product roadmap (gaps 1–13, ADR track).
 
 **Legend:** `block` = release/CI or availability/security breaker · `high` = must fix before
 1.0 · `medium` = should fix · `low`/`nit` = cleanup.

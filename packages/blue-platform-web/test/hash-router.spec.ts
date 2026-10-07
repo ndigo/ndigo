@@ -273,4 +273,101 @@ describe('HashRouter', () => {
 
         window.removeEventListener('hashchange', hashChangeSeen);
     });
+
+    test('it should roll back the in-memory route when postHandle throws (PWB-REV-002)', async () => {
+        const onComplete = vi.fn((_route: Route) => null);
+        const onError = vi.fn();
+        router = new HashRouter(onComplete, { onError });
+
+        await router.setRoute('/original');
+        onComplete.mockClear();
+
+        const afterCompletion = vi.fn();
+        router.use({
+            preHandle: () => true,
+            postHandle: () => {
+                throw new Error('postHandle boom');
+            },
+            afterCompletion,
+        });
+
+        await expect(router.setRoute('/next')).resolves.toBeUndefined();
+
+        expect(afterCompletion).toHaveBeenCalledTimes(1);
+        expect(router.route).toBe('/original');
+        expect(onComplete).not.toHaveBeenCalled();
+        expect(onError).toHaveBeenCalledTimes(1);
+    });
+
+    test('it should not reject when afterCompletion throws (PWB-REV-015)', async () => {
+        const onComplete = vi.fn((_route: Route) => null);
+        const onError = vi.fn();
+        router = new HashRouter(onComplete, { onError });
+
+        router.use({
+            preHandle: () => true,
+            afterCompletion: () => {
+                throw new Error('afterCompletion boom');
+            },
+        });
+
+        await expect(router.setRoute('/x')).resolves.toBeUndefined();
+
+        expect(onError).toHaveBeenCalledTimes(1);
+        const captured = onError.mock.calls[0]?.[0] as Error | undefined;
+        expect(captured?.message).toBe('afterCompletion boom');
+    });
+
+    test('it should not re-dispatch the restored route after a rejected external navigation (PWB-REV-003)', async () => {
+        // Flush any hashchange event left pending by the shared jsdom location
+        // before wiring the listener (otherwise it dispatches into the router).
+        const { promise: flushed, resolve: flush } = Promise.withResolvers<void>();
+        setTimeout(flush, 50);
+        await flushed;
+
+        const onComplete = vi.fn((_route: Route) => null);
+        router = new HashRouter(onComplete);
+
+        await router.setRoute('/original');
+        onComplete.mockClear();
+
+        const preHandle = vi.fn(() => false);
+        router.use({ preHandle });
+
+        location.hash = '/blocked';
+        await vi.waitFor(() => expect(preHandle).toHaveBeenCalled());
+
+        // Give any un-suppressed rollback echo time to re-run the pipeline.
+        await new Promise((resolve) => setTimeout(resolve, 50));
+
+        expect(preHandle).toHaveBeenCalledTimes(1);
+        expect(onComplete).not.toHaveBeenCalled();
+        expect(router.route).toBe('/original');
+        expect(location.hash).toBe('#/original');
+    });
+
+    test('it should serialize concurrent navigations, last one winning (PWB-REV-005)', async () => {
+        const onComplete = vi.fn((_route: Route) => null);
+        router = new HashRouter(onComplete);
+
+        const { promise: gate, resolve: release } = Promise.withResolvers<void>();
+        const preHandle = vi.fn(async (route: Route) => {
+            if (route.path === 'a') {
+                await gate;
+            }
+            return true;
+        });
+        router.use({ preHandle });
+
+        const first = router.setRoute('/a');
+        const second = router.setRoute('/b');
+
+        // The first navigation is held at its gate; the second must wait.
+        await vi.waitFor(() => expect(preHandle).toHaveBeenCalledTimes(1));
+        release();
+        await Promise.all([first, second]);
+
+        expect(router.route).toBe('/b');
+        expect(onComplete).toHaveBeenCalledTimes(2);
+    });
 });

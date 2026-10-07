@@ -10,6 +10,7 @@ import { AbstractRouter, RouterCallback } from '@blue/router';
 import { RingBuffer } from '@blue/core';
 import { RouterExecutionChain } from '@blue/router';
 import { MappedRouterInterceptor, RouterInterceptor } from '@blue/router';
+import type { RouterOptions } from '@blue/router';
 import { commitRoute } from './_commit-route';
 
 /**
@@ -67,7 +68,12 @@ export class BrowserRouter extends AbstractRouter {
     #handler: PopStateHandler;
     #history: RingBuffer<RouteTransaction>;
     #route: PathRoute;
-    #lastPublicRoute: string;
+    /**
+     * Serializes navigations so concurrent `setRoute` calls (and external
+     * `popstate` dispatches) cannot interleave across their interceptor
+     * awaits and drop an earlier navigation (PWB-REV-005).
+     */
+    #navigation: Promise<unknown>;
 
     readonly callback!: RouterCallback;
 
@@ -86,9 +92,10 @@ export class BrowserRouter extends AbstractRouter {
      *
      * @param callback - The `RouterCallback` to be invoked when the route changes.
      *   Called with a `PathRoute` representing the current URL path.
+     * @param options - Router options, e.g. the navigation-error hook.
      */
-    constructor(callback: RouterCallback) {
-        super();
+    constructor(callback: RouterCallback, options: RouterOptions = {}) {
+        super(options);
 
         defineProperty(this, 'callback', {
             value: callback,
@@ -99,12 +106,12 @@ export class BrowserRouter extends AbstractRouter {
 
         this.#handler = (event: PopStateEvent) => this._onPopState(event);
         this.#history = new RingBuffer<RouteTransaction>(256);
+        this.#navigation = Promise.resolve();
 
         const currentRoute = window.location.pathname + window.location.search || '/',
             routeTx = new RouteTransaction(currentRoute, RouteAccess.PUBLIC, RouteSource.EXTERNAL);
 
         this.#route = new PathRoute(currentRoute);
-        this.#lastPublicRoute = this.#route.toString();
         this.#history.put(routeTx);
 
         defineProperty(this, 'destroyed', {
@@ -143,17 +150,7 @@ export class BrowserRouter extends AbstractRouter {
      * @returns A promise that resolves when the route has been processed.
      */
     async setRoute(newRoute: string, isPublic = true): Promise<void> {
-        const success = await this._setRoute(newRoute, isPublic);
-        if (success) {
-            const routeAccess = isPublic ? RouteAccess.PUBLIC : RouteAccess.PRIVATE,
-                routeTx = new RouteTransaction(this.route, routeAccess, RouteSource.INTERNAL);
-            this.#history.put(routeTx);
-            if (isPublic) {
-                this.#lastPublicRoute = this.route;
-                history.pushState(null, '', newRoute);
-            }
-            this.callback(this.#route);
-        }
+        await this.#serialize(() => this.#applyNavigation(newRoute, isPublic, RouteSource.INTERNAL));
     }
 
     /**
@@ -183,15 +180,43 @@ export class BrowserRouter extends AbstractRouter {
     protected _onPopState(_event: PopStateEvent): void {
         const newRoute = window.location.pathname + window.location.search || '/';
 
-        void this._setRoute(newRoute, true).then((success) => {
-            if (success) {
-                const route = this.route,
-                    routeTx = new RouteTransaction(route, RouteAccess.PUBLIC, RouteSource.EXTERNAL);
-                this.#history.put(routeTx);
-                this.#lastPublicRoute = route;
-                this.callback(this.#route);
-            }
-        });
+        void this.#serialize(() => this.#applyNavigation(newRoute, true, RouteSource.EXTERNAL)).catch(
+            (error: unknown) => this.onError(error, new PathRoute(newRoute))
+        );
+    }
+
+    /**
+     * Runs one navigation to completion and records it: commits the route,
+     * appends a history transaction, pushes the URL for public routes, and
+     * invokes the callback. A rejection or pipeline failure is a no-op here —
+     * `commitRoute` already restored the previous route.
+     */
+    async #applyNavigation(newRoute: string, isPublic: boolean, source: RouteSource): Promise<void> {
+        const success = await this._setRoute(newRoute, isPublic);
+        if (!success) {
+            return;
+        }
+
+        const routeAccess = isPublic ? RouteAccess.PUBLIC : RouteAccess.PRIVATE,
+            routeTx = new RouteTransaction(this.route, routeAccess, source);
+        this.#history.put(routeTx);
+        if (isPublic) {
+            history.pushState(null, '', newRoute);
+        }
+        this.callback(this.#route);
+    }
+
+    /**
+     * Chains navigation work onto the single-flight queue so concurrent
+     * navigations run one at a time in call order.
+     */
+    #serialize<T>(task: () => Promise<T>): Promise<T> {
+        const run = this.#navigation.then(task, task);
+        this.#navigation = run.then(
+            () => undefined,
+            () => undefined
+        );
+        return run;
     }
 
     /**
@@ -199,11 +224,12 @@ export class BrowserRouter extends AbstractRouter {
      *
      * Runs the full interceptor pipeline (`preHandle` → `postHandle` →
      * `afterCompletion`); the route is only committed once `preHandle` accepts
-     * it and is restored when the route change is rejected or fails.
+     * it and is restored to the pre-call route when the route change is
+     * rejected or fails.
      */
-    protected async _setRoute(newRoute: string, syncHash = true): Promise<boolean> {
+    protected async _setRoute(newRoute: string, _syncHash = true): Promise<boolean> {
         const route = new PathRoute(newRoute),
-            oldRoute = syncHash ? this.route : this.#lastPublicRoute,
+            oldRoute = this.route,
             chain = new RouterExecutionChain(this._resolveInterceptors(route));
 
         return commitRoute(
@@ -214,7 +240,8 @@ export class BrowserRouter extends AbstractRouter {
             },
             () => {
                 this.#route = new PathRoute(oldRoute);
-            }
+            },
+            (error, failedRoute) => this.onError(error, failedRoute)
         );
     }
 

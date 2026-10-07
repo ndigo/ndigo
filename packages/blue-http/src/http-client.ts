@@ -181,7 +181,9 @@ export class HTTP {
             const chain = this._getHTTPExecutionChain(this, url.href);
 
             if (chain.applyPreInit(url, settings) === false) {
-                return new Response(null, settings);
+                const cancelled = new Response(null, settings);
+                this.#completeCancelled(chain, url, settings, cancelled);
+                return cancelled;
             }
 
             freeze(settings);
@@ -189,9 +191,12 @@ export class HTTP {
             let request = new Request(url.toString(), settings);
 
             try {
-                const preRequestResult = await chain.applyPreRequest(request, this);
+                const preRequestResult = await chain.applyPreRequest(request, this, settings);
                 if (likeResponse(preRequestResult)) {
-                    response = preRequestResult;
+                    // A short-circuit (e.g. a cache hit) is still a response
+                    // the pipeline must observe: run the postResponse
+                    // transforms so hits and misses agree (HTT-REV-002).
+                    response = await chain.applyPostResponse(preRequestResult, settings, request);
                 } else {
                     request = preRequestResult as Request;
                     response = await this.#fetch(request);
@@ -200,7 +205,15 @@ export class HTTP {
             } catch (error) {
                 // Failures raised before fetch (e.g. by a request transform)
                 // follow the same error/completion contract as transport ones.
-                response = await chain.applyPostError(error as Error, request, this);
+                try {
+                    response = await chain.applyPostError(error as Error, request, this, settings);
+                } catch (postErrorFailure) {
+                    // A throwing error-aware interceptor must not strand
+                    // per-request resources (e.g. the timeout timer): complete
+                    // the request before propagating the failure (HTT-REV-009).
+                    chain.applyPostComplete(request, new ResponseError(undefined, postErrorFailure as Error), settings);
+                    throw postErrorFailure;
+                }
 
                 if (!likeResponse(response)) {
                     response = likeResponse(error)
@@ -217,6 +230,29 @@ export class HTTP {
         }
 
         return response;
+    }
+
+    /**
+     * Runs completion hooks for a request cancelled before fetch executes.
+     *
+     * A pre-init cancellation never reaches the normal completion path, so
+     * per-request resources (e.g. the timeout interceptor's timer) would
+     * otherwise outlive the request (HTT-REV-009). The request is rebuilt from
+     * the settings purely so completion hooks have a subject.
+     *
+     * @param chain - The execution chain to notify.
+     * @param url - The resolved request URL.
+     * @param settings - The per-request settings.
+     * @param response - The cancellation response returned to the caller.
+     */
+    #completeCancelled(chain: HTTPExecutionChain, url: URL, settings: HTTPInit, response: Response): void {
+        try {
+            chain.applyPostComplete(new Request(url.toString(), settings), response, settings);
+        } catch {
+            // A body-bearing settings object can make Request construction
+            // throw; the cancellation itself must still succeed. Completion
+            // cleanup is best-effort here.
+        }
     }
 
     /**

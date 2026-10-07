@@ -10,6 +10,7 @@ import { AbstractRouter, RouterCallback } from '@blue/router';
 import { RingBuffer } from '@blue/core';
 import { RouterExecutionChain } from '@blue/router';
 import { MappedRouterInterceptor, RouterInterceptor } from '@blue/router';
+import type { RouterOptions } from '@blue/router';
 import { commitRoute } from './_commit-route';
 
 //type RouteSource = 'private' | 'public' | 'external';
@@ -100,9 +101,15 @@ export class HashRouter extends AbstractRouter {
     #handler: HashChangeHandler;
     #history: RouteHistory;
     #route: PathRoute;
-    #lastPublicRoute: string;
     /** Routes whose `location.hash` write is still awaiting its `hashchange` echo. */
     #pendingHashEchoes: string[];
+    /**
+     * Serializes navigations. Concurrent `setRoute` calls (and external
+     * `hashchange` dispatches) otherwise interleave across their interceptor
+     * awaits: an earlier navigation is dropped and the winner's callback can
+     * fire twice (PWB-REV-005).
+     */
+    #navigation: Promise<unknown>;
 
     readonly callback!: RouterCallback;
 
@@ -133,10 +140,11 @@ export class HashRouter extends AbstractRouter {
     /**
      * Creates an instance of `HashRouter`.
      * @param callback - The `RouterCallback` to be invoked when the route changes.
+     * @param options - Router options, e.g. the navigation-error hook.
      * @since 1.0.0
      */
-    constructor(callback: RouterCallback) {
-        super();
+    constructor(callback: RouterCallback, options: RouterOptions = {}) {
+        super(options);
 
         defineProperty(this, 'callback', {
             value: callback,
@@ -148,12 +156,12 @@ export class HashRouter extends AbstractRouter {
         this.#handler = (event: HashChangeEvent) => this._onHashChange(event);
         this.#history = new RingBuffer<RouteTransaction>(256);
         this.#pendingHashEchoes = [];
+        this.#navigation = Promise.resolve();
 
         const currentRoute = removeFirstCharacter(location.hash) || '/',
             routeTx = new RouteTransaction(currentRoute, RouteAccess.PUBLIC, RouteSource.EXTERNAL);
 
         this.#route = new PathRoute(currentRoute);
-        this.#lastPublicRoute = this.#route.toString();
         this.#history.put(routeTx);
 
         defineProperty(this, 'destroyed', {
@@ -193,17 +201,7 @@ export class HashRouter extends AbstractRouter {
      * @since 1.0.0
      */
     async setRoute(newRoute: string, isPublic = true): Promise<void> {
-        const success = await this._setRoute(newRoute, isPublic);
-        if (success) {
-            const routeAccess = isPublic ? RouteAccess.PUBLIC : RouteAccess.PRIVATE,
-                routeTx = new RouteTransaction(this.route, routeAccess, RouteSource.INTERNAL);
-            this.#history.put(routeTx);
-            if (isPublic) {
-                this.#lastPublicRoute = this.route;
-                this._syncHash();
-            }
-            this.callback(this.#route);
-        }
+        await this.#serialize(() => this.#applyNavigation(newRoute, isPublic, RouteSource.INTERNAL));
     }
 
     /**
@@ -248,15 +246,43 @@ export class HashRouter extends AbstractRouter {
             return;
         }
 
-        void this._setRoute(newRoute, true).then((success) => {
-            if (success) {
-                const route = this.route,
-                    routeTx = new RouteTransaction(route, RouteAccess.PUBLIC, RouteSource.EXTERNAL);
-                this.#history.put(routeTx);
-                this.#lastPublicRoute = route;
-                this.callback(this.#route);
-            }
-        });
+        void this.#serialize(() => this.#applyNavigation(newRoute, true, RouteSource.EXTERNAL)).catch(
+            (error: unknown) => this.onError(error, new PathRoute(newRoute))
+        );
+    }
+
+    /**
+     * Runs one navigation to completion and records it: commits the route,
+     * appends a history transaction, mirrors public routes into the hash, and
+     * invokes the callback. A rejection or pipeline failure is a no-op here —
+     * `commitRoute` already restored the previous route.
+     */
+    async #applyNavigation(newRoute: string, isPublic: boolean, source: RouteSource): Promise<void> {
+        const success = await this._setRoute(newRoute, isPublic);
+        if (!success) {
+            return;
+        }
+
+        const routeAccess = isPublic ? RouteAccess.PUBLIC : RouteAccess.PRIVATE,
+            routeTx = new RouteTransaction(this.route, routeAccess, source);
+        this.#history.put(routeTx);
+        if (isPublic) {
+            this._syncHash();
+        }
+        this.callback(this.#route);
+    }
+
+    /**
+     * Chains navigation work onto the single-flight queue so concurrent
+     * navigations run one at a time in call order.
+     */
+    #serialize<T>(task: () => Promise<T>): Promise<T> {
+        const run = this.#navigation.then(task, task);
+        this.#navigation = run.then(
+            () => undefined,
+            () => undefined
+        );
+        return run;
     }
 
     /**
@@ -269,7 +295,7 @@ export class HashRouter extends AbstractRouter {
      */
     protected async _setRoute(newRoute: string, syncHash = true): Promise<boolean> {
         const route = new PathRoute(newRoute),
-            oldRoute = syncHash ? this.route : this.#lastPublicRoute,
+            oldRoute = this.route,
             chain = new RouterExecutionChain(this._resolveInterceptors(route));
 
         return commitRoute(
@@ -278,7 +304,11 @@ export class HashRouter extends AbstractRouter {
             () => {
                 this.#route = route;
             },
-            () => this._restoreHash(oldRoute, syncHash)
+            () => {
+                this.#route = new PathRoute(oldRoute);
+                this._restoreHash(oldRoute, syncHash);
+            },
+            (error, failedRoute) => this.onError(error, failedRoute)
         );
     }
 
@@ -308,15 +338,22 @@ export class HashRouter extends AbstractRouter {
     /**
      * Restores the browser hash to the given route when a navigation is rejected or fails.
      * Only acts when syncHash is enabled and the hash no longer represents the given route.
+     * The rollback write is recorded as an echo so the `hashchange` it emits does not
+     * re-dispatch the restored route (PWB-REV-003).
      */
     private _restoreHash(oldRoute: string, syncHash: boolean): void {
-        if (syncHash && typeof location !== 'undefined') {
-            const currentRoute = removeFirstCharacter(location.hash) || '/';
-
-            if (currentRoute !== oldRoute) {
-                location.hash = oldRoute;
-            }
+        if (!syncHash || typeof location === 'undefined') {
+            return;
         }
+
+        const currentRoute = removeFirstCharacter(location.hash) || '/';
+
+        if (currentRoute === oldRoute) {
+            return;
+        }
+
+        location.hash = oldRoute;
+        this.#pendingHashEchoes.push(removeFirstCharacter(location.hash));
     }
 
     /**

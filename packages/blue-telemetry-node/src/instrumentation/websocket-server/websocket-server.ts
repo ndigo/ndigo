@@ -4,12 +4,12 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { SpanKind, metrics, trace } from '@opentelemetry/api';
-import type { Attributes, Counter, Span } from '@opentelemetry/api';
+import { SpanKind, trace } from '@opentelemetry/api';
+import type { Attributes, Span } from '@opentelemetry/api';
 import { NodeSocketSessionRegistry } from '@blue/platform-node';
 import type { SocketSession } from '@blue/socket';
 import type { WebSocket } from 'ws';
-import { AbstractBaseInstrumentation } from '@blue/telemetry';
+import { AbstractBaseInstrumentation, createLazyCounter } from '@blue/telemetry';
 
 /**
  * Options for {@link WebSocketServerInstrumentation}.
@@ -41,7 +41,9 @@ export interface WebSocketServerInstrumentationOptions {
  *   `SocketSession.connect` SERVER span (path, duration, close code) —
  *   the socket analog of the SSE stream-lifetime instrumentation.
  * - **Counters**: sessions opened / closed (per path + close code),
- *   fan-out messages + bytes (per path; per room only with
+ *   fan-out **delivered** messages + bytes — scaled by recipient count, so a
+ *   broadcast to N open sessions records N messages and N × wire bytes (per
+ *   path; per room only with
  *   {@link WebSocketServerInstrumentationOptions.roomAttribute}),
  *   backpressure closes (close code `1013`).
  *
@@ -81,12 +83,9 @@ export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation 
         // `InstrumentationBase` calls `enable()` from ITS constructor —
         // before this subclass's field initializers (or any `#private`
         // member) exist. State therefore lives in module-level WeakMaps
-        // keyed by instance, and the latch below makes the second enable
-        // (SDK `registerInstrumentations`) a no-op.
-        if (ENABLED.has(this)) {
-            return;
-        }
-        ENABLED.add(this);
+        // keyed by instance. Repeated enables are latched once, in
+        // `AbstractBaseInstrumentation` (the shared single latch), so this
+        // body runs exactly once per enable cycle.
         // Captured for the room-gating observer: `#roomAttribute` is assigned
         // in the constructor body, which runs *after* this `enable()` (the
         // base constructor calls it), so the observer reads it lazily at
@@ -107,17 +106,7 @@ export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation 
         // first wrapped call runs after SDK init, so the global meter is real
         // by then. (Tracers need no such care: the API's ProxyTracerProvider
         // defers to the registered provider.)
-        const counter = (() => {
-            const cache = new Map<string, Counter>();
-            return (name: string, attributes?: Attributes, value: number = 1): void => {
-                let instrument = cache.get(name);
-                if (instrument === undefined) {
-                    instrument = metrics.getMeter('@blue/telemetry').createCounter(name);
-                    cache.set(name, instrument);
-                }
-                instrument.add(value, attributes);
-            };
-        })();
+        const counter = createLazyCounter();
         const tracer = trace.getTracer('@blue/telemetry');
 
         // Backpressure decisions: the registry's onOverflow observer is the
@@ -136,7 +125,10 @@ export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation 
                     counter('blue.socket.sessions.opened', { 'socket.path': path });
                     open.set(session, {
                         span: tracer.startSpan('SocketSession.connect', {
-                            kind: SpanKind.SERVER,
+                            // Session lifetime is internal lifecycle work —
+                            // the real boundary is the upgrade/HTTP request
+                            // span, not the registry bookkeeping (TEL-11).
+                            kind: SpanKind.INTERNAL,
                             attributes: { 'socket.path': path } as Attributes,
                         }),
                         began: Date.now(),
@@ -157,9 +149,13 @@ export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation 
                     // event: the payload is measured where it is serialized
                     // for the wire, so the instrumentation never
                     // re-serializes it (that was a second JSON.stringify per
-                    // broadcast). `room` is an arbitrary application string,
-                    // so the room dimension is opt-in (TEL-3); off, room
-                    // fan-out lands on the bounded attribute-free series.
+                    // broadcast). Counters measure **delivered** messages and
+                    // bytes — scaled by `recipients`, so one broadcast to N
+                    // open sessions records N messages and N × wire bytes
+                    // (a broadcast is not one message on the wire). `room` is
+                    // an arbitrary application string, so the room dimension
+                    // is opt-in (TEL-3); off, room fan-out lands on the
+                    // bounded attribute-free series.
                     const fanoutUnsubscribe = registry.addFanoutObserver((event) => {
                         const attributes: Attributes | undefined =
                             event.scope === 'path'
@@ -167,8 +163,8 @@ export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation 
                                 : roomAttribute()
                                   ? { 'socket.room': event.key }
                                   : undefined;
-                        counter('blue.socket.messages.sent', attributes);
-                        counter('blue.socket.messages.bytes', attributes, event.bytes);
+                        counter('blue.socket.messages.sent', attributes, event.recipients);
+                        counter('blue.socket.messages.bytes', attributes, event.bytes * event.recipients);
                     });
                     fanoutObservers.push(fanoutUnsubscribe);
                 }
@@ -198,7 +194,6 @@ export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation 
     }
 
     disable(): void {
-        ENABLED.delete(this);
         this._unwrap(NodeSocketSessionRegistry.prototype, 'register');
         this._unwrap(NodeSocketSessionRegistry.prototype, 'remove');
         // End spans still open (sessions that never hit `remove` while
@@ -229,7 +224,6 @@ export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation 
  * Keyed by the instrumentation instance so multiple instances (or
  * enable/disable cycles) never share state.
  */
-const ENABLED = new WeakSet<WebSocketServerInstrumentation>();
 type OpenSession = { span: Span; began: number; path: string };
 const OPEN_SPANS = new WeakMap<WebSocketServerInstrumentation, Map<SocketSession, OpenSession>>();
 const OBSERVED_REGISTRIES = new WeakMap<WebSocketServerInstrumentation, WeakSet<NodeSocketSessionRegistry>>();

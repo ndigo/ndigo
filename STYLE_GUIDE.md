@@ -8,6 +8,15 @@ This document defines the concrete implementation rules, naming conventions, and
 
 **See ARCHITECTURE.md for:** "Why is the system designed this way?" and "What are the architectural patterns?"
 
+**Enforcement markers:** Section headings carry a marker describing how the rule is checked.
+
+- `[AUTOMATED: oxfmt]` — enforced by oxfmt (`pnpm format:check`, `.oxfmtrc.json`).
+- `[AUTOMATED: oxlint]` — enforced by oxlint (`pnpm lint`, `.oxlintrc.json`); the lane runs
+  `oxlint --type-aware --deny-warnings`, so a `warn`-level rule fails CI exactly like an `error`.
+  The enforcing rule names (for example `@blue/no-internal-file-exports`) are named inline.
+- `[CONVENTION: Code Review]` — enforced by review; no lint rule. Some of these sections also carry
+  a partial oxlint rule, named inline.
+
 ## 1. Formatting Rules
 
 These rules are enforced by oxfmt (`.oxfmtrc.json`). When the oxfmt configuration changes, this section must be updated.
@@ -161,11 +170,14 @@ All TypeScript source files use lowercase with hyphens separating words.
 
 **Rationale:** Kebab-case is URL-friendly, avoids case-sensitivity issues across file systems, and is widely adopted in JavaScript/TypeScript ecosystems.
 
-### Internal/Private Files [CONVENTION: Code Review]
+### Internal/Private Files [AUTOMATED: oxlint]
 
 **Pattern:** `_kebab-case.ts`
 
 Files prefixed with underscore are internal implementation details.
+
+**Automated:** `@blue/no-internal-file-exports` (error) rejects underscore files re-exported from
+public entry points, and `@blue/no-internal-file-imports` (error) rejects cross-package imports of them.
 
 **Rules:**
 
@@ -291,9 +303,9 @@ Configuration files use kebab-case with appropriate extensions.
 
 ### Documentation Files [CONVENTION: Code Review]
 
-**Pattern:** `UPPER_SNAKE_CASE.md` or `YYYY-MM-DD_DESCRIPTION.md`
+**Pattern:** `UPPER_SNAKE_CASE.md` (root), `YYYY-MM-DD_DESCRIPTION.md` (dated), or `kebab-case-slug.md` (living)
 
-Root-level documentation uses all caps, dated documentation uses ISO 8601 date with underscore separator.
+Root-level documentation uses all caps; dated documentation uses an ISO 8601 date with an underscore separator; living documentation uses a stable kebab-case slug.
 
 **Root Documentation (Uppercase):**
 
@@ -325,6 +337,21 @@ Where:
 - `YYYY-MM-DD` - ISO 8601 date with hyphens
 - `_` - Underscore separator (consistent with UPPER_SNAKE_CASE)
 - `DESCRIPTION` - ALL_CAPS with underscores for multi-word phrases
+
+**Living Documentation (Stable Slug):**
+
+Docs updated in place rather than frozen by date use a stable kebab-case slug with no date:
+
+```
+✅ docs/guides/19-testing.md
+✅ docs/guides/04-i18n-and-content.md
+✅ docs/architecture/security.md
+✅ ARCHITECTURE.md
+
+❌ docs/guides/2026-10-06-testing.md   // Wrong: living docs do not carry a date
+```
+
+Guide files carry a zero-padded numeric ordering prefix (`NN-slug.md`); `docs/architecture/` and the root documents use a bare slug. See [docs/README.md](./docs/README.md) (Conventions) for which directories are dated (history) and which are living (updated in place).
 
 ---
 
@@ -370,6 +397,8 @@ export const IMAGE_PNG = MediaType.for('image', 'png');
 **Object Constants** (RegExp patterns, object literals, arrays):
 
 All non-primitive constants use `camelCase`, including RegExp patterns and other immutable objects.
+
+**Automated:** `@blue/no-uppercase-regexp-constants` (error) rejects UPPER_SNAKE_CASE constants initialized with a RegExp literal.
 
 ```typescript
 // ✅ Correct: RegExp patterns use camelCase (they are objects, not primitives)
@@ -640,6 +669,8 @@ type serializable = string | number | boolean | null | undefined;
 
 ### 3.8. Decorators [CONVENTION: Code Review]
 
+**Automated:** `@blue/no-cross-paradigm-decorators` (error) rejects mixing service-call and route-mapping decorators on one class; decorator naming itself remains a review concern.
+
 **Pattern:** `camelCase`
 
 Decorator functions follow standard function naming conventions (camelCase).
@@ -672,7 +703,9 @@ class UserProfileView {}
 
 **Rationale:** Decorators are functions that modify classes, methods, fields, or parameters. Following standard function naming conventions (camelCase) maintains consistency with JavaScript/TypeScript ecosystem patterns and TC39 decorator standards.
 
-### 3.9. Acronym Casing [CONVENTION: Code Review]
+### 3.9. Acronym Casing [AUTOMATED: oxlint]
+
+**Automated:** `@blue/no-mixed-case-acronyms` (error) rejects mixed-case acronyms (`Http`, `Json`, `Xml`) in type declaration names; identifier casing remains a review concern.
 
 **Pattern:** Consistent casing for acronyms across all contexts
 
@@ -782,6 +815,8 @@ Examples from the codebase (not an exhaustive list):
 **Note:** This rule applies to ALL code contexts—classes, interfaces, types, variables, functions, parameters, and constants.
 
 ### 3.10. Interfaces and Abstract Classes [CONVENTION: Code Review]
+
+**Automated:** `@blue/no-abstract-class-without-prefix` (error) requires the `Abstract` prefix on abstract classes; interface naming remains a review concern.
 
 **Pattern:** Description-first for classes, Abstract prefix for abstract classes
 
@@ -3473,7 +3508,11 @@ export { slugify } from './slugify';
 // (no export for _helpers.ts)
 ```
 
-### Internal vs Public Modules [CONVENTION: Code Review]
+### Internal vs Public Modules [AUTOMATED: oxlint]
+
+**Automated:** `@blue/no-internal-file-exports` (error) — underscore-prefixed modules must not be
+re-exported from public entry points; `@blue/no-internal-file-imports` (error) — they must not be
+imported across package boundaries.
 
 **Public Modules:**
 
@@ -3772,7 +3811,7 @@ export const parseAcceptHeader = (header: string) => header.split(',').map(trim)
 
 **Note:** The hybrid naming approach (generic `_util.ts` + specific domain files) will be reviewed at a future date to determine if it should be kept, standardized, or evolved to directory-based organization.
 
-**See:** `docs/plans/INTERNAL_FILE_NAMING_REVIEW.md` for the evaluation framework.
+**See:** `docs/plans/2026-02-01_INTERNAL_FILE_NAMING_REVIEW.md` for the evaluation framework.
 
 **Triggers for review:**
 
@@ -4319,8 +4358,8 @@ files:
   `pnpm exec nx generate @blue/generators:header --file <path> [--summary ...]`
 
 The file-level block documents the whole module; class/method members carry
-their own focused TSDoc. `@blue/oxlint-plugin` enforcement can be layered on
-top of this convention.
+their own focused TSDoc. `@blue/requires-doc-header` (oxlint, error level —
+`.oxlintrc.json`) enforces the canonical block on source files.
 
 **Public symbol comments (coverage gate):** every top-level exported
 function, class, interface, or type alias needs a doc comment — the docs

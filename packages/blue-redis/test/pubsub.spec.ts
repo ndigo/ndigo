@@ -21,6 +21,7 @@ import {
 } from '@blue/socket';
 import { RedisConnection } from '../src';
 import { RedisSocketFanout } from '../src/pubsub';
+import { decodeSocketFanoutEnvelope } from '../src/pubsub/socket-fanout';
 
 const url = process.env.BLUE_REDIS_TEST_URL;
 const live = url === undefined ? describe.skip : describe;
@@ -494,5 +495,40 @@ live('Redis socket fan-out (live standalone Redis)', () => {
         await second.close();
         await expect(second.publish('/topic/chat', 'after close')).rejects.toThrow();
         expect(remote.closes.map((item) => item.code)).toEqual([1001]);
+    });
+});
+
+describe('RedisSocketFanout envelope framing (PRT-REV-006)', () => {
+    const MAX = 1_048_576;
+    const envelope = (headers: unknown, key = '/topic/x'): string =>
+        JSON.stringify({
+            version: 1,
+            origin: '00000000-0000-0000-0000-000000000000',
+            key,
+            binary: false,
+            body: 'm',
+            headers,
+        });
+
+    it('round-trips a well-formed envelope', () => {
+        const decoded = decodeSocketFanoutEnvelope(envelope({ 'content-type': 'text/plain' }), MAX);
+        expect(decoded.message.key).toBe('/topic/x');
+        expect(decoded.message.headers).toEqual({ 'content-type': 'text/plain' });
+    });
+
+    it('rejects header values that cannot be framed (NUL)', () => {
+        // A NUL header value would make every subscriber's MESSAGE
+        // serialization throw and be swallowed — a silently blackholed
+        // destination. It must be rejected at the envelope boundary.
+        expect(() => decodeSocketFanoutEnvelope(envelope({ 'x-bad': 'a\u0000b' }), MAX)).toThrow(TypeError);
+    });
+
+    it('rejects header names that would split or forge a header line', () => {
+        expect(() => decodeSocketFanoutEnvelope(envelope({ 'bad:name': 'v' }), MAX)).toThrow(TypeError);
+        expect(() => decodeSocketFanoutEnvelope(envelope({ 'bad\nname': 'v' }), MAX)).toThrow(TypeError);
+    });
+
+    it('rejects a NUL in the key (it becomes the destination header)', () => {
+        expect(() => decodeSocketFanoutEnvelope(envelope({}, '/topic/x\u0000y'), MAX)).toThrow(TypeError);
     });
 });

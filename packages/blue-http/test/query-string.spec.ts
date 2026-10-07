@@ -91,14 +91,19 @@ describe('QueryString', () => {
             expect(QueryString.parse('a=&a=value')).toEqual({ a: ['', 'value'] });
         });
 
-        test.skip('it should handle multiple values and preserve appearance order with brackets', () => {
-            expect(QueryString.parse('a[]=value&a[]=')).toEqual({ a: ['value', null] });
-            expect(QueryString.parse('a[]=&a[]=value')).toEqual({ a: [null, 'value'] });
+        test('it treats bracketed keys literally, aggregating repeated keys under the bracket name', () => {
+            // Documented limitation: the parser is WHATWG URLSearchParams-
+            // aligned and performs no `a[]` array expansion — the brackets stay
+            // part of the key, and empty values are `''` (never null).
+            expect(QueryString.parse('a[]=value&a[]=')).toEqual({ 'a[]': ['value', ''] });
+            expect(QueryString.parse('a[]=&a[]=value')).toEqual({ 'a[]': ['', 'value'] });
         });
 
-        test.skip('it should handle multiple values and preserve appearance order with indexes', () => {
-            expect(QueryString.parse('a[0]=value&a[1]=')).toEqual({ a: ['value', null] });
-            expect(QueryString.parse('a[1]=&a[0]=value')).toEqual({ a: ['value', null] });
+        test('it treats indexed keys literally, one entry per distinct bracket name', () => {
+            // Documented limitation: `a[0]`/`a[1]` are not collapsed into an `a`
+            // array — each distinct literal key maps to its own value.
+            expect(QueryString.parse('a[0]=value&a[1]=')).toEqual({ 'a[0]': 'value', 'a[1]': '' });
+            expect(QueryString.parse('a[1]=&a[0]=value')).toEqual({ 'a[1]': '', 'a[0]': 'value' });
         });
 
         test('it should parse query strings params including embedded `=`', () => {
@@ -139,54 +144,88 @@ describe('QueryString', () => {
             expect(QueryString.parse('foo=bar&baz[]=bar')).toEqual({ foo: 'bar', 'baz[]': 'bar' }); // Adjusted
         });
 
-        test.skip('it should parse query strings having brackets arrays and format option as `bracket`', () => {
-            expect(QueryString.parse('foo[]=bar&foo[]=baz')).toEqual({ foo: ['bar', 'baz'] });
+        test('it has no `bracket` format option — bracket keys stay literal', () => {
+            // Documented limitation: the parser exposes no format option, so the
+            // legacy `bracket` expansion is not implemented; repeated `foo[]`
+            // keys aggregate under the literal `foo[]` name.
+            expect(QueryString.parse('foo[]=bar&foo[]=baz')).toEqual({ 'foo[]': ['bar', 'baz'] });
         });
 
-        test.skip('it should parse query strings having indexed arrays and format option as `index`', () => {
-            expect(QueryString.parse('foo[0]=bar&foo[1]=baz')).toEqual({ foo: ['bar', 'baz'] });
+        test('it has no `index` format option — indexed keys stay literal', () => {
+            // Documented limitation: no `index` format option/expansion exists.
+            expect(QueryString.parse('foo[0]=bar&foo[1]=baz')).toEqual({ 'foo[0]': 'bar', 'foo[1]': 'baz' });
         });
 
-        test.skip('it should parse query strings having ordered index arrays and format option as `index`', () => {
+        test('it keeps indexed keys literal and in source order rather than sorting by index', () => {
+            // Documented limitation: indexed arrays are neither collapsed nor
+            // numerically ordered; every distinct literal key is preserved in
+            // first-appearance order.
             expect(QueryString.parse('foo[1]=bar&foo[0]=baz&foo[3]=one&foo[2]=two')).toEqual({
-                foo: ['baz', 'bar', 'two', 'one'],
+                'foo[1]': 'bar',
+                'foo[0]': 'baz',
+                'foo[3]': 'one',
+                'foo[2]': 'two',
             });
             expect(QueryString.parse('foo[0]=bar&foo[1]=baz&foo[2]=one&foo[3]=two')).toEqual({
-                foo: ['bar', 'baz', 'one', 'two'],
+                'foo[0]': 'bar',
+                'foo[1]': 'baz',
+                'foo[2]': 'one',
+                'foo[3]': 'two',
             });
             expect(QueryString.parse('foo[3]=three&foo[2]=two&foo[1]=one&foo[0]=zero')).toEqual({
-                foo: ['zero', 'one', 'two', 'three'],
+                'foo[3]': 'three',
+                'foo[2]': 'two',
+                'foo[1]': 'one',
+                'foo[0]': 'zero',
             });
             expect(QueryString.parse('foo[3]=three&foo[2]=two&foo[1]=one&foo[0]=zero&bat=buz')).toEqual({
-                foo: ['zero', 'one', 'two', 'three'],
+                'foo[3]': 'three',
+                'foo[2]': 'two',
+                'foo[1]': 'one',
+                'foo[0]': 'zero',
                 bat: 'buz',
             });
-            expect(QueryString.parse('foo[1]=bar&foo[0]=baz')).toEqual({ foo: ['baz', 'bar'] });
+            expect(QueryString.parse('foo[1]=bar&foo[0]=baz')).toEqual({ 'foo[1]': 'bar', 'foo[0]': 'baz' });
             expect(QueryString.parse('foo[102]=three&foo[2]=two&foo[1]=one&foo[0]=zero&bat=buz')).toEqual({
+                'foo[102]': 'three',
+                'foo[2]': 'two',
+                'foo[1]': 'one',
+                'foo[0]': 'zero',
                 bat: 'buz',
-                foo: ['zero', 'one', 'two', 'three'],
             });
             expect(QueryString.parse('foo[102]=three&foo[2]=two&foo[100]=one&foo[0]=zero&bat=buz')).toEqual({
+                'foo[102]': 'three',
+                'foo[2]': 'two',
+                'foo[100]': 'one',
+                'foo[0]': 'zero',
                 bat: 'buz',
-                foo: ['zero', 'two', 'one', 'three'],
             });
         });
 
-        test.skip('it should parse circuit QueryString.parse -> stringify', () => {
+        test('it does not round-trip bracket syntax through parse/stringify', () => {
+            // Documented limitation: the legacy bracket round-trip cannot hold —
+            // parse keeps bracket names literal, and stringify re-encodes those
+            // names (`[`/`]` percent-escaped), sorting them as text rather than
+            // reconstructing the indexed form.
             const original = 'foo[3]=foo&foo[2]&foo[1]=one&foo[0]=&bat=buz';
-            const sortedOriginal = 'bat=buz&foo[0]=&foo[1]=one&foo[2]&foo[3]=foo';
-            const expected = { bat: 'buz', foo: ['', 'one', null, 'foo'] };
-
-            expect(QueryString.parse(original)).toEqual(expected);
-            expect(QueryString.stringify(expected)).toBe(sortedOriginal);
+            const parsed = QueryString.parse(original);
+            expect(parsed).toEqual({
+                'foo[3]': 'foo',
+                'foo[2]': '',
+                'foo[1]': 'one',
+                'foo[0]': '',
+                bat: 'buz',
+            });
+            expect(QueryString.stringify(parsed)).toBe('bat=buz&foo%5B0%5D=&foo%5B1%5D=one&foo%5B2%5D=&foo%5B3%5D=foo');
         });
 
-        test.skip('it should parse circuit original -> QueryString.parse - > stringify -> sorted original', () => {
+        test('it does not reconstruct out-of-range index ordering through parse/stringify', () => {
+            // Documented limitation: large indices are ordinary literal keys, so
+            // stringify sorts them as text — never the numeric `foo[0..3]` form.
             const original = 'foo[21474836471]=foo&foo[21474836470]&foo[1]=one&foo[0]=&bat=buz';
-            const sortedOriginal = 'bat=buz&foo[0]=&foo[1]=one&foo[2]&foo[3]=foo';
-            const options = {};
-
-            expect(QueryString.stringify(QueryString.parse(original))).toBe(sortedOriginal);
+            expect(QueryString.stringify(QueryString.parse(original))).toBe(
+                'bat=buz&foo%5B0%5D=&foo%5B1%5D=one&foo%5B21474836470%5D=&foo%5B21474836471%5D=foo'
+            );
         });
 
         test('it should parse decode keys and values', () => {

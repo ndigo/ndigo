@@ -20,6 +20,9 @@ import type { Route } from '@blue/router';
 import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
 import { ProblemTypes, writeProblem } from './problem-details';
 import { type ResolvedOpenAPIDocsOptions } from './openapi-docs-auto-configuration';
+import { getLogger } from '@blue/log';
+
+const logger = getLogger('blue-platform-node:openapi-docs-controller');
 
 /**
  * The spec controller: self-documenting, cache-free, JSON.
@@ -64,7 +67,7 @@ export class OpenAPIDocsController extends AsApplicationContextAware(Null) {
                 this.#cached = this.#generate();
             } catch (error) {
                 const message = error instanceof Error ? (error.stack ?? error.message) : String(error);
-                console.error('[OpenAPIDocsController] spec generation failed:', message);
+                logger.error('[OpenAPIDocsController] spec generation failed:', message);
                 writeProblem(res, {
                     type: ProblemTypes.internalError,
                     title: 'Internal Server Error',
@@ -94,12 +97,15 @@ export class OpenAPIDocsController extends AsApplicationContextAware(Null) {
         const tables = dispatcher.handlerMappings.filter((mapping) => 'getHandlerMethods' in mapping) as
             | RouteMappingTable[]
             | [];
-        const { title, version, description, servers, excludePaths, include } = this.#options;
+        const { title, version, description, servers, securitySchemes, security, excludePaths, include } =
+            this.#options;
         return new OpenAPISpecGenerator().generate(tables, {
             title,
             version,
             description,
             servers,
+            securitySchemes,
+            security,
             excludePaths,
             include,
         });

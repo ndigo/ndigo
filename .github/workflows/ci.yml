@@ -24,6 +24,19 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    # Live Redis suites (@blue/redis cache + pub/sub) are env-gated and would
+    # otherwise never run in CI (review DAT-F14); the URL is exported on the
+    # test step below.
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout
@@ -47,6 +60,9 @@ jobs:
         run: pnpm build
 
       - name: Unit + integration tests
+        env:
+          # Exercises the env-gated @blue/redis live suites (DAT-F14).
+          BLUE_REDIS_TEST_URL: redis://127.0.0.1:6379
         run: pnpm test
 
       - name: Lint (zero warnings)

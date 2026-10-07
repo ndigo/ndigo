@@ -14,6 +14,9 @@
 import type { InitializationAwareProcessor } from '@blue/factory';
 import type { MethodInterceptor } from './interceptor';
 import { collectMethodSpecs, interceptAndRegister, isIntercepted, wovenBy } from './weave';
+import { getLogger } from '@blue/log';
+
+const logger = getLogger('blue-proxy:processor');
 
 /**
  * Builds an initialization-aware entry processor advising every method an
@@ -65,7 +68,7 @@ export function interception(interceptors: readonly MethodInterceptor[]): Initia
                     return instance;
                 }
                 if (woveBy === undefined) {
-                    console.warn(
+                    logger.warn(
                         `entry '${entryName}' was already woven standalone (interceptMethods) — the interception(...) processor leaves it unchanged, so its interceptors do not run on this instance`
                     );
                     return instance;

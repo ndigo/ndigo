@@ -94,7 +94,11 @@ describe('streamToSignal (AD-09)', () => {
             // Give the error path time to run; the rejection must be contained.
             await new Promise((resolve) => setTimeout(resolve, 10));
             expect(target.value).toBe(1);
-            expect(errorSpy).toHaveBeenCalledWith('[blue-signals] streamToSignal failed:', expect.any(Error));
+            expect(errorSpy).toHaveBeenCalledWith(
+                expect.stringContaining('[blue-signals] streamToSignal failed:'),
+                expect.any(Object),
+                expect.any(Error)
+            );
         } finally {
             errorSpy.mockRestore();
         }

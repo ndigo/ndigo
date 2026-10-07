@@ -13,6 +13,9 @@ import type { MutablePropertySources } from './property-sources';
 import { resolvePlaceholders } from './placeholder-resolver';
 import { isSecretMarkerLike, SecretDecryptor } from './secret-cipher';
 import { redactDiagnosticValue } from './redaction';
+import { getLogger } from '@blue/log';
+
+const logger = getLogger('blue-context:property-resolver');
 
 const keypathConverter = new KeypathConverter();
 type PrimitiveLike = 'string' | 'number' | 'boolean';
@@ -519,7 +522,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
         if (!decryptor) {
             if (!secretFailOpenWarned && isSecretMarkerLike(value)) {
                 secretFailOpenWarned = true;
-                console.warn(
+                logger.warn(
                     `[@blue/context] Property "${key}" holds a secret marker ({scheme:...}) but no secret ` +
                         'decryptor is wired — the ciphertext binds as a literal plaintext value (SEC-10 fail-open). ' +
                         'Call environment.applySecretDecryptor(...) (e.g. builder.secrets(...) with BLUE_SECRET_KEY ' +

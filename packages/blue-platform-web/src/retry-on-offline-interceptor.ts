@@ -11,6 +11,9 @@ import {
     CompletionAwareHTTPInterceptor,
 } from '@blue/http';
 import { FrameworkError } from '@blue/core';
+import { getLogger } from '@blue/log';
+
+const logger = getLogger('blue-platform-web:retry-on-offline-interceptor');
 
 /** Stable identity for a replay clone: a later interceptor may replace the Request object. */
 const requestKey = (request: Request): string => `${request.method} ${request.url}`;
@@ -360,7 +363,7 @@ export class RetryOnOfflineInterceptor
                     entry.nextRetryAt = Date.now() + this.#backoffFor(entry.retries);
                     stillQueued.push(entry);
                     if (this.#config.enableLogging) {
-                        console.warn(
+                        logger.warn(
                             `[RetryOnOffline] Retry ${entry.retries}/${maxRetries} for ${entry.request.url} in ${entry.nextRetryAt - Date.now()}ms`
                         );
                     }

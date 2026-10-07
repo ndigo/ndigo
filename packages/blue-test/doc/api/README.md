@@ -39,4 +39,5 @@ Jeff Rose
 - [cachedBootApp](functions/cachedBootApp.md)
 - [createMemoryResponse](functions/createMemoryResponse.md)
 - [delay](functions/delay.md)
+- [installSynchronousAnimationFrames](functions/installSynchronousAnimationFrames.md)
 - [releaseCachedApp](functions/releaseCachedApp.md)

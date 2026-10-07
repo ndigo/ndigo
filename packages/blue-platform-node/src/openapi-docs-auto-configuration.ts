@@ -95,6 +95,8 @@ export function resolveOpenAPIDocsOptions(options: OpenAPIDocsAutoConfigurationO
         version: options.version,
         description: options.description,
         servers: options.servers,
+        securitySchemes: options.securitySchemes,
+        security: options.security,
         excludePaths: options.excludePaths,
         include: options.include,
     };

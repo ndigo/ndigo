@@ -6,6 +6,7 @@
 // @vitest-environment jsdom
 
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { installSynchronousAnimationFrames } from '@blue/test';
 import { toAccountShellRoute, toTodoShellRoute } from '../src/shell-composition';
 import '../src/todo-app-view';
 import type MyTodoApp from '../src/todo-app-view';
@@ -13,14 +14,10 @@ import '../src/todo-input-view';
 import '../src/todo-item-view';
 
 /**
- * Mocks requestAnimationFrame to call the callback synchronously.
- * This is needed because AbstractWebComponent.requestUpdate() uses
- * requestAnimationFrame, which doesn't fire in jsdom.
+ * requestAnimationFrame runs synchronously so AbstractWebComponent.requestUpdate()
+ * (which renders on a frame tick) completes — jsdom never fires frames.
  */
-vi.spyOn(global, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCallback) => {
-    cb(0);
-    return 0;
-});
+installSynchronousAnimationFrames();
 
 describe('todo-app view filtering', () => {
     let element: MyTodoApp;

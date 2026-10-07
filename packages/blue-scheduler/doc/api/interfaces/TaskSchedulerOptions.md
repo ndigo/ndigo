@@ -27,8 +27,8 @@ bookkeeping (next-fire anchors, completion times).
 
 > `optional` **warn?**: (`message`) => `void`
 
-Warning sink (e.g. `maxRunTime` violations); defaults to
-`console.warn`.
+Warning sink (e.g. `maxRunTime` violations); defaults to the
+`blue-scheduler:task-scheduler` `@blue/log` warning channel.
 
 #### Parameters
 

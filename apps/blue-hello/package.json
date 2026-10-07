@@ -26,6 +26,7 @@
     "@blue/context": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/platform-web": "~0.0.1",
+    "@blue/test": "~0.0.1",
     "@tsmetadata/polyfill": "catalog:",
     "vite": "catalog:"
   }

@@ -20,6 +20,9 @@ import {
     FeatureUnmountPolicy,
     unmountFeatureContext,
 } from './context-hierarchy';
+import { getLogger } from '@blue/log';
+
+const logger = getLogger('blue-context:feature-context-mount-manager');
 
 /**
  * Options used to register a feature for mounting.
@@ -376,7 +379,7 @@ export class FeatureContextMountManager {
 
         const result: DependencyValidationResult = registry.validate(deps.requires ?? {}, deps.optional ?? {});
 
-        result.warnings.forEach((w) => console.warn(`[${featureName}] ${w}`));
+        result.warnings.forEach((w) => logger.warn(`[${featureName}] ${w}`));
 
         if (!result.valid) {
             const messages: string[] = [];

@@ -145,6 +145,7 @@ describe('@refreshScope live rebind (AD-29 D-1/D-2)', () => {
         // Boot logged the failure through the fail-loud channel (ARC-1(c)).
         expect(consoleError).toHaveBeenCalledWith(
             expect.stringContaining('config:refresh rebind failure'),
+            expect.any(Object),
             expect.any(Error)
         );
 

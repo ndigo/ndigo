@@ -23,6 +23,7 @@ Jeff Rose
 - [AbstractTemplateView](classes/AbstractTemplateView.md)
 - [AbstractView](classes/AbstractView.md)
 - [AbstractViewMapping](classes/AbstractViewMapping.md)
+- [BoundedCache](classes/BoundedCache.md)
 - [ContentNegotiationManager](classes/ContentNegotiationManager.md)
 - [ContentNegotiationViewResolver](classes/ContentNegotiationViewResolver.md)
 - [CSVView](classes/CSVView.md)
@@ -58,11 +59,14 @@ Jeff Rose
 
 ## Variables
 
-- [customElementNamePattern](variables/customElementNamePattern.md)
+- [MAX\_VIEW\_CACHE\_ENTRIES](variables/MAX_VIEW_CACHE_ENTRIES.md)
 
 ## Functions
 
 - [canServeMediaType](functions/canServeMediaType.md)
+- [createViewCacheKey](functions/createViewCacheKey.md)
+- [firstServableMediaType](functions/firstServableMediaType.md)
+- [isSafeViewName](functions/isSafeViewName.md)
 - [isValidCustomElementName](functions/isValidCustomElementName.md)
 - [likeMediaTypeFileExtensionResolver](functions/likeMediaTypeFileExtensionResolver.md)
 - [likeProducerView](functions/likeProducerView.md)

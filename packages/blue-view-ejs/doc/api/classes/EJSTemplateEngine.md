@@ -28,6 +28,14 @@ cannot grow it without limit. A template's compiled form therefore reflects
 the first source seen for that key; inline templates are immutable strings,
 so this is unobservable for all practical usage.
 
+`include(...)` targets are resolved and read from the filesystem by ejs. Each
+render threads a guarded `include` local through the include chain, so a
+cyclic include (a includes b includes a) fails fast with a bounded, named
+[EJSIncludeCycleError](EJSIncludeCycleError.md) instead of overflowing the call stack. The guard
+relies on ejs's default `with (locals)` scoping; an `options.strict: true`
+(which disables `with`) opts out of it, as does any template that references
+ejs's own `include` parameter directly.
+
 ## Constructors
 
 ### Constructor

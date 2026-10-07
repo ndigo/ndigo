@@ -18,4 +18,5 @@ Options accepted by router implementations.
 
 > `optional` **onError?**: [`RouterErrorHandler`](../type-aliases/RouterErrorHandler.md)
 
-Navigation-error hook. Defaults to logging through `console.error`.
+Navigation-error hook. Defaults to logging through the `@blue/log`
+logger for `blue-router:router`.

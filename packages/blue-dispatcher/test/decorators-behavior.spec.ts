@@ -191,9 +191,8 @@ describe('Dispatcher Decorators - Behavioral Tests', () => {
         });
     });
 
-    describe('Legacy Parameter Decorators', () => {
-        it.skip('should remain disabled because TC39 decorators do not support parameter decorators', () => {
-            expect(true).toBe(true);
-        });
-    });
+    // Limitation (TST-C): legacy parameter decorators (`@cookieValue()`-style) are
+    // not supported — TC39 decorators carry no parameter position — and were
+    // replaced by the `@parameters` pattern (see the import note above). There is
+    // no behaviour to assert, so the placeholder assertion was deleted.
 });

@@ -10,6 +10,7 @@ import {
     NameViewResolver,
     ViewResolverComposite,
     AbstractCachingViewResolver,
+    isSafeViewName,
 } from '../src/view-resolver';
 import { View } from '../src/view';
 import type { ApplicationContext } from '@blue/context';
@@ -177,6 +178,10 @@ describe('AbstractPathBasedViewResolver name containment', () => {
             '..\\windows',
             '\\absolute',
             'C:\\absolute',
+            // drive-relative (VIEW-7): any drive specifier is rejected, not
+            // only `C:\` — `C:foo` escapes via the drive's working directory.
+            'C:foo',
+            'c:relative',
             'a//..;x=1/b',
             'nul\u0000byte',
         ]) {
@@ -198,5 +203,45 @@ describe('AbstractPathBasedViewResolver name containment', () => {
         expect(await resolver.resolveViewName('..;x=1/..;x=1/tmp/traversed')).toBeNull();
         // eslint-disable-next-line @blue/no-unsafe-view-name-literal -- NUL probe
         expect(await resolver.resolveViewName('nul\u0000byte')).toBeNull();
+    });
+});
+
+/**
+ * Shared view-name safety vector table (REU-2 / VIEW-7). The
+ * `no-unsafe-view-name-literal` lint rule asserts the same table, so the
+ * runtime predicate and the lint grammar cannot drift.
+ */
+const UNSAFE_VIEW_NAMES = [
+    'a\u0000b', // NUL, truncates native paths
+    '/x', // POSIX absolute
+    '\\x', // backslash absolute
+    'C:\\x', // Windows absolute
+    'C:foo', // Windows drive-relative (VIEW-7)
+    '..', // parent segment
+    '..;a=1', // parent segment with matrix param
+    '.. ', // parent segment with trailing space
+    '..\\x',
+] as const;
+
+const SAFE_VIEW_NAMES = ['v1.2', 'admin/user', 'home', 'my.file', 'user_profile'] as const;
+
+describe('isSafeViewName predicate (REU-2/VIEW-7)', () => {
+    test('rejects every unsafe form in the shared vector table', () => {
+        for (const name of UNSAFE_VIEW_NAMES) {
+            expect(isSafeViewName(name), `expected ${JSON.stringify(name)} to be unsafe`).toBe(false);
+        }
+    });
+
+    test('accepts legitimate nested, dotted, and underscored names', () => {
+        for (const name of SAFE_VIEW_NAMES) {
+            expect(isSafeViewName(name), `expected ${JSON.stringify(name)} to be safe`).toBe(true);
+        }
+    });
+
+    test('the resolver class delegates to the module predicate', () => {
+        const resolver = new ExposedPathResolver();
+        for (const name of [...UNSAFE_VIEW_NAMES, ...SAFE_VIEW_NAMES]) {
+            expect(resolver.isSafe(name)).toBe(isSafeViewName(name));
+        }
     });
 });

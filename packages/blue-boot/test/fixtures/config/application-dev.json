@@ -1,0 +1,5 @@
+{
+  "server": { "port": 9090 },
+  "features": { "beta": 2, "gamma": ["x", "y"] },
+  "api": { "secretToken": "{cipher:v1:BBBB}" }
+}

@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { property } from '@blue/context';
 import { defaultValue, nested } from '@blue/context';
 import { parseSchemaConfig } from '@blue/context';
+import { isSecretMarkerLike, REDACTED_VALUE } from '@blue/context';
 import type { ApplicationContext } from '@blue/context';
 
 const CONFIG_PROPS = 'boot:configurationProperties';
@@ -47,8 +48,12 @@ export interface ConfigurationPropertiesOptions {
      * and defaults all come from the schema (`z.default()` replaces
      * `@defaultValue`; no `@property` decorators needed). A missing required
      * key or a failed coercion throws at boot, naming the class. Schema mode
-     * ignores `@property`/`@defaultValue`/`@nested` decorators on the
+     * `@property`/`@defaultValue`/`@nested` decorators on the
      * class — the schema is the single source of truth (D3).
+     *
+     * Schema keys are resolved **exactly** as `${prefix}.${key}`: schema mode
+     * never probes the relaxed kebab/snake spellings, even when `relaxed` is
+     * also set (D-3). Relaxed binding is a field-decorator-mode contract.
      */
     schema?: z.ZodObject;
 }
@@ -179,14 +184,101 @@ function collectDeclaredProperties(
 }
 
 /**
+ * Metadata-only declared-key enumeration, used when the class constructor
+ * throws and no instance can be built to introspect. The field name is
+ * embedded in each metadata key (`config:property:<field>` /
+ * `config:nested:<field>`), so the top-level keys are still recoverable.
+ *
+ * DEPTH LIMIT: an `@nested` subtree lives in the nested class's own metadata,
+ * unreachable without an instance, so a nested field contributes only its
+ * top-level key (`prefix.field`) — no descendants. The instance path (a
+ * constructor that does not throw) recurses fully.
+ */
+function collectDeclaredPropertiesFromMetadata(
+    meta: Record<string, unknown>,
+    prefix: string | undefined,
+    into: Map<string, string | undefined>
+): void {
+    for (const metaKey of Object.keys(meta)) {
+        if (metaKey.startsWith(NESTED_KEY)) {
+            const fieldName = metaKey.slice(NESTED_KEY.length);
+            const key = prefix ? `${prefix}.${fieldName}` : fieldName;
+            if (!into.has(key)) into.set(key, undefined);
+            continue;
+        }
+        if (!metaKey.startsWith(PROPERTY_KEY)) continue;
+        const fieldPath = meta[metaKey];
+        // `@property` stores the keypath string; other `config:property*`
+        // keys (`config:property:source` from `@propertySource`, the
+        // `config:propertyType:` type entry) carry other shapes and are not
+        // field declarations.
+        if (typeof fieldPath !== 'string') continue;
+        const fieldName = metaKey.slice(PROPERTY_KEY.length);
+        const key = prefix ? `${prefix}.${fieldPath}` : fieldPath;
+        if (!into.has(key)) into.set(key, declaredTypeOf(meta[`${PROPERTY_KEY_TYPE}${fieldName}`]));
+    }
+}
+
+/** zod def-type discriminants (the `ZodFirstPartyTypeKind` names) → declared conversion target. */
+const SCHEMA_KIND_TARGETS: Record<string, string> = {
+    string: 'string',
+    number: 'number',
+    boolean: 'boolean',
+    date: 'date',
+    object: 'object',
+    array: 'array',
+};
+
+/** zod wrapper kinds whose value type is their inner type's kind (`.default()` et al.). */
+const ZOD_WRAPPER_KINDS: Record<string, true> = {
+    default: true,
+    optional: true,
+    nullable: true,
+    readonly: true,
+};
+
+/**
+ * The declared conversion target for a zod shape field. zod v4 ships
+ * `ZodFirstPartyTypeKind` as a deprecated empty stub, so the first-party kind
+ * is read structurally from the type's definition discriminant (`_def.type`),
+ * which carries the same enum names. Transparent wrappers (`default`,
+ * `optional`, `nullable`, `readonly`) are unwrapped to their inner type — a
+ * `z.coerce.number().default(3000)` field is still `number`. A kind outside
+ * the mapped set (or an absent discriminant) yields `undefined`: the type is
+ * omitted, never guessed.
+ */
+function declaredTypeFromSchema(field: unknown): string | undefined {
+    let node = field;
+    // Bounded walk: wrapper chains are short; the cap guards a malformed/cyclic def.
+    for (let depth = 0; depth < 8; depth++) {
+        if (typeof node !== 'object' || node === null || !('_def' in node)) return undefined;
+        const def = node._def;
+        if (typeof def !== 'object' || def === null) return undefined;
+        if (!('type' in def) || typeof def.type !== 'string') return undefined;
+        if (ZOD_WRAPPER_KINDS[def.type] === true) {
+            if (!('innerType' in def)) return undefined;
+            node = def.innerType;
+            continue;
+        }
+        return SCHEMA_KIND_TARGETS[def.type];
+    }
+    return undefined;
+}
+
+/**
  * Enumerate the configuration keys a `@configurationProperties` class declares,
  * without resolving any value.
  *
- * Field mode walks `@property` fields (plus `@nested` sub-objects);
- * schema mode walks the `schema` shape keys. Keys are the same full keypaths
- * binding uses (`prefix.field`), deduplicated and sorted. This is the
- * introspection seam for tooling that must list declared configuration
- * without touching the environment — and so without ever exposing a value.
+ * Field mode walks `@property` fields (plus `@nested` sub-objects); schema
+ * mode walks the `schema` shape keys and maps each zod type to its declared
+ * conversion target. Keys are the same full keypaths binding uses
+ * (`prefix.field`), deduplicated and sorted. This is the introspection seam
+ * for tooling that must list declared configuration without touching the
+ * environment — and so without ever exposing a value.
+ *
+ * When a field-mode class's constructor throws, enumeration falls back to
+ * metadata: top-level keys are still listed, but `@nested` subtrees are
+ * limited to their top-level key (see `collectDeclaredPropertiesFromMetadata`).
  *
  * @param ctor - The configuration properties class constructor.
  * @returns The declared keys, sorted by key, with the declared type when known.
@@ -199,18 +291,18 @@ export function declaredConfigurationProperties(ctor: new () => unknown): Declar
 
     if (schema) {
         for (const key of Object.keys(schema.shape)) {
-            declared.set(prefix ? `${prefix}.${key}` : key, undefined);
+            declared.set(prefix ? `${prefix}.${key}` : key, declaredTypeFromSchema(schema.shape[key]));
         }
     } else {
-        let instance: Record<string, unknown> = {};
         try {
-            instance = new (ctor as new () => Record<string, unknown>)();
+            const instance = new (ctor as new () => Record<string, unknown>)();
+            collectDeclaredProperties(instance, prefix, declared);
         } catch {
-            // A constructor that throws still declares its keys via metadata;
-            // fall back to metadata-only enumeration (no `@nested` recursion).
-            instance = {};
+            // A throwing constructor still declares its keys via metadata;
+            // fall back to metadata-only enumeration (nested subtrees are
+            // listed by their top-level key only — no recursion).
+            collectDeclaredPropertiesFromMetadata(meta, prefix, declared);
         }
-        collectDeclaredProperties(instance, prefix, declared);
     }
 
     return [...declared]
@@ -228,7 +320,12 @@ export interface ConfigurationPropertiesResult<T> {
     instance: T;
     /** Whether all properties resolved successfully (always true — binders throw on failure). */
     isValid: boolean;
-    /** Bound paths and their resolved values. */
+    /**
+     * Bound paths and their resolved values. Never contains decrypted secret
+     * plaintext: a scalar binding whose raw source value was a `{cipher:…}`
+     * marker holds `REDACTED_VALUE` instead of the plaintext. A nested
+     * `@nested` field records the bound sub-object by its top-level key.
+     */
     bindings: Record<string, JSONValue | undefined>;
 }
 
@@ -240,6 +337,39 @@ const { defineProperty } = Reflect;
  * when a class opts in via `{ relaxed: true }` (AD-15 Q8).
  */
 const camelize = (key: string): string => key.replace(/[-_]([a-z])/g, (_match, letter: string) => letter.toUpperCase());
+
+/**
+ * The candidate environment keys `valueAt` probes for a dotted key under
+ * relaxed binding, exact key first, then its camelCase, kebab-case and
+ * snake_case spellings — each rewritten to resolver-safe form via
+ * `toLookupKey` and de-duplicated (a spelling that equals the exact key
+ * collapses). This is the single definition of the relaxed candidate set, so
+ * declaration probing (`@blue/inspect`) and binding cannot drift apart.
+ *
+ * @param key - The dotted keypath as declared (e.g. `server.hostName`).
+ * @returns The lookup-ready candidate keys, exact key first.
+ */
+export function relaxedKeyCandidates(key: string): string[] {
+    return dedupeLookups([
+        key,
+        camelize(key),
+        key.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`),
+        key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`),
+    ]);
+}
+
+/** Rewrites each spelling to a lookup key, dropping duplicates (first wins). */
+function dedupeLookups(spellings: string[]): string[] {
+    const seen = new Set<string>();
+    const out: string[] = [];
+    for (const spelling of spellings) {
+        const lookup = toLookupKey(spelling);
+        if (seen.has(lookup)) continue;
+        seen.add(lookup);
+        out.push(lookup);
+    }
+    return out;
+}
 
 /**
  * Rewrites a keypath into resolver-safe form: the keypath parser stops at a
@@ -290,23 +420,36 @@ function valueAt(
     relaxed: boolean
 ): ResolvedProperty {
     const base = prefix ? `${prefix}.${fieldPath}` : fieldPath;
-    const candidates = relaxed
-        ? [
-              base,
-              camelize(base),
-              base.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`),
-              base.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`),
-          ]
-        : [base];
-    const seen = new Set<string>();
-    for (const candidate of candidates) {
-        const lookup = toLookupKey(candidate);
-        if (seen.has(lookup)) continue;
-        seen.add(lookup);
+    const candidates = relaxed ? relaxedKeyCandidates(base) : dedupeLookups([base]);
+    for (const lookup of candidates) {
         const value = environment.getProperty(lookup);
         if (value !== undefined) return { key: lookup, value };
     }
     return { key: toLookupKey(base), value: undefined };
+}
+
+/**
+ * The value recorded in {@link ConfigurationPropertiesResult.bindings} for a
+ * bound key: the resolved value normally, or `REDACTED_VALUE` when the
+ * key's RAW source value is a `{cipher:…}` secret marker — in which case the
+ * resolved value is decrypted plaintext and must never reach the map.
+ * `getRawProperty` reads the pre-decryption source value, so the marker is
+ * detectable without any decryptor seam.
+ *
+ * LIMITATION: a marker reached indirectly through a `${placeholder}` is not
+ * detected (the raw source holds the placeholder, not the marker), so such a
+ * value is recorded as resolved. Documented, not silently ignored.
+ */
+function bindingValue(
+    environment: {
+        getProperty(key: string): JSONValue | undefined;
+        getRawProperty(key: string): JSONValue | undefined;
+    },
+    key: string,
+    resolved: JSONValue | undefined
+): JSONValue | undefined {
+    if (resolved === undefined) return resolved;
+    return isSecretMarkerLike(environment.getRawProperty(key)) ? REDACTED_VALUE : resolved;
 }
 
 /**
@@ -332,7 +475,7 @@ export function resolveConfigurationProperties<T>(
     const instance = new ctor();
 
     if (schema) {
-        return resolveFromSchema(ctor, instance, prefix, relaxed, schema, context);
+        return resolveFromSchema(ctor, instance, prefix, schema, context);
     }
 
     const bindings: Record<string, JSONValue | undefined> = {};
@@ -395,7 +538,7 @@ export function resolveConfigurationProperties<T>(
                 error instanceof Error ? { cause: error } : undefined
             );
         }
-        bindings[resolved.key] = resolved.value;
+        bindings[resolved.key] = bindingValue(environment, resolved.key, resolved.value);
         defineProperty(instance as Record<string, unknown>, key, {
             value: typed,
             configurable: true,
@@ -415,12 +558,15 @@ export function resolveConfigurationProperties<T>(
  * `bindings`. Fail-loud: missing required keys and failed coercions throw an
  * `IllegalStateError` naming the class and the offending value, matching the
  * field-mode contract (AD-15 D4).
+ *
+ * Schema keys are probed **exactly** as `${prefix}.${key}` — the relaxed
+ * kebab/snake candidate set is a field-decorator-mode contract and is never
+ * consulted here, even when the class also sets `{ relaxed: true }` (D-3).
  */
 function resolveFromSchema<T>(
     ctor: new () => T,
     instance: T,
     prefix: string | undefined,
-    relaxed: boolean,
     schema: z.ZodObject,
     context: ApplicationContext
 ): ConfigurationPropertiesResult<T> {
@@ -434,10 +580,10 @@ function resolveFromSchema<T>(
     const shape = schema.shape;
 
     for (const key of Object.keys(shape)) {
-        const resolved = valueAt(environment, prefix, key, relaxed);
+        const resolved = valueAt(environment, prefix, key, false);
         if (resolved.value !== undefined) {
             raw[key] = resolved.value;
-            bindings[resolved.key] = resolved.value;
+            bindings[resolved.key] = bindingValue(environment, resolved.key, resolved.value);
         }
     }
 

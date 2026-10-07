@@ -14,8 +14,9 @@ import {
     getConfigurationPropertiesPrefix,
     declaredConfigurationProperties,
     resolveConfigurationProperties,
+    relaxedKeyCandidates,
 } from '../src/index';
-import { property, defaultValue, nested, configuration, entry } from '@blue/context';
+import { property, defaultValue, nested, configuration, entry, StandardEnvironment } from '@blue/context';
 
 class DbConfig {
     @property('url', String) @defaultValue('mongodb://localhost') url!: string;
@@ -74,7 +75,7 @@ describe('declaredConfigurationProperties (value-free inspection seam)', () => {
         expect(declaredConfigurationProperties(UntypedConfig)).toEqual([{ key: 'app.mode' }]);
     });
 
-    test('enumerates schema-mode shape keys under the prefix without values', () => {
+    test('enumerates schema-mode shape keys under the prefix with their zod types', () => {
         const schema = z.object({ name: z.string().default('x'), port: z.coerce.number() });
 
         @configurationProperties('server', { schema })
@@ -83,7 +84,54 @@ describe('declaredConfigurationProperties (value-free inspection seam)', () => {
             port!: number;
         }
 
-        expect(declaredConfigurationProperties(SchemaKeys)).toEqual([{ key: 'server.name' }, { key: 'server.port' }]);
+        expect(declaredConfigurationProperties(SchemaKeys)).toEqual([
+            { key: 'server.name', type: 'string' },
+            { key: 'server.port', type: 'number' },
+        ]);
+    });
+
+    test('BOOT-4: maps schema-mode types from the zod kind, omitting unknown kinds', () => {
+        const schema = z.object({
+            s: z.string(),
+            n: z.number(),
+            b: z.boolean(),
+            d: z.date(),
+            o: z.object({}),
+            a: z.array(z.string()),
+            u: z.union([z.string(), z.number()]),
+        });
+
+        @configurationProperties('shapes', { schema })
+        class ShapeKeys {}
+
+        expect(declaredConfigurationProperties(ShapeKeys)).toEqual([
+            { key: 'shapes.a', type: 'array' },
+            { key: 'shapes.b', type: 'boolean' },
+            { key: 'shapes.d', type: 'date' },
+            { key: 'shapes.n', type: 'number' },
+            { key: 'shapes.o', type: 'object' },
+            { key: 'shapes.s', type: 'string' },
+            { key: 'shapes.u' }, // union has no mapped conversion target → omitted
+        ]);
+    });
+
+    test('BOOT-2: a throwing constructor still enumerates keys from metadata (nested listed by top key)', () => {
+        @configurationProperties('boom')
+        class ThrowingConfig {
+            @property('port', Number) port!: number;
+            @property('name', String) name = 'fallback';
+            @nested db!: DbConfig;
+
+            constructor() {
+                throw new Error('no instance for you');
+            }
+        }
+
+        expect(declaredConfigurationProperties(ThrowingConfig)).toEqual([
+            { key: 'boom.db' }, // nested subtree: top-level key only (depth limit)
+            { key: 'boom.name', type: 'string' },
+            { key: 'boom.port', type: 'number' },
+        ]);
     });
 });
 
@@ -358,5 +406,63 @@ describe('relaxed binding + untyped inference (CTX-01/CTX-10/CTX-11)', () => {
 
         const { instance } = resolveConfigurationProperties(InferredConfig, context);
         expect(instance.port).toBe(9090);
+    });
+});
+
+describe('BOOT-1 schema mode never relaxes (D-3)', () => {
+    const runBoot = async (properties: JSONObject) => {
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig]);
+        app.properties(properties);
+        return app.run();
+    };
+
+    test('schema mode ignores relaxed: a kebab env key does NOT bind', async () => {
+        @configurationProperties('srv', { schema: z.object({ hostName: z.string() }), relaxed: true })
+        class SchemaRelaxed {
+            hostName!: string;
+        }
+        const context = await runBoot({ srv: { 'host-name': 'blue.dev' } });
+
+        expect(() => resolveConfigurationProperties(SchemaRelaxed, context)).toThrowError(
+            /Cannot bind SchemaRelaxed from schema/
+        );
+    });
+
+    test('field mode with relaxed:true still binds the kebab env key', async () => {
+        @configurationProperties('srv', { relaxed: true })
+        class FieldRelaxed {
+            @property('hostName', String) hostName!: string;
+        }
+        const context = await runBoot({ srv: { 'host-name': 'blue.dev' } });
+
+        expect(resolveConfigurationProperties(FieldRelaxed, context).instance.hostName).toBe('blue.dev');
+    });
+});
+
+describe('BOOT-3 relaxed candidate set + origin (AD-16 D1)', () => {
+    test('relaxedKeyCandidates returns the exact key plus its spelled variants', () => {
+        expect(relaxedKeyCandidates('server.hostName')).toEqual([
+            'server.hostName',
+            'server["host-name"]',
+            'server.host_name',
+        ]);
+        // A kebab-declared key normalizes to its camelCase spelling; the
+        // kebab/snake transforms only rewrite uppercase, so no extra snake
+        // variant is produced (matching the binding path's candidate set).
+        expect(relaxedKeyCandidates('server.host-name')).toEqual(['server["host-name"]', 'server.hostName']);
+    });
+
+    test('the documented originOf form works (flat index); the default index retains no origins', () => {
+        const environment = new StandardEnvironment([], { index: 'flat' });
+        environment.getPropertySources().addLast('application', { server: { port: 8080 } });
+
+        expect(environment.originOf('server')).toBe('application');
+        expect(environment.originOf('server.port')).toBe('application'); // top-level granularity
+        expect(environment.originOf('missing')).toBeNull();
+
+        // The default prototype-chain index does not retain origins.
+        expect(new StandardEnvironment([{ server: { port: 1 } }]).originOf('server')).toBeNull();
     });
 });

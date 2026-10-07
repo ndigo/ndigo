@@ -20,7 +20,10 @@ Result of resolving a configuration properties class against an application cont
 
 > **bindings**: `Record`\<`string`, `JSONValue` \| `undefined`\>
 
-Bound paths and their resolved values.
+Bound paths and their resolved values. Never contains decrypted secret
+plaintext: a scalar binding whose raw source value was a `{cipher:…}`
+marker holds `REDACTED_VALUE` instead of the plaintext. A nested
+`@nested` field records the bound sub-object by its top-level key.
 
 ***
 

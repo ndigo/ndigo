@@ -8,7 +8,7 @@
   "properties": {
     "server": {
       "title": "HTTP server",
-      "description": "Managed HTTP server settings (platform-node HTTPServer). Extra keys are preserved as config values.",
+      "description": "Application-defined HTTP server settings: an application's own @configurationProperties('server') class binds these keys (the bundled example binds name/port); the framework itself reads none of them. Extra keys are preserved as config values.",
       "type": "object",
       "additionalProperties": { "$ref": "#/$defs/configValue" },
       "properties": {
@@ -26,14 +26,16 @@
         },
         "host": {
           "type": "string",
+          "x-blue-read-from-config": false,
           "default": "127.0.0.1",
-          "description": "Host/interface to bind to (platform-node HTTPServer default is 127.0.0.1)."
+          "description": "Host/interface to bind to — NOT read from config: platform-node HTTPServer takes it as a programmatic `{ host }` option (default 127.0.0.1); no reader consumes a `server.host` property."
         }
       }
     },
     "profiles": {
       "title": "Profiles",
-      "description": "Profile activation, mirroring the CLI/env channels (AD-14): CLI --profiles.* > BLUE_PROFILES_* env > builder .profiles(). Extra keys are preserved as config values.",
+      "x-blue-read-from-config": false,
+      "description": "Profile activation — NOT read from config files. `_configureProfiles` runs before config files load and reads only the builder `.profiles()`, the env `BLUE_PROFILES_*`, and the CLI `--profiles.*` (AD-14). A `profiles.*` key in a config file is inert; these keys document the CLI/env channel only. Extra keys are preserved as config values.",
       "type": "object",
       "additionalProperties": { "$ref": "#/$defs/configValue" },
       "properties": {
@@ -59,7 +61,8 @@
     },
     "telemetry": {
       "title": "Telemetry",
-      "description": "OpenTelemetry knobs mirrored from TelemetryConfig (@blue/telemetry-node), the object accepted by configureTelemetry(). Extra keys are preserved as config values.",
+      "x-blue-read-from-config": false,
+      "description": "OpenTelemetry knobs — NOT read from config files. This is the TelemetryConfig object passed to configureTelemetry() (@blue/telemetry-node); real apps build it from env (e.g. OTEL_EXPORTER_OTLP_ENDPOINT) in code. Extra keys are preserved as config values.",
       "type": "object",
       "additionalProperties": { "$ref": "#/$defs/configValue" },
       "properties": {
@@ -84,7 +87,8 @@
     },
     "management": {
       "title": "Management endpoints",
-      "description": "Management endpoint settings (/health, /metrics — ManagementAutoConfiguration). The endpoints are open by default; extra keys are preserved as config values.",
+      "x-blue-read-from-config": false,
+      "description": "Management endpoint settings (/health, /metrics) — NOT read from config files. These are ManagementAutoConfiguration(options) constructor options; the endpoints are open by default. Extra keys are preserved as config values.",
       "type": "object",
       "additionalProperties": { "$ref": "#/$defs/configValue" },
       "properties": {
@@ -99,22 +103,18 @@
   "$defs": {
     "configValue": {
       "title": "Config value",
-      "description": "Any JSON value. A plain object carrying a `cipher` key is the {cipher:…} at-rest secret marker: a MARKER interpreted by the secret resolver at lookup time (with BLUE_SECRET_KEY wired), not an ordinary object value — the ciphertext lives in the file, the key in a separate channel. With no decryptor wired, the marker passes through as raw text.",
+      "description": "Any JSON value. A `{cipher:…}` secret is the STRING form matching $defs.secretMarker — e.g. \"{cipher:v1:<base64 ciphertext>}\" — interpreted by the secret resolver at lookup time (with BLUE_SECRET_KEY wired), NOT an ordinary object value. The ciphertext lives in the file, the key in a separate channel; with no decryptor wired, the marker passes through as raw text.",
       "anyOf": [
         { "type": ["string", "number", "boolean", "null"] },
         { "type": "array", "items": { "$ref": "#/$defs/configValue" } },
-        { "type": "object", "additionalProperties": { "$ref": "#/$defs/configValue" } },
-        {
-          "type": "object",
-          "required": ["cipher"],
-          "properties": {
-            "cipher": {
-              "type": "string",
-              "description": "{cipher:…} secret marker, e.g. 'v1:<base64 ciphertext>'. The scheme segment dispatches the decryptor."
-            }
-          }
-        }
+        { "type": "object", "additionalProperties": { "$ref": "#/$defs/configValue" } }
       ]
+    },
+    "secretMarker": {
+      "title": "Secret marker",
+      "description": "The {scheme[:version]:payload} at-rest secret marker (e.g. \"{cipher:v1:AAAA}\"). A marker is a STRING value, never an object: the resolver decrypts it at lookup time when a decryptor is wired (BLUE_SECRET_KEY), and passes it through as literal text otherwise. The scheme segment dispatches the decryptor (AD-29).",
+      "type": "string",
+      "pattern": "^\\{[a-z][a-z0-9]*(:[a-z][a-z0-9.]*)?:.+\\}$"
     },
     "samplerSpec": {
       "title": "Sampler spec",

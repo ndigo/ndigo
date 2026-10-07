@@ -8,8 +8,8 @@
  */
 import { describe, test, expect } from 'vitest';
 import { z } from 'zod';
-import { ApplicationBuilder, configurationProperties } from '../src/index';
-import { property, defaultValue, configuration, SecretCipher } from '@blue/context';
+import { ApplicationBuilder, configurationProperties, resolveConfigurationProperties } from '../src/index';
+import { property, defaultValue, configuration, SecretCipher, REDACTED_VALUE } from '@blue/context';
 
 @configurationProperties('db')
 class DbConfig {
@@ -145,6 +145,42 @@ describe('builder.secrets (AD-29 Wave 2)', () => {
         expect(messages).toMatch(/Cannot bind SecretNumberConfig\.token from "dbnum\.token"/);
         expect(messages).not.toContain('super-secret-hunter2');
         expect(messages).not.toContain(marker);
+    });
+
+    test('SEC-A: bindings holds the redacted placeholder, not decrypted plaintext', async () => {
+        const cipher = fakeCipher();
+        const marker = cipher.encrypt('s3cret-pass', 'db.password');
+
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig, DbConfig]);
+        app.properties({ db: { user: 'app-user', password: marker } });
+        app.secrets(cipher);
+
+        const context = await app.run();
+        const { instance, bindings } = resolveConfigurationProperties(DbConfig, context);
+
+        expect(instance.password).toBe('s3cret-pass'); // instance binds plaintext
+        expect(bindings['db.password']).toBe(REDACTED_VALUE); // map never carries it
+        expect(bindings['db.user']).toBe('app-user'); // ordinary values untouched
+        expect(JSON.stringify(bindings)).not.toContain('s3cret-pass');
+        expect(JSON.stringify(bindings)).not.toContain(marker);
+    });
+
+    test('SEC-A: a marker with no decryptor is redacted from bindings too (no ciphertext leaks)', async () => {
+        const cipher = fakeCipher();
+        const marker = cipher.encrypt('s3cret-pass', 'db.password');
+
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig, DbConfig]);
+        app.properties({ db: { password: marker } });
+
+        const context = await app.run();
+        const { bindings } = resolveConfigurationProperties(DbConfig, context);
+
+        expect(bindings['db.password']).toBe(REDACTED_VALUE);
+        expect(JSON.stringify(bindings)).not.toContain(marker);
     });
 });
 

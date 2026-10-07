@@ -126,8 +126,8 @@ configureNodeArgumentResolvers(context);
 
 The package provides 9 argument resolvers for binding request data to controller method parameters:
 
-- `NodeQueryValueMethodArgumentResolver`: Binds query parameters from the URL
-- `NodePathValueMethodArgumentResolver`: Binds path parameters from the route
+- `QueryValueMethodArgumentResolver`: Binds query parameters from the URL (the dispatcher's platform-independent default, shared with the browser)
+- `PathValueMethodArgumentResolver`: Binds path parameters from the route (the dispatcher's platform-independent default, shared with the browser)
 - `NodeHeaderValueMethodArgumentResolver`: Binds HTTP headers
 - `NodeBodyValueMethodArgumentResolver`: Binds request body data
 - `NodeDataBindingMethodArgumentResolver`: Binds a whole source (`body` / `cookie`) into an object

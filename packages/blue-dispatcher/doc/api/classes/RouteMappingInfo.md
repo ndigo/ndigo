@@ -205,3 +205,40 @@ The merged mapping info.
 #### Implementation of
 
 [`RouteCondition`](../interfaces/RouteCondition.md).[`merge`](../interfaces/RouteCondition.md#merge)
+
+***
+
+### method()
+
+> **method**(): `HTTPMethod` \| `undefined`
+
+The required HTTP method, or `undefined` when the mapping matches any
+method.
+
+Public read model for mapping inspection (`@blue/inspect` via the
+`getMappingEntries()` seam): consumers MUST NOT reach into the
+`methodCondition` internal condition to read it.
+
+#### Returns
+
+`HTTPMethod` \| `undefined`
+
+The fixed method, or `undefined` for an any-method mapping.
+
+***
+
+### patterns()
+
+> **patterns**(): `string`[]
+
+The route patterns this mapping matches, in registration order.
+
+Public read model for mapping inspection (`@blue/inspect` via the
+`getMappingEntries()` seam): consumers MUST NOT reach into the
+`patternsCondition` internal condition to read them.
+
+#### Returns
+
+`string`[]
+
+A fresh array of the mapping's patterns.

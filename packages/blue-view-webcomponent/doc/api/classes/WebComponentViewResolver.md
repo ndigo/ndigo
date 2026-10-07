@@ -50,22 +50,6 @@ Registry + name filter options.
 
 ## Properties
 
-### cache
-
-> `readonly` **cache**: `object`
-
-Cached views keyed by name and language.
-
-#### Index Signature
-
-\[`key`: `string`\]: [`View`](#)
-
-#### Inherited from
-
-`AbstractPathBasedViewResolver.cache`
-
-***
-
 ### isCaching
 
 > **isCaching**: `boolean`
@@ -123,6 +107,24 @@ The set of names this resolver supports.
 #### Inherited from
 
 `AbstractPathBasedViewResolver.viewNames`
+
+## Accessors
+
+### cache
+
+#### Get Signature
+
+> **get** **cache**(): `object`
+
+A read-only mirror of the cached views keyed by name and language.
+
+##### Returns
+
+`object`
+
+#### Inherited from
+
+`AbstractPathBasedViewResolver.cache`
 
 ## Methods
 

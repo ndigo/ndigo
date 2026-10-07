@@ -30,23 +30,25 @@ Creates a resolver with an empty cache.
 
 ## Properties
 
-### cache
-
-> `readonly` **cache**: `object`
-
-Cached views keyed by name and language.
-
-#### Index Signature
-
-\[`key`: `string`\]: [`View`](../interfaces/View.md)
-
-***
-
 ### isCaching
 
 > **isCaching**: `boolean`
 
 Indicates whether resolved views should be cached.
+
+## Accessors
+
+### cache
+
+#### Get Signature
+
+> **get** **cache**(): `object`
+
+A read-only mirror of the cached views keyed by name and language.
+
+##### Returns
+
+`object`
 
 ## Methods
 

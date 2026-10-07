@@ -107,7 +107,7 @@ Interceptors applied to matched handlers.
 
 ### mappingRegistry
 
-> `readonly` **mappingRegistry**: [`MappingRegistry`](MappingRegistry.md)\<`T`\>
+> `readonly` **mappingRegistry**: [`MappingRegistry`](#)\<`T`\>
 
 Registry of route mappings and their handler methods.
 

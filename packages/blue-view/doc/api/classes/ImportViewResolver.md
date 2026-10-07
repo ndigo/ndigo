@@ -35,22 +35,6 @@ Creates a path-based resolver with JavaScript media type defaults.
 
 ## Properties
 
-### cache
-
-> `readonly` **cache**: `object`
-
-Cached views keyed by name and language.
-
-#### Index Signature
-
-\[`key`: `string`\]: [`View`](../interfaces/View.md)
-
-#### Inherited from
-
-[`AbstractPathBasedViewResolver`](AbstractPathBasedViewResolver.md).[`cache`](AbstractPathBasedViewResolver.md#cache)
-
-***
-
 ### isCaching
 
 > **isCaching**: `boolean`
@@ -108,6 +92,24 @@ The set of names this resolver supports.
 #### Inherited from
 
 [`AbstractPathBasedViewResolver`](AbstractPathBasedViewResolver.md).[`viewNames`](AbstractPathBasedViewResolver.md#viewnames)
+
+## Accessors
+
+### cache
+
+#### Get Signature
+
+> **get** **cache**(): `object`
+
+A read-only mirror of the cached views keyed by name and language.
+
+##### Returns
+
+`object`
+
+#### Inherited from
+
+[`AbstractPathBasedViewResolver`](AbstractPathBasedViewResolver.md).[`cache`](AbstractPathBasedViewResolver.md#cache)
 
 ## Methods
 

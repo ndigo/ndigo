@@ -32,7 +32,8 @@ tools it is genuinely good at.
 - `packages/blue-oxlint-plugin/src/index.ts` builds the plugin via
   `eslintCompatPlugin` from `@oxlint/plugins`, `meta.name: '@blue/oxlint-plugin'`;
   no `@blue/eslint-plugin` package remains (`ls packages/` matches no `eslint`).
-- The plugin ships 12 rules under `packages/blue-oxlint-plugin/src/rules/`,
+- The plugin shipped 12 rules under `packages/blue-oxlint-plugin/src/rules/`
+  at the time of this ADR (14 ship today),
   including the three checked: `no-browser-globals-in-isomorphic.ts`,
   `no-internal-file-exports.ts`, `no-uppercase-regexp-constants.ts`
   (plus `no-direct-integration-imports.ts`, `no-internal-file-imports.ts`,

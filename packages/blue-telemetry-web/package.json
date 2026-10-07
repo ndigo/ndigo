@@ -22,13 +22,14 @@
   },
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
     "test:watch": "vitest"
   },
   "license": "ISC",
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "sideEffects": false,
   "dependencies": {
+    "@blue/log": "~0.0.1",
     "@blue/platform-web": "~0.0.1",
     "@blue/socket": "~0.0.1",
     "@blue/telemetry": "~0.0.1",

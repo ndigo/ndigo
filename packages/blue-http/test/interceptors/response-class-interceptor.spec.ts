@@ -40,8 +40,10 @@ describe('ResponseClassHTTPInterceptor', () => {
 
     afterAll(() => server.close());
 
-    //! This does not work and I do not know why.
-    test.skip('it should handle informational responses', async () => {
+    // Un-skipped (TST-C): MSW 2.x surfaces the 1xx status to the client, so the
+    // interceptor's informational branch is exercised; the "does not work" skip
+    // predated that and is stale.
+    test('it should handle informational responses', async () => {
         await http?.request('http://localhost/responseClass/100');
         expect(hooks.postInformationalResponse).toHaveBeenCalled();
         expect(hooks.postSuccessfulResponse).not.toHaveBeenCalled();

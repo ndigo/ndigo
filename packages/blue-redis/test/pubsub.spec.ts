@@ -24,6 +24,8 @@ import { RedisSocketFanout } from '../src/pubsub';
 import { decodeSocketFanoutEnvelope } from '../src/pubsub/socket-fanout';
 
 const url = process.env.BLUE_REDIS_TEST_URL;
+// Live integration lane — intentionally skipped unless BLUE_REDIS_TEST_URL points at a
+// running standalone Redis (see the file header); the in-memory unit lane covers the rest.
 const live = url === undefined ? describe.skip : describe;
 
 class Session implements SocketSession {

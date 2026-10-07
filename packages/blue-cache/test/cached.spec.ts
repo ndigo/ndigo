@@ -344,7 +344,7 @@ describe('@cached', () => {
             }
             const loader = new Loader();
             expect(await loader.load('a')).toBe('va-1');
-            expect(warn).toHaveBeenCalledWith(expect.any(String), failure);
+            expect(warn).toHaveBeenCalledWith(expect.stringContaining('failed to cache'), { error: 'store full' });
             expect(await loader.load('a')).toBe('va-2');
             expect(loader.invocations).toBe(2);
         } finally {

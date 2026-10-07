@@ -32,6 +32,9 @@ import { defineProperty, ownKeys } from './context-shared';
 import { ApplicationContextAwareProcessor } from './application-context-aware-processor';
 import { resolveSchemaConfig } from './schema-config';
 import type { z } from 'zod';
+import { getLogger } from '@blue/log';
+
+const logger = getLogger('blue-context:application-context');
 
 let uuid = 0;
 
@@ -315,9 +318,9 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
      * @param error - The error thrown by a teardown listener or hook.
      */
     #reportTeardownError(error: unknown): void {
-        console.error(
+        logger.error(
             `[blue-context] error during teardown of "${this.#name ?? 'context'}"; teardown continues (CTX-06)`,
-            error
+            error instanceof Error ? error : String(error)
         );
     }
 
@@ -507,7 +510,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         if (refreshScope instanceof RefreshScope) {
             this.#refreshListener = () => refreshScope.clear();
             this.#refreshFailHandler = (error: Error) => {
-                console.error(
+                logger.error(
                     `[blue-context] config:refresh listener failed (${this.#name ?? 'context'}): the refresh ` +
                         'may have half-applied — see the exception below.',
                     error

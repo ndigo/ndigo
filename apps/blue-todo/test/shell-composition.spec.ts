@@ -6,6 +6,7 @@
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';
 import { describe, expect, test, vi } from 'vitest';
+import { installSynchronousAnimationFrames } from '@blue/test';
 import { GenericApplicationContext } from '@blue/context';
 import { createTodoContext } from '../src/todo-context';
 import {
@@ -18,10 +19,7 @@ import {
 
 // AbstractWebComponent renders via requestAnimationFrame, which never fires in
 // jsdom — fire it synchronously so dispatches render immediately.
-vi.spyOn(global, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCallback) => {
-    cb(0);
-    return 0;
-});
+installSynchronousAnimationFrames();
 
 /**
  * Boot the REAL composed todo runtime: real createTodoContext() (ApplicationBuilder

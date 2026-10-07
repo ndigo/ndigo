@@ -196,10 +196,4 @@ describe('Dispatcher Decorators - Behavioral Tests', () => {
             expect(true).toBe(true);
         });
     });
-
-    describe.skip('Integration Tests', () => {
-        it('should work with all decorators together (covered by route-params.spec.ts)', () => {
-            expect(true).toBe(true);
-        });
-    });
 });

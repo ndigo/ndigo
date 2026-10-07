@@ -124,6 +124,41 @@ describe('OpenAPIDocsAutoConfiguration', () => {
     });
 });
 
+describe('OpenAPIDocsAutoConfiguration: security options forwarded (DAT-F12)', () => {
+    let base: string;
+
+    beforeAll(async () => {
+        class SecureDocsConfiguration extends OpenAPIDocsAutoConfiguration {
+            constructor() {
+                super({
+                    securitySchemes: {
+                        bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+                    },
+                    security: ['bearerAuth'],
+                });
+            }
+        }
+        base = await boot(SecureDocsConfiguration);
+    });
+
+    test('document-level security and components.securitySchemes reach the served spec', async () => {
+        const res = await fetch(`${base}/v3/api-docs`);
+        expect(res.status).toBe(200);
+        const doc = (await res.json()) as {
+            security?: Array<Record<string, string[]>>;
+            components?: { securitySchemes?: Record<string, unknown> };
+            paths: Record<string, { get?: { security?: unknown } }>;
+        };
+        expect(doc.security).toEqual([{ bearerAuth: [] }]);
+        expect(doc.components?.securitySchemes).toEqual({
+            bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+        });
+        // Operations without an `@apiDocs({ security })` override inherit the
+        // document default rather than restating it.
+        expect(doc.paths['/api/notes'].get?.security).toBeUndefined();
+    });
+});
+
 describe('OpenAPIDocsAutoConfiguration — security headers on docs endpoints (SEC-2)', () => {
     let base: string;
 

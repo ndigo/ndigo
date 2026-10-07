@@ -28,6 +28,7 @@
   "license": "ISC",
   "sideEffects": false,
   "dependencies": {
+    "@blue/log": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/socket": "~0.0.1",

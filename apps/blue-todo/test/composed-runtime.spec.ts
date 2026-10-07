@@ -5,7 +5,8 @@
  */
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';
-import { describe, test, beforeAll, afterAll, expect, vi } from 'vitest';
+import { describe, test, beforeAll, afterAll, expect } from 'vitest';
+import { installSynchronousAnimationFrames } from '@blue/test';
 import { Route } from '@blue/router';
 import { createTodoContext } from '../src/todo-context';
 import { composeTodoRuntime } from '../src/shell-composition';
@@ -19,10 +20,7 @@ import { composeTodoRuntime } from '../src/shell-composition';
 
 // AbstractWebComponent.requestUpdate() renders via requestAnimationFrame,
 // which never fires in jsdom — fire it synchronously (same as todo-app-view.spec).
-vi.spyOn(global, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCallback) => {
-    cb(0);
-    return 0;
-});
+installSynchronousAnimationFrames();
 
 function makeRoute(path: string): Route {
     return { path, raw: path, id: 1, data: {}, params: null, length: 0, attributes: {} } as Route;

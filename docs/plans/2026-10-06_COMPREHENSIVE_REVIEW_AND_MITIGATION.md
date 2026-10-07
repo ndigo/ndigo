@@ -20,16 +20,22 @@ independently re-verified headline claims: the passwordless-account auth bypass
 alias/param corruption (reproduced via `tsx`), the stale `AD-01..AD-67` ranges, the CI
 e2e fresh-checkout failure path, and the stale `vitest.config.ts` alias targets. Working
 tree was clean before and after; throwaway probes were removed.
-**Status:** Findings recorded. **Execution in progress:** waves 1–3 landed
-(commit `91712f40` for waves 1–2 security/availability; wave 3 in the following
-commit — context/boot, HTTP, data, ops, protocols, telemetry/resilience,
-platform-web, kernel-2, tooling, docs, apps and platform-misc clusters). All 46
-test projects green; full gate set green (build, test, lint, format, links,
-manifest, agents, typecheck, audit, doc freshness). Still open from the plan:
-the tooling leftovers (test-file typecheck lane TOL-F5, Redis CI lane DAT-F14,
-app-manifest checker extension), the TEL-08 wiring follow-up, the
-`@blue/log` migration of framework `console.*` call sites (wave 5), and the
-wave-6 product roadmap (gaps 1–13, ADR track).
+**Status:** Findings recorded. **Execution in progress:** waves 1–5 landed —
+waves 1–2 in `91712f40` (security + availability), waves 3–4 in `8f54a402`
+(context/boot, HTTP, data, ops, protocols, telemetry/resilience, platform-web,
+kernel-2, tooling, docs, apps), wave 5 in the following commit (framework
+`console.*` → `@blue/log` migration across 10 packages, `@blue/test`
+synchronous-rAF helper with app-spec migration, skipped-test policy, OpenAPI
+auto-config security forwarding, app-manifest checker, Redis CI service lane,
+benchmark exit code). All 46 test projects and the full gate set are green.
+Residuals tracked for follow-up: the test-file typecheck lane (TOL-F5 —
+requires 46 per-project `tsconfig.spec.json` files plus triage of pre-existing
+test type errors), TEL-08's client byte-size seam is exposed by `@blue/socket`
+(`onSend`) but not yet consumed by the web instrumentation, and the wave-6
+product roadmap (gaps 1–13: jobs/outbox, cluster runtime, distributed locks,
+actuator parity, OTel metrics, CLI, migration generation, shared rate-limit
+store, containerized test glue) which needs ADRs and owner sign-off before
+implementation.
 
 **Legend:** `block` = release/CI or availability/security breaker · `high` = must fix before
 1.0 · `medium` = should fix · `low`/`nit` = cleanup.

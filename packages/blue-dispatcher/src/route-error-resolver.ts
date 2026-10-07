@@ -10,6 +10,9 @@ import { ApplicationContextAware, ApplicationContext } from '@blue/context';
 import { RouteHandlerMethod, ErrorHandlerMethod } from './route-handler-method';
 import { errorMapping, likeErrorHandler } from './error-mapping';
 import { $aware } from '@blue/factory';
+import { getLogger } from '@blue/log';
+
+const logger = getLogger('blue-dispatcher:route-error-resolver');
 
 /**
  * Resolves exceptions into a route-specific response.
@@ -284,11 +287,11 @@ export class DefaultRouteErrorResolver extends AbstractRouteErrorResolver {
 
             return new ModelAndView(errorView);
         } catch (e) {
-            // NOTE: @blue/telemetry instruments @blue/dispatcher, so importing
-            // telemetry here would create a circular dependency. A future
-            // refactoring should expose a lightweight Logger interface from
-            // @blue/core that both packages can depend on (see Initiative 1).
-            console.warn('[DefaultRouteErrorResolver] Failure while resolving error:', {
+            // @blue/telemetry instruments @blue/dispatcher, so importing
+            // telemetry here would create a circular dependency; @blue/log is
+            // the lightweight logging core both packages can share
+            // (Initiative 1).
+            logger.warn('[DefaultRouteErrorResolver] Failure while resolving error:', {
                 error: error?.constructor?.name ?? 'Unknown',
                 message: error?.message,
                 resolutionError: (e as Error)?.message,

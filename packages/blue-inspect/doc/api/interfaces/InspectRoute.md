@@ -18,14 +18,6 @@ The route's stable key (the `RouteRegistry` dotted key, or the pattern).
 
 ***
 
-### partition?
-
-> `optional` **partition?**: `string`
-
-The partition prefix the route belongs to, when known.
-
-***
-
 ### path
 
 > **path**: `string`

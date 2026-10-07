@@ -12,6 +12,21 @@ errors, and actuator-style management endpoints.
 cd apps/blue-api && pnpm start
 ```
 
+## Introspection (`inspect`)
+
+AD-70 ships the manifest generator without a CLI: the demo entry point prints a
+deterministic, versioned JSON manifest of this app.
+
+```bash
+pnpm --filter @blue/api inspect
+```
+
+It boots the same assembly as `pnpm start`, enumerates routes, handler mappings
+and declared configuration keys through `@blue/inspect`, writes the manifest as
+pretty JSON to stdout and exits. It **never starts the HTTP server** (no port is
+bound) and **never reads or decrypts configuration values** — only key presence
+and the winning source name — so secrets are never emitted.
+
 ## Endpoints
 
 ```text

@@ -14,7 +14,11 @@
     "strict": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    // The app-root `vitest.config.ts` files import the shared alias table from
+    // the repo root (`../../vitest.aliases`), so the common source directory is
+    // the workspace root — declare it, mirroring the packages' tsconfig.json.
+    "rootDir": ".."
   },
   "exclude": ["**/node_modules", "**/dist", "**/lib", "**/*.spec.ts"]
 }

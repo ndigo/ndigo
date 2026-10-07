@@ -9,7 +9,8 @@
     "dev": "npm run start:full",
     "start": "tsx src/index.ts",
     "start:full": "npm run build:client && tsx src/index.ts",
-    "test": "pnpm build:client && vitest run"
+    "test": "pnpm build:client && vitest run",
+    "test:e2e": "pnpm build:client && playwright test"
   },
   "dependencies": {
     "@awesome.me/webawesome": "^3.14.0",
@@ -43,6 +44,7 @@
     "@blue/util": "~0.0.1",
     "@blue/view-ejs": "~0.0.1",
     "@blue/view-webcomponent": "~0.0.1",
+    "@playwright/test": "^1.63.0",
     "tsx": "catalog:",
     "vite": "catalog:"
   }

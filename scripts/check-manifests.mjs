@@ -25,23 +25,37 @@
  *      judged against workspace-wide import usage (root scripts/configs plus
  *      every project's src/test/bench); implicitly-resolved tooling
  *      (ROOT_TOOLING) is allowlisted.
- *   9. Vitest alias targets: every `resolve(__dirname, '<path>')` replacement
- *      in a vitest config must exist on disk — the hand-maintained alias table
- *      silently drifts as packages are renamed or removed (TOL-F6).
+ *   9. Vitest alias targets: every alias `replacement` in a test-bearing config
+ *      must resolve on disk — the hand-maintained alias table silently drifts
+ *      as packages are renamed or removed (TOL-F6). Checked across
+ *      `vitest.config.*`, the shared `vitest.aliases.ts`, and any
+ *      `vite.config.*` that carries a `test` block (APP-C). Recognized
+ *      spellings are `resolve(__dirname, '<path>')`,
+ *      `fileURLToPath(new URL('<path>', import.meta.url))`, the repo-root
+ *      `resolve(<identifier>, '<path>')` form used by the shared table, and a
+ *      bare quoted path; anything else after `replacement:` warns.
  *  10. App manifests (`apps/*`, private): the same closure/dead-dependency
  *      discipline applies — every import in an app source dir (src/test/
- *      client/views/e2e) must be declared, and no declared dependency may be
- *      imported nowhere. Build tooling invoked by name (APP_TOOLING) and
- *      asset-only runtime deps (APP_ASSET_DEPS) are exempt.
+ *      client/views/e2e) and in the app-root `*.config.{ts,mts,mjs,js}` files
+ *      must be declared, and no declared dependency may be imported nowhere.
+ *      Build tooling invoked by name (APP_TOOLING) and asset-only runtime deps
+ *      (APP_ASSET_DEPS) are exempt.
+ *  11. Alias coverage: every workspace package has an entry in the root
+ *      `vitest.aliases.ts` `blueAliases` table, so tests resolve `@blue/*`
+ *      imports to `src/` rather than a stale built `lib/` (TST-B).
+ *  12. No relative import escapes the repository root: a tracked relative
+ *      specifier that resolves outside the checkout makes its lane
+ *      irreproducible on a fresh clone (BLK-1). Bare/alias specifiers and
+ *      `node:` builtins are host-provided and exempt.
  *
  * Run: `node scripts/check-manifests.mjs` (wired into `pnpm manifest:check`
  * and `.github/workflows/ci.yml`).
  */
 
-import { readdirSync, readFileSync, existsSync } from 'node:fs';
+import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { importsOf, SOURCE_DIRS, DEV_DIRS } from './import-scanner.mjs';
+import { importsOf, extractImports, tokenize, SKIP_DIRS, SOURCE_DIRS, DEV_DIRS } from './import-scanner.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const PACKAGES = join(ROOT, 'packages');
@@ -117,9 +131,107 @@ const REQUIRED_README_SECTIONS = [
 ];
 
 const failures = [];
+const warnings = [];
 
 function fail(pkg, message) {
     failures.push(`${pkg}: ${message}`);
+}
+
+function warn(configPath, message) {
+    warnings.push(`${relative(ROOT, configPath)}: ${message}`);
+}
+
+/** Comment-free source (code + string tokens, comments dropped) — a
+ * `replacement:` mentioned in a comment is never read as a real alias entry. */
+function stripComments(source) {
+    return tokenize(source)
+        .filter((token) => token.kind !== 'comment')
+        .map((token) => token.text)
+        .join('');
+}
+
+/**
+ * Relative import/export/dynamic-import/require specifiers, captured from code
+ * context only: a string is read as a specifier solely when the preceding code
+ * token ends on `from`/`import`/`require(`, so fixture code inside strings or
+ * comments can never be mistaken for a real import.
+ * @returns {Set<string>} specifiers beginning with `.`
+ */
+function relativeSpecifiers(source) {
+    const specs = new Set();
+    let pending = false;
+    for (const token of tokenize(source)) {
+        if (token.kind === 'comment') continue;
+        if (token.kind === 'str') {
+            if (pending) {
+                const content = token.text.slice(1, -1);
+                if (content.startsWith('.')) specs.add(content);
+                pending = false;
+            }
+            continue;
+        }
+        pending = /(?:(?<![.\w$])from|(?<![.\w$])import|(?<![.\w$])require(?:\.resolve)?)\b\s*\(?\s*$/.test(token.text);
+    }
+    return specs;
+}
+
+const sourceFileRe = /\.(ts|mts|cts|tsx|mjs|js|cjs|jsx)$/;
+
+/** True when a committed .js/.cjs/.jsx file is emitted output (a TS twin exists). */
+function hasTsTwin(dir, file) {
+    const base = file.replace(/\.(js|cjs|jsx)$/, '');
+    return ['.ts', '.mts', '.cts', '.tsx'].some((ext) => existsSync(join(dir, base + ext)));
+}
+
+/** Every tracked source file under `dir` (recursively), skipping build output. */
+function walkSourceFiles(dir, out = []) {
+    let entries;
+    try {
+        entries = readdirSync(dir);
+    } catch {
+        return out;
+    }
+    for (const entry of entries) {
+        const path = join(dir, entry);
+        const stat = statSync(path);
+        if (stat.isDirectory()) {
+            if (!SKIP_DIRS.has(entry)) walkSourceFiles(path, out);
+        } else if (sourceFileRe.test(entry) && !(/\.(js|cjs|jsx)$/.test(entry) && hasTsTwin(dir, entry))) {
+            out.push(path);
+        }
+    }
+    return out;
+}
+
+function escapeRegExp(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Resolve an alias `replacement` expression to its on-disk target.
+ * Recognized spellings:
+ *   - `resolve(__dirname, '<path>')`                              (base: config dir)
+ *   - `fileURLToPath(new URL('<path>', import.meta.url))`         (base: config dir)
+ *   - `resolve(<identifier>, '<path>')` for any other identifier  (base: repo root,
+ *     the shared `vitest.aliases.ts` table is repo-root-absolute)
+ *   - a bare quoted `'<path>'`
+ * @returns {{base: 'config'|'root', path: string}|null}
+ */
+function aliasTargetFromReplacement(tail) {
+    let match;
+    if ((match = /^(?:path\.)?resolve\(\s*__dirname\s*,\s*(['"])([^'"]+)\1\s*\)/.exec(tail))) {
+        return { base: 'config', path: match[2] };
+    }
+    if ((match = /^fileURLToPath\(\s*new\s+URL\(\s*(['"])([^'"]+)\1\s*,\s*import\.meta\.url\s*\)\s*\)/.exec(tail))) {
+        return { base: 'config', path: match[2] };
+    }
+    if ((match = /^(?:path\.)?resolve\(\s*[A-Za-z_$][\w$]*\s*,\s*(['"])([^'"]+)\1\s*\)/.exec(tail))) {
+        return { base: 'root', path: match[2] };
+    }
+    if ((match = /^(['"])([^'"]+)\1/.exec(tail))) {
+        return { base: 'config', path: match[2] };
+    }
+    return null;
 }
 
 /** Every specifier imported anywhere in the workspace — feeds the root rule. */
@@ -267,6 +379,13 @@ for (const dir of readdirSync(APPS)) {
     const name = manifest.name ?? dir;
     const runtime = importsOf(pkgDir, APP_SOURCE_DIRS);
     const dev = importsOf(pkgDir, APP_DEV_DIRS);
+    // Rule 10 closure (APP-C): an app's root-level config files (vite.config.ts,
+    // playwright.config.ts, …) are real import sites too — an undeclared or dead
+    // dependency there is otherwise invisible to the scanner.
+    for (const entry of readdirSync(pkgDir)) {
+        if (!/\.config\.(ts|mts|mjs|js)$/.test(entry)) continue;
+        for (const spec of extractImports(readFileSync(join(pkgDir, entry), 'utf8'))) dev.add(spec);
+    }
     for (const spec of runtime) workspaceUsage.add(spec);
     for (const spec of dev) workspaceUsage.add(spec);
 
@@ -295,22 +414,107 @@ for (const dir of readdirSync(APPS)) {
     }
 }
 
-// Rule 9: every `resolve(__dirname, '<path>')` alias target in a vitest config
-// must exist. The root alias table is hand-maintained, so a rename or removal
+// Rule 9: every alias `replacement` in a test-bearing config must resolve to an
+// existing path. The alias tables are hand-maintained, so a rename or removal
 // leaves a silently-dead entry (and an aspirational subpath alias can land
-// before its `src/` directory). Checked per-config so package-local configs
-// (whose `__dirname` differs) resolve their own relative targets.
-const vitestConfigs = [
-    join(ROOT, 'vitest.config.ts'),
-    ...readdirSync(PACKAGES).map((dir) => join(PACKAGES, dir, 'vitest.config.ts')),
-    ...readdirSync(APPS).map((dir) => join(APPS, dir, 'vitest.config.ts')),
-].filter((configPath) => existsSync(configPath));
-for (const configPath of vitestConfigs) {
-    const source = readFileSync(configPath, 'utf8');
-    for (const match of source.matchAll(/replacement:\s*resolve\(\s*__dirname\s*,\s*(['"])([^'"]+)\1\s*\)/g)) {
-        const target = resolve(dirname(configPath), match[2]);
+// before its `src/` directory). Checked per-config so each target resolves from
+// the right base. Scanned set (APP-C):
+//   - `vitest.config.*` for the root, every package and every app;
+//   - the shared `vitest.aliases.ts` table;
+//   - `vite.config.*` that carries a `test` block, where an app's vitest
+//     aliases live (blue-todo's in-config test block was previously skipped).
+// Recognized replacement spellings are resolved by `aliasTargetFromReplacement`;
+// an unrecognized, alias-looking value warns instead of passing silently.
+const aliasConfigs = new Set([join(ROOT, 'vitest.config.ts'), join(ROOT, 'vitest.aliases.ts')]);
+for (const base of [PACKAGES, APPS]) {
+    for (const dir of readdirSync(base)) {
+        for (const ext of ['ts', 'mts', 'mjs', 'js']) {
+            const vitestConfig = join(base, dir, `vitest.config.${ext}`);
+            if (existsSync(vitestConfig)) aliasConfigs.add(vitestConfig);
+            const viteConfig = join(base, dir, `vite.config.${ext}`);
+            if (existsSync(viteConfig) && /\btest\s*:/.test(readFileSync(viteConfig, 'utf8'))) {
+                aliasConfigs.add(viteConfig);
+            }
+        }
+    }
+}
+for (const configPath of aliasConfigs) {
+    if (!existsSync(configPath)) continue;
+    const source = stripComments(readFileSync(configPath, 'utf8'));
+    for (const match of source.matchAll(/replacement\s*:\s*/g)) {
+        // Only object-literal members are alias entries; a `replacement` in a TS
+        // type literal (`{ find: RegExp; replacement: string }`) is not a value
+        // and must not warn.
+        const preceding = source.slice(0, match.index).trimEnd().slice(-1);
+        if (preceding !== '{' && preceding !== ',') continue;
+        const tail = source.slice(match.index + match[0].length);
+        const alias = aliasTargetFromReplacement(tail);
+        if (!alias) {
+            const preview = tail.split('\n', 1)[0].trim().slice(0, 60);
+            warn(configPath, `unrecognized alias replacement "${preview}" — cannot verify its target`);
+            continue;
+        }
+        const target = alias.base === 'root' ? resolve(ROOT, alias.path) : resolve(dirname(configPath), alias.path);
         if (!existsSync(target)) {
-            fail(relative(ROOT, configPath), `vitest alias target "${match[2]}" does not exist`);
+            fail(relative(ROOT, configPath), `alias target "${alias.path}" does not exist`);
+        }
+    }
+}
+
+// Rule 11: every workspace package has an entry in the root `vitest.aliases.ts`
+// `blueAliases` table, so its tests resolve `@blue/*` imports to `src/` rather
+// than a stale built `lib/` (TST-B). Read as text and compared by package name —
+// tolerant of regex-literal keys (`^@blue\/core$`) and quoted keys.
+const aliasesPath = join(ROOT, 'vitest.aliases.ts');
+if (!existsSync(aliasesPath)) {
+    fail(
+        '@blue/js (root)',
+        'vitest.aliases.ts is missing — the alias-coverage gate (TST-B) requires it; it is owned by the Wave-1 aliases workstream'
+    );
+} else {
+    const aliasText = readFileSync(aliasesPath, 'utf8').replaceAll('\\/', '/');
+    for (const dir of readdirSync(PACKAGES)) {
+        const pkgPath = join(PACKAGES, dir, 'package.json');
+        if (!existsSync(pkgPath)) continue;
+        let name;
+        try {
+            name = JSON.parse(readFileSync(pkgPath, 'utf8')).name ?? dir;
+        } catch {
+            continue; // unparseable manifests are already reported by the loop above
+        }
+        // Require a standalone alias name: `@blue/util` must not be satisfied by
+        // the deeper `@blue/util/string` entry.
+        if (!new RegExp(`${escapeRegExp(name)}(?![\\w/-])`).test(aliasText)) {
+            fail(name, `no entry in the root vitest.aliases.ts blueAliases table (required so tests resolve src/)`);
+        }
+    }
+}
+
+// Rule 12: no relative import may escape the repository root. A tracked
+// relative specifier that resolves outside the checkout makes its lane
+// irreproducible on a fresh clone (BLK-1). Bare/alias specifiers and `node:`
+// builtins are host-provided and exempt.
+const trackedSourceDirs = [];
+for (const dir of readdirSync(PACKAGES)) {
+    if (!existsSync(join(PACKAGES, dir, 'package.json'))) continue;
+    trackedSourceDirs.push([dir, join(PACKAGES, dir, 'src')], [dir, join(PACKAGES, dir, 'test')]);
+}
+for (const dir of readdirSync(APPS)) {
+    if (!existsSync(join(APPS, dir, 'package.json'))) continue;
+    for (const sub of ['src', 'client', 'test', 'e2e', 'views']) {
+        trackedSourceDirs.push([dir, join(APPS, dir, sub)]);
+    }
+}
+for (const [label, dir] of trackedSourceDirs) {
+    for (const file of walkSourceFiles(dir)) {
+        for (const spec of relativeSpecifiers(readFileSync(file, 'utf8'))) {
+            const target = resolve(dirname(file), spec.replace(/[?#].*$/, ''));
+            if (relative(ROOT, target).startsWith('..')) {
+                fail(
+                    label,
+                    `relative import "${spec}" in ${relative(ROOT, file)} resolves outside the repository root`
+                );
+            }
         }
     }
 }
@@ -326,6 +530,11 @@ for (const [dep, version] of Object.entries(rootManifest.devDependencies ?? {}))
     if (!workspaceUsage.has(dep)) {
         fail('@blue/js (root)', `devDependencies.${dep} (${version}) is imported nowhere in the workspace`);
     }
+}
+
+if (warnings.length > 0) {
+    console.warn(`Manifest conformance: ${warnings.length} warning(s)`);
+    for (const message of warnings) console.warn(`  ! ${message}`);
 }
 
 if (failures.length > 0) {

@@ -11,8 +11,29 @@
  * invalid JavaScript while Vitest suites stayed green (Vitest transforms
  * through esbuild). This plugin runs before the default transforms and uses
  * esbuild — which lowers decorators for any target below `esnext` — for
- * TypeScript modules in the workspace. App configs apply it for `build` only;
- * test transforms are handled by Vitest's own esbuild pipeline.
+ * TypeScript modules in the workspace. Every app with browser sources applies
+ * it for BOTH `vite build` and `vite dev` (the demo apps forward it
+ * unconditionally; `blue-todo`'s former `command === 'build'` gate is gone),
+ * so neither path ships raw decorators. Vitest needs no plugin: it lowers
+ * decorators in its own transform pipeline and resolves workspace sources
+ * through the shared `vitest.aliases.ts` table that each app `vitest.config.ts`
+ * imports.
+ *
+ * Scope (SEC-B/WC-I):
+ *
+ * - Only **TypeScript module sources** are rewritten: `.ts`, `.mts`, `.cts`
+ *   and `.tsx`. Built `lib/*.js` inputs (a dependency's compiled output, or a
+ *   workspace package resolved through its `exports` → `lib/`) are **out of
+ *   scope** — they are expected to be browser-ready, and `tsc` already lowers
+ *   standard decorators into helper calls when building the package.
+ * - A module is only handed to esbuild when it actually contains a decorator.
+ *   The cheap `/^\s*@|[{(;]\s*@/m` pre-check returns decorator-free modules
+ *   unchanged, so the plugin does not re-transform every workspace `.ts` (the
+ *   transform, and its sourcemap, is dropped for the common case). It is a
+ *   heuristic, not a parse: it covers a decorator at the start of a line (the
+ *   formatted form) and one starting a class/member body or a parameter list
+ *   (`{ @dec`, `(@inject`), which is every syntactically valid position in
+ *   practice. A module with no `@` in such a position is left alone.
  *
  * @module scripts/vite-plugin-lower-decorators
  * @since 1.0.0
@@ -21,7 +42,10 @@
 import { transform } from 'esbuild';
 
 /** TypeScript module extensions (`.ts`, `.mts`, `.cts`, `.tsx`). */
-const tsModuleRe = /\.(m?ts|tsx)$/;
+const tsModuleRe = /\.(?:[cm]?ts|tsx)$/;
+
+/** Cheap pre-check: a decorator starting a line, or opening a member body / parameter list. */
+const decoratorRe = /^\s*@|[{(;]\s*@/m;
 
 /** Workspace package sources resolved through pnpm symlinks (`packages/blue-*`). */
 const workspacePackageRe = /[\\/]packages[\\/]blue-[^\\/]+[\\/]/;
@@ -49,6 +73,11 @@ export function lowerDecorators() {
             // the workspace's own package sources (symlinked through
             // `node_modules`) need the transform alongside app code.
             if (file.includes('node_modules') && !workspacePackageRe.test(file)) {
+                return null;
+            }
+            // Nothing to lower: return the source untouched so esbuild (and its
+            // sourcemap) is skipped for decorator-free modules.
+            if (!decoratorRe.test(code)) {
                 return null;
             }
             const result = await transform(code, {

@@ -1,7 +1,7 @@
 {
   "name": "blue-island",
   "version": "0.0.1",
-  "description": "Hybrid island demo \u2014 Node server renders Web Component islands; client hydrates them",
+  "description": "Hybrid island demo — Node server renders Web Component islands; client hydrates them",
   "type": "module",
   "private": true,
   "scripts": {
@@ -12,9 +12,9 @@
     "test": "pnpm build:client && vitest run"
   },
   "dependencies": {
-    "zod": "catalog:",
-    "@tsmetadata/polyfill": "catalog:",
+    "@awesome.me/webawesome": "^3.14.0",
     "@blue/boot": "~0.0.1",
+    "@blue/content-i18next": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/http": "~0.0.1",
@@ -22,15 +22,14 @@
     "@blue/service": "~0.0.1",
     "@blue/signals": "~0.0.1",
     "@blue/telemetry": "~0.0.1",
+    "@blue/util": "~0.0.1",
     "@blue/view": "~0.0.1",
     "@blue/view-ejs": "~0.0.1",
     "@blue/view-webcomponent": "~0.0.1",
-    "@blue/content-i18next": "~0.0.1",
-    "@blue/util": "~0.0.1"
+    "@tsmetadata/polyfill": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
-    "tsx": "catalog:",
-    "vite": "catalog:",
     "@blue/boot": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
@@ -41,8 +40,10 @@
     "@blue/signals": "~0.0.1",
     "@blue/telemetry": "~0.0.1",
     "@blue/test": "~0.0.1",
+    "@blue/util": "~0.0.1",
     "@blue/view-ejs": "~0.0.1",
     "@blue/view-webcomponent": "~0.0.1",
-    "@blue/util": "~0.0.1"
+    "tsx": "catalog:",
+    "vite": "catalog:"
   }
 }

@@ -1,6 +1,6 @@
 # BlueJS Decision Records (ADRs)
 
-Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-70**,
+Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-71**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -95,3 +95,4 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-68** | 2026-10-06    | Accepted           | [User-wide revocation — explicit session deletion, account version epoch for JWTs](2026-10-06_AD68_USER_WIDE_REVOCATION.md)                                                 |
 | **AD-69** | 2026-10-06    | Accepted           | [Component integration contract — adopt the Web Component ecosystem; framework owns the DSD/FACE bridge](2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md)                 |
 | **AD-70** | 2026-10-06    | Accepted           | [Editor tooling — introspection first (`@blue/inspect` manifest, config schema, lint rules); no language server yet](2026-10-06_AD70_EDITOR_TOOLING_INTROSPECTION_FIRST.md) |
+| **AD-71** | 2026-10-07    | Accepted           | [Component library selection — Web Awesome for the reference integration](2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md)                                                   |

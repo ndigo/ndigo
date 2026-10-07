@@ -3,11 +3,28 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { getMapping, ModelAndView, parameters, requestMapping, routeValue } from '@blue/dispatcher';
+import {
+    dataBinderValue,
+    getMapping,
+    ModelAndView,
+    parameters,
+    postMapping,
+    requestMapping,
+    routeValue,
+    validatedBy,
+} from '@blue/dispatcher';
 import { ServerSentEventView } from '@blue/platform-node';
 import { IslandView } from '@blue/view';
 import type { Route } from '@blue/router';
+import { z } from 'zod';
 import { TodoModel, TodoModelStore } from './todo-model-store';
+
+/**
+ * The add-item form's server contract (AD-71 reference integration): the
+ * bound form body arrives as strings, so the schema is the single validation
+ * source (trim → non-empty → bounded).
+ */
+const AddItemSchema = z.object({ text: z.string().trim().min(1).max(200) });
 
 /**
  * Escapes HTML-significant characters for the server-rendered island fallback.
@@ -23,17 +40,21 @@ function escapeHtmlText(value: string): string {
 
 /**
  * Server-renders the island's first-paint fallback from the todo model: the
- * same item list + filter line the client component paints. Passed to
- * `IslandView` as its trusted `shadowHtml` option, the browser parses it into
- * a real declarative shadow root, so the page shows real content before any
- * script runs (ADR-69 D-3); hydration then replaces it in place.
+ * same item list + filter line the client component paints, plus a skeleton
+ * line for the adopted library's form. Passed to `IslandView` as its trusted
+ * `shadowHtml` option, the browser parses it into a real declarative shadow
+ * root, so the page shows real content before any script runs (ADR-69 D-3);
+ * hydration then replaces it in place. Third-party components cannot
+ * server-render portably yet, so the derived fallback is the documented
+ * pattern (AD-71 D-4).
  */
 function renderTodoFallback(model: TodoModel): string {
     const items = model.items
         .map((item) => `<li>${item.done ? '✅' : '⬜'} ${escapeHtmlText(item.text)}</li>`)
         .join('');
     const hint = `[hydrated on client] ${model.items.length} item(s), filter: ${escapeHtmlText(model.filter)}`;
-    return `<ul>${items}</ul><p style="font-size:0.85rem;color:#666">${hint}</p>`;
+    const formSkeleton = '[first paint] The add-item form (Web Awesome) hydrates on the client.';
+    return `<ul>${items}</ul><p style="font-size:0.85rem;color:#666">${hint}</p><p style="color:#666">${formSkeleton}</p>`;
 }
 
 /**
@@ -96,6 +117,26 @@ export class IslandController {
             // deterministic across runs (locale helpers format it).
             today: new Date('2026-09-13T12:00:00Z'),
         });
+    }
+
+    /**
+     * Accepts the island's add-item form (AD-71 reference integration): the
+     * Web Awesome input is a form-associated custom element, so the browser
+     * submits ordinary `application/x-www-form-urlencoded` name/value pairs —
+     * bound and validated through the standard path (`dataBinderValue` +
+     * Zod, guides 09/02), with no component-specific handling.
+     *
+     * The mutation goes through the model store, so every connected client
+     * (including the submitting one) receives the update over SSE.
+     */
+    @postMapping('/items')
+    @parameters({ item: validatedBy(AddItemSchema, dataBinderValue('body')) })
+    addItem(item: { text: string }) {
+        const text = item.text;
+        this.#modelStore.update((model) => {
+            model.items.push({ text, done: false });
+        });
+        return { accepted: text };
     }
 
     /**

@@ -47,6 +47,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   custom elements whose values submit as standard form data through the
   existing binding/Zod path. No UI library is bundled; the decision record
   defines the adoption checklist and the no-wrappers discipline.
+- Component library selection (AD-71): Web Awesome is the adopted library for
+  the single reference integration — a dependency of `apps/blue-island` only
+  (framework packages stay library-free). The island's add-item form uses its
+  form-associated controls end-to-end: native `FormData` →
+  `application/x-www-form-urlencoded` → `POST /items` → `dataBinderValue` +
+  Zod → SSE push. Theming is the library's token stylesheet plus `--wa-*`
+  overrides; first paint stays the DSD fallback pattern. Guide 21 documents
+  the workflow, and the AD-69 vetting checklist carries recorded results
+  (Spectrum and Material Web ship no form-associated controls; FAST has no
+  maintained component set).
 - `@blue/log` — dependency-light logging core (Logger contract,
   `getLogger`/`LoggerFactory`, console + OpenTelemetry appenders, severity
   mappings) extracted so framework internals can log without the telemetry

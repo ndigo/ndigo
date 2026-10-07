@@ -54,6 +54,9 @@ describe('blue-island hybrid demo', () => {
         expect(html).toContain('<li>✅ Server-rendered island</li>');
         expect(html).toContain('<li>⬜ Hydrated on the client</li>');
         expect(html).toContain('[hydrated on client] 2 item(s), filter: all');
+        // AD-71: the adopted library's form cannot server-render portably, so
+        // the derived fallback carries a skeleton the client render replaces.
+        expect(html).toContain('[first paint] The add-item form (Web Awesome) hydrates on the client.');
     });
 
     test('GET / renders the serialized model into data-blue-model', async () => {
@@ -90,6 +93,30 @@ describe('blue-island hybrid demo', () => {
         // Bundle contains the hydrate logic + the todo-app component tag.
         expect(body).toContain('todo-app');
         expect(body.length).toBeGreaterThan(1000);
+    });
+
+    test('POST /items binds + validates the form body and updates the model (AD-71)', async () => {
+        const res = await mockHTTP
+            .post('/items')
+            .headers({ 'content-type': 'application/x-www-form-urlencoded' })
+            .rawBody('text=Write+the+guide')
+            .exec();
+        expect(res.response.status).toBe(200);
+        expect(res.json()).toEqual({ accepted: 'Write the guide' });
+
+        // The mutation flows through the store, so the next shell render (and
+        // every SSE subscriber) carries the new item.
+        const shell = await mockHTTP.get('/').exec();
+        expect(shell.text()).toContain('Write the guide');
+    });
+
+    test('POST /items rejects a blank value through the bound schema (422)', async () => {
+        const res = await mockHTTP
+            .post('/items')
+            .headers({ 'content-type': 'application/x-www-form-urlencoded' })
+            .rawBody('text=%20%20')
+            .exec();
+        expect(res.response.status).toBe(422);
     });
 
     test('GET / negotiates the shell language from Accept-Language', async () => {
@@ -254,5 +281,31 @@ describe('GET /events pushes model updates over SSE (AD-09)', () => {
         await reader.cancel();
 
         expect(text).toContain('"text":"Model update pushed from the server (3)"');
+    });
+
+    test('a posted form item reaches connected clients over SSE (AD-71)', async () => {
+        const res = await fetch(`${base}/events`);
+        const body = res.body;
+        if (body === null) {
+            throw new Error('expected an SSE response body');
+        }
+        const reader = body.getReader();
+        const decoder = new TextDecoder();
+
+        // The browser-shaped submission the island's form produces: standard
+        // urlencoded name/value pairs.
+        const posted = await fetch(`${base}/items`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+            body: 'text=from+the+form',
+        });
+        expect(posted.status).toBe(200);
+
+        const text = await readFrames(reader, decoder, 2);
+        await reader.cancel();
+
+        const frames = text.split('\n\n').filter((frame) => frame.length > 0);
+        expect(frames[1]).toContain('event: model\n');
+        expect(frames[1]).toContain('"text":"from the form"');
     });
 });

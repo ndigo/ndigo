@@ -24,6 +24,7 @@ Conceptual and hands-on guides for building applications with BlueJS. These comp
 18. [18 — Signals & Islands](18-signals-and-islands.md) — reactive state with `@blue/signals` (`signal`/`computed`/`effect`, the `@reactive` decorators, stream and event bridges) and the island lifecycle: `IslandView` marker → `hydrateIslands()` → SSE-driven re-render.
 19. [19 — Testing with `@blue/test`](19-testing.md) — the in-process harness (AD-63): `bootApp`/`cachedBootApp`, the `MockHTTP` request builder and `MockResult`, browser apps via `BrowserMockClient` + `MemoryViewTarget`, and what the harness deliberately is not.
 20. [20 — The HTTP Client](20-http-client.md) — `@blue/http`: `HTTP.create` settings, the verb surface, the interceptor lifecycle hooks and built-ins, body transform pipelines, and the `QueryString`/`MatrixString` parsers.
+21. [21 — Component Integration](21-component-integration.md) — adopting a Web Component library: the AD-69 vetting checklist, per-component imports without wrappers, the server-fallback pattern for first paint, FACE form submission into the existing binding/Zod path, token theming, and i18n wiring. Reference application: `apps/blue-island` (AD-71 — Web Awesome).
 
 ## Reading Order
 

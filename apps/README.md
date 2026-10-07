@@ -12,7 +12,7 @@ from simple to complex. Each app demonstrates a distinct slice of the framework.
 | 3   | `blue-todo`       | Browser — TodoMVC + micro frontend shell (`@blue/host` one-call registration, relay gateway)                                                                                            |
 | 4   | `blue-api`        | Node — controllers, opaque session-token auth, ORM (+Drizzle), content negotiation, problem+json errors, **management `/health`/`/metrics`**, **Accept-Language i18n**, config bindings |
 | 5   | `blue-host`       | Browser — micro frontend host: `@blue/host` `HostManager` + 3 lazy-loaded feature chunks, shared-dependency validation                                                                  |
-| 6   | `blue-island`     | Node SSR — EJS shell + island hydration, SSE push → `@blue/signals`, typed service stream                                                                                               |
+| 6   | `blue-island`     | Node SSR — EJS shell + island hydration, SSE push → `@blue/signals`, typed service stream, adopted component-library form (AD-71)                                                       |
 | 7   | `blue-views`      | Browser — view-resolution composite (three view locations), i18n (`@blue/content`), HTTP client with cache + offline queueing                                                           |
 
 ## Applications

@@ -48,7 +48,11 @@ bundles were invalid JavaScript — and blue-todo's todo routes omitted `items`,
 so the Playwright e2e lane was failing end-to-end (build order, bundle syntax,
 and seeding were all broken); both are fixed and the e2e passes locally.
 AD-69 records the component-integration contract (adopt the Web Component
-ecosystem; framework owns the DSD first-paint and FACE bridges) with its spike.
+ecosystem; framework owns the DSD first-paint and FACE bridges) with its spike;
+AD-71 selects Web Awesome for the single reference integration and lands it in
+`apps/blue-island` (FACE form → `POST /items` → `dataBinderValue` + Zod → SSE)
+with [guide 21](../guides/21-component-integration.md) — framework packages
+stay library-free.
 
 **Legend:** `block` = release/CI or availability/security breaker · `high` = must fix before
 1.0 · `medium` = should fix · `low`/`nit` = cleanup.

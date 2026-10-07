@@ -112,6 +112,14 @@ export interface StaticResolveOptions {
      * anything is opened or read. `0` (default) = unlimited.
      */
     maxFileSizeBytes?: number;
+    /**
+     * Whether dotfiles (any path segment beginning with `.`) may be served.
+     * Default `false`: dotfile requests resolve `forbidden` (→ 403).
+     * The standard `.well-known` namespace is the built-in opt-in exception —
+     * it is served either way, so well-known URIs keep working without
+     * exposing every hidden file (PLN-F9).
+     */
+    serveDotfiles?: boolean;
 }
 
 /**
@@ -153,6 +161,30 @@ export function negotiateEncoding(header: string | undefined): StaticEncoding | 
 function buildEtag(size: number, mtimeMs: number, encoding?: StaticEncoding): string {
     const base = `${size.toString(16)}-${Math.round(mtimeMs).toString(16)}`;
     return `"${encoding ? `${base}-${encoding}` : base}"`;
+}
+
+/**
+ * True when a request-relative path addresses a dotfile (PLN-F9): any path
+ * segment that begins with `.`. The standard `.well-known` namespace is the
+ * built-in opt-in exception (a leading `.well-known` segment is not a
+ * dotfile), and the `.`/`..` navigation segments are left to path resolution.
+ *
+ * @param relative - The request path with any leading `/` stripped.
+ * @returns `true` when the path must be refused unless `serveDotfiles` is set.
+ */
+function isDotfilePath(relative: string): boolean {
+    if (relative === '') {
+        return false;
+    }
+    const segments = relative.split('/');
+    // The exemption is a leading, literal `.well-known` namespace. A `..`
+    // segment anywhere means the path is not a straight well-known URI (path
+    // algebra could otherwise launder `.well-known/../.env.json` back to a
+    // dotfile), so it falls through to the normal dotfile rules.
+    if (segments[0] === '.well-known' && !segments.includes('..')) {
+        return false;
+    }
+    return segments.some((segment) => segment.startsWith('.') && segment !== '.' && segment !== '..');
 }
 
 /**
@@ -205,6 +237,13 @@ export class StaticResourceResolver {
             // path algebra could launder against the base).
             const relative = requestPath.replace(/^\/+/, '');
             if (isAbsolute(relative)) {
+                return { kind: 'forbidden' };
+            }
+            // Explicit dotfile policy (PLN-F9): dotfiles are refused unless
+            // opted in, so a hidden file with an *allowlisted* extension
+            // (`.env.json`, `.vite/manifest.json`) is no longer served. The
+            // `.well-known` namespace is the conventional opt-in exception.
+            if (!options?.serveDotfiles && isDotfilePath(relative)) {
                 return { kind: 'forbidden' };
             }
             const candidate = resolve(base, relative);

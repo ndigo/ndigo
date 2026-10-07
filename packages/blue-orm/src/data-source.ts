@@ -7,6 +7,39 @@ import { IllegalStateError } from '@blue/core';
 import { Destroyable, Initializable } from '@blue/factory';
 
 /**
+ * Well-known symbol an entity class implements to control how it is cloned for
+ * {@link InMemoryDataSource.snapshot} / `restore` (DAT-F7).
+ *
+ * `snapshot()` clones own enumerable properties, so ECMAScript private fields
+ * (`#field`) are not carried over — a restored instance lacks its private
+ * brand and any access throws. An entity that owns private state implements
+ * this hook to copy it explicitly:
+ *
+ * ```typescript
+ * class ApiKey {
+ *     #secret = '';
+ *     [ENTITY_CLONE](): ApiKey {
+ *         const copy = new ApiKey();
+ *         copy.#secret = this.#secret;
+ *         return copy;
+ *     }
+ * }
+ * ```
+ *
+ * The hook owns its clone completely: it returns a fresh instance (or a plain
+ * object) and is responsible for copying whatever state it holds.
+ */
+export const ENTITY_CLONE: unique symbol = Symbol.for('@blue/orm:entityClone');
+
+/**
+ * Contract for classes that customize their snapshot clone; see
+ * {@link ENTITY_CLONE}.
+ */
+export interface EntityCloneHook {
+    [ENTITY_CLONE](): object;
+}
+
+/**
  * Represents a data source for managing entity stores.
  * It extends `Initializable` and `Destroyable` for lifecycle management.
  */
@@ -115,6 +148,10 @@ export class InMemoryDataSource implements DataSource {
      * Store keys are kept as-is (primary identifiers), and the snapshot is
      * isolated from mutations made after this call.
      *
+     * Own enumerable state is copied, so entities with ECMAScript private
+     * fields should implement the {@link ENTITY_CLONE} hook to carry that
+     * state across a snapshot/restore (DAT-F7).
+     *
      * @returns An opaque snapshot handle to pass to {@link restore}.
      */
     snapshot(): { stores: Map<string, Map<unknown, unknown>> } {
@@ -177,6 +214,15 @@ function cloneStoredValue<T>(value: T, seen: Map<object, unknown>): T {
     const cloned = seen.get(value);
     if (cloned !== undefined) {
         return cloned as T;
+    }
+
+    // Entities with private state opt into a custom clone (DAT-F7); they own
+    // the whole copy, so no prototype/own-property walk runs for them.
+    const cloneHook = (value as Partial<EntityCloneHook>)[ENTITY_CLONE];
+    if (typeof cloneHook === 'function') {
+        const clone = cloneHook.call(value);
+        seen.set(value, clone);
+        return clone as T;
     }
 
     if (value instanceof Date) {

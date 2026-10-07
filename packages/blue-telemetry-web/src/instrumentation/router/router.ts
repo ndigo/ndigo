@@ -33,7 +33,9 @@ export class RouterInstrumentation extends AbstractBaseInstrumentation {
             '_setRoute',
             this._patch({
                 name: 'Router.setRoute',
-                kind: SpanKind.SERVER,
+                // In-app navigation is internal router work, not a network
+                // boundary (TEL-11).
+                kind: SpanKind.INTERNAL,
                 attributes: (_instance: unknown, args: unknown[]) => ({
                     'router.route': args[0],
                 }),

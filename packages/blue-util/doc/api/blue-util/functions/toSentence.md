@@ -23,6 +23,6 @@ Returns the sentence case version of a string.
 ## Example
 
 ```ts
-toSentence( 'lorem-ipsum-dolor' );
-//=> "Lorem ipsum dolor"
+toSentence( 'lorem ipsum. dolor sit' );
+//=> "Lorem ipsum. Dolor sit"
 ```

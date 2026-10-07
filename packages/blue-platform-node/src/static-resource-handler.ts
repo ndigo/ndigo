@@ -52,6 +52,12 @@ export interface StaticHandlerOptions {
     spaFallback?: boolean;
     /** Reject files larger than this many bytes, checked at stat time before the file is opened. `0` = unlimited. Default `0`. */
     maxFileSizeBytes?: number;
+    /**
+     * Serve dotfiles (any path segment beginning with `.`). Default `false`:
+     * dotfile requests answer 403. The standard `.well-known` namespace is
+     * always served as the built-in opt-in exception (PLN-F9).
+     */
+    serveDotfiles?: boolean;
 }
 
 /** Default `Cache-Control` for successful responses (D-6). */
@@ -264,6 +270,7 @@ export class StaticResourceHandler {
             listDirectories: this.#options.listDirectories,
             acceptEncoding: ACCEPT_ENCODING.get(headers) ?? undefined,
             maxFileSizeBytes: this.#options.maxFileSizeBytes,
+            serveDotfiles: this.#options.serveDotfiles,
         });
 
         // COR-19: a shared cache must key an SPA fallback on `Accept` so it is
@@ -280,6 +287,7 @@ export class StaticResourceHandler {
                 const index = await this.#resolver.resolve(indexName, {
                     acceptEncoding: undefined,
                     maxFileSizeBytes: this.#options.maxFileSizeBytes,
+                    serveDotfiles: this.#options.serveDotfiles,
                 });
                 if (index.kind === 'ok') {
                     result = index;

@@ -112,7 +112,10 @@ describe('FeatureRoutingRegistry mount-manager integration', () => {
 
         registry.navigate('/todo/active');
 
-        expect(accountDeactivate).toHaveBeenCalledTimes(2);
+        // The registry deactivates only features it actually activated — a
+        // registered-but-never-activated feature (account at startup) never
+        // receives `onDeactivate` (PWB routed-activation semantics).
+        expect(accountDeactivate).toHaveBeenCalledTimes(1);
         expect(mountManager.isMounted('account')).toBe(false);
 
         mountManager.destroy();

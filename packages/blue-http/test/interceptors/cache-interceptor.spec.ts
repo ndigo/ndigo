@@ -299,4 +299,120 @@ describe('CacheInterceptor', () => {
     test('should not cache responses credentialed by a request-time interceptor (HT-1, credential interceptor first)', async () => {
         await expectCredentialedResponseNotCached(false);
     });
+
+    test('runs the postResponse pipeline on a cache hit, matching a miss (HTT-REV-002)', async () => {
+        let callCount = 0;
+        server.use(
+            http.get('*/cache-transformed', () => {
+                callCount++;
+                return HttpResponse.json({ n: callCount });
+            })
+        );
+        const httpClient = HTTP.create({
+            baseURL: 'http://localhost/',
+            interceptors: [new CacheInterceptor()],
+            responseTransforms: [(body: unknown) => ({ ...(body as Record<string, unknown>), transformed: true })],
+        });
+
+        const miss = await httpClient.get('cache-transformed');
+        const missBody = await miss.json();
+        const hit = await httpClient.get('cache-transformed');
+        const hitBody = await hit.json();
+
+        expect(callCount).toBe(1);
+        expect(missBody).toEqual({ n: 1, transformed: true });
+        // A hit must run the same post-response transforms as the miss.
+        expect(hitBody).toEqual(missBody);
+    });
+
+    test('never stores a response carrying Set-Cookie (HTT-REV-004)', async () => {
+        const httpClient = new HTTP([new CacheInterceptor()]);
+        let callCount = 0;
+        server.use(
+            http.get('*/set-cookie', () => {
+                callCount++;
+                return HttpResponse.json(
+                    { n: callCount },
+                    { headers: { 'Set-Cookie': 'session=secret; HttpOnly; Path=/' } }
+                );
+            })
+        );
+
+        await httpClient.get('http://localhost/set-cookie');
+        const second = await httpClient.get('http://localhost/set-cookie');
+
+        expect(callCount).toBe(2);
+        expect(await second.json()).toEqual({ n: 2 });
+    });
+
+    test('never stores a response with Cache-Control private/no-store (HTT-REV-004/005)', async () => {
+        const httpClient = new HTTP([new CacheInterceptor()]);
+        let privateCount = 0;
+        let noStoreCount = 0;
+        server.use(
+            http.get('*/private', () => {
+                privateCount++;
+                return HttpResponse.json({ n: privateCount }, { headers: { 'Cache-Control': 'private, max-age=60' } });
+            }),
+            http.get('*/no-store', () => {
+                noStoreCount++;
+                return HttpResponse.json({ n: noStoreCount }, { headers: { 'Cache-Control': 'no-store' } });
+            })
+        );
+
+        await httpClient.get('http://localhost/private');
+        await httpClient.get('http://localhost/private');
+        expect(privateCount).toBe(2);
+
+        await httpClient.get('http://localhost/no-store');
+        await httpClient.get('http://localhost/no-store');
+        expect(noStoreCount).toBe(2);
+    });
+
+    test('keys cached responses on Vary request headers (HTT-REV-005)', async () => {
+        const httpClient = new HTTP([new CacheInterceptor()]);
+        let callCount = 0;
+        server.use(
+            http.get('*/vary', ({ request }) => {
+                callCount++;
+                return HttpResponse.json(
+                    { encoding: request.headers.get('accept-encoding') ?? 'none' },
+                    { headers: { Vary: 'Accept-Encoding' } }
+                );
+            })
+        );
+
+        const first = await httpClient.get('http://localhost/vary', { headers: { 'Accept-Encoding': 'gzip' } });
+        expect(await first.json()).toEqual({ encoding: 'gzip' });
+        expect(callCount).toBe(1);
+
+        // A different Vary header must miss, not replay the gzip payload.
+        const second = await httpClient.get('http://localhost/vary', { headers: { 'Accept-Encoding': 'br' } });
+        expect(await second.json()).toEqual({ encoding: 'br' });
+        expect(callCount).toBe(2);
+
+        // A matching Vary header is served from cache.
+        const third = await httpClient.get('http://localhost/vary', { headers: { 'Accept-Encoding': 'br' } });
+        expect(await third.json()).toEqual({ encoding: 'br' });
+        expect(callCount).toBe(2);
+    });
+
+    test('a request Cache-Control: no-store neither reads nor writes the cache (HTT-REV-005)', async () => {
+        const httpClient = new HTTP([new CacheInterceptor()]);
+        let callCount = 0;
+        server.use(
+            http.get('*/no-store-request', () => {
+                callCount++;
+                return HttpResponse.json({ n: callCount });
+            })
+        );
+
+        await httpClient.get('http://localhost/no-store-request', { headers: { 'Cache-Control': 'no-store' } });
+        await httpClient.get('http://localhost/no-store-request', { headers: { 'Cache-Control': 'no-store' } });
+        expect(callCount).toBe(2);
+
+        // The no-store requests must not have populated the cache.
+        await httpClient.get('http://localhost/no-store-request');
+        expect(callCount).toBe(3);
+    });
 });

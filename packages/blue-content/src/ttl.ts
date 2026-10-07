@@ -35,8 +35,19 @@ export class TtlContentSource implements ContentSource {
     }
 
     /**
+     * The number of entries currently held (expired entries are swept on
+     * write, so this reflects live-plus-not-yet-swept entries).
+     */
+    get size(): number {
+        return this.#cache.size;
+    }
+
+    /**
      * Loads content via the loader when no unexpired cached value exists,
      * stores it, and returns it.
+     *
+     * Expired entries are swept on every write so dynamic keys cannot retain
+     * memory indefinitely (PWB-REV-017).
      *
      * @param key - The content key to resolve.
      * @param language - The requested language code.
@@ -53,6 +64,7 @@ export class TtlContentSource implements ContentSource {
 
         const value = await this.#loader(key, lang);
 
+        this.#sweepExpired();
         this.#cache.set(cacheKey, {
             value,
             expiresAt: Date.now() + this.#ttl,
@@ -66,6 +78,18 @@ export class TtlContentSource implements ContentSource {
      */
     invalidate(): void {
         this.#cache.clear();
+    }
+
+    /**
+     * Removes every entry whose TTL has elapsed.
+     */
+    #sweepExpired(): void {
+        const now = Date.now();
+        for (const [key, entry] of this.#cache) {
+            if (now >= entry.expiresAt) {
+                this.#cache.delete(key);
+            }
+        }
     }
 
     /**

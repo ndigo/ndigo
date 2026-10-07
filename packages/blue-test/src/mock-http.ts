@@ -12,10 +12,14 @@ import {
     writeProblem,
     parseMultipart,
     parseBodyRecord,
+    parseCookies,
+    resolveHTTPRequestLimits,
     RequestLimitError,
     finalizeInterceptorDenial,
     type MultipartLimits,
     type NodeMultipartContext,
+    type ResolvedHTTPRequestLimits,
+    type HTTPRequestLimits,
 } from '@blue/platform-node';
 import { PassThrough } from 'node:stream';
 import type { IncomingMessage } from 'node:http';
@@ -63,11 +67,35 @@ function decodeBody(body: unknown): string {
  * A `PassThrough` is a valid `IncomingMessage`-shaped source for busboy: its
  * `.headers` carry the boundary and `end()` feeds the body busboy pipes.
  */
-function asIncoming(body: string | Buffer, headers: Record<string, string | undefined>): IncomingMessage {
+function asIncoming(body: string | Buffer, headers: Record<string, string | string[] | undefined>): IncomingMessage {
     const stream = new PassThrough();
     (stream as unknown as { headers: Record<string, string | string[] | undefined> }).headers = headers;
     stream.end(typeof body === 'string' ? Buffer.from(body, 'utf-8') : body);
     return stream as unknown as IncomingMessage;
+}
+
+/** Case-insensitive header read over the raw request spec's header map. */
+function findHeader(headers: Record<string, string> | undefined, name: string): string | undefined {
+    if (headers === undefined) {
+        return undefined;
+    }
+    for (const [key, value] of Object.entries(headers)) {
+        if (key.toLowerCase() === name) {
+            return value;
+        }
+    }
+    return undefined;
+}
+
+/** Byte size of the mock request's body, or `null` when it carries none. */
+function requestBodyBytes(req: MockRequest): number | null {
+    if (req.rawBody !== undefined) {
+        return typeof req.rawBody === 'string' ? Buffer.byteLength(req.rawBody, 'utf-8') : req.rawBody.byteLength;
+    }
+    if (req.body !== undefined) {
+        return Buffer.byteLength(JSON.stringify(req.body), 'utf-8');
+    }
+    return null;
 }
 
 /**
@@ -164,6 +192,26 @@ export class MockHTTPRequestBuilder {
     }
 
     /**
+     * Simulate a client abort before the request completes — the live
+     * adapter's `400` `request_aborted` problem (HTT-REV-014).
+     * @returns This builder.
+     */
+    abort(): this {
+        this.#request.transport = 'aborted';
+        return this;
+    }
+
+    /**
+     * Simulate a request-body timeout — the live adapter's `408`
+     * `request_timeout` problem (HTT-REV-014).
+     * @returns This builder.
+     */
+    timeout(): this {
+        this.#request.transport = 'timeout';
+        return this;
+    }
+
+    /**
      * Set request headers.
      * @param headers - Header map (lower-cased keys).
      * @returns This builder.
@@ -226,19 +274,22 @@ export class MockHTTPRequestBuilder {
 export class MockHTTP {
     #dispatcher: NodeDispatcher;
     readonly #multipartLimits: Partial<MultipartLimits> | undefined;
+    readonly #limits: ResolvedHTTPRequestLimits;
 
     /**
      * @param arg (application dispatcher) - A configured node dispatcher, or an app with one.
      * @param options - Optional harness configuration. `multipartLimits` is
      * passed through to the multipart parser, mirroring
-     * `NodeHTTPServerAdapterOptions.multipart`.
+     * `NodeHTTPServerAdapterOptions.multipart`; `limits` are the transport
+     * request limits the live adapter enforces (HTT-REV-014).
      */
     constructor(
         arg: NodeDispatcher | { dispatcher: NodeDispatcher },
-        options: { multipartLimits?: Partial<MultipartLimits> } = {}
+        options: { multipartLimits?: Partial<MultipartLimits>; limits?: HTTPRequestLimits } = {}
     ) {
         this.#dispatcher = typeof arg === 'object' && 'dispatcher' in arg ? arg.dispatcher : arg;
         this.#multipartLimits = options.multipartLimits;
+        this.#limits = resolveHTTPRequestLimits(options.limits);
     }
 
     /**
@@ -270,15 +321,28 @@ export class MockHTTP {
         let multipart: NodeMultipartContext | undefined;
 
         try {
+            // Transport-level failures the in-process harness cannot otherwise
+            // reproduce (HTT-REV-014).
+            if (req.transport === 'aborted') {
+                throw new RequestLimitError(400, 'request_aborted', 'Request aborted before completion');
+            }
+            if (req.transport === 'timeout') {
+                throw new RequestLimitError(408, 'request_timeout', 'Request body timed out');
+            }
+            // Mirror NodeHTTPServerAdapter's transport limits (HTT-REV-014).
+            this.#assertLimits(req);
+
             // Mirror NodeHTTPServerAdapter — stream raw multipart bytes through
             // busboy before dispatch and attach the parsed parts + text fields
             // so the @file() resolver sees real parts (a true byte-level
             // round-trip). Parse/limit errors land in the catch below and map
-            // to the same problem responses the live adapter writes.
+            // to the same problem responses the live adapter writes. The
+            // already-folded header map is passed on so a canonical-case
+            // `Content-Type` key still reaches busboy (HTT-REV-013).
             if (req.rawBody !== undefined) {
                 const contentType = String(HTTPHeaders.CONTENT_TYPE.get(req.headers ?? {}) ?? '').toLowerCase();
                 if (contentTypeBase(contentType) === MULTIPART_FORM_DATA) {
-                    multipart = await parseMultipart(asIncoming(req.rawBody, req.headers ?? {}), {
+                    multipart = await parseMultipart(asIncoming(req.rawBody, prepared.request.headers), {
                         limits: this.#multipartLimits,
                     });
                     const nodeRequest = prepared.request;
@@ -368,13 +432,34 @@ export class MockHTTP {
         } catch (err: unknown) {
             if (!response.completed) {
                 if (err instanceof RequestLimitError) {
-                    // SEC-13: mirror NodeHTTPServerAdapter.#writeErrorResponse —
-                    // limit/parse rejections are problem documents at their own
-                    // status with a `urn:blue:<code>` type, not plain 500 JSON.
+                    // SEC-13/HTT-REV-012: mirror
+                    // NodeHTTPServerAdapter.#writeErrorResponse — limit/parse
+                    // rejections are problem documents at their own status with
+                    // a `urn:blue:<code>` type, not plain 500 JSON. A malformed
+                    // body shares the registered `urn:blue:malformed-body` type.
+                    if (err.code === 'malformed_body') {
+                        writeProblem(sink, {
+                            type: ProblemTypes.malformedBody,
+                            title: 'Bad Request',
+                            status: 400,
+                            detail: 'malformed_body',
+                        });
+                    } else {
+                        writeProblem(sink, {
+                            type: `urn:blue:${err.code}`,
+                            status: err.statusCode,
+                            detail: err.code,
+                        });
+                    }
+                } else if (err instanceof SyntaxError) {
+                    // HTT-REV-012: the adapter maps a raw JSON `SyntaxError`
+                    // from body parsing to the same 400 malformed-body problem,
+                    // never a generic 500.
                     writeProblem(sink, {
-                        type: `urn:blue:${err.code}`,
-                        status: err.statusCode,
-                        detail: err.code,
+                        type: ProblemTypes.malformedBody,
+                        title: 'Bad Request',
+                        status: 400,
+                        detail: 'malformed_body',
                     });
                 } else {
                     const message = err instanceof Error ? (err.stack ?? err.message) : String(err);
@@ -429,6 +514,40 @@ export class MockHTTP {
 
     #method(method: string, path: string): MockHTTPRequestBuilder {
         return new MockHTTPRequestBuilder(this, { method, path });
+    }
+
+    /**
+     * Rejects a request that exceeds the transport limits the live adapter
+     * enforces (HTT-REV-014): the `Cookie` header bounds (431) and the body
+     * byte cap (413). Multipart bodies are bounded by their own parser limits
+     * instead, matching `NodeHTTPServerAdapter`.
+     *
+     * @param req - The request spec to check.
+     */
+    #assertLimits(req: MockRequest): void {
+        const cookieHeader = findHeader(req.headers, 'cookie');
+        if (cookieHeader !== undefined) {
+            if (Buffer.byteLength(cookieHeader, 'utf-8') > this.#limits.maxHeaderBytes) {
+                throw new RequestLimitError(431, 'headers_too_large', 'Cookie header exceeds the configured limit');
+            }
+            try {
+                parseCookies(cookieHeader);
+            } catch (error) {
+                if (error instanceof RangeError) {
+                    throw new RequestLimitError(431, 'headers_too_large', 'Cookie header exceeds the configured limit');
+                }
+                throw error;
+            }
+        }
+
+        const contentType = String(HTTPHeaders.CONTENT_TYPE.get(req.headers ?? {}) ?? '').toLowerCase();
+        if (contentTypeBase(contentType) === MULTIPART_FORM_DATA) {
+            return;
+        }
+        const bodyBytes = requestBodyBytes(req);
+        if (bodyBytes !== null && bodyBytes > this.#limits.maxBodyBytes) {
+            throw new RequestLimitError(413, 'body_too_large', 'Request body exceeds the configured limit');
+        }
     }
 
     /**

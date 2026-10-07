@@ -4,12 +4,6 @@
  * @author Jeff Rose
  */
 // @vitest-environment node
-import { resolve } from 'node:path';
-
-// Must be set BEFORE importing the configuration: StaticController reads
-// STATIC_DIR at module load time to build its resolver base.
-process.env['STATIC_DIR'] = resolve('dist');
-
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import type { AddressInfo } from 'node:net';
 import { bootApp, MockHTTP } from '@blue/test';
@@ -31,7 +25,6 @@ describe('blue-island hybrid demo', () => {
     let close: () => void;
 
     beforeAll(() => {
-        process.env['STATIC_DIR'] = resolve('dist');
         const app = bootApp([IslandConfiguration]);
         // Same wiring as the app bootstrap: entry-resolved message source.
         app.context.setMessageSource(app.context.getValue('messageSource'));
@@ -41,7 +34,6 @@ describe('blue-island hybrid demo', () => {
 
     afterAll(() => {
         close();
-        delete process.env['STATIC_DIR'];
     });
 
     test('GET / serves the shell with the server-rendered island', async () => {
@@ -132,7 +124,26 @@ describe('GET /events pushes model updates over SSE (AD-09)', () => {
         await adapter?.close();
     });
 
-    test('streams one frameless model event per store update', async () => {
+    /** Opens an SSE stream and reads frames until `count` complete frames arrive. */
+    async function readFrames(
+        reader: { read(): Promise<{ done: boolean; value: Uint8Array }> },
+        decoder: TextDecoder,
+        count: number
+    ): Promise<string> {
+        let text = '';
+        const frameCount = (): number => text.split('\n\n').filter((frame) => frame.length > 0).length;
+
+        while (frameCount() < count) {
+            // oxlint-disable-next-line no-await-in-loop -- SSE frames arrive over one stream; reads must be consumed in arrival order.
+            const { done, value } = await reader.read();
+            if (done) break;
+            text += decoder.decode(value);
+        }
+
+        return text;
+    }
+
+    test('connects with the current snapshot as the first event (APP-N3)', async () => {
         const res = await fetch(`${base}/events`);
         expect(res.status).toBe(200);
         expect(res.headers.get('content-type')).toBe('text/event-stream; charset=utf-8');
@@ -144,11 +155,6 @@ describe('GET /events pushes model updates over SSE (AD-09)', () => {
         const reader = body.getReader();
         const decoder = new TextDecoder();
         let text = '';
-
-        // Trigger a push and read until the event frame completes.
-        store.update((model) => {
-            model.items.push({ text: 'pushed from test', done: false });
-        });
         while (!text.includes('\n\n')) {
             // oxlint-disable-next-line no-await-in-loop -- SSE frames arrive over one stream; reads must be consumed in arrival order.
             const { done, value } = await reader.read();
@@ -157,12 +163,14 @@ describe('GET /events pushes model updates over SSE (AD-09)', () => {
         }
         await reader.cancel();
 
+        // No store update was triggered: the snapshot frame alone carries the
+        // server-rendered model, so late subscribers hydrate.
         expect(text).toContain('event: model\n');
         expect(text).toContain('data: {"model":{');
-        expect(text).toContain('"text":"pushed from test"');
+        expect(text).toContain('"text":"Server-rendered island"');
     });
 
-    test('each store update reaches the connected client in order', async () => {
+    test('streams one model event per store update, after the snapshot frame', async () => {
         const res = await fetch(`${base}/events`);
         const body = res.body;
         if (body === null) {
@@ -173,19 +181,60 @@ describe('GET /events pushes model updates over SSE (AD-09)', () => {
         let text = '';
 
         store.update((model) => {
+            model.items.push({ text: 'pushed from test', done: false });
+        });
+        text = await readFrames(reader, decoder, 2);
+        await reader.cancel();
+
+        const frames = text.split('\n\n').filter((frame) => frame.length > 0);
+        expect(frames).toHaveLength(2);
+        expect(frames[0]).toContain('"text":"Server-rendered island"');
+        expect(frames[1]).toContain('event: model\n');
+        expect(frames[1]).toContain('data: {"model":{');
+        expect(frames[1]).toContain('"text":"pushed from test"');
+    });
+
+    test('each store update reaches the connected client in order', async () => {
+        const res = await fetch(`${base}/events`);
+        const body = res.body;
+        if (body === null) {
+            throw new Error('expected an SSE response body');
+        }
+        const reader = body.getReader();
+        const decoder = new TextDecoder();
+
+        store.update((model) => {
             model.items.push({ text: 'first', done: false });
         });
-        while (!text.includes('\n\n')) {
-            // oxlint-disable-next-line no-await-in-loop -- SSE frames arrive over one stream; reads must be consumed in arrival order.
-            const { done, value } = await reader.read();
-            if (done) break;
-            text += decoder.decode(value);
-        }
         store.update((model) => {
             model.items.push({ text: 'second', done: false });
         });
-        const frameCount = (): number => text.split('\n\n').filter((frame) => frame.length > 0).length;
-        while (frameCount() < 2) {
+
+        const text = await readFrames(reader, decoder, 3);
+        await reader.cancel();
+
+        const frames = text.split('\n\n').filter((frame) => frame.length > 0);
+        expect(frames).toHaveLength(3);
+        expect(frames[0]).toContain('"text":"Server-rendered island"');
+        expect(frames[1]).toContain('"first"');
+        expect(frames[2]).toContain('"second"');
+    });
+
+    test('a client connecting after the boot ticker completes still hydrates (APP-N3)', async () => {
+        store.startTicker();
+        // The ticker pushes exactly three updates, one per second.
+        await new Promise((resolve) => setTimeout(resolve, 3600));
+        store.stopTicker();
+
+        const res = await fetch(`${base}/events`);
+        const body = res.body;
+        if (body === null) {
+            throw new Error('expected an SSE response body');
+        }
+        const reader = body.getReader();
+        const decoder = new TextDecoder();
+        let text = '';
+        while (!text.includes('\n\n')) {
             // oxlint-disable-next-line no-await-in-loop -- SSE frames arrive over one stream; reads must be consumed in arrival order.
             const { done, value } = await reader.read();
             if (done) break;
@@ -193,9 +242,6 @@ describe('GET /events pushes model updates over SSE (AD-09)', () => {
         }
         await reader.cancel();
 
-        const frames = text.split('\n\n').filter((frame) => frame.length > 0);
-        expect(frames).toHaveLength(2);
-        expect(frames[0]).toContain('"first"');
-        expect(frames[1]).toContain('"second"');
+        expect(text).toContain('"text":"Model update pushed from the server (3)"');
     });
 });

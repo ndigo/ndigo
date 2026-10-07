@@ -38,7 +38,11 @@ export default async function packageGenerator(tree: Tree, schema: PackageGenera
     const vitestConfigPath = 'vitest.config.ts';
     const vitestContent = tree.read(vitestConfigPath, 'utf-8');
     if (vitestContent) {
-        const aliasEntry = `            { find: /^@blue\\/${name.replace(/-/g, '\\\\-')}$/, replacement: resolve(__dirname, './packages/blue-${name}/src') },`;
+        // `name` is validated kebab-case (`[a-z0-9-]`), so it is already
+        // regex-safe: escaping the hyphen emitted a doubled backslash (`\\-`)
+        // that made the alias regex demand a literal `\` and never match the
+        // `@blue/<name>` import specifier (TOL-F3).
+        const aliasEntry = `            { find: /^@blue\\/${name}$/, replacement: resolve(__dirname, './packages/blue-${name}/src') },`;
         const updatedContent = vitestContent.replace(/(\s*\],\s*\},\s*\}\);)/, `\n${aliasEntry}$1`);
         tree.write(vitestConfigPath, updatedContent);
     }

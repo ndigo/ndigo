@@ -94,9 +94,13 @@ export interface ErrorAwareHTTPInterceptor {
      * @param error - The failure that interrupted request execution.
      * @param request - The request that failed.
      * @param http - The HTTP client executing the request.
+     * @param settings - The per-request settings object. It is created once per
+     * `HTTP.request` call and survives the `Request` replacements performed by
+     * other interceptors, so error-aware state (retry clones, timers) can be
+     * keyed on an identity that outlives `new Request(...)`.
      * @returns A replacement response, or `undefined` to keep the failure.
      */
-    postError(error: Error, request: Request, http: HTTP): Promise<Response | undefined>;
+    postError(error: Error, request: Request, http: HTTP, settings?: HTTPInit): Promise<Response | undefined>;
 }
 
 /**
@@ -122,9 +126,13 @@ export interface RequestAwareHTTPInterceptor {
      *
      * @param request - The request to inspect or replace.
      * @param http - The HTTP client executing the request.
+     * @param settings - The per-request settings object. Unlike the `Request`,
+     * it is not replaced by later interceptors, so state that must survive a
+     * request rebuild (e.g. an undisturbed body clone for retries) is keyed on
+     * it.
      * @returns A replacement request, a cached response, or `void` to keep the original.
      */
-    preRequest(request: Request, http: HTTP): Promise<Request | Response | void>;
+    preRequest(request: Request, http: HTTP, settings?: HTTPInit): Promise<Request | Response | void>;
 }
 
 /**

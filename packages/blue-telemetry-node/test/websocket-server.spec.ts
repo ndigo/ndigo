@@ -16,7 +16,7 @@ import {
     PeriodicExportingMetricReader,
     type DataPoint,
 } from '@opentelemetry/sdk-metrics';
-import { metrics, trace, type Attributes } from '@opentelemetry/api';
+import { metrics, trace, SpanKind, type Attributes } from '@opentelemetry/api';
 import { parameters, requestMapping, socketMapping, socketSessionValue, type SocketSession } from '@blue/dispatcher';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@blue/platform-node';
@@ -168,6 +168,7 @@ describe('WebSocketServerInstrumentation', () => {
 
         const sessionSpan = spanExporter.getFinishedSpans().find((span) => span.name === 'SocketSession.connect');
         expect(sessionSpan).toBeDefined();
+        expect(sessionSpan?.kind).toBe(SpanKind.INTERNAL);
         expect(sessionSpan?.attributes['socket.path']).toBe('/echo');
         expect(sessionSpan?.attributes['socket.close_code']).toBe(1000);
         expect(Number(sessionSpan?.attributes['socket.duration_ms'])).toBeGreaterThanOrEqual(0);
@@ -190,6 +191,34 @@ describe('WebSocketServerInstrumentation', () => {
         ws.close(1000, 'done');
         await delay(150);
         expect(await counterValue(metricReader, 'blue.socket.sessions.closed')).toBe(2);
+    });
+
+    test('scales fan-out counters by recipient count (TEL-07)', async () => {
+        const sockets = [await openEchoSocket(), await openEchoSocket()];
+        const recipients = adapter.socketRegistry.sessions('/echo').filter((session) => !session.isClosed).length;
+        expect(recipients).toBeGreaterThanOrEqual(2);
+
+        const sentBefore = await datapointValue(metricReader, 'blue.socket.messages.sent', { 'socket.path': '/echo' });
+        const bytesBefore = await datapointValue(metricReader, 'blue.socket.messages.bytes', {
+            'socket.path': '/echo',
+        });
+
+        // One broadcast, delivered to every open session: the counters count
+        // delivered messages/bytes (recipient-scaled), not broadcast calls —
+        // '{"event":"tick"}' is 16 bytes on the wire.
+        await adapter.socketRegistry.broadcast('/echo', { event: 'tick' });
+
+        expect(await datapointValue(metricReader, 'blue.socket.messages.sent', { 'socket.path': '/echo' })).toBe(
+            sentBefore + recipients
+        );
+        expect(await datapointValue(metricReader, 'blue.socket.messages.bytes', { 'socket.path': '/echo' })).toBe(
+            bytesBefore + 16 * recipients
+        );
+
+        for (const socket of sockets) {
+            socket.close(1000, 'done');
+        }
+        await delay(150);
     });
 
     test('measures binary fan-out payloads by byte length, not JSON encoding', async () => {

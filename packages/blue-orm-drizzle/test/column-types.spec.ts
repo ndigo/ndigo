@@ -10,6 +10,7 @@ import { entity, column, generated, primaryColumn } from '@blue/orm';
 import { DrizzleDataSource, createTableStatements } from '../src/drizzle-data-source';
 import { DrizzleEntityManager } from '../src/drizzle-entity-manager';
 import { drizzleTableForEntity } from '../src/drizzle-zod';
+import { sqliteTypeForColumnType } from '../src/_column-types';
 
 @entity('column_types')
 class TypedColumns {
@@ -90,6 +91,40 @@ class ClientKeyed {
 
     @column({ type: 'text' })
     label!: string;
+}
+
+// DAT-F4: a Date on a declared date-like column must round-trip as a Date —
+// previously any object (including a Date) was JSON-encoded with quotes.
+@entity('date_rows')
+class DateRow {
+    @generated()
+    @primaryColumn()
+    id: number | undefined;
+
+    @column({ type: 'datetime' })
+    occurredAt!: Date;
+
+    @column({ type: 'json' })
+    payload!: unknown;
+
+    @column({ type: 'blob' })
+    bytes!: Uint8Array;
+}
+
+// DAT-F3: a non-PK @generated column is skipped by persist while undefined, so
+// its DDL must not carry NOT NULL.
+@entity('generated_nonpk')
+class GeneratedNonPk {
+    @generated()
+    @primaryColumn()
+    id: number | undefined;
+
+    @column()
+    name = '';
+
+    @generated()
+    @column()
+    stamp: string | undefined;
 }
 
 const NON_PK_TYPES: Array<[string, string]> = [
@@ -191,5 +226,75 @@ describe('declared-type round trips (DA-1)', () => {
         const found = await entityManager.find(ClientKeyed, 10);
         expect(found?.id).toBe(10);
         expect(found?.label).toBe('ten');
+    });
+});
+
+// DAT-N1: storage types are matched on whole words, so types that merely
+// contain 'int' are not mapped to INTEGER.
+describe('word-boundary declared-type matching (DAT-N1)', () => {
+    test('unrelated types are not read as int', () => {
+        expect(sqliteTypeForColumnType('point')).toBe('TEXT');
+        expect(sqliteTypeForColumnType('interval')).toBe('TEXT');
+        expect(sqliteTypeForColumnType('bigint')).toBe('INTEGER');
+        expect(sqliteTypeForColumnType('varchar(255)')).toBe('TEXT');
+        expect(sqliteTypeForColumnType('double precision')).toBe('REAL');
+    });
+});
+
+describe('Date and non-json column round trips (DAT-F4)', () => {
+    let dataSource: DrizzleDataSource;
+    let entityManager: DrizzleEntityManager;
+
+    beforeEach(async () => {
+        dataSource = new DrizzleDataSource({ url: ':memory:' });
+        await dataSource.init([DateRow]);
+        entityManager = new DrizzleEntityManager(dataSource);
+    });
+
+    test('a Date column round-trips as a Date, not a quoted JSON string', async () => {
+        const at = new Date('2026-10-06T12:34:56.000Z');
+        const row = new DateRow();
+        row.occurredAt = at;
+        row.payload = { tag: 'x' };
+        row.bytes = new Uint8Array([1, 2, 3]);
+
+        await entityManager.persist(row);
+
+        const found = await entityManager.find(DateRow, row.id);
+        expect(found?.occurredAt).toBeInstanceOf(Date);
+        expect(found?.occurredAt.toISOString()).toBe(at.toISOString());
+        expect(found?.payload).toEqual({ tag: 'x' });
+        // BLOB cells return as an ArrayBuffer; the bytes survive verbatim.
+        expect(Array.from(new Uint8Array(found?.bytes as ArrayBuffer))).toEqual([1, 2, 3]);
+    });
+});
+
+// DAT-F3: a non-PK @generated column is not written by persist while
+// undefined, so NOT NULL on that column must be dropped.
+describe('non-PK @generated columns (DAT-F3)', () => {
+    let dataSource: DrizzleDataSource;
+    let entityManager: DrizzleEntityManager;
+
+    beforeEach(async () => {
+        dataSource = new DrizzleDataSource({ url: ':memory:' });
+        await dataSource.init([GeneratedNonPk]);
+        entityManager = new DrizzleEntityManager(dataSource);
+    });
+
+    test('DDL omits NOT NULL for the generated column', () => {
+        const [ddl] = createTableStatements([GeneratedNonPk]);
+        expect(ddl).toContain('"stamp" TEXT NULL');
+        expect(ddl).not.toContain('"stamp" TEXT NOT NULL');
+    });
+
+    test('persist succeeds with the generated column unwritten', async () => {
+        const row = new GeneratedNonPk();
+        row.name = 'x';
+
+        await entityManager.persist(row);
+
+        const found = await entityManager.find(GeneratedNonPk, row.id);
+        expect(found?.name).toBe('x');
+        expect(found?.stamp == null).toBe(true);
     });
 });

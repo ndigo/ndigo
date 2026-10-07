@@ -5,6 +5,7 @@
  * @author Jeff Rose
  */
 import type { ApplicationContext } from '@blue/context';
+import { CART } from '../context-tokens';
 
 /**
  * Create the checkout feature context.
@@ -14,7 +15,16 @@ import type { ApplicationContext } from '@blue/context';
  */
 export function createContext(parent: ApplicationContext): ApplicationContext {
     const ctx = parent.newChild('checkout');
-    // `cart` resolves from the shell (shared dependency).
-    ctx.setValue('checkoutNote', 'Cart is shared from the shell');
+    // `cart` resolves from the shell (shared dependency) — the demo exercises
+    // the shared singleton instead of leaving it unused. A missing cart falls
+    // back to the plain checkout note.
+    const cart = ctx.getValue(CART);
+    if (!cart) {
+        ctx.setValue('checkoutNote', 'Cart is shared from the shell');
+        return ctx;
+    }
+
+    cart.add('Blue Mug');
+    ctx.setValue('checkoutNote', `Cart is shared from the shell (${cart.items.length} item(s))`);
     return ctx;
 }

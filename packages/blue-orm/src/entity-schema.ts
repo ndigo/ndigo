@@ -6,6 +6,7 @@
  */
 import { z } from 'zod';
 import { Constructable, FrameworkError } from '@blue/core';
+import { columnTypeFamily } from './column-type';
 import { type ColumnDefinition, getEntityMetadata } from './metadata';
 
 /**
@@ -16,14 +17,17 @@ import { type ColumnDefinition, getEntityMetadata } from './metadata';
  * @returns The base Zod schema, or `z.unknown` when no mapping applies.
  */
 export function baseSchemaForType(type: string): z.ZodType {
-    const normalized = type.toLowerCase();
-    if (normalized.includes('int')) return z.number();
-    if (normalized.includes('bool')) return z.boolean();
-    if (normalized.includes('json')) return z.unknown();
-    if (normalized.includes('text') || normalized.includes('char') || normalized.includes('string')) {
-        return z.string();
+    switch (columnTypeFamily(type)) {
+        case 'integer':
+            return z.number();
+        case 'boolean':
+            return z.boolean();
+        case 'text':
+            return z.string();
+        default:
+            // json, blob, real and unrecognized types pass through unvalidated.
+            return z.unknown();
     }
-    return z.unknown();
 }
 
 /**

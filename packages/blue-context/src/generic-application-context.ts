@@ -222,27 +222,62 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Closes the context and all descendants.
+     *
+     * Teardown sequence: emit `context:close`, close each child, run the
+     * lifecycle processor's `onClose`, destroy managed values, detach the
+     * environment refresh subscription ({@link unsubscribeRefresh}), unhook
+     * from the parent, mark `destroyed`/`destroyedTimestamp`, emit
+     * `context:destroy`, then remove every listener.
+     *
+     * Exception-safe (CTX-06): a throwing listener or teardown hook is
+     * reported and swallowed so the remaining steps still run — `destroyed`
+     * is always set and children/beans are still torn down. Exceptions from
+     * `context:close`/`context:destroy` listeners otherwise abort teardown
+     * mid-way (the emitter re-throws when no `error` listener is attached).
      */
     close(): void {
         if (this.destroyed) {
             return;
         }
 
-        this.emit('context:close', this);
+        try {
+            this.emit('context:close', this);
+        } catch (error) {
+            this.#reportTeardownError(error);
+        }
 
         // eslint-disable-next-line unicorn/no-useless-spread -- snapshot is required: child.close() splices this.#children via removeChild during iteration
         for (const child of [...this.#children]) {
-            child.close();
+            try {
+                child.close();
+            } catch (error) {
+                this.#reportTeardownError(error);
+            }
         }
 
-        this.#lifecycleProcessor?.onClose(this);
-        this._destroyValues();
+        try {
+            this.#lifecycleProcessor?.onClose(this);
+        } catch (error) {
+            this.#reportTeardownError(error);
+        }
+        try {
+            this._destroyValues();
+        } catch (error) {
+            this.#reportTeardownError(error);
+        }
         // ARC-6: a closed context must not stay reachable through the
         // environment — later config:refresh events must not write into it.
-        this.unsubscribeRefresh();
-
+        try {
+            this.unsubscribeRefresh();
+        } catch (error) {
+            this.#reportTeardownError(error);
+        }
         if (this.parent instanceof GenericApplicationContext) {
-            this.parent.removeChild(this);
+            try {
+                this.parent.removeChild(this);
+            } catch (error) {
+                this.#reportTeardownError(error);
+            }
         }
 
         defineProperty(this, 'destroyed', {
@@ -259,7 +294,11 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         });
 
         this.#isActive = false;
-        this.emit('context:destroy', this);
+        try {
+            this.emit('context:destroy', this);
+        } catch (error) {
+            this.#reportTeardownError(error);
+        }
 
         for (const eventType of this.eventTypes()) {
             const listeners = this.listeners(eventType);
@@ -267,6 +306,19 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
                 this.off(eventType, listener);
             }
         }
+    }
+
+    /**
+     * Reports a teardown failure and swallows it so close() can continue
+     * (CTX-06). Teardown is best-effort by contract: every step must run.
+     *
+     * @param error - The error thrown by a teardown listener or hook.
+     */
+    #reportTeardownError(error: unknown): void {
+        console.error(
+            `[blue-context] error during teardown of "${this.#name ?? 'context'}"; teardown continues (CTX-06)`,
+            error
+        );
     }
 
     /**
@@ -579,8 +631,14 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         }
 
         for (const name of names) {
-            // eslint-disable-next-line no-unused-expressions -- guarded dispatch: destroy only truthy names
-            name && this.destroyValue(name);
+            if (!name) continue;
+            // CTX-06: one bean's destroy failure must not strand the rest of
+            // the managed values — isolate and report each.
+            try {
+                this.destroyValue(name);
+            } catch (error) {
+                this.#reportTeardownError(error);
+            }
         }
     }
 
@@ -592,7 +650,11 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
             const name = key.slice(1);
 
-            if (name && this.hasValue(name)) {
+            // FACTORY-12: only eagerly instantiate scopes that support it —
+            // hash/route scopes have no active key at refresh (getValue would
+            // throw) and prototype beans would be created then discarded.
+            // Singleton/refresh/custom scopes stay eager (AD-29 D-2).
+            if (name && this.hasValue(name) && this.shouldEagerlyInstantiate(name)) {
                 this.getValue(name);
             }
         }

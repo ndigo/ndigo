@@ -8,15 +8,16 @@ referenced from the ADR index.
 
 ### [Decisions](./decisions/README.md)
 
-Architecture Decision Records — AD-01..AD-67, contiguous. Numbered by
-decision-sequence, filenames use the decision date
-(`YYYY-MM-DD_AD##_TITLE.md`). The README is the index: status legend,
-supersession markers, links.
+Architecture Decision Records — a single contiguous, numbered series. Numbered
+by decision-sequence, filenames use the decision date
+(`YYYY-MM-DD_AD##_TITLE.md`). The [README](./decisions/README.md) is the index
+and the source of truth for the current range: status legend, supersession
+markers, links.
 
 ### [Guides](./guides/README.md)
 
 How-to guides (numbered `NN-slug.md`, living documents — no dates). Guide 01
-is the end-to-end tutorial/integration path; 02–18 cover one feature area
+is the end-to-end tutorial/integration path; 02–20 cover one feature area
 each.
 
 ### [Plans](./plans/README.md)
@@ -42,9 +43,12 @@ at the successor; unmarked entries are current as of their date.
 
 ### [Audits](./audits/)
 
-Dated audit reports (`YYYY-MM-DD_DESCRIPTION.md`). The Framework Gap
-Analysis is the live document (updated as features land); older audits are
-historical records.
+Dated audit reports (`YYYY-MM-DD_DESCRIPTION.md`) — snapshots of the repository
+at their date, kept for history. The Framework Gap Analysis
+(`2026-09-13_FRAMEWORK_GAP_ANALYSIS.md`) is a dated baseline (refreshed
+2026-10-06 to HEAD); for live feature status see
+[ARCHITECTURE.md](../ARCHITECTURE.md) (Package Map, Roadmap) and the
+[ADR index](./decisions/README.md), not this audit.
 
 ### [Migrations](./migrations/)
 

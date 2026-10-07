@@ -11,7 +11,8 @@ import { like, isNil } from '@blue/util/types';
 import { PropertySource } from './property-source';
 import type { MutablePropertySources } from './property-sources';
 import { resolvePlaceholders } from './placeholder-resolver';
-import { parseSecretMarker, SecretDecryptor } from './secret-cipher';
+import { isSecretMarkerLike, SecretDecryptor } from './secret-cipher';
+import { redactDiagnosticValue } from './redaction';
 
 const keypathConverter = new KeypathConverter();
 type PrimitiveLike = 'string' | 'number' | 'boolean';
@@ -508,19 +509,25 @@ export class PrototypalPropertyResolver implements PropertyResolver {
      * fail-open): warned once, values still pass through.
      */
     #decrypt(key: string, value: JSONValue | undefined): JSONValue | undefined {
-        const decryptor = this.#options.secretDecryptor;
         if (typeof value !== 'string') return value;
-        const marker = parseSecretMarker(value);
-        if (marker && !decryptor && !secretFailOpenWarned) {
-            secretFailOpenWarned = true;
-            console.warn(
-                `[@blue/context] Property "${key}" holds a secret marker ({${marker.scheme}:...}) but no secret ` +
-                    'decryptor is wired — the ciphertext binds as a literal plaintext value (SEC-10 fail-open). ' +
-                    'Call environment.applySecretDecryptor(...) (e.g. builder.secrets(...) with BLUE_SECRET_KEY ' +
-                    'set) to decrypt at-rest secrets.'
-            );
+        const decryptor = this.#options.secretDecryptor;
+        // SEC-10 fail-open (CTX-04): with NO decryptor wired, the read path
+        // must never throw — a marker-shaped value (even a malformed one)
+        // passes through as literal plaintext, warned once per process.
+        // Parsing (and its fail-loud malformed-version error) only runs when
+        // a decryptor is configured, where failing loud is the contract.
+        if (!decryptor) {
+            if (!secretFailOpenWarned && isSecretMarkerLike(value)) {
+                secretFailOpenWarned = true;
+                console.warn(
+                    `[@blue/context] Property "${key}" holds a secret marker ({scheme:...}) but no secret ` +
+                        'decryptor is wired — the ciphertext binds as a literal plaintext value (SEC-10 fail-open). ' +
+                        'Call environment.applySecretDecryptor(...) (e.g. builder.secrets(...) with BLUE_SECRET_KEY ' +
+                        'set) to decrypt at-rest secrets.'
+                );
+            }
+            return value;
         }
-        if (!decryptor) return value;
         return decryptor.decrypt(value, { key });
     }
 
@@ -532,10 +539,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
      * decryptor redacts uniformly for a single, predictable diagnostic shape.
      */
     #diagnosticValue(value: JSONValue | undefined): string {
-        if (this.#options.secretDecryptor && typeof value === 'string') {
-            return '<redacted>';
-        }
-        return JSON.stringify(value);
+        return redactDiagnosticValue(value, Boolean(this.#options.secretDecryptor));
     }
 
     /** Converts a resolved value to the target type via the injected conversion service. */
@@ -557,7 +561,28 @@ export class PrototypalPropertyResolver implements PropertyResolver {
         ) {
             return value as T;
         }
-        const converted = conversion.convert(value, targetType);
+        // String target pass-through (CTX-10): the registry's only
+        // (String, String) converter is the UUID converter, which is wrong
+        // for a plain string target — a non-string source would crash on
+        // `.trim is not a function`. `String(value)` is the documented
+        // pass-through semantics, so a non-string binds without the registry.
+        if (primitiveName === 'string') {
+            return String(value) as T;
+        }
+        let converted: unknown;
+        try {
+            converted = conversion.convert(value, targetType);
+        } catch (error) {
+            // Never let a converter echo the raw input (CTX-03): with a
+            // decryptor configured that input may be decrypted plaintext, and
+            // the converter's own message embeds it. The wrapped message
+            // redacts uniformly; the raw cause is dropped in secret context so
+            // the plaintext is not reachable through the error chain either.
+            throw new IllegalStateError(
+                `Property "${key}" could not be converted to ${targetName ?? String(targetType)}: ${this.#diagnosticValue(value)}`,
+                !this.#options.secretDecryptor && error instanceof Error ? { cause: error } : undefined
+            );
+        }
         // NaN rejection: NumberConverter yields NaN for non-numeric strings.
         if (typeof converted === 'number' && Number.isNaN(converted)) {
             throw new IllegalStateError(

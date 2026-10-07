@@ -106,6 +106,14 @@ export interface WebSocketClientOptions {
      */
     onStatusChange?: (status: SocketStatus) => void;
     /**
+     * Outbound-size observer: invoked with the UTF-8 byte length of every
+     * payload actually written to the transport (direct sends and buffered
+     * flushes alike, never for queued/dropped payloads) — the byte-counter
+     * seam for telemetry, which would otherwise re-serialize each payload.
+     * Constructor-injected like `onStatusChange`; a throw is isolated.
+     */
+    onSend?: (bytes: number) => void;
+    /**
      * Transport factory for tests and non-standard environments. Defaults
      * to the WHATWG `WebSocket` global (browser + Node ≥22).
      * @internal
@@ -145,6 +153,9 @@ export interface SocketClient {
 
 const DEFAULT_RECONNECT: ReconnectPolicy = Object.freeze({ baseMs: 1_000, maxMs: 30_000, jitter: 0.2 });
 
+/** Shared encoder for the outbound byte-size observer (module-level, reused). */
+const TEXT_ENCODER = new TextEncoder();
+
 /**
  * Default transport: the WHATWG global. The cast is deliberate — the
  * global's full surface is wider than the documented `SocketTransport`
@@ -177,6 +188,7 @@ export class WebSocketClient implements SocketClient {
     readonly #bufferLimit: number | null;
     readonly #trigger: ReconnectTrigger | null;
     readonly #onStatusChange: ((status: SocketStatus) => void) | null;
+    readonly #onSend: ((bytes: number) => void) | null;
     readonly #transportFactory: (url: string) => SocketTransport;
     readonly #inbound: AsyncReader<unknown>;
     #transport: SocketTransport | null = null;
@@ -207,6 +219,7 @@ export class WebSocketClient implements SocketClient {
         this.#bufferLimit = options.bufferWhileDisconnected?.maxMessages ?? null;
         this.#trigger = options.reconnectTrigger ?? null;
         this.#onStatusChange = options.onStatusChange ?? null;
+        this.#onSend = options.onSend ?? null;
         this.#transportFactory = options.transportFactory ?? defaultTransportFactory;
         // The ring's power-of-2 capacity rounds the bound up; the exact
         // `maxMessages` is enforced by the length guard in send().
@@ -261,6 +274,7 @@ export class WebSocketClient implements SocketClient {
         if (transport !== null && this.status.value === 'open') {
             try {
                 transport.send(payload as string | ArrayBuffer);
+                this.#notifySend(payload as string | ArrayBuffer);
                 return;
             } catch {
                 // The status signal lags the wire: between the peer starting
@@ -418,6 +432,25 @@ export class WebSocketClient implements SocketClient {
         }
     }
 
+    /**
+     * Report one written payload's byte size to the `onSend` observer
+     * (TEL-08). Isolated: an observer fault must never wedge the send path
+     * (nor be mistaken for a transport failure by the caller's try/catch).
+     *
+     * @param payload - The payload that just hit the wire.
+     */
+    #notifySend(payload: string | ArrayBuffer): void {
+        const observer = this.#onSend;
+        if (observer === null) {
+            return;
+        }
+        try {
+            observer(typeof payload === 'string' ? TEXT_ENCODER.encode(payload).length : payload.byteLength);
+        } catch {
+            // Observer fault — the frame is already on the wire.
+        }
+    }
+
     #flush(): void {
         const transport = this.#transport;
         while (transport !== null && this.status.value === 'open') {
@@ -428,6 +461,7 @@ export class WebSocketClient implements SocketClient {
                 } catch {
                     return; // still racing — parked for the next open
                 }
+                this.#notifySend(retry);
                 this.#retryPending = null;
             }
             if (this.#outbound.length === 0) {
@@ -444,6 +478,7 @@ export class WebSocketClient implements SocketClient {
                 this.#retryPending = message;
                 return;
             }
+            this.#notifySend(message);
         }
     }
 }

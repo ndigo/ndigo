@@ -139,11 +139,53 @@ want richer operations:
     tags: ['reports'],
     operationId: 'listReports',
     deprecated: true,
+    responses: { '200': reportPageSchema, '404': { description: 'Not found' } },
+    security: ['bearerAuth'],
 })
 list(from: string | undefined) { … }
 ```
 
 `hidden: true` drops the operation from the spec entirely.
+
+### Responses
+
+Without `responses`, every operation documents the default
+`200: { description: 'OK' }`. Declaring `responses` **replaces** that
+default — the handler's own set is authoritative, so an endpoint that only
+returns `202` does not advertise a `200` it never produces. Declare `'200'`
+yourself to keep it. Each entry is either a bare zod schema (shorthand for
+`{ description: 'OK', schema }`) or `{ description?, schema? }`; schemas
+render through the same zod → JSON Schema seam as request bodies.
+
+### Security
+
+Authenticated operations can carry OpenAPI security requirements. Declare
+the named schemes once on the generator, then reference them per operation:
+
+```ts
+const doc = new OpenAPISpecGenerator().generate(tables, {
+    securitySchemes: {
+        bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+    },
+    security: ['bearerAuth'], // document-level default
+});
+
+@getMapping('/me')
+@apiDocs({ security: ['bearerAuth'] })
+me() { … }
+
+@getMapping('/public')
+@apiDocs({ security: [] }) // explicitly anonymous — overrides the default
+open() { … }
+```
+
+`@apiDocs({ security })` overrides the document-level default for that
+operation; omitting it inherits the default; an empty array documents an
+explicitly anonymous operation. (The `OpenAPIDocsAutoConfiguration` wiring
+currently forwards `title`/`version`/`description`/`servers`/`excludePaths`/
+`include` only — pass `securitySchemes`/`security` through
+`OpenAPISpecGenerator.generate` directly, or extend the auto-configuration
+options, until it forwards them.)
 
 ## 4. Scope notes
 
@@ -154,9 +196,9 @@ list(from: string | undefined) { … }
 - **Typed-client generation** is deferred (post-1.0): feed the served
   document to the ecosystem generators (openapi-generator, openapi-typescript).
 - **Response schemas** are not inferred (the framework keeps no return-type
-  metadata); every operation documents `200 OK`. The RFC 9457
-  `application/problem+json` error envelope as a `default` response is a
-  recorded follow-up.
+  metadata); declare them with `@apiDocs({ responses })`, otherwise the
+  operation documents `200 OK`. The RFC 9457 `application/problem+json` error
+  envelope as a `default` response is a recorded follow-up.
 - **Assets are local** — no CDN; Swagger UI is served from
   `swagger-ui-dist` with the platform's static-file machinery (ETag,
   conditional GET, cache headers).

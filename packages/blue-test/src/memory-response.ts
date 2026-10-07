@@ -36,6 +36,8 @@ export interface ResponseSink {
     readonly headersSent: boolean;
     /** Record a single header (lower-cased key), merging with prior sets. */
     setHeader(name: string, value: string | string[]): void;
+    /** Read a previously set header (case-insensitive), mirroring `ServerResponse`. */
+    getHeader(name: string): string | string[] | undefined;
     /** Remove a header previously set (lower-cased key; no-op when absent). */
     removeHeader(name: string): void;
     /** Record the status and headers, merging with prior sets. */
@@ -73,6 +75,10 @@ export function createMemoryResponse(): { response: MemoryResponse; sink: Respon
 
         setHeader(name: string, value: string | string[]): void {
             response.headers[foldHeaderName(name)] = value;
+        },
+
+        getHeader(name: string): string | string[] | undefined {
+            return response.headers[foldHeaderName(name)];
         },
 
         removeHeader(name: string): void {

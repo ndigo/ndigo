@@ -5,7 +5,7 @@
  */
 import { describe, test, expect, beforeAll, beforeEach, afterEach, afterAll } from 'vitest';
 import { server } from '../_worker';
-import { HTTP } from '../../src/http';
+import { HTTP, type ResponseAwareHTTPInterceptor } from '../../src/http';
 import {
     ResponseTypeInit,
     ResponseTypeSettings,
@@ -111,5 +111,32 @@ describe('ResponseTypeInterceptor', () => {
 
         expect(response).toBeDefined();
         expect(response).toHaveProperty('data', 'foo=123');
+    });
+
+    test('parses via a clone so later interceptors can still read the body (HTT-REV-003)', async () => {
+        const seen: string[] = [];
+        class Reader implements ResponseAwareHTTPInterceptor {
+            async postResponse(response: Response): Promise<Response | void> {
+                // Pre-fix, ResponseType consumed the live body, so this clone
+                // threw "Body is unusable" and the request rejected.
+                seen.push(await response.clone().text());
+                return response;
+            }
+        }
+
+        const client = new HTTP(
+            [new ResponseTypeInterceptor(), new Reader()],
+            {},
+            async () => new Response('payload-body', { headers: { 'content-type': 'text/plain' } })
+        );
+
+        const result = (await client.request('http://localhost/responseType/plain', {
+            responseType: 'text/plain',
+        } as ResponseTypeInit)) as Response & { data?: unknown };
+
+        expect(result.data).toBe('payload-body');
+        expect(seen).toEqual(['payload-body']);
+        // The caller's own read still works too.
+        expect(await result.text()).toBe('payload-body');
     });
 });

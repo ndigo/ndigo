@@ -3,7 +3,9 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, beforeAll, afterAll, afterEach } from 'vitest';
+import { http as mswHttp, HttpResponse } from 'msw';
+import { server } from '../_worker';
 import { HTTP } from '../../src/http';
 import type { CompletionAwareHTTPInterceptor, ErrorAwareHTTPInterceptor } from '../../src/http';
 import type { TransformContext } from '../../src/transformers/http-transformer';
@@ -11,6 +13,10 @@ import { TimeoutInterceptor } from '../../src/interceptors/timeout-interceptor';
 import ResponseError from '../../src/response-error';
 
 describe('TransformInterceptor', () => {
+    beforeAll(() => server.listen());
+    afterAll(() => server.close());
+    afterEach(() => server.resetHandlers());
+
     test('applies request transforms through HTTP.create config', async () => {
         const http = HTTP.create({
             baseURL: 'http://localhost/',
@@ -190,5 +196,52 @@ describe('TransformInterceptor', () => {
         expect(response).toBeInstanceOf(ResponseError);
         expect((response as ResponseError).message).toBe('transform failed');
         expect(observed).toEqual(['error:transform failed', 'complete:error']);
+    });
+
+    test('preserves url and drops the stale Content-Length on rebuild (HTT-REV-011)', async () => {
+        server.use(
+            mswHttp.get('http://localhost/transform/meta', () =>
+                HttpResponse.json({ value: 1 }, { headers: { 'Content-Length': '11' } })
+            )
+        );
+
+        const client = HTTP.create({
+            baseURL: 'http://localhost/',
+            responseTransforms: [(body: unknown) => body],
+        });
+
+        const response = await client.get('transform/meta');
+
+        // The rebuilt response must keep the transport URL, not reset to ''.
+        expect(response.url).toBe('http://localhost/transform/meta');
+        // The transformed body invalidates the original length.
+        expect(response.headers.get('content-length')).toBeNull();
+    });
+
+    test('isolates a throwing postComplete hook from the response (HTT-REV-010)', async () => {
+        const completed: string[] = [];
+        class ThrowingCompletion implements CompletionAwareHTTPInterceptor {
+            postComplete(): void {
+                throw new Error('completion boom');
+            }
+        }
+        class Observer implements CompletionAwareHTTPInterceptor {
+            postComplete(): void {
+                completed.push('observed');
+            }
+        }
+
+        const client = HTTP.create({
+            baseURL: 'http://localhost/',
+            interceptors: [new ThrowingCompletion(), new Observer()],
+            fetch: async () => new Response('ok'),
+        });
+
+        const response = await client.get('api/completed');
+
+        // Pre-fix the throw escaped postComplete, discarding the response and
+        // preempting the later completion hook.
+        expect(await response.text()).toBe('ok');
+        expect(completed).toEqual(['observed']);
     });
 });

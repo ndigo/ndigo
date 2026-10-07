@@ -3,8 +3,42 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { HTTPInit, HTTP, RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '@blue/http';
+import {
+    HTTPInit,
+    HTTP,
+    RequestAwareHTTPInterceptor,
+    ResponseAwareHTTPInterceptor,
+    CompletionAwareHTTPInterceptor,
+} from '@blue/http';
 import { FrameworkError } from '@blue/core';
+
+/** Stable identity for a replay clone: a later interceptor may replace the Request object. */
+const requestKey = (request: Request): string => `${request.method} ${request.url}`;
+
+/**
+ * Builds the client init for replaying a queued request through `HTTP.request`.
+ *
+ * The `body` stream belongs to a fresh clone, so consuming it does not disturb
+ * the pristine clone the queue keeps for further retries.
+ */
+function toReplayInit(request: Request): HTTPInit & { duplex?: 'half' } {
+    return {
+        method: request.method as HTTPInit['method'],
+        headers: request.headers,
+        body: request.body,
+        // Node's fetch refuses a ReadableStream body without an explicit
+        // half-duplex mode.
+        duplex: request.body ? 'half' : undefined,
+        mode: request.mode,
+        credentials: request.credentials,
+        cache: request.cache,
+        redirect: request.redirect,
+        referrer: request.referrer,
+        referrerPolicy: request.referrerPolicy,
+        integrity: request.integrity,
+        keepalive: request.keepalive,
+    };
+}
 
 /** Default base interval before the first retry, and the timer cadence. */
 export const DEFAULT_RETRY_INTERVAL = 3000;
@@ -79,7 +113,9 @@ type OfflineQueueEntry = {
  * // If offline, the request is queued and retried automatically
  * ```
  */
-export class RetryOnOfflineInterceptor implements RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor {
+export class RetryOnOfflineInterceptor
+    implements RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor, CompletionAwareHTTPInterceptor
+{
     readonly #config: RetryOnOfflineConfig;
     /**
      * Undisturbed `Request.clone()` per live request, captured in `preRequest`
@@ -88,6 +124,13 @@ export class RetryOnOfflineInterceptor implements RequestAwareHTTPInterceptor, R
      * must be rebuilt from this clone to keep method, headers, and body.
      */
     readonly #pristineClones = new WeakMap<Request, Request>();
+    /**
+     * The same clones keyed by `method + url`. A later interceptor may replace
+     * the `Request` object, so the identity map misses and `postResponse` must
+     * still find the undisturbed body (PWB-REV-006). Cleared in `postComplete`
+     * so the map holds only in-flight requests.
+     */
+    readonly #pristineByKey = new Map<string, Request>();
     #queue: OfflineQueueEntry[];
     #timer: ReturnType<typeof setInterval> | null;
 
@@ -114,11 +157,15 @@ export class RetryOnOfflineInterceptor implements RequestAwareHTTPInterceptor, R
      */
     async preRequest(request: Request, http: HTTP): Promise<Response | void> {
         if (navigator.onLine) {
-            this.#pristineClones.set(request, request.clone());
+            const clone = request.clone();
+            this.#pristineClones.set(request, clone);
+            this.#pristineByKey.set(requestKey(request), clone);
             return;
         }
 
-        // Queue the request for later retry (bounded by the queue cap).
+        // Queue the request for later retry (bounded by the queue cap). The
+        // owning client is retained so the drain replays through the full
+        // interceptor pipeline rather than a bare fetch (PWB-REV-007).
         return new Promise<Response>((resolve, reject) => {
             try {
                 this.#enqueue({ request, http, resolve, reject, retries: 0, nextRetryAt: 0 });
@@ -142,33 +189,65 @@ export class RetryOnOfflineInterceptor implements RequestAwareHTTPInterceptor, R
         }
 
         if (!navigator.onLine) {
-            // Replay the undisturbed clone captured in preRequest: synthesizing
-            // a request from the response headers would drop the original
-            // method, headers, and body.
-            const replay = (request && this.#pristineClones.get(request)) ?? request;
+            if (!request) {
+                if (!response.url) {
+                    // Unkeyable response (mock/stub) — no replay possible.
+                    return response;
+                }
 
-            if (!replay && !response.url) {
-                // Unkeyable response (mock/stub) — no replay possible.
-                return response;
+                return this.#enqueueResponse(
+                    new Request(response.url, {
+                        method: response.headers.get('X-HTTP-Method') || 'GET',
+                    })
+                );
             }
 
-            const queued =
-                replay ??
-                new Request(response.url, {
-                    method: response.headers.get('X-HTTP-Method') || 'GET',
-                });
+            // Replay the undisturbed clone captured in preRequest: synthesizing
+            // a request from the response headers would drop the original
+            // method, headers, and body. The identity map is consulted first,
+            // then the method+url map — a later interceptor may have replaced
+            // the Request object (PWB-REV-006).
+            const candidate =
+                this.#pristineClones.get(request) ?? this.#pristineByKey.get(requestKey(request)) ?? request;
 
-            return new Promise<Response>((resolve, reject) => {
-                // postResponse has no HTTP client; the queue is drained over fetch().
-                try {
-                    this.#enqueue({ request: queued, http: undefined, resolve, reject, retries: 0, nextRetryAt: 0 });
-                } catch (error) {
-                    reject(error as Error);
-                }
-            });
+            if (candidate.bodyUsed) {
+                // No undisturbed clone: replaying a consumed body would throw a
+                // disturbed-body TypeError on the drain. Fail the queue entry
+                // instead (PWB-REV-006).
+                return Promise.reject(
+                    new FrameworkError(
+                        `[RetryOnOffline] cannot queue ${candidate.method} ${candidate.url} for replay: the request body was already consumed and no undisturbed clone is available`
+                    )
+                );
+            }
+
+            return this.#enqueueResponse(candidate);
         }
 
         return response;
+    }
+
+    /**
+     * Releases the method+url clone for a completed request so the map tracks
+     * only in-flight requests.
+     */
+    postComplete(request: Request): void {
+        this.#pristineByKey.delete(requestKey(request));
+    }
+
+    /**
+     * Queues a request for offline retry and returns the promise that settles
+     * when the drain succeeds or the retries are exhausted.
+     */
+    #enqueueResponse(request: Request): Promise<Response> {
+        return new Promise<Response>((resolve, reject) => {
+            // postResponse has no HTTP client; the queue is drained over fetch().
+            try {
+                this.#enqueue({ request, http: undefined, resolve, reject, retries: 0, nextRetryAt: 0 });
+            } catch (error) {
+                reject(error as Error);
+            }
+        });
     }
 
     /**
@@ -231,6 +310,23 @@ export class RetryOnOfflineInterceptor implements RequestAwareHTTPInterceptor, R
     }
 
     /**
+     * Re-issues a queued request for one drain attempt.
+     *
+     * When the entry carries its owning client (the offline-at-`preRequest`
+     * path), the replay runs through `HTTP.request` so the full interceptor
+     * pipeline applies (PWB-REV-007). Otherwise — a `postResponse` queue entry
+     * has no client — it falls back to `fetch`.
+     *
+     * A fresh clone is taken per attempt: fetch consumes the body stream, so
+     * the never-fetched queued clone stays pristine for later retries.
+     */
+    async #replay(entry: OfflineQueueEntry): Promise<Response> {
+        const attempt = entry.request.clone();
+
+        return entry.http ? entry.http.request(attempt.url, toReplayInit(attempt)) : fetch(attempt);
+    }
+
+    /**
      * Processes the queue, retrying each request.
      */
     async #processQueue(): Promise<void> {
@@ -247,7 +343,15 @@ export class RetryOnOfflineInterceptor implements RequestAwareHTTPInterceptor, R
         for (const entry of due) {
             try {
                 // oxlint-disable-next-line no-await-in-loop -- sequential queue drain: retries are paced by the retry timer; parallelizing would burst all queued requests and reorder retry scheduling.
-                const response = await fetch(entry.request);
+                const response = await this.#replay(entry);
+
+                // A client-drained transport failure surfaces as a ResponseError
+                // (`type === 'error'`) rather than a rejection; treat it as a
+                // failed attempt so retry accounting still runs.
+                if (response.type === 'error') {
+                    throw response;
+                }
+
                 entry.resolve(response);
             } catch (error) {
                 const maxRetries = this.#config.maxRetries ?? 5;

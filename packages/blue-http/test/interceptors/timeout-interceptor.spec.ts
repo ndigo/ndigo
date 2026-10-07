@@ -3,9 +3,14 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { describe, test, expect, beforeAll, beforeEach, afterEach, afterAll } from 'vitest';
+import { describe, test, expect, beforeAll, beforeEach, afterEach, afterAll, vi } from 'vitest';
 import { server } from '../_worker';
-import { HTTP, HTTPInit } from '../../src/http';
+import {
+    HTTP,
+    HTTPInit,
+    type ErrorAwareHTTPInterceptor,
+    type InitializationAwareHTTPInterceptor,
+} from '../../src/http';
 import { TimeoutInit, TimeoutInterceptor } from '../../src/interceptors/timeout-interceptor';
 import { RetryInterceptor } from '../../src/interceptors/retry-interceptor';
 import ResponseError from '../../src/response-error';
@@ -17,8 +22,8 @@ class TestTimeoutInterceptor extends TimeoutInterceptor {
         return proceed;
     }
 
-    async postError(error: Error, request: Request) {
-        const response = await super.postError(error, request);
+    async postError(error: Error, request: Request, http: HTTP, settings?: HTTPInit) {
+        const response = await super.postError(error, request, http, settings);
         if (response !== undefined) {
             expect(response).toBeInstanceOf(ResponseError);
         }
@@ -260,5 +265,51 @@ describe('TimeoutInterceptor', () => {
         expect(response).toBeInstanceOf(ResponseError);
         expect(response?.status).toBe(408);
         expect(response?.statusText).toBe('Request Timeout');
+    });
+
+    test('it clears the timer on an error exit that never reaches postComplete (HTT-REV-009)', async () => {
+        vi.useFakeTimers();
+        try {
+            class Thrower implements ErrorAwareHTTPInterceptor {
+                async postError(): Promise<Response | undefined> {
+                    throw new Error('postError boom');
+                }
+            }
+            // Thrower runs first, so Timeout's own postError never executes —
+            // only the completion path can release the timer.
+            const client = new HTTP([new Thrower(), new TimeoutInterceptor(1000)], {}, async () => {
+                throw new TypeError('fetch failed');
+            });
+
+            await expect(client.request('http://localhost/throws')).rejects.toThrow('postError boom');
+
+            // The 1000 ms timeout timer must not survive a failed request whose
+            // error chain threw before the completion hooks could run.
+            expect(vi.getTimerCount()).toBe(0);
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
+    test('it clears the timer when a request is cancelled before fetch (HTT-REV-009)', async () => {
+        vi.useFakeTimers();
+        try {
+            class Canceller implements InitializationAwareHTTPInterceptor {
+                preInit(): boolean {
+                    return false;
+                }
+            }
+            const client = new HTTP(
+                [new TimeoutInterceptor(1000), new Canceller()],
+                {},
+                async () => new Response('never')
+            );
+
+            const result = await client.request('http://localhost/cancelled');
+            expect(result.status).toBe(200);
+            expect(vi.getTimerCount()).toBe(0);
+        } finally {
+            vi.useRealTimers();
+        }
     });
 });

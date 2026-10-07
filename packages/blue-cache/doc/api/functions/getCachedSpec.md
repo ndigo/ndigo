@@ -10,13 +10,17 @@
 
 Reads the spec recorded by `@cached` for a method.
 
+Metadata lives on the class constructor, so an instance is resolved
+through its `constructor` (mirrors `getSymbolMetadata`); both forms
+return the same spec.
+
 ## Parameters
 
 ### target
 
 `object`
 
-The decorated class constructor (or instance).
+The decorated class constructor or an instance of it.
 
 ### methodName
 

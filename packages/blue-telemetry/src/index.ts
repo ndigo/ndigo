@@ -14,4 +14,3 @@ export * from './metrics';
 export * from './instrumentation/base';
 export * from './instrumentation/context/context';
 export * from './instrumentation/dispatcher/dispatcher';
-export * from './instrumentation/counted';

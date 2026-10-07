@@ -11,10 +11,12 @@ import { LoggingRouteHandlerInterceptor, RadixMetadataHandlerMapping } from '@bl
 import { getLogger } from '@blue/telemetry';
 import { DOMElementViewTarget } from '@blue/view-webcomponent';
 import AccountController from './account-controller';
+import AuthController from './auth-controller';
 import IndexController from './index-controller';
 // Side-effect imports: loading these modules registers the components
 // (`@TagMapping` → `customElements.define`).
 import './account-app-view';
+import './auth-app-view';
 import './todo-app-view';
 import TodoService from './todo-service';
 
@@ -23,6 +25,11 @@ class ToDoconfiguration {
     @entry()
     accountController() {
         return new AccountController();
+    }
+
+    @entry()
+    authController() {
+        return new AuthController();
     }
 
     @entry()

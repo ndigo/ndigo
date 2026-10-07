@@ -30,6 +30,41 @@ interface CacheEntry {
     response: Response;
     expiry: number;
     lastAccessed: number;
+    /** Lower-cased `Vary` field names declared by the stored response. */
+    vary: string[];
+    /** Request header values for each `Vary` field at store time. */
+    varyValues: Record<string, string>;
+}
+
+/** Response directives that forbid storing a response in a shared cache. */
+const UNCACHEABLE_RESPONSE_DIRECTIVES: Record<string, true> = {
+    'no-store': true,
+    'no-cache': true,
+    private: true,
+};
+
+/** Request directives that forbid using or storing a cached response. */
+const UNCACHEABLE_REQUEST_DIRECTIVES: Record<string, true> = {
+    'no-store': true,
+    'no-cache': true,
+};
+
+/** Splits a `Cache-Control` header into lower-cased directive tokens. */
+function cacheControlTokens(headers: Headers): string[] {
+    const value = headers.get('cache-control');
+    if (value === null) {
+        return [];
+    }
+    return value.split(',').map((token) => token.trim().toLowerCase());
+}
+
+/** Reports whether any directive name in `directives` appears in `Cache-Control`. */
+function hasCacheDirective(headers: Headers, directives: Record<string, true>): boolean {
+    return cacheControlTokens(headers).some((token) => {
+        // A directive may carry a value (`no-cache="set-cookie"`, `max-age=0`).
+        const name = token.split('=')[0];
+        return directives[name] === true;
+    });
 }
 
 /**
@@ -42,11 +77,19 @@ interface CacheEntry {
  * `method:url`. Credentialed requests — those carrying an `Authorization`
  * or `Cookie` header — are never cached and never served from cache, so one
  * user's authenticated response can never leak to another user through the
- * shared in-memory cache.
+ * shared in-memory cache. Responses that forbid shared caching (`Set-Cookie`,
+ * `Cache-Control: private`/`no-store`/`no-cache`, `Vary: *`) are never stored,
+ * and a stored response is only replayed when its `Vary` request headers match.
  */
 export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor {
     #config: CacheInterceptorConfig;
     #cache: Map<string, CacheEntry> = new Map();
+    /**
+     * Responses handed out by `preRequest` so the same interceptor's
+     * `postResponse` does not re-store them (and reset their TTL) when the
+     * pipeline runs post-response hooks for a cache hit (HTT-REV-002).
+     */
+    #hits = new WeakSet<Response>();
 
     /**
      * Creates a new cache interceptor.
@@ -69,7 +112,11 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
             return;
         }
 
-        if (this.#hasCredentials(request.headers) || this.#shouldBypassCache(request.headers)) {
+        if (
+            this.#hasCredentials(request.headers) ||
+            this.#shouldBypassCache(request.headers) ||
+            hasCacheDirective(request.headers, UNCACHEABLE_REQUEST_DIRECTIVES)
+        ) {
             return;
         }
 
@@ -77,11 +124,14 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
         const entry = this.#cache.get(cacheKey);
 
         if (entry) {
-            if (Date.now() < entry.expiry) {
+            if (Date.now() < entry.expiry && this.#matchesVary(entry, request)) {
                 entry.lastAccessed = Date.now();
                 // Return a clone of the response as Response bodies can only be read once
-                return entry.response.clone();
-            } else {
+                const cached = entry.response.clone();
+                this.#hits.add(cached);
+                return cached;
+            }
+            if (Date.now() >= entry.expiry) {
                 this.#cache.delete(cacheKey);
             }
         }
@@ -107,6 +157,12 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
             return response;
         }
 
+        // A cache hit re-enters the post-response pipeline (HTT-REV-002);
+        // storing it again would needlessly reset its TTL.
+        if (this.#hits.has(response)) {
+            return response;
+        }
+
         const sentRequest = request ?? new Request(response.url, { method: settings.method ?? 'GET' });
 
         const requestHeaders = request
@@ -121,8 +177,23 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
             return response;
         }
 
-        if (this.#shouldBypassCache(requestHeaders)) {
+        if (
+            this.#shouldBypassCache(requestHeaders) ||
+            hasCacheDirective(requestHeaders, UNCACHEABLE_REQUEST_DIRECTIVES) ||
+            this.#responseDisallowsCache(response)
+        ) {
             return response;
+        }
+
+        const vary = this.#varyFields(response);
+        if (vary === null) {
+            // `Vary: *` — the response can never be matched to a later request.
+            return response;
+        }
+
+        const varyValues: Record<string, string> = {};
+        for (const name of vary) {
+            varyValues[name] = sentRequest.headers.get(name) ?? '';
         }
 
         const cacheKey = this.#generateCacheKey(sentRequest);
@@ -132,6 +203,8 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
             response: response.clone(),
             expiry: Date.now() + ttl,
             lastAccessed: Date.now(),
+            vary,
+            varyValues,
         });
 
         this.#enforceCacheSize(cacheKey);
@@ -155,6 +228,45 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
             }
         }
         return false;
+    }
+
+    /**
+     * Tests whether a response forbids shared caching: `Set-Cookie` credentials,
+     * `Cache-Control: private`/`no-store`/`no-cache`, or `Vary: *` (HTT-REV-004/005).
+     */
+    #responseDisallowsCache(response: Response): boolean {
+        return (
+            response.headers.get('set-cookie') !== null ||
+            hasCacheDirective(response.headers, UNCACHEABLE_RESPONSE_DIRECTIVES)
+        );
+    }
+
+    /**
+     * Reads the response's `Vary` field names.
+     *
+     * @returns The lower-cased field names, or `null` when `Vary: *` makes the
+     * response unmatchable.
+     */
+    #varyFields(response: Response): string[] | null {
+        const value = response.headers.get('vary');
+        if (value === null) {
+            return [];
+        }
+        const fields = value
+            .split(',')
+            .map((field) => field.trim().toLowerCase())
+            .filter((field) => field.length > 0);
+        return fields.includes('*') ? null : fields;
+    }
+
+    /** Tests whether the request's `Vary` headers match the stored entry. */
+    #matchesVary(entry: CacheEntry, request: Request): boolean {
+        for (const name of entry.vary) {
+            if ((request.headers.get(name) ?? '') !== (entry.varyValues[name] ?? '')) {
+                return false;
+            }
+        }
+        return true;
     }
 
     #generateCacheKey(request: Request): string {

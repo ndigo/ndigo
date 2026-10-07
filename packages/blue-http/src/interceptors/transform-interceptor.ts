@@ -5,7 +5,7 @@
  */
 import { Transform, TransformContext } from '../transformers/http-transformer';
 import { MediaType } from '@blue/core';
-import { RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '../http';
+import { RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor, rebuildResponse } from '../http';
 import * as HTTPHeaders from '../http-headers';
 
 /**
@@ -93,11 +93,7 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
         const contentType = HTTPHeaders.CONTENT_TYPE.get(response.headers) || '';
         const transformedBody = this.serializeBody(body, contentType);
 
-        return new Response(transformedBody, {
-            status: response.status,
-            statusText: response.statusText,
-            headers: response.headers,
-        });
+        return rebuildResponse(response, transformedBody);
     }
 
     /**

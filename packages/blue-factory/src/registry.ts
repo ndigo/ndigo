@@ -49,8 +49,18 @@ export class RegistryProxyHandler<T extends Registry> implements ProxyHandler<T>
     }
 
     get<U = unknown>(target: T, key: PropertyKey): U {
-        const value = target.getValue<U>(key as string);
-        return typeof value === 'function' ? ((value as Function).bind(target) as U) : value;
+        // Resolve the factory's own API surface (methods/accessors) first, so
+        // `registry.setValue`/`getValue` reach the real methods. `getValue` no
+        // longer falls back to inherited `Object.prototype` members, so the
+        // registry's own methods must be matched here (KRN-REV-FACTORY-14).
+        if (!target.hasValue(key as string)) {
+            const member = Reflect.get(target, key);
+            if (typeof member === 'function') {
+                return (member as Function).bind(target) as U;
+            }
+        }
+
+        return target.getValue<U>(key as string);
     }
 
     has(target: T, key: PropertyKey): boolean {

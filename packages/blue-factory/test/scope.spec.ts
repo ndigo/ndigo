@@ -341,6 +341,82 @@ describe('Scope Decorators - TC39 Behavioral Tests', () => {
 
             expect(() => hash.getValue('value', () => ({ id: 1 }))).toThrow('No active hash scope context');
             expect(() => hash.destroyValue('value')).toThrow('No active hash scope context');
+            expect(() => hash.registerDestructionCallback('value', () => {})).toThrow('No active hash scope context');
+        });
+
+        it('HashScope destroyValue runs the destruction callback once', () => {
+            const hash = new HashScope();
+            const destroyed = vi.fn();
+
+            hash.setCurrentKey('route-1');
+            hash.getValue('value', () => ({ id: 1 }));
+            hash.registerDestructionCallback('value', destroyed);
+
+            hash.destroyValue('value');
+
+            expect(destroyed).toHaveBeenCalledTimes(1);
+            expect(hash.getValue('value', () => ({ id: 2 }))).toEqual({ id: 2 });
+        });
+
+        it('HashScope endScope destroys every cached value in the key (KRN-REV-FACTORY-13)', () => {
+            const hash = new HashScope();
+            const destroyedA = vi.fn();
+            const destroyedB = vi.fn();
+            const otherKey = vi.fn();
+
+            hash.setCurrentKey('route-1');
+            hash.getValue('a', () => ({ id: 'a1' }));
+            hash.getValue('b', () => ({ id: 'b1' }));
+            hash.registerDestructionCallback('a', destroyedA);
+            hash.registerDestructionCallback('b', destroyedB);
+
+            hash.setCurrentKey('route-2');
+            hash.getValue('a', () => ({ id: 'a2' }));
+            hash.registerDestructionCallback('a', otherKey);
+
+            hash.endScope('route-1');
+
+            // Both route-1 buckets tears down; route-2's cached value survives.
+            expect(destroyedA).toHaveBeenCalledTimes(1);
+            expect(destroyedB).toHaveBeenCalledTimes(1);
+            expect(otherKey).not.toHaveBeenCalled();
+
+            hash.setCurrentKey('route-1');
+            expect(hash.getValue('a', () => ({ id: 'a3' }))).toEqual({ id: 'a3' });
+            hash.setCurrentKey('route-2');
+            expect(hash.getValue('a', () => ({ id: 'a4' }))).toEqual({ id: 'a2' });
+        });
+
+        it('HashScope endScope survives a throwing destruction callback (best effort)', () => {
+            const hash = new HashScope();
+            const error = new Error('teardown exploded');
+            const destroyed = vi.fn();
+
+            hash.setCurrentKey('route-1');
+            hash.getValue('value', () => ({ id: 1 }));
+            hash.registerDestructionCallback('boom', () => {
+                throw error;
+            });
+            hash.registerDestructionCallback('value', destroyed);
+
+            const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+            try {
+                hash.endScope('route-1');
+
+                expect(consoleError).toHaveBeenCalledTimes(1);
+                expect(
+                    consoleError.mock.calls[0].some(
+                        (arg) =>
+                            typeof arg === 'string' && arg.includes('HashScope destruction callback for "boom" failed')
+                    )
+                ).toBe(true);
+                // The sweep still ran the remaining callback and cleared the bucket.
+                expect(destroyed).toHaveBeenCalledTimes(1);
+                hash.setCurrentKey('route-1');
+                expect(hash.getValue('value', () => ({ id: 2 }))).toEqual({ id: 2 });
+            } finally {
+                consoleError.mockRestore();
+            }
         });
     });
 

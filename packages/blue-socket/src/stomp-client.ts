@@ -253,6 +253,10 @@ export class StompClient {
             for (const subscription of this.#subscriptions.values()) {
                 subscription.reader.complete();
             }
+            // Terminal session: drop the registry so a late `subscribe()`
+            // throws instead of registering a stream that can never receive
+            // frames (the entries' readers are already completed above).
+            this.#subscriptions.clear();
             this.#closedReader.complete();
         };
         effect(() => {
@@ -266,7 +270,13 @@ export class StompClient {
                     // transport. queueMicrotask detaches the reads.
                     queueMicrotask(() => {
                         if (!this.#done) {
-                            void this.#onOpen();
+                            // Never leave the pass an orphaned promise: an
+                            // unexpected throw here would be an unhandled
+                            // rejection (fatal under Node's default policy)
+                            // and would strand the session half-open.
+                            this.#onOpen().catch((error: unknown) => {
+                                this.#fail(error instanceof Error ? error.message : 'stomp session error');
+                            });
                         }
                     });
                 }
@@ -319,8 +329,14 @@ export class StompClient {
      * @param opts - Subscription policy (`id` defaults to an opaque uuid;
      *   `ack` defaults to `auto`).
      * @returns The subscription handle.
+     * @throws {@link StompProtocolError} when the session has ended
+     *   (disconnect, ERROR, transport closed) — a new subscription could
+     *   never receive frames.
      */
     subscribe(destination: string, opts: { id?: string; ack?: StompAckMode } = {}): StompSubscription {
+        if (this.#done) {
+            throw new StompProtocolError('client is closed');
+        }
         const id = opts.id ?? crypto.randomUUID();
         const ack = opts.ack ?? 'auto';
         if (this.#subscriptions.has(id)) {
@@ -434,8 +450,19 @@ export class StompClient {
         const receipt: PendingReceipt = { resolve, reject, sent: false };
         this.#receipts.set(receiptId, receipt);
         const send = (): void => {
+            // Exception-safe: a serialization fault (invalid header name/
+            // value, or a destination that cannot be a header) must not
+            // escape `send()` — it would strand this receipt entry and, on
+            // the flush path, abort the whole queue. The frame never left
+            // the wire, so settle this send alone and leave `sent` false.
+            try {
+                this.#sendFrame({ command: 'SEND', headers: { destination, ...ownHeaders }, body: payload });
+            } catch (error) {
+                this.#receipts.delete(receiptId);
+                reject(error instanceof Error ? error : new StompProtocolError(String(error)));
+                return;
+            }
             receipt.sent = true;
-            this.#sendFrame({ command: 'SEND', headers: { destination, ...ownHeaders }, body: payload });
         };
         if (this.connected.value) {
             send();
@@ -618,14 +645,34 @@ export class StompClient {
         // Entries subscribed while this connection was live are already
         // `live` and skipped — no duplicates.
         for (const [id, entry] of this.#subscriptions) {
-            if (entry.state === 'pending') {
+            if (entry.state !== 'pending') {
+                continue;
+            }
+            try {
                 this.#submit(entry, id);
+            } catch {
+                // The SUBSCRIBE cannot be framed (e.g. an invalid
+                // destination): the subscription is unusable — complete its
+                // reader so no app iterator hangs, and drop it.
+                this.#subscriptions.delete(id);
+                entry.reader.complete();
             }
         }
-        // Flush sends that arrived while (re)connecting.
+        // Flush sends that arrived while (re)connecting. Per-item fault
+        // isolation: one failing send must never abort the rest of the
+        // queue (each `send()` already settles its own receipt, but a
+        // throw from anything else is caught here and settles that entry).
         while (this.#pendingSends.length > 0) {
             const pending = this.#pendingSends.get() as { receiptId: string; send: () => void };
-            pending.send();
+            try {
+                pending.send();
+            } catch (error) {
+                const receipt = this.#receipts.get(pending.receiptId);
+                if (receipt !== undefined) {
+                    this.#receipts.delete(pending.receiptId);
+                    receipt.reject(error instanceof Error ? error : new StompProtocolError(String(error)));
+                }
+            }
         }
     }
 
@@ -709,6 +756,7 @@ export class StompClient {
         for (const subscription of this.#subscriptions.values()) {
             subscription.reader.complete();
         }
+        this.#subscriptions.clear();
         this.#closedReader.complete();
         try {
             this.#options.onError?.(message);

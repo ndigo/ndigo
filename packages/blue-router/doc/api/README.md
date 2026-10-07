@@ -34,6 +34,7 @@ Jeff Rose
 - [Router](interfaces/Router.md)
 - [RouterInterceptor](interfaces/RouterInterceptor.md)
 - [RouterInterceptorRegistry](interfaces/RouterInterceptorRegistry.md)
+- [RouterOptions](interfaces/RouterOptions.md)
 - [RouteSegment](interfaces/RouteSegment.md)
 
 ## Type Aliases
@@ -42,6 +43,7 @@ Jeff Rose
 - [FeatureRouteCallback](type-aliases/FeatureRouteCallback.md)
 - [RouteParams](type-aliases/RouteParams.md)
 - [RouterCallback](type-aliases/RouterCallback.md)
+- [RouterErrorHandler](type-aliases/RouterErrorHandler.md)
 - [RouterMiddleware](type-aliases/RouterMiddleware.md)
 
 ## Variables

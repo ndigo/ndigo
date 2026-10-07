@@ -3,7 +3,7 @@
 Implementation plans for features and technical specifications.
 
 Every implemented plan has its **decision recorded** in
-[docs/decisions/README.md](../decisions/README.md) (ADR index, AD-01..AD-67).
+[docs/decisions/README.md](../decisions/README.md) (the ADR index).
 
 ## Completed Plans
 

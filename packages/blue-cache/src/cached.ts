@@ -188,14 +188,31 @@ export function cached(spec: CachedSpec = {}) {
     };
 }
 
+/** Narrows a metadata bag to its string-keyed record shape. */
+function isMetadataRecord(value: unknown): value is Record<string, unknown> {
+    return value !== null && typeof value === 'object';
+}
+
 /**
  * Reads the spec recorded by `@cached` for a method.
  *
- * @param target - The decorated class constructor (or instance).
+ * Metadata lives on the class constructor, so an instance is resolved
+ * through its `constructor` (mirrors `getSymbolMetadata`); both forms
+ * return the same spec.
+ *
+ * @param target - The decorated class constructor or an instance of it.
  * @param methodName - The decorated method name.
  * @returns The normalized spec, or `undefined` when not cached.
  */
 export function getCachedSpec(target: object, methodName: string): NormalizedCachedSpec | undefined {
-    const metadata = (target as { [Symbol.metadata]?: Record<string, unknown> })?.[Symbol.metadata] ?? {};
-    return metadata[`${CACHED_METADATA_PREFIX}${methodName}`] as NormalizedCachedSpec | undefined;
+    const carrier: object | undefined = typeof target === 'function' ? target : target?.constructor;
+    if (carrier === undefined || !(Symbol.metadata in carrier)) {
+        return undefined;
+    }
+    const metadata: unknown = carrier[Symbol.metadata];
+    if (!isMetadataRecord(metadata)) {
+        return undefined;
+    }
+    const spec = metadata[`${CACHED_METADATA_PREFIX}${methodName}`];
+    return spec as NormalizedCachedSpec | undefined;
 }

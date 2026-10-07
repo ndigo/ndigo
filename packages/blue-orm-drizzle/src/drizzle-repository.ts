@@ -62,7 +62,9 @@ export class DrizzleRepository<T extends object, ID> implements AsyncRepository<
      */
     async findById(id: ID, options: RelationFetchOptions = {}): Promise<T | undefined> {
         const entity = await this.#entityManager.find(this.#entityClass, id);
-        return entity === undefined ? undefined : this.#fetchRelations(entity, options);
+        if (entity === undefined) return undefined;
+        await this.#entityManager.fetchRelations([entity], options.relations ?? []);
+        return entity;
     }
 
     /**
@@ -72,7 +74,10 @@ export class DrizzleRepository<T extends object, ID> implements AsyncRepository<
      */
     async findAll(options: RelationFetchOptions = {}): Promise<T[]> {
         const all = await this.#entityManager.findAll(this.#entityClass);
-        return Promise.all(all.map((entity) => this.#fetchRelations(entity, options)));
+        // One batched query per relation for the whole result set (DAT-F5)
+        // instead of one query per entity.
+        await this.#entityManager.fetchRelations(all, options.relations ?? []);
+        return all;
     }
 
     /**
@@ -88,19 +93,6 @@ export class DrizzleRepository<T extends object, ID> implements AsyncRepository<
         const value = await this.#entityManager.fetchRelation(entity, relationName);
         (entity as Record<string, unknown>)[relationName] = value;
         return value;
-    }
-
-    async #fetchRelations(entity: T, options: RelationFetchOptions): Promise<T> {
-        // Relations are independent of each other — fetch concurrently.
-        await Promise.all(
-            (options.relations ?? []).map(async (relationName) => {
-                (entity as Record<string, unknown>)[relationName] = await this.#entityManager.fetchRelation(
-                    entity,
-                    relationName
-                );
-            })
-        );
-        return entity;
     }
 
     /**

@@ -58,7 +58,23 @@ list() { … }
 `hidden: true` drops an operation from the spec; `summary`, `description`,
 `tags`, `operationId`, and `deprecated` flow through as standard OpenAPI
 fields. `responses` documents per-status schemas — a bare Zod schema is
-shorthand for `{ description: 'OK', schema }`.
+shorthand for `{ description: 'OK', schema }`. Declaring `responses`
+**replaces** the implicit `200: { description: 'OK' }` (declare `'200'`
+yourself to keep it). `security` lists the scheme names the operation
+requires, overriding the document-level default; an empty array marks the
+operation explicitly anonymous.
+
+Security schemes are declared once on the generator, then referenced by name:
+
+```ts
+new OpenAPISpecGenerator().generate(tables, {
+    securitySchemes: { bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' } },
+    security: ['bearerAuth'], // document-level default; per-operation @apiDocs({ security }) overrides it
+});
+```
+
+(The `OpenAPIDocsAutoConfiguration` serving options do not yet forward
+`securitySchemes`/`security` — use the library-level `generate` for those.)
 
 ### Serving options
 
@@ -84,9 +100,9 @@ metadata, so a metadata-driven guard always permits these endpoints.
 
 - **Typed-client generation**: deferred — feed the served document to
   ecosystem generators.
-- **Response schemas**: not inferred from return types; every operation
-  documents `200 OK` unless `@apiDocs({ responses })` supplies per-status
-  documentation.
+- **Response schemas**: not inferred from return types; an operation without
+  `@apiDocs({ responses })` documents `200 OK`, and a declared set replaces
+  that default.
 - **UI assets**: local (`swagger-ui-dist` through the platform's static-file
   machinery, no CDN).
 

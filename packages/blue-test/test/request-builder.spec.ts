@@ -42,3 +42,32 @@ describe('buildRoute query parity (IN-4)', () => {
         expect(data['__proto__']).toBe('x');
     });
 });
+
+describe('buildRoute request-builder fidelity (HTT-REV-015)', () => {
+    test('parses a Cookie header into nodeRequest.cookies', () => {
+        const { sink } = createMemoryResponse();
+        const { request } = buildRoute({ path: '/', headers: { Cookie: 'a=1; b=2' } }, sink);
+        expect(request.cookies).toEqual({ a: '1', b: '2' });
+    });
+
+    test('explicit .cookies() entries win over the Cookie header', () => {
+        const { sink } = createMemoryResponse();
+        const { request } = buildRoute(
+            { path: '/', headers: { Cookie: 'a=1; b=2' }, cookies: { a: 'override', c: '3' } },
+            sink
+        );
+        expect(request.cookies).toEqual({ a: 'override', b: '2', c: '3' });
+    });
+
+    test('route.raw includes the query string like the adapter req.url', () => {
+        const { sink } = createMemoryResponse();
+        const { route } = buildRoute({ path: '/search', query: { a: '1', b: ['2', '3'] } }, sink);
+        expect(route.raw).toBe('/search?a=1&b=2&b=3');
+    });
+
+    test('a JSON body defaults the Content-Type to application/json', () => {
+        const { sink } = createMemoryResponse();
+        const { request } = buildRoute({ path: '/echo', method: 'POST', body: { value: 1 } }, sink);
+        expect(request.headers['content-type']).toBe('application/json');
+    });
+});

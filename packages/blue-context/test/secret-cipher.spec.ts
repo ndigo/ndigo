@@ -275,4 +275,29 @@ describe('resolver secret integration (AD-29 D-5)', () => {
             expect(message).not.toContain(marker);
         }
     });
+
+    test('malformed marker-shaped values do not throw without a decryptor (SEC-10 fail-open, CTX-04)', () => {
+        // `{cipher:1:x}` has a non-conforming numeric version segment — the
+        // parser rejects it fail-loud, but with NO decryptor wired the read
+        // path must stay fail-open: pass the literal value through, no throw.
+        const malformed = '{cipher:1:not-a-version}';
+        const env = new StandardEnvironment([{ token: malformed }]);
+        const consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+        expect(() => env.getProperty('token')).not.toThrow();
+        expect(env.getProperty('token')).toBe(malformed);
+        expect(() => env.getRequiredProperty('token')).not.toThrow();
+        expect(env.getRequiredProperty('token')).toBe(malformed);
+
+        consoleWarn.mockRestore();
+    });
+
+    test('malformed marker-shaped values still fail loud when a decryptor IS wired (CTX-04 control)', () => {
+        const registry = new SecretSchemeRegistry();
+        registry.register(fakeCipher());
+        const env = new StandardEnvironment([{ token: '{cipher:1:not-a-version}' }]);
+        env.applySecretDecryptor(registry);
+
+        expect(() => env.getProperty('token')).toThrow(/Malformed secret marker/);
+    });
 });

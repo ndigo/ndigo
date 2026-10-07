@@ -123,9 +123,17 @@ export class HTTPExecutionChain {
      * @param error - The request failure.
      * @param request - The request that failed.
      * @param http - The HTTP client executing the request.
+     * @param settings - The per-request settings object, threaded so error-aware
+     * interceptors can key state on an identity that survives request
+     * replacement.
      * @returns The most recent replacement response, or \`undefined\` when no interceptor handles the error.
      */
-    async applyPostError(error: Error, request: Request, http: HTTP): Promise<Response | undefined> {
+    async applyPostError(
+        error: Error,
+        request: Request,
+        http: HTTP,
+        settings?: HTTPInit
+    ): Promise<Response | undefined> {
         if (this.#hasErrorAwareInterceptors) {
             const interceptors = this.#interceptors,
                 length = interceptors.length;
@@ -137,7 +145,7 @@ export class HTTPExecutionChain {
                     const interceptor = interceptors[index];
                     if (likeErrorAwareHTTPInterceptor(interceptor)) {
                         // oxlint-disable-next-line no-await-in-loop
-                        const result = await interceptor.postError(currentError, request, http);
+                        const result = await interceptor.postError(currentError, request, http, settings);
                         if (result !== undefined) {
                             recovered = result;
                             currentError = new ResponseError(result, result.statusText);
@@ -166,7 +174,15 @@ export class HTTPExecutionChain {
                 for (; index < length; index++) {
                     const interceptor = interceptors[index];
                     if (likeCompletionAwareHTTPInterceptor(interceptor)) {
-                        interceptor.postComplete(request, response, settings);
+                        try {
+                            interceptor.postComplete(request, response, settings);
+                        } catch {
+                            // A throwing completion hook must not discard the
+                            // already-settled response/error nor preempt the
+                            // remaining completion hooks (HTT-REV-010). This
+                            // leaf package has no logger dependency; the hook
+                            // owns reporting its own failures.
+                        }
                     }
                 }
             }
@@ -239,9 +255,12 @@ export class HTTPExecutionChain {
      *
      * @param request - The request to inspect or replace.
      * @param http - The HTTP client executing the request.
+     * @param settings - The per-request settings object, threaded to
+     * request-aware interceptors that must key state on an identity surviving
+     * request replacement.
      * @returns The transformed request, or the original request when unsupported.
      */
-    async applyPreRequest(request: Request, http: HTTP): Promise<Request | Response> {
+    async applyPreRequest(request: Request, http: HTTP, settings?: HTTPInit): Promise<Request | Response> {
         if (this.#hasRequestAwareInterceptors) {
             const interceptors = this.#interceptors,
                 length = interceptors.length;
@@ -257,7 +276,8 @@ export class HTTPExecutionChain {
                             currentRequest instanceof Request
                                 ? currentRequest
                                 : new Request(currentRequest as unknown as RequestInfo),
-                            http
+                            http,
+                            settings
                         );
                         if (isRequest(result) || likeResponse(result)) {
                             currentRequest = result;

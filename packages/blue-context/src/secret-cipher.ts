@@ -111,6 +111,29 @@ export function parseSecretMarker(value: string): SecretMarker | null {
 }
 
 /**
+ * Non-throwing shape test for a marker-like string.
+ *
+ * Unlike {@link parseSecretMarker}, this NEVER throws: it answers only
+ * "does this string look like a `{scheme:...}` marker?" — including malformed
+ * markers whose version segment is invalid. It exists so the fail-open path
+ * (no decryptor configured) can warn about a marker-shaped value without a
+ * malformed marker turning an ordinary read into a failure (SEC-10 fail-open
+ * contract, CTX-04).
+ *
+ * @param value - The candidate string.
+ * @returns `true` when the value has the reserved `{scheme:...}` shape.
+ */
+export function isSecretMarkerLike(value: unknown): boolean {
+    if (typeof value !== 'string' || value.length < 4 || value[0] !== '{' || !value.endsWith('}')) {
+        return false;
+    }
+    const inner = value.slice(1, -1);
+    const firstColon = inner.indexOf(':');
+    if (firstColon === -1) return false;
+    return schemeRe.test(inner.slice(0, firstColon));
+}
+
+/**
  * Capability flags a cipher backend may declare.
  */
 export interface SecretCipherCapabilities {

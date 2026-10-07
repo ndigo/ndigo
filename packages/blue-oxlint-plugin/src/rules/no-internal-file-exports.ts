@@ -7,7 +7,11 @@
 import type { Context, ESTree } from '@oxlint/plugins';
 
 function isPublicIndexFile(filename: string): boolean {
-    return /[\\/]src[\\/]index\.ts$/u.test(filename);
+    // Match the package barrel (`src/index.ts`) and any sub-barrel under `src/`
+    // (e.g. `src/metrics/index.ts`). The previous `/src\/index\.ts$/` only caught
+    // the top-level barrel, so internals leaked through a nested barrel that was
+    // invisible to the gate (TOL-F2).
+    return /[\\/]src[\\/](?:[^\\/]+[\\/])?index\.ts$/u.test(filename);
 }
 
 /**

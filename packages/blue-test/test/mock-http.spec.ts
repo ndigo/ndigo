@@ -257,6 +257,112 @@ describe('MockHTTP', () => {
             app.close();
         }
     });
+
+    test('a malformed JSON rawBody maps to the adapter 400 malformed-body problem (HTT-REV-012)', async () => {
+        const res = await mockHTTP
+            .post('/echo/raw')
+            .rawBody('{"broken": ')
+            .headers({ 'content-type': 'application/json' })
+            .exec();
+        expect(res.response.status).toBe(400);
+        expect(res.json()).toMatchObject({
+            type: 'urn:blue:malformed-body',
+            status: 400,
+            detail: 'malformed_body',
+        });
+    });
+
+    test('well-formed non-object JSON maps to 400, not 500 (HTT-REV-012)', async () => {
+        const res = await mockHTTP
+            .post('/echo/raw')
+            .rawBody('[1,2]')
+            .headers({ 'content-type': 'application/json' })
+            .exec();
+        expect(res.response.status).toBe(400);
+        expect(res.json()).toMatchObject({
+            type: 'urn:blue:malformed-body',
+            status: 400,
+            detail: 'malformed_body',
+        });
+    });
+
+    test('multipart rawBody parses with a canonical-case Content-Type header (HTT-REV-013)', async () => {
+        const app = bootApp([GreetingController]);
+        try {
+            const mock = new MockHTTP(app);
+            const boundary = '----blueCanonicalCase';
+            const payload = [
+                `--${boundary}`,
+                'Content-Disposition: form-data; name="value"',
+                '',
+                'canonical',
+                `--${boundary}--`,
+                '',
+            ].join('\r\n');
+            const res = await mock
+                .post('/echo')
+                .rawBody(payload)
+                // Canonical-case key: Node folds it, so the harness must too.
+                .headers({ 'Content-Type': `multipart/form-data; boundary=${boundary}` })
+                .exec();
+            expect(res.response.status).toBe(200);
+            expect(res.json()).toEqual({ echoed: 'canonical' });
+        } finally {
+            app.close();
+        }
+    });
+
+    test('a cookie header past the parser bound maps to 431, not 500 (HTT-REV-014)', async () => {
+        const res = await mockHTTP
+            .get('/')
+            .headers({ cookie: `big=${'x'.repeat(5000)}` })
+            .exec();
+        expect(res.response.status).toBe(431);
+        expect(res.json()).toMatchObject({
+            type: 'urn:blue:headers_too_large',
+            status: 431,
+            detail: 'headers_too_large',
+        });
+    });
+
+    test('an oversized body maps to 413 under the configured limit (HTT-REV-014)', async () => {
+        const app = bootApp([GreetingController]);
+        try {
+            const mock = new MockHTTP(app, { limits: { maxBodyBytes: 16 } });
+            const res = await mock
+                .post('/echo')
+                .body({ value: 'x'.repeat(64) })
+                .exec();
+            expect(res.response.status).toBe(413);
+            expect(res.json()).toMatchObject({
+                type: 'urn:blue:body_too_large',
+                status: 413,
+                detail: 'body_too_large',
+            });
+        } finally {
+            app.close();
+        }
+    });
+
+    test('an aborted request maps to 400 request_aborted (HTT-REV-014)', async () => {
+        const res = await mockHTTP.get('/').abort().exec();
+        expect(res.response.status).toBe(400);
+        expect(res.json()).toMatchObject({
+            type: 'urn:blue:request_aborted',
+            status: 400,
+            detail: 'request_aborted',
+        });
+    });
+
+    test('a timed-out request maps to 408 request_timeout (HTT-REV-014)', async () => {
+        const res = await mockHTTP.get('/').timeout().exec();
+        expect(res.response.status).toBe(408);
+        expect(res.json()).toMatchObject({
+            type: 'urn:blue:request_timeout',
+            status: 408,
+            detail: 'request_timeout',
+        });
+    });
 });
 
 describe('IslandView through MockHTTP dispatch (SSR islands)', () => {

@@ -242,12 +242,13 @@ The project maintains two complementary documentation files for different purpos
 
 **The Dividing Line:**
 
-| Concern               | ARCHITECTURE.md                                           | STYLE_GUIDE.md                                     |
-| :-------------------- | :-------------------------------------------------------- | :------------------------------------------------- |
-| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @blue/util, not from seedrandom"      |
-| Code Organization     | "Use Strategy Pattern for parsers"                        | "Name parser files: kebab-case.ts in src/"         |
-| Module Visibility     | "Internal modules are implementation details"             | "Prefix internal files with underscore: \_util.ts" |
-| Naming Philosophy     | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean"     |
+| Concern               | ARCHITECTURE.md                                           | STYLE_GUIDE.md                                            |
+| :-------------------- | :-------------------------------------------------------- | :-------------------------------------------------------- |
+| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @blue/util, not from seedrandom"             |
+| Code Organization     | "Use Strategy Pattern for parsers"                        | "Name parser files: kebab-case.ts in src/"                |
+| Module Visibility     | "Internal modules are implementation details"             | "Prefix internal files with underscore: \_util.ts"        |
+| Naming Philosophy     | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean"            |
+| Decorators            | "Decorators enable separation of concerns"                | "@routeMapping uses camelCase, stores in Symbol.metadata" |
 
 **Maintenance Note:** When updating the dividing line explanation, update it in both `README.md` and `AGENTS.md` to keep them synchronized.
 

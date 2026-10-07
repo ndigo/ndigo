@@ -8,8 +8,9 @@
 
 > **isIntercepted**(`instance`): `boolean`
 
-Whether the instance was already woven by this package. Guards against
-double-wrapping when processing runs twice.
+Whether the instance (a woven proxy or the raw target it advises) was
+already woven by this package. Guards against double-wrapping when
+processing runs twice.
 
 ## Parameters
 

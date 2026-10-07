@@ -149,6 +149,40 @@ When the relation, its join column, or the
 
 ***
 
+### fetchRelations()
+
+> **fetchRelations**(`entities`, `relationNames`): `Promise`\<`void`\>
+
+Eagerly loads declared relations for a batch of entities of the same
+class, issuing one query per relation over all distinct join keys rather
+than one query per entity (DAT-F5). Each entity's relation field is
+assigned the loaded value, mirroring [fetchRelation](#fetchrelation) semantics.
+
+#### Parameters
+
+##### entities
+
+`object`[]
+
+Entities of one class; an empty batch is a no-op.
+
+##### relationNames
+
+`string`[]
+
+Declared relation field names to load.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Throws
+
+When a relation, its join column, or the
+  target class is not declared, or for many-to-many relations.
+
+***
+
 ### find()
 
 > **find**\<`T`\>(`entityClass`, `id`): `Promise`\<`T` \| `undefined`\>

@@ -13,7 +13,8 @@ export type {
     LifecycleEvent,
     LifecycleHookDefinition,
 } from './metadata';
-export type { DataSource } from './data-source';
+export type { DataSource, EntityCloneHook } from './data-source';
+export { ENTITY_CLONE } from './data-source';
 export type { EntityManager } from './entity-manager';
 export type { EntityState, UnitOfWork } from './unit-of-work';
 export type { TransactionManager } from './transaction-manager';
@@ -39,6 +40,9 @@ export type { RelationOptions } from './decorators';
 
 // Metadata utilities
 export { getEntityMetadata, isEntity } from './metadata';
+export { columnTypeFamily } from './column-type';
+export type { ColumnTypeFamily } from './column-type';
+export { runLifecycleHooks } from './lifecycle';
 
 // Zod schema derivation (AD-07)
 export {

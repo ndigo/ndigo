@@ -181,7 +181,11 @@ export class ResponseTypeInterceptor
 
             try {
                 if (parser) {
-                    const data = await parser(response);
+                    // Parse through a clone so the original response body stays
+                    // readable for later interceptors and the caller — a parser
+                    // that consumed the live body would turn a 200 into an
+                    // empty/disturbed response downstream (HTT-REV-003).
+                    const data = await parser(response.clone());
                     defineProperty(response, 'data', {
                         value: data,
                         configurable: true,

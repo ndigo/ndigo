@@ -6,25 +6,32 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import { columnTypeFamily } from '@blue/orm';
 
 /** SQLite storage classes the metadata → SQL mapping can emit. */
 export type SqliteStorageType = 'INTEGER' | 'REAL' | 'NUMERIC' | 'BLOB' | 'TEXT';
 
 /**
  * Maps a declared `@column({ type })` to its SQLite storage type:
- * `int*` → `INTEGER`, `real`/`float`/`double` → `REAL`, `blob` → `BLOB`,
- * and everything else (`char`/`text`/`string`/`varchar`, plus boolean, json
- * and untyped columns) → `TEXT`.
+ * integer family → `INTEGER`, `real`/`float`/`double` → `REAL`, `blob` →
+ * `BLOB`, and everything else (`char`/`text`/`string`/`varchar`, plus boolean,
+ * json and untyped columns) → `TEXT`. Classification uses whole-word matching
+ * (DAT-N1), so an unrelated type like `point` is not read as `int`.
  *
  * @param type - The declared column type; `undefined` for untyped columns.
  * @returns The SQLite storage type for the column.
  */
 export function sqliteTypeForColumnType(type: string | undefined): SqliteStorageType {
-    const normalized = (type ?? '').toLowerCase();
-    if (normalized.includes('int')) return 'INTEGER';
-    if (normalized.includes('real') || normalized.includes('float') || normalized.includes('double')) return 'REAL';
-    if (normalized.includes('blob')) return 'BLOB';
-    return 'TEXT';
+    switch (columnTypeFamily(type)) {
+        case 'integer':
+            return 'INTEGER';
+        case 'real':
+            return 'REAL';
+        case 'blob':
+            return 'BLOB';
+        default:
+            return 'TEXT';
+    }
 }
 
 /**

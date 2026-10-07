@@ -9,7 +9,7 @@ import type { CacheManager } from '../src/cache-manager';
 import { CacheMiss, MemoryCache } from '../src/cache';
 import type { Cache } from '../src/cache';
 import type { CachedSpec } from '../src/cached';
-import { cached, resolveCachedSpec } from '../src/cached';
+import { cached, getCachedSpec, resolveCachedSpec } from '../src/cached';
 import { serializeCacheKey } from '../src/keys';
 import { ContextToken } from '@blue/context';
 
@@ -356,5 +356,29 @@ describe('@cached', () => {
         const decorator = cached();
         const applyToGetter = decorator as (value: Function, context: unknown) => unknown;
         expect(() => applyToGetter(async () => 1, { kind: 'getter', name: 'value' })).toThrow(TypeError);
+    });
+});
+
+describe('getCachedSpec (DAT-F13)', () => {
+    class Service {
+        @cached({ cacheName: 'msgs', ttl: 60_000 })
+        async message(id: string): Promise<string> {
+            return id;
+        }
+    }
+
+    test('reads the spec from the class constructor', () => {
+        expect(getCachedSpec(Service, 'message')).toEqual({ cacheName: 'msgs', key: undefined, ttl: 60_000 });
+    });
+
+    test('reads the spec from an instance by resolving through its constructor', () => {
+        // Pre-fix the instance form read `Symbol.metadata` off the instance
+        // itself (always absent) and returned undefined despite the JSDoc.
+        expect(getCachedSpec(new Service(), 'message')).toEqual(getCachedSpec(Service, 'message'));
+    });
+
+    test('returns undefined for an undocumented method', () => {
+        expect(getCachedSpec(Service, 'missing')).toBeUndefined();
+        expect(getCachedSpec(new Service(), 'missing')).toBeUndefined();
     });
 });

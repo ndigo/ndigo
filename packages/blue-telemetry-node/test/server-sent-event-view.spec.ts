@@ -91,8 +91,8 @@ describe('ServerSentEventViewInstrumentation', () => {
         const spans = exporter.getFinishedSpans().filter((s) => s.name === 'ServerSentEventView.renderTo');
         expect(spans).toHaveLength(1);
         const span = spans[0];
-        expect(span.kind).toBe(SpanKind.SERVER);
-        expect(span.attributes['http.response.status_code']).toBe('200');
+        expect(span.kind).toBe(SpanKind.INTERNAL);
+        expect(span.attributes['http.response.status_code']).toBe(200);
         expect(span.attributes['sse.frames']).toBe(3);
         expect(Number(span.attributes['sse.duration_ms'])).toBeGreaterThanOrEqual(0);
         expect(span.attributes['sse.client_disconnected']).toBeUndefined();

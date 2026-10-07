@@ -43,5 +43,6 @@ The advice to apply (matched per method).
 
 `T`
 
-A woven proxy, or `instance` itself when nothing matches or it
-  was already intercepted.
+A woven proxy; the existing proxy when `instance` (or the raw
+  target it advises) was already woven; or `instance` itself when nothing
+  matches.

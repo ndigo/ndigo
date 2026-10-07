@@ -3,6 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import { IllegalStateError } from '@blue/core';
 import { InMemoryDataSource } from './data-source';
 
 /**
@@ -61,6 +62,10 @@ export interface TransactionManager {
  * entities before the transaction keep their own later mutations — the stores
  * no longer alias them after a rollback.
  *
+ * Overlapping `run()` calls are rejected (the backing store can only hold one
+ * snapshot at a time); a second concurrent call fails loud rather than
+ * silently discarding the first run's commits on rollback (DAT-F2).
+ *
  * @since 1.0.0
  */
 export class InMemoryTransactionManager implements TransactionManager {
@@ -81,6 +86,12 @@ export class InMemoryTransactionManager implements TransactionManager {
 
     /** @inheritdoc */
     async run<T>(fn: () => T | Promise<T>): Promise<T> {
+        if (this.#active) {
+            throw new IllegalStateError('InMemoryTransactionManager: a transaction is already active');
+        }
+
+        // Set the latch synchronously (no await in between) so a concurrent
+        // run() started before this one's first await observes it.
         this.#active = true;
         const snapshot = this.#dataSource.snapshot();
         try {

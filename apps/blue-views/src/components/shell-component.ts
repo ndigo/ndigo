@@ -27,6 +27,7 @@ export class BlueViewsShell extends HTMLElement {
             ['Shell', '#/'],
             ['Widget', '#/widget'],
             ['Report', '#/report'],
+            ['Client', '#/client'],
         ] as const) {
             const link = document.createElement('a');
             link.href = href;

@@ -107,6 +107,29 @@ describe('ServerSentEventParser', () => {
         parser.feed('data: {"n":1}\n\n');
         expect(parser.finish()).toEqual([]);
     });
+
+    test('splits on lone CR line terminators (WHATWG event-stream, REV-007)', () => {
+        const parser = new ServerSentEventParser();
+        // Pre-fix only CRLF/LF were recognized, so the lone-CR frame was
+        // never terminated and produced no event.
+        expect(parser.feed('event: tick\rdata: {"n":1}\r\r')).toEqual([{ event: 'tick', data: { n: 1 } }]);
+    });
+
+    test('a CRLF split across chunks still terminates one line', () => {
+        const parser = new ServerSentEventParser();
+        expect(parser.feed('data: a\r')).toEqual([]);
+        expect(parser.feed('\n\n')).toEqual([{ event: 'message', data: 'a' }]);
+    });
+
+    test('strips a single leading byte order mark (REV-007)', () => {
+        const parser = new ServerSentEventParser();
+        // Pre-fix the BOM glued to the first field name, so the `data` line
+        // was an unknown field and the event vanished.
+        expect(parser.feed('\uFEFFdata: hello\n\n')).toEqual([{ event: 'message', data: 'hello' }]);
+        // A BOM later in the stream is content, not a marker.
+        const later = new ServerSentEventParser();
+        expect(later.feed('data: a\uFEFFb\n\n')).toEqual([{ event: 'message', data: 'a\uFEFFb' }]);
+    });
 });
 
 describe('parseServerSentEvents', () => {

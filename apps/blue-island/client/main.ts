@@ -54,6 +54,26 @@ class IslandPushAPI {
     }
 }
 
+/** First reconnect delay; each failed attempt doubles up to the max (WC-G). */
+const SSE_INITIAL_BACKOFF_MS = 1000;
+
+/** Ceiling for the reconnect backoff, so retries stay frequent but bounded. */
+const SSE_MAX_BACKOFF_MS = 30_000;
+
+/**
+ * The island's SSE connection states, surfaced in its status line so a server
+ * restart or network drop is visible instead of silently stale (WC-G).
+ */
+type ConnectionState = 'connecting' | 'live' | 'reconnecting';
+
+/**
+ * Per-connect SSE session state (WC-G): the reconnect loop waits out its
+ * backoff on `wake`, so disconnecting can cancel the wait immediately instead
+ * of leaving a timer to fire after the component is gone. A fresh session per
+ * connect keeps a disposed loop from observing the next one's state.
+ */
+type StreamSession = { cancelled: boolean; wake: (() => void) | undefined };
+
 /** The island's own strings, keyed by the negotiated locale's language. */
 const ISLAND_LABELS = {
     en: {
@@ -63,6 +83,11 @@ const ISLAND_LABELS = {
         idle: '[form] Web Awesome controls — submit posts standard form data.',
         accepted: (text: string) => `[form] accepted "${text}" — model update pushed over SSE`,
         rejected: (detail: string) => `[form] submit failed (${detail})`,
+        connection: {
+            connecting: '[SSE] connecting…',
+            live: '[SSE] listening for server model updates…',
+            reconnecting: '[SSE] connection lost — reconnecting…',
+        },
     },
     fr: {
         inputLabel: 'Ajouter un élément',
@@ -71,6 +96,11 @@ const ISLAND_LABELS = {
         idle: '[form] composants Web Awesome — l’envoi utilise les données de formulaire standard.',
         accepted: (text: string) => `[form] « ${text} » accepté — mise à jour poussée via SSE`,
         rejected: (detail: string) => `[form] échec de l’envoi (${detail})`,
+        connection: {
+            connecting: '[SSE] connexion…',
+            live: '[SSE] écoute des mises à jour du serveur…',
+            reconnecting: '[SSE] connexion perdue — reconnexion…',
+        },
     },
 } as const;
 
@@ -88,6 +118,18 @@ class TodoIsland extends AbstractWebComponent {
     readonly #http = new HTTP();
     #list: HTMLUListElement | undefined;
     #hint: HTMLParagraphElement | undefined;
+    #live: HTMLParagraphElement | undefined;
+
+    // WC-F: the connect-time subscription/render resources are owned by the
+    // component and released on disconnect, so a DOM move (disconnect →
+    // reconnect) never stacks a second effect or SSE subscription.
+    #stopEffect: (() => void) | undefined;
+    #stopStream: (() => void) | undefined;
+    #streamSession: StreamSession | undefined;
+
+    // WC-G: the last connection state, kept so a shell rebuilt after a
+    // reconnect still reflects the live status.
+    #connectionState: ConnectionState = 'connecting';
 
     set model(model: TodoModel) {
         this.#model = model;
@@ -110,12 +152,17 @@ class TodoIsland extends AbstractWebComponent {
         return this.#locale;
     }
 
-    connectedCallback(): void {
-        super.connectedCallback();
+    /**
+     * Lifecycle hook (WC-F): wire the reactive render path and the SSE
+     * subscription, keeping both disposers so {@link handleDisconnect} can
+     * release them. Runs on every (re)connect, so it must create exactly one
+     * of each.
+     */
+    protected handleConnect(): void {
         // Subscribe to server pushes: each validated SSE `model` event
         // replaces the local reactive state; the effect below re-renders.
         const modelSignal = signal<{ model: TodoModel }>({ model: this.#model });
-        effect(() => {
+        this.#stopEffect = effect(() => {
             const next = modelSignal.value.model;
             if (next !== this.#model) {
                 this.#model = next;
@@ -125,7 +172,81 @@ class TodoIsland extends AbstractWebComponent {
         // serviceClient's generic binds to the constructor it receives, so the
         // proxy is typed as the instance shape explicitly (runtime returns one).
         const api = serviceClient(IslandPushAPI, this.#http) as unknown as IslandPushAPI;
-        streamToSignal(api.modelUpdates(), modelSignal);
+        // A per-connect session lets disconnect cancel an in-flight backoff
+        // wait before closing the stream (see {@link handleDisconnect}).
+        this.#streamSession = { cancelled: false, wake: undefined };
+        this.#stopStream = streamToSignal(this.#reconnectingStream(api, this.#streamSession), modelSignal);
+    }
+
+    /**
+     * Releases the connect-time resources (WC-F). Without this the old effect
+     * and SSE subscription would keep running after a DOM move, stacking a
+     * second render path and a second stream on the next connect.
+     */
+    protected handleDisconnect(): void {
+        // Wake an in-flight backoff wait so the reconnect loop stops now, then
+        // release the effect and the stream's stop handle.
+        if (this.#streamSession) {
+            this.#streamSession.cancelled = true;
+            this.#streamSession.wake?.();
+            this.#streamSession.wake = undefined;
+            this.#streamSession = undefined;
+        }
+        this.#stopStream?.();
+        this.#stopEffect?.();
+        this.#stopStream = undefined;
+        this.#stopEffect = undefined;
+    }
+
+    /**
+     * Resubscribing SSE source (WC-G): follows the server's model stream, and
+     * when it ends or errors — a server restart, a dropped connection — waits a
+     * bounded, exponentially growing backoff and resubscribes, updating the
+     * visible connection state around each attempt. The returned stop handle
+     * (from `streamToSignal`) disposes the whole loop.
+     *
+     * @param api - The typed push service client to resubscribe.
+     * @param session - The connect's cancellation state; see {@link StreamSession}.
+     * @returns The event stream, resubscribed across disconnections.
+     */
+    async *#reconnectingStream(api: IslandPushAPI, session: StreamSession): AsyncIterable<{ model: TodoModel }> {
+        let delay = SSE_INITIAL_BACKOFF_MS;
+        while (!session.cancelled) {
+            this.#setConnectionState('connecting');
+            try {
+                // oxlint-disable-next-line no-await-in-loop -- consuming the push stream is inherently sequential
+                for await (const update of api.modelUpdates()) {
+                    // A delivered event proves the stream is open again.
+                    delay = SSE_INITIAL_BACKOFF_MS;
+                    this.#setConnectionState('live');
+                    yield update;
+                }
+                this.#setConnectionState('reconnecting');
+            } catch {
+                // Transport failure (server down/restart): retry below. The
+                // error is expected during backoff and is not user-facing.
+                this.#setConnectionState('reconnecting');
+            }
+            if (session.cancelled) {
+                return;
+            }
+            const backoff = Promise.withResolvers<void>();
+            session.wake = backoff.resolve;
+            const timer = setTimeout(backoff.resolve, delay);
+            // oxlint-disable-next-line no-await-in-loop -- the loop exists to serialize reconnect attempts
+            await backoff.promise;
+            clearTimeout(timer);
+            session.wake = undefined;
+            delay = Math.min(delay * 2, SSE_MAX_BACKOFF_MS);
+        }
+    }
+
+    /** Records and, once the shell exists, displays the SSE connection state. */
+    #setConnectionState(state: ConnectionState): void {
+        this.#connectionState = state;
+        if (this.#live) {
+            this.#live.textContent = labelsFor(this.#locale).connection[state];
+        }
     }
 
     render(): void {
@@ -171,7 +292,7 @@ class TodoIsland extends AbstractWebComponent {
         const live = document.createElement('p');
         live.style.fontSize = '0.85rem';
         live.style.color = '#1a7f4b'; // ≥4.5:1 on white (axe WCAG AA)
-        live.textContent = '[SSE] listening for server model updates…';
+        live.textContent = labels.connection[this.#connectionState];
         const form = document.createElement('form');
         form.className = 'add-item';
         const input = document.createElement('wa-input') as HTMLElement & { value: string };
@@ -198,6 +319,7 @@ class TodoIsland extends AbstractWebComponent {
         root.replaceChildren(style, list, hint, live, form, status);
         this.#list = list;
         this.#hint = hint;
+        this.#live = live;
     }
 
     /**

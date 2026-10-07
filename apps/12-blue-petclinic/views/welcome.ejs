@@ -1,0 +1,23 @@
+<%- await include('./partials/head.ejs', { title: await t('welcome.heading') }) %>
+<section class="hero">
+    <h1><%= await t('welcome.heading') %></h1>
+    <p class="lead"><%= await t('welcome.intro') %></p>
+    <p class="muted">
+        <%= await t('welcome.figures', { values: { owners: counts.owners, vets: counts.vets } }) %>
+    </p>
+</section>
+<ul class="cards">
+    <li class="card">
+        <h2><a href="/owners"><%= await t('nav.owners') %></a></h2>
+        <p><%= await t('welcome.owners.hint') %></p>
+    </li>
+    <li class="card">
+        <h2><a href="/owners/new"><%= await t('nav.addOwner') %></a></h2>
+        <p><%= await t('welcome.addOwner.hint') %></p>
+    </li>
+    <li class="card">
+        <h2><a href="/vets"><%= await t('nav.vets') %></a></h2>
+        <p><%= await t('welcome.vets.hint') %></p>
+    </li>
+</ul>
+<%- await include('./partials/footer.ejs') %>

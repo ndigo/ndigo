@@ -28,6 +28,10 @@
     ".": {
       "types": "./lib/index.d.ts",
       "default": "./lib/index.js"
+    },
+    "./scrypt": {
+      "types": "./lib/scrypt-password-encoder.d.ts",
+      "default": "./lib/scrypt-password-encoder.js"
     }
   },
   "sideEffects": false,

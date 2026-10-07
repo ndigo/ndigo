@@ -54,7 +54,7 @@ const builder = new ApplicationBuilder([NodeAppConfiguration]).processors(interc
 ```
 
 Registered beans whose methods carry `@audited` are replaced by one proxy;
-every other entry keeps its identity. This is the `apps/blue-api` demo gate
+every other entry keeps its identity. This is the `apps/04-blue-api` demo gate
 (AD-42 D-8).
 
 ## 2. The interceptor contract
@@ -180,6 +180,6 @@ class PushAPI {
   plan `docs/plans/2026-10-03_METHOD_INTERCEPTION.md`
 - Resilience: [AD-43](../decisions/2026-10-04_AD43_RETRY_AND_CIRCUIT_BREAKER.md),
   plan `docs/plans/2026-10-04_RETRY_AND_CIRCUIT_BREAKER.md`
-- Demo gates: `apps/blue-api` (audit), `packages/blue-service`
+- Demo gates: `apps/04-blue-api` (audit), `packages/blue-service`
   (`service-client-resilience.spec.ts`)
 - Packages: `@blue/proxy`, `@blue/resilience`

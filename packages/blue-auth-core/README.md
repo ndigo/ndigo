@@ -59,6 +59,20 @@ if (principal.hasAnyRole('admin', 'moderator')) {
 }
 ```
 
+### Password encoders
+
+The scheme-agnostic `PasswordEncoder`/`DelegatingPasswordEncoder` contracts are
+on the root export and safe to import anywhere. The **scrypt implementation is
+Node-only** (it derives through `node:crypto`) and lives on a subpath, so a
+browser bundle that imports the root never pulls a Node built-in:
+
+```typescript
+import { DelegatingPasswordEncoder } from '@blue/auth-core';
+import { ScryptPasswordEncoder } from '@blue/auth-core/scrypt';
+
+const encoder = new DelegatingPasswordEncoder({ scrypt: new ScryptPasswordEncoder() }, 'scrypt');
+```
+
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into

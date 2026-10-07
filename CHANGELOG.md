@@ -123,8 +123,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   DTO/schema-target conversion (AD-35, AD-38).
 - Tooling: `@blue/test` integration harness (bootApp/MockHTTP), oxlint
   plugin architectural rules (AD-45, AD-46, AD-63).
+- Example applications `08`–`19`: `08-blue-httpbin` (HTTP semantics
+  playground), `09-blue-todobackend` (Todo-Backend REST spec + CORS/HEAD/
+  OPTIONS), `10-blue-conduit-api` (RealWorld API, JWT + spec-exact error
+  envelope), `11-blue-conduit-web` (RealWorld frontend), `12-blue-petclinic`
+  (server-rendered forms, i18n, JSON negotiation), `13-blue-chat` (rooms,
+  presence, history; STOMP interop with `@stomp/stompjs`), `14-blue-kanban`
+  (versioned cards, 409 conflicts, optimistic UI), `15-blue-resilience-lab`
+  (`@retry`/`@circuitBreaker` breaker cycle), `16-blue-redis-fanout`
+  (cross-node cache + socket fan-out), `17-blue-telemetry-lab` (browser→server
+  trace continuation, sampling, OTLP), `18-blue-auth-playground` (cookie/JWT/
+  role/session-durability matrix + embedded OIDC PKCE issuer), `19-blue-hn`
+  (cached/offline HN reader) — each with tests and a boot-smoke probe
+  (`docs/plans/2026-10-07_EXAMPLE_APPLICATIONS.md`).
+- Root `pnpm apps:smoke` — boots every Node example app on a dedicated probe
+  port, asserts its documented route (plus the hello-node WebSocket echo),
+  requires a clean SIGTERM exit and a released port; wired into the CI quality
+  lane.
 
 ### Changed
+
+- Example-app directories are numbered in reading order
+  (`apps/01-blue-hello` … `apps/07-blue-views`, new apps `08`–`19`); package
+  names stay unnumbered (`@blue/hello` …) except the two unscoped demos, now
+  `@blue/island` and `@blue/views`. `blue-todo`'s Vite dev port moves
+  3000 → 3003 and `blue-hello-node`'s default 3000 → 3010; the port registry
+  lives in `apps/README.md`. Lockfile importers, CI artifact paths, lint
+  ignores and all doc links were swept with the rename.
+- Example-app practice sweep (guides + AD-67): every app imports `getLogger`
+  from the `@blue/log` leaf instead of `@blue/telemetry`, and the twelve apps
+  that only log dropped their `@blue/telemetry` dependency; `03-blue-todo`
+  boots `MetadataConfigApplicationContext` instead of the Node-oriented
+  `ApplicationBuilder` (−98 kB in the client bundle; guide 01's minimal-app
+  snippet now matches `02-blue-hello-node` again); `01-blue-hello`'s smoke spec
+  uses the `@blue/test` browser harness (`docs/plans/2026-10-07_EXAMPLE_APPLICATIONS.md` §12).
 
 - The `@blue/requires-doc-header` oxlint rule now rejects stray `* * @…`
   header lines; a repo-wide sweep repaired 115 files (the artifact rendered as
@@ -165,6 +197,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `SiteBuilder` stub and the legacy Site/Page model remnants (AD-03).
 
 ### Fixed
+
+- `@blue/auth-core` no longer exports the Node-only `ScryptPasswordEncoder`
+  from its package root: the module imports `node:crypto` at evaluation time,
+  and `@blue/auth-client` re-exported the whole root — so any browser app
+  importing the auth client dragged a Node built-in into its module graph and
+  crashed under `vite dev` (the production build masked it by compiling
+  `process.env` reads away). The encoder now lives at
+  `@blue/auth-core/scrypt`; the root stays isomorphic. Consumers updated
+  (`apps/04`, `apps/10`, `apps/18`, the auth-server and orm-drizzle specs,
+  guides 11 and 16, the package README) — verified by loading `blue-todo`'s
+  dev server in a real browser (zero console errors, app renders).
+
+- `blue-hello-node`'s `/echo` WebSocket handler now declares its session
+  argument (`@parameters({ session: socketSessionValue('session') })`) — the
+  previous form ran the handler with `undefined` and every connection closed
+  with 1011 before echoing; locked with
+  `apps/02-blue-hello-node/test/hello-socket.spec.ts`.
+- App default ports are seeded into `process.env.PORT` before boot in
+  `02-blue-hello-node`, `08-blue-httpbin` and `13-blue-chat`: the managed
+  `HTTPServer` reads `process.env.PORT` (falling back to 3000), so the
+  documented defaults were logged but not bound.
 
 - App client bundles are valid JavaScript again: Vite 8's oxc transform passes
   TC39 decorators through unchanged (oxc 0.151 offers no lowering option), so

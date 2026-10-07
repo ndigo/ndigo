@@ -52,8 +52,8 @@ const documentedKeys = (): string[] =>
  * Every entry must name the code that consumes the key.
  */
 const READ_FROM_CONFIG: Record<string, string> = {
-    'server.name': "apps/blue-api/src/server-config.ts — @configurationProperties('server', { schema })",
-    'server.port': "apps/blue-api/src/server-config.ts — @configurationProperties('server', { schema })",
+    'server.name': "apps/04-blue-api/src/server-config.ts — @configurationProperties('server', { schema })",
+    'server.port': "apps/04-blue-api/src/server-config.ts — @configurationProperties('server', { schema })",
 };
 
 /**

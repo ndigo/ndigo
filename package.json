@@ -17,6 +17,7 @@
     "test": "nx run-many -t test",
     "test:bench": "vitest bench --run --reporter verbose",
     "test:e2e": "nx run @blue/todo:test:e2e",
+    "apps:smoke": "node scripts/apps-smoke.mjs",
     "typecheck": "pnpm --filter './packages/**' --filter './apps/**' -r exec tsc -b tsconfig.build.json",
     "lint": "pnpm --filter @blue/oxlint-plugin build:lib && oxlint --type-aware --deny-warnings .",
     "format": "oxfmt --write .",

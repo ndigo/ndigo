@@ -122,7 +122,7 @@ hook runs before the handler: return an object to populate
 ## 3. Scheduler → room (cross-context push)
 
 The registry is ordinary DI, so scheduled tasks or HTTP handlers can push
-into rooms — the `apps/blue-api` demo proves it with a chat room where a
+into rooms — the `apps/04-blue-api` demo proves it with a chat room where a
 `@scheduled` tick fires every 2 seconds:
 
 ```ts
@@ -227,7 +227,7 @@ attribute bag is merged into `session.attributes`, so `{ user }` also
 drives STOMP `/user/*` routing (`resolveUser`). `authenticateTimeoutMs`
 (default 10 s) closes a socket whose authenticator never settles, and
 `maxConnections` bounds concurrent accepted upgrades (`1013` over the cap).
-`apps/blue-api` wires the reference implementation (demo token in
+`apps/04-blue-api` wires the reference implementation (demo token in
 `?token=` or `Authorization: Bearer …`) and marks its STOMP endpoint
 `@authenticated`; its raw `/ws/chat` endpoint stays open as the documented
 public-socket contrast.
@@ -560,10 +560,10 @@ channels; a namespace is isolation convention, not authorization.
 - Plans: [WebSocket Broadcast](../plans/2026-09-15_WEBSOCKET_BROADCAST.md),
   [WebSocket Client](../plans/2026-09-15_WEBSOCKET_CLIENT.md),
   [STOMP](../plans/2026-09-16_STOMP.md)
-- Demo: `ChatController` in `apps/blue-api/src/chat-controller.ts`, e2e in
-  `apps/blue-api/test/chat.spec.ts` (driven by `WebSocketClient`);
-  `StompChatController` in `apps/blue-api/src/stomp-chat-controller.ts`,
-  e2e in `apps/blue-api/test/stomp.spec.ts` (driven by `StompClient`)
+- Demo: `ChatController` in `apps/04-blue-api/src/chat-controller.ts`, e2e in
+  `apps/04-blue-api/test/chat.spec.ts` (driven by `WebSocketClient`);
+  `StompChatController` in `apps/04-blue-api/src/stomp-chat-controller.ts`,
+  e2e in `apps/04-blue-api/test/stomp.spec.ts` (driven by `StompClient`)
 - Package surfaces: [`@blue/socket`](../../packages/blue-socket/README.md)
   (contracts + client + STOMP), `@blue/dispatcher` (handler vocabulary),
   [`@blue/platform-node`](../../packages/blue-platform-node/README.md)

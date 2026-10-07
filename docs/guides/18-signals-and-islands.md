@@ -84,7 +84,7 @@ class SignalsCounter extends AbstractWebComponent {
 - When the class defines `destroy()`/`dispose()`, activation wraps them to
   dispose the effects and drop the signal maps.
 
-The runnable demo is `apps/blue-todo`'s `signals-counter-view.ts`.
+The runnable demo is `apps/03-blue-todo`'s `signals-counter-view.ts`.
 
 ## 4. Bridging streams and events
 
@@ -158,7 +158,7 @@ hydrateIslands(); // upgrades every [data-blue-island] marker; returns the count
 each tag — which must already be defined; a tag with no registered component is
 left as inert markup — restores the locale and `.model`, and replaces the
 server markup, after which `connectedCallback`/`render` run. The demo app is
-`apps/blue-island` (EJS shell + hydrated island + SSE).
+`apps/06-blue-island` (EJS shell + hydrated island + SSE).
 
 ### Reactive islands: SSE → signal → render
 

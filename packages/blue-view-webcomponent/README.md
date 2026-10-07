@@ -106,7 +106,7 @@ pnpm --filter @blue/view-webcomponent test
 
 - [@blue/view](../blue-view/README.md) — view contracts and targets
 - [@blue/dom](../blue-dom/README.md) — isomorphic DOM providers used for server-side component rendering
-- [apps/blue-island](../../apps/blue-island/README.md) — server-side island hydration
+- [apps/06-blue-island](../../apps/06-blue-island/README.md) — server-side island hydration
 
 ## Contributing
 

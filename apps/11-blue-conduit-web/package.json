@@ -1,0 +1,41 @@
+{
+  "name": "@blue/conduit-web",
+  "version": "0.0.1",
+  "description": "RealWorld (Conduit) frontend — BlueJS browser app driving @blue/conduit-api",
+  "type": "module",
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vite build && vitest run"
+  },
+  "keywords": [
+    "conduit",
+    "realworld",
+    "blue",
+    "bluejs"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/http": "~0.0.1",
+    "@blue/platform-web": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/signals": "~0.0.1",
+    "@blue/view-webcomponent": "~0.0.1",
+    "@blue/log": "~0.0.1"
+  },
+  "devDependencies": {
+    "@blue/test": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:",
+    "vite": "catalog:",
+    "@blue/log": "~0.0.1"
+  }
+}

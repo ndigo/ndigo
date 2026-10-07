@@ -41,7 +41,7 @@ backend the auth stack ships; the auth contract itself is unchanged.
 ```ts
 import { LibSQLSessionStore } from '@blue/orm-drizzle';
 import { CredentialsAuthAdapter } from '@blue/auth-server';
-import { ScryptPasswordEncoder } from '@blue/auth-core';
+import { ScryptPasswordEncoder } from '@blue/auth-core/scrypt'; // Node-only (node:crypto)
 
 const sessions = new LibSQLSessionStore({
     url: 'file:./sessions.db', // or an injected { client } with intMode: 'number'

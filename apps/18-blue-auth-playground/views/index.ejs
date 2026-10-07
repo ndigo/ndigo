@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title><%= title %></title>
+        <style>
+            :root {
+                color-scheme: light dark;
+                --line: #8883;
+                --accent: #1f7a5a;
+            }
+            body {
+                font-family: system-ui, sans-serif;
+                max-width: 62rem;
+                margin: 2rem auto;
+                padding: 0 1rem;
+                line-height: 1.5;
+            }
+            h1 {
+                margin-bottom: 0.25rem;
+            }
+            .lede {
+                color: #666;
+                margin-top: 0;
+            }
+            section {
+                border-top: 1px solid var(--line);
+                margin-top: 2rem;
+                padding-top: 1rem;
+            }
+            article {
+                border: 1px solid var(--line);
+                border-radius: 8px;
+                padding: 0.75rem 1rem;
+                margin-bottom: 0.75rem;
+            }
+            article h3 {
+                margin: 0 0 0.25rem;
+                font-size: 1rem;
+            }
+            article ul {
+                margin: 0.25rem 0;
+                padding-left: 1.25rem;
+            }
+            code {
+                font-family: ui-monospace, monospace;
+                font-size: 0.9em;
+            }
+            #panel {
+                display: grid;
+                gap: 0.75rem;
+                border: 1px solid var(--line);
+                border-radius: 8px;
+                padding: 1rem;
+            }
+            .row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                align-items: end;
+            }
+            fieldset {
+                border: 1px solid var(--line);
+                border-radius: 8px;
+            }
+            legend {
+                padding: 0 0.35rem;
+                font-weight: 600;
+            }
+            label {
+                display: block;
+                font-size: 0.8rem;
+                color: #666;
+            }
+            input {
+                font: inherit;
+                padding: 0.25rem 0.4rem;
+            }
+            button {
+                font: inherit;
+                padding: 0.3rem 0.7rem;
+                border-radius: 6px;
+                border: 1px solid var(--line);
+                background: transparent;
+                cursor: pointer;
+            }
+            button:hover {
+                border-color: var(--accent);
+            }
+            #log {
+                font-family: ui-monospace, monospace;
+                font-size: 0.8rem;
+                white-space: pre-wrap;
+                word-break: break-all;
+                max-height: 30rem;
+                overflow: auto;
+                background: #8881;
+                border-radius: 8px;
+                padding: 0.75rem;
+                margin: 0;
+            }
+            .note {
+                color: #666;
+                font-size: 0.85rem;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1><%= title %></h1>
+            <p class="lede">
+                Six authentication modes, one process: opaque cookie sessions, JWT access + refresh tokens, a role matrix
+                over HTTP and sockets, login rate limiting, durable LibSQL sessions, and OIDC authorization-code + PKCE
+                against an issuer embedded in this server.
+            </p>
+            <p class="note">
+                Demo accounts: <code>admin</code> (role <code>admin</code>) and <code>alice</code> (role
+                <code>user</code>), password <code>demo</code>; the federated account <code>oidc-demo</code> exists only
+                through the embedded OIDC issuer.
+            </p>
+        </header>
+
+        <main id="playground" aria-live="polite">
+            <section>
+                <h2>Interactive panel loading…</h2>
+                <p class="note">
+                    The buttons come from <code>/static/client.js</code>. Everything this page documents is also
+                    reachable with <code>curl</code> — see the README's transcripts.
+                </p>
+            </section>
+        </main>
+
+        <section id="matrix">
+            <h2>The modes</h2>
+            <% for (const mode of modes) { %>
+            <article id="<%= mode.id %>">
+                <h3><%= mode.title %></h3>
+                <ul>
+                    <% for (const endpoint of mode.endpoints) { %>
+                    <li><code><%= endpoint %></code></li>
+                    <% } %>
+                </ul>
+                <p><%= mode.demonstrates %></p>
+            </article>
+            <% } %>
+        </section>
+
+        <script type="module" src="/static/client.js"></script>
+    </body>
+</html>

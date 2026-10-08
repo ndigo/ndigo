@@ -19,11 +19,12 @@ import type { Sampler, SpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
-import { ConsoleMetricExporter, PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
+import { ConsoleMetricExporter, MetricReader, PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { BatchLogRecordProcessor, ConsoleLogRecordExporter, SimpleLogRecordProcessor } from '@opentelemetry/sdk-logs';
 import { Instrumentation } from '@opentelemetry/instrumentation';
-import { LoggerFactory } from '@blue/telemetry';
+import { LoggerFactory, registerMetricSnapshotProvider } from '@blue/telemetry';
 import { SeverityFilterLogRecordProcessor } from './severity-filter-log-record-processor';
+import { PrometheusMetricReader } from './metrics/prometheus-metric-reader';
 import { getLogger } from '@blue/log';
 
 const logger = getLogger('blue-telemetry-node:node-config');
@@ -43,11 +44,19 @@ export type SamplerSpec = { ratio: number } | 'always' | 'off' | Sampler;
  *   (the dev default; a missing url can no longer silently phone the
  *   default collector);
  * - `'none'` — the signal's export path is disabled;
+ * - `'prometheus'` — **metric signal only** (AD-77 D-1): registers the pull
+ *   {@link PrometheusMetricReader} instead of the periodic push reader, and
+ *   serves the meter state through `GET /metrics` in the Prometheus text
+ *   exposition format (plus the JSON projection);
  * - `{ url, headers? }` — OTLP/HTTP, headers forwarded (e.g. bearer auth;
  *   never logged). A `headers`-only spec still selects OTLP (explicit
  *   intent), using the default endpoint.
  */
-export type ExporterSpec = { url?: string; headers?: Record<string, string>; console?: true } | 'console' | 'none';
+export type ExporterSpec =
+    | { url?: string; headers?: Record<string, string>; console?: true }
+    | 'console'
+    | 'none'
+    | 'prometheus';
 
 export interface TelemetryConfig {
     traceExporter?: ExporterSpec;
@@ -62,7 +71,8 @@ export interface TelemetryConfig {
 export type ResolvedExporter =
     | { kind: 'console' }
     | { kind: 'none' }
-    | { kind: 'otlp'; url?: string; headers?: Record<string, string> };
+    | { kind: 'otlp'; url?: string; headers?: Record<string, string> }
+    | { kind: 'prometheus' };
 
 /**
  * Resolves a per-signal exporter spec (AD-32 D-2/D-3). Pure — no providers
@@ -76,6 +86,14 @@ export function resolveExporter(spec: ExporterSpec | undefined, signal: 'trace' 
     if (spec === 'none') {
         return { kind: 'none' };
     }
+    if (spec === 'prometheus') {
+        if (signal !== 'metric') {
+            throw new Error(
+                `TelemetryConfig: 'prometheus' is only valid for the metric exporter (requested for ${signal})`
+            );
+        }
+        return { kind: 'prometheus' };
+    }
     if (spec.url !== undefined) {
         try {
             new URL(spec.url);
@@ -87,7 +105,7 @@ export function resolveExporter(spec: ExporterSpec | undefined, signal: 'trace' 
 }
 
 function logRecordProcessorFor(
-    resolved: Exclude<ResolvedExporter, { kind: 'none' }>,
+    resolved: Exclude<ResolvedExporter, { kind: 'none' } | { kind: 'prometheus' }>,
     minimumSeverity: SeverityNumber | undefined
 ): BatchLogRecordProcessor | SimpleLogRecordProcessor | SeverityFilterLogRecordProcessor {
     const base =
@@ -155,20 +173,31 @@ export function configureTelemetry(config: TelemetryConfig) {
               ? []
               : undefined;
 
-    // Metrics: the reader list is always explicit (as before).
-    const metricReaders =
-        metric.kind === 'none'
-            ? []
-            : [
-                  new PeriodicExportingMetricReader({
-                      exporter:
-                          metric.kind === 'console'
-                              ? new ConsoleMetricExporter()
-                              : new OTLPMetricExporter({ url: metric.url, headers: metric.headers }),
-                  }),
-              ];
+    // Metrics: the reader list is always explicit (as before). The
+    // `'prometheus'` spec (AD-77 D-1) swaps the periodic push reader for the
+    // pull reader; the same process cannot push and pull (one reader slot —
+    // combining them is a future `metricReaders` knob).
+    let prometheusReader: PrometheusMetricReader | undefined;
+    let metricReaders: MetricReader[] = [];
+    if (metric.kind === 'prometheus') {
+        prometheusReader = new PrometheusMetricReader();
+        metricReaders = [prometheusReader];
+    } else if (metric.kind !== 'none') {
+        metricReaders = [
+            new PeriodicExportingMetricReader({
+                exporter:
+                    metric.kind === 'console'
+                        ? new ConsoleMetricExporter()
+                        : new OTLPMetricExporter({ url: metric.url, headers: metric.headers }),
+            }),
+        ];
+    }
 
-    const logRecordProcessors = log.kind === 'none' ? [] : [logRecordProcessorFor(log, config.minimumSeverity)];
+    // `'prometheus'` cannot reach here: `resolveExporter` throws for the log
+    // signal above, before the once-per-process latch. The filter keeps the
+    // union honest so an invalid spec can never build a log pipeline.
+    const logRecordProcessors =
+        log.kind === 'none' || log.kind === 'prometheus' ? [] : [logRecordProcessorFor(log, config.minimumSeverity)];
 
     const sdk = new NodeSDK({
         // AD-32 D-1: parent-based sampler presets preserve the SDK default
@@ -185,6 +214,13 @@ export function configureTelemetry(config: TelemetryConfig) {
     });
 
     sdk.start();
+
+    // AD-77 D-3: the pull reader becomes the process's metric snapshot source
+    // (single slot, last registration wins) — `@blue/management`'s `/metrics`
+    // endpoint reads it per request with zero wiring.
+    if (prometheusReader !== undefined) {
+        registerMetricSnapshotProvider(prometheusReader);
+    }
 
     // OP-8: the log processor is inert until app loggers emit through the
     // OpenTelemetry API. Web parity: once an explicit `logExporter` is

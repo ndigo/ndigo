@@ -7,6 +7,36 @@ Every implemented plan has its **decision recorded** in
 
 ## Completed Plans
 
+### 2026-10-08 - Migration Generation + Run-on-Boot
+
+`@blue/orm-drizzle` + `@blue/cli` + `apps/04-blue-api` (AD-78), closing
+GAP-7: versioned **file migrations** (`db/migrations/<NNNN>-<slug>.ts`,
+loader + `migrateOnBoot` — the AD-30 runner untouched), entity-metadata
+**generation** against a committed `db/schema.json` projection
+(`projectEntities`/`diffProjections`, freshness-gated in CI by
+`db:schema:check`), `blue db new|generate|status` (closing the AD-75 `db:*`
+remainder), and the app's `config/application.json` as the dotted-key
+carrier for `migrations.runOnBoot`.
+
+[Read plan](2026-10-08_MIGRATION_GENERATION.md)
+
+---
+
+### 2026-10-08 - Prometheus Metrics
+
+`@blue/telemetry-node` + `@blue/management` + `@blue/telemetry` (AD-77),
+closing GAP-5: `metricExporter: 'prometheus'` (metric signal only) registers
+a pull `PrometheusMetricReader` over the SDK `MeterProvider`; `/metrics`
+serves the same snapshot as the Prometheus text exposition document by
+default and as JSON on `Accept: application/json` (the `{ features }`
+aggregator document is replaced); `HTTPServerInstrumentation` records the
+semconv `http.server.request.duration` histogram in every export mode. The
+isomorphic snapshot model + renderers live in `@blue/telemetry`.
+
+[Read plan](2026-10-08_PROMETHEUS_METRICS.md)
+
+---
+
 ### 2026-10-08 - Actuator Parity
 
 `@blue/management` (AD-76), closing GAP-4: `/loggers` (level index,

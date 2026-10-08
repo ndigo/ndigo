@@ -1,6 +1,6 @@
 # BlueJS Decision Records (ADRs)
 
-Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-75**,
+Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-78**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -16,7 +16,8 @@ contiguous. Every record captures a decision with its context, the evidence
   _Superseded in part_ (only a subset of the decision was replaced; the
   successor ADRs are linked in the record) · _Reviewed_ (proposal reviewed;
   the outcome is recorded — no change needed) · _Deferred/Rejected_
-  (decided against, with revisit triggers).
+  (decided against, with revisit triggers) · _Proposed_ (draft awaiting
+  sign-off — recorded so the gated backlog is visible).
 - Decision records are the source of truth for _why_; implementation plans
   live in [docs/plans](../plans/README.md), how-to in
   [docs/guides](../guides/README.md).
@@ -101,3 +102,5 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-74** | 2026-10-07    | Accepted           | [Clustering / worker offload — `@blue/cluster` (process supervisor, signal relay, bounded restarts)](2026-10-07_AD74_CLUSTERING.md)                                         |
 | **AD-75** | 2026-10-07    | Accepted           | [The framework CLI — `@blue/cli` on `@oclif/core` v5, embedded](2026-10-07_AD75_FRAMEWORK_CLI.md)                                                                           |
 | **AD-76** | 2026-10-08    | Accepted           | [Actuator parity — `/loggers`, `/env`, `/configprops`, health groups](2026-10-08_AD76_ACTUATOR_PARITY.md)                                                                   |
+| **AD-77** | 2026-10-08    | Accepted           | [Prometheus metrics, semconv duration, meter-derived `/metrics`](2026-10-08_AD77_PROMETHEUS_METRICS.md)                                                                     |
+| **AD-78** | 2026-10-08    | Accepted           | [Migration generation + run-on-boot — `blue db generate`, committed schema snapshot, `migrations.runOnBoot`](2026-10-08_AD78_MIGRATION_GENERATION.md)                       |

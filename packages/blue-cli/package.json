@@ -40,13 +40,16 @@
     "additionalVersionFlags": [
       "-v"
     ],
-    "topicSeparator": ":"
+    "topicSeparator": " "
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
     "@blue/cluster": "~0.0.1",
     "@oclif/core": "^5.0.0"
+  },
+  "devDependencies": {
+    "@blue/orm-drizzle": "~0.0.1"
   },
   "sideEffects": false
 }

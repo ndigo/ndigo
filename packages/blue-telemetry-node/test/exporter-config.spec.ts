@@ -25,6 +25,15 @@ describe('resolveExporter (AD-32 D-2)', () => {
         expect(resolveExporter('none', 'metric')).toEqual({ kind: 'none' });
     });
 
+    test("'prometheus' selects the pull reader for the metric signal (AD-77 D-1)", () => {
+        expect(resolveExporter('prometheus', 'metric')).toEqual({ kind: 'prometheus' });
+    });
+
+    test("'prometheus' is rejected for trace and log signals, naming the signal", () => {
+        expect(() => resolveExporter('prometheus', 'trace')).toThrow(/only valid for the metric exporter/);
+        expect(() => resolveExporter('prometheus', 'log')).toThrow('requested for log');
+    });
+
     test('{ url } selects OTLP, preserving url and headers', () => {
         expect(
             resolveExporter(

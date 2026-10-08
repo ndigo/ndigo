@@ -1,0 +1,15 @@
+[**@blue/telemetry v0.0.1**](../README.md)
+
+***
+
+[@blue/telemetry](../README.md) / unregisterMetricSnapshotProvider
+
+# Function: unregisterMetricSnapshotProvider()
+
+> **unregisterMetricSnapshotProvider**(): `void`
+
+Clears the registered metric snapshot source.
+
+## Returns
+
+`void`

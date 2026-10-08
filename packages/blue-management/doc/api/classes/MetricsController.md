@@ -6,11 +6,13 @@
 
 # Class: MetricsController
 
-Serves aggregated application metrics under `/metrics`.
-
-Reads the context-level [FeatureMetricAggregator](#) (populated by the
-`counted` decorator and feature code) and serializes per-feature counters,
-gauges, and durations as JSON — the Blue-native pull view over telemetry.
+Serves the meter snapshot under `/metrics` (AD-77 D-4): one source of
+truth — the process's registered `MetricSnapshotProvider` — in two wire
+forms. An `Accept: application/json` (or `*+json`) header selects the
+JSON projection; every other request receives the Prometheus text
+exposition document with `Content-Type: text/plain; version=0.0.4`.
+When no snapshot source is registered (no telemetry configured), the
+endpoint answers the classic error document.
 
 ## Since
 
@@ -56,16 +58,24 @@ A symbol indicating that the value is aware.
 
 ### metrics()
 
-> **metrics**(): \{ `error`: `string`; `features?`: `undefined`; \} \| \{ `error?`: `undefined`; `features`: `Record`\<`string`, \{ `counters`: `Record`\<`string`, `number`\>; `durations`: `Record`\<`string`, `DurationSummary`\>; `gauges`: `Record`\<`string`, `number`\>; `updatedAt`: `string`; \}\>; \}
+> **metrics**(`accept?`): `Promise`\<`MetricJSONView` \| `ResponseEntity`\<`string`\> \| \{ `error`: `string`; \}\>
 
-Returns the full metrics snapshot.
+Returns the metric snapshot in the negotiated wire form.
+
+#### Parameters
+
+##### accept?
+
+`string`
+
+The `Accept` header value (absent for socket/bare calls).
 
 #### Returns
 
-\{ `error`: `string`; `features?`: `undefined`; \} \| \{ `error?`: `undefined`; `features`: `Record`\<`string`, \{ `counters`: `Record`\<`string`, `number`\>; `durations`: `Record`\<`string`, `DurationSummary`\>; `gauges`: `Record`\<`string`, `number`\>; `updatedAt`: `string`; \}\>; \}
+`Promise`\<`MetricJSONView` \| `ResponseEntity`\<`string`\> \| \{ `error`: `string`; \}\>
 
-`{ features: { <feature>: { counters, gauges, durations, updatedAt } } }`,
-  or `{ error }` when no aggregator is wired.
+The Prometheus text document, the JSON projection, or the
+  no-source error document.
 
 ***
 

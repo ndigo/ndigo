@@ -34,7 +34,10 @@ blue serve --cluster 4 --port 3000   # 4 replicated worker slots
 | `blue serve [dir]`     | Runs the app under the supervisor (`--cluster <n>`, `--port <base>`).  |
 | `blue dev [dir]`       | Runs the app's `dev` script (vite) or `start` (Node apps).             |
 | `blue generate <kind>` | Fronts `@blue/generators` (package, component, readme, header) via Nx. |
-| `blue db:migrate`      | Runs the app's `db:migrate` script.                                    |
+| `blue db new [slug]`   | Scaffolds the next versioned migration file (AD-78).                   |
+| `blue db generate`     | Runs the app's `db:generate` script (AD-78: entities → migration).     |
+| `blue db migrate`      | Runs the app's `db:migrate` script (the journaled runner).             |
+| `blue db status`       | Runs the app's `db:status` script (journal readback).                  |
 | `blue inspect [dir]`   | Runs the app's `inspect` entry (the AD-70 manifest printer).           |
 | `blue doctor`          | Prints environment diagnostics — the issue-report starter.             |
 

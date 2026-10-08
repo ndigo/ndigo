@@ -66,9 +66,31 @@ PORT=3090 pnpm start
   uses (`/lab/config` serves it to the browser). A custom receiver must answer
   the browser's CORS preflight; the stock image already does, and the CSP is
   widened for that origin automatically.
-- The SDK is shut down on `SIGINT`/`SIGTERM` (`gracefulShutdown`), so the last
-  batch — including the server's `HTTPServer.close` span and the metrics reader —
-  is flushed instead of dropped (guide 10 §6).
+
+### Prometheus mode (AD-77)
+
+```bash
+cd apps/17-blue-telemetry-lab
+BLUE_TELEMETRY_METRIC_EXPORTER=prometheus PORT=3090 pnpm start
+```
+
+`BLUE_TELEMETRY_METRIC_EXPORTER=prometheus` overrides the **metric** signal
+only (winning over the OTLP endpoint): the pull reader backs
+`GET /metrics` in the Prometheus text exposition format — the scrape
+contract — with the JSON projection on `Accept: application/json`:
+
+```bash
+curl -s localhost:3090/metrics       # text/plain; version=0.0.4
+curl -s -H 'Accept: application/json' localhost:3090/metrics
+```
+
+The lab reads its own metrics, so a scrape shows the
+`http.server.request.duration` histogram (semconv) plus the lab's custom
+counters.
+
+The SDK is shut down on `SIGINT`/`SIGTERM` (`gracefulShutdown`), so the last
+batch — including the server's `HTTPServer.close` span and the metrics reader —
+is flushed instead of dropped (guide 10 §6).
 
 ## What to look for
 

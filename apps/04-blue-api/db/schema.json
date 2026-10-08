@@ -1,0 +1,38 @@
+{
+  "predicate": 1,
+  "tables": [
+    {
+      "name": "drizzle_notes",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "primaryKey": true,
+          "generated": true,
+          "nullable": false
+        },
+        {
+          "name": "title",
+          "type": "TEXT",
+          "primaryKey": false,
+          "generated": false,
+          "nullable": false
+        },
+        {
+          "name": "body",
+          "type": "TEXT",
+          "primaryKey": false,
+          "generated": false,
+          "nullable": true
+        },
+        {
+          "name": "created_at",
+          "type": "TEXT",
+          "primaryKey": false,
+          "generated": false,
+          "nullable": true
+        }
+      ]
+    }
+  ]
+}

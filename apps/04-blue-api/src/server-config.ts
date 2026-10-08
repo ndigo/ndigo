@@ -67,3 +67,29 @@ const secretsSchema = z.object({
 export class SecretsConfig {
     secretToken!: string;
 }
+
+/**
+ * Schema for `migrations.*` (AD-78 D-4) — the run-on-boot opt-in and the
+ * migrations directory, resolved from environment properties with schema
+ * defaults.
+ */
+const migrationsSchema = z.object({
+    runOnBoot: z.coerce.boolean().default(false),
+    dir: z.string().default('db/migrations'),
+});
+
+/**
+ * Type-safe handle for the bound `MigrationsConfig` bean (AD-34 D1).
+ */
+export const MIGRATIONS_CONFIG = new ContextToken<MigrationsConfig>('migrationsConfig');
+
+/**
+ * Journaled-migration boot options (AD-78): `migrations.runOnBoot` applies
+ * pending file migrations through `migrateOnBoot` before the server starts
+ * (fail-closed), against the same store the Drizzle routes read.
+ */
+@configurationProperties('migrations', { schema: migrationsSchema })
+export class MigrationsConfig {
+    runOnBoot!: boolean;
+    dir!: string;
+}

@@ -28,22 +28,36 @@ Jeff Rose
 
 ## Interfaces
 
+- [ColumnProjection](interfaces/ColumnProjection.md)
 - [DrizzleDataSourceOptions](interfaces/DrizzleDataSourceOptions.md)
 - [LibSQLJobStoreOptions](interfaces/LibSQLJobStoreOptions.md)
 - [LibSQLOutboxStoreOptions](interfaces/LibSQLOutboxStoreOptions.md)
 - [LibSQLQueueMessageStoreOptions](interfaces/LibSQLQueueMessageStoreOptions.md)
 - [LibSQLSessionStoreOptions](interfaces/LibSQLSessionStoreOptions.md)
+- [MigrateOnBootOptions](interfaces/MigrateOnBootOptions.md)
 - [Migration](interfaces/Migration.md)
 - [MigrationContext](interfaces/MigrationContext.md)
 - [MigrationStatus](interfaces/MigrationStatus.md)
+- [ProjectionDelta](interfaces/ProjectionDelta.md)
+- [SchemaSnapshot](interfaces/SchemaSnapshot.md)
+- [TableProjection](interfaces/TableProjection.md)
 
 ## Type Aliases
 
 - [MigrationState](type-aliases/MigrationState.md)
+- [SqliteStorageType](type-aliases/SqliteStorageType.md)
 
 ## Functions
 
 - [createTableStatements](functions/createTableStatements.md)
+- [diffProjections](functions/diffProjections.md)
 - [drizzleTableForEntity](functions/drizzleTableForEntity.md)
 - [insertSchemaForEntity](functions/insertSchemaForEntity.md)
+- [loadMigrations](functions/loadMigrations.md)
+- [migrateOnBoot](functions/migrateOnBoot.md)
+- [nextMigrationVersion](functions/nextMigrationVersion.md)
+- [projectEntities](functions/projectEntities.md)
+- [readSnapshot](functions/readSnapshot.md)
+- [renderMigrationFile](functions/renderMigrationFile.md)
+- [renderSnapshot](functions/renderSnapshot.md)
 - [selectSchemaForEntity](functions/selectSchemaForEntity.md)

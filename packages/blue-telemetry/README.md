@@ -58,7 +58,7 @@ The full API is generated from JSDoc via `pnpm doc:api` into
 how it fits with the rest of BlueJS.
 
 - **Logging** — `getLogger`, logger abstraction with threshold filtering
-- **Metrics** — `FeatureMetricAggregator`, `@counted`
+- **Metrics** — `FeatureMetricAggregator`, `@counted`, the metric snapshot model (`MetricSnapshot`/`MetricSnapshotProvider` registry) and the Prometheus-text / JSON renderers the management `/metrics` endpoint serves (AD-77)
 - **Tracing** — `@traced` decorator, platform-free instrumentation bases
 - **Severity mapping** — utilities for `syslog`, `npm`, `apache`, and `cli`
 

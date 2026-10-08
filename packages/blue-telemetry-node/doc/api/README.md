@@ -19,6 +19,7 @@ Jeff Rose
 - [ContextInstrumentation](classes/ContextInstrumentation.md)
 - [HTTPResponseViewTargetInstrumentation](classes/HTTPResponseViewTargetInstrumentation.md)
 - [HTTPServerInstrumentation](classes/HTTPServerInstrumentation.md)
+- [PrometheusMetricReader](classes/PrometheusMetricReader.md)
 - [ServerSentEventViewInstrumentation](classes/ServerSentEventViewInstrumentation.md)
 - [SeverityFilterLogRecordProcessor](classes/SeverityFilterLogRecordProcessor.md)
 - [WebSocketServerInstrumentation](classes/WebSocketServerInstrumentation.md)

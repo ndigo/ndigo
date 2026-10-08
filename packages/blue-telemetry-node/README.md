@@ -2,7 +2,7 @@
 
 > NodeSDK configuration and Node platform instrumentations for BlueJS, built on the isomorphic [`@blue/telemetry`](../blue-telemetry/README.md) core.
 
-`@blue/telemetry-node` wires OpenTelemetry into Node applications: one-call `configureTelemetry()` NodeSDK setup (tracer provider, span/live-metric exporters, severity-filtered log processor), runtime instrumentations that produce spans for BlueJS components, and a `SeverityFilterLogRecordProcessor` that drops log records below a configured severity so production logs stay quiet. The isomorphic core carries only the OTel API packages; SDK dependencies live here on the Node side.
+`@blue/telemetry-node` wires OpenTelemetry into Node applications: one-call `configureTelemetry()` NodeSDK setup (tracer provider, span/live-metric exporters — including the `'prometheus'` pull reader, AD-77, severity-filtered log processor), runtime instrumentations that produce spans for BlueJS components, and a `SeverityFilterLogRecordProcessor` that drops log records below a configured severity so production logs stay quiet. The isomorphic core carries only the OTel API packages; SDK dependencies live here on the Node side.
 
 ## Installation
 
@@ -47,6 +47,7 @@ The full API is generated from JSDoc via `pnpm doc:api` into
 how it fits with the rest of BlueJS.
 
 - **Bootstrap** — `configureTelemetry()`
+- **Prometheus pull** — `PrometheusMetricReader` (backed by `metricExporter: 'prometheus'`); `HTTPServerInstrumentation` records the semconv `http.server.request.duration` histogram (seconds) for every request
 - **Instrumentations** — `HTTPServerInstrumentation`, `ServerSentEventViewInstrumentation`, `WebSocketServerInstrumentation`, `HTTPResponseViewTargetInstrumentation`
 - **Logging** — `SeverityFilterLogRecordProcessor`
 

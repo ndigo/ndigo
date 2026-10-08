@@ -21,4 +21,5 @@ export {
     type WebSocketServerInstrumentationOptions,
 } from './instrumentation/websocket-server/websocket-server';
 export { ContextInstrumentation } from '@blue/telemetry';
+export { PrometheusMetricReader } from './metrics/prometheus-metric-reader';
 export { SeverityFilterLogRecordProcessor } from './severity-filter-log-record-processor';

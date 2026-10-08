@@ -76,7 +76,7 @@
           "description": "Trace export. undefined/'console'/{ console: true } selects the console exporter (dev default); 'none' disables the signal; { url, headers? } selects OTLP/HTTP. OTLP urls are validated at configuration time."
         },
         "metricExporter": {
-          "description": "Metric export — same exporter spec as traceExporter.",
+          "description": "Metric export — same exporter spec as traceExporter, plus the metric-only 'prometheus' literal (AD-77): registers the pull reader behind the management /metrics endpoint instead of the periodic push reader.",
           "$ref": "#/$defs/exporterSpec"
         },
         "logExporter": {
@@ -189,7 +189,7 @@
       "title": "Exporter spec",
       "description": "Per-signal exporter configuration (ExporterSpec).",
       "anyOf": [
-        { "type": "string", "enum": ["console", "none"] },
+        { "type": "string", "enum": ["console", "none", "prometheus"] },
         {
           "type": "object",
           "properties": {

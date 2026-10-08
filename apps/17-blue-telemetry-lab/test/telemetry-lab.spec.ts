@@ -19,6 +19,7 @@ import { ManagementAutoConfiguration } from '@blue/management';
 import { bootApp, MockHTTP } from '@blue/test';
 import type { BlueTestApp } from '@blue/test';
 import { LAB_FEATURE } from '../src/lab-metrics';
+import { MetricSnapshot, registerMetricSnapshotProvider, unregisterMetricSnapshotProvider } from '@blue/telemetry';
 import { SOCKET_PATH } from '../src/lab-controller';
 import { TelemetryLabConfiguration, applyLabSecurityHeaders } from '../src/telemetry-lab-configuration';
 import { resolveLabTelemetry } from '../src/telemetry-config';
@@ -41,11 +42,6 @@ interface LabConfigBody {
     exporters: { trace: string; metric: string; log: string };
     tickCron: string;
     pushCron: string;
-}
-
-/** The `/metrics` document, reduced to the lab's feature entry. */
-interface MetricsBody {
-    features: Record<string, { counters: Record<string, number> }>;
 }
 
 describe('blue-telemetry-lab HTTP surface', () => {
@@ -119,15 +115,47 @@ describe('blue-telemetry-lab HTTP surface', () => {
         expect(res.json()).toMatchObject({ status: 400, error: 'invalid_body' });
     });
 
-    test('GET /metrics serves the lab counters the routes recorded', async () => {
-        const res = await mockHTTP.get('/metrics').exec();
+    test('GET /metrics serves the meter-derived Prometheus document (AD-77 D-4)', async () => {
+        // The hermetic lane never registers an OTel SDK, so the meter-backed
+        // snapshot source is injected directly. (`@blue/management` pins the
+        // full adapter contract end-to-end; this lane pins what the lab
+        // serves on the wire.)
+        registerMetricSnapshotProvider({
+            snapshot: async (): Promise<readonly MetricSnapshot[]> => [
+                {
+                    name: 'work.requests.get',
+                    description: 'GET /work requests',
+                    unit: '',
+                    type: 'sum',
+                    points: [{ attributes: { feature: LAB_FEATURE }, value: { kind: 'scalar', value: 7 } }],
+                },
+                {
+                    name: 'http.server.request.duration',
+                    description: 'The duration of the server request.',
+                    unit: 's',
+                    type: 'histogram',
+                    points: [
+                        {
+                            attributes: { 'http.request.method': 'GET' },
+                            value: { kind: 'histogram', count: 2, sum: 0.02, min: 0.001, max: 0.019, buckets: [] },
+                        },
+                    ],
+                },
+            ],
+        });
+        try {
+            const res = await mockHTTP.get('/metrics').exec();
 
-        expect(res.response.status).toBe(200);
-        const body = res.json() as MetricsBody;
-        const counters = body.features[LAB_FEATURE]?.counters ?? {};
-        expect(counters['work.requests.get']).toBeGreaterThanOrEqual(1);
-        expect(counters['work.requests.post']).toBeGreaterThanOrEqual(1);
-        expect(counters['work.units']).toBeGreaterThanOrEqual(5);
+            expect(res.response.status).toBe(200);
+            const body = res.text();
+            expect(body).toContain('# TYPE work.requests.get counter');
+            expect(body).toContain(`work.requests.get{feature="${LAB_FEATURE}"} 7`);
+            expect(body).toContain('# TYPE http.server.request.duration_count counter');
+            expect(body).toContain('http.server.request.duration_count{http.request.method="GET"} 2');
+            expect(body).toContain('# TYPE http.server.request.duration_sum gauge');
+        } finally {
+            unregisterMetricSnapshotProvider();
+        }
     });
 
     test('GET /lab/state reports the counters, scheduler, and socket wiring', async () => {

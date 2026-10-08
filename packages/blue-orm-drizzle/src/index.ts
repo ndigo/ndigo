@@ -7,6 +7,16 @@ export { DrizzleDataSource, createTableStatements } from './drizzle-data-source'
 export type { DrizzleDataSourceOptions } from './drizzle-data-source';
 export { DrizzleMigrator } from './drizzle-migrator';
 export type { Migration, MigrationContext, MigrationState, MigrationStatus } from './drizzle-migrator';
+export { loadMigrations, nextMigrationVersion, migrateOnBoot } from './migration-loader';
+export type { MigrateOnBootOptions } from './migration-loader';
+export { projectEntities, diffProjections, renderMigrationFile, renderSnapshot, readSnapshot } from './schema-snapshot';
+export type {
+    SchemaSnapshot,
+    TableProjection,
+    ColumnProjection,
+    ProjectionDelta,
+    SqliteStorageType,
+} from './schema-snapshot';
 export { LibSQLQueueMessageStore } from './libsql-queue-message-store';
 export type { LibSQLQueueMessageStoreOptions } from './libsql-queue-message-store';
 export { LibSQLJobStore } from './libsql-job-store';

@@ -166,6 +166,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `@blue/redis/locks` (AD-73): `RedisLockDriver` — Lua `SET NX PX` acquire +
   compare-and-delete release, one namespace per environment, borrowed
   connection. Cross-process single-executor for multi-node deployments.
+- `@blue/cluster` (AD-74): the process supervisor — `ClusterRunner` spawns N
+  replicated worker slots (`BLUE_CLUSTER_SLOT`/`SIZE`, `PORT = base + slot`
+  derivation), relays `SIGINT`/`SIGTERM` into each child's own graceful
+  shutdown (shared deadline, `SIGKILL` stragglers), respawns crashed slots
+  with exponential backoff, trips fail-closed past `maxRestartsPerWindow`
+  per slot, and aborts on a second signal; `runCluster()` runs one cluster
+  to completion. The `node:child_process` spawner and `process` signal host
+  are injectable seams for embeddings and tests.
 - `@scheduled({ lock })` (AD-73): one node executes each fire of a locked
   schedule — the runner acquires before the run and releases in the `finally`
   (contended fires skip with a logged warning; `lockWait`/`lockWaitStep`/

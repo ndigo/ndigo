@@ -27,6 +27,7 @@ Conceptual and hands-on guides for building applications with BlueJS. These comp
 21. [21 — Component Integration](21-component-integration.md) — adopting a Web Component library: the AD-69 vetting checklist, per-component imports without wrappers, the server-fallback pattern for first paint, FACE form submission into the existing binding/Zod path, token theming, and i18n wiring. Reference application: `apps/06-blue-island` (AD-71 — Web Awesome).
 22. [22 — Jobs and the Transactional Outbox](22-jobs-and-outbox.md) — `@blue/jobs`: the `JobDriver` SPI (at-least-once lease-based delivery), `@jobHandler` discovery, retries/timeouts/spans, the durable libSQL and Redis drivers, and the outbox that commits side effects with the data.
 23. [23 — Distributed Locks](23-distributed-locks.md) — `@blue/locks` (AD-73): leases + fencing tokens, the in-process and Redis drivers, and the `@scheduled({ lock })` single-executor contract across nodes.
+24. [24 — Clustering](24-clustering.md) — `@blue/cluster` (AD-74): the process supervisor — replicated worker slots, `SIGINT`/`SIGTERM` relay into each child's own graceful shutdown, bounded-backoff restarts, and the fail-closed crash-loop guard.
 
 ## Reading Order
 

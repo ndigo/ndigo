@@ -13,6 +13,11 @@ import { DrizzleNote } from '../src/drizzle-note.entity';
 import { getDrizzleDataSource } from '../src/drizzle-note-controller';
 import type { NoteDTO } from '../src/note.dto';
 
+// AD-78: the demo data source is file-backed by default; tests pin the
+// in-process store so runs never touch the working tree's `data/` dir
+// (the data source is created lazily on first request).
+process.env.BLUE_DB_URL = ':memory:';
+
 /**
  * Integration test for the real blue-api app through @blue/test.
  *
@@ -284,11 +289,12 @@ describe('blue-api through @blue/test', () => {
         expect(typeof body.components).toBe('object');
     });
 
-    test('GET /metrics returns the aggregator snapshot', async () => {
+    test('GET /metrics answers the no-source document without a snapshot source (AD-77)', async () => {
         const res = await mockHTTP.get('/metrics').exec();
         expect(res.response.status).toBe(200);
-        const body = res.json() as { features?: Record<string, unknown> };
-        expect(typeof body.features).toBe('object');
+        // No telemetry configured in the boot path → the endpoint is served
+        // and answers the documented error document instead of a 500.
+        expect(res.json()).toEqual({ error: 'No metric source wired' });
     });
 
     test('GET /api/greeting resolves the language from Accept-Language', async () => {

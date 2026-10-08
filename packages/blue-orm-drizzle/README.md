@@ -48,6 +48,40 @@ await em.persist(alice); // backfills alice.id (generated key)
 const found = await em.find(User, alice.id);
 ```
 
+## Migrations (AD-30/AD-78)
+
+Two layers, both additive on the AD-30 runner:
+
+- **Versioned migration files** — `db/migrations/<NNNN>-<slug>.ts`, one
+  module exporting a `Migration` per file. `loadMigrations(dir)` discovers
+  and orders them (versions come from the exports; filenames are cosmetic),
+  `nextMigrationVersion(dir)` probes the next free version, and
+  `migrateOnBoot({ dataSource, dir })` applies pending ones at startup —
+  failing closed (a boot that would serve against a stale schema stops).
+  The `DrizzleMigrator` contract itself is unchanged.
+- **Generation from entity metadata** — `projectEntities(entities)` renders
+  the snapshot shape (`db/schema.json`, `predicate`-versioned);
+  `diffProjections(before, after)` renders the SQL delta (create/alter/drop)
+  with anything the metadata predicate cannot express reported as
+  unsupported; `renderMigrationFile` + `renderSnapshot`/`readSnapshot` are
+  the committed artifacts. `blue db generate` (guide 27) drives the whole
+  loop against the committed snapshot, so regeneration is byte-identical —
+  the CI freshness gate's premise.
+
+```ts
+// db/migrations/0001-initial.ts
+import type { Migration } from '@blue/orm-drizzle';
+import { createTableStatements } from '@blue/orm-drizzle'; // or a generated file's ctx.batch body
+
+const migration: Migration = {
+    version: 1,
+    description: 'initial schema',
+    up: (ctx) => ctx.batch(createTableStatements([User])),
+};
+
+export default migration;
+```
+
 ## Usage
 
 ### Repository contract

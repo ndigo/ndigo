@@ -6,6 +6,6 @@
 
 # Type Alias: ResolvedExporter
 
-> **ResolvedExporter** = \{ `kind`: `"console"`; \} \| \{ `kind`: `"none"`; \} \| \{ `headers?`: `Record`\<`string`, `string`\>; `kind`: `"otlp"`; `url?`: `string`; \}
+> **ResolvedExporter** = \{ `kind`: `"console"`; \} \| \{ `kind`: `"none"`; \} \| \{ `headers?`: `Record`\<`string`, `string`\>; `kind`: `"otlp"`; `url?`: `string`; \} \| \{ `kind`: `"prometheus"`; \}
 
 The resolved export choice for one signal.

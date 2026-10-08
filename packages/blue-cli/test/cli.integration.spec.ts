@@ -248,3 +248,47 @@ setTimeout(() => {}, 120_000);
         }
     }, 20_000);
 });
+
+describe('blue db (AD-78)', () => {
+    let dbAppDir: string;
+
+    beforeAll(() => {
+        dbAppDir = join(base, 'db-app');
+        mkdirSync(dbAppDir, { recursive: true });
+        writeFileSync(join(dbAppDir, 'package.json'), JSON.stringify({ name: 'db-app', private: true, scripts: {} }));
+    });
+
+    test('db new scaffolds the next versioned migration file', async () => {
+        const first = await runCli(['db', 'new', dbAppDir, 'add-title-column']);
+        expect(first.code).toBe(0);
+        expect(first.out).toContain('0001-add-title-column.ts');
+
+        const target = join(dbAppDir, 'db', 'migrations', '0001-add-title-column.ts');
+        expect(existsSync(target)).toBe(true);
+        const source = readFileSync(target, 'utf8');
+        expect(source).toContain('version: 1,');
+        expect(source).toContain('description: "add-title-column",');
+        expect(source).toContain('export default migration;');
+
+        // The next scaffold probes past the highest version.
+        const second = await runCli(['db', 'new', dbAppDir, 'another']);
+        expect(second.code).toBe(0);
+        expect(existsSync(join(dbAppDir, 'db', 'migrations', '0002-another.ts'))).toBe(true);
+    });
+
+    test('db new normalizes the slug for the filename', async () => {
+        const { code, out } = await runCli(['db', 'new', dbAppDir, 'Add  Column!']);
+        expect(code).toBe(0);
+        expect(out).toContain('0003-add-column.ts');
+    });
+
+    test('db generate and db status fail loud with the script hint when undeclared', async () => {
+        const results = await Promise.all(['generate', 'status'].map((script) => runCli(['db', script, dbAppDir])));
+        for (const [script, { code, out, err }] of results.map(
+            (result, index) => [['generate', 'status'][index], result] as const
+        )) {
+            expect(code).toBe(2);
+            expect(`${out}${err}`).toContain(`db:${script}`);
+        }
+    });
+});

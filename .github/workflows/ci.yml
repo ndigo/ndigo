@@ -90,6 +90,13 @@ jobs:
         # wrong relative paths, and dead heading anchors. No network.
         run: pnpm docs:links
 
+      - name: Migration schema freshness (AD-78 D-6)
+        # Regenerates the reference app's committed db/schema.json through
+        # its own db:generate script and fails on any drift under db/
+        # (scripts/check-migration-schema.mjs): entity metadata and the
+        # committed migration/snapshot must stay in one commit.
+        run: pnpm db:schema:check
+
       - name: Production dependency audit (no known vulnerabilities)
         run: pnpm audit --prod
 

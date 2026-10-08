@@ -88,6 +88,14 @@ export function appScriptCommand(
         );
     }
     const env: Record<string, string> = {
+        // The child gets the invoking environment (config knobs like
+        // BLUE_DB_URL, OTel endpoints, secret keys flow through), with the
+        // app's local .bin fronting PATH for argv[0] lookup. Signals still
+        // reach the real process — the shell-free property is about no
+        // intermediate shell, not a sanitized environment (AD-78 recorded
+        // this: `blue db migrate` silently dropped BLUE_DB_URL and friends
+        // when the env was stripped to PATH).
+        ...process.env,
         PATH: `${join(dir, 'node_modules', '.bin')}:${process.env.PATH ?? ''}`,
     };
     return { argv, cwd: dir, env };

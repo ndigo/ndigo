@@ -7,14 +7,17 @@ library — commands, typed flags, `--help`, exit codes.
 
 ## Commands
 
-| Command                | Runs the app's…                         | Example                                                          |
-| :--------------------- | :-------------------------------------- | :--------------------------------------------------------------- |
-| `blue serve`           | `scripts.start` under the supervisor    | `blue serve ./apps/04-blue-api --port 3000 --cluster 4`          |
-| `blue dev`             | `scripts.dev` (vite) or `scripts.start` | `blue dev ./apps/15-blue-resilience-lab --port 3200`             |
-| `blue generate <kind>` | `@blue/generators` via Nx               | `blue generate package --name my-app`                            |
-| `blue db:migrate`      | `scripts.db:migrate`                    | `blue db:migrate ./apps/04-blue-api`                             |
-| `blue inspect`         | `scripts.inspect` (the AD-70 printer)   | `blue inspect ./apps/04-blue-api`                                |
-| `blue doctor`          | (self-diagnostics)                      | `blue doctor` — versions, workspace, git, and environment checks |
+| Command                | Runs the app's…                                                     | Example                                                          |
+| :--------------------- | :------------------------------------------------------------------ | :--------------------------------------------------------------- |
+| `blue serve`           | `scripts.start` under the supervisor                                | `blue serve ./apps/04-blue-api --port 3000 --cluster 4`          |
+| `blue dev`             | `scripts.dev` (vite) or `scripts.start`                             | `blue dev ./apps/15-blue-resilience-lab --port 3200`             |
+| `blue generate <kind>` | `@blue/generators` via Nx                                           | `blue generate package --name my-app`                            |
+| `blue db new [slug]`   | scaffolds the next versioned migration                              | `blue db new ./apps/04-blue-api add-title-column`                |
+| `blue db generate`     | `scripts.db:generate` (AD-78: entities → next migration + snapshot) | `blue db generate ./apps/04-blue-api`                            |
+| `blue db migrate`      | `scripts.db:migrate`                                                | `blue db migrate ./apps/04-blue-api`                             |
+| `blue db status`       | `scripts.db:status` (journal readback)                              | `blue db status ./apps/04-blue-api`                              |
+| `blue inspect`         | `scripts.inspect` (the AD-70 printer)                               | `blue inspect ./apps/04-blue-api`                                |
+| `blue doctor`          | (self-diagnostics)                                                  | `blue doctor` — versions, workspace, git, and environment checks |
 
 Every command follows the oclif contract: `--help`, `--version`, exit `0`
 ok / `2` usage / `1` runtime. `blue doctor` exits `1` when a check fails
@@ -72,10 +75,13 @@ signals relay, crashes reap.
 
 ## Adding the conventions
 
-`db:migrate` and `inspect` look for the app's declared scripts — add them
-when the CLI reports them missing (the AD-70 `inspect` entry builds the
-manifest without binding a port; apps choose their own controllers/config
-classes, exactly as `apps/04-blue-api/src/inspect.ts` does).
+`db:migrate`, `db:generate`, `db:status` and `inspect` look for the app's
+declared scripts — add them when the CLI reports them missing (the AD-70
+`inspect` entry builds the manifest without binding a port; apps choose
+their own controllers/config classes, exactly as
+`apps/04-blue-api/src/inspect.ts` does). The `db:*` lifecycle — versioned
+migration files, generation from entity metadata, and run-on-boot — is
+guide 27.
 
 ## See also
 

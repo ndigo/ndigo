@@ -47,14 +47,51 @@ Ratios outside `[0, 1]` and NaN fail loud at configuration time.
 
 Each signal (`traceExporter` / `metricExporter` / `logExporter`) accepts:
 
-| Spec                                              | Effect                                                                                                    |
-| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `undefined` or `'console'` or `{ console: true }` | console exporter — the safe dev default; a missing url can no longer silently phone the default collector |
-| `'none'`                                          | the signal's export path is disabled                                                                      |
-| `{ url, headers? }`                               | OTLP/HTTP; headers (e.g. bearer auth) are forwarded and never logged                                      |
+| Spec                                              | Effect                                                                                                                                                        |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `undefined` or `'console'` or `{ console: true }` | console exporter — the safe dev default; a missing url can no longer silently phone the default collector                                                     |
+| `'none'`                                          | the signal's export path is disabled                                                                                                                          |
+| `'prometheus'`                                    | **metric signal only** (AD-77): registers the pull reader instead of the periodic push exporter; the management `/metrics` endpoint serves the meter snapshot |
+| `{ url, headers? }`                               | OTLP/HTTP; headers (e.g. bearer auth) are forwarded and never logged                                                                                          |
 
 OTLP urls are validated at configuration time — typos fail loud instead of
 failing at export time.
+
+### The metrics pull view — Prometheus and `/metrics` (AD-77)
+
+`metricExporter: 'prometheus'` replaces the push pipeline for metrics with a
+**pull reader over the SDK `MeterProvider`** — the same instruments, exposed
+for scraping. Combined with
+[`ManagementAutoConfiguration`](26-management-endpoints.md):
+
+```ts
+configureTelemetry({
+    metricExporter: 'prometheus', // metric-only: pull replaces push
+    instrumentations: [new HTTPServerInstrumentation()],
+});
+// + ManagementAutoConfiguration in the app builder
+```
+
+- `GET /metrics` serves the **Prometheus text exposition** document by
+  default (`text/plain; version=0.0.4`) — the scraper contract. An
+  `Accept: application/json` (or `application/*+json`) header returns the
+  same snapshot as JSON (`{ metrics: { <name>: { type, unit, points } } }`);
+  both views derive from the one meter snapshot, so the exported and the
+  scraped picture can never diverge. Without a configured snapshot source
+  the endpoint answers `{ "error": "No metric source wired" }`.
+- Histograms render as the `<name>_count` counter + `<name>_sum` gauge pair
+  (the exposition format has no histogram type); averages derive the
+  usual way (`sum / count`).
+- `HTTPServerInstrumentation` records the semconv
+  **`http.server.request.duration`** histogram (seconds, explicit semconv
+  buckets, `http.request.method` + `http.response.status_code` attributes)
+  for every completed request — in **every** export mode, Prometheus or
+  OTLP alike.
+
+`'prometheus'` is rejected for `traceExporter` / `logExporter` at
+configuration time (fail loud, naming the signal). One exporter per signal
+per process: combining OTLP push with Prometheus pull needs a future
+`metricReaders` knob.
 
 Configuring a `logExporter` (anything but `'none'`) also switches
 `LoggerFactory` to the OpenTelemetry logger (browser parity), so

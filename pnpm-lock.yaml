@@ -1531,6 +1531,10 @@ importers:
       '@oclif/core':
         specifier: ^5.0.0
         version: 5.1.2
+    devDependencies:
+      '@blue/orm-drizzle':
+        specifier: ~0.0.1
+        version: link:../blue-orm-drizzle
 
   packages/blue-cluster:
     dependencies:
@@ -1811,6 +1815,9 @@ importers:
       '@blue/dispatcher':
         specifier: ~0.0.1
         version: link:../blue-dispatcher
+      '@blue/http':
+        specifier: ~0.0.1
+        version: link:../blue-http
       '@blue/log':
         specifier: ~0.0.1
         version: link:../blue-log

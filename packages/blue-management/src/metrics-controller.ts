@@ -3,18 +3,54 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { getMapping, requestMapping } from '@blue/dispatcher';
-import { DurationSummary, FeatureMetricAggregator } from '@blue/telemetry';
+import { getMapping, requestMapping, parameters, headerValue } from '@blue/dispatcher';
+import { MediaType } from '@blue/core';
+import { ResponseEntity } from '@blue/platform-node';
+import { ResponseStatuses } from '@blue/http';
+import { getMetricSnapshotProvider, renderMetricJson, renderPrometheusText } from '@blue/telemetry';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Null } from '@blue/core';
-import { METRIC_AGGREGATOR } from './metric-aggregator-tokens';
 
 /**
- * Serves aggregated application metrics under `/metrics`.
- *
- * Reads the context-level {@link FeatureMetricAggregator} (populated by the
- * `counted` decorator and feature code) and serializes per-feature counters,
- * gauges, and durations as JSON — the Blue-native pull view over telemetry.
+ * The wire content type for the Prometheus text exposition document
+ * (the versioned media type the scraper understands).
+ */
+export const PROMETHEUS_TEXT_CONTENT_TYPE = 'text/plain; version=0.0.4; charset=utf-8';
+
+/**
+ * Whether an `Accept` header explicitly prefers the JSON projection (AD-77
+ * D-4): the single best-acceptable entry decides, ties keep header order,
+ * malformed weights fall back to `1`. A JSON media type
+ * (`application/json` or any `application/*+json` suffix) selects JSON;
+ * everything else — absent headers, wildcard accepts, `text/plain`,
+ * browsers — selects the Prometheus text document.
+ */
+export function prefersJsonView(accept: string | undefined): boolean {
+    let best: MediaType | undefined;
+    let bestQuality = 0;
+
+    for (const entry of MediaType.parseAccept(accept)) {
+        const quality = entry.qualityFactor;
+        if (quality <= 0 || quality < bestQuality) {
+            continue;
+        }
+        if (quality > bestQuality || best === undefined) {
+            best = entry;
+            bestQuality = quality;
+        }
+    }
+
+    return best !== undefined && best.type === 'application' && (best.subtype === 'json' || best.suffix === 'json');
+}
+
+/**
+ * Serves the meter snapshot under `/metrics` (AD-77 D-4): one source of
+ * truth — the process's registered `MetricSnapshotProvider` — in two wire
+ * forms. An `Accept: application/json` (or `*+json`) header selects the
+ * JSON projection; every other request receives the Prometheus text
+ * exposition document with `Content-Type: text/plain; version=0.0.4`.
+ * When no snapshot source is registered (no telemetry configured), the
+ * endpoint answers the classic error document.
  *
  * @since 1.0.0
  */
@@ -23,41 +59,26 @@ export class MetricsController extends AsApplicationContextAware(Null) {
     readonly applicationContext!: ApplicationContext;
 
     /**
-     * Returns the full metrics snapshot.
+     * Returns the metric snapshot in the negotiated wire form.
      *
-     * @returns `{ features: { <feature>: { counters, gauges, durations, updatedAt } } }`,
-     *   or `{ error }` when no aggregator is wired.
+     * @param accept - The `Accept` header value (absent for socket/bare calls).
+     * @returns The Prometheus text document, the JSON projection, or the
+     *   no-source error document.
      */
     @getMapping('/')
-    metrics() {
-        const aggregator = this.applicationContext?.getValue<FeatureMetricAggregator>(METRIC_AGGREGATOR);
-        if (!aggregator) {
-            return { error: 'No metric aggregator wired' };
+    @parameters({ accept: headerValue('Accept') })
+    async metrics(accept?: string) {
+        const provider = getMetricSnapshotProvider();
+        if (!provider) {
+            return { error: 'No metric source wired' };
         }
 
-        const features: Record<
-            string,
-            {
-                counters: Record<string, number>;
-                durations: Record<string, DurationSummary>;
-                gauges: Record<string, number>;
-                updatedAt: string;
-            }
-        > = {};
-
-        for (const name of aggregator.featureNames) {
-            const metrics = aggregator.getFeatureMetrics(name);
-            if (!metrics) {
-                continue;
-            }
-            features[name] = {
-                counters: Object.fromEntries(metrics.counters),
-                durations: Object.fromEntries(metrics.durations),
-                gauges: Object.fromEntries(metrics.gauges),
-                updatedAt: metrics.updatedAt.toISOString(),
-            };
+        const snapshots = await provider.snapshot();
+        if (prefersJsonView(accept)) {
+            return renderMetricJson(snapshots);
         }
-
-        return { features };
+        return new ResponseEntity(renderPrometheusText(snapshots), ResponseStatuses.OK, {
+            'Content-Type': PROMETHEUS_TEXT_CONTENT_TYPE,
+        });
     }
 }

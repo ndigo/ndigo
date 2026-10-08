@@ -309,7 +309,7 @@ Quarkus, Ktor. Status verified against HEAD by grep/graft.
 | GAP-4  | Actuator parity (`/loggers`, `/env`, `/configprops`, health groups) | **executed — AD-76** (`@blue/management`: exposure model + the four endpoint classes)                                                                                                                                                                        | high         | build behind the existing management-path guard                                          |
 | GAP-5  | OTel metrics + Prometheus + semconv names                           | **partial** — the prior review's "metrics are not OTel" was wrong: OTLP metric export and OTel counters predate the baseline; missing are the Prometheus exporter, semconv metric names (`http.server.request.duration`), and `/metrics` is proprietary JSON | high         | add Prometheus exporter + semconv emission; derive the JSON view from the meter provider |
 | GAP-6  | First-class CLI / dev loop                                          | absent (no `bin` anywhere; `@blue/inspect` is API+demo)                                                                                                                                                                                                      | high         | build `@blue/cli` (`dev`, `generate`, `db`, `inspect`)                                   |
-| GAP-7  | Migration generation + run-on-boot                                  | partial (forward-only journaled runner, baseline DDL only)                                                                                                                                                                                                   | medium       | `blue db generate` from entity metadata; `migrations.runOnBoot`                          |
+| GAP-7  | Migration generation + run-on-boot                                  | **executed — AD-78** (`@blue/orm-drizzle` file migrations + snapshot generation + `migrateOnBoot`; `blue db new\|generate\|status`; committed `db/schema.json` + CI freshness gate; reference app `apps/04-blue-api`)                                        | medium       | `blue db generate` from entity metadata; `migrations.runOnBoot`                          |
 | GAP-8  | Shared-store rate limiting                                          | partial (`RateLimiter` SPI, memory-only)                                                                                                                                                                                                                     | medium       | Redis driver via the existing SPI                                                        |
 | GAP-9  | Testcontainers / DB isolation                                       | absent                                                                                                                                                                                                                                                       | medium       | `@blue/test-containers` glue (connection properties + migrate + rollback)                |
 | GAP-10 | Multitenancy primitives                                             | absent                                                                                                                                                                                                                                                       | medium       | defer: ADR for tenant-context token + resolver hook                                      |
@@ -342,18 +342,18 @@ graft pin, OpenAPI security forwarding, secret-redaction invariant, A1/A2/A3/A5.
 
 **Carried forward (still open / deferred):**
 
-| Item                                                        | Status at HEAD                                                                 | Owner action               |
-| :---------------------------------------------------------- | :----------------------------------------------------------------------------- | :------------------------- |
-| TOL-F5 test-file typecheck lane                             | **closed in the follow-up sweep** — `tsconfig.spec.json` + full triage         | TST-A (this revision)      |
-| TEL-08 client byte-size seam (`onSend` not consumed)        | **closed in the follow-up sweep** — `countSocketClientBytes` + co.             | TEL-08 (this revision)     |
-| REU-9 inspect → boot transitive weight                      | **closed in the follow-up sweep** — metadata relocated to `@blue/context`      | REU-9 (this revision)      |
-| SEC-B/WC-I plugin probe home                                | **closed in the follow-up sweep** — `test:tooling` node:test lane              | SEC-B/WC-I (this revision) |
-| Raw-console invariant (`blue-router`, `blue-telemetry-web`) | recurrence item open (RES-A)                                                   | Wave 5                     |
-| AD-46 rule depth (`src/**/index.ts` deeper than one level)  | partial (RES-D)                                                                | Wave 3                     |
-| Skipped-test policy (six sites)                             | partial (TST-C)                                                                | Wave 1                     |
-| `[object Promise]` / bracket-syntax tests                   | test-quality items (RES-B/C)                                                   | Wave 5                     |
-| Wave-6 GAP-1..15 roadmap                                    | ADR-gated; GAP-1 (AD-72), GAP-3 (AD-73), GAP-2 (AD-74), GAP-6 (AD-75) executed | Wave 6                     |
-| Doc hygiene for both 2026-10-06 plans + indexes             | drift (DOC-2..4, DOC-5)                                                        | Wave 5                     |
+| Item                                                        | Status at HEAD                                                                                               | Owner action               |
+| :---------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------- | :------------------------- |
+| TOL-F5 test-file typecheck lane                             | **closed in the follow-up sweep** — `tsconfig.spec.json` + full triage                                       | TST-A (this revision)      |
+| TEL-08 client byte-size seam (`onSend` not consumed)        | **closed in the follow-up sweep** — `countSocketClientBytes` + co.                                           | TEL-08 (this revision)     |
+| REU-9 inspect → boot transitive weight                      | **closed in the follow-up sweep** — metadata relocated to `@blue/context`                                    | REU-9 (this revision)      |
+| SEC-B/WC-I plugin probe home                                | **closed in the follow-up sweep** — `test:tooling` node:test lane                                            | SEC-B/WC-I (this revision) |
+| Raw-console invariant (`blue-router`, `blue-telemetry-web`) | recurrence item open (RES-A)                                                                                 | Wave 5                     |
+| AD-46 rule depth (`src/**/index.ts` deeper than one level)  | partial (RES-D)                                                                                              | Wave 3                     |
+| Skipped-test policy (six sites)                             | partial (TST-C)                                                                                              | Wave 1                     |
+| `[object Promise]` / bracket-syntax tests                   | test-quality items (RES-B/C)                                                                                 | Wave 5                     |
+| Wave-6 GAP-1..15 roadmap                                    | ADR-gated; GAP-1 (AD-72), GAP-3 (AD-73), GAP-2 (AD-74), GAP-6 (AD-75), GAP-4 (AD-76), GAP-5 (AD-77) executed | Wave 6                     |
+| Doc hygiene for both 2026-10-06 plans + indexes             | drift (DOC-2..4, DOC-5)                                                                                      | Wave 5                     |
 
 ---
 
@@ -437,7 +437,22 @@ Remaining Wave-6 items stay ADR-gated. **GAP-4 executed** (2026-10-08) —
 [AD-76](../decisions/2026-10-08_AD76_ACTUATOR_PARITY.md) + the
 [companion plan](2026-10-08_ACTUATOR_PARITY.md): `/loggers`, `/env`,
 `/configprops`, health groups/components, and the opt-in exposure model in
-`@blue/management` (guide 26). GAP-5 (Prometheus/semconv) remains open.
+`@blue/management` (guide 26). **GAP-5 executed** (2026-10-08) —
+[AD-77](../decisions/2026-10-08_AD77_PROMETHEUS_METRICS.md) + the
+[companion plan](2026-10-08_PROMETHEUS_METRICS.md): the
+`metricExporter: 'prometheus'` pull reader on the existing meter provider,
+the semconv `http.server.request.duration` histogram from
+`HTTPServerInstrumentation`, and the meter-derived `/metrics` view
+(Prometheus text by default, JSON on an explicit `Accept: application/json` —
+the `{ features }` aggregator document is gone). **GAP-7 executed** (2026-10-08) —
+[AD-78](../decisions/2026-10-08_AD78_MIGRATION_GENERATION.md) + the
+[companion plan](2026-10-08_MIGRATION_GENERATION.md) + guide 27:
+`db/migrations/<NNNN>-<slug>.ts` file migrations with a loader
+(`@blue/orm-drizzle`), entity-metadata generation against a committed
+`db/schema.json` projection (freshness-gated in CI), `migrateOnBoot`
+(`migrations.runOnBoot` via the app's config file), and `blue db
+new|generate|status` closing the AD-75 `db:*` remainder. GAP-8..15 stay
+ADR-gated.
 
 ### Wave 7 — Verification
 

@@ -16,31 +16,34 @@ import {
 import { ResponseEntity } from '@blue/platform-node';
 import { apiDocs } from '@blue/openapi';
 import { insertSchemaForEntity } from '@blue/orm';
-import { DrizzleDataSource, DrizzleEntityManager } from '@blue/orm-drizzle';
+import { DrizzleEntityManager } from '@blue/orm-drizzle';
 import { HTTPHeaders } from '@blue/http';
 import { DrizzleNote } from './drizzle-note.entity';
+import { ensureDbDir, getDrizzleDataSource } from './drizzle-data-source';
 import { conversionService, noteDtoSchema, noteResponseSchema } from './note.dto';
 import { lookupPrincipal } from './auth-store';
 
 /** Insert shape validated against the Drizzle entity's derived schema. */
 const noteInsertSchema = insertSchemaForEntity(DrizzleNote);
 
-const dataSource = new DrizzleDataSource({ url: ':memory:' });
-// Idempotent + async: the first call that awaits init() creates the table;
-// subsequent calls short-circuit on #initialized.
+// Idempotent + async: the first call that awaits init() creates the table
+// (IF NOT EXISTS — byte-identical to the AD-30 baseline migration, so the
+// journaled and auto-init paths agree); subsequent calls short-circuit.
 let initPromise: Promise<void> | null = null;
 function ensureInit(): Promise<void> {
-    initPromise ??= dataSource.init([DrizzleNote]);
+    initPromise ??= (async () => {
+        await ensureDbDir();
+        await getDrizzleDataSource().init([DrizzleNote]);
+    })();
     return initPromise;
 }
 
 /**
- * The demo's Drizzle data source — exported so integration tests can seed the
- * same (in-memory) SQL store the routes read from.
+ * The demo's Drizzle data source — exported (unchanged signature) so
+ * integration tests can seed the same SQL store the routes read from; the
+ * store itself now lives in `./drizzle-data-source` (AD-78).
  */
-export function getDrizzleDataSource(): DrizzleDataSource {
-    return dataSource;
-}
+export { getDrizzleDataSource } from './drizzle-data-source';
 
 /**
  * Drizzle-backed note controller (M2): SQL persistence (read + write) through
@@ -52,7 +55,7 @@ export class DrizzleNoteController {
     readonly #entityManager: DrizzleEntityManager;
 
     constructor() {
-        this.#entityManager = new DrizzleEntityManager(dataSource);
+        this.#entityManager = new DrizzleEntityManager(getDrizzleDataSource());
     }
 
     @getMapping('/notes')

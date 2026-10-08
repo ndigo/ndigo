@@ -11,7 +11,13 @@ import { denialOf, getMapping, requestMapping, RouteHandlerMethod } from '@blue/
 import { ManagementAutoConfiguration } from '../src/management-auto-configuration';
 import { METRIC_AGGREGATOR } from '../src/metric-aggregator-tokens';
 import { HEALTH_REGISTRY } from '../src/health-registry-tokens';
-import { FeatureMetricAggregator } from '@blue/telemetry';
+import {
+    FeatureMetricAggregator,
+    MetricSnapshot,
+    registerMetricSnapshotProvider,
+    unregisterMetricSnapshotProvider,
+} from '@blue/telemetry';
+import { prefersJsonView } from '../src/metrics-controller';
 import { HealthRegistry } from '../src/health';
 import { HealthController } from '../src/health-controller';
 
@@ -30,45 +36,107 @@ describe('ManagementAutoConfiguration endpoints', () => {
         context.register(ManagementAutoConfiguration);
         context.refresh(); // auto-initializes the handler mapping + dispatcher
 
-        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
-
-        // Seed some metrics through the shared aggregator.
+        // Seed the health indicator's aggregator (AD-36) — `/health` reads it.
         const aggregator = context.getValue<FeatureMetricAggregator>(METRIC_AGGREGATOR);
         aggregator.incrementCounter('todo', 'mountCount', 1);
-        aggregator.incrementCounter('api', 'requestCount', 3);
-        aggregator.recordDuration('todo', 'mountMs', 8);
-        aggregator.recordDuration('todo', 'mountMs', 12);
 
+        // Seed the metric snapshot source (AD-77 D-3): `/metrics` derives
+        // from the meter snapshot, not the aggregator.
+        registerMetricSnapshotProvider({
+            snapshot: async (): Promise<readonly MetricSnapshot[]> => [
+                {
+                    name: 'api.request.count',
+                    description: 'Inbound API requests',
+                    unit: '',
+                    type: 'sum',
+                    points: [{ attributes: { method: 'GET' }, value: { kind: 'scalar', value: 3 } }],
+                },
+                {
+                    name: 'http.server.request.duration',
+                    description: 'The duration of the server request.',
+                    unit: 's',
+                    type: 'histogram',
+                    points: [
+                        {
+                            attributes: { method: 'GET' },
+                            value: {
+                                kind: 'histogram',
+                                count: 2,
+                                sum: 0.51,
+                                min: 0.1,
+                                max: 0.41,
+                                buckets: [
+                                    { count: 2, low: 0, high: 0.005 },
+                                    { count: 0, low: 0.005, high: 0.01 },
+                                ],
+                            },
+                        },
+                    ],
+                },
+            ],
+        });
+
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
         const adapter = new NodeHTTPServerAdapter(dispatcher);
         await adapter.listen(0, '127.0.0.1');
         base = `http://127.0.0.1:${(adapter.server as { address(): { port: number } }).address().port}`;
     });
 
-    test('GET /metrics returns seeded counters', async () => {
-        const res = await fetch(`${base}/metrics`);
-        expect(res.status).toBe(200);
-        const body = (await res.json()) as { features: Record<string, { counters: Record<string, number> }> };
-        expect(body.features['todo'].counters['mountCount']).toBe(1);
-        expect(body.features['api'].counters['requestCount']).toBe(3);
+    afterAll(() => {
+        unregisterMetricSnapshotProvider();
     });
 
-    test('GET /metrics returns duration summaries (OP-4)', async () => {
+    test('GET /metrics serves the Prometheus text document by default (AD-77 D-4)', async () => {
         const res = await fetch(`${base}/metrics`);
         expect(res.status).toBe(200);
+        expect(res.headers.get('content-type')).toContain('text/plain; version=0.0.4');
+
+        const body = await res.text();
+        expect(body).toContain('# TYPE api.request.count counter');
+        expect(body).toContain('# HELP api.request.count Inbound API requests');
+        expect(body).toContain('api.request.count{method="GET"} 3');
+        // Histograms project to the _count counter + _sum gauge pair.
+        expect(body).toContain('# TYPE http.server.request.duration_count counter');
+        expect(body).toContain('http.server.request.duration_count{method="GET"} 2');
+        expect(body).toContain('# TYPE http.server.request.duration_sum gauge');
+        expect(body).toContain('http.server.request.duration_sum{method="GET"} 0.51');
+    });
+
+    test('GET /metrics serves the meter-derived JSON projection on an explicit JSON accept (AD-77 D-4)', async () => {
+        const res = await fetch(`${base}/metrics`, { headers: { Accept: 'application/json' } });
+        expect(res.status).toBe(200);
+        expect(res.headers.get('content-type')).toContain('application/json');
+
         const body = (await res.json()) as {
-            features: Record<
+            metrics: Record<
                 string,
                 {
-                    counters: Record<string, number>;
-                    durations: Record<string, { count: number; max: number; mean: number; min: number; p50: number }>;
-                    gauges: Record<string, number>;
-                    updatedAt: string;
+                    type: string;
+                    unit: string;
+                    points: Array<Record<string, unknown>>;
                 }
             >;
         };
-        expect(body.features['todo'].durations['mountMs']).toEqual({ count: 2, max: 12, mean: 10, min: 8, p50: 10 });
-        // Full per-feature shape promised by the controller JSDoc.
-        expect(Object.keys(body.features['todo']).sort()).toEqual(['counters', 'durations', 'gauges', 'updatedAt']);
+        expect(body.metrics['api.request.count']).toEqual({
+            type: 'sum',
+            unit: '',
+            description: 'Inbound API requests',
+            points: [{ attributes: { method: 'GET' }, value: 3 }],
+        });
+        const duration = body.metrics['http.server.request.duration'];
+        expect(duration.type).toBe('histogram');
+        expect(duration.unit).toBe('s');
+        const histogram = (
+            duration.points[0] as {
+                histogram: { count: number; sum: number; min: number; max: number; buckets: unknown[] };
+            }
+        ).histogram;
+        expect(histogram.count).toBe(2);
+        expect(histogram.sum).toBe(0.51);
+        expect(histogram.buckets).toEqual([
+            { count: 2, low: 0, high: 0.005 },
+            { count: 0, low: 0.005, high: 0.01 },
+        ]);
     });
 
     test('GET /health reports UP with the telemetry component', async () => {
@@ -77,6 +145,54 @@ describe('ManagementAutoConfiguration endpoints', () => {
         const body = (await res.json()) as { status: string; components: Record<string, { status: string }> };
         expect(body.status).toBe('UP');
         expect(body.components['telemetry'].status).toBe('UP');
+    });
+});
+
+describe('GET /metrics without a metric source', () => {
+    let base: string;
+
+    beforeAll(async () => {
+        // No snapshot source registered anywhere in this process.
+        unregisterMetricSnapshotProvider();
+
+        const context = new MetadataConfigApplicationContext('management-no-source');
+        context.register(NodeAutoConfiguration);
+        context.register(ManagementAutoConfiguration);
+        context.refresh();
+
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+        const adapter = new NodeHTTPServerAdapter(dispatcher);
+        await adapter.listen(0, '127.0.0.1');
+        base = `http://127.0.0.1:${(adapter.server as { address(): { port: number } }).address().port}`;
+    });
+
+    test('answers the error document instead of a 500 (AD-77 D-3)', async () => {
+        const res = await fetch(`${base}/metrics`);
+        expect(res.status).toBe(200);
+        expect(await res.json()).toEqual({ error: 'No metric source wired' });
+    });
+});
+
+describe('prefersJsonView (AD-77 D-4)', () => {
+    test('absent and empty Accept headers default to the text document', () => {
+        expect(prefersJsonView(undefined)).toBe(false);
+        expect(prefersJsonView('')).toBe(false);
+    });
+
+    test('wildcards and browser accepts fall back to the text document', () => {
+        expect(prefersJsonView('*/*')).toBe(false);
+        expect(prefersJsonView('text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')).toBe(false);
+        expect(prefersJsonView('text/plain')).toBe(false);
+    });
+
+    test('explicit JSON media types select the JSON projection', () => {
+        expect(prefersJsonView('application/json')).toBe(true);
+        expect(prefersJsonView('application/problem+json')).toBe(true);
+        expect(prefersJsonView('text/plain;q=0.5,application/json;q=1')).toBe(true);
+    });
+
+    test('q=0 JSON never selects the JSON projection', () => {
+        expect(prefersJsonView('application/json;q=0')).toBe(false);
     });
 });
 

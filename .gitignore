@@ -70,6 +70,10 @@ apps/*/index.js.map
 /index.js
 /index.js.map
 
+# Application runtime databases (AD-78: file-backed Drizzle store created by
+# the migrations; committed migrations/snapshots live under apps/*/db/)
+apps/*/data/
+
 # Documentation
 doc/
 !doc/

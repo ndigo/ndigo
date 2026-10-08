@@ -4,22 +4,42 @@
  * @author Jeff Rose
  */
 import 'node:process';
-import { ApplicationBuilder } from '@blue/boot';
+import { readFile } from 'node:fs/promises';
+import { ApplicationBuilder, StandardConfigFileLoader } from '@blue/boot';
+import type { ConfigFileReader } from '@blue/boot';
 import { getEnv } from '@blue/context';
 import { AESGCMCipher, NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@blue/platform-node';
 import { configureTelemetry, HTTPServerInstrumentation, WebSocketServerInstrumentation } from '@blue/telemetry-node';
 import { getLogger } from '@blue/log';
 import { interception } from '@blue/proxy';
 import { getErrorMessage } from '@blue/util';
+import { migrateOnBoot } from '@blue/orm-drizzle';
+import { fileURLToPath } from 'node:url';
 import { NodeAppConfiguration } from './node-app-configuration';
 import { AuditInterceptor } from './audit-interceptor';
 import { SecureDocsConfiguration } from './secure-docs-configuration';
 import { ManagementConfiguration } from './management-configuration';
-import { ServerConfig, SecretsConfig, SERVER_CONFIG } from './server-config';
+import { ServerConfig, SecretsConfig, MigrationsConfig, SERVER_CONFIG, MIGRATIONS_CONFIG } from './server-config';
+import { ensureDbDir, getDrizzleDataSource } from './drizzle-data-source';
 import { initAuth } from './auth-store';
 
 const PORT = Number(getEnv('PORT', '3000'));
 const logger = getLogger('blue-api');
+
+/**
+ * Config-file reader for the builder's `configFiles` loader: reads the
+ * requested path, signaling `null` when it does not exist (the loader probes
+ * locations/formats). The platform has no default Node reader yet — this
+ * adapter is the reference wiring until one ships (AD-78/BOOT-5 follow-up).
+ */
+const configFileReader: ConfigFileReader = async (path: string) => {
+    try {
+        return await readFile(path, 'utf8');
+    } catch (error) {
+        if ((error as { code?: string }).code === 'ENOENT') return null;
+        throw error;
+    }
+};
 
 async function main() {
     initAuth();
@@ -53,8 +73,14 @@ async function main() {
         SecureDocsConfiguration,
         ServerConfig,
         SecretsConfig,
+        MigrationsConfig,
         NodeAppConfiguration,
     ])
+        // Dotted config keys ride config files (`config/application.json`,
+        // `config/application-dev.json` under profiles) — env names must be
+        // identifier-safe because package-manager runners drop dotted
+        // variables (see AD-78/guide 03).
+        .configFiles(new StandardConfigFileLoader({ reader: configFileReader }))
         .profiles('dev')
         .properties({ 'server.port': String(PORT), 'server.name': 'blue-api' });
 
@@ -88,6 +114,19 @@ async function main() {
     builder.processors(interception([audit]));
 
     const context = await builder.run();
+
+    // AD-78 D-4: apply pending journaled migrations at boot when opted in
+    // (`migrations.runOnBoot`), against the same store the Drizzle routes
+    // read. Fail-closed: any migration error aborts startup.
+    const migrationsConfig = context.getValue(MIGRATIONS_CONFIG);
+    if (migrationsConfig.runOnBoot) {
+        await ensureDbDir();
+        await migrateOnBoot({
+            dataSource: getDrizzleDataSource(),
+            dir: fileURLToPath(new URL(`../${migrationsConfig.dir}`, import.meta.url)),
+        });
+        logger.info(`applied pending migrations from ${migrationsConfig.dir}`);
+    }
 
     const server = context.getValue(HTTP_SERVER);
     await server.start();

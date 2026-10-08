@@ -20,6 +20,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `@blue/orm-drizzle` (AD-78): migration **files** — `loadMigrations(dir)`
+  (one versioned module per file, `db/migrations/<NNNN>-<slug>.ts` by
+  convention), `nextMigrationVersion(dir)`, and `migrateOnBoot({dataSource,
+  dir})` — apply pending journaled migrations at boot, failing closed. The
+  AD-30 runner contract is unchanged.
+- `@blue/orm-drizzle` (AD-78): schema **generation** — `projectEntities`,
+  `diffProjections`, `renderMigrationFile`, and the committed `schema.json`
+  snapshot (`renderSnapshot`/`readSnapshot`, `predicate: 1`). Generation is
+  a diff against the committed snapshot; constraints the metadata cannot
+  express are reported, never emitted silently.
+- `blue db new|generate|status` (AD-78): scaffold the next versioned
+  migration, generate one from entity metadata (runs the app's
+  `scripts.db:generate`), and report the journal (runs the app's
+  `scripts.db:status`).
+- `apps/04-blue-api`: the migration reference consumer — `db:migrate` /
+  `db:generate` / `db:status` scripts, committed baseline migration +
+  `db/schema.json`, `migrations.{runOnBoot,dir}` configuration with
+  `migrateOnBoot` in the start path, and config-file loading
+  (`config/application.json`) as the dotted-key carrier.
+- Guide 27 — ORM & Migrations (the journaled lifecycle, the snapshot
+  freshness gate, and the fidelity ceiling).
+
+### Fixed
+
+- `blue` (AD-75 review, discovered by AD-78): space-form nested commands
+  (`blue db migrate`, `blue db new …`) printed topic help instead of running
+  — the oclif `topicSeparator` was `:` so only `blue db:migrate` worked.
+  `topicSeparator` is now a space; colon form keeps working.
+- `blue` (AD-75, discovered by AD-78): one-shot commands (`db:*`, `inspect`,
+  run-through scripts) received only `PATH` in their environment — config
+  knobs like `BLUE_DB_URL`, OTel endpoints and secret keys never reached the
+  app script. The invoking environment now flows through (shell-free
+  signal relays unchanged).
+
 ### Fixed
 
 - `@blue/cluster` (AD-74 review): the crash-loop guard now tears down **every**
@@ -53,6 +89,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   advances the fencing-token counter (consecutive tokens on both drivers).
 
 ### Added
+
+- `@blue/telemetry-node` + `@blue/management` (AD-77): Prometheus metrics —
+  `metricExporter: 'prometheus'` (metric signal only) registers a pull
+  `PrometheusMetricReader` over the SDK `MeterProvider`; the management
+  `/metrics` endpoint serves the same snapshot two ways — the Prometheus
+  text exposition document by default (the scraper contract), and a JSON
+  projection on `Accept: application/json`. `HTTPServerInstrumentation`
+  records the semconv `http.server.request.duration` histogram (seconds,
+  method + status attributes) for every request in every export mode. The
+  `/metrics` `{ features }` aggregator document is replaced by the
+  meter-derived view (breaking change, documented in guide 26 §2). New
+  snapshot model + renderers in `@blue/telemetry`; the telemetry lab gains
+  `BLUE_TELEMETRY_METRIC_EXPORTER=prometheus`.
 
 - `@blue/management` (AD-76): actuator parity — `/loggers` (level index,
   per-logger reads, and live `POST` level changes backed by a per-name

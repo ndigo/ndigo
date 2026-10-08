@@ -30,6 +30,9 @@ export const SAMPLER_OFF = 'off';
 /** The value `BLUE_TELEMETRY_SAMPLER=always` (the default) resolves to. */
 export const SAMPLER_ALWAYS = 'always';
 
+/** The value `BLUE_TELEMETRY_METRIC_EXPORTER=prometheus` resolves to. */
+export const METRIC_EXPORTER_PROMETHEUS = 'prometheus';
+
 /**
  * The lab's resolved telemetry setup — what was configured, in words.
  */
@@ -96,6 +99,10 @@ export function describeSampler(spec: SamplerSpec): string {
  * - `OTEL_EXPORTER_OTLP_ENDPOINT` — when set, traces, metrics, and logs are
  *   exported there (`<endpoint>/v1/{traces,metrics,logs}`); otherwise the
  *   console exporters are used.
+ * - `BLUE_TELEMETRY_METRIC_EXPORTER=prometheus` — override for the metric
+ *   signal only (wins over the OTLP endpoint, AD-77): the pull reader backs
+ *   `/metrics` in the Prometheus text exposition format (and its JSON
+ *   projection) — `curl localhost:<port>/metrics` is the scrape contract.
  * - `BLUE_TELEMETRY_SAMPLER` — `always` (default), `off`, or a `[0, 1]` ratio.
  * - `BLUE_TELEMETRY_BROWSER_TRACE_URL` — the collector trace URL handed to the
  *   page (browsers need a reachable URL, which is rarely the in-cluster one).
@@ -107,6 +114,7 @@ export function resolveLabTelemetry(): ResolvedLabTelemetry {
     const samplerSpec = parseSamplerSpec(getEnv('BLUE_TELEMETRY_SAMPLER'));
     const target = otlpEndpoint ?? 'console';
     const browserTraceUrl = getEnv('BLUE_TELEMETRY_BROWSER_TRACE_URL');
+    const usePrometheusMetrics = getEnv('BLUE_TELEMETRY_METRIC_EXPORTER')?.trim() === METRIC_EXPORTER_PROMETHEUS;
 
     return {
         config: {
@@ -116,16 +124,20 @@ export function resolveLabTelemetry(): ResolvedLabTelemetry {
                 new WebSocketServerInstrumentation(),
                 new DispatcherInstrumentation(),
             ],
-            ...(otlpEndpoint
-                ? {
-                      traceExporter: { url: `${otlpEndpoint}/v1/traces` },
-                      metricExporter: { url: `${otlpEndpoint}/v1/metrics` },
-                      logExporter: { url: `${otlpEndpoint}/v1/logs` },
-                  }
-                : { traceExporter: 'console', metricExporter: 'console', logExporter: 'console' }),
+            traceExporter: otlpEndpoint ? { url: `${otlpEndpoint}/v1/traces` } : 'console',
+            metricExporter: usePrometheusMetrics
+                ? METRIC_EXPORTER_PROMETHEUS
+                : otlpEndpoint
+                  ? { url: `${otlpEndpoint}/v1/metrics` }
+                  : 'console',
+            logExporter: otlpEndpoint ? { url: `${otlpEndpoint}/v1/logs` } : 'console',
         },
         sampler: describeSampler(samplerSpec),
-        exporters: { trace: target, metric: target, log: target },
+        exporters: {
+            trace: target,
+            metric: usePrometheusMetrics ? 'prometheus (pull)' : target,
+            log: target,
+        },
         otlpEndpoint,
         browserTraceUrl,
     };

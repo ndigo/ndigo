@@ -15,7 +15,12 @@ import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { describeSampler, parseSamplerSpec, resolveLabTelemetry } from '../src/telemetry-config';
 
 /** The environment variables this lane manipulates. */
-const KEYS = ['OTEL_EXPORTER_OTLP_ENDPOINT', 'BLUE_TELEMETRY_SAMPLER', 'BLUE_TELEMETRY_BROWSER_TRACE_URL'] as const;
+const KEYS = [
+    'OTEL_EXPORTER_OTLP_ENDPOINT',
+    'BLUE_TELEMETRY_SAMPLER',
+    'BLUE_TELEMETRY_BROWSER_TRACE_URL',
+    'BLUE_TELEMETRY_METRIC_EXPORTER',
+] as const;
 
 const saved = new Map<string, string | undefined>();
 
@@ -92,6 +97,17 @@ describe('resolveLabTelemetry', () => {
         expect(telemetry.config.traceExporter).toEqual({ url: 'http://collector:4318/v1/traces' });
         expect(telemetry.config.metricExporter).toEqual({ url: 'http://collector:4318/v1/metrics' });
         expect(telemetry.config.logExporter).toEqual({ url: 'http://collector:4318/v1/logs' });
+    });
+
+    test('BLUE_TELEMETRY_METRIC_EXPORTER=prometheus overrides only the metric signal (AD-77)', () => {
+        process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] = 'http://collector:4318';
+        process.env['BLUE_TELEMETRY_METRIC_EXPORTER'] = 'prometheus';
+        const telemetry = resolveLabTelemetry();
+
+        expect(telemetry.config.traceExporter).toEqual({ url: 'http://collector:4318/v1/traces' });
+        expect(telemetry.config.metricExporter).toBe('prometheus');
+        expect(telemetry.config.logExporter).toEqual({ url: 'http://collector:4318/v1/logs' });
+        expect(telemetry.exporters.metric).toBe('prometheus (pull)');
     });
 
     test('the sampler and browser trace URL come from the environment', () => {

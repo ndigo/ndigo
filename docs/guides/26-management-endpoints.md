@@ -16,13 +16,13 @@ Reference application: `apps/04-blue-api` (the demo exposes the full surface).
 default posture: **only `/health` and `/metrics` are served**. The other
 endpoints are opt-in, so nothing new is reachable without operator action:
 
-| Endpoint id   | Serves                                    | Default |
-| :------------ | :---------------------------------------- | :------ |
-| `health`      | aggregate + components + groups           | on      |
-| `metrics`     | the feature-metric snapshot (GAP-5-owned) | on      |
-| `loggers`     | level index, per-logger reads + changes   | off     |
-| `env`         | property sources with origins             | off     |
-| `configprops` | declared `@configurationProperties` keys  | off     |
+| Endpoint id   | Serves                                                        | Default |
+| :------------ | :------------------------------------------------------------ | :------ |
+| `health`      | aggregate + components + groups                               | on      |
+| `metrics`     | the meter snapshot: Prometheus text + JSON projection (AD-77) | on      |
+| `loggers`     | level index, per-logger reads + changes                       | off     |
+| `env`         | property sources with origins                                 | off     |
+| `configprops` | declared `@configurationProperties` keys                      | off     |
 
 Configure exposure in `config/application.json`:
 
@@ -49,9 +49,47 @@ A disabled endpoint answers `404`; it is never half-armed. When an
 > network, pass an _unconditional_ guard (token-presence / token-adapter —
 > a metadata-driven guard cannot protect these handlers, which carry no
 > `@authenticated`/`@authorized` metadata) and/or firewall the paths at the
-> network boundary (AD-36 posture).
+> network boundary (AD-36 posture). `/metrics` reveals application
+> telemetry — the same posture applies once a Prometheus exporter is
+> configured.
 
-## 2. `/health` — groups and components
+## 2. `/metrics` — the meter snapshot (AD-77)
+
+`/metrics` is the **pull view over the OpenTelemetry meter provider**: one
+snapshot, two wire forms. Registering
+[`ManagementAutoConfiguration`](../../packages/blue-management/README.md)
+serves it; configuring `metricExporter: 'prometheus'` (guide 10 §3)
+registers the reader that backs it — neither needs the other to boot.
+
+- **Prometheus text by default.** `GET /metrics` returns the exposition
+  document (`Content-Type: text/plain; version=0.0.4`) — the contract a
+  Prometheus scraper consumes. Histograms render as the `<name>_count`
+  counter + `<name>_sum` gauge pair (the format has no histogram type).
+- **JSON projection on explicit accept.** `Accept: application/json` (or
+  any `application/*+json` type) returns the same snapshot as
+  `{ metrics: { <name>: { type, unit, description?, points } } }`.
+- **No source → error document.** Without a registered snapshot source (no
+  `configureTelemetry` / no `metricExporter: 'prometheus'`), the endpoint
+  answers `{ "error": "No metric source wired" }` — same posture as before.
+
+The view is per-request: every scrape re-collects from the
+`MeterProvider`, so the endpoint always shows live aggregated state and
+needs no periodic flush. The pre-AD-77 `{ features }` aggregator document is
+gone — `/metrics` and the exported stream are the same data by
+construction.
+
+Example (a scoped scrape):
+
+```bash
+curl -s localhost:8080/metrics
+# TYPE http.server.request.duration_count counter
+# HELP http.server.request.duration_count A histogram of the server-request durations.
+http.server.request.duration_count{http.request.method="GET",http.response.status_code=200} 42
+# TYPE http.server.request.duration_sum gauge
+http.server.request.duration_sum{http.request.method="GET",http.response.status_code=200} 1.53
+```
+
+## 3. `/health` — groups and components
 
 `/health` keeps its aggregate document: `{ status, components, timestamp }`
 (`503` when the aggregate is `DOWN`, `200` otherwise). AD-76 adds:
@@ -69,7 +107,7 @@ A disabled endpoint answers `404`; it is never half-armed. When an
   one-component aggregate (`{ status, components, timestamp }`); unknown
   names answer `404`. A configured group shadows a same-named component.
 
-## 3. `/loggers` — level inspection and live changes
+## 4. `/loggers` — level inspection and live changes
 
 Payloads follow the Spring Boot actuator endpoint:
 
@@ -87,7 +125,7 @@ Levels are **runtime, process-local state**: they apply to every handle for
 the name (including ones handed out before the change), survive global
 threshold changes until cleared, and are lost on restart — no persistence.
 
-## 4. `/env` — property sources
+## 5. `/env` — property sources
 
 `GET /env` → `{ activeProfiles, propertySources }`, sources in precedence
 order with their flattened dotted keys:
@@ -111,7 +149,7 @@ order with their flattened dotted keys:
 - `?toMatch=<term>` filters to sources whose name contains the term plus
   properties whose key starts with it.
 
-## 5. `/configprops` — declared configuration, never values
+## 6. `/configprops` — declared configuration, never values
 
 `GET /configprops` → `{ beans: [{ name, properties: [{ key, type? }] }] }`
 for the `@configurationProperties` classes the app hands over:
@@ -127,13 +165,16 @@ never read**, the same value-free contract `@blue/inspect` codifies, so a
 secret cannot leak by construction. Bean names come from the shared key
 prefix (`ROOT` for prefix-less classes).
 
-## 6. Reference
+## 7. Reference
 
 - ADR: [AD-76 — Actuator parity](../decisions/2026-10-08_AD76_ACTUATOR_PARITY.md);
+  [AD-77 — Prometheus metrics, semconv duration, meter-derived `/metrics`](../decisions/2026-10-08_AD77_PROMETHEUS_METRICS.md);
   AD-36 for the open-by-default + guard + firewall posture.
 - Schema section: `management` in
   [`@blue/boot`'s `application.schema.json`](../../packages/blue-boot/schema/application.schema.json)
-  (only `redactHealthErrors` is not read from config files).
-- Related: guide 10 (telemetry — the metrics backing), guide 13 (OpenAPI —
-  the same management guard pattern in `OpenAPIDocsAutoConfiguration`),
-  guide 03 (the config-file convention the `management.*` keys follow).
+  (only `redactHealthErrors` is not read from config files); the
+  `telemetry.metricExporter` spec documents the `'prometheus'` literal.
+- Related: guide 10 (telemetry — the metrics backing and the exporter
+  knobs), guide 13 (OpenAPI — the same management guard pattern in
+  `OpenAPIDocsAutoConfiguration`), guide 03 (the config-file convention the
+  `management.*` keys follow).

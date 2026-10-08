@@ -7,6 +7,9 @@
   "scripts": {
     "start": "tsx src/index.ts",
     "inspect": "tsx src/inspect.ts",
+    "db:migrate": "tsx src/migrate.ts",
+    "db:generate": "tsx src/db-generate.ts",
+    "db:status": "tsx src/db-status.ts",
     "test": "vitest run"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",

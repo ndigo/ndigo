@@ -21,9 +21,16 @@
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { z } from 'zod';
 import type { Fetch } from '@blue/http';
-import { ManagementAutoConfiguration } from '@blue/management';
+import { ManagementAutoConfiguration, METRIC_AGGREGATOR } from '@blue/management';
 import { bootApp, MockHTTP } from '@blue/test';
 import type { BlueTestApp } from '@blue/test';
+import {
+    FeatureMetricAggregator,
+    MetricSnapshot,
+    MetricSnapshotProvider,
+    registerMetricSnapshotProvider,
+    unregisterMetricSnapshotProvider,
+} from '@blue/telemetry';
 import { LAB_FAILURE_THRESHOLD, LAB_RESET_MS, LAB_RETRY_ATTEMPTS } from '../src/lab-policy';
 import { ResilienceLabConfiguration } from '../src/lab-configuration';
 import { RESILIENCE_LAB } from '../src/resilience-lab';
@@ -74,11 +81,21 @@ const Health = z.object({
     components: z.record(z.string(), z.object({ status: z.string() })),
 });
 
-/** The `/metrics` document, reduced to the parts this lane asserts on. */
+/**
+ * The `/metrics` document (AD-77 D-4): the meter-derived JSON projection.
+ */
+const MetricPoint = z.object({
+    attributes: z.record(z.string(), z.unknown()),
+    value: z.number().optional(),
+});
 const Metrics = z.object({
-    features: z.record(
+    metrics: z.record(
         z.string(),
-        z.object({ counters: z.record(z.string(), z.number()), gauges: z.record(z.string(), z.number()) })
+        z.object({
+            type: z.enum(['sum', 'gauge', 'histogram']),
+            unit: z.string(),
+            points: z.array(MetricPoint),
+        })
     ),
 });
 
@@ -186,11 +203,58 @@ describe('blue-resilience-lab', () => {
         http = new MockHTTP(app);
         lab = app.context.getValue(RESILIENCE_LAB);
         lab.setUpstreamFetch(inProcessFetch(app));
+
+        // The lab records through the feature aggregator; `/metrics` now
+        // serves the meter snapshot (AD-77 D-3/4), so the spec registers a
+        // provider that projects that same aggregator — the documented
+        // migration path for feature views — and scrapes the JSON view.
+        registerMetricSnapshotProvider(
+            aggregatorSnapshotProvider(app.context.getValue<FeatureMetricAggregator>(METRIC_AGGREGATOR))
+        );
     });
 
     afterEach(() => {
+        unregisterMetricSnapshotProvider();
         app.close();
     });
+
+    /**
+     * Projects a `FeatureMetricAggregator` into the meter snapshot model —
+     * the spec-side bridge between the lab's aggregator records and the
+     * meter-derived `/metrics` endpoint (AD-77).
+     */
+    function aggregatorSnapshotProvider(aggregator: FeatureMetricAggregator): MetricSnapshotProvider {
+        return {
+            async snapshot(): Promise<readonly MetricSnapshot[]> {
+                const snapshots: MetricSnapshot[] = [];
+                for (const feature of aggregator.featureNames) {
+                    const metrics = aggregator.getFeatureMetrics(feature);
+                    if (!metrics) {
+                        continue;
+                    }
+                    for (const [name, value] of metrics.counters) {
+                        snapshots.push({
+                            name,
+                            description: `Feature counter '${name}' (${feature}, aggregator projection)`,
+                            unit: '',
+                            type: 'sum',
+                            points: [{ attributes: { feature }, value: { kind: 'scalar', value } }],
+                        });
+                    }
+                    for (const [name, value] of metrics.gauges) {
+                        snapshots.push({
+                            name,
+                            description: `Feature gauge '${name}' (${feature}, aggregator projection)`,
+                            unit: '',
+                            type: 'gauge',
+                            points: [{ attributes: { feature }, value: { kind: 'scalar', value } }],
+                        });
+                    }
+                }
+                return snapshots;
+            },
+        };
+    }
 
     /** The validated `/lab/state` document. */
     async function state(): Promise<StateDocument> {
@@ -321,8 +385,10 @@ describe('blue-resilience-lab', () => {
         expect(snapshot.counters['breaker.opened']).toBe(1);
         expect(circuitOf(snapshot).remainingMs).toBeGreaterThan(0);
 
-        const metrics = await http.get('/metrics').exec();
-        expect(Metrics.parse(metrics.json()).features['resilience-lab']?.gauges['breaker.state.data']).toBe(2);
+        const metrics = await http.get('/metrics').headers({ accept: 'application/json' }).exec();
+        const gauge = Metrics.parse(metrics.json()).metrics['breaker.state.data'];
+        expect(gauge?.type).toBe('gauge');
+        expect(gauge?.points[0].value).toBe(2);
 
         const health = await http.get('/health').exec();
         expect(health.response.status).toBe(503);
@@ -425,19 +491,19 @@ describe('blue-resilience-lab', () => {
         await setMode({ mode: 'fail', count: 1 });
         await http.get('/consumer/data').exec();
 
-        const res = await http.get('/metrics').exec();
+        const res = await http.get('/metrics').headers({ accept: 'application/json' }).exec();
 
         expect(res.response.status).toBe(200);
-        const feature = Metrics.parse(res.json()).features['resilience-lab'];
-        expect(feature).toBeDefined();
-        expect(feature?.counters['upstream.calls']).toBe(2);
-        expect(feature?.counters['consumer.calls']).toBe(1);
-        expect(feature?.counters['consumer.successes']).toBe(1);
+        const metrics = Metrics.parse(res.json()).metrics;
+        expect(metrics['upstream.calls']?.type).toBe('sum');
+        expect(metrics['upstream.calls']?.points[0].value).toBe(2);
+        expect(metrics['consumer.calls']?.points[0].value).toBe(1);
+        expect(metrics['consumer.successes']?.points[0].value).toBe(1);
         // Closed circuit → the gauge the breaker projection publishes.
-        expect(feature?.gauges['breaker.state.data']).toBe(0);
+        expect(metrics['breaker.state.data']).toMatchObject({ type: 'gauge', points: [{ value: 0 }] });
 
         const snapshot = await state();
-        expect(snapshot.counters['upstream.calls']).toBe(feature?.counters['upstream.calls']);
+        expect(snapshot.counters['upstream.calls']).toBe(metrics['upstream.calls']?.points[0].value);
     });
 
     test('the control plane rejects invalid settings', async () => {

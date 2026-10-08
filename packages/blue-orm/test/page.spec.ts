@@ -7,8 +7,11 @@ import '@tsmetadata/polyfill';
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { InMemoryDataSource } from '../src/data-source';
-import { column, entity, generated, primaryColumn } from '../src/decorators';
+import { column, entity as entityDecorator, generated, primaryColumn } from '../src/decorators';
 import { InMemoryEntityManager } from '../src/entity-manager';
+
+// Spec-side type wrapper; runtime-identical to the production `entity` decorator.
+const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
 import { InMemoryRepository } from '../src/repository';
 import { pageFromAll, validatePageRequest, SortDirection } from '../src/page';
 

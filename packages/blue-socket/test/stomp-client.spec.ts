@@ -29,6 +29,7 @@ import {
  */
 class FakeSocket implements SocketClient {
     readonly url = 'ws://realtime.example.test:3000/stomp/chat';
+    readonly onSendWired = false;
     readonly status: Signal<SocketStatus> = signal<SocketStatus>('connecting');
     readonly #inbound = new AsyncReader<unknown>();
     readonly sent: Array<string | Uint8Array> = [];
@@ -55,7 +56,7 @@ class FakeSocket implements SocketClient {
     }
 
     /** Push a raw server frame. */
-    pushFrame(raw: string): void {
+    pushFrame(raw: string | Uint8Array): void {
         this.#inbound.push(raw);
     }
 
@@ -232,8 +233,8 @@ describe('StompClient subscriptions', () => {
 
     test('two subscriptions receive only their own frames', async () => {
         const { socket, client } = openClient();
-        const a: Array<string> = [];
-        const b: Array<string> = [];
+        const a: Array<string | Uint8Array> = [];
+        const b: Array<string | Uint8Array> = [];
         void (async () => {
             for await (const message of client.subscribe('/t/a', { id: 'a' }).messages) {
                 a.push(message.body);
@@ -652,7 +653,7 @@ describe('StompClient lifecycle hardening', () => {
             const onError = vi.fn();
             const client = new StompClient(socket, { connectTimeoutMs: 5000, onError });
             const sub = client.subscribe('/topic/chat', { id: 's1' });
-            const received: Array<string> = [];
+            const received: Array<string | Uint8Array> = [];
             void (async () => {
                 for await (const message of sub.messages) {
                     received.push(message.body);
@@ -682,7 +683,7 @@ describe('StompClient lifecycle hardening', () => {
         const socket = new FakeSocket();
         const client = new StompClient(socket);
         const sub = client.subscribe('/topic/chat', { id: 's1', ack: 'client-individual' });
-        const received: Array<string> = [];
+        const received: Array<string | Uint8Array> = [];
         void (async () => {
             for await (const message of sub.messages) {
                 received.push(message.body);

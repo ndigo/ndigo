@@ -163,7 +163,7 @@ describe('Node multipart request wiring', () => {
         // an ordinary key — no hasOwnProperty TypeError, no prototype swap.
         const body = nodeRequest?.body;
         expect(Object.getPrototypeOf(body)).toBeNull();
-        expect(Object.hasOwn(body, '__proto__')).toBe(true);
+        expect(Object.hasOwn(body ?? {}, '__proto__')).toBe(true);
         expect(body?.['__proto__']).toBe('polluted');
         // The record stays fully usable end to end.
         expect(JSON.stringify(body)).toBe('{"__proto__":"polluted"}');

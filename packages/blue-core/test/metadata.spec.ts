@@ -11,7 +11,8 @@ describe('getSymbolMetadata', () => {
     test('it should return metadata from a class with Symbol.metadata', () => {
         class Sample {}
 
-        Sample[Symbol.metadata] = { key: 'value' };
+        const SampleCarrier = Sample as unknown as { [Symbol.metadata]: Record<string, unknown> };
+        SampleCarrier[Symbol.metadata] = { key: 'value' };
 
         expect(getSymbolMetadata(Sample)).toEqual({
             key: 'value',
@@ -21,7 +22,8 @@ describe('getSymbolMetadata', () => {
     test('it should return metadata from an instance via constructor', () => {
         class Sample {}
 
-        Sample[Symbol.metadata] = { key: 'value' };
+        const SampleCarrier = Sample as unknown as { [Symbol.metadata]: Record<string, unknown> };
+        SampleCarrier[Symbol.metadata] = { key: 'value' };
 
         const instance = new Sample();
 

@@ -12,8 +12,15 @@
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { MockHTTP, bootApp, type MockResult } from '@blue/test';
+import { MockHTTP, bootApp } from '@blue/test';
 import { ConduitConfiguration } from '../src/conduit-configuration';
+
+/** The dispatch result returned by `MockHTTP#exec()` (its `MockResult` type
+ * is internal to `@blue/test`); reverse `json()` into the payload here. */
+interface MockResult {
+    json(): unknown;
+    text(): string;
+}
 
 /** The `{user}` payload the API returns. */
 interface UserPayload {

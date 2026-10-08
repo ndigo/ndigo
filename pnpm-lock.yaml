@@ -1716,9 +1716,6 @@ importers:
 
   packages/blue-inspect:
     dependencies:
-      '@blue/boot':
-        specifier: ~0.0.1
-        version: link:../blue-boot
       '@blue/context':
         specifier: ~0.0.1
         version: link:../blue-context
@@ -1732,6 +1729,9 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-router
     devDependencies:
+      '@blue/boot':
+        specifier: ~0.0.1
+        version: link:../blue-boot
       typescript:
         specifier: 'catalog:'
         version: 7.0.2

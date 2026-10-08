@@ -6,9 +6,12 @@
 import '@tsmetadata/polyfill';
 
 import { InMemoryDataSource } from '../src/data-source';
-import { column, entity, generated, primaryColumn } from '../src/decorators';
+import { column, entity as entityDecorator, generated, primaryColumn } from '../src/decorators';
 import { InMemoryEntityManager } from '../src/entity-manager';
 import { InMemoryUnitOfWork } from '../src/unit-of-work';
+
+// Spec-side type wrapper; runtime-identical to the production `entity` decorator.
+const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
 
 @entity()
 class TestUser {

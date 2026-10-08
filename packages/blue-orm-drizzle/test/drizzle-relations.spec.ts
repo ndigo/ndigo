@@ -5,11 +5,15 @@
  */
 import '@tsmetadata/polyfill';
 import { describe, test, expect, vi } from 'vitest';
-import { entity, generated, primaryColumn, column, manyToOne, oneToMany } from '@blue/orm';
+import { entity as entityDecorator, generated, primaryColumn, column, manyToOne, oneToMany } from '@blue/orm';
 import type { AsyncRepository } from '@blue/orm';
 import { DrizzleDataSource } from '../src/drizzle-data-source';
 import { DrizzleEntityManager } from '../src/drizzle-entity-manager';
 import { DrizzleRepository } from '../src/drizzle-repository';
+
+// Spec-side type wrapper; runtime-identical to the production `entity` decorator.
+const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
+type ClassType = new (...args: unknown[]) => unknown;
 
 @entity('drizzle_rel_authors')
 class DrizzleRelAuthor {
@@ -20,7 +24,7 @@ class DrizzleRelAuthor {
     @column()
     name: string;
 
-    @oneToMany(() => DrizzleRelNote, { inverseJoinColumn: 'authorId' })
+    @oneToMany(() => DrizzleRelNote as unknown as ClassType, { inverseJoinColumn: 'authorId' })
     notes: DrizzleRelNote[] = [];
 
     constructor(name: string) {
@@ -40,7 +44,7 @@ class DrizzleRelNote {
     @column({ nullable: true })
     authorId: number | undefined;
 
-    @manyToOne(() => DrizzleRelAuthor, { joinColumn: 'authorId' })
+    @manyToOne(() => DrizzleRelAuthor as unknown as ClassType, { joinColumn: 'authorId' })
     author: DrizzleRelAuthor | undefined;
 
     constructor(title: string, authorId: number | undefined) {

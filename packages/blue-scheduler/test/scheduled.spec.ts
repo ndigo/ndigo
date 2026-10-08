@@ -89,8 +89,10 @@ describe('@blue/scheduler @scheduled decorator', () => {
     test('rejects non-method application', () => {
         const decorator = scheduled('* * * * * *');
 
-        expect(() => decorator(() => {}, { kind: 'class' } as ClassDecoratorContext)).toThrow(/can only be applied/);
-        expect(() => decorator(() => {}, { kind: 'field' } as ClassFieldDecoratorContext)).toThrow(
+        expect(() => decorator(() => {}, { kind: 'class' } as unknown as ClassMethodDecoratorContext)).toThrow(
+            /can only be applied/
+        );
+        expect(() => decorator(() => {}, { kind: 'field' } as unknown as ClassMethodDecoratorContext)).toThrow(
             /can only be applied/
         );
     });

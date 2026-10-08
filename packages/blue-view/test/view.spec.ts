@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
 import { ViewTarget } from '@blue/view';
 import type { MediaType } from '@blue/core';
 import type { ApplicationContext } from '@blue/context';
@@ -18,7 +18,10 @@ import {
 import { MediaTypes } from '@blue/core';
 
 class MockTarget implements ViewTarget {
-    commit: ReturnType<typeof vi.fn>;
+    // `vi.fn()` infers `Mock<Constructable | Procedure>`, whose call
+    // signature is not assignable to ViewTarget.commit; anchor it to the
+    // committed slot's exact signature so `implements ViewTarget` holds.
+    commit: Mock<ViewTarget['commit']>;
     constructor() {
         this.commit = vi.fn();
     }
@@ -30,6 +33,13 @@ class MockTarget implements ViewTarget {
     clear(): void {
         // do nothing
     }
+}
+
+// StringTemplateView._renderTemplate is protected; expose a structural view of
+// it so the specs can drive the render pipeline without widening the public API
+// (same pattern as the webcomponent specs' ExposedView).
+interface ExposedStringTemplate {
+    _renderTemplate(templateModel: unknown, request: unknown, target?: ViewTarget): void | Promise<void>;
 }
 
 describe('AbstractTemplateView', () => {
@@ -62,11 +72,11 @@ describe('AbstractTemplateView', () => {
 
 describe('StringTemplateView', () => {
     let target: MockTarget;
-    let view: StringTemplateView;
+    let view: StringTemplateView & ExposedStringTemplate;
 
     beforeEach(() => {
         target = new MockTarget();
-        view = new StringTemplateView('/test');
+        view = new StringTemplateView('/test') as unknown as StringTemplateView & ExposedStringTemplate;
         view.template = '<!DOCTYPE html>\n<html><body>Test Template View</body></html>';
     });
 
@@ -134,7 +144,7 @@ describe('StringTemplateView', () => {
     });
 
     it('renders template without target throws error', async () => {
-        const view = new StringTemplateView('/test');
+        const view = new StringTemplateView('/test') as unknown as StringTemplateView & ExposedStringTemplate;
         view.template = '<!DOCTYPE html>\n<html><body>Test Template View</body></html>';
         await expect(view._renderTemplate({}, {})).rejects.toThrow();
     });
@@ -174,7 +184,8 @@ describe('StringTemplateView — integration (view.render pipeline)', () => {
     it('renders end-to-end with custom _createViewModel projection', async () => {
         class ProjectingView extends StringTemplateView {
             protected _createViewModel(model: unknown, request: unknown): unknown {
-                return { displayName: model.name?.toUpperCase(), timestamp: Date.now() };
+                const raw = model as { name?: { toUpperCase(): string } };
+                return { displayName: raw.name?.toUpperCase(), timestamp: Date.now() };
             }
         }
 
@@ -195,7 +206,8 @@ describe('StringTemplateView — integration (view.render pipeline)', () => {
     it('renders end-to-end with custom _projectViewModel hook', async () => {
         class TemplateProjectingView extends StringTemplateView {
             protected _projectViewModel(viewModel: unknown, request: unknown): unknown {
-                return { title: viewModel.pageTitle ?? 'Default', items: viewModel.items ?? [] };
+                const raw = viewModel as { pageTitle?: string; items?: unknown };
+                return { title: raw.pageTitle ?? 'Default', items: raw.items ?? [] };
             }
         }
 

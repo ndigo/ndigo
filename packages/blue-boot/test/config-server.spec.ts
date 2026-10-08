@@ -16,13 +16,15 @@ import { property, defaultValue, configuration } from '@blue/context';
 @configurationProperties('server')
 @refreshScope
 class RefreshableServerConfig {
-    @property('port', Number) @defaultValue('8080') port!: number;
-    @property('host', String) @defaultValue('localhost') host!: string;
+    @property('port', Number as unknown as new (...args: never[]) => number) @defaultValue('8080') port!: number;
+    @property('host', String as unknown as new (...args: never[]) => string) @defaultValue('localhost') host!: string;
 }
 
 @configurationProperties('db')
 class DbPasswordConfig {
-    @property('password', String) @defaultValue('none') password!: string;
+    @property('password', String as unknown as new (...args: never[]) => string)
+    @defaultValue('none')
+    password!: string;
 }
 
 /** Content-addressable fake fetch with a mutable current document. */

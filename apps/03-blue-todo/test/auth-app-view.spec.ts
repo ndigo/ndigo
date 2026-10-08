@@ -30,7 +30,7 @@ describe('auth-app view rendering', () => {
 
         expect(element.querySelector('h1.title')?.textContent).toBe('Sign in');
         expect(element.querySelector('input#auth-username')).not.toBeNull();
-        expect(element.querySelector('input#auth-password')?.type).toBe('password');
+        expect(element.querySelector<HTMLInputElement>('input#auth-password')?.type).toBe('password');
     });
 
     test('rejects invalid credentials without navigating', async () => {

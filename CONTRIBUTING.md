@@ -38,7 +38,7 @@ All of these must pass; CI runs them on every PR:
 ```bash
 pnpm build               # all library packages (tsc -b per package)
 pnpm test                # unit + integration suites (per package)
-pnpm typecheck           # per-project tsc -b (packages + every app)
+pnpm typecheck           # per-project tsc -b + the spec lane (tsconfig.spec.json checks src AND test files, TST-A)
 pnpm lint                # Oxlint — must report ZERO warnings
 pnpm format:check        # oxfmt over maintained files only
 pnpm docs:links          # relative-link integrity (docs + package/app READMEs)

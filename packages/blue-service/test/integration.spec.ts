@@ -81,14 +81,18 @@ describe('Service Layer Integration', () => {
 
     test('should emit error telemetry with error details', () => {
         let emittedData: { error: string; stack: string | undefined } | null = null;
-        emitter.on('service:request:error', (data) => {
+        emitter.on('service:request:error', (data: { error: string; stack: string | undefined }) => {
             emittedData = data;
         });
 
         const error = new Error('Connection refused');
         telemetry.onError(error);
 
-        expect(emittedData?.error).toBe('Connection refused');
-        expect(emittedData?.stack).toBeDefined();
+        // Flow analysis narrows `emittedData` to `null` (assigned only inside
+        // the callback) and would collapse `?.` to `never` — re-widen the
+        // read handle instead of fighting the closure capture.
+        const emitted = emittedData as { error: string; stack: string | undefined } | null;
+        expect(emitted?.error).toBe('Connection refused');
+        expect(emitted?.stack).toBeDefined();
     });
 });

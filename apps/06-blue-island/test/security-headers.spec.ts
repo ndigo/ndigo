@@ -7,6 +7,7 @@
  */
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
+import type { Server } from 'node:http';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@blue/platform-node';
 import { IslandConfiguration, applyDemoSecurityHeaders } from '../src/island-configuration';
@@ -34,7 +35,7 @@ describe('blue-island security headers (SEC-C)', () => {
         const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
         adapter = new NodeHTTPServerAdapter(dispatcher);
         await adapter.listen(0, '127.0.0.1');
-        const address = adapter.server.address();
+        const address = (adapter.server as Server).address();
         if (address === null || typeof address === 'string') {
             throw new Error('expected the adapter to listen on a TCP address');
         }

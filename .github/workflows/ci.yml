@@ -65,6 +65,12 @@ jobs:
           BLUE_REDIS_TEST_URL: redis://127.0.0.1:6379
         run: pnpm test
 
+      - name: Root-tooling lane (node:test)
+        # Durable home for the decorator-lowering plugin probes that used to
+        # live in /tmp (SEC-B/WC-I): extension scope (`.cts` included),
+        # workspace-vs-vendored resolution, and the `@`-pre-check.
+        run: pnpm test:tooling
+
       - name: Example apps boot + probe (smoke)
         # Boots every Node example app on its dedicated probe port, asserts its
         # documented route (and the hello-node WebSocket echo), then requires a

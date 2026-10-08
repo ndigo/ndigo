@@ -190,10 +190,10 @@ describe('HTTP Client - Default Query Parameters', () => {
         const http = HTTP.create({
             baseURL: 'https://api.example.com',
             params: null,
-        } as HTTPInit);
+        } as unknown as HTTPInit);
 
         await http.get('/test', {
-            params: null,
+            params: null as unknown as string[][] | Record<string, string> | URLSearchParams,
         });
 
         expect(mockFetch).toHaveBeenCalledTimes(1);

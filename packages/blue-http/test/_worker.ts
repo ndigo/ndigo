@@ -50,7 +50,7 @@ const handlers = [
                         'Content-Length': length,
                         'Content-Type': mediaType,
                     },
-                });
+                }) as unknown as HttpResponse<string>;
             case 'image/gif':
                 buffer = await (await fetch(base64GIF)).arrayBuffer();
                 length = buffer.byteLength.toString();
@@ -59,7 +59,7 @@ const handlers = [
                         'Content-Length': length,
                         'Content-Type': mediaType,
                     },
-                });
+                }) as unknown as HttpResponse<string>;
             case 'image/jpg':
                 buffer = await (await fetch(base64JPG)).arrayBuffer();
                 length = buffer.byteLength.toString();
@@ -68,7 +68,7 @@ const handlers = [
                         'Content-Length': length,
                         'Content-Type': mediaType,
                     },
-                });
+                }) as unknown as HttpResponse<string>;
             case 'image/png':
                 buffer = await (await fetch(base64PNG)).arrayBuffer();
                 length = buffer.byteLength.toString();
@@ -77,7 +77,7 @@ const handlers = [
                         'Content-Length': length,
                         'Content-Type': mediaType,
                     },
-                });
+                }) as unknown as HttpResponse<string>;
             case 'text/html':
                 data = '<div id="foo">123</div>';
                 length = data.length.toString();

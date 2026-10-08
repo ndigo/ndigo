@@ -50,9 +50,9 @@ describe('HeaderInterceptor', () => {
         const originalRequest = new Request('http://localhost/test-headers');
 
         // Mock HTTP client
-        const mockHTTP: HTTP = {
+        const mockHTTP = {
             fetch: vi.fn().mockResolvedValue(new Response()),
-        };
+        } as unknown as HTTP;
 
         const result = await interceptor.preRequest(originalRequest, mockHTTP);
 
@@ -82,9 +82,9 @@ describe('HeaderInterceptor', () => {
         });
 
         const originalRequest = new Request('http://localhost/test-headers');
-        const mockHTTP: HTTP = {
+        const mockHTTP = {
             fetch: vi.fn().mockResolvedValue(new Response()),
-        };
+        } as unknown as HTTP;
 
         const result = await interceptor.preRequest(originalRequest, mockHTTP);
 
@@ -112,9 +112,9 @@ describe('HeaderInterceptor', () => {
         });
 
         const originalRequest = new Request('http://localhost/test-headers');
-        const mockHTTP: HTTP = {
+        const mockHTTP = {
             fetch: vi.fn().mockResolvedValue(new Response()),
-        };
+        } as unknown as HTTP;
 
         const result = await interceptor.preRequest(originalRequest, mockHTTP);
 
@@ -142,9 +142,9 @@ describe('HeaderInterceptor', () => {
         });
 
         const originalRequest = new Request('http://localhost/test-headers');
-        const mockHTTP: HTTP = {
+        const mockHTTP = {
             fetch: vi.fn().mockResolvedValue(new Response()),
-        };
+        } as unknown as HTTP;
 
         const result = await interceptor.preRequest(originalRequest, mockHTTP);
 
@@ -174,9 +174,9 @@ describe('HeaderInterceptor', () => {
         });
 
         const originalRequest = new Request('http://localhost/test-headers');
-        const mockHTTP: HTTP = {
+        const mockHTTP = {
             fetch: vi.fn().mockResolvedValue(new Response()),
-        };
+        } as unknown as HTTP;
 
         const result = await interceptor.preRequest(originalRequest, mockHTTP);
 
@@ -213,9 +213,9 @@ describe('HeaderInterceptor', () => {
             headers: originalHeaders,
         });
 
-        const mockHTTP: HTTP = {
+        const mockHTTP = {
             fetch: vi.fn().mockResolvedValue(new Response()),
-        };
+        } as unknown as HTTP;
 
         // Store the reference to check immutability later
         const originalHeaderMap = new Map(originalRequest.headers);

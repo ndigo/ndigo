@@ -50,7 +50,7 @@ describe('DataParameterInterceptor', () => {
             http = new HTTP([new JSONDataParameterInterceptor()]);
             const response = await http.post('http://localhost/dataParameter', {
                 data: { foo: 'bar', qux: 'baz' },
-            } as DataParameterInit);
+            } as unknown as DataParameterInit);
             const text = await response.text();
             expect(text).toBe('');
         });
@@ -79,7 +79,7 @@ describe('DataParameterInterceptor', () => {
             http = new HTTP([new BodylessInterceptor()]);
             const response = await http.get('http://localhost/dataParameter', {
                 data: { foo: 'bar' },
-            } as DataParameterInit);
+            } as unknown as DataParameterInit);
             const text = await response.text();
             expect(text).toBe('');
         });

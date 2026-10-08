@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
+import { JSONObject } from '@blue/core';
 import { MutablePropertySources } from '../src/property-sources';
 import { FlatMergedIndex, PrototypeChainIndex, PrototypalPropertyResolver } from '../src/property-resolver';
 import { wrapSource } from '../src/property-source';
@@ -11,7 +12,7 @@ import { wrapSource } from '../src/property-source';
 const SNAKE = 'flat|prototype';
 
 describe('PropertyIndex parity', () => {
-    const fixtures: Array<{ name: string; sources: Array<[string, Record<string, unknown>]>; queries: string[] }> = [
+    const fixtures: Array<{ name: string; sources: Array<[string, JSONObject]>; queries: string[] }> = [
         {
             name: 'flat config',
             sources: [

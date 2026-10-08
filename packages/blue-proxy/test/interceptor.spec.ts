@@ -5,7 +5,13 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { invokeChain, sortInterceptors, createMethodDescriptor, MethodInterceptor } from '@blue/proxy';
+import {
+    invokeChain,
+    sortInterceptors,
+    createMethodDescriptor,
+    MethodInterceptor,
+    MethodInvocation,
+} from '@blue/proxy';
 import { methodAnnotation } from '@blue/proxy';
 
 describe('interceptor API', () => {
@@ -43,10 +49,11 @@ describe('invokeChain', () => {
         }
     }
 
-    const call = {
+    const call: MethodInvocation = {
         entryName: 'service',
         targetType: Service,
         methodName: 'run',
+        target: new Service(),
         args: ['x'],
         annotation: () => undefined,
     };
@@ -162,21 +169,39 @@ describe('invokeChain', () => {
 });
 
 describe('sortInterceptors', () => {
-    it('is stable within equal orders', () => {
-        const a = { order: 0, name: 'a' };
-        const b = { order: 0, name: 'b' };
-        const c = { order: -1, name: 'c' };
+    // sortInterceptors only reads `order`; a `name` tags each mock so the
+    // sorted result can be asserted by identity, even though the
+    // MethodInterceptor contract doesn't declare a name.
+    function namedInterceptor(name: string, order?: number): MethodInterceptor & { name: string } {
+        return {
+            order,
+            name,
+            matches: () => true,
+            invoke: () => undefined,
+        };
+    }
 
-        const sorted = sortInterceptors([a, b, c]);
+    it('is stable within equal orders', () => {
+        const a = namedInterceptor('a', 0);
+        const b = namedInterceptor('b', 0);
+        const c = namedInterceptor('c', -1);
+
+        const sorted = sortInterceptors([a, b, c]) as Array<MethodInterceptor & { name: string }>;
 
         expect(sorted.map((i) => i.name)).toEqual(['c', 'a', 'b']);
     });
 
     it('treats missing order as 0', () => {
-        const a = { name: 'a' };
-        const b = { order: 1, name: 'b' };
+        const a = namedInterceptor('a');
+        const b = namedInterceptor('b', 1);
 
-        expect(sortInterceptors([a, b]).map((i) => i.name)).toEqual(['a', 'b']);
-        expect(sortInterceptors([b, a]).map((i) => i.name)).toEqual(['a', 'b']);
+        expect((sortInterceptors([a, b]) as Array<MethodInterceptor & { name: string }>).map((i) => i.name)).toEqual([
+            'a',
+            'b',
+        ]);
+        expect((sortInterceptors([b, a]) as Array<MethodInterceptor & { name: string }>).map((i) => i.name)).toEqual([
+            'a',
+            'b',
+        ]);
     });
 });

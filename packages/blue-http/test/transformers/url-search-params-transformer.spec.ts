@@ -9,6 +9,7 @@ import { TransformContext, URLSearchParamsTransformer } from '../../src/transfor
 const context: TransformContext = {
     url: 'http://localhost/test',
     headers: new Headers(),
+    mediaType: null,
     direction: 'request',
 };
 

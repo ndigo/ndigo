@@ -7,7 +7,7 @@ import { describe, test, expect, vi } from 'vitest';
 import { ApplicationBuilder } from '../src/application-builder';
 import { Application } from '../src/application';
 import { StandardEnvironment, configuration, entry } from '@blue/context';
-import type { InitializationAwareProcessor } from '@blue/factory';
+import type { InitializationAwareProcessor, EntryProcessor } from '@blue/factory';
 
 @configuration
 class BuilderConfiguration {
@@ -192,7 +192,7 @@ describe('ApplicationBuilder.fromConfig', () => {
 describe('ApplicationBuilder.processors', () => {
     test('returns this for chaining', () => {
         const builder = new ApplicationBuilder([BuilderConfiguration]);
-        expect(builder.processors({})).toBe(builder);
+        expect(builder.processors({} as unknown as EntryProcessor)).toBe(builder);
     });
 
     test('processors() registers entry processors before the context refresh', async () => {

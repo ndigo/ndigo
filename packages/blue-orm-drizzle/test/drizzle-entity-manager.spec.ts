@@ -7,7 +7,10 @@ import '@tsmetadata/polyfill';
 import { describe, test, expect, beforeAll, beforeEach } from 'vitest';
 import { DrizzleDataSource } from '../src/drizzle-data-source';
 import { DrizzleEntityManager } from '../src/drizzle-entity-manager';
-import { entity, primaryColumn, generated, column } from '@blue/orm';
+import { entity as entityDecorator, primaryColumn, generated, column } from '@blue/orm';
+
+// Spec-side type wrapper; runtime-identical to the production `entity` decorator.
+const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
 
 @entity('crud_users')
 class CrudUser {

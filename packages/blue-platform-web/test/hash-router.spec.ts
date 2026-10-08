@@ -113,8 +113,8 @@ describe('HashRouter', () => {
         await router.setRoute('/users/42/orders/abc');
 
         expect(capturedParams).toBeTruthy();
-        expect(capturedParams?.userId).toBe('42');
-        expect(capturedParams?.orderId).toBe('abc');
+        expect((capturedParams as unknown as Record<string, string>).userId).toBe('42');
+        expect((capturedParams as unknown as Record<string, string>).orderId).toBe('abc');
     });
 
     test('it should support function middleware shorthand', async () => {

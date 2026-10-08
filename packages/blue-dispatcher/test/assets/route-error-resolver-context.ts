@@ -15,31 +15,32 @@ import { MetadataErrorResolver } from '../../src/route-error-resolver';
 import { routeMapping } from '../../src/route-mapping';
 import { ModelAndView } from '../../src/model-and-view';
 import { errorMapping, errorHandler } from '../../src/error-mapping';
+import { Route } from '@blue/router';
 
 @routeMapping('/bad')
 class BadController {
     @routeMapping('/bad')
-    handleBad(route) {
+    handleBad(route: Route) {
         throw new Error('Bad');
     }
 
     @routeMapping('/reference')
-    handleReference(route) {
+    handleReference(route: Route) {
         throw new ReferenceError('Bad Reference');
     }
 
     @routeMapping('/syntax')
-    handleSyntax(route) {
+    handleSyntax(route: Route) {
         throw new SyntaxError('Bad Syntax');
     }
 
     @routeMapping('/range')
-    handleRange(route) {
+    handleRange(route: Route) {
         throw new RangeError('Bad Range');
     }
 
     @errorMapping(RangeError)
-    handleRangeError(route, error, handlerMethod) {
+    handleRangeError(route: Route, error: Error, handlerMethod: unknown) {
         return new ModelAndView('error');
     }
 }
@@ -47,17 +48,17 @@ class BadController {
 @errorHandler
 class GlobalErrorHandler {
     @errorMapping(Error)
-    handleError(route, error, handlerMethod) {
+    handleError(route: Route, error: Error, handlerMethod: unknown) {
         return new ModelAndView('error');
     }
 
     @errorMapping(TypeError)
-    handleTypeError(route, error, handlerMethod) {
+    handleTypeError(route: Route, error: Error, handlerMethod: unknown) {
         return new ModelAndView('error');
     }
 
     @errorMapping([ReferenceError, SyntaxError])
-    handleOtherErrors(route, error, handlerMethod) {
+    handleOtherErrors(route: Route, error: Error, handlerMethod: unknown) {
         return new ModelAndView('error');
     }
 }

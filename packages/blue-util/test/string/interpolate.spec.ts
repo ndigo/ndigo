@@ -49,12 +49,12 @@ describe('interpolate', function () {
 
     test('it should treat null as empty string', function () {
         expect(interpolate('{{a}}', { a: null })).toBe('');
-        expect(interpolate(null, {})).toBe('');
+        expect(interpolate(null as unknown as string, {})).toBe('');
     });
 
     test('it should treat undefined as empty string', function () {
         expect(interpolate('{{a}}', { a: void 0 })).toBe('');
-        expect(interpolate(null, {})).toBe('');
+        expect(interpolate(null as unknown as string, {})).toBe('');
     });
 
     test('it should treat false as string "false"', function () {

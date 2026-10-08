@@ -4,11 +4,13 @@
  * @author Jeff Rose
  */
 import { describe, expect, test } from 'vitest';
+import type { JSONObject } from '@blue/core';
 import { JSONTransformer, TransformContext } from '../../src/transformers';
 
 const context: TransformContext = {
     url: 'http://localhost/test',
     headers: new Headers(),
+    mediaType: null,
     direction: 'response',
 };
 
@@ -25,7 +27,7 @@ describe('JSONTransformer', () => {
 
     test('rejects non-object values in canTransform', () => {
         const transformer = new JSONTransformer([(value) => value]);
-        expect(transformer.canTransform(null, context)).toBe(false);
-        expect(transformer.canTransform('text', context)).toBe(false);
+        expect(transformer.canTransform(null as unknown as JSONObject, context)).toBe(false);
+        expect(transformer.canTransform('text' as unknown as JSONObject, context)).toBe(false);
     });
 });

@@ -83,7 +83,7 @@ afterAll(() => {
 describe('HN route table', () => {
     test('#/ resolves the top feed into hn-list', async () => {
         const render = await browser.dispatch('/');
-        const output = render.output;
+        const output = render.output as HTMLElement;
         expect(output.tagName.toLowerCase()).toBe('hn-list');
         expect((render.model as ListModel).feed).toBe('top');
         expect(output.textContent).toContain('Top stories');
@@ -93,12 +93,12 @@ describe('HN route table', () => {
     test('#/new resolves the new feed', async () => {
         const render = await browser.dispatch('/new');
         expect((render.model as ListModel).feed).toBe('new');
-        expect(render.output.textContent).toContain('Story 3');
+        expect((render.output as HTMLElement).textContent).toContain('Story 3');
     });
 
     test('#/item/:id binds the id and renders the thread with its comments', async () => {
         const render = await browser.dispatch('/item/1');
-        const output = render.output;
+        const output = render.output as HTMLElement;
         expect(output.tagName.toLowerCase()).toBe('hn-item');
         expect((render.model as ItemModel).id).toBe(1);
         expect(output.textContent).toContain('Story 1');

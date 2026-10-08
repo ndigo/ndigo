@@ -77,7 +77,12 @@ function createHarness(
     options: Partial<
         Pick<
             WebSocketClientOptions,
-            'reconnect' | 'bufferWhileDisconnected' | 'reconnectTrigger' | 'onStatusChange' | 'onSend'
+            | 'reconnect'
+            | 'bufferWhileDisconnected'
+            | 'reconnectTrigger'
+            | 'onStatusChange'
+            | 'onSend'
+            | 'maxInboundMessages'
         >
     > = {}
 ) {

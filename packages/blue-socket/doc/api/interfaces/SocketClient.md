@@ -21,6 +21,17 @@ after reconnect.
 
 ***
 
+### onSendWired
+
+> `readonly` **onSendWired**: `boolean`
+
+Whether the client reports exact wire sizes through the `onSend`
+observer (TEL-08). Telemetry reads this to skip its own payload
+estimation for wired clients — counting both would double the byte
+metric.
+
+***
+
 ### status
 
 > `readonly` **status**: `Signal`\<[`SocketStatus`](../type-aliases/SocketStatus.md)\>

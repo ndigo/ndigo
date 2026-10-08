@@ -7,6 +7,7 @@
 import '@tsmetadata/polyfill';
 import { describe, expect, it, vi } from 'vitest';
 import { bootBrowserApp, BrowserMockClient, installSynchronousAnimationFrames } from '@blue/test';
+import type { ConfigurableApplicationContext } from '@blue/context';
 import { StaticContentSource, StaticThemeResolver } from '@blue/content';
 import { propagation, trace } from '@opentelemetry/api';
 import { W3CTraceContextPropagator } from '@opentelemetry/core';
@@ -98,8 +99,9 @@ describe('blue-views composite resolver demo', () => {
     it('resolves themes through the context theme machinery', async () => {
         const app = await bootBrowserApp([ViewsAppConfiguration]);
         const themeContent = new StaticContentSource();
-        app.context.setThemeName('night');
-        app.context.setThemeResolver(new StaticThemeResolver([{ name: 'night', contentSource: themeContent }]));
+        const ctx = app.context as ConfigurableApplicationContext;
+        ctx.setThemeName('night');
+        ctx.setThemeResolver(new StaticThemeResolver([{ name: 'night', contentSource: themeContent }]));
 
         expect(app.context.getTheme('night').name).toBe('night');
         expect(app.context.getTheme('night').contentSource).toBe(themeContent);

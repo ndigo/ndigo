@@ -186,7 +186,7 @@ describe('ResponseStatus', () => {
 
     test('it should create responses', () => {
         const okStatus = ResponseStatus.for(200, 'OK');
-        const okResponse = okStatus.createResponse(null);
+        const okResponse = okStatus.createResponse(null as unknown as BodyInit);
 
         expect(okResponse).toHaveProperty('body', null);
         expect(okResponse).toHaveProperty('status', 200);

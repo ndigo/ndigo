@@ -159,6 +159,10 @@ Auto-configuration for Node.js-based applications that provisions:
   runner starts explicitly (worker processes call `start()`; an unstarted
   runner arms no timer) — see
   [guide 22](../../docs/guides/22-jobs-and-outbox.md)
+  :- A `lockDriver` bean (`@blue/locks`): the default in-process driver
+  coordinates schedulers within one process; register a `RedisLockDriver`
+  bean to make `@scheduled({ lock })` arbitrate across nodes — see
+  [guide 23](../../docs/guides/23-distributed-locks.md)
   :- A managed `httpServer` entry (`HTTPServer`, a `SmartLifecycle` bean)
   :- A `socketSessionRegistry` bean (`SocketSessionRegistry`): rooms, path
   broadcast, heartbeat, and backpressure for `@socketMapping` endpoints —

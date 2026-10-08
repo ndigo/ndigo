@@ -238,8 +238,12 @@ limiting behind trusted proxies, durable LibSQL sessions that survive a restart,
 and an embedded OIDC issuer running the authorization-code + PKCE S256 flow.
 
 ```bash
-cd apps/18-blue-auth-playground && pnpm dev
+# API + OIDC issuer on :3110
+cd apps/18-blue-auth-playground && pnpm start
 # GET http://127.0.0.1:3110/health
+# client dev server on :3440 (second terminal)
+pnpm dev
+# open http://127.0.0.1:3440/
 ```
 
 ### 19-blue-hn
@@ -273,7 +277,7 @@ apps on the next free port.
 | 3060        | `13-blue-chat` (serves its built client)                            |
 | 3070        | `14-blue-kanban` (serves its built client)                          |
 | 3080        | `15-blue-resilience-lab`                                            |
-| 3090        | `17-blue-telemetry-lab` (client dev server 3430)                    |
+| 3090        | `17-blue-telemetry-lab` (server + built client)                     |
 | 3100        | `05-blue-host` (Vite)                                               |
 | 3110        | `18-blue-auth-playground` (client dev server 3440)                  |
 | 3160 / 3161 | `16-blue-redis-fanout` (two instances for the fan-out demo)         |

@@ -21,7 +21,7 @@ export {
     type JobHandlerMetadata,
     type JobHandlerOptions,
 } from './job-handler';
-export { JobHandlerRegistry, type RegisteredJobHandler } from './job-handler-registry';
+export { JobHandlerRegistry, likeJobHandlerRegistry, type RegisteredJobHandler } from './job-handler-registry';
 export { JobRunner, type JobRunnerOptions } from './job-runner';
 export { startJobSpan, type JobSpan } from './telemetry';
 export {

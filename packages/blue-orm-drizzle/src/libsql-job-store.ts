@@ -23,6 +23,7 @@
  * @author Jeff Rose
  */
 import { createClient, type Client } from '@libsql/client';
+import { randomUUID } from 'node:crypto';
 import type { ClaimOptions, JobId, JobRecord, JobRequest } from '@blue/jobs';
 import { parseJobPayload, resolveJobRequest, serializeJobPayload, type JobDriver } from '@blue/jobs';
 
@@ -45,6 +46,11 @@ const SCHEMA: readonly string[] = [
   lease_expires_at INTEGER
 )`,
     `CREATE INDEX IF NOT EXISTS ${TABLE}_ready ON ${TABLE} (state, run_at)`,
+    // The claim's expired-lease branch filters state='running' rows on
+    // lease_expires_at (unindexed otherwise — a linear scan of every running
+    // row per claim pass). Idempotent DDL: existing databases gain it on the
+    // next store open.
+    `CREATE INDEX IF NOT EXISTS ${TABLE}_lease ON ${TABLE} (state, lease_expires_at)`,
 ];
 
 const RETURNING_COLUMNS = 'id, type, payload, attempts, max_attempts, run_at, created_at, timeout_ms, last_error';
@@ -107,7 +113,7 @@ export class LibSQLJobStore implements JobDriver {
     constructor(options: LibSQLJobStoreOptions = {}) {
         this.#client = options.client ?? createClient({ url: options.url ?? ':memory:', authToken: options.authToken });
         this.#ownsClient = options.client === undefined || options.ownsClient === true;
-        this.#idFactory = options.idFactory ?? (() => crypto.randomUUID());
+        this.#idFactory = options.idFactory ?? randomUUID;
         this.#ready = this.#client.batch(SCHEMA.map((sql) => ({ sql }))).then(() => undefined);
         // Attach a handler immediately; methods still await the original
         // promise and propagate schema errors, even when first used later.

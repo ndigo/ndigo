@@ -37,7 +37,7 @@ export class ServeCommand extends Command {
         }),
         port: Flags.integer({
             summary: 'Base PORT for every slot (default: inherited environment).',
-            min: 0,
+            min: 1,
         }),
     };
 

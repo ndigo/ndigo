@@ -18,11 +18,13 @@ pnpm add @blue/redis @blue/cache @blue/factory
 pnpm add @blue/socket
 # The job driver additionally needs the jobs contract:
 pnpm add @blue/jobs
+# The lock driver additionally needs the locks contract:
+pnpm add @blue/locks
 ```
 
 Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11, plus a
 standalone Redis server (integration tests run against 7.2). The package
-ships four entry points:
+ships five entry points:
 
 | Entry point          | Exports                             | Optional peers                 |
 | -------------------- | ----------------------------------- | ------------------------------ |
@@ -30,6 +32,7 @@ ships four entry points:
 | `@blue/redis/cache`  | `RedisCache`, `RedisCacheManager`   | `@blue/cache`, `@blue/factory` |
 | `@blue/redis/pubsub` | `RedisSocketFanout`                 | `@blue/socket`                 |
 | `@blue/redis/jobs`   | `RedisJobDriver`                    | `@blue/jobs`                   |
+| `@blue/redis/locks`  | `RedisLockDriver`                   | `@blue/locks`                  |
 
 The base dependency is pinned to `@redis/client` 6.3.0. No Redis modules,
 cluster/sentinel topology or scheduler are provided. The root export loads

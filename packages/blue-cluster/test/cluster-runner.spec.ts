@@ -202,6 +202,111 @@ describe('ClusterRunner', () => {
         expect(h.spawned.length).toBeLessThanOrEqual(3);
     });
 
+    test('a crash-loop trip tears down healthy siblings — no slot outlives it', async () => {
+        const h = harness({
+            size: 2,
+            command: ['node', 'main.js'],
+            maxRestartsPerWindow: 2,
+            restartWindowMs: 60_000,
+        });
+        const running = h.runner.run();
+        // Spawn order is slot order: children[0] = slot 0, children[1] = slot 1.
+        await tick();
+
+        // Slot 0 crash-loops (3 deaths trip the guard); slot 1's child stays
+        // healthy and MUST be killed with it — the bug left slot 1 running
+        // forever and hung run()'s Promise.all.
+        h.children[0]?.finish(1);
+        await tick(50);
+        h.children[2]?.finish(1); // slot 0 respawn #1
+        await tick(50);
+        h.children[3]?.finish(1); // slot 0 respawn #2 → trip
+
+        const result = await running;
+        expect(result.reason).toBe('crash-loop');
+        expect(result.exitCode).toBe(1);
+        expect(h.children[1]?.killed).toBe(true); // slot 1's healthy child forced down
+        expect(h.spawned.length).toBeLessThanOrEqual(4);
+    });
+
+    test('a spawn failure aborts fail-closed — siblings are not orphaned', async () => {
+        // Slot 0 spawns normally; the SECOND spawn throws (a missing binary
+        // at respawn time). The cluster must settle and the healthy sibling
+        // must be torn down with it instead of being orphaned.
+        const children: ScriptedChild[] = [];
+        const runner = new ClusterRunner({
+            size: 2,
+            command: ['node', 'main.js'],
+            restartBaseMs: 1,
+            restartMaxMs: 5,
+            clock: () => 0,
+            signalHost: {
+                on: () => undefined,
+                removeHandler: () => undefined,
+            },
+            log: () => undefined,
+            spawner: (options) => {
+                if (options.env.BLUE_CLUSTER_SLOT === '1') {
+                    throw new Error('boom: binary missing');
+                }
+                const child = new ScriptedChild();
+                children.push(child);
+                return child;
+            },
+        });
+        const running = runner.run();
+        await tick();
+
+        expect(children).toHaveLength(1); // slot 0 spawned; slot 1's spawn failed
+        const result = await running; // must settle — never hang on the sibling
+        expect(result.reason).toBe('aborted');
+        expect(result.exitCode).toBe(1);
+        expect(children[0]?.killed).toBe(true); // slot 0 torn down, not orphaned
+    });
+
+    test('the worst sibling exit code survives a crash-loop trip (floor 1)', async () => {
+        const h = harness({
+            size: 2,
+            command: ['node', 'main.js'],
+            maxRestartsPerWindow: 2,
+            restartWindowMs: 60_000,
+        });
+        const running = h.runner.run();
+        await tick();
+
+        // Slot 1 fails for real (exit 7); slot 0 then crash-loops. The trip
+        // must not overwrite slot 1's meaningful code with a bare 1.
+        h.children[1]?.finish(7); // slot 1 → respawns (children[2])
+        await tick(50);
+        h.children[0]?.finish(1); // slot 0 → respawn #1 (children[3])
+        await tick(50);
+        h.children[3]?.finish(1); // slot 0 → respawn #2 (children[4])
+        await tick(50);
+        h.children[4]?.finish(1); // slot 0 3rd death → trip
+
+        const result = await running;
+        expect(result.reason).toBe('crash-loop');
+        expect(result.exitCode).toBe(7);
+        expect(h.children[2]?.killed).toBe(true); // slot 1's respawn torn down too
+    });
+
+    test('stop() after an abort is a no-op — the abort outcome stands', async () => {
+        const h = harness({ size: 1, command: ['node', 'main.js'] });
+        const running = h.runner.run();
+        await tick();
+
+        await h.runner.abort();
+        // The abort already set #stopping; a trailing stop() must not relay
+        // signals, respawn, or override the outcome.
+        await h.runner.stop();
+
+        const result = await running;
+        expect(result.reason).toBe('aborted');
+        expect(result.exitCode).toBe(1);
+        expect(h.children[0]?.killed).toBe(true);
+        expect(h.children[0]?.signaled).toEqual([]);
+    });
+
     test('a child that ignores the signal is force-killed', async () => {
         const h = harness({ size: 1, command: ['node', 'main.js'], shutdownTimeoutMs: 10 });
         const running = h.runner.run();

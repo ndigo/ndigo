@@ -46,6 +46,22 @@ async function fileStores(): Promise<{ first: LibSQLJobStore; second: LibSQLJobS
 }
 
 describe('LibSQLJobStore', () => {
+    test('the claim reclaim index exists (state, lease_expires_at)', async () => {
+        // AD72-M5: without this index the claim's expired-lease branch scans
+        // EVERY running row per pass. The store applies idempotent DDL on
+        // open, so a fresh (and an existing) database gains it.
+        const client = createClient({ url: ':memory:' });
+        clients.push(client);
+        const store = new LibSQLJobStore({ client });
+        stores.push(store);
+        await store.enqueue({ type: 'seed', payload: {} });
+        const rows = await client.execute({
+            sql: `SELECT name FROM sqlite_master WHERE type = 'index' AND name = 'blue_jobs_lease'`,
+            args: [],
+        });
+        expect(Array.isArray(rows.rows) && rows.rows.length).toBe(1);
+        expect(rows.rows[0]?.[0]).toBe('blue_jobs_lease');
+    });
     test('enqueue → claim → complete round-trips a job', async () => {
         const store = openStore();
 

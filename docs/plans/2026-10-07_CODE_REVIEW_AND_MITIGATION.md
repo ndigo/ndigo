@@ -306,7 +306,7 @@ Quarkus, Ktor. Status verified against HEAD by grep/graft.
 | GAP-1  | Durable jobs/queues + transactional outbox                          | absent                                                                                                                                                                                                                                                       | high         | build: ADR + `@blue/jobs` driver SPI (Redis/SQL), outbox wired to the ORM UoW            |
 | GAP-2  | Clustering / worker offload                                         | absent                                                                                                                                                                                                                                                       | high         | build: `blue serve --cluster <n>` fanning SIGTERM into existing graceful shutdown        |
 | GAP-3  | Distributed locks / persistent schedules                            | absent                                                                                                                                                                                                                                                       | high         | build: `@blue/locks` (Redis/PG advisory, fencing) + `@scheduled({lock})`                 |
-| GAP-4  | Actuator parity (`/loggers`, `/env`, `/configprops`, health groups) | absent (only `/health`, `/metrics`)                                                                                                                                                                                                                          | high         | build behind the existing management-path guard                                          |
+| GAP-4  | Actuator parity (`/loggers`, `/env`, `/configprops`, health groups) | **executed — AD-76** (`@blue/management`: exposure model + the four endpoint classes)                                                                                                                                                                        | high         | build behind the existing management-path guard                                          |
 | GAP-5  | OTel metrics + Prometheus + semconv names                           | **partial** — the prior review's "metrics are not OTel" was wrong: OTLP metric export and OTel counters predate the baseline; missing are the Prometheus exporter, semconv metric names (`http.server.request.duration`), and `/metrics` is proprietary JSON | high         | add Prometheus exporter + semconv emission; derive the JSON view from the meter provider |
 | GAP-6  | First-class CLI / dev loop                                          | absent (no `bin` anywhere; `@blue/inspect` is API+demo)                                                                                                                                                                                                      | high         | build `@blue/cli` (`dev`, `generate`, `db`, `inspect`)                                   |
 | GAP-7  | Migration generation + run-on-boot                                  | partial (forward-only journaled runner, baseline DDL only)                                                                                                                                                                                                   | medium       | `blue db generate` from entity metadata; `migrations.runOnBoot`                          |
@@ -433,7 +433,11 @@ graceful shutdown, bounded backoff + fail-closed guard — the
 [AD-75](../decisions/2026-10-07_AD75_FRAMEWORK_CLI.md) (`@blue/cli` on
 `@oclif/core` v5: serve with the `--cluster` surface, dev, generate,
 db:migrate, inspect, doctor — the [companion plan](2026-10-07_FRAMEWORK_CLI.md)).
-Remaining Wave-6 items stay ADR-gated.
+Remaining Wave-6 items stay ADR-gated. **GAP-4 executed** (2026-10-08) —
+[AD-76](../decisions/2026-10-08_AD76_ACTUATOR_PARITY.md) + the
+[companion plan](2026-10-08_ACTUATOR_PARITY.md): `/loggers`, `/env`,
+`/configprops`, health groups/components, and the opt-in exposure model in
+`@blue/management` (guide 26). GAP-5 (Prometheus/semconv) remains open.
 
 ### Wave 7 — Verification
 

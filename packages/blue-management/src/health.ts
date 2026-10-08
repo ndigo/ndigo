@@ -124,11 +124,19 @@ export class HealthRegistry implements Enumerable<string, HealthIndicator> {
     }
 
     /**
-     * Runs every indicator and aggregates the results.
+     * Runs the registered indicators (or the named subset) and aggregates
+     * the results (AD-76 D-6).
      *
+     * Unknown names in `names` are skipped; an empty intersection produces
+     * `{ status: 'UNKNOWN', components: {} }` — callers decide the 404.
+     *
+     * @param names - The indicator names to probe; all when omitted.
      * @returns The aggregate health status with per-indicator details.
      */
-    async checkAll(): Promise<HealthStatus> {
+    async check(names?: readonly string[]): Promise<HealthStatus> {
+        const indicators = names
+            ? [...this.#indicators].filter(([name]) => names.includes(name))
+            : [...this.#indicators];
         const components: Record<string, HealthResult> = {};
         let overall: HealthState = 'UP';
 
@@ -136,7 +144,7 @@ export class HealthRegistry implements Enumerable<string, HealthIndicator> {
         // aggregate afterwards — identical status rules, but one round-trip
         // instead of N sequential probes.
         const results = await Promise.all(
-            [...this.#indicators].map(async ([name, indicator]): Promise<{ name: string; result: HealthResult }> => {
+            indicators.map(async ([name, indicator]): Promise<{ name: string; result: HealthResult }> => {
                 try {
                     const result = await indicator.check();
                     return { name, result };
@@ -169,6 +177,15 @@ export class HealthRegistry implements Enumerable<string, HealthIndicator> {
             components,
             timestamp: new Date().toISOString(),
         };
+    }
+
+    /**
+     * Runs every registered indicator and aggregates the results.
+     *
+     * @returns The aggregate health status with per-indicator details.
+     */
+    checkAll(): Promise<HealthStatus> {
+        return this.check();
     }
 }
 

@@ -29,6 +29,7 @@ Conceptual and hands-on guides for building applications with BlueJS. These comp
 23. [23 — Distributed Locks](23-distributed-locks.md) — `@blue/locks` (AD-73): leases + fencing tokens, the in-process and Redis drivers, and the `@scheduled({ lock })` single-executor contract across nodes.
 24. [24 — Clustering](24-clustering.md) — `@blue/cluster` (AD-74): the process supervisor — replicated worker slots, `SIGINT`/`SIGTERM` relay into each child's own graceful shutdown, bounded-backoff restarts, and the fail-closed crash-loop guard.
 25. [25 — The `blue` CLI](25-blue-cli.md) — `@blue/cli` (AD-75): serve (with the `--cluster` surface), dev, generate, db, inspect, and doctor — how scripts run shell-free so signals reach the app.
+26. [26 — Management Endpoints](26-management-endpoints.md) — the actuator-parity surface (AD-76): `/health` groups and component reads, `/loggers` level inspection + live changes, `/env` with source origins and redaction, `/configprops` (declared keys, never values), and the opt-in exposure model. Reference application: `apps/04-blue-api`.
 
 ## Reading Order
 

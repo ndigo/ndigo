@@ -29,6 +29,11 @@ yarn-error.log
 **/test/**/*.d.ts.map
 **/test/**/*.d.ts
 **/lib/
+# Hand-authored application sources under `src/lib/` (the blanket `**/lib/`
+# above would swallow them): re-included so a fresh checkout can build the
+# client. `git check-ignore` must stay silent for these.
+!apps/11-blue-conduit-web/src/lib/
+!apps/11-blue-conduit-web/src/lib/**
 *.tsbuildinfo
 
 # Build artifacts in package roots

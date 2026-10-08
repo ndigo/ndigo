@@ -166,6 +166,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `@blue/redis/locks` (AD-73): `RedisLockDriver` — Lua `SET NX PX` acquire +
   compare-and-delete release, one namespace per environment, borrowed
   connection. Cross-process single-executor for multi-node deployments.
+- `@blue/cli` (AD-75): the `blue` binary — `serve` (with the AD-74
+  `--cluster <n>` surface and `--port` derivation), `dev`, `generate`
+  (fronting `@blue/generators`), `db:migrate`, `inspect` (the AD-70
+  entry), and `doctor` (environment diagnostics). Built on `@oclif/core`
+  ^5 as an embedded library; scripts run shell-free so SIGTERM/SIGINT
+  reach the actual application process.
 - `@blue/cluster` (AD-74): the process supervisor — `ClusterRunner` spawns N
   replicated worker slots (`BLUE_CLUSTER_SLOT`/`SIZE`, `PORT = base + slot`
   derivation), relays `SIGINT`/`SIGTERM` into each child's own graceful

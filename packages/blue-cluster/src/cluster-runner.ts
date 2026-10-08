@@ -331,18 +331,35 @@ export class ClusterRunner {
         // observation; `run()` aggregates exit codes once they do.)
         const exited = new Set<ClusterChild>();
         const deadline = this.#clock() + this.#options.shutdownTimeoutMs;
-        for (const child of children) {
-            const remaining = deadline - this.#clock();
-            if (remaining <= 0) {
-                break;
+        // Timers created by the losing branch of a race still hold the
+        // process open — every race timer is collected and cleared once the
+        // drain settles (a 10 s residual timer would otherwise keep a
+        // supervisor process alive after a clean stop).
+        const raceTimers: NodeJS.Timeout[] = [];
+        try {
+            for (const child of children) {
+                const remaining = deadline - this.#clock();
+                if (remaining <= 0) {
+                    break;
+                }
+                // oxlint-disable-next-line no-await-in-loop -- children drain sequentially against the shared deadline; the remaining budget informs each next wait
+                await Promise.race([
+                    child.waitForExit().then(() => {
+                        exited.add(child);
+                    }),
+                    new Promise<void>((resolve) => {
+                        raceTimers.push(setTimeout(resolve, remaining));
+                    }),
+                ]);
+                const armed = raceTimers.pop();
+                if (armed !== undefined) {
+                    clearTimeout(armed); // the armed timer is done either way
+                }
             }
-            // oxlint-disable-next-line no-await-in-loop -- children drain sequentially against the shared deadline; the remaining budget informs each next wait
-            await Promise.race([
-                child.waitForExit().then(() => {
-                    exited.add(child);
-                }),
-                this.#delay(remaining),
-            ]);
+        } finally {
+            for (const timer of raceTimers) {
+                clearTimeout(timer);
+            }
         }
         for (const child of children) {
             if (!exited.has(child)) {
@@ -438,7 +455,16 @@ export class ClusterRunner {
         state.restartTimes.push(now);
         state.restarts += 1;
         const backoff = this.#backoff(state.restarts - 1);
-        await this.#delay(backoff);
+        // Cancellable: an in-progress backoff must not delay a stop (a 30 s
+        // respawn timer would otherwise hold the supervisor process open).
+        // Polled in ≤100 ms chunks so the lifecycle state is re-checked.
+        let remaining = backoff;
+        while (remaining > 0 && !this.#stopping && !this.#aborted) {
+            const step = Math.min(100, remaining);
+            // oxlint-disable-next-line no-await-in-loop -- the chunked backoff must observe the lifecycle between waits
+            await this.#delay(step);
+            remaining -= step;
+        }
         return true;
     }
 

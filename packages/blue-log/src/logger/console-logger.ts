@@ -5,7 +5,7 @@
  */
 import { Exception } from '@opentelemetry/api';
 import { SeverityNumber } from '@opentelemetry/api-logs';
-import { Logger, LogAttributes } from './logger';
+import { Logger, LogAttributes } from './logger.js';
 
 export class ConsoleLogger implements Logger {
     #threshold: SeverityNumber;

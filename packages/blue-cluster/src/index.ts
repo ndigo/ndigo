@@ -17,4 +17,4 @@ export {
     type ClusterSlotSnapshot,
     type ClusterSpawner,
     type ClusterStopReason,
-} from './cluster-runner';
+} from './cluster-runner.js';

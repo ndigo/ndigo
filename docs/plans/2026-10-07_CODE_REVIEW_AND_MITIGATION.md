@@ -342,18 +342,18 @@ graft pin, OpenAPI security forwarding, secret-redaction invariant, A1/A2/A3/A5.
 
 **Carried forward (still open / deferred):**
 
-| Item                                                        | Status at HEAD                                                            | Owner action               |
-| :---------------------------------------------------------- | :------------------------------------------------------------------------ | :------------------------- |
-| TOL-F5 test-file typecheck lane                             | **closed in the follow-up sweep** — `tsconfig.spec.json` + full triage    | TST-A (this revision)      |
-| TEL-08 client byte-size seam (`onSend` not consumed)        | **closed in the follow-up sweep** — `countSocketClientBytes` + co.        | TEL-08 (this revision)     |
-| REU-9 inspect → boot transitive weight                      | **closed in the follow-up sweep** — metadata relocated to `@blue/context` | REU-9 (this revision)      |
-| SEC-B/WC-I plugin probe home                                | **closed in the follow-up sweep** — `test:tooling` node:test lane         | SEC-B/WC-I (this revision) |
-| Raw-console invariant (`blue-router`, `blue-telemetry-web`) | recurrence item open (RES-A)                                              | Wave 5                     |
-| AD-46 rule depth (`src/**/index.ts` deeper than one level)  | partial (RES-D)                                                           | Wave 3                     |
-| Skipped-test policy (six sites)                             | partial (TST-C)                                                           | Wave 1                     |
-| `[object Promise]` / bracket-syntax tests                   | test-quality items (RES-B/C)                                              | Wave 5                     |
-| Wave-6 GAP-1..15 roadmap                                    | not attempted (ADR-gated; GAP-1 closed by AD-72 at `d950ad5c`)            | Wave 6                     |
-| Doc hygiene for both 2026-10-06 plans + indexes             | drift (DOC-2..4, DOC-5)                                                   | Wave 5                     |
+| Item                                                        | Status at HEAD                                                                                    | Owner action               |
+| :---------------------------------------------------------- | :------------------------------------------------------------------------------------------------ | :------------------------- |
+| TOL-F5 test-file typecheck lane                             | **closed in the follow-up sweep** — `tsconfig.spec.json` + full triage                            | TST-A (this revision)      |
+| TEL-08 client byte-size seam (`onSend` not consumed)        | **closed in the follow-up sweep** — `countSocketClientBytes` + co.                                | TEL-08 (this revision)     |
+| REU-9 inspect → boot transitive weight                      | **closed in the follow-up sweep** — metadata relocated to `@blue/context`                         | REU-9 (this revision)      |
+| SEC-B/WC-I plugin probe home                                | **closed in the follow-up sweep** — `test:tooling` node:test lane                                 | SEC-B/WC-I (this revision) |
+| Raw-console invariant (`blue-router`, `blue-telemetry-web`) | recurrence item open (RES-A)                                                                      | Wave 5                     |
+| AD-46 rule depth (`src/**/index.ts` deeper than one level)  | partial (RES-D)                                                                                   | Wave 3                     |
+| Skipped-test policy (six sites)                             | partial (TST-C)                                                                                   | Wave 1                     |
+| `[object Promise]` / bracket-syntax tests                   | test-quality items (RES-B/C)                                                                      | Wave 5                     |
+| Wave-6 GAP-1..15 roadmap                                    | ADR-gated; GAP-1 closed by AD-72 (`d950ad5c`), GAP-3's ADR accepted (AD-73) — implementation next | Wave 6                     |
+| Doc hygiene for both 2026-10-06 plans + indexes             | drift (DOC-2..4, DOC-5)                                                                           | Wave 5                     |
 
 ---
 
@@ -420,6 +420,10 @@ GAP-3 → GAP-1 → GAP-2 (dependency cluster: locks, jobs/outbox, cluster) firs
 GAP-6/7 (CLI, migration generate) as the DX track; GAP-8/9/13 (shared-store limits,
 testcontainers, SSE backpressure incl. APP-D) as capacity work; GAP-10/11/12/14 get ADRs
 only until a consumer exists. Each requires an ADR + owner sign-off before code.
+**Movement:** GAP-1 closed by AD-72 (`d950ad5c`); GAP-3's gate is now open —
+[AD-73](../decisions/2026-10-07_AD73_DISTRIBUTED_LOCKS.md) (accepted 2026-10-07,
+Redis-first: `@blue/locks` SPI + `@blue/redis/locks` driver + `@scheduled({lock})`)
+makes GAP-3 the next implementation, ahead of GAP-2.
 
 ### Wave 7 — Verification
 

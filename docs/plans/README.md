@@ -25,6 +25,21 @@ discovery mirroring `@scheduled`, and the transactional outbox — `OutboxStore`
 
 ---
 
+### 2026-10-07 - Distributed Locks
+
+`@blue/locks` (AD-73), closing GAP-3: one `LockDriver` SPI (non-blocking
+acquire, TTL leases, monotonic **fencing tokens** — only the current token
+can renew/release), the process-wide `InProcessLockDriver` (single-node
+truth), `RedisLockDriver` (`@blue/redis/locks`, Lua `SET NX PX` +
+compare-and-delete), and `@scheduled({ lock, lockWait, lockWaitStep,
+lockTtl })` for cross-process single-executor. `NodeAutoConfiguration`
+registers a `lockDriver` bean (in-process default, Redis override).
+PG advisory locks documented-deferred in the ADR.
+
+[Read plan](2026-10-07_DISTRIBUTED_LOCKS.md)
+
+---
+
 ### 2026-10-05 - TOON Support (opt-in authoring format)
 
 Opt-in, decode-only TOON support (AD-66): inert `MediaTypes.TEXT_TOON`

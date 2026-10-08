@@ -19,6 +19,7 @@ import {
     HANDLER_MAPPING,
 } from '@blue/dispatcher';
 import { ScheduleRegistry, TaskScheduler } from '@blue/scheduler';
+import { InProcessLockDriver, LOCK_DRIVER, type LockDriver } from '@blue/locks';
 import {
     InProcessJobDriver,
     JOB_DRIVER,
@@ -192,6 +193,21 @@ export class NodeAutoConfiguration {
     @entry(JOB_RUNNER)
     jobRunner() {
         return new JobRunner();
+    }
+
+    /**
+     * The default lock driver (AD-73): in-process and **single-node** — the
+     * process-wide lease table gives `@scheduled({ lock })` tasks exactly
+     * one holder per process. Apps that run multiple nodes register their
+     * own `LockDriver` bean (`RedisLockDriver`) for cross-process
+     * coordination; the task scheduler resolves whichever bean is
+     * registered here.
+     *
+     * @returns The default in-process lock driver.
+     */
+    @entry(LOCK_DRIVER)
+    lockDriver(): LockDriver {
+        return new InProcessLockDriver();
     }
 
     /**

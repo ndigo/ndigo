@@ -5,10 +5,22 @@
  */
 import { FrameworkError } from '@blue/core';
 import { like } from '@blue/util/types';
+import { LOCK_DRIVER, likeLockDriver, type LockDriver, type LockHandle } from '@blue/locks';
 import { Schedule } from './schedule';
 import { getLogger } from '@blue/log';
+import type { ApplicationContext } from '@blue/context';
 
 const logger = getLogger('blue-scheduler:task-scheduler');
+
+/**
+ * Default lease duration for `@scheduled({ lock })` acquisitions.
+ */
+export const DEFAULT_LOCK_TTL_MS = 60_000;
+
+/**
+ * Default poll interval while waiting for a contended lock.
+ */
+export const DEFAULT_LOCK_WAIT_STEP_MS = 100;
 
 /**
  * A runnable scheduled task as registered with {@link TaskScheduler}.
@@ -29,6 +41,26 @@ export interface ScheduledTaskDefinition {
      */
     readonly maxRunTimeMs?: number;
     /**
+     * Distributed lock key (AD-73): the scheduler acquires the named lock
+     * before each run and releases it after (finally-style), so only one
+     * node executes this task at a time.
+     */
+    readonly lockKey?: string;
+    /**
+     * How long to wait for a contended lock before skipping the fire
+     * (ms; `0`/absent = skip immediately on contention).
+     */
+    readonly lockWaitMs?: number;
+    /**
+     * Poll interval while waiting for a contended lock (ms).
+     */
+    readonly lockWaitStepMs?: number;
+    /**
+     * Lock lease duration (ms). Must cover the whole run — a lease that
+     * lapses mid-run lets another node take over (at-least-once posture).
+     */
+    readonly lockTtlMs?: number;
+    /**
      * Executes the task once.
      */
     run(): void | Promise<void>;
@@ -48,6 +80,13 @@ export interface TaskSchedulerOptions {
      * `blue-scheduler:task-scheduler` `@blue/log` warning channel.
      */
     warn?: (message: string) => void;
+    /**
+     * The distributed lock driver for `@scheduled({ lock })` tasks
+     * (AD-73). `undefined` (default) resolves the `lockDriver` bean from
+     * the injected application context; pass `null` to leave locked tasks
+     * failing loudly when no bean exists.
+     */
+    lockDriver?: LockDriver | null;
 }
 
 /**
@@ -140,15 +179,31 @@ export class TaskScheduler {
     #started = false;
     #closed = false;
     destroyed = false;
+    /** Constructor-provided lock driver; `undefined` = resolve from context. */
+    readonly #lockDriverOption: LockDriver | null | undefined;
+    /** The injected application context (lockDriver bean resolution). */
+    #context: ApplicationContext | null = null;
 
     /**
      * Creates a task scheduler.
      *
-     * @param options - Clock and warning-sink injection.
+     * @param options - Clock, warning-sink, and lock-driver injection.
      */
     constructor(options: TaskSchedulerOptions = {}) {
         this.#clock = options.clock ?? (() => new Date());
         this.#warn = options.warn ?? ((message: string) => logger.warn(message));
+        this.#lockDriverOption = options.lockDriver;
+    }
+
+    /**
+     * Container injection (`ApplicationContextAware`): the context is used
+     * to resolve the `lockDriver` bean for {@link ScheduledTaskDefinition
+     * locked} tasks when no driver was passed to the constructor (AD-73).
+     *
+     * @param context - The application context.
+     */
+    setApplicationContext(context: ApplicationContext): void {
+        this.#context = context;
     }
 
     /**
@@ -386,7 +441,17 @@ export class TaskScheduler {
 
     async #execute(state: TaskState): Promise<void> {
         const { definition } = state;
+        let lease: LockHandle | null = null;
         try {
+            if (definition.lockKey !== undefined) {
+                lease = await this.#acquireTaskLock(definition);
+                if (lease === null) {
+                    // Contended (or the wait budget expired): this fire is
+                    // skipped. The finally normalizes bookkeeping exactly
+                    // like a completed run, so the task stays schedulable.
+                    return;
+                }
+            }
             const runPromise = Promise.resolve(definition.run());
             if (definition.maxRunTimeMs === undefined) {
                 await runPromise;
@@ -396,6 +461,7 @@ export class TaskScheduler {
         } catch (error) {
             this.#recordFailure(state, error);
         } finally {
+            await this.#releaseTaskLock(lease);
             state.inFlight = false;
             state.lastCompletedAt = this.#clock();
             const { schedule } = definition;
@@ -404,6 +470,105 @@ export class TaskScheduler {
                 state.nextRunAt = new Date(state.lastCompletedAt.getTime() + schedule.intervalMs);
             }
         }
+    }
+
+    /**
+     * Acquires a task's distributed lock, honoring the definition's wait
+     * budget. Skips (returns `null`) when the key stays contended beyond
+     * `lockWaitMs` — the default behavior on contention.
+     *
+     * @param definition - The task definition.
+     * @returns The lease, or `null` when the fire is skipped.
+     * @throws {FrameworkError} When `lockKey` is set but no lock driver is
+     *   configured (fail-loud: running unguarded would defeat the feature).
+     */
+    async #acquireTaskLock(definition: ScheduledTaskDefinition): Promise<LockHandle | null> {
+        const driver = this.#lockDriver();
+        if (driver === null) {
+            throw new FrameworkError(
+                `TaskScheduler: task '${definition.name}' declares lock '${definition.lockKey}' but no LockDriver is ` +
+                    "configured — register a lockDriver bean or pass one to the scheduler's options"
+            );
+        }
+        if (definition.lockKey === undefined) {
+            return null;
+        }
+        const ttlMs = definition.lockTtlMs ?? DEFAULT_LOCK_TTL_MS;
+        const startedAt = this.#clock().getTime();
+        const budgetMs = definition.lockWaitMs ?? 0;
+        const stepMs = Math.max(1, definition.lockWaitStepMs ?? DEFAULT_LOCK_WAIT_STEP_MS);
+        const key = definition.lockKey;
+        for (;;) {
+            // oxlint-disable-next-line no-await-in-loop -- a contended-lock poll is inherently sequential: each probe must observe the previous wait
+            const lease = await driver.acquire(key, { ttlMs });
+            if (lease !== null) {
+                return lease;
+            }
+            if (this.#closed) {
+                return null;
+            }
+            const elapsed = this.#clock().getTime() - startedAt;
+            if (elapsed >= budgetMs) {
+                this.#warn(`TaskScheduler: task '${definition.name}' skipped — lock '${key}' is held`);
+                return null;
+            }
+            // oxlint-disable-next-line no-await-in-loop -- same poll loop: wait between attempts, never parallel
+            await this.#sleep(Math.min(stepMs, budgetMs - elapsed));
+        }
+    }
+
+    /**
+     * Releases a task's lease in the run `finally` — a throw never leaks
+     * the lease. Failures are warnings: the fence already prevents any
+     * successor damage, and the bookkeeping must proceed.
+     *
+     * @param lease - The acquired lease, or `null` when none was acquired.
+     */
+    async #releaseTaskLock(lease: LockHandle | null): Promise<void> {
+        if (lease === null) {
+            return;
+        }
+        try {
+            await lease.release();
+        } catch {
+            // The driver may already be closed (scheduler shutdown); the
+            // lease expires by TTL regardless — nothing further to do.
+        }
+    }
+
+    /**
+     * Resolves the lock driver: constructor option wins, then the
+     * application context's `lockDriver` bean.
+     *
+     * @returns The driver, or `null` when none is configured.
+     */
+    #lockDriver(): LockDriver | null {
+        if (this.#lockDriverOption !== undefined) {
+            return this.#lockDriverOption;
+        }
+        const context = this.#context;
+        if (context !== null && context.hasValue(LOCK_DRIVER)) {
+            const driver = context.getValue(LOCK_DRIVER);
+            if (!likeLockDriver(driver)) {
+                throw new FrameworkError(`TaskScheduler: the '${LOCK_DRIVER.description}' bean is not a LockDriver`);
+            }
+            return driver;
+        }
+        return null;
+    }
+
+    /**
+     * Waits without busy-looping the CPU.
+     *
+     * @param ms - The delay in milliseconds (positive; no-op on zero).
+     */
+    async #sleep(ms: number): Promise<void> {
+        if (ms <= 0) {
+            return;
+        }
+        await new Promise<void>((resolve) => {
+            setTimeout(resolve, ms);
+        });
     }
 
     /**

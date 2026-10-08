@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { SeverityNumber } from '@opentelemetry/api-logs';
-import { SeverityMapping } from './severity-mapping';
+import { SeverityMapping } from './severity-mapping.js';
 
 function createSeverityMapping(
     scheme: SeverityMapping['scheme'],

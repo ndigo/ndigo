@@ -5,8 +5,8 @@
  */
 import { Exception } from '@opentelemetry/api';
 import { SeverityNumber } from '@opentelemetry/api-logs';
-import { SeverityScheme } from '../severity';
-import { LogAttributes } from './logger';
+import { SeverityScheme } from '../severity/index.js';
+import { LogAttributes } from './logger.js';
 
 /**
  * Represents a single log entry with structured information.

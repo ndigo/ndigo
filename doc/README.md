@@ -15,6 +15,7 @@ package can be read — and installed — on its own.
 | `@blue/auth-server` | Server-side authentication for BlueJS — AuthServer, AuthRouteGuard, and JWT adapter | [doc/api/README.md](../packages/blue-auth-server/doc/api/README.md) |
 | `@blue/boot` | Application bootstrap, profiles, and typed configuration for BlueJS | [doc/api/README.md](../packages/blue-boot/doc/api/README.md) |
 | `@blue/cache` | Isomorphic caching for BlueJS — memory cache manager, memoize, and the @cached decorator | [doc/api/README.md](../packages/blue-cache/doc/api/README.md) |
+| `@blue/cli` | The BlueJS framework CLI — serve, dev, generate, db, inspect, doctor (AD-75) | [doc/api/README.md](../packages/blue-cli/doc/api/README.md) |
 | `@blue/cluster` | Process supervisor for Node.js applications — replicated worker slots with signal relay, graceful drains, and bounded-backoff restarts (AD-74) | [doc/api/README.md](../packages/blue-cluster/doc/api/README.md) |
 | `@blue/content` | i18n content keys, themes, and the MessageSource contract for BlueJS | [doc/api/README.md](../packages/blue-content/doc/api/README.md) |
 | `@blue/content-i18next` | Blue Content i18next Adapter | [doc/api/README.md](../packages/blue-content-i18next/doc/api/README.md) |

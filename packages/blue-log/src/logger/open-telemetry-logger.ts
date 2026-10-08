@@ -5,8 +5,8 @@
  */
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
 import { context, trace, Exception, SpanStatusCode } from '@opentelemetry/api';
-import { Logger, LogAttributes } from './logger';
-import { severityNumberToLevel } from '../severity';
+import { Logger, LogAttributes } from './logger.js';
+import { severityNumberToLevel } from '../severity/index.js';
 
 export class OpenTelemetryLogger implements Logger {
     #threshold: SeverityNumber;

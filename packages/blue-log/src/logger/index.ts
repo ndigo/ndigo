@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-export * from './logger';
-export * from './logger-factory';
-export * from './entry';
-export * from './context-aware-logger';
+export * from './logger.js';
+export * from './logger-factory.js';
+export * from './entry.js';
+export * from './context-aware-logger.js';

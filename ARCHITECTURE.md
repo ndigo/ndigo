@@ -1141,6 +1141,7 @@ Canonical reference for every publishable package: purpose · layer · platform 
 | `@blue/auth-server`       | 6       | node     | Server auth: `AuthServer`, `AuthRouteGuard`, JWT (`jose`)                                                                                 | `auth-core`, `dispatcher`, `router`, `util`                                                       |
 | `@blue/platform-node`     | 6       | node     | Node platform: HTTP server adapter, auto-configuration, static files, multipart (`busboy`, `helmet`, `ws`)                                | 15 BlueJS deps — hub                                                                              |
 | `@blue/cluster`           | 6       | node     | Process supervisor: replicated worker slots, signal relay, bounded restarts (AD-74)                                                       | `log`                                                                                             |
+| `@blue/cli`               | 6       | node     | Framework CLI: serve/dev/generate/db/inspect/doctor on `@oclif/core` ^5 (AD-75)                                                           | `cluster`, `core`, `@oclif/core`                                                                  |
 | `@blue/platform-web`      | 6       | browser  | Browser platform glue: dispatcher, history/cookie/data-binding resolvers, theme                                                           | 12 BlueJS deps — hub                                                                              |
 | `@blue/telemetry-node`    | 6       | node     | OTel NodeSDK wiring + Node instrumentations (10 OTel packages; peer `ws`)                                                                 | `telemetry`, `platform-node`, `router`, `socket`, `view`, `log`                                   |
 | `@blue/telemetry-web`     | 6       | browser  | Browser SDK wiring + web instrumentations (8 OTel packages)                                                                               | `log`, `platform-web`, `socket`, `telemetry`                                                      |
@@ -1794,6 +1795,11 @@ Guides: [`docs/guides/`](docs/guides/README.md).
 - **Persistence baseline landed** (AD-40): durable sessions, shared Redis
   cache, cross-node WebSocket/STOMP fan-out; distributed scheduling
   explicitly deferred (AD-41).
+- **The framework CLI shipped** (AD-75): `@blue/cli` (bin `blue`) on
+  `@oclif/core` ^5 as an embedded library — `serve` (with the AD-74
+  `--cluster` surface), `dev`, `generate` (fronting `@blue/generators`),
+  `db:migrate`, `inspect` (the AD-70 entry), and `doctor`; scripts run
+  shell-free so signals reach the app.
 - **Clustering shipped** (AD-74): `@blue/cluster` supervises replicated
   worker slots — `SIGINT`/`SIGTERM` relay into each child's own graceful
   shutdown, bounded-backoff respawns behind a fail-closed crash-loop guard,

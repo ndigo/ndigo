@@ -5,7 +5,7 @@
  */
 import { context, trace, Exception } from '@opentelemetry/api';
 import { SeverityNumber } from '@opentelemetry/api-logs';
-import { LogAttributes, Logger } from './logger';
+import { LogAttributes, Logger } from './logger.js';
 
 /**
  * A decorator logger that automatically injects OpenTelemetry trace and span IDs into log attributes

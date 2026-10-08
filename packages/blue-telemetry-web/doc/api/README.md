@@ -29,4 +29,5 @@ Jeff Rose
 ## Functions
 
 - [configureBrowserTelemetry](functions/configureBrowserTelemetry.md)
+- [countSocketClientBytes](functions/countSocketClientBytes.md)
 - [countSocketClientStatus](functions/countSocketClientStatus.md)

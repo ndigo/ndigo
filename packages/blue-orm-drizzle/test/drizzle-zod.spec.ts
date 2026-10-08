@@ -29,8 +29,11 @@ class DzNote {
 describe('drizzle-zod bridge (AD-07)', () => {
     test('drizzleTableForEntity builds a Drizzle table from metadata', () => {
         const table = drizzleTableForEntity(DzNote);
-        expect(table[Symbol.for('drizzle:Name')]).toBe('dz_notes');
-        const cols = table[Symbol.for('drizzle:Columns')] as Record<string, unknown>;
+        expect((table as unknown as Record<symbol, unknown>)[Symbol.for('drizzle:Name')]).toBe('dz_notes');
+        const cols = (table as unknown as Record<symbol, unknown>)[Symbol.for('drizzle:Columns')] as Record<
+            string,
+            unknown
+        >;
         expect(Object.keys(cols).sort()).toEqual(['body', 'id', 'title', 'views']);
     });
 

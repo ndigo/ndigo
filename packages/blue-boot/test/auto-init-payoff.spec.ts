@@ -19,16 +19,16 @@ describe('ApplicationBuilder + NodeAutoConfiguration payoff', () => {
         expect(context.hasValue('handlerMapping')).toBe(true);
 
         // The mapping is a SmartLifecycle driven by refresh: auto-started.
-        const mapping = context.getValue('handlerMapping');
+        const mapping = context.getValue('handlerMapping') as { isRunning: boolean };
         expect(mapping.isRunning).toBe(true);
 
         // The dispatcher is SmartLifecycle + auto-started with strategies.
-        const dispatcher = context.getValue('dispatcher');
+        const dispatcher = context.getValue('dispatcher') as { isRunning: boolean; applicationContext: unknown };
         expect(dispatcher.isRunning).toBe(true);
         expect(dispatcher.applicationContext).toBeDefined();
 
         // The server is provisioned but must NOT auto-bind a socket on refresh.
-        const server = context.getValue('httpServer');
+        const server = context.getValue('httpServer') as { isAutoStartup: boolean; isRunning: boolean };
         expect(server.isAutoStartup).toBe(false);
         expect(server.isRunning).toBe(false);
 

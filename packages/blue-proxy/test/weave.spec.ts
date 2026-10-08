@@ -48,7 +48,9 @@ describe('weaveMethodProxy', () => {
         const service = new PrivateService();
         const log: string[] = [];
         const descriptor = createMethodDescriptor(PrivateService, 'svc', 'read');
-        const proxy = weaveMethodProxy(service, [{ descriptor, interceptors: [intercepting('a', log)] }]);
+        const proxy = weaveMethodProxy(service, [
+            { descriptor, interceptors: [intercepting('a', log)] },
+        ]) as PrivateService;
 
         expect(proxy).not.toBe(service);
         expect(proxy).toBeInstanceOf(PrivateService);
@@ -59,7 +61,9 @@ describe('weaveMethodProxy', () => {
     it('executes methods on the target receiver so #private fields work', () => {
         const service = new PrivateService();
         const descriptor = createMethodDescriptor(PrivateService, 'svc', 'read');
-        const proxy = weaveMethodProxy(service, [{ descriptor, interceptors: [] as MethodInterceptor[] }]);
+        const proxy = weaveMethodProxy(service, [
+            { descriptor, interceptors: [] as MethodInterceptor[] },
+        ]) as PrivateService;
 
         expect(proxy.read()).toBe('read:s3cret');
         expect(proxy.inner()).toBe('inner:s3cret');
@@ -73,7 +77,7 @@ describe('weaveMethodProxy', () => {
         const proxy = weaveMethodProxy(service, [
             { descriptor: outerDescriptor, interceptors: [intercepting('o', log)] },
             { descriptor: innerDescriptor, interceptors: [intercepting('i', log)] },
-        ]);
+        ]) as PrivateService;
 
         proxy.outer();
         expect(log).toEqual(['o:outer']);
@@ -85,7 +89,9 @@ describe('weaveMethodProxy', () => {
     it('caches method wrappers so repeated access keeps identity', () => {
         const service = new PrivateService();
         const descriptor = createMethodDescriptor(PrivateService, 'svc', 'outer');
-        const proxy = weaveMethodProxy(service, [{ descriptor, interceptors: [] as MethodInterceptor[] }]);
+        const proxy = weaveMethodProxy(service, [
+            { descriptor, interceptors: [] as MethodInterceptor[] },
+        ]) as PrivateService;
 
         expect(proxy.outer).toBe(proxy.outer);
         expect(proxy.read).toBe(proxy.read);
@@ -93,10 +99,10 @@ describe('weaveMethodProxy', () => {
 
     it('forwards non-method properties and getters on the target receiver', () => {
         const service = new PrivateService();
-        const proxy = weaveMethodProxy(service, []);
+        const proxy = weaveMethodProxy(service, []) as PrivateService;
 
         expect(proxy.secret).toBe('s3cret');
-        expect(proxy.unknownField).toBeUndefined();
+        expect((proxy as PrivateService & { unknownField: unknown }).unknownField).toBeUndefined();
     });
 
     it('executes the installed (decorated) method, never a saved original', () => {
@@ -114,7 +120,9 @@ describe('weaveMethodProxy', () => {
 
         const instance = new Decorated();
         const descriptor = createMethodDescriptor(Decorated, 'svc', 'installed');
-        const proxy = weaveMethodProxy(instance, [{ descriptor, interceptors: [] as MethodInterceptor[] }]);
+        const proxy = weaveMethodProxy(instance, [
+            { descriptor, interceptors: [] as MethodInterceptor[] },
+        ]) as Decorated;
 
         expect(proxy.installed()).toBe('wrapped:raw');
         expect(installedRuns).toBe(1);
@@ -135,10 +143,10 @@ describe('weaveMethodProxy', () => {
         };
         const descriptor = createMethodDescriptor(PrivateService, 'svc', 'outer');
 
-        const shortProxy = weaveMethodProxy(service, [{ descriptor, interceptors: [shortCircuit] }]);
+        const shortProxy = weaveMethodProxy(service, [{ descriptor, interceptors: [shortCircuit] }]) as PrivateService;
         expect(shortProxy.outer()).toBe('short');
 
-        const throwingProxy = weaveMethodProxy(service, [{ descriptor, interceptors: [throwing] }]);
+        const throwingProxy = weaveMethodProxy(service, [{ descriptor, interceptors: [throwing] }]) as PrivateService;
         expect(() => throwingProxy.outer()).toThrow('boom');
     });
 
@@ -155,7 +163,9 @@ describe('weaveMethodProxy', () => {
         instance.ask = () => promise;
 
         const descriptor = createMethodDescriptor(AsyncService, 'svc', 'ask');
-        const proxy = weaveMethodProxy(instance, [{ descriptor, interceptors: [] as MethodInterceptor[] }]);
+        const proxy = weaveMethodProxy(instance, [
+            { descriptor, interceptors: [] as MethodInterceptor[] },
+        ]) as AsyncService;
 
         expect(proxy.ask()).toBe(promise);
         expect(await proxy.ask()).toBe('answer');
@@ -172,14 +182,14 @@ describe('weaveMethodProxy', () => {
         }
         const withLate: PrivateService & WithLate = service as PrivateService & WithLate;
         withLate.late = () => 'late';
-        expect(proxy.late()).toBe('late');
+        expect((proxy as PrivateService & { late: () => string }).late()).toBe('late');
         expect(typeof Reflect.get(proxy, 'late')).toBe('function');
     });
 
     it('forwards symbol-keyed access untouched', () => {
         const meta = Symbol('meta');
         interface WithSymbol {
-            readonly [meta]: number;
+            [meta]: number;
         }
         const service = new PrivateService();
         const withSymbol: PrivateService & WithSymbol = service as PrivateService & WithSymbol;

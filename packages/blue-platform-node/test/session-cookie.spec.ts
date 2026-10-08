@@ -163,7 +163,7 @@ describe('NodeSessionInterceptor', () => {
         const token = await store.create(record, 60_000);
         const interceptor = new NodeSessionInterceptor(store);
         const route = routeWithCookie(token);
-        expect(await interceptor.preHandle(route, undefined)).toBe(true);
+        expect(await interceptor.preHandle(route)).toBe(true);
         const request = requireNodeRequest(route);
         expect(request.session['principal']).toBe(principal);
         expect(request.session['token']).toBe(token);
@@ -213,6 +213,7 @@ describe('NodeSessionInterceptor', () => {
             attributes: {
                 [NODE_REQUEST_ATTRIBUTE]: {
                     headers: { cookie: `blue-session=${token}` },
+                    body: {},
                     cookies: { 'blue-session': token },
                     session: {},
                 } as NodeRequest,

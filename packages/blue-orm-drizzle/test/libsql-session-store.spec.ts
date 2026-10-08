@@ -269,31 +269,35 @@ describe('LibSQLSessionStore', () => {
     test('real credentials consumers validate, refresh with remaining TTL, and logout across clients', async () => {
         const { first, second, url } = await fileStores();
         const login = await adapter(first).authenticate({ username: 'alice', password: 'secret' });
+        // Successful authentication guarantees a token; narrow it for the strict store APIs.
+        const loginToken = login.token as NonNullable<typeof login.token>;
         first.close();
         const reopened = new LibSQLSessionStore({ url });
         stores.push(reopened);
         const reader = adapter(reopened);
-        expect((await reader.validate(login.token))?.hasRole('user')).toBe(true);
+        expect((await reader.validate(loginToken))?.hasRole('user')).toBe(true);
         const direct = createClient({ url });
         clients.push(direct);
         const expiresAt = Date.now() + 2000;
         await direct.execute({
             sql: 'UPDATE blue_sessions SET expires_at = ? WHERE session_id = ?',
-            args: [expiresAt, login.token],
+            args: [expiresAt, loginToken],
         });
-        const refreshed = await reader.refresh(login.token);
+        const refreshed = await reader.refresh(loginToken);
+        const refreshedToken = refreshed.token as NonNullable<typeof refreshed.token>;
         expect(refreshed.expiresAt).toBe(expiresAt);
-        expect(await adapter(second).validate(login.token)).toBeNull();
-        expect((await adapter(second).validate(refreshed.token))?.id).toBe('alice');
-        await adapter(second).logout(refreshed.token);
-        expect(await reader.validate(refreshed.token)).toBeNull();
-        await expect(reader.refresh(refreshed.token)).rejects.toThrow(/invalid credentials/i);
+        expect(await adapter(second).validate(loginToken)).toBeNull();
+        expect((await adapter(second).validate(refreshedToken))?.id).toBe('alice');
+        await adapter(second).logout(refreshedToken);
+        expect(await reader.validate(refreshedToken)).toBeNull();
+        await expect(reader.refresh(refreshedToken)).rejects.toThrow(/invalid credentials/i);
         const expiring = await reader.authenticate({ username: 'alice', password: 'secret' });
+        const expiringToken = expiring.token as NonNullable<typeof expiring.token>;
         await direct.execute({
             sql: 'UPDATE blue_sessions SET expires_at = ? WHERE session_id = ?',
-            args: [Date.now() - 1, expiring.token],
+            args: [Date.now() - 1, expiringToken],
         });
-        expect(await reader.validate(expiring.token)).toBeNull();
-        await expect(reader.refresh(expiring.token)).rejects.toThrow(/invalid credentials/i);
+        expect(await reader.validate(expiringToken)).toBeNull();
+        await expect(reader.refresh(expiringToken)).rejects.toThrow(/invalid credentials/i);
     });
 });

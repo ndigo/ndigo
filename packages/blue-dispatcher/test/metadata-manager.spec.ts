@@ -42,7 +42,7 @@ describe('metadataManager', () => {
         }
 
         beforeEach(() => {
-            target = new InstanceTarget();
+            target = new InstanceTarget() as unknown as Record<string, unknown>;
         });
 
         afterEach(() => {
@@ -59,7 +59,7 @@ describe('metadataManager', () => {
         });
 
         test('it should populate an empty cache and then return the requested metadata', () => {
-            metadataScanner = new MetadataScanner(Target.prototype);
+            metadataScanner = new MetadataScanner(Target.prototype as unknown as Record<string, unknown>);
 
             expect(metadataScanner._cache.size).toBe(0);
             expect(metadataScanner.get('request:mapping')).toEqual(['handleEveryone', 'handleWorld']);
@@ -107,7 +107,7 @@ describe('metadataManager', () => {
                 getUsers() {}
             }
 
-            metadataScanner = new MetadataScanner(ClassLevelTarget);
+            metadataScanner = new MetadataScanner(ClassLevelTarget as unknown as Record<string, unknown>);
             const classLevel = metadataScanner.get('route:mapping');
 
             // Should return both class-level (empty string) and method-level (property names)
@@ -117,19 +117,19 @@ describe('metadataManager', () => {
         });
 
         test('it should work with constructor as target', () => {
-            metadataScanner = new MetadataScanner(Target);
+            metadataScanner = new MetadataScanner(Target as unknown as Record<string, unknown>);
             expect(metadataScanner.get('request:mapping')).toEqual(['handleEveryone', 'handleWorld']);
         });
 
         test('it should work with instance as target', () => {
             const instance = new Target();
-            metadataScanner = new MetadataScanner(instance);
+            metadataScanner = new MetadataScanner(instance as unknown as Record<string, unknown>);
             expect(metadataScanner.get('request:mapping')).toEqual(['handleEveryone', 'handleWorld']);
         });
 
         test('it should return undefined for target without Symbol.metadata', () => {
             class NoMetadata {}
-            metadataScanner = new MetadataScanner(NoMetadata);
+            metadataScanner = new MetadataScanner(NoMetadata as unknown as Record<string, unknown>);
             expect(metadataScanner.get('any:key')).toBeUndefined();
         });
     });
@@ -151,7 +151,7 @@ describe('metadataManager', () => {
     }
 
     beforeEach(() => {
-        target = new MappingTarget();
+        target = new MappingTarget() as unknown as Record<string, unknown>;
         scannerMapGetSpy = vi.spyOn(metadataManager._scannerMap, 'get');
     });
 

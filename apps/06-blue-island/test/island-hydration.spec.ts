@@ -10,6 +10,7 @@ import { LANGUAGE_ATTRIBUTE, type Route } from '@blue/router';
 import { EJSViewResolver } from '@blue/view-ejs';
 import { FileSystemResourceLoader } from '@blue/platform-node';
 import { hydrateIslands } from '@blue/view-webcomponent';
+import type { ProducerView } from '@blue/view';
 import { IslandController } from '../src/island-controller';
 import { TodoModelStore } from '../src/todo-model-store';
 import { installFormAssociatedShims } from './jsdom-form-associated-shim';
@@ -51,15 +52,16 @@ describe('blue-island SSR → hydration', () => {
             suffix: '.ejs',
         });
 
-        const view = await resolver.resolveViewName('shell', 'en-US');
+        const view = (await resolver.resolveViewName('shell', 'en-US')) as unknown as ProducerView | null;
         if (!view) {
             throw new Error('expected the shell view to resolve');
         }
         const { body } = await view.renderTo(modelAndView.model, route);
+        const bodyText = body as string;
 
         // The island now carries a declarative shadow root, so the marker has
         // child markup (the browser would lift it into a real shadow root).
-        const markup = /<todo-app[^>]*>[\s\S]*?<\/todo-app>/.exec(body)?.[0] ?? '';
+        const markup = /<todo-app[^>]*>[\s\S]*?<\/todo-app>/.exec(bodyText)?.[0] ?? '';
         expect(markup).toContain('data-blue-model=');
         // DSD first paint: the negotiated locale rides along, and the island
         // carries a declarative shadow root with the server-rendered fallback.

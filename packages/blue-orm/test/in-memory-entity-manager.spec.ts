@@ -9,7 +9,7 @@ import { z } from 'zod';
 import { IllegalStateError } from '@blue/core';
 import { InMemoryDataSource } from '../src/data-source';
 import {
-    entity,
+    entity as entityDecorator,
     generated,
     primaryColumn,
     column,
@@ -19,6 +19,11 @@ import {
     postRemove,
 } from '../src/decorators';
 import { InMemoryEntityManager } from '../src/entity-manager';
+
+// Spec-side type wrapper: the src `entity` decorator's generic class-decorator signature is
+// widened by strict tsc to `ClassType`; this cast restores a usable `ClassDecorator` signature
+// without changing runtime behavior or the production decorator.
+const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
 
 @entity()
 class TestUser {

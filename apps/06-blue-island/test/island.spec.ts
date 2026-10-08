@@ -7,7 +7,7 @@
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import type { AddressInfo } from 'node:net';
 import { bootApp, MockHTTP } from '@blue/test';
-import { MetadataConfigApplicationContext } from '@blue/context';
+import { ConfigurableApplicationContext, MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@blue/platform-node';
 import { parseModel, serializeModel } from '@blue/view';
 import { IslandConfiguration } from '../src/island-configuration';
@@ -27,7 +27,7 @@ describe('blue-island hybrid demo', () => {
     beforeAll(() => {
         const app = bootApp([IslandConfiguration]);
         // Same wiring as the app bootstrap: entry-resolved message source.
-        app.context.setMessageSource(app.context.getValue('messageSource'));
+        (app.context as ConfigurableApplicationContext).setMessageSource(app.context.getValue('messageSource'));
         mockHTTP = new MockHTTP(app);
         close = app.close;
     });
@@ -164,7 +164,7 @@ describe('GET /events pushes model updates over SSE (AD-09)', () => {
 
     /** Opens an SSE stream and reads frames until `count` complete frames arrive. */
     async function readFrames(
-        reader: { read(): Promise<{ done: boolean; value: Uint8Array }> },
+        reader: ReadableStreamDefaultReader<Uint8Array<ArrayBufferLike>>,
         decoder: TextDecoder,
         count: number
     ): Promise<string> {

@@ -8,6 +8,7 @@ import { server } from './_worker';
 import { HTTP, HTTPExecutionChain } from '../src/http';
 import type {
     CompletionAwareHTTPInterceptor,
+    Fetch,
     InitializationAwareHTTPInterceptor,
     RequestAwareHTTPInterceptor,
     ResponseAwareHTTPInterceptor,
@@ -50,7 +51,7 @@ class TestInterceptor
         return true;
     }
 
-    preRequest(request: Request, http: HTTP) {
+    async preRequest(request: Request, http: HTTP): Promise<Request | Response | void> {
         return;
     }
 
@@ -121,7 +122,7 @@ describe('HTTP', () => {
             const http = HTTP.create({
                 baseURL: 'http://localhost/',
                 headers: { 'X-Custom-Header': 'test-value' },
-                fetch: mockFetch,
+                fetch: mockFetch as unknown as Fetch,
             });
 
             await http.get('request');
@@ -150,7 +151,7 @@ describe('HTTP', () => {
                 baseURL: 'http://localhost/',
                 headers: { Authorization: 'Bearer token' },
                 params: { version: 'v2' },
-                fetch: mockFetch,
+                fetch: mockFetch as unknown as Fetch,
             });
 
             await http.get('request');

@@ -11,4 +11,5 @@ export { ContextInstrumentation, DispatcherInstrumentation } from '@blue/telemet
 export {
     WebSocketClientInstrumentation,
     countSocketClientStatus,
+    countSocketClientBytes,
 } from './instrumentation/websocket-client/websocket-client';

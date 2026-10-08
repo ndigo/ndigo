@@ -7,6 +7,7 @@ export * from './context';
 export * from './context-events';
 export * from './context-hierarchy';
 export * from './configuration';
+export * from './configuration-metadata';
 export * from './environment';
 export * from './event-emitter';
 export * from './event-gateway';

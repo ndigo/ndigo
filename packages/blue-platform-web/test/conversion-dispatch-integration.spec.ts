@@ -65,7 +65,7 @@ describe('conversion + error flow integration', () => {
         }
 
         class ConversionCapturingErrorResolver implements RouteErrorResolver {
-            resolveError(route, handler, error: Error): ModelAndView {
+            resolveError(route: Route, handler: object | null, error: Error): ModelAndView | null {
                 void route;
                 void handler;
                 errorCapture = error;
@@ -99,8 +99,10 @@ describe('conversion + error flow integration', () => {
             }
         }
 
-        const context = new MetadataConfigApplicationContext([TestConfiguration]);
-        context.addProcessor(new ApplicationContextAwareProcessor());
+        const context = new MetadataConfigApplicationContext([TestConfiguration] as unknown as string);
+        context.addProcessor(
+            new (ApplicationContextAwareProcessor as unknown as new () => ApplicationContextAwareProcessor)()
+        );
         context.refresh();
 
         // Verify resolvers are registered

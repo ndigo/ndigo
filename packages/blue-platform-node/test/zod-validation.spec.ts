@@ -6,6 +6,7 @@
 import { describe, it, expect } from 'vitest';
 import { z } from 'zod';
 import { Route, RouteSegment } from '@blue/router';
+import { JSONObject } from '@blue/core';
 import {
     routeMapping,
     parameters,
@@ -48,14 +49,14 @@ const nodeRoute = (
     const route: Route = {
         path,
         raw: path,
-        data,
+        data: data as JSONObject,
         params: null,
-        id: 1,
+        id: '1',
         attributes,
         length: segments.length,
     };
     for (let index = 0; index < segments.length; index++) {
-        const segment: RouteSegment = { name: segments[index], data: {} };
+        const segment: RouteSegment = { name: segments[index], data: {}, raw: segments[index] };
         route[index] = segment;
     }
     return route;
@@ -122,8 +123,8 @@ describe('Zod validation over the Node argument pipeline', () => {
 
         // z.coerce.number() ran after binding — proves validatedBy's convert hook fired.
         expect(captured).toBeDefined();
-        expect(captured?.name).toBe('Jeff');
-        expect(captured?.age).toBe(30);
+        expect((captured as User | null)?.name).toBe('Jeff');
+        expect((captured as User | null)?.age).toBe(30);
     });
 
     it('validates a per-field query parameter', async () => {
@@ -194,8 +195,8 @@ describe('Zod validation over the Node argument pipeline', () => {
         // z.coerce.number() ran on the whole query object — proves the '*'
         // whole-query binding and the convert hook both fire.
         expect(captured).toBeDefined();
-        expect(captured?.page).toBe(2);
-        expect(captured?.q).toBe('hello');
+        expect((captured as Search | null)?.page).toBe(2);
+        expect((captured as Search | null)?.q).toBe('hello');
     });
 
     it('surfaces an invalid whole query as a ParameterConversionError', async () => {
@@ -228,7 +229,7 @@ describe('Zod validation over the Node argument pipeline', () => {
 
         expect(capturedError).toBeDefined();
         expect(capturedError).toBeInstanceOf(ParameterConversionError);
-        const queryCause = (capturedError as ParameterConversionError).cause;
+        const queryCause = (capturedError as unknown as ParameterConversionError).cause;
         expect(queryCause).toBeInstanceOf(ZodValidationError);
         expect((queryCause as ZodValidationError).issues.map((i) => i.path.join('.'))).toContain('page');
     });
@@ -261,7 +262,7 @@ describe('Zod validation over the Node argument pipeline', () => {
         expect(capturedError).toBeInstanceOf(ParameterConversionError);
         // Phase 4A: the cause carries the structured per-field issues, not
         // just the flattened message.
-        const bodyCause = (capturedError as ParameterConversionError).cause;
+        const bodyCause = (capturedError as unknown as ParameterConversionError).cause;
         expect(bodyCause).toBeInstanceOf(ZodValidationError);
         const bodyIssuePaths = (bodyCause as ZodValidationError).issues.map((issue) => issue.path.join('.'));
         expect(bodyIssuePaths).toContain('name');
@@ -299,7 +300,7 @@ describe('Zod validation over the Node argument pipeline', () => {
         expect(capturedError).toBeInstanceOf(ParameterConversionError);
         // Per-field validation: the value itself failed, so the issue paths to
         // the root ([]) — but the structure still survives.
-        const fieldCause = (capturedError as ParameterConversionError).cause;
+        const fieldCause = (capturedError as unknown as ParameterConversionError).cause;
         expect(fieldCause).toBeInstanceOf(ZodValidationError);
         expect((fieldCause as ZodValidationError).issues.length).toBeGreaterThan(0);
     });

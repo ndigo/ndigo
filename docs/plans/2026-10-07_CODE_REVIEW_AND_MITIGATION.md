@@ -342,16 +342,18 @@ graft pin, OpenAPI security forwarding, secret-redaction invariant, A1/A2/A3/A5.
 
 **Carried forward (still open / deferred):**
 
-| Item                                                        | Status at HEAD                                                          | Owner action               |
-| :---------------------------------------------------------- | :---------------------------------------------------------------------- | :------------------------- |
-| TOL-F5 test-file typecheck lane                             | still-open (76 diagnostics reproduced across 10 `blue-core` test files) | Wave 1 (folded into TST-A) |
-| TEL-08 client byte-size seam (`onSend` not consumed)        | still-open (self-labelled in `websocket-client.ts:53-62`)               | Wave 4 (telemetry polish)  |
-| Raw-console invariant (`blue-router`, `blue-telemetry-web`) | recurrence item open (RES-A)                                            | Wave 5                     |
-| AD-46 rule depth (`src/**/index.ts` deeper than one level)  | partial (RES-D)                                                         | Wave 3                     |
-| Skipped-test policy (six sites)                             | partial (TST-C)                                                         | Wave 1                     |
-| `[object Promise]` / bracket-syntax tests                   | test-quality items (RES-B/C)                                            | Wave 5                     |
-| Wave-6 GAP-1..GAP-15 roadmap                                | not attempted (ADR-gated)                                               | Wave 6                     |
-| Doc hygiene for both 2026-10-06 plans + indexes             | drift (DOC-2..4, DOC-5)                                                 | Wave 5                     |
+| Item                                                        | Status at HEAD                                                            | Owner action               |
+| :---------------------------------------------------------- | :------------------------------------------------------------------------ | :------------------------- |
+| TOL-F5 test-file typecheck lane                             | **closed in the follow-up sweep** — `tsconfig.spec.json` + full triage    | TST-A (this revision)      |
+| TEL-08 client byte-size seam (`onSend` not consumed)        | **closed in the follow-up sweep** — `countSocketClientBytes` + co.        | TEL-08 (this revision)     |
+| REU-9 inspect → boot transitive weight                      | **closed in the follow-up sweep** — metadata relocated to `@blue/context` | REU-9 (this revision)      |
+| SEC-B/WC-I plugin probe home                                | **closed in the follow-up sweep** — `test:tooling` node:test lane         | SEC-B/WC-I (this revision) |
+| Raw-console invariant (`blue-router`, `blue-telemetry-web`) | recurrence item open (RES-A)                                              | Wave 5                     |
+| AD-46 rule depth (`src/**/index.ts` deeper than one level)  | partial (RES-D)                                                           | Wave 3                     |
+| Skipped-test policy (six sites)                             | partial (TST-C)                                                           | Wave 1                     |
+| `[object Promise]` / bracket-syntax tests                   | test-quality items (RES-B/C)                                              | Wave 5                     |
+| Wave-6 GAP-1..15 roadmap                                    | not attempted (ADR-gated; GAP-1 closed by AD-72 at `d950ad5c`)            | Wave 6                     |
+| Doc hygiene for both 2026-10-06 plans + indexes             | drift (DOC-2..4, DOC-5)                                                   | Wave 5                     |
 
 ---
 
@@ -432,9 +434,11 @@ assertion, doc-index checks, and the new Playwright lanes. Close with a clean
 
 ```bash
 # Full gate set (all must pass)
-pnpm build && pnpm test && pnpm lint && pnpm format:check && pnpm docs:links \
+pnpm build && pnpm test && pnpm test:tooling && pnpm lint && pnpm format:check && pnpm docs:links \
   && pnpm audit --prod && pnpm manifest:check && pnpm agents:check \
   && pnpm typecheck && pnpm doc && git diff --exit-code -- packages doc
+# (follow-up: `pnpm typecheck` also runs the spec lane — `tsc -p tsconfig.spec.json`
+# covers every package/app src AND test file; `pnpm test:tooling` is the node:test lane)
 
 # Wave-specific probes (throwaway; never committed)
 #  CI:        git archive HEAD | tar -x -C /tmp/x && pnpm install --frozen-lockfile
@@ -506,15 +510,52 @@ carries its regression test; the full gate set (§9) is green with regenerated A
   `@blue/no-raw-console` rule. RES-B/RES-C: the defect-pinning EJS case and the redundant
   bracket restatements are replaced by decision-backed assertions.
 
+### Follow-up closure — the 2026-10-07 deferred sweep (at `d950ad5c`)
+
+The four actionable deferred items above the ADR gate were executed in a
+follow-up pass (this revision). Each landed with its regression coverage; the
+full gate set including the new spec-typecheck lane is green.
+
+- **TST-A / TOL-F5** — resolved. Root `tsconfig.spec.json` typechecks every
+  package/app `src` **and** `test` file (extends `tsconfig.build.json`, so it
+  enforces exactly the build chain's erasable-syntax policy; `strict`,
+  `lib: ES2024 + DOM + DOM.Iterable`, `types: [node, vitest/globals]`, and a
+  `paths` table mirroring `vitest.aliases.ts` ordering, subpath families
+  first). `pnpm typecheck` now appends `tsc -p tsconfig.spec.json` to the
+  per-project `tsc -b`; the lane is red on an intentional type error. The
+  ~900-diagnostic residual (re-probed at `d950ad5c`) was triaged to zero by
+  fourteen parallel per-package slices — test-only typing changes (annotations,
+  explicit params, casts, null guards), every touched package lane green.
+  Two config causes accounted for a large share: the lane must NOT inherit the
+  IDE-only `erasableSyntaxOnly` (the build chain doesn't) and must carry the
+  per-project `lib`/globals settings explicitly.
+- **REU-9** — resolved. The config-metadata machinery
+  (`declaredConfigurationProperties`, `relaxedKeyCandidates`, `toLookupKey`,
+  the metadata-key constants, `getMetadata`) moved to
+  `@blue/context/src/configuration-metadata.ts` — the decorators that WRITE
+  those metadata keys live in context, so the readers sit beside them.
+  `@blue/boot` re-exports both public functions unchanged (API continuity)
+  and imports the shared pieces; `@blue/inspect` now depends on `@blue/context`
+  only (`@blue/boot` moved to devDependencies — its spec fixtures use the
+  boot decorator), so the tooling runtime closure no longer pulls the boot
+  tree. ARCHITECTURE package map and the inspect README corrected.
+- **TEL-08** — resolved. The `onSend` seam is now consumed: the new
+  `countSocketClientBytes()` wires exact wire-byte metrics through the
+  option (symmetric with `countSocketClientStatus`), the client exposes
+  `SocketClient.onSendWired`, and the instrumentation's `send` wrap skips
+  its own payload estimation for seamed clients — bytes count exactly once,
+  per write (buffered flushes and retried writes included). Spec pins the
+  buffered-while-connecting → flush semantics.
+- **SEC-B/WC-I** — resolved. The plugin probes now live in a durable lane:
+  `scripts/test-lower-decorators.mjs` (`node --test`, deliberately outside
+  vitest's `*.test.*` glob so a root `vitest run` cannot collect it) under
+  `pnpm test:tooling`, wired into the quality CI job.
+
 ### Deferred (reason)
 
-| Item                                        | Reason                                                                                                                                                        |
-| :------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **TST-A / TOL-F5** spec typecheck lane      | A probe tsconfig measured **1321 diagnostics repo-wide** (76 in `blue-core` alone) — needs a dedicated triage pass, not a wave-1 rider.                       |
-| **REU-9** `@blue/inspect` transitive weight | Fixing means relocating config metadata to a lighter package; currently a documented transitive dependency through `@blue/boot`.                              |
-| **Wave 6 / GAP-1..15**                      | Untouched by design: each needs an ADR + owner sign-off (jobs, cluster, locks, actuator parity, CLI, migration generation, Prometheus/semconv, SSE drain, …). |
-| **TEL-08** client byte-size seam            | Still self-labelled in `blue-telemetry-web`; unchanged by this cycle.                                                                                         |
-| **SEC-B/WC-I durable test home**            | The plugin probe is a `/tmp` probe: the repo has no scripts test lane (a root-tooling lane is the durable fix).                                               |
+| Item                   | Reason                                                                                                                                                                                                            |
+| :--------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Wave 6 / GAP-1..15** | Untouched by design: each needs an ADR + owner sign-off (cluster, locks, actuator parity, CLI, migration generation, Prometheus/semconv, SSE drain, …). AD-72 already closed GAP-1 (jobs + outbox) at `d950ad5c`. |
 
 ### Final verification
 
@@ -522,6 +563,15 @@ carries its regression test; the full gate set (§9) is green with regenerated A
 `pnpm format:check` 1662 files · `pnpm docs:links` 281/1052 · `pnpm audit --prod` clean ·
 `pnpm manifest:check` · `pnpm agents:check` · `pnpm typecheck` · `pnpm doc` exit 0
 (regenerated docs committed with the wave).
+
+**Follow-up sweep verification (this revision):** the full gate set re-run at the
+post-sweep HEAD — `pnpm build` 41/41 · `pnpm test` 60 projects (98 nx tasks) ·
+`pnpm lint` 0 diagnostics · `pnpm format:check` clean · `pnpm docs:links` ·
+`pnpm audit --prod` clean · `pnpm manifest:check` · `pnpm agents:check` ·
+**`pnpm typecheck` now includes the spec lane** (`tsc -p tsconfig.spec.json`:
+904 diagnostics at the sweep start → **0**) · `pnpm test:tooling` (node:test lane,
+5/5) · `pnpm doc` exit 0, regenerated docs committed with the sweep ·
+`graft build` refreshed.
 
 ---
 

@@ -7,7 +7,7 @@
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';
 import { modelUpdateStream } from '../src/island-controller';
-import { TodoModelStore } from '../src/todo-model-store';
+import { TodoItem, TodoModelStore } from '../src/todo-model-store';
 
 /**
  * The demo's `/events` source emits whole-model snapshots. Because each frame
@@ -24,7 +24,7 @@ describe('modelUpdateStream — snapshot coalescing (APP-D)', () => {
         const iterator = modelUpdateStream(store)[Symbol.asyncIterator]();
 
         const snapshot = await iterator.next();
-        expect(snapshot.value.data.model.items.map((item) => item.text)).toEqual(['seed']);
+        expect(snapshot.value.data.model.items.map((item: TodoItem) => item.text)).toEqual(['seed']);
 
         // N rapid updates while the consumer has not yet pulled the next frame.
         for (let index = 1; index <= 50; index++) {
@@ -34,7 +34,7 @@ describe('modelUpdateStream — snapshot coalescing (APP-D)', () => {
         }
 
         const coalesced = await iterator.next();
-        const texts = coalesced.value.data.model.items.map((item) => item.text);
+        const texts = coalesced.value.data.model.items.map((item: TodoItem) => item.text);
         expect(texts).toHaveLength(51);
         expect(texts[0]).toBe('seed');
         expect(texts.at(-1)).toBe('rapid 50');

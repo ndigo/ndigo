@@ -12,7 +12,7 @@ import {
     MatrixParamExpression,
     MatrixParamCondition,
 } from '../src/route-mapping-info';
-import { Route } from '@blue/router';
+import { Route, RouteSegment } from '@blue/router';
 import { AccessControlCondition } from '../src/access-control-condition';
 import { HTTPMethodCondition } from '../src/http-method-condition';
 
@@ -28,7 +28,7 @@ const createRoute = (path: string, data?: Record<string, string | string[] | nul
     }) as unknown as Route;
 
 const createRouteWithSegments = (path: string, segments: Array<{ data: Record<string, string | string[]> }>): Route => {
-    const route: unknown = {
+    const route: Route = {
         attributes: {},
         data: {},
         id: 0,
@@ -36,11 +36,11 @@ const createRouteWithSegments = (path: string, segments: Array<{ data: Record<st
         params: {},
         path,
         raw: path,
-    };
+    } as unknown as Route;
     segments.forEach((seg, i) => {
-        route[i] = seg;
+        route[i] = seg as unknown as RouteSegment;
     });
-    return route as unknown as Route;
+    return route;
 };
 
 describe('QueryParamCondition', () => {

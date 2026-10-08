@@ -13,7 +13,7 @@ import {
     property,
     propertySource,
 } from '../src/configuration';
-import { StandardEnvironment } from '../src/environment';
+import { StandardEnvironment, ConfigurableEnvironment } from '../src/environment';
 import testContext from './testContext';
 
 describe('Configuration', () => {
@@ -40,7 +40,7 @@ describe('MetadataConfigApplicationContext', () => {
             }
         }
 
-        const context = new MetadataConfigApplicationContext();
+        const context = new MetadataConfigApplicationContext('test');
         context.register(FakeConfig);
 
         expect(context.getValue('foo')).toBeUndefined();
@@ -62,7 +62,7 @@ describe('MetadataConfigApplicationContext', () => {
             }
         }
 
-        const context = new MetadataConfigApplicationContext();
+        const context = new MetadataConfigApplicationContext('test');
         context.register(TokenConfiguration);
 
         // Token lookup uses the typed handle; the backing name remains readable as a string.
@@ -81,7 +81,7 @@ describe('MetadataConfigApplicationContext', () => {
             }
         }
 
-        const context = new MetadataConfigApplicationContext();
+        const context = new MetadataConfigApplicationContext('test');
         context.register(NamedConfiguration);
 
         expect(context.getValue<string>('custom:name')).toBe('registered');
@@ -104,7 +104,7 @@ describe('MetadataConfigApplicationContext', () => {
 
         class BareSubConfiguration extends BaseOnlyConfiguration {}
 
-        const context = new MetadataConfigApplicationContext();
+        const context = new MetadataConfigApplicationContext('test');
         context.register(BareSubConfiguration);
 
         // Both base-declared beans register on the subclass instance.
@@ -133,7 +133,7 @@ describe('MetadataConfigApplicationContext', () => {
             }
         }
 
-        const context = new MetadataConfigApplicationContext();
+        const context = new MetadataConfigApplicationContext('test');
         context.register(WorkingConfiguration);
 
         // Subclass-declared and inherited base entries both resolve...
@@ -156,7 +156,7 @@ describe('MetadataConfigApplicationContext', () => {
             }
         }
 
-        const context = new MetadataConfigApplicationContext();
+        const context = new MetadataConfigApplicationContext('test');
         context.environment.activeProfiles = ['dev'];
         context.register(ProdConfiguration);
         expect(context.getValue('prodEntry')).toBeUndefined();
@@ -181,8 +181,8 @@ describe('MetadataConfigApplicationContext', () => {
             }
         }
 
-        const context = new MetadataConfigApplicationContext();
-        context.environment.getPropertySources().addFirst('test', { foo: 'one' });
+        const context = new MetadataConfigApplicationContext('test');
+        (context.environment as ConfigurableEnvironment).getPropertySources().addFirst('test', { foo: 'one' });
         context.register(ValueConfiguration);
         expect(context.getValue<string>('getFoo')).toBe('one');
 
@@ -207,7 +207,9 @@ describe('MetadataConfigApplicationContext', () => {
         context.register(SourceConfigA);
         context.register(SourceConfigB);
 
-        const names = [...context.environment.getPropertySources().toArray()].map((source) => source.name);
+        const names = [...(context.environment as ConfigurableEnvironment).getPropertySources().toArray()].map(
+            (source) => source.name
+        );
         // Names are unique and carry the declaring class: before the fix both
         // classes registered `source:0`, so the later one replaced the first.
         expect(new Set(names).size).toBe(names.length);

@@ -23,16 +23,16 @@ class TestView {
 }
 
 class TestPathBasedViewResolver extends AbstractPathBasedViewResolver {
-    protected async _loadView(name: string, language?: unknown): Promise<View> {
+    protected async _loadView(name: string, language?: unknown): Promise<View | null> {
         return null;
     }
 }
 
 class TestCachingResolver extends AbstractCachingViewResolver {
     loadCount = 0;
-    nextView: View | null = { mediaType: null, render: () => null };
+    nextView: View | null = { mediaType: null, render: () => undefined };
 
-    protected async _loadView(name: string, language?: unknown): Promise<View> {
+    protected async _loadView(name: string, language?: unknown): Promise<View | null> {
         this.loadCount++;
         return this.nextView;
     }
@@ -142,7 +142,7 @@ class KeyedCachingResolver extends AbstractCachingViewResolver {
     protected async _loadView(name: string, language?: unknown): Promise<View | null> {
         const pair = `${name}|${String(language ?? '')}`;
         this.loaded.push(pair);
-        return { mediaType: null, render: () => null } as View;
+        return { mediaType: null, render: () => undefined } as View;
     }
 }
 

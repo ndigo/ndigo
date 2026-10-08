@@ -8,18 +8,18 @@ import { getFunctionParamNames } from '../src/_decorator-util';
 
 describe('getFunctionParamNames', () => {
     it('extracts parameter names from regular function', () => {
-        function example(foo, bar, baz) {}
+        function example(foo: unknown, bar: unknown, baz: unknown) {}
         expect(getFunctionParamNames(example)).toEqual(['foo', 'bar', 'baz']);
     });
 
     it('extracts parameter names from arrow function', () => {
-        const example = (foo, bar, baz) => {};
+        const example = (foo: unknown, bar: unknown, baz: unknown) => {};
         expect(getFunctionParamNames(example)).toEqual(['foo', 'bar', 'baz']);
     });
 
     it('extracts parameter names from method', () => {
         class Example {
-            method(foo, bar, baz) {}
+            method(foo: unknown, bar: unknown, baz: unknown) {}
         }
         expect(getFunctionParamNames(Example.prototype.method)).toEqual(['foo', 'bar', 'baz']);
     });
@@ -40,7 +40,7 @@ describe('getFunctionParamNames', () => {
     });
 
     it('handles rest parameters', () => {
-        function example(foo, bar, ...rest) {}
+        function example(foo: unknown, bar: unknown, ...rest: unknown[]) {}
         expect(getFunctionParamNames(example)).toEqual(['foo', 'bar', 'rest']);
     });
 
@@ -50,12 +50,12 @@ describe('getFunctionParamNames', () => {
     });
 
     it('handles single parameter', () => {
-        function example(foo) {}
+        function example(foo: unknown) {}
         expect(getFunctionParamNames(example)).toEqual(['foo']);
     });
 
     it('handles async functions', () => {
-        async function example(foo, bar) {}
+        async function example(foo: unknown, bar: unknown) {}
         expect(getFunctionParamNames(example)).toEqual(['foo', 'bar']);
     });
 

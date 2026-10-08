@@ -6,7 +6,16 @@
 // @vitest-environment jsdom
 import { describe, test, expect, beforeEach } from 'vitest';
 import { LANGUAGE_ATTRIBUTE } from '@blue/router';
+import type { Route } from '@blue/router';
+import { ViewTarget } from '@blue/view';
 import { IslandView, parseModel, serializeModel } from '../src/island-view';
+
+// IslandView._renderTemplate is protected; expose a structural view of it so
+// the specs can drive the render pipeline without widening the public API
+// (same pattern as the webcomponent specs' ExposedView).
+interface ExposedIslandView {
+    _renderTemplate(templateModel: unknown, request: unknown, target?: ViewTarget): void | Promise<void>;
+}
 
 const stringifyHtml = (html: string) => html;
 
@@ -27,7 +36,7 @@ beforeEach(() => {
 
 describe('IslandView (server-side island render)', () => {
     test('renders an inert custom element with a serialized model attribute', async () => {
-        const view = new IslandView('todo-app');
+        const view = new IslandView('todo-app') as unknown as IslandView & ExposedIslandView;
         const model = { items: ['a', 'b'], filter: 'all' };
         let committed = '';
 
@@ -45,7 +54,7 @@ describe('IslandView (server-side island render)', () => {
     });
 
     test('carries the resolved request language on the marker', async () => {
-        const view = new IslandView('todo-app');
+        const view = new IslandView('todo-app') as unknown as IslandView & ExposedIslandView;
         let committed = '';
 
         await view._renderTemplate(
@@ -64,7 +73,7 @@ describe('IslandView (server-side island render)', () => {
     });
 
     test('escapes hostile locale values so the attribute cannot break out', async () => {
-        const view = new IslandView('todo-app');
+        const view = new IslandView('todo-app') as unknown as IslandView & ExposedIslandView;
         let committed = '';
 
         await view._renderTemplate(
@@ -135,7 +144,9 @@ describe('IslandView (server-side island render)', () => {
     });
 
     test('embeds trusted shadowHtml as a declarative shadow root (DSD first paint)', async () => {
-        const view = new IslandView('todo-app', { shadowHtml: '<ul><li>⬜ Buy milk</li></ul>' });
+        const view = new IslandView('todo-app', {
+            shadowHtml: '<ul><li>⬜ Buy milk</li></ul>',
+        }) as unknown as IslandView & ExposedIslandView;
         let committed = '';
 
         await view._renderTemplate({ items: [{ text: 'Buy milk', done: false }] }, null, {
@@ -154,7 +165,7 @@ describe('IslandView (server-side island render)', () => {
     });
 
     test('omits the declarative shadow root when no shadowHtml is supplied', async () => {
-        const view = new IslandView('todo-app');
+        const view = new IslandView('todo-app') as unknown as IslandView & ExposedIslandView;
         let committed = '';
 
         await view._renderTemplate({}, null, {
@@ -170,7 +181,8 @@ describe('IslandView (server-side island render)', () => {
     });
 
     test('passes shadowHtml through unescaped (trusted markup only)', async () => {
-        const view = new IslandView('x-panel', { shadowHtml: '<b>bold</b>' });
+        const view = new IslandView('x-panel', { shadowHtml: '<b>bold</b>' }) as unknown as IslandView &
+            ExposedIslandView;
         let committed = '';
 
         await view._renderTemplate({}, null, {

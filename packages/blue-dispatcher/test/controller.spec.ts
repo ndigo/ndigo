@@ -5,9 +5,10 @@
  */
 import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { PathViewController } from '../src/controller';
+import { Route } from '@blue/router';
 
 describe('PathViewController', () => {
-    const route = { path: '/foo;a=1/bar;b=2?c=3' };
+    const route = { path: '/foo;a=1/bar;b=2?c=3' } as unknown as Route;
     let controller: PathViewController;
 
     afterEach(() => {

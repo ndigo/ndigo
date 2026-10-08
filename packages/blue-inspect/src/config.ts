@@ -4,12 +4,12 @@
  * @author Jeff Rose
  *
  * Configuration enumeration for the inspect manifest. Declares keys via
- * `@blue/boot`'s `declaredConfigurationProperties()` and reports only
- * *whether* the environment supplies a value and which source won — values
- * are never read or decrypted.
+ * `@blue/context`'s `declaredConfigurationProperties()` (the seam `@blue/boot`
+ * binds against; REU-9) and reports only *whether* the environment supplies a
+ * value and which source won — values are never read or decrypted.
  */
 
-import { declaredConfigurationProperties, relaxedKeyCandidates } from '@blue/boot';
+import { declaredConfigurationProperties, relaxedKeyCandidates } from '@blue/context';
 import type { Environment } from '@blue/context';
 import type { InspectConfigEntry } from './types';
 

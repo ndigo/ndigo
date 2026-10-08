@@ -251,7 +251,7 @@ describe('CredentialsAuthAdapter', () => {
         expect(refreshed.token).not.toBe(token);
         expect(refreshed.principal).toMatchObject({ id: 'alice' });
         await expect(adapter.validate(token)).resolves.toBeNull();
-        await expect(adapter.validate(refreshed.token)).resolves.toMatchObject({ id: 'alice' });
+        await expect(adapter.validate(refreshed.token as string)).resolves.toMatchObject({ id: 'alice' });
     });
 
     test('refresh fails closed on an unknown token', async () => {
@@ -313,11 +313,11 @@ describe('CredentialsAuthAdapter', () => {
         const refreshed = await adapter.refresh(token);
         // The reported expiry preserves the original session's absolute
         // expiry (within a few ms of clock drift) instead of `issuedAt + ttl`.
-        expect(refreshed.expiresAt).toBeGreaterThanOrEqual(authenticated.expiresAt - 5);
-        expect(refreshed.expiresAt).toBeLessThanOrEqual(authenticated.expiresAt + 5);
+        expect(refreshed.expiresAt).toBeGreaterThanOrEqual((authenticated.expiresAt as number) - 5);
+        expect(refreshed.expiresAt).toBeLessThanOrEqual((authenticated.expiresAt as number) + 5);
         // …and the refreshed session is actually live with that expiry, still
         // well short of the 50ms-already-elapsed full TTL would be.
-        expect(await adapter.validate(refreshed.token)).toMatchObject({ id: 'alice' });
+        expect(await adapter.validate(refreshed.token as string)).toMatchObject({ id: 'alice' });
     });
 
     test('logout invalidates the session', async () => {

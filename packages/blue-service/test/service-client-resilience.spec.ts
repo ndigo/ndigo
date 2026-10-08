@@ -58,7 +58,9 @@ class PlainAPI {
 describe('resilient service client composition (AD-43 D-7 demo gate)', () => {
     test('retry intercepts validation failures through the service client', async () => {
         fetchMock.mockResolvedValue(invalidBody());
-        const api = interceptMethods(serviceClient(ResilientAPI, http), [new RetryInterceptor()]);
+        const api = interceptMethods(serviceClient(ResilientAPI, http) as unknown as ResilientAPI, [
+            new RetryInterceptor(),
+        ]);
 
         await expect(api.items()).rejects.toThrow(/Service 'resilient' response validation failed/);
         expect(fetchMock).toHaveBeenCalledTimes(3);
@@ -66,7 +68,9 @@ describe('resilient service client composition (AD-43 D-7 demo gate)', () => {
 
     test('the circuit opens after the threshold and fails fast', async () => {
         fetchMock.mockResolvedValue(invalidBody());
-        const api = interceptMethods(serviceClient(ResilientAPI, http), [new CircuitBreakerInterceptor()]);
+        const api = interceptMethods(serviceClient(ResilientAPI, http) as unknown as ResilientAPI, [
+            new CircuitBreakerInterceptor(),
+        ]);
 
         await expect(api.items()).rejects.toThrow(/response validation failed/);
         await expect(api.items()).rejects.toThrow(/response validation failed/);
@@ -77,7 +81,7 @@ describe('resilient service client composition (AD-43 D-7 demo gate)', () => {
 
     test('retry sits inside the circuit: one chain pass counts one failure', async () => {
         fetchMock.mockResolvedValue(invalidBody());
-        const api = interceptMethods(serviceClient(ResilientAPI, http), [
+        const api = interceptMethods(serviceClient(ResilientAPI, http) as unknown as ResilientAPI, [
             new CircuitBreakerInterceptor(),
             new RetryInterceptor(),
         ]);

@@ -7,8 +7,20 @@ import '@tsmetadata/polyfill';
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { InMemoryDataSource } from '../src/data-source';
-import { column, entity, generated, manyToOne, oneToMany, postLoad, primaryColumn } from '../src/decorators';
+import {
+    column,
+    entity as entityDecorator,
+    generated,
+    manyToOne,
+    oneToMany,
+    postLoad,
+    primaryColumn,
+} from '../src/decorators';
 import { InMemoryEntityManager } from '../src/entity-manager';
+
+// Spec-side type wrapper; runtime-identical to the production `entity` decorator.
+const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
+type ClassType = new (...args: unknown[]) => unknown;
 import { InMemoryDerivedQueryRepository } from '../src/repository';
 
 @entity('rel_authors')
@@ -20,7 +32,7 @@ class RelAuthor {
     @column()
     name: string;
 
-    @oneToMany(() => RelNote, { inverseJoinColumn: 'authorId' })
+    @oneToMany(() => RelNote as unknown as ClassType, { inverseJoinColumn: 'authorId' })
     notes: RelNote[] = [];
 
     constructor(name: string) {
@@ -40,7 +52,7 @@ class RelNote {
     @column({ nullable: true })
     authorId: number | undefined;
 
-    @manyToOne(() => RelAuthor, { joinColumn: 'authorId' })
+    @manyToOne(() => RelAuthor as unknown as ClassType, { joinColumn: 'authorId' })
     author: RelAuthor | undefined;
 
     @postLoad()
@@ -57,7 +69,7 @@ class BadRelNote {
     @primaryColumn()
     id: number | undefined;
 
-    @manyToOne(() => RelAuthor, { joinColumn: 'missing' })
+    @manyToOne(() => RelAuthor as unknown as ClassType, { joinColumn: 'missing' })
     author: RelAuthor | undefined;
 }
 
@@ -66,7 +78,7 @@ class LooseRelNote {
     @primaryColumn()
     id: number | undefined;
 
-    @manyToOne(() => RelAuthor)
+    @manyToOne(() => RelAuthor as unknown as ClassType)
     author: RelAuthor | undefined;
 }
 

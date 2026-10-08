@@ -27,7 +27,7 @@ import {
 } from '@blue/dispatcher';
 import { z } from 'zod';
 import { apiDocs } from '../src/api-docs';
-import { OpenAPISpecGenerator } from '../src/spec';
+import { OpenAPISpecGenerator, type OpenAPIOperation } from '../src/spec';
 
 const EchoSchema = z.object({
     message: z.string().min(1),
@@ -240,15 +240,15 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
     it('maps query/path/header/cookie parameters with location and required', () => {
         const mapping = register(new APIController());
         const doc = new OpenAPISpecGenerator().generate([mapping]);
-        const hello = doc.paths['/api/hello'].get;
+        const hello = doc.paths['/api/hello'].get as OpenAPIOperation;
         expect(hello.parameters).toEqual([{ name: 'name', in: 'query', required: false, schema: { type: 'string' } }]);
-        const greet = doc.paths['/api/greet/{name}'].get;
+        const greet = doc.paths['/api/greet/{name}'].get as OpenAPIOperation;
         expect(greet.parameters).toEqual([{ name: 'name', in: 'path', required: true, schema: { type: 'string' } }]);
-        const echo = doc.paths['/api/echo'].post;
+        const echo = doc.paths['/api/echo'].post as OpenAPIOperation;
         expect(echo.parameters).toEqual([
             { name: 'x-trace', in: 'header', required: false, schema: { type: 'string' } },
         ]);
-        const filtered = doc.paths['/api/filtered'].get;
+        const filtered = doc.paths['/api/filtered'].get as OpenAPIOperation;
         expect(filtered.parameters).toEqual([
             { name: 'lang', in: 'cookie', required: false, schema: { type: 'string' } },
         ]);
@@ -257,11 +257,16 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
     it('derives requestBody schemas from the zod seam', () => {
         const mapping = register(new APIController());
         const doc = new OpenAPISpecGenerator().generate([mapping]);
-        const echo = doc.paths['/api/echo'].post;
+        const echo = doc.paths['/api/echo'].post as OpenAPIOperation;
         // bodyValue() defaults to optional — the spec mirrors the framework
         // contract (validation runs whenever a body is present).
-        expect(echo.requestBody.required).toBe(false);
-        const schema = echo.requestBody.content['application/json'].schema;
+        expect(echo.requestBody?.required).toBe(false);
+        const schema = echo.requestBody?.content['application/json'].schema as {
+            $schema?: unknown;
+            type?: string;
+            required?: string[];
+            properties: Record<string, Record<string, unknown>>;
+        };
         expect(schema.$schema).toBeUndefined();
         expect(schema.type).toBe('object');
         expect(schema.required).toEqual(['message', 'count']);
@@ -293,24 +298,29 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
     it('embeds @apiDocs response schemas via the zod seam (AD-38 D-4)', () => {
         const mapping = register(new APIController());
         const doc = new OpenAPISpecGenerator().generate([mapping]);
-        const op = doc.paths['/api/docs-response'].get;
+        const op = doc.paths['/api/docs-response'].get as OpenAPIOperation;
         const response = op.responses['200'];
         expect(response.description).toBe('OK');
-        const schema = response.content?.['application/json']?.schema;
+        const schema = response.content?.['application/json']?.schema as {
+            $schema?: unknown;
+            type?: string;
+            required?: string[];
+            properties: Record<string, Record<string, unknown>>;
+        };
         expect(schema?.type).toBe('object');
         expect(schema?.required).toEqual(['message', 'count']);
         expect(schema?.properties?.message?.minLength).toBe(1);
         // Object-form statuses pass their description through without content.
         expect(op.responses['404']).toEqual({ description: 'Not found' });
         // Handlers without declared responses keep the default.
-        const hello = doc.paths['/api/hello'].get;
+        const hello = doc.paths['/api/hello'].get as OpenAPIOperation;
         expect(hello.responses['200']).toEqual({ description: 'OK' });
     });
 
     it('declared @apiDocs responses replace the implicit 200 (DAT-F11)', () => {
         const mapping = register(new APIController());
         const doc = new OpenAPISpecGenerator().generate([mapping]);
-        const accepted = doc.paths['/api/accepted'].get;
+        const accepted = doc.paths['/api/accepted'].get as OpenAPIOperation;
         // Pre-fix the implicit `200 OK` merged with the declared set, so a
         // handler documenting only 202 still advertised a 200 it never returns.
         expect(accepted.responses).toEqual({ '202': { description: 'Accepted' } });
@@ -324,11 +334,11 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
         });
         expect(doc.components?.securitySchemes).toEqual({ bearerAuth: { type: 'http', scheme: 'bearer' } });
         // @apiDocs({ security }) becomes the operation's requirement list…
-        expect(doc.paths['/api/secure'].get.security).toEqual([{ bearerAuth: [] }]);
+        expect(doc.paths['/api/secure'].get?.security).toEqual([{ bearerAuth: [] }]);
         // …an empty list documents an explicitly anonymous operation…
-        expect(doc.paths['/api/open'].get.security).toEqual([]);
+        expect(doc.paths['/api/open'].get?.security).toEqual([]);
         // …and an operation without it inherits the (absent) document default.
-        expect(doc.paths['/api/hello'].get.security).toBeUndefined();
+        expect(doc.paths['/api/hello'].get?.security).toBeUndefined();
     });
 
     it('applies the document-level security default with per-operation override (DAT-F12)', () => {
@@ -339,9 +349,9 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
         });
         expect(doc.security).toEqual([{ bearerAuth: [] }]);
         // No operation-level `security` → inherits the document default.
-        expect(doc.paths['/api/hello'].get.security).toBeUndefined();
+        expect(doc.paths['/api/hello'].get?.security).toBeUndefined();
         // Per-operation `@apiDocs({ security: [] })` overrides the default.
-        expect(doc.paths['/api/open'].get.security).toEqual([]);
+        expect(doc.paths['/api/open'].get?.security).toEqual([]);
     });
 
     it('emits components when only security schemes are declared (DAT-F12)', () => {
@@ -364,7 +374,7 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
     it('honors @apiDocs metadata and hidden exclusion', () => {
         const mapping = register(new APIController());
         const doc = new OpenAPISpecGenerator().generate([mapping]);
-        const filtered = doc.paths['/api/filtered'].get;
+        const filtered = doc.paths['/api/filtered'].get as OpenAPIOperation;
         expect(filtered.summary).toBe('Filtered list');
         expect(filtered.tags).toEqual(['reports']);
         expect(filtered.deprecated).toBe(true);
@@ -382,14 +392,14 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
     it('records framework matrix/query conditions as x-blue extensions', () => {
         const mapping = register(new APIController());
         const doc = new OpenAPISpecGenerator().generate([mapping]);
-        const update = doc.paths['/api/products/{id}'].post;
+        const update = doc.paths['/api/products/{id}'].post as OpenAPIOperation;
         expect(update['x-blue-matrixParams']).toEqual(['color=red', 'size']);
     });
 
     it('deduplicates operations across overlapping mappings, first mapping wins', () => {
         const doc = new OpenAPISpecGenerator().generate([register(new APIController()), register(new APIController())]);
         expect(Object.keys(doc.paths['/api/hello'])).toEqual(['get']);
-        expect(doc.paths['/api/echo'].post.requestBody.required).toBe(false);
+        expect(doc.paths['/api/echo'].post?.requestBody?.required).toBe(false);
     });
 
     it('applies the include filter and excludePaths', () => {
@@ -406,7 +416,7 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
     it('hoists recursive response schemas into components.schemas and rewrites $ref pointers (PR-9 regression)', () => {
         const mapping = register(new APIController());
         const doc = new OpenAPISpecGenerator().generate([mapping]);
-        const categorySchema = doc.paths['/api/categories'].get.responses['200'].content?.['application/json']?.schema;
+        const categorySchema = doc.paths['/api/categories'].get?.responses['200'].content?.['application/json']?.schema;
         expect(categorySchema).toEqual({ $ref: '#/components/schemas/get-api-categories-200' });
         expect(doc.components?.schemas['get-api-categories-200']).toMatchObject({
             type: 'object',
@@ -430,7 +440,7 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
     it('promotes id-registered schema bundles to their own components (PR-9 regression)', () => {
         const mapping = register(new APIController());
         const doc = new OpenAPISpecGenerator().generate([mapping]);
-        const folderSchema = doc.paths['/api/folders'].get.responses['200'].content?.['application/json']?.schema;
+        const folderSchema = doc.paths['/api/folders'].get?.responses['200'].content?.['application/json']?.schema;
         expect(folderSchema).toEqual({ $ref: '#/components/schemas/Folder' });
         expect(doc.components?.schemas['Folder']).toMatchObject({
             type: 'object',
@@ -447,10 +457,10 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
         const doc = new OpenAPISpecGenerator().generate([mapping]);
         // `/files/:id/download` declares no extractor at all — the spec must
         // still declare the template variable as a required path parameter.
-        const download = doc.paths['/api/files/{id}/download'].get;
+        const download = doc.paths['/api/files/{id}/download'].get as OpenAPIOperation;
         expect(download.parameters).toEqual([{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }]);
         // Only the uncovered variable is synthesized; declared ones pass through.
-        const content = doc.paths['/api/files/{id}/versions/{version}/content'].get;
+        const content = doc.paths['/api/files/{id}/versions/{version}/content'].get as OpenAPIOperation;
         expect(content.parameters).toEqual([
             { name: 'id', in: 'path', required: true, schema: { type: 'string' } },
             { name: 'version', in: 'path', required: true, schema: { type: 'string' } },
@@ -460,7 +470,7 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
     it('builds multipart/form-data schemas from fileValue and requestPart parts (PR-12 regression)', () => {
         const mapping = register(new APIController());
         const doc = new OpenAPISpecGenerator().generate([mapping]);
-        const upload = doc.paths['/api/uploads'].post;
+        const upload = doc.paths['/api/uploads'].post as OpenAPIOperation;
         expect(upload.requestBody?.required).toBe(true);
         expect(upload.requestBody?.content['multipart/form-data']?.schema).toEqual({
             type: 'object',
@@ -475,7 +485,7 @@ describe('OpenAPISpecGenerator (AD-35)', () => {
     it('merges multipart parts into a request body that also carries JSON (PR-12 regression)', () => {
         const mapping = register(new APIController());
         const doc = new OpenAPISpecGenerator().generate([mapping]);
-        const mixed = doc.paths['/api/uploads-mixed'].post;
+        const mixed = doc.paths['/api/uploads-mixed'].post as OpenAPIOperation;
         expect(mixed.requestBody?.required).toBe(true);
         expect(mixed.requestBody?.content['application/json']?.schema?.type).toBe('object');
         expect(mixed.requestBody?.content['multipart/form-data']?.schema).toEqual({

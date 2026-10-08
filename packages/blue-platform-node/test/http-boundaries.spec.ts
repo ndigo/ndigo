@@ -15,7 +15,7 @@ import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
 import { HTTPServer } from '../src/http-server';
 import { NODE_RESPONSE_ATTRIBUTE } from '../src/node-request';
-import { resolveHTTPRequestLimits, parseBody, RequestLimitError } from '../src/http-request-limits';
+import { resolveHTTPRequestLimits, parseBody, RequestLimitError, BodyParseResult } from '../src/http-request-limits';
 
 /**
  * Boundary behavior of the Node request pipeline: oversized bodies (413),
@@ -136,12 +136,17 @@ describe('HTTP request pipeline boundaries', () => {
                 await promise;
             },
         });
-        const res = await fetch(base, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body,
-            duplex: 'half',
-        });
+        const res = await fetch(
+            base,
+            Object.assign(
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body,
+                },
+                { duplex: 'half' }
+            )
+        );
         expect(res.status).toBe(413);
         expect(await res.json()).toMatchObject({
             type: 'urn:blue:body_too_large',
@@ -224,7 +229,7 @@ describe('parseBody', () => {
     test('a urlencoded field named __proto__ lands as an ordinary key on a null-prototype record (SEC-1)', () => {
         const result = parseBody('application/x-www-form-urlencoded', Buffer.from('__proto__=x&a=1'));
         expect(result.kind).toBe('json');
-        const value = result.value;
+        const value = (result as Extract<BodyParseResult, { kind: 'json' }>).value;
         // The body stays a usable null-prototype record — no inherited accessor
         // was hit, so no hasOwnProperty TypeError, and __proto__ is a plain key.
         expect(Object.getPrototypeOf(value)).toBeNull();
@@ -236,7 +241,7 @@ describe('parseBody', () => {
     test('repeated urlencoded __proto__ keys accumulate into an array, not a prototype swap (SEC-1)', () => {
         const result = parseBody('application/x-www-form-urlencoded', Buffer.from('__proto__=a&__proto__=b'));
         expect(result.kind).toBe('json');
-        const value = result.value;
+        const value = (result as Extract<BodyParseResult, { kind: 'json' }>).value;
         expect(Object.getPrototypeOf(value)).toBeNull();
         expect(Array.isArray(value['__proto__'])).toBe(true);
         expect(value['__proto__']).toEqual(['a', 'b']);
@@ -247,7 +252,7 @@ describe('parseBody', () => {
         // risk — pin it so the contract cannot regress.
         const result = parseBody('application/json', Buffer.from('{"__proto__": 1, "a": 2}'));
         expect(result.kind).toBe('json');
-        const value = result.value;
+        const value = (result as Extract<BodyParseResult, { kind: 'json' }>).value;
         expect(Object.getPrototypeOf(value)).toBe(Object.prototype);
         expect(Object.hasOwn(value, '__proto__')).toBe(true);
         expect(value['__proto__']).toBe(1);

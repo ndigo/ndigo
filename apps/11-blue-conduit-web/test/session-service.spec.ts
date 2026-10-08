@@ -5,7 +5,7 @@
  */
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { ConduitApiError } from '../src/lib/api/conduit-types';
+import { ConduitApiError, type ConduitApi, type ConduitSession } from '../src/lib/api/conduit-types';
 import { ConduitTokenStorage, CONDUIT_TOKEN_KEY, SessionService } from '../src/services/session-service';
 import { contextWithRouter, createRouterDouble, createStubApi, sessionFixture } from './support/fixtures';
 
@@ -19,7 +19,7 @@ describe('SessionService', () => {
         router.navigate.mockClear();
     });
 
-    function serviceWith(api: ReturnType<typeof createStubApi>, initial = null) {
+    function serviceWith(api: ConduitApi, initial: ConduitSession | null = null) {
         const service = new SessionService(api, storage, initial);
         service.setApplicationContext(contextWithRouter(router));
         return service;

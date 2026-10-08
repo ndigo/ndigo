@@ -12,7 +12,7 @@ import type { ApplicationContext } from '@blue/context';
 import type { JobRecord } from './job';
 import { likeJobDriver, type JobDriver } from './job-driver';
 import { JOB_DRIVER, JOB_HANDLER_REGISTRY } from './context-tokens';
-import type { JobHandlerRegistry } from './job-handler-registry';
+import { likeJobHandlerRegistry, type JobHandlerRegistry } from './job-handler-registry';
 import { startJobSpan } from './telemetry';
 
 /**
@@ -176,6 +176,14 @@ export class JobRunner {
     /**
      * Awaits all in-flight executions (retry-safe: executions do not claim
      * new work, so the set only shrinks).
+     *
+     * **Cooperative-handler contract:** `drain()` waits for every in-flight
+     * handler to settle. A handler registered without `timeoutMs` that never
+     * resolves (e.g. a hanging network call) blocks `close()`/shutdown
+     * indefinitely — there is no forced-abort at the drain level. Set a
+     * `timeoutMs` on each handler (or job) whose work can stall; the runner
+     * then aborts late handlers and settles them as failed, and the drain
+     * completes.
      */
     async drain(): Promise<void> {
         while (this.#inflight.size > 0) {
@@ -252,7 +260,8 @@ export class JobRunner {
         const timeoutMs = handler.timeoutMs ?? record.timeoutMs;
         const maxAttempts = handler.maxAttempts ?? record.maxAttempts;
         const controller = new AbortController();
-        const heartbeat = this.#startHeartbeat(record.id, driver);
+        const heartbeatState = { current: Promise.resolve() };
+        const heartbeat = this.#startHeartbeat(record.id, driver, heartbeatState);
         let error: unknown;
 
         try {
@@ -271,6 +280,14 @@ export class JobRunner {
             error = caught;
         } finally {
             clearInterval(heartbeat);
+            // The final in-flight heartbeat may still be on the wire in a
+            // durable driver. Settle it BEFORE the terminal transition so a
+            // heartbeat can never land after complete()/retry()/fail() and
+            // re-extend a lease the driver just released or requeued
+            // (AD72-M3: lease-extension racing a terminal state change).
+            // Callback-level `.catch` swallows driver failures, so awaiting
+            // is safe.
+            await heartbeatState.current;
         }
 
         if (error === undefined) {
@@ -297,13 +314,18 @@ export class JobRunner {
         await driver.retry(record.id, runAt, message);
     }
 
-    #startHeartbeat(id: string, driver: JobDriver): NodeJS.Timeout | undefined {
+    #startHeartbeat(id: string, driver: JobDriver, state: { current: Promise<void> }): NodeJS.Timeout | undefined {
         const intervalMs = Math.floor(this.#leaseMs / 2);
         if (intervalMs < 1) {
             return undefined;
         }
         return setInterval(() => {
-            void driver.heartbeat(id, this.#leaseMs).catch((error: unknown) => {
+            // The promise is tracked (not fire-and-forget) so #execute can
+            // await the last in-flight beat before the terminal transition
+            // (AD72-M3). Failures are swallowed here: a lost heartbeat must
+            // not fail the job — the lease simply lapses and the next claim
+            // reclaims it.
+            state.current = driver.heartbeat(id, this.#leaseMs).catch((error: unknown) => {
                 this.#logger.warn(`[jobs] heartbeat failed for job ${id}: ${getErrorMessage(error)}`);
             });
         }, intervalMs);
@@ -354,8 +376,8 @@ export class JobRunner {
         }
         const context = this.#context;
         if (context !== null && context.hasValue(JOB_HANDLER_REGISTRY)) {
-            const registry = context.getValue(JOB_HANDLER_REGISTRY) as JobHandlerRegistry | null;
-            if (registry === null || typeof registry.get !== 'function' || typeof registry.register !== 'function') {
+            const registry = context.getValue(JOB_HANDLER_REGISTRY);
+            if (!likeJobHandlerRegistry(registry)) {
                 throw new FrameworkError(
                     `JobRunner: '${JOB_HANDLER_REGISTRY.description}' bean is not a JobHandlerRegistry`
                 );

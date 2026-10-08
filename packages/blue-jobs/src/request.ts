@@ -72,9 +72,12 @@ export function resolveJobRequest(request: JobRequest, now: number): ResolvedJob
 /**
  * Serializes a job payload to the stored JSON text.
  *
- * Fails loud on values JSON cannot carry faithfully: functions, symbols, and
- * bigints (native `JSON.stringify` would drop them silently), and circular
- * structures (native `TypeError`). `undefined` payloads serialize to `null`.
+ * Fails loud on values JSON cannot carry faithfully: functions, symbols,
+ * bigints (native `JSON.stringify` would drop them silently), and `undefined`
+ * **members** — those vanish without a trace under `stringify`, so a producer
+ * would lose fields with no error (AD-72 D-2). A payload that IS `undefined`
+ * at the top level is normalized to `null` (the documented explicit-absence
+ * carrier), and circular structures throw natively.
  *
  * @param payload - The payload to serialize.
  * @returns The JSON text a driver stores.
@@ -83,6 +86,9 @@ export function serializeJobPayload(payload: unknown): string {
     const serialized = JSON.stringify(payload ?? null, (_key, value: unknown) => {
         if (typeof value === 'function' || typeof value === 'symbol' || typeof value === 'bigint') {
             throw new TypeError(`job payload must be JSON-serializable — found a ${typeof value} value`);
+        }
+        if (value === undefined) {
+            throw new TypeError('job payload member must not be undefined — JSON would drop it silently; use null');
         }
         return value;
     });

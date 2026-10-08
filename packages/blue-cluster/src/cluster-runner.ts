@@ -139,6 +139,20 @@ export interface ClusterRunResult {
     readonly slots: readonly ClusterSlotSnapshot[];
 }
 
+/**
+ * Renders an unknown error for supervision logs without throwing on a
+ * malformed value (`null`, a bare string, or an object without `message`).
+ */
+function describeError(error: unknown): string {
+    if (typeof error === 'string') {
+        return error;
+    }
+    if (error instanceof Error && typeof error.message === 'string' && error.message.length > 0) {
+        return error.message;
+    }
+    return String(error);
+}
+
 /** Shared process-signal host (the runner's default). */
 const PROCESS_SIGNAL_HOST: ClusterSignalHost = {
     on: (signalName, handler) => {
@@ -374,13 +388,31 @@ export class ClusterRunner {
      * all children are force-killed and the result carries exit code `1`.
      */
     async abort(): Promise<void> {
+        this.#teardown('aborted', 1);
+    }
+
+    /**
+     * Fail-closed teardown shared by the operator abort, the crash-loop
+     * guard and a spawn failure: every slot's current child is killed so
+     * no sibling can keep the cluster alive, `#stopping`/`#aborted` are
+     * set (never respawn), and the reason + exit code are pinned. The
+     * first teardown wins; a later one (e.g. a second abort call) is a
+     * no-op. The settle of every supervise loop is guaranteed: a killed
+     * child resolves its `waitForExit`, and a slot mid-backoff observes
+     * `#aborted` on its next poll, so `run()`'s `Promise.all` never hangs
+     * on a tripped cluster.
+     */
+    #teardown(reason: ClusterStopReason, exitCode: number, message?: string): void {
         if (this.#aborted) {
             return;
         }
         this.#aborted = true;
         this.#stopping = true;
-        this.#reason = 'aborted';
-        this.#exitCode = 1;
+        this.#reason = reason;
+        this.#exitCode = exitCode;
+        if (message !== undefined) {
+            this.#log(message);
+        }
         for (const state of this.#slots) {
             const child = state.child;
             if (child !== null) {
@@ -412,7 +444,20 @@ export class ClusterRunner {
                 state.status = 'exited';
                 return;
             }
-            const child = this.#spawnSlot(state);
+            let child: ClusterChild;
+            try {
+                child = this.#spawnSlot(state);
+            } catch (error) {
+                // A spawning failure (e.g. a missing binary) is fail-closed:
+                // the cluster cannot run, and siblings must not be orphaned.
+                // oxlint-disable-next-line no-await-in-loop -- the supervise loop settles after a terminal spawn failure
+                this.#teardown(
+                    'aborted',
+                    1,
+                    `slot ${state.slot}: spawn failed — ${describeError(error)}; aborting the cluster`
+                );
+                return;
+            }
             state.child = child;
             state.status = 'running';
             // oxlint-disable-next-line no-await-in-loop -- the supervise loop is inherently sequential: a slot's lifecycle waits on its child
@@ -428,9 +473,17 @@ export class ClusterRunner {
             }
             // oxlint-disable-next-line no-await-in-loop -- same per-slot lifecycle: the restart decision must follow the exit
             if (!(await this.#scheduleRestart(state))) {
-                this.#aborted = true;
-                this.#reason = 'crash-loop';
-                this.#exitCode = 1;
+                // Fail-closed: the crash-loop guard trips the WHOLE cluster
+                // — siblings are killed so they cannot outlive the trip (the
+                // previous code merely set #aborted, hanging `run()` forever),
+                // and the highest observed child code survives (floor 1) so a
+                // sibling's real failure is not masked by the trip code.
+                this.#teardown(
+                    'crash-loop',
+                    Math.max(1, this.#exitCode),
+                    `slot ${state.slot} exceeded ${this.#options.maxRestartsPerWindow} restarts per ` +
+                        `${this.#options.restartWindowMs}ms — crash-loop guard trips the cluster`
+                );
                 return;
             }
         }
@@ -446,10 +499,7 @@ export class ClusterRunner {
         const windowStart = now - this.#options.restartWindowMs;
         state.restartTimes = state.restartTimes.filter((at) => at > windowStart);
         if (state.restartTimes.length >= this.#options.maxRestartsPerWindow) {
-            this.#log(
-                `slot ${state.slot} exceeded ${this.#options.maxRestartsPerWindow} restarts per ` +
-                    `${this.#options.restartWindowMs}ms — crash-loop guard trips the cluster`
-            );
+            // The trip message is logged once by #teardown in #supervise.
             return false;
         }
         state.restartTimes.push(now);

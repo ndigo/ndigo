@@ -188,6 +188,16 @@ Message from the final failed attempt.
 
 Extends the lease of a running job.
 
+**Ordering contract (AD72-M3):** the runner awaits its last in-flight
+heartbeat before any terminal transition (`complete`/`retry`/`fail`),
+so a driver never receives a heartbeat for a job it just removed. A
+driver MUST still tolerate a heartbeat that is a no-op: another worker
+may have reclaimed the lease (expired) or completed the job before the
+beat lands — extending only a still-valid lease is the reference
+behavior (`RedisJobDriver.HEARTBEAT_SCRIPT`), and a check-then-mutate
+pair MUST be atomic (one script/statement) so a stale beat can never
+re-lease a job a concurrent claim just moved.
+
 #### Parameters
 
 ##### id

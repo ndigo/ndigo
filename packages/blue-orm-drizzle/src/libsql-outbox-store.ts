@@ -36,6 +36,7 @@
  * @author Jeff Rose
  */
 import { createClient, type Client } from '@libsql/client';
+import { randomUUID } from 'node:crypto';
 import type { JobId } from '@blue/jobs';
 import {
     parseJobPayload,
@@ -109,7 +110,7 @@ export class LibSQLOutboxStore implements OutboxStore {
     constructor(options: LibSQLOutboxStoreOptions = {}) {
         this.#client = options.client ?? createClient({ url: options.url ?? ':memory:', authToken: options.authToken });
         this.#ownsClient = options.client === undefined || options.ownsClient === true;
-        this.#idFactory = options.idFactory ?? (() => crypto.randomUUID());
+        this.#idFactory = options.idFactory ?? randomUUID;
         this.#ready = this.#client.batch(SCHEMA.map((sql) => ({ sql }))).then(() => undefined);
         // Attach a handler immediately; methods still await the original
         // promise and propagate schema errors, even when first used later.

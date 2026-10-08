@@ -79,15 +79,41 @@ live('RedisLockDriver (live standalone Redis 6.2+)', () => {
         expect(first.token).toBe(1);
         expect(await first.isHeld()).toBe(true);
 
+        // Contention does NOT burn a token (AD73-M2 parity with the
+        // in-process driver: only successful acquires advance the counter).
+        expect(await driver.acquire('slot', { ttlMs: 10_000 })).toBeNull();
         expect(await driver.acquire('slot', { ttlMs: 10_000 })).toBeNull();
         expect(await first.release()).toBe(true);
         expect(await first.isHeld()).toBe(false);
 
         const second = await driver.acquire('slot', { ttlMs: 10_000 });
         if (second === null) throw new Error('expected the second acquisition');
-        // Monotonic per key — the counter also advances on contention attempts,
-        // so acquisitions may carry gaps.
-        expect(second.token).toBeGreaterThan(first.token);
+        // Monotonic per key, and CONSECUTIVE after the release: the sequence
+        // matches the in-process driver's exactly.
+        expect(second.token).toBe(first.token + 1);
+    });
+
+    it('close() releases only this driver’s own leases (AD73-M1)', async () => {
+        if (url === undefined) throw new Error('BLUE_REDIS_TEST_URL is required for live tests');
+        const namespace = randomUUID();
+        namespaces.add(namespace);
+        const own = await openShared(namespace);
+        const other = await openShared(namespace);
+
+        const ownHandle = await own.acquire('mine', { ttlMs: 60_000 });
+        if (ownHandle === null) throw new Error('expected own to acquire');
+        const otherHandle = await other.acquire('yours', { ttlMs: 60_000 });
+        if (otherHandle === null) throw new Error('expected other to acquire');
+
+        await own.close();
+
+        // own's lease is released (the next acquirer wins immediately)…
+        const successor = await other.acquire('mine', { ttlMs: 60_000 });
+        if (successor === null) throw new Error('expected the released key to be acquirable');
+        // …while other's lease is untouched by own.close().
+        expect(await otherHandle.isHeld()).toBe(true);
+        expect(await successor.release()).toBe(true);
+        expect(await otherHandle.release()).toBe(true);
     });
 
     it('expires leases — the next acquirer wins and the stale holder is fenced', async () => {

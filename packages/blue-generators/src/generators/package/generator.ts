@@ -13,10 +13,16 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export interface PackageGeneratorSchema {
     name: string;
     description?: string;
+    /**
+     * Wire the `@blue/jobs` dependency (durable jobs / transactional
+     * outbox, AD-72) into the generated package. Off by default — keep
+     * skeletons dependency-free until a feature asks for one.
+     */
+    jobs?: boolean;
 }
 
 export default async function packageGenerator(tree: Tree, schema: PackageGeneratorSchema): Promise<void> {
-    const { name, description } = schema;
+    const { name, description, jobs } = schema;
 
     if (!/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(name)) {
         throw new Error(`Package name must be kebab-case: "${name}"`);
@@ -34,6 +40,22 @@ export default async function packageGenerator(tree: Tree, schema: PackageGenera
         description: resolvedDescription,
         tmpl: '',
     });
+
+    if (jobs) {
+        // The skeleton ships dependency-free; a package opting into the
+        // AD-72 jobs/outbox surface needs its runtime dep wired here
+        // (mirrors how platform-node declares @blue/jobs).
+        const manifestPath = join(projectRoot, 'package.json');
+        const manifestContent = tree.read(manifestPath, 'utf-8');
+        if (manifestContent === null) {
+            throw new Error(`Could not locate ${manifestPath} to add the @blue/jobs dependency`);
+        }
+        const manifest = JSON.parse(manifestContent) as Record<string, unknown>;
+        const dependencies = (manifest.dependencies as Record<string, string> | undefined) ?? {};
+        dependencies['@blue/jobs'] = '~0.0.1';
+        manifest.dependencies = dependencies;
+        tree.write(manifestPath, JSON.stringify(manifest, null, 4) + '\n');
+    }
 
     const aliasesPath = 'vitest.aliases.ts';
     const aliasesContent = tree.read(aliasesPath, 'utf-8');

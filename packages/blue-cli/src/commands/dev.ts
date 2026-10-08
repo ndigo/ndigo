@@ -21,12 +21,12 @@ export class DevCommand extends Command {
         'Server-side hot-reload (watch) is documented as v1.1; the supervisor ' +
         'lifecycle (signal relay, exit-code propagation) applies either way.';
 
-    static examples = ['$ blue dev', '$ blue dev ./apps/06-blue-island --port 3200'];
+    static examples = ['$ blue dev', '$ blue dev ./apps/15-blue-resilience-lab --port 3200'];
 
     static flags = {
         port: Flags.integer({
             summary: 'PORT for the dev server (default: inherited environment).',
-            min: 0,
+            min: 1,
         }),
     };
 

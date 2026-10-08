@@ -103,6 +103,14 @@ Container teardown: stops claiming and drains in-flight executions.
 Awaits all in-flight executions (retry-safe: executions do not claim
 new work, so the set only shrinks).
 
+**Cooperative-handler contract:** `drain()` waits for every in-flight
+handler to settle. A handler registered without `timeoutMs` that never
+resolves (e.g. a hanging network call) blocks `close()`/shutdown
+indefinitely — there is no forced-abort at the drain level. Set a
+`timeoutMs` on each handler (or job) whose work can stall; the runner
+then aborts late handlers and settles them as failed, and the drain
+completes.
+
 #### Returns
 
 `Promise`\<`void`\>

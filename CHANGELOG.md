@@ -20,7 +20,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `@blue/cluster` (AD-74 review): the crash-loop guard now tears down **every**
+  sibling slot — a tripped cluster settles with `reason: 'crash-loop'`
+  instead of hanging with live children; a spawn failure aborts fail-closed
+  (no orphaned children); the worst sibling exit code survives a trip (floor
+  1); and a `stop()` after an `abort()` is a no-op.
+- `blue serve` (AD-74/75 review): `--port` is now forwarded as the cluster's
+  `basePort`, so `--cluster N --port P` gives every slot a distinct
+  `PORT = P + slot` as documented — slots no longer collide on one port.
+- `blue generate` (AD-75 review): forwards each generator's declared flags
+  (`--package`, `--file`, `--force`, `--className`, `--summary`, `--author`,
+  `--description`, `--module`, `--path`, `--jobs`) — `component` and `header`
+  are runnable from the CLI.
+- `blue doctor` (AD-75 review): reports the workspace root by walking up to
+  `pnpm-workspace.yaml` (not the `node_modules` dir `pnpm root` answers),
+  performs real environment checks, and exits `1` when one fails.
+- `blue` (AD-75 review): one-shot commands install their signal relays before
+  spawning (a signal in the spawn window is never dropped), and the
+  shell-operator guard also rejects `$()`/backtick scripts.
+- `@blue/jobs`/`@blue/redis/jobs` (AD-72 review): the Redis driver's
+  `heartbeat` and `retry` are single-Lua-script atomic units — a stale
+  heartbeat can no longer re-lease a job a successor reclaimed, and a retry
+  can no longer resurrect a completed (terminal) job; the claim script sweeps
+  companion hashes of phantom records (no unbounded growth); the runner
+  awaits its last in-flight heartbeat before the terminal transition;
+  enqueue now fails loud on `undefined` payload members; the LibSQL job store
+  gained a `(state, lease_expires_at)` reclaim index.
+- `@blue/redis/locks` (AD-73 review): `close()` now releases the driver's own
+  leases (token-checked, in-process parity), and only a successful acquire
+  advances the fencing-token counter (consecutive tokens on both drivers).
+
 ### Added
+
+- `blue generate package --jobs` — wire the `@blue/jobs` dependency into a
+  new package at generation time.
 
 - `@blue/jobs` (AD-72): durable job queues and the transactional outbox — the
   `JobDriver` SPI (lease-based at-least-once claims, attempts incremented at

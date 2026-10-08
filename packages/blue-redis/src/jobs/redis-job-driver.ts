@@ -36,37 +36,102 @@ import type { RedisConnection } from '../connection';
 
 /**
  * Atomic claim: reclaim expired leases, then lease up to `limit` ready jobs.
- * Returns a flat `[id, attempts, id, attempts, …]` reply.
+ * Returns a flat `[id, attempts, id, attempts, …]` reply. Companion hashes
+ * are swept for record-less ids so a missed `#discard` cannot leak
+ * `attempts`/`errors` entries forever.
  *
- * KEYS: ready ZSET, leases ZSET, records hash, attempts hash.
+ * KEYS: ready ZSET, leases ZSET, records hash, attempts hash, errors hash.
  * ARGV: now (ms), limit, leaseMs.
  */
 const CLAIM_SCRIPT = `local ready = KEYS[1]
 local leases = KEYS[2]
 local records = KEYS[3]
 local attempts = KEYS[4]
+local errors = KEYS[5]
 local now = tonumber(ARGV[1])
 local limit = tonumber(ARGV[2])
 local leaseMs = tonumber(ARGV[3])
 local expired = redis.call('ZRANGEBYSCORE', leases, '-inf', now, 'LIMIT', 0, limit)
 for i = 1, #expired do
   local id = expired[i]
-  if redis.call('ZREM', leases, id) == 1 and redis.call('HEXISTS', records, id) == 1 then
-    redis.call('ZADD', ready, now, id)
+  if redis.call('ZREM', leases, id) == 1 then
+    if redis.call('HEXISTS', records, id) == 1 then
+      redis.call('ZADD', ready, now, id)
+    else
+      -- The record is already gone (a partial/missed #discard): sweep the
+      -- companion hashes so attempts/errors cannot accumulate forever.
+      redis.call('HDEL', attempts, id)
+      redis.call('HDEL', errors, id)
+    end
   end
 end
 local out = {}
 local readyIds = redis.call('ZRANGEBYSCORE', ready, '-inf', now, 'LIMIT', 0, limit)
 for i = 1, #readyIds do
   local id = readyIds[i]
-  if redis.call('ZREM', ready, id) == 1 and redis.call('HEXISTS', records, id) == 1 then
-    local count = redis.call('HINCRBY', attempts, id, 1)
-    redis.call('ZADD', leases, now + leaseMs, id)
-    out[#out + 1] = id
-    out[#out + 1] = tostring(count)
+  if redis.call('ZREM', ready, id) == 1 then
+    if redis.call('HEXISTS', records, id) == 1 then
+      local count = redis.call('HINCRBY', attempts, id, 1)
+      redis.call('ZADD', leases, now + leaseMs, id)
+      out[#out + 1] = id
+      out[#out + 1] = tostring(count)
+    else
+      redis.call('HDEL', attempts, id)
+      redis.call('HDEL', errors, id)
+    end
   end
 end
 return out`;
+
+/**
+ * Atomic lease heartbeat: extend **only when the job is still leased**.
+ * Two round-trips (`zScore` + `zAdd`) left the ready→leases transition
+ * exposed: a stale holder could re-extend a lease a concurrent `CLAIM_SCRIPT`
+ * just reclaimed for a second worker (double-claim, AD72-H1). One script
+ * makes the check + extend a single atomic unit.
+ *
+ * KEYS: leases ZSET. ARGV: id, new expiry (ms).
+ */
+const HEARTBEAT_SCRIPT = `local leases = KEYS[1]
+local id = ARGV[1]
+local expiry = tonumber(ARGV[2])
+if redis.call('ZSCORE', leases, id) ~= false then
+  redis.call('ZADD', leases, expiry, id)
+  return 1
+end
+return 0`;
+
+/**
+ * Atomic retry: requeue **only while the record still exists**. Two
+ * round-trips (`hGet` + `multi`) exposed a resurrection window: a concurrent
+ * `complete()`/`fail()` (`#discard`) between them could delete the record,
+ * after which the retry's `hSet` re-created a terminal job as a zombie
+ * (AD72-H2). One script makes the existence check + requeue atomic, and
+ * refreshes the stored `runAt` so a reclaim reads the new schedule.
+ *
+ * KEYS: records hash, errors hash, ready ZSET, leases ZSET.
+ * ARGV: id, runAt (ms), lastError.
+ */
+const RETRY_SCRIPT = `local records = KEYS[1]
+local errors = KEYS[2]
+local ready = KEYS[3]
+local leases = KEYS[4]
+local id = ARGV[1]
+local runAt = tonumber(ARGV[2])
+local lastError = ARGV[3]
+if redis.call('HEXISTS', records, id) == 0 then
+  return 0
+end
+local raw = redis.call('HGET', records, id)
+if type(raw) == 'string' then
+  local data = cjson.decode(raw)
+  data['runAt'] = runAt
+  redis.call('HSET', records, id, cjson.encode(data))
+end
+redis.call('HSET', errors, id, lastError)
+redis.call('ZADD', ready, runAt, id)
+redis.call('ZREM', leases, id)
+return 1`;
 
 /**
  * The record fields stored per job (attempts and lastError live in their own
@@ -165,7 +230,7 @@ export class RedisJobDriver implements JobDriver {
         const keys = this.#keys();
         return this.#connection.run(async (client) => {
             const reply = await client.eval(CLAIM_SCRIPT, {
-                keys: [keys.ready, keys.leases, keys.records, keys.attempts],
+                keys: [keys.ready, keys.leases, keys.records, keys.attempts, keys.errors],
                 arguments: [String(now), String(options.limit), String(options.leaseMs)],
             });
             const pairs = toIdAttemptPairs(reply);
@@ -214,19 +279,13 @@ export class RedisJobDriver implements JobDriver {
         this.#assertOpen();
         const keys = this.#keys();
         await this.#connection.run(async (client) => {
-            const serialized = await client.hGet(keys.records, id);
-            if (serialized === null) {
-                return; // already completed
-            }
-            const data = decodeStoredData(serialized, id);
-            const patched: StoredJobData = { ...data, runAt };
-            await client
-                .multi()
-                .hSet(keys.records, id, JSON.stringify(patched))
-                .hSet(keys.errors, id, lastError)
-                .zAdd(keys.ready, { score: runAt, value: id })
-                .zRem(keys.leases, id)
-                .exec();
+            // One atomic unit: the existence check and the requeue cannot be
+            // separated by a concurrent complete()/fail() #discard, so a
+            // terminal job is never resurrected (AD72-H2).
+            await client.eval(RETRY_SCRIPT, {
+                keys: [keys.records, keys.errors, keys.ready, keys.leases],
+                arguments: [id, String(runAt), lastError],
+            });
         });
     }
 
@@ -242,11 +301,13 @@ export class RedisJobDriver implements JobDriver {
         this.#assertOpen();
         const keys = this.#keys();
         await this.#connection.run(async (client) => {
-            // Best-effort: a lease set only when the job is still leased.
-            const leased = await client.zScore(keys.leases, id);
-            if (leased !== null) {
-                await client.zAdd(keys.leases, { score: Date.now() + leaseMs, value: id });
-            }
+            // One atomic unit: the still-leased check and the extend cannot
+            // be separated by a concurrent claim, so a stale holder can
+            // never revive a lease a successor just moved to ready (AD72-H1).
+            await client.eval(HEARTBEAT_SCRIPT, {
+                keys: [keys.leases],
+                arguments: [id, String(Date.now() + leaseMs)],
+            });
         });
     }
 

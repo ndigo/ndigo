@@ -66,6 +66,7 @@ Jeff Rose
 - [getJobHandlerMetadata](functions/getJobHandlerMetadata.md)
 - [jobHandler](functions/jobHandler.md)
 - [likeJobDriver](functions/likeJobDriver.md)
+- [likeJobHandlerRegistry](functions/likeJobHandlerRegistry.md)
 - [likeOutboxStore](functions/likeOutboxStore.md)
 - [parseJobPayload](functions/parseJobPayload.md)
 - [resolveJobRequest](functions/resolveJobRequest.md)

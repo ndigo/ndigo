@@ -20,8 +20,8 @@ import { setTimeout as delay } from 'node:timers/promises';
 /** The compiled bin — the nx lane runs build:lib before test. */
 const BIN = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'bin', 'run.js');
 
-async function runCli(args: string[]): Promise<{ code: number; out: string; err: string }> {
-    const proc = spawn(process.execPath, [BIN, ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+async function runCli(args: string[], cwd?: string): Promise<{ code: number; out: string; err: string }> {
+    const proc = spawn(process.execPath, [BIN, ...args], { cwd, stdio: ['ignore', 'pipe', 'pipe'] });
     const out: string[] = [];
     const err: string[] = [];
     if (proc.stdout !== null) {
@@ -101,10 +101,49 @@ describe('blue (real bin)', () => {
 
     test('doctor prints the environment diagnostics', async () => {
         const { code, out } = await runCli(['doctor']);
-        expect(code).toBe(0);
+        expect(code).toBe(0); // healthy environment on the dev machine
         expect(out).toContain('blue ');
         expect(out).toContain('node v');
         expect(out).toContain('pnpm ');
+    });
+
+    test('doctor reports the workspace root by walking to pnpm-workspace.yaml (AD75-H1)', async () => {
+        // BIN lives at <repo>/packages/blue-cli/bin/run.js; running doctor
+        // with the repo root as cwd must yield the ROOT (a walk up to
+        // pnpm-workspace.yaml), never the `pnpm root` node_modules dir.
+        const repoRoot = resolve(dirname(BIN), '..', '..', '..');
+        const { code, out } = await runCli(['doctor'], repoRoot);
+        expect(code).toBe(0); // we ARE inside the workspace here
+        const line = out.split('\n').find((row) => row.startsWith('workspace ')) ?? '';
+        expect(line).toBe(`workspace ${repoRoot}`);
+    });
+
+    test('doctor exits non-zero outside a workspace (AD75-H1 regression)', async () => {
+        const outside = join(base, 'outside');
+        mkdirSync(outside, { recursive: true });
+        const proc = spawn(process.execPath, [BIN, 'doctor'], { cwd: outside, stdio: ['ignore', 'pipe', 'pipe'] });
+        const out: string[] = [];
+        const err: string[] = [];
+        if (proc.stdout !== null) {
+            void (async () => {
+                for await (const chunk of proc.stdout) {
+                    out.push(String(chunk));
+                }
+            })().catch(() => undefined);
+        }
+        if (proc.stderr !== null) {
+            void (async () => {
+                for await (const chunk of proc.stderr) {
+                    err.push(String(chunk));
+                }
+            })().catch(() => undefined);
+        }
+        const code = await new Promise<number>((resolveCode) => {
+            proc.once('exit', resolveCode);
+        });
+        await delay(20);
+        expect(code).toBe(1);
+        expect(`${out.join('')}${err.join('')}`).toContain('pnpm-workspace.yaml');
     });
 
     test('generate rejects unknown kinds with a usage error', async () => {
@@ -140,6 +179,65 @@ describe('blue (real bin)', () => {
         } finally {
             rmSync(join(base, 'app.up'), { force: true });
             rmSync(join(base, 'drained.signal'), { force: true });
+            if (proc.pid !== undefined) {
+                try {
+                    kill(proc.pid, 'SIGKILL');
+                } catch {
+                    // already gone
+                }
+            }
+        }
+    });
+
+    test('serve --cluster 2 derives distinct per-slot PORTs (base + slot)', async () => {
+        const clusterDir = join(base, 'cluster-app');
+        mkdirSync(clusterDir, { recursive: true });
+        writeFileSync(
+            join(clusterDir, 'package.json'),
+            JSON.stringify({ name: 'e2e-cluster-app', private: true, scripts: { start: 'node app.mjs' } })
+        );
+        writeFileSync(
+            join(clusterDir, 'app.mjs'),
+            `
+const { writeFileSync } = await import('node:fs');
+const { join } = await import('node:path');
+const slot = process.env.BLUE_CLUSTER_SLOT ?? '?';
+writeFileSync(join(${JSON.stringify(base)}, 'cluster-' + slot + '.up'), process.env.PORT ?? 'no-port');
+process.on('SIGTERM', () => {
+  writeFileSync(join(${JSON.stringify(base)}, 'cluster-' + slot + '.signal'), 'x');
+  process.exit(0);
+});
+setTimeout(() => {}, 120_000);
+`
+        );
+
+        const port = '4401';
+        const proc = spawn(process.execPath, [BIN, 'serve', clusterDir, '--port', port, '--cluster', '2'], {
+            stdio: 'inherit',
+        });
+        try {
+            // Both slots must be up with PORT = base + slot (BLK-2: the flat
+            // env.PORT bug gave every slot the same port).
+            await waitFor(() => existsSync(join(base, 'cluster-0.up')) && existsSync(join(base, 'cluster-1.up')));
+            expect(readFileSync(join(base, 'cluster-0.up'), 'utf8')).toBe(port);
+            expect(readFileSync(join(base, 'cluster-1.up'), 'utf8')).toBe(String(Number(port) + 1));
+
+            // A single SIGTERM reaches the supervisor, which relays into both
+            // children's drains — never respawns.
+            kill(proc.pid ?? 0, 'SIGTERM');
+            await waitFor(
+                () => existsSync(join(base, 'cluster-0.signal')) && existsSync(join(base, 'cluster-1.signal'))
+            );
+            const code = await new Promise<number>((resolveCode) => {
+                proc.once('exit', resolveCode);
+            });
+            expect(code).toBe(0);
+        } finally {
+            for (const slot of ['0', '1']) {
+                rmSync(join(base, `cluster-${slot}.up`), { force: true });
+                rmSync(join(base, `cluster-${slot}.signal`), { force: true });
+            }
+            rmSync(clusterDir, { recursive: true, force: true });
             if (proc.pid !== undefined) {
                 try {
                     kill(proc.pid, 'SIGKILL');

@@ -7,17 +7,25 @@ library — commands, typed flags, `--help`, exit codes.
 
 ## Commands
 
-| Command                | Runs the app's…                         | Example                                                             |
-| :--------------------- | :-------------------------------------- | :------------------------------------------------------------------ |
-| `blue serve`           | `scripts.start` under the supervisor    | `blue serve ./apps/04-blue-api --port 3000 --cluster 4`             |
-| `blue dev`             | `scripts.dev` (vite) or `scripts.start` | `blue dev ./apps/06-blue-island --port 3200`                        |
-| `blue generate <kind>` | `@blue/generators` via Nx               | `blue generate package --name my-app`                               |
-| `blue db:migrate`      | `scripts.db:migrate`                    | `blue db:migrate ./apps/04-blue-api`                                |
-| `blue inspect`         | `scripts.inspect` (the AD-70 printer)   | `blue inspect ./apps/04-blue-api`                                   |
-| `blue doctor`          | (self-diagnostics)                      | `blue doctor` — versions, workspace, git — the issue-report starter |
+| Command                | Runs the app's…                         | Example                                                          |
+| :--------------------- | :-------------------------------------- | :--------------------------------------------------------------- |
+| `blue serve`           | `scripts.start` under the supervisor    | `blue serve ./apps/04-blue-api --port 3000 --cluster 4`          |
+| `blue dev`             | `scripts.dev` (vite) or `scripts.start` | `blue dev ./apps/15-blue-resilience-lab --port 3200`             |
+| `blue generate <kind>` | `@blue/generators` via Nx               | `blue generate package --name my-app`                            |
+| `blue db:migrate`      | `scripts.db:migrate`                    | `blue db:migrate ./apps/04-blue-api`                             |
+| `blue inspect`         | `scripts.inspect` (the AD-70 printer)   | `blue inspect ./apps/04-blue-api`                                |
+| `blue doctor`          | (self-diagnostics)                      | `blue doctor` — versions, workspace, git, and environment checks |
 
 Every command follows the oclif contract: `--help`, `--version`, exit `0`
-ok / `2` usage / `1` runtime.
+ok / `2` usage / `1` runtime. `blue doctor` exits `1` when a check fails
+(an unsupported Node, a missing pnpm/git, or no workspace above the cwd).
+
+## `blue dev` and server watch
+
+`blue dev` runs `scripts.dev` (vite for browser apps) or `scripts.start`
+under the same supervisor as `serve`. **Server-side watch/hot-reload is
+deferred to v1.1** (AD-75 D-2) — for Node apps `blue dev` is a supervised
+single start, not a watch loop.
 
 ## How scripts run — and why
 
@@ -33,6 +41,21 @@ The CLI resolves `package.json` scripts and runs them **shell-free**
   package manager.
 - A script that uses shell operators (`&&`, `|`, …) fails with a hint —
   keep start/dev scripts single commands.
+
+## Generate
+
+`blue generate <kind>` fronts `@blue/generators` (package, component,
+readme, header):
+
+```bash
+blue generate package --name my-app --description "A demo package" --jobs
+blue generate component --name widget --package blue-demo
+blue generate header --file packages/blue-demo/src/index.ts --force
+```
+
+Each kind forwards exactly the flags its generator declares (`--name`,
+`--package`; `--file`; `--force`; …), so the required fields reach Nx; the
+generators' own prompts fill anything omitted.
 
 ## Serve and the cluster
 

@@ -72,7 +72,16 @@ into refresh-driven start.
 - **`timeoutMs`** aborts the handler's `AbortSignal` and settles the attempt
   as failed; a handler that ignores the signal is still settled by the runner.
 - **Payloads are JSON.** Enqueue fails loud on functions, symbols, bigints,
-  and circulars. Queue rows are plaintext — never enqueue secrets.
+  circulars, and **`undefined` members** (use `null`); only a payload that
+  _is_ `undefined` is normalized to `null`. Queue rows are plaintext — never
+  enqueue secrets.
+- **Handlers are cooperative.** `close()` drains in-flight executions: a
+  handler without `timeoutMs` that never resolves blocks shutdown — every
+  handler with potentially-stalling work should set one.
+- **Heartbeats settle before the terminal transition.** The runner awaits its
+  last lease heartbeat before `complete`/`retry`/`fail`, and drivers treat a
+  beat for a missing job as a no-op — the check and the extend are one atomic
+  unit in the Redis driver (AD-72).
 
 Every execution records one INTERNAL span `jobs.job.<type>` (`job.id`,
 `job.type`, `job.attempt`, `job.outcome`, `job.duration_ms`); retries log a

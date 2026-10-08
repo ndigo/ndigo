@@ -54,6 +54,15 @@ describe('payload serialization', () => {
         expect(serializeJobPayload(undefined)).toBe('null');
     });
 
+    test('rejects undefined MEMBERS — JSON.stringify would drop them silently (AD72-H3)', () => {
+        expect(() => serializeJobPayload({ a: 1, b: undefined })).toThrow(
+            /member must not be undefined — JSON would drop it silently; use null/
+        );
+        expect(() => serializeJobPayload([1, undefined, 3])).toThrow(
+            /member must not be undefined — JSON would drop it silently; use null/
+        );
+    });
+
     test.each([
         ['a function', { callback: () => undefined }],
         ['a symbol', { token: Symbol('x') }],

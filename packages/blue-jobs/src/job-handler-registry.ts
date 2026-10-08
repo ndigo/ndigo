@@ -213,3 +213,18 @@ export class JobHandlerRegistry {
         }
     }
 }
+
+/**
+ * Structural type guard for {@link JobHandlerRegistry} — the `like*`
+ * convention used where a bean or option is verified before use (sibling of
+ * {@link likeJobDriver}).
+ *
+ * @param value - The candidate value.
+ * @returns Whether it exposes the registry seam (`get` + `register`).
+ * @since 1.0.0
+ */
+export const likeJobHandlerRegistry = (value: unknown): value is JobHandlerRegistry =>
+    value !== null &&
+    typeof value === 'object' &&
+    typeof (value as JobHandlerRegistry).get === 'function' &&
+    typeof (value as JobHandlerRegistry).register === 'function';

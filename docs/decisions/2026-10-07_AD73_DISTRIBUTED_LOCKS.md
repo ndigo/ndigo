@@ -102,8 +102,8 @@ interface LockDriver {
 ```
 
 - **Non-blocking by contract.** Waiting policies belong to the caller
-  (`@scheduled({ lock, waitMs, waitStepMs })`), never to the driver — the SPI
-  stays the primitive.
+  (`@scheduled({ lock, lockWait, lockWaitStep, lockTtl })`), never to the driver —
+  the SPI stays the primitive.
 - **Fencing is not optional.** Every driver issues a token at acquisition; a
   stale holder (lease expired, another node acquired) cannot `renew` or
   `release` — the backend atomically compares the token. Without this, a slow

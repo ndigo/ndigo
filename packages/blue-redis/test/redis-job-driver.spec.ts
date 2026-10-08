@@ -158,6 +158,100 @@ live('RedisJobDriver (live standalone Redis 7.2+)', () => {
         expect(await driver.size()).toBe(1);
     });
 
+    it('retry after terminal removal is a no-op — a completed job stays terminal (AD72-H2)', async () => {
+        if (url === undefined) throw new Error('BLUE_REDIS_TEST_URL is required for live tests');
+        const namespace = randomUUID();
+        namespaces.add(namespace);
+        const driver = await openShared(namespace);
+        const record = await driver.enqueue({ type: 'done' });
+        const [claimed] = await driver.claim({ limit: 1, leaseMs: 1000 });
+        expect(claimed?.id).toBe(record.id);
+
+        await driver.complete(record.id);
+        // A retry racing a completion must not resurrect the record: the
+        // existence check lives inside the SAME atomic unit as the requeue,
+        // so the hGet→multi window of the earlier implementation is closed.
+        await driver.retry(record.id, 0, 'too late');
+
+        expect(await driver.size()).toBe(0);
+        expect(await driver.claim({ limit: 5, leaseMs: 1000 })).toHaveLength(0);
+    });
+
+    it('a stale heartbeat cannot revive a lease a successor reclaimed (AD72-H1)', async () => {
+        if (url === undefined) throw new Error('BLUE_REDIS_TEST_URL is required for live tests');
+        const namespace = randomUUID();
+        namespaces.add(namespace);
+        const first = await openShared(namespace);
+        const second = await openShared(namespace);
+        const record = await first.enqueue({ type: 'slow' });
+
+        const [holder] = await first.claim({ limit: 1, leaseMs: 1 });
+        expect(holder?.id).toBe(record.id);
+        await delay(10); // the lease expires
+
+        // The successor reclaims the expired lease (attempts now 2).
+        const [successor] = await second.claim({ limit: 1, leaseMs: 10_000 });
+        expect(successor?.id).toBe(record.id);
+        expect(successor?.attempts).toBe(2);
+
+        // The stale holder heartbeats AFTER the reclamation. The atomic
+        // heartbeat sees the lease belongs to the successor — it must not
+        // place the job in BOTH ready and leases (the double-claim hazard).
+        await first.heartbeat(record.id, 60_000);
+
+        // Single-holder invariant: a third handle cannot claim it while the
+        // successor's lease is fresh, and the successor can still finish it.
+        const third = await openShared(namespace);
+        expect(await third.claim({ limit: 5, leaseMs: 1000 })).toHaveLength(0);
+        await second.complete(record.id);
+        expect(await third.claim({ limit: 5, leaseMs: 1000 })).toHaveLength(0);
+        expect(await second.size()).toBe(0);
+    });
+
+    it('claim sweeps companion hashes of phantom records — no unbounded growth (AD72-M4)', async () => {
+        if (url === undefined) throw new Error('BLUE_REDIS_TEST_URL is required for live tests');
+        const namespace = randomUUID();
+        namespaces.add(namespace);
+        const driver = await openShared(namespace);
+        const record = await driver.enqueue({ type: 'phantom' });
+        const [claimed] = await driver.claim({ limit: 1, leaseMs: 1 });
+        expect(claimed?.id).toBe(record.id);
+        await delay(10); // the lease expires
+
+        // A missed #discard leaves the RECORD hash gone while the (now
+        // expired) lease and the companion hashes still carry the id — the
+        // exact shape the claim script must sweep.
+        const prefix = `blue:jobs:${namespace}:`;
+        const client: RedisClient = createClient({
+            url,
+            socket: { reconnectStrategy: false },
+            disableOfflineQueue: true,
+        });
+        client.on('error', () => undefined);
+        await client.connect();
+        try {
+            await client.hDel(`${prefix}records`, record.id);
+        } finally {
+            await client.close();
+        }
+        const swept = await driver.claim({ limit: 5, leaseMs: 1000 });
+        expect(swept).toHaveLength(0);
+        const check: RedisClient = createClient({
+            url,
+            socket: { reconnectStrategy: false },
+            disableOfflineQueue: true,
+        });
+        check.on('error', () => undefined);
+        await check.connect();
+        try {
+            expect(await check.hExists(`${prefix}attempts`, record.id)).toBe(0);
+            expect(await check.hExists(`${prefix}errors`, record.id)).toBe(0);
+        } finally {
+            await check.close();
+        }
+        expect(await driver.size()).toBe(0);
+    });
+
     it('size counts ready plus leased jobs', async () => {
         const { driver } = await open();
         await driver.enqueue({ type: 'a' });

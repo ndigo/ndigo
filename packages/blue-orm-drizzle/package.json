@@ -26,6 +26,9 @@
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run"
   },
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {

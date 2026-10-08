@@ -13,6 +13,12 @@
       "type": "string",
       "description": "Short package description",
       "default": ""
+    },
+    "jobs": {
+      "type": "boolean",
+      "description": "Wire the durable-jobs/outbox dependencies (@blue/jobs) into the generated package",
+      "default": false,
+      "x-prompt": "Will the package use @blue/jobs (durable jobs / transactional outbox)?"
     }
   },
   "required": ["name"]

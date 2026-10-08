@@ -40,6 +40,19 @@ PG advisory locks documented-deferred in the ADR.
 
 ---
 
+### 2026-10-07 - Clustering / Worker Offload
+
+`@blue/cluster` (AD-74), closing GAP-2: a process **supervisor, not a
+coordinator** — `ClusterRunner` spawns N replicated worker slots with
+`BLUE_CLUSTER_SLOT`/`SIZE` (+ `PORT` derivation), relays `SIGINT`/`SIGTERM`
+into each child's own graceful shutdown, respawns crashed slots with
+bounded-backoff, and trips fail-closed past the per-slot crash-loop window.
+Single-executor work stays arbitrated by the AD-72/73 leases and locks.
+
+[Read plan](2026-10-07_CLUSTERING.md)
+
+---
+
 ### 2026-10-05 - TOON Support (opt-in authoring format)
 
 Opt-in, decode-only TOON support (AD-66): inert `MediaTypes.TEXT_TOON`

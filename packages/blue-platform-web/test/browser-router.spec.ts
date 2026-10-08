@@ -3,12 +3,12 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { describe, test, expect, vi, afterEach, beforeAll } from 'vitest';
+import { describe, test, expect, vi, afterEach, beforeAll, type Mock } from 'vitest';
 import { BrowserRouter } from '../src/browser-router';
-import { Route, RouterInterceptor } from '@blue/router';
+import { Route, RouterInterceptor, RouterCallback } from '@blue/router';
 
 describe('BrowserRouter', () => {
-    let callback: ReturnType<typeof vi.fn>;
+    let callback: Mock<RouterCallback>;
 
     beforeAll(() => {
         // jsdom doesn't provide full History API — stub what we need
@@ -34,7 +34,7 @@ describe('BrowserRouter', () => {
     });
 
     beforeEach(() => {
-        callback = vi.fn();
+        callback = vi.fn<RouterCallback>();
     });
 
     afterEach(() => {
@@ -155,8 +155,8 @@ describe('BrowserRouter', () => {
         await router.setRoute('/users/42/orders/abc');
 
         expect(capturedParams).toBeTruthy();
-        expect(capturedParams?.userId).toBe('42');
-        expect(capturedParams?.orderId).toBe('abc');
+        expect((capturedParams as unknown as Record<string, string>).userId).toBe('42');
+        expect((capturedParams as unknown as Record<string, string>).orderId).toBe('abc');
         router.destroy();
     });
 

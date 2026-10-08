@@ -100,6 +100,29 @@ after reconnect.
 
 [`SocketClient`](../interfaces/SocketClient.md).[`messages`](../interfaces/SocketClient.md#messages)
 
+***
+
+### onSendWired
+
+#### Get Signature
+
+> **get** **onSendWired**(): `boolean`
+
+Whether the client reports exact wire sizes through `onSend` (TEL-08).
+
+##### Returns
+
+`boolean`
+
+Whether the client reports exact wire sizes through the `onSend`
+observer (TEL-08). Telemetry reads this to skip its own payload
+estimation for wired clients — counting both would double the byte
+metric.
+
+#### Implementation of
+
+[`SocketClient`](../interfaces/SocketClient.md).[`onSendWired`](../interfaces/SocketClient.md#onsendwired)
+
 ## Methods
 
 ### close()

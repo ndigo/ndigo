@@ -8,10 +8,13 @@ import '@tsmetadata/polyfill';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { InMemoryDataSource } from '../src/data-source';
 import { InMemoryEntityManager } from '../src/entity-manager';
-import { column, entity, generated, primaryColumn } from '../src/decorators';
+import { column, entity as entityDecorator, generated, primaryColumn } from '../src/decorators';
 import { InMemoryDerivedQueryRepository } from '../src/repository';
 import { parseDerivedQuery } from '../src/derived-query-repository';
 import { getEntityMetadata } from '../src/metadata';
+
+// Spec-side type wrapper; runtime-identical to the production `entity` decorator.
+const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
 
 @entity('derived_users')
 class DerivedUser {

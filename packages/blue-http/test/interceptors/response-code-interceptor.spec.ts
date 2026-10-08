@@ -6,7 +6,10 @@
 import { describe, test, expect, beforeAll, beforeEach, afterEach, afterAll, vi } from 'vitest';
 import { server } from '../_worker';
 import { HTTP } from '../../src/http';
-import { MappedResponseCodeHTTPInterceptor } from '../../src/interceptors/response-code-interceptor';
+import {
+    MappedResponseCodeHTTPInterceptor,
+    ResponseCodeAwareHTTPInterceptor,
+} from '../../src/interceptors/response-code-interceptor';
 
 describe('ResponseCodeHTTPInterceptor', () => {
     let http: HTTP | undefined;
@@ -23,7 +26,7 @@ describe('ResponseCodeHTTPInterceptor', () => {
             400: vi.fn(),
             500: vi.fn(),
         };
-        interceptor = new MappedResponseCodeHTTPInterceptor(handlers);
+        interceptor = new MappedResponseCodeHTTPInterceptor(handlers as unknown as ResponseCodeAwareHTTPInterceptor);
         http = new HTTP([interceptor]);
     });
 

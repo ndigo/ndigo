@@ -156,7 +156,10 @@ describe('metadata → SQLite type mapping (DA-1)', () => {
     test('DDL and drizzleTableForEntity agree on every declared type', () => {
         const [ddl] = createTableStatements([TypedColumns]);
         const table = drizzleTableForEntity(TypedColumns);
-        const columns = table[Symbol.for('drizzle:Columns')] as Record<string, { getSQLType(): string }>;
+        const columns = (table as unknown as Record<symbol, unknown>)[Symbol.for('drizzle:Columns')] as Record<
+            string,
+            { getSQLType(): string }
+        >;
 
         for (const [fieldName, storageType] of NON_PK_TYPES) {
             expect(columns[fieldName].getSQLType().toUpperCase()).toBe(storageType);
@@ -265,7 +268,7 @@ describe('Date and non-json column round trips (DAT-F4)', () => {
         expect(found?.occurredAt.toISOString()).toBe(at.toISOString());
         expect(found?.payload).toEqual({ tag: 'x' });
         // BLOB cells return as an ArrayBuffer; the bytes survive verbatim.
-        expect(Array.from(new Uint8Array(found?.bytes as ArrayBuffer))).toEqual([1, 2, 3]);
+        expect(Array.from(new Uint8Array(found?.bytes as unknown as ArrayBuffer))).toEqual([1, 2, 3]);
     });
 });
 

@@ -80,10 +80,10 @@ describe('Emitter', () => {
                 onBar = vi.fn();
 
             emitter = new Emitter({
-                ':on': (event: string, listener: Function) => {
+                ':on': ((event: string, listener: Function) => {
                     events.push(event);
                     listeners.push(listener);
-                },
+                }) as EventListener,
                 foo: [onFoo, onFooToo],
                 bar: onBar,
             });
@@ -195,7 +195,7 @@ describe('Emitter', () => {
             emitter.off('test', onEmitToo);
 
             // A function-only `off(listener)` removes the listener everywhere (`$every`)
-            (emitter as { off(listener: Function): Emitter }).off(onAll);
+            (emitter as unknown as { off(listener: Function): Emitter }).off(onAll);
 
             emitter.off('undefined', onEmit);
 
@@ -215,7 +215,7 @@ describe('Emitter', () => {
             const onEmit = vi.fn();
 
             emitter.on(Emitter.every, onEmit);
-            emitter.on(undefined, onEmit);
+            emitter.on(undefined as unknown as EventType, onEmit);
 
             emitter.emit('foo');
             emitter.emit('bar');
@@ -365,7 +365,7 @@ describe('AsPositionalEventEmitter', () => {
             const listener = vi.fn();
 
             // A function-only `first(listener)` registers for every event (`$every`)
-            (emitter as { first(listener: Function): PositionalEmitter }).first(listener);
+            (emitter as unknown as { first(listener: Function): PositionalEmitter }).first(listener);
             emitter.emit('foo');
             emitter.emit('bar');
 

@@ -149,6 +149,13 @@ export interface SocketClient {
      * @param reason - Human-readable close reason.
      */
     close(code?: number, reason?: string): void;
+    /**
+     * Whether the client reports exact wire sizes through the `onSend`
+     * observer (TEL-08). Telemetry reads this to skip its own payload
+     * estimation for wired clients — counting both would double the byte
+     * metric.
+     */
+    readonly onSendWired: boolean;
 }
 
 const DEFAULT_RECONNECT: ReconnectPolicy = Object.freeze({ baseMs: 1_000, maxMs: 30_000, jitter: 0.2 });
@@ -234,6 +241,11 @@ export class WebSocketClient implements SocketClient {
         // in its listener list forever (M6).
         this.#unsubscribeTrigger = this.#trigger?.onChange(() => this.#retryNow()) ?? null;
         this.#connect();
+    }
+
+    /** Whether the client reports exact wire sizes through `onSend` (TEL-08). */
+    get onSendWired(): boolean {
+        return this.#onSend !== null;
     }
 
     get messages(): AsyncIterable<unknown> {

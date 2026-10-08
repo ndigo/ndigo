@@ -42,7 +42,7 @@ class DemoController {
 
 @configurationProperties('server')
 class ServerConfig {
-    @property('port', Number) port!: number;
+    @property('port', Number as unknown as new () => number) port!: number;
     @property('host') host!: string;
 }
 

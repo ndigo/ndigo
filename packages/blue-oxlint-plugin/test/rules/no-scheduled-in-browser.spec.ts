@@ -10,7 +10,7 @@ const ruleTester = new RuleTester({
     languageOptions: {
         parserOptions: {
             ecmaVersion: 'latest',
-        },
+        } as RuleTester.ParserOptions,
     },
 });
 

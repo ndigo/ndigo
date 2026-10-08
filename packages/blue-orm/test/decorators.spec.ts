@@ -7,7 +7,7 @@ import '@tsmetadata/polyfill';
 
 import {
     column,
-    entity,
+    entity as entityDecorator,
     generated,
     primaryColumn,
     oneToMany,
@@ -18,9 +18,16 @@ import {
     postLoad,
     preUpdate,
     postRemove,
-    transactional,
+    transactional as transactionalDecorator,
 } from '../src/decorators';
 import { getEntityMetadata, isEntity } from '../src/metadata';
+
+// Spec-side type wrappers; runtime-identical to the production decorators.
+const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
+const transactional = transactionalDecorator as unknown as () => (
+    target: Function,
+    context: ClassMethodDecoratorContext
+) => void;
 
 @entity()
 class DefaultEntity {
@@ -367,7 +374,9 @@ describe('decorators', () => {
         }
 
         it('marks method as transactional', () => {
-            const metadata = OrderService[Symbol.metadata];
+            const metadata = (OrderService as unknown as Record<PropertyKey, unknown>)[Symbol.metadata] as
+                | Record<string, unknown>
+                | undefined;
             expect(metadata?.['orm:transactional']).toBe(true);
         });
     });

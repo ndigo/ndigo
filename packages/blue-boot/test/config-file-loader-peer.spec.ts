@@ -11,8 +11,8 @@
  */
 import { describe, test, expect, vi } from 'vitest';
 import { StandardEnvironment } from '@blue/context';
+import type { ConfigFileReader } from '@blue/context';
 import { StandardConfigFileLoader } from '../src/config-file-loader';
-import type { ConfigFileReader } from '../src/config-file-loader';
 
 describe('TOON peer loading (AD-66)', () => {
     const files =

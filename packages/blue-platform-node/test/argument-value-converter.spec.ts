@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
+import { Route } from '@blue/router';
 import {
     identityArgumentValueConverter,
     toNumberValue,
@@ -14,15 +15,26 @@ import {
     createOptionalConverter,
     argumentValueConverters,
     resolveConverter,
+    MethodParameter,
+    MethodParameterType,
+    ArgumentValueConversionContext,
 } from '@blue/dispatcher';
+
+/** Context is never read by the built-in converters under test. */
+const noContext = (): ArgumentValueConversionContext => ({
+    name: 'value',
+    parameter: new MethodParameter(MethodParameterType.QUERY, 'value'),
+    route: {} as unknown as Route,
+    mapping: undefined,
+});
 
 describe('argument-value-converter', () => {
     describe('identityArgumentValueConverter', () => {
         test('should return the value unchanged', () => {
-            expect(identityArgumentValueConverter('test')).toBe('test');
-            expect(identityArgumentValueConverter(123)).toBe(123);
-            expect(identityArgumentValueConverter(null)).toBeNull();
-            expect(identityArgumentValueConverter(undefined)).toBeUndefined();
+            expect(identityArgumentValueConverter('test', noContext())).toBe('test');
+            expect(identityArgumentValueConverter(123, noContext())).toBe(123);
+            expect(identityArgumentValueConverter(null, noContext())).toBeNull();
+            expect(identityArgumentValueConverter(undefined, noContext())).toBeUndefined();
         });
     });
 
@@ -107,7 +119,7 @@ describe('argument-value-converter', () => {
 
         test('should handle special values', () => {
             // Note: new Date(null) returns 1970-01-01, not null
-            expect(toDateValue(null).toString()).toBe(new Date(null).toString());
+            expect(toDateValue(null).toString()).toBe(new Date(null as unknown as number).toString());
             // Note: new Date(undefined) returns Invalid Date, not undefined
             expect(toDateValue(undefined).toString()).toBe('Invalid Date');
         });
@@ -139,27 +151,27 @@ describe('argument-value-converter', () => {
     describe('createStringSplitConverter', () => {
         test('should split strings by delimiter', () => {
             const converter = createStringSplitConverter(',');
-            expect(converter('a,b,c')).toEqual(['a', 'b', 'c']);
-            expect(converter('one;two;three')).toEqual(['one;two;three']); // No match
+            expect(converter('a,b,c', noContext())).toEqual(['a', 'b', 'c']);
+            expect(converter('one;two;three', noContext())).toEqual(['one;two;three']); // No match
         });
 
         test('should handle empty strings', () => {
             const converter = createStringSplitConverter(',');
-            expect(converter('')).toEqual(['']);
+            expect(converter('', noContext())).toEqual(['']);
         });
 
         test('should handle single values', () => {
             const converter = createStringSplitConverter(',');
-            expect(converter('single')).toEqual(['single']);
+            expect(converter('single', noContext())).toEqual(['single']);
         });
     });
 
     describe('createOptionalConverter', () => {
         test('should wrap a converter to make it optional', () => {
             const converter = createOptionalConverter(toNumberValue);
-            expect(converter('42')).toBe(42);
-            expect(converter(null)).toBeNull();
-            expect(converter(undefined)).toBeUndefined();
+            expect(converter('42', noContext())).toBe(42);
+            expect(converter(null, noContext())).toBeNull();
+            expect(converter(undefined, noContext())).toBeUndefined();
         });
     });
 
@@ -175,43 +187,43 @@ describe('argument-value-converter', () => {
         test('should return correct converter functions', () => {
             // The registry stores wrapper functions; verify by behaviour, not reference
             expect(argumentValueConverters.identity).toBe(identityArgumentValueConverter);
-            expect(argumentValueConverters.number('42')).toBe(42);
-            expect(argumentValueConverters.boolean('true')).toBe(true);
-            expect(argumentValueConverters.date('2023-01-01')).toBeInstanceOf(Date);
-            expect(argumentValueConverters.json('{"x":1}')).toEqual({ x: 1 });
+            expect(argumentValueConverters.number('42', noContext())).toBe(42);
+            expect(argumentValueConverters.boolean('true', noContext())).toBe(true);
+            expect(argumentValueConverters.date('2023-01-01', noContext())).toBeInstanceOf(Date);
+            expect(argumentValueConverters.json('{"x":1}', noContext())).toEqual({ x: 1 });
         });
     });
 
     describe('resolveConverter', () => {
         test('should return identity converter when no convertType provided', () => {
             const result = resolveConverter();
-            expect(result('hello')).toBe('hello');
+            expect(result('hello', noContext())).toBe('hello');
         });
 
         test('should resolve type-based converters via ConversionService', () => {
             // Number conversion
             const numberConverter = resolveConverter({ source: String, target: Number });
-            expect(numberConverter('42')).toBe(42);
+            expect(numberConverter('42', noContext())).toBe(42);
 
             // Boolean conversion
             const booleanConverter = resolveConverter({ source: String, target: Boolean });
-            expect(booleanConverter('true')).toBe(true);
-            expect(booleanConverter('false')).toBe(false);
+            expect(booleanConverter('true', noContext())).toBe(true);
+            expect(booleanConverter('false', noContext())).toBe(false);
 
             // Date conversion
             const dateConverter = resolveConverter({ source: String, target: Date });
-            expect(dateConverter('2023-01-01')).toBeInstanceOf(Date);
+            expect(dateConverter('2023-01-01', noContext())).toBeInstanceOf(Date);
 
             // JSON conversion
             const jsonConverter = resolveConverter({ source: String, target: Object });
-            expect(jsonConverter('{"a":1}')).toEqual({ a: 1 });
+            expect(jsonConverter('{"a":1}', noContext())).toEqual({ a: 1 });
         });
 
         test('should handle null/undefined values with optional converters', () => {
             const optionalConverter = createOptionalConverter((value: unknown) => Number(value));
-            expect(optionalConverter(null)).toBeNull();
-            expect(optionalConverter(undefined)).toBeUndefined();
-            expect(optionalConverter('10')).toBe(10);
+            expect(optionalConverter(null, noContext())).toBeNull();
+            expect(optionalConverter(undefined, noContext())).toBeUndefined();
+            expect(optionalConverter('10', noContext())).toBe(10);
         });
     });
 });

@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, it, expect } from 'vitest';
-import { RouteRegistry, deriveKey, getRouteMapping, getRouteMappingMethodKeys } from '../src/route-registry';
+import { RouteRegistry, deriveKey } from '../src/route-registry';
 import { RouteDefinition } from '../src/route-definition';
 
 describe('deriveKey', () => {
@@ -84,7 +84,10 @@ describe('RouteRegistry', () => {
  */
 function routeMapping(route: string | { value: string; name?: string }) {
     const conf = typeof route === 'string' ? { value: route } : route;
-    return function (target: Function, context: ClassDecoratorContext | ClassMethodDecoratorContext): Function | void {
+    return function <T extends Function>(
+        target: T,
+        context: ClassDecoratorContext | ClassMethodDecoratorContext
+    ): T | void {
         if (context.kind === 'class') {
             context.metadata['route:mapping'] = conf;
             return target;

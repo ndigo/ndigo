@@ -7,6 +7,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Enumerable, JSONObject, JSONValue } from '@blue/core';
 import { ContextToken } from '@blue/factory';
+import { ConfigurableEnvironment } from '../src/environment';
 import {
     configuration,
     entry,
@@ -51,7 +52,7 @@ describe('@configuration Decorator', () => {
             }
         }
 
-        const context = new MetadataConfigApplicationContext();
+        const context = new MetadataConfigApplicationContext('test');
         context.register(TestConfig);
         expect(context.getValue('foo')).toBe('foo');
     });
@@ -115,7 +116,7 @@ describe('@profile Decorator', () => {
             }
         }
 
-        const devContext = new MetadataConfigApplicationContext();
+        const devContext = new MetadataConfigApplicationContext('test');
         devContext.environment.activeProfiles = ['dev'];
         devContext.register(TestConfig);
 
@@ -139,14 +140,14 @@ describe('@profile Decorator', () => {
             }
         }
 
-        const devContext = new MetadataConfigApplicationContext();
+        const devContext = new MetadataConfigApplicationContext('test');
         devContext.environment.activeProfiles = ['dev'];
         devContext.register(TestConfig);
 
         expect(devContext.getValue('devOrTest')).toBe('dev-or-test');
         expect(devContext.getValue('prodOnly')).toBeUndefined();
 
-        const prodContext = new MetadataConfigApplicationContext();
+        const prodContext = new MetadataConfigApplicationContext('test');
         prodContext.environment.activeProfiles = ['prod'];
         prodContext.register(TestConfig);
 
@@ -164,7 +165,7 @@ describe('@profile Decorator', () => {
             }
         }
 
-        const context = new MetadataConfigApplicationContext();
+        const context = new MetadataConfigApplicationContext('test');
         context.environment.addDefaultProfile('base');
         context.register(TestConfig);
 
@@ -236,7 +237,7 @@ describe('@property Decorator', () => {
             }
         }
 
-        const context = new MetadataConfigApplicationContext();
+        const context = new MetadataConfigApplicationContext('test');
         context.register(TestConfig);
 
         expect(context.getValue('getFoo')).toBe('bar');
@@ -256,7 +257,7 @@ describe('@property Decorator', () => {
             }
         }
 
-        const context = new MetadataConfigApplicationContext();
+        const context = new MetadataConfigApplicationContext('test');
         context.register(TestConfig);
 
         expect(context.getValue('getItem')).toBe(2);
@@ -274,8 +275,8 @@ describe('@property Decorator', () => {
             }
         }
 
-        const context = new MetadataConfigApplicationContext();
-        context.environment.getPropertySources().addFirst('test', { foo: 'bar' });
+        const context = new MetadataConfigApplicationContext('test');
+        (context.environment as ConfigurableEnvironment).getPropertySources().addFirst('test', { foo: 'bar' });
         context.register(TestConfig);
 
         expect(context.getValue('getFoo')).toBe('bar');
@@ -409,7 +410,7 @@ describe('@entry Decorator', () => {
             }
         }
 
-        const context = new MetadataConfigApplicationContext();
+        const context = new MetadataConfigApplicationContext('test');
         context.register(TestConfig);
 
         expect(context.getValue('foo')).toBe('foo-value');
@@ -429,7 +430,7 @@ describe('@entry Decorator', () => {
             }
         }
 
-        const context = new MetadataConfigApplicationContext();
+        const context = new MetadataConfigApplicationContext('test');
         context.register(TestConfig);
 
         expect(context.getValue('included')).toBe('included');
@@ -455,7 +456,7 @@ describe('Decorator Integration', () => {
             }
         }
 
-        const context = new MetadataConfigApplicationContext();
+        const context = new MetadataConfigApplicationContext('test');
         context.environment.activeProfiles = ['test'];
         context.register(AppConfig);
 
@@ -482,7 +483,7 @@ describe('Decorator Integration', () => {
             }
         }
 
-        const context = new MetadataConfigApplicationContext();
+        const context = new MetadataConfigApplicationContext('test');
         context.environment.activeProfiles = ['dev'];
         context.register(TestConfig);
 

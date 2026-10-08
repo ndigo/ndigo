@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
 import { MediaType, MediaTypes } from '@blue/core';
 import {
     ContentNegotiationManager,
@@ -11,7 +11,15 @@ import {
     AbstractMappingContentNegotiationStrategy,
     FixedContentNegotiationStrategy,
     StringTemplateView,
+    ViewTarget,
 } from '@blue/view';
+
+// StringTemplateView._renderTemplate is protected; expose a structural view of
+// it so the specs can drive the render pipeline without widening the public API
+// (same pattern as the webcomponent specs' ExposedView).
+interface ExposedStringTemplate {
+    _renderTemplate(templateModel: unknown, request: unknown, target?: ViewTarget): void | Promise<void>;
+}
 
 describe('ContentNegotiationManager', () => {
     let manager: ContentNegotiationManager;
@@ -220,14 +228,22 @@ describe('StringTemplateView', () => {
 
     it('renders template with variable substitution', async () => {
         class TestTarget {
-            commit: ReturnType<typeof vi.fn>;
+            commit: Mock<ViewTarget['commit']>;
             constructor() {
                 this.commit = vi.fn();
+            }
+
+            prepare(): void {
+                // do nothing
+            }
+
+            clear(): void {
+                // do nothing
             }
         }
 
         const target = new TestTarget();
-        const view = new StringTemplateView('/test');
+        const view = new StringTemplateView('/test') as unknown as StringTemplateView & ExposedStringTemplate;
         view.template = TEMPLATE;
         await view._renderTemplate({ name: 'World' }, {}, target);
 
@@ -236,14 +252,22 @@ describe('StringTemplateView', () => {
 
     it('renders template with nested property access', async () => {
         class TestTarget {
-            commit: ReturnType<typeof vi.fn>;
+            commit: Mock<ViewTarget['commit']>;
             constructor() {
                 this.commit = vi.fn();
+            }
+
+            prepare(): void {
+                // do nothing
+            }
+
+            clear(): void {
+                // do nothing
             }
         }
 
         const target = new TestTarget();
-        const view = new StringTemplateView('/test');
+        const view = new StringTemplateView('/test') as unknown as StringTemplateView & ExposedStringTemplate;
         view.template = TEMPLATE;
         await view._renderTemplate({ user: { name: 'Alice' } }, {}, target);
 
@@ -252,14 +276,22 @@ describe('StringTemplateView', () => {
 
     it('renders template with array access', async () => {
         class TestTarget {
-            commit: ReturnType<typeof vi.fn>;
+            commit: Mock<ViewTarget['commit']>;
             constructor() {
                 this.commit = vi.fn();
+            }
+
+            prepare(): void {
+                // do nothing
+            }
+
+            clear(): void {
+                // do nothing
             }
         }
 
         const target = new TestTarget();
-        const view = new StringTemplateView('/test');
+        const view = new StringTemplateView('/test') as unknown as StringTemplateView & ExposedStringTemplate;
         view.template = TEMPLATE;
         await view._renderTemplate({ items: ['a', 'b', 'c'] }, {}, target);
 
@@ -267,7 +299,7 @@ describe('StringTemplateView', () => {
     });
 
     it('renders template without target throws error', async () => {
-        const view = new StringTemplateView('/test');
+        const view = new StringTemplateView('/test') as unknown as StringTemplateView & ExposedStringTemplate;
         view.template = TEMPLATE;
         await expect(view._renderTemplate({}, {})).rejects.toThrow();
     });

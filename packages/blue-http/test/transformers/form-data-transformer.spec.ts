@@ -9,6 +9,7 @@ import { FormDataTransformer, TransformContext } from '../../src/transformers';
 const context: TransformContext = {
     url: 'http://localhost/test',
     headers: new Headers(),
+    mediaType: null,
     direction: 'request',
 };
 

@@ -92,9 +92,9 @@ describe('Zod Validation Integration', () => {
 
         // Zod's z.coerce.number() handles string-to-number conversion
         expect(capturedUser).toBeDefined();
-        const captured = capturedUser ?? null;
-        expect(captured?.name).toBe('Jeff');
-        expect(captured?.age).toBe(30); // coerced from '30' — proves validatedBy's convert ran
+        const captured: User | null = capturedUser ?? null;
+        expect((captured as unknown as User).name).toBe('Jeff');
+        expect((captured as unknown as User).age).toBe(30); // coerced from '30' — proves validatedBy's convert ran
         // Note: z.coerce.number() conversion depends on Zod schema validation being applied
     });
 

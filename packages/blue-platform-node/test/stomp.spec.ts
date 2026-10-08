@@ -20,7 +20,7 @@ import {
     socketSessionValue,
     type SocketSession,
 } from '@blue/dispatcher';
-import { StompBroker, parseStompFrame, serializeStompFrame, type StompFrame } from '@blue/socket';
+import { StompBroker, parseStompFrame, serializeStompFrame, type StompFrame, type StompBody } from '@blue/socket';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -28,7 +28,7 @@ import { HTTPServer } from '../src/http-server';
 import { WebSocket } from 'ws';
 
 /** Wire helper: serialize a STOMP frame for `ws.send`. */
-const frame = (command: string, headers: Record<string, string> = {}, body = ''): string =>
+const frame = (command: string, headers: Record<string, string> = {}, body = ''): StompBody =>
     serializeStompFrame({ command, headers, body });
 
 /** Await one WS message and parse it as a STOMP frame (text or binary). */

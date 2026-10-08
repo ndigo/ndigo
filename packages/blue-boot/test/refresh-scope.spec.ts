@@ -14,26 +14,26 @@ import type { ConfigurableEnvironment } from '@blue/context';
 @configurationProperties('server')
 @refreshScope
 class RefreshableServerConfig {
-    @property('port', Number) @defaultValue('8080') port!: number;
-    @property('host', String) @defaultValue('localhost') host!: string;
+    @property('port', Number as unknown as new (...args: never[]) => number) @defaultValue('8080') port!: number;
+    @property('host', String as unknown as new (...args: never[]) => string) @defaultValue('localhost') host!: string;
 }
 
 @configurationProperties('plain')
 class PlainServerConfig {
-    @property('port', Number) @defaultValue('7000') port!: number;
+    @property('port', Number as unknown as new (...args: never[]) => number) @defaultValue('7000') port!: number;
 }
 
 @configurationProperties('first')
 @refreshScope
 class FirstRefreshableConfig {
-    @property('port', Number) @defaultValue('1111') port!: number;
+    @property('port', Number as unknown as new (...args: never[]) => number) @defaultValue('1111') port!: number;
 }
 
 @configurationProperties('second')
 @refreshScope
 class SecondRefreshableConfig {
     // No default: a refresh that drops `second.port` makes the rebind throw.
-    @property('port', Number) port!: number;
+    @property('port', Number as unknown as new (...args: never[]) => number) port!: number;
 }
 
 /** Refresh-scoped config that records its own teardown across rebinds (CTX-13). */
@@ -43,7 +43,7 @@ class DestroyCountingConfig {
     /** Test probe: how many previous instances were destroyed. */
     static destroyedInstances = 0;
 
-    @property('port', Number) @defaultValue('8080') port!: number;
+    @property('port', Number as unknown as new (...args: never[]) => number) @defaultValue('8080') port!: number;
     destroyed = false;
 
     destroy(): void {

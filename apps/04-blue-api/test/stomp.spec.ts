@@ -22,7 +22,7 @@ import type { ApplicationContext } from '@blue/context';
 import { ApplicationBuilder } from '@blue/boot';
 import { ManagementAutoConfiguration } from '@blue/management';
 import { NodeAutoConfiguration, HTTPServer } from '@blue/platform-node';
-import { WebSocketClient, StompClient, type StompSubscription } from '@blue/socket';
+import { WebSocketClient, StompClient, type StompSubscription, bodyAsText } from '@blue/socket';
 import { WebSocket } from 'ws';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { ServerConfig } from '../src/server-config';
@@ -38,7 +38,7 @@ function collect(sub: StompSubscription): { bodies: string[]; done: Promise<void
     const bodies: string[] = [];
     const done = (async () => {
         for await (const message of sub.messages) {
-            bodies.push(message.body);
+            bodies.push(bodyAsText(message.body));
         }
     })();
     return { bodies, done };

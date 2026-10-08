@@ -5,7 +5,9 @@
  */
 import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
-import { type Route } from '@blue/router';
+import { type Route, type RouteSegment } from '@blue/router';
+import RouteHandlerExecutionChain from '../src/route-handler-execution-chain';
+import { RouteHandlerMethod } from '../src/route-handler-method';
 import { routeMapping } from '../src/route-mapping';
 import { canonicalizeRouteMappingPath, RadixMetadataHandlerMapping } from '../src/radix-metadata-handler-mapping';
 import { HTTPMethodCondition } from '../src/http-method-condition';
@@ -15,6 +17,10 @@ import {
     QueryParamCondition,
     RouteMappingInfo,
 } from '../src/route-mapping-info';
+
+/** Resolve a matched route's handler as the {@link RouteHandlerMethod} the mapping registered. */
+const handlerOf = (chain: RouteHandlerExecutionChain | null): RouteHandlerMethod =>
+    (chain as NonNullable<typeof chain>).handler as RouteHandlerMethod;
 
 describe('RadixMetadataHandlerMapping', () => {
     let ctx: GenericApplicationContext;
@@ -44,7 +50,7 @@ describe('RadixMetadataHandlerMapping', () => {
 
         const chain = mapping.getHandler({ path: '/hello/world' } as unknown as Route);
         expect(chain).not.toBeNull();
-        expect(chain.handler.method).toBe('world');
+        expect(handlerOf(chain).method).toBe('world');
     });
 
     test('base-class-declared route resolves on a bare subclass', () => {
@@ -66,7 +72,7 @@ describe('RadixMetadataHandlerMapping', () => {
 
         const chain = mapping.getHandler({ path: '/hello/world' } as unknown as Route);
         expect(chain).not.toBeNull();
-        expect(chain.handler.method).toBe('world');
+        expect(handlerOf(chain).method).toBe('world');
     });
 
     test('parameterized route :id resolves handler', () => {
@@ -214,12 +220,12 @@ describe('RadixMetadataHandlerMapping', () => {
         // Test users controller
         let chain = mapping.getHandler({ path: '/users/1' } as unknown as Route);
         expect(chain).not.toBeNull();
-        expect(chain.handler.method).toBe('getUser');
+        expect(handlerOf(chain).method).toBe('getUser');
 
         // Test posts controller
         chain = mapping.getHandler({ path: '/posts/2' } as unknown as Route);
         expect(chain).not.toBeNull();
-        expect(chain.handler.method).toBe('getPost');
+        expect(handlerOf(chain).method).toBe('getPost');
     });
 
     describe('normalized duplicate registrations (DSV-DISP-2/3)', () => {
@@ -233,14 +239,14 @@ describe('RadixMetadataHandlerMapping', () => {
         test('`/dup/:id` and `/dup/{id}` both stay reachable', () => {
             @routeMapping('/dup')
             class ColonController {
-                @routeMapping({ value: '/:id', queryParams: 'which=colon' })
+                @routeMapping({ value: '/:id', queryParams: 'which=colon', private: false })
                 colon() {
                     return 'colon';
                 }
             }
             @routeMapping('/dup')
             class BraceController {
-                @routeMapping({ value: '/{id}', queryParams: 'which=brace' })
+                @routeMapping({ value: '/{id}', queryParams: 'which=brace', private: false })
                 brace() {
                     return 'brace';
                 }
@@ -253,21 +259,21 @@ describe('RadixMetadataHandlerMapping', () => {
             mapping.setApplicationContext(ctx);
             mapping.init();
 
-            expect(get(mapping, '/dup/42', 'colon')?.handler.method).toBe('colon');
-            expect(get(mapping, '/dup/42', 'brace')?.handler.method).toBe('brace');
+            expect(handlerOf(get(mapping, '/dup/42', 'colon')).method).toBe('colon');
+            expect(handlerOf(get(mapping, '/dup/42', 'brace')).method).toBe('brace');
         });
 
         test('`/dup/:id` and `/dup/:id/` both stay reachable', () => {
             @routeMapping('/dup')
             class NoSlashController {
-                @routeMapping({ value: '/:id', queryParams: 'which=no-slash' })
+                @routeMapping({ value: '/:id', queryParams: 'which=no-slash', private: false })
                 noSlash() {
                     return 'no-slash';
                 }
             }
             @routeMapping('/dup')
             class SlashController {
-                @routeMapping({ value: '/:id/', queryParams: 'which=slash' })
+                @routeMapping({ value: '/:id/', queryParams: 'which=slash', private: false })
                 slash() {
                     return 'slash';
                 }
@@ -280,8 +286,8 @@ describe('RadixMetadataHandlerMapping', () => {
             mapping.setApplicationContext(ctx);
             mapping.init();
 
-            expect(get(mapping, '/dup/42', 'no-slash')?.handler.method).toBe('noSlash');
-            expect(get(mapping, '/dup/42', 'slash')?.handler.method).toBe('slash');
+            expect(handlerOf(get(mapping, '/dup/42', 'no-slash')).method).toBe('noSlash');
+            expect(handlerOf(get(mapping, '/dup/42', 'slash')).method).toBe('slash');
         });
     });
 
@@ -289,7 +295,7 @@ describe('RadixMetadataHandlerMapping', () => {
         test('handler selected when queryParams condition matches query string', () => {
             @routeMapping('/items')
             class ItemsController {
-                @routeMapping({ value: '/:id', queryParams: 'filter=active' })
+                @routeMapping({ value: '/:id', queryParams: 'filter=active', private: false })
                 getItem() {
                     return 'item';
                 }
@@ -303,14 +309,14 @@ describe('RadixMetadataHandlerMapping', () => {
             mapping.init();
 
             const route = { path: '/items/1', data: { filter: 'active' }, length: 0 };
-            const chain = mapping.getHandler(route);
+            const chain = mapping.getHandler(route as unknown as Route);
             expect(chain).not.toBeNull();
         });
 
         test('handler rejected when queryParams condition does not match', () => {
             @routeMapping('/items')
             class ItemsController {
-                @routeMapping({ value: '/:id', queryParams: 'filter=active' })
+                @routeMapping({ value: '/:id', queryParams: 'filter=active', private: false })
                 getItem() {
                     return 'item';
                 }
@@ -324,14 +330,14 @@ describe('RadixMetadataHandlerMapping', () => {
             mapping.init();
 
             const route = { path: '/items/1', data: { filter: 'inactive' }, length: 0 };
-            const chain = mapping.getHandler(route);
+            const chain = mapping.getHandler(route as unknown as Route);
             expect(chain).toBeNull();
         });
 
         test('handler selected when matrixParams condition matches segment data', () => {
             @routeMapping('/products')
             class ProductsController {
-                @routeMapping({ value: '/:id', matrixParams: 'color=red' })
+                @routeMapping({ value: '/:id', matrixParams: 'color=red', private: false })
                 getProduct() {
                     return 'product';
                 }
@@ -345,15 +351,15 @@ describe('RadixMetadataHandlerMapping', () => {
             mapping.init();
 
             const route: Route = { path: '/products/42', length: 1, data: {}, queryParams: null } as unknown as Route;
-            route[0] = { data: { color: 'red' } };
-            const chain = mapping.getHandler(route);
+            route[0] = { data: { color: 'red' } } as unknown as RouteSegment;
+            const chain = mapping.getHandler(route as unknown as Route);
             expect(chain).not.toBeNull();
         });
 
         test('handler rejected when matrixParams condition does not match', () => {
             @routeMapping('/products')
             class ProductsController {
-                @routeMapping({ value: '/:id', matrixParams: 'color=red' })
+                @routeMapping({ value: '/:id', matrixParams: 'color=red', private: false })
                 getProduct() {
                     return 'product';
                 }
@@ -367,15 +373,15 @@ describe('RadixMetadataHandlerMapping', () => {
             mapping.init();
 
             const route: Route = { path: '/products/42', length: 1, data: {}, queryParams: null } as unknown as Route;
-            route[0] = { data: { color: 'blue' } };
-            const chain = mapping.getHandler(route);
+            route[0] = { data: { color: 'blue' } } as unknown as RouteSegment;
+            const chain = mapping.getHandler(route as unknown as Route);
             expect(chain).toBeNull();
         });
 
         test('handler selected when queryParams condition matches query string', () => {
             @routeMapping('/items')
             class ItemsController {
-                @routeMapping({ value: '/*', queryParams: 'filter=active' })
+                @routeMapping({ value: '/*', queryParams: 'filter=active', private: false })
                 getItem() {
                     return 'item';
                 }
@@ -389,14 +395,14 @@ describe('RadixMetadataHandlerMapping', () => {
             mapping.init();
 
             const route = { path: '/items/1', data: { filter: 'active' }, length: 0 };
-            const chain = mapping.getHandler(route);
+            const chain = mapping.getHandler(route as unknown as Route);
             expect(chain).not.toBeNull();
         });
 
         test('handler rejected when queryParams condition does not match', () => {
             @routeMapping('/items')
             class ItemsController {
-                @routeMapping({ value: '/*', queryParams: 'filter=active' })
+                @routeMapping({ value: '/*', queryParams: 'filter=active', private: false })
                 getItem() {
                     return 'item';
                 }
@@ -410,14 +416,14 @@ describe('RadixMetadataHandlerMapping', () => {
             mapping.init();
 
             const route = { path: '/items/1', data: { filter: 'inactive' }, length: 0 };
-            const chain = mapping.getHandler(route);
+            const chain = mapping.getHandler(route as unknown as Route);
             expect(chain).toBeNull();
         });
 
         test('handler selected when matrixParams condition matches segment data', () => {
             @routeMapping('/products')
             class ProductsController {
-                @routeMapping({ value: '/*', matrixParams: 'color=red' })
+                @routeMapping({ value: '/*', matrixParams: 'color=red', private: false })
                 getProduct() {
                     return 'product';
                 }
@@ -431,15 +437,15 @@ describe('RadixMetadataHandlerMapping', () => {
             mapping.init();
 
             const route: Route = { path: '/products/42', length: 1, data: {}, queryParams: null } as unknown as Route;
-            route[0] = { data: { color: 'red' } };
-            const chain = mapping.getHandler(route);
+            route[0] = { data: { color: 'red' } } as unknown as RouteSegment;
+            const chain = mapping.getHandler(route as unknown as Route);
             expect(chain).not.toBeNull();
         });
 
         test('handler rejected when matrixParams condition does not match', () => {
             @routeMapping('/products')
             class ProductsController {
-                @routeMapping({ value: '/*', matrixParams: 'color=red' })
+                @routeMapping({ value: '/*', matrixParams: 'color=red', private: false })
                 getProduct() {
                     return 'product';
                 }
@@ -453,15 +459,15 @@ describe('RadixMetadataHandlerMapping', () => {
             mapping.init();
 
             const route: Route = { path: '/products/42', length: 1, data: {}, queryParams: null } as unknown as Route;
-            route[0] = { data: { color: 'blue' } };
-            const chain = mapping.getHandler(route);
+            route[0] = { data: { color: 'blue' } } as unknown as RouteSegment;
+            const chain = mapping.getHandler(route as unknown as Route);
             expect(chain).toBeNull();
         });
 
         test('Radix: more-specific handler (matrixParams) wins when condition matches', () => {
             @routeMapping('/products')
             class ProductsController {
-                @routeMapping({ value: '/:id', matrixParams: 'color' })
+                @routeMapping({ value: '/:id', matrixParams: 'color', private: false })
                 getProductColored() {
                     return 'colored';
                 }
@@ -480,16 +486,16 @@ describe('RadixMetadataHandlerMapping', () => {
             mapping.init();
 
             const route: Route = { path: '/products/42', length: 1, data: {}, queryParams: null } as unknown as Route;
-            route[0] = { data: { color: 'red' } };
-            const chain = mapping.getHandler(route);
+            route[0] = { data: { color: 'red' } } as unknown as RouteSegment;
+            const chain = mapping.getHandler(route as unknown as Route);
             expect(chain).not.toBeNull();
-            expect(chain.handler.method).toBe('getProductColored');
+            expect(handlerOf(chain).method).toBe('getProductColored');
         });
 
         test('Radix: fallback handler wins when specific condition does not match', () => {
             @routeMapping('/products')
             class ProductsController {
-                @routeMapping({ value: '/:id', matrixParams: 'color' })
+                @routeMapping({ value: '/:id', matrixParams: 'color', private: false })
                 getProductColored() {
                     return 'colored';
                 }
@@ -509,9 +515,9 @@ describe('RadixMetadataHandlerMapping', () => {
 
             // No matrix segments — the color condition should fail, fallback wins
             const route: Route = { path: '/products/42', length: 0, data: {}, queryParams: null } as unknown as Route;
-            const chain = mapping.getHandler(route);
+            const chain = mapping.getHandler(route as unknown as Route);
             expect(chain).not.toBeNull();
-            expect(chain.handler.method).toBe('getProduct');
+            expect(handlerOf(chain).method).toBe('getProduct');
         });
     });
 });
@@ -571,8 +577,10 @@ describe('canonicalizeRouteMappingPath (REU-3)', () => {
 
             spellings.forEach((_spelling, index) => {
                 const route = { path, data: { which: String(index) }, length: 0 } as unknown as Route;
-                const chain = mapping.getHandler(route);
-                expect(chain?.handler.handler).toBe(handlers[index]);
+                const chain = mapping.getHandler(route as unknown as Route);
+                // The radix mapping wraps each registered handler in a RouteHandlerMethod.
+                const mappedHandler = chain?.handler as RouteHandlerMethod | undefined;
+                expect(mappedHandler?.handler).toBe(handlers[index]);
             });
         }
     });

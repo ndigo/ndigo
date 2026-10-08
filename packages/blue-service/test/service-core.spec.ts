@@ -48,7 +48,7 @@ describe('EventEmitterTelemetryHooks', () => {
 
     test('should emit service:request:start on onRequest', () => {
         let eventData: unknown;
-        emitter.on('service:request:start', (data) => {
+        emitter.on('service:request:start', (data: unknown) => {
             eventData = data;
         });
 
@@ -60,7 +60,7 @@ describe('EventEmitterTelemetryHooks', () => {
 
     test('should emit service:request:end on onResponse', () => {
         let eventData: unknown;
-        emitter.on('service:request:end', (data) => {
+        emitter.on('service:request:end', (data: unknown) => {
             eventData = data;
         });
 
@@ -73,7 +73,7 @@ describe('EventEmitterTelemetryHooks', () => {
 
     test('should emit service:request:error on onError', () => {
         let eventData: unknown;
-        emitter.on('service:request:error', (data) => {
+        emitter.on('service:request:error', (data: unknown) => {
             eventData = data;
         });
 

@@ -16,6 +16,9 @@ import { AbstractBaseInstrumentation, createLazyCounter } from '@blue/telemetry'
  * Status/reconnect metrics are **not** patchable (the client's status
  * signal lives on app-constructed instances) — wire
  * {@link countSocketClientStatus} into the `onStatusChange` option instead.
+ * Outbound bytes are exact the same way: wire {@link countSocketClientBytes}
+ * into `onSend` and this instrumentation's `send` wrap skips its own
+ * estimation for that client (TEL-08).
  *
  * @example
  * ```ts
@@ -23,6 +26,7 @@ import { AbstractBaseInstrumentation, createLazyCounter } from '@blue/telemetry'
  * // for the shared instrumentations (or wrap the client directly):
  * new WebSocketClient(url, {
  *     onStatusChange: countSocketClientStatus(),
+ *     onSend: countSocketClientBytes(),
  * });
  * ```
  */
@@ -49,19 +53,16 @@ export class WebSocketClientInstrumentation extends AbstractBaseInstrumentation 
         const counter = createLazyCounter();
 
         this._wrap(WebSocketClient.prototype, 'send', (original) => {
-            // Defensive optional seam: a client that reports the exact wire
-            // size it wrote (today the WHATWG `send` returns void) lets the
-            // byte counter skip re-serializing object payloads with a second
-            // `JSON.stringify`. Until such a seam exists, fall back to
-            // measuring the payload here (TEL-08 residual: the hook lives in
-            // `@blue/socket`, outside this package).
             const send = original as unknown as (this: unknown, data: unknown) => unknown;
             return function (this: unknown, data: unknown): void {
-                const written = send.apply(this, [data]);
+                send.apply(this, [data]);
                 counter('blue.socket.client.messages.sent');
-                const bytes = typeof written === 'number' && Number.isFinite(written) ? written : payloadBytes(data);
-                counter('blue.socket.client.messages.bytes', undefined, bytes);
-                return written as void;
+                // Exact wire sizes flow through the client's `onSend` seam
+                // (`countSocketClientBytes`); estimating the payload here as
+                // well would double-count the bytes that seam reports
+                // (TEL-08). Unwired clients keep the v2 fallback estimate.
+                if ((this as WebSocketClient).onSendWired) return;
+                counter('blue.socket.client.messages.bytes', undefined, payloadBytes(data));
             };
         });
 
@@ -132,6 +133,31 @@ export function countSocketClientStatus(): (status: SocketStatus) => void {
     };
     return (status: SocketStatus): void => {
         counter(NAME[status], { 'socket.status': status });
+    };
+}
+
+/**
+ * Exact outbound-byte wiring for a `WebSocketClient` — use as the client's
+ * `onSend` option (constructor-injected; the client reports the actual bytes
+ * written to the transport, buffered flushes and retried writes included):
+ *
+ * ```ts
+ * const chat = new WebSocketClient(url, { onSend: countSocketClientBytes() });
+ * ```
+ *
+ * While wired, {@link WebSocketClientInstrumentation}'s `send` wrap skips its
+ * own payload estimation for that client (TEL-08), so `blue.socket.client
+ * .messages.bytes` counts each wire write exactly once — no re-serialized
+ * estimation, no double count.
+ *
+ * @returns An `onSend` observer feeding `blue.socket.client.messages.bytes`.
+ */
+export function countSocketClientBytes(): (bytes: number) => void {
+    // Lazy counter (shared helper) — same rationale as the status factory:
+    // instruments resolve on first observation, after SDK init.
+    const counter = createLazyCounter();
+    return (bytes: number): void => {
+        counter('blue.socket.client.messages.bytes', undefined, bytes);
     };
 }
 

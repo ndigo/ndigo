@@ -53,8 +53,8 @@ describe('baseSchemaForType', () => {
 
     test('maps text family to strings', () => {
         for (const type of ['varchar', 'TEXT', 'string', 'char']) {
-            expect(baseSchemaForType(type).safeParse('hello').success).toBe(true, type);
-            expect(baseSchemaForType(type).safeParse(42).success).toBe(false, type);
+            expect(baseSchemaForType(type).safeParse('hello').success, type).toBe(true);
+            expect(baseSchemaForType(type).safeParse(42).success, type).toBe(false);
         }
     });
 

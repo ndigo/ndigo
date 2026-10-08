@@ -10,7 +10,7 @@ import type { ServerResponse } from 'node:http';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { getMapping, requestMapping, ModelAndView } from '@blue/dispatcher';
 import type { Route } from '@blue/router';
-import { MediaTypes } from '@blue/core';
+import { MediaTypes, MediaType } from '@blue/core';
 import { NotAcceptableError, View, ViewTarget } from '@blue/view';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
@@ -29,6 +29,7 @@ import { NODE_RESPONSE_ATTRIBUTE } from '../src/node-request';
 /** A view whose `render` throws — optionally after flushing headers. */
 class ThrowingView implements View {
     readonly #afterHeaders: boolean;
+    mediaType: MediaType | null = null;
 
     constructor(afterHeaders: boolean) {
         this.#afterHeaders = afterHeaders;

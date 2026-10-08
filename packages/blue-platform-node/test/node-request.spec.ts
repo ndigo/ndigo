@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
+import type { Route } from '@blue/router';
 import { NODE_REQUEST_ATTRIBUTE, NodeRequest, getNodeRequest } from '../src/node-request';
 
 describe('node-request', () => {
@@ -31,7 +32,7 @@ describe('node-request', () => {
 
     describe('getNodeRequest', () => {
         test('should return undefined when route has no attributes', () => {
-            const route = { data: {}, params: {} };
+            const route = { data: {}, params: {} } as unknown as Route;
             expect(getNodeRequest(route)).toBeUndefined();
         });
 
@@ -40,7 +41,7 @@ describe('node-request', () => {
                 data: {},
                 params: {},
                 attributes: { someOtherAttribute: 'value' },
-            };
+            } as unknown as Route;
             expect(getNodeRequest(route)).toBeUndefined();
         });
 
@@ -56,7 +57,7 @@ describe('node-request', () => {
                 data: {},
                 params: {},
                 attributes: { [NODE_REQUEST_ATTRIBUTE]: mockRequest },
-            };
+            } as unknown as Route;
 
             expect(getNodeRequest(route)).toBe(mockRequest);
         });
@@ -67,7 +68,7 @@ describe('node-request', () => {
                 data: {},
                 params: {},
                 attributes: { [NODE_REQUEST_ATTRIBUTE]: 'not-a-request' },
-            };
+            } as unknown as Route;
 
             // getNodeRequest only does a type assertion, so it will return the value as-is
             // but since we're checking for undefined, we need to make sure it's not returning the string

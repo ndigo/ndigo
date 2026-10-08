@@ -40,7 +40,7 @@ describe('OfflineInterceptor', () => {
         const offlineHandler = offlineCall[1];
 
         let emittedEvent: unknown = null;
-        emitter.on('offline', (data) => {
+        emitter.on('offline', (data: unknown) => {
             emittedEvent = data;
         });
 
@@ -78,7 +78,7 @@ describe('OfflineInterceptor', () => {
         const interceptor = new OfflineInterceptor({ checkInterval: 1000 }, emitter);
 
         let emittedEvent: unknown = null;
-        emitter.on('offline', (data) => {
+        emitter.on('offline', (data: unknown) => {
             emittedEvent = data;
         });
 

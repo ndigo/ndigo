@@ -13,8 +13,10 @@ import { property, defaultValue, configuration, SecretCipher, REDACTED_VALUE } f
 
 @configurationProperties('db')
 class DbConfig {
-    @property('password', String) @defaultValue('none') password!: string;
-    @property('user', String) @defaultValue('app') user!: string;
+    @property('password', String as unknown as new (...args: never[]) => string)
+    @defaultValue('none')
+    password!: string;
+    @property('user', String as unknown as new (...args: never[]) => string) @defaultValue('app') user!: string;
 }
 
 /** Minimal AES-GCM-free fake that round-trips through the real wire format. */
@@ -122,7 +124,7 @@ describe('builder.secrets (AD-29 Wave 2)', () => {
     test('CF-2: conversion failure never echoes the decrypted plaintext in the bind message', async () => {
         @configurationProperties('dbnum')
         class SecretNumberConfig {
-            @property('token', Number) token!: number;
+            @property('token', Number as unknown as new (...args: never[]) => number) token!: number;
         }
         const cipher = fakeCipher();
         const marker = cipher.encrypt('super-secret-hunter2', 'dbnum.token');
@@ -214,7 +216,7 @@ describe('secret redaction invariant (CTX-02/CTX-03)', () => {
     test('CTX-03: Boolean conversion failure never echoes the decrypted plaintext', async () => {
         @configurationProperties('secbool')
         class SecBoolConfig {
-            @property('enabled', Boolean) enabled!: boolean;
+            @property('enabled', Boolean as unknown as new (...args: never[]) => boolean) enabled!: boolean;
         }
         const cipher = fakeCipher();
         const marker = cipher.encrypt('super-secret-hunter2', 'secbool.enabled');

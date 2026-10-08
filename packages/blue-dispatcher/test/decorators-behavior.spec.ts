@@ -38,8 +38,8 @@ describe('Dispatcher Decorators - Behavioral Tests', () => {
                 class UserController {}
 
                 const mapping = getRouteMapping(UserController);
-                expect(mapping.value).toBe('/users');
-                expect(mapping.private).toBe(false);
+                expect(mapping?.value).toBe('/users');
+                expect(mapping?.private).toBe(false);
             });
 
             it('should accept configuration object', () => {
@@ -47,9 +47,9 @@ describe('Dispatcher Decorators - Behavioral Tests', () => {
                 class AdminController {}
 
                 const mapping = getRouteMapping(AdminController);
-                expect(mapping.value).toBe('/admin');
-                expect(mapping.private).toBe(true);
-                expect(mapping.name).toBe('admin');
+                expect(mapping?.value).toBe('/admin');
+                expect(mapping?.private).toBe(true);
+                expect(mapping?.name).toBe('admin');
             });
 
             it('should use default mapping when no argument provided', () => {
@@ -57,8 +57,8 @@ describe('Dispatcher Decorators - Behavioral Tests', () => {
                 class DefaultController {}
 
                 const mapping = getRouteMapping(DefaultController);
-                expect(mapping.value).toBe('/**');
-                expect(mapping.private).toBe(false);
+                expect(mapping?.value).toBe('/**');
+                expect(mapping?.private).toBe(false);
             });
         });
 
@@ -100,8 +100,8 @@ describe('Dispatcher Decorators - Behavioral Tests', () => {
                 const classMapping = getRouteMapping(TestController);
                 const methodMapping = getRouteMapping(TestController.prototype, 'getUsers');
 
-                expect(classMapping.value).toBe('/api');
-                expect(methodMapping.value).toBe('/users');
+                expect(classMapping?.value).toBe('/api');
+                expect(methodMapping?.value).toBe('/users');
             });
         });
 
@@ -111,7 +111,7 @@ describe('Dispatcher Decorators - Behavioral Tests', () => {
                 class PublicController {}
 
                 const mapping = getRouteMapping(PublicController);
-                expect(mapping.private).toBe(false);
+                expect(mapping?.private).toBe(false);
             });
 
             it('privateMapping should set private: true', () => {
@@ -119,7 +119,7 @@ describe('Dispatcher Decorators - Behavioral Tests', () => {
                 class PrivateController {}
 
                 const mapping = getRouteMapping(PrivateController);
-                expect(mapping.private).toBe(true);
+                expect(mapping?.private).toBe(true);
             });
         });
     });

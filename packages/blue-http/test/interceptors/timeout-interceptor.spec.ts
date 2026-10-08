@@ -99,7 +99,7 @@ describe('TimeoutInterceptor', () => {
         const result = await failing.request('http://localhost/dns-failure');
         expect(result).toBeInstanceOf(ResponseError);
         expect(result.status).not.toBe(408);
-        expect(result.message).toBe('fetch failed');
+        expect((result as ResponseError).message).toBe('fetch failed');
     });
 
     test('it should allow [Timeout, Retry] to retry after a timeout (COR-6)', async () => {
@@ -225,7 +225,7 @@ describe('TimeoutInterceptor', () => {
 
         expect(result).toBeInstanceOf(ResponseError);
         expect(result.status).not.toBe(408);
-        expect(result.message).toContain('caller cancelled');
+        expect((result as ResponseError).message).toContain('caller cancelled');
     });
 
     test('it aborts in-flight requests when the caller aborts (HT-5)', async () => {
@@ -252,7 +252,7 @@ describe('TimeoutInterceptor', () => {
 
         expect(result).toBeInstanceOf(ResponseError);
         expect(result.status).not.toBe(408);
-        expect(result.message).toContain('caller cancelled later');
+        expect((result as ResponseError).message).toContain('caller cancelled later');
     });
 
     test('it still yields 408 when the caller signal never aborts (HT-5)', async () => {

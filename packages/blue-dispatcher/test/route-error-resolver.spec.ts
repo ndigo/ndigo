@@ -116,7 +116,7 @@ describe('SimpleMappingErrorResolver', () => {
                 new SyntaxError()
             );
             expect(mav).toHaveProperty('viewName');
-            expect(mav.viewName).toBe('syntaxError');
+            expect(mav?.viewName).toBe('syntaxError');
 
             mav = errorResolver.resolveError(
                 { path: '/bad/syntax' } as unknown as Route,
@@ -124,11 +124,11 @@ describe('SimpleMappingErrorResolver', () => {
                 new ReferenceError()
             );
             expect(mav).toHaveProperty('viewName');
-            expect(mav.viewName).toBe('referenceError');
+            expect(mav?.viewName).toBe('referenceError');
 
             mav = errorResolver.resolveError({ path: '/foo' } as unknown as Route, new TestHandler(), new Error());
             expect(mav).toHaveProperty('viewName');
-            expect(mav.viewName).toBe('defaultError');
+            expect(mav?.viewName).toBe('defaultError');
         });
     });
 });

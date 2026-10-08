@@ -33,7 +33,7 @@ describe('AppResetInterceptor', () => {
 
         // No NotOKInterceptor in chain — 200 is returned as a plain Response
         expect(response).toBeInstanceOf(Response);
-        expect(response.status).toBe(200);
+        expect((response as Response).status).toBe(200);
         expect(mockReload).not.toHaveBeenCalled();
     });
 
@@ -61,7 +61,7 @@ describe('AppResetInterceptor', () => {
 
         // No NotOKInterceptor — 205 is returned as a plain Response
         expect(response).toBeInstanceOf(Response);
-        expect(response.status).toBe(205);
+        expect((response as Response).status).toBe(205);
         expect(mockReload).not.toHaveBeenCalled();
     });
 

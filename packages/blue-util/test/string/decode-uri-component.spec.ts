@@ -50,7 +50,7 @@ describe('decodeURIComponent', function () {
 
         for (; index < length; index += 1) {
             key = keys[index];
-            expect(decode(key)).toBe(fixtures[key]);
+            expect(decode(key)).toBe((fixtures as Record<string, string>)[key]);
         }
     });
 });

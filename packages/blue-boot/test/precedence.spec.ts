@@ -12,7 +12,7 @@
 import { describe, test, expect } from 'vitest';
 import { ConfigurableEnvironment, MutablePropertySources } from '@blue/context';
 import { ApplicationBuilder } from '../src/application-builder';
-import { PRECEDENCE } from '../src/precedence';
+import { PRECEDENCE, PrecedenceSource } from '../src/precedence';
 import { NodeEnvironment } from '@blue/platform-node';
 
 class AppConfig {}
@@ -82,7 +82,7 @@ describe('PrecedenceDoc', () => {
         // optional sources are skipped — dotenv is not registered by this
         // stack).
         const expected = [...PRECEDENCE].filter((name) => names.includes(name));
-        const order = names.filter((name) => PRECEDENCE.includes(name));
+        const order = names.filter((name) => PRECEDENCE.includes(name as PrecedenceSource));
         expect(order).toEqual(expected);
 
         // The hard guarantees: commandLine highest, boot above env,

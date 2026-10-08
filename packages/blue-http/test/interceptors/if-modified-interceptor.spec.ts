@@ -33,7 +33,7 @@ class TestIfModifiedInterceptor extends IfModifiedInterceptor {
         return proceed;
     }
 
-    postResponse(response: Response, settings: IfModifiedInit): Promise<Response | void> {
+    postResponse(response: Response, settings: IfModifiedInit): Promise<void> {
         return super.postResponse(response, settings);
     }
 }

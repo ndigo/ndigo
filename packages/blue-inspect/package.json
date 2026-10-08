@@ -31,13 +31,13 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
-    "@blue/boot": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/router": "~0.0.1"
   },
   "devDependencies": {
+    "@blue/boot": "~0.0.1",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },

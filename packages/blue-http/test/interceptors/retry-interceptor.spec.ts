@@ -35,7 +35,7 @@ describe('RetryInterceptor', () => {
         }
 
         expect(response).toBeInstanceOf(ResponseError);
-        expect(response.status).toBe(503);
+        expect((response as ResponseError).status).toBe(503);
     });
 
     test('should retry once when retryLimit = 1', async () => {
@@ -72,7 +72,7 @@ describe('RetryInterceptor', () => {
         }
 
         expect(response).toBeInstanceOf(ResponseError);
-        expect(response.status).toBe(503);
+        expect((response as ResponseError).status).toBe(503);
     });
 
     test('should respect retryStatusCodes filter', async () => {
@@ -88,7 +88,7 @@ describe('RetryInterceptor', () => {
         }
 
         expect(response).toBeInstanceOf(ResponseError);
-        expect(response.status).toBe(404);
+        expect((response as ResponseError).status).toBe(404);
 
         // 503 — in retryStatusCodes; override handler always returns 503 so retry exhausts
         server.use(
@@ -104,7 +104,7 @@ describe('RetryInterceptor', () => {
         }
 
         expect(response).toBeInstanceOf(ResponseError);
-        expect(response.status).toBe(503);
+        expect((response as ResponseError).status).toBe(503);
     });
 
     // Timer-based tests call postError() directly to avoid the need for
@@ -244,7 +244,7 @@ describe('RetryInterceptor', () => {
 
         const response = await http.post('http://localhost/retry/post-default', { body: 'x' });
         expect(response).toBeInstanceOf(ResponseError);
-        expect(response.status).toBe(503);
+        expect((response as ResponseError).status).toBe(503);
         expect(callCount).toBe(1);
     });
 
@@ -262,7 +262,7 @@ describe('RetryInterceptor', () => {
 
         const response = await http.request('http://localhost/retry/default-404');
         expect(response).toBeInstanceOf(ResponseError);
-        expect(response.status).toBe(404);
+        expect((response as ResponseError).status).toBe(404);
         expect(callCount).toBe(1);
     });
 

@@ -71,7 +71,7 @@ describe('parseMultipart', () => {
         expect(part?.originalFilename).toBe('a.txt');
         expect(part?.size).toBe('file-contents'.length);
         expect(part?.isEmpty()).toBe(false);
-        expect(Buffer.from(await part?.bytes()).toString()).toBe('file-contents');
+        expect(Buffer.from(await (part as NonNullable<typeof part>).bytes()).toString()).toBe('file-contents');
     });
 
     it('streams a large part to a temp file above the threshold and cleans it up', async () => {

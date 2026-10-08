@@ -138,7 +138,7 @@ describe('Application integration — conditional gate coverage (CF-1)', () => {
         @whenBrowser
         @configurationProperties('browseronly')
         class BrowserOnlyConfig {
-            @property('token', String) token!: string;
+            @property('token', String as unknown as new (...args: never[]) => string) token!: string;
         }
 
         @configuration
@@ -155,7 +155,7 @@ describe('Application integration — conditional gate coverage (CF-1)', () => {
         @whenNode
         @configurationProperties('nodeonly')
         class NodeOnlyConfig {
-            @property('token', String) token!: string;
+            @property('token', String as unknown as new (...args: never[]) => string) token!: string;
         }
 
         @configuration
@@ -192,14 +192,18 @@ describe('Application integration — conditional gate coverage (CF-1)', () => {
         @refreshScope
         @configurationProperties('browser-refresh')
         class BrowserRefreshConfig {
-            @property('token', String) @defaultValue('unset') token!: string;
+            @property('token', String as unknown as new (...args: never[]) => string)
+            @defaultValue('unset')
+            token!: string;
         }
 
         @whenNode
         @refreshScope
         @configurationProperties('node-refresh')
         class NodeRefreshConfig {
-            @property('token', String) @defaultValue('node-default') token!: string;
+            @property('token', String as unknown as new (...args: never[]) => string)
+            @defaultValue('node-default')
+            token!: string;
         }
 
         @configuration
@@ -252,7 +256,10 @@ describe('Application integration — conditional gate coverage (CF-1)', () => {
  */
 function routeMapping(route: string | { value: string; name?: string }) {
     const conf = typeof route === 'string' ? { value: route } : route;
-    return function (target: Function, context: ClassDecoratorContext | ClassMethodDecoratorContext): Function | void {
+    return function <T extends Function>(
+        target: T,
+        context: ClassDecoratorContext | ClassMethodDecoratorContext
+    ): T | void {
         if (context.kind === 'class') {
             context.metadata['route:mapping'] = conf;
             return target;

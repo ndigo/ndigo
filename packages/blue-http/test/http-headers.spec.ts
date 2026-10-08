@@ -127,10 +127,10 @@ describe('HTTP Client - Default Headers', () => {
         const http = HTTP.create({
             baseURL: 'https://api.example.com',
             headers: null, // Explicitly null
-        } as HTTPInit);
+        } as unknown as HTTPInit);
 
         await http.get('/test', {
-            headers: null, // Explicitly null
+            headers: null as unknown as HeadersInit, // Explicitly null
         });
 
         expect(mockFetch).toHaveBeenCalledTimes(1);

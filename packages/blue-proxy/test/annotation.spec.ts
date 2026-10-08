@@ -68,12 +68,15 @@ describe('methodAnnotation', () => {
 
         expect(() => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            audited({ action: 'x' })(OrderService, { kind: 'class' } as unknown as ClassDecoratorContext);
+            audited({ action: 'x' })(OrderService, { kind: 'class' } as unknown as ClassMethodDecoratorContext);
         }).toThrow(TypeError);
 
         expect(() => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            audited({ action: 'x' })(undefined, { kind: 'field' } as unknown as ClassFieldDecoratorContext);
+            audited({ action: 'x' })(
+                undefined as unknown as Function,
+                { kind: 'field' } as unknown as ClassMethodDecoratorContext
+            );
         }).toThrow(TypeError);
     });
 

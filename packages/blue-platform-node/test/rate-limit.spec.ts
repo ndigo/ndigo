@@ -38,14 +38,17 @@ function limitedHandler(method: string, policy: Record<string, unknown>, classPo
 function captureResponse() {
     let head: { status: number; headers: Record<string, string> } | null = null;
     let body = '';
+    const flags = { writableEnded: false };
     const res = {
-        writableEnded: false,
+        get writableEnded() {
+            return flags.writableEnded;
+        },
         writeHead(status: number, headers: Record<string, string>) {
             head = { status, headers };
         },
         end(chunk: string) {
             body = chunk;
-            this.writableEnded = true;
+            flags.writableEnded = true;
         },
     } as unknown as ServerResponse;
     return { res, head: () => head, body: () => body };
@@ -126,7 +129,6 @@ describe('FixedWindowRateLimiter', () => {
 
 describe('@rateLimit decorator + RateLimitInterceptor', () => {
     test('decorator validates its policy at decoration time', () => {
-        // @ts-expect-error -- invalid policy must be rejected by the factory
         expect(() => rateLimit({ limit: 0, windowMs: 1000 })).toThrow(RangeError);
     });
 

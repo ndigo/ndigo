@@ -14,6 +14,9 @@ prototype patches.
 Status/reconnect metrics are **not** patchable (the client's status
 signal lives on app-constructed instances) — wire
 [countSocketClientStatus](../functions/countSocketClientStatus.md) into the `onStatusChange` option instead.
+Outbound bytes are exact the same way: wire [countSocketClientBytes](../functions/countSocketClientBytes.md)
+into `onSend` and this instrumentation's `send` wrap skips its own
+estimation for that client (TEL-08).
 
 ## Example
 
@@ -22,6 +25,7 @@ signal lives on app-constructed instances) — wire
 // for the shared instrumentations (or wrap the client directly):
 new WebSocketClient(url, {
     onStatusChange: countSocketClientStatus(),
+    onSend: countSocketClientBytes(),
 });
 ```
 

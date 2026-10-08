@@ -163,7 +163,7 @@ describe('RetryInterceptor', () => {
         const interceptor = new RetryInterceptor();
         const instance = new SyncAdvised();
         const descriptor = createMethodDescriptor(SyncAdvised, 'syncAdvised', 'call');
-        const proxy = weaveMethodProxy(instance, [{ descriptor, interceptors: [interceptor] }]);
+        const proxy = weaveMethodProxy(instance, [{ descriptor, interceptors: [interceptor] }]) as SyncAdvised;
 
         const result = proxy.call();
         expect(result).toBeInstanceOf(Promise);
@@ -186,7 +186,9 @@ describe('RetryInterceptor', () => {
         const interceptor = new RetryInterceptor();
         const instance = new WovenFlaky();
         const descriptor = createMethodDescriptor(WovenFlaky, 'flaky', 'call');
-        const proxy = weaveMethodProxy(instance, [{ descriptor, interceptors: [interceptor] }]);
+        const proxy = weaveMethodProxy(instance, [{ descriptor, interceptors: [interceptor] }]) as {
+            call: () => Promise<string>;
+        };
 
         expect(await proxy.call()).toBe('recovered');
     });

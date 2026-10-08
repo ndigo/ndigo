@@ -7,8 +7,17 @@ import { describe, test, expect } from 'vitest';
 import { InMemoryDataSource } from '../src/data-source';
 import { InMemoryEntityManager } from '../src/entity-manager';
 import { InMemoryTransactionManager } from '../src/transaction-manager';
-import { transactional } from '../src/decorators';
-import { entity, primaryColumn, column } from '../src/index';
+import { transactional as transactionalDecorator } from '../src/decorators';
+import { entity as entityDecorator, primaryColumn, column } from '../src/index';
+
+// Spec-side type wrappers; runtime-identical to the production decorators. The src decorators'
+// signatures are intentionally loose (`ClassType` / `Function`) and get rigidly rejected under
+// strict tsc at use sites, so the spec restores a valid `ClassDecorator` / method-decorator shape.
+const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
+const transactional = transactionalDecorator as unknown as () => (
+    target: Function,
+    context: ClassMethodDecoratorContext
+) => void;
 
 @entity()
 class Account {

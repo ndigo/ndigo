@@ -19,7 +19,7 @@ describe('typed context events (AD-34 D2)', () => {
         let seen: ApplicationContext | null = null;
         let preparingSeen = false;
 
-        context.on('context:refresh', (refreshed) => {
+        context.on('context:refresh', (refreshed: ApplicationContext) => {
             // Compile gate: `refreshed` must be the ApplicationContext type.
             seen = refreshed;
             void refreshed.isActive;
@@ -32,7 +32,11 @@ describe('typed context events (AD-34 D2)', () => {
 
         expect(preparingSeen).toBe(true);
         expect(seen).toBe(context);
-        expect(seen?.isActive).toBe(true);
+        // The listener assignment happens inside the emit callback, so flow
+        // analysis narrows `seen` to null here; the cast re-widens the read
+        // handle to the declared union and keeps the null-detecting chain.
+        const seenContext = seen as ApplicationContext | null;
+        expect(seenContext?.isActive).toBe(true);
 
         context.close();
     });

@@ -111,7 +111,7 @@ describe('memoize', () => {
                 calls += 1;
                 return value.id;
             },
-            { key: (value: { id: number }) => `id:${value.id}` }
+            { key: ((value: { id: number }) => `id:${value.id}`) as (...args: unknown[]) => string }
         );
         expect(await byId({ id: 1, extra: 'x' })).toBe(1);
         expect(await byId({ id: 1, extra: 'y' })).toBe(1); // same key

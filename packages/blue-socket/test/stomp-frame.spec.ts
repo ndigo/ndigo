@@ -242,7 +242,7 @@ describe('parseStompFrame binary (AD-23 D8)', () => {
 
     test('parses ArrayBuffer input', () => {
         const bytes = ascii('SEND\ndestination:/topic/x\n\nhi\0').buffer;
-        const frame = parseStompFrame(bytes);
+        const frame = parseStompFrame(bytes as ArrayBuffer);
         expect(frame.command).toBe('SEND');
         expect(frame.headers['destination']).toBe('/topic/x');
         expect(frame.body).toEqual(new Uint8Array([0x68, 0x69]));

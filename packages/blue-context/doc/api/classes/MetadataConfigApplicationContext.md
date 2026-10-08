@@ -23,11 +23,11 @@ Allows arbitrary properties to be added to the factory, which are then managed a
 
 ### Constructor
 
-> **new MetadataConfigApplicationContext**(`name`): `MetadataConfigApplicationContext`
+> **new MetadataConfigApplicationContext**(`name?`): `MetadataConfigApplicationContext`
 
 #### Parameters
 
-##### name
+##### name?
 
 `string`
 

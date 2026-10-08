@@ -11,7 +11,7 @@ const ruleTester = new RuleTester({
         parserOptions: {
             sourceType: 'module',
             ecmaVersion: 'latest',
-        },
+        } as RuleTester.ParserOptions,
     },
 });
 

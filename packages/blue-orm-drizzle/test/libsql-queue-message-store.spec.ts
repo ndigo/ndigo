@@ -138,7 +138,7 @@ describe('LibSQLQueueMessageStore (QueueMessageStore contract)', () => {
 
     test('rejects invalid destinations exactly like the in-memory store', async () => {
         const { store } = openStore();
-        await expect(store.append({ ...message('') })).rejects.toThrow(RangeError);
+        await expect(store.append({ ...message('', '') })).rejects.toThrow(RangeError);
         await expect(store.replay('')).rejects.toThrow(RangeError);
         await expect(store.prune('', { maxMessages: 1 })).rejects.toThrow(RangeError);
         await expect(store.has('')).rejects.toThrow(RangeError);

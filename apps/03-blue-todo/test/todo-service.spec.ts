@@ -40,7 +40,7 @@ describe('TodoService', () => {
                     return undefined;
                 }),
                 emit: vi.fn(),
-            } as ApplicationContext,
+            } as unknown as ApplicationContext,
         };
     }
 

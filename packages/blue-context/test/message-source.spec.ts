@@ -71,7 +71,7 @@ describe('GenericApplicationContext — message source', () => {
 
         // Child-level message source wins over the parent.
         const childMessages = new FakeMessageSource({ shared: 'Child value' });
-        child.setMessageSource(childMessages);
+        (child as GenericApplicationContext).setMessageSource(childMessages);
         expect(await child.getMessage('shared')).toBe('Child value');
     });
 

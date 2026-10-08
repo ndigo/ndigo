@@ -19,10 +19,18 @@ describe('HTTPHeader', () => {
         expect(String(pragma)).toBe('Pragma');
         expect(pragma.toJSON()).toBe('Pragma');
 
-        pragma.delete();
-        pragma.get();
-        expect(() => pragma.set()).toThrow(TypeError);
-        expect(pragma.has()).toBe(false);
+        // The runtime guards a missing header collection (delete/get/has
+        // no-op, set throws); declare the optional form the spec exercises.
+        const bareHeader = pragma as unknown as {
+            delete(): void;
+            get(): string | null;
+            set(): void;
+            has(): boolean;
+        };
+        bareHeader.delete();
+        bareHeader.get();
+        expect(() => bareHeader.set()).toThrow(TypeError);
+        expect(bareHeader.has()).toBe(false);
 
         expect(Object.prototype.toString.call(pragma)).toBe('[object HTTPHeader:Pragma]');
     });
@@ -177,7 +185,7 @@ describe('HTTPHeader.getJoined', () => {
     test('folds case on records and returns null when missing', () => {
         expect(accept.getJoined({ Accept: 'x' })).toBe('x');
         expect(accept.getJoined({ other: 'x' })).toBeNull();
-        expect(accept.getJoined(undefined)).toBeNull();
+        expect(accept.getJoined(undefined as unknown as HeadersInit)).toBeNull();
     });
 });
 

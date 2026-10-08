@@ -31,7 +31,7 @@ const scratch = mkdtempSync(join(tmpdir(), 'blue-island-bundle-check-'));
  * @param source - Module source text.
  * @returns The `spawnSync` result for `node --check`.
  */
-function checkAsModule(name, source) {
+function checkAsModule(name: string, source: string) {
     const file = join(scratch, `${name}.mjs`);
     writeFileSync(file, source);
     return spawnSync(process.execPath, ['--check', file], { encoding: 'utf-8' });

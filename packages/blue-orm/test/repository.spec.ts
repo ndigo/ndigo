@@ -6,8 +6,12 @@
 import '@tsmetadata/polyfill';
 
 import { InMemoryDataSource } from '../src/data-source';
-import { column, entity, generated, manyToOne, primaryColumn } from '../src/decorators';
+import { column, entity as entityDecorator, generated, manyToOne, primaryColumn } from '../src/decorators';
 import { InMemoryEntityManager } from '../src/entity-manager';
+
+// Spec-side type wrapper; runtime-identical to the production `entity` decorator.
+const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
+type ClassType = new (...args: unknown[]) => unknown;
 import { InMemoryRepository, toAsyncRepository } from '../src/index';
 import type { AsyncRepository } from '../src/index';
 
@@ -23,7 +27,7 @@ class TestUser {
     @column({ nullable: true })
     mentorId: number | undefined;
 
-    @manyToOne(() => TestUser, { joinColumn: 'mentorId' })
+    @manyToOne(() => TestUser as unknown as ClassType, { joinColumn: 'mentorId' })
     mentor: TestUser | undefined;
 
     constructor(name: string) {

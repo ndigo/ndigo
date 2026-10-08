@@ -496,7 +496,7 @@ export class ConfigurationProcessor
  * their `@entry` values.
  */
 export class MetadataConfigApplicationContext extends GenericApplicationContext {
-    constructor(name: string) {
+    constructor(name?: string) {
         super(name);
         // Register the ApplicationContextAwareProcessor before any @entry
         // configs are parsed, so entry-created aware beans receive context

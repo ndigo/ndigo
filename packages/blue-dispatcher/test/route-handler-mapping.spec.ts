@@ -13,8 +13,13 @@ import {
 import { GenericApplicationContext } from '@blue/context';
 import { type Route } from '@blue/router';
 import { TestController } from './test-strategies';
+import RouteHandlerExecutionChain from '../src/route-handler-execution-chain';
 import { routeMapping } from '../src/route-mapping';
 import { parameters, pathVariable } from '../src/parameters';
+
+/** Resolve a matched route's handler as the TestController these tests register. */
+const controllerOf = (chain: RouteHandlerExecutionChain | null): TestController =>
+    (chain as NonNullable<typeof chain>).handler as TestController;
 
 describe('RouteHandlerMapping', () => {
     let applicationContext: GenericApplicationContext;
@@ -34,9 +39,9 @@ describe('RouteHandlerMapping', () => {
 
     afterEach(() => {
         applicationContext.destroy();
-        fooController = undefined;
-        barController = undefined;
-        applicationContext = undefined;
+        (fooController as TestController | undefined) = undefined;
+        (barController as TestController | undefined) = undefined;
+        (applicationContext as GenericApplicationContext | undefined) = undefined;
     });
 
     describe('NamePathHandlerMapping', () => {
@@ -48,10 +53,10 @@ describe('RouteHandlerMapping', () => {
             const handlerMapping = new NamePathHandlerMapping();
             handlerMapping.setApplicationContext(applicationContext);
 
-            chain = handlerMapping.getHandler({ path: '/foo' });
-            expect(chain.handler.id).toBe(fooController.id);
-            chain = handlerMapping.getHandler({ path: '/bar' });
-            expect(chain.handler.id).toBe(barController.id);
+            chain = handlerMapping.getHandler({ path: '/foo' } as unknown as Route);
+            expect(controllerOf(chain).id).toBe(fooController.id);
+            chain = handlerMapping.getHandler({ path: '/bar' } as unknown as Route);
+            expect(controllerOf(chain).id).toBe(barController.id);
         });
 
         test('it should map multiple routes', () => {
@@ -61,10 +66,10 @@ describe('RouteHandlerMapping', () => {
             const handlerMapping = new NamePathHandlerMapping();
             handlerMapping.setApplicationContext(applicationContext);
 
-            chain = handlerMapping.getHandler({ path: '/foo' });
-            expect(chain.handler.id).toBe(fooController.id);
-            chain = handlerMapping.getHandler({ path: '/bar' });
-            expect(chain.handler.id).toBe(fooController.id);
+            chain = handlerMapping.getHandler({ path: '/foo' } as unknown as Route);
+            expect(controllerOf(chain).id).toBe(fooController.id);
+            chain = handlerMapping.getHandler({ path: '/bar' } as unknown as Route);
+            expect(controllerOf(chain).id).toBe(fooController.id);
         });
     });
 
@@ -78,11 +83,11 @@ describe('RouteHandlerMapping', () => {
             });
             handlerMapping.setApplicationContext(applicationContext);
 
-            chain = handlerMapping.getHandler({ path: '/foo' });
-            expect(chain.handler.id).toBe(fooController.id);
+            chain = handlerMapping.getHandler({ path: '/foo' } as unknown as Route);
+            expect(controllerOf(chain).id).toBe(fooController.id);
 
-            chain = handlerMapping.getHandler({ path: '/bar' });
-            expect(chain.handler.id).toBe(barController.id);
+            chain = handlerMapping.getHandler({ path: '/bar' } as unknown as Route);
+            expect(controllerOf(chain).id).toBe(barController.id);
         });
 
         test('it should resolve token handlers (AD-34 D1)', () => {
@@ -93,8 +98,8 @@ describe('RouteHandlerMapping', () => {
             handlerMapping.setMappings({ '/tok': fooToken });
             handlerMapping.setApplicationContext(applicationContext);
 
-            const chain = handlerMapping.getHandler({ path: '/tok' });
-            expect(chain.handler.id).toBe(fooController.id);
+            const chain = handlerMapping.getHandler({ path: '/tok' } as unknown as Route);
+            expect(controllerOf(chain).id).toBe(fooController.id);
         });
     });
 

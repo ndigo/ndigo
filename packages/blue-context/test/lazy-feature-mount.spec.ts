@@ -134,8 +134,7 @@ describe('FeatureContextMountManager lazy loading', () => {
     });
 
     test('it should support dependencies validation with lazy loading', async () => {
-        const { SharedDependencyRegistry, DefaultSharedDependencyRegistry } =
-            await import('../src/shared-dependency-registry');
+        const { DefaultSharedDependencyRegistry } = await import('../src/shared-dependency-registry');
         const { SHARED_DEPENDENCY_REGISTRY_TOKEN } = await import('../src/feature-context-mount-manager');
 
         const parent = new GenericApplicationContext('shell');

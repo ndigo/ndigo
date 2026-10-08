@@ -55,19 +55,28 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
 
         it('queryValue should accept converter option', () => {
             const converter = (value: unknown) => Number(value);
-            const extractor = queryValue('limit', { convertType: converter });
+            const extractor = queryValue('limit', {
+                convertType: converter as unknown as { source: unknown; target: unknown },
+            });
 
             expect(extractor.convertType).toBe(converter);
         });
 
         it('queryValue should accept named converter option', () => {
-            const extractor = queryValue('limit', { convertType: 'number' });
+            const extractor = queryValue('limit', {
+                convertType: 'number' as unknown as { source: unknown; target: unknown },
+            });
 
             expect(extractor.convertType).toBe('number');
         });
 
         it('queryValue should accept optional converter descriptor', () => {
-            const extractor = queryValue('limit', { convertType: { optional: true, use: 'number' } });
+            const extractor = queryValue('limit', {
+                convertType: { optional: true, use: 'number' } as unknown as {
+                    source: unknown;
+                    target: unknown;
+                },
+            });
 
             expect(extractor.convertType).toEqual({ optional: true, use: 'number' });
         });
@@ -177,7 +186,9 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
             });
 
             it('wrappers should override existing converter', () => {
-                const inner = queryValue('age', { convertType: (v: unknown) => v });
+                const inner = queryValue('age', {
+                    convertType: ((v: unknown) => v) as unknown as { source: unknown; target: unknown },
+                });
                 const wrapped = asNumber(inner);
                 expect(wrapped.convertType).toEqual({ source: String, target: Number });
             });
@@ -320,7 +331,11 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
         it('should preserve converter options', () => {
             const converter = (v: unknown) => Number(v);
             class TestController {
-                @parameters({ limit: queryValue('limit', { convertType: converter }) })
+                @parameters({
+                    limit: queryValue('limit', {
+                        convertType: converter as unknown as { source: unknown; target: unknown },
+                    }),
+                })
                 handleQuery(limit: string) {}
             }
             const params = resolveParameters(
@@ -333,7 +348,11 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
 
         it('should preserve named converter options', () => {
             class TestController {
-                @parameters({ limit: queryValue('limit', { convertType: 'number' }) })
+                @parameters({
+                    limit: queryValue('limit', {
+                        convertType: 'number' as unknown as { source: unknown; target: unknown },
+                    }),
+                })
                 handleQuery(limit: string) {}
             }
             const params = resolveParameters(
@@ -373,7 +392,7 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
             }
 
             const mapping = getRouteMapping(TestController.prototype, 'getUsers');
-            expect(mapping.value).toBe('/users');
+            expect(mapping?.value).toBe('/users');
 
             const params = resolveParameters(
                 TestController.prototype,
@@ -432,7 +451,7 @@ describe('fileValue() multipart extractor', () => {
 
     it('folds the explicit part name into parameter.name (fileValue("field"))', () => {
         class UploadController {
-            @routeMapping({ value: '/upload', method: 'POST' })
+            @routeMapping({ value: '/upload', method: 'POST', private: false })
             @parameters({ profile: fileValue('avatar_url') })
             upload(profile: unknown) {}
         }
@@ -447,7 +466,7 @@ describe('fileValue() multipart extractor', () => {
 
     it('infers the part name from the argument name (fileValue())', () => {
         class UploadController {
-            @routeMapping({ value: '/upload', method: 'POST' })
+            @routeMapping({ value: '/upload', method: 'POST', private: false })
             @parameters({ avatar: fileValue() })
             upload(avatar: unknown) {}
         }
@@ -479,7 +498,7 @@ describe('fileValue() multipart extractor', () => {
         expect(fileValue('avatar', { required: true }).required).toBe(true);
 
         class UploadController {
-            @routeMapping({ value: '/upload', method: 'POST' })
+            @routeMapping({ value: '/upload', method: 'POST', private: false })
             @parameters({ avatar: fileValue('avatar', { required: true }) })
             upload(avatar: unknown) {}
         }
@@ -497,7 +516,7 @@ describe('fileValue() multipart extractor', () => {
 describe('requestPart() multipart JSON-part extractor (D-6)', () => {
     it('creates a REQUEST_PART extractor with the part name inferred from the argument', () => {
         class UploadController {
-            @routeMapping({ value: '/upload', method: 'POST' })
+            @routeMapping({ value: '/upload', method: 'POST', private: false })
             @parameters({ meta: requestPart() })
             upload(meta: unknown) {}
         }
@@ -528,7 +547,7 @@ describe('requestPart() multipart JSON-part extractor (D-6)', () => {
 
     it('folds the explicit part name into parameter.name', () => {
         class UploadController {
-            @routeMapping({ value: '/upload', method: 'POST' })
+            @routeMapping({ value: '/upload', method: 'POST', private: false })
             @parameters({ meta: requestPart('metadata') })
             upload(meta: unknown) {}
         }

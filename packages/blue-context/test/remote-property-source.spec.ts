@@ -75,7 +75,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
         fetchImpl.mockResolvedValue(response(200, '{"server":{"port":"8080"}}'));
         const source = new RemotePropertySource(env, {
             url: 'https://cfg.example/app.json',
-            fetch: fetchImpl,
+            fetch: fetchImpl as unknown as typeof fetch,
         });
 
         expect(await source.load()).toBe(true);
@@ -93,7 +93,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
         fetchImpl.mockResolvedValue(response(200, '{"a":"b"}'));
         const source = new RemotePropertySource(env, {
             url: 'https://cfg.example/app.json',
-            fetch: fetchImpl,
+            fetch: fetchImpl as unknown as typeof fetch,
         });
 
         await source.load();
@@ -111,7 +111,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
         fetchImpl.mockResolvedValue(response(200, '{"a":"b"}'));
         const source = new RemotePropertySource(env, {
             url: 'https://cfg.example/app.json',
-            fetch: fetchImpl,
+            fetch: fetchImpl as unknown as typeof fetch,
         });
 
         await source.load();
@@ -127,7 +127,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
         fetchImpl.mockResolvedValue(response(200, '{"a":"1"}', 'etag-1'));
         const source = new RemotePropertySource(env, {
             url: 'https://cfg.example/app.json',
-            fetch: fetchImpl,
+            fetch: fetchImpl as unknown as typeof fetch,
         });
         await source.load();
         expect(env.getProperty('a')).toBe('1');
@@ -153,7 +153,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
         fetchImpl.mockResolvedValue(response(200, '{"a":"1"}', 'etag-1'));
         const source = new RemotePropertySource(env, {
             url: 'https://cfg.example/app.json',
-            fetch: fetchImpl,
+            fetch: fetchImpl as unknown as typeof fetch,
         });
         await source.load();
         expect(env.getProperty('a')).toBe('1');
@@ -175,7 +175,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
         fetchImpl.mockResolvedValue(response(200, '{"a":"1"}'));
         const source = new RemotePropertySource(env, {
             url: 'https://cfg.example/app.json',
-            fetch: fetchImpl,
+            fetch: fetchImpl as unknown as typeof fetch,
         });
         await source.load();
         const refreshSpy = vi.fn();
@@ -192,7 +192,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
         fetchImpl.mockResolvedValueOnce(response(200, '{"a":"2"}'));
         const source = new RemotePropertySource(env, {
             url: 'https://cfg.example/app.json',
-            fetch: fetchImpl,
+            fetch: fetchImpl as unknown as typeof fetch,
         });
         await source.load();
 
@@ -210,7 +210,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
         const source = new RemotePropertySource(env, {
             url: 'https://cfg.example/app.json',
             optional: true,
-            fetch: fetchImpl,
+            fetch: fetchImpl as unknown as typeof fetch,
         });
 
         expect(await source.load()).toBe(false);
@@ -222,7 +222,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
         const source = new RemotePropertySource(env, {
             url: 'https://cfg.example/app.json',
             optional: false,
-            fetch: fetchImpl,
+            fetch: fetchImpl as unknown as typeof fetch,
         });
 
         const err = await source.load().then(
@@ -237,7 +237,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
         const source = new RemotePropertySource(env, {
             url: 'https://cfg.example/app.json',
             optional: false,
-            fetch: fetchImpl,
+            fetch: fetchImpl as unknown as typeof fetch,
         });
         const err = await source.load().then(
             () => null,
@@ -252,7 +252,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
         const source = new RemotePropertySource(env, {
             url: 'https://cfg.example/app.json',
             optional: false,
-            fetch: fetchImpl,
+            fetch: fetchImpl as unknown as typeof fetch,
         });
         const err = await source.load().then(
             () => null,
@@ -269,7 +269,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
             const source = new RemotePropertySource(env, {
                 url: 'https://cfg.example/app.json',
                 optional: true,
-                fetch: fetchImpl,
+                fetch: fetchImpl as unknown as typeof fetch,
             });
 
             expect(await source.load()).toBe(false);
@@ -285,7 +285,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
         const source = new RemotePropertySource(env, {
             url: 'https://cfg.example/app.json',
             headers: { Authorization: 'Bearer tok' },
-            fetch: fetchImpl,
+            fetch: fetchImpl as unknown as typeof fetch,
         });
         await source.load();
 
@@ -310,7 +310,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
             const source = new RemotePropertySource(env, {
                 url: 'https://cfg.example/app.json',
                 pollMs: 5000,
-                fetch: fetchImpl,
+                fetch: fetchImpl as unknown as typeof fetch,
                 scheduler,
             });
             await source.load();
@@ -339,7 +339,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
         fetchImpl.mockResolvedValue(response(200, '{"a":"1"}'));
         const source = new RemotePropertySource(env, {
             url: 'https://cfg.example/app.json',
-            fetch: fetchImpl,
+            fetch: fetchImpl as unknown as typeof fetch,
         });
         await source.load();
 
@@ -353,7 +353,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
         fetchImpl.mockResolvedValue(response(200, '{"server":{"port":"8080"}}'));
         const source = new RemotePropertySource(env, {
             url: 'https://cfg.example/app.json',
-            fetch: fetchImpl,
+            fetch: fetchImpl as unknown as typeof fetch,
         });
 
         await source.load();
@@ -377,7 +377,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
                 const source = new RemotePropertySource(env, {
                     url: 'https://cfg.example/app.json',
                     pollMs: 5000,
-                    fetch: fetchImpl,
+                    fetch: fetchImpl as unknown as typeof fetch,
                     scheduler,
                 });
                 await source.load();
@@ -435,7 +435,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
                 const source = new RemotePropertySource(env, {
                     url: 'https://cfg.example/app.json',
                     pollMs: 5000,
-                    fetch: fetchImpl,
+                    fetch: fetchImpl as unknown as typeof fetch,
                     scheduler,
                 });
                 await source.load();
@@ -468,7 +468,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
                 const source = new RemotePropertySource(env, {
                     url: 'https://cfg.example/app.json',
                     optional: true,
-                    fetch: fetchImpl,
+                    fetch: fetchImpl as unknown as typeof fetch,
                 });
 
                 expect(await source.load()).toBe(false);
@@ -484,7 +484,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
             const source = new RemotePropertySource(env, {
                 url: 'https://cfg.example/app.json',
                 optional: false,
-                fetch: fetchImpl,
+                fetch: fetchImpl as unknown as typeof fetch,
             });
 
             const err = await source.load().then(
@@ -502,7 +502,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
                 url: 'https://cfg.example/app.json',
                 optional: false,
                 maxResponseBytes: 64,
-                fetch: fetchImpl,
+                fetch: fetchImpl as unknown as typeof fetch,
             });
 
             const err = await source.load().then(
@@ -518,7 +518,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
                 url: 'https://cfg.example/app.json',
                 optional: false,
                 maxResponseBytes: 64,
-                fetch: fetchImpl,
+                fetch: fetchImpl as unknown as typeof fetch,
             });
 
             const err = await source.load().then(
@@ -534,7 +534,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
             const source = new RemotePropertySource(env, {
                 url: 'https://cfg.example/app.json',
                 maxResponseBytes: body.length,
-                fetch: fetchImpl,
+                fetch: fetchImpl as unknown as typeof fetch,
             });
 
             expect(await source.load()).toBe(true);
@@ -546,7 +546,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
             const source = new RemotePropertySource(env, {
                 url: 'https://cfg.example/app.json',
                 maxResponseBytes: 64,
-                fetch: fetchImpl,
+                fetch: fetchImpl as unknown as typeof fetch,
             });
             await source.load();
 
@@ -568,7 +568,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
                 const source = new RemotePropertySource(env, {
                     url: 'https://cfg.example/app.json',
                     fetchTimeoutMs: 1_000,
-                    fetch: fetchImpl,
+                    fetch: fetchImpl as unknown as typeof fetch,
                 });
                 await source.load();
                 expect(vi.getTimerCount()).toBe(0); // timeout cleared after success
@@ -619,7 +619,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
             fetchImpl.mockResolvedValue(response(200, '{"a":"1"}'));
             const source = new RemotePropertySource(env, {
                 url: 'http://cfg.example/app.json',
-                fetch: fetchImpl,
+                fetch: fetchImpl as unknown as typeof fetch,
             });
             expect(await source.load()).toBe(true);
             expect(env.getProperty('a')).toBe('1');
@@ -642,7 +642,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
                 const source = new RemotePropertySource(env, {
                     url: 'https://cfg.example/app.json',
                     pollMs: 5000,
-                    fetch: fetchImpl,
+                    fetch: fetchImpl as unknown as typeof fetch,
                     scheduler,
                 });
                 await source.load();
@@ -654,7 +654,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
                 // must skip it (no third request).
                 let release: (() => void) | undefined;
                 const deferred = new Promise<never>((resolve) => {
-                    release = resolve;
+                    release = resolve as () => void;
                 });
                 fetchImpl.mockReturnValueOnce(deferred);
                 scheduled[0].callback();
@@ -680,7 +680,7 @@ describe('RemotePropertySource (AD-29 D-6..D-8)', () => {
             fetchImpl.mockResolvedValue(response(200, '{"server":{"port":"9090"}}'));
             const source = new RemotePropertySource(env, {
                 url: 'https://cfg.example/app.json',
-                fetch: fetchImpl,
+                fetch: fetchImpl as unknown as typeof fetch,
             });
 
             await source.load();

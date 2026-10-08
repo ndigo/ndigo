@@ -158,7 +158,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   requires a clean SIGTERM exit and a released port; wired into the CI quality
   lane.
 
+- Spec-typecheck lane (TST-A): `pnpm typecheck` now runs
+  `tsc -p tsconfig.spec.json` after the per-project build checks, typechecking
+  every package/app `src` **and** `test` file (strict, vitest globals, live
+  `src/` resolution mirroring `vitest.aliases.ts`). Specs that never
+  typechecked before are now green and gated red on an intentional error.
+- `pnpm test:tooling`: durable `node --test` lane (SEC-B/WC-I) pinning the
+  decorator-lowering plugin's extension scope (`.cts` included), vendored-vs-
+  workspace resolution, and the `@`-pre-check — the /tmp probes now live in
+  CI.
+- `@blue/telemetry-web` (TEL-08): `countSocketClientBytes()` wires exact
+  outbound-wire-byte telemetry through the socket client's `onSend` seam;
+  `@blue/socket` exposes `SocketClient.onSendWired` so the instrumentation's
+  `send` wrap skips its own payload estimation for seamed clients — bytes
+  count exactly once, per write (buffered flushes and retried writes
+  included).
+
 ### Changed
+
+- `@blue/inspect` config introspection (REU-9): `declaredConfigurationProperties`
+  and `relaxedKeyCandidates` moved to `@blue/context` (re-exported from
+  `@blue/boot` unchanged) — the tooling package no longer pulls the boot layer
+  into its runtime closure.
 
 - OXC tooling updated to the 2026-10-05 releases: `oxlint` and
   `@oxlint/plugins` `^1.87.0`, `oxfmt` `^0.72.0` (`oxlint-tsgolint` was

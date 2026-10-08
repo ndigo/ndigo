@@ -23,7 +23,7 @@ import { composeTodoRuntime } from '../src/shell-composition';
 installSynchronousAnimationFrames();
 
 function makeRoute(path: string): Route {
-    return { path, raw: path, id: 1, data: {}, params: null, length: 0, attributes: {} } as Route;
+    return { path, raw: path, id: 1, data: {}, params: null, length: 0, attributes: {} } as unknown as Route;
 }
 
 describe('composed todo runtime end-to-end', () => {

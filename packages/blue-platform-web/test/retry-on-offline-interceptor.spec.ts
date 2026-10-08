@@ -85,7 +85,7 @@ describe('RetryOnOfflineInterceptor', () => {
             vi.stubGlobal('navigator', { onLine: true });
             vi.advanceTimersByTime(1000);
 
-            const response = await queued;
+            const response = (await queued) as Response;
             expect(response.status).toBe(200);
             expect(fetchMock).toHaveBeenCalledTimes(1);
             expect(interceptor.queuedCount).toBe(0);

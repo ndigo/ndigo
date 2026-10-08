@@ -18,7 +18,7 @@
     "test:bench": "vitest bench --run --reporter verbose",
     "test:e2e": "nx run @blue/todo:test:e2e",
     "apps:smoke": "node scripts/apps-smoke.mjs",
-    "typecheck": "pnpm --filter './packages/**' --filter './apps/**' -r exec tsc -b tsconfig.build.json",
+    "typecheck": "pnpm --filter './packages/**' --filter './apps/**' -r exec tsc -b tsconfig.build.json && pnpm exec tsc -p tsconfig.spec.json",
     "lint": "pnpm --filter @blue/oxlint-plugin build:lib && oxlint --type-aware --deny-warnings .",
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
@@ -28,6 +28,7 @@
     "docs:links": "node scripts/check-doc-links.mjs",
     "manifest:check": "node scripts/check-manifests.mjs",
     "graft:build": "graft build --deep --allow-partial",
+    "test:tooling": "node --test scripts/test-lower-decorators.mjs",
     "postinstall": "node scripts/typedoc-ts-shim.mjs",
     "agents:sync": "node ../development-agents/gen.mjs .",
     "agents:check": "node scripts/agents-check.mjs"

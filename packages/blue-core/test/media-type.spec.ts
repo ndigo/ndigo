@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
-import MediaType, { parseMediaType } from '../src/media-type';
+import MediaType, { SupportedMediaType, parseMediaType } from '../src/media-type';
 import * as MediaTypes from '../src/media-types';
 
 describe('MediaType', () => {
@@ -183,7 +183,7 @@ describe('MediaType', () => {
 
     test('it should parse media type strings', () => {
         const textHtml = 'text/html',
-            textHtmlType = MediaType.for(textHtml);
+            textHtmlType = MediaType.for(textHtml) as MediaType;
 
         expect(textHtmlType).toHaveProperty('type', 'text');
         expect(textHtmlType).toHaveProperty('subtype', 'html');
@@ -252,7 +252,7 @@ describe('MediaType', () => {
             'audio/*;q=0.8',
         ];
         const sorted = expressions
-            .map((expression) => MediaType.for(expression))
+            .map((expression) => MediaType.for(expression) as MediaType)
             .sort(MediaType.qualityFactorComparator.compare);
         expect(sorted.map((mediaType) => mediaType.toString())).toEqual([
             'audio/basic;level=1;q=0.8',
@@ -266,7 +266,7 @@ describe('MediaType', () => {
     test('retains input order for equal-quality unrelated types and subtypes', () => {
         const expressions = ['text/plain;q=0.8', 'audio/wave;q=0.8', 'audio/basic;q=0.8'];
         const sorted = expressions
-            .map((expression) => MediaType.for(expression))
+            .map((expression) => MediaType.for(expression) as MediaType)
             .sort(MediaType.qualityFactorComparator.compare);
         expect(sorted.map((mediaType) => mediaType.toString())).toEqual(expressions);
     });
@@ -280,8 +280,8 @@ describe('MediaType', () => {
 
     test('it should provide baseType', () => {
         expect(MediaTypes.TEXT_HTML.baseType).toBe('text/html');
-        expect(MediaType.for('application/atom+xml').baseType).toBe('application/atom');
-        expect(MediaType.for('application/json;charset=utf-8').baseType).toBe('application/json');
+        expect(MediaType.for('application/atom+xml')?.baseType).toBe('application/atom');
+        expect(MediaType.for('application/json;charset=utf-8')?.baseType).toBe('application/json');
     });
 
     test('it should provide default charset', () => {
@@ -296,7 +296,7 @@ describe('MediaType', () => {
         expect(MediaTypes.IMAGE_PNG.toContentType()).toBe('image/png');
 
         // Should respect existing charset
-        expect(MediaType.for('text/html;charset=ISO-8859-1').toContentType()).toBe('text/html;charset=ISO-8859-1');
+        expect(MediaType.for('text/html;charset=ISO-8859-1')?.toContentType()).toBe('text/html;charset=ISO-8859-1');
 
         // Should support opt-out
         expect(MediaTypes.TEXT_HTML.toContentType({ autoCharset: false })).toBe('text/html');
@@ -311,18 +311,18 @@ describe('MediaType', () => {
         expect(MediaTypes.TEXT_TOON.toContentType()).toBe('text/toon;charset=utf-8');
         expect(MediaTypes.TEXT_TOON.toContentType({ autoCharset: false })).toBe('text/toon');
         // Negotiates like any text subtype: acceptable under a text/* range.
-        expect(MediaTypes.TEXT_TOON.matches(MediaType.for('text/*'))).toBe(true);
+        expect(MediaTypes.TEXT_TOON.matches(MediaType.for('text/*') as MediaType)).toBe(true);
     });
 
     test('it should fix withCharset bug and preserve parameters', () => {
-        const mt = MediaType.for('multipart/form-data;boundary=abc123');
+        const mt = MediaType.for('multipart/form-data;boundary=abc123') as MediaType;
         const withCharset = mt.withCharset('utf-8');
         expect(withCharset.toString()).toBe('multipart/form-data;boundary=abc123;charset=utf-8');
         expect(withCharset.parameters).toEqual({ boundary: 'abc123', charset: 'utf-8' });
     });
 
     test('withCharset keeps the +suffix (KRN-REV-MEDIA-06)', () => {
-        const problemJson = MediaType.for('application/problem+json');
+        const problemJson = MediaType.for('application/problem+json') as MediaType;
         const withCharset = problemJson.withCharset('utf-8');
         expect(withCharset.toString()).toBe('application/problem+json;charset=utf-8');
         expect(withCharset.subtype).toBe('problem');
@@ -330,11 +330,11 @@ describe('MediaType', () => {
     });
 
     test('includes is suffix-specific for type/*+suffix (KRN-REV-MEDIA-08)', () => {
-        const xmlWildcard = MediaType.for('application/*+xml');
-        expect(xmlWildcard.includes(MediaType.for('application/soap+xml'))).toBe(true);
-        expect(xmlWildcard.includes(MediaType.for('application/json'))).toBe(false);
-        expect(xmlWildcard.includes(MediaType.for('application/*'))).toBe(false);
-        expect(MediaType.for('application/*').includes(MediaType.for('application/json'))).toBe(true);
+        const xmlWildcard = MediaType.for('application/*+xml') as MediaType;
+        expect(xmlWildcard.includes(MediaType.for('application/soap+xml') as MediaType)).toBe(true);
+        expect(xmlWildcard.includes(MediaType.for('application/json') as MediaType)).toBe(false);
+        expect(xmlWildcard.includes(MediaType.for('application/*') as MediaType)).toBe(false);
+        expect(MediaType.for('application/*')?.includes(MediaType.for('application/json') as MediaType)).toBe(true);
     });
 
     test('wildcard-subtype component form keys on its parameters (KRN-REV-MEDIA-07)', () => {
@@ -376,42 +376,42 @@ describe('parseMediaType', () => {
 
 describe('MediaType raw-header parsing (Wave 6)', () => {
     test('case variants of type and subtype converge on one interned instance', () => {
-        const mixed = MediaType.for('TEXT/HTML');
-        const lower = MediaType.for('text/html');
+        const mixed = MediaType.for('TEXT/HTML') as MediaType;
+        const lower = MediaType.for('text/html') as MediaType;
         expect(mixed).toBe(MediaTypes.TEXT_HTML);
         expect(mixed).toBe(lower);
         expect(mixed.baseType).toBe('text/html');
     });
 
     test('parameter names fold case, values keep their case', () => {
-        const mediaType = MediaType.for('text/html; CHARSET=UTF-8');
+        const mediaType = MediaType.for('text/html; CHARSET=UTF-8') as MediaType;
         expect(mediaType.parameters).toEqual({ charset: 'UTF-8' });
         expect(mediaType.toString()).toBe('text/html;charset=UTF-8');
         expect(MediaType.for('text/html;charset=UTF-8')).toBe(mediaType);
     });
 
     test('quoted parameter values parse unquoted and serialize quoted', () => {
-        const mediaType = MediaType.for('multipart/form-data; BOUNDARY="x y"');
+        const mediaType = MediaType.for('multipart/form-data; BOUNDARY="x y"') as MediaType;
         expect(mediaType.parameters).toEqual({ boundary: 'x y' });
         expect(mediaType.toString()).toBe('multipart/form-data;boundary="x y"');
     });
 
     test('parameter values containing = survive (first-equals split)', () => {
-        const mediaType = MediaType.for('application/x-foo; session=a=b=c');
+        const mediaType = MediaType.for('application/x-foo; session=a=b=c') as MediaType;
         expect(mediaType.parameters).toEqual({ session: 'a=b=c' });
     });
 
     test('quality factors parse from the q parameter', () => {
-        expect(MediaType.for('text/html;q=0').qualityFactor).toBe(0);
-        expect(MediaType.for('text/html;q=0.5').qualityFactor).toBe(0.5);
+        expect(MediaType.for('text/html;q=0')?.qualityFactor).toBe(0);
+        expect(MediaType.for('text/html;q=0.5')?.qualityFactor).toBe(0.5);
     });
 
     test('isJSON covers bases and +json suffixes', () => {
         expect(MediaTypes.APPLICATION_JSON.isJSON).toBe(true);
         expect(MediaTypes.TEXT_JSON.isJSON).toBe(true);
-        expect(MediaType.for('application/problem+json').isJSON).toBe(true);
+        expect(MediaType.for('application/problem+json')?.isJSON).toBe(true);
         expect(MediaTypes.TEXT_HTML.isJSON).toBe(false);
-        expect(MediaType.for('application/atom+xml').isJSON).toBe(false);
+        expect(MediaType.for('application/atom+xml')?.isJSON).toBe(false);
     });
 
     test('parseAccept splits, turns bare type tokens into wildcards, and drops empty entries', () => {
@@ -440,8 +440,10 @@ describe('MediaType registry round-trip (COR-5 / DSG-1 / DSG-2)', () => {
     test('quoted parameter values containing separators round-trip (COR-5)', () => {
         const values = ['a;b', 'a"b', 'a\\b', 'a,b', 'a"b\\c', 'a\\b;c,d'];
         for (const value of values) {
-            const component = MediaType.for('text/html', 'x', { v: value }),
-                reparsed = MediaType.for(component.toString());
+            const component = MediaType.for('text/html' as unknown as SupportedMediaType, 'x', {
+                    v: value,
+                }) as MediaType,
+                reparsed = MediaType.for(component.toString()) as MediaType;
 
             expect(reparsed.parameters).toEqual({ v: value });
             expect(reparsed.toString()).toBe(component.toString());
@@ -460,12 +462,12 @@ describe('MediaType registry round-trip (COR-5 / DSG-1 / DSG-2)', () => {
     });
 
     test('component form folds type/subtype case and converges with the expression path (DSG-2)', () => {
-        expect(MediaType.for('Text', 'HTML')).toBe(MediaTypes.TEXT_HTML);
-        expect(MediaType.for('Text', 'HTML').toString()).toBe('text/html');
+        expect(MediaType.for('Text' as unknown as SupportedMediaType, 'HTML')).toBe(MediaTypes.TEXT_HTML);
+        expect(MediaType.for('Text' as unknown as SupportedMediaType, 'HTML')?.toString()).toBe('text/html');
         expect(MediaType.for('text', 'html')).toBe(MediaTypes.TEXT_HTML);
 
-        const problemJson = MediaType.for('APPLICATION', 'Problem+JSON'),
-            problemJsonExpression = MediaType.for('application/problem+json');
+        const problemJson = MediaType.for('APPLICATION' as unknown as SupportedMediaType, 'Problem+JSON') as MediaType,
+            problemJsonExpression = MediaType.for('application/problem+json') as MediaType;
         expect(problemJson.isJSON).toBe(true);
         expect(problemJsonExpression.isJSON).toBe(true);
         expect(problemJson).toBe(problemJsonExpression);
@@ -473,8 +475,10 @@ describe('MediaType registry round-trip (COR-5 / DSG-1 / DSG-2)', () => {
     });
 
     test('component form folds parameter names and preserves parameter values (DSG-2)', () => {
-        const component = MediaType.for('Text', 'HTML', { Charset: 'UTF-8' }),
-            expression = MediaType.for('text/html;CHARSET=UTF-8');
+        const component = MediaType.for('Text' as unknown as SupportedMediaType, 'HTML', {
+                Charset: 'UTF-8',
+            }) as MediaType,
+            expression = MediaType.for('text/html;CHARSET=UTF-8') as MediaType;
 
         expect(component.parameters).toEqual({ charset: 'UTF-8' });
         expect(component.toString()).toBe('text/html;charset=UTF-8');
@@ -483,8 +487,8 @@ describe('MediaType registry round-trip (COR-5 / DSG-1 / DSG-2)', () => {
     });
 
     test('parameter order is canonicalized before keying and comparison (DSG-1)', () => {
-        const first = MediaType.for('text/html;charset=utf-8;x=1'),
-            second = MediaType.for('text/html;x=1;charset=utf-8');
+        const first = MediaType.for('text/html;charset=utf-8;x=1') as MediaType,
+            second = MediaType.for('text/html;x=1;charset=utf-8') as MediaType;
 
         expect(second).toBe(first);
         expect(first.compareTo(second)).toBe(0);
@@ -553,17 +557,17 @@ describe('MediaType registry round-trip (COR-5 / DSG-1 / DSG-2)', () => {
     });
 
     test('type-only expressions trim, fold case, and converge (COR-6)', () => {
-        expect(MediaType.for(' JPEG').toString()).toBe('jpeg/*');
+        expect(MediaType.for(' JPEG')?.toString()).toBe('jpeg/*');
         expect(MediaType.for('JPEG')).toBe(MediaType.for('jpeg'));
     });
 
     test('malformed quality factors fall back to 1, never NaN/exclusion (COR-7)', () => {
-        const malformed = MediaType.for('text/html;q=abc');
+        const malformed = MediaType.for('text/html;q=abc') as MediaType;
         expect(Number.isFinite(malformed.qualityFactor)).toBe(true);
         expect(malformed.qualityFactor).toBe(1);
-        expect(MediaType.for('text/html;q=0.5').qualityFactor).toBe(0.5);
-        expect(MediaType.for('text/html;q=0').qualityFactor).toBe(0);
-        expect(MediaType.for('text/html').qualityFactor).toBe(1);
+        expect(MediaType.for('text/html;q=0.5')?.qualityFactor).toBe(0.5);
+        expect(MediaType.for('text/html;q=0')?.qualityFactor).toBe(0);
+        expect(MediaType.for('text/html')?.qualityFactor).toBe(1);
 
         const accepted = MediaType.parseAccept('text/html;q=abc, application/json;q=0');
         expect(accepted).toHaveLength(2);

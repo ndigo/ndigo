@@ -17,7 +17,7 @@ import {
 } from '@opentelemetry/sdk-metrics';
 import { metrics } from '@opentelemetry/api';
 import { WebSocketClient, type SocketTransport, type WebSocketClientOptions } from '@blue/socket';
-import { countSocketClientStatus, WebSocketClientInstrumentation } from '../src/index';
+import { countSocketClientBytes, countSocketClientStatus, WebSocketClientInstrumentation } from '../src/index';
 
 /**
  * Minimal WHATWG-subset transport: tests fire events; sends recorded.
@@ -209,6 +209,30 @@ describe('WebSocketClientInstrumentation', () => {
         expect(await counterValue(reader, 'blue.socket.client.opened')).toBe(openedBefore + 2);
         expect(await counterValue(reader, 'blue.socket.client.reconnecting')).toBe(reconnectingBefore + 1);
         expect(await counterValue(reader, 'blue.socket.client.closed')).toBe(closedBefore + 1);
+    });
+
+    test('a client wired with the onSend seam counts exact wire bytes once (TEL-08)', async () => {
+        const bytesBefore = await counterValue(reader, 'blue.socket.client.messages.bytes');
+        const sentBefore = await counterValue(reader, 'blue.socket.client.messages.sent');
+
+        // Wired client: the `send` wrap must skip its own estimation, and the
+        // seam must report only bytes actually written — a send that is
+        // buffered while connecting is *not* on the wire yet.
+        const { client, created } = createClient({
+            onSend: countSocketClientBytes(),
+            bufferWhileDisconnected: { maxMessages: 16 },
+        });
+        client.send('abc'); // buffered — nothing written, nothing counted
+        expect(await counterValue(reader, 'blue.socket.client.messages.bytes')).toBe(bytesBefore);
+        expect(await counterValue(reader, 'blue.socket.client.messages.sent')).toBe(sentBefore + 1);
+
+        created[0].fireOpen(); // flush: exactly 3 bytes hit the wire
+        expect(await counterValue(reader, 'blue.socket.client.messages.bytes')).toBe(bytesBefore + 3);
+
+        // Binary frames flow through the seam with their exact byte length.
+        client.send(new Uint8Array([1, 2, 3]));
+        expect(await counterValue(reader, 'blue.socket.client.messages.bytes')).toBe(bytesBefore + 6);
+        client.close();
     });
 
     test('client onStatusChange wiring reaches the counters (integrated)', async () => {

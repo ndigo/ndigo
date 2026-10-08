@@ -126,7 +126,9 @@ describe('Application.run() boot-failure cleanup (CF-6)', () => {
         @configurationProperties('server')
         @refreshScope
         class RefreshableConfig {
-            @property('port', Number) @defaultValue('8080') port!: number;
+            @property('port', Number as unknown as new (...args: never[]) => number)
+            @defaultValue('8080')
+            port!: number;
         }
 
         const app = new Application([BootConfig, RefreshableConfig]);

@@ -47,7 +47,14 @@ describe('WebComponentView', () => {
 describe('AbstractWebComponent event registration', () => {
     // jsdom's custom-element registry persists across tests in a file, so the
     // tag is defined exactly once and each test creates fresh instances.
-    customElements.define('event-test-component', class TestComponent extends AbstractWebComponent {});
+    customElements.define(
+        'event-test-component',
+        class TestComponent extends AbstractWebComponent {
+            render(): void {
+                // no-op; only event-registration behaviour is exercised here
+            }
+        }
+    );
 
     function makeComponent(): AbstractWebComponent {
         return document.createElement('event-test-component') as AbstractWebComponent;

@@ -39,7 +39,7 @@ describe('ApplicationError', () => {
 
     test('it should serialize to JSON via toJSON', () => {
         const error = new ApplicationError('msg');
-        const json = error.toJSON();
+        const json = error.toJSON?.();
 
         expect(json).toMatchObject({
             name: 'ApplicationError',
@@ -94,7 +94,7 @@ describe('FrameworkError', () => {
 
     test('it should serialize to JSON via toJSON', () => {
         const error = new FrameworkError('msg');
-        const json = error.toJSON();
+        const json = error.toJSON?.();
 
         expect(json).toMatchObject({
             name: 'FrameworkError',
@@ -137,7 +137,7 @@ describe('IllegalStateError', () => {
 
     test('it should serialize to JSON', () => {
         const error = new IllegalStateError('custom');
-        const json = error.toJSON();
+        const json = error.toJSON?.();
 
         expect(json).toMatchObject({
             name: 'IllegalStateError',

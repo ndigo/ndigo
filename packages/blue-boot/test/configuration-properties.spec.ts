@@ -19,21 +19,23 @@ import {
 import { property, defaultValue, nested, configuration, entry, StandardEnvironment } from '@blue/context';
 
 class DbConfig {
-    @property('url', String) @defaultValue('mongodb://localhost') url!: string;
-    @property('port', Number) @defaultValue('5432') port!: number;
-    @property('pooled', Boolean) @defaultValue('true') pooled!: boolean;
+    @property('url', String as unknown as new (...args: never[]) => string)
+    @defaultValue('mongodb://localhost')
+    url!: string;
+    @property('port', Number as unknown as new (...args: never[]) => number) @defaultValue('5432') port!: number;
+    @property('pooled', Boolean as unknown as new (...args: never[]) => boolean) @defaultValue('true') pooled!: boolean;
 }
 
 @configurationProperties('server')
 class ServerConfig {
-    @property('port', Number) @defaultValue('8080') port!: number;
-    @property('host', String) @defaultValue('localhost') host!: string;
+    @property('port', Number as unknown as new (...args: never[]) => number) @defaultValue('8080') port!: number;
+    @property('host', String as unknown as new (...args: never[]) => string) @defaultValue('localhost') host!: string;
     @nested db: DbConfig = new DbConfig();
 }
 
 @configurationProperties()
 class AppConfig {
-    @property('app.title', String) @defaultValue('blue') title!: string;
+    @property('app.title', String as unknown as new (...args: never[]) => string) @defaultValue('blue') title!: string;
 }
 
 class UndecoratedConfig {
@@ -118,8 +120,8 @@ describe('declaredConfigurationProperties (value-free inspection seam)', () => {
     test('BOOT-2: a throwing constructor still enumerates keys from metadata (nested listed by top key)', () => {
         @configurationProperties('boom')
         class ThrowingConfig {
-            @property('port', Number) port!: number;
-            @property('name', String) name = 'fallback';
+            @property('port', Number as unknown as new (...args: never[]) => number) port!: number;
+            @property('name', String as unknown as new (...args: never[]) => string) name = 'fallback';
             @nested db!: DbConfig;
 
             constructor() {
@@ -271,7 +273,7 @@ describe('resolveConfigurationProperties v2', () => {
     test('throws fail-loud when a required property is missing', async () => {
         @configurationProperties('strict')
         class StrictConfig {
-            @property('token', String) token!: string;
+            @property('token', String as unknown as new (...args: never[]) => string) token!: string;
         }
         @configuration
         class BootConfig {}
@@ -287,7 +289,7 @@ describe('resolveConfigurationProperties v2', () => {
     test('throws fail-loud on conversion failure, naming field/value/type', async () => {
         @configurationProperties('server')
         class PortConfig {
-            @property('port', Number) port!: number;
+            @property('port', Number as unknown as new (...args: never[]) => number) port!: number;
         }
         @configuration
         class BootConfig {}
@@ -330,7 +332,7 @@ describe('relaxed binding + untyped inference (CTX-01/CTX-10/CTX-11)', () => {
     test('CTX-01: a kebab env key binds a camelCase field (forward)', async () => {
         @configurationProperties('server', { relaxed: true })
         class RelaxedCamel {
-            @property('hostName', String) hostName!: string;
+            @property('hostName', String as unknown as new (...args: never[]) => string) hostName!: string;
         }
         const context = await runBoot({ server: { 'host-name': 'blue.dev' } });
 
@@ -341,7 +343,7 @@ describe('relaxed binding + untyped inference (CTX-01/CTX-10/CTX-11)', () => {
     test('CTX-01: a camelCase env key binds a kebab field (reverse)', async () => {
         @configurationProperties('srv', { relaxed: true })
         class RelaxedKebab {
-            @property('host-name', String) hostName!: string;
+            @property('host-name', String as unknown as new (...args: never[]) => string) hostName!: string;
         }
         const context = await runBoot({ srv: { hostName: 'blue.dev' } });
 
@@ -352,7 +354,7 @@ describe('relaxed binding + untyped inference (CTX-01/CTX-10/CTX-11)', () => {
     test('CTX-01: the relaxed WINNING key is converted, not the declared path', async () => {
         @configurationProperties('srv', { relaxed: true })
         class RelaxedPort {
-            @property('listen-port', Number) listenPort!: number;
+            @property('listen-port', Number as unknown as new (...args: never[]) => number) listenPort!: number;
         }
         const context = await runBoot({ srv: { listenPort: '9090' } });
 
@@ -362,7 +364,7 @@ describe('relaxed binding + untyped inference (CTX-01/CTX-10/CTX-11)', () => {
 
     test('CTX-01: nested relaxed binding reads the winning key', async () => {
         class NestedDb {
-            @property('userName', String) userName!: string;
+            @property('userName', String as unknown as new (...args: never[]) => string) userName!: string;
         }
         @configurationProperties('db', { relaxed: true })
         class RelaxedNested {
@@ -377,7 +379,7 @@ describe('relaxed binding + untyped inference (CTX-01/CTX-10/CTX-11)', () => {
     test('CTX-10: a String-typed field binds a non-string property without crashing', async () => {
         @configurationProperties('svc')
         class StringTargetConfig {
-            @property('port', String) port!: string;
+            @property('port', String as unknown as new (...args: never[]) => string) port!: string;
         }
         const context = await runBoot({ svc: { port: 9090 } });
 
@@ -433,7 +435,7 @@ describe('BOOT-1 schema mode never relaxes (D-3)', () => {
     test('field mode with relaxed:true still binds the kebab env key', async () => {
         @configurationProperties('srv', { relaxed: true })
         class FieldRelaxed {
-            @property('hostName', String) hostName!: string;
+            @property('hostName', String as unknown as new (...args: never[]) => string) hostName!: string;
         }
         const context = await runBoot({ srv: { 'host-name': 'blue.dev' } });
 

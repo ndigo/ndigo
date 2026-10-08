@@ -6,6 +6,7 @@
 import '@tsmetadata/polyfill';
 
 import { describe, expect, test, vi, beforeEach, beforeAll } from 'vitest';
+import type { SpanExporter } from '@opentelemetry/sdk-trace-base';
 import { z } from 'zod';
 import { HTTP } from '@blue/http';
 import { service, getCall, postCall, putCall, deleteCall, patchCall, queryCall, serviceClient } from '../src';
@@ -19,37 +20,37 @@ const AccountSchema = z.object({
 class AccountsAPI {
     @getCall('/accounts/:id')
     getById(id: number): Promise<unknown> {
-        return undefined as unknown;
+        return undefined as unknown as Promise<unknown>;
     }
 
     @postCall('/accounts')
     create(account: Account): Promise<unknown> {
-        return undefined as unknown;
+        return undefined as unknown as Promise<unknown>;
     }
 
     @getCall('/accounts/profile/:userId', { responseSchema: AccountSchema })
     getProfile(userId: number): Promise<{ id: number; name: string }> {
-        return undefined as unknown;
+        return undefined as unknown as Promise<{ id: number; name: string }>;
     }
 
     @putCall('/accounts/:id')
     update(id: number, account: Account): Promise<unknown> {
-        return undefined as unknown;
+        return undefined as unknown as Promise<unknown>;
     }
 
     @deleteCall('/accounts/:id')
     remove(id: number): Promise<unknown> {
-        return undefined as unknown;
+        return undefined as unknown as Promise<unknown>;
     }
 
     @queryCall('/accounts/search')
     search(query: string): Promise<unknown> {
-        return undefined as unknown;
+        return undefined as unknown as Promise<unknown>;
     }
 
     @patchCall('/accounts/:id')
     patch(id: number, account: Account): Promise<unknown> {
-        return undefined as unknown;
+        return undefined as unknown as Promise<unknown>;
     }
 }
 
@@ -73,7 +74,7 @@ function lastRequest(): Request {
 describe('serviceClient', () => {
     test('resolves path params and sends GET', async () => {
         fetchMock.mockResolvedValue(new Response(JSON.stringify({ ok: true }), { status: 200 }));
-        const client = serviceClient(AccountsAPI, http);
+        const client = serviceClient(AccountsAPI, http) as unknown as AccountsAPI;
 
         await client.getById(42);
 
@@ -84,7 +85,7 @@ describe('serviceClient', () => {
 
     test('attaches the service name correlation header', async () => {
         fetchMock.mockResolvedValue(new Response(JSON.stringify({ ok: true }), { status: 200 }));
-        const client = serviceClient(AccountsAPI, http);
+        const client = serviceClient(AccountsAPI, http) as unknown as AccountsAPI;
 
         await client.getById(7);
 
@@ -93,7 +94,7 @@ describe('serviceClient', () => {
 
     test('sends a JSON body for POST', async () => {
         fetchMock.mockResolvedValue(new Response(JSON.stringify({ ok: true }), { status: 201 }));
-        const client = serviceClient(AccountsAPI, http);
+        const client = serviceClient(AccountsAPI, http) as unknown as AccountsAPI;
 
         await client.create({ id: 1, name: 'Alice' });
 
@@ -103,7 +104,7 @@ describe('serviceClient', () => {
 
     test('sets the HTTP method for PUT/DELETE/PATCH/QUERY', async () => {
         fetchMock.mockResolvedValue(new Response('ok', { status: 200 }));
-        const client = serviceClient(AccountsAPI, http);
+        const client = serviceClient(AccountsAPI, http) as unknown as AccountsAPI;
 
         await client.update(1, { id: 1, name: 'A' });
         await client.remove(2);
@@ -121,7 +122,7 @@ describe('serviceClient', () => {
                 headers: { 'Content-Type': 'application/json' },
             })
         );
-        const client = serviceClient(AccountsAPI, http);
+        const client = serviceClient(AccountsAPI, http) as unknown as AccountsAPI;
 
         const profile = await client.getProfile(1);
         expect(profile).toEqual({ id: 1, name: 'Alice' });
@@ -134,14 +135,14 @@ describe('serviceClient', () => {
                 headers: { 'Content-Type': 'application/json' },
             })
         );
-        const client = serviceClient(AccountsAPI, http);
+        const client = serviceClient(AccountsAPI, http) as unknown as AccountsAPI;
 
         await expect(client.getProfile(1)).rejects.toThrow('response validation failed');
     });
 
     test('returns the raw Response when no responseSchema is declared', async () => {
         fetchMock.mockResolvedValue(new Response('raw-body', { status: 200 }));
-        const client = serviceClient(AccountsAPI, http);
+        const client = serviceClient(AccountsAPI, http) as unknown as AccountsAPI;
 
         const result = await client.getById(9);
         expect(result).toBeInstanceOf(Response);
@@ -155,7 +156,7 @@ describe('serviceClient', () => {
     });
 
     test('delegates Object.prototype members instead of treating them as call configs', () => {
-        const client = serviceClient(AccountsAPI, http);
+        const client = serviceClient(AccountsAPI, http) as unknown as AccountsAPI;
 
         // `calls` inherits from Object.prototype: without an own-property
         // check the proxy resolved `toString`/`hasOwnProperty` as generated
@@ -170,12 +171,12 @@ describe('serviceClient', () => {
 class TickerAPI {
     @getCall('/ticks', { stream: true })
     ticks(): AsyncIterable<unknown> {
-        return undefined as unknown;
+        return undefined as unknown as AsyncIterable<unknown>;
     }
 
     @getCall('/models', { stream: true, responseSchema: AccountSchema })
     models(): AsyncIterable<{ id: number; name: string }> {
-        return undefined as unknown;
+        return undefined as unknown as AsyncIterable<{ id: number; name: string }>;
     }
 }
 
@@ -204,7 +205,9 @@ describe('serviceClient stream calls (AD-09)', () => {
             await import('@opentelemetry/sdk-trace-base');
         const { trace } = await import('@opentelemetry/api');
         streamExporter = new InMemorySpanExporter();
-        const provider = new BasicTracerProvider({ spanProcessors: [new SimpleSpanProcessor(streamExporter)] });
+        const provider = new BasicTracerProvider({
+            spanProcessors: [new SimpleSpanProcessor(streamExporter as unknown as SpanExporter)],
+        });
         trace.setGlobalTracerProvider(provider);
     });
 
@@ -239,7 +242,7 @@ describe('serviceClient stream calls (AD-09)', () => {
 
     test('sends Accept: text/event-stream and returns parsed events in order', async () => {
         fetchMock.mockResolvedValue(sseResponse(['event: tick\ndata: {"n":1}\n\n', 'event: tick\ndata: {"n":2}\n\n']));
-        const client = serviceClient(TickerAPI, http);
+        const client = serviceClient(TickerAPI, http) as unknown as TickerAPI;
 
         const events = await collect(client.ticks());
 
@@ -255,7 +258,7 @@ describe('serviceClient stream calls (AD-09)', () => {
         fetchMock.mockResolvedValue(
             sseResponse(['data: {"id":1,"name":"Alice"}\n\n', 'data: {"id":2,"name":"Bob"}\n\n'])
         );
-        const client = serviceClient(TickerAPI, http);
+        const client = serviceClient(TickerAPI, http) as unknown as TickerAPI;
 
         expect(await collect(client.models())).toEqual([
             { id: 1, name: 'Alice' },
@@ -265,14 +268,14 @@ describe('serviceClient stream calls (AD-09)', () => {
 
     test('throws when a streamed event fails Zod validation', async () => {
         fetchMock.mockResolvedValue(sseResponse(['data: {"id":"nope","name":42}\n\n']));
-        const client = serviceClient(TickerAPI, http);
+        const client = serviceClient(TickerAPI, http) as unknown as TickerAPI;
 
         await expect(collect(client.models())).rejects.toThrow('response validation failed');
     });
 
     test('throws when the stream request fails', async () => {
         fetchMock.mockResolvedValue(new Response('nope', { status: 500 }));
-        const client = serviceClient(TickerAPI, http);
+        const client = serviceClient(TickerAPI, http) as unknown as TickerAPI;
 
         await expect(collect(client.ticks())).rejects.toThrow('stream request failed');
     });
@@ -280,7 +283,7 @@ describe('serviceClient stream calls (AD-09)', () => {
     test('ends the streamCall span with ERROR when the stream request fails', async () => {
         requireExporter().reset();
         fetchMock.mockResolvedValue(new Response('nope', { status: 500 }));
-        const client = serviceClient(TickerAPI, http);
+        const client = serviceClient(TickerAPI, http) as unknown as TickerAPI;
 
         await expect(collect(client.ticks())).rejects.toThrow('stream request failed');
 
@@ -298,7 +301,7 @@ describe('serviceClient stream calls (AD-09)', () => {
     test('emits a ServiceClient.streamCall CLIENT span with event count', async () => {
         requireExporter().reset();
         fetchMock.mockResolvedValue(sseResponse(['event: tick\ndata: {"n":1}\n\n', 'event: tick\ndata: {"n":2}\n\n']));
-        const client = serviceClient(TickerAPI, http);
+        const client = serviceClient(TickerAPI, http) as unknown as TickerAPI;
 
         await collect(client.ticks());
 
@@ -337,7 +340,7 @@ describe('serviceClient stream calls (AD-09)', () => {
         // the reader lock and span.
         requireExporter().reset();
         fetchMock.mockResolvedValue(inflightSseResponse('event: tick\ndata: {"n":1}\n\ndata: {"n":2}'));
-        const client = serviceClient(TickerAPI, http);
+        const client = serviceClient(TickerAPI, http) as unknown as TickerAPI;
 
         const seen: unknown[] = [];
         let completed = false;
@@ -370,7 +373,7 @@ describe('serviceClient stream calls (AD-09)', () => {
 
     test('delivers a trailing event buffered without a final newline on normal EOF', async () => {
         fetchMock.mockResolvedValue(sseResponse(['event: tick\ndata: {"n":1}\n\n', 'data: {"n":2}']));
-        const client = serviceClient(TickerAPI, http);
+        const client = serviceClient(TickerAPI, http) as unknown as TickerAPI;
 
         expect(await collect(client.ticks())).toEqual([
             { event: 'tick', data: { n: 1 } },

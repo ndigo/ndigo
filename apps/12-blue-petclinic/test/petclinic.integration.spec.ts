@@ -21,6 +21,7 @@
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { bootApp, MockHTTP, type BlueTestApp } from '@blue/test';
+import type { ConfigurableApplicationContext } from '@blue/context';
 import { MESSAGE_SOURCE } from '../src/context-tokens';
 import { PetClinicConfiguration } from '../src/petclinic-configuration';
 
@@ -34,7 +35,7 @@ describe('blue-petclinic', () => {
         app = bootApp([PetClinicConfiguration]);
         // Same wiring as the app bootstrap: the templates resolve messages
         // through the context's message source.
-        app.context.setMessageSource(app.context.getValue(MESSAGE_SOURCE));
+        (app.context as ConfigurableApplicationContext).setMessageSource(app.context.getValue(MESSAGE_SOURCE));
         http = new MockHTTP(app);
     });
 

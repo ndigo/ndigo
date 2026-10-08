@@ -12,7 +12,7 @@ describe('RingBuffer', () => {
     let rb: RingBuffer<string | number>;
 
     test('it should initialize with no arguments', () => {
-        rb = new RingBuffer<string | number>();
+        rb = new (RingBuffer as unknown as new () => RingBuffer<string | number>)();
         expect(rb).toBeInstanceOf(RingBuffer);
         expect(rb).toHaveProperty('capacity', RingBuffer.MIN_CAPACITY);
         expect(rb).toHaveProperty('length', 0);
@@ -44,7 +44,7 @@ describe('RingBuffer', () => {
 
     describe('instances', () => {
         beforeEach(() => {
-            rb = new RingBuffer<string | number>();
+            rb = new (RingBuffer as unknown as new () => RingBuffer<string | number>)();
         });
         afterEach(() => {
             rb = undefined as unknown as RingBuffer<string | number>;

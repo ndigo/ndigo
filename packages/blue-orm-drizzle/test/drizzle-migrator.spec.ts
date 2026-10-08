@@ -5,7 +5,10 @@
  */
 import '@tsmetadata/polyfill';
 import { describe, test, expect } from 'vitest';
-import { entity, generated, primaryColumn, column } from '@blue/orm';
+import { entity as entityDecorator, generated, primaryColumn, column } from '@blue/orm';
+
+// Spec-side type wrapper; runtime-identical to the production `entity` decorator.
+const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
 import { DrizzleDataSource, createTableStatements } from '../src/drizzle-data-source';
 import { DrizzleMigrator } from '../src/drizzle-migrator';
 import { DrizzleEntityManager } from '../src/drizzle-entity-manager';

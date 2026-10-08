@@ -7,7 +7,7 @@ import { describe, test, expect, beforeEach } from 'vitest';
 import { AuthServer } from '../src/server';
 import { AuthRouteGuard } from '../src/route-guard';
 import { AuthRegistry, Principal, AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@blue/auth-core';
-import { RouteHandlerMethod, type ModelAndView } from '@blue/dispatcher';
+import { type ModelAndView } from '@blue/dispatcher';
 import { type Route } from '@blue/router';
 
 function createMockAdapter(id: string, validateResult: Principal | null = null) {
@@ -32,13 +32,16 @@ function createMockPrincipal(id = '1', name = 'Test', roles: string[] = ['user']
 
 function createMockRoute(token: string | null = null) {
     return {
+        id: 'mock:test',
         path: '/test',
         params: {},
         data: {},
+        raw: 'test',
+        attributes: {},
         0: { name: 'test', raw: 'test', data: null },
         length: 1,
         getToken: () => token,
-    };
+    } as unknown as Route;
 }
 
 /**
@@ -105,7 +108,7 @@ describe('AuthRouteGuard', () => {
             setHandlerMetadata(handlerFn, { [AUTH_REQUIRED_KEY]: true });
 
             const route = createMockRoute('valid-token');
-            const handlerMethod: RouteHandlerMethod = {
+            const handlerMethod: object = {
                 handler: handlerFn,
                 method: 'get',
                 path: '/test',
@@ -125,7 +128,7 @@ describe('AuthRouteGuard', () => {
             setHandlerMetadata(handlerFn, { [AUTH_REQUIRED_KEY]: true });
 
             const route = createMockRoute(null);
-            const handlerMethod: RouteHandlerMethod = {
+            const handlerMethod: object = {
                 handler: handlerFn,
                 method: 'get',
                 path: '/test',
@@ -145,7 +148,7 @@ describe('AuthRouteGuard', () => {
             setHandlerMetadata(handlerFn, { [AUTH_REQUIRED_KEY]: true });
 
             const route = createMockRoute('invalid-token');
-            const handlerMethod: RouteHandlerMethod = {
+            const handlerMethod: object = {
                 handler: handlerFn,
                 method: 'get',
                 path: '/test',
@@ -169,7 +172,7 @@ describe('AuthRouteGuard', () => {
             });
 
             const route = createMockRoute('valid-token');
-            const handlerMethod: RouteHandlerMethod = {
+            const handlerMethod: object = {
                 handler: handlerFn,
                 method: 'handle',
                 path: '/test',
@@ -190,7 +193,7 @@ describe('AuthRouteGuard', () => {
             setHandlerMetadata(handlerFn, {});
 
             const route = createMockRoute(null);
-            const handlerMethod: RouteHandlerMethod = {
+            const handlerMethod: object = {
                 handler: handlerFn,
                 method: 'get',
                 path: '/test',
@@ -214,7 +217,7 @@ describe('AuthRouteGuard', () => {
             });
 
             const route = createMockRoute('token');
-            const handlerMethod: RouteHandlerMethod = {
+            const handlerMethod: object = {
                 handler: handlerFn,
                 method: 'adminAction',
                 path: '/test',
@@ -236,7 +239,7 @@ describe('AuthRouteGuard', () => {
             });
 
             const route = createMockRoute('token');
-            const handlerMethod: RouteHandlerMethod = {
+            const handlerMethod: object = {
                 handler: handlerFn,
                 method: 'adminAction',
                 path: '/test',
@@ -259,7 +262,7 @@ describe('AuthRouteGuard', () => {
             });
 
             const route = createMockRoute('token');
-            const handlerMethod: RouteHandlerMethod = {
+            const handlerMethod: object = {
                 handler: handlerFn,
                 method: 'editContent',
                 path: '/test',
@@ -281,7 +284,7 @@ describe('AuthRouteGuard', () => {
             });
 
             const route = createMockRoute('token');
-            const handlerMethod: RouteHandlerMethod = {
+            const handlerMethod: object = {
                 handler: handlerFn,
                 method: 'get',
                 path: '/test',
@@ -300,7 +303,7 @@ describe('AuthRouteGuard', () => {
             setHandlerMetadata(handlerFn, { [AUTH_REQUIRED_KEY]: true });
 
             const route = createMockRoute('token');
-            const handlerMethod: RouteHandlerMethod = {
+            const handlerMethod: object = {
                 handler: handlerFn,
                 method: 'get',
                 path: '/test',

@@ -6,9 +6,9 @@
 import { describe, test, expect } from 'vitest';
 import type { JSONObject } from '@blue/core';
 import { StandardEnvironment } from '@blue/context';
+import type { ConfigFileReader } from '@blue/context';
 import { decode } from '@toon-format/toon';
 import { mergeConfig, StandardConfigFileLoader } from '../src/config-file-loader';
-import type { ConfigFileReader } from '../src/config-file-loader';
 
 describe('mergeConfig', () => {
     test('objects merge, scalars override, arrays replace', () => {

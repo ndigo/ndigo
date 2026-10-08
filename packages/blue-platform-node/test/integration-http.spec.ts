@@ -8,6 +8,8 @@ import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { getMapping, parameters, queryValue, requestMapping, ModelAndView } from '@blue/dispatcher';
 import { View, ViewTarget } from '@blue/view';
+import { MediaType } from '@blue/core';
+import type { Route } from '@blue/router';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -24,12 +26,13 @@ import { HTTPServer } from '../src/http-server';
 /** Renders the language the dispatcher resolved for the request. */
 class LanguageProbeView implements View {
     #language: string;
+    mediaType: MediaType | null = null;
 
     constructor(language: string) {
         this.#language = language;
     }
 
-    async render(model: unknown, request: unknown, target?: ViewTarget): Promise<void> {
+    async render(model: unknown, request: Route, target?: ViewTarget): Promise<void> {
         await target?.commit(JSON.stringify({ language: this.#language }), model, request);
     }
 }

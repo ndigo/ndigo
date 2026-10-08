@@ -46,12 +46,12 @@ describe('blue-api config-server demo (AD-29 Wave 3)', () => {
             // Self-served loop (TST-4): the stub fetch serves the SAME mutable
             // document `/api/config.json` exposes, so mutating
             // REMOTE_DOCUMENT is a genuine change at the "config server".
-            fetch: async () => ({
+            fetch: (async () => ({
                 ok: true,
                 status: 200,
                 headers: { get: () => null },
                 text: async () => JSON.stringify(REMOTE_DOCUMENT),
-            }),
+            })) as unknown as typeof fetch,
         });
 
         context = await app.run();

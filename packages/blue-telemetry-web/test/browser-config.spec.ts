@@ -7,7 +7,7 @@ import { trace, metrics, diag, DiagConsoleLogger, DiagLogLevel } from '@opentele
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
 import type { Logger } from '@opentelemetry/api-logs';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { BasicTracerProvider, ConsoleSpanExporter } from '@opentelemetry/sdk-trace-base';
+import { BasicTracerProvider, ConsoleSpanExporter, type SpanExporter } from '@opentelemetry/sdk-trace-base';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { configureBrowserTelemetry } from '../src/browser-config';
 import { LoggerFactory } from '@blue/telemetry';
@@ -17,17 +17,19 @@ import { LoggerFactory } from '@blue/telemetry';
 // registered provider (DSG-1 gating + OP-14 batching).
 const spanProcessors: { kind: 'simple' | 'batch'; exporter: unknown }[] = [];
 vi.mock('@opentelemetry/sdk-trace-base', async (importOriginal) => {
-    const actual = await importOriginal();
+    // vitest types the factory's importOriginal as Promise<unknown> — the
+    // real module shape is needed for the class-extension spreads below.
+    const actual = (await importOriginal()) as typeof import('@opentelemetry/sdk-trace-base');
     return {
         ...actual,
         SimpleSpanProcessor: class extends actual.SimpleSpanProcessor {
-            constructor(exporter: unknown) {
+            constructor(exporter: SpanExporter) {
                 super(exporter);
                 spanProcessors.push({ kind: 'simple', exporter });
             }
         },
         BatchSpanProcessor: class extends actual.BatchSpanProcessor {
-            constructor(exporter: unknown) {
+            constructor(exporter: SpanExporter) {
                 super(exporter);
                 spanProcessors.push({ kind: 'batch', exporter });
             }
@@ -78,7 +80,7 @@ describe('configureBrowserTelemetry', () => {
     });
 
     it('enables diagnostics when configured', () => {
-        const diagSpy = vi.spyOn(diag, 'setLogger').mockImplementation(() => undefined);
+        const diagSpy = vi.spyOn(diag, 'setLogger').mockImplementation(() => true);
 
         configureBrowserTelemetry({ serviceName: 'test', enableDiagnostics: true });
 
@@ -86,7 +88,7 @@ describe('configureBrowserTelemetry', () => {
     });
 
     it('does not enable diagnostics by default', () => {
-        const diagSpy = vi.spyOn(diag, 'setLogger').mockImplementation(() => undefined);
+        const diagSpy = vi.spyOn(diag, 'setLogger').mockImplementation(() => true);
 
         configureBrowserTelemetry({ serviceName: 'test' });
 

@@ -24,8 +24,11 @@ import type { LockDriver, LockHandle } from '@blue/locks';
 import type { RedisConnection } from '../connection';
 
 /**
- * Atomic acquire: take the per-key counter, then `SET NX PX` — one winner
- * even when two workers race. Returns the token (≥ 1) or `0` (held).
+ * Atomic acquire: take the per-key counter and the lease in one unit, and
+ * only on SUCCESS — a contended attempt does not burn a token. Sequence
+ * parity with `InProcessLockDriver` (consecutive tokens start at 1; a
+ * released-then-reacquired key keeps counting). One winner even when two
+ * workers race. Returns the token (≥ 1) or `0` (held).
  *
  * KEYS: lease key, token counter.
  * ARGV: ttl (ms).
@@ -33,11 +36,14 @@ import type { RedisConnection } from '../connection';
 const ACQUIRE_SCRIPT = `local key = KEYS[1]
 local seq = KEYS[2]
 local ttl = tonumber(ARGV[1])
-local token = redis.call('INCR', seq)
-if redis.call('SET', key, token, 'NX', 'PX', ttl) then
-  return token
+-- EXISTS is false for an expired key (the TTL reaps it), so a lapsed lease
+-- is acquirable exactly like the in-process table.
+if redis.call('EXISTS', key) == 1 then
+  return 0
 end
-return 0`;
+local token = redis.call('INCR', seq)
+redis.call('SET', key, token, 'PX', ttl)
+return token`;
 
 /**
  * Atomic token-checked release. Returns `1` when this token still owns the
@@ -115,6 +121,8 @@ export class RedisLockDriver implements LockDriver {
 
     readonly #connection: RedisConnection;
     readonly #prefix: string;
+    /** Keys this instance acquired, with the token that won. */
+    readonly #acquired = new Map<string, number>();
     #closed = false;
 
     /**
@@ -150,6 +158,7 @@ export class RedisLockDriver implements LockDriver {
             if (typeof reply !== 'number' || reply < 1) {
                 return null; // held — non-blocking contract
             }
+            this.#acquired.set(lockKey, reply);
             return this.#handle(lockKey, reply, now + options.ttlMs);
         });
     }
@@ -196,17 +205,42 @@ export class RedisLockDriver implements LockDriver {
                         keys: [lockKey],
                         arguments: [String(token)],
                     });
-                    return typeof reply === 'number' && reply === 1;
+                    const released = typeof reply === 'number' && reply === 1;
+                    if (released && this.#acquired.get(lockKey) === token) {
+                        this.#acquired.delete(lockKey);
+                    }
+                    return released;
                 });
             },
         };
     }
 
     /**
-     * Seals this handle (borrowed connection untouched; idempotent). Later
-     * operations reject with a closed-handle error.
+     * Releases this driver's own leases (token-checked — a successor's
+     * lease is never touched) and seals the handle. The borrowed connection
+     * is untouched; idempotent.
      */
     async close(): Promise<void> {
+        if (this.#closed) {
+            return;
+        }
+        // SPI parity with InProcessLockDriver.close: release every lease
+        // acquired through THIS instance, fencing-guarded by token. A lease
+        // that already expired or was superseded is left alone either way.
+        // Releases are independent (each is token-checked server-side), so
+        // they drain in parallel.
+        const owned = [...this.#acquired.entries()];
+        this.#acquired.clear();
+        await Promise.all(
+            owned.map(([lockKey, token]) =>
+                this.#connection.run(async (client) => {
+                    await client.eval(RELEASE_SCRIPT, {
+                        keys: [lockKey],
+                        arguments: [String(token)],
+                    });
+                })
+            )
+        );
         this.#closed = true;
     }
 

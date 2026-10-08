@@ -106,7 +106,17 @@
       "@blue/test": ["./packages/blue-test/src"],
       "@blue/test/*": ["./packages/blue-test/src/*"],
       "@blue/inspect": ["./packages/blue-inspect/src"],
-      "@blue/inspect/*": ["./packages/blue-inspect/src/*"]
+      "@blue/inspect/*": ["./packages/blue-inspect/src/*"],
+      "@blue/locks": ["./packages/blue-locks/src"],
+      "@blue/locks/*": ["./packages/blue-locks/src/*"],
+      "@blue/cluster": ["./packages/blue-cluster/src"],
+      "@blue/cluster/*": ["./packages/blue-cluster/src/*"],
+      "@blue/cli": ["./packages/blue-cli/src"],
+      "@blue/cli/*": ["./packages/blue-cli/src/*"],
+      // redis subpaths first: /cache and /pubsub are declared above, /locks
+      // joins the family (its driver is a top-level surface of @blue/redis).
+      "@blue/redis/locks": ["./packages/blue-redis/src/locks"],
+      "@blue/redis/locks/*": ["./packages/blue-redis/src/locks/*"]
     }
   },
   "include": [
@@ -117,5 +127,9 @@
     "apps/*/client/**/*.ts",
     "apps/*/client/**/*.d.ts"
   ],
-  "exclude": ["**/node_modules/**", "**/lib/**", "**/dist/**", "**/coverage/**", "**/e2e/**", "**/bench/**"]
+  // Exclusions are anchored to BUILT OUTPUTS (SWP-M1): the old `**/lib/**`
+  // also hid genuine sources like apps/11-blue-conduit-web/src/lib from the
+  // lane. Playwright e2e specs stay excluded — they are not covered by any
+  // tsc pass (deliberate: their globals are not in the 'types' array).
+  "exclude": ["**/node_modules/**", "packages/*/lib/**", "apps/*/dist/**", "**/coverage/**", "**/e2e/**", "**/bench/**"]
 }

@@ -78,8 +78,9 @@ Backend identifier for diagnostics.
 
 > **close**(): `Promise`\<`void`\>
 
-Seals this handle (borrowed connection untouched; idempotent). Later
-operations reject with a closed-handle error.
+Releases this driver's own leases (token-checked — a successor's
+lease is never touched) and seals the handle. The borrowed connection
+is untouched; idempotent.
 
 #### Returns
 

@@ -139,6 +139,28 @@ export const blueAliases: { find: RegExp; replacement: string }[] = [
         expect(packageJson.sideEffects).toBe(false);
     });
 
+    it('stays dependency-free by default (no jobs wiring)', async () => {
+        await packageGenerator(tree, { name: 'plain-pkg' });
+
+        const packageJsonContent = tree.read('packages/blue-plain-pkg/package.json', 'utf-8');
+        if (packageJsonContent === null) {
+            throw new Error('expected generated package.json to exist');
+        }
+        const packageJson = JSON.parse(packageJsonContent);
+        expect(packageJson.dependencies).toEqual({});
+    });
+
+    it('wires @blue/jobs when the jobs option is set', async () => {
+        await packageGenerator(tree, { name: 'jobber', jobs: true });
+
+        const packageJsonContent = tree.read('packages/blue-jobber/package.json', 'utf-8');
+        if (packageJsonContent === null) {
+            throw new Error('expected generated package.json to exist');
+        }
+        const packageJson = JSON.parse(packageJsonContent);
+        expect(packageJson.dependencies).toEqual({ '@blue/jobs': '~0.0.1' });
+    });
+
     it('should generate a manifest that satisfies the docs-standard rules', async () => {
         // Short name on purpose: the description fallback must clear the gate's
         // 25-char minimum, not just avoid the "Blue <Name>" placeholder.

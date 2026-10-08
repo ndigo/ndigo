@@ -9,7 +9,8 @@ import { GenericApplicationContext } from '@blue/context';
 import { JOB_DRIVER, JOB_HANDLER_REGISTRY } from '../src/context-tokens';
 import { InProcessJobDriver } from '../src/in-process-job-driver';
 import { JobHandlerRegistry } from '../src/job-handler-registry';
-import { JobRunner } from '../src/job-runner';
+import { JobRunner, type JobRunnerOptions } from '../src/job-runner';
+import type { ClaimOptions, JobRequest } from '../src/job';
 
 const T0 = 1_000_000;
 
@@ -238,6 +239,112 @@ describe('JobRunner', () => {
         expect(new JobRunner({ autoStart: true }).isAutoStartup).toBe(true);
         await runner.close();
         await runner.close(); // idempotent
+    });
+
+    test('crash mid-run: an expired lease is reclaimed by the next tick and re-executed (AD72-M2)', async () => {
+        // At-least-once end-to-end: the handler starts, the process "crashes"
+        // (the lease is never renewed), the next tick reclaims and re-runs
+        // the job with attempts incremented; the maxAttempts boundary still
+        // terminates it.
+        const { runner, driver, registry, advance } = makeRunner({ concurrency: 2 });
+        const seenAttempts: number[] = [];
+        let finished = 0;
+        let releaseFirst: () => void = () => undefined;
+        let firstRun = new Promise<void>((resolve) => {
+            releaseFirst = resolve;
+        });
+        registry.register('crashy', async (_payload, context) => {
+            seenAttempts.push(context.attempt);
+            // The first execution hangs mid-run (the simulated crash): the
+            // lease expires un-renewed while it is still in flight.
+            await firstRun;
+            finished += 1;
+        });
+
+        const record = await driver.enqueue({ type: 'crashy', maxAttempts: 2 });
+        await runner.tick();
+        expect(seenAttempts).toEqual([1]);
+
+        // "Crash": no heartbeat happened, the lease lapses, and the next tick
+        // reclaims the job for a second execution.
+        advance(20_000); // past leaseMs (10 000) + slack
+        await runner.tick();
+        expect(seenAttempts).toEqual([1, 2]);
+
+        releaseFirst();
+        await waitFor(() => finished === 2); // both executions settled
+        expect(record.id).toBeDefined();
+        // The second execution consumed the maxAttempts budget terminally —
+        // no further delivery after the settle.
+        await runner.tick();
+        expect(seenAttempts).toEqual([1, 2]);
+        expect(await driver.size()).toBe(0);
+    });
+
+    test('the runner settles its last heartbeat before the terminal transition (AD72-M3)', async () => {
+        // The ordering contract: complete() must never observe a heartbeat
+        // still in flight behind it (a lease re-extend racing a terminal
+        // removal). A slow durable backend (300 ms heartbeat) with an interval
+        // that fires mid-run makes the old fire-and-forget implementation
+        // fail deterministically: complete() is called while the beat is
+        // still on the wire.
+        const { driver, registry } = makeRunner();
+        let beating = 0;
+        let sawInFlightAtComplete = false;
+        const recording: JobRunnerOptions['driver'] = {
+            kind: 'recording',
+            enqueue: (request: JobRequest) => driver.enqueue(request),
+            claim: (options: ClaimOptions) => driver.claim(options),
+            complete: async (id: string) => {
+                if (beating > 0) {
+                    sawInFlightAtComplete = true;
+                }
+                await driver.complete(id);
+            },
+            retry: async (id: string) => {
+                await driver.retry(id, 0, 'recording');
+            },
+            fail: async (id: string, error: string) => {
+                if (beating > 0) {
+                    sawInFlightAtComplete = true;
+                }
+                await driver.fail(id, error);
+            },
+            heartbeat: async (id: string, leaseMs: number) => {
+                beating += 1;
+                try {
+                    await delay(300); // simulate a durable backend's wire time
+                    await driver.heartbeat(id, leaseMs);
+                } finally {
+                    beating -= 1;
+                }
+            },
+            size: () => driver.size(),
+            close: () => driver.close(),
+        };
+        // leaseMs 2000 → interval 1000 ms, so a beat starts 1000 ms into the
+        // run; the handler settles at ~1100 ms, mid-beat without the await.
+        const runner = new JobRunner({
+            driver: recording,
+            registry,
+            leaseMs: 2_000,
+            pollIntervalMs: 5,
+            clock: () => T0,
+        });
+        registry.register('slow', async () => {
+            await delay(1100); // settles while the second-beat is in flight
+        });
+        const record = await driver.enqueue({ type: 'slow' });
+
+        await runner.tick();
+        await runner.drain();
+
+        // The runner awaited the beat: complete never saw one in flight, and
+        // the beat had time to land (the driver-side heartbeat ran).
+        expect(sawInFlightAtComplete).toBe(false);
+        expect(beating).toBe(0);
+        expect(await driver.size()).toBe(0);
+        await runner.close();
     });
 });
 

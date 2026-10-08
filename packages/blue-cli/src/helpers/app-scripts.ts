@@ -10,7 +10,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { spawn } from 'node:child_process';
+import { spawn, type ChildProcess } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve as resolvePath } from 'node:path';
 import { runCluster, type ClusterRunResult } from '@blue/cluster';
@@ -79,7 +79,7 @@ export function appScriptCommand(
     if (argv.length === 0) {
         throw usageError(`"${scriptKey}" in ${join(dir, 'package.json')} resolves to an empty command`);
     }
-    if (argv.some((token) => /[|&;<>()]/u.test(token))) {
+    if (argv.some((token) => /[|&;<>()$`]/u.test(token))) {
         throw usageError(
             `"${scriptKey}" in ${join(dir, 'package.json')} uses shell operators — ` +
                 'serve runs the script without a shell, so keep it a single command ' +
@@ -110,14 +110,18 @@ export async function runAppSupervised(
 ): Promise<ClusterRunResult> {
     const resolved = appScriptCommand(dir, scriptKey, hint);
     const env = { ...resolved.env };
-    if (options.port !== undefined) {
-        env.PORT = String(options.port);
-    }
+    // `port` is the BASE for the cluster's per-slot PORT derivation
+    // (slot 0 = port, slot N = port + N), exactly as the supervisor
+    // documents. Passing it as `basePort` (not a flat `env.PORT`) is what
+    // lets ClusterRunner's #spawnSlot derive distinct ports per slot; a
+    // flat env.PORT would give every slot the same port and they would
+    // collide on it.
     return runCluster({
         size: options.cluster ?? 1,
         command: resolved.argv,
         cwd: resolved.cwd,
         env,
+        basePort: options.port,
     });
 }
 
@@ -133,26 +137,31 @@ export async function runAppSupervised(
  */
 export async function runAppOnce(dir: string, scriptKey: string, hint: string): Promise<number> {
     const resolved = appScriptCommand(dir, scriptKey, hint);
-    const child = spawn(resolved.argv[0] ?? '', resolved.argv.slice(1), {
-        cwd: resolved.cwd,
-        env: resolved.env,
-        stdio: 'inherit',
-    });
-    const exit = new Promise<number>((resolve) => {
-        child.once('exit', resolve);
-    });
-    // The SAME handler object is registered and removed (signal handlers
-    // receive the signal name as their argument, so `relay` doubles as the
-    // handler).
+    // Handlers are installed BEFORE the spawn (AD75-H2): a signal arriving
+    // between spawn and registration would otherwise drop the relay and
+    // orphan the child. The relay reads the child through a mutable holder —
+    // a signal before the spawn has nothing to relay, never an orphan.
+    let child: ChildProcess | null = null;
     const relay = (signal: NodeJS.Signals): void => {
-        child.kill(signal);
+        child?.kill(signal);
     };
     for (const signal of ['SIGINT', 'SIGTERM'] as NodeJS.Signals[]) {
         process.on(signal, relay);
     }
     try {
+        child = spawn(resolved.argv[0] ?? '', resolved.argv.slice(1), {
+            cwd: resolved.cwd,
+            env: resolved.env,
+            stdio: 'inherit',
+        });
+        const exit = new Promise<number>((resolve) => {
+            child?.once('exit', resolve);
+        });
         return await exit;
     } finally {
+        // The SAME handler object is registered and removed (signal handlers
+        // receive the signal name as their argument, so `relay` doubles as
+        // the handler).
         for (const signal of ['SIGINT', 'SIGTERM'] as NodeJS.Signals[]) {
             process.off(signal, relay);
         }
@@ -168,17 +177,19 @@ export async function runAppOnce(dir: string, scriptKey: string, hint: string): 
  * @returns The child's exit code.
  */
 export async function runWorkspaceOnce(extraArgv: string[], cwd?: string): Promise<number> {
-    const child = spawn('pnpm', extraArgv, { stdio: 'inherit', cwd });
-    const exit = new Promise<number>((resolve) => {
-        child.once('exit', resolve);
-    });
+    // Handlers installed before spawn (AD75-H2) — see runAppOnce.
+    let child: ChildProcess | null = null;
     const relay = (signal: NodeJS.Signals): void => {
-        child.kill(signal);
+        child?.kill(signal);
     };
     for (const signal of ['SIGINT', 'SIGTERM'] as NodeJS.Signals[]) {
         process.on(signal, relay);
     }
     try {
+        child = spawn('pnpm', extraArgv, { stdio: 'inherit', cwd });
+        const exit = new Promise<number>((resolve) => {
+            child?.once('exit', resolve);
+        });
         return await exit;
     } finally {
         for (const signal of ['SIGINT', 'SIGTERM'] as NodeJS.Signals[]) {

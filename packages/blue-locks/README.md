@@ -63,6 +63,24 @@ The full API is generated from JSDoc via `pnpm doc:api` into
 - `likeLockDriver` — structural guard for beans and options.
 - `LOCK_DRIVER` — the context token for bean resolution.
 
+## Driver parity notes (AD-73)
+
+- **Tokens are consecutive.** Only a successful `acquire` advances the
+  per-key counter — a contended attempt returns `null` and burns nothing — so
+  both drivers emit the same sequence (1, 2, 3, …) for the same acquire
+  history, and a released key's successor sees exactly `prior + 1`.
+- **`close()` releases this driver's own leases**, token-checked: a
+  successor's lease (another driver, or a re-acquisition) is never touched
+  (same fencing rule as `release()`).
+- **Clock skew (Redis).** `LockHandle.expiresAt` is captured from the
+  **client** clock (`now + ttlMs`) while the Redis TTL runs on the **server**
+  clock. With skew, `expiresAt` is a diagnostic approximation; fencing is
+  unaffected because every mutation re-checks the live server state via Lua.
+  Healthy deployments keep NTP-synchronized clocks.
+- **Redis `EXISTS`-based acquire** treats an expired key as free (the TTL
+  reaps it lazily), exactly matching the in-process table — a lapsed lease is
+  simply gone, no sweeper.
+
 ## Development
 
 ```bash

@@ -60,6 +60,30 @@ describe('@blue/scheduler resolveScheduledSpec', () => {
         expect(() => resolveScheduledSpec(42 as unknown as never)).toThrow(TypeError);
         expect(() => resolveScheduledSpec(undefined as unknown as never)).toThrow(TypeError);
     });
+
+    test('normalizes lock fields (AD-73)', () => {
+        expect(resolveScheduledSpec({ cron: '* * * * * *', lock: 'gate', lockWait: 500, lockTtl: '10s' })).toEqual({
+            cron: '* * * * * *',
+            lockKey: 'gate',
+            lockWaitMs: 500,
+            lockTtlMs: 10_000,
+        });
+        expect(resolveScheduledSpec({ fixedRate: '1m', lock: 'gate', lockWaitStep: 25 })).toEqual({
+            fixedRateMs: 60_000,
+            lockKey: 'gate',
+            lockWaitStepMs: 25,
+        });
+    });
+
+    test('rejects malformed lock fields at decoration time (AD-73)', () => {
+        expect(() => resolveScheduledSpec({ cron: '* * * * * *', lock: '' })).toThrow(/invalid lock name/);
+        expect(() => resolveScheduledSpec({ cron: '* * * * * *', lock: 'bad name' })).toThrow(/invalid lock name/);
+        expect(() => resolveScheduledSpec({ cron: '* * * * * *', lock: 'gate', lockWait: 'soon' })).toThrow(/lockWait/);
+        expect(() => resolveScheduledSpec({ cron: '* * * * * *', lock: 'gate', lockTtl: 0 })).toThrow(/lockTtl/);
+        expect(() => resolveScheduledSpec({ cron: '* * * * * *', lock: 'gate', lockWaitStep: -5 })).toThrow(
+            /lockWaitStep/
+        );
+    });
 });
 
 describe('@blue/scheduler @scheduled decorator', () => {

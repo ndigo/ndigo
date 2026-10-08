@@ -98,9 +98,11 @@ interface JobDriver {
 ### D-3 — Producer facade `JobQueue`
 
 `JobQueue` wraps a driver for producers: `enqueue({ type, payload, delayMs?,
-runAt? , maxAttempts?, timeoutMs? })` with defaults applied in one place
-(`maxAttempts` 3, `delayMs` ⇄ `runAt` validation). Producers never see
-`claim`/`complete`.
+runAt? , maxAttempts?, timeoutMs? })` with the default `maxAttempts` filled
+in by the queue; drivers are the single normalization/validation point
+(`resolveJobRequest`: `delayMs` ⇄ `runAt` exclusivity, non-finite/negative
+times, attempt/timeout integers), so every backend rejects the same bad
+input. Producers never see `claim`/`complete`.
 
 ### D-4 — Worker engine `JobRunner`
 

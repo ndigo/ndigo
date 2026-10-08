@@ -51,11 +51,37 @@ readonly `string`[]
 
 ## Methods
 
+### check()
+
+> **check**(`names?`): `Promise`\<[`HealthStatus`](../interfaces/HealthStatus.md)\>
+
+Runs the registered indicators (or the named subset) and aggregates
+the results (AD-76 D-6).
+
+Unknown names in `names` are skipped; an empty intersection produces
+`{ status: 'UNKNOWN', components: {} }` — callers decide the 404.
+
+#### Parameters
+
+##### names?
+
+readonly `string`[]
+
+The indicator names to probe; all when omitted.
+
+#### Returns
+
+`Promise`\<[`HealthStatus`](../interfaces/HealthStatus.md)\>
+
+The aggregate health status with per-indicator details.
+
+***
+
 ### checkAll()
 
 > **checkAll**(): `Promise`\<[`HealthStatus`](../interfaces/HealthStatus.md)\>
 
-Runs every indicator and aggregates the results.
+Runs every registered indicator and aggregates the results.
 
 #### Returns
 

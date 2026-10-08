@@ -60,6 +60,36 @@ A symbol indicating that the value is aware.
 
 ## Methods
 
+### component()
+
+> **component**(`name`): `Promise`\<[`HealthResponseView`](HealthResponseView.md) \| `ResponseEntity`\<`void`\>\>
+
+Serves a health group or a single component under `/health/:name`
+(AD-76 D-6).
+
+A configured group (from `management.health.groups.<name>.include`)
+shadows a same-named component and answers with the aggregate over
+the members that are registered; a bare component answers with its
+own result document. Unknown names 404; a group with no registered
+members 404 too. A `DOWN` aggregate answers `503` exactly like the
+root document.
+
+#### Parameters
+
+##### name
+
+`string`
+
+The group or component name.
+
+#### Returns
+
+`Promise`\<[`HealthResponseView`](HealthResponseView.md) \| `ResponseEntity`\<`void`\>\>
+
+The health document at the aggregate status, or 404.
+
+***
+
 ### health()
 
 > **health**(): `Promise`\<[`HealthResponseView`](HealthResponseView.md)\>

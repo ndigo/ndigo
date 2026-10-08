@@ -461,22 +461,27 @@ The schema itself lives at
 
 Documented framework keys. The **Read from** column is the authority: keys
 marked with a CLI/env/builder/argument channel are _not_ read from
-`config/application.json` (the `profiles`, `telemetry` and `management`
-sections are annotated `"x-blue-read-from-config": false`):
+`config/application.json` (the `profiles` and `telemetry` sections are
+annotated `"x-blue-read-from-config": false`; `management.*` is read by
+`@blue/management`'s `ManagementProperties` reader — AD-76):
 
-| Key                             | Type                                 | Default             | Read from                                                   | Meaning                                                               |
-| ------------------------------- | ------------------------------------ | ------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------- |
-| `server.name`                   | string                               | `blue-api`          | Application `@configurationProperties('server')` class      | Application/server name (the demo binds it; the framework does not).  |
-| `server.port`                   | integer                              | `3000` (`PORT` env) | Application `@configurationProperties('server')` class      | TCP port to listen on (`0` requests an ephemeral port).               |
-| `server.host`                   | string                               | `127.0.0.1`         | Not config-read — programmatic `HTTPServer({ host })`       | Host/interface to bind to (platform-node `HTTPServer` default).       |
-| `profiles.active`               | string[]                             | —                   | CLI `--profiles.active` / `BLUE_PROFILES_ACTIVE` / builder  | Profiles to activate.                                                 |
-| `profiles.default`              | string[]                             | —                   | CLI `--profiles.default` / `BLUE_PROFILES_DEFAULT`          | Fallback profiles used when nothing is active.                        |
-| `profiles.group.<name>`         | string[]                             | —                   | CLI `--profiles.group.<name>` / `BLUE_PROFILES_GROUPS`      | Profile group name → member profiles.                                 |
-| `telemetry.sampler`             | `'always'` \| `'off'` \| `{ ratio }` | `always`            | `configureTelemetry()` argument                             | Root-span sampling (ratio in `[0, 1]`).                               |
-| `telemetry.traceExporter`       | exporter spec                        | `console`           | `configureTelemetry()` argument                             | Trace export: `console` \| `none` \| `{ url, headers? }` (OTLP/HTTP). |
-| `telemetry.metricExporter`      | exporter spec                        | `console`           | `configureTelemetry()` argument                             | Metric export — same spec as `traceExporter`.                         |
-| `telemetry.logExporter`         | exporter spec                        | `console`           | `configureTelemetry()` argument                             | Log export — same spec as `traceExporter`.                            |
-| `management.redactHealthErrors` | boolean                              | `true`              | `ManagementAutoConfiguration(options)` constructor argument | Redact thrown health-indicator errors on `/health`.                   |
+| Key                                     | Type                                 | Default                | Read from                                                   | Meaning                                                                                          |
+| --------------------------------------- | ------------------------------------ | ---------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `server.name`                           | string                               | `blue-api`             | Application `@configurationProperties('server')` class      | Application/server name (the demo binds it; the framework does not).                             |
+| `server.port`                           | integer                              | `3000` (`PORT` env)    | Application `@configurationProperties('server')` class      | TCP port to listen on (`0` requests an ephemeral port).                                          |
+| `server.host`                           | string                               | `127.0.0.1`            | Not config-read — programmatic `HTTPServer({ host })`       | Host/interface to bind to (platform-node `HTTPServer` default).                                  |
+| `profiles.active`                       | string[]                             | —                      | CLI `--profiles.active` / `BLUE_PROFILES_ACTIVE` / builder  | Profiles to activate.                                                                            |
+| `profiles.default`                      | string[]                             | —                      | CLI `--profiles.default` / `BLUE_PROFILES_DEFAULT`          | Fallback profiles used when nothing is active.                                                   |
+| `profiles.group.<name>`                 | string[]                             | —                      | CLI `--profiles.group.<name>` / `BLUE_PROFILES_GROUPS`      | Profile group name → member profiles.                                                            |
+| `telemetry.sampler`                     | `'always'` \| `'off'` \| `{ ratio }` | `always`               | `configureTelemetry()` argument                             | Root-span sampling (ratio in `[0, 1]`).                                                          |
+| `telemetry.traceExporter`               | exporter spec                        | `console`              | `configureTelemetry()` argument                             | Trace export: `console` \| `none` \| `{ url, headers? }` (OTLP/HTTP).                            |
+| `telemetry.metricExporter`              | exporter spec                        | `console`              | `configureTelemetry()` argument                             | Metric export — same spec as `traceExporter`.                                                    |
+| `telemetry.logExporter`                 | exporter spec                        | `console`              | `configureTelemetry()` argument                             | Log export — same spec as `traceExporter`.                                                       |
+| `management.redactHealthErrors`         | boolean                              | `true`                 | `ManagementAutoConfiguration(options)` constructor argument | Redact thrown health-indicator errors on `/health`.                                              |
+| `management.endpoints.exposure.include` | string[]                             | `["health","metrics"]` | `@blue/management` `readManagementSettings` (config read)   | Management endpoint ids to serve (`*` = all; `loggers`/`env`/`configprops` are opt-in, AD-76).   |
+| `management.endpoints.exposure.exclude` | string[]                             | —                      | `@blue/management` `readManagementSettings` (config read)   | Management endpoint ids withheld; wins over `include` (AD-76).                                   |
+| `management.endpoints.env.showValues`   | boolean                              | `false`                | `@blue/management` `readManagementSettings` (config read)   | When true, `/env` emits the raw stored config text; decrypted plaintext is never served (AD-76). |
+| `management.health.groups`              | `{ <name>: { include: string[] } }`  | —                      | `@blue/management` `readManagementSettings` (config read)   | Health groups served at `/health/<name>` aggregating the listed components (AD-76).              |
 
 ## Recommended reading
 

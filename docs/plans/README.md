@@ -7,6 +7,21 @@ Every implemented plan has its **decision recorded** in
 
 ## Completed Plans
 
+### 2026-10-08 - Actuator Parity
+
+`@blue/management` (AD-76), closing GAP-4: `/loggers` (level index,
+per-logger reads, live `POST` changes over a per-name registry in
+`@blue/log`), `/env` (sources with origins, values redacted by default,
+`showValues` never serves decrypted plaintext, `?toMatch=`), `/configprops`
+(declared `@configurationProperties` keys + types, never values), health
+groups + single-component reads at `/health/<name>`, and an opt-in exposure
+model (`management.endpoints.exposure.include` — the HI-5 `management.*`
+annotation flips to a real read path).
+
+[Read plan](2026-10-08_ACTUATOR_PARITY.md)
+
+---
+
 ### 2026-10-07 - Durable Jobs and Transactional Outbox
 
 `@blue/jobs` (AD-72), closing GAP-1: one `JobDriver` SPI (at-least-once,

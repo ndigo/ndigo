@@ -23,6 +23,7 @@ import type { ManagementAutoConfigurationOptions as ManagementOptions } from '..
 
 interface SchemaNode {
     properties?: Record<string, SchemaNode>;
+    'x-blue-read-from-config'?: boolean;
 }
 
 const SCHEMA_PATH = new URL('../schema/application.schema.json', import.meta.url);
@@ -45,24 +46,40 @@ const MANAGEMENT_TYPE_KEYS: Array<keyof ManagementOptions> = ['accessGuard', 're
 
 const schemaKeysOf = (namespace: string): string[] => Object.keys(schema.properties?.[namespace]?.properties ?? {});
 
+/**
+ * The schema keys of a section that carry the constructor-option annotation
+ * (`x-blue-read-from-config: false`) — the only ones mirroring an option
+ * type, post AD-76 D-5 (the read-from-config keys are NOT options).
+ */
+const annotatedKeysOf = (namespace: string): string[] =>
+    Object.entries(schema.properties?.[namespace]?.properties ?? {})
+        .filter(([, node]) => node['x-blue-read-from-config'] === false)
+        .map(([key]) => key);
+
 describe('schema ⇄ option-type parity (BOOT-4)', () => {
     test('telemetry.* schema keys are a subset of TelemetryConfig keys', () => {
         const unknown = schemaKeysOf('telemetry').filter((key) => !TELEMETRY_TYPE_KEYS.some((known) => known === key));
         expect(unknown, `schema telemetry keys not in TelemetryConfig: ${unknown.join(', ') || '(none)'}`).toEqual([]);
     });
 
-    test('management.* schema keys are a subset of ManagementAutoConfigurationOptions keys', () => {
-        const unknown = schemaKeysOf('management').filter(
-            (key) => !MANAGEMENT_TYPE_KEYS.some((known) => known === key)
-        );
+    test('management.* constructor-option keys are a subset of ManagementAutoConfigurationOptions keys', () => {
+        const optionKeys = annotatedKeysOf('management');
+        const unknown = optionKeys.filter((key) => !MANAGEMENT_TYPE_KEYS.some((known) => known === key));
         expect(
             unknown,
-            `schema management keys not in ManagementAutoConfigurationOptions: ${unknown.join(', ')}`
+            `annotated management keys not in ManagementAutoConfigurationOptions: ${unknown.join(', ')}`
         ).toEqual([]);
+    });
+
+    test('config-read management keys are not constructor options (AD-76 D-5)', () => {
+        for (const key of ['endpoints', 'health']) {
+            const isOption = MANAGEMENT_TYPE_KEYS.some((known) => known === key);
+            expect(isOption, `${key} is read from config (AD-76 D-5), not a constructor option`).toBe(false);
+        }
     });
 
     test('both sections document at least one key (the parity check is not vacuous)', () => {
         expect(schemaKeysOf('telemetry').length).toBeGreaterThan(0);
-        expect(schemaKeysOf('management').length).toBeGreaterThan(0);
+        expect(annotatedKeysOf('management').length).toBeGreaterThan(0);
     });
 });

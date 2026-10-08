@@ -1811,6 +1811,9 @@ importers:
       '@blue/dispatcher':
         specifier: ~0.0.1
         version: link:../blue-dispatcher
+      '@blue/log':
+        specifier: ~0.0.1
+        version: link:../blue-log
       '@blue/platform-node':
         specifier: ~0.0.1
         version: link:../blue-platform-node
@@ -1820,6 +1823,13 @@ importers:
       '@blue/util':
         specifier: ~0.0.1
         version: link:../blue-util
+      zod:
+        specifier: 'catalog:'
+        version: 4.5.4
+    devDependencies:
+      '@blue/boot':
+        specifier: ~0.0.1
+        version: link:../blue-boot
 
   packages/blue-openapi:
     dependencies:

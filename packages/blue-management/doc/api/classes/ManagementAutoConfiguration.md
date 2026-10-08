@@ -6,32 +6,11 @@
 
 # Class: ManagementAutoConfiguration
 
-Auto-configuration for management endpoints.
+Auto-configuration for management endpoints (AD-76).
 
-Registers:
-- a shared [FeatureMetricAggregator](#) entry (read by `/metrics` and by
-  any feature using `counted`)
-- a [HealthRegistry](HealthRegistry.md) with the [TelemetryHealthIndicator](TelemetryHealthIndicator.md) wired
-- the `/metrics` and `/health` controllers
+## Extends
 
-Register alongside `NodeAutoConfiguration` in a Node application:
-
-```ts
-const app = new ApplicationBuilder([NodeAutoConfiguration, ManagementAutoConfiguration]);
-```
-
-The endpoints are **open by default** — on an untrusted network, pass an
-*unconditional* guard (a token-presence / token-adapter
-`RouteHandlerInterceptor`; metadata-driven guards like the auth-server's
-`AuthRouteGuard` cannot protect these handlers, which carry no
-`@authenticated`/`@authorized` metadata) to
-`ManagementAutoConfiguration(options)` so `/metrics` and `/health`
-require authentication, and/or firewall the management routes at the
-network boundary.
-
-## Since
-
-1.0.0
+- `ApplicationContextAware` & `Null`\<`this`\>
 
 ## Constructors
 
@@ -43,27 +22,83 @@ network boundary.
 
 ##### options?
 
-[`ManagementAutoConfigurationOptions`](#) = `{}`
+[`ManagementAutoConfigurationOptions`](../interfaces/ManagementAutoConfigurationOptions.md) = `{}`
 
 #### Returns
 
 `ManagementAutoConfiguration`
 
+#### Overrides
+
+`AsApplicationContextAware(Null).constructor`
+
+## Properties
+
+### \[$aware\]
+
+> `readonly` **\[$aware\]**: `boolean`
+
+A symbol indicating that the value is aware.
+
+#### Inherited from
+
+`AsApplicationContextAware(Null).[$aware]`
+
+***
+
+### applicationContext
+
+> `readonly` **applicationContext**: `ApplicationContext`
+
 ## Methods
+
+### configurationPropertiesController()
+
+> **configurationPropertiesController**(): [`ConfigurationPropertiesController`](ConfigurationPropertiesController.md)
+
+The `/configprops` controller bean (AD-76 D-8).
+
+#### Returns
+
+[`ConfigurationPropertiesController`](ConfigurationPropertiesController.md)
+
+The configuration-properties controller.
+
+***
+
+### environmentController()
+
+> **environmentController**(): [`EnvironmentController`](EnvironmentController.md)
+
+The `/env` controller bean (AD-76 D-8).
+
+#### Returns
+
+[`EnvironmentController`](EnvironmentController.md)
+
+The environment controller.
+
+***
 
 ### handlerMappings()
 
 > **handlerMappings**(): `RadixMetadataHandlerMapping`[]
 
 The metadata handler mapping(s): the default security-header set is
-prepended (same instance shape as the platform mapping — `/health` and
-`/metrics` otherwise bypass the interceptor attached to the *platform*
-mapping), then the configured access guard pushed onto the interceptor
-chain when present. Declared as the `handlerMappings` collection (the
+prepended (same instance shape as the platform mapping — the served
+management routes otherwise bypass the interceptor attached to the
+*platform* mapping), the management-path guard pushed onto the
+interceptor chain when present, and the controllers detected through
+it like every other decorator-driven handler (AD-76 D-8: detection
+registers the *processed* bean, so the handlers run with their
+context wired). Declared as the `handlerMappings` collection (the
 resolution the strategy checks first), so it is immune to
-registration-order clobbering by `NodeAutoConfiguration.handlerMapping`;
-controllers still register through it via handler detection. Without a
-guard the mapping behaves like the platform default plus headers.
+registration-order clobbering by `NodeAutoConfiguration.handlerMapping`.
+
+Exposure is enforced **per request** inside the controllers (AD-76
+D-2): a disabled endpoint answers 404, and its path is covered by the
+guard like every other management route — same wire behavior as not
+registering it.
 
 #### Returns
 
@@ -103,6 +138,21 @@ The registry.
 
 ***
 
+### loggersController()
+
+> **loggersController**(): [`LoggersController`](LoggersController.md)
+
+The `/loggers` controller bean (AD-76 D-8): decorator-registered, so
+handler detection dispatches the context-processed instance.
+
+#### Returns
+
+[`LoggersController`](LoggersController.md)
+
+The loggers controller.
+
+***
+
 ### metricAggregator()
 
 > **metricAggregator**(): [`FeatureMetricAggregator`](#)
@@ -129,3 +179,29 @@ level, see [ManagementAutoConfiguration.handlerMappings](#handlermappings)).
 [`MetricsController`](MetricsController.md)
 
 The metrics controller.
+
+***
+
+### setApplicationContext()
+
+> **setApplicationContext**(`applicationContext`): `void`
+
+Set the ApplicationContext that this object runs in. Normally this call will be used to initialize the object.
+
+Invoked after population of normal value properties but before an `init` callback.
+
+#### Parameters
+
+##### applicationContext
+
+`ApplicationContext`
+
+The ApplicationContext to be used by this object.
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+`AsApplicationContextAware(Null).setApplicationContext`

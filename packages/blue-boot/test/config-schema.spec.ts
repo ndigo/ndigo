@@ -54,6 +54,10 @@ const documentedKeys = (): string[] =>
 const READ_FROM_CONFIG: Record<string, string> = {
     'server.name': "apps/04-blue-api/src/server-config.ts — @configurationProperties('server', { schema })",
     'server.port': "apps/04-blue-api/src/server-config.ts — @configurationProperties('server', { schema })",
+    'management.endpoints':
+        'packages/blue-management/src/management-properties.ts — readManagementSettings (AD-76 D-5): the deep-merged `management` source subtree read at refresh',
+    'management.health':
+        'packages/blue-management/src/management-properties.ts — readManagementSettings (AD-76 D-5): the deep-merged `management` source subtree read at refresh',
 };
 
 /**
@@ -61,7 +65,7 @@ const READ_FROM_CONFIG: Record<string, string> = {
  * are programmatic options (CLI/env/builder/constructor argument), never read
  * from `config/application.json`.
  */
-const NOT_READ_NAMESPACES = ['profiles', 'telemetry', 'management'];
+const NOT_READ_NAMESPACES = ['profiles', 'telemetry'];
 
 describe('application.schema.json', () => {
     test('is a 2020-12 object schema, permissive for app keys', () => {

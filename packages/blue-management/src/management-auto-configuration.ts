@@ -1,27 +1,13 @@
 /**
- * @module blue-management
- * @since 1.0.0
- * @author Jeff Rose
- */
-import { configuration, entry } from '@blue/context';
-import { type RouteHandlerInterceptor, RadixMetadataHandlerMapping } from '@blue/dispatcher';
-import { SecurityHeadersInterceptor } from '@blue/platform-node';
-import { FeatureMetricAggregator } from '@blue/telemetry';
-import { HealthRegistry } from './health';
-import { MetricsController } from './metrics-controller';
-import { HealthController } from './health-controller';
-import { TelemetryHealthIndicator } from './telemetry-health-indicator';
-import { HEALTH_REGISTRY } from './health-registry-tokens';
-import { METRIC_AGGREGATOR } from './metric-aggregator-tokens';
-
-/**
  * Auto-configuration for management endpoints.
  *
  * Registers:
  * - a shared {@link FeatureMetricAggregator} entry (read by `/metrics` and by
  *   any feature using `counted`)
  * - a {@link HealthRegistry} with the {@link TelemetryHealthIndicator} wired
- * - the `/metrics` and `/health` controllers
+ * - the `/metrics`, `/health`, `/loggers`, `/env` and `/configprops`
+ *   controllers — the last three only when the exposure model (AD-76 D-2)
+ *   includes them, so nothing new is served without operator action
  *
  * Register alongside `NodeAutoConfiguration` in a Node application:
  *
@@ -34,24 +20,54 @@ import { METRIC_AGGREGATOR } from './metric-aggregator-tokens';
  * `RouteHandlerInterceptor`; metadata-driven guards like the auth-server's
  * `AuthRouteGuard` cannot protect these handlers, which carry no
  * `@authenticated`/`@authorized` metadata) to
- * `ManagementAutoConfiguration(options)` so `/metrics` and `/health`
+ * `ManagementAutoConfiguration(options)` so the exposed management routes
  * require authentication, and/or firewall the management routes at the
  * network boundary.
  *
+ * @module blue-management
  * @since 1.0.0
+ * @author Jeff Rose
+ */
+import { configuration, entry, AsApplicationContextAware, type ApplicationContext } from '@blue/context';
+import { Null } from '@blue/core';
+import { type RouteHandlerInterceptor, RadixMetadataHandlerMapping } from '@blue/dispatcher';
+import { SecurityHeadersInterceptor } from '@blue/platform-node';
+import { FeatureMetricAggregator } from '@blue/telemetry';
+import { HealthRegistry } from './health';
+import { MetricsController } from './metrics-controller';
+import { HealthController } from './health-controller';
+import { TelemetryHealthIndicator } from './telemetry-health-indicator';
+import { HEALTH_REGISTRY } from './health-registry-tokens';
+import { METRIC_AGGREGATOR } from './metric-aggregator-tokens';
+import { LoggersController } from './loggers-controller';
+import { EnvironmentController } from './environment-controller';
+import { ConfigurationPropertiesController } from './configuration-properties-controller';
+import { endpointPath, MANAGEMENT_ENDPOINT_IDS } from './management-properties';
+
+/**
+ * Auto-configuration for management endpoints (AD-76).
  */
 @configuration
-export class ManagementAutoConfiguration {
+export class ManagementAutoConfiguration extends AsApplicationContextAware(Null) {
+    readonly applicationContext!: ApplicationContext;
     readonly #accessGuard: RouteHandlerInterceptor | undefined;
     readonly #redactHealthErrors: boolean;
+    readonly #exposure: { include?: string[]; exclude?: string[] } | undefined;
+    readonly #configurationClasses: Array<new () => unknown>;
     readonly #metricAggregator = new FeatureMetricAggregator();
 
     constructor(options: ManagementAutoConfigurationOptions = {}) {
-        // Scoped to management paths: the guard rides the shared platform
-        // mapping (no per-route interceptors), so it must never deny (or
-        // rewrite) non-management routes.
-        this.#accessGuard = options.accessGuard ? scopedToManagementPaths(options.accessGuard) : undefined;
+        super(); // AsApplicationContextAware mixin base (Null)
+        // Scoped to the management paths (computed at refresh — the guard
+        // rides the shared platform mapping (no per-route interceptors),
+        // so it must never deny (or rewrite) non-management routes.
+        this.#accessGuard = options.accessGuard;
         this.#redactHealthErrors = options.redactHealthErrors ?? true;
+        this.#exposure = options.exposure;
+        // (The controller beans are constructed per entry call below — the
+        // container processes the values it receives and dispatches the
+        // processed beans, so the mapping never holds raw instances.)
+        this.#configurationClasses = options.configurationClasses ?? [];
     }
 
     /**
@@ -100,15 +116,52 @@ export class ManagementAutoConfiguration {
     }
 
     /**
+     * The `/loggers` controller bean (AD-76 D-8): decorator-registered, so
+     * handler detection dispatches the context-processed instance.
+     *
+     * @returns The loggers controller.
+     */
+    @entry()
+    loggersController(): LoggersController {
+        return new LoggersController(this.#exposure);
+    }
+
+    /**
+     * The `/env` controller bean (AD-76 D-8).
+     *
+     * @returns The environment controller.
+     */
+    @entry()
+    environmentController(): EnvironmentController {
+        return new EnvironmentController(this.#exposure);
+    }
+
+    /**
+     * The `/configprops` controller bean (AD-76 D-8).
+     *
+     * @returns The configuration-properties controller.
+     */
+    @entry()
+    configurationPropertiesController(): ConfigurationPropertiesController {
+        return new ConfigurationPropertiesController(this.#configurationClasses, this.#exposure);
+    }
+
+    /**
      * The metadata handler mapping(s): the default security-header set is
-     * prepended (same instance shape as the platform mapping — `/health` and
-     * `/metrics` otherwise bypass the interceptor attached to the *platform*
-     * mapping), then the configured access guard pushed onto the interceptor
-     * chain when present. Declared as the `handlerMappings` collection (the
+     * prepended (same instance shape as the platform mapping — the served
+     * management routes otherwise bypass the interceptor attached to the
+     * *platform* mapping), the management-path guard pushed onto the
+     * interceptor chain when present, and the controllers detected through
+     * it like every other decorator-driven handler (AD-76 D-8: detection
+     * registers the *processed* bean, so the handlers run with their
+     * context wired). Declared as the `handlerMappings` collection (the
      * resolution the strategy checks first), so it is immune to
-     * registration-order clobbering by `NodeAutoConfiguration.handlerMapping`;
-     * controllers still register through it via handler detection. Without a
-     * guard the mapping behaves like the platform default plus headers.
+     * registration-order clobbering by `NodeAutoConfiguration.handlerMapping`.
+     *
+     * Exposure is enforced **per request** inside the controllers (AD-76
+     * D-2): a disabled endpoint answers 404, and its path is covered by the
+     * guard like every other management route — same wire behavior as not
+     * registering it.
      *
      * @returns The metadata mapping (security headers default-on, guard-attached when configured).
      */
@@ -117,7 +170,10 @@ export class ManagementAutoConfiguration {
         const mapping = new RadixMetadataHandlerMapping();
         mapping.interceptors.unshift(new SecurityHeadersInterceptor());
         if (this.#accessGuard) {
-            mapping.interceptors.push(this.#accessGuard);
+            const paths = MANAGEMENT_ENDPOINT_IDS.map((id) => endpointPath(id)).filter(
+                (path): path is string => path !== undefined
+            );
+            mapping.interceptors.push(scopedToManagementPaths(this.#accessGuard, Object.freeze(paths)));
         }
         return [mapping];
     }
@@ -128,13 +184,12 @@ export class ManagementAutoConfiguration {
  */
 export interface ManagementAutoConfigurationOptions {
     /**
-     * Optional access guard for the management endpoints (`/metrics`,
-     * `/health`). When set, every request to these routes must pass the
-     * guard or is denied before the handler runs; when omitted the
-     * endpoints are **open to any caller** (default posture — documented
-     * in the package README).
+     * Optional access guard for the exposed management endpoints. When set,
+     * every request to those routes must pass the guard or is denied before
+     * the handler runs; when omitted the endpoints are **open to any
+     * caller** (default posture — documented in the package README).
      *
-     * **Recommendation:** the health/metrics handlers carry no
+     * **Recommendation:** the management handlers carry no
      * `@authenticated`/`@authorized` metadata, so a metadata-driven guard
      * (e.g. the auth-server's `AuthRouteGuard`, which derives every
      * requirement from handler metadata) would always permit these
@@ -151,33 +206,50 @@ export interface ManagementAutoConfigurationOptions {
      * behind the `accessGuard`).
      */
     redactHealthErrors?: boolean;
+    /**
+     * Endpoint exposure override (AD-76 D-2/D-5): wins over any
+     * `management.endpoints.exposure` section. `include` lists the endpoint
+     * ids to serve (`'*'` = all), `exclude` withholds; the default is
+     * `["health", "metrics"]`.
+     */
+    exposure?: { include?: string[]; exclude?: string[] };
+    /**
+     * The `@configurationProperties` classes `/configprops` enumerates
+     * (declared keys + conversion types only — values are never read,
+     * AD-76 D-3). The same explicit list `@blue/inspect` takes.
+     */
+    configurationClasses?: Array<new () => unknown>;
 }
 
-/** The management route prefixes the access guard protects. */
-const MANAGEMENT_PATHS = ['/health', '/metrics'];
-
 /**
- * Wraps a user-provided guard so it only intercepts the management routes,
- * leaving every other route on the shared mapping untouched. Without this,
- * the guard would apply repository-wide (the platform's shared mapping
- * cannot carry per-route interceptors).
+ * Wraps a user-provided guard so it only intercepts the exposed management
+ * routes, leaving every other route on the shared mapping untouched. Without
+ * this, the guard would apply repository-wide (the platform's shared mapping
+ * cannot carry per-route interceptors). The path set is computed from the
+ * exposure at refresh, so a disabled endpoint is neither served nor guarded.
  */
-function scopedToManagementPaths(guard: RouteHandlerInterceptor): RouteHandlerInterceptor {
+function scopedToManagementPaths(guard: RouteHandlerInterceptor, paths: readonly string[]): RouteHandlerInterceptor {
+    const covers = (path: string): boolean => {
+        for (const prefix of paths) {
+            if (path === prefix || path.startsWith(`${prefix}/`)) return true;
+        }
+        return false;
+    };
     return {
         async preHandle(route, handler) {
-            if (!MANAGEMENT_PATHS.some((path) => route.path === path || route.path.startsWith(`${path}/`))) {
+            if (!covers(route.path)) {
                 return true;
             }
             return guard.preHandle(route, handler);
         },
         async postHandle(route, handler, modelAndView) {
-            if (!MANAGEMENT_PATHS.some((path) => route.path === path || route.path.startsWith(`${path}/`))) {
+            if (!covers(route.path)) {
                 return;
             }
             await guard.postHandle?.(route, handler, modelAndView);
         },
         async completeHandle(route, handler, error) {
-            if (!MANAGEMENT_PATHS.some((path) => route.path === path || route.path.startsWith(`${path}/`))) {
+            if (!covers(route.path)) {
                 return;
             }
             await guard.completeHandle?.(route, handler, error);

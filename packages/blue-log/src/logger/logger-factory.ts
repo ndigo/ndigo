@@ -62,6 +62,16 @@ const DEFAULT_SETTINGS: Readonly<LoggerSettings> = {
 let settings: LoggerSettings = { ...DEFAULT_SETTINGS };
 
 /**
+ * Per-name threshold overrides (AD-76 D-7): names and severities only — no
+ * registry keeps handles alive, so lazy `ConfigurableLogger` handles stay
+ * collectible (the AD-67 property). Changes bump {@link revision}.
+ */
+const levelOverrides = new Map<string, SeverityNumber>();
+
+/** The names ever requested through `getLogger`, for `/loggers` enumeration. */
+const requestedNames = new Set<string>();
+
+/**
  * Bumped whenever {@link settings} change. A handle re-resolves its delegate
  * when the revision it last saw differs, so switches made after a logger was
  * created at module load still reach it (KRN-REV-LOG-11).
@@ -110,10 +120,14 @@ class ConfigurableLogger implements Logger {
     #current(): Logger {
         if (this.#revision !== revision) {
             this.#delegate = buildLogger(this.#name);
-            if (this.#thresholdOverride !== undefined) {
-                this.#delegate.setThreshold(this.#thresholdOverride);
-            }
             this.#revision = revision;
+        }
+        // Registry override wins over the handle-local one; both sit above
+        // the global settings floor. Idempotent per call, so a rebuild or a
+        // later registry change is reflected without extra bookkeeping.
+        const effective = levelOverrides.get(this.#name) ?? this.#thresholdOverride;
+        if (effective !== undefined) {
+            this.#delegate.setThreshold(effective);
         }
         return this.#delegate;
     }
@@ -193,20 +207,88 @@ export class LoggerFactory {
      * - Type: `'console'`
      * - Threshold: `SeverityNumber.DEBUG`
      * - Context-aware: `true`
+     * - Per-name overrides and requested-name tracking: cleared (AD-76 D-7)
      */
     public static reset(): void {
         settings = { ...DEFAULT_SETTINGS };
+        levelOverrides.clear();
+        requestedNames.clear();
         revision += 1;
     }
 
     /**
      * Creates and returns a `Logger` handle whose configuration follows this
-     * factory's current and future global settings.
+     * factory's current and future global settings (plus any per-name
+     * override, {@link LoggerFactory.setLevel}).
      * @param name - The name of the logger.
      * @returns A `Logger` instance.
      */
     public static getLogger(name: string): Logger {
+        requestedNames.add(name);
         return new ConfigurableLogger(name);
+    }
+
+    /**
+     * Sets a per-name threshold override (AD-76 D-7). Applies to every
+     * handle for the name — including ones handed out before this call —
+     * and survives global `setThreshold` calls until cleared.
+     * @param name - The logger name.
+     * @param level - The threshold severity.
+     */
+    public static setLevel(name: string, level: SeverityNumber): void {
+        levelOverrides.set(name, level);
+        revision += 1;
+    }
+
+    /**
+     * Removes a per-name threshold override, falling back to the global
+     * settings for the name.
+     * @param name - The logger name.
+     */
+    public static clearLevel(name: string): void {
+        if (levelOverrides.delete(name)) {
+            revision += 1;
+        }
+    }
+
+    /**
+     * The logger names known to the factory — ever requested through
+     * {@link LoggerFactory.getLogger} plus any name with a level override
+     * (a `/loggers` POST names a logger without a handle, AD-76 D-7) —
+     * sorted: the `/loggers` enumeration surface.
+     * @returns The known logger names.
+     */
+    public static loggerNames(): readonly string[] {
+        const names = new Set([...requestedNames, ...levelOverrides.keys()]);
+        return Object.freeze([...names].sort());
+    }
+
+    /**
+     * Whether a logger with this name is known (requested or overridden).
+     * @param name - The logger name.
+     * @returns `true` when the name is known.
+     */
+    public static hasLogger(name: string): boolean {
+        return requestedNames.has(name) || levelOverrides.has(name);
+    }
+
+    /**
+     * The per-name threshold override for a logger, when set.
+     * @param name - The logger name.
+     * @returns The override severity, or `undefined`.
+     */
+    public static configuredLevel(name: string): SeverityNumber | undefined {
+        return levelOverrides.get(name);
+    }
+
+    /**
+     * The effective threshold for a logger: the per-name override when set,
+     * otherwise the current global threshold.
+     * @param name - The logger name.
+     * @returns The effective severity.
+     */
+    public static effectiveLevel(name: string): SeverityNumber {
+        return levelOverrides.get(name) ?? settings.threshold;
     }
 }
 

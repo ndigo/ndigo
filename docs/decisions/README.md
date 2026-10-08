@@ -100,3 +100,4 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-73** | 2026-10-07    | Accepted           | [Distributed locks — `@blue/locks` (Redis fencing + `@scheduled({lock})`)](2026-10-07_AD73_DISTRIBUTED_LOCKS.md)                                                            |
 | **AD-74** | 2026-10-07    | Accepted           | [Clustering / worker offload — `@blue/cluster` (process supervisor, signal relay, bounded restarts)](2026-10-07_AD74_CLUSTERING.md)                                         |
 | **AD-75** | 2026-10-07    | Accepted           | [The framework CLI — `@blue/cli` on `@oclif/core` v5, embedded](2026-10-07_AD75_FRAMEWORK_CLI.md)                                                                           |
+| **AD-76** | 2026-10-08    | Accepted           | [Actuator parity — `/loggers`, `/env`, `/configprops`, health groups](2026-10-08_AD76_ACTUATOR_PARITY.md)                                                                   |

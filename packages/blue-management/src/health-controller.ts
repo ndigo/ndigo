@@ -3,11 +3,13 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { getMapping, requestMapping } from '@blue/dispatcher';
+import { getMapping, requestMapping, parameters, pathVariable } from '@blue/dispatcher';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Null } from '@blue/core';
+import { ResponseEntity } from '@blue/platform-node';
 import { HealthRegistry, type HealthStatus } from './health';
 import { HEALTH_REGISTRY } from './health-registry-tokens';
+import { readManagementSettings } from './management-properties';
 
 /**
  * A producing view that writes the `/health` document at an explicit HTTP
@@ -80,5 +82,46 @@ export class HealthController extends AsApplicationContextAware(Null) {
             ? await registry.checkAll()
             : { status: 'UNKNOWN', components: {}, timestamp: new Date().toISOString() };
         return new HealthResponseView(status, status.status === 'DOWN' ? 503 : 200);
+    }
+
+    /**
+     * Serves a health group or a single component under `/health/:name`
+     * (AD-76 D-6).
+     *
+     * A configured group (from `management.health.groups.<name>.include`)
+     * shadows a same-named component and answers with the aggregate over
+     * the members that are registered; a bare component answers with its
+     * own result document. Unknown names 404; a group with no registered
+     * members 404 too. A `DOWN` aggregate answers `503` exactly like the
+     * root document.
+     *
+     * @param name - The group or component name.
+     * @returns The health document at the aggregate status, or 404.
+     */
+    @getMapping('/:name')
+    @parameters({ name: pathVariable('name') })
+    async component(name: string): Promise<HealthResponseView | ResponseEntity<void>> {
+        const registry = this.applicationContext?.getValue<HealthRegistry>(HEALTH_REGISTRY);
+        if (!registry) {
+            return ResponseEntity.notFound();
+        }
+        const groups = readManagementSettings(this.applicationContext?.environment).health.groups;
+        const group = groups[name];
+        if (group && group.include.length > 0) {
+            const status = await registry.check(group.include);
+            if (Object.keys(status.components).length === 0) {
+                return ResponseEntity.notFound();
+            }
+            return new HealthResponseView(status, status.status === 'DOWN' ? 503 : 200);
+        }
+        if (!registry.names.includes(name)) {
+            return ResponseEntity.notFound();
+        }
+        const status = await registry.check([name]);
+        const result = status.components[name];
+        return new HealthResponseView(
+            { status: result.status, components: { [name]: result }, timestamp: status.timestamp },
+            result.status === 'DOWN' ? 503 : 200
+        );
     }
 }

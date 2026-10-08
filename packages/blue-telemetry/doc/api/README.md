@@ -51,6 +51,7 @@ Jeff Rose
 
 ## Variables
 
+- [LOGGER\_LEVEL\_NAMES](variables/LOGGER_LEVEL_NAMES.md)
 - [loggerSeverityMethodNames](variables/loggerSeverityMethodNames.md)
 
 ## Functions
@@ -67,5 +68,7 @@ Jeff Rose
 - [hasTraced](functions/hasTraced.md)
 - [levelToSeverityNumber](functions/levelToSeverityNumber.md)
 - [levelToSeverityText](functions/levelToSeverityText.md)
+- [loggerLevelName](functions/loggerLevelName.md)
+- [resolveLoggerLevel](functions/resolveLoggerLevel.md)
 - [severityNumberToLevel](functions/severityNumberToLevel.md)
 - [traced](functions/traced.md)

@@ -342,18 +342,18 @@ graft pin, OpenAPI security forwarding, secret-redaction invariant, A1/A2/A3/A5.
 
 **Carried forward (still open / deferred):**
 
-| Item                                                        | Status at HEAD                                                                                            | Owner action               |
-| :---------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------- | :------------------------- |
-| TOL-F5 test-file typecheck lane                             | **closed in the follow-up sweep** — `tsconfig.spec.json` + full triage                                    | TST-A (this revision)      |
-| TEL-08 client byte-size seam (`onSend` not consumed)        | **closed in the follow-up sweep** — `countSocketClientBytes` + co.                                        | TEL-08 (this revision)     |
-| REU-9 inspect → boot transitive weight                      | **closed in the follow-up sweep** — metadata relocated to `@blue/context`                                 | REU-9 (this revision)      |
-| SEC-B/WC-I plugin probe home                                | **closed in the follow-up sweep** — `test:tooling` node:test lane                                         | SEC-B/WC-I (this revision) |
-| Raw-console invariant (`blue-router`, `blue-telemetry-web`) | recurrence item open (RES-A)                                                                              | Wave 5                     |
-| AD-46 rule depth (`src/**/index.ts` deeper than one level)  | partial (RES-D)                                                                                           | Wave 3                     |
-| Skipped-test policy (six sites)                             | partial (TST-C)                                                                                           | Wave 1                     |
-| `[object Promise]` / bracket-syntax tests                   | test-quality items (RES-B/C)                                                                              | Wave 5                     |
-| Wave-6 GAP-1..15 roadmap                                    | ADR-gated; GAP-1 closed by AD-72 (`d950ad5c`), GAP-3 executed (AD-73, this revision) — GAP-2 cluster next | Wave 6                     |
-| Doc hygiene for both 2026-10-06 plans + indexes             | drift (DOC-2..4, DOC-5)                                                                                   | Wave 5                     |
+| Item                                                        | Status at HEAD                                                                                          | Owner action               |
+| :---------------------------------------------------------- | :------------------------------------------------------------------------------------------------------ | :------------------------- |
+| TOL-F5 test-file typecheck lane                             | **closed in the follow-up sweep** — `tsconfig.spec.json` + full triage                                  | TST-A (this revision)      |
+| TEL-08 client byte-size seam (`onSend` not consumed)        | **closed in the follow-up sweep** — `countSocketClientBytes` + co.                                      | TEL-08 (this revision)     |
+| REU-9 inspect → boot transitive weight                      | **closed in the follow-up sweep** — metadata relocated to `@blue/context`                               | REU-9 (this revision)      |
+| SEC-B/WC-I plugin probe home                                | **closed in the follow-up sweep** — `test:tooling` node:test lane                                       | SEC-B/WC-I (this revision) |
+| Raw-console invariant (`blue-router`, `blue-telemetry-web`) | recurrence item open (RES-A)                                                                            | Wave 5                     |
+| AD-46 rule depth (`src/**/index.ts` deeper than one level)  | partial (RES-D)                                                                                         | Wave 3                     |
+| Skipped-test policy (six sites)                             | partial (TST-C)                                                                                         | Wave 1                     |
+| `[object Promise]` / bracket-syntax tests                   | test-quality items (RES-B/C)                                                                            | Wave 5                     |
+| Wave-6 GAP-1..15 roadmap                                    | ADR-gated; GAP-1 closed (AD-72), GAP-3 executed (AD-73), GAP-2 executed (AD-74) — Wave-6 cluster landed | Wave 6                     |
+| Doc hygiene for both 2026-10-06 plans + indexes             | drift (DOC-2..4, DOC-5)                                                                                 | Wave 5                     |
 
 ---
 
@@ -424,8 +424,13 @@ only until a consumer exists. Each requires an ADR + owner sign-off before code.
 [AD-73](../decisions/2026-10-07_AD73_DISTRIBUTED_LOCKS.md) (accepted and
 implemented 2026-10-07: `@blue/locks` SPI + `InProcessLockDriver`,
 `@blue/redis/locks` driver, `@scheduled({ lock })`, `lockDriver` bean —
-see the [companion plan](2026-10-07_DISTRIBUTED_LOCKS.md)). GAP-2
-(cluster) remains the next ADR-gated item.
+see the [companion plan](2026-10-07_DISTRIBUTED_LOCKS.md)); GAP-2
+**executed** — [AD-74](../decisions/2026-10-07_AD74_CLUSTERING.md)
+(`@blue/cluster` supervisor: N worker slots, signal relay into each child's
+graceful shutdown, bounded backoff + fail-closed guard — the
+[companion plan](2026-10-07_CLUSTERING.md)). The Wave-6 dependency cluster
+(GAP-3 → GAP-1 → GAP-2) is fully landed; remaining Wave-6 items stay
+ADR-gated.
 
 ### Wave 7 — Verification
 
@@ -561,14 +566,20 @@ full gate set including the new spec-typecheck lane is green.
       (`LockDriver` SPI + `InProcessLockDriver`), `@blue/redis/locks`
       (`RedisLockDriver`, Lua, live-lane verified), `@scheduled({ lock })`
       (runner acquire/finally-release, decoration-time validation), and the
-      `lockDriver` bean — the Wave-6 dependency cluster's second item lands,
-      ahead of GAP-2.
+      `lockDriver` bean — the Wave-6 dependency cluster's second item lands.
+- **GAP-2 (Wave 6)** — executed on ADR sign-off: [AD-74](../decisions/2026-10-07_AD74_CLUSTERING.md)
+    - [companion plan](2026-10-07_CLUSTERING.md) + guide 24. `@blue/cluster`
+      (`ClusterRunner`: N replicated worker slots with `BLUE_CLUSTER_SLOT`/`SIZE`
+    - `PORT` derivation, `SIGINT`/`SIGTERM` relay into each child's own
+      graceful shutdown, bounded-backoff respawns behind a fail-closed
+      crash-loop guard, second-signal abort) — unit + real-process lanes green;
+      the Wave-6 dependency cluster is now fully landed.
 
 ### Deferred (reason)
 
-| Item                   | Reason                                                                                                                                                                                                            |
-| :--------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Wave 6 / GAP-1..15** | Untouched by design: each needs an ADR + owner sign-off (cluster, locks, actuator parity, CLI, migration generation, Prometheus/semconv, SSE drain, …). AD-72 already closed GAP-1 (jobs + outbox) at `d950ad5c`. |
+| Item                   | Reason                                                                                                                                                                                                                                                                         |
+| :--------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Wave 6 / GAP-1..15** | ADR-gated; the dependency cluster landed (GAP-1 AD-72, GAP-3 AD-73, GAP-2 AD-74). Remaining items untouched by design: each needs an ADR + owner sign-off (actuator parity, CLI, migration generation, Prometheus/semconv, shared-store limits, testcontainers, SSE drain, …). |
 
 ### Final verification
 

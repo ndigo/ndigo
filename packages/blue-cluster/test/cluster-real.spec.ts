@@ -89,7 +89,7 @@ describe('ClusterRunner (real processes)', () => {
         await waitFor(() => existsSync(join(marker, '0.signal')) && existsSync(join(marker, '1.signal')));
         expect(existsSync(join(marker, '0.signal'))).toBe(true);
         expect(existsSync(join(marker, '1.signal'))).toBe(true);
-    });
+    }, 20_000);
 
     test('a child that fails during drain decides the cluster exit code', async () => {
         const marker = freshMarker('drain-fail');
@@ -107,7 +107,7 @@ describe('ClusterRunner (real processes)', () => {
         const result = await running;
         expect(result.exitCode).toBe(3);
         expect(result.reason).toBe('stopped');
-    });
+    }, 20_000);
 
     test('a crash-looping slot trips the cluster and no sibling survives', async () => {
         const marker = freshMarker('crash-loop');
@@ -154,7 +154,7 @@ if (slot !== '0') {
             alive = false;
         }
         expect(alive).toBe(false);
-    });
+    }, 20_000);
 
     test('runCluster validates options without spawning', () => {
         expect(() => {

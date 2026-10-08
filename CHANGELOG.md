@@ -54,6 +54,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `@blue/management` (AD-76): actuator parity — `/loggers` (level index,
+  per-logger reads, and live `POST` level changes backed by a per-name
+  registry in `@blue/log`), `/env` (property sources with origins,
+  redacted values by default, `showValues` opt-in that never serves
+  decrypted plaintext, `?toMatch=` filtering), `/configprops` (declared
+  `@configurationProperties` keys and types only — never values), and
+  health groups + single-component reads under `/health/<name>`. The new
+  endpoints are **opt-in** via `management.endpoints.exposure.include`
+  (a real config-file read path — the HI-5 annotation flips for the
+  `management.*` read keys), with the AD-36 access-guard model extended to
+  every management path. New guide 26.
+
 - `blue generate package --jobs` — wire the `@blue/jobs` dependency into a
   new package at generation time.
 

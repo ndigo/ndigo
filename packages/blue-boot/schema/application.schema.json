@@ -87,15 +87,65 @@
     },
     "management": {
       "title": "Management endpoints",
-      "x-blue-read-from-config": false,
-      "description": "Management endpoint settings (/health, /metrics) — NOT read from config files. These are ManagementAutoConfiguration(options) constructor options; the endpoints are open by default. Extra keys are preserved as config values.",
+      "description": "Management endpoint settings — the endpoints.* and health.* keys ARE read from config files by @blue/management's readManagementSettings (AD-76 D-5): only /health and /metrics are served unless management.endpoints.exposure.include lists more (loggers, env, configprops are opt-in). redactHealthErrors is a ManagementAutoConfiguration(options) constructor argument, documented here for editor completion only. Extra keys are preserved as config values.",
       "type": "object",
       "additionalProperties": { "$ref": "#/$defs/configValue" },
       "properties": {
+        "endpoints": {
+          "type": "object",
+          "properties": {
+            "exposure": {
+              "type": "object",
+              "properties": {
+                "include": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "default": ["health", "metrics"],
+                  "description": "Management endpoint ids to serve: health, metrics, loggers, env, configprops; '*' serves all. Values missing from the set are ignored."
+                },
+                "exclude": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Management endpoint ids withheld; wins over include."
+                }
+              }
+            },
+            "env": {
+              "type": "object",
+              "properties": {
+                "showValues": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "When true, /env emits the raw stored config text; decrypted plaintext is never served (default: values appear redacted)."
+                }
+              }
+            }
+          }
+        },
+        "health": {
+          "type": "object",
+          "properties": {
+            "groups": {
+              "type": "object",
+              "description": "Health groups served at /health/<group>: management.health.groups.<name>.include lists the component names to aggregate.",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "include": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "The health components (HealthIndicator names) aggregated by this group."
+                  }
+                }
+              }
+            }
+          }
+        },
         "redactHealthErrors": {
           "type": "boolean",
+          "x-blue-read-from-config": false,
           "default": true,
-          "description": "Whether thrown health-indicator errors are redacted on /health (default true): the status stays DOWN and the component name is preserved, but the exception text is replaced so indicator internals never reach the wire."
+          "description": "Whether thrown health-indicator errors are redacted on /health (default true): the status stays DOWN and the component name is preserved, but the exception text is replaced so indicator internals never reach the wire. NOT read from config — a ManagementAutoConfiguration(options) constructor argument (AD-36)."
         }
       }
     }

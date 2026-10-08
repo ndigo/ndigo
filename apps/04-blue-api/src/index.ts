@@ -6,7 +6,6 @@
 import 'node:process';
 import { ApplicationBuilder } from '@blue/boot';
 import { getEnv } from '@blue/context';
-import { ManagementAutoConfiguration } from '@blue/management';
 import { AESGCMCipher, NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@blue/platform-node';
 import { configureTelemetry, HTTPServerInstrumentation, WebSocketServerInstrumentation } from '@blue/telemetry-node';
 import { getLogger } from '@blue/log';
@@ -15,6 +14,7 @@ import { getErrorMessage } from '@blue/util';
 import { NodeAppConfiguration } from './node-app-configuration';
 import { AuditInterceptor } from './audit-interceptor';
 import { SecureDocsConfiguration } from './secure-docs-configuration';
+import { ManagementConfiguration } from './management-configuration';
 import { ServerConfig, SecretsConfig, SERVER_CONFIG } from './server-config';
 import { initAuth } from './auth-store';
 
@@ -49,7 +49,7 @@ async function main() {
     // `/v3/api-docs` + `/swagger-ui/` are denied 401.
     const builder = new ApplicationBuilder([
         NodeAutoConfiguration,
-        ManagementAutoConfiguration,
+        ManagementConfiguration,
         SecureDocsConfiguration,
         ServerConfig,
         SecretsConfig,

@@ -29,13 +29,18 @@
   ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
+  "devDependencies": {
+    "@blue/boot": "~0.0.1"
+  },
   "dependencies": {
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
+    "@blue/log": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
     "@blue/telemetry": "~0.0.1",
-    "@blue/util": "~0.0.1"
+    "@blue/util": "~0.0.1",
+    "zod": "catalog:"
   },
   "sideEffects": false
 }

@@ -17,7 +17,7 @@ import { ApplicationBuilder } from '@blue/boot';
 import { getEnv } from '@blue/context';
 import { DISPATCHER, type AbstractDispatcher } from '@blue/dispatcher';
 import { inspectApplication } from '@blue/inspect';
-import { ManagementAutoConfiguration } from '@blue/management';
+import { ManagementConfiguration } from './management-configuration';
 import { NodeAutoConfiguration } from '@blue/platform-node';
 import { RouteRegistry } from '@blue/router';
 import { getErrorMessage } from '@blue/util';
@@ -62,7 +62,7 @@ const CONTROLLERS = [
 async function main() {
     const builder = new ApplicationBuilder([
         NodeAutoConfiguration,
-        ManagementAutoConfiguration,
+        ManagementConfiguration,
         SecureDocsConfiguration,
         ServerConfig,
         SecretsConfig,

@@ -53,6 +53,19 @@ Single-executor work stays arbitrated by the AD-72/73 leases and locks.
 
 ---
 
+### 2026-10-07 - The Framework CLI
+
+`@blue/cli` (AD-75), closing GAP-6: the `blue` binary on **`@oclif/core`
+v5 as an embedded library** (research-backed; Node ≥22 baseline matches),
+with `serve` (the AD-74 `--cluster` surface), `dev`, `generate` (fronting
+`@blue/generators`), `db:migrate`, `inspect` (the AD-70 entry), and
+`doctor`. Scripts run shell-free so OS signals reach the actual
+application. Server watch + upgrade codemods deferred in the ADR.
+
+[Read plan](2026-10-07_FRAMEWORK_CLI.md)
+
+---
+
 ### 2026-10-05 - TOON Support (opt-in authoring format)
 
 Opt-in, decode-only TOON support (AD-66): inert `MediaTypes.TEXT_TOON`

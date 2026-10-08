@@ -4,11 +4,11 @@
  * @author Jeff Rose
  */
 import { Exception } from '@opentelemetry/api';
-import { Logger, LogAttributes } from './logger';
-import { OpenTelemetryLogger } from './open-telemetry-logger';
-import { ConsoleLogger } from './console-logger';
+import { Logger, LogAttributes } from './logger.js';
+import { OpenTelemetryLogger } from './open-telemetry-logger.js';
+import { ConsoleLogger } from './console-logger.js';
 import { SeverityNumber } from '@opentelemetry/api-logs';
-import { ContextAwareLogger } from './context-aware-logger';
+import { ContextAwareLogger } from './context-aware-logger.js';
 
 /**
  * Defines the available types of loggers that can be created by the `LoggerFactory`.

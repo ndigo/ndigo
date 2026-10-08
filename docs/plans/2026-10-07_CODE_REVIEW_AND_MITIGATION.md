@@ -342,18 +342,18 @@ graft pin, OpenAPI security forwarding, secret-redaction invariant, A1/A2/A3/A5.
 
 **Carried forward (still open / deferred):**
 
-| Item                                                        | Status at HEAD                                                                                          | Owner action               |
-| :---------------------------------------------------------- | :------------------------------------------------------------------------------------------------------ | :------------------------- |
-| TOL-F5 test-file typecheck lane                             | **closed in the follow-up sweep** — `tsconfig.spec.json` + full triage                                  | TST-A (this revision)      |
-| TEL-08 client byte-size seam (`onSend` not consumed)        | **closed in the follow-up sweep** — `countSocketClientBytes` + co.                                      | TEL-08 (this revision)     |
-| REU-9 inspect → boot transitive weight                      | **closed in the follow-up sweep** — metadata relocated to `@blue/context`                               | REU-9 (this revision)      |
-| SEC-B/WC-I plugin probe home                                | **closed in the follow-up sweep** — `test:tooling` node:test lane                                       | SEC-B/WC-I (this revision) |
-| Raw-console invariant (`blue-router`, `blue-telemetry-web`) | recurrence item open (RES-A)                                                                            | Wave 5                     |
-| AD-46 rule depth (`src/**/index.ts` deeper than one level)  | partial (RES-D)                                                                                         | Wave 3                     |
-| Skipped-test policy (six sites)                             | partial (TST-C)                                                                                         | Wave 1                     |
-| `[object Promise]` / bracket-syntax tests                   | test-quality items (RES-B/C)                                                                            | Wave 5                     |
-| Wave-6 GAP-1..15 roadmap                                    | ADR-gated; GAP-1 closed (AD-72), GAP-3 executed (AD-73), GAP-2 executed (AD-74) — Wave-6 cluster landed | Wave 6                     |
-| Doc hygiene for both 2026-10-06 plans + indexes             | drift (DOC-2..4, DOC-5)                                                                                 | Wave 5                     |
+| Item                                                        | Status at HEAD                                                                 | Owner action               |
+| :---------------------------------------------------------- | :----------------------------------------------------------------------------- | :------------------------- |
+| TOL-F5 test-file typecheck lane                             | **closed in the follow-up sweep** — `tsconfig.spec.json` + full triage         | TST-A (this revision)      |
+| TEL-08 client byte-size seam (`onSend` not consumed)        | **closed in the follow-up sweep** — `countSocketClientBytes` + co.             | TEL-08 (this revision)     |
+| REU-9 inspect → boot transitive weight                      | **closed in the follow-up sweep** — metadata relocated to `@blue/context`      | REU-9 (this revision)      |
+| SEC-B/WC-I plugin probe home                                | **closed in the follow-up sweep** — `test:tooling` node:test lane              | SEC-B/WC-I (this revision) |
+| Raw-console invariant (`blue-router`, `blue-telemetry-web`) | recurrence item open (RES-A)                                                   | Wave 5                     |
+| AD-46 rule depth (`src/**/index.ts` deeper than one level)  | partial (RES-D)                                                                | Wave 3                     |
+| Skipped-test policy (six sites)                             | partial (TST-C)                                                                | Wave 1                     |
+| `[object Promise]` / bracket-syntax tests                   | test-quality items (RES-B/C)                                                   | Wave 5                     |
+| Wave-6 GAP-1..15 roadmap                                    | ADR-gated; GAP-1 (AD-72), GAP-3 (AD-73), GAP-2 (AD-74), GAP-6 (AD-75) executed | Wave 6                     |
+| Doc hygiene for both 2026-10-06 plans + indexes             | drift (DOC-2..4, DOC-5)                                                        | Wave 5                     |
 
 ---
 
@@ -429,8 +429,11 @@ see the [companion plan](2026-10-07_DISTRIBUTED_LOCKS.md)); GAP-2
 (`@blue/cluster` supervisor: N worker slots, signal relay into each child's
 graceful shutdown, bounded backoff + fail-closed guard — the
 [companion plan](2026-10-07_CLUSTERING.md)). The Wave-6 dependency cluster
-(GAP-3 → GAP-1 → GAP-2) is fully landed; remaining Wave-6 items stay
-ADR-gated.
+(GAP-3 → GAP-1 → GAP-2) is fully landed; GAP-6 **executed** —
+[AD-75](../decisions/2026-10-07_AD75_FRAMEWORK_CLI.md) (`@blue/cli` on
+`@oclif/core` v5: serve with the `--cluster` surface, dev, generate,
+db:migrate, inspect, doctor — the [companion plan](2026-10-07_FRAMEWORK_CLI.md)).
+Remaining Wave-6 items stay ADR-gated.
 
 ### Wave 7 — Verification
 
@@ -574,6 +577,13 @@ full gate set including the new spec-typecheck lane is green.
       graceful shutdown, bounded-backoff respawns behind a fail-closed
       crash-loop guard, second-signal abort) — unit + real-process lanes green;
       the Wave-6 dependency cluster is now fully landed.
+- **GAP-6 (Wave 6)** — executed on ADR sign-off + web research:
+  [AD-75](../decisions/2026-10-07_AD75_FRAMEWORK_CLI.md) + companion plan +
+  guide 25. `@blue/cli` (bin `blue`) on `@oclif/core` v5 as an embedded
+  library: `serve` (the AD-74 `--cluster` surface), `dev`, `generate`,
+  `db:migrate`, `inspect`, `doctor`. Scripts run shell-free (signals reach
+  the app — a substrate finding fixed in `@blue/cluster`'s timers and
+  races along the way); real-bin integration lane green.
 
 ### Deferred (reason)
 

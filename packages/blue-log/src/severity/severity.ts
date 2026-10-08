@@ -4,14 +4,14 @@
  * @author Jeff Rose
  */
 import { SeverityNumber } from '@opentelemetry/api-logs';
-import { Logger } from '../logger/logger';
+import { Logger } from '../logger/logger.js';
 import {
     apacheSeverityMapping,
     cliSeverityMapping,
     npmSeverityMapping,
     syslogSeverityMapping,
-} from './_severity-mappings';
-import { SeverityMapping, SeverityScheme } from './severity-mapping';
+} from './_severity-mappings.js';
+import { SeverityMapping, SeverityScheme } from './severity-mapping.js';
 
 const severityMappings: Readonly<Record<SeverityScheme, SeverityMapping>> = {
     syslog: syslogSeverityMapping,

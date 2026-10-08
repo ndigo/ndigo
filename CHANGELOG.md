@@ -158,6 +158,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   requires a clean SIGTERM exit and a released port; wired into the CI quality
   lane.
 
+- `@blue/locks` (AD-73): distributed locks with **fencing tokens** — the
+  `LockDriver` SPI (non-blocking `acquire` with lease TTLs, monotonic per-key
+  tokens where only the current token can `renew`/`release`/`isHeld`), the
+  process-wide `InProcessLockDriver` (single-node truth — every driver in the
+  process coordinates, zero config), and the `LOCK_DRIVER` context token.
+- `@blue/redis/locks` (AD-73): `RedisLockDriver` — Lua `SET NX PX` acquire +
+  compare-and-delete release, one namespace per environment, borrowed
+  connection. Cross-process single-executor for multi-node deployments.
+- `@scheduled({ lock })` (AD-73): one node executes each fire of a locked
+  schedule — the runner acquires before the run and releases in the `finally`
+  (contended fires skip with a logged warning; `lockWait`/`lockWaitStep`/
+  `lockTtl` tune the waiting, polling, and lease duration). `lockDriver` bean
+  wired through `NodeAutoConfiguration` (in-process default, Redis override).
 - Spec-typecheck lane (TST-A): `pnpm typecheck` now runs
   `tsc -p tsconfig.spec.json` after the per-project build checks, typechecking
   every package/app `src` **and** `test` file (strict, vitest globals, live

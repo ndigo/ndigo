@@ -253,6 +253,10 @@ export class ScheduleRegistry {
                 name: `${name}.${methodName}`,
                 schedule: scheduleFromSpec(raw),
                 maxRunTimeMs: raw.maxRunTimeMs,
+                lockKey: raw.lockKey,
+                lockWaitMs: raw.lockWaitMs,
+                lockWaitStepMs: raw.lockWaitStepMs,
+                lockTtlMs: raw.lockTtlMs,
                 run: () => (method as Function).call(owner),
             };
             scheduler.register(instrumentTask(definition));

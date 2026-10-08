@@ -37,6 +37,8 @@ Jeff Rose
 
 ## Variables
 
+- [DEFAULT\_LOCK\_TTL\_MS](variables/DEFAULT_LOCK_TTL_MS.md)
+- [DEFAULT\_LOCK\_WAIT\_STEP\_MS](variables/DEFAULT_LOCK_WAIT_STEP_MS.md)
 - [likeTaskScheduler](variables/likeTaskScheduler.md)
 - [SCHEDULED\_METADATA\_PREFIX](variables/SCHEDULED_METADATA_PREFIX.md)
 - [TASK\_SCHEDULER](variables/TASK_SCHEDULER.md)

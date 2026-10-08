@@ -1,6 +1,6 @@
 # BlueJS Decision Records (ADRs)
 
-Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-71**,
+Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-73**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -97,3 +97,4 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-70** | 2026-10-06    | Accepted           | [Editor tooling — introspection first (`@blue/inspect` manifest, config schema, lint rules); no language server yet](2026-10-06_AD70_EDITOR_TOOLING_INTROSPECTION_FIRST.md) |
 | **AD-71** | 2026-10-07    | Accepted           | [Component library selection — Web Awesome for the reference integration](2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md)                                                   |
 | **AD-72** | 2026-10-07    | Accepted           | [Durable jobs and the transactional outbox — `@blue/jobs`](2026-10-07_AD72_JOBS_AND_OUTBOX.md)                                                                              |
+| **AD-73** | 2026-10-07    | Accepted           | [Distributed locks — `@blue/locks` (Redis fencing + `@scheduled({lock})`)](2026-10-07_AD73_DISTRIBUTED_LOCKS.md)                                                            |

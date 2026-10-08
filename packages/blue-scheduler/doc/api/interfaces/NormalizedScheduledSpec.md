@@ -29,6 +29,38 @@ by `@scheduled` (AD-20 D1).
 
 ***
 
+### lockKey?
+
+> `readonly` `optional` **lockKey?**: `string`
+
+Distributed lock key (AD-73), when the spec declared `lock`.
+
+***
+
+### lockTtlMs?
+
+> `readonly` `optional` **lockTtlMs?**: `number`
+
+Lock lease duration in milliseconds.
+
+***
+
+### lockWaitMs?
+
+> `readonly` `optional` **lockWaitMs?**: `number`
+
+Contended-lock wait budget in milliseconds (`0` = skip immediately).
+
+***
+
+### lockWaitStepMs?
+
+> `readonly` `optional` **lockWaitStepMs?**: `number`
+
+Contended-lock poll interval in milliseconds.
+
+***
+
 ### maxRunTimeMs?
 
 > `readonly` `optional` **maxRunTimeMs?**: `number`

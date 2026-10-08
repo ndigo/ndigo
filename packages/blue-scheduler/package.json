@@ -36,6 +36,7 @@
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/factory": "~0.0.1",
+    "@blue/locks": "~0.0.1",
     "@blue/log": "~0.0.1",
     "@blue/util": "~0.0.1",
     "@opentelemetry/api": "catalog:",

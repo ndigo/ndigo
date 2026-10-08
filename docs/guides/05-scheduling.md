@@ -61,12 +61,13 @@ The `blue-api` demo ships a working heartbeat (`Heartbeat` in
 
 ## 2. Specs
 
-| Spec                     | Meaning                                             | Extra                                                                                                                              |
-| ------------------------ | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `cron: '*/30 * * * * *'` | croner expression — 5, 6, or 7 fields auto-detected | `timeZone` (IANA identifier)                                                                                                       |
-| `{ fixedRate: '10s' }`   | every interval **from run start**                   | —                                                                                                                                  |
-| `{ fixedDelay: '5m' }`   | every interval **from run completion**              | —                                                                                                                                  |
-| both/formats             | `maxRunTime`                                        | caps a run; on expiry the single-flight slot is released with a warning (the task itself keeps running — Node has no cancellation) |
+| Spec                     | Meaning                                             | Extra                                                                                                                                      |
+| ------------------------ | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `cron: '*/30 * * * * *'` | croner expression — 5, 6, or 7 fields auto-detected | `timeZone` (IANA identifier)                                                                                                               |
+| `{ fixedRate: '10s' }`   | every interval **from run start**                   | —                                                                                                                                          |
+| `{ fixedDelay: '5m' }`   | every interval **from run completion**              | —                                                                                                                                          |
+| both/formats             | `maxRunTime`                                        | caps a run; on expiry the single-flight slot is released with a warning (the task itself keeps running — Node has no cancellation)         |
+| both/formats             | `lock`                                              | distributed lock key (AD-73): one node executes each fire; see `lockWait`/`lockWaitStep`/`lockTtl` and [guide 23](23-distributed-locks.md) |
 
 Bare string shorthand: `@scheduled('*/30 * * * * *')` ≡
 `@scheduled({ cron: '*/30 * * * * *' })`.

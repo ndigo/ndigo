@@ -10,6 +10,42 @@ A runnable scheduled task as registered with [TaskScheduler](../classes/TaskSche
 
 ## Properties
 
+### lockKey?
+
+> `readonly` `optional` **lockKey?**: `string`
+
+Distributed lock key (AD-73): the scheduler acquires the named lock
+before each run and releases it after (finally-style), so only one
+node executes this task at a time.
+
+***
+
+### lockTtlMs?
+
+> `readonly` `optional` **lockTtlMs?**: `number`
+
+Lock lease duration (ms). Must cover the whole run — a lease that
+lapses mid-run lets another node take over (at-least-once posture).
+
+***
+
+### lockWaitMs?
+
+> `readonly` `optional` **lockWaitMs?**: `number`
+
+How long to wait for a contended lock before skipping the fire
+(ms; `0`/absent = skip immediately on contention).
+
+***
+
+### lockWaitStepMs?
+
+> `readonly` `optional` **lockWaitStepMs?**: `number`
+
+Poll interval while waiting for a contended lock (ms).
+
+***
+
 ### maxRunTimeMs?
 
 > `readonly` `optional` **maxRunTimeMs?**: `number`

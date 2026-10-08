@@ -86,6 +86,11 @@
     "JobDriver": "#",
     "OutboxStore": "#"
   },
+  "@blue/locks": {
+    "LockAcquireOptions": "#",
+    "LockDriver": "#",
+    "LockHandle": "#"
+  },
   "@blue/management": {
     "ManagementAutoConfigurationOptions": "#"
   },

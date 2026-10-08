@@ -234,6 +234,25 @@ The accept-header language resolver.
 
 ***
 
+### lockDriver()
+
+> **lockDriver**(): [`LockDriver`](#)
+
+The default lock driver (AD-73): in-process and **single-node** — the
+process-wide lease table gives `@scheduled({ lock })` tasks exactly
+one holder per process. Apps that run multiple nodes register their
+own `LockDriver` bean (`RedisLockDriver`) for cross-process
+coordination; the task scheduler resolves whichever bean is
+registered here.
+
+#### Returns
+
+[`LockDriver`](#)
+
+The default in-process lock driver.
+
+***
+
 ### rateLimiter()
 
 > **rateLimiter**(): [`RateLimiter`](../interfaces/RateLimiter.md)

@@ -77,16 +77,16 @@ the Redis driver bean.
 
 ```ts
 interface LockHandle {
-    /** Monotonic fence token for this acquisition (`0` = local/in-process). */
+    /** Monotonic fence token for this acquisition (per lock key, starts at 1). */
     readonly token: number;
-    /** True while the lease is valid and this handle still holds it. */
-    readonly held: boolean;
+    /** The lease expiry (epoch ms), observing renewals. */
+    readonly expiresAt: number;
+    /** Whether the lease is still valid and this handle's token still owns it. */
+    isHeld(): Promise<boolean>;
     /** Extends the lease by `ttlMs`; fails when the token no longer matches. */
     renew(ttlMs: number): Promise<boolean>;
     /** Atomic token-checked release; fails when another holder took over. */
     release(): Promise<boolean>;
-    /** The absolute expiry, for contention diagnostics. */
-    readonly expiresAt: number;
 }
 
 interface LockDriver {
@@ -119,9 +119,11 @@ interface LockDriver {
 A new optional `lock` key on the `@scheduled` spec (decoration-time validated,
 like today's cron/interval spec):
 
-- The runner acquires `lock` (with configurable `waitMs`/`waitStepMs`, default
-  skip-on-contention) **before** running the task and releases after the run
-  (finally-style — release in `finally`, never leak the lease on a throw).
+- The runner acquires `lock` (with configurable `lockWait`/`lockWaitStep` —
+  shipped option names — default skip-on-contention) **before** running the
+  task and releases after the run (finally-style — release in `finally`,
+  never leak the lease on a throw). `lockTtl` (default 60 s) must cover the
+  run; a lapsed lease lets another node take over (at-least-once posture).
 - Interplay: single-flight stays per-process (a task never overlaps itself on
   one node); the lock adds the cross-process half (one node runs the task
   while others skip). Both gates run in the same before/after wrapper.

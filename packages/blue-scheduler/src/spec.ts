@@ -66,6 +66,28 @@ export interface CronScheduleSpec {
      * when a run exceeds this duration (the task itself is not cancelled).
      */
     maxRunTime?: DurationValue;
+    /**
+     * Distributed lock key (AD-73): the runner acquires the named lock
+     * before each run and releases it after (finally-style), so only one
+     * node executes this schedule at a time. Requires a `lockDriver` bean
+     * (in-process or `@blue/redis/locks`).
+     */
+    lock?: string;
+    /**
+     * How long the runner waits for a contended lock before skipping the
+     * fire. Omitted (default): skip immediately on contention.
+     */
+    lockWait?: DurationValue;
+    /**
+     * Poll interval while waiting for a contended lock (default 100 ms).
+     */
+    lockWaitStep?: DurationValue;
+    /**
+     * Lease duration for the acquired lock (default 60 s). Must cover the
+     * whole run — a lease that lapses mid-run lets another node take over
+     * (at-least-once posture, like the job driver).
+     */
+    lockTtl?: DurationValue;
 }
 
 /**
@@ -86,6 +108,17 @@ export interface IntervalScheduleSpec {
      * when a run exceeds this duration (the task itself is not cancelled).
      */
     maxRunTime?: DurationValue;
+    /**
+     * Distributed lock key (AD-73) — see the cron spec's `lock` for the
+     * contract; the two spec forms share the same lock option set.
+     */
+    lock?: string;
+    /** How long to wait for a contended lock before skipping (see cron spec). */
+    lockWait?: DurationValue;
+    /** Poll interval while waiting for a contended lock (default 100 ms). */
+    lockWaitStep?: DurationValue;
+    /** Lease duration for the acquired lock (default 60 s). */
+    lockTtl?: DurationValue;
 }
 
 /**
@@ -104,4 +137,12 @@ export interface NormalizedScheduledSpec {
     readonly fixedDelayMs?: number;
     readonly timeZone?: string;
     readonly maxRunTimeMs?: number;
+    /** Distributed lock key (AD-73), when the spec declared `lock`. */
+    readonly lockKey?: string;
+    /** Contended-lock wait budget in milliseconds (`0` = skip immediately). */
+    readonly lockWaitMs?: number;
+    /** Contended-lock poll interval in milliseconds. */
+    readonly lockWaitStepMs?: number;
+    /** Lock lease duration in milliseconds. */
+    readonly lockTtlMs?: number;
 }

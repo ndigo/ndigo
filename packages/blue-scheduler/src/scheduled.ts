@@ -33,6 +33,43 @@ function parseDurationValue(value: unknown, label: string, options?: { positive?
 }
 
 /**
+ * Distributed lock names: identifier characters matching the Redis-key and
+ * in-process namespaces (mirrors the lock drivers' own key rule).
+ */
+const lockNamePattern = /^[A-Za-z0-9._:-]+$/;
+
+/**
+ * Normalizes and validates the AD-73 lock options shared by both spec
+ * forms: `lock`, `lockWait`, `lockWaitStep`, `lockTtl`.
+ *
+ * @param spec - The raw spec object (unknown-typed via narrowing).
+ * @returns The normalized lock fields; absent when `lock` is absent.
+ * @throws {TypeError} On a malformed lock name or duration.
+ */
+function resolveLockFields(spec: { lock?: unknown; lockWait?: unknown; lockWaitStep?: unknown; lockTtl?: unknown }): {
+    lockKey?: string;
+    lockWaitMs?: number;
+    lockWaitStepMs?: number;
+    lockTtlMs?: number;
+} {
+    const { lock, lockWait, lockWaitStep, lockTtl } = spec;
+    if (lock === undefined) {
+        return {};
+    }
+    if (typeof lock !== 'string' || !lockNamePattern.test(lock)) {
+        throw new TypeError(`@scheduled: invalid lock name ${JSON.stringify(lock)} — use [A-Za-z0-9._:-] characters`);
+    }
+    return {
+        lockKey: lock,
+        ...(lockWait !== undefined ? { lockWaitMs: parseDurationValue(lockWait, 'lockWait') } : {}),
+        ...(lockWaitStep !== undefined
+            ? { lockWaitStepMs: parseDurationValue(lockWaitStep, 'lockWaitStep', { positive: true }) }
+            : {}),
+        ...(lockTtl !== undefined ? { lockTtlMs: parseDurationValue(lockTtl, 'lockTtl', { positive: true }) } : {}),
+    };
+}
+
+/**
  * Normalizes and validates a {@link ScheduledSpec} into its canonical form.
  *
  * Throws at decoration time for malformed cron expressions, durations, and
@@ -64,6 +101,7 @@ export function resolveScheduledSpec(spec: ScheduledSpec): NormalizedScheduledSp
             cron: spec.cron,
             ...(timeZone !== undefined ? { timeZone } : {}),
             ...(maxRunTime !== undefined ? { maxRunTimeMs: parseDurationValue(maxRunTime, 'maxRunTime') } : {}),
+            ...resolveLockFields(spec),
         };
     }
 
@@ -88,6 +126,7 @@ export function resolveScheduledSpec(spec: ScheduledSpec): NormalizedScheduledSp
             ? { fixedDelayMs: parseDurationValue(fixedDelay, 'fixedDelay', { positive: true }) }
             : {}),
         ...(maxRunTime !== undefined ? { maxRunTimeMs: parseDurationValue(maxRunTime, 'maxRunTime') } : {}),
+        ...resolveLockFields(spec),
     };
 }
 

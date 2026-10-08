@@ -23,6 +23,10 @@
     "./jobs": {
       "types": "./lib/jobs/index.d.ts",
       "default": "./lib/jobs/index.js"
+    },
+    "./locks": {
+      "types": "./lib/locks/index.d.ts",
+      "default": "./lib/locks/index.js"
     }
   },
   "types": "lib/index.d.ts",
@@ -59,6 +63,7 @@
     "@blue/cache": "~0.0.1",
     "@blue/factory": "~0.0.1",
     "@blue/jobs": "~0.0.1",
+    "@blue/locks": "~0.0.1",
     "@blue/socket": "~0.0.1"
   },
   "peerDependenciesMeta": {
@@ -69,6 +74,9 @@
       "optional": true
     },
     "@blue/jobs": {
+      "optional": true
+    },
+    "@blue/locks": {
       "optional": true
     },
     "@blue/socket": {

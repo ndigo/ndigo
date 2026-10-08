@@ -27,6 +27,7 @@ package can be read — and installed — on its own.
 | `@blue/http` | Fetch-based HTTP client, interceptors, and content parsing for BlueJS | [doc/api/README.md](../packages/blue-http/doc/api/README.md) |
 | `@blue/inspect` | Deterministic JSON manifest generator for BlueJS applications (routes, mappings, config keys) | [doc/api/README.md](../packages/blue-inspect/doc/api/README.md) |
 | `@blue/jobs` | Durable job queues, worker execution, and the transactional outbox for Node.js | [doc/api/README.md](../packages/blue-jobs/doc/api/README.md) |
+| `@blue/locks` | Distributed locks with fencing tokens for Node.js — the single-executor primitive behind multi-node @scheduled and cluster work | [doc/api/README.md](../packages/blue-locks/doc/api/README.md) |
 | `@blue/log` | Isomorphic logging core for BlueJS — logger abstraction, severity mappings, and threshold filtering on the OpenTelemetry API | [doc/api/README.md](../packages/blue-log/doc/api/README.md) |
 | `@blue/management` | Blue management endpoints — /health and /metrics (actuator-style) | [doc/api/README.md](../packages/blue-management/doc/api/README.md) |
 | `@blue/openapi` | OpenAPI 3.0 documentation for BlueJS apps — spec generation from dispatch metadata + Swagger UI | [doc/api/README.md](../packages/blue-openapi/doc/api/README.md) |

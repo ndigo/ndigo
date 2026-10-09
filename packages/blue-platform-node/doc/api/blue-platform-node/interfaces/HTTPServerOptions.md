@@ -124,7 +124,10 @@ Ignored when a custom [HTTPServerOptions.adapter](#adapter) is passed.
 
 Env fallback when omitted: `BLUE_TLS_KEY` + `BLUE_TLS_CERT` (both
 required together — a half-configured pair throws rather than
-silently serving plaintext) and optional `BLUE_TLS_CA`.
+silently serving plaintext) and optional `BLUE_TLS_CA`. Blank env
+values count as unset, and the env is consulted for the default
+adapter only — a custom [HTTPServerOptions.adapter](#adapter) is never
+TLS-configured through it (REV-102).
 
 ***
 

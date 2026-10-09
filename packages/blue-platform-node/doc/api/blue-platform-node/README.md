@@ -84,6 +84,7 @@ Jeff Rose
 - [StaticHandlerOptions](interfaces/StaticHandlerOptions.md)
 - [StaticResolveOptions](interfaces/StaticResolveOptions.md)
 - [StaticResourceResult](interfaces/StaticResourceResult.md)
+- [TLSServerOptions](interfaces/TLSServerOptions.md)
 
 ## Type Aliases
 

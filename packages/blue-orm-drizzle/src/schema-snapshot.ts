@@ -58,6 +58,13 @@ export interface ProjectionDelta {
     description: string;
     /** Changes the predicate cannot express (type/nullability/PK changes, added PK columns) — hand-written SQL required. */
     unsupported: string[];
+    /**
+     * The drop statements among {@link ProjectionDelta.statements} (also
+     * listed there) — the destructive subset a generator may want to gate
+     * behind explicit operator acknowledgment before emitting (REV-006).
+     * Empty when the delta contains no drops.
+     */
+    drops: string[];
 }
 
 /**
@@ -128,9 +135,10 @@ export function renderCreateTable(table: TableProjection): string {
  * as a create. Column additions render `ALTER TABLE … ADD COLUMN` (except
  * added primary-key columns, which need a rebuild); dropped columns and
  * dropped tables render `ALTER TABLE … DROP COLUMN` / `DROP TABLE IF
- * EXISTS`. Changes the predicate cannot express — type, nullability,
- * primary-key or generated-flag changes — go to `unsupported`, never into
- * the migration silently.
+ * EXISTS` (both also listed in `drops`, the destructive subset a generator
+ * may gate behind explicit acknowledgment). Changes the predicate cannot
+ * express — type, nullability, primary-key or generated-flag changes — go
+ * to `unsupported`, never into the migration silently.
  *
  * @param before - The committed projection, or `null` when none exists.
  * @param after - The current projection (from `projectEntities`).
@@ -139,6 +147,7 @@ export function renderCreateTable(table: TableProjection): string {
 export function diffProjections(before: SchemaSnapshot | null, after: SchemaSnapshot): ProjectionDelta {
     const statements: string[] = [];
     const unsupported: string[] = [];
+    const drops: string[] = [];
     const summary: string[] = [];
 
     if (before === null) {
@@ -146,7 +155,7 @@ export function diffProjections(before: SchemaSnapshot | null, after: SchemaSnap
             statements.push(renderCreateTable(table));
             summary.push(`create table "${table.name}"`);
         }
-        return { statements, description: summary.join('; '), unsupported };
+        return { statements, description: summary.join('; '), unsupported, drops };
     }
 
     const beforeTables = new Map(before.tables.map((table) => [table.name, table] as const));
@@ -185,7 +194,9 @@ export function diffProjections(before: SchemaSnapshot | null, after: SchemaSnap
         const currentNames = new Set(table.columns.map((column) => column.name));
         for (const prevColumn of prev.columns) {
             if (!currentNames.has(prevColumn.name)) {
-                statements.push(`ALTER TABLE "${table.name}" DROP COLUMN "${prevColumn.name}"`);
+                const statement = `ALTER TABLE "${table.name}" DROP COLUMN "${prevColumn.name}"`;
+                statements.push(statement);
+                drops.push(statement);
                 summary.push(`drop column "${prevColumn.name}" from "${table.name}"`);
             }
         }
@@ -194,12 +205,14 @@ export function diffProjections(before: SchemaSnapshot | null, after: SchemaSnap
     const currentTables = new Set(after.tables.map((table) => table.name));
     for (const table of before.tables) {
         if (!currentTables.has(table.name)) {
-            statements.push(`DROP TABLE IF EXISTS "${table.name}"`);
+            const statement = `DROP TABLE IF EXISTS "${table.name}"`;
+            statements.push(statement);
+            drops.push(statement);
             summary.push(`drop table "${table.name}"`);
         }
     }
 
-    return { statements, description: summary.join('; '), unsupported };
+    return { statements, description: summary.join('; '), unsupported, drops };
 }
 
 /**

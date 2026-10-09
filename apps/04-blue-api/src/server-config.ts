@@ -69,12 +69,42 @@ export class SecretsConfig {
 }
 
 /**
+ * Parses a boolean-ish configuration value the way operators write it:
+ * real booleans pass through; case-insensitive `true`/`1`/`yes`/`on` and
+ * `false`/`0`/`no`/`off`/`''` strings map explicitly; anything else throws
+ * so a misspelled flag cannot silently flip the default.
+ *
+ * This deliberately is not `z.coerce.boolean()`: that coercion applies
+ * `Boolean(value)`, so the string `"false"` — exactly how an env/CLI source
+ * would spell it — becomes `true` and silently enables migrations at boot
+ * (REV-001). The value test lives in `app-bootstrap.spec.ts`.
+ */
+function parseBooleanFlag(value: unknown): unknown {
+    if (typeof value !== 'string') return value;
+    switch (value.trim().toLowerCase()) {
+        case 'true':
+        case '1':
+        case 'yes':
+        case 'on':
+            return true;
+        case 'false':
+        case '0':
+        case 'no':
+        case 'off':
+        case '':
+            return false;
+        default:
+            throw new Error(`invalid boolean flag ${JSON.stringify(value)} — expected true/1/yes/on or false/0/no/off`);
+    }
+}
+
+/**
  * Schema for `migrations.*` (AD-78 D-4) — the run-on-boot opt-in and the
  * migrations directory, resolved from environment properties with schema
  * defaults.
  */
 const migrationsSchema = z.object({
-    runOnBoot: z.coerce.boolean().default(false),
+    runOnBoot: z.preprocess(parseBooleanFlag, z.boolean()).default(false),
     dir: z.string().default('db/migrations'),
 });
 

@@ -15,9 +15,10 @@ import {
     FeatureMetricAggregator,
     MetricSnapshot,
     registerMetricSnapshotProvider,
+    setFallbackMetricSnapshotProvider,
     unregisterMetricSnapshotProvider,
 } from '@blue/telemetry';
-import { prefersJsonView } from '../src/metrics-controller';
+import { MetricsController, prefersJsonView } from '../src/metrics-controller';
 import { HealthRegistry } from '../src/health';
 import { HealthController } from '../src/health-controller';
 
@@ -148,17 +149,23 @@ describe('ManagementAutoConfiguration endpoints', () => {
     });
 });
 
-describe('GET /metrics without a metric source', () => {
+describe('GET /metrics with the aggregator-backed fallback (REV-003)', () => {
     let base: string;
 
     beforeAll(async () => {
-        // No snapshot source registered anywhere in this process.
+        // No telemetry pull reader registered: the management auto-config's
+        // feature aggregator is the snapshot source (REV-003).
         unregisterMetricSnapshotProvider();
 
-        const context = new MetadataConfigApplicationContext('management-no-source');
+        const context = new MetadataConfigApplicationContext('management-fallback');
         context.register(NodeAutoConfiguration);
         context.register(ManagementAutoConfiguration);
         context.refresh();
+
+        // Seed feature metrics through the same bean the endpoint projects.
+        const aggregator = context.getValue<FeatureMetricAggregator>(METRIC_AGGREGATOR);
+        aggregator.incrementCounter('gate', 'opens', 2);
+        aggregator.recordDuration('gate', 'latencyMs', 150);
 
         const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
         const adapter = new NodeHTTPServerAdapter(dispatcher);
@@ -166,10 +173,58 @@ describe('GET /metrics without a metric source', () => {
         base = `http://127.0.0.1:${(adapter.server as { address(): { port: number } }).address().port}`;
     });
 
-    test('answers the error document instead of a 500 (AD-77 D-3)', async () => {
+    afterAll(() => {
+        setFallbackMetricSnapshotProvider(undefined);
+    });
+
+    test('serves the feature counters instead of the error document', async () => {
         const res = await fetch(`${base}/metrics`);
         expect(res.status).toBe(200);
-        expect(await res.json()).toEqual({ error: 'No metric source wired' });
+        expect(res.headers.get('content-type')).toContain('text/plain; version=0.0.4');
+
+        const body = await res.text();
+        // The aggregator fallback projects feature counters as the
+        // exposition document — the endpoint no longer dead-ends when only
+        // feature metrics exist (e.g. `counted` without telemetry).
+        expect(body).toContain('# TYPE gate.opens counter');
+        expect(body).toContain('gate.opens{} 2');
+        // Durations project through the histogram pair (count + sum).
+        expect(body).toContain('# TYPE gate.latencyMs_count counter');
+        expect(body).toContain('gate.latencyMs_count{} 1');
+        expect(body).toContain('# TYPE gate.latencyMs_sum gauge');
+    });
+
+    test('a registered pull reader still wins over the fallback', async () => {
+        registerMetricSnapshotProvider({
+            snapshot: async (): Promise<readonly MetricSnapshot[]> => [
+                {
+                    name: 'api.request.count',
+                    description: '',
+                    unit: '',
+                    type: 'sum',
+                    points: [{ attributes: {}, value: { kind: 'scalar', value: 3 } }],
+                },
+            ],
+        });
+        try {
+            const res = await fetch(`${base}/metrics`);
+            expect(res.status).toBe(200);
+            const body = await res.text();
+            expect(body).toContain('# TYPE api.request.count counter');
+            expect(body).not.toContain('gate.opens');
+        } finally {
+            unregisterMetricSnapshotProvider();
+        }
+    });
+
+    test('the bare controller still answers the error document with no source anywhere (AD-77 D-3)', async () => {
+        // No management auto-configuration, no telemetry: the current slot
+        // and the fallback are both clear, so the documented error document
+        // answers instead of a 500.
+        unregisterMetricSnapshotProvider();
+        setFallbackMetricSnapshotProvider(undefined);
+        const controller = new MetricsController();
+        expect(await controller.metrics(undefined)).toEqual({ error: 'No metric source wired' });
     });
 });
 

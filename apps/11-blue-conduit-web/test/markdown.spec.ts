@@ -45,6 +45,19 @@ describe('renderMarkdown', () => {
         expect(html).not.toContain('javascript:');
     });
 
+    test('a control-character-tainted https target is scrubbed, never emitted raw (REV-009)', () => {
+        // The scheme check strips control chars/whitespace before testing;
+        // the *stripped* href must be what lands in the document.
+        const html = renderMarkdown('[ok](https://example.com/a\u0000b)');
+        expect(html).toContain('href="https://example.com/ab"');
+        expect(html).not.toContain('\u0000');
+
+        // A javascript: target remains neutralized even with the taint.
+        const blocked = renderMarkdown('[x](jav\u0000ascript:alert(1))');
+        expect(blocked).toContain('href="#"');
+        expect(blocked).not.toContain('javascript:');
+    });
+
     test('joins consecutive lines into one paragraph and splits on a blank line', () => {
         expect(renderMarkdown('one\ntwo\n\nthree')).toBe('<p>one two</p>\n<p>three</p>');
     });

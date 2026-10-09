@@ -61,11 +61,20 @@ export function escapeHtml(value: string): string {
 /**
  * Neutralizes a link target outside the safe scheme set.
  *
+ * The scheme check runs on the control-character/whitespace-stripped form,
+ * and the *stripped* form is what gets returned (REV-009): browsers strip
+ * tab/newline during URL parsing but their whitespace handling is
+ * otherwise lenient, so a control-char-tainted URL that passes the check
+ * on its scrubbed copy must not be emitted in its raw shape. Inline
+ * regexes never produce spaces inside targets, so the strip is an
+ * identity for legitimate links.
+ *
  * @param href - The raw target from the Markdown source.
- * @returns The target when it is safe, otherwise `#`.
+ * @returns The stripped target when it is safe, otherwise `#`.
  */
 function safeHref(href: string): string {
-    return SAFE_HREF.test(href.replace(/[\u0000-\u001f\s]/g, '')) ? href : '#';
+    const testable = href.replace(/[\u0000-\u001f\s]/g, '');
+    return SAFE_HREF.test(testable) ? testable : '#';
 }
 
 /**

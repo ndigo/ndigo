@@ -108,6 +108,20 @@ escaping-by-default renderer (`src/lib/markdown.ts`) instead of a dependency.
   dependency to render four constructs is weight without benefit; the escaping
   contract is one module a reader can verify in a sitting.
 
+## Session & token storage (threat model)
+
+The RealWorld contract requires the JWT back on every request as
+`Authorization: Token <jwt>`, so the app persists it in `localStorage`
+(`session-service.ts`). That is an XSS-theft surface **by design**: any script
+that executes in this origin can read the token. The defense is that the app
+itself never renders untrusted markup — the article body goes through the
+allowlisted renderer above and every other value reaches the DOM as
+`textContent` — so there is no in-app path from a hostile article to script
+execution. For deployments under a higher threat model (CMS plugins, third-party
+scripts, shared origins), switch to an `HttpOnly; SameSite` session cookie with
+a non-RealWorld backend, or front the API with a reverse proxy that moves the
+token server-side (REV-010).
+
 ## Tests
 
 ```bash

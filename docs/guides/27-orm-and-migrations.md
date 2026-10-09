@@ -92,11 +92,26 @@ else stays **hand-written migration SQL**:
 
 - defaults, `UNIQUE`, indexes, CHECK constraints, and FK DDL from relation
   metadata are not expressed by `@blue/orm` column metadata today;
-- a column **type/nullability/PK change** is reported as unsupported by
-  `db generate` (it needs a table rebuild) — write it by hand;
+- a column **type/nullability/PK change** is unsupported (it needs a table
+  rebuild) — write it by hand;
 - the snapshot format carries a `predicate` version; growing the metadata
   later bumps it so committed snapshots fail the freshness check instead of
   silently diverging.
+
+`db generate` **fails loud instead of emitting what the operator has not
+reviewed**; the patterns below exit non-zero with the offending statements
+on stderr until acknowledged (REV-002/REV-006):
+
+- **destructive drops** (dropped columns, dropped tables) — an entity
+  rename would otherwise render `DROP TABLE IF EXISTS` into a migration
+  unseen; re-run with `BLUE_DB_ACCEPT_DROPS=true` after reviewing;
+- **unexpressible changes** — reported as unsupported; the snapshot still
+  advances (the entities are the source of truth), so without the
+  acknowledgment a hand-written migration could be forgotten while the
+  freshness gate stays silent; re-run with `BLUE_DB_ACCEPT_UNSUPPORTED=true`.
+
+Both flags follow the repo's env-flag convention (`present`/`true`/`1`
+enables, `false`/`0`/`''` does not) and are read from the environment.
 
 ## 3. Running migrations at boot (`migrations.runOnBoot`, AD-78 D-4)
 

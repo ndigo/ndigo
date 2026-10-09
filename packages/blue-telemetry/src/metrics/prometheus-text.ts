@@ -52,14 +52,21 @@ function scalarLiteral(value: AttributeValue): string | undefined {
 
 /**
  * Renders the attribute set as `{k="v",...}` in sorted key order. Only
- * scalar values render; empty sets render as `{}`.
+ * scalar values render; empty sets render as `{}`. Keys pass through
+ * {@link sanitizePrometheusName} — an attribute key outside the exposition
+ * grammar would otherwise produce a malformed document (REV-004) — and a
+ * sanitized collision within one set keeps the first key.
  */
 export function renderPrometheusAttributes(attributes: Readonly<Record<string, AttributeValue>>): string {
     const parts: string[] = [];
+    const seen = new Set<string>();
     for (const key of Object.keys(attributes as object).sort() as string[]) {
+        const name = sanitizePrometheusName(key);
+        if (seen.has(name)) continue;
+        seen.add(name);
         const literal = scalarLiteral(attributes[key]);
         if (literal !== undefined) {
-            parts.push(`${key}=${literal}`);
+            parts.push(`${name}=${literal}`);
         }
     }
     return parts.length === 0 ? '{}' : `{${parts.join(',')}}`;
@@ -78,11 +85,21 @@ function dataLine(name: string, attributes: Readonly<Record<string, AttributeVal
  */
 export function renderPrometheusText(snapshots: readonly MetricSnapshot[]): string {
     const lines: string[] = [];
+    const seenNames = new Set<string>();
 
     for (const snapshot of snapshots) {
         if (snapshot.type === 'histogram') {
             const countName = sanitizePrometheusName(`${snapshot.name}_count`);
             const sumName = sanitizePrometheusName(`${snapshot.name}_sum`);
+            // REV-004: two instruments whose names differ only in
+            // non-grammar characters sanitize to the same exposition name —
+            // the document would carry duplicate metric names (scrapers
+            // reject/overwrite). First wins; the JSON view keeps both.
+            if (seenNames.has(countName) || seenNames.has(sumName)) {
+                continue;
+            }
+            seenNames.add(countName);
+            seenNames.add(sumName);
             lines.push(`# TYPE ${countName} counter`);
             if (snapshot.description.length > 0) {
                 lines.push(`# HELP ${countName} ${snapshot.description.replace(/\n/g, ' ')}`);
@@ -105,6 +122,10 @@ export function renderPrometheusText(snapshots: readonly MetricSnapshot[]): stri
 
         const type = snapshot.type === 'gauge' ? 'gauge' : 'counter';
         const name = sanitizePrometheusName(snapshot.name);
+        if (seenNames.has(name)) {
+            continue;
+        }
+        seenNames.add(name);
         lines.push(`# TYPE ${name} ${type}`);
         if (snapshot.description.length > 0) {
             lines.push(`# HELP ${name} ${snapshot.description.replace(/\n/g, ' ')}`);

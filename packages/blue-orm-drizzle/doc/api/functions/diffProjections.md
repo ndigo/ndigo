@@ -13,9 +13,10 @@ delta. A `null` `before` (no committed snapshot yet) renders every table
 as a create. Column additions render `ALTER TABLE … ADD COLUMN` (except
 added primary-key columns, which need a rebuild); dropped columns and
 dropped tables render `ALTER TABLE … DROP COLUMN` / `DROP TABLE IF
-EXISTS`. Changes the predicate cannot express — type, nullability,
-primary-key or generated-flag changes — go to `unsupported`, never into
-the migration silently.
+EXISTS` (both also listed in `drops`, the destructive subset a generator
+may gate behind explicit acknowledgment). Changes the predicate cannot
+express — type, nullability, primary-key or generated-flag changes — go
+to `unsupported`, never into the migration silently.
 
 ## Parameters
 

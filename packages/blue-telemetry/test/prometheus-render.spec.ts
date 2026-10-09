@@ -141,11 +141,43 @@ describe('renderPrometheusText', () => {
         expect(sanitizePrometheusName('9lives')).toBe('_9lives');
         expect(sanitizePrometheusName('ok.name')).toBe('ok.name');
     });
+
+    it('keeps the first snapshot when two names sanitize identically (REV-004)', () => {
+        // Dots are valid exposition-name characters; a *hyphen* is not —
+        // `api.calls-failed` sanitizes onto `api.calls_failed`.
+        const rendered = renderPrometheusText([
+            { ...counterSnapshot(), name: 'api.calls-failed' },
+            { ...counterSnapshot(), name: 'api.calls_failed' }, // same observed name after sanitization
+        ]);
+
+        expect(rendered).toContain('# TYPE api.calls_failed counter');
+        expect(rendered).toContain('api.calls_failed{method="GET"} 3');
+        expect(rendered.split('# TYPE ').length - 1).toBe(1); // one block, not two
+    });
+
+    it('skips a histogram whose sanitized pair collides (REV-004)', () => {
+        const rendered = renderPrometheusText([
+            { ...histogramSnapshot(), name: 'req.duration-s' },
+            { ...histogramSnapshot(), name: 'req.duration_s' }, // collides on the _count/_sum pair
+        ]);
+
+        expect(rendered).toContain('# TYPE req.duration_s_count counter');
+        expect(rendered.split('# TYPE ').length - 1).toBe(2); // count + sum of the first snapshot only
+    });
 });
 
 describe('renderPrometheusAttributes', () => {
     it('renders an empty attribute set as {}', () => {
         expect(renderPrometheusAttributes({})).toBe('{}');
+    });
+
+    it('sanitizes attribute keys invalid in the exposition grammar (REV-004)', () => {
+        expect(renderPrometheusAttributes({ 'status-code': '500' })).toBe('{status_code="500"}');
+        expect(renderPrometheusAttributes({ '2xx': true })).toBe('{_2xx=true}');
+    });
+
+    it('keeps the first attribute key when sanitized keys collide (REV-004)', () => {
+        expect(renderPrometheusAttributes({ 'a-b': 1, a_b: 2 })).toBe('{a_b=1}');
     });
 });
 

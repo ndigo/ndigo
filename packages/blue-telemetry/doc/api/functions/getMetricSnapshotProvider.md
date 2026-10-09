@@ -8,9 +8,10 @@
 
 > **getMetricSnapshotProvider**(): [`MetricSnapshotProvider`](../interfaces/MetricSnapshotProvider.md) \| `undefined`
 
-Returns the registered metric snapshot source, or `undefined` when none is
-registered (no telemetry configured — the `/metrics` endpoint answers its
-"no metric source" document).
+Returns the metric snapshot source: the registered current provider when
+present, else the fallback, else `undefined` (no telemetry configured and
+no auto-configuration — the `/metrics` endpoint answers its "no metric
+source" document).
 
 ## Returns
 

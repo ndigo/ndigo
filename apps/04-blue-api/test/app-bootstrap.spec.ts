@@ -13,7 +13,7 @@ import { MockHTTP } from '@blue/test';
 import { NodeHTTPServerAdapter } from '@blue/platform-node';
 import type { AddressInfo } from 'node:net';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
-import { ServerConfig } from '../src/server-config';
+import { MigrationsConfig, MIGRATIONS_CONFIG, ServerConfig } from '../src/server-config';
 import { Heartbeat } from '../src/heartbeat';
 import { CachedReportController } from '../src/cached-report-controller';
 import { initAuth } from '../src/auth-store';
@@ -72,13 +72,15 @@ describe('blue-api full bootstrap (ApplicationBuilder path)', () => {
         expect(typeof body.components).toBe('object');
     });
 
-    test('GET /metrics answers the no-source document without a snapshot source (AD-77)', async () => {
+    test('GET /metrics serves the empty catalog via the aggregator fallback (REV-003)', async () => {
         const res = await mockHTTP.get('/metrics').exec();
 
         expect(res.response.status).toBe(200);
         // No telemetry configured in the boot path → the endpoint is served
-        // and answers the documented error document instead of a 500.
-        expect(res.json()).toEqual({ error: 'No metric source wired' });
+        // by the management auto-config's aggregator-backed fallback, which
+        // has nothing tracked here yet: an empty exposition document, not
+        // the error document.
+        expect(res.text()).toBe('');
     });
 
     test('GET /api/greeting resolves the language from Accept-Language', async () => {
@@ -151,6 +153,47 @@ describe('blue-api full bootstrap (ApplicationBuilder path)', () => {
             expect(csp).toContain("connect-src 'self'");
         } finally {
             await adapter.close();
+        }
+    });
+});
+
+/**
+ * Regression guard for REV-001: `migrations.runOnBoot` uses strict boolean
+ * parsing (zod `coerce.boolean()` turned the STRING `"false"` into `true`).
+ */
+describe('MigrationsConfig boolean binding (REV-001)', () => {
+    const bootWith = async (runOnBoot: string): Promise<boolean> => {
+        const built = await new ApplicationBuilder([MigrationsConfig])
+            .properties({ 'migrations.runOnBoot': runOnBoot })
+            .run();
+        try {
+            return built.getValue<MigrationsConfig>(MIGRATIONS_CONFIG).runOnBoot;
+        } finally {
+            built.close();
+        }
+    };
+
+    test("the string 'false' stays false (coerce.boolean() would flip it)", async () => {
+        expect(await bootWith('false')).toBe(false);
+        expect(await bootWith('no')).toBe(false);
+        expect(await bootWith('0')).toBe(false);
+    });
+
+    test("the string 'true' binds true", async () => {
+        expect(await bootWith('true')).toBe(true);
+        expect(await bootWith('1')).toBe(true);
+    });
+
+    test('a misspelled flag fails the boot instead of flipping the default', async () => {
+        await expect(bootWith('maybe')).rejects.toThrow();
+    });
+
+    test('the committed default stays false when the key is absent', async () => {
+        const built = await new ApplicationBuilder([MigrationsConfig]).run();
+        try {
+            expect(built.getValue<MigrationsConfig>(MIGRATIONS_CONFIG).runOnBoot).toBe(false);
+        } finally {
+            built.close();
         }
     });
 });

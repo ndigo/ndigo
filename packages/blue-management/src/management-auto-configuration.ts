@@ -2,8 +2,11 @@
  * Auto-configuration for management endpoints.
  *
  * Registers:
- * - a shared {@link FeatureMetricAggregator} entry (read by `/metrics` and by
- *   any feature using `counted`)
+ * - a shared {@link FeatureMetricAggregator} entry (consumed by any feature
+ *   using `counted` / `FeatureMetricAggregator`); the same aggregator also
+ *   becomes the **fallback** metric snapshot source (REV-003), so `/metrics`
+ *   serves feature metrics even without a telemetry pull reader — a
+ *   registered reader (prometheus exporter) always wins over the fallback
  * - a {@link HealthRegistry} with the {@link TelemetryHealthIndicator} wired
  * - the `/metrics`, `/health`, `/loggers`, `/env` and `/configprops`
  *   controllers — the last three only when the exposure model (AD-76 D-2)
@@ -32,7 +35,11 @@ import { configuration, entry, AsApplicationContextAware, type ApplicationContex
 import { Null } from '@blue/core';
 import { type RouteHandlerInterceptor, RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { SecurityHeadersInterceptor } from '@blue/platform-node';
-import { FeatureMetricAggregator } from '@blue/telemetry';
+import {
+    FeatureMetricAggregator,
+    FeatureMetricAggregatorProvider,
+    setFallbackMetricSnapshotProvider,
+} from '@blue/telemetry';
 import { HealthRegistry } from './health';
 import { MetricsController } from './metrics-controller';
 import { HealthController } from './health-controller';
@@ -58,6 +65,12 @@ export class ManagementAutoConfiguration extends AsApplicationContextAware(Null)
 
     constructor(options: ManagementAutoConfigurationOptions = {}) {
         super(); // AsApplicationContextAware mixin base (Null)
+        // REV-003: this configuration's aggregator doubles as the process's
+        // fallback metric snapshot source — eager (constructor, not the
+        // entry resolution), so `/metrics` never dead-ends before the
+        // aggregator bean is first requested. A telemetry pull reader
+        // registered via `configureTelemetry` (current slot) wins over it.
+        setFallbackMetricSnapshotProvider(new FeatureMetricAggregatorProvider(this.#metricAggregator));
         // Scoped to the management paths (computed at refresh — the guard
         // rides the shared platform mapping (no per-route interceptors),
         // so it must never deny (or rewrite) non-management routes.

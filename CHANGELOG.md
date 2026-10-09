@@ -58,8 +58,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (fail-closed by default; `onError: 'fail-open'` logs through
   `@blue/log` and allows).
 
+### Changed
+
+- `blue db generate` (2026-10-08 review, REV-002/REV-006): **fails loud**
+  instead of emitting what the operator has not reviewed — a delta with
+  destructive drops (dropped columns/tables) or changes the projection cannot
+  express (type/nullability/PK) exits non-zero with the offending statements
+  on stderr until acknowledged via `BLUE_DB_ACCEPT_DROPS=true` /
+  `BLUE_DB_ACCEPT_UNSUPPORTED=true`. Previously the unsupported subset
+  printed a warning, exited 0 and advanced the snapshot anyway, so the CI
+  freshness gate could not see the DB/entity divergence.
+- `/metrics` (2026-10-08 review, REV-003): the endpoint no longer dead-ends
+  when no telemetry pull reader is configured — `ManagementAutoConfiguration`
+  registers its feature aggregator as the fallback snapshot source, so
+  feature counters (`counted` / `FeatureMetricAggregator`) are served in the
+  Prometheus text + JSON views out of the box; a configured telemetry reader
+  still wins.
+- `@blue/telemetry` (2026-10-08 review, REV-004): the Prometheus text
+  renderer keeps the first snapshot when two instrument names sanitize to
+  the same exposition name (hyphen vs underscore class) and sanitizes
+  attribute keys, so a scrape document can no longer carry malformed or
+  duplicate metric names.
+
 ### Fixed
 
+- `apps/04-blue-api` (2026-10-08 review, REV-001): `migrations.runOnBoot`
+  binds with strict boolean parsing — the string `"false"`/`"0"` (env/CLI
+  sources) now stays **false**; `z.coerce.boolean()` applied `Boolean("false")`
+  → `true` and silently enabled migration-on-boot. A misspelled flag now
+  fails boot instead of flipping the default.
 - `apps/04-blue-api` (AD-78 remainder): the Drizzle controller opens the
   file-backed SQL store lazily inside `ensureInit()` — after `ensureDbDir()`
   — instead of at construction, so the lane boots on a fresh checkout

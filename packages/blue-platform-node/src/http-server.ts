@@ -1,6 +1,11 @@
 /**
  * Managed HTTP server for Node.js platform applications.
  *
+ * The origin listener serves HTTP/1.1 by default; opt-in TLS material
+ * ({@link TLSServerOptions}) upgrades it to ALPN h2 with an HTTP/1.1
+ * fallback (AD-81). HTTP/3 terminates at an edge proxy in front of it
+ * (AD-80).
+ *
  * @module blue-platform-node
  * @since 1.0.0
  * @author Jeff Rose
@@ -29,6 +34,28 @@ export interface HTTPServerAdapter {
 }
 
 /**
+ * TLS material for the secure origin listener (AD-81).
+ *
+ * `key`, `cert` and `ca` accept either inline PEM (detected by a
+ * `-----BEGIN` prefix) or a filesystem path, read by the adapter at bind
+ * time (Node's tls options take PEM content only). Present when the
+ * origin should terminate TLS and negotiate HTTP/2; absent, the origin
+ * stays plaintext HTTP/1.1 for the edge-terminated topology (AD-80).
+ */
+export interface TLSServerOptions {
+    /** PEM private key (inline) or path to the key file. */
+    key: string;
+    /** PEM certificate chain (inline) or path to the certificate file. */
+    cert: string;
+    /** Optional additional CA bundle (inline PEM or path) for client-certificate chains. */
+    ca?: string;
+    /** Minimum TLS version. Defaults to Node's baseline (`TLSv1.2`). */
+    minVersion?: 'TLSv1.2' | 'TLSv1.3';
+    /** OpenSSL cipher list. Defaults to Node's baseline. */
+    ciphers?: string;
+}
+
+/**
  * Options for creating an {@link HTTPServer}.
  */
 export interface HTTPServerOptions {
@@ -38,6 +65,19 @@ export interface HTTPServerOptions {
     host?: string;
     /** Custom adapter. Defaults to `NodeHTTPServerAdapter`. */
     adapter?: HTTPServerAdapter;
+    /**
+     * TLS material for the default adapter (AD-81). When set, the origin
+     * listener is an `http2.createSecureServer` in `allowHTTP1` mode:
+     * ALPN negotiates `h2` with an HTTP/1.1 fallback, and WebSocket
+     * upgrades keep working over the h1.1 path (RFC 8441 is not
+     * implemented by `ws` or browsers — WebSockets cannot ride h2).
+     * Ignored when a custom {@link HTTPServerOptions.adapter} is passed.
+     *
+     * Env fallback when omitted: `BLUE_TLS_KEY` + `BLUE_TLS_CERT` (both
+     * required together — a half-configured pair throws rather than
+     * silently serving plaintext) and optional `BLUE_TLS_CA`.
+     */
+    tls?: TLSServerOptions;
     /**
      * Socket transport bounds (frame payload, inbound queue cap). When
      * omitted, env `BLUE_SOCKET_MAX_PAYLOAD_BYTES` / `BLUE_SOCKET_MAX_QUEUED_MESSAGES`
@@ -111,6 +151,7 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
     #started: boolean;
     #dispatcher: NodeDispatcher | null;
     #socketRegistry: NodeSocketSessionRegistry | null;
+    #tls: TLSServerOptions | null;
     #socketLimits: SocketLimits | undefined;
     #allowedWebSocketOrigins: string[] | undefined;
     #authenticate: NodeHTTPServerAdapterOptions['authenticate'];
@@ -180,6 +221,11 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         this.#host = options.host ?? '127.0.0.1';
         this.#dispatcher = dispatcher;
         this.#socketRegistry = options.socketRegistry ?? null;
+        // AD-81: explicit TLS material wins; otherwise the env pair
+        // (`BLUE_TLS_KEY`/`BLUE_TLS_CERT`, plus optional `BLUE_TLS_CA`) is
+        // read — all-or-nothing, so a half-configured pair fails loud
+        // instead of silently keeping the plaintext listener.
+        this.#tls = options.tls ?? readTLSOptionsFromEnv(process.env) ?? null;
         this.#socketLimits = options.socketLimits;
         // Env-tunable origin allowlist for the default adapter: comma-
         // separated bare origins (`BLUE_SOCKET_ALLOWED_ORIGINS`). Absent
@@ -232,6 +278,7 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
                 maxConnections: this.#maxConnections,
                 authenticateTimeoutMs: this.#authenticateTimeoutMs,
                 trustedProxies: this.#trustedProxies,
+                tls: this.#tls ?? undefined,
             });
         }
         await this.#adapter.listen(this.#port, this.#host);
@@ -309,6 +356,33 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         }
         return undefined;
     }
+}
+
+/**
+ * Reads optional TLS material from the environment (AD-81):
+ * `BLUE_TLS_KEY` + `BLUE_TLS_CERT` (both required together) and optional
+ * `BLUE_TLS_CA`. Absent both required keys → `undefined` (plaintext
+ * origin, the AD-80 edge-terminated topology). One key without the other
+ * → `RangeError`: a half-configured TLS listener must fail loud rather
+ * than silently serve plaintext.
+ */
+function readTLSOptionsFromEnv(env: NodeJS.ProcessEnv): TLSServerOptions | undefined {
+    const key = env['BLUE_TLS_KEY'];
+    const cert = env['BLUE_TLS_CERT'];
+    if (key === undefined && cert === undefined) {
+        return undefined;
+    }
+    if (key === undefined || cert === undefined) {
+        throw new RangeError(
+            'HTTPServer: BLUE_TLS_KEY and BLUE_TLS_CERT must be set together — a half-configured TLS listener would silently serve plaintext'
+        );
+    }
+    const tls: TLSServerOptions = { key, cert };
+    const ca = env['BLUE_TLS_CA'];
+    if (ca !== undefined && ca.trim() !== '') {
+        tls.ca = ca;
+    }
+    return tls;
 }
 
 /**

@@ -126,6 +126,18 @@ disabled.
 
 ***
 
+### tls?
+
+> `optional` **tls?**: [`TLSServerOptions`](TLSServerOptions.md)
+
+TLS material for the origin listener (AD-81). When set, the adapter
+binds `http2.createSecureServer` with `allowHTTP1: true` — ALPN
+negotiates h2 with an HTTP/1.1 fallback, and WebSocket upgrades keep
+flowing over the h1.1 path (RFC 8441 is not implemented by `ws` or
+browsers). Omit for the plaintext HTTP/1.1 origin.
+
+***
+
 ### trustedProxies?
 
 > `optional` **trustedProxies?**: `string`[]

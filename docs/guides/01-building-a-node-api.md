@@ -296,6 +296,65 @@ override the default. Logging comes from the dependency-light `@blue/log`
 leaf; `@blue/telemetry` re-exports the same surface when an app already
 depends on it (AD-67).
 
+## 8. Deployment topology — TLS and HTTP/2–3 at the edge
+
+The framework's origin listener serves **HTTP/1.1 over plain TCP** and does
+not terminate TLS in-process (see [AD-80](../decisions/2026-10-09_AD80_HTTP23_EDGE_TERMINATION.md)).
+The supported production topology is:
+
+```text
+browser/client ──(TLS, HTTP/2, HTTP/3)──► edge proxy/LB/CDN ──(HTTP/1.1)──► origin
+```
+
+The edge terminates TLS, HTTP/2 and HTTP/3 — that is where the
+user-visible benefits (multiplexing, HPACK, 0-RTT) are realized. The
+origin hop is keep-alive HTTP/1.1, which is by design: Node has no HTTP/3
+listener, and WebSockets cannot ride h2 (neither `ws` nor browsers
+implement RFC 8441).
+
+- **Bind the origin to the loopback or a private interface.** The default
+  bind is `127.0.0.1`; only the edge may reach the origin. Exposing the
+  plaintext listener publicly is a misconfiguration.
+- **Preserve client identity with the trusted-proxy allowlist.**
+  Configure `trustedProxies` (or `BLUE_TRUSTED_PROXIES`) with the edge's
+  addresses (AD-37). Without it every request looks like the proxy's IP —
+  rate limiting, audit logs and `remoteAddress` are wrong; with a wrongly
+  widened allowlist, spoofed `X-Forwarded-For` headers are trusted. Empty
+  = trust nobody, which is the safe default.
+- **WebSockets and STOMP:** the proxy must pass `Upgrade`/`Connection`
+  headers through. nginx, Caddy and HAProxy do by default; an h2-only edge
+  configuration that refuses h1.1 fallback breaks socket upgrades —
+  keep the origin's h1.1 path reachable. Browser pages never notice the
+  origin hop: they speak h2 to the edge either way.
+- **SSE and long-lived streams:** configure the proxy's idle timeout above
+  your event cadence (or disable it for the stream paths) so the connection
+  is not dropped mid-stream.
+
+### Optional: native TLS + HTTP/2 at the origin
+
+Pass TLS material (`tls` on `HTTPServerOptions`/adapter options, or the
+`BLUE_TLS_KEY` + `BLUE_TLS_CERT` env pair with optional `BLUE_TLS_CA`) and
+the origin listener switches to `http2.createSecureServer` in
+`allowHTTP1` mode — ALPN negotiates **h2** with an **HTTP/1.1 fallback**
+on the same port (AD-81):
+
+```ts
+new HTTPServer(null, { tls: { key: '/etc/tls/key.pem', cert: '/etc/tls/cert.pem' } });
+```
+
+- PEM entries are inline-or-path: a value starting with `-----BEGIN` is
+  certificate content; anything else is a file path read at bind time.
+  The env pair is all-or-nothing — one key without the other throws at
+  construction rather than silently serving plaintext.
+- **WebSockets keep riding the h1.1 fallback** — neither `ws` nor browsers
+  implement RFC 8441, so socket/STOMP endpoints cannot upgrade over h2;
+  keep the h1.1 ALPN path reachable.
+- **HTTP/3 still terminates at the edge** (Node has no QUIC listener);
+  the default topology above remains the supported production shape.
+- Options that are h1.1-only (`keepAliveTimeout`, `maxRequestsPerSocket`)
+  are no-ops on the secure flavor; request/header timeouts are honored on
+  both.
+
 ## Next steps
 
 - [Guide 02 — Request Validation](02-request-validation.md): coercion,

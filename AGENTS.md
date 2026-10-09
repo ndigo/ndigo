@@ -522,7 +522,6 @@ This repository's AI-agent definitions are **generated, not hand-edited**:
   harnesses inherit the session model).
 
 <!-- graft:start -->
-
 ## Graft — repo context graph
 
 This repo is indexed in `graft/`: small linked markdown nodes that explain each

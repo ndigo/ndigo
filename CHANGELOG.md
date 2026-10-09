@@ -57,6 +57,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   request; budgets survive restarts and N processes share one budget
   (fail-closed by default; `onError: 'fail-open'` logs through
   `@blue/log` and allows).
+- `@blue/platform-node` (AD-80/AD-81, 2026-10-09): opt-in TLS origin with
+  native HTTP/2 — `tls?: TLSServerOptions` on `HTTPServerOptions` and the
+  adapter (`key`/`cert`/`ca` inline-or-path, `minVersion?`, `ciphers?`,
+  `clientAuth?` for mutual TLS, `maxConcurrentStreams?` to bound h2
+  streams per connection), plus the all-or-nothing `BLUE_TLS_KEY` /
+  `BLUE_TLS_CERT` + optional `BLUE_TLS_CA` env pair (default adapter only;
+  blank values count as unset). TLS material switches the listener to an
+  `http2.createSecureServer` in `allowHTTP1` mode — ALPN negotiates h2
+  with an HTTP/1.1 fallback, and WebSockets keep riding h1.1 (no RFC 8441
+  in `ws`/browsers). Plaintext, edge-terminated stays the default posture
+  (AD-80); a half-configured env pair throws rather than silently serving
+  plaintext.
 
 ### Changed
 

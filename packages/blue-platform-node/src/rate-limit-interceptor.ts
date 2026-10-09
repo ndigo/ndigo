@@ -14,7 +14,7 @@ import {
 import { getSymbolMetadata } from '@blue/core';
 import { getNodeRequest } from './node-request';
 import { HTTPHeaders } from '@blue/http';
-import { type RateLimiter, type RateLimitPolicy, validateRateLimitPolicy } from './rate-limit';
+import { type RateLimiter, type RateLimitPolicy, validateRateLimitPolicy } from '@blue/rate-limit';
 import { ProblemTypes, writeProblem } from './problem-details';
 import type { ServerResponse } from 'node:http';
 import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
@@ -72,13 +72,13 @@ export class RateLimitInterceptor implements RouteHandlerInterceptor {
         this.#limiter = limiter;
     }
 
-    preHandle(route: Route, handler: object | undefined): boolean | InterceptorDenial {
+    async preHandle(route: Route, handler: object | undefined): Promise<boolean | InterceptorDenial> {
         const policy = this.#policyFor(handler);
         if (!policy) return true;
 
         const request = getNodeRequest(route);
         const key = request?.remoteAddress ?? 'unknown';
-        const result = this.#limiter.consume(key, policy);
+        const result = await this.#limiter.consume(key, policy);
         if (result.allowed) return true;
 
         this.#reject(route, result.retryAfterMs);

@@ -7,6 +7,23 @@ Every implemented plan has its **decision recorded** in
 
 ## Completed Plans
 
+### 2026-10-08 - Shared-Store Rate Limiting
+
+`@blue/rate-limit` + `@blue/platform-node` + `@blue/redis` (AD-79),
+closing GAP-8: the `RateLimiter` SPI moves to a leaf package with an
+**async** `consume` (AD-39) plus `validateRateLimitPolicy`,
+`likeRateLimiter`, `FixedWindowRateLimiter` and the `RATE_LIMITER` token;
+the platform interceptor awaits and the bean registers under the token
+(`src/rate-limit.ts` deleted — clean cutover); `@blue/redis/rate-limit`
+ships `RedisRateLimiter` (one Lua script per consume:
+INCR/PEXPIRE-on-first/PTTL, keys `blue:rl:<ns>:<windowMs>:<key>`,
+**fail-closed** default with a documented `fail-open` option). Guide 11 §5
+and guide 16 updated.
+
+[Read plan](2026-10-08_SHARED_STORE_RATE_LIMITING.md)
+
+---
+
 ### 2026-10-08 - Migration Generation + Run-on-Boot
 
 `@blue/orm-drizzle` + `@blue/cli` + `apps/04-blue-api` (AD-78), closing

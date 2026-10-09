@@ -1,71 +1,29 @@
 /**
- * @module blue-platform-node
- * @since 1.0.0
- * @author Jeff Rose
- */
-
-/**
- * A route's rate-limit policy: at most `limit` requests per `windowMs`
- * per client key (SEC-6).
- */
-export interface RateLimitPolicy {
-    /** Maximum requests allowed within the window. Positive integer. */
-    limit: number;
-    /** Window length in milliseconds. Positive integer. */
-    windowMs: number;
-}
-
-/**
- * The outcome of {@link RateLimiter.consume}.
- */
-export interface RateLimitResult {
-    /** Whether the request may proceed. */
-    readonly allowed: boolean;
-    /**
-     * When denied: milliseconds until the current window resets (the
-     * basis for the `Retry-After` header). `0` when allowed.
-     */
-    readonly retryAfterMs: number;
-}
-
-/**
- * Rate-limit backend contract. Implementations count request keys over
- * fixed windows; this is an integration point for distributed backends
- * (Redis) later — the in-memory reference implementation ships now.
- */
-export interface RateLimiter {
-    /** Backend identifier e.g. `'fixed-window'`, `'redis'`. */
-    readonly kind: string;
-
-    /**
-     * Accounts one request for `key` under `policy`. Implementations MUST
-     * fail loud (`RangeError`) on malformed policies and MUST be safe for
-     * concurrent use.
-     */
-    consume(key: string, policy: RateLimitPolicy): RateLimitResult;
-}
-
-/**
- * Validates a {@link RateLimitPolicy} — shared by the `@rateLimit`
- * decorator (decoration-time) and the limiter (call-time).
- */
-export function validateRateLimitPolicy(policy: RateLimitPolicy, where = 'rate limit policy'): void {
-    if (!Number.isInteger(policy.limit) || policy.limit < 1) {
-        throw new RangeError(`${where}: "limit" must be a positive integer, got ${String(policy.limit)}`);
-    }
-    if (!Number.isInteger(policy.windowMs) || policy.windowMs < 1) {
-        throw new RangeError(`${where}: "windowMs" must be a positive integer, got ${String(policy.windowMs)}`);
-    }
-}
-
-/**
- * In-memory fixed-window reference implementation: one counter per
+ * The default {@link RateLimiter}: in-process and single-node (AD-33
+ * Wave 3, moved to `@blue/rate-limit` by AD-79).
+ *
+ * Semantics deliberately mirror a one-node deployment: one counter per
  * (key, window) pair, sliding to a fresh window once `windowMs` elapses.
+ * Budgets are **per instance** — the platform wires a single bean into
+ * the default mapping, so one process shares one budget; replace the bean
+ * with the Redis driver (`@blue/redis/rate-limit`) when more than one
+ * process must share (AD-79).
  *
  * Memory is bounded: expired buckets are swept once the map passes
  * `maxEntries` (default 10 000); at the cap with no expired buckets the
  * oldest bucket is evicted, so `size` never exceeds `maxEntries` and new
- * keys stay ~O(1) to insert (SEC-2).
+ * keys stay ~O(1) to insert (SEC-2). Redis-backed TTL windows need no
+ * such machinery — the server expires keys itself.
+ *
+ * @module blue-rate-limit
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+import { type RateLimitPolicy, type RateLimitResult, type RateLimiter, validateRateLimitPolicy } from './rate-limiter';
+
+/**
+ * In-memory fixed-window reference implementation: one counter per
+ * (key, window) pair, sliding to a fresh window once `windowMs` elapses.
  */
 export class FixedWindowRateLimiter implements RateLimiter {
     readonly kind = 'fixed-window';
@@ -82,7 +40,7 @@ export class FixedWindowRateLimiter implements RateLimiter {
         }
     }
 
-    consume(key: string, policy: RateLimitPolicy): RateLimitResult {
+    async consume(key: string, policy: RateLimitPolicy): Promise<RateLimitResult> {
         validateRateLimitPolicy(policy);
         const now = Date.now();
         const bucketKey = `${policy.windowMs}:${key}`;

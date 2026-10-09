@@ -35,7 +35,7 @@ key, denied as **429 + `Retry-After`** problem documents.
 
 ##### limiter
 
-[`RateLimiter`](../interfaces/RateLimiter.md)
+[`RateLimiter`](#)
 
 #### Returns
 
@@ -101,7 +101,7 @@ key, denied as **429 + `Retry-After`** problem documents.
 
 ### preHandle()
 
-> **preHandle**(`route`, `handler`): `boolean` \| [`InterceptorDenial`](#)
+> **preHandle**(`route`, `handler`): `Promise`\<`boolean` \| [`InterceptorDenial`](#)\>
 
 #### Parameters
 
@@ -115,7 +115,7 @@ key, denied as **429 + `Retry-After`** problem documents.
 
 #### Returns
 
-`boolean` \| [`InterceptorDenial`](#)
+`Promise`\<`boolean` \| [`InterceptorDenial`](#)\>
 
 #### Implementation of
 

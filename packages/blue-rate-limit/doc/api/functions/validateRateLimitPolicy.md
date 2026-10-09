@@ -1,15 +1,15 @@
-[**@blue/platform-node v0.0.1**](../../README.md)
+[**@blue/rate-limit v0.0.1**](../README.md)
 
 ***
 
-[@blue/platform-node](../../README.md) / [blue-platform-node](../README.md) / validateRateLimitPolicy
+[@blue/rate-limit](../README.md) / validateRateLimitPolicy
 
 # Function: validateRateLimitPolicy()
 
 > **validateRateLimitPolicy**(`policy`, `where?`): `void`
 
 Validates a [RateLimitPolicy](../interfaces/RateLimitPolicy.md) — shared by the `@rateLimit`
-decorator (decoration-time) and the limiter (call-time).
+decorator (decoration-time) and every limiter (call-time).
 
 ## Parameters
 

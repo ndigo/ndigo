@@ -60,7 +60,6 @@ export * from './cookie-parser';
 export * from './csrf-interceptor';
 export * from './session-cookie';
 export * from './node-session-interceptor';
-export * from './rate-limit';
 export * from './rate-limit-interceptor';
 export * from './trusted-proxy';
 export * from './cors-interceptor';

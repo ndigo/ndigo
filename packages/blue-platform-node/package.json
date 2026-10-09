@@ -51,6 +51,7 @@
     "@blue/locks": "~0.0.1",
     "@blue/log": "~0.0.1",
     "@blue/openapi": "~0.0.1",
+    "@blue/rate-limit": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/scheduler": "~0.0.1",
     "@blue/socket": "~0.0.1",

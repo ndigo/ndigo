@@ -114,6 +114,15 @@
     "RouteHistory": "#",
     "RouteTransaction": "#"
   },
+  "@blue/rate-limit": {
+    "FixedWindowRateLimiter": "#",
+    "RATE_LIMITER": "#",
+    "RateLimitPolicy": "#",
+    "RateLimitResult": "#",
+    "RateLimiter": "#",
+    "likeRateLimiter": "#",
+    "validateRateLimitPolicy": "#"
+  },
   "@blue/router": {
     "ACCEPT_LANGUAGE_ATTRIBUTE": "#",
     "Route": "#"

@@ -109,6 +109,8 @@
       "@blue/inspect/*": ["./packages/blue-inspect/src/*"],
       "@blue/locks": ["./packages/blue-locks/src"],
       "@blue/locks/*": ["./packages/blue-locks/src/*"],
+      "@blue/rate-limit": ["./packages/blue-rate-limit/src"],
+      "@blue/rate-limit/*": ["./packages/blue-rate-limit/src/*"],
       "@blue/cluster": ["./packages/blue-cluster/src"],
       "@blue/cluster/*": ["./packages/blue-cluster/src/*"],
       "@blue/cli": ["./packages/blue-cli/src"],
@@ -116,7 +118,9 @@
       // redis subpaths first: /cache and /pubsub are declared above, /locks
       // joins the family (its driver is a top-level surface of @blue/redis).
       "@blue/redis/locks": ["./packages/blue-redis/src/locks"],
-      "@blue/redis/locks/*": ["./packages/blue-redis/src/locks/*"]
+      "@blue/redis/locks/*": ["./packages/blue-redis/src/locks/*"],
+      "@blue/redis/rate-limit": ["./packages/blue-redis/src/rate-limit"],
+      "@blue/redis/rate-limit/*": ["./packages/blue-redis/src/rate-limit/*"]
     }
   },
   "include": [

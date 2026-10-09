@@ -39,8 +39,7 @@ import { SecurityHeadersInterceptor } from './security-headers-interceptor';
 import { NodeParameterBindingErrorResolver } from './parameter-binding-error-resolver';
 import { NodeLastResortErrorResolver } from './last-resort-error-resolver';
 import { createNodeArgumentResolvers } from './configure-argument-resolvers';
-import { FixedWindowRateLimiter } from './rate-limit';
-import type { RateLimiter } from './rate-limit';
+import { FixedWindowRateLimiter, RATE_LIMITER, type RateLimiter } from '@blue/rate-limit';
 import { RateLimitInterceptor } from './rate-limit-interceptor';
 
 /**
@@ -93,11 +92,12 @@ export class NodeAutoConfiguration {
     /**
      * The shared in-memory rate limiter (SEC-6). Apps needing a
      * distributed backend provide their own {@link RateLimiter}
-     * implementation; the bean is the default.
+     * implementation (the `@blue/redis/rate-limit` driver is the
+     * shared-store option, AD-79); the bean is the default.
      *
      * @returns The default fixed-window rate limiter.
      */
-    @entry()
+    @entry(RATE_LIMITER)
     rateLimiter(): RateLimiter {
         return new FixedWindowRateLimiter();
     }

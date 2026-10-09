@@ -33,6 +33,7 @@
     "@blue/management": "~0.0.1",
     "@blue/orm-drizzle": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
+    "@blue/rate-limit": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/util": "~0.0.1",
     "@blue/view-ejs": "~0.0.1",

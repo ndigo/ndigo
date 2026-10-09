@@ -1,7 +1,7 @@
 {
   "name": "@blue/redis",
   "version": "0.0.1",
-  "description": "Node-only Redis connections, namespaced shared cache adapters, and WebSocket pub/sub fanout for BlueJS",
+  "description": "Node-only Redis connections, namespaced shared cache adapters, WebSocket pub/sub fan-out, distributed-lock/job drivers, and the shared-store rate limiter for BlueJS",
   "type": "module",
   "files": [
     "doc",
@@ -27,6 +27,10 @@
     "./locks": {
       "types": "./lib/locks/index.d.ts",
       "default": "./lib/locks/index.js"
+    },
+    "./rate-limit": {
+      "types": "./lib/rate-limit/index.d.ts",
+      "default": "./lib/rate-limit/index.js"
     }
   },
   "types": "lib/index.d.ts",
@@ -50,6 +54,7 @@
   ],
   "dependencies": {
     "@blue/core": "~0.0.1",
+    "@blue/log": "~0.0.1",
     "@redis/client": "6.3.0"
   },
   "devDependencies": {
@@ -64,6 +69,7 @@
     "@blue/factory": "~0.0.1",
     "@blue/jobs": "~0.0.1",
     "@blue/locks": "~0.0.1",
+    "@blue/rate-limit": "~0.0.1",
     "@blue/socket": "~0.0.1"
   },
   "peerDependenciesMeta": {
@@ -77,6 +83,9 @@
       "optional": true
     },
     "@blue/locks": {
+      "optional": true
+    },
+    "@blue/rate-limit": {
       "optional": true
     },
     "@blue/socket": {

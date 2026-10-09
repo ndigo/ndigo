@@ -13,7 +13,8 @@
  */
 import { fileURLToPath } from 'node:url';
 import { getEnv } from '@blue/context';
-import { SESSION_COOKIE, type RateLimitPolicy, type SessionCookieOptions } from '@blue/platform-node';
+import { type RateLimitPolicy } from '@blue/rate-limit';
+import { SESSION_COOKIE, type SessionCookieOptions } from '@blue/platform-node';
 
 /** The password shared by every password-backed demo account. */
 export const DEMO_PASSWORD = 'demo';

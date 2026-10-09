@@ -71,8 +71,16 @@ export interface MetricSnapshotProvider {
 // `/metrics` controller reads it per request — zero wiring between the two
 // auto-configurations, the same story `FeatureMetricAggregator` had via
 // context tokens.
+//
+// A *fallback* slot (REV-003) sits underneath the current slot: the
+// management auto-configuration installs its feature aggregator there, so
+// `/metrics` serves feature counters even when no telemetry pipeline (pull
+// reader) is configured. A registered current provider (e.g. the
+// telemetry reader) always wins over the fallback; unregistering the
+// current slot falls back instead of returning `undefined`.
 
 let current: MetricSnapshotProvider | undefined;
+let fallback: MetricSnapshotProvider | undefined;
 
 /**
  * Registers the process's metric snapshot source, replacing any previous
@@ -85,17 +93,30 @@ export function registerMetricSnapshotProvider(provider: MetricSnapshotProvider)
 }
 
 /**
- * Clears the registered metric snapshot source.
+ * Clears the registered metric snapshot source — the fallback slot (when
+ * set) now answers.
  */
 export function unregisterMetricSnapshotProvider(): void {
     current = undefined;
 }
 
 /**
- * Returns the registered metric snapshot source, or `undefined` when none is
- * registered (no telemetry configured — the `/metrics` endpoint answers its
- * "no metric source" document).
+ * Sets or clears the fallback metric snapshot source (REV-003): the
+ * aggregator-backed provider `ManagementAutoConfiguration` installs as the
+ * no-telemetry default. `undefined` clears.
+ *
+ * @param provider - The fallback provider, or `undefined` to clear.
+ */
+export function setFallbackMetricSnapshotProvider(provider: MetricSnapshotProvider | undefined): void {
+    fallback = provider;
+}
+
+/**
+ * Returns the metric snapshot source: the registered current provider when
+ * present, else the fallback, else `undefined` (no telemetry configured and
+ * no auto-configuration — the `/metrics` endpoint answers its "no metric
+ * source" document).
  */
 export function getMetricSnapshotProvider(): MetricSnapshotProvider | undefined {
-    return current;
+    return current ?? fallback;
 }

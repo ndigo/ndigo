@@ -7,10 +7,11 @@
  * The snapshot is the common ancestor: the diff is computed against the
  * **committed** projection, so a run at HEAD regenerates byte-identical
  * output (the root freshness gate's premise) and writes a migration file
- * only when the metadata actually moved. Changes the AD-30 predicate cannot
- * express (type/nullability/PK changes) are reported on stderr and the
- * snapshot is still rewritten — the projection tracks the entities, which
- * are the source of truth.
+ * only when the metadata actually moved. The gate lives in
+ * `db-generate-plan.ts`: a delta with destructive drops or changes the
+ * AD-30 predicate cannot express **fails loud** (exit code 1) until the
+ * operator acknowledges them with `BLUE_DB_ACCEPT_DROPS=true` /
+ * `BLUE_DB_ACCEPT_UNSUPPORTED=true` (REV-002/REV-006).
  *
  * @module blue-api
  * @since 1.0.0
@@ -19,19 +20,14 @@
 import 'node:process';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import {
-    diffProjections,
-    nextMigrationVersion,
-    projectEntities,
-    readSnapshot,
-    renderMigrationFile,
-    renderSnapshot,
-} from '@blue/orm-drizzle';
+import { getEnv } from '@blue/context';
+import { projectEntities, readSnapshot, renderMigrationFile, renderSnapshot } from '@blue/orm-drizzle';
 import type { SchemaSnapshot } from '@blue/orm-drizzle';
 import { getLogger } from '@blue/log';
 import { getErrorMessage } from '@blue/util';
 import { MIGRATIONS_DIR, SNAPSHOT_PATH } from './db-paths';
 import { DrizzleNote } from './drizzle-note.entity';
+import { GenerationBlockedError, planGeneration } from './db-generate-plan';
 
 const logger = getLogger('blue-api:db');
 
@@ -49,28 +45,49 @@ async function loadSnapshot(): Promise<SchemaSnapshot | null> {
     }
 }
 
+/**
+ * The `BLUE_DB_ACCEPT_*` escape hatches: present-and-not-false (the repo's
+ * env-flag convention).
+ */
+function acceptFlag(name: string): boolean {
+    const value = getEnv(name);
+    return value !== undefined && value !== '' && value !== '0' && value.toLowerCase() !== 'false';
+}
+
 async function main(): Promise<void> {
     const snapshot = await loadSnapshot();
     const projection = projectEntities(ENTITIES);
-    const delta = diffProjections(snapshot, projection);
+
+    let plan: Awaited<ReturnType<typeof planGeneration>>;
+    try {
+        plan = await planGeneration(snapshot, projection, {
+            dir: MIGRATIONS_DIR,
+            acceptDrops: acceptFlag('BLUE_DB_ACCEPT_DROPS'),
+            acceptUnsupported: acceptFlag('BLUE_DB_ACCEPT_UNSUPPORTED'),
+        });
+    } catch (error) {
+        if (error instanceof GenerationBlockedError) {
+            for (const note of error.warnings) {
+                process.stderr.write(`WARNING: ${note}\n`);
+            }
+            process.stderr.write(`db:generate blocked: ${getErrorMessage(error)}\n`);
+            process.exit(1);
+        }
+        throw error;
+    }
 
     await mkdir(MIGRATIONS_DIR, { recursive: true });
 
     const lines: string[] = [];
-    if (delta.statements.length > 0) {
-        const version = await nextMigrationVersion(MIGRATIONS_DIR);
-        const slug = delta.description
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-+|-+$/g, '');
-        const target = join(MIGRATIONS_DIR, `${String(version).padStart(4, '0')}-${slug}.ts`);
-        await writeFile(target, renderMigrationFile(version, delta.description, delta.statements));
+    if (plan.statements.length > 0) {
+        const target = join(MIGRATIONS_DIR, `${String(plan.version).padStart(4, '0')}-${plan.slug}.ts`);
+        await writeFile(target, renderMigrationFile(plan.version, plan.description, plan.statements));
         lines.push(`generated ${target}`);
-    } else if (delta.unsupported.length === 0) {
+    } else if (plan.warnings.length === 0) {
         lines.push('no schema changes');
     }
 
-    for (const note of delta.unsupported) {
+    for (const note of plan.warnings) {
         process.stderr.write(`WARNING: ${note}\n`);
     }
 

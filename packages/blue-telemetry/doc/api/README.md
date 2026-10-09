@@ -23,6 +23,7 @@ Jeff Rose
 - [CounterRateResolver](classes/CounterRateResolver.md)
 - [DispatcherInstrumentation](classes/DispatcherInstrumentation.md)
 - [FeatureMetricAggregator](classes/FeatureMetricAggregator.md)
+- [FeatureMetricAggregatorProvider](classes/FeatureMetricAggregatorProvider.md)
 - [LoggerFactory](classes/LoggerFactory.md)
 
 ## Interfaces
@@ -87,6 +88,7 @@ Jeff Rose
 - [renderPrometheusText](functions/renderPrometheusText.md)
 - [resolveLoggerLevel](functions/resolveLoggerLevel.md)
 - [sanitizePrometheusName](functions/sanitizePrometheusName.md)
+- [setFallbackMetricSnapshotProvider](functions/setFallbackMetricSnapshotProvider.md)
 - [severityNumberToLevel](functions/severityNumberToLevel.md)
 - [traced](functions/traced.md)
 - [unregisterMetricSnapshotProvider](functions/unregisterMetricSnapshotProvider.md)

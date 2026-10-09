@@ -68,9 +68,14 @@ registers the reader that backs it — neither needs the other to boot.
 - **JSON projection on explicit accept.** `Accept: application/json` (or
   any `application/*+json` type) returns the same snapshot as
   `{ metrics: { <name>: { type, unit, description?, points } } }`.
-- **No source → error document.** Without a registered snapshot source (no
-  `configureTelemetry` / no `metricExporter: 'prometheus'`), the endpoint
-  answers `{ "error": "No metric source wired" }` — same posture as before.
+- **No telemetry → feature-aggregator fallback (REV-003).** Without a
+  registered pull reader (no `configureTelemetry` /
+  `metricExporter: 'prometheus'`), the endpoint serves
+  `ManagementAutoConfiguration`'s feature aggregator: counters/gauges/
+  durations from `counted` / `FeatureMetricAggregator` render as
+  `{feature}.{name}` snapshots (durations as the histogram count/sum pair).
+  With neither a reader nor the auto-configuration present, the endpoint
+  answers `{ "error": "No metric source wired" }`.
 
 The view is per-request: every scrape re-collects from the
 `MeterProvider`, so the endpoint always shows live aggregated state and

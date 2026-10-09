@@ -8,7 +8,8 @@
 
 > **unregisterMetricSnapshotProvider**(): `void`
 
-Clears the registered metric snapshot source.
+Clears the registered metric snapshot source — the fallback slot (when
+set) now answers.
 
 ## Returns
 

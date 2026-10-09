@@ -29,7 +29,8 @@ import {
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
-import { HTTPServer, type TLSServerOptions } from '../src/http-server';
+import { HTTPServer, type HTTPServerAdapter, type TLSServerOptions } from '../src/http-server';
+import type { HTTPRequestLimits } from '../src/http-request-limits';
 
 /**
  * TLS origin + HTTP/2 (AD-81): the secure adapter branch binds
@@ -38,9 +39,9 @@ import { HTTPServer, type TLSServerOptions } from '../src/http-server';
  * the drain deadline force-closes tracked sockets (the tls/h2 server has
  * no `closeAllConnections`).
  *
- * Requires the `openssl` CLI for a throwaway self-signed cert; the whole
- * suite is skipped when it is unavailable (CI and dev machines both ship
- * it).
+ * Requires the `openssl` CLI for throwaway self-signed server and client
+ * certificates; the whole suite is skipped when it is unavailable (CI and
+ * dev machines both ship it).
  */
 
 function hasOpenssl(): boolean {
@@ -76,13 +77,13 @@ class TlsProbeController {
     }
 }
 
-async function boot(tls: TLSServerOptions, limits?: Record<string, number>): Promise<NodeHTTPServerAdapter> {
+async function boot(tls: TLSServerOptions, limits?: HTTPRequestLimits): Promise<NodeHTTPServerAdapter> {
     const context = new MetadataConfigApplicationContext('tls-http2');
     context.register(NodeAutoConfiguration);
     context.setValue(TlsProbeController.name, new TlsProbeController());
     context.refresh();
     const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
-    const adapter = new NodeHTTPServerAdapter(dispatcher, { tls, limits } as never);
+    const adapter = new NodeHTTPServerAdapter(dispatcher, { tls, ...(limits !== undefined ? { limits } : {}) });
     await adapter.listen(0, '127.0.0.1');
     return adapter;
 }
@@ -106,6 +107,10 @@ describe.skipIf(!OPENSSL_AVAILABLE)('TLS origin + HTTP/2 (AD-81)', () => {
     let keyPath: string;
     let certPath: string;
     let certPem: string;
+    let clientKeyPath: string;
+    let clientCertPath: string;
+    let clientKeyPem: string;
+    let clientCertPem: string;
     let adapter: NodeHTTPServerAdapter;
     let port: number;
 
@@ -129,6 +134,27 @@ describe.skipIf(!OPENSSL_AVAILABLE)('TLS origin + HTTP/2 (AD-81)', () => {
             '/CN=localhost',
         ]);
         certPem = readFileSync(certPath, 'utf8');
+        // Client identity for the mTLS cases (REV-101): self-signed like the
+        // server cert; the server trusts it by pointing `ca` at it.
+        clientKeyPath = join(dir, 'client-key.pem');
+        clientCertPath = join(dir, 'client-cert.pem');
+        execFileSync('openssl', [
+            'req',
+            '-x509',
+            '-newkey',
+            'rsa:2048',
+            '-nodes',
+            '-keyout',
+            clientKeyPath,
+            '-out',
+            clientCertPath,
+            '-days',
+            '1',
+            '-subj',
+            '/CN=blue-test-client',
+        ]);
+        clientKeyPem = readFileSync(clientKeyPath, 'utf8');
+        clientCertPem = readFileSync(clientCertPath, 'utf8');
         adapter = await boot({ key: keyPath, cert: certPath });
         port = portOf(adapter);
     });
@@ -257,7 +283,9 @@ describe.skipIf(!OPENSSL_AVAILABLE)('TLS origin + HTTP/2 (AD-81)', () => {
         const broken = new NodeHTTPServerAdapter(new NodeDispatcher(), {
             tls: { key: join(dir, 'missing.pem'), cert: certPath },
         });
-        await expect(broken.listen(0, '127.0.0.1')).rejects.toThrow();
+        // The filesystem error surfaces as the listen() rejection (AD-81
+        // D-3's typed-error contract), not a bare handshake failure later.
+        await expect(broken.listen(0, '127.0.0.1')).rejects.toThrow(/ENOENT|no such file/i);
     });
 
     test('a half-configured env pair throws instead of serving plaintext', () => {
@@ -286,5 +314,239 @@ describe.skipIf(!OPENSSL_AVAILABLE)('TLS origin + HTTP/2 (AD-81)', () => {
         const started = Date.now();
         await draining.close();
         expect(Date.now() - started).toBeLessThan(2_000);
+    });
+
+    test('clientAuth request admits anonymous clients', async () => {
+        const mTls = await boot({ key: keyPath, cert: certPath, ca: certPem, clientAuth: 'request' });
+        let client: http2.ClientHttp2Session | null = null;
+        try {
+            client = http2.connect(`https://127.0.0.1:${portOf(mTls)}`, {
+                ca: certPem,
+                ALPNProtocols: ['h2'],
+                rejectUnauthorized: false,
+            });
+            try {
+                const req = client.request({ ':path': '/probe' });
+                req.end();
+                const headers = await new Promise<http2.IncomingHttpHeaders>((resolve) => req.on('response', resolve));
+                await collectBody(req);
+                expect(headers[':status']).toBe(200);
+            } finally {
+                client.close();
+            }
+        } finally {
+            await mTls.close();
+        }
+    });
+
+    test('clientAuth require rejects anonymous clients', async () => {
+        const mTls = await boot({ key: keyPath, cert: certPath, ca: certPem, clientAuth: 'require' });
+        try {
+            const client = http2.connect(`https://127.0.0.1:${portOf(mTls)}`, {
+                ca: certPem,
+                ALPNProtocols: ['h2'],
+                rejectUnauthorized: false,
+            });
+            try {
+                // No client certificate: the server aborts the handshake, so
+                // the request can never reach the dispatcher.
+                const outcome = await new Promise<'ok' | 'error'>((resolve) => {
+                    client.once('error', () => resolve('error'));
+                    const req = client.request({ ':path': '/probe' });
+                    req.once('error', () => resolve('error'));
+                    req.once('response', () => resolve('ok'));
+                    req.end();
+                });
+                expect(outcome).toBe('error');
+            } finally {
+                client.close();
+            }
+        } finally {
+            await mTls.close();
+        }
+    });
+
+    test('clientAuth require admits a certificate verifying against ca', async () => {
+        const mTls = await boot({ key: keyPath, cert: certPath, ca: clientCertPem, clientAuth: 'require' });
+        try {
+            const client = http2.connect(`https://127.0.0.1:${portOf(mTls)}`, {
+                ca: certPem,
+                key: clientKeyPem,
+                cert: clientCertPem,
+                ALPNProtocols: ['h2'],
+                rejectUnauthorized: false,
+            });
+            try {
+                const req = client.request({ ':path': '/probe' });
+                req.end();
+                const headers = await new Promise<http2.IncomingHttpHeaders>((resolve) => req.on('response', resolve));
+                await collectBody(req);
+                expect(headers[':status']).toBe(200);
+            } finally {
+                client.close();
+            }
+        } finally {
+            await mTls.close();
+        }
+    });
+
+    test('maxConcurrentStreams is advertised in server SETTINGS', async () => {
+        const capped = await boot({ key: keyPath, cert: certPath, maxConcurrentStreams: 4 });
+        try {
+            const client = http2.connect(`https://127.0.0.1:${portOf(capped)}`, {
+                ca: certPem,
+                ALPNProtocols: ['h2'],
+                rejectUnauthorized: false,
+            });
+            try {
+                const settings = await new Promise<http2.Settings>((resolve, reject) => {
+                    client.once('remoteSettings', resolve);
+                    client.once('error', reject);
+                });
+                expect(settings.maxConcurrentStreams).toBe(4);
+            } finally {
+                client.close();
+            }
+        } finally {
+            await capped.close();
+        }
+    });
+
+    test('an invalid maxConcurrentStreams rejects listen()', async () => {
+        const bad = new NodeHTTPServerAdapter(new NodeDispatcher(), {
+            tls: { key: keyPath, cert: certPath, maxConcurrentStreams: -1 },
+        });
+        await expect(bad.listen(0, '127.0.0.1')).rejects.toThrow();
+    });
+
+    test('minVersion is enforced by the secure listener', async () => {
+        const strict = await boot({ key: keyPath, cert: certPath, minVersion: 'TLSv1.3' });
+        try {
+            // A TLSv1.2-only client cannot handshake against the
+            // TLSv1.3-only listener.
+            const agent = new https.Agent({
+                ca: certPem,
+                ALPNProtocols: ['http/1.1'],
+                minVersion: 'TLSv1.2',
+                maxVersion: 'TLSv1.2',
+                rejectUnauthorized: false,
+            });
+            let handshakeFailed = false;
+            await new Promise<void>((resolve) => {
+                const req = https.get(`https://127.0.0.1:${portOf(strict)}/probe`, { agent }, () => resolve());
+                req.on('error', () => {
+                    handshakeFailed = true;
+                    resolve();
+                });
+            });
+            expect(handshakeFailed).toBe(true);
+        } finally {
+            await strict.close();
+        }
+    });
+
+    test('a bogus cipher list rejects listen()', async () => {
+        const bad = new NodeHTTPServerAdapter(new NodeDispatcher(), {
+            tls: { key: keyPath, cert: certPath, ciphers: 'NOT-A-CIPHER-SUITE' },
+        });
+        await expect(bad.listen(0, '127.0.0.1')).rejects.toThrow();
+    });
+
+test('a valid cipher list still serves h2', async () => {
+        const ciphered = await boot({
+            key: keyPath,
+            cert: certPath,
+            ciphers: 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256',
+        });
+        let client: http2.ClientHttp2Session | null = null;
+        try {
+            client = http2.connect(`https://127.0.0.1:${portOf(ciphered)}`, {
+                ca: certPem,
+                ALPNProtocols: ['h2'],
+                rejectUnauthorized: false,
+            });
+            try {
+                const req = client.request({ ':path': '/probe' });
+                req.end();
+                const headers = await new Promise<http2.IncomingHttpHeaders>((resolve) => req.on('response', resolve));
+                await collectBody(req);
+                expect(headers[':status']).toBe(200);
+            } finally {
+                client.close();
+            }
+        } finally {
+            await ciphered.close();
+        }
+    });
+
+    test('inline PEM with surrounding whitespace is still PEM (REV-103)', async () => {
+        const inline = await boot({ key: `  \n${readFileSync(keyPath, 'utf8')}`, cert: `\n${certPem}\n` });
+        let client: http2.ClientHttp2Session | null = null;
+        try {
+            client = http2.connect(`https://127.0.0.1:${portOf(inline)}`, {
+                ca: certPem,
+                ALPNProtocols: ['h2'],
+                rejectUnauthorized: false,
+            });
+            try {
+                const req = client.request({ ':path': '/probe' });
+                req.end();
+                const headers = await new Promise<http2.IncomingHttpHeaders>((resolve) => req.on('response', resolve));
+                await collectBody(req);
+                expect(headers[':status']).toBe(200);
+            } finally {
+                client.close();
+            }
+        } finally {
+            await inline.close();
+        }
+    });
+
+    test('a failed bind leaves the adapter reusable (REV-107)', async () => {
+        const occupier = await boot({ key: keyPath, cert: certPath });
+        const retry = new NodeHTTPServerAdapter(new NodeDispatcher(), { tls: { key: keyPath, cert: certPath } });
+        try {
+            await expect(retry.listen(portOf(occupier), '127.0.0.1')).rejects.toThrow();
+            // The failed bind must not poison the adapter: a retry on a free
+            // ephemeral port succeeds, and a later close() is a clean no-op.
+            await retry.listen(0, '127.0.0.1');
+            expect(retry.server).not.toBeNull();
+        } finally {
+            await retry.close();
+            await occupier.close();
+        }
+    });
+
+    test('a half-configured env pair is ignored with a custom adapter (REV-102)', () => {
+        const fakeAdapter: HTTPServerAdapter = {
+            listen: async () => undefined,
+            close: async () => undefined,
+            server: null,
+        };
+        vi.stubEnv('BLUE_TLS_KEY', '-----BEGIN PRIVATE KEY-----\nx');
+        try {
+            expect(() => new HTTPServer(null, { adapter: fakeAdapter })).not.toThrow();
+        } finally {
+            vi.unstubAllEnvs();
+        }
+    });
+
+    test('explicit TLS options win over a half-configured env pair', () => {
+        vi.stubEnv('BLUE_TLS_KEY', '-----BEGIN PRIVATE KEY-----\nx');
+        try {
+            expect(() => new HTTPServer(null, { tls: { key: 'k', cert: 'c' } })).not.toThrow();
+        } finally {
+            vi.unstubAllEnvs();
+        }
+    });
+
+    test('blank BLUE_TLS_* values count as unset (REV-103)', () => {
+        vi.stubEnv('BLUE_TLS_KEY', '');
+        vi.stubEnv('BLUE_TLS_CERT', '   ');
+        try {
+            expect(() => new HTTPServer(null)).not.toThrow();
+        } finally {
+            vi.unstubAllEnvs();
+        }
     });
 });

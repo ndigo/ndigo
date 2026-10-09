@@ -77,8 +77,13 @@ configureTelemetry({
   `Accept: application/json` (or `application/*+json`) header returns the
   same snapshot as JSON (`{ metrics: { <name>: { type, unit, points } } }`);
   both views derive from the one meter snapshot, so the exported and the
-  scraped picture can never diverge. Without a configured snapshot source
-  the endpoint answers `{ "error": "No metric source wired" }`.
+  scraped picture can never diverge. Without a telemetry pull reader the
+  endpoint serves the management auto-configuration's **feature-aggregator
+  fallback** (REV-003): counters/gauges/durations from `counted` /
+  `FeatureMetricAggregator` render as `{feature}.{name}` snapshots (durations
+  as the histogram count/sum pair). With neither a reader nor the
+  auto-configuration present, the endpoint answers
+  `{ "error": "No metric source wired" }`.
 - Histograms render as the `<name>_count` counter + `<name>_sum` gauge pair
   (the exposition format has no histogram type); averages derive the
   usual way (`sum / count`).

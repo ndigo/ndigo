@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 import { IllegalStateError } from '@blue/core';
+import { type MetricSnapshot, type MetricSnapshotProvider } from './metric-snapshot';
 
 interface MutableFeatureMetrics {
     counters: Map<string, number>;
@@ -226,5 +227,89 @@ export class FeatureMetricAggregator {
         }
 
         return result;
+    }
+}
+
+/**
+ * The aggregator as a {@link MetricSnapshotProvider} (REV-003): projects the
+ * tracked features into the snapshot model the `/metrics` endpoint serves.
+ * Installed by `ManagementAutoConfiguration` as the *fallback* snapshot
+ * source, so feature counters are served even when no telemetry pipeline
+ * (pull reader) is configured — a registered current provider always wins.
+ *
+ * Projection rules:
+ * - counters → `sum` snapshots, gauges → `gauge` snapshots, both named
+ *   `` `{feature}.{metric}` `` with empty attributes;
+ * - durations → `histogram` snapshots (count/sum/min/max, no buckets — the
+ *   raw samples are summarized, not bucketed), so the Prometheus view
+ *   projects the `_count` counter + `_sum` gauge pair;
+ * - name collisions within one snapshot (same feature + metric name across
+ *   two kinds) keep the first entry — the wire views key by name, so a
+ *   duplicate would clobber in the JSON view.
+ */
+export class FeatureMetricAggregatorProvider implements MetricSnapshotProvider {
+    readonly #aggregator: FeatureMetricAggregator;
+
+    /**
+     * @param aggregator - The aggregator to project (bound by the caller).
+     */
+    constructor(aggregator: FeatureMetricAggregator) {
+        this.#aggregator = aggregator;
+    }
+
+    /**
+     * Projects every tracked feature into snapshot form.
+     *
+     * @returns The snapshots, feature-sorted.
+     */
+    async snapshot(): Promise<readonly MetricSnapshot[]> {
+        const snapshots: MetricSnapshot[] = [];
+        const names = new Set<string>();
+
+        for (const feature of [...this.#aggregator.featureNames].sort()) {
+            const metrics = this.#aggregator.getFeatureMetrics(feature);
+            if (!metrics) continue;
+
+            const push = (
+                name: string,
+                type: 'sum' | 'gauge' | 'histogram',
+                value: MetricSnapshot['points'][number]['value']
+            ): void => {
+                if (names.has(name)) return; // first wins — see the module docs
+                names.add(name);
+                snapshots.push({
+                    name,
+                    description: '',
+                    unit: '',
+                    type,
+                    points: [{ attributes: {}, value }],
+                });
+            };
+
+            for (const [name, value] of [...metrics.gauges.entries()].sort(([a], [b]) =>
+                a < b ? -1 : a > b ? 1 : 0
+            )) {
+                push(`${feature}.${name}`, 'gauge', { kind: 'scalar', value });
+            }
+            for (const [name, value] of [...metrics.counters.entries()].sort(([a], [b]) =>
+                a < b ? -1 : a > b ? 1 : 0
+            )) {
+                push(`${feature}.${name}`, 'sum', { kind: 'scalar', value });
+            }
+            for (const [name, summary] of [...metrics.durations.entries()].sort(([a], [b]) =>
+                a < b ? -1 : a > b ? 1 : 0
+            )) {
+                push(`${feature}.${name}`, 'histogram', {
+                    kind: 'histogram',
+                    count: summary.count,
+                    sum: summary.mean * summary.count,
+                    min: summary.min,
+                    max: summary.max,
+                    buckets: [],
+                });
+            }
+        }
+
+        return snapshots;
     }
 }

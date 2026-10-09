@@ -289,12 +289,13 @@ describe('blue-api through @blue/test', () => {
         expect(typeof body.components).toBe('object');
     });
 
-    test('GET /metrics answers the no-source document without a snapshot source (AD-77)', async () => {
+    test('GET /metrics serves the feature-aggregator fallback without telemetry (REV-003)', async () => {
         const res = await mockHTTP.get('/metrics').exec();
         expect(res.response.status).toBe(200);
         // No telemetry configured in the boot path → the endpoint is served
-        // and answers the documented error document instead of a 500.
-        expect(res.json()).toEqual({ error: 'No metric source wired' });
+        // by ManagementAutoConfiguration's aggregator-backed fallback: the
+        // Prometheus text document (empty here — no features tracked).
+        expect(res.text()).toBe('');
     });
 
     test('GET /api/greeting resolves the language from Accept-Language', async () => {

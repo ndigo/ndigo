@@ -47,12 +47,35 @@ export interface TLSServerOptions {
     key: string;
     /** PEM certificate chain (inline) or path to the certificate file. */
     cert: string;
-    /** Optional additional CA bundle (inline PEM or path) for client-certificate chains. */
+    /**
+     * Optional CA bundle (inline PEM or path) that presented client
+     * certificates verify against when {@link TLSServerOptions.clientAuth}
+     * is set (REV-101); without `clientAuth` this entry has no effect —
+     * Node never requests a client certificate on `ca` alone.
+     */
     ca?: string;
     /** Minimum TLS version. Defaults to Node's baseline (`TLSv1.2`). */
     minVersion?: 'TLSv1.2' | 'TLSv1.3';
     /** OpenSSL cipher list. Defaults to Node's baseline. */
     ciphers?: string;
+    /**
+     * Client-certificate authentication (mutual TLS, REV-101). `'none'`
+     * (the default) never requests a certificate; `'request'` asks for one
+     * but admits clients that present none; `'require'` rejects connections
+     * without a certificate that verifies against {@link TLSServerOptions.ca}
+     * (Node's baseline trust store when `ca` is absent — which typically
+     * rejects every presented certificate). Maps to Node's server-side
+     * `requestCert` / `rejectUnauthorized` options.
+     */
+    clientAuth?: 'none' | 'request' | 'require';
+    /**
+     * Maximum concurrent HTTP/2 streams per connection (the HTTP/2 SETTINGS
+     * `maxConcurrentStreams` value, REV-104). Absent, Node's default
+     * applies — which is unbounded (up to 2^32-1): a single client can open
+     * any number of concurrent streams, each a full dispatcher request.
+     * Set a bounded value for production (128 is the nginx default).
+     */
+    maxConcurrentStreams?: number;
 }
 
 /**
@@ -75,7 +98,10 @@ export interface HTTPServerOptions {
      *
      * Env fallback when omitted: `BLUE_TLS_KEY` + `BLUE_TLS_CERT` (both
      * required together — a half-configured pair throws rather than
-     * silently serving plaintext) and optional `BLUE_TLS_CA`.
+     * silently serving plaintext) and optional `BLUE_TLS_CA`. Blank env
+     * values count as unset, and the env is consulted for the default
+     * adapter only — a custom {@link HTTPServerOptions.adapter} is never
+     * TLS-configured through it (REV-102).
      */
     tls?: TLSServerOptions;
     /**
@@ -224,8 +250,14 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         // AD-81: explicit TLS material wins; otherwise the env pair
         // (`BLUE_TLS_KEY`/`BLUE_TLS_CERT`, plus optional `BLUE_TLS_CA`) is
         // read — all-or-nothing, so a half-configured pair fails loud
-        // instead of silently keeping the plaintext listener.
-        this.#tls = options.tls ?? readTLSOptionsFromEnv(process.env) ?? null;
+        // instead of silently keeping the plaintext listener. REV-102: the
+        // env applies to the default adapter only — a custom adapter owns
+        // its own TLS story, so a stale `BLUE_TLS_KEY` export must not
+        // break or secretly reconfigure it.
+        this.#tls =
+            options.tls ??
+            (options.adapter === undefined ? readTLSOptionsFromEnv(process.env) : undefined) ??
+            null;
         this.#socketLimits = options.socketLimits;
         // Env-tunable origin allowlist for the default adapter: comma-
         // separated bare origins (`BLUE_SOCKET_ALLOWED_ORIGINS`). Absent
@@ -362,24 +394,26 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
  * Reads optional TLS material from the environment (AD-81):
  * `BLUE_TLS_KEY` + `BLUE_TLS_CERT` (both required together) and optional
  * `BLUE_TLS_CA`. Absent both required keys → `undefined` (plaintext
- * origin, the AD-80 edge-terminated topology). One key without the other
- * → `RangeError`: a half-configured TLS listener must fail loud rather
+ * origin, the AD-80 edge-terminated topology). Blank/whitespace-only
+ * values count as unset (REV-103) — an empty `BLUE_TLS_KEY=` export is a
+ * shell default, not a broken credential. One key without the other →
+ * `RangeError`: a half-configured TLS listener must fail loud rather
  * than silently serve plaintext.
  */
 function readTLSOptionsFromEnv(env: NodeJS.ProcessEnv): TLSServerOptions | undefined {
-    const key = env['BLUE_TLS_KEY'];
-    const cert = env['BLUE_TLS_CERT'];
-    if (key === undefined && cert === undefined) {
+    const key = env['BLUE_TLS_KEY']?.trim() ?? '';
+    const cert = env['BLUE_TLS_CERT']?.trim() ?? '';
+    if (key === '' && cert === '') {
         return undefined;
     }
-    if (key === undefined || cert === undefined) {
+    if (key === '' || cert === '') {
         throw new RangeError(
             'HTTPServer: BLUE_TLS_KEY and BLUE_TLS_CERT must be set together — a half-configured TLS listener would silently serve plaintext'
         );
     }
     const tls: TLSServerOptions = { key, cert };
-    const ca = env['BLUE_TLS_CA'];
-    if (ca !== undefined && ca.trim() !== '') {
+    const ca = env['BLUE_TLS_CA']?.trim() ?? '';
+    if (ca !== '') {
         tls.ca = ca;
     }
     return tls;

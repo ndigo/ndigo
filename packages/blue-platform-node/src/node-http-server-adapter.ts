@@ -220,14 +220,21 @@ export interface NodeHTTPServerAdapterOptions {
 
 /**
  * TLS material from a {@link TLSServerOptions} entry (AD-81): inline PEM
- * (detected by the `-----BEGIN` prefix) passes through; anything else is
- * a file path read here, so a missing or unreadable file surfaces as a
- * typed `listen()` rejection instead of a later TLS handshake failure.
- * Node's tls options accept PEM content only — path support is this
- * framework's convenience, resolved at bind time.
+ * (detected by the `-----BEGIN` prefix after trimming surrounding
+ * whitespace — env-dumped values often carry indentation or quoting)
+ * passes through; anything else is a file path read here, so a missing or
+ * unreadable file surfaces as a typed `listen()` rejection instead of a
+ * later TLS handshake failure. Node's tls options accept PEM content only
+ * — path support is this framework's convenience, resolved at bind time.
  */
 function readPemMaterial(value: string): string | Buffer {
-    return value.includes('-----BEGIN') ? value : readFileSync(value);
+    const trimmed = value.trim();
+    if (trimmed === '') {
+        throw new RangeError(
+            'NodeHTTPServerAdapter: TLS material must be inline PEM or a file path, received an empty value'
+        );
+    }
+    return trimmed.startsWith('-----BEGIN') ? trimmed : readFileSync(trimmed);
 }
 
 /**
@@ -384,6 +391,9 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         return new Promise<void>((resolve, reject) => {
             const onError = (error: Error): void => reject(error);
             let server: Server | http2.Http2SecureServer;
+            // Per-flavor connection teardown, committed to `#forceClose`
+            // only when the bind succeeds (REV-107).
+            let forceClose: () => void;
             if (this.#tls === null) {
                 const plain = createServer((req: IncomingMessage, res: ServerResponse) => {
                     void this.handleRequest(req, res);
@@ -392,16 +402,37 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 plain.headersTimeout = this.#limits.headersTimeoutMs;
                 plain.keepAliveTimeout = this.#limits.keepAliveTimeoutMs;
                 plain.maxRequestsPerSocket = this.#limits.maxRequestsPerSocket;
-                this.#forceClose = () => plain.closeAllConnections();
+                forceClose = () => plain.closeAllConnections();
                 server = plain;
             } else {
-                const { key, cert, ca, minVersion, ciphers } = this.#tls;
+                const { key, cert, ca, minVersion, ciphers, clientAuth, maxConcurrentStreams } = this.#tls;
+                // REV-104: the settings value is our API boundary — Node
+                // accepts out-of-range values silently at creation, so a
+                // typed rejection here beats a silently-ignored setting.
+                if (maxConcurrentStreams !== undefined && (!Number.isInteger(maxConcurrentStreams) || maxConcurrentStreams < 0)) {
+                    throw new RangeError(
+                        `NodeHTTPServerAdapter maxConcurrentStreams must be a non-negative integer (HTTP/2 SETTINGS), received ${String(maxConcurrentStreams)}`
+                    );
+                }
                 server = http2.createSecureServer({
                     key: readPemMaterial(key),
                     cert: readPemMaterial(cert),
                     ...(ca !== undefined ? { ca: readPemMaterial(ca) } : {}),
                     ...(minVersion !== undefined ? { minVersion } : {}),
                     ...(ciphers !== undefined ? { ciphers } : {}),
+                    // REV-101: mutual TLS — `requestCert` asks for a client
+                    // certificate, `rejectUnauthorized` (default `true`)
+                    // enforces it: `'request'` opts out of the rejection so
+                    // anonymous clients still connect; `ca` supplies the
+                    // verification chain.
+                    ...(clientAuth !== undefined && clientAuth !== 'none'
+                        ? { requestCert: true, rejectUnauthorized: clientAuth === 'require' }
+                        : {}),
+                    // REV-104: Node's `maxConcurrentStreams` default is
+                    // unbounded (up to 2^32-1 per connection) — a bounded
+                    // ceiling here guards against stream-exhaustion
+                    // amplification by a single client.
+                    ...(maxConcurrentStreams !== undefined ? { settings: { maxConcurrentStreams } } : {}),
                     allowHTTP1: true,
                     ALPNProtocols: ['h2', 'http/1.1'],
                 });
@@ -428,7 +459,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                     connections.add(socket);
                     socket.once('close', () => connections.delete(socket));
                 });
-                this.#forceClose = () => {
+                forceClose = () => {
                     for (const socket of connections) {
                         socket.destroy();
                     }
@@ -437,9 +468,16 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             server.once('error', onError);
             server.listen(port, host, () => {
                 server.off('error', onError);
+                // REV-107: commit adapter state only on a successful bind —
+                // a failed bind (EADDRINUSE, bad host, …) leaves the adapter
+                // reusable for a retry instead of poisoned with a server and
+                // ledger that never listened; `close()` after the failure is
+                // a clean no-op.
+                this.#server = server;
+                this.#forceClose = forceClose;
+                this.#websocket = websocket;
                 resolve();
             });
-            this.#server = server;
             // WebSocket upgrades (RFC 6455 via `ws`): attach an `upgrade`
             // listener to this http.Server; `shouldHandle` gates by path so
             // only socket-mapped routes upgrade, then `connection` dispatches.
@@ -567,7 +605,6 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                     pending?.sources ?? { query: {}, headers: {}, cookies: {} }
                 );
             });
-            this.#websocket = websocket;
         });
     }
 

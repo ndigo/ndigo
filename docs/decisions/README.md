@@ -1,6 +1,6 @@
 # BlueJS Decision Records (ADRs)
 
-Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-78**,
+Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-79**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -104,3 +104,4 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-76** | 2026-10-08    | Accepted           | [Actuator parity — `/loggers`, `/env`, `/configprops`, health groups](2026-10-08_AD76_ACTUATOR_PARITY.md)                                                                   |
 | **AD-77** | 2026-10-08    | Accepted           | [Prometheus metrics, semconv duration, meter-derived `/metrics`](2026-10-08_AD77_PROMETHEUS_METRICS.md)                                                                     |
 | **AD-78** | 2026-10-08    | Accepted           | [Migration generation + run-on-boot — `blue db generate`, committed schema snapshot, `migrations.runOnBoot`](2026-10-08_AD78_MIGRATION_GENERATION.md)                       |
+| **AD-79** | 2026-10-08    | Accepted           | [Shared-store rate limiting — async `RateLimiter` SPI, `@blue/rate-limit`, Redis fixed-window driver](2026-10-08_AD79_SHARED_STORE_RATE_LIMITING.md)                        |

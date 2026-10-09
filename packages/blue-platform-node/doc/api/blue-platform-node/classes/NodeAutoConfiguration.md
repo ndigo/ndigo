@@ -255,15 +255,16 @@ The default in-process lock driver.
 
 ### rateLimiter()
 
-> **rateLimiter**(): [`RateLimiter`](../interfaces/RateLimiter.md)
+> **rateLimiter**(): [`RateLimiter`](#)
 
 The shared in-memory rate limiter (SEC-6). Apps needing a
-distributed backend provide their own [RateLimiter](../interfaces/RateLimiter.md)
-implementation; the bean is the default.
+distributed backend provide their own [RateLimiter](#)
+implementation (the `@blue/redis/rate-limit` driver is the
+shared-store option, AD-79); the bean is the default.
 
 #### Returns
 
-[`RateLimiter`](../interfaces/RateLimiter.md)
+[`RateLimiter`](#)
 
 The default fixed-window rate limiter.
 

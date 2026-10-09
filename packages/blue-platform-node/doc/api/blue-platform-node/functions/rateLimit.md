@@ -24,7 +24,7 @@ The policy is validated at decoration time (fail loud at definition).
 
 ### options
 
-[`RateLimitPolicy`](../interfaces/RateLimitPolicy.md)
+[`RateLimitPolicy`](#)
 
 ## Returns
 

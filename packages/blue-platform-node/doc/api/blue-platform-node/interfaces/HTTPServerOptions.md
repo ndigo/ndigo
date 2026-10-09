@@ -111,6 +111,23 @@ instance — so broadcasts from the bean reach the adapter's sessions.
 
 ***
 
+### tls?
+
+> `optional` **tls?**: [`TLSServerOptions`](TLSServerOptions.md)
+
+TLS material for the default adapter (AD-81). When set, the origin
+listener is an `http2.createSecureServer` in `allowHTTP1` mode:
+ALPN negotiates `h2` with an HTTP/1.1 fallback, and WebSocket
+upgrades keep working over the h1.1 path (RFC 8441 is not
+implemented by `ws` or browsers — WebSockets cannot ride h2).
+Ignored when a custom [HTTPServerOptions.adapter](#adapter) is passed.
+
+Env fallback when omitted: `BLUE_TLS_KEY` + `BLUE_TLS_CERT` (both
+required together — a half-configured pair throws rather than
+silently serving plaintext) and optional `BLUE_TLS_CA`.
+
+***
+
 ### trustedProxies?
 
 > `optional` **trustedProxies?**: `string`[]

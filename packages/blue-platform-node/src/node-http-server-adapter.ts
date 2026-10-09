@@ -11,6 +11,9 @@ import { guid } from '@blue/util/math';
  * and dispatches through the `NodeDispatcher`. The dispatcher's render output
  * is written to the `ServerResponse`.
  *
+ * The origin is HTTP/1.1 only — put an edge proxy (trusted per AD-37, TLS
+ * terminated per AD-80) in front for production deployments.
+ *
  * Every request passes through one error boundary: URL construction, body
  * streaming, parsing, dispatch, and response finalization all terminate with
  * a deterministic status (`400` malformed input, `408` timeout, `413`
@@ -20,7 +23,10 @@ import { guid } from '@blue/util/math';
  * @module
  * @since 1.0.0
  */
-import { createServer, IncomingMessage, ServerResponse, type Server } from 'node:http';
+import { createServer, IncomingMessage, Server, ServerResponse } from 'node:http';
+import { readFileSync } from 'node:fs';
+import * as http2 from 'node:http2';
+import type { Socket } from 'node:net';
 import { WebSocketServer } from 'ws';
 import { Route, RouteSegment, ACCEPT_LANGUAGE_ATTRIBUTE } from '@blue/router';
 import { ARGUMENT_RESOLVERS } from '@blue/dispatcher';
@@ -52,7 +58,7 @@ import { contentTypeBase, MULTIPART_FORM_DATA, HTTPHeaders } from '@blue/http';
 import { ProblemTypes, writeProblem } from './problem-details';
 import { finalizeInterceptorDenial } from './finalize-denial';
 import type { NodeDispatcher } from './node-dispatcher';
-import type { HTTPServerAdapter } from './http-server';
+import type { HTTPServerAdapter, TLSServerOptions } from './http-server';
 import type { WebSocket } from 'ws';
 import {
     type HTTPRequestLimits,
@@ -202,6 +208,26 @@ export interface NodeHTTPServerAdapterOptions {
      * disabled.
      */
     socketRegistry?: NodeSocketSessionRegistry;
+    /**
+     * TLS material for the origin listener (AD-81). When set, the adapter
+     * binds `http2.createSecureServer` with `allowHTTP1: true` — ALPN
+     * negotiates h2 with an HTTP/1.1 fallback, and WebSocket upgrades keep
+     * flowing over the h1.1 path (RFC 8441 is not implemented by `ws` or
+     * browsers). Omit for the plaintext HTTP/1.1 origin.
+     */
+    tls?: TLSServerOptions;
+}
+
+/**
+ * TLS material from a {@link TLSServerOptions} entry (AD-81): inline PEM
+ * (detected by the `-----BEGIN` prefix) passes through; anything else is
+ * a file path read here, so a missing or unreadable file surfaces as a
+ * typed `listen()` rejection instead of a later TLS handshake failure.
+ * Node's tls options accept PEM content only — path support is this
+ * framework's convenience, resolved at bind time.
+ */
+function readPemMaterial(value: string): string | Buffer {
+    return value.includes('-----BEGIN') ? value : readFileSync(value);
 }
 
 /**
@@ -277,11 +303,21 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     readonly #openConnections: Set<unknown> = new Set();
     readonly #maxConnections: number;
     readonly #authenticateTimeoutMs: number;
-    #server: Server | null;
+    #server: Server | http2.Http2SecureServer | null;
     #websocket: WebSocketServer | null = null;
     readonly #socketRegistry: NodeSocketSessionRegistry;
     /** Trusted-proxy allowlist (AD-37); empty = trust nobody. */
     readonly #trustedProxies: TrustedProxySet;
+    /** TLS material for the secure origin listener (AD-81), or `null` for plaintext h1.1. */
+    readonly #tls: TLSServerOptions | null;
+    /**
+     * Force-closes the remaining connections when the shutdown drain
+     * deadline wins. The h1.1 flavor uses `server.closeAllConnections()`;
+     * the tls/h2 flavor has no such method (probe 2026-10-09 — neither
+     * `Http2SecureServer` nor `tls.Server` exposes it), so it destroys the
+     * tracked sockets instead.
+     */
+    #forceClose: (() => void) | null = null;
 
     get server(): unknown {
         return this.#server;
@@ -306,6 +342,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         this.#multipartLimits = options.multipart;
         this.#socketLimits = resolveSocketLimits(options.socketLimits);
         this.#authenticate = options.authenticate ?? undefined;
+        this.#tls = options.tls ?? null;
         const maxConnections = options.maxConnections ?? DEFAULT_MAX_CONNECTIONS;
         if (maxConnections !== Number.POSITIVE_INFINITY && (!Number.isInteger(maxConnections) || maxConnections <= 0)) {
             throw new RangeError(
@@ -345,14 +382,58 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             throw new Error('NodeHTTPServerAdapter is already listening — close it before listening again');
         }
         return new Promise<void>((resolve, reject) => {
-            const server = createServer((req: IncomingMessage, res: ServerResponse) => {
-                void this.handleRequest(req, res);
-            });
-            server.requestTimeout = this.#limits.requestTimeoutMs;
-            server.headersTimeout = this.#limits.headersTimeoutMs;
-            server.keepAliveTimeout = this.#limits.keepAliveTimeoutMs;
-            server.maxRequestsPerSocket = this.#limits.maxRequestsPerSocket;
             const onError = (error: Error): void => reject(error);
+            let server: Server | http2.Http2SecureServer;
+            if (this.#tls === null) {
+                const plain = createServer((req: IncomingMessage, res: ServerResponse) => {
+                    void this.handleRequest(req, res);
+                });
+                plain.requestTimeout = this.#limits.requestTimeoutMs;
+                plain.headersTimeout = this.#limits.headersTimeoutMs;
+                plain.keepAliveTimeout = this.#limits.keepAliveTimeoutMs;
+                plain.maxRequestsPerSocket = this.#limits.maxRequestsPerSocket;
+                this.#forceClose = () => plain.closeAllConnections();
+                server = plain;
+            } else {
+                const { key, cert, ca, minVersion, ciphers } = this.#tls;
+                server = http2.createSecureServer({
+                    key: readPemMaterial(key),
+                    cert: readPemMaterial(cert),
+                    ...(ca !== undefined ? { ca: readPemMaterial(ca) } : {}),
+                    ...(minVersion !== undefined ? { minVersion } : {}),
+                    ...(ciphers !== undefined ? { ciphers } : {}),
+                    allowHTTP1: true,
+                    ALPNProtocols: ['h2', 'http/1.1'],
+                });
+                server.on('request', (req, res) => {
+                    // AD-81: the http2 compatibility layer presents h2
+                    // requests through the http.Server-shaped surface
+                    // (url/method/headers in, writeHead/write/end out), so
+                    // the same pipeline consumes both flavors
+                    // (runtime-verified 2026-10-09 on Node 22).
+                    void this.handleRequest(req as unknown as IncomingMessage, res as unknown as ServerResponse);
+                });
+                // Runtime-supported on the h2 server (verified 2026-10-09);
+                // `@types/node` exposes them on `http.Server` only, hence
+                // the local cast. Keep-alive/per-socket caps are h1.1-only
+                // and stay on the plaintext branch.
+                const timed = server as unknown as { requestTimeout: number; headersTimeout: number };
+                timed.requestTimeout = this.#limits.requestTimeoutMs;
+                timed.headersTimeout = this.#limits.headersTimeoutMs;
+                // Draining the secure flavor needs tracked sockets —
+                // destroying them kills h2 sessions and the h1.1 fallback
+                // alike (see #forceClose).
+                const connections = new Set<Socket>();
+                server.on('connection', (socket) => {
+                    connections.add(socket);
+                    socket.once('close', () => connections.delete(socket));
+                });
+                this.#forceClose = () => {
+                    for (const socket of connections) {
+                        socket.destroy();
+                    }
+                };
+            }
             server.once('error', onError);
             server.listen(port, host, () => {
                 server.off('error', onError);
@@ -371,8 +452,13 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             // a listener here, a bind failure would re-emit and crash the
             // process as an uncaught exception. Bind errors are already
             // surfaced by the server `error` path above (reject).
+            //
+            // The secure h2 flavor is runtime-compatible with ws — it emits
+            // `upgrade` for h1.1 clients under `allowHTTP1` (probe
+            // 2026-10-09) — but is typed as `tls.Server`, which `@types/ws`
+            // does not accept, hence the cast.
             const websocket = new WebSocketServer({
-                server,
+                server: server as unknown as Server,
                 maxPayload: this.#socketLimits.maxPayloadBytes,
                 // STOMP subprotocol negotiation (AD-23 D4): a stomp-mapped
                 // path answers `v12.stomp`/`v11.stomp`/`v10.stomp` when the
@@ -867,7 +953,8 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         // it: when the deadline wins, destroy the remaining connections and
         // let the server's own completion callback resolve the await.
         const deadline = this.#limits.shutdownTimeoutMs;
-        const forceClose = deadline > 0 && typeof server.closeAllConnections === 'function';
+        const forceClose = this.#forceClose;
+        this.#forceClose = null;
         await new Promise<void>((resolve) => {
             let timer: NodeJS.Timeout | null = null;
             let finished = false;
@@ -883,10 +970,10 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 resolve();
             };
             server.close(() => finish());
-            if (forceClose && !finished) {
+            if (deadline > 0 && forceClose !== null && !finished) {
                 timer = setTimeout(() => {
                     if (!finished) {
-                        server.closeAllConnections();
+                        forceClose();
                     }
                 }, deadline);
                 timer.unref?.();

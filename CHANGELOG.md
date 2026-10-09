@@ -43,9 +43,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`config/application.json`) as the dotted-key carrier.
 - Guide 27 — ORM & Migrations (the journaled lifecycle, the snapshot
   freshness gate, and the fidelity ceiling).
+- `@blue/rate-limit` (AD-79): the `RateLimiter` SPI as a leaf package —
+  async `consume` (AD-39), `RateLimitPolicy`/`RateLimitResult`,
+  `validateRateLimitPolicy`, `likeRateLimiter`, `FixedWindowRateLimiter`
+  (moved from `@blue/platform-node`), and the `RATE_LIMITER` context
+  token. The platform interceptor awaits, the bean registers under the
+  token, and apps import `RateLimitPolicy` from the new package (clean
+  cutover — no re-exports).
+- `@blue/redis/rate-limit` (AD-79): `RedisRateLimiter` — the shared-store
+  fixed-window driver, one Lua script per consume (INCR, PEXPIRE on the
+  first request of a window, PTTL as the `Retry-After` basis), keys
+  `blue:rl:<namespace>:<windowMs>:<key>`, windows anchored at first
+  request; budgets survive restarts and N processes share one budget
+  (fail-closed by default; `onError: 'fail-open'` logs through
+  `@blue/log` and allows).
 
 ### Fixed
 
+- `apps/04-blue-api` (AD-78 remainder): the Drizzle controller opens the
+  file-backed SQL store lazily inside `ensureInit()` — after `ensureDbDir()`
+  — instead of at construction, so the lane boots on a fresh checkout
+  (no pre-existing `data/` directory; libSQL CANTOPEN class) and tests can
+  pin `BLUE_DB_URL` before any request touches the store, as documented.
 - `blue` (AD-75 review, discovered by AD-78): space-form nested commands
   (`blue db migrate`, `blue db new …`) printed topic help instead of running
   — the oclif `topicSeparator` was `:` so only `blue db:migrate` worked.

@@ -82,7 +82,7 @@ the queue store. No auth contract changes were made for persistence.
 ## 3. Redis: connection, shared cache
 
 `@blue/redis` is the Node-only Redis foundation: `RedisConnection` lifecycle
-plus two capability subpaths. Root export does not load capability contracts,
+plus the capability subpaths. Root export does not load capability contracts,
 so the package is dependency-light for connection-only use.
 
 ```ts
@@ -100,6 +100,31 @@ unsupported and corrupt values reject rather than silently losing data. See
 [guide 07 §6](07-caching.md) for the full backend policy (no per-cache
 eviction, server-side expiry, namespace-safe `clear`/`size`, no
 `FLUSHDB`).
+
+Shared-store **rate limiting** is the same opt-in shape:
+`@blue/redis/rate-limit` — `RedisRateLimiter` (AD-79) — implements the
+`RateLimiter` SPI from `@blue/rate-limit`: fixed-window budgets that
+every process counts against (keys `blue:rl:<namespace>:<windowMs>:<key>`,
+windows anchored at the first request, expiry server-side by TTL). It is
+**fail-closed by default** — an unreachable store rejects the request
+instead of passing it unthrottled; `onError: 'fail-open'` logs through
+`@blue/log` and allows (the documented availability escape hatch).
+Override the platform's `RATE_LIMITER` bean with it:
+
+```ts
+import { RedisConnection } from '@blue/redis';
+import { RedisRateLimiter } from '@blue/redis/rate-limit';
+
+const connection = new RedisConnection({ url: process.env.REDIS_URL! });
+await connection.connect(); // borrowed; readiness is the app's contract
+
+const shared = new RedisRateLimiter({ connection, namespace: 'prod' });
+// …register `shared` under the RATE_LIMITER token (or hand it to the
+// RateLimitInterceptor constructor directly)…
+```
+
+See [guide 11 §5](11-authentication-and-sessions.md) for the
+`@rateLimit` metadata and the 429 + `Retry-After` denial.
 
 ## 4. Cross-node live fan-out (opt-in)
 

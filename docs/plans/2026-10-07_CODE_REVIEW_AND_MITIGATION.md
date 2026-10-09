@@ -310,7 +310,7 @@ Quarkus, Ktor. Status verified against HEAD by grep/graft.
 | GAP-5  | OTel metrics + Prometheus + semconv names                           | **partial** — the prior review's "metrics are not OTel" was wrong: OTLP metric export and OTel counters predate the baseline; missing are the Prometheus exporter, semconv metric names (`http.server.request.duration`), and `/metrics` is proprietary JSON | high         | add Prometheus exporter + semconv emission; derive the JSON view from the meter provider |
 | GAP-6  | First-class CLI / dev loop                                          | absent (no `bin` anywhere; `@blue/inspect` is API+demo)                                                                                                                                                                                                      | high         | build `@blue/cli` (`dev`, `generate`, `db`, `inspect`)                                   |
 | GAP-7  | Migration generation + run-on-boot                                  | **executed — AD-78** (`@blue/orm-drizzle` file migrations + snapshot generation + `migrateOnBoot`; `blue db new\|generate\|status`; committed `db/schema.json` + CI freshness gate; reference app `apps/04-blue-api`)                                        | medium       | `blue db generate` from entity metadata; `migrations.runOnBoot`                          |
-| GAP-8  | Shared-store rate limiting                                          | partial (`RateLimiter` SPI, memory-only)                                                                                                                                                                                                                     | medium       | Redis driver via the existing SPI                                                        |
+| GAP-8  | Shared-store rate limiting                                          | **executed — AD-79** (async `RateLimiter` SPI in `@blue/rate-limit`; `@blue/redis/rate-limit` Redis fixed-window driver with TTL windows; fail-closed default)                                                                                               | medium       | Redis driver via the existing SPI                                                        |
 | GAP-9  | Testcontainers / DB isolation                                       | absent                                                                                                                                                                                                                                                       | medium       | `@blue/test-containers` glue (connection properties + migrate + rollback)                |
 | GAP-10 | Multitenancy primitives                                             | absent                                                                                                                                                                                                                                                       | medium       | defer: ADR for tenant-context token + resolver hook                                      |
 | GAP-11 | Feature flags (OpenFeature)                                         | absent                                                                                                                                                                                                                                                       | low          | defer: `FlagEvaluator` SPI over property sources                                         |
@@ -451,8 +451,18 @@ the `{ features }` aggregator document is gone). **GAP-7 executed** (2026-10-08)
 (`@blue/orm-drizzle`), entity-metadata generation against a committed
 `db/schema.json` projection (freshness-gated in CI), `migrateOnBoot`
 (`migrations.runOnBoot` via the app's config file), and `blue db
-new|generate|status` closing the AD-75 `db:*` remainder. GAP-8..15 stay
-ADR-gated.
+new|generate|status` closing the AD-75 `db:*` remainder. **GAP-8 executed**
+(2026-10-08) — [AD-79](../decisions/2026-10-08_AD79_SHARED_STORE_RATE_LIMITING.md)
+
+- the [companion plan](2026-10-08_SHARED_STORE_RATE_LIMITING.md): the
+  `RateLimiter` SPI (`consume` async per AD-39) moves to the new
+  `@blue/rate-limit` leaf (policy/result/guard/`FixedWindowRateLimiter`/
+  `RATE_LIMITER` token), the interceptor awaits and the bean is
+  token-registered, and `@blue/redis/rate-limit` ships the shared-store
+  fixed-window driver (one Lua script per consume: INCR/PEXPIRE-on-first/
+  PTTL, namespace-scoped keys, windows anchored at first request,
+  fail-closed default with a documented fail-open option) — guide 11 §5 and
+  guide 16 updated. GAP-9..15 stay ADR-gated.
 
 ### Wave 7 — Verification
 
@@ -603,12 +613,23 @@ full gate set including the new spec-typecheck lane is green.
   `db:migrate`, `inspect`, `doctor`. Scripts run shell-free (signals reach
   the app — a substrate finding fixed in `@blue/cluster`'s timers and
   races along the way); real-bin integration lane green.
+- **GAP-8 (Wave 6)** — executed on ADR sign-off: [AD-79](../decisions/2026-10-08_AD79_SHARED_STORE_RATE_LIMITING.md)
+    - [companion plan](2026-10-08_SHARED_STORE_RATE_LIMITING.md) +
+      guide 11 §5/guide 16. `@blue/rate-limit` (`RateLimiter` SPI with async
+      `consume`, `validateRateLimitPolicy`, `likeRateLimiter`,
+      `FixedWindowRateLimiter`, `RATE_LIMITER` token), the platform cutover
+      (interceptor awaits, bean `@entry(RATE_LIMITER)`, `src/rate-limit.ts`
+      deleted), and `@blue/redis/rate-limit` (`RedisRateLimiter`: Lua
+      INCR/PEXPIRE-on-first/PTTL fixed windows keyed
+      `blue:rl:<ns>:<windowMs>:<key>`, fail-closed default, `fail-open` logs
+      via `@blue/log`) — the live two-node lane shares one budget across two
+      connections (the lock lane's pattern); gate set green.
 
 ### Deferred (reason)
 
-| Item                   | Reason                                                                                                                                                                                                                                                                         |
-| :--------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Wave 6 / GAP-1..15** | ADR-gated; the dependency cluster landed (GAP-1 AD-72, GAP-3 AD-73, GAP-2 AD-74). Remaining items untouched by design: each needs an ADR + owner sign-off (actuator parity, CLI, migration generation, Prometheus/semconv, shared-store limits, testcontainers, SSE drain, …). |
+| Item                   | Reason                                                                                                                                                                                                                                                                    |
+| :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Wave 6 / GAP-1..15** | ADR-gated; the dependency cluster landed (GAP-1 AD-72, GAP-3 AD-73, GAP-2 AD-74) and GAP-4..8 executed (AD-76..79). Remaining items untouched by design: each needs an ADR + owner sign-off (testcontainers, SSE drain, multitenancy, feature flags, HTTP/2–3, i18n/RTL). |
 
 ### Final verification
 

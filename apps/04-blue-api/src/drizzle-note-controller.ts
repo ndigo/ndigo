@@ -52,10 +52,19 @@ export { getDrizzleDataSource } from './drizzle-data-source';
  */
 @requestMapping('/drizzle')
 export class DrizzleNoteController {
-    readonly #entityManager: DrizzleEntityManager;
+    #entityManager: DrizzleEntityManager | null = null;
 
     constructor() {
-        this.#entityManager = new DrizzleEntityManager(getDrizzleDataSource());
+        // Deliberately empty — the data source is created lazily inside
+        // #manager()/ensureInit(), which ensure the file-backed database's
+        // parent directory first (libSQL fails CANTOPEN otherwise; the
+        // module doc's lazy-contract — tests pin BLUE_DB_URL before any
+        // request touches the store).
+    }
+
+    #manager(): DrizzleEntityManager {
+        this.#entityManager ??= new DrizzleEntityManager(getDrizzleDataSource());
+        return this.#entityManager;
     }
 
     @getMapping('/notes')
@@ -68,7 +77,7 @@ export class DrizzleNoteController {
         }
         await ensureInit();
         return {
-            notes: conversionService.convert(await this.#entityManager.findAll(DrizzleNote), noteDtoSchema.array()),
+            notes: conversionService.convert(await this.#manager().findAll(DrizzleNote), noteDtoSchema.array()),
         };
     }
 
@@ -81,7 +90,7 @@ export class DrizzleNoteController {
             return ResponseEntity.unauthorized({ error: 'Unauthorized' }, { 'WWW-Authenticate': 'Bearer' });
         }
         await ensureInit();
-        const note = await this.#entityManager.find(DrizzleNote, Number(id));
+        const note = await this.#manager().find(DrizzleNote, Number(id));
         if (!note) {
             return ResponseEntity.notFound();
         }
@@ -108,7 +117,7 @@ export class DrizzleNoteController {
         // createdAt.
         const note = new DrizzleNote();
         Object.assign(note, data);
-        await this.#entityManager.persist(note);
+        await this.#manager().persist(note);
         // AD-38: convert back through the DTO schema — the response is a
         // plain object (fields are decorator-affixed non-enumerable on the
         // entity itself) and matches the GET shape exactly.

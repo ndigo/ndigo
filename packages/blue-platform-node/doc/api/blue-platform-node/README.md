@@ -21,7 +21,6 @@ Jeff Rose
 - [CSRFInterceptor](classes/CSRFInterceptor.md)
 - [FileSystemResourceLoader](classes/FileSystemResourceLoader.md)
 - [FileSystemRouter](classes/FileSystemRouter.md)
-- [FixedWindowRateLimiter](classes/FixedWindowRateLimiter.md)
 - [HTTPResponseViewTarget](classes/HTTPResponseViewTarget.md)
 - [HTTPServer](classes/HTTPServer.md)
 - [NodeBodyValueMethodArgumentResolver](classes/NodeBodyValueMethodArgumentResolver.md)
@@ -75,9 +74,6 @@ Jeff Rose
 - [OpenAPIDocsAutoConfigurationOptions](interfaces/OpenAPIDocsAutoConfigurationOptions.md)
 - [ProblemDetails](interfaces/ProblemDetails.md)
 - [ProblemResponseWriter](interfaces/ProblemResponseWriter.md)
-- [RateLimiter](interfaces/RateLimiter.md)
-- [RateLimitPolicy](interfaces/RateLimitPolicy.md)
-- [RateLimitResult](interfaces/RateLimitResult.md)
 - [ResolvedHTTPRequestLimits](interfaces/ResolvedHTTPRequestLimits.md)
 - [ResolvedOpenAPIDocsOptions](interfaces/ResolvedOpenAPIDocsOptions.md)
 - [ResolvedSocketLimits](interfaces/ResolvedSocketLimits.md)
@@ -165,7 +161,6 @@ Jeff Rose
 - [toJSONStringValue](functions/toJSONStringValue.md)
 - [toNumberValue](functions/toNumberValue.md)
 - [toProblemDetails](functions/toProblemDetails.md)
-- [validateRateLimitPolicy](functions/validateRateLimitPolicy.md)
 - [writeProblem](functions/writeProblem.md)
 
 ## References

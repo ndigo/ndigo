@@ -1,8 +1,8 @@
-[**@blue/platform-node v0.0.1**](../../README.md)
+[**@blue/rate-limit v0.0.1**](../README.md)
 
 ***
 
-[@blue/platform-node](../../README.md) / [blue-platform-node](../README.md) / RateLimitPolicy
+[@blue/rate-limit](../README.md) / RateLimitPolicy
 
 # Interface: RateLimitPolicy
 

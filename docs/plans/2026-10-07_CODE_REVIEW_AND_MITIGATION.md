@@ -661,6 +661,45 @@ post-sweep HEAD — `pnpm build` 41/41 · `pnpm test` 60 projects (98 nx tasks) 
 
 ---
 
+## 11. Delta review — 2026-10-09 AD-80/81 (native HTTP/2 + opt-in TLS, at `5016cf12`)
+
+**Scope:** the only unreviewed feature commit since the waves-1–3 remediation:
+`feat(platform-node): native HTTP/2 origin with opt-in TLS` (AD-80/AD-81).
+Reviewed: `TLSServerOptions` + env binding, the adapter's secure branch and
+drain, `test/tls-http2.spec.ts`, both ADRs, guide 01 §8, GAP-12 row, CHANGELOG,
+config-schema parity, peer-framework TLS/h2 surfaces. Verification: the TLS
+spec rerun locally (9/9 at review time, 22/22 after this wave's additions),
+`node:http2` confirmed Stable in the Node 22 LTS docs, and the compat-layer
+claim re-checked (no `httpVersion` branches in `src/`).
+
+**Verdict:** approve-with-changes — no Block/High; the compat-layer design and
+the per-flavor drain refactor are sound. Findings (REV-101..111) and
+remediation waves:
+
+| ID    | Severity   | Finding                                                                                     | Wave |
+| :---- | :--------- | :------------------------------------------------------------------------------------------ | :--- |
+| REV-101 | WARNING  | `ca` was inert (Node never requests client certs without `requestCert`) — mTLS gap vs Spring `server.ssl.client-auth`; docs overpromised           | 2 — `clientAuth` option landed |
+| REV-102 | WARNING  | env TLS read even for custom adapters ("ignored" per docs but a half-pair still threw) and no blank-value handling                                       | 1 — env gated on default adapter; blank = unset |
+| REV-103 | WARNING  | PEM detection used `includes('-----BEGIN')` vs the documented starts-with contract; whitespace/empty-string edge cases                             | 1 — trim + `startsWith` + empty `RangeError` |
+| REV-104 | WARNING  | no h2 settings surface — Node's `maxConcurrentStreams` default is unbounded (2^32-1); single-client stream-exhaustion vector                     | 2 — `maxConcurrentStreams` option + boundary validation |
+| REV-105 | WARNING  | CHANGELOG had no AD-80/81 entry (repo convention)                                                                                                      | 3 — entry added |
+| REV-106 | SUGGESTION | untested `minVersion`/`ciphers`/`ca`/precedence; unreadable-key asserted bare `toThrow`; `as never` cast in the test helper                    | 2-3 — 13 new tests; typed assertions; typed helper |
+| REV-107 | SUGGESTION | failed bind left the adapter poisoned (`#server`/`#forceClose`/ws handlers armed before the bind outcome)                                           | 1 — state committed only on bind success |
+| REV-108 | SUGGESTION | guide 01 §8 lacked minVersion/ciphers/rotation/`ca` semantics; TSDoc caveat duplicated across surfaces (kept — repo convention)                  | 3 — guide expanded |
+| REV-109 | SUGGESTION | lexical `node:http2` import unavailable only on crypto-less Node builds — documented in the package README                                          | 3 — README note |
+| REV-110 | SUGGESTION | uncommitted context-file drift (AGENTS.md / copilot-instructions / graft SKILL)                                                                        | chore commit |
+| REV-111 | SUGGESTION | auto-configuration lacks a config-property TLS surface (`node.server.tls.*`) — env/code cover it; ADR-gated backlog                                | deferred |
+
+**Remediated this wave (2026-10-09):** REV-101..105, REV-107 with 13 new
+specs (mTLS request/require incl. a verified client certificate, SETTINGS
+advertisement, minVersion/ciphers wiring, bind-failure reuse, env
+gating/precedence/blank values, whitespace PEM); the full
+`@blue/platform-node` lane, `pnpm typecheck` (build + spec lanes), API doc
+regeneration, and lint are green. Carried forward (ADR-gated): REV-111, plus
+the AD-80/81 watches (h2c, HTTP/3, client-side h2, cert hot-rotation).
+
+---
+
 ## Appendix A — Review slices and probe artifacts
 
 | Slice              | Key probes (all throwaway, deleted)                                                                                                                                                                                                                           |

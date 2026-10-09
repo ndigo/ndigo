@@ -342,10 +342,28 @@ on the same port (AD-81):
 new HTTPServer(null, { tls: { key: '/etc/tls/key.pem', cert: '/etc/tls/cert.pem' } });
 ```
 
-- PEM entries are inline-or-path: a value starting with `-----BEGIN` is
-  certificate content; anything else is a file path read at bind time.
-  The env pair is all-or-nothing — one key without the other throws at
-  construction rather than silently serving plaintext.
+- PEM entries are inline-or-path: a value whose first non-whitespace
+  characters are `-----BEGIN` is certificate content; anything else is a
+  file path read at bind time. The env pair is all-or-nothing — one key
+  without the other throws at construction rather than silently serving
+  plaintext; blank env values (`BLUE_TLS_KEY=`) count as unset. The env
+  configures the **default adapter only** — an app that passes a custom
+  adapter owns its own TLS story.
+- **Certificate files are read once at bind time** — rotating a key or
+  certificate requires a restart (same lifecycle as the process).
+- **Mutual TLS is opt-in** — `clientAuth: 'request'` asks for a client
+  certificate but admits anonymous clients; `clientAuth: 'require'`
+  rejects connections without a certificate that verifies against `ca`
+  (or Node's baseline trust store when `ca` is absent — which typically
+  rejects every presented certificate). `ca` alone never requests a
+  client certificate.
+- **Bound the h2 stream count for production** — `maxConcurrentStreams`
+  caps concurrent HTTP/2 streams per connection (the SETTINGS value).
+  Node's default is unbounded, so a single client could open any number
+  of concurrent requests; 128 (the nginx default) is a sane ceiling.
+- `minVersion` (`'TLSv1.2'` default / `'TLSv1.3'`) and `ciphers`
+  (OpenSSL list) tune the cipher policy; keep `minVersion: 'TLSv1.3'` for
+  strict deployments.
 - **WebSockets keep riding the h1.1 fallback** — neither `ws` nor browsers
   implement RFC 8441, so socket/STOMP endpoints cannot upgrade over h2;
   keep the h1.1 ALPN path reachable.

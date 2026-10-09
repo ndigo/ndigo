@@ -60,6 +60,42 @@ JSON bodies are parsed strictly against their `Content-Type` — malformed JSON
 is a `400`, never silently reshaped. `listen()` rejects on bind errors, and
 `close()` drains in-flight requests up to `shutdownTimeoutMs`.
 
+### TLS and HTTP/2 origin (opt-in)
+
+The origin listens on plaintext HTTP/1.1 by default — the edge-terminated
+posture (see [guide 01 §8](../../docs/guides/01-building-a-node-api.md#8-deployment-topology--tls-and-http23-at-the-edge)
+and [AD-80](../../docs/decisions/2026-10-09_AD80_HTTP23_EDGE_TERMINATION.md)).
+Pass TLS material and the listener becomes an `http2.createSecureServer`
+in `allowHTTP1` mode: ALPN negotiates HTTP/2 with an HTTP/1.1 fallback on
+one port, and WebSockets keep riding h1.1 (neither `ws` nor browsers
+implement RFC 8441 — [AD-81](../../docs/decisions/2026-10-09_AD81_NATIVE_HTTP2.md)).
+
+```ts
+const server = new HTTPServer(dispatcher, {
+    tls: {
+        key: '/etc/tls/key.pem',       // inline PEM or path
+        cert: '/etc/tls/cert.pem',
+        clientAuth: 'require',         // mutual TLS: 'none' | 'request' | 'require'
+        maxConcurrentStreams: 128,     // bound h2 streams per connection
+    },
+});
+```
+
+Environment-driven alternative (default adapter only, all-or-nothing:
+a half-configured pair throws rather than serving plaintext):
+
+```text
+BLUE_TLS_KEY=/etc/tls/key.pem
+BLUE_TLS_CERT=/etc/tls/cert.pem
+BLUE_TLS_CA=                      # optional; blank values count as unset
+```
+
+`node:http2` is stable in the supported Node 22 LTS line; it cannot load
+only on Node builds compiled without crypto support (rare — distro
+hardened builds), in which case the module import fails at startup and
+plaintext serving is unavailable. Certificates are read once at bind
+time; rotate by restarting the process.
+
 ### CSRF Protection
 
 `CSRFInterceptor` enforces double-submit-cookie validation on mutating

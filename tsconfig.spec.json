@@ -111,6 +111,8 @@
       "@blue/locks/*": ["./packages/blue-locks/src/*"],
       "@blue/rate-limit": ["./packages/blue-rate-limit/src"],
       "@blue/rate-limit/*": ["./packages/blue-rate-limit/src/*"],
+      "@blue/flags": ["./packages/blue-flags/src"],
+      "@blue/flags/*": ["./packages/blue-flags/src/*"],
       "@blue/cluster": ["./packages/blue-cluster/src"],
       "@blue/cluster/*": ["./packages/blue-cluster/src/*"],
       "@blue/cli": ["./packages/blue-cli/src"],

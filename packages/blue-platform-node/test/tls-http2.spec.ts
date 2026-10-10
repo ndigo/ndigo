@@ -452,7 +452,7 @@ describe.skipIf(!OPENSSL_AVAILABLE)('TLS origin + HTTP/2 (AD-81)', () => {
         await expect(bad.listen(0, '127.0.0.1')).rejects.toThrow();
     });
 
-test('a valid cipher list still serves h2', async () => {
+    test('a valid cipher list still serves h2', async () => {
         const ciphered = await boot({
             key: keyPath,
             cert: certPath,

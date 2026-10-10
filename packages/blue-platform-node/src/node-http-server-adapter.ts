@@ -409,7 +409,10 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 // REV-104: the settings value is our API boundary — Node
                 // accepts out-of-range values silently at creation, so a
                 // typed rejection here beats a silently-ignored setting.
-                if (maxConcurrentStreams !== undefined && (!Number.isInteger(maxConcurrentStreams) || maxConcurrentStreams < 0)) {
+                if (
+                    maxConcurrentStreams !== undefined &&
+                    (!Number.isInteger(maxConcurrentStreams) || maxConcurrentStreams < 0)
+                ) {
                     throw new RangeError(
                         `NodeHTTPServerAdapter maxConcurrentStreams must be a non-negative integer (HTTP/2 SETTINGS), received ${String(maxConcurrentStreams)}`
                     );

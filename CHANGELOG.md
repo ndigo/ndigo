@@ -22,6 +22,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `@blue/flags` (AD-82): feature flags — the **`FlagEvaluator`** SPI
+  (typed, async, **never-throw**: abnormal evaluation returns the supplied
+  default with a `reason` + `errorCode`), the zero-config
+  **`PropertyFlagProvider`** (flag `name` → `feature.<name>` properties,
+  read-through so `environment.refresh()` flips flags live; **percentage
+  rollouts** via `feature.rollout.<flag>` ∈ [0, 1] bucketed per targeting
+  key — `SPLIT` reason), the **`@whenFeature`** class/method gate metadata
+  (flag-key validated at decoration time), and the `FLAG_EVALUATOR` bean
+  token.
+- `@blue/platform-node` (AD-82): the **`FeatureGateInterceptor`** —
+  default-on in the node mapping, evaluates `@whenFeature` gates per
+  request and denies an off flag with a 404 problem document
+  (`urn:blue:not-found`; the `@FeatureGate`/`DisabledFeaturesHandler`
+  analog); the default `FLAG_EVALUATOR` bean reads the application
+  environment.
+- `apps/04-blue-api` (AD-82): the gated `/gated-report` demo route
+  (`@whenFeature('gated.report')`, `feature.gated.report` in
+  `config/application.json`).
+
 - `@blue/orm-drizzle` (AD-78): migration **files** — `loadMigrations(dir)`
   (one versioned module per file, `db/migrations/<NNNN>-<slug>.ts` by
   convention), `nextMigrationVersion(dir)`, and `migrateOnBoot({dataSource,

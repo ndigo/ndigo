@@ -1,6 +1,6 @@
 # BlueJS Decision Records (ADRs)
 
-Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-81**,
+Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-82**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -107,3 +107,4 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-79** | 2026-10-08    | Accepted           | [Shared-store rate limiting — async `RateLimiter` SPI, `@blue/rate-limit`, Redis fixed-window driver](2026-10-08_AD79_SHARED_STORE_RATE_LIMITING.md)                        |
 | **AD-80** | 2026-10-09    | Superseded in part | [HTTP/2–3 — edge termination is the supported pattern (origin stays HTTP/1.1; TLS/h2/h3 at the proxy; native h2 optioned)](2026-10-09_AD80_HTTP23_EDGE_TERMINATION.md)      |
 | **AD-81** | 2026-10-09    | Accepted           | [Native HTTP/2 origin — opt-in TLS (`allowHTTP1` + ALPN; ws keeps h1.1)](2026-10-09_AD81_NATIVE_HTTP2.md)                                                                   |
+| **AD-82** | 2026-10-10    | Accepted           | [Feature flags — `@blue/flags`: `FlagEvaluator` SPI, property provider, `@whenFeature` route gates](2026-10-10_AD82_FEATURE_FLAGS.md)                                       |

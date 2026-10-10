@@ -24,6 +24,7 @@ package can be read — and installed — on its own.
 | `@blue/dispatcher` | Request dispatch, parameter binding, and radix handler mappings for BlueJS | [doc/api/README.md](../packages/blue-dispatcher/doc/api/README.md) |
 | `@blue/dom` | Blue DOM – Isomorphic DOM parsing integration layer | [doc/api/README.md](../packages/blue-dom/doc/api/README.md) |
 | `@blue/factory` | IoC factory with scopes, lifecycle, and aware processors for BlueJS | [doc/api/README.md](../packages/blue-factory/doc/api/README.md) |
+| `@blue/flags` | Feature flags for BlueJS — the FlagEvaluator SPI (typed, async, never-throw), the property-backed local provider, and the @whenFeature gate metadata | [doc/api/README.md](../packages/blue-flags/doc/api/README.md) |
 | `@blue/generators` | Nx generators for BlueJS package and component scaffolding | [doc/api/README.md](../packages/blue-generators/doc/api/README.md) |
 | `@blue/host` | Blue Host — centralized micro frontend orchestration in the shell context | [doc/api/README.md](../packages/blue-host/doc/api/README.md) |
 | `@blue/http` | Fetch-based HTTP client, interceptors, and content parsing for BlueJS | [doc/api/README.md](../packages/blue-http/doc/api/README.md) |

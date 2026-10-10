@@ -7,6 +7,23 @@ Every implemented plan has its **decision recorded** in
 
 ## Completed Plans
 
+### 2026-10-10 - Feature Flags
+
+`@blue/flags` + `@blue/platform-node` + `apps/04-blue-api` (AD-82),
+closing GAP-11: the `FlagEvaluator` SPI (typed, async, **never-throw** —
+default value + reason/error-code on abnormal execution), the zero-config
+`PropertyFlagProvider` (flag `name` → `feature.<name>`, read-through so
+`environment.refresh()` flips flags live), `@whenFeature` route gates
+enforced by `FeatureGateInterceptor` (404 problem doc when off; the
+`@FeatureGate`/`DisabledFeaturesHandler` analog), the `FLAG_EVALUATOR`
+bean + `feature` config-schema namespace, and the gated `/gated-report`
+demo route. Vendor flagging (Split/LaunchDarkly/flagd via OpenFeature
+providers) stays a documented provider bridge behind the SPI.
+
+[Read plan](2026-10-10_FEATURE_FLAGS.md)
+
+---
+
 ### 2026-10-08 - Shared-Store Rate Limiting
 
 `@blue/rate-limit` + `@blue/platform-node` + `@blue/redis` (AD-79),

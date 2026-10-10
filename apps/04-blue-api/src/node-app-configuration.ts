@@ -33,6 +33,7 @@ import { CachedReportController } from './cached-report-controller';
 import { ConfigSecretsController } from './config-secrets-controller';
 import { ConfigServerDemoController } from './config-server-demo-controller';
 import { UploadController } from './upload-controller';
+import { FeatureFlagController } from './feature-flag-controller';
 import { lookupPrincipal } from './auth-store';
 
 /**
@@ -143,6 +144,9 @@ export class NodeAppConfiguration {
     }
     @entry() configServerDemoController() {
         return new ConfigServerDemoController();
+    }
+    @entry() featureFlagController() {
+        return new FeatureFlagController();
     }
     /**
      * Static demo root (DEM-1): the base dir is explicit and absolute, so

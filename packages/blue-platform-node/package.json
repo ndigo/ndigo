@@ -1,7 +1,7 @@
 {
   "name": "@blue/platform-node",
   "version": "0.0.1",
-  "description": "Node.js platform adapter for BlueJS \u2014 HTTP server, auto-configuration, static files, multipart",
+  "description": "Node.js platform adapter for BlueJS — HTTP server, auto-configuration, static files, multipart",
   "type": "module",
   "files": [
     "doc",
@@ -46,6 +46,7 @@
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/factory": "~0.0.1",
+    "@blue/flags": "~0.0.1",
     "@blue/http": "~0.0.1",
     "@blue/jobs": "~0.0.1",
     "@blue/locks": "~0.0.1",

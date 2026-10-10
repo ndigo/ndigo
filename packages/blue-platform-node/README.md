@@ -73,10 +73,10 @@ implement RFC 8441 — [AD-81](../../docs/decisions/2026-10-09_AD81_NATIVE_HTTP2
 ```ts
 const server = new HTTPServer(dispatcher, {
     tls: {
-        key: '/etc/tls/key.pem',       // inline PEM or path
+        key: '/etc/tls/key.pem', // inline PEM or path
         cert: '/etc/tls/cert.pem',
-        clientAuth: 'require',         // mutual TLS: 'none' | 'request' | 'require'
-        maxConcurrentStreams: 128,     // bound h2 streams per connection
+        clientAuth: 'require', // mutual TLS: 'none' | 'request' | 'require'
+        maxConcurrentStreams: 128, // bound h2 streams per connection
     },
 });
 ```

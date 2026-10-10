@@ -12,6 +12,10 @@ Provisions Node.js argument resolvers, a dispatcher, and an HTTP server.
 Register this configuration class with your `ApplicationContext` alongside
 NodeEnvironment to enable full server-side request handling.
 
+## Extends
+
+- `ApplicationContextAware` & `Null`\<`this`\>
+
 ## Constructors
 
 ### Constructor
@@ -21,6 +25,30 @@ NodeEnvironment to enable full server-side request handling.
 #### Returns
 
 `NodeAutoConfiguration`
+
+#### Inherited from
+
+`AsApplicationContextAware(Null).constructor`
+
+## Properties
+
+### \[$aware\]
+
+> `readonly` **\[$aware\]**: `boolean`
+
+A symbol indicating that the value is aware.
+
+#### Inherited from
+
+`AsApplicationContextAware(Null).[$aware]`
+
+***
+
+### applicationContext
+
+> `readonly` **applicationContext**: `ApplicationContext`
+
+The owning application context (container-injected, AD-82 wiring).
 
 ## Methods
 
@@ -114,6 +142,31 @@ user-configured `@errorMapping` handlers win.
 ([`NodeParameterBindingErrorResolver`](NodeParameterBindingErrorResolver.md) \| `MetadataErrorResolver` \| [`NodeLastResortErrorResolver`](NodeLastResortErrorResolver.md))[]
 
 The error resolvers.
+
+***
+
+### flagEvaluator()
+
+> **flagEvaluator**(): `FlagEvaluator`
+
+The default flag evaluator (AD-82): reads `feature.*` properties
+from the application environment, **live on every evaluation** — an
+`environment.refresh()` (AD-29) flips flags without a redeploy.
+Apps needing vendor flagging (Split / LaunchDarkly / flagd via an
+OpenFeature bridge) provide their own `FlagEvaluator` bean;
+this is the zero-config default.
+
+ONE instance serves both the `FLAG_EVALUATOR` bean and the
+`FeatureGateInterceptor`: the parser configures the bean value
+(aware injection) after it is registered, mutating the shared
+instance, so the gate's copy observes the injected application
+context too.
+
+#### Returns
+
+`FlagEvaluator`
+
+The property-backed flag evaluator.
 
 ***
 
@@ -283,6 +336,32 @@ down with the context — zero wiring for Node apps (AD-20 D2).
 `ScheduleRegistry`
 
 The schedule registry.
+
+***
+
+### setApplicationContext()
+
+> **setApplicationContext**(`applicationContext`): `void`
+
+Set the ApplicationContext that this object runs in. Normally this call will be used to initialize the object.
+
+Invoked after population of normal value properties but before an `init` callback.
+
+#### Parameters
+
+##### applicationContext
+
+`ApplicationContext`
+
+The ApplicationContext to be used by this object.
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+`AsApplicationContextAware(Null).setApplicationContext`
 
 ***
 

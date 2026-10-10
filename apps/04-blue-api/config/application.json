@@ -1,5 +1,6 @@
 {
   "migrations": {
     "runOnBoot": false
-  }
+  },
+  "feature.gated.report": true
 }

@@ -3,8 +3,8 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { configuration, entry } from '@blue/context';
-import { whenNode, createConversionService, type ConversionService } from '@blue/core';
+import { configuration, entry, AsApplicationContextAware, type ApplicationContext } from '@blue/context';
+import { whenNode, Null, createConversionService, type ConversionService } from '@blue/core';
 import { MemoryCacheManager } from '@blue/cache';
 import type { CacheManager } from '@blue/cache';
 import { CACHE_MANAGER } from '@blue/cache';
@@ -41,6 +41,9 @@ import { NodeLastResortErrorResolver } from './last-resort-error-resolver';
 import { createNodeArgumentResolvers } from './configure-argument-resolvers';
 import { FixedWindowRateLimiter, RATE_LIMITER, type RateLimiter } from '@blue/rate-limit';
 import { RateLimitInterceptor } from './rate-limit-interceptor';
+import { FLAG_EVALUATOR, type FlagEvaluator } from '@blue/flags';
+import { FeatureGateInterceptor } from './feature-gate-interceptor';
+import { EnvironmentFlagEvaluator } from './environment-flag-evaluator';
 
 /**
  * Auto-configuration for Node.js-based applications.
@@ -51,7 +54,9 @@ import { RateLimitInterceptor } from './rate-limit-interceptor';
  */
 @whenNode
 @configuration
-export class NodeAutoConfiguration {
+export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
+    /** The owning application context (container-injected, AD-82 wiring). */
+    readonly applicationContext!: ApplicationContext;
     /**
      * Exposes the shared argument-value converter registry.
      *
@@ -85,6 +90,9 @@ export class NodeAutoConfiguration {
     handlerMapping() {
         const mapping = new RadixMetadataHandlerMapping();
         mapping.interceptors.unshift(new SecurityHeadersInterceptor());
+        // Feature gate before rate limiting: a disabled feature is not a
+        // traffic event worth charging a budget against (AD-82 D-5).
+        mapping.interceptors.push(new FeatureGateInterceptor(this.flagEvaluator()));
         mapping.interceptors.push(new RateLimitInterceptor(this.rateLimiter()));
         return mapping;
     }
@@ -101,6 +109,28 @@ export class NodeAutoConfiguration {
     rateLimiter(): RateLimiter {
         return new FixedWindowRateLimiter();
     }
+
+    /**
+     * The default flag evaluator (AD-82): reads `feature.*` properties
+     * from the application environment, **live on every evaluation** — an
+     * `environment.refresh()` (AD-29) flips flags without a redeploy.
+     * Apps needing vendor flagging (Split / LaunchDarkly / flagd via an
+     * OpenFeature bridge) provide their own `FlagEvaluator` bean;
+     * this is the zero-config default.
+     *
+     * ONE instance serves both the `FLAG_EVALUATOR` bean and the
+     * `FeatureGateInterceptor`: the parser configures the bean value
+     * (aware injection) after it is registered, mutating the shared
+     * instance, so the gate's copy observes the injected application
+     * context too.
+     *
+     * @returns The property-backed flag evaluator.
+     */
+    @entry(FLAG_EVALUATOR)
+    flagEvaluator(): FlagEvaluator {
+        return (this.#flagEvaluatorInstance ??= new EnvironmentFlagEvaluator());
+    }
+    #flagEvaluatorInstance: FlagEvaluator | null = null;
 
     /**
      * Creates the Node dispatcher used for server-side request dispatch and rendering.

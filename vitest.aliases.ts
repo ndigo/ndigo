@@ -36,6 +36,7 @@ export const blueAliases: { find: RegExp; replacement: string }[] = [
     { find: /^@blue\/dom$/, replacement: resolve(repoRoot, 'packages/blue-dom/src') },
     { find: /^@blue\/util$/, replacement: resolve(repoRoot, 'packages/blue-util/src') },
     { find: /^@blue\/factory$/, replacement: resolve(repoRoot, 'packages/blue-factory/src') },
+    { find: /^@blue\/flags$/, replacement: resolve(repoRoot, 'packages/blue-flags/src') },
     { find: /^@blue\/context$/, replacement: resolve(repoRoot, 'packages/blue-context/src') },
     { find: /^@blue\/router$/, replacement: resolve(repoRoot, 'packages/blue-router/src') },
     { find: /^@blue\/host$/, replacement: resolve(repoRoot, 'packages/blue-host/src') },

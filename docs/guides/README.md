@@ -31,6 +31,7 @@ Conceptual and hands-on guides for building applications with BlueJS. These comp
 25. [25 — The `blue` CLI](25-blue-cli.md) — `@blue/cli` (AD-75): serve (with the `--cluster` surface), dev, generate, db, inspect, and doctor — how scripts run shell-free so signals reach the app.
 26. [26 — Management Endpoints](26-management-endpoints.md) — the actuator-parity surface (AD-76): `/health` groups and component reads, `/loggers` level inspection + live changes, `/env` with source origins and redaction, `/configprops` (declared keys, never values), and the opt-in exposure model. Reference application: `apps/04-blue-api`.
 27. [27 — ORM & Migrations](27-orm-and-migrations.md) — the journaled migration lifecycle (AD-30/AD-78): decorator entities as the schema source, `blue db generate` (committed snapshot + freshness gate), `blue db migrate`/`db:status`, `migrations.runOnBoot`, and the fidelity ceiling (what stays hand-written). Reference application: `apps/04-blue-api`.
+28. [28 — Feature Flags](28-feature-flags.md) — `@blue/flags` (AD-82): the never-throw `FlagEvaluator` SPI, the zero-config property provider (`feature.*`, live refresh), `@whenFeature` route gates (404 when off), and the OpenFeature provider seam for vendor flagging. Reference application: `apps/04-blue-api` (`/gated-report`).
 
 ## Reading Order
 

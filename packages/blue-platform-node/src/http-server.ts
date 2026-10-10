@@ -255,9 +255,7 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         // its own TLS story, so a stale `BLUE_TLS_KEY` export must not
         // break or secretly reconfigure it.
         this.#tls =
-            options.tls ??
-            (options.adapter === undefined ? readTLSOptionsFromEnv(process.env) : undefined) ??
-            null;
+            options.tls ?? (options.adapter === undefined ? readTLSOptionsFromEnv(process.env) : undefined) ?? null;
         this.#socketLimits = options.socketLimits;
         // Env-tunable origin allowlist for the default adapter: comma-
         // separated bare origins (`BLUE_SOCKET_ALLOWED_ORIGINS`). Absent

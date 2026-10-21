@@ -19,6 +19,7 @@
     "test:e2e": "nx run @blue/todo:test:e2e",
     "apps:smoke": "node scripts/apps-smoke.mjs",
     "typecheck": "pnpm --filter './packages/**' --filter './apps/**' -r exec tsc -b tsconfig.build.json && pnpm exec tsc -p tsconfig.spec.json",
+    "typecheck:fast": "pnpm --filter './packages/**' --filter './apps/**' -r exec tsrs -b tsconfig.build.json && pnpm exec tsrs -p tsconfig.spec.json",
     "lint": "pnpm --filter @blue/oxlint-plugin build:lib && oxlint --type-aware --deny-warnings .",
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
@@ -60,10 +61,11 @@
     "oxlint": "catalog:",
     "oxlint-tsgolint": "^7.0.2003",
     "safe-regex": "catalog:",
+    "tsrs": "0.18.0-ts7.1.0-dev.20260929",
+    "tsx": "catalog:",
     "typedoc": "^0.28.20",
     "typedoc-plugin-markdown": "^4.13.0",
     "typescript": "catalog:",
-    "vitest": "catalog:",
-    "tsx": "catalog:"
+    "vitest": "catalog:"
   }
 }

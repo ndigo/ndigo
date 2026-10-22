@@ -33,6 +33,7 @@ import {
 import { IslandViewResolver } from '@blue/view';
 import { NodeDispatcher } from './node-dispatcher';
 import { HTTPServer } from './http-server';
+import { readIntEnv } from './read-int-env';
 import { NodeSocketSessionRegistry, resolveSocketRegistryOptions } from './node-socket-session-registry';
 import { HTTP_SERVER, SOCKET_SESSION_REGISTRY } from './context-tokens';
 import { SecurityHeadersInterceptor } from './security-headers-interceptor';
@@ -46,6 +47,18 @@ import { FLAG_EVALUATOR, type FlagEvaluator } from '@blue/flags';
 import { FeatureGateInterceptor } from './feature-gate-interceptor';
 import { EnvironmentFlagEvaluator } from './environment-flag-evaluator';
 
+/**
+ * Coerces a configured `server.port` value — a JSON number or numeric string —
+ * to an integer port, returning `undefined` when absent or non-numeric so the
+ * caller falls back to its own default. Range validation is deferred to
+ * {@link HTTPServer}, which fails fast on an out-of-bounds value rather than
+ * silently binding the wrong port.
+ */
+function configuredPort(value: unknown): number | undefined {
+    if (value === undefined || value === null) return undefined;
+    const port = typeof value === 'number' ? value : Number(value);
+    return Number.isInteger(port) ? port : undefined;
+}
 /**
  * Auto-configuration for Node.js-based applications.
  * Provisions Node.js argument resolvers, a dispatcher, and an HTTP server.
@@ -352,7 +365,9 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
      */
     @entry(HTTP_SERVER)
     httpServer(): HTTPServer {
-        return new HTTPServer();
+        const port = readIntEnv(process.env, 'PORT', { allowZero: true })
+            ?? configuredPort(this.applicationContext?.environment?.getProperty('server.port'));
+        return new HTTPServer(null, { port });
     }
 
     /**

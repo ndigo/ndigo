@@ -486,6 +486,11 @@ Framework/tooling findings, verified at source and left for the review process
    Fixed in the apps with `process.env['PORT'] ??= '<default>'` (the pattern
    six other apps already used); a framework-level `server.port` property
    source would remove the trap.
+   Fixed 2026-10-22 (`node-auto-configuration.ts`): `httpServer()` now resolves
+   the port as `process.env.PORT ?? server.port config ?? 3000`, so a documented
+   `server.port` in an app's application.json is honored. The constructor takes
+   `(null, { port })`; the dispatcher stays null and is resolved from context at
+   start. Regression: node-auto-configuration.spec.ts (all three precedence cases).
 2. **`ResponseEntityView` drops `ResponseEntity.headers` for status ≥ 400** —
    the problem+json branch returns only `Content-Type`
    (`packages/blue-platform-node/src/response-entity-view.ts:25-31`), so a

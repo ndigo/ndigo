@@ -516,6 +516,12 @@ Framework/tooling findings, verified at source and left for the review process
    token extractor, so a route accepting both a session cookie and a Bearer
    token cannot use it; `18` ships an app-owned `AuthMatrixGuard` over
    `validateAny`.
+   Fixed 2026-10-22 (`route-matrix-guard.ts`): promoted a transport-agnostic
+   `AuthMatrixGuard` into `@blue/auth-server` — injected per-scheme extractors +
+   optional `onAuthenticated` sink, `validateAny` over explicit ids, fail-closed
+   401/403 — keeping `AuthRouteGuard` single-scheme. `18` migrated to it (local
+   `auth-matrix-guard.ts` removed); sockets were already multi-scheme via
+   `SocketRequestAuthenticator` + `validateAny`. Regression: route-matrix-guard.spec.ts.
 5. **`scripts/import-scanner.mjs:18` skips any directory named `lib`**, so
    imports under an app's `src/lib/` are invisible to `pnpm manifest:check`
    and surface as false "dead dependency" failures (hit by `19`, renamed to

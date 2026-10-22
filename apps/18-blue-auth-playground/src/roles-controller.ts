@@ -21,7 +21,7 @@ import '@tsmetadata/polyfill';
 import { authenticated, authorized, type Principal } from '@blue/auth-core';
 import { getMapping, parameters, requestMapping, requestSessionValue } from '@blue/dispatcher';
 import { MODES, principalView } from './api-shape';
-import { REQUEST_PRINCIPAL_KEY } from './auth-matrix-guard';
+import { REQUEST_PRINCIPAL_KEY } from './http-pipeline';
 
 /** The requirement labels the handlers echo back (also the README's matrix). */
 export const HTTP_REQUIREMENTS = {

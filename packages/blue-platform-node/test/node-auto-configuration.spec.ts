@@ -128,4 +128,45 @@ describe('NodeAutoConfiguration', () => {
         await (cors as CORSInterceptor).preHandle(route, undefined);
         expect(headers.get('access-control-allow-origin')).toBe('https://app.example.com');
     });
+    test('honors documented server.port config when PORT is unset', () => {
+        const saved = process.env.PORT;
+        delete process.env.PORT;
+        try {
+            const config = new NodeAutoConfiguration();
+            (config as unknown as { applicationContext: unknown }).applicationContext = {
+                environment: { getProperty: (key: string) => (key === 'server.port' ? 4321 : undefined) },
+            };
+            expect(config.httpServer().port).toBe(4321);
+        } finally {
+            if (saved !== undefined) process.env.PORT = saved;
+        }
+    });
+
+    test('prefers process.env.PORT over server.port config', () => {
+        const saved = process.env.PORT;
+        process.env.PORT = '3999';
+        try {
+            const config = new NodeAutoConfiguration();
+            (config as unknown as { applicationContext: unknown }).applicationContext = {
+                environment: { getProperty: (key: string) => (key === 'server.port' ? 4321 : undefined) },
+            };
+            expect(config.httpServer().port).toBe(3999);
+        } finally {
+            if (saved === undefined) delete process.env.PORT; else process.env.PORT = saved;
+        }
+    });
+
+    test('falls back to the server default when neither PORT nor server.port is set', () => {
+        const saved = process.env.PORT;
+        delete process.env.PORT;
+        try {
+            const config = new NodeAutoConfiguration();
+            (config as unknown as { applicationContext: unknown }).applicationContext = {
+                environment: { getProperty: () => undefined },
+            };
+            expect(config.httpServer().port).toBe(3000);
+        } finally {
+            if (saved !== undefined) process.env.PORT = saved;
+        }
+    });
 });

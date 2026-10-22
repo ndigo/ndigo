@@ -24,7 +24,7 @@ export class ResponseEntityView implements ProducerView {
                 : toProblemDetails(entity.body, entity.status.code, entity.status.text, route.path);
             return {
                 status: entity.status.code,
-                headers: { 'Content-Type': 'application/problem+json' },
+                headers: { 'Content-Type': 'application/problem+json', ...entity.headers },
                 body: JSON.stringify(details),
             };
         }

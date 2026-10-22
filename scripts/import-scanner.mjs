@@ -15,7 +15,14 @@
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
-export const SKIP_DIRS = new Set(['node_modules', '.vitest', 'lib', 'doc']);
+/**
+ * Directories that are never source at any depth. Build-output names (`lib`,
+ * `doc`) are deliberately absent: both walkers only descend from source roots
+ * (`src`/`test`/`client`/…), never a package root, so a nested `lib` is genuine
+ * source (e.g. `apps/11-blue-conduit-web/src/lib`). Skipping it by name hid
+ * those imports from `manifest:check` as false dead dependencies.
+ */
+export const SKIP_DIRS = new Set(['node_modules', '.vitest']);
 export const SOURCE_DIRS = new Set(['src']);
 export const DEV_DIRS = new Set(['test', 'bench', 'benchmark', 'profile', 'scripts']);
 

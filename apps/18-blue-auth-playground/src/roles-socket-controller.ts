@@ -25,7 +25,7 @@ import '@tsmetadata/polyfill';
 import { authenticated, authorized, type Principal } from '@blue/auth-core';
 import { parameters, requestMapping, socketMapping, socketSessionValue, type SocketSession } from '@blue/dispatcher';
 import { MODES, principalView } from './api-shape';
-import { REQUEST_PRINCIPAL_KEY } from './auth-matrix-guard';
+import { REQUEST_PRINCIPAL_KEY } from './http-pipeline';
 
 /** The socket's requirement label (also the README's matrix). */
 export const SOCKET_REQUIREMENT = '@authenticated + @authorized(admin)';

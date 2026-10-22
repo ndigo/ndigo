@@ -31,10 +31,17 @@
  */
 import { HANDLER_MAPPING } from '@blue/dispatcher';
 import type { ApplicationContext } from '@blue/context';
-import { NodeSessionInterceptor } from '@blue/platform-node';
-import { AuthMatrixGuard } from './auth-matrix-guard';
+import { HTTPHeaders } from '@blue/http';
+import { getNodeRequest, hasDuplicateCookie, NodeSessionInterceptor } from '@blue/platform-node';
+import { AuthMatrixGuard } from '@blue/auth-server';
 import { AUTH_SCHEME_ORDER, type AuthStack } from './auth-stack';
 import type { PlaygroundConfig } from './config';
+
+/** Session-bag key holding the authenticated principal (matches NodeSessionInterceptor). */
+export const REQUEST_PRINCIPAL_KEY = 'principal';
+
+/** Session-bag key holding the credential the principal was resolved from. */
+export const REQUEST_TOKEN_KEY = 'token';
 
 /**
  * Installs the session restoration and the dual-scheme authorization guard on
@@ -49,8 +56,50 @@ export function applyAuthPipeline(context: ApplicationContext, stack: AuthStack,
     mapping.interceptors.push(
         new NodeSessionInterceptor(stack.sessions, config.cookieName),
         new AuthMatrixGuard(stack.server, {
-            adapterIds: AUTH_SCHEME_ORDER,
-            cookieName: config.cookieName,
+            // Cookie session id first (AUTH_SCHEME_ORDER[0]), Bearer access token
+            // second — extraction priority follows AUTH_SCHEME_ORDER, and the guard
+            // validates the winning credential against both ids via validateAny.
+            schemes: [
+                {
+                    adapterId: AUTH_SCHEME_ORDER[0],
+                    extract: (route) => {
+                        const request = getNodeRequest(route);
+                        if (!request) {
+                            return null;
+                        }
+                        if (hasDuplicateCookie(request.headers?.['cookie'], config.cookieName)) {
+                            return null;
+                        }
+                        const cookie = request.cookies?.[config.cookieName];
+                        return typeof cookie === 'string' && cookie !== '' ? cookie : null;
+                    },
+                },
+                {
+                    adapterId: AUTH_SCHEME_ORDER[1],
+                    extract: (route) => {
+                        const request = getNodeRequest(route);
+                        if (!request) {
+                            return null;
+                        }
+                        const authorization = request.headers?.['authorization'];
+                        return (
+                            HTTPHeaders.AUTHORIZATION.bearerToken(
+                                Array.isArray(authorization) ? authorization[0] : authorization
+                            ) ?? null
+                        );
+                    },
+                },
+            ],
+            // Stash the resolved principal + token in the same bag NodeSessionInterceptor
+            // fills for cookies, so both schemes reach handlers through one seam.
+            onAuthenticated: (route, principal, token) => {
+                const request = getNodeRequest(route);
+                if (!request) {
+                    return;
+                }
+                request.session[REQUEST_PRINCIPAL_KEY] = principal;
+                request.session[REQUEST_TOKEN_KEY] = token;
+            },
         })
     );
 }

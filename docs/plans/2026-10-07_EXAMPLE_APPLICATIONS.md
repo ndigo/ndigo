@@ -526,6 +526,11 @@ Framework/tooling findings, verified at source and left for the review process
    imports under an app's `src/lib/` are invisible to `pnpm manifest:check`
    and surface as false "dead dependency" failures (hit by `19`, renamed to
    `src/api/`).
+   Fixed 2026-10-22 (`import-scanner.mjs`): `SKIP_DIRS` no longer lists `lib`/`doc`
+   — both walkers descend only from source roots, never a package root, so a
+   nested `lib` is always source. Verified on `11`'s `src/lib` (a probe import was
+   missed, then seen); `manifest:check` otherwise unchanged (pre-existing `tsrs`
+   deviation only).
 6. **Socket-handler DX:** a `@socketMapping` handler that forgets
    `@parameters({ session: socketSessionValue('session') })` runs with
    `undefined` and the peer sees only a 1011 close — diagnosed from a 1011

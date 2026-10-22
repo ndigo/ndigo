@@ -41,6 +41,7 @@ import { NodeLastResortErrorResolver } from './last-resort-error-resolver';
 import { createNodeArgumentResolvers } from './configure-argument-resolvers';
 import { FixedWindowRateLimiter, RATE_LIMITER, type RateLimiter } from '@blue/rate-limit';
 import { RateLimitInterceptor } from './rate-limit-interceptor';
+import { CORSInterceptor, type CORSInterceptorOptions } from './cors-interceptor';
 import { FLAG_EVALUATOR, type FlagEvaluator } from '@blue/flags';
 import { FeatureGateInterceptor } from './feature-gate-interceptor';
 import { EnvironmentFlagEvaluator } from './environment-flag-evaluator';
@@ -94,7 +95,48 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
         // traffic event worth charging a budget against (AD-82 D-5).
         mapping.interceptors.push(new FeatureGateInterceptor(this.flagEvaluator()));
         mapping.interceptors.push(new RateLimitInterceptor(this.rateLimiter()));
+        // CORS runs last (after feature/rate-limit) and is fail-closed by
+        // default: no origin is permitted until an app sets `cors.allowedOrigins`,
+        // so registering it globally is inert for unconfigured apps. This closes
+        // the example-apps trap where CORSInterceptor existed but was wired nowhere.
+        mapping.interceptors.push(new CORSInterceptor(this.corsOptions()));
         return mapping;
+    }
+
+    /**
+     * CORS policy bound to the `cors.*` environment namespace, read once at
+     * registration time. Fail-closed by default (empty `allowedOrigins`): no
+     * cross-origin request is permitted until an app sets `cors.allowedOrigins`,
+     * so the always-registered {@link CORSInterceptor} blocks by default and
+     * apps opt in explicitly. Mirrors how `flagEvaluator()`/`rateLimiter()` bind
+     * their namespaces from the application environment.
+     *
+     * @returns options for the auto-registered {@link CORSInterceptor}.
+     */
+    corsOptions(): CORSInterceptorOptions {
+        const raw = this.applicationContext?.environment?.getProperty('cors');
+        if (!raw || typeof raw !== 'object') return {};
+        const cfg = raw as Record<string, unknown>;
+        const options: CORSInterceptorOptions = {};
+        if (Array.isArray(cfg.allowedOrigins)) {
+            options.allowedOrigins = cfg.allowedOrigins.map(String);
+        }
+        if (typeof cfg.allowCredentials === 'boolean') {
+            options.allowCredentials = cfg.allowCredentials;
+        }
+        if (Array.isArray(cfg.allowedMethods)) {
+            options.allowedMethods = cfg.allowedMethods.map(String);
+        }
+        if (Array.isArray(cfg.allowedHeaders)) {
+            options.allowedHeaders = cfg.allowedHeaders.map(String);
+        }
+        if (Array.isArray(cfg.exposedHeaders)) {
+            options.exposedHeaders = cfg.exposedHeaders.map(String);
+        }
+        if (typeof cfg.maxAgeSeconds === 'number') {
+            options.maxAgeSeconds = cfg.maxAgeSeconds;
+        }
+        return options;
     }
 
     /**

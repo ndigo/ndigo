@@ -8,6 +8,9 @@ import { z } from 'zod';
 import { Route, ACCEPT_LANGUAGE_ATTRIBUTE } from '@blue/router';
 import { AcceptHeaderLanguageResolver } from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
+import type { ServerResponse } from 'node:http';
+import { CORSInterceptor } from '../src/cors-interceptor';
+import { NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from '../src/node-request';
 import { NodeMultipartFileMethodArgumentResolver } from '../src/multipart-file-argument-resolver';
 import { NodeRequestPartMethodArgumentResolver } from '../src/request-part-argument-resolver';
 import { NodeDataBindingMethodArgumentResolver } from '../src/data-binding-argument-resolver';
@@ -64,5 +67,65 @@ describe('NodeAutoConfiguration', () => {
 
         expect(resolver.resolveLanguage(route)).toBe('fr-CH');
         expect(resolver.resolveLanguage({ attributes: {} } as Route)).toBe('en-US');
+    });
+    test('registers a fail-closed CORS interceptor when no cors config is present', async () => {
+        const config = new NodeAutoConfiguration();
+        (config as unknown as { applicationContext: unknown }).applicationContext = {
+            environment: { getProperty: () => undefined },
+        };
+
+        const mapping = config.handlerMapping();
+        const cors = mapping.interceptors.find((interceptor) => interceptor instanceof CORSInterceptor);
+        expect(cors).toBeInstanceOf(CORSInterceptor);
+
+        // Fail-closed: an Origin header is not permitted without cors.allowedOrigins.
+        const headers = new Map<string, string | string[]>();
+        const res = {
+            headersSent: false,
+            getHeader: (name: string) => headers.get(name.toLowerCase()),
+            setHeader: (name: string, value: string | string[]) => {
+                headers.set(name.toLowerCase(), value);
+            },
+        } as unknown as ServerResponse;
+        const route = {
+            method: 'GET',
+            path: '/api/x',
+            attributes: {
+                [NODE_REQUEST_ATTRIBUTE]: { headers: { origin: 'https://evil.example' } },
+                [NODE_RESPONSE_ATTRIBUTE]: res,
+            },
+        } as unknown as Route;
+        await (cors as CORSInterceptor).preHandle(route, undefined);
+        expect(headers.get('access-control-allow-origin')).toBeUndefined();
+    });
+
+    test('reads cors.allowedOrigins from the environment and permits that origin', async () => {
+        const config = new NodeAutoConfiguration();
+        (config as unknown as { applicationContext: unknown }).applicationContext = {
+            environment: { getProperty: (key: string) => (key === 'cors' ? { allowedOrigins: ['https://app.example.com'] } : undefined) },
+        };
+
+        const mapping = config.handlerMapping();
+        const cors = mapping.interceptors.find((interceptor) => interceptor instanceof CORSInterceptor);
+        expect(cors).toBeInstanceOf(CORSInterceptor);
+
+        const headers = new Map<string, string | string[]>();
+        const res = {
+            headersSent: false,
+            getHeader: (name: string) => headers.get(name.toLowerCase()),
+            setHeader: (name: string, value: string | string[]) => {
+                headers.set(name.toLowerCase(), value);
+            },
+        } as unknown as ServerResponse;
+        const route = {
+            method: 'GET',
+            path: '/api/x',
+            attributes: {
+                [NODE_REQUEST_ATTRIBUTE]: { headers: { origin: 'https://app.example.com' } },
+                [NODE_RESPONSE_ATTRIBUTE]: res,
+            },
+        } as unknown as Route;
+        await (cors as CORSInterceptor).preHandle(route, undefined);
+        expect(headers.get('access-control-allow-origin')).toBe('https://app.example.com');
     });
 });

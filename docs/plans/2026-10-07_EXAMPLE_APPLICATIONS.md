@@ -500,6 +500,12 @@ Framework/tooling findings, verified at source and left for the review process
    with no configuration knob; `09` (and `10`) splice it in app-side through
    `HANDLER_MAPPING.interceptors`. A `blue.cors`-bound auto-registered
    interceptor is the obvious framework fix.
+   Fixed 2026-10-22 (`node-auto-configuration.ts`): `handlerMapping()` now
+   pushes a `CORSInterceptor(this.corsOptions())`. `corsOptions()` reads the
+   `cors.*` environment namespace, fail-closed (empty `allowedOrigins` blocks
+   every origin until an app sets `cors.allowedOrigins`), so the interceptor is
+   always registered but inert unless configured. Regression in
+   node-auto-configuration.spec.ts.
 4. **`AuthRouteGuard` is single-scheme** —
    `packages/blue-auth-server/src/route-guard.ts` binds one adapter id + one
    token extractor, so a route accepting both a session cookie and a Bearer

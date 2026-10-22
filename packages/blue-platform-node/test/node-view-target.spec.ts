@@ -78,4 +78,21 @@ describe('HTTPResponseViewTarget entity models (fragment path)', () => {
         expect(captured.headers['X-Widget']).toBe('42');
         expect(captured.body).toBe('{"id":1}');
     });
+
+    test('preserves handler-set headers on a 4xx problem+json response', async () => {
+        const { captured, sink } = memorySink();
+        const target = new HTTPResponseViewTarget(sink as unknown as ServerResponse);
+
+        await target.commit(
+            undefined,
+            new ResponseEntity({ error: 'unauthorized' }, ResponseStatuses.UNAUTHORIZED, { 'WWW-Authenticate': 'Bearer realm="api"' }),
+            route,
+        );
+
+        expect(captured.status).toBe(401);
+        expect(captured.headers['Content-Type']).toBe('application/problem+json');
+        // Regression: a 4xx must carry handler-set headers (e.g. WWW-Authenticate),
+        // not just the problem+json Content-Type.
+        expect(captured.headers['WWW-Authenticate']).toBe('Bearer realm="api"');
+    });
 });

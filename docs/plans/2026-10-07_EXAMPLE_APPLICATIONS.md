@@ -491,6 +491,9 @@ Framework/tooling findings, verified at source and left for the review process
    (`packages/blue-platform-node/src/response-entity-view.ts:25-31`), so a
    handler-level 401 cannot carry `WWW-Authenticate` (or any 4xx header).
    Worked around in `08` via the `NODE_RESPONSE_ATTRIBUTE` sink.
+   Fixed 2026-10-22 (`response-entity-view.ts`): the ≥400 branch now spreads
+   `entity.headers`, so handler-set headers (e.g. `WWW-Authenticate`) survive;
+   regression in `node-view-target.spec.ts`.
 3. **`CORSInterceptor` exists but is registered nowhere** —
    `packages/blue-platform-node/src/cors-interceptor.ts` is not referenced by
    `node-auto-configuration.ts`, so a cross-origin browser client is blocked

@@ -72,8 +72,9 @@ and dependency state for exploitability and hygiene. You never modify files.
 1. Load the `security-and-hardening` skill for the checklist (input
    validation, auth/authorization, secrets, injection, deserialization,
    XSS/CSRF where applicable, known-CVE dependencies).
-2. Run the repo's audit command (e.g., `pnpm audit`) and `pnpm list` to see
-   the dependency graph; investigate anything flagged with real severity.
+2. Run the repo's dependency-audit and listing commands, whatever it
+   documents, to see the dependency graph; investigate anything flagged with
+   real severity.
 3. Check code paths for: secrets in code, unsafe input handling, missing
    authorization checks, dangerous deserialization, debug backdoors.
 4. Cite evidence — file, line, and the vulnerable pattern — for every finding.

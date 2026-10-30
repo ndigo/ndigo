@@ -97,7 +97,7 @@ agent covering everything:
 | ---------------------- | ------------------------------- |
 | Correctness, design, style, complexity, gaps, a11y | `code-reviewer` (all axes) |
 | Security + dependency audit          | `security-reviewer`             |
-| Markdown, TSDoc, diagrams            | `documentation-reviewer`        |
+| Markdown, API docs, diagrams         | `documentation-reviewer`        |
 
 Merge the specialist reports into one consolidated findings list; drop
 duplicate findings, keep the strongest statement of each. Specialist

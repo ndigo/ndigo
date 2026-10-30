@@ -128,7 +128,7 @@ When implementation is delegated to specialized agents, route by task type:
 | New classes, functions, modules, decorators, services, APIs | `source-writer`           |
 | Refactoring, renaming, extracting utilities, moving code    | `source-writer`           |
 | Extending existing features, modifying source code          | `source-writer`           |
-| `package.json`, `tsconfig.json`, workspace configs          | `tooling-writer`          |
+| Build manifests, language config, workspace configs         | `tooling-writer`          |
 | CI/CD pipelines, shell scripts, build scripts               | `tooling-writer`          |
 | Dependency additions/removals, workspace config             | `tooling-writer`          |
 | Unit tests                                                  | `test-writer`             |

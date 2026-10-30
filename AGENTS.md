@@ -513,13 +513,13 @@ This repository's AI-agent definitions are **generated, not hand-edited**:
   skills, per-harness shims) plus this repo's `agent-local/` (repo-specific
   overrides, e.g. the `graft` skill).
 - **Regenerate:** `pnpm agents:sync` (runs `gen.mjs`; emits `.opencode/`,
-  `.claude/`, `.omp/` copies + `.agent-gen.json`)
+  `.omp/` copies + `.agent-gen.json`)
 - **Validate:** `pnpm agents:check` — committed files vs. the sha256
   manifest + structural invariants (CI-gated)
 - Edit `development-agents/` or `agent-local/` and regenerate — never edit
-  generated files under `.opencode/agents`, `.claude/agents`, `.omp/agents`.
-- Models: pinned in `.agent-models.json` (stamped into OMP agents; other
-  harnesses inherit the session model).
+  generated files under `.opencode/agents`, `.omp/agents`.
+- Models: not part of the deployment — agents inherit the session model
+  (OpenCode `model`, OMP `modelRoles`, configured outside the store).
 
 <!-- graft:start -->
 

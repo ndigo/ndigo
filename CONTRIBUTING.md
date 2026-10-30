@@ -151,7 +151,7 @@ last build.
 - CI runs `graft build` (tier-1, deterministic, $0) + `graft check` on every
   PR; `graft check` failing means a fingerprint/wiring regression.
 
-## Agent configuration (`.opencode/`, `.claude/`, `.omp/`)
+## Agent configuration (`.opencode/`, `.omp/`)
 
 The repository's AI-agent definitions are **generated, not hand-edited**.
 
@@ -164,14 +164,14 @@ The repository's AI-agent definitions are **generated, not hand-edited**.
 - Validate: `pnpm agents:check` — manifest + structural invariants
   (CI-gated).
 - Edit `development-agents/` or `agent-local/` and regenerate; never edit
-  generated files under `.opencode/agents`, `.claude/agents`, `.omp/agents`.
+  generated files under `.opencode/agents`, `.omp/agents`.
 - Repo-owned deployment files (`opencode.json`, `.opencode/plugins/`,
   `AGENTS.md`) are authored in-repo but carry editor code-execution reach, so
   they sit under the same drift gate: hashes live in `.agent-local.json`,
   refreshed with `node scripts/agents-check.mjs --update` after any edit to
   those files (commit the manifest alongside).
-- Models: `.agent-models.json` (stamped into OMP agents only; opencode and
-  Claude inherit the session model).
+- Models: not part of the deployment — agents inherit the session model
+  (OpenCode `model`, OMP `modelRoles`, configured outside the store).
 
 ## Releases
 

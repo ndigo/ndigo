@@ -45,10 +45,11 @@ information from the web and relate it directly to the task at hand.
 
 ## Research areas
 
-- Modern patterns for the project's stack (TypeScript, Node, web framework)
+- Modern patterns for the project's stack, as its `AGENTS.md` defines it
 - Third-party library documentation and migration guides
 - Security vulnerabilities and CVEs for in-use dependencies
-- Standards and proposals (e.g., TC39, ESM) as they affect the repo
+- Standards and proposals (e.g., ecosystem specs, platform releases) as they
+  affect the repo
 - Performance comparisons and benchmarks
 
 ## Do Not

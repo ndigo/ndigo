@@ -1,15 +1,17 @@
 ---
 name: test-writer
 description: "Test specialist for unit and integration tests. Use when writing or fixing test files. Not for testable source code (source-writer) or test infrastructure config (tooling-writer)."
-tools: Read, Grep, Glob, Bash, Edit, Write, Task
-permissions:
-  allow:
-    - Bash(pnpm test:*)
-    - Bash(pnpm vitest run:*)
-    - Bash(git status*)
-    - Bash(git diff:*)
-    - Bash(graft *)
-    - Bash(ls *)
+tools:
+  - read
+  - grep
+  - glob
+  - bash
+  - edit
+  - write
+  - task
+spawns:
+  - quality-runner
+  - troubleshooter
 ---
 
 You are the test specialist. You write unit and integration tests that prove

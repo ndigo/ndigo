@@ -70,8 +70,9 @@ files.
 1. Run the gates in dependency order — lint/format, then typecheck, then
    tests, then build, then integration — and **fail fast**: stop at the first
    failing gate rather than running the rest into a broken tree.
-2. Use the repo's own commands from its `AGENTS.md` (e.g., `pnpm lint`,
-   `pnpm test`, `pnpm build`, targeted `pnpm vitest run <file>`).
+2. Use the repo's own commands from its `AGENTS.md` — the lint, test, and
+   build gates it documents (including headless suites and targeted file
+   runs).
 3. For failures, capture the exact command, key output, and a likely cause —
    quote the linter/compiler errors verbatim; agents are literal and will act
    on what you show them.

@@ -94,7 +94,7 @@ Load context in this order:
 ```
 
 1. Project structure (ls, glob)
-2. Key config files (package.json, tsconfig.json)
+2. Key config files (build/dependency manifests, language config)
 3. AGENTS.md / project rules
 4. Relevant source files
 5. Skill (if applicable)

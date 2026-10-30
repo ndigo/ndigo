@@ -160,5 +160,5 @@ it('validates titles correctly', () => { ... });
 After completing any implementation:
 
 - [ ] Every new behavior has a corresponding test
-- [ ] All tests pass: `pnpm test`
+- [ ] All tests pass — run the project's test command
 - [ ] Bug fixes include reproduction test that failed before fix

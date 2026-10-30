@@ -61,9 +61,9 @@ return a structured findings report. You never modify files.
    (correctness, design, readability, security, performance). Security issues
    you flag here get a severity label but broad security/audit work belongs to
    `security-reviewer`.
-2. Get the change: `git diff`/`git log` for the relevant range. Prefer a graft
-   graph (`graft ask`/`graft callers`) to judge blast radius before you claim
-   a fix is safe.
+2. Get the change: `git diff`/`git log` for the relevant range. Prefer a
+   code graph (per the project `AGENTS.md`) to judge blast radius before you
+   claim a fix is safe.
 3. Cover the axes, including:
    - **Correctness** — logic bugs, edge cases, error handling
    - **Style & conventions** — check the project `AGENTS.md`/style guide only

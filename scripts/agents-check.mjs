@@ -2,12 +2,12 @@
 // agents-check.mjs — verify the generated agent/skill deployment.
 //
 // The agent configuration is generated from the neutral store
-// (development-agents/) into .opencode/, .claude/, and .omp/ by `gen.mjs`.
+// (development-agents/) into .opencode/ and .omp/ by `gen.mjs`.
 // This script validates the committed deployment without needing the store:
 //
 //   1. every file listed in .agent-gen.json exists and its sha256 matches
 //   2. structural invariants: frontmatter present, no model fields in
-//      opencode/claude agents, no template-placeholder bugs ("for the.")
+//      opencode agents, no template-placeholder bugs ("for the.")
 //
 // Regenerate with `pnpm agents:sync`; edit in the store or agent-local/, never
 // in the generated directories. Zero dependencies. Exit 1 on any failure.
@@ -75,7 +75,7 @@ else {
 }
 
 // 2. Structural invariants over the generated tree.
-const dirs = ['.opencode/agents', '.claude/agents', '.omp/agents'];
+const dirs = ['.opencode/agents', '.omp/agents'];
 for (const dir of dirs) {
     const abs = join(root, dir);
     if (!existsSync(abs)) {
@@ -89,18 +89,14 @@ for (const dir of dirs) {
         if (text.includes('${') && text.includes('}')) report(`${dir}/${file}: unexpanded template interpolation`);
     }
 }
-// Models are stamped into OMP agents only.
-for (const dir of ['.opencode/agents', '.claude/agents']) {
+// Models are not part of the deployment (agents inherit the session model),
+// so no deployed agent may pin one.
+for (const dir of ['.opencode/agents']) {
     const abs = join(root, dir);
     for (const file of readdirSync(abs).filter((f) => f.endsWith('.md'))) {
         const head = readFileSync(join(abs, file), 'utf8').split('\n---', 1)[0];
-        if (head.includes('\nmodel:')) report(`${dir}/${file}: model field must not appear outside OMP`);
+        if (head.includes('\nmodel:')) report(`${dir}/${file}: opencode agents must not pin a model`);
     }
-}
-const ompAgents = join(root, '.omp/agents');
-for (const file of readdirSync(ompAgents).filter((f) => f.endsWith('.md'))) {
-    const head = readFileSync(join(ompAgents, file), 'utf8').split('\n---', 1)[0];
-    if (!head.includes('\nmodel:')) report(`.omp/agents/${file}: missing stamped model (check .agent-models.json)`);
 }
 
 // 3. Repo-owned deployment manifest (.agent-local.json). Unlike .agent-gen.json

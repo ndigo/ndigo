@@ -3,7 +3,6 @@
 .nyc_output
 .scratch/
 .vscode
-.omp/
 archive
 coverage
 lerna-debug.log

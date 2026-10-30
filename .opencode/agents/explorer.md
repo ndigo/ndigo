@@ -63,10 +63,10 @@ should X be implemented here" with evidence, and never modify files.
 
 ## Process
 
-1. **Orient**: If a graft graph exists (`graft/` or graft MCP), start with
-   `graft map`/`graft ask` — ranked hits with exact `file:line` spans; use
-   `graft callers` for who-calls-what and blast radius. Raw grep only for
-   unindexed files or exhaustive sweeps.
+1. **Orient**: If a code graph is available (per the project `AGENTS.md`),
+   start with it for ranked hits at exact `file:line` spans and for
+   who-calls-what and blast radius. Raw grep only for unindexed files or
+   exhaustive sweeps.
 2. **Locate**: Find related functionality, established patterns, and reusable
    utilities. Name the canonical examples.
 3. **Assess**: For an implementation question, identify integration points,

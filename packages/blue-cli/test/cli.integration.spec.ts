@@ -165,11 +165,20 @@ describe('blue (real bin)', () => {
         const port = '4301';
         const proc = spawn(process.execPath, [BIN, 'serve', appDir, '--port', port], { stdio: 'inherit' });
         try {
-            await waitFor(() => existsSync(join(base, 'app.up')));
+            // The marker can exist before its content lands (writeFileSync opens
+            // the file first) — wait for the value, not the name (CI flake 2026-10-31).
+            await waitFor(
+                () => existsSync(join(base, 'app.up')) && readFileSync(join(base, 'app.up'), 'utf8') === port
+            );
             expect(readFileSync(join(base, 'app.up'), 'utf8')).toBe(port);
 
             kill(proc.pid ?? 0, 'SIGTERM');
-            await waitFor(() => existsSync(join(base, 'drained.signal')));
+            // Same visible-before-complete guard for the drain marker.
+            await waitFor(
+                () =>
+                    existsSync(join(base, 'drained.signal')) &&
+                    readFileSync(join(base, 'drained.signal'), 'utf8') === port
+            );
             expect(readFileSync(join(base, 'drained.signal'), 'utf8')).toBe(port);
 
             const code = await new Promise<number>((resolveCode) => {

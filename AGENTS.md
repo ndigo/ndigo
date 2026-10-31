@@ -113,7 +113,7 @@ Every package must meet the documentation standard:
   tracking IDs or decision-record links in package READMEs. Template:
   `packages/blue-generators/src/generators/readme/files/README.md.template`.
 - **Generated API reference** — `pnpm doc:api` writes
-  `packages/<name>/doc/api/` per package (zero-warning TypeDoc standard,
+  `packages/<name>/api/` per package (zero-warning TypeDoc standard,
   CI-enforced). After public API changes: regenerate, commit the tree.
 - **Cross-package JSDoc links** — add an entry to
   `scripts/external-symbol-links.json`; never sprinkle links into package code.
@@ -557,7 +557,7 @@ stay in `docs/`. The project board flows
 **Single-lane files** — at most one in-flight issue touches these (note it
 when grooming): `pnpm-lock.yaml`, Drizzle migrations (`db:schema:check`
 enforces one-commit discipline), and the generated trees (`.opencode/`,
-`.omp/`, `packages/*/doc/api/`).
+`.omp/`, `packages/*/api/`).
 
 **Releases** stay trunk-based: `main` is always releasable; a release is a
 milestone-driven act (CHANGELOG cut → tag → per-package publish), not a

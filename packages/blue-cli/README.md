@@ -49,7 +49,7 @@ dash-style shells both swallow `SIGTERM` (verified 2026-10-07).
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into
-[`doc/api/`](doc/api/README.md). Primary export: `runCli(args)` — the same
+[`api/`](api/README.md). Primary export: `runCli(args)` — the same
 dispatcher the `blue` binary invokes, for embeddings.
 
 ## Development

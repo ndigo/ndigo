@@ -10,7 +10,7 @@
     "flags"
   ],
   "files": [
-    "doc",
+    "api",
     "lib"
   ],
   "exports": {

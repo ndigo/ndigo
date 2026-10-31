@@ -12,7 +12,8 @@
   "sortPackageJson": false,
   "proseWrap": "preserve",
   "ignorePatterns": [
-    "doc/",
+    "/api/",
+    "packages/*/api/",
     "**/graft/",
     "lib/",
     "dist/",

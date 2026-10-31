@@ -55,7 +55,7 @@ Multi node: register a `RedisLockDriver` bean (see [guide 23](../../docs/guides/
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into
-[`doc/api/`](doc/api/README.md). Primary exports:
+[`api/`](api/README.md). Primary exports:
 
 - `LockDriver` / `LockHandle` / `LockAcquireOptions` — the contract
   (`acquire` is non-blocking; `renew`/`release` are token-checked).

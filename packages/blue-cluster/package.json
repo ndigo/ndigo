@@ -11,7 +11,7 @@
     "supervisor"
   ],
   "files": [
-    "doc",
+    "api",
     "lib"
   ],
   "exports": {

@@ -85,8 +85,10 @@ describe('HTTPResponseViewTarget entity models (fragment path)', () => {
 
         await target.commit(
             undefined,
-            new ResponseEntity({ error: 'unauthorized' }, ResponseStatuses.UNAUTHORIZED, { 'WWW-Authenticate': 'Bearer realm="api"' }),
-            route,
+            new ResponseEntity({ error: 'unauthorized' }, ResponseStatuses.UNAUTHORIZED, {
+                'WWW-Authenticate': 'Bearer realm="api"',
+            }),
+            route
         );
 
         expect(captured.status).toBe(401);

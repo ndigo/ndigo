@@ -33,7 +33,7 @@ Request sources captured from the upgrade request.
 
 ### registry?
 
-`Pick`\<`SocketSessionRegistry`, `"join"` \| `"leave"`\> \| `null`
+`Pick`\<`SocketSessionRegistry`, `"join"` \| `"leave"`\> \| `null` = `null`
 
 Optional session registry backing `join`/`leave`
   (AD-21 D5); when `null`, room membership is a no-op.

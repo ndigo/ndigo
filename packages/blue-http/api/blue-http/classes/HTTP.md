@@ -276,7 +276,7 @@ The interceptors configured for this client instance.
 
 ##### init?
 
-[`HTTPInit`](../type-aliases/HTTPInit.md) \| `null`
+[`HTTPInit`](../type-aliases/HTTPInit.md) \| `null` = `null`
 
 #### Returns
 

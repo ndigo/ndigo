@@ -10,7 +10,7 @@ Blue Router provides routing primitives for BlueJS: a `Route`/`PathRoute` model 
 pnpm add @blue/router
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 
 ## Getting Started
 

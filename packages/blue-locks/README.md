@@ -15,7 +15,7 @@ can never interfere with a successor. That is the exact protection
 pnpm add @blue/locks
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 
 The durable backend is optional and owned by the integration package:
 `@blue/redis` (`@blue/redis/locks` — `RedisLockDriver`).

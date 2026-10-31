@@ -6,7 +6,7 @@
 
 # Variable: errorHandler
 
-> `const` **errorHandler**: (`target`, `context`) => `void` & `object`
+> `const` **errorHandler**: ((`target`, `context`) => `void`) & `object`
 
 `errorHandler` is a decorator and a utility object for managing error handler classes.
 When used as a decorator (the `errorHandler` decorator), it marks a class as an error handler.

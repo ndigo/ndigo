@@ -10,7 +10,8 @@ Extends [HierarchicalFactory](HierarchicalFactory.md) and [Registry](Registry.md
 
 ## Extends
 
-- [`HierarchicalFactory`](HierarchicalFactory.md).[`Registry`](Registry.md)
+- [`HierarchicalFactory`](HierarchicalFactory.md)
+- [`Registry`](Registry.md)
 
 ## Properties
 

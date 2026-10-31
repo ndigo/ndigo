@@ -10,7 +10,7 @@ import { HTTP } from '../../src/http';
 import { AppResetInterceptor } from '../../src/interceptors/app-reset-interceptor';
 
 describe('AppResetInterceptor', () => {
-    beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+    beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
 
     afterEach(() => {
         server.resetHandlers();

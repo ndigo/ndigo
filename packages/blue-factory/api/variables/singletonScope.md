@@ -14,7 +14,7 @@ Decorator for singleton scope (convenience factory)
 
 ### T
 
-`T` *extends* (...`args`) => `unknown`
+`T` *extends* new (...`args`) => `unknown`
 
 ## Parameters
 

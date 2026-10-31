@@ -56,7 +56,7 @@ describe('TOON peer loading (AD-66)', () => {
             });
 
             await expect(loader.load(env)).rejects.toThrowError(
-                /the optional "@toon-format\/toon" dependency is not installed[\s\S]*npm i @toon-format\/toon@4\.1\.1/
+                /the optional "@toon-format\/toon" dependency is not installed[\s\S]*npm i @toon-format\/toon@4\.4\.0/
             );
         } finally {
             vi.doUnmock('@toon-format/toon');

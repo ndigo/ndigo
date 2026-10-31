@@ -10,7 +10,7 @@ Blue ORM provides repository and data mapper persistence abstractions for BlueJS
 pnpm add @blue/orm
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 
 ## Getting Started
 

@@ -39,7 +39,7 @@ Creates a new EJS view.
 
 ##### path?
 
-`string` \| `null`
+`string` \| `null` = `null`
 
 The template path (used with a [ResourceLoader](#)).
 

@@ -14,7 +14,7 @@ import type { ConfigFileReader } from '@blue/context';
  * `packages/blue-boot/package.json`; the install hint in
  * {@link loadToonDecoder} references it.
  */
-const TOON_PEER_VERSION = '4.1.1';
+const TOON_PEER_VERSION = '4.4.0';
 
 /**
  * Runtime shape of the optional `@toon-format/toon` peer. Declared locally

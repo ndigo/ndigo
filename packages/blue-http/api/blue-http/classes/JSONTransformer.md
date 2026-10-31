@@ -24,7 +24,7 @@ Creates a JSON transformer.
 
 ##### transforms
 
-(`value`) => `JSONObject`[]
+((`value`) => `JSONObject`)[]
 
 The transform pipeline to apply.
 

@@ -10,7 +10,7 @@
 pnpm add @blue/service @tsmetadata/polyfill
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 
 The decorators read and write TC39 decorator metadata (`Symbol.metadata`). Import the polyfill once, before any decorated class is evaluated:
 

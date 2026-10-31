@@ -6,7 +6,7 @@
 
 # Variable: TagMapping
 
-> `const` **TagMapping**: (`tagName`) => \<`T`\>(`target`, `context`) => `T` & `object`
+> `const` **TagMapping**: ((`tagName`) => \<`T`\>(`target`, `context`) => `T`) & `object`
 
 Registers a custom element name and stores it in decorator metadata.
 

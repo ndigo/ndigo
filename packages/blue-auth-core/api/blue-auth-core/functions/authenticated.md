@@ -21,7 +21,7 @@ by the `AuthRouteGuard` (server-side) or `ClientAuthGuard` (client-side).
 
 ### context
 
-`ClassDecoratorContext`\<(...`args`) => `any`\> \| `ClassMethodDecoratorContext`\<`unknown`, (`this`, ...`args`) => `any`\>
+`ClassDecoratorContext`\<new (...`args`) => `any`\> \| `ClassMethodDecoratorContext`\<`unknown`, (`this`, ...`args`) => `any`\>
 
 ## Returns
 

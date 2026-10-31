@@ -32,7 +32,7 @@ generic and reads the given path as-is.
 
 ##### root?
 
-`string` \| `null`
+`string` \| `null` = `null`
 
 Optional directory that confines every lookup. Pass
   `null` (the default) to load arbitrary paths.

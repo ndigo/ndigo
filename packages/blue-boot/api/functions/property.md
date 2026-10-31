@@ -20,7 +20,7 @@ The property path to resolve.
 
 ### propertyType?
 
-`string` \| ((...`args`) => `number`) \| ((...`args`) => `boolean`) \| ((...`args`) => `Date`) \| ((...`args`) => `string`)
+`string` \| (new (...`args`) => `number`) \| (new (...`args`) => `boolean`) \| (new (...`args`) => `Date`) \| (new (...`args`) => `string`)
 
 ## Returns
 

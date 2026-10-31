@@ -16,7 +16,7 @@
 
 ##### pattern?
 
-`string` \| `null`
+`string` \| `null` = `null`
 
 #### Returns
 

@@ -38,7 +38,7 @@ Converts a value of type `S` to type `T`.
 
 ##### separator?
 
-`string` \| `RegExp`
+`string` \| `RegExp` = `','`
 
 #### Returns
 

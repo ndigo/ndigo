@@ -6,7 +6,7 @@
 
 # Variable: errorMapping
 
-> `const` **errorMapping**: (`errorClass`) => (`target`, `context`) => `void` & `object`
+> `const` **errorMapping**: ((`errorClass`) => (`target`, `context`) => `void`) & `object`
 
 Export errorMapping with utility methods
 

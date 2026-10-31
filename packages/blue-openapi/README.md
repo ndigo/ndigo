@@ -17,7 +17,7 @@ pnpm add @blue/platform-node
 pnpm add swagger-ui-dist    # peer dependency of @blue/platform-node (UI assets)
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 
 ## Getting Started
 

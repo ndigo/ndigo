@@ -172,7 +172,7 @@ errors with a rename hint. TOON documents decode to the JSON model, so
 everything downstream — merge semantics, `{cipher:…}` secrets, zod schema
 validation, typed binding — behaves identically. `@toon-format/toon` is an
 **optional** dependency, loaded lazily only when a `.toon` file is found;
-install it (`npm i @toon-format/toon@4.1.1`) to use TOON files. The
+install it (`npm i @toon-format/toon@4.4.0`) to use TOON files. The
 `text/toon` media type is provisional (not IANA-registered) — this opt-in
 is a pre-1.0 authoring option, not a framework default.
 

@@ -41,7 +41,7 @@
   },
   "sideEffects": false,
   "peerDependencies": {
-    "@toon-format/toon": "4.1.1"
+    "@toon-format/toon": "4.4.0"
   },
   "peerDependenciesMeta": {
     "@toon-format/toon": {

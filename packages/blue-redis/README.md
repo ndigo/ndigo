@@ -22,7 +22,7 @@ pnpm add @blue/jobs
 pnpm add @blue/locks
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11, plus a
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11, plus a
 standalone Redis server (integration tests run against 7.2). The package
 ships five entry points:
 

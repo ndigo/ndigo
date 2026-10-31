@@ -24,7 +24,7 @@ Create a holder for an optional condition.
 
 ##### routeCondition?
 
-[`RouteCondition`](../interfaces/RouteCondition.md)\<`unknown`\> \| `null`
+[`RouteCondition`](../interfaces/RouteCondition.md)\<`unknown`\> \| `null` = `null`
 
 The wrapped condition, if any.
 

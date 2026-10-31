@@ -14,7 +14,7 @@ deployments.
 pnpm add @blue/jobs
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 
 Durable backends are optional and owned by their integration packages:
 `@blue/orm-drizzle` (`LibSQLJobStore`, `LibSQLOutboxStore`) and `@blue/redis`

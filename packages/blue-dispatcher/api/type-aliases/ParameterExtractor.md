@@ -93,7 +93,7 @@ never read by the resolvers (they go through `convert`).
 
 ### target?
 
-> `optional` **target?**: () => `object`
+> `optional` **target?**: new () => `object`
 
 Optional target constructor for whole-source binding: when set, the
  bound result is a real instance of the target (not a plain object).

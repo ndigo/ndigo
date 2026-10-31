@@ -30,7 +30,7 @@ const parseXML = async (response: Response) => {
 describe('ContentTypeInterceptor', () => {
     let http: HTTP | undefined;
 
-    beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+    beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
 
     beforeEach(() => {
         http = new HTTP([new TestContentTypeInterceptor()]);

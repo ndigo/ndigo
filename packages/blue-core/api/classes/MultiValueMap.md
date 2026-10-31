@@ -30,7 +30,7 @@
 
 ##### entries?
 
-readonly readonly \[`K`, `V`[]\][] \| `null`
+readonly (readonly \[`K`, `V`[]\])[] \| `null`
 
 #### Returns
 

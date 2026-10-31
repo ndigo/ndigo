@@ -10,7 +10,15 @@ Emits and manages event listeners.
 
 ## Extends
 
-- `ChildNode`\<`ApplicationContext`\>.`ParentNode`\<`ApplicationContext`\>.`ConfigurableFactory`.[`ContentSource`](#).[`MessageSource`](#).`Destroyable`.[`EventEmitter`](EventEmitter.md).[`EnvironmentSource`](EnvironmentSource.md).[`ResourceLoader`](ResourceLoader.md)
+- `ChildNode`\<`ApplicationContext`\>
+- `ParentNode`\<`ApplicationContext`\>
+- `ConfigurableFactory`
+- [`ContentSource`](#)
+- [`MessageSource`](#)
+- `Destroyable`
+- [`EventEmitter`](EventEmitter.md)
+- [`EnvironmentSource`](EnvironmentSource.md)
+- [`ResourceLoader`](ResourceLoader.md)
 
 ## Extended by
 

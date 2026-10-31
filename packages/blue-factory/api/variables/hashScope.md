@@ -16,7 +16,7 @@ ends (`HashScope.endScope`) or the bean is destroyed (`destroyValue`).
 
 ### T
 
-`T` *extends* (...`args`) => `unknown`
+`T` *extends* new (...`args`) => `unknown`
 
 ## Parameters
 

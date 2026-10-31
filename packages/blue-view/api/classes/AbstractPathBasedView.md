@@ -27,7 +27,7 @@ Abstract base class for path-based views.
 
 ##### path?
 
-`string` \| `null`
+`string` \| `null` = `null`
 
 #### Returns
 

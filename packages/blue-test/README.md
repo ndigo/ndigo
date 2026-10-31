@@ -10,7 +10,7 @@ Blue integration test harness — **MockHTTP**-style, socket-free request dispat
 pnpm add -D @blue/test
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 
 ## Getting Started
 

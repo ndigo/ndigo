@@ -154,8 +154,11 @@ function extractBoundary(contentType: string | undefined): string | null {
  * created (D-6) — so the stored {@link MultipartFile.originalFilename} can never
  * resolve against the working directory. A plain basename passes through trimmed.
  */
-function sanitizeFilename(filename: string): string | null {
-    if (/[/\\]/.test(filename)) {
+function sanitizeFilename(filename: string | undefined): string | null {
+    // busboy's types widen `filename` to possibly-undefined; a file part with
+    // no filename has nothing safe to write, so it is rejected like the other
+    // invalid names.
+    if (filename === undefined || /[/\\]/.test(filename)) {
         return null;
     }
     const base = filename.trim();

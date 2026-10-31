@@ -49,7 +49,7 @@ The underlying content source providing translations.
 
 ##### defaultLanguage?
 
-`string` \| [`LanguageCode`](LanguageCode.md)
+`string` \| [`LanguageCode`](LanguageCode.md) = `LanguageCodes.EN`
 
 Fallback language when the header cannot be parsed.
 

@@ -1,8 +1,8 @@
 # @blue/socket
 
-> Isomorphic WebSocket domain for BlueJS — session contracts and a WHATWG `WebSocket`-based client running in browsers and Node ≥22.
+> Isomorphic WebSocket domain for BlueJS — session contracts and a WHATWG `WebSocket`-based client running in browsers and Node ≥24.
 
-The isomorphic WebSocket domain package: the session contracts (still exported by `@blue/dispatcher` for `@socketMapping` handler signatures) and the client story, running on the WHATWG `WebSocket` global in browsers **and** Node ≥22 — no platform packages, no window globals. It also hosts the STOMP 1.2 protocol layer.
+The isomorphic WebSocket domain package: the session contracts (still exported by `@blue/dispatcher` for `@socketMapping` handler signatures) and the client story, running on the WHATWG `WebSocket` global in browsers **and** Node ≥24 — no platform packages, no window globals. It also hosts the STOMP 1.2 protocol layer.
 
 ## Installation
 
@@ -10,7 +10,7 @@ The isomorphic WebSocket domain package: the session contracts (still exported b
 pnpm add @blue/socket
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 
 ## Getting Started
 

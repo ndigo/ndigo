@@ -26,7 +26,7 @@ Source classes that should be included in the application.
 
 ##### parent?
 
-`ApplicationBuilder` \| `null`
+`ApplicationBuilder` \| `null` = `null`
 
 Optional parent builder used to share configuration.
 

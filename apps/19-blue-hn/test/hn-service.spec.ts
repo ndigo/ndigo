@@ -42,7 +42,7 @@ for (const id of LONG_IDS) {
 
 const server = createHnServer({ feeds: { top: [1, 2, 3, 4], best: LONG_IDS }, items });
 
-beforeAll(() => server.server.listen({ onUnhandledRequest: 'error' }));
+beforeAll(() => server.server.listen({ onUnhandledFrame: 'error' }));
 beforeEach(() => {
     localStorage.clear();
     server.requests.length = 0;

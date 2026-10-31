@@ -380,7 +380,7 @@ The property name to resolve.
 
 ##### targetType
 
-`T` \| ((...`args`) => `T`) \| (() => `T`)
+`T` \| (new (...`args`) => `T`) \| (() => `T`)
 
 The target constructor or primitive (`Number`, `Boolean`, `Date`, ...).
 
@@ -506,7 +506,7 @@ The property name to resolve.
 
 ##### targetType
 
-`T` \| ((...`args`) => `T`) \| (() => `T`)
+`T` \| (new (...`args`) => `T`) \| (() => `T`)
 
 The target constructor or primitive.
 

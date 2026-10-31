@@ -20,7 +20,7 @@ class TestDataParameterInterceptor extends DataParameterInterceptor {
 describe('DataParameterInterceptor', () => {
     let http: HTTP | undefined;
 
-    beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+    beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
 
     afterEach(() => {
         http = undefined;

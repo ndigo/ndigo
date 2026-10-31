@@ -6,7 +6,7 @@
 
 # Variable: ViewMapping
 
-> `const` **ViewMapping**: (`viewName`) => \<`T`\>(`target`, `context`) => `T` & `object`
+> `const` **ViewMapping**: ((`viewName`) => \<`T`\>(`target`, `context`) => `T`) & `object`
 
 Registers a view name in decorator metadata for later lookup.
 

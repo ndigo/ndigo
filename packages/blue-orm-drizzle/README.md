@@ -15,7 +15,7 @@ implementation of the authentication `SessionStore` contract.
 pnpm add @blue/orm-drizzle @blue/orm
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11. The adapter
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11. The adapter
 depends on `drizzle-orm` and `@libsql/client`; add them directly if you import
 their types or helpers in application code.
 

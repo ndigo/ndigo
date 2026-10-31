@@ -5,11 +5,27 @@
  */
 import { describe, test, expect, beforeAll, beforeEach, afterEach, afterAll, vi } from 'vitest';
 import { server } from '../_worker';
-import { HTTP } from '../../src/http';
+import { HTTP, type HTTPInit } from '../../src/http';
 import {
     MappedResponseClassHTTPInterceptor,
     ResponseClassAwareHTTPInterceptor,
 } from '../../src/interceptors/response-class-interceptor';
+
+/**
+ * Builds a `Response` carrying an informational (1xx) status.
+ *
+ * The WHATWG `Response` constructor rejects statuses outside 200-599, and msw
+ * cannot surface a 1xx to the client — under msw 3 the fetch never settles
+ * (probe-verified 2026-10-31 on Node 22 and 24). The accessors are overridden
+ * on a real `Response` so the classifier sees a faithful 100 case.
+ */
+function informationalResponse(): Response {
+    const response = new Response(null, { status: 200 });
+    Object.defineProperty(response, 'ok', { value: false });
+    Object.defineProperty(response, 'status', { value: 100 });
+    Object.defineProperty(response, 'statusText', { value: 'Continue' });
+    return response;
+}
 
 describe('ResponseClassHTTPInterceptor', () => {
     let http: HTTP | undefined;
@@ -22,7 +38,7 @@ describe('ResponseClassHTTPInterceptor', () => {
         postServerErrorResponse: ReturnType<typeof vi.fn>;
     };
 
-    beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+    beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
 
     beforeEach(() => {
         hooks = {
@@ -43,11 +59,10 @@ describe('ResponseClassHTTPInterceptor', () => {
 
     afterAll(() => server.close());
 
-    // Un-skipped (TST-C): MSW 2.x surfaces the 1xx status to the client, so the
-    // interceptor's informational branch is exercised; the "does not work" skip
-    // predated that and is stale.
+    // The informational branch is exercised directly (msw 3 cannot surface 1xx;
+    // see `informationalResponse`); the remaining classes run through msw.
     test('it should handle informational responses', async () => {
-        await http?.request('http://localhost/responseClass/100');
+        await interceptor?.postResponse(informationalResponse(), {} as HTTPInit);
         expect(hooks.postInformationalResponse).toHaveBeenCalled();
         expect(hooks.postSuccessfulResponse).not.toHaveBeenCalled();
         expect(hooks.postRedirectResponse).not.toHaveBeenCalled();

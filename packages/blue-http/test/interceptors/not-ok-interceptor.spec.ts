@@ -12,7 +12,7 @@ import ResponseError from '../../src/response-error';
 describe('NotOKInterceptor', () => {
     let http: HTTP | undefined;
 
-    beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+    beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
 
     beforeEach(() => {
         http = new HTTP([new NotOKInterceptor()]);

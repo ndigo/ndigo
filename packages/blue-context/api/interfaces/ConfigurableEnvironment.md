@@ -10,7 +10,8 @@ Environment variant that exposes its property registry and merge operations.
 
 ## Extends
 
-- [`Environment`](Environment.md).[`EventEmitter`](EventEmitter.md)
+- [`Environment`](Environment.md)
+- [`EventEmitter`](EventEmitter.md)
 
 ## Properties
 
@@ -276,7 +277,7 @@ The property name to resolve.
 
 ##### targetType
 
-`T` \| ((...`args`) => `T`) \| (() => `T`)
+`T` \| (new (...`args`) => `T`) \| (() => `T`)
 
 The target constructor or primitive (`Number`, `Boolean`, `Date`, ...).
 
@@ -393,7 +394,7 @@ The property name to resolve.
 
 ##### targetType
 
-`T` \| ((...`args`) => `T`) \| (() => `T`)
+`T` \| (new (...`args`) => `T`) \| (() => `T`)
 
 The target constructor or primitive.
 

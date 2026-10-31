@@ -16,7 +16,7 @@ seam for vendor flagging (Split, LaunchDarkly, flagd, … — AD-82 D-6).
 pnpm add @blue/flags
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 
 ## Getting Started
 

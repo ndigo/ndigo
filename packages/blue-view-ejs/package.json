@@ -34,7 +34,7 @@
     "@blue/core": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/view": "~0.0.1",
-    "ejs": "^3.1.10"
+    "ejs": "^7.0.2"
   },
   "devDependencies": {
     "@types/ejs": "^3.1.5"

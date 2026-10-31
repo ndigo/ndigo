@@ -7,7 +7,7 @@ servers, ORM, telemetry (OpenTelemetry), auth, and micro frontend hosting.
 
 ## Requirements
 
-- **Node.js:** ≥22 (runtime, engines entry in the root manifest)
+- **Node.js:** ≥24 (runtime, engines entry in the root manifest)
 - **pnpm:** ≥11.0.0
 
 ## Technology Stack

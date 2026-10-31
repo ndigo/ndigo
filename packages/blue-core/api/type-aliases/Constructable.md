@@ -6,7 +6,7 @@
 
 # Type Alias: Constructable\<T\>
 
-> **Constructable**\<`T`\> = (...`args`) => `T`
+> **Constructable**\<`T`\> = new (...`args`) => `T`
 
 Represents a constructor type, allowing for the creation of new instances of a class.
 

@@ -24,7 +24,7 @@ Create route mapping metadata for a handler method.
 
 ##### name?
 
-`string` \| `null`
+`string` \| `null` = `null`
 
 The mapping name.
 
@@ -48,13 +48,13 @@ Matrix-parameter matching condition.
 
 ##### custom?
 
-[`RouteCondition`](../interfaces/RouteCondition.md)\<`unknown`\> \| `null`
+[`RouteCondition`](../interfaces/RouteCondition.md)\<`unknown`\> \| `null` = `null`
 
 Optional custom condition.
 
 ##### access?
 
-[`AccessControlCondition`](AccessControlCondition.md) \| `null`
+[`AccessControlCondition`](AccessControlCondition.md) \| `null` = `null`
 
 Optional access level (`'public'` or `'private'`).
 

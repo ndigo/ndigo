@@ -12,7 +12,7 @@ Application-context lifecycle events and their payloads.
 
 ### context:close
 
-> **context:close**: \[[`ApplicationContext`](ApplicationContext.md)\]
+> **context:close**: \[`context`: [`ApplicationContext`](ApplicationContext.md)\]
 
 Emitted when the context starts closing.
 
@@ -20,7 +20,7 @@ Emitted when the context starts closing.
 
 ### context:destroy
 
-> **context:destroy**: \[[`ApplicationContext`](ApplicationContext.md)\]
+> **context:destroy**: \[`context`: [`ApplicationContext`](ApplicationContext.md)\]
 
 Emitted when the context is fully destroyed.
 
@@ -28,7 +28,7 @@ Emitted when the context is fully destroyed.
 
 ### context:preparing
 
-> **context:preparing**: \[[`ApplicationContext`](ApplicationContext.md)\]
+> **context:preparing**: \[`context`: [`ApplicationContext`](ApplicationContext.md)\]
 
 Emitted at the start of `refresh()` before processors run.
 
@@ -36,6 +36,6 @@ Emitted at the start of `refresh()` before processors run.
 
 ### context:refresh
 
-> **context:refresh**: \[[`ApplicationContext`](ApplicationContext.md)\]
+> **context:refresh**: \[`context`: [`ApplicationContext`](ApplicationContext.md)\]
 
 Emitted when the context is fully active.

@@ -41,7 +41,7 @@ Create a new HTTP server.
 
 ##### dispatcher?
 
-[`NodeDispatcher`](NodeDispatcher.md) \| `null`
+[`NodeDispatcher`](NodeDispatcher.md) \| `null` = `null`
 
 The dispatcher to handle incoming requests. When
 omitted, the dispatcher is resolved from the application context at

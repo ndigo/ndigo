@@ -10,7 +10,8 @@ A tree node that supports bidirectional navigation and child mutation.
 
 ## Extends
 
-- [`ChildNode`](ChildNode.md)\<`T`\>.[`ParentNode`](ParentNode.md)\<`T`\>
+- [`ChildNode`](ChildNode.md)\<`T`\>
+- [`ParentNode`](ParentNode.md)\<`T`\>
 
 ## Type Parameters
 

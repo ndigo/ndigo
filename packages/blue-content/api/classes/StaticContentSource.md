@@ -30,7 +30,7 @@ Localized content keyed by content id and language.
 
 ##### defaultLanguage?
 
-`string` \| [`LanguageCode`](LanguageCode.md)
+`string` \| [`LanguageCode`](LanguageCode.md) = `LanguageCodes.EN`
 
 Fallback language used when a translation is missing.
 

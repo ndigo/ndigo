@@ -40,7 +40,7 @@
     "test:watch": "vitest"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=24.0.0"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",

@@ -10,7 +10,8 @@ A [Lifecycle](Lifecycle.md) that starts automatically and runs in a declared pha
 
 ## Extends
 
-- [`Lifecycle`](Lifecycle.md).[`Phased`](Phased.md)
+- [`Lifecycle`](Lifecycle.md)
+- [`Phased`](Phased.md)
 
 ## Properties
 

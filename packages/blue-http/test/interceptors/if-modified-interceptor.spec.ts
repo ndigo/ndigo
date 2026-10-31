@@ -41,7 +41,7 @@ class TestIfModifiedInterceptor extends IfModifiedInterceptor {
 describe('IfModifiedInterceptor', () => {
     let http: HTTP | undefined;
 
-    beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+    beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
 
     beforeEach(() => {
         http = new HTTP([new TestIfModifiedInterceptor()]);

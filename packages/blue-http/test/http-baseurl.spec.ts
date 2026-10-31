@@ -9,7 +9,7 @@ import { HTTP, MappedHTTPInterceptor } from '../src/http'; // Import MappedHTTPI
 import type { InitializationAwareHTTPInterceptor } from '../src/http';
 
 describe('HTTP baseURL', () => {
-    beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+    beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
     afterEach(() => server.resetHandlers());
     afterAll(() => server.close());
 
@@ -130,7 +130,7 @@ describe('HTTP baseURL with interceptors', () => {
 });
 
 describe('HTTP baseURL edge cases', () => {
-    beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+    beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
     afterEach(() => server.resetHandlers());
     afterAll(() => server.close());
 

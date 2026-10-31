@@ -22,7 +22,7 @@ function setOnline(value: boolean): void {
     Object.defineProperty(navigator, 'onLine', { configurable: true, get: () => value });
 }
 
-beforeAll(() => server.server.listen({ onUnhandledRequest: 'error' }));
+beforeAll(() => server.server.listen({ onUnhandledFrame: 'error' }));
 beforeEach(() => {
     localStorage.clear();
     server.requests.length = 0;

@@ -39,7 +39,7 @@
   "devDependencies": {
     "@blue/test": "~0.0.1",
     "@tsmetadata/polyfill": "catalog:",
-    "msw": "~2.15.0",
+    "msw": "~3.0.3",
     "vite": "catalog:"
   }
 }

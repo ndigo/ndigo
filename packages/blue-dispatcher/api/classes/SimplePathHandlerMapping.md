@@ -294,6 +294,8 @@ Merge explicit path mappings into the registry.
 
 ##### mappings
 
+\{\[`path`: `string`\]: [`MaybeHandler`](../type-aliases/MaybeHandler.md); \}
+
 The path-to-handler map to merge.
 
 #### Returns

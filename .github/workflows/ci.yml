@@ -1,10 +1,14 @@
 name: CI
 
 on:
-  push:
-    branches: [master, main]
+  # PRs run the full lane. Squash merges re-test the exact tree the PR already
+  # validated, so the post-merge push run was a near-duplicate — dropping it
+  # halves the private-repo Actions burn of the normal PR flow. The weekly
+  # main sweep plus manual dispatch keep the safety net (MIN-1, 2026-10-31).
   pull_request:
     branches: [master, main]
+  schedule:
+    - cron: '0 6 * * 1' # Mondays 06:00 UTC
   workflow_dispatch:
 
 # Minimal permissions: only read the repository; artifacts need contents read.
@@ -23,7 +27,7 @@ env:
 jobs:
   quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     # Live Redis suites (@blue/redis cache + pub/sub) are env-gated and would
     # otherwise never run in CI (review DAT-F14); the URL is exported on the
     # test step below.
@@ -59,12 +63,8 @@ jobs:
       - name: Build libraries
         run: pnpm build
 
-      - name: Unit + integration tests
-        env:
-          # Exercises the env-gated @blue/redis live suites (DAT-F14).
-          BLUE_REDIS_TEST_URL: redis://127.0.0.1:6379
-        run: pnpm test
-
+      # Fast gates first (MIN-1): the sub-minute checks below fail the lane in
+      # ~1-2 minutes instead of after the heavy test + docs steps.
       - name: Root-tooling lane (node:test)
         # Durable home for the decorator-lowering plugin probes that used to
         # live in /tmp (SEC-B/WC-I): extension scope (`.cts` included),
@@ -122,6 +122,12 @@ jobs:
         # lane; pnpm -r alone would TS5083 on any project without
         # tsconfig.build.json.
         run: pnpm typecheck
+
+      - name: Unit + integration tests
+        env:
+          # Exercises the env-gated @blue/redis live suites (DAT-F14).
+          BLUE_REDIS_TEST_URL: redis://127.0.0.1:6379
+        run: pnpm test
 
       - name: API docs (TypeDoc, zero warnings)
         # treatWarningsAsErrors is on: dead links, missing params, or

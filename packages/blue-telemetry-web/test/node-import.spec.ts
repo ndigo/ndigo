@@ -12,6 +12,8 @@
 import { describe, expect, test } from 'vitest';
 
 describe('@blue/telemetry-web barrel (non-DOM import)', () => {
+    // Cold barrel import on a loaded CI runner can exceed the 5s default
+    // (observed 2026-10-30, first fully-run lane — platform-web + telemetry-web).
     test('is importable with no DOM globals', async () => {
         expect(typeof document).toBe('undefined');
         expect(typeof window).toBe('undefined');
@@ -21,5 +23,5 @@ describe('@blue/telemetry-web barrel (non-DOM import)', () => {
         expect(typeof barrel.configureBrowserTelemetry).toBe('function');
         expect(typeof barrel.RouterInstrumentation).toBe('function');
         expect(typeof barrel.WebSocketClientInstrumentation).toBe('function');
-    });
+    }, 30_000);
 });

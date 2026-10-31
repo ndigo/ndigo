@@ -104,7 +104,7 @@ Immediate-retry wiring (AD-22 D3); `null` disables.
 **`Internal`**
 
 Transport factory for tests and non-standard environments. Defaults
-to the WHATWG `WebSocket` global (browser + Node ≥22).
+to the WHATWG `WebSocket` global (browser + Node ≥24).
 
 #### Parameters
 

@@ -13,7 +13,7 @@ import { HeaderInterceptor } from '../../src/interceptors/header-interceptor';
 import ResponseError from '../../src/response-error';
 
 describe('RetryInterceptor', () => {
-    beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+    beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
 
     afterEach(() => {
         server.resetHandlers();

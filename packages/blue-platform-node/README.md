@@ -90,7 +90,7 @@ BLUE_TLS_CERT=/etc/tls/cert.pem
 BLUE_TLS_CA=                      # optional; blank values count as unset
 ```
 
-`node:http2` is stable in the supported Node 22 LTS line; it cannot load
+`node:http2` is stable in the supported Node 24 LTS line; it cannot load
 only on Node builds compiled without crypto support (rare — distro
 hardened builds), in which case the module import fails at startup and
 plaintext serving is unavailable. Certificates are read once at bind

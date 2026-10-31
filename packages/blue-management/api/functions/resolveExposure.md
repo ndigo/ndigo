@@ -17,13 +17,13 @@ Computes the served endpoint-id set from an exposure pair.
 
 ### include?
 
-readonly `string`[] \| `undefined`
+readonly `string`[] \| `undefined` = `DEFAULT_EXPOSURE`
 
 The ids to serve (or `'*'`).
 
 ### exclude?
 
-readonly `string`[] \| `undefined`
+readonly `string`[] \| `undefined` = `[]`
 
 The ids to withhold.
 

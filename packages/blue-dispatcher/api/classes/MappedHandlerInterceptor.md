@@ -87,7 +87,7 @@ The `PathMatcher` instance used for matching patterns.
 
 ##### error?
 
-`Error` \| `null`
+`Error` \| `null` = `null`
 
 #### Returns
 

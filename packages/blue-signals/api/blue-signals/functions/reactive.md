@@ -38,7 +38,7 @@ class NamedCounter extends Counter {
 
 ### T
 
-`T` *extends* (...`args`) => `object`
+`T` *extends* new (...`args`) => `object`
 
 ## Parameters
 

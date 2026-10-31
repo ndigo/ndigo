@@ -41,7 +41,7 @@ a [MissingParameterError](../classes/MissingParameterError.md) (HTTP 400) instea
 
 #### target?
 
-() => `object`
+new () => `object`
 
 #### options?
 
@@ -92,7 +92,7 @@ a [MissingParameterError](../classes/MissingParameterError.md) (HTTP 400) instea
 
 #### target
 
-() => `object`
+new () => `object`
 
 #### options?
 

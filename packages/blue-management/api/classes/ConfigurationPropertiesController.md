@@ -36,7 +36,7 @@ deterministically sorted.
 
 ##### classes?
 
-() => `unknown`[] = `[]`
+(new () => `unknown`)[] = `[]`
 
 The `@configurationProperties` classes to enumerate.
 

@@ -10,7 +10,7 @@ Application startup for BlueJS: profile-aware bootstrapping, typed config bindin
 pnpm add @blue/boot
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 
 ## Getting Started
 

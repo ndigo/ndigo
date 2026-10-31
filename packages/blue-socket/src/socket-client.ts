@@ -1,7 +1,7 @@
 /**
  * Isomorphic WebSocket client — WHATWG `WebSocket`-based (AD-22 D3).
  *
- * Runs on the same interface surface in browsers and Node ≥22 (undici
+ * Runs on the same interface surface in browsers and Node ≥24 (undici
  * global), so the client lives in the isomorphic `@blue/socket` package:
  * signal-based connection status, async-iterable messages, reconnect with
  * backoff + jitter on unexpected close, and an opt-in bounded outbound
@@ -29,7 +29,7 @@ export type SocketStatus = 'connecting' | 'open' | 'reconnecting' | 'closed';
  * The structural WHATWG `WebSocket` subset the client depends on.
  *
  * `WebSocketClient` never touches transports outside this surface, which is
- * exactly what browsers and Node ≥22 both implement — and what the unit
+ * exactly what browsers and Node ≥24 both implement — and what the unit
  * transport doubles implement.
  */
 export interface SocketTransport {
@@ -115,7 +115,7 @@ export interface WebSocketClientOptions {
     onSend?: (bytes: number) => void;
     /**
      * Transport factory for tests and non-standard environments. Defaults
-     * to the WHATWG `WebSocket` global (browser + Node ≥22).
+     * to the WHATWG `WebSocket` global (browser + Node ≥24).
      * @internal
      */
     transportFactory?: (url: string) => SocketTransport;
@@ -166,7 +166,7 @@ const TEXT_ENCODER = new TextEncoder();
 /**
  * Default transport: the WHATWG global. The cast is deliberate — the
  * global's full surface is wider than the documented `SocketTransport`
- * subset the client touches (browser and Node ≥22 both implement it).
+ * subset the client touches (browser and Node ≥24 both implement it).
  */
 function defaultTransportFactory(url: string): SocketTransport {
     return new WebSocket(url) as unknown as SocketTransport;

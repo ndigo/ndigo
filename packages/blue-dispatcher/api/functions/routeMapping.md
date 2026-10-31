@@ -16,7 +16,7 @@ Works as both a class and method decorator.
 
 ### route?
 
-`string` \| [`RouteMappingConfiguration`](../type-aliases/RouteMappingConfiguration.md)
+`string` \| [`RouteMappingConfiguration`](../type-aliases/RouteMappingConfiguration.md) = `defaultMapping`
 
 The route path or mapping configuration to apply.
 

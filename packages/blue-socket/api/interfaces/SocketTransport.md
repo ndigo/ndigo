@@ -9,7 +9,7 @@
 The structural WHATWG `WebSocket` subset the client depends on.
 
 `WebSocketClient` never touches transports outside this surface, which is
-exactly what browsers and Node ≥22 both implement — and what the unit
+exactly what browsers and Node ≥24 both implement — and what the unit
 transport doubles implement.
 
 ## Properties

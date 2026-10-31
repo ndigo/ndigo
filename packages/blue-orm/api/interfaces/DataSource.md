@@ -11,7 +11,8 @@ It extends `Initializable` and `Destroyable` for lifecycle management.
 
 ## Extends
 
-- [`Initializable`](#).`Destroyable`
+- [`Initializable`](#)
+- `Destroyable`
 
 ## Properties
 

@@ -24,7 +24,7 @@ The owning HTTP client or an existing execution chain.
 
 ##### interceptors?
 
-[`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)[] \| `null`
+[`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)[] \| `null` = `null`
 
 Interceptors to seed the chain with.
 

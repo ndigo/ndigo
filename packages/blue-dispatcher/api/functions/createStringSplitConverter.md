@@ -14,7 +14,7 @@ Creates a converter that splits a string into list items.
 
 ### separator?
 
-`string` \| `RegExp`
+`string` \| `RegExp` = `','`
 
 ## Returns
 

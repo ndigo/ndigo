@@ -3064,6 +3064,13 @@ static fromOrdinal(ordinal: number): EnumType { /* ... */ }
 
 Standalone factory functions (not static class methods) follow these naming conventions:
 
+**Enforcement:** the `@blue/no-global-state-in-create-factories` rule automates
+the mechanically-checkable slice — `create*` factories (standalone, or static
+methods) that reference _mutable_ module-level (`let`/`var`) or class-level
+(non-`readonly` static) state directly. Transitive dependencies reached through
+helper calls, and ambient globals (`process.env`, `globalThis`), remain review
+checks.
+
 **Creation Functions (no global state):**
 
 ```typescript

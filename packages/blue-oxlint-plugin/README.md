@@ -28,23 +28,24 @@ Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 
 ### Rules
 
-| Rule                                     | Enforces                                                                                                                                                |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@blue/no-direct-integration-imports`    | Imports of encapsulated libraries go through their integration packages, never directly                                                                 |
-| `@blue/no-internal-file-imports`         | No cross-package imports of internal files (`_*.ts`)                                                                                                    |
-| `@blue/no-internal-file-exports`         | No barrel re-exports of internal files at any `src/**/index.ts` depth                                                                                   |
-| `@blue/no-browser-globals-in-isomorphic` | Isomorphic code must not reference browser globals                                                                                                      |
-| `@blue/no-mixed-case-acronyms`           | Acronyms follow `STYLE_GUIDE` casing                                                                                                                    |
-| `@blue/no-uppercase-regexp-constants`    | RegExp instances are objects — camelCase                                                                                                                |
-| `@blue/no-cross-paradigm-decorators`     | Decorator families stay within their paradigm                                                                                                           |
-| `@blue/no-scheduled-in-browser`          | Disallow `@blue/scheduler` imports in browser-platform files                                                                                            |
-| `@blue/no-signals-in-entity`             | `@blue/signals` reactivity does not leak into entities                                                                                                  |
-| `@blue/no-string-registry-lookup`        | Disallow string-literal registry lookups in source files                                                                                                |
-| `@blue/no-unsafe-view-name-literal`      | View-name literals are relative — no absolute prefixes, `..` segments, or NUL bytes (DSV-SEC-1); `IslandView` names must be valid custom-element tags   |
-| `@blue/no-duplicate-mapping-path`        | Duplicate method-level mapping paths of the same HTTP-method identity in one class (class-local, best-effort); disabled in specs                        |
-| `@blue/no-abstract-class-without-prefix` | Abstract classes use the `Abstract`/`As` prefix convention                                                                                              |
-| `@blue/requires-doc-header`              | Source files begin with the canonical doc header (`@module`/`@since`/`@author`); repair with `nx generate @blue/generators:header`                      |
-| `@blue/no-raw-console`                   | Raw `console.warn`/`console.error`/`console.log` calls in package source are banned — log through `@blue/log` (allow-listed: `@blue/log`, `@blue/util`) |
+| Rule                                        | Enforces                                                                                                                                                |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@blue/no-direct-integration-imports`       | Imports of encapsulated libraries go through their integration packages, never directly                                                                 |
+| `@blue/no-internal-file-imports`            | No cross-package imports of internal files (`_*.ts`)                                                                                                    |
+| `@blue/no-internal-file-exports`            | No barrel re-exports of internal files at any `src/**/index.ts` depth                                                                                   |
+| `@blue/no-browser-globals-in-isomorphic`    | Isomorphic code must not reference browser globals                                                                                                      |
+| `@blue/no-mixed-case-acronyms`              | Acronyms follow `STYLE_GUIDE` casing                                                                                                                    |
+| `@blue/no-uppercase-regexp-constants`       | RegExp instances are objects — camelCase                                                                                                                |
+| `@blue/no-cross-paradigm-decorators`        | Decorator families stay within their paradigm                                                                                                           |
+| `@blue/no-scheduled-in-browser`             | Disallow `@blue/scheduler` imports in browser-platform files                                                                                            |
+| `@blue/no-signals-in-entity`                | `@blue/signals` reactivity does not leak into entities                                                                                                  |
+| `@blue/no-string-registry-lookup`           | Disallow string-literal registry lookups in source files                                                                                                |
+| `@blue/no-unsafe-view-name-literal`         | View-name literals are relative — no absolute prefixes, `..` segments, or NUL bytes (DSV-SEC-1); `IslandView` names must be valid custom-element tags   |
+| `@blue/no-duplicate-mapping-path`           | Duplicate method-level mapping paths of the same HTTP-method identity in one class (class-local, best-effort); disabled in specs                        |
+| `@blue/no-abstract-class-without-prefix`    | Abstract classes use the `Abstract`/`As` prefix convention                                                                                              |
+| `@blue/no-global-state-in-create-factories` | `create*` factories must not reference mutable module/class state — the `create*` vs `get*` split                                                       |
+| `@blue/requires-doc-header`                 | Source files begin with the canonical doc header (`@module`/`@since`/`@author`); repair with `nx generate @blue/generators:header`                      |
+| `@blue/no-raw-console`                      | Raw `console.warn`/`console.error`/`console.log` calls in package source are banned — log through `@blue/log` (allow-listed: `@blue/log`, `@blue/util`) |
 
 `no-duplicate-mapping-path` is method-level, class-local, and best-effort: it
 compares only mapping decorators syntactically attached to methods of a single
@@ -74,6 +75,16 @@ against the custom-element tag grammar (lowercase, ≥1 hyphen, non-reserved)
 while `ModelAndView` and `resolveViewName` keep the relative-path (DSV-SEC-1)
 contract. The rule's predicates are asserted against the runtime helpers
 (`isSafeViewName`, `isValidCustomElementName`) over a shared vector table.
+
+`no-global-state-in-create-factories` automates the mechanically-checkable
+slice of the `create*` (no global state) vs `get*` (global state affects the
+result) split: a `create*` factory — standalone or a static method — that
+references mutable module-level (`let`/`var`) or class-level (non-`readonly`
+static) state directly is reported. Plain `=` writes are treated as side-effect
+publication, not dependence; compound assignments and updates read the
+previous value and are flagged. Direct references only: transitive helper
+calls, ambient globals (`process.env`), and shadowed bindings are out of scope
+— those remain review checks (STYLE_GUIDE §3.13).
 
 ## API
 

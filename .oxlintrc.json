@@ -68,6 +68,7 @@
     "@blue/no-uppercase-regexp-constants": "error",
     "@blue/no-abstract-class-without-prefix": "error",
     "@blue/no-mixed-case-acronyms": "error",
+    "@blue/no-global-state-in-create-factories": "error",
     "@blue/no-cross-paradigm-decorators": "error",
     "@blue/no-scheduled-in-browser": "error",
     "@blue/no-signals-in-entity": "error",

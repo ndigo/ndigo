@@ -21,6 +21,7 @@ import { noUnsafeViewNameLiteral } from './rules/no-unsafe-view-name-literal.js'
 import { noDuplicateMappingPath } from './rules/no-duplicate-mapping-path.js';
 import { requiresDocHeader } from './rules/requires-doc-header.js';
 import { noRawConsole } from './rules/no-raw-console.js';
+import { noGlobalStateInCreateFactories } from './rules/no-global-state-in-create-factories.js';
 
 const plugin = eslintCompatPlugin({
     meta: {
@@ -42,6 +43,7 @@ const plugin = eslintCompatPlugin({
         'no-duplicate-mapping-path': noDuplicateMappingPath,
         'requires-doc-header': requiresDocHeader,
         'no-raw-console': noRawConsole,
+        'no-global-state-in-create-factories': noGlobalStateInCreateFactories,
     },
 });
 

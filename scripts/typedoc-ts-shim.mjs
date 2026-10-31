@@ -37,7 +37,7 @@ for (const flavor of readdirSync(pnpm)) {
     const target = readdirSync(pnpm).find((name) => name.startsWith(TS6_PREFIX));
     if (!target) {
         console.warn(
-            'typedoc-ts-shim: typescript@6.0.3 flavor missing from the store — TypeDoc will crash if it runs. Is `typescript-6` still declared in the root manifest?',
+            'typedoc-ts-shim: typescript@6.0.3 flavor missing from the store — TypeDoc will crash if it runs. Is `typescript-6` still declared in the root manifest?'
         );
         continue; // nothing safe to point at
     }

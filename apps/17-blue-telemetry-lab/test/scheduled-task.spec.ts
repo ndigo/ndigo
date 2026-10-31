@@ -19,7 +19,7 @@
 // @vitest-environment node
 import { afterAll, describe, expect, test } from 'vitest';
 import { context as otelContext, metrics, trace } from '@opentelemetry/api';
-import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
+import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
 import {
     AggregationTemporality,
     DataPointType,
@@ -42,7 +42,7 @@ metrics.setGlobalMeterProvider(new MeterProvider({ readers: [metricReader] }));
 // Without an async-local context manager the task's span never becomes the
 // active context, so the nested `lab.work.compute` span would be a second root
 // instead of a child.
-const contextManager = new AsyncHooksContextManager();
+const contextManager = new AsyncLocalStorageContextManager();
 contextManager.enable();
 otelContext.setGlobalContextManager(contextManager);
 

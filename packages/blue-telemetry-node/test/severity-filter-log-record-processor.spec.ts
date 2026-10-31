@@ -5,7 +5,7 @@
  */
 import { Context, ROOT_CONTEXT } from '@opentelemetry/api';
 import { SeverityNumber } from '@opentelemetry/api-logs';
-import { SdkLogRecord, LogRecordProcessor } from '@opentelemetry/sdk-logs';
+import { LogRecordProcessor, type ReadWriteLogRecord } from '@opentelemetry/sdk-logs';
 import { describe, expect, it, vi } from 'vitest';
 import { SeverityFilterLogRecordProcessor } from '../src/severity-filter-log-record-processor';
 
@@ -15,10 +15,10 @@ class MockLogRecordProcessor implements LogRecordProcessor {
     readonly shutdown = vi.fn(() => Promise.resolve());
 }
 
-function createLogRecord(severityNumber: SeverityNumber): SdkLogRecord {
+function createLogRecord(severityNumber: SeverityNumber): ReadWriteLogRecord {
     return {
         severityNumber,
-    } as SdkLogRecord;
+    } as ReadWriteLogRecord;
 }
 
 describe('SeverityFilterLogRecordProcessor', () => {

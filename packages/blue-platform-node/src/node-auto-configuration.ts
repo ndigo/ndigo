@@ -365,8 +365,9 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
      */
     @entry(HTTP_SERVER)
     httpServer(): HTTPServer {
-        const port = readIntEnv(process.env, 'PORT', { allowZero: true })
-            ?? configuredPort(this.applicationContext?.environment?.getProperty('server.port'));
+        const port =
+            readIntEnv(process.env, 'PORT', { allowZero: true }) ??
+            configuredPort(this.applicationContext?.environment?.getProperty('server.port'));
         return new HTTPServer(null, { port });
     }
 

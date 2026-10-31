@@ -102,7 +102,10 @@ describe('NodeAutoConfiguration', () => {
     test('reads cors.allowedOrigins from the environment and permits that origin', async () => {
         const config = new NodeAutoConfiguration();
         (config as unknown as { applicationContext: unknown }).applicationContext = {
-            environment: { getProperty: (key: string) => (key === 'cors' ? { allowedOrigins: ['https://app.example.com'] } : undefined) },
+            environment: {
+                getProperty: (key: string) =>
+                    key === 'cors' ? { allowedOrigins: ['https://app.example.com'] } : undefined,
+            },
         };
 
         const mapping = config.handlerMapping();
@@ -152,7 +155,8 @@ describe('NodeAutoConfiguration', () => {
             };
             expect(config.httpServer().port).toBe(3999);
         } finally {
-            if (saved === undefined) delete process.env.PORT; else process.env.PORT = saved;
+            if (saved === undefined) delete process.env.PORT;
+            else process.env.PORT = saved;
         }
     });
 

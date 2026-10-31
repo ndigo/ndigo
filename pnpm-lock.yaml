@@ -2038,8 +2038,8 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-log
       '@preact/signals-core':
-        specifier: ^1.14.4
-        version: 1.14.4
+        specifier: ^1.14.5
+        version: 1.14.5
 
   packages/blue-socket:
     dependencies:
@@ -3269,8 +3269,8 @@ packages:
     engines: {node: '>=20'}
     hasBin: true
 
-  '@preact/signals-core@1.14.4':
-    resolution: {integrity: sha512-HNB6HYeYKhQbJ1aKl+YRjrS4+QWHLKX6qKoUsfS/m0vqzsVaEBiZiaKbG/e+NKk2ch5ALQr/ihWaMHxiCuuWHA==}
+  '@preact/signals-core@1.14.5':
+    resolution: {integrity: sha512-vcRv7Ityz5JVmeiVqIluLFzT/PDS/AlhHUpw3/aUWqcVUs6bDGIPXE/6RSC4evBNWYvnniozg5Syfj33al3gkg==}
 
   '@redis/client@6.3.0':
     resolution: {integrity: sha512-fHrjwGCBvAANGi+TuRuwKi83sIOzgHr8eh+Uf48w3fSX7Hhrz174NrWqfJhAC2vnN0d/tfaZpdr6+o6JC3QHwg==}
@@ -6295,7 +6295,7 @@ snapshots:
     dependencies:
       playwright: 1.63.0
 
-  '@preact/signals-core@1.14.4': {}
+  '@preact/signals-core@1.14.5': {}
 
   '@redis/client@6.3.0(@opentelemetry/api@1.9.1)':
     optionalDependencies:

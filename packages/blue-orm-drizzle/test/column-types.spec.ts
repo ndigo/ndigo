@@ -6,7 +6,7 @@
 import '@tsmetadata/polyfill';
 
 import { beforeEach, describe, expect, test } from 'vitest';
-import { entity, column, generated, primaryColumn } from '@blue/orm';
+import { entity, column, generatedColumn, primaryColumn } from '@blue/orm';
 import { DrizzleDataSource, createTableStatements } from '../src/drizzle-data-source';
 import { DrizzleEntityManager } from '../src/drizzle-entity-manager';
 import { drizzleTableForEntity } from '../src/drizzle-zod';
@@ -14,7 +14,7 @@ import { sqliteTypeForColumnType } from '../src/_column-types';
 
 @entity('column_types')
 class TypedColumns {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 
@@ -76,7 +76,7 @@ class ReviewNote {
 
 @entity('string_codes')
 class StringCode {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 
@@ -97,7 +97,7 @@ class ClientKeyed {
 // previously any object (including a Date) was JSON-encoded with quotes.
 @entity('date_rows')
 class DateRow {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 
@@ -111,18 +111,18 @@ class DateRow {
     bytes!: Uint8Array;
 }
 
-// DAT-F3: a non-PK @generated column is skipped by persist while undefined, so
+// DAT-F3: a non-PK @generatedColumn column is skipped by persist while undefined, so
 // its DDL must not carry NOT NULL.
 @entity('generated_nonpk')
 class GeneratedNonPk {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 
     @column()
     name = '';
 
-    @generated()
+    @generatedColumn()
     @column()
     stamp: string | undefined;
 }
@@ -272,9 +272,9 @@ describe('Date and non-json column round trips (DAT-F4)', () => {
     });
 });
 
-// DAT-F3: a non-PK @generated column is not written by persist while
+// DAT-F3: a non-PK @generatedColumn column is not written by persist while
 // undefined, so NOT NULL on that column must be dropped.
-describe('non-PK @generated columns (DAT-F3)', () => {
+describe('non-PK @generatedColumn columns (DAT-F3)', () => {
     let dataSource: DrizzleDataSource;
     let entityManager: DrizzleEntityManager;
 

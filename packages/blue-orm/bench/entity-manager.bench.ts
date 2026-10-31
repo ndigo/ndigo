@@ -14,7 +14,7 @@
 
 import { bench, describe } from 'vitest';
 import '@tsmetadata/polyfill';
-import { entity, generated, primaryColumn, column } from '../src/decorators';
+import { entity, generatedColumn, primaryColumn, column } from '../src/decorators';
 import { InMemoryDataSource } from '../src/data-source';
 import { InMemoryEntityManager } from '../src/entity-manager';
 
@@ -24,7 +24,7 @@ import { InMemoryEntityManager } from '../src/entity-manager';
 
 @entity()
 class BenchUser {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 

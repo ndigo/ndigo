@@ -458,7 +458,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
     setValue<T = unknown>(nameOrToken: string | ContextToken<T>, value: T): void {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
 
-        // Skip @shared beans in child factories — resolved from parent chain
+        // Skip @sharedDependency beans in child factories — resolved from parent chain
         if (isConstructor(value) && isShared(value as Function) && this.#parent) {
             return;
         }

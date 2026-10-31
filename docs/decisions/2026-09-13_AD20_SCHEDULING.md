@@ -156,6 +156,10 @@ consistency review before the 1.0 API freeze, not a mid-flight rename. Added
 to the architecture roadmap pending items; `@scheduled` ships with the
 convention documented.
 
+> **Review completed (AD-83, 2026-10-31):** the family was assessed within
+> the full decorator taxonomy — `@generated` → `@generatedColumn`; the other
+> names kept, with rationale recorded in AD-83 D3.
+
 ## Consequences
 
 - New package `@blue/scheduler` (node-only contract + engine), a

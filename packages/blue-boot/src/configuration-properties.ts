@@ -8,7 +8,7 @@ import { IllegalStateError, JSONValue } from '@blue/core';
 import { getErrorMessage } from '@blue/util';
 import { z } from 'zod';
 import { property } from '@blue/context';
-import { defaultValue, nested } from '@blue/context';
+import { defaultValue, nestedConfig } from '@blue/context';
 import { parseSchemaConfig } from '@blue/context';
 import { isSecretMarkerLike, REDACTED_VALUE } from '@blue/context';
 import type { ApplicationContext } from '@blue/context';
@@ -48,7 +48,7 @@ export interface ConfigurationPropertiesOptions {
      * and defaults all come from the schema (`z.default()` replaces
      * `@defaultValue`; no `@property` decorators needed). A missing required
      * key or a failed coercion throws at boot, naming the class. Schema mode
-     * `@property`/`@defaultValue`/`@nested` decorators on the
+     * `@property`/`@defaultValue`/`@nestedConfig` decorators on the
      * class — the schema is the single source of truth (D3).
      *
      * Schema keys are resolved **exactly** as `${prefix}.${key}`: schema mode
@@ -77,7 +77,7 @@ export interface ConfigurationPropertiesOptions {
  * the raw value with no conversion — declare the type explicitly or
  * initialize the field to get numeric/boolean/date conversion.
  *
- * Use with `@property` (+ optional `@defaultValue` / `@nested`) from
+ * Use with `@property` (+ optional `@defaultValue` / `@nestedConfig`) from
  * `@blue/context`.
  *
  * @param prefix - Optional property key prefix applied to all `@property` fields.
@@ -86,13 +86,13 @@ export interface ConfigurationPropertiesOptions {
  *
  * @example
  * ```ts
- * import { property, defaultValue, nested } from '@blue/context';
+ * import { property, defaultValue, nestedConfig } from '@blue/context';
  * import { configurationProperties } from '@blue/boot';
  *
  * @configurationProperties('server')
  * class ServerConfig {
  *     @property('port', Number) @defaultValue('8080') port!: number;
- *     @property('db') @nested db!: DbConfig;
+ *     @property('db') @nestedConfig db!: DbConfig;
  * }
  *
  * const ctx = app.run();
@@ -130,7 +130,7 @@ export function getConfigurationPropertiesPrefix(target: unknown): string | unde
     return getMetadata(target)[CONFIG_PROPS_PREFIX] as string | undefined;
 }
 
-export { property, defaultValue, nested };
+export { property, defaultValue, nestedConfig };
 
 // The declaration-probing seam moved to `@blue/context` (REU-9); it is
 // re-exported here unchanged so existing consumers (`@blue/inspect`, the
@@ -150,7 +150,7 @@ export interface ConfigurationPropertiesResult<T> {
      * Bound paths and their resolved values. Never contains decrypted secret
      * plaintext: a scalar binding whose raw source value was a `{cipher:…}`
      * marker holds `REDACTED_VALUE` instead of the plaintext. A nested
-     * `@nested` field records the bound sub-object by its top-level key.
+     * `@nestedConfig` field records the bound sub-object by its top-level key.
      */
     bindings: Record<string, JSONValue | undefined>;
 }
@@ -223,7 +223,7 @@ function bindingValue(
  *
  * Fail-loud (AD-15 D4): a missing required field (no `@defaultValue`) or a
  * conversion failure throws, naming class.field + attempted value + target
- * type. Nested fields bind recursively via `@nested`.
+ * type. Nested fields bind recursively via `@nestedConfig`.
  *
  * @param ctor - The configuration properties class constructor.
  * @param context - The application context providing the environment.
@@ -250,7 +250,7 @@ export function resolveConfigurationProperties<T>(
 
         if (isNested) {
             // Bind recursively into the nested field's existing instance
-            // (author provides the initializer; @nested alone, no @property —
+            // (author provides the initializer; @nestedConfig alone, no @property —
             // the field NAME is the sub-prefix: `db` → `server.db`).
             const fieldInstance = (instance as Record<string, unknown>)[key] as Record<string, unknown>;
             resolveNested(ctor, key, key, prefix, fieldInstance, context, relaxed);
@@ -485,7 +485,7 @@ function convertRaw(
 }
 
 /**
- * Binds a nested `@nested` object in place: the sub-prefix is the field's
+ * Binds a nested `@nestedConfig` object in place: the sub-prefix is the field's
  * `@property` keypath, and the nested object's own `@property` fields bind
  * under it. The nested object is the field's existing instance (the author
  * writes a field initializer — decorators cannot see field types).

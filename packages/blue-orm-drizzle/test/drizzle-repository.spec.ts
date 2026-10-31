@@ -5,7 +5,7 @@
  */
 import '@tsmetadata/polyfill';
 import { describe, test, expect, vi } from 'vitest';
-import { entity as entityDecorator, generated, primaryColumn, column } from '@blue/orm';
+import { entity as entityDecorator, generatedColumn, primaryColumn, column } from '@blue/orm';
 import type { AsyncRepository } from '@blue/orm';
 
 // Spec-side type wrapper; runtime-identical to the production `entity` decorator.
@@ -16,7 +16,7 @@ import { DrizzleRepository } from '../src/drizzle-repository';
 
 @entity('paged_notes')
 class PagedNote {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 

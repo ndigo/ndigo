@@ -7,12 +7,12 @@ import '@tsmetadata/polyfill';
 
 import { describe, expect, test } from 'vitest';
 import { z } from 'zod';
-import { entity, column, generated, primaryColumn } from '@blue/orm';
+import { entity, column, generatedColumn, primaryColumn } from '@blue/orm';
 import { drizzleTableForEntity, insertSchemaForEntity, selectSchemaForEntity } from '../src/drizzle-zod';
 
 @entity('dz_notes')
 class DzNote {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 

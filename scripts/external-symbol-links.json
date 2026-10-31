@@ -35,7 +35,6 @@
     "EntryDecorator": "#",
     "EntryRegistryProcessor": "#",
     "LifecycleProcessor": "#",
-    "ProfileTerm": "#",
     "ResourceLoader": "#",
     "ResourceLoaderAware": "#",
     "SecretCipher": "#"
@@ -53,6 +52,7 @@
     "MediaTypeParameters": "#",
     "NumberComparator": "#",
     "ObjectEntries": "#",
+    "ProfileTerm": "#",
     "QualityFactorComparator": "#",
     "SetEntries": "#",
     "SpecificityComparator": "#",

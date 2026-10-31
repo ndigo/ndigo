@@ -10,7 +10,7 @@ import { InMemoryDataSource } from '../src/data-source';
 import {
     column,
     entity as entityDecorator,
-    generated,
+    generatedColumn,
     manyToOne,
     oneToMany,
     postLoad,
@@ -25,7 +25,7 @@ import { InMemoryDerivedQueryRepository } from '../src/repository';
 
 @entity('rel_authors')
 class RelAuthor {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 
@@ -42,7 +42,7 @@ class RelAuthor {
 
 @entity('rel_notes')
 class RelNote {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 

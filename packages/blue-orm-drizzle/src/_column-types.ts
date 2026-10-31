@@ -47,7 +47,7 @@ export function sqliteTypeForColumnType(type: string | undefined): SqliteStorage
  * `SQLITE_MISMATCH`; a `TEXT` key would instead stringify every numeric id.
  *
  * @param type - The declared column type; `undefined` for untyped keys.
- * @param generated - Whether the key field is marked `@generated`.
+ * @param generated - Whether the key field is marked `@generatedColumn`.
  * @returns The SQLite storage type for the primary key column.
  */
 export function primaryKeyStorageType(type: string | undefined, generated: boolean): SqliteStorageType {

@@ -2,7 +2,7 @@
 
 > Repository and data mapper persistence abstractions for BlueJS — entities, columns, and Zod schema derivation backed by in-memory or SQL adapters.
 
-Blue ORM provides repository and data mapper persistence abstractions for BlueJS. Entities map through `@entity`, `@column`, `@primaryColumn`, and `@generated` to a `DataSource`/`EntityManager`/`Repository`/`UnitOfWork` object graph, backed by in-memory implementations (`InMemoryDataSource`, `InMemoryEntityManager`, `InMemoryRepository`, `InMemoryUnitOfWork`) intended for development and testing workflows.
+Blue ORM provides repository and data mapper persistence abstractions for BlueJS. Entities map through `@entity`, `@column`, `@primaryColumn`, and `@generatedColumn` to a `DataSource`/`EntityManager`/`Repository`/`UnitOfWork` object graph, backed by in-memory implementations (`InMemoryDataSource`, `InMemoryEntityManager`, `InMemoryRepository`, `InMemoryUnitOfWork`) intended for development and testing workflows.
 
 ## Installation
 
@@ -21,14 +21,14 @@ import {
     InMemoryEntityManager,
     entity,
     column,
-    generated,
+    generatedColumn,
     primaryColumn,
 } from '@blue/orm';
 
 @entity('users')
 class User {
     @primaryColumn()
-    @generated()
+    @generatedColumn()
     id?: number;
 
     @column()

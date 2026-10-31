@@ -1,9 +1,13 @@
 /**
- * @module blue-context
+ * Spring 6.1-style profile expression grammar (`name`, `!`, `&`, `|`,
+ * parentheses) — parsed, never eval'd. Re-homed from `@blue/context` with
+ * the conditional-family profile unification (AD-83).
+ *
+ * @module blue-core
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { IllegalStateError } from '@blue/core';
+import { IllegalStateError } from './error.js';
 
 /** Maximum parentheses nesting depth (panic switch for pathological input). */
 const MAX_DEPTH = 10;

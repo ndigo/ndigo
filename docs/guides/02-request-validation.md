@@ -103,7 +103,7 @@ import { column } from '@blue/orm';
 
 @entity('notes')
 export class Note {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 

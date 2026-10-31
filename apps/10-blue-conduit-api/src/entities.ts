@@ -14,7 +14,7 @@
  */
 import '@tsmetadata/polyfill';
 import { z } from 'zod';
-import { column, entity, generated, prePersist, preUpdate, primaryColumn } from '@blue/orm';
+import { column, entity, generatedColumn, prePersist, preUpdate, primaryColumn } from '@blue/orm';
 
 /**
  * A registered Conduit account.
@@ -25,7 +25,7 @@ import { column, entity, generated, prePersist, preUpdate, primaryColumn } from 
  */
 @entity('conduit_users')
 export class User {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 
@@ -59,7 +59,7 @@ export class User {
 /** A published article. `slug` is derived from `title` and kept unique. */
 @entity('conduit_articles')
 export class Article {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 
@@ -109,7 +109,7 @@ export class Article {
 /** A comment on an article. */
 @entity('conduit_comments')
 export class Comment {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 
@@ -144,7 +144,7 @@ export class Comment {
 /** One account's favorite of one article (the pair is unique by construction). */
 @entity('conduit_favorites')
 export class Favorite {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 
@@ -158,7 +158,7 @@ export class Favorite {
 /** One account following another. */
 @entity('conduit_follows')
 export class Follow {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 

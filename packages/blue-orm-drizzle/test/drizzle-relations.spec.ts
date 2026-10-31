@@ -5,7 +5,7 @@
  */
 import '@tsmetadata/polyfill';
 import { describe, test, expect, vi } from 'vitest';
-import { entity as entityDecorator, generated, primaryColumn, column, manyToOne, oneToMany } from '@blue/orm';
+import { entity as entityDecorator, generatedColumn, primaryColumn, column, manyToOne, oneToMany } from '@blue/orm';
 import type { AsyncRepository } from '@blue/orm';
 import { DrizzleDataSource } from '../src/drizzle-data-source';
 import { DrizzleEntityManager } from '../src/drizzle-entity-manager';
@@ -17,7 +17,7 @@ type ClassType = new (...args: unknown[]) => unknown;
 
 @entity('drizzle_rel_authors')
 class DrizzleRelAuthor {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 
@@ -34,7 +34,7 @@ class DrizzleRelAuthor {
 
 @entity('drizzle_rel_notes')
 class DrizzleRelNote {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 

@@ -10,7 +10,7 @@
 
 Derives a Zod **insert** schema for an entity: the writable shape for a new
 row. Identical to [schemaForEntity](schemaForEntity.md) except that the primary key and
-any `@generated()` columns are omitted — the database owns them, so a
+any `@generatedColumn()` columns are omitted — the database owns them, so a
 client-created payload must not carry (or be required to carry) them.
 
 Use this for request-body validation of create endpoints:

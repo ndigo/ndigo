@@ -77,7 +77,7 @@ describe('Cookies', () => {
         Object.defineProperty(document, 'cookie', {
             configurable: true,
             get: () => '',
-            set: () => undefined,
+            set: () => {},
         });
 
         expect(() => Cookies.set('theme', 'dark', { ['x; Domain=evil.example']: '1' })).toThrow(TypeError);

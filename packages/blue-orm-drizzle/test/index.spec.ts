@@ -152,7 +152,7 @@ describe('DrizzleUnitOfWork', () => {
 
         const all = await manager.findAll(Note);
         expect(all).toHaveLength(2);
-        expect(all.map((n) => n.title).sort()).toEqual(['alice', 'bob']);
+        expect(all.map((n) => n.title).sort((a, b) => a.localeCompare(b))).toEqual(['alice', 'bob']);
         expect(uow.getState(a)).toBeUndefined(); // cleared after flush
 
         await uow.flush();

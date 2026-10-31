@@ -5,14 +5,8 @@
  */
 import { describe, test, expect } from 'vitest';
 import { ContextToken } from '@blue/factory';
-import {
-    MetadataConfigApplicationContext,
-    configuration,
-    entry,
-    profile,
-    property,
-    propertySource,
-} from '../src/configuration';
+import { whenProfile } from '@blue/core';
+import { MetadataConfigApplicationContext, configuration, entry, property, propertySource } from '../src/configuration';
 import { StandardEnvironment, ConfigurableEnvironment } from '../src/environment';
 import testContext from './testContext';
 
@@ -149,7 +143,7 @@ describe('MetadataConfigApplicationContext', () => {
     test('CF-9: evaluates profile gates against the environment current at registration', () => {
         @configuration
         class ProdConfiguration {
-            @profile('prod')
+            @whenProfile('prod')
             @entry()
             prodEntry() {
                 return 'prod-bean';

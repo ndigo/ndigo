@@ -100,15 +100,17 @@ bundles — route every read through `getEnv`.
 
 ## 2. Profiles
 
-Profiles gate config with expressions, and file loading is profile-aware:
+Profiles gate config with `@whenProfile` — class registration or individual
+entry methods — and file loading is profile-aware:
 
 ```ts
-import { configuration, entry, profile } from '@blue/context';
+import { configuration, entry } from '@blue/context';
+import { whenProfile } from '@blue/core';
 
 @configuration
 class AppConfiguration {
     @entry
-    @profile('dev | (test & !ci)') // expressions, not just exact names
+    @whenProfile('dev | (test & !ci)') // expressions, not just exact names
     devTools() {
         return new DevToolsGate();
     }
@@ -133,12 +135,14 @@ env.acceptsProfiles('base'); // true — nothing explicit set
 
 In-code gates compose with the `Profile` builder (AD-34 D5) — canonical
 strings, validated by the grammar at build time, parenthesized when
-precedence would change the meaning:
+precedence would change the meaning. Multiple arguments mean **either-of**
+and fold into one canonical expression at decoration time
+(`@whenProfile('dev', 'test')` → `'dev | test'`):
 
 ```ts
-import { Profile } from '@blue/context';
+import { Profile, whenProfile } from '@blue/core';
 
-@profile(Profile.and('dev', Profile.not('ci'))) // 'dev & !ci'
+@whenProfile(Profile.and('dev', Profile.not('ci'))) // 'dev & !ci'
 @entry
 devTools() { … }
 
@@ -181,14 +185,14 @@ is a pre-1.0 authoring option, not a framework default.
 `@configurationProperties` auto-registers a bound, converted singleton:
 
 ```ts
-import { configuration, property, defaultValue, nested } from '@blue/context';
+import { configuration, property, defaultValue, nestedConfig } from '@blue/context';
 import { configurationProperties } from '@blue/boot';
 
 @configurationProperties('server')
 class ServerConfig {
     @property('port', Number) @defaultValue('8080') port!: number;
     @property('host', String) @defaultValue('localhost') host!: string;
-    @nested db: DbConfig = new DbConfig();
+    @nestedConfig db: DbConfig = new DbConfig();
 }
 
 class DbConfig {
@@ -204,7 +208,7 @@ const port = serverConfig.getValue('serverConfig').port; // number, fail-loud
 
 - `@property(path, Type)` declares the conversion target (Number/Boolean/Date/String).
 - `@defaultValue('...')` is string-then-converted, same path as real values.
-- `@nested` binds a sub-object under the field name (`db` → `server.db.url`).
+- `@nestedConfig` binds a sub-object under the field name (`db` → `server.db.url`).
 - Missing-required or conversion failure **fails refresh** naming class.field.
 
 ### 3.1 Schema mode (AD-34 D3)
@@ -231,7 +235,7 @@ class ServerConfig {
 - Each schema key resolves `${prefix}.${key}`; `z.coerce` converts the
   stringly env values, `z.default()` fills missing keys, required keys fail
   boot naming the class (fail-loud, same as field mode).
-- `@property`/`@defaultValue`/`@nested` are ignored in schema mode — the
+- `@property`/`@defaultValue`/`@nestedConfig` are ignored in schema mode — the
   schema is the single source of truth.
 - The relaxed (kebab/snake) fallback applies to kebab/snake _field paths_ in field-decorator mode; schema keys are camelCase shape keys resolved exactly as `${prefix}.${key}` — schema mode does not probe kebab spellings (D-3).
 

@@ -1208,7 +1208,7 @@ Registers a configuration class for metadata-driven initialization.
 Parsing runs against the environment current at this call: a fresh
 `ConfigurationParser` is created per registration. Callers may replace
 the environment between registrations (`setEnvironment`), so a memoized
-parser would evaluate `@profile` gates, `@propertySource` and
+parser would evaluate `@whenProfile` gates, `@propertySource` and
 `@property` binding against a stale environment (CF-9).
 
 #### Parameters

@@ -2,6 +2,10 @@
 
 The BlueJS environment, in one place. Built across Phases 0–6.
 
+> **Update (2026-10-31, AD-83):** profile gating unified on `@whenProfile`
+> (class/method; either-of arguments fold to one canonical expression);
+> `@nested` → `@nestedConfig`; ORM `@generated` → `@generatedColumn`.
+
 ## Core types
 
 ### `PropertyResolver` (blue-context)
@@ -48,9 +52,10 @@ The BlueJS environment, in one place. Built across Phases 0–6.
 
 Grammar: `name` | `!expr` | `expr & expr` | `expr | expr` | `( expr )`. `&`
 binds tighter than `|`. Whitespace tolerated. Malformed expressions and
-nesting beyond depth 10 throw naming the expression. `@profile(...)` takes one
-or more expressions, **OR**-across entries. `@whenProfile(expr)`
-(blue-core) gates DI registration.
+nesting beyond depth 10 throw naming the expression. `@whenProfile(...)`
+(blue-core) is the single profile gate — class or entry method; multiple
+arguments mean either-of and fold into one canonical expression at
+decoration time.
 
 ## Decorators (all camelCase per JS convention)
 
@@ -58,11 +63,10 @@ or more expressions, **OR**-across entries. `@whenProfile(expr)`
 | ------------------------------------------------- | ------------ | ------------ | -------------------------------------------------------------------------- |
 | `@property(path[, Type])`                         | blue-context | field        | Bind to keypath; optional conversion target                                |
 | `@defaultValue('raw')`                            | blue-context | field        | Fallback (string → converted)                                              |
-| `@nested`                                         | blue-context | field        | Bind recursively under the field name into the author-initialized instance |
-| `@profile(...expr)`                               | blue-context | class/method | OR-gate entries by expression                                              |
+| `@nestedConfig`                                   | blue-context | field        | Bind recursively under the field name into the author-initialized instance |
 | `@configurationProperties(prefix[, { relaxed }])` | blue-boot    | class        | Type-safe binding + auto-registration (`ServerConfig` → `serverConfig`)    |
 | `@environment(zodSchema)`                         | blue-context | class        | Declare the environment's shape; auto-validated at boot                    |
-| `@whenProfile(expr)`                              | blue-core    | class        | Condition for registration                                                 |
+| `@whenProfile(...expr)`                           | blue-core    | class/method | Profile gate; either-of arguments fold to one expression                   |
 
 `{ relaxed: true }` enables kebab/snake → camel fallback matching
 (`server.host-name` ↔ `hostName`); exact keypaths are the default.

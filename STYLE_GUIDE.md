@@ -3459,6 +3459,35 @@ stand out as intentional.
 
 ---
 
+### 3.17. Decorator Categories & Naming [CONVENTION: Code Review]
+
+**Pattern:** Every decorator belongs to one category; the category fixes the name's grammatical form. Pick the category first — the form follows.
+
+| Category                    | What the name describes               | Form                                        | Examples                                                                                                                          |
+| :-------------------------- | :------------------------------------ | :------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------- |
+| **Stereotypes**             | What the unit _is_                    | noun                                        | `@service`, `@entity`, `@configuration`, `@jobHandler`, `@scope`, `@entry`, `@sharedDependency`                                   |
+| **Participatory behaviors** | What it _participates in_             | past participle / adjective                 | `@scheduled`, `@authenticated`, `@authorized`, `@transactional`, `@cached`, `@traced`, `@counted`                                 |
+| **Conditions**              | _When_ it is active                   | `@when*`                                    | `@whenFeature`, `@whenProperty`, `@whenProfile`, `@whenNode`, `@whenBrowser`, `@whenMissingEntry`                                 |
+| **Registrations**           | What it _registers_                   | `<qualifier>Mapping`                        | `@routeMapping`, `@socketMapping`, `@stompMapping`, `@getMapping` …                                                               |
+| **Lifecycle hooks**         | _When_ in a lifecycle it runs         | `@pre*` / `@post*` + event                  | `@prePersist`, `@preUpdate`, `@postLoad`, `@postRemove`                                                                           |
+| **Member descriptors**      | What a member _denotes_               | established term of art (noun or adjective) | `@column`, `@primaryColumn`, `@generatedColumn`, `@property`, `@defaultValue`, `@nestedConfig`, `@signal`, `@computed`, `@effect` |
+| **Policies**                | _How_ behavior is governed            | noun = the policy name                      | `@retry`, `@circuitBreaker`, `@rateLimit`                                                                                         |
+| **Annotations**             | What a declaration _binds_ or exposes | noun                                        | `@parameters`, `@apiDocs`                                                                                                         |
+
+**Admission procedure:**
+
+1. Determine the category from the annotated element's role — not from the mechanism. "When" phrasing → condition; "registers a …" → registration; a noun for what something _is_ → stereotype; a verb root + `-ed` for what it participates in → behavior.
+2. Take the category's form. Do not invent a new morphology for one decorator.
+3. Straddling categories: prefer the category matching the annotated element's role, and record the deviation (with rationale) in the exception list of [AD-83](docs/decisions/2026-10-31_AD83_DECORATOR_CATEGORIES.md) — do not bend the category.
+
+**Recorded exceptions (do not "fix" without an ADR):** the signals family keeps its ecosystem vocabulary (`@signal`, `@computed`, `@effect`, `@reactive`); policies stay policy nouns (`retried` would misdescribe on-failure semantics); `@whenProfile` is the single profile gate — there is no `@profile`.
+
+**Reference:** [AD-83](docs/decisions/2026-10-31_AD83_DECORATOR_CATEGORIES.md) — full taxonomy, member map, rename verdicts, and the profile unification. §3.8 (camelCase) remains the base rule for every category.
+
+**Rationale:** A single global convention could not describe the repository's decorator surface — conditions and registrations already ran their own forms deliberately. Role-keyed categories give every existing decorator a documented home, give new decorators a decision procedure ("pick the category; the form follows"), and make deviations explicit records instead of accidental drift.
+
+---
+
 ## 4. Module Organization
 
 ### Directory Structure [CONVENTION: Code Review]

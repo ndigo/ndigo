@@ -5,7 +5,7 @@
  */
 import '@tsmetadata/polyfill';
 import { describe, test, expect } from 'vitest';
-import { entity as entityDecorator, generated, primaryColumn, column } from '@blue/orm';
+import { entity as entityDecorator, generatedColumn, primaryColumn, column } from '@blue/orm';
 
 // Spec-side type wrapper; runtime-identical to the production `entity` decorator.
 const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
@@ -15,7 +15,7 @@ import { DrizzleDerivedQueryRepository } from '../src/drizzle-derived-query-repo
 
 @entity('derived_notes')
 class DerivedNote {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 

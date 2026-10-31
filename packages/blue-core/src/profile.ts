@@ -1,12 +1,13 @@
 /**
- * Typed profile-expression builder (AD-34 D5).
+ * Typed profile-expression builder (AD-34 D5; re-homed into `@blue/core`
+ * with the conditional-family profile unification — AD-83).
  *
  * The profile grammar (`dev`, `!ci`, `a & b`, `(a | b) & c`) stays the
- * canonical, serializable form (`@profile`, env-driven activation, metadata),
- * but in-code profile gates get compile-time composition instead of string
- * surgery. Every builder validates through the existing grammar at build
- * time and produces a canonical expression string, parenthesizing compound
- * children when the grammar's precedence would change the meaning:
+ * canonical, serializable form (`@whenProfile`, env-driven activation,
+ * metadata), but in-code profile gates get compile-time composition instead
+ * of string surgery. Every builder validates through the existing grammar at
+ * build time and produces a canonical expression string, parenthesizing
+ * compound children when the grammar's precedence would change the meaning:
  *
  * ```ts
  * Profile.and('dev', Profile.not('ci'))        // 'dev & !ci'
@@ -14,13 +15,13 @@
  * ```
  *
  * Terms compose and can be passed anywhere a profile expression string is
- * accepted (`@profile(...)`, `environment.acceptsProfiles(...)`).
- * @module blue-context
+ * accepted (`@whenProfile(...)`, `environment.acceptsProfiles(...)`).
+ * @module blue-core
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { IllegalStateError } from '@blue/core';
-import { evaluateProfileExpression } from './profile-expression';
+import { IllegalStateError } from './error.js';
+import { evaluateProfileExpression } from './profile-expression.js';
 
 /**
  * The precedence-role a composed term plays in the grammar (loose → tight):
@@ -33,7 +34,7 @@ const namePattern = /^[a-zA-Z0-9_.:-]+$/u;
 
 /**
  * A composed profile expression. Immutable; `String(term)` yields the
- * canonical expression string, so terms drop into `@profile(...)` and
+ * canonical expression string, so terms drop into `@whenProfile(...)` and
  * `acceptsProfiles(...)` seamlessly.
  */
 export class ProfileTerm {

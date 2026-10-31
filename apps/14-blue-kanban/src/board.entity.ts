@@ -18,7 +18,7 @@ import { column, entity, primaryColumn } from '@blue/orm';
  * A board: the aggregate a client subscribes to and syncs whole.
  *
  * Ids are application-assigned (`crypto.randomUUID` for new cards, stable
- * slugs for the seeded demo board), so no column is `@generated`.
+ * slugs for the seeded demo board), so no column is `@generatedColumn`.
  */
 @entity('kanban_boards')
 export class Board {

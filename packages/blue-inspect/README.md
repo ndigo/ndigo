@@ -94,7 +94,7 @@ a `FrameworkError`; omit `mappings` (or pass `undefined`) to inspect none.
 
 Declared keys come from `@blue/context`'s `declaredConfigurationProperties()`
 (the metadata seam `@blue/boot` binds against, re-exported unchanged — REU-9),
-which walks `@property`/`@nested` fields (or a schema-mode `schema` shape).
+which walks `@property`/`@nestedConfig` fields (or a schema-mode `schema` shape).
 Presence is probed with `hasProperty` over the exact key plus every
 relaxed-binding spelling (`relaxedKeyCandidates`), and the winning source origin
 is read from `originOf` — no value is ever read or decrypted.

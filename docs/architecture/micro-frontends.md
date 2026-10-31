@@ -66,7 +66,7 @@ host.registerFeature({
   (`SHARED_DEPENDENCY_REGISTRY_TOKEN` in the shell context); features declare
   `requires`/`optional` ranges; validation runs at mount time (missing or
   semver-mismatched required deps throw).
-- `@shared()` decorator marks a bean shell-managed: child contexts skip
+- `@sharedDependency()` decorator marks a bean shell-managed: child contexts skip
   registration and resolve from the parent chain (enforced in
   `AbstractFactory`).
 - This is the runtime equivalent of import maps — no build-level module
@@ -105,14 +105,14 @@ a graph of call sites. Both demo hosts exercise this discipline.
 
 ## Single-SPA comparison (condensed)
 
-| Single-SPA                                    | BlueJS                                                   | Note                                 |
-| --------------------------------------------- | -------------------------------------------------------- | ------------------------------------ |
-| `registerApplication` + activity fn           | `HostManager.registerFeature({name, prefix, …})`         | Prefix partitions; single call       |
-| bootstrap/mount/unmount                       | `mount`/`mountLazy`/`unmount(policy)`/`unregister`       | No separate bootstrap phase          |
-| `start()` gating                              | —                                                        | Not implemented; composition is sync |
-| import maps / shared deps                     | `SharedDependencyRegistry` + `@shared` + semver at mount | Runtime-validated, stronger          |
-| framework-agnostic apps                       | Web components + context values                          | Islands = data-bound components      |
-| standalone apps / minimal integration testing | Island model contracts; feature contexts with gateways   | Same doctrine                        |
+| Single-SPA                                    | BlueJS                                                             | Note                                 |
+| --------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------ |
+| `registerApplication` + activity fn           | `HostManager.registerFeature({name, prefix, …})`                   | Prefix partitions; single call       |
+| bootstrap/mount/unmount                       | `mount`/`mountLazy`/`unmount(policy)`/`unregister`                 | No separate bootstrap phase          |
+| `start()` gating                              | —                                                                  | Not implemented; composition is sync |
+| import maps / shared deps                     | `SharedDependencyRegistry` + `@sharedDependency` + semver at mount | Runtime-validated, stronger          |
+| framework-agnostic apps                       | Web components + context values                                    | Islands = data-bound components      |
+| standalone apps / minimal integration testing | Island model contracts; feature contexts with gateways             | Same doctrine                        |
 
 ## Documentation pointers
 

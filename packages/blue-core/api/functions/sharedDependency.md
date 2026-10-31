@@ -2,15 +2,15 @@
 
 ***
 
-[@blue/core](../README.md) / shared
+[@blue/core](../README.md) / sharedDependency
 
-# Function: shared()
+# Function: sharedDependency()
 
-> **shared**(`options?`): (`target`, `context`) => `Function`
+> **sharedDependency**(`options?`): (`target`, `context`) => `Function`
 
 Class decorator that marks an entry as a shell-managed shared dependency.
 
-When a child (feature) context attempts to register a `@shared` entry,
+When a child (feature) context attempts to register a `@sharedDependency` entry,
 the factory skips registration and resolves the entry from the parent chain instead.
 
 ## Parameters
@@ -26,6 +26,6 @@ the factory skips registration and resolves the entry from the parent chain inst
 ## Example
 
 ```ts
-@shared({ version: '1.2.0' })
+@sharedDependency({ version: '1.2.0' })
 class TelemetryService { … }
 ```

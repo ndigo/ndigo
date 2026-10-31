@@ -8,7 +8,7 @@ import { describe, test, expect } from 'vitest';
 import {
     column,
     entity,
-    generated,
+    generatedColumn,
     postLoad,
     prePersist,
     preUpdate,
@@ -20,7 +20,7 @@ import { runLifecycleHooks } from '../src/lifecycle';
 // DAT-F1: one runner backs both InMemoryEntityManager and DrizzleEntityManager.
 @entity()
 class HookedNote {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 

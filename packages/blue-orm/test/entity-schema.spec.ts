@@ -6,7 +6,7 @@
 import '@tsmetadata/polyfill';
 
 import { z } from 'zod';
-import { entity, generated, primaryColumn, column } from '../src/decorators';
+import { entity, generatedColumn, primaryColumn, column } from '../src/decorators';
 import {
     baseSchemaForType,
     schemaForColumn,
@@ -18,7 +18,7 @@ import { getEntityMetadata } from '../src/metadata';
 
 @entity()
 class Product {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 

@@ -6,7 +6,7 @@
 
 # Interface: SharedOptions
 
-Options for the `@shared` class decorator.
+Options for the `@sharedDependency` class decorator.
 
 ## Properties
 

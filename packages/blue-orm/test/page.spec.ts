@@ -7,7 +7,7 @@ import '@tsmetadata/polyfill';
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { InMemoryDataSource } from '../src/data-source';
-import { column, entity as entityDecorator, generated, primaryColumn } from '../src/decorators';
+import { column, entity as entityDecorator, generatedColumn, primaryColumn } from '../src/decorators';
 import { InMemoryEntityManager } from '../src/entity-manager';
 
 // Spec-side type wrapper; runtime-identical to the production `entity` decorator.
@@ -17,7 +17,7 @@ import { pageFromAll, validatePageRequest, SortDirection } from '../src/page';
 
 @entity('page_things')
 class PageThing {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 

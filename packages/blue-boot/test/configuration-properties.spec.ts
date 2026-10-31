@@ -16,7 +16,7 @@ import {
     resolveConfigurationProperties,
     relaxedKeyCandidates,
 } from '../src/index';
-import { property, defaultValue, nested, configuration, entry, StandardEnvironment } from '@blue/context';
+import { property, defaultValue, nestedConfig, configuration, entry, StandardEnvironment } from '@blue/context';
 
 class DbConfig {
     @property('url', String as unknown as new (...args: never[]) => string)
@@ -30,7 +30,7 @@ class DbConfig {
 class ServerConfig {
     @property('port', Number as unknown as new (...args: never[]) => number) @defaultValue('8080') port!: number;
     @property('host', String as unknown as new (...args: never[]) => string) @defaultValue('localhost') host!: string;
-    @nested db: DbConfig = new DbConfig();
+    @nestedConfig db: DbConfig = new DbConfig();
 }
 
 @configurationProperties()
@@ -122,7 +122,7 @@ describe('declaredConfigurationProperties (value-free inspection seam)', () => {
         class ThrowingConfig {
             @property('port', Number as unknown as new (...args: never[]) => number) port!: number;
             @property('name', String as unknown as new (...args: never[]) => string) name = 'fallback';
-            @nested db!: DbConfig;
+            @nestedConfig db!: DbConfig;
 
             constructor() {
                 throw new Error('no instance for you');
@@ -368,7 +368,7 @@ describe('relaxed binding + untyped inference (CTX-01/CTX-10/CTX-11)', () => {
         }
         @configurationProperties('db', { relaxed: true })
         class RelaxedNested {
-            @nested connection: NestedDb = new NestedDb();
+            @nestedConfig connection: NestedDb = new NestedDb();
         }
         const context = await runBoot({ db: { connection: { 'user-name': 'app' } } });
 

@@ -1,13 +1,13 @@
-[**@blue/context v0.0.1**](../README.md)
+[**@blue/core v0.0.1**](../README.md)
 
 ***
 
-[@blue/context](../README.md) / ProfileTerm
+[@blue/core](../README.md) / ProfileTerm
 
 # Class: ProfileTerm
 
 A composed profile expression. Immutable; `String(term)` yields the
-canonical expression string, so terms drop into `@profile(...)` and
+canonical expression string, so terms drop into `@whenProfile(...)` and
 `acceptsProfiles(...)` seamlessly.
 
 ## Constructors

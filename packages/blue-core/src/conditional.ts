@@ -5,6 +5,9 @@
  * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
+import { FrameworkError } from './error.js';
+import { Profile } from './profile.js';
+import type { ProfileTerm } from './profile.js';
 
 /** Platform types for conditional auto-configuration. */
 export type ConditionalPlatform = 'browser' | 'node';
@@ -114,21 +117,56 @@ export function whenProperty(options: WhenPropertyOptions) {
 }
 
 /**
- * Class decorator that marks a configuration class as active only when a
- * profile expression matches the environment's effective active set (AD-14).
+ * Normalizes profile gate arguments into one canonical expression: a single
+ * value keeps its validated, trimmed form; multiple values mean either-of
+ * and fold into one union via {@link Profile.or}. Folding at decoration time
+ * replaces the old per-entry OR loop, so every reader evaluates exactly one
+ * expression (AD-83).
+ */
+const normalizeProfileCondition = (expressions: Array<string | ProfileTerm>): string => {
+    if (expressions.length === 0) {
+        throw new FrameworkError('@whenProfile requires at least one profile expression');
+    }
+    return expressions.length === 1 ? Profile.parse(String(expressions[0])) : String(Profile.or(...expressions));
+};
+
+/**
+ * Class or method decorator that marks the annotated target active only when
+ * a profile expression matches the environment's effective active set
+ * (AD-14; unified as the single profile gate by AD-83).
  *
- * @param expression - The profile expression (`dev`, `!prod`, `a & b`, `(a | b) & c`).
- * @returns A class decorator.
+ * A single expression keeps its form; multiple arguments mean either-of and
+ * fold into one canonical `a | b` expression at decoration time. Composed
+ * {@link ProfileTerm} expressions (AD-34 D5) are accepted and normalized the
+ * same way. On a class the condition gates registration; on an entry method
+ * it gates that entry alone.
+ *
+ * @param expressions - One profile expression, or multiple for either-of.
+ * @returns A class/method decorator that stores the canonical condition.
  *
  * @example
  * ```ts
  * @whenProfile('!prod & (dev | test)')
  * class DevOnlyConfiguration { ... }
+ *
+ * @whenProfile('dev', 'test') // either-of → 'dev | test'
+ * @entry()
+ * devOrTestEntry() { ... }
  * ```
  */
-export function whenProfile(expression: string) {
-    return function (target: Function, context: ClassDecoratorContext): void {
-        conditionalDecorator(WHEN_PROFILE, expression, target, context);
+export function whenProfile(...expressions: Array<string | ProfileTerm>) {
+    const condition = normalizeProfileCondition(expressions);
+    // Generic target keeps the decorator's return type assignable to both
+    // classes and methods (TS1270 would reject a bare `Function` return).
+    return function <M extends Function>(target: M, context: ClassDecoratorContext | ClassMethodDecoratorContext): M {
+        if (context.kind === 'class') {
+            context.metadata[WHEN_PROFILE] = condition;
+        } else if (context.kind === 'method') {
+            context.metadata[`${WHEN_PROFILE}:${String(context.name)}`] = condition;
+        } else {
+            throw new FrameworkError('@whenProfile can only be applied to classes or methods');
+        }
+        return target;
     };
 }
 
@@ -166,6 +204,21 @@ const getMetadata = (target: unknown): Record<string, unknown> => {
 export function getConditionalPlatform(target: unknown): ConditionalPlatform | undefined {
     const meta = getMetadata(target);
     return meta[WHEN_PLATFORM] as ConditionalPlatform | undefined;
+}
+
+/**
+ * Reads the canonical profile condition stored on a class or one of its
+ * methods — the read counterpart of {@link whenProfile} (AD-83). The
+ * configuration parser uses this to gate classes and entry methods; boot
+ * uses {@link isActive} on classes only.
+ *
+ * @param target - The class constructor or instance to inspect.
+ * @param methodName - When set, read the condition recorded for that method.
+ * @returns The canonical profile expression, or `undefined` when unset.
+ */
+export function getProfileCondition(target: unknown, methodName?: string): string | undefined {
+    const meta = getMetadata(target);
+    return meta[methodName === undefined ? WHEN_PROFILE : `${WHEN_PROFILE}:${methodName}`] as string | undefined;
 }
 
 /**

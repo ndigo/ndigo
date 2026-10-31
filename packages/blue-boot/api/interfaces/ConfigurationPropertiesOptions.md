@@ -31,7 +31,7 @@ class binds in **schema mode**: every shape key resolves
 and defaults all come from the schema (`z.default()` replaces
 `@defaultValue`; no `@property` decorators needed). A missing required
 key or a failed coercion throws at boot, naming the class. Schema mode
-`@property`/`@defaultValue`/`@nested` decorators on the
+`@property`/`@defaultValue`/`@nestedConfig` decorators on the
 class — the schema is the single source of truth (D3).
 
 Schema keys are resolved **exactly** as `${prefix}.${key}`: schema mode

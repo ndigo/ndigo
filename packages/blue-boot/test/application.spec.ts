@@ -7,12 +7,13 @@ import { describe, test, expect, vi, afterEach } from 'vitest';
 import { Application } from '../src/application';
 import { WebAutoConfiguration } from '@blue/platform-web';
 import { NodeAutoConfiguration } from '@blue/platform-node';
-import { configuration, entry, profile } from '@blue/context';
+import { configuration, entry } from '@blue/context';
+import { whenProfile } from '@blue/core';
 import { hashScope } from '@blue/factory';
 import { HandlerMethodArgumentResolver } from '@blue/dispatcher';
 
 @configuration
-@profile('dev')
+@whenProfile('dev')
 class ProfiledConfiguration {
     @entry()
     appMode() {
@@ -53,6 +54,16 @@ describe('Application', () => {
 
         expect(context.environment.activeProfiles).toEqual(['dev']);
         expect(context.getValue('appMode')).toBe('dev');
+    });
+
+    test('it skips sources whose @whenProfile condition is inactive', async () => {
+        const app = new Application([ProfiledConfiguration]);
+        app.setProfiles('prod');
+
+        const context = await app.run();
+
+        expect(context.environment.activeProfiles).toEqual(['prod']);
+        expect(context.hasValue('appMode')).toBe(false);
     });
 
     test('it should register metadata configuration sources into context', async () => {

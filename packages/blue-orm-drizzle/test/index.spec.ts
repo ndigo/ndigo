@@ -7,7 +7,7 @@ import '@tsmetadata/polyfill';
 
 import { describe, expect, test } from 'vitest';
 import { z } from 'zod';
-import { entity, column, generated, primaryColumn } from '@blue/orm';
+import { entity, column, generatedColumn, primaryColumn } from '@blue/orm';
 import type { AsyncRepository } from '@blue/orm';
 import { DrizzleDataSource } from '../src/drizzle-data-source';
 import { DrizzleEntityManager } from '../src/drizzle-entity-manager';
@@ -17,7 +17,7 @@ import { DrizzleRepository } from '../src/drizzle-repository';
 
 @entity('notes')
 class Note {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 

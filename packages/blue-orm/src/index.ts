@@ -25,7 +25,7 @@ export {
     entity,
     column,
     primaryColumn,
-    generated,
+    generatedColumn,
     oneToMany,
     manyToOne,
     manyToMany,

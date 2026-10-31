@@ -35,7 +35,6 @@ Jeff Rose
 - [MutablePropertySources](classes/MutablePropertySources.md)
 - [NamespaceRelayValidationStrategy](classes/NamespaceRelayValidationStrategy.md)
 - [PermissiveRelayValidationStrategy](classes/PermissiveRelayValidationStrategy.md)
-- [ProfileTerm](classes/ProfileTerm.md)
 - [PrototypalPropertyResolver](classes/PrototypalPropertyResolver.md)
 - [PrototypeChainIndex](classes/PrototypeChainIndex.md)
 - [ProxiedGenericApplicationContext](classes/ProxiedGenericApplicationContext.md)
@@ -112,10 +111,8 @@ Jeff Rose
 - [EventType](type-aliases/EventType.md)
 - [FeatureUnmountPolicy](type-aliases/FeatureUnmountPolicy.md)
 - [PrimitiveValue](type-aliases/PrimitiveValue.md)
-- [ProfileExpressionInput](type-aliases/ProfileExpressionInput.md)
 - [PropertyKeyMap](type-aliases/PropertyKeyMap.md)
 - [SchemaConfigResolver](type-aliases/SchemaConfigResolver.md)
-- [TermKind](type-aliases/TermKind.md)
 
 ## Variables
 
@@ -141,7 +138,6 @@ Jeff Rose
 - [likeResourceLoader](variables/likeResourceLoader.md)
 - [likeResourceLoaderAware](variables/likeResourceLoaderAware.md)
 - [NESTED\_KEY](variables/NESTED_KEY.md)
-- [Profile](variables/Profile.md)
 - [PROPERTY\_KEY](variables/PROPERTY_KEY.md)
 - [PROPERTY\_KEY\_TYPE](variables/PROPERTY_KEY_TYPE.md)
 - [REDACTED\_VALUE](variables/REDACTED_VALUE.md)
@@ -150,7 +146,6 @@ Jeff Rose
 
 ## Functions
 
-- [and](functions/and.md)
 - [applyCustomizers](functions/applyCustomizers.md)
 - [AsApplicationContextAware](functions/AsApplicationContextAware.md)
 - [AsAsyncEventEmitter](functions/AsAsyncEventEmitter.md)
@@ -175,13 +170,10 @@ Jeff Rose
 - [getMetadata](functions/getMetadata.md)
 - [isDevMode](functions/isDevMode.md)
 - [isSecretMarkerLike](functions/isSecretMarkerLike.md)
-- [nested](functions/nested.md)
-- [not](functions/not.md)
-- [or](functions/or.md)
+- [nestedConfig](functions/nestedConfig.md)
 - [parseCommandLineArgs](functions/parseCommandLineArgs.md)
 - [parseSchemaConfig](functions/parseSchemaConfig.md)
 - [parseSecretMarker](functions/parseSecretMarker.md)
-- [profile](functions/profile.md)
 - [property](functions/property.md)
 - [propertyKeys](functions/propertyKeys.md)
 - [propertySource](functions/propertySource.md)
@@ -194,5 +186,4 @@ Jeff Rose
 - [traverseToRoot](functions/traverseToRoot.md)
 - [unmountFeatureContext](functions/unmountFeatureContext.md)
 - [validateEnvironment](functions/validateEnvironment.md)
-- [validateProfileExpression](functions/validateProfileExpression.md)
 - [wrapSource](functions/wrapSource.md)

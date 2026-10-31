@@ -5,11 +5,11 @@
  */
 import '@tsmetadata/polyfill';
 import { z } from 'zod';
-import { entity, primaryColumn, generated, column, prePersist } from '@blue/orm';
+import { entity, primaryColumn, generatedColumn, column, prePersist } from '@blue/orm';
 
 @entity('notes')
 export class Note {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 

@@ -19,7 +19,7 @@ pnpm lint            # Check code quality
 
 ⚠️ **Section 4.4 (Library Integration Layer)** - Most common error: importing seedrandom/slug directly instead of through @blue/util
 
-⚠️ **Section 4.7 (Decorator Naming)** - All decorators MUST use camelCase
+⚠️ **Section 4.7 (Decorator Naming)** - All decorators MUST use camelCase; each decorator category fixes its name's form (STYLE_GUIDE.md §3.17)
 
 ⚠️ **STYLE_GUIDE.md Predicate (is\*) vs Duck-Typing (like\*) Functions** - `is*` for type/identity checks (`typeof`, `instanceof`); `like*` for structural/duck-typing checks (property shape). Never use `instanceof` in a `like*` function.
 
@@ -340,7 +340,7 @@ When adding new integration layers or encapsulated libraries:
 - ✅ **Correct:** `@routeMapping`, `@injectable`
 - ❌ **Incorrect:** `@RouteMapping`, `@Injectable`
 
-This convention is detailed in **STYLE_GUIDE.md Section 3.8**. Adherence is critical for distinguishing decorators from classes at a glance.
+This convention is detailed in **STYLE_GUIDE.md Section 3.8**; the per-category forms (stereotypes, behaviors, conditions, registrations, lifecycle, descriptors, policies) are in **Section 3.17** ([AD-83](docs/decisions/2026-10-31_AD83_DECORATOR_CATEGORIES.md)). Adherence is critical for distinguishing decorators from classes at a glance.
 
 ### Architecture & File Structure
 

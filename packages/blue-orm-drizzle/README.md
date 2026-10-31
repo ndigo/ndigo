@@ -22,12 +22,12 @@ their types or helpers in application code.
 ## Getting Started
 
 ```ts
-import { column, entity, generated, primaryColumn } from '@blue/orm';
+import { column, entity, generatedColumn, primaryColumn } from '@blue/orm';
 import { DrizzleDataSource, DrizzleEntityManager } from '@blue/orm-drizzle';
 
 @entity('users')
 class User {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 

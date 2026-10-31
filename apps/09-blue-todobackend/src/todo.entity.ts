@@ -6,7 +6,7 @@
  */
 import '@tsmetadata/polyfill';
 import { z } from 'zod';
-import { column, entity, generated, primaryColumn } from '@blue/orm';
+import { column, entity, generatedColumn, primaryColumn } from '@blue/orm';
 
 /**
  * One todo row.
@@ -20,7 +20,7 @@ import { column, entity, generated, primaryColumn } from '@blue/orm';
 @entity('todos')
 export class Todo {
     /** Primary key — generated (`1`, `2`, …) unless the client supplied one. */
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number | string;
 

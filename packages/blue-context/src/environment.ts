@@ -3,15 +3,14 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { Constructable, Null, JSONValue, JSONObject } from '@blue/core';
+import { Constructable, Null, JSONValue, JSONObject, evaluateProfileExpression } from '@blue/core';
+import type { ProfileTerm } from '@blue/core';
 import type { z } from 'zod';
 import { like, isNil } from '@blue/util/types';
 import { AsAware, Aware, likeAwareAnd } from '@blue/factory';
 import { likePropertyResolver, PropertyResolver, PrototypalPropertyResolver } from './property-resolver';
 import type { ResolverOptions } from './property-resolver';
 import { MutablePropertySources } from './property-sources';
-import { evaluateProfileExpression } from './profile-expression';
-import { ProfileTerm } from './profile';
 import { resolveSchemaConfig } from './schema-config';
 import { AsEventEmitter, EventEmitter, EventType, EventHandlers } from './event-emitter';
 import type { EnvironmentEvents } from './context-events';

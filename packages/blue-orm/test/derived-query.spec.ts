@@ -8,7 +8,7 @@ import '@tsmetadata/polyfill';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { InMemoryDataSource } from '../src/data-source';
 import { InMemoryEntityManager } from '../src/entity-manager';
-import { column, entity as entityDecorator, generated, primaryColumn } from '../src/decorators';
+import { column, entity as entityDecorator, generatedColumn, primaryColumn } from '../src/decorators';
 import { InMemoryDerivedQueryRepository } from '../src/repository';
 import { parseDerivedQuery } from '../src/derived-query-repository';
 import { getEntityMetadata } from '../src/metadata';
@@ -18,7 +18,7 @@ const entity = entityDecorator as unknown as (tableName?: string) => ClassDecora
 
 @entity('derived_users')
 class DerivedUser {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 

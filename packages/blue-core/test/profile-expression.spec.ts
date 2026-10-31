@@ -1,5 +1,5 @@
 /**
- * @module blue-context
+ * @module blue-core
  * @since 1.0.0
  * @author Jeff Rose
  */

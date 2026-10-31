@@ -5,7 +5,7 @@
  */
 import '@tsmetadata/polyfill';
 import { describe, test, expect } from 'vitest';
-import { entity as entityDecorator, generated, primaryColumn, column } from '@blue/orm';
+import { entity as entityDecorator, generatedColumn, primaryColumn, column } from '@blue/orm';
 import { createTableStatements } from '../src/drizzle-data-source';
 import {
     projectEntities,
@@ -22,7 +22,7 @@ const entity = entityDecorator as unknown as (tableName?: string) => ClassDecora
 
 @entity('snap_notes')
 class SnapNote {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 
@@ -35,7 +35,7 @@ class SnapNote {
     @column({ type: 'blob' })
     bytes: Uint8Array | undefined;
 
-    @generated()
+    @generatedColumn()
     @column()
     stamp: string | undefined;
 }

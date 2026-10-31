@@ -37,12 +37,13 @@ const service = context.getValue<GreetingService>('greetingService');
 ### Profile-gated entries
 
 ```ts
-import { configuration, entry, profile } from '@blue/context';
+import { configuration, entry } from '@blue/context';
+import { whenProfile } from '@blue/core';
 
 @configuration
 class AppConfiguration {
     @entry
-    @profile('dev | (test & !ci)') // expressions, not just exact names
+    @whenProfile('dev | (test & !ci)') // expressions, not just exact names
     devTools() {
         return new DevToolsGate();
     }
@@ -57,7 +58,7 @@ The full API is generated from JSDoc via `pnpm doc:api` into
 how it fits with the rest of BlueJS.
 
 - **Application context** — `ApplicationContext`, `MetadataConfigApplicationContext`
-- **Configuration decorators** — `@configuration`, `@entry()`, `@profile`, `@environment`, `@configurationProperties`
+- **Configuration decorators** — `@configuration`, `@entry()`, `@environment`, `@configurationProperties`; profile gates via `@whenProfile` (`@blue/core`)
 - **Property sources** — named, ordered sources with placeholder resolution and `@Value`-style typed lookup
 - **Environment + profiles** — profile activation and typed config binding
 - **Resource & events** — `ResourceLoader`/`Resource` abstractions, event emitters

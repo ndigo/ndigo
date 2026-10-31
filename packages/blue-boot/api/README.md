@@ -43,7 +43,7 @@ Jeff Rose
 - [getConfigurationPropertiesPrefix](functions/getConfigurationPropertiesPrefix.md)
 - [isConfigurationProperties](functions/isConfigurationProperties.md)
 - [mergeConfig](functions/mergeConfig.md)
-- [nested](functions/nested.md)
+- [nestedConfig](functions/nestedConfig.md)
 - [property](functions/property.md)
 - [relaxedKeyCandidates](functions/relaxedKeyCandidates.md)
 - [resolveConfigurationProperties](functions/resolveConfigurationProperties.md)

@@ -5,19 +5,19 @@
  */
 import '@tsmetadata/polyfill';
 import { describe, test, expect } from 'vitest';
-import { shared, isShared, getSharedOptions, SharedOptions } from '../src/shared';
+import { sharedDependency, isShared, getSharedOptions, SharedOptions } from '../src/shared';
 
-// The production `@shared` decorator's inner function is typed `=> Function`;
+// The production `@sharedDependency` decorator's inner function is typed `=> Function`;
 // TS requires a class decorator to return `void | typeof Class`, so cast to a
 // void-returning decorator here. Runtime behavior is unchanged (it still
 // returns the target class and writes Symbol.metadata).
-const sharedDecorator = shared as unknown as (
+const sharedDependencyDecorator = sharedDependency as unknown as (
     options?: SharedOptions
 ) => (target: Function, context: ClassDecoratorContext) => void;
 
-describe('@shared decorator', () => {
+describe('@sharedDependency decorator', () => {
     test('it should mark a class as shared with default options', () => {
-        @sharedDecorator()
+        @sharedDependencyDecorator()
         class MyService {}
 
         expect(isShared(MyService)).toBe(true);
@@ -25,7 +25,7 @@ describe('@shared decorator', () => {
     });
 
     test('it should accept custom version', () => {
-        @sharedDecorator({ version: '^1.0.0' })
+        @sharedDependencyDecorator({ version: '^1.0.0' })
         class MyService {}
 
         expect(isShared(MyService)).toBe(true);
@@ -40,7 +40,7 @@ describe('@shared decorator', () => {
     });
 
     test('it should read metadata from an instance', () => {
-        @sharedDecorator({ version: '2.0.0' })
+        @sharedDependencyDecorator({ version: '2.0.0' })
         class MyService {}
 
         const instance = new MyService();

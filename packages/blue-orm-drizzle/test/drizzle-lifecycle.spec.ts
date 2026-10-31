@@ -8,7 +8,7 @@ import { describe, test, expect } from 'vitest';
 import {
     column,
     entity,
-    generated,
+    generatedColumn,
     InMemoryDataSource,
     InMemoryEntityManager,
     manyToOne,
@@ -29,7 +29,7 @@ import { DrizzleEntityManager } from '../src/drizzle-entity-manager';
 class LifecycleNote {
     static events: string[] = [];
 
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 
@@ -61,7 +61,7 @@ class LifecycleNote {
 class LifecycleChild {
     static loads = 0;
 
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 
@@ -84,7 +84,7 @@ class LifecycleChild {
 class LifecycleParent {
     static loads = 0;
 
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 

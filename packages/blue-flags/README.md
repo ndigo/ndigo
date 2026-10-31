@@ -122,7 +122,7 @@ The public surface mirrors the SPI: `FlagEvaluator` / `FlagEvaluation`
 types, `FlagEvaluationContext`, `likeFlagEvaluator`,
 `validateFlagKey`, `PropertyFlagProvider`, `whenFeature` /
 `getWhenFeature` / `WHEN_FEATURE_KEY`, and `FLAG_EVALUATOR`. Generated
-reference: `doc/api/`.
+reference: `api/`.
 
 ## Development
 

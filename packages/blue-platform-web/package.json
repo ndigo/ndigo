@@ -4,7 +4,7 @@
   "description": "Browser platform adapter for BlueJS — dispatcher glue, history/cookie resolvers, themes",
   "type": "module",
   "files": [
-    "doc",
+    "api",
     "lib"
   ],
   "exports": {

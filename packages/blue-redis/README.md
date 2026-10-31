@@ -234,10 +234,10 @@ deployment.
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into
-[`doc/api/`](doc/api/README.md). Primary exports live in
+[`api/`](api/README.md). Primary exports live in
 [`src/index.ts`](src/index.ts) (`RedisConnection`); the `/cache` and `/pubsub`
 entry points re-export the adapters listed above. See the [package
-index](../../doc/README.md) for how it fits with the rest of BlueJS.
+index](../../api/README.md) for how it fits with the rest of BlueJS.
 
 ## Development
 

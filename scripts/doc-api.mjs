@@ -3,7 +3,7 @@
  *
  * For every package with a `src/` directory, runs TypeDoc (markdown plugin)
  * over the package's own `exports` map and writes the reference tree to
- * `packages/<pkg>/doc/api/`. Also regenerates `doc/README.md`, the
+ * `packages/<pkg>/api/`. Also regenerates `api/README.md`, the
  * package-docs index at the repo root.
  *
  * Why per-package: each BlueJS package must read like a standalone library
@@ -63,7 +63,7 @@ function typedocConfig(pkgDir, manifest) {
     return {
         name: manifest.name,
         entryPoints: entryPointsFor(manifest, pkgDir).map((p) => join(pkgDir, p)),
-        out: join(pkgDir, 'doc', 'api'),
+        out: join(pkgDir, 'api'),
         plugin: ['typedoc-plugin-markdown', join(ROOT, 'scripts', 'typedoc-tags-plugin.mjs')],
         readme: 'none',
         excludePrivate: true,
@@ -161,7 +161,7 @@ const CONCURRENCY = Math.max(2, Math.min(4, cpus().length));
 let failures = 0;
 let coverageFailures = 0;
 
-/** Renders one package to its `doc/api` tree; returns its report block. */
+/** Renders one package to its `api` tree; returns its report block. */
 async function renderPackage(dir) {
     const pkgDir = join(PACKAGES, dir);
     const manifest = JSON.parse(readFileSync(join(pkgDir, 'package.json'), 'utf8'));
@@ -211,7 +211,7 @@ await Promise.all(
     })
 );
 
-// --- doc/README.md index -------------------------------------------------
+// --- api/README.md index -------------------------------------------------
 const indexLines = [
     '# BlueJS Package API Documentation',
     '',
@@ -220,7 +220,7 @@ const indexLines = [
     '> references drift from the committed tree.',
     '',
     'Every BlueJS package documents itself: its README and its generated API',
-    'reference live **inside the package** (`packages/<name>/doc/api/`), so each',
+    'reference live **inside the package** (`packages/<name>/api/`), so each',
     'package can be read — and installed — on its own.',
     '',
     '| Package | Description | API reference |',
@@ -229,11 +229,11 @@ const indexLines = [
 for (const dir of packages) {
     const manifest = JSON.parse(readFileSync(join(PACKAGES, dir, 'package.json'), 'utf8'));
     indexLines.push(
-        `| \`${manifest.name}\` | ${(manifest.description ?? '').replaceAll('|', '\\|')} | [doc/api/README.md](../packages/${dir}/doc/api/README.md) |`
+        `| \`${manifest.name}\` | ${(manifest.description ?? '').replaceAll('|', '\\|')} | [api/README.md](../packages/${dir}/api/README.md) |`
     );
 }
 indexLines.push('', 'Tooling notes:', '', '- `pnpm doc:api` regenerates everything (TypeDoc, zero-warning standard).');
-mkdirSync(join(ROOT, 'doc'), { recursive: true });
-writeFileSync(join(ROOT, 'doc', 'README.md'), indexLines.join('\n') + '\n');
-console.log('✓ doc/README.md');
+mkdirSync(join(ROOT, 'api'), { recursive: true });
+writeFileSync(join(ROOT, 'api', 'README.md'), indexLines.join('\n') + '\n');
+console.log('✓ api/README.md');
 if (failures || coverageFailures) process.exit(1);

@@ -85,8 +85,8 @@ The todomvc benchmark suite (Speedometer-3 style workload in jsdom) measures the
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into
-[`doc/api/`](doc/api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../doc/README.md) for
+[`api/`](api/README.md). Primary exports live in
+[`src/index.ts`](src/index.ts); see the [package index](../../api/README.md) for
 how it fits with the rest of BlueJS.
 
 - **`AbstractWebComponent`** — base class with the `create`/`emit` lifecycle for component-backed views; acquire a shadow root with `ensureShadowRoot()` so a parser-created declarative root is adopted (not re-attached) at upgrade — the acquired root is cached, so a **closed** root is reused on later calls, and a mode mismatch throws instead of silently returning the wrong root

@@ -12,7 +12,7 @@
     "worker"
   ],
   "files": [
-    "doc",
+    "api",
     "lib"
   ],
   "exports": {

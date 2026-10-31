@@ -10,7 +10,7 @@
   ],
   "type": "module",
   "files": [
-    "doc",
+    "api",
     "lib"
   ],
   "exports": {

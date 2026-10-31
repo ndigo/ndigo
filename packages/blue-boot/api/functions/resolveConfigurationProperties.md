@@ -13,7 +13,7 @@ binding each `@property` field to its converted value from the environment.
 
 Fail-loud (AD-15 D4): a missing required field (no `@defaultValue`) or a
 conversion failure throws, naming class.field + attempted value + target
-type. Nested fields bind recursively via `@nested`.
+type. Nested fields bind recursively via `@nestedConfig`.
 
 ## Type Parameters
 

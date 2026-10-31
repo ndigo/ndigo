@@ -5,17 +5,10 @@
  * @author Jeff Rose
  */
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Enumerable, JSONObject, JSONValue } from '@blue/core';
+import { Enumerable, JSONObject, JSONValue, whenProfile } from '@blue/core';
 import { ContextToken } from '@blue/factory';
 import { ConfigurableEnvironment } from '../src/environment';
-import {
-    configuration,
-    entry,
-    profile,
-    property,
-    propertySource,
-    MetadataConfigApplicationContext,
-} from '../src/configuration';
+import { configuration, entry, property, propertySource, MetadataConfigApplicationContext } from '../src/configuration';
 
 /**
  * Reads the decorator metadata store (Symbol.metadata), dynamically typed at
@@ -58,20 +51,20 @@ describe('@configuration Decorator', () => {
     });
 });
 
-describe('@profile Decorator', () => {
-    it('stores profile metadata on a class', () => {
+describe('@whenProfile Decorator', () => {
+    it('stores the canonical condition on a class', () => {
         @configuration
-        @profile('dev')
+        @whenProfile('dev')
         class TestConfig {}
 
         const metadata = metadataOf(TestConfig);
-        expect(metadata['config:profile']).toEqual(['dev']);
+        expect(metadata['boot:whenProfile']).toBe('dev');
     });
 
-    it('stores profile metadata on a method', () => {
+    it('stores the canonical condition on a method', () => {
         @configuration
         class TestConfig {
-            @profile('dev')
+            @whenProfile('dev')
             @entry()
             foo() {
                 return 'dev-foo';
@@ -79,37 +72,28 @@ describe('@profile Decorator', () => {
         }
 
         const metadata = metadataOf(TestConfig);
-        expect(metadata['config:profile:foo']).toEqual(['dev']);
+        expect(metadata['boot:whenProfile:foo']).toBe('dev');
     });
 
-    it('splits comma-separated profiles into array', () => {
+    it('folds multiple arguments into one either-of expression', () => {
         @configuration
-        @profile('dev,test')
+        @whenProfile('dev', 'test')
         class TestConfig {}
 
         const metadata = metadataOf(TestConfig);
-        expect(metadata['config:profile']).toEqual(['dev', 'test']);
-    });
-
-    it('removes duplicate profiles', () => {
-        @configuration
-        @profile('dev,test,dev')
-        class TestConfig {}
-
-        const metadata = metadataOf(TestConfig);
-        expect(metadata['config:profile']).toEqual(['dev', 'test']);
+        expect(metadata['boot:whenProfile']).toBe('dev | test');
     });
 
     it('only activates entries when profile matches', () => {
         @configuration
         class TestConfig {
-            @profile('dev')
+            @whenProfile('dev')
             @entry()
             devOnly() {
                 return 'dev';
             }
 
-            @profile('prod')
+            @whenProfile('prod')
             @entry()
             prodOnly() {
                 return 'prod';
@@ -127,13 +111,13 @@ describe('@profile Decorator', () => {
     it('evaluates profile expressions on entries (AD-14)', () => {
         @configuration
         class TestConfig {
-            @profile('!prod & (dev | test)')
+            @whenProfile('!prod & (dev | test)')
             @entry()
             devOrTest() {
                 return 'dev-or-test';
             }
 
-            @profile('prod')
+            @whenProfile('prod')
             @entry()
             prodOnly() {
                 return 'prod';
@@ -158,7 +142,7 @@ describe('@profile Decorator', () => {
     it('default profiles gate when nothing is explicit (AD-14)', () => {
         @configuration
         class TestConfig {
-            @profile('base')
+            @whenProfile('base')
             @entry()
             baseOnly() {
                 return 'base';
@@ -441,7 +425,7 @@ describe('@entry Decorator', () => {
 describe('Decorator Integration', () => {
     it('works with all decorators combined', () => {
         @configuration
-        @profile('test')
+        @whenProfile('test')
         @propertySource({ appName: 'MyApp', version: '1.0.0' })
         class AppConfig {
             @property('appName')
@@ -470,13 +454,13 @@ describe('Decorator Integration', () => {
             @property('foo')
             fooValue: unknown;
 
-            @profile('dev')
+            @whenProfile('dev')
             @entry()
             devEntry() {
                 return this.fooValue;
             }
 
-            @profile('prod')
+            @whenProfile('prod')
             @entry()
             prodEntry() {
                 return this.fooValue;

@@ -62,7 +62,7 @@ Jeff Rose
 - [column](functions/column.md)
 - [columnTypeFamily](functions/columnTypeFamily.md)
 - [entity](functions/entity.md)
-- [generated](functions/generated.md)
+- [generatedColumn](functions/generatedColumn.md)
 - [getEntityMetadata](functions/getEntityMetadata.md)
 - [insertSchemaForEntity](functions/insertSchemaForEntity.md)
 - [isEntity](functions/isEntity.md)

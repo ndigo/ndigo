@@ -10,7 +10,7 @@ import semver from 'semver';
 export const SHARED_KEY = 'blue:shared';
 
 /**
- * Options for the `@shared` class decorator.
+ * Options for the `@sharedDependency` class decorator.
  */
 export interface SharedOptions {
     /** Whether this entry must be a singleton across the context hierarchy. Default `true`. */
@@ -22,16 +22,18 @@ export interface SharedOptions {
 /**
  * Class decorator that marks an entry as a shell-managed shared dependency.
  *
- * When a child (feature) context attempts to register a `@shared` entry,
+ * When a child (feature) context attempts to register a `@sharedDependency` entry,
  * the factory skips registration and resolves the entry from the parent chain instead.
  *
  * @example
  * ```ts
- * @shared({ version: '1.2.0' })
+ * @sharedDependency({ version: '1.2.0' })
  * class TelemetryService { … }
  * ```
  */
-export function shared(options?: SharedOptions): (target: Function, context: ClassDecoratorContext) => Function {
+export function sharedDependency(
+    options?: SharedOptions
+): (target: Function, context: ClassDecoratorContext) => Function {
     return function (target: Function, context: ClassDecoratorContext): Function {
         context.metadata[SHARED_KEY] = { singleton: true, ...options };
         return target;
@@ -39,10 +41,10 @@ export function shared(options?: SharedOptions): (target: Function, context: Cla
 }
 
 /**
- * Reads the `@shared` metadata from a class constructor or instance.
+ * Reads the `@sharedDependency` metadata from a class constructor or instance.
  *
  * @param target - Class constructor, prototype, or instance.
- * @returns The `SharedOptions` if the class is marked `@shared`, or `undefined`.
+ * @returns The `SharedOptions` if the class is marked `@sharedDependency`, or `undefined`.
  */
 export function getSharedOptions(target: unknown): SharedOptions | undefined {
     const carrier = (typeof target === 'function' ? target : target?.constructor) as
@@ -54,10 +56,10 @@ export function getSharedOptions(target: unknown): SharedOptions | undefined {
 }
 
 /**
- * Checks whether a class or instance is marked with `@shared`.
+ * Checks whether a class or instance is marked with `@sharedDependency`.
  *
  * @param target - Class constructor, prototype, or instance.
- * @returns `true` if the class is decorated with `@shared`.
+ * @returns `true` if the class is decorated with `@sharedDependency`.
  */
 export function isShared(target: unknown): boolean {
     return getSharedOptions(target) !== undefined;

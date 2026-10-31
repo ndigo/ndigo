@@ -34,8 +34,8 @@ this is the map.
    `@environment` schemas _are_ the config contract. **(P3, P2, P6)**
 7. **No eval-family.** Profile expressions and keys are parsed, never
    `new Function`'d — CSP-safe and scanner-clean. (D8 holds for all phases.)
-8. **JS-standard camelCase decorators.** `@property`, `@entry`, `@profile`,
-   `@configurationProperties`, `@defaultValue`, `@nested`, `@environment`.
+8. **JS-standard camelCase decorators.** `@property`, `@entry`, `@whenProfile`,
+   `@configurationProperties`, `@defaultValue`, `@nestedConfig`, `@environment`.
    Pre-1.0 clean cutovers (no PascalCase aliases). **(P4)**
 
 ## The precedence chain (the doctrine)
@@ -60,7 +60,7 @@ so doctrine cannot drift.
 | Profile defaults docstring vs reality              | `defaultProfiles` was documented-but-dead; P3 made the environment own the effective set — defaults gate only when nothing explicit (Spring parity) |
 | Config profile files as separate sources vs merged | Chain whole-subtree first-wins would shadow nested overrides; all files deep-merge into one `application` source (P2, impl-corrected)               |
 | Fail-fast vs aggregate                             | Dependent errors (binding) → fail-fast; independent config-shape violations (validation) → aggregate report (P4/Q4 vs P6/Q1)                        |
-| `@nested` prefix source                            | Field decorators can't read types; the field name is the sub-prefix and the author provides the initializer (P4)                                    |
+| `@nestedConfig` prefix source                      | Field decorators can't read types; the field name is the sub-prefix and the author provides the initializer (P4)                                    |
 | Type conversion targets                            | TS types are compile-time-only; `@property(path, Type)` declares the runtime target (P4, impl-corrected)                                            |
 
 ## Security posture

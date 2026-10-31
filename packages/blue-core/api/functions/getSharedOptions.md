@@ -8,7 +8,7 @@
 
 > **getSharedOptions**(`target`): [`SharedOptions`](../interfaces/SharedOptions.md) \| `undefined`
 
-Reads the `@shared` metadata from a class constructor or instance.
+Reads the `@sharedDependency` metadata from a class constructor or instance.
 
 ## Parameters
 
@@ -22,4 +22,4 @@ Class constructor, prototype, or instance.
 
 [`SharedOptions`](../interfaces/SharedOptions.md) \| `undefined`
 
-The `SharedOptions` if the class is marked `@shared`, or `undefined`.
+The `SharedOptions` if the class is marked `@sharedDependency`, or `undefined`.

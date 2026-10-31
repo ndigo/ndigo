@@ -64,7 +64,7 @@ function declaredTypeOf(declared: unknown): string | undefined {
 
 /**
  * Collect a class instance's declared keys into `into`, recursing through
- * `@nested` fields (the field name is the sub-prefix, mirroring
+ * `@nestedConfig` fields (the field name is the sub-prefix, mirroring
  * {@link resolveConfigurationProperties}).
  */
 function collectDeclaredProperties(
@@ -98,7 +98,7 @@ function collectDeclaredProperties(
  * embedded in each metadata key (`config:property:<field>` /
  * `config:nested:<field>`), so the top-level keys are still recoverable.
  *
- * DEPTH LIMIT: an `@nested` subtree lives in the nested class's own metadata,
+ * DEPTH LIMIT: an `@nestedConfig` subtree lives in the nested class's own metadata,
  * unreachable without an instance, so a nested field contributes only its
  * top-level key (`prefix.field`) — no descendants. The instance path (a
  * constructor that does not throw) recurses fully.
@@ -178,7 +178,7 @@ function declaredTypeFromSchema(field: unknown): string | undefined {
  * Enumerate the configuration keys a `@configurationProperties` class declares,
  * without resolving any value.
  *
- * Field mode walks `@property` fields (plus `@nested` sub-objects); schema
+ * Field mode walks `@property` fields (plus `@nestedConfig` sub-objects); schema
  * mode walks the `schema` shape keys and maps each zod type to its declared
  * conversion target. Keys are the same full keypaths binding uses
  * (`prefix.field`), deduplicated and sorted. This is the introspection seam
@@ -186,7 +186,7 @@ function declaredTypeFromSchema(field: unknown): string | undefined {
  * environment — and so without ever exposing a value.
  *
  * When a field-mode class's constructor throws, enumeration falls back to
- * metadata: top-level keys are still listed, but `@nested` subtrees are
+ * metadata: top-level keys are still listed, but `@nestedConfig` subtrees are
  * limited to their top-level key (see `collectDeclaredPropertiesFromMetadata`).
  *
  * @param ctor - The configuration properties class constructor.

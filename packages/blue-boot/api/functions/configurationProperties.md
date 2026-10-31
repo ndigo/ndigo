@@ -26,7 +26,7 @@ with NO initializer (`port!: number` is erased at runtime) therefore binds
 the raw value with no conversion — declare the type explicitly or
 initialize the field to get numeric/boolean/date conversion.
 
-Use with `@property` (+ optional `@defaultValue` / `@nested`) from
+Use with `@property` (+ optional `@defaultValue` / `@nestedConfig`) from
 `@blue/context`.
 
 ## Parameters
@@ -52,13 +52,13 @@ A class decorator.
 ## Example
 
 ```ts
-import { property, defaultValue, nested } from '@blue/context';
+import { property, defaultValue, nestedConfig } from '@blue/context';
 import { configurationProperties } from '@blue/boot';
 
 @configurationProperties('server')
 class ServerConfig {
     @property('port', Number) @defaultValue('8080') port!: number;
-    @property('db') @nested db!: DbConfig;
+    @property('db') @nestedConfig db!: DbConfig;
 }
 
 const ctx = app.run();

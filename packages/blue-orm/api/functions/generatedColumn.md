@@ -2,11 +2,11 @@
 
 ***
 
-[@blue/orm](../README.md) / generated
+[@blue/orm](../README.md) / generatedColumn
 
-# Function: generated()
+# Function: generatedColumn()
 
-> **generated**(): (`_value`, `context`) => `void`
+> **generatedColumn**(): (`_value`, `context`) => `void`
 
 Decorator that marks a class property as a generated column.
 This is typically used for auto-incrementing primary keys or other database-generated values.
@@ -20,7 +20,7 @@ This is typically used for auto-incrementing primary keys or other database-gene
 ```typescript
 class User {
   @primaryColumn()
-  @generated()
+  @generatedColumn()
   id: number;
 }
 ```

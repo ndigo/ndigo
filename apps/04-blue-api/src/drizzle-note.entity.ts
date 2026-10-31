@@ -5,7 +5,7 @@
  */
 import '@tsmetadata/polyfill';
 import { z } from 'zod';
-import { entity, primaryColumn, generated, column, prePersist } from '@blue/orm';
+import { entity, primaryColumn, generatedColumn, column, prePersist } from '@blue/orm';
 
 /**
  * Drizzle-backed note entity (SQL persistence demo, M2).
@@ -15,7 +15,7 @@ import { entity, primaryColumn, generated, column, prePersist } from '@blue/orm'
  */
 @entity('drizzle_notes')
 export class DrizzleNote {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 

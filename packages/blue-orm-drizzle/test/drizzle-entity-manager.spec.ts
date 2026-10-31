@@ -7,14 +7,14 @@ import '@tsmetadata/polyfill';
 import { describe, test, expect, beforeAll, beforeEach } from 'vitest';
 import { DrizzleDataSource } from '../src/drizzle-data-source';
 import { DrizzleEntityManager } from '../src/drizzle-entity-manager';
-import { entity as entityDecorator, primaryColumn, generated, column } from '@blue/orm';
+import { entity as entityDecorator, primaryColumn, generatedColumn, column } from '@blue/orm';
 
 // Spec-side type wrapper; runtime-identical to the production `entity` decorator.
 const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
 
 @entity('crud_users')
 class CrudUser {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 
@@ -52,7 +52,7 @@ class ConflictedUser {
 // flow failed boolean validation.
 @entity('typed_flags')
 class TypedFlag {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 
@@ -175,14 +175,14 @@ describe('DrizzleEntityManager persist conflict handling (COR-12)', () => {
 // row — the real error (and the missing write) was silently masked.
 @entity('masked_inserts')
 class MaskedInsert {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 
     @column()
     name = '';
 
-    @generated()
+    @generatedColumn()
     @column()
     stamp: string | undefined;
 }

@@ -9,7 +9,7 @@ import {
     columnsMetadataKey,
     entityMetadataKey,
     entityNameMetadataKey,
-    generatedMetadataKey,
+    generatedColumnMetadataKey,
     primaryMetadataKey,
     relationsMetadataKey,
     lifecycleHooksMetadataKey,
@@ -110,7 +110,7 @@ export function getEntityMetadata(target: Constructable): EntityMetadata {
         entityName: (metadata[entityNameMetadataKey] as string) ?? target.name,
         columns: (metadata[columnsMetadataKey] as ColumnDefinition[]) ?? [],
         primaryColumn: (metadata[primaryMetadataKey] as string) ?? '',
-        generatedColumns: (metadata[generatedMetadataKey] as string[]) ?? [],
+        generatedColumns: (metadata[generatedColumnMetadataKey] as string[]) ?? [],
         relations: (metadata[relationsMetadataKey] as RelationDefinition[]) ?? [],
         lifecycleHooks: (metadata[lifecycleHooksMetadataKey] as LifecycleHookDefinition[]) ?? [],
     };

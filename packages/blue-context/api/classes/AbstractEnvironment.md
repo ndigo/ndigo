@@ -162,10 +162,10 @@ Evaluates a profile expression against the effective active set
 
 ##### expression
 
-`string` \| [`ProfileTerm`](ProfileTerm.md)
+`string` \| [`ProfileTerm`](#)
 
 The profile expression (`dev`, `!prod`, `a & b`,
-  `(a | b) & c`) or a composed [ProfileTerm](ProfileTerm.md) (AD-34 D5).
+  `(a | b) & c`) or a composed [ProfileTerm](#) (AD-34 D5).
 
 #### Returns
 

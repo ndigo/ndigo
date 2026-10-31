@@ -1,13 +1,13 @@
 /**
- * Profile expression builder specs (AD-34 D5).
- * @module blue-context
+ * Profile expression builder specs (AD-34 D5; re-homed with the builder —
+ * AD-83). Config-gating integration for `@whenProfile` lives in
+ * `@blue/context` (`test/when-profile.spec.ts`).
+ * @module blue-core
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { Profile, ProfileTerm } from '../src/profile';
-import { StandardEnvironment } from '../src/environment';
-import { configuration, entry, profile, MetadataConfigApplicationContext } from '../src/configuration';
 
 describe('Profile builder (AD-34 D5)', () => {
     test('composes simple gates to canonical strings', () => {
@@ -39,42 +39,5 @@ describe('Profile builder (AD-34 D5)', () => {
         expect(() => Profile.or('(dev', 'ci')).toThrowError();
         expect(Profile.parse('dev & !ci')).toBe('dev & !ci');
         expect(() => Profile.and()).toThrowError();
-    });
-
-    test('composed terms evaluate identically to their strings', () => {
-        const env = new StandardEnvironment();
-        env.addActiveProfile('dev');
-
-        expect(env.acceptsProfiles('dev & !ci')).toBe(true);
-        expect(env.acceptsProfiles(Profile.and('dev', Profile.not('ci')))).toBe(true);
-        expect(env.acceptsProfiles(Profile.and(Profile.or('dev', 'ci'), 'ops'))).toBe(false);
-    });
-});
-
-describe('@profile with composed terms (AD-34 D5)', () => {
-    test('registers the canonical string metadata', () => {
-        const term = Profile.and('test', Profile.not('ci'));
-
-        @configuration
-        class TermConfiguration {
-            @profile(String(term))
-            @entry('termEntry')
-            value() {
-                return 1;
-            }
-
-            @profile(term)
-            @entry('directTermEntry')
-            other() {
-                return 2;
-            }
-        }
-
-        const context = new MetadataConfigApplicationContext('term-profiles');
-        context.environment.addActiveProfile('test');
-        context.register(TermConfiguration);
-
-        expect(context.getValue<number>('termEntry')).toBe(1);
-        expect(context.getValue<number>('directTermEntry')).toBe(2);
     });
 });

@@ -1,8 +1,8 @@
-[**@blue/context v0.0.1**](../README.md)
+[**@blue/core v0.0.1**](../README.md)
 
 ***
 
-[@blue/context](../README.md) / ProfileExpressionInput
+[@blue/core](../README.md) / ProfileExpressionInput
 
 # Type Alias: ProfileExpressionInput
 

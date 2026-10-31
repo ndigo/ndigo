@@ -4,16 +4,13 @@
  * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
-import { FrameworkError } from '@blue/core';
+import { FrameworkError, getProfileCondition } from '@blue/core';
 import { GenericApplicationContext, ApplicationContextAwareProcessor } from './context';
 import { Environment, AsEnvironmentAware, StandardEnvironment, ConfigurableEnvironment } from './environment';
 import { EntryRegistryProcessor, Registry } from '@blue/factory';
 import { AsResourceLoaderAware } from './resource';
 import { Enumerable, Null, JSONObject, likeEnumerable, createNull, JSONValue } from '@blue/core';
 import { ContextToken, isContextToken } from '@blue/factory';
-import { ProfileTerm } from './profile';
-
-type ProfileMetadata = string[];
 
 /**
  * Decorator-recorded metadata for an `@entry` method: the registry name and
@@ -27,14 +24,12 @@ interface EntryMetadata {
 
 const { defineProperty, getOwnPropertyDescriptor } = Reflect,
     CONFIG_CONSTRUCTOR = 'config:constructor',
-    CONFIG_PROFILE = 'config:profile',
     CONFIG_PROPERTY = 'config:property',
     CONFIG_PROPERTY_SOURCE = 'config:property:source',
     CONFIG_DEFAULT_VALUE = 'config:defaultValue',
     CONFIG_NESTED = 'config:nested',
     CONFIG_PROPERTY_TYPE = 'config:propertyType',
     CONFIG_ENTRY = 'config:entry',
-    toUniqueArray = (name: string): string[] => [...new Set(name.split(','))],
     // Helper to get metadata from a class constructor.
     // The decorator metadata store (Symbol.metadata) is dynamically typed at
     // runtime; the typed getters below assert the shapes their decorators wrote.
@@ -57,13 +52,6 @@ const { defineProperty, getOwnPropertyDescriptor } = Reflect,
     },
     // Metadata getter functions
     hasConfigurationMetadata = (target: unknown): boolean => getMetadata(target)[CONFIG_CONSTRUCTOR] === true,
-    hasProfileMetadata = (target: unknown, propertyKey?: string | symbol): boolean => {
-        const metadata = getInstanceMetadata(target) || getMetadata(target);
-        if (propertyKey) {
-            return metadata[`${CONFIG_PROFILE}:${String(propertyKey)}`] !== undefined;
-        }
-        return metadata[CONFIG_PROFILE] !== undefined;
-    },
     hasPropertyMetadata = (target: unknown, propertyKey: string | symbol): boolean => {
         const metadata = getInstanceMetadata(target) || getMetadata(target);
         return metadata[`${CONFIG_PROPERTY}:${String(propertyKey)}`] !== undefined;
@@ -72,14 +60,6 @@ const { defineProperty, getOwnPropertyDescriptor } = Reflect,
     hasEntryMetadata = (target: unknown, propertyKey: string | symbol): boolean => {
         const metadata = getInstanceMetadata(target) || getMetadata(target);
         return metadata[`${CONFIG_ENTRY}:${String(propertyKey)}`] !== undefined;
-    },
-    getProfileMetadata = (target: unknown, propertyKey?: string | symbol): ProfileMetadata => {
-        const metadata = getInstanceMetadata(target) || getMetadata(target);
-        if (propertyKey) {
-            // The decorator wrote an array of profile names under this key
-            return metadata[`${CONFIG_PROFILE}:${String(propertyKey)}`] as ProfileMetadata;
-        }
-        return metadata[CONFIG_PROFILE] as ProfileMetadata;
     },
     getPropertyMetadata = (target: unknown, propertyKey: string | symbol): string => {
         const metadata = getInstanceMetadata(target) || getMetadata(target);
@@ -127,32 +107,6 @@ export function configuration<T extends new (...args: never[]) => unknown>(
 ): T {
     context.metadata[CONFIG_CONSTRUCTOR] = true;
     return target;
-}
-
-/**
- * Marks a class or method as active only for the named profile(s).
- *
- * @param expressions - Profile name(s) for which the decorated target stays
- *   active (`@profile('prod')` or `@profile('a', 'b')` for either-of).
- *   Composed {@link ProfileTerm} expressions (AD-34 D5) are accepted and
- *   coerced to their canonical string.
- * @returns A decorator that stores profile metadata.
- */
-export function profile(...expressions: Array<string | ProfileTerm>) {
-    // Generic target keeps the decorator's return type assignable to the
-    // decorated class/method (TS1270 would reject a bare `Function` return).
-    return function <M extends Function>(target: M, context: ClassDecoratorContext | ClassMethodDecoratorContext): M {
-        const profiles = toUniqueArray(expressions.map(String).join(','));
-
-        if (context.kind === 'class') {
-            context.metadata[CONFIG_PROFILE] = profiles;
-        } else if (context.kind === 'method') {
-            // Store method-level metadata with method name as key
-            context.metadata[`${CONFIG_PROFILE}:${String(context.name)}`] = profiles;
-        }
-
-        return target;
-    };
 }
 
 /**
@@ -221,14 +175,14 @@ export function defaultValue(rawDefault: string) {
  * @configurationProperties('server')
  * class ServerConfig {
  *     @property('port') @defaultValue('8080') port!: number;
- *     @property('db') @nested db!: DbConfig;
+ *     @property('db') @nestedConfig db!: DbConfig;
  * }
  * class DbConfig { @property('url') url!: string; } // binds server.db.url
  * ```
  */
-export function nested(value: undefined, context: ClassFieldDecoratorContext): void {
+export function nestedConfig(value: undefined, context: ClassFieldDecoratorContext): void {
     if (context.kind !== 'field') {
-        throw new FrameworkError('@nested can only be applied to class fields');
+        throw new FrameworkError('@nestedConfig can only be applied to class fields');
     }
     context.metadata[`${CONFIG_NESTED}:${String(context.name)}`] = true;
 }
@@ -363,7 +317,8 @@ class ConfigurationParser {
         for (; index < length; index++) {
             const configClass = candidates[index];
             if (hasConfigurationMetadata(configClass)) {
-                if (!hasProfileMetadata(configClass) || this._isActiveProfile(getProfileMetadata(configClass))) {
+                const condition = getProfileCondition(configClass);
+                if (condition === undefined || this.environment.acceptsProfiles(condition)) {
                     // Candidates are decorated configuration classes (containers
                     // such as registries are skipped by the metadata check above)
                     const config = new (configClass as new (...args: never[]) => object)();
@@ -388,7 +343,8 @@ class ConfigurationParser {
         // Config instances are plain decorated classes: iterate via string keys
         const entries: Record<string, unknown> = config as Record<string, unknown>;
         for (const key in entries) {
-            if (!hasProfileMetadata(config, key) || this._isActiveProfile(getProfileMetadata(config, key))) {
+            const condition = getProfileCondition(config, key);
+            if (condition === undefined || this.environment.acceptsProfiles(condition)) {
                 if (hasEntryMetadata(config, key)) {
                     const metadata: EntryMetadata = getEntryMetadataRecord(config, key);
                     this.processEntry(metadata.token ?? metadata.name, (entries[key] as Function).bind(config));
@@ -447,20 +403,6 @@ class ConfigurationParser {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
         this.registry.setValue(name, value());
     }
-
-    /**
-     * @private
-     * @param {Array<string>} expressions The profile expressions (OR across entries).
-     * @returns {boolean} Whether any expression is accepted by the environment.
-     */
-    private _isActiveProfile(expressions: string[]): boolean {
-        for (const expression of expressions) {
-            if (this.environment.acceptsProfiles(expression)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
 
 /**
@@ -513,7 +455,7 @@ export class MetadataConfigApplicationContext extends GenericApplicationContext 
      * Parsing runs against the environment current at this call: a fresh
      * `ConfigurationParser` is created per registration. Callers may replace
      * the environment between registrations (`setEnvironment`), so a memoized
-     * parser would evaluate `@profile` gates, `@propertySource` and
+     * parser would evaluate `@whenProfile` gates, `@propertySource` and
      * `@property` binding against a stale environment (CF-9).
      *
      * @param configClass - The configuration class to parse.

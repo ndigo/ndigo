@@ -2,11 +2,11 @@
 
 ***
 
-[@blue/boot](../README.md) / nested
+[@blue/boot](../README.md) / nestedConfig
 
-# Function: nested()
+# Function: nestedConfig()
 
-> **nested**(`value`, `context`): `void`
+> **nestedConfig**(`value`, `context`): `void`
 
 Marks a `@property('prefix')` field as a nested configuration object: bind
 recursively into this plain-class field under the property's keypath
@@ -34,7 +34,7 @@ A field decorator.
 @configurationProperties('server')
 class ServerConfig {
     @property('port') @defaultValue('8080') port!: number;
-    @property('db') @nested db!: DbConfig;
+    @property('db') @nestedConfig db!: DbConfig;
 }
 class DbConfig { @property('url') url!: string; } // binds server.db.url
 ```

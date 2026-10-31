@@ -5,7 +5,7 @@
  */
 import '@tsmetadata/polyfill';
 import { describe, test, expect } from 'vitest';
-import { entity as entityDecorator, generated, primaryColumn, column } from '@blue/orm';
+import { entity as entityDecorator, generatedColumn, primaryColumn, column } from '@blue/orm';
 
 // Spec-side type wrapper; runtime-identical to the production `entity` decorator.
 const entity = entityDecorator as unknown as (tableName?: string) => ClassDecorator;
@@ -15,7 +15,7 @@ import { DrizzleEntityManager } from '../src/drizzle-entity-manager';
 
 @entity('migrated_users')
 class MigratedUser {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 
@@ -32,7 +32,7 @@ class MigratedUser {
 
 @entity('migrated_users')
 class MigratedUserV1 {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 

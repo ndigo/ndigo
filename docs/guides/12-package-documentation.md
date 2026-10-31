@@ -91,9 +91,10 @@ Rules:
   in its warning message — add it there, never in a package's own docs.
 - **After any public API change:** update the JSDoc, run `pnpm doc:api`,
   commit the generated `api/` tree with the change.
-- **Freshness:** CI regenerates and runs
-  `git diff --exit-code -- packages doc`, so stale docs fail the lane.
-  Locally: `pnpm doc:check`.
+- **Freshness:** CI regenerates the packages a PR affects — and every package
+  on the weekly sweep — then runs `git diff --exit-code -- packages api`, so
+  stale docs fail the lane. Locally: `pnpm doc:check` (full regeneration);
+  `node scripts/doc-api.mjs --only <pkg-dir>` regenerates a single package.
 - **Coverage gate:** `pnpm doc:api` fails when a **top-level exported**
   function, class, interface, or type alias has no doc comment (declaration
   or signature). By design: class/interface members, variables, and enum

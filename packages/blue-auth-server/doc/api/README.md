@@ -14,6 +14,7 @@ Jeff Rose
 
 ## Classes
 
+- [AuthMatrixGuard](classes/AuthMatrixGuard.md)
 - [AuthRouteGuard](classes/AuthRouteGuard.md)
 - [AuthServer](classes/AuthServer.md)
 - [CredentialsAuthAdapter](classes/CredentialsAuthAdapter.md)
@@ -26,6 +27,8 @@ Jeff Rose
 ## Interfaces
 
 - [AuthGuardDenialOptions](interfaces/AuthGuardDenialOptions.md)
+- [AuthMatrixGuardOptions](interfaces/AuthMatrixGuardOptions.md)
+- [AuthScheme](interfaces/AuthScheme.md)
 - [Credentials](interfaces/Credentials.md)
 - [CredentialsAuthAdapterOptions](interfaces/CredentialsAuthAdapterOptions.md)
 - [InMemorySessionStoreOptions](interfaces/InMemorySessionStoreOptions.md)

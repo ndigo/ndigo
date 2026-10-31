@@ -1,0 +1,51 @@
+name: Docs
+
+# Light lane for docs-only PRs: the main CI workflow skips them via
+# paths-ignore, and this one keeps formatting and relative links honest at a
+# fraction of the cost (MIN-1 / #41).
+on:
+  pull_request:
+    branches: [master, main]
+    paths:
+      - '**/*.md'
+      - 'docs/**'
+
+# Minimal permissions: only read the repository.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI: true
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies (frozen lockfile)
+        # oxfmt and the docs scripts run from the workspace's own toolchain.
+        run: pnpm install --frozen-lockfile
+
+      - name: Maintained-file formatting
+        run: pnpm format:check
+
+      - name: Docs relative-link integrity
+        run: pnpm docs:links

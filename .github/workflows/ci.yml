@@ -7,6 +7,11 @@ on:
   # main sweep plus manual dispatch keep the safety net (MIN-1, 2026-10-31).
   pull_request:
     branches: [master, main]
+    # Docs-only PRs take the light `docs.yml` lane (format + links); the full
+    # lane runs only when at least one non-doc file changed.
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
   schedule:
     - cron: '0 6 * * 1' # Mondays 06:00 UTC
   workflow_dispatch:
@@ -141,11 +146,36 @@ jobs:
       - name: API docs (TypeDoc, zero warnings)
         # treatWarningsAsErrors is on: dead links, missing params, or
         # unresolved symbols fail the lane.
-        run: pnpm doc
+        #
+        # Per-PR: regenerate only the packages whose src changed (plus a full
+        # regeneration when the doc toolchain itself changed). The weekly
+        # sweep runs the full 46-package generation as the backstop, and the
+        # freshness step below still validates whatever was generated here.
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            pnpm doc
+            exit 0
+          fi
+          changed="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/compare/${{ github.event.pull_request.base.sha }}...${{ github.sha }}" --jq '.files[].filename')"
+          if printf '%s\n' "$changed" | grep -qE '^(scripts/|package\.json$|pnpm-workspace\.yaml$|tsconfig)'; then
+            echo "doc toolchain changed — full regeneration"
+            pnpm doc
+            exit 0
+          fi
+          packages="$(printf '%s\n' "$changed" | sed -n 's|^packages/\([^/]*\)/src/.*|\1|p' | sort -u | paste -sd, -)"
+          if [ -z "$packages" ]; then
+            echo "no package sources changed — skipping doc generation"
+            exit 0
+          fi
+          node scripts/doc-api.mjs --only "$packages"
 
       - name: API docs freshness (generated tree must match committed)
-        # pnpm doc regenerated everything above; any resulting working-tree
-        # diff means committed docs are stale. Docs standard:
+        # The step above regenerated the affected docs (or all of them on
+        # schedule/dispatch); any resulting working-tree diff means committed
+        # docs are stale. The weekly sweep regenerates all 46 packages, so
+        # per-PR scoping cannot hide drift for long. Docs standard:
         # docs/guides/12-package-documentation.md
         run: git diff --exit-code -- packages api
 
@@ -153,6 +183,11 @@ jobs:
         # The repo graph tool is a global npm package on dev machines; make it
         # available to the lanes below. Pinned: the graph format and parser
         # behavior are version-sensitive (TOL-F13).
+        #
+        # Weekly-only (with the two graph steps below): saves ~1.4 min on
+        # every PR run; the parser/fingerprint regression gate still runs on
+        # the weekly sweep and manual dispatches.
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: npm install -g @nanonets/graft@0.23.0
 
       - name: Repo graph build (graft)
@@ -160,6 +195,7 @@ jobs:
         # tree — deterministic, no API key ($0). A hard gate: graft's parsers
         # fail loudly on constructs tsc does not cover (legacy .js scripts,
         # mixed-version decorators, unused-file syntax).
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: graft build
 
       - name: Repo graph in sync (graft check)
@@ -167,6 +203,7 @@ jobs:
         # graph in sync; a mismatch means the wiring or fingerprint mechanism
         # regressed. (The deep meaning tier is an environment-with-key
         # nicety — run `graft build --deep` locally after large changes.)
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: graft check
 
       - name: Nx Cloud — self-healing report

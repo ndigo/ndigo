@@ -521,6 +521,49 @@ This repository's AI-agent definitions are **generated, not hand-edited**:
 - Models: not part of the deployment — agents inherit the session model
   (OpenCode `model`, OMP `modelRoles`, configured outside the store).
 
+## 8. Work Tracking & Multi-Agent Concurrency
+
+Live work lives in **GitHub Issues**; durable records — ADRs, specs, guides —
+stay in `docs/`. The project board flows
+`Backlog → Ready → In Progress → In Review → Done`.
+
+**Picking up work**
+
+- Take issues only from `Ready` (groomed: acceptance criteria, files/area
+  noted, no blockers).
+- Claim before starting: board status → `In Progress`, assign yourself, and
+  comment `claimed — <branch>` on the issue. If a claim already exists, pick
+  another issue. If two sessions race anyway, the first PR wins; the other
+  closes its branch.
+
+**One issue = one branch = one worktree = one session = one PR**
+
+- Branch off `main`: `type/N-short-slug` (e.g. `feat/12-auth-refresh`);
+  `type` is the conventional-commit type.
+- Run concurrent sessions in separate git worktrees (OpenCode: the worktree
+  session tools; OMP: `git worktree add`). One `pnpm install` per worktree is
+  expected — the shared pnpm store makes it cheap.
+- PR back to `main`: title `type(scope): summary`, body `Closes #N`. Rebase
+  onto `main` before merging; **squash-merge only**; delete the branch and
+  remove the worktree afterwards.
+
+**Never**
+
+- Never push directly to `main`, never force-push.
+- Never hand-merge generated files — after a rebase, regenerate:
+  `pnpm agents:sync` (agent trees + `.agent-gen.json`), `pnpm doc:api`
+  (API reference), `pnpm install` (lockfile); commit the regenerated output.
+
+**Single-lane files** — at most one in-flight issue touches these (note it
+when grooming): `pnpm-lock.yaml`, Drizzle migrations (`db:schema:check`
+enforces one-commit discipline), and the generated trees (`.opencode/`,
+`.omp/`, `packages/*/doc/api/`).
+
+**Releases** stay trunk-based: `main` is always releasable; a release is a
+milestone-driven act (CHANGELOG cut → tag → per-package publish), not a
+branch. Incomplete features merge behind `@blue/flags` instead of living on
+long-lived branches.
+
 <!-- graft:start -->
 
 ## Graft — repo context graph

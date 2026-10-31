@@ -75,7 +75,7 @@ it is passed to the delegate processor. Otherwise, it is dropped.
 
 `ReadWriteLogRecord`
 
-The `SdkLogRecord` to process.
+The `ReadWriteLogRecord` to process.
 
 ##### context?
 

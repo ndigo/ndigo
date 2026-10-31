@@ -27,7 +27,7 @@
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import type { Server } from 'node:http';
 import { context as otelContext, propagation, trace } from '@opentelemetry/api';
-import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
+import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
 import { W3CTraceContextPropagator } from '@opentelemetry/core';
 import {
     BasicTracerProvider,
@@ -78,7 +78,7 @@ describe('browser → server trace continuation', () => {
     beforeAll(async () => {
         // Without an async-local context manager the SERVER span's context
         // never reaches the handler, and `context.with` is a no-op.
-        const contextManager = new AsyncHooksContextManager();
+        const contextManager = new AsyncLocalStorageContextManager();
         contextManager.enable();
         otelContext.setGlobalContextManager(contextManager);
 

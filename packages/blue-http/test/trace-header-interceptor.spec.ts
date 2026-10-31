@@ -6,7 +6,7 @@
 // @vitest-environment node
 import { describe, expect, test, vi } from 'vitest';
 import { ROOT_CONTEXT, context as otelContext, propagation, trace } from '@opentelemetry/api';
-import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
+import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
 import { W3CTraceContextPropagator } from '@opentelemetry/core';
 import { BasicTracerProvider } from '@opentelemetry/sdk-trace-base';
 import { HTTP } from '../src/http';
@@ -22,7 +22,7 @@ describe('TraceHeaderInterceptor', () => {
 
     test('injects traceparent from the ambient active span (node pattern)', async () => {
         // Node's OTel contract: ambient context via async-local storage.
-        const contextManager = new AsyncHooksContextManager();
+        const contextManager = new AsyncLocalStorageContextManager();
         contextManager.enable();
         otelContext.setGlobalContextManager(contextManager);
 

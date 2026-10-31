@@ -231,3 +231,6 @@ jobs:
             apps/03-blue-todo/test-results
             apps/06-blue-island/test-results
           if-no-files-found: ignore
+
+      - run: pnpm exec nx fix-ci
+        if: always()

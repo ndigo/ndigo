@@ -28,7 +28,7 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
-    "find-my-way": "^9.9.0",
+    "find-my-way": "^9.10.0",
     "radix3": "^1.1.2"
   },
   "dependencies": {

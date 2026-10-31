@@ -23,6 +23,8 @@ servers, ORM, telemetry (OpenTelemetry), auth, and micro frontend hosting.
 
 ## Getting Started
 
+### Work on the framework (this repository)
+
 ```bash
 # Enable pnpm via corepack (first time only)
 corepack enable
@@ -40,6 +42,66 @@ pnpm test
 pnpm lint
 pnpm format:check
 ```
+
+The full workflow — Nx targets, focused test runs, and the work-tracking
+process — lives in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+### Build an application
+
+Applications are pnpm workspaces over `@blue/*` packages; the
+[`blue` CLI](packages/blue-cli/README.md) fronts the application lifecycle
+(`blue dev`, `blue serve`, `blue generate`, `blue db`, `blue inspect`,
+`blue doctor` — [guide 25](docs/guides/25-blue-cli.md)). Pick a path below:
+each lists the packages to start with, then the demo apps to follow.
+
+> **Pre-1.0:** the packages are not published yet — build from this repository
+> and use the demo ladder as your starting point.
+
+#### If you want to build a client-side web app
+
+1. [`@blue/context`](packages/blue-context/README.md) + [`@blue/boot`](packages/blue-boot/README.md) — DI container and bootstrap
+2. [`@blue/view-webcomponent`](packages/blue-view-webcomponent/README.md) — Web Component views
+3. [`@blue/signals`](packages/blue-signals/README.md) — reactive state
+4. [`@blue/router`](packages/blue-router/README.md) — routing
+5. [`@blue/http`](packages/blue-http/README.md) — HTTP client (interceptors, parsers, cache)
+6. [`@blue/platform-web`](packages/blue-platform-web/README.md) — browser platform glue
+
+Then follow the ladder: [apps/01-blue-hello](apps/01-blue-hello/README.md)
+(minimal SPA) → [apps/03-blue-todo](apps/03-blue-todo/README.md) (micro
+frontend) → [apps/11-blue-conduit-web](apps/11-blue-conduit-web/README.md)
+(RealWorld frontend).
+
+#### If you want to build a Node server-side app
+
+1. [`@blue/boot`](packages/blue-boot/README.md) — application bootstrap (`ApplicationBuilder`, profiles, typed config)
+2. [`@blue/platform-node`](packages/blue-platform-node/README.md) — HTTP server, dispatcher, static files
+3. [`@blue/dispatcher`](packages/blue-dispatcher/README.md) — controllers (`@getMapping` / `@postMapping`)
+4. [`@blue/orm`](packages/blue-orm/README.md) + [`@blue/orm-drizzle`](packages/blue-orm-drizzle/README.md) — persistence
+5. [`@blue/telemetry-node`](packages/blue-telemetry-node/README.md) — tracing, metrics, logging
+
+Then follow the ladder: [apps/02-blue-hello-node](apps/02-blue-hello-node/README.md)
+(minimal server) → [apps/04-blue-api](apps/04-blue-api/README.md) (the reference
+Node app) → [apps/10-blue-conduit-api](apps/10-blue-conduit-api/README.md)
+(RealWorld API). The end-to-end tutorial is [guide 01 — Building a Node
+API](docs/guides/01-building-a-node-api.md).
+
+#### Server-rendered with islands (both)
+
+EJS shell + hydration + live updates: [apps/06-blue-island](apps/06-blue-island/README.md)
+and [apps/12-blue-petclinic](apps/12-blue-petclinic/README.md); the model is
+[guide 18 — Signals & Islands](docs/guides/18-signals-and-islands.md).
+
+#### Run the demos
+
+```bash
+cd apps/<app-dir>
+pnpm dev     # browser apps (Vite)
+pnpm start   # Node apps (tsx)
+```
+
+All 19 apps — reading order, ports, what each demonstrates — are indexed in
+[apps/README.md](apps/README.md); `pnpm apps:smoke` boots and probes every Node
+demo.
 
 ## Applications
 
@@ -148,20 +210,25 @@ Micro frontends:
 
 ## Documentation
 
-- **API reference** — `pnpm doc:api` generates each package's reference from
-  JSDoc into `packages/<name>/api/` (index:
-  [api/README.md](api/README.md))
-- **Guides** — the hand-written documentation set lives in `docs/`
-  ([index](docs/README.md)): [guides](docs/guides/README.md),
-  [architecture](docs/architecture/README.md),
-  [reference](docs/reference/README.md),
-  [migrations](docs/migrations/README.md)
+| Document                           | Answers                                                                                                                                                                                                                                                     |
+| :--------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | _Why is the system built this way?_ — philosophy, layers, design patterns, dependency strategy, the package map, roadmap                                                                                                                                    |
+| [STYLE_GUIDE.md](STYLE_GUIDE.md)   | _How do I write code here?_ — naming, formatting, file/module conventions, with per-section enforcement markers                                                                                                                                             |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | _How do I contribute?_ — setup, work tracking (issue → branch → PR), quality gates                                                                                                                                                                          |
+| [docs/](docs/README.md)            | The documentation set: [guides](docs/guides/README.md) (numbered how-tos), [architecture topics](docs/architecture/README.md), [reference](docs/reference/README.md), [decisions (ADRs)](docs/decisions/README.md), [migrations](docs/migrations/README.md) |
+| [AGENTS.md](AGENTS.md)             | Instructions for AI agents working in this repository                                                                                                                                                                                                       |
+| [`api/`](api/README.md)            | Generated per-package API reference (`pnpm doc:api`, freshness-gated)                                                                                                                                                                                       |
+
+Conventions and layout rules are stated once, in [STYLE_GUIDE.md](STYLE_GUIDE.md);
+architectural rationale once, in [ARCHITECTURE.md](ARCHITECTURE.md). This README
+links them rather than restating them.
+
+Tooling and generated surfaces:
+
 - **Benchmarks** — `pnpm test:bench` runs the vitest bench suites; the
   todomvc Speedometer-3-style comparison runs via `pnpm test:benchmark:*`
 - **Repository graph** — `graft build` maintains the local `graft/` code
   graph used by context-aware tooling
-
-## Development
 
 ## Build Commands
 
@@ -207,111 +274,13 @@ The project uses **oxfmt** for formatting and **oxlint** for code quality
 checks:
 
 ```bash
-# Format code
-pnpm format
-
-# Check formatting
-pnpm format:check
-
-# Run linter
-pnpm lint
+pnpm format        # fix
+pnpm format:check  # verify
+pnpm lint          # oxlint --type-aware --deny-warnings
 ```
 
-**Configuration:**
-
-- Oxfmt: `oxfmt` via `pnpm format` (120-column, 4-space indent, single quotes)
-- Oxlint: `.oxlintrc.json` plus the repository rules in
-  `@blue/oxlint-plugin`
-
-## Documentation Guide
-
-### STYLE_GUIDE vs ARCHITECTURE
-
-The project maintains two complementary documentation files for different purposes:
-
-**STYLE_GUIDE.md - "How to Write Code"**
-
-- **Focus:** Concrete implementation rules, naming, and formatting conventions
-- **Audience:** All developers (including AI agents) writing code daily
-- **Content:**
-    - File naming conventions (kebab-case, underscore prefix, etc.)
-    - Code naming conventions (camelCase, PascalCase, UPPER_SNAKE_CASE)
-    - oxfmt formatting rules (indentation, quotes, semicolons, etc.)
-    - Module organization structure
-    - Special patterns (internal files, test helpers, mixins)
-    - Before/after examples of correct usage
-
-**Think:** "How do I name this file/variable/class?" and "How should this code be formatted?"
-
-**ARCHITECTURE.md - "Why the System Works This Way"**
-
-- **Focus:** High-level design decisions, patterns, principles, and rationale
-- **Audience:** Architects and senior developers understanding system design
-- **Content:**
-    - Core philosophy and design principles
-    - Layered architecture organization
-    - Design patterns (Strategy, Factory, Observer, Decorator, etc.)
-    - Dependency management strategy (Library Integration Layer)
-    - Module visibility concepts and API design
-    - Roadmap and development phases
-
-**Think:** "Why is the system designed this way?" and "What are the architectural patterns?"
-
-**The Dividing Line:**
-
-| Concern               | ARCHITECTURE.md                                           | STYLE_GUIDE.md                                            |
-| :-------------------- | :-------------------------------------------------------- | :-------------------------------------------------------- |
-| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @blue/util, not from seedrandom"             |
-| Code Organization     | "Use Strategy Pattern for parsers"                        | "Name parser files: kebab-case.ts in src/"                |
-| Module Visibility     | "Internal modules are implementation details"             | "Prefix internal files with underscore: \_util.ts"        |
-| Naming Philosophy     | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean"            |
-| Decorators            | "Decorators enable separation of concerns"                | "@routeMapping uses camelCase, stores in Symbol.metadata" |
-
-**Maintenance Note:** When updating the dividing line explanation, update it in both `README.md` and `AGENTS.md` to keep them synchronized.
-
-## Terminology
-
-## Naming Conventions
-
-- **PascalCase** for classes and class mixins, e.g. `MyClass`
-- **camelCase** for variables, properties, and methods, e.g. `myMethod`
-- **is** prefix for type/inheritance checks (uses `typeof` or `instanceof`), e.g. `isString( value )`
-- **like** prefix for duck-typing/interface checks, e.g. `likeController( value )` checks for expected properties
-- **as** prefix for mixins that apply functionality:
-    - Class mixins: `AsEventEmitter( Component )` produces a new class with combined capabilities
-    - Function mixins: `asEventEmitter( component )` adds event emitter methods to the instance
-- **Configurable** suffix denotes interfaces/classes with setters for normally readonly properties
-
-## File & Module Conventions
-
-### Underscore-Prefix Pattern
-
-Files prefixed with an underscore (`_*.ts`) are **internal to their package** and should not be considered part of the public API:
-
-**Source files (`packages/*/src/_*.ts`):**
-
-- Internal utilities and helper functions
-- Implementation details not intended for external consumption
-- Re-exports from dependencies organized for internal use
-- Example: `_util.ts`, `_parser.ts`, `_natural-sort.ts`
-
-**Test files (`packages/*/test/_*.ts`):**
-
-- Test helper utilities and fixtures
-- Custom assertion helpers
-- Mock/worker implementations for testing
-- Example: `_expect.ts`, `_worker.ts`
-
-**Guidelines:**
-
-- ❌ Do NOT export underscore-prefixed modules in `index.ts`
-- ❌ Do NOT import underscore modules from other packages
-- ✅ Use only within the same package
-- ✅ Document purpose in file-level JSDoc comments
-
-### Public API Surface
-
-Each package's public API is defined by its `src/index.ts` file. Only modules explicitly exported there are considered public and stable.
+Rules, naming conventions, patterns, and enforcement markers:
+[STYLE_GUIDE.md](STYLE_GUIDE.md).
 
 ## Versioning
 

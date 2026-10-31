@@ -4,7 +4,7 @@
   "description": "Web Component view technology for BlueJS — component creation and event binding",
   "type": "module",
   "files": [
-    "doc",
+    "api",
     "lib"
   ],
   "exports": {

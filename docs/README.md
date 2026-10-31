@@ -63,7 +63,7 @@ historical by nature.
 - **ADR links are the source of truth for "why"** — every implemented plan
   and feature surface may cite its decision record.
 - **Generated API reference is single-sourced from JSDoc**
-  (`pnpm doc:api` → `packages/<name>/doc/api/`; freshness enforced by
+  (`pnpm doc:api` → `packages/<name>/api/`; freshness enforced by
   `pnpm doc:check`). Package READMEs follow the guide-12 standard.
 - Formatting is enforced by oxfmt (`pnpm format:check`) across docs.
 

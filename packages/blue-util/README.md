@@ -35,15 +35,15 @@ const id = guid();
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into
-[`doc/api/`](doc/api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../doc/README.md) for
+[`api/`](api/README.md). Primary exports live in
+[`src/index.ts`](src/index.ts); see the [package index](../../api/README.md) for
 how it fits with the rest of BlueJS.
 
 Every symbol in the generated reference is supported public API — including
 helpers the framework itself does not call (`decodeHtml`, `encodeHtml`,
 `trailingSplit`, `toProper`, `randHex`, `randInt`, `isValidDate`,
 `isNumeric`). They are covered by this package's test suite and versioned
-with it; nothing in `doc/api/` should be treated as private. Note that
+with it; nothing in `api/` should be treated as private. Note that
 `rand`/`randInt`/`randHex` are seeded pseudo-random helpers — use
 `randomToken`/`randomHex` when the output must be cryptographically secure.
 

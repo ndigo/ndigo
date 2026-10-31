@@ -74,9 +74,6 @@ apps/*/index.js.map
 apps/*/data/
 
 # Documentation
-doc/
-!doc/
-!packages/*/doc/
 docs-ts/
 playwright-report/
 test-results/

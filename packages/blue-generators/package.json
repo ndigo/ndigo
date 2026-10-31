@@ -22,7 +22,7 @@
   "files": [
     "src",
     "lib",
-    "doc",
+    "api",
     "generators.json"
   ],
   "scripts": {

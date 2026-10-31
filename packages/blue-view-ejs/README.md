@@ -45,8 +45,8 @@ Path-backed views load their template source once and keep rendering it for the 
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into
-[`doc/api/`](doc/api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../doc/README.md) for
+[`api/`](api/README.md). Primary exports live in
+[`src/index.ts`](src/index.ts); see the [package index](../../api/README.md) for
 how it fits with the rest of BlueJS.
 
 - **`EJSView`** — a producer view that renders an EJS template into a fragment `ViewTarget` (islands, client-side DOM) or a whole document (servlet-style SSR), per the `ProducerView` contract

@@ -4,7 +4,7 @@
   "description": "Blue DOM – Isomorphic DOM parsing integration layer",
   "type": "module",
   "files": [
-    "doc",
+    "api",
     "lib"
   ],
   "exports": {

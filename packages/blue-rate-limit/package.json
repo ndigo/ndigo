@@ -10,7 +10,7 @@
     "throttle"
   ],
   "files": [
-    "doc",
+    "api",
     "lib"
   ],
   "exports": {

@@ -107,7 +107,7 @@ const params = QueryString.parse('a=1&a=2&b=3'); // { a: ['1','2'], b: '3' }
 
 ## References
 
-- Generated API: [`@blue/http` doc/api](../../packages/blue-http/doc/api/README.md);
+- Generated API: [`@blue/http` api](../../packages/blue-http/api/README.md);
   the full symbol surface is on the package README.
 - Decision: [AD-49](../decisions/2026-02-07_AD49_HTTP_TRANSFORM_PIPELINE.md) —
   the body transform pipeline.

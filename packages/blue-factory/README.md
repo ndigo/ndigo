@@ -46,8 +46,8 @@ Built-in names: `singleton`, `prototype`, `route` (implemented using key-based h
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into
-[`doc/api/`](doc/api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../doc/README.md) for
+[`api/`](api/README.md). Primary exports live in
+[`src/index.ts`](src/index.ts); see the [package index](../../api/README.md) for
 how it fits with the rest of BlueJS.
 
 ## Development

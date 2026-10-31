@@ -25,7 +25,7 @@
     "format:check": "oxfmt --check .",
     "doc": "pnpm doc:api",
     "doc:api": "node scripts/doc-api.mjs",
-    "doc:check": "pnpm doc:api && git diff --exit-code -- packages doc",
+    "doc:check": "pnpm doc:api && git diff --exit-code -- packages api",
     "docs:links": "node scripts/check-doc-links.mjs",
     "db:schema:check": "node scripts/check-migration-schema.mjs",
     "manifest:check": "node scripts/check-manifests.mjs",

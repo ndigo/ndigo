@@ -115,6 +115,25 @@ The conversion service.
 
 ***
 
+### corsOptions()
+
+> **corsOptions**(): [`CORSInterceptorOptions`](../interfaces/CORSInterceptorOptions.md)
+
+CORS policy bound to the `cors.*` environment namespace, read once at
+registration time. Fail-closed by default (empty `allowedOrigins`): no
+cross-origin request is permitted until an app sets `cors.allowedOrigins`,
+so the always-registered [CORSInterceptor](CORSInterceptor.md) blocks by default and
+apps opt in explicitly. Mirrors how `flagEvaluator()`/`rateLimiter()` bind
+their namespaces from the application environment.
+
+#### Returns
+
+[`CORSInterceptorOptions`](../interfaces/CORSInterceptorOptions.md)
+
+options for the auto-registered [CORSInterceptor](CORSInterceptor.md).
+
+***
+
 ### dispatcher()
 
 > **dispatcher**(): [`NodeDispatcher`](NodeDispatcher.md)

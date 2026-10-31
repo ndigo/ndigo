@@ -36,7 +36,10 @@ for (const flavor of readdirSync(pnpm)) {
     const link = join(linkDir, 'typescript');
     const target = readdirSync(pnpm).find((name) => name.startsWith(TS6_PREFIX));
     if (!target) {
-        continue; // 6.0.3 flavor not installed — nothing safe to point at
+        console.warn(
+            'typedoc-ts-shim: typescript@6.0.3 flavor missing from the store — TypeDoc will crash if it runs. Is `typescript-6` still declared in the root manifest?'
+        );
+        continue; // nothing safe to point at
     }
     const relative = join('..', '..', target, 'node_modules', 'typescript');
     try {

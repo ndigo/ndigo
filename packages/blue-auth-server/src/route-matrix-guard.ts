@@ -122,7 +122,10 @@ export class AuthMatrixGuard implements RouteHandlerInterceptor {
         // Fail closed: an unregistered adapter id is a configuration error, but the
         // request is still denied — never let an error open a guarded route.
         const principal: Principal | null = await this.#authServer
-            .validateAny(token, this.#schemes.map((scheme) => scheme.adapterId))
+            .validateAny(
+                token,
+                this.#schemes.map((scheme) => scheme.adapterId)
+            )
             .catch(() => null);
         if (principal === null) {
             return this.#deny(401);

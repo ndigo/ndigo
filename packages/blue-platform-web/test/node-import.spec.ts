@@ -12,6 +12,8 @@
 import { describe, expect, test } from 'vitest';
 
 describe('@blue/platform-web barrel (non-DOM import)', () => {
+    // Cold barrel import on a loaded CI runner can exceed the 5s default
+    // (observed 2026-10-30, first fully-run lane — platform-web + telemetry-web).
     test('is importable with no DOM globals', async () => {
         expect(typeof document).toBe('undefined');
         expect(typeof window).toBe('undefined');
@@ -24,7 +26,7 @@ describe('@blue/platform-web barrel (non-DOM import)', () => {
         expect(typeof barrel.HashRouter).toBe('function');
         expect(typeof barrel.BrowserRouter).toBe('function');
         expect(typeof barrel.RetryOnOfflineInterceptor).toBe('function');
-    });
+    }, 30_000);
 
     test('cookie reads outside a DOM return undefined instead of throwing', async () => {
         const { Cookies } = await import('../src/cookies');

@@ -52,11 +52,14 @@ function childScript(exitCode: number): string {
 const { writeFileSync } = require('node:fs');
 const { join } = require('node:path');
 const dir = process.env.CLUSTER_MARKER_DIR;
-writeFileSync(join(dir, process.env.BLUE_CLUSTER_SLOT + '.up'), process.env.PORT ?? 'no-port');
 process.on('SIGTERM', () => {
   writeFileSync(join(dir, process.env.BLUE_CLUSTER_SLOT + '.signal'), 'x');
   process.exit(${exitCode});
 });
+// The .up marker must mean "armed": tests may race stop() against startup,
+// and an unhandled SIGTERM would kill the child by default disposition —
+// exit code null, cluster stays at its default 0 (CI flake 2026-10-30).
+writeFileSync(join(dir, process.env.BLUE_CLUSTER_SLOT + '.up'), process.env.PORT ?? 'no-port');
 setTimeout(() => {}, 60_000);
 `;
 }

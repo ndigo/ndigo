@@ -21,7 +21,7 @@
 
 import { readdirSync, readFileSync, writeFileSync, existsSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
-import { tmpdir } from 'node:os';
+import { cpus, tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 
@@ -150,9 +150,19 @@ const packages = readdirSync(PACKAGES)
     .filter((dir) => existsSync(join(PACKAGES, dir, 'package.json')) && existsSync(join(PACKAGES, dir, 'src')))
     .sort();
 
+/**
+ * Bounded parallelism (MIN-1): each TypeDoc run builds a full TS program, so
+ * per-package spawns dominate wall time. Workers print per-package blocks
+ * atomically — diagnostics stay readable; the generated tree does not depend
+ * on ordering.
+ */
+const CONCURRENCY = Math.max(2, Math.min(4, cpus().length));
+
 let failures = 0;
 let coverageFailures = 0;
-for (const dir of packages) {
+
+/** Renders one package to its `doc/api` tree; returns its report block. */
+async function renderPackage(dir) {
     const pkgDir = join(PACKAGES, dir);
     const manifest = JSON.parse(readFileSync(join(pkgDir, 'package.json'), 'utf8'));
     let tmp;
@@ -163,28 +173,43 @@ for (const dir of packages) {
         const config = typedocConfig(pkgDir, manifest);
         config.json = jsonPath;
         writeFileSync(configPath, JSON.stringify(config, null, 2));
-        await runTypedoc(configPath); // eslint-disable-line no-await-in-loop -- sequential per-package runs keep log/violation output ordered and match the WATCH short-circuit; parallelizing would interleave diagnostics
+        await runTypedoc(configPath);
         const violations = coverageViolations(jsonPath, pkgDir, manifest.name);
         if (violations.length) {
-            coverageFailures += violations.length;
-            console.error(
-                `✗ ${manifest.name}: ${violations.length} public ${violations.length === 1 ? 'symbol has' : 'symbols have'} no doc comment:`
-            );
-            for (const v of violations.slice(0, 12)) console.error(`    ${v.kind} ${v.name} (${v.file})`);
-            if (violations.length > 12) console.error(`    … and ${violations.length - 12} more`);
-        } else {
-            console.log(`✓ ${manifest.name}`);
+            const lines = [
+                `✗ ${manifest.name}: ${violations.length} public ${violations.length === 1 ? 'symbol has' : 'symbols have'} no doc comment:`,
+            ];
+            for (const v of violations.slice(0, 12)) lines.push(`    ${v.kind} ${v.name} (${v.file})`);
+            if (violations.length > 12) lines.push(`    … and ${violations.length - 12} more`);
+            return { failed: false, coverage: violations.length, lines };
         }
+        return { failed: false, coverage: 0, lines: [`✓ ${manifest.name}`] };
     } catch (error) {
-        failures++;
-        console.error(`✗ ${manifest.name}: ${error.message}`);
+        return { failed: true, coverage: 0, lines: [`✗ ${manifest.name}: ${error.message}`] };
     } finally {
         // Never leak blue-doc-* dirs under OS tmp: typedoc non-zero exit, JSON
         // parse and coverage failures all throw above — clean up on every path.
         if (tmp) rmSync(tmp, { recursive: true, force: true });
     }
-    if (WATCH) break; // watch mode: first package only, hangs by design
 }
+
+const targets = WATCH ? packages.slice(0, 1) : packages; // watch mode: first package only, hangs by design
+const workers = Math.min(WATCH ? 1 : CONCURRENCY, targets.length);
+let next = 0;
+await Promise.all(
+    Array.from({ length: workers }, async () => {
+        while (next < targets.length) {
+            // oxlint-disable-next-line no-await-in-loop -- bounded worker pool: each worker renders one package at a time
+            const result = await renderPackage(targets[next++]);
+            if (result.failed) failures += 1;
+            coverageFailures += result.coverage;
+            for (const line of result.lines) {
+                if (result.failed || result.coverage > 0) console.error(line);
+                else console.log(line);
+            }
+        }
+    })
+);
 
 // --- doc/README.md index -------------------------------------------------
 const indexLines = [

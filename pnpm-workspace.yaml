@@ -18,7 +18,7 @@ packages:
 # ../todomvc/examples/* members, which keep their own ecosystem pins
 # (typescript 5.9.3/6.0.3, webpack 5.x, jsdom 20/29) as standalone demos.
 catalog:
-  '@nx/devkit': '~23.2.1'
+  '@nx/devkit': '~24.0.2'
   '@opentelemetry/api': '~1.10.0'
   '@opentelemetry/api-logs': '~0.223.0'
   '@opentelemetry/context-async-hooks': '~3.0.0'

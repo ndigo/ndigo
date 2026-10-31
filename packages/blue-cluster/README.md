@@ -18,7 +18,7 @@ window.
 pnpm add @blue/cluster
 ```
 
-Prerequisites: Node.js ≥22 and pnpm ≥11.
+Prerequisites: Node.js ≥24 and pnpm ≥11.
 
 ## Getting Started
 

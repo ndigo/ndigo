@@ -189,7 +189,7 @@ await catalog.set('top', [{ id: 42 }]);
 await manager.close(); // stop consumers, then await before context.close()
 ```
 
-Requires Node 22+ and standalone Redis 7.2+. Values must be JSON-value trees;
+Requires Node 24+ and standalone Redis 7.2+. Values must be JSON-value trees;
 whole-entry undefined is separately tagged so it is not a miss. Unsupported
 objects (Date/classes/cycles/functions/bigint/nonfinite numbers, nested undefined,
 accessors/sparse arrays) and corrupt stored values reject rather than silently

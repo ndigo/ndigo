@@ -61,7 +61,7 @@ let browser: BrowserMockClient;
 let close: () => void;
 
 beforeAll(async () => {
-    server.server.listen({ onUnhandledRequest: 'error' });
+    server.server.listen({ onUnhandledFrame: 'error' });
     api = createHnApiClient({ base: HN_TEST_BASE });
     service = new HnService(api);
     const app = await bootBrowserApp([HnTestConfiguration]);

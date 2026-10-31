@@ -10,7 +10,7 @@ Nx generators for BlueJS package, component, README, and documentation-header sc
 pnpm add @blue/generators
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 
 ## Getting Started
 

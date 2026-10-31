@@ -26,7 +26,7 @@ Service or chain to wrap.
 
 ##### interceptors?
 
-[`ServiceInterceptor`](../type-aliases/ServiceInterceptor.md)[] \| `null`
+[`ServiceInterceptor`](../type-aliases/ServiceInterceptor.md)[] \| `null` = `null`
 
 Additional interceptors to append.
 

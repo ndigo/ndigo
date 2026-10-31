@@ -10,7 +10,7 @@ Reactive state management with signals, computed values, and effects. Built on [
 pnpm add @blue/signals
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 
 ## Getting Started
 

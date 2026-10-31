@@ -29,7 +29,7 @@ container-friendly decorator that resolves a `CacheManager` off the instance.
 pnpm add @blue/cache
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 
 ## Getting Started
 

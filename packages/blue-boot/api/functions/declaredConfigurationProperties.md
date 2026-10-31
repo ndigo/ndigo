@@ -26,7 +26,7 @@ limited to their top-level key (see `collectDeclaredPropertiesFromMetadata`).
 
 ### ctor
 
-() => `unknown`
+new () => `unknown`
 
 The configuration properties class constructor.
 

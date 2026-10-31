@@ -39,7 +39,7 @@ describe('TimeoutInterceptor', () => {
     let http: HTTP | undefined;
     let response: Response | undefined;
 
-    beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+    beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
 
     beforeEach(() => {
         http = new HTTP([new TestTimeoutInterceptor(200)]);

@@ -15,7 +15,8 @@ It extends `ArrayLike<RouteSegment>` to allow iteration over its segments.
 
 ## Extends
 
-- `ArrayLike`\<[`RouteSegment`](RouteSegment.md)\>.`Serializable`
+- `ArrayLike`\<[`RouteSegment`](RouteSegment.md)\>
+- `Serializable`
 
 ## Type Parameters
 

@@ -16,7 +16,7 @@ the next `getValue` re-creates the instance from its factory.
 
 ### T
 
-`T` *extends* (...`args`) => `unknown`
+`T` *extends* new (...`args`) => `unknown`
 
 ## Parameters
 

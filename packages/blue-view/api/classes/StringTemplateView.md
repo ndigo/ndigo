@@ -41,7 +41,7 @@ Creates a new StringTemplateView.
 
 ##### path?
 
-`string` \| `null`
+`string` \| `null` = `null`
 
 The URL path for this view.
 

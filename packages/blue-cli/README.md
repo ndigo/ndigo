@@ -14,7 +14,7 @@ features (generators, introspection) staying in their packages.
 pnpm add @blue/cli
 ```
 
-Prerequisites: Node.js ≥22 (the `@oclif/core` v5 baseline), pnpm ≥11.
+Prerequisites: Node.js ≥24 (the repository runtime baseline), pnpm ≥11.
 
 ## Getting Started
 

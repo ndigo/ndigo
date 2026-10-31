@@ -26,7 +26,7 @@ The view name or view instance.
 
 ##### model?
 
-[`Model`](#)\<`unknown`\> \| `null`
+[`Model`](#)\<`unknown`\> \| `null` = `null`
 
 Optional model data to expose to the view.
 

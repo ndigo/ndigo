@@ -1,4 +1,20 @@
 {
+  "@blue/js": {
+    "AuthAdapter": "#",
+    "AuthResult": "#",
+    "FeatureMetricAggregator": "#",
+    "Initializable": "#",
+    "InterceptorDenial": "#",
+    "JobDriver": "#",
+    "MessageSource": "#",
+    "OutboxStore": "#",
+    "Principal": "#",
+    "ProducerView": "#",
+    "ResourceLoader": "#",
+    "RouteHandlerInterceptor": "#",
+    "SessionStore": "#",
+    "ViewTarget": "#"
+  },
   "@blue/auth-core": {
     "AuthAdapter": "#",
     "AuthResult": "#",

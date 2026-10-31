@@ -102,7 +102,9 @@ The project maintains two complementary documentation files for different purpos
 | Naming Philosophy     | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean"            |
 | Decorators            | "Decorators enable separation of concerns"                | "@routeMapping uses camelCase, stores in Symbol.metadata" |
 
-**Maintenance Note:** When updating the dividing line explanation, update it in both `README.md` and `AGENTS.md` to keep them synchronized.
+**Maintenance Note:** The root README links [`STYLE_GUIDE.md`](STYLE_GUIDE.md)
+and [`ARCHITECTURE.md`](ARCHITECTURE.md) instead of restating this split — keep
+this summary synchronized with them.
 
 ### Package Documentation
 

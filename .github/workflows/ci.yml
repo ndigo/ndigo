@@ -21,6 +21,10 @@ concurrency:
 
 env:
   CI: true
+  # Nx Cloud (Hobby: remote cache + self-healing reports). Token lives in the
+  # repo secret; when absent, Nx Cloud features stay off and CI behaves as
+  # before.
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
   # Pinning: third-party actions are pinned to reviewed commit SHAs
   # (see each `uses:` below for the resolved SHA).
 
@@ -165,6 +169,13 @@ jobs:
         # nicety — run `graft build --deep` locally after large changes.)
         run: graft check
 
+      - name: Nx Cloud — self-healing report
+        # Runs even when earlier steps fail; a no-op on all-success runs.
+        # Failed tasks are analyzed by Nx Cloud, with fix proposals posted to
+        # the PR (workspace setting). Guardrails: .nx/SELF_HEALING.md.
+        if: always()
+        run: pnpm exec nx fix-ci
+
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -231,3 +242,10 @@ jobs:
             apps/03-blue-todo/test-results
             apps/06-blue-island/test-results
           if-no-files-found: ignore
+
+      - name: Nx Cloud — self-healing report
+        # e2e-side copy: covers e2e failures. Quality failures are reported by
+        # that job's own copy (e2e never runs after a failed quality job).
+        # No-op on all-success runs.
+        if: always()
+        run: pnpm exec nx fix-ci

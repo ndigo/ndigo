@@ -28,6 +28,11 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     timeout-minutes: 35
+    # Parked PRs (Dependabot by default — see .github/dependabot.yml) skip the
+    # whole lane, so rebase pushes cost no runner minutes. Un-park by removing
+    # the label and pushing: a rebase push is a `synchronize` event, which
+    # runs CI on the fresh base. Schedule and manual dispatch are never gated.
+    if: ${{ github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'parked') }}
     # Live Redis suites (@blue/redis cache + pub/sub) are env-gated and would
     # otherwise never run in CI (review DAT-F14); the URL is exported on the
     # test step below.

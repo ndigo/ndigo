@@ -33,7 +33,7 @@ catalog:
   '@opentelemetry/sdk-node': '~0.300.0'
   '@opentelemetry/sdk-trace-base': '~2.12.0'
   '@oxlint/plugins': '^1.90.0'
-  '@toon-format/toon': '4.1.1'
+  '@toon-format/toon': '4.4.0'
   '@tsmetadata/polyfill': '^1.1.3'
   '@types/node': '~24.13.5'
   '@types/ws': '^8.18.0'

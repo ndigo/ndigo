@@ -4,7 +4,8 @@
  * For every registered app: spawn its `start` script on a dedicated probe port,
  * poll the probe route until it answers, assert the expected status/body,
  * optionally round-trip a WebSocket frame, then SIGTERM the process and require
- * a clean exit. This covers the real-process surface that in-process tests miss:
+ * a graceful exit — code 0, death by the signal, or a wrapper's 128 + SIGTERM.
+ * This covers the real-process surface that in-process tests miss:
  * socket bind, static files, view rendering, and graceful shutdown.
  *
  * Probe ports live in the dedicated 4xxx range, never the documented dev port,
@@ -30,6 +31,8 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const READY_TIMEOUT_MS = Number(process.env['APPS_SMOKE_READY_MS'] ?? 60_000);
 const EXIT_TIMEOUT_MS = 10_000;
 const WS_TIMEOUT_MS = 10_000;
+/** Exit code a runtime wrapper reports for "terminated by SIGTERM" (128 + 15). */
+const SIGTERM_EXIT_CODE = 128 + 15;
 const LOG_TAIL = 8_000;
 
 /**
@@ -182,7 +185,10 @@ async function runApp(app) {
     if (!result) {
         fail('did not exit within 10s of SIGTERM (graceful shutdown broken?)');
     }
-    if (result.code !== 0 && result.signal !== 'SIGTERM') {
+    // tsx sometimes handles the group SIGTERM and exits with 128 + SIGTERM
+    // (143) instead of dying by the signal; both mean "terminated on request".
+    // The port-release assertion below still enforces real cleanup. (#33)
+    if (result.code !== 0 && result.signal !== 'SIGTERM' && result.code !== SIGTERM_EXIT_CODE) {
         fail(`exited with code=${result.code} signal=${result.signal}`);
     }
 

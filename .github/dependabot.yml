@@ -7,6 +7,10 @@
 # dev/demo toolchain (vitest, webpack demo apps, svelte) carries pre-existing
 # upstream advisories that would fail CI. Dependabot is the complement: it
 # files security updates for any of these automatically.
+#
+# Version updates are grouped (see `groups`) to cut PR/CI churn: OpenTelemetry
+# packages, preact packages, and dev dependencies each land as one PR per
+# weekly run; security updates stay ungrouped.
 version: 2
 updates:
   - package-ecosystem: npm
@@ -14,3 +18,13 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      opentelemetry:
+        patterns:
+          - '@opentelemetry/*'
+      preact:
+        patterns:
+          - 'preact'
+          - '@preact/*'
+      dev-dependencies:
+        dependency-type: development

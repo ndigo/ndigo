@@ -11,9 +11,13 @@
  * includes `doc`), and link correctly from its README.
  *
  * Usage:
- *   node scripts/doc-api.mjs            # regenerate everything
- *   node scripts/doc-api.mjs --watch    # typedoc --watch (first package);
- *                                       # dev aid only, not used in CI
+ *   node scripts/doc-api.mjs                 # regenerate everything
+ *   node scripts/doc-api.mjs --only a,b,c    # regenerate just those packages
+ *                                            # (the root index is always
+ *                                            # rewritten); CI uses this for
+ *                                            # PR-affected docs
+ *   node scripts/doc-api.mjs --watch         # typedoc --watch (first package);
+ *                                            # dev aid only, not used in CI
  *
  * Deterministic: output is derived from source + manifests only. CI verifies
  * freshness by regenerating and diffing the working tree.
@@ -29,6 +33,30 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const PACKAGES = join(ROOT, 'packages');
 
 const WATCH = process.argv.includes('--watch');
+
+/**
+ * Parses `--only <dirs>` (comma-separated package directories). Returns
+ * `null` when the flag is absent. Unknown directories are rejected where the
+ * package list is known — a typo must never silently skip regeneration.
+ */
+function parseOnly(argv) {
+    const index = argv.indexOf('--only');
+    if (index === -1) return null;
+    const value = argv[index + 1];
+    const dirs = value
+        ? value
+              .split(',')
+              .map((dir) => dir.trim())
+              .filter(Boolean)
+        : [];
+    if (!dirs.length) {
+        console.error('✗ --only requires a comma-separated list of package directories');
+        process.exit(1);
+    }
+    return dirs;
+}
+
+const ONLY = parseOnly(process.argv);
 
 const EXTERNAL_SYMBOL_LINK_MAPPINGS = JSON.parse(
     readFileSync(join(ROOT, 'scripts', 'external-symbol-links.json'), 'utf8')
@@ -193,7 +221,19 @@ async function renderPackage(dir) {
     }
 }
 
-const targets = WATCH ? packages.slice(0, 1) : packages; // watch mode: first package only, hangs by design
+let targets;
+if (WATCH) {
+    targets = packages.slice(0, 1); // watch mode: first package only, hangs by design
+} else if (ONLY) {
+    const unknown = ONLY.filter((dir) => !packages.includes(dir));
+    if (unknown.length) {
+        console.error(`✗ --only references unknown package directories: ${unknown.join(', ')}`);
+        process.exit(1);
+    }
+    targets = packages.filter((dir) => ONLY.includes(dir));
+} else {
+    targets = packages;
+}
 const workers = Math.min(WATCH ? 1 : CONCURRENCY, targets.length);
 let next = 0;
 await Promise.all(

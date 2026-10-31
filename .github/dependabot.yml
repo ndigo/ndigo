@@ -18,6 +18,12 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # Arrive parked: CI skips while this label is present (the guard lives in
+    # .github/workflows/ci.yml). Un-park = remove the label + rebase push.
+    labels:
+      - dependencies
+      - javascript
+      - parked
     groups:
       opentelemetry:
         patterns:

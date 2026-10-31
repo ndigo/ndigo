@@ -59,7 +59,7 @@
     "nx": "catalog:",
     "oxfmt": "^0.72.0",
     "oxlint": "catalog:",
-    "oxlint-tsgolint": "^7.0.2003",
+    "oxlint-tsgolint": "^7.0.2005",
     "safe-regex": "catalog:",
     "tsrs": "0.18.0-ts7.1.0-dev.20260929",
     "tsx": "catalog:",

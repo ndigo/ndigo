@@ -4,7 +4,7 @@
   "description": "Node.js platform adapter for BlueJS — HTTP server, auto-configuration, static files, multipart",
   "type": "module",
   "files": [
-    "doc",
+    "api",
     "lib"
   ],
   "exports": {

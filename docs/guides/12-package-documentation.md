@@ -13,12 +13,12 @@ So every package carries its own docs:
 
 - **`README.md`** — the human-written entry point (purpose, install,
   usage, API pointer).
-- **`doc/api/`** — the generated TypeDoc reference tree, committed and
+- **`api/`** — the generated TypeDoc reference tree, committed and
   CI-verified.
 - **`package.json` metadata** — registry-facing fields (description,
   keywords, files) that make the package self-describing on npm.
 
-The repo-root `doc/README.md` is just an index linking into the
+The repo-root `api/README.md` is just an index linking into the
 per-package references — no root-level generated site.
 
 ## The per-package README
@@ -41,7 +41,7 @@ section order (drop optional ones):
 
 ## Configuration # (optional) options table
 
-## API # link to doc/api/README.md; DO NOT re-list symbols
+## API # link to api/README.md; DO NOT re-list symbols
 
 ## Development # pnpm --filter @blue/<name> build:lib / test
 
@@ -80,8 +80,8 @@ Rules:
 ## Generated API docs
 
 - **Generate:** `pnpm doc:api` (alias `pnpm doc`) — runs TypeDoc per package
-  over the package's `exports` map, writing `packages/<name>/doc/api/`,
-  then regenerates the `doc/README.md` index.
+  over the package's `exports` map, writing `packages/<name>/api/`,
+  then regenerates the `api/README.md` index.
 - **Zero-warning standard:** `treatWarningsAsErrors` is on. Broken JSDoc
   links fail the lane — that's the drift guard.
 - **Cross-package links:** each package's API reference is isolated, so a
@@ -90,7 +90,7 @@ Rules:
   (`{ "@blue/other": { "Symbol": "#" } }`). TypeDoc names the needed entry
   in its warning message — add it there, never in a package's own docs.
 - **After any public API change:** update the JSDoc, run `pnpm doc:api`,
-  commit the generated `doc/api/` tree with the change.
+  commit the generated `api/` tree with the change.
 - **Freshness:** CI regenerates and runs
   `git diff --exit-code -- packages doc`, so stale docs fail the lane.
   Locally: `pnpm doc:check`.
@@ -117,7 +117,7 @@ in real content, then let `pnpm manifest:check` + `pnpm doc:api` validate.
 - **No HTML docs** — `doc-html/`, `typedoc.html.json`, and `pnpm doc:html`
   were removed (2026-09). Markdown only.
 - **No root generated site** — `typedoc.json` entry-point wizardry is
-  replaced by `scripts/doc-api.mjs`; the root `doc/` holds only the
+  replaced by `scripts/doc-api.mjs`; the root `api/` holds only the
   generated index.
 - **No per-package `README` duplication of the API** — the generated
   reference is the single source for signatures.

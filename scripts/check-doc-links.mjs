@@ -6,7 +6,7 @@
  * files, every package README, and every app markdown file; extracts
  * markdown links and verifies that every relative target exists and every
  * `#anchor` fragment resolves to a heading (GitHub-style slug). External
- * URLs are skipped (no network); generated trees (doc/, dist/, lib/,
+ * URLs are skipped (no network); generated trees (api/, dist/, lib/,
  * node_modules/) are not walked.
  *
  * Catches: renamed/moved files, wrong relative depth, wrong link dates,
@@ -51,7 +51,7 @@ function withoutCodeFences(text) {
 }
 
 /** Generated/installed trees that never contain maintained markdown. */
-const SKIP_DIRS = new Set(['node_modules', 'dist', 'lib', 'coverage', 'doc', 'test-results', 'playwright-report']);
+const SKIP_DIRS = new Set(['node_modules', 'dist', 'lib', 'coverage', 'api', 'test-results', 'playwright-report']);
 
 function collectMarkdownFiles() {
     const files = [];

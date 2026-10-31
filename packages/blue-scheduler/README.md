@@ -65,7 +65,7 @@ lint rule flags browser-platform files importing this package.
 
 ## API
 
-Complete generated reference (all exports, via `pnpm doc:api`): [`doc/api/README.md`](doc/api/README.md).
+Complete generated reference (all exports, via `pnpm doc:api`): [`api/README.md`](api/README.md).
 
 - `@scheduled(spec)` — marks a method as a scheduled task
 - `resolveScheduledSpec(spec)` — normalize + validate a spec

@@ -312,12 +312,12 @@ for (const dir of readdirSync(PACKAGES)) {
         fail(name, `keywords must be a non-empty array (docs standard)`);
     }
     // Documentation standard (see docs/guides/12-package-documentation.md): every
-    // publishable package ships its compiled lib/ and generated doc/. (No
+    // publishable package ships its compiled lib/ and generated api/. (No
     // @blue/generators exemption — it is a normal build-output package: its
     // exports point at lib/ and its files include lib alongside the Nx-runtime
     // assets src/ and generators.json.)
-    if (!Array.isArray(manifest.files) || !manifest.files.includes('doc') || !manifest.files.includes('lib')) {
-        fail(name, `files must include "doc" and "lib" (docs standard)`);
+    if (!Array.isArray(manifest.files) || !manifest.files.includes('api') || !manifest.files.includes('lib')) {
+        fail(name, `files must include "api" and "lib" (docs standard)`);
     }
 
     // Rule 1: runtime closure — every src/ import is a dependency

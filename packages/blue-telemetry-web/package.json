@@ -44,7 +44,7 @@
   },
   "devDependencies": {},
   "files": [
-    "doc",
+    "api",
     "lib"
   ]
 }

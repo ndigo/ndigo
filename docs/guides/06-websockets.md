@@ -235,7 +235,7 @@ public-socket contrast.
 ## 6. The client (`@blue/socket`)
 
 `WebSocketClient` is the isomorphic client: WHATWG `WebSocket` global in
-browsers **and** Node ≥22, with signal-based status and reconnect:
+browsers **and** Node ≥24, with signal-based status and reconnect:
 
 ```ts
 import { WebSocketClient } from '@blue/socket';

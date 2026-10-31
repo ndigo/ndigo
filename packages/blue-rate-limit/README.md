@@ -16,7 +16,7 @@ integration package: `@blue/redis` (`@blue/redis/rate-limit` —
 pnpm add @blue/rate-limit
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 
 ## Getting Started
 

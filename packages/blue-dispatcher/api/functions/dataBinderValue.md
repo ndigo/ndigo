@@ -25,7 +25,7 @@ convention, AD-26 D-5).
 
 ### target?
 
-() => `object`
+new () => `object`
 
 ### options?
 

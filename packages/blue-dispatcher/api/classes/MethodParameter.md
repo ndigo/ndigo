@@ -34,7 +34,7 @@ Method parameter metadata
 
 ##### defaultValue?
 
-`string` \| `null`
+`string` \| `null` = `null`
 
 ##### convertType?
 
@@ -48,7 +48,7 @@ Method parameter metadata
 
 ##### prefix?
 
-`string` \| `null`
+`string` \| `null` = `null`
 
 ##### convert?
 
@@ -60,7 +60,7 @@ Method parameter metadata
 
 ##### target?
 
-() => `object`
+new () => `object`
 
 ##### schema?
 
@@ -136,7 +136,7 @@ introspection seam for API docs; never used by resolution.
 
 ### target
 
-> `readonly` **target**: (() => `object`) \| `undefined`
+> `readonly` **target**: (new () => `object`) \| `undefined`
 
 Optional target constructor for whole-source binding. When set, the
 bound value is a real instance of the target (see

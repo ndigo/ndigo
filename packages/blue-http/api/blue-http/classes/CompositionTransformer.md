@@ -34,7 +34,7 @@ Creates a composed transformer.
 
 ##### transforms
 
-(`value`) => `unknown`[]
+((`value`) => `unknown`)[]
 
 The transform pipeline to execute in order.
 

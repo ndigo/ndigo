@@ -33,7 +33,7 @@ context.getValue( 'foo' ); // "foo"
 
 ### T
 
-`T` *extends* (...`args`) => `unknown`
+`T` *extends* new (...`args`) => `unknown`
 
 ## Parameters
 

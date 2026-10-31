@@ -10,7 +10,7 @@ View abstractions, view targets, and view resolution for BlueJS — the contract
 pnpm add @blue/view
 ```
 
-Prerequisites for every BlueJS package: Node.js ≥22 and pnpm ≥11.
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 
 ## Getting Started
 

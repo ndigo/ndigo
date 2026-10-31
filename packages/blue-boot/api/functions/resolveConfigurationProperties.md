@@ -25,7 +25,7 @@ type. Nested fields bind recursively via `@nested`.
 
 ### ctor
 
-() => `T`
+new () => `T`
 
 The configuration properties class constructor.
 

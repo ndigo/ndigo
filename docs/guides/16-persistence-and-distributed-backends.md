@@ -8,7 +8,7 @@ deferred (AD-41).
 
 ```sh
 pnpm add @blue/redis @blue/orm-drizzle @blue/cache @blue/socket
-# node only: @blue/redis requires Node 22+; standalone Redis 7.2+
+# node only: @blue/redis requires Node 24+; standalone Redis 7.2+
 ```
 
 ## 1. The doctrine (AD-40)

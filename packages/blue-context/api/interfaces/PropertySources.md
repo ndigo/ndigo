@@ -17,7 +17,8 @@ module:context.ConfigurableEnvironment
 
 ## Extends
 
-- `Enumerable`\<`string`, [`PropertySource`](PropertySource.md)\>.`Iterable`\<[`PropertySource`](PropertySource.md)\>
+- `Enumerable`\<`string`, [`PropertySource`](PropertySource.md)\>
+- `Iterable`\<[`PropertySource`](PropertySource.md)\>
 
 ## Properties
 

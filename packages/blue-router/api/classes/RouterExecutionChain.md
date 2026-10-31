@@ -16,7 +16,7 @@
 
 ##### chain?
 
-[`RouterInterceptor`](../interfaces/RouterInterceptor.md)[] \| `RouterExecutionChain` \| `null`
+[`RouterInterceptor`](../interfaces/RouterInterceptor.md)[] \| `RouterExecutionChain` \| `null` = `null`
 
 #### Returns
 

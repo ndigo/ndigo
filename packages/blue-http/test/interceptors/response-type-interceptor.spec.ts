@@ -29,7 +29,7 @@ describe('ResponseTypeInterceptor', () => {
     let http: HTTP | undefined;
     let response: (Response & { data?: unknown }) | undefined;
 
-    beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+    beforeAll(() => server.listen({ onUnhandledFrame: 'error' }));
 
     beforeEach(() => {
         http = new HTTP([new TestResponseTypeInterceptor()]);

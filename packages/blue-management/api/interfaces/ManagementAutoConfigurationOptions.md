@@ -30,7 +30,7 @@ itself — a token-presence or token-adapter guard.
 
 ### configurationClasses?
 
-> `optional` **configurationClasses?**: () => `unknown`[]
+> `optional` **configurationClasses?**: (new () => `unknown`)[]
 
 The `@configurationProperties` classes `/configprops` enumerates
 (declared keys + conversion types only — values are never read,

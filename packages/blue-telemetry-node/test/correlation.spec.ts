@@ -6,7 +6,7 @@
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
-import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
+import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
 import { context as otelContext, SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
 import { HTTPServerInstrumentation } from '../src/instrumentation/http-server/http-server';
 import { DispatcherInstrumentation } from '@blue/telemetry';
@@ -72,7 +72,7 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
 
     beforeAll(async () => {
         exporter = new InMemorySpanExporter();
-        const contextManager = new AsyncHooksContextManager();
+        const contextManager = new AsyncLocalStorageContextManager();
         contextManager.enable();
         otelContext.setGlobalContextManager(contextManager);
 

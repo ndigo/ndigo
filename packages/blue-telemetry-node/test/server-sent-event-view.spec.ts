@@ -7,7 +7,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import type { AddressInfo } from 'node:net';
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
-import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
+import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
 import { context as otelContext, trace, SpanKind } from '@opentelemetry/api';
 import { getMapping, requestMapping } from '@blue/dispatcher';
 import { MetadataConfigApplicationContext } from '@blue/context';
@@ -58,7 +58,7 @@ describe('ServerSentEventViewInstrumentation', () => {
 
     beforeAll(async () => {
         exporter = new InMemorySpanExporter();
-        const contextManager = new AsyncHooksContextManager();
+        const contextManager = new AsyncLocalStorageContextManager();
         contextManager.enable();
         otelContext.setGlobalContextManager(contextManager);
         const provider = new BasicTracerProvider({ spanProcessors: [new SimpleSpanProcessor(exporter)] });

@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { Context } from '@opentelemetry/api';
-import { LogRecordProcessor, SdkLogRecord } from '@opentelemetry/sdk-logs';
+import { LogRecordProcessor, type ReadWriteLogRecord } from '@opentelemetry/sdk-logs';
 import { SeverityNumber } from '@opentelemetry/api-logs';
 
 /**
@@ -31,10 +31,10 @@ export class SeverityFilterLogRecordProcessor implements LogRecordProcessor {
     /**
      * Processes a `LogRecord`. If the log record's severity meets the minimum threshold,
      * it is passed to the delegate processor. Otherwise, it is dropped.
-     * @param logRecord - The `SdkLogRecord` to process.
+     * @param logRecord - The `ReadWriteLogRecord` to process.
      * @param context - Optional. The OpenTelemetry `Context` associated with the log record.
      */
-    onEmit(logRecord: SdkLogRecord, context?: Context): void {
+    onEmit(logRecord: ReadWriteLogRecord, context?: Context): void {
         if ((logRecord.severityNumber ?? SeverityNumber.UNSPECIFIED) < this.#minimumSeverity) {
             return;
         }

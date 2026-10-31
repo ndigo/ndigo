@@ -6,7 +6,7 @@
 // @vitest-environment node
 import { describe, expect, test, afterEach } from 'vitest';
 import { context as otelContext, propagation, trace } from '@opentelemetry/api';
-import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
+import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { W3CTraceContextPropagator } from '@opentelemetry/core';
 import { HTTPServerInstrumentation } from '../src/instrumentation/http-server/http-server';
@@ -31,7 +31,7 @@ describe('HTTPServerInstrumentation trace continuation', () => {
     const setup = () => {
         // Without an async-local context manager, `context.with` is a no-op
         // and extracted trace context never reaches the span.
-        const contextManager = new AsyncHooksContextManager();
+        const contextManager = new AsyncLocalStorageContextManager();
         contextManager.enable();
         otelContext.setGlobalContextManager(contextManager);
 

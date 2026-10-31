@@ -8,7 +8,7 @@ import {
     columnsMetadataKey,
     entityMetadataKey,
     entityNameMetadataKey,
-    generatedMetadataKey,
+    generatedColumnMetadataKey,
     primaryMetadataKey,
     relationsMetadataKey,
     lifecycleHooksMetadataKey,
@@ -99,21 +99,21 @@ export function primaryColumn() {
  * ```typescript
  * class User {
  *   @primaryColumn()
- *   @generated()
+ *   @generatedColumn()
  *   id: number;
  * }
  * ```
  */
-export function generated() {
+export function generatedColumn() {
     return function (_value: undefined, context: ClassFieldDecoratorContext) {
-        const generatedColumns = ((context.metadata[generatedMetadataKey] as string[]) ?? []).slice();
+        const generatedColumns = ((context.metadata[generatedColumnMetadataKey] as string[]) ?? []).slice();
         const fieldName = String(context.name);
 
         if (!generatedColumns.includes(fieldName)) {
             generatedColumns.push(fieldName);
         }
 
-        context.metadata[generatedMetadataKey] = generatedColumns;
+        context.metadata[generatedColumnMetadataKey] = generatedColumns;
     };
 }
 

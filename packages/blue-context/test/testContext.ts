@@ -3,14 +3,8 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import {
-    configuration,
-    entry,
-    MetadataConfigApplicationContext,
-    profile,
-    propertySource,
-    property,
-} from '../src/configuration';
+import { configuration, entry, MetadataConfigApplicationContext, propertySource, property } from '../src/configuration';
+import { whenProfile } from '@blue/core';
 
 class Bar {}
 
@@ -25,25 +19,25 @@ class TestConfiguration {
     @property('fuu[1]') // Get value for property "fuu[1]" from the property source
     fuuValue: unknown;
 
-    @profile('test') // Run only if the active profile is "test"
+    @whenProfile('test') // Run only if the active profile is "test"
     @entry('bar') // Create an entry "bar" in context with the result from the factory
     testBar() {
         return new Bar();
     }
 
-    @profile('dev') // Run only if the active profile is "dev"
+    @whenProfile('dev') // Run only if the active profile is "dev"
     @entry('bar') // Create an entry "bar" in context with the result from the factory
     devBar() {
         return new Bar();
     }
 
-    @profile('test') // Run only if the active profile is "test"
+    @whenProfile('test') // Run only if the active profile is "test"
     @entry() // Create an entry "foo" in context with the result from the factory
     foo() {
         return this.fooValue;
     }
 
-    @profile('test') // Run only if the active profile is "test"
+    @whenProfile('test') // Run only if the active profile is "test"
     @entry() // Create an entry "fuu" in context with the result from the factory
     fuu() {
         return this.fuuValue;

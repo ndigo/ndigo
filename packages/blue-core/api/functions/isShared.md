@@ -8,7 +8,7 @@
 
 > **isShared**(`target`): `boolean`
 
-Checks whether a class or instance is marked with `@shared`.
+Checks whether a class or instance is marked with `@sharedDependency`.
 
 ## Parameters
 
@@ -22,4 +22,4 @@ Class constructor, prototype, or instance.
 
 `boolean`
 
-`true` if the class is decorated with `@shared`.
+`true` if the class is decorated with `@sharedDependency`.

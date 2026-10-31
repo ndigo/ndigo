@@ -17,7 +17,7 @@
  * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
-import { column, entity, generated, manyToOne, oneToMany, primaryColumn } from '@blue/orm';
+import { column, entity, generatedColumn, manyToOne, oneToMany, primaryColumn } from '@blue/orm';
 import { z } from 'zod';
 
 /** Column schema for a required name field (the form's own limit is the same 30). */
@@ -38,7 +38,7 @@ const DAY_COLUMN = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
  */
 @entity('petclinic_owners')
 export class Owner {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 
@@ -65,7 +65,7 @@ export class Owner {
 /** A pet type (`cat`, `dog`, …) — the reference app's `types` lookup table. */
 @entity('petclinic_pet_types')
 export class PetType {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 
@@ -76,7 +76,7 @@ export class PetType {
 /** A pet belonging to exactly one {@link Owner}. */
 @entity('petclinic_pets')
 export class Pet {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 
@@ -107,7 +107,7 @@ export class Pet {
 /** A visit record for one {@link Pet}. */
 @entity('petclinic_visits')
 export class Visit {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 
@@ -130,7 +130,7 @@ export class Visit {
 /** A veterinarian. */
 @entity('petclinic_vets')
 export class Vet {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 
@@ -144,7 +144,7 @@ export class Vet {
 /** A veterinary specialty (`radiology`, `surgery`, `dentistry`). */
 @entity('petclinic_specialties')
 export class Specialty {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 
@@ -159,7 +159,7 @@ export class Specialty {
  */
 @entity('petclinic_vet_specialties')
 export class VetSpecialty {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 

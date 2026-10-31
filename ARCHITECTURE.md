@@ -1445,7 +1445,7 @@ BlueJS decorators are organized around five key cross-cutting concerns:
 
 These decorators manage application configuration and dependency injection, allowing components to receive their dependencies and configuration properties without needing to know where they come from.
 
-- **Decorators**: `@configuration`, `@entry`, `@property`, `@propertySource`, `@profile`
+- **Decorators**: `@configuration`, `@entry`, `@property`, `@propertySource`, `@whenProfile`
 - **Problem Solved**: Eliminates manual dependency wiring, external configuration loading, and factory management.
 
 **Example:**
@@ -1514,7 +1514,7 @@ class RequestHandler {
 
 Entity decorators carry validation metadata that the framework derives into a Zod schema — validation logic is co-located with the field it protects, and the derived schema is the single source of truth (AD-07).
 
-- **Decorators**: `@column({ schema })`, `@primaryColumn`, `@generated`
+- **Decorators**: `@column({ schema })`, `@primaryColumn`, `@generatedColumn`
 - **Problem Solved**: Keeps validation with the data it protects while producing a runtime schema _and_ a static type (`z.infer`) from one declaration. Route params use `validatedBy(schema, dataBinderValue('query'))` from `@blue/dispatcher`; domain components override `validationSchemas`.
 
 **Example:**
@@ -1821,10 +1821,6 @@ Guides: [`docs/guides/`](docs/guides/README.md).
 
 ### Near-Term (1.0)
 
-- **API-freeze consistency review** — the participatory decorator family
-  (`@scheduled`, `@authenticated`, `@authorized`, `@generated`,
-  `@transactional`, `@cached` — AD-20 D8) gets one deliberate naming
-  review, including renames if rejected, before the 1.0 freeze.
 - **Full time-zone catalog generator** — conditional (AD-20 D6): only if
   the curated `@blue/scheduler` constants prove insufficient.
 - **Page concept design** — the open AD-03 question (independently
@@ -1836,6 +1832,9 @@ Guides: [`docs/guides/`](docs/guides/README.md).
 
 ### Closed / Deferred
 
+- API-freeze consistency review (AD-20 D8) — completed 2026-10-31: the full
+  decorator taxonomy and naming conventions (AD-83); profile gates unified
+  on `@whenProfile`.
 - Distributed scheduling (AD-41) and cross-node queue consumption — closed
   with revisit triggers; not speculative scope.
 - The 2026-03-08 architecture roadmap reference and the 2026-05-27

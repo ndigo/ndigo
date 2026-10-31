@@ -8,7 +8,7 @@ import '@tsmetadata/polyfill';
 import {
     column,
     entity as entityDecorator,
-    generated,
+    generatedColumn,
     primaryColumn,
     oneToMany,
     manyToOne,
@@ -55,7 +55,7 @@ class PrimaryEntity {
 
 @entity()
 class GeneratedEntity {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 }
@@ -71,7 +71,7 @@ class PlainColumnsEntity {
 
 @entity()
 class TestUser {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 

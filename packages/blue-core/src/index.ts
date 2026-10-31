@@ -273,6 +273,8 @@ export * from './property-value.js';
 export * from './serializable.js';
 export * from './shared.js';
 export * from './conditional.js';
+export * from './profile.js';
+export * from './profile-expression.js';
 export * from './tree-node.js';
 export { default as WildcardExp } from './wildcard-exp.js';
 export { KeypathConverter } from './keypath-expression.js';

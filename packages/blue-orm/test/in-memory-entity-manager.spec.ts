@@ -10,7 +10,7 @@ import { IllegalStateError } from '@blue/core';
 import { InMemoryDataSource } from '../src/data-source';
 import {
     entity as entityDecorator,
-    generated,
+    generatedColumn,
     primaryColumn,
     column,
     prePersist,
@@ -27,7 +27,7 @@ const entity = entityDecorator as unknown as (tableName?: string) => ClassDecora
 
 @entity()
 class TestUser {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id: number | undefined;
 
@@ -70,7 +70,7 @@ class PlainClass {
 
 @entity()
 class TrackedNote {
-    @generated()
+    @generatedColumn()
     @primaryColumn()
     id!: number;
 
@@ -294,7 +294,7 @@ describe('InMemoryEntityManager', () => {
 describe('validate-on-persist integration', () => {
     @entity()
     class ValidatedUser {
-        @generated()
+        @generatedColumn()
         @primaryColumn()
         id: number | undefined;
 
@@ -330,7 +330,7 @@ describe('validate-on-persist integration', () => {
     test('does not validate entities without declared column schemas', () => {
         @entity()
         class SimpleUser {
-            @generated()
+            @generatedColumn()
             @primaryColumn()
             id: number | undefined;
 

@@ -6,9 +6,9 @@
 import '@tsmetadata/polyfill';
 import 'node:process';
 import { resolve } from 'node:path';
-import { configuration, entry, getEnv, profile, Profile } from '@blue/context';
+import { configuration, entry, getEnv } from '@blue/context';
 import { StaticContentSource } from '@blue/content';
-import { MediaTypes } from '@blue/core';
+import { MediaTypes, Profile, whenProfile } from '@blue/core';
 import { HTTPHeaders } from '@blue/http';
 import { StaticController, SOCKET_REQUEST_AUTHENTICATOR, type SocketRequestAuthenticator } from '@blue/platform-node';
 import type { SocketRequestSources } from '@blue/dispatcher';
@@ -182,7 +182,7 @@ export class NodeAppConfiguration {
      * Profile-gated bean (AD-14): registered only when the `dev` profile is
      * active — `ApplicationBuilder.profiles('dev')` in the app entry.
      */
-    @profile(Profile.and('dev', Profile.not('staging')))
+    @whenProfile(Profile.and('dev', Profile.not('staging')))
     @entry()
     devInfo() {
         return { flavor: 'dev', note: 'profile-gated bean (AD-14)' };

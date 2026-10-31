@@ -38,8 +38,9 @@ let installed: PlaygroundRuntime | null = null;
  */
 export async function createRuntime(config: PlaygroundConfig = loadConfig()): Promise<PlaygroundRuntime> {
     const stack = await AuthStack.create(config);
-    installed = { config, stack };
-    return installed;
+    const created: PlaygroundRuntime = { config, stack };
+    installed = created;
+    return created;
 }
 
 /**

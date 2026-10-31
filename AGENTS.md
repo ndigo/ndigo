@@ -43,10 +43,12 @@ pnpm lint            # Check code quality
 pnpm lint   # enforces integration-layer imports, internal-file imports/exports
 ```
 
-Naming conventions (acronym casing, Abstract prefix, UPPER_SNAKE_CASE
-regex constants, factory naming create\* vs get\*) are review-time checks
-from STYLE_GUIDE.md §3; migrating them into `@blue/oxlint-plugin` rules is
-tracked separately.
+Naming conventions live in STYLE_GUIDE.md §3 and are enforced mechanically
+where a rule exists: acronym casing (`@blue/no-mixed-case-acronyms`), the
+`Abstract` prefix (`@blue/no-abstract-class-without-prefix`), UPPER_SNAKE_CASE
+regex constants (`@blue/no-uppercase-regexp-constants`), and `create\*` vs
+`get\*` for factories (`@blue/no-global-state-in-create-factories` — mutable
+module/class state references). The rest of §3.13 remains a review check.
 
 ---
 

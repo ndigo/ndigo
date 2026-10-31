@@ -43,7 +43,7 @@
     "@blue/util": "~0.0.1",
     "@blue/view-ejs": "~0.0.1",
     "@blue/view-webcomponent": "~0.0.1",
-    "@playwright/test": "^1.63.0",
+    "@playwright/test": "^1.64.1",
     "tsx": "catalog:",
     "vite": "catalog:",
     "@blue/log": "~0.0.1"

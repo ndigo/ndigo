@@ -43,9 +43,9 @@
   },
   "devDependencies": {
     "@blue/test": "~0.0.1",
-    "@types/oidc-provider": "^9.12.1",
+    "@types/oidc-provider": "^9.13.0",
     "@types/ws": "catalog:",
-    "oidc-provider": "^9.12.2",
+    "oidc-provider": "^9.13.1",
     "tsx": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:",

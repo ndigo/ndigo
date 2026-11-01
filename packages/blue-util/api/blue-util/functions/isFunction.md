@@ -2,7 +2,7 @@
 
 ***
 
-[@blue/util](../../README.md) / [blue-util](../README-3.md) / isFunction
+[@blue/util](../../README.md) / [blue-util](../README-2.md) / isFunction
 
 # Function: isFunction()
 

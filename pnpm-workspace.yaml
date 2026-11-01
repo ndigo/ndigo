@@ -40,7 +40,6 @@ catalog:
   jose: '^6.2.12'
   nx: '~23.2.1'
   oxlint: '^1.90.0'
-  safe-regex: '~2.1.1'
   swagger-ui-dist: '5.33.0'
   tsx: '^4.23.13'
   typescript: '~7.0.2'

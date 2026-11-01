@@ -23,7 +23,6 @@ import {
 } from '@blue/platform-node';
 import { PassThrough } from 'node:stream';
 import type { IncomingMessage } from 'node:http';
-import { guid } from '@blue/util/math';
 import type { Route } from '@blue/router';
 import { getLogger } from '@blue/log';
 import { buildRoute, MockRequest, PreparedRoute } from './request-builder';
@@ -563,7 +562,7 @@ export class MockHTTP {
     #hasSocketHandler(route: Route): boolean {
         const probe: Route = {
             length: 0,
-            id: guid(),
+            id: crypto.randomUUID(),
             path: route.path,
             raw: route.raw,
             data: {},

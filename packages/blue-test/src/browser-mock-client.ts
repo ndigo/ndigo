@@ -3,7 +3,6 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { guid } from '@blue/util/math';
 /**
  * BrowserMockClient — drive `BrowserDispatcher` with a DOM-free capture target.
  *
@@ -145,7 +144,7 @@ export class BrowserMockClient {
     async dispatch(path: string): Promise<CapturedRender> {
         const route: Route = {
             length: 0,
-            id: guid(),
+            id: crypto.randomUUID(),
             path,
             raw: path,
             data: {},

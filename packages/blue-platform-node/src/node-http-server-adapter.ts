@@ -3,7 +3,6 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { guid } from '@blue/util/math';
 /**
  * Node.js HTTP server adapter wrapping `node:http.createServer()`.
  *
@@ -661,7 +660,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             raw: path,
             data: query,
             params: null,
-            id: guid(),
+            id: crypto.randomUUID(),
             attributes: {},
             length: 0,
         };
@@ -714,7 +713,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             raw: '',
             data: sources.query,
             params: pathParams,
-            id: guid(),
+            id: crypto.randomUUID(),
             attributes: {
                 [NODE_REQUEST_ATTRIBUTE]: {
                     headers: sources.headers,
@@ -1069,7 +1068,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
 
             const route: Route = {
                 length: segments.length,
-                id: guid(),
+                id: crypto.randomUUID(),
                 path: cleanedPath,
                 raw: req.url ?? '/',
                 data,

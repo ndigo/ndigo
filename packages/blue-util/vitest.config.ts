@@ -10,13 +10,14 @@ export default defineConfig({
         exclude: ['**/node_modules/**', '**/dist/**', '**/lib/**', '**/coverage/**'],
     },
     resolve: {
-        alias: {
-            '@blue/util': resolve(__dirname, './src'),
-            // Also create aliases for deep imports
-            '@blue/util/string': resolve(__dirname, './src/string'),
-            '@blue/util/type': resolve(__dirname, './src/type'),
-            '@blue/util/types': resolve(__dirname, './src/type'),
-            '@blue/util/math': resolve(__dirname, './src/math'),
-        },
+        // Subpaths first: a bare `@blue/util` string alias would otherwise
+        // capture `@blue/util/types` and resolve it to a non-existent `src/types`.
+        alias: [
+            { find: /^@blue\/util\/crypto/, replacement: resolve(__dirname, './src/crypto') },
+            { find: /^@blue\/util\/string/, replacement: resolve(__dirname, './src/string') },
+            { find: /^@blue\/util\/types/, replacement: resolve(__dirname, './src/type') },
+            { find: /^@blue\/util\/type/, replacement: resolve(__dirname, './src/type') },
+            { find: /^@blue\/util$/, replacement: resolve(__dirname, './src') },
+        ],
     },
 });

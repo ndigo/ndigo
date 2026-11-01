@@ -2,7 +2,7 @@
 
 ***
 
-[@blue/util](../../README.md) / [blue-util](../README-2.md) / toPascal
+[@blue/util](../../README.md) / [blue-util](../README-1.md) / toPascal
 
 # Variable: toPascal
 

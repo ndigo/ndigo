@@ -4,7 +4,26 @@
  * @author Jeff Rose
  */
 import { Serializable, JSONArray, serialize } from './serializable.js';
-import { likeArray } from '@blue/util/types';
+
+/** `typeof`/`instanceof` check that also accepts boxed `String` objects. */
+const isString = (value: unknown): value is string => typeof value === 'string' || value instanceof String;
+
+/**
+ * Determines whether a value is array-like: an array, string, element, or an
+ * object exposing a coherent `length` and last index.
+ */
+const likeArray = (value: unknown): value is ArrayLike<unknown> => {
+    if (value == null) return false;
+    if (Array.isArray(value) || isString(value)) return true;
+    if (typeof value !== 'object') return false;
+    // Arbitrary structured input: DOM nodes and array-likes via generic property reflection
+    const record = value as Record<string, unknown>;
+    const length: unknown = record.length;
+    if (record.nodeType === 1) return typeof length === 'number' && length > 0;
+    if (length === 0) return true;
+    if (typeof length === 'number' && length > 0) return '0' in value && String(length - 1) in value;
+    return false;
+};
 
 const { defineProperty } = Reflect,
     { max, min } = Math,

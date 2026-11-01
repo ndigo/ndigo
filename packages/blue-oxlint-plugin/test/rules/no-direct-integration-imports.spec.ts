@@ -18,15 +18,15 @@ const ruleTester = new RuleTester({
 ruleTester.run('no-direct-integration-imports', noDirectIntegrationImports, {
     valid: [
         {
-            code: "import * as R from '@blue/util';",
+            code: "import { createDOMProvider } from '@blue/dom';",
             filename: '/packages/blue-core/src/container.ts',
         },
         {
-            code: "import * as R from 'ramda';",
-            filename: '/packages/blue-util/src/ramda.ts',
+            code: "import { parseHTML } from 'linkedom';",
+            filename: '/packages/blue-dom/src/linkedom-dom-provider.ts',
         },
         {
-            code: "import * as R from 'ramda';",
+            code: "import { parseHTML } from 'linkedom';",
             filename: '/packages/blue-core/test/something.spec.ts',
         },
         {
@@ -36,40 +36,27 @@ ruleTester.run('no-direct-integration-imports', noDirectIntegrationImports, {
     ],
     invalid: [
         {
-            code: "import * as R from 'ramda';",
+            code: "import { parseHTML } from 'linkedom';",
             filename: '/packages/blue-core/src/container.ts',
             errors: [
                 {
                     messageId: 'directImport',
                     data: {
-                        library: 'ramda',
-                        integrationLayer: '@blue/util',
+                        library: 'linkedom',
+                        integrationLayer: '@blue/dom',
                     },
                 },
             ],
         },
         {
-            code: "import { format } from 'date-fns';",
-            filename: '/packages/blue-http/src/query-string.ts',
+            code: "import { parseHTML } from 'linkedom/worker';",
+            filename: '/packages/blue-view/src/renderer.ts',
             errors: [
                 {
                     messageId: 'directImport',
                     data: {
-                        library: 'date-fns',
-                        integrationLayer: '@blue/util',
-                    },
-                },
-            ],
-        },
-        {
-            code: "import { format } from 'date-fns/format';",
-            filename: '/packages/blue-http/src/query-string.ts',
-            errors: [
-                {
-                    messageId: 'directImport',
-                    data: {
-                        library: 'date-fns',
-                        integrationLayer: '@blue/util',
+                        library: 'linkedom',
+                        integrationLayer: '@blue/dom',
                     },
                 },
             ],

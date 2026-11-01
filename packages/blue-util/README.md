@@ -1,8 +1,10 @@
 # Blue Utility
 
-> Native-first BlueJS helpers for strings, types, math, and structure matching — the framework's integration layer for its small third-party helper libraries.
+> Zero-dependency BlueJS helpers: type guards, string utilities, environment access, and WebCrypto-backed tokens.
 
-`@blue/util` is the BlueJS utility library: native-first helpers for strings, types, math, and structure matching. Most utilities are implemented natively and benchmarked; the few third-party libraries it wraps (`seedrandom`, `slug`, `safe-regex`) are confined to internal modules and stay behind the public wrapper surface — consume them through `@blue/util`, never by direct import.
+`@blue/util` is the framework's leaf toolkit. Everything in it is built on
+native platform APIs — it has no third-party runtime dependencies — so every
+layer can depend on it, including tooling packages that must stay lightweight.
 
 ## Installation
 
@@ -15,22 +17,32 @@ Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 ## Getting Started
 
 ```ts
-import { isString, like, guid } from '@blue/util';
+import { getErrorMessage } from '@blue/util';
+import { isString, like } from '@blue/util/types';
 
+getErrorMessage(new Error('boom')); // 'boom'
 isString('abc'); // true
 like({ then: Function }, thenable); // true — duck-type check
-
-const id = guid();
 ```
 
 ## Usage
 
-### Categories
+### Entry points
 
-- **Type guards** — `isString`, `isNumber`, `isNumeric`, `isFunction`, `isValidDate`, `isConstructor`, `type()`, and structural matching with `like` (WeakMap-cached descriptors)
-- **String utilities** — encoding/decoding, slugify, camel/Pascal/proper/sentence case, diacritics removal, interpolation, regex builders
-- **Math & ids** — `randInt`, `randHex`, `guid`, seeded random
-- **Predicates & composition** — native replacements for common combinators (`allPass`-style checks are plain `&&` chains)
+- **`@blue/util`** — `getErrorMessage`, `delay`, `getEnv`, `isDevMode`, `randomHex`, `randomToken`, `is`, `like`
+- **`@blue/util/types`** — `is`, `like`, `isString`, `isNumber`, `isFunction`, `isNil`, `isNotNil`
+- **`@blue/util/string`** — `toPascal`, `decodeURIComponent`, `encodeURIComponent`
+
+### Notes
+
+- `isNumber` accepts finite numbers (and boxed `Number`) only — `NaN` and
+  `±Infinity` are rejected, unlike `typeof`.
+- `randomToken`/`randomHex` use the Web Crypto CSPRNG. For UUIDs, call the
+  platform's `crypto.randomUUID()` directly.
+- `delay` is the framework's test-friendly timer; it settles under Vitest
+  fake timers via `vi.advanceTimersByTimeAsync`.
+- `isNil` covers both `null` and `undefined` in one check — prefer it over
+  hand-rolled comparisons.
 
 ## API
 
@@ -38,14 +50,6 @@ The full API is generated from JSDoc via `pnpm doc:api` into
 [`api/`](api/README.md). Primary exports live in
 [`src/index.ts`](src/index.ts); see the [package index](../../api/README.md) for
 how it fits with the rest of BlueJS.
-
-Every symbol in the generated reference is supported public API — including
-helpers the framework itself does not call (`decodeHtml`, `encodeHtml`,
-`trailingSplit`, `toProper`, `randHex`, `randInt`, `isValidDate`,
-`isNumeric`). They are covered by this package's test suite and versioned
-with it; nothing in `api/` should be treated as private. Note that
-`rand`/`randInt`/`randHex` are seeded pseudo-random helpers — use
-`randomToken`/`randomHex` when the output must be cryptographically secure.
 
 ## Development
 
@@ -56,7 +60,8 @@ pnpm --filter @blue/util test
 
 ### Performance notes
 
-The `bench/` suites guard the native implementations against regression, run via Vitest's benchmark runner (`vitest bench`).
+`bench/like.bench.ts` guards the `like` descriptor cache against regression,
+run via Vitest's benchmark runner (`vitest bench`).
 
 ## See Also
 

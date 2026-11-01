@@ -69,9 +69,6 @@ catalogs:
     oxlint:
       specifier: ^1.90.0
       version: 1.90.0
-    safe-regex:
-      specifier: ~2.1.1
-      version: 2.1.1
     swagger-ui-dist:
       specifier: 5.33.0
       version: 5.33.0
@@ -149,9 +146,6 @@ importers:
       oxlint-tsgolint:
         specifier: ^7.0.2005
         version: 7.0.2005
-      safe-regex:
-        specifier: 'catalog:'
-        version: 2.1.1
       tsrs:
         specifier: 0.18.0-ts7.1.0-dev.20260929
         version: 0.18.0-ts7.1.0-dev.20260929
@@ -178,31 +172,31 @@ importers:
     dependencies:
       '@blue/boot':
         specifier: workspace:*
-        version: link:../../../blue/packages/blue-boot
+        version: link:../../../blue-48-util-surface-prune/packages/blue-boot
       '@blue/context':
         specifier: workspace:*
-        version: link:../../../blue/packages/blue-context
+        version: link:../../../blue-48-util-surface-prune/packages/blue-context
       '@blue/core':
         specifier: workspace:*
-        version: link:../../../blue/packages/blue-core
+        version: link:../../../blue-48-util-surface-prune/packages/blue-core
       '@blue/dispatcher':
         specifier: workspace:*
-        version: link:../../../blue/packages/blue-dispatcher
+        version: link:../../../blue-48-util-surface-prune/packages/blue-dispatcher
       '@blue/platform-web':
         specifier: workspace:*
-        version: link:../../../blue/packages/blue-platform-web
+        version: link:../../../blue-48-util-surface-prune/packages/blue-platform-web
       '@blue/signals':
         specifier: workspace:*
-        version: link:../../../blue/packages/blue-signals
+        version: link:../../../blue-48-util-surface-prune/packages/blue-signals
       '@blue/telemetry':
         specifier: workspace:*
-        version: link:../../../blue/packages/blue-telemetry
+        version: link:../../../blue-48-util-surface-prune/packages/blue-telemetry
       '@blue/view':
         specifier: workspace:*
-        version: link:../../../blue/packages/blue-view
+        version: link:../../../blue-48-util-surface-prune/packages/blue-view
       '@blue/view-webcomponent':
         specifier: workspace:*
-        version: link:../../../blue/packages/blue-view-webcomponent
+        version: link:../../../blue-48-util-surface-prune/packages/blue-view-webcomponent
     devDependencies:
       '@types/jsdom':
         specifier: ^20.0.1
@@ -2438,24 +2432,7 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-view-webcomponent
 
-  packages/blue-util:
-    dependencies:
-      safe-regex:
-        specifier: 'catalog:'
-        version: 2.1.1
-      seedrandom:
-        specifier: ~3.0.5
-        version: 3.0.5
-      slug:
-        specifier: ~12.0.1
-        version: 12.0.1
-    devDependencies:
-      '@types/seedrandom':
-        specifier: ~3.0.8
-        version: 3.0.8
-      '@types/slug':
-        specifier: ~5.0.9
-        version: 5.0.9
+  packages/blue-util: {}
 
   packages/blue-view:
     dependencies:
@@ -4811,9 +4788,6 @@ packages:
   '@types/retry@0.12.2':
     resolution: {integrity: sha512-XISRgDJ2Tc5q4TRqvgJtzsRkFYNJzZrhTdtMoGVBttwzzQJkPnS3WWTFc7kuDRoPtPakl+T+OfdEUjYJj7Jbow==}
 
-  '@types/seedrandom@3.0.8':
-    resolution: {integrity: sha512-TY1eezMU2zH2ozQoAFAQFOPpvP15g+ZgSfTZt31AUUH/Rxtnz3H+A/Sv1Snw2/amp//omibc+AEkTaA8KUeOLQ==}
-
   '@types/semver@7.8.0':
     resolution: {integrity: sha512-1mAINjtQCXXeLkJ9ehXkwOcBpqtLxiVtKhpUf83DdRNdQKV0iXZpaHYqRr7nj+wvxuJzoAmAwXI+sCNMv1CzLQ==}
 
@@ -4834,9 +4808,6 @@ packages:
 
   '@types/set-cookie-parser@2.4.10':
     resolution: {integrity: sha512-GGmQVGpQWUe5qglJozEjZV/5dyxbOOZ0LHe/lqyWssB88Y4svNfst0uqBVscdDeIKl5Jy5+aPSvy7mI9tYRguw==}
-
-  '@types/slug@5.0.9':
-    resolution: {integrity: sha512-6Yp8BSplP35Esa/wOG1wLNKiqXevpQTEF/RcL/NV6BBQaMmZh4YlDwCgrrFSoUE4xAGvnKd5c+lkQJmPrBAzfQ==}
 
   '@types/sockjs@0.3.36':
     resolution: {integrity: sha512-MK9V6NzAS1+Ud7JV9lJLFqW85VbC9dq3LmwZCuBe4wBDgKC0Kj/jd8Xl+nSviU+Qc3+m7umHHyHg//2KSa0a0Q==}
@@ -7851,10 +7822,6 @@ packages:
   regenerate@1.5.0:
     resolution: {integrity: sha512-1s+CxXjJ71i7LNVy8nYwg47XV4y6lAnOEhsMtSKq3WpmPfhl9LuKlTqKIn/3yUpE8lBz+W+TT88Bxyhnr0U4yw==}
 
-  regexp-tree@0.1.27:
-    resolution: {integrity: sha512-iETxpjK6YoRWJG5o6hXLwvjYAoW+FEZn9os0PD/b6AP6xQwsa/Y7lCVgIixBbUPMfhu+i2LtdeAqVTgGlQarfA==}
-    hasBin: true
-
   regexpu-core@6.5.3:
     resolution: {integrity: sha512-E8VgUoSK+LMQrLboDxavm76MTBGrQhx9RiNuomRmYnZ10Uw12HrI8fkxOOncktb2hBpzIZ9SV/347euQHG5z+g==}
     engines: {node: '>=4'}
@@ -7956,9 +7923,6 @@ packages:
     resolution: {integrity: sha512-tAtCGFPPP02VroDVzp4daGi6bC7jWG+41D47GKf18FeH/ubvKQHT9VmhAkvtjNOmJwqtApzWeUpEhkyEYULvmw==}
     hasBin: true
 
-  safe-regex@2.1.1:
-    resolution: {integrity: sha512-rx+x8AMzKb5Q5lQ95Zoi6ZbJqwCLkqi3XuJXp5P3rT8OEc6sZCJG5AE5dU3lsgRr/F4Bs31jSlVN+j5KrsGu9A==}
-
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
@@ -7985,9 +7949,6 @@ packages:
 
   secure-compare@3.0.1:
     resolution: {integrity: sha512-AckIIV90rPDcBcglUwXPF3kg0P0qmPsPXAj6BBEENQE1p5yA1xfmDJzfi1Tappj37Pv2mVbKpL3Z1T+Nn7k1Qw==}
-
-  seedrandom@3.0.5:
-    resolution: {integrity: sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==}
 
   select-hose@2.0.0:
     resolution: {integrity: sha512-mEugaLK+YfkijB4fx0e6kImuJdCIt2LxCRcbEYPqRGCs4F2ogyfZU5IAZRdjCP8JPq2AtdNoC/Dux63d9Kiryg==}
@@ -8087,10 +8048,6 @@ packages:
   slash@5.1.0:
     resolution: {integrity: sha512-ZA6oR3T/pEyuqwMgAKT0/hAv8oAXckzbkmR0UkUosQ+Mc4RxGoJkRmwHgHufaenlyAgE1Mxgpdcrf75y6XcnDg==}
     engines: {node: '>=14.16'}
-
-  slug@12.0.1:
-    resolution: {integrity: sha512-p8lJZLw/5GDmxXO3FKjiOYjiBMFGDc+/8DgutoXKqjn8KX7buzbkX1unEavO7T+GHGLTOyeb7VjWTRWpb8wmuQ==}
-    hasBin: true
 
   smol-toml@1.9.0:
     resolution: {integrity: sha512-hpd+HLON7HdZXqYchMM/+LaTTbdK0AU3NngIJ4KVyWbY9bfQqdL9cD+4yf6dUoU2Ap4VsU0JkQi6FxAI1B2mXQ==}
@@ -11193,8 +11150,6 @@ snapshots:
 
   '@types/retry@0.12.2': {}
 
-  '@types/seedrandom@3.0.8': {}
-
   '@types/semver@7.8.0': {}
 
   '@types/send@0.17.6':
@@ -11224,8 +11179,6 @@ snapshots:
   '@types/set-cookie-parser@2.4.10':
     dependencies:
       '@types/node': 26.6.6
-
-  '@types/slug@5.0.9': {}
 
   '@types/sockjs@0.3.36':
     dependencies:
@@ -14313,8 +14266,6 @@ snapshots:
 
   regenerate@1.5.0: {}
 
-  regexp-tree@0.1.27: {}
-
   regexpu-core@6.5.3:
     dependencies:
       regenerate: 1.5.0
@@ -14452,10 +14403,6 @@ snapshots:
     dependencies:
       ret: 0.5.1
 
-  safe-regex@2.1.1:
-    dependencies:
-      regexp-tree: 0.1.27
-
   safer-buffer@2.1.2: {}
 
   sax@1.6.1: {}
@@ -14476,8 +14423,6 @@ snapshots:
       webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.28)(webpack-cli@5.1.4)
 
   secure-compare@3.0.1: {}
-
-  seedrandom@3.0.5: {}
 
   select-hose@2.0.0: {}
 
@@ -14595,8 +14540,6 @@ snapshots:
   sisteransi@1.0.5: {}
 
   slash@5.1.0: {}
-
-  slug@12.0.1: {}
 
   smol-toml@1.9.0: {}
 

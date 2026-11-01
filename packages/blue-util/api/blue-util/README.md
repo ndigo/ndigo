@@ -24,21 +24,3 @@ Jeff Rose
 ### is
 
 Re-exports [is](functions/is.md)
-
-***
-
-### math
-
-Renames and re-exports [blue-util](README-1.md)
-
-***
-
-### string
-
-Renames and re-exports [blue-util](README-2.md)
-
-***
-
-### types
-
-Renames and re-exports [blue-util](README-3.md)

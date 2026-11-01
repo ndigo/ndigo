@@ -1,7 +1,7 @@
 # AD-85: `packages/` is the consumer surface — repo-only lint rules live in root `src/`
 
 **Date:** 2026-10-31
-**Status:** Proposed
+**Status:** Accepted
 **Deciders:** Framework owner (pre-1.0 lint surface review — issue #50)
 
 ---
@@ -117,8 +117,8 @@ not ship the consumer artifact.
   root config is updated. Effective coverage on `packages/` + `apps/` is
   unchanged.
 - `pnpm lint` keeps building only the public plugin; the internal rules need
-  no build step. `src/oxlint` specs join the CI tooling lane;
-  `tsconfig.spec.json` covers `src/**`.
+  no build step (`src/oxlint` specs run via `pnpm test:internal`, wired as
+  its own CI step; `tsconfig.spec.json` covers `src/**`).
 - `@blue/oxlint-plugin` shrinks to the consumer surface; its README and
   generated `api/` tree reflect that. No consumer import paths change (the
   repository is unpublished; there are no external consumers).

@@ -1145,7 +1145,7 @@ Canonical reference for every publishable package: purpose · layer · platform 
 | `@blue/telemetry-web`     | 6       | browser  | Browser SDK wiring + web instrumentations (8 OTel packages)                                                                                                                | `log`, `platform-web`, `socket`, `telemetry`                                                      |
 | `@blue/test`              | 6       | iso      | In-process request dispatch test harness (MockMVC-style)                                                                                                                   | `platform-node`, `platform-web`, `dispatcher`, `router`, `view`, `context`, `http`, `log`, `util` |
 | `@blue/boot`              | 7       | node     | Application bootstrap: profiles, typed config, `run()` (`zod`; peer `@toon-format/toon`)                                                                                   | `context`, `core`, `factory`, `log`, `router`, `util`                                             |
-| `@blue/oxlint-plugin`     | tooling | —        | Architecture-enforcing oxlint rules (CI) (`@oxlint/plugins`; peer `oxlint`)                                                                                                | —                                                                                                 |
+| `@blue/oxlint-plugin`     | tooling | —        | Consumer-facing oxlint rules (CI) (`@oxlint/plugins`; peer `oxlint`); repo-only rules live in root `src/oxlint/`                                                           | —                                                                                                 |
 | `@blue/inspect`           | tooling | —        | App manifest: routes, handler mappings, declared configuration keys (programmatic API + demo script)                                                                       | `context`, `core`, `dispatcher`, `router`                                                         |
 | `@blue/generators`        | tooling | —        | Nx generators: package/component/readme scaffolding (`@nx/devkit`)                                                                                                         | `util`                                                                                            |
 
@@ -1194,8 +1194,8 @@ Canonical reference for every publishable package: purpose · layer · platform 
 | `@blue/dom`       | `linkedom`             | Isomorphic DOM parsing and element creation |
 
 The encapsulated-library set is the set enforced by the
-`@blue/no-direct-integration-imports` oxlint rule (`INTEGRATION_LAYER_MAP` in
-`@blue/oxlint-plugin`, wired through `.oxlintrc.json`; the lint lane runs
+`internal/no-direct-integration-imports` oxlint rule (`INTEGRATION_LAYER_MAP` in
+`src/oxlint/_constants.ts`, wired through `.oxlintrc.json`; the lint lane runs
 `--deny-warnings`, so a violation fails CI). Add the library there first, then
 here.
 
@@ -1275,7 +1275,7 @@ When adding a new external dependency:
 ### Enforcement
 
 - **Manual Review**: Check imports during code review
-- **oxlint Plugin** (implemented): Custom rule to detect direct imports of encapsulated libraries (`@blue/oxlint-plugin` loaded via oxlint JS Plugins)
+- **oxlint Plugin** (implemented): Custom rule to detect direct imports of encapsulated libraries (`internal/no-direct-integration-imports`, loaded from root `src/oxlint/` via oxlint JS Plugins; consumer-facing rules ship in `@blue/oxlint-plugin`)
 - **CI Manifest Checker** (implemented): `scripts/check-manifests.mjs` runs in CI (`pnpm manifest:check`; `.github/workflows/ci.yml`) and enforces the [Manifest Dependency Sections](#manifest-dependency-sections) contract plus the `@blue/*` `~0.0.1` protocol
 
 ### Type-Only Imports

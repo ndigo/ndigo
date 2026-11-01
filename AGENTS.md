@@ -44,10 +44,10 @@ pnpm lint   # enforces integration-layer imports, internal-file imports/exports
 ```
 
 Naming conventions live in STYLE_GUIDE.md §3 and are enforced mechanically
-where a rule exists: acronym casing (`@blue/no-mixed-case-acronyms`), the
-`Abstract` prefix (`@blue/no-abstract-class-without-prefix`), UPPER_SNAKE_CASE
-regex constants (`@blue/no-uppercase-regexp-constants`), and `create\*` vs
-`get\*` for factories (`@blue/no-global-state-in-create-factories` — mutable
+where a rule exists: acronym casing (`internal/no-mixed-case-acronyms`), the
+`Abstract` prefix (`internal/no-abstract-class-without-prefix`), UPPER_SNAKE_CASE
+regex constants (`internal/no-uppercase-regexp-constants`), and `create\*` vs
+`get\*` for factories (`internal/no-global-state-in-create-factories` — mutable
 module/class state references). The rest of §3.13 remains a review check.
 
 ---
@@ -300,13 +300,16 @@ import { createDOMProvider } from '@blue/dom';
 
 **Enforcement:**
 
-These rules are **automatically enforced** by `@blue/oxlint-plugin`, which ships these dependency-boundary rules:
+These rules are **automatically enforced** by the repository-only oxlint
+plugin at root [`src/oxlint/`](src/oxlint/README.md) (rule namespace
+`internal/*`, AD-85), loaded by the same `pnpm lint` lane as the
+consumer-facing `@blue/oxlint-plugin`:
 
-| Rule                                  | Severity | Description                                                                                                                                        |
-| :------------------------------------ | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@blue/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (linkedom, etc.) outside their integration layer packages. Allows in integration packages and test files. |
-| `@blue/no-internal-file-imports`      | error    | Forbids cross-package imports of internal files (`@blue/<pkg>/_*`), including `export * from '@blue/<pkg>/_*'`.                                    |
-| `@blue/no-internal-file-exports`      | error    | Forbids re-exporting internal files (`./_*`) — both `export * from './_*'` and named re-exports (`export { foo } from './_*'`).                    |
+| Rule                                     | Severity | Description                                                                                                                                        |
+| :--------------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `internal/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (linkedom, etc.) outside their integration layer packages. Allows in integration packages and test files. |
+| `internal/no-internal-file-imports`      | error    | Forbids cross-package imports of internal files (`@blue/<pkg>/_*`), including `export * from '@blue/<pkg>/_*'`.                                    |
+| `internal/no-internal-file-exports`      | error    | Forbids re-exporting internal files (`./_*`) — both `export * from './_*'` and named re-exports (`export { foo } from './_*'`).                    |
 
 Run `pnpm lint` to check for violations. These rules are integrated into the root `.oxlintrc.json`.
 
@@ -321,7 +324,7 @@ When reviewing or writing code:
 When adding new integration layers or encapsulated libraries:
 
 1. Update this section with the new mapping
-2. Update `@blue/oxlint-plugin` constants in `packages/blue-oxlint-plugin/src/_constants.ts`
+2. Update the internal plugin constants in `src/oxlint/_constants.ts`
 3. Update `ARCHITECTURE.md` "Dependency Management Strategy" section
 
 ### Decorator Naming and Conventions

@@ -43,8 +43,11 @@ dedicated plugin carrying custom rules to lock them down in CI.
 
 ## Consequences
 
-- The integration-layer and internal-file rules still exist verbatim in
-  `packages/blue-oxlint-plugin/src/rules/`.
+- **2026-11-01 (AD-85):** the repository-only rules (`no-direct-integration-imports`,
+  `no-internal-file-imports`, `no-internal-file-exports`, naming/style guards,
+  `requires-doc-header`) relocated to root `src/oxlint/` and load as the
+  `internal/*` namespace; `packages/blue-oxlint-plugin/` now carries the
+  consumer-facing rules only. The dedicated-plugin decision stands.
 - `@blue/no-internal-file-imports` remains `error` (`.oxlintrc.json`, rule entry) as the
   non-negotiable boundary; `no-direct-integration-imports` stays `warn`.
 

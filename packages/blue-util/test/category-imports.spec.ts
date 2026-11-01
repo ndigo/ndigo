@@ -40,7 +40,9 @@ describe('Category modules - import patterns', () => {
     });
 
     test('no category namespaces or default export remain', async () => {
-        const util = await import('@blue/util');
+        // Negative checks probe for pruned leftovers the module type no longer
+        // declares, so the namespace object is widened to a plain record.
+        const util = (await import('@blue/util')) as unknown as Record<string, unknown>;
 
         expect(util.crypto).toBeUndefined();
         expect(util.math).toBeUndefined();

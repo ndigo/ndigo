@@ -7,6 +7,7 @@
   "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "strict": true,
     // The generators package imports its own modules with `.ts` specifiers
     // (Nx loads those files via Node's native type stripping; AD-85) — the
@@ -130,6 +131,7 @@
     }
   },
   "include": [
+    "src/**/*.ts",
     "packages/*/src/**/*.ts",
     "packages/*/test/**/*.ts",
     "apps/*/src/**/*.ts",

@@ -20,7 +20,10 @@
     "*.config.mjs",
     "*.config.ts"
   ],
-  "jsPlugins": ["./packages/blue-oxlint-plugin/lib/index.js"],
+  "jsPlugins": [
+    "./packages/blue-oxlint-plugin/lib/index.js",
+    { "name": "internal", "specifier": "./src/oxlint/plugin.ts" }
+  ],
   "rules": {
     "no-unused-vars": "off",
     "no-undef": "off",
@@ -61,14 +64,14 @@
     ],
     "@typescript-eslint/no-require-imports": "off",
     "@typescript-eslint/prefer-namespace-keyword": "error",
-    "@blue/no-direct-integration-imports": "warn",
-    "@blue/no-internal-file-imports": "error",
-    "@blue/no-internal-file-exports": "error",
+    "internal/no-direct-integration-imports": "warn",
+    "internal/no-internal-file-imports": "error",
+    "internal/no-internal-file-exports": "error",
     "@blue/no-browser-globals-in-isomorphic": "warn",
-    "@blue/no-uppercase-regexp-constants": "error",
-    "@blue/no-abstract-class-without-prefix": "error",
-    "@blue/no-mixed-case-acronyms": "error",
-    "@blue/no-global-state-in-create-factories": "error",
+    "internal/no-uppercase-regexp-constants": "error",
+    "internal/no-abstract-class-without-prefix": "error",
+    "internal/no-mixed-case-acronyms": "error",
+    "internal/no-global-state-in-create-factories": "error",
     "@blue/no-cross-paradigm-decorators": "error",
     "@blue/no-scheduled-in-browser": "error",
     "@blue/no-signals-in-entity": "error",
@@ -95,7 +98,7 @@
     "typescript/unbound-method": "off",
     "typescript/no-redundant-type-constituents": "off",
     "typescript/no-implied-eval": "off",
-    "@blue/requires-doc-header": "error",
+    "internal/requires-doc-header": "error",
     "@blue/no-raw-console": "error"
   },
   "env": {

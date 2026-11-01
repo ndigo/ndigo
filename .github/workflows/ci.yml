@@ -95,6 +95,12 @@ jobs:
       - name: Lint (zero warnings)
         run: pnpm lint
 
+      - name: Internal lint rules (vitest)
+        # Repository-only rules under src/oxlint run straight from TypeScript
+        # (oxlint JS-plugin runtime, no build step); their specs pin both
+        # namespaces and the package-surface guard.
+        run: pnpm test:internal
+
       - name: Maintained-file formatting
         run: pnpm format:check
 

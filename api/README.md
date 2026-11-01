@@ -36,7 +36,7 @@ package can be read — and installed — on its own.
 | `@blue/openapi` | OpenAPI 3.0 documentation for BlueJS apps — spec generation from dispatch metadata + Swagger UI | [api/README.md](../packages/blue-openapi/api/README.md) |
 | `@blue/orm` | Blue ORM - Repository and Data Mapper persistence abstractions | [api/README.md](../packages/blue-orm/api/README.md) |
 | `@blue/orm-drizzle` | Blue ORM Drizzle – Drizzle ORM adapter for @blue/orm | [api/README.md](../packages/blue-orm-drizzle/api/README.md) |
-| `@blue/oxlint-plugin` | Custom oxlint rules for BlueJS architectural enforcement | [api/README.md](../packages/blue-oxlint-plugin/api/README.md) |
+| `@blue/oxlint-plugin` | Consumer-facing oxlint rules for BlueJS applications — paradigm, view, route, and logging guards | [api/README.md](../packages/blue-oxlint-plugin/api/README.md) |
 | `@blue/platform-node` | Node.js platform adapter for BlueJS — HTTP server, auto-configuration, static files, multipart | [api/README.md](../packages/blue-platform-node/api/README.md) |
 | `@blue/platform-web` | Browser platform adapter for BlueJS — dispatcher glue, history/cookie resolvers, themes | [api/README.md](../packages/blue-platform-web/api/README.md) |
 | `@blue/proxy` | Container-managed method interception for BlueJS — metadata annotations, interceptor chains, and Proxy-based weaving | [api/README.md](../packages/blue-proxy/api/README.md) |

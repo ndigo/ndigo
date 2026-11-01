@@ -14,7 +14,7 @@ import {
 } from '@blue/core';
 import { Destroyable, Initializable, likeCloseable, likeDestroyable, likeInitializable } from './lifecycle';
 import { getErrorMessage } from '@blue/util';
-import { isConstructor, isNumber, isString } from '@blue/util/types';
+import { isNumber, isString } from '@blue/util/types';
 import { Aware, likeAware, likeNameAware } from './aware';
 import { ContextToken } from './context-tokens';
 import {
@@ -39,6 +39,22 @@ import { keys, construct, defineProperty, deleteProperty } from './factory-share
 import { getLogger } from '@blue/log';
 
 const logger = getLogger('blue-factory:abstract-factory');
+
+/**
+ * `true` when `value` is a function usable with `new`. The `Reflect.construct`
+ * probe rejects arrow functions and shorthand methods, which `typeof` alone
+ * cannot distinguish from constructors.
+ */
+const isConstructor = (value: unknown): value is Function => {
+    if (typeof value !== 'function') return false;
+
+    try {
+        Reflect.construct(String, [], value);
+        return true;
+    } catch {
+        return false;
+    }
+};
 
 /**
  * An abstract base class for implementing a {@link ConfigurableFactory} and {@link ScopedFactory}.

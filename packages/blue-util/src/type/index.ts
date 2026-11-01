@@ -3,65 +3,10 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-// Import custom functions for re-export
-import isConstructor from './is-constructor.js';
 import isFunction from './is-function.js';
 import isNumber from './is-number.js';
-import isNumeric from './is-numeric.js';
 import isString from './is-string.js';
-import isValidDate from './is-valid-date.js';
 import like from './like.js';
-import likeArray from './like-array.js';
-import likePromise from './like-promise.js';
-
-/**
- * Returns `true` if the specified object property is an instance of the
- * supplied constructor; `false` otherwise.
- *
- * @category Type
- * @param {Object} ctor The constructor to check against
- * @param {string} name The name of the property to check
- * @param {Object} obj The object to query
- * @returns {boolean}
- * @example
- * propIs( Number, 'x', { x: 1, y: 2 } ); //=> true
- * propIs( Number, 'x', { x: 'foo' } ); //=> false
- * propIs( Number, 'x', {} ); //=> false
- */
-function propIs(ctor: Function, name: string, obj: unknown): boolean {
-    if (obj == null) return false;
-    // Arbitrary structured input: reflect properties generically after the nil guard
-    const record = obj as Record<string, unknown>;
-    const prop = record[name];
-    // lib.es5 `Function` lacks `name`; every runtime function exposes it
-    const ctorName = (ctor as { readonly name?: string }).name;
-    return prop instanceof ctor || Object.prototype.toString.call(prop) === `[${ctorName}]`;
-}
-
-/**
- * Gives a single-word string description of the (native) type of a value,
- * returning such answers as 'Object', 'Number', 'Array', or 'Null'. Does not
- * attempt to distinguish user Object types any further, reporting them all as
- * 'Object'.
- *
- * @category Type
- * @param {*} val The value to test
- * @returns {string}
- * @example
- * type( {} ); //=> "Object"
- * type( 1 ); //=> "Number"
- * type( false ); //=> "Boolean"
- * type( 's' ); //=> "String"
- * type( null ); //=> "Null"
- * type( [] ); //=> "Array"
- * type( /[A-z]/ ); //=> "RegExp"
- * type( () => {} ); //=> "Function"
- * type( undefined ); //=> "Undefined"
- */
-function type(val: unknown): string {
-    if (val == null) return val === null ? 'Null' : 'Undefined';
-    return Object.prototype.toString.call(val).slice(8, -1);
-}
 
 function is<T>(Ctor: Function): (val: unknown) => val is T;
 function is<T>(Ctor: Function, val: unknown): val is T;
@@ -125,60 +70,4 @@ export { isNil };
  */
 export { isNotNil };
 
-/**
- * Returns `true` if the specified object property is an instance of the
- * supplied constructor; `false` otherwise.
- *
- * @category Type
- * @param {Object} ctor The constructor to check against
- * @param {string} name The name of the property to check
- * @param {Object} obj The object to query
- * @returns {boolean}
- * @example
- * propIs( Number, 'x', { x: 1, y: 2 } ); //=> true
- * propIs( Number, 'x', { x: 'foo' } ); //=> false
- * propIs( Number, 'x', {} ); //=> false
- */
-export { propIs };
-
-/**
- * Gives a single-word string description of the (native) type of a value,
- * returning such answers as 'Object', 'Number', 'Array', or 'Null'. Does not
- * attempt to distinguish user Object types any further, reporting them all as
- * 'Object'.
- *
- * @category Type
- * @param {*} val The value to test
- * @returns {string}
- * @example
- * type( {} ); //=> "Object"
- * type( 1 ); //=> "Number"
- * type( false ); //=> "Boolean"
- * type( 's' ); //=> "String"
- * type( null ); //=> "Null"
- * type( [] ); //=> "Array"
- * type( /[A-z]/ ); //=> "RegExp"
- * type( () => {} ); //=> "Function"
- * type( undefined ); //=> "Undefined"
- */
-export { type };
-
-// Export custom functions
-export { isConstructor, isFunction, isNumber, isNumeric, isString, isValidDate, like, likeArray, likePromise };
-
-export default {
-    is,
-    isConstructor,
-    isFunction,
-    isNil,
-    isNotNil,
-    isNumber,
-    isNumeric,
-    isString,
-    isValidDate,
-    like,
-    likeArray,
-    likePromise,
-    propIs,
-    type,
-};
+export { isFunction, isNumber, isString, like };

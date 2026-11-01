@@ -27,7 +27,6 @@ export const blueAliases: { find: RegExp; replacement: string }[] = [
     // Live `@blue/util` subpaths only — `function`/`list`/`logic`/`object`/`relation`
     // were aspirational imports with no `src/` directory (and no manifest export).
     { find: /^@blue\/util\/crypto/, replacement: resolve(repoRoot, 'packages/blue-util/src/crypto') },
-    { find: /^@blue\/util\/math/, replacement: resolve(repoRoot, 'packages/blue-util/src/math') },
     { find: /^@blue\/util\/string/, replacement: resolve(repoRoot, 'packages/blue-util/src/string') },
     { find: /^@blue\/util\/types/, replacement: resolve(repoRoot, 'packages/blue-util/src/type') },
     { find: /^@blue\/util\/type/, replacement: resolve(repoRoot, 'packages/blue-util/src/type') },

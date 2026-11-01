@@ -5,11 +5,14 @@
  */
 import '@tsmetadata/polyfill';
 import { Constructable, getSymbolMetadata } from '@blue/core';
-import { propIs, isNotNil } from '@blue/util/types';
+import { isNotNil } from '@blue/util/types';
 import { makeMethodEnumerable } from './_decorator-util';
 
 function _hasFunction(key: string, obj: unknown): boolean {
-    return propIs(Function, key, obj);
+    if (obj == null) return false;
+    // Arbitrary structured input: reflect the property generically after the nil guard
+    const prop = (obj as Record<string, unknown>)[key];
+    return prop instanceof Function || Object.prototype.toString.call(prop) === '[Function]';
 }
 
 const { assign } = Object;

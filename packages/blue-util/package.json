@@ -1,7 +1,7 @@
 {
   "name": "@blue/util",
   "version": "0.0.1",
-  "description": "Native helper utilities — types, strings, math, and objects",
+  "description": "Zero-dependency helper utilities — type guards, strings, environment, crypto",
   "keywords": [
     "blue",
     "bluejs",
@@ -21,10 +21,6 @@
       "default": "./lib/index.js",
       "types": "./lib/index.d.ts"
     },
-    "./math": {
-      "types": "./lib/math/index.d.ts",
-      "default": "./lib/math/index.js"
-    },
     "./string": {
       "types": "./lib/string/index.d.ts",
       "default": "./lib/string/index.js"
@@ -37,9 +33,6 @@
   "types": "lib/index.d.ts",
   "typesVersions": {
     "*": {
-      "math": [
-        "./lib/math/index.d.ts"
-      ],
       "string": [
         "./lib/string/index.d.ts"
       ],
@@ -54,14 +47,5 @@
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
-  "dependencies": {
-    "safe-regex": "catalog:",
-    "seedrandom": "~3.0.5",
-    "slug": "~12.0.1"
-  },
-  "devDependencies": {
-    "@types/seedrandom": "~3.0.8",
-    "@types/slug": "~5.0.9"
-  },
   "sideEffects": false
 }

@@ -42,6 +42,17 @@ describe('RingBuffer', () => {
         expect(rb).toHaveProperty('length', 3);
     });
 
+    test('it should initialize from a generic array-like', () => {
+        rb = new RingBuffer<string>({ 0: 'zero', 9: 'nine', length: 10 } as unknown as ArrayLike<string>);
+        expect(rb).toHaveProperty('length', 10);
+        expect(rb).toHaveProperty('0', 'zero');
+        expect(rb).toHaveProperty('9', 'nine');
+
+        // A `length` without a coherent last index is not array-like, so no elements are read.
+        rb = new RingBuffer<string>({ length: 10 } as unknown as ArrayLike<string>);
+        expect(rb).toHaveProperty('length', 0);
+    });
+
     describe('instances', () => {
         beforeEach(() => {
             rb = new (RingBuffer as unknown as new () => RingBuffer<string | number>)();

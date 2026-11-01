@@ -16,23 +16,15 @@ Jeff Rose
 
 ## Other
 
-- [default](variables/default-2.md)
-- [toCamel](variables/toCamel.md)
-- [toPascal](variables/toPascal.md)
-- [decodeHtml](functions/decodeHtml.md)
-- [encodeHtml](functions/encodeHtml.md)
-- [encodeURIComponent](functions/encodeURIComponent.md)
-- [interpolate](functions/interpolate.md)
-- [replaceDiacritics](functions/replaceDiacritics.md)
-- [trailingSplit](functions/trailingSplit.md)
+### like
 
-## String
+Re-exports [like](functions/like.md)
 
-- [removeNonPrintable](variables/removeNonPrintable.md)
-- [removeNonWord](variables/removeNonWord.md)
-- [decodeURIComponent](functions/decodeURIComponent.md)
-- [slugify](functions/slugify.md)
-- [toProper](functions/toProper.md)
-- [toRegExp](functions/toRegExp.md)
-- [toSentence](functions/toSentence.md)
-- [toString](functions/toString.md)
+## Type
+
+- [is](functions/is.md)
+- [isFunction](functions/isFunction.md)
+- [isNil](functions/isNil.md)
+- [isNotNil](functions/isNotNil.md)
+- [isNumber](functions/isNumber.md)
+- [isString](functions/isString.md)

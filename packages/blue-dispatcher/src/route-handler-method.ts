@@ -6,11 +6,18 @@
 import { Factory, likeFactory } from '@blue/factory';
 import { Route } from '@blue/router';
 import { Serializable } from '@blue/core';
-import { type } from '@blue/util/types';
 import { HandlerMethodArgumentResolver } from './argument-resolver';
 import { ParameterBindingError } from './error';
 import { MethodParameter } from './parameters';
 import { getRouteMapping } from './route-mapping';
+
+const { toString } = Object.prototype;
+
+/**
+ * Single-word native type name used in debug output (`Null`, `Undefined`, `Object`, ...).
+ */
+const typeName = (value: unknown): string =>
+    value == null ? (value === null ? 'Null' : 'Undefined') : toString.call(value).slice(8, -1);
 
 export interface Invocable {
     invoke<T = unknown>(...args: unknown[]): T;
@@ -146,7 +153,7 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
      * @returns {string}
      */
     toString(): string {
-        return `${type(this.handler)}#${this.method}( ${JSON.stringify(this.parameters)} )`;
+        return `${typeName(this.handler)}#${this.method}( ${JSON.stringify(this.parameters)} )`;
     }
 }
 

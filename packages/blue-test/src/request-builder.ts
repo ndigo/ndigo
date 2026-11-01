@@ -3,7 +3,6 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { guid } from '@blue/util/math';
 /**
  * Builds a Blue `Route` and `NodeRequest` from a MockHTTP request spec.
  *
@@ -179,7 +178,7 @@ export function buildRoute(request: MockRequest, responseSink: ResponseSink): Pr
     // until populated (cast with a named const + reason).
     const route = {
         length: segments.length,
-        id: guid(),
+        id: crypto.randomUUID(),
         path: cleanedPath,
         raw: queryString.length > 0 ? `${request.path}?${queryString}` : request.path,
         data,

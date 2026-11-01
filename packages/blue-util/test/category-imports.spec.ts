@@ -6,33 +6,48 @@
 import { describe, test, expect } from 'vitest';
 
 describe('Category modules - import patterns', () => {
-    test('math category - namespace access', async () => {
+    test('root entry exposes the consumed surface', async () => {
         const util = await import('@blue/util');
-        expect(util.math).toBeDefined();
-        expect(typeof util.math.add).toBe('function');
-        expect(util.math.add(2, 3)).toBe(5);
+
+        expect(typeof util.getErrorMessage).toBe('function');
+        expect(typeof util.delay).toBe('function');
+        expect(typeof util.getEnv).toBe('function');
+        expect(typeof util.isDevMode).toBe('function');
+        expect(typeof util.randomHex).toBe('function');
+        expect(typeof util.randomToken).toBe('function');
+        expect(typeof util.is).toBe('function');
+        expect(typeof util.like).toBe('function');
     }, 20000);
 
-    test('string category - namespace access', async () => {
-        const util = await import('@blue/util');
-        expect(util.string).toBeDefined();
-        expect(typeof util.string.toString).toBe('function');
-    });
-
-    test('types category - default export', async () => {
-        const util = await import('@blue/util');
-        expect(util.types).toBeDefined();
-        expect(typeof util.types.isString).toBe('function');
-    });
-
-    test('Direct category imports work', async () => {
-        const math = await import('@blue/util/math');
+    test('string category - named exports', async () => {
         const string = await import('@blue/util/string');
 
-        expect(math.default).toBeDefined();
-        expect(string.default).toBeDefined();
+        expect(typeof string.decodeURIComponent).toBe('function');
+        expect(typeof string.encodeURIComponent).toBe('function');
+        expect(typeof string.toPascal).toBe('function');
+    });
 
-        expect(math.default.add(10, 20)).toBe(30);
-        expect(typeof string.default.toString).toBe('function');
+    test('types category - named exports', async () => {
+        const types = await import('@blue/util/types');
+
+        expect(typeof types.is).toBe('function');
+        expect(typeof types.like).toBe('function');
+        expect(typeof types.isString).toBe('function');
+        expect(typeof types.isNumber).toBe('function');
+        expect(typeof types.isFunction).toBe('function');
+        expect(typeof types.isNil).toBe('function');
+        expect(typeof types.isNotNil).toBe('function');
+    });
+
+    test('no category namespaces or default export remain', async () => {
+        // Negative checks probe for pruned leftovers the module type no longer
+        // declares, so the namespace object is widened to a plain record.
+        const util = (await import('@blue/util')) as unknown as Record<string, unknown>;
+
+        expect(util.crypto).toBeUndefined();
+        expect(util.math).toBeUndefined();
+        expect(util.string).toBeUndefined();
+        expect(util.types).toBeUndefined();
+        expect(util.default).toBeUndefined();
     });
 });

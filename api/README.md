@@ -52,7 +52,7 @@ package can be read — and installed — on its own.
 | `@blue/telemetry-node` | Node.js telemetry for BlueJS — NodeSDK configuration and Node platform instrumentations | [api/README.md](../packages/blue-telemetry-node/api/README.md) |
 | `@blue/telemetry-web` | Browser telemetry for BlueJS — browser telemetry configuration and web instrumentations | [api/README.md](../packages/blue-telemetry-web/api/README.md) |
 | `@blue/test` | Blue integration test harness — MockMVC-style in-process request dispatch | [api/README.md](../packages/blue-test/api/README.md) |
-| `@blue/util` | Native helper utilities — types, strings, math, and objects | [api/README.md](../packages/blue-util/api/README.md) |
+| `@blue/util` | Zero-dependency helper utilities — type guards, strings, environment, crypto | [api/README.md](../packages/blue-util/api/README.md) |
 | `@blue/view` | Views, view targets, and content negotiation for BlueJS | [api/README.md](../packages/blue-view/api/README.md) |
 | `@blue/view-ejs` | Blue View EJS — server-side EJS template rendering as an isomorphic Blue view technology. | [api/README.md](../packages/blue-view-ejs/api/README.md) |
 | `@blue/view-webcomponent` | Web Component view technology for BlueJS — component creation and event binding | [api/README.md](../packages/blue-view-webcomponent/api/README.md) |

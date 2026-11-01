@@ -2,7 +2,7 @@
 
 ***
 
-[@blue/util](../../README.md) / [blue-util](../README-2.md) / decodeURIComponent
+[@blue/util](../../README.md) / [blue-util](../README-1.md) / decodeURIComponent
 
 # Function: decodeURIComponent()
 

@@ -17,7 +17,7 @@ pnpm lint            # Check code quality
 
 ⚠️ **Section 5 (Research Workflow)** - ALWAYS perform two-step reconnaissance before writing code. This repo is graft-indexed: run `graft ask`/`graft callers` (see the Graft section at the end) to understand code or trace callers before grepping/reading; use raw grep only for unindexed files or exhaustive checks.
 
-⚠️ **Section 4.4 (Library Integration Layer)** - Most common error: importing seedrandom/slug directly instead of through @blue/util
+⚠️ **Section 4.4 (Library Integration Layer)** - Most common error: importing linkedom directly instead of through @blue/dom
 
 ⚠️ **Section 4.7 (Decorator Naming)** - All decorators MUST use camelCase; each decorator category fixes its name's form (STYLE_GUIDE.md §3.17)
 
@@ -98,7 +98,7 @@ The project maintains two complementary documentation files for different purpos
 
 | Concern               | ARCHITECTURE.md                                           | STYLE_GUIDE.md                                            |
 | :-------------------- | :-------------------------------------------------------- | :-------------------------------------------------------- |
-| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @blue/util, not from seedrandom"             |
+| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @blue/dom, not from linkedom"                |
 | Code Organization     | "Use Strategy Pattern for parsers"                        | "Name parser files: kebab-case.ts in src/"                |
 | Module Visibility     | "Internal modules are implementation details"             | "Prefix internal files with underscore: \_util.ts"        |
 | Naming Philosophy     | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean"            |
@@ -258,14 +258,13 @@ pnpm format
 
 **Integration Layer Packages:**
 
-| Package      | Encapsulates         | Import From  |
-| :----------- | :------------------- | :----------- |
-| `@blue/util` | `seedrandom`, `slug` | `@blue/util` |
-| `@blue/dom`  | `linkedom`           | `@blue/dom`  |
+| Package     | Encapsulates | Import From |
+| :---------- | :----------- | :---------- |
+| `@blue/dom` | `linkedom`   | `@blue/dom` |
 
 **Import Rules by Package Type:**
 
-1. **Integration Layer Packages** (`@blue/util`, `@blue/dom`):
+1. **Integration Layer Packages** (`@blue/dom`):
 
     - ✅ May import directly from their encapsulated libraries
     - ✅ Must re-export functionality through `src/index.ts`
@@ -283,23 +282,15 @@ pnpm format
 
 ```typescript
 // ✅ CORRECT: Import from integration layer
-import { slugify } from '@blue/util';
 import { createDOMProvider } from '@blue/dom';
 
 // ❌ INCORRECT: Direct import bypasses integration layer
-import { random } from 'seedrandom'; // Wrong! Use @blue/util
 import { parseHTML } from 'linkedom'; // Wrong! Use @blue/dom
 ```
 
 **Common Violations to Avoid:**
 
 ```typescript
-// ❌ In @blue/core/src/container.ts
-import { random } from 'seedrandom'; // WRONG: Not in integration layer
-
-// ✅ Correct version:
-import { random } from '@blue/util';
-
 // ❌ In @blue/view/src/renderer.ts
 import { parse } from 'linkedom'; // WRONG
 
@@ -311,11 +302,11 @@ import { createDOMProvider } from '@blue/dom';
 
 These rules are **automatically enforced** by `@blue/oxlint-plugin`, which ships these dependency-boundary rules:
 
-| Rule                                  | Severity | Description                                                                                                                                                |
-| :------------------------------------ | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@blue/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (seedrandom, slug, etc.) outside their integration layer packages. Allows in integration packages and test files. |
-| `@blue/no-internal-file-imports`      | error    | Forbids cross-package imports of internal files (`@blue/<pkg>/_*`), including `export * from '@blue/<pkg>/_*'`.                                            |
-| `@blue/no-internal-file-exports`      | error    | Forbids re-exporting internal files (`./_*`) — both `export * from './_*'` and named re-exports (`export { foo } from './_*'`).                            |
+| Rule                                  | Severity | Description                                                                                                                                        |
+| :------------------------------------ | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@blue/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (linkedom, etc.) outside their integration layer packages. Allows in integration packages and test files. |
+| `@blue/no-internal-file-imports`      | error    | Forbids cross-package imports of internal files (`@blue/<pkg>/_*`), including `export * from '@blue/<pkg>/_*'`.                                    |
+| `@blue/no-internal-file-exports`      | error    | Forbids re-exporting internal files (`./_*`) — both `export * from './_*'` and named re-exports (`export { foo } from './_*'`).                    |
 
 Run `pnpm lint` to check for violations. These rules are integrated into the root `.oxlintrc.json`.
 
@@ -433,7 +424,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
     - **Fallback (unindexed/exhaustive):** When the graph lacks a detail or you need _every_ occurrence, grep the target:
         - **Step 1 - Scan target package:** Search for related functionality, established patterns, internal utilities (`_util.ts`, `_parsers.ts`), naming conventions, and design patterns currently in use.
         - **Step 2 - Scan related packages:** Check common utilities and specialized tools:
-            - `@blue/util` - Common utilities (string utils, seedrandom, slug) - **Check first!**
+            - `@blue/util` - Common utilities (type guards, string utils, environment, crypto) - **Check first!**
             - `@blue/dom` - Isomorphic DOM parsing/creation (linkedom wrappers) - For HTML parsing, element creation
             - `@blue/validate` - (retired 2026-09-05 per AD-07; use `zod` via `@blue/orm` entity schemas / `@blue/dispatcher` `validatedBy`)
             - `@blue/core` - Core primitives, containers, patterns - Use for application context, DI, base types

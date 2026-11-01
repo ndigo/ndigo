@@ -661,28 +661,24 @@ type UserUpdate = Partial<UserDTO>;
 **4. Library Integration Layer (BlueJS Pattern):**
 
 ```typescript
-// @blue/util - the integration layer for its encapsulated libraries.
-// The imports live inside @blue/util (e.g. src/string/slugify.ts,
-// src/math/random.ts, src/string/to-reg-exp.ts) and are re-exported through
-// stable category surfaces:
-import slug from 'slug';
-import alea from 'seedrandom/lib/alea.js';
-import safeRegex from 'safe-regex';
+// @blue/dom - the integration layer for its encapsulated DOM library.
+// The import lives inside @blue/dom (src/linkedom-dom-provider.ts) and is
+// re-exported through the package's stable surface:
+import { parseHTML } from 'linkedom';
 
-export function uniqueSlug(title: string): string {
-    return `${slug(title)}-${alea().toString(36).slice(2, 8)}`;
+export function createDOMProvider(html: string): DOMProvider {
+    return new LinkedomDOMProvider(parseHTML(html));
 }
 
-export function assertSafeRegex(source: string): boolean {
-    return safeRegex(source);
-}
+// Application code imports from @blue/dom, not from linkedom directly
+import { createDOMProvider } from '@blue/dom';
 
-// Application code imports from @blue/util, not from the encapsulated libraries
-import { string, math } from '@blue/util';
-
-string.slugify('Hello World');
-math.random();
+createDOMProvider('<p>Hello</p>');
 ```
+
+`@blue/util` is the framework's zero-dependency leaf toolkit (type guards,
+strings, environment, crypto). It no longer wraps third-party libraries; it
+stays at layer 0 because every other layer may depend on it.
 
 **See also:** [Dependency Management Strategy](#dependency-management-strategy) for the Library Integration Layer pattern.
 
@@ -835,7 +831,7 @@ The framework is organized into 8 architectural layers with clear dependency dir
 | **3: Application Context** | `@blue/context`                                                                                                                                                                                                                                            | Application context, environment, events, configuration metadata                                                                                                                                  | DI container + application context    |
 | **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/content-i18next`, `@blue/cache`, `@blue/orm`, `@blue/orm-drizzle`, `@blue/proxy`, `@blue/resilience`                                                                                                              | IoC container internals, i18n/theming, caching, persistence abstractions + Drizzle adapter, method interception + resilience                                                                      | IoC container internals + theme/i18n  |
 | **1: Foundation**          | `@blue/core`, `@blue/signals`, `@blue/log`                                                                                                                                                                                                                 | Core primitives, collection types, path matching, reactive state, logging core                                                                                                                    | Core primitives + reactive state      |
-| **0: Integration Layer**   | `@blue/util`, `@blue/dom` (+ tooling: `@blue/oxlint-plugin`, `@blue/generators`)                                                                                                                                                                           | Encapsulated third-party libraries via stable BlueJS wrappers                                                                                                                                     | Third-party facade + utility layer    |
+| **0: Integration Layer**   | `@blue/util`, `@blue/dom` (+ tooling: `@blue/oxlint-plugin`, `@blue/generators`)                                                                                                                                                                           | Zero-dependency leaf toolkit + encapsulated third-party libraries via stable BlueJS wrappers                                                                                                      | Third-party facade + utility layer    |
 
 > **Package Map:** the canonical per-package reference (purpose · platform ·
 > runtime deps) — see [§ Package Map](#package-map) below.
@@ -1106,7 +1102,7 @@ Canonical reference for every publishable package: purpose · layer · platform 
 
 | Package                   | Layer   | Platform | Purpose                                                                                                                                                                    | Runtime deps                                                                                      |
 | :------------------------ | :------ | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ |
-| `@blue/util`              | 0       | iso      | Utility helpers: types, string, math, object (`safe-regex`, `seedrandom`, `slug`)                                                                                          | —                                                                                                 |
+| `@blue/util`              | 0       | iso      | Zero-dependency leaf toolkit: type guards, strings, environment, crypto                                                                                                    | —                                                                                                 |
 | `@blue/dom`               | 0       | iso      | Isomorphic DOM parsing/creation (`linkedom`)                                                                                                                               | —                                                                                                 |
 | `@blue/core`              | 1       | iso      | Primitives, collections, radix tree, metadata, events (`semver`, `zod`)                                                                                                    | `util`                                                                                            |
 | `@blue/signals`           | 1       | iso      | Reactive state: signals, computed, effects (`@preact/signals-core`)                                                                                                        | `log`                                                                                             |
@@ -1193,10 +1189,9 @@ Canonical reference for every publishable package: purpose · layer · platform 
 
 **Current Integration Layers:**
 
-| Integration Layer | Encapsulated Libraries             | Purpose                                            |
-| :---------------- | :--------------------------------- | :------------------------------------------------- |
-| `@blue/util`      | `safe-regex`, `seedrandom`, `slug` | ReDoS-safe regex validation, randomness, URL slugs |
-| `@blue/dom`       | `linkedom`                         | Isomorphic DOM parsing and element creation        |
+| Integration Layer | Encapsulated Libraries | Purpose                                     |
+| :---------------- | :--------------------- | :------------------------------------------ |
+| `@blue/dom`       | `linkedom`             | Isomorphic DOM parsing and element creation |
 
 The encapsulated-library set is the set enforced by the
 `@blue/no-direct-integration-imports` oxlint rule (`INTEGRATION_LAYER_MAP` in
@@ -1240,14 +1235,14 @@ the missing resolver is a manifest bug — not the consumer's job. There is no
 
 ```typescript
 // In @blue/core or any non-integration package
-import { slugify } from '@blue/util'; // ✅ Import from integration layer
+import { createDOMProvider } from '@blue/dom'; // ✅ Import from integration layer
 ```
 
 **❌ Incorrect:**
 
 ```typescript
 // In @blue/core or any non-integration package
-import { random } from 'seedrandom'; // ❌ Direct import bypasses integration layer
+import { parseHTML } from 'linkedom'; // ❌ Direct import bypasses integration layer
 ```
 
 **✅ Allowed Exception (Tests):**

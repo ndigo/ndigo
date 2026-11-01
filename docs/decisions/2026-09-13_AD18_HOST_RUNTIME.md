@@ -171,6 +171,9 @@ change later, but the default remains "host declares features at boot."
   `ContextToken`; both demos' manifests gain the dependency. The demo app
   `apps/blue-host` was npm-renamed `@blue/host` → **`@blue/host-demo`** to
   free the scope name for the package.
+- **2026-11-01 (AD-85):** the "publishable later" arrived — `@blue/host`
+  dropped `private: true`, so the `packages/` publishable-surface guard now
+  carries no exceptions.
 - **Documentation:** `apps/README.md` matrix updated; this AD
   cross-references AD-03 (registration API resolved for the host seam, Page
   question untouched).

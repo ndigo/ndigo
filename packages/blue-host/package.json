@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "Blue Host — centralized micro frontend orchestration in the shell context",
   "type": "module",
-  "private": true,
   "files": [
     "api",
     "lib"

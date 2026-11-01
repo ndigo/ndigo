@@ -11,23 +11,17 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { SURFACE_EXCEPTIONS, surfaceViolations } from './package-surface.mjs';
+import { surfaceViolations } from './package-surface.mjs';
 
 test('a packages/ directory without a manifest violates the surface rule', () => {
     const [violation] = surfaceViolations('blue-probe', null);
     assert.match(violation, /no package\.json/);
 });
 
-test('a private package violates the surface rule unless explicitly publish-pending', () => {
+test('a private package violates the surface rule', () => {
     const violations = surfaceViolations('blue-probe', { name: '@blue/probe', private: true });
     assert.equal(violations.length, 1);
     assert.match(violations[0], /"private": true/);
-});
-
-test('the publish-pending exception passes, with its decision on record', () => {
-    const violations = surfaceViolations('blue-host', { name: '@blue/host', private: true });
-    assert.deepEqual(violations, []);
-    assert.match(SURFACE_EXCEPTIONS.get('@blue/host'), /AD-18/);
 });
 
 test('a regular package passes', () => {

@@ -12,16 +12,6 @@
  */
 
 /**
- * Publish-pending packages allowed to carry `private: true` for now. Every
- * entry records the decision that granted the exception and is expected to
- * be removed when the package flips publishable — the map shrinks, never
- * grows silently.
- */
-export const SURFACE_EXCEPTIONS = new Map([
-    ['@blue/host', 'AD-18: private first, publishable later — remove when @blue/host publishes'],
-]);
-
-/**
  * Violations of the publishable-surface rule for one `packages/` directory.
  *
  * @param {string} dirName - the directory name under `packages/`.
@@ -35,9 +25,9 @@ export function surfaceViolations(dirName, manifest) {
         ];
     }
     const name = manifest.name ?? dirName;
-    if (manifest.private === true && !SURFACE_EXCEPTIONS.has(name)) {
+    if (manifest.private === true) {
         return [
-            `${name} is "private": true — packages/ is the published surface (AD-85); remove the flag or record a publish-pending exception in scripts/package-surface.mjs`,
+            `${name} is "private": true — packages/ is the published surface (AD-85); remove the flag or move the package out of packages/`,
         ];
     }
     return [];

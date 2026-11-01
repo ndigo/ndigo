@@ -50,8 +50,7 @@
  *  13. Publishable surface: every directory under `packages/` is a consumer
  *      package — a `package.json` must exist, must not be `private: true`,
  *      and must carry the consumer artifacts (legacy contract + docs
- *      standard). Publish-pending exceptions are pinned in
- *      `scripts/package-surface.mjs` with their decision (AD-85).
+ *      standard) (AD-85).
  *
  * Run: `node scripts/check-manifests.mjs` (wired into `pnpm manifest:check`
  * and `.github/workflows/ci.yml`).
@@ -249,8 +248,8 @@ for (const spec of importsOf(ROOT, SOURCE_DIRS)) workspaceUsage.add(spec);
 
 // Rule 13: `packages/` is the published surface (AD-85) — every directory in
 // it must be a consumer package: a `package.json` must exist and must not be
-// `private` (publish-pending exceptions live in `scripts/package-surface.mjs`;
-// the `files`/`exports` requirement is the legacy contract checked below).
+// `private` (the `files`/`exports` requirement is the legacy contract checked
+// below).
 for (const dir of readdirSync(PACKAGES)) {
     const pkgPath = join(PACKAGES, dir, 'package.json');
     if (!existsSync(pkgPath)) {

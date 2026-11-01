@@ -535,12 +535,19 @@ stay in `docs/`. The project board flows
 
 - Branch off `main`: `type/N-short-slug` (e.g. `feat/12-auth-refresh`);
   `type` is the conventional-commit type.
-- Run concurrent sessions in separate git worktrees (OpenCode: the worktree
-  session tools; OMP: `git worktree add`). One `pnpm install` per worktree is
-  expected — the shared pnpm store makes it cheap.
+- Run concurrent sessions in separate git worktrees **adjacent to the repo**,
+  named `<repo>-<issue>-<slug>` (e.g. `~/Workspace/blue-50-lint-surface-split`)
+  — never inside the repo and never in a harness data directory. OpenCode
+  defaults to `~/.local/share/opencode/worktree/…`; `opencode.json` sets
+  `worktree.directory: ".."`, so pass the `<repo>-…` name to `worktree_create`,
+  run `git switch -c type/N-slug` in it (the tool leaves HEAD detached), and
+  move the session there. One `pnpm install` per worktree is expected — the
+  shared pnpm store makes it cheap. If a tool places one elsewhere, stop the
+  processes whose cwd is inside it (MCP servers included), `git worktree move`
+  it, and re-point the session.
 - PR back to `main`: title `type(scope): summary`, body `Closes #N`. Rebase
   onto `main` before merging; **squash-merge only**; delete the branch and
-  remove the worktree afterwards.
+  remove the worktree directory afterwards.
 
 **Never**
 

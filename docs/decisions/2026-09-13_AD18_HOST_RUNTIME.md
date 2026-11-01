@@ -1,8 +1,8 @@
 # AD-18: Host runtime — centralized micro frontend orchestration in the shell context
 
 **Date:** 2026-09-13
-**Status:** Accepted — design recorded; implementation sequenced (see
-§Sequencing, not yet started)
+**Status:** Accepted — implemented 2026-09-13 (all sequencing steps
+complete; see §Implementation status)
 
 ## Background
 

@@ -262,4 +262,42 @@ describe('JWTAdapter revocation cache (AD-33 D-7)', () => {
         await delay(60);
         await expect(adapter.validate(accessToken)).resolves.toBeNull();
     });
+
+    test('the cache is bounded: at the cap the oldest entry is evicted (2026-11-02 review L1)', async () => {
+        // The bound is observable behavior, not a private poke: once the cap is
+        // crossed, the oldest sub's live entry is gone — so its revocation takes
+        // effect immediately instead of waiting out the (here: 60 s) TTL.
+        const MAX = 10_000;
+        const futureTime = Math.floor(Date.now() / 1000) + 3600;
+        const users: UserRecord[] = Array.from({ length: MAX + 1 }, (_, i) => ({
+            id: `user-${i}`,
+            username: `user-${i}`,
+            passwordHash: null,
+            roles: ['user'],
+            tokenVersion: 0,
+        }));
+        const userStore = new InMemoryUserStore(users);
+        const adapter = new JWTAdapter({ ...CONFIG, userStore, revocationCacheTtlMs: 60_000 });
+
+        const token = (sub: string, ver: number) =>
+            createJWT({ sub, ver, iss: CONFIG.issuer, aud: CONFIG.audience, exp: futureTime });
+
+        // Fill the cache: MAX distinct subs, all entries still within TTL.
+        for (let i = 0; i < MAX; i++) {
+            // oxlint-disable-next-line no-await-in-loop -- insertion ORDER is the test: sequential awaits establish the Map's FIFO order that the eviction assertion depends on.
+            await expect(adapter.validate(token(`user-${i}`, 0))).resolves.toMatchObject({ id: `user-${i}` });
+        }
+
+        // Revoking user-0 now would be hidden by its cached version for 60 s…
+        await userStore.incrementTokenVersion('user-0');
+        await expect(adapter.validate(token('user-0', 0))).resolves.toMatchObject({ id: 'user-0' });
+
+        // …but inserting the (MAX+1)-th sub forces the oldest eviction.
+        await expect(adapter.validate(token(`user-${MAX}`, 0))).resolves.toMatchObject({ id: `user-${MAX}` });
+
+        // user-0 is no longer cached: the stale token dies at once, proving the
+        // map never grows past the cap and eviction targets the oldest entry.
+        await expect(adapter.validate(token('user-0', 0))).resolves.toBeNull();
+        await expect(adapter.validate(token('user-0', 1))).resolves.toMatchObject({ id: 'user-0' });
+    });
 });

@@ -1,10 +1,10 @@
 /**
- * @module blue-oxlint-plugin
+ * @module src/oxlint
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { RuleTester } from 'oxlint/plugins-dev';
-import { noDirectIntegrationImports } from '../../src/rules/no-direct-integration-imports';
+import { noDirectIntegrationImports } from '../../rules/no-direct-integration-imports.ts';
 
 const ruleTester = new RuleTester({
     languageOptions: {

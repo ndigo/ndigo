@@ -1,10 +1,10 @@
 /**
- * @module blue-oxlint-plugin
+ * @module src/oxlint
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { RuleTester } from 'oxlint/plugins-dev';
-import { noAbstractClassWithoutPrefix } from '../../src/rules/no-abstract-class-without-prefix';
+import { noAbstractClassWithoutPrefix } from '../../rules/no-abstract-class-without-prefix.ts';
 
 const ruleTester = new RuleTester({
     languageOptions: {

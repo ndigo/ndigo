@@ -17,6 +17,7 @@
     "test": "nx run-many -t test",
     "test:bench": "vitest bench --run --reporter verbose",
     "test:e2e": "nx run @blue/todo:test:e2e",
+    "test:internal": "vitest run src/oxlint",
     "apps:smoke": "node scripts/apps-smoke.mjs",
     "typecheck": "pnpm --filter './packages/**' --filter './apps/**' -r exec tsc -b tsconfig.build.json && pnpm exec tsc -p tsconfig.spec.json",
     "typecheck:fast": "pnpm --filter './packages/**' --filter './apps/**' -r exec tsrs -b tsconfig.build.json && pnpm exec tsrs -p tsconfig.spec.json",
@@ -30,7 +31,7 @@
     "db:schema:check": "node scripts/check-migration-schema.mjs",
     "manifest:check": "node scripts/check-manifests.mjs",
     "graft:build": "graft build --deep --allow-partial",
-    "test:tooling": "node --test scripts/test-lower-decorators.mjs scripts/test-import-scanner.mjs",
+    "test:tooling": "node --test scripts/test-lower-decorators.mjs scripts/test-import-scanner.mjs scripts/test-package-surface.mjs",
     "postinstall": "node scripts/typedoc-ts-shim.mjs",
     "agents:sync": "node ../development-agents/gen.mjs .",
     "agents:check": "node scripts/agents-check.mjs"

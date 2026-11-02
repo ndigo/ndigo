@@ -4,7 +4,7 @@
 
 # @blue/oxlint-plugin v0.0.1
 
-Oxlint plugin that bundles BlueJS's repository-specific lint rules.
+Oxlint plugin that bundles BlueJS's consumer-facing lint rules.
 
 ## Since
 

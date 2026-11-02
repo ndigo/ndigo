@@ -1,6 +1,6 @@
 /**
  * Rule that flags mixed-case acronyms (Http, Json, Xml, Url, Api, Html, Dto,.
- * @module blue-oxlint-plugin
+ * @module src/oxlint
  * @since 1.0.0
  * @author Jeff Rose
  */

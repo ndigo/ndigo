@@ -14,5 +14,8 @@
       "command": ["tsc", "--lsp", "--stdio"],
       "extensions": [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".mts", ".cts"]
     }
+  },
+  "worktree": {
+    "directory": ".."
   }
 }

@@ -13,7 +13,7 @@ This document defines the concrete implementation rules, naming conventions, and
 - `[AUTOMATED: oxfmt]` — enforced by oxfmt (`pnpm format:check`, `.oxfmtrc.json`).
 - `[AUTOMATED: oxlint]` — enforced by oxlint (`pnpm lint`, `.oxlintrc.json`); the lane runs
   `oxlint --type-aware --deny-warnings`, so a `warn`-level rule fails CI exactly like an `error`.
-  The enforcing rule names (for example `@blue/no-internal-file-exports`) are named inline.
+  The enforcing rule names (for example `internal/no-internal-file-exports`) are named inline.
 - `[CONVENTION: Code Review]` — enforced by review; no lint rule. Some of these sections also carry
   a partial oxlint rule, named inline.
 
@@ -176,8 +176,8 @@ All TypeScript source files use lowercase with hyphens separating words.
 
 Files prefixed with underscore are internal implementation details.
 
-**Automated:** `@blue/no-internal-file-exports` (error) rejects underscore files re-exported from
-public entry points, and `@blue/no-internal-file-imports` (error) rejects cross-package imports of them.
+**Automated:** `internal/no-internal-file-exports` (error) rejects underscore files re-exported from
+public entry points, and `internal/no-internal-file-imports` (error) rejects cross-package imports of them.
 
 **Rules:**
 
@@ -398,7 +398,7 @@ export const IMAGE_PNG = MediaType.for('image', 'png');
 
 All non-primitive constants use `camelCase`, including RegExp patterns and other immutable objects.
 
-**Automated:** `@blue/no-uppercase-regexp-constants` (error) rejects UPPER_SNAKE_CASE constants initialized with a RegExp literal.
+**Automated:** `internal/no-uppercase-regexp-constants` (error) rejects UPPER_SNAKE_CASE constants initialized with a RegExp literal.
 
 ```typescript
 // ✅ Correct: RegExp patterns use camelCase (they are objects, not primitives)
@@ -705,7 +705,7 @@ class UserProfileView {}
 
 ### 3.9. Acronym Casing [AUTOMATED: oxlint]
 
-**Automated:** `@blue/no-mixed-case-acronyms` (error) rejects mixed-case acronyms (`Http`, `Json`, `Xml`) in type declaration names; identifier casing remains a review concern.
+**Automated:** `internal/no-mixed-case-acronyms` (error) rejects mixed-case acronyms (`Http`, `Json`, `Xml`) in type declaration names; identifier casing remains a review concern.
 
 **Pattern:** Consistent casing for acronyms across all contexts
 
@@ -816,7 +816,7 @@ Examples from the codebase (not an exhaustive list):
 
 ### 3.10. Interfaces and Abstract Classes [CONVENTION: Code Review]
 
-**Automated:** `@blue/no-abstract-class-without-prefix` (error) requires the `Abstract` prefix on abstract classes; interface naming remains a review concern.
+**Automated:** `internal/no-abstract-class-without-prefix` (error) requires the `Abstract` prefix on abstract classes; interface naming remains a review concern.
 
 **Pattern:** Description-first for classes, Abstract prefix for abstract classes
 
@@ -3064,7 +3064,7 @@ static fromOrdinal(ordinal: number): EnumType { /* ... */ }
 
 Standalone factory functions (not static class methods) follow these naming conventions:
 
-**Enforcement:** the `@blue/no-global-state-in-create-factories` rule automates
+**Enforcement:** the `internal/no-global-state-in-create-factories` rule automates
 the mechanically-checkable slice — `create*` factories (standalone, or static
 methods) that reference _mutable_ module-level (`let`/`var`) or class-level
 (non-`readonly` static) state directly. Transitive dependencies reached through
@@ -3546,8 +3546,8 @@ export { slugify } from './slugify';
 
 ### Internal vs Public Modules [AUTOMATED: oxlint]
 
-**Automated:** `@blue/no-internal-file-exports` (error) — underscore-prefixed modules must not be
-re-exported from public entry points; `@blue/no-internal-file-imports` (error) — they must not be
+**Automated:** `internal/no-internal-file-exports` (error) — underscore-prefixed modules must not be
+re-exported from public entry points; `internal/no-internal-file-imports` (error) — they must not be
 imported across package boundaries.
 
 **Public Modules:**
@@ -4394,7 +4394,7 @@ files:
   `pnpm exec nx generate @blue/generators:header --file <path> [--summary ...]`
 
 The file-level block documents the whole module; class/method members carry
-their own focused TSDoc. `@blue/requires-doc-header` (oxlint, error level —
+their own focused TSDoc. `internal/requires-doc-header` (oxlint, error level —
 `.oxlintrc.json`) enforces the canonical block on source files.
 
 **Public symbol comments (coverage gate):** every top-level exported

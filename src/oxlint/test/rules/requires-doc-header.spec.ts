@@ -1,10 +1,10 @@
 /**
- * @module blue-oxlint-plugin
+ * @module src/oxlint
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { RuleTester } from 'oxlint/plugins-dev';
-import { requiresDocHeader } from '../../src/rules/requires-doc-header';
+import { requiresDocHeader } from '../../rules/requires-doc-header.ts';
 
 const ruleTester = new RuleTester({
     languageOptions: {

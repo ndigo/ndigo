@@ -1,6 +1,6 @@
 # BlueJS Decision Records (ADRs)
 
-Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-83**,
+Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-85**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -110,3 +110,4 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-82** | 2026-10-10    | Accepted           | [Feature flags — `@blue/flags`: `FlagEvaluator` SPI, property provider, `@whenFeature` route gates](2026-10-10_AD82_FEATURE_FLAGS.md)                                                                                      |
 | **AD-83** | 2026-10-31    | Accepted           | [Decorator categories and their naming conventions — role-keyed taxonomy, renames (`@generatedColumn`, `@sharedDependency`, `@nestedConfig`), `@whenProfile` profile unification](2026-10-31_AD83_DECORATOR_CATEGORIES.md) |
 | **AD-84** | 2026-10-31    | Accepted           | [`@blue/util` is a framework leaf toolkit — prune to the consumed surface, native `crypto.randomUUID()`, zero runtime deps](2026-10-31_AD84_UTIL_SURFACE_PRUNE.md)                                                         |
+| **AD-85** | 2026-11-01    | Accepted           | [App scaffolding — `blue new` in-repo now, `create-blue-app` at publish](2026-11-01_AD85_APP_SCAFFOLDING.md)                                                                                                               |

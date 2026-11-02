@@ -1,8 +1,8 @@
 # @blue/generators
 
-> Nx generators for BlueJS — scaffold packages, components, READMEs, and standard documentation headers.
+> Nx generators for BlueJS — scaffold applications, packages, components, READMEs, and standard documentation headers.
 
-Nx generators for BlueJS package, component, README, and documentation-header scaffolding.
+Nx generators for BlueJS application, package, component, README, and documentation-header scaffolding.
 
 ## Installation
 
@@ -15,6 +15,10 @@ Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
 ## Getting Started
 
 ```bash
+# New application (writes apps/NN-blue-<name>/ through the `app` generator;
+# `blue new <name>` from @blue/cli fronts the same generator)
+pnpm exec nx generate @blue/generators:app --name hello-widget --kind node
+
 # New package (writes packages/blue-<name>/, index.ts with standard header)
 pnpm exec nx generate @blue/generators:package --name my-package
 
@@ -28,10 +32,21 @@ pnpm exec nx generate @blue/generators:readme --name my-package
 
 | Generator   | Purpose                                                                                                           |
 | ----------- | ----------------------------------------------------------------------------------------------------------------- |
+| `app`       | Scaffold an example application under `apps/NN-blue-<name>` (`node` or `browser` kind), allocating number + port  |
 | `package`   | Scaffold a new `@blue/*` package: manifest, tsconfigs, empty `src/`/`test/`, and a standard-header `src/index.ts` |
 | `component` | Generate a source + test file pair in an existing package, with the standard doc header                           |
 | `header`    | Add or replace the standard documentation header on an existing source file                                       |
 | `readme`    | Scaffold a new package `README.md` on the standard BlueJS template                                                |
+
+### App generator options
+
+| Option          | Description                                                           |
+| --------------- | --------------------------------------------------------------------- |
+| `--name`        | App slug (kebab-case, without the `blue-` prefix; required)           |
+| `--kind`        | `node` (HTTP server) or `browser` (Vite SPA); required                |
+| `--number`      | Reading-order number (defaults to one past the highest existing app)  |
+| `--port`        | Dev port (defaults to the first free multiple-of-ten slot above 3000) |
+| `--description` | One-line description used in the manifest and README                  |
 
 ### Component + header generators
 
@@ -72,6 +87,13 @@ how it fits with the rest of BlueJS.
 ```bash
 pnpm --filter @blue/generators test
 ```
+
+Nx loads the generator factories with Node's native TypeScript stripping,
+which requires exact specifiers: relative imports in Nx-loaded generator
+files carry the `.ts` extension (AD-85), and the package tsconfigs set
+`rewriteRelativeImportExtensions` so `tsc` emits `.js` for the built
+`lib/`. Keep the flag in sync between `tsconfig.json` and
+`tsconfig.build.json` when touching either.
 
 ## See Also
 

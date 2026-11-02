@@ -22,6 +22,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `@blue/generators` (AD-85): the **`app` generator** — scaffolds a demo
+  application under `apps/NN-blue-<slug>` from the `01-blue-hello` (browser)
+  or `02-blue-hello-node` (node) shape, allocating the reading-order number
+  and dev port automatically (the port scan covers the ladder's documented
+  conventions; explicit `--number`/`--port` fail loud on collisions). The
+  generator factories now load through Node's native TypeScript stripping —
+  Nx-loaded generator files import their own modules with `.ts` specifiers,
+  rewritten on emit by `rewriteRelativeImportExtensions`.
+- `@blue/cli` (AD-85): **`blue new <name>`** (`--kind`, `--number`, `--port`,
+  `--description`, `--dry-run`) fronts the app generator through the
+  workspace's Nx bridge; `blue generate app` fails with a pointer at it (one
+  canonical path per artifact).
 - `@blue/flags` (AD-82): feature flags — the **`FlagEvaluator`** SPI
   (typed, async, **never-throw**: abnormal evaluation returns the supplied
   default with a `reason` + `errorCode`), the zero-config

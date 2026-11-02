@@ -50,9 +50,9 @@ process — lives in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Applications are pnpm workspaces over `@blue/*` packages; the
 [`blue` CLI](packages/blue-cli/README.md) fronts the application lifecycle
-(`blue dev`, `blue serve`, `blue generate`, `blue db`, `blue inspect`,
-`blue doctor` — [guide 25](docs/guides/25-blue-cli.md)). Pick a path below:
-each lists the packages to start with, then the demo apps to follow.
+(`blue new`, `blue dev`, `blue serve`, `blue generate`, `blue db`,
+`blue inspect`, `blue doctor` — [guide 25](docs/guides/25-blue-cli.md)). Pick a
+path below: each lists the packages to start with, then the demo apps to follow.
 
 > **Pre-1.0:** the packages are not published yet — build from this repository
 > and use the demo ladder as your starting point.

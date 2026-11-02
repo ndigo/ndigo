@@ -8,6 +8,10 @@
   "compilerOptions": {
     "noEmit": true,
     "strict": true,
+    // The generators package imports its own modules with `.ts` specifiers
+    // (Nx loads those files via Node's native type stripping; AD-85) — the
+    // noEmit lane here permits the extension without rewriting.
+    "allowImportingTsExtensions": true,
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
     "types": ["node", "vitest/globals"],
     "paths": {

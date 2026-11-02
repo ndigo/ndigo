@@ -35,7 +35,7 @@ pnpm lint            # Check code quality
 
 ⚠️ **STYLE_GUIDE.md Section 3.14 (Type-Safe Enums)** - Use class-based pattern for enums with methods/inheritance, built-in enums for simple constants
 
-⚠️ **STYLE_GUIDE.md Section 9 (Self-Documenting Code)** - Names carry meaning, comments carry rationale. Document _why_, not _what_. Bare `as any`/`as unknown as T`/`// @ts-ignore` need a one-line reason; `// NOTE:` is technical debt; one public type per file, files under 300 lines.
+⚠️ **STYLE_GUIDE.md Section 8 (Self-Documenting Code)** - Names carry meaning, comments carry rationale. Document _why_, not _what_. Bare `as any`/`as unknown as T`/`// @ts-ignore` need a one-line reason; `// NOTE:` is technical debt; one public type per file, files under 300 lines.
 
 **Pre-Commit Validation:**
 
@@ -58,7 +58,8 @@ module/class state references). The rest of §3.13 remains a review check.
 - **Module System:** **ESM Only**. No CommonJS (`require`) allowed.
 - **Language:** TypeScript (Target: `ES2022`; single compiler line `~7.0.2` pinned in the pnpm catalog — root, packages, and apps resolve it from there; TypeDoc still runs on the shimmed 6.0.3 toolchain, see `scripts/typedoc-ts-shim.mjs`).
 - **Package Manager:** pnpm >= 11.0.0.
-- **Node Version:** >= 22.0.0.
+- **Node Version:** >= 24.0.0 (root `engines`, `engine-strict=true`; the floor
+  every package README and the README template state).
 
 ## 2. Documentation Guide
 
@@ -342,9 +343,21 @@ This convention is detailed in **STYLE_GUIDE.md Section 3.8**; the per-category 
 - **Output:** Compiled ESM files in `packages/<package-name>/lib/`.
 - **Imports:** Use path aliases `@blue/*` where applicable, or relative paths within the same package.
 - **Dependencies:**
-    - **Runtime:** Add to `dependencies`.
+    - **Runtime (external):** Add to `dependencies` (e.g. `@redis/client`, `jose`).
     - **Development:** Add to `devDependencies`.
-    - **Cross-Package:** List `@blue/*` dependencies in both `devDependencies` and `peerDependencies`.
+    - **Cross-Package (`@blue/*`):** Framework dependencies go in
+      `dependencies` with the workspace version range (e.g. `"@blue/core":
+      "~0.0.1"`) — Angular/Nest-style self-contained published graph.
+      **Optional capability drivers** — subpath entry points that integrate a
+      _sibling_ contract package the consumer may not use — declare that
+      contract as a `peerDependencies` entry instead (canonical example:
+      `@blue/redis` root depends on `@blue/core`/`@blue/log`, while its
+      `/cache`, `/jobs`, `/locks`, `/rate-limit`, `/pubsub` subpaths peer-depend
+      on `@blue/cache`, `@blue/jobs`, `@blue/locks`, `@blue/rate-limit`,
+      `@blue/socket` respectively). Do not add a `peerDependencies` entry for a
+      hard framework dependency, and do not duplicate `dependencies` entries
+      into `devDependencies` — `auto-install-peers=true` plus workspace linking
+      resolves both kinds inside the monorepo.
 
 ### Internal vs Public Modules
 

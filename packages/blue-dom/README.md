@@ -10,6 +10,8 @@ DOM abstraction layer for BlueJS. Provides browser DOM and server-side (linkedom
 pnpm add @blue/dom
 ```
 
+Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11.
+
 ## Getting Started
 
 ```typescript

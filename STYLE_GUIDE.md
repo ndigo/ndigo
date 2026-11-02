@@ -4488,7 +4488,7 @@ class OldComponent {
 
 ---
 
-## 7. Complete Example
+## 6. Complete Example
 
 Here's a complete example demonstrating all conventions:
 
@@ -4598,7 +4598,7 @@ export type { MediaTypeParams, Comparable };
 
 ---
 
-## 8. Maintenance
+## 7. Maintenance
 
 ### When oxfmt Config Changes
 
@@ -4635,7 +4635,7 @@ When making style decisions, document the rationale in git commit messages and c
 
 ---
 
-## 9. Self-Documenting Code
+## 8. Self-Documenting Code
 
 Code is read more often than it is written. Self-documenting code minimizes the gap between what the code says and what the author intended.
 

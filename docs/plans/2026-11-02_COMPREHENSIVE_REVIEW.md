@@ -95,16 +95,16 @@ scope was re-performed directly — nothing left unreviewed.
 - Sections jump `## 5` → `## 7` (`STYLE_GUIDE.md:4491`); no `## 6`. No current doc
   cites §6, so risk is ambiguity only. Renumber or restore.
 
-### F1 — OIDC refresh-token grant unimplemented (feature gap, tracked)
-
-- `packages/blue-auth-client/src/oidc-adapter.ts:703-707`: `refresh()` throws
-  "not implemented" (and `authenticate()` throws by design). Callers discover this
-  only at runtime.
-- **Tracked:** [issue #61](https://github.com/jeffrose/blue/issues/61) — full
-  scope: refresh-token capture, discovery-resolved exchange through the existing
-  `#fetchJson` guards, `#verifyIdToken` on the response, rotation, and the
-  SE-7 mirror rule (a refresh token never authenticates).
-- Interim landed with Wave 3: the throw message now cites the issue.
+- **F1 — OIDC refresh-token grant unimplemented (feature gap, tracked)** —
+  **Landed 2026-11-02** (issue #61): `OIDCAdapter.refresh()` now performs the
+  `grant_type=refresh_token` exchange — capture at code exchange, binding to
+  the verified subject, single-use rotation, `invalid_token` on provider
+  rejections, and a `refreshStore` seam mirroring `pendingStore`; the client
+  captures and presents refresh tokens on `AuthClient.refresh()`. Details:
+  auth-client README + the flow/unit specs.
+- Historical detail: `packages/blue-auth-client/src/oidc-adapter.ts`: `refresh()`
+  threw "not implemented" (and `authenticate()` throws by design). Callers
+  discovered this only at runtime.
 
 ## 2. Verified good (no action)
 

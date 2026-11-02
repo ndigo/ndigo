@@ -30,11 +30,18 @@ export type OIDCErrorCode =
  */
 export class OIDCError extends Error {
     readonly code: OIDCErrorCode;
+    /**
+     * The HTTP status behind a `network` failure, when one exists — lets
+     * callers distinguish a provider rejection (e.g. a `400` on the refresh
+     * grant) from a transport failure.
+     */
+    readonly httpStatus: number | undefined;
 
-    constructor(code: OIDCErrorCode, message: string, options?: { cause?: unknown }) {
+    constructor(code: OIDCErrorCode, message: string, options?: { cause?: unknown; httpStatus?: number }) {
         super(message, options !== undefined ? { cause: options.cause } : undefined);
         this.name = 'OIDCError';
         this.code = code;
+        this.httpStatus = options?.httpStatus;
     }
 }
 
@@ -67,6 +74,9 @@ const DEFAULT_FETCH_TIMEOUT_MS = 10_000;
 /** Upper bound on concurrently pending authorization requests (the default in-memory store's cap). */
 const MAX_PENDING_AUTHORIZATIONS = 20;
 
+/** Upper bound on tracked refresh-token bindings (the default in-memory store's cap). */
+const MAX_REFRESH_BINDINGS = 100;
+
 /** PKCE code-verifier length in bytes (RFC 7636 recommends 32 octets of entropy). */
 const CODE_VERIFIER_BYTES = 32;
 
@@ -88,6 +98,12 @@ export interface OIDCAdapterConfig {
     redirectUri: string;
     /** The scopes to request (e.g., ['openid', 'profile', 'email']). */
     scopes?: string[];
+    /**
+     * Optional `prompt` value for the authorization request (e.g. `'consent'`,
+     * `'login'`). Several providers require `prompt=consent` before they will
+     * grant `offline_access` — and therefore issue refresh tokens.
+     */
+    prompt?: string;
     /** The audience claim to validate. Defaults to `clientId` when omitted. */
     audience?: string;
     /**
@@ -127,6 +143,15 @@ export interface OIDCAdapterConfig {
      * Redis server-side).
      */
     pendingStore?: PendingAuthorizationStore;
+    /**
+     * Persistence seam for refresh-token bindings (which principal each
+     * captured refresh token belongs to, single-use rotation included).
+     * Defaults to an in-memory store scoped to this adapter instance: a
+     * refresh arriving on another instance — a second tab, a restart, or
+     * another server — fails with `invalid_token` unless a store over
+     * shared storage is supplied.
+     */
+    refreshStore?: RefreshTokenStore;
 }
 
 /**
@@ -164,6 +189,7 @@ interface TokenResponse {
     idToken: string;
     accessToken: string | null;
     expiresIn: number | null;
+    refreshToken: string | null;
 }
 
 /**
@@ -247,6 +273,88 @@ export class InMemoryPendingAuthorizationStore implements PendingAuthorizationSt
     }
 }
 
+/**
+ * The subject binding recorded for a refresh token: which principal the
+ * token was issued for. Set when the code exchange (or a rotation) captures
+ * the token; consulted on every refresh so the new ID token cannot switch
+ * subjects mid-session.
+ */
+export interface RefreshTokenBinding {
+    /** The verified `sub` of the ID token the refresh token was issued with. */
+    subject: string;
+}
+
+/**
+ * Persistence seam for refresh-token bindings.
+ *
+ * The adapter defaults to {@link InMemoryRefreshTokenStore}, an in-memory
+ * map **scoped to one adapter instance** — both the binding and the
+ * single-use rotation bookkeeping live there. Deployments where a refresh
+ * may arrive on another instance (a second tab, a restart, or another
+ * server) MUST inject a store backed by shared storage; with the default,
+ * a refresh token captured elsewhere is rejected (`invalid_token`).
+ *
+ * Only tokens this adapter captured from its own exchanges (or rotations)
+ * are redeemable — an access or ID token is never a refresh credential
+ * (the SE-7 mirror: as refresh tokens never authenticate, access tokens
+ * never refresh).
+ */
+export interface RefreshTokenStore {
+    /**
+     * Backend identifier for observability/diagnostics
+     * (e.g. `'in-memory'`, `'redis'`).
+     */
+    readonly kind: string;
+    /** Returns the binding for `token`, or `null` when unknown or consumed. */
+    get(token: string): Promise<RefreshTokenBinding | null>;
+    /** Stores the binding for `token`, replacing any existing entry. */
+    set(token: string, binding: RefreshTokenBinding): Promise<void>;
+    /** Removes the binding for `token` (rotation consumes the presented token). */
+    delete(token: string): Promise<void>;
+}
+
+/**
+ * Default {@link RefreshTokenStore}: a bounded in-memory map scoped to a
+ * single adapter instance.
+ *
+ * At the cap (100 entries) `set` evicts the oldest binding, so a refresh
+ * flood cannot grow the map without limit.
+ */
+export class InMemoryRefreshTokenStore implements RefreshTokenStore {
+    readonly kind = 'in-memory';
+
+    readonly #entries = new Map<string, RefreshTokenBinding>();
+
+    async get(token: string): Promise<RefreshTokenBinding | null> {
+        return this.#entries.get(token) ?? null;
+    }
+
+    async set(token: string, binding: RefreshTokenBinding): Promise<void> {
+        // Bound memory: evict the oldest binding when full.
+        while (this.#entries.size >= MAX_REFRESH_BINDINGS) {
+            const oldestKey = this.#entries.keys().next().value;
+            if (oldestKey === undefined) break;
+            this.#entries.delete(oldestKey);
+        }
+        this.#entries.set(token, binding);
+    }
+
+    async delete(token: string): Promise<void> {
+        this.#entries.delete(token);
+    }
+}
+
+/**
+ * The result of a token-endpoint exchange: the `AuthResult` contract plus
+ * the provider's refresh token. `refreshToken` is `null` when the provider
+ * issued none for this result (a previously captured token then stays
+ * current).
+ */
+export interface OIDCResult extends AuthResult {
+    /** The provider's refresh token (`refresh_token`), or null when none was issued. */
+    refreshToken: string | null;
+}
+
 function isLoopbackHost(hostname: string): boolean {
     const host = hostname.toLowerCase().replace(/^\[|\]$/g, '');
     return (
@@ -306,20 +414,27 @@ function principalFromPayload(payload: JWTPayload): Principal {
 /**
  * An {@link AuthAdapter} implementation for OpenID Connect (OIDC).
  *
- * This adapter implements the OIDC authorization code flow with PKCE:
+ * This adapter implements the OIDC authorization code flow with PKCE,
+ * plus the refresh-token grant:
  * - Resolving endpoints from validated discovery metadata (optional)
  * - Redirecting to the identity provider with `state`, PKCE, and `nonce`
- * - Exchanging the authorization code for tokens
+ * - Exchanging the authorization code for tokens (capturing any
+ *   `refresh_token` and binding it to the verified subject)
+ * - Exchanging a captured refresh token for a new token set
+ *   (`grant_type=refresh_token`) with the same verification discipline
  * - Verifying ID-token signature, issuer, audience, expiration, and nonce
  *   before constructing a principal
  *
  * @remarks Verification is mandatory: construct with `jwksUrl`, `discovery`,
  * or `tokenValidator`. There is no claim-only mode.
  *
- * Pending authorization requests live in a {@link PendingAuthorizationStore}.
- * The default store is in-memory and scoped to this adapter instance, so a
- * flow that spans a redirect MUST reuse that instance or inject a shared
- * store — see {@link OIDCAdapterConfig.pendingStore}.
+ * Pending authorization requests live in a {@link PendingAuthorizationStore}
+ * and refresh-token bindings in a {@link RefreshTokenStore}. The defaults
+ * are in-memory and scoped to this adapter instance, so a flow that spans a
+ * redirect or a refresh that arrives on another instance MUST reuse that
+ * instance or inject a shared store — see
+ * {@link OIDCAdapterConfig.pendingStore} and
+ * {@link OIDCAdapterConfig.refreshStore}.
  */
 export class OIDCAdapter implements AuthAdapter {
     readonly id = 'oidc';
@@ -328,6 +443,7 @@ export class OIDCAdapter implements AuthAdapter {
     #discoveryPromise: Promise<DiscoveryDocument> | null = null;
     #jwks: ReturnType<typeof createRemoteJWKSet> | null = null;
     readonly #pending: PendingAuthorizationStore;
+    readonly #refresh: RefreshTokenStore;
 
     constructor(config: OIDCAdapterConfig) {
         this.#config = config;
@@ -339,6 +455,7 @@ export class OIDCAdapter implements AuthAdapter {
             );
         }
         this.#pending = config.pendingStore ?? new InMemoryPendingAuthorizationStore();
+        this.#refresh = config.refreshStore ?? new InMemoryRefreshTokenStore();
         this.#discoveryUrl = `${config.issuer.replace(/\/$/, '')}/.well-known/openid-configuration`;
     }
 
@@ -434,7 +551,9 @@ export class OIDCAdapter implements AuthAdapter {
         try {
             const response = await fetch(url, { ...init, signal: controller.signal, redirect: 'error' });
             if (!response.ok) {
-                throw new OIDCError('network', `${label} fetch failed with status ${response.status}`);
+                throw new OIDCError('network', `${label} fetch failed with status ${response.status}`, {
+                    httpStatus: response.status,
+                });
             }
             const contentLength = Number(HTTPHeaders.CONTENT_LENGTH.get(response.headers));
             if (Number.isFinite(contentLength) && contentLength > maxBytes) {
@@ -570,6 +689,9 @@ export class OIDCAdapter implements AuthAdapter {
         });
         params.set('code_challenge', await pkceCodeChallenge(codeVerifier));
         params.set('code_challenge_method', 'S256');
+        if (this.#config.prompt) {
+            params.set('prompt', this.#config.prompt);
+        }
 
         return { url: `${authorizationEndpoint}?${params.toString()}`, state, nonce, codeVerifier, expiresAt };
     }
@@ -580,12 +702,14 @@ export class OIDCAdapter implements AuthAdapter {
      * authorization code for tokens at the token endpoint.
      *
      * Fails closed: unknown/expired `state`, malformed responses, and any
-     * ID-token verification failure throw without mutating auth state. With
+     * ID-token verification failure throw without mutating auth state. A
+     * `refresh_token` in the response is captured and bound to the verified
+     * subject for later {@link refresh} calls. With
      * the default in-memory store the callback must be handled by the same
      * adapter instance that created the request; inject a shared store to
      * survive redirects, restarts, or multiple instances.
      */
-    async exchangeCodeForTokens(code: string, state: string): Promise<AuthResult> {
+    async exchangeCodeForTokens(code: string, state: string): Promise<OIDCResult> {
         const pending = await this.#pending.get(state);
         if (!pending || pending.expiresAt < Date.now()) {
             await this.#pending.delete(state);
@@ -617,11 +741,19 @@ export class OIDCAdapter implements AuthAdapter {
 
         const tokens = this.#assertTokenResponse(rawResponse);
         const payload = await this.#verifyIdToken(tokens.idToken, pending.nonce);
+        const principal = principalFromPayload(payload);
+
+        // Bind the refresh token to the verified subject: refresh() redeems
+        // only tokens this adapter captured, and only for that principal.
+        if (tokens.refreshToken !== null) {
+            await this.#refresh.set(tokens.refreshToken, { subject: principal.id });
+        }
 
         return {
-            principal: principalFromPayload(payload),
+            principal,
             token: tokens.accessToken ?? tokens.idToken,
             expiresAt: tokens.expiresIn !== null ? Date.now() + tokens.expiresIn * 1000 : null,
+            refreshToken: tokens.refreshToken,
         };
     }
 
@@ -648,10 +780,21 @@ export class OIDCAdapter implements AuthAdapter {
         ) {
             throw new OIDCError('malformed_response', 'Token response expires_in is not a number');
         }
+        if (
+            response.refresh_token !== undefined &&
+            response.refresh_token !== null &&
+            typeof response.refresh_token !== 'string'
+        ) {
+            throw new OIDCError('malformed_response', 'Token response refresh_token is not a string');
+        }
         return {
             idToken: response.id_token,
             accessToken: typeof response.access_token === 'string' ? response.access_token : null,
             expiresIn: typeof response.expires_in === 'number' ? response.expires_in : null,
+            refreshToken:
+                typeof response.refresh_token === 'string' && response.refresh_token.length > 0
+                    ? response.refresh_token
+                    : null,
         };
     }
 
@@ -700,10 +843,85 @@ export class OIDCAdapter implements AuthAdapter {
         return url.toString();
     }
 
-    async refresh(_token: string): Promise<AuthResult> {
-        throw new Error(
-            'OIDCAdapter.refresh() is not implemented — the refresh-token grant is tracked in https://github.com/jeffrose/blue/issues/61'
-        );
+    /**
+     * Exchanges a refresh token for a new token set (`grant_type=refresh_token`)
+     * at the token endpoint — discovery-resolved when enabled, with client-secret
+     * authentication for confidential clients.
+     *
+     * Only refresh tokens this adapter **captured** from a code exchange (or a
+     * previous rotation, per the configured {@link RefreshTokenStore}) are
+     * accepted: presenting an access or ID token fails with `invalid_token`
+     * before any network call (the SE-7 mirror — as refresh tokens never
+     * authenticate, access tokens never refresh).
+     *
+     * The response's ID token passes the full verification path (signature,
+     * issuer, audience, expiration) with **no nonce** — the nonce binds the
+     * authorization flow only — and its subject must match the binding
+     * recorded for the presented token.
+     *
+     * Rotation: when the provider returns a new refresh token the presented
+     * one is consumed (single-use); when it does not, the presented token
+     * remains redeemable. Provider rejections (`400 invalid_grant` — expired,
+     * revoked, or already-rotated tokens) surface as `invalid_token`, not as
+     * transport errors.
+     *
+     * @param token - The refresh token captured from the exchange.
+     */
+    async refresh(token: string): Promise<OIDCResult> {
+        const binding = await this.#refresh.get(token);
+        if (binding === null) {
+            throw new OIDCError('invalid_token', 'Unknown or already-consumed refresh token');
+        }
+
+        const doc = this.#config.discovery ? await this.#ensureDiscovery() : null;
+        const tokenEndpoint = doc ? doc.tokenEndpoint : `${this.#config.issuer.replace(/\/$/, '')}/token`;
+
+        let rawResponse: unknown;
+        try {
+            rawResponse = await this.#fetchJson(new URL(tokenEndpoint), 'token refresh', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    grant_type: 'refresh_token',
+                    refresh_token: token,
+                    client_id: this.#config.clientId,
+                    ...(this.#config.clientSecret ? { client_secret: this.#config.clientSecret } : {}),
+                }),
+            });
+        } catch (error) {
+            if (error instanceof OIDCError && error.code === 'network' && error.httpStatus === 400) {
+                throw new OIDCError(
+                    'invalid_token',
+                    'The identity provider rejected the refresh token (invalid_grant)',
+                    {
+                        cause: error,
+                    }
+                );
+            }
+            if (error instanceof OIDCError) throw error;
+            throw new OIDCError('network', 'Token refresh request failed', { cause: error });
+        }
+
+        const tokens = this.#assertTokenResponse(rawResponse);
+        const payload = await this.#verifyIdToken(tokens.idToken, null);
+        const principal = principalFromPayload(payload);
+        if (principal.id !== binding.subject) {
+            throw new OIDCError('invalid_token', 'ID token subject does not match the refresh-token binding');
+        }
+
+        // Rotation consumes the presented token; without rotation it stays
+        // current (the provider still accepts it).
+        if (tokens.refreshToken !== null) {
+            await this.#refresh.delete(token);
+            await this.#refresh.set(tokens.refreshToken, { subject: binding.subject });
+        }
+
+        return {
+            principal,
+            token: tokens.accessToken ?? tokens.idToken,
+            expiresAt: tokens.expiresIn !== null ? Date.now() + tokens.expiresIn * 1000 : null,
+            refreshToken: tokens.refreshToken,
+        };
     }
 
     async logout(_token: string): Promise<void> {

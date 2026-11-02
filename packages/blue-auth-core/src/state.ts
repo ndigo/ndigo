@@ -15,6 +15,14 @@ export interface AuthResult {
     token: string | null;
     /** Expiration timestamp in milliseconds. */
     expiresAt: number | null;
+    /**
+     * The provider's refresh token when the exchange or refresh returned
+     * one (rotation-capable adapters). Callers persist it alongside `token`
+     * and present it on the next refresh; `null`/absent means the provider
+     * issued none for this result (so a previously captured one stays
+     * current).
+     */
+    refreshToken?: string | null;
 }
 
 /**

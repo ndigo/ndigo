@@ -35,6 +35,10 @@ this so callers can distinguish provider errors from programming errors.
 
 `unknown`
 
+###### httpStatus?
+
+`number`
+
 #### Returns
 
 `OIDCError`
@@ -48,3 +52,13 @@ this so callers can distinguish provider errors from programming errors.
 ### code
 
 > `readonly` **code**: [`OIDCErrorCode`](../type-aliases/OIDCErrorCode.md)
+
+***
+
+### httpStatus
+
+> `readonly` **httpStatus**: `number` \| `undefined`
+
+The HTTP status behind a `network` failure, when one exists — lets
+callers distinguish a provider rejection (e.g. a `400` on the refresh
+grant) from a transport failure.

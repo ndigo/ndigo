@@ -141,6 +141,26 @@ if (code && state) {
 }
 ```
 
+#### Refresh tokens
+
+`exchangeCodeForTokens` captures the provider's `refresh_token` when one is issued and returns it as `result.refreshToken`, bound to the verified subject. `refresh(refreshToken)` exchanges it for a new token set: the response's ID token passes the full verification path (**no nonce** — the nonce binds the authorization flow only) and its subject must match the binding. Provider rejections (`400 invalid_grant` for expired, revoked, or already-rotated tokens) surface as `OIDCError` with code `invalid_token`, not as transport errors.
+
+Whether a provider issues a refresh token is its policy, not the adapter's. Most follow the `offline_access` convention: request the scope in `scopes`, and where the provider gates it behind explicit consent (as `oidc-provider` does) also set `prompt: 'consent'` — without it the scope is silently dropped and no refresh token is issued. The embedded issuer in `apps/18-blue-auth-playground` (mode 6) shows both in a working flow.
+
+Only tokens this adapter captured from its own exchanges (or a previous rotation) are redeemable — presenting an access or ID token is rejected before any network call (the SE-7 mirror: as refresh tokens never authenticate, access tokens never refresh). When the provider rotates (`refresh_token` in the response), the presented token is consumed **single-use**; when it does not, the presented token stays redeemable.
+
+Bindings live in a `refreshStore` with the same instance-affinity contract as `pendingStore`: the default is in-memory and scoped to one adapter instance, so inject a shared store (`sessionStorage`, Redis) when a refresh may arrive on another instance — the isolated default rejects it with `invalid_token`.
+
+`AuthClient` captures refresh tokens automatically and presents the most recent one on `client.refresh(adapterId)`, falling back to the session token for adapters that issue none:
+
+```typescript
+const result = await adapter.exchangeCodeForTokens(code, state);
+console.log(result.refreshToken); // captured for the next refresh
+
+// Later, when the access token is near expiry:
+await client.refresh('oidc'); // exchanges, rotates, updates the client state
+```
+
 ## API
 
 The full API is generated from JSDoc via `pnpm doc:api` into

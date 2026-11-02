@@ -1,7 +1,7 @@
 /**
  * Mode 6, switched off: `OIDC_ENABLED=false` must answer `503 oidc_disabled`
  * rather than throw or hang, so a deployment that does not run the embedded
- * issuer still gets a labelled failure from both OIDC routes.
+ * issuer still gets a labelled failure from every OIDC route.
  *
  * @module blue-auth-playground
  * @since 1.0.0
@@ -33,6 +33,12 @@ describe('mode 6 — the embedded issuer disabled', () => {
 
     test('GET /oidc/callback is 503 oidc_disabled, whatever it carries', async () => {
         const res = await harness.http.get('/oidc/callback').query({ code: 'x', state: 'y' }).exec();
+        expect(res.response.status).toBe(503);
+        expect(recordOf(res.json())).toMatchObject({ code: 'oidc_disabled' });
+    });
+
+    test('GET /oidc/refresh is 503 oidc_disabled', async () => {
+        const res = await harness.http.get('/oidc/refresh').exec();
         expect(res.response.status).toBe(503);
         expect(recordOf(res.json())).toMatchObject({ code: 'oidc_disabled' });
     });

@@ -138,7 +138,12 @@ The ID of the adapter to use for logout.
 
 > **refresh**(`adapterId`): `Promise`\<[`AuthResult`](../interfaces/AuthResult.md)\>
 
-Refreshes the current token.
+Refreshes the current session.
+
+Presents the most recent refresh token captured from a refresh-capable
+adapter (`AuthResult.refreshToken`), falling back to the session token
+when none was issued. A rotated refresh token from the result replaces
+the stored one; results without one leave it current.
 
 #### Parameters
 

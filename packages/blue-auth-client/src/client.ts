@@ -22,6 +22,9 @@ export class AuthClient {
         expiresAt: null,
     };
 
+    /** The most recent refresh token a refresh-capable adapter returned. */
+    #refreshToken: string | null = null;
+
     get state(): AuthenticationState {
         return this.#state;
     }
@@ -79,13 +82,19 @@ export class AuthClient {
     }
 
     /**
-     * Refreshes the current token.
+     * Refreshes the current session.
+     *
+     * Presents the most recent refresh token captured from a refresh-capable
+     * adapter (`AuthResult.refreshToken`), falling back to the session token
+     * when none was issued. A rotated refresh token from the result replaces
+     * the stored one; results without one leave it current.
      *
      * @param adapterId - The ID of the adapter to use for refresh.
      * @returns The updated {@link AuthResult}.
      */
     async refresh(adapterId: string): Promise<AuthResult> {
-        if (!this.#state.token) {
+        const token = this.#refreshToken ?? this.#state.token;
+        if (!token) {
             throw new Error('No token to refresh');
         }
 
@@ -94,7 +103,7 @@ export class AuthClient {
             throw new Error(`Authentication adapter '${adapterId}' not found`);
         }
 
-        const result = await adapter.refresh(this.#state.token);
+        const result = await adapter.refresh(token);
         this.#updateState(result);
         return result;
     }
@@ -130,9 +139,15 @@ export class AuthClient {
         this.#state.principal = result.principal;
         this.#state.token = result.token;
         this.#state.expiresAt = result.expiresAt;
+        // Capture rotated refresh tokens; a null/absent one leaves the
+        // previously captured token current (the provider still accepts it).
+        if (typeof result.refreshToken === 'string' && result.refreshToken.length > 0) {
+            this.#refreshToken = result.refreshToken;
+        }
     }
 
     #logout(): void {
+        this.#refreshToken = null;
         this.#state = {
             isAuthenticated: false,
             principal: null,

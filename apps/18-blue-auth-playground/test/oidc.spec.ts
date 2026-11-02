@@ -15,8 +15,9 @@
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { freePort, recordOf, startPlaygroundServer, type ServerHarness } from './harness';
+import { freePort, recordOf, sessionIdOf, startPlaygroundServer, type ServerHarness } from './harness';
 import { discover, runAuthorizationCodeFlow, type AuthorizationFlowResult } from './oidc-interaction';
+import { DEMO_PASSWORD } from '../src/config';
 
 describe('mode 6 — OIDC code + PKCE with the embedded issuer', () => {
     let harness: ServerHarness;
@@ -47,6 +48,25 @@ describe('mode 6 — OIDC code + PKCE with the embedded issuer', () => {
         return fetch(url, { redirect: 'manual', headers: { accept } });
     }
 
+    /** Completes a flow and returns the callback's JSON summary plus the session id it issued. */
+    async function completeFederatedSession(): Promise<{ body: Record<string, unknown>; sessionId: string }> {
+        const flow = await beginFlow();
+        const res = await callback(flow.code, flow.state);
+        expect(res.status).toBe(200);
+        const body = recordOf(await res.json());
+        if (body === null) throw new Error('callback body was not an object');
+        return { body, sessionId: sessionIdOf(body) };
+    }
+
+    /** Calls the playground's refresh route with (or without) the session cookie. */
+    function refresh(sessionId?: string) {
+        const headers: Record<string, string> = {};
+        if (sessionId !== undefined) {
+            headers['cookie'] = `${harness.config.cookieName}=${sessionId}`;
+        }
+        return fetch(`${harness.baseUrl}/oidc/refresh`, { headers });
+    }
+
     test('the embedded issuer serves discovery for the registered client', async () => {
         const endpoints = await discover(harness.config.oidc.issuerUrl);
         expect(endpoints.issuer).toBe(harness.config.oidc.issuerUrl);
@@ -65,7 +85,10 @@ describe('mode 6 — OIDC code + PKCE with the embedded issuer', () => {
         expect(url.searchParams.get('client_id')).toBe(harness.config.oidc.clientId);
         expect(url.searchParams.get('redirect_uri')).toBe(harness.config.oidc.redirectUri);
         expect(url.searchParams.get('response_type')).toBe('code');
-        expect(url.searchParams.get('scope')).toBe('openid profile');
+        expect(url.searchParams.get('scope')).toBe('openid profile offline_access');
+        // oidc-provider only grants `offline_access` (→ refresh tokens) to a
+        // request that asks for consent.
+        expect(url.searchParams.get('prompt')).toBe('consent');
         expect(url.searchParams.get('code_challenge_method')).toBe('S256');
         expect(url.searchParams.get('code_challenge')).toMatch(/^[A-Za-z0-9_-]{43}$/);
         expect(url.searchParams.get('state')).toBeTruthy();
@@ -151,5 +174,53 @@ describe('mode 6 — OIDC code + PKCE with the embedded issuer', () => {
         const res = await callback(`${flow.code}-tampered`, flow.state);
         expect(res.status).toBe(401);
         expect(recordOf(await res.json())).toMatchObject({ code: 'oidc_exchange_failed' });
+    });
+
+    test('the callback captures the provider refresh token server-side', async () => {
+        const { body } = await completeFederatedSession();
+
+        expect(body['refresh']).toMatchObject({ captured: true, rotation: 'single-use' });
+        // The credential itself never rides the browser-facing summary.
+        expect(JSON.stringify(body)).not.toContain('refresh_token');
+    });
+
+    test('GET /oidc/refresh exchanges the server-held token and tracks rotation', async () => {
+        const { sessionId } = await completeFederatedSession();
+
+        const first = await refresh(sessionId);
+        expect(first.status).toBe(200);
+        const firstBody = recordOf(await first.json());
+        expect(firstBody).toMatchObject({
+            mode: 'oidc',
+            surface: 'http',
+            refreshed: true,
+            rotated: true,
+            principal: { id: harness.config.oidc.accountId, name: 'OIDC Demo User' },
+        });
+        expect(typeof firstBody?.['expiresAt']).toBe('number');
+
+        // The public client rotated on first use; the app tracked the new
+        // credential, so a second refresh presents the live token and succeeds.
+        const second = await refresh(sessionId);
+        expect(second.status).toBe(200);
+        expect(recordOf(await second.json())).toMatchObject({ refreshed: true, rotated: true });
+    });
+
+    test('GET /oidc/refresh without a federated session is 401 oidc_refresh_unavailable', async () => {
+        const anonymous = await refresh();
+        expect(anonymous.status).toBe(401);
+        expect(recordOf(await anonymous.json())).toMatchObject({ code: 'oidc_refresh_unavailable' });
+
+        // A live session that never went through the OIDC callback holds no
+        // provider token either — the route is OIDC-session-scoped.
+        const login = await fetch(`${harness.baseUrl}/auth/login`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ username: 'admin', password: DEMO_PASSWORD }),
+        });
+        expect(login.status).toBe(200);
+        const wrongMode = await refresh(sessionIdOf(await login.json()));
+        expect(wrongMode.status).toBe(401);
+        expect(recordOf(await wrongMode.json())).toMatchObject({ code: 'oidc_refresh_unavailable' });
     });
 });

@@ -8,6 +8,10 @@
 
 The result of an authentication attempt.
 
+## Extended by
+
+- [`OIDCResult`](OIDCResult.md)
+
 ## Properties
 
 ### expiresAt
@@ -23,6 +27,18 @@ Expiration timestamp in milliseconds.
 > **principal**: [`Principal`](Principal.md) \| `null`
 
 The authenticated principal, or null if authentication failed.
+
+***
+
+### refreshToken?
+
+> `optional` **refreshToken?**: `string` \| `null`
+
+The provider's refresh token when the exchange or refresh returned
+one (rotation-capable adapters). Callers persist it alongside `token`
+and present it on the next refresh; `null`/absent means the provider
+issued none for this result (so a previously captured one stays
+current).
 
 ***
 

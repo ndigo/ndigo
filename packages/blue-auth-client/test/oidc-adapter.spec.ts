@@ -229,6 +229,15 @@ describe('OIDCAdapter.createAuthorizationRequest', () => {
         const url = new URL(request.url);
         expect(url.searchParams.get('code_challenge')).toBe(challenge);
     });
+
+    test('carries the configured prompt parameter, and only then', async () => {
+        const withPrompt = new OIDCAdapter({ ...baseConfig, prompt: 'consent' });
+        const withoutPrompt = new OIDCAdapter(baseConfig);
+        const promptUrl = new URL((await withPrompt.createAuthorizationRequest()).url);
+        const plainUrl = new URL((await withoutPrompt.createAuthorizationRequest()).url);
+        expect(promptUrl.searchParams.get('prompt')).toBe('consent');
+        expect(plainUrl.searchParams.get('prompt')).toBeNull();
+    });
 });
 
 describe('InMemoryPendingAuthorizationStore', () => {
@@ -257,5 +266,13 @@ describe('InMemoryPendingAuthorizationStore', () => {
         }
         expect(await store.get('state-0')).toBeNull(); // the 21st set evicted the oldest
         expect(await store.get('state-20')).toMatchObject({ state: 'state-20' });
+    });
+});
+
+describe('OIDCAdapter refresh guard', () => {
+    test('rejects a token the adapter never captured, before any network call', async () => {
+        const adapter = new OIDCAdapter(baseConfig);
+
+        await expect(adapter.refresh('never-issued')).rejects.toMatchObject({ code: 'invalid_token' });
     });
 });

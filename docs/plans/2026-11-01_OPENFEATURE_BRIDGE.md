@@ -1,7 +1,7 @@
 # OpenFeature Bridge — Phase 1 (pre-1.0) and the Phase 2 outline
 
-**Status:** Approved 2026-11-01 — Phase 1 targeted at the 1.0 cycle
-(milestone `1.0.0`); Phase 2 demand-driven, post-1.0.
+**Status:** Phase 1 implemented (2026-11-01, AD-87) — in review on the 1.0
+cycle; Phase 2 demand-driven, post-1.0.
 **Decision record:** [AD-87](../decisions/2026-11-01_AD87_OPENFEATURE_BRIDGE.md).
 **Issues:** Phase 1 — [#56](https://github.com/jeffrose/blue/issues/56) ·
 companion targeting context — [#55](https://github.com/jeffrose/blue/issues/55) ·
@@ -59,9 +59,16 @@ imports outside the bridge package.
 - Gate sweep: `pnpm lint`, `typecheck` (build + spec lanes), `format:check`,
   `manifest:check` (peer allowlist), `doc:api` freshness,
   `docs:links`.
-- Recipe smoke: guide 28's in-memory recipe exercised as a test
-  (bootstrap → `setProviderAndWait` → `@whenFeature` route → 404 when off)
-  without adding a vendor dependency to any app.
+- Recipe smoke: the guide's recipe decomposes into the bridge mapping tests
+  (this package) plus the existing gate tests (`apps/04-blue-api`'s
+  feature-flags lane) — the interceptor evaluates through whatever
+  `FLAG_EVALUATOR` bean is registered, so no new app dependency is needed.
+
+Performed 2026-11-01 (#56): flags + bridge lanes green — 62 tests across
+the SPI and the bridge, including the 11 adapted spec-vector scenarios,
+the never-throw cases, and the null narrowing; build, spec typecheck,
+scoped lint, format, manifest, and doc-links gates green; API trees
+regenerated for both packages.
 
 ## 5. Phase 2 outline (post-1.0 — #57)
 

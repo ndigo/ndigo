@@ -81,4 +81,5 @@ export const blueAliases: { find: RegExp; replacement: string }[] = [
     { find: /^@blue\/generators$/, replacement: resolve(repoRoot, 'packages/blue-generators/src') },
     { find: /^@blue\/test$/, replacement: resolve(repoRoot, 'packages/blue-test/src') },
     { find: /^@blue\/inspect$/, replacement: resolve(repoRoot, 'packages/blue-inspect/src') },
+    { find: /^@blue\/flags-openfeature$/, replacement: resolve(repoRoot, 'packages/blue-flags-openfeature/src') },
 ];

@@ -106,15 +106,58 @@ the next request re-buckets. When a vendor provider later replaces the
 local one, its own flag configuration (and its own bucketing) takes over —
 the local algorithm is intentionally independent (AD-82 D-3).
 
-## Vendors: the provider is the seam
+## Vendors: OpenFeature is the seam
 
-`@blue/flags` deliberately ships no vendor SDK (AD-82 D-6). Split,
-LaunchDarkly, flagd, PostHog and friends all publish **OpenFeature
-providers**; a bridge provider behind the same `FlagEvaluator` contract is
-the documented path, so app code never imports a vendor and swapping
-vendors is a bean change. The evaluation-context seam (`targetingKey`,
-`attributes`) exists for percentage rollouts when a targeting provider is
-wired.
+`@blue/flags` ships no vendor SDK; vendors arrive as **OpenFeature
+providers** behind the same `FlagEvaluator` contract. The bridge
+(`@blue/flags-openfeature`) evaluates through an OpenFeature client, so app
+code never imports a vendor and swapping vendors is a bootstrap + bean
+change:
+
+```bash
+pnpm add @blue/flags-openfeature @openfeature/flagd-provider
+```
+
+```ts
+// Bootstrap — register the provider once, before the context is built.
+import { OpenFeature } from '@openfeature/server-sdk';
+import { FlagdProvider } from '@openfeature/flagd-provider';
+
+await OpenFeature.setProviderAndWait(new FlagdProvider());
+```
+
+```ts
+// App configuration — override the zero-config property provider.
+import { FLAG_EVALUATOR } from '@blue/flags';
+import { OpenFeatureFlagEvaluator } from '@blue/flags-openfeature';
+
+@configuration
+class AppConfiguration {
+    @entry(FLAG_EVALUATOR)
+    flagEvaluator() {
+        return new OpenFeatureFlagEvaluator();
+    }
+}
+```
+
+Everything above keeps working: `@whenFeature` gates, rollouts, and
+programmatic checks evaluate through the same bean; the
+reason/variant/error vocabulary is already OpenFeature's, and
+`flagMetadata` (config version, bucket info, …) rides the evaluation.
+
+- **Readiness**: `setProviderAndWait` resolves once the provider is ready;
+  before that, evaluations return your defaults (never-throw holds).
+- **Targeting**: providers target on the evaluation context — the gate
+  seeds the client IP today; pass `{ targetingKey, attributes }` for
+  programmatic checks (principal/tenant attribution is a resolver seam on
+  the way).
+- **Domains and clients**: `new OpenFeatureFlagEvaluator({ domain:
+  'checkout' })` reads that domain's provider; `{ client }` takes an
+  explicitly built client.
+- **Browser/edge**: this bridge is the server SDK; the web SDK's
+  sync-snapshot model is a separate follow-up.
+- **Tests**: the OpenFeature SDK's in-memory provider is the zero-infra
+  stub — no vendor service needed.
 
 ## What this is not
 

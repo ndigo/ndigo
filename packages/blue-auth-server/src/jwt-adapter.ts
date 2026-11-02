@@ -117,6 +117,18 @@ const DEFAULT_REFRESH_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 const MIN_HMAC_SECRET_BYTES = 32;
 
 /**
+ * Cap on the revocation `tokenVersion` cache (2026-11-02 review, L1). Entries
+ * are keyed by account `sub` with a per-entry expiry that is only ever
+ * overwritten on re-access — without a bound, a long-running server accrues
+ * one stale entry per distinct account ever seen. Crossing the cap sweeps
+ * expired entries first, then FIFO-evicts the oldest (Map iteration order is
+ * insertion order), same discipline as `FixedWindowRateLimiter` (SEC-2). The
+ * cache is a throughput optimization only: evicting a live entry costs one
+ * `UserStore.findById`, never a wrong auth decision.
+ */
+const MAX_REVOCATION_CACHE_ENTRIES = 10_000;
+
+/**
  * A reference implementation of {@link AuthAdapter} for JWT-based authentication.
  *
  * Uses `jose` for cryptographic signature verification:
@@ -457,6 +469,7 @@ export class JWTAdapter implements AuthAdapter {
         const user = await store.findById(sub);
         const version = user === null || user.disabled === true ? null : (user.tokenVersion ?? 0);
         if (ttl > 0 && version !== null) {
+            this.#pruneVersionCache();
             this.#versionCache.set(sub, { version, expiresAt: Date.now() + ttl });
         }
         return version;
@@ -464,7 +477,28 @@ export class JWTAdapter implements AuthAdapter {
 
     #cacheVersion(sub: string, version: number): void {
         if (this.#revocationCacheTtlMs > 0) {
+            this.#pruneVersionCache();
             this.#versionCache.set(sub, { version, expiresAt: Date.now() + this.#revocationCacheTtlMs });
+        }
+    }
+
+    /**
+     * Bounds {@link MAX_REVOCATION_CACHE_ENTRIES}: no-op below the cap; at the
+     * cap, delete-on-sight sweep of expired entries, then oldest-first eviction
+     * until the insert fits. Called before every cache write.
+     */
+    #pruneVersionCache(): void {
+        if (this.#versionCache.size < MAX_REVOCATION_CACHE_ENTRIES) return;
+        const now = Date.now();
+        for (const [key, entry] of this.#versionCache) {
+            if (entry.expiresAt <= now) {
+                this.#versionCache.delete(key);
+            }
+        }
+        while (this.#versionCache.size >= MAX_REVOCATION_CACHE_ENTRIES) {
+            const oldest = this.#versionCache.keys().next();
+            if (oldest.done) break;
+            this.#versionCache.delete(oldest.value);
         }
     }
 }

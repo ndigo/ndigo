@@ -100,9 +100,11 @@ scope was re-performed directly — nothing left unreviewed.
 - `packages/blue-auth-client/src/oidc-adapter.ts:703-707`: `refresh()` throws
   "not implemented" (and `authenticate()` throws by design). Callers discover this
   only at runtime.
-- Fix: file a GitHub issue (Ready lane) for the `grant_type=refresh_token` exchange
-  with the adapter's full verification discipline. Interim: point the throw
-  messages at the issue.
+- **Tracked:** [issue #61](https://github.com/jeffrose/blue/issues/61) — full
+  scope: refresh-token capture, discovery-resolved exchange through the existing
+  `#fetchJson` guards, `#verifyIdToken` on the response, rotation, and the
+  SE-7 mirror rule (a refresh token never authenticates).
+- Interim landed with Wave 3: the throw message now cites the issue.
 
 ## 2. Verified good (no action)
 
@@ -159,3 +161,29 @@ Verify: `pnpm build`, `pnpm lint`, package test lanes; `pnpm typecheck`.
 - `pnpm audit --prod` stays clean (no dependency changes are proposed)
 - After merge: `graft build` to refresh the graph; per AGENTS.md §8 one issue =
   one branch = one worktree per wave.
+
+## 5. Execution log (2026-11-02, branch `chore/2026-11-02-review-remediation`)
+
+All three waves landed on one branch as `bc6a994f` (plan), `69cd5355`
+(Wave 1, docs), `3e77d3f8` (Wave 2, fixes), and the Wave 3 commit.
+
+- **M1 revised during implementation:** git archaeology showed `url-matcher.ts`
+  was **never** exported from `src/index.ts` and has zero importers/tests — the
+  README bullet was a doc-regeneration vestige (`b461dfcc`), not an API promise.
+  Following the #49 "prune to the consumed surface" precedent, the island was
+  **retired** (file deleted, bullet dropped) instead of promoting dead code into
+  public API. The `api/` tree never carried it, so no regeneration was needed.
+- **L1 test design:** the 10 000-entry cap is proven observably — fill the cache,
+  bump the oldest sub's store version (cached ⇒ still validates), force one
+  eviction past the cap, then the same stale token must die at once. A behavior
+  assertion on revocation semantics, not a private-Map poke. 359 ms.
+- **L2 regression test:** `apps/03-blue-todo/test/auth-store.spec.ts` (new file)
+  covers login, bad credentials, the persisted-lease refresh contract under
+  `vi.useFakeTimers({ toFake: ['Date'] })`, and fail-closed refresh on a dead
+  token.
+- **F1 → issue #61** created with full scope; interim throw message updated to
+  cite it (no test pinned the old text).
+- Gates re-run on the branch: lint 0, oxfmt clean, `pnpm build` exit 0,
+  `pnpm typecheck` exit 0, `@blue/auth-server` + `@blue/todo` + `@blue/http`
+  test lanes green (32 Nx tasks), manifest + doc-links green.
+- Graph refreshed with `graft build` after merge.

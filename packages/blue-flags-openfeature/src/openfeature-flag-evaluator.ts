@@ -2,7 +2,8 @@
  * The OpenFeature-backed evaluator (AD-87): maps the `FlagEvaluator` SPI
  * onto an `@openfeature/server-sdk` client. Vendor providers (flagd,
  * OFREP, LaunchDarkly, Unleash, …) arrive through this adapter — the SPI,
- * `@whenFeature`, and app code never change.
+ * `@whenFeature`, and app code never change. The browser counterpart is
+ * `WebOpenFeatureFlagEvaluator` in the `@blue/flags-openfeature/web` entry.
  *
  * Lifecycle: the OpenFeature singleton and its providers are
  * **application-owned** (`OpenFeature.setProvider` /
@@ -14,59 +15,15 @@
  * @author Jeff Rose
  */
 import { OpenFeature } from '@openfeature/server-sdk';
-import type {
-    Client,
-    EvaluationContext,
-    EvaluationContextValue,
-    EvaluationDetails,
-    JsonValue,
-} from '@openfeature/server-sdk';
+import type { Client, EvaluationContext, EvaluationContextValue, JsonValue } from '@openfeature/server-sdk';
 import {
     validateFlagKey,
-    type FlagErrorCode,
     type FlagEvaluation,
     type FlagEvaluationContext,
-    type FlagEvaluationReason,
     type FlagEvaluator,
     type FlagValue,
 } from '@blue/flags';
-
-/** The reason vocabulary `@blue/flags` carries — everything else maps to `UNKNOWN`. */
-const FLAG_REASONS: ReadonlySet<string> = new Set([
-    'STATIC',
-    'TARGETING_MATCH',
-    'SPLIT',
-    'CACHED',
-    'DISABLED',
-    'DEFAULT',
-    'UNKNOWN',
-    'STALE',
-    'ERROR',
-]);
-
-/** The error-code vocabulary `@blue/flags` carries — everything else maps to `GENERAL`. */
-const FLAG_ERROR_CODES: ReadonlySet<string> = new Set([
-    'FLAG_NOT_FOUND',
-    'PARSE_ERROR',
-    'TYPE_MISMATCH',
-    'GENERAL',
-    'PROVIDER_NOT_READY',
-    'PROVIDER_FATAL',
-    'TARGETING_KEY_MISSING',
-    'INVALID_CONTEXT',
-]);
-
-/**
- * The SDK detail shapes the typed dispatch can produce. Our `FlagValue`
- * widens the SDK's `FlagValue` (unknown object members), so the union —
- * not the SDK's generic — is the internal plumbing type; the outer SPI
- * boundary carries the widening.
- */
-type BridgeDetails =
-    | EvaluationDetails<boolean>
-    | EvaluationDetails<number>
-    | EvaluationDetails<string>
-    | EvaluationDetails<JsonValue>;
+import { toFlagEvaluation, type OpenFeatureEvaluationDetails } from './_mapping';
 
 /**
  * Options for {@link OpenFeatureFlagEvaluator}.
@@ -128,7 +85,7 @@ export class OpenFeatureFlagEvaluator implements FlagEvaluator {
         try {
             const details = await this.#evaluateDetails(flag, defaultValue, context);
             // The generic is carried by the defaultValue dispatch above.
-            return toFlagEvaluation(details, defaultValue) as FlagEvaluation<T>;
+            return toFlagEvaluation<FlagValue>(details, defaultValue) as FlagEvaluation<T>;
         } catch (error) {
             return {
                 value: defaultValue,
@@ -148,7 +105,7 @@ export class OpenFeatureFlagEvaluator implements FlagEvaluator {
         flag: string,
         defaultValue: FlagValue,
         context: EvaluationContext | undefined
-    ): Promise<BridgeDetails> {
+    ): Promise<OpenFeatureEvaluationDetails<FlagValue>> {
         const client = this.#resolveClient();
         if (typeof defaultValue === 'boolean') {
             return client.getBooleanDetails(flag, defaultValue, context);
@@ -196,55 +153,4 @@ function toEvaluationContext(ctx: FlagEvaluationContext | undefined): Evaluation
         context[key] = value as EvaluationContextValue;
     }
     return Object.keys(context).length > 0 ? context : undefined;
-}
-
-/**
- * Translates SDK evaluation details into the SPI's `FlagEvaluation`.
- *
- * One narrowing: OpenFeature's value model allows `null`, the SPI's does
- * not (the default value selects the type) — a null resolution surfaces as
- * the caller's default with `TYPE_MISMATCH`.
- */
-function toFlagEvaluation(details: BridgeDetails, defaultValue: FlagValue): FlagEvaluation<FlagValue> {
-    if (details.value === null) {
-        return {
-            value: defaultValue,
-            reason: 'ERROR',
-            errorCode: 'TYPE_MISMATCH',
-            errorMessage: 'provider resolved null; the SPI value model carries no null',
-            flagMetadata: { ...details.flagMetadata },
-        };
-    }
-    const evaluation: FlagEvaluation<FlagValue> = {
-        value: details.value,
-        reason: toReason(details.reason),
-        flagMetadata: { ...details.flagMetadata },
-    };
-    if (details.variant !== undefined) {
-        evaluation.variant = details.variant;
-    }
-    if (details.errorCode !== undefined) {
-        evaluation.errorCode = toErrorCode(details.errorCode);
-    }
-    if (details.errorMessage !== undefined) {
-        evaluation.errorMessage = details.errorMessage;
-    }
-    return evaluation;
-}
-
-/**
- * Narrows the SDK's open reason string to the SPI vocabulary — an
- * unrecognized (or absent) reason is `UNKNOWN` (the OpenFeature bucket for
- * "could not be determined").
- */
-function toReason(reason: string | undefined): FlagEvaluationReason {
-    return reason !== undefined && FLAG_REASONS.has(reason) ? (reason as FlagEvaluationReason) : 'UNKNOWN';
-}
-
-/**
- * Narrows the SDK's error code — anything outside the SPI vocabulary is
- * `GENERAL`, mirroring the SDK's own catch-all.
- */
-function toErrorCode(errorCode: string): FlagErrorCode {
-    return FLAG_ERROR_CODES.has(errorCode) ? (errorCode as FlagErrorCode) : 'GENERAL';
 }

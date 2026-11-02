@@ -43,7 +43,7 @@ evidence and reasoning: AD-87.
 | P1-3 | Catalog pins + peer allowlist (SDKs as peers per OF library guidance)                                                              | `pnpm-workspace.yaml`, `scripts/check-manifests.mjs`                    |
 | P1-4 | Tests: in-test in-memory provider + OF **Gherkin spec vectors** (`@standard-reasons`, `@object`, `@disabled-flags`)                | `packages/blue-flags-openfeature/test/`                                 |
 | P1-5 | Docs: bridge README, guide 28 §Vendors recipe (`setProviderAndWait` + bean override; flagd/OFREP examples), Package Map, CHANGELOG | `packages/blue-flags-openfeature/README.md`, `docs/`, `ARCHITECTURE.md` |
-| P1-6 | Companion: `FlagEvaluationContextResolver` seam (principal/tenant → context)                                                       | `packages/blue-platform-node/` — **#55**, either order                  |
+| P1-6 | Companion: `FlagEvaluationContextResolver` seam (principal/tenant → context)                                                       | `packages/blue-platform-node/` — **#55**, implemented 2026-11-02        |
 
 Explicit non-goals for Phase 1: no web entry (`/web`), no telemetry hook, no
 provider implementations, no provider-TCK adoption, no `@openfeature/*`

@@ -72,10 +72,14 @@ export async function startEmbeddedIssuer(config: PlaygroundConfig): Promise<Emb
             {
                 // A public client: no secret, PKCE required (the adapter always
                 // sends an S256 challenge — see `OIDCAdapter.createAuthorizationRequest`).
+                // `refresh_token` is allowed so `/oidc/callback`'s exchange can
+                // capture one (the flow requests `offline_access`); the
+                // provider's default policy rotates it on every use for public
+                // clients, which is exactly the rotation the adapter tracks.
                 client_id: config.oidc.clientId,
                 redirect_uris: [config.oidc.redirectUri],
                 token_endpoint_auth_method: 'none',
-                grant_types: ['authorization_code'],
+                grant_types: ['authorization_code', 'refresh_token'],
                 response_types: ['code'],
             },
         ],

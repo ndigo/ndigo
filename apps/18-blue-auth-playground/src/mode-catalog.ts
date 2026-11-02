@@ -64,8 +64,8 @@ export const MODE_CATALOG: readonly ModeEntry[] = [
     {
         id: 'oidc',
         title: '6 · OIDC authorization code + PKCE',
-        endpoints: ['GET /oidc/start', 'GET /oidc/callback'],
+        endpoints: ['GET /oidc/start', 'GET /oidc/callback', 'GET /oidc/refresh'],
         demonstrates:
-            'A real authorization-code + PKCE flow (state, nonce, S256 verifier) against the oidc-provider issuer embedded in this process: discovery, JWKS-verified ID token, and then a local opaque session — the federated subject must exist as an account here, or it is refused 403.',
+            'A real authorization-code + PKCE flow (state, nonce, S256 verifier) against the oidc-provider issuer embedded in this process: discovery, JWKS-verified ID token, and then a local opaque session — the federated subject must exist as an account here, or it is refused 403. The provider refresh token (`offline_access`) is captured server-side — the browser never sees it — and /oidc/refresh redeems it with single-use rotation, re-verifying the refreshed ID token.',
     },
 ];

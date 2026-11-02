@@ -63,8 +63,15 @@ class DemoAuthAdapter implements AuthAdapter {
 
     async refresh(token: string): Promise<AuthResult> {
         const principal = await this.validate(token);
+        if (!principal) {
+            return { principal: null, token: null, expiresAt: null };
+        }
         const expiresAt = Date.now() + TOKEN_TTL_MS;
-        return { principal, token, expiresAt: principal ? expiresAt : null };
+        // A refresh MUST persist the extended lease, not just report it: if the
+        // store keeps the old deadline, the next validate() logs the user out
+        // at the *original* expiry and the client/server disagree on lifetime.
+        tokenStore.set(token, { principal, expiresAt });
+        return { principal, token, expiresAt };
     }
 
     async logout(token: string): Promise<void> {

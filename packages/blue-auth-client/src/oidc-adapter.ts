@@ -702,7 +702,7 @@ export class OIDCAdapter implements AuthAdapter {
 
     async refresh(_token: string): Promise<AuthResult> {
         throw new Error(
-            'OIDCAdapter.refresh() is not implemented - use the refresh token grant via exchangeCodeForTokens-style handling'
+            'OIDCAdapter.refresh() is not implemented — the refresh-token grant is tracked in https://github.com/jeffrose/blue/issues/61'
         );
     }
 

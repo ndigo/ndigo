@@ -5,7 +5,9 @@
 Standalone Redis for BlueJS: an explicit connection foundation
 (`RedisConnection`), cache adapters that share that connection (`RedisCache`,
 `RedisCacheManager`), a cross-node socket transport (`RedisSocketFanout`),
-and a durable job driver (`RedisJobDriver`) with atomic claims.
+a durable job driver (`RedisJobDriver`) with atomic claims, a fenced
+distributed lock driver (`RedisLockDriver`), and a shared-store rate limiter
+(`RedisRateLimiter`).
 The default framework cache remains
 `MemoryCacheManager`; installing this package never connects to Redis or
 changes auto-configuration.
@@ -20,19 +22,22 @@ pnpm add @blue/socket
 pnpm add @blue/jobs
 # The lock driver additionally needs the locks contract:
 pnpm add @blue/locks
+# The rate limiter additionally needs the rate-limit contract:
+pnpm add @blue/rate-limit
 ```
 
 Prerequisites for every BlueJS package: Node.js ≥24 and pnpm ≥11, plus a
 standalone Redis server (integration tests run against 7.2). The package
-ships five entry points:
+ships six entry points:
 
-| Entry point          | Exports                             | Optional peers                 |
-| -------------------- | ----------------------------------- | ------------------------------ |
-| `@blue/redis`        | `RedisConnection` (foundation only) | —                              |
-| `@blue/redis/cache`  | `RedisCache`, `RedisCacheManager`   | `@blue/cache`, `@blue/factory` |
-| `@blue/redis/pubsub` | `RedisSocketFanout`                 | `@blue/socket`                 |
-| `@blue/redis/jobs`   | `RedisJobDriver`                    | `@blue/jobs`                   |
-| `@blue/redis/locks`  | `RedisLockDriver`                   | `@blue/locks`                  |
+| Entry point              | Exports                             | Optional peers                 |
+| ------------------------ | ----------------------------------- | ------------------------------ |
+| `@blue/redis`            | `RedisConnection` (foundation only) | —                              |
+| `@blue/redis/cache`      | `RedisCache`, `RedisCacheManager`   | `@blue/cache`, `@blue/factory` |
+| `@blue/redis/pubsub`     | `RedisSocketFanout`                 | `@blue/socket`                 |
+| `@blue/redis/jobs`       | `RedisJobDriver`                    | `@blue/jobs`                   |
+| `@blue/redis/locks`      | `RedisLockDriver`                   | `@blue/locks`                  |
+| `@blue/redis/rate-limit` | `RedisRateLimiter`                  | `@blue/rate-limit`             |
 
 The base dependency is pinned to `@redis/client` 6.3.0. No Redis modules,
 cluster/sentinel topology or scheduler are provided. The root export loads

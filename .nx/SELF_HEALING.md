@@ -21,7 +21,7 @@ proposing changes. BlueJS conventions: `STYLE_GUIDE.md` (how to write),
 
 - `pnpm lint` runs with `--deny-warnings`; prefer fixing the code over
   weakening rules. Never introduce bare `as any` / `@ts-ignore` without a
-  one-line reason (STYLE_GUIDE §9).
+  one-line reason (STYLE_GUIDE §8).
 - TS/JS: 4-space indent, single quotes, 120 columns; run the writable formatter
   (`pnpm format`) rather than hand-wrapping markdown/JSON/YAML.
 - Keep changes minimal and in the surrounding style; the public API surface is

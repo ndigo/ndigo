@@ -22,6 +22,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `@blue/flags-openfeature` (AD-87 Phase 2): the **browser entry**
+  (`@blue/flags-openfeature/web`) — `WebOpenFeatureFlagEvaluator` over
+  `@openfeature/web-sdk` (static-context snapshot semantics, the same
+  reason/error mapping, `null` narrowing, and never-throw boundary as the
+  server evaluator) — and **`FeatureFlagTelemetryHook`**: one
+  `feature_flag.evaluation` span per evaluation with the OTel feature-flag
+  semconv attributes (`feature_flag.key`, `feature_flag.provider.name`,
+  `feature_flag.result.reason`, `feature_flag.result.variant`, `error.type`
+  on abnormal outcomes), usable on both SDKs and inert until telemetry
+  providers are wired. Guide 28 gains the browser recipe and provider
+  notes (flagd/OFREP).
 - `@blue/platform-node` (AD-87 companion): the flag targeting-context
   seam — the **`FLAG_CONTEXT_RESOLVER`** bean
   (`FlagEvaluationContextResolver`; default

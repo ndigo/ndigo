@@ -1,10 +1,10 @@
 /**
- * @module blue-oxlint-plugin
+ * @module src/oxlint
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { RuleTester } from 'oxlint/plugins-dev';
-import { noInternalFileExports } from '../../src/rules/no-internal-file-exports';
+import { noInternalFileExports } from '../../rules/no-internal-file-exports.ts';
 
 const ruleTester = new RuleTester({
     languageOptions: {

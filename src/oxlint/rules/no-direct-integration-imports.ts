@@ -1,12 +1,12 @@
 /**
  * Rule that blocks direct imports from libraries wrapped by BlueJS integration packages.
- * @module blue-oxlint-plugin
+ * @module src/oxlint
  * @since 1.0.0
  * @author Jeff Rose
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 
-import { INTEGRATION_LAYER_MAP, INTEGRATION_LAYER_PACKAGES } from '../_constants.js';
+import { INTEGRATION_LAYER_MAP, INTEGRATION_LAYER_PACKAGES } from '../_constants.ts';
 
 function getCurrentPackageName(filename: string): string | null {
     const match = /[\\/]packages[\\/]blue-([^\\/]+)[\\/]/u.exec(filename);

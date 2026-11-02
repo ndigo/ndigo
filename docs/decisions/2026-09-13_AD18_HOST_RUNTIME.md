@@ -1,8 +1,8 @@
 # AD-18: Host runtime — centralized micro frontend orchestration in the shell context
 
 **Date:** 2026-09-13
-**Status:** Accepted — design recorded; implementation sequenced (see
-§Sequencing, not yet started)
+**Status:** Accepted — implemented 2026-09-13 (all sequencing steps
+complete; see §Implementation status)
 
 ## Background
 
@@ -171,6 +171,9 @@ change later, but the default remains "host declares features at boot."
   `ContextToken`; both demos' manifests gain the dependency. The demo app
   `apps/blue-host` was npm-renamed `@blue/host` → **`@blue/host-demo`** to
   free the scope name for the package.
+- **2026-11-01 (AD-86):** the "publishable later" arrived — `@blue/host`
+  dropped `private: true`, so the `packages/` publishable-surface guard now
+  carries no exceptions.
 - **Documentation:** `apps/README.md` matrix updated; this AD
   cross-references AD-03 (registration API resolved for the host seam, Page
   question untouched).

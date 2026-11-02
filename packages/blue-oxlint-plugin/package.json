@@ -1,7 +1,7 @@
 {
   "name": "@blue/oxlint-plugin",
   "version": "0.0.1",
-  "description": "Custom oxlint rules for BlueJS architectural enforcement",
+  "description": "Consumer-facing oxlint rules for BlueJS applications — paradigm, view, route, and logging guards",
   "keywords": [
     "blue",
     "bluejs",

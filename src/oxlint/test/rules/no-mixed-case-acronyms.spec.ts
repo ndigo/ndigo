@@ -1,10 +1,10 @@
 /**
- * @module blue-oxlint-plugin
+ * @module src/oxlint
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { RuleTester } from 'oxlint/plugins-dev';
-import { noMixedCaseAcronyms } from '../../src/rules/no-mixed-case-acronyms';
+import { noMixedCaseAcronyms } from '../../rules/no-mixed-case-acronyms.ts';
 
 const ruleTester = new RuleTester({
     languageOptions: {

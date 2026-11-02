@@ -1659,7 +1659,7 @@ BlueJS is fully compliant with modern JavaScript standards for decorators:
 
 - **STYLE_GUIDE.md Section 3.12** - Properties vs Methods (when to use properties, get-methods, or to-methods)
 - **STYLE_GUIDE.md Section 3.13** - Method Naming Conventions (get\*, is\*, has\*, set\*, from\*, to\*, with\*, etc.)
-- **STYLE_GUIDE.md Section 9** - Self-Documenting Code (names carry meaning, comments carry rationale; _why_-not-_what_ comments; assertion rationale; `// NOTE:` as technical debt; one public type per file under 300 lines)
+- **STYLE_GUIDE.md Section 8** - Self-Documenting Code (names carry meaning, comments carry rationale; _why_-not-_what_ comments; assertion rationale; `// NOTE:` as technical debt; one public type per file under 300 lines)
 
 These sections provide detailed decision matrices, examples from the codebase, and rationale for choosing between different API design patterns.
 

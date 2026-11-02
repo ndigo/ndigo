@@ -10,15 +10,15 @@ scope was re-performed directly — nothing left unreviewed.
 
 ## 0. Gate baseline (run at `e732baf4`, 2026-11-01/02)
 
-| Gate | Result |
-| --- | --- |
-| `pnpm lint` (oxlint, type-aware, deny-warnings) | ✅ exit 0 |
-| `pnpm audit --prod` | ✅ no known vulnerabilities |
-| `pnpm manifest:check` | ✅ all packages + root conform |
-| `node scripts/check-doc-links.mjs` | ✅ 338 files, 1383 relative links OK |
-| Secrets / injection / dangerous-API scan | ✅ none in source |
-| Timer/resource-leak sweep | ✅ imbalances are terminal delays or test-local |
-| Dependency cycles (runtime+peer graph) | ✅ none |
+| Gate                                            | Result                                          |
+| ----------------------------------------------- | ----------------------------------------------- |
+| `pnpm lint` (oxlint, type-aware, deny-warnings) | ✅ exit 0                                       |
+| `pnpm audit --prod`                             | ✅ no known vulnerabilities                     |
+| `pnpm manifest:check`                           | ✅ all packages + root conform                  |
+| `node scripts/check-doc-links.mjs`              | ✅ 338 files, 1383 relative links OK            |
+| Secrets / injection / dangerous-API scan        | ✅ none in source                               |
+| Timer/resource-leak sweep                       | ✅ imbalances are terminal delays or test-local |
+| Dependency cycles (runtime+peer graph)          | ✅ none                                         |
 
 ## 1. Findings
 
@@ -28,9 +28,12 @@ scope was re-performed directly — nothing left unreviewed.
 - It exists at `src/url-matcher.ts:67` but is **not** exported from `src/index.ts`;
   it is absent from the generated `api/` tree. A consumer copying the README gets a
   broken import.
-- Fix (preferred): export `EqualsURLMatcher` from `src/index.ts` (it belongs to the
-  `URLMatcher` family the README already promises), regenerate `pnpm doc:api`,
-  commit `api/`. Alternative: reword the bullet to drop the claim.
+- Resolution (revised during Wave 1): git history shows `url-matcher.ts` was
+  **never** exported from `index.ts` (JSDIP-era orphan, zero importers/tests/callers),
+  and the README bullet came from a doc regeneration (`b461dfcc`) — a generated
+  vestige, not an API decision. Per the "prune to the consumed surface" precedent
+  (#49), the module is **retired** and the bullet dropped rather than promoting a
+  dead, untested class into public API.
 
 ### M2 — blue-redis README entry-point count wrong; `/rate-limit` undocumented (Medium, docs)
 

@@ -20,14 +20,20 @@ other tooling).
 
 ## Interfaces
 
+- [AppGeneratorSchema](interfaces/AppGeneratorSchema.md)
 - [ComponentGeneratorSchema](interfaces/ComponentGeneratorSchema.md)
 - [DocHeaderOptions](interfaces/DocHeaderOptions.md)
 - [HeaderGeneratorSchema](interfaces/HeaderGeneratorSchema.md)
 - [PackageGeneratorSchema](interfaces/PackageGeneratorSchema.md)
 - [ReadmeGeneratorSchema](interfaces/ReadmeGeneratorSchema.md)
 
+## Type Aliases
+
+- [AppKind](type-aliases/AppKind.md)
+
 ## Functions
 
+- [appGenerator](functions/appGenerator.md)
 - [buildDocHeader](functions/buildDocHeader.md)
 - [componentGenerator](functions/componentGenerator.md)
 - [getTopDocBlock](functions/getTopDocBlock.md)

@@ -6,6 +6,7 @@
 import { formatFiles, generateFiles, type Tree } from '@nx/devkit';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateKebabName } from '../../_validators.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -26,9 +27,7 @@ export interface ReadmeGeneratorSchema {
 export default async function readmeGenerator(tree: Tree, schema: ReadmeGeneratorSchema): Promise<void> {
     const { name, description } = schema;
 
-    if (!/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(name)) {
-        throw new Error(`README name must be kebab-case: "${name}"`);
-    }
+    validateKebabName(name, 'README name');
 
     const projectRoot = schema.path ?? `packages/blue-${name}`;
 

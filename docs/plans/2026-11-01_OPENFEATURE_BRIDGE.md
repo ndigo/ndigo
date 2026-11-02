@@ -1,7 +1,8 @@
 # OpenFeature Bridge — Phase 1 (pre-1.0) and the Phase 2 outline
 
-**Status:** Phase 1 implemented (2026-11-01, AD-87) — in review on the 1.0
-cycle; Phase 2 demand-driven, post-1.0.
+**Status:** Phase 1 implemented (2026-11-01) and Phase 2's web entry +
+telemetry hook implemented (2026-11-02, #57) — pre-1.0; the remaining
+Phase 2 items are externally gated (see §5).
 **Decision record:** [AD-87](../decisions/2026-11-01_AD87_OPENFEATURE_BRIDGE.md).
 **Issues:** Phase 1 — [#56](https://github.com/jeffrose/blue/issues/56) ·
 companion targeting context — [#55](https://github.com/jeffrose/blue/issues/55) ·
@@ -70,19 +71,24 @@ the never-throw cases, and the null narrowing; build, spec typecheck,
 scoped lint, format, manifest, and doc-links gates green; API trees
 regenerated for both packages.
 
-## 5. Phase 2 outline (post-1.0 — #57)
+## 5. Phase 2 (#57) — web entry + telemetry hook implemented; the rest gated
 
-1. **Web entry** — `@openfeature/web-sdk`: static context, sync evaluation
-   over a provider-materialized snapshot, `onContextChange`/`RECONCILING`
-   handling; doc the ready-before-evaluate rule. Same async SPI; a `/web`
-   subpath or sibling package decided at that point.
-2. **Telemetry hook** — `feature_flag.*` semconv into `@blue/telemetry`
-   (AD-87 D-7); registered per-client or globally, off by default.
-3. **Conformance follow-ups** — provider-TCK when normative; a reverse
-   adapter (our provider as an OF provider) purely to run OF vectors against
-   `PropertyFlagProvider` semantics.
-4. **OFREP/flagd recipes** — expand guide 28 once JS SSE push lands
-   (js-sdk-contrib#1498); document polling/caching posture meanwhile.
+1. **Web entry — implemented**: `@blue/flags-openfeature/web` over
+   `@openfeature/web-sdk` (`WebOpenFeatureFlagEvaluator`); static-context,
+   snapshot semantics documented; the same mapping, null narrowing, and
+   never-throw boundary as the server evaluator; web-sdk added as the
+   subpath's peer + catalog pin.
+2. **Telemetry hook — implemented**: `FeatureFlagTelemetryHook` (bridge
+   package) — one `feature_flag.evaluation` span per evaluation,
+   `feature_flag.*` semconv attributes plus `error.type`; works on both
+   SDKs; opt-in and inert without wired providers.
+3. **Conformance follow-ups — still deferred**: provider-TCK adoption waits
+   for its normative Appendix F (v0.1.0 is explicitly pre-normative); the
+   reverse adapter (our provider as an OF provider) stays a possible
+   vector-runner, not a deliverable.
+4. **OFREP/flagd recipes — documented**: guide 28 notes both providers and
+   their maturity badges; SSE push recipes wait on JS support
+   (js-sdk-contrib#1498) — they poll meanwhile.
 
 ## 6. Risks and watchlist
 

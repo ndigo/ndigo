@@ -1,0 +1,29 @@
+/**
+ * <%= className %> — the app's HTTP surface.
+ *
+ * @module blue-<%= name %>
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+import '@tsmetadata/polyfill';
+import { getMapping, parameters, queryValue, requestMapping } from '@blue/dispatcher';
+
+/**
+ * Serves a JSON greeting.
+ *
+ * - `GET /` → `{ message: "Hello from <%= name %>!" }`
+ * - `GET /hello?name=X` → `{ message: "Hello, X!" }`
+ */
+@requestMapping('/')
+export class <%= className %>Controller {
+    @getMapping('/')
+    index() {
+        return { message: 'Hello from <%= name %>!' };
+    }
+
+    @getMapping('/hello')
+    @parameters({ name: queryValue('name') })
+    greet(name?: string) {
+        return { message: `Hello, ${name || 'World'}!` };
+    }
+}

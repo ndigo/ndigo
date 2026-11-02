@@ -93,7 +93,7 @@ describe('blue (real bin)', () => {
     test('--help lists the v1 surface', async () => {
         const { code, out } = await runCli(['--help']);
         expect(code).toBe(0);
-        for (const command of ['serve', 'dev', 'generate', 'inspect', 'doctor']) {
+        for (const command of ['serve', 'dev', 'new', 'generate', 'inspect', 'doctor']) {
             expect(out).toContain(command);
         }
         expect(out).toContain('db');
@@ -150,6 +150,12 @@ describe('blue (real bin)', () => {
         const { code, out, err } = await runCli(['generate', 'wat']);
         expect(code).toBe(2);
         expect(`${out}${err}`).toContain("unknown generator 'wat'");
+    });
+
+    test('generate points at `blue new` for the app kind (AD-85)', async () => {
+        const { code, out, err } = await runCli(['generate', 'app', '--name', 'widget']);
+        expect(code).toBe(2);
+        expect(`${out}${err}`).toContain('blue new <name>');
     });
 
     test('inspect without a convention entry fails loud', async () => {

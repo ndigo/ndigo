@@ -7,6 +7,7 @@ import { formatFiles, generateFiles, type Tree } from '@nx/devkit';
 import { toPascal } from '@blue/util/string';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateKebabName } from '../../_validators.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -24,9 +25,7 @@ export interface PackageGeneratorSchema {
 export default async function packageGenerator(tree: Tree, schema: PackageGeneratorSchema): Promise<void> {
     const { name, description, jobs } = schema;
 
-    if (!/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(name)) {
-        throw new Error(`Package name must be kebab-case: "${name}"`);
-    }
+    validateKebabName(name, 'Package name');
 
     const projectRoot = `packages/blue-${name}`;
     const className = toPascal(name);

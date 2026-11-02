@@ -487,6 +487,7 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 
 ## Draft Plans
 
+- [2026-11-01_APP_SCAFFOLDING.md](2026-11-01_APP_SCAFFOLDING.md) - App scaffolding — Phase A (`blue new` + the `app` generator) implemented and validated 2026-11-01 (AD-85); Phase B (`create-blue-app` for standalone projects) gated on the 1.0 package publish.
 - [2026-10-07_EXAMPLE_APPLICATIONS.md](2026-10-07_EXAMPLE_APPLICATIONS.md) - Example-application portfolio: number the app directories (`01-blue-hello` …), keep the existing seven in order, and grow the suite with externally-oracled conformance apps (httpbin, Todo-Backend, RealWorld/Conduit), verticals (Conduit web, PetClinic), realtime (STOMP chat, kanban), distributed (resilience lab, Redis fan-out), and operations (telemetry lab, auth playground) apps — plus a port registry, a boot-and-probe smoke gate, and the W0 rename sweep mechanics. **Executed 2026-10-07**: apps `08`–`19` landed with tests + smoke coverage; §11 records execution and the defects the exercise found (port seeding, ≥400 `ResponseEntity` headers, unregistered CORS, single-scheme auth guard, import-scanner `lib` skip, socket 1011 DX).
 
 ---

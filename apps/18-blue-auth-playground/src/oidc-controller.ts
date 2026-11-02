@@ -3,7 +3,7 @@
  * `OIDCAdapter` against the issuer embedded in this process
  * ({@link startEmbeddedIssuer}).
  *
- * The two routes are the client half of the flow, and they are the whole client:
+ * The three routes are the client half of the flow, and they are the whole client:
  *
  * 1. `GET /oidc/start` — `createAuthorizationRequest()` mints `state`, a `nonce`
  *    and a PKCE S256 verifier, keeps them in the adapter's pending store, and
@@ -15,24 +15,49 @@
  *    nonce** before a principal exists. Only then does the playground issue its
  *    own opaque session for that principal — the federated identity lands in the
  *    same durable store, the same cookie and the same `/auth/me` as mode 1.
+ *    The provider's `refresh_token` (the flow requests `offline_access`) is
+ *    captured **server-side**, keyed by the playground session — the browser
+ *    never sees it, the BFF shape a confidential client would use.
+ * 3. `GET /oidc/refresh` — presents the server-held refresh token to
+ *    `OIDCAdapter.refresh()`: discovery-resolved exchange, the response's ID
+ *    token re-verified (no nonce) with subject stability against the captured
+ *    binding, and single-use rotation tracked by the adapter. This is the
+ *    conformance leg for the refresh grant against the live embedded issuer
+ *    (public client → the provider rotates on every refresh).
  *
  * Failures are fail-closed and labelled: an unknown/replayed `state`, a
  * mismatched nonce, a bad signature and a missing `code` are distinct problems
  * (`oidc_state_invalid`, `oidc_exchange_failed`, `oidc_missing_code`), and a
  * federated subject with no application account cannot obtain a session
- * (`oidc_account_unknown`) even though its ID token verified.
+ * (`oidc_account_unknown`) even though its ID token verified; a refresh without
+ * a server-held token or with a rejected/rotated-out one is
+ * `oidc_refresh_unavailable` / `oidc_refresh_failed`.
  *
  * @module blue-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
-import { getMapping, headerValue, parameters, queryValue, requestMapping, routeValue } from '@blue/dispatcher';
+import {
+    cookieValue,
+    getMapping,
+    headerValue,
+    parameters,
+    queryValue,
+    requestMapping,
+    routeValue,
+} from '@blue/dispatcher';
 import { OIDCAdapter, OIDCError } from '@blue/auth-client';
 import { HTTPHeaders, ResponseStatuses } from '@blue/http';
-import { ResponseEntity, setSessionCookie, type ProblemDetails, type SessionCookieOptions } from '@blue/platform-node';
+import {
+    ResponseEntity,
+    SESSION_COOKIE,
+    setSessionCookie,
+    type ProblemDetails,
+    type SessionCookieOptions,
+} from '@blue/platform-node';
 import type { Route } from '@blue/router';
-import { sessionCookieOptions } from './config';
+import { PLAIN_HTTP_SESSION_COOKIE, sessionCookieOptions } from './config';
 import type { PlaygroundConfig } from './config';
 import { cookieView, MODES, principalView, sessionView } from './api-shape';
 import type { AuthStack } from './auth-stack';
@@ -47,7 +72,9 @@ export type OidcFailureCode =
     | 'oidc_state_invalid'
     | 'oidc_exchange_failed'
     | 'oidc_account_unknown'
-    | 'oidc_provider_unreachable';
+    | 'oidc_provider_unreachable'
+    | 'oidc_refresh_unavailable'
+    | 'oidc_refresh_failed';
 
 /** An OIDC problem document, carrying its machine-readable `code`. */
 export interface OidcProblem extends ProblemDetails {
@@ -98,10 +125,30 @@ export const OIDC_FAILURES: Record<OidcFailureCode, OidcProblem> = {
         code: 'oidc_provider_unreachable',
         detail: 'The provider did not answer its discovery document — check OIDC_ISSUER_URL (the embedded issuer is started by the app)',
     },
+    oidc_refresh_unavailable: {
+        type: OIDC_PROBLEM_TYPE,
+        title: 'Unauthorized',
+        status: 401,
+        code: 'oidc_refresh_unavailable',
+        detail:
+            'No server-held refresh token for this session — complete a sign-in at /oidc/start first ' +
+            '(the token store is in-memory, so a restart or another process loses it)',
+    },
+    oidc_refresh_failed: {
+        type: OIDC_PROBLEM_TYPE,
+        title: 'Unauthorized',
+        status: 401,
+        code: 'oidc_refresh_failed',
+        detail: 'The provider rejected the refresh — the token is expired, revoked or already rotated; start a new flow at /oidc/start',
+    },
 };
 
+/** Live refresh-token bindings cap — mirrors the durable session store's cap (SEC-4). */
+const MAX_TRACKED_REFRESH_SESSIONS = 256;
+
 /**
- * The client half of the OIDC flow: start the redirect, redeem the callback.
+ * The client half of the OIDC flow: start the redirect, redeem the callback,
+ * refresh the server-held token.
  */
 @requestMapping('/oidc')
 export class OidcController {
@@ -109,6 +156,14 @@ export class OidcController {
     readonly #config: PlaygroundConfig;
     readonly #cookie: SessionCookieOptions;
     readonly #adapter: OIDCAdapter | null;
+
+    /**
+     * Refresh tokens captured at callback, keyed by playground session id.
+     * Server-side only: the browser holds the opaque session, never the
+     * provider credential. In-memory like the adapter's own binding store (one
+     * process owns the whole demo) and capped like the durable session store.
+     */
+    readonly #refreshTokens = new Map<string, string>();
 
     /**
      * @param stack - The auth stack (the session store the federated login lands in).
@@ -123,7 +178,15 @@ export class OidcController {
                   issuer: config.oidc.issuerUrl,
                   clientId: config.oidc.clientId,
                   redirectUri: config.oidc.redirectUri,
-                  scopes: ['openid', 'profile'],
+                  // `offline_access` is what makes the provider issue a
+                  // refresh token for this client (its default policy requires
+                  // both the grant type and the scope), so the callback can
+                  // capture one and `/oidc/refresh` can redeem it.
+                  scopes: ['openid', 'profile', 'offline_access'],
+                  // `oidc-provider` strips `offline_access` unless the request
+                  // asks for explicit consent — the prompt is what makes the
+                  // scope (and the refresh token) survive to the grant.
+                  prompt: 'consent',
                   // Discovery resolves authorization/token/JWKS endpoints and
                   // refuses a document whose `issuer` is not this exact value.
                   discovery: true,
@@ -211,6 +274,19 @@ export class OidcController {
         }
         setSessionCookie(route, session.token, this.#cookie);
 
+        // Capture the provider's refresh token under the new session — the
+        // browser never sees it. The adapter already bound it to the verified
+        // subject; this map is what the refresh route presents it back from.
+        if (result.refreshToken !== null) {
+            // Bound memory: evict the oldest binding when the cap is reached.
+            while (this.#refreshTokens.size >= MAX_TRACKED_REFRESH_SESSIONS) {
+                const oldestKey = this.#refreshTokens.keys().next().value;
+                if (oldestKey === undefined) break;
+                this.#refreshTokens.delete(oldestKey);
+            }
+            this.#refreshTokens.set(session.token, result.refreshToken);
+        }
+
         const summary = {
             mode: MODES.oidc,
             surface: 'http',
@@ -220,6 +296,7 @@ export class OidcController {
             principal: principalView(result.principal),
             session: sessionView(this.#config, session),
             cookie: cookieView(this.#config),
+            refresh: { captured: result.refreshToken !== null, rotation: 'single-use' },
             follows: 'GET /auth/me now answers with this session cookie',
         };
         if (typeof accept === 'string' && accept.includes('application/json')) {
@@ -229,5 +306,64 @@ export class OidcController {
         return new ResponseEntity(undefined, ResponseStatuses.SEE_OTHER, {
             [HTTPHeaders.LOCATION.name]: '/?mode=oidc',
         });
+    }
+
+    /**
+     * `GET /oidc/refresh` — exchanges the **server-held** refresh token for a
+     * new token set and reports the outcome.
+     *
+     * The credential the caller presents is the playground's own session cookie;
+     * the provider's refresh token captured at callback stays on this side.
+     * `OIDCAdapter.refresh` re-verifies the response's ID token through the full
+     * path (signature, issuer, audience, expiry — **no nonce**) with subject
+     * stability against the captured binding. The embedded public client rotates
+     * on every refresh, so the stored token is replaced each time; a provider
+     * rejection (expired, revoked or already-rotated token) is a labelled
+     * `401 oidc_refresh_failed`.
+     *
+     * @param secureToken - The credential from the `__Host-` cookie, when presented.
+     * @param plainToken - The credential from the plain-HTTP cookie, when presented.
+     * @returns The refreshed summary, or a labelled `401`/`503`.
+     */
+    @getMapping('/refresh')
+    @parameters({
+        secureToken: cookieValue(SESSION_COOKIE),
+        plainToken: cookieValue(PLAIN_HTTP_SESSION_COOKIE),
+    })
+    async refresh(secureToken: string | undefined, plainToken: string | undefined) {
+        if (this.#adapter === null) {
+            return new ResponseEntity(OIDC_FAILURES.oidc_disabled, ResponseStatuses.SERVICE_UNAVAILABLE);
+        }
+        const sessionId = secureToken ?? plainToken;
+        const refreshToken = sessionId === undefined ? undefined : this.#refreshTokens.get(sessionId);
+        if (sessionId === undefined || refreshToken === undefined) {
+            return new ResponseEntity(OIDC_FAILURES.oidc_refresh_unavailable, ResponseStatuses.UNAUTHORIZED);
+        }
+        // The playground session must still be live — the same check `/auth/me` runs.
+        if ((await this.#stack.credentials.validate(sessionId)) === null) {
+            return new ResponseEntity(OIDC_FAILURES.oidc_refresh_unavailable, ResponseStatuses.UNAUTHORIZED);
+        }
+
+        let result;
+        try {
+            result = await this.#adapter.refresh(refreshToken);
+        } catch (error) {
+            const problem = OIDC_FAILURES.oidc_refresh_failed;
+            const detail = error instanceof OIDCError ? `${error.code}: ${error.message}` : problem.detail;
+            return new ResponseEntity({ ...problem, detail }, ResponseStatuses.UNAUTHORIZED);
+        }
+
+        // Track the rotated credential so the next refresh presents the live one.
+        if (result.refreshToken !== null) {
+            this.#refreshTokens.set(sessionId, result.refreshToken);
+        }
+        return {
+            mode: MODES.oidc,
+            surface: 'http',
+            refreshed: true,
+            rotated: result.refreshToken !== null,
+            principal: result.principal === null ? null : principalView(result.principal),
+            expiresAt: result.expiresAt,
+        };
     }
 }

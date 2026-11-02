@@ -328,4 +328,80 @@ describe('AuthClient', () => {
             expect(client.principal).toBeNull();
         });
     });
+
+    describe('refresh-token capture (rotation-capable adapters)', () => {
+        function createRefreshAdapter(authenticateResult: AuthResult): { adapter: AuthAdapter; seen: string[] } {
+            const seen: string[] = [];
+            const adapter: AuthAdapter = {
+                id: 'oidc',
+                validate: async () => null,
+                authenticate: async () => authenticateResult,
+                refresh: async (token) => {
+                    seen.push(token);
+                    return {
+                        principal: authenticateResult.principal,
+                        token: 'at-rotated',
+                        expiresAt: null,
+                        refreshToken: 'rt-2',
+                    };
+                },
+                logout: async () => {},
+            };
+            return { adapter, seen };
+        }
+
+        test('presents the captured refresh token and captures the rotation', async () => {
+            const principal = createMockPrincipal();
+            const { adapter, seen } = createRefreshAdapter({
+                principal,
+                token: 'at-1',
+                expiresAt: null,
+                refreshToken: 'rt-1',
+            });
+            AuthRegistry.register(adapter);
+
+            await client.authenticate('oidc', {});
+            await client.refresh('oidc');
+
+            expect(seen).toEqual(['rt-1']);
+            expect(client.state.token).toBe('at-rotated');
+
+            // The rotated token from the result replaces the previous one.
+            await client.refresh('oidc');
+            expect(seen).toEqual(['rt-1', 'rt-2']);
+        });
+
+        test('falls back to the session token when no refresh token was issued', async () => {
+            const principal = createMockPrincipal();
+            const { adapter, seen } = createRefreshAdapter({
+                principal,
+                token: 'at-1',
+                expiresAt: null,
+                refreshToken: null,
+            });
+            AuthRegistry.register(adapter);
+
+            await client.authenticate('oidc', {});
+            await client.refresh('oidc');
+
+            expect(seen).toEqual(['at-1']);
+        });
+
+        test('logout clears the captured refresh token', async () => {
+            const principal = createMockPrincipal();
+            const first = createRefreshAdapter({ principal, token: 'at-1', expiresAt: null, refreshToken: 'rt-1' });
+            AuthRegistry.register(first.adapter);
+            await client.authenticate('oidc', {});
+            await client.logout('oidc');
+
+            // A new session without a refresh token must not present the
+            // stale one from the previous session.
+            const second = createRefreshAdapter({ principal, token: 'at-2', expiresAt: null });
+            AuthRegistry.register(second.adapter);
+            await client.authenticate('oidc', {});
+            await client.refresh('oidc');
+
+            expect(second.seen).toEqual(['at-2']);
+        });
+    });
 });

@@ -22,6 +22,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `@blue/auth-client` (issue #61): the **OIDC refresh-token grant** —
+  `OIDCAdapter.refresh(refreshToken)` performs the `grant_type=refresh_token`
+  exchange (discovery-resolved, client-secret auth for confidential clients)
+  and verifies the response's ID token through the full path with no nonce
+  and subject stability against the token's binding. Refresh tokens are
+  captured at code exchange and bound to the verified subject in a
+  `refreshStore` (default in-memory, `pendingStore`-style instance affinity);
+  only captured tokens are redeemable — access/ID tokens are rejected before
+  any network call — and rotation consumes the presented token single-use.
+  Provider rejections (`400 invalid_grant`) surface as `invalid_token`.
+  `exchangeCodeForTokens` now returns `OIDCResult` (the `AuthResult` plus
+  `refreshToken`), the adapter gains an optional `prompt` authorization
+  parameter (several providers require `prompt: 'consent'` before granting
+  `offline_access`), and `AuthClient` captures rotated refresh tokens from
+  any refresh-capable adapter and presents them on `client.refresh(adapterId)`.
+  The conformance leg runs against a live provider: `18-blue-auth-playground`
+  mode 6 captures the embedded `oidc-provider`'s refresh token **server-side**
+  and redeems it via `GET /oidc/refresh`, rotation included.
+- `@blue/auth-core`: `AuthResult` gains an optional `refreshToken` seat for
+  rotation-capable adapters.
 - `@blue/flags-openfeature` (AD-87 Phase 2): the **browser entry**
   (`@blue/flags-openfeature/web`) — `WebOpenFeatureFlagEvaluator` over
   `@openfeature/web-sdk` (static-context snapshot semantics, the same

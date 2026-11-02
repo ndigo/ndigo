@@ -1,10 +1,10 @@
 /**
- * @module blue-oxlint-plugin
+ * @module src/oxlint
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { RuleTester } from 'oxlint/plugins-dev';
-import { noUppercaseRegexpConstants } from '../../src/rules/no-uppercase-regexp-constants';
+import { noUppercaseRegexpConstants } from '../../rules/no-uppercase-regexp-constants.ts';
 
 const ruleTester = new RuleTester({
     languageOptions: {

@@ -22,9 +22,9 @@
  *      License) is present and in order — see
  *      docs/guides/12-package-documentation.md.
  *   8. Root manifest: devDependencies obey the same dead-dependency rule,
- *      judged against workspace-wide import usage (root scripts/configs plus
- *      every project's src/test/bench); implicitly-resolved tooling
- *      (ROOT_TOOLING) is allowlisted.
+ *      judged against workspace-wide import usage (root scripts/configs, the
+ *      repo-only root `src/` tree, plus every project's src/test/bench);
+ *      implicitly-resolved tooling (ROOT_TOOLING) is allowlisted.
  *   9. Vitest alias targets: every alias `replacement` in a test-bearing config
  *      must resolve on disk — the hand-maintained alias table silently drifts
  *      as packages are renamed or removed (TOL-F6). Checked across
@@ -47,6 +47,10 @@
  *      specifier that resolves outside the checkout makes its lane
  *      irreproducible on a fresh clone (BLK-1). Bare/alias specifiers and
  *      `node:` builtins are host-provided and exempt.
+ *  13. Publishable surface: every directory under `packages/` is a consumer
+ *      package — a `package.json` must exist, must not be `private: true`,
+ *      and must carry the consumer artifacts (legacy contract + docs
+ *      standard) (AD-86).
  *
  * Run: `node scripts/check-manifests.mjs` (wired into `pnpm manifest:check`
  * and `.github/workflows/ci.yml`).
@@ -56,6 +60,7 @@ import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { importsOf, extractImports, tokenize, SKIP_DIRS, SOURCE_DIRS, DEV_DIRS } from './import-scanner.mjs';
+import { surfaceViolations } from './package-surface.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const PACKAGES = join(ROOT, 'packages');
@@ -238,10 +243,19 @@ function aliasTargetFromReplacement(tail) {
 
 /** Every specifier imported anywhere in the workspace — feeds the root rule. */
 const workspaceUsage = importsOf(ROOT, DEV_DIRS);
+// Root `src/` is repo-only source (AD-86): its imports count as usage too.
+for (const spec of importsOf(ROOT, SOURCE_DIRS)) workspaceUsage.add(spec);
 
+// Rule 13: `packages/` is the published surface (AD-86) — every directory in
+// it must be a consumer package: a `package.json` must exist and must not be
+// `private` (the `files`/`exports` requirement is the legacy contract checked
+// below).
 for (const dir of readdirSync(PACKAGES)) {
     const pkgPath = join(PACKAGES, dir, 'package.json');
-    if (!existsSync(pkgPath)) continue;
+    if (!existsSync(pkgPath)) {
+        for (const violation of surfaceViolations(dir, null)) fail(dir, violation);
+        continue;
+    }
     let manifest;
     try {
         manifest = JSON.parse(readFileSync(pkgPath, 'utf8'));
@@ -250,6 +264,7 @@ for (const dir of readdirSync(PACKAGES)) {
         continue;
     }
     const name = manifest.name ?? dir;
+    for (const violation of surfaceViolations(dir, manifest)) fail(name, violation);
     const runtime = importsOf(join(PACKAGES, dir), SOURCE_DIRS);
     const dev = importsOf(join(PACKAGES, dir), DEV_DIRS);
     for (const spec of runtime) workspaceUsage.add(spec);

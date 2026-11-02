@@ -1,10 +1,10 @@
 /**
- * @module blue-oxlint-plugin
+ * @module src/oxlint
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { RuleTester } from 'oxlint/plugins-dev';
-import { noGlobalStateInCreateFactories } from '../../src/rules/no-global-state-in-create-factories';
+import { noGlobalStateInCreateFactories } from '../../rules/no-global-state-in-create-factories.ts';
 
 const ruleTester = new RuleTester({
     languageOptions: {

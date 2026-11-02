@@ -19,6 +19,10 @@ packages:
 # (typescript 5.9.3/6.0.3, webpack 5.x, jsdom 20/29) as standalone demos.
 catalog:
   '@nx/devkit': '~24.0.2'
+  # OpenFeature bridge (@blue/flags-openfeature): the app-installed provider
+  # runtime. `~` pin — the SDKs are 1.x, but provider-facing behavior still
+  # moves on minors during the spec v0.9.0 compliance sweep (AD-87).
+  '@openfeature/server-sdk': '~1.23.0'
   '@opentelemetry/api': '~1.10.0'
   '@opentelemetry/api-logs': '~0.223.0'
   '@opentelemetry/context-async-hooks': '~3.0.0'

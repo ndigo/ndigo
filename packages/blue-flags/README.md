@@ -7,8 +7,8 @@ the **SPI** (typed, async, never-throw evaluation), the **local provider**
 (flags as `feature.*` config properties, read live), and the **gate
 metadata** (`@whenFeature`, enforced by `FeatureGateInterceptor` in
 `@blue/platform-node`). Backends are optional and owned by the packages
-that own their clients; an OpenFeature bridge provider is the documented
-seam for vendor flagging (Split, LaunchDarkly, flagd, … — AD-82 D-6).
+that own their clients; `@blue/flags-openfeature` bridges vendor flagging
+(flagd, OFREP, LaunchDarkly, …) through the same contract.
 
 ## Installation
 
@@ -75,9 +75,10 @@ interface FlagEvaluator {
   `reason: 'ERROR'` and an `errorCode` (`FLAG_NOT_FOUND`,
   `PARSE_ERROR`, `TYPE_MISMATCH`, `GENERAL`, …) — flags cannot crash
   requests.
-- **Provider-pluggable**: the bean is the seam. A vendor provider
-  (OpenFeature bridge) implements the same contract; app code never
-  imports a vendor SDK.
+- **Provider-pluggable**: the bean is the seam.
+  `@blue/flags-openfeature` bridges vendor providers (flagd, OFREP,
+  LaunchDarkly, …) through the same contract; app code never imports a
+  vendor SDK.
 
 ## The local provider
 

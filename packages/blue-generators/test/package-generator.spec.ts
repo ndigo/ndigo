@@ -178,8 +178,8 @@ export const blueAliases: { find: RegExp; replacement: string }[] = [
         // Manifest gate: description >= 25 chars and not `Blue <Name>`.
         expect(packageJson.description.length).toBeGreaterThanOrEqual(25);
         expect(packageJson.description).not.toMatch(/^blue\s+\w+$/i);
-        // Manifest gate: `files` must include doc + lib.
-        expect(packageJson.files).toEqual(expect.arrayContaining(['doc', 'lib']));
+        // Manifest gate: `files` must include api + lib.
+        expect(packageJson.files).toEqual(expect.arrayContaining(['api', 'lib']));
     });
 
     it('should use custom description when provided', async () => {

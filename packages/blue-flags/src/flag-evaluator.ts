@@ -3,10 +3,11 @@
  * **never-throw** flag evaluation behind one `FlagEvaluator` surface.
  *
  * The SPI is deliberately provider-agnostic: a local property-backed
- * provider ships here, an OpenFeature bridge provider (accessing Split /
- * LaunchDarkly / flagd / …) is a follow-up adapter behind the same
- * contract (AD-82 D-6). Enforcement — the `@whenFeature` route gate —
- * lives in `@blue/platform-node` beside the other interceptors.
+ * provider ships here, and the OpenFeature bridge
+ * (`@blue/flags-openfeature`, AD-87) implements the same contract over an
+ * `@openfeature/server-sdk` client (accessing flagd / OFREP /
+ * LaunchDarkly / … providers). Enforcement — the `@whenFeature` route gate
+ * — lives in `@blue/platform-node` beside the other interceptors.
  *
  * @module blue-flags
  * @since 1.0.0
@@ -20,9 +21,21 @@ export type FlagValue = boolean | number | string | Record<string, unknown> | un
 
 /**
  * Why a flag resolved the way it did — the OpenFeature reason vocabulary
- * (best-effort metadata: a provider may only supply a subset).
+ * (best-effort metadata: a provider may only supply a subset, and an
+ * unrecognized provider reason surfaces as `UNKNOWN`). `DISABLED` is a
+ * *successful* evaluation — the flag is off, the value is the caller's
+ * default, and there is no `errorCode`.
  */
-export type FlagEvaluationReason = 'STATIC' | 'TARGETING_MATCH' | 'SPLIT' | 'DISABLED' | 'DEFAULT' | 'ERROR';
+export type FlagEvaluationReason =
+    | 'STATIC'
+    | 'TARGETING_MATCH'
+    | 'SPLIT'
+    | 'CACHED'
+    | 'DISABLED'
+    | 'DEFAULT'
+    | 'UNKNOWN'
+    | 'STALE'
+    | 'ERROR';
 
 /**
  * Machine-readable error classification for abnormal evaluations
@@ -34,7 +47,9 @@ export type FlagErrorCode =
     | 'TYPE_MISMATCH'
     | 'GENERAL'
     | 'PROVIDER_NOT_READY'
-    | 'PROVIDER_FATAL';
+    | 'PROVIDER_FATAL'
+    | 'TARGETING_KEY_MISSING'
+    | 'INVALID_CONTEXT';
 
 /**
  * The outcome of {@link FlagEvaluator.evaluate}.
@@ -46,7 +61,10 @@ export type FlagErrorCode =
 export interface FlagEvaluation<T extends FlagValue> {
     /** The evaluated flag value (the supplied default on abnormal execution). */
     value: T;
-    /** The reason the provider resolved this value. */
+    /**
+     * The reason the provider resolved this value — `UNKNOWN` when the
+     * provider supplied none (or an unrecognized one).
+     */
     reason: FlagEvaluationReason;
     /** The flag variant (provider-assigned) when available. */
     variant?: string;
@@ -54,6 +72,12 @@ export interface FlagEvaluation<T extends FlagValue> {
     errorCode?: FlagErrorCode;
     /** Optional human-readable detail for the error (telemetry only). */
     errorMessage?: string;
+    /**
+     * Provider-supplied metadata for this evaluation (OpenFeature
+     * `flagMetadata`): stable identifiers, config version, bucket info, ….
+     * The bridge always supplies an object (possibly empty).
+     */
+    flagMetadata?: Record<string, unknown>;
 }
 
 /**

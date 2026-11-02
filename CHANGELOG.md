@@ -22,6 +22,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `@blue/flags` (AD-87): the evaluation vocabulary widens to the full
+  OpenFeature surface — reasons `CACHED`/`UNKNOWN`/`STALE`, error codes
+  `TARGETING_KEY_MISSING`/`INVALID_CONTEXT`, and an optional
+  `flagMetadata` on `FlagEvaluation` (`DISABLED` is documented as a
+  successful evaluation).
+- `@blue/flags-openfeature` (AD-87): the **OpenFeature bridge** — a
+  `FlagEvaluator` over `@openfeature/server-sdk` clients (global,
+  domain-scoped, or explicit), never-throw at the boundary, provider
+  `flagMetadata` passed through; vendor flagging (flagd, OFREP,
+  LaunchDarkly, …) plugs in behind the existing SPI, so `@whenFeature`
+  gates and app code stay unchanged.
 - `@blue/generators` (AD-85): the **`app` generator** — scaffolds a demo
   application under `apps/NN-blue-<slug>` from the `01-blue-hello` (browser)
   or `02-blue-hello-node` (node) shape, allocating the reading-order number
@@ -34,6 +45,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `--description`, `--dry-run`) fronts the app generator through the
   workspace's Nx bridge; `blue generate app` fails with a pointer at it (one
   canonical path per artifact).
+- `@blue/generators` (drive-by, 2026-11-01): the `package` generator's
+  manifest now ships `files: ["api", "lib"]` — the docs standard the manifest
+  gate enforces.
 - `@blue/flags` (AD-82): feature flags — the **`FlagEvaluator`** SPI
   (typed, async, **never-throw**: abnormal evaluation returns the supplied
   default with a `reason` + `errorCode`), the zero-config

@@ -8,7 +8,7 @@
         "blue-<%= name %>"
     ],
     "files": [
-        "doc",
+        "api",
         "lib"
     ],
     "exports": {

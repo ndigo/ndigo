@@ -1,0 +1,40 @@
+{
+  "name": "@blue/flags-openfeature",
+  "version": "0.0.1",
+  "description": "OpenFeature bridge for BlueJS flags — the FlagEvaluator over @openfeature/server-sdk, so vendor providers (flagd, OFREP, LaunchDarkly, …) arrive behind the existing SPI",
+  "type": "module",
+  "keywords": [
+    "bluejs",
+    "blue-flags",
+    "feature-flags",
+    "openfeature"
+  ],
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@blue/flags": "~0.0.1"
+  },
+  "devDependencies": {
+    "@openfeature/server-sdk": "catalog:"
+  },
+  "peerDependencies": {
+    "@openfeature/server-sdk": "^1.23.0"
+  },
+  "sideEffects": false
+}

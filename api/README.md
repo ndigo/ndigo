@@ -25,6 +25,7 @@ package can be read — and installed — on its own.
 | `@blue/dom` | Blue DOM – Isomorphic DOM parsing integration layer | [api/README.md](../packages/blue-dom/api/README.md) |
 | `@blue/factory` | IoC factory with scopes, lifecycle, and aware processors for BlueJS | [api/README.md](../packages/blue-factory/api/README.md) |
 | `@blue/flags` | Feature flags for BlueJS — the FlagEvaluator SPI (typed, async, never-throw), the property-backed local provider, and the @whenFeature gate metadata | [api/README.md](../packages/blue-flags/api/README.md) |
+| `@blue/flags-openfeature` | OpenFeature bridge for BlueJS flags — the FlagEvaluator over @openfeature/server-sdk, so vendor providers (flagd, OFREP, LaunchDarkly, …) arrive behind the existing SPI | [api/README.md](../packages/blue-flags-openfeature/api/README.md) |
 | `@blue/generators` | Nx generators for BlueJS application, package, component, README, and documentation-header scaffolding | [api/README.md](../packages/blue-generators/api/README.md) |
 | `@blue/host` | Blue Host — centralized micro frontend orchestration in the shell context | [api/README.md](../packages/blue-host/api/README.md) |
 | `@blue/http` | Fetch-based HTTP client, interceptors, and content parsing for BlueJS | [api/README.md](../packages/blue-http/api/README.md) |

@@ -36,11 +36,22 @@ Optional human-readable detail for the error (telemetry only).
 
 ***
 
+### flagMetadata?
+
+> `optional` **flagMetadata?**: `Record`\<`string`, `unknown`\>
+
+Provider-supplied metadata for this evaluation (OpenFeature
+`flagMetadata`): stable identifiers, config version, bucket info, ….
+The bridge always supplies an object (possibly empty).
+
+***
+
 ### reason
 
 > **reason**: [`FlagEvaluationReason`](../type-aliases/FlagEvaluationReason.md)
 
-The reason the provider resolved this value.
+The reason the provider resolved this value — `UNKNOWN` when the
+provider supplied none (or an unrecognized one).
 
 ***
 

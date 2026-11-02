@@ -117,6 +117,8 @@
       "@blue/rate-limit/*": ["./packages/blue-rate-limit/src/*"],
       "@blue/flags": ["./packages/blue-flags/src"],
       "@blue/flags/*": ["./packages/blue-flags/src/*"],
+      "@blue/flags-openfeature": ["./packages/blue-flags-openfeature/src"],
+      "@blue/flags-openfeature/*": ["./packages/blue-flags-openfeature/src/*"],
       "@blue/cluster": ["./packages/blue-cluster/src"],
       "@blue/cluster/*": ["./packages/blue-cluster/src/*"],
       "@blue/cli": ["./packages/blue-cli/src"],

@@ -199,6 +199,12 @@ Auto-configuration for Node.js-based applications that provisions:
   coordinates schedulers within one process; register a `RedisLockDriver`
   bean to make `@scheduled({ lock })` arbitrate across nodes — see
   [guide 23](../../docs/guides/23-distributed-locks.md)
+  :- A `flagEvaluator` + `flagContextResolver` pair (`@blue/flags`): the
+  `@whenFeature` gate is default-on and evaluates through them — the default
+  evaluator reads `feature.*` properties live, the default context resolver
+  targets the session principal (else the client address); override either
+  bean for vendor flagging and tenant/attribute targeting — see
+  [guide 28](../../docs/guides/28-feature-flags.md)
   :- A managed `httpServer` entry (`HTTPServer`, a `SmartLifecycle` bean)
   :- A `socketSessionRegistry` bean (`SocketSessionRegistry`): rooms, path
   broadcast, heartbeat, and backpressure for `@socketMapping` endpoints —

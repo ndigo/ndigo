@@ -270,6 +270,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `ndigo doctor` (2026-11-02 review follow-up): the Node floor was pinned at
+  22 while root `engines` requires `>=24` under `engine-strict` — the
+  diagnostic users attach to issue reports pronounced an unusable runtime
+  healthy. The floor is 24 now, a parity spec fails the lane if it drifts
+  from `engines.node` again, and `CONTRIBUTING.md` states the same floor.
 - `apps/04-ndigo-api` (2026-10-08 review, REV-001): `migrations.runOnBoot`
   binds with strict boolean parsing — the string `"false"`/`"0"` (env/CLI
   sources) now stays **false**; `z.coerce.boolean()` applied `Boolean("false")`

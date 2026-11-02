@@ -1,6 +1,6 @@
 /**
  * Root-tooling lane for `package-surface.mjs` — the `packages/`
- * publishable-surface rule behind `manifest:check` (AD-85).
+ * publishable-surface rule behind `manifest:check` (AD-86).
  *
  * Runs under `pnpm test:tooling` (`node --test` — no vitest, no nx). The name
  * deliberately escapes vitest's `*.test.*` glob.

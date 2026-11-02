@@ -3,7 +3,7 @@
 Code in this tree serves the BlueJS **repository itself** — never a consumer.
 It is not a package: no `package.json`, no workspace membership, no build
 step, no published artifact. Consumer-facing code lives in `packages/`
-(AD-85); repo-only tooling that doesn't span packages lives in `scripts/`.
+(AD-86); repo-only tooling that doesn't span packages lives in `scripts/`.
 
 Current tenants:
 

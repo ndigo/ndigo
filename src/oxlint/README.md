@@ -5,7 +5,7 @@ monorepo (integration-layer boundaries, internal-file hygiene, house style)
 rather than to BlueJS application code. Consumer-facing rules live in
 [`@blue/oxlint-plugin`](../../packages/blue-oxlint-plugin/README.md).
 
-`src/` is the home for repo-only cross-package concerns (AD-85); this
+`src/` is the home for repo-only cross-package concerns (AD-86); this
 directory is **not a package** — no `package.json`, no build step, no
 published artifact.
 

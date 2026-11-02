@@ -1,4 +1,4 @@
-# AD-85: `packages/` is the consumer surface — repo-only lint rules live in root `src/`
+# AD-86: `packages/` is the consumer surface — repo-only lint rules live in root `src/`
 
 **Date:** 2026-10-31
 **Status:** Accepted

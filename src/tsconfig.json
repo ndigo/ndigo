@@ -1,5 +1,5 @@
 {
-  // Editor + typecheck config for the repo-only `src/` tree (AD-85). These
+  // Editor + typecheck config for the repo-only `src/` tree (AD-86). These
   // files load directly from TypeScript (oxlint's JS-plugin runtime, Node
   // type stripping), so relative imports carry explicit `.ts` extensions —
   // allowed here, and only here, via `noEmit`.

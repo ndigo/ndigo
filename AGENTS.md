@@ -302,7 +302,7 @@ import { createDOMProvider } from '@blue/dom';
 
 These rules are **automatically enforced** by the repository-only oxlint
 plugin at root [`src/oxlint/`](src/oxlint/README.md) (rule namespace
-`internal/*`, AD-85), loaded by the same `pnpm lint` lane as the
+`internal/*`, AD-86), loaded by the same `pnpm lint` lane as the
 consumer-facing `@blue/oxlint-plugin`:
 
 | Rule                                     | Severity | Description                                                                                                                                        |

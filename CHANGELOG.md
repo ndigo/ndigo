@@ -103,13 +103,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `@blue/oxlint-plugin` + lint rules (AD-85): repository-only rules moved
+- `@blue/oxlint-plugin` + lint rules (AD-86): repository-only rules moved
   out of the package into the internal plugin at root `src/oxlint/`, loading
   directly from TypeScript (rule IDs `internal/*`, e.g.
   `internal/no-internal-file-exports`). The package now ships the
   consumer-facing rules only; `pnpm test:internal` runs the internal specs.
 - `@blue/host` (AD-18): dropped the `private: true` staging flag — the
-  package is publishable and the AD-85 `packages/` surface guard now carries
+  package is publishable and the AD-86 `packages/` surface guard now carries
   no exceptions.
 - `blue db generate` (2026-10-08 review, REV-002/REV-006): **fails loud**
   instead of emitting what the operator has not reviewed — a delta with

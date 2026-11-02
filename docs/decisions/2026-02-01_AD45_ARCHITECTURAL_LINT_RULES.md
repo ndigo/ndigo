@@ -43,7 +43,7 @@ dedicated plugin carrying custom rules to lock them down in CI.
 
 ## Consequences
 
-- **2026-11-01 (AD-85):** the repository-only rules (`no-direct-integration-imports`,
+- **2026-11-01 (AD-86):** the repository-only rules (`no-direct-integration-imports`,
   `no-internal-file-imports`, `no-internal-file-exports`, naming/style guards,
   `requires-doc-header`) relocated to root `src/oxlint/` and load as the
   `internal/*` namespace; `packages/blue-oxlint-plugin/` now carries the

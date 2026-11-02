@@ -50,7 +50,7 @@
  *  13. Publishable surface: every directory under `packages/` is a consumer
  *      package — a `package.json` must exist, must not be `private: true`,
  *      and must carry the consumer artifacts (legacy contract + docs
- *      standard) (AD-85).
+ *      standard) (AD-86).
  *
  * Run: `node scripts/check-manifests.mjs` (wired into `pnpm manifest:check`
  * and `.github/workflows/ci.yml`).
@@ -243,10 +243,10 @@ function aliasTargetFromReplacement(tail) {
 
 /** Every specifier imported anywhere in the workspace — feeds the root rule. */
 const workspaceUsage = importsOf(ROOT, DEV_DIRS);
-// Root `src/` is repo-only source (AD-85): its imports count as usage too.
+// Root `src/` is repo-only source (AD-86): its imports count as usage too.
 for (const spec of importsOf(ROOT, SOURCE_DIRS)) workspaceUsage.add(spec);
 
-// Rule 13: `packages/` is the published surface (AD-85) — every directory in
+// Rule 13: `packages/` is the published surface (AD-86) — every directory in
 // it must be a consumer package: a `package.json` must exist and must not be
 // `private` (the `files`/`exports` requirement is the legacy contract checked
 // below).

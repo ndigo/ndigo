@@ -89,8 +89,11 @@ the master switch:
 ```
 
 `@whenFeature` seeds each evaluation with a **targeting key** — the
-client IP (the AD-37/rate-limiter address, so `X-Forwarded-For` respects
-the trusted-proxy allowlist) — and the local provider buckets the key
+session principal's id when a session/identity interceptor ran **before**
+the gate (`NodeRequest.session.principal`, the principal's roles carried
+as context attributes), otherwise the client IP (the AD-37/rate-limiter
+address, so `X-Forwarded-For` respects the trusted-proxy allowlist) —
+and the local provider buckets the key
 deterministically (FNV-1a) into the rollout:
 
 - keyed request with `bucket < rollout` → on (`reason: 'SPLIT'`);
@@ -148,9 +151,12 @@ reason/variant/error vocabulary is already OpenFeature's, and
 - **Readiness**: `setProviderAndWait` resolves once the provider is ready;
   before that, evaluations return your defaults (never-throw holds).
 - **Targeting**: providers target on the evaluation context — the gate
-  seeds the client IP today; pass `{ targetingKey, attributes }` for
-  programmatic checks (principal/tenant attribution is a resolver seam on
-  the way).
+  seeds the session principal when a session/identity interceptor ran
+  first, else the client IP; pass `{ targetingKey, attributes }` for
+  programmatic checks. Apps register their own **`FLAG_CONTEXT_RESOLVER`**
+  bean for tenant/attribute targeting from elsewhere in the request (the
+  default resolver is `SessionPrincipalFlagContextResolver`; order your
+  session interceptor before the gate to make principals visible).
 - **Domains and clients**: `new OpenFeatureFlagEvaluator({ domain:
   'checkout' })` reads that domain's provider; `{ client }` takes an
   explicitly built client.

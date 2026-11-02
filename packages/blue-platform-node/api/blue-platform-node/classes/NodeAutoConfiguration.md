@@ -164,6 +164,42 @@ The error resolvers.
 
 ***
 
+### featureGateInterceptor()
+
+> **featureGateInterceptor**(): [`FeatureGateInterceptor`](FeatureGateInterceptor.md)
+
+The feature-gate interceptor — **one instance**, registered as an
+entry so the aware processor injects the application context
+(`HTTPServer` precedent): the interceptor resolves the
+`FLAG_EVALUATOR`/`FLAG_CONTEXT_RESOLVER` beans per check, and the
+mapping holds that same injected instance.
+
+#### Returns
+
+[`FeatureGateInterceptor`](FeatureGateInterceptor.md)
+
+The shared [FeatureGateInterceptor](FeatureGateInterceptor.md).
+
+***
+
+### flagContextResolver()
+
+> **flagContextResolver**(): [`FlagEvaluationContextResolver`](../interfaces/FlagEvaluationContextResolver.md)
+
+The default flag targeting-context resolver (AD-87 companion): the
+session-bag principal when a session/identity interceptor ran first
+(targeting key = principal id, roles as attributes), else the AD-37
+client address. Apps override this bean for tenant/attribute
+targeting.
+
+#### Returns
+
+[`FlagEvaluationContextResolver`](../interfaces/FlagEvaluationContextResolver.md)
+
+The principal-first, address-fallback resolver.
+
+***
+
 ### flagEvaluator()
 
 > **flagEvaluator**(): `FlagEvaluator`
@@ -171,15 +207,10 @@ The error resolvers.
 The default flag evaluator (AD-82): reads `feature.*` properties
 from the application environment, **live on every evaluation** — an
 `environment.refresh()` (AD-29) flips flags without a redeploy.
-Apps needing vendor flagging (Split / LaunchDarkly / flagd via an
-OpenFeature bridge) provide their own `FlagEvaluator` bean;
-this is the zero-config default.
-
-ONE instance serves both the `FLAG_EVALUATOR` bean and the
-`FeatureGateInterceptor`: the parser configures the bean value
-(aware injection) after it is registered, mutating the shared
-instance, so the gate's copy observes the injected application
-context too.
+Apps needing vendor flagging (flagd / OFREP / LaunchDarkly via the
+`@blue/flags-openfeature` bridge) provide their own `FlagEvaluator`
+bean; this is the zero-config default. The gate resolves the bean
+per check (AD-87), so an override reaches `@whenFeature` routes too.
 
 #### Returns
 

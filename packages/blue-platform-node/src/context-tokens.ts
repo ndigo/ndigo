@@ -9,6 +9,7 @@ import type { ConversionService } from '@blue/core';
 import type { HTTPServer } from './http-server';
 import type { NodeSocketSessionRegistry } from './node-socket-session-registry';
 import type { SocketRequestAuthenticator } from './node-http-server-adapter';
+import type { FlagEvaluationContextResolver } from './flag-context-resolver';
 
 /**
  * Token for the managed {@link HTTPServer} bean.
@@ -24,6 +25,12 @@ export const SOCKET_SESSION_REGISTRY = new ContextToken<NodeSocketSessionRegistr
  * Token for the socket upgrade authenticator bean (SEC-3).
  */
 export const SOCKET_REQUEST_AUTHENTICATOR = new ContextToken<SocketRequestAuthenticator>('socketRequestAuthenticator');
+
+/**
+ * Token for the flag targeting-context resolver bean (AD-87 companion):
+ * the default resolves the session-bag principal, then the client address.
+ */
+export const FLAG_CONTEXT_RESOLVER = new ContextToken<FlagEvaluationContextResolver>('flagContextResolver');
 
 /**
  * Token for the shared conversion service bean (schema targets included,

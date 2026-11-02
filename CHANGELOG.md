@@ -22,6 +22,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `@blue/platform-node` (AD-87 companion): the flag targeting-context
+  seam — the **`FLAG_CONTEXT_RESOLVER`** bean
+  (`FlagEvaluationContextResolver`; default
+  `SessionPrincipalFlagContextResolver`: the session-bag principal's id as
+  the targeting key with its roles as attributes, falling back to the
+  AD-37 client address; `ClientAddressFlagContextResolver` ships for
+  address-only targeting), and **late-bound gate dependencies**: the
+  `FeatureGateInterceptor` now resolves `FLAG_EVALUATOR` /
+  `FLAG_CONTEXT_RESOLVER` from the application context per check, so
+  app-level bean overrides (the vendor-bridge recipe included) reach
+  `@whenFeature` routes instead of pinning the auto-configuration
+  defaults.
 - `@blue/flags` (AD-87): the evaluation vocabulary widens to the full
   OpenFeature surface — reasons `CACHED`/`UNKNOWN`/`STALE`, error codes
   `TARGETING_KEY_MISSING`/`INVALID_CONTEXT`, and an optional

@@ -9,6 +9,16 @@
  * interceptor on the default mapping changes no existing route's behavior
  * (mirror of `RateLimitInterceptor`).
  *
+ * The evaluator and the targeting-context resolver are resolved from the
+ * application context **per gate check**, never captured at construction:
+ * entry values are created while sources register — before an app's own
+ * configuration registers its entries — so an eager capture would pin the
+ * auto-configuration defaults and a `FLAG_EVALUATOR` or
+ * `FLAG_CONTEXT_RESOLVER` bean override (the vendor-bridge recipe, AD-87)
+ * would never reach the gate. `HTTPServer`'s late `getValue` resolution is
+ * the precedent; the interceptor registers as an entry so the aware
+ * processor injects the application context into it.
+ *
  * @module blue-platform-node
  * @since 1.0.0
  * @author Jeff Rose
@@ -21,21 +31,61 @@ import {
     type RouteHandlerMethod,
     denialOf,
 } from '@blue/dispatcher';
-import { getWhenFeature, type FlagEvaluationContext, type FlagEvaluator } from '@blue/flags';
+import { FLAG_EVALUATOR, getWhenFeature, type FlagEvaluator } from '@blue/flags';
+import { $aware } from '@blue/factory';
+import { IllegalStateError } from '@blue/core';
+import type { ApplicationContext, ApplicationContextAware } from '@blue/context';
 import type { ServerResponse } from 'node:http';
 import { ProblemTypes, writeProblem } from './problem-details';
-import { getNodeRequest, NODE_RESPONSE_ATTRIBUTE } from './node-request';
+import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
+import { FLAG_CONTEXT_RESOLVER } from './context-tokens';
+import { SessionPrincipalFlagContextResolver, type FlagEvaluationContextResolver } from './flag-context-resolver';
+
+/**
+ * Constructor overrides for the interceptor's beans — embedding and unit
+ * tests. In the wired application the `FLAG_EVALUATOR` /
+ * `FLAG_CONTEXT_RESOLVER` beans are the source, resolved per check so
+ * app-level overrides apply.
+ */
+export interface FeatureGateInterceptorOptions {
+    /** The evaluator to use instead of the `FLAG_EVALUATOR` bean. */
+    readonly evaluator?: FlagEvaluator;
+    /** The context resolver to use instead of the `FLAG_CONTEXT_RESOLVER` bean. */
+    readonly contextResolver?: FlagEvaluationContextResolver;
+}
 
 /**
  * Enforces `@whenFeature` gates (AD-82): off flag → **404** problem
  * document (`urn:blue:not-found`), written before the denial finalizer so
  * the body survives.
  */
-export class FeatureGateInterceptor implements RouteHandlerInterceptor {
-    readonly #evaluator: FlagEvaluator;
+export class FeatureGateInterceptor implements RouteHandlerInterceptor, ApplicationContextAware {
+    readonly #evaluatorOverride: FlagEvaluator | undefined;
+    readonly #contextResolverOverride: FlagEvaluationContextResolver | undefined;
+    #applicationContext: ApplicationContext | null = null;
+    #fallbackContextResolver: FlagEvaluationContextResolver | null = null;
 
-    constructor(evaluator: FlagEvaluator) {
-        this.#evaluator = evaluator;
+    /**
+     * @param options - Optional evaluator/resolver overrides; omit both to
+     *   resolve the beans from the application context.
+     */
+    constructor(options: FeatureGateInterceptorOptions = {}) {
+        this.#evaluatorOverride = options.evaluator;
+        this.#contextResolverOverride = options.contextResolver;
+    }
+
+    /**
+     * Marks the value as aware so the factory's aware injection calls
+     * {@link setApplicationContext} when the entry registers (the
+     * `HTTPServer` precedent).
+     */
+    get [$aware](): boolean {
+        return true;
+    }
+
+    /** Injected by the aware processor when the interceptor entry registers. */
+    setApplicationContext(context: ApplicationContext): void {
+        this.#applicationContext = context;
     }
 
     async preHandle(route: Route, handler: object | undefined): Promise<boolean | InterceptorDenial> {
@@ -47,11 +97,14 @@ export class FeatureGateInterceptor implements RouteHandlerInterceptor {
         // Never-throw evaluation (AD-82 D-2): a provider failure resolves
         // as the default (false) with reason ERROR — the gate is
         // fail-closed by posture. A flag that errors is a kill switch.
-        // The client IP seeds the targeting context so percentage
-        // rollouts (the local provider's `feature.rollout.*` channel)
-        // bucket per requester — the same key the rate limiter uses
-        // (AD-37).
-        const evaluation = await this.#evaluator.evaluate<boolean>(flag, false, this.#targetingContext(route));
+        // The context resolver seeds the targeting key (session principal,
+        // else the AD-37 client address) so percentage rollouts (the local
+        // provider's `feature.rollout.*` channel) bucket per requester.
+        const evaluation = await this.#evaluator().evaluate<boolean>(
+            flag,
+            false,
+            this.#contextResolver().resolve(route)
+        );
         if (evaluation.value === true) {
             return true;
         }
@@ -84,16 +137,34 @@ export class FeatureGateInterceptor implements RouteHandlerInterceptor {
     }
 
     /**
-     * Builds the evaluation context for a request: targeting key = the
-     * client IP (the AD-37 trusted-proxy-resolved address, same as the
-     * rate-limiter key). Absent address → no context (rollouts stay
-     * closed for untargeted requests); providers that ignore the context
-     * are unaffected.
+     * The evaluator for this check: the explicit override, else the
+     * `FLAG_EVALUATOR` bean — resolved late so bean overrides apply.
      */
-    #targetingContext(route: Route): FlagEvaluationContext | undefined {
-        const request = getNodeRequest(route);
-        const targetingKey = request?.remoteAddress;
-        return typeof targetingKey === 'string' && targetingKey !== '' ? { targetingKey } : undefined;
+    #evaluator(): FlagEvaluator {
+        if (this.#evaluatorOverride !== undefined) {
+            return this.#evaluatorOverride;
+        }
+        if (this.#applicationContext?.hasValue?.(FLAG_EVALUATOR)) {
+            return this.#applicationContext.getValue(FLAG_EVALUATOR);
+        }
+        throw new IllegalStateError(
+            'FeatureGateInterceptor: no evaluator — pass one or register the FLAG_EVALUATOR bean'
+        );
+    }
+
+    /**
+     * The targeting-context resolver for this check: the explicit
+     * override, else the `FLAG_CONTEXT_RESOLVER` bean, else the built-in
+     * default (context-less construction — tests and embeddings).
+     */
+    #contextResolver(): FlagEvaluationContextResolver {
+        if (this.#contextResolverOverride !== undefined) {
+            return this.#contextResolverOverride;
+        }
+        if (this.#applicationContext?.hasValue?.(FLAG_CONTEXT_RESOLVER)) {
+            return this.#applicationContext.getValue(FLAG_CONTEXT_RESOLVER);
+        }
+        return (this.#fallbackContextResolver ??= new SessionPrincipalFlagContextResolver());
     }
 
     /**

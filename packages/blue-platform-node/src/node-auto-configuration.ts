@@ -35,7 +35,7 @@ import { NodeDispatcher } from './node-dispatcher';
 import { HTTPServer } from './http-server';
 import { readIntEnv } from './read-int-env';
 import { NodeSocketSessionRegistry, resolveSocketRegistryOptions } from './node-socket-session-registry';
-import { HTTP_SERVER, SOCKET_SESSION_REGISTRY } from './context-tokens';
+import { HTTP_SERVER, FLAG_CONTEXT_RESOLVER, SOCKET_SESSION_REGISTRY } from './context-tokens';
 import { SecurityHeadersInterceptor } from './security-headers-interceptor';
 import { NodeParameterBindingErrorResolver } from './parameter-binding-error-resolver';
 import { NodeLastResortErrorResolver } from './last-resort-error-resolver';
@@ -46,6 +46,7 @@ import { CORSInterceptor, type CORSInterceptorOptions } from './cors-interceptor
 import { FLAG_EVALUATOR, type FlagEvaluator } from '@blue/flags';
 import { FeatureGateInterceptor } from './feature-gate-interceptor';
 import { EnvironmentFlagEvaluator } from './environment-flag-evaluator';
+import { SessionPrincipalFlagContextResolver, type FlagEvaluationContextResolver } from './flag-context-resolver';
 
 /**
  * Coerces a configured `server.port` value — a JSON number or numeric string —
@@ -106,7 +107,7 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
         mapping.interceptors.unshift(new SecurityHeadersInterceptor());
         // Feature gate before rate limiting: a disabled feature is not a
         // traffic event worth charging a budget against (AD-82 D-5).
-        mapping.interceptors.push(new FeatureGateInterceptor(this.flagEvaluator()));
+        mapping.interceptors.push(this.featureGateInterceptor());
         mapping.interceptors.push(new RateLimitInterceptor(this.rateLimiter()));
         // CORS runs last (after feature/rate-limit) and is fail-closed by
         // default: no origin is permitted until an app sets `cors.allowedOrigins`,
@@ -169,23 +170,46 @@ export class NodeAutoConfiguration extends AsApplicationContextAware(Null) {
      * The default flag evaluator (AD-82): reads `feature.*` properties
      * from the application environment, **live on every evaluation** — an
      * `environment.refresh()` (AD-29) flips flags without a redeploy.
-     * Apps needing vendor flagging (Split / LaunchDarkly / flagd via an
-     * OpenFeature bridge) provide their own `FlagEvaluator` bean;
-     * this is the zero-config default.
-     *
-     * ONE instance serves both the `FLAG_EVALUATOR` bean and the
-     * `FeatureGateInterceptor`: the parser configures the bean value
-     * (aware injection) after it is registered, mutating the shared
-     * instance, so the gate's copy observes the injected application
-     * context too.
+     * Apps needing vendor flagging (flagd / OFREP / LaunchDarkly via the
+     * `@blue/flags-openfeature` bridge) provide their own `FlagEvaluator`
+     * bean; this is the zero-config default. The gate resolves the bean
+     * per check (AD-87), so an override reaches `@whenFeature` routes too.
      *
      * @returns The property-backed flag evaluator.
      */
     @entry(FLAG_EVALUATOR)
     flagEvaluator(): FlagEvaluator {
-        return (this.#flagEvaluatorInstance ??= new EnvironmentFlagEvaluator());
+        return new EnvironmentFlagEvaluator();
     }
-    #flagEvaluatorInstance: FlagEvaluator | null = null;
+
+    /**
+     * The default flag targeting-context resolver (AD-87 companion): the
+     * session-bag principal when a session/identity interceptor ran first
+     * (targeting key = principal id, roles as attributes), else the AD-37
+     * client address. Apps override this bean for tenant/attribute
+     * targeting.
+     *
+     * @returns The principal-first, address-fallback resolver.
+     */
+    @entry(FLAG_CONTEXT_RESOLVER)
+    flagContextResolver(): FlagEvaluationContextResolver {
+        return new SessionPrincipalFlagContextResolver();
+    }
+
+    /**
+     * The feature-gate interceptor — **one instance**, registered as an
+     * entry so the aware processor injects the application context
+     * (`HTTPServer` precedent): the interceptor resolves the
+     * `FLAG_EVALUATOR`/`FLAG_CONTEXT_RESOLVER` beans per check, and the
+     * mapping holds that same injected instance.
+     *
+     * @returns The shared {@link FeatureGateInterceptor}.
+     */
+    @entry()
+    featureGateInterceptor(): FeatureGateInterceptor {
+        return (this.#featureGateInterceptorInstance ??= new FeatureGateInterceptor());
+    }
+    #featureGateInterceptorInstance: FeatureGateInterceptor | null = null;
 
     /**
      * Creates the Node dispatcher used for server-side request dispatch and rendering.

@@ -12,7 +12,7 @@
 import { describe, test, afterAll, expect } from 'vitest';
 import type { ServerResponse } from 'node:http';
 import type { Route } from '@blue/router';
-import { MetadataConfigApplicationContext, StandardEnvironment } from '@blue/context';
+import { MetadataConfigApplicationContext, StandardEnvironment, configuration, entry } from '@blue/context';
 import { getMapping, requestMapping } from '@blue/dispatcher';
 import {
     FLAG_EVALUATOR,
@@ -28,6 +28,13 @@ import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
 import { FeatureGateInterceptor } from '../src/feature-gate-interceptor';
 import { NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE, type NodeRequest } from '../src/node-request';
+import { FLAG_CONTEXT_RESOLVER } from '../src/context-tokens';
+import {
+    ClientAddressFlagContextResolver,
+    SessionPrincipalFlagContextResolver,
+    type FlagEvaluationContextResolver,
+} from '../src/flag-context-resolver';
+import { DefaultPrincipal } from '@blue/auth-core';
 
 /** A route with a response sink (`writeProblem` target). */
 function routeWithResponse(): { route: Route; res: ServerResponse; body: () => string } {
@@ -66,15 +73,19 @@ function gatedHandler(flag: string): object {
 
 describe('FeatureGateInterceptor', () => {
     test('un-gated handlers pass through untouched', async () => {
-        const interceptor = new FeatureGateInterceptor(new PropertyFlagProvider({ getProperty: () => undefined }));
+        const interceptor = new FeatureGateInterceptor({
+            evaluator: new PropertyFlagProvider({ getProperty: () => undefined }),
+        });
         const result = await interceptor.preHandle(routeWithResponse().route, { handler: {}, method: 'a' });
         expect(result).toBe(true);
     });
 
     test('gated handler with an on flag passes', async () => {
-        const interceptor = new FeatureGateInterceptor(
-            new PropertyFlagProvider({ getProperty: (key: string) => (key === 'feature.pay' ? true : undefined) })
-        );
+        const interceptor = new FeatureGateInterceptor({
+            evaluator: new PropertyFlagProvider({
+                getProperty: (key: string) => (key === 'feature.pay' ? true : undefined),
+            }),
+        });
         const result = await interceptor.preHandle(routeWithResponse().route, {
             handler: gatedHandler('pay'),
             method: 'due',
@@ -83,9 +94,11 @@ describe('FeatureGateInterceptor', () => {
     });
 
     test('gated handler with an off flag is denied 404 with a problem doc', async () => {
-        const interceptor = new FeatureGateInterceptor(
-            new PropertyFlagProvider({ getProperty: (key: string) => (key === 'feature.pay' ? false : undefined) })
-        );
+        const interceptor = new FeatureGateInterceptor({
+            evaluator: new PropertyFlagProvider({
+                getProperty: (key: string) => (key === 'feature.pay' ? false : undefined),
+            }),
+        });
         const { route, res, body } = routeWithResponse();
         const denial = await interceptor.preHandle(route, { handler: gatedHandler('pay'), method: 'due' });
         expect(denial).toMatchObject({ statusCode: 404 });
@@ -95,7 +108,9 @@ describe('FeatureGateInterceptor', () => {
     });
 
     test('a missing flag evaluates DEFAULT → the gate is closed (404)', async () => {
-        const interceptor = new FeatureGateInterceptor(new PropertyFlagProvider({ getProperty: () => undefined }));
+        const interceptor = new FeatureGateInterceptor({
+            evaluator: new PropertyFlagProvider({ getProperty: () => undefined }),
+        });
         const { route, res } = routeWithResponse();
         const denial = await interceptor.preHandle(route, { handler: gatedHandler('absent'), method: 'due' });
         expect(denial).toMatchObject({ statusCode: 404 });
@@ -103,9 +118,9 @@ describe('FeatureGateInterceptor', () => {
     });
 
     test('method-level gate wins over a class-level gate', async () => {
-        const interceptor = new FeatureGateInterceptor(
-            new PropertyFlagProvider({ getProperty: (key: string) => key === 'feature.on' })
-        );
+        const interceptor = new FeatureGateInterceptor({
+            evaluator: new PropertyFlagProvider({ getProperty: (key: string) => key === 'feature.on' }),
+        });
         @whenFeature('off')
         class Controller {
             @whenFeature('on')
@@ -146,28 +161,28 @@ describe('FeatureGateInterceptor targeting context + rollouts (AD-82 addendum)',
                 return { value: false as T, reason: 'DEFAULT' };
             },
         };
-        const interceptor = new FeatureGateInterceptor(spy);
+        const interceptor = new FeatureGateInterceptor({ evaluator: spy });
         await interceptor.preHandle(routeFrom('198.51.100.2'), { handler: gatedHandler('pay'), method: 'due' });
         expect(received).toBe('198.51.100.2');
     });
 
     test('a 0% rollout gates everyone out; a 100% rollout admits the same requester', async () => {
-        const closed = new FeatureGateInterceptor(
-            new PropertyFlagProvider({
+        const closed = new FeatureGateInterceptor({
+            evaluator: new PropertyFlagProvider({
                 getProperty: (key: string) =>
                     key === 'feature.pay' ? true : key === 'feature.rollout.pay' ? 0 : undefined,
-            })
-        );
+            }),
+        });
         expect(
             await closed.preHandle(routeFrom('198.51.100.2'), { handler: gatedHandler('pay'), method: 'due' })
         ).toMatchObject({ statusCode: 404 });
 
-        const open = new FeatureGateInterceptor(
-            new PropertyFlagProvider({
+        const open = new FeatureGateInterceptor({
+            evaluator: new PropertyFlagProvider({
                 getProperty: (key: string) =>
                     key === 'feature.pay' ? true : key === 'feature.rollout.pay' ? 1 : undefined,
-            })
-        );
+            }),
+        });
         expect(await open.preHandle(routeFrom('198.51.100.2'), { handler: gatedHandler('pay'), method: 'due' })).toBe(
             true
         );
@@ -274,6 +289,175 @@ describe('@whenFeature through the real NodeAutoConfiguration wiring (AD-82 D-5)
             expect(res.status).toBe(200);
         } finally {
             await mixedAdapter.close();
+            context.close();
+        }
+    });
+});
+
+describe('targeting-context resolvers (AD-87 companion)', () => {
+    /** A route carrying a node request (address and/or session bag). */
+    function routeWith(request: Partial<NodeRequest>): Route {
+        return {
+            attributes: {
+                [NODE_REQUEST_ATTRIBUTE]: { session: {}, ...request } as NodeRequest,
+                [NODE_RESPONSE_ATTRIBUTE]: routeWithResponse().res,
+            },
+        } as unknown as Route;
+    }
+
+    test('the client-address resolver reads the resolved remote address', () => {
+        const resolver = new ClientAddressFlagContextResolver();
+
+        expect(resolver.resolve(routeWith({ remoteAddress: '203.0.113.9' }))).toEqual({
+            targetingKey: '203.0.113.9',
+        });
+        expect(resolver.resolve(routeWith({}))).toBeUndefined();
+        expect(resolver.resolve(routeWith({ remoteAddress: '' }))).toBeUndefined();
+    });
+
+    test('the default resolver prefers the session principal (id + roles) over the address', () => {
+        const resolver = new SessionPrincipalFlagContextResolver();
+
+        const context = resolver.resolve(
+            routeWith({
+                remoteAddress: '203.0.113.9',
+                session: { principal: new DefaultPrincipal('user-1', 'Ada', ['admin', 'beta']) },
+            })
+        );
+
+        expect(context).toEqual({ targetingKey: 'user-1', attributes: { roles: ['admin', 'beta'] } });
+    });
+
+    test('the default resolver falls back to the client address without a principal', () => {
+        const resolver = new SessionPrincipalFlagContextResolver();
+
+        expect(resolver.resolve(routeWith({ remoteAddress: '203.0.113.9' }))).toEqual({
+            targetingKey: '203.0.113.9',
+        });
+        expect(resolver.resolve(routeWith({}))).toBeUndefined();
+    });
+
+    test('a malformed session principal is ignored (fail-safe to the address)', () => {
+        const resolver = new SessionPrincipalFlagContextResolver();
+
+        const context = resolver.resolve(
+            routeWith({ remoteAddress: '203.0.113.9', session: { principal: { id: 'incomplete' } } })
+        );
+
+        expect(context).toEqual({ targetingKey: '203.0.113.9' });
+    });
+
+    test('the interceptor uses the built-in default when no bean or override is present', async () => {
+        let received: FlagEvaluationContext | undefined;
+        const spy: FlagEvaluator = {
+            kind: 'spy',
+            async evaluate<T extends FlagValue>(
+                _flag: string,
+                _defaultValue: T,
+                ctx?: FlagEvaluationContext
+            ): Promise<FlagEvaluation<T>> {
+                received = ctx;
+                return { value: true as T, reason: 'STATIC' };
+            },
+        };
+
+        const interceptor = new FeatureGateInterceptor({ evaluator: spy });
+        await interceptor.preHandle(
+            routeWith({
+                remoteAddress: '203.0.113.9',
+                session: { principal: new DefaultPrincipal('user-7', 'Grace', ['ops']) },
+            }),
+            { handler: gatedHandler('pay'), method: 'due' }
+        );
+
+        expect(received).toEqual({ targetingKey: 'user-7', attributes: { roles: ['ops'] } });
+    });
+
+    test('an explicit resolver override replaces the default', async () => {
+        let received: FlagEvaluationContext | undefined;
+        const spy: FlagEvaluator = {
+            kind: 'spy',
+            async evaluate<T extends FlagValue>(
+                _flag: string,
+                _defaultValue: T,
+                ctx?: FlagEvaluationContext
+            ): Promise<FlagEvaluation<T>> {
+                received = ctx;
+                return { value: true as T, reason: 'STATIC' };
+            },
+        };
+
+        const interceptor = new FeatureGateInterceptor({
+            evaluator: spy,
+            contextResolver: { resolve: () => ({ targetingKey: 'tenant-9', attributes: { plan: 'pro' } }) },
+        });
+        await interceptor.preHandle(routeWith({ remoteAddress: '203.0.113.9' }), {
+            handler: gatedHandler('pay'),
+            method: 'due',
+        });
+
+        expect(received).toEqual({ targetingKey: 'tenant-9', attributes: { plan: 'pro' } });
+    });
+});
+
+describe('app bean overrides reach the gate (AD-87 companion)', () => {
+    test('FLAG_EVALUATOR and FLAG_CONTEXT_RESOLVER entries apply to @whenFeature routes', async () => {
+        const seen: (FlagEvaluationContext | undefined)[] = [];
+        const override: FlagEvaluator = {
+            kind: 'override',
+            async evaluate<T extends FlagValue>(
+                _flag: string,
+                _defaultValue: T,
+                ctx?: FlagEvaluationContext
+            ): Promise<FlagEvaluation<T>> {
+                seen.push(ctx);
+                return { value: true as T, reason: 'STATIC' };
+            },
+        };
+
+        @configuration
+        class OverrideConfiguration {
+            @entry(FLAG_EVALUATOR)
+            flagEvaluator(): FlagEvaluator {
+                return override;
+            }
+
+            @entry(FLAG_CONTEXT_RESOLVER)
+            flagContextResolver(): FlagEvaluationContextResolver {
+                return { resolve: () => ({ targetingKey: 'tenant-42', attributes: { plan: 'enterprise' } }) };
+            }
+        }
+        @requestMapping('/')
+        class OverrideController {
+            @whenFeature('override.flag')
+            @requestMapping('/gated')
+            gated() {
+                return { gated: true };
+            }
+        }
+
+        const context = new MetadataConfigApplicationContext('feature-override');
+        // The flag is absent from the environment on purpose: only the app's
+        // FLAG_EVALUATOR override can open the gate.
+        context.setEnvironment(new StandardEnvironment([{ 'feature.unrelated': true }]));
+        context.register(NodeAutoConfiguration);
+        context.register(OverrideConfiguration);
+        context.setValue('overrideController', new OverrideController());
+        context.refresh();
+
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+        const adapter = new NodeHTTPServerAdapter(dispatcher);
+        await adapter.listen(0, '127.0.0.1');
+        const base = `http://127.0.0.1:${(adapter.server as { address(): { port: number } }).address().port}`;
+        try {
+            const res = await fetch(`${base}/gated`);
+            expect(res.status).toBe(200);
+            expect(await res.json()).toEqual({ gated: true });
+            // The override resolver fed the evaluation context through to the gate.
+            expect(seen).toHaveLength(1);
+            expect(seen[0]).toEqual({ targetingKey: 'tenant-42', attributes: { plan: 'enterprise' } });
+        } finally {
+            await adapter.close();
             context.close();
         }
     });

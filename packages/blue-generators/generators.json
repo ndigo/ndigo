@@ -1,5 +1,10 @@
 {
   "generators": {
+    "app": {
+      "factory": "./src/generators/app/generator",
+      "schema": "./src/generators/app/schema.json",
+      "description": "Generate a BlueJS example application under apps/ (node or browser kind)"
+    },
     "package": {
       "factory": "./src/generators/package/generator",
       "schema": "./src/generators/package/schema.json",

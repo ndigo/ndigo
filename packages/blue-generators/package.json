@@ -1,7 +1,7 @@
 {
   "name": "@blue/generators",
   "version": "0.0.1",
-  "description": "Nx generators for BlueJS package and component scaffolding",
+  "description": "Nx generators for BlueJS application, package, component, README, and documentation-header scaffolding",
   "keywords": [
     "bluejs",
     "nx",

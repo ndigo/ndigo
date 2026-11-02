@@ -154,7 +154,8 @@ implementations themselves live in @blue/generators (AD-75 D-3).`;
         const dir = resolveAppDir(args.dir);
         const kind = args.kind;
         if (!(GENERATOR_KINDS as readonly string[]).includes(kind)) {
-            throw usageError(`unknown generator '${kind}' — one of ${GENERATOR_KINDS.join(', ')}`);
+            const hint = kind === 'app' ? "; to scaffold an application, run 'blue new <name>'" : '';
+            throw usageError(`unknown generator '${kind}' — one of ${GENERATOR_KINDS.join(', ')}${hint}`);
         }
         const argv = [
             'exec',

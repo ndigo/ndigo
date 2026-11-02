@@ -15,7 +15,7 @@ package can be read — and installed — on its own.
 | `@blue/auth-server` | Server-side authentication for BlueJS — AuthServer, AuthRouteGuard, and JWT adapter | [api/README.md](../packages/blue-auth-server/api/README.md) |
 | `@blue/boot` | Application bootstrap, profiles, and typed configuration for BlueJS | [api/README.md](../packages/blue-boot/api/README.md) |
 | `@blue/cache` | Isomorphic caching for BlueJS — memory cache manager, memoize, and the @cached decorator | [api/README.md](../packages/blue-cache/api/README.md) |
-| `@blue/cli` | The BlueJS framework CLI — serve, dev, generate, db, inspect, doctor (AD-75) | [api/README.md](../packages/blue-cli/api/README.md) |
+| `@blue/cli` | The BlueJS framework CLI — serve, dev, new, generate, db, inspect, doctor (AD-75) | [api/README.md](../packages/blue-cli/api/README.md) |
 | `@blue/cluster` | Process supervisor for Node.js applications — replicated worker slots with signal relay, graceful drains, and bounded-backoff restarts (AD-74) | [api/README.md](../packages/blue-cluster/api/README.md) |
 | `@blue/content` | i18n content keys, themes, and the MessageSource contract for BlueJS | [api/README.md](../packages/blue-content/api/README.md) |
 | `@blue/content-i18next` | Blue Content i18next Adapter | [api/README.md](../packages/blue-content-i18next/api/README.md) |
@@ -25,7 +25,7 @@ package can be read — and installed — on its own.
 | `@blue/dom` | Blue DOM – Isomorphic DOM parsing integration layer | [api/README.md](../packages/blue-dom/api/README.md) |
 | `@blue/factory` | IoC factory with scopes, lifecycle, and aware processors for BlueJS | [api/README.md](../packages/blue-factory/api/README.md) |
 | `@blue/flags` | Feature flags for BlueJS — the FlagEvaluator SPI (typed, async, never-throw), the property-backed local provider, and the @whenFeature gate metadata | [api/README.md](../packages/blue-flags/api/README.md) |
-| `@blue/generators` | Nx generators for BlueJS package and component scaffolding | [api/README.md](../packages/blue-generators/api/README.md) |
+| `@blue/generators` | Nx generators for BlueJS application, package, component, README, and documentation-header scaffolding | [api/README.md](../packages/blue-generators/api/README.md) |
 | `@blue/host` | Blue Host — centralized micro frontend orchestration in the shell context | [api/README.md](../packages/blue-host/api/README.md) |
 | `@blue/http` | Fetch-based HTTP client, interceptors, and content parsing for BlueJS | [api/README.md](../packages/blue-http/api/README.md) |
 | `@blue/inspect` | Deterministic JSON manifest generator for BlueJS applications (routes, mappings, config keys) | [api/README.md](../packages/blue-inspect/api/README.md) |

@@ -1,12 +1,13 @@
 # @blue/cli
 
-> The BlueJS framework CLI — serve, dev, generate, db, inspect, doctor (AD-75).
+> The BlueJS framework CLI — serve, dev, new, generate, db, inspect, doctor (AD-75).
 
 One `blue` entry absorbs the bespoke per-app start scripts, fronts the
-framework-owned generators and introspection, and ships the AD-74
-`--cluster` surface. Built on `@oclif/core ^5` as an embedded library —
-commands/topics, typed flags, help, exit codes — with the framework
-features (generators, introspection) staying in their packages.
+framework-owned generators and introspection, scaffolds new applications
+(`blue new`), and ships the AD-74 `--cluster` surface. Built on
+`@oclif/core ^5` as an embedded library — commands/topics, typed flags,
+help, exit codes — with the framework features (generators, introspection)
+staying in their packages.
 
 ## Installation
 
@@ -29,17 +30,18 @@ blue serve --cluster 4 --port 3000   # 4 replicated worker slots
 
 ## Usage
 
-| Command                | What it does                                                           |
-| :--------------------- | :--------------------------------------------------------------------- |
-| `blue serve [dir]`     | Runs the app under the supervisor (`--cluster <n>`, `--port <base>`).  |
-| `blue dev [dir]`       | Runs the app's `dev` script (vite) or `start` (Node apps).             |
-| `blue generate <kind>` | Fronts `@blue/generators` (package, component, readme, header) via Nx. |
-| `blue db new [slug]`   | Scaffolds the next versioned migration file (AD-78).                   |
-| `blue db generate`     | Runs the app's `db:generate` script (AD-78: entities → migration).     |
-| `blue db migrate`      | Runs the app's `db:migrate` script (the journaled runner).             |
-| `blue db status`       | Runs the app's `db:status` script (journal readback).                  |
-| `blue inspect [dir]`   | Runs the app's `inspect` entry (the AD-70 manifest printer).           |
-| `blue doctor`          | Prints environment diagnostics — the issue-report starter.             |
+| Command                | What it does                                                            |
+| :--------------------- | :---------------------------------------------------------------------- |
+| `blue serve [dir]`     | Runs the app under the supervisor (`--cluster <n>`, `--port <base>`).   |
+| `blue dev [dir]`       | Runs the app's `dev` script (vite) or `start` (Node apps).              |
+| `blue new <name>`      | Scaffolds an app into `apps/` (`--kind`, `--port`, `--dry-run`; AD-85). |
+| `blue generate <kind>` | Fronts `@blue/generators` (package, component, readme, header) via Nx.  |
+| `blue db new [slug]`   | Scaffolds the next versioned migration file (AD-78).                    |
+| `blue db generate`     | Runs the app's `db:generate` script (AD-78: entities → migration).      |
+| `blue db migrate`      | Runs the app's `db:migrate` script (the journaled runner).              |
+| `blue db status`       | Runs the app's `db:status` script (journal readback).                   |
+| `blue inspect [dir]`   | Runs the app's `inspect` entry (the AD-70 manifest printer).            |
+| `blue doctor`          | Prints environment diagnostics — the issue-report starter.              |
 
 Every command: `--help`/`-h`, `--version`/`-v`, exit `0` ok / `2` usage /
 `1` runtime. Scripts run **shell-free** (single commands only) so OS

@@ -5,7 +5,12 @@
     "strict": true,
     "outDir": "lib",
     "rootDir": "src",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    // Nx loads generator factories with Node's native TypeScript stripping,
+    // which needs exact specifiers — generator sources import their own files
+    // with the `.ts` extension, and this flag rewrites them to `.js` on emit
+    // (AD-85). Mirror any change in tsconfig.json (the IDE lane).
+    "rewriteRelativeImportExtensions": true
   },
   "include": ["src/**/*"]
 }

@@ -1,7 +1,7 @@
 {
   "name": "@blue/cli",
   "version": "0.0.1",
-  "description": "The BlueJS framework CLI \u2014 serve, dev, generate, db, inspect, doctor (AD-75)",
+  "description": "The BlueJS framework CLI — serve, dev, new, generate, db, inspect, doctor (AD-75)",
   "type": "module",
   "keywords": [
     "bluejs",

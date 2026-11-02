@@ -6,7 +6,9 @@ reading order: `apps/NN-blue-<slug>`.
 The number is **reading order only** — it never appears in a package name,
 import specifier, or nx target. Package names are stable (`@blue/<slug>`), so
 renumbering the ladder is a mechanical directory sweep and nothing more. New
-apps append at the next free number; see the
+apps append at the next free number: `blue new <slug> --kind node|browser`
+scaffolds the skeleton and allocates the number and dev port (AD-85, guide 25);
+add the app's row below by hand. See the
 [example-applications plan](../docs/plans/2026-10-07_EXAMPLE_APPLICATIONS.md)
 for the planned `08+` portfolio.
 

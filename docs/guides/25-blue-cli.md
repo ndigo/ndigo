@@ -11,6 +11,7 @@ library — commands, typed flags, `--help`, exit codes.
 | :--------------------- | :------------------------------------------------------------------ | :--------------------------------------------------------------- |
 | `blue serve`           | `scripts.start` under the supervisor                                | `blue serve ./apps/04-blue-api --port 3000 --cluster 4`          |
 | `blue dev`             | `scripts.dev` (vite) or `scripts.start`                             | `blue dev ./apps/15-blue-resilience-lab --port 3200`             |
+| `blue new <name>`      | the `app` generator (a new app under `apps/NN-blue-<name>`)         | `blue new todo-widget --kind node`                               |
 | `blue generate <kind>` | `@blue/generators` via Nx                                           | `blue generate package --name my-app`                            |
 | `blue db new [slug]`   | scaffolds the next versioned migration                              | `blue db new ./apps/04-blue-api add-title-column`                |
 | `blue db generate`     | `scripts.db:generate` (AD-78: entities → next migration + snapshot) | `blue db generate ./apps/04-blue-api`                            |
@@ -59,6 +60,33 @@ blue generate header --file packages/blue-demo/src/index.ts --force
 Each kind forwards exactly the flags its generator declares (`--name`,
 `--package`; `--file`; `--force`; …), so the required fields reach Nx; the
 generators' own prompts fill anything omitted.
+
+## New apps
+
+`blue new <name>` scaffolds an application into this repository's `apps/`
+ladder (`apps/NN-blue-<name>`) through the framework-owned `app` generator
+(AD-85):
+
+```bash
+blue new todo-widget --kind node
+blue new todo-widget --kind browser --description "Widget demo"
+blue new todo-widget --kind node --port 3190 --dry-run
+```
+
+- **Kinds:** `node` (the `02-blue-hello-node` shape — server + smoke test)
+  and `browser` (the `01-blue-hello` shape — Vite SPA + bundle guard).
+- **Numbering:** the reading-order number defaults to one past the highest
+  existing app; `--number` overrides it (a taken number fails).
+- **Ports:** the dev port defaults to the first free multiple-of-ten slot
+  above 3000, scanned from the apps' own conventions (vite `server.port`,
+  `PORT` defaults, `DEFAULT_PORT` constants); an explicit `--port` that
+  collides fails and names the owning app.
+- `--dry-run` previews the file plan without writing anything. After
+  generating, add the app's row to `apps/README.md` and the root README
+  table by hand — index tables are not generated.
+
+`blue generate app` is deliberately not a kind: it fails with a pointer at
+`blue new` so there is one canonical path per artifact.
 
 ## Serve and the cluster
 

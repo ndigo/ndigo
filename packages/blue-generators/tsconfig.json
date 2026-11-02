@@ -5,7 +5,11 @@
     "paths": {
       "@blue/*": ["../blue-*/src"]
     },
-    "rootDir": "../../"
+    "rootDir": "../../",
+    // Nx loads generator factories with Node's native TypeScript stripping,
+    // which needs exact specifiers — generator sources import their own files
+    // with the `.ts` extension, and tsc rewrites them to `.js` on emit (AD-85).
+    "rewriteRelativeImportExtensions": true
   },
   "include": ["src/**/*"]
 }

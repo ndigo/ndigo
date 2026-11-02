@@ -4,7 +4,7 @@
 
 # @blue/cli v0.0.1
 
-Public API of `@blue/cli` — the framework CLI (AD-75): serve, dev,
+Public API of `@blue/cli` — the framework CLI (AD-75): serve, dev, new,
 generate, db, inspect, doctor. The `blue` binary is the primary surface;
 `runCli` exposes the same dispatcher to embeddings.
 

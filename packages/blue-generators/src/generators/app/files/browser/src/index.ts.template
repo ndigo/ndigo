@@ -1,0 +1,24 @@
+/**
+ * @module blue-<%= name %>
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+import <%= camelName %>Context from './<%= name %>-context';
+import './<%= name %>-app-view';
+import { BrowserDispatcher, HashRouter } from '@blue/platform-web';
+import type { Route } from '@blue/router';
+
+const dispatcher = new BrowserDispatcher();
+dispatcher.initStrategies(<%= camelName %>Context);
+
+const router = new HashRouter((route: Route) => {
+    void dispatcher.dispatch(route);
+});
+
+// Ensure the root route is dispatched on initial load.
+// Setting the hash triggers hashchange; refresh() handles page reloads.
+if (location.hash === '#/') {
+    router.refresh();
+} else {
+    location.hash = '/';
+}

@@ -160,10 +160,45 @@ reason/variant/error vocabulary is already OpenFeature's, and
 - **Domains and clients**: `new OpenFeatureFlagEvaluator({ domain:
   'checkout' })` reads that domain's provider; `{ client }` takes an
   explicitly built client.
-- **Browser/edge**: this bridge is the server SDK; the web SDK's
-  sync-snapshot model is a separate follow-up.
+- **Telemetry**: register `FeatureFlagTelemetryHook` (this package) on a
+  client or globally — one `feature_flag.evaluation` span per evaluation
+  with the semconv attributes (key, provider, reason, variant,
+  `error.type`); inert until `@blue/telemetry-node`/`-web` providers are
+  wired, and the same instance works on the web SDK.
+- **Provider choice**: flagd (`@openfeature/flagd-provider`) and OFREP
+  (`@openfeature/ofrep-provider` — the vendor-neutral HTTP protocol)
+  install the same way; both still carry maturity badges upstream, and JS
+  push (SSE) is not implemented yet, so they poll.
 - **Tests**: the OpenFeature SDK's in-memory provider is the zero-infra
   stub — no vendor service needed.
+
+## Browser apps (the web SDK)
+
+UI gating in SPAs uses the package's `/web` entry over
+`@openfeature/web-sdk`:
+
+```bash
+pnpm add @blue/flags-openfeature @openfeature/web-sdk
+```
+
+```ts
+import { OpenFeature, InMemoryProvider } from '@openfeature/web-sdk';
+import { WebOpenFeatureFlagEvaluator } from '@blue/flags-openfeature/web';
+
+await OpenFeature.setProviderAndWait(new InMemoryProvider({ … }));
+await OpenFeature.setContext({ targetingKey: userId, plan }); // static context
+
+const evaluator = new WebOpenFeatureFlagEvaluator();
+const { value } = await evaluator.evaluate('betaUI', false);
+```
+
+The web SDK materializes flags per context and evaluates
+**synchronously** — `setProviderAndWait` settles readiness at bootstrap,
+and the per-call context argument is not forwarded: targeting is the
+static context (`OpenFeature.setContext`), re-conciled by the provider
+(`onContextChange`). Domains (`{ domain }`) and explicit clients
+(`{ client }`) work as on the server entry, and `FeatureFlagTelemetryHook`
+registers on the web client with the same instance.
 
 ## What this is not
 

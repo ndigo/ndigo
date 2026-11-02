@@ -1,8 +1,8 @@
-[**@blue/flags-openfeature v0.0.1**](../README.md)
+[**@blue/flags-openfeature v0.0.1**](../../README.md)
 
 ***
 
-[@blue/flags-openfeature](../README.md) / OpenFeatureFlagEvaluatorOptions
+[@blue/flags-openfeature](../../README.md) / [blue-flags-openfeature](../README.md) / OpenFeatureFlagEvaluatorOptions
 
 # Interface: OpenFeatureFlagEvaluatorOptions
 

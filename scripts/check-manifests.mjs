@@ -84,9 +84,10 @@ const PEER_ALLOWLIST = {
     // variable-specifier dynamic import; consumers who never use TOON
     // install nothing and bundlers never resolve the module.
     '@blue/boot': ['@toon-format/toon'],
-    // OpenFeature bridge (AD-87): the SDK is the app-installed provider
-    // runtime — one singleton copy per app by design.
-    '@blue/flags-openfeature': ['@openfeature/server-sdk'],
+    // OpenFeature bridge (AD-87): the SDKs are the app-installed provider
+    // runtimes — one singleton copy per app; the `./web` subpath's consumer
+    // installs only the web SDK.
+    '@blue/flags-openfeature': ['@openfeature/server-sdk', '@openfeature/web-sdk'],
 };
 
 /** Dev-tooling that is imported/invoked by configs and tests but is not a package concern. */

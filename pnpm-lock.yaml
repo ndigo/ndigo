@@ -12,6 +12,9 @@ catalogs:
     '@openfeature/server-sdk':
       specifier: ~1.23.0
       version: 1.23.0
+    '@openfeature/web-sdk':
+      specifier: ~1.10.0
+      version: 1.10.0
     '@opentelemetry/api':
       specifier: ~1.10.0
       version: 1.10.0
@@ -175,31 +178,31 @@ importers:
     dependencies:
       '@blue/boot':
         specifier: workspace:*
-        version: link:../../../blue-56-openfeature-bridge/packages/blue-boot
+        version: link:../../../blue-57-openfeature-phase2/packages/blue-boot
       '@blue/context':
         specifier: workspace:*
-        version: link:../../../blue-56-openfeature-bridge/packages/blue-context
+        version: link:../../../blue-57-openfeature-phase2/packages/blue-context
       '@blue/core':
         specifier: workspace:*
-        version: link:../../../blue-56-openfeature-bridge/packages/blue-core
+        version: link:../../../blue-57-openfeature-phase2/packages/blue-core
       '@blue/dispatcher':
         specifier: workspace:*
-        version: link:../../../blue-56-openfeature-bridge/packages/blue-dispatcher
+        version: link:../../../blue-57-openfeature-phase2/packages/blue-dispatcher
       '@blue/platform-web':
         specifier: workspace:*
-        version: link:../../../blue-56-openfeature-bridge/packages/blue-platform-web
+        version: link:../../../blue-57-openfeature-phase2/packages/blue-platform-web
       '@blue/signals':
         specifier: workspace:*
-        version: link:../../../blue-56-openfeature-bridge/packages/blue-signals
+        version: link:../../../blue-57-openfeature-phase2/packages/blue-signals
       '@blue/telemetry':
         specifier: workspace:*
-        version: link:../../../blue-56-openfeature-bridge/packages/blue-telemetry
+        version: link:../../../blue-57-openfeature-phase2/packages/blue-telemetry
       '@blue/view':
         specifier: workspace:*
-        version: link:../../../blue-56-openfeature-bridge/packages/blue-view
+        version: link:../../../blue-57-openfeature-phase2/packages/blue-view
       '@blue/view-webcomponent':
         specifier: workspace:*
-        version: link:../../../blue-56-openfeature-bridge/packages/blue-view-webcomponent
+        version: link:../../../blue-57-openfeature-phase2/packages/blue-view-webcomponent
     devDependencies:
       '@types/jsdom':
         specifier: ^20.0.1
@@ -1702,10 +1705,19 @@ importers:
       '@blue/flags':
         specifier: ~0.0.1
         version: link:../blue-flags
+      '@opentelemetry/api':
+        specifier: 'catalog:'
+        version: 1.10.0
     devDependencies:
       '@openfeature/server-sdk':
         specifier: 'catalog:'
         version: 1.23.0(@openfeature/core@1.12.0)
+      '@openfeature/web-sdk':
+        specifier: 'catalog:'
+        version: 1.10.0(@openfeature/core@1.12.0)
+      '@opentelemetry/sdk-trace-base':
+        specifier: 'catalog:'
+        version: 2.12.0(@opentelemetry/api@1.10.0)
 
   packages/blue-generators:
     dependencies:
@@ -3797,16 +3809,17 @@ packages:
     peerDependencies:
       '@openfeature/core': ^1.12.0
 
+  '@openfeature/web-sdk@1.10.0':
+    resolution: {integrity: sha512-qf+JmJSnaslhegNwoDDLn2Cf72P6cIobuAQPUb61MSkzJOZuVLU6f9pv/90FlLcK6UDtp6od//xZHW712rBrmg==}
+    peerDependencies:
+      '@openfeature/core': ^1.12.0
+
   '@opentelemetry/api-logs@0.223.0':
     resolution: {integrity: sha512-Oepm6etVPFCn0VWB1t833iOTgz1eYBDUPxcrOR/XvwzD1+Ag9VzSPSrrKAFNJ/haatj+8CXbG47pZXvdNQKDJw==}
     engines: {node: '>=8.0.0'}
 
   '@opentelemetry/api@1.10.0':
     resolution: {integrity: sha512-lMkyes8iHrG+mk6WH7X70MdCLI2RS0FwNBY1PyQ8UemaijE2m5mv5A0Niy3HtbYTFrgkUEQjFMXmSAk2hQDuPQ==}
-    engines: {node: '>=8.0.0'}
-
-  '@opentelemetry/api@1.9.1':
-    resolution: {integrity: sha512-gLyJlPHPZYdAk1JENA9LeHejZe1Ti77/pTeFm/nMXmQH/HFZlcS/O2XJB+L8fkbrNSqhdtlvjBVjxwUYanNH5Q==}
     engines: {node: '>=8.0.0'}
 
   '@opentelemetry/configuration@0.300.0':
@@ -10338,13 +10351,15 @@ snapshots:
     dependencies:
       '@openfeature/core': 1.12.0
 
+  '@openfeature/web-sdk@1.10.0(@openfeature/core@1.12.0)':
+    dependencies:
+      '@openfeature/core': 1.12.0
+
   '@opentelemetry/api-logs@0.223.0':
     dependencies:
-      '@opentelemetry/api': 1.9.1
+      '@opentelemetry/api': 1.10.0
 
   '@opentelemetry/api@1.10.0': {}
-
-  '@opentelemetry/api@1.9.1': {}
 
   '@opentelemetry/configuration@0.300.0(@opentelemetry/api@1.10.0)':
     dependencies:

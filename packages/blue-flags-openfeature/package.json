@@ -1,7 +1,7 @@
 {
   "name": "@blue/flags-openfeature",
   "version": "0.0.1",
-  "description": "OpenFeature bridge for BlueJS flags — the FlagEvaluator over @openfeature/server-sdk, so vendor providers (flagd, OFREP, LaunchDarkly, …) arrive behind the existing SPI",
+  "description": "OpenFeature bridge for BlueJS flags — the FlagEvaluator over @openfeature/server-sdk (and the web SDK for the ./web entry), so vendor providers (flagd, OFREP, LaunchDarkly, …) arrive behind the existing SPI",
   "type": "module",
   "keywords": [
     "bluejs",
@@ -17,6 +17,10 @@
     ".": {
       "types": "./lib/index.d.ts",
       "default": "./lib/index.js"
+    },
+    "./web": {
+      "types": "./lib/web/index.d.ts",
+      "default": "./lib/web/index.js"
     }
   },
   "types": "lib/index.d.ts",
@@ -28,13 +32,17 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
-    "@blue/flags": "~0.0.1"
+    "@blue/flags": "~0.0.1",
+    "@opentelemetry/api": "catalog:"
   },
   "devDependencies": {
-    "@openfeature/server-sdk": "catalog:"
+    "@openfeature/server-sdk": "catalog:",
+    "@openfeature/web-sdk": "catalog:",
+    "@opentelemetry/sdk-trace-base": "catalog:"
   },
   "peerDependencies": {
-    "@openfeature/server-sdk": "^1.23.0"
+    "@openfeature/server-sdk": "^1.23.0",
+    "@openfeature/web-sdk": "^1.10.0"
   },
   "sideEffects": false
 }

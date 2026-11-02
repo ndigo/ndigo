@@ -1,21 +1,26 @@
 # @blue/flags-openfeature
 
-> OpenFeature bridge for BlueJS flags — the `FlagEvaluator` over `@openfeature/server-sdk`.
+> OpenFeature bridge for BlueJS flags — the `FlagEvaluator` over `@openfeature/server-sdk`, the web SDK (`./web`), and evaluation telemetry.
 
-Bridges an OpenFeature client into the `@blue/flags` SPI, so vendor flag
+Bridges OpenFeature clients into the `@blue/flags` SPI, so vendor flag
 providers (flagd, OFREP, LaunchDarkly, Unleash, …) arrive behind the
 framework contract: app code, `@whenFeature` gates, and DI wiring never
-change — only the `FLAG_EVALUATOR` bean does.
+change — only the `FLAG_EVALUATOR` bean does. The `./web` entry does the
+same for browser apps (`@openfeature/web-sdk`), and
+`FeatureFlagTelemetryHook` records an evaluation span per call.
 
 ## Installation
 
 ```bash
 pnpm add @blue/flags-openfeature @openfeature/server-sdk
+# browser apps instead pair the web entry with the web SDK:
+pnpm add @blue/flags-openfeature @openfeature/web-sdk
 ```
 
-Prerequisites: Node.js ≥22 (the framework baseline), and a provider package
+Prerequisites: Node.js ≥24 (the framework floor), and a provider package
 for your flag backend (e.g. `@openfeature/flagd-provider`,
-`@openfeature/ofrep-provider`, `@launchdarkly/openfeature-node-server`).
+`@openfeature/ofrep-provider`, `@launchdarkly/openfeature-node-server` —
+the web SDK has its own provider set, e.g. `@openfeature/flagd-web-provider`).
 
 ## Getting Started
 
@@ -71,6 +76,54 @@ default with `reason: 'ERROR'`.
 its providers are set (`setProvider` / `setProviderAndWait`) and closed
 (`OpenFeature.close()`) by the app — this evaluator holds no resources and
 defines no `close()`.
+
+## Browser apps (the `./web` entry)
+
+The `/web` entry maps the same SPI onto `@openfeature/web-sdk` for UI
+gating in SPAs:
+
+```ts
+import { OpenFeature, InMemoryProvider } from '@openfeature/web-sdk';
+import { WebOpenFeatureFlagEvaluator } from '@blue/flags-openfeature/web';
+
+await OpenFeature.setProviderAndWait(
+    new InMemoryProvider({
+        betaUI: { variants: { on: true, off: false }, defaultVariant: 'off', disabled: false },
+    })
+);
+await OpenFeature.setContext({ targetingKey: userId, plan }); // static context
+
+const evaluator = new WebOpenFeatureFlagEvaluator();
+const { value } = await evaluator.evaluate('betaUI', false);
+```
+
+The web SDK resolves from a provider-materialized snapshot with
+**synchronous** evaluation: `setProviderAndWait` settles readiness at
+bootstrap, and the SPI's per-call context argument is **not forwarded** —
+targeting is the static context (`OpenFeature.setContext(...)`), which
+providers re-concile via `onContextChange`. Domain-scoped clients
+(`{ domain }`) and explicit clients (`{ client }`) work exactly as on the
+server entry.
+
+## Evaluation telemetry
+
+`FeatureFlagTelemetryHook` emits one `feature_flag.evaluation` span per
+evaluation with the OpenTelemetry feature-flag semconv attributes —
+`feature_flag.key`, `feature_flag.provider.name`,
+`feature_flag.result.reason`, `feature_flag.result.variant`, plus
+`error.type` on abnormal outcomes. Register it per client or globally:
+
+```ts
+import { OpenFeature } from '@openfeature/server-sdk';
+import { FeatureFlagTelemetryHook } from '@blue/flags-openfeature';
+
+OpenFeature.getClient().addHooks(new FeatureFlagTelemetryHook());
+```
+
+The same instance satisfies the web SDK's hook contract
+(`OpenFeature.addHooks(...)` in the browser), and the hook is inert until
+your telemetry providers are wired (`@blue/telemetry-node` /
+`@blue/telemetry-web`).
 
 ## API
 

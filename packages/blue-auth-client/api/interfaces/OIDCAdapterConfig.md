@@ -113,11 +113,34 @@ Redis server-side).
 
 ***
 
+### prompt?
+
+> `optional` **prompt?**: `string`
+
+Optional `prompt` value for the authorization request (e.g. `'consent'`,
+`'login'`). Several providers require `prompt=consent` before they will
+grant `offline_access` — and therefore issue refresh tokens.
+
+***
+
 ### redirectUri
 
 > **redirectUri**: `string`
 
 The redirect URI for the authorization callback.
+
+***
+
+### refreshStore?
+
+> `optional` **refreshStore?**: [`RefreshTokenStore`](RefreshTokenStore.md)
+
+Persistence seam for refresh-token bindings (which principal each
+captured refresh token belongs to, single-use rotation included).
+Defaults to an in-memory store scoped to this adapter instance: a
+refresh arriving on another instance — a second tab, a restart, or
+another server — fails with `invalid_token` unless a store over
+shared storage is supplied.
 
 ***
 

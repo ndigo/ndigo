@@ -2028,8 +2028,8 @@ importers:
   packages/ndigo-orm-drizzle:
     dependencies:
       '@libsql/client':
-        specifier: 0.17.4
-        version: 0.17.4
+        specifier: 0.18.0
+        version: 0.18.0
       '@ndigo/auth-core':
         specifier: ~0.0.1
         version: link:../ndigo-auth-core
@@ -2050,10 +2050,10 @@ importers:
         version: link:../ndigo-util
       drizzle-orm:
         specifier: 0.45.4
-        version: 0.45.4(@libsql/client@0.17.4)(@opentelemetry/api@1.10.0)
+        version: 0.45.4(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0)
       drizzle-zod:
         specifier: ^0.8.3
-        version: 0.8.3(drizzle-orm@0.45.4(@libsql/client@0.17.4)(@opentelemetry/api@1.10.0))(zod@4.6.7)
+        version: 0.8.3(drizzle-orm@0.45.4(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0))(zod@4.6.7)
       zod:
         specifier: 'catalog:'
         version: 4.6.7
@@ -3731,11 +3731,11 @@ packages:
   '@leichtgewicht/ip-codec@2.0.5':
     resolution: {integrity: sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==}
 
-  '@libsql/client@0.17.4':
-    resolution: {integrity: sha512-lYayFWasDV78A+TjlEhr6ubb3odBV6OHjb+wdp8VQcyWWAEIjuwbCHaraEUS4m4yWoo0BvZo96It4VdzZRmRWw==}
+  '@libsql/client@0.18.0':
+    resolution: {integrity: sha512-zMCCo58vv7w27j7+cnt/GW+X6/Rih6cHZ86PKi0AxCMOqMfrVgG9OZ5lW2bDMJhSeOjsv2szH2nJF3A9l36UmA==}
 
-  '@libsql/core@0.17.4':
-    resolution: {integrity: sha512-LqF9gIvnJ38nmAH1y/ChizHqDO/MO1wLgA96XrraulEEbqXxLjleSH92YWTolbuJKgPUmGu4aJk9W3UnAcxLOQ==}
+  '@libsql/core@0.18.0':
+    resolution: {integrity: sha512-N8RR2CIpcgtbKZnXs2KVpw2lJQfinUj3I56e7qRDRpK18Hty0Rr8nr00VmFb4R/DsqOanPB/TaP3+QAQLZeXMg==}
 
   '@libsql/darwin-arm64@0.5.29':
     resolution: {integrity: sha512-K+2RIB1OGFPYQbfay48GakLhqf3ArcbHqPFu7EZiaUcRgFcdw8RoltsMyvbj5ix2fY0HV3Q3Ioa/ByvQdaSM0A==}
@@ -10342,9 +10342,9 @@ snapshots:
 
   '@leichtgewicht/ip-codec@2.0.5': {}
 
-  '@libsql/client@0.17.4':
+  '@libsql/client@0.18.0':
     dependencies:
-      '@libsql/core': 0.17.4
+      '@libsql/core': 0.18.0
       '@libsql/hrana-client': 0.10.0
       js-base64: 3.9.3
       libsql: 0.5.29
@@ -10353,7 +10353,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@libsql/core@0.17.4':
+  '@libsql/core@0.18.0':
     dependencies:
       js-base64: 3.9.3
 
@@ -10373,8 +10373,8 @@ snapshots:
 
   '@libsql/isomorphic-ws@0.1.5':
     dependencies:
-      '@types/ws': 8.18.1
-      ws: 8.21.3
+      '@types/ws': 8.18.2
+      ws: 8.22.1
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -12506,14 +12506,14 @@ snapshots:
 
   dotenv@16.4.7: {}
 
-  drizzle-orm@0.45.4(@libsql/client@0.17.4)(@opentelemetry/api@1.10.0):
+  drizzle-orm@0.45.4(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0):
     optionalDependencies:
-      '@libsql/client': 0.17.4
+      '@libsql/client': 0.18.0
       '@opentelemetry/api': 1.10.0
 
-  drizzle-zod@0.8.3(drizzle-orm@0.45.4(@libsql/client@0.17.4)(@opentelemetry/api@1.10.0))(zod@4.6.7):
+  drizzle-zod@0.8.3(drizzle-orm@0.45.4(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0))(zod@4.6.7):
     dependencies:
-      drizzle-orm: 0.45.4(@libsql/client@0.17.4)(@opentelemetry/api@1.10.0)
+      drizzle-orm: 0.45.4(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0)
       zod: 4.6.7
 
   dunder-proto@1.0.1:

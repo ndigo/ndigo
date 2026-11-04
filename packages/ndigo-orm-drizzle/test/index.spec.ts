@@ -5,7 +5,11 @@
  */
 import '@tsmetadata/polyfill';
 
-import { describe, expect, test } from 'vitest';
+import { AsyncResource } from 'node:async_hooks';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { z } from 'zod';
 import { entity, column, generatedColumn, primaryColumn } from '@ndigo/orm';
 import type { AsyncRepository } from '@ndigo/orm';
@@ -26,10 +30,18 @@ class Note {
 }
 
 let dataSource: DrizzleDataSource;
+const directories: string[] = [];
 
 beforeEach(async () => {
     dataSource = new DrizzleDataSource({ url: ':memory:' });
     await dataSource.init([Note]);
+});
+
+afterEach(async () => {
+    for (const directory of directories.splice(0)) {
+        // oxlint-disable-next-line no-await-in-loop -- sequential temp-dir cleanup keeps the spec deterministic.
+        await rm(directory, { recursive: true, force: true });
+    }
 });
 
 describe('DrizzleEntityManager', () => {
@@ -117,6 +129,57 @@ describe('DrizzleTransactionManager', () => {
 
         release();
         await expect(first).resolves.toBe('first');
+        expect(tx.isActive()).toBe(false);
+    });
+
+    // The boundary is bound to the async context that opened it: with a pooled
+    // client (every statement gets its own connection) a statement issued from
+    // another context must not be swept into — or out of — the transaction.
+    test('statements from another async context stay out of the open transaction', async () => {
+        const directory = await mkdtemp(join(tmpdir(), 'ndigo-tx-'));
+        directories.push(directory);
+        const fileSource = new DrizzleDataSource({ url: `file:${join(directory, 'app.db')}` });
+        await fileSource.init([]);
+        await fileSource.client.execute('CREATE TABLE orders (id TEXT NOT NULL)');
+        const tx = new DrizzleTransactionManager(fileSource);
+        // Created before the transaction, like a context that belongs to another
+        // in-flight request.
+        const otherRequest = new AsyncResource('other-request');
+        let outsideWrite: unknown;
+
+        await expect(
+            tx.run(async () => {
+                await fileSource.client.execute("INSERT INTO orders VALUES ('inside')");
+                outsideWrite = await otherRequest
+                    .runInAsyncScope(() => fileSource.client.execute("INSERT INTO orders VALUES ('outside-during')"))
+                    .catch((error: unknown) => error);
+                throw new Error('rolled back');
+            })
+        ).rejects.toThrow('rolled back');
+
+        // The outside statement ran on its own connection rather than inside the
+        // transaction, and SQLite allows one writer per database: it was refused,
+        // not silently enrolled (SQLITE_BUSY), and not silently committed inside a
+        // transaction that then rolled back.
+        expect(String(outsideWrite)).toMatch(/SQLITE_BUSY|database is locked/);
+
+        // A write issued once the boundary has settled is unaffected by it.
+        await fileSource.client.execute("INSERT INTO orders VALUES ('outside-after')");
+        const rows = await fileSource.client.execute('SELECT id FROM orders ORDER BY id');
+        expect(rows.rows.map((row) => row[0])).toEqual(['outside-after']);
+    });
+
+    // An in-memory database exists only on the connection that opened it, so the
+    // client is capped at one connection: an unrelated statement cannot run
+    // beside an open transaction. Fail loud rather than run it inside (and roll
+    // it back with) someone else's transaction.
+    test('a statement from another context during an in-memory transaction fails loud', async () => {
+        const tx = new DrizzleTransactionManager(dataSource);
+        const otherRequest = new AsyncResource('other-request');
+
+        await expect(
+            tx.run(() => otherRequest.runInAsyncScope(() => dataSource.client.execute('SELECT 1 AS other_request')))
+        ).rejects.toThrow(/TRANSACTION_ACTIVE/);
         expect(tx.isActive()).toBe(false);
     });
 });

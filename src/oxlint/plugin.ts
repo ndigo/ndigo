@@ -19,6 +19,7 @@ import { noInternalFileExports } from './rules/no-internal-file-exports.ts';
 import { noInternalFileImports } from './rules/no-internal-file-imports.ts';
 import { noMixedCaseAcronyms } from './rules/no-mixed-case-acronyms.ts';
 import { noUppercaseRegexpConstants } from './rules/no-uppercase-regexp-constants.ts';
+import { noUpwardLayerImports } from './rules/no-upward-layer-imports.ts';
 import { requiresDocHeader } from './rules/requires-doc-header.ts';
 
 const plugin = eslintCompatPlugin({
@@ -33,6 +34,7 @@ const plugin = eslintCompatPlugin({
         'no-internal-file-imports': noInternalFileImports,
         'no-mixed-case-acronyms': noMixedCaseAcronyms,
         'no-uppercase-regexp-constants': noUppercaseRegexpConstants,
+        'no-upward-layer-imports': noUpwardLayerImports,
         'requires-doc-header': requiresDocHeader,
     },
 });

@@ -99,6 +99,7 @@
     "typescript/no-redundant-type-constituents": "off",
     "typescript/no-implied-eval": "off",
     "internal/requires-doc-header": "error",
+    "internal/no-upward-layer-imports": "error",
     "@ndigo/no-raw-console": "error"
   },
   "env": {

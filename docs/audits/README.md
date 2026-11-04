@@ -4,6 +4,8 @@ This directory contains audit reports analyzing various aspects of the BlueJS co
 
 ## Available Audits
 
+- [2026-11-03_POST_RENAME_CLEANUP_AUDIT.md](./2026-11-03_POST_RENAME_CLEANUP_AUDIT.md) - Post-rename dead-code/dependency audit (knip report mode + manual verification; dead files pruned, findings triaged to #90–#92)
+
 - [2026-10-07_OXC_UPDATE_AND_MATURITY_ASSESSMENT.md](./2026-10-07_OXC_UPDATE_AND_MATURITY_ASSESSMENT.md) - OXC toolchain update (oxlint/oxfmt 1.87/0.72) and maturity re-assessment of the unadopted tools (oxc-transform decorators, parser, minify, resolver)
 - [2026-09-13_FRAMEWORK_GAP_ANALYSIS.md](./2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) - Enterprise-framework gap analysis (missing features, incomplete features, Content/i18n direction with implement-vs-wrap split, client-side angle)
 - [2026-09-05_FRAMEWORK_ASSESSMENT.md](./2026-09-05_FRAMEWORK_ASSESSMENT.md) - Framework feature/redundancy/purpose evaluation (public-API vs framework-internal classification, reactive/event overlap, validation split, semantic enforcement)

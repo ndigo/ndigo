@@ -1,9 +1,6 @@
 # Ndigo
 
-A modular JavaScript/TypeScript framework organized as an Nx monorepo with
-pnpm workspaces. The framework spans the browser and Node: a shared context
-and dispatcher core, view and template technologies, HTTP clients and
-servers, ORM, telemetry (OpenTelemetry), auth, and micro frontend hosting.
+A modular TypeScript framework that spans the Browser and Node: a shared context and dispatcher core, view and template technologies, HTTP clients and servers, ORM, telemetry, auth, and micro frontend hosting.
 
 ## Requirements
 

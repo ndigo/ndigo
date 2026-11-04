@@ -5,15 +5,27 @@
  * @author Jeff Rose
  */
 import { TransactionManager } from '@ndigo/orm';
+import { runInTransaction } from './_transaction-scope';
 import { DrizzleDataSource } from './drizzle-data-source';
 
 /**
- * Executes `fn` inside a BEGIN/COMMIT/ROLLBACK transaction on the libSQL
- * connection. When `fn` rejects, the transaction is rolled back and the
- * original error is rethrown.
+ * Executes `fn` inside an interactive libSQL transaction: everything `fn`
+ * issues through the data source's client — raw statements, the Drizzle
+ * database, the durable stores built on the same client — runs in the
+ * transaction, and it is committed on success or rolled back on failure.
  *
- * Nested calls throw: `@transactional` already serializes the boundary, and a
- * SQL connection can only hold one open transaction.
+ * The boundary is bound to `fn`'s async context (`runInTransaction` in
+ * `_transaction-scope.ts`), so statements from elsewhere — `@libsql/client`
+ * 0.18 pools connections, one per statement — keep running on their own
+ * connections instead of joining it.
+ *
+ * The transaction opens with `BEGIN IMMEDIATE` (`mode: 'write'`): with a pooled
+ * client the write lock is claimed at BEGIN rather than upgraded on the first
+ * write, which is the mode libSQL's own clients default to and what keeps a
+ * concurrent writer from failing the upgrade mid-transaction.
+ *
+ * Nested calls throw: `@transactional` already serializes the boundary
+ * (DAT-F9), and a transaction owns one connection for its lifetime.
  *
  * @since 1.0.0
  */
@@ -41,23 +53,23 @@ export class DrizzleTransactionManager implements TransactionManager {
         }
 
         // Claim the boundary synchronously (no await in between) so a
-        // concurrent run() cannot slip another BEGIN onto the same connection
-        // while this one is starting up (DAT-F9).
+        // concurrent run() cannot slip another transaction past the latch
+        // while this one is acquiring its connection (DAT-F9).
         this.#active = true;
-        let begun = false;
         try {
-            await this.#dataSource.client.execute('BEGIN');
-            begun = true;
-            const result = await fn();
-            await this.#dataSource.client.execute('COMMIT');
-            return result;
-        } catch (error) {
-            // Only roll back a transaction that actually opened; a failed
-            // BEGIN must surface its own error, not a masked ROLLBACK failure.
-            if (begun) {
-                await this.#dataSource.client.execute('ROLLBACK');
+            const transaction = await this.#dataSource.client.transaction('write');
+
+            try {
+                const result = await runInTransaction(transaction, async () => fn());
+                await transaction.commit();
+                return result;
+            } catch (error) {
+                // A failed body or a failed COMMIT: the original error must
+                // surface, not a rollback error. `close()` is the last resort
+                // when the transaction is already gone.
+                await transaction.rollback().catch(() => transaction.close());
+                throw error;
             }
-            throw error;
         } finally {
             this.#active = false;
         }

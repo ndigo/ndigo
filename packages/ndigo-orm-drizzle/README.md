@@ -140,7 +140,10 @@ operations.
 `LibSQLOutboxStore` implements its `OutboxStore` contract. Together they close
 the "commit side effect with the data" gap: an `append()` made inside a
 `@transactional` method joins the open transaction when the store shares the
-`DrizzleDataSource` client.
+`DrizzleDataSource` client — the client routes the statements of the transaction
+boundary's async context into it (`@libsql/client` 0.18 pools connections, so
+sharing the client, not merely the database file, is what carries the
+guarantee).
 
 ```ts
 import { LibSQLJobStore, LibSQLOutboxStore } from '@ndigo/orm-drizzle';

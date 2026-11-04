@@ -211,6 +211,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `changeLanguage` requests no longer race. Behavior is unchanged for the
   adapter's surface; consumers that keep their own `i18next` copy alongside
   this package now need ≥26 for a single instance type.
+- `@ndigo/orm-drizzle` (`@libsql/client` 0.17.4 → 0.18.0): the libSQL local
+  driver now pools connections, so the transaction boundary is a real
+  interactive transaction (`client.transaction('write')`, `BEGIN IMMEDIATE`)
+  bound to the caller's async context instead of raw `BEGIN`/`COMMIT` on a
+  single connection. Statements inside `run(fn)` — the Drizzle database, raw
+  client calls, durable stores handed `dataSource.client` — join it as before;
+  a statement from another async context now runs on its own connection instead
+  of being silently enrolled in (and rolled back with) someone else's
+  transaction, and the two cases that cannot be served this way fail loud:
+  `TRANSACTION_ACTIVE` while an open transaction holds an in-memory database's
+  only connection, `SQLITE_BUSY` on a concurrent write to a file database.
+  `TransactionManager.run(fn)`, `@transactional` and the nested/concurrent
+  rejection are unchanged.
 
 ### Fixed
 

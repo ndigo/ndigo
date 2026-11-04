@@ -19,7 +19,7 @@ A modular TypeScript framework that spans the Browser and Node: a shared context
   linting
 - **Nx:** 24.0.4 (monorepo management)
 - **pnpm:** 12.16.1 (package manager)
-- **Vitest:** 4.0.18 (testing + `vitest bench` benchmarks)
+- **Vitest:** 5.1.0 (testing + `vitest bench` benchmarks)
 - **Vite:** 8.3.5 (bundler)
 
 ## Getting Started

@@ -6,7 +6,7 @@
  *   2. cookieExpression – Object.fromEntries baseline – built-in JS split approach
  */
 
-import { bench, describe } from 'vitest';
+import { test } from 'vitest';
 import cookieExpression from '../src/parser/cookie-expression';
 
 /* ------------------------------------------------------------------ */
@@ -35,26 +35,27 @@ let _sink: unknown = 0;
 /*  Benchmarks                                                         */
 /* ------------------------------------------------------------------ */
 
-describe('cookieExpression – Cookie header strings', () => {
-    bench('arcsecond parser', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            for (const cookie of cookieStrings) {
-                const result = cookieExpression.run(cookie);
-                accumulator += result.isError ? 0 : 1;
+test('cookieExpression – Cookie header strings', async ({ bench }) => {
+    await bench.compare(
+        bench('arcsecond parser', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                for (const cookie of cookieStrings) {
+                    const result = cookieExpression.run(cookie);
+                    accumulator += result.isError ? 0 : 1;
+                }
             }
-        }
-        _sink = accumulator;
-    });
-
-    bench('Object.fromEntries baseline (split)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            for (const cookie of cookieStrings) {
-                const result = splitBaseline(cookie);
-                accumulator += Object.keys(result).length > 0 ? 1 : 0;
+            _sink = accumulator;
+        }),
+        bench('Object.fromEntries baseline (split)', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                for (const cookie of cookieStrings) {
+                    const result = splitBaseline(cookie);
+                    accumulator += Object.keys(result).length > 0 ? 1 : 0;
+                }
             }
-        }
-        _sink = accumulator;
-    });
+            _sink = accumulator;
+        })
+    );
 });

@@ -15,7 +15,7 @@
 // strings share the description-keyed registry (a token case is benched
 // below to pin the same-cost claim).
 
-import { bench, describe } from 'vitest';
+import { test } from 'vitest';
 import '@tsmetadata/polyfill';
 import {
     MetadataConfigApplicationContext,
@@ -78,59 +78,59 @@ let _sink: unknown = 0;
 /*  Benchmarks                                                         */
 /* ------------------------------------------------------------------ */
 
-describe('ApplicationContext – getValue hit (first bean)', () => {
-    bench('getValue("bean1")', () => {
+test('ApplicationContext – getValue hit (first bean)', async ({ bench }) => {
+    await bench('getValue("bean1")', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += ctx.getValue('bean1') ? 1 : 0;
         }
         _sink = accumulator;
-    });
+    }).run();
 });
 
-describe('ApplicationContext – getValue via ContextToken (D1 same-cost claim)', () => {
-    const bean1Token = ContextToken('bean1');
-    bench('getValue(bean1Token)', () => {
+test('ApplicationContext – getValue via ContextToken (D1 same-cost claim)', async ({ bench }) => {
+    const bean1Token = new ContextToken('bean1');
+    await bench('getValue(bean1Token)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += ctx.getValue(bean1Token) ? 1 : 0;
         }
         _sink = accumulator;
-    });
+    }).run();
 });
 
-describe('ApplicationContext – getValue hit (fifth bean)', () => {
-    bench('getValue("bean5")', () => {
+test('ApplicationContext – getValue hit (fifth bean)', async ({ bench }) => {
+    await bench('getValue("bean5")', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += ctx.getValue('bean5') ? 1 : 0;
         }
         _sink = accumulator;
-    });
+    }).run();
 });
 
-describe('ApplicationContext – hasValue hit', () => {
-    bench('hasValue("bean1")', () => {
+test('ApplicationContext – hasValue hit', async ({ bench }) => {
+    await bench('hasValue("bean1")', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += ctx.hasValue('bean1') ? 1 : 0;
         }
         _sink = accumulator;
-    });
+    }).run();
 });
 
-describe('ApplicationContext – hasValue miss', () => {
-    bench('hasValue("missing")', () => {
+test('ApplicationContext – hasValue miss', async ({ bench }) => {
+    await bench('hasValue("missing")', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += ctx.hasValue('missing') ? 1 : 0;
         }
         _sink = accumulator;
-    });
+    }).run();
 });
 
-describe('ApplicationContext – multi-bean scan (5 beans per iteration)', () => {
-    bench('getValue × 5', () => {
+test('ApplicationContext – multi-bean scan (5 beans per iteration)', async ({ bench }) => {
+    await bench('getValue × 5', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += ctx.getValue('bean1') ? 1 : 0;
@@ -140,5 +140,5 @@ describe('ApplicationContext – multi-bean scan (5 beans per iteration)', () =>
             accumulator += ctx.getValue('bean5') ? 1 : 0;
         }
         _sink = accumulator;
-    });
+    }).run();
 });

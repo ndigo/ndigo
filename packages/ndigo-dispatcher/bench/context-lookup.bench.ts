@@ -32,7 +32,7 @@
 // strings share the description-keyed registry (same-cost claim pinned in
 // packages/ndigo-context/bench/context-lookup.bench.ts's token case).
 
-import { bench, describe } from 'vitest';
+import { test } from 'vitest';
 import { DefaultFactory } from '@ndigo/factory';
 
 /* ------------------------------------------------------------------ */
@@ -79,83 +79,83 @@ let _sink: unknown = 0;
 /*  1. getValue – warm singleton (fast path)                           */
 /* ------------------------------------------------------------------ */
 
-describe('getValue – warm singleton (fast path)', () => {
-    bench('getValue', () => {
+test('getValue – warm singleton (fast path)', async ({ bench }) => {
+    await bench('getValue', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += warmFactory.getValue('myService') ? 1 : 0;
         }
         _sink = accumulator;
-    });
+    }).run();
 });
 
 /* ------------------------------------------------------------------ */
 /*  2. getValue – miss (no instance, no constructor)                   */
 /* ------------------------------------------------------------------ */
 
-describe('getValue – miss (undefined result)', () => {
-    bench('getValue', () => {
+test('getValue – miss (undefined result)', async ({ bench }) => {
+    await bench('getValue', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             const v = missFactory.getValue('unknown');
             accumulator += v === undefined ? 0 : 1;
         }
         _sink = accumulator;
-    });
+    }).run();
 });
 
 /* ------------------------------------------------------------------ */
 /*  3. hasValue – present (instance path)                              */
 /* ------------------------------------------------------------------ */
 
-describe('hasValue – present key', () => {
-    bench('hasValue', () => {
+test('hasValue – present key', async ({ bench }) => {
+    await bench('hasValue', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += warmFactory.hasValue('myService') ? 1 : 0;
         }
         _sink = accumulator;
-    });
+    }).run();
 });
 
 /* ------------------------------------------------------------------ */
 /*  4. hasValue – absent key                                           */
 /* ------------------------------------------------------------------ */
 
-describe('hasValue – absent key', () => {
-    bench('hasValue', () => {
+test('hasValue – absent key', async ({ bench }) => {
+    await bench('hasValue', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += warmFactory.hasValue('nope') ? 1 : 0;
         }
         _sink = accumulator;
-    });
+    }).run();
 });
 
 /* ------------------------------------------------------------------ */
 /*  5. hasInstance – present vs absent                                 */
 /* ------------------------------------------------------------------ */
 
-describe('hasInstance – present key', () => {
-    bench('hasInstance', () => {
+test('hasInstance – present key', async ({ bench }) => {
+    await bench('hasInstance', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += warmFactory.hasInstance('myService') ? 1 : 0;
         }
         _sink = accumulator;
-    });
+    }).run();
 });
 
 /* ------------------------------------------------------------------ */
 /*  6. Object.keys() on a factory with 10 entries                     */
 /* ------------------------------------------------------------------ */
 
-describe('Object.keys(factory) – 10 entries', () => {
-    bench('keys', () => {
+test('Object.keys(factory) – 10 entries', async ({ bench }) => {
+    await bench('keys', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += Object.keys(multiFactory).length;
         }
         _sink = accumulator;
-    });
+    }).run();
 });

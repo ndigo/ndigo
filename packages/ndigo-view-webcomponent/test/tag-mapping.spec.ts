@@ -7,9 +7,11 @@ import '@tsmetadata/polyfill';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TagMapping } from '../src/tag-mapping.js';
 
-// Mock customElements API
+// Mock customElements API. jsdom installs `customElements` on `window` as a
+// getter-only accessor, so it is replaced through Vitest's global stub rather
+// than by assignment (which throws on the jsdom global in Vitest 5).
 const mockDefine = vi.fn();
-global.customElements = { define: mockDefine } as unknown as CustomElementRegistry;
+vi.stubGlobal('customElements', { define: mockDefine });
 
 describe('@tagMapping decorator (TC39)', () => {
     beforeEach(() => {

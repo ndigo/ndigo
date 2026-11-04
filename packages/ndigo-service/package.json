@@ -22,7 +22,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
-    "test": "vitest run"
+    "test": "vitest run --config ../../vitest.config.ts"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",

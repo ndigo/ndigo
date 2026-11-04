@@ -15,7 +15,7 @@
  * iteration — the lookup is the hot path, matching context-lookup.bench.ts).
  */
 
-import { bench, describe } from 'vitest';
+import { test } from 'vitest';
 import type { JSONObject } from '@ndigo/core';
 import { FlatMergedIndex, PrototypeChainIndex } from '../src/property-resolver';
 import type { PropertyIndex } from '../src/property-resolver';
@@ -73,86 +73,87 @@ const protoMix = built(new PrototypeChainIndex(), representative);
 /*  Flat config (no overlap)                                           */
 /* ------------------------------------------------------------------ */
 
-describe('flat config', () => {
-    bench('prototype — 10 keys', () => {
-        for (let i = 0; i < 10; i++) proto10.getProperty(`key${i}`);
-    });
-
-    bench('flat — 10 keys', () => {
-        for (let i = 0; i < 10; i++) flat10.getProperty(`key${i}`);
-    });
-
-    bench('prototype — 100 keys', () => {
-        for (let i = 0; i < 100; i++) proto100.getProperty(`key${i}`);
-    });
-
-    bench('flat — 100 keys', () => {
-        for (let i = 0; i < 100; i++) flat100.getProperty(`key${i}`);
-    });
-
-    bench('prototype — 1,000 keys', () => {
-        for (let i = 0; i < 1000; i++) proto1000.getProperty(`key${i}`);
-    });
-
-    bench('flat — 1,000 keys', () => {
-        for (let i = 0; i < 1000; i++) flat1000.getProperty(`key${i}`);
-    });
+test('flat config', async ({ bench }) => {
+    await bench.compare(
+        bench('prototype — 10 keys', () => {
+            for (let i = 0; i < 10; i++) proto10.getProperty(`key${i}`);
+        }),
+        bench('flat — 10 keys', () => {
+            for (let i = 0; i < 10; i++) flat10.getProperty(`key${i}`);
+        }),
+        bench('prototype — 100 keys', () => {
+            for (let i = 0; i < 100; i++) proto100.getProperty(`key${i}`);
+        }),
+        bench('flat — 100 keys', () => {
+            for (let i = 0; i < 100; i++) flat100.getProperty(`key${i}`);
+        }),
+        bench('prototype — 1,000 keys', () => {
+            for (let i = 0; i < 1000; i++) proto1000.getProperty(`key${i}`);
+        }),
+        bench('flat — 1,000 keys', () => {
+            for (let i = 0; i < 1000; i++) flat1000.getProperty(`key${i}`);
+        })
+    );
 });
 
 /* ------------------------------------------------------------------ */
 /*  Layered config (25% overlap)                                       */
 /* ------------------------------------------------------------------ */
 
-describe('layered config (8 sources, 25% overlap) — representative', () => {
-    bench('prototype', () => {
-        for (const key of representativeKeys) protoRep.getProperty(key);
-    });
-
-    bench('flat', () => {
-        for (const key of representativeKeys) flatRep.getProperty(key);
-    });
+test('layered config (8 sources, 25% overlap) — representative', async ({ bench }) => {
+    await bench.compare(
+        bench('prototype', () => {
+            for (const key of representativeKeys) protoRep.getProperty(key);
+        }),
+        bench('flat', () => {
+            for (const key of representativeKeys) flatRep.getProperty(key);
+        })
+    );
 });
 
-describe('layered config (32 sources, 25% overlap)', () => {
-    bench('prototype', () => {
-        for (const key of representativeKeys) proto32.getProperty(key);
-    });
-
-    bench('flat', () => {
-        for (const key of representativeKeys) flat32.getProperty(key);
-    });
+test('layered config (32 sources, 25% overlap)', async ({ bench }) => {
+    await bench.compare(
+        bench('prototype', () => {
+            for (const key of representativeKeys) proto32.getProperty(key);
+        }),
+        bench('flat', () => {
+            for (const key of representativeKeys) flat32.getProperty(key);
+        })
+    );
 });
 
 /* ------------------------------------------------------------------ */
 /*  Access mix (hit / miss / nested)                                   */
 /* ------------------------------------------------------------------ */
 
-describe('access mix', () => {
-    bench('prototype', () => {
-        for (const key of mixedKeys) protoMix.getProperty(key);
-    });
-
-    bench('flat', () => {
-        for (const key of mixedKeys) flatMix.getProperty(key);
-    });
+test('access mix', async ({ bench }) => {
+    await bench.compare(
+        bench('prototype', () => {
+            for (const key of mixedKeys) protoMix.getProperty(key);
+        }),
+        bench('flat', () => {
+            for (const key of mixedKeys) flatMix.getProperty(key);
+        })
+    );
 });
 
 /* ------------------------------------------------------------------ */
 /*  Mutation cost (sustained 1% mutation — rebuild inside the body)    */
 /* ------------------------------------------------------------------ */
 
-describe('mutation cost (sustained 1% mutation)', () => {
-    bench('prototype — lazily invalidated', () => {
-        for (let i = 0; i < 100; i++) {
-            protoRep.getProperty(`key${i % 100}`); // 1 lookup
-            if (i % 100 === 0) protoRep.build(representative); // 1% rebuild
-        }
-    });
-
-    bench('flat — rebuild on version bump', () => {
-        for (let i = 0; i < 100; i++) {
-            flatRep.getProperty(`key${i % 100}`);
-            if (i % 100 === 0) flatRep.build(representative);
-        }
-    });
+test('mutation cost (sustained 1% mutation)', async ({ bench }) => {
+    await bench.compare(
+        bench('prototype — lazily invalidated', () => {
+            for (let i = 0; i < 100; i++) {
+                protoRep.getProperty(`key${i % 100}`); // 1 lookup
+                if (i % 100 === 0) protoRep.build(representative); // 1% rebuild
+            }
+        }),
+        bench('flat — rebuild on version bump', () => {
+            for (let i = 0; i < 100; i++) {
+                flatRep.getProperty(`key${i % 100}`);
+                if (i % 100 === 0) flatRep.build(representative);
+            }
+        })
+    );
 });

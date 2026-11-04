@@ -7,9 +7,8 @@ export default defineConfig({
     // decorators with this plugin for BOTH `vite build` and `vite dev` —
     // Vite 8's oxc transform passes `@decorator` syntax through unchanged, so
     // any path that skips it (build bundle or dev-served module) ships
-    // JavaScript browsers cannot parse. Vitest needs no plugin: its own esbuild
-    // transform already lowers decorators, and the app `vitest.config.ts` only
-    // supplies the shared `@ndigo/*` aliases.
+    // JavaScript browsers cannot parse. The app `vitest.config.ts` carries the
+    // same plugin, because Vitest 5 transforms through this very Vite pipeline.
     plugins: [lowerDecorators()],
     build: {
         outDir: 'dist',

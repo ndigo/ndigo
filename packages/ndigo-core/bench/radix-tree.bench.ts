@@ -15,7 +15,7 @@
  *   8. Scale – 50 routes         – 3 lookup paths × 1000
  *   9. Scale – 100 routes        – 3 lookup paths × 1000
  */
-import { bench, describe } from 'vitest';
+import { describe, test } from 'vitest';
 import { RadixTree } from '../src/radix-tree';
 
 // Flat Map with only static routes
@@ -126,66 +126,57 @@ const fix50 = buildScaleFixture(50);
 const fix100 = buildScaleFixture(100);
 
 describe('RadixTree lookup performance', () => {
-    describe('static route match – /users', () => {
-        bench('RadixTree.lookup', () => {
-            let _sink: unknown;
-            for (let i = 0; i < 1000; i++) {
-                _sink = tree.lookup('/users');
-            }
-        });
-        bench('Map.get (flat)', () => {
-            let _sink: unknown;
-            for (let i = 0; i < 1000; i++) {
-                _sink = staticMap.get('/users');
-            }
-        });
+    test('static route match – /users', async ({ bench }) => {
+        await bench.compare(
+            bench('RadixTree.lookup', () => {
+                let _sink: unknown;
+                for (let i = 0; i < 1000; i++) {
+                    _sink = tree.lookup('/users');
+                }
+            }),
+            bench('Map.get (flat)', () => {
+                let _sink: unknown;
+                for (let i = 0; i < 1000; i++) {
+                    _sink = staticMap.get('/users');
+                }
+            })
+        );
     });
 
-    describe('param route match – /users/42', () => {
-        bench('RadixTree.lookup', () => {
-            let _sink: unknown;
-            for (let i = 0; i < 1000; i++) {
-                _sink = tree.lookup('/users/42');
-            }
-        });
-        bench('RegExp array scan', () => {
-            let _sink: unknown;
-            for (let i = 0; i < 1000; i++) {
-                for (const [re, handler] of regexpRoutes) {
-                    const m = re.exec('/users/42');
-                    if (m) {
-                        _sink = { value: handler, params: m.groups ?? null };
-                        break;
+    test('param route match – /users/42', async ({ bench }) => {
+        await bench.compare(
+            bench('RadixTree.lookup', () => {
+                let _sink: unknown;
+                for (let i = 0; i < 1000; i++) {
+                    _sink = tree.lookup('/users/42');
+                }
+            }),
+            bench('RegExp array scan', () => {
+                let _sink: unknown;
+                for (let i = 0; i < 1000; i++) {
+                    for (const [re, handler] of regexpRoutes) {
+                        const m = re.exec('/users/42');
+                        if (m) {
+                            _sink = { value: handler, params: m.groups ?? null };
+                            break;
+                        }
                     }
                 }
-            }
-        });
+            })
+        );
     });
 
-    describe('deep nested param route – /api/v1/users/42/profile', () => {
-        bench('RadixTree.lookup', () => {
-            let _sink: unknown;
-            for (let i = 0; i < 1000; i++) {
-                _sink = tree.lookup('/api/v1/users/42/profile');
-            }
-        });
-        bench('RegExp array scan', () => {
-            let _sink: unknown;
-            for (let i = 0; i < 1000; i++) {
-                for (const [re, handler] of regexpRoutes) {
-                    const m = re.exec('/api/v1/users/42/profile');
-                    if (m) {
-                        _sink = { value: handler, params: m.groups ?? null };
-                        break;
-                    }
+    test('deep nested param route – /api/v1/users/42/profile', async ({ bench }) => {
+        await bench.compare(
+            bench('RadixTree.lookup', () => {
+                let _sink: unknown;
+                for (let i = 0; i < 1000; i++) {
+                    _sink = tree.lookup('/api/v1/users/42/profile');
                 }
-            }
-        });
-        bench('Map.get (exact miss then regexp)', () => {
-            let _sink: unknown;
-            for (let i = 0; i < 1000; i++) {
-                const result = staticMap.get('/api/v1/users/42/profile');
-                if (result === undefined) {
+            }),
+            bench('RegExp array scan', () => {
+                let _sink: unknown;
+                for (let i = 0; i < 1000; i++) {
                     for (const [re, handler] of regexpRoutes) {
                         const m = re.exec('/api/v1/users/42/profile');
                         if (m) {
@@ -193,154 +184,181 @@ describe('RadixTree lookup performance', () => {
                             break;
                         }
                     }
-                } else {
-                    _sink = result;
                 }
-            }
-        });
-    });
-
-    describe('two-param route – /api/v1/users/42/posts/7', () => {
-        bench('RadixTree.lookup', () => {
-            let _sink: unknown;
-            for (let i = 0; i < 1000; i++) {
-                _sink = tree.lookup('/api/v1/users/42/posts/7');
-            }
-        });
-        bench('RegExp array scan', () => {
-            let _sink: unknown;
-            for (let i = 0; i < 1000; i++) {
-                for (const [re, handler] of regexpRoutes) {
-                    const m = re.exec('/api/v1/users/42/posts/7');
-                    if (m) {
-                        _sink = { value: handler, params: m.groups ?? null };
-                        break;
+            }),
+            bench('Map.get (exact miss then regexp)', () => {
+                let _sink: unknown;
+                for (let i = 0; i < 1000; i++) {
+                    const result = staticMap.get('/api/v1/users/42/profile');
+                    if (result === undefined) {
+                        for (const [re, handler] of regexpRoutes) {
+                            const m = re.exec('/api/v1/users/42/profile');
+                            if (m) {
+                                _sink = { value: handler, params: m.groups ?? null };
+                                break;
+                            }
+                        }
+                    } else {
+                        _sink = result;
                     }
                 }
-            }
-        });
+            })
+        );
     });
 
-    describe('route miss – /nonexistent', () => {
-        bench('RadixTree.lookup', () => {
-            let _sink: unknown;
-            for (let i = 0; i < 1000; i++) {
-                _sink = tree.lookup('/nonexistent');
-            }
-        });
-        bench('Map.get (miss)', () => {
-            let _sink: unknown;
-            for (let i = 0; i < 1000; i++) {
-                _sink = staticMap.get('/nonexistent');
-            }
-        });
-        bench('RegExp array scan (full miss)', () => {
-            let _sink: unknown;
-            for (let i = 0; i < 1000; i++) {
-                for (const [re, handler] of regexpRoutes) {
-                    const m = re.exec('/nonexistent');
-                    if (m) {
-                        _sink = handler;
-                        break;
+    test('two-param route – /api/v1/users/42/posts/7', async ({ bench }) => {
+        await bench.compare(
+            bench('RadixTree.lookup', () => {
+                let _sink: unknown;
+                for (let i = 0; i < 1000; i++) {
+                    _sink = tree.lookup('/api/v1/users/42/posts/7');
+                }
+            }),
+            bench('RegExp array scan', () => {
+                let _sink: unknown;
+                for (let i = 0; i < 1000; i++) {
+                    for (const [re, handler] of regexpRoutes) {
+                        const m = re.exec('/api/v1/users/42/posts/7');
+                        if (m) {
+                            _sink = { value: handler, params: m.groups ?? null };
+                            break;
+                        }
                     }
                 }
-            }
-        });
+            })
+        );
     });
 
-    describe('mixed rotation – 3 routes × 1000', () => {
-        bench('RadixTree.lookup', () => {
-            let _sink: unknown;
-            const routes = ['/users', '/users/42', '/api/v1/users/42/profile'];
-            for (let i = 0; i < 1000; i++) {
-                const route = routes[i % routes.length];
-                _sink = tree.lookup(route);
-            }
-        });
-        bench('RegExp array scan', () => {
-            let _sink: unknown;
-            const routes = ['/users', '/users/42', '/api/v1/users/42/profile'];
-            for (let i = 0; i < 1000; i++) {
-                const route = routes[i % routes.length];
-                for (const [re, handler] of regexpRoutes) {
-                    const m = re.exec(route);
-                    if (m) {
-                        _sink = { value: handler, params: m.groups ?? null };
-                        break;
+    test('route miss – /nonexistent', async ({ bench }) => {
+        await bench.compare(
+            bench('RadixTree.lookup', () => {
+                let _sink: unknown;
+                for (let i = 0; i < 1000; i++) {
+                    _sink = tree.lookup('/nonexistent');
+                }
+            }),
+            bench('Map.get (miss)', () => {
+                let _sink: unknown;
+                for (let i = 0; i < 1000; i++) {
+                    _sink = staticMap.get('/nonexistent');
+                }
+            }),
+            bench('RegExp array scan (full miss)', () => {
+                let _sink: unknown;
+                for (let i = 0; i < 1000; i++) {
+                    for (const [re, handler] of regexpRoutes) {
+                        const m = re.exec('/nonexistent');
+                        if (m) {
+                            _sink = handler;
+                            break;
+                        }
                     }
                 }
-            }
-        });
+            })
+        );
+    });
+
+    test('mixed rotation – 3 routes × 1000', async ({ bench }) => {
+        await bench.compare(
+            bench('RadixTree.lookup', () => {
+                let _sink: unknown;
+                const routes = ['/users', '/users/42', '/api/v1/users/42/profile'];
+                for (let i = 0; i < 1000; i++) {
+                    const route = routes[i % routes.length];
+                    _sink = tree.lookup(route);
+                }
+            }),
+            bench('RegExp array scan', () => {
+                let _sink: unknown;
+                const routes = ['/users', '/users/42', '/api/v1/users/42/profile'];
+                for (let i = 0; i < 1000; i++) {
+                    const route = routes[i % routes.length];
+                    for (const [re, handler] of regexpRoutes) {
+                        const m = re.exec(route);
+                        if (m) {
+                            _sink = { value: handler, params: m.groups ?? null };
+                            break;
+                        }
+                    }
+                }
+            })
+        );
     });
 
     // ─── Scale benchmarks ───────────────────────────────────────────────
 
-    describe('scale – 20 routes', () => {
-        bench('RadixTree.lookup', () => {
-            let _sink: unknown;
-            const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
-            for (let i = 0; i < 1000; i++) {
-                _sink = fix20.tree.lookup(paths[i % 3]);
-            }
-        });
-        bench('RegExp array scan', () => {
-            let _sink: unknown;
-            const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
-            for (let i = 0; i < 1000; i++) {
-                for (const [re, handler] of fix20.regexps) {
-                    const m = re.exec(paths[i % 3]);
-                    if (m) {
-                        _sink = { value: handler, params: m.groups ?? null };
-                        break;
+    test('scale – 20 routes', async ({ bench }) => {
+        await bench.compare(
+            bench('RadixTree.lookup', () => {
+                let _sink: unknown;
+                const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
+                for (let i = 0; i < 1000; i++) {
+                    _sink = fix20.tree.lookup(paths[i % 3]);
+                }
+            }),
+            bench('RegExp array scan', () => {
+                let _sink: unknown;
+                const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
+                for (let i = 0; i < 1000; i++) {
+                    for (const [re, handler] of fix20.regexps) {
+                        const m = re.exec(paths[i % 3]);
+                        if (m) {
+                            _sink = { value: handler, params: m.groups ?? null };
+                            break;
+                        }
                     }
                 }
-            }
-        });
+            })
+        );
     });
 
-    describe('scale – 50 routes', () => {
-        bench('RadixTree.lookup', () => {
-            let _sink: unknown;
-            const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
-            for (let i = 0; i < 1000; i++) {
-                _sink = fix50.tree.lookup(paths[i % 3]);
-            }
-        });
-        bench('RegExp array scan', () => {
-            let _sink: unknown;
-            const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
-            for (let i = 0; i < 1000; i++) {
-                for (const [re, handler] of fix50.regexps) {
-                    const m = re.exec(paths[i % 3]);
-                    if (m) {
-                        _sink = { value: handler, params: m.groups ?? null };
-                        break;
+    test('scale – 50 routes', async ({ bench }) => {
+        await bench.compare(
+            bench('RadixTree.lookup', () => {
+                let _sink: unknown;
+                const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
+                for (let i = 0; i < 1000; i++) {
+                    _sink = fix50.tree.lookup(paths[i % 3]);
+                }
+            }),
+            bench('RegExp array scan', () => {
+                let _sink: unknown;
+                const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
+                for (let i = 0; i < 1000; i++) {
+                    for (const [re, handler] of fix50.regexps) {
+                        const m = re.exec(paths[i % 3]);
+                        if (m) {
+                            _sink = { value: handler, params: m.groups ?? null };
+                            break;
+                        }
                     }
                 }
-            }
-        });
+            })
+        );
     });
 
-    describe('scale – 100 routes', () => {
-        bench('RadixTree.lookup', () => {
-            let _sink: unknown;
-            const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
-            for (let i = 0; i < 1000; i++) {
-                _sink = fix100.tree.lookup(paths[i % 3]);
-            }
-        });
-        bench('RegExp array scan', () => {
-            let _sink: unknown;
-            const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
-            for (let i = 0; i < 1000; i++) {
-                for (const [re, handler] of fix100.regexps) {
-                    const m = re.exec(paths[i % 3]);
-                    if (m) {
-                        _sink = { value: handler, params: m.groups ?? null };
-                        break;
+    test('scale – 100 routes', async ({ bench }) => {
+        await bench.compare(
+            bench('RadixTree.lookup', () => {
+                let _sink: unknown;
+                const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
+                for (let i = 0; i < 1000; i++) {
+                    _sink = fix100.tree.lookup(paths[i % 3]);
+                }
+            }),
+            bench('RegExp array scan', () => {
+                let _sink: unknown;
+                const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
+                for (let i = 0; i < 1000; i++) {
+                    for (const [re, handler] of fix100.regexps) {
+                        const m = re.exec(paths[i % 3]);
+                        if (m) {
+                            _sink = { value: handler, params: m.groups ?? null };
+                            break;
+                        }
                     }
                 }
-            }
-        });
+            })
+        );
     });
 });

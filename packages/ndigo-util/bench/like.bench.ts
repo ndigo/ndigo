@@ -15,7 +15,7 @@
  *                                         (shipped in Wave 10; 43x faster fresh, 201x faster cached)
  */
 
-import { bench, describe } from 'vitest';
+import { test } from 'vitest';
 import type { LikeDescriptor } from '../src/type/like.js';
 
 /* ------------------------------------------------------------------ */
@@ -345,508 +345,478 @@ const curriedValues = [
 /*  Benchmarks                                                         */
 /* ------------------------------------------------------------------ */
 
-describe('like – single-property ({ then: Function }) – match', () => {
-    bench('for-of', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeForOf(likePromiseDesc, thenable) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('every', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeEvery(likePromiseDesc, thenable) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('keys+has', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeKeys(likePromiseDesc, thenable) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('prekeys', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likePreKeys(cachedPromise, thenable) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('direct', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeDirect(likePromiseDesc, thenable) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('current (WeakMap cached)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCached(likePromiseDesc, thenable) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
+test('like – single-property ({ then: Function }) – match', async ({ bench }) => {
+    await bench.compare(
+        bench('for-of', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeForOf(likePromiseDesc, thenable) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('every', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeEvery(likePromiseDesc, thenable) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('keys+has', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeKeys(likePromiseDesc, thenable) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('prekeys', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likePreKeys(cachedPromise, thenable) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('direct', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeDirect(likePromiseDesc, thenable) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('current (WeakMap cached)', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeCached(likePromiseDesc, thenable) ? 1 : 0;
+            }
+            _sink = accumulator;
+        })
+    );
 });
 
-describe('like – single-property ({ then: Function }) – fail', () => {
-    bench('for-of', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeForOf(likePromiseDesc, thenableFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('every', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeEvery(likePromiseDesc, thenableFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('keys+has', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeKeys(likePromiseDesc, thenableFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('prekeys', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likePreKeys(cachedPromise, thenableFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('direct', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeDirect(likePromiseDesc, thenableFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('current (WeakMap cached)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCached(likePromiseDesc, thenableFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
+test('like – single-property ({ then: Function }) – fail', async ({ bench }) => {
+    await bench.compare(
+        bench('for-of', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeForOf(likePromiseDesc, thenableFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('every', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeEvery(likePromiseDesc, thenableFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('keys+has', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeKeys(likePromiseDesc, thenableFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('prekeys', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likePreKeys(cachedPromise, thenableFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('direct', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeDirect(likePromiseDesc, thenableFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('current (WeakMap cached)', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeCached(likePromiseDesc, thenableFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        })
+    );
 });
 
-describe('like – single-property ({ then: Function }) – null', () => {
-    bench('for-of', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeForOf(likePromiseDesc, null) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('every', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeEvery(likePromiseDesc, null) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('keys+has', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeKeys(likePromiseDesc, null) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('prekeys', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likePreKeys(cachedPromise, null) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('direct', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeDirect(likePromiseDesc, null) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('current (WeakMap cached)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCached(likePromiseDesc, null) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
+test('like – single-property ({ then: Function }) – null', async ({ bench }) => {
+    await bench.compare(
+        bench('for-of', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeForOf(likePromiseDesc, null) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('every', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeEvery(likePromiseDesc, null) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('keys+has', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeKeys(likePromiseDesc, null) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('prekeys', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likePreKeys(cachedPromise, null) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('direct', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeDirect(likePromiseDesc, null) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('current (WeakMap cached)', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeCached(likePromiseDesc, null) ? 1 : 0;
+            }
+            _sink = accumulator;
+        })
+    );
 });
 
-describe('like – two-property ({ destroy: Function, destroyed: Boolean }) – match', () => {
-    bench('for-of', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeForOf(likeDestroyableDesc, destroyable) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('every', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeEvery(likeDestroyableDesc, destroyable) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('keys+has', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeKeys(likeDestroyableDesc, destroyable) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('prekeys', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likePreKeys(cachedDestroyable, destroyable) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('direct', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeDirect(likeDestroyableDesc, destroyable) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('current (WeakMap cached)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCached(likeDestroyableDesc, destroyable) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
+test('like – two-property ({ destroy: Function, destroyed: Boolean }) – match', async ({ bench }) => {
+    await bench.compare(
+        bench('for-of', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeForOf(likeDestroyableDesc, destroyable) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('every', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeEvery(likeDestroyableDesc, destroyable) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('keys+has', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeKeys(likeDestroyableDesc, destroyable) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('prekeys', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likePreKeys(cachedDestroyable, destroyable) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('direct', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeDirect(likeDestroyableDesc, destroyable) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('current (WeakMap cached)', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeCached(likeDestroyableDesc, destroyable) ? 1 : 0;
+            }
+            _sink = accumulator;
+        })
+    );
 });
 
-describe('like – two-property ({ destroy: Function, destroyed: Boolean }) – fail', () => {
-    bench('for-of', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeForOf(likeDestroyableDesc, destroyableFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('every', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeEvery(likeDestroyableDesc, destroyableFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('keys+has', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeKeys(likeDestroyableDesc, destroyableFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('prekeys', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likePreKeys(cachedDestroyable, destroyableFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('direct', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeDirect(likeDestroyableDesc, destroyableFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('current (WeakMap cached)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCached(likeDestroyableDesc, destroyableFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
+test('like – two-property ({ destroy: Function, destroyed: Boolean }) – fail', async ({ bench }) => {
+    await bench.compare(
+        bench('for-of', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeForOf(likeDestroyableDesc, destroyableFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('every', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeEvery(likeDestroyableDesc, destroyableFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('keys+has', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeKeys(likeDestroyableDesc, destroyableFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('prekeys', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likePreKeys(cachedDestroyable, destroyableFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('direct', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeDirect(likeDestroyableDesc, destroyableFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('current (WeakMap cached)', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeCached(likeDestroyableDesc, destroyableFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        })
+    );
 });
 
-describe('like – three-property ({ isRunning: Boolean, start: Function, stop: Function }) – match', () => {
-    bench('for-of', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeForOf(likeLifecycleDesc, lifecycle) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('every', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeEvery(likeLifecycleDesc, lifecycle) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('keys+has', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeKeys(likeLifecycleDesc, lifecycle) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('prekeys', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likePreKeys(cachedLifecycle, lifecycle) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('direct', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeDirect(likeLifecycleDesc, lifecycle) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('current (WeakMap cached)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCached(likeLifecycleDesc, lifecycle) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
+test('like – three-property ({ isRunning: Boolean, start: Function, stop: Function }) – match', async ({ bench }) => {
+    await bench.compare(
+        bench('for-of', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeForOf(likeLifecycleDesc, lifecycle) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('every', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeEvery(likeLifecycleDesc, lifecycle) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('keys+has', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeKeys(likeLifecycleDesc, lifecycle) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('prekeys', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likePreKeys(cachedLifecycle, lifecycle) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('direct', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeDirect(likeLifecycleDesc, lifecycle) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('current (WeakMap cached)', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeCached(likeLifecycleDesc, lifecycle) ? 1 : 0;
+            }
+            _sink = accumulator;
+        })
+    );
 });
 
-describe('like – wxy descriptor ({ w: true, x: Number, y: Number }) – match', () => {
-    bench('for-of', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeForOf(likeWXY, wxyMatch) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('every', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeEvery(likeWXY, wxyMatch) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('keys+has', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeKeys(likeWXY, wxyMatch) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('prekeys', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likePreKeys(cachedWXY, wxyMatch) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('direct', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeDirect(likeWXY, wxyMatch) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('current (WeakMap cached)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCached(likeWXY, wxyMatch) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
+test('like – wxy descriptor ({ w: true, x: Number, y: Number }) – match', async ({ bench }) => {
+    await bench.compare(
+        bench('for-of', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeForOf(likeWXY, wxyMatch) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('every', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeEvery(likeWXY, wxyMatch) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('keys+has', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeKeys(likeWXY, wxyMatch) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('prekeys', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likePreKeys(cachedWXY, wxyMatch) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('direct', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeDirect(likeWXY, wxyMatch) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('current (WeakMap cached)', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeCached(likeWXY, wxyMatch) ? 1 : 0;
+            }
+            _sink = accumulator;
+        })
+    );
 });
 
-describe('like – wxy descriptor ({ w: true, x: Number, y: Number }) – fail', () => {
-    bench('for-of', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeForOf(likeWXY, wxyFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('every', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeEvery(likeWXY, wxyFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('keys+has', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeKeys(likeWXY, wxyFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('prekeys', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likePreKeys(cachedWXY, wxyFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('direct', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeDirect(likeWXY, wxyFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('current (WeakMap cached)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCached(likeWXY, wxyFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
+test('like – wxy descriptor ({ w: true, x: Number, y: Number }) – fail', async ({ bench }) => {
+    await bench.compare(
+        bench('for-of', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeForOf(likeWXY, wxyFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('every', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeEvery(likeWXY, wxyFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('keys+has', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeKeys(likeWXY, wxyFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('prekeys', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likePreKeys(cachedWXY, wxyFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('direct', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeDirect(likeWXY, wxyFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('current (WeakMap cached)', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeCached(likeWXY, wxyFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        })
+    );
 });
 
-describe('like – theme descriptor ({ name: String, contentSource: Object }) – match', () => {
-    bench('for-of', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeForOf(likeThemeDesc, themeMatch) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('every', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeEvery(likeThemeDesc, themeMatch) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('keys+has', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeKeys(likeThemeDesc, themeMatch) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('prekeys', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likePreKeys(cachedTheme, themeMatch) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('direct', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeDirect(likeThemeDesc, themeMatch) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('current (WeakMap cached)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCached(likeThemeDesc, themeMatch) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
+test('like – theme descriptor ({ name: String, contentSource: Object }) – match', async ({ bench }) => {
+    await bench.compare(
+        bench('for-of', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeForOf(likeThemeDesc, themeMatch) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('every', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeEvery(likeThemeDesc, themeMatch) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('keys+has', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeKeys(likeThemeDesc, themeMatch) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('prekeys', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likePreKeys(cachedTheme, themeMatch) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('direct', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeDirect(likeThemeDesc, themeMatch) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('current (WeakMap cached)', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeCached(likeThemeDesc, themeMatch) ? 1 : 0;
+            }
+            _sink = accumulator;
+        })
+    );
 });
 
-describe('like – theme descriptor ({ name: String, contentSource: Object }) – fail', () => {
-    bench('for-of', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeForOf(likeThemeDesc, themeFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('every', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeEvery(likeThemeDesc, themeFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('keys+has', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeKeys(likeThemeDesc, themeFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('prekeys', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likePreKeys(cachedTheme, themeFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('direct', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeDirect(likeThemeDesc, themeFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('current (WeakMap cached)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCached(likeThemeDesc, themeFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
+test('like – theme descriptor ({ name: String, contentSource: Object }) – fail', async ({ bench }) => {
+    await bench.compare(
+        bench('for-of', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeForOf(likeThemeDesc, themeFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('every', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeEvery(likeThemeDesc, themeFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('keys+has', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeKeys(likeThemeDesc, themeFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('prekeys', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likePreKeys(cachedTheme, themeFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('direct', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeDirect(likeThemeDesc, themeFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('current (WeakMap cached)', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                accumulator += likeCached(likeThemeDesc, themeFail) ? 1 : 0;
+            }
+            _sink = accumulator;
+        })
+    );
 });
 
-describe('like – curried usage (descriptor applied to 10 diverse values)', () => {
-    bench('current (WeakMap cached, descriptor already cached)', () => {
+test('like – curried usage (descriptor applied to 10 diverse values)', async ({ bench }) => {
+    await bench('current (WeakMap cached, descriptor already cached)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             for (const v of curriedValues) {
@@ -854,11 +824,11 @@ describe('like – curried usage (descriptor applied to 10 diverse values)', () 
             }
         }
         _sink = accumulator;
-    });
+    }).run();
 });
 
-describe('like – caching benefit (first call vs subsequent)', () => {
-    bench('current (WeakMap cached, descriptor already cached)', () => {
+test('like – caching benefit (first call vs subsequent)', async ({ bench }) => {
+    await bench('current (WeakMap cached, descriptor already cached)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             const cachedLike = likeCached(likeWXY);
@@ -867,5 +837,5 @@ describe('like – caching benefit (first call vs subsequent)', () => {
             }
         }
         _sink = accumulator;
-    });
+    }).run();
 });

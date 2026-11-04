@@ -11,7 +11,7 @@
  * rejection of empty segments — so the built-in is a floor, not a target.
  */
 
-import { bench, describe } from 'vitest';
+import { test } from 'vitest';
 import QueryString from '../src/query-string';
 
 /* ------------------------------------------------------------------ */
@@ -41,25 +41,26 @@ let _sink: unknown = 0;
 /*  Benchmarks                                                         */
 /* ------------------------------------------------------------------ */
 
-describe('QueryString.parse – URL query strings', () => {
-    bench('ndigo-http QueryString.parse', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            for (const qs of queryStrings) {
-                accumulator += Object.keys(QueryString.parse(qs)).length;
+test('QueryString.parse – URL query strings', async ({ bench }) => {
+    await bench.compare(
+        bench('ndigo-http QueryString.parse', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                for (const qs of queryStrings) {
+                    accumulator += Object.keys(QueryString.parse(qs)).length;
+                }
             }
-        }
-        _sink = accumulator;
-    });
-
-    bench('URLSearchParams baseline', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            for (const qs of queryStrings) {
-                const params = parseWithBuiltin(qs);
-                accumulator += (params.get('foo') ?? '').length >= 0 ? 1 : 0;
+            _sink = accumulator;
+        }),
+        bench('URLSearchParams baseline', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                for (const qs of queryStrings) {
+                    const params = parseWithBuiltin(qs);
+                    accumulator += (params.get('foo') ?? '').length >= 0 ? 1 : 0;
+                }
             }
-        }
-        _sink = accumulator;
-    });
+            _sink = accumulator;
+        })
+    );
 });

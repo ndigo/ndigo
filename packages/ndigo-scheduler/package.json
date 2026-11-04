@@ -41,6 +41,6 @@
     "@ndigo/util": "~0.0.1",
     "@opentelemetry/api": "catalog:",
     "@tsmetadata/polyfill": "catalog:",
-    "croner": "^10.0.1"
+    "croner": "^11.0.0"
   }
 }

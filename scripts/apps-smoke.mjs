@@ -123,6 +123,10 @@ async function runApp(app) {
 
     /** @param {NodeJS.Signals} signal */
     const signalGroup = (signal) => {
+        if (child.pid === undefined) {
+            child.kill(signal);
+            return;
+        }
         try {
             process.kill(-child.pid, signal);
         } catch {

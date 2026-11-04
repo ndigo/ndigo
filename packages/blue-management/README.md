@@ -43,7 +43,7 @@ const app = new ApplicationBuilder([ManagementAutoConfiguration]).run();
 
 The full API is generated from JSDoc via `pnpm doc:api` into
 [`api/`](api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../api/README.md) for
+[`src/index.ts`](src/index.ts); see the [package index](../../API.md) for
 how it fits with the rest of BlueJS.
 
 - `HealthRegistry` — `register/unregister/checkAll`; `HealthIndicator` interface.

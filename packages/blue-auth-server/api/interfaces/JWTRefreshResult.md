@@ -45,6 +45,10 @@ The authenticated principal, or null if authentication failed.
 
 New (rotated) refresh token — the old one is dead.
 
+#### Overrides
+
+`AuthResult.refreshToken`
+
 ***
 
 ### token

@@ -7,7 +7,7 @@ proposing changes. BlueJS conventions: `STYLE_GUIDE.md` (how to write),
 
 ## Off-limits areas
 
-- `api/` and `packages/*/api/` — generated TypeDoc trees; regenerate with
+- `API.md` and `packages/*/api/` — generated TypeDoc trees; regenerate with
   `pnpm doc`, never hand-edit.
 - `pnpm-lock.yaml` — dependency changes go through `pnpm install` / `pnpm add`
   in the owning workspace; never hand-edit the lockfile.

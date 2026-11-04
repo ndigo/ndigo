@@ -15,7 +15,7 @@ staying in their packages.
 pnpm add @ndigo/cli
 ```
 
-Prerequisites: Node.js ≥24 (the repository runtime baseline), pnpm ≥11.
+Prerequisites: Node.js ≥24 (the repository runtime baseline), pnpm ≥12.
 
 ## Getting Started
 

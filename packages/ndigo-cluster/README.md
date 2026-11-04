@@ -18,7 +18,7 @@ window.
 pnpm add @ndigo/cluster
 ```
 
-Prerequisites: Node.js ≥24 and pnpm ≥11.
+Prerequisites: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

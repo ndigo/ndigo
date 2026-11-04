@@ -10,7 +10,7 @@ Reactive state management with signals, computed values, and effects. Built on [
 pnpm add @ndigo/signals
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

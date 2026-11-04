@@ -10,7 +10,7 @@ Ndigo integration test harness — **MockHTTP**-style, socket-free request dispa
 pnpm add -D @ndigo/test
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

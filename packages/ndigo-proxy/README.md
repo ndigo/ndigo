@@ -15,7 +15,7 @@ identity and pay nothing per call.
 pnpm add @ndigo/proxy
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

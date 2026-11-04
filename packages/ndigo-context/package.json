@@ -29,9 +29,6 @@
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
-  "devDependencies": {
-    "benchmark": "~2.1.4"
-  },
   "sideEffects": false,
   "dependencies": {
     "@ndigo/content": "~0.0.1",

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignore": ["**/api/**", "**/lib/**", "**/dist/**", ".opencode/**", ".omp/**", "graft/**"],
+  "ignoreDependencies": ["graft"],
+  "ignoreBinaries": ["graft", "openssl"],
+  "workspaces": {
+    ".": {
+      "entry": ["src/oxlint/plugin.ts", "scripts/*.mjs"]
+    }
+  }
+}

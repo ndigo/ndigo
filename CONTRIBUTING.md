@@ -21,8 +21,8 @@ repository: how to install, validate, change a package, and prepare a release.
 
 ## Prerequisites
 
-- **Node.js ≥ 22** (runtime; CI uses 22)
-- **pnpm ≥ 11** (corepack recommended: `corepack enable && corepack prepare pnpm@11 --activate`)
+- **Node.js ≥ 24** (runtime; CI uses 24)
+- **pnpm ≥ 12** (corepack recommended: `corepack enable && corepack prepare pnpm@12 --activate`)
 
 ## Install
 

@@ -29,7 +29,7 @@ container-friendly decorator that resolves a `CacheManager` off the instance.
 pnpm add @ndigo/cache
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

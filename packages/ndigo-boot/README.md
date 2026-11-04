@@ -10,7 +10,7 @@ Application startup for Ndigo: profile-aware bootstrapping, typed config binding
 pnpm add @ndigo/boot
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

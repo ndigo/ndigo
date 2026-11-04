@@ -11,7 +11,7 @@ decorators, property sources, environment, and resource/event infrastructure.
 pnpm add @ndigo/context
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

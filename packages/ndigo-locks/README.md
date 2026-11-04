@@ -15,7 +15,7 @@ can never interfere with a successor. That is the exact protection
 pnpm add @ndigo/locks
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 The durable backend is optional and owned by the integration package:
 `@ndigo/redis` (`@ndigo/redis/locks` — `RedisLockDriver`).

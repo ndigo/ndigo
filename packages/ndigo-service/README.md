@@ -10,7 +10,7 @@
 pnpm add @ndigo/service @tsmetadata/polyfill
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 The decorators read and write TC39 decorator metadata (`Symbol.metadata`). Import the polyfill once, before any decorated class is evaluated:
 

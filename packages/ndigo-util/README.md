@@ -12,7 +12,7 @@ layer can depend on it, including tooling packages that must stay lightweight.
 pnpm add @ndigo/util
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

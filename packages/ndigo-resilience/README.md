@@ -16,7 +16,7 @@ standalone `interceptMethods(...)`.
 pnpm add @ndigo/resilience
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

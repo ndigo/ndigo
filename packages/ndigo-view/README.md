@@ -10,7 +10,7 @@ View abstractions, view targets, and view resolution for Ndigo — the contract 
 pnpm add @ndigo/view
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

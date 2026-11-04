@@ -17,7 +17,7 @@ pnpm add @ndigo/platform-node
 pnpm add swagger-ui-dist    # peer dependency of @ndigo/platform-node (UI assets)
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

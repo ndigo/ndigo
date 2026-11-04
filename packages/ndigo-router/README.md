@@ -10,7 +10,7 @@ Ndigo Router provides routing primitives for Ndigo: a `Route`/`PathRoute` model 
 pnpm add @ndigo/router
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

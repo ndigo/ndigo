@@ -10,7 +10,7 @@ Nx generators for Ndigo application, package, component, README, and documentati
 pnpm add @ndigo/generators
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

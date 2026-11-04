@@ -16,7 +16,7 @@ Ndigo Telemetry provides tracing, metrics, and logging integrations for Ndigo us
 pnpm add @ndigo/telemetry
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

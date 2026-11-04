@@ -10,7 +10,7 @@ Ndigo Content defines content and theme abstractions used across Ndigo packages.
 pnpm add @ndigo/content
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

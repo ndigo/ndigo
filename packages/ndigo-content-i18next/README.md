@@ -12,7 +12,7 @@ i18next owns resource storage, interpolation, plurals (via `Intl.PluralRules`), 
 pnpm add @ndigo/content-i18next
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

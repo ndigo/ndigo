@@ -4,6 +4,7 @@ This directory contains migration guides documenting breaking changes and upgrad
 
 ## Available Migrations
 
+- [2026-11-04_PNPM_12_NX_24_UPGRADE.md](./2026-11-04_PNPM_12_NX_24_UPGRADE.md) - Toolchain upgrade: pnpm 11.4.0→12.16.1 (Rust rewrite) and Nx 23.2.1→24.0.4
 - [2026-08-22_MIGRATION_TO_1.0.md](./2026-08-22_MIGRATION_TO_1.0.md) - Legacy → BlueJS 1.0 migration guide (TC39 decorators, API surface changes)
 - [2026-08-12_ESLINT_TO_OXLINT.md](./2026-08-12_ESLINT_TO_OXLINT.md) - ESLint → oxlint migration
 - [2026-06-18_CONTENT_NEGOTIATION_AND_TEMPLATE_VIEW_CONTRACT.md](./2026-06-18_CONTENT_NEGOTIATION_AND_TEMPLATE_VIEW_CONTRACT.md) - Wave 3 summary: content negotiation framework + template-view contract

@@ -16,7 +16,7 @@ integration package: `@ndigo/redis` (`@ndigo/redis/rate-limit` —
 pnpm add @ndigo/rate-limit
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

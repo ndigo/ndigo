@@ -16,7 +16,7 @@ that own their clients; `@ndigo/flags-openfeature` bridges vendor flagging
 pnpm add @ndigo/flags
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

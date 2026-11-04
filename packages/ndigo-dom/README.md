@@ -10,7 +10,7 @@ DOM abstraction layer for Ndigo. Provides browser DOM and server-side (linkedom)
 pnpm add @ndigo/dom
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

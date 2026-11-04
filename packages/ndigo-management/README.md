@@ -10,7 +10,7 @@ Actuator-style management endpoints for Ndigo Node applications: `/health` (the 
 pnpm add @ndigo/management
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

@@ -14,7 +14,7 @@ deployments.
 pnpm add @ndigo/jobs
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 Durable backends are optional and owned by their integration packages:
 `@ndigo/orm-drizzle` (`LibSQLJobStore`, `LibSQLOutboxStore`) and `@ndigo/redis`

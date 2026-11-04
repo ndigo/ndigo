@@ -9,7 +9,7 @@ A modular TypeScript framework that spans the Browser and Node: a shared context
 ## Requirements
 
 - **Node.js:** ≥24 (runtime, engines entry in the root manifest)
-- **pnpm:** ≥11.0.0
+- **pnpm:** ≥12.0.0
 
 ## Technology Stack
 
@@ -17,10 +17,10 @@ A modular TypeScript framework that spans the Browser and Node: a shared context
   pinned 6.0.3 toolchain — see `scripts/typedoc-ts-shim.mjs`)
 - **Oxlint** (`pnpm lint`) + **oxfmt** (`pnpm format`) — formatting and
   linting
-- **Nx:** 23.2.1 (monorepo management)
-- **pnpm:** 11.4.0 (package manager)
+- **Nx:** 24.0.4 (monorepo management)
+- **pnpm:** 12.16.1 (package manager)
 - **Vitest:** 4.0.18 (testing + `vitest bench` benchmarks)
-- **Vite:** 8.2.2 (bundler)
+- **Vite:** 8.3.5 (bundler)
 
 ## Getting Started
 

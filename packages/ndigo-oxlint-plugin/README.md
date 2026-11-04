@@ -16,7 +16,7 @@ this package.
 pnpm add -D @ndigo/oxlint-plugin
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

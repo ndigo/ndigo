@@ -10,7 +10,7 @@ Platform-independent request dispatch for Ndigo: maps routes to handler methods,
 pnpm add @ndigo/dispatcher
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

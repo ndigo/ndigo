@@ -44,7 +44,7 @@
     "@ndigo/socket": "~0.0.1",
     "@ndigo/util": "~0.0.1",
     "@libsql/client": "0.17.4",
-    "drizzle-orm": "0.45.2",
+    "drizzle-orm": "0.45.4",
     "drizzle-zod": "^0.8.3",
     "zod": "catalog:"
   },

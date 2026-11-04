@@ -46,7 +46,7 @@
     "@opentelemetry/sdk-trace-base": "catalog:"
   },
   "peerDependencies": {
-    "ws": "^8.18.0"
+    "ws": "^8.22.1"
   },
   "devDependencies": {
     "@ndigo/context": "~0.0.1",

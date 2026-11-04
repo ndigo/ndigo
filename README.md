@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/images/Ndigo.svg" alt="Ndigo logo" width="160" height="160">
+</p>
+
 # Ndigo
 
 A modular TypeScript framework that spans the Browser and Node: a shared context and dispatcher core, view and template technologies, HTTP clients and servers, ORM, telemetry, auth, and micro frontend hosting.

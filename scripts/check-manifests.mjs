@@ -113,6 +113,7 @@ const ROOT_TOOLING = new Set([
     'tsrs', // root `typecheck:fast` script — CLI invoked (tsrs -b), deliberately pinned to a 7.1-dev snapshot
     'typescript-6', // TypeDoc peer flavor — relink target for scripts/typedoc-ts-shim.mjs (not importable); keeps docs working where the `../todomvc` members (their TS 6.0.3) are absent, e.g. CI
     'esbuild', // Vite's esbuild transform path (app client builds need decorator lowering; oxc 0.153 passes them through)
+    'knip', // root `audit:dead` script — CLI invoked (knip), never imported
 ]);
 
 /**

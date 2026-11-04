@@ -42,7 +42,7 @@ const AT_IN_STRING = `export const email = 'dev@example.com';
 const regex = /\\@not-a-decorator/m;
 `;
 
-test('lowers standard decorators in .ts modules', async () => {
+void test('lowers standard decorators in .ts modules', async () => {
     const out = await plugin.transform(DECORATED, '/repo/apps/demo/src/controller.ts');
     assert.notEqual(out, null);
     assert.ok(!/^\s*@\w+/m.test(out.code), 'raw decorator syntax must be lowered');
@@ -50,7 +50,7 @@ test('lowers standard decorators in .ts modules', async () => {
     assert.ok(out.map !== null, 'a sourcemap is attached');
 });
 
-test('covers every documented extension: .mts, .cts, .tsx', async () => {
+void test('covers every documented extension: .mts, .cts, .tsx', async () => {
     const results = await Promise.all(
         ['.mts', '.cts', '.tsx'].map(async (ext) => [
             ext,
@@ -63,7 +63,7 @@ test('covers every documented extension: .mts, .cts, .tsx', async () => {
     }
 });
 
-test('leaves non-TypeScript modules untouched', async () => {
+void test('leaves non-TypeScript modules untouched', async () => {
     const results = await Promise.all(
         ['/repo/apps/demo/src/theme.css', '/repo/apps/demo/src/svelte-component.js'].map(async (id) => [
             id,
@@ -75,13 +75,13 @@ test('leaves non-TypeScript modules untouched', async () => {
     }
 });
 
-test('does not re-transform decorator-free modules (pre-check, WC-I)', async () => {
+void test('does not re-transform decorator-free modules (pre-check, WC-I)', async () => {
     assert.equal(await plugin.transform(DECORATOR_FREE, '/repo/apps/demo/src/plain.ts'), null);
     // An `@` inside a string or a regex is not a decorator position.
     assert.equal(await plugin.transform(AT_IN_STRING, '/repo/apps/demo/src/strings.ts'), null);
 });
 
-test('excludes bundled third-party modules but keeps workspace packages', async () => {
+void test('excludes bundled third-party modules but keeps workspace packages', async () => {
     const vendored = await plugin.transform(DECORATED, '/repo/node_modules/@awesome.me/lib/dist/widget.ts');
     assert.equal(vendored, null, 'non-workspace node_modules stays browser-ready as-is');
     const workspace = await plugin.transform(DECORATED, '/repo/packages/ndigo-view-webcomponent/src/island.ts');

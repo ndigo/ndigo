@@ -105,6 +105,10 @@ function typedocConfig(pkgDir, manifest) {
         exclude: ['**/node_modules/**', '**/test/**', 'archive/**'],
         externalSymbolLinkMappings: EXTERNAL_SYMBOL_LINK_MAPPINGS,
         compilerOptions: { skipLibCheck: true, noEmit: true },
+        // TypeDoc discovers `tsconfig.json` from its cwd (the repo root) when
+        // this is absent; the root config is scoped to root tooling, so the
+        // docs program declares its own `include` (packages/*/src).
+        tsconfig: join(ROOT, 'tsconfig.docs.json'),
     };
 }
 

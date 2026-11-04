@@ -32,7 +32,7 @@ function withFixture(run) {
     }
 }
 
-test('scans a nested src/lib directory instead of treating it as build output', () => {
+void test('scans a nested src/lib directory instead of treating it as build output', () => {
     withFixture((root) => {
         mkdirSync(join(root, 'src', 'lib'), { recursive: true });
         writeFileSync(join(root, 'src', 'app.ts'), "import '@ndigo/app';\n");
@@ -45,7 +45,7 @@ test('scans a nested src/lib directory instead of treating it as build output', 
     });
 });
 
-test('still skips node_modules and .vitest at any depth', () => {
+void test('still skips node_modules and .vitest at any depth', () => {
     withFixture((root) => {
         mkdirSync(join(root, 'src', 'node_modules', 'pkg'), { recursive: true });
         mkdirSync(join(root, 'src', '.vitest'), { recursive: true });
@@ -61,7 +61,7 @@ test('still skips node_modules and .vitest at any depth', () => {
     });
 });
 
-test('importsOf(src) includes imports living under a nested lib', () => {
+void test('importsOf(src) includes imports living under a nested lib', () => {
     withFixture((root) => {
         mkdirSync(join(root, 'src', 'lib'), { recursive: true });
         writeFileSync(join(root, 'src', 'lib', 'probe.ts'), "import '@ndigo/nested-lib';\n");

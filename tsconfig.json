@@ -2,5 +2,11 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "noEmit": true
-  }
+  },
+  // Root-level tooling only. This file is also the base for src/tsconfig.json
+  // and the three package configs that extend it; every child overrides
+  // `include`. Do not restore the old default whole-repo include — it pulled
+  // in archive/, built lib/ output, and every test file (thousands of errors
+  // that belong to the per-project and spec lanes, not this one).
+  "include": ["vitest.config.ts", "vitest.aliases.ts"]
 }

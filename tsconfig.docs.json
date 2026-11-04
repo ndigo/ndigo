@@ -1,0 +1,11 @@
+{
+  // TypeDoc program for `scripts/doc-api.mjs` (the `tsconfig` option there).
+  // TypeDoc otherwise discovers the root `tsconfig.json` from its cwd — that
+  // config is scoped to root tooling, so package entry points declare their
+  // own include here (see docs/plans/2026-11-03_TSCONFIG_PACKAGE_CONSISTENCY.md).
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["packages/*/src/**/*.ts"]
+}

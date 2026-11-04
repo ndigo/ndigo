@@ -21,7 +21,7 @@
  *   - Any unexpectedly large gap between b and c points to resolver-ordering issues.
  */
 
-import { bench, describe } from 'vitest';
+import { test } from 'vitest';
 import { type Route } from '@ndigo/router';
 import '@tsmetadata/polyfill';
 import { routeMapping } from '../src/route-mapping';
@@ -122,86 +122,88 @@ let _sink: unknown = 0;
 /*  1. Resolver lookup in isolation                                     */
 /* ------------------------------------------------------------------ */
 
-describe('resolver lookup – path param (find vs Map)', () => {
-    bench('Array.find()', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            const r = defaultResolvers.find((resolver) => resolver.supportsParameter(pathParam));
-            accumulator += r ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('Map.get()', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            const r = resolverMap.get(pathParam.type);
-            accumulator += r ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
+test('resolver lookup – path param (find vs Map)', async ({ bench }) => {
+    await bench.compare(
+        bench('Array.find()', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                const r = defaultResolvers.find((resolver) => resolver.supportsParameter(pathParam));
+                accumulator += r ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('Map.get()', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                const r = resolverMap.get(pathParam.type);
+                accumulator += r ? 1 : 0;
+            }
+            _sink = accumulator;
+        })
+    );
 });
 
-describe('resolver lookup – query param (find vs Map)', () => {
-    bench('Array.find()', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            const r = defaultResolvers.find((resolver) => resolver.supportsParameter(queryParam));
-            accumulator += r ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
-    bench('Map.get()', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            const r = resolverMap.get(queryParam.type);
-            accumulator += r ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
+test('resolver lookup – query param (find vs Map)', async ({ bench }) => {
+    await bench.compare(
+        bench('Array.find()', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                const r = defaultResolvers.find((resolver) => resolver.supportsParameter(queryParam));
+                accumulator += r ? 1 : 0;
+            }
+            _sink = accumulator;
+        }),
+        bench('Map.get()', () => {
+            let accumulator = 0;
+            for (let i = 0; i < 1000; i++) {
+                const r = resolverMap.get(queryParam.type);
+                accumulator += r ? 1 : 0;
+            }
+            _sink = accumulator;
+        })
+    );
 });
 
 /* ------------------------------------------------------------------ */
 /*  2. Full RouteHandlerMethod.invoke()                                 */
 /* ------------------------------------------------------------------ */
 
-describe('invoke() – 0 params (baseline)', () => {
-    bench('invoke', () => {
+test('invoke() – 0 params (baseline)', async ({ bench }) => {
+    await bench('invoke', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += noParamMethod.invoke(routeWithPath) ? 1 : 0;
         }
         _sink = accumulator;
-    });
+    }).run();
 });
 
-describe('invoke() – 1 path param (find index 0)', () => {
-    bench('invoke', () => {
+test('invoke() – 1 path param (find index 0)', async ({ bench }) => {
+    await bench('invoke', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += pathParamMethod.invoke(routeWithPath) ? 1 : 0;
         }
         _sink = accumulator;
-    });
+    }).run();
 });
 
-describe('invoke() – 1 query param (find index 2)', () => {
-    bench('invoke', () => {
+test('invoke() – 1 query param (find index 2)', async ({ bench }) => {
+    await bench('invoke', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += queryParamMethod.invoke(routeWithQuery) ? 1 : 0;
         }
         _sink = accumulator;
-    });
+    }).run();
 });
 
-describe('invoke() – 3 mixed params (path + query + attribute)', () => {
-    bench('invoke', () => {
+test('invoke() – 3 mixed params (path + query + attribute)', async ({ bench }) => {
+    await bench('invoke', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += mixedParamMethod.invoke(routeWithAll) ? 1 : 0;
         }
         _sink = accumulator;
-    });
+    }).run();
 });

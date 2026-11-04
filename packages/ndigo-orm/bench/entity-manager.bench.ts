@@ -12,7 +12,7 @@
  *   7. remove (repeat calls)           – remove on same entity; key absent after first call
  */
 
-import { bench, describe } from 'vitest';
+import { test } from 'vitest';
 import '@tsmetadata/polyfill';
 import { entity, generatedColumn, primaryColumn, column } from '../src/decorators';
 import { InMemoryDataSource } from '../src/data-source';
@@ -81,19 +81,19 @@ let _sink: unknown = 0;
 /*  Benchmarks                                                         */
 /* ------------------------------------------------------------------ */
 
-describe('InMemoryEntityManager – persist (update path, single entity)', () => {
-    bench('persist(mutableUser)', () => {
+test('InMemoryEntityManager – persist (update path, single entity)', async ({ bench }) => {
+    await bench('persist(mutableUser)', () => {
         let count = 0;
         for (let i = 0; i < 1000; i++) {
             emMutable.persist(mutableUser);
             count++;
         }
         _sink = count;
-    });
+    }).run();
 });
 
-describe('InMemoryEntityManager – persist (update path, batch × 10)', () => {
-    bench('persist × 10', () => {
+test('InMemoryEntityManager – persist (update path, batch × 10)', async ({ bench }) => {
+    await bench('persist × 10', () => {
         let count = 0;
         for (let i = 0; i < 1000; i++) {
             for (const u of batchUsers) {
@@ -102,56 +102,56 @@ describe('InMemoryEntityManager – persist (update path, batch × 10)', () => {
             }
         }
         _sink = count;
-    });
+    }).run();
 });
 
-describe('InMemoryEntityManager – find hit (id = 1)', () => {
-    bench('find(BenchUser, 1)', () => {
+test('InMemoryEntityManager – find hit (id = 1)', async ({ bench }) => {
+    await bench('find(BenchUser, 1)', () => {
         let count = 0;
         for (let i = 0; i < 1000; i++) {
             count += emRead.find(BenchUser, 1) ? 1 : 0;
         }
         _sink = count;
-    });
+    }).run();
 });
 
-describe('InMemoryEntityManager – find miss (id = 9999)', () => {
-    bench('find(BenchUser, 9999)', () => {
+test('InMemoryEntityManager – find miss (id = 9999)', async ({ bench }) => {
+    await bench('find(BenchUser, 9999)', () => {
         let count = 0;
         for (let i = 0; i < 1000; i++) {
             count += emRead.find(BenchUser, 9999) ? 1 : 0;
         }
         _sink = count;
-    });
+    }).run();
 });
 
-describe('InMemoryEntityManager – findAll small (5 entities)', () => {
-    bench('findAll(BenchUser) × 5', () => {
+test('InMemoryEntityManager – findAll small (5 entities)', async ({ bench }) => {
+    await bench('findAll(BenchUser) × 5', () => {
         let count = 0;
         for (let i = 0; i < 1000; i++) {
             count += emSmall.findAll(BenchUser).length;
         }
         _sink = count;
-    });
+    }).run();
 });
 
-describe('InMemoryEntityManager – findAll large (50 entities)', () => {
-    bench('findAll(BenchUser) × 50', () => {
+test('InMemoryEntityManager – findAll large (50 entities)', async ({ bench }) => {
+    await bench('findAll(BenchUser) × 50', () => {
         let count = 0;
         for (let i = 0; i < 1000; i++) {
             count += emRead.findAll(BenchUser).length;
         }
         _sink = count;
-    });
+    }).run();
 });
 
-describe('InMemoryEntityManager – remove (repeat calls on same entity)', () => {
-    bench('remove(removeUser)', () => {
+test('InMemoryEntityManager – remove (repeat calls on same entity)', async ({ bench }) => {
+    await bench('remove(removeUser)', () => {
         let count = 0;
         for (let i = 0; i < 1000; i++) {
             emRemove.remove(removeUser);
             count++;
         }
         _sink = count;
-    });
+    }).run();
 });

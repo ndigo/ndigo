@@ -4,17 +4,20 @@
  * Kept separate from any build config so tests resolve `@ndigo/*` against
  * `packages/<pkg>/src` through the shared alias table (HI-6/TST-B) instead of
  * the built `lib/` output the `node_modules` symlinks expose — mirrors the
- * sibling Node app lanes (`04-ndigo-api` relies on the root lane; this app
- * declares its own).
+ * sibling Node app lanes (`02-ndigo-hello-node`, `04-ndigo-api`).
  *
  * @module ndigo-httpbin
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { defineConfig } from 'vitest/config';
+import { lowerDecorators } from '../../scripts/vite-plugin-lower-decorators.mjs';
 import { ndigoAliases } from '../../vitest.aliases';
 
 export default defineConfig({
+    // Oxc (Vite 8) leaves TC39 decorators untouched, so tests lower them with
+    // the same plugin `vite build` uses (HI-1).
+    plugins: [lowerDecorators()],
     resolve: {
         alias: ndigoAliases,
     },

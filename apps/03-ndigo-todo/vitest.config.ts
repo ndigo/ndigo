@@ -12,9 +12,13 @@
  * @author Jeff Rose
  */
 import { defineConfig } from 'vitest/config';
+import { lowerDecorators } from '../../scripts/vite-plugin-lower-decorators.mjs';
 import { ndigoAliases } from '../../vitest.aliases';
 
 export default defineConfig({
+    // Oxc (Vite 8) leaves TC39 decorators untouched, so tests lower them with
+    // the same plugin `vite build` uses (HI-1).
+    plugins: [lowerDecorators()],
     resolve: {
         alias: ndigoAliases,
     },

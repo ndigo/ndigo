@@ -39,10 +39,29 @@ oxlint executes the TypeScript directly (Node ≥24 type stripping), so:
 | `internal/no-uppercase-regexp-constants`       | RegExp instances are objects — camelCase                                                          |
 | `internal/no-global-state-in-create-factories` | `create*` factories must not reference mutable module/class state — the `create*` vs `get*` split |
 | `internal/requires-doc-header`                 | Source files begin with the canonical doc header (`@module`/`@since`/`@author`)                   |
+| `internal/no-upward-layer-imports`             | Package imports flow only downward through the derived layer ranks (see below)                    |
+
+## Layer ranks
+
+`_layers.ts` assigns every runtime package a rank derived from the actual
+dependency direction — `rank(p) = 1 + max(rank(deps))` over `dependencies` and
+`peerDependencies`, never `devDependencies` (tests and benches may reach across
+layers). `internal/no-upward-layer-imports` applies to runtime `src/**` code
+and allows an import only when the target's rank is at or below the importer's;
+equal ranks are siblings and may cross-import freely. Tooling packages
+(`@ndigo/cli`, `@ndigo/generators`, `@ndigo/oxlint-plugin`, `@ndigo/test`) sit
+outside the layer system.
+
+The ranks are a **derived** artifact: `test/layers.spec.ts` recomputes them
+from the package manifests and fails on drift, and walks every package's `src/`
+(the enforced surface) to prove no upward imports exist. A dependency change
+that reorders the graph therefore fails `pnpm test:internal` until `_layers.ts`
+is updated deliberately.
 
 ## Specs
 
-`test/rules/*.spec.ts` run under the root vitest config:
+`test/rules/*.spec.ts` and `test/layers.spec.ts` run under the root vitest
+config:
 
 ```bash
 pnpm test:internal

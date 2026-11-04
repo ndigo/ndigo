@@ -1,6 +1,6 @@
 # BlueJS Decision Records (ADRs)
 
-Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-88**,
+Architecture Decision Records for the BlueJS monorepo — **AD-01..AD-89**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -114,3 +114,4 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-86** | 2026-10-31    | Accepted           | [`packages/` is the consumer surface — repo-only lint rules live in root `src/`](2026-10-31_AD86_LINT_RULE_SURFACE.md)                                                                                                     |
 | **AD-87** | 2026-11-01    | Accepted           | [OpenFeature bridge — adopt the standard behind the `FlagEvaluator` SPI](2026-11-01_AD87_OPENFEATURE_BRIDGE.md)                                                                                                            |
 | **AD-88** | 2026-11-03    | Accepted           | [Project rename — BlueJS → ndigo](2026-11-03_AD88_NDIGO_RENAME.md)                                                                                                                                                         |
+| **AD-89** | 2026-11-03    | Accepted           | [Layer-boundary enforcement — derived ranks, not named tiers](2026-11-03_AD89_LAYER_BOUNDARIES.md)                                                                                                                         |

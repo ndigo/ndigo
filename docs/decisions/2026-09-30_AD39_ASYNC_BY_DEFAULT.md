@@ -82,5 +82,5 @@ The telemetry patch helper `_patchAsync` becomes `_patch` (the sync
 ## References
 
 - [STYLE_GUIDE.md](../../STYLE_GUIDE.md) §3.13 Special Patterns → Async Methods
-- [`@blue/content`](../../packages/blue-content/README.md)
-- [`@blue/view-ejs`](../../packages/blue-view-ejs/README.md)
+- [`@blue/content`](../../packages/ndigo-content/README.md)
+- [`@blue/view-ejs`](../../packages/ndigo-view-ejs/README.md)

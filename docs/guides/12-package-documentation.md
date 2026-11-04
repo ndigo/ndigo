@@ -1,14 +1,14 @@
 # Package Documentation
 
-How BlueJS packages document themselves — the standard every package must
+How Ndigo packages document themselves — the standard every package must
 meet, and the tooling that keeps it true. Applies to all
 `packages/*`; the reference implementation of the standard is the
-[`blue-generators`](../../packages/blue-generators/README.md) scaffolding.
+[`ndigo-generators`](../../packages/ndigo-generators/README.md) scaffolding.
 
 ## Why this shape
 
-BlueJS packages are deliberately standalone-readable: a developer who only
-needs `@blue/http` should never have to open the framework monorepo docs.
+Ndigo packages are deliberately standalone-readable: a developer who only
+needs `@ndigo/http` should never have to open the framework monorepo docs.
 So every package carries its own docs:
 
 - **`README.md`** — the human-written entry point (purpose, install,
@@ -27,13 +27,13 @@ Written for someone meeting the package for the first time. Required
 section order (drop optional ones):
 
 ```markdown
-# @blue/<name>
+# @ndigo/<name>
 
 > One-line tagline — what it does and who it's for.
 
 [2–3 sentences: the problem it solves, why it exists as a separate package.]
 
-## Installation # pnpm add @blue/<name> + prerequisites
+## Installation # pnpm add @ndigo/<name> + prerequisites
 
 ## Getting Started # smallest runnable example
 
@@ -43,7 +43,7 @@ section order (drop optional ones):
 
 ## API # link to api/README.md; DO NOT re-list symbols
 
-## Development # pnpm --filter @blue/<name> build:lib / test
+## Development # pnpm --filter @ndigo/<name> build:lib / test
 
 ## See Also # (optional) sibling packages
 
@@ -62,20 +62,20 @@ Rules:
 - No internal references: no `AD-##` ids, decision-record links, commit
   notes, or audit citations in package READMEs — those belong in `docs/`.
 - The `## API` section is a _link_, not a dump. Hand-written symbol lists
-  (e.g. `blue-scheduler`) are allowed only alongside the generated link.
-- Package READMEs link packages by relative path (`../blue-util/README.md`).
+  (e.g. `ndigo-scheduler`) are allowed only alongside the generated link.
+- Package READMEs link packages by relative path (`../ndigo-util/README.md`).
 
 ## package.json metadata
 
-| Field                                             | Requirement                                                                                            | Why                                   |
-| :------------------------------------------------ | :----------------------------------------------------------------------------------------------------- | :------------------------------------ |
-| `description`                                     | ≥ 25 chars, non-generic (not `"Blue Cache"`); one-sentence value statement                             | npm listing, doc index, search        |
-| `keywords`                                        | non-empty array incl. `"bluejs"` + domain tags                                                         | npm discoverability                   |
-| `author`                                          | `"Jeff Rose <jeff_rose@outlook.com>"`                                                                  | npm profile                           |
-| `license`                                         | `"ISC"`                                                                                                | always                                |
-| `files`                                           | `["doc", "lib"]` for every package; `@blue/generators` additionally ships `["src", "generators.json"]` | npm tarball ships only these + README |
-| `repository` / `homepage` / `bugs`                | set at publish time, when a public remote exists                                                       | npm links                             |
-| `exports` / `sideEffects` / `type` / dep sections | enforced by `scripts/check-manifests.mjs` — see ARCHITECTURE.md "Manifest Dependency Sections"         | install closure                       |
+| Field                                             | Requirement                                                                                             | Why                                   |
+| :------------------------------------------------ | :------------------------------------------------------------------------------------------------------ | :------------------------------------ |
+| `description`                                     | ≥ 25 chars, non-generic (not `"Ndigo Cache"`); one-sentence value statement                             | npm listing, doc index, search        |
+| `keywords`                                        | non-empty array incl. `"ndigo"` + domain tags                                                           | npm discoverability                   |
+| `author`                                          | `"Jeff Rose <jeff_rose@outlook.com>"`                                                                   | npm profile                           |
+| `license`                                         | `"ISC"`                                                                                                 | always                                |
+| `files`                                           | `["doc", "lib"]` for every package; `@ndigo/generators` additionally ships `["src", "generators.json"]` | npm tarball ships only these + README |
+| `repository` / `homepage` / `bugs`                | set at publish time, when a public remote exists                                                        | npm links                             |
+| `exports` / `sideEffects` / `type` / dep sections | enforced by `scripts/check-manifests.mjs` — see ARCHITECTURE.md "Manifest Dependency Sections"          | install closure                       |
 
 ## Generated API docs
 
@@ -87,7 +87,7 @@ Rules:
 - **Cross-package links:** each package's API reference is isolated, so a
   JSDoc link to a symbol in another package needs an entry in
   [`scripts/external-symbol-links.json`](../../scripts/external-symbol-links.json)
-  (`{ "@blue/other": { "Symbol": "#" } }`). TypeDoc names the needed entry
+  (`{ "@ndigo/other": { "Symbol": "#" } }`). TypeDoc names the needed entry
   in its warning message — add it there, never in a package's own docs.
 - **After any public API change:** update the JSDoc, run `pnpm doc:api`,
   commit the generated `api/` tree with the change.
@@ -105,8 +105,8 @@ Rules:
 ## Adding a new package
 
 ```bash
-pnpm exec nx g @blue/generators:package --name mypackage --description "…"
-pnpm exec nx g @blue/generators:readme --name mypackage --description "…"
+pnpm exec nx g @ndigo/generators:package --name mypackage --description "…"
+pnpm exec nx g @ndigo/generators:readme --name mypackage --description "…"
 pnpm doc:api
 ```
 

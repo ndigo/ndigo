@@ -1,6 +1,6 @@
 # Guide 09 — Argument Binding
 
-How handler arguments bind in BlueJS: the full source vocabulary, whole-source
+How handler arguments bind in Ndigo: the full source vocabulary, whole-source
 **data binding** (`dataBinderValue` — the form/model-binding story), and
 multipart **JSON parts** (`requestPart`). The engine mirrors Spring MVC's
 resolver architecture — each parameter source is one resolver, first match
@@ -56,7 +56,7 @@ sources are an explicit per-platform allow-list:
 
 ```ts
 import { z } from 'zod';
-import { parameters, dataBinderValue, validatedBy } from '@blue/dispatcher';
+import { parameters, dataBinderValue, validatedBy } from '@ndigo/dispatcher';
 
 class ProfileForm {
     email = '';
@@ -142,7 +142,7 @@ those strings with the real parser as the validator — a name or value that
 would change meaning under the grammar throws at build time:
 
 ```ts
-import { matrixParamCondition } from '@blue/dispatcher';
+import { matrixParamCondition } from '@ndigo/dispatcher';
 
 @getMapping({ value: '/:id', matrixParams: matrixParamCondition('color'), private: false })
 getProduct(id: string) { … }           // presence check → 'color'
@@ -183,7 +183,7 @@ registerArgumentResolvers(context, resolvers);
   specialize an existing source without replacing the chain:
 
 ```ts
-import { ARGUMENT_RESOLVERS, registerArgumentResolvers } from '@blue/dispatcher';
+import { ARGUMENT_RESOLVERS, registerArgumentResolvers } from '@ndigo/dispatcher';
 
 const current = context.getValue(ARGUMENT_RESOLVERS) ?? [];
 registerArgumentResolvers(context, [new TenantQueryArgumentResolver(), ...current]);
@@ -197,8 +197,8 @@ pipeline: name lookup → default → `convertType` conversion → Zod `convert`
 (`validatedBy`) → required-missing → `MissingParameterError` (400):
 
 ```ts
-import { AbstractNamedValueMethodArgumentResolver, MethodParameter, MethodParameterType } from '@blue/dispatcher';
-import type { Route } from '@blue/router';
+import { AbstractNamedValueMethodArgumentResolver, MethodParameter, MethodParameterType } from '@ndigo/dispatcher';
+import type { Route } from '@ndigo/router';
 
 /** `queryValue('tenant.*')` params read the query first, then the framework context. */
 class TenantQueryArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
@@ -219,7 +219,7 @@ Hand it to `AbstractPlatformArgumentResolver`, the base the platform resolvers
 extend:
 
 ```ts
-import { AbstractPlatformArgumentResolver, passthroughArgumentValue } from '@blue/dispatcher';
+import { AbstractPlatformArgumentResolver, passthroughArgumentValue } from '@ndigo/dispatcher';
 
 class UploadArgumentResolver extends AbstractPlatformArgumentResolver {
     constructor() {

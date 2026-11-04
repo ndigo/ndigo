@@ -18,8 +18,8 @@ yarn-error.log
 **/src/**/*.d.ts.map
 **/src/**/*.d.ts
 # Hand-authored type declarations (not generated) — must not be ignored
-!packages/blue-util/src/_types/*.d.ts
-!packages/blue-util/src/_safe-regex.d.ts
+!packages/ndigo-util/src/_types/*.d.ts
+!packages/ndigo-util/src/_safe-regex.d.ts
 # TypeScript development cache
 **/.tscache/
 # Note: .d.ts files in src/ are generated build artifacts (mirrors of .ts sources).
@@ -31,8 +31,8 @@ yarn-error.log
 # Hand-authored application sources under `src/lib/` (the blanket `**/lib/`
 # above would swallow them): re-included so a fresh checkout can build the
 # client. `git check-ignore` must stay silent for these.
-!apps/11-blue-conduit-web/src/lib/
-!apps/11-blue-conduit-web/src/lib/**
+!apps/11-ndigo-conduit-web/src/lib/
+!apps/11-ndigo-conduit-web/src/lib/**
 *.tsbuildinfo
 
 # Build artifacts in package roots

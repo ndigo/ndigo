@@ -1,6 +1,6 @@
 # Guide 06 — WebSockets, Rooms, Broadcast, and STOMP
 
-How realtime endpoints work in BlueJS: `@socketMapping`, the
+How realtime endpoints work in Ndigo: `@socketMapping`, the
 `SocketSession` contract, the session registry (rooms + broadcast), and the
 heartbeat. WebSockets are served from the same dispatcher as HTTP routes —
 same radix mapping, same `@parameters` binding, same Zod validation — with
@@ -17,7 +17,7 @@ separate extractors (`socketSessionValue()` / `requestSessionValue()`).
 Add a `@socketMapping` handler to any controller and connect:
 
 ```ts
-import { parameters, socketMapping, socketSessionValue, type SocketSession } from '@blue/dispatcher';
+import { parameters, socketMapping, socketSessionValue, type SocketSession } from '@ndigo/dispatcher';
 
 @requestMapping('/ws')
 class ChatController {
@@ -55,12 +55,12 @@ adapter option rejects forged origins with `403` before the connection (in
 ## 2. The session registry
 
 `NodeAutoConfiguration` provisions a `socketSessionRegistry` bean
-(`SocketSessionRegistry` contract in `@blue/dispatcher`, implementation in
-`@blue/platform-node`). The HTTP server resolves it at start, so the bean
+(`SocketSessionRegistry` contract in `@ndigo/dispatcher`, implementation in
+`@ndigo/platform-node`). The HTTP server resolves it at start, so the bean
 **is the adapter's registry** — any service can push to live sessions:
 
 ```ts
-import { type SocketSessionRegistry } from '@blue/dispatcher';
+import { type SocketSessionRegistry } from '@ndigo/dispatcher';
 
 // any bean: fetch the registry from the context (or inject it)
 const registry = context.getValue<SocketSessionRegistry>('socketSessionRegistry');
@@ -96,21 +96,21 @@ is what stops a stalled handler pinning `count × payload`). Tune per
 adapter or by env:
 
 ```
-BLUE_SOCKET_MAX_PAYLOAD_BYTES=1048576       # frame payload cap (default 1 MiB)
-BLUE_SOCKET_MAX_QUEUED_MESSAGES=1024        # inbound queue cap per session (default 1024)
-BLUE_SOCKET_MAX_QUEUED_BYTES=4194304        # inbound byte budget (default 4 MiB; 0 disables)
-BLUE_SOCKET_MAX_BUFFERED_BYTES=1048576      # outbound watermark (default 1 MiB; 0 disables)
-BLUE_SOCKET_ON_OVERFLOW=close               # close (default, 1013) | drop
+NDIGO_SOCKET_MAX_PAYLOAD_BYTES=1048576       # frame payload cap (default 1 MiB)
+NDIGO_SOCKET_MAX_QUEUED_MESSAGES=1024        # inbound queue cap per session (default 1024)
+NDIGO_SOCKET_MAX_QUEUED_BYTES=4194304        # inbound byte budget (default 4 MiB; 0 disables)
+NDIGO_SOCKET_MAX_BUFFERED_BYTES=1048576      # outbound watermark (default 1 MiB; 0 disables)
+NDIGO_SOCKET_ON_OVERFLOW=close               # close (default, 1013) | drop
 ```
 
 Socket observability ships as `WebSocketServerInstrumentation`
-(`@blue/telemetry-node`, opt-in like the HTTP instrumentation): session
+(`@ndigo/telemetry-node`, opt-in like the HTTP instrumentation): session
 lifetime spans (`SocketSession.connect`, path/duration/close code),
 sessions opened/closed, fan-out messages/bytes (per path; per room only
 with the `roomAttribute` option — room names are arbitrary application
 strings, so attributing them by default would mint unbounded metric
 series), and backpressure counters (`close` and `drop` actions) — all
-under `blue.socket.*`.
+under `ndigo.socket.*`.
 
 Also on the session: `session.attributes` — a per-connection state bag
 (Micronaut/Spring/Jakarta parity), and `session.close(code, reason)` for a
@@ -122,7 +122,7 @@ hook runs before the handler: return an object to populate
 ## 3. Scheduler → room (cross-context push)
 
 The registry is ordinary DI, so scheduled tasks or HTTP handlers can push
-into rooms — the `apps/04-blue-api` demo proves it with a chat room where a
+into rooms — the `apps/04-ndigo-api` demo proves it with a chat room where a
 `@scheduled` tick fires every 2 seconds:
 
 ```ts
@@ -161,9 +161,9 @@ never finish the close handshake are force-reaped by ws's own
 Configure via environment:
 
 ```
-BLUE_SOCKET_HEARTBEAT_INTERVAL_MS=10000   # ping every 10s
-BLUE_SOCKET_IDLE_TIMEOUT_MS=30000         # reap after 30s silent
-BLUE_SOCKET_HEARTBEAT_INTERVAL_MS=0       # disable explicitly (not recommended)
+NDIGO_SOCKET_HEARTBEAT_INTERVAL_MS=10000   # ping every 10s
+NDIGO_SOCKET_IDLE_TIMEOUT_MS=30000         # reap after 30s silent
+NDIGO_SOCKET_HEARTBEAT_INTERVAL_MS=0       # disable explicitly (not recommended)
 ```
 
 Adapters constructed by hand accept a `NodeSocketSessionRegistry` with the
@@ -181,7 +181,7 @@ apply, so a malicious page can open a cross-origin socket unless origins
 are validated. The adapter's `allowedWebSocketOrigins` option rejects
 forged or missing `Origin` headers with `403` before the connection fires
 (fail-closed). The `HTTPServer` default-adapter path reads the same list
-from `BLUE_SOCKET_ALLOWED_ORIGINS` (comma-separated bare origins,
+from `NDIGO_SOCKET_ALLOWED_ORIGINS` (comma-separated bare origins,
 e.g. `https://app.example,https://admin.example`). When unset, any origin
 may upgrade — the explicit public-socket posture (the demo chat room is
 intended to be open). Production deployments binding credentials to
@@ -227,19 +227,19 @@ attribute bag is merged into `session.attributes`, so `{ user }` also
 drives STOMP `/user/*` routing (`resolveUser`). `authenticateTimeoutMs`
 (default 10 s) closes a socket whose authenticator never settles, and
 `maxConnections` bounds concurrent accepted upgrades (`1013` over the cap).
-`apps/04-blue-api` wires the reference implementation (demo token in
+`apps/04-ndigo-api` wires the reference implementation (demo token in
 `?token=` or `Authorization: Bearer …`) and marks its STOMP endpoint
 `@authenticated`; its raw `/ws/chat` endpoint stays open as the documented
 public-socket contrast.
 
-## 6. The client (`@blue/socket`)
+## 6. The client (`@ndigo/socket`)
 
 `WebSocketClient` is the isomorphic client: WHATWG `WebSocket` global in
 browsers **and** Node ≥24, with signal-based status and reconnect:
 
 ```ts
-import { WebSocketClient } from '@blue/socket';
-import { effect } from '@blue/signals';
+import { WebSocketClient } from '@ndigo/socket';
+import { effect } from '@ndigo/signals';
 
 const chat = new WebSocketClient('ws://localhost:3000/ws/chat', {
     reconnect: { baseMs: 1000, maxMs: 30_000, jitter: 0.2 }, // default
@@ -267,18 +267,18 @@ clamped to the cap, attempt counter reset on each successful open);
 messages sent while disconnected are queued (opt-in, overflow drops
 oldest) or dropped.
 
-`createOnlineReconnectTrigger()` (`blue-platform-web`, browser-only) wires
+`createOnlineReconnectTrigger()` (`ndigo-platform-web`, browser-only) wires
 window `online`/`offline` events into the client's immediate-retry path —
-the browser half of the story; `@blue/socket` itself has no window globals.
+the browser half of the story; `@ndigo/socket` itself has no window globals.
 
 Client-side metrics: `WebSocketClientInstrumentation`
-(`@blue/telemetry-web`) counts outbound messages/bytes and deliberate
-closes automatically (`blue.socket.client.*`); status and **reconnect**
+(`@ndigo/telemetry-web`) counts outbound messages/bytes and deliberate
+closes automatically (`ndigo.socket.client.*`); status and **reconnect**
 counters wire through `countSocketClientStatus()` as the client's
 `onStatusChange` option:
 
 ```ts
-import { countSocketClientStatus } from '@blue/telemetry-web';
+import { countSocketClientStatus } from '@ndigo/telemetry-web';
 
 const chat = new WebSocketClient(url, { onStatusChange: countSocketClientStatus() });
 ```
@@ -298,10 +298,10 @@ closes `1009` on oversized frames) and per-session queue —
 `maxQueuedMessages` (1024) **and** a cumulative byte budget
 (`maxQueuedBytes`, 4 MiB) so a stalled handler cannot pin
 `count × payload` (~1 GiB at the defaults). Queue overflow closes `1013`.
-Env override: `BLUE_SOCKET_MAX_PAYLOAD_BYTES`,
-`BLUE_SOCKET_MAX_QUEUED_MESSAGES`, `BLUE_SOCKET_MAX_QUEUED_BYTES`,
-`BLUE_SOCKET_MAX_BUFFERED_BYTES` (`0` disables the byte budgets) and
-`BLUE_SOCKET_ON_OVERFLOW` (`close`|`drop`).
+Env override: `NDIGO_SOCKET_MAX_PAYLOAD_BYTES`,
+`NDIGO_SOCKET_MAX_QUEUED_MESSAGES`, `NDIGO_SOCKET_MAX_QUEUED_BYTES`,
+`NDIGO_SOCKET_MAX_BUFFERED_BYTES` (`0` disables the byte budgets) and
+`NDIGO_SOCKET_ON_OVERFLOW` (`close`|`drop`).
 
 Client-side, `WebSocketClient.send` drops non-serializable payloads
 (`undefined`, functions, symbols) instead of queueing a frame that would
@@ -319,7 +319,7 @@ The same sessions speak the industry-standard STOMP 1.2 broker protocol:
 destinations, subscriptions, receipts — interop with Spring
 (`SimpMessagingTemplate`), RabbitMQ/Artemis STOMP, and @stomp/stompjs
 clients. It is a protocol layer over the socket contracts, so it is
-isomorphic (`@blue/socket`) and transport-agnostic:
+isomorphic (`@ndigo/socket`) and transport-agnostic:
 
 ```ts
 // server: a broker owns the destination namespace; the handler runs the
@@ -400,7 +400,7 @@ already owns liveness. The second wave rounds out the protocol:
   source of truth for `/queue`: every append persists through it and
   subscribe replay reads from it. The default is an
   `InMemoryQueueMessageStore` built from the backlog caps above;
-  `LibSQLQueueMessageStore` from `@blue/orm-drizzle` provides durable storage
+  `LibSQLQueueMessageStore` from `@ndigo/orm-drizzle` provides durable storage
   through the broker's `queueStore` option. This is separate from live Redis
   fan-out, not a distributed queue — **a `RECEIPT` means
   "persisted"** for `/queue` destinations (the receipt follows the append; a
@@ -449,16 +449,16 @@ like SockJS it is a non-feature, not a gap.
 ### Cross-node live fan-out (opt-in)
 
 The memory/local default is unchanged. Compose external resources explicitly;
-install `@blue/redis` and its `@blue/socket` capability peer. This example uses
+install `@ndigo/redis` and its `@ndigo/socket` capability peer. This example uses
 an existing `NodeDispatcher` named `dispatcher` and an application context named
 `context`; the endpoint controller must use this same `broker` for
 `handleSocket(session)`, and room handlers use the server's shared registry:
 
 ```ts
-import { RedisConnection } from '@blue/redis';
-import { RedisSocketFanout } from '@blue/redis/pubsub';
-import { StompBroker } from '@blue/socket';
-import { HTTPServer, NodeSocketSessionRegistry } from '@blue/platform-node';
+import { RedisConnection } from '@ndigo/redis';
+import { RedisSocketFanout } from '@ndigo/redis/pubsub';
+import { StompBroker } from '@ndigo/socket';
+import { HTTPServer, NodeSocketSessionRegistry } from '@ndigo/platform-node';
 
 const url = process.env.REDIS_URL!; // explicit redis:// or rediss://
 const publisher = new RedisConnection({ url });
@@ -541,12 +541,12 @@ channels; a namespace is isolation convention, not authorization.
   attribute-bag mixin, not a base).
 - **Names are adjectival**: `AuthSession` (auth state), `SocketSession`
   (connection), `HttpSession` (reserved for the future session store).
-- **Client story**: `@blue/socket` — the isomorphic client package
+- **Client story**: `@ndigo/socket` — the isomorphic client package
   (`SocketClient`, reconnect + status signal) — see
   [WebSocket client](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md) and
   [plan](../plans/2026-09-15_WEBSOCKET_CLIENT.md).
 - **Cross-node live fan-out: opt-in**, through `SocketFanout` and
-  `@blue/redis/pubsub`; socket ownership, room membership, queue consumption
+  `@ndigo/redis/pubsub`; socket ownership, room membership, queue consumption
   and ACK/message IDs remain local. Durable `/queue` persistence is available
   through `LibSQLQueueMessageStore`; it is not durable pub/sub.
 - **SockJS: never** (pre-2015 fallback-transport workaround; third-party
@@ -560,11 +560,11 @@ channels; a namespace is isolation convention, not authorization.
 - Plans: [WebSocket Broadcast](../plans/2026-09-15_WEBSOCKET_BROADCAST.md),
   [WebSocket Client](../plans/2026-09-15_WEBSOCKET_CLIENT.md),
   [STOMP](../plans/2026-09-16_STOMP.md)
-- Demo: `ChatController` in `apps/04-blue-api/src/chat-controller.ts`, e2e in
-  `apps/04-blue-api/test/chat.spec.ts` (driven by `WebSocketClient`);
-  `StompChatController` in `apps/04-blue-api/src/stomp-chat-controller.ts`,
-  e2e in `apps/04-blue-api/test/stomp.spec.ts` (driven by `StompClient`)
-- Package surfaces: [`@blue/socket`](../../packages/blue-socket/README.md)
-  (contracts + client + STOMP), `@blue/dispatcher` (handler vocabulary),
-  [`@blue/platform-node`](../../packages/blue-platform-node/README.md)
-  (registry, adapter, auto-configuration), `@blue/platform-web` (online trigger)
+- Demo: `ChatController` in `apps/04-ndigo-api/src/chat-controller.ts`, e2e in
+  `apps/04-ndigo-api/test/chat.spec.ts` (driven by `WebSocketClient`);
+  `StompChatController` in `apps/04-ndigo-api/src/stomp-chat-controller.ts`,
+  e2e in `apps/04-ndigo-api/test/stomp.spec.ts` (driven by `StompClient`)
+- Package surfaces: [`@ndigo/socket`](../../packages/ndigo-socket/README.md)
+  (contracts + client + STOMP), `@ndigo/dispatcher` (handler vocabulary),
+  [`@ndigo/platform-node`](../../packages/ndigo-platform-node/README.md)
+  (registry, adapter, auto-configuration), `@ndigo/platform-web` (online trigger)

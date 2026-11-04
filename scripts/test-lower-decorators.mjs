@@ -84,6 +84,6 @@ test('does not re-transform decorator-free modules (pre-check, WC-I)', async () 
 test('excludes bundled third-party modules but keeps workspace packages', async () => {
     const vendored = await plugin.transform(DECORATED, '/repo/node_modules/@awesome.me/lib/dist/widget.ts');
     assert.equal(vendored, null, 'non-workspace node_modules stays browser-ready as-is');
-    const workspace = await plugin.transform(DECORATED, '/repo/packages/blue-view-webcomponent/src/island.ts');
+    const workspace = await plugin.transform(DECORATED, '/repo/packages/ndigo-view-webcomponent/src/island.ts');
     assert.notEqual(workspace, null, 'workspace package sources are lowered');
 });

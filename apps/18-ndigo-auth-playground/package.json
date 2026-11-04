@@ -1,0 +1,55 @@
+{
+  "name": "@ndigo/auth-playground",
+  "version": "0.0.1",
+  "description": "Ndigo Auth Playground — six authentication modes side by side: opaque cookie sessions, JWT + refresh, role matrices (HTTP + socket), login rate limiting, durable LibSQL sessions and OIDC authorization-code + PKCE against an embedded issuer",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build:client": "vite build",
+    "start": "tsx src/index.ts",
+    "start:full": "pnpm build:client && tsx src/index.ts",
+    "dev": "vite",
+    "test": "pnpm build:client && vitest run"
+  },
+  "keywords": [
+    "auth",
+    "sessions",
+    "jwt",
+    "oidc",
+    "pkce",
+    "ndigo"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/auth-client": "~0.0.1",
+    "@ndigo/auth-core": "~0.0.1",
+    "@ndigo/auth-server": "~0.0.1",
+    "@ndigo/boot": "~0.0.1",
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/http": "~0.0.1",
+    "@ndigo/management": "~0.0.1",
+    "@ndigo/orm-drizzle": "~0.0.1",
+    "@ndigo/platform-node": "~0.0.1",
+    "@ndigo/rate-limit": "~0.0.1",
+    "@ndigo/router": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@ndigo/view-ejs": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:",
+    "jose": "catalog:",
+    "@ndigo/log": "~0.0.1"
+  },
+  "devDependencies": {
+    "@ndigo/test": "~0.0.1",
+    "@types/oidc-provider": "^9.13.0",
+    "@types/ws": "catalog:",
+    "oidc-provider": "^9.13.2",
+    "tsx": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:",
+    "ws": "catalog:",
+    "@ndigo/log": "~0.0.1"
+  }
+}

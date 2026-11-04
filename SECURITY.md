@@ -1,6 +1,6 @@
 # Security Policy
 
-The BlueJS framework prioritizes fail-closed authentication, bounded transport
+The Ndigo framework prioritizes fail-closed authentication, bounded transport
 handling, and safe package boundaries. This policy defines how vulnerabilities
 are reported, triaged, and fixed.
 
@@ -26,7 +26,7 @@ You will receive an acknowledgment within 72 hours and a fix timeline within
 
 ## Security model (what we guarantee)
 
-- **Authentication**: `@blue/auth-client` OIDC adapter is fail-closed — no
+- **Authentication**: `@ndigo/auth-client` OIDC adapter is fail-closed — no
   claim-only mode. Construction without `jwksUrl`, `discovery`, or an explicit
   `tokenValidator` throws. ID tokens are signature-, issuer-, audience-,
   expiration-, and (during the code flow) nonce-verified. PKCE S256 and `state`
@@ -34,17 +34,17 @@ You will receive an acknowledgment within 72 hours and a fix timeline within
 - **Authorization**: `AuthRouteGuard` validates against exactly one explicit
   authentication adapter; denials finalize as 401/403 and never leave requests
   open. Interceptor denials use the `InterceptorDenial` contract
-  (`@blue/dispatcher`).
+  (`@ndigo/dispatcher`).
 - **Transport**: Node request bodies/headers/timeouts are bounded
-  (`@blue/platform-node` limits) with deterministic 400/408/413/431/500
+  (`@ndigo/platform-node` limits) with deterministic 400/408/413/431/500
   responses; malformed JSON is rejected, never reshaped; `listen()` rejects on
   bind errors.
 - **Static files**: shared `StaticResourceResolver` (canonical base +
   prefix-with-separator containment, symlink resolution, MIME allowlist,
   `nosniff`) — no path escape.
-- **CORS**: server-side enforcement only in `@blue/platform-node`
+- **CORS**: server-side enforcement only in `@ndigo/platform-node`
   `CORSInterceptor`; wildcard + credentials rejected at construction.
-  `@blue/platform-web` `FetchCredentialsInterceptor` is documented as a
+  `@ndigo/platform-web` `FetchCredentialsInterceptor` is documented as a
   browser-only fetch helper — it is not a security boundary.
 
 ## Dependency advisories

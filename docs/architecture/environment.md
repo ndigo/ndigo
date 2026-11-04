@@ -1,6 +1,6 @@
 # Environment Architecture — Design & Decisions
 
-The BlueJS environment is a six-phase port of **Spring's environment model**
+The Ndigo environment is a six-phase port of **Spring's environment model**
 (PropertySource / MutablePropertySources / profiles / `@ConfigurationProperties` /
 `EnvironmentPostProcessor`), translated to **JavaScript-native structures** with
 fail-loud semantics throughout. This document is the "why" — the decisions,
@@ -11,7 +11,7 @@ this is the map.
 
 1. **Port semantics, not structures.** Spring's implementation (iterate every
    source per lookup, subclass zoo, `LinkedHashMap` ceremony) is Java-shaped.
-   BlueJS uses a `Map`-backed registry + prototype-chain/flat index strategies —
+   Ndigo uses a `Map`-backed registry + prototype-chain/flat index strategies —
    the P0 research table rejected radix/ART/QP-trie/HAMT/codegen accessors for
    config-size exact lookups (native objects & `Map` win). **(P0)**
 2. **Bench drives defaults, not taste.** The representative-workload rule
@@ -46,7 +46,7 @@ CLI → boot properties → process.env → .env → application-{profile}.json
 ```
 
 Deployer-over-developer (operator at runtime overrides baked-in defaults);
-among operator channels, CLI is most specific. `PrecedenceDoc` in blue-boot is
+among operator channels, CLI is most specific. `PrecedenceDoc` in ndigo-boot is
 the canonical list — the doc table and the integration test both reference it,
 so doctrine cannot drift.
 

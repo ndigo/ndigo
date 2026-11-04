@@ -1,5 +1,5 @@
 /**
- * Manifest conformance checker for publishable BlueJS packages.
+ * Manifest conformance checker for publishable Ndigo packages.
  *
  * Enforced contract (release + standalone-install correctness):
  *   1. Every runtime import (in `src/`) must be declared in `dependencies` —
@@ -15,7 +15,7 @@
  *   5. `devDependencies` entries must be used by tests/bench or be tooling
  *      (`@types/*`, typescript, vitest, nx, oxlint, tsx, jsdom, msw).
  *   6. Legacy contract: license ISC, `type: module`, exports map with
- *      `.` -> `types` + `default`, explicit `sideEffects`, and `@blue/*`
+ *      `.` -> `types` + `default`, explicit `sideEffects`, and `@ndigo/*`
  *      workspace deps pinned to `~0.0.1` in every section.
  *   7. README standard: the required H2 set
  *      (Installation, Getting Started, Usage, API, Development, Contributing,
@@ -41,7 +41,7 @@
  *      Build tooling invoked by name (APP_TOOLING) and asset-only runtime deps
  *      (APP_ASSET_DEPS) are exempt.
  *  11. Alias coverage: every workspace package has an entry in the root
- *      `vitest.aliases.ts` `blueAliases` table, so tests resolve `@blue/*`
+ *      `vitest.aliases.ts` `ndigoAliases` table, so tests resolve `@ndigo/*`
  *      imports to `src/` rather than a stale built `lib/` (TST-B).
  *  12. No relative import escapes the repository root: a tracked relative
  *      specifier that resolves outside the checkout makes its lane
@@ -65,7 +65,7 @@ import { surfaceViolations } from './package-surface.mjs';
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const PACKAGES = join(ROOT, 'packages');
 const APPS = join(ROOT, 'apps');
-const BLUE_PREFIX = '@blue/';
+const NDIGO_PREFIX = '@ndigo/';
 
 /**
  * Packages whose peerDependencies must contain exactly these entries:
@@ -73,21 +73,28 @@ const BLUE_PREFIX = '@blue/';
  * deliberately does not install itself.
  */
 const PEER_ALLOWLIST = {
-    '@blue/oxlint-plugin': ['oxlint'],
-    '@blue/telemetry-node': ['ws'],
+    '@ndigo/oxlint-plugin': ['oxlint'],
+    '@ndigo/telemetry-node': ['ws'],
     // Asset-only runtime feature dep for the OpenAPI docs UI (see AD-35):
     // the platform serves the files but code never imports the module.
-    '@blue/platform-node': ['swagger-ui-dist'],
+    '@ndigo/platform-node': ['swagger-ui-dist'],
     // Node-only capability subpaths: connection-only consumers need none of these.
-    '@blue/redis': ['@blue/cache', '@blue/factory', '@blue/jobs', '@blue/locks', '@blue/rate-limit', '@blue/socket'],
+    '@ndigo/redis': [
+        '@ndigo/cache',
+        '@ndigo/factory',
+        '@ndigo/jobs',
+        '@ndigo/locks',
+        '@ndigo/rate-limit',
+        '@ndigo/socket',
+    ],
     // OPTIONAL peer (AD-66): .toon config files decode through a lazy
     // variable-specifier dynamic import; consumers who never use TOON
     // install nothing and bundlers never resolve the module.
-    '@blue/boot': ['@toon-format/toon'],
+    '@ndigo/boot': ['@toon-format/toon'],
     // OpenFeature bridge (AD-87): the SDKs are the app-installed provider
     // runtimes — one singleton copy per app; the `./web` subpath's consumer
     // installs only the web SDK.
-    '@blue/flags-openfeature': ['@openfeature/server-sdk', '@openfeature/web-sdk'],
+    '@ndigo/flags-openfeature': ['@openfeature/server-sdk', '@openfeature/web-sdk'],
 };
 
 /** Dev-tooling that is imported/invoked by configs and tests but is not a package concern. */
@@ -123,8 +130,8 @@ const APP_DEV_DIRS = new Set(['test', 'e2e']);
  */
 const APP_TOOLING = new Set([...TOOLING, 'vite', '@playwright/test']);
 const APP_ASSET_DEPS = new Set([
-    'swagger-ui-dist', // blue-api serves the docs UI assets (asset-only, like the platform peer)
-    'todomvc-app-css', // blue-todo copies the TodoMVC stylesheet
+    'swagger-ui-dist', // ndigo-api serves the docs UI assets (asset-only, like the platform peer)
+    'todomvc-app-css', // ndigo-todo copies the TodoMVC stylesheet
 ]);
 
 /**
@@ -273,7 +280,7 @@ for (const dir of readdirSync(PACKAGES)) {
     const dev = importsOf(join(PACKAGES, dir), DEV_DIRS);
     for (const spec of runtime) workspaceUsage.add(spec);
     for (const spec of dev) workspaceUsage.add(spec);
-    const blueSelf = name; // manifest.name already carries the @blue/ scope
+    const ndigoSelf = name; // manifest.name already carries the @ndigo/ scope
 
     const dependencies = manifest.dependencies ?? {};
     const devDependencies = manifest.devDependencies ?? {};
@@ -292,7 +299,7 @@ for (const dir of readdirSync(PACKAGES)) {
         ['peerDependencies', peerDependencies],
     ]) {
         for (const [dep, version] of Object.entries(deps)) {
-            if (dep.startsWith(BLUE_PREFIX) && !version.startsWith('~0.0.1')) {
+            if (dep.startsWith(NDIGO_PREFIX) && !version.startsWith('~0.0.1')) {
                 fail(name, `${section}.${dep} uses ${version}, expected ~0.0.1`);
             }
         }
@@ -323,7 +330,7 @@ for (const dir of readdirSync(PACKAGES)) {
         }
     }
     const desc = manifest.description ?? '';
-    if (desc.length < 25 || /^blue\s+\w+$/i.test(desc.trim())) {
+    if (desc.length < 25 || /^ndigo\s+\w+$/i.test(desc.trim())) {
         fail(name, `description is generic or too short: "${desc}" (docs standard)`);
     }
     if (!manifest.author) fail(name, `author is required (docs standard)`);
@@ -332,7 +339,7 @@ for (const dir of readdirSync(PACKAGES)) {
     }
     // Documentation standard (see docs/guides/12-package-documentation.md): every
     // publishable package ships its compiled lib/ and generated api/. (No
-    // @blue/generators exemption — it is a normal build-output package: its
+    // @ndigo/generators exemption — it is a normal build-output package: its
     // exports point at lib/ and its files include lib alongside the Nx-runtime
     // assets src/ and generators.json.)
     if (!Array.isArray(manifest.files) || !manifest.files.includes('api') || !manifest.files.includes('lib')) {
@@ -342,7 +349,7 @@ for (const dir of readdirSync(PACKAGES)) {
     // Rule 1: runtime closure — every src/ import is a dependency
     // (allowlisted host-provided peers excepted, e.g. telemetry-node's `ws`).
     for (const spec of runtime) {
-        if (spec === blueSelf) continue;
+        if (spec === ndigoSelf) continue;
         if (!dependencies[spec] && !peerDependencies[spec]) {
             fail(name, `runtime import "${spec}" is not declared in dependencies`);
         }
@@ -350,7 +357,7 @@ for (const dir of readdirSync(PACKAGES)) {
 
     // Rule 2: no dead dependencies.
     for (const dep of Object.keys(dependencies)) {
-        if (dep === blueSelf) continue;
+        if (dep === ndigoSelf) continue;
         if (!runtime.has(dep) && !peerDependencies[dep]) {
             fail(name, `dependencies.${dep} is imported nowhere in src/`);
         }
@@ -358,7 +365,7 @@ for (const dir of readdirSync(PACKAGES)) {
 
     // Rule 3: every dev-time import is declared.
     for (const spec of dev) {
-        if (spec === blueSelf) continue;
+        if (spec === ndigoSelf) continue;
         if (!dependencies[spec] && !devDependencies[spec] && !TOOLING.has(spec) && !peerDependencies[spec]) {
             fail(name, `test/bench import "${spec}" is not declared (add to devDependencies or dependencies)`);
         }
@@ -375,7 +382,7 @@ for (const dir of readdirSync(PACKAGES)) {
 
     // Rule 5: devDependencies entries must be used or tooling.
     for (const [dep, version] of Object.entries(devDependencies)) {
-        if (dep === blueSelf) continue;
+        if (dep === ndigoSelf) continue;
         if (dep.startsWith('@types/') || TOOLING.has(dep)) continue;
         if (!dev.has(dep) && !runtime.has(dep) && !peerDependencies[dep]) {
             fail(name, `devDependencies.${dep} (${version}) is imported nowhere in test/bench`);
@@ -443,7 +450,7 @@ for (const dir of readdirSync(APPS)) {
 //   - `vitest.config.*` for the root, every package and every app;
 //   - the shared `vitest.aliases.ts` table;
 //   - `vite.config.*` that carries a `test` block, where an app's vitest
-//     aliases live (blue-todo's in-config test block was previously skipped).
+//     aliases live (ndigo-todo's in-config test block was previously skipped).
 // Recognized replacement spellings are resolved by `aliasTargetFromReplacement`;
 // an unrecognized, alias-looking value warns instead of passing silently.
 const aliasConfigs = new Set([join(ROOT, 'vitest.config.ts'), join(ROOT, 'vitest.aliases.ts')]);
@@ -483,13 +490,13 @@ for (const configPath of aliasConfigs) {
 }
 
 // Rule 11: every workspace package has an entry in the root `vitest.aliases.ts`
-// `blueAliases` table, so its tests resolve `@blue/*` imports to `src/` rather
+// `ndigoAliases` table, so its tests resolve `@ndigo/*` imports to `src/` rather
 // than a stale built `lib/` (TST-B). Read as text and compared by package name —
-// tolerant of regex-literal keys (`^@blue\/core$`) and quoted keys.
+// tolerant of regex-literal keys (`^@ndigo\/core$`) and quoted keys.
 const aliasesPath = join(ROOT, 'vitest.aliases.ts');
 if (!existsSync(aliasesPath)) {
     fail(
-        '@blue/js (root)',
+        '@ndigo/js (root)',
         'vitest.aliases.ts is missing — the alias-coverage gate (TST-B) requires it; it is owned by the Wave-1 aliases workstream'
     );
 } else {
@@ -503,10 +510,10 @@ if (!existsSync(aliasesPath)) {
         } catch {
             continue; // unparseable manifests are already reported by the loop above
         }
-        // Require a standalone alias name: `@blue/util` must not be satisfied by
-        // the deeper `@blue/util/string` entry.
+        // Require a standalone alias name: `@ndigo/util` must not be satisfied by
+        // the deeper `@ndigo/util/string` entry.
         if (!new RegExp(`${escapeRegExp(name)}(?![\\w/-])`).test(aliasText)) {
-            fail(name, `no entry in the root vitest.aliases.ts blueAliases table (required so tests resolve src/)`);
+            fail(name, `no entry in the root vitest.aliases.ts ndigoAliases table (required so tests resolve src/)`);
         }
     }
 }
@@ -549,7 +556,7 @@ const rootManifest = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')
 for (const [dep, version] of Object.entries(rootManifest.devDependencies ?? {})) {
     if (dep.startsWith('@types/') || ROOT_TOOLING.has(dep)) continue;
     if (!workspaceUsage.has(dep)) {
-        fail('@blue/js (root)', `devDependencies.${dep} (${version}) is imported nowhere in the workspace`);
+        fail('@ndigo/js (root)', `devDependencies.${dep} (${version}) is imported nowhere in the workspace`);
     }
 }
 

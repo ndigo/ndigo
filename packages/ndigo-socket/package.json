@@ -1,0 +1,37 @@
+{
+  "name": "@ndigo/socket",
+  "version": "0.0.1",
+  "description": "Ndigo Socket — isomorphic WebSocket domain: client contract + implementation and server-side session contracts",
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "ndigo-socket",
+    "websocket",
+    "socket",
+    "realtime"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/signals": "~0.0.1"
+  },
+  "sideEffects": false,
+  "devDependencies": {}
+}

@@ -1,0 +1,29 @@
+# @ndigo/<%= name %> — <%= className %>
+
+> <%- description %>.
+
+Scaffolded by `ndigo new` — extend this README as the app grows.
+
+## Run
+
+```bash
+cd apps/<%= dirName %> && pnpm dev
+# open http://127.0.0.1:<%= port %>
+```
+
+## Demonstrates
+
+- The minimal `@ndigo` browser application shape: context + route + Web Component render
+- Vite dev server wiring with the shared decorator-lowering policy
+
+## See Also
+
+- [apps/README](../README.md) — the applications progression
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

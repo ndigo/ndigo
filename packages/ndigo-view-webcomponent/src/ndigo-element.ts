@@ -1,0 +1,34 @@
+/**
+ * @module ndigo-view-webcomponent
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+import { Constructable } from '@ndigo/core';
+
+export interface NdigoElement {
+    name: string;
+}
+
+const NAME = 'name';
+
+/**
+ * Adds a `name` property that reflects the element's `name` attribute.
+ *
+ * Use this mixin when a web component should expose a simple attribute-backed identifier
+ * without re-implementing the reflection logic in each subclass.
+ *
+ * @param superclass - The base HTMLElement subclass to extend.
+ * @returns A subclass that exposes a reflected `name` property.
+ */
+export const AsNdigoElement = <T extends Constructable<HTMLElement>>(superclass: T): Constructable<NdigoElement> & T =>
+    class extends superclass implements NdigoElement {
+        get name(): string {
+            return this.getAttribute(NAME) ?? '';
+        }
+
+        set name(newName: string) {
+            if (newName) {
+                this.setAttribute(NAME, newName);
+            }
+        }
+    };

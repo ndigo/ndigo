@@ -21,7 +21,7 @@ The default driver is in-process with a **process-wide lease table** — every
 never double-run a locked task:
 
 ```ts
-import { InProcessLockDriver } from '@blue/locks';
+import { InProcessLockDriver } from '@ndigo/locks';
 
 const locks = new InProcessLockDriver();
 const lease = await locks.acquire('payroll-window', { ttlMs: 30_000 });
@@ -42,9 +42,9 @@ Register a durable driver under the `lockDriver` bean to replace the default
 (which is in-process — correct on one node, meaningless across nodes):
 
 ```ts
-import { LOCK_DRIVER } from '@blue/locks';
-import { RedisConnection } from '@blue/redis';
-import { RedisLockDriver } from '@blue/redis/locks';
+import { LOCK_DRIVER } from '@ndigo/locks';
+import { RedisConnection } from '@ndigo/redis';
+import { RedisLockDriver } from '@ndigo/redis/locks';
 
 const connection = new RedisConnection({ url: 'redis://…' });
 await connection.connect();

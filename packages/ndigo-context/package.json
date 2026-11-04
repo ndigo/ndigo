@@ -1,0 +1,45 @@
+{
+  "name": "@ndigo/context",
+  "version": "0.0.1",
+  "description": "Application context, environments, configuration, and events for Ndigo",
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "ndigo-context",
+    "application-context",
+    "context"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "benchmark": "~2.1.4"
+  },
+  "sideEffects": false,
+  "dependencies": {
+    "@ndigo/content": "~0.0.1",
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/factory": "~0.0.1",
+    "@ndigo/log": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:",
+    "zod": "catalog:"
+  }
+}

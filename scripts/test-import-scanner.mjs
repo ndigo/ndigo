@@ -35,13 +35,13 @@ function withFixture(run) {
 test('scans a nested src/lib directory instead of treating it as build output', () => {
     withFixture((root) => {
         mkdirSync(join(root, 'src', 'lib'), { recursive: true });
-        writeFileSync(join(root, 'src', 'app.ts'), "import '@blue/app';\n");
-        writeFileSync(join(root, 'src', 'lib', 'probe.ts'), "import '@blue/nested-lib';\n");
+        writeFileSync(join(root, 'src', 'app.ts'), "import '@ndigo/app';\n");
+        writeFileSync(join(root, 'src', 'lib', 'probe.ts'), "import '@ndigo/nested-lib';\n");
 
         const imports = collectImports(join(root, 'src'));
 
-        assert.ok(imports.has('@blue/nested-lib'), 'nested src/lib import must be seen');
-        assert.ok(imports.has('@blue/app'));
+        assert.ok(imports.has('@ndigo/nested-lib'), 'nested src/lib import must be seen');
+        assert.ok(imports.has('@ndigo/app'));
     });
 });
 
@@ -49,23 +49,23 @@ test('still skips node_modules and .vitest at any depth', () => {
     withFixture((root) => {
         mkdirSync(join(root, 'src', 'node_modules', 'pkg'), { recursive: true });
         mkdirSync(join(root, 'src', '.vitest'), { recursive: true });
-        writeFileSync(join(root, 'src', 'app.ts'), "import '@blue/app';\n");
-        writeFileSync(join(root, 'src', 'node_modules', 'pkg', 'index.ts'), "import '@blue/skipped-nm';\n");
-        writeFileSync(join(root, 'src', '.vitest', 'probe.ts'), "import '@blue/skipped-vitest';\n");
+        writeFileSync(join(root, 'src', 'app.ts'), "import '@ndigo/app';\n");
+        writeFileSync(join(root, 'src', 'node_modules', 'pkg', 'index.ts'), "import '@ndigo/skipped-nm';\n");
+        writeFileSync(join(root, 'src', '.vitest', 'probe.ts'), "import '@ndigo/skipped-vitest';\n");
 
         const imports = collectImports(join(root, 'src'));
 
-        assert.ok(imports.has('@blue/app'));
-        assert.ok(!imports.has('@blue/skipped-nm'), 'node_modules must stay skipped');
-        assert.ok(!imports.has('@blue/skipped-vitest'), '.vitest must stay skipped');
+        assert.ok(imports.has('@ndigo/app'));
+        assert.ok(!imports.has('@ndigo/skipped-nm'), 'node_modules must stay skipped');
+        assert.ok(!imports.has('@ndigo/skipped-vitest'), '.vitest must stay skipped');
     });
 });
 
 test('importsOf(src) includes imports living under a nested lib', () => {
     withFixture((root) => {
         mkdirSync(join(root, 'src', 'lib'), { recursive: true });
-        writeFileSync(join(root, 'src', 'lib', 'probe.ts'), "import '@blue/nested-lib';\n");
+        writeFileSync(join(root, 'src', 'lib', 'probe.ts'), "import '@ndigo/nested-lib';\n");
 
-        assert.ok(importsOf(root, SOURCE_DIRS).has('@blue/nested-lib'));
+        assert.ok(importsOf(root, SOURCE_DIRS).has('@ndigo/nested-lib'));
     });
 });

@@ -1,0 +1,51 @@
+{
+  "name": "@ndigo/util",
+  "version": "0.0.1",
+  "description": "Zero-dependency helper utilities — type guards, strings, environment, crypto",
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "ndigo-util",
+    "util",
+    "utilities",
+    "utility"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    },
+    "./string": {
+      "types": "./lib/string/index.d.ts",
+      "default": "./lib/string/index.js"
+    },
+    "./types": {
+      "types": "./lib/type/index.d.ts",
+      "default": "./lib/type/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "string": [
+        "./lib/string/index.d.ts"
+      ],
+      "types": [
+        "./lib/type/index.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "sideEffects": false
+}

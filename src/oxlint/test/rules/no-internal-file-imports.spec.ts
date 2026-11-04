@@ -18,71 +18,71 @@ const ruleTester = new RuleTester({
 ruleTester.run('no-internal-file-imports', noInternalFileImports, {
     valid: [
         {
-            code: "import { Deferred } from '@blue/core';",
-            filename: '/packages/blue-core/src/container.ts',
+            code: "import { Deferred } from '@ndigo/core';",
+            filename: '/packages/ndigo-core/src/container.ts',
         },
         {
             code: "import { something } from './_util';",
-            filename: '/packages/blue-core/src/container.ts',
+            filename: '/packages/ndigo-core/src/container.ts',
         },
         {
-            code: "import { foo } from '@blue/util';",
-            filename: '/packages/blue-core/src/container.ts',
+            code: "import { foo } from '@ndigo/util';",
+            filename: '/packages/ndigo-core/src/container.ts',
         },
         {
-            code: "import { bar } from '@blue/core/container';",
-            filename: '/packages/blue-core/src/container.ts',
+            code: "import { bar } from '@ndigo/core/container';",
+            filename: '/packages/ndigo-core/src/container.ts',
         },
         {
-            code: "export * from '@blue/http';",
-            filename: '/packages/blue-core/src/container.ts',
+            code: "export * from '@ndigo/http';",
+            filename: '/packages/ndigo-core/src/container.ts',
         },
     ],
     invalid: [
         {
-            code: "import { foo } from '@blue/core/_util';",
-            filename: '/packages/blue-core/src/container.ts',
+            code: "import { foo } from '@ndigo/core/_util';",
+            filename: '/packages/ndigo-core/src/container.ts',
             errors: [
                 {
                     messageId: 'internalImport',
                     data: {
-                        source: '@blue/core/_util',
+                        source: '@ndigo/core/_util',
                     },
                 },
             ],
         },
         {
-            code: "import { bar } from '@blue/util/_helpers';",
-            filename: '/packages/blue-core/src/container.ts',
+            code: "import { bar } from '@ndigo/util/_helpers';",
+            filename: '/packages/ndigo-core/src/container.ts',
             errors: [
                 {
                     messageId: 'internalImport',
                     data: {
-                        source: '@blue/util/_helpers',
+                        source: '@ndigo/util/_helpers',
                     },
                 },
             ],
         },
         {
-            code: "export { baz } from '@blue/http/_internal';",
-            filename: '/packages/blue-core/src/container.ts',
+            code: "export { baz } from '@ndigo/http/_internal';",
+            filename: '/packages/ndigo-core/src/container.ts',
             errors: [
                 {
                     messageId: 'internalImport',
                     data: {
-                        source: '@blue/http/_internal',
+                        source: '@ndigo/http/_internal',
                     },
                 },
             ],
         },
         {
-            code: "export * from '@blue/http/_internal';",
-            filename: '/packages/blue-core/src/container.ts',
+            code: "export * from '@ndigo/http/_internal';",
+            filename: '/packages/ndigo-core/src/container.ts',
             errors: [
                 {
                     messageId: 'internalImport',
                     data: {
-                        source: '@blue/http/_internal',
+                        source: '@ndigo/http/_internal',
                     },
                 },
             ],

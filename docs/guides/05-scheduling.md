@@ -1,6 +1,6 @@
 # Guide 05 — Scheduling
 
-How scheduled tasks work in BlueJS: the `@scheduled` decorator, zero-wiring
+How scheduled tasks work in Ndigo: the `@scheduled` decorator, zero-wiring
 discovery, execution semantics, and guardrails. Scheduling is **Node-only**.
 
 The design: Spring's declarative decorator shape with Nest/AdonisJS runtime
@@ -13,8 +13,8 @@ Add a `@scheduled` method to **any registered bean**, and the node platform
 does the rest:
 
 ```ts
-import { scheduled } from '@blue/scheduler';
-import { configuration, entry } from '@blue/context';
+import { scheduled } from '@ndigo/scheduler';
+import { configuration, entry } from '@ndigo/context';
 
 @configuration
 class HousekeepingConfiguration {
@@ -56,8 +56,8 @@ class Maintenance {
 - **auto-starts** (SmartLifecycle), and
 - stops/drains on context close.
 
-The `blue-api` demo ships a working heartbeat (`Heartbeat` in
-`apps/04-blue-api/src/heartbeat.ts`).
+The `ndigo-api` demo ships a working heartbeat (`Heartbeat` in
+`apps/04-ndigo-api/src/heartbeat.ts`).
 
 ## 2. Specs
 
@@ -103,12 +103,12 @@ scheduler.getStats('maintenance.purge'); // → { runs, failures, inFlight, … 
 
 ## 5. Guardrails
 
-| Where      | Behavior                                                                                                    |
-| ---------- | ----------------------------------------------------------------------------------------------------------- |
-| Decoration | non-method → `TypeError`; invalid cron/duration/time zone → throws                                          |
-| Platform   | no `process` (browser) → `FrameworkError`                                                                   |
-| Refresh    | `@scheduled` class registered as a prototype (no instance) → `FrameworkError`                               |
-| Lint       | `no-scheduled-in-browser` flags `@blue/scheduler` imports in files also importing browser-platform packages |
+| Where      | Behavior                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------ |
+| Decoration | non-method → `TypeError`; invalid cron/duration/time zone → throws                                           |
+| Platform   | no `process` (browser) → `FrameworkError`                                                                    |
+| Refresh    | `@scheduled` class registered as a prototype (no instance) → `FrameworkError`                                |
+| Lint       | `no-scheduled-in-browser` flags `@ndigo/scheduler` imports in files also importing browser-platform packages |
 
 ## 6. HTTP example
 
@@ -116,8 +116,8 @@ Scheduling integrates with the dispatcher like any bean — controllers park
 tasks too:
 
 ```ts
-import { requestMapping, getMapping } from '@blue/dispatcher';
-import { scheduled } from '@blue/scheduler';
+import { requestMapping, getMapping } from '@ndigo/dispatcher';
+import { scheduled } from '@ndigo/scheduler';
 
 @requestMapping('/reports')
 class ReportController {
@@ -137,5 +137,5 @@ class ReportController {
 
 - [scheduling decision](../../docs/decisions/2026-09-13_AD20_SCHEDULING.md)
 - [Implementation plan](../../docs/plans/2026-09-13_SCHEDULING.md)
-- [blue-api demo](../../apps/04-blue-api/README.md) — the heartbeat task
-- [`@blue/scheduler`](../../packages/blue-scheduler/README.md) — package surface
+- [ndigo-api demo](../../apps/04-ndigo-api/README.md) — the heartbeat task
+- [`@ndigo/scheduler`](../../packages/ndigo-scheduler/README.md) — package surface

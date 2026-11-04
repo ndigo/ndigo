@@ -1,0 +1,29 @@
+{
+  "generators": {
+    "app": {
+      "factory": "./src/generators/app/generator",
+      "schema": "./src/generators/app/schema.json",
+      "description": "Generate a Ndigo example application under apps/ (node or browser kind)"
+    },
+    "package": {
+      "factory": "./src/generators/package/generator",
+      "schema": "./src/generators/package/schema.json",
+      "description": "Generate a new @ndigo/* package with the standard Ndigo skeleton"
+    },
+    "component": {
+      "factory": "./src/generators/component/generator",
+      "schema": "./src/generators/component/schema.json",
+      "description": "Generate a source file + test file pair with Ndigo conventions"
+    },
+    "header": {
+      "factory": "./src/generators/header/generator",
+      "schema": "./src/generators/header/schema.json",
+      "description": "Add or replace the standard Ndigo documentation header on a source file"
+    },
+    "readme": {
+      "factory": "./src/generators/readme/generator",
+      "schema": "./src/generators/readme/schema.json",
+      "description": "Scaffold a new package README on the standard Ndigo template"
+    }
+  }
+}

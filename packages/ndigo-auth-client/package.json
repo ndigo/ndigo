@@ -1,0 +1,41 @@
+{
+  "name": "@ndigo/auth-client",
+  "version": "0.0.1",
+  "description": "Client-side authentication for Ndigo — AuthClient, ClientAuthGuard, and OIDC adapter",
+  "keywords": [
+    "ndigo",
+    "auth",
+    "oidc",
+    "client"
+  ],
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "catalog:"
+  },
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@ndigo/auth-core": "~0.0.1",
+    "@ndigo/http": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "jose": "catalog:"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "api",
+    "lib"
+  ]
+}

@@ -1,0 +1,33 @@
+/**
+ * @module ndigo-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+import { ApplicationContext } from '@ndigo/context';
+import { Constructable } from '@ndigo/core';
+import { StrategyInitializer } from './strategy-initializer';
+
+export interface ViewMappingStrategy {
+    viewMapping: unknown;
+    initViewMapping(context: ApplicationContext): void;
+}
+
+/**
+ */
+
+export const defaultViewMapping = null;
+
+export const AsViewMappingStrategy = <T extends Constructable<StrategyInitializer>>(
+    superclass: T
+): Constructable<ViewMappingStrategy> & T =>
+    class extends superclass implements ViewMappingStrategy {
+        readonly viewMappingKey = 'viewMapping';
+
+        viewMapping!: unknown;
+
+        initViewMapping(context: ApplicationContext) {
+            const { viewMappingKey } = this;
+
+            this.initStrategy(context, viewMappingKey, 'viewMapping', defaultViewMapping);
+        }
+    };

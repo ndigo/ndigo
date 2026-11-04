@@ -4,13 +4,13 @@
  *
  * Regenerates the reference app's committed schema snapshot through the
  * app's own `db:generate` script and fails on ANY working-tree change under
- * `apps/04-blue-api/db/` — a run at HEAD must be byte-identical (a fresh
+ * `apps/04-ndigo-api/db/` — a run at HEAD must be byte-identical (a fresh
  * migration file means the entities moved without a committed migration;
  * a snapshot diff means the last generate was never committed). Mirrors the
  * doc-freshness gate's premise: generated artifacts are committed and
  * regen-checked in CI.
  *
- * Requires the workspace built (the app script imports `@blue/orm-drizzle`
+ * Requires the workspace built (the app script imports `@ndigo/orm-drizzle`
  * from its built `lib/`); CI runs build before checks.
  */
 import { spawnSync } from 'node:child_process';
@@ -18,11 +18,11 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const dbDir = join(root, 'apps', '04-blue-api', 'db');
+const dbDir = join(root, 'apps', '04-ndigo-api', 'db');
 
 // 1. Regenerate: the app script writes only when the metadata actually
 //    moved (plus the always-rewritten snapshot, byte-identical when clean).
-const generate = spawnSync('pnpm', ['--filter', '@blue/api', 'db:generate'], {
+const generate = spawnSync('pnpm', ['--filter', '@ndigo/api', 'db:generate'], {
     cwd: root,
     stdio: ['ignore', 'inherit', 'inherit'],
 });
@@ -45,8 +45,8 @@ if (status.status !== 0) {
 const lines = (status.stdout ?? '').split('\n').filter((line) => line.length > 0);
 if (lines.length > 0) {
     process.stderr.write(
-        'db:schema:check: schema drift under apps/04-blue-api/db/ — ' +
-            'run `blue db generate apps/04-blue-api`, review the generated ' +
+        'db:schema:check: schema drift under apps/04-ndigo-api/db/ — ' +
+            'run `ndigo db generate apps/04-ndigo-api`, review the generated ' +
             'migration, and commit it together with db/schema.json:\n'
     );
     for (const line of lines) {

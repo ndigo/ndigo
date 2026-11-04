@@ -1,0 +1,40 @@
+{
+  "name": "@ndigo/chat",
+  "version": "0.0.1",
+  "description": "Ndigo Chat — real-time room chat: WebSocket rooms, presence, history replay, and a Web Component client",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build:client": "vite build",
+    "dev": "npm run start:full",
+    "start": "tsx src/index.ts",
+    "start:full": "npm run build:client && tsx src/index.ts",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/boot": "~0.0.1",
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/factory": "~0.0.1",
+    "@ndigo/management": "~0.0.1",
+    "@ndigo/platform-node": "~0.0.1",
+    "@ndigo/signals": "~0.0.1",
+    "@ndigo/socket": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@ndigo/view-ejs": "~0.0.1",
+    "@ndigo/view-webcomponent": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:",
+    "zod": "catalog:",
+    "@ndigo/log": "~0.0.1"
+  },
+  "devDependencies": {
+    "@ndigo/test": "~0.0.1",
+    "@stomp/stompjs": "7.5.0",
+    "tsx": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:",
+    "@ndigo/log": "~0.0.1"
+  }
+}

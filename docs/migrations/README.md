@@ -4,6 +4,7 @@ This directory contains migration guides documenting breaking changes and upgrad
 
 ## Available Migrations
 
+- [2026-11-04_LIBSQL_CLIENT_0_18_UPGRADE.md](./2026-11-04_LIBSQL_CLIENT_0_18_UPGRADE.md) - `@libsql/client` 0.17.4→0.18.0: pooled local driver, interactive-transaction boundary in `@ndigo/orm-drizzle`
 - [2026-11-04_CRONER_11_I18NEXT_26_UPGRADE.md](./2026-11-04_CRONER_11_I18NEXT_26_UPGRADE.md) - Runtime deps: croner 10→11 (DST semantics) and i18next 24→26 (`initImmediate` removal)
 - [2026-11-04_VITEST_5_UPGRADE.md](./2026-11-04_VITEST_5_UPGRADE.md) - Vitest 4.0.18→5.1.0: `bench` fixture rewrite, per-lane config wiring, decorator lowering in test lanes
 - [2026-11-04_PNPM_12_NX_24_UPGRADE.md](./2026-11-04_PNPM_12_NX_24_UPGRADE.md) - Toolchain upgrade: pnpm 11.4.0→12.16.1 (Rust rewrite) and Nx 23.2.1→24.0.4

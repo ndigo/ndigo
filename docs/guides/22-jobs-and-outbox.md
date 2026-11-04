@@ -147,8 +147,11 @@ class OrderService {
 
 **Construction is the wiring.** `LibSQLOutboxStore` joins the caller's
 transaction because it writes through the _same_ libSQL client the
-`DrizzleTransactionManager` brackets with `BEGIN`/`COMMIT`/`ROLLBACK`. Hand
-it anything else and the guarantee is gone.
+`DrizzleTransactionManager` brackets with an interactive transaction
+(`client.transaction('write')`) — the client routes the statements of the
+boundary's async context into it. Hand it anything else and the guarantee is
+gone. A statement issued from _another_ async context (a different request, a
+worker) stays out of the boundary rather than joining it.
 
 The relay claims unpublished entries with a lease, publishes through an
 `OutboxPublisher` (the shipped `JobOutboxPublisher` enqueues the entry as a

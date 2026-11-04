@@ -8,6 +8,7 @@ import { drizzle as createDrizzle, LibSQLDatabase } from 'drizzle-orm/libsql';
 import { Constructable } from '@ndigo/core';
 import { getEntityMetadata, isEntity } from '@ndigo/orm';
 import { primaryKeyStorageType, sqliteTypeForColumnType } from './_column-types';
+import { TransactionScopedClient } from './_transaction-scoped-client';
 
 export type { LibSQLDatabase } from 'drizzle-orm/libsql';
 
@@ -30,7 +31,11 @@ export class DrizzleDataSource {
 
     constructor(options: DrizzleDataSourceOptions = {}) {
         this.#url = options.url ?? ':memory:';
-        this.#client = createClient({ url: this.#url, authToken: options.authToken });
+        // The raw client is pooled (`@libsql/client` 0.18 gives every statement
+        // its own connection), so everything built on it — the Drizzle database
+        // and every store handed `client` — goes through the scoped wrapper that
+        // routes statements into an open transaction.
+        this.#client = new TransactionScopedClient(createClient({ url: this.#url, authToken: options.authToken }));
         this.#db = createDrizzle(this.#client);
     }
 

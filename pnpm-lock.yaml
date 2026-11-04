@@ -1689,8 +1689,8 @@ importers:
         specifier: ~0.0.1
         version: link:../ndigo-content
       i18next:
-        specifier: ^24.2.3
-        version: 24.2.3(typescript@7.0.2)
+        specifier: ^26.7.1
+        version: 26.7.1(typescript@7.0.2)
 
   packages/ndigo-context:
     dependencies:
@@ -2333,8 +2333,8 @@ importers:
         specifier: 'catalog:'
         version: 1.1.3
       croner:
-        specifier: ^10.0.1
-        version: 10.0.1
+        specifier: ^11.0.0
+        version: 11.0.0
     devDependencies:
       '@opentelemetry/sdk-trace-base':
         specifier: 'catalog:'
@@ -3189,10 +3189,6 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
-
-  '@babel/runtime@7.29.7':
-    resolution: {integrity: sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==}
-    engines: {node: '>=6.9.0'}
 
   '@babel/template@7.29.7':
     resolution: {integrity: sha512-puq+Gf35oI24FeN11LkoUQFqv9uwNeWpxXZi/Ji3rRIoKAzKnxRaZ+Gkj0vKS9ZCiTESfng1N9LyOyXvo+m+Gg==}
@@ -5829,8 +5825,8 @@ packages:
   create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
 
-  croner@10.0.1:
-    resolution: {integrity: sha512-ixNtAJndqh173VQ4KodSdJEI6nuioBWI0V1ITNKhZZsO0pEMoDxz539T4FTTbSZ/xIOSuDnzxLVRqBVSvPNE2g==}
+  croner@11.0.0:
+    resolution: {integrity: sha512-T17ADjdttrVToyzLpLq9Xb9xzcMwpQ/M3Qs9szhh0MVNTbv6NWQ9OFYa2qlzPYXFMn+uoDlnW1IpIv6cAvFtyA==}
     engines: {node: '>=18.0'}
 
   cross-spawn@7.0.6:
@@ -6711,10 +6707,10 @@ packages:
     resolution: {integrity: sha512-Y93lCzHYgGWdrJ66yIktxiaGULYc6oGiABxhcO5AufBeOyoIdZF7bIfLaOrbM0iGIOXQQgxxRrFEnb+Y6w1n4A==}
     engines: {node: '>=10.18'}
 
-  i18next@24.2.3:
-    resolution: {integrity: sha512-lfbf80OzkocvX7nmZtu7nSTNbrTYR52sLWxPtlXX1zAhVw8WEnFk4puUkCR4B1dNQwbSpEHHHemcZu//7EcB7A==}
+  i18next@26.7.1:
+    resolution: {integrity: sha512-cX+3RRVczel/V2kCMTACckSGSpqgtWYEA6beXNYVms7dOQiHojdPYHD26lT4IKimNeoGWrLvtPgjftbRvmZJVw==}
     peerDependencies:
-      typescript: ^5
+      typescript: ^5 || ^6 || ^7
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -9875,8 +9871,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/runtime@7.29.7': {}
-
   '@babel/template@7.29.7':
     dependencies:
       '@babel/code-frame': 7.29.7
@@ -12151,7 +12145,7 @@ snapshots:
 
   create-require@1.1.1: {}
 
-  croner@10.0.1: {}
+  croner@11.0.0: {}
 
   cross-spawn@7.0.6:
     dependencies:
@@ -13017,9 +13011,7 @@ snapshots:
 
   hyperdyperid@1.2.0: {}
 
-  i18next@24.2.3(typescript@7.0.2):
-    dependencies:
-      '@babel/runtime': 7.29.7
+  i18next@26.7.1(typescript@7.0.2):
     optionalDependencies:
       typescript: 7.0.2
 

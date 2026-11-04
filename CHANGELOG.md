@@ -194,6 +194,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the same exposition name (hyphen vs underscore class) and sanitizes
   attribute keys, so a scrape document can no longer carry malformed or
   duplicate metric names.
+- `@ndigo/scheduler` (croner 10 → 11): DST handling is realigned with Vixie
+  cron. A fixed-time job whose wall time falls in the spring-forward gap now
+  runs at the first valid time after the gap (`0 30 2 * * *` in
+  `Europe/Paris` fires 03:00, not 03:30), a job scoped to the skipped hour
+  does not fire that day, and an interval job runs _through_ the repeated
+  fall-back hour on both of its occurrences instead of jumping over it by the
+  gap's length. Patterns using `?` in the day-of-month or day-of-week field
+  now behave as the documented wildcard alias (`0 0 ? * MON` ran daily on
+  10.x, now runs on Mondays). No API change: `@scheduled` specs, expressions
+  and time zones are untouched.
+- `@ndigo/content-i18next` (i18next 24 → 26): the adapter initializes with
+  `initAsync: false` (the deprecated `initImmediate` alias it used was removed
+  in i18next 26) and language resolution follows the 25.x matcher — a
+  region-qualified code such as `fr-CA` still resolves to the base language, and
+  `changeLanguage` requests no longer race. Behavior is unchanged for the
+  adapter's surface; consumers that keep their own `i18next` copy alongside
+  this package now need ≥26 for a single instance type.
 
 ### Fixed
 

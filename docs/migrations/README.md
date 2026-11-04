@@ -4,6 +4,7 @@ This directory contains migration guides documenting breaking changes and upgrad
 
 ## Available Migrations
 
+- [2026-11-04_CRONER_11_I18NEXT_26_UPGRADE.md](./2026-11-04_CRONER_11_I18NEXT_26_UPGRADE.md) - Runtime deps: croner 10→11 (DST semantics) and i18next 24→26 (`initImmediate` removal)
 - [2026-11-04_VITEST_5_UPGRADE.md](./2026-11-04_VITEST_5_UPGRADE.md) - Vitest 4.0.18→5.1.0: `bench` fixture rewrite, per-lane config wiring, decorator lowering in test lanes
 - [2026-11-04_PNPM_12_NX_24_UPGRADE.md](./2026-11-04_PNPM_12_NX_24_UPGRADE.md) - Toolchain upgrade: pnpm 11.4.0→12.16.1 (Rust rewrite) and Nx 23.2.1→24.0.4
 - [2026-08-22_MIGRATION_TO_1.0.md](./2026-08-22_MIGRATION_TO_1.0.md) - Legacy → BlueJS 1.0 migration guide (TC39 decorators, API surface changes)

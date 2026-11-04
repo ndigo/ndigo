@@ -49,6 +49,45 @@ describe('@ndigo/scheduler CronSchedule', () => {
     test('rejects malformed expressions at construction', () => {
         expect(() => new CronSchedule('99 99 * * * * *', 'UTC')).toThrow(TypeError);
     });
+
+    // DST contract (croner 11, aligned with Vixie cron): a fixed-time job whose
+    // wall time falls in the spring-forward gap runs at the first valid time
+    // after it; the non-existent hour itself never appears in the sequence.
+    test('a fixed-time job in the spring-forward gap fires at the gap end', () => {
+        // Europe/Paris 2026-03-29: 02:00-03:00 local does not exist.
+        const schedule = new CronSchedule('0 30 2 * * *', 'Europe/Paris');
+
+        // 03:00 local on the transition day, not 03:30 (croner 10's answer).
+        expect(schedule.next(at('2026-03-29T00:30:00Z'))?.toISOString()).toBe('2026-03-29T01:00:00.000Z');
+    });
+
+    test('a job scoped to the skipped hour does not fire that day', () => {
+        const schedule = new CronSchedule('0 0,30 2 * * *', 'Europe/Paris');
+
+        expect(schedule.next(at('2026-03-29T00:00:00Z'))?.toISOString()).toBe('2026-03-30T00:00:00.000Z');
+    });
+
+    // `?` is a wildcard alias (OCPS 1.4). croner 10 applied it to the day fields
+    // as "current time", so a `?` day-of-week pattern ran daily; 11 fixed it.
+    test('? in a day field behaves as a wildcard', () => {
+        expect(new CronSchedule('0 0 ? * MON', 'UTC').next(at('2026-11-01T00:00:00Z'))?.toISOString()).toBe(
+            '2026-11-02T00:00:00.000Z'
+        );
+        expect(new CronSchedule('0 0 ? * MON', 'UTC').next(at('2026-11-02T00:00:00Z'))?.toISOString()).toBe(
+            '2026-11-09T00:00:00.000Z'
+        );
+    });
+
+    // Fall back (2026-10-25): 02:00-03:00 local happens twice, and an interval
+    // job runs through the repeated hour instead of jumping over it.
+    test('an interval job runs through the repeated fall-back hour', () => {
+        const schedule = new CronSchedule('0 0,30 * * * *', 'Europe/Paris');
+
+        expect(schedule.next(at('2026-10-25T00:20:00Z'))?.toISOString()).toBe('2026-10-25T00:30:00.000Z');
+        // 01:00Z and 01:30Z are the CET occurrences of 02:00 and 02:30.
+        expect(schedule.next(at('2026-10-25T00:30:00Z'))?.toISOString()).toBe('2026-10-25T01:00:00.000Z');
+        expect(schedule.next(at('2026-10-25T01:00:00Z'))?.toISOString()).toBe('2026-10-25T01:30:00.000Z');
+    });
 });
 
 describe('@ndigo/scheduler IntervalSchedule', () => {

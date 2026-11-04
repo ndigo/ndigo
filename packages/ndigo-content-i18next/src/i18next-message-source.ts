@@ -82,7 +82,7 @@ export class I18nextMessageSource implements MessageSource {
         const { resources, language, fallbackLanguage, backend, ns, defaultNS } = options;
 
         this.instance = createInstance();
-        // initImmediate: false + static resources make getMessage available
+        // initAsync: false + static resources make getMessage available
         // synchronously (SSR path); backend-loaded namespaces resolve lazily.
         // ns/defaultNS only when provided — explicit undefined breaks i18next's
         // default-namespace ('translation') resolution.
@@ -97,7 +97,7 @@ export class I18nextMessageSource implements MessageSource {
                           ? fallbackLanguage.map(String)
                           : String(fallbackLanguage),
                 returnEmptyString: false,
-                initImmediate: false,
+                initAsync: false,
                 ...(ns ? { ns } : {}),
                 ...(defaultNS ? { defaultNS } : {}),
                 ...(backend ? { backend } : {}),

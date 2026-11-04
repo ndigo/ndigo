@@ -52,24 +52,24 @@ const LOG_TAIL = 8_000;
 /** @type {AppProbe[]} */
 const APPS = [
     {
-        dir: '02-blue-hello-node',
+        dir: '02-ndigo-hello-node',
         port: 4010,
         probe: '/hello?name=smoke',
         expectBody: 'Hello, smoke!',
         websocket: '/echo',
     },
-    { dir: '04-blue-api', port: 4000, probe: '/health', expectStatus: 200 },
-    { dir: '06-blue-island', port: 4200, probe: '/', expectBody: '<todo-app' },
-    { dir: '08-blue-httpbin', port: 4020, probe: '/get' },
-    { dir: '09-blue-todobackend', port: 4030, probe: '/todos' },
-    { dir: '10-blue-conduit-api', port: 4040, probe: '/api/tags' },
-    { dir: '12-blue-petclinic', port: 4050, probe: '/', expectBody: 'Welcome to Blue PetClinic' },
-    { dir: '13-blue-chat', port: 4060, probe: '/health' },
-    { dir: '14-blue-kanban', port: 4070, probe: '/health' },
-    { dir: '15-blue-resilience-lab', port: 4080, probe: '/health' },
-    { dir: '16-blue-redis-fanout', port: 4160, probe: '/health' },
-    { dir: '17-blue-telemetry-lab', port: 4090, probe: '/health' },
-    { dir: '18-blue-auth-playground', port: 4110, probe: '/health', env: { OIDC_ISSUER_PORT: '4111' } },
+    { dir: '04-ndigo-api', port: 4000, probe: '/health', expectStatus: 200 },
+    { dir: '06-ndigo-island', port: 4200, probe: '/', expectBody: '<todo-app' },
+    { dir: '08-ndigo-httpbin', port: 4020, probe: '/get' },
+    { dir: '09-ndigo-todobackend', port: 4030, probe: '/todos' },
+    { dir: '10-ndigo-conduit-api', port: 4040, probe: '/api/tags' },
+    { dir: '12-ndigo-petclinic', port: 4050, probe: '/', expectBody: 'Welcome to Ndigo PetClinic' },
+    { dir: '13-ndigo-chat', port: 4060, probe: '/health' },
+    { dir: '14-ndigo-kanban', port: 4070, probe: '/health' },
+    { dir: '15-ndigo-resilience-lab', port: 4080, probe: '/health' },
+    { dir: '16-ndigo-redis-fanout', port: 4160, probe: '/health' },
+    { dir: '17-ndigo-telemetry-lab', port: 4090, probe: '/health' },
+    { dir: '18-ndigo-auth-playground', port: 4110, probe: '/health', env: { OIDC_ISSUER_PORT: '4111' } },
 ];
 
 /**

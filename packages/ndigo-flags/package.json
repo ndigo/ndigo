@@ -1,0 +1,35 @@
+{
+  "name": "@ndigo/flags",
+  "version": "0.0.1",
+  "description": "Feature flags for Ndigo — the FlagEvaluator SPI (typed, async, never-throw), the property-backed local provider, and the @whenFeature gate metadata",
+  "type": "module",
+  "keywords": [
+    "ndigo",
+    "ndigo-flags",
+    "feature-flags",
+    "flags"
+  ],
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/factory": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:"
+  },
+  "sideEffects": false
+}

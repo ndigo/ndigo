@@ -1,0 +1,30 @@
+# @ndigo/<%= name %> — <%= className %>
+
+> <%- description %>.
+
+Scaffolded by `ndigo new` — extend this README as the app grows.
+
+## Run
+
+```bash
+cd apps/<%= dirName %> && pnpm start
+# GET http://127.0.0.1:<%= port %>/hello?name=Ndigo
+```
+
+## Demonstrates
+
+- A minimal `ApplicationBuilder` + `NodeAutoConfiguration` boot with one controller
+- `@getMapping` handlers with query-parameter binding
+
+## See Also
+
+- [apps/README](../README.md) — the applications progression
+- [@ndigo/platform-node](../../packages/ndigo-platform-node/README.md) — the Node platform foundation
+
+## Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## License
+
+[ISC](../../LICENSE)

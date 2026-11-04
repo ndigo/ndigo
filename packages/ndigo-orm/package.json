@@ -1,0 +1,41 @@
+{
+  "name": "@ndigo/orm",
+  "version": "0.0.1",
+  "description": "Ndigo ORM - Repository and Data Mapper persistence abstractions",
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "ndigo-orm",
+    "orm",
+    "repository",
+    "data-mapper",
+    "persistence"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/factory": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:",
+    "zod": "catalog:"
+  },
+  "sideEffects": false
+}

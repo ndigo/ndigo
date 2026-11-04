@@ -1,0 +1,32 @@
+{
+  "name": "@ndigo/hello-node",
+  "version": "0.0.1",
+  "description": "Ndigo Hello Node — minimal HTTP server using the Node platform foundation",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@tsmetadata/polyfill": "catalog:",
+    "@ndigo/boot": "~0.0.1",
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/platform-node": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@ndigo/log": "~0.0.1"
+  },
+  "devDependencies": {
+    "tsx": "catalog:",
+    "@ndigo/boot": "~0.0.1",
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/platform-node": "~0.0.1",
+    "@ndigo/test": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@ndigo/log": "~0.0.1"
+  }
+}

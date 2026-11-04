@@ -1,0 +1,221 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ndigo.dev/schema/application.schema.json",
+  "title": "Ndigo application configuration",
+  "description": "Editor schema for the Ndigo config-file convention: ./config/application.json and ./config/application-{profile}.json (TOON variants decode to the same JSON model). PERMISSIVE BY DESIGN — application keys are unconstrained (additionalProperties: true); this schema documents only the framework namespaces and never rejects an unknown key. Profile files are structurally identical to the base file.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "server": {
+      "title": "HTTP server",
+      "description": "Application-defined HTTP server settings: an application's own @configurationProperties('server') class binds these keys (the bundled example binds name/port); the framework itself reads none of them. Extra keys are preserved as config values.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/configValue" },
+      "properties": {
+        "name": {
+          "type": "string",
+          "default": "ndigo-api",
+          "description": "Application/server name. Bound by an app's @configurationProperties('server') class (default 'ndigo-api' in the bundled example); the framework itself does not read it."
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535,
+          "default": 3000,
+          "description": "TCP port to listen on. Defaults to the PORT environment variable, then 3000. 0 requests an ephemeral port. An out-of-range value fails server construction."
+        },
+        "host": {
+          "type": "string",
+          "x-ndigo-read-from-config": false,
+          "default": "127.0.0.1",
+          "description": "Host/interface to bind to — NOT read from config: platform-node HTTPServer takes it as a programmatic `{ host }` option (default 127.0.0.1); no reader consumes a `server.host` property."
+        }
+      }
+    },
+    "profiles": {
+      "title": "Profiles",
+      "x-ndigo-read-from-config": false,
+      "description": "Profile activation — NOT read from config files. `_configureProfiles` runs before config files load and reads only the builder `.profiles()`, the env `NDIGO_PROFILES_*`, and the CLI `--profiles.*` (AD-14). A `profiles.*` key in a config file is inert; these keys document the CLI/env channel only. Extra keys are preserved as config values.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/configValue" },
+      "properties": {
+        "active": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Profiles to activate. Highest-precedence activation channel is the CLI (--profiles.active=prod) over env NDIGO_PROFILES_ACTIVE; the last source wins."
+        },
+        "default": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Fallback profiles consulted only when nothing is explicitly active (--profiles.default / NDIGO_PROFILES_DEFAULT)."
+        },
+        "group": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "description": "Profile group names expanded to their member profiles (--profiles.group.<name> / NDIGO_PROFILES_GROUPS, 'name=m1,m2;other=…')."
+        }
+      }
+    },
+    "telemetry": {
+      "title": "Telemetry",
+      "x-ndigo-read-from-config": false,
+      "description": "OpenTelemetry knobs — NOT read from config files. This is the TelemetryConfig object passed to configureTelemetry() (@ndigo/telemetry-node); real apps build it from env (e.g. OTEL_EXPORTER_OTLP_ENDPOINT) in code. Extra keys are preserved as config values.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/configValue" },
+      "properties": {
+        "sampler": {
+          "description": "Root-span sampling: 'always' (default, 100%), 'off', or { ratio: number } in [0, 1]. Ratios outside the range or NaN fail loud at configuration time. Child spans inherit the root decision.",
+          "default": "always",
+          "$ref": "#/$defs/samplerSpec"
+        },
+        "traceExporter": {
+          "$ref": "#/$defs/exporterSpec",
+          "description": "Trace export. undefined/'console'/{ console: true } selects the console exporter (dev default); 'none' disables the signal; { url, headers? } selects OTLP/HTTP. OTLP urls are validated at configuration time."
+        },
+        "metricExporter": {
+          "description": "Metric export — same exporter spec as traceExporter, plus the metric-only 'prometheus' literal (AD-77): registers the pull reader behind the management /metrics endpoint instead of the periodic push reader.",
+          "$ref": "#/$defs/exporterSpec"
+        },
+        "logExporter": {
+          "description": "Log export — same exporter spec as traceExporter. Configuring anything but 'none' also routes LoggerFactory through the OpenTelemetry logger.",
+          "$ref": "#/$defs/exporterSpec"
+        }
+      }
+    },
+    "feature": {
+      "title": "Feature flags",
+      "description": "Feature-flag values READ from config files by @ndigo/flags' PropertyFlagProvider (AD-82): each flag `name` resolves the property `feature.<name>` through the environment's resolved sources (an @whenFeature route gate evaluates it per request). A truthy value or the literal 'true' enables; 'false', 0, '' and null disable; absent means the caller's default applies. Extra keys are preserved as flag values.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/configValue" }
+    },
+    "management": {
+      "title": "Management endpoints",
+      "description": "Management endpoint settings — the endpoints.* and health.* keys ARE read from config files by @ndigo/management's readManagementSettings (AD-76 D-5): only /health and /metrics are served unless management.endpoints.exposure.include lists more (loggers, env, configprops are opt-in). redactHealthErrors is a ManagementAutoConfiguration(options) constructor argument, documented here for editor completion only. Extra keys are preserved as config values.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/configValue" },
+      "properties": {
+        "endpoints": {
+          "type": "object",
+          "properties": {
+            "exposure": {
+              "type": "object",
+              "properties": {
+                "include": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "default": ["health", "metrics"],
+                  "description": "Management endpoint ids to serve: health, metrics, loggers, env, configprops; '*' serves all. Values missing from the set are ignored."
+                },
+                "exclude": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Management endpoint ids withheld; wins over include."
+                }
+              }
+            },
+            "env": {
+              "type": "object",
+              "properties": {
+                "showValues": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "When true, /env emits the raw stored config text; decrypted plaintext is never served (default: values appear redacted)."
+                }
+              }
+            }
+          }
+        },
+        "health": {
+          "type": "object",
+          "properties": {
+            "groups": {
+              "type": "object",
+              "description": "Health groups served at /health/<group>: management.health.groups.<name>.include lists the component names to aggregate.",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "include": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "The health components (HealthIndicator names) aggregated by this group."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "redactHealthErrors": {
+          "type": "boolean",
+          "x-ndigo-read-from-config": false,
+          "default": true,
+          "description": "Whether thrown health-indicator errors are redacted on /health (default true): the status stays DOWN and the component name is preserved, but the exception text is replaced so indicator internals never reach the wire. NOT read from config — a ManagementAutoConfiguration(options) constructor argument (AD-36)."
+        }
+      }
+    }
+  },
+  "$defs": {
+    "configValue": {
+      "title": "Config value",
+      "description": "Any JSON value. A `{cipher:…}` secret is the STRING form matching $defs.secretMarker — e.g. \"{cipher:v1:<base64 ciphertext>}\" — interpreted by the secret resolver at lookup time (with NDIGO_SECRET_KEY wired), NOT an ordinary object value. The ciphertext lives in the file, the key in a separate channel; with no decryptor wired, the marker passes through as raw text.",
+      "anyOf": [
+        { "type": ["string", "number", "boolean", "null"] },
+        { "type": "array", "items": { "$ref": "#/$defs/configValue" } },
+        { "type": "object", "additionalProperties": { "$ref": "#/$defs/configValue" } }
+      ]
+    },
+    "secretMarker": {
+      "title": "Secret marker",
+      "description": "The {scheme[:version]:payload} at-rest secret marker (e.g. \"{cipher:v1:AAAA}\"). A marker is a STRING value, never an object: the resolver decrypts it at lookup time when a decryptor is wired (NDIGO_SECRET_KEY), and passes it through as literal text otherwise. The scheme segment dispatches the decryptor (AD-29).",
+      "type": "string",
+      "pattern": "^\\{[a-z][a-z0-9]*(:[a-z][a-z0-9.]*)?:.+\\}$"
+    },
+    "samplerSpec": {
+      "title": "Sampler spec",
+      "description": "Trace sampling configuration (SamplerSpec): a preset or a ratio object.",
+      "anyOf": [
+        { "type": "string", "enum": ["always", "off"] },
+        {
+          "type": "object",
+          "required": ["ratio"],
+          "properties": {
+            "ratio": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Fraction of root spans kept, in [0, 1]."
+            }
+          }
+        }
+      ]
+    },
+    "exporterSpec": {
+      "title": "Exporter spec",
+      "description": "Per-signal exporter configuration (ExporterSpec).",
+      "anyOf": [
+        { "type": "string", "enum": ["console", "none", "prometheus"] },
+        {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "description": "OTLP/HTTP endpoint; validated at configuration time. Omit for the default endpoint."
+            },
+            "headers": {
+              "type": "object",
+              "additionalProperties": { "type": "string" },
+              "description": "Headers forwarded on export (e.g. bearer auth); never logged."
+            },
+            "console": {
+              "const": true,
+              "description": "Explicitly select the console exporter (equiv. to 'console')."
+            }
+          }
+        }
+      ]
+    }
+  }
+}

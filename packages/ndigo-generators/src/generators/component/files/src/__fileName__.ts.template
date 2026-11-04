@@ -1,0 +1,12 @@
+/**
+ * <%= summary || className + ' — ' + packageName + ' component' %>.
+ *
+ * @module ndigo-<%= packageName %>
+ * @since 1.0.0
+ * @author <%= author %>
+ */
+export class <%= className %> {
+    get [Symbol.toStringTag](): string {
+        return '<%= className %>';
+    }
+}

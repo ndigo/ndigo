@@ -183,7 +183,7 @@ jobs:
         # docs are stale. The weekly sweep regenerates all 46 packages, so
         # per-PR scoping cannot hide drift for long. Docs standard:
         # docs/guides/12-package-documentation.md
-        run: git diff --exit-code -- packages api
+        run: git diff --exit-code -- packages API.md
 
       - name: Install graft
         # The repo graph tool is a global npm package on dev machines; make it

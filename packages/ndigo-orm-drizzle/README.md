@@ -161,7 +161,7 @@ reclaimed by the next `claim`. Borrowed clients stay open on `close()` unless
 
 The full API is generated from JSDoc via `pnpm doc:api` into
 [`api/`](api/README.md). Primary exports live in
-[`src/index.ts`](src/index.ts); see the [package index](../../api/README.md) for
+[`src/index.ts`](src/index.ts); see the [package index](../../API.md) for
 how it fits with the rest of Ndigo.
 
 ## Development

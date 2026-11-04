@@ -39,18 +39,19 @@ Lane contract today:
 
 ## 3. Findings
 
-| ID  | Finding                                      | Evidence                                                                                                                                                                                                                            | Severity       |
-| :-- | :------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------- |
-| C1  | App inheritance is three-way                 | 10 apps extend `apps/tsconfig.json`, 8 extend `../../tsconfig.base.json`, `apps/07-ndigo-views` extends nothing                                                                                                                     | High           |
-| C2  | App build configs bypass the build base      | 17 extend their IDE config, 2 extend `apps/tsconfig.json`; **0** extend `tsconfig.build.json`. They inherit `erasableSyntaxOnly: true` from the base, unlike package builds                                                         | High           |
-| C3  | Three package IDE configs are hybrids        | `ndigo-log`, `ndigo-signals`, `ndigo-socket` extend root `tsconfig.json` and set `composite`/`outDir`/`rootDir`; `ndigo-socket`'s build config extends its IDE config                                                               | Medium         |
-| C4  | Nine build configs carry dead path overrides | `@ndigo/*` → `../ndigo-*/index` in `ndigo-content`, `ndigo-factory`, `ndigo-host`, `ndigo-inspect`, `ndigo-orm`, `ndigo-router`, `ndigo-telemetry`, `ndigo-telemetry-node`, `ndigo-telemetry-web`; no package has a root `index.ts` | Medium         |
-| C5  | IDE aliases omit subpaths                    | Package configs only map `@ndigo/*` → `../ndigo-*/src`; `@ndigo/util/types`, `@ndigo/redis/cache`, `@ndigo/auth-core/scrypt`, etc. fall back to built `lib/`                                                                        | High           |
-| C6  | Three alias tables                           | `vitest.aliases.ts`, `tsconfig.spec.json` paths, and per-package `paths` are maintained by hand                                                                                                                                     | High           |
-| C7  | Build base duplicates the editor base        | `tsconfig.build.json` repeats 8 flags and does not extend `tsconfig.base.json`; `erasableSyntaxOnly: false` is implicit                                                                                                             | Low            |
-| C8  | `apps/*/client` is spec-lane-only            | App IDE/build includes are `src/**/*`; client code is covered only by `tsconfig.spec.json`                                                                                                                                          | Low (document) |
-| C9  | No config guard                              | A new package can ship one config, a wrong `extends`, or a stale alias without failing a gate                                                                                                                                       | High           |
-| C10 | `tsconfig.spec.json` is not an Nx input      | It is a root script, not an Nx target; harmless today, fragile if `typecheck` becomes one                                                                                                                                           | Low            |
+| ID  | Finding                                               | Evidence                                                                                                                                                                                                                            | Severity       |
+| :-- | :---------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------- |
+| C1  | App inheritance is three-way                          | 10 apps extend `apps/tsconfig.json`, 8 extend `../../tsconfig.base.json`, `apps/07-ndigo-views` extends nothing                                                                                                                     | High           |
+| C2  | App build configs bypass the build base               | 17 extend their IDE config, 2 extend `apps/tsconfig.json`; **0** extend `tsconfig.build.json`. They inherit `erasableSyntaxOnly: true` from the base, unlike package builds                                                         | High           |
+| C3  | Three package IDE configs are hybrids                 | `ndigo-log`, `ndigo-signals`, `ndigo-socket` extend root `tsconfig.json` and set `composite`/`outDir`/`rootDir`; `ndigo-socket`'s build config extends its IDE config                                                               | Medium         |
+| C4  | Nine build configs carry dead path overrides          | `@ndigo/*` → `../ndigo-*/index` in `ndigo-content`, `ndigo-factory`, `ndigo-host`, `ndigo-inspect`, `ndigo-orm`, `ndigo-router`, `ndigo-telemetry`, `ndigo-telemetry-node`, `ndigo-telemetry-web`; no package has a root `index.ts` | Medium         |
+| C5  | IDE aliases omit subpaths                             | Package configs only map `@ndigo/*` → `../ndigo-*/src`; `@ndigo/util/types`, `@ndigo/redis/cache`, `@ndigo/auth-core/scrypt`, etc. fall back to built `lib/`                                                                        | High           |
+| C6  | Three alias tables                                    | `vitest.aliases.ts`, `tsconfig.spec.json` paths, and per-package `paths` are maintained by hand                                                                                                                                     | High           |
+| C7  | Build base duplicates the editor base                 | `tsconfig.build.json` repeats 8 flags and does not extend `tsconfig.base.json`; `erasableSyntaxOnly: false` is implicit                                                                                                             | Low            |
+| C8  | `apps/*/client` is spec-lane-only                     | App IDE/build includes are `src/**/*`; client code is covered only by `tsconfig.spec.json`                                                                                                                                          | Low (document) |
+| C9  | No config guard                                       | A new package can ship one config, a wrong `extends`, or a stale alias without failing a gate                                                                                                                                       | High           |
+| C10 | `tsconfig.spec.json` is not an Nx input               | It is a root script, not an Nx target; harmless today, fragile if `typecheck` becomes one                                                                                                                                           | Low            |
+| C11 | TypeDoc depends on the root config's implicit include | `scripts/doc-api.mjs` passes no `tsconfig`, so TypeDoc discovers the root `tsconfig.json` from its cwd; narrowing it to root tooling broke doc generation for all 47 packages (CI on PR #97: `typedoc exited 3`)                    | High           |
 
 C5 is the user-visible one: in VS Code, go-to-definition for
 `@ndigo/util/types` lands in `packages/ndigo-util/lib/...`, not
@@ -152,7 +153,11 @@ config, because those must be package-relative.
       `lib/`).
 - [x] Fix the 12 `scripts/*.mjs` lint warnings the now-valid root config
       exposed (`void test(...)`; guard `child.pid` in `apps-smoke.mjs`).
-- Validation: `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm test:tooling`.
+- [x] Add root `tsconfig.docs.json` and point `scripts/doc-api.mjs` at it —
+      CI on PR #97 exposed the coupling: TypeDoc discovers the root config
+      from its cwd, so the narrowing broke generation for all 47 packages.
+- Validation: `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm test:tooling`,
+  `pnpm doc:check`.
 
 ### Phase 1 — App standardization
 

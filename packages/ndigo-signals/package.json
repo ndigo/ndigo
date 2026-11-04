@@ -1,0 +1,42 @@
+{
+  "name": "@ndigo/signals",
+  "version": "0.0.1",
+  "description": "Ndigo Signals – Reactive state management with signals, computed values, and effects",
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "ndigo-signals",
+    "signals",
+    "reactive",
+    "state"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js"
+    },
+    "./decorators": {
+      "types": "./lib/decorators/index.d.ts",
+      "import": "./lib/decorators/index.js"
+    }
+  },
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/log": "~0.0.1",
+    "@preact/signals-core": "^1.14.5"
+  },
+  "devDependencies": {},
+  "sideEffects": false
+}

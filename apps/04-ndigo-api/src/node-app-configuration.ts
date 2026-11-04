@@ -1,0 +1,216 @@
+/**
+ * @module ndigo-api
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+import '@tsmetadata/polyfill';
+import 'node:process';
+import { resolve } from 'node:path';
+import { configuration, entry, getEnv } from '@ndigo/context';
+import { StaticContentSource } from '@ndigo/content';
+import { MediaTypes, Profile, whenProfile } from '@ndigo/core';
+import { HTTPHeaders } from '@ndigo/http';
+import { StaticController, SOCKET_REQUEST_AUTHENTICATOR, type SocketRequestAuthenticator } from '@ndigo/platform-node';
+import type { SocketRequestSources } from '@ndigo/dispatcher';
+import {
+    ContentNegotiationManager,
+    ContentNegotiationViewResolver,
+    PathExtensionContentNegotiationStrategy,
+    type ViewResolver,
+    CSVView,
+    JSONView,
+} from '@ndigo/view';
+import { GreetingController } from './greeting-controller';
+import { OrderService } from './order-service';
+import { Heartbeat } from './heartbeat';
+import { AuthController } from './auth-controller';
+import { ChatController } from './chat-controller';
+import { StompChatController } from './stomp-chat-controller';
+import { NoteController } from './note-controller';
+import { DrizzleNoteController } from './drizzle-note-controller';
+import { ProductController } from './product-controller';
+import { CachedReportController } from './cached-report-controller';
+import { ConfigSecretsController } from './config-secrets-controller';
+import { ConfigServerDemoController } from './config-server-demo-controller';
+import { UploadController } from './upload-controller';
+import { FeatureFlagController } from './feature-flag-controller';
+import { lookupPrincipal } from './auth-store';
+
+/**
+ * Reads the demo credential off the WebSocket handshake: `?token=` (the
+ * only channel a WHATWG `WebSocket` client can use) or an
+ * `Authorization: Bearer <token>` header for non-browser clients.
+ *
+ * @param sources - The upgrade request sources.
+ * @returns The token, or `null` when the handshake carries none.
+ */
+function upgradeToken(sources: SocketRequestSources): string | null {
+    const queryToken = sources.query['token'];
+    const fromQuery = Array.isArray(queryToken) ? queryToken[0] : queryToken;
+    if (typeof fromQuery === 'string' && fromQuery !== '') {
+        return fromQuery;
+    }
+    const authorization = HTTPHeaders.AUTHORIZATION.get(sources.headers);
+    const header = Array.isArray(authorization) ? authorization[0] : authorization;
+    const bearer = HTTPHeaders.AUTHORIZATION.bearerToken(header);
+    return bearer ?? null;
+}
+
+@configuration
+export class NodeAppConfiguration {
+    @entry() greetingController() {
+        return new GreetingController(
+            new StaticContentSource({
+                greeting: {
+                    en: 'Hello, {name}!',
+                    de: 'Hallo, {name}!',
+                    fr: 'Bonjour, {name}!',
+                },
+            })
+        );
+    }
+    @entry() authController() {
+        return new AuthController();
+    }
+    @entry() chatController() {
+        return new ChatController();
+    }
+    @entry() stompChatController() {
+        return new StompChatController();
+    }
+
+    /**
+     * Socket identity source (SEC-3): `HTTPServer` resolves this bean and
+     * hands its `authenticate` method to the adapter's upgrade hook, so
+     * socket identity is wired declaratively like any other bean.
+     *
+     * A `?token=` query parameter (the channel a WHATWG `WebSocket` client
+     * can actually use) or an `Authorization: Bearer …` header resolves
+     * through the app's own `lookupPrincipal`. The returned bag carries
+     * `principal` — the identity `@authenticated`/`@authorized` socket
+     * handlers enforce at dispatch — plus `user`, which makes the STOMP
+     * broker's `/user/*` scope real.
+     *
+     * No credential ⇒ anonymous `{}`: the raw `/ws/chat` endpoint stays a
+     * public socket (the documented contrast), while `@authenticated`
+     * endpoints such as `/stomp/chat` fail closed with `1008`. A
+     * presented-but-unknown token is a failed authentication, not
+     * anonymity: `authenticate` returns `null` and the upgrade is refused
+     * with `1008`.
+     */
+    @entry(SOCKET_REQUEST_AUTHENTICATOR)
+    socketRequestAuthenticator(): SocketRequestAuthenticator {
+        return {
+            authenticate(sources: SocketRequestSources) {
+                const token = upgradeToken(sources);
+                if (token === null) {
+                    return {};
+                }
+                return lookupPrincipal(token).then((principal) =>
+                    principal === null ? null : { principal, user: principal.id }
+                );
+            },
+        };
+    }
+
+    @entry() noteController() {
+        return new NoteController();
+    }
+    @entry() drizzleNoteController() {
+        return new DrizzleNoteController();
+    }
+    @entry() productController() {
+        return new ProductController();
+    }
+
+    /**
+     * Method-interception demo gate (AD-42 D-8): the class is the entry, so
+     * the container instantiates it — eagerly at refresh end, by which time
+     * the audit processor registered via `builder.processors(...)` is
+     * already in place and the instance is woven at creation.
+     */
+    @entry()
+    orderService() {
+        return OrderService;
+    }
+    @entry() uploadController() {
+        return new UploadController();
+    }
+    @entry() cachedReportController() {
+        return new CachedReportController();
+    }
+    @entry() configSecretsController() {
+        return new ConfigSecretsController();
+    }
+    @entry() configServerDemoController() {
+        return new ConfigServerDemoController();
+    }
+    @entry() featureFlagController() {
+        return new FeatureFlagController();
+    }
+    /**
+     * Static demo root (DEM-1): the base dir is explicit and absolute, so
+     * the demo serves its `public/` folder regardless of the working
+     * directory the process was started from (the cwd-relative constructor
+     * default is the framework fallback, not this app's wiring). An
+     * explicit `STATIC_DIR` env override wins, matching the controller's
+     * own env contract.
+     */
+    @entry()
+    staticController() {
+        const staticDir = getEnv('STATIC_DIR');
+        return new StaticController(staticDir ? resolve(staticDir) : resolve(process.cwd(), 'public'));
+    }
+
+    /**
+     * The scheduled heartbeat (AD-20 demo gate): a registered bean picked
+     * up by the node platform's scheduler auto-discovery — zero wiring.
+     */
+    @entry()
+    heartbeat() {
+        return new Heartbeat();
+    }
+
+    /**
+     * Management endpoints (`/health`, `/metrics`) come from
+     * `ManagementAutoConfiguration` (registered in the app entry) — its
+     * `handlerMappings` collection now supplements rather than replaces the
+     * platform mapping.
+     */
+
+    /**
+     * Profile-gated bean (AD-14): registered only when the `dev` profile is
+     * active — `ApplicationBuilder.profiles('dev')` in the app entry.
+     */
+    @whenProfile(Profile.and('dev', Profile.not('staging')))
+    @entry()
+    devInfo() {
+        return { flavor: 'dev', note: 'profile-gated bean (AD-14)' };
+    }
+
+    /**
+     * Content-negotiating view resolver: the same logical `report` view is
+     * served as JSON (default) or CSV (`.csv` path extension) — the
+     * representation-family demo (JSONView / CSVView).
+     */
+    @entry()
+    viewResolver() {
+        const jsonReport: ViewResolver = {
+            resolveViewName: async (name: string) => (name === 'report' ? new JSONView() : null),
+        };
+        const csvReport: ViewResolver = {
+            resolveViewName: async (name: string) => (name === 'report' ? new CSVView({ records: 'rows' }) : null),
+        };
+        const manager = new ContentNegotiationManager([
+            new PathExtensionContentNegotiationStrategy(
+                new Map([
+                    ['json', MediaTypes.APPLICATION_JSON],
+                    ['csv', MediaTypes.TEXT_CSV],
+                ])
+            ),
+        ]);
+        const resolver = new ContentNegotiationViewResolver(manager);
+        resolver.viewResolvers = [jsonReport, csvReport];
+        return resolver;
+    }
+}

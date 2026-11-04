@@ -1,0 +1,36 @@
+{
+  "name": "@ndigo/resilience-lab",
+  "version": "0.0.1",
+  "description": "Ndigo Resilience Lab — retry and circuit-breaker policies on a typed service client against a controllable flaky upstream",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/boot": "~0.0.1",
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/http": "~0.0.1",
+    "@ndigo/management": "~0.0.1",
+    "@ndigo/platform-node": "~0.0.1",
+    "@ndigo/proxy": "~0.0.1",
+    "@ndigo/resilience": "~0.0.1",
+    "@ndigo/service": "~0.0.1",
+    "@ndigo/telemetry": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:",
+    "zod": "catalog:",
+    "@ndigo/log": "~0.0.1"
+  },
+  "devDependencies": {
+    "@ndigo/test": "~0.0.1",
+    "tsx": "catalog:",
+    "vitest": "catalog:",
+    "@ndigo/log": "~0.0.1"
+  }
+}

@@ -1,0 +1,71 @@
+[**@ndigo/core v0.0.1**](../README.md)
+
+***
+
+[@ndigo/core](../README.md) / StringComparable
+
+# Interface: StringComparable\<T\>
+
+Interface for string-based objects that can be compared to another object of the same type, with case-insensitive comparison.
+
+## Extends
+
+- [`Comparable`](Comparable.md)\<`T`\>
+
+## Type Parameters
+
+### T
+
+`T`
+
+The type of the string-based object being compared.
+
+## Methods
+
+### compareTo()
+
+> **compareTo**(`value`): `number`
+
+Compares this object with the specified object for order. Returns a negative integer, zero, or a positive integer
+as this object is less than, equal to, or greater than the specified object.
+
+#### Parameters
+
+##### value
+
+`T`
+
+The object to be compared.
+
+#### Returns
+
+`number`
+
+A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
+
+#### Inherited from
+
+[`Comparable`](Comparable.md).[`compareTo`](Comparable.md#compareto)
+
+***
+
+### compareToIgnoreCase()
+
+> **compareToIgnoreCase**(`value`): `number`
+
+Compares this string-based object with the specified string-based object for order, ignoring case.
+Returns a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
+
+#### Parameters
+
+##### value
+
+`T`
+
+The object to be compared.
+
+#### Returns
+
+`number`
+
+A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.

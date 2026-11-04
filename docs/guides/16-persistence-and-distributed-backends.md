@@ -1,23 +1,23 @@
 # Guide 16 — Persistence & Distributed Backends
 
-BlueJS is memory-first: every shared capability ships an in-process default,
+Ndigo is memory-first: every shared capability ships an in-process default,
 and external backends are **explicit opt-ins**. This guide covers the
 persistence baseline (AD-40): durable sessions on LibSQL, the shared Redis
 cache, and cross-node WebSocket/STOMP fan-out — plus what stays deliberately
 deferred (AD-41).
 
 ```sh
-pnpm add @blue/redis @blue/orm-drizzle @blue/cache @blue/socket
-# node only: @blue/redis requires Node 24+; standalone Redis 7.2+
+pnpm add @ndigo/redis @ndigo/orm-drizzle @ndigo/cache @ndigo/socket
+# node only: @ndigo/redis requires Node 24+; standalone Redis 7.2+
 ```
 
 ## 1. The doctrine (AD-40)
 
 - **Capability-owned contracts, no universal store.** Sessions implement
-  `SessionStore` (`@blue/auth-core`), messages implement `QueueMessageStore`,
+  `SessionStore` (`@ndigo/auth-core`), messages implement `QueueMessageStore`,
   caches implement `Cache` — there is no generic storage superclass and no
-  `@blue/store` package. Add a backend where a contract already exists.
-- **Memory is the default; backends are explicit.** Installing `@blue/redis`
+  `@ndigo/store` package. Add a backend where a contract already exists.
+- **Memory is the default; backends are explicit.** Installing `@ndigo/redis`
   never connects to anything and never changes auto-configuration.
 - **Ownership is explicit.** Created clients are _owned_ (you close them);
   injected clients are _borrowed_ unless `ownsClient: true` transfers
@@ -33,21 +33,21 @@ pnpm add @blue/redis @blue/orm-drizzle @blue/cache @blue/socket
 
 ## 2. Durable sessions with LibSQL
 
-`LibSQLSessionStore` (`@blue/orm-drizzle`) implements the same `SessionStore`
+`LibSQLSessionStore` (`@ndigo/orm-drizzle`) implements the same `SessionStore`
 contract as the reference `InMemorySessionStore` — same `kind`-guarded
 surfaces, same rotation semantics, durable across restarts. It is the one
 backend the auth stack ships; the auth contract itself is unchanged.
 
 ```ts
-import { LibSQLSessionStore } from '@blue/orm-drizzle';
-import { CredentialsAuthAdapter } from '@blue/auth-server';
-import { ScryptPasswordEncoder } from '@blue/auth-core/scrypt'; // Node-only (node:crypto)
+import { LibSQLSessionStore } from '@ndigo/orm-drizzle';
+import { CredentialsAuthAdapter } from '@ndigo/auth-server';
+import { ScryptPasswordEncoder } from '@ndigo/auth-core/scrypt'; // Node-only (node:crypto)
 
 const sessions = new LibSQLSessionStore({
     url: 'file:./sessions.db', // or an injected { client } with intMode: 'number'
     maxSessions: 512,          // default 512; shared live-session cap
 });
-await sessions.initialize(); // explicit: provisions blue_sessions + expiry index
+await sessions.initialize(); // explicit: provisions ndigo_sessions + expiry index
 
 const auth = new CredentialsAuthAdapter({
     userStore: /* your user store */,
@@ -59,7 +59,7 @@ const auth = new CredentialsAuthAdapter({
 Guarantees (verified in AD-40):
 
 - **Explicit provisioning.** `initialize()` idempotently creates only
-  `blue_sessions` and its expiry index — never drops or migrates application
+  `ndigo_sessions` and its expiry index — never drops or migrates application
   tables. An application-owned migration may provision the same layout.
 - **Atomic rotation.** Refresh issues a new id via one conditional
   `UPDATE … WHERE session_id = ? AND expires_at > ?` — exactly one
@@ -81,18 +81,18 @@ the queue store. No auth contract changes were made for persistence.
 
 ## 3. Redis: connection, shared cache
 
-`@blue/redis` is the Node-only Redis foundation: `RedisConnection` lifecycle
+`@ndigo/redis` is the Node-only Redis foundation: `RedisConnection` lifecycle
 plus the capability subpaths. Root export does not load capability contracts,
 so the package is dependency-light for connection-only use.
 
 ```ts
-import { RedisConnection } from '@blue/redis';
+import { RedisConnection } from '@ndigo/redis';
 const publisher = new RedisConnection({ url: process.env.REDIS_URL! });
 await publisher.connect();
 // … await publisher.close(); // owned; drained, no QUIT (close, not QUIT)
 ```
 
-Shared cache lives in `@blue/redis/cache` (`RedisCacheManager` /
+Shared cache lives in `@ndigo/redis/cache` (`RedisCacheManager` /
 `RedisCache`) against the awaitable `Cache` contract — same API as
 `MemoryCacheManager`, saw the async cutover under AD-39. Redis values are
 restricted to JSON-value trees (plus a tagged whole-entry undefined);
@@ -102,18 +102,18 @@ eviction, server-side expiry, namespace-safe `clear`/`size`, no
 `FLUSHDB`).
 
 Shared-store **rate limiting** is the same opt-in shape:
-`@blue/redis/rate-limit` — `RedisRateLimiter` (AD-79) — implements the
-`RateLimiter` SPI from `@blue/rate-limit`: fixed-window budgets that
-every process counts against (keys `blue:rl:<namespace>:<windowMs>:<key>`,
+`@ndigo/redis/rate-limit` — `RedisRateLimiter` (AD-79) — implements the
+`RateLimiter` SPI from `@ndigo/rate-limit`: fixed-window budgets that
+every process counts against (keys `ndigo:rl:<namespace>:<windowMs>:<key>`,
 windows anchored at the first request, expiry server-side by TTL). It is
 **fail-closed by default** — an unreachable store rejects the request
 instead of passing it unthrottled; `onError: 'fail-open'` logs through
-`@blue/log` and allows (the documented availability escape hatch).
+`@ndigo/log` and allows (the documented availability escape hatch).
 Override the platform's `RATE_LIMITER` bean with it:
 
 ```ts
-import { RedisConnection } from '@blue/redis';
-import { RedisRateLimiter } from '@blue/redis/rate-limit';
+import { RedisConnection } from '@ndigo/redis';
+import { RedisRateLimiter } from '@ndigo/redis/rate-limit';
 
 const connection = new RedisConnection({ url: process.env.REDIS_URL! });
 await connection.connect(); // borrowed; readiness is the app's contract
@@ -128,8 +128,8 @@ See [guide 11 §5](11-authentication-and-sessions.md) for the
 
 ## 4. Cross-node live fan-out (opt-in)
 
-`SocketFanout` (`@blue/socket`) is a capability-owned transport contract and
-`RedisSocketFanout` (`@blue/redis/pubsub`) is its live implementation:
+`SocketFanout` (`@ndigo/socket`) is a capability-owned transport contract and
+`RedisSocketFanout` (`@ndigo/redis/pubsub`) is its live implementation:
 `subscribe(scope, receive)` / `publish(scope, { key, body, headers? })` for
 paths, rooms, and STOMP `/topic/*`. Wire it through
 `new NodeSocketSessionRegistry({ fanout })` and/or
@@ -177,7 +177,7 @@ Not built, with an explicit decision and revisit triggers:
   consumer needs at-most-once-per-schedule across workers, restart-surviving
   queued jobs, deployable schedule definitions, or cross-process task
   observation — then the precedent is AD-20's hook seam plus the
-  `@blue/redis` / SQL-store patterns above.
+  `@ndigo/redis` / SQL-store patterns above.
 - **Cross-node queue consumption** — LibSQL `/queue` persistence is storage,
   not distributed consumption; durable pub/sub replay, offline queues, and
   global ordering are out of scope for the live fan-out.
@@ -190,6 +190,6 @@ Not built, with an explicit decision and revisit triggers:
 - Roadmap: `docs/plans/2026-10-01_SHARED_PERSISTENCE_ROADMAP.md`
 - Related guides: [06 — WebSockets](06-websockets.md) (fan-out),
   [07 — Caching](07-caching.md) §6, [11 — Auth & Sessions](11-authentication-and-sessions.md)
-- Packages: `@blue/redis` (README), `@blue/orm-drizzle` (README:
-  `LibSQLSessionStore`, `LibSQLQueueMessageStore`), `@blue/socket`,
-  `@blue/cache`
+- Packages: `@ndigo/redis` (README), `@ndigo/orm-drizzle` (README:
+  `LibSQLSessionStore`, `LibSQLQueueMessageStore`), `@ndigo/socket`,
+  `@ndigo/cache`

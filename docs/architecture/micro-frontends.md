@@ -1,20 +1,20 @@
-# Micro Frontends in BlueJS — architecture map
+# Micro Frontends in Ndigo — architecture map
 
-**Status:** Live — the patterns below are implemented (`@blue/host` since
-2026-09-13) and demonstrated by `apps/05-blue-host` and `apps/03-blue-todo`.
+**Status:** Live — the patterns below are implemented (`@ndigo/host` since
+2026-09-13) and demonstrated by `apps/05-ndigo-host` and `apps/03-ndigo-todo`.
 
-This is the cross-cutting map for BlueJS micro frontends: how the shell
+This is the cross-cutting map for Ndigo micro frontends: how the shell
 hosts feature contexts, how islands fit in, and where the seams,
 contracts, and decision records live.
 
 ## Two complementary mechanisms
 
-BlueJS has **two** micro frontend shapes, used independently or together:
+Ndigo has **two** micro frontend shapes, used independently or together:
 
-| Shape              | What it is                                                                           | Boundary                                                  | Where                                         |
-| ------------------ | ------------------------------------------------------------------------------------ | --------------------------------------------------------- | --------------------------------------------- |
-| **Hosted feature** | A child `ApplicationContext` mounted into the shell, lazy-loaded on route activation | Context tree + shared-dependency contract + event gateway | `@blue/host`, `@blue/context`, `@blue/router` |
-| **Island**         | A server-rendered web component (`data-blue-island` marker) hydrated on the client   | Serialized model (JSON) + zod schema + tag name           | `@blue/view`, `@blue/view-webcomponent`       |
+| Shape              | What it is                                                                           | Boundary                                                  | Where                                            |
+| ------------------ | ------------------------------------------------------------------------------------ | --------------------------------------------------------- | ------------------------------------------------ |
+| **Hosted feature** | A child `ApplicationContext` mounted into the shell, lazy-loaded on route activation | Context tree + shared-dependency contract + event gateway | `@ndigo/host`, `@ndigo/context`, `@ndigo/router` |
+| **Island**         | A server-rendered web component (`data-ndigo-island` marker) hydrated on the client  | Serialized model (JSON) + zod schema + tag name           | `@ndigo/view`, `@ndigo/view-webcomponent`        |
 
 The host/feature path is for _application slices_ with their own services and
 lifecycle; the island path is for _presentation units_ that should render
@@ -36,7 +36,7 @@ HostManager  (resolvable via HOST_MANAGER_TOKEN from the shell context)
 
 ## Registration and lifecycle
 
-One call per feature (`@blue/host`):
+One call per feature (`@ndigo/host`):
 
 ```ts
 host.registerFeature({
@@ -84,14 +84,14 @@ host.registerFeature({
 
 ## Islands
 
-- Server: `IslandView` emits `<tag data-blue-island data-blue-model="…">`;
+- Server: `IslandView` emits `<tag data-ndigo-island data-ndigo-model="…">`;
   `IslandViewResolver` resolves a view name → island marker (the
   controller↔client link).
 - Client: `hydrateIslands()` upgrades markers to live custom elements
   (`@TagMapping`-registered), restores `.model`, replaces inert markup.
 - Reactive half: server pushes model updates over SSE
   (`ServerSentEventView`/`SSEEmitter`); the island subscribes via a typed
-  service-stream into `@blue/signals` (`streamToSignal`) and re-renders.
+  service-stream into `@ndigo/signals` (`streamToSignal`) and re-renders.
 - The integration contract is the **name ↔ tag ↔ zod schema triple** —
   documented in the view-resolution strategy, not yet enforced by a
   registry.
@@ -105,7 +105,7 @@ a graph of call sites. Both demo hosts exercise this discipline.
 
 ## Single-SPA comparison (condensed)
 
-| Single-SPA                                    | BlueJS                                                             | Note                                 |
+| Single-SPA                                    | Ndigo                                                              | Note                                 |
 | --------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------ |
 | `registerApplication` + activity fn           | `HostManager.registerFeature({name, prefix, …})`                   | Prefix partitions; single call       |
 | bootstrap/mount/unmount                       | `mount`/`mountLazy`/`unmount(policy)`/`unregister`                 | No separate bootstrap phase          |
@@ -125,13 +125,13 @@ a graph of call sites. Both demo hosts exercise this discipline.
 - **Scale 2 context + routing** (AD-54): `docs/decisions/2026-03-24_AD54_HIERARCHICAL_CONTEXTS_ROUTE_PARTITIONING.md`
 - **View resolution strategy** (AD-65): `docs/decisions/2026-09-06_AD65_VIEW_RESOLUTION_STRATEGY.md`
 - **Signals & islands how-to** — [Guide 18](../guides/18-signals-and-islands.md):
-  the reactive half in detail (`@blue/signals` primitives and decorators,
+  the reactive half in detail (`@ndigo/signals` primitives and decorators,
   stream/event bridges, `hydrateIslands()` + SSE-driven re-render).
 - **Route registry** (AD-61): `docs/decisions/2026-09-03_AD61_ROUTE_REGISTRY.md`
 - **Framework assessment** (partial hydration ✅, MFE shell status):
   `docs/reference/2026-09-01_FEATURE_ASSESSMENT.md`
-- **Demo hosts**: `apps/05-blue-host` (@blue/host-demo), `apps/03-blue-todo`,
-  reactive island: `apps/06-blue-island`
+- **Demo hosts**: `apps/05-ndigo-host` (@ndigo/host-demo), `apps/03-ndigo-todo`,
+  reactive island: `apps/06-ndigo-island`
 
 ## Known gaps (deliberate)
 

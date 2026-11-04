@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    // ES2024 lib for `Promise.withResolvers` (the workspace's deferred-promise
+    // idiom — see @ndigo/util's timing helpers), plus the DOM libs for the
+    // browser half in `client/` (extended by tsconfig.build.json, which sets
+    // `rootDir: "."` so it can include both halves).
+    "lib": ["ES2024", "DOM", "DOM.Iterable"]
+  },
+  "include": ["src/**/*"]
+}

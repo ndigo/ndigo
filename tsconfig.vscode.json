@@ -2,9 +2,9 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "paths": {
-      "@blue/redis/cache": ["./packages/blue-redis/src/cache"],
-      "@blue/redis/pubsub": ["./packages/blue-redis/src/pubsub"],
-      "@blue/*": ["./packages/blue-*/src"]
+      "@ndigo/redis/cache": ["./packages/ndigo-redis/src/cache"],
+      "@ndigo/redis/pubsub": ["./packages/ndigo-redis/src/pubsub"],
+      "@ndigo/*": ["./packages/ndigo-*/src"]
     }
   },
   "include": ["packages/*/src/**/*", "apps/*/src/**/*"],

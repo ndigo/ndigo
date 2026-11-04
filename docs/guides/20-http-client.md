@@ -1,6 +1,6 @@
 # Guide 20 — The HTTP Client
 
-`@blue/http` is the Fetch-based HTTP client: an `HTTP` instance with a base URL
+`@ndigo/http` is the Fetch-based HTTP client: an `HTTP` instance with a base URL
 and default settings, an interceptor chain with explicit lifecycle hooks, body
 transform pipelines, and WHATWG-aligned query/matrix parsers. Server handlers
 and browser code use the same class, so request behavior is identical on both
@@ -16,7 +16,7 @@ For the server side of an HTTP interaction (routing, binding, views), see
 default Fetch `RequestInit` surface plus three client-specific keys:
 
 ```ts
-import { HTTP, TimeoutInterceptor, ContentTypeInterceptor } from '@blue/http';
+import { HTTP, TimeoutInterceptor, ContentTypeInterceptor } from '@ndigo/http';
 
 const api = HTTP.create({
     baseURL: 'https://api.example.com/',
@@ -72,7 +72,7 @@ Built-in interceptors cover the common cases: `TimeoutInterceptor`,
 and the response-code/class mappers. Compose them in `interceptors`:
 
 ```ts
-import { HTTP, RetryInterceptor, ErrorNormalizationInterceptor } from '@blue/http';
+import { HTTP, RetryInterceptor, ErrorNormalizationInterceptor } from '@ndigo/http';
 
 const api = HTTP.create({
     baseURL: 'https://api.example.com/',
@@ -100,19 +100,19 @@ const api = HTTP.create({
 framework also uses server-side, so client and server agree byte for byte:
 
 ```ts
-import { QueryString, MatrixString } from '@blue/http';
+import { QueryString, MatrixString } from '@ndigo/http';
 
 const params = QueryString.parse('a=1&a=2&b=3'); // { a: ['1','2'], b: '3' }
 ```
 
 ## References
 
-- Generated API: [`@blue/http` api](../../packages/blue-http/api/README.md);
+- Generated API: [`@ndigo/http` api](../../packages/ndigo-http/api/README.md);
   the full symbol surface is on the package README.
 - Decision: [AD-49](../decisions/2026-02-07_AD49_HTTP_TRANSFORM_PIPELINE.md) —
   the body transform pipeline.
 - Related: [guide 07](./07-caching.md) (client `memoize`),
   [guide 15](./15-method-interception.md) (retry/circuit-breaker policies),
-  [guide 19](./19-testing.md) (`@blue/test` exercises HTTP-boundary behavior).
+  [guide 19](./19-testing.md) (`@ndigo/test` exercises HTTP-boundary behavior).
 
 [Back to guides](./README.md)

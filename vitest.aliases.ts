@@ -1,14 +1,14 @@
 /**
- * Shared Vitest resolve-alias table for `@blue/*` workspace packages.
+ * Shared Vitest resolve-alias table for `@ndigo/*` workspace packages.
  *
  * Both the root `vitest.config.ts` and every app `vitest.config.ts` import this
- * table, so tests resolve `@blue/*` against the live `packages/<pkg>/src` sources
+ * table, so tests resolve `@ndigo/*` against the live `packages/<pkg>/src` sources
  * rather than the built `lib/` output that the `node_modules` symlinks expose.
  * A source-only change is therefore exercised without a rebuild, and a missing
  * `lib/` can no longer break a lane (HI-6/TST-B).
  *
  * The aliases are ordered: package-root entries must not capture subpath
- * imports such as `@blue/util/types`, so the more specific subpaths come first.
+ * imports such as `@ndigo/util/types`, so the more specific subpaths come first.
  *
  * @module vitest.aliases
  * @since 1.0.0
@@ -22,64 +22,64 @@ import { fileURLToPath } from 'node:url';
 // than the root config, and all of them must resolve to the same packages.
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '.');
 
-/** Ordered `@blue/*` → `packages/<pkg>/src` alias table consumed by every Vitest config. */
-export const blueAliases: { find: RegExp; replacement: string }[] = [
-    // Live `@blue/util` subpaths only — `function`/`list`/`logic`/`object`/`relation`
+/** Ordered `@ndigo/*` → `packages/<pkg>/src` alias table consumed by every Vitest config. */
+export const ndigoAliases: { find: RegExp; replacement: string }[] = [
+    // Live `@ndigo/util` subpaths only — `function`/`list`/`logic`/`object`/`relation`
     // were aspirational imports with no `src/` directory (and no manifest export).
-    { find: /^@blue\/util\/crypto/, replacement: resolve(repoRoot, 'packages/blue-util/src/crypto') },
-    { find: /^@blue\/util\/string/, replacement: resolve(repoRoot, 'packages/blue-util/src/string') },
-    { find: /^@blue\/util\/types/, replacement: resolve(repoRoot, 'packages/blue-util/src/type') },
-    { find: /^@blue\/util\/type/, replacement: resolve(repoRoot, 'packages/blue-util/src/type') },
+    { find: /^@ndigo\/util\/crypto/, replacement: resolve(repoRoot, 'packages/ndigo-util/src/crypto') },
+    { find: /^@ndigo\/util\/string/, replacement: resolve(repoRoot, 'packages/ndigo-util/src/string') },
+    { find: /^@ndigo\/util\/types/, replacement: resolve(repoRoot, 'packages/ndigo-util/src/type') },
+    { find: /^@ndigo\/util\/type/, replacement: resolve(repoRoot, 'packages/ndigo-util/src/type') },
 
-    { find: /^@blue\/core$/, replacement: resolve(repoRoot, 'packages/blue-core/src') },
-    { find: /^@blue\/dom$/, replacement: resolve(repoRoot, 'packages/blue-dom/src') },
-    { find: /^@blue\/util$/, replacement: resolve(repoRoot, 'packages/blue-util/src') },
-    { find: /^@blue\/factory$/, replacement: resolve(repoRoot, 'packages/blue-factory/src') },
-    { find: /^@blue\/flags$/, replacement: resolve(repoRoot, 'packages/blue-flags/src') },
-    { find: /^@blue\/context$/, replacement: resolve(repoRoot, 'packages/blue-context/src') },
-    { find: /^@blue\/router$/, replacement: resolve(repoRoot, 'packages/blue-router/src') },
-    { find: /^@blue\/host$/, replacement: resolve(repoRoot, 'packages/blue-host/src') },
-    { find: /^@blue\/view$/, replacement: resolve(repoRoot, 'packages/blue-view/src') },
-    { find: /^@blue\/view-ejs$/, replacement: resolve(repoRoot, 'packages/blue-view-ejs/src') },
-    { find: /^@blue\/view-webcomponent$/, replacement: resolve(repoRoot, 'packages/blue-view-webcomponent/src') },
-    { find: /^@blue\/http$/, replacement: resolve(repoRoot, 'packages/blue-http/src') },
-    { find: /^@blue\/content$/, replacement: resolve(repoRoot, 'packages/blue-content/src') },
-    { find: /^@blue\/content-i18next$/, replacement: resolve(repoRoot, 'packages/blue-content-i18next/src') },
-    { find: /^@blue\/platform-web$/, replacement: resolve(repoRoot, 'packages/blue-platform-web/src') },
-    { find: /^@blue\/platform-node$/, replacement: resolve(repoRoot, 'packages/blue-platform-node/src') },
-    { find: /^@blue\/dispatcher$/, replacement: resolve(repoRoot, 'packages/blue-dispatcher/src') },
-    { find: /^@blue\/boot$/, replacement: resolve(repoRoot, 'packages/blue-boot/src') },
-    { find: /^@blue\/service$/, replacement: resolve(repoRoot, 'packages/blue-service/src') },
-    { find: /^@blue\/scheduler$/, replacement: resolve(repoRoot, 'packages/blue-scheduler/src') },
-    { find: /^@blue\/jobs$/, replacement: resolve(repoRoot, 'packages/blue-jobs/src') },
-    { find: /^@blue\/locks$/, replacement: resolve(repoRoot, 'packages/blue-locks/src') },
-    { find: /^@blue\/rate-limit$/, replacement: resolve(repoRoot, 'packages/blue-rate-limit/src') },
-    { find: /^@blue\/cluster$/, replacement: resolve(repoRoot, 'packages/blue-cluster/src') },
-    { find: /^@blue\/cli$/, replacement: resolve(repoRoot, 'packages/blue-cli/src') },
-    { find: /^@blue\/cache$/, replacement: resolve(repoRoot, 'packages/blue-cache/src') },
-    { find: /^@blue\/proxy$/, replacement: resolve(repoRoot, 'packages/blue-proxy/src') },
-    { find: /^@blue\/resilience$/, replacement: resolve(repoRoot, 'packages/blue-resilience/src') },
-    { find: /^@blue\/redis\/cache$/, replacement: resolve(repoRoot, 'packages/blue-redis/src/cache') },
-    { find: /^@blue\/redis\/pubsub$/, replacement: resolve(repoRoot, 'packages/blue-redis/src/pubsub') },
-    { find: /^@blue\/redis\/locks$/, replacement: resolve(repoRoot, 'packages/blue-redis/src/locks') },
-    { find: /^@blue\/redis\/rate-limit$/, replacement: resolve(repoRoot, 'packages/blue-redis/src/rate-limit') },
-    { find: /^@blue\/redis$/, replacement: resolve(repoRoot, 'packages/blue-redis/src') },
-    { find: /^@blue\/socket$/, replacement: resolve(repoRoot, 'packages/blue-socket/src') },
-    { find: /^@blue\/signals$/, replacement: resolve(repoRoot, 'packages/blue-signals/src') },
-    { find: /^@blue\/log$/, replacement: resolve(repoRoot, 'packages/blue-log/src') },
-    { find: /^@blue\/telemetry$/, replacement: resolve(repoRoot, 'packages/blue-telemetry/src') },
-    { find: /^@blue\/telemetry-node$/, replacement: resolve(repoRoot, 'packages/blue-telemetry-node/src') },
-    { find: /^@blue\/telemetry-web$/, replacement: resolve(repoRoot, 'packages/blue-telemetry-web/src') },
-    { find: /^@blue\/oxlint-plugin$/, replacement: resolve(repoRoot, 'packages/blue-oxlint-plugin/src') },
-    { find: /^@blue\/orm$/, replacement: resolve(repoRoot, 'packages/blue-orm/src') },
-    { find: /^@blue\/orm-drizzle$/, replacement: resolve(repoRoot, 'packages/blue-orm-drizzle/src') },
-    { find: /^@blue\/management$/, replacement: resolve(repoRoot, 'packages/blue-management/src') },
-    { find: /^@blue\/auth-core$/, replacement: resolve(repoRoot, 'packages/blue-auth-core/src') },
-    { find: /^@blue\/auth-server$/, replacement: resolve(repoRoot, 'packages/blue-auth-server/src') },
-    { find: /^@blue\/auth-client$/, replacement: resolve(repoRoot, 'packages/blue-auth-client/src') },
-    { find: /^@blue\/openapi$/, replacement: resolve(repoRoot, 'packages/blue-openapi/src') },
-    { find: /^@blue\/generators$/, replacement: resolve(repoRoot, 'packages/blue-generators/src') },
-    { find: /^@blue\/test$/, replacement: resolve(repoRoot, 'packages/blue-test/src') },
-    { find: /^@blue\/inspect$/, replacement: resolve(repoRoot, 'packages/blue-inspect/src') },
-    { find: /^@blue\/flags-openfeature$/, replacement: resolve(repoRoot, 'packages/blue-flags-openfeature/src') },
+    { find: /^@ndigo\/core$/, replacement: resolve(repoRoot, 'packages/ndigo-core/src') },
+    { find: /^@ndigo\/dom$/, replacement: resolve(repoRoot, 'packages/ndigo-dom/src') },
+    { find: /^@ndigo\/util$/, replacement: resolve(repoRoot, 'packages/ndigo-util/src') },
+    { find: /^@ndigo\/factory$/, replacement: resolve(repoRoot, 'packages/ndigo-factory/src') },
+    { find: /^@ndigo\/flags$/, replacement: resolve(repoRoot, 'packages/ndigo-flags/src') },
+    { find: /^@ndigo\/context$/, replacement: resolve(repoRoot, 'packages/ndigo-context/src') },
+    { find: /^@ndigo\/router$/, replacement: resolve(repoRoot, 'packages/ndigo-router/src') },
+    { find: /^@ndigo\/host$/, replacement: resolve(repoRoot, 'packages/ndigo-host/src') },
+    { find: /^@ndigo\/view$/, replacement: resolve(repoRoot, 'packages/ndigo-view/src') },
+    { find: /^@ndigo\/view-ejs$/, replacement: resolve(repoRoot, 'packages/ndigo-view-ejs/src') },
+    { find: /^@ndigo\/view-webcomponent$/, replacement: resolve(repoRoot, 'packages/ndigo-view-webcomponent/src') },
+    { find: /^@ndigo\/http$/, replacement: resolve(repoRoot, 'packages/ndigo-http/src') },
+    { find: /^@ndigo\/content$/, replacement: resolve(repoRoot, 'packages/ndigo-content/src') },
+    { find: /^@ndigo\/content-i18next$/, replacement: resolve(repoRoot, 'packages/ndigo-content-i18next/src') },
+    { find: /^@ndigo\/platform-web$/, replacement: resolve(repoRoot, 'packages/ndigo-platform-web/src') },
+    { find: /^@ndigo\/platform-node$/, replacement: resolve(repoRoot, 'packages/ndigo-platform-node/src') },
+    { find: /^@ndigo\/dispatcher$/, replacement: resolve(repoRoot, 'packages/ndigo-dispatcher/src') },
+    { find: /^@ndigo\/boot$/, replacement: resolve(repoRoot, 'packages/ndigo-boot/src') },
+    { find: /^@ndigo\/service$/, replacement: resolve(repoRoot, 'packages/ndigo-service/src') },
+    { find: /^@ndigo\/scheduler$/, replacement: resolve(repoRoot, 'packages/ndigo-scheduler/src') },
+    { find: /^@ndigo\/jobs$/, replacement: resolve(repoRoot, 'packages/ndigo-jobs/src') },
+    { find: /^@ndigo\/locks$/, replacement: resolve(repoRoot, 'packages/ndigo-locks/src') },
+    { find: /^@ndigo\/rate-limit$/, replacement: resolve(repoRoot, 'packages/ndigo-rate-limit/src') },
+    { find: /^@ndigo\/cluster$/, replacement: resolve(repoRoot, 'packages/ndigo-cluster/src') },
+    { find: /^@ndigo\/cli$/, replacement: resolve(repoRoot, 'packages/ndigo-cli/src') },
+    { find: /^@ndigo\/cache$/, replacement: resolve(repoRoot, 'packages/ndigo-cache/src') },
+    { find: /^@ndigo\/proxy$/, replacement: resolve(repoRoot, 'packages/ndigo-proxy/src') },
+    { find: /^@ndigo\/resilience$/, replacement: resolve(repoRoot, 'packages/ndigo-resilience/src') },
+    { find: /^@ndigo\/redis\/cache$/, replacement: resolve(repoRoot, 'packages/ndigo-redis/src/cache') },
+    { find: /^@ndigo\/redis\/pubsub$/, replacement: resolve(repoRoot, 'packages/ndigo-redis/src/pubsub') },
+    { find: /^@ndigo\/redis\/locks$/, replacement: resolve(repoRoot, 'packages/ndigo-redis/src/locks') },
+    { find: /^@ndigo\/redis\/rate-limit$/, replacement: resolve(repoRoot, 'packages/ndigo-redis/src/rate-limit') },
+    { find: /^@ndigo\/redis$/, replacement: resolve(repoRoot, 'packages/ndigo-redis/src') },
+    { find: /^@ndigo\/socket$/, replacement: resolve(repoRoot, 'packages/ndigo-socket/src') },
+    { find: /^@ndigo\/signals$/, replacement: resolve(repoRoot, 'packages/ndigo-signals/src') },
+    { find: /^@ndigo\/log$/, replacement: resolve(repoRoot, 'packages/ndigo-log/src') },
+    { find: /^@ndigo\/telemetry$/, replacement: resolve(repoRoot, 'packages/ndigo-telemetry/src') },
+    { find: /^@ndigo\/telemetry-node$/, replacement: resolve(repoRoot, 'packages/ndigo-telemetry-node/src') },
+    { find: /^@ndigo\/telemetry-web$/, replacement: resolve(repoRoot, 'packages/ndigo-telemetry-web/src') },
+    { find: /^@ndigo\/oxlint-plugin$/, replacement: resolve(repoRoot, 'packages/ndigo-oxlint-plugin/src') },
+    { find: /^@ndigo\/orm$/, replacement: resolve(repoRoot, 'packages/ndigo-orm/src') },
+    { find: /^@ndigo\/orm-drizzle$/, replacement: resolve(repoRoot, 'packages/ndigo-orm-drizzle/src') },
+    { find: /^@ndigo\/management$/, replacement: resolve(repoRoot, 'packages/ndigo-management/src') },
+    { find: /^@ndigo\/auth-core$/, replacement: resolve(repoRoot, 'packages/ndigo-auth-core/src') },
+    { find: /^@ndigo\/auth-server$/, replacement: resolve(repoRoot, 'packages/ndigo-auth-server/src') },
+    { find: /^@ndigo\/auth-client$/, replacement: resolve(repoRoot, 'packages/ndigo-auth-client/src') },
+    { find: /^@ndigo\/openapi$/, replacement: resolve(repoRoot, 'packages/ndigo-openapi/src') },
+    { find: /^@ndigo\/generators$/, replacement: resolve(repoRoot, 'packages/ndigo-generators/src') },
+    { find: /^@ndigo\/test$/, replacement: resolve(repoRoot, 'packages/ndigo-test/src') },
+    { find: /^@ndigo\/inspect$/, replacement: resolve(repoRoot, 'packages/ndigo-inspect/src') },
+    { find: /^@ndigo\/flags-openfeature$/, replacement: resolve(repoRoot, 'packages/ndigo-flags-openfeature/src') },
 ];

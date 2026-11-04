@@ -1,0 +1,39 @@
+{
+  "name": "@ndigo/log",
+  "version": "0.0.1",
+  "description": "Isomorphic logging core for Ndigo — logger abstraction, severity mappings, and threshold filtering on the OpenTelemetry API",
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "ndigo-log",
+    "logging",
+    "logger",
+    "opentelemetry"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@opentelemetry/api": "catalog:",
+    "@opentelemetry/api-logs": "catalog:"
+  },
+  "devDependencies": {},
+  "sideEffects": false
+}

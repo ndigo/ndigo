@@ -1,0 +1,46 @@
+{
+  "name": "@ndigo/telemetry-lab",
+  "version": "0.0.1",
+  "description": "Ndigo Telemetry Lab — browser action → server span → scheduled task → socket push, exported to console or an OTLP collector",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build:client": "vite build",
+    "start": "tsx src/index.ts",
+    "dev": "npm run start:full",
+    "start:full": "npm run build:client && tsx src/index.ts",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/boot": "~0.0.1",
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/factory": "~0.0.1",
+    "@ndigo/http": "~0.0.1",
+    "@ndigo/management": "~0.0.1",
+    "@ndigo/platform-node": "~0.0.1",
+    "@ndigo/scheduler": "~0.0.1",
+    "@ndigo/socket": "~0.0.1",
+    "@ndigo/telemetry": "~0.0.1",
+    "@ndigo/telemetry-node": "~0.0.1",
+    "@ndigo/telemetry-web": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@opentelemetry/api": "catalog:",
+    "@tsmetadata/polyfill": "catalog:",
+    "zod": "catalog:",
+    "@ndigo/log": "~0.0.1"
+  },
+  "devDependencies": {
+    "@ndigo/test": "~0.0.1",
+    "@opentelemetry/context-async-hooks": "catalog:",
+    "@opentelemetry/core": "catalog:",
+    "@opentelemetry/sdk-metrics": "catalog:",
+    "@opentelemetry/sdk-trace-base": "catalog:",
+    "tsx": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:",
+    "@ndigo/log": "~0.0.1"
+  }
+}

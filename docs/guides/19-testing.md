@@ -1,6 +1,6 @@
-# Guide 19 — Testing with `@blue/test`
+# Guide 19 — Testing with `@ndigo/test`
 
-`@blue/test` is the in-process integration harness (AD-63): `bootApp` boots a
+`@ndigo/test` is the in-process integration harness (AD-63): `bootApp` boots a
 real application context and dispatcher, and `MockHTTP` sends socket-free
 requests through the whole pipeline — interceptors, argument resolvers,
 validation, handler, view resolution, and the response contract. No port, no
@@ -21,12 +21,12 @@ dispatcher, returning `{ context, dispatcher, close }`:
 ```ts
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
-import { bootApp, MockHTTP } from '@blue/test';
-import type { BlueTestApp } from '@blue/test';
+import { bootApp, MockHTTP } from '@ndigo/test';
+import type { NdigoTestApp } from '@ndigo/test';
 import { TodoController } from '../src/todo-controller';
 
 describe('Todo API', () => {
-    let app: BlueTestApp;
+    let app: NdigoTestApp;
     let http: MockHTTP;
 
     beforeAll(() => {
@@ -50,7 +50,7 @@ app for repeated calls with the same sources within a Vitest worker
 reference and closes on the last:
 
 ```ts
-import { cachedBootApp, releaseCachedApp, MockHTTP } from '@blue/test';
+import { cachedBootApp, releaseCachedApp, MockHTTP } from '@ndigo/test';
 
 const app = cachedBootApp([TodoController]); // boots once per worker
 // ... suite A ...
@@ -105,7 +105,7 @@ For browser apps (jsdom), `bootBrowserApp` (async) wires the real
 
 ```ts
 // @vitest-environment jsdom
-import { bootBrowserApp, BrowserMockClient } from '@blue/test';
+import { bootBrowserApp, BrowserMockClient } from '@ndigo/test';
 
 const app = await bootBrowserApp([TodoConfiguration]);
 const browser = new BrowserMockClient(app);
@@ -123,7 +123,7 @@ app.close();
 ## 4. Timing helpers
 
 `delay(ms)` is a shared promise-based helper for specs that await real or fake
-timers (re-exported from `@blue/util`). Use it instead of ad-hoc `setTimeout`
+timers (re-exported from `@ndigo/util`). Use it instead of ad-hoc `setTimeout`
 promises so fake-timer suites stay deterministic.
 
 ## 5. What the harness deliberately is not
@@ -136,8 +136,8 @@ promises so fake-timer suites stay deterministic.
 
 - Decision: [AD-63](../decisions/2026-09-04_AD63_BLUE_TEST_HARNESS.md) — the
   in-process, socket-free harness.
-- Generated API: [`@blue/test` api](../../packages/blue-test/api/README.md).
-- Demo usage: [`apps/03-blue-todo`](../../apps/03-blue-todo/README.md) —
+- Generated API: [`@ndigo/test` api](../../packages/ndigo-test/api/README.md).
+- Demo usage: [`apps/03-ndigo-todo`](../../apps/03-ndigo-todo/README.md) —
   harness-driven controller and shell-router specs.
 
 [Back to guides](./README.md)

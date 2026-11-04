@@ -1,6 +1,6 @@
 # Guide 22 — Jobs and the Transactional Outbox
 
-How background work is delivered in BlueJS: `@blue/jobs` — the `JobDriver`
+How background work is delivered in Ndigo: `@ndigo/jobs` — the `JobDriver`
 contract, worker execution, and the transactional outbox that ties side
 effects to database commits. Jobs are **Node-only**.
 
@@ -15,8 +15,8 @@ Add a `@jobHandler` method to any registered bean, enqueue a job, and start a
 runner:
 
 ```ts
-import { jobHandler, JOB_QUEUE, JOB_RUNNER } from '@blue/jobs';
-import { configuration, entry } from '@blue/context';
+import { jobHandler, JOB_QUEUE, JOB_RUNNER } from '@ndigo/jobs';
+import { configuration, entry } from '@ndigo/context';
 
 class EmailWorker {
     @jobHandler('email.send', { maxAttempts: 5, timeoutMs: 30_000 })
@@ -85,21 +85,21 @@ into refresh-driven start.
 
 Every execution records one INTERNAL span `jobs.job.<type>` (`job.id`,
 `job.type`, `job.attempt`, `job.outcome`, `job.duration_ms`); retries log a
-warning and terminal failures an error through `@blue/log`.
+warning and terminal failures an error through `@ndigo/log`.
 
 ## 3. Durable drivers
 
-| Driver               | Package             | Claim mechanism                                       |
-| -------------------- | ------------------- | ----------------------------------------------------- |
-| `InProcessJobDriver` | `@blue/jobs`        | In-memory map + runAt ordering (not durable)          |
-| `LibSQLJobStore`     | `@blue/orm-drizzle` | One `UPDATE … RETURNING` statement (SQLite)           |
-| `RedisJobDriver`     | `@blue/redis/jobs`  | One Lua script over ready/lease ZSETs + record hashes |
+| Driver               | Package              | Claim mechanism                                       |
+| -------------------- | -------------------- | ----------------------------------------------------- |
+| `InProcessJobDriver` | `@ndigo/jobs`        | In-memory map + runAt ordering (not durable)          |
+| `LibSQLJobStore`     | `@ndigo/orm-drizzle` | One `UPDATE … RETURNING` statement (SQLite)           |
+| `RedisJobDriver`     | `@ndigo/redis/jobs`  | One Lua script over ready/lease ZSETs + record hashes |
 
 Register a durable driver under the `jobDriver` bean to replace the default:
 
 ```ts
-import { JOB_DRIVER } from '@blue/jobs';
-import { LibSQLJobStore } from '@blue/orm-drizzle';
+import { JOB_DRIVER } from '@ndigo/jobs';
+import { LibSQLJobStore } from '@ndigo/orm-drizzle';
 
 @configuration
 class JobsConfiguration {
@@ -123,8 +123,8 @@ losing it on a crash. The outbox removes both: record the side effect in the
 same transaction, publish it afterwards.
 
 ```ts
-import { LibSQLOutboxStore } from '@blue/orm-drizzle';
-import { JobOutboxPublisher, OutboxRelay, JOB_QUEUE } from '@blue/jobs';
+import { LibSQLOutboxStore } from '@ndigo/orm-drizzle';
+import { JobOutboxPublisher, OutboxRelay, JOB_QUEUE } from '@ndigo/jobs';
 
 const outbox = new LibSQLOutboxStore({ client: dataSource.client }); // same client!
 const relay = new OutboxRelay({

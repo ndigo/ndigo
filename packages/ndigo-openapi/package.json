@@ -1,0 +1,41 @@
+{
+  "name": "@ndigo/openapi",
+  "version": "0.0.1",
+  "description": "OpenAPI 3.0 documentation for Ndigo apps \u2014 spec generation from dispatch metadata + Swagger UI",
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "openapi",
+    "swagger",
+    "api-docs"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/http": "~0.0.1",
+    "zod": "catalog:"
+  },
+  "sideEffects": false,
+  "devDependencies": {
+    "@ndigo/context": "~0.0.1"
+  }
+}

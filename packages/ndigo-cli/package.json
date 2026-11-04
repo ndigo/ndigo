@@ -1,0 +1,55 @@
+{
+  "name": "@ndigo/cli",
+  "version": "0.0.1",
+  "description": "The Ndigo framework CLI — serve, dev, new, generate, db, inspect, doctor (AD-75)",
+  "type": "module",
+  "keywords": [
+    "ndigo",
+    "ndigo-cli",
+    "cli",
+    "dev-loop"
+  ],
+  "files": [
+    "bin",
+    "api",
+    "lib"
+  ],
+  "bin": {
+    "ndigo": "./bin/run.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "oclif": {
+    "commands": "./lib/commands",
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v"
+    ],
+    "topicSeparator": " "
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/cluster": "~0.0.1",
+    "@oclif/core": "^5.0.0"
+  },
+  "devDependencies": {
+    "@ndigo/orm-drizzle": "~0.0.1"
+  },
+  "sideEffects": false
+}

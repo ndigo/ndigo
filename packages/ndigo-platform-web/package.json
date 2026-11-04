@@ -1,0 +1,62 @@
+{
+  "name": "@ndigo/platform-web",
+  "version": "0.0.1",
+  "description": "Browser platform adapter for Ndigo — dispatcher glue, history/cookie resolvers, themes",
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./browser-dispatcher": {
+      "types": "./lib/browser-dispatcher.d.ts",
+      "default": "./lib/browser-dispatcher.js"
+    },
+    "./web-auto-configuration": {
+      "types": "./lib/web-auto-configuration.d.ts",
+      "default": "./lib/web-auto-configuration.js"
+    },
+    "./browser-theme": {
+      "types": "./lib/browser-theme.d.ts",
+      "default": "./lib/browser-theme.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "ndigo-platform",
+    "ndigo-platform-web",
+    "platform",
+    "web"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "zod": "catalog:"
+  },
+  "dependencies": {
+    "@ndigo/content": "~0.0.1",
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/http": "~0.0.1",
+    "@ndigo/log": "~0.0.1",
+    "@ndigo/router": "~0.0.1",
+    "@ndigo/signals": "~0.0.1",
+    "@ndigo/socket": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@ndigo/view": "~0.0.1",
+    "@ndigo/view-webcomponent": "~0.0.1"
+  },
+  "sideEffects": false
+}

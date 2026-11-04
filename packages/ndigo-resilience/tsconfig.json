@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "strict": true,
+    "types": ["node"],
+    "paths": {
+      "@ndigo/*": ["../ndigo-*/src"]
+    },
+    "rootDir": "../../"
+  },
+  "include": ["src/**/*"]
+}

@@ -263,6 +263,9 @@ describe('JWTAdapter revocation cache (AD-33 D-7)', () => {
         await expect(adapter.validate(accessToken)).resolves.toBeNull();
     });
 
+    // Explicit budget: filling the cache is deliberately 10k sequential
+    // sign+verify ops (~0.4s locally); a cold CI run (no cache, every project
+    // contending a 2-core runner) starved it past the 5s default (#94).
     test('the cache is bounded: at the cap the oldest entry is evicted (2026-11-02 review L1)', async () => {
         // The bound is observable behavior, not a private poke: once the cap is
         // crossed, the oldest sub's live entry is gone — so its revocation takes
@@ -299,5 +302,5 @@ describe('JWTAdapter revocation cache (AD-33 D-7)', () => {
         // map never grows past the cap and eviction targets the oldest entry.
         await expect(adapter.validate(token('user-0', 0))).resolves.toBeNull();
         await expect(adapter.validate(token('user-0', 1))).resolves.toMatchObject({ id: 'user-0' });
-    });
+    }, 30_000);
 });

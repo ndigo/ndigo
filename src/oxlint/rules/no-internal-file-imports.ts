@@ -6,7 +6,7 @@
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 
-const crossPackageInternalImportPattern = /^@blue\/[^/]+\/_/u;
+const crossPackageInternalImportPattern = /^@ndigo\/[^/]+\/_/u;
 
 /**
  * Reports imports that bypass a package's public API by reaching into internal files.

@@ -1,5 +1,5 @@
 /**
- * Rule that blocks direct imports from libraries wrapped by BlueJS integration packages.
+ * Rule that blocks direct imports from libraries wrapped by Ndigo integration packages.
  * @module src/oxlint
  * @since 1.0.0
  * @author Jeff Rose
@@ -9,13 +9,13 @@ import type { Context, ESTree } from '@oxlint/plugins';
 import { INTEGRATION_LAYER_MAP, INTEGRATION_LAYER_PACKAGES } from '../_constants.ts';
 
 function getCurrentPackageName(filename: string): string | null {
-    const match = /[\\/]packages[\\/]blue-([^\\/]+)[\\/]/u.exec(filename);
+    const match = /[\\/]packages[\\/]ndigo-([^\\/]+)[\\/]/u.exec(filename);
 
     if (!match) {
         return null;
     }
 
-    return `@blue/${match[1]}`;
+    return `@ndigo/${match[1]}`;
 }
 
 function isTestFile(filename: string): boolean {

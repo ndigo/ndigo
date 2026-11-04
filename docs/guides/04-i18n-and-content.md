@@ -1,18 +1,18 @@
 # Guide 04 — Content, i18n, and locale
 
-How content and internationalization work in BlueJS: content keys, message
+How content and internationalization work in Ndigo: content keys, message
 formatting, locale resolution (server and client), and the formatting rule
 that keeps server-rendered pages faithful on the client.
 
-The design follows one rule: **BlueJS owns the contract, wraps the
+The design follows one rule: **Ndigo owns the contract, wraps the
 ecosystem standard, and uses platform standard APIs directly** —
 
-| Layer                       | What it is                                                           | Who owns it                                           |
-| --------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------- |
-| `MessageSource` contract    | `getMessage(key, params?, language?)` over `ContentSource`           | `@blue/content` (framework)                           |
-| Message translation         | resources, interpolation, plurals, contexts, fallbacks, lazy loading | **i18next** (via `@blue/content-i18next`)             |
-| Date/number/list formatting | `Intl.*` formatters, cached, explicit locale/time zone               | `@blue/core` wrappers (framework facade, Intl engine) |
-| Locale resolution           | per-request language: header/cookie/navigator/fixed                  | `@blue/dispatcher` + platform packages                |
+| Layer                       | What it is                                                           | Who owns it                                            |
+| --------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------ |
+| `MessageSource` contract    | `getMessage(key, params?, language?)` over `ContentSource`           | `@ndigo/content` (framework)                           |
+| Message translation         | resources, interpolation, plurals, contexts, fallbacks, lazy loading | **i18next** (via `@ndigo/content-i18next`)             |
+| Date/number/list formatting | `Intl.*` formatters, cached, explicit locale/time zone               | `@ndigo/core` wrappers (framework facade, Intl engine) |
+| Locale resolution           | per-request language: header/cookie/navigator/fixed                  | `@ndigo/dispatcher` + platform packages                |
 
 ## 1. The pipeline
 
@@ -25,7 +25,7 @@ ecosystem standard, and uses platform standard APIs directly** —
         dispatcher render → route.attributes[LANGUAGE_ATTRIBUTE]
                         │
         ┌─ EJS helpers: t/formatDate/formatNumber/…   (server templates)
-        ├─ IslandView: data-blue-locale → hydrate .locale
+        ├─ IslandView: data-ndigo-locale → hydrate .locale
         └─ Client views: currentLocale signal (reactive, no reload)
 ```
 
@@ -36,8 +36,8 @@ becomes a `MessageSource`, so any `ApplicationContextAware` bean can format
 messages:
 
 ```ts
-import { I18nextMessageSource } from '@blue/content-i18next';
-import { ApplicationBuilder } from '@blue/boot';
+import { I18nextMessageSource } from '@ndigo/content-i18next';
+import { ApplicationBuilder } from '@ndigo/boot';
 
 const context = await new ApplicationBuilder([/* configurations */]).run();
 
@@ -103,12 +103,12 @@ curl -H 'Accept-Language: fr, en;q=0.8' http://localhost:3200/
 ```
 
 The dispatch pipeline writes the negotiated language onto the route, and
-templates and islands consume it. The `blue-island` demo serves a fully
+templates and islands consume it. The `ndigo-island` demo serves a fully
 localized page — one request, two languages:
 
 ```text
 $ curl http://localhost:3200/ | grep '<h1>'
-<h1>Blue Island</h1>
+<h1>Ndigo Island</h1>
 $ curl -H 'Accept-Language: fr' http://localhost:3200/ | grep -E '<h1>|lang='
 <html lang="fr">
 ```
@@ -147,7 +147,7 @@ Pin the timezone in the template (`timeZone: 'UTC'`) or pass the request's.
 component formats identically to the server:
 
 ```html
-<todo-app data-blue-island data-blue-locale="fr-CA" data-blue-model="…"></todo-app>
+<todo-app data-ndigo-island data-ndigo-locale="fr-CA" data-ndigo-model="…"></todo-app>
 ```
 
 `hydrateIslands()` assigns `.locale` on the live element **before** it
@@ -169,8 +169,8 @@ The browser platform persists the user's choice and reacts to changes
 without a reload — the parts Spring never had to build:
 
 ```ts
-import { changeLocale, currentLocale, CookieLanguageResolver } from '@blue/platform-web';
-import { effect } from '@blue/signals';
+import { changeLocale, currentLocale, CookieLanguageResolver } from '@ndigo/platform-web';
+import { effect } from '@ndigo/signals';
 
 // Reactive: re-render whenever the locale changes.
 effect(() => {
@@ -187,26 +187,26 @@ Precedence: **cookie (user choice) → navigator → default** — the
 `lang` cookie the signal writes, so the next dispatcher pass agrees with the
 current UI.
 
-The `blue-todo` demo ships a working switcher (`locale-switcher-view.ts`):
+The `ndigo-todo` demo ships a working switcher (`locale-switcher-view.ts`):
 EN/FR buttons, a message-source-backed label, cookie persistence, and
 signal-driven re-rendering.
 
 ## 7. What you get out of the box
 
-| Concern            | Default                                                          |
-| ------------------ | ---------------------------------------------------------------- |
-| Server language    | `Accept-Language` header (`NodeAutoConfiguration`)               |
-| Client language    | cookie `lang` → navigator → `en-US` (`WebAutoConfiguration`)     |
-| Template messages  | `t()` helpers in every EJS render                                |
-| Island locale      | `data-blue-locale` attribute, assigned on hydration              |
-| Reactive switching | `changeLocale()` → cookie + `currentLocale` signal               |
-| Formatting         | `Intl.*` via `@blue/core` formatters (explicit locale/time zone) |
+| Concern            | Default                                                           |
+| ------------------ | ----------------------------------------------------------------- |
+| Server language    | `Accept-Language` header (`NodeAutoConfiguration`)                |
+| Client language    | cookie `lang` → navigator → `en-US` (`WebAutoConfiguration`)      |
+| Template messages  | `t()` helpers in every EJS render                                 |
+| Island locale      | `data-ndigo-locale` attribute, assigned on hydration              |
+| Reactive switching | `changeLocale()` → cookie + `currentLocale` signal                |
+| Formatting         | `Intl.*` via `@ndigo/core` formatters (explicit locale/time zone) |
 
 ## See also
 
 - [Content/i18n decision](../decisions/2026-09-13_AD19_CONTENT_I18N.md)
 - [Content/i18n implementation plan](../plans/2026-09-13_CONTENT_I18N.md)
-- [blue-island demo](../../apps/06-blue-island/README.md) — localized SSR page
-- [blue-todo demo](../../apps/03-blue-todo/README.md) — reactive locale switcher
-- [`@blue/content-i18next`](../../packages/blue-content-i18next/README.md) —
+- [ndigo-island demo](../../apps/06-ndigo-island/README.md) — localized SSR page
+- [ndigo-todo demo](../../apps/03-ndigo-todo/README.md) — reactive locale switcher
+- [`@ndigo/content-i18next`](../../packages/ndigo-content-i18next/README.md) —
   the i18next adapter

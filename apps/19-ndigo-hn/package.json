@@ -1,0 +1,45 @@
+{
+  "name": "@ndigo/hn",
+  "version": "0.0.1",
+  "description": "Hacker News reader — Ndigo browser app over the official HN API, exercising the HTTP client's cache/offline story and long-list rendering",
+  "type": "module",
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vite build && vitest run"
+  },
+  "keywords": [
+    "hacker-news",
+    "hn",
+    "pwa",
+    "offline",
+    "ndigo",
+    "ndigo"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/http": "~0.0.1",
+    "@ndigo/platform-web": "~0.0.1",
+    "@ndigo/router": "~0.0.1",
+    "@ndigo/signals": "~0.0.1",
+    "@ndigo/telemetry-web": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@ndigo/view-webcomponent": "~0.0.1",
+    "@opentelemetry/api": "catalog:"
+  },
+  "devDependencies": {
+    "@ndigo/test": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:",
+    "msw": "~3.0.3",
+    "vite": "catalog:"
+  }
+}

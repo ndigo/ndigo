@@ -1,7 +1,7 @@
 # Self-Healing CI — workspace instructions
 
 The Nx Cloud fix agent reads this file (plus `AGENTS.md` context) before
-proposing changes. BlueJS conventions: `STYLE_GUIDE.md` (how to write),
+proposing changes. Ndigo conventions: `STYLE_GUIDE.md` (how to write),
 `ARCHITECTURE.md` (why the system is shaped this way), `CONTRIBUTING.md`
 (workflow), `docs/guides/README.md` (task guides).
 

@@ -1,0 +1,47 @@
+{
+  "name": "@ndigo/management",
+  "version": "0.0.1",
+  "description": "Ndigo management endpoints — /health and /metrics (actuator-style)",
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "management",
+    "health",
+    "metrics",
+    "actuator"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@ndigo/boot": "~0.0.1"
+  },
+  "dependencies": {
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/http": "~0.0.1",
+    "@ndigo/log": "~0.0.1",
+    "@ndigo/platform-node": "~0.0.1",
+    "@ndigo/telemetry": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "zod": "catalog:"
+  },
+  "sideEffects": false
+}

@@ -1,0 +1,52 @@
+{
+  "name": "@ndigo/orm-drizzle",
+  "version": "0.0.1",
+  "description": "Ndigo ORM Drizzle – Drizzle ORM adapter for @ndigo/orm",
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "ndigo-orm-drizzle",
+    "orm",
+    "drizzle"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@tsmetadata/polyfill": "catalog:",
+    "@ndigo/auth-server": "~0.0.1",
+    "@ndigo/context": "~0.0.1"
+  },
+  "dependencies": {
+    "@ndigo/auth-core": "~0.0.1",
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/jobs": "~0.0.1",
+    "@ndigo/orm": "~0.0.1",
+    "@ndigo/socket": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@libsql/client": "0.17.4",
+    "drizzle-orm": "0.45.2",
+    "drizzle-zod": "^0.8.3",
+    "zod": "catalog:"
+  },
+  "sideEffects": false
+}

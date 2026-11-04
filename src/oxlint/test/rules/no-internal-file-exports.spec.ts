@@ -19,39 +19,39 @@ ruleTester.run('no-internal-file-exports', noInternalFileExports, {
     valid: [
         {
             code: "export * from './container';",
-            filename: '/packages/blue-core/src/index.ts',
+            filename: '/packages/ndigo-core/src/index.ts',
         },
         {
             code: "export * from './_util';",
-            filename: '/packages/blue-core/src/something.ts',
+            filename: '/packages/ndigo-core/src/something.ts',
         },
         {
             code: "export { foo } from './deferred';",
-            filename: '/packages/blue-core/src/index.ts',
+            filename: '/packages/ndigo-core/src/index.ts',
         },
         {
             code: "export * from './_helpers';",
-            filename: '/packages/blue-core/test/index.ts',
+            filename: '/packages/ndigo-core/test/index.ts',
         },
         {
             code: 'const foo = 1;\nexport { foo };',
-            filename: '/packages/blue-core/src/index.ts',
+            filename: '/packages/ndigo-core/src/index.ts',
         },
         // A sub-barrel under `src/` is also a public API entry point (TOL-F2).
         {
             code: "export * from './registry';",
-            filename: '/packages/blue-telemetry/src/metrics/index.ts',
+            filename: '/packages/ndigo-telemetry/src/metrics/index.ts',
         },
         // A two-level nested barrel re-exporting a public module is fine (RES-D).
         {
             code: "export * from './registry';",
-            filename: '/packages/blue-telemetry/src/metrics/http/index.ts',
+            filename: '/packages/ndigo-telemetry/src/metrics/http/index.ts',
         },
     ],
     invalid: [
         {
             code: "export * from './_util';",
-            filename: '/packages/blue-core/src/index.ts',
+            filename: '/packages/ndigo-core/src/index.ts',
             errors: [
                 {
                     messageId: 'internalExport',
@@ -63,7 +63,7 @@ ruleTester.run('no-internal-file-exports', noInternalFileExports, {
         },
         {
             code: "export * from './_constants';",
-            filename: '/packages/blue-factory/src/index.ts',
+            filename: '/packages/ndigo-factory/src/index.ts',
             errors: [
                 {
                     messageId: 'internalExport',
@@ -75,7 +75,7 @@ ruleTester.run('no-internal-file-exports', noInternalFileExports, {
         },
         {
             code: "export { foo } from './_helpers';",
-            filename: '/packages/blue-util/src/index.ts',
+            filename: '/packages/ndigo-util/src/index.ts',
             errors: [
                 {
                     messageId: 'internalExport',
@@ -88,7 +88,7 @@ ruleTester.run('no-internal-file-exports', noInternalFileExports, {
         // A two-level nested barrel re-exporting an internal file is flagged (RES-D).
         {
             code: "export * from './_x';",
-            filename: '/packages/blue-telemetry/src/metrics/http/index.ts',
+            filename: '/packages/ndigo-telemetry/src/metrics/http/index.ts',
             errors: [
                 {
                     messageId: 'internalExport',

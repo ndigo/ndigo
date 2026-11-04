@@ -1,0 +1,49 @@
+{
+  "name": "@ndigo/dispatcher",
+  "version": "0.0.1",
+  "description": "Request dispatch, parameter binding, and radix handler mappings for Ndigo",
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "ndigo-dispatcher"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "find-my-way": "^9.10.0",
+    "radix3": "^1.1.2"
+  },
+  "dependencies": {
+    "@ndigo/content": "~0.0.1",
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/factory": "~0.0.1",
+    "@ndigo/http": "~0.0.1",
+    "@ndigo/log": "~0.0.1",
+    "@ndigo/router": "~0.0.1",
+    "@ndigo/socket": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@ndigo/view": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:",
+    "zod": "catalog:"
+  },
+  "sideEffects": false
+}

@@ -1,0 +1,60 @@
+{
+  "name": "@ndigo/boot",
+  "version": "0.0.1",
+  "description": "Application bootstrap, profiles, and typed configuration for Ndigo",
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "ndigo-app",
+    "ndigo-boot",
+    "app",
+    "boot"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib",
+    "schema"
+  ],
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    },
+    "./schema/application.schema.json": "./schema/application.schema.json"
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/platform-node": "~0.0.1",
+    "@ndigo/platform-web": "~0.0.1",
+    "@ndigo/telemetry-node": "~0.0.1",
+    "@toon-format/toon": "catalog:"
+  },
+  "sideEffects": false,
+  "peerDependencies": {
+    "@toon-format/toon": "4.4.0"
+  },
+  "peerDependenciesMeta": {
+    "@toon-format/toon": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/factory": "~0.0.1",
+    "@ndigo/log": "~0.0.1",
+    "@ndigo/router": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "zod": "catalog:"
+  }
+}

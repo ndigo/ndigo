@@ -9,7 +9,7 @@ whether a route _is reachable_ — and can flip while the process runs.
 ## The model: evaluate, never crash
 
 All flag evaluation runs through one contract, `FlagEvaluator`
-(`@blue/flags`): a typed `evaluate(flag, defaultValue, ctx?)` that
+(`@ndigo/flags`): a typed `evaluate(flag, defaultValue, ctx?)` that
 **never throws** — a missing flag, a wrong-typed value, or a broken
 backend returns the supplied default with a `reason` and (on error) an
 `errorCode`. Flags cannot crash requests; a provider outage degrades to
@@ -33,7 +33,7 @@ visible immediately. Flag `name` resolves `feature.<name>`; in
 ## Gating a route
 
 ```ts
-import { whenFeature } from '@blue/flags';
+import { whenFeature } from '@ndigo/flags';
 
 @requestMapping('/')
 class ReportController {
@@ -46,7 +46,7 @@ class ReportController {
 `FeatureGateInterceptor` (default-on in the node platform mapping, after
 security headers, before rate limiting) evaluates the flag per request:
 truthy → the handler runs; **off, absent, or error → 404** problem
-document (`urn:blue:not-found`) — the kill switch reads. Un-gated routes
+document (`urn:ndigo:not-found`) — the kill switch reads. Un-gated routes
 are untouched, and a disabled route never charges a rate-limit budget.
 Method-level gates win over class-level gates.
 
@@ -64,7 +64,7 @@ The read-through provider serves the new state on the next request.
 ## Programmatic checks
 
 ```ts
-import { FLAG_EVALUATOR } from '@blue/flags';
+import { FLAG_EVALUATOR } from '@ndigo/flags';
 
 const evaluation = await context.getValue(FLAG_EVALUATOR).evaluate('betaUI', false);
 if (evaluation.value) { … }
@@ -111,14 +111,14 @@ the local algorithm is intentionally independent (AD-82 D-3).
 
 ## Vendors: OpenFeature is the seam
 
-`@blue/flags` ships no vendor SDK; vendors arrive as **OpenFeature
+`@ndigo/flags` ships no vendor SDK; vendors arrive as **OpenFeature
 providers** behind the same `FlagEvaluator` contract. The bridge
-(`@blue/flags-openfeature`) evaluates through an OpenFeature client, so app
+(`@ndigo/flags-openfeature`) evaluates through an OpenFeature client, so app
 code never imports a vendor and swapping vendors is a bootstrap + bean
 change:
 
 ```bash
-pnpm add @blue/flags-openfeature @openfeature/flagd-provider
+pnpm add @ndigo/flags-openfeature @openfeature/flagd-provider
 ```
 
 ```ts
@@ -131,8 +131,8 @@ await OpenFeature.setProviderAndWait(new FlagdProvider());
 
 ```ts
 // App configuration — override the zero-config property provider.
-import { FLAG_EVALUATOR } from '@blue/flags';
-import { OpenFeatureFlagEvaluator } from '@blue/flags-openfeature';
+import { FLAG_EVALUATOR } from '@ndigo/flags';
+import { OpenFeatureFlagEvaluator } from '@ndigo/flags-openfeature';
 
 @configuration
 class AppConfiguration {
@@ -163,7 +163,7 @@ reason/variant/error vocabulary is already OpenFeature's, and
 - **Telemetry**: register `FeatureFlagTelemetryHook` (this package) on a
   client or globally — one `feature_flag.evaluation` span per evaluation
   with the semconv attributes (key, provider, reason, variant,
-  `error.type`); inert until `@blue/telemetry-node`/`-web` providers are
+  `error.type`); inert until `@ndigo/telemetry-node`/`-web` providers are
   wired, and the same instance works on the web SDK.
 - **Provider choice**: flagd (`@openfeature/flagd-provider`) and OFREP
   (`@openfeature/ofrep-provider` — the vendor-neutral HTTP protocol)
@@ -178,12 +178,12 @@ UI gating in SPAs uses the package's `/web` entry over
 `@openfeature/web-sdk`:
 
 ```bash
-pnpm add @blue/flags-openfeature @openfeature/web-sdk
+pnpm add @ndigo/flags-openfeature @openfeature/web-sdk
 ```
 
 ```ts
 import { OpenFeature, InMemoryProvider } from '@openfeature/web-sdk';
-import { WebOpenFeatureFlagEvaluator } from '@blue/flags-openfeature/web';
+import { WebOpenFeatureFlagEvaluator } from '@ndigo/flags-openfeature/web';
 
 await OpenFeature.setProviderAndWait(new InMemoryProvider({ … }));
 await OpenFeature.setContext({ targetingKey: userId, plan }); // static context
@@ -203,11 +203,11 @@ registers on the web client with the same instance.
 ## What this is not
 
 - **Not** a registration gate — `@whenProperty` / `@whenProfile`
-  (`@blue/core`) still decide what boots.
+  (`@ndigo/core`) still decide what boots.
 - **Not** automatic for service methods — non-route gating is an explicit
   `evaluate()` check (or an AD-42 interceptor when one is needed).
 - **Not** a caching layer — the local provider is read-through by design;
   caching is a provider concern (a follow-up behind the SPI).
 
-Reference application: `apps/04-blue-api` — the `/gated-report` demo route,
+Reference application: `apps/04-ndigo-api` — the `/gated-report` demo route,
 grounded in `test/feature-flags.spec.ts`.

@@ -1,0 +1,21 @@
+/**
+ * @module ndigo-<%= name %>
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+import { routeMapping, ModelAndView } from '@ndigo/dispatcher';
+import { WebComponentView } from '@ndigo/view-webcomponent';
+
+@routeMapping('/')
+class <%= className %>Controller {
+    @routeMapping('/')
+    handleRoot() {
+        // The minimal example keeps a concrete view by design — constructing
+        // a view in the handler is always an option. Most apps instead return
+        // a view NAME (`new ModelAndView('<%= name %>-app')`) resolved by the
+        // resolver chain (WebComponentViewResolver etc.).
+        return new ModelAndView(new WebComponentView('<%= name %>-app'), { message: 'Hello, World!' });
+    }
+}
+
+export default <%= className %>Controller;

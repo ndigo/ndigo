@@ -1,4 +1,4 @@
-# BlueJS
+# Ndigo
 
 A modular JavaScript/TypeScript framework organized as an Nx monorepo with
 pnpm workspaces. The framework spans the browser and Node: a shared context
@@ -48,10 +48,10 @@ process — lives in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ### Build an application
 
-Applications are pnpm workspaces over `@blue/*` packages; the
-[`blue` CLI](packages/blue-cli/README.md) fronts the application lifecycle
-(`blue new`, `blue dev`, `blue serve`, `blue generate`, `blue db`,
-`blue inspect`, `blue doctor` — [guide 25](docs/guides/25-blue-cli.md)). Pick a
+Applications are pnpm workspaces over `@ndigo/*` packages; the
+[`ndigo` CLI](packages/ndigo-cli/README.md) fronts the application lifecycle
+(`ndigo new`, `ndigo dev`, `ndigo serve`, `ndigo generate`, `ndigo db`,
+`ndigo inspect`, `ndigo doctor` — [guide 25](docs/guides/25-ndigo-cli.md)). Pick a
 path below: each lists the packages to start with, then the demo apps to follow.
 
 > **Pre-1.0:** the packages are not published yet — build from this repository
@@ -59,36 +59,36 @@ path below: each lists the packages to start with, then the demo apps to follow.
 
 #### If you want to build a client-side web app
 
-1. [`@blue/context`](packages/blue-context/README.md) + [`@blue/boot`](packages/blue-boot/README.md) — DI container and bootstrap
-2. [`@blue/view-webcomponent`](packages/blue-view-webcomponent/README.md) — Web Component views
-3. [`@blue/signals`](packages/blue-signals/README.md) — reactive state
-4. [`@blue/router`](packages/blue-router/README.md) — routing
-5. [`@blue/http`](packages/blue-http/README.md) — HTTP client (interceptors, parsers, cache)
-6. [`@blue/platform-web`](packages/blue-platform-web/README.md) — browser platform glue
+1. [`@ndigo/context`](packages/ndigo-context/README.md) + [`@ndigo/boot`](packages/ndigo-boot/README.md) — DI container and bootstrap
+2. [`@ndigo/view-webcomponent`](packages/ndigo-view-webcomponent/README.md) — Web Component views
+3. [`@ndigo/signals`](packages/ndigo-signals/README.md) — reactive state
+4. [`@ndigo/router`](packages/ndigo-router/README.md) — routing
+5. [`@ndigo/http`](packages/ndigo-http/README.md) — HTTP client (interceptors, parsers, cache)
+6. [`@ndigo/platform-web`](packages/ndigo-platform-web/README.md) — browser platform glue
 
-Then follow the ladder: [apps/01-blue-hello](apps/01-blue-hello/README.md)
-(minimal SPA) → [apps/03-blue-todo](apps/03-blue-todo/README.md) (micro
-frontend) → [apps/11-blue-conduit-web](apps/11-blue-conduit-web/README.md)
+Then follow the ladder: [apps/01-ndigo-hello](apps/01-ndigo-hello/README.md)
+(minimal SPA) → [apps/03-ndigo-todo](apps/03-ndigo-todo/README.md) (micro
+frontend) → [apps/11-ndigo-conduit-web](apps/11-ndigo-conduit-web/README.md)
 (RealWorld frontend).
 
 #### If you want to build a Node server-side app
 
-1. [`@blue/boot`](packages/blue-boot/README.md) — application bootstrap (`ApplicationBuilder`, profiles, typed config)
-2. [`@blue/platform-node`](packages/blue-platform-node/README.md) — HTTP server, dispatcher, static files
-3. [`@blue/dispatcher`](packages/blue-dispatcher/README.md) — controllers (`@getMapping` / `@postMapping`)
-4. [`@blue/orm`](packages/blue-orm/README.md) + [`@blue/orm-drizzle`](packages/blue-orm-drizzle/README.md) — persistence
-5. [`@blue/telemetry-node`](packages/blue-telemetry-node/README.md) — tracing, metrics, logging
+1. [`@ndigo/boot`](packages/ndigo-boot/README.md) — application bootstrap (`ApplicationBuilder`, profiles, typed config)
+2. [`@ndigo/platform-node`](packages/ndigo-platform-node/README.md) — HTTP server, dispatcher, static files
+3. [`@ndigo/dispatcher`](packages/ndigo-dispatcher/README.md) — controllers (`@getMapping` / `@postMapping`)
+4. [`@ndigo/orm`](packages/ndigo-orm/README.md) + [`@ndigo/orm-drizzle`](packages/ndigo-orm-drizzle/README.md) — persistence
+5. [`@ndigo/telemetry-node`](packages/ndigo-telemetry-node/README.md) — tracing, metrics, logging
 
-Then follow the ladder: [apps/02-blue-hello-node](apps/02-blue-hello-node/README.md)
-(minimal server) → [apps/04-blue-api](apps/04-blue-api/README.md) (the reference
-Node app) → [apps/10-blue-conduit-api](apps/10-blue-conduit-api/README.md)
+Then follow the ladder: [apps/02-ndigo-hello-node](apps/02-ndigo-hello-node/README.md)
+(minimal server) → [apps/04-ndigo-api](apps/04-ndigo-api/README.md) (the reference
+Node app) → [apps/10-ndigo-conduit-api](apps/10-ndigo-conduit-api/README.md)
 (RealWorld API). The end-to-end tutorial is [guide 01 — Building a Node
 API](docs/guides/01-building-a-node-api.md).
 
 #### Server-rendered with islands (both)
 
-EJS shell + hydration + live updates: [apps/06-blue-island](apps/06-blue-island/README.md)
-and [apps/12-blue-petclinic](apps/12-blue-petclinic/README.md); the model is
+EJS shell + hydration + live updates: [apps/06-ndigo-island](apps/06-ndigo-island/README.md)
+and [apps/12-ndigo-petclinic](apps/12-ndigo-petclinic/README.md); the model is
 [guide 18 — Signals & Islands](docs/guides/18-signals-and-islands.md).
 
 #### Run the demos
@@ -105,30 +105,30 @@ demo.
 
 ## Applications
 
-| App                                                            | What it demonstrates                                                |
-| -------------------------------------------------------------- | ------------------------------------------------------------------- |
-| [blue-hello](apps/01-blue-hello/README.md)                     | Minimal browser SPA — context + route + Web Component               |
-| [blue-hello-node](apps/02-blue-hello-node/README.md)           | Minimal Node HTTP server                                            |
-| [blue-todo](apps/03-blue-todo/README.md)                       | TodoMVC + micro frontend shell                                      |
-| [blue-api](apps/04-blue-api/README.md)                         | Node API server — auth, ORM, negotiation, problem+json              |
-| [blue-host](apps/05-blue-host/README.md)                       | Micro frontend host with lazy feature chunks                        |
-| [blue-island](apps/06-blue-island/README.md)                   | Node SSR — EJS shell + island hydration + SSE                       |
-| [blue-views](apps/07-blue-views/README.md)                     | View-resolution composite and negotiation                           |
-| [blue-httpbin](apps/08-blue-httpbin/README.md)                 | HTTP semantics playground (binding, redirects, compression, limits) |
-| [blue-todobackend](apps/09-blue-todobackend/README.md)         | Todo-Backend REST spec implementation                               |
-| [blue-conduit-api](apps/10-blue-conduit-api/README.md)         | RealWorld (Conduit) API — JWT auth, CRUD, filters                   |
-| [blue-conduit-web](apps/11-blue-conduit-web/README.md)         | RealWorld frontend (routes, guards, optimistic UI)                  |
-| [blue-petclinic](apps/12-blue-petclinic/README.md)             | Server-rendered CRUD vertical (forms, i18n, JSON)                   |
-| [blue-chat](apps/13-blue-chat/README.md)                       | Real-time rooms: presence, history, STOMP interop                   |
-| [blue-kanban](apps/14-blue-kanban/README.md)                   | Collaborative board: versioned writes, optimistic UI                |
-| [blue-resilience-lab](apps/15-blue-resilience-lab/README.md)   | Retry + circuit breaker lab (`@blue/resilience`)                    |
-| [blue-redis-fanout](apps/16-blue-redis-fanout/README.md)       | Multi-node cache + socket fan-out (`@blue/redis`)                   |
-| [blue-telemetry-lab](apps/17-blue-telemetry-lab/README.md)     | End-to-end observability — traces, metrics, sampling                |
-| [blue-auth-playground](apps/18-blue-auth-playground/README.md) | Auth matrix — cookies, JWT, roles, OIDC + PKCE                      |
-| [blue-hn](apps/19-blue-hn/README.md)                           | Hacker News reader — cached/offline HTTP client, long lists         |
+| App                                                              | What it demonstrates                                                |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------- |
+| [ndigo-hello](apps/01-ndigo-hello/README.md)                     | Minimal browser SPA — context + route + Web Component               |
+| [ndigo-hello-node](apps/02-ndigo-hello-node/README.md)           | Minimal Node HTTP server                                            |
+| [ndigo-todo](apps/03-ndigo-todo/README.md)                       | TodoMVC + micro frontend shell                                      |
+| [ndigo-api](apps/04-ndigo-api/README.md)                         | Node API server — auth, ORM, negotiation, problem+json              |
+| [ndigo-host](apps/05-ndigo-host/README.md)                       | Micro frontend host with lazy feature chunks                        |
+| [ndigo-island](apps/06-ndigo-island/README.md)                   | Node SSR — EJS shell + island hydration + SSE                       |
+| [ndigo-views](apps/07-ndigo-views/README.md)                     | View-resolution composite and negotiation                           |
+| [ndigo-httpbin](apps/08-ndigo-httpbin/README.md)                 | HTTP semantics playground (binding, redirects, compression, limits) |
+| [ndigo-todobackend](apps/09-ndigo-todobackend/README.md)         | Todo-Backend REST spec implementation                               |
+| [ndigo-conduit-api](apps/10-ndigo-conduit-api/README.md)         | RealWorld (Conduit) API — JWT auth, CRUD, filters                   |
+| [ndigo-conduit-web](apps/11-ndigo-conduit-web/README.md)         | RealWorld frontend (routes, guards, optimistic UI)                  |
+| [ndigo-petclinic](apps/12-ndigo-petclinic/README.md)             | Server-rendered CRUD vertical (forms, i18n, JSON)                   |
+| [ndigo-chat](apps/13-ndigo-chat/README.md)                       | Real-time rooms: presence, history, STOMP interop                   |
+| [ndigo-kanban](apps/14-ndigo-kanban/README.md)                   | Collaborative board: versioned writes, optimistic UI                |
+| [ndigo-resilience-lab](apps/15-ndigo-resilience-lab/README.md)   | Retry + circuit breaker lab (`@ndigo/resilience`)                   |
+| [ndigo-redis-fanout](apps/16-ndigo-redis-fanout/README.md)       | Multi-node cache + socket fan-out (`@ndigo/redis`)                  |
+| [ndigo-telemetry-lab](apps/17-ndigo-telemetry-lab/README.md)     | End-to-end observability — traces, metrics, sampling                |
+| [ndigo-auth-playground](apps/18-ndigo-auth-playground/README.md) | Auth matrix — cookies, JWT, roles, OIDC + PKCE                      |
+| [ndigo-hn](apps/19-ndigo-hn/README.md)                           | Hacker News reader — cached/offline HTTP client, long lists         |
 
 The [apps/README](apps/README.md) documents the progression from simple to
-complex. App directories are numbered in reading order (`apps/01-blue-hello` …);
+complex. App directories are numbered in reading order (`apps/01-ndigo-hello` …);
 the number is reading order only — package names stay unnumbered and stable.
 
 ## Packages
@@ -140,73 +140,73 @@ the number is reading order only — package names stay unnumbered and stable.
 
 Core & infrastructure:
 
-- [blue-core](packages/blue-core/README.md) — primitives, radix tree, media types
-- [blue-util](packages/blue-util/README.md) — native helper utilities
-- [blue-log](packages/blue-log/README.md) — logging core, severity mappings, thresholds (re-exported by `@blue/telemetry`)
-- [blue-factory](packages/blue-factory/README.md) — IoC factory + scopes
-- [blue-proxy](packages/blue-proxy/README.md) — method interception: annotation-driven advice weaving
-- [blue-resilience](packages/blue-resilience/README.md) — resilience policies: `@retry`, `@circuitBreaker`
-- [blue-context](packages/blue-context/README.md) — application context, configuration, environments
-- [blue-boot](packages/blue-boot/README.md) — application bootstrap, profiles, typed config
-- [blue-signals](packages/blue-signals/README.md) — reactive state
-- [blue-dom](packages/blue-dom/README.md) — isomorphic DOM providers
-- [blue-cache](packages/blue-cache/README.md) — cache manager + `@cached` decorator
-- [blue-scheduler](packages/blue-scheduler/README.md) — cron scheduling (`@scheduled`), task registry
+- [ndigo-core](packages/ndigo-core/README.md) — primitives, radix tree, media types
+- [ndigo-util](packages/ndigo-util/README.md) — native helper utilities
+- [ndigo-log](packages/ndigo-log/README.md) — logging core, severity mappings, thresholds (re-exported by `@ndigo/telemetry`)
+- [ndigo-factory](packages/ndigo-factory/README.md) — IoC factory + scopes
+- [ndigo-proxy](packages/ndigo-proxy/README.md) — method interception: annotation-driven advice weaving
+- [ndigo-resilience](packages/ndigo-resilience/README.md) — resilience policies: `@retry`, `@circuitBreaker`
+- [ndigo-context](packages/ndigo-context/README.md) — application context, configuration, environments
+- [ndigo-boot](packages/ndigo-boot/README.md) — application bootstrap, profiles, typed config
+- [ndigo-signals](packages/ndigo-signals/README.md) — reactive state
+- [ndigo-dom](packages/ndigo-dom/README.md) — isomorphic DOM providers
+- [ndigo-cache](packages/ndigo-cache/README.md) — cache manager + `@cached` decorator
+- [ndigo-scheduler](packages/ndigo-scheduler/README.md) — cron scheduling (`@scheduled`), task registry
 
 Content & i18n:
 
-- [blue-content](packages/blue-content/README.md) — content keys, themes, message-source contract
-- [blue-content-i18next](packages/blue-content-i18next/README.md) — i18next `MessageSource` adapter
+- [ndigo-content](packages/ndigo-content/README.md) — content keys, themes, message-source contract
+- [ndigo-content-i18next](packages/ndigo-content-i18next/README.md) — i18next `MessageSource` adapter
 
 HTTP & routing:
 
-- [blue-http](packages/blue-http/README.md) — fetch-based client, interceptors, parsers
-- [blue-router](packages/blue-router/README.md) — routes, feature/partition routing
-- [blue-socket](packages/blue-socket/README.md) — WebSocket domain: STOMP client, session contracts
-- [blue-service](packages/blue-service/README.md) — typed service clients, SSE
+- [ndigo-http](packages/ndigo-http/README.md) — fetch-based client, interceptors, parsers
+- [ndigo-router](packages/ndigo-router/README.md) — routes, feature/partition routing
+- [ndigo-socket](packages/ndigo-socket/README.md) — WebSocket domain: STOMP client, session contracts
+- [ndigo-service](packages/ndigo-service/README.md) — typed service clients, SSE
 
 Dispatch & views:
 
-- [blue-dispatcher](packages/blue-dispatcher/README.md) — request dispatch, parameters, radix mapping
-- [blue-view](packages/blue-view/README.md) — views, targets, content negotiation
-- [blue-view-ejs](packages/blue-view-ejs/README.md) — EJS template technology
-- [blue-view-webcomponent](packages/blue-view-webcomponent/README.md) — Web Component views
+- [ndigo-dispatcher](packages/ndigo-dispatcher/README.md) — request dispatch, parameters, radix mapping
+- [ndigo-view](packages/ndigo-view/README.md) — views, targets, content negotiation
+- [ndigo-view-ejs](packages/ndigo-view-ejs/README.md) — EJS template technology
+- [ndigo-view-webcomponent](packages/ndigo-view-webcomponent/README.md) — Web Component views
 
 Platforms:
 
-- [blue-platform-node](packages/blue-platform-node/README.md) — Node HTTP server, dispatcher, static files
-- [blue-platform-web](packages/blue-platform-web/README.md) — browser platform glue
+- [ndigo-platform-node](packages/ndigo-platform-node/README.md) — Node HTTP server, dispatcher, static files
+- [ndigo-platform-web](packages/ndigo-platform-web/README.md) — browser platform glue
 
 Data & management:
 
-- [blue-orm](packages/blue-orm/README.md) — repository/data-mapper persistence
-- [blue-orm-drizzle](packages/blue-orm-drizzle/README.md) — Drizzle ORM adapter
-- [blue-redis](packages/blue-redis/README.md) — shared Redis cache + cross-node pub/sub fan-out (Node)
-- [blue-management](packages/blue-management/README.md) — `/health`, `/metrics` endpoints
-- [blue-openapi](packages/blue-openapi/README.md) — OpenAPI 3.0 spec from dispatch metadata + Swagger UI
+- [ndigo-orm](packages/ndigo-orm/README.md) — repository/data-mapper persistence
+- [ndigo-orm-drizzle](packages/ndigo-orm-drizzle/README.md) — Drizzle ORM adapter
+- [ndigo-redis](packages/ndigo-redis/README.md) — shared Redis cache + cross-node pub/sub fan-out (Node)
+- [ndigo-management](packages/ndigo-management/README.md) — `/health`, `/metrics` endpoints
+- [ndigo-openapi](packages/ndigo-openapi/README.md) — OpenAPI 3.0 spec from dispatch metadata + Swagger UI
 
 Auth:
 
-- [blue-auth-core](packages/blue-auth-core/README.md) — contracts, principal, registry
-- [blue-auth-client](packages/blue-auth-client/README.md) — client auth + OIDC
-- [blue-auth-server](packages/blue-auth-server/README.md) — server auth + JWT
+- [ndigo-auth-core](packages/ndigo-auth-core/README.md) — contracts, principal, registry
+- [ndigo-auth-client](packages/ndigo-auth-client/README.md) — client auth + OIDC
+- [ndigo-auth-server](packages/ndigo-auth-server/README.md) — server auth + JWT
 
 Telemetry:
 
-- [blue-telemetry](packages/blue-telemetry/README.md) — isomorphic API core
-- [blue-telemetry-node](packages/blue-telemetry-node/README.md) — NodeSDK + Node instrumentations
-- [blue-telemetry-web](packages/blue-telemetry-web/README.md) — browser setup + instrumentations
+- [ndigo-telemetry](packages/ndigo-telemetry/README.md) — isomorphic API core
+- [ndigo-telemetry-node](packages/ndigo-telemetry-node/README.md) — NodeSDK + Node instrumentations
+- [ndigo-telemetry-web](packages/ndigo-telemetry-web/README.md) — browser setup + instrumentations
 
 Testing & tooling:
 
-- [blue-test](packages/blue-test/README.md) — MockHTTP in-process test harness
-- [blue-oxlint-plugin](packages/blue-oxlint-plugin/README.md) — consumer-facing oxlint rules (repo-only rules live in [src/oxlint](src/oxlint/README.md))
-- [blue-inspect](packages/blue-inspect/README.md) — deterministic app manifest generator (routes, mappings, config keys)
-- [blue-generators](packages/blue-generators/README.md) — Nx scaffolding
+- [ndigo-test](packages/ndigo-test/README.md) — MockHTTP in-process test harness
+- [ndigo-oxlint-plugin](packages/ndigo-oxlint-plugin/README.md) — consumer-facing oxlint rules (repo-only rules live in [src/oxlint](src/oxlint/README.md))
+- [ndigo-inspect](packages/ndigo-inspect/README.md) — deterministic app manifest generator (routes, mappings, config keys)
+- [ndigo-generators](packages/ndigo-generators/README.md) — Nx scaffolding
 
 Micro frontends:
 
-- [blue-host](packages/blue-host/README.md) — host orchestration + feature mounting
+- [ndigo-host](packages/ndigo-host/README.md) — host orchestration + feature mounting
 
 ## Documentation
 
@@ -241,8 +241,8 @@ pnpm build:all        # Build lib and bundles
 nx run-many -t build:lib
 
 # Build specific package
-nx run @blue/core:build:lib
-cd packages/blue-core && pnpm build:lib
+nx run @ndigo/core:build:lib
+cd packages/ndigo-core && pnpm build:lib
 
 # View dependency graph
 nx graph
@@ -256,8 +256,8 @@ pnpm test                    # Run all tests with Vitest
 nx run-many -t test          # Nx directly
 
 # Run specific package tests
-nx run @blue/core:test
-cd packages/blue-core && pnpm test
+nx run @ndigo/core:test
+cd packages/ndigo-core && pnpm test
 
 # Run tests in watch mode
 pnpm vitest --watch
@@ -284,7 +284,7 @@ Rules, naming conventions, patterns, and enforcement markers:
 
 ## Versioning
 
-All BlueJS packages and applications are currently versioned below `1.0.0`,
+All Ndigo packages and applications are currently versioned below `1.0.0`,
 indicating active development:
 
 - Breaking changes may occur between commits

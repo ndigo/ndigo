@@ -1,0 +1,41 @@
+{
+  "name": "@ndigo/factory",
+  "version": "0.0.1",
+  "description": "IoC factory with scopes, lifecycle, and aware processors for Ndigo",
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "ndigo-factory",
+    "ndigo-registry",
+    "factory",
+    "registry"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "devDependencies": {},
+  "sideEffects": false,
+  "dependencies": {
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/log": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@tsmetadata/polyfill": "catalog:"
+  }
+}

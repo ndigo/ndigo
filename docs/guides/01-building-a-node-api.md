@@ -1,17 +1,17 @@
 # Guide 01 — Building a Node API
 
-This guide walks through the primary BlueJS server-side workflow end-to-end:
+This guide walks through the primary Ndigo server-side workflow end-to-end:
 DI-scaffolded bootstrap, dependency configuration, controllers, request
 binding, validation, the error contract, and graceful shutdown.
 
-The finished shape of every pattern here lives in `apps/04-blue-api` — use it as
+The finished shape of every pattern here lives in `apps/04-ndigo-api` — use it as
 the canonical reference. Concepts link to the relevant decision record where the rationale
 is worth reading.
 
 ## Prerequisites
 
-- The BlueJS monorepo bootstrapped (`pnpm install`).
-- Node platform packages built: `pnpm --filter @blue/platform-node build:lib`
+- The Ndigo monorepo bootstrapped (`pnpm install`).
+- Node platform packages built: `pnpm --filter @ndigo/platform-node build:lib`
   (workspace packages resolve to their `lib/` outputs).
 
 ## 1. Bootstrap: `ApplicationBuilder`
@@ -21,8 +21,8 @@ plus your own `@configuration` classes, then `run()`.
 
 ```ts
 import 'node:process';
-import { ApplicationBuilder } from '@blue/boot';
-import { NodeAutoConfiguration, HTTPServer, gracefulShutdown } from '@blue/platform-node';
+import { ApplicationBuilder } from '@ndigo/boot';
+import { NodeAutoConfiguration, HTTPServer, gracefulShutdown } from '@ndigo/platform-node';
 
 const context = new ApplicationBuilder([NodeAutoConfiguration, AppConfiguration]).run();
 ```
@@ -49,7 +49,7 @@ named context value — the factory names it after the method.
 
 ```ts
 import '@tsmetadata/polyfill';
-import { configuration, entry } from '@blue/context';
+import { configuration, entry } from '@ndigo/context';
 
 @configuration
 export class AppConfiguration {
@@ -70,12 +70,12 @@ entries typically don't need this; controllers are plain classes.
 ## 3. Controllers and mapping
 
 Controllers are plain classes whose methods carry mapping decorators.
-`@getMapping` / `@postMapping` (from `@blue/dispatcher`) describe path and
+`@getMapping` / `@postMapping` (from `@ndigo/dispatcher`) describe path and
 method; `@parameters` describes how method arguments are bound.
 
 ```ts
 import '@tsmetadata/polyfill';
-import { getMapping, postMapping, parameters, queryValue, bodyValue, pathValue } from '@blue/dispatcher';
+import { getMapping, postMapping, parameters, queryValue, bodyValue, pathValue } from '@ndigo/dispatcher';
 
 @requestMapping('/api')
 export class GreetingController {
@@ -136,7 +136,7 @@ validation on top of extractors.
 ## 5. Managed beans and the server
 
 Beans can participate in the context lifecycle by implementing
-`SmartLifecycle` (from `@blue/factory`): on `refresh()` the lifecycle
+`SmartLifecycle` (from `@ndigo/factory`): on `refresh()` the lifecycle
 processor starts beans that are `isAutoStartup`; on `close()` it stops them.
 `HTTPServer` is such a bean — `NodeAutoConfiguration` provisions it as the
 `httpServer` entry.
@@ -162,7 +162,7 @@ Every 4xx/5xx response is an `application/problem+json` document:
 
 ```json
 {
-    "type": "urn:blue:not-found",
+    "type": "urn:ndigo:not-found",
     "title": "Not Found",
     "status": 404,
     "instance": "/nope"
@@ -182,7 +182,7 @@ The framework maps errors deterministically:
 | Anything unhandled                                       | 500 (internals never leaked)    |
 
 Handlers can return a `ResponseEntity<ProblemDetails>` for full control, or
-rely on the default chain. The `urn:blue:*` problem-type scheme is a
+rely on the default chain. The `urn:ndigo:*` problem-type scheme is a
 placeholder — replace with real HTTPS URIs before first public release.
 
 ## 6b. WebSockets (`@socketMapping`)
@@ -192,7 +192,7 @@ Real-time endpoints are declared with `@socketMapping` and handled as
 outbound (mirroring the SSE view style):
 
 ```ts
-import { socketMapping, type SocketSession } from '@blue/dispatcher';
+import { socketMapping, type SocketSession } from '@ndigo/dispatcher';
 
 @requestMapping('/chat')
 class ChatController {
@@ -208,7 +208,7 @@ class ChatController {
 - The adapter performs the RFC 6455 handshake (via `ws`) only when the
   request carries `Connection: Upgrade` + `Upgrade: websocket`; a plain HTTP
   request to a socket path is `404`.
-- `SocketSession` (`@blue/dispatcher`) is transport-neutral: `messages`
+- `SocketSession` (`@ndigo/dispatcher`) is transport-neutral: `messages`
   (async iterable), `send`, `close(code, reason)`, `closed`, `isClosed`.
 - Params/interceptors run on the upgrade request like a normal request, so
   auth denial rejects the upgrade with `401`/`403`.
@@ -257,16 +257,16 @@ dispatch on either platform.
 
 ## 7. Putting it together
 
-`apps/02-blue-hello-node/src/index.ts` is the minimal complete app — the
+`apps/02-ndigo-hello-node/src/index.ts` is the minimal complete app — the
 snippet below is that file:
 
 ```ts
 import 'node:process';
-import { ApplicationBuilder } from '@blue/boot';
-import { getEnv } from '@blue/context';
-import { NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@blue/platform-node';
-import { getLogger } from '@blue/log';
-import { getErrorMessage } from '@blue/util';
+import { ApplicationBuilder } from '@ndigo/boot';
+import { getEnv } from '@ndigo/context';
+import { NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@ndigo/platform-node';
+import { getLogger } from '@ndigo/log';
+import { getErrorMessage } from '@ndigo/util';
 import { HelloConfiguration } from './hello-configuration';
 
 // The managed server reads `process.env.PORT` (defaulting to 3000) when no
@@ -274,7 +274,7 @@ import { HelloConfiguration } from './hello-configuration';
 // the log lines claim the app default.
 process.env['PORT'] ??= '3010';
 const PORT = Number(getEnv('PORT', '3010'));
-const logger = getLogger('blue-hello-node');
+const logger = getLogger('ndigo-hello-node');
 
 async function main() {
     const context = await new ApplicationBuilder([NodeAutoConfiguration, HelloConfiguration]).run();
@@ -290,10 +290,10 @@ main().catch((err) => {
 });
 ```
 
-Run it with `pnpm --filter @blue/hello-node start` (or
-`pnpm --filter @blue/hello-node exec tsx src/index.ts`) and set `PORT` to
-override the default. Logging comes from the dependency-light `@blue/log`
-leaf; `@blue/telemetry` re-exports the same surface when an app already
+Run it with `pnpm --filter @ndigo/hello-node start` (or
+`pnpm --filter @ndigo/hello-node exec tsx src/index.ts`) and set `PORT` to
+override the default. Logging comes from the dependency-light `@ndigo/log`
+leaf; `@ndigo/telemetry` re-exports the same surface when an app already
 depends on it (AD-67).
 
 ## 8. Deployment topology — TLS and HTTP/2–3 at the edge
@@ -316,7 +316,7 @@ implement RFC 8441).
   bind is `127.0.0.1`; only the edge may reach the origin. Exposing the
   plaintext listener publicly is a misconfiguration.
 - **Preserve client identity with the trusted-proxy allowlist.**
-  Configure `trustedProxies` (or `BLUE_TRUSTED_PROXIES`) with the edge's
+  Configure `trustedProxies` (or `NDIGO_TRUSTED_PROXIES`) with the edge's
   addresses (AD-37). Without it every request looks like the proxy's IP —
   rate limiting, audit logs and `remoteAddress` are wrong; with a wrongly
   widened allowlist, spoofed `X-Forwarded-For` headers are trusted. Empty
@@ -333,7 +333,7 @@ implement RFC 8441).
 ### Optional: native TLS + HTTP/2 at the origin
 
 Pass TLS material (`tls` on `HTTPServerOptions`/adapter options, or the
-`BLUE_TLS_KEY` + `BLUE_TLS_CERT` env pair with optional `BLUE_TLS_CA`) and
+`NDIGO_TLS_KEY` + `NDIGO_TLS_CERT` env pair with optional `NDIGO_TLS_CA`) and
 the origin listener switches to `http2.createSecureServer` in
 `allowHTTP1` mode — ALPN negotiates **h2** with an **HTTP/1.1 fallback**
 on the same port (AD-81):
@@ -346,7 +346,7 @@ new HTTPServer(null, { tls: { key: '/etc/tls/key.pem', cert: '/etc/tls/cert.pem'
   characters are `-----BEGIN` is certificate content; anything else is a
   file path read at bind time. The env pair is all-or-nothing — one key
   without the other throws at construction rather than silently serving
-  plaintext; blank env values (`BLUE_TLS_KEY=`) count as unset. The env
+  plaintext; blank env values (`NDIGO_TLS_KEY=`) count as unset. The env
   configures the **default adapter only** — an app that passes a custom
   adapter owns its own TLS story.
 - **Certificate files are read once at bind time** — rotating a key or
@@ -379,8 +379,8 @@ new HTTPServer(null, { tls: { key: '/etc/tls/key.pem', cert: '/etc/tls/cert.pem'
   `validatedBody`, and entity-derived schemas.
 - [Guide 17 — Static Files](17-static-files.md): serving a directory over
   HTTP — ETag/Range, precompressed variants, SPA fallback (the reference demo
-  is `apps/04-blue-api`'s `/static/`).
-- Package READMEs: `@blue/platform-node`, `@blue/dispatcher`, `@blue/boot`,
-  `@blue/orm` for the full symbol surface.
+  is `apps/04-ndigo-api`'s `/static/`).
+- Package READMEs: `@ndigo/platform-node`, `@ndigo/dispatcher`, `@ndigo/boot`,
+  `@ndigo/orm` for the full symbol surface.
 - Decision records: [Zod validation](../decisions/2026-09-05_AD07_ZOD_VALIDATION.md),
   [RFC 9457 problem+json error model](../decisions/2026-09-07_AD10_RFC9457_ERROR_MODEL.md).

@@ -1,6 +1,6 @@
-# BlueJS Agent Guidelines
+# Ndigo Agent Guidelines
 
-This document provides essential instructions for AI agents (and human developers) working in the BlueJS repository.
+This document provides essential instructions for AI agents (and human developers) working in the Ndigo repository.
 
 ## Quick Start for AI Agents
 
@@ -17,7 +17,7 @@ pnpm lint            # Check code quality
 
 ⚠️ **Section 5 (Research Workflow)** - ALWAYS perform two-step reconnaissance before writing code. This repo is graft-indexed: run `graft ask`/`graft callers` (see the Graft section at the end) to understand code or trace callers before grepping/reading; use raw grep only for unindexed files or exhaustive checks.
 
-⚠️ **Section 4.4 (Library Integration Layer)** - Most common error: importing linkedom directly instead of through @blue/dom
+⚠️ **Section 4.4 (Library Integration Layer)** - Most common error: importing linkedom directly instead of through @ndigo/dom
 
 ⚠️ **Section 4.7 (Decorator Naming)** - All decorators MUST use camelCase; each decorator category fixes its name's form (STYLE_GUIDE.md §3.17)
 
@@ -99,7 +99,7 @@ The project maintains two complementary documentation files for different purpos
 
 | Concern               | ARCHITECTURE.md                                           | STYLE_GUIDE.md                                            |
 | :-------------------- | :-------------------------------------------------------- | :-------------------------------------------------------- |
-| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @blue/dom, not from linkedom"                |
+| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @ndigo/dom, not from linkedom"               |
 | Code Organization     | "Use Strategy Pattern for parsers"                        | "Name parser files: kebab-case.ts in src/"                |
 | Module Visibility     | "Internal modules are implementation details"             | "Prefix internal files with underscore: \_util.ts"        |
 | Naming Philosophy     | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean"            |
@@ -116,7 +116,7 @@ Every package must meet the documentation standard:
 - **README.md** — required sections (tagline, Installation, Getting Started,
   Usage, API _link only_, Development, Contributing, License). No internal
   tracking IDs or decision-record links in package READMEs. Template:
-  `packages/blue-generators/src/generators/readme/files/README.md.template`.
+  `packages/ndigo-generators/src/generators/readme/files/README.md.template`.
 - **Generated API reference** — `pnpm doc:api` writes
   `packages/<name>/api/` per package (zero-warning TypeDoc standard,
   CI-enforced). After public API changes: regenerate, commit the tree.
@@ -174,9 +174,9 @@ Packages are built using `tsc -b` via Nx. Output goes to `lib/`.
 pnpm build
 
 # Build a specific package
-nx run @blue/core:build:lib
+nx run @ndigo/core:build:lib
 # OR directly in the directory
-cd packages/blue-core && pnpm build:lib
+cd packages/ndigo-core && pnpm build:lib
 ```
 
 ### Testing
@@ -188,10 +188,10 @@ We use **Vitest**.
 pnpm test
 
 # Run tests for a specific package
-nx run @blue/core:test
+nx run @ndigo/core:test
 
 # Run a SINGLE test file (Fastest)
-pnpm vitest run packages/blue-core/test/deferred.spec.ts
+pnpm vitest run packages/ndigo-core/test/deferred.spec.ts
 ```
 
 ### Code Quality
@@ -248,7 +248,7 @@ pnpm format
 
 ### TC39 Decorators
 
-- **Standard:** BlueJS uses modern **TC39 Stage 3 decorators**.
+- **Standard:** Ndigo uses modern **TC39 Stage 3 decorators**.
 - **Polyfill:** The `@tsmetadata/polyfill` is used to support `Symbol.metadata`.
 - **Legacy:** `reflect-metadata` and the old `experimentalDecorators` flag are **no longer used**.
 - **Further Reading:** For a deep dive into the architecture, see the "Decorators & Separation of Concerns" section in `ARCHITECTURE.md`.
@@ -259,18 +259,18 @@ pnpm format
 
 **Integration Layer Packages:**
 
-| Package     | Encapsulates | Import From |
-| :---------- | :----------- | :---------- |
-| `@blue/dom` | `linkedom`   | `@blue/dom` |
+| Package      | Encapsulates | Import From  |
+| :----------- | :----------- | :----------- |
+| `@ndigo/dom` | `linkedom`   | `@ndigo/dom` |
 
 **Import Rules by Package Type:**
 
-1. **Integration Layer Packages** (`@blue/dom`):
+1. **Integration Layer Packages** (`@ndigo/dom`):
 
     - ✅ May import directly from their encapsulated libraries
     - ✅ Must re-export functionality through `src/index.ts`
 
-2. **All Other Packages** (`@blue/core`, `@blue/context`, etc.):
+2. **All Other Packages** (`@ndigo/core`, `@ndigo/context`, etc.):
 
     - ✅ Must import from integration layer packages
     - ❌ Must never import directly from encapsulated libraries
@@ -283,20 +283,20 @@ pnpm format
 
 ```typescript
 // ✅ CORRECT: Import from integration layer
-import { createDOMProvider } from '@blue/dom';
+import { createDOMProvider } from '@ndigo/dom';
 
 // ❌ INCORRECT: Direct import bypasses integration layer
-import { parseHTML } from 'linkedom'; // Wrong! Use @blue/dom
+import { parseHTML } from 'linkedom'; // Wrong! Use @ndigo/dom
 ```
 
 **Common Violations to Avoid:**
 
 ```typescript
-// ❌ In @blue/view/src/renderer.ts
+// ❌ In @ndigo/view/src/renderer.ts
 import { parse } from 'linkedom'; // WRONG
 
 // ✅ Correct version:
-import { createDOMProvider } from '@blue/dom';
+import { createDOMProvider } from '@ndigo/dom';
 ```
 
 **Enforcement:**
@@ -304,12 +304,12 @@ import { createDOMProvider } from '@blue/dom';
 These rules are **automatically enforced** by the repository-only oxlint
 plugin at root [`src/oxlint/`](src/oxlint/README.md) (rule namespace
 `internal/*`, AD-86), loaded by the same `pnpm lint` lane as the
-consumer-facing `@blue/oxlint-plugin`:
+consumer-facing `@ndigo/oxlint-plugin`:
 
 | Rule                                     | Severity | Description                                                                                                                                        |
 | :--------------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `internal/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (linkedom, etc.) outside their integration layer packages. Allows in integration packages and test files. |
-| `internal/no-internal-file-imports`      | error    | Forbids cross-package imports of internal files (`@blue/<pkg>/_*`), including `export * from '@blue/<pkg>/_*'`.                                    |
+| `internal/no-internal-file-imports`      | error    | Forbids cross-package imports of internal files (`@ndigo/<pkg>/_*`), including `export * from '@ndigo/<pkg>/_*'`.                                  |
 | `internal/no-internal-file-exports`      | error    | Forbids re-exporting internal files (`./_*`) — both `export * from './_*'` and named re-exports (`export { foo } from './_*'`).                    |
 
 Run `pnpm lint` to check for violations. These rules are integrated into the root `.oxlintrc.json`.
@@ -341,20 +341,20 @@ This convention is detailed in **STYLE_GUIDE.md Section 3.8**; the per-category 
 
 - **Location:** Source code in `packages/<package-name>/src/`.
 - **Output:** Compiled ESM files in `packages/<package-name>/lib/`.
-- **Imports:** Use path aliases `@blue/*` where applicable, or relative paths within the same package.
+- **Imports:** Use path aliases `@ndigo/*` where applicable, or relative paths within the same package.
 - **Dependencies:**
     - **Runtime (external):** Add to `dependencies` (e.g. `@redis/client`, `jose`).
     - **Development:** Add to `devDependencies`.
-    - **Cross-Package (`@blue/*`):** Framework dependencies go in
-      `dependencies` with the workspace version range (e.g. `"@blue/core":
+    - **Cross-Package (`@ndigo/*`):** Framework dependencies go in
+      `dependencies` with the workspace version range (e.g. `"@ndigo/core":
       "~0.0.1"`) — Angular/Nest-style self-contained published graph.
       **Optional capability drivers** — subpath entry points that integrate a
       _sibling_ contract package the consumer may not use — declare that
       contract as a `peerDependencies` entry instead (canonical example:
-      `@blue/redis` root depends on `@blue/core`/`@blue/log`, while its
+      `@ndigo/redis` root depends on `@ndigo/core`/`@ndigo/log`, while its
       `/cache`, `/jobs`, `/locks`, `/rate-limit`, `/pubsub` subpaths peer-depend
-      on `@blue/cache`, `@blue/jobs`, `@blue/locks`, `@blue/rate-limit`,
-      `@blue/socket` respectively). Do not add a `peerDependencies` entry for a
+      on `@ndigo/cache`, `@ndigo/jobs`, `@ndigo/locks`, `@ndigo/rate-limit`,
+      `@ndigo/socket` respectively). Do not add a `peerDependencies` entry for a
       hard framework dependency, and do not duplicate `dependencies` entries
       into `devDependencies` — `auto-install-peers=true` plus workspace linking
       resolves both kinds inside the monorepo.
@@ -371,7 +371,7 @@ This convention is detailed in **STYLE_GUIDE.md Section 3.8**; the per-category 
 
 ### Error Handling
 
-- Use specific error classes (e.g., `IllegalStateError` from `@blue/core`) rather than generic `Error` where possible.
+- Use specific error classes (e.g., `IllegalStateError` from `@ndigo/core`) rather than generic `Error` where possible.
 
 ### Utility Function Organization
 
@@ -382,7 +382,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 1. **1 file uses** → Keep inline (regexes, functional constants)
 2. **3+ files (same category)** → Extract to dedicated file (e.g., `remove-non-word.ts`)
 3. **4+ files (cross-category)** → Add to internal file (e.g., `_util.ts`, `_validators.ts`)
-4. **Multiple packages** → Promote to `@blue/util`
+4. **Multiple packages** → Promote to `@ndigo/util`
 
 **Critical Rule:** Internal files (`_util.ts`, `_parser.ts`, etc.) must contain **actual local utility functions**, not just pass-through re-exports.
 
@@ -390,7 +390,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 
 **Internal File Naming:**
 
-- `_util.ts` - Mixed-purpose utilities (often with `@blue/util` re-exports)
+- `_util.ts` - Mixed-purpose utilities (often with `@ndigo/util` re-exports)
 - `_<domain>.ts` - Domain-specific collections (e.g., `_validators.ts`, `_parsers.ts`)
 - `_<algorithm>.ts` - Specific implementations (e.g., `_natural-sort.ts`)
 
@@ -428,7 +428,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 - Follow thresholds: 4+ files for cross-category utilities within a package
 - Use appropriate naming: `_util.ts` (mixed), `_validators.ts` (domain), `_natural-sort.ts` (algorithm)
 
-**Example:** While working in `@blue/telemetry`, you notice `formatTimestamp` appears in 5 files → create `_formatters.ts` following the guidelines in STYLE_GUIDE.md Section 4.5.
+**Example:** While working in `@ndigo/telemetry`, you notice `formatTimestamp` appears in 5 files → create `_formatters.ts` following the guidelines in STYLE_GUIDE.md Section 4.5.
 
 ## 5. Workflows
 
@@ -440,10 +440,10 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
     - **Fallback (unindexed/exhaustive):** When the graph lacks a detail or you need _every_ occurrence, grep the target:
         - **Step 1 - Scan target package:** Search for related functionality, established patterns, internal utilities (`_util.ts`, `_parsers.ts`), naming conventions, and design patterns currently in use.
         - **Step 2 - Scan related packages:** Check common utilities and specialized tools:
-            - `@blue/util` - Common utilities (type guards, string utils, environment, crypto) - **Check first!**
-            - `@blue/dom` - Isomorphic DOM parsing/creation (linkedom wrappers) - For HTML parsing, element creation
-            - `@blue/validate` - (retired 2026-09-05 per AD-07; use `zod` via `@blue/orm` entity schemas / `@blue/dispatcher` `validatedBy`)
-            - `@blue/core` - Core primitives, containers, patterns - Use for application context, DI, base types
+            - `@ndigo/util` - Common utilities (type guards, string utils, environment, crypto) - **Check first!**
+            - `@ndigo/dom` - Isomorphic DOM parsing/creation (linkedom wrappers) - For HTML parsing, element creation
+            - `@ndigo/validate` - (retired 2026-09-05 per AD-07; use `zod` via `@ndigo/orm` entity schemas / `@ndigo/dispatcher` `validatedBy`)
+            - `@ndigo/core` - Core primitives, containers, patterns - Use for application context, DI, base types
     - **After big changes:** refresh the graph with `graft build`.
 3.  **Plan:** Check `docs/migrations/` or `ARCHITECTURE.md` for recent architectural shifts.
 4.  **Design Decisions:** Consider API design patterns:
@@ -552,7 +552,7 @@ stay in `docs/`. The project board flows
 - Branch off `main`: `type/N-short-slug` (e.g. `feat/12-auth-refresh`);
   `type` is the conventional-commit type.
 - Run concurrent sessions in separate git worktrees **adjacent to the repo**,
-  named `<repo>-<issue>-<slug>` (e.g. `~/Workspace/blue-50-lint-surface-split`)
+  named `<repo>-<issue>-<slug>` (e.g. `~/Workspace/ndigo-50-lint-surface-split`)
   — never inside the repo and never in a harness data directory. OpenCode
   defaults to `~/.local/share/opencode/worktree/…`; `opencode.json` sets
   `worktree.directory: ".."`, so pass the `<repo>-…` name to `worktree_create`,
@@ -579,7 +579,7 @@ enforces one-commit discipline), and the generated trees (`.opencode/`,
 
 **Releases** stay trunk-based: `main` is always releasable; a release is a
 milestone-driven act (CHANGELOG cut → tag → per-package publish), not a
-branch. Incomplete features merge behind `@blue/flags` instead of living on
+branch. Incomplete features merge behind `@ndigo/flags` instead of living on
 long-lived branches.
 
 <!-- graft:start -->

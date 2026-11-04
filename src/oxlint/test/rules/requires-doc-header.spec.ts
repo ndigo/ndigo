@@ -18,7 +18,7 @@ const ruleTester = new RuleTester({
 const CANONICAL = `/**
  * Widget utilities.
  *
- * @module blue-core
+ * @module ndigo-core
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -28,27 +28,27 @@ ruleTester.run('requires-doc-header', requiresDocHeader, {
     valid: [
         {
             code: `${CANONICAL}export const x = 1;`,
-            filename: '/packages/blue-core/src/widget.ts',
+            filename: '/packages/ndigo-core/src/widget.ts',
         },
         // Summary may be omitted; tags are what matter.
         {
             code: `/**
- * @module blue-core
+ * @module ndigo-core
  * @since 1.0.0
  * @author Jeff Rose
  */
 export const x = 1;`,
-            filename: '/packages/blue-core/src/widget.ts',
+            filename: '/packages/ndigo-core/src/widget.ts',
         },
         // Test files are checked too…
         {
             code: `${CANONICAL}import { x } from '../src/widget';\nit('x', () => x);`,
-            filename: '/packages/blue-core/test/widget.spec.ts',
+            filename: '/packages/ndigo-core/test/widget.spec.ts',
         },
         // …but build configs and non-source locations are exempt.
         {
             code: 'export default { test: 1 };',
-            filename: '/packages/blue-core/vitest.config.ts',
+            filename: '/packages/ndigo-core/vitest.config.ts',
         },
         {
             code: 'console.log("no header needed");',
@@ -58,20 +58,20 @@ export const x = 1;`,
     invalid: [
         {
             code: 'export const x = 1;',
-            filename: '/packages/blue-core/src/widget.ts',
+            filename: '/packages/ndigo-core/src/widget.ts',
             errors: [{ messageId: 'missingHeader' }],
         },
         {
             code: `/**\n * Only a description.\n */\nexport const x = 1;`,
-            filename: '/packages/blue-core/src/widget.ts',
+            filename: '/packages/ndigo-core/src/widget.ts',
             errors: [{ messageId: 'missingTags' }],
         },
         {
             code: `/**
- * @module blue-core
+ * @module ndigo-core
  */
 export const x = 1;`,
-            filename: '/apps/blue-todo/src/index.ts',
+            filename: '/apps/ndigo-todo/src/index.ts',
             errors: [{ messageId: 'missingTags' }],
         },
         {
@@ -79,12 +79,12 @@ export const x = 1;`,
             code: `/**
  * Widget utilities.
  *
- * * @module blue-core
+ * * @module ndigo-core
  * @since 1.0.0
  * @author Jeff Rose
  */
 export const x = 1;`,
-            filename: '/packages/blue-core/src/widget.ts',
+            filename: '/packages/ndigo-core/src/widget.ts',
             errors: [{ messageId: 'malformedTagLine' }],
         },
     ],

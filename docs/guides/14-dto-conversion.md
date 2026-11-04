@@ -2,7 +2,7 @@
 
 How to project models into API shapes with `ConversionService` (AD-38):
 one service converts both leaf values and whole objects — schema targets are
-contract-enforced projection, fail-fast. Reference application: `apps/04-blue-api`.
+contract-enforced projection, fail-fast. Reference application: `apps/04-ndigo-api`.
 
 ## One service, two target kinds
 
@@ -10,7 +10,7 @@ contract-enforced projection, fail-fast. Reference application: `apps/04-blue-ap
 registry-backed) or a target **zod schema** (shape projection):
 
 ```ts
-import { createConversionService } from '@blue/core';
+import { createConversionService } from '@ndigo/core';
 import type { z } from 'zod';
 
 const conversion = createConversionService();
@@ -33,11 +33,11 @@ bug and surfaces through the RFC 9457 error path.
 
 ## Deriving DTO schemas from entities
 
-`@blue/orm` derives schemas from column metadata, so the entity stays the
+`@ndigo/orm` derives schemas from column metadata, so the entity stays the
 single source of truth:
 
 ```ts
-import { schemaForEntity } from '@blue/orm';
+import { schemaForEntity } from '@ndigo/orm';
 import { z } from 'zod';
 
 const noteResponseSchema = z.object({
@@ -127,5 +127,5 @@ override the bean for custom converter registries.
 - Schema targets produce plain `z.infer` shapes — no class-instance targets
   (instantiate entities via `Object.assign`, above).
 - No async facade — call `schema.parseAsync` directly when needed.
-- Client-side reuse works out of the box (blue-core has no node
+- Client-side reuse works out of the box (ndigo-core has no node
   dependencies) though no formal web wiring exists.

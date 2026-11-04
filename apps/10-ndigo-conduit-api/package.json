@@ -1,0 +1,35 @@
+{
+  "name": "@ndigo/conduit-api",
+  "version": "0.0.1",
+  "description": "RealWorld (Conduit) API conformance app — JWT auth, articles, comments, tags over @ndigo/platform-node",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "zod": "catalog:",
+    "@tsmetadata/polyfill": "catalog:",
+    "@ndigo/auth-core": "~0.0.1",
+    "@ndigo/auth-server": "~0.0.1",
+    "@ndigo/boot": "~0.0.1",
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/orm": "~0.0.1",
+    "@ndigo/platform-node": "~0.0.1",
+    "@ndigo/router": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@ndigo/view": "~0.0.1",
+    "@ndigo/log": "~0.0.1"
+  },
+  "devDependencies": {
+    "tsx": "catalog:",
+    "vitest": "catalog:",
+    "@ndigo/test": "~0.0.1",
+    "@ndigo/log": "~0.0.1"
+  }
+}

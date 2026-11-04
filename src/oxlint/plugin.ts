@@ -3,7 +3,7 @@
  *
  * Loaded directly as TypeScript by oxlint's JS-plugin runtime (Node ≥24 type
  * stripping) — there is no build step, so relative imports carry explicit
- * `.ts` extensions. Consumer-facing rules ship in `@blue/oxlint-plugin`
+ * `.ts` extensions. Consumer-facing rules ship in `@ndigo/oxlint-plugin`
  * instead; this tree never leaves the repository (AD-86).
  *
  * @module src/oxlint
@@ -23,7 +23,7 @@ import { requiresDocHeader } from './rules/requires-doc-header.ts';
 
 const plugin = eslintCompatPlugin({
     meta: {
-        name: '@blue/oxlint-internal',
+        name: '@ndigo/oxlint-internal',
     },
     rules: {
         'no-abstract-class-without-prefix': noAbstractClassWithoutPrefix,

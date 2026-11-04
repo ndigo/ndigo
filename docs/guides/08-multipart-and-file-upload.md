@@ -1,24 +1,24 @@
 # Guide 08 — Multipart & File Upload
 
-Multipart in BlueJS is **server-side acceptance** of `multipart/form-data` uploads: the
+Multipart in Ndigo is **server-side acceptance** of `multipart/form-data` uploads: the
 adapter streams an incoming upload straight through [busboy](https://github.com/mscdex/busboy),
 and a handler binds each file part to a `MultipartFile`. The client half — building a
-`multipart/form-data` body with `blue-http`'s `FormData` — already exists and is untouched;
+`multipart/form-data` body with `ndigo-http`'s `FormData` — already exists and is untouched;
 this guide covers the receiving side.
 
 The design mirrors Spring MVC's `MultipartFile` + early `MultipartResolver`, adapted to
-Blue's resolver/interceptor model: parsing happens **before** argument binding, so resolvers
+Ndigo's resolver/interceptor model: parsing happens **before** argument binding, so resolvers
 see parts directly rather than a buffered body. The one new runtime dependency is busboy —
-the canonical zero-dependency streaming parser; Blue owns the contract and wraps it.
+the canonical zero-dependency streaming parser; Ndigo owns the contract and wraps it.
 
 ## 1. The contract
 
-A `MultipartFile` (`@blue/platform-node`) is one part of the request. It is backed either by
+A `MultipartFile` (`@ndigo/platform-node`) is one part of the request. It is backed either by
 an in-memory `Buffer` (small uploads) or a temp file on disk (large uploads streamed above a
 threshold); both are served through the same interface, so callers never care which.
 
 ```ts
-import type { MultipartFile } from '@blue/platform-node';
+import type { MultipartFile } from '@ndigo/platform-node';
 
 async function handle(file: MultipartFile) {
     file.name; // form field name ("avatar")
@@ -44,9 +44,9 @@ runtime). Declare file parts with the `fileValue()` extractor inside `@parameter
 you would for a validated body:
 
 ```ts
-import { fileValue, postMapping, parameters, requestMapping } from '@blue/dispatcher';
-import { ResponseEntity } from '@blue/platform-node';
-import type { MultipartFile } from '@blue/platform-node';
+import { fileValue, postMapping, parameters, requestMapping } from '@ndigo/dispatcher';
+import { ResponseEntity } from '@ndigo/platform-node';
+import type { MultipartFile } from '@ndigo/platform-node';
 
 @requestMapping('/api')
 export class ProfileController {
@@ -125,7 +125,7 @@ the upload caps independently via the framework's configuration-properties mecha
 
 ## 6. Filename safety
 
-busboy passes the client-supplied `filename` through verbatim, so treat it as untrusted. Blue
+busboy passes the client-supplied `filename` through verbatim, so treat it as untrusted. Ndigo
 sanitizes at the edge: any name containing a path separator (`/` or `\`), a bare `.` / `..` segment,
 or a NUL byte is rejected **before any temp file is created**. The demo controller persists under a
 random filename and echoes only the reported `originalFilename` — never resolving it to disk.
@@ -145,5 +145,5 @@ the contract exposes bytes/stream so a caller pipes to their store unchanged. Wr
 - **The global body cap doesn't govern uploads.** Multipart parses before `#readBody`; tune the upload
   caps (`maxFileSize` / `maxRequestSize`) separately so one knob doesn't masquerade as both.
 
-Reference: `apps/04-blue-api` (`POST /api/upload` demo gate in `upload-controller.ts`, round-trip +
+Reference: `apps/04-ndigo-api` (`POST /api/upload` demo gate in `upload-controller.ts`, round-trip +
 empty-file spec in `upload.spec.ts`). Design rationale: [AD-26](../decisions/2026-09-22_AD26_MULTIPART_FILE_UPLOAD.md).

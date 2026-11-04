@@ -1,6 +1,6 @@
-# BlueJS Style Guide
+# Ndigo Style Guide
 
-This document defines the concrete implementation rules, naming conventions, and formatting standards for the BlueJS codebase. For architectural principles and design patterns, see [ARCHITECTURE.md](./ARCHITECTURE.md).
+This document defines the concrete implementation rules, naming conventions, and formatting standards for the Ndigo codebase. For architectural principles and design patterns, see [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ## Purpose and Scope
 
@@ -39,7 +39,7 @@ function example() {
 
 ```json
 {
-    "name": "@blue/core",
+    "name": "@ndigo/core",
     "version": "3.0.0-alpha.0"
 }
 ```
@@ -74,11 +74,11 @@ export default MyClass;
 ```typescript
 // ✅ Correct
 const message = 'Hello, world!';
-import { foo } from '@blue/util';
+import { foo } from '@ndigo/util';
 
 // ❌ Wrong
 const message = 'Hello, world!';
-import { foo } from '@blue/util';
+import { foo } from '@ndigo/util';
 ```
 
 ### Trailing Commas [AUTOMATED: oxfmt]
@@ -199,12 +199,12 @@ public entry points, and `internal/no-internal-file-imports` (error) rejects cro
 
 ```typescript
 // ✅ Correct: Import within same package
-// In packages/blue-util/src/string/to-camel.ts
+// In packages/ndigo-util/src/string/to-camel.ts
 import { helper } from '../_util';
 
 // ❌ Wrong: Import across packages
-// In packages/blue-core/src/media-type.ts
-import { helper } from '@blue/util/_util'; // NEVER DO THIS
+// In packages/ndigo-core/src/media-type.ts
+import { helper } from '@ndigo/util/_util'; // NEVER DO THIS
 ```
 
 ### Test Files [CONVENTION: Code Review]
@@ -361,7 +361,7 @@ Guide files carry a zero-padded numeric ordering prefix (`NN-slug.md`); `docs/ar
 
 **Pattern:** `UPPER_SNAKE_CASE` for primitive constants and semantic enum-like values, `camelCase` for all other constants
 
-**Primitive Constants** (immutable primitive values per `@blue/core/src/primitive.ts`):
+**Primitive Constants** (immutable primitive values per `@ndigo/core/src/primitive.ts`):
 
 Primitive types: `boolean | null | number | string | symbol | bigint | undefined`
 
@@ -434,7 +434,7 @@ const specificityComparator = new SpecificityComparator();
 const upperCaseCount: Counter = pipe(toString, removeLowerCase, lengthOf);
 ```
 
-**Rationale:** Distinguishes true primitive values (per `@blue/core/src/primitive.ts`: string, number, boolean, null, undefined, symbol, bigint) from all other constants. RegExp objects, arrays, and object literals are not primitives—they have methods and are mutable in structure—so they use camelCase. Semantic enum-like constants (HTTPHeader, MediaType instances) use UPPER_SNAKE_CASE as a special case because they represent immutable enum values in the public API. This follows JavaScript's semantic distinction: primitives use uppercase (Math.PI, Number.MAX_VALUE), objects use camelCase.
+**Rationale:** Distinguishes true primitive values (per `@ndigo/core/src/primitive.ts`: string, number, boolean, null, undefined, symbol, bigint) from all other constants. RegExp objects, arrays, and object literals are not primitives—they have methods and are mutable in structure—so they use camelCase. Semantic enum-like constants (HTTPHeader, MediaType instances) use UPPER_SNAKE_CASE as a special case because they represent immutable enum values in the public API. This follows JavaScript's semantic distinction: primitives use uppercase (Math.PI, Number.MAX_VALUE), objects use camelCase.
 
 ### Variables and Functions [CONVENTION: Code Review]
 
@@ -502,7 +502,7 @@ const isContextToken = (value: unknown): value is ContextToken<unknown> => value
 
 **Pattern:** `likeType` prefix for structural/interface checks
 
-Functions that check whether a value has the expected **structural shape** (properties and methods) rather than checking identity via `typeof` or `instanceof`. The question being asked is: "Does this value _behave like_ type X?" The `like()` utility from `@blue/util/types` is the standard way to create these checks.
+Functions that check whether a value has the expected **structural shape** (properties and methods) rather than checking identity via `typeof` or `instanceof`. The question being asked is: "Does this value _behave like_ type X?" The `like()` utility from `@ndigo/util/types` is the standard way to create these checks.
 
 **Note:** `typeof` may appear in `like*` functions as null guards or to verify a property is callable (e.g., `typeof value.then === 'function'`). This is fine — the key distinction is whether the **primary check mechanism** tests for structural shape or type identity.
 
@@ -526,7 +526,7 @@ function likeComparable<T>(value: unknown): value is Comparable<T> {
     return value != null && typeof value === 'object' && 'compareTo' in value;
 }
 
-// ✅ Correct: Using the like() utility from @blue/util/types
+// ✅ Correct: Using the like() utility from @ndigo/util/types
 const likeFactory = like({ getInstance: Function }) as (value) => value is Factory;
 const likeEquatable = like({ equals: Function }) as (value) => value is Equatable;
 ```
@@ -669,7 +669,7 @@ type serializable = string | number | boolean | null | undefined;
 
 ### 3.8. Decorators [CONVENTION: Code Review]
 
-**Automated:** `@blue/no-cross-paradigm-decorators` (error) rejects mixing service-call and route-mapping decorators on one class; decorator naming itself remains a review concern.
+**Automated:** `@ndigo/no-cross-paradigm-decorators` (error) rejects mixing service-call and route-mapping decorators on one class; decorator naming itself remains a review concern.
 
 **Pattern:** `camelCase`
 
@@ -723,7 +723,7 @@ interface APIClient {}
 class HTMLRenderer {}
 interface DTOMapper {}
 
-// Real examples from @blue/http
+// Real examples from @ndigo/http
 export class HTTP {}
 export interface HTTPConfig {}
 export interface HTTPInterceptor {}
@@ -794,7 +794,7 @@ const Http_Timeout = 5000; // Should be HTTP_TIMEOUT
 const JSON_Mime_Type = '...'; // Should be JSON_MIME_TYPE
 ```
 
-**Common Acronyms in BlueJS:**
+**Common Acronyms in Ndigo:**
 
 Examples from the codebase (not an exhaustive list):
 
@@ -978,7 +978,7 @@ class NamePathHandlerMapping extends AbstractDetectingPathHandlerMapping {
     }
 }
 
-// Real example from @blue/view
+// Real example from @ndigo/view
 export abstract class AbstractCachingViewResolver implements ViewResolver {
     // Base with caching
 }
@@ -998,8 +998,8 @@ The description-first pattern prevents conflicts when implementing multiple inte
 
 ```typescript
 // ✅ Correct: No import conflicts with description-first pattern
-import { HTTPTransformer, type TransformContext } from '@blue/http';
-import { JSONObject, type Serializable } from '@blue/core';
+import { HTTPTransformer, type TransformContext } from '@ndigo/http';
+import { JSONObject, type Serializable } from '@ndigo/core';
 
 class PaymentProcessor implements HTTPTransformer, Serializable {
     // Implements both interfaces
@@ -1017,8 +1017,8 @@ class PaymentProcessor implements HTTPTransformer, Serializable {
 }
 
 // ✅ Correct: Multiple interfaces from different packages
-import { ViewResolver } from '@blue/view';
-import { ResourceLoader } from '@blue/context';
+import { ViewResolver } from '@ndigo/view';
+import { ResourceLoader } from '@ndigo/context';
 
 class TemplateViewResolver implements ViewResolver, ResourceLoader {
     resolve(name: string): View {}
@@ -1045,7 +1045,7 @@ class TemplateViewResolver implements ViewResolver, ResourceLoader {
 
 **Pattern:** Use semantic suffixes to convey component responsibility
 
-BlueJS uses role-based suffixes inspired by Spring Framework to indicate the responsibility and behavior of classes/interfaces. These suffixes provide instant semantic understanding and create a shared vocabulary across the codebase.
+Ndigo uses role-based suffixes inspired by Spring Framework to indicate the responsibility and behavior of classes/interfaces. These suffixes provide instant semantic understanding and create a shared vocabulary across the codebase.
 
 **Core Suffixes and Their Meanings:**
 
@@ -1201,10 +1201,10 @@ class PaymentProcessor {
 }
 ```
 
-**Real Examples from BlueJS:**
+**Real Examples from Ndigo:**
 
 ```typescript
-// From @blue/dispatcher
+// From @ndigo/dispatcher
 export interface RouteHandlerAdapter {}
 export abstract class AbstractHandlerMethodAdapter implements RouteHandlerAdapter {}
 export class ControllerHandlerAdapter implements RouteHandlerAdapter {}
@@ -1215,7 +1215,7 @@ export abstract class AbstractNamedValueMethodArgumentResolver {}
 export class MatrixValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {}
 export class QueryValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {}
 
-// From @blue/view
+// From @ndigo/view
 export interface ViewResolver {}
 export abstract class AbstractCachingViewResolver implements ViewResolver {}
 export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewResolver {}
@@ -1226,7 +1226,7 @@ export interface ContentNegotiationStrategy {}
 export class PathExtensionContentNegotiationStrategy implements ContentNegotiationStrategy {}
 export class FixedContentNegotiationStrategy implements ContentNegotiationStrategy {}
 
-// From @blue/factory
+// From @ndigo/factory
 export interface Factory {}
 export interface HierarchicalFactory extends Factory {}
 export interface ConfigurableFactory extends HierarchicalFactory {}
@@ -1236,7 +1236,7 @@ export class DefaultFactory extends AbstractFactory {}
 export interface Registry {}
 export class MappingRegistry implements Registry {}
 
-// From @blue/http
+// From @ndigo/http
 export interface HTTPInterceptor {}
 export class MappedHTTPInterceptor implements HTTPInterceptor {}
 export class MappedResponseClassHTTPInterceptor implements ResponseAwareHTTPInterceptor {}
@@ -1244,7 +1244,7 @@ export class MappedResponseClassHTTPInterceptor implements ResponseAwareHTTPInte
 export class HTTPAppender {}
 export class HTTPLogRecordExporter {}
 
-// From @blue/context
+// From @ndigo/context
 export interface PropertyResolver {}
 export interface ConfigurablePropertyResolver extends PropertyResolver {}
 export class PrototypalPropertyResolver implements ConfigurablePropertyResolver {}
@@ -1308,7 +1308,7 @@ class UserResolver {
 
 **Pattern:** Choose based on computation cost, side effects, and semantic meaning
 
-JavaScript/TypeScript allows both properties (with getters) and methods. BlueJS favors properties for cheap, intrinsic data access, and methods for operations that involve external lookups, transformations, or potential failures.
+JavaScript/TypeScript allows both properties (with getters) and methods. Ndigo favors properties for cheap, intrinsic data access, and methods for operations that involve external lookups, transformations, or potential failures.
 
 This section provides clear guidelines on when to use each approach.
 
@@ -1322,10 +1322,10 @@ This section provides clear guidelines on when to use each approach.
 - ✅ Always succeeds (never returns null for legitimate values)
 - ✅ Feels like "what this object IS" (intrinsic attribute)
 
-**Real Examples from BlueJS:**
+**Real Examples from Ndigo:**
 
 ```typescript
-// From @blue/core/media-type.ts
+// From @ndigo/core/media-type.ts
 class MediaType {
     // ✅ Correct: Properties for direct field access
     readonly type: SupportedMediaType; // Direct field
@@ -1353,7 +1353,7 @@ class MediaType {
     }
 }
 
-// From @blue/http/response-status.ts
+// From @ndigo/http/response-status.ts
 class ResponseStatus {
     // ✅ Correct: Properties for range checks
     get isInformationClass(): boolean {
@@ -1369,7 +1369,7 @@ class ResponseStatus {
     }
 }
 
-// From @blue/dispatcher/route-condition.ts
+// From @ndigo/dispatcher/route-condition.ts
 class RouteCondition {
     // ✅ Correct: Properties for simple checks
     get isEmpty(): boolean {
@@ -1385,7 +1385,7 @@ class RouteCondition {
     }
 }
 
-// From @blue/core/collection.ts
+// From @ndigo/core/collection.ts
 class BoundedCollection {
     // ✅ Correct: Properties for collection state
     get capacity(): number {
@@ -1405,7 +1405,7 @@ class BoundedCollection {
     }
 }
 
-// From @blue/factory/factory.ts
+// From @ndigo/factory/factory.ts
 abstract class AbstractFactory {
     #parent: Factory;
 
@@ -1467,10 +1467,10 @@ class BadExample {
 - ✅ Tristate return (true/false/null or success/failure/unknown)
 - ✅ Feels like "fetching" or "retrieving"
 
-**Real Examples from BlueJS:**
+**Real Examples from Ndigo:**
 
 ```typescript
-// From @blue/factory/factory.ts
+// From @ndigo/factory/factory.ts
 interface Factory {
     // ✅ Correct: get* for registry lookup (may fail)
     getInstance<T = any>(name: string): T;
@@ -1482,7 +1482,7 @@ interface ConfigurableFactory extends Factory {
     getScopeNames(): string[];
 }
 
-// From @blue/context/property-resolver.ts
+// From @ndigo/context/property-resolver.ts
 interface PropertyResolver {
     // ✅ Correct: get* for external property lookup
     getProperty(key: string, defaultValue?: JSONValue): JSONValue;
@@ -1508,7 +1508,7 @@ class PrototypalPropertyResolver implements PropertyResolver {
     }
 }
 
-// From @blue/dispatcher/route-handler-mapping.ts
+// From @ndigo/dispatcher/route-handler-mapping.ts
 interface RouteHandlerMapping {
     // ✅ Correct: get* for handler lookup (may return null)
     getHandler(route: Route): RouteHandlerExecutionChain;
@@ -1528,8 +1528,8 @@ class AbstractRouteHandlerMapping {
     }
 }
 
-// From @blue/telemetry
-class BlueLoggerProvider {
+// From @ndigo/telemetry
+class NdigoLoggerProvider {
     // ✅ Correct: get* for external SDK access
     getLogger(name: string, version?: string, options?: LoggerOptions): OTelLoggerAPI {
         // Creates/retrieves logger from external SDK
@@ -1548,7 +1548,7 @@ class BlueLoggerProvider {
     }
 }
 
-// From @blue/context/event-logger.ts
+// From @ndigo/context/event-logger.ts
 class EventLogger {
     // ✅ Correct: get* that may return undefined
     getOTelLogger(): OTelLoggerAPI | undefined {
@@ -1602,10 +1602,10 @@ getDefaultCharset(): string | null {
 - ✅ Creates a new representation (doesn't just access data)
 - ✅ Feels like "converting to X"
 
-**Real Examples from BlueJS:**
+**Real Examples from Ndigo:**
 
 ```typescript
-// From @blue/core/media-type.ts
+// From @ndigo/core/media-type.ts
 class MediaType implements Serializable {
     // ✅ Correct: to* for string representation
     toString(): string {
@@ -1621,7 +1621,7 @@ class MediaType implements Serializable {
     }
 }
 
-// From @blue/http/response-status.ts
+// From @ndigo/http/response-status.ts
 class ResponseStatus implements Serializable {
     toString(): string {
         return `${this.code} ${this.text}`;
@@ -1635,7 +1635,7 @@ class ResponseStatus implements Serializable {
     }
 }
 
-// From @blue/core/property-value.ts
+// From @ndigo/core/property-value.ts
 class PropertyValue {
     toString(): string {
         return `PropertyValue(${this.name}=${this.value})`;
@@ -1732,7 +1732,7 @@ get isEmpty(): boolean {
     return this.length === 0;
 }
 
-// From @blue/dispatcher/model-and-view.ts
+// From @ndigo/dispatcher/model-and-view.ts
 get hasView(): boolean {
     return this.view != null;
 }
@@ -1900,7 +1900,7 @@ If still unsure, **prefer a method** - it's safer and more flexible for future c
 
 **Pattern:** Use conventional prefixes to signal method behavior and return expectations
 
-Method names should clearly communicate their purpose, behavior, and expected return values. BlueJS uses standardized prefixes inspired by JavaBeans, Spring Framework, and JavaScript ecosystem conventions.
+Method names should clearly communicate their purpose, behavior, and expected return values. Ndigo uses standardized prefixes inspired by JavaBeans, Spring Framework, and JavaScript ecosystem conventions.
 
 This section establishes clear rules for method naming across the entire codebase.
 
@@ -1920,7 +1920,7 @@ This section establishes clear rules for method naming across the entire codebas
 **Use when:** Retrieving values from external sources, registries, or performing lookups that may fail
 
 ```typescript
-// From @blue/factory/factory.ts
+// From @ndigo/factory/factory.ts
 interface Factory {
     // ✅ Correct: get* for registry lookup (may return null)
     getInstance<T = any>(name: string): T;
@@ -1932,7 +1932,7 @@ interface ConfigurableFactory extends Factory {
     getScopeNames(): string[];
 }
 
-// From @blue/context/property-resolver.ts
+// From @ndigo/context/property-resolver.ts
 interface PropertyResolver {
     // ✅ Correct: get* for external property lookup
     getProperty(key: string, defaultValue?: JSONValue): JSONValue;
@@ -1958,7 +1958,7 @@ class PrototypalPropertyResolver implements PropertyResolver {
     }
 }
 
-// From @blue/dispatcher/route-handler-mapping.ts
+// From @ndigo/dispatcher/route-handler-mapping.ts
 class AbstractRouteHandlerMapping {
     // ✅ Correct: get* for complex lookups
     getHandler(route: Route): RouteHandlerExecutionChain {
@@ -1978,8 +1978,8 @@ class AbstractRouteHandlerMapping {
     }
 }
 
-// From @blue/telemetry
-class BlueLoggerProvider {
+// From @ndigo/telemetry
+class NdigoLoggerProvider {
     // ✅ Correct: get* for external SDK access
     getLogger(name: string, version?: string, options?: LoggerOptions): OTelLoggerAPI {
         // Creates/retrieves logger from external SDK
@@ -1998,7 +1998,7 @@ class BlueLoggerProvider {
     }
 }
 
-// From @blue/context/event-logger.ts
+// From @ndigo/context/event-logger.ts
 class EventLogger {
     // ✅ Correct: get* that may return undefined
     getOTelLogger(): OTelLoggerAPI | undefined {
@@ -2006,7 +2006,7 @@ class EventLogger {
     }
 }
 
-// From @blue/view/content-negotiation-view-resolver.ts
+// From @ndigo/view/content-negotiation-view-resolver.ts
 class ContentNegotiationViewResolver {
     // ✅ Correct: get* for collecting from multiple sources
     getAllFileExtenstions(): string[] {
@@ -2047,7 +2047,7 @@ class BadExample {
 **Use when:** Checking types with typeof/instanceof or checking boolean state
 
 ```typescript
-// From @blue/util/types.ts
+// From @ndigo/util/types.ts
 // ✅ Correct: is* for type checks
 function isString(value: unknown): value is string {
     return typeof value === 'string';
@@ -2069,7 +2069,7 @@ function isPrimitive(value: unknown): boolean {
     return value == null || typeof value !== 'object';
 }
 
-// isValidDate-style predicates live in @blue/util (date utilities)
+// isValidDate-style predicates live in @ndigo/util (date utilities)
 function isValidDate(value: temporal, format: string): boolean {
     return !isNaN(Date.parse(value));
 }
@@ -2111,7 +2111,7 @@ function isCompressible(mediaType: MediaType): boolean | null {
 **Use when:** Checking for presence of properties, items, or capabilities
 
 ```typescript
-// From @blue/context/property-resolver.ts
+// From @ndigo/context/property-resolver.ts
 interface PropertyResolver {
     // ✅ Correct: has* for presence check
     hasProperty(key: string): boolean;
@@ -2128,13 +2128,13 @@ class PrototypalPropertyResolver implements PropertyResolver {
     }
 }
 
-// From @blue/factory/factory.ts
+// From @ndigo/factory/factory.ts
 interface HierarchicalFactory extends Factory {
     // ✅ Correct: has* for ownership check
     hasOwnValue(name: string): boolean;
 }
 
-// From @blue/dispatcher/model-and-view.ts
+// From @ndigo/dispatcher/model-and-view.ts
 class ModelAndView {
     // ✅ Correct: has* as property for simple check
     get hasView(): boolean {
@@ -2142,7 +2142,7 @@ class ModelAndView {
     }
 }
 
-// From @blue/core/media-type.ts (proposed)
+// From @ndigo/core/media-type.ts (proposed)
 class MediaType {
     // ✅ Correct: has* for parameter presence
     get hasParameters(): boolean {
@@ -2169,7 +2169,7 @@ class Set<T> {
 **Use when:** Checking structural compatibility without typeof/instanceof
 
 ```typescript
-// From @blue/core
+// From @ndigo/core
 // ✅ Correct: like* for duck typing
 function likeArray(value: unknown): value is ArrayLike<any> {
     return value != null && typeof value === 'object' && 'length' in value;
@@ -2179,21 +2179,21 @@ function likePromise(value: unknown): value is PromiseLike<any> {
     return value != null && typeof (value as any).then === 'function';
 }
 
-// From @blue/dispatcher
+// From @ndigo/dispatcher
 function likeController(value: unknown): value is ControllerLike {
     return (
         value != null && typeof value === 'object' && 'handle' in value && typeof (value as any).handle === 'function'
     );
 }
 
-// From @blue/factory
+// From @ndigo/factory
 const likeFactory = like({ getInstance: Function }) as (value) => value is Factory;
 
 const likeFactoryAware = likeAwareAnd(like({ setFactory: Function })) as (value) => value is FactoryAware;
 
 const likeHierarchicalFactory = both(likeFactory, like({ parent: true, hasOwnValue: Function }));
 
-// From @blue/http
+// From @ndigo/http
 function likeResponse(value: unknown): value is Response {
     return value != null && typeof value === 'object' && 'status' in value && 'statusText' in value;
 }
@@ -2215,13 +2215,13 @@ function likeResponse(value: unknown): value is Response {
 **Examples:**
 
 ```typescript
-// From @blue/factory/aware.ts
+// From @ndigo/factory/aware.ts
 interface FactoryAware extends Aware {
     // ✅ Correct: set* for mutating reference
     setFactory(factory: Factory): void;
 }
 
-// From @blue/factory/factory.ts
+// From @ndigo/factory/factory.ts
 interface ConfigurableFactory extends Factory {
     // ✅ Correct: set* for parent assignment
     setParent(parent: Factory): void;
@@ -2246,7 +2246,7 @@ abstract class AbstractFactory implements ConfigurableFactory {
     }
 }
 
-// From @blue/core/data-binder.ts
+// From @ndigo/core/data-binder.ts
 class DataBinder {
     #requiredFields: Set<string>;
 
@@ -2268,7 +2268,7 @@ class DataBinder {
     }
 }
 
-// From @blue/factory/registry.ts
+// From @ndigo/factory/registry.ts
 interface Registry {
     // ✅ Correct: Mutation methods
     set(name: string, value: any): void;
@@ -2330,7 +2330,7 @@ class MediaType {
 **Examples:**
 
 ```typescript
-// From @blue/core/media-type.ts
+// From @ndigo/core/media-type.ts
 class MediaType {
     // ✅ Correct: Static factory method
     static for(mediaType: string): MediaType;
@@ -2376,7 +2376,7 @@ class MediaType {
     }
 }
 
-// From @blue/http/response-status.ts
+// From @ndigo/http/response-status.ts
 class ResponseStatus {
     // ✅ Correct: Static factory (overloaded)
     static for(response: Response): ResponseStatus;
@@ -2438,7 +2438,7 @@ const promise = Promise.resolve(42);
 **Examples:**
 
 ```typescript
-// From @blue/core/media-type.ts
+// From @ndigo/core/media-type.ts
 class MediaType implements Serializable {
     // ✅ Correct: to* for string representation
     toString(): string {
@@ -2483,7 +2483,7 @@ class MediaType {
     }
 }
 
-// From @blue/http/response-status.ts
+// From @ndigo/http/response-status.ts
 class ResponseStatus implements Serializable {
     toString(): string {
         return `${this.code} ${this.text}`;
@@ -2497,14 +2497,14 @@ class ResponseStatus implements Serializable {
     }
 }
 
-// From @blue/core/property-value.ts
+// From @ndigo/core/property-value.ts
 class PropertyValue {
     toString(): string {
         return `PropertyValue(${this.name}=${this.value})`;
     }
 }
 
-// From @blue/core — parse* for string deserialization
+// From @ndigo/core — parse* for string deserialization
 // parse* functions return the result directly or null on failure (never a discriminated union)
 function parseWildcard(pattern: string): string {
     // Always succeeds — any string is a valid wildcard
@@ -2521,8 +2521,8 @@ function parseKeypath(input: string): KeypathToken[] | null {
 // function parseKeypath(input: string): { isError: false; result: KeypathToken[] } | { isError: true; error: string }
 // Unnecessarily complex — callers check `if (keypath)` not `if (!result.isError)`
 
-// ✅ parse* functions align with the Converter<string, T> type alias from @blue/core
-import type { Converter } from '@blue/core';
+// ✅ parse* functions align with the Converter<string, T> type alias from @ndigo/core
+import type { Converter } from '@ndigo/core';
 const parseWildcard: Converter<string, string> = (pattern) => `^${pattern.replace(/\*/g, '.*?')}$`;
 
 // Real JavaScript examples
@@ -2575,7 +2575,7 @@ class ResourceLoader {
     }
 }
 
-// From @blue/context/resource.ts
+// From @ndigo/context/resource.ts
 interface ResourceLoader {
     getResource(location: string): Promise<Resource>;
 }
@@ -3372,28 +3372,28 @@ export class HttpMethod implements Equatable, Serializable {
 
 **Simple Type-Safe Enum:**
 
-- `MethodParameterType` - `@blue/dispatcher/src/parameter-types.ts`
+- `MethodParameterType` - `@ndigo/dispatcher/src/parameter-types.ts`
 
 **Factory Registry Pattern:**
 
-- `ResponseStatus` - `@blue/http/src/response-status.ts`
+- `ResponseStatus` - `@ndigo/http/src/response-status.ts`
 
 **Built-in Enum (Appropriate Use):**
 
-- `RouteAccess`, `RouteSource` - `@blue/router/src/hash-router.ts`
+- `RouteAccess`, `RouteSource` - `@ndigo/router/src/hash-router.ts`
 
 ---
 
 ### 3.15. Validation [CONVENTION: Code Review]
 
-**Pattern:** Zod is the single runtime-schema primitive. There is exactly one way to validate a value at each level — no parallel constraint/decorator APIs. (`blue-validate` and `blue-model`/objectmodel were retired 2026-09-05 per AD-07; do not re-introduce them.)
+**Pattern:** Zod is the single runtime-schema primitive. There is exactly one way to validate a value at each level — no parallel constraint/decorator APIs. (`ndigo-validate` and `ndigo-model`/objectmodel were retired 2026-09-05 per AD-07; do not re-introduce them.)
 
 **Pick the shape by what you are validating:**
 
 | What                  | Canonical form                                                                                  |
 | :-------------------- | :---------------------------------------------------------------------------------------------- |
 | DTO / object shape    | `z.object({ ... })` — static type via `z.infer`                                                 |
-| Route parameter       | `validatedBy(schema, dataBinderValue('query'))` in `@parameters` (from `@blue/dispatcher`)      |
+| Route parameter       | `validatedBy(schema, dataBinderValue('query'))` in `@parameters` (from `@ndigo/dispatcher`)     |
 | ENTITY field          | `@column({ schema: z.string().min(2) })` — the ORM derives the full entity schema from metadata |
 | A reusable value type | `z.string().refine(...)` or `z.number().min(0)` — a schema _is_ the type                        |
 
@@ -3406,7 +3406,7 @@ class User {
     @column({ type: 'varchar', schema: z.string().min(2) })
     name!: string;
 }
-// schemaForEntity(User) / validateEntity(User, inst) from @blue/orm
+// schemaForEntity(User) / validateEntity(User, inst) from @ndigo/orm
 
 // ✅ Correct: Route param validation via validatedBy
 @routeMapping('/create')
@@ -3518,7 +3518,7 @@ packages/
 **Public API Definition:**
 
 ```typescript
-// packages/blue-core/src/index.ts
+// packages/ndigo-core/src/index.ts
 // Only export public API - never export underscore files
 
 export { MediaType } from './media-type';
@@ -3532,7 +3532,7 @@ export type { Comparable, Comparator } from './interfaces';
 **Category Barrel:**
 
 ```typescript
-// packages/blue-util/src/string/index.ts
+// packages/ndigo-util/src/string/index.ts
 // Re-export all public modules in this category
 
 export { toCamel } from './to-camel';
@@ -3576,7 +3576,7 @@ Organizing helper functions and utilities follows a clear hierarchy based on usa
 Single file usage          → Inline (regexes, functional constants)
 3+ files (same category)   → Extract to dedicated file
 4+ files (cross-category)  → Add to _util.ts
-Multiple packages          → Promote to @blue/util
+Multiple packages          → Promote to @ndigo/util
 ```
 
 **Key Thresholds:**
@@ -3590,7 +3590,7 @@ Multiple packages          → Promote to @blue/util
 
 Keep utilities inline when they're used **only within the file they're defined in**.
 
-**Example from `packages/blue-util/src/string/to-camel.ts`:**
+**Example from `packages/ndigo-util/src/string/to-camel.ts`:**
 
 ```typescript
 // ✅ Correct: Inline helpers for single-file use
@@ -3626,7 +3626,7 @@ export default toCamel;
 
 Extract to a separate file when a utility is used by **3+ files within the same category**.
 
-**Example: `packages/blue-util/src/string/remove-non-word.ts`**
+**Example: `packages/ndigo-util/src/string/remove-non-word.ts`**
 
 This 21-line utility is imported by `to-camel.ts`, `to-pascal.ts`, `slugify.ts`, and other string utilities:
 
@@ -3654,10 +3654,10 @@ export default removeNonWord;
 **Example usage:**
 
 ```typescript
-// In packages/blue-util/src/string/to-camel.ts
+// In packages/ndigo-util/src/string/to-camel.ts
 import removeNonWord from './remove-non-word.js';
 
-// In packages/blue-util/src/string/slugify.ts
+// In packages/ndigo-util/src/string/slugify.ts
 import removeNonWord from './remove-non-word.js';
 ```
 
@@ -3665,13 +3665,13 @@ import removeNonWord from './remove-non-word.js';
 
 Create a `_util.ts` when utilities are used by **4+ files across different categories**, or once `_util.ts` exists, add new cross-file utilities there directly.
 
-**Example: `packages/blue-dispatcher/src/_shared.ts`**
+**Example: `packages/ndigo-dispatcher/src/_shared.ts`**
 
 ```typescript
 // ✅ Correct: Re-exports + package-specific helpers
 // Re-export commonly used utilities
-export { like, isFunction } from '@blue/util';
-export { isString } from '@blue/util/string';
+export { like, isFunction } from '@ndigo/util';
+export { isString } from '@ndigo/util/string';
 
 // Package-specific helpers used across multiple dispatcher modules
 export const isNonEmptyString = (value: unknown) => isString(value) && value.length > 0;
@@ -3680,10 +3680,10 @@ export const notLike = (value: unknown, pattern: unknown) => !like(value, patter
 
 **Examples of existing internal files:**
 
-- `@blue/context/src/_event-emitter-helpers.ts`
-- `@blue/dispatcher/src/_shared.ts`
-- `@blue/dispatcher/src/_match.ts`
-- `@blue/platform-node/src/_resolver-util.ts`
+- `@ndigo/context/src/_event-emitter-helpers.ts`
+- `@ndigo/dispatcher/src/_shared.ts`
+- `@ndigo/dispatcher/src/_match.ts`
+- `@ndigo/platform-node/src/_resolver-util.ts`
 
 **Guidelines:**
 
@@ -3706,14 +3706,14 @@ Internal files (`_util.ts`, `_parser.ts`, etc.) should **only be created when th
 
 ```typescript
 /**
- * Internal utilities for @blue/dispatcher package.
+ * Internal utilities for @ndigo/dispatcher package.
  *
  * @internal - Do not export in index.ts or import across package boundaries
  */
 
 // Re-exports (supporting infrastructure)
-import { like, isFunction } from '@blue/util';
-import { isString } from '@blue/util/string';
+import { like, isFunction } from '@ndigo/util';
+import { isString } from '@ndigo/util/string';
 
 export { like, isString };
 
@@ -3728,22 +3728,22 @@ export const notLike = (value: unknown, pattern: unknown) => !like(value, patter
 
 ```typescript
 /**
- * Internal utilities for @blue/http package.
+ * Internal utilities for @ndigo/http package.
  *
  * @internal - Do not export in index.ts or import across package boundaries
  */
 
 // Type utilities
-export { is, like, isString } from '@blue/util';
+export { is, like, isString } from '@ndigo/util';
 
 // String utilities
-export { slugify, toSentence } from '@blue/util/string';
+export { slugify, toSentence } from '@ndigo/util/string';
 
 // Package-specific utilities can be added below
 // (But they never were! This file should NOT exist.)
 ```
 
-**Why this is wrong:** No actual utility functions are created. This is just a convenience re-export layer with no value. Consuming files should import directly from `@blue/util` instead.
+**Why this is wrong:** No actual utility functions are created. This is just a convenience re-export layer with no value. Consuming files should import directly from `@ndigo/util` instead.
 
 ##### When to Create Internal Files
 
@@ -3766,7 +3766,7 @@ Internal files don't always need to be named `_util.ts`. Choose a name that refl
 
 **Generic Mixed Utilities:**
 
-- `_util.ts` - Re-exports from `@blue/util` + mixed-purpose helpers
+- `_util.ts` - Re-exports from `@ndigo/util` + mixed-purpose helpers
 
 **Domain-Specific Collections:**
 
@@ -3807,14 +3807,14 @@ Test utilities           → test/_<purpose>.ts
 **Stage 1: Inline (single file uses)**
 
 ```typescript
-// In packages/blue-http/src/request.ts
+// In packages/ndigo-http/src/request.ts
 const parseAcceptHeader = (header: string) => header.split(',').map(trim);
 ```
 
 **Stage 2: Extract to dedicated file (3+ files use)**
 
 ```typescript
-// packages/blue-http/src/_header-parser.ts
+// packages/ndigo-http/src/_header-parser.ts
 export const parseAcceptHeader = (header: string) => header.split(',').map(trim);
 export const parseContentType = (header: string) => {
     /* ... */
@@ -3827,8 +3827,8 @@ export const parseCacheControl = (header: string) => {
 **Stage 3: Add to `_util.ts` (becomes cross-cutting)**
 
 ```typescript
-// packages/blue-http/src/_shared.ts
-import { slugify, toSentence } from '@blue/util/string';
+// packages/ndigo-http/src/_shared.ts
+import { slugify, toSentence } from '@ndigo/util/string';
 
 export { slugify, toSentence }; // Re-exports
 
@@ -3836,10 +3836,10 @@ export { slugify, toSentence }; // Re-exports
 export const parseAcceptHeader = (header: string) => header.split(',').map((part) => part.trim());
 ```
 
-**Stage 4: Promote to @blue/util (multiple packages use)**
+**Stage 4: Promote to @ndigo/util (multiple packages use)**
 
 ```typescript
-// packages/blue-util/src/http/parse-accept-header.ts
+// packages/ndigo-util/src/http/parse-accept-header.ts
 export const parseAcceptHeader = (header: string) => header.split(',').map(trim);
 ```
 
@@ -3855,23 +3855,23 @@ export const parseAcceptHeader = (header: string) => header.split(',').map(trim)
 - > 10% internal file ratio (too many internal files)
 - Significant organizational challenges emerge
 
-#### Promoted to `@blue/util`
+#### Promoted to `@ndigo/util`
 
-Promote utilities to `@blue/util` when they're used by **multiple packages** or are truly universal.
+Promote utilities to `@ndigo/util` when they're used by **multiple packages** or are truly universal.
 
 **When to promote:**
 
 - Function is used by 2+ packages
 - Logic is universally applicable (not domain-specific)
-- Fits into existing `@blue/util` categories (`/string`, `/list`, `/function`, etc.)
+- Fits into existing `@ndigo/util` categories (`/string`, `/list`, `/function`, etc.)
 
 **Process:**
 
-1. Move to appropriate category in `@blue/util`
+1. Move to appropriate category in `@ndigo/util`
 2. Add comprehensive TSDoc documentation
 3. Add thorough test coverage
-4. Export in `@blue/util/src/index.ts`
-5. Update consuming packages to import from `@blue/util`
+4. Export in `@ndigo/util/src/index.ts`
+5. Update consuming packages to import from `@ndigo/util`
 
 #### Higher-Order Functions
 
@@ -3918,7 +3918,7 @@ const DEFAULT_DATE_FORMAT = 'MM/DD/YYYY';
 
 ```typescript
 // ✅ Correct: Large cohesive collections
-// packages/blue-http/src/http-headers.ts (725 lines, 124 constants)
+// packages/ndigo-http/src/http-headers.ts (725 lines, 124 constants)
 export const HTTPHeader = Object.freeze({
     Accept: 'Accept',
     AcceptEncoding: 'Accept-Encoding',
@@ -3984,13 +3984,13 @@ import { SPACES_REGEX } from './_util';
 **❌ Wrong Extraction Level:**
 
 ```typescript
-// ❌ Wrong: Package-specific utility in @blue/util
-// This is only used by @blue/dispatcher modules
-export const resolveMatch = ...;  // Should be in @blue/dispatcher/src/_match.ts
+// ❌ Wrong: Package-specific utility in @ndigo/util
+// This is only used by @ndigo/dispatcher modules
+export const resolveMatch = ...;  // Should be in @ndigo/dispatcher/src/_match.ts
 
 // ❌ Wrong: Cross-package utility in _util.ts
-// This is used by @blue/core, @blue/context, @blue/dispatcher
-export const deepClone = ...;  // Should be promoted to @blue/util
+// This is used by @ndigo/core, @ndigo/context, @ndigo/dispatcher
+export const deepClone = ...;  // Should be promoted to @ndigo/util
 ```
 
 **❌ Circular Dependencies:**
@@ -4006,7 +4006,7 @@ import { utility } from './_util'; // CIRCULAR!
 // ✅ Correct: Extract shared code to third file or inline in one
 ```
 
-**See also:** [ARCHITECTURE.md - Dependency Management Strategy](./ARCHITECTURE.md#dependency-management-strategy) for guidance on when to promote utilities to `@blue/util`.
+**See also:** [ARCHITECTURE.md - Dependency Management Strategy](./ARCHITECTURE.md#dependency-management-strategy) for guidance on when to promote utilities to `@ndigo/util`.
 
 ### 4.6 File Size and Module Breakdown [CONVENTION: Code Review]
 
@@ -4033,10 +4033,10 @@ Maintaining appropriate file sizes improves code readability, testability, and m
 
 ```typescript
 // ✅ Ideal: Single utility (20-50 lines)
-// packages/blue-util/src/string/remove-non-word.ts (21 lines)
+// packages/ndigo-util/src/string/remove-non-word.ts (21 lines)
 
 // ✅ Good: Utility with helpers (50-150 lines)
-// packages/blue-util/src/string/to-camel.ts (46 lines)
+// packages/ndigo-util/src/string/to-camel.ts (46 lines)
 
 // ⚠️ Review: Complex module (150-300 lines)
 // May be acceptable if single cohesive responsibility
@@ -4164,7 +4164,7 @@ Some files are legitimately large and should **not** be split:
 **✅ Constant Collections:**
 
 ```typescript
-// packages/blue-http/src/http-headers.ts (725 lines, 124 constants)
+// packages/ndigo-http/src/http-headers.ts (725 lines, 124 constants)
 // Single cohesive collection of related HTTP header constants
 export const HTTPHeader = Object.freeze({
     Accept: 'Accept',
@@ -4182,18 +4182,18 @@ export const HTTPHeader = Object.freeze({
 **✅ Complex Classes with Single Responsibility:**
 
 ```typescript
-// packages/blue-factory/src/factory.ts (562 lines)
+// packages/ndigo-factory/src/factory.ts (562 lines)
 // Single cohesive responsibility: Dependency injection factory
 // High internal cohesion, all methods serve DI container
 
-// packages/blue-context/src/context.ts (363 lines)
+// packages/ndigo-context/src/context.ts (363 lines)
 // Single responsibility: Application context management
 ```
 
 **✅ Framework Integration:**
 
 ```typescript
-// packages/blue-dispatcher/src/route-handler-mapping.ts (884 lines)
+// packages/ndigo-dispatcher/src/route-handler-mapping.ts (884 lines)
 // Complex route mapping logic with high internal cohesion
 // Difficult to split without artificial boundaries
 ```
@@ -4211,7 +4211,7 @@ export const HTTPHeader = Object.freeze({
 
 ```typescript
 // ✅ Ideal: 1 main export, 0-6 inline helpers
-// packages/blue-util/src/string/to-camel.ts (46 lines)
+// packages/ndigo-util/src/string/to-camel.ts (46 lines)
 const dashes = /[\-_]/g; // Helper 1
 const spaces = /\s+/g; // Helper 2
 const removeSpaces = replace(spaces, ''); // Helper 3
@@ -4314,7 +4314,7 @@ cleanup.ts (100 lines)
 pnpm build
 
 # Check specific package
-nx run @blue/core:build:lib
+nx run @ndigo/core:build:lib
 ```
 
 **5. Update Tests**
@@ -4336,7 +4336,7 @@ user - validation.spec.ts;
 pnpm test
 
 # Check coverage report
-nx run @blue/core:test --coverage
+nx run @ndigo/core:test --coverage
 ```
 
 **7. Document Changes**
@@ -4366,7 +4366,7 @@ Ref: STYLE_GUIDE.md Section 4.6"
 
 Every source file begins with a single canonical TSDoc block at the very top
 of the file, carrying the module name, the since-version stamp, and the
-author. This is the standard form — `@blue/generators` emits it for new
+author. This is the standard form — `@ndigo/generators` emits it for new
 packages/components and the `header` generator adds/replaces it on existing
 files:
 
@@ -4374,7 +4374,7 @@ files:
 /**
  * <One-line summary ending with a period>.
  *
- * @module blue-<package>
+ * @module ndigo-<package>
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -4384,14 +4384,14 @@ files:
 
 - ✅ One block per file, first thing in the file (before imports)
 - ✅ `<summary>` is a single sentence ending in a period; it may be omitted
-- ✅ `@module blue-<package>` for package sources (`<app>` name for apps)
+- ✅ `@module ndigo-<package>` for package sources (`<app>` name for apps)
 - ✅ `@since 1.0.0` stamps the framework version the file first shipped in
 - ✅ `@author Jeff Rose` (override per file only with `--author`)
 - ❌ Headings (`#`) inside doc blocks
 - ❌ `TODO:` summary placeholders — describe what the file does
 - ❌ `@file`, `@category`, or duplicate summary lines
 - ✅ Generate with:
-  `pnpm exec nx generate @blue/generators:header --file <path> [--summary ...]`
+  `pnpm exec nx generate @ndigo/generators:header --file <path> [--summary ...]`
 
 The file-level block documents the whole module; class/method members carry
 their own focused TSDoc. `internal/requires-doc-header` (oxlint, error level —
@@ -4500,7 +4500,7 @@ Here's a complete example demonstrating all conventions:
  */
 
 // Imports: Always use single quotes
-import * as R from '@blue/util';
+import * as R from '@ndigo/util';
 import { AbstractValueComparator } from './_util'; // Internal import OK in same package
 
 // True constants: UPPER_SNAKE_CASE

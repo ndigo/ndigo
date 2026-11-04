@@ -1,0 +1,43 @@
+{
+  "name": "@ndigo/auth-server",
+  "version": "0.0.1",
+  "description": "Server-side authentication for Ndigo — AuthServer, AuthRouteGuard, and JWT adapter",
+  "keywords": [
+    "ndigo",
+    "auth",
+    "jwt",
+    "server"
+  ],
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@ndigo/test": "~0.0.1",
+    "typescript": "catalog:"
+  },
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@ndigo/auth-core": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/router": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "jose": "catalog:"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "api",
+    "lib"
+  ]
+}

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Ndigo Micro Frontend Host</title>
+        <style>
+            body {
+                font-family: system-ui, sans-serif;
+                margin: 2rem;
+            }
+            nav {
+                display: flex;
+                gap: 1rem;
+            }
+            a {
+                cursor: pointer;
+                text-decoration: underline;
+            }
+            #feature {
+                margin-top: 1.5rem;
+                border: 1px solid #ccc;
+                padding: 1rem;
+            }
+            #status {
+                color: #666;
+                font-size: 0.85rem;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>🟦 Ndigo Micro Frontend Host</h1>
+        <nav>
+            <a href="#/">Home</a>
+            <a href="#/catalog">Catalog</a>
+            <a href="#/checkout">Checkout</a>
+            <a href="#/reports">Reports</a>
+        </nav>
+        <div id="status"></div>
+        <div id="feature"></div>
+        <script type="module" src="/src/index.ts"></script>
+    </body>
+</html>

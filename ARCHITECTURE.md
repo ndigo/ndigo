@@ -1,6 +1,6 @@
-# BlueJS Architecture & Philosophy
+# Ndigo Architecture & Philosophy
 
-BlueJS is a JavaScript-first application framework built on the enduring architectural principles that modern DI-and-dispatch frameworks share — inversion of control, declarative metadata, a layered object graph, and platform portability — adapted for the multi-paradigm (OOP + FP) JavaScript ecosystem.
+Ndigo is a JavaScript-first application framework built on the enduring architectural principles that modern DI-and-dispatch frameworks share — inversion of control, declarative metadata, a layered object graph, and platform portability — adapted for the multi-paradigm (OOP + FP) JavaScript ecosystem.
 
 ## Table of Contents
 
@@ -33,7 +33,7 @@ BlueJS is a JavaScript-first application framework built on the enduring archite
 
 ## Foundational Principles
 
-BlueJS architecture is built upon industry-standard design principles adapted for JavaScript/TypeScript's unique characteristics. Understanding these principles is essential for maintaining code quality, enabling extensibility, and facilitating collaboration.
+Ndigo architecture is built upon industry-standard design principles adapted for JavaScript/TypeScript's unique characteristics. Understanding these principles is essential for maintaining code quality, enabling extensibility, and facilitating collaboration.
 
 ### SOLID Principles
 
@@ -51,7 +51,7 @@ In JavaScript/TypeScript, SRP applies at multiple levels:
 - **Functions**: Pure functions naturally follow SRP by doing one thing well
 - **Modules**: Each module should address one specific domain or feature
 
-**BlueJS Example:**
+**Ndigo Example:**
 
 ```typescript
 // ❌ Violates SRP - mixing multiple concerns
@@ -94,7 +94,7 @@ class UserRepository {
 
 class EmailService {
     sendWelcome(user: User): Promise<void> {
-        return this.send(user.email, 'Welcome to BlueJS!');
+        return this.send(user.email, 'Welcome to Ndigo!');
     }
 }
 ```
@@ -105,7 +105,7 @@ class EmailService {
 - **Improved maintainability**: Changes to validation don't affect email sending
 - **Better reusability**: Components can be used independently
 
-**See also:** [Decorators & Separation of Concerns](#decorators--separation-of-concerns) for how BlueJS uses decorators to achieve SRP.
+**See also:** [Decorators & Separation of Concerns](#decorators--separation-of-concerns) for how Ndigo uses decorators to achieve SRP.
 
 ---
 
@@ -122,7 +122,7 @@ JavaScript's dynamic nature and TypeScript's structural typing provide multiple 
 - **TypeScript generics**: Type-safe extensibility
 - **Higher-order functions**: Functions that return or accept functions
 
-**BlueJS Example:**
+**Ndigo Example:**
 
 ```typescript
 // ❌ Violates OCP - requires modification for new payment methods
@@ -294,7 +294,7 @@ ISP is especially relevant in TypeScript with its interface system:
 - **Role interfaces**: Interfaces based on client needs, not implementer structure
 - **Composition**: Combine small interfaces for complex types
 
-**BlueJS Example:**
+**Ndigo Example:**
 
 ```typescript
 // ❌ Violates ISP - fat interface forces unnecessary dependencies
@@ -383,13 +383,13 @@ class OrderService {
 
 **Application in JavaScript/TypeScript:**
 
-DIP is fundamental to BlueJS's architecture:
+DIP is fundamental to Ndigo's architecture:
 
 - **Dependency injection**: Constructor or function parameter injection
 - **Interface-based design**: Depend on TypeScript interfaces, not concrete classes
-- **ApplicationContext**: BlueJS's DI container manages dependencies
+- **ApplicationContext**: Ndigo's DI container manages dependencies
 
-**BlueJS Example:**
+**Ndigo Example:**
 
 ```typescript
 // ❌ Violates DIP - high-level code depends on low-level implementation
@@ -439,7 +439,7 @@ class PostgresDatabase implements Database {
     }
 }
 
-// BlueJS ApplicationContext wires dependencies
+// Ndigo ApplicationContext wires dependencies
 @configuration
 class AppConfig {
     @entry
@@ -460,13 +460,13 @@ class AppConfig {
 - **Flexibility**: Swap implementations without changing dependent code
 - **Decoupling**: High-level logic independent of low-level details
 
-**See also:** `@blue/core` package documentation for ApplicationContext and dependency injection patterns.
+**See also:** `@ndigo/core` package documentation for ApplicationContext and dependency injection patterns.
 
 ---
 
 ### SOLID in Functional Programming
 
-BlueJS embraces both OOP and FP paradigms. SOLID principles have functional equivalents:
+Ndigo embraces both OOP and FP paradigms. SOLID principles have functional equivalents:
 
 | SOLID Principle | Functional Equivalent                      |
 | --------------- | ------------------------------------------ |
@@ -658,11 +658,11 @@ type UserDTO = Pick<User, 'name' | 'email' | 'age'>;
 type UserUpdate = Partial<UserDTO>;
 ```
 
-**4. Library Integration Layer (BlueJS Pattern):**
+**4. Library Integration Layer (Ndigo Pattern):**
 
 ```typescript
-// @blue/dom - the integration layer for its encapsulated DOM library.
-// The import lives inside @blue/dom (src/linkedom-dom-provider.ts) and is
+// @ndigo/dom - the integration layer for its encapsulated DOM library.
+// The import lives inside @ndigo/dom (src/linkedom-dom-provider.ts) and is
 // re-exported through the package's stable surface:
 import { parseHTML } from 'linkedom';
 
@@ -670,13 +670,13 @@ export function createDOMProvider(html: string): DOMProvider {
     return new LinkedomDOMProvider(parseHTML(html));
 }
 
-// Application code imports from @blue/dom, not from linkedom directly
-import { createDOMProvider } from '@blue/dom';
+// Application code imports from @ndigo/dom, not from linkedom directly
+import { createDOMProvider } from '@ndigo/dom';
 
 createDOMProvider('<p>Hello</p>');
 ```
 
-`@blue/util` is the framework's zero-dependency leaf toolkit (type guards,
+`@ndigo/util` is the framework's zero-dependency leaf toolkit (type guards,
 strings, environment, crypto). It no longer wraps third-party libraries; it
 stays at layer 0 because every other layer may depend on it.
 
@@ -698,12 +698,12 @@ Don't create abstractions for hypothetical future use. Abstract when you have ac
 
 #### Utility Function Organization
 
-From STYLE_GUIDE.md Section 4.5, BlueJS uses a hierarchical approach:
+From STYLE_GUIDE.md Section 4.5, Ndigo uses a hierarchical approach:
 
 1. **1 file uses** → Keep inline (regex patterns, constants)
 2. **3+ files (same category)** → Extract to dedicated file (`email-validator.ts`)
 3. **4+ files (cross-category)** → Add to internal file (`_util.ts`, `_validators.ts`)
-4. **Multiple packages** → Promote to `@blue/util`
+4. **Multiple packages** → Promote to `@ndigo/util`
 
 **Critical Rule:** Internal files must contain **actual local utility functions**, not just pass-through re-exports.
 
@@ -713,7 +713,7 @@ From STYLE_GUIDE.md Section 4.5, BlueJS uses a hierarchical approach:
 
 ### Practical Guidelines
 
-#### Applying SOLID and DRY in BlueJS
+#### Applying SOLID and DRY in Ndigo
 
 **1. Start with Interfaces (TypeScript):**
 
@@ -754,7 +754,7 @@ class Dog {
 **3. Use Dependency Injection:**
 
 ```typescript
-// BlueJS ApplicationContext manages this
+// Ndigo ApplicationContext manages this
 @configuration
 class AppConfig {
     @entry
@@ -822,25 +822,25 @@ When reviewing code, check for:
 
 The framework is organized into 8 architectural layers with clear dependency direction and platform-aware boundaries:
 
-| Layer                      | Packages                                                                                                                                                                                                                                                   | Description                                                                                                                                                                                       | Design Analogue                       |
-| :------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------ |
-| **7: Bootstrap**           | `@blue/boot`                                                                                                                                                                                                                                               | Application bootstrap, startup orchestration, and context assembly                                                                                                                                | Application bootstrap entrypoint      |
-| **6: Application**         | `@blue/service`, `@blue/management`, `@blue/openapi`, `@blue/platform-node`, `@blue/cluster`, `@blue/platform-web`, `@blue/auth-core`, `@blue/auth-client`, `@blue/auth-server`, `@blue/host`, `@blue/telemetry-node`, `@blue/telemetry-web`, `@blue/test` | Business services, platform adapters, API docs generation, auth (contracts + client + server), process supervision, micro-frontend shell, Node/browser telemetry wiring, integration test harness | App services + platform adapters      |
-| **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent`, `@blue/view-ejs`                                                                                                                                                                              | Front controller, handler execution, view resolution and rendering adapters (Web Components, EJS)                                                                                                 | Front controller + view resolution    |
-| **4: Web & Runtime Infra** | `@blue/http`, `@blue/router`, `@blue/telemetry`, `@blue/socket`, `@blue/scheduler`, `@blue/jobs`, `@blue/locks`, `@blue/redis`                                                                                                                             | HTTP client/interceptors/transforms, routing primitives, websocket domain, cron scheduling, observability, durable jobs, distributed locks, distributed backends                                  | HTTP vocabulary + routing + telemetry |
-| **3: Application Context** | `@blue/context`                                                                                                                                                                                                                                            | Application context, environment, events, configuration metadata                                                                                                                                  | DI container + application context    |
-| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/content-i18next`, `@blue/cache`, `@blue/orm`, `@blue/orm-drizzle`, `@blue/proxy`, `@blue/resilience`                                                                                                              | IoC container internals, i18n/theming, caching, persistence abstractions + Drizzle adapter, method interception + resilience                                                                      | IoC container internals + theme/i18n  |
-| **1: Foundation**          | `@blue/core`, `@blue/signals`, `@blue/log`                                                                                                                                                                                                                 | Core primitives, collection types, path matching, reactive state, logging core                                                                                                                    | Core primitives + reactive state      |
-| **0: Integration Layer**   | `@blue/util`, `@blue/dom` (+ tooling: `@blue/oxlint-plugin`, `@blue/generators`)                                                                                                                                                                           | Zero-dependency leaf toolkit + encapsulated third-party libraries via stable BlueJS wrappers                                                                                                      | Third-party facade + utility layer    |
+| Layer                      | Packages                                                                                                                                                                                                                                                                | Description                                                                                                                                                                                       | Design Analogue                       |
+| :------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------ |
+| **7: Bootstrap**           | `@ndigo/boot`                                                                                                                                                                                                                                                           | Application bootstrap, startup orchestration, and context assembly                                                                                                                                | Application bootstrap entrypoint      |
+| **6: Application**         | `@ndigo/service`, `@ndigo/management`, `@ndigo/openapi`, `@ndigo/platform-node`, `@ndigo/cluster`, `@ndigo/platform-web`, `@ndigo/auth-core`, `@ndigo/auth-client`, `@ndigo/auth-server`, `@ndigo/host`, `@ndigo/telemetry-node`, `@ndigo/telemetry-web`, `@ndigo/test` | Business services, platform adapters, API docs generation, auth (contracts + client + server), process supervision, micro-frontend shell, Node/browser telemetry wiring, integration test harness | App services + platform adapters      |
+| **5: Request Processing**  | `@ndigo/dispatcher`, `@ndigo/view`, `@ndigo/view-webcomponent`, `@ndigo/view-ejs`                                                                                                                                                                                       | Front controller, handler execution, view resolution and rendering adapters (Web Components, EJS)                                                                                                 | Front controller + view resolution    |
+| **4: Web & Runtime Infra** | `@ndigo/http`, `@ndigo/router`, `@ndigo/telemetry`, `@ndigo/socket`, `@ndigo/scheduler`, `@ndigo/jobs`, `@ndigo/locks`, `@ndigo/redis`                                                                                                                                  | HTTP client/interceptors/transforms, routing primitives, websocket domain, cron scheduling, observability, durable jobs, distributed locks, distributed backends                                  | HTTP vocabulary + routing + telemetry |
+| **3: Application Context** | `@ndigo/context`                                                                                                                                                                                                                                                        | Application context, environment, events, configuration metadata                                                                                                                                  | DI container + application context    |
+| **2: Infrastructure**      | `@ndigo/factory`, `@ndigo/content`, `@ndigo/content-i18next`, `@ndigo/cache`, `@ndigo/orm`, `@ndigo/orm-drizzle`, `@ndigo/proxy`, `@ndigo/resilience`                                                                                                                   | IoC container internals, i18n/theming, caching, persistence abstractions + Drizzle adapter, method interception + resilience                                                                      | IoC container internals + theme/i18n  |
+| **1: Foundation**          | `@ndigo/core`, `@ndigo/signals`, `@ndigo/log`                                                                                                                                                                                                                           | Core primitives, collection types, path matching, reactive state, logging core                                                                                                                    | Core primitives + reactive state      |
+| **0: Integration Layer**   | `@ndigo/util`, `@ndigo/dom` (+ tooling: `@ndigo/oxlint-plugin`, `@ndigo/generators`)                                                                                                                                                                                    | Zero-dependency leaf toolkit + encapsulated third-party libraries via stable Ndigo wrappers                                                                                                       | Third-party facade + utility layer    |
 
 > **Package Map:** the canonical per-package reference (purpose · platform ·
 > runtime deps) — see [§ Package Map](#package-map) below.
 
-The `blue-todo` app sits above these layers as a reference implementation and integration proving ground.
+The `ndigo-todo` app sits above these layers as a reference implementation and integration proving ground.
 
 ### Platform Portability
 
-BlueJS is intentionally designed for **platform portability**. The isomorphic core (factory/context/dispatcher/service/content with foundational packages) can execute in browser, Node.js, or hybrid deployments. Platform-specific behavior is isolated in adapter packages such as `@blue/platform-web` and `@blue/view-webcomponent`.
+Ndigo is intentionally designed for **platform portability**. The isomorphic core (factory/context/dispatcher/service/content with foundational packages) can execute in browser, Node.js, or hybrid deployments. Platform-specific behavior is isolated in adapter packages such as `@ndigo/platform-web` and `@ndigo/view-webcomponent`.
 
 This architecture supports multiple deployment topologies:
 
@@ -848,7 +848,7 @@ This architecture supports multiple deployment topologies:
 2. **Hybrid split**: View in browser with dispatch/service in Node.js
 3. **Configurable split point**: Boundary can shift based on latency, security, and UX requirements
 
-Future platform bindings (for example `@blue/platform-node`) can provide server-specific router/environment/resource implementations without changing isomorphic core contracts.
+Future platform bindings (for example `@ndigo/platform-node`) can provide server-specific router/environment/resource implementations without changing isomorphic core contracts.
 
 ### Architecture Overview
 
@@ -857,64 +857,64 @@ The following diagram illustrates dependency flow and major package groupings:
 ```mermaid
 graph TD
     subgraph L7["Layer 7: Bootstrap"]
-        Boot[@blue/boot]
+        Boot[@ndigo/boot]
     end
 
     subgraph L6["Layer 6: Application"]
-        Service[@blue/service]
-        Management[@blue/management]
-        OpenAPI[@blue/openapi]
-        PlatformNode[@blue/platform-node]
-        PlatformWeb[@blue/platform-web]
-        AuthCore[@blue/auth-core]
-        AuthClient[@blue/auth-client]
-        AuthServer[@blue/auth-server]
-        Host[@blue/host]
-        TelemetryNode[@blue/telemetry-node]
-        TelemetryWeb[@blue/telemetry-web]
-        Test[@blue/test]
+        Service[@ndigo/service]
+        Management[@ndigo/management]
+        OpenAPI[@ndigo/openapi]
+        PlatformNode[@ndigo/platform-node]
+        PlatformWeb[@ndigo/platform-web]
+        AuthCore[@ndigo/auth-core]
+        AuthClient[@ndigo/auth-client]
+        AuthServer[@ndigo/auth-server]
+        Host[@ndigo/host]
+        TelemetryNode[@ndigo/telemetry-node]
+        TelemetryWeb[@ndigo/telemetry-web]
+        Test[@ndigo/test]
     end
 
     subgraph L5["Layer 5: Request Processing"]
-        Dispatcher[@blue/dispatcher]
-        View[@blue/view]
-        ViewWebComponent[@blue/view-webcomponent]
-        ViewEJS[@blue/view-ejs]
+        Dispatcher[@ndigo/dispatcher]
+        View[@ndigo/view]
+        ViewWebComponent[@ndigo/view-webcomponent]
+        ViewEJS[@ndigo/view-ejs]
     end
 
     subgraph L4["Layer 4: Web & Runtime Infrastructure"]
-        Http[@blue/http]
-        Router[@blue/router]
-        Telemetry[@blue/telemetry]
-        Socket[@blue/socket]
-        Scheduler[@blue/scheduler]
-        Redis[@blue/redis]
+        Http[@ndigo/http]
+        Router[@ndigo/router]
+        Telemetry[@ndigo/telemetry]
+        Socket[@ndigo/socket]
+        Scheduler[@ndigo/scheduler]
+        Redis[@ndigo/redis]
     end
 
     subgraph L3["Layer 3: Application Context"]
-        Context[@blue/context]
+        Context[@ndigo/context]
     end
 
     subgraph L2["Layer 2: Infrastructure"]
-        Factory[@blue/factory]
-        Content[@blue/content]
-        ContentI18Next[@blue/content-i18next]
-        Cache[@blue/cache]
-        Orm[@blue/orm]
-        OrmDrizzle[@blue/orm-drizzle]
-        Proxy[@blue/proxy]
-        Resilience[@blue/resilience]
+        Factory[@ndigo/factory]
+        Content[@ndigo/content]
+        ContentI18Next[@ndigo/content-i18next]
+        Cache[@ndigo/cache]
+        Orm[@ndigo/orm]
+        OrmDrizzle[@ndigo/orm-drizzle]
+        Proxy[@ndigo/proxy]
+        Resilience[@ndigo/resilience]
     end
 
     subgraph L1["Layer 1: Foundation"]
-        Core[@blue/core]
-        Signals[@blue/signals]
-        Log[@blue/log]
+        Core[@ndigo/core]
+        Signals[@ndigo/signals]
+        Log[@ndigo/log]
     end
 
     subgraph L0["Layer 0: Integration Layer"]
-        Util[@blue/util]
-        Dom[@blue/dom]
+        Util[@ndigo/util]
+        Dom[@ndigo/dom]
     end
 
     Boot --> Core
@@ -1091,66 +1091,66 @@ graph TD
 > Edges mirror runtime (`src/`) imports. `scripts/check-manifests.mjs` (CI)
 > enforces import ↔ manifest consistency in both directions; keep this
 > diagram and the Package Map in step with the manifests when they change.
-> `@blue/cache`, `@blue/signals`, `@blue/dom`, `@blue/auth-core`,
-> `@blue/util`, and `@blue/log` depend on no BlueJS package.
+> `@ndigo/cache`, `@ndigo/signals`, `@ndigo/dom`, `@ndigo/auth-core`,
+> `@ndigo/util`, and `@ndigo/log` depend on no Ndigo package.
 
 **Key Principle:** Higher layers depend on lower layers, never the reverse. Some cross-layer dependencies inside adjacent architectural tiers are intentional for integration and orchestration. The stack is acyclic — `pnpm build` fails on any cycle in the Nx task graph.
 
 ### Package Map
 
-Canonical reference for every publishable package: purpose · layer · platform · runtime dependencies. The **Runtime deps** column lists BlueJS dependencies only; notable external libraries appear in parentheses in the **Purpose** column (illustrative, not exhaustive — the package manifest is the source of truth for externals). `scripts/check-manifests.mjs` (CI, `pnpm manifest:check`) enforces that every runtime import is declared and every declared dependency is used; the columns below are maintained by hand from the manifests — update this table whenever manifests or imports change.
+Canonical reference for every publishable package: purpose · layer · platform · runtime dependencies. The **Runtime deps** column lists Ndigo dependencies only; notable external libraries appear in parentheses in the **Purpose** column (illustrative, not exhaustive — the package manifest is the source of truth for externals). `scripts/check-manifests.mjs` (CI, `pnpm manifest:check`) enforces that every runtime import is declared and every declared dependency is used; the columns below are maintained by hand from the manifests — update this table whenever manifests or imports change.
 
-| Package                   | Layer   | Platform | Purpose                                                                                                                                                                    | Runtime deps                                                                                      |
-| :------------------------ | :------ | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ |
-| `@blue/util`              | 0       | iso      | Zero-dependency leaf toolkit: type guards, strings, environment, crypto                                                                                                    | —                                                                                                 |
-| `@blue/dom`               | 0       | iso      | Isomorphic DOM parsing/creation (`linkedom`)                                                                                                                               | —                                                                                                 |
-| `@blue/core`              | 1       | iso      | Primitives, collections, radix tree, metadata, events (`semver`, `zod`)                                                                                                    | `util`                                                                                            |
-| `@blue/signals`           | 1       | iso      | Reactive state: signals, computed, effects (`@preact/signals-core`)                                                                                                        | `log`                                                                                             |
-| `@blue/log`               | 1       | iso      | Logging core: logger abstraction, severity mappings, threshold filtering (`@opentelemetry/api`)                                                                            | —                                                                                                 |
-| `@blue/factory`           | 2       | iso      | IoC container: scopes, lifecycle, entry/aware processors                                                                                                                   | `core`, `log`, `util`                                                                             |
-| `@blue/content`           | 2       | iso      | i18n content keys, themes, `MessageSource` contract                                                                                                                        | `core`, `factory`, `util`                                                                         |
-| `@blue/content-i18next`   | 2       | iso      | i18next `MessageSource` adapter (`i18next`)                                                                                                                                | `content`                                                                                         |
-| `@blue/cache`             | 2       | iso      | Cache manager + `@cached` decorator (AD-24)                                                                                                                                | `context`, `factory`, `log`                                                                       |
-| `@blue/orm`               | 2       | iso      | Repository/data-mapper persistence abstractions, `@entity` decorators (`zod`)                                                                                              | `core`, `factory`                                                                                 |
-| `@blue/orm-drizzle`       | 2       | node     | Drizzle ORM adapter for `@blue/orm` (`drizzle-orm`, `drizzle-zod`, `@libsql/client`)                                                                                       | `auth-core`, `core`, `jobs`, `orm`, `socket`, `util`                                              |
-| `@blue/proxy`             | 2       | iso      | Method interception: annotation-driven advice weaving (`@tsmetadata/polyfill`)                                                                                             | `core`, `factory`, `log`                                                                          |
-| `@blue/resilience`        | 2       | iso      | Resilience policies: `@retry` + `@circuitBreaker` interceptors                                                                                                             | `proxy`                                                                                           |
-| `@blue/rate-limit`        | 2       | iso      | Fixed-window rate limiting: `RateLimiter` SPI (async, AD-79), `FixedWindowRateLimiter`, `RATE_LIMITER` token (AD-33/AD-79)                                                 | `factory`                                                                                         |
-| `@blue/flags`             | 2       | iso      | Feature flags (AD-82): `FlagEvaluator` SPI (typed, async, never-throw), `PropertyFlagProvider`, `@whenFeature` gate metadata, `FLAG_EVALUATOR` token                       | `factory`                                                                                         |
-| `@blue/flags-openfeature` | 2       | node     | OpenFeature bridge (`@openfeature/server-sdk`, peer): `FlagEvaluator` over an OpenFeature client — vendors (flagd, OFREP, LaunchDarkly, …) behind the SPI (AD-87)          | `flags`                                                                                           |
-| `@blue/context`           | 3       | iso      | Application context, environments, configuration, events (`zod`)                                                                                                           | `content`, `core`, `factory`, `log`, `util`                                                       |
-| `@blue/http`              | 4       | iso      | Fetch client, interceptors, content parsing, transforms (`@opentelemetry/api`)                                                                                             | `core`, `factory`, `util`                                                                         |
-| `@blue/router`            | 4       | iso      | Route registry, path partitions, feature routing                                                                                                                           | `core`, `factory`, `http`, `log`, `util`                                                          |
-| `@blue/telemetry`         | 4       | iso      | OTel surface: metrics, tracing decorators, framework instrumentations; re-exports `@blue/log`                                                                              | `context`, `core`, `dispatcher`, `log`, `router`                                                  |
-| `@blue/socket`            | 4       | iso      | WebSocket domain: STOMP client, session contracts (AD-21/22/23)                                                                                                            | `core`, `signals`                                                                                 |
-| `@blue/scheduler`         | 4       | node     | Cron scheduling: `@scheduled`, task registry, tracing (`croner`)                                                                                                           | `context`, `core`, `factory`, `locks`, `log`, `util`                                              |
-| `@blue/jobs`              | 4       | node     | Durable job queues, worker execution, transactional outbox (AD-72) (`@opentelemetry/api`)                                                                                  | `context`, `core`, `factory`, `log`, `util`                                                       |
-| `@blue/locks`             | 4       | node     | Distributed locks + fencing tokens (AD-73): in-process default driver, `@scheduled({lock})` seam                                                                           | `core`, `factory`                                                                                 |
-| `@blue/redis`             | 4       | node     | Redis backends: shared cache + pub/sub fan-out + jobs/lock/rate-limit drivers (AD-79) (`@redis/client`; peers `cache`, `factory`, `jobs`, `locks`, `rate-limit`, `socket`) | `core`, `log`                                                                                     |
-| `@blue/view`              | 5       | iso      | Views, `ViewTarget`s, content negotiation, serialization                                                                                                                   | `context`, `core`, `factory`, `http`, `router`, `util`                                            |
-| `@blue/view-webcomponent` | 5       | browser  | Web Component view technology                                                                                                                                              | `context`, `core`, `factory`, `log`, `router`, `view`                                             |
-| `@blue/view-ejs`          | 5       | node     | EJS server-side template view technology (`ejs`)                                                                                                                           | `view`, `content`, `context`, `core`, `router`                                                    |
-| `@blue/dispatcher`        | 5       | iso      | Front controller: request dispatch, parameter binding, radix handler mappings (`zod`)                                                                                      | `view`, `router`, `http`, `socket`, `context`, `content`, `core`, `factory`, `log`, `util`        |
-| `@blue/service`           | 6       | iso      | Typed service clients, SSE/streaming (`zod`)                                                                                                                               | `http`, `context`, `core`, `factory`, `util`                                                      |
-| `@blue/management`        | 6       | node     | Actuator endpoints: `/health`, `/metrics` (meter snapshot — Prometheus text + JSON, AD-77)                                                                                 | `context`, `core`, `dispatcher`, `http`, `log`, `platform-node`, `telemetry`, `util`              |
-| `@blue/openapi`           | 6       | iso      | OpenAPI 3.0.3 generation from dispatch metadata (`zod`)                                                                                                                    | `core`, `dispatcher`, `http`                                                                      |
-| `@blue/host`              | 6       | browser  | Micro-frontend shell orchestration, feature mounting (AD-18)                                                                                                               | `context`, `core`, `router`                                                                       |
-| `@blue/auth-core`         | 6       | iso      | Auth contracts: principal, sessions, password encoders, `@authenticated`/`@authorized`                                                                                     | —                                                                                                 |
-| `@blue/auth-client`       | 6       | browser  | Client auth: `AuthClient`, `ClientAuthGuard`, OIDC (`jose`)                                                                                                                | `auth-core`, `http`, `util`                                                                       |
-| `@blue/auth-server`       | 6       | node     | Server auth: `AuthServer`, `AuthRouteGuard`, JWT (`jose`)                                                                                                                  | `auth-core`, `dispatcher`, `router`, `util`                                                       |
-| `@blue/platform-node`     | 6       | node     | Node platform: HTTP server adapter, auto-configuration, static files, multipart (`busboy`, `helmet`, `ws`)                                                                 | 18 BlueJS deps — hub                                                                              |
-| `@blue/cluster`           | 6       | node     | Process supervisor: replicated worker slots, signal relay, bounded restarts (AD-74)                                                                                        | `log`                                                                                             |
-| `@blue/cli`               | 6       | node     | Framework CLI: serve/dev/generate/db/inspect/doctor on `@oclif/core` ^5 (AD-75)                                                                                            | `cluster`, `@oclif/core`                                                                          |
-| `@blue/platform-web`      | 6       | browser  | Browser platform glue: dispatcher, history/cookie/data-binding resolvers, theme                                                                                            | 12 BlueJS deps — hub                                                                              |
-| `@blue/telemetry-node`    | 6       | node     | OTel NodeSDK wiring + Node instrumentations (10 OTel packages; peer `ws`)                                                                                                  | `telemetry`, `platform-node`, `router`, `socket`, `view`, `log`                                   |
-| `@blue/telemetry-web`     | 6       | browser  | Browser SDK wiring + web instrumentations (8 OTel packages)                                                                                                                | `log`, `platform-web`, `socket`, `telemetry`                                                      |
-| `@blue/test`              | 6       | iso      | In-process request dispatch test harness (MockMVC-style)                                                                                                                   | `platform-node`, `platform-web`, `dispatcher`, `router`, `view`, `context`, `http`, `log`, `util` |
-| `@blue/boot`              | 7       | node     | Application bootstrap: profiles, typed config, `run()` (`zod`; peer `@toon-format/toon`)                                                                                   | `context`, `core`, `factory`, `log`, `router`, `util`                                             |
-| `@blue/oxlint-plugin`     | tooling | —        | Consumer-facing oxlint rules (CI) (`@oxlint/plugins`; peer `oxlint`); repo-only rules live in root `src/oxlint/`                                                           | —                                                                                                 |
-| `@blue/inspect`           | tooling | —        | App manifest: routes, handler mappings, declared configuration keys (programmatic API + demo script)                                                                       | `context`, `core`, `dispatcher`, `router`                                                         |
-| `@blue/generators`        | tooling | —        | Nx generators: package/component/readme scaffolding (`@nx/devkit`)                                                                                                         | `util`                                                                                            |
+| Package                    | Layer   | Platform | Purpose                                                                                                                                                                    | Runtime deps                                                                                      |
+| :------------------------- | :------ | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ |
+| `@ndigo/util`              | 0       | iso      | Zero-dependency leaf toolkit: type guards, strings, environment, crypto                                                                                                    | —                                                                                                 |
+| `@ndigo/dom`               | 0       | iso      | Isomorphic DOM parsing/creation (`linkedom`)                                                                                                                               | —                                                                                                 |
+| `@ndigo/core`              | 1       | iso      | Primitives, collections, radix tree, metadata, events (`semver`, `zod`)                                                                                                    | `util`                                                                                            |
+| `@ndigo/signals`           | 1       | iso      | Reactive state: signals, computed, effects (`@preact/signals-core`)                                                                                                        | `log`                                                                                             |
+| `@ndigo/log`               | 1       | iso      | Logging core: logger abstraction, severity mappings, threshold filtering (`@opentelemetry/api`)                                                                            | —                                                                                                 |
+| `@ndigo/factory`           | 2       | iso      | IoC container: scopes, lifecycle, entry/aware processors                                                                                                                   | `core`, `log`, `util`                                                                             |
+| `@ndigo/content`           | 2       | iso      | i18n content keys, themes, `MessageSource` contract                                                                                                                        | `core`, `factory`, `util`                                                                         |
+| `@ndigo/content-i18next`   | 2       | iso      | i18next `MessageSource` adapter (`i18next`)                                                                                                                                | `content`                                                                                         |
+| `@ndigo/cache`             | 2       | iso      | Cache manager + `@cached` decorator (AD-24)                                                                                                                                | `context`, `factory`, `log`                                                                       |
+| `@ndigo/orm`               | 2       | iso      | Repository/data-mapper persistence abstractions, `@entity` decorators (`zod`)                                                                                              | `core`, `factory`                                                                                 |
+| `@ndigo/orm-drizzle`       | 2       | node     | Drizzle ORM adapter for `@ndigo/orm` (`drizzle-orm`, `drizzle-zod`, `@libsql/client`)                                                                                      | `auth-core`, `core`, `jobs`, `orm`, `socket`, `util`                                              |
+| `@ndigo/proxy`             | 2       | iso      | Method interception: annotation-driven advice weaving (`@tsmetadata/polyfill`)                                                                                             | `core`, `factory`, `log`                                                                          |
+| `@ndigo/resilience`        | 2       | iso      | Resilience policies: `@retry` + `@circuitBreaker` interceptors                                                                                                             | `proxy`                                                                                           |
+| `@ndigo/rate-limit`        | 2       | iso      | Fixed-window rate limiting: `RateLimiter` SPI (async, AD-79), `FixedWindowRateLimiter`, `RATE_LIMITER` token (AD-33/AD-79)                                                 | `factory`                                                                                         |
+| `@ndigo/flags`             | 2       | iso      | Feature flags (AD-82): `FlagEvaluator` SPI (typed, async, never-throw), `PropertyFlagProvider`, `@whenFeature` gate metadata, `FLAG_EVALUATOR` token                       | `factory`                                                                                         |
+| `@ndigo/flags-openfeature` | 2       | node     | OpenFeature bridge (`@openfeature/server-sdk`, peer): `FlagEvaluator` over an OpenFeature client — vendors (flagd, OFREP, LaunchDarkly, …) behind the SPI (AD-87)          | `flags`                                                                                           |
+| `@ndigo/context`           | 3       | iso      | Application context, environments, configuration, events (`zod`)                                                                                                           | `content`, `core`, `factory`, `log`, `util`                                                       |
+| `@ndigo/http`              | 4       | iso      | Fetch client, interceptors, content parsing, transforms (`@opentelemetry/api`)                                                                                             | `core`, `factory`, `util`                                                                         |
+| `@ndigo/router`            | 4       | iso      | Route registry, path partitions, feature routing                                                                                                                           | `core`, `factory`, `http`, `log`, `util`                                                          |
+| `@ndigo/telemetry`         | 4       | iso      | OTel surface: metrics, tracing decorators, framework instrumentations; re-exports `@ndigo/log`                                                                             | `context`, `core`, `dispatcher`, `log`, `router`                                                  |
+| `@ndigo/socket`            | 4       | iso      | WebSocket domain: STOMP client, session contracts (AD-21/22/23)                                                                                                            | `core`, `signals`                                                                                 |
+| `@ndigo/scheduler`         | 4       | node     | Cron scheduling: `@scheduled`, task registry, tracing (`croner`)                                                                                                           | `context`, `core`, `factory`, `locks`, `log`, `util`                                              |
+| `@ndigo/jobs`              | 4       | node     | Durable job queues, worker execution, transactional outbox (AD-72) (`@opentelemetry/api`)                                                                                  | `context`, `core`, `factory`, `log`, `util`                                                       |
+| `@ndigo/locks`             | 4       | node     | Distributed locks + fencing tokens (AD-73): in-process default driver, `@scheduled({lock})` seam                                                                           | `core`, `factory`                                                                                 |
+| `@ndigo/redis`             | 4       | node     | Redis backends: shared cache + pub/sub fan-out + jobs/lock/rate-limit drivers (AD-79) (`@redis/client`; peers `cache`, `factory`, `jobs`, `locks`, `rate-limit`, `socket`) | `core`, `log`                                                                                     |
+| `@ndigo/view`              | 5       | iso      | Views, `ViewTarget`s, content negotiation, serialization                                                                                                                   | `context`, `core`, `factory`, `http`, `router`, `util`                                            |
+| `@ndigo/view-webcomponent` | 5       | browser  | Web Component view technology                                                                                                                                              | `context`, `core`, `factory`, `log`, `router`, `view`                                             |
+| `@ndigo/view-ejs`          | 5       | node     | EJS server-side template view technology (`ejs`)                                                                                                                           | `view`, `content`, `context`, `core`, `router`                                                    |
+| `@ndigo/dispatcher`        | 5       | iso      | Front controller: request dispatch, parameter binding, radix handler mappings (`zod`)                                                                                      | `view`, `router`, `http`, `socket`, `context`, `content`, `core`, `factory`, `log`, `util`        |
+| `@ndigo/service`           | 6       | iso      | Typed service clients, SSE/streaming (`zod`)                                                                                                                               | `http`, `context`, `core`, `factory`, `util`                                                      |
+| `@ndigo/management`        | 6       | node     | Actuator endpoints: `/health`, `/metrics` (meter snapshot — Prometheus text + JSON, AD-77)                                                                                 | `context`, `core`, `dispatcher`, `http`, `log`, `platform-node`, `telemetry`, `util`              |
+| `@ndigo/openapi`           | 6       | iso      | OpenAPI 3.0.3 generation from dispatch metadata (`zod`)                                                                                                                    | `core`, `dispatcher`, `http`                                                                      |
+| `@ndigo/host`              | 6       | browser  | Micro-frontend shell orchestration, feature mounting (AD-18)                                                                                                               | `context`, `core`, `router`                                                                       |
+| `@ndigo/auth-core`         | 6       | iso      | Auth contracts: principal, sessions, password encoders, `@authenticated`/`@authorized`                                                                                     | —                                                                                                 |
+| `@ndigo/auth-client`       | 6       | browser  | Client auth: `AuthClient`, `ClientAuthGuard`, OIDC (`jose`)                                                                                                                | `auth-core`, `http`, `util`                                                                       |
+| `@ndigo/auth-server`       | 6       | node     | Server auth: `AuthServer`, `AuthRouteGuard`, JWT (`jose`)                                                                                                                  | `auth-core`, `dispatcher`, `router`, `util`                                                       |
+| `@ndigo/platform-node`     | 6       | node     | Node platform: HTTP server adapter, auto-configuration, static files, multipart (`busboy`, `helmet`, `ws`)                                                                 | 18 Ndigo deps — hub                                                                               |
+| `@ndigo/cluster`           | 6       | node     | Process supervisor: replicated worker slots, signal relay, bounded restarts (AD-74)                                                                                        | `log`                                                                                             |
+| `@ndigo/cli`               | 6       | node     | Framework CLI: serve/dev/generate/db/inspect/doctor on `@oclif/core` ^5 (AD-75)                                                                                            | `cluster`, `@oclif/core`                                                                          |
+| `@ndigo/platform-web`      | 6       | browser  | Browser platform glue: dispatcher, history/cookie/data-binding resolvers, theme                                                                                            | 12 Ndigo deps — hub                                                                               |
+| `@ndigo/telemetry-node`    | 6       | node     | OTel NodeSDK wiring + Node instrumentations (10 OTel packages; peer `ws`)                                                                                                  | `telemetry`, `platform-node`, `router`, `socket`, `view`, `log`                                   |
+| `@ndigo/telemetry-web`     | 6       | browser  | Browser SDK wiring + web instrumentations (8 OTel packages)                                                                                                                | `log`, `platform-web`, `socket`, `telemetry`                                                      |
+| `@ndigo/test`              | 6       | iso      | In-process request dispatch test harness (MockMVC-style)                                                                                                                   | `platform-node`, `platform-web`, `dispatcher`, `router`, `view`, `context`, `http`, `log`, `util` |
+| `@ndigo/boot`              | 7       | node     | Application bootstrap: profiles, typed config, `run()` (`zod`; peer `@toon-format/toon`)                                                                                   | `context`, `core`, `factory`, `log`, `router`, `util`                                             |
+| `@ndigo/oxlint-plugin`     | tooling | —        | Consumer-facing oxlint rules (CI) (`@oxlint/plugins`; peer `oxlint`); repo-only rules live in root `src/oxlint/`                                                           | —                                                                                                 |
+| `@ndigo/inspect`           | tooling | —        | App manifest: routes, handler mappings, declared configuration keys (programmatic API + demo script)                                                                       | `context`, `core`, `dispatcher`, `router`                                                         |
+| `@ndigo/generators`        | tooling | —        | Nx generators: package/component/readme scaffolding (`@nx/devkit`)                                                                                                         | `util`                                                                                            |
 
-**Standalone use:** every package resolves its own install closure — `npm install @blue/http` pulls exactly `core`, `factory`, `util` and its external deps; no hand-assembled peer list. `peerDependencies` is allowlisted per package for host-provided contracts (`oxlint-plugin → oxlint`, `telemetry-node → ws`, `platform-node → swagger-ui-dist`, `boot → @toon-format/toon`, `flags-openfeature → @openfeature/server-sdk`, `redis → cache`/`factory`/`jobs`/`locks`/`rate-limit`/`socket`). See [Manifest Dependency Sections](#manifest-dependency-sections).
+**Standalone use:** every package resolves its own install closure — `npm install @ndigo/http` pulls exactly `core`, `factory`, `util` and its external deps; no hand-assembled peer list. `peerDependencies` is allowlisted per package for host-provided contracts (`oxlint-plugin → oxlint`, `telemetry-node → ws`, `platform-node → swagger-ui-dist`, `boot → @toon-format/toon`, `flags-openfeature → @openfeature/server-sdk`, `redis → cache`/`factory`/`jobs`/`locks`/`rate-limit`/`socket`). See [Manifest Dependency Sections](#manifest-dependency-sections).
 
 ## Paradigm Selection Rules
 
@@ -1160,21 +1160,21 @@ Canonical reference for every publishable package: purpose · layer · platform 
 
 | Facility                                                                      | Canonical use                                                                                                                                           | Anti-pattern                                                                                        |
 | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `@blue/signals` (`signal`/`computed`/`effect`)                                | **Local, synchronous, derived state** within one component or service — a value that other code reads and reacts to immediately.                        | Using signals to broadcast asynchronous cross-component notifications (a "signal as an event bus"). |
-| `@blue/context` `EventEmitter` (`Emitter`, `AsEventEmitter`)                  | **Cross-component, asynchronous application events** — decoupled publish/subscribe with `:`-hierarchy dispatch (`ApplicationEvent` style).              | Using an emitter to model derived/inline state that components read synchronously.                  |
+| `@ndigo/signals` (`signal`/`computed`/`effect`)                               | **Local, synchronous, derived state** within one component or service — a value that other code reads and reacts to immediately.                        | Using signals to broadcast asynchronous cross-component notifications (a "signal as an event bus"). |
+| `@ndigo/context` `EventEmitter` (`Emitter`, `AsEventEmitter`)                 | **Cross-component, asynchronous application events** — decoupled publish/subscribe with `:`-hierarchy dispatch (`ApplicationEvent` style).              | Using an emitter to model derived/inline state that components read synchronously.                  |
 | SSE (`ServerSentEventView`, `serviceClient` `stream: true`)                   | **Server→client one-way event stream** — the island-reactivity channel; handler-owned, per-request state (AD-09).                                       | Using WebSockets for one-way notifications that SSE already covers.                                 |
 | WebSocket + STOMP (`@socketMapping`, `SocketSession` rooms, STOMP `/topic/*`) | **Bidirectional, session-scoped channels** — rooms/broadcast, heartbeat reaping, STOMP destinations; cross-node via opt-in fanout (AD-21/22/23, AD-40). | Broadcasting application-wide events over a socket channel instead of the context event bus.        |
 | Async iterables (`ServiceClient.stream`, `SocketSession.messages`)            | **Consumer-driven consumption of an open stream** — typed, backpressured iteration over pushed values.                                                  | Materializing a whole stream into an array before reading it.                                       |
 
 **Rule of thumb:** derived value you read → signal; thing that happened that others should react to → event.
 
-> **Removed (2026-09-05):** `@blue/model`'s `EventModel`/`asMinimalEventEmitter` — the legacy pre-signals "observable model" emitter — has been deleted. Reactive models are now `@blue/signals`' `@reactive`/`@signal` decorators, with validation via Zod schemas (AD-07).
+> **Removed (2026-09-05):** `@ndigo/model`'s `EventModel`/`asMinimalEventEmitter` — the legacy pre-signals "observable model" emitter — has been deleted. Reactive models are now `@ndigo/signals`' `@reactive`/`@signal` decorators, with validation via Zod schemas (AD-07).
 
 ### Validation
 
-- **Zod is the canonical runtime-schema primitive** (`safeParse`/`parse` + `z.infer`). Schemas validate DTOs, route params, domain value objects, and signal state; `drizzle-zod` derives entity schemas from `blue-orm`'s decorator metadata so persistence, validation, and typing share one definition. See `docs/decisions/2026-09-05_AD07_ZOD_VALIDATION.md`.
-- `blue-orm` entities stay decorator-annotated (`@entity`/`@column`/`@primaryColumn`); validation is _derived from_ those annotations, not a parallel decorator API.
-- `blue-validate` (constraint/decorator system) and `blue-model` (objectmodel) were retired 2026-09-05 per AD-07; do not re-add them.
+- **Zod is the canonical runtime-schema primitive** (`safeParse`/`parse` + `z.infer`). Schemas validate DTOs, route params, domain value objects, and signal state; `drizzle-zod` derives entity schemas from `ndigo-orm`'s decorator metadata so persistence, validation, and typing share one definition. See `docs/decisions/2026-09-05_AD07_ZOD_VALIDATION.md`.
+- `ndigo-orm` entities stay decorator-annotated (`@entity`/`@column`/`@primaryColumn`); validation is _derived from_ those annotations, not a parallel decorator API.
+- `ndigo-validate` (constraint/decorator system) and `ndigo-model` (objectmodel) were retired 2026-09-05 per AD-07; do not re-add them.
 
 ### Route → handler mapping
 
@@ -1186,13 +1186,13 @@ Canonical reference for every publishable package: purpose · layer · platform 
 
 ### Library Integration Layer Pattern
 
-**Core Principle:** External dependencies should be encapsulated by a single BlueJS package that acts as an **integration layer**. Other packages must import functionality from the integration layer, never directly from external libraries.
+**Core Principle:** External dependencies should be encapsulated by a single Ndigo package that acts as an **integration layer**. Other packages must import functionality from the integration layer, never directly from external libraries.
 
 **Current Integration Layers:**
 
 | Integration Layer | Encapsulated Libraries | Purpose                                     |
 | :---------------- | :--------------------- | :------------------------------------------ |
-| `@blue/dom`       | `linkedom`             | Isomorphic DOM parsing and element creation |
+| `@ndigo/dom`      | `linkedom`             | Isomorphic DOM parsing and element creation |
 
 The encapsulated-library set is the set enforced by the
 `internal/no-direct-integration-imports` oxlint rule (`INTEGRATION_LAYER_MAP` in
@@ -1205,18 +1205,18 @@ here.
 Every package declares exactly the dependencies it uses, in three enforced
 sections (`scripts/check-manifests.mjs` — CI, `pnpm manifest:check`):
 
-1. **`dependencies`** — every import made from `src/`, including `@blue/*`.
-   This is the standalone-install closure: `npm install @blue/http` pulls
+1. **`dependencies`** — every import made from `src/`, including `@ndigo/*`.
+   This is the standalone-install closure: `npm install @ndigo/http` pulls
    `core`, `factory`, `util`, and OTel's API automatically.
 2. **`devDependencies`** — imports used only by `test/`, `bench/`, and root
    `vitest.config.ts`/`vite.config.ts`, plus `@types/*` and build tooling.
 3. **`peerDependencies`** — reserved for host-provided contracts, allowlisted
    per package in the checker (`PEER_ALLOWLIST` in
-   `scripts/check-manifests.mjs` — the single source of truth): `@blue/oxlint-plugin
-   → oxlint` (plugin contract), `@blue/telemetry-node → ws` (host-provided
-   types), `@blue/platform-node → swagger-ui-dist` (asset-only docs UI),
-   `@blue/redis → @blue/cache`/`@blue/factory`/`@blue/socket` (node-only
-   capability subpaths), and `@blue/boot → @toon-format/toon` (optional; AD-66).
+   `scripts/check-manifests.mjs` — the single source of truth): `@ndigo/oxlint-plugin
+   → oxlint` (plugin contract), `@ndigo/telemetry-node → ws` (host-provided
+   types), `@ndigo/platform-node → swagger-ui-dist` (asset-only docs UI),
+   `@ndigo/redis → @ndigo/cache`/`@ndigo/factory`/`@ndigo/socket` (node-only
+   capability subpaths), and `@ndigo/boot → @toon-format/toon` (optional; AD-66).
    Any new peer needs a deliberate decision + allowlist entry in the checker.
 
 **Rule of thumb:** if a package cannot run right after `npm install <pkg>`,
@@ -1235,24 +1235,24 @@ the missing resolver is a manifest bug — not the consumer's job. There is no
 **✅ Correct:**
 
 ```typescript
-// In @blue/core or any non-integration package
-import { createDOMProvider } from '@blue/dom'; // ✅ Import from integration layer
+// In @ndigo/core or any non-integration package
+import { createDOMProvider } from '@ndigo/dom'; // ✅ Import from integration layer
 ```
 
 **❌ Incorrect:**
 
 ```typescript
-// In @blue/core or any non-integration package
+// In @ndigo/core or any non-integration package
 import { parseHTML } from 'linkedom'; // ❌ Direct import bypasses integration layer
 ```
 
 **✅ Allowed Exception (Tests):**
 
 ```typescript
-// In @blue/core/test/my-service.spec.ts
+// In @ndigo/core/test/my-service.spec.ts
 import { vi } from 'vitest';
 // Mock external dependencies if needed for testing
-vi.mock('@blue/util');
+vi.mock('@ndigo/util');
 ```
 
 ### Rationale
@@ -1276,14 +1276,14 @@ When adding a new external dependency:
 ### Enforcement
 
 - **Manual Review**: Check imports during code review
-- **oxlint Plugin** (implemented): Custom rule to detect direct imports of encapsulated libraries (`internal/no-direct-integration-imports`, loaded from root `src/oxlint/` via oxlint JS Plugins; consumer-facing rules ship in `@blue/oxlint-plugin`)
-- **CI Manifest Checker** (implemented): `scripts/check-manifests.mjs` runs in CI (`pnpm manifest:check`; `.github/workflows/ci.yml`) and enforces the [Manifest Dependency Sections](#manifest-dependency-sections) contract plus the `@blue/*` `~0.0.1` protocol
+- **oxlint Plugin** (implemented): Custom rule to detect direct imports of encapsulated libraries (`internal/no-direct-integration-imports`, loaded from root `src/oxlint/` via oxlint JS Plugins; consumer-facing rules ship in `@ndigo/oxlint-plugin`)
+- **CI Manifest Checker** (implemented): `scripts/check-manifests.mjs` runs in CI (`pnpm manifest:check`; `.github/workflows/ci.yml`) and enforces the [Manifest Dependency Sections](#manifest-dependency-sections) contract plus the `@ndigo/*` `~0.0.1` protocol
 
 ### Type-Only Imports
 
 **Status:** Resolved. Type-only imports (`import type`) are permitted for
 host-provided libraries when the library is declared in `peerDependencies`
-(e.g. `@blue/telemetry-node → ws`) — the import is erased at build time and
+(e.g. `@ndigo/telemetry-node → ws`) — the import is erased at build time and
 the consumer opts into the host library explicitly. Runtime imports must go
 through the integration layer; package-manager sections follow the
 [Manifest Dependency Sections](#manifest-dependency-sections) policy.
@@ -1300,11 +1300,11 @@ When adding or modifying integration layer rules, remember to update:
 
 ## Design Patterns
 
-BlueJS leverages established design patterns to achieve flexibility, extensibility, and maintainability. These patterns directly support the [SOLID principles](#solid-principles) documented above.
+Ndigo leverages established design patterns to achieve flexibility, extensibility, and maintainability. These patterns directly support the [SOLID principles](#solid-principles) documented above.
 
 - **Strategy Pattern**: Used extensively in parsers and routers. Enables [Open-Closed Principle](#open-closed-principle-ocp) by allowing behavior to be swapped without modifying existing code.
-- **Factory Pattern**: Central to component instantiation in `@blue/core`. Supports [Dependency Inversion Principle](#dependency-inversion-principle-dip) by abstracting object creation.
-- **Observer Pattern**: The backbone of the `@blue/core` event system. Achieves [Open-Closed Principle](#open-closed-principle-ocp) by allowing new observers without modifying subjects.
+- **Factory Pattern**: Central to component instantiation in `@ndigo/core`. Supports [Dependency Inversion Principle](#dependency-inversion-principle-dip) by abstracting object creation.
+- **Observer Pattern**: The backbone of the `@ndigo/core` event system. Achieves [Open-Closed Principle](#open-closed-principle-ocp) by allowing new observers without modifying subjects.
 - **Decorator/Mixin Pattern**: Used for horizontal feature composition (e.g., `AsEventEmitter`). Promotes [Single Responsibility Principle](#single-responsibility-principle-srp) by separating concerns across decorators.
 - **Template Method**: Used in base controller and service classes. Follows [Open-Closed Principle](#open-closed-principle-ocp) by defining extension points.
 
@@ -1312,7 +1312,7 @@ BlueJS leverages established design patterns to achieve flexibility, extensibili
 
 ### Constructor-Factory Dual Pattern
 
-BlueJS employs a **Constructor-Factory Dual Pattern** in several core classes, where the constructor is optimized for dependency injection scenarios, and a static factory method provides a cleaner API for direct instantiation.
+Ndigo employs a **Constructor-Factory Dual Pattern** in several core classes, where the constructor is optimized for dependency injection scenarios, and a static factory method provides a cleaner API for direct instantiation.
 
 #### Pattern Structure
 
@@ -1351,12 +1351,12 @@ class Service {
 
 #### Example: HTTP Client
 
-The `HTTP` class in `@blue/http` demonstrates this pattern:
+The `HTTP` class in `@ndigo/http` demonstrates this pattern:
 
 **DI Pattern (Constructor):**
 
 ```typescript
-// In AsHTTPStrategy mixin (packages/blue-dispatcher)
+// In AsHTTPStrategy mixin (packages/ndigo-dispatcher)
 class Application extends AsHTTPStrategy(StrategyInitializer) {
     initHTTP(context: ApplicationContext): void {
         // Framework collects interceptors from DI container
@@ -1412,7 +1412,7 @@ When implementing this pattern:
 4. **Consistency**: Use consistent naming (`create()` for factory methods)
 5. **Defaults**: Provide sensible defaults in factory, require explicit values in constructor
 
-**See also:** `@blue/http` package for a complete implementation example.
+**See also:** `@ndigo/http` package for a complete implementation example.
 
 ## Decorators & Separation of Concerns
 
@@ -1420,13 +1420,13 @@ When implementing this pattern:
 
 Decorators are a metaprogramming feature in JavaScript and TypeScript that allow behavior to be added to classes, methods, fields, or parameters at design time. They are functions that are invoked with the decorated item as an argument, enabling them to inspect, modify, or even replace the target.
 
-In BlueJS, decorators are the primary mechanism for achieving **separation of concerns** and **reducing boilerplate**. They enable a declarative programming style where complex, cross-cutting logic—such as routing, dependency injection, and lifecycle management—is cleanly separated from core business logic. This directly supports the [Single Responsibility Principle](#single-responsibility-principle-srp) by allowing each class to focus on its core purpose while decorators handle cross-cutting concerns.
+In Ndigo, decorators are the primary mechanism for achieving **separation of concerns** and **reducing boilerplate**. They enable a declarative programming style where complex, cross-cutting logic—such as routing, dependency injection, and lifecycle management—is cleanly separated from core business logic. This directly supports the [Single Responsibility Principle](#single-responsibility-principle-srp) by allowing each class to focus on its core purpose while decorators handle cross-cutting concerns.
 
 By annotating a class or its members, you instruct the framework to apply specific behaviors, turning complex imperative setup into a simple, readable declaration. This is all accomplished using the official **TC39 Stage 3 decorator** standard, ensuring future compatibility and adherence to the JavaScript language evolution.
 
-### Decorators in BlueJS
+### Decorators in Ndigo
 
-BlueJS provides 16 decorators across 5 core packages, each designed to address a common cross-cutting concern. Their key benefits include:
+Ndigo provides 16 decorators across 5 core packages, each designed to address a common cross-cutting concern. Their key benefits include:
 
 - **Declarative Configuration**: Define component behavior with simple annotations instead of complex setup code.
 - **Metadata-Driven**: Decorators attach metadata to classes, which the framework uses at runtime to wire together behavior.
@@ -1435,7 +1435,7 @@ BlueJS provides 16 decorators across 5 core packages, each designed to address a
 
 ### Cross-Cutting Concerns
 
-BlueJS decorators are organized around five key cross-cutting concerns:
+Ndigo decorators are organized around five key cross-cutting concerns:
 
 #### 1. Configuration & Dependency Injection
 
@@ -1511,13 +1511,13 @@ class RequestHandler {
 Entity decorators carry validation metadata that the framework derives into a Zod schema — validation logic is co-located with the field it protects, and the derived schema is the single source of truth (AD-07).
 
 - **Decorators**: `@column({ schema })`, `@primaryColumn`, `@generatedColumn`
-- **Problem Solved**: Keeps validation with the data it protects while producing a runtime schema _and_ a static type (`z.infer`) from one declaration. Route params use `validatedBy(schema, dataBinderValue('query'))` from `@blue/dispatcher`; domain components override `validationSchemas`.
+- **Problem Solved**: Keeps validation with the data it protects while producing a runtime schema _and_ a static type (`z.infer`) from one declaration. Route params use `validatedBy(schema, dataBinderValue('query'))` from `@ndigo/dispatcher`; domain components override `validationSchemas`.
 
 **Example:**
 
 ```typescript
 import { z } from 'zod';
-import { entity, column, primaryColumn } from '@blue/orm';
+import { entity, column, primaryColumn } from '@ndigo/orm';
 
 @entity('users')
 class User {
@@ -1552,7 +1552,7 @@ class UserProfileComponent extends HTMLElement {
 
 ### Decorator Metadata
 
-BlueJS decorators work by attaching metadata to classes, which is then read by the framework at runtime. This process follows the TC39 standard, using the `Symbol.metadata` property on class constructors.
+Ndigo decorators work by attaching metadata to classes, which is then read by the framework at runtime. This process follows the TC39 standard, using the `Symbol.metadata` property on class constructors.
 
 The flow is as follows:
 
@@ -1577,7 +1577,7 @@ flowchart LR
 | `concern:type:member`      | `'route:mapping:getUser'`    | Method-level metadata |
 | `concern:parameter:member` | `'method:parameter:getUser'` | Parameter metadata    |
 
-**MetadataManager**: The `@blue/dispatcher` package provides a `MetadataManager` class that efficiently scans, caches (in a `WeakMap`), and retrieves this metadata, acting as the bridge between declarative decorators and the framework's runtime behavior.
+**MetadataManager**: The `@ndigo/dispatcher` package provides a `MetadataManager` class that efficiently scans, caches (in a `WeakMap`), and retrieves this metadata, acting as the bridge between declarative decorators and the framework's runtime behavior.
 
 ### Performance Considerations
 
@@ -1621,7 +1621,7 @@ function route(path: string) {
 
 ### Creating Custom Decorators
 
-To create a custom decorator compatible with BlueJS, adhere to the following:
+To create a custom decorator compatible with Ndigo, adhere to the following:
 
 1.  **Follow the TC39 Signature**: Ensure your decorator function matches the standard signature (e.g., `(target, context)`).
 2.  **Use `context.metadata`**: Store metadata on the provided `context.metadata` object.
@@ -1641,7 +1641,7 @@ export function customDecorator(value: string) {
 
 ### Standards Compliance
 
-BlueJS is fully compliant with modern JavaScript standards for decorators:
+Ndigo is fully compliant with modern JavaScript standards for decorators:
 
 - **TC39 Stage 3 Decorators**: All 16 framework decorators use the official TC39 Stage 3 decorator specification.
 - **`Symbol.metadata`**: Metadata is stored in the standard `Symbol.metadata` property.
@@ -1699,8 +1699,8 @@ Files beginning with underscore (`_`) are **internal implementation details**:
 
 ## Node Platform & Application Lifecycle
 
-The Node server-side stack (`@blue/platform-node` + `@blue/boot` +
-`@blue/http` + `@blue/dispatcher`) follows the same philosophy as the rest of
+The Node server-side stack (`@ndigo/platform-node` + `@ndigo/boot` +
+`@ndigo/http` + `@ndigo/dispatcher`) follows the same philosophy as the rest of
 the framework — dependency injection, declarative metadata, and lifecycle
 management — applied to HTTP services. The developer-facing story is covered
 in the guides; this section captures the architecture.
@@ -1708,7 +1708,7 @@ in the guides; this section captures the architecture.
 ### Bootstrap
 
 Applications are assembled through `ApplicationBuilder.run()`
-(`@blue/boot`): it prepares the environment, registers platform
+(`@ndigo/boot`): it prepares the environment, registers platform
 auto-configuration (`NodeAutoConfiguration`) plus the app's
 `@configuration` classes, and refreshes the context. Registration is
 conditional on platform (`@whenNode`) and environment.
@@ -1746,7 +1746,7 @@ NodeHTTPServerAdapter → NodeDispatcher → handler mapping → interceptors
 ### The HTTP error contract (RFC 9457)
 
 Every 4xx/5xx response is an [`application/problem+json`][rfc9457] document
-(decision: AD-10): `type` (`urn:blue:*` placeholder), `title`, `status`,
+(decision: AD-10): `type` (`urn:ndigo:*` placeholder), `title`, `status`,
 `detail`, `instance`, plus the `errors` extension for validation issues.
 Status conventions are canonical — 400 binding, 401 + `WWW-Authenticate`,
 403, 404, 405 + `Allow`, 413/408 transport, 415, 422 validation, 429, 503,
@@ -1755,16 +1755,16 @@ before first public release.
 
 ### Modules at a glance (Node path)
 
-| Package               | Responsibilities         | Key exported concepts                                                                                             |
-| --------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------- |
-| `@blue/boot`          | Bootstrap primitives     | `ApplicationBuilder`, `Application`                                                                               |
-| `@blue/context`       | DI container + lifecycle | `Configuration`, `@entry`, context hierarchy                                                                      |
-| `@blue/factory`       | Bean lifecycle           | `SmartLifecycle`, `Destroyable`, `Closeable`                                                                      |
-| `@blue/dispatcher`    | Routing + dispatch       | mappings, `@parameters` extractors, validation, interceptors, error resolvers                                     |
-| `@blue/platform-node` | Node adapter             | `NodeAutoConfiguration`, `HTTPServer`, `NodeDispatcher`, argument resolvers, `ProblemDetails`, `gracefulShutdown` |
-| `@blue/http`          | HTTP vocabulary          | `ResponseStatuses`, `HTTPHeaders`                                                                                 |
-| `@blue/orm`           | Persistence + schema     | `@entity`/`@column`, `insertSchemaForEntity`                                                                      |
-| `@blue/telemetry`     | Logging/tracing/metrics  | `getLogger`, `LoggerFactory`                                                                                      |
+| Package                | Responsibilities         | Key exported concepts                                                                                             |
+| ---------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `@ndigo/boot`          | Bootstrap primitives     | `ApplicationBuilder`, `Application`                                                                               |
+| `@ndigo/context`       | DI container + lifecycle | `Configuration`, `@entry`, context hierarchy                                                                      |
+| `@ndigo/factory`       | Bean lifecycle           | `SmartLifecycle`, `Destroyable`, `Closeable`                                                                      |
+| `@ndigo/dispatcher`    | Routing + dispatch       | mappings, `@parameters` extractors, validation, interceptors, error resolvers                                     |
+| `@ndigo/platform-node` | Node adapter             | `NodeAutoConfiguration`, `HTTPServer`, `NodeDispatcher`, argument resolvers, `ProblemDetails`, `gracefulShutdown` |
+| `@ndigo/http`          | HTTP vocabulary          | `ResponseStatuses`, `HTTPHeaders`                                                                                 |
+| `@ndigo/orm`           | Persistence + schema     | `@entity`/`@column`, `insertSchemaForEntity`                                                                      |
+| `@ndigo/telemetry`     | Logging/tracing/metrics  | `getLogger`, `LoggerFactory`                                                                                      |
 
 Guides: [`docs/guides/`](docs/guides/README.md).
 
@@ -1779,9 +1779,9 @@ Guides: [`docs/guides/`](docs/guides/README.md).
 
 ### Current Status (2026-10-06)
 
-- **The 10-wave program shipped.** Foundation (`@blue/util`, `@blue/core`,
-  `@blue/signals`), IoC/context, the web stack (`@blue/http`,
-  `@blue/router`, `@blue/dispatcher`), observability, and the
+- **The 10-wave program shipped.** Foundation (`@ndigo/util`, `@ndigo/core`,
+  `@ndigo/signals`), IoC/context, the web stack (`@ndigo/http`,
+  `@ndigo/router`, `@ndigo/dispatcher`), observability, and the
   view/application layers are complete; the 1.0 checkpoint (Wave 10) is
   reached and the decision records are indexed in
   [`docs/decisions/README.md`](docs/decisions/README.md).
@@ -1793,21 +1793,21 @@ Guides: [`docs/guides/`](docs/guides/README.md).
 - **Persistence baseline landed** (AD-40): durable sessions, shared Redis
   cache, cross-node WebSocket/STOMP fan-out; distributed scheduling
   explicitly deferred (AD-41).
-- **The framework CLI shipped** (AD-75): `@blue/cli` (bin `blue`) on
+- **The framework CLI shipped** (AD-75): `@ndigo/cli` (bin `ndigo`) on
   `@oclif/core` ^5 as an embedded library — `serve` (with the AD-74
-  `--cluster` surface), `dev`, `generate` (fronting `@blue/generators`),
+  `--cluster` surface), `dev`, `generate` (fronting `@ndigo/generators`),
   `db:migrate`, `inspect` (the AD-70 entry), and `doctor`; scripts run
   shell-free so signals reach the app.
-- **Clustering shipped** (AD-74): `@blue/cluster` supervises replicated
+- **Clustering shipped** (AD-74): `@ndigo/cluster` supervises replicated
   worker slots — `SIGINT`/`SIGTERM` relay into each child's own graceful
   shutdown, bounded-backoff respawns behind a fail-closed crash-loop guard,
-  `BLUE_CLUSTER_SLOT`/`SIZE` + `PORT` derivation. Coordination stays in the
+  `NDIGO_CLUSTER_SLOT`/`SIZE` + `PORT` derivation. Coordination stays in the
   leases and locks (AD-72/73); the supervisor owns only the processes.
-- **Distributed locks shipped** (AD-73): `@blue/locks` owns the `LockDriver`
+- **Distributed locks shipped** (AD-73): `@ndigo/locks` owns the `LockDriver`
   SPI (non-blocking acquire, TTL leases, monotonic fencing tokens) with the
-  in-process driver and Redis driver (`@blue/redis/locks`, Lua
+  in-process driver and Redis driver (`@ndigo/redis/locks`, Lua
   compare-and-delete); `@scheduled({ lock })` runs one node per fire.
-- **Jobs and the transactional outbox shipped** (AD-72): `@blue/jobs` owns the
+- **Jobs and the transactional outbox shipped** (AD-72): `@ndigo/jobs` owns the
   `JobDriver` SPI (lease-based at-least-once claims, retries, spans) with
   in-process, LibSQL, and Redis drivers, plus the outbox relay whose LibSQL
   store joins `@transactional` commits on the application's data source.
@@ -1818,7 +1818,7 @@ Guides: [`docs/guides/`](docs/guides/README.md).
 ### Near-Term (1.0)
 
 - **Full time-zone catalog generator** — conditional (AD-20 D6): only if
-  the curated `@blue/scheduler` constants prove insufficient.
+  the curated `@ndigo/scheduler` constants prove insufficient.
 - **Page concept design** — the open AD-03 question (independently
   bootable presentation container) on its own design conversation if a
   concrete consumer appears.
@@ -1840,4 +1840,4 @@ Guides: [`docs/guides/`](docs/guides/README.md).
 
 ---
 
-_© 2026 BlueJS Team. All rights reserved._
+_© 2026 Ndigo Team. All rights reserved._

@@ -1,0 +1,84 @@
+[**@ndigo/openapi v0.0.1**](../README.md)
+
+***
+
+[@ndigo/openapi](../README.md) / OpenAPIOperation
+
+# Interface: OpenAPIOperation
+
+An OpenAPI operation object. Framework-specific conditions are preserved
+under `x-ndigo-*` extensions rather than dropped.
+
+## Properties
+
+### deprecated?
+
+> `optional` **deprecated?**: `boolean`
+
+***
+
+### description?
+
+> `optional` **description?**: `string`
+
+***
+
+### operationId?
+
+> `optional` **operationId?**: `string`
+
+***
+
+### parameters?
+
+> `optional` **parameters?**: [`OpenAPIParameter`](OpenAPIParameter.md)[]
+
+***
+
+### requestBody?
+
+> `optional` **requestBody?**: [`OpenAPIRequestBody`](OpenAPIRequestBody.md)
+
+***
+
+### responses
+
+> **responses**: `Record`\<`string`, [`OpenAPIResponse`](OpenAPIResponse.md)\>
+
+***
+
+### security?
+
+> `optional` **security?**: `Record`\<`string`, `string`[]\>[]
+
+Security requirements for this operation (scheme name → scopes). Set
+from `@apiDocs({ security })`; overrides the document-level default.
+An empty array documents an explicitly anonymous operation.
+
+***
+
+### summary?
+
+> `optional` **summary?**: `string`
+
+***
+
+### tags?
+
+> `optional` **tags?**: `string`[]
+
+***
+
+### x-ndigo-matrixParams?
+
+> `optional` **x-ndigo-matrixParams?**: `string`[]
+
+Framework matrix-parameter conditions (AD-35 D-2).
+
+***
+
+### x-ndigo-queryParams?
+
+> `optional` **x-ndigo-queryParams?**: `string`[]
+
+Framework query-parameter conditions (AD-35 D-2).

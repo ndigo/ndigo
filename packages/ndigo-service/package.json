@@ -1,0 +1,45 @@
+{
+  "name": "@ndigo/service",
+  "version": "0.0.1",
+  "description": "Typed service clients and server-sent event streaming for Ndigo",
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "ndigo-service"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@ndigo/proxy": "~0.0.1",
+    "@ndigo/resilience": "~0.0.1",
+    "@opentelemetry/sdk-trace-base": "catalog:",
+    "@tsmetadata/polyfill": "catalog:"
+  },
+  "dependencies": {
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/factory": "~0.0.1",
+    "@ndigo/http": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@opentelemetry/api": "catalog:",
+    "zod": "catalog:"
+  },
+  "sideEffects": false
+}

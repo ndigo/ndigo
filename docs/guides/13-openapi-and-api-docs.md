@@ -8,7 +8,7 @@ write, no second source of truth.
 
 ## 1. The endpoints
 
-`swagger-ui-dist` is a **peer dependency** of `@blue/platform-node` (asset-only
+`swagger-ui-dist` is a **peer dependency** of `@ndigo/platform-node` (asset-only
 — no module is imported), so install it explicitly when serving docs:
 
 ```bash
@@ -95,7 +95,7 @@ For every public handler method the generator emits an operation with:
 - **Multipart** — `fileValue`/`requestPart` parameters become
   `multipart/form-data` parts (`type: string, format: binary` for files).
 - **Framework conditions with no OpenAPI equivalent** are preserved as
-  `x-blue-*` extensions (e.g. `x-blue-matrixParams: ['color=red']`) instead
+  `x-ndigo-*` extensions (e.g. `x-ndigo-matrixParams: ['color=red']`) instead
   of silently dropped.
 
 Excluded by design: methodless catch-alls, `@privateMapping` routes, and
@@ -116,7 +116,7 @@ spec from self-referencing and changes nothing about live dispatch.
 >   discoverable at all);
 > - deploy the docs behind an `accessGuard` — the whole spec becomes
 >   private, but is not redacted. The demo demonstrates this: it registers
->   `SecureDocsConfiguration` (`apps/04-blue-api/src/secure-docs-configuration.ts`),
+>   `SecureDocsConfiguration` (`apps/04-ndigo-api/src/secure-docs-configuration.ts`),
 >   whose guard accepts only an `Authorization: Bearer <token>` that
 >   resolves through the same `lookupPrincipal` check the protected
 >   handlers apply, so anonymous `/v3/api-docs` and `/swagger-ui/` are 401.
@@ -190,7 +190,7 @@ options, until it forwards them.)
 ## 4. Scope notes
 
 - **Spec generation is library-level**: `OpenAPISpecGenerator` in
-  `@blue/openapi` takes any `getHandlerMethods()`-providing mapping and
+  `@ndigo/openapi` takes any `getHandlerMethods()`-providing mapping and
   returns the document — use it for offline CI generation or serving under a
   custom route without the auto-configuration.
 - **Typed-client generation** is deferred (post-1.0): feed the served

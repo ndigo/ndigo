@@ -1,0 +1,63 @@
+{
+  "name": "@ndigo/telemetry-node",
+  "version": "0.0.1",
+  "description": "Node.js telemetry for Ndigo — NodeSDK configuration and Node platform instrumentations",
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "telemetry",
+    "opentelemetry",
+    "node"
+  ],
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "sideEffects": false,
+  "dependencies": {
+    "@ndigo/log": "~0.0.1",
+    "@ndigo/platform-node": "~0.0.1",
+    "@ndigo/router": "~0.0.1",
+    "@ndigo/socket": "~0.0.1",
+    "@ndigo/telemetry": "~0.0.1",
+    "@ndigo/view": "~0.0.1",
+    "@opentelemetry/api": "catalog:",
+    "@opentelemetry/api-logs": "catalog:",
+    "@opentelemetry/exporter-logs-otlp-http": "catalog:",
+    "@opentelemetry/exporter-metrics-otlp-http": "catalog:",
+    "@opentelemetry/exporter-trace-otlp-http": "catalog:",
+    "@opentelemetry/instrumentation": "catalog:",
+    "@opentelemetry/sdk-logs": "catalog:",
+    "@opentelemetry/sdk-metrics": "catalog:",
+    "@opentelemetry/sdk-node": "catalog:",
+    "@opentelemetry/sdk-trace-base": "catalog:"
+  },
+  "peerDependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/test": "~0.0.1",
+    "@opentelemetry/context-async-hooks": "catalog:",
+    "@opentelemetry/core": "catalog:",
+    "@types/ws": "catalog:"
+  },
+  "files": [
+    "api",
+    "lib"
+  ]
+}

@@ -7,9 +7,9 @@ graceful shutdown (AD-74).
 
 ## The model
 
-`@blue/cluster` is a **supervisor, not a coordinator**. There is no leader,
-no discovery, no state sync: job leases (`@blue/jobs`, AD-72) and
-`@scheduled({ lock })` (`@blue/locks`, AD-73) already make replicated slots
+`@ndigo/cluster` is a **supervisor, not a coordinator**. There is no leader,
+no discovery, no state sync: job leases (`@ndigo/jobs`, AD-72) and
+`@scheduled({ lock })` (`@ndigo/locks`, AD-73) already make replicated slots
 single-executor. The package owns only the process shell:
 
 - **Spawn** `size` children running the same command;
@@ -22,7 +22,7 @@ single-executor. The package owns only the process shell:
 ## Using it
 
 ```ts
-import { ClusterRunner } from '@blue/cluster';
+import { ClusterRunner } from '@ndigo/cluster';
 
 const start = new ClusterRunner({
     size: 4,
@@ -31,7 +31,7 @@ const start = new ClusterRunner({
 }).run(); // signal handlers installed — nothing else to do
 ```
 
-Each child sees `BLUE_CLUSTER_SLOT` (0-based) and `BLUE_CLUSTER_SIZE`; with
+Each child sees `NDIGO_CLUSTER_SLOT` (0-based) and `NDIGO_CLUSTER_SIZE`; with
 `basePort` (or pinned `ports`), `PORT = base + slot`. Base environments pass
 through `env`.
 
@@ -61,7 +61,7 @@ already have:
 ## See also
 
 - AD-74: `docs/decisions/2026-10-07_AD74_CLUSTERING.md`
-- `gracefulShutdown()` (`@blue/platform-node`) — what each child runs on the
+- `gracefulShutdown()` (`@ndigo/platform-node`) — what each child runs on the
   relayed signal.
 - The jobs (22) and locks (23) guides — the coordination the cluster relies
   on.

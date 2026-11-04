@@ -2,8 +2,8 @@
 
 Repository-only oxlint rules — the enforcement that applies to _this_
 monorepo (integration-layer boundaries, internal-file hygiene, house style)
-rather than to BlueJS application code. Consumer-facing rules live in
-[`@blue/oxlint-plugin`](../../packages/blue-oxlint-plugin/README.md).
+rather than to Ndigo application code. Consumer-facing rules live in
+[`@ndigo/oxlint-plugin`](../../packages/ndigo-oxlint-plugin/README.md).
 
 `src/` is the home for repo-only cross-package concerns (AD-86); this
 directory is **not a package** — no `package.json`, no build step, no
@@ -16,7 +16,7 @@ Root `.oxlintrc.json` registers `plugin.ts` as an oxlint JS plugin under the
 
 ```jsonc
 "jsPlugins": [
-  "./packages/blue-oxlint-plugin/lib/index.js",
+  "./packages/ndigo-oxlint-plugin/lib/index.js",
   { "name": "internal", "specifier": "./src/oxlint/plugin.ts" }
 ]
 ```

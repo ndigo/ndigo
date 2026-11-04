@@ -1,7 +1,7 @@
 packages:
   - 'packages/*'
   - 'apps/*'
-  - '../todomvc/examples/bluejs'
+  - '../todomvc/examples/ndigo'
   - '../todomvc/examples/svelte'
   - '../todomvc/examples/vue'
   - '../todomvc/examples/react'
@@ -19,7 +19,7 @@ packages:
 # (typescript 5.9.3/6.0.3, webpack 5.x, jsdom 20/29) as standalone demos.
 catalog:
   '@nx/devkit': '~24.0.2'
-  # OpenFeature bridge (@blue/flags-openfeature): the app-installed provider
+  # OpenFeature bridge (@ndigo/flags-openfeature): the app-installed provider
   # runtime. `~` pin — the SDKs are 1.x, but provider-facing behavior still
   # moves on minors during the spec v0.9.0 compliance sweep (AD-87).
   '@openfeature/server-sdk': '~1.23.0'

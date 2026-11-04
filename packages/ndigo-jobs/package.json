@@ -1,0 +1,48 @@
+{
+  "name": "@ndigo/jobs",
+  "version": "0.0.1",
+  "description": "Durable job queues, worker execution, and the transactional outbox for Node.js",
+  "type": "module",
+  "keywords": [
+    "ndigo",
+    "ndigo-jobs",
+    "jobs",
+    "queue",
+    "outbox",
+    "worker"
+  ],
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/factory": "~0.0.1",
+    "@ndigo/log": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
+    "@opentelemetry/api": "catalog:",
+    "@tsmetadata/polyfill": "catalog:"
+  },
+  "devDependencies": {
+    "@opentelemetry/sdk-trace-base": "catalog:"
+  },
+  "sideEffects": false
+}

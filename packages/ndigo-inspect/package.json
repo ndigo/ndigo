@@ -1,0 +1,45 @@
+{
+  "name": "@ndigo/inspect",
+  "version": "0.0.1",
+  "description": "Deterministic JSON manifest generator for Ndigo applications (routes, mappings, config keys)",
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "inspect",
+    "manifest",
+    "introspection"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/router": "~0.0.1"
+  },
+  "devDependencies": {
+    "@ndigo/boot": "~0.0.1",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "sideEffects": false
+}

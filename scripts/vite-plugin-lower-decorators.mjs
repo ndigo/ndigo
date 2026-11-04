@@ -15,7 +15,7 @@
  * esbuild — which lowers decorators for any target below `esnext` — for
  * TypeScript modules in the workspace. Every app with browser sources applies
  * it for BOTH `vite build` and `vite dev` (the demo apps forward it
- * unconditionally; `blue-todo`'s former `command === 'build'` gate is gone),
+ * unconditionally; `ndigo-todo`'s former `command === 'build'` gate is gone),
  * so neither path ships raw decorators. Vitest needs no plugin: it lowers
  * decorators in its own transform pipeline and resolves workspace sources
  * through the shared `vitest.aliases.ts` table that each app `vitest.config.ts`
@@ -49,8 +49,8 @@ const tsModuleRe = /\.(?:[cm]?ts|tsx)$/;
 /** Cheap pre-check: a decorator starting a line, or opening a member body / parameter list. */
 const decoratorRe = /^\s*@|[{(;]\s*@/m;
 
-/** Workspace package sources resolved through pnpm symlinks (`packages/blue-*`). */
-const workspacePackageRe = /[\\/]packages[\\/]blue-[^\\/]+[\\/]/;
+/** Workspace package sources resolved through pnpm symlinks (`packages/ndigo-*`). */
+const workspacePackageRe = /[\\/]packages[\\/]ndigo-[^\\/]+[\\/]/;
 
 /**
  * Creates the decorator-lowering plugin.
@@ -59,7 +59,7 @@ const workspacePackageRe = /[\\/]packages[\\/]blue-[^\\/]+[\\/]/;
  */
 export function lowerDecorators() {
     return {
-        name: 'blue:lower-decorators',
+        name: 'ndigo:lower-decorators',
         enforce: 'pre',
         /**
          * @param code - The module source.

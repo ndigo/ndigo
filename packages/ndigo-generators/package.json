@@ -1,0 +1,45 @@
+{
+  "name": "@ndigo/generators",
+  "version": "0.0.1",
+  "description": "Nx generators for Ndigo application, package, component, README, and documentation-header scaffolding",
+  "keywords": [
+    "ndigo",
+    "nx",
+    "generator",
+    "scaffolding"
+  ],
+  "type": "module",
+  "generators": "./generators.json",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "lib",
+    "api",
+    "generators.json"
+  ],
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@ndigo/util": "~0.0.1",
+    "@nx/devkit": "catalog:"
+  },
+  "devDependencies": {
+    "nx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "sideEffects": false
+}

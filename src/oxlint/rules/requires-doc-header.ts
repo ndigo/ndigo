@@ -1,13 +1,13 @@
 /**
- * Rule that requires the canonical BlueJS documentation header at the top of
+ * Rule that requires the canonical Ndigo documentation header at the top of
  * every source file.
  *
  * Per STYLE_GUIDE §5 (Documentation Blocks): every file begins with a single
  * TSDoc block carrying `@module`, `@since`, and `@author` tags, before any
- * imports. The `header` generator (`@blue/generators`) creates and repairs
+ * imports. The `header` generator (`@ndigo/generators`) creates and repairs
  * these blocks:
  *
- *   `nx generate @blue/generators:header --file <path>`
+ *   `nx generate @ndigo/generators:header --file <path>`
  *
  * Only files under `src/` and `test/` (and app client directories) are
  * checked; build configuration and generated files are exempt.
@@ -43,15 +43,15 @@ export const requiresDocHeader = {
     meta: {
         type: 'problem',
         docs: {
-            description: 'Require the canonical BlueJS doc header (@module/@since/@author) on source files',
+            description: 'Require the canonical Ndigo doc header (@module/@since/@author) on source files',
         },
         messages: {
             missingHeader:
-                "Source file is missing the canonical doc header. Run 'nx generate @blue/generators:header --file {{file}}'.",
+                "Source file is missing the canonical doc header. Run 'nx generate @ndigo/generators:header --file {{file}}'.",
             missingTags:
-                "Doc header is missing the {{tags}} tag(s); run 'nx generate @blue/generators:header --file {{file}} --force'.",
+                "Doc header is missing the {{tags}} tag(s); run 'nx generate @ndigo/generators:header --file {{file}} --force'.",
             malformedTagLine:
-                "Doc header has a stray '*' before a tag line (reads '* * @…'); repair with 'nx generate @blue/generators:header --file {{file}} --force'.",
+                "Doc header has a stray '*' before a tag line (reads '* * @…'); repair with 'nx generate @ndigo/generators:header --file {{file}} --force'.",
         },
         schema: [],
     } as const,

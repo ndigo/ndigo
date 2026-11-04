@@ -1,0 +1,36 @@
+{
+  "name": "@ndigo/locks",
+  "version": "0.0.1",
+  "description": "Distributed locks with fencing tokens for Node.js — the single-executor primitive behind multi-node @scheduled and cluster work",
+  "type": "module",
+  "keywords": [
+    "ndigo",
+    "ndigo-locks",
+    "locks",
+    "fencing",
+    "distributed"
+  ],
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/factory": "~0.0.1"
+  },
+  "sideEffects": false
+}

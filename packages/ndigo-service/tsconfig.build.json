@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.build.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "lib",
+    "paths": {
+      "@ndigo/*": ["../ndigo-*"]
+    },
+    "rootDir": "src",
+    "skipLibCheck": true,
+    "strict": true
+  },
+  "exclude": ["node_modules/**/*", "**/*.spec.ts", "**/*.test.ts", "vite.config.ts", "vitest.config.ts"],
+  "include": ["src/**/*"]
+}

@@ -1,0 +1,42 @@
+{
+  "name": "@ndigo/auth-core",
+  "version": "0.0.1",
+  "description": "Core authentication types, interfaces, and passive decorators for Ndigo",
+  "keywords": [
+    "ndigo",
+    "auth",
+    "principal",
+    "session"
+  ],
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@tsmetadata/polyfill": "catalog:"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  },
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./scrypt": {
+      "types": "./lib/scrypt-password-encoder.d.ts",
+      "default": "./lib/scrypt-password-encoder.js"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "api",
+    "lib"
+  ]
+}

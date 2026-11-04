@@ -1,4 +1,4 @@
-# BlueJS Documentation
+# Ndigo Documentation
 
 This directory organizes all project documentation by category. Docs-as-code:
 everything lives in the repo, reviewed in PRs, formatted by oxfmt, and

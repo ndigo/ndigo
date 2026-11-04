@@ -3,7 +3,7 @@
  * Runs the todomvc benchmark behind a short-lived `vite preview` server.
  *
  * Replaces the former inline root script
- * (`pnpm --filter @blue/todomvc run preview & sleep 5 && …`), which raced the
+ * (`pnpm --filter @ndigo/todomvc run preview & sleep 5 && …`), which raced the
  * server's startup and leaked the backgrounded preview process on every run
  * (2026-10-06 review, TO-9). This wrapper waits for the preview port to accept
  * connections, fails fast when the server dies, and reaps it in a `finally`
@@ -19,7 +19,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-/** Matches `@blue/todomvc`'s preview script (`vite preview --port 3001`). */
+/** Matches `@ndigo/todomvc`'s preview script (`vite preview --port 3001`). */
 const PREVIEW_PORT = 3001;
 const PORT_TIMEOUT_MS = 60_000;
 const POLL_INTERVAL_MS = 200;
@@ -68,7 +68,7 @@ function run(command, args) {
     });
 }
 
-const preview = spawn('pnpm', ['--filter', '@blue/todomvc', 'run', 'preview'], {
+const preview = spawn('pnpm', ['--filter', '@ndigo/todomvc', 'run', 'preview'], {
     cwd: ROOT,
     stdio: 'inherit',
 });
@@ -107,7 +107,7 @@ try {
         () => !previewErrored && preview.exitCode === null && preview.signalCode === null
     );
     console.log(`benchmark preview ready on http://127.0.0.1:${PREVIEW_PORT}`);
-    exitCode = await run('pnpm', ['exec', 'tsx', '../todomvc/examples/bluejs/benchmark-runner.ts']);
+    exitCode = await run('pnpm', ['exec', 'tsx', '../todomvc/examples/ndigo/benchmark-runner.ts']);
 } catch (error) {
     console.error(error instanceof Error ? error.message : String(error));
     exitCode = 1;

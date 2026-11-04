@@ -1,20 +1,20 @@
 # Guide 07 — Caching
 
-Caching in BlueJS has two halves sharing one store: server-side method
+Caching in Ndigo has two halves sharing one store: server-side method
 caching with the `@cached` decorator, and client-side (browser or Node)
 function memoization with `memoize`. Both run on the same package —
-`@blue/cache` — an isomorphic, dependency-free TTL store with LRU/FIFO
+`@ndigo/cache` — an isomorphic, dependency-free TTL store with LRU/FIFO
 eviction.
 
 The HTTP client's `CacheInterceptor`/`IfModifiedInterceptor` are the third
-piece (client-side **HTTP** caching) — see the `blue-views` client demo and
-the `@blue/http` package README; they are separate machinery with
+piece (client-side **HTTP** caching) — see the `ndigo-views` client demo and
+the `@ndigo/http` package README; they are separate machinery with
 response-specific semantics.
 
 ## 1. The store
 
 ```ts
-import { MemoryCache, MemoryCacheManager, CacheMiss } from '@blue/cache';
+import { MemoryCache, MemoryCacheManager, CacheMiss } from '@ndigo/cache';
 
 const cache = new MemoryCache<string>({ defaultTtl: 60_000, maxSize: 1_000 });
 
@@ -53,9 +53,9 @@ absent the raw method runs (graceful degradation — unit tests see the plain
 method).
 
 ```ts
-import { cached } from '@blue/cache';
-import type { CacheManager } from '@blue/cache';
-import { getMapping, requestMapping } from '@blue/dispatcher';
+import { cached } from '@ndigo/cache';
+import type { CacheManager } from '@ndigo/cache';
+import { getMapping, requestMapping } from '@ndigo/dispatcher';
 
 @requestMapping('/api')
 export class ProductController {
@@ -83,9 +83,9 @@ description is the store name), so renames and store types are
 compile-checked:
 
 ```ts
-import { ContextToken } from '@blue/context';
-import { cached } from '@blue/cache';
-import type { Cache } from '@blue/cache';
+import { ContextToken } from '@ndigo/context';
+import { cached } from '@ndigo/cache';
+import type { Cache } from '@ndigo/cache';
 
 export const CATALOG = new ContextToken<Cache<Product>>('catalog');
 
@@ -123,7 +123,7 @@ Plain-function memoization for browsers and Node — no DI, no beans. The
 wrapper always returns `Promise<Awaited<R>>`, even for synchronous inputs:
 
 ```ts
-import { memoize } from '@blue/cache';
+import { memoize } from '@ndigo/cache';
 
 const loadUser = memoize(async (id: string) => fetch(`/users/${id}`).then((r) => r.json()), {
     ttl: 30_000,
@@ -163,19 +163,19 @@ await catalog.getCache('catalog').clear(); // whole-store eviction
 - **Bounded stores** — cap `maxSize` (or rely on TTL) where keys are
   user-controlled: unbounded caches grow with the key space.
 
-Reference: `apps/04-blue-api` (`GET /api/cached-report` demo gate, counter spec
-in `app-bootstrap.spec.ts`) and the `blue-views` client demo (memoized
+Reference: `apps/04-ndigo-api` (`GET /api/cached-report` demo gate, counter spec
+in `app-bootstrap.spec.ts`) and the `ndigo-views` client demo (memoized
 payload derivation next to the HTTP cache-hit refresh). Design rationale:
 [caching decision](../decisions/2026-09-17_AD24_CACHING.md).
 
 ## 6. Shared Node cache with Redis
 
-`@blue/redis/cache` supplies `RedisCacheManager` and `RedisCache` against the
+`@ndigo/redis/cache` supplies `RedisCacheManager` and `RedisCache` against the
 same awaitable contract. The memory backend remains the framework default;
 register/select a Redis manager explicitly in your application's configuration.
 
 ```ts
-import { RedisCacheManager } from '@blue/redis/cache';
+import { RedisCacheManager } from '@ndigo/redis/cache';
 
 const manager = new RedisCacheManager({
     url: process.env.REDIS_URL!,
@@ -210,5 +210,5 @@ Backend errors propagate (the existing `@cached` best-effort _write_ policy stil
 applies). The synchronous context teardown does not await async close hooks, so
 await the manager before closing the context. Supply URLs/credentials through
 application environment/secrets binding; the adapter never logs them or
-connects automatically to localhost. See the [Redis package README](../../packages/blue-redis/README.md)
+connects automatically to localhost. See the [Redis package README](../../packages/ndigo-redis/README.md)
 for the full codec, failure, ACL, lifecycle and live verification contracts.

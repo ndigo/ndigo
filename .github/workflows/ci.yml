@@ -42,7 +42,7 @@ jobs:
     # the label and pushing: a rebase push is a `synchronize` event, which
     # runs CI on the fresh base. Schedule and manual dispatch are never gated.
     if: ${{ github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'parked') }}
-    # Live Redis suites (@blue/redis cache + pub/sub) are env-gated and would
+    # Live Redis suites (@ndigo/redis cache + pub/sub) are env-gated and would
     # otherwise never run in CI (review DAT-F14); the URL is exported on the
     # test step below.
     services:
@@ -145,8 +145,8 @@ jobs:
 
       - name: Unit + integration tests
         env:
-          # Exercises the env-gated @blue/redis live suites (DAT-F14).
-          BLUE_REDIS_TEST_URL: redis://127.0.0.1:6379
+          # Exercises the env-gated @ndigo/redis live suites (DAT-F14).
+          NDIGO_REDIS_TEST_URL: redis://127.0.0.1:6379
         run: pnpm test
 
       - name: API docs (TypeDoc, zero warnings)
@@ -243,19 +243,19 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build workspace libraries
-        # The todo app resolves @blue/* through package `exports` -> `lib/`,
+        # The todo app resolves @ndigo/* through package `exports` -> `lib/`,
         # and `**/lib/` is gitignored: a fresh runner has no built workspace
         # libraries, so the app build below would fail to resolve every
-        # @blue/* import without this step (review CI-B1).
+        # @ndigo/* import without this step (review CI-B1).
         run: pnpm build
 
       - name: Build the todo app
         # vite preview (started by Playwright) serves dist/, which is
         # gitignored — the app must be built before the E2E run.
-        run: pnpm --filter @blue/todo build
+        run: pnpm --filter @ndigo/todo build
 
       - name: Install Playwright browsers
-        run: pnpm --filter @blue/todo exec playwright install --with-deps chromium
+        run: pnpm --filter @ndigo/todo exec playwright install --with-deps chromium
 
       - name: E2E
         run: pnpm test:e2e
@@ -264,7 +264,7 @@ jobs:
         # The AD-71 reference integration: DSD first paint -> hydration -> FACE
         # form submit -> SSE. The browsers installed above are shared through
         # the Playwright cache, so this lane adds no install cost.
-        run: pnpm --filter @blue/island test:e2e
+        run: pnpm --filter @ndigo/island test:e2e
 
       - name: Upload Playwright report
         if: always()
@@ -272,8 +272,8 @@ jobs:
         with:
           name: playwright-report
           path: |
-            apps/03-blue-todo/playwright-report
-            apps/06-blue-island/playwright-report
+            apps/03-ndigo-todo/playwright-report
+            apps/06-ndigo-island/playwright-report
           if-no-files-found: ignore
 
       - name: Upload test results
@@ -282,8 +282,8 @@ jobs:
         with:
           name: test-results
           path: |
-            apps/03-blue-todo/test-results
-            apps/06-blue-island/test-results
+            apps/03-ndigo-todo/test-results
+            apps/06-ndigo-island/test-results
           if-no-files-found: ignore
 
       - name: Nx Cloud — self-healing report

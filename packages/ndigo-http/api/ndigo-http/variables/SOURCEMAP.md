@@ -1,0 +1,11 @@
+[**@ndigo/http v0.0.1**](../../README.md)
+
+***
+
+[@ndigo/http](../../README.md) / [ndigo-http](../README.md) / SOURCEMAP
+
+# Variable: SOURCEMAP
+
+> `const` `readonly` **SOURCEMAP**: [`HTTPHeader`](../classes/HTTPHeader.md)
+
+The constant value documented by the code.

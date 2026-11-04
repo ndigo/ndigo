@@ -1,0 +1,37 @@
+{
+  "name": "@ndigo/content",
+  "version": "0.0.1",
+  "description": "i18n content keys, themes, and the MessageSource contract for Ndigo",
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "ndigo-content",
+    "content"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "devDependencies": {},
+  "sideEffects": false,
+  "dependencies": {
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/factory": "~0.0.1",
+    "@ndigo/util": "~0.0.1"
+  }
+}

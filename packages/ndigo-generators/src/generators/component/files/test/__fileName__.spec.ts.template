@@ -1,0 +1,21 @@
+/**
+ * <%= className %> — spec.
+ *
+ * @module ndigo-<%= packageName %>
+ * @since 1.0.0
+ * @author <%= author %>
+ */
+import { describe, expect, it } from 'vitest';
+import { <%= className %> } from '@ndigo/<%= packageName %>';
+
+describe('<%= className %>', () => {
+    it('should create an instance', () => {
+        const instance = new <%= className %>();
+        expect(instance).toBeDefined();
+    });
+
+    it('should have correct toStringTag', () => {
+        const instance = new <%= className %>();
+        expect(Object.prototype.toString.call(instance)).toBe('[object <%= className %>]');
+    });
+});

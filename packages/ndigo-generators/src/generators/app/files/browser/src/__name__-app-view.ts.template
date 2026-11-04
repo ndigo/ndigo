@@ -1,0 +1,23 @@
+/**
+ * @module ndigo-<%= name %>
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+export default class <%= className %>App extends HTMLElement {
+    set model(model: { message?: string }) {
+        this.#message = model?.message ?? 'Hello, World!';
+        this._render();
+    }
+
+    #message = 'Hello, World!';
+
+    connectedCallback() {
+        this._render();
+    }
+
+    _render() {
+        this.innerHTML = `<h1>${this.#message}</h1><p>Welcome to Ndigo</p>`;
+    }
+}
+
+window.customElements.define('<%= name %>-app', <%= className %>App);

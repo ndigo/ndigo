@@ -8,11 +8,11 @@ point and the single access-guard model; the endpoints are **open by
 default**, so the security posture from guide 11 (guard + boundary firewall)
 applies to everything below.
 
-Reference application: `apps/04-blue-api` (the demo exposes the full surface).
+Reference application: `apps/04-ndigo-api` (the demo exposes the full surface).
 
 ## 1. Enabling the endpoints
 
-`@blue/management`'s `ManagementAutoConfiguration` ships with the framework
+`@ndigo/management`'s `ManagementAutoConfiguration` ships with the framework
 default posture: **only `/health` and `/metrics` are served**. The other
 endpoints are opt-in, so nothing new is reachable without operator action:
 
@@ -57,7 +57,7 @@ A disabled endpoint answers `404`; it is never half-armed. When an
 
 `/metrics` is the **pull view over the OpenTelemetry meter provider**: one
 snapshot, two wire forms. Registering
-[`ManagementAutoConfiguration`](../../packages/blue-management/README.md)
+[`ManagementAutoConfiguration`](../../packages/ndigo-management/README.md)
 serves it; configuring `metricExporter: 'prometheus'` (guide 10 §3)
 registers the reader that backs it — neither needs the other to boot.
 
@@ -166,7 +166,7 @@ new ManagementAutoConfiguration({
 ```
 
 The endpoint emits declared keys and conversion types only — **values are
-never read**, the same value-free contract `@blue/inspect` codifies, so a
+never read**, the same value-free contract `@ndigo/inspect` codifies, so a
 secret cannot leak by construction. Bean names come from the shared key
 prefix (`ROOT` for prefix-less classes).
 
@@ -176,7 +176,7 @@ prefix (`ROOT` for prefix-less classes).
   [AD-77 — Prometheus metrics, semconv duration, meter-derived `/metrics`](../decisions/2026-10-08_AD77_PROMETHEUS_METRICS.md);
   AD-36 for the open-by-default + guard + firewall posture.
 - Schema section: `management` in
-  [`@blue/boot`'s `application.schema.json`](../../packages/blue-boot/schema/application.schema.json)
+  [`@ndigo/boot`'s `application.schema.json`](../../packages/ndigo-boot/schema/application.schema.json)
   (only `redactHealthErrors` is not read from config files); the
   `telemetry.metricExporter` spec documents the `'prometheus'` literal.
 - Related: guide 10 (telemetry — the metrics backing and the exporter

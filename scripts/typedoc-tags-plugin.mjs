@@ -1,11 +1,11 @@
 /**
- * TypeDoc plugin: register BlueJS framework decorators and custom doc tags as
+ * TypeDoc plugin: register Ndigo framework decorators and custom doc tags as
  * known block/inline tags so `pnpm doc` emits zero "unknown tag" warnings.
  */
 
-/* eslint-disable @blue/no-string-registry-lookup -- TypeDoc's Application.options exposes a getValue/setValue pair (an option bag, not the Blue registry); the AD-34 rule is method-name scoped in v1 and receiver typing is out of scope. */
+/* eslint-disable @ndigo/no-string-registry-lookup -- TypeDoc's Application.options exposes a getValue/setValue pair (an option bag, not the Ndigo registry); the AD-34 rule is method-name scoped in v1 and receiver typing is out of scope. */
 
-/** Tags appearing in BlueJS source JSDoc that TypeDoc doesn't know by default. */
+/** Tags appearing in Ndigo source JSDoc that TypeDoc doesn't know by default. */
 const CUSTOM_TAGS = [
     'configuration',
     'counted',

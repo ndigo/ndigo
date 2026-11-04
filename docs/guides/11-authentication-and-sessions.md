@@ -1,26 +1,26 @@
 # Guide 11 — Authentication and Sessions
 
-How authentication works in BlueJS: password hashing, first-party
+How authentication works in Ndigo: password hashing, first-party
 credential login, opaque cookie sessions, rate limiting and CSRF on
 auth mutations, and JWT issuance/refresh/revocation. The machinery spans
-`@blue/auth-core` (contracts), `@blue/auth-server` (credentials adapter,
-session/user stores, JWT adapter) and `@blue/platform-node` (cookies,
+`@ndigo/auth-core` (contracts), `@ndigo/auth-server` (credentials adapter,
+session/user stores, JWT adapter) and `@ndigo/platform-node` (cookies,
 session interceptor, rate limiting). Design decisions: [AD-33](../decisions/2026-09-26_AD33_AUTH_CREDENTIALS_AND_SESSIONS.md);
 landed via [the auth completion plan](../plans/2026-09-26_AUTH_COMPLETION.md).
 
 ## 1. Quickstart (server-rendered cookie flow)
 
 ```ts
-import { AuthRegistry, DelegatingPasswordEncoder } from '@blue/auth-core';
-import { ScryptPasswordEncoder } from '@blue/auth-core/scrypt'; // Node-only (node:crypto)
-import { CredentialsAuthAdapter, InMemoryUserStore, InMemorySessionStore } from '@blue/auth-server';
+import { AuthRegistry, DelegatingPasswordEncoder } from '@ndigo/auth-core';
+import { ScryptPasswordEncoder } from '@ndigo/auth-core/scrypt'; // Node-only (node:crypto)
+import { CredentialsAuthAdapter, InMemoryUserStore, InMemorySessionStore } from '@ndigo/auth-server';
 
 const encoder = new DelegatingPasswordEncoder({ scrypt: new ScryptPasswordEncoder() }, 'scrypt');
 
 function initAuth(): void {
     AuthRegistry.register(
         new CredentialsAuthAdapter({
-            userStore, // your UserStore — typically blue-orm backed (see §3)
+            userStore, // your UserStore — typically ndigo-orm backed (see §3)
             passwordEncoder: encoder,
             sessionStore: new InMemorySessionStore(), // or your SessionStore
         })
@@ -32,7 +32,7 @@ The adapter implements the existing `AuthAdapter` seam — `AuthServer`,
 `AuthRouteGuard` and `validateAny` explicit-scheme selection consume it
 unchanged. Login/logout/`/me` wiring (cookie in, cookie out):
 `setSessionCookie(route, token)` / `clearSessionCookie(route)` from
-`@blue/platform-node`; the `__Host-blue-session` cookie is HttpOnly +
+`@ndigo/platform-node`; the `__Host-ndigo-session` cookie is HttpOnly +
 SameSite=Lax + Path=/ + **Secure by default**. The `__Host-` prefix
 _mandates_ `Secure` (alongside `Path=/` and no `Domain`), so
 `{ secure: false }` with the default name fails loudly; for plain-HTTP dev
@@ -45,7 +45,7 @@ requests.
 ## 2. Password hashing
 
 `PasswordEncoder` (`encode`/`verify`/`needsRehash`) — Spring-shaped with
-BlueJS names. Hashes are self-describing: `{scrypt}$ln=17,r=8,p=1$<salt>$<hash>`
+Ndigo names. Hashes are self-describing: `{scrypt}$ln=17,r=8,p=1$<salt>$<hash>`
 (cost parameters embedded), so parameter bumps never invalidate stored
 hashes. `DelegatingPasswordEncoder` dispatches on the `{scheme}` prefix;
 an unknown scheme **throws** (fail closed — no plaintext fallthrough).
@@ -64,7 +64,7 @@ stored scheme/params no longer match the configured default.
 
 `UserStore` (`findByUsername`, `findById`, `incrementTokenVersion`) is a
 contract, not a product: user storage is application data. Implement it
-over a `blue-orm` entity:
+over a `ndigo-orm` entity:
 
 ```ts
 class OrmUserStore implements UserStore {
@@ -86,7 +86,7 @@ class OrmUserStore implements UserStore {
 }
 ```
 
-`InMemoryUserStore` (`@blue/auth-server`) ships for tests and demos — never
+`InMemoryUserStore` (`@ndigo/auth-server`) ships for tests and demos — never
 a production store. The credentials adapter equalizes timing for unknown
 users (dummy-hash verify), so error responses should be one generic
 message (`InvalidCredentialsError`); disabled accounts and accounts
@@ -97,9 +97,9 @@ without a hash never authenticate.
 `SessionStore` (`kind`, `create`, `get`, `rotate`, `delete`,
 `deleteForUser`) with TTL enforced on read. Opaque 32-byte tokens — not JWTs: trivially revocable,
 no replay window. `InMemorySessionStore` is the reference; the durable
-[`LibSQLSessionStore`](../../packages/blue-orm-drizzle/README.md) (`kind:
+[`LibSQLSessionStore`](../../packages/ndigo-orm-drizzle/README.md) (`kind:
 'libsql'`) implements the same contract: explicit `initialize()` to
-provision the `blue_sessions` table, atomic rotation (exactly one contender;
+provision the `ndigo_sessions` table, atomic rotation (exactly one contender;
 absolute expiry preserved), strict record decoding, and `close()` for
 container shutdown (owned clients close exactly once; injected clients are
 borrowed unless `ownsClient: true`). Injected clients must use
@@ -109,14 +109,14 @@ use the same contract later (the `kind` identifier matches
 in-memory store deletes the old id before issuing the new one; the LibSQL
 store replaces it atomically in one guarded update. Cookies:
 HttpOnly + SameSite=Lax + Secure, `Max-Age=0` clear on logout. Naming:
-`SESSION_COOKIE = '__Host-blue-session'` (the `__Host-` prefix mandates
+`SESSION_COOKIE = '__Host-ndigo-session'` (the `__Host-` prefix mandates
 `Secure`; see §1).
 
 ### Revoking a user everywhere (AD-68)
 
 ```ts
-import { AuthRegistry, type CredentialsAuthAdapter } from '@blue/auth-core';
-// (the concrete adapter is exported by @blue/auth-server)
+import { AuthRegistry, type CredentialsAuthAdapter } from '@ndigo/auth-core';
+// (the concrete adapter is exported by @ndigo/auth-server)
 
 const credentials = AuthRegistry.getAdapter('credentials') as CredentialsAuthAdapter;
 const { sessions, tokenVersion } = await credentials.logoutAll(userId);
@@ -157,10 +157,10 @@ interceptor is unwired (see §6).
 `@rateLimit` is passive metadata; `RateLimitInterceptor` (default-on in
 `NodeAutoConfiguration.handlerMapping`, like security headers) enforces it
 — routes without metadata are untouched. Denial: **429** +
-`Retry-After` (seconds) problem document (`urn:blue:rate-limited`). The
+`Retry-After` (seconds) problem document (`urn:ndigo:rate-limited`). The
 key is `NodeRequest.remoteAddress` — the socket peer unless the direct
 connection comes from a `trustedProxies` allowlist entry
-(`BLUE_TRUSTED_PROXIES` env): then `X-Forwarded-For` is walked
+(`NDIGO_TRUSTED_PROXIES` env): then `X-Forwarded-For` is walked
 rightmost-first and the first non-trusted valid IP wins, so spoofed
 headers never win; with no trusted proxies configured the socket peer is
 used (see §9).
@@ -168,7 +168,7 @@ used (see §9).
 The budgets live in a `RateLimiter` bean (`RATE_LIMITER` token), the
 in-process `FixedWindowRateLimiter` by default — one process, one budget.
 Under multiple processes the in-memory default multiplies the effective
-limit per node; override the bean with `@blue/redis/rate-limit`'s
+limit per node; override the bean with `@ndigo/redis/rate-limit`'s
 `RedisRateLimiter` so every node counts against the **same** budgets
 (shared store, **fail-closed** by default — AD-79; see
 [guide 16 §3](16-persistence-and-distributed-backends.md)).
@@ -186,7 +186,7 @@ mapping.interceptors.push(new CSRFInterceptor());
 ```
 
 Every POST/PUT/DELETE/PATCH then requires a matching `X-CSRF-Token` header
-(or `csrf_token` body field) against the `__Host-blue-csrf` cookie
+(or `csrf_token` body field) against the `__Host-ndigo-csrf` cookie
 (SameSite=Lax + Secure + Path=/ by default); safe GETs mint the cookie. The
 `__Host-` prefix stops a sibling subdomain from overwriting the cookie
 (cookie tossing) — keep `Secure`/`Path=/` and no `Domain` when overriding the
@@ -284,7 +284,7 @@ new NodeHTTPServerAdapter(dispatcher, {
 Or deploy-time, no code change:
 
 ```
-BLUE_TRUSTED_PROXIES=10.0.0.0/8,2001:db8::/32 node server.js
+NDIGO_TRUSTED_PROXIES=10.0.0.0/8,2001:db8::/32 node server.js
 ```
 
 Rules (AD-37, following the MDN/Rails/Fastify industry approach):

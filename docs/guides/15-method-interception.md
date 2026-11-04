@@ -1,6 +1,6 @@
 # Guide 15 — Method Interception & Resilience
 
-How `@blue/proxy` and `@blue/resilience` work together: metadata-only method
+How `@ndigo/proxy` and `@ndigo/resilience` work together: metadata-only method
 annotations, interceptor chains around managed methods, standalone weaving
 for service clients, and the retry + circuit-breaker policies on top.
 
@@ -14,7 +14,7 @@ Declare policy as **metadata-only annotations** — they never replace or wrap
 the method:
 
 ```ts
-import { methodAnnotation } from '@blue/proxy';
+import { methodAnnotation } from '@ndigo/proxy';
 
 export const audited = methodAnnotation<{ action: string }>('audited');
 
@@ -30,8 +30,8 @@ Attach an interceptor that reads that metadata, and register it on the
 application:
 
 ```ts
-import { ApplicationBuilder } from '@blue/boot';
-import { interception, type MethodDescriptor, type MethodInvocation, type MethodInterceptor } from '@blue/proxy';
+import { ApplicationBuilder } from '@ndigo/boot';
+import { interception, type MethodDescriptor, type MethodInvocation, type MethodInterceptor } from '@ndigo/proxy';
 
 class AuditInterceptor implements MethodInterceptor {
     #entries: string[] = [];
@@ -54,7 +54,7 @@ const builder = new ApplicationBuilder([NodeAppConfiguration]).processors(interc
 ```
 
 Registered beans whose methods carry `@audited` are replaced by one proxy;
-every other entry keeps its identity. This is the `apps/04-blue-api` demo gate
+every other entry keeps its identity. This is the `apps/04-ndigo-api` demo gate
 (AD-42 D-8).
 
 ## 2. The interceptor contract
@@ -125,11 +125,11 @@ const api = interceptMethods(serviceClient(IslandPushAPI, new HTTP()), [
 ]);
 ```
 
-## 5. Resilience policies (`@blue/resilience`)
+## 5. Resilience policies (`@ndigo/resilience`)
 
 ```ts
-import { retry, circuitBreaker, RetryInterceptor, CircuitBreakerInterceptor } from '@blue/resilience';
-import { fixedBackoff, exponentialBackoff } from '@blue/resilience';
+import { retry, circuitBreaker, RetryInterceptor, CircuitBreakerInterceptor } from '@ndigo/resilience';
+import { fixedBackoff, exponentialBackoff } from '@ndigo/resilience';
 
 class PushAPI {
     @retry({ attempts: 3, backoff: exponentialBackoff({ initialMs: 100, factor: 2, maxMs: 2_000 }) })
@@ -160,7 +160,7 @@ class PushAPI {
   retry/circuit breaker see only errors callers actually throw. The real
   service-layer throw is response-schema validation (`IllegalStateError`);
   transport-level retry (status codes, `Retry-After`) already exists in
-  `@blue/http` and layers underneath.
+  `@ndigo/http` and layers underneath.
 - **Stream calls** (`stream: true`) return their generator at call time —
   iteration failures are outside call-level interception. Retry a stream's
   _establishment_ only.
@@ -172,7 +172,7 @@ class PushAPI {
 | Migration of `@cached`/`@traced`/`@transactional`            | They intercept self-invocation and degrade without wiring — a different contract (AD-42 D-6) |
 | Property/field traps, constructor interception               | Explicit non-goals (AD-42 D-7)                                                               |
 | AspectJ pointcuts, introductions, `@Primary`-style selection | Not applicable to the metadata contract (AD-42)                                              |
-| Transport-level retry / status classification                | Lives in `@blue/http`; the layers compose (AD-43 D-8)                                        |
+| Transport-level retry / status classification                | Lives in `@ndigo/http`; the layers compose (AD-43 D-8)                                       |
 
 ## References
 
@@ -180,6 +180,6 @@ class PushAPI {
   plan `docs/plans/2026-10-03_METHOD_INTERCEPTION.md`
 - Resilience: [AD-43](../decisions/2026-10-04_AD43_RETRY_AND_CIRCUIT_BREAKER.md),
   plan `docs/plans/2026-10-04_RETRY_AND_CIRCUIT_BREAKER.md`
-- Demo gates: `apps/04-blue-api` (audit), `packages/blue-service`
+- Demo gates: `apps/04-ndigo-api` (audit), `packages/ndigo-service`
   (`service-client-resilience.spec.ts`)
-- Packages: `@blue/proxy`, `@blue/resilience`
+- Packages: `@ndigo/proxy`, `@ndigo/resilience`

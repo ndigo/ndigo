@@ -1,0 +1,38 @@
+{
+  "name": "@ndigo/cluster",
+  "version": "0.0.1",
+  "description": "Process supervisor for Node.js applications — replicated worker slots with signal relay, graceful drains, and bounded-backoff restarts (AD-74)",
+  "type": "module",
+  "keywords": [
+    "ndigo",
+    "ndigo-cluster",
+    "cluster",
+    "worker",
+    "supervisor"
+  ],
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/log": "~0.0.1"
+  },
+  "sideEffects": false
+}

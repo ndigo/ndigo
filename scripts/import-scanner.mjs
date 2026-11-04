@@ -19,7 +19,7 @@ import { join } from 'node:path';
  * Directories that are never source at any depth. Build-output names (`lib`,
  * `doc`) are deliberately absent: both walkers only descend from source roots
  * (`src`/`test`/`client`/…), never a package root, so a nested `lib` is genuine
- * source (e.g. `apps/11-blue-conduit-web/src/lib`). Skipping it by name hid
+ * source (e.g. `apps/11-ndigo-conduit-web/src/lib`). Skipping it by name hid
  * those imports from `manifest:check` as false dead dependencies.
  */
 export const SKIP_DIRS = new Set(['node_modules', '.vitest']);

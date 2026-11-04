@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitest/config';
-import { blueAliases } from './vitest.aliases';
+import { ndigoAliases } from './vitest.aliases';
 
 export default defineConfig({
     test: {
@@ -12,7 +12,7 @@ export default defineConfig({
     resolve: {
         // Shared with every app config (`vitest.aliases.ts`); ordered so
         // package-root aliases don't accidentally capture subpath imports
-        // like `@blue/util/types`.
-        alias: blueAliases,
+        // like `@ndigo/util/types`.
+        alias: ndigoAliases,
     },
 });

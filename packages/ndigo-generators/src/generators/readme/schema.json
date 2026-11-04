@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "id": "NdigoReadme",
+  "title": "Create a Ndigo Package README",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The package name (kebab-case, without 'ndigo-' prefix)",
+      "x-prompt": "What is the package name? (e.g., 'telemetry-otel')"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short one-line description used in the intro",
+      "default": ""
+    },
+    "path": {
+      "type": "string",
+      "description": "Destination directory for the README (defaults to packages/ndigo-<name>)"
+    }
+  },
+  "required": ["name"]
+}

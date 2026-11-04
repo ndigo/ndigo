@@ -14,16 +14,16 @@ import assert from 'node:assert/strict';
 import { surfaceViolations } from './package-surface.mjs';
 
 test('a packages/ directory without a manifest violates the surface rule', () => {
-    const [violation] = surfaceViolations('blue-probe', null);
+    const [violation] = surfaceViolations('ndigo-probe', null);
     assert.match(violation, /no package\.json/);
 });
 
 test('a private package violates the surface rule', () => {
-    const violations = surfaceViolations('blue-probe', { name: '@blue/probe', private: true });
+    const violations = surfaceViolations('ndigo-probe', { name: '@ndigo/probe', private: true });
     assert.equal(violations.length, 1);
     assert.match(violations[0], /"private": true/);
 });
 
 test('a regular package passes', () => {
-    assert.deepEqual(surfaceViolations('blue-probe', { name: '@blue/probe' }), []);
+    assert.deepEqual(surfaceViolations('ndigo-probe', { name: '@ndigo/probe' }), []);
 });

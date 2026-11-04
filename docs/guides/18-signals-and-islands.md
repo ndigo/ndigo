@@ -1,6 +1,6 @@
 # Guide 18 — Signals & Islands
 
-`@blue/signals` is the local reactive-state layer: `signal`, `computed`, and
+`@ndigo/signals` is the local reactive-state layer: `signal`, `computed`, and
 `effect` re-exported from `@preact/signals-core`, a decorator API for classes
 and web components, and bridges that turn async streams and emitter events
 into signals. Islands use it for the reactive half of partial hydration — the
@@ -17,14 +17,14 @@ how-to.
 Signals are for **local, synchronous, derived state** within one component or
 service — a value that other code reads and reacts to immediately. They are
 not an event bus: cross-component asynchronous notifications stay on the
-`@blue/context` event emitter, and server→client pushes stay on SSE. The full
+`@ndigo/context` event emitter, and server→client pushes stay on SSE. The full
 paradigm table lives in
 [ARCHITECTURE.md § Paradigm Selection Rules](../../ARCHITECTURE.md#paradigm-selection-rules).
 
 ## 2. Core primitives
 
 ```ts
-import { signal, computed, effect, batch, untracked } from '@blue/signals';
+import { signal, computed, effect, batch, untracked } from '@ndigo/signals';
 
 const count = signal(0);
 const doubled = computed(() => count.value * 2); // memoized, lazy
@@ -46,15 +46,15 @@ stop(); // dispose the effect
 Reads and writes go through `.value`; `effect` returns its disposer; `computed`
 re-evaluates only when its dependencies change.
 
-## 3. Decorator API — `@blue/signals/decorators`
+## 3. Decorator API — `@ndigo/signals/decorators`
 
 For classes and web components, the `decorators` subpath exports decorator
 versions of the same names. Import from the right entry — the root exports the
 primitives, the subpath exports the decorators:
 
 ```ts
-import { AbstractWebComponent } from '@blue/view-webcomponent';
-import { signal, computed, effect, reactive } from '@blue/signals/decorators';
+import { AbstractWebComponent } from '@ndigo/view-webcomponent';
+import { signal, computed, effect, reactive } from '@ndigo/signals/decorators';
 
 @reactive // activates the members below (this class only)
 class SignalsCounter extends AbstractWebComponent {
@@ -84,18 +84,18 @@ class SignalsCounter extends AbstractWebComponent {
 - When the class defines `destroy()`/`dispose()`, activation wraps them to
   dispose the effects and drop the signal maps.
 
-The runnable demo is `apps/03-blue-todo`'s `signals-counter-view.ts`.
+The runnable demo is `apps/03-ndigo-todo`'s `signals-counter-view.ts`.
 
 ## 4. Bridging streams and events
 
 ```ts
-import { eventsToSignal, signal, signalToEvents, streamToSignal } from '@blue/signals';
+import { eventsToSignal, signal, signalToEvents, streamToSignal } from '@ndigo/signals';
 
 // Async iterable → signal; the returned function cancels and closes the source.
 const numbers = signal(0);
 const stop = streamToSignal(service.numbers(), numbers);
 
-// Emitter-shaped source (on/off — e.g. the @blue/context Emitter) → signal.
+// Emitter-shaped source (on/off — e.g. the @ndigo/context Emitter) → signal.
 const status = signal<'up' | 'down'>('down');
 const off = eventsToSignal(context, 'service:status', status, (payload) => payload.status);
 
@@ -120,14 +120,14 @@ the **name ↔ tag ↔ zod schema triple**.
 ### Server: the marker
 
 ```ts
-import { ModelAndView } from '@blue/dispatcher';
-import { IslandView } from '@blue/view';
+import { ModelAndView } from '@ndigo/dispatcher';
+import { IslandView } from '@ndigo/view';
 
 return new ModelAndView(new IslandView('todo-app'), { items, filter: 'all' });
 ```
 
 `IslandView` renders inert markup —
-`<todo-app data-blue-island data-blue-locale="…" data-blue-model="…">` — with
+`<todo-app data-ndigo-island data-ndigo-locale="…" data-ndigo-model="…">` — with
 the model JSON HTML-escaped into the attribute and the negotiated locale riding
 along; nothing on the server imports the client component. Resolve view names
 to markers with `IslandViewResolver`; its optional `viewNames` filter
@@ -137,7 +137,7 @@ chain.
 ### Client: hydration
 
 ```ts
-import { AbstractWebComponent, hydrateIslands, TagMapping } from '@blue/view-webcomponent';
+import { AbstractWebComponent, hydrateIslands, TagMapping } from '@ndigo/view-webcomponent';
 
 @TagMapping('todo-app') // customElements.define at module import
 class TodoIsland extends AbstractWebComponent {
@@ -151,14 +151,14 @@ class TodoIsland extends AbstractWebComponent {
     }
 }
 
-hydrateIslands(); // upgrades every [data-blue-island] marker; returns the count
+hydrateIslands(); // upgrades every [data-ndigo-island] marker; returns the count
 ```
 
 `hydrateIslands(root = document)` finds the markers, constructs the element for
 each tag — which must already be defined; a tag with no registered component is
 left as inert markup — restores the locale and `.model`, and replaces the
 server markup, after which `connectedCallback`/`render` run. The demo app is
-`apps/06-blue-island` (EJS shell + hydrated island + SSE).
+`apps/06-ndigo-island` (EJS shell + hydrated island + SSE).
 
 ### Reactive islands: SSE → signal → render
 
@@ -167,7 +167,7 @@ typed stream and writes it into a signal that an `effect` renders from:
 
 ```ts
 // Server: a per-connection, imperative view.
-import { ServerSentEventView } from '@blue/platform-node';
+import { ServerSentEventView } from '@ndigo/platform-node';
 
 @getMapping('/events')
 events(): ServerSentEventView {
@@ -176,12 +176,12 @@ events(): ServerSentEventView {
 ```
 
 ```ts
-// Client: the endpoint as a typed service stream (`@blue/service`).
-import { getCall, service, serviceClient } from '@blue/service';
-import { signal, streamToSignal, effect } from '@blue/signals';
-import { HTTP } from '@blue/http';
+// Client: the endpoint as a typed service stream (`@ndigo/service`).
+import { getCall, service, serviceClient } from '@ndigo/service';
+import { signal, streamToSignal, effect } from '@ndigo/signals';
+import { HTTP } from '@ndigo/http';
 
-@service('blue-island', { baseUrl: '' })
+@service('ndigo-island', { baseUrl: '' })
 class IslandPushAPI {
     @getCall('/events', { stream: true, responseSchema: ModelUpdateSchema })
     modelUpdates(): AsyncIterable<{ model: TodoModel }> {
@@ -213,7 +213,7 @@ signal, so the island renders only well-formed models.
   (view resolution).
 - Architecture: [Micro Frontends](../architecture/micro-frontends.md) — the
   host/island map, shared dependencies, event isolation.
-- Packages: `@blue/signals`, `@blue/view` (`IslandView`),
-  `@blue/view-webcomponent` (`hydrateIslands`, `@TagMapping`),
-  `@blue/service` (`stream: true`), `@blue/platform-node`
+- Packages: `@ndigo/signals`, `@ndigo/view` (`IslandView`),
+  `@ndigo/view-webcomponent` (`hydrateIslands`, `@TagMapping`),
+  `@ndigo/service` (`stream: true`), `@ndigo/platform-node`
   (`ServerSentEventView`).

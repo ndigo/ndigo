@@ -1,6 +1,6 @@
 # Guide 03 — Environment & Configuration
 
-How configuration reaches your BlueJS application and becomes typed, validated
+How configuration reaches your Ndigo application and becomes typed, validated
 objects: property sources, precedence, profiles, and `@configurationProperties`
 binding.
 
@@ -44,7 +44,7 @@ Sources are **named and ordered** — higher wins:
 | Defaults           | `defaults`          | `builder.defaults({...})` (always present, lowest)                                 |
 
 `dotenv` is a **reserved slot** in the documented chain (`PRECEDENCE` in
-`@blue/boot`), not an auto-loaded source: nothing reads `.env` today (AD-13
+`@ndigo/boot`), not an auto-loaded source: nothing reads `.env` today (AD-13
 D3 is not shipped — see its Update note). A stack that needs `.env` values
 can parse the file in an environment customizer (§6) and register the values
 as a named source in the reserved slot.
@@ -57,7 +57,7 @@ so the environment must be constructed with `{ index: 'flat' }` first (a
 granularity** (`server`, not `server.port`):
 
 ```ts
-import { StandardEnvironment } from '@blue/context';
+import { StandardEnvironment } from '@ndigo/context';
 
 // The flat index retains origins; the default prototype-chain index does not.
 const environment = new StandardEnvironment([], { index: 'flat' });
@@ -75,11 +75,11 @@ a flat index is the documented configuration the example requires.
 ### Raw env reads — `getEnv` and `isDevMode`
 
 Read `process.env` through the two accessors, never directly. Both live in
-`@blue/util` and are re-exported from `@blue/context` (the C-14 single
+`@ndigo/util` and are re-exported from `@ndigo/context` (the C-14 single
 accessor):
 
 ```ts
-import { getEnv, isDevMode } from '@blue/context';
+import { getEnv, isDevMode } from '@ndigo/context';
 
 getEnv('PORT'); // undefined when unset
 getEnv('PORT', '3000'); // fallback when unset
@@ -104,8 +104,8 @@ Profiles gate config with `@whenProfile` — class registration or individual
 entry methods — and file loading is profile-aware:
 
 ```ts
-import { configuration, entry } from '@blue/context';
-import { whenProfile } from '@blue/core';
+import { configuration, entry } from '@ndigo/context';
+import { whenProfile } from '@ndigo/core';
 
 @configuration
 class AppConfiguration {
@@ -120,9 +120,9 @@ class AppConfiguration {
 Activation (CLI > env > builder):
 
 ```sh
-BLUE_PROFILES_ACTIVE=prod node app.js                # env
+NDIGO_PROFILES_ACTIVE=prod node app.js                # env
 node app.js --profiles.active=prod                   # CLI (wins)
-BLUE_PROFILES_GROUPS='short=dev,test' node app.js    # groups expand
+NDIGO_PROFILES_GROUPS='short=dev,test' node app.js    # groups expand
 ```
 
 Default profiles gate only when **nothing is explicit**:
@@ -140,7 +140,7 @@ and fold into one canonical expression at decoration time
 (`@whenProfile('dev', 'test')` → `'dev | test'`):
 
 ```ts
-import { Profile, whenProfile } from '@blue/core';
+import { Profile, whenProfile } from '@ndigo/core';
 
 @whenProfile(Profile.and('dev', Profile.not('ci'))) // 'dev & !ci'
 @entry
@@ -169,7 +169,7 @@ environments[2:]{region,replicas}:
 `./config/application.toon` and `application-{profile}.toon` are probed when
 no `.json` file of the same name wins the collision; the loader option
 `format: 'json' | 'toon' | 'auto'` (default `auto`) restricts probing, and
-`BLUE_CONFIG_IMPORT` paths whose extension contradicts a restricted
+`NDIGO_CONFIG_IMPORT` paths whose extension contradicts a restricted
 `format` error out instead of silently parsing (imports inherit the rule).
 A `.toon` document that starts like JSON (`{` or `[` at the first column)
 errors with a rename hint. TOON documents decode to the JSON model, so
@@ -185,8 +185,8 @@ is a pre-1.0 authoring option, not a framework default.
 `@configurationProperties` auto-registers a bound, converted singleton:
 
 ```ts
-import { configuration, property, defaultValue, nestedConfig } from '@blue/context';
-import { configurationProperties } from '@blue/boot';
+import { configuration, property, defaultValue, nestedConfig } from '@ndigo/context';
+import { configurationProperties } from '@ndigo/boot';
 
 @configurationProperties('server')
 class ServerConfig {
@@ -218,10 +218,10 @@ coercion, requiredness and defaults all come from the schema:
 
 ```ts
 import { z } from 'zod';
-import { configurationProperties } from '@blue/boot';
+import { configurationProperties } from '@ndigo/boot';
 
 const serverSchema = z.object({
-    name: z.string().default('blue-api'),
+    name: z.string().default('ndigo-api'),
     port: z.coerce.number().default(3000),
 });
 
@@ -253,7 +253,7 @@ context.environment.typedConfig('server.port', z.coerce.number()); // leaf mode 
 typo fails at compile time:
 
 ```ts
-import { propertyKeys } from '@blue/context';
+import { propertyKeys } from '@ndigo/context';
 const keys = propertyKeys({ server: { name: '', port: 0 } });
 @property(keys.server.port, Number) port!: number; // 'server.port'
 ```
@@ -274,7 +274,7 @@ unresolvable ones pass through literally (no escape syntax — a literal
 
 ```ts
 import { z } from 'zod';
-import { environment } from '@blue/context';
+import { environment } from '@ndigo/context';
 
 @environment(
     z.object({
@@ -289,7 +289,7 @@ Boot now **fails loudly with every violation listed** (path, expected,
 actual) — aggregate, not first-error. Ad-hoc:
 
 ```ts
-import { validateEnvironment } from '@blue/context';
+import { validateEnvironment } from '@ndigo/context';
 const { valid, issues } = validateEnvironment(environment, schema);
 ```
 
@@ -318,7 +318,7 @@ Configuration is no longer a boot-time snapshot: environments emit
 it. Mark a `@configurationProperties` class:
 
 ```ts
-import { refreshScope, configurationProperties, property } from '@blue/context';
+import { refreshScope, configurationProperties, property } from '@ndigo/context';
 
 @refreshScope // re-binds on every environment refresh
 @configurationProperties('server')
@@ -367,7 +367,7 @@ the context's scope-clear (`RefreshScope.clear()` on `config:refresh`) and
 boot's config-class rebind (`resolveConfigurationProperties` + `setValue`)
 — whose relative order is their subscription order.
 
-## 8. At-rest secrets — `{cipher:...}` values and `BLUE_SECRET_KEY`
+## 8. At-rest secrets — `{cipher:...}` values and `NDIGO_SECRET_KEY`
 
 Encrypted config values keep secrets out of repos/backups/logs: the
 **ciphertext** lives in the file, the **key** lives in a separate channel.
@@ -381,10 +381,10 @@ AD-29 D-4).
 
 // Node bootstrap: key + decryptor wiring
 const app = new ApplicationBuilder([...]);
-app.secrets(AESGCMCipher.fromEnvironment()); // reads BLUE_SECRET_KEY
+app.secrets(AESGCMCipher.fromEnvironment()); // reads NDIGO_SECRET_KEY
 ```
 
-- `BLUE_SECRET_KEY` is base64 of **exactly 32 bytes** (AES-256); malformed
+- `NDIGO_SECRET_KEY` is base64 of **exactly 32 bytes** (AES-256); malformed
   or wrong length fails at construction, never a passive field. Passphrases
   are rejected.
 - Values resolve to plaintext at every lookup and in
@@ -406,9 +406,9 @@ merge live and rebind refresh-scoped beans:
 
 ```ts
 builder.configServer({
-    url: 'https://config.internal/blue-api.json', // https enforced
+    url: 'https://config.internal/ndigo-api.json', // https enforced
     pollMs: 30_000, // 0/absent = fetch once
-    headers: { Authorization: `Bearer ${process.env.BLUE_CONFIG_SERVER_TOKEN}` },
+    headers: { Authorization: `Bearer ${process.env.NDIGO_CONFIG_SERVER_TOKEN}` },
     optional: false, // fail boot when unreachable
 });
 ```
@@ -434,12 +434,12 @@ builder.configServer({
 
 ## Editor support
 
-`@blue/boot` ships a JSON Schema for the config-file convention so editors give
+`@ndigo/boot` ships a JSON Schema for the config-file convention so editors give
 completion and validation for the framework keys with no language server:
 
 ```json
 {
-    "$schema": "../node_modules/@blue/boot/schema/application.schema.json",
+    "$schema": "../node_modules/@ndigo/boot/schema/application.schema.json",
     "server": { "port": 8080 },
     "profiles": { "active": ["prod"] },
     "api": { "secretToken": "{cipher:v1:…}" }
@@ -448,7 +448,7 @@ completion and validation for the framework keys with no language server:
 
 The `$schema` path is relative to the file that contains it: from an app's
 `config/` directory the schema lives one level up under `node_modules`, so
-`../node_modules/@blue/boot/schema/application.schema.json` is the correct
+`../node_modules/@ndigo/boot/schema/application.schema.json` is the correct
 reference (adjust the `../` count if `config/` sits deeper). The schema is
 **permissive by design** — application keys are unconstrained
 (`additionalProperties: true` for the document, and the framework sections
@@ -458,34 +458,34 @@ documents the framework namespaces below; profile files
 schema. The `{cipher:…}` marker is modeled as a marker **string**
 (`$defs.secretMarker`, e.g. `"{cipher:v1:…}"`), not an ordinary object value
 (§8). Sections that are **not** read from config files carry the custom
-annotation `"x-blue-read-from-config": false` — their keys are editor
+annotation `"x-ndigo-read-from-config": false` — their keys are editor
 completion for a programmatic channel, not config-file keys (see the table).
 The schema itself lives at
-[`packages/blue-boot/schema/application.schema.json`](../../packages/blue-boot/schema/application.schema.json).
+[`packages/ndigo-boot/schema/application.schema.json`](../../packages/ndigo-boot/schema/application.schema.json).
 
 Documented framework keys. The **Read from** column is the authority: keys
 marked with a CLI/env/builder/argument channel are _not_ read from
 `config/application.json` (the `profiles` and `telemetry` sections are
-annotated `"x-blue-read-from-config": false`; `management.*` is read by
-`@blue/management`'s `ManagementProperties` reader — AD-76):
+annotated `"x-ndigo-read-from-config": false`; `management.*` is read by
+`@ndigo/management`'s `ManagementProperties` reader — AD-76):
 
 | Key                                     | Type                                 | Default                | Read from                                                   | Meaning                                                                                                                           |
 | --------------------------------------- | ------------------------------------ | ---------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `server.name`                           | string                               | `blue-api`             | Application `@configurationProperties('server')` class      | Application/server name (the demo binds it; the framework does not).                                                              |
+| `server.name`                           | string                               | `ndigo-api`            | Application `@configurationProperties('server')` class      | Application/server name (the demo binds it; the framework does not).                                                              |
 | `server.port`                           | integer                              | `3000` (`PORT` env)    | Application `@configurationProperties('server')` class      | TCP port to listen on (`0` requests an ephemeral port).                                                                           |
 | `server.host`                           | string                               | `127.0.0.1`            | Not config-read — programmatic `HTTPServer({ host })`       | Host/interface to bind to (platform-node `HTTPServer` default).                                                                   |
-| `profiles.active`                       | string[]                             | —                      | CLI `--profiles.active` / `BLUE_PROFILES_ACTIVE` / builder  | Profiles to activate.                                                                                                             |
-| `profiles.default`                      | string[]                             | —                      | CLI `--profiles.default` / `BLUE_PROFILES_DEFAULT`          | Fallback profiles used when nothing is active.                                                                                    |
-| `profiles.group.<name>`                 | string[]                             | —                      | CLI `--profiles.group.<name>` / `BLUE_PROFILES_GROUPS`      | Profile group name → member profiles.                                                                                             |
+| `profiles.active`                       | string[]                             | —                      | CLI `--profiles.active` / `NDIGO_PROFILES_ACTIVE` / builder | Profiles to activate.                                                                                                             |
+| `profiles.default`                      | string[]                             | —                      | CLI `--profiles.default` / `NDIGO_PROFILES_DEFAULT`         | Fallback profiles used when nothing is active.                                                                                    |
+| `profiles.group.<name>`                 | string[]                             | —                      | CLI `--profiles.group.<name>` / `NDIGO_PROFILES_GROUPS`     | Profile group name → member profiles.                                                                                             |
 | `telemetry.sampler`                     | `'always'` \| `'off'` \| `{ ratio }` | `always`               | `configureTelemetry()` argument                             | Root-span sampling (ratio in `[0, 1]`).                                                                                           |
 | `telemetry.traceExporter`               | exporter spec                        | `console`              | `configureTelemetry()` argument                             | Trace export: `console` \| `none` \| `{ url, headers? }` (OTLP/HTTP).                                                             |
 | `telemetry.metricExporter`              | exporter spec                        | `console`              | `configureTelemetry()` argument                             | Metric export — same spec as `traceExporter`, plus the metric-only `'prometheus'` literal (AD-77): pull reader behind `/metrics`. |
 | `telemetry.logExporter`                 | exporter spec                        | `console`              | `configureTelemetry()` argument                             | Log export — same spec as `traceExporter`.                                                                                        |
 | `management.redactHealthErrors`         | boolean                              | `true`                 | `ManagementAutoConfiguration(options)` constructor argument | Redact thrown health-indicator errors on `/health`.                                                                               |
-| `management.endpoints.exposure.include` | string[]                             | `["health","metrics"]` | `@blue/management` `readManagementSettings` (config read)   | Management endpoint ids to serve (`*` = all; `loggers`/`env`/`configprops` are opt-in, AD-76).                                    |
-| `management.endpoints.exposure.exclude` | string[]                             | —                      | `@blue/management` `readManagementSettings` (config read)   | Management endpoint ids withheld; wins over `include` (AD-76).                                                                    |
-| `management.endpoints.env.showValues`   | boolean                              | `false`                | `@blue/management` `readManagementSettings` (config read)   | When true, `/env` emits the raw stored config text; decrypted plaintext is never served (AD-76).                                  |
-| `management.health.groups`              | `{ <name>: { include: string[] } }`  | —                      | `@blue/management` `readManagementSettings` (config read)   | Health groups served at `/health/<name>` aggregating the listed components (AD-76).                                               |
+| `management.endpoints.exposure.include` | string[]                             | `["health","metrics"]` | `@ndigo/management` `readManagementSettings` (config read)  | Management endpoint ids to serve (`*` = all; `loggers`/`env`/`configprops` are opt-in, AD-76).                                    |
+| `management.endpoints.exposure.exclude` | string[]                             | —                      | `@ndigo/management` `readManagementSettings` (config read)  | Management endpoint ids withheld; wins over `include` (AD-76).                                                                    |
+| `management.endpoints.env.showValues`   | boolean                              | `false`                | `@ndigo/management` `readManagementSettings` (config read)  | When true, `/env` emits the raw stored config text; decrypted plaintext is never served (AD-76).                                  |
+| `management.health.groups`              | `{ <name>: { include: string[] } }`  | —                      | `@ndigo/management` `readManagementSettings` (config read)  | Health groups served at `/health/<name>` aggregating the listed components (AD-76).                                               |
 
 ## Recommended reading
 

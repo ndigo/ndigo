@@ -10,7 +10,7 @@ Ndigo ORM provides repository and data mapper persistence abstractions for Ndigo
 pnpm add @ndigo/orm
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11.
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ## Getting Started
 

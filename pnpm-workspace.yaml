@@ -18,7 +18,7 @@ packages:
 # ../todomvc/examples/* members, which keep their own ecosystem pins
 # (typescript 5.9.3/6.0.3, webpack 5.x, jsdom 20/29) as standalone demos.
 catalog:
-  '@nx/devkit': '~24.0.2'
+  '@nx/devkit': '~24.0.4'
   # OpenFeature bridge (@ndigo/flags-openfeature): the app-installed provider
   # runtime. `~` pin — the SDKs are 1.x, but provider-facing behavior still
   # moves on minors during the spec v0.9.0 compliance sweep (AD-87).
@@ -43,7 +43,7 @@ catalog:
   '@types/node': '~24.13.5'
   '@types/ws': '^8.18.2'
   jose: '^6.2.15'
-  nx: '~23.2.1'
+  nx: '~24.0.4'
   oxlint: '^1.91.0'
   swagger-ui-dist: '5.34.1'
   tsx: '^4.23.13'
@@ -88,10 +88,29 @@ overrides:
   '@grpc/grpc-js': '>=1.14.5' # GHSA-m9gg-hp2v-232j / GHSA-f596-whhp-79r4 — auth-context bypass, error leakage (otel grpc exporter chain)
   js-yaml: '>=3.15.1'
   nanoid: '>=3.3.18'
-  nx: '>=23.2.1' # GHSA-hrvq-x7jp-36xv — path traversal in `nx migrate` package-migrations extraction (@nx/devkit chain)
+  nx: '>=24.0.4' # GHSA-hrvq-x7jp-36xv — path traversal in `nx migrate` package-migrations extraction (@nx/devkit chain)
   postcss: '>=8.5.23'
   protobufjs: '>=7.6.5'
   tmp: '>=0.2.7'
   react-router: '>=7.18.2'
   smol-toml: '>=1.8.1' # GHSA-r4xh-jqrq-34v2 — quadratic-time parse() key rescan (nx · @nx/devkit chain)
   source-map-js: '>=1.2.2' # GHSA-68fv-2mgg-jv7q — ReDoS in source-map parsing (sibling todomvc Vue build chain)
+
+# pnpm 12's built-in `minimumReleaseAge` (1440 min) quarantines packages
+# published in the last day. The default is non-strict, so an install that
+# needs a younger version proceeds and records a version-pinned exception
+# below. Prune keeps this list from growing stale across bumps.
+minimumReleaseAgeExcludePrune: true
+minimumReleaseAgeExclude:
+  - '@nx/devkit@24.0.4'
+  - '@nx/nx-darwin-arm64@24.0.4'
+  - '@nx/nx-darwin-x64@24.0.4'
+  - '@nx/nx-freebsd-x64@24.0.4'
+  - '@nx/nx-linux-arm-gnueabihf@24.0.4'
+  - '@nx/nx-linux-arm64-gnu@24.0.4'
+  - '@nx/nx-linux-arm64-musl@24.0.4'
+  - '@nx/nx-linux-x64-gnu@24.0.4'
+  - '@nx/nx-linux-x64-musl@24.0.4'
+  - '@nx/nx-win32-arm64-msvc@24.0.4'
+  - '@nx/nx-win32-x64-msvc@24.0.4'
+  - nx@24.0.4

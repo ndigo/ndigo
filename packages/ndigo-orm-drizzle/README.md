@@ -15,7 +15,7 @@ implementation of the authentication `SessionStore` contract.
 pnpm add @ndigo/orm-drizzle @ndigo/orm
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11. The adapter
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12. The adapter
 depends on `drizzle-orm` and `@libsql/client`; add them directly if you import
 their types or helpers in application code.
 

@@ -26,7 +26,7 @@ pnpm add @ndigo/locks
 pnpm add @ndigo/rate-limit
 ```
 
-Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥11, plus a
+Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12, plus a
 standalone Redis server (integration tests run against 7.2). The package
 ships six entry points:
 

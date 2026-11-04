@@ -10,16 +10,16 @@
  * `build.lib` outputs (verified with a bundle syntax check, 2026-10-06).
  * Browsers cannot parse `@decorator` syntax, so decorator-using
  * client bundles (e.g. `@service`/`@getCall`, `@signal`/`@effect`) shipped as
- * invalid JavaScript while Vitest suites stayed green (Vitest transforms
- * through esbuild). This plugin runs before the default transforms and uses
- * esbuild — which lowers decorators for any target below `esnext` — for
- * TypeScript modules in the workspace. Every app with browser sources applies
- * it for BOTH `vite build` and `vite dev` (the demo apps forward it
- * unconditionally; `ndigo-todo`'s former `command === 'build'` gate is gone),
- * so neither path ships raw decorators. Vitest needs no plugin: it lowers
- * decorators in its own transform pipeline and resolves workspace sources
- * through the shared `vitest.aliases.ts` table that each app `vitest.config.ts`
- * imports.
+ * invalid JavaScript while Vitest suites stayed green (Vitest 4 transformed
+ * through esbuild, which lowered them). This plugin runs before the default
+ * transforms and uses esbuild — which lowers decorators for any target below
+ * `esnext` — for TypeScript modules in the workspace. Every app with browser
+ * sources applies it for BOTH `vite build` and `vite dev` (the demo apps
+ * forward it unconditionally; `ndigo-todo`'s former `command === 'build'` gate
+ * is gone), so neither path ships raw decorators. Every Vitest lane carries it
+ * too: Vitest 5 transforms through the same Vite 8 Oxc pipeline, which passes
+ * decorators through unchanged, while the lanes resolve workspace sources to
+ * `src/` through the shared `vitest.aliases.ts` table.
  *
  * Scope (SEC-B/WC-I):
  *

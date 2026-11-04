@@ -1,0 +1,38 @@
+{
+  "name": "@ndigo/dom",
+  "version": "0.0.1",
+  "description": "Ndigo DOM – Isomorphic DOM parsing integration layer",
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "ndigo-dom",
+    "dom",
+    "linkedom",
+    "isomorphic"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "linkedom": "^0.18.13"
+  },
+  "sideEffects": false,
+  "devDependencies": {}
+}

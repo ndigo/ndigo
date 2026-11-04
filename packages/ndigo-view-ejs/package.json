@@ -1,0 +1,43 @@
+{
+  "name": "@ndigo/view-ejs",
+  "version": "0.0.1",
+  "description": "Ndigo View EJS — server-side EJS template rendering as an isomorphic Ndigo view technology.",
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "ndigo-js",
+    "ndigo-view",
+    "ndigo-view-ejs",
+    "ejs"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ndigo/content": "~0.0.1",
+    "@ndigo/context": "~0.0.1",
+    "@ndigo/core": "~0.0.1",
+    "@ndigo/router": "~0.0.1",
+    "@ndigo/view": "~0.0.1",
+    "ejs": "^7.0.2"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.5"
+  },
+  "sideEffects": false
+}

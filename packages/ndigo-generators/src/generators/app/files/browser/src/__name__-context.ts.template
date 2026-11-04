@@ -1,0 +1,32 @@
+/**
+ * @module ndigo-<%= name %>
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+import { configuration, entry, MetadataConfigApplicationContext } from '@ndigo/context';
+import { WebAutoConfiguration } from '@ndigo/platform-web';
+import { DOMElementViewTarget } from '@ndigo/view-webcomponent';
+import <%= className %>Controller from './<%= name %>-controller';
+
+@configuration
+class <%= className %>Configuration {
+    @entry()
+    <%= entryMethod %>() {
+        return new <%= className %>Controller();
+    }
+
+    /**
+     * The render destination. Everything else (handler mapping, view
+     * resolver chain, web-component engine) comes from WebAutoConfiguration.
+     */
+    @entry()
+    viewTarget() {
+        return new DOMElementViewTarget(document.getElementById('app'));
+    }
+}
+
+const context = new MetadataConfigApplicationContext('<%= name %>');
+context.register(WebAutoConfiguration);
+context.register(<%= className %>Configuration);
+
+export default context;

@@ -1,0 +1,45 @@
+{
+  "name": "@ndigo/oxlint-plugin",
+  "version": "0.0.1",
+  "description": "Consumer-facing oxlint rules for Ndigo applications — paradigm, view, route, and logging guards",
+  "keywords": [
+    "ndigo",
+    "ndigo",
+    "oxlint",
+    "oxlint-plugin",
+    "architecture"
+  ],
+  "type": "module",
+  "files": [
+    "api",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@oxlint/plugins": "catalog:"
+  },
+  "devDependencies": {
+    "@ndigo/dispatcher": "~0.0.1",
+    "@ndigo/view": "~0.0.1",
+    "oxlint": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "oxlint": ">=1.0.0"
+  },
+  "license": "ISC",
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "sideEffects": false
+}

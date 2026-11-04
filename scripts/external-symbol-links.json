@@ -1,5 +1,5 @@
 {
-  "@blue/js": {
+  "@ndigo/js": {
     "AuthAdapter": "#",
     "AuthResult": "#",
     "FeatureMetricAggregator": "#",
@@ -15,20 +15,20 @@
     "SessionStore": "#",
     "ViewTarget": "#"
   },
-  "@blue/auth-core": {
+  "@ndigo/auth-core": {
     "AuthAdapter": "#",
     "AuthResult": "#",
     "Principal": "#",
     "SessionStore": "#"
   },
-  "@blue/cache": {
+  "@ndigo/cache": {
     "CacheMiss": "#"
   },
-  "@blue/content": {
+  "@ndigo/content": {
     "ContentSource": "#",
     "MessageSource": "#"
   },
-  "@blue/context": {
+  "@ndigo/context": {
     "ApplicationEventEmitterAware": "#",
     "ContentSource": "#",
     "ContentSourceAware": "#",
@@ -39,7 +39,7 @@
     "ResourceLoaderAware": "#",
     "SecretCipher": "#"
   },
-  "@blue/core": {
+  "@ndigo/core": {
     "ArrayEntries": "#",
     "EntryProcessor": "#",
     "Factory": "#",
@@ -61,7 +61,7 @@
     "reduce": "#",
     "string": "#"
   },
-  "@blue/dispatcher": {
+  "@ndigo/dispatcher": {
     "AbstractPlatformArgumentResolver.resolveBoundArgument": "#",
     "AbstractRouteErrorResolver": "#",
     "Dispatcher": "#",
@@ -78,7 +78,7 @@
     "ViewNameTranslator": "#",
     "default": "#"
   },
-  "@blue/factory": {
+  "@ndigo/factory": {
     "Constructable": "#",
     "ContextToken": "#",
     "EntryRegistryProcessor": "#",
@@ -88,7 +88,7 @@
     "PrototypeScope": "#",
     "SingletonScope": "#"
   },
-  "@blue/http": {
+  "@ndigo/http": {
     "CompletionAwareHTTPInterceptor": "#",
     "ErrorAwareHTTPInterceptor": "#",
     "InitializationAwareHTTPInterceptor": "#",
@@ -98,22 +98,22 @@
     "ResponseAwareHTTPInterceptor": "#",
     "ResponseError": "#"
   },
-  "@blue/jobs": {
+  "@ndigo/jobs": {
     "JobDriver": "#",
     "OutboxStore": "#"
   },
-  "@blue/locks": {
+  "@ndigo/locks": {
     "LockAcquireOptions": "#",
     "LockDriver": "#",
     "LockHandle": "#"
   },
-  "@blue/management": {
+  "@ndigo/management": {
     "ManagementAutoConfigurationOptions": "#"
   },
-  "@blue/orm": {
+  "@ndigo/orm": {
     "ClassType": "#"
   },
-  "@blue/platform-node": {
+  "@ndigo/platform-node": {
     "DEFAULT_MPART_LIMITS": "#",
     "HTTPServer": "#",
     "NodeDispatcher": "#",
@@ -123,14 +123,14 @@
     "ResourceLoader": "#",
     "UnresolvedResource": "#"
   },
-  "@blue/platform-web": {
+  "@ndigo/platform-web": {
     "BrowserDispatcher": "#",
     "CookieAttributeValue": "#",
     "Parser": "#",
     "RouteHistory": "#",
     "RouteTransaction": "#"
   },
-  "@blue/rate-limit": {
+  "@ndigo/rate-limit": {
     "FixedWindowRateLimiter": "#",
     "RATE_LIMITER": "#",
     "RateLimitPolicy": "#",
@@ -139,14 +139,14 @@
     "likeRateLimiter": "#",
     "validateRateLimitPolicy": "#"
   },
-  "@blue/router": {
+  "@ndigo/router": {
     "ACCEPT_LANGUAGE_ATTRIBUTE": "#",
     "Route": "#"
   },
-  "@blue/service": {
+  "@ndigo/service": {
     "Service": "#"
   },
-  "@blue/socket": {
+  "@ndigo/socket": {
     "ReconnectTrigger": "#",
     "SocketFanout": "#",
     "SocketFanoutMessage": "#",
@@ -154,18 +154,18 @@
     "SocketSession": "#",
     "WebSocketClient": "#"
   },
-  "@blue/telemetry": {
+  "@ndigo/telemetry": {
     "FeatureMetricAggregator": "#",
     "LoggerFactory": "#"
   },
-  "@blue/test": {
+  "@ndigo/test": {
     "MockResult": "#"
   },
-  "@blue/util": {
+  "@ndigo/util": {
     "LikeDescriptor": "#",
     "Numeric": "#"
   },
-  "@blue/view": {
+  "@ndigo/view": {
     "AbstractCachingViewResolver._loadView": "#",
     "AbstractSerializingView.serialize": "#",
     "ProducerView": "#",

@@ -1,0 +1,30 @@
+{
+    "name": "@ndigo/<%= name %>",
+    "version": "0.0.1",
+    "description": "<%- description %>",
+    "type": "module",
+    "private": true,
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "test": "vite build && vitest run"
+    },
+    "author": "Jeff Rose <jeff_rose@outlook.com>",
+    "license": "ISC",
+    "dependencies": {
+        "@ndigo/context": "~0.0.1",
+        "@ndigo/dispatcher": "~0.0.1",
+        "@ndigo/platform-web": "~0.0.1",
+        "@ndigo/router": "~0.0.1",
+        "@ndigo/view-webcomponent": "~0.0.1"
+    },
+    "devDependencies": {
+        "@ndigo/test": "~0.0.1",
+        "@tsmetadata/polyfill": "catalog:",
+        "vite": "catalog:"
+    }
+}

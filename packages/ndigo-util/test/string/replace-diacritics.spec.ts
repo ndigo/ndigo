@@ -1,0 +1,83 @@
+/**
+ * @module ndigo-util
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+import { describe, test, expect } from 'vitest';
+
+import replaceDiacritics from '@ndigo/util/string/replace-diacritics';
+
+describe('replaceDiacritics', function () {
+    test('it should replace accented characters', function () {
+        expect(replaceDiacritics('À')).toBe('A');
+        expect(replaceDiacritics('Á')).toBe('A');
+        expect(replaceDiacritics('Â')).toBe('A');
+        expect(replaceDiacritics('Ã')).toBe('A');
+        expect(replaceDiacritics('Ä')).toBe('A');
+        expect(replaceDiacritics('Å')).toBe('A');
+        expect(replaceDiacritics('Æ')).toBe('AE');
+        expect(replaceDiacritics('Ç')).toBe('C');
+        expect(replaceDiacritics('È')).toBe('E');
+        expect(replaceDiacritics('É')).toBe('E');
+        expect(replaceDiacritics('Ê')).toBe('E');
+        expect(replaceDiacritics('Ë')).toBe('E');
+        expect(replaceDiacritics('Ì')).toBe('I');
+        expect(replaceDiacritics('Í')).toBe('I');
+        expect(replaceDiacritics('Î')).toBe('I');
+        expect(replaceDiacritics('Ï')).toBe('I');
+        expect(replaceDiacritics('Ð')).toBe('D');
+        expect(replaceDiacritics('Ñ')).toBe('N');
+        expect(replaceDiacritics('Ò')).toBe('O');
+        expect(replaceDiacritics('Ó')).toBe('O');
+        expect(replaceDiacritics('Ô')).toBe('O');
+        expect(replaceDiacritics('Õ')).toBe('O');
+        expect(replaceDiacritics('Ö')).toBe('O');
+        expect(replaceDiacritics('Ø')).toBe('O');
+        expect(replaceDiacritics('Ù')).toBe('U');
+        expect(replaceDiacritics('Ú')).toBe('U');
+        expect(replaceDiacritics('Û')).toBe('U');
+        expect(replaceDiacritics('Ü')).toBe('U');
+        expect(replaceDiacritics('Ý')).toBe('Y');
+        expect(replaceDiacritics('Þ')).toBe('P');
+        expect(replaceDiacritics('ß')).toBe('B');
+        expect(replaceDiacritics('à')).toBe('a');
+        expect(replaceDiacritics('á')).toBe('a');
+        expect(replaceDiacritics('â')).toBe('a');
+        expect(replaceDiacritics('ã')).toBe('a');
+        expect(replaceDiacritics('ä')).toBe('a');
+        expect(replaceDiacritics('å')).toBe('a');
+        expect(replaceDiacritics('æ')).toBe('ae');
+        expect(replaceDiacritics('ç')).toBe('c');
+        expect(replaceDiacritics('è')).toBe('e');
+        expect(replaceDiacritics('é')).toBe('e');
+        expect(replaceDiacritics('ê')).toBe('e');
+        expect(replaceDiacritics('ë')).toBe('e');
+        expect(replaceDiacritics('ì')).toBe('i');
+        expect(replaceDiacritics('í')).toBe('i');
+        expect(replaceDiacritics('î')).toBe('i');
+        expect(replaceDiacritics('ï')).toBe('i');
+        expect(replaceDiacritics('ð')).toBe('d');
+        expect(replaceDiacritics('ñ')).toBe('n');
+        expect(replaceDiacritics('ò')).toBe('o');
+        expect(replaceDiacritics('ó')).toBe('o');
+        expect(replaceDiacritics('ô')).toBe('o');
+        expect(replaceDiacritics('õ')).toBe('o');
+        expect(replaceDiacritics('ö')).toBe('o');
+        expect(replaceDiacritics('ø')).toBe('o');
+        expect(replaceDiacritics('ù')).toBe('u');
+        expect(replaceDiacritics('ú')).toBe('u');
+        expect(replaceDiacritics('û')).toBe('u');
+        expect(replaceDiacritics('ü')).toBe('u');
+        expect(replaceDiacritics('ý')).toBe('y');
+        expect(replaceDiacritics('þ')).toBe('p');
+        expect(replaceDiacritics('ÿ')).toBe('y');
+        expect(replaceDiacritics('Œ')).toBe('OE');
+        expect(replaceDiacritics('œ')).toBe('oe');
+        expect(replaceDiacritics('Š')).toBe('S');
+        expect(replaceDiacritics('š')).toBe('s');
+        expect(replaceDiacritics('Ÿ')).toBe('Y');
+        expect(replaceDiacritics('ƒ')).toBe('f');
+        expect(replaceDiacritics('Ꜳ')).toBe('AA');
+        expect(replaceDiacritics('ꜳ')).toBe('aa');
+    });
+});

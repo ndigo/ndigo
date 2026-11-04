@@ -1,6 +1,6 @@
 # Lifecycle & Resource Ownership
 
-The async/resource discipline of BlueJS: how the framework manages
+The async/resource discipline of Ndigo: how the framework manages
 initialization and teardown, who owns what, and why the ordering rules are
 uniform across every backend. This document states the doctrine once; the
 ADRs and guides cited are the per-surface details.
@@ -77,7 +77,7 @@ drain-before-close rule.
   (ownership/initialization/shutdown), AD-41 (deferral discipline)
 - Guides: 06 (websocket close composition), 16 §5 (persistence shutdown)
 - Reference: `docs/reference/2026-08-22_CONTEXT_LIFECYCLE.md`
-- Packages: `@blue/redis`, `@blue/orm-drizzle`, `@blue/socket` READMEs
+- Packages: `@ndigo/redis`, `@ndigo/orm-drizzle`, `@ndigo/socket` READMEs
   (per-surface ownership statements)
 
 ## Revisit triggers

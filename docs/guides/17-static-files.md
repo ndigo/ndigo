@@ -1,6 +1,6 @@
 # Guide 17 — Static Files
 
-`@blue/platform-node` serves filesystem resources with the HTTP semantics a
+`@ndigo/platform-node` serves filesystem resources with the HTTP semantics a
 browser cache or CDN expects: ETag conditional GET, single-range requests,
 cache headers, precompressed variants, SPA history fallback, and directory
 control (AD-28). One class owns the whole decision flow — `StaticResourceHandler`
@@ -15,8 +15,8 @@ the root are captured:
 
 ```ts
 import { resolve } from 'node:path';
-import { configuration, entry } from '@blue/context';
-import { StaticController } from '@blue/platform-node';
+import { configuration, entry } from '@ndigo/context';
+import { StaticController } from '@ndigo/platform-node';
 
 @configuration
 class AppConfiguration {
@@ -28,7 +28,7 @@ class AppConfiguration {
 }
 ```
 
-`apps/04-blue-api` registers exactly this and serves `/static/assets/logo.png`
+`apps/04-ndigo-api` registers exactly this and serves `/static/assets/logo.png`
 from `./public/assets/logo.png`.
 
 Greedy capture is raw and **undecoded**: nothing percent-decodes request
@@ -81,9 +81,9 @@ view resolution — use `StaticFileView`: the file is `route.path` relative to
 the base directory.
 
 ```ts
-import { getMapping, ModelAndView } from '@blue/dispatcher';
+import { getMapping, ModelAndView } from '@ndigo/dispatcher';
 import { resolve } from 'node:path';
-import { StaticFileView } from '@blue/platform-node';
+import { StaticFileView } from '@ndigo/platform-node';
 
 @getMapping('/assets/{*file}')
 assets() {
@@ -116,7 +116,7 @@ exported for tools that need the pieces separately.
 
 - Decision: [AD-28](../decisions/2026-09-24_AD28_STATIC_FILES.md) — ETag/Range,
   precompressed variants, SPA fallback, directory control (D-1..D-9).
-- Package: `@blue/platform-node` README — `StaticController`,
+- Package: `@ndigo/platform-node` README — `StaticController`,
   `StaticFileView`, `StaticResourceHandler`, `StaticResourceResolver`.
 - Guides: [01 — Building a Node API](01-building-a-node-api.md) (the server
   that mounts it), [08 — Multipart & File Upload](08-multipart-and-file-upload.md)

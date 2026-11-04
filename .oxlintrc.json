@@ -15,13 +15,13 @@
     "**/coverage/**",
     "**/node_modules/**",
     "**/test/**/*.js",
-    "apps/03-blue-todo/index.js",
+    "apps/03-ndigo-todo/index.js",
     "*.config.js",
     "*.config.mjs",
     "*.config.ts"
   ],
   "jsPlugins": [
-    "./packages/blue-oxlint-plugin/lib/index.js",
+    "./packages/ndigo-oxlint-plugin/lib/index.js",
     { "name": "internal", "specifier": "./src/oxlint/plugin.ts" }
   ],
   "rules": {
@@ -67,17 +67,17 @@
     "internal/no-direct-integration-imports": "warn",
     "internal/no-internal-file-imports": "error",
     "internal/no-internal-file-exports": "error",
-    "@blue/no-browser-globals-in-isomorphic": "warn",
+    "@ndigo/no-browser-globals-in-isomorphic": "warn",
     "internal/no-uppercase-regexp-constants": "error",
     "internal/no-abstract-class-without-prefix": "error",
     "internal/no-mixed-case-acronyms": "error",
     "internal/no-global-state-in-create-factories": "error",
-    "@blue/no-cross-paradigm-decorators": "error",
-    "@blue/no-scheduled-in-browser": "error",
-    "@blue/no-signals-in-entity": "error",
-    "@blue/no-string-registry-lookup": "error",
-    "@blue/no-unsafe-view-name-literal": "error",
-    "@blue/no-duplicate-mapping-path": "error",
+    "@ndigo/no-cross-paradigm-decorators": "error",
+    "@ndigo/no-scheduled-in-browser": "error",
+    "@ndigo/no-signals-in-entity": "error",
+    "@ndigo/no-string-registry-lookup": "error",
+    "@ndigo/no-unsafe-view-name-literal": "error",
+    "@ndigo/no-duplicate-mapping-path": "error",
     "no-shadow": "warn",
     "no-useless-escape": "warn",
     "no-unsafe-optional-chaining": "warn",
@@ -99,7 +99,7 @@
     "typescript/no-redundant-type-constituents": "off",
     "typescript/no-implied-eval": "off",
     "internal/requires-doc-header": "error",
-    "@blue/no-raw-console": "error"
+    "@ndigo/no-raw-console": "error"
   },
   "env": {
     "browser": true,
@@ -127,14 +127,14 @@
         "no-shadow": "off",
         "no-useless-escape": "off",
         "no-instanceof-builtins": "off",
-        "@blue/no-duplicate-mapping-path": "off",
-        "@blue/no-raw-console": "off"
+        "@ndigo/no-duplicate-mapping-path": "off",
+        "@ndigo/no-raw-console": "off"
       }
     },
     {
       "files": ["apps/**/*.ts", "apps/**/*.js", "apps/**/*.mjs"],
       "rules": {
-        "@blue/no-browser-globals-in-isomorphic": "off"
+        "@ndigo/no-browser-globals-in-isomorphic": "off"
       }
     }
   ]

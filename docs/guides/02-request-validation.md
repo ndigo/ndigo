@@ -1,8 +1,8 @@
 # Guide 02 — Request Validation
 
-How request validation fits the BlueJS pipeline: coercive binding via
+How request validation fits the Ndigo pipeline: coercive binding via
 `@parameters` extractors, schema validation with Zod, and schemas that are
-derived directly from `@blue/orm` entity metadata.
+derived directly from `@ndigo/orm` entity metadata.
 
 The validation mechanism is a single pipeline: an extractor resolves
 
@@ -31,7 +31,7 @@ chain to a 422 with `errors[]`.
 
 ```ts
 import { z } from 'zod';
-import { getMapping, parameters, queryValue, validatedBy } from '@blue/dispatcher';
+import { getMapping, parameters, queryValue, validatedBy } from '@ndigo/dispatcher';
 
 @requestMapping('/subscribe')
 class SubscribeController {
@@ -94,12 +94,12 @@ Apply one schema across several extractors.
 
 ## 5. Entity-derived schemas: `insertSchemaForEntity`
 
-Schemas can come from `@blue/orm` entity metadata instead of being written
+Schemas can come from `@ndigo/orm` entity metadata instead of being written
 by hand — one declaration drives the column, the DB table (via
-`@blue/orm-drizzle`), and the wire validation.
+`@ndigo/orm-drizzle`), and the wire validation.
 
 ```ts
-import { column } from '@blue/orm';
+import { column } from '@ndigo/orm';
 
 @entity('notes')
 export class Note {
@@ -119,7 +119,7 @@ Derive the _writable_ shape (w/o primary/generated columns; nullable/untyped
 optional) and validate the body:
 
 ```ts
-import { insertSchemaForEntity } from '@blue/orm';
+import { insertSchemaForEntity } from '@ndigo/orm';
 
 @postMapping('/')
 @parameters({ data: validatedBody(insertSchemaForEntity(Note)) })
@@ -130,7 +130,7 @@ A `POST` with `{ title: '' }` now yields:
 
 ```json
 {
-    "type": "urn:blue:validation-failed",
+    "type": "urn:ndigo:validation-failed",
     "title": "Validation Failed",
     "status": 422,
     "detail": "title: Too small: expected string to have >=1 characters",
@@ -147,14 +147,14 @@ A `POST` with `{ title: '' }` now yields:
 
 `validatedBy`/`validateParameters` also run on the browser pipeline — the BIND
 resolver and the shared named-value resolvers invoke the same `convert`
-hook, so per-field validation works in `@blue/platform-web` with the same
+hook, so per-field validation works in `@ndigo/platform-web` with the same
 single-decorator surface. (Whole-body `validatedBody` is Node-specific:
 browser request "bodies" are form/model sources.)
 
 ## Reference
 
-- Full API: JSDoc in `packages/blue-dispatcher/src/zod-validated-by.ts`
+- Full API: JSDoc in `packages/ndigo-dispatcher/src/zod-validated-by.ts`
   (docstring includes all four usage forms) and
-  `packages/blue-orm/src/entity-schema.ts`.
+  `packages/ndigo-orm/src/entity-schema.ts`.
 - Rationale: [Zod as the canonical schema primitive](../decisions/2026-09-05_AD07_ZOD_VALIDATION.md)
   and [RFC 9457 problem+json error contract](../decisions/2026-09-07_AD10_RFC9457_ERROR_MODEL.md).

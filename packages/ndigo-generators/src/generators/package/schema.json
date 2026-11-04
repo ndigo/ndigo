@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "id": "NdigoPackage",
+  "title": "Create a Ndigo Package",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The package name (kebab-case, without 'ndigo-' prefix)",
+      "x-prompt": "What is the package name? (e.g., 'telemetry-otel')"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short package description",
+      "default": ""
+    },
+    "jobs": {
+      "type": "boolean",
+      "description": "Wire the durable-jobs/outbox dependencies (@ndigo/jobs) into the generated package",
+      "default": false,
+      "x-prompt": "Will the package use @ndigo/jobs (durable jobs / transactional outbox)?"
+    }
+  },
+  "required": ["name"]
+}

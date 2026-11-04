@@ -64,6 +64,6 @@
     "ws": "catalog:"
   },
   "peerDependencies": {
-    "swagger-ui-dist": "5.33.0"
+    "swagger-ui-dist": "5.34.1"
   }
 }

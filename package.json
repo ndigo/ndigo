@@ -34,6 +34,7 @@
     "graft:build": "graft build --deep --allow-partial",
     "test:tooling": "node --test scripts/test-lower-decorators.mjs scripts/test-import-scanner.mjs scripts/test-package-surface.mjs",
     "postinstall": "node scripts/typedoc-ts-shim.mjs",
+    "hooks:install": "node scripts/install-hooks.mjs",
     "agents:sync": "node ../development-agents/gen.mjs .",
     "agents:check": "node scripts/agents-check.mjs"
   },

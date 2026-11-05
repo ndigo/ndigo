@@ -153,10 +153,15 @@ jobs:
         # treatWarningsAsErrors is on: dead links, missing params, or
         # unresolved symbols fail the lane.
         #
-        # Per-PR: regenerate only the packages whose src changed (plus a full
-        # regeneration when the doc toolchain itself changed). The weekly
-        # sweep runs the full 46-package generation as the backstop, and the
-        # freshness step below still validates whatever was generated here.
+        # Per-PR scoping: regenerate the packages whose `src/` or manifest
+        # changed — a package's name, version and description all reach the
+        # generated tree (`includeVersion`, the root API.md index), so a
+        # manifest edit counts as a doc input. Full regeneration when the doc
+        # toolchain changed, or when the changed-file list is truncated: the
+        # compare API caps `files` at 300 entries, and a truncated list cannot
+        # prove which packages are unaffected (PR #105 hit exactly that and the
+        # lane silently skipped, so the freshness step below validated
+        # nothing). The weekly sweep runs the full generation as the backstop.
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -165,14 +170,20 @@ jobs:
             exit 0
           fi
           changed="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/compare/${{ github.event.pull_request.base.sha }}...${{ github.sha }}" --jq '.files[].filename')"
-          if printf '%s\n' "$changed" | grep -qE '^(scripts/|package\.json$|pnpm-workspace\.yaml$|tsconfig)'; then
+          changed_count="$(printf '%s\n' "$changed" | grep -c . || true)"
+          if [ "$changed_count" -ge 300 ]; then
+            echo "changed-file list truncated at the API cap ($changed_count) — full regeneration"
+            pnpm doc
+            exit 0
+          fi
+          if printf '%s\n' "$changed" | grep -qE '^(scripts/|package\.json$|pnpm-workspace\.yaml$|tsconfig|\.github/)'; then
             echo "doc toolchain changed — full regeneration"
             pnpm doc
             exit 0
           fi
-          packages="$(printf '%s\n' "$changed" | sed -n 's|^packages/\([^/]*\)/src/.*|\1|p' | sort -u | paste -sd, -)"
+          packages="$(printf '%s\n' "$changed" | sed -n -e 's|^packages/\([^/]*\)/src/.*|\1|p' -e 's|^packages/\([^/]*\)/package\.json$|\1|p' | sort -u | paste -sd, -)"
           if [ -z "$packages" ]; then
-            echo "no package sources changed — skipping doc generation"
+            echo "no package sources or manifests changed — skipping doc generation"
             exit 0
           fi
           node scripts/doc-api.mjs --only "$packages"

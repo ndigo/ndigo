@@ -1,7 +1,7 @@
 # TC39 Decorator Quick Reference
 
 **Date:** 2025-02-01  
-**For:** BlueJS Decorator Migration
+**For:** ndigo Decorator Migration
 
 ---
 
@@ -409,7 +409,7 @@ it('makes method enumerable', () => {
 
 ```bash
 # Build package
-pnpm --filter @blue/package-name build:lib
+pnpm --filter @ndigo/package-name build:lib
 
 # Run tests
 pnpm vitest run packages/package-name/test/

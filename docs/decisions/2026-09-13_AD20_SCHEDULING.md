@@ -9,12 +9,12 @@
 Scheduled tasks are the top remaining Tier-1 gap in the framework audit
 (`docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md` §2.1): no cron, no task
 executor, no background processing in any package. The trigger to fix the
-gap surfaced a framing question: BlueJS follows the reference framework, but the
+gap surfaced a framing question: ndigo follows the reference framework, but the
 scheduler runs on Node — so whose capabilities should it track?
 
 Answer: **The reference framework's declarative shape, Nest/AdonisJS semantics.** The
 decorator + container-managed lifecycle is excellent ergonomics and matches
-the existing BlueJS decorator system (TC39 `Symbol.metadata` keys, kind
+the existing ndigo decorator system (TC39 `Symbol.metadata` keys, kind
 guards, `@conditionalOnNode`). But the runtime semantics must match what
 Node scheduling actually needs:
 
@@ -40,13 +40,13 @@ bundles for `@Cron` — the closest industry precedent.
 
 ## Decision
 
-### D1 — New package `@blue/scheduler`
+### D1 — New package `@ndigo/scheduler`
 
 `@scheduled` is a TC39 method decorator on **any registered class** (not
 just `@configuration` — controller-parked tasks are a real pattern):
 
 ```ts
-import { scheduled } from '@blue/scheduler';
+import { scheduled } from '@ndigo/scheduler';
 
 class Maintenance {
     @scheduled(cron: '*/5 * * * * *')                 // croner: 5/6/7 fields
@@ -72,7 +72,7 @@ classes, `bootApp` precedent).
 ### D2 — Node-only
 
 - The scheduler is provisioned by Node's platform auto-configuration: a
-  `taskScheduler` entry on `NodeAutoConfiguration` (which `@blue/boot`
+  `taskScheduler` entry on `NodeAutoConfiguration` (which `@ndigo/boot`
   auto-registers on the node platform). Zero-config for Node apps; nothing
   is registered in browser bundles.
 - The scheduler is `Closable` for `gracefulShutdown`: stop accepting new
@@ -115,10 +115,10 @@ plus a tiny duration-string parser (`'10s'`, `'2h'`). Both implement one
    has no `process` — genuine browsers fail at import. Caveat documented:
    bundlers that polyfill `process` can evade this; the lint rule covers
    repo code, docs cover the rest.
-4. **Lint rule `no-scheduled-in-browser`** (`@blue/oxlint-plugin`, the
-   `no-signals-in-entity` pattern): flags files importing `@blue/scheduler`
-   while importing browser-platform markers (`@blue/platform-web`,
-   `@blue/view-webcomponent`) — the platform-misuse warning tier.
+4. **Lint rule `no-scheduled-in-browser`** (`@ndigo/oxlint-plugin`, the
+   `no-signals-in-entity` pattern): flags files importing `@ndigo/scheduler`
+   while importing browser-platform markers (`@ndigo/platform-web`,
+   `@ndigo/view-webcomponent`) — the platform-misuse warning tier.
 5. **Bind-time guard:** schedule metadata whose owner instance cannot be
    resolved from the context fails refresh with a `FrameworkError` naming
    class + method.
@@ -162,10 +162,10 @@ convention documented.
 
 ## Consequences
 
-- New package `@blue/scheduler` (node-only contract + engine), a
+- New package `@ndigo/scheduler` (node-only contract + engine), a
   `taskScheduler` entry on `NodeAutoConfiguration`, one new lint rule, and
-  a demo in a Node app (the client-side `blue-todo` can't schedule — the
-  metrics-panel `setInterval` stays as-is; `blue-island`'s SSE ticker
+  a demo in a Node app (the client-side `ndigo-todo` can't schedule — the
+  metrics-panel `setInterval` stays as-is; `ndigo-island`'s SSE ticker
   (`setInterval`-driven) is a candidate dogfood later).
 - Zero-config adoption: any Node app gets the scheduler from
   `NodeAutoConfiguration`; adding `@scheduled` to a registered class just
@@ -192,7 +192,7 @@ demo + lint rule + docs.
 - Phase 3: `ScheduleRegistry` as the container bean (aware-injected,
   auto-started on refresh, destroyed on close); `NodeAutoConfiguration`
   provisions `taskScheduler` + `scheduleRegistry`; per-run OTel spans.
-- Phase 4: `no-scheduled-in-browser` lint rule (enabled), `blue-api`
+- Phase 4: `no-scheduled-in-browser` lint rule (enabled), `ndigo-api`
   heartbeat demo (8 bootstrap tests), `docs/guides/05-scheduling.md`;
   plan moved to Completed.
 
@@ -212,5 +212,5 @@ manifest + format clean, graft refreshed.
 - **1.0 API freeze** → the D8 past-tense naming review decides whether
   `@scheduled`/`@authenticated`/`@authorized`/`@generated`/`@transactional`
   stay or are renamed, once, before release.
-- **`blue-island` ticker migration** → replacing its `setInterval` loop with
+- **`ndigo-island` ticker migration** → replacing its `setInterval` loop with
   `@scheduled` when the demo next changes.

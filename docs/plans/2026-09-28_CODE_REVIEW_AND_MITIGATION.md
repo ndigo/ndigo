@@ -111,7 +111,7 @@ configured for the UI's inline script — nonce or external asset), emit
 
 **SEC-3 (Should Fix) — `swagger-ui-dist` floats on `^5.33.0` with no
 integrity; served bundle is same-origin executable JS.**
-`[code]` peer range `packages/blue-platform-node/package.json:78-80` (+ app
+`[code]` peer range `packages/ndigo-platform-node/package.json:78-80` (+ app
 dep) allows silent 5.x drift of the bundle served at `/swagger-ui/` with no
 SRI/CSP/nosniff (SEC-2). Lockfile resolves 5.33.0 with `@scarf/scarf@1.4.0`
 (install-time machine-fingerprinting telemetry) in the dep graph. The
@@ -128,7 +128,7 @@ protected merely in-handler (`/api/config/secrets`, `/notes`,
 `/drizzle/notes` — no accessCondition) are emitted with their
 `authorization` header parameters (`spec.ts:277-298`,
 `locationOf`/`parameterOf`). Documented default-open posture, but the demo
-registers the docs with no guard at all (`apps/blue-api/src/index.ts:29-36`)
+registers the docs with no guard at all (`apps/ndigo-api/src/index.ts:29-36`)
 and guide 13 does not call out the disclosure. **Fix:** wire a guard in the
 demo, add an explicit guide-13 disclosure note, and recommend
 `@apiDocs({hidden:true})` for sensitive endpoints.
@@ -256,8 +256,8 @@ fail at build time. **Fix:** add `parsed.value !== value`; reword the error
 to state exactly what is rejected.
 
 **DOC-3 (Should Fix) — schema-mode demo documents a key the code never
-binds.** `[code]` `apps/blue-api/src/server-config.ts:57,61`: doc claims
-`api.secret-token`/`BLUE_API_SECRET_TOKEN` resolve; schema mode binds
+binds.** `[code]` `apps/ndigo-api/src/server-config.ts:57,61`: doc claims
+`api.secret-token`/`NDIGO_API_SECRET_TOKEN` resolve; schema mode binds
 `${prefix}.${key}` → **`api.secretToken`** (what `config-secrets.spec.ts:27,43`
 seeds). The documented kebab key never probes (`camelize` of a camelCase key
 is identity). An operator following the doc silently gets the `'unset'`
@@ -286,8 +286,8 @@ both handles"; neither file contains any `ContextToken` scenario. Add a
 token-lookup bench or correct the comment.
 
 **NAME-1 (Optional) — one concept, three module names.**
-`blue-cache/src/tokens.ts`, `blue-dispatcher|platform-node|*/context-tokens.ts`,
-`blue-factory/src/context-token.ts`, apps `context-tokens.ts`. Pick one
+`ndigo-cache/src/tokens.ts`, `ndigo-dispatcher|platform-node|*/context-tokens.ts`,
+`ndigo-factory/src/context-token.ts`, apps `context-tokens.ts`. Pick one
 conventional name per repository.
 
 **NAME-2 (Optional) — `refreshed`/`refreshes` typos (missing `e`) in the
@@ -321,7 +321,7 @@ gap — add it and the five read sites converge. `#assertHeaderLimits`
 while `node-view-target.ts:46,58` already uses `HTTPHeaders.CONTENT_TYPE.name`.
 Use the constants.
 
-**REUSE-5 (Should Fix) — `@blue/http`'s own interceptor reads Content-Type
+**REUSE-5 (Should Fix) — `@ndigo/http`'s own interceptor reads Content-Type
 via literal string.** `[code]` `transform-interceptor.ts:55,87,101,127`:
 `headers.get('content-type')`. Use `HTTPHeaders.CONTENT_TYPE.get(...)`.
 
@@ -331,8 +331,8 @@ emission side already uses constants).
 
 **Defensible non-findings:** `'X-HTTP-Method'` custom header
 (cache-interceptor, retry-on-offline — no constant; add once if it stays);
-`blue-view`/`blue-content` Accept/Accept-Language reads (packages do not
-depend on `@blue/http`; `parseAcceptLanguage` is properly shared);
+`ndigo-view`/`ndigo-content` Accept/Accept-Language reads (packages do not
+depend on `@ndigo/http`; `parseAcceptLanguage` is properly shared);
 `trusted-proxy.ts:318` reads XFF through `X_FORWARDED_FOR.getJoined` and only
 then splits the chain — correct split point (reported as such by the
 security slice).
@@ -342,22 +342,22 @@ security slice).
 **COR-10 (Should Fix) — `doc-api.mjs` leaks temp dirs on every failure
 path.** `[code]` `scripts/doc-api.mjs:159-170`: `mkdtempSync` under OS tmp,
 `rmSync` (line 167) only on success; any throw (typedoc non-zero, JSON
-parse, coverage read) leaves `blue-doc-*` dirs behind. `71e2b239` fixed the
+parse, coverage read) leaves `ndigo-doc-*` dirs behind. `71e2b239` fixed the
 in-tree variant but not failure-path cleanup. **Fix:** `try/finally`.
 
 **DSG-4 (Should Fix) — manifest/import gate is blind to `.js`/CJS bench
 files — a live violation.** `[code]` `import-scanner.mjs:115-130` collects
 only `/\.(ts|mjs)$/` with no `require()` support;
-`packages/blue-context/benchmark/emitting.js:1-3` requires `'benchmark'`
+`packages/ndigo-context/benchmark/emitting.js:1-3` requires `'benchmark'`
 (declared only at root), so the gate exits 0 while its own rule 3 ("every
 test/bench/config import declared") is violated. Root config scan
 (`:133-142`) misses committed `vitest.config.js` variants
-(blue-oxlint-plugin, blue-router). **Fix:** scan `require()` in `.js`
+(ndigo-oxlint-plugin, ndigo-router). **Fix:** scan `require()` in `.js`
 bench/scripts without `.ts` twins; cover other root config spellings.
 (Verified running the gate: exit 0 — the violation is real and passing.)
 
-**COR-11 (Should Fix) — `blue-generators` manifest points at entrypoints
-the tarball never ships.** `[code]` `packages/blue-generators/package.json:
+**COR-11 (Should Fix) — `ndigo-generators` manifest points at entrypoints
+the tarball never ships.** `[code]` `packages/ndigo-generators/package.json:
 13-24`: `main`/`types`/`exports` → `./src/index.js|.d.ts`, but `files` ships
 only `src` + `generators.json` (TypeScript sources, no build artifacts —
 `lib/` exists but is excluded by the check-manifests special case,
@@ -377,7 +377,7 @@ through silently.** `[code]` `check-manifests.mjs:47-58,147`: `debug`/`glob`/
 clean), but the carve-out is broader than toolchain config imports.
 
 **SMELL-3 (Optional) — `doc-api.mjs:128` ownership check is a string
-prefix, not a path segment** (sibling `blue-xy` would pass `blue-x`'s
+prefix, not a path segment** (sibling `ndigo-xy` would pass `ndigo-x`'s
 guard). One-char fix: `pkgDir + '/'`.
 
 **SMELL-4 (Optional) — `check-manifests.mjs:29` uses `.pathname` instead of
@@ -401,7 +401,7 @@ reword the claims.
 
 ### 1.8 Integration findings (this execution)
 
-**BUILD-1 (Must Fix — was red at HEAD) — `blue-platform-node` has not compiled
+**BUILD-1 (Must Fix — was red at HEAD) — `ndigo-platform-node` has not compiled
 since AD-37.** `[exec]` `tsc -b tsconfig.build.json` fails at HEAD with
 `trusted-proxy.ts:318: getJoined(headers) — Record<string, string|string[]|undefined>
 not assignable to HeadersInit`. The module's own contract documents Node-record
@@ -410,21 +410,21 @@ passes) but every `HTTPHeader` helper and method typed its parameter as
 `HeadersInit` only; `trusted-proxy.ts` was the first caller passing a node-shaped
 record. **Fixed:** `http-header.ts` gained the `HeaderRecord` alias and all nine
 signatures widened to `HeadersInit | HeaderRecord` (additive; no behavioral
-change — `blue-http` 369 passed/12 skipped). The `33/33 build` claims in commit
+change — `ndigo-http` 369 passed/12 skipped). The `33/33 build` claims in commit
 messages predate AD-37; the nx/`tsc -b` lane has been red since.
 
-**BUILD-2 (Must Fix — was red at HEAD) — `apps/blue-api` does not compile since
+**BUILD-2 (Must Fix — was red at HEAD) — `apps/ndigo-api` does not compile since
 AD-34.** `[exec]` `cached-report-controller.ts:18` declares
 `ContextToken<Cache<string, {invocations, value}>>` — two type arguments for the
 single-parameter `Cache<V>` contract. **Fixed:** token typed
 `Cache<{invocations: number; value: string}>` (string keys are the contract's
-default). blue-api 64/64 green after the fix.
+default). ndigo-api 64/64 green after the fix.
 
 **FMT-1 (Should Fix — was red at HEAD) — `oxfmt --check .` fails on eight files
 since the 09-26..28 waves** (docs/plans/2026-09-26_AUTH_COMPLETION.md,
 2026-09-18_SECURITY_HEADERS.md, 2026-09-28_TRUSTED_PROXY.md,
 docs/decisions/2026-09-28_AD37_TRUSTED_PROXY.md, gap analysis,
-docs/guides/13, blue-management/src/index.ts, and this plan): the 09-27 sweep
+docs/guides/13, ndigo-management/src/index.ts, and this plan): the 09-27 sweep
 missed them. **Fixed:** `oxfmt --write` applied; `git diff -w` confirms zero
 content change (line-wrap, table alignment, emphasis-syntax normalization).
 `format:check` green repo-wide again.
@@ -440,7 +440,7 @@ treat installs as frozen-lockfile — intentional for CI, harmless now that
 the lockfile matches.
 
 **Graph note (info):** `graft build --deep` meaning tier is incomplete for
-3 files (`blue-orm/src/repository.ts`, `blue-test/src/mock-http.ts`, +1);
+3 files (`ndigo-orm/src/repository.ts`, `ndigo-test/src/mock-http.ts`, +1);
 structure tier is in sync; `graft/` is intentionally untracked (regenerable),
 so no tree collateral. Re-run `graft build --deep` before the next wave and
 re-check freshness if those files land on a review path.
@@ -458,7 +458,7 @@ shielded accidentally). The demo re-declares the three `@entry` factories
 with forwarding bodies as a workaround. **Fix candidate:** entry discovery
 should walk the prototype chain (`Object.getOwnPropertyDescriptors` per
 level) or record factory metadata on the subclass at decoration time; add
-a spec constructing a bare subclass. Home: `@blue/context` decorators /
+a spec constructing a bare subclass. Home: `@ndigo/context` decorators /
 `MetadataConfigApplicationContext` entry scan.
 
 **DOC-8 (retraction) — NAME-11/NAME-2 was a false positive.** The claimed
@@ -505,7 +505,7 @@ narrowing — the two calls are the type-safe dispatch, not duplication
     - Acceptance: `10.0.0.5` inside `10.0.0.0/25`; `10.0.1.0` outside; values
       previously misclassified (e.g. a `/25`-trusted proxy now yields XFF)
       asserted in `trusted-proxy.spec.ts`.
-    - Verify: `cd packages/blue-platform-node && pnpm test` (trusted-proxy +
+    - Verify: `cd packages/ndigo-platform-node && pnpm test` (trusted-proxy +
       rate-limit e2e suites).
 
 2. **SEC-1 — accessGuard effectiveness.** Forward the real handler through
@@ -516,7 +516,7 @@ narrowing — the two calls are the type-safe dispatch, not duplication
     - Acceptance: new spec wires `AuthRouteGuard` via `accessGuard` on the
       docs auto-config and asserts 401 on `/v3/api-docs` and `/health`
       without a token; guide 13 names an effective guard type.
-    - Verify: `blue-platform-node` + `blue-management` + `blue-api` suites.
+    - Verify: `ndigo-platform-node` + `ndigo-management` + `ndigo-api` suites.
 
 ### Wave 2 — Correctness (Should Fix)
 
@@ -524,17 +524,17 @@ narrowing — the two calls are the type-safe dispatch, not duplication
    unescape (`;`/`"`/`\` round-trip registry tests); intern only
    parameterless expressions (or bounded LRU) + canonical parameter order;
    fold case in the component-arg path (isJSON + convergence tests).
-    - Verify: `blue-core` media-type suite (+ new round-trip specs).
+    - Verify: `ndigo-core` media-type suite (+ new round-trip specs).
 
 4. **COR-8 — `getRawProperty`.** Revert `environment.ts` to the raw
    delegation; pin semantics with a spec (ciphertext marker survives
    `getRawProperty`, plaintext from `getProperty`).
-    - Verify: `blue-context` suite (environment + secrets specs).
+    - Verify: `ndigo-context` suite (environment + secrets specs).
 
 5. **COR-9 — condition round-trip value check.** Add `parsed.value` to the
    guard; reword the error; spec `queryParamCondition('filter','a=b')`
    rejection.
-    - Verify: `blue-dispatcher` condition-builders suite.
+    - Verify: `ndigo-dispatcher` condition-builders suite.
 
 6. **COR-2 — IPv6 grammar.** Reject empty groups; dotted-quad only as final
    group; malformed-spelling specs.
@@ -560,7 +560,7 @@ narrowing — the two calls are the type-safe dispatch, not duplication
     to the docs mapping; emit `NOSNIFF_HEADER` in static success headers;
     assert CSP on `/swagger-ui/` in the integration spec.
 11. **SEC-3 — swagger-ui-dist.** Exact-version pin in
-    `blue-platform-node` + `blue-api`; document bundle-integrity decision;
+    `ndigo-platform-node` + `ndigo-api`; document bundle-integrity decision;
     lazy/guarded peer resolution (missing peer fails only the docs
     endpoint, via the problem+json machinery).
 12. **SEC-4 — disclosure scope.** Demo wires the Wave-1 guard; guide 13
@@ -574,7 +574,7 @@ narrowing — the two calls are the type-safe dispatch, not duplication
 14. **DSG-4 — `import-scanner.mjs`:** `require()` support, `.js` bench
     files without `.ts` twins, `vitest.config.js` spellings; acceptance
     probe `require('made-up-pkg')` in a `.js` bench fails the gate.
-15. **COR-11 — `blue-generators` manifest** → `lib/*` entrypoints (+ `files`),
+15. **COR-11 — `ndigo-generators` manifest** → `lib/*` entrypoints (+ `files`),
     or gate rule that `files` covers every export target;
     `npm pack --dry-run` verification.
 16. **SMELL-2 — `.gitignore` stray line + dedupe block.**
@@ -597,7 +597,7 @@ narrowing — the two calls are the type-safe dispatch, not duplication
 
 ## 4. Verified clean (checked and sound)
 
-- **AD-37 core walk:** XFF read via `@blue/http` `X_FORWARDED_FOR.getJoined`
+- **AD-37 core walk:** XFF read via `@ndigo/http` `X_FORWARDED_FOR.getJoined`
   (no raw header parsing anywhere in the file); `TrustedProxySet` implements
   `Matchable<string>`; empty set = trust nobody with the header never read;
   option→env precedence with empty-env → trust-nobody; rightmost-first walk,
@@ -649,20 +649,20 @@ narrowing — the two calls are the type-safe dispatch, not duplication
   unescape + backslash escaping; canonical parameter ordering;
   bounded FIFO intern cache (128) for parameterized expressions with
   `registrySize` observability; component-arg `for()` folds case and
-  converges with the expression path. 6 new specs; blue-core 308/308.
+  converges with the expression path. 6 new specs; ndigo-core 308/308.
 - **COR-8 (`getRawProperty`):** reverted to the raw index delegation;
   2 pins in `secret-cipher.spec.ts` (raw marker survives, `getProperty`
-  decrypts/resolves). blue-context 355/355.
+  decrypts/resolves). ndigo-context 355/355.
 - **COR-9 (condition builders):** the value round-trip guard is enforced
   via an explicit `=`/`!` character scan (`parsed.value` comparison alone
   cannot fire — the parser's `parseValue` is identity); error + module doc
   reworded to state exactly what is rejected; obsolete contradictory test
-  removed. blue-dispatcher 277 passed/2 skipped.
+  removed. ndigo-dispatcher 277 passed/2 skipped.
 - **COR-2 (IPv6 grammar):** empty groups and non-final dotted-quads
   rejected; 6 malformed spellings added to the fail-loud board; mid-chain
-  empty-entry walk pinned. trusted-proxy 27/27; blue-platform-node 445/445.
+  empty-entry walk pinned. trusted-proxy 27/27; ndigo-platform-node 445/445.
 - **COR-4 (spec generation):** generation wrapped; failure → server-side
-  log + 500 `urn:blue:internal-error` problem doc (adapter generic shape),
+  log + 500 `urn:ndigo:internal-error` problem doc (adapter generic shape),
   never memoized; 2-request regression spec. 28 docs/boundary specs green.
 - **COR-3 (hook scoping):** all three guard hooks path-gated in both
   wrappers; side-effect regression specs (no hooks on `/api/notes`, `/app/probe`).
@@ -674,9 +674,9 @@ narrowing — the two calls are the type-safe dispatch, not duplication
 
 - **BUILD-1/BUILD-2 fixed** (see §1.8): full repo `tsc -b` sweep over all
   packages + apps — **ALL-BUILD-OK**.
-- Suites: blue-http 369/12 skipped · blue-api 64 · blue-platform-node 445 ·
-  blue-management 18 · blue-dispatcher 277/2 skipped · blue-context 355 ·
-  blue-core 308.
+- Suites: ndigo-http 369/12 skipped · ndigo-api 64 · ndigo-platform-node 445 ·
+  ndigo-management 18 · ndigo-dispatcher 277/2 skipped · ndigo-context 355 ·
+  ndigo-core 308.
 - `oxlint --type-aware --deny-warnings .` — 0 findings; `oxfmt --check .` —
   green repo-wide (8 historical files swept, content-identical).
 - **ENV-1 open** (pnpm verify-deps hard-fail on `@scarf/scarf`) — Wave 3
@@ -704,15 +704,15 @@ remaining, DOC-4/5/7, REUSE-6, NAME-1/2, SMELL-1, SMELL-3/4, DSG-5).
   Specs: SEC-2 trio (CSP + nosniff + XFO/HSTS on `/v3/api-docs`,
   `/swagger-ui/`, `swagger-ui-init.js`) — platform-node 451/451.
 - **SEC-3 (swagger-ui-dist):** exact `5.33.0` pins in
-  `blue-platform-node` + `blue-api`; `allowBuilds: {'@scarf/scarf': false}`
+  `ndigo-platform-node` + `ndigo-api`; `allowBuilds: {'@scarf/scarf': false}`
   in `pnpm-workspace.yaml` (scarf's postinstall is telemetry; deliberately
   never executed); controller peer resolution made **lazy** — a missing
   peer fails only the docs endpoints with a 500 problem document
-  (`urn:blue:internal-error` naming the peer), never boot. **ENV-1
+  (`urn:ndigo:internal-error` naming the peer), never boot. **ENV-1
   resolved**: `pnpm install` green, lockfile updated.
-- **SEC-4 (demo disclosure):** blue-api registers a Bearer-gated docs
+- **SEC-4 (demo disclosure):** ndigo-api registers a Bearer-gated docs
   config (`SecureDocsConfiguration` + unconditional `docsAccessGuard`
-  using the config-secrets token pattern, `urn:blue:unauthorized` problem
+  using the config-secrets token pattern, `urn:ndigo:unauthorized` problem
     - `WWW-Authenticate: Bearer`, MockHTTP/live parity verified); app spec:
       anonymous `/v3/api-docs` + `/swagger-ui/` → 401, token → 200 spec/page/
       bundle (5 new specs; app suite 66/66); live smoke over real HTTP. Guide
@@ -722,16 +722,16 @@ remaining, DOC-4/5/7, REUSE-6, NAME-1/2, SMELL-1, SMELL-3/4, DSG-5).
 #### Wave 4 — Tooling, manifests, reuse
 
 - **COR-10:** `doc-api.mjs` temp dir now cleaned in `finally`
-  (failure-injection probe: zero `blue-doc-*` leaks across a 35-package
+  (failure-injection probe: zero `ndigo-doc-*` leaks across a 35-package
   failing run).
 - **DSG-4:** `import-scanner.mjs` captures `require()`/`require.resolve()`
   (inline + split-token), scans `.js`/`.cjs` without `.ts` twins in
   bench/benchmark/scripts (+ `benchmark` dir), and covers
   `vitest.config.{ts,js,mjs,cjs}` spellings; `'benchmark': ~2.1.4`
-  declared in blue-context (the previously invisible violation). Probe:
+  declared in ndigo-context (the previously invisible violation). Probe:
   undeclared `require('made-up-pkg-xyz')` in a bench `.js` now fails the
   gate (exit 1), removed after.
-- **COR-11:** `blue-generators` entrypoints → `./lib/index.{js,d.ts}`,
+- **COR-11:** `ndigo-generators` entrypoints → `./lib/index.{js,d.ts}`,
   `files` ships `lib`; check-manifests exemption branch removed (package
   now passes the generic rule). `npm pack --dry-run` lists `lib/index.js`;
   gate exit 0.
@@ -739,12 +739,12 @@ remaining, DOC-4/5/7, REUSE-6, NAME-1/2, SMELL-1, SMELL-3/4, DSG-5).
 - **REUSE-1..7:** constants adopted at 9 sites — CSRF `Set-Cookie` via
   `SET_COOKIE.buildValue` (byte-identical, 8/8 interceptor specs),
   `problem-details` keys + `MediaTypes.APPLICATION_PROBLEM_JSON` (new
-  blue-core constant), node adapter + multipart literal reads,
+  ndigo-core constant), node adapter + multipart literal reads,
   `transform-interceptor` (`CONTENT_TYPE.get`), docs controllers
   (REUSE-4, done with SEC-2), `oidc-adapter`, `cors-interceptor` reads;
-  **`ACCEPT_LANGUAGE` constant added** to `@blue/http` (the module gap).
+  **`ACCEPT_LANGUAGE` constant added** to `@ndigo/http` (the module gap).
   Residual literals audited defensible (auth-scheme parsing, byte-identity
-  constraints, no-dep packages). blue-http 369/12 skipped, blue-auth-client
+  constraints, no-dep packages). ndigo-http 369/12 skipped, ndigo-auth-client
   70/70.
 
 #### Wave 5 — Optional backlog
@@ -755,13 +755,13 @@ remaining, DOC-4/5/7, REUSE-6, NAME-1/2, SMELL-1, SMELL-3/4, DSG-5).
   case and converge. 2 specs.
 - **COR-7:** malformed `q` → default 1 (RFC 7231 §5.3.1), never
   NaN-exclusion; `q=0` semantics preserved; `parseAccept` malformed-q
-  entries keep default weight. 1 spec. blue-core 311/311.
+  entries keep default weight. 1 spec. ndigo-core 311/311.
 - **DOC-4/DOC-7:** plan/ADR/guide claims aligned with shipped rule scope
   and schema-mode key resolution (no kebab probing).
 - **DOC-5:** context bench gains a real `ContextToken` case (pins the D1
   same-cost claim); both bench disable comments corrected.
 - **NAME-1:** token modules standardized to `context-tokens.ts`
-  (`blue-cache/tokens.ts`, `blue-factory/context-token.ts` renamed;
+  (`ndigo-cache/tokens.ts`, `ndigo-factory/context-token.ts` renamed;
   imports updated; suites green: cache 49/49, factory 74/74).
 - **SMELL-3/4:** doc-api ownership check is path-segment exact;
   check-manifests uses `fileURLToPath`.
@@ -773,15 +773,15 @@ remaining, DOC-4/5/7, REUSE-6, NAME-1/2, SMELL-1, SMELL-3/4, DSG-5).
 #### Integration (Waves 3–5)
 
 - **Build:** full `tsc -b` sweep all packages + apps — **ALL-BUILD-OK**.
-- Suites: blue-platform-node 451 · blue-api 66 · blue-context 355 ·
-  blue-dispatcher 277/2 skipped · blue-core 311 · blue-http 369/12 skipped
-  · blue-auth-client 70 · blue-cache 49 · blue-factory 74 ·
-  blue-management 18 · blue-openapi 9.
+- Suites: ndigo-platform-node 451 · ndigo-api 66 · ndigo-context 355 ·
+  ndigo-dispatcher 277/2 skipped · ndigo-core 311 · ndigo-http 369/12 skipped
+  · ndigo-auth-client 70 · ndigo-cache 49 · ndigo-factory 74 ·
+  ndigo-management 18 · ndigo-openapi 9.
 - Lint `--type-aware --deny-warnings` 0 findings; `oxfmt --check` green
   repo-wide; `check-manifests` exit 0; doc-api/import-scanner syntax
   checked; stray temp probe file removed.
 - **FOLLOW-1 open** (entry-inheritance latent bug, see §1.9) — tracked for
-  a follow-up fix in `@blue/context`.
+  a follow-up fix in `@ndigo/context`.
 
 ## References
 

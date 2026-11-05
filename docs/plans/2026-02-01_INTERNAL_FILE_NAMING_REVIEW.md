@@ -61,7 +61,7 @@ Re-evaluate the internal file naming convention to determine if the current hybr
     find packages -name "_*.ts" -path "*/src/*" | wc -l
 
     # Internal files per package
-    for pkg in packages/blue-*/; do
+    for pkg in packages/ndigo-*/; do
       count=$(find "$pkg/src" -name "_*.ts" 2>/dev/null | wc -l)
       echo "$(basename $pkg): $count internal files"
     done

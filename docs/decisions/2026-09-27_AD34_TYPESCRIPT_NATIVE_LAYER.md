@@ -6,7 +6,7 @@ waves; see [docs/plans/2026-09-27_TYPESCRIPT_NATIVE_LAYER.md](../plans/2026-09-2
 
 ## Background
 
-BlueJS ports reference solutions deliberately. The 2026-09-27 evaluation found
+ndigo ports reference solutions deliberately. The 2026-09-27 evaluation found
 the framework already TS-native where it replaced Java machinery (Zod over
 Bean Validation, extractor-factory parameter binding over reflection,
 wrapper decorators over AOP proxies — self-invocation is intercepted,
@@ -19,14 +19,14 @@ for those surfaces and records what stays deliberately Java-shaped.
 
 ### D-1 — `ContextToken<T>` is the canonical bean handle; strings are a compat/data path
 
-The registry (`Registry` in `blue-factory`) is description-keyed, so a
+The registry (`Registry` in `ndigo-factory`) is description-keyed, so a
 token lookup and its string alias resolve the same value — the token is pure
 handle, zero runtime cost. The TS layer:
 
-- `@entry(TOKEN)` declaration (blue-context `configuration.ts`); the
+- `@entry(TOKEN)` declaration (ndigo-context `configuration.ts`); the
   decorator records `{ name, token? }` in metadata and registers by token.
 - Typed handler resolution: mapping handlers accept
-  `string | ContextToken<object>` (`blue-dispatcher/_shared.ts`); JSON
+  `string | ContextToken<object>` (`ndigo-dispatcher/_shared.ts`); JSON
   deserialized mapping tables keep strings — **mapping data is data**.
 - Framework beans migrate to tokens: dispatcher, handler mapping, argument
   resolvers, view target, http server, socket registry/authenticator, cache
@@ -35,7 +35,7 @@ handle, zero runtime cost. The TS layer:
   (`getValue`/`getInstance`/`hasValue`/`destroyValue`) in non-test files,
   with justified disables for the benchmark fixtures (the string hot path is
   a measured bench axis) and the TypeDoc script (an option bag, not the
-  Blue registry). Dynamic (non-literal) names stay legal.
+  Ndigo registry). Dynamic (non-literal) names stay legal.
 
 Rejected: `@Primary`/`@Qualifier` string selectors — a qualifier string
 would reimport the Java flaw the token eliminates.
@@ -45,7 +45,7 @@ would reimport the Java flaw the token eliminates.
 `ContextEvents` (lifecycle: `context:preparing/refresh/close/destroy`,
 payload `[ApplicationContext]`) and `EnvironmentEvents`
 (`config:refresh`, payload `[]`) map event name → payload tuple
-(`blue-context/context-events.ts`). `ApplicationContext`,
+(`ndigo-context/context-events.ts`). `ApplicationContext`,
 `ConfigurableEnvironment` and `Environment` gained typed `on`/`off`/`emit`
 overloads before the raw fallback overload (last overload = implementation,
 so class implementors keep their existing `EventEmitter` mixin methods
@@ -64,8 +64,8 @@ field paths in field-decorator mode; schema keys are camelCase shape keys
 resolved exactly as `${prefix}.${key}` — schema mode does not probe kebab
 spellings. Field-decorator mode (`@property`/`@nested`) is unchanged and remains
 the default. The same parse semantics power `Environment.typedConfig` /
-`ApplicationContext.typedConfig` (blue-context `schema-config.ts`) — one
-module, one behavior, shared by blue-boot. Flat and nested-object shapes are
+`ApplicationContext.typedConfig` (ndigo-context `schema-config.ts`) — one
+module, one behavior, shared by ndigo-boot. Flat and nested-object shapes are
 supported (nested objects arrive whole from the resolver); dotted schema
 keys are out of scope. `@defaultValue` is ignored in schema mode (D-4).
 
@@ -73,7 +73,7 @@ keys are out of scope. `@defaultValue` is ignored in schema mode (D-4).
 
 `@defaultValue('3000')` remains textual — the environment is stringly
 interpolated and the conversion happens on read. The TS layer for paths is
-`propertyKeys(shape)` (blue-context): template-literal-typed leaf keypaths
+`propertyKeys(shape)` (ndigo-context): template-literal-typed leaf keypaths
 (`keys.server.port` → `'server.port'`) that `@property` accepts, so typos
 fail at compile time. Schema mode's `z.default(value)` supersedes
 `@defaultValue` in the literal typing.
@@ -82,7 +82,7 @@ fail at compile time. Schema mode's `z.default(value)` supersedes
 
 The profile expression DSL (`dev`, `!ci`, `a & b`, `(a | b) & c`) remains
 the canonical, serializable form — env-driven activation is a string
-protocol. `Profile.and/or/not/parse` (blue-context `profile.ts`) build
+protocol. `Profile.and/or/not/parse` (ndigo-context `profile.ts`) build
 canonical strings validated through the existing parser at build time, and
 parenthesize compounds whose precedence would change meaning under the
 grammar (`and(or('a','b'),'c')` → `'(a | b) & c'`). `@profile(...)` and
@@ -94,7 +94,7 @@ profile metadata is serialized data.
 Route conditions (`queryParams: 'filter=all'`, `matrixParams: 'color'`)
 stay canonical strings — mapping tables deserialize from JSON and the
 registry orders/merges conditions by their string form. `queryParamCondition`
-/ `matrixParamCondition` (blue-dispatcher `condition-builders.ts`) produce
+/ `matrixParamCondition` (ndigo-dispatcher `condition-builders.ts`) produce
 those strings **with the real parser as the validator**: every built
 expression round-trips (`QueryParamExpression(canonical)` must recover the
 exact name/value/negation), so a name containing `=` or ending in `!` —
@@ -107,7 +107,7 @@ and verified, not guessed at.
 `@cached({ cache: REPORTS_CACHE })` and `cacheManager.getCache(TOKEN)` /
 `hasCache(TOKEN)` accept `ContextToken<Cache<V>>`; the token description is
 the store name, so token and string forms address the identical store
-(blue-cache). Explicit `cacheName` with a token is overridden by the token
+(ndigo-cache). Explicit `cacheName` with a token is overridden by the token
 (precedence documented on the spec). `CachedSpec.cacheName` remains legal.
 
 ### D-8 — No predicate-form mapping tables, no generators codegen (v1)
@@ -115,7 +115,7 @@ the store name, so token and string forms address the identical store
 Softer grammars rejected: mapping conditions and profile expressions keep
 their string forms because they participate in registry ordering/merging
 and JSON serialization — functions would break `merge`/`compareTo` and
-deserialization. `blue-generators` token codegen is deferred to v2: tokens
+deserialization. `ndigo-generators` token codegen is deferred to v2: tokens
 are declared once per bean root, not per lookup. `@parameters` keys cannot
 be statically checked against handler parameter names (decorator evaluation
 precedes the method signature; TS has no remedy in decorator position) —

@@ -1,11 +1,11 @@
 # 2026-09-28 OpenAPI Docs + Management Hardening — implementation plan
 
-**Scope:** Wave: `@blue/openapi` (spec generation + Swagger UI — the last
+**Scope:** Wave: `@ndigo/openapi` (spec generation + Swagger UI — the last
 Tier-1 gap-analysis row) + SEC-5 completion (redaction + bind posture).
 **Status:** ALL WAVES IMPLEMENTED 2026-09-28. (Two implementation
 amendments, recorded in AD-35: zod-native `toJSONSchema` replaces
 `zod-to-json-schema` — the latest release cannot introspect Zod 4.5; and the
-serving auto-configuration lives in `@blue/platform-node`, keeping the
+serving auto-configuration lives in `@ndigo/platform-node`, keeping the
 openapi package transport-agnostic.)
 **Decisions:** [AD-35](../decisions/2026-09-28_AD35_OPENAPI_DOCS.md),
 [AD-36](../decisions/2026-09-28_AD36_MANAGEMENT_HARDENING.md)
@@ -25,11 +25,11 @@ openapi package transport-agnostic.)
 
 ## 2. Decisions (ratified by AD-35/AD-36)
 
-- New `@blue/openapi` package: `OpenAPISpecGenerator` + `@apiDocs`;
+- New `@ndigo/openapi` package: `OpenAPISpecGenerator` + `@apiDocs`;
   wraps `swagger-ui-dist` (zod-native `toJSONSchema` for schema
   conversion — see AD-35 amendment); no platform-node dependency.
-  `OpenAPIDocsAutoConfiguration` lives in `@blue/platform-node` (serving;
-  controller/mapping contribution, `@blue/management` pattern).
+  `OpenAPIDocsAutoConfiguration` lives in `@ndigo/platform-node` (serving;
+  controller/mapping contribution, `@ndigo/management` pattern).
 - Generation is introspection over `RouteHandlerMapping.getHandlerMethods()`:
   patterns → paths (`:name`/`{*name}` → `{name}`), method-condition →
   operation, first-wins dedup by `{method} {path}`; private/hidden excluded.
@@ -53,21 +53,21 @@ follow-up); multi-mapping duplication needs the dedup key.
 
 ## 4. Sequencing — ✅ all waves implemented 2026-09-28
 
-### Wave 1 — Zod schema seam (`@blue/dispatcher`)
+### Wave 1 — Zod schema seam (`@ndigo/dispatcher`)
 
 - `ParameterExtractor` + `MethodParameter`: optional `schema?: z.ZodType`;
   `validatedBy` sets it (spread already forwards); `toMethodParameter`
   threads it; `MethodParameter.toJSON` excludes it.
 - Specs: `validatedBy` attaches the schema; `MethodParameter.toJSON` omits it.
 
-### Wave 2 — `@blue/openapi` skeleton + generator core
+### Wave 2 — `@ndigo/openapi` skeleton + generator core
 
 - Package scaffold per standard (package.json/tsconfig build+check/vitest
   config/src index/README; docs standard 12).
 - `OpenAPISpecGenerator.generate(mappings, options?): OpenApiDocument`:
   info block, path/operation extraction, parameter mapping
   (query/path/header/cookie/body → requestBody; multipart parts), schema via
-  `zod-to-json-schema`, `x-blue-matrixParams`/`x-blue-queryParams`
+  `zod-to-json-schema`, `x-ndigo-matrixParams`/`x-ndigo-queryParams`
   extensions, exclusions (methodless, private, hidden, filters), dedup.
 - Specs: fixture `RadixMetadataHandlerMapping` with controller classes.
 
@@ -84,7 +84,7 @@ follow-up); multi-mapping duplication needs the dedup key.
   request time; memoized generation) + `SwaggerUIAssetsController`
   (binary ResponseEntity + cache headers) on a `handlerMappings()` entry;
   `@apiDocs({ hidden: true })` on both; scoped `accessGuard` wrapper.
-- Specs (via `@blue/platform-node` dev-dep + MockHTTP/live pipeline):
+- Specs (via `@ndigo/platform-node` dev-dep + MockHTTP/live pipeline):
   spec JSON endpoint shape, UI HTML + asset 200s, guard scoping.
 
 ### Wave 5 — SEC-5: redaction + bind posture
@@ -92,13 +92,13 @@ follow-up); multi-mapping duplication needs the dedup key.
 - `ManagementAutoConfigurationOptions.redactHealthErrors` (default true);
   `HealthRegistry.checkAll()` redaction param; marker constant
   `HEALTH_ERROR_REDACTED`.
-- `@blue/platform-node`: host-binding regression spec (server binds supplied
+- `@ndigo/platform-node`: host-binding regression spec (server binds supplied
   host; loopback default).
 - Specs: redacted vs unredacted `/health`; success payloads unchanged.
 
 ### Wave 6 — Demo wiring, docs, gates
 
-- `apps/blue-api`: register `OpenAPIDocsAutoConfiguration`; startup log line
+- `apps/ndigo-api`: register `OpenAPIDocsAutoConfiguration`; startup log line
   for the UI; integration spec asserts `/v3/api-docs` + an operation
   (`POST /api/echo` requestBody) + `/swagger-ui/` assets.
 - Notes: gap analysis §2.1 OpenAPI row → IMPLEMENTED (AD-35/36, guide 13);
@@ -106,13 +106,13 @@ follow-up); multi-mapping duplication needs the dedup key.
   roadmap OpenAPI row flip; guides README + guide 13
   (`docs/guides/13-openapi-and-api-docs.md`); guide 11 §8 rewrite (AD-36
   posture); docs/README audit list + root README package list get
-  `@blue/openapi`; plan table entry.
+  `@ndigo/openapi`; plan table entry.
 - Gates: `pnpm lint`, `pnpm format:check`, `pnpm build`, changed-package
   `vitest run` + `tsc -b`, `graft build`.
 
 ## 5. Verification
 
-The demo (`apps/blue-api`) runs with the docs registered: `curl
+The demo (`apps/ndigo-api`) runs with the docs registered: `curl
 /v3/api-docs` returns a parseable spec listing the demo's operations with the
 `/api/echo` requestBody; `curl /swagger-ui/` returns the UI page whose asset
 URLs 200; `/health` with a throwing indicator returns the redacted marker by

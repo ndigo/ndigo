@@ -1,4 +1,4 @@
-# Prometheus metrics, semconv duration, meter-derived `/metrics` — `@blue/telemetry-node` + `@blue/management` + `@blue/telemetry`
+# Prometheus metrics, semconv duration, meter-derived `/metrics` — `@ndigo/telemetry-node` + `@ndigo/management` + `@ndigo/telemetry`
 
 **Date:** 2026-10-08
 **Status:** Executed (2026-10-08 — see §8)
@@ -43,11 +43,11 @@ Versions that make this dependency-free: `@opentelemetry/sdk-metrics` 2.11
 (`MetricReader.collect()` pulls from the bound producer; explicit-bucket
 histogram via `advice.explicitBucketBoundaries` under the default
 aggregation) and `@opentelemetry/api` 1.9.1 (`Meter.createHistogram`) —
-both already in `@blue/telemetry-node`'s dependency closure.
+both already in `@ndigo/telemetry-node`'s dependency closure.
 
 ## 3. Change
 
-### Wave 1 — Snapshot model + text renderer (`@blue/telemetry`, isomorphic)
+### Wave 1 — Snapshot model + text renderer (`@ndigo/telemetry`, isomorphic)
 
 - `src/metrics/metric-snapshot.ts`: `MetricPoint` (attributes + either a
   scalar value or a histogram stat block), `MetricSnapshot` (name,
@@ -63,7 +63,7 @@ both already in `@blue/telemetry-node`'s dependency closure.
   attribute sort order, empty snapshot → comment-only document; registry spec
   — register/read/unregister lifecycle. Fail-before/pass-after.
 
-### Wave 2 — SDK reader + exporter wiring (`@blue/telemetry-node`)
+### Wave 2 — SDK reader + exporter wiring (`@ndigo/telemetry-node`)
 
 - `src/metrics/prometheus-metric-reader.ts`: `PrometheusMetricReader extends
   MetricReader` — `onShutdown`/`onForceFlush` no-ops; `snapshot()` calls the
@@ -81,7 +81,7 @@ both already in `@blue/telemetry-node`'s dependency closure.
   real `MeterProvider` — counters/gauges/histograms project into the
   snapshot shape, values correct, unbound reader → `[]`. Fail-before/pass-after.
 
-### Wave 3 — Semconv duration metric (`@blue/telemetry-node`)
+### Wave 3 — Semconv duration metric (`@ndigo/telemetry-node`)
 
 - `HTTPServerInstrumentation`: measure the adapter call with
   `performance.now()`; on both the `.then` and `.catch` paths record
@@ -94,7 +94,7 @@ both already in `@blue/telemetry-node`'s dependency closure.
   duration datapoint per completed request on each path, with the two
   attributes; unit `s`. Fail-before/pass-after.
 
-### Wave 4 — `/metrics` derives from the meter (`@blue/management`)
+### Wave 4 — `/metrics` derives from the meter (`@ndigo/management`)
 
 - `MetricsController.metrics(accept)` binds the `Accept` header
   (`headerValue('Accept')`): JSON media type (browser default) → the new
@@ -118,7 +118,7 @@ both already in `@blue/telemetry-node`'s dependency closure.
   default, JSON projection, migration note for `{ features }`). Management +
   telemetry-node READMEs, guide 03 `telemetry.metricExporter` row, CHANGELOG
   (AD-77), decisions + plans indexes, ADR-77 + this plan.
-- `apps/17-blue-telemetry-lab`: enable `metricExporter: 'prometheus'` behind
+- `apps/17-ndigo-telemetry-lab`: enable `metricExporter: 'prometheus'` behind
   an env var (the lab is the metrics demo; its README documents the scrape
   flow).
 - Gates: the full set of the review plan §9 (incl. the spec-typecheck lane),
@@ -155,8 +155,8 @@ both already in `@blue/telemetry-node`'s dependency closure.
 
 ```bash
 # Per wave: fail-before/pass-after specs, then:
-pnpm --filter @blue/telemetry test && pnpm --filter @blue/telemetry-node test \
-  && pnpm --filter @blue/management test && pnpm build && pnpm test \
+pnpm --filter @ndigo/telemetry test && pnpm --filter @ndigo/telemetry-node test \
+  && pnpm --filter @ndigo/management test && pnpm build && pnpm test \
   && pnpm lint && pnpm format:check && pnpm docs:links && pnpm manifest:check \
   && pnpm typecheck && pnpm test:tooling && pnpm doc \
   && git diff --exit-code -- packages doc
@@ -175,13 +175,13 @@ gate set is green with regenerated API docs; `graft build` refreshed.
 All waves landed in this cycle, ADR-77 accepted; the full gate set (§6) is
 green below with regenerated API docs.
 
-- **Wave 1 — Snapshot model + renderer (`@blue/telemetry`).**
+- **Wave 1 — Snapshot model + renderer (`@ndigo/telemetry`).**
   `metric-snapshot.ts` (`MetricPoint`, `MetricSnapshot`, `MetricSnapshotProvider`,
   single-slot registry) + `prometheus-text.ts` (grammar-accurate renderer:
   `# TYPE`/`# HELP`, counter/gauge/histogram projection, escaping, sorted
   attributes) + `metric-json.ts` (the `{ metrics: { name } }` projection).
   Pure and sdk-free; serializer + registry specs landed.
-- **Wave 2 — SDK reader + wiring (`@blue/telemetry-node`).**
+- **Wave 2 — SDK reader + wiring (`@ndigo/telemetry-node`).**
   `PrometheusMetricReader extends MetricReader` (`onShutdown`/`onForceFlush`
   no-ops; `snapshot()` projects `collect()` into the isomorphic model;
   unbound → `[]`). `ExporterSpec`/`ResolvedExporter` gain `'prometheus'`;
@@ -201,10 +201,10 @@ green below with regenerated API docs.
 
 ### Final verification
 
-`pnpm build` · `pnpm --filter @blue/telemetry test` (incl. the serializer +
-registry specs) · `pnpm --filter @blue/telemetry-node test` (incl.
+`pnpm build` · `pnpm --filter @ndigo/telemetry test` (incl. the serializer +
+registry specs) · `pnpm --filter @ndigo/telemetry-node test` (incl.
 `prometheus-metric-reader.spec.ts`, the exporter-config additions, the
-http-server duration spec) · `pnpm --filter @blue/management test` (incl. the
+http-server duration spec) · `pnpm --filter @ndigo/management test` (incl. the
 reworked `/metrics` endpoint spec) · `pnpm test` · `pnpm lint` 0 diagnostics ·
 `pnpm format:check` · `pnpm typecheck` (build + spec lane) · `pnpm docs:links`
 · `pnpm audit --prod` · `pnpm manifest:check` · `pnpm agents:check` ·

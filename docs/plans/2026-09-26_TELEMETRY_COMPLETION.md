@@ -14,7 +14,7 @@ D-5). The gap-analysis Telemetry row is flipped to IMPLEMENTED.
 
 **Evidence gathered (verified 2026-09-26):**
 
-- `configureTelemetry(TelemetryConfig)` (`@blue/telemetry-node`,
+- `configureTelemetry(TelemetryConfig)` (`@ndigo/telemetry-node`,
   `src/node-config.ts`) wraps `NodeSDK` with OTLP/HTTP exporters for all
   three signals. Gaps: exporters accept **only a url** (no headers,
   timeout/compression, no console dev fallback, no disable); the trace
@@ -23,7 +23,7 @@ D-5). The gap-analysis Telemetry row is flipped to IMPLEMENTED.
   `OTEL_TRACES_SAMPLER`); `url: undefined` today means "OTLP to the
   default `localhost:4318` endpoint" — silent network chatter for a
   misconfigured app, and no construction-time validation.
-- `@blue/telemetry-web` (`browser-config.ts`) **already ships the
+- `@ndigo/telemetry-web` (`browser-config.ts`) **already ships the
   ergonomics** the node side lacks: `traceUrl`-missing → console exporter,
   `useConsoleExporters: false` disable, `enableDiagnostics`. The node
   contract should reach parity, not invent a new shape.
@@ -33,16 +33,16 @@ D-5). The gap-analysis Telemetry row is flipped to IMPLEMENTED.
   (`currentTraceContext()`) for non-logger consumers (queue messages,
   outbound calls, custom sinks), and no guide documents the seam.
 - `@opentelemetry/sdk-trace-base` is already a direct dependency of
-  `@blue/telemetry-node` → samplers (`AlwaysOnSampler`, `AlwaysOffSampler`,
+  `@ndigo/telemetry-node` → samplers (`AlwaysOnSampler`, `AlwaysOffSampler`,
   `TraceIdRatioBasedSampler`), `ParentBased`, and `ConsoleSpanExporter` are
   importable without new dependencies.
-- Node consumer + demo gate: `apps/blue-api/src/index.ts`
+- Node consumer + demo gate: `apps/ndigo-api/src/index.ts`
   (`configureTelemetry({ ... })`).
 
 **Companion docs:**
 [Framework Gap Analysis](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) §3
 (Telemetry row), [AD-32](../decisions/2026-09-26_AD32_TELEMETRY_COMPLETION.md)
-(decisions D-1..D-5), `@blue/telemetry-web` `browser-config.ts` (the
+(decisions D-1..D-5), `@ndigo/telemetry-web` `browser-config.ts` (the
 ergonomics precedent), AD-07-adjacent OTel sweep (Otel SDK 2.x option
 shapes).
 
@@ -76,12 +76,12 @@ in the audit row map to three waves.
   signal's export path (empty processors/readers where the SDK accepts
   them, no-op sink otherwise — verified in Wave 2's spec). `headers` are
   never logged. **Breaking note:** today `url: undefined` = default OTLP
-  endpoint; `blue-api`'s call site is checked and updated in Wave 2.
+  endpoint; `ndigo-api`'s call site is checked and updated in Wave 2.
 - **D-3 — OTLP urls validate at construction.** `new URL(url)` before the
   exporter is built; invalid/garbage urls fail loud at `configureTelemetry`
   time — same discipline as the config-server `https:` enforcement (AD-29
   SEC-1), applied to all three signals.
-- **D-4 — Correlation tooling is an explicit surface.** `@blue/telemetry`
+- **D-4 — Correlation tooling is an explicit surface.** `@ndigo/telemetry`
   exports `currentTraceContext(): { traceId, spanId } | undefined` backed
   by the active OTel span (via the API: `trace.getSpan(context.active())`).
   Returns `undefined` when no provider/span is active — safe in pure-logging
@@ -89,18 +89,18 @@ in the audit row map to three waves.
   stamping logs; the new accessor serves non-logger consumers (queue
   payloads, outbound headers, custom sinks).
 - **D-5 — No env-var duplication.** OTel's native `OTEL_*` variables keep
-  their precedence for raw OTel consumers; the BlueJS option layer is
+  their precedence for raw OTel consumers; the ndigo option layer is
   explicit-first and documents that mixing with `OTEL_*` is unsupported
   (one source of truth per deployment).
 
 ## 3. Risks
 
-| Risk                                                              | Mitigation                                                                                                             |
-| ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Missing-url default change silently alters an existing deployment | Wave 2 audits `configureTelemetry` call sites (blue-api); explicit `console`/url paths keep old behavior one word away |
-| `'none'` needs a no-op trace exporter the SDK may require         | Wave-2 spec verifies per-signal disable against the installed SDK; no-op sink documented if needed                     |
-| Sampler round-off at extremes (`ratio: 0`/`1`)                    | Presets normalize to the exact `AlwaysOn`/`AlwaysOff` semantics; spec pins boundaries                                  |
-| Active-span accessor returns stale ids after span end             | Spec asserts `undefined` after end/without provider; JSDoc documents lifetime                                          |
+| Risk                                                              | Mitigation                                                                                                              |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Missing-url default change silently alters an existing deployment | Wave 2 audits `configureTelemetry` call sites (ndigo-api); explicit `console`/url paths keep old behavior one word away |
+| `'none'` needs a no-op trace exporter the SDK may require         | Wave-2 spec verifies per-signal disable against the installed SDK; no-op sink documented if needed                      |
+| Sampler round-off at extremes (`ratio: 0`/`1`)                    | Presets normalize to the exact `AlwaysOn`/`AlwaysOff` semantics; spec pins boundaries                                   |
+| Active-span accessor returns stale ids after span end             | Spec asserts `undefined` after end/without provider; JSDoc documents lifetime                                           |
 
 ## 4. Sequencing
 
@@ -139,7 +139,7 @@ in the audit row map to three waves.
   Metrics/logs follow the same table (`metricReaders`/`logRecordProcessors`).
 - OTLP urls validate at configuration time (`new URL`, D-3), error naming
   the signal.
-- **Call-site audit:** `blue-api` passes an explicit `{ url }` gated on
+- **Call-site audit:** `ndigo-api` passes an explicit `{ url }` gated on
   `OTEL_EXPORTER_OTLP_ENDPOINT` — unaffected by the new default; no change.
 - Specs: `exporter-config.spec.ts` (6 pure resolver tests incl. headers
   passthrough + per-signal invalid-url errors), `exporter-console.spec.ts`
@@ -148,7 +148,7 @@ in the audit row map to three waves.
 
 ### Wave 3 — Log↔trace correlation tooling ✅ (implemented 2026-09-26)
 
-- `currentTraceContext()` in `@blue/telemetry` (`src/trace/correlation.ts`),
+- `currentTraceContext()` in `@ndigo/telemetry` (`src/trace/correlation.ts`),
   exported from the package index; reads the active span's `spanContext()`
   (the same API boundary `ContextAwareLogger` uses); `undefined`-safe; JSDoc
   example for queue/outbound stamping.
@@ -158,7 +158,7 @@ in the audit row map to three waves.
 - Specs: `test/current-trace-context.spec.ts` (boundary-mocked like the
   logger spec — no global provider needed): ids from the active span,
   `undefined` without one.
-- **Gate:** `@blue/telemetry` 33/33 (31 + 2 new) + `tsc -b` green.
+- **Gate:** `@ndigo/telemetry` 33/33 (31 + 2 new) + `tsc -b` green.
 
 ### Wave 4 — Audit + README refresh
 
@@ -169,5 +169,5 @@ in the audit row map to three waves.
 ## 5. Verification
 
 Per wave: changed-package `vitest run` + `tsc -b`; consumer gates
-(blue-api) after Wave 2; final `graft build`; gap-analysis status flip in
+(ndigo-api) after Wave 2; final `graft build`; gap-analysis status flip in
 Wave 4.

@@ -22,9 +22,9 @@ scope was re-performed directly — nothing left unreviewed.
 
 ## 1. Findings
 
-### M1 — blue-http README documents a non-exported symbol (Medium, docs)
+### M1 — ndigo-http README documents a non-exported symbol (Medium, docs)
 
-- `packages/blue-http/README.md:55` presents `EqualsURLMatcher` as public API.
+- `packages/ndigo-http/README.md:55` presents `EqualsURLMatcher` as public API.
 - It exists at `src/url-matcher.ts:67` but is **not** exported from `src/index.ts`;
   it is absent from the generated `api/` tree. A consumer copying the README gets a
   broken import.
@@ -35,9 +35,9 @@ scope was re-performed directly — nothing left unreviewed.
   (#49), the module is **retired** and the bullet dropped rather than promoting a
   dead, untested class into public API.
 
-### M2 — blue-redis README entry-point count wrong; `/rate-limit` undocumented (Medium, docs)
+### M2 — ndigo-redis README entry-point count wrong; `/rate-limit` undocumented (Medium, docs)
 
-- `packages/blue-redis/README.md:27-35` says "five entry points" (`.`, `/cache`,
+- `packages/ndigo-redis/README.md:27-35` says "five entry points" (`.`, `/cache`,
   `/pubsub`, `/jobs`, `/locks`); `package.json` exports **six** — `./rate-limit`
   (`RedisRateLimiter`) is missing from the docs although the package description
   advertises it.
@@ -52,32 +52,32 @@ scope was re-performed directly — nothing left unreviewed.
 
 ### M4 — AGENTS.md cross-package dependency convention contradicts the repo (Medium, docs/convention)
 
-- `AGENTS.md` §4 "Dependencies" mandates: "Cross-Package: List `@blue/*`
+- `AGENTS.md` §4 "Dependencies" mandates: "Cross-Package: List `@ndigo/*`
   dependencies in **both** `devDependencies` and `peerDependencies`."
-- Reality (verified 2026-11-02 across all 43 packages with `@blue/*` deps):
-  **0 follow it.** 41 list cross-package deps in `dependencies`; `@blue/redis`
+- Reality (verified 2026-11-02 across all 43 packages with `@ndigo/*` deps):
+  **0 follow it.** 41 list cross-package deps in `dependencies`; `@ndigo/redis`
   additionally models optional driver subpaths (`/cache`, `/jobs`, `/locks`,
   `/rate-limit`, `/pubsub` integrations) as `peerDependencies` — a deliberate,
   sound adapter pattern. `auto-install-peers=true` + workspace linking keeps
   dev resolution correct either way.
 - Fix: rewrite §4 Dependencies to document the **actual** convention — framework
   deps in `dependencies`; optional subpath drivers as `peerDependencies` with
-  `@blue/redis` as the canonical example. Do not "fix" the packages: the
+  `@ndigo/redis` as the canonical example. Do not "fix" the packages: the
   current manifests match mainstream publishable-framework practice (Angular/Nest
   style).
 
 ### L1 — jwt-adapter revocation cache grows unboundedly (Low, correctness/robustness)
 
-- `packages/blue-auth-server/src/jwt-adapter.ts:145` `#versionCache` is a plain
+- `packages/ndigo-auth-server/src/jwt-adapter.ts:145` `#versionCache` is a plain
   Map keyed by account `sub`, populated at `:452-469`. Expired entries are only
   overwritten on re-access — never evicted. A long-running server with many
   distinct subjects accumulates one stale entry per `sub` ever seen.
-- Fix: bound it — reuse `@blue/core`'s LRU pattern (size cap, e.g. 10 000) and/or
+- Fix: bound it — reuse `@ndigo/core`'s LRU pattern (size cap, e.g. 10 000) and/or
   delete-on-expiry in `#currentVersion`; add a growth-cap unit test.
 
 ### L2 — demo auth `refresh()` never persists the TTL extension (Low, app correctness/teaching)
 
-- `apps/03-blue-todo/src/auth-store.ts:64-68`: `DemoAuthAdapter.refresh()` computes
+- `apps/03-ndigo-todo/src/auth-store.ts:64-68`: `DemoAuthAdapter.refresh()` computes
   `expiresAt = Date.now() + TOKEN_TTL_MS` and returns it, but never writes it back
   to `tokenStore`. `validate()` (`:53-62`) still checks the original expiry, so a
   refreshed token dies at the old deadline — client and server disagree on lifetime.
@@ -85,9 +85,9 @@ scope was re-performed directly — nothing left unreviewed.
 - Fix: `tokenStore.set(token, { principal, expiresAt })` inside `refresh()`; spec
   asserting server-side expiry moved after refresh.
 
-### L3 — blue-dom README missing standard prerequisite line (Low, docs)
+### L3 — ndigo-dom README missing standard prerequisite line (Low, docs)
 
-- `packages/blue-dom/README.md:9-11` omits the "Node ≥ 24 / pnpm ≥ 11" paragraph
+- `packages/ndigo-dom/README.md:9-11` omits the "Node ≥ 24 / pnpm ≥ 11" paragraph
   present in the template and every sibling README.
 
 ### L4 — STYLE_GUIDE.md section-numbering gap (Low, docs)
@@ -102,7 +102,7 @@ scope was re-performed directly — nothing left unreviewed.
   rejections, and a `refreshStore` seam mirroring `pendingStore`; the client
   captures and presents refresh tokens on `AuthClient.refresh()`. Details:
   auth-client README + the flow/unit specs.
-- Historical detail: `packages/blue-auth-client/src/oidc-adapter.ts`: `refresh()`
+- Historical detail: `packages/ndigo-auth-client/src/oidc-adapter.ts`: `refresh()`
   threw "not implemented" (and `authenticate()` throws by design). Callers
   discovered this only at runtime.
 
@@ -122,13 +122,13 @@ scope was re-performed directly — nothing left unreviewed.
   lease-race guards); resilience (generation-epoch circuit breaker, correct jitter);
   scheduler (single-flight, `MAX_TIMER_DELAY_MS` cap).
 - **Architecture**: no dependency cycles; layering sound (core in=26 / util·log
-  in=20; apps and adapters in=0; `@blue/redis` peers pattern is coherent).
-- **Retired packages**: zero residual code references to `@blue/validate`.
+  in=20; apps and adapters in=0; `@ndigo/redis` peers pattern is coherent).
+- **Retired packages**: zero residual code references to `@ndigo/validate`.
 - **API hygiene**: internal `_*.ts` leak rules are lint-enforced (error) and green;
   cross-package `@link` targets centralized in `scripts/external-symbol-links.json`
   (0 sprinkled into code); sampled `api/` trees fresh; all 19 example apps have
   tests; conduit/upload apps teach good auth + path-traversal habits.
-- **Prose hygiene**: single `TODO` in `blue-dispatcher/src/matrix-param-condition.ts:82`
+- **Prose hygiene**: single `TODO` in `ndigo-dispatcher/src/matrix-param-condition.ts:82`
   is a legitimate Rule-of-Three note, not debt.
 
 ## 3. Waves
@@ -136,16 +136,16 @@ scope was re-performed directly — nothing left unreviewed.
 ### Wave 1 — doc-contract fixes (single PR, no code)
 
 1. M1 export `EqualsURLMatcher` + `pnpm doc:api` regenerate + commit `api/` tree.
-2. M2 blue-redis README entry points.
+2. M2 ndigo-redis README entry points.
 3. M3 + M4 AGENTS.md corrections (§1 engine, §4 dependency convention).
-4. L3 blue-dom prerequisite line; L4 STYLE_GUIDE §6 renumber.
+4. L3 ndigo-dom prerequisite line; L4 STYLE_GUIDE §6 renumber.
 
 Verify: `pnpm manifest:check`, `pnpm docs:links`, `pnpm doc:check`, `pnpm lint`.
 
 ### Wave 2 — correctness fixes (two PRs, independent)
 
-5. L2 todo `auth-store.refresh()` persist + spec → `nx run @blue/todo:test` (or app test lane).
-6. L1 jwt-adapter bounded version cache + cap test → `nx run @blue/auth-server:test`.
+5. L2 todo `auth-store.refresh()` persist + spec → `nx run @ndigo/todo:test` (or app test lane).
+6. L1 jwt-adapter bounded version cache + cap test → `nx run @ndigo/auth-server:test`.
 
 Verify: `pnpm build`, `pnpm lint`, package test lanes; `pnpm typecheck`.
 
@@ -177,13 +177,13 @@ All three waves landed on one branch as `bc6a994f` (plan), `69cd5355`
   bump the oldest sub's store version (cached ⇒ still validates), force one
   eviction past the cap, then the same stale token must die at once. A behavior
   assertion on revocation semantics, not a private-Map poke. 359 ms.
-- **L2 regression test:** `apps/03-blue-todo/test/auth-store.spec.ts` (new file)
+- **L2 regression test:** `apps/03-ndigo-todo/test/auth-store.spec.ts` (new file)
   covers login, bad credentials, the persisted-lease refresh contract under
   `vi.useFakeTimers({ toFake: ['Date'] })`, and fail-closed refresh on a dead
   token.
 - **F1 → issue #61** created with full scope; interim throw message updated to
   cite it (no test pinned the old text).
 - Gates re-run on the branch: lint 0, oxfmt clean, `pnpm build` exit 0,
-  `pnpm typecheck` exit 0, `@blue/auth-server` + `@blue/todo` + `@blue/http`
+  `pnpm typecheck` exit 0, `@ndigo/auth-server` + `@ndigo/todo` + `@ndigo/http`
   test lanes green (32 Nx tasks), manifest + doc-links green.
 - Graph refreshed with `graft build` after merge.

@@ -1,7 +1,7 @@
 # AD-65: View resolution strategy — controllers return names, resolvers return views
 
 **Date:** 2026-09-06
-**Status:** Accepted — implemented; `blue-views` proves three
+**Status:** Accepted — implemented; `ndigo-views` proves three
 resolvers/locations behind one composite.
 
 ## Context
@@ -20,23 +20,23 @@ mixed-case acronym convention).
 
 ## Evidence
 
-- `packages/blue-view/src/island-view-resolver.ts` —
+- `packages/ndigo-view/src/island-view-resolver.ts` —
   `export class IslandViewResolver extends AbstractPathBasedViewResolver`
   (line 31) — name → `IslandView` marker for Node rendering. Born `48640af2`
   (2026-09-06, "feat(views): view-resolution strategy …").
-- `packages/blue-view-webcomponent/src/web-component-view-resolver.ts` —
+- `packages/ndigo-view-webcomponent/src/web-component-view-resolver.ts` —
   `export class WebComponentViewResolver extends AbstractPathBasedViewResolver`
   (line 85) — config registry (`name → component class | module path`) +
   `@TagMapping` tag derivation, `viewNames` filter, eager/lazy modes, cached.
   Born `48640af2` (2026-09-06).
-- `packages/blue-view/src/like-view.ts` — `export const likeView = (value) …`
+- `packages/ndigo-view/src/like-view.ts` — `export const likeView = (value) …`
   structural View guard (line 17); `NodeDispatcher.render` gained the
   direct-View branch so handlers can `return new ServerSentEventView(events)`.
 - Auto-config chains: `WebAutoConfiguration.viewResolver` →
   `ViewResolverComposite([WebComponentViewResolver, NameViewResolver])`;
   `NodeAutoConfiguration` gets an `IslandViewResolver` entry (per the
   follow-up).
-- **Demo app `apps/blue-views`** (`2026-09-06`): `src/views-app-configuration.ts`
+- **Demo app `apps/ndigo-views`** (`2026-09-06`): `src/views-app-configuration.ts`
   configures a composite
   `[WebComponentViewResolver (eager registry { shell, clientDemo }), NameViewResolver (footer bean), ReportViewResolver (report → ./views/report-view.ts)]` —
   three view locations behind one chain; `src/report-view-resolver.ts`
@@ -45,7 +45,7 @@ mixed-case acronym convention).
   (footer-view, report-view). A `'nope'` route proves chain fall-through →
   `NoViewFound`.
 - The plan's SSE rename follow-up claimed `EventStreamView` → `SSEEmitter`;
-  the actual landed name is `ServerSentEventView` (`packages/blue-platform-node/src/server-sent-event-view.ts`,
+  the actual landed name is `ServerSentEventView` (`packages/ndigo-platform-node/src/server-sent-event-view.ts`,
   `export class ServerSentEventView implements ProducerView`).
 
 ## Decision
@@ -62,12 +62,12 @@ mixed-case acronym convention).
   `likeView` View return in `NodeDispatcher.render`.
 - **D-3** Auto-config defaults are app-overridable: web resolves component
   names first, then bean views; node resolves via `IslandViewResolver`.
-- **D-4** `blue-views` demonstrates three locations (component module /
+- **D-4** `ndigo-views` demonstrates three locations (component module /
   context bean / view module on disk) with chain fall-through.
-- **D-5** Demo migrations: `blue-todo` controllers return names (dead
+- **D-5** Demo migrations: `ndigo-todo` controllers return names (dead
   element-class beans and redundant `viewResolver`/`webComponentViewEngine`
-  overrides removed); `blue-hello` keeps one intentionally-concrete
-  `WebComponentView` as the "concrete is an option" sample; `blue-island`
+  overrides removed); `ndigo-hello` keeps one intentionally-concrete
+  `WebComponentView` as the "concrete is an option" sample; `ndigo-island`
   `/events` returns the SSE view directly. **String handler returns stay
   JSON** (needs a `@ResponseBody`-style marker before the implicit
   String-as-view-name is adopted).
@@ -90,11 +90,11 @@ mixed-case acronym convention).
 ## References
 
 - Plan: `docs/plans/2026-09-06_VIEW_RESOLUTION_STRATEGY.md`
-- Implementation: `packages/blue-view/src/island-view-resolver.ts`,
-  `packages/blue-view/src/like-view.ts`,
-  `packages/blue-view-webcomponent/src/web-component-view-resolver.ts`,
-  `apps/blue-views/src/views-app-configuration.ts`,
-  `apps/blue-views/src/report-view-resolver.ts`, commits `48640af2`,
+- Implementation: `packages/ndigo-view/src/island-view-resolver.ts`,
+  `packages/ndigo-view/src/like-view.ts`,
+  `packages/ndigo-view-webcomponent/src/web-component-view-resolver.ts`,
+  `apps/ndigo-views/src/views-app-configuration.ts`,
+  `apps/ndigo-views/src/report-view-resolver.ts`, commits `48640af2`,
   `ee767f49` (2026-09-06)
 - Related: [AD-09](2026-09-05_AD09_SERVER_PUSH.md),
   [AD-03](2026-09-07_AD03_SITE_PAGE_MODEL.md)

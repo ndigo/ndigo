@@ -1,17 +1,17 @@
-# AD-06 Resolution: @blue/factory Scoping Split
+# AD-06 Resolution: @ndigo/factory Scoping Split
 
 **Date:** 2026-08-22  
 **Status:** Reviewed — No split needed at 1.0
 
 ## Background
 
-AD-06 proposed splitting `@blue/factory` into a scoped and non-scoped part. The concern was that `Scope`, `ScopedFactory`, `PrototypeScope`, `SingletonScope`, `HashScope`, and `ScopeRegistry` add complexity that not all consumers need.
+AD-06 proposed splitting `@ndigo/factory` into a scoped and non-scoped part. The concern was that `Scope`, `ScopedFactory`, `PrototypeScope`, `SingletonScope`, `HashScope`, and `ScopeRegistry` add complexity that not all consumers need.
 
 ## Analysis
 
 | Concern                                    | Current state                                          |
 | ------------------------------------------ | ------------------------------------------------------ |
-| Packages importing `@blue/factory`         | 11 packages across layers L0–L6                        |
+| Packages importing `@ndigo/factory`        | 11 packages across layers L0–L6                        |
 | Packages that import scope-specific types  | 0 (scopes are used internally by `AbstractFactory`)    |
 | Packages that import lifecycle/Aware types | All 11 (these are the primary interface)               |
 | Size of scope code                         | ~200 lines of 834 in `scope.ts` + `_scope-registry.ts` |
@@ -22,7 +22,7 @@ Scope types are internal to the factory implementation — no external consumer 
 
 **No split at 1.0.** The scoped factory remains integrated for three reasons:
 
-1. **No consumer pressure.** Every consumer that uses `@blue/factory` either needs the full `ConfigurableFactory` (which includes scoping) or just imports lightweight lifecycle/Aware types from the same package. No consumer would benefit from a split today.
+1. **No consumer pressure.** Every consumer that uses `@ndigo/factory` either needs the full `ConfigurableFactory` (which includes scoping) or just imports lightweight lifecycle/Aware types from the same package. No consumer would benefit from a split today.
 
 2. **No abstraction boundary.** Scoping is woven through `AbstractFactory` — `getInstance()`, `setValue()`, `destroyValues()` all interact with scopes. Extracting scopes would require significant refactoring of the core factory methods for no immediate gain.
 
@@ -32,14 +32,14 @@ Scope types are internal to the factory implementation — no external consumer 
 
 The integration point is:
 
-- `packages/blue-factory/src/_scope-registry.ts` — scope registry
-- `packages/blue-factory/src/scope.ts` — scope interfaces and implementations
-- `packages/blue-factory/src/factory.ts` — `AbstractFactory` wires them in `constructor()` at line 222
+- `packages/ndigo-factory/src/_scope-registry.ts` — scope registry
+- `packages/ndigo-factory/src/scope.ts` — scope interfaces and implementations
+- `packages/ndigo-factory/src/factory.ts` — `AbstractFactory` wires them in `constructor()` at line 222
 
 If a non-scoped consumer emerges post-1.0, the extraction path is:
 
-1. New package `@blue/factory-core` with `AbstractFactory` minus scope registration
-2. `@blue/factory` re-exports from `@blue/factory-core` and adds scope support
+1. New package `@ndigo/factory-core` with `AbstractFactory` minus scope registration
+2. `@ndigo/factory` re-exports from `@ndigo/factory-core` and adds scope support
 3. Consumers that only need lifecycle/Aware types can depend on either
 
 ## Revisit Trigger

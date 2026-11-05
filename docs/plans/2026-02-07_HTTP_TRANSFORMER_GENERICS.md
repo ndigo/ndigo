@@ -82,23 +82,23 @@ const sanitizer: HTTPTransformer<JSONObject> = {
     - Does `TOutput = TInput` complicate composition types?
 
 3. **Convention**
-    - What do other @blue packages do?
+    - What do other @ndigo packages do?
     - Is this pattern used elsewhere in the codebase?
 
 ## Research Tasks
 
-### 1. Survey @blue/core Conventions
+### 1. Survey @ndigo/core Conventions
 
 **Check:**
 
-- [ ] `@blue/core/src/transducer.ts` - How are generics structured?
+- [ ] `@ndigo/core/src/transducer.ts` - How are generics structured?
 - [ ] Any other interfaces with input/output generics
 - [ ] Pattern: Do they default output to input?
 
 **Example from transducers:**
 
 ```typescript
-// Check actual signature in @blue/core
+// Check actual signature in @ndigo/core
 interface Transducer<TInput, TOutput> {
     // Does this default TOutput to TInput?
 }
@@ -260,7 +260,7 @@ const pipeline = new CompositionTransformer<string>([
 
 1. TypeScript inference works correctly
 2. Doesn't complicate composition
-3. Aligns with @blue/core conventions
+3. Aligns with @ndigo/core conventions
 4. Common use case is same-type transforms
 
 **Rationale:** Reduces repetition for the common case (sanitizers, validators, same-type transforms) while still allowing explicit type changes when needed.
@@ -289,7 +289,7 @@ const pipeline = new CompositionTransformer<string>([
 
 ## Next Steps
 
-1. **Research** @blue/core conventions
+1. **Research** @ndigo/core conventions
 2. **Test** TypeScript type inference
 3. **Decide** based on findings
 4. **Document** decision in this file

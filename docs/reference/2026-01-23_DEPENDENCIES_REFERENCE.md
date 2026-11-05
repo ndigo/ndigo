@@ -82,7 +82,7 @@ This document provides a quick reference for all dependency versions after the 2
 
 ## Package Runtime Dependencies
 
-### blue-util (packages/blue-util)
+### ndigo-util (packages/ndigo-util)
 
 | Package     | Version | Notes                              |
 | ----------- | ------- | ---------------------------------- |
@@ -100,19 +100,19 @@ This document provides a quick reference for all dependency versions after the 2
 | @types/seedrandom | ~3.0.8  |
 | @types/slug       | ~5.0.9  |
 
-### blue-factory (packages/blue-factory)
+### ndigo-factory (packages/ndigo-factory)
 
 | Package          | Version | Notes               |
 | ---------------- | ------- | ------------------- |
 | reflect-metadata | ~0.2.2  | Updated from 0.1.13 |
 
-### blue-model (packages/blue-model)
+### ndigo-model (packages/ndigo-model)
 
 | Package     | Version | Notes                         |
 | ----------- | ------- | ----------------------------- |
 | objectmodel | ~4.4.6  | Latest 4.x (v5 doesn't exist) |
 
-### blue-context (packages/blue-context)
+### ndigo-context (packages/ndigo-context)
 
 **DevDependencies / PeerDependencies:**
 
@@ -120,7 +120,7 @@ This document provides a quick reference for all dependency versions after the 2
 | ---------------- | ------- |
 | reflect-metadata | 0.2.2   |
 
-### blue-dispatcher (packages/blue-dispatcher)
+### ndigo-dispatcher (packages/ndigo-dispatcher)
 
 **DevDependencies / PeerDependencies:**
 
@@ -128,7 +128,7 @@ This document provides a quick reference for all dependency versions after the 2
 | ---------------- | ------- |
 | reflect-metadata | 0.2.2   |
 
-### blue-fill (packages/blue-fill)
+### ndigo-fill (packages/ndigo-fill)
 
 | Package                       | Version       | Notes               |
 | ----------------------------- | ------------- | ------------------- |

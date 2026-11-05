@@ -1,10 +1,10 @@
-# 2026-10-03 Method Interception (`@blue/proxy`)
+# 2026-10-03 Method Interception (`@ndigo/proxy`)
 
 Decision record: [AD-42](../decisions/2026-10-03_AD42_METHOD_INTERCEPTION.md)
 
 ## 1. Problem
 
-BlueJS has no container-managed method interception. Cross-cutting concerns
+ndigo has no container-managed method interception. Cross-cutting concerns
 today are per-method decorators (`@cached`, `@traced`, `@transactional`): the
 wrapper is chosen at class-definition time and the policy lives in the service
 class. There is no way to apply a concern across many services — or to select
@@ -24,7 +24,7 @@ pointcut expressions, introductions, or migrating existing method decorators.
 
 - `InitializationAwareProcessor.processAfterInitialization(name, instance)` may
   return a wrapped replacement:
-  `packages/blue-factory/src/entry-processor.ts:11-30`
+  `packages/ndigo-factory/src/entry-processor.ts:11-30`
 - Wiring + singleton caching: `AbstractFactory._applyProcessorsAfterInitialization`
   (`abstract-factory.ts:472-491`), creation flow (`L600-643`), singleton cached
   via `defineProperty` in `getValue` (`L240-247`)
@@ -36,21 +36,21 @@ pointcut expressions, introductions, or migrating existing method decorators.
 - Wrappers replace the prototype method AND stamp metadata keys of the form
   `"<KEY>:<methodName>"`; e.g. `@traced` preserves the pre-wrap function as
   `"<TRACED_KEY>:<name>:original"` for signature inspection
-  (`packages/blue-telemetry/src/trace/decorators.ts:42-90`); `@profile` uses the
-  same `:name` suffix convention (`packages/blue-context/src/configuration.ts`)
-- Reader: `getSymbolMetadata(target)` (`packages/blue-core/src/metadata.ts:20-29`)
+  (`packages/ndigo-telemetry/src/trace/decorators.ts:42-90`); `@profile` uses the
+  same `:name` suffix convention (`packages/ndigo-context/src/configuration.ts`)
+- Reader: `getSymbolMetadata(target)` (`packages/ndigo-core/src/metadata.ts:20-29`)
 
 **Existing proxies**
 
 - `RegistryProxyHandler` forwards property access to the registry, binding
-  functions (`packages/blue-factory/src/registry.ts:42-69`) — registry-level,
+  functions (`packages/ndigo-factory/src/registry.ts:42-69`) — registry-level,
   not bean-method-level
 - `serviceClient()` builds a Proxy over a bean target with a `get` trap
-  intercepting declared methods (`packages/blue-service/src/service-client.ts:204-246`)
+  intercepting declared methods (`packages/ndigo-service/src/service-client.ts:204-246`)
 
 **Prior art (archived)**
 
-- `archive/blue-aspect/` — full imperative AOP API (`intercept(target, pointcut,
+- `archive/ndigo-aspect/` — full imperative AOP API (`intercept(target, pointcut,
   aspect)`, pointcut/advice classes, property interception), 16 months old,
   archived. Not resurrected (see AD-42).
 
@@ -82,9 +82,9 @@ Design decisions are recorded in AD-42. Sequencing-relevant refinements:
 
 ### Package
 
-`packages/blue-proxy/` — new workspace package. Depends on `@blue/factory`
-(processor types) and `@blue/core` (`getSymbolMetadata`). Mirrors the
-`blue-factory` package skeleton (package.json, vitest.config.ts, tsconfig.build.json,
+`packages/ndigo-proxy/` — new workspace package. Depends on `@ndigo/factory`
+(processor types) and `@ndigo/core` (`getSymbolMetadata`). Mirrors the
+`ndigo-factory` package skeleton (package.json, vitest.config.ts, tsconfig.build.json,
 nx project).
 
 ### API sketch
@@ -180,15 +180,15 @@ Caller
 
 ### Phase 0 — Package scaffold
 
-- Create `packages/blue-proxy` (skeleton from `blue-factory`), register in
+- Create `packages/ndigo-proxy` (skeleton from `ndigo-factory`), register in
   workspace/nx, root re-exports per repo convention.
-- **Acceptance:** `pnpm --filter @blue/proxy test` green (placeholder spec);
+- **Acceptance:** `pnpm --filter @ndigo/proxy test` green (placeholder spec);
   `pnpm manifest:check` clean.
 
 ### Phase 1 — Annotation keys
 
 - `methodAnnotation<T>(name)` decorator factory storing
-  `"blue.proxy.<name>:<method>"` in `context.metadata` (reject non-method
+  `"ndigo.proxy.<name>:<method>"` in `context.metadata` (reject non-method
   kinds with `TypeError`, mirroring `@traced`); `AnnotationKey` type;
   `annotationsOf(target)` reader via `getSymbolMetadata` with prototype-chain
   walk.
@@ -231,14 +231,14 @@ Caller
   without interceptors, double-processing safety.
 - **Acceptance:** factory-level specs green.
 
-### Phase 5 — Demo gate (blue-api)
+### Phase 5 — Demo gate (ndigo-api)
 
 - `AuditInterceptor` + `OrderService` demo bean, registered in the app entry
-  (`apps/blue-api/src/index.ts`, AD-42 D-8 pattern: processor first, class
+  (`apps/ndigo-api/src/index.ts`, AD-42 D-8 pattern: processor first, class
   second); spec mirroring that flow asserts audit records for advised calls,
   silence for plain methods, and preserved private state; smoke: full boot
   path exercised by the spec.
-- **Acceptance:** `pnpm --filter @blue/api test` green including the audit
+- **Acceptance:** `pnpm --filter @ndigo/api test` green including the audit
   spec; full app typecheck shows no new errors.
 
 ### Phase 6 — Verification and docs

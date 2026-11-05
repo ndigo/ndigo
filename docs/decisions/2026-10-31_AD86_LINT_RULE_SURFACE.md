@@ -8,18 +8,18 @@
 
 ## Context
 
-`@blue/oxlint-plugin` bundles 16 rules that serve two different missions:
+`@ndigo/oxlint-plugin` bundles 16 rules that serve two different missions:
 
-- **Consumer-usage guards** (8) catch wrong use of the BlueJS API in app
+- **Consumer-usage guards** (8) catch wrong use of the ndigo API in app
   code: they fire on decorator/paradigm mistakes, unsafe view-name literals,
   string registry lookups, duplicate mapping paths, `@scheduled` in browser
-  code, and `console` bypassing `@blue/log`. These are meaningful to every
+  code, and `console` bypassing `@ndigo/log`. These are meaningful to every
   app author — and to their agents: oxlint ships `oxlint --lsp` (editor
   delivery) and shareable configs via `oxlint.config.ts` `extends`, so a
   published rule set plus preset reaches consumer editors, CI, and agent
   shells through one artifact.
 - **Repo-only guards** (8) enforce this monorepo's layout and house style:
-  integration-layer boundaries keyed to `/packages/blue-*` paths
+  integration-layer boundaries keyed to `/packages/ndigo-*` paths
   (`no-direct-integration-imports`), internal-file imports/exports, doc
   headers (module/since/author), acronym casing, the `Abstract` prefix,
   UPPERCASE regexp constants, and create-factory global state.
@@ -28,15 +28,15 @@ Both missions ride the same package. That conflicts with two directions:
 
 1. `packages/` is the published product surface. A package that is _not_
    intended for consumers breaks the namespace's meaning — the directory a
-   reader (human or agent) treats as "installable BlueJS" must not contain
+   reader (human or agent) treats as "installable ndigo" must not contain
    repo-only tooling.
 2. The planned consumer artifact — a published plugin plus a
-   `recommended` preset, wired by `blue init` — needs the public package to
+   `recommended` preset, wired by `ndigo init` — needs the public package to
    be publishable, documented, tested, and free of monorepo assumptions.
    If the repo-only rules stay, they become de-facto public API and
    maintenance surface.
 
-Root `src/` previously held a barrel shim (`export * from '@blue/core'`)
+Root `src/` previously held a barrel shim (`export * from '@ndigo/core'`)
 deleted 2026-10-04 as dead. Reviving the location gives repo-only
 cross-package concerns a home outside `packages/`.
 
@@ -49,7 +49,7 @@ cross-package concerns a home outside `packages/`.
   `{ "name": "internal", "specifier": "./src/oxlint/plugin.ts" }` registers
   a stable rule namespace.
 - Two plugins coexist in one config: the string form
-  (`./packages/blue-oxlint-plugin/lib/index.js`, namespace `@blue`) next to
+  (`./packages/ndigo-oxlint-plugin/lib/index.js`, namespace `@ndigo`) next to
   the aliased internal plugin — both fired in the same run.
 - Root `engines` already require Node ≥24, so type-stripping is guaranteed
   in dev and CI. (Upstream jsPlugins is still alpha and not semver'd —
@@ -70,7 +70,7 @@ principle cannot silently regress.
 
 ### D2 — One rule set per mission
 
-The consumer mission stays in `@blue/oxlint-plugin` and is exactly the eight
+The consumer mission stays in `@ndigo/oxlint-plugin` and is exactly the eight
 usage guards listed above. The repo-only eight move out:
 
 | Moved to root `src/` (new rule ID)             |
@@ -96,7 +96,7 @@ explicit alias:
 
 ```json
 "jsPlugins": [
-  "./packages/blue-oxlint-plugin/lib/index.js",
+  "./packages/ndigo-oxlint-plugin/lib/index.js",
   { "name": "internal", "specifier": "./src/oxlint/plugin.ts" }
 ]
 ```
@@ -107,19 +107,19 @@ package source tree or a new barrel (its predecessor was deleted as one).
 ### D4 — The consumer surface is evolved as follow-up work
 
 De-hardcoding the eight public rules for app repos (path assumptions,
-hardcoded `@blue/*` package lists), the `recommended` preset, and
-`blue init` wiring are separate issues. This ADR fixes the boundary; it does
+hardcoded `@ndigo/*` package lists), the `recommended` preset, and
+`ndigo init` wiring are separate issues. This ADR fixes the boundary; it does
 not ship the consumer artifact.
 
 ## Consequences
 
-- Rule IDs change for the eight moved rules (`@blue/x` → `internal/x`); the
+- Rule IDs change for the eight moved rules (`@ndigo/x` → `internal/x`); the
   root config is updated. Effective coverage on `packages/` + `apps/` is
   unchanged.
 - `pnpm lint` keeps building only the public plugin; the internal rules need
   no build step (`src/oxlint` specs run via `pnpm test:internal`, wired as
   its own CI step; `tsconfig.spec.json` covers `src/**`).
-- `@blue/oxlint-plugin` shrinks to the consumer surface; its README and
+- `@ndigo/oxlint-plugin` shrinks to the consumer surface; its README and
   generated `api/` tree reflect that. No consumer import paths change (the
   repository is unpublished; there are no external consumers).
 - `check-manifests` gains the publishable-surface guardrail — the D1
@@ -127,14 +127,14 @@ not ship the consumer artifact.
 - Docs updated: AGENTS.md §4.4 (rule table, "Updating Rules" path),
   ARCHITECTURE.md lint references, AD-45 path note.
 - Follow-ups (separate issues): consumer preset + de-hardcoding +
-  `todomvc/examples/bluejs` smoke test; `blue init` wiring.
+  `todomvc/examples/bluejs` smoke test; `ndigo init` wiring.
 - **Revisit trigger:** oxlint dropping TS jsPlugin execution (internal rules
   would then need compiling), or the consumer preset needing rule sources
   shared with the repo.
 
 ## Alternatives considered
 
-- **Rename the package to `@blue/oxlint-plugin-private`, add a new public
+- **Rename the package to `@ndigo/oxlint-plugin-private`, add a new public
   package.** Rejected: still places repo-only tooling under `packages/`,
   contradicting D1, and drags it through the full package discipline
   (README, API docs, manifest conformance).
@@ -144,7 +144,7 @@ not ship the consumer artifact.
   scaffolding is needed.
 - **Keep all 16 rules public behind a "repo" preset.** Rejected:
   repo-layout and house-style rules would become de-facto public API — the
-  exact surface burden AD-84 removed for `@blue/util`.
+  exact surface burden AD-84 removed for `@ndigo/util`.
 - **Ship the internal rules as a private workspace package.** Rejected:
   unnecessary machinery — no build step, dependency graph, or publish
   metadata is required for TS files oxlint loads directly.

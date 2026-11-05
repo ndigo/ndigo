@@ -7,15 +7,15 @@
 
 ## Executive Summary
 
-Migration of BlueJS decorators from legacy TypeScript experimental decorators to TC39 Stage 3 standard decorators. This migration is necessary for future TypeScript compatibility and enables use of modern decorator features.
+Migration of ndigo decorators from legacy TypeScript experimental decorators to TC39 Stage 3 standard decorators. This migration is necessary for future TypeScript compatibility and enables use of modern decorator features.
 
 **Final Status:**
 
-- ✅ **Phase 1 Complete:** @blue/validate package fully migrated (1 decorator)
-- ✅ **Phase 2 Complete:** @blue/context package fully migrated (5 decorators)
-- ✅ **Phase 3 Complete:** @blue/dispatcher package fully migrated (6 decorators)
-- ✅ **Phase 4 Complete:** @blue/factory package fully migrated (4 decorators)
-- ✅ **Phase 5 Complete:** @blue/view-webcomponent package fully migrated (2 decorators)
+- ✅ **Phase 1 Complete:** @ndigo/validate package fully migrated (1 decorator)
+- ✅ **Phase 2 Complete:** @ndigo/context package fully migrated (5 decorators)
+- ✅ **Phase 3 Complete:** @ndigo/dispatcher package fully migrated (6 decorators)
+- ✅ **Phase 4 Complete:** @ndigo/factory package fully migrated (4 decorators)
+- ✅ **Phase 5 Complete:** @ndigo/view-webcomponent package fully migrated (2 decorators)
 - ✅ **Runtime Integration:** MetadataManager migrated to TC39
 - ✅ **All Tests Passing:** ~165 decorator tests passing across all packages
 - ✅ **Naming Standardization:** All decorators now use camelCase naming
@@ -52,13 +52,13 @@ Migration of BlueJS decorators from legacy TypeScript experimental decorators to
 
 **Total decorators migrated: 16 across 5 packages**
 
-| Package                 | Decorators                                                                | Types                    | Status      |
-| ----------------------- | ------------------------------------------------------------------------- | ------------------------ | ----------- |
-| @blue/validate          | `@pattern`                                                                | Field                    | ✅ COMPLETE |
-| @blue/context           | `@configuration`, `@profile`, `@property`, `@propertySource`, `@entry`    | Class, Method, Field     | ✅ COMPLETE |
-| @blue/dispatcher        | `@routeMapping`, `@errorMapping`, `@errorHandler`, `@routeParams` pattern | Class, Method, Parameter | ✅ COMPLETE |
-| @blue/factory           | `@scope`, `@singletonScope`, `@prototypeScope`, `@hashScope`              | Class                    | ✅ COMPLETE |
-| @blue/view-webcomponent | `@viewMapping`, `@tagMapping`                                             | Class                    | ✅ COMPLETE |
+| Package                  | Decorators                                                                | Types                    | Status      |
+| ------------------------ | ------------------------------------------------------------------------- | ------------------------ | ----------- |
+| @ndigo/validate          | `@pattern`                                                                | Field                    | ✅ COMPLETE |
+| @ndigo/context           | `@configuration`, `@profile`, `@property`, `@propertySource`, `@entry`    | Class, Method, Field     | ✅ COMPLETE |
+| @ndigo/dispatcher        | `@routeMapping`, `@errorMapping`, `@errorHandler`, `@routeParams` pattern | Class, Method, Parameter | ✅ COMPLETE |
+| @ndigo/factory           | `@scope`, `@singletonScope`, `@prototypeScope`, `@hashScope`              | Class                    | ✅ COMPLETE |
+| @ndigo/view-webcomponent | `@viewMapping`, `@tagMapping`                                             | Class                    | ✅ COMPLETE |
 
 ---
 
@@ -108,18 +108,18 @@ This allows packages to migrate independently while others continue using legacy
 
 ## Completed Work
 
-### ✅ Phase 1: @blue/validate Package (@Pattern Decorator)
+### ✅ Phase 1: @ndigo/validate Package (@Pattern Decorator)
 
 **Timeline:** 2025-02-01  
 **Files Modified:**
 
-- `packages/blue-validate/src/decorators.ts` - Complete rewrite
-- `packages/blue-validate/tsconfig.build.json` - TC39 enabled
-- `packages/blue-validate/tsconfig.json` - Created for tests
+- `packages/ndigo-validate/src/decorators.ts` - Complete rewrite
+- `packages/ndigo-validate/tsconfig.build.json` - TC39 enabled
+- `packages/ndigo-validate/tsconfig.json` - Created for tests
 
 **Files Created:**
 
-- `packages/blue-validate/test/pattern.spec.ts` - 16 comprehensive tests
+- `packages/ndigo-validate/test/pattern.spec.ts` - 16 comprehensive tests
 
 **Files Deleted:**
 
@@ -217,7 +217,7 @@ export function Pattern(params: PatternDecoratorParams) {
 #### Test Results
 
 ```
-✓ packages/blue-validate/test/pattern.spec.ts (16 tests) - ALL PASSING
+✓ packages/ndigo-validate/test/pattern.spec.ts (16 tests) - ALL PASSING
   ✓ Basic Validation (3 tests)
   ✓ Multiple Decorated Properties (1 test)
   ✓ Instance Isolation (2 tests)
@@ -227,36 +227,36 @@ export function Pattern(params: PatternDecoratorParams) {
   ✓ Inheritance (1 test)
   ✓ Edge Cases (3 tests)
 
-All @blue/validate tests: 107 passed | 97 skipped (204)
+All @ndigo/validate tests: 107 passed | 97 skipped (204)
 ```
 
 ---
 
-### ✅ Phase 2: @blue/context Package (COMPLETE)
+### ✅ Phase 2: @ndigo/context Package (COMPLETE)
 
 **Timeline:** 2025-02-01  
 **Status:** ✅ All decorators migrated, all tests passing
 
 #### Files Modified
 
-1. **`packages/blue-context/src/configuration.ts`** - Complete decorator rewrite (332 lines)
+1. **`packages/ndigo-context/src/configuration.ts`** - Complete decorator rewrite (332 lines)
 
     - Replaced `reflect-metadata` import with `@tsmetadata/polyfill`
     - Migrated 5 decorators to TC39
     - Updated metadata helper functions to use `Symbol.metadata`
     - Removed legacy `Reflect.defineMetadata()` / `Reflect.getMetadata()` calls
 
-2. **`packages/blue-context/src/_util.ts`** - Fixed export conflicts
+2. **`packages/ndigo-context/src/_util.ts`** - Fixed export conflicts
 
-    - Resolved `addIndex` / `addIndexRight` naming conflict between `@blue/util/function` and `@blue/util/list`
+    - Resolved `addIndex` / `addIndexRight` naming conflict between `@ndigo/util/function` and `@ndigo/util/list`
 
-3. **`packages/blue-context/test/decorators-behavior.spec.ts`** - Updated to TC39 metadata API (385 lines)
+3. **`packages/ndigo-context/test/decorators-behavior.spec.ts`** - Updated to TC39 metadata API (385 lines)
 
     - Converted 24 tests from `Reflect.getMetadata()` to `Symbol.metadata` access
     - Updated property tests to check instance properties (not prototype)
     - Fixed `@entry` decorator calls to use `@entry()` with parentheses
 
-4. **`packages/blue-context/test/testContext.ts`** - Fixed for TC39 compatibility
+4. **`packages/ndigo-context/test/testContext.ts`** - Fixed for TC39 compatibility
     - Added type annotations to `@property` decorated fields (`fooValue: any`, `fuuValue: any`)
     - Updated manual metadata setting from `Reflect.defineMetadata()` to `Symbol.metadata`
 
@@ -592,13 +592,13 @@ context.metadata['config:profile:myMethod'] = ['dev'];
 
 ```
 ✅ 59 tests passed | 1 skipped
-✅ packages/blue-context/test/decorators-behavior.spec.ts (24 tests) - ALL PASSING
-✅ packages/blue-context/test/configuration.spec.ts (2 tests)
-✅ packages/blue-context/test/context.spec.ts (6 tests)
-✅ packages/blue-context/test/environment.spec.ts (1 test)
-✅ packages/blue-context/test/event-emitter.spec.ts (23 tests | 1 skipped)
-✅ packages/blue-context/test/property-resolver.spec.ts (4 tests)
-❌ packages/blue-context/test/event-logger.spec.ts (UNRELATED: @blue/logger dependency issue)
+✅ packages/ndigo-context/test/decorators-behavior.spec.ts (24 tests) - ALL PASSING
+✅ packages/ndigo-context/test/configuration.spec.ts (2 tests)
+✅ packages/ndigo-context/test/context.spec.ts (6 tests)
+✅ packages/ndigo-context/test/environment.spec.ts (1 test)
+✅ packages/ndigo-context/test/event-emitter.spec.ts (23 tests | 1 skipped)
+✅ packages/ndigo-context/test/property-resolver.spec.ts (4 tests)
+❌ packages/ndigo-context/test/event-logger.spec.ts (UNRELATED: @ndigo/logger dependency issue)
 ```
 
 **Behavioral Test Coverage:**
@@ -745,7 +745,7 @@ class MyClass {}
 const value = MyClass[Symbol.metadata]['my:key'];
 ```
 
-**Challenge for @blue/context:** The package extensively uses `Reflect.defineMetadata` and `Reflect.getMetadata`. We need to:
+**Challenge for @ndigo/context:** The package extensively uses `Reflect.defineMetadata` and `Reflect.getMetadata`. We need to:
 
 1. Update all decorators to use `context.metadata`
 2. Update all reader functions (`getProfileMetadata`, etc.) to read from `Symbol.metadata`
@@ -753,9 +753,9 @@ const value = MyClass[Symbol.metadata]['my:key'];
 
 ---
 
-## Phase 3: @blue/dispatcher Migration (COMPLETE)
+## Phase 3: @ndigo/dispatcher Migration (COMPLETE)
 
-### ✅ Phase 3: @blue/dispatcher Migration
+### ✅ Phase 3: @ndigo/dispatcher Migration
 
 **Status:** ✅ COMPLETE (2026-02-02)
 
@@ -767,15 +767,15 @@ const value = MyClass[Symbol.metadata]['my:key'];
 
 **Files to migrate:**
 
-- `packages/blue-dispatcher/src/route-mapping.ts` (80 lines) - 1 decorator
-- `packages/blue-dispatcher/src/error-mapping.ts` (106 lines) - 2 decorators
-- `packages/blue-dispatcher/src/route-parameter.ts` (285 lines) - 3 parameter decorators (**COMPLEX**)
+- `packages/ndigo-dispatcher/src/route-mapping.ts` (80 lines) - 1 decorator
+- `packages/ndigo-dispatcher/src/error-mapping.ts` (106 lines) - 2 decorators
+- `packages/ndigo-dispatcher/src/route-parameter.ts` (285 lines) - 3 parameter decorators (**COMPLEX**)
 
 **Infrastructure already in place:**
 
-- ✅ `packages/blue-dispatcher/src/_decorator-util.ts` - Parameter name extraction helper
-- ✅ `packages/blue-dispatcher/src/error.ts` - 3 new error classes for decorator validation
-- ✅ `packages/blue-dispatcher/test/decorator-util.spec.ts` - 11 tests (all passing)
+- ✅ `packages/ndigo-dispatcher/src/_decorator-util.ts` - Parameter name extraction helper
+- ✅ `packages/ndigo-dispatcher/src/error.ts` - 3 new error classes for decorator validation
+- ✅ `packages/ndigo-dispatcher/test/decorator-util.spec.ts` - 11 tests (all passing)
 
 **Decorators to migrate (6):**
 
@@ -842,7 +842,7 @@ handleThere(n1: string, n2: string) {
 
 ##### **Step 1: Configure TypeScript for TC39** (5 min)
 
-**File:** `packages/blue-dispatcher/tsconfig.build.json`
+**File:** `packages/ndigo-dispatcher/tsconfig.build.json`
 
 **Changes needed:**
 
@@ -863,13 +863,13 @@ handleThere(n1: string, n2: string) {
 }
 ```
 
-**Why:** Enables TC39 decorator mode (same pattern as @blue/context and @blue/validate)
+**Why:** Enables TC39 decorator mode (same pattern as @ndigo/context and @ndigo/validate)
 
 **Verification:**
 
 ```bash
-cd /home/jeff/workspace/blue
-pnpm --filter @blue/dispatcher build:lib
+cd /home/jeff/workspace/ndigo
+pnpm --filter @ndigo/dispatcher build:lib
 # Should fail with legacy decorator errors (expected - will fix in next steps)
 ```
 
@@ -879,7 +879,7 @@ pnpm --filter @blue/dispatcher build:lib
 
 **Purpose:** Document current behavior of all 6 decorators **before** migration. This provides a safety net.
 
-**File to create:** `packages/blue-dispatcher/test/decorators-behavior.spec.ts`
+**File to create:** `packages/ndigo-dispatcher/test/decorators-behavior.spec.ts`
 
 **Test structure:**
 
@@ -1095,7 +1095,7 @@ describe('Decorator Behavior Documentation (Legacy → TC39)', () => {
 **Deliverable:** Run tests with legacy decorators - all should pass
 
 ```bash
-pnpm vitest run packages/blue-dispatcher/test/decorators-behavior.spec.ts
+pnpm vitest run packages/ndigo-dispatcher/test/decorators-behavior.spec.ts
 ```
 
 ---
@@ -1104,16 +1104,16 @@ pnpm vitest run packages/blue-dispatcher/test/decorators-behavior.spec.ts
 
 ###### **3.1 Migrate @routeMapping** (30 min)
 
-**File:** `packages/blue-dispatcher/src/route-mapping.ts`
+**File:** `packages/ndigo-dispatcher/src/route-mapping.ts`
 
 **Before (Legacy):**
 
 ```typescript
 import 'reflect-metadata';
-import { compose } from '@blue/util/function';
-import { when } from '@blue/util/logic';
-import { mergeRight, objOf } from '@blue/util/object';
-import { isString } from '@blue/util/types';
+import { compose } from '@ndigo/util/function';
+import { when } from '@ndigo/util/logic';
+import { mergeRight, objOf } from '@ndigo/util/object';
+import { isString } from '@ndigo/util/types';
 
 type RouteMappingValue = {
     value: string;
@@ -1175,10 +1175,10 @@ export const privateMapping = (route: string) => routeMapping({ value: route, pr
  */
 
 import '@tsmetadata/polyfill';
-import { compose } from '@blue/util/function';
-import { when } from '@blue/util/logic';
-import { mergeRight, objOf } from '@blue/util/object';
-import { isString } from '@blue/util/types';
+import { compose } from '@ndigo/util/function';
+import { when } from '@ndigo/util/logic';
+import { mergeRight, objOf } from '@ndigo/util/object';
+import { isString } from '@ndigo/util/types';
 
 type RouteMappingValue = {
     value: string;
@@ -1327,15 +1327,15 @@ export const privateMapping = (route: string) => routeMapping({ value: route, pr
 
 ###### **3.2 Migrate @errorHandler + @errorMapping** (30 min)
 
-**File:** `packages/blue-dispatcher/src/error-mapping.ts`
+**File:** `packages/ndigo-dispatcher/src/error-mapping.ts`
 
 **Before (Legacy):**
 
 ```typescript
 import 'reflect-metadata';
-import { Constructable } from '@blue/core';
-import { both, either, propSatisfies } from '@blue/util/logic';
-import { propIs, isNotNil } from '@blue/util/types';
+import { Constructable } from '@ndigo/core';
+import { both, either, propSatisfies } from '@ndigo/util/logic';
+import { propIs, isNotNil } from '@ndigo/util/types';
 
 const ERROR_HANDLER = 'error:handler',
     ERROR_MAPPING = 'error:mapping',
@@ -1356,9 +1356,9 @@ const ERROR_HANDLER = 'error:handler',
  */
 
 import '@tsmetadata/polyfill';
-import { Constructable } from '@blue/core';
-import { both, either, propSatisfies } from '@blue/util/logic';
-import { propIs, isNotNil } from '@blue/util/types';
+import { Constructable } from '@ndigo/core';
+import { both, either, propSatisfies } from '@ndigo/util/logic';
+import { propIs, isNotNil } from '@ndigo/util/types';
 
 const { assign } = Object;
 const hasFunction = propIs(Function);
@@ -1494,7 +1494,7 @@ export const errorMapping = assign(em, {
 
 ```bash
 # Update behavioral tests to use TC39 API for simple decorators
-pnpm vitest run packages/blue-dispatcher/test/decorators-behavior.spec.ts
+pnpm vitest run packages/ndigo-dispatcher/test/decorators-behavior.spec.ts
 
 # Should pass for @routeMapping, @errorHandler, @errorMapping
 # Will still fail for parameter decorators (expected - fixing in Step 4)
@@ -1506,7 +1506,7 @@ pnpm vitest run packages/blue-dispatcher/test/decorators-behavior.spec.ts
 
 ###### **4.1 Design New API** (45 min)
 
-**File:** `packages/blue-dispatcher/src/route-parameter.ts`
+**File:** `packages/ndigo-dispatcher/src/route-parameter.ts`
 
 **Strategy:**
 
@@ -1523,11 +1523,11 @@ pnpm vitest run packages/blue-dispatcher/test/decorators-behavior.spec.ts
  */
 
 import '@tsmetadata/polyfill';
-import { complement, either, when } from '@blue/util/logic';
-import { pipe } from '@blue/util/function';
-import { mergeRight, objOf } from '@blue/util/object';
-import { isString, like } from '@blue/util/types';
-import { Serializable, JSONObject, createNull, Equatable } from '@blue/core';
+import { complement, either, when } from '@ndigo/util/logic';
+import { pipe } from '@ndigo/util/function';
+import { mergeRight, objOf } from '@ndigo/util/object';
+import { isString, like } from '@ndigo/util/types';
+import { Serializable, JSONObject, createNull, Equatable } from '@ndigo/core';
 import { extractParameterNames } from './_decorator-util';
 import { InvalidParameterMappingError } from './error';
 
@@ -1848,7 +1848,7 @@ export const defineQueryValue = (
 
 ###### **4.2 Update Test Files** (30 min)
 
-**File:** `packages/blue-dispatcher/test/assets/argument-resolver-context.ts`
+**File:** `packages/ndigo-dispatcher/test/assets/argument-resolver-context.ts`
 
 **Before:**
 
@@ -1895,7 +1895,7 @@ class HelloController {
 **Check other test assets:**
 
 ```bash
-cd /home/jeff/workspace/blue/packages/blue-dispatcher
+cd /home/jeff/workspace/ndigo/packages/ndigo-dispatcher
 grep -r "@queryValue\|@matrixValue\|@cookieValue" test/
 ```
 
@@ -1905,7 +1905,7 @@ Update any other files that use parameter decorators.
 
 ###### **4.3 Update Behavioral Tests** (15 min)
 
-**File:** `packages/blue-dispatcher/test/decorators-behavior.spec.ts`
+**File:** `packages/ndigo-dispatcher/test/decorators-behavior.spec.ts`
 
 **Add new TC39 tests, remove legacy parameter decorator tests:**
 
@@ -1993,8 +1993,8 @@ describe('@routeParams (TC39)', () => {
 **5.1 Run All Dispatcher Tests:**
 
 ```bash
-cd /home/jeff/workspace/blue
-pnpm vitest run packages/blue-dispatcher/test/
+cd /home/jeff/workspace/ndigo
+pnpm vitest run packages/ndigo-dispatcher/test/
 ```
 
 **Expected:** All tests should pass, including:
@@ -2006,15 +2006,15 @@ pnpm vitest run packages/blue-dispatcher/test/
 **5.2 Run Specific Integration Tests:**
 
 ```bash
-pnpm vitest run packages/blue-dispatcher/test/argument-resolver.spec.ts
-pnpm vitest run packages/blue-dispatcher/test/dispatcher.spec.ts
-pnpm vitest run packages/blue-dispatcher/test/controller.spec.ts
+pnpm vitest run packages/ndigo-dispatcher/test/argument-resolver.spec.ts
+pnpm vitest run packages/ndigo-dispatcher/test/dispatcher.spec.ts
+pnpm vitest run packages/ndigo-dispatcher/test/controller.spec.ts
 ```
 
 **5.3 Build Package:**
 
 ```bash
-pnpm --filter @blue/dispatcher build:lib
+pnpm --filter @ndigo/dispatcher build:lib
 ```
 
 **Expected:** Clean build with no TypeScript errors
@@ -2047,14 +2047,14 @@ Mark Phase 3 as complete and change status from "⏳ Pending" to "✅ Complete".
 Add Phase 3 completion summary at line 722:
 
 ````markdown
-### ✅ Phase 3: @blue/dispatcher Migration - COMPLETE
+### ✅ Phase 3: @ndigo/dispatcher Migration - COMPLETE
 
 **Status:** Complete (implemented on 2025-02-XX)
 
 **Time Taken:** X.X hours (estimated 4.5-5.5 hours)
 
 **Summary:**
-Successfully migrated all 6 decorators in @blue/dispatcher from legacy TypeScript to TC39 Stage 3 standard. Redesigned parameter decorators from parameter decorator pattern to method decorator with parameter map.
+Successfully migrated all 6 decorators in @ndigo/dispatcher from legacy TypeScript to TC39 Stage 3 standard. Redesigned parameter decorators from parameter decorator pattern to method decorator with parameter map.
 
 **Decorators Migrated:**
 
@@ -2211,7 +2211,7 @@ Document the breaking change and provide migration examples for users.
 
 **7.1 Run Full Test Suite:**
 ```bash
-cd /home/jeff/workspace/blue
+cd /home/jeff/workspace/ndigo
 pnpm test
 ````
 
@@ -2228,14 +2228,14 @@ pnpm build
 **7.3 Verify No Regressions:**
 
 ```bash
-# Check @blue/validate
-pnpm vitest run packages/blue-validate/test/
+# Check @ndigo/validate
+pnpm vitest run packages/ndigo-validate/test/
 
-# Check @blue/context
-pnpm vitest run packages/blue-context/test/
+# Check @ndigo/context
+pnpm vitest run packages/ndigo-context/test/
 
-# Check @blue/dispatcher
-pnpm vitest run packages/blue-dispatcher/test/
+# Check @ndigo/dispatcher
+pnpm vitest run packages/ndigo-dispatcher/test/
 ```
 
 **Expected:** All tests passing (no regressions)
@@ -2255,8 +2255,8 @@ pnpm vitest run packages/blue-dispatcher/test/
 - [ ] All test files updated to new API
 - [ ] All dispatcher tests passing (60+)
 - [ ] Clean build with no TypeScript errors
-- [ ] No regressions in @blue/validate
-- [ ] No regressions in @blue/context
+- [ ] No regressions in @ndigo/validate
+- [ ] No regressions in @ndigo/context
 - [ ] Documentation updated (this file)
 - [ ] TC39 Quick Reference updated
 - [ ] Breaking changes documented
@@ -2267,20 +2267,20 @@ pnpm vitest run packages/blue-dispatcher/test/
 
 **Configuration:**
 
-- `packages/blue-dispatcher/tsconfig.build.json` - Enable TC39 mode
+- `packages/ndigo-dispatcher/tsconfig.build.json` - Enable TC39 mode
 
 **Source Code (Complete Rewrites):**
 
-- `packages/blue-dispatcher/src/route-mapping.ts` (~120 lines)
-- `packages/blue-dispatcher/src/error-mapping.ts` (~90 lines)
-- `packages/blue-dispatcher/src/route-parameter.ts` (~200 lines, major redesign)
+- `packages/ndigo-dispatcher/src/route-mapping.ts` (~120 lines)
+- `packages/ndigo-dispatcher/src/error-mapping.ts` (~90 lines)
+- `packages/ndigo-dispatcher/src/route-parameter.ts` (~200 lines, major redesign)
 
 **Tests:**
 
-- `packages/blue-dispatcher/test/decorators-behavior.spec.ts` (NEW, ~150 lines)
-- `packages/blue-dispatcher/test/assets/argument-resolver-context.ts` (UPDATE)
-- `packages/blue-dispatcher/test/assets/dispatcher-context.ts` (CHECK + UPDATE if needed)
-- `packages/blue-dispatcher/test/assets/route-error-resolver-context.ts` (CHECK + UPDATE if needed)
+- `packages/ndigo-dispatcher/test/decorators-behavior.spec.ts` (NEW, ~150 lines)
+- `packages/ndigo-dispatcher/test/assets/argument-resolver-context.ts` (UPDATE)
+- `packages/ndigo-dispatcher/test/assets/dispatcher-context.ts` (CHECK + UPDATE if needed)
+- `packages/ndigo-dispatcher/test/assets/route-error-resolver-context.ts` (CHECK + UPDATE if needed)
 
 **Documentation:**
 
@@ -2444,14 +2444,14 @@ context.addInitializer(function (this: any) {
 
 **Decorators Migrated:** 16 total across 5 packages
 
-| Package                 | Decorators     | Test Files | New Tests | Total Tests | Status          |
-| ----------------------- | -------------- | ---------- | --------- | ----------- | --------------- |
-| @blue/validate          | 1 (`@pattern`) | 1          | 12        | 107 active  | ✅ Complete     |
-| @blue/context           | 5              | 1          | 24        | 60 active   | ✅ Complete     |
-| @blue/dispatcher        | 6              | 3          | 39        | 88 active   | ✅ Complete     |
-| @blue/factory           | 4              | 1          | 24        | 35 active   | ✅ Complete     |
-| @blue/view-webcomponent | 2              | 2          | 23        | 23 active   | ✅ Complete     |
-| **TOTALS**              | **16**         | **8**      | **122**   | **~313**    | **✅ Complete** |
+| Package                  | Decorators     | Test Files | New Tests | Total Tests | Status          |
+| ------------------------ | -------------- | ---------- | --------- | ----------- | --------------- |
+| @ndigo/validate          | 1 (`@pattern`) | 1          | 12        | 107 active  | ✅ Complete     |
+| @ndigo/context           | 5              | 1          | 24        | 60 active   | ✅ Complete     |
+| @ndigo/dispatcher        | 6              | 3          | 39        | 88 active   | ✅ Complete     |
+| @ndigo/factory           | 4              | 1          | 24        | 35 active   | ✅ Complete     |
+| @ndigo/view-webcomponent | 2              | 2          | 23        | 23 active   | ✅ Complete     |
+| **TOTALS**               | **16**         | **8**      | **122**   | **~313**    | **✅ Complete** |
 
 ### Time Investment
 
@@ -2459,11 +2459,11 @@ context.addInitializer(function (this: any) {
 
 | Phase              | Package                           | Decorators        | Time Spent    |
 | ------------------ | --------------------------------- | ----------------- | ------------- |
-| Phase 1            | @blue/validate                    | 1                 | ~2 hours      |
-| Phase 2            | @blue/context                     | 5                 | ~4 hours      |
-| Phase 3            | @blue/dispatcher                  | 6                 | ~6 hours      |
-| Phase 4            | @blue/factory                     | 4                 | ~1.5 hours    |
-| Phase 5            | @blue/view-webcomponent           | 2                 | ~1.5 hours    |
+| Phase 1            | @ndigo/validate                   | 1                 | ~2 hours      |
+| Phase 2            | @ndigo/context                    | 5                 | ~4 hours      |
+| Phase 3            | @ndigo/dispatcher                 | 6                 | ~6 hours      |
+| Phase 4            | @ndigo/factory                    | 4                 | ~1.5 hours    |
+| Phase 5            | @ndigo/view-webcomponent          | 2                 | ~1.5 hours    |
 | **Infrastructure** | MetadataManager, configs, cleanup | -                 | ~2 hours      |
 | **TOTAL**          | **5 packages**                    | **16 decorators** | **~17 hours** |
 
@@ -2682,19 +2682,19 @@ After each package migration:
 
 ### Low Risk ✅
 
-- **@blue/validate:** Complete and stable
+- **@ndigo/validate:** Complete and stable
 - **Simple class decorators:** Straightforward migration
 - **Method decorators:** Well-understood pattern
 
 ### Medium Risk ⚠️
 
-- **@blue/context metadata compatibility:** Need to ensure existing code reading metadata works
+- **@ndigo/context metadata compatibility:** Need to ensure existing code reading metadata works
 - **Property decorators:** More complex than methods but pattern is proven
 - **Test coverage:** Some packages may have insufficient tests
 
 ### High Risk ⚠️⚠️
 
-- **@blue/dispatcher parameter decorators:** Requires API change (breaking change)
+- **@ndigo/dispatcher parameter decorators:** Requires API change (breaking change)
 - **Runtime behavior changes:** TC39 execution order differs from legacy
 - **Metadata migration:** Risk of breaking existing code that reads decorator metadata
 - **Build system interactions:** Potential issues with tsconfig composition
@@ -2730,7 +2730,7 @@ All planned decorator migrations have been successfully completed. The following
     - Document any performance implications
 
 3. **Remaining packages** (no decorators found)
-    - @blue/router, @blue/http, @blue/logger, etc. have no decorators to migrate
+    - @ndigo/router, @ndigo/http, @ndigo/logger, etc. have no decorators to migrate
     - Pre-existing build errors in some packages are unrelated to decorator migration
 
 ### Success Criteria Met ✅
@@ -2755,13 +2755,13 @@ All planned decorator migrations have been successfully completed. The following
 **Modified Files:**
 
 ```
-packages/blue-validate/
+packages/ndigo-validate/
   ├── src/decorators.ts                     [MODIFIED - TC39 rewrite]
   ├── test/pattern.spec.ts                  [CREATED - 16 tests]
   ├── tsconfig.json                         [CREATED - TC39 enabled]
   └── tsconfig.build.json                   [MODIFIED - TC39 enabled]
 
-packages/blue-context/
+packages/ndigo-context/
   ├── src/configuration.ts                  [MODIFIED - TC39 rewrite, 332 lines]
   ├── src/_util.ts                          [MODIFIED - fixed export conflicts]
   ├── test/decorators-behavior.spec.ts      [MODIFIED - TC39 metadata API, 385 lines]
@@ -2769,7 +2769,7 @@ packages/blue-context/
   ├── tsconfig.json                         [MODIFIED - TC39 enabled]
   └── tsconfig.build.json                   [MODIFIED - TC39 enabled]
 
-packages/blue-dispatcher/
+packages/ndigo-dispatcher/
   ├── src/_decorator-util.ts                [CREATED - param name extraction]
   ├── src/error.ts                          [MODIFIED - added error classes]
   └── test/decorator-util.spec.ts           [CREATED - 11 tests]
@@ -2778,7 +2778,7 @@ packages/blue-dispatcher/
 **Deleted Files:**
 
 ```
-packages/blue-validate/test/
+packages/ndigo-validate/test/
   ├── pattern-decorator-behavior.spec.ts    [DELETED - legacy tests]
   ├── pattern-behavior-contract.spec.ts     [DELETED - legacy tests]
   ├── pattern-constraint-debug.spec.ts      [DELETED - debug file]
@@ -2825,11 +2825,11 @@ packages/blue-validate/test/
 **Success Metrics:**
 
 - ✅ Five packages fully migrated with all tests passing
-    - @blue/validate (1 decorator, 107 active tests)
-    - @blue/context (5 decorators, 60 active tests)
-    - @blue/dispatcher (6 decorators, 88 active tests)
-    - @blue/factory (4 decorators, 35 active tests)
-    - @blue/view-webcomponent (2 decorators, 23 active tests)
+    - @ndigo/validate (1 decorator, 107 active tests)
+    - @ndigo/context (5 decorators, 60 active tests)
+    - @ndigo/dispatcher (6 decorators, 88 active tests)
+    - @ndigo/factory (4 decorators, 35 active tests)
+    - @ndigo/view-webcomponent (2 decorators, 23 active tests)
 - ✅ Total: 16 decorators migrated, ~165 tests passing
 - ✅ Naming standardization: All decorators now use camelCase
 - ✅ Proven pattern for field decorators (addInitializer + instance storage)
@@ -2872,30 +2872,30 @@ Completed cleanup tasks after TC39 migration:
 
 1. ✅ **Removed `reflect-metadata` from migrated packages**
 
-    - Removed from `@blue/context/package.json` (devDependencies and peerDependencies)
-    - Removed from `@blue/dispatcher/package.json` (devDependencies and peerDependencies)
-    - @blue/validate never had the dependency (uses only @tsmetadata/polyfill)
+    - Removed from `@ndigo/context/package.json` (devDependencies and peerDependencies)
+    - Removed from `@ndigo/dispatcher/package.json` (devDependencies and peerDependencies)
+    - @ndigo/validate never had the dependency (uses only @tsmetadata/polyfill)
 
 2. ✅ **Verified no `reflect-metadata` imports in migrated packages**
 
-    - Searched all source files in @blue/validate, @blue/context, @blue/dispatcher
+    - Searched all source files in @ndigo/validate, @ndigo/context, @ndigo/dispatcher
     - Zero imports found (all use @tsmetadata/polyfill instead)
 
 3. ✅ **Test & Build Verification**
 
-    - @blue/validate: All 107 tests passing, build successful
-    - @blue/context: All 59 tests passing, build successful
-    - @blue/dispatcher: All 66 decorator tests passing, build successful
+    - @ndigo/validate: All 107 tests passing, build successful
+    - @ndigo/context: All 59 tests passing, build successful
+    - @ndigo/dispatcher: All 66 decorator tests passing, build successful
 
 4. 📝 **Unmigrated Packages Still Using `reflect-metadata`:**
-    - `@blue/factory` - Uses legacy decorators (`@scope`, `@singletonScope`, etc.)
-    - `@blue/view-webcomponent` - Uses legacy decorators (`@viewMapping`, `@tagMapping`)
+    - `@ndigo/factory` - Uses legacy decorators (`@scope`, `@singletonScope`, etc.)
+    - `@ndigo/view-webcomponent` - Uses legacy decorators (`@viewMapping`, `@tagMapping`)
     - Root package.json - Keeps dependency for unmigrated packages
 
 **Next Steps (Optional):**
 
 - Remove `experimentalDecorators: true` from root tsconfig (if desired)
-- Migrate remaining packages (@blue/factory, @blue/view-webcomponent)
+- Migrate remaining packages (@ndigo/factory, @ndigo/view-webcomponent)
 - Create user migration guide for external consumers
 - Performance benchmarking (TC39 vs legacy)
 

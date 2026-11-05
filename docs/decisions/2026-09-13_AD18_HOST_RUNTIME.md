@@ -6,15 +6,15 @@ complete; see §Implementation status)
 
 ## Background
 
-Blue's micro frontend story is split across two host demos, each composing
+Ndigo's micro frontend story is split across two host demos, each composing
 the same pieces by hand:
 
-| Piece                                          | `apps/blue-host` (shell-composition.ts)   | `apps/blue-todo` (shell-composition.ts) |
-| ---------------------------------------------- | ----------------------------------------- | --------------------------------------- |
-| Shell context (`createShellContext`)           | ✅                                        | ✅                                      |
-| `FeatureContextMountManager` (`@blue/context`) | ✅ `registerFeature` × 3                  | ✅ `registerFeature` × 5                |
-| `FeatureRoutingRegistry` (`@blue/router`)      | ✅ `registerFeature` × 3                  | ✅ `registerFeature` × 5                |
-| Join mount↔route                               | `mountOnActivate`/`onDeactivate` closures | same closures, plus dispatcher dispatch |
+| Piece                                           | `apps/ndigo-host` (shell-composition.ts)  | `apps/ndigo-todo` (shell-composition.ts) |
+| ----------------------------------------------- | ----------------------------------------- | ---------------------------------------- |
+| Shell context (`createShellContext`)            | ✅                                        | ✅                                       |
+| `FeatureContextMountManager` (`@ndigo/context`) | ✅ `registerFeature` × 3                  | ✅ `registerFeature` × 5                 |
+| `FeatureRoutingRegistry` (`@ndigo/router`)      | ✅ `registerFeature` × 3                  | ✅ `registerFeature` × 5                 |
+| Join mount↔route                                | `mountOnActivate`/`onDeactivate` closures | same closures, plus dispatcher dispatch  |
 
 Both hosts register each feature **twice** — once in the mount manager, once
 in the routing registry — and hand-join them with closures
@@ -36,7 +36,7 @@ from the context. Consequences:
   converge on or test against.
 - The gap vs. single-SPA's `registerApplication(name, app, activityFn,
   customProps)` — one call covering registration, lifecycle, and URL
-  activation — is real: Blue splits it across two registries joined by
+  activation — is real: Ndigo splits it across two registries joined by
   boilerplate.
 
 AD-03 (Site/Page model) already flags the missing registration API:
@@ -52,7 +52,7 @@ island name↔tag↔schema binding remain AD-03's open questions (see
 
 ### D1 — A new `HostManager` service, resolvable from the shell context
 
-New package **`@blue/host`** (depends on `@blue/context` + `@blue/router`)
+New package **`@ndigo/host`** (depends on `@ndigo/context` + `@ndigo/router`)
 exports:
 
 ```ts
@@ -68,15 +68,15 @@ the shell (features, shell auto-configuration, tests) can reach the
 orchestrator.
 
 **Why a new package:** `HostManager` composes `FeatureContextMountManager`
-(`@blue/context`) with `FeatureRoutingRegistry` (`@blue/router`). Neither
-package may grow the other as a dependency: `@blue/router` today depends
-only on core/factory/http/util (`package.json`), and `@blue/context` is the
+(`@ndigo/context`) with `FeatureRoutingRegistry` (`@ndigo/router`). Neither
+package may grow the other as a dependency: `@ndigo/router` today depends
+only on core/factory/http/util (`package.json`), and `@ndigo/context` is the
 more fundamental layer. A dedicated package owns the composition without
 polluting either concern — consistent with the package-separation doctrine
 (`docs/plans/2026-09-04_PACKAGE_SEPARATION.md`). Rejected alternative:
-`HostManager` in `@blue/router` with a new context dependency — forces the
+`HostManager` in `@ndigo/router` with a new context dependency — forces the
 router to know context lifecycle concerns for a composition-only consumer.
-Naming: package `@blue/host` (distinct from the demo app `apps/blue-host`);
+Naming: package `@ndigo/host` (distinct from the demo app `apps/ndigo-host`);
 class `HostManager` conforms to the role-based suffixes of `STYLE_GUIDE.md`
 §3.11 (`*Manager` = "manages lifecycle or coordinates multiple components",
 matching `FeatureContextMountManager`). The _concept_ keeps the established
@@ -158,7 +158,7 @@ change later, but the default remains "host declares features at boot."
   impossible from a feature.
 - **Testability.** Feature tests can replace the shell-context value with a
   mock/stub `HostManager`; host integration tests exercise one seam.
-- **New small public surface** in `@blue/router`: `PartitionRouter.unmount`,
+- **New small public surface** in `@ndigo/router`: `PartitionRouter.unmount`,
   `FeatureRoutingRegistry.unregister`.
 - **`PartitionRouter` rename (2026-09-13).** `SiteRouter` was renamed in the
   same session: "Site" was vestigial vocabulary — AD-03 retired the Site
@@ -167,11 +167,11 @@ change later, but the default remains "host declares features at boot."
   blocks; `PartitionRouter` matches the existing `route-partition.ts`
   vocabulary (`matchesPartitionPath`, `normalizePartitionPrefix`,
   `stripPartitionPrefix`, `restorePartitionPrefix`).
-- **New package** `@blue/host` (private first, publishable later) + a
+- **New package** `@ndigo/host` (private first, publishable later) + a
   `ContextToken`; both demos' manifests gain the dependency. The demo app
-  `apps/blue-host` was npm-renamed `@blue/host` → **`@blue/host-demo`** to
+  `apps/ndigo-host` was npm-renamed `@ndigo/host` → **`@ndigo/host-demo`** to
   free the scope name for the package.
-- **2026-11-01 (AD-86):** the "publishable later" arrived — `@blue/host`
+- **2026-11-01 (AD-86):** the "publishable later" arrived — `@ndigo/host`
   dropped `private: true`, so the `packages/` publishable-surface guard now
   carries no exceptions.
 - **Documentation:** `apps/README.md` matrix updated; this AD
@@ -180,15 +180,15 @@ change later, but the default remains "host declares features at boot."
 
 ## Sequencing
 
-1. **`@blue/host` scaffold**: `HostManager` + `HOST_MANAGER_TOKEN` + types;
+1. **`@ndigo/host` scaffold**: `HostManager` + `HOST_MANAGER_TOKEN` + types;
    unit tests — one-call registration, mount-on-activate, unmount-on-
    deactivate, dependency validation at mount, `unregister`, metrics
    passthrough (`FeatureMetricRecorder`).
-2. **`@blue/router` additions**: `PartitionRouter.unmount(prefix)`,
+2. **`@ndigo/router` additions**: `PartitionRouter.unmount(prefix)`,
    `FeatureRoutingRegistry.unregister(name)` (+ tests).
-3. **Migrate `apps/blue-host`** to `HostManager`; delete closures. Verify:
+3. **Migrate `apps/ndigo-host`** to `HostManager`; delete closures. Verify:
    identical rendered behavior, same chunks/loading, tests green.
-4. **Migrate `apps/blue-todo`** (keeps relays/gateway/dispatcher via the
+4. **Migrate `apps/ndigo-todo`** (keeps relays/gateway/dispatcher via the
    `onRoute`/relays options). Delete the dead test seams the migration
    leaves behind: `createTodoPartitionRouter` and
    `TodoRuntimeComposition.partitionRouter` (the registry's
@@ -198,28 +198,28 @@ change later, but the default remains "host declares features at boot."
 **Acceptance:** zero `mountOnActivate`-style closure joins remain in
 `apps/`; every feature is registered by exactly one `registerFeature` call;
 a feature context can resolve `HOST_MANAGER_TOKEN`; `createTodoPartitionRouter`
-and `TodoRuntimeComposition.partitionRouter` are gone from `apps/blue-todo`;
+and `TodoRuntimeComposition.partitionRouter` are gone from `apps/ndigo-todo`;
 both demo suites green with unchanged output.
 
 ## Implementation status (2026-09-13)
 
 Steps 1–4 complete; step 5 (docs) landed with this record.
 
-1. **`@blue/host` scaffold — DONE.** `HostManager` + `HOST_MANAGER_TOKEN`
-   (`packages/blue-host`), 12 unit tests covering one-call registration,
+1. **`@ndigo/host` scaffold — DONE.** `HostManager` + `HOST_MANAGER_TOKEN`
+   (`packages/ndigo-host`), 12 unit tests covering one-call registration,
    mount-on-activate, unmount-on-deactivate, dependency validation at mount,
    `mountLazy` dedup, `unregister`, metrics passthrough, and
    `HOST_MANAGER_TOKEN` resolution from the context tree. Two small surface
    completions were added along the way (both consistent with D2/D3):
    optional `onDeactivate` hook (enables the todo demo's unmount relay
    telemetry), and `FeatureContextMountManager.unregister(name)`.
-2. **`@blue/router` additions — DONE.** `PartitionRouter.unmount(prefix)`,
+2. **`@ndigo/router` additions — DONE.** `PartitionRouter.unmount(prefix)`,
    `FeatureRoutingRegistry.unregister(name)` (deactivate + prefix unmount),
    each with tests.
-3. **`apps/blue-host` migration — DONE.** `composeHostRuntime` now registers
+3. **`apps/ndigo-host` migration — DONE.** `composeHostRuntime` now registers
    catalog/checkout/reports through `HostManager`; entry points resolve the
    token; Vite build confirms the three lazy chunks still split.
-4. **`apps/blue-todo` migration — DONE.** Six features registered through
+4. **`apps/ndigo-todo` migration — DONE.** Six features registered through
    one `registerFeature` call each (relays/gateway/dispatcher preserved via
    options); dead seams (`createTodoPartitionRouter`,
    `TodoRuntimeComposition.partitionRouter`) deleted together with their two
@@ -227,9 +227,9 @@ Steps 1–4 complete; step 5 (docs) landed with this record.
    `onDeactivate`.
 5. **Docs — DONE.** `apps/README.md` matrix updated; this AD updated.
 
-**Verification:** `packages/blue-host` 12/12, `packages/blue-router` 68/68,
-`packages/blue-context` 274/274, `apps/blue-todo` 43 passed / 1 skipped
-(pre-existing placeholder skip); `blue-host` demo production build green;
+**Verification:** `packages/ndigo-host` 12/12, `packages/ndigo-router` 68/68,
+`packages/ndigo-context` 274/274, `apps/ndigo-todo` 43 passed / 1 skipped
+(pre-existing placeholder skip); `ndigo-host` demo production build green;
 manifest gate green (`node scripts/check-manifests.mjs`); graft rebuilt.
 
 ## Revisit Trigger

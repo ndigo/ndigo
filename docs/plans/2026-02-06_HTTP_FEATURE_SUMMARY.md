@@ -8,7 +8,7 @@
 
 ## Research Scope
 
-Comprehensive comparison of **@blue/http** against:
+Comprehensive comparison of **@ndigo/http** against:
 
 - **Spring Framework RestClient** (Java enterprise standard, inspiration source)
 - **Axios** (JavaScript ecosystem leader)
@@ -21,7 +21,7 @@ Comprehensive comparison of **@blue/http** against:
 
 ## Key Findings
 
-### @blue/http Strengths ✅
+### @ndigo/http Strengths ✅
 
 1. **5-Hook Interceptor System** - Most granular lifecycle control
     - `preInit`, `preRequest`, `postResponse`, `postError`, `postComplete`
@@ -239,7 +239,7 @@ api.get('/users');
 
 Migration guide for developers coming from Axios:
 
-| Axios                             | @blue/http (Proposed)             |
+| Axios                             | @ndigo/http (Proposed)            |
 | --------------------------------- | --------------------------------- |
 | `axios.create(config)`            | `HTTP.create(config)`             |
 | `axios.get(url, { params })`      | `api.get(url, { params })`        |
@@ -284,9 +284,9 @@ Migration guide for developers coming from Axios:
 
 1. **Migration Guide**
 
-    - Axios → @blue/http
-    - Old @blue/http API → New API
-    - Spring concepts → @blue/http equivalents
+    - Axios → @ndigo/http
+    - Old @ndigo/http API → New API
+    - Spring concepts → @ndigo/http equivalents
 
 2. **Feature Documentation**
 
@@ -388,7 +388,7 @@ Migration guide for developers coming from Axios:
 - **Full Analysis:** [2026-02-06_HTTP_FEATURE_COMPARISON.md](./2026-02-06_HTTP_FEATURE_COMPARISON.md)
 - **Spring Research Plan:** (Reference to research plan document)
 - **ARCHITECTURE.md:** HTTP Client Architecture section
-- **@blue/http README:** Package documentation
+- **@ndigo/http README:** Package documentation
 
 ---
 

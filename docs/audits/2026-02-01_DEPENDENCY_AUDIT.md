@@ -11,10 +11,10 @@ This audit scanned the codebase for direct imports of encapsulated libraries tha
 
 ### Violations Found
 
-- **@blue/router**: 1 violation (ramda)
-- **@blue/http**: 1 violation (ramda)
-- **@blue/platform-web**: 2 violations (arcsecond)
-- **@blue/logger**: 1 violation (date-fns) - **Missing dependency declaration**
+- **@ndigo/router**: 1 violation (ramda)
+- **@ndigo/http**: 1 violation (ramda)
+- **@ndigo/platform-web**: 2 violations (arcsecond)
+- **@ndigo/logger**: 1 violation (date-fns) - **Missing dependency declaration**
 
 ### Compliance Status
 
@@ -28,44 +28,44 @@ These packages are **authorized** to import directly from encapsulated libraries
 
 | Integration Layer | Encapsulated Libraries                                   | Files with Direct Imports |
 | :---------------- | :------------------------------------------------------- | :------------------------ |
-| `@blue/util`      | `ramda`, `date-fns`, `date-fns-tz`, `seedrandom`, `slug` | 42 files (✅ Expected)    |
-| `@blue/parser`    | `arcsecond`                                              | 13 files (✅ Expected)    |
-| `@blue/model`     | `objectmodel`                                            | 1 file (✅ Expected)      |
+| `@ndigo/util`     | `ramda`, `date-fns`, `date-fns-tz`, `seedrandom`, `slug` | 42 files (✅ Expected)    |
+| `@ndigo/parser`   | `arcsecond`                                              | 13 files (✅ Expected)    |
+| `@ndigo/model`    | `objectmodel`                                            | 1 file (✅ Expected)      |
 
 ## Violations Detected
 
-### 1. @blue/router - Direct ramda Import
+### 1. @ndigo/router - Direct ramda Import
 
-**File:** `packages/blue-router/src/to-query-string.ts:12`
-
-```typescript
-import { addIndex, complement, cond, equals, ifElse, isEmpty, filter, pipe, join, keys, map, sort, T } from 'ramda';
-```
-
-**Severity:** Medium  
-**Recommendation:** Change to `import { ... } from '@blue/util';`
-
----
-
-### 2. @blue/http - Direct ramda Import
-
-**File:** `packages/blue-http/src/query-string.ts:12`
+**File:** `packages/ndigo-router/src/to-query-string.ts:12`
 
 ```typescript
 import { addIndex, complement, cond, equals, ifElse, isEmpty, filter, pipe, join, keys, map, sort, T } from 'ramda';
 ```
 
 **Severity:** Medium  
-**Recommendation:** Change to `import { ... } from '@blue/util';`
+**Recommendation:** Change to `import { ... } from '@ndigo/util';`
 
 ---
 
-### 3. @blue/platform-web - Direct arcsecond Imports
+### 2. @ndigo/http - Direct ramda Import
+
+**File:** `packages/ndigo-http/src/query-string.ts:12`
+
+```typescript
+import { addIndex, complement, cond, equals, ifElse, isEmpty, filter, pipe, join, keys, map, sort, T } from 'ramda';
+```
+
+**Severity:** Medium  
+**Recommendation:** Change to `import { ... } from '@ndigo/util';`
+
+---
+
+### 3. @ndigo/platform-web - Direct arcsecond Imports
 
 **Files:**
 
-- `packages/blue-platform-web/src/cookies.ts:6`
-- `packages/blue-platform-web/src/parser/cookie-expression.ts:12`
+- `packages/ndigo-platform-web/src/cookies.ts:6`
+- `packages/ndigo-platform-web/src/parser/cookie-expression.ts:12`
 
 **Violations:**
 
@@ -78,15 +78,15 @@ import { Parser, char, everyCharUntil, regex, sepBy, sequenceOf, str, takeRight 
 ```
 
 **Severity:** Medium  
-**Recommendation:** Change to `import { ... } from '@blue/parser';`
+**Recommendation:** Change to `import { ... } from '@ndigo/parser';`
 
-**Note:** Verify that all required arcsecond exports are re-exported by `@blue/parser`. If missing, add them to `@blue/parser/src/index.ts`.
+**Note:** Verify that all required arcsecond exports are re-exported by `@ndigo/parser`. If missing, add them to `@ndigo/parser/src/index.ts`.
 
 ---
 
-### 4. @blue/logger - Direct date-fns Import + Missing Dependency
+### 4. @ndigo/logger - Direct date-fns Import + Missing Dependency
 
-**File:** `packages/blue-logger/src/layouts/pattern-layout.ts:7`
+**File:** `packages/ndigo-logger/src/layouts/pattern-layout.ts:7`
 
 ```typescript
 import { format } from 'date-fns';
@@ -95,20 +95,20 @@ import { format } from 'date-fns';
 **Severity:** High  
 **Issues:**
 
-1. Direct import of `date-fns` (should use `@blue/util`)
-2. **Missing dependency declaration** - `date-fns` is not listed in `packages/blue-logger/package.json` dependencies
+1. Direct import of `date-fns` (should use `@ndigo/util`)
+2. **Missing dependency declaration** - `date-fns` is not listed in `packages/ndigo-logger/package.json` dependencies
 
 **Recommendation:**
 
-1. Change import to: `import { format } from '@blue/util';`
-2. Add `@blue/util` to `devDependencies` and `peerDependencies` in `@blue/logger/package.json`
+1. Change import to: `import { format } from '@ndigo/util';`
+2. Add `@ndigo/util` to `devDependencies` and `peerDependencies` in `@ndigo/logger/package.json`
 3. Remove any accidental `date-fns` dependency if present
 
 ## Test Files (Allowed Exceptions)
 
 The following test files import external libraries directly, which is **permitted** for mocking purposes:
 
-**File:** `packages/blue-util/test/list/reg-exp-range.spec.ts:3`
+**File:** `packages/ndigo-util/test/list/reg-exp-range.spec.ts:3`
 
 ```typescript
 import { range } from 'ramda';
@@ -120,72 +120,72 @@ import { range } from 'ramda';
 
 ### Libraries Scanned
 
-| Library       | Total Imports | Integration Layer | Violations | Test Files |
-| :------------ | :-----------: | :---------------: | :--------: | :--------: |
-| `ramda`       |      87       |  84 (@blue/util)  |     2      |     1      |
-| `date-fns`    |       2       |  1 (@blue/util)   |     1      |     0      |
-| `arcsecond`   |      16       | 14 (@blue/parser) |     2      |     0      |
-| `objectmodel` |       2       |  2 (@blue/model)  |     0      |     0      |
-| `seedrandom`  |       0       |  0 (@blue/util)   |     0      |     0      |
-| `slug`        |       1       |  1 (@blue/util)   |     0      |     0      |
-| **TOTAL**     |    **108**    |      **102**      |   **5**    |   **1**    |
+| Library       | Total Imports | Integration Layer  | Violations | Test Files |
+| :------------ | :-----------: | :----------------: | :--------: | :--------: |
+| `ramda`       |      87       |  84 (@ndigo/util)  |     2      |     1      |
+| `date-fns`    |       2       |  1 (@ndigo/util)   |     1      |     0      |
+| `arcsecond`   |      16       | 14 (@ndigo/parser) |     2      |     0      |
+| `objectmodel` |       2       |  2 (@ndigo/model)  |     0      |     0      |
+| `seedrandom`  |       0       |  0 (@ndigo/util)   |     0      |     0      |
+| `slug`        |       1       |  1 (@ndigo/util)   |     0      |     0      |
+| **TOTAL**     |    **108**    |      **102**       |   **5**    |   **1**    |
 
 ### Package Compliance
 
-| Package                 | Status | Violations | Notes                                |
-| :---------------------- | :----: | :--------: | :----------------------------------- |
-| @blue/util              |   ✅   |     0      | Integration layer                    |
-| @blue/parser            |   ✅   |     0      | Integration layer                    |
-| @blue/model             |   ✅   |     0      | Integration layer                    |
-| @blue/router            |   ❌   |     1      | Direct ramda import                  |
-| @blue/http              |   ❌   |     1      | Direct ramda import                  |
-| @blue/platform-web      |   ❌   |     2      | Direct arcsecond imports             |
-| @blue/logger            |   ⚠️   |     1      | Direct date-fns + missing dependency |
-| @blue/boot              |   ✅   |     0      | -                                    |
-| @blue/content           |   ✅   |     0      | -                                    |
-| @blue/context           |   ✅   |     0      | -                                    |
-| @blue/core              |   ✅   |     0      | -                                    |
-| @blue/demo              |   ✅   |     0      | -                                    |
-| @blue/dispatcher        |   ✅   |     0      | -                                    |
-| @blue/domain            |   ✅   |     0      | -                                    |
-| @blue/factory           |   ✅   |     0      | -                                    |
-| @blue/print             |   ✅   |     0      | -                                    |
-| @blue/service           |   ✅   |     0      | -                                    |
-| @blue/validate          |   ✅   |     0      | -                                    |
-| @blue/view              |   ✅   |     0      | -                                    |
-| @blue/view-webcomponent |   ✅   |     0      | -                                    |
+| Package                  | Status | Violations | Notes                                |
+| :----------------------- | :----: | :--------: | :----------------------------------- |
+| @ndigo/util              |   ✅   |     0      | Integration layer                    |
+| @ndigo/parser            |   ✅   |     0      | Integration layer                    |
+| @ndigo/model             |   ✅   |     0      | Integration layer                    |
+| @ndigo/router            |   ❌   |     1      | Direct ramda import                  |
+| @ndigo/http              |   ❌   |     1      | Direct ramda import                  |
+| @ndigo/platform-web      |   ❌   |     2      | Direct arcsecond imports             |
+| @ndigo/logger            |   ⚠️   |     1      | Direct date-fns + missing dependency |
+| @ndigo/boot              |   ✅   |     0      | -                                    |
+| @ndigo/content           |   ✅   |     0      | -                                    |
+| @ndigo/context           |   ✅   |     0      | -                                    |
+| @ndigo/core              |   ✅   |     0      | -                                    |
+| @ndigo/demo              |   ✅   |     0      | -                                    |
+| @ndigo/dispatcher        |   ✅   |     0      | -                                    |
+| @ndigo/domain            |   ✅   |     0      | -                                    |
+| @ndigo/factory           |   ✅   |     0      | -                                    |
+| @ndigo/print             |   ✅   |     0      | -                                    |
+| @ndigo/service           |   ✅   |     0      | -                                    |
+| @ndigo/validate          |   ✅   |     0      | -                                    |
+| @ndigo/view              |   ✅   |     0      | -                                    |
+| @ndigo/view-webcomponent |   ✅   |     0      | -                                    |
 
 ## Recommendations
 
-### Priority 1: Fix @blue/logger (High Severity)
+### Priority 1: Fix @ndigo/logger (High Severity)
 
-1. Update `packages/blue-logger/src/layouts/pattern-layout.ts`:
+1. Update `packages/ndigo-logger/src/layouts/pattern-layout.ts`:
 
     ```typescript
     // Before
     import { format } from 'date-fns';
 
     // After
-    import { format } from '@blue/util';
+    import { format } from '@ndigo/util';
     ```
 
-2. Update `packages/blue-logger/package.json`:
+2. Update `packages/ndigo-logger/package.json`:
     ```json
     {
         "devDependencies": {
-            "@blue/util": "workspace:*"
+            "@ndigo/util": "workspace:*"
         },
         "peerDependencies": {
-            "@blue/util": "^3.0.0-alpha.0"
+            "@ndigo/util": "^3.0.0-alpha.0"
         }
     }
     ```
 
-### Priority 2: Fix @blue/router and @blue/http
+### Priority 2: Fix @ndigo/router and @ndigo/http
 
 Both packages have identical violations in `query-string.ts` / `to-query-string.ts` files.
 
-**@blue/router - to-query-string.ts:12**
+**@ndigo/router - to-query-string.ts:12**
 
 ```typescript
 // Before
@@ -206,10 +206,10 @@ import {
     map,
     sort,
     T,
-} from '@blue/util';
+} from '@ndigo/util';
 ```
 
-**@blue/http - query-string.ts:12**
+**@ndigo/http - query-string.ts:12**
 
 ```typescript
 // Before
@@ -230,10 +230,10 @@ import {
     map,
     sort,
     T,
-} from '@blue/util';
+} from '@ndigo/util';
 ```
 
-### Priority 3: Fix @blue/platform-web
+### Priority 3: Fix @ndigo/platform-web
 
 **cookies.ts:6**
 
@@ -242,10 +242,10 @@ import {
 import { Parser, Ok } from 'arcsecond';
 
 // After
-import { Parser, Ok } from '@blue/parser';
+import { Parser, Ok } from '@ndigo/parser';
 ```
 
-**Note:** Verify `Ok` is exported by `@blue/parser`. If not, add to `@blue/parser/src/index.ts`:
+**Note:** Verify `Ok` is exported by `@ndigo/parser`. If not, add to `@ndigo/parser/src/index.ts`:
 
 ```typescript
 export { Ok } from 'arcsecond';
@@ -258,10 +258,10 @@ export { Ok } from 'arcsecond';
 import { Parser, char, everyCharUntil, regex, sepBy, sequenceOf, str, takeRight } from 'arcsecond';
 
 // After
-import { Parser, char, everyCharUntil, regex, sepBy, sequenceOf, str, takeRight } from '@blue/parser';
+import { Parser, char, everyCharUntil, regex, sepBy, sequenceOf, str, takeRight } from '@ndigo/parser';
 ```
 
-**Note:** Verify all exports (`Parser`, `char`, `everyCharUntil`, `regex`, `sepBy`, `sequenceOf`, `str`, `takeRight`) are available from `@blue/parser`. Add missing exports if needed.
+**Note:** Verify all exports (`Parser`, `char`, `everyCharUntil`, `regex`, `sepBy`, `sequenceOf`, `str`, `takeRight`) are available from `@ndigo/parser`. Add missing exports if needed.
 
 ## Type-Only Imports Investigation
 
@@ -279,10 +279,10 @@ grep -r "import type.*from ['\"]\(ramda\|date-fns\|arcsecond\|objectmodel\|seedr
 
 ### ESLint Rule (Planned)
 
-Create custom ESLint rule in `@blue/eslint-plugin`:
+Create custom ESLint rule in `@ndigo/eslint-plugin`:
 
 ```javascript
-// packages/blue-eslint-plugin/rules/no-direct-integration-imports.js
+// packages/ndigo-eslint-plugin/rules/no-direct-integration-imports.js
 module.exports = {
     meta: {
         type: 'problem',
@@ -292,13 +292,13 @@ module.exports = {
     },
     create(context) {
         const violations = {
-            ramda: '@blue/util',
-            'date-fns': '@blue/util',
-            'date-fns-tz': '@blue/util',
-            seedrandom: '@blue/util',
-            slug: '@blue/util',
-            arcsecond: '@blue/parser',
-            objectmodel: '@blue/model',
+            ramda: '@ndigo/util',
+            'date-fns': '@ndigo/util',
+            'date-fns-tz': '@ndigo/util',
+            seedrandom: '@ndigo/util',
+            slug: '@ndigo/util',
+            arcsecond: '@ndigo/parser',
+            objectmodel: '@ndigo/model',
         };
 
         return {
@@ -308,7 +308,7 @@ module.exports = {
                     // Skip if current file is in the integration layer package
                     const filename = context.getFilename();
                     const integrationLayer = violations[source];
-                    const packageName = integrationLayer.replace('@blue/', 'blue-');
+                    const packageName = integrationLayer.replace('@ndigo/', 'ndigo-');
 
                     if (!filename.includes(`packages/${packageName}/`)) {
                         context.report({
@@ -337,27 +337,27 @@ Create shell script for CI pipeline:
 
 violations=0
 
-# Check for ramda imports outside @blue/util
-if grep -r --include="*.ts" "from ['\"]ramda['\"]" packages/ | grep -v "packages/blue-util/" | grep -v "\.spec\.ts"; then
-  echo "ERROR: Direct ramda imports found outside @blue/util"
+# Check for ramda imports outside @ndigo/util
+if grep -r --include="*.ts" "from ['\"]ramda['\"]" packages/ | grep -v "packages/ndigo-util/" | grep -v "\.spec\.ts"; then
+  echo "ERROR: Direct ramda imports found outside @ndigo/util"
   violations=$((violations + 1))
 fi
 
-# Check for date-fns imports outside @blue/util
-if grep -r --include="*.ts" "from ['\"]date-fns['\"]" packages/ | grep -v "packages/blue-util/" | grep -v "\.spec\.ts"; then
-  echo "ERROR: Direct date-fns imports found outside @blue/util"
+# Check for date-fns imports outside @ndigo/util
+if grep -r --include="*.ts" "from ['\"]date-fns['\"]" packages/ | grep -v "packages/ndigo-util/" | grep -v "\.spec\.ts"; then
+  echo "ERROR: Direct date-fns imports found outside @ndigo/util"
   violations=$((violations + 1))
 fi
 
-# Check for arcsecond imports outside @blue/parser
-if grep -r --include="*.ts" "from ['\"]arcsecond['\"]" packages/ | grep -v "packages/blue-parser/" | grep -v "\.spec\.ts"; then
-  echo "ERROR: Direct arcsecond imports found outside @blue/parser"
+# Check for arcsecond imports outside @ndigo/parser
+if grep -r --include="*.ts" "from ['\"]arcsecond['\"]" packages/ | grep -v "packages/ndigo-parser/" | grep -v "\.spec\.ts"; then
+  echo "ERROR: Direct arcsecond imports found outside @ndigo/parser"
   violations=$((violations + 1))
 fi
 
-# Check for objectmodel imports outside @blue/model
-if grep -r --include="*.ts" "from ['\"]objectmodel['\"]" packages/ | grep -v "packages/blue-model/" | grep -v "\.spec\.ts"; then
-  echo "ERROR: Direct objectmodel imports found outside @blue/model"
+# Check for objectmodel imports outside @ndigo/model
+if grep -r --include="*.ts" "from ['\"]objectmodel['\"]" packages/ | grep -v "packages/ndigo-model/" | grep -v "\.spec\.ts"; then
+  echo "ERROR: Direct objectmodel imports found outside @ndigo/model"
   violations=$((violations + 1))
 fi
 
@@ -410,16 +410,16 @@ grep -r "from ['\"]slug['\"]" --include="*.ts" packages/
 
 ## Next Steps
 
-1. **Immediate:** Fix @blue/logger violations (high priority due to missing dependency)
-2. **Short-term:** Fix remaining 4 violations in @blue/router, @blue/http, @blue/platform-web
+1. **Immediate:** Fix @ndigo/logger violations (high priority due to missing dependency)
+2. **Short-term:** Fix remaining 4 violations in @ndigo/router, @ndigo/http, @ndigo/platform-web
 3. **Medium-term:** Investigate type-only import policy
 4. **Long-term:** Implement ESLint rule and CI checker for automated enforcement
 
 ## Conclusion
 
-The BlueJS codebase has **excellent compliance** with the Library Integration Layer pattern, with only **5 violations across 3 packages** out of 108 total imports. The integration layer packages (@blue/util, @blue/parser, @blue/model) are properly encapsulating their dependencies.
+The ndigo codebase has **excellent compliance** with the Library Integration Layer pattern, with only **5 violations across 3 packages** out of 108 total imports. The integration layer packages (@ndigo/util, @ndigo/parser, @ndigo/model) are properly encapsulating their dependencies.
 
-The most critical issue is the @blue/logger package, which has both a direct import violation and a missing dependency declaration. All violations are straightforward to fix and do not require architectural changes.
+The most critical issue is the @ndigo/logger package, which has both a direct import violation and a missing dependency declaration. All violations are straightforward to fix and do not require architectural changes.
 
 Once the violations are addressed and automated enforcement is in place, the Library Integration Layer pattern will provide strong protection against dependency management issues and enable safer library upgrades in the future.
 

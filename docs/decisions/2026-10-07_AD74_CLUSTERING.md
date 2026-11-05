@@ -1,4 +1,4 @@
-# AD-74: Clustering / worker offload — `@blue/cluster`
+# AD-74: Clustering / worker offload — `@ndigo/cluster`
 
 **Date:** 2026-10-07
 **Status:** Accepted
@@ -9,7 +9,7 @@
 ## Context
 
 The 2026-10-07 review lists GAP-2: **clustering / worker offload** — absent,
-1.0-severity high; recommended shape "`blue serve --cluster <n>` fanning
+1.0-severity high; recommended shape "`ndigo serve --cluster <n>` fanning
 SIGTERM into existing graceful shutdown". Wave 6 is ADR-gated; this record is
 the gate. The Wave-6 dependency cluster was GAP-3 → GAP-1 → GAP-2; both
 predecessors have landed — GAP-1 as AD-72 (`d950ad5c`) and GAP-3 as AD-73
@@ -23,14 +23,14 @@ What the repository already provides, and what is missing:
   needs **no leader election, no coordinator, no distributed consensus** —
   it needs processes that run the same application and let the existing
   contracts arbitrate.
-- **Graceful shutdown is solved.** `@blue/platform-node/gracefulShutdown()`
+- **Graceful shutdown is solved.** `@ndigo/platform-node/gracefulShutdown()`
   wires OS signals to `context.close()` plus application resources
   (HTTPServer first, others in order), awaits the drain, force-exits after a
   deadline, and aborts on a second signal. GAP-2's "fan SIGTERM into the
   existing graceful shutdown" is a precise, already-built target.
 - **What is missing is the supervisor.** Nothing spawns N application
   processes, forwards signals to them, or restarts a slot that died — and
-  there is still no CLI (GAP-6, deferred): there is no `blue serve` to hang
+  there is still no CLI (GAP-6, deferred): there is no `ndigo serve` to hang
   `--cluster` on.
 
 ## Evidence
@@ -55,10 +55,10 @@ What the repository already provides, and what is missing:
 
 ## Decision
 
-### D-1 — `@blue/cluster`: a supervisor, not a coordinator
+### D-1 — `@ndigo/cluster`: a supervisor, not a coordinator
 
-A new Node-platform package (`@blue/cluster`, layer 6 beside
-`@blue/platform-node`) owns a `ClusterRunner`: it spawns **N identical child
+A new Node-platform package (`@ndigo/cluster`, layer 6 beside
+`@ndigo/platform-node`) owns a `ClusterRunner`: it spawns **N identical child
 processes** running the same application in worker mode. Every child bootstraps
 and serves the full application (HTTP + `@scheduled` + jobs when started) —
 horizontal replication. Single-executor work self-arbitrates through the
@@ -88,7 +88,7 @@ shutdown deadline passes.
 
 ### D-4 — Slot identity: env-derived, port auto-bump
 
-Each child gets `BLUE_CLUSTER_SLOT` (0-based), `BLUE_CLUSTER_SIZE`, and —
+Each child gets `NDIGO_CLUSTER_SLOT` (0-based), `NDIGO_CLUSTER_SIZE`, and —
 when the caller provides `basePort` — a per-slot `PORT` (`base + slot`,
 the apps' documented `PORT` env override, `apps/README.md`), unless the
 caller pins `ports`. The child applies the existing
@@ -97,9 +97,9 @@ shell, not a second application model.
 
 ### D-5 — No CLI yet
 
-`blue serve --cluster <n>` lands with GAP-6's `@blue/cli`; this ADR records
+`ndigo serve --cluster <n>` lands with GAP-6's `@ndigo/cli`; this ADR records
 the CLI as the eventual entry point, and `ClusterRunner` is the surface it
-invokes. A `bin` in `@blue/cluster` is deferred with GAP-6.
+invokes. A `bin` in `@ndigo/cluster` is deferred with GAP-6.
 
 ## Alternatives considered
 
@@ -131,6 +131,6 @@ invokes. A `bin` in `@blue/cluster` is deferred with GAP-6.
   Wave-6 cluster note (GAP-3 → GAP-1 → GAP-2: both landed).
 - AD-72 (leases/claims — why no coordinator is needed) and AD-73
   (`@scheduled({lock})` — why replicated slots stay single-executor).
-- `packages/blue-platform-node/src/graceful-shutdown.ts` (the child-drain
+- `packages/ndigo-platform-node/src/graceful-shutdown.ts` (the child-drain
   contract this relays into).
 - AD-41 (distributed scheduling deferred — unchanged).

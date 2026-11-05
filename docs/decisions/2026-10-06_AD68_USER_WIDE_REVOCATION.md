@@ -16,10 +16,10 @@ access credentials because it never inspected `token_use`.
 
 ## Evidence
 
-- `blue-auth-core/src/session-store.ts`: `SessionRecord` snapshots
+- `ndigo-auth-core/src/session-store.ts`: `SessionRecord` snapshots
   `tokenVersion` at issue, but nothing ever compared it; the contract had
   `create`/`get`/`rotate`/`delete` only — no user-wide operation.
-- `blue-auth-server/src/jwt-adapter.ts`: `refresh` advances `tokenVersion`
+- `ndigo-auth-server/src/jwt-adapter.ts`: `refresh` advances `tokenVersion`
   via CAS on **every** rotation (single-use reuse detection, SEC-6) and
   `logout` bumps it too — the counter is a rotation/revocation family
   counter, so it cannot double as an opaque-session epoch without logging

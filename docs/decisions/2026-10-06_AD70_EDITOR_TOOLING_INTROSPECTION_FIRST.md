@@ -1,7 +1,7 @@
 # AD-70: Editor tooling — introspection first, no language server yet
 
 **Date:** 2026-10-06
-**Status:** Accepted — substrate landed (`@blue/inspect` manifest v1, config
+**Status:** Accepted — substrate landed (`@ndigo/inspect` manifest v1, config
 JSON Schema, two lint rules); a language server is deferred with explicit
 revisit triggers.
 
@@ -15,7 +15,7 @@ args, DI token/bean graphs, and embedded-language support for EJS templates.
 
 Two facts bound the decision:
 
-1. **The diagnostics half already ships.** `@blue/oxlint-plugin` is a
+1. **The diagnostics half already ships.** `@ndigo/oxlint-plugin` is a
    type-aware rule pack (AD-45/46) enforced with `--deny-warnings` in CI —
    a proto-language-server at near-zero protocol cost.
 2. **The semantics an LSP would encode are still moving.** In the 48h before
@@ -34,7 +34,7 @@ An editor language server is also a permanent commitment beyond diagnostics:
 an LSP implementation, per-editor clients, embedded-language work of
 Volar-scale complexity for templates, and a release cadence that must track
 the churn above. Angular/Vue/Svelte language services exist because templates
-are their first-class surface; NestJS ships none. BlueJS's nearest real need
+are their first-class surface; NestJS ships none. ndigo's nearest real need
 is _introspection_, which is CLI/artifact-shaped, not server-shaped.
 
 ## Decision
@@ -44,13 +44,13 @@ is _introspection_, which is CLI/artifact-shaped, not server-shaped.
   breaking changes to the surfaces an LSP would encode (routes/mappings,
   config keys, view resolution, token registry).
 - **D-2 — Build the substrate now (landed with this record):**
-    - `@blue/inspect` — `inspectApplication(input)` produces a deterministic,
+    - `@ndigo/inspect` — `inspectApplication(input)` produces a deterministic,
       versioned JSON manifest (`version: 1`): `app`, `routes`, `mappings`
       (pattern, methods/socket, handler class + method, parameters), and
       `config` (declared keys, type, origin, `hasValue` — **never values**, so
-      manifests cannot leak secrets). A demo script (`apps/blue-api` `inspect`)
-      prints it; a full `@blue/cli` bin remains a separate roadmap item.
-    - Config JSON Schema — `packages/blue-boot/schema/application.schema.json`
+      manifests cannot leak secrets). A demo script (`apps/ndigo-api` `inspect`)
+      prints it; a full `@ndigo/cli` bin remains a separate roadmap item.
+    - Config JSON Schema — `packages/ndigo-boot/schema/application.schema.json`
       covering the framework keys that exist today, permissive by design
       (`additionalProperties: true`), with the `{cipher:…}` secret marker
       modeled; referenced from `.vscode/settings.json` for
@@ -65,7 +65,7 @@ is _introspection_, which is CLI/artifact-shaped, not server-shaped.
   Code client. EJS embedding is deferred; AD-69's typed-web-component
   direction makes that the strong long-term template surface.
 - **D-4 — The manifest is the contract.** The LSP, a future CLI, docs, and
-  CI consumers all read `@blue/inspect`'s output; breaking shape changes bump
+  CI consumers all read `@ndigo/inspect`'s output; breaking shape changes bump
   `version`.
 
 ## Rationale
@@ -102,10 +102,10 @@ is _introspection_, which is CLI/artifact-shaped, not server-shaped.
 
 ## Evidence
 
-- Substrate commit: the batch following `4ee4a41f` (`@blue/inspect`,
-  `packages/blue-boot/schema/application.schema.json`, two oxlint rules,
+- Substrate commit: the batch following `4ee4a41f` (`@ndigo/inspect`,
+  `packages/ndigo-boot/schema/application.schema.json`, two oxlint rules,
   `.vscode` wiring).
-- Diagnostics substrate: `packages/blue-oxlint-plugin` (12 rules + 2 new),
+- Diagnostics substrate: `packages/ndigo-oxlint-plugin` (12 rules + 2 new),
   AD-45/46.
 - Churn evidence: `0c4becbd` (dispatcher/views semantics), `60d601ca` (app
   bundles + todo seeding), `4ee4a41f` (DSD islands, AD-69).

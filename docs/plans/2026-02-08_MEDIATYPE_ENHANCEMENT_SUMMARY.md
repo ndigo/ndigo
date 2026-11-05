@@ -8,7 +8,7 @@
 
 ## 1. Summary of Changes
 
-### 1.1 Core Enhancements (@blue/core)
+### 1.1 Core Enhancements (@ndigo/core)
 
 - **Added `baseType` property**: Returns `type/subtype` without parameters or suffix (e.g., `application/atom`).
 - **Added `getDefaultCharset()` method**: Returns 'utf-8' for `text/*` and `application/json`.
@@ -21,16 +21,16 @@
 
 Refactored 4 call sites to use the new `toContentType()` method, simplifying the code:
 
-- `FetchAppender` (blue-logger)
-- `FetchLogRecordExporter` (blue-logger)
-- `HTTPAppender` (blue-dispatcher)
-- `HTTPLogRecordExporter` (blue-dispatcher)
+- `FetchAppender` (ndigo-logger)
+- `FetchLogRecordExporter` (ndigo-logger)
+- `HTTPAppender` (ndigo-dispatcher)
+- `HTTPLogRecordExporter` (ndigo-dispatcher)
 
 ---
 
 ## 2. Verification Results
 
-- ✅ **blue-core tests**: 82/82 passed (including 8 new tests for enhancements).
+- ✅ **ndigo-core tests**: 82/82 passed (including 8 new tests for enhancements).
 - ✅ **Bug Fixes Verified**:
     - `withCharset()` bug fix confirmed via regression test.
     - `MediaType.for()` parameter parsing fix confirmed via new `baseType` and `parseMediaType` tests.
@@ -41,4 +41,4 @@ Refactored 4 call sites to use the new `toContentType()` method, simplifying the
 ## 3. Next Steps
 
 1. **HTTP Transform Pipeline**: This enhancement unblocks the implementation of the Transform Pipeline (specifically `baseType` and `parseMediaType`).
-2. **Architecture Documentation**: Consider updating `ARCHITECTURE.md` to note `MediaType`'s location in `@blue/core` as a documented anomaly.
+2. **Architecture Documentation**: Consider updating `ARCHITECTURE.md` to note `MediaType`'s location in `@ndigo/core` as a documented anomaly.

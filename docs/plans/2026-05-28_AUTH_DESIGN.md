@@ -2,21 +2,21 @@
 
 ## Overview
 
-Wave 9 adds `@blue/auth` (new package) and extends `@blue/orm` with relation decorators, lifecycle hooks, `@transactional`, and the `@blue/orm-drizzle` adapter.
+Wave 9 adds `@ndigo/auth` (new package) and extends `@ndigo/orm` with relation decorators, lifecycle hooks, `@transactional`, and the `@ndigo/orm-drizzle` adapter.
 
-## 9a. `@blue/auth`
+## 9a. `@ndigo/auth`
 
 ### Goals
 
 - Authentication strategy abstraction (pluggable, injectable)
 - `Principal` and `Session` as first-class domain types
 - `@authenticated` / `@authorized(role)` TC39 decorators for route guarding
-- `AuthHeaderInterceptor` for `@blue/http` (injects `Authorization: Bearer <token>`)
-- `AuthRouteGuard` for `@blue/dispatcher` (pre-handle guard)
+- `AuthHeaderInterceptor` for `@ndigo/http` (injects `Authorization: Bearer <token>`)
+- `AuthRouteGuard` for `@ndigo/dispatcher` (pre-handle guard)
 
 ### Package Dependencies
 
-- peerDependencies: `@blue/core`, `@blue/context`, `@blue/dispatcher`, `@blue/http`, `@blue/router`
+- peerDependencies: `@ndigo/core`, `@ndigo/context`, `@ndigo/dispatcher`, `@ndigo/http`, `@ndigo/router`
 
 ### Core Interfaces
 
@@ -81,7 +81,7 @@ function authorized(role: string): (target, context) => void;
 
 ### AuthRouteGuard
 
-Implements `RouteHandlerInterceptor` from `@blue/dispatcher`. Receives `Session` via constructor.
+Implements `RouteHandlerInterceptor` from `@ndigo/dispatcher`. Receives `Session` via constructor.
 
 In `preHandle(route, handler)`:
 
@@ -94,7 +94,7 @@ In `preHandle(route, handler)`:
 
 ### AuthHeaderInterceptor
 
-Implements `RequestAwareHTTPInterceptor` from `@blue/http`. Receives `Session` via constructor.
+Implements `RequestAwareHTTPInterceptor` from `@ndigo/http`. Receives `Session` via constructor.
 
 In `preRequest(request, http)`:
 
@@ -110,7 +110,7 @@ In `preRequest(request, http)`:
 
 ---
 
-## 9b. `@blue/orm` Post-MVP
+## 9b. `@ndigo/orm` Post-MVP
 
 ### Relation Decorators
 
@@ -159,13 +159,13 @@ Wraps the target method in a `unitOfWork.begin()` / `unitOfWork.commit()` / `uni
 
 ---
 
-## 9c. `@blue/orm-drizzle` Adapter
+## 9c. `@ndigo/orm-drizzle` Adapter
 
 ### Package
 
-- New package `packages/blue-orm-drizzle/`
+- New package `packages/ndigo-orm-drizzle/`
 - IS the integration layer for drizzle-orm (can import drizzle directly)
-- peerDependencies: `@blue/orm`, `@blue/core`
+- peerDependencies: `@ndigo/orm`, `@ndigo/core`
 - dependencies: `drizzle-orm`, `better-sqlite3`
 - devDependencies: `@types/better-sqlite3`
 
@@ -195,10 +195,10 @@ class DrizzleEntityManager implements EntityManager {
 
 ## Demo Gate
 
-Extend `apps/blue-demo-node/` with two new routes:
+Extend `apps/ndigo-demo-node/` with two new routes:
 
 1. `POST /auth/login` — accepts `{ username, password }`, authenticates, returns `{ token }`
 2. `GET /notes` — `@authenticated` guard, returns all `Note` entities from DB
-3. `POST /notes` — `@authenticated` guard, saves a new `Note` entity via `@blue/orm-drizzle`
+3. `POST /notes` — `@authenticated` guard, saves a new `Note` entity via `@ndigo/orm-drizzle`
 
 `Note` entity: `@entity`, `@primaryColumn` id, `@column` title, `@column` body, `@column` createdAt.

@@ -20,33 +20,33 @@
 
 ## Core Features Comparison
 
-| Feature                         | @blue/http | Spring | Axios | Fetch | Node http | Node https | Priority  |
-| ------------------------------- | ---------- | ------ | ----- | ----- | --------- | ---------- | --------- |
-| **Instance System**             | ❌         | ✅     | ✅    | ❌    | ❌        | ❌         | 🔴 HIGH   |
-| **Config Defaults**             | 🟡         | ✅     | ✅    | ❌    | ✅        | ✅         | 🔴 HIGH   |
-| **Base URL**                    | ✅         | ✅     | ✅    | ❌    | ✅        | ✅         | 🔴 HIGH   |
-| **Query Params Config**         | 🟡         | ✅     | ✅    | 🟡    | ❌        | ❌         | 🔴 HIGH   |
-| **Transform Pipeline**          | 🟡         | ✅     | ✅    | ❌    | ❌        | ❌         | 🔴 HIGH   |
-| **Basic Auth Helper**           | 🟡         | ✅     | ✅    | 🟡    | ✅        | ✅         | 🔴 HIGH   |
-| **XSRF Protection** 🔵          | ❌         | 🟡     | ✅    | ❌    | ❌        | ❌         | 🔴 HIGH   |
-| **Upload Progress** 🔵          | ❌         | ❌     | ✅    | 🟡    | ❌        | ❌         | 🔴 HIGH   |
-| **Download Progress** 🔵        | ❌         | ❌     | ✅    | 🟡    | ❌        | ❌         | 🔴 HIGH   |
-| **Validate Status**             | 🟡         | ✅     | ✅    | ❌    | ✅        | ✅         | 🟠 MEDIUM |
-| **Interceptor Management**      | ❌         | 🟡     | ✅    | ❌    | ❌        | ❌         | 🟠 MEDIUM |
-| **Form Shortcuts**              | ❌         | ✅     | ✅    | ❌    | ❌        | ❌         | 🟠 MEDIUM |
-| **Proxy Support** 🟣            | ❌         | ✅     | ✅    | ❌    | ✅        | ✅         | 🟠 MEDIUM |
-| **Error Categorization**        | 🟡         | ✅     | ✅    | ❌    | ❌        | ❌         | 🟠 MEDIUM |
-| **Range Request Helper**        | 🟡         | ✅     | 🟡    | 🟡    | ❌        | ❌         | 🟠 MEDIUM |
-| **Connection Pooling**          | ❌         | ✅     | ✅    | ❌    | ✅        | ✅         | 🟠 MEDIUM |
-| **Client Certificates**         | ❌         | ✅     | ✅    | ❌    | ❌        | ✅         | 🟠 MEDIUM |
-| **Custom DNS**                  | ❌         | ✅     | ❌    | ❌    | ✅        | ✅         | 🟢 LOW    |
-| **TLS Session Resumption**      | ❌         | ✅     | ❌    | ❌    | ❌        | ✅         | 🟢 LOW    |
-| **Socket Timeout**              | ✅         | ✅     | ✅    | 🟡    | ✅        | ✅         | 🟢 LOW    |
-| **Streaming (Node.js Streams)** | ❌         | ✅     | 🟡    | ❌    | ✅        | ✅         | 🟢 LOW    |
+| Feature                         | @ndigo/http | Spring | Axios | Fetch | Node http | Node https | Priority  |
+| ------------------------------- | ----------- | ------ | ----- | ----- | --------- | ---------- | --------- |
+| **Instance System**             | ❌          | ✅     | ✅    | ❌    | ❌        | ❌         | 🔴 HIGH   |
+| **Config Defaults**             | 🟡          | ✅     | ✅    | ❌    | ✅        | ✅         | 🔴 HIGH   |
+| **Base URL**                    | ✅          | ✅     | ✅    | ❌    | ✅        | ✅         | 🔴 HIGH   |
+| **Query Params Config**         | 🟡          | ✅     | ✅    | 🟡    | ❌        | ❌         | 🔴 HIGH   |
+| **Transform Pipeline**          | 🟡          | ✅     | ✅    | ❌    | ❌        | ❌         | 🔴 HIGH   |
+| **Basic Auth Helper**           | 🟡          | ✅     | ✅    | 🟡    | ✅        | ✅         | 🔴 HIGH   |
+| **XSRF Protection** 🔵          | ❌          | 🟡     | ✅    | ❌    | ❌        | ❌         | 🔴 HIGH   |
+| **Upload Progress** 🔵          | ❌          | ❌     | ✅    | 🟡    | ❌        | ❌         | 🔴 HIGH   |
+| **Download Progress** 🔵        | ❌          | ❌     | ✅    | 🟡    | ❌        | ❌         | 🔴 HIGH   |
+| **Validate Status**             | 🟡          | ✅     | ✅    | ❌    | ✅        | ✅         | 🟠 MEDIUM |
+| **Interceptor Management**      | ❌          | 🟡     | ✅    | ❌    | ❌        | ❌         | 🟠 MEDIUM |
+| **Form Shortcuts**              | ❌          | ✅     | ✅    | ❌    | ❌        | ❌         | 🟠 MEDIUM |
+| **Proxy Support** 🟣            | ❌          | ✅     | ✅    | ❌    | ✅        | ✅         | 🟠 MEDIUM |
+| **Error Categorization**        | 🟡          | ✅     | ✅    | ❌    | ❌        | ❌         | 🟠 MEDIUM |
+| **Range Request Helper**        | 🟡          | ✅     | 🟡    | 🟡    | ❌        | ❌         | 🟠 MEDIUM |
+| **Connection Pooling**          | ❌          | ✅     | ✅    | ❌    | ✅        | ✅         | 🟠 MEDIUM |
+| **Client Certificates**         | ❌          | ✅     | ✅    | ❌    | ❌        | ✅         | 🟠 MEDIUM |
+| **Custom DNS**                  | ❌          | ✅     | ❌    | ❌    | ✅        | ✅         | 🟢 LOW    |
+| **TLS Session Resumption**      | ❌          | ✅     | ❌    | ❌    | ❌        | ✅         | 🟢 LOW    |
+| **Socket Timeout**              | ✅          | ✅     | ✅    | 🟡    | ✅        | ✅         | 🟢 LOW    |
+| **Streaming (Node.js Streams)** | ❌          | ✅     | 🟡    | ❌    | ✅        | ✅         | 🟢 LOW    |
 
 ---
 
-## @blue/http Unique Strengths
+## @ndigo/http Unique Strengths
 
 | Feature                       | Status | Notes                                                                                             |
 | ----------------------------- | ------ | ------------------------------------------------------------------------------------------------- |
@@ -95,7 +95,7 @@
 
 ## Quick Decision Matrix
 
-### Should I Use @blue/http Today?
+### Should I Use @ndigo/http Today?
 
 | Use Case                          | Recommendation | Reason                                     |
 | --------------------------------- | -------------- | ------------------------------------------ |
@@ -130,18 +130,18 @@
 
 ### From Axios
 
-| Axios Pattern                  | @blue/http Current | @blue/http Future              |
-| ------------------------------ | ------------------ | ------------------------------ |
-| `axios.create({ baseURL })`    | ❌                 | `HTTP.create({ baseURL })`     |
-| `params: { key: 'value' }`     | Manual URL         | `params: { key: 'value' }`     |
-| `transformRequest: []`         | Via interceptors   | `transformRequest: []`         |
-| `auth: { username, password }` | Manual header      | `auth: { username, password }` |
-| `onUploadProgress`             | ❌                 | `onUploadProgress`             |
-| `xsrfCookieName`               | ❌                 | `xsrfCookieName`               |
+| Axios Pattern                  | @ndigo/http Current | @ndigo/http Future             |
+| ------------------------------ | ------------------- | ------------------------------ |
+| `axios.create({ baseURL })`    | ❌                  | `HTTP.create({ baseURL })`     |
+| `params: { key: 'value' }`     | Manual URL          | `params: { key: 'value' }`     |
+| `transformRequest: []`         | Via interceptors    | `transformRequest: []`         |
+| `auth: { username, password }` | Manual header       | `auth: { username, password }` |
+| `onUploadProgress`             | ❌                  | `onUploadProgress`             |
+| `xsrfCookieName`               | ❌                  | `xsrfCookieName`               |
 
 ### From Fetch API
 
-| Fetch Pattern           | @blue/http                | Improvement                       |
+| Fetch Pattern           | @ndigo/http               | Improvement                       |
 | ----------------------- | ------------------------- | --------------------------------- |
 | `fetch(url, options)`   | `http.get(url, settings)` | Interceptors + helpers            |
 | Manual headers          | Same                      | 124 header constants              |
@@ -155,7 +155,7 @@
 
 | Library                | Paradigm                     | Strengths                                                   | Best For                                              |
 | ---------------------- | ---------------------------- | ----------------------------------------------------------- | ----------------------------------------------------- |
-| **@blue/http**         | Fetch + Interceptors         | Advanced interceptors, URL parsers, status/header constants | Complex request/response pipelines, Spring developers |
+| **@ndigo/http**        | Fetch + Interceptors         | Advanced interceptors, URL parsers, status/header constants | Complex request/response pipelines, Spring developers |
 | **Spring RestClient**  | Builder + Message Converters | Enterprise patterns, type safety, rich abstractions         | Java/Spring ecosystem                                 |
 | **Axios**              | Promise + Config             | Simple API, progress tracking, XSRF protection              | General web apps, file uploads                        |
 | **Fetch API**          | Promise + Options            | Web standard, no dependencies, streaming                    | Native browser/Node.js, minimal overhead              |

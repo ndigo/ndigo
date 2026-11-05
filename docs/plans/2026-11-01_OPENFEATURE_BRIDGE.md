@@ -4,17 +4,17 @@
 telemetry hook implemented (2026-11-02, #57) — pre-1.0; the remaining
 Phase 2 items are externally gated (see §5).
 **Decision record:** [AD-87](../decisions/2026-11-01_AD87_OPENFEATURE_BRIDGE.md).
-**Issues:** Phase 1 — [#56](https://github.com/jeffrose/blue/issues/56) ·
-companion targeting context — [#55](https://github.com/jeffrose/blue/issues/55) ·
-Phase 2 — [#57](https://github.com/jeffrose/blue/issues/57).
+**Issues:** Phase 1 — [#56](https://github.com/ndigo/ndigo/issues/56) ·
+companion targeting context — [#55](https://github.com/ndigo/ndigo/issues/55) ·
+Phase 2 — [#57](https://github.com/ndigo/ndigo/issues/57).
 
 ---
 
 ## 1. Summary
 
-1. **Adopt OpenFeature behind the existing SPI.** `@blue/flags` keeps
+1. **Adopt OpenFeature behind the existing SPI.** `@ndigo/flags` keeps
    `FlagEvaluator` / `FLAG_EVALUATOR` / `@whenFeature`; a new
-   `@blue/flags-openfeature` package bridges an OpenFeature client into the
+   `@ndigo/flags-openfeature` package bridges an OpenFeature client into the
    SPI, so vendors (flagd, OFREP, LaunchDarkly, Unleash, …) arrive as
    providers — never as framework integrations.
 2. **Widen the SPI vocabulary additively** (reasons `CACHED`/`UNKNOWN`/`STALE`,
@@ -37,14 +37,14 @@ evidence and reasoning: AD-87.
 
 ## 3. Phase 1 deliverables (pre-1.0 — #56)
 
-| #    | Deliverable                                                                                                                        | Where                                                                   |
-| ---- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| P1-1 | SPI widening: 3 reasons, 2 error codes, optional `flagMetadata`; `DISABLED`-as-success documented; tests                           | `packages/blue-flags/src/flag-evaluator.ts`, `test/`                    |
-| P1-2 | `@blue/flags-openfeature`: `OpenFeatureFlagEvaluator` (global + domain clients), never-throw boundary, `close()` policy            | `packages/blue-flags-openfeature/` (new)                                |
-| P1-3 | Catalog pins + peer allowlist (SDKs as peers per OF library guidance)                                                              | `pnpm-workspace.yaml`, `scripts/check-manifests.mjs`                    |
-| P1-4 | Tests: in-test in-memory provider + OF **Gherkin spec vectors** (`@standard-reasons`, `@object`, `@disabled-flags`)                | `packages/blue-flags-openfeature/test/`                                 |
-| P1-5 | Docs: bridge README, guide 28 §Vendors recipe (`setProviderAndWait` + bean override; flagd/OFREP examples), Package Map, CHANGELOG | `packages/blue-flags-openfeature/README.md`, `docs/`, `ARCHITECTURE.md` |
-| P1-6 | Companion: `FlagEvaluationContextResolver` seam (principal/tenant → context)                                                       | `packages/blue-platform-node/` — **#55**, implemented 2026-11-02        |
+| #    | Deliverable                                                                                                                        | Where                                                                    |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| P1-1 | SPI widening: 3 reasons, 2 error codes, optional `flagMetadata`; `DISABLED`-as-success documented; tests                           | `packages/ndigo-flags/src/flag-evaluator.ts`, `test/`                    |
+| P1-2 | `@ndigo/flags-openfeature`: `OpenFeatureFlagEvaluator` (global + domain clients), never-throw boundary, `close()` policy           | `packages/ndigo-flags-openfeature/` (new)                                |
+| P1-3 | Catalog pins + peer allowlist (SDKs as peers per OF library guidance)                                                              | `pnpm-workspace.yaml`, `scripts/check-manifests.mjs`                     |
+| P1-4 | Tests: in-test in-memory provider + OF **Gherkin spec vectors** (`@standard-reasons`, `@object`, `@disabled-flags`)                | `packages/ndigo-flags-openfeature/test/`                                 |
+| P1-5 | Docs: bridge README, guide 28 §Vendors recipe (`setProviderAndWait` + bean override; flagd/OFREP examples), Package Map, CHANGELOG | `packages/ndigo-flags-openfeature/README.md`, `docs/`, `ARCHITECTURE.md` |
+| P1-6 | Companion: `FlagEvaluationContextResolver` seam (principal/tenant → context)                                                       | `packages/ndigo-platform-node/` — **#55**, implemented 2026-11-02        |
 
 Explicit non-goals for Phase 1: no web entry (`/web`), no telemetry hook, no
 provider implementations, no provider-TCK adoption, no `@openfeature/*`
@@ -61,7 +61,7 @@ imports outside the bridge package.
   `manifest:check` (peer allowlist), `doc:api` freshness,
   `docs:links`.
 - Recipe smoke: the guide's recipe decomposes into the bridge mapping tests
-  (this package) plus the existing gate tests (`apps/04-blue-api`'s
+  (this package) plus the existing gate tests (`apps/04-ndigo-api`'s
   feature-flags lane) — the interceptor evaluates through whatever
   `FLAG_EVALUATOR` bean is registered, so no new app dependency is needed.
 
@@ -73,7 +73,7 @@ regenerated for both packages.
 
 ## 5. Phase 2 (#57) — web entry + telemetry hook implemented; the rest gated
 
-1. **Web entry — implemented**: `@blue/flags-openfeature/web` over
+1. **Web entry — implemented**: `@ndigo/flags-openfeature/web` over
    `@openfeature/web-sdk` (`WebOpenFeatureFlagEvaluator`); static-context,
    snapshot semantics documented; the same mapping, null narrowing, and
    never-throw boundary as the server evaluator; web-sdk added as the
@@ -114,6 +114,6 @@ regenerated for both packages.
 - Should `PropertyFlagProvider` emit `flagMetadata: {}` for detail-shape
   parity, or leave the field absent? Decide in P1-1 (lean: absent stays
   valid; bridge always sets it).
-- Does `apps/04-blue-api` gain a bridge demo? It would need a provider
+- Does `apps/04-ndigo-api` gain a bridge demo? It would need a provider
   process; lean: no — the guide recipe + a test suffice until a vendor
   demo lands with Phase 2's recipes.

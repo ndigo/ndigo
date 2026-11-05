@@ -18,7 +18,7 @@ OXC (oxc.rs) is a Rust-based JavaScript/TypeScript toolchain. It is **not a sing
 | `oxc_transformer`                           | TS→JS transformation (types, enum, namespace, decorators, class fields) | Beta (`@oxc-transform` npm wrapper)                                |
 | `@oxc-project/transform` / `@oxc-transform` | Node API + CLI wrapper for the transformer                              | Beta — usable for type-stripping, not yet a full `tsc` replacement |
 | `oxc_resolver`                              | Fast module resolution (Rust)                                           | Stable, used internally by Rolldown/oxc                            |
-| `oxlint` + `@blue/eslint-plugin`            | —                                                                       | We already use `oxlint` for linting; our custom rules run there    |
+| `oxlint` + `@ndigo/eslint-plugin`           | —                                                                       | We already use `oxlint` for linting; our custom rules run there    |
 
 **Bottom line recommendation:**
 
@@ -35,9 +35,9 @@ OXC (oxc.rs) is a Rust-based JavaScript/TypeScript toolchain. It is **not a sing
 
 | Concern           | Current Tool                                            | Version    | Notes                                                                                                                                                         |
 | :---------------- | :------------------------------------------------------ | :--------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Lint              | `oxlint` (Rust) + `@blue/eslint-plugin` custom rules    | oxlint 1.x | Already OXC. Config in root `.oxlintrc.json`. Custom plugin provides `no-direct-integration-imports`, `no-internal-file-imports`, `no-internal-file-exports`. |
+| Lint              | `oxlint` (Rust) + `@ndigo/eslint-plugin` custom rules   | oxlint 1.x | Already OXC. Config in root `.oxlintrc.json`. Custom plugin provides `no-direct-integration-imports`, `no-internal-file-imports`, `no-internal-file-exports`. |
 | Type check + emit | `tsc -b` (TypeScript 5.9)                               | TS 5.9     | Nx `tsc` executor, per-package `tsconfig.build.json` extending root. Outputs ESM to `lib/`.                                                                   |
-| Tests             | Vitest 3.2                                              | Vitest 3.x | `pnpm test` runs all; per-package `nx run @blue/<pkg>:test`.                                                                                                  |
+| Tests             | Vitest 3.2                                              | Vitest 3.x | `pnpm test` runs all; per-package `nx run @ndigo/<pkg>:test`.                                                                                                 |
 | Task runner       | Nx 21 + pnpm 10 workspaces                              | Nx 21      | `pnpm build` → `nx run-many -t build:lib`.                                                                                                                    |
 | Formatting        | Prettier 3.8                                            | —          | No OXC equivalent exists; keep Prettier.                                                                                                                      |
 | Module system     | ESM only, TS target ES2022, `moduleResolution: bundler` | —          | OXC is ESM-friendly; no conflict.                                                                                                                             |
@@ -56,7 +56,7 @@ OXC (oxc.rs) is a Rust-based JavaScript/TypeScript toolchain. It is **not a sing
 
 ### 3.1 What OXC Is Good At (and Where)
 
-| Tool                                                          | Performance vs Current                  | Maturity           | Fit for BlueJS                                                           |
+| Tool                                                          | Performance vs Current                  | Maturity           | Fit for ndigo                                                            |
 | :------------------------------------------------------------ | :-------------------------------------- | :----------------- | :----------------------------------------------------------------------- |
 | `oxlint`                                                      | 10–30× faster than ESLint               | **Stable**         | ✅ Already adopted                                                       |
 | `oxc_parser`                                                  | 5–10× faster than SWC/TS parsing        | **Stable**         | ✅ Transitive (via oxlint, and available for tooling)                    |
@@ -128,7 +128,7 @@ This gives us OXC's speed where it matters (emit) with zero loss of type safety.
 We're already on oxlint. Do **not** rip anything out. Instead:
 
 1. **Expand oxlint rule coverage** to displace any residual ESLint-style checks we might be doing ad hoc. Enable more `correctness` and `suspicious` rule categories in `.oxlintrc.json` (start with `correctness` only; review `perf`/`suspicious` hits).
-2. **Keep the `@blue/eslint-plugin` custom rules** as the enforcement mechanism for the Library Integration Layer + internal-file rules. (These are oxlint plugin rules already; no change.)
+2. **Keep the `@ndigo/eslint-plugin` custom rules** as the enforcement mechanism for the Library Integration Layer + internal-file rules. (These are oxlint plugin rules already; no change.)
 3. **Add a CI guard** (if not present): fail the build on any _new_ oxlint `error` (allow existing `warn` baseline). This makes lint regression-free as we grow rules.
 
 **Effort:** ~0.5 day. **Risk:** Low.
@@ -276,12 +276,12 @@ These are "adopt when the trigger exists" items. **Do not do them speculatively*
 
 ## Appendix A: Current Per-Package Build Targets (as surveyed)
 
-All 10 packages (`blue-core`, `blue-context`, `blue-parser`, `blue-model`, `blue-router`, `blue-telemetry`, `blue-cli`, `blue-eslint-plugin`, and others) use the Nx `tsc` executor with per-package `tsconfig.build.json` extending the root tsconfig. `pnpm build` = `nx run-many -t build:lib`. No bundler, no esbuild/rollup in the repo.
+All 10 packages (`ndigo-core`, `ndigo-context`, `ndigo-parser`, `ndigo-model`, `ndigo-router`, `ndigo-telemetry`, `ndigo-cli`, `ndigo-eslint-plugin`, and others) use the Nx `tsc` executor with per-package `tsconfig.build.json` extending the root tsconfig. `pnpm build` = `nx run-many -t build:lib`. No bundler, no esbuild/rollup in the repo.
 
 ## Appendix B: OXC Tool Reference
 
 - **oxc_parser** — Rust TS/JS/JSX parser. Stable. (Transitively used by oxlint today.)
-- **oxlint** — Rust linter. Stable. **In use.** Config: root `.oxlintrc.json`. Custom rules via `@blue/eslint-plugin`.
+- **oxlint** — Rust linter. Stable. **In use.** Config: root `.oxlintrc.json`. Custom rules via `@ndigo/eslint-plugin`.
 - **@oxc-transform / @oxc-project/transform** — Node wrapper over `oxc_transformer` for TS→JS (type stripping + feature transform). Beta. **Target of Phase 2.**
 - **oxc_resolver** — Rust module resolver. Stable. **No current consumer.**
 - **No OXC formatter, no OXC test runner.**

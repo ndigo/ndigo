@@ -19,12 +19,12 @@ gap-analysis Tier-2 row and removes the SEC-6 rate-limiter keying caveat.
   literal** is the client; malformed entries skipped; fallback = peer.
 - IP literals + CIDR (IPv4/IPv6); IPv4-mapped IPv6 normalizes; malformed
   config fails loud at construction.
-- Header parsing via `@blue/http` headers module (`X_FORWARDED_FOR`),
+- Header parsing via `@ndigo/http` headers module (`X_FORWARDED_FOR`),
   repeated lines joined.
 
 ## Phases
 
-1. **Resolver + unit tests** (`packages/blue-platform-node/src/trusted-proxy.ts`,
+1. **Resolver + unit tests** (`packages/ndigo-platform-node/src/trusted-proxy.ts`,
    `test/trusted-proxy.spec.ts`) — `TrustedProxySet` (allowlist,
    `implements Matchable<string>`) and `resolveClientAddress(peer,
    headers, set)`. TDD: spoofing matrix first (no config, untrusted peer,
@@ -32,7 +32,7 @@ gap-analysis Tier-2 row and removes the SEC-6 rate-limiter keying caveat.
    forms, repeated header lines, CIDR boundaries).
 2. **Wiring** — `NodeHTTPServerAdapterOptions.trustedProxies` +
    constructor validation; `handleRequest` resolves `remoteAddress`;
-   `HTTPServerOptions.trustedProxies` + `BLUE_TRUSTED_PROXIES` env
+   `HTTPServerOptions.trustedProxies` + `NDIGO_TRUSTED_PROXIES` env
    (comma-separated, option wins); index exports; `NodeRequest`
    JSDoc updated.
 3. **Integration tests** — real `node:http` server: default posture
@@ -47,7 +47,7 @@ gap-analysis Tier-2 row and removes the SEC-6 rate-limiter keying caveat.
 
 ## Verification
 
-- `vitest run packages/blue-platform-node/test/trusted-proxy.spec.ts` —
+- `vitest run packages/ndigo-platform-node/test/trusted-proxy.spec.ts` —
   24 tests (unit matrix + 3 integration scenarios).
 - Full platform-node suite green; manifest + doc-coverage gates pass;
   `oxlint --type-aware --deny-warnings` clean on touched files.

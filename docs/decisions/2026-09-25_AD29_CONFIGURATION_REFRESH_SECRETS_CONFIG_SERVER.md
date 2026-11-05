@@ -60,7 +60,7 @@ file layer is rejected (whole-file ≠ property values).
 - Marker: `{scheme[:version]:payload}` — `{cipher:v1:<base64url(iv|tag|ct)>}`
   (12-byte IV, 16-byte tag, AES-256-GCM). Shared `parseSecretMarker` is the
   single grammar; unknown scheme/version fail loud, never plaintext fallback.
-- Key: `BLUE_SECRET_KEY` is base64 of EXACTLY 32 bytes, enforced at
+- Key: `NDIGO_SECRET_KEY` is base64 of EXACTLY 32 bytes, enforced at
   construction (fail at startup, not first decrypt); passphrases rejected
   outright (no KDF footgun).
 - **Key-path AAD**: the resolver passes the property key (`db.password`) as
@@ -87,12 +87,12 @@ refused loudly; pluggability never downgrades the threat model.
 
 ### D-6 — Config server: plain JSON-over-HTTPS remote source (own contract)
 
-`RemotePropertySource` (blue-context) fetches a flat JSON document over
+`RemotePropertySource` (ndigo-context) fetches a flat JSON document over
 HTTPS with ETag/`If-None-Match` change detection (304 → no re-merge, no
 event) falling back to body-text comparison. `optional: true` default (boot
 proceeds on failure); `optional: false` fails boot naming the URL; later
 poll failures keep last-good. Auth: static headers, token sourced from env
-(`BLUE_CONFIG_SERVER_TOKEN`) — never from `application.json` (the token
+(`NDIGO_CONFIG_SERVER_TOKEN`) — never from `application.json` (the token
 header is itself a secret). `fetch` + scheduler seams are injectable
 (isomorphic default `globalThis.fetch`; https enforced on the default
 path). Lifecycle: `start()`/`stop()`; boot starts polling after success,
@@ -129,7 +129,7 @@ ADR when a client-side consumer exists**. Explicitly NOT this wave.
 
 - New public surface: `CONFIG_REFRESH_EVENT`, `@refreshScope`/`RefreshScope`,
   `SecretCipher`/`SecretSchemeRegistry`/`parseSecretMarker`, `AESGCMCipher`
-  (+ `BLUE_SECRET_KEY`), `RemotePropertySource`/`RemoteSourceOptions`/
+  (+ `NDIGO_SECRET_KEY`), `RemotePropertySource`/`RemoteSourceOptions`/
   `RemoteSourceScheduler`, `ApplicationBuilder.secrets(...)`/`configServer(...)`.
 - Behavior changes (pre-1.0, accepted): environments are emitters;
   `refresh()` emits `config:refresh` (no listeners → no-op); `defaults`

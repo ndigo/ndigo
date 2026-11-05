@@ -12,38 +12,38 @@ No new features. Wave 10 is exclusively about quality, clarity, and public API s
 
 Waves 1–9 are complete and committed. The full package matrix is now:
 
-| Package                   | Completed In | Status        |
-| :------------------------ | :----------- | :------------ |
-| `@blue/util`              | pre-Wave 1   | ✅ Stable     |
-| `@blue/parser`            | pre-Wave 1   | ✅ Stable     |
-| `@blue/model`             | pre-Wave 1   | ✅ Stable     |
-| `@blue/core`              | pre-Wave 1   | ✅ Stable     |
-| `@blue/http`              | pre-Wave 1   | ✅ Stable     |
-| `@blue/telemetry`         | pre-Wave 1   | ✅ Stable     |
-| `@blue/print`             | pre-Wave 1   | ✅ Stable     |
-| `@blue/eslint-plugin`     | Wave 2       | ✅ Stable     |
-| `@blue/context`           | Wave 7       | ✅ Stable     |
-| `@blue/validate`          | Wave 5/7     | ✅ Stable     |
-| `@blue/content`           | Wave 7       | ✅ Stable     |
-| `@blue/factory`           | Wave 5       | ✅ Stable     |
-| `@blue/domain`            | Wave 5       | 🟡 Advancing  |
-| `@blue/dispatcher`        | Wave 3/8     | 🟡 Advancing  |
-| `@blue/router`            | Wave 3       | 🟡 Advancing  |
-| `@blue/view`              | Wave 3       | 🟡 Advancing  |
-| `@blue/view-webcomponent` | Wave 3       | 🟡 Advancing  |
-| `@blue/boot`              | Wave 6       | 🟡 Advancing  |
-| `@blue/service`           | Wave 4       | 🟡 Advancing  |
-| `@blue/platform-web`      | Wave 3       | 🟡 Advancing  |
-| `@blue/platform-node`     | Wave 8       | ✅ MVP        |
-| `@blue/orm`               | Wave 9       | 🟡 Advancing  |
-| `@blue/auth`              | Wave 9       | ✅ MVP        |
-| `blue-demo-node`          | Wave 8/9     | ✅ Functional |
+| Package                    | Completed In | Status        |
+| :------------------------- | :----------- | :------------ |
+| `@ndigo/util`              | pre-Wave 1   | ✅ Stable     |
+| `@ndigo/parser`            | pre-Wave 1   | ✅ Stable     |
+| `@ndigo/model`             | pre-Wave 1   | ✅ Stable     |
+| `@ndigo/core`              | pre-Wave 1   | ✅ Stable     |
+| `@ndigo/http`              | pre-Wave 1   | ✅ Stable     |
+| `@ndigo/telemetry`         | pre-Wave 1   | ✅ Stable     |
+| `@ndigo/print`             | pre-Wave 1   | ✅ Stable     |
+| `@ndigo/eslint-plugin`     | Wave 2       | ✅ Stable     |
+| `@ndigo/context`           | Wave 7       | ✅ Stable     |
+| `@ndigo/validate`          | Wave 5/7     | ✅ Stable     |
+| `@ndigo/content`           | Wave 7       | ✅ Stable     |
+| `@ndigo/factory`           | Wave 5       | ✅ Stable     |
+| `@ndigo/domain`            | Wave 5       | 🟡 Advancing  |
+| `@ndigo/dispatcher`        | Wave 3/8     | 🟡 Advancing  |
+| `@ndigo/router`            | Wave 3       | 🟡 Advancing  |
+| `@ndigo/view`              | Wave 3       | 🟡 Advancing  |
+| `@ndigo/view-webcomponent` | Wave 3       | 🟡 Advancing  |
+| `@ndigo/boot`              | Wave 6       | 🟡 Advancing  |
+| `@ndigo/service`           | Wave 4       | 🟡 Advancing  |
+| `@ndigo/platform-web`      | Wave 3       | 🟡 Advancing  |
+| `@ndigo/platform-node`     | Wave 8       | ✅ MVP        |
+| `@ndigo/orm`               | Wave 9       | 🟡 Advancing  |
+| `@ndigo/auth`              | Wave 9       | ✅ MVP        |
+| `ndigo-demo-node`          | Wave 8/9     | ✅ Functional |
 
 ---
 
 ## Architecture Decisions Revisited
 
-### AD-06 — `@blue/factory` Scoping Split (Deferred)
+### AD-06 — `@ndigo/factory` Scoping Split (Deferred)
 
 **Review findings:** The `Scope` interface and `ScopedFactory` interface are clean, well-bounded abstractions already present in `scope.ts`. The concrete scope implementations (`SingletonScope`, `HashScope`, `PrototypeScope`) are implementation details. A future split could expose only the interfaces in a core module while keeping the concrete implementations in a separate package.
 
@@ -61,16 +61,16 @@ Mark clearly unstable / forward-looking APIs so consumers know what to trust.
 
 **`@experimental` to add:**
 
-- `@transactional()` decorator in `@blue/orm` — stores metadata but no `TransactionManager` enforces it yet; will be functional when `@blue/orm-drizzle` or `@blue/orm-sqlite` lands
-- `UnitOfWork` / `InMemoryUnitOfWork` in `@blue/orm` — fully implemented but not wired into any auto-configuration; opt-in only for now
+- `@transactional()` decorator in `@ndigo/orm` — stores metadata but no `TransactionManager` enforces it yet; will be functional when `@ndigo/orm-drizzle` or `@ndigo/orm-sqlite` lands
+- `UnitOfWork` / `InMemoryUnitOfWork` in `@ndigo/orm` — fully implemented but not wired into any auto-configuration; opt-in only for now
 
 **Already marked `@experimental`:**
 
-- `SiteBuilder` in `@blue/boot` — multi-app composition deferred to post-1.0 (AD-03)
+- `SiteBuilder` in `@ndigo/boot` — multi-app composition deferred to post-1.0 (AD-03)
 
 **`@internal` to add:**
 
-- Concrete scope implementations in `@blue/factory`: `SingletonScope`, `HashScope`, `PrototypeScope` — expose only the `Scope` and `ScopedFactory` interfaces in the stable API
+- Concrete scope implementations in `@ndigo/factory`: `SingletonScope`, `HashScope`, `PrototypeScope` — expose only the `Scope` and `ScopedFactory` interfaces in the stable API
 
 ---
 
@@ -80,9 +80,9 @@ Add missing TSDoc to all public API functions in packages that lack it.
 
 **Priority targets:**
 
-- `@blue/orm/src/decorators.ts` — relation decorators and lifecycle decorators lack TSDoc
-- `@blue/auth/src/_decorators.ts` — already has TSDoc ✅
-- `@blue/platform-node/src/` — auto-configuration and resolvers already have TSDoc ✅
+- `@ndigo/orm/src/decorators.ts` — relation decorators and lifecycle decorators lack TSDoc
+- `@ndigo/auth/src/_decorators.ts` — already has TSDoc ✅
+- `@ndigo/platform-node/src/` — auto-configuration and resolvers already have TSDoc ✅
 
 ---
 
@@ -92,8 +92,8 @@ New Wave 8/9 packages need README files:
 
 **Missing READMEs:**
 
-- `@blue/auth` — new in Wave 9; no README
-- `@blue/platform-node` — new in Wave 8; no README
+- `@ndigo/auth` — new in Wave 9; no README
+- `@ndigo/platform-node` — new in Wave 8; no README
 
 ---
 
@@ -105,18 +105,18 @@ Write `docs/migrations/2026-05-29_V1_MIGRATION.md` covering all breaking changes
 
 ### 10e. Performance Benchmark Baselines
 
-Extend the Vitest bench suite beyond `@blue/util` to cover hot paths in the dispatcher and router.
+Extend the Vitest bench suite beyond `@ndigo/util` to cover hot paths in the dispatcher and router.
 
 **New bench files:**
 
-- `packages/blue-dispatcher/bench/routing.bench.ts` — `MetadataHandlerMapping.getHandler()` route resolution throughput
-- `packages/blue-router/bench/matching.bench.ts` — `RouteMatcher.match()` throughput for static vs. parameterised paths
+- `packages/ndigo-dispatcher/bench/routing.bench.ts` — `MetadataHandlerMapping.getHandler()` route resolution throughput
+- `packages/ndigo-router/bench/matching.bench.ts` — `RouteMatcher.match()` throughput for static vs. parameterised paths
 
 ---
 
 ## Demo Gate
 
-`blue-demo-node` already demonstrates:
+`ndigo-demo-node` already demonstrates:
 
 - ✅ `POST /auth/login` — `AuthenticationManager` with username/password strategy, returns Bearer token
 - ✅ `GET /notes` — Bearer-token-protected, returns all notes from `InMemoryEntityManager`
@@ -132,12 +132,12 @@ Extend the Vitest bench suite beyond `@blue/util` to cover hot paths in the disp
 - [ ] `pnpm lint` — 0 errors, 0 warnings
 - [ ] `pnpm test` — all Wave 9 tests passing (254+)
 - [ ] `@experimental` tags on `@transactional`, `UnitOfWork`/`InMemoryUnitOfWork`
-- [ ] `@internal` tags on concrete scope implementations in `@blue/factory`
-- [ ] TSDoc on all public relation/lifecycle/transactional decorators in `@blue/orm`
-- [ ] README for `@blue/auth`
-- [ ] README for `@blue/platform-node`
+- [ ] `@internal` tags on concrete scope implementations in `@ndigo/factory`
+- [ ] TSDoc on all public relation/lifecycle/transactional decorators in `@ndigo/orm`
+- [ ] README for `@ndigo/auth`
+- [ ] README for `@ndigo/platform-node`
 - [ ] Migration guide committed to `docs/migrations/`
-- [ ] Bench file committed to `packages/blue-dispatcher/bench/`
+- [ ] Bench file committed to `packages/ndigo-dispatcher/bench/`
 
 ---
 

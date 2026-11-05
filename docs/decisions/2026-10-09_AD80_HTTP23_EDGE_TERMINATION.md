@@ -23,12 +23,12 @@ What the repository actually is at HEAD (verified 2026-10-09):
 
 - **The origin listener is HTTP/1.1 and has no TLS surface at all.**
   `NodeHTTPServerAdapter` wraps `node:http.createServer()`
-  (`packages/blue-platform-node/src/node-http-server-adapter.ts:348`);
+  (`packages/ndigo-platform-node/src/node-http-server-adapter.ts:348`);
   `HTTPServerOptions` is port/host/adapter plus socket/limits/authenticate/
   trusted-proxy options (`http-server.ts:36-88`) — there is no `tls:`,
   `ssl:`, or secure-listener option anywhere in the platform.
 - **The framework already assumes an edge in front.** AD-37 ships
-  `trustedProxies` / `BLUE_TRUSTED_PROXIES` and the `TrustedProxySet`
+  `trustedProxies` / `NDIGO_TRUSTED_PROXIES` and the `TrustedProxySet`
   with rightmost-first `X-Forwarded-For` walking — the seam exists
   precisely because the platform expects to sit behind a reverse proxy.
 - **Node ≥ 22 baseline** (root `package.json` `engines`). `node:http2`
@@ -40,7 +40,7 @@ What the repository actually is at HEAD (verified 2026-10-09):
   HTTP/2 extended CONNECT), so even a native-h2 origin would serve socket
   upgrades over h1.1 only — a h2-only listener would break the AD-21/23
   socket and STOMP surface for browsers.
-- **The outbound client has no h2 either.** `@blue/http` rides
+- **The outbound client has no h2 either.** `@ndigo/http` rides
   fetch/undici; undici's h2 client (`Http2Client`, ALPN connect options)
   is experimental. Client-side h2 would be a separate effort.
 
@@ -82,7 +82,7 @@ plan's GAP-12 row flips to resolved with this record as the evidence.
 This decision shipped no code: native h2 stayed optioned behind a
 consumer. The option was exercised the same day —
 [AD-81](2026-10-09_AD81_NATIVE_HTTP2.md) lands the four pieces below as
-an opt-in TLS mode (`TLSServerOptions` + `BLUE_TLS_*` env); the
+an opt-in TLS mode (`TLSServerOptions` + `NDIGO_TLS_*` env); the
 edge-terminated plaintext default is unchanged.
 
 1. **TLS surface first** — `tls?: { key, cert, ca?, minVersion, ciphers }`
@@ -117,7 +117,7 @@ h3 belongs to the edge/CDN by construction.
 ## Consequences
 
 - Deployments must place a TLS-terminating proxy/LB/CDN in front of the
-  origin; `trustedProxies`/`BLUE_TRUSTED_PROXIES` becomes a required
+  origin; `trustedProxies`/`NDIGO_TRUSTED_PROXIES` becomes a required
   production configuration (it was already the documented mechanism).
 - No API change; no new dependency; `pnpm build/test/lint` unaffected —
   this is a decision-and-documentation change only.
@@ -151,4 +151,4 @@ h3 belongs to the edge/CDN by construction.
 - Node.js docs: `node:http2` `createSecureServer` + `allowHTTP1` ALPN
   behavior; `ws` upgrade support is h1.1-only (no RFC 8441).
 - Applied at: `docs/guides/01-building-a-node-api.md` §8,
-  `packages/blue-platform-node/src/http-server.ts` module TSDoc.
+  `packages/ndigo-platform-node/src/http-server.ts` module TSDoc.

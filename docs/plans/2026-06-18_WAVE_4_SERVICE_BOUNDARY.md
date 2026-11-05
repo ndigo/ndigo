@@ -2,17 +2,17 @@
 
 ## Overview
 
-This document outlines the implementation plan for Wave 4 of the Client-First Roadmap, focusing on porting legacy service interceptors into `@blue/http` and `@blue/platform-web`, and enhancing `@blue/service`.
+This document outlines the implementation plan for Wave 4 of the Client-First Roadmap, focusing on porting legacy service interceptors into `@ndigo/http` and `@ndigo/platform-web`, and enhancing `@ndigo/service`.
 
 ## Goals
 
 1. Port legacy interceptors from `header.legacy.js`, `error.legacy.js`, `cache.legacy.js`, `status.legacy.js`, and `offline.legacy.js`
-2. Push CSRF, retry, error normalization, cache, and offline-detection into `@blue/http` as interceptors
-3. Enhance `@blue/service` with service registry, telemetry hooks, and request-id correlation
+2. Push CSRF, retry, error normalization, cache, and offline-detection into `@ndigo/http` as interceptors
+3. Enhance `@ndigo/service` with service registry, telemetry hooks, and request-id correlation
 
 ## Interceptor Implementations
 
-### 1. HeaderInterceptor (@blue/http)
+### 1. HeaderInterceptor (@ndigo/http)
 
 #### Architectural Decision
 
@@ -48,13 +48,13 @@ class HeaderInterceptor implements HttpInterceptor {
 - Invalid channel ID: Validate format before adding to header
 - Request ID generation failure: Fall back to timestamp-based ID
 
-### 2. ErrorNormalizationInterceptor (@blue/http)
+### 2. ErrorNormalizationInterceptor (@ndigo/http)
 
 #### Architectural Decision
 
 - Standardizes error responses from HTTP calls into consistent shape
 - Handles both network errors and HTTP status code errors
-- Integrates with existing error handling system in `@blue/service`
+- Integrates with existing error handling system in `@ndigo/service`
 
 #### API Signature
 
@@ -82,7 +82,7 @@ class ErrorNormalizationInterceptor implements HttpInterceptor {
 - Missing error fields: Populate with defaults or empty values
 - Non-JSON responses: Attempt to parse as text or fall back gracefully
 
-### 3. CacheInterceptor (@blue/http)
+### 3. CacheInterceptor (@ndigo/http)
 
 #### Architectural Decision
 
@@ -118,7 +118,7 @@ class CacheInterceptor implements HttpInterceptor {
 - Invalid TTL values: Default to safe value or throw error
 - Concurrent requests for same resource: Handle race conditions properly
 
-### 4. StatusInterceptor (@blue/http)
+### 4. StatusInterceptor (@ndigo/http)
 
 #### Architectural Decision
 
@@ -153,7 +153,7 @@ class StatusInterceptor implements HttpInterceptor {
 - Invalid status mappings: Validate and handle gracefully
 - Status code conflicts: Define clear precedence rules
 
-### 5. OfflineInterceptor (@blue/platform-web)
+### 5. OfflineInterceptor (@ndigo/platform-web)
 
 #### Architectural Decision
 
@@ -187,7 +187,7 @@ class OfflineInterceptor implements HttpInterceptor {
 - Network flakiness: Debounce rapid state changes
 - Manual override: Allow manual state setting for testing
 
-## @blue/service Enhancements
+## @ndigo/service Enhancements
 
 ### Service Registry
 
@@ -221,7 +221,7 @@ class ServiceRegistryImpl implements ServiceRegistry {
 
 #### Architectural Decision
 
-- Integrates with `@blue/telemetry` for request tracing and metrics
+- Integrates with `@ndigo/telemetry` for request tracing and metrics
 - Provides hooks for request/response lifecycle events
 - Supports correlation of telemetry data with service calls
 
@@ -285,21 +285,21 @@ class RequestIdCorrelationImpl implements RequestIdCorrelation {
 
 ### Phase 1: Core Interceptors (Week 1)
 
-- Implement HeaderInterceptor in @blue/http
-- Implement ErrorNormalizationInterceptor in @blue/http
-- Implement CacheInterceptor in @blue/http
-- Implement StatusInterceptor in @blue/http
+- Implement HeaderInterceptor in @ndigo/http
+- Implement ErrorNormalizationInterceptor in @ndigo/http
+- Implement CacheInterceptor in @ndigo/http
+- Implement StatusInterceptor in @ndigo/http
 
 ### Phase 2: Platform-Specific Interceptor (Week 2)
 
-- Implement OfflineInterceptor in @blue/platform-web
+- Implement OfflineInterceptor in @ndigo/platform-web
 - Integrate with existing platform detection mechanisms
 
 ### Phase 3: Service Enhancements (Week 3)
 
-- Implement ServiceRegistry in @blue/service
+- Implement ServiceRegistry in @ndigo/service
 - Add TelemetryHooks integration
-- Implement RequestIdCorrelation in @blue/service
+- Implement RequestIdCorrelation in @ndigo/service
 
 ### Phase 4: Testing & Validation (Week 4)
 
@@ -326,10 +326,10 @@ class RequestIdCorrelationImpl implements RequestIdCorrelation {
 
 ### Required Packages
 
-- `@blue/http` - Core HTTP client and interceptor infrastructure
-- `@blue/platform-web` - Browser-specific functionality for offline detection
-- `@blue/service` - Service layer enhancements
-- `@blue/telemetry` - Telemetry integration
+- `@ndigo/http` - Core HTTP client and interceptor infrastructure
+- `@ndigo/platform-web` - Browser-specific functionality for offline detection
+- `@ndigo/service` - Service layer enhancements
+- `@ndigo/telemetry` - Telemetry integration
 
 ### External Dependencies
 

@@ -2,7 +2,7 @@
 
 **Status:** Active  
 **Horizon:** 6–12 months (10 waves)  
-**Demo gate:** Every milestone must land a working flow in `blue-demo`  
+**Demo gate:** Every milestone must land a working flow in `ndigo-demo`  
 **Legacy policy:** Port and integrate `.legacy.js` files as modern TypeScript; delete originals
 
 ---
@@ -11,13 +11,13 @@
 
 The following six decisions were ratified on 2026-05-27 and govern all subsequent wave work.
 
-### AD-01: `@blue/http` vs `@blue/service` Boundary
+### AD-01: `@ndigo/http` vs `@ndigo/service` Boundary
 
-**Decision:** Push CSRF, retry, error normalization, cache, and offline-detection into `@blue/http` as
-interceptors. `@blue/service` remains a thin domain-aware façade: service registry, service-call telemetry,
+**Decision:** Push CSRF, retry, error normalization, cache, and offline-detection into `@ndigo/http` as
+interceptors. `@ndigo/service` remains a thin domain-aware façade: service registry, service-call telemetry,
 request-id correlation, and app-reset coordination.
 
-**Rationale:** `@blue/http` already has a mature interceptor + transform pipeline. The legacy service
+**Rationale:** `@ndigo/http` already has a mature interceptor + transform pipeline. The legacy service
 interceptors (`header`, `error`, `cache`, `retryOnError`, `offline`, `status`, `appReset`) are HTTP
 cross-cutting concerns, not business logic.
 
@@ -25,15 +25,15 @@ cross-cutting concerns, not business logic.
 
 ---
 
-### AD-02: `@blue/domain` vs `@blue/model` Reconciliation
+### AD-02: `@ndigo/domain` vs `@ndigo/model` Reconciliation
 
-**Decision:** `@blue/domain` is an optional MVVM layer that depends on `@blue/model` for validation and
-`@blue/context` for event emission. `@blue/model` stays pure (validation/data shape). A domain component is
+**Decision:** `@ndigo/domain` is an optional MVVM layer that depends on `@ndigo/model` for validation and
+`@ndigo/context` for event emission. `@ndigo/model` stays pure (validation/data shape). A domain component is
 "model + actions + lifecycle." For Web Components, view-models project from domain. Future adapters (React,
 Lit) back against the same domain component.
 
 **Rationale:** `GenericDomainComponent.validate()` throws `Method not implemented`—it explicitly awaits this
-decision. Reusing `@blue/model` avoids duplicating constraint logic.
+decision. Reusing `@ndigo/model` avoids duplicating constraint logic.
 
 **Affects:** Wave 5.
 
@@ -42,7 +42,7 @@ decision. Reusing `@blue/model` avoids duplicating constraint logic.
 ### AD-03: Minimal Viable `Site` Model
 
 **Decision:** Defer `Site` to post-1.0. Ship a single-`Application` model first. `SiteBuilder` remains in
-`@blue/boot` marked `@experimental` but is not on the critical path.
+`@ndigo/boot` marked `@experimental` but is not on the critical path.
 
 **Rationale:** History shows one main app accumulated all complexity. YAGNI applies.
 
@@ -50,12 +50,12 @@ decision. Reusing `@blue/model` avoids duplicating constraint logic.
 
 ---
 
-### AD-04: Browser-Only Code → `@blue/platform-web`
+### AD-04: Browser-Only Code → `@ndigo/platform-web`
 
 **Decision:** Audit and migrate browser-only globals (`window`, `document`, `navigator`, `HTMLElement`,
-`history`) from isomorphic-core packages (`@blue/router`, `@blue/dispatcher`, `@blue/view`,
-`@blue/context`, `@blue/content`) into `@blue/platform-web`. Enforce via a new
-`@blue/eslint-plugin/no-browser-globals-in-isomorphic` rule.
+`history`) from isomorphic-core packages (`@ndigo/router`, `@ndigo/dispatcher`, `@ndigo/view`,
+`@ndigo/context`, `@ndigo/content`) into `@ndigo/platform-web`. Enforce via a new
+`@ndigo/eslint-plugin/no-browser-globals-in-isomorphic` rule.
 
 **Rationale:** Isomorphic core principle from architecture roadmap §1.
 
@@ -63,19 +63,19 @@ decision. Reusing `@blue/model` avoids duplicating constraint logic.
 
 ---
 
-### AD-05: `@blue/platform-node` MVP Scope
+### AD-05: `@ndigo/platform-node` MVP Scope
 
 **Decision:** MVP includes: server environment binding, Node-side request/response argument resolvers,
 server-side cookie/session adapters, and file-system resource loader. Excludes: server-side rendering of
-Web Components (deferred to future view adapters) and database concerns (`@blue/orm` handles).
+Web Components (deferred to future view adapters) and database concerns (`@ndigo/orm` handles).
 
-**Rationale:** Mirrors `@blue/platform-web` symmetry; smallest viable enabler for hybrid deployment.
+**Rationale:** Mirrors `@ndigo/platform-web` symmetry; smallest viable enabler for hybrid deployment.
 
 **Affects:** Wave 8.
 
 ---
 
-### AD-06: `@blue/factory` Scoping Split
+### AD-06: `@ndigo/factory` Scoping Split
 
 **Decision:** Defer. Leave scoped factory integrated until real non-scoped consumers emerge. Document the
 integration point. Revisit at 1.0 checkpoint.
@@ -88,32 +88,32 @@ integration point. Revisit at 1.0 checkpoint.
 
 ## Package Maturity Baseline (2026-05-27)
 
-| Layer              | Package                   | Baseline | Target |
-| :----------------- | :------------------------ | :------- | :----- |
-| Integration        | `@blue/util`              | ✅ 100%  | —      |
-| Integration        | `@blue/parser`            | ✅ 100%  | —      |
-| Integration        | `@blue/model`             | ✅ 100%  | —      |
-| Foundation         | `@blue/core`              | ✅ 100%  | —      |
-| Web Infra          | `@blue/http`              | ✅ 100%  | —      |
-| Observability      | `@blue/telemetry`         | ✅ 100%  | —      |
-| Tooling            | `@blue/print`             | ✅ 100%  | —      |
-| Tooling            | `@blue/eslint-plugin`     | ✅ 100%  | —      |
-| Context            | `@blue/context`           | 🟡 85%   | 95%    |
-| Request Processing | `@blue/dispatcher`        | 🟡 65%   | 90%    |
-| Web Infra          | `@blue/router`            | 🟡 50%   | 80%    |
-| Infrastructure     | `@blue/content`           | 🟡 45%   | 85%    |
-| Application        | `@blue/platform-web`      | 🟡 45%   | 90%    |
-| Request Processing | `@blue/view`              | 🟡 40%   | 85%    |
-| Bootstrap          | `@blue/boot`              | 🟡 40%   | 85%    |
-| Infrastructure     | `@blue/validate`          | 🟡 adv.  | 90%    |
-| Infrastructure     | `@blue/factory`           | 🟡 adv.  | 90%    |
-| Application        | `@blue/service`           | 🟡 30%   | 80%    |
-| Request Processing | `@blue/view-webcomponent` | 🟡 25%   | 80%    |
-| Application        | `@blue/domain`            | 🔴 15%   | 75%    |
-| Persistence        | `@blue/orm`               | 🟡 MVP   | 70%    |
-| Application        | `@blue/auth`              | ⬜ 0%    | MVP    |
-| Platform           | `@blue/platform-node`     | ⬜ 0%    | MVP    |
-| Demo               | `blue-demo`               | 🟡 core  | Full   |
+| Layer              | Package                    | Baseline | Target |
+| :----------------- | :------------------------- | :------- | :----- |
+| Integration        | `@ndigo/util`              | ✅ 100%  | —      |
+| Integration        | `@ndigo/parser`            | ✅ 100%  | —      |
+| Integration        | `@ndigo/model`             | ✅ 100%  | —      |
+| Foundation         | `@ndigo/core`              | ✅ 100%  | —      |
+| Web Infra          | `@ndigo/http`              | ✅ 100%  | —      |
+| Observability      | `@ndigo/telemetry`         | ✅ 100%  | —      |
+| Tooling            | `@ndigo/print`             | ✅ 100%  | —      |
+| Tooling            | `@ndigo/eslint-plugin`     | ✅ 100%  | —      |
+| Context            | `@ndigo/context`           | 🟡 85%   | 95%    |
+| Request Processing | `@ndigo/dispatcher`        | 🟡 65%   | 90%    |
+| Web Infra          | `@ndigo/router`            | 🟡 50%   | 80%    |
+| Infrastructure     | `@ndigo/content`           | 🟡 45%   | 85%    |
+| Application        | `@ndigo/platform-web`      | 🟡 45%   | 90%    |
+| Request Processing | `@ndigo/view`              | 🟡 40%   | 85%    |
+| Bootstrap          | `@ndigo/boot`              | 🟡 40%   | 85%    |
+| Infrastructure     | `@ndigo/validate`          | 🟡 adv.  | 90%    |
+| Infrastructure     | `@ndigo/factory`           | 🟡 adv.  | 90%    |
+| Application        | `@ndigo/service`           | 🟡 30%   | 80%    |
+| Request Processing | `@ndigo/view-webcomponent` | 🟡 25%   | 80%    |
+| Application        | `@ndigo/domain`            | 🔴 15%   | 75%    |
+| Persistence        | `@ndigo/orm`               | 🟡 MVP   | 70%    |
+| Application        | `@ndigo/auth`              | ⬜ 0%    | MVP    |
+| Platform           | `@ndigo/platform-node`     | ⬜ 0%    | MVP    |
+| Demo               | `ndigo-demo`               | 🟡 core  | Full   |
 
 ---
 
@@ -127,10 +127,10 @@ integration point. Revisit at 1.0 checkpoint.
 
 - [ ] Complete pnpm 11 upgrade (resolve `ERR_PNPM_IGNORED_BUILDS` via `pnpm approve-builds`)
 - [ ] Rename `2025-05-27_PNPM_9_UPGRADE.md` → `2026-05-27_PNPM_11_UPGRADE.md` with full content update
-- [ ] Delete `packages/blue-util/bench/like.test.ts` (obsolete benchmark variant)
-- [ ] Delete `packages/blue-util/src/type/_like-is.ts` (merged into `like.ts`)
-- [ ] Delete `packages/blue-context/src/event-emitter.old.ts.txt` (superseded)
-- [ ] Audit and delete `blue-view/test/*.js` (Chai/Mocha shared spec factories; not referenced by any `.spec.ts`)
+- [ ] Delete `packages/ndigo-util/bench/like.test.ts` (obsolete benchmark variant)
+- [ ] Delete `packages/ndigo-util/src/type/_like-is.ts` (merged into `like.ts`)
+- [ ] Delete `packages/ndigo-context/src/event-emitter.old.ts.txt` (superseded)
+- [ ] Audit and delete `ndigo-view/test/*.js` (Chai/Mocha shared spec factories; not referenced by any `.spec.ts`)
 - [ ] Audit all 9 `.legacy.js` files → produce port-or-delete decisions in Wave 4 spec
 - [ ] Verify `pnpm build && pnpm test && pnpm lint` clean
 
@@ -138,20 +138,20 @@ integration point. Revisit at 1.0 checkpoint.
 
 #### Legacy File Inventory
 
-| File                       | Location                        | Decision                                |
-| :------------------------- | :------------------------------ | :-------------------------------------- |
-| `old-service.legacy.js`    | `blue-service/src/`             | Port in Wave 4                          |
-| `appReset.legacy.js`       | `blue-service/src/interceptor/` | Port to `@blue/http` in Wave 4          |
-| `cache.legacy.js`          | `blue-service/src/interceptor/` | Port to `@blue/http` in Wave 4          |
-| `error.legacy.js`          | `blue-service/src/interceptor/` | Port to `@blue/http` in Wave 4          |
-| `header.legacy.js`         | `blue-service/src/interceptor/` | Port to `@blue/http` in Wave 4          |
-| `offline.legacy.js`        | `blue-service/src/interceptor/` | Port to `@blue/platform-web` in Wave 4  |
-| `retryOnError.legacy.js`   | `blue-service/src/interceptor/` | Port to `@blue/http` in Wave 4          |
-| `status.legacy.js`         | `blue-service/src/interceptor/` | Port to `@blue/http` in Wave 4          |
-| `old-http.legacy.js`       | `blue-http/src/`                | Read → document what's superseded       |
-| `old-fetch.legacy.js`      | `blue-http/src/`                | Read → document what's superseded       |
-| `old-component.legacy.js`  | `blue-domain/src/`              | Port in Wave 5                          |
-| `event-emitter.old.ts.txt` | `blue-context/src/`             | Delete (event-emitter.ts supersedes it) |
+| File                       | Location                         | Decision                                |
+| :------------------------- | :------------------------------- | :-------------------------------------- |
+| `old-service.legacy.js`    | `ndigo-service/src/`             | Port in Wave 4                          |
+| `appReset.legacy.js`       | `ndigo-service/src/interceptor/` | Port to `@ndigo/http` in Wave 4         |
+| `cache.legacy.js`          | `ndigo-service/src/interceptor/` | Port to `@ndigo/http` in Wave 4         |
+| `error.legacy.js`          | `ndigo-service/src/interceptor/` | Port to `@ndigo/http` in Wave 4         |
+| `header.legacy.js`         | `ndigo-service/src/interceptor/` | Port to `@ndigo/http` in Wave 4         |
+| `offline.legacy.js`        | `ndigo-service/src/interceptor/` | Port to `@ndigo/platform-web` in Wave 4 |
+| `retryOnError.legacy.js`   | `ndigo-service/src/interceptor/` | Port to `@ndigo/http` in Wave 4         |
+| `status.legacy.js`         | `ndigo-service/src/interceptor/` | Port to `@ndigo/http` in Wave 4         |
+| `old-http.legacy.js`       | `ndigo-http/src/`                | Read → document what's superseded       |
+| `old-fetch.legacy.js`      | `ndigo-http/src/`                | Read → document what's superseded       |
+| `old-component.legacy.js`  | `ndigo-domain/src/`              | Port in Wave 5                          |
+| `event-emitter.old.ts.txt` | `ndigo-context/src/`             | Delete (event-emitter.ts supersedes it) |
 
 ---
 
@@ -161,11 +161,11 @@ integration point. Revisit at 1.0 checkpoint.
 
 #### Tasks
 
-- [ ] Scan `@blue/router`, `@blue/dispatcher`, `@blue/view`, `@blue/context`, `@blue/content` for
+- [ ] Scan `@ndigo/router`, `@ndigo/dispatcher`, `@ndigo/view`, `@ndigo/context`, `@ndigo/content` for
       `window`, `document`, `navigator`, `HTMLElement`, `history`, `location`
-- [ ] Migrate each offending usage: move to `@blue/platform-web` or behind an abstraction
-- [ ] Fix `RerouteView._renderView` in `@blue/view` — replace `history.pushState` with router integration
-- [ ] Add `no-browser-globals-in-isomorphic` lint rule to `@blue/eslint-plugin` for isomorphic-core packages
+- [ ] Migrate each offending usage: move to `@ndigo/platform-web` or behind an abstraction
+- [ ] Fix `RerouteView._renderView` in `@ndigo/view` — replace `history.pushState` with router integration
+- [ ] Add `no-browser-globals-in-isomorphic` lint rule to `@ndigo/eslint-plugin` for isomorphic-core packages
 - [ ] Verify isomorphic packages build cleanly without `"lib": ["DOM"]` in tsconfig
 
 **Demo gate:** Demo unchanged; new lint rule passes cleanly.
@@ -178,46 +178,46 @@ integration point. Revisit at 1.0 checkpoint.
 
 #### Tasks
 
-**`@blue/view` (~40% → 85%)**
+**`@ndigo/view` (~40% → 85%)**
 
 - [ ] Implement rendering for `AbstractTemplateView` subclass (non-DOM template rendering)
 - [ ] Add view model projection hooks
 - [ ] Integration tests: `view.render()` end-to-end
 
-**`@blue/view-webcomponent` (~25% → 80%)**
+**`@ndigo/view-webcomponent` (~25% → 80%)**
 
 - [ ] Complete view registration/discovery helpers (tag mapping to custom element registry)
 - [ ] Finalize public export surface (`index.ts`)
 - [ ] Integration tests: `WebComponentViewEngine.render()` into a real `DOMElementViewTarget`
 
-**`@blue/dispatcher` (~65% → 90%)**
+**`@ndigo/dispatcher` (~65% → 90%)**
 
 - [ ] Complete view negotiation flow (media type → resolver → view → render)
 - [ ] Error view dispatch (configurable error route)
 - [ ] Redirect handling via `RerouteView`
 
-**`@blue/router` (~50% → 80%)**
+**`@ndigo/router` (~50% → 80%)**
 
 - [ ] Complete `TransactionManager` (route transaction commit/rollback)
 - [ ] Document deferred features (named routes, route generation)
 
-**`@blue/platform-web` (~45% → 80%)**
+**`@ndigo/platform-web` (~45% → 80%)**
 
 - [ ] Wire all argument resolvers into `configure-argument-resolvers.ts`
 - [ ] Integration tests covering each resolver
 
-**Demo gate:** `blue-demo` navigates between ≥3 routes, each rendering distinct Web Component views,
+**Demo gate:** `ndigo-demo` navigates between ≥3 routes, each rendering distinct Web Component views,
 with correct transaction lifecycle (start → commit/rollback).
 
 ---
 
 ### Wave 4 — Service Layer Boundary (2–3 weeks)
 
-**Goal:** Apply AD-01. Port legacy service interceptors into `@blue/http` and `@blue/platform-web`.
+**Goal:** Apply AD-01. Port legacy service interceptors into `@ndigo/http` and `@ndigo/platform-web`.
 
 #### Tasks
 
-**Port to `@blue/http/interceptor/`**
+**Port to `@ndigo/http/interceptor/`**
 
 - [ ] `header.legacy.js` → `header.ts` (CSRF token, channel-id, client-request-id headers)
 - [ ] `error.legacy.js` → `error-normalization.ts` (standardise error shape from HTTP responses)
@@ -226,21 +226,21 @@ with correct transaction lifecycle (start → commit/rollback).
 - [ ] `status.legacy.js` → `status.ts` (HTTP status code normalisation)
 - [ ] `appReset.legacy.js` → `app-reset.ts` (application reset on specific status codes)
 
-**Port to `@blue/platform-web/`**
+**Port to `@ndigo/platform-web/`**
 
 - [ ] `offline.legacy.js` → `offline-interceptor.ts` (browser offline detection)
 
-**`@blue/service` (30% → 80%)**
+**`@ndigo/service` (30% → 80%)**
 
 - [ ] Keep existing `app-reset-interceptor.ts`
 - [ ] Add service registry (maps service tokens to HTTP endpoints)
-- [ ] Add telemetry hooks (emit span per service call via `@blue/telemetry`)
+- [ ] Add telemetry hooks (emit span per service call via `@ndigo/telemetry`)
 - [ ] Add request-id correlation header injection
 - [ ] Audit and document `old-service.legacy.js`; extract any remaining concerns
 
 **Cleanup**
 
-- [ ] Delete all `.legacy.js` files from `blue-service/src/` and `blue-http/src/`
+- [ ] Delete all `.legacy.js` files from `ndigo-service/src/` and `ndigo-http/src/`
 
 **Demo gate:** Demo makes an HTTP call with CSRF header, retry, and telemetry trace correlation visible
 in console/OTel span.
@@ -249,11 +249,11 @@ in console/OTel span.
 
 ### Wave 5 — Domain/Model Reconciliation (3 weeks)
 
-**Goal:** Apply AD-02. Bring `@blue/domain` to production-ready state.
+**Goal:** Apply AD-02. Bring `@ndigo/domain` to production-ready state.
 
 #### Tasks
 
-- [ ] Implement `GenericDomainComponent.validate()` via `@blue/validate` integration
+- [ ] Implement `GenericDomainComponent.validate()` via `@ndigo/validate` integration
 - [ ] Implement `GenericDomainComponent.destroy()` lifecycle (emit destroy event, release listeners)
 - [ ] Port `old-component.legacy.js` patterns → modern TC39 decorators
 - [ ] Add `@domainComponent` class decorator (registers component in factory)
@@ -269,7 +269,7 @@ a working action that mutates the model and re-renders.
 
 ### Wave 6 — Boot & Auto-Configuration (2 weeks)
 
-**Goal:** Apply AD-03 (single-app focus). Complete `@blue/boot` lifecycle.
+**Goal:** Apply AD-03 (single-app focus). Complete `@ndigo/boot` lifecycle.
 
 #### Tasks
 
@@ -280,7 +280,7 @@ a working action that mutates the model and re-renders.
 - [ ] Integration tests covering full boot and controlled shutdown
 - [ ] Update `web-auto-configuration.ts` to wire Wave 3–5 packages automatically
 
-**Demo gate:** `blue-demo` boots entirely via `ApplicationBuilder` with declarative configuration;
+**Demo gate:** `ndigo-demo` boots entirely via `ApplicationBuilder` with declarative configuration;
 no manual wiring required in demo source.
 
 ---
@@ -291,19 +291,19 @@ no manual wiring required in demo source.
 
 #### Tasks
 
-**`@blue/content` (~45% → 85%)**
+**`@ndigo/content` (~45% → 85%)**
 
 - [ ] Dynamic content sources (async loading, TTL-based caching)
 - [ ] Theme composition (multiple theme sources merged in priority order)
 - [ ] Content negotiation hooks for dispatcher integration
 
-**`@blue/validate`**
+**`@ndigo/validate`**
 
 - [ ] Finalize group-aware decorator symmetry between `native` and `zod` backends
-- [ ] Add `@blue/orm` integration: validate on entity persist
+- [ ] Add `@ndigo/orm` integration: validate on entity persist
 - [ ] Improve error message formatting and i18n-readiness
 
-**`@blue/context` (~85% → 95%)**
+**`@ndigo/context` (~85% → 95%)**
 
 - [ ] Finalize tree event propagation edge cases (parent/child context event bubbling)
 - [ ] Document refresh/close semantics with sequence diagrams
@@ -314,48 +314,48 @@ and demonstrates context refresh on navigation.
 
 ---
 
-### Wave 8 — Platform Expansion: `@blue/platform-node` (3–4 weeks)
+### Wave 8 — Platform Expansion: `@ndigo/platform-node` (3–4 weeks)
 
 **Goal:** Apply AD-05. Enable hybrid (browser + Node) deployment topology.
 
 #### Tasks
 
-- [ ] Create new package `packages/blue-platform-node/`
+- [ ] Create new package `packages/ndigo-platform-node/`
 - [ ] `NodeEnvironment`: implements `Environment` interface (process.env binding)
 - [ ] `NodeArgumentResolvers`: body, header, query, path argument resolvers for Node HTTP
 - [ ] `NodeCookieArgumentResolver`: server-side cookie parsing
 - [ ] `NodeSessionArgumentResolver`: server-side session abstraction
-- [ ] `FileSystemResourceLoader`: loads resource files from disk (implements `@blue/context` resource contract)
-- [ ] Argument resolver auto-configuration helper (mirrors `@blue/platform-web` pattern)
+- [ ] `FileSystemResourceLoader`: loads resource files from disk (implements `@ndigo/context` resource contract)
+- [ ] Argument resolver auto-configuration helper (mirrors `@ndigo/platform-web` pattern)
 - [ ] Full unit + integration test coverage
 - [ ] Build and lint config matching existing platform package patterns
 
-**Demo gate:** New `blue-demo-node` example (or `blue-demo` `--node` flag) runs the dispatch pipeline
+**Demo gate:** New `ndigo-demo-node` example (or `ndigo-demo` `--node` flag) runs the dispatch pipeline
 server-side in Node, rendering a route and returning the view model as JSON.
 
 ---
 
 ### Wave 9 — Ecosystem Packages (4–6 weeks)
 
-#### 9a. `@blue/auth` (new package)
+#### 9a. `@ndigo/auth` (new package)
 
 - [ ] Spec doc: `docs/plans/YYYY-MM-DD_AUTH_DESIGN.md`
 - [ ] `AuthenticationStrategy` interface + provider registry
 - [ ] `Principal` and `Session` abstractions
 - [ ] `@authenticated` and `@authorized(role)` decorators
-- [ ] Integration: `@blue/http` auth-header interceptor
-- [ ] Integration: `@blue/dispatcher` route guard support
+- [ ] Integration: `@ndigo/http` auth-header interceptor
+- [ ] Integration: `@ndigo/dispatcher` route guard support
 
-#### 9b. `@blue/orm` post-MVP
+#### 9b. `@ndigo/orm` post-MVP
 
 - [ ] Relation decorators: `@oneToMany`, `@manyToOne`, `@manyToMany`, `@oneToOne`
 - [ ] Entity lifecycle hooks: `@prePersist`, `@postLoad`, `@preUpdate`, `@postRemove`
 - [ ] `@transactional` method decorator
-- [ ] `@blue/validate` integration on entity persist
-- [ ] `@blue/orm-drizzle` adapter (ESM-first SQL backing store)
+- [ ] `@ndigo/validate` integration on entity persist
+- [ ] `@ndigo/orm-drizzle` adapter (ESM-first SQL backing store)
 
-**Demo gate:** Demo has a login flow (via `@blue/auth`) and a persisted entity round-trip
-(via `@blue/orm` + drizzle adapter).
+**Demo gate:** Demo has a login flow (via `@ndigo/auth`) and a persisted entity round-trip
+(via `@ndigo/orm` + drizzle adapter).
 
 ---
 
@@ -365,7 +365,7 @@ server-side in Node, rendering a route and returning the view model as JSON.
 
 #### Tasks
 
-- [ ] Revisit AD-06 (`@blue/factory` scoping split decision)
+- [ ] Revisit AD-06 (`@ndigo/factory` scoping split decision)
 - [ ] Full architectural audit (architecture-reviewer)
 - [ ] Security review (security-reviewer)
 - [ ] Documentation completeness pass (all packages have README + TSDoc on public APIs)
@@ -373,7 +373,7 @@ server-side in Node, rendering a route and returning the view model as JSON.
 - [ ] Public API stability commitment (mark unstable APIs `@experimental` or `@internal`)
 - [ ] Performance benchmark baselines (Vitest bench suite covering hot paths)
 
-**Demo gate:** `blue-demo` demonstrates the full feature surface across all completed waves.
+**Demo gate:** `ndigo-demo` demonstrates the full feature surface across all completed waves.
 
 ---
 

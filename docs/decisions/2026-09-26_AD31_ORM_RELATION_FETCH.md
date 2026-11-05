@@ -71,7 +71,7 @@ as argument to the database" from a bogus UPDATE.
 ## Verification
 
 Wave-3 gates executed 2026-09-26: `vitest run` green in both packages
-(blue-orm 113/113 incl. 8 relation-fetch specs; blue-orm-drizzle 49/49 incl.
+(ndigo-orm 113/113 incl. 8 relation-fetch specs; ndigo-orm-drizzle 49/49 incl.
 5 specs) and both `tsc -b` builds pass; `graft build` refreshed. Specs cover
 eager (findById/findAll, both directions), lazy, unset-FK/empty-inverse
 values, and all three fail-loud paths per backend.

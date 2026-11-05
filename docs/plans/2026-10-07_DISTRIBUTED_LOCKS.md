@@ -1,4 +1,4 @@
-# 2026-10-07 Distributed locks — `@blue/locks`
+# 2026-10-07 Distributed locks — `@ndigo/locks`
 
 **Date:** 2026-10-07
 **Status:** Executed (see §8)
@@ -32,18 +32,18 @@ GAP-2; GAP-1 landed as AD-72).
 
 ## 3. Change
 
-1. **`@blue/locks`** (new, layer 4): `LockDriver` SPI (non-blocking acquire
+1. **`@ndigo/locks`** (new, layer 4): `LockDriver` SPI (non-blocking acquire
    with lease TTL, fencing tokens, token-checked `renew`/`release`/`isHeld`),
    `InProcessLockDriver` (process-wide lease table = single-node truth,
    injectable clock), `LOCK_DRIVER` context token, `likeLockDriver` guard.
-2. **`@blue/redis/locks`**: `RedisLockDriver` — Lua `SET NX PX` acquire with
+2. **`@ndigo/redis/locks`**: `RedisLockDriver` — Lua `SET NX PX` acquire with
    a per-key monotonic counter, compare-and-delete release, token-checked
    renew/verify. Borrowed connection, namespace isolation, closed-latch.
-3. **`@blue/scheduler`**: `@scheduled({ lock, lockWait, lockWaitStep, lockTtl })`
+3. **`@ndigo/scheduler`**: `@scheduled({ lock, lockWait, lockWaitStep, lockTtl })`
    on both spec forms — decoration-time validated; the runner acquires before
    the run and releases in the `finally` (a skip on contention is logged, the
    schedule continues); fail-loud when a locked task has no driver.
-4. **`@blue/platform-node`**: `NodeAutoConfiguration` `lockDriver` bean
+4. **`@ndigo/platform-node`**: `NodeAutoConfiguration` `lockDriver` bean
    (in-process default, redis override), injected into `TaskScheduler` via
    `ApplicationContextAware`.
 
@@ -65,15 +65,15 @@ lease — the exact double-run the feature exists to prevent.
 
 ## 6. Verification
 
-- `@blue/locks` (12): lifecycle, expiry, fencing, process-wide table, close
+- `@ndigo/locks` (12): lifecycle, expiry, fencing, process-wide table, close
   isolation, prefixes, validation.
-- `@blue/redis/locks` (7, live standalone Redis 6.2+): acquire/release/
+- `@ndigo/redis/locks` (7, live standalone Redis 6.2+): acquire/release/
   re-acquire across connections, fencing after expiry, renew, namespace
   isolation, closed latch.
-- `@blue/scheduler` (5): run+release on consecutive fires, contended skip
+- `@ndigo/scheduler` (5): run+release on consecutive fires, contended skip
   keeps the task schedulable, bounded wait, finally-release after a throw,
   fail-loud with no driver.
-- `@blue/platform-node` (1 live boot): real registry → scheduler → driver
+- `@ndigo/platform-node` (1 live boot): real registry → scheduler → driver
   wiring; the lease is free after a run.
 - Full gate set (§9 of the review plan) incl. the spec-typecheck lane.
 
@@ -86,8 +86,8 @@ API docs.
 ## 8. Execution log (2026-10-07)
 
 All changes landed in one pass with the verification above green:
-`@blue/locks` 12/12 · `@blue/redis/locks` 7/7 (live Redis 7 in docker) ·
-`@blue/scheduler` 71/71 · `@blue/platform-node` 503/503 · lint clean ·
+`@ndigo/locks` 12/12 · `@ndigo/redis/locks` 7/7 (live Redis 7 in docker) ·
+`@ndigo/scheduler` 71/71 · `@ndigo/platform-node` 503/503 · lint clean ·
 spec-typecheck lane green · full gate set green (see the review plan's
 follow-up verification). One test-design correction along the way: same-tick
 fires run concurrently, so the finally-release is asserted through the driver

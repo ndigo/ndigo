@@ -9,7 +9,7 @@ session `OpenFeature-1`; AD-82 D-6 is the deferred seam this record honors)
 
 ## Context
 
-AD-82 shipped `@blue/flags` with the **OpenFeature vocabulary** deliberately in
+AD-82 shipped `@ndigo/flags` with the **OpenFeature vocabulary** deliberately in
 place (reasons, error codes, targeting context, never-throw evaluation) but
 with no OpenFeature dependency: D-6 decided "OpenFeature compatibility is a
 provider-seam, not a runtime", listing the follow-up bridge as additive and
@@ -51,9 +51,9 @@ variant?, errorCode?, errorMessage?}` vs `EvaluationDetails` (plus
 
 ## Evidence
 
-- `packages/blue-flags/src/flag-evaluator.ts` — the SPI vocabularies and
+- `packages/ndigo-flags/src/flag-evaluator.ts` — the SPI vocabularies and
   never-throw contract; `property-flag-provider.ts` — the local provider;
-  `packages/blue-platform-node/src/feature-gate-interceptor.ts` — the gate
+  `packages/ndigo-platform-node/src/feature-gate-interceptor.ts` — the gate
   (targeting seeded from `route.remoteAddress` today).
 - AD-82 D-6 and the deferred item in
   `docs/plans/2026-10-10_FEATURE_FLAGS.md` ("OpenFeature SDK bridge
@@ -71,13 +71,13 @@ variant?, errorCode?, errorMessage?}` vs `EvaluationDetails` (plus
 ### D-1 — The SPI stays the contract; the standard arrives behind it
 
 Apps keep `FlagEvaluator`, `FLAG_EVALUATOR`, and `@whenFeature`; vendor reach
-is a **bean swap** to an OpenFeature-backed evaluator. `@blue/flags` remains
+is a **bean swap** to an OpenFeature-backed evaluator. `@ndigo/flags` remains
 SDK-free — the dependency lives only in the bridge package (the
-`@blue/telemetry` → `telemetry-node` split, applied to flags). The
+`@ndigo/telemetry` → `telemetry-node` split, applied to flags). The
 never-throw contract is preserved at the bridge boundary: SDK surprises
 resolve as the caller's default with `GENERAL`.
 
-### D-2 — `@blue/flags-openfeature` — Node-first, web recorded not built
+### D-2 — `@ndigo/flags-openfeature` — Node-first, web recorded not built
 
 A new package ships the server evaluator bridge:
 `OpenFeatureFlagEvaluator implements FlagEvaluator` (`kind: 'openfeature'`)
@@ -94,7 +94,7 @@ evaluation over a provider-materialized snapshot, reconciliation events
 (`RECONCILING`, stale serving) — so a `/web` entry (or sibling package)
 lands with a browser consumer, not speculatively (the AD-41 doctrine).
 
-### D-3 — Additive vocabulary widening in `@blue/flags`
+### D-3 — Additive vocabulary widening in `@ndigo/flags`
 
 The bridge must be able to carry every standard outcome. Additive SPI
 changes (the last pre-1.0 window):
@@ -124,7 +124,7 @@ business — the framework consumes evaluations, and the gate keeps its
 `FlagEvaluationContext` maps to the server SDK's per-call context (dynamic
 context). Request-derived targeting (principal, tenant, session) is a
 **platform** concern, not a bridge concern: a `FlagEvaluationContextResolver`
-seam in `@blue/platform-node` replaces the IP-only seed (companion issue
+seam in `@ndigo/platform-node` replaces the IP-only seed (companion issue
 #55; independent of the bridge and useful to the property provider's own
 rollouts). The SDK's `AsyncLocalStorage` transaction-context propagator is
 documented as an option, not adopted by default — the framework's context
@@ -137,28 +137,28 @@ Bridge tests run against an in-test in-memory provider plus the OpenFeature
 `@object`, `@disabled-flags`). The provider-TCK is **not** adopted: v0.1.0,
 experimental, explicitly "ships ahead of" its normative Appendix F, and a
 minor bump may legitimately turn a green provider red. Revisit when it is
-normative. BlueJS ships **no** provider implementations — provider maturity
+normative. ndigo ships **no** provider implementations — provider maturity
 is the vendor's contract (flagd's JS providers still carry an experimental
 badge; OFREP's JS providers are 0.x).
 
 ### D-7 — Telemetry composes through OpenFeature hooks (Phase 2)
 
 Evaluation telemetry — `feature_flag.*` semconv (key, provider, variant,
-reason counters) into `@blue/telemetry` — ships as an OpenFeature **hook**
+reason counters) into `@ndigo/telemetry` — ships as an OpenFeature **hook**
 in the bridge. Hooks are the standard's sanctioned extension point; this is
 where the OpenFeature and OpenTelemetry adoptions compose. Deferred with
 Phase 2 (no consumer in Phase 1).
 
 ## Alternatives considered
 
-- **Depend on the SDK inside `@blue/flags`.** Rejected (reaffirming D-6,
+- **Depend on the SDK inside `@ndigo/flags`.** Rejected (reaffirming D-6,
   more strongly): forces the SDK + singleton governance on every app,
   including property-only ones; adapter packages own peers by design.
 - **Adopt the OpenFeature client API as the app-facing surface.** Rejected:
   the typed, async, never-throw SPI is the framework surface, shared by DI
   wiring and `@whenFeature`; the OpenFeature client is an implementation
   detail behind the bean.
-- **Provider-direction only (Blue as an OpenFeature provider).** Rejected
+- **Provider-direction only (Ndigo as an OpenFeature provider).** Rejected
   as a deliverable: we vend no evaluation engine. Recorded as a possible
   test aid — running OF vectors against `PropertyFlagProvider` via a reverse
   adapter (Phase 2 §4).
@@ -177,7 +177,7 @@ Phase 2 (no consumer in Phase 1).
 - Vendor flagging becomes: install the bridge + a provider, await
   `setProviderAndWait`, override the `FLAG_EVALUATOR` bean. App code —
   including `@whenFeature` routes — is unchanged.
-- `@blue/flags` grows three reasons, two error codes, and one optional
+- `@ndigo/flags` grows three reasons, two error codes, and one optional
   field; `PropertyFlagProvider` behavior is untouched.
 - New dependency surface only where opted in: the bridge package plus its
   peer SDK (app-installed, catalog-pinned); manifest peer-allowlist entry;
@@ -191,7 +191,7 @@ Phase 2 (no consumer in Phase 1).
 
 ## References
 
-- AD-82 (`@blue/flags`; D-6 the deferred seam) and
+- AD-82 (`@ndigo/flags`; D-6 the deferred seam) and
   `docs/plans/2026-10-10_FEATURE_FLAGS.md` (bridge follow-up item).
 - `docs/plans/2026-11-01_OPENFEATURE_BRIDGE.md` — Phase 1 (#56) /
   companion (#55) / Phase 2 (#57) execution plan.

@@ -1,7 +1,7 @@
 # AD-61: RouteRegistry — type-safe routes from decorator metadata
 
 **Date:** 2026-09-03
-**Status:** Accepted — implemented in `@blue/router`.
+**Status:** Accepted — implemented in `@ndigo/router`.
 
 ## Context
 
@@ -16,10 +16,10 @@ that existing metadata rather than change the decorator.
 
 ## Evidence
 
-- `packages/blue-router/src/route-registry.ts` — `RouteRegistry` (scans bean
+- `packages/ndigo-router/src/route-registry.ts` — `RouteRegistry` (scans bean
   constructor metadata, builds a nested `RouteDefinition` tree, registers
   itself as a bean).
-- `packages/blue-router/src/route-definition.ts` — `RouteDefinition<TPattern>`
+- `packages/ndigo-router/src/route-definition.ts` — `RouteDefinition<TPattern>`
   with `url()`, `href()`, `redirect()`, `navigate()`, `parse()`, `matches()`
   overloads keyed off `RouteParams<TPattern>`; `RouteParams`/`IsEmptyObject`
   type-level helpers derive `{ id: string }` from `'/users/{id}'`.
@@ -54,8 +54,8 @@ that existing metadata rather than change the decorator.
 ## References
 
 - Plan: `docs/plans/2026-09-03_ROUTE_REGISTRY.md`
-- Implementation: `packages/blue-router/src/route-registry.ts`,
-  `packages/blue-router/src/route-definition.ts`, commit `e164bccb` (2026-09-03)
+- Implementation: `packages/ndigo-router/src/route-registry.ts`,
+  `packages/ndigo-router/src/route-definition.ts`, commit `e164bccb` (2026-09-03)
 
 ## Revisit Trigger
 

@@ -34,7 +34,7 @@ Based on codebase statistics:
 
 ### 1. standard-constraints.ts (965 lines) - HIGH PRIORITY
 
-**Package:** `@blue/validate`  
+**Package:** `@ndigo/validate`  
 **Lines:** 965  
 **Exports:** 5 main exports + many constraint functions  
 **Current Structure:**
@@ -73,7 +73,7 @@ standard-constraints.ts (100 lines) - Main entry point, re-exports
 
 ### 2. route-handler-mapping.ts (884 lines) - MEDIUM PRIORITY
 
-**Package:** `@blue/dispatcher`  
+**Package:** `@ndigo/dispatcher`  
 **Lines:** 884  
 **Exports:** 12 exports, 8 classes  
 **Current Structure:**
@@ -110,7 +110,7 @@ route-handler-mapping.ts (650 lines) - Core mapping logic
 
 ### 3. event-emitter.ts (771 lines) - HIGH PRIORITY
 
-**Package:** `@blue/context`  
+**Package:** `@ndigo/context`  
 **Lines:** 771  
 **Exports:** 19 exports (interfaces, mixins, classes, functions)  
 **Current Structure:**
@@ -148,7 +148,7 @@ event-emitter.ts (300 lines) - Core EventEmitter + base implementation
 
 ### 4. http.ts (760 lines) - MEDIUM PRIORITY
 
-**Package:** `@blue/http`  
+**Package:** `@ndigo/http`  
 **Lines:** 760  
 **Exports:** 21 exports, 4 classes  
 **Current Structure:**
@@ -183,7 +183,7 @@ http.ts (600 lines) - Core HTTP logic
 
 ### 5. http-headers.ts (725 lines) - ACCEPTABLE (NO REFACTOR)
 
-**Package:** `@blue/http`  
+**Package:** `@ndigo/http`  
 **Lines:** 725  
 **Exports:** 124 HTTPHeader constants  
 **Current Structure:**
@@ -214,7 +214,7 @@ http.ts (600 lines) - Core HTTP logic
 
 ### 6. factory.ts (562 lines) - ACCEPTABLE (NO REFACTOR)
 
-**Package:** `@blue/factory`  
+**Package:** `@ndigo/factory`  
 **Lines:** 562  
 **Exports:** Multiple (dependency injection factory)  
 **Current Structure:**
@@ -247,7 +247,7 @@ http.ts (600 lines) - Core HTTP logic
 
 ### 7. route-mapping-info.ts (526 lines) - MEDIUM PRIORITY
 
-**Package:** `@blue/dispatcher`  
+**Package:** `@ndigo/dispatcher`  
 **Lines:** 526  
 **Exports:** Multiple route mapping classes  
 **Current Structure:**
@@ -271,7 +271,7 @@ http.ts (600 lines) - Core HTTP logic
 
 ### 8. media-type.ts (433 lines) - LOW PRIORITY
 
-**Package:** `@blue/core`  
+**Package:** `@ndigo/core`  
 **Lines:** 433  
 **Exports:** MediaType constants and class  
 **Current Structure:**
@@ -297,7 +297,7 @@ media-type.ts (250 lines) - MediaType class and logic
 
 ### 9. standard-types.ts (422 lines) - MEDIUM PRIORITY
 
-**Package:** `@blue/validate`  
+**Package:** `@ndigo/validate`  
 **Lines:** 422  
 **Exports:** Multiple type validation functions
 
@@ -311,7 +311,7 @@ Should be refactored together with standard-constraints.ts as part of validation
 
 ### 10. context.ts (363 lines) - ACCEPTABLE (NO REFACTOR)
 
-**Package:** `@blue/context`  
+**Package:** `@ndigo/context`  
 **Lines:** 363  
 **Exports:** ApplicationContext class  
 **Current Structure:**
@@ -335,7 +335,7 @@ Should be refactored together with standard-constraints.ts as part of validation
 
 ### 11. route-condition.ts (359 lines) - MEDIUM PRIORITY
 
-**Package:** `@blue/dispatcher`  
+**Package:** `@ndigo/dispatcher`  
 **Lines:** 359  
 **Exports:** Route condition matching logic
 
@@ -354,7 +354,7 @@ route-condition.ts (280 lines) - Core condition logic
 
 ### 12. response-statuses.ts (348 lines) - ACCEPTABLE (NO REFACTOR)
 
-**Package:** `@blue/http`  
+**Package:** `@ndigo/http`  
 **Lines:** 348  
 **Exports:** HTTP status code constants  
 **Current Structure:**
@@ -376,7 +376,7 @@ route-condition.ts (280 lines) - Core condition logic
 
 ### 13. path-matcher.ts (337 lines) - MEDIUM PRIORITY
 
-**Package:** `@blue/core`  
+**Package:** `@ndigo/core`  
 **Lines:** 337  
 **Exports:** Path matching logic
 
@@ -395,7 +395,7 @@ path-matcher.ts (250 lines) - Core matching logic
 
 ### 14. configuration.ts (331 lines) - LOW PRIORITY
 
-**Package:** `@blue/context`  
+**Package:** `@ndigo/context`  
 **Lines:** 331  
 **Exports:** Configuration management
 
@@ -409,7 +409,7 @@ Likely single cohesive responsibility. Analyze structure before deciding.
 
 ### 15. transducer.ts (306 lines) - LOW PRIORITY
 
-**Package:** `@blue/core`  
+**Package:** `@ndigo/core`  
 **Lines:** 306  
 **Exports:** Transducer implementation
 
@@ -489,14 +489,14 @@ Just over threshold. Complex functional programming concept better kept together
 
     ```bash
     pnpm build
-    nx run @blue/validate:build:lib
+    nx run @ndigo/validate:build:lib
     ```
 
 5. **Verify Tests**
 
     ```bash
     pnpm test
-    nx run @blue/validate:test
+    nx run @ndigo/validate:test
     ```
 
 6. **Remove Re-export Hub (if appropriate)**

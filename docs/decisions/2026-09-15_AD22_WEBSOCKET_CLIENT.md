@@ -1,4 +1,4 @@
-# AD-22: WebSocket Client & the `@blue/socket` Package
+# AD-22: WebSocket Client & the `@ndigo/socket` Package
 
 **Date:** 2026-09-15
 **Status:** Accepted — decision recorded; implementation sequenced (see
@@ -17,19 +17,19 @@ The decisive fact: **WHATWG `WebSocket` is a global in browsers _and_ Node
 ≥22** (undici ships it) — the same interface surface on both runtimes,
 exactly like `fetch`. A client written against it is isomorphic. The repo's
 boundary rule (AD-04 / `no-browser-globals-in-isomorphic`) says browser-only
-code lives in `blue-platform-web`; an isomorphic abstraction does **not**
-belong there, and it is not HTTP (so not `blue-http`). The client is also a
+code lives in `ndigo-platform-web`; an isomorphic abstraction does **not**
+belong there, and it is not HTTP (so not `ndigo-http`). The client is also a
 **second surface** of the socket domain (server contract + client
 abstraction sharing message framing and close semantics) — that is the
 trigger for a domain package.
 
 ## Decision
 
-### D1 — New isomorphic package `@blue/socket`
+### D1 — New isomorphic package `@ndigo/socket`
 
-`@blue/socket` owns the socket domain:
+`@ndigo/socket` owns the socket domain:
 
-- **Contracts, moved from `blue-dispatcher`** (type-only, zero runtime
+- **Contracts, moved from `ndigo-dispatcher`** (type-only, zero runtime
   coupling): `SocketSession`, `SocketRequestSources`, `SocketSessionRegistry`.
 - **Client**: `SocketClient` contract, `WebSocketClient` implementation
   (WHATWG `WebSocket` global; `ws` fallback not needed — engine is ≥22),
@@ -39,9 +39,9 @@ Trigger: the client joins the existing server contract — extraction now is
 pre-1.0-cheap (four known consumer files) versus a breaking migration at the
 1.0 freeze. Future STOMP and pub/sub work lands in this package (D5).
 
-### D2 — `blue-dispatcher` keeps exporting the moved types
+### D2 — `ndigo-dispatcher` keeps exporting the moved types
 
-Dispatcher imports the contracts from `@blue/socket` and re-exports them
+Dispatcher imports the contracts from `@ndigo/socket` and re-exports them
 from its index: the handler-signature vocabulary stays stable for
 `@socketMapping` users, and `parameters.ts` must type the `socketSessionValue()`
 extractor against them regardless. This is public-API aggregation, not a
@@ -64,7 +64,7 @@ belongs.
   flushed on reconnect, overflow drops oldest.
 - A **reconnect trigger** seam (signal/emitter) so environment wiring can
   push an immediate retry — the browser `online` event arrives from
-  `blue-platform-web` (D6), keeping `@blue/socket` free of window globals.
+  `ndigo-platform-web` (D6), keeping `@ndigo/socket` free of window globals.
 
 ### D4 — SockJS: never
 
@@ -76,23 +76,23 @@ the caller's choice.
 ### D5 — STOMP: future layer, post-client
 
 STOMP (destinations, subscriptions, frames) is a real future feature,
-scheduled after the client lands: client frame codec in `@blue/socket`,
-server-side in `blue-platform-node` (or a socket-server sibling). Not in
+scheduled after the client lands: client frame codec in `@ndigo/socket`,
+server-side in `ndigo-platform-node` (or a socket-server sibling). Not in
 this plan's scope.
 
 ### D6 — Demo gate
 
-The blue-api chat e2e is **rewired through the `@blue/socket` client** (Node
+The ndigo-api chat e2e is **rewired through the `@ndigo/socket` client** (Node
 global WebSocket against the real app — same wire as a browser), plus unit
 tests against a WHATWG-shaped transport double with fake timers. The
-browser `online`-event trigger ships as a small `blue-platform-web` helper.
+browser `online`-event trigger ships as a small `ndigo-platform-web` helper.
 
 ## Consequences
 
-- **Layout**: `@blue/socket` (contracts + client, isomorphic);
-  `blue-dispatcher` depends on it (re-exports); `blue-platform-node`
-  unchanged; `blue-platform-web` gains the online-trigger helper.
-- **Dependencies**: `@blue/socket` → `@blue/signals` (status signal);
+- **Layout**: `@ndigo/socket` (contracts + client, isomorphic);
+  `ndigo-dispatcher` depends on it (re-exports); `ndigo-platform-node`
+  unchanged; `ndigo-platform-web` gains the online-trigger helper.
+- **Dependencies**: `@ndigo/socket` → `@ndigo/signals` (status signal);
   dispatcher → socket. Lockfile updates.
 - **Deferred, documented**: backpressure policy (separate small follow-up),
   Redis pub/sub backplane (post-1.0, needs a store contract), message

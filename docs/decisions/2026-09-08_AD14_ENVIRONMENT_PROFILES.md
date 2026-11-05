@@ -31,7 +31,7 @@ expr` | `( expr )` (whitespace tolerated), evaluated by
 expression (a silently-never-matching typo ships as a missing feature).
 `@profile(...)` accepts one-or-more expression strings, **OR across entries
 (Q6)** — the reference OR-list parity; AND is expressible within one entry.
-`ConfigurationProcessor` + new `@conditionalOnProfile` (blue-core, Q7 — core
+`ConfigurationProcessor` + new `@conditionalOnProfile` (ndigo-core, Q7 — core
 is the conditions home; the decorator consumes the injected
 `acceptsProfiles` capability, same architecture as `conditionalOnProperty`)
 both evaluate via the shared function.
@@ -40,11 +40,11 @@ both evaluate via the shared function.
 profile configuration is a deliberate property namespace — not a dangling key,
 all members are real P3 features:
 
-| Property                | Meaning                          | Sources                                                |
-| ----------------------- | -------------------------------- | ------------------------------------------------------ |
-| `profiles.active`       | comma-separated active profiles  | CLI `--profiles.active=`, env `BLUE_PROFILES_ACTIVE`   |
-| `profiles.default`      | comma-separated default profiles | CLI `--profiles.default=`, env `BLUE_PROFILES_DEFAULT` |
-| `profiles.group.<name>` | profile group mapping            | property, env `BLUE_PROFILES_GROUPS`                   |
+| Property                | Meaning                          | Sources                                                 |
+| ----------------------- | -------------------------------- | ------------------------------------------------------- |
+| `profiles.active`       | comma-separated active profiles  | CLI `--profiles.active=`, env `NDIGO_PROFILES_ACTIVE`   |
+| `profiles.default`      | comma-separated default profiles | CLI `--profiles.default=`, env `NDIGO_PROFILES_DEFAULT` |
+| `profiles.group.<name>` | profile group mapping            | property, env `NDIGO_PROFILES_GROUPS`                   |
 
 **Activation precedence (Q2): CLI > env > bulier `.profiles()`** — deployer
 at runtime overriedes developer defaults; CLI is the most-specific operator
@@ -60,11 +60,11 @@ effective set (D1 + D2); `likeEnvironment` shape updated.
 
 ## Consequences
 
-- New modules: `profile-expression.ts` (blue-context); `@conditionalOnProfile`
-  (blue-core conditional.ts).
+- New modules: `profile-expression.ts` (ndigo-context); `@conditionalOnProfile`
+  (ndigo-core conditional.ts).
 - Behavior changes (pre-1.0, accepted): `@profile` exact-match arrays become
   expression lists (widening — existing exact strings still match); defaults
-  now actually gate; `BLUE_PROFILES_ACTIVE`/`--profiles.active=` activate at
+  now actually gate; `NDIGO_PROFILES_ACTIVE`/`--profiles.active=` activate at
   boot; groups expand.
 - No eval-family anywhere (expressions parsed, not executed — P0 D8 holds).
 - Precedence and namespace documented as a contract (specs pin them).

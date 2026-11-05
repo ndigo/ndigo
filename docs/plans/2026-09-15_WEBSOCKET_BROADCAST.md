@@ -4,13 +4,13 @@
 shipped in `6eafdf05`, `d76eed8f`, `f5fd6d8b`, `f0a67c98`, `f0718252`; review-hardening `2026-09-15`)
 **As-built deviations (surface changed after this plan was written):**
 
-- Contract home moved from `blue-dispatcher` to `@blue/socket` — dispatcher re-exports the types for handler signatures (`6bda49b5`).
+- Contract home moved from `ndigo-dispatcher` to `@ndigo/socket` — dispatcher re-exports the types for handler signatures (`6bda49b5`).
 - `remove(session)` → `remove(session, closeCode?)` (close-code observability for telemetry, `f0718252`); registry additions: `addOverflowObserver()` and per-session memoized overflow-close decisions (2026-09-15 review hardening).
-- Heartbeat env is `BLUE_SOCKET_HEARTBEAT_INTERVAL_MS` / `BLUE_SOCKET_IDLE_TIMEOUT_MS` (env-only; the plan's `socket.heartbeat-interval-ms` property names were not adopted — `f5fd6d8b`). The reaper pings with `ws.ping()` and closes `1001` (peers stuck in the handshake are force-reaped by ws `closeTimeout`).
+- Heartbeat env is `NDIGO_SOCKET_HEARTBEAT_INTERVAL_MS` / `NDIGO_SOCKET_IDLE_TIMEOUT_MS` (env-only; the plan's `socket.heartbeat-interval-ms` property names were not adopted — `f5fd6d8b`). The reaper pings with `ws.ping()` and closes `1001` (peers stuck in the handshake are force-reaped by ws `closeTimeout`).
 - Session `attributes` lives **as long as the session** — the plan's "cleared on close" wording was dropped in the contract (`6eafdf05`/`6bda49b5`).
-- Transport bounds added after planning: `maxPayload` (frame cap, default 1 MiB) and `maxQueuedMessages` (inbound queue, overflow close `1009`) — env `BLUE_SOCKET_MAX_PAYLOAD_BYTES` / `BLUE_SOCKET_MAX_QUEUED_MESSAGES`. Origin allowlist is env-tunable via `BLUE_SOCKET_ALLOWED_ORIGINS` (2026-09-15 review hardening).
-  **Scope:** `blue-dispatcher` (type-only contracts), `blue-platform-node` (impl, auto-configuration),
-  `blue-auth-core` (naming prereq), `apps/blue-api` (demo gate)
+- Transport bounds added after planning: `maxPayload` (frame cap, default 1 MiB) and `maxQueuedMessages` (inbound queue, overflow close `1009`) — env `NDIGO_SOCKET_MAX_PAYLOAD_BYTES` / `NDIGO_SOCKET_MAX_QUEUED_MESSAGES`. Origin allowlist is env-tunable via `NDIGO_SOCKET_ALLOWED_ORIGINS` (2026-09-15 review hardening).
+  **Scope:** `ndigo-dispatcher` (type-only contracts), `ndigo-platform-node` (impl, auto-configuration),
+  `ndigo-auth-core` (naming prereq), `apps/ndigo-api` (demo gate)
   **Companion docs:** [Framework Gap Analysis](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) §2.3 (WebSockets),
   [AD-18 Host Runtime](../decisions/2026-09-13_AD18_HOST_RUNTIME.md), [AD-20 Scheduling](../decisions/2026-09-13_AD20_SCHEDULING.md)
 
@@ -24,7 +24,7 @@ present-but-incomplete:
 > `@socketMapping` (RFC 6455), echo/room demos, socket session — no broadcast
 > abstraction, no cross-node pub/sub, no heartbeat/reconnect lifecycle.
 
-Concretely, a BlueJS Node app today can accept a WebSocket connection and echo
+Concretely, a ndigo Node app today can accept a WebSocket connection and echo
 messages back, but it cannot:
 
 - broadcast one message to many connected clients (the defining WebSocket use case),
@@ -35,16 +35,16 @@ messages back, but it cannot:
 
 ## 2. Current state (verified 2026-09-15)
 
-| Surface                  | Location                                        | Notes                                                                                                                                                                                                   |
-| ------------------------ | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@socketMapping(route)`  | `blue-dispatcher/src/socket-mapping.ts`         | Method decorator on top of `routeMapping`; per-method socket marker                                                                                                                                     |
-| `isSocketMapping()`      | same file                                       | `route:socket:<method>` + `route:mapping:<name>` both present                                                                                                                                           |
-| `SocketSession` contract | `blue-dispatcher/src/socket-session.ts`         | `path/params/query/headers/cookies`, `messages` (async iterable), `closed`, `isClosed`, `send()`, `close(code, reason)`                                                                                 |
-| `SocketRequestSources`   | same file                                       | `query/headers/cookies` — the upgrade-request vocabulary, shared with the HTTP path                                                                                                                     |
-| `nodeSocketSession()`    | `blue-platform-node/src/node-socket-session.ts` | Wraps `ws`; `AsyncReader` bridges push events → async iterable                                                                                                                                          |
-| Adapter upgrade path     | `node-http-server-adapter.ts`                   | `shouldHandle` gates by route conditions (query params), origin allowlist fails closed, FIFO pending-upgrades, `#dispatchSocket` binds `@parameters` (incl. Zod; missing required param → close `1008`) |
-| Tests                    | `blue-platform-node/test/websocket.spec.ts`     | Echo, unknown-path refusal, query-gated upgrade, origin enforcement                                                                                                                                     |
-| Auto-configuration       | `node-auto-configuration.ts`                    | **No socket wiring** — no registry, no options, nothing                                                                                                                                                 |
+| Surface                  | Location                                         | Notes                                                                                                                                                                                                   |
+| ------------------------ | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@socketMapping(route)`  | `ndigo-dispatcher/src/socket-mapping.ts`         | Method decorator on top of `routeMapping`; per-method socket marker                                                                                                                                     |
+| `isSocketMapping()`      | same file                                        | `route:socket:<method>` + `route:mapping:<name>` both present                                                                                                                                           |
+| `SocketSession` contract | `ndigo-dispatcher/src/socket-session.ts`         | `path/params/query/headers/cookies`, `messages` (async iterable), `closed`, `isClosed`, `send()`, `close(code, reason)`                                                                                 |
+| `SocketRequestSources`   | same file                                        | `query/headers/cookies` — the upgrade-request vocabulary, shared with the HTTP path                                                                                                                     |
+| `nodeSocketSession()`    | `ndigo-platform-node/src/node-socket-session.ts` | Wraps `ws`; `AsyncReader` bridges push events → async iterable                                                                                                                                          |
+| Adapter upgrade path     | `node-http-server-adapter.ts`                    | `shouldHandle` gates by route conditions (query params), origin allowlist fails closed, FIFO pending-upgrades, `#dispatchSocket` binds `@parameters` (incl. Zod; missing required param → close `1008`) |
+| Tests                    | `ndigo-platform-node/test/websocket.spec.ts`     | Echo, unknown-path refusal, query-gated upgrade, origin enforcement                                                                                                                                     |
+| Auto-configuration       | `node-auto-configuration.ts`                     | **No socket wiring** — no registry, no options, nothing                                                                                                                                                 |
 
 The dispatcher already treats sockets as first-class (parameter binding via the same
 machinery as HTTP: `queryValue`, `headerValue`, `cookieValue`, `validatedBy`, plus
@@ -61,15 +61,15 @@ separate extractors — no unified "session layer" exists or is proposed.
 
 | Role                 | Home                                                                                         | Contents                                                                             | Runtime coupling to dispatcher                               |
 | -------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
-| Signature vocabulary | `blue-dispatcher` (type-only)                                                                | `SocketSession` (+ `attributes`), `SocketSessionRegistry` contract, extractor types  | None — dispatcher execution path never references registries |
-| Implementation       | `blue-platform-node`                                                                         | `NodeSocketSessionRegistry` (membership, broadcast, heartbeat sweep), adapter hookup | Implements the contract                                      |
+| Signature vocabulary | `ndigo-dispatcher` (type-only)                                                               | `SocketSession` (+ `attributes`), `SocketSessionRegistry` contract, extractor types  | None — dispatcher execution path never references registries |
+| Implementation       | `ndigo-platform-node`                                                                        | `NodeSocketSessionRegistry` (membership, broadcast, heartbeat sweep), adapter hookup | Implements the contract                                      |
 | Composition          | `NodeAutoConfiguration` (`@entry` beans, mirroring `TaskScheduler`/`ScheduleRegistry` AD-20) | Registry bean + configuration properties (heartbeat intervals)                       | Through DI only                                              |
 | Application          | any app config (e.g. `NodeAppConfiguration`)                                                 | Controllers + services inject the registry; nothing to wire                          | Through DI only                                              |
 
 Coexistence example (the question this model answers — a Node app with both kinds):
 
 ```typescript
-// blue-api-style app config: nothing socket-specific beyond the auto-config
+// ndigo-api-style app config: nothing socket-specific beyond the auto-config
 @configuration
 export class NodeAppConfiguration {
     @entry chatController() {
@@ -99,13 +99,13 @@ a hierarchy on; every operation beyond identity splits by lifecycle
 
 ### D2 — Adjectival session naming; rename auth `Session` → `AuthSession`
 
-`Session` in `@blue/auth-core` is the only unqualified session type and collides by
+`Session` in `@ndigo/auth-core` is the only unqualified session type and collides by
 name with the emerging family. Rename it as a standalone prereq commit (verified
-blast radius: one consumer — `blue-auth-client/src/auth-header-interceptor.ts` — plus
+blast radius: one consumer — `ndigo-auth-client/src/auth-header-interceptor.ts` — plus
 specs; pre-1.0 breaking changes are sanctioned by the README). Family:
 
-- `AuthSession` / `DefaultAuthSession` — `@blue/auth-core` (principal/token state)
-- `SocketSession` — `@blue/dispatcher` (unchanged)
+- `AuthSession` / `DefaultAuthSession` — `@ndigo/auth-core` (principal/token state)
+- `SocketSession` — `@ndigo/dispatcher` (unchanged)
 - `HttpSession` — **reserved** for the audit M4 server-side session store; not built here
 
 Package names remain the coarse namespace; adjectives the fine one.
@@ -123,7 +123,7 @@ store, and the seed of the future shared contract.
 ### D4 — Registry lifecycle is application-context-owned
 
 Registry, heartbeat, and broadcast are beans registered by `NodeAutoConfiguration`;
-`blue-dispatcher` contributes types only. This is the existing auto-configuration
+`ndigo-dispatcher` contributes types only. This is the existing auto-configuration
 pattern (AD-20 D2: scheduler zero-wiring) and the industry pattern (Spring
 `SimpMessagingTemplate`, Micronaut `SessionStore` are context beans). The adapter
 still owns the `WebSocketServer`; the registry attaches to it at server start.
@@ -149,7 +149,7 @@ forever — the silent failure this feature exists to fix.
 
 ## 5. Surface
 
-### `blue-dispatcher` — type-only additions
+### `ndigo-dispatcher` — type-only additions
 
 ```ts
 // socket-session.ts — additive
@@ -178,7 +178,7 @@ interface SocketSessionRegistry {
 }
 ```
 
-### `blue-platform-node` — implementation
+### `ndigo-platform-node` — implementation
 
 - `NodeSocketSessionRegistry implements SocketSessionRegistry` — `Map<session, path>`
     - `Map<room, Set<session>>`; register happens in the adapter's `#dispatchSocket`
@@ -197,18 +197,18 @@ interface SocketSessionRegistry {
 ### Phase 0 — Prereq: `AuthSession` rename (small, isolated commit)
 
 - Rename `Session` → `AuthSession`, `DefaultSession` → `DefaultAuthSession` in
-  `blue-auth-core/src/session.ts`; update `index.ts` exports and consumers
-  (`blue-auth-client/src/auth-header-interceptor.ts`, specs).
+  `ndigo-auth-core/src/session.ts`; update `index.ts` exports and consumers
+  (`ndigo-auth-client/src/auth-header-interceptor.ts`, specs).
 - Commit message: `refactor(auth-core): rename Session to AuthSession (WS session naming, D2)`.
 
-### Phase 1 — Contracts (blue-dispatcher)
+### Phase 1 — Contracts (ndigo-dispatcher)
 
 - Add `attributes`, `join`, `leave` to `SocketSession`; update `nodeSocketSession`
   and test doubles.
 - Add `SocketSessionRegistry` contract + `index.ts` export.
 - Tests: contract-shape unit tests (matching `socket-session` conventions).
 
-### Phase 2 — Implementation (blue-platform-node)
+### Phase 2 — Implementation (ndigo-platform-node)
 
 - `NodeSocketSessionRegistry` with membership, rooms, broadcast, close-all, heartbeat
   sweep (fake timers), error tolerance.
@@ -219,7 +219,7 @@ interface SocketSessionRegistry {
 ### Phase 3 — Auto-configuration
 
 - `NodeAutoConfiguration` `@entry` registry bean + environment options
-  (`BLUE_SOCKET_HEARTBEAT_INTERVAL_MS`, `BLUE_SOCKET_IDLE_TIMEOUT_MS`; D6
+  (`NDIGO_SOCKET_HEARTBEAT_INTERVAL_MS`, `NDIGO_SOCKET_IDLE_TIMEOUT_MS`; D6
   defaults — resolved via `resolveSocketRegistryOptions`, the
   `resolveHTTPRequestLimits` pattern).
 - `HTTPServer`/adapter wiring: the server resolves the registry bean at
@@ -227,7 +227,7 @@ interface SocketSessionRegistry {
   graceful shutdown closes sessions and stops the sweep.
 - Spec: bean present in a booted context; options flow through.
 
-### Phase 4 — Demo gate (apps/blue-api)
+### Phase 4 — Demo gate (apps/ndigo-api)
 
 - `@socketMapping('/ws/chat')` chat: any client message broadcasts to the
   room; everyone joins the `room` group on connect.
@@ -235,14 +235,14 @@ interface SocketSessionRegistry {
   tick broadcasting into the room every 2s (controller-parked task, AD-20
   D1) — proving registry reachability from outside handlers with
   zero-wiring. (The AD-20 `Heartbeat` bean stays the scheduling demo.)
-- e2e (Playwright-style or `blue-test` harness): two sockets, message fan-out,
+- e2e (Playwright-style or `ndigo-test` harness): two sockets, message fan-out,
   scheduler tick received.
 - Docs: `docs/guides/06-websockets.md` + plans README index (this doc).
 
 ## 7. Verification
 
 Per phase: package `pnpm test`, `pnpm lint`, `pnpm format:check`, root `pnpm build`.
-Phase 4 gate additionally runs the blue-api e2e. No generic-registry or
+Phase 4 gate additionally runs the ndigo-api e2e. No generic-registry or
 session-base abstractions are introduced (D1/D3 guardrails).
 
 ## 8. Non-goals / deferred (documented, not built)
@@ -250,7 +250,7 @@ session-base abstractions are introduced (D1/D3 guardrails).
 - Cross-node pub/sub (Redis-backed fan-out) — needs a store contract; revisit post-1.0.
 - STOMP/SockJS subprotocols — STOMP is a future layer (AD-22 D5); **SockJS is
   never** (pre-2015 fallback-transport workaround — AD-22 D4, third-party territory).
-- Client-side reconnect/backoff — **now its own feature**: `@blue/socket`
+- Client-side reconnect/backoff — **now its own feature**: `@ndigo/socket`
   client package, see [2026-09-15_WEBSOCKET_CLIENT.md](2026-09-15_WEBSOCKET_CLIENT.md) + AD-22.
 - Message persistence/history. (Backpressure: **implemented 2026-09-15** —
   `SocketBackpressurePolicy` on the registry: 1 MiB watermark, `close` `1013`
@@ -268,16 +268,16 @@ session-base abstractions are introduced (D1/D3 guardrails).
 | `Session` → `AuthSession` rename churn                      | Verified single consumer + specs; isolated commit (Phase 0)                   |
 
 Open: none blocking. Alternative considered and rejected: hosting the registry
-contract in `blue-platform-node` (rejected — `SocketSession` contract precedent in
-`blue-dispatcher`, D4).
+contract in `ndigo-platform-node` (rejected — `SocketSession` contract precedent in
+`ndigo-dispatcher`, D4).
 
 ## 10. References
 
 - Gap analysis: `docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md` §2.3
-- Exact seams: `packages/blue-dispatcher/src/socket-session.ts`, `socket-mapping.ts`;
-  `packages/blue-platform-node/src/node-http-server-adapter.ts` (`#dispatchSocket`),
-  `node-socket-session.ts`, `node-auto-configuration.ts`; `apps/blue-api/src/node-app-configuration.ts`
-- Existing tests: `packages/blue-platform-node/test/websocket.spec.ts`
+- Exact seams: `packages/ndigo-dispatcher/src/socket-session.ts`, `socket-mapping.ts`;
+  `packages/ndigo-platform-node/src/node-http-server-adapter.ts` (`#dispatchSocket`),
+  `node-socket-session.ts`, `node-auto-configuration.ts`; `apps/ndigo-api/src/node-app-configuration.ts`
+- Existing tests: `packages/ndigo-platform-node/test/websocket.spec.ts`
 
 ---
 
@@ -303,5 +303,5 @@ Spring `SimpUserRegistry`). Cross-cutting state (auth principal on a socket) is
 `@OnOpen`; Spring keys STOMP by user. Separation persists in frameworks designed
 after WebSockets were mainstream (SignalR 2018, Phoenix Channels 2015, NestJS 2019),
 so it is structural (lifecycle), not merely historical accretion. Consequences for
-BlueJS: D1 (no base class), D3 (per-kind registry; attribute bag), D4 (context-owned
+ndigo: D1 (no base class), D3 (per-kind registry; attribute bag), D4 (context-owned
 lifecycle).

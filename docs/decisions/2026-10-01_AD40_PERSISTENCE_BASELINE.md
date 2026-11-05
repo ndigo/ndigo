@@ -8,9 +8,9 @@
 - Keep capability-owned contracts. No generic store superclass or universal storage package. Keep memory defaults; external backends require explicit configuration.
 - Created clients are owned. Injected clients are borrowed unless ownership is explicitly transferred. `LibSQLQueueMessageStore({ client, ownsClient: true })` transfers ownership; disposal without it leaves the client usable by other adapters. Disposal is idempotent and makes the disposed adapter unusable. Stop/drain producers before disposing; disposal itself does not guarantee pending writes complete.
 - Initialization failures must not become unhandled rejections merely because first use is delayed. Queue operations await the original initialization promise and still reject on schema failure. Backend faults are never empty history or automatic memory fallback.
-- Queue ordering is per destination; LibSQL uses a global AUTOINCREMENT watermark with gaps and idempotent `(destination, message_id)` append. Its fixed `blue_queue_messages` table is a database-wide namespace: isolate applications by database/destination convention until an explicit namespace is designed. Existing schema creation remains unchanged; future session schema initialization must be explicit.
+- Queue ordering is per destination; LibSQL uses a global AUTOINCREMENT watermark with gaps and idempotent `(destination, message_id)` append. Its fixed `ndigo_queue_messages` table is a database-wide namespace: isolate applications by database/destination convention until an explicit namespace is designed. Existing schema creation remains unchanged; future session schema initialization must be explicit.
 - Session adapters must preserve the current contract's effective expiry and remaining TTL on rotation, not resurrect unknown/expired sessions. SQL rotation must be atomic under contention. No auth contract changes in this phase.
-- Redis selection: node-redis base package **`@redis/client`**, pinned **6.3.0** after verifying the registry at introduction. Node-only `@blue/redis` owns connection/configuration/lifecycle; `/cache` uses optional cache/factory capability peers and `/pubsub` uses the optional socket peer. Root exports do not load capability contracts. Support standalone Redis **7.2+** using core cache commands and PUBLISH/SUBSCRIBE/UNSUBSCRIBE; no modules, cluster guarantees or Redis 8.4-only CAS commands. Connection errors are observed; graceful close uses close rather than deprecated QUIT.
+- Redis selection: node-redis base package **`@redis/client`**, pinned **6.3.0** after verifying the registry at introduction. Node-only `@ndigo/redis` owns connection/configuration/lifecycle; `/cache` uses optional cache/factory capability peers and `/pubsub` uses the optional socket peer. Root exports do not load capability contracts. Support standalone Redis **7.2+** using core cache commands and PUBLISH/SUBSCRIBE/UNSUBSCRIBE; no modules, cluster guarantees or Redis 8.4-only CAS commands. Connection errors are observed; graceful close uses close rather than deprecated QUIT.
 - **Phase 2 API prerequisite landed:** all `Cache` data operations are awaitable, including `size()`, and manager handle acquisition remains synchronous. All consumers migrated under [AD-39](2026-09-30_AD39_ASYNC_BY_DEFAULT.md), without stale local snapshots or a parallel `AsyncCache` interface. Redis serialization is restricted to JSON-value trees plus a tagged whole-entry undefined; memory still accepts arbitrary values. See the [cache guide](../guides/07-caching.md) for the backend-specific policy.
 - Container destruction currently recognizes destroy/close, not arbitrary dispose. External adapter integration must explicitly bridge to the supported lifecycle and prove awaited shutdown; registering a dispose-only object is not proof of cleanup. STOMP store disposal remains owner-managed, not broker-managed.
 
@@ -18,8 +18,8 @@
 
 Historical RT-2 (no LibSQL dispose method) is already resolved. Phase 0 reproduces a different shared-client defect: disposing one queue adapter closes a client used by another. The regression now checks independent store usability, disposal rejection, and direct SQL access. File-backed close/reopen coverage replaces the former same-client test that misleadingly claimed restart durability. Failure coverage uses a real invalid schema and a closed real client.
 
-Phase 1 adds `LibSQLSessionStore` in `@blue/orm-drizzle`, leaving the auth-core
-contract and memory defaults unchanged. Its fixed `blue_sessions` table is
+Phase 1 adds `LibSQLSessionStore` in `@ndigo/orm-drizzle`, leaving the auth-core
+contract and memory defaults unchanged. Its fixed `ndigo_sessions` table is
 explicitly provisioned by `initialize()` (or the equivalent application-owned
 migration), never automatically migrated or dropped. Like queues, the database
 is the application/environment namespace. Session payloads contain only the
@@ -53,7 +53,7 @@ adapter was introduced.
 
 ### Phase 3 — live cross-node fan-out contract
 
-`SocketFanout` remains capability-owned in `@blue/socket`:
+`SocketFanout` remains capability-owned in `@ndigo/socket`:
 `subscribe(scope, callback): Promise<() => Promise<void>>` and
 `publish(scope, { key, body, headers? }): Promise<void>`, for
 `path | room | topic`, serialized `string | Uint8Array` bodies and optional
@@ -63,7 +63,7 @@ its own subscriptions. Redis uses a random origin per transport to suppress echo
 not a general duplicate/retry ledger. Live at-most-once delivery has no replay,
 reconnect, offline queue, global ordering or exactly-once guarantee.
 
-`RedisSocketFanout` in `@blue/redis/pubsub` borrows a `RedisConnection` publisher
+`RedisSocketFanout` in `@ndigo/redis/pubsub` borrows a `RedisConnection` publisher
 and creates its own subscriber from an explicit URL. Construction opens no
 sockets. Await publisher `connect()`, fanout `connect()`, and consumer
 `connect()` before serving: registry subscribes `path`/`room`, broker subscribes

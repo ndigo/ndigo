@@ -2,11 +2,11 @@
 
 ## Scope
 
-This reference standardizes per-feature metric naming and dashboard presentation for BlueJS runtime telemetry.
+This reference standardizes per-feature metric naming and dashboard presentation for ndigo runtime telemetry.
 
 It applies to:
 
-- `FeatureMetricAggregator` usage from `@blue/telemetry`
+- `FeatureMetricAggregator` usage from `@ndigo/telemetry`
 - `@counted(...)` feature-attributed counters
 - Shell/feature diagnostics surfaces such as `feature-metrics-panel`
 
@@ -66,10 +66,10 @@ For dashboards, prefer explicit derived section labels and include interval cont
 
 ### Reusable Rate Resolution (`CounterRateResolver`)
 
-Use `CounterRateResolver` from `@blue/telemetry` to compute `counter-delta / elapsed-time` rates across features.
+Use `CounterRateResolver` from `@ndigo/telemetry` to compute `counter-delta / elapsed-time` rates across features.
 
 ```ts
-import { CounterRateResolver, FeatureMetricAggregator } from '@blue/telemetry';
+import { CounterRateResolver, FeatureMetricAggregator } from '@ndigo/telemetry';
 
 const aggregator = new FeatureMetricAggregator();
 
@@ -96,7 +96,7 @@ Notes:
 `CounterRateResolver` supports configurable sliding-window averaging for more stable rate calculations.
 
 ```ts
-import { CounterRateResolver, FeatureMetricAggregator } from '@blue/telemetry';
+import { CounterRateResolver, FeatureMetricAggregator } from '@ndigo/telemetry';
 
 const aggregator = new FeatureMetricAggregator();
 
@@ -172,7 +172,7 @@ Fallback behavior:
 Use `FeatureMetricAggregator.recordDuration()` to track operation latencies:
 
 ```ts
-import { FeatureMetricAggregator } from '@blue/telemetry';
+import { FeatureMetricAggregator } from '@ndigo/telemetry';
 
 const aggregator = new FeatureMetricAggregator();
 
@@ -243,9 +243,9 @@ Feature: todo
 Use one shared recorder instance across runtime layers to avoid duplicate metric wiring:
 
 ```ts
-import { FeatureContextMountManager } from '@blue/context';
-import { FeatureRoutingRegistry } from '@blue/router';
-import { FeatureMetricAggregator } from '@blue/telemetry';
+import { FeatureContextMountManager } from '@ndigo/context';
+import { FeatureRoutingRegistry } from '@ndigo/router';
+import { FeatureMetricAggregator } from '@ndigo/telemetry';
 
 const featureMetrics = new FeatureMetricAggregator();
 
@@ -261,8 +261,8 @@ const featureRoutingRegistry = new FeatureRoutingRegistry(undefined, {
 
 With this pattern:
 
-- `@blue/context` emits mount lifecycle metrics (`*.mountCount`, `*.unmountCount`, `*.isMounted`)
-- `@blue/router` emits routing lifecycle metrics (`*.activateCount`, `*.deactivateCount`, `*.routeHandledCount`, `*.isActive`)
+- `@ndigo/context` emits mount lifecycle metrics (`*.mountCount`, `*.unmountCount`, `*.isMounted`)
+- `@ndigo/router` emits routing lifecycle metrics (`*.activateCount`, `*.deactivateCount`, `*.routeHandledCount`, `*.isActive`)
 - App-level code can reserve manual metrics for domain-specific signals (e.g., relay diagnostics)
 
 ### Decorator + Aggregator

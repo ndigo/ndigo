@@ -8,14 +8,14 @@ This document tracks progress on the Query/Matrix String Consolidation project.
 
     - Reviewed active implementation plans and identified URL parsing duplication
     - Created comprehensive plan: `2026-02-03_QUERY_MATRIX_STRING_CONSOLIDATION.md`
-    - Established `@blue/http` as canonical source for URL parsing utilities
+    - Established `@ndigo/http` as canonical source for URL parsing utilities
 
 2.  **Code Migration & Refactoring (Phases 1-5 - Previous Session):**
 
-    - Created `matrix-string.ts` and `parsers/matrix-expression.ts` in `@blue/http`
-    - Migrated tests from `@blue/router` to `@blue/http`
-    - Updated `@blue/router` to depend on `@blue/http`
-    - Deleted ~759 lines of duplicate code from `@blue/router`
+    - Created `matrix-string.ts` and `parsers/matrix-expression.ts` in `@ndigo/http`
+    - Migrated tests from `@ndigo/router` to `@ndigo/http`
+    - Updated `@ndigo/router` to depend on `@ndigo/http`
+    - Deleted ~759 lines of duplicate code from `@ndigo/router`
     - Fixed parser bugs and enhanced query string parser with semicolon delimiter support
 
 3.  **Phase 6: Specification Research & Compliance Testing (Current Session):**
@@ -46,20 +46,20 @@ This document tracks progress on the Query/Matrix String Consolidation project.
 
     **6.3 Test Suite Creation (2 hours):**
 
-    - Created `packages/blue-http/test/query-string-spec-compliance.spec.ts` (61 tests)
+    - Created `packages/ndigo-http/test/query-string-spec-compliance.spec.ts` (61 tests)
         - RFC 3986 reserved/unreserved character handling
         - Percent-encoding compliance
         - Delimiter handling (both `&` and `;`)
         - Unicode and emoji support
         - Edge cases and robustness testing
         - Stringification and round-trip tests
-    - Created `packages/blue-http/test/matrix-string-spec-compliance.spec.ts` (62 tests)
+    - Created `packages/ndigo-http/test/matrix-string-spec-compliance.spec.ts` (62 tests)
         - RFC 3986 path component compliance
         - Matrix URI specification adherence
         - Comma-separated array handling (JAX-RS pattern)
         - Multiple same-key parameter support
         - Unicode, whitespace, and edge case testing
-    - Created `packages/blue-http/test/url-search-params-compat.spec.ts` (44 tests)
+    - Created `packages/ndigo-http/test/url-search-params-compat.spec.ts` (44 tests)
         - Direct comparisons with native URLSearchParams
         - Documented behavior differences
         - Real-world use case testing
@@ -120,17 +120,17 @@ This document tracks progress on the Query/Matrix String Consolidation project.
 
     *   `docs/reference/2026-02-06_URL_PARSING_SPECIFICATIONS.md` (NEW - 850+ lines)
 
-- `packages/blue-http/test/query-string-spec-compliance.spec.ts` (NEW - 610 lines, 61 tests)
-- `packages/blue-http/test/matrix-string-spec-compliance.spec.ts` (NEW - 620 lines, 62 tests)
-- `packages/blue-http/test/url-search-params-compat.spec.ts` (NEW - 480 lines, 44 tests)
+- `packages/ndigo-http/test/query-string-spec-compliance.spec.ts` (NEW - 610 lines, 61 tests)
+- `packages/ndigo-http/test/matrix-string-spec-compliance.spec.ts` (NEW - 620 lines, 62 tests)
+- `packages/ndigo-http/test/url-search-params-compat.spec.ts` (NEW - 480 lines, 44 tests)
 
 **Overall Project Statistics:**
 
-- **Lines of Code Removed:** ~759 (duplicate code from @blue/router)
+- **Lines of Code Removed:** ~759 (duplicate code from @ndigo/router)
 - **Lines of Documentation Added:** ~850 (specification reference)
 - **Lines of Tests Added:** ~1,710 (167 new tests)
-- **Test Coverage Increase:** +167 tests (from 94 to 261 in @blue/http)
-- **Packages Affected:** 3 (@blue/http, @blue/router, @blue/parser)
+- **Test Coverage Increase:** +167 tests (from 94 to 261 in @ndigo/http)
+- **Packages Affected:** 3 (@ndigo/http, @ndigo/router, @ndigo/parser)
 
 **Next Steps:**
 

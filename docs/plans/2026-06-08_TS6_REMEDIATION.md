@@ -4,10 +4,10 @@ This document outlines the steps to resolve critical regressions, type safety ri
 
 ## 🎯 Objectives
 
-1. **Restore Broken Logic**: Fix the behavioral regressions in `@blue/domain` and `@blue/dispatcher`.
+1. **Restore Broken Logic**: Fix the behavioral regressions in `@ndigo/domain` and `@ndigo/dispatcher`.
 2. **Eliminate "Type Lies"**: Replace dangerous `as unknown as T` casts and unverified `!` assertions with defensive runtime checks.
 3. **Stabilize Public API**: Update all consumers of widened return types (`| null` / `| undefined`) to prevent runtime crashes.
-4. **Restore Maintainability**: Refactor the bloated `@blue/validate` constraints and fix style violations.
+4. **Restore Maintainability**: Refactor the bloated `@ndigo/validate` constraints and fix style violations.
 
 ---
 
@@ -15,11 +15,11 @@ This document outlines the steps to resolve critical regressions, type safety ri
 
 ### Wave 1: Critical Regressions (Immediate Priority)
 
-- [x] **Task 1.1: Restore `@blue/domain` Property Delegation**
-    - Target: `packages/blue-domain/src/component.ts`
+- [x] **Task 1.1: Restore `@ndigo/domain` Property Delegation**
+    - Target: `packages/ndigo-domain/src/component.ts`
     - Action: Revert the `initializeData` mixin from returning `undefined` to delegating `get` calls to `component.model.get(key, { isolate: true })`.
 - [x] **Task 1.2: Restore `RouteHandlerAdapter.supports()`**
-    - Target: `packages/blue-dispatcher/src/route-handler-adapter.ts`
+    - Target: `packages/ndigo-dispatcher/src/route-handler-adapter.ts`
     - Action: Re-add the `supports(handler: object): boolean` method to the `RouteHandlerAdapter` interface. Ensure concrete implementations (`MetadataHandlerAdapter`, `ControllerHandlerAdapter`) correctly implement it.
 
 ### Wave 2: Type Safety Hardening
@@ -28,7 +28,7 @@ This document outlines the steps to resolve critical regressions, type safety ri
     - Target: All `like*` functions across the monorepo.
     - Action: Change signatures from `(value: any) => value is T` to `(value: unknown) => value is T`.
 - [x] **Task 2.2: Remediation of "Type Lies" (`as unknown as T`)**
-    - Target: High-risk areas (especially `@blue/context` and `@blue/boot`).
+    - Target: High-risk areas (especially `@ndigo/context` and `@ndigo/boot`).
     - Action: Replace `null as unknown as T` with `T | null` where possible. Implement defensive runtime checks before casting.
 - [x] **Task 2.3: Audit Non-Null Assertions (`!`)**
     - Target: All class fields marked with `!`.
@@ -45,11 +45,11 @@ This document outlines the steps to resolve critical regressions, type safety ri
 
 ### Wave 4: Maintainability & Style
 
-- [x] **Task 4.1: Refactor `@blue/validate` Constraints**
-    - Target: `packages/blue-validate/src/standard-constraints.ts`
+- [x] **Task 4.1: Refactor `@ndigo/validate` Constraints**
+    - Target: `packages/ndigo-validate/src/standard-constraints.ts`
     - Action: Create a `createConstraint` helper to reduce boilerplate.
 - [x] **Task 4.2: Style & Convention Cleanup**
-    - Target: `packages/blue-core/src/comparable.ts` (Import order) and `packages/blue-dispatcher/test/...` (`APIController` naming).
+    - Target: `packages/ndigo-core/src/comparable.ts` (Import order) and `packages/ndigo-dispatcher/test/...` (`APIController` naming).
     - Action: Move imports to top; rename `ApiController` $\rightarrow$ `APIController`.
 
 ---

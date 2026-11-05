@@ -6,7 +6,7 @@ concept deferred to a dedicated design conversation (see §5).
 
 ## Background
 
-Early BlueJS scaled for large enterprise use with a composable top-level
+Early ndigo scaled for large enterprise use with a composable top-level
 model:
 
 ```
@@ -40,27 +40,27 @@ of SiteBuilder.
 The three capabilities did **not** die; they were re-implemented with the
 modern primitives and re-named:
 
-| Legacy concept                                          | Modern equivalent                                                                                                                                                                                      | Where                                                          |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
-| Site (owner of top-level route, delegates by segment)   | **`PartitionRouter` + `FeatureRoutingRegistry`** — prefix-partitioned route delegation; features mount at URL prefixes                                                                                 | `@blue/router`                                                 |
-| Application (independent context: controllers + models) | **`ApplicationContext` + `@community configuration`/`@entry`** — an app context owns its beans; `ApplicationBuilder.run()` assembles one                                                               | `@blue/context`, `@blue/boot`                                  |
-| Page (independently-mounted presentation owning views)  | **View targets + `IslandView`/web-component mounts** — a render surface target is a mountable presentation unit; islands prime a fast first render                                                     | `@blue/view`, `@blue/view-webcomponent`, `@blue/platform-node` |
-| Independent boot / link-time assembly                   | **Context tree + `FeatureContextMountManager`** — parent/child contexts + lazily-mounted feature contexts with shared-dependency validation (see `apps/blue-host`, `apps/blue-todo` shell composition) | `@blue/context`, demo apps                                     |
-| Progressive render (TTFB vs TTI)                        | **Island/server-render-then-hydrate + lazy feature mounts** — the modern incarnation of "boot the Page first"                                                                                          | `IslandView`, `FeatureContextMountManager`                     |
+| Legacy concept                                          | Modern equivalent                                                                                                                                                                                        | Where                                                             |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Site (owner of top-level route, delegates by segment)   | **`PartitionRouter` + `FeatureRoutingRegistry`** — prefix-partitioned route delegation; features mount at URL prefixes                                                                                   | `@ndigo/router`                                                   |
+| Application (independent context: controllers + models) | **`ApplicationContext` + `@community configuration`/`@entry`** — an app context owns its beans; `ApplicationBuilder.run()` assembles one                                                                 | `@ndigo/context`, `@ndigo/boot`                                   |
+| Page (independently-mounted presentation owning views)  | **View targets + `IslandView`/web-component mounts** — a render surface target is a mountable presentation unit; islands prime a fast first render                                                       | `@ndigo/view`, `@ndigo/view-webcomponent`, `@ndigo/platform-node` |
+| Independent boot / link-time assembly                   | **Context tree + `FeatureContextMountManager`** — parent/child contexts + lazily-mounted feature contexts with shared-dependency validation (see `apps/ndigo-host`, `apps/ndigo-todo` shell composition) | `@ndigo/context`, demo apps                                       |
+| Progressive render (TTFB vs TTI)                        | **Island/server-render-then-hydrate + lazy feature mounts** — the modern incarnation of "boot the Page first"                                                                                            | `IslandView`, `FeatureContextMountManager`                        |
 
-**Reference implementation:** `apps/blue-host/src/shell-composition.ts` is
+**Reference implementation:** `apps/ndigo-host/src/shell-composition.ts` is
 the canonical live heir — shell context + shared dependency registry +
 `PartitionRouter` feature mounts, all composed at runtime. This is what the
 legacy Site model _became_.
 
 ## Decision: SiteBuilder is removed
 
-- `SiteBuilder` (no-op `@experimental` stub, `packages/blue-boot/src/site-builder.ts`)
+- `SiteBuilder` (no-op `@experimental` stub, `packages/ndigo-boot/src/site-builder.ts`)
   is **deleted** (2026-09-07). It was a false promise: `run()` did nothing,
   `child()` stored nothing, and the single `ApplicationBuilder` model plus
   the context tree already cover the documented intent (AD-07-era docs even
   read "use `ApplicationBuilder`").
-- **No `Site`/`SiteBuilder` re-export remains** in `@blue/boot`.
+- **No `Site`/`SiteBuilder` re-export remains** in `@ndigo/boot`.
 - Applications needing multi-context composition use either
   `ApplicationBuilder` (single context) or the parent/child context model
   with `FeatureContextMountManager` (multiple linked contexts).
@@ -95,7 +95,7 @@ conversation must answer:
    application context)?
 5. How does it compose with the shell/feature routing model?
 
-The placeholder `@blue/page` package (the former record of this deferred
+The placeholder `@ndigo/page` package (the former record of this deferred
 design) was removed on 2026-09-08; this AD is the single source of truth for
 the open question.
 
@@ -103,7 +103,7 @@ the open question.
 
 | Item                            | Status                                                           |
 | ------------------------------- | ---------------------------------------------------------------- |
-| SiteBuilder removal             | ✅ Done 2026-09-07 (`@blue/boot` no longer exports it)           |
+| SiteBuilder removal             | ✅ Done 2026-09-07 (`@ndigo/boot` no longer exports it)          |
 | Lineage + successors documented | ✅ This AD                                                       |
 | Page concept design             | ⚠️ **Deferred** — dedicated conversation + AD; initial stub only |
 

@@ -2,14 +2,14 @@
 
 **Date:** 2026-08-19
 **Status:** Accepted — implemented; oxlint+oxfmt are the lint/format gates,
-`@blue/eslint-plugin` became `@blue/oxlint-plugin`, and `tsc -b` remains the
+`@ndigo/eslint-plugin` became `@ndigo/oxlint-plugin`, and `tsc -b` remains the
 build.
 
 ## Context
 
 The lint/build/test stack was TypeScript 5.9 (`tsc -b`, project references,
 ~29 packages), ESLint 9 + Prettier, and a dormant ESLint-installed-but-unused
-`@blue/eslint-plugin`. OXC (oxc.rs) promised large speedups (oxlint ~50–100×
+`@ndigo/eslint-plugin`. OXC (oxc.rs) promised large speedups (oxlint ~50–100×
 over ESLint; `@oxc-transform` ~10–30× over tsc emit). Three consecutive
 evaluations ([2026-08-12_OXC_EVALUATION], [2026-08-19_OXC_EVALUATION_AND_MIGRATION_PLAN],
 [2026-08-19_OXC_MIGRATION]) probed partial adoption — lint and formatting
@@ -30,19 +30,19 @@ tools it is genuinely good at.
   — added as `^0.151.0` for the 08-19 spike and removed in `c6020142`
   (2026-10-06), so the transform-emit path holds no standing dependency at all.
 - `build:lib` target is still `"tsc -b tsconfig.build.json"` (verified in
-  `packages/blue-core/package.json` and `packages/blue-oxlint-plugin/package.json`)
+  `packages/ndigo-core/package.json` and `packages/ndigo-oxlint-plugin/package.json`)
   — the build/emit path was **not** migrated to `@oxc-transform`.
-- `packages/blue-oxlint-plugin/src/index.ts` builds the plugin via
-  `eslintCompatPlugin` from `@oxlint/plugins`, `meta.name: '@blue/oxlint-plugin'`;
-  no `@blue/eslint-plugin` package remains (`ls packages/` matches no `eslint`).
-- The plugin shipped 12 rules under `packages/blue-oxlint-plugin/src/rules/`
+- `packages/ndigo-oxlint-plugin/src/index.ts` builds the plugin via
+  `eslintCompatPlugin` from `@oxlint/plugins`, `meta.name: '@ndigo/oxlint-plugin'`;
+  no `@ndigo/eslint-plugin` package remains (`ls packages/` matches no `eslint`).
+- The plugin shipped 12 rules under `packages/ndigo-oxlint-plugin/src/rules/`
   at the time of this ADR (14 ship today),
   including the three checked: `no-browser-globals-in-isomorphic.ts`,
   `no-internal-file-exports.ts`, `no-uppercase-regexp-constants.ts`
   (plus `no-direct-integration-imports.ts`, `no-internal-file-imports.ts`,
   and seven more). Coupling with the original ruleset is the Library
   Integration Layer/AD-04 enforcement doctrine.
-- `packages/blue-oxlint-plugin/package.json` first git entry:
+- `packages/ndigo-oxlint-plugin/package.json` first git entry:
   `249dfe13` (2026-09-10, "chore: commit uncommitted changes").
 - The oxfmt/oxc-transform versions in root `package.json` have moved since
   (observed at `^0.68.0`/`^0.150.0` in `1173cd93`, 2026-09-28) — versions are
@@ -57,7 +57,7 @@ tools it is genuinely good at.
   (`format`/`format:check`). The migration plans marked Prettier "keep" and
   OXC's formatter optional; the realized direction committed to oxfmt
   instead, folding formatting into the OXC toolchain.
-- **D-3 Plugin rename:** `@blue/eslint-plugin` became `@blue/oxlint-plugin`
+- **D-3 Plugin rename:** `@ndigo/eslint-plugin` became `@ndigo/oxlint-plugin`
   (rules are oxlint plugin rules authored against `@oxlint/plugins`
   `eslintCompatPlugin`; there is no ESLint runtime in the pipeline). Origin
   of the rule plugin: [AD-45](2026-02-01_AD45_ARCHITECTURAL_LINT_RULES.md).
@@ -76,7 +76,7 @@ tools it is genuinely good at.
 - Lint and format run at OXC Rust speed through a single toolchain; the
   previous ESLint + Prettier pair (and their configs) are gone from the repo
   root.
-- The custom rule family lives once, in `@blue/oxlint-plugin`, still enforcing
+- The custom rule family lives once, in `@ndigo/oxlint-plugin`, still enforcing
   the AD-04 browser-boundary rule and the internal/external file-import
   policies.
 - `tsc -b` remains the sole build authority — no risk to decorator metadata
@@ -88,8 +88,8 @@ tools it is genuinely good at.
 - Plans: `docs/plans/2026-08-12_OXC_EVALUATION.md`,
   `docs/plans/2026-08-19_OXC_EVALUATION_AND_MIGRATION_PLAN.md`,
   `docs/plans/2026-08-19_OXC_MIGRATION.md`
-- Implementation: `packages/blue-oxlint-plugin/src/index.ts`,
-  `packages/blue-oxlint-plugin/src/rules/*.ts`, root `package.json`
+- Implementation: `packages/ndigo-oxlint-plugin/src/index.ts`,
+  `packages/ndigo-oxlint-plugin/src/rules/*.ts`, root `package.json`
   (`lint`/`format`/`format:check`, `build:lib`), commit `249dfe13` (2026-09-10)
 - Related: [AD-45](2026-02-01_AD45_ARCHITECTURAL_LINT_RULES.md) (rule-plugin origin), [AD-04](2026-05-27_AD04_BROWSER_BOUNDARY_PLATFORM_WEB.md)
 

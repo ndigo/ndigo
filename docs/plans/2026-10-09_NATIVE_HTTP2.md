@@ -17,7 +17,7 @@ surface.
 | Area                                                 | Change                                                                                                                                                                                                                               |
 | :--------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `HTTPServerOptions` / `NodeHTTPServerAdapterOptions` | New `tls?: TLSServerOptions` (`key`, `cert`, `ca?`, `minVersion?`, `ciphers?`); PEM entries are inline-or-path, resolved at `listen()`                                                                                               |
-| Env                                                  | `BLUE_TLS_KEY` + `BLUE_TLS_CERT` (both required — half-configured throws) + optional `BLUE_TLS_CA`                                                                                                                                   |
+| Env                                                  | `NDIGO_TLS_KEY` + `NDIGO_TLS_CERT` (both required — half-configured throws) + optional `NDIGO_TLS_CA`                                                                                                                                |
 | Adapter                                              | `listen()` branches: plain `node:http` (unchanged) vs `http2.createSecureServer({ allowHTTP1: true, ALPNProtocols: ['h2','http/1.1'] })`; h2 requests flow through the same `request` event + pipeline (probe-verified compat layer) |
 | Timeouts                                             | `requestTimeout`/`headersTimeout` honored on both flavors; `keepAliveTimeout`/`maxRequestsPerSocket` stay h1.1-only                                                                                                                  |
 | Shutdown                                             | Secure flavor force-closes tracked `connection` sockets at the drain deadline (`closeAllConnections` does not exist on tls/h2 servers — runtime-verified)                                                                            |
@@ -39,5 +39,5 @@ surface.
 Landed with the ADR: `TLSServerOptions` + `tls` on both option surfaces,
 the env reader (all-or-nothing), the adapter's secure branch with inline-
 or-path PEM resolution, the per-flavor timeout handling, and the socket-
-tracking force-close. The nine-test spec passes; the full `@blue/platform-node`
+tracking force-close. The nine-test spec passes; the full `@ndigo/platform-node`
 lane stays green; `pnpm typecheck` (build + spec lanes) is clean.

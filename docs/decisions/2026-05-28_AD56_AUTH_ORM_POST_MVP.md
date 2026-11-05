@@ -1,16 +1,16 @@
 # AD-56: Auth & ORM post-MVP — pluggable authentication plus ORM relations, lifecycle, transactions, Drizzle adapter
 
 **Date:** 2026-05-28
-**Status:** Accepted — implemented; `@blue/auth` split into
-`blue-auth-core` / `blue-auth-server` / `blue-auth-client` (2026-06-24,
+**Status:** Accepted — implemented; `@ndigo/auth` split into
+`ndigo-auth-core` / `ndigo-auth-server` / `ndigo-auth-client` (2026-06-24,
 commit `148c92e9`); superseded in part by
 [AD-33](2026-09-26_AD33_AUTH_CREDENTIALS_AND_SESSIONS.md) (credentials/
 sessions subset, 2026-09-26).
 
 ## Context
 
-Wave 9 added `@blue/auth` (new) and extended `@blue/orm` post-MVP with
-relations, lifecycle hooks, `@transactional`, and the `@blue/orm-drizzle`
+Wave 9 added `@ndigo/auth` (new) and extended `@ndigo/orm` post-MVP with
+relations, lifecycle hooks, `@transactional`, and the `@ndigo/orm-drizzle`
 adapter. The auth plan specified a strategy-based abstraction
 (pluggable/injectable strategies, `Principal`/`Session`, TC39 decorators,
 HTTP + dispatcher guards) — **not** yet the OIDC/JWT/scheme-selection model
@@ -24,21 +24,21 @@ the credentials/sessions subset of the eventual stack.
 
 - Plan: `docs/plans/2026-05-28_AUTH_DESIGN.md` — §9a auth core interfaces,
   decorators, `AuthRouteGuard`, `AuthHeaderInterceptor`; §9b ORM relations/
-  lifecycle/`@transactional`; §9c `@blue/orm-drizzle` adapter; demo gate.
-- Original `@blue/auth` born commit `f23b8d13` (2026-05-29, wave-9) — 9
+  lifecycle/`@transactional`; §9c `@ndigo/orm-drizzle` adapter; demo gate.
+- Original `@ndigo/auth` born commit `f23b8d13` (2026-05-29, wave-9) — 9
   source files (AuthenticationManager, SessionManager, PasswordHasher,
   AuthRouteGuard, `@authenticated`/`@role`/`@permission`, token session
   store) — verified via `git log --diff-filter=A -- path`.
 - Re-architect split: commit `148c92e9` (2026-06-24,
   `feat: re-architect auth, telemetry, and router packages`) is the earliest
-  commit touching all three of `packages/blue-auth-core/`,
-  `blue-auth-server/`, `blue-auth-client/` (verified per-package
+  commit touching all three of `packages/ndigo-auth-core/`,
+  `ndigo-auth-server/`, `ndigo-auth-client/` (verified per-package
   `git log --reverse`).
-- Current surface: `blue-auth-core/src/{principal,session,state,adapter,registry,password-encoder,delegating-password-encoder,scrypt-password-encoder,user-store,session-store}.ts` + `_decorators.ts`
+- Current surface: `ndigo-auth-core/src/{principal,session,state,adapter,registry,password-encoder,delegating-password-encoder,scrypt-password-encoder,user-store,session-store}.ts` + `_decorators.ts`
   (exports `authenticated`, `authorized`, `AUTH_REQUIRED_KEY`,
-  `AUTH_ROLES_KEY`); `blue-auth-server/src/{jwt-adapter,credentials-auth-adapter,in-memory-session-store,in-memory-user-store,route-guard}.ts`;
-  `blue-auth-client/src/{oidc-adapter,client,auth-header-interceptor,client-guard}.ts`.
-- OIDC/PKCE: `packages/blue-auth-client/src/oidc-adapter.ts` imports
+  `AUTH_ROLES_KEY`); `ndigo-auth-server/src/{jwt-adapter,credentials-auth-adapter,in-memory-session-store,in-memory-user-store,route-guard}.ts`;
+  `ndigo-auth-client/src/{oidc-adapter,client,auth-header-interceptor,client-guard}.ts`.
+- OIDC/PKCE: `packages/ndigo-auth-client/src/oidc-adapter.ts` imports
   `jose` (`createRemoteJWKSet`, `jwtVerify`, `decodeJwt`) and `randomToken`/
   `base64url` (code verifier → PKCE); `JWTAdapter` (server, `jose`, ver
   claim/`tokenVersion` revocation). Fail-closed: `AuthServer.validateAny`
@@ -67,11 +67,11 @@ the credentials/sessions subset of the eventual stack.
   invokes them.
 - **D-6 — `@transactional`:** method decorator wrapping the call in
   `unitOfWork.begin()/commit()/rollback()`.
-- **D-7 — `@blue/orm-drizzle` adapter:** dynamic schema reading
+- **D-7 — `@ndigo/orm-drizzle` adapter:** dynamic schema reading
   `@entity`/`@column` metadata → `sqliteTable()`; `DrizzleDataSource`/
   `DrizzleEntityManager`; deps `drizzle-orm`, `better-sqlite3`.
 - **Demo gate:** `POST /auth/login`, `GET /notes`, `POST /notes` in
-  `blue-demo-node` with an `@entity` `Note`.
+  `ndigo-demo-node` with an `@entity` `Note`.
 
 ## Supersession (in part)
 
@@ -80,16 +80,16 @@ credentials/sessions subset that followed the 2026-06-24 split:
 credential/password auth, first-party user store, server-session auth,
 refresh/revocation — building on the `AuthAdapter` seam and `AuthRegistry`
 that the split produced. The `@authenticated`/`@authorized` guard contract
-survives (`blue-auth-core` `_decorators.ts`); the ORM post-MVP surface was
+survives (`ndigo-auth-core` `_decorators.ts`); the ORM post-MVP surface was
 carried by AD-55's successors ([AD-30](2026-09-26_AD30_ORM_MIGRATIONS.md) /
 [AD-31](2026-09-26_AD31_ORM_RELATION_FETCH.md)).
 
 ## Consequences
 
-- `@blue/auth` became three packages on 2026-06-24 (`148c92e9`): core
-  contracts/adapters in `blue-auth-core`, server-side guards, stores and
-  JWT/credentials in `blue-auth-server`, browser-side client + OIDC +
-  header interceptor in `blue-auth-client`.
+- `@ndigo/auth` became three packages on 2026-06-24 (`148c92e9`): core
+  contracts/adapters in `ndigo-auth-core`, server-side guards, stores and
+  JWT/credentials in `ndigo-auth-server`, browser-side client + OIDC +
+  header interceptor in `ndigo-auth-client`.
 - OIDC authorization-code + PKCE (client), `jose`-based JWT with versioned
   revocation and issuer/audience checks (server), and fail-closed
   `validateAny` are the realized architecture — none specified verbatim in
@@ -101,11 +101,11 @@ carried by AD-55's successors ([AD-30](2026-09-26_AD30_ORM_MIGRATIONS.md) /
 ## References
 
 - Plan: `docs/plans/2026-05-28_AUTH_DESIGN.md`
-- Birth: commit `f23b8d13` (2026-05-29, `@blue/auth`);
+- Birth: commit `f23b8d13` (2026-05-29, `@ndigo/auth`);
   ORM wave-9 extensions same commit
 - Split: commit `148c92e9` (2026-06-24)
-- Implementation: `packages/blue-auth-core/src/`, `blue-auth-server/src/`,
-  `blue-auth-client/src/`
+- Implementation: `packages/ndigo-auth-core/src/`, `ndigo-auth-server/src/`,
+  `ndigo-auth-client/src/`
 - Related: [AD-33](2026-09-26_AD33_AUTH_CREDENTIALS_AND_SESSIONS.md),
   [AD-30](2026-09-26_AD30_ORM_MIGRATIONS.md),
   [AD-31](2026-09-26_AD31_ORM_RELATION_FETCH.md)

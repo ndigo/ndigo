@@ -1,4 +1,4 @@
-# AD-30: ORM migrations — journaled versioned DDL for `@blue/orm-drizzle`
+# AD-30: ORM migrations — journaled versioned DDL for `@ndigo/orm-drizzle`
 
 **Date:** 2026-09-26
 **Status:** Accepted — decisions D-1..D-5 ratified; Wave 1 of the ORM
@@ -15,7 +15,7 @@ backfill behind a versioned, journaled runner. The audit's sequencing
 explicitly flags it: "Do not pass the 1.0 checkpoint without them."
 
 The five ORM contracts (`DataSource`, `EntityManager`, `UnitOfWork`,
-`TransactionManager`, `Repository`) are complete in `blue-orm-drizzle` (M3
+`TransactionManager`, `Repository`) are complete in `ndigo-orm-drizzle` (M3
 resolved 2026-09-05); the DDL mapping from entity metadata is already owned
 by `DrizzleDataSource.init`; raw SQL execution (`client.execute`/
 `client.batch`) and `DrizzleTransactionManager` (BEGIN/COMMIT/ROLLBACK) are
@@ -25,10 +25,10 @@ proven seams. This ADR ratifies the shape of the runner that composes them.
 
 ### D-1 — Journaled, versioned, forward-only migration runner
 
-`DrizzleMigrator` (package `@blue/orm-drizzle`) applies a code-composed
+`DrizzleMigrator` (package `@ndigo/orm-drizzle`) applies a code-composed
 `Migration[]` list — `{ version: integer, description, up: (ctx) => ... }` —
 in ascending version order, recording each application in a journal table
-`_blue_migrations (version INTEGER PRIMARY KEY, description TEXT NOT NULL,
+`_ndigo_migrations (version INTEGER PRIMARY KEY, description TEXT NOT NULL,
 applied_at TEXT NOT NULL)`. The runner is **forward-only**: no `down()` and
 no rollback execution in v1 — downgrades happen by restoring a backup and
 re-applying, the same model Drizzle Kit/raw SQL rollouts use. `down` is
@@ -103,7 +103,7 @@ journal readback is exposed as `status(migrations): MigrationStatus[]`
 ## Verification
 
 Wave-1 gates executed 2026-09-26: `vitest run` (35 tests incl. 9 new
-migration specs) and `tsc -b` green in `packages/blue-orm-drizzle`; `graft
+migration specs) and `tsc -b` green in `packages/ndigo-orm-drizzle`; `graft
 build` refreshed. Waves 2–4 (pagination/sorting, relation fetch, derived
 query enrichment) follow the plan, each with its own decision/ADR if the
 shape changes.

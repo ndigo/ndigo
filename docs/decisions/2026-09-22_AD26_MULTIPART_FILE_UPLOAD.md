@@ -12,11 +12,11 @@ This is gap-analysis item #1 in the Tier 1 "must-have" row of
 > Server cannot accept uploads — `MULTIPART_FORM_DATA` constant and client `FormData`
 > transformer exist, but the Node body resolver has no multipart parser.
 
-Blue could _emit_ a `multipart/form-data` request (client `FormDataTransformer`,
-`@blue/http`) but not _receive_ one. A handler annotated for a file part had
+Ndigo could _emit_ a `multipart/form-data` request (client `FormDataTransformer`,
+`@ndigo/http`) but not _receive_ one. A handler annotated for a file part had
 nothing to bind against; any `<input type="file">` form silently dropped the
 file. The reference answer is `MultipartFile` + a `MultipartHttpServletRequest`
-resolved **before** argument binding — this ports that capability to Blue's
+resolved **before** argument binding — this ports that capability to Ndigo's
 resolver/interceptor model.
 
 The trigger questions shaped every decision: how to parse without re-introducing
@@ -29,15 +29,15 @@ where the security boundary for client-supplied filenames sits.
 
 ### D-1 — Own the contract, wrap busboy
 
-BlueJS owns the `MultipartFile` + request-access contract and wraps **busboy** as
-the streaming parser (`packages/blue-platform-node/src/parse-multipart.ts` is the
+ndigo owns the `MultipartFile` + request-access contract and wraps **busboy** as
+the streaming parser (`packages/ndigo-platform-node/src/parse-multipart.ts` is the
 only busboy touchpoint). This follows the repo's three prior "own the contract,
-wrap the standard" settlements: `blue-signals` re-exports `@preact/signals-core`,
+wrap the standard" settlements: `ndigo-signals` re-exports `@preact/signals-core`,
 validation adopted Zod (AD-07), telemetry wraps OpenTelemetry. busboy is the
 canonical **zero-dependency, fully streaming** primitive (multer and
 `@fastify/multipart` both build on it); their framework-specific middleware shapes
-(Express/Fastify) don't fit Blue's resolver/interceptor model, so the primitive is
-wrapped directly and a Blue-shaped contract is built on top. One new runtime
+(Express/Fastify) don't fit Ndigo's resolver/interceptor model, so the primitive is
+wrapped directly and a Ndigo-shaped contract is built on top. One new runtime
 dependency (`busboy`) plus its types — minimal and idiomatic.
 
 ### D-2 — Parse early in the adapter, streaming from `req` (never through `#readBody`)
@@ -81,7 +81,7 @@ bounded but generous: `maxFileSize` 10 MiB, `maxRequestSize` 10 MiB, `maxFiles` 
 
 TypeScript parameter types are erased at runtime, so binding is driven by an explicit
 marker, not the declared type — matching how `@RequestBody` drives `BODY`. The
-`fileValue(partName?)` factory (`packages/blue-dispatcher/src/parameters.ts:430`)
+`fileValue(partName?)` factory (`packages/ndigo-dispatcher/src/parameters.ts:430`)
 produces a `ParameterExtractor` carrying `MethodParameterType.MULTIPART_FILE`; it is
 declared on the handler via `@parameters({ file: fileValue() })`. The part name
 defaults to the **parameter name** (`fileValue()` → client field "file"); pass an
@@ -90,14 +90,14 @@ explicit name only when the client form field differs from the JS variable
 `request.multipart.files.get(name)` and returns a single `MultipartFile` or a
 `MultipartFile[]` for an array-typed param. Text fields keep binding through the body
 resolver. Zero-arg inference removes the common boilerplate while keeping the
-explicit, unambiguous marker — Blue's analogue of the reference framework's
+explicit, unambiguous marker — Ndigo's analogue of the reference framework's
 `@RequestParam MultipartFile` / `@RequestPart`.
 
 ### D-6 — Filename safety is framework-owned (busboy does not sanitize)
 
 busboy passes the client-supplied `filename` through verbatim, so it is untrusted.
 Uploading straight into a filesystem is a **path-traversal** risk (`../../etc/passwd`,
-absolute paths, Windows backslashes). Blue sanitizes at the edge: any name containing
+absolute paths, Windows backslashes). Ndigo sanitizes at the edge: any name containing
 a path separator or a bare `.` / `..` segment (or a NUL byte) is rejected outright —
 _before any temp file is created_ (`parse-multipart.ts:sanitizeFilename`) — so the
 stored `MultipartFile.originalFilename` can never resolve against the working
@@ -117,13 +117,13 @@ seam.
 
 ## Consequences
 
-- New surface in `@blue/platform-node`: `MultipartFile` + `MultipartContext`
-  contracts, `parseMultipart(req, { limits?, tmpDir? })`, and — via `@blue/dispatcher`
+- New surface in `@ndigo/platform-node`: `MultipartFile` + `MultipartContext`
+  contracts, `parseMultipart(req, { limits?, tmpDir? })`, and — via `@ndigo/dispatcher`
   — the `fileValue()` extractor factory. One runtime dependency (`busboy`).
 - The adapter parses multipart before `#readBody`; `NodeRequest.multipart?` is a new
   optional field alongside `cookies`/`session`.
 - Binding: declare file parts with `@parameters({ <field>: fileValue() })`.
-- Demo gate: `apps/blue-api` `POST /api/upload` accepts `@file()` and returns
+- Demo gate: `apps/ndigo-api` `POST /api/upload` accepts `@file()` and returns
   `{ size, name }`; a spec round-trips an upload.
 - The residual path-traversal risk is documented as the caller's responsibility when
   they bypass `transferTo` and write `originalFilename` themselves — out of contract.
@@ -149,7 +149,7 @@ resolver (Wave 3), demo gates + docs (Wave 4). All waves landed — see below.
 - **Wave 3** — `fileValue(partName?)` extractor factory + `MethodParameterType.MULTIPART_FILE`;
   `NodeMultipartFileMethodArgumentResolver` (single + array), registered in the
   `argumentResolvers()` `@entry` bean on `NodeAutoConfiguration`.
-- **Wave 4** — `apps/blue-api` `POST /api/upload` demo gate (`UploadController`, persists
+- **Wave 4** — `apps/ndigo-api` `POST /api/upload` demo gate (`UploadController`, persists
   to a temp dir under a random filename, returns `{ size, name }`); `upload.spec.ts`
   round-trip + empty-file-400 spec; guide [`docs/guides/08-multipart-and-file-upload.md`](../guides/08-multipart-and-file-upload.md);
   gap-analysis §2.1 multipart row → IMPLEMENTED; plan ratified here.

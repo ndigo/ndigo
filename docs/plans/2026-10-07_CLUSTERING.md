@@ -1,4 +1,4 @@
-# 2026-10-07 Clustering / worker offload — `@blue/cluster`
+# 2026-10-07 Clustering / worker offload — `@ndigo/cluster`
 
 **Date:** 2026-10-07
 **Status:** Executed (see §8)
@@ -21,17 +21,17 @@ back without churning".
 
 ## 2. Current state (verified 2026-10-07)
 
-| Seam           | What exists                                                                            | What is missing            |
-| :------------- | :------------------------------------------------------------------------------------- | :------------------------- |
-| Graceful close | `gracefulShutdown()` (`@blue/platform-node`): signals → context close, drain, deadline | a process that relays to N |
-| Coordination   | job leases + `@scheduled({lock})` make replicated slots single-executor                | — (nothing, by design)     |
-| Spawning       | `node:child_process` (stdlib)                                                          | a supervisor + slot env    |
-| CLI            | — (GAP-6)                                                                              | `blue serve --cluster <n>` |
+| Seam           | What exists                                                                             | What is missing             |
+| :------------- | :-------------------------------------------------------------------------------------- | :-------------------------- |
+| Graceful close | `gracefulShutdown()` (`@ndigo/platform-node`): signals → context close, drain, deadline | a process that relays to N  |
+| Coordination   | job leases + `@scheduled({lock})` make replicated slots single-executor                 | — (nothing, by design)      |
+| Spawning       | `node:child_process` (stdlib)                                                           | a supervisor + slot env     |
+| CLI            | — (GAP-6)                                                                               | `ndigo serve --cluster <n>` |
 
 ## 3. Change
 
-1. **`@blue/cluster`** (new, layer 6): `ClusterRunner` — spawn `size` children
-   with `BLUE_CLUSTER_SLOT`/`BLUE_CLUSTER_SIZE` (+ `PORT = basePort + slot`
+1. **`@ndigo/cluster`** (new, layer 6): `ClusterRunner` — spawn `size` children
+   with `NDIGO_CLUSTER_SLOT`/`NDIGO_CLUSTER_SIZE` (+ `PORT = basePort + slot`
    derivation or pinned `ports`), relay `SIGINT`/`SIGTERM` into each child's
    own graceful shutdown (shared deadline → `SIGKILL` stragglers), respawn
    crashed slots with exponential backoff (base × 2ⁿ, clamped, jittered),
@@ -47,7 +47,7 @@ back without churning".
   reverse proxies keep routing explicit.
 - Worker-offload specialization (headless slots) — a documented future
   `mode` knob.
-- The `blue serve` CLI — rides GAP-6.
+- The `ndigo serve` CLI — rides GAP-6.
 
 ## 5. Lifecycle contract
 
@@ -78,7 +78,7 @@ README; ARCHITECTURE package map/roadmap; CHANGELOG; generated API docs.
 ## 8. Execution log (2026-10-07)
 
 All changes landed in one pass with the verification above green:
-`@blue/cluster` 11/11 (8 unit + 3 real-process) · `pnpm --filter @blue/cluster`
+`@ndigo/cluster` 11/11 (8 unit + 3 real-process) · `pnpm --filter @ndigo/cluster`
 lint clean · spec-typecheck lane green · full gate set green. Two test-design
 notes: the crash-loop guard counts the window budget BEFORE the push, so a
 `maxRestartsPerWindow: N` slot respawns N times and trips on death N+1 —

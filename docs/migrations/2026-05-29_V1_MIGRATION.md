@@ -1,10 +1,10 @@
 # 2026-05-29 V1 Migration Guide
 
-This guide documents the breaking changes and new features introduced in the BlueJS 10-wave roadmap (pre-Wave-1 baseline) that developers need to understand when upgrading from previous versions.
+This guide documents the breaking changes and new features introduced in the ndigo 10-wave roadmap (pre-Wave-1 baseline) that developers need to understand when upgrading from previous versions.
 
 ## Overview
 
-The 10-wave roadmap has completed a major architectural overhaul of BlueJS, focusing on:
+The 10-wave roadmap has completed a major architectural overhaul of ndigo, focusing on:
 
 - Clear separation of concerns between packages
 - Isomorphic core principles with browser-only code moved to platform packages
@@ -19,24 +19,24 @@ The 10-wave roadmap has completed a major architectural overhaul of BlueJS, focu
 
 The pnpm 11 upgrade has been completed, and several legacy files have been removed:
 
-- `packages/blue-util/bench/like.test.ts`
-- `packages/blue-util/src/type/_like-is.ts`
-- `packages/blue-context/src/event-emitter.old.ts.txt`
-- `blue-view/test/*.js` (Chai/Mocha shared spec factories)
+- `packages/ndigo-util/bench/like.test.ts`
+- `packages/ndigo-util/src/type/_like-is.ts`
+- `packages/ndigo-context/src/event-emitter.old.ts.txt`
+- `ndigo-view/test/*.js` (Chai/Mocha shared spec factories)
 - All 9 `.legacy.js` files from various packages
 
 ### Wave 2: `no-browser-globals-in-isomorphic` ESLint rule is now `warn`
 
-A new ESLint rule `@blue/no-browser-globals-in-isomorphic` has been added to enforce that browser-only globals (`window`, `document`, `navigator`, `HTMLElement`, `history`) are not used in isomorphic-core packages. This rule is now set to `warn` level, which may cause lint warnings in consumer code using browser globals in isomorphic packages.
+A new ESLint rule `@ndigo/no-browser-globals-in-isomorphic` has been added to enforce that browser-only globals (`window`, `document`, `navigator`, `HTMLElement`, `history`) are not used in isomorphic-core packages. This rule is now set to `warn` level, which may cause lint warnings in consumer code using browser globals in isomorphic packages.
 
 ### Wave 4: Service interceptors moved
 
-The following service interceptors have been moved from `@blue/service` to `@blue/http`:
+The following service interceptors have been moved from `@ndigo/service` to `@ndigo/http`:
 
 - `RetryInterceptor`
 - `AppResetInterceptor`
 
-Additionally, 7 legacy interceptor files were deleted from `@blue/service`:
+Additionally, 7 legacy interceptor files were deleted from `@ndigo/service`:
 
 - `cache.legacy.js`
 - `offline.legacy.js` (deferred to platform-web)
@@ -46,17 +46,17 @@ Additionally, 7 legacy interceptor files were deleted from `@blue/service`:
 - `retryOnError.legacy.js`
 - `appReset.legacy.js`
 
-### Wave 9: New exports in `@blue/dispatcher`
+### Wave 9: New exports in `@ndigo/dispatcher`
 
-The `@blue/dispatcher` package now exports `RouteHandlerInterceptor`, which is an additive change but may affect imports.
+The `@ndigo/dispatcher` package now exports `RouteHandlerInterceptor`, which is an additive change but may affect imports.
 
 ## New Packages
 
-### `@blue/platform-node` (Wave 8)
+### `@ndigo/platform-node` (Wave 8)
 
 Node.js HTTP argument resolvers and environment for server-side development.
 
-### `@blue/auth` (Wave 9)
+### `@ndigo/auth` (Wave 9)
 
 Authentication strategies, principals, sessions, and decorators for secure application development.
 
@@ -64,7 +64,7 @@ Authentication strategies, principals, sessions, and decorators for secure appli
 
 The following new TC39 Stage 3 decorators have been added across various packages:
 
-### `@blue/orm`
+### `@ndigo/orm`
 
 - `@oneToMany`
 - `@manyToOne`
@@ -76,13 +76,13 @@ The following new TC39 Stage 3 decorators have been added across various package
 - `@postRemove`
 - `@transactional`
 
-### `@blue/domain`
+### `@ndigo/domain`
 
 - `@domainComponent`
 - `@domainAction`
 - `@domainData`
 
-### `@blue/auth`
+### `@ndigo/auth`
 
 - `@authenticated`
 - `@authorized(role)`
@@ -91,18 +91,18 @@ The following new TC39 Stage 3 decorators have been added across various package
 
 The following APIs are marked as `@experimental` and may change in future releases:
 
-- `SiteBuilder` in `@blue/boot`
-- `@transactional` decorator in `@blue/orm` (metadata stored but not enforced without a TransactionManager)
-- `UnitOfWork` / `InMemoryUnitOfWork` in `@blue/orm` (not yet auto-configured)
+- `SiteBuilder` in `@ndigo/boot`
+- `@transactional` decorator in `@ndigo/orm` (metadata stored but not enforced without a TransactionManager)
+- `UnitOfWork` / `InMemoryUnitOfWork` in `@ndigo/orm` (not yet auto-configured)
 
 ## Dependency Changes
 
 The Library Integration Layer pattern has been enforced more strictly:
 
 - External dependencies must now be imported through their designated integration layer packages:
-    - `@blue/util` for `ramda`, `date-fns`, `date-fns-tz`, `seedrandom`, `slug`
-    - `@blue/parser` for `arcsecond`
-    - `@blue/model` for `objectmodel`
+    - `@ndigo/util` for `ramda`, `date-fns`, `date-fns-tz`, `seedrandom`, `slug`
+    - `@ndigo/parser` for `arcsecond`
+    - `@ndigo/model` for `objectmodel`
 - Direct imports from ramda, arcsecond, objectmodel are now linted as warnings
 
 This change ensures better consistency and prevents runtime issues with ESM/CJS dual-exports.

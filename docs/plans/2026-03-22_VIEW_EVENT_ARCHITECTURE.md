@@ -3,14 +3,14 @@
 **Date:** 2026-03-22  
 **Status:** ✅ Completed  
 **Priority:** High  
-**Context:** BlueJS view rendering pipeline and user interaction flow  
-**Dependencies:** `@blue/view`, `@blue/view-webcomponent`, `@blue/router`, `@blue/dispatcher`, `@blue/context`, `apps/blue-demo`
+**Context:** ndigo view rendering pipeline and user interaction flow  
+**Dependencies:** `@ndigo/view`, `@ndigo/view-webcomponent`, `@ndigo/router`, `@ndigo/dispatcher`, `@ndigo/context`, `apps/ndigo-demo`
 
 ---
 
 ## Executive Summary
 
-This plan finalized BlueJS's Spring MVC-inspired view architecture by hardening contracts for bidirectional flow:
+This plan finalized ndigo's Spring MVC-inspired view architecture by hardening contracts for bidirectional flow:
 
 1. **Controller → View:** Dispatcher renders model data into a ViewTarget through View + ViewEngine.
 2. **View → Service:** ViewTarget bridges mapped UI CustomEvents to ApplicationContext events.
@@ -28,14 +28,14 @@ The implementation keeps dispatcher logic view-technology agnostic, pushes rende
 | Event bridge host                    | ViewTarget                                    | Naturally scoped to rendered subtree and decoupled from components/services. |
 | Event mapping                        | Declarative map (`domEvent` → `contextEvent`) | Explicit, auditable, and allows selective forwarding.                        |
 | State refresh after service mutation | `router.refresh()`                            | Reuses full route dispatch pipeline; no duplicate render path.               |
-| Telemetry/logging channel            | Interceptors + decorators                     | Not event-based; already implemented via `@blue/telemetry`.                  |
+| Telemetry/logging channel            | Interceptors + decorators                     | Not event-based; already implemented via `@ndigo/telemetry`.                 |
 | Analytics channel                    | Explicit service calls                        | Preserves business semantics; avoids event overload.                         |
 
 ---
 
 ## Spring MVC Mapping
 
-| Spring MVC                                  | BlueJS                                  |
+| Spring MVC                                  | ndigo                                   |
 | ------------------------------------------- | --------------------------------------- |
 | `DispatcherServlet`                         | `BrowserDispatcher`                     |
 | `ViewResolver`                              | `ViewResolver` strategy chain           |
@@ -48,11 +48,11 @@ The implementation keeps dispatcher logic view-technology agnostic, pushes rende
 ## Interface Hierarchy
 
 ```text
-@blue/view
+@ndigo/view
   ViewTarget
     └── EventBridgeViewTarget
 
-@blue/view-webcomponent
+@ndigo/view-webcomponent
   DOMViewTarget extends EventBridgeViewTarget
     └── DOMElementViewTarget
 ```
@@ -60,7 +60,7 @@ The implementation keeps dispatcher logic view-technology agnostic, pushes rende
 ### Notes
 
 - `EventBridgeViewTarget` adds `setEventMap(eventMap)` to formalize mapped UI event forwarding.
-- `DOMViewTarget` remains in `@blue/view-webcomponent` (not `@blue/view`) because it references DOM-specific types (`HTMLElement`).
+- `DOMViewTarget` remains in `@ndigo/view-webcomponent` (not `@ndigo/view`) because it references DOM-specific types (`HTMLElement`).
 
 ---
 
@@ -68,8 +68,8 @@ The implementation keeps dispatcher logic view-technology agnostic, pushes rende
 
 ### Interface hardening
 
-- Added `EventBridgeViewTarget` in `@blue/view`.
-- Added `DOMViewTarget` and `likeDOMViewTarget` in `@blue/view-webcomponent`.
+- Added `EventBridgeViewTarget` in `@ndigo/view`.
+- Added `DOMViewTarget` and `likeDOMViewTarget` in `@ndigo/view-webcomponent`.
 - Updated `WebComponentViewEngine` to use `likeDOMViewTarget(...)` instead of concrete `instanceof` checks.
 - Added `refresh()` to `Router` interface and default implementation in `AbstractRouter`.
 - Added `router.spec.ts` test coverage for `AbstractRouter.refresh()`.
@@ -85,8 +85,8 @@ The implementation keeps dispatcher logic view-technology agnostic, pushes rende
 
 ### Bridge cleanup
 
-- Removed legacy `@blue/view` `Bridge` stub (`bridge.ts`).
-- Removed `export * from './bridge'` from `@blue/view` index.
+- Removed legacy `@ndigo/view` `Bridge` stub (`bridge.ts`).
+- Removed `export * from './bridge'` from `@ndigo/view` index.
 
 ### Demo cleanup
 

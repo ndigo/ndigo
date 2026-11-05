@@ -2,13 +2,13 @@
 
 **Date:** 2026-09-30
 **Status:** Ratified — implemented in `2026-09-30_ASYNC_BY_DEFAULT` changeset.
-**Closes:** the naming drift identified in the `@blue/content` `ContentSource`
+**Closes:** the naming drift identified in the `@ndigo/content` `ContentSource`
 sync/async split (`AsyncContentSource`, `getContentAsync`).
 
 ## Background
 
-BlueJS inherits a sync-by-default framing from the reference framework. Its
-`ContentSource` methods are synchronous, so the Blue port kept
+ndigo inherits a sync-by-default framing from the reference framework. Its
+`ContentSource` methods are synchronous, so the Ndigo port kept
 `getContent(key, language): string` synchronous and later added an async twin
 interface (`AsyncContentSource extends ContentSource`) with a
 `getContentAsync` method for loaders that cannot resolve content in-memory
@@ -45,7 +45,7 @@ If a call path cannot await (sync template engines, hot loops, DI seams
 that predate async), the **sync variant is the exception and gets the
 explicit name**: Node's `readFileSync` pattern. Never the reverse.
 
-### D-3 — `@blue/content` contracts are async by convention
+### D-3 — `@ndigo/content` contracts are async by convention
 
 `ContentSource.getContent` and `MessageSource.getMessage` now return
 `Promise<string>`. Implementations that are synchronous under the hood
@@ -82,5 +82,5 @@ The telemetry patch helper `_patchAsync` becomes `_patch` (the sync
 ## References
 
 - [STYLE_GUIDE.md](../../STYLE_GUIDE.md) §3.13 Special Patterns → Async Methods
-- [`@blue/content`](../../packages/ndigo-content/README.md)
-- [`@blue/view-ejs`](../../packages/ndigo-view-ejs/README.md)
+- [`@ndigo/content`](../../packages/ndigo-content/README.md)
+- [`@ndigo/view-ejs`](../../packages/ndigo-view-ejs/README.md)

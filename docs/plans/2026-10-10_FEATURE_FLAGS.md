@@ -1,4 +1,4 @@
-# 2026-10-10 Feature flags — `@blue/flags` (FlagEvaluator SPI + `@whenFeature` route gate)
+# 2026-10-10 Feature flags — `@ndigo/flags` (FlagEvaluator SPI + `@whenFeature` route gate)
 
 **Date:** 2026-10-10
 **Status:** Executed (see §7)
@@ -21,18 +21,18 @@ percentage rollouts, vendor portability) need a runtime abstraction; the
 
 ## 2. Current state (verified 2026-10-10)
 
-| Seam                       | What exists                                                                                                                                       | What is missing                                          |
-| :------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------- |
-| Registration conditions    | `@whenProperty`/`@whenProfile`/`@whenBrowser`/`@whenMissingEntry` (`blue-core/src/conditional.ts`) — boot-time class gates                        | runtime, per-request evaluation                          |
-| Metadata decorator pattern | `@scheduled` (`schedule:<method>`), `@rateLimit` (`rate:limit:<method>`) — decoration-time validation, `Symbol.metadata`                          | a flag gate decorator                                    |
-| Per-request enforcement    | `RouteHandlerInterceptor` chain in `RadixMetadataHandlerMapping`; `RateLimitInterceptor` (async `preHandle`, `denialOf`, problem doc)             | a feature-gate interceptor                               |
-| Bean wiring                | `@entry(TOKEN)` + `NodeAutoConfiguration` (AD-79/73); `AsApplicationContextAware` gives beans the environment (`ManagementAutoConfiguration`)     | a `FLAG_EVALUATOR` bean                                  |
-| Config refresh             | `CONFIG_REFRESH_EVENT` (`environment.ts:25`) — AD-29 rebind                                                                                       | flag read-through (no cache — provider reads live state) |
-| Schema                     | `application.schema.json` framework namespaces (`management` READ from config, `profiles`/`telemetry` annotated `x-blue-read-from-config: false`) | the `feature` namespace                                  |
+| Seam                       | What exists                                                                                                                                        | What is missing                                          |
+| :------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------- |
+| Registration conditions    | `@whenProperty`/`@whenProfile`/`@whenBrowser`/`@whenMissingEntry` (`ndigo-core/src/conditional.ts`) — boot-time class gates                        | runtime, per-request evaluation                          |
+| Metadata decorator pattern | `@scheduled` (`schedule:<method>`), `@rateLimit` (`rate:limit:<method>`) — decoration-time validation, `Symbol.metadata`                           | a flag gate decorator                                    |
+| Per-request enforcement    | `RouteHandlerInterceptor` chain in `RadixMetadataHandlerMapping`; `RateLimitInterceptor` (async `preHandle`, `denialOf`, problem doc)              | a feature-gate interceptor                               |
+| Bean wiring                | `@entry(TOKEN)` + `NodeAutoConfiguration` (AD-79/73); `AsApplicationContextAware` gives beans the environment (`ManagementAutoConfiguration`)      | a `FLAG_EVALUATOR` bean                                  |
+| Config refresh             | `CONFIG_REFRESH_EVENT` (`environment.ts:25`) — AD-29 rebind                                                                                        | flag read-through (no cache — provider reads live state) |
+| Schema                     | `application.schema.json` framework namespaces (`management` READ from config, `profiles`/`telemetry` annotated `x-ndigo-read-from-config: false`) | the `feature` namespace                                  |
 
 ## 3. Change
 
-1. **`@blue/flags`** (new, layer 2, isomorphic, deps: `@blue/factory`):
+1. **`@ndigo/flags`** (new, layer 2, isomorphic, deps: `@ndigo/factory`):
     - `flag-evaluator.ts`: `FlagValue`, `FlagEvaluation<T>`,
       `FlagEvaluationReason`, `FlagErrorCode`, `FlagEvaluationContext`,
       `FlagEvaluator` SPI (async `evaluate`, never-throw), `likeFlagEvaluator`
@@ -47,7 +47,7 @@ percentage rollouts, vendor portability) need a runtime abstraction; the
       `WHEN_FEATURE_KEY` + `getWhenFeature(target, method?)` reader.
     - `context-tokens.ts`: `FLAG_EVALUATOR` token.
     - `index.ts` barrel.
-2. **`@blue/platform-node`**:
+2. **`@ndigo/platform-node`**:
     - `feature-gate-interceptor.ts`: `FeatureGateInterceptor(evaluator)` —
       method metadata gate (method over class, mirror of `RateLimitInterceptor`),
       off → **404 problem document** (`ProblemTypes.notFound`) + `denialOf(404)`.
@@ -56,11 +56,11 @@ percentage rollouts, vendor portability) need a runtime abstraction; the
       (`AsApplicationContextAware` mixin, `ManagementAutoConfiguration`
       precedent); `handlerMapping()` pushes `FeatureGateInterceptor`
       (after security headers, before rate limit).
-3. **Schema** (`packages/blue-boot/schema/application.schema.json`):
-   `feature` namespace — READ from config (no `x-blue-read-from-config:
+3. **Schema** (`packages/ndigo-boot/schema/application.schema.json`):
+   `feature` namespace — READ from config (no `x-ndigo-read-from-config:
    false`), `additionalProperties: { $ref: configValue }`, description
    documents the flag semantics + `@whenFeature` + provider.
-4. **Wiring/docs**: vitest alias (`@blue/flags`) + spec-tsconfig paths +
+4. **Wiring/docs**: vitest alias (`@ndigo/flags`) + spec-tsconfig paths +
    package manifest; ARCHITECTURE package map (new row, platform-node hub
    count 17 → 18); guide 28 (new — feature flags) + guides index +
    docs README guide range (02–27 → 02–28); decisions index (AD-82);
@@ -94,17 +94,17 @@ percentage rollouts, vendor portability) need a runtime abstraction; the
 
 ## 6. Verification
 
-- `@blue/flags` specs: flag-key validation (accept/reject); evaluator
+- `@ndigo/flags` specs: flag-key validation (accept/reject); evaluator
   contract (typed boolean/number/string/object, DEFAULT on missing,
   DISABLED on false, TYPE_MISMATCH/PARSE_ERROR + default, never-throw on
   throwing reader); `PropertyFlagProvider` namespace/pass-through/
   truthiness matrix; `likeFlagEvaluator` guard.
-- `@blue/platform-node` specs: `whenFeature` decoration-time validation
+- `@ndigo/platform-node` specs: `whenFeature` decoration-time validation
   (bad key, non-method kind); interceptor metadata read (method over
   class); off flag → 404 problem doc + denial; on flag → passthrough;
   un-gated route untouched; with a real `PropertyFlagProvider` over a
   config-backed environment, `refresh()` flips the gate.
-- Demo (`apps/04-blue-api`): a `@whenFeature('feature.noteFlags')` route
+- Demo (`apps/04-ndigo-api`): a `@whenFeature('feature.noteFlags')` route
   gated via `config/application.json` + live-toggle spec.
 - Full gate set (§9 of the review plan): `pnpm build` / `pnpm test` /
   `pnpm lint` / `pnpm format:check` / `pnpm docs:links` /
@@ -116,17 +116,17 @@ percentage rollouts, vendor portability) need a runtime abstraction; the
 
 All changes landed in one pass with the verification below green;
 `pnpm install` wired the new workspace package and the lockfile (twice —
-once for `@blue/flags`, once for the `@blue/platform-node` dependency
+once for `@ndigo/flags`, once for the `@ndigo/platform-node` dependency
 edge).
 
-- **`@blue/flags`** (22 specs): flag-key grammar, `likeFlagEvaluator`
+- **`@ndigo/flags`** (22 specs): flag-key grammar, `likeFlagEvaluator`
   guard, the full provider matrix (boolean truthiness incl. the
   `'true'`/`'false'` strings, number coercion, string/object pass-through,
   PARSE_ERROR/TYPE_MISMATCH + default, throwing-reader → GENERAL +
   default, namespace validation), and `@whenFeature` metadata
   (decoration-time validation, method/class keys, instance reads).
-- **`@blue/platform-node`** (8 specs in `feature-gate.spec.ts`): gate
-  interceptor unit contract (404 `urn:blue:not-found` problem doc, method
+- **`@ndigo/platform-node`** (8 specs in `feature-gate.spec.ts`): gate
+  interceptor unit contract (404 `urn:ndigo:not-found` problem doc, method
   over class, un-gated pass-through, missing-flag fail-closed) _and_ the
   real wiring: `FLAG_EVALUATOR` bean + **live refresh flip** over
   `StandardEnvironment` (`addFirst` source + `environment.refresh()` →
@@ -137,7 +137,7 @@ edge).
   same instance the bean registers, so `NodeAutoConfiguration` memoizes
   one `EnvironmentFlagEvaluator` serving both the bean and the interceptor
   (injection mutates the shared instance in place).
-- **Demo** (`apps/04-blue-api`): `FeatureFlagController` (`/gated-report`,
+- **Demo** (`apps/04-ndigo-api`): `FeatureFlagController` (`/gated-report`,
   `@whenFeature('gated.report')`), flat dotted `feature.gated.report` key
   in `config/application.json` (nested-literal dotted keys do not resolve
   through the property index — verified by probe), registered in
@@ -146,7 +146,7 @@ edge).
 - **Schema/docs**: `feature` namespace in `application.schema.json`
   (READ from config), guide 28 + guides index + docs README range,
   AD-82 in the decisions index, plan entry + execution log, ARCHITECTURE
-  package map (+`@blue/flags` row, platform-node hub 17 → 18), CHANGELOG.
+  package map (+`@ndigo/flags` row, platform-node hub 17 → 18), CHANGELOG.
 
 **Addendum (same day, post-review ask): percentage rollouts.** The
 evaluation-context seam became live: `feature.rollout.<flag>` ∈ [0, 1]

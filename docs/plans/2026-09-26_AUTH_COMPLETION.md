@@ -5,7 +5,7 @@
 limiting) + Wave 4 (JWT refresh/revocation) + Wave 5 (hardening, docs,
 audit flip) landed; ratified by
 [AD-33](../decisions/2026-09-26_AD33_AUTH_CREDENTIALS_AND_SESSIONS.md)
-(D-1..D-7); supersedes the §9a `@blue/auth`
+(D-1..D-7); supersedes the §9a `@ndigo/auth`
 design sketch of `docs/plans/2026-05-28_AUTH_DESIGN.md` where they conflict
 (the adapter seam evolved from `AuthenticationStrategy` to `AuthAdapter` /
 `AuthRegistry` / `AuthServer.validateAny`).
@@ -42,9 +42,9 @@ unsafe to ship.
 
 ## 2. Decisions (ratified by AD-33)
 
-- **D-1 — `PasswordEncoder` contract** in `blue-auth-core`: `encode(raw)`,
+- **D-1 — `PasswordEncoder` contract** in `ndigo-auth-core`: `encode(raw)`,
   `verify(raw, encoded)`, `needsRehash(encoded)`. Spring shape; `verify`
-  not `matches` (BlueJS `matches` = pattern matching; `verify` = existing
+  not `matches` (ndigo `matches` = pattern matching; `verify` = existing
   auth vocabulary + `jose.jwtVerify`).
 - **D-2 — Self-describing format:** `{scrypt}$ln=17,r=8,p=1$<salt>$<hash>`,
   parameters embedded; `DelegatingPasswordEncoder` dispatches on prefix,
@@ -95,7 +95,7 @@ unsafe to ship.
   params differ (D-3).
 - `src/user-store.ts` — `UserRecord { id, username, passwordHash, roles?,
   tokenVersion?, disabled? }` + `UserStore { findByUsername, findById }`.
-  Apps implement the store over `blue-orm`/Drizzle entities;
+  Apps implement the store over `ndigo-orm`/Drizzle entities;
   `test/fixtures/in-memory-user-store.ts` is the shipped test/demo fixture
   (no framework-owned reference store in v1 — user storage is app data).
 - Specs `test/password-encoder.spec.ts` (20): encode/verify round-trip,
@@ -124,38 +124,38 @@ unsafe to ship.
   (including for custom schemes): the prefix is the dispatch key, so
   unwrapped output would later throw on `verify`.
 
-- **Gate:** `vitest run` 53/53 + `tsc -b` green in `blue-auth-core`;
-  dependent packages re-run — `blue-auth-client` 70/70,
-  `blue-auth-server` 42/42, all four `tsc -b` builds green (additive
+- **Gate:** `vitest run` 53/53 + `tsc -b` green in `ndigo-auth-core`;
+  dependent packages re-run — `ndigo-auth-client` 70/70,
+  `ndigo-auth-server` 42/42, all four `tsc -b` builds green (additive
   exports only).
 
 ### Wave 2 — Server sessions + credentials adapter ✅ implemented 2026-09-27
 
-- `@blue/auth-core` `src/session-store.ts` — `SessionRecord { principal,
+- `@ndigo/auth-core` `src/session-store.ts` — `SessionRecord { principal,
   tokenVersion?, issuedAt }` + `SessionStore { kind, create(record, ttlMs),
   get, rotate, delete }` (D-6). **As-built: the contract lives in
-  `blue-auth-core`, not `blue-auth-server`** — the node platform's
+  `ndigo-auth-core`, not `ndigo-auth-server`** — the node platform's
   `NodeSessionInterceptor` types against it, and platform-node's
   peer-dependency surface is `auth-core` only.
-- `blue-auth-server` `src/in-memory-session-store.ts` — Map + expiry-on-read
+- `ndigo-auth-server` `src/in-memory-session-store.ts` — Map + expiry-on-read
     - opportunistic sweep (past 512 entries); rotate deletes the old id first
       (fixation), throws on unknown (fail closed); 32-byte `randomBytes` ids.
-- `blue-auth-server` `src/credentials-auth-adapter.ts` — `CredentialsAuthAdapter`
+- `ndigo-auth-server` `src/credentials-auth-adapter.ts` — `CredentialsAuthAdapter`
   (D-5): one generic `InvalidCredentialsError`, dummy-hash timing
   equalization, disabled/no-hash denial, validate/refresh(rotation)/logout
   on the existing `AuthAdapter` seam.
-- `blue-auth-server` `src/in-memory-user-store.ts` — packaged convenience
+- `ndigo-auth-server` `src/in-memory-user-store.ts` — packaged convenience
   store for tests/demos, **moved from the Wave-1 `auth-core/test/fixtures`
   location** so applications can import it.
-- `blue-platform-node` `src/session-cookie.ts` — `SESSION_COOKIE =
-  'blue-session'`, HttpOnly + SameSite=Lax + Path=/ (+ Secure by default,
+- `ndigo-platform-node` `src/session-cookie.ts` — `SESSION_COOKIE =
+  'ndigo-session'`, HttpOnly + SameSite=Lax + Path=/ (+ Secure by default,
   opt-out for localhost), clear value with Max-Age=0 + epoch Expires;
   `setSessionCookie`/`clearSessionCookie` write the node response.
-- `blue-platform-node` `src/node-session-interceptor.ts` — reads the cookie,
+- `ndigo-platform-node` `src/node-session-interceptor.ts` — reads the cookie,
   resolves the store, fills the documented `request.session` bag
   (`principal`/`token`) before dispatch; absent/unknown/expired ⇒ empty bag
   (anonymous, guard denies).
-- `blue-api` demo: `auth-store.ts` rewritten on the real machinery (demo
+- `ndigo-api` demo: `auth-store.ts` rewritten on the real machinery (demo
   users with scrypt `'demo'` hashes, adapter registered on `AuthRegistry`);
   `AuthController` login issues body token + HttpOnly cookie, logout clears
     - invalidates, `GET /auth/me` is the protected route (cookie →
@@ -188,23 +188,23 @@ unsafe to ship.
 - `Promise.withResolvers` is the repo-wide delay idiom (`@types/node`
   provides the declaration; the base tsconfig's ES2022 lib is fine).
 
-- **Gate:** `vitest run` + `tsc -b` in `blue-auth-server` (63/63 incl. 21
-  new) and `blue-platform-node` (399/399 incl. 9 new); `blue-api` 59/59
+- **Gate:** `vitest run` + `tsc -b` in `ndigo-auth-server` (63/63 incl. 21
+  new) and `ndigo-platform-node` (399/399 incl. 9 new); `ndigo-api` 59/59
   (8 files, incl. 7 new cookie-session specs: cookie flags, fixation
   rotation, `/auth/me` 200/401 matrix, logout invalidation + clear, login
-  body contract preserved); live smoke on `apps/blue-api` (PORT=3100):
+  body contract preserved); live smoke on `apps/ndigo-api` (PORT=3100):
   curl login → HttpOnly cookie jar → `/auth/me` 200 → logout
   `Max-Age=0` → `/auth/me` 401.
 
 ### Wave 3 — Rate limiting ✅ implemented 2026-09-27 (SEC-6)
 
-- `blue-platform-node` `src/rate-limit.ts` — `RateLimitPolicy { limit,
+- `ndigo-platform-node` `src/rate-limit.ts` — `RateLimitPolicy { limit,
   windowMs }`, `RateLimitResult { allowed, retryAfterMs }`, `RateLimiter`
   contract (distributed-backend seam) + `FixedWindowRateLimiter` reference
   (per-(key, window) counters, window slides on expiry, opportunistic
   sweep past 10 000 entries, `validateRateLimitPolicy` shared
   decoration/call-time validation).
-- `blue-platform-node` `src/rate-limit-interceptor.ts` — `RATE_LIMIT_KEY
+- `ndigo-platform-node` `src/rate-limit-interceptor.ts` — `RATE_LIMIT_KEY
   = 'rate:limit'`, `@rateLimit({ limit, windowMs })` passive metadata
   decorator (class- and method-scoped, method wins, validates at
   decoration), `RateLimitInterceptor` enforcing **429 + `Retry-After`
@@ -216,7 +216,7 @@ unsafe to ship.
   untouched (zero behavior change for existing apps).
 - `NodeRequest.remoteAddress` (new field) populated by the adapter from
   `req.socket.remoteAddress`; the limiter keys on it.
-- `blue-test` `MockHTTP`: `.remoteAddress()` fluent setter +
+- `ndigo-test` `MockHTTP`: `.remoteAddress()` fluent setter +
   per-request-unique default (`mock-peer-<n>`) so tests never share
   budgets accidentally; sharing is opt-in for rate-limit specs.
 - Demo: `@rateLimit({ limit: 5, windowMs: 60_000 })` on `/auth/login` —
@@ -242,15 +242,15 @@ unsafe to ship.
   demo's `login()` helper (7+ logins per suite) would share one
   `mock-peer` bucket and trip the demo limit mid-suite.
 
-- **Gate:** `vitest run` + `tsc -b` in `blue-platform-node` (410/410 incl.
+- **Gate:** `vitest run` + `tsc -b` in `ndigo-platform-node` (410/410 incl.
   11 new rate-limit specs: boundary 3-ok/4-deny, window reset over time,
   per-key independence, policy validation, metadata passthrough, 429
   write + `Retry-After`, per-address isolation, method-over-class,
-  unknown-address fallback key) and `blue-test` (17/17, builder changes
-  additive); `blue-api` 60/60 incl. the demo block spec (5×401 →
+  unknown-address fallback key) and `ndigo-test` (17/17, builder changes
+  additive); `ndigo-api` 60/60 incl. the demo block spec (5×401 →
   6th 429 + retry-after; other peer unaffected); live smoke on
-  `apps/blue-api` (PORT=3101): five bad logins from 127.0.0.1 → 401 ×5,
-  sixth → `HTTP/1.1 429`, `Retry-After: 59`, `urn:blue:rate-limited`
+  `apps/ndigo-api` (PORT=3101): five bad logins from 127.0.0.1 → 401 ×5,
+  sixth → `HTTP/1.1 429`, `Retry-After: 59`, `urn:ndigo:rate-limited`
   body.
 
 ### Wave 4 — JWT refresh + revocation ✅ implemented 2026-09-27
@@ -310,19 +310,19 @@ unsafe to ship.
   passthrough, disabled accounts, rotation + new-pair validity, rotated-out
   reuse rejection, access-as-refresh rejection, junk/ghost rejection,
   storeless failure, logout bump + junk no-op, cache prime/defer/expire)
-    - `tsc -b` green in `blue-auth-server`; dependents re-run — auth-client
-      70/70, blue-api 60/60 over the rebuilt libs.
+    - `tsc -b` green in `ndigo-auth-server`; dependents re-run — auth-client
+      70/70, ndigo-api 60/60 over the rebuilt libs.
 
 ### Wave 5 — Hardening, docs, audit flip ✅ implemented 2026-09-27
 
 - **CSRF pinned on auth mutations:** `CSRFInterceptor` renamed per the
   repo's acronym convention (was `CsrfInterceptor`; file name unchanged —
   matches `HTTPServer`/`AESGCMCipher`/`OIDCAdapter`). Integration pin in
-  `apps/blue-api/test/auth.spec.ts`: a dedicated boot pushes the
+  `apps/ndigo-api/test/auth.spec.ts`: a dedicated boot pushes the
   interceptor onto the platform mapping (the mapping has one owner — the
   default demo boot stays without it, documented), then asserts the
   double-submit flow end to end: first POST without a token → **403 +
-  minted `blue-csrf` cookie**; cookie + matching `X-CSRF-Token` → login
+  minted `ndigo-csrf` cookie**; cookie + matching `X-CSRF-Token` → login
   proceeds (200); mismatched header → 403. Auth mutations never run
   without a genuine token.
 - **SEC-5 guidance:** `ManagementAutoConfigurationOptions.accessGuard`
@@ -331,7 +331,7 @@ unsafe to ship.
   redaction remain open deferrals.
 - **Guide:** `docs/guides/11-authentication-and-sessions.md` — password
   hashing (scheme format, `needsRehash` migration, argon2id deferral),
-  app-owned `UserStore` over blue-orm (incl. the atomic
+  app-owned `UserStore` over ndigo-orm (incl. the atomic
   `incrementTokenVersion` update), cookie session flags + fixation, login
   rate limiting, CSRF wiring, JWT issuance/refresh/revocation semantics
   (incl. the no-ledger rotation trade), management endpoint posture,
@@ -356,13 +356,13 @@ unsafe to ship.
   constraint in the test comment.
 
 - **Gate:** renamed class re-run (platform-node 410/410, tsc clean);
-  blue-api 61/61 incl. the CSRF pin; final sweep across auth-core
+  ndigo-api 61/61 incl. the CSRF pin; final sweep across auth-core
   53/53, auth-server 77/77, auth-client 70/70, platform-node 410/410,
-  blue-test 17/17, blue-api 61/61; `graft build` refreshed.
+  ndigo-test 17/17, ndigo-api 61/61; `graft build` refreshed.
 
 ## 5. Verification
 
 Per wave: changed-package `vitest run` + `tsc -b`, dependent packages
-re-run where consumers exist, demo smoke on `apps/blue-api` for Waves 2–3,
+re-run where consumers exist, demo smoke on `apps/ndigo-api` for Waves 2–3,
 `graft build` at the end. Final repo gate `pnpm build` if any cross-package
 surface changed.

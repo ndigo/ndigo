@@ -1,6 +1,6 @@
-# @blue/parser Enhancement Plan
+# @ndigo/parser Enhancement Plan
 
-This document outlines the research and implementation strategy for stabilizing and enhancing the `@blue/parser` package, specifically focusing on brace expansion and glob pattern matching.
+This document outlines the research and implementation strategy for stabilizing and enhancing the `@ndigo/parser` package, specifically focusing on brace expansion and glob pattern matching.
 
 ## Objectives
 
@@ -26,7 +26,7 @@ This document outlines the research and implementation strategy for stabilizing 
 
 **Goal**: Define the "Core Feature" set for parity.
 
-- **Feature Matrix**: Compare `@blue/parser` against `fast-glob` and `picomatch`.
+- **Feature Matrix**: Compare `@ndigo/parser` against `fast-glob` and `picomatch`.
 - **Scope Definition**: Focus on core glob features (stars, question marks, ranges) and the 5 extended glob types (`@()`, `*()`, `?()`, `+()`, `!()`).
 - **Success Criteria**: A prioritized list of missing core features.
 
@@ -51,14 +51,14 @@ This document outlines the research and implementation strategy for stabilizing 
 
 ## Phase 5: Integration & Documentation
 
-- Update `packages/blue-parser/README.md` with supported patterns and known limitations.
+- Update `packages/ndigo-parser/README.md` with supported patterns and known limitations.
 - Cross-reference this plan in `ARCHITECTURE.md`.
 - Provide clear usage examples for all 5 ExtGlob types.
 
 ## Phase 6: Testing & Validation
 
-- Run the full `@blue/parser` test suite (`pnpm nx test @blue/parser`).
-- Ensure `@blue/util` coverage remains at 100%.
+- Run the full `@ndigo/parser` test suite (`pnpm nx test @ndigo/parser`).
+- Ensure `@ndigo/util` coverage remains at 100%.
 - Perform manual integration tests with a mock file system if necessary.
 
 ## Phase 7: Commit Strategy

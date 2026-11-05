@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-Establish a consistent naming convention for regular expression variables across the BlueJS monorepo. Currently, regex variables inconsistently use `UPPER_SNAKE_CASE` with various suffixes (`*_REGEX`, `*_PATTERN`, `*Matcher`). This plan standardizes on **`camelCase` with `*Rule` suffix** for all regex variables, aligning with the principle that only primitive constants use `UPPER_SNAKE_CASE`.
+Establish a consistent naming convention for regular expression variables across the ndigo monorepo. Currently, regex variables inconsistently use `UPPER_SNAKE_CASE` with various suffixes (`*_REGEX`, `*_PATTERN`, `*Matcher`). This plan standardizes on **`camelCase` with `*Rule` suffix** for all regex variables, aligning with the principle that only primitive constants use `UPPER_SNAKE_CASE`.
 
 **Key Decision:** RegExp is an object type (not a primitive), so it should follow `camelCase` naming conventions like other objects, arrays, and functions.
 
@@ -20,16 +20,16 @@ Establish a consistent naming convention for regular expression variables across
 
 The codebase has **four different naming patterns** for regex variables:
 
-| Pattern                        | Count | Example                                     | Package(s)                   |
-| :----------------------------- | :---- | :------------------------------------------ | :--------------------------- |
-| `*_REGEX` (UPPER_SNAKE_CASE)   | 30+   | `EMAIL_REGEX`, `SSN_FORMAT`                 | `@blue/validate`             |
-| `*_PATTERN` (UPPER_SNAKE_CASE) | 6+    | `QUERY_KEY_PATTERN`, `COOKIE_VALUE_PATTERN` | `@blue/http`, parsers        |
-| `*Matcher` (camelCase)         | 8+    | `commaMatcher`, `charMatcher`               | `@blue/util`, `@blue/parser` |
-| Descriptive (camelCase)        | 10+   | `ampersand`, `comma`, `regex`               | Various packages             |
+| Pattern                        | Count | Example                                     | Package(s)                     |
+| :----------------------------- | :---- | :------------------------------------------ | :----------------------------- |
+| `*_REGEX` (UPPER_SNAKE_CASE)   | 30+   | `EMAIL_REGEX`, `SSN_FORMAT`                 | `@ndigo/validate`              |
+| `*_PATTERN` (UPPER_SNAKE_CASE) | 6+    | `QUERY_KEY_PATTERN`, `COOKIE_VALUE_PATTERN` | `@ndigo/http`, parsers         |
+| `*Matcher` (camelCase)         | 8+    | `commaMatcher`, `charMatcher`               | `@ndigo/util`, `@ndigo/parser` |
+| Descriptive (camelCase)        | 10+   | `ampersand`, `comma`, `regex`               | Various packages               |
 
 ### Core Issue
 
-**RegExp objects are not primitives.** According to `@blue/core/src/primitive.ts`, primitives are:
+**RegExp objects are not primitives.** According to `@ndigo/core/src/primitive.ts`, primitives are:
 
 - `boolean | null | number | string | symbol | bigint | undefined`
 
@@ -39,7 +39,7 @@ RegExp is an object with methods (`.test()`, `.exec()`, etc.) and should use `ca
 
 This is part of a larger inconsistency where other object types also incorrectly use `UPPER_SNAKE_CASE`:
 
-- **Object literals** in `@blue/logger`: `NPMLevelToSeverity`, `CLIColor` (should be camelCase)
+- **Object literals** in `@ndigo/logger`: `NPMLevelToSeverity`, `CLIColor` (should be camelCase)
 - **Record/mapping objects**: Similar issues throughout
 
 However, **this plan focuses only on regex naming**. Object literal naming will be addressed separately.
@@ -117,23 +117,23 @@ interface URLMatcher extends PatternMatcher {}
 
 ### Packages Affected (11 packages)
 
-| Package                | Files | Regex Count | Primary Pattern      | Breaking Change?         |
-| :--------------------- | :---- | :---------- | :------------------- | :----------------------- |
-| **@blue/validate**     | 2     | 30+         | `*_REGEX` exported   | ✅ **Yes** - Public API  |
-| **@blue/http**         | 6     | 6+          | `*_PATTERN` internal | ⚠️ Maybe - Check exports |
-| **@blue/util**         | 6     | 8+          | `*Matcher` internal  | ❌ No - Internal only    |
-| **@blue/parser**       | 3     | 5+          | Descriptive internal | ❌ No - Internal only    |
-| **@blue/platform-web** | 1     | 2+          | `*_PATTERN` internal | ❌ No - Internal only    |
-| **@blue/logger**       | 1     | 1           | Mixed internal       | ❌ No - Internal only    |
-| **@blue/context**      | 1     | 1           | `*Matcher` internal  | ❌ No - Internal only    |
-| **@blue/domain**       | 2     | 2           | Mixed internal       | ❌ No - Internal only    |
-| **@blue/router**       | 1     | 1           | Internal             | ❌ No - Internal only    |
-| **@blue/service**      | 1     | 1           | Internal             | ❌ No - Internal only    |
-| **@blue/view**         | 1     | 1           | Internal             | ❌ No - Internal only    |
+| Package                 | Files | Regex Count | Primary Pattern      | Breaking Change?         |
+| :---------------------- | :---- | :---------- | :------------------- | :----------------------- |
+| **@ndigo/validate**     | 2     | 30+         | `*_REGEX` exported   | ✅ **Yes** - Public API  |
+| **@ndigo/http**         | 6     | 6+          | `*_PATTERN` internal | ⚠️ Maybe - Check exports |
+| **@ndigo/util**         | 6     | 8+          | `*Matcher` internal  | ❌ No - Internal only    |
+| **@ndigo/parser**       | 3     | 5+          | Descriptive internal | ❌ No - Internal only    |
+| **@ndigo/platform-web** | 1     | 2+          | `*_PATTERN` internal | ❌ No - Internal only    |
+| **@ndigo/logger**       | 1     | 1           | Mixed internal       | ❌ No - Internal only    |
+| **@ndigo/context**      | 1     | 1           | `*Matcher` internal  | ❌ No - Internal only    |
+| **@ndigo/domain**       | 2     | 2           | Mixed internal       | ❌ No - Internal only    |
+| **@ndigo/router**       | 1     | 1           | Internal             | ❌ No - Internal only    |
+| **@ndigo/service**      | 1     | 1           | Internal             | ❌ No - Internal only    |
+| **@ndigo/view**         | 1     | 1           | Internal             | ❌ No - Internal only    |
 
 ### Breaking Changes
 
-**Primary Impact: `@blue/validate/src/formats.ts`**
+**Primary Impact: `@ndigo/validate/src/formats.ts`**
 
 This file exports 28+ regex constants that are part of the public API:
 
@@ -155,11 +155,11 @@ export const phoneNorthAmericaRule = /...$/;
 
 ```typescript
 // Before
-import { EMAIL_REGEX, SSN_FORMAT } from '@blue/validate';
+import { EMAIL_REGEX, SSN_FORMAT } from '@ndigo/validate';
 if (EMAIL_REGEX.test(value)) { ... }
 
 // After
-import { emailRule, ssnRule } from '@blue/validate';
+import { emailRule, ssnRule } from '@ndigo/validate';
 if (emailRule.test(value)) { ... }
 ```
 
@@ -167,9 +167,9 @@ if (emailRule.test(value)) { ... }
 
 Internal regex in other packages won't break external consumers but will need updates for internal consistency:
 
-- `@blue/http` parser patterns
-- `@blue/util` string utilities
-- `@blue/parser` expression parsers
+- `@ndigo/http` parser patterns
+- `@ndigo/util` string utilities
+- `@ndigo/parser` expression parsers
 - Others
 
 ---
@@ -212,7 +212,7 @@ const email = /...$/; // Unclear without suffix
 **Rationale update (line 382):**
 
 ```
-**Rationale:** Regular expressions are objects (not primitives per `@blue/core/src/primitive.ts`),
+**Rationale:** Regular expressions are objects (not primitives per `@ndigo/core/src/primitive.ts`),
 so they use `camelCase` like other objects, arrays, and functions. The `Rule` suffix clearly
 indicates these are validation/matching rules. This distinguishes regex from `*Matcher`
 classes/interfaces (e.g., `PathMatcher`, `URLMatcher`) and avoids confusion with design patterns.
@@ -242,31 +242,31 @@ discussion of `@pattern({ regex: /.../ })` decorator usage with regex rules.
 
 **Order of operations:**
 
-1. **Update `@blue/validate/src/formats.ts`** (28+ exports)
+1. **Update `@ndigo/validate/src/formats.ts`** (28+ exports)
 
     - Rename all `*_REGEX`, `*_FORMAT` constants to `*Rule`
     - Update all internal references in the same package
-    - Run tests: `nx run @blue/validate:test`
+    - Run tests: `nx run @ndigo/validate:test`
 
 2. **Update cross-package references**
 
-    - Search for imports from `@blue/validate`
+    - Search for imports from `@ndigo/validate`
     - Update all usages in other packages
     - Common locations: validators, decorators, constraints
 
-3. **Update parser patterns** (`@blue/http`, `@blue/platform-web`)
+3. **Update parser patterns** (`@ndigo/http`, `@ndigo/platform-web`)
 
     - Rename `*_PATTERN` to `*Rule`
     - Update internal references
-    - Run tests: `nx run @blue/http:test`
+    - Run tests: `nx run @ndigo/http:test`
 
-4. **Update utility regex** (`@blue/util`, `@blue/parser`)
+4. **Update utility regex** (`@ndigo/util`, `@ndigo/parser`)
 
     - Rename `*Matcher` to `*Rule`
     - Remove ad-hoc descriptive names, add `Rule` suffix
-    - Run tests: `nx run @blue/util:test`, `nx run @blue/parser:test`
+    - Run tests: `nx run @ndigo/util:test`, `nx run @ndigo/parser:test`
 
-5. **Update remaining packages** (`@blue/logger`, `@blue/context`, etc.)
+5. **Update remaining packages** (`@ndigo/logger`, `@ndigo/context`, etc.)
 
     - Internal regex updates
     - Run package-specific tests
@@ -316,22 +316,22 @@ RegExp objects are not primitives and should use camelCase naming.
 All regex variables now use the *Rule suffix for consistency.
 
 Changes:
-- @blue/validate: Rename 28+ exported regex constants (EMAIL_REGEX → emailRule)
-- @blue/http: Rename parser patterns (*_PATTERN → *Rule)
-- @blue/util: Rename internal regex (*Matcher → *Rule)
-- @blue/parser: Rename internal regex (descriptive → *Rule)
+- @ndigo/validate: Rename 28+ exported regex constants (EMAIL_REGEX → emailRule)
+- @ndigo/http: Rename parser patterns (*_PATTERN → *Rule)
+- @ndigo/util: Rename internal regex (*Matcher → *Rule)
+- @ndigo/parser: Rename internal regex (descriptive → *Rule)
 - STYLE_GUIDE.md: Update Section 3.1 with new convention
 
-BREAKING CHANGE: Consumers must update imports from @blue/validate:
-  Before: import { EMAIL_REGEX, SSN_FORMAT } from '@blue/validate';
-  After:  import { emailRule, ssnRule } from '@blue/validate';
+BREAKING CHANGE: Consumers must update imports from @ndigo/validate:
+  Before: import { EMAIL_REGEX, SSN_FORMAT } from '@ndigo/validate';
+  After:  import { emailRule, ssnRule } from '@ndigo/validate';
 
 See docs/migrations/2025-02-07_REGEX_NAMING.md for full migration guide.
 ```
 
 **Version bump:** Major version increment for affected packages
 
-- `@blue/validate`: Major bump (public API change)
+- `@ndigo/validate`: Major bump (public API change)
 - Other packages: Patch bump (internal changes only)
 
 ---
@@ -347,27 +347,27 @@ See docs/migrations/2025-02-07_REGEX_NAMING.md for full migration guide.
 
 ### Code Changes - Public API (Breaking)
 
-- [ ] `@blue/validate/src/formats.ts` - Rename 28+ exported regex
-- [ ] `@blue/validate/src/standard-constraints.ts` - Update internal references
-- [ ] Update all cross-package imports from `@blue/validate`
+- [ ] `@ndigo/validate/src/formats.ts` - Rename 28+ exported regex
+- [ ] `@ndigo/validate/src/standard-constraints.ts` - Update internal references
+- [ ] Update all cross-package imports from `@ndigo/validate`
 
 ### Code Changes - Internal (Non-Breaking)
 
-- [ ] `@blue/http/src/parsers/*.ts` - Rename parser patterns (6 files)
-- [ ] `@blue/platform-web/src/parser/cookie-expression.ts` - Rename patterns
-- [ ] `@blue/util/src/string/*.ts` - Rename utility regex (6 files)
-- [ ] `@blue/parser/src/*.ts` - Rename parser regex (3 files)
-- [ ] `@blue/context/src/event-emitter.ts` - Rename `onMatcher`
-- [ ] `@blue/logger/src/pattern-layout.ts` - Rename pattern regex
-- [ ] `@blue/domain`, `@blue/router`, `@blue/service`, `@blue/view` - Rename internal regex
+- [ ] `@ndigo/http/src/parsers/*.ts` - Rename parser patterns (6 files)
+- [ ] `@ndigo/platform-web/src/parser/cookie-expression.ts` - Rename patterns
+- [ ] `@ndigo/util/src/string/*.ts` - Rename utility regex (6 files)
+- [ ] `@ndigo/parser/src/*.ts` - Rename parser regex (3 files)
+- [ ] `@ndigo/context/src/event-emitter.ts` - Rename `onMatcher`
+- [ ] `@ndigo/logger/src/pattern-layout.ts` - Rename pattern regex
+- [ ] `@ndigo/domain`, `@ndigo/router`, `@ndigo/service`, `@ndigo/view` - Rename internal regex
 
 ### Testing
 
 - [ ] Update test expectations in `test/**/*.spec.ts`
-- [ ] Run `nx run @blue/validate:test`
-- [ ] Run `nx run @blue/http:test`
-- [ ] Run `nx run @blue/util:test`
-- [ ] Run `nx run @blue/parser:test`
+- [ ] Run `nx run @ndigo/validate:test`
+- [ ] Run `nx run @ndigo/http:test`
+- [ ] Run `nx run @ndigo/util:test`
+- [ ] Run `nx run @ndigo/parser:test`
 - [ ] Run `pnpm test` (all packages)
 
 ### Validation
@@ -380,7 +380,7 @@ See docs/migrations/2025-02-07_REGEX_NAMING.md for full migration guide.
 ### Release
 
 - [ ] Commit with breaking change message
-- [ ] Bump `@blue/validate` to next major version
+- [ ] Bump `@ndigo/validate` to next major version
 - [ ] Bump other packages to next patch version
 - [ ] Update CHANGELOG.md files
 - [ ] Tag release
@@ -391,7 +391,7 @@ See docs/migrations/2025-02-07_REGEX_NAMING.md for full migration guide.
 
 ### Risk 1: Downstream Breaking Changes
 
-**Risk:** External consumers of `@blue/validate` will break when importing regex constants.
+**Risk:** External consumers of `@ndigo/validate` will break when importing regex constants.
 
 **Mitigation:**
 
@@ -440,7 +440,7 @@ See docs/migrations/2025-02-07_REGEX_NAMING.md for full migration guide.
 
 ### Related Work: Object Literal Naming
 
-This plan identifies that object literals in `@blue/logger` also incorrectly use `UPPER_SNAKE_CASE`:
+This plan identifies that object literals in `@ndigo/logger` also incorrectly use `UPPER_SNAKE_CASE`:
 
 - `NPMLevelToSeverity` → should be `npmLevelToSeverity`
 - `CLIColor` → should be `cliColor`
@@ -450,7 +450,7 @@ This plan identifies that object literals in `@blue/logger` also incorrectly use
 
 ### Decorator Integration
 
-The `@pattern` decorator in `@blue/validate` accepts regex in metadata:
+The `@pattern` decorator in `@ndigo/validate` accepts regex in metadata:
 
 ```typescript
 @pattern({ regex: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i })
@@ -477,7 +477,7 @@ Consider adding lint rules to enforce the convention:
 
 ```typescript
 // ESLint custom rule (future enhancement)
-'bluejs/regex-naming': {
+'ndigo/regex-naming': {
   'suffix': 'Rule',
   'case': 'camelCase'
 }
@@ -489,12 +489,12 @@ Consider adding lint rules to enforce the convention:
 
 ### Files Requiring Changes (by package)
 
-**@blue/validate** (2 files, 30+ changes)
+**@ndigo/validate** (2 files, 30+ changes)
 
 - `src/formats.ts` - 28+ exported regex constants
 - `src/standard-constraints.ts` - Internal usage
 
-**@blue/http** (6 files, 6+ changes)
+**@ndigo/http** (6 files, 6+ changes)
 
 - `src/parsers/query-expression.ts` - Query parsing regex
 - `src/parsers/matrix-expression.ts` - Matrix parsing regex
@@ -502,11 +502,11 @@ Consider adding lint rules to enforce the convention:
 - `src/url-matcher.ts` - URL matching (classes, not regex - verify)
 - Related parser files
 
-**@blue/platform-web** (1 file, 2 changes)
+**@ndigo/platform-web** (1 file, 2 changes)
 
 - `src/parser/cookie-expression.ts` - Cookie value patterns
 
-**@blue/util** (6 files, 8+ changes)
+**@ndigo/util** (6 files, 8+ changes)
 
 - `src/string/encode-uri-component.ts` - Character matching
 - `src/string/decode-uri-component.ts` - Token matching
@@ -517,25 +517,25 @@ Consider adding lint rules to enforce the convention:
 - `src/string/replace-diacritics.ts` - Diacritic matching
 - `src/string/remove-non-printable.ts` - Printable character matching
 
-**@blue/parser** (3 files, 5+ changes)
+**@ndigo/parser** (3 files, 5+ changes)
 
 - `src/matrix-string.ts` - Matrix delimiters
 - `src/from-piped-string.ts` - Delimiter parsing
 - Related parser utilities
 
-**@blue/logger** (1 file, 1 change)
+**@ndigo/logger** (1 file, 1 change)
 
 - `src/pattern-layout.ts` - Log pattern regex
 
-**@blue/context** (1 file, 1 change)
+**@ndigo/context** (1 file, 1 change)
 
 - `src/event-emitter.ts` - Event name matching
 
-**@blue/domain** (2 files, 2 changes)
+**@ndigo/domain** (2 files, 2 changes)
 
 - Limited regex usage (verify specifics)
 
-**@blue/router**, **@blue/service**, **@blue/view** (1 file each, 1 change each)
+**@ndigo/router**, **@ndigo/service**, **@ndigo/view** (1 file each, 1 change each)
 
 - Internal regex (verify specifics)
 
@@ -543,7 +543,7 @@ Consider adding lint rules to enforce the convention:
 
 ## Appendix B: Detailed Regex Inventory
 
-### @blue/validate/src/formats.ts (28 exports)
+### @ndigo/validate/src/formats.ts (28 exports)
 
 **Format Validation Rules:**
 
@@ -581,7 +581,7 @@ Consider adding lint rules to enforce the convention:
 
 - `DATE_PATTERN` → `dateRule` (in `standard-constraints.ts`)
 
-### @blue/http Parser Patterns (6 instances)
+### @ndigo/http Parser Patterns (6 instances)
 
 **Query Expression:**
 
@@ -598,7 +598,7 @@ Consider adding lint rules to enforce the convention:
 - `COOKIE_VALUE_PATTERN` → `cookieValueRule`
 - `PERCENT_ENCODED_PATTERN` → `percentEncodedRule`
 
-### @blue/util String Utilities (8 instances)
+### @ndigo/util String Utilities (8 instances)
 
 **URI Encoding/Decoding:**
 
@@ -622,7 +622,7 @@ Consider adding lint rules to enforce the convention:
 - `accented` → `accentedRule` (replace-diacritics.ts)
 - `nonPrintable` → `nonPrintableRule` (remove-non-printable.ts)
 
-### @blue/parser Delimiters (5 instances)
+### @ndigo/parser Delimiters (5 instances)
 
 **Matrix String:**
 
@@ -634,7 +634,7 @@ Consider adding lint rules to enforce the convention:
 - `ampersand` → `ampersandRule`
 - `comma` → `commaRule`
 
-### @blue/context Event Handling (1 instance)
+### @ndigo/context Event Handling (1 instance)
 
 **Event Emitter:**
 
@@ -687,7 +687,7 @@ Migration is complete when:
 6. ✅ Build succeeds (`pnpm build`)
 7. ✅ Linting passes (`pnpm lint`)
 8. ✅ Validation scripts return no violations
-9. ✅ Major version bump for `@blue/validate`
+9. ✅ Major version bump for `@ndigo/validate`
 10. ✅ Breaking changes documented in commit message and CHANGELOG
 
 ---

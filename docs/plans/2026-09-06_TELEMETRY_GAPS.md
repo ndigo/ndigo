@@ -17,7 +17,7 @@ The view-resolution/SSE session added new runtime surfaces that the current tele
 - **No frame count, no stream duration, no disconnect detection** — the exact operational questions for a push endpoint (`/events`).
 - The `likeView` direct-return path in `NodeDispatcher` means even the _200 status_ is never recorded today for these responses.
 
-**Instrumentation:** `ServerSentEventViewInstrumentation` (node, `blue-telemetry-node`) — wrap `ServerSentEventView.prototype.render`:
+**Instrumentation:** `ServerSentEventViewInstrumentation` (node, `ndigo-telemetry-node`) — wrap `ServerSentEventView.prototype.render`:
 
 - span `ServerSentEventView.render`, SERVER kind, child of `handleRequest` (inside the dispatch span's subtree as today)
 - attrs: `http.response.status_code = 200`, `http.route` (from the route when available)
@@ -37,32 +37,32 @@ The view-resolution/SSE session added new runtime surfaces that the current tele
 
 ### G3 — Client stream consumption has no spans
 
-`streamCall` (blue-service) performs an unbounded-duration response read; today the service client has zero telemetry beyond the `X-Blue-Service` correlation header. A stream call is a long-lived client span with no visibility into duration/event count.
+`streamCall` (ndigo-service) performs an unbounded-duration response read; today the service client has zero telemetry beyond the `X-Ndigo-Service` correlation header. A stream call is a long-lived client span with no visibility into duration/event count.
 
 **Instrumentation:** `ServiceClientInstrumentation` or a focused span inside `streamCall`:
 
 - span `ServiceClient.streamCall`, CLIENT kind
 - attrs: `service.name` (config name), `http.method`, `http.route` (call path); end attrs `stream.events` (or `sse.events`) count + duration
-- instrumented from blue-service directly (it already imports telemetry hooks) — either a trace-aware wrapper or, cleaner, an OTel span via `@blue/telemetry`'s tracer (blue-service has no `@blue/telemetry` dep today — add to peer/dev + wire one small span, or expose a hook the telemetry package instruments)
+- instrumented from ndigo-service directly (it already imports telemetry hooks) — either a trace-aware wrapper or, cleaner, an OTel span via `@ndigo/telemetry`'s tracer (ndigo-service has no `@ndigo/telemetry` dep today — add to peer/dev + wire one small span, or expose a hook the telemetry package instruments)
 
-Note: G3 has a dependency question — `blue-service` currently depends on `@blue/context|core|factory|http|util` + zod; adding `@blue/telemetry` to peerDeps is the repo-consistent path (`@blue/telemetry` is itself a telemetry package with no reverse dep).
+Note: G3 has a dependency question — `ndigo-service` currently depends on `@ndigo/context|core|factory|http|util` + zod; adding `@ndigo/telemetry` to peerDeps is the repo-consistent path (`@ndigo/telemetry` is itself a telemetry package with no reverse dep).
 
 ### G4 — Empty `controller/` instrumentation dirs (pre-existing)
 
-`blue-telemetry-node` and `-web` both carry an empty `instrumentation/controller/` directory. Either implement (e.g. `@traced` handlers covered by dispatcher span already — likely redundant) or remove the empty dirs. **Remove is my suggestion** (redundant with the dispatcher span; keep the surface honest).
+`ndigo-telemetry-node` and `-web` both carry an empty `instrumentation/controller/` directory. Either implement (e.g. `@traced` handlers covered by dispatcher span already — likely redundant) or remove the empty dirs. **Remove is my suggestion** (redundant with the dispatcher span; keep the surface honest).
 
 ## Guidelines applied
 
 - **One span per logical operation, child of the existing request root** (no new roots; consistency with current nesting).
 - **Attributes follow OTel semantic conventions** (`http.*`, `error.type`, `service.*`) — no invented naming.
 - **Hot-path cost ≈ 0**: frame-count read at span end; no per-frame span (SSE may push hundreds/thousands).
-- **Naming**: `*Instrumentation` suffix + package placement mirrors existing (`blue-telemetry-node/src/instrumentation/<area>/<area>.ts`).
+- **Naming**: `*Instrumentation` suffix + package placement mirrors existing (`ndigo-telemetry-node/src/instrumentation/<area>/<area>.ts`).
 
 ## Implementation steps
 
 1. G1: `ServerSentEventViewInstrumentation` (node) — wrap `ServerSentEventView.render`; add a `#frames` counter to the view (or read an existing one); set end attrs; test: open SSE connection with the demo store, assert span shape + frame count + disconnect attr on client abort.
-2. G2: `ViewResolutionInstrumentation` — wrap `_resolveViewName` in both telemetry packages; test with a composite (blue-views fixture) asserting `resolved_by` = the winning resolver.
-3. G3: decide service-client dependency approach (span inside blue-service vs hook) — recommended: add `@blue/telemetry` peerDep + one `streamCall` span; test with a mocked fetch stream (service-client spec has the machinery).
+2. G2: `ViewResolutionInstrumentation` — wrap `_resolveViewName` in both telemetry packages; test with a composite (ndigo-views fixture) asserting `resolved_by` = the winning resolver.
+3. G3: decide service-client dependency approach (span inside ndigo-service vs hook) — recommended: add `@ndigo/telemetry` peerDep + one `streamCall` span; test with a mocked fetch stream (service-client spec has the machinery).
 4. G4: delete empty `controller/` dirs (both packages).
 5. Wire the new instrumentations into `configureTelemetry`/node+browser config (where the existing instrumentation list is built).
 6. Docs: update telemetry README/section listing instrumentations; fold into the view-resolution plan's follow-up. Optional AD-10 for the telemetry surface if a decision record is wanted.
@@ -73,10 +73,10 @@ Note: G3 has a dependency question — `blue-service` currently depends on `@blu
 
 - Reuse the repo's existing telemetry test harness (mock `@opentelemetry/api` tracer capturing spans).
 - G1: real SSE connect → assert span attrs `sse.frames` matches pushed count; client abort → `sse.client_disconnected=true` + end/ERROR.
-- G2: blue-views composite → assert `view.resolved_by === 'WebComponentViewResolver'` for `shell`, `'NameViewResolver'` for `footer`.
+- G2: ndigo-views composite → assert `view.resolved_by === 'WebComponentViewResolver'` for `shell`, `'NameViewResolver'` for `footer`.
 - G3: service-client spec with mocked stream → assert CLIENT span + event count.
 - Full suites: telemetry-node/web + the packages touched + island demo; lint + format; graft refresh.
-- Non-goals honored: no per-frame spans, no new telemetry deps beyond the peer-dep decision for blue-service, no instrumentation of `streamToSignal` (state, not a boundary).
+- Non-goals honored: no per-frame spans, no new telemetry deps beyond the peer-dep decision for ndigo-service, no instrumentation of `streamToSignal` (state, not a boundary).
 
 ## Acceptance criteria
 
@@ -89,8 +89,8 @@ Note: G3 has a dependency question — `blue-service` currently depends on `@blu
 
 ## Follow-up (2026-09-06): implementation landed
 
-- **G1** — `ServerSentEventViewInstrumentation` (node, `blue-telemetry-node`): wraps `ServerSentEventView.render`; spans carry `http.response.status_code`, `http.route`, `sse.frames`, `sse.duration_ms`, `sse.client_disconnected`. The view gained observable `frameCount` + `clientDisconnected` fields (a `res` `close` listener + destroyed-guard set the flag — Node surfaces aborts on socket close, not on `write`). Tests: completed stream (frames + duration) and mid-stream disconnect flag over a real HTTP server.
+- **G1** — `ServerSentEventViewInstrumentation` (node, `ndigo-telemetry-node`): wraps `ServerSentEventView.render`; spans carry `http.response.status_code`, `http.route`, `sse.frames`, `sse.duration_ms`, `sse.client_disconnected`. The view gained observable `frameCount` + `clientDisconnected` fields (a `res` `close` listener + destroyed-guard set the flag — Node surfaces aborts on socket close, not on `write`). Tests: completed stream (frames + duration) and mid-stream disconnect flag over a real HTTP server.
 - **G2** — `_resolveViewName` span (`Dispatcher.resolveViewName`, INTERNAL) added to both node + web `DispatcherInstrumentation`: `view.name`, `view.resolved` (false on chain fall-through), `view.resolved_by` (the resolved view's class). Correlation spec asserts the winning view for a name-returning route.
-- **G3** — `ServiceClient.streamCall` CLIENT span in `blue-service`: `service.name`, `http.method`, `http.route`, `stream.events`, `stream.duration_ms`; exception + ERROR status on failure. `@blue/telemetry` added to peer+dev deps, `@opentelemetry/api` to dependencies, `@opentelemetry/sdk-trace-base` (test-only) to devDeps. Spec asserts the span attrs with a mocked stream.
+- **G3** — `ServiceClient.streamCall` CLIENT span in `ndigo-service`: `service.name`, `http.method`, `http.route`, `stream.events`, `stream.duration_ms`; exception + ERROR status on failure. `@ndigo/telemetry` added to peer+dev deps, `@opentelemetry/api` to dependencies, `@opentelemetry/sdk-trace-base` (test-only) to devDeps. Spec asserts the span attrs with a mocked stream.
 - **G4** — empty `controller/` instrumentation dirs removed (redundant with dispatcher spans).
 - Full suites green (32 nx targets), docs updated (this plan), graft refreshed.

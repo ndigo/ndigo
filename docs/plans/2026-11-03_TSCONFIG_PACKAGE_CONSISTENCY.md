@@ -2,7 +2,7 @@
 
 **Status:** Draft — Phase 0 executed 2026-11-03 on `chore/tsconfig-low-risk-cleanup`.
 **Scope:** every `tsconfig*.json` under `packages/`, `apps/`, and the repo root.
-**Post-rename baseline:** `9bf74957 chore(repo): rename BlueJS → ndigo (#79)`.
+**Post-rename baseline:** `9bf74957 chore(repo): rename ndigo → ndigo (#79)`.
 
 ## 1. Why this plan exists
 
@@ -223,7 +223,7 @@ if the three consumers disagree.
 
 - [ ] Add `scripts/check-tsconfigs.mjs` (or a Vitest spec) asserting:
       every package/app has exactly two configs; `extends` matches the
-      contract; no `@blue` leftovers; aliases match the source of truth.
+      contract; no `@ndigo` leftovers; aliases match the source of truth.
 - [ ] Wire it into `pnpm manifest:check` or a new `pnpm tsconfig:check` in CI.
 - [ ] Add `packages/tsconfig.base.json` to `nx.json` `sharedGlobals`.
 - [ ] Document the two-lane model in `ARCHITECTURE.md` and the config contract
@@ -275,6 +275,6 @@ This phase changes code diagnostics, not just config; keep it separate.
 - Adding TypeScript project references (`composite` graph); Nx already orders
   `build:lib` with `dependsOn: ^build:lib`.
 - Renaming the `lib/` output directory or changing the package publish layout.
-- Rewriting historical docs that still mention `@blue/*`; the rename sweep is
+- Rewriting historical docs that still mention `@ndigo/*`; the rename sweep is
   tracked separately.
 - The untracked `archive/` tree; delete its 12 configs locally if desired.

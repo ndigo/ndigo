@@ -26,7 +26,7 @@ This plan has been completed and archived:
 
 ## Overview
 
-This document outlines the plan for systematically identifying and extracting duplicated utility code across the BlueJS monorepo.
+This document outlines the plan for systematically identifying and extracting duplicated utility code across the ndigo monorepo.
 
 **Critical Correction:** Internal files (`_util.ts`, `_parser.ts`, etc.) should only be created when there are **actual local utility functions** to define, not just for centralizing imports or pass-through re-exports.
 
@@ -38,26 +38,26 @@ This document outlines the plan for systematically identifying and extracting du
 
 **Existing Internal Files (Correct - Contain Local Utilities):**
 
-- ✅ `@blue/parser/src/_util.ts` - Has local utilities: `joinOnEmptyString`, `lengthLessThanN`, `xprodAndJoinOnString`, `xprodAll`, `xprod3`, `rangeN`, `trailingJoin`
-- ✅ `@blue/parser/src/_parser.ts` - Parser primitive utilities
-- ✅ `@blue/context/src/_util.ts` - Has local utility: `isNotNil`
-- ✅ `@blue/platform-web/src/_util.ts` - Has local utilities: `isDefined`, `isFunction`, `hasFunction`, `isDefinedAnd`
-- ✅ `@blue/util/src/_natural-sort.ts` - Natural sorting algorithm implementation
+- ✅ `@ndigo/parser/src/_util.ts` - Has local utilities: `joinOnEmptyString`, `lengthLessThanN`, `xprodAndJoinOnString`, `xprodAll`, `xprod3`, `rangeN`, `trailingJoin`
+- ✅ `@ndigo/parser/src/_parser.ts` - Parser primitive utilities
+- ✅ `@ndigo/context/src/_util.ts` - Has local utility: `isNotNil`
+- ✅ `@ndigo/platform-web/src/_util.ts` - Has local utilities: `isDefined`, `isFunction`, `hasFunction`, `isDefinedAnd`
+- ✅ `@ndigo/util/src/_natural-sort.ts` - Natural sorting algorithm implementation
 - ✅ Test helpers (3 files): `_expect.ts`, `_worker.ts` - Custom test utilities
 
 **Files Created Incorrectly (Deleted):**
 
-- ❌ `@blue/core/src/_util.ts` - Only re-exports, no local utilities (DELETED)
-- ❌ `@blue/dispatcher/src/_util.ts` - Only re-exports, no local utilities (DELETED)
-- ❌ `@blue/logger/src/_util.ts` - Only re-exports, no local utilities (DELETED)
-- ❌ `@blue/http/src/_util.ts` - Only re-exports, no local utilities (DELETED)
-- ❌ `@blue/router/src/_util.ts` - Only re-exports, no local utilities (DELETED)
-- ❌ `@blue/util/src/_util.ts` - Only re-exports of internal files (DELETED)
-- ❌ `@blue/view-webcomponent/src/_util.ts` - Only pass-through re-export (DELETED)
+- ❌ `@ndigo/core/src/_util.ts` - Only re-exports, no local utilities (DELETED)
+- ❌ `@ndigo/dispatcher/src/_util.ts` - Only re-exports, no local utilities (DELETED)
+- ❌ `@ndigo/logger/src/_util.ts` - Only re-exports, no local utilities (DELETED)
+- ❌ `@ndigo/http/src/_util.ts` - Only re-exports, no local utilities (DELETED)
+- ❌ `@ndigo/router/src/_util.ts` - Only re-exports, no local utilities (DELETED)
+- ❌ `@ndigo/util/src/_util.ts` - Only re-exports of internal files (DELETED)
+- ❌ `@ndigo/view-webcomponent/src/_util.ts` - Only pass-through re-export (DELETED)
 
 **Files Merged:**
 
-- ⚠️ `@blue/parser/src/_xprod.ts` - Used by only 1 file (below 3-file threshold) → MERGED into `_util.ts`
+- ⚠️ `@ndigo/parser/src/_xprod.ts` - Used by only 1 file (below 3-file threshold) → MERGED into `_util.ts`
 
 ## Phase 1: Remediation (Completed)
 
@@ -71,9 +71,9 @@ This document outlines the plan for systematically identifying and extracting du
 
 ✅ **Completed:** Following the 3-file threshold guideline:
 
-1. Added xprod functions to `@blue/parser/src/_util.ts`
+1. Added xprod functions to `@ndigo/parser/src/_util.ts`
 2. Updated import in `brace-expression.ts` from `./_xprod` to `./_util`
-3. Deleted `packages/blue-parser/src/_xprod.ts`
+3. Deleted `packages/ndigo-parser/src/_xprod.ts`
 
 ### 1.3: Update Documentation
 
@@ -100,11 +100,11 @@ pnpm test
 find packages -name "_*.ts" -path "*/src/*" | sort
 
 # Should show:
-# - blue-context/src/_util.ts ✅
-# - blue-parser/src/_parser.ts ✅
-# - blue-parser/src/_util.ts ✅
-# - blue-platform-web/src/_util.ts ✅
-# - blue-util/src/_natural-sort.ts ✅
+# - ndigo-context/src/_util.ts ✅
+# - ndigo-parser/src/_parser.ts ✅
+# - ndigo-parser/src/_util.ts ✅
+# - ndigo-platform-web/src/_util.ts ✅
+# - ndigo-util/src/_natural-sort.ts ✅
 # (and test helpers in test/ directories)
 ```
 
@@ -114,20 +114,20 @@ find packages -name "_*.ts" -path "*/src/*" | sort
 
 ### 2.1: Duplicates Identified and Remediated
 
-#### Utility Predicates (Extracted to @blue/util)
+#### Utility Predicates (Extracted to @ndigo/util)
 
 **1. `isDefined = complement(isNil)` → Replaced with `isNotNil` from ramda**
 
 **Locations (3 packages):**
 
-- ✅ `packages/blue-dispatcher/src/error-mapping.ts` - FIXED
-- ✅ `packages/blue-util/src/type/like.ts` - FIXED
-- ✅ `packages/blue-view/src/content-negotiation-view-resolver.ts` - FIXED
+- ✅ `packages/ndigo-dispatcher/src/error-mapping.ts` - FIXED
+- ✅ `packages/ndigo-util/src/type/like.ts` - FIXED
+- ✅ `packages/ndigo-view/src/content-negotiation-view-resolver.ts` - FIXED
 
 **Actions Taken:**
 
-1. Added `isNotNil` export to `@blue/util/src/type/index.ts` (already imported from ramda)
-2. Replaced all `isDefined = complement(isNil)` with `isNotNil` import from `@blue/util/types`
+1. Added `isNotNil` export to `@ndigo/util/src/type/index.ts` (already imported from ramda)
+2. Replaced all `isDefined = complement(isNil)` with `isNotNil` import from `@ndigo/util/types`
 3. Verified builds succeed
 
 **Rationale:** Ramda already provides `isNotNil` which is semantically equivalent to `complement(isNil)`. Reusing the standard function improves consistency.
@@ -136,37 +136,37 @@ find packages -name "_*.ts" -path "*/src/*" | sort
 
 **Locations (5 packages, 8+ occurrences):**
 
-- ✅ `packages/blue-http/src/query-string.ts` - FIXED
-- ✅ `packages/blue-model/src/basic.ts` - FIXED
-- ✅ `packages/blue-parser/src/to-matrix-string.ts` - FIXED
-- ✅ `packages/blue-parser/src/_util.ts` - Added re-export
-- ✅ `packages/blue-router/src/path-route.ts` - FIXED
-- ✅ `packages/blue-router/src/to-matrix-string.ts` - FIXED
-- ✅ `packages/blue-router/src/to-query-string.ts` - FIXED
+- ✅ `packages/ndigo-http/src/query-string.ts` - FIXED
+- ✅ `packages/ndigo-model/src/basic.ts` - FIXED
+- ✅ `packages/ndigo-parser/src/to-matrix-string.ts` - FIXED
+- ✅ `packages/ndigo-parser/src/_util.ts` - Added re-export
+- ✅ `packages/ndigo-router/src/path-route.ts` - FIXED
+- ✅ `packages/ndigo-router/src/to-matrix-string.ts` - FIXED
+- ✅ `packages/ndigo-router/src/to-query-string.ts` - FIXED
 
 **Actions Taken:**
 
-1. Added `isNotEmpty` named export to `@blue/util/src/logic/index.ts` (already imported from ramda, but not exported)
-2. Added `isNotEmpty` re-export to `@blue/parser/src/_util.ts`
-3. Replaced all `isNotEmpty = complement(isEmpty)` duplicates with imports from `@blue/util/logic`
+1. Added `isNotEmpty` named export to `@ndigo/util/src/logic/index.ts` (already imported from ramda, but not exported)
+2. Added `isNotEmpty` re-export to `@ndigo/parser/src/_util.ts`
+3. Replaced all `isNotEmpty = complement(isEmpty)` duplicates with imports from `@ndigo/util/logic`
 4. Verified builds succeed
 
 **Rationale:** Ramda already provides `isNotEmpty`. The function was imported but not exported as a named export. Adding the export allows all packages to use the standard function.
 
 #### Architectural Issues Identified (No Action Taken - Requires Separate Planning)
 
-**Massive Code Duplication: @blue/http vs @blue/router vs @blue/parser**
+**Massive Code Duplication: @ndigo/http vs @ndigo/router vs @ndigo/parser**
 
 **Problem:** Router and HTTP packages contain near-identical code for query string and matrix string parsing/stringification that was copied from parser package.
 
 **Specifics:**
 
-- `packages/blue-http/src/query-string.ts` (132 lines)
-- `packages/blue-router/src/to-query-string.ts` (121 lines)
+- `packages/ndigo-http/src/query-string.ts` (132 lines)
+- `packages/ndigo-router/src/to-query-string.ts` (121 lines)
 - **126 lines, 389 tokens duplicated** (~95% duplicate)
 
-- `packages/blue-parser/src/matrix-string.ts`
-- `packages/blue-router/src/from-matrix-string.ts`
+- `packages/ndigo-parser/src/matrix-string.ts`
+- `packages/ndigo-router/src/from-matrix-string.ts`
 - **10-29 lines, 164-212 tokens duplicated per clone**
 
 **Root Cause:** Router package doesn't depend on parser or http packages. Code was duplicated instead of shared.
@@ -174,8 +174,8 @@ find packages -name "_*.ts" -path "*/src/*" | sort
 **Options for Future Resolution:**
 
 - **Option A:** Router imports from parser/http (add dependencies)
-- **Option B:** Extract shared code to new `@blue/url-parsing` package
-- **Option C:** Move URL parsing utilities to `@blue/util`
+- **Option B:** Extract shared code to new `@ndigo/url-parsing` package
+- **Option C:** Move URL parsing utilities to `@ndigo/util`
 
 **Decision:** Deferred - Requires architectural decision and careful planning. This is tracked as a separate issue.
 
@@ -183,13 +183,13 @@ find packages -name "_*.ts" -path "*/src/*" | sort
 
 **Modified Packages:**
 
-- ✅ `@blue/util` - Added exports for `isNotEmpty` and `isNotNil`
-- ✅ `@blue/parser` - Added `isNotEmpty` re-export to `_util.ts`
-- ✅ `@blue/model` - Replaced duplicate with import
-- ✅ `@blue/http` - Replaced duplicate with import
-- ✅ `@blue/router` - Replaced duplicates with imports
-- ✅ `@blue/dispatcher` - Replaced duplicate with import
-- ✅ `@blue/view` - Replaced duplicate with import
+- ✅ `@ndigo/util` - Added exports for `isNotEmpty` and `isNotNil`
+- ✅ `@ndigo/parser` - Added `isNotEmpty` re-export to `_util.ts`
+- ✅ `@ndigo/model` - Replaced duplicate with import
+- ✅ `@ndigo/http` - Replaced duplicate with import
+- ✅ `@ndigo/router` - Replaced duplicates with imports
+- ✅ `@ndigo/dispatcher` - Replaced duplicate with import
+- ✅ `@ndigo/view` - Replaced duplicate with import
 
 **Build Status:**
 
@@ -208,14 +208,14 @@ find packages -name "_*.ts" -path "*/src/*" | sort
 **After:**
 
 - Duplicated utility predicates: 0 instances
-- All packages use standard ramda functions via `@blue/util`
+- All packages use standard ramda functions via `@ndigo/util`
 - Code reuse: 100% for these utilities
 
 **Impact:**
 
 - Lines of code saved: ~11 lines of duplicate utility definitions
 - Consistency: All packages now use the same functions
-- Maintainability: Single source of truth (ramda via @blue/util)
+- Maintainability: Single source of truth (ramda via @ndigo/util)
 
 ## Phase 3: Create Internal Files (Ongoing - Guideline Mode)
 
@@ -230,13 +230,13 @@ Phase 3 is fundamentally different from Phases 1 and 2:
 
 ❌ **Incorrect Approach:**
 
-1. Scan `@blue/dispatcher` for utilities used by 4+ files
+1. Scan `@ndigo/dispatcher` for utilities used by 4+ files
 2. Create `_util.ts` and move utilities there
 3. Move to next package and repeat
 
 ✅ **Correct Approach:**
 
-1. While fixing a bug in `@blue/dispatcher/src/error-handler.ts`
+1. While fixing a bug in `@ndigo/dispatcher/src/error-handler.ts`
 2. Notice `formatErrorCode()` is duplicated in 5 files
 3. Create `_util.ts` with `formatErrorCode()` as local utility
 4. Update all 5 files to import from `_util.ts`
@@ -248,8 +248,8 @@ Phase 3 is fundamentally different from Phases 1 and 2:
 Only create when you have:
 
 - 4+ duplicated utilities across categories in a package
-- Package-specific utilities not suitable for `@blue/util`
-- Composed/partial functions from `@blue/util` imports used by multiple files
+- Package-specific utilities not suitable for `@ndigo/util`
+- Composed/partial functions from `@ndigo/util` imports used by multiple files
 
 ### Naming Decision
 
@@ -274,7 +274,7 @@ Only create when you have:
 6. **Add JSDoc header:**
     ```typescript
     /**
-     * Internal utilities for @blue/<package> package.
+     * Internal utilities for @ndigo/<package> package.
      *
      * This file contains:
      * - [Brief description of local utilities]
@@ -323,7 +323,7 @@ find packages -name "_*.ts" -path "*/src/*"
     "no-restricted-imports": [
       "error",
       {
-        "patterns": ["../**/_*.ts", "@blue/*/_*.ts"]
+        "patterns": ["../**/_*.ts", "@ndigo/*/_*.ts"]
       }
     ]
   }
@@ -388,16 +388,16 @@ The hybrid internal file naming convention (generic `_util.ts` + specific domain
 
 **These packages may need internal files in the future if actual duplicated utilities emerge:**
 
-| Package            | Files | Assessment                                                                   |
-| ------------------ | ----- | ---------------------------------------------------------------------------- |
-| `@blue/core`       | 24    | Monitor for duplicated utilities; create `_util.ts` when organic need arises |
-| `@blue/dispatcher` | 34    | Largest package - likely candidate for future internal files                 |
-| `@blue/logger`     | 47    | Very large - scan for duplicated formatting/transformation logic             |
-| `@blue/http`       | 19    | Monitor for HTTP-specific utility patterns                                   |
-| `@blue/router`     | 11    | Monitor for routing utility patterns                                         |
-| `@blue/validate`   | 10    | Small - defer until clear need                                               |
-| `@blue/factory`    | 8     | Small - defer until clear need                                               |
-| `@blue/domain`     | 6     | Small - defer until clear need                                               |
+| Package             | Files | Assessment                                                                   |
+| ------------------- | ----- | ---------------------------------------------------------------------------- |
+| `@ndigo/core`       | 24    | Monitor for duplicated utilities; create `_util.ts` when organic need arises |
+| `@ndigo/dispatcher` | 34    | Largest package - likely candidate for future internal files                 |
+| `@ndigo/logger`     | 47    | Very large - scan for duplicated formatting/transformation logic             |
+| `@ndigo/http`       | 19    | Monitor for HTTP-specific utility patterns                                   |
+| `@ndigo/router`     | 11    | Monitor for routing utility patterns                                         |
+| `@ndigo/validate`   | 10    | Small - defer until clear need                                               |
+| `@ndigo/factory`    | 8     | Small - defer until clear need                                               |
+| `@ndigo/domain`     | 6     | Small - defer until clear need                                               |
 
 **Process for each:**
 
@@ -408,13 +408,13 @@ The hybrid internal file naming convention (generic `_util.ts` + specific domain
 
 ### Packages With Correct Internal Files
 
-| Package              | File               | Status     | Content                            |
-| -------------------- | ------------------ | ---------- | ---------------------------------- |
-| `@blue/parser`       | `_util.ts`         | ✅ Correct | Local utilities + re-exports       |
-| `@blue/parser`       | `_parser.ts`       | ✅ Correct | Parser primitives                  |
-| `@blue/context`      | `_util.ts`         | ✅ Correct | Local utility: `isNotNil`          |
-| `@blue/platform-web` | `_util.ts`         | ✅ Correct | Local utilities: `isDefined`, etc. |
-| `@blue/util`         | `_natural-sort.ts` | ✅ Correct | Natural sorting algorithm          |
+| Package               | File               | Status     | Content                            |
+| --------------------- | ------------------ | ---------- | ---------------------------------- |
+| `@ndigo/parser`       | `_util.ts`         | ✅ Correct | Local utilities + re-exports       |
+| `@ndigo/parser`       | `_parser.ts`       | ✅ Correct | Parser primitives                  |
+| `@ndigo/context`      | `_util.ts`         | ✅ Correct | Local utility: `isNotNil`          |
+| `@ndigo/platform-web` | `_util.ts`         | ✅ Correct | Local utilities: `isDefined`, etc. |
+| `@ndigo/util`         | `_natural-sort.ts` | ✅ Correct | Natural sorting algorithm          |
 
 **These serve as good examples of correct internal file usage.**
 
@@ -426,7 +426,7 @@ The hybrid internal file naming convention (generic `_util.ts` + specific domain
 
     - Does this `_*.ts` file contain actual utilities?
     - Is the file name appropriate for the content?
-    - Could these utilities be promoted to `@blue/util`?
+    - Could these utilities be promoted to `@ndigo/util`?
 
 2. **Quarterly Audit:**
 

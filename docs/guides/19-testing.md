@@ -134,7 +134,7 @@ promises so fake-timer suites stay deterministic.
 
 ## References
 
-- Decision: [AD-63](../decisions/2026-09-04_AD63_BLUE_TEST_HARNESS.md) — the
+- Decision: [AD-63](../decisions/2026-09-04_AD63_NDIGO_TEST_HARNESS.md) — the
   in-process, socket-free harness.
 - Generated API: [`@ndigo/test` api](../../packages/ndigo-test/api/README.md).
 - Demo usage: [`apps/03-ndigo-todo`](../../apps/03-ndigo-todo/README.md) —

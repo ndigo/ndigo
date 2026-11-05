@@ -20,22 +20,22 @@ partially wired CLI vs builder; the rest of the chain was unimplemented.
 `defaults` → `application.json` → `application-{profile}.json` →
 `dotenv` → `systemEnvironment` → `boot` → `commandLine`. All named sources,
 replaceable/reorderable per P0 semantics. **File-loading placement (Q1)**:
-orchestrated in `@blue/boot`'s `_prepareEnvironment` — **after profiles are
+orchestrated in `@ndigo/boot`'s `_prepareEnvironment` — **after profiles are
 applied** (profile-aware stacking is impossible at `NodeEnvironment`
 construction: `activeProfiles` is empty until `_configureProfiles`), **before**
 CLI/builder wiring. Boot stays isomorphic via an injected
-`readFile(path) → Promise<string|null>` seam; `blue-platform-node` supplies the
+`readFile(path) → Promise<string|null>` seam; `ndigo-platform-node` supplies the
 `fs`-backed reader; browsers/specs pass none. `NodeEnvironment` stays
 resolver-only.
 
 **D2 — `StandardConfigFileLoader`.** Locations `./config/`, `./` (default;
-`BLUE_CONFIG_LOCATION` overrides, comma-separated, `optional:` prefix as in the
+`NDIGO_CONFIG_LOCATION` overrides, comma-separated, `optional:` prefix as in the
 reference framework). **First-present-wins per file name, no cross-location merge (Q4)**.
 Names: `application.json` (base) + `application-{profile}.json` per active
 profile (later profiles higher). JSON only. **Deep-merge: objects merge,
 scalars override, arrays replace (Q3)** — an override that replaces a list is
 total; append would silently retain stale base entries. Missing → skip
-(`optional:` default); `required:` throws. `BLUE_CONFIG_IMPORT`
+(`optional:` default); `required:` throws. `NDIGO_CONFIG_IMPORT`
 (comma-separated) for extra files.
 
 **D3 — `.env` via the `dotenv` npm package (Q2).** Ecosystem-standard,
@@ -58,11 +58,11 @@ mechanical gate would be self-referential (its config lives in the same
 sources).
 
 **D5 — `fromConfig` converges.** `ApplicationBuilder.fromConfig(url)` reuses
-the loader's merge semantics; the URL becomes a valid `BLUE_CONFIG_LOCATION`
+the loader's merge semantics; the URL becomes a valid `NDIGO_CONFIG_LOCATION`
 value. No new API.
 
 **D6 — Precedence doctrine as a spec artifact.** **`PrecedenceDoc` (Q7)** — a
-canonical ordered source-name constant in `@blue/boot` — is the single source
+canonical ordered source-name constant in `@ndigo/boot` — is the single source
 of truth: the doc table references it and the integration test programmatically
 asserts the wired registry order equals it, so the documented chain and the
 tested chain cannot drift. **`defaults` always present (Q8)**, empty when
@@ -70,11 +70,11 @@ unused (structural uniformity; no conditional in the Q7 assertion).
 
 ## Consequences
 
-- New in `@blue/boot`: `config-file-loader.ts` (`StandardConfigFileLoader`,
+- New in `@ndigo/boot`: `config-file-loader.ts` (`StandardConfigFileLoader`,
   `readFile` seam), `precedence.ts` (`PrecedenceDoc`); the boot environment
   sequence becomes create → profiles → **files** → CLI/builder.
-- New in `blue-platform-node`: `node-file-reader.ts` (`fs`-backed seam).
-- New dep: `dotenv` (blue-context).
+- New in `ndigo-platform-node`: `node-file-reader.ts` (`fs`-backed seam).
+- New dep: `dotenv` (ndigo-context).
 - `BrowserEnvironment` gains `importMetaEnv` (VITE_-filtered, Vite-only) +
   `bootstrap` slot; filter is a tested pure function.
 - Behavior changes (pre-1.0, accepted): boot now reads `./config`/`./`
@@ -86,7 +86,7 @@ unused (structural uniformity; no conditional in the Q7 assertion).
 ## Update (2026-10-06)
 
 **D3 (`.env` via the `dotenv` npm package) is not shipped.** No `.env` source
-exists in the codebase: `@blue/context` never reads a `.env` file, no
+exists in the codebase: `@ndigo/context` never reads a `.env` file, no
 workspace package depends on `dotenv` (the lockfile copy is a transitive
 tooling dependency), and nothing registers a `dotenv` source at boot. The
 `dotenv` name remains in `PRECEDENCE` (D1/D6) as a **reserved

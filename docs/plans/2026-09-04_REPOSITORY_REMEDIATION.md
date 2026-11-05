@@ -2,18 +2,18 @@
 
 **Date:** 2026-09-04  
 **Status:** Proposed  
-**Scope:** Architecture, security, correctness, package design, conventions, documentation, and delivery controls across the BlueJS monorepo.
+**Scope:** Architecture, security, correctness, package design, conventions, documentation, and delivery controls across the ndigo monorepo.
 
 ## 1. Baseline
 
 The repository has a coherent package-oriented design and broad automated coverage. The current baseline is not release-ready:
 
 - `pnpm build` succeeds for 28 library projects, entirely from the local Nx cache.
-- `pnpm test` succeeds for 31 projects; Nx reports `@blue/auth-client:test` as flaky and one placeholder test is skipped.
+- `pnpm test` succeeds for 31 projects; Nx reports `@ndigo/auth-client:test` as flaky and one placeholder test is skipped.
 - `pnpm lint` exits successfully while reporting 240 warnings because most quality and boundary rules are warnings.
 - `pnpm format:check` fails and reports 2,913 files. The command includes generated documentation and local harness files as well as maintained source.
 - `pnpm audit --prod --audit-level low` fails with 37 advisories: 19 high and 18 moderate. Runtime telemetry includes a vulnerable `@opentelemetry/core`; generator/Nx paths include vulnerable `minimatch` and `axios` versions.
-- `pnpm doc` generates Markdown with 289 warnings, including nonexistent `blue-auth` and `blue-generators/src/index.ts` entry points and unresolved/obsolete TSDoc tags and links.
+- `pnpm doc` generates Markdown with 289 warnings, including nonexistent `ndigo-auth` and `ndigo-generators/src/index.ts` entry points and unresolved/obsolete TSDoc tags and links.
 
 Existing strengths to preserve:
 
@@ -25,28 +25,28 @@ Existing strengths to preserve:
 
 ## 2. Current Findings
 
-| ID      | Severity | Area                     | Evidence and risk                                                                                                                                                                                                                                                                                                                                                                                 |
-| ------- | -------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| SEC-1   | Critical | OIDC                     | `packages/blue-auth-client/src/oidc-adapter.ts` accepts tokens without signature verification when neither `jwksUrl` nor `tokenValidator` is supplied. That insecure mode is the default shown in the package README. Authorization state is optional, PKCE and nonce are absent, endpoints are constructed rather than discovered, and token response fields are used without schema validation. |
-| SEC-2   | High     | Node HTTP                | `NodeHTTPServerAdapter.#readBody()` buffers an unbounded request before entering the dispatch `try` block. Large or aborted requests can exhaust memory or reject outside response handling. Internal exception messages are returned in 500 bodies. `listen()` does not reject on bind errors.                                                                                                   |
-| SEC-3   | High     | Static files             | `StaticFileView` and the API `StaticController` use string-prefix containment checks. Sibling-prefix paths and filesystem symlinks can escape the intended root. Both force UTF-8 reads, corrupting binary files despite PNG MIME support.                                                                                                                                                        |
-| COR-1   | High     | Authorization            | `AuthRouteGuard.preHandle()` only returns `false`. The dispatcher then completes with no model, and the Node adapter does not finalize a response; denied requests can remain open instead of receiving 401/403. The guard also validates a token against every registered adapter instead of selecting an explicit authentication scheme.                                                        |
-| SEC-4   | High     | Dependencies             | Production audit reports 37 known advisories, including an OpenTelemetry baggage memory-allocation issue in runtime telemetry. The CI workflow does not run an audit.                                                                                                                                                                                                                             |
-| ARCH-1  | High     | Platform boundary        | `@blue/boot` imports `NodeAutoConfiguration` and has a runtime dependency on `@blue/platform-node`. This contradicts the documented isomorphic tier and makes the shared bootstrap package Node-coupled.                                                                                                                                                                                          |
-| COR-2   | High     | Request contract         | `NodeHTTPServerAdapter` initializes `cookies` and `session` as empty objects although `NodeRequest`, package docs, and argument resolvers advertise populated cookie/session data. Body parsing ignores content type and silently treats malformed JSON as a wildcard string. Repeated query values are overwritten.                                                                              |
-| SEC-5   | Medium   | Management surface       | `/metrics` and detailed `/health` are registered without an access policy. Health check exceptions are returned to callers. No management bind-address, path, redaction, or authorization policy is documented.                                                                                                                                                                                   |
-| SEC-6   | Medium   | Server hardening         | The Node server exposes no request/header/body timeout policy, security-header policy, rate-limit integration point, trusted-proxy policy, or centralized safe error response. CSRF cookies default without `Secure`, and cookie parsing is not wired into the default adapter.                                                                                                                   |
-| ARCH-2  | Medium   | Telemetry packaging      | Telemetry subpaths prevent code re-export leakage, but the single package still installs Node SDK/exporters and declares both platform packages as peers. Package-level dependencies cannot be isolated by subpath exports, so the nominal isomorphic core retains platform installation weight and vulnerable runtime dependencies.                                                              |
-| ARCH-3  | Medium   | CORS design              | `CORSInterceptor` is an outbound browser request interceptor. It cannot attach server response headers despite documentation claiming server-side/preflight handling, and its default constants are unused. The name and docs promise a security boundary it does not implement.                                                                                                                  |
-| TYPE-1  | Medium   | Type safety              | Root and package TypeScript configurations enable `skipLibCheck` and do not enable `strict`. Public contracts still expose `any`; lint explicitly allows `no-explicit-any` and non-null assertions. This weakens library boundary guarantees.                                                                                                                                                     |
-| QUAL-1  | Medium   | Quality gate             | Lint reports 240 warnings, including unused production imports/fields, dead abstractions, suspicious unused expressions, and boundary-rule warnings. CI accepts all warnings. Some sequential awaits are intentional and need documented rule exceptions rather than mechanical `Promise.all`.                                                                                                    |
-| QUAL-2  | Medium   | Formatting               | Formatting is not enforced by CI. The check is also poorly scoped: generated `doc-html`, generated Markdown, scratch output, and harness configuration dominate its 2,913-file failure set.                                                                                                                                                                                                       |
-| TEST-1  | Medium   | Verification             | Coverage configuration has no thresholds and CI does not collect coverage despite the architecture document claiming greater than 80%. Static-file security, body limits, malformed/aborted requests, auth-denial HTTP responses, and management access policy lack behavior-level coverage. One placeholder suite is skipped and auth-client tests are flaky.                                    |
-| DOC-1   | Medium   | Documentation            | Root README tool versions are stale, says ESLint while the repository uses Oxlint, lists removed packages, and omits current packages. Platform/auth READMEs show obsolete APIs and insecure defaults. TypeDoc has stale entry points and 289 warnings.                                                                                                                                           |
-| PKG-1   | Medium   | Package consistency      | Manifests mix `workspace:*`, `workspace:~`, and `~0.0.1`; use MIT and ISC inconsistently; alternate between `main` and export maps; and pin different TypeScript versions. The generator edits a central alias list with a fragile regular expression and does not update docs, TypeDoc, or other package metadata.                                                                               |
-| BUILD-1 | Medium   | Supply chain and release | CI omits formatting, API report compatibility, documentation validation, dependency audit, and coverage. GitHub Actions use mutable major tags and workflow permissions are not minimized. There is no visible release/publish validation path.                                                                                                                                                   |
-| CLEAN-1 | Low      | Repository hygiene       | Legacy root bundles/entry points, `.scratch` output, stale package output-only directories, generated documentation, old implementation summaries, and build metadata obscure the maintained source of truth.                                                                                                                                                                                     |
-| DOC-2   | Low      | Governance               | No root `CONTRIBUTING`, `SECURITY`, or license file was found. The plans index is stale and does not list recent plans. Architecture guidance is long and partly generic, making enforceable package-boundary decisions difficult to find.                                                                                                                                                        |
+| ID      | Severity | Area                     | Evidence and risk                                                                                                                                                                                                                                                                                                                                                                                  |
+| ------- | -------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SEC-1   | Critical | OIDC                     | `packages/ndigo-auth-client/src/oidc-adapter.ts` accepts tokens without signature verification when neither `jwksUrl` nor `tokenValidator` is supplied. That insecure mode is the default shown in the package README. Authorization state is optional, PKCE and nonce are absent, endpoints are constructed rather than discovered, and token response fields are used without schema validation. |
+| SEC-2   | High     | Node HTTP                | `NodeHTTPServerAdapter.#readBody()` buffers an unbounded request before entering the dispatch `try` block. Large or aborted requests can exhaust memory or reject outside response handling. Internal exception messages are returned in 500 bodies. `listen()` does not reject on bind errors.                                                                                                    |
+| SEC-3   | High     | Static files             | `StaticFileView` and the API `StaticController` use string-prefix containment checks. Sibling-prefix paths and filesystem symlinks can escape the intended root. Both force UTF-8 reads, corrupting binary files despite PNG MIME support.                                                                                                                                                         |
+| COR-1   | High     | Authorization            | `AuthRouteGuard.preHandle()` only returns `false`. The dispatcher then completes with no model, and the Node adapter does not finalize a response; denied requests can remain open instead of receiving 401/403. The guard also validates a token against every registered adapter instead of selecting an explicit authentication scheme.                                                         |
+| SEC-4   | High     | Dependencies             | Production audit reports 37 known advisories, including an OpenTelemetry baggage memory-allocation issue in runtime telemetry. The CI workflow does not run an audit.                                                                                                                                                                                                                              |
+| ARCH-1  | High     | Platform boundary        | `@ndigo/boot` imports `NodeAutoConfiguration` and has a runtime dependency on `@ndigo/platform-node`. This contradicts the documented isomorphic tier and makes the shared bootstrap package Node-coupled.                                                                                                                                                                                         |
+| COR-2   | High     | Request contract         | `NodeHTTPServerAdapter` initializes `cookies` and `session` as empty objects although `NodeRequest`, package docs, and argument resolvers advertise populated cookie/session data. Body parsing ignores content type and silently treats malformed JSON as a wildcard string. Repeated query values are overwritten.                                                                               |
+| SEC-5   | Medium   | Management surface       | `/metrics` and detailed `/health` are registered without an access policy. Health check exceptions are returned to callers. No management bind-address, path, redaction, or authorization policy is documented.                                                                                                                                                                                    |
+| SEC-6   | Medium   | Server hardening         | The Node server exposes no request/header/body timeout policy, security-header policy, rate-limit integration point, trusted-proxy policy, or centralized safe error response. CSRF cookies default without `Secure`, and cookie parsing is not wired into the default adapter.                                                                                                                    |
+| ARCH-2  | Medium   | Telemetry packaging      | Telemetry subpaths prevent code re-export leakage, but the single package still installs Node SDK/exporters and declares both platform packages as peers. Package-level dependencies cannot be isolated by subpath exports, so the nominal isomorphic core retains platform installation weight and vulnerable runtime dependencies.                                                               |
+| ARCH-3  | Medium   | CORS design              | `CORSInterceptor` is an outbound browser request interceptor. It cannot attach server response headers despite documentation claiming server-side/preflight handling, and its default constants are unused. The name and docs promise a security boundary it does not implement.                                                                                                                   |
+| TYPE-1  | Medium   | Type safety              | Root and package TypeScript configurations enable `skipLibCheck` and do not enable `strict`. Public contracts still expose `any`; lint explicitly allows `no-explicit-any` and non-null assertions. This weakens library boundary guarantees.                                                                                                                                                      |
+| QUAL-1  | Medium   | Quality gate             | Lint reports 240 warnings, including unused production imports/fields, dead abstractions, suspicious unused expressions, and boundary-rule warnings. CI accepts all warnings. Some sequential awaits are intentional and need documented rule exceptions rather than mechanical `Promise.all`.                                                                                                     |
+| QUAL-2  | Medium   | Formatting               | Formatting is not enforced by CI. The check is also poorly scoped: generated `doc-html`, generated Markdown, scratch output, and harness configuration dominate its 2,913-file failure set.                                                                                                                                                                                                        |
+| TEST-1  | Medium   | Verification             | Coverage configuration has no thresholds and CI does not collect coverage despite the architecture document claiming greater than 80%. Static-file security, body limits, malformed/aborted requests, auth-denial HTTP responses, and management access policy lack behavior-level coverage. One placeholder suite is skipped and auth-client tests are flaky.                                     |
+| DOC-1   | Medium   | Documentation            | Root README tool versions are stale, says ESLint while the repository uses Oxlint, lists removed packages, and omits current packages. Platform/auth READMEs show obsolete APIs and insecure defaults. TypeDoc has stale entry points and 289 warnings.                                                                                                                                            |
+| PKG-1   | Medium   | Package consistency      | Manifests mix `workspace:*`, `workspace:~`, and `~0.0.1`; use MIT and ISC inconsistently; alternate between `main` and export maps; and pin different TypeScript versions. The generator edits a central alias list with a fragile regular expression and does not update docs, TypeDoc, or other package metadata.                                                                                |
+| BUILD-1 | Medium   | Supply chain and release | CI omits formatting, API report compatibility, documentation validation, dependency audit, and coverage. GitHub Actions use mutable major tags and workflow permissions are not minimized. There is no visible release/publish validation path.                                                                                                                                                    |
+| CLEAN-1 | Low      | Repository hygiene       | Legacy root bundles/entry points, `.scratch` output, stale package output-only directories, generated documentation, old implementation summaries, and build metadata obscure the maintained source of truth.                                                                                                                                                                                      |
+| DOC-2   | Low      | Governance               | No root `CONTRIBUTING`, `SECURITY`, or license file was found. The plans index is stale and does not list recent plans. Architecture guidance is long and partly generic, making enforceable package-boundary decisions difficult to find.                                                                                                                                                         |
 
 ## 3. Remediation Principles
 
@@ -72,7 +72,7 @@ Existing strengths to preserve:
     - Validate token response shape, issuer, audience, authorized party where applicable, expiration/not-before, nonce, and allowed algorithms before constructing a principal.
     - Bound remote discovery/JWKS fetches with HTTPS requirements, timeouts, size limits, and cache behavior.
     - Replace the insecure README example and document public-versus-confidential client handling.
-- **Files:** `packages/blue-auth-client/src/oidc-adapter.ts`, auth-client public types/exports, README, behavior tests.
+- **Files:** `packages/ndigo-auth-client/src/oidc-adapter.ts`, auth-client public types/exports, README, behavior tests.
 - **Acceptance:** Forged, unsigned, wrong-issuer, wrong-audience, stale-state, missing-PKCE, wrong-nonce, and malformed token responses all fail without mutating auth state.
 - **Verify:** Targeted auth-client tests plus a throwaway local OIDC/JWKS flow using signed tokens.
 - **Depends:** None.
@@ -87,7 +87,7 @@ Existing strengths to preserve:
     - Parse only declared supported content types; reject malformed JSON instead of silently changing its shape.
     - Preserve repeated query parameters using the existing multi-value contract.
     - Make `listen()` reject on bind errors and make close/start state transitions race-safe.
-- **Files:** `packages/blue-platform-node/src/node-http-server-adapter.ts`, `http-server.ts`, request/error types, integration tests, README.
+- **Files:** `packages/ndigo-platform-node/src/node-http-server-adapter.ts`, `http-server.ts`, request/error types, integration tests, README.
 - **Acceptance:** Oversized, aborted, malformed-host, malformed-JSON, duplicate-query, bind-failure, and timeout scenarios terminate deterministically with documented statuses and bounded memory.
 - **Verify:** Launch the actual HTTP server and exercise each boundary over a real socket/fetch client.
 - **Depends:** None.
@@ -114,7 +114,7 @@ Existing strengths to preserve:
     - Resolve and canonicalize the base and candidate paths; require `candidate === base` or containment by `base + sep`.
     - Resolve filesystem symlinks and reject any real path outside the canonical base.
     - Stream or return `Buffer` data, set MIME from a maintained allowlist, set `nosniff`, and distinguish forbidden/not-found/internal failures without leaking paths.
-- **Files:** `packages/blue-platform-node/src/static-file-view.ts`, a shared internal resolver, demo static controller, response target, tests.
+- **Files:** `packages/ndigo-platform-node/src/static-file-view.ts`, a shared internal resolver, demo static controller, response target, tests.
 - **Acceptance:** Parent traversal, sibling-prefix, encoded traversal, absolute path, and escaping symlink cases are denied; PNG/SVG/text round-trip byte-for-byte.
 - **Verify:** Launch the demo/server against a temporary fixture tree including an escaping symlink.
 - **Depends:** Task 2 response semantics.
@@ -133,16 +133,16 @@ Existing strengths to preserve:
 
 ### Wave 2 — Restore package and platform boundaries
 
-#### 6. Make `@blue/boot` platform-neutral
+#### 6. Make `@ndigo/boot` platform-neutral
 
 - **Objective:** Remove Node and DOM platform dependencies from shared bootstrap code.
 - **Changes:**
-    - Remove the static `NodeAutoConfiguration` import and `@blue/platform-node` dependency from boot.
+    - Remove the static `NodeAutoConfiguration` import and `@ndigo/platform-node` dependency from boot.
     - Move Node auto-registration to a Node bootstrap entry/package or require platform configuration as an explicit application source.
-    - Keep browser auto-configuration in `@blue/platform-web`; do not reintroduce it through the boot root.
+    - Keep browser auto-configuration in `@ndigo/platform-web`; do not reintroduce it through the boot root.
     - Add a dependency-boundary test/lint rule that rejects `node:`/DOM/platform imports from isomorphic packages.
 - **Files:** boot application/package manifest, platform-node bootstrap, consuming apps, custom lint rules/tests.
-- **Acceptance:** Importing `@blue/boot` in a browser and Node process loads no opposite-platform module; Nx dependency graph contains no boot-to-platform edge.
+- **Acceptance:** Importing `@ndigo/boot` in a browser and Node process loads no opposite-platform module; Nx dependency graph contains no boot-to-platform edge.
 - **Verify:** Minimal browser bundle and Node import smoke tests plus dependency graph assertion.
 - **Depends:** None.
 
@@ -150,8 +150,8 @@ Existing strengths to preserve:
 
 - **Objective:** Make the isomorphic telemetry core independent at installation and runtime.
 - **Changes:**
-    - Split Node SDK/exporters/instrumentations into `@blue/telemetry-node` and browser setup/instrumentation into `@blue/telemetry-web`, unless a package-manager-supported optional-dependency design proves equivalent.
-    - Keep `@blue/telemetry` limited to API, logger, metrics, severity, and platform-free instrumentation bases.
+    - Split Node SDK/exporters/instrumentations into `@ndigo/telemetry-node` and browser setup/instrumentation into `@ndigo/telemetry-web`, unless a package-manager-supported optional-dependency design proves equivalent.
+    - Keep `@ndigo/telemetry` limited to API, logger, metrics, severity, and platform-free instrumentation bases.
     - Remove unconditional platform peers and Node SDK dependencies from the core manifest.
     - Migrate every consumer and TypeDoc entry without compatibility shims.
 - **Files:** telemetry packages, consumers, workspace/TypeDoc/test aliases, docs.
@@ -233,7 +233,7 @@ Existing strengths to preserve:
     - Locally document intentional sequential-await loops; do not parallelize ordering-sensitive interceptors/resolvers.
     - Run Oxlint with a zero-warning threshold in CI.
 - **Acceptance:** `pnpm lint` reports zero warnings/errors and a boundary-violation fixture fails.
-- **Verify:** Lint plus rule tests in `@blue/eslint-plugin`.
+- **Verify:** Lint plus rule tests in `@ndigo/eslint-plugin`.
 - **Depends:** Waves 1–3 remove several warned paths.
 
 #### 14. Add release-grade CI lanes

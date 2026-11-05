@@ -9,7 +9,7 @@
 Phase 0 delivered named, ordered property sources + a strategy index. Phase 1 gives the resolver its **resolution semantics** — the three features that make `Environment` usable for real config:
 
 1. **Placeholders** — `${key}` and `${key:default}` referencing other properties (Spring's `PropertyPlaceholderHelper` contract).
-2. **Typed lookup** — `getPropertyAs(key, Type)` with conversion from string (number/bool/array/date/…), reuse of blue-core's existing `ConversionService` + built-in converters.
+2. **Typed lookup** — `getPropertyAs(key, Type)` with conversion from string (number/bool/array/date/…), reuse of ndigo-core's existing `ConversionService` + built-in converters.
 3. **Command-line args** — `--key=value` / `--key value` parsed into a first-class named source at the top of the precedence chain; fixes `run(...args)` being **dead today** (args are accepted and ignored).
 
 User stories:
@@ -22,20 +22,20 @@ Non-goals (explicit): config files, env-var relaxation matching, default-profile
 
 ## 2 · Current state (evidence)
 
-| Area                | Today                                                                                                                                                                                                                                                                                                                  | Gap                                                                            |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Placeholders        | None — `getProperty` returns raw values                                                                                                                                                                                                                                                                                | Entire feature                                                                 |
-| Typed lookup        | `getProperty(key, defaultValue)` returns `JSONValue \| undefined`; no conversion                                                                                                                                                                                                                                       | No `getPropertyAs`                                                             |
-| Conversion infra    | **blue-core `converter.ts`** has `createConversionService()` with built-in `UUIDConverter`, `DateConverter`, `JSONConverter`, `NumberConverter` (parseFloat), `BooleanConverter` (strict, throws on invalid), `ArrayConverter` (split on separator) + `canConvert`/`register`/`unregister` — unused by the environment | Wire it in                                                                     |
-| CLI                 | `Application.run(...args)` and `ApplicationBuilder.run(...args)` accept `...args: string[]`; `_configureEnvironment(env, args)` passes them to `_configurePropertySources`/`_configureProfiles` which **ignore them**                                                                                                  | Parse + register as a source                                                   |
-| Source-order hook   | P0's `getPropertySources().addFirst('name', obj)` + registry version counter                                                                                                                                                                                                                                           | Natural CLI insertion point                                                    |
-| Converter precedent | `blue-platform-node/src/argument-value-converter.ts` — HTTP arg converter registry (separate concern, `resolveTypeConverter`)                                                                                                                                                                                          | Do **not** couple; environment typed lookup uses blue-core's ConversionService |
+| Area                | Today                                                                                                                                                                                                                                                                                                                   | Gap                                                                             |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Placeholders        | None — `getProperty` returns raw values                                                                                                                                                                                                                                                                                 | Entire feature                                                                  |
+| Typed lookup        | `getProperty(key, defaultValue)` returns `JSONValue \| undefined`; no conversion                                                                                                                                                                                                                                        | No `getPropertyAs`                                                              |
+| Conversion infra    | **ndigo-core `converter.ts`** has `createConversionService()` with built-in `UUIDConverter`, `DateConverter`, `JSONConverter`, `NumberConverter` (parseFloat), `BooleanConverter` (strict, throws on invalid), `ArrayConverter` (split on separator) + `canConvert`/`register`/`unregister` — unused by the environment | Wire it in                                                                      |
+| CLI                 | `Application.run(...args)` and `ApplicationBuilder.run(...args)` accept `...args: string[]`; `_configureEnvironment(env, args)` passes them to `_configurePropertySources`/`_configureProfiles` which **ignore them**                                                                                                   | Parse + register as a source                                                    |
+| Source-order hook   | P0's `getPropertySources().addFirst('name', obj)` + registry version counter                                                                                                                                                                                                                                            | Natural CLI insertion point                                                     |
+| Converter precedent | `ndigo-platform-node/src/argument-value-converter.ts` — HTTP arg converter registry (separate concern, `resolveTypeConverter`)                                                                                                                                                                                          | Do **not** couple; environment typed lookup uses ndigo-core's ConversionService |
 
 ## 3 · Decisions (proposed — review Q1–Q8)
 
 ### D1 — Placeholder resolution: `${key}` / `${key:default}`, nested, lazy-cached
 
-- New `blue-context/src/placeholder-resolver.ts`: parses template strings for `${...}` occurrences; supports inline default (`${key:default}`), and **nesting** (`${a:${b:fallback}}`).
+- New `ndigo-context/src/placeholder-resolver.ts`: parses template strings for `${...}` occurrences; supports inline default (`${key:default}`), and **nesting** (`${a:${b:fallback}}`).
 - **Cycle guard (Q3)**: in-progress key set (keys currently being resolved); re-entry → `IllegalStateError` naming the cycle (`circular placeholder reference: a → b → a`). This is the real safety mechanism — a depth cap cannot catch cycles at all (they overflow past it, misreporting "too deep" for a cycle). A **depth cap of 10** remains only as a deliberate panic-switch for runaway non-cyclic nesting (beyond ~5 levels is always a bug), documented as such, not as the cycle mechanism.
 - **Hook point**: applied in `PrototypalPropertyResolver.getProperty` — raw value fetched from the index, then if the value is a string containing `$ {`, resolved against the environment (the resolver itself, so placeholders can reference any source).
 - **Lazy resolved-value cache** on the resolver: a `Map<string, JSONValue>` keyed by config key, **cleared wholesale when the registry version changes** (Q7). Only values containing `${` engage it (plain values skip — zero cost for the common case); no eviction policy needed (bounded by the config key space; version-clear prevents stale accumulation). Version-keyed invalidation is exact under the supported mutation API (`addLast`/`replace`/`remove` all bump; transitive through placeholder references). Caveat, consistent with replace-not-mutate doctrine: in-place source-map edits are visible to raw lookups but may lag the resolution cache (same class as flat's divergence; documented in the resolver tsdoc). Eager-resolve-at-build is rejected — it forces flat + rebuild-per-mutation, the exact model P0's bench rejected.
@@ -43,19 +43,19 @@ Non-goals (explicit): config files, env-var relaxation matching, default-profile
 - **Unresolvable → lenient passthrough in `getProperty` (Q4)** — coupled to Q2: the "no escape syntax" decision requires a literal `${key}` matching no property to survive reads; fail-fast here would make any `${`-bearing value unreadable. Note: Spring's _framework default_ is actually strict (throws; `ignoreUnresolvablePlaceholders` defaults to `false`) — we adopt its _lenient opt-in mode_ deliberately, and push strictness down to required reads. `getRequiredProperty` **throws** when the final value still contains `${`, with a distinct message (`Required property "x" could not be resolved: unresolved placeholder "${MISSING}" in value "…"`) — the key exists but cannot resolve; this is different from "missing".
 - **No escape syntax (Q2)** — matches Spring (its only knob is prefix replacement; there is no `\${`). Passthrough is the de-facto escape (a `${key}` matching no property passes through verbatim); a literal matching a real key is substituted — document the limitation (store such literals indirectly via another property). `\${` is purely additive later if needed.
 
-### D2 — Typed lookup via blue-core ConversionService
+### D2 — Typed lookup via ndigo-core ConversionService
 
 - `PropertyResolver` gains `getPropertyAs(key, targetType, defaultValue?)` and `getRequiredPropertyAs(key, targetType)`; `AbstractEnvironment` delegates like the other lookups.
-- Resolver option **`{ conversionService }`** (Q8 — `createConversionService()` default, blue-core built-ins cover string→number/boolean/date/json/array/UUID; platform layers inject their own by passing the option through the resolver's existing `ResolverOptions`). Rationale: it's the same knob-class as `{ index }` — lives in the resolver options cabinet, per-instance isolated (no singleton global state), additive with a sane default, and threads through the environment constructors with **zero new surface** (they already forward `ResolverOptions`).
+- Resolver option **`{ conversionService }`** (Q8 — `createConversionService()` default, ndigo-core built-ins cover string→number/boolean/date/json/array/UUID; platform layers inject their own by passing the option through the resolver's existing `ResolverOptions`). Rationale: it's the same knob-class as `{ index }` — lives in the resolver options cabinet, per-instance isolated (no singleton global state), additive with a sane default, and threads through the environment constructors with **zero new surface** (they already forward `ResolverOptions`).
 - **Identity short-circuit**: value already the target type → passthrough without conversion (`canConvert` check or `typeof` guard).
 - **Conversion failure → `IllegalStateError`** with key, value, and target type in the message (fail-fast on typed config reads; NaN from `NumberConverter` counts as failure — the resolver rejects it, since `NumberConverter.convert` itself returns NaN instead of throwing). The missing/wrong split (Q5): **key missing → `defaultValue` (no conversion)**; **key present but unconvertible → throw** — returning `undefined` for a bad value would silently fall back to defaults, hiding exactly the config bugs typed reads exist to catch. Spring parity: Spring's `getProperty(key, Class)` throws `ConversionFailedException` on conversion failure.
 - Interface widening: `PropertyResolver` + `Environment` expose the new methods; only `AbstractEnvironment`/`MockEnvironment` implement (both inherit — no external breakage in-repo).
 
 ### D3 — CLI args: `--key=value` / `--key value`, named source `commandLine`
 
-- New `blue-context/src/cli-arguments.ts`: `parseCommandLineArgs(args: string[]): JSONObject` — supports `--key=value`, `--key value`, quoted values (shell already strips quotes — nothing to unquote), `--` terminator (everything after is positional, ignored by the parser but not an error). Repeated keys: last wins (deterministic). **Non-`--` positionals: ignored (Q6)** — Spring's `CommandLinePropertySource` does the same (they never become properties); Node's `process.argv` already exposes them natively; the parser's skip leaves room to collect them later if an `ApplicationArguments`-style need appears. Documented in the parser tsdoc.
+- New `ndigo-context/src/cli-arguments.ts`: `parseCommandLineArgs(args: string[]): JSONObject` — supports `--key=value`, `--key value`, quoted values (shell already strips quotes — nothing to unquote), `--` terminator (everything after is positional, ignored by the parser but not an error). Repeated keys: last wins (deterministic). **Non-`--` positionals: ignored (Q6)** — Spring's `CommandLinePropertySource` does the same (they never become properties); Node's `process.argv` already exposes them natively; the parser's skip leaves room to collect them later if an `ApplicationArguments`-style need appears. Documented in the parser tsdoc.
 - **Bare flag** (`--debug`): value `true` (Q1 — minimist-style; Spring's `""` is a Java-ism that reads awkwardly in JS, and would _invert_ typed reads: `getPropertyAs('debug', Boolean)` on `''` fails or maps false, turning "flag present" into "disabled").
-- **Wiring** (blue-boot): `Application._configurePropertySources(environment, args)` — if args parsed non-empty, `environment.getPropertySources().addFirst('commandLine', parsed)`. The named source is anchorable/replaceable per P0 semantics. Precedence: **top of the chain** (beats builder props, platform env, files — consistent with the roadmap's documented chain where CLI wins).
+- **Wiring** (ndigo-boot): `Application._configurePropertySources(environment, args)` — if args parsed non-empty, `environment.getPropertySources().addFirst('commandLine', parsed)`. The named source is anchorable/replaceable per P0 semantics. Precedence: **top of the chain** (beats builder props, platform env, files — consistent with the roadmap's documented chain where CLI wins).
 - `run(...args)` stays the API; no new builder surface.
 
 ### D4 — Placeholder + typed lookup compose
@@ -70,18 +70,18 @@ All resolver-side failures throw `IllegalStateError` (existing precedent: `getRe
 ## 4 · Project structure
 
 ```
-packages/blue-context/src/
+packages/ndigo-context/src/
   placeholder-resolver.ts    NEW  — parse/resolve ${key}, ${key:default}, nested; depth cap, cycle guard
   cli-arguments.ts           NEW  — parseCommandLineArgs (--key=value, --key value, bare flag, -- terminator)
   property-resolver.ts       EDIT — getPropertyAs/getRequiredPropertyAs; lazy resolved-value cache; options
   environment.ts             EDIT — delegate getPropertyAs/getRequiredPropertyAs; PropertyResolver+Environment widened
-packages/blue-boot/src/
+packages/ndigo-boot/src/
   application.ts             EDIT — _configurePropertySources: addFirst('commandLine', parseCommandLineArgs(args))
-packages/blue-context/test/
+packages/ndigo-context/test/
   placeholder-resolver.spec.ts  NEW — unit: defaults, nesting, depth cap, cycle, unresolvable, literal passthrough
   cli-arguments.spec.ts         NEW — =value, space value, bare flag, repeats, -- terminator, positionals
   property-resolver.spec.ts     EDIT — typed lookup + placeholder integration (via resolver)
-packages/blue-boot/test/
+packages/ndigo-boot/test/
   application.spec.ts           EDIT — CLI beats builder props; absent args → no source
 ```
 
@@ -115,7 +115,7 @@ export function parseCommandLineArgs(args: string[]): JSONObject {
 Vitest, project suite. Observable contract only:
 
 - **Placeholder resolver**: `${key}` resolves from the env; `${key:default}` uses default when missing; nested `${a:${b}}`; default containing `:`; depth cap exceeded → thrown (cycle guard); unresolvable → literal passthrough; empty key / malformed → literal.
-- **Typed lookup**: string→number/bool/date/array (blue-core converters); identity passthrough when already typed; conversion failure → `IllegalStateError` (message has key/value/type); NaN rejected; default used when missing.
+- **Typed lookup**: string→number/bool/date/array (ndigo-core converters); identity passthrough when already typed; conversion failure → `IllegalStateError` (message has key/value/type); NaN rejected; default used when missing.
 - **Composition**: `getPropertyAs` of a placeholder-referenced value; `getRequiredPropertyAs` distinct errors for missing/unresolved/bad-conversion.
 - **CLI**: `--a=1`, `--a 1`, bare `--flag` → `true`, repeated key last-wins, `--` terminator, positionals ignored; empty array → no source registered.
 - **Boot integration**: `run('--server.port=9000')` beats `properties({ server: { port: 8080 } })`; no args → registry unchanged.

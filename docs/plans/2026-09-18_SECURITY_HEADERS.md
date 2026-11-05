@@ -2,7 +2,7 @@
 
 **Status:** Completed — implementation landed 2026-09-18; decision record
 [AD-25](../decisions/2026-09-18_AD25_SECURITY_HEADERS.md).
-**Scope:** `SecurityHeadersInterceptor` in `blue-platform-node` (Helmet-wrap,
+**Scope:** `SecurityHeadersInterceptor` in `ndigo-platform-node` (Helmet-wrap,
 `RouteHandlerInterceptor`), default-on wiring in `NodeAutoConfiguration`,
 demo assertions, docs + audit status refresh. Rate limiting stays a separate
 wave (seq #3 half 2 — client-IP trust landed separately, AD-37 2026-09-28).
@@ -20,7 +20,7 @@ no HSTS, no frame/referrer/sniffing protections — on any default app. The
 only header today is `X-Content-Type-Options: nosniff` on the static-file
 controller (and CORS/CSRF machinery, which is a different surface). The gap
 analysis names the fix shape: "interceptor-shaped, fit the
-`blue-platform-node` interceptor + auto-configuration machinery (SEC-6)."
+`ndigo-platform-node` interceptor + auto-configuration machinery (SEC-6)."
 
 Owner decisions this wave: **wrap Helmet** (the industry standard, v8.3.0,
 zero dependencies, TypeScript types built in — the wrap-don't-reimplement
@@ -29,7 +29,7 @@ hardening item safe to ship enabled; management-endpoints precedent).
 
 ## 2. Current state (verified 2026-09-18)
 
-- `CORSInterceptor`/`CsrfInterceptor` (`blue-platform-node/src/`): the
+- `CORSInterceptor`/`CsrfInterceptor` (`ndigo-platform-node/src/`): the
   `RouteHandlerInterceptor` pattern — `preHandle(route, handler)` extracts
   the `ServerResponse` from `route.attributes[NODE_RESPONSE_ATTRIBUTE]`,
   writes headers, returns `PreHandleOutcome`; apps push onto
@@ -38,7 +38,7 @@ hardening item safe to ship enabled; management-endpoints precedent).
 - `NodeAutoConfiguration.handlerMapping()`: `new RadixMetadataHandlerMapping()`
   — nothing default-registered today; the mapping bean is the assembly point.
 - Demo pages use external scripts only (`/static/client.js`, `src/index.ts`)
-  — no inline JS; `blue-api` serves the STOMP demo over `ws://` (CSP
+  — no inline JS; `ndigo-api` serves the STOMP demo over `ws://` (CSP
   `connect-src` must allow it; `'self'`-matching-WebSocket is
   browser-divergent, so `ws:`/`wss:` are explicit).
 - Helmet (npm) 8.3.0: zero deps, per-header middlewares exported
@@ -109,17 +109,17 @@ rate limiting (next wave), no header helpers for SSE/WebSocket handshakes
 
 ## 4. Architecture
 
-| Piece                                                              | Home                                                              | Notes                                                            |
-| ------------------------------------------------------------------ | ----------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `SecurityHeadersInterceptor` + `SecurityHeadersInterceptorOptions` | `packages/blue-platform-node/src/security-headers-interceptor.ts` | Helmet middleware list built in ctor; `preHandle` per CORS idiom |
-| Default instance                                                   | `NodeAutoConfiguration.handlerMapping()`                          | prepended to `mapping.interceptors`                              |
-| Export                                                             | `blue-platform-node` index                                        | manual use + custom wiring                                       |
-| Dependency                                                         | `helmet@^8.3.0` in `blue-platform-node` `dependencies`            | zero-dep lib (like `ws`)                                         |
+| Piece                                                              | Home                                                               | Notes                                                            |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| `SecurityHeadersInterceptor` + `SecurityHeadersInterceptorOptions` | `packages/ndigo-platform-node/src/security-headers-interceptor.ts` | Helmet middleware list built in ctor; `preHandle` per CORS idiom |
+| Default instance                                                   | `NodeAutoConfiguration.handlerMapping()`                           | prepended to `mapping.interceptors`                              |
+| Export                                                             | `ndigo-platform-node` index                                        | manual use + custom wiring                                       |
+| Dependency                                                         | `helmet@^8.3.0` in `ndigo-platform-node` `dependencies`            | zero-dep lib (like `ws`)                                         |
 
 ### API sketch
 
 ```ts
-import { SecurityHeadersInterceptor } from '@blue/platform-node';
+import { SecurityHeadersInterceptor } from '@ndigo/platform-node';
 
 // default-on: NodeAutoConfiguration provides this exact instance
 new SecurityHeadersInterceptor(); // full default set
@@ -147,7 +147,7 @@ new SecurityHeadersInterceptor({
 - **Header duplication with a hand-rolled app set** → `setHeader` is
   last-write-wins; the interceptor runs first, app overrides land later in
   the chain — an ordering contract to document, not a bug.
-- **MockHTTP header fidelity** (blue-test) → assertion specs must confirm
+- **MockHTTP header fidelity** (ndigo-test) → assertion specs must confirm
   headers surface through the in-memory response before trusting them.
 
 ## 6. Sequencing
@@ -158,7 +158,7 @@ disable, option override (CSP connect-src merge), `headersSent`/absent
 skip, construction-time TypeError. Gates: package vitest + `tsc -b`.
 
 **Wave 2 — default-on + demo + docs.** Prepend in `NodeAutoConfiguration`;
-blue-api bootstrap spec asserts the header set on a live dispatch (and the
+ndigo-api bootstrap spec asserts the header set on a live dispatch (and the
 STOMP demo still connects); AD-25; gap-analysis row → implemented (SEC-6
 header item); guide-01 "Security headers" subsection; plan status; plans
 README. Gates: `pnpm lint`, `pnpm format:check`, changed-package vitest +

@@ -26,11 +26,11 @@ directly** — AD-07 Zod, AD-19 i18n, AD-24 caching, AD-35 OpenAPI):
   partial on mismatch. TypeScript does not have this problem.
 - **MapStruct** — compile-time codegen; declined on the AD-34 D-8
   principle (no generator codegen).
-- **`class-transformer`** — decorator/class/reflection machinery Blue
+- **`class-transformer`** — decorator/class/reflection machinery Ndigo
   already removed (AD-34); slow maintenance.
 - **`typia`** — AOT compiler layer; same AD-34 D-8 rejection.
 - **`effect/schema`** — ecosystem gravity disproportionate to the gap.
-- **Zod** — already Blue's validation stack (AD-07), already a dependency
+- **Zod** — already Ndigo's validation stack (AD-07), already a dependency
   of 9 packages, already drives request DTOs (`validatedBody`
   `insertSchemaForEntity`), ORM schemas (`schemaForEntity`), config
   schema mode (AD-34 D-3), and OpenAPI schema derivation (`toJSONSchema`,
@@ -42,7 +42,7 @@ word, and mapping implies configurable association while this operation is
 a one-way contract-enforced conversion. "Converting" was the correct verb,
 and `ConversionService` the correct home.
 
-**Conclusion:** schema-driven conversion in Blue is one operation with two
+**Conclusion:** schema-driven conversion in Ndigo is one operation with two
 target kinds. The engine is `schema.parse`; the framework already owns
 runtime schemas that _are_ the types (`z.infer`); the same schema object
 feeds conversion and the OpenAPI document — one shape, cannot drift. This
@@ -50,7 +50,7 @@ is the AD-34 position applied to the last reflection-era gap.
 
 ## Decisions
 
-### D-1 — One service: schema targets in `ConversionService` (blue-core)
+### D-1 — One service: schema targets in `ConversionService` (ndigo-core)
 
 `ConversionService.convert` gains a second target kind — any `z.ZodType`:
 
@@ -60,11 +60,11 @@ conversion.convert(notes, noteDtoSchema.array()); // arrays: the schema defines 
 conversion.convert('2026-09-29', Date); // leaf: registered converters (unchanged)
 ```
 
-- **No new package.** An initial parallel-facade design (`@blue/mapper` +
+- **No new package.** An initial parallel-facade design (`@ndigo/mapper` +
   `ObjectMapper`) was built and rolled back before publishing: it split one
   concept ("convert a value to a target contract") across two abstractions,
   and every candidate name for the facade (`Mapper`, `Projector`, `Parser`)
-  collided or invented vocabulary. `blue-core` already holds ecosystem
+  collided or invented vocabulary. `ndigo-core` already holds ecosystem
   dependencies (`semver`, `@tsmetadata/polyfill`); zod joins them.
 - **Registry untouched.** The schema branch short-circuits before the
   constructor-keyed registry — `makeKey` is name-based, schemas have no
@@ -118,7 +118,7 @@ Named mapping profiles; flatten/unflatten helpers; mapping codegen;
 async facade (`schema.parseAsync` is directly callable on any target
 schema); DTO→entity instantiation (`Object.assign(new Note(),
 validatedData)` is the documented pattern); formal client/island conversion
-wiring (blue-core has no node deps, so web reuse works untouched);
+wiring (ndigo-core has no node deps, so web reuse works untouched);
 RFC 9457 `default` response entry in the spec (separate AD-35 follow-up).
 
 ## Implementation amendments (2026-09-29)
@@ -131,7 +131,7 @@ RFC 9457 `default` response entry in the spec (separate AD-35 follow-up).
    drift fails loud at `convert` time. A `responses` entry that is itself a
    transform fails loud at generation (the zod error propagates through the
    generator).
-2. **D-1 superseded in part.** The initial design (new `@blue/mapper`
+2. **D-1 superseded in part.** The initial design (new `@ndigo/mapper`
    package with `ObjectMapper` composing `ConversionService`) was replaced
    same-day by the unified design above before anything published; the
    package, its docs, and the `OBJECT_MAPPER` token were removed. `convert`

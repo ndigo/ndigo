@@ -39,24 +39,24 @@ delegated review pass, cross-checked against the cited lines.
   `session.attributes.principal` and fails closed with close `1008` when it is
   missing or lacks a required role. The adapter's `authenticate` hook (or the
   context-resolved socket authenticator bean) is the identity source that must
-  populate it. `apps/blue-api` wires this as the reference implementation.
+  populate it. `apps/ndigo-api` wires this as the reference implementation.
 
 ---
 
 ## 1. Verified baseline (what is healthy)
 
-| Gate                        | Command                                       | Result (2026-09-17, working tree)                                                                         |
-| --------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `@blue/socket` tests        | `cd packages/blue-socket && pnpm test`        | ✅ 169/169 (6 files: codec 45, broker 66, client 25, socket-client 23)                                    |
-| `@blue/platform-node` tests | `cd packages/blue-platform-node && pnpm test` | ✅ 244/244 (incl. `stomp.spec.ts` 11, `websocket.spec.ts` 19)                                             |
-| `@blue/core` ring buffer    | `vitest run test/ring-buffer.spec.ts`         | ✅ 24/24                                                                                                  |
-| Type-check (changed pkgs)   | `tsc -b tsconfig.build.json`                  | ✅ `blue-socket`, `blue-orm-drizzle` exit 0                                                               |
-| Lint (`--deny-warnings`)    | `pnpm lint`                                   | ❌ **exit 1 — 54 warnings** (§2.1 GATE-1)                                                                 |
-| Format                      | `pnpm format:check`                           | ❌ **exit 1 — 67 files** (§2.1 GATE-2)                                                                    |
-| Working tree                | `git status`                                  | 26 modified + 5 untracked files uncommitted (§2.5 HYG-1); this review adds this plan + a plan-index entry |
+| Gate                         | Command                                        | Result (2026-09-17, working tree)                                                                         |
+| ---------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `@ndigo/socket` tests        | `cd packages/ndigo-socket && pnpm test`        | ✅ 169/169 (6 files: codec 45, broker 66, client 25, socket-client 23)                                    |
+| `@ndigo/platform-node` tests | `cd packages/ndigo-platform-node && pnpm test` | ✅ 244/244 (incl. `stomp.spec.ts` 11, `websocket.spec.ts` 19)                                             |
+| `@ndigo/core` ring buffer    | `vitest run test/ring-buffer.spec.ts`          | ✅ 24/24                                                                                                  |
+| Type-check (changed pkgs)    | `tsc -b tsconfig.build.json`                   | ✅ `ndigo-socket`, `ndigo-orm-drizzle` exit 0                                                             |
+| Lint (`--deny-warnings`)     | `pnpm lint`                                    | ❌ **exit 1 — 54 warnings** (§2.1 GATE-1)                                                                 |
+| Format                       | `pnpm format:check`                            | ❌ **exit 1 — 67 files** (§2.1 GATE-2)                                                                    |
+| Working tree                 | `git status`                                   | 26 modified + 5 untracked files uncommitted (§2.5 HYG-1); this review adds this plan + a plan-index entry |
 
 Verified-sound (do not "fix" these): the AD-23 D1 isomorphism claim —
-`@blue/socket` imports only `@blue/core`, `@blue/signals` and its own modules
+`@ndigo/socket` imports only `@ndigo/core`, `@ndigo/signals` and its own modules
 (no `ws`, no `node:*`, no platform package; verified over every `src/*.ts`);
 codec framing for LF frames
 (content-length octet math, trailing-data rejection, null-prototype header
@@ -79,23 +79,23 @@ is forwarded), ack/transaction scoping to the sender's own subscriptions.
 **GATE-1 (Block) — `pnpm lint` fails: 54 warnings, all introduced by this wave.**
 `pnpm lint` = `oxlint --type-aware --deny-warnings .` (CI lane "Lint (zero
 warnings)", `.github/workflows/ci.yml`), exit 1.
-`[exec]` Distribution: `packages/blue-socket/test/stomp-broker.spec.ts` 42
-(`typescript(no-floating-promises)`), `packages/blue-socket/src/stomp-broker.ts`
-4, `test/message-store.spec.ts` 3, `blue-platform-node/test/stomp.spec.ts` 2,
-`test/async-reader.spec.ts` 1, `blue-orm-drizzle/test/libsql-queue-message-store.spec.ts`
-1, `apps/blue-api/src/stomp-chat-controller.ts:51` 1.
+`[exec]` Distribution: `packages/ndigo-socket/test/stomp-broker.spec.ts` 42
+(`typescript(no-floating-promises)`), `packages/ndigo-socket/src/stomp-broker.ts`
+4, `test/message-store.spec.ts` 3, `ndigo-platform-node/test/stomp.spec.ts` 2,
+`test/async-reader.spec.ts` 1, `ndigo-orm-drizzle/test/libsql-queue-message-store.spec.ts`
+1, `apps/ndigo-api/src/stomp-chat-controller.ts:51` 1.
 The 4 source findings: `stomp-broker.ts:474,850` (`unicorn/no-useless-spread`);
 `:1013` (`no-await-in-loop` — the COMMIT loop is order-contractual, so it needs
 the CONTRIBUTING rule-5 line-scoped disable with a reason); and `:359` — a
-**false positive of the repo's own rule**: `@blue/no-browser-globals-in-isomorphic`
+**false positive of the repo's own rule**: `@ndigo/no-browser-globals-in-isomorphic`
 flags the `history()` method because the name matches a browser global. The
 rule must ignore member/property names (or the method renamed); with
 `--deny-warnings` a rule false positive is a hard gate failure.
 
 **GATE-2 (Block) — `pnpm format:check` fails on 67 files; the wave's files are among them.**
-`[exec]` Spot-checked history: `packages/blue-core/src/formatter.ts` (last
-touched by `95ea360e`, AD-20), `packages/blue-socket/tsconfig.json` (`5472171a`,
-AD-22), `packages/blue-core/README.md` (`b24e26b4`), `docs/decisions/2026-09-15_AD21_*`,
+`[exec]` Spot-checked history: `packages/ndigo-core/src/formatter.ts` (last
+touched by `95ea360e`, AD-20), `packages/ndigo-socket/tsconfig.json` (`5472171a`,
+AD-22), `packages/ndigo-core/README.md` (`b24e26b4`), `docs/decisions/2026-09-15_AD21_*`,
 `docs/plans/2026-09-15_WEBSOCKET_*` — i.e. the gate went red during this wave
 and stayed red. `docs/plans/2026-09-16_STOMP.md` §6 lists `pnpm lint` +
 `pnpm format:check` as the final verification, so either they were run scoped
@@ -105,8 +105,8 @@ and stayed red. `docs/plans/2026-09-16_STOMP.md` §6 lists `pnpm lint` +
 `docs/decisions/2026-09-16_AD23_STOMP.md` documents the second wave (D7–D11)
 as implemented and the guide describes the queue store seam, while the code
 for both sits uncommitted (26 modified, 5 untracked files — incl.
-`packages/blue-socket/src/message-store.ts` and
-`packages/blue-orm-drizzle/src/libsql-queue-message-store.ts`). Anyone reading
+`packages/ndigo-socket/src/message-store.ts` and
+`packages/ndigo-orm-drizzle/src/libsql-queue-message-store.ts`). Anyone reading
 `master` gets documentation for behavior the tree does not have.
 
 ### 2.2 STOMP correctness and specification conformance
@@ -269,13 +269,13 @@ decorators are inert, and nothing wires the only real seam.**
 `[code]` `node-http-server-adapter.ts:557` calls
 `handlerMethod.call(target.instance, ...args)` directly — no
 `RouteHandlerExecutionChain`, so `@authenticated`/`@authorized`
-(`blue-auth-server/src/route-guard.ts`, metadata written by
-`blue-auth-core/src/_decorators.ts`) never run for `@socketMapping`/
+(`ndigo-auth-server/src/route-guard.ts`, metadata written by
+`ndigo-auth-core/src/_decorators.ts`) never run for `@socketMapping`/
 `@stompMapping` methods: fail-open by construction. The only upgrade-time seam
 is `NodeHTTPServerAdapterOptions.authenticate` (`:527-545`), and no app in the
 repo passes one (`node-auto-configuration.ts` builds `new HTTPServer()`;
-`apps/blue-api/src/index.ts:49` starts it unchanged), and
-`BLUE_SOCKET_ALLOWED_ORIGINS` is set nowhere. The AD-23 demo gate
+`apps/ndigo-api/src/index.ts:49` starts it unchanged), and
+`NDIGO_SOCKET_ALLOWED_ORIGINS` is set nowhere. The AD-23 demo gate
 (`/stomp/chat`) is therefore an open broker on the default config — the e2e
 spec itself connects with no credentials.
 
@@ -355,8 +355,8 @@ posture from the SEND path, which fails closed (COR-8). Pick one posture and
 document it ([SEC-3]-adjacent): at minimum surface the fault to an observer.
 
 **TEL-1 (Should Fix) — binary payloads are measured by JSON-encoding them.**
-`[code]` `blue-telemetry-web/.../websocket-client.ts:146-149` and
-`blue-telemetry-node/.../websocket-server.ts:193-196`: `payloadBytes` maps
+`[code]` `ndigo-telemetry-web/.../websocket-client.ts:146-149` and
+`ndigo-telemetry-node/.../websocket-server.ts:193-196`: `payloadBytes` maps
 non-strings through `JSON.stringify`, so an `ArrayBuffer` records **2 bytes**
 (`'{}'`) and a 3-byte `Uint8Array` records 19; the web docblock claims
 `SocketClient.send` parity, which sends those as binary frames
@@ -372,13 +372,13 @@ seam (the registry already has `addOverflowObserver` precedent) that reports
 the size from the single serialization.
 
 **TEL-3 (Optional) — `socket.room` is an unbounded metric attribute.**
-`[code]` `blue-telemetry-node/.../websocket-server.ts:141-146`; rooms are
+`[code]` `ndigo-telemetry-node/.../websocket-server.ts:141-146`; rooms are
 arbitrary app strings ("finer grouping" per the guide), so per-entity room
 names mint unbounded series. Gate behind an opt-in or emit the bounded path
 dimension `[agent]`.
 
 **TEL-4 (Optional) — the client close counter misses a terminal close after a
-drop.** `[agent]` status-guard in `blue-telemetry-web/.../websocket-client.ts`
+drop.** `[agent]` status-guard in `ndigo-telemetry-web/.../websocket-client.ts`
 counts a deliberate close only while `status === 'open'`. Low impact, wrong
 number.
 
@@ -389,16 +389,16 @@ number.
 
 **DOC-2 (Should Fix) — inbound overflow close code documented as 1009 in two
 places.** `docs/guides/06-websockets.md:90` and
-`packages/blue-platform-node/README.md:68` say the queue overflow closes
+`packages/ndigo-platform-node/README.md:68` say the queue overflow closes
 `1009`; the implementation closes `1013` (`node-socket-session.ts:195-215`) and
 line 245 of the _same guide_ says 1013. The README table also omits the new
-knobs `BLUE_SOCKET_MAX_QUEUED_BYTES`, `BLUE_SOCKET_MAX_BUFFERED_BYTES`,
-`BLUE_SOCKET_ON_OVERFLOW`.
+knobs `NDIGO_SOCKET_MAX_QUEUED_BYTES`, `NDIGO_SOCKET_MAX_BUFFERED_BYTES`,
+`NDIGO_SOCKET_ON_OVERFLOW`.
 
 **DOC-3 (Should Fix) — AD-23 D1 dependency statement is stale.**
 `docs/decisions/2026-09-16_AD23_STOMP.md` says the package dependency "stays
-`@blue/signals` … no `@blue/util` dependency needed"; `packages/blue-socket/package.json`
-now declares `@blue/core` (used by the ring-buffer-backed reader/queues). State
+`@ndigo/signals` … no `@ndigo/util` dependency needed"; `packages/ndigo-socket/package.json`
+now declares `@ndigo/core` (used by the ring-buffer-backed reader/queues). State
 the real dependency set.
 
 **DOC-4 (Optional) — AD-23 documents ack semantics the code does not
@@ -427,13 +427,13 @@ item is ≥ 1 byte), but it is misleading arithmetic that a future bound change
 could turn into silent overwrite + `#bytes` drift. Express it as "capacity =
 count bound, rounded up" with a comment, or drop the hint entirely.
 
-**HYG-4 (FYI, no action) — `@blue/signals` appears in both `dependencies` and
-`peerDependencies` of `packages/blue-socket/package.json`.** Re-checked
-against the repo convention: `blue-dispatcher` declares `zod` the same way,
+**HYG-4 (FYI, no action) — `@ndigo/signals` appears in both `dependencies` and
+`peerDependencies` of `packages/ndigo-socket/package.json`.** Re-checked
+against the repo convention: `ndigo-dispatcher` declares `zod` the same way,
 and the dependency-vs-peer split is used repo-wide to ship a default while
 letting consumers align the instance. Not a defect; leave it.
 
-**HYG-5 (FYI) — `@blue/dispatcher` now type-only re-exports `@blue/socket`
+**HYG-5 (FYI) — `@ndigo/dispatcher` now type-only re-exports `@ndigo/socket`
 contracts** (`socket-session.ts`, `socket-session-registry.ts`, both 7 lines,
 peer-dep declared). Deliberate per AD-22 D2; noted so the direction
 (dispatcher → socket, type-only) is not "cleaned up" by accident.
@@ -448,8 +448,8 @@ peer-dep declared). Deliberate per AD-22 D2; noted so the direction
    promises in `stomp-broker.spec.ts` + the 3 other spec files; drop the two
    useless spreads in `stomp-broker.ts:474,850`; add the CONTRIBUTING-rule-5
    line-scoped `no-await-in-loop` disable with a reason on
-   `stomp-broker.ts:1013`). Fix the `@blue/no-browser-globals-in-isomorphic`
-   false positive in `packages/blue-oxlint-plugin` so member/property names are
+   `stomp-broker.ts:1013`). Fix the `@ndigo/no-browser-globals-in-isomorphic`
+   false positive in `packages/ndigo-oxlint-plugin` so member/property names are
    not treated as global references (add a rule test case with a `history()`
    method), or rename the broker method — rule fix preferred.
     - Acceptance: `pnpm lint` exits 0 repo-wide on the fixed tree.
@@ -531,13 +531,13 @@ COR-11), then client (COR-12), then the error-posture decision (COR-8).
 17. **SEC-3 socket auth (decision D-B):** in the socket dispatch path, read
     the handler's auth metadata (class + method `auth:required` / `auth:roles`
     — the `AUTH_REQUIRED_KEY`/`AUTH_ROLES_KEY` contract owned by
-    `@blue/auth-core`) and fail closed with close `1008` when a principal is
+    `@ndigo/auth-core`) and fail closed with close `1008` when a principal is
     required and `session.attributes.principal` is absent or lacks a required
     role (`principal.hasRole`). Identity comes from the adapter's
     `authenticate` hook; `HTTPServer` additionally resolves an optional
     `socketRequestAuthenticator` context bean (mirroring the
     `socketSessionRegistry` pattern) so bean-based apps wire it without
-    constructing the server. `apps/blue-api` supplies the reference
+    constructing the server. `apps/ndigo-api` supplies the reference
     authenticator (demo token → principal, published as
     `attributes.principal` + `attributes.user`) and marks the STOMP endpoint
     `@authenticated`; its e2e authenticates. Document the model in the
@@ -595,7 +595,7 @@ COR-11), then client (COR-12), then the error-posture decision (COR-8).
 
 27. **HYG-2** collapse `#dropSession`/`#removeSubscription` and share
     `materialOctets`. **HYG-3/HYG-4** nits. **DOC-2** fix the 1009/1013 drift
-    and document the new env knobs in `packages/blue-platform-node/README.md`.
+    and document the new env knobs in `packages/ndigo-platform-node/README.md`.
     **DOC-3/DOC-4** update AD-23 (dependency set, ack/queue semantics) and the
     plan index (`docs/plans/README.md` entry for this plan; move the STOMP
     plan's status to reflect the open items).
@@ -623,7 +623,7 @@ COR-11), then client (COR-12), then the error-posture decision (COR-8).
 - **Implementation order (2026-09-17):** the per-file lint fixes of Wave 1
   ride with the slice that owns the file (they are the same lines Wave 2/3
   rewrites), so the effective order is: code slices (Waves 2–4) → repo-wide
-  format pass + the `@blue/no-browser-globals-in-isomorphic` rule fix →
+  format pass + the `@ndigo/no-browser-globals-in-isomorphic` rule fix →
   `pnpm lint` / `format:check` green → docs (Wave 5) → commit slices → Wave 6
   certification. Wave 1 still gates the merge; it just stops being a separate
   first pass.
@@ -715,7 +715,7 @@ COR-11), then client (COR-12), then the error-posture decision (COR-8).
   identity via the `authenticate` hook or a new `socketRequestAuthenticator`
   context bean, `maxConnections` + `authenticateTimeoutMs` added, upgrade
   handshakes respect the header limits, query maps are null-prototype.
-  `blue-api` wires the reference authenticator + `@authenticated` on its STOMP
+  `ndigo-api` wires the reference authenticator + `@authenticated` on its STOMP
   endpoint (e2e authenticates; `/ws/chat` stays the public contrast).
   19 → 33 websocket tests.
 - **Telemetry (TEL-1/3/4 + TEL-2 by integration):** binary payloads measured
@@ -734,11 +734,11 @@ COR-11), then client (COR-12), then the error-posture decision (COR-8).
 ### 7.3 Findings added during certification
 
 **COR-16 (fixed) — the strict typecheck lane was red from the AD-19/20 wave.**
-`apps/blue-todo/src/todo-context.ts:69` called `context.setMessageSource(...)`
+`apps/ndigo-todo/src/todo-context.ts:69` called `context.setMessageSource(...)`
 on an `ApplicationContext`, but the AD-19 commit added that setter to
 `ConfigurableApplicationContext`; `shell-composition.ts` imported two default
 exports as named imports. Fixed by widening `ApplicationBuilder`'s context type
-to `ConfigurableApplicationContext` (`packages/blue-boot/src/application-builder.ts`
+to `ConfigurableApplicationContext` (`packages/ndigo-boot/src/application-builder.ts`
 — it already holds one; `Application.run()` returns that type) and using the
 default imports. Lane now exits 0.
 
@@ -747,16 +747,16 @@ were missing `externalSymbolLinkMappings` entries (added for
 `NodeSocketSessionRegistry[.broadcastTo]`, `ACCEPT_LANGUAGE_ATTRIBUTE`,
 `NavigatorLanguageResolver`, `ReconnectTrigger`, `WebSocketClient`,
 `MessageSource`); the last was an unqualified `{@link MessageSource}` in
-`blue-view-ejs`, now `{@link @blue/content!MessageSource}`.
+`ndigo-view-ejs`, now `{@link @ndigo/content!MessageSource}`.
 
 **GATE-4 (fixed 2026-09-17) — `pnpm audit --prod` reported 1 high
 advisory.** `smol-toml <= 1.7.0` (patched `>= 1.7.1`) via
-`@nx/devkit → nx → smol-toml`, a dev-tool chain (`packages/blue-generators`),
+`@nx/devkit → nx → smol-toml`, a dev-tool chain (`packages/ndigo-generators`),
 untouched by the socket work. Fixed per the owner's decision with the repo's
 existing security-overrides pattern: `pnpm-workspace.yaml` adds
 `smol-toml: '>=1.7.1'` (GHSA-7w5x-hrqm-74c2); the lockfile re-resolved to
 1.8.0 and the importer blocks were renormalized (they were also stale for
-`packages/blue-socket`'s `ws`/`@types/ws` dev-deps removal and `@blue/core`
+`packages/ndigo-socket`'s `ws`/`@types/ws` dev-deps removal and `@ndigo/core`
 dependency — both part of the pre-existing uncommitted wave work). Audit,
 build, all 37 test projects, lint, format, manifest and doc lanes pass with
 the bump.
@@ -768,7 +768,7 @@ throwaway probes (COR-1, COR-2, COR-3, COR-9, COR-10, SEC-1) were re-run
 against the fixed tree as a final acceptance pass (5/5 pass, deleted after —
 the permanent equivalents live in `stomp-broker.spec.ts`,
 `stomp-frame.spec.ts`, `message-store.spec.ts`, `websocket.spec.ts` and
-`apps/blue-api/test/stomp.spec.ts`).
+`apps/ndigo-api/test/stomp.spec.ts`).
 
 **Commit state (HYG-1, executed 2026-09-17):** the tree is committed in 12
 topical slices (core ring buffer → oxlint rule → socket STOMP → libsql store →

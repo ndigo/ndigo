@@ -1,4 +1,4 @@
-# 2026-10-08 Shared-store rate limiting — `@blue/rate-limit`
+# 2026-10-08 Shared-store rate limiting — `@ndigo/rate-limit`
 
 **Date:** 2026-10-08
 **Status:** Executed (see §7)
@@ -22,35 +22,35 @@ itself.
 
 ## 2. Current state (verified 2026-10-08)
 
-| Seam          | What exists                                                                                                         | What is missing                                      |
-| :------------ | :------------------------------------------------------------------------------------------------------------------ | :--------------------------------------------------- |
-| Metadata      | `@rateLimit` class/method decorator (method wins, decoration-time validation) + `RATE_LIMIT_KEY`                    | —                                                    |
-| Enforcement   | `RateLimitInterceptor` (default-on, metadata-gated), 429 + `Retry-After`, keyed on the AD-37 client IP              | an async store call (chain already awaits)           |
-| SPI           | `RateLimiter.consume` (sync), `RateLimitPolicy`, `RateLimitResult`, `validateRateLimitPolicy` in blue-platform-node | async contract (AD-39); a dependency-light leaf home |
-| Counter store | `FixedWindowRateLimiter` (in-memory, SEC-2 bound)                                                                   | shared store; restart survival                       |
-| Wiring        | `NodeAutoConfiguration.rateLimiter()` bean (bare `@entry()`)                                                        | `RATE_LIMITER` token registration (AD-73 pattern)    |
-| Backends      | `RedisConnection` (borrowed; subpaths `./cache`, `./locks`, `./jobs`, `./pubsub`)                                   | a rate-limit driver                                  |
+| Seam          | What exists                                                                                                          | What is missing                                      |
+| :------------ | :------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------- |
+| Metadata      | `@rateLimit` class/method decorator (method wins, decoration-time validation) + `RATE_LIMIT_KEY`                     | —                                                    |
+| Enforcement   | `RateLimitInterceptor` (default-on, metadata-gated), 429 + `Retry-After`, keyed on the AD-37 client IP               | an async store call (chain already awaits)           |
+| SPI           | `RateLimiter.consume` (sync), `RateLimitPolicy`, `RateLimitResult`, `validateRateLimitPolicy` in ndigo-platform-node | async contract (AD-39); a dependency-light leaf home |
+| Counter store | `FixedWindowRateLimiter` (in-memory, SEC-2 bound)                                                                    | shared store; restart survival                       |
+| Wiring        | `NodeAutoConfiguration.rateLimiter()` bean (bare `@entry()`)                                                         | `RATE_LIMITER` token registration (AD-73 pattern)    |
+| Backends      | `RedisConnection` (borrowed; subpaths `./cache`, `./locks`, `./jobs`, `./pubsub`)                                    | a rate-limit driver                                  |
 
 ## 3. Change
 
-1. **`@blue/rate-limit`** (new, layer 2): `RateLimiter` SPI with async
+1. **`@ndigo/rate-limit`** (new, layer 2): `RateLimiter` SPI with async
    `consume` (AD-39), `RateLimitPolicy` / `RateLimitResult`,
    `validateRateLimitPolicy`, `likeRateLimiter` guard,
    `FixedWindowRateLimiter` (moved unchanged; instance-scoped, SEC-2
    bound), `RATE_LIMITER` context token.
-2. **`@blue/platform-node`**: interceptor awaits `consume`; bean
+2. **`@ndigo/platform-node`**: interceptor awaits `consume`; bean
    registered as `@entry(RATE_LIMITER)`; `src/rate-limit.ts` deleted —
    clean cutover, no re-exports; `@rateLimit` metadata and the 429
    behavior unchanged.
-3. **`@blue/redis/rate-limit`**: `RedisRateLimiter` — fixed windows in one
+3. **`@ndigo/redis/rate-limit`**: `RedisRateLimiter` — fixed windows in one
    Lua script (`INCR`, `PEXPIRE` on first request of a window, `PTTL`
-   readback), keys `blue:rl:<namespace>:<windowMs>:<key>`, borrowed
+   readback), keys `ndigo:rl:<namespace>:<windowMs>:<key>`, borrowed
    connection, sealed `close()`, **fail-closed by default**
-   (`onError: 'fail-open'` logs through `@blue/log` and allows — the
+   (`onError: 'fail-open'` logs through `@ndigo/log` and allows — the
    documented availability escape hatch).
 4. **Wiring/docs**: vitest alias + spec-tsconfig paths for both packages;
-   apps importing `RateLimitPolicy` migrate to `@blue/rate-limit`;
-   ARCHITECTURE package map (+`@blue/rate-limit`, redis row, platform-node
+   apps importing `RateLimitPolicy` migrate to `@ndigo/rate-limit`;
+   ARCHITECTURE package map (+`@ndigo/rate-limit`, redis row, platform-node
    hub count 16 → 17); guide 11 §5 + guide 16; security architecture row;
    audit-row note; CHANGELOG; generated API docs.
 
@@ -73,21 +73,21 @@ multi-process deployments override the bean with `RedisRateLimiter`.
 platform error path fails the request. A rate-limit outage must surface,
 not silently widen the budget ledger; it must also not masquerade as a
 429 (`Retry-After` tells the client to retry — wrong for a storage
-failure). `'fail-open'`: log every allowance through `@blue/log` and
+failure). `'fail-open'`: log every allowance through `@ndigo/log` and
 allow. Malformed Lua replies are a storage failure in both postures —
 never a free pass.
 
 ## 6. Verification
 
-- `@blue/rate-limit` (7): kind, allow/deny + `retryAfterMs`, distinct
+- `@ndigo/rate-limit` (7): kind, allow/deny + `retryAfterMs`, distinct
   keys, window reset via real delay, fail-loud policies, SEC-2 cap
   eviction, SEC-2 flood bound.
-- `@blue/redis/rate-limit` (11, live standalone Redis 6.2+): kind, budget
+- `@ndigo/redis/rate-limit` (11, live standalone Redis 6.2+): kind, budget
   with shrinking remainder, window reset, **two nodes share one budget**,
   namespace isolation, distinct keys/windows, fail-loud policies, key
   validation, fail-closed on an unreachable store, fail-open allows +
   logs, closed latch, construction validation.
-- `@blue/platform-node` (6): decorator decoration-time validation,
+- `@ndigo/platform-node` (6): decorator decoration-time validation,
   metadata-gated pass-through, per-address 429 + `Retry-After` problem,
   per-address budgets, method-over-class policy, fallback key.
 - Full gate set (§9 of the review plan) incl. the spec-typecheck lane,
@@ -100,8 +100,8 @@ All changes landed in one pass with the verification above green;
 `pnpm install` wired the new workspace package and the lockfile.
 Substrate notes: the interceptor chain needed only the `await` (async
 `preHandle` was already a supported contract shape); the moved limiter
-spec replaced the `@blue/util` delay with promisified
+spec replaced the `@ndigo/util` delay with promisified
 `node:timers/promises` `setTimeout` so the leaf keeps a single dependency
-(`@blue/factory` for the token). The redis lane's cleanup scans
-`blue:rl:<namespace>:*` exactly like the lock lane scans
-`blue:locks:<namespace>:*`.
+(`@ndigo/factory` for the token). The redis lane's cleanup scans
+`ndigo:rl:<namespace>:*` exactly like the lock lane scans
+`ndigo:locks:<namespace>:*`.

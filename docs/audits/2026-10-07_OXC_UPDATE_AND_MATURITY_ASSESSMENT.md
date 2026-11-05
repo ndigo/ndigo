@@ -71,7 +71,7 @@ in every file (largest: 22 changed lines).
 | :------------------------------------------- | :------------------------------------------------------------- |
 | `pnpm lint` (`--type-aware --deny-warnings`) | exit 0, zero findings                                          |
 | `pnpm format:check`                          | green after the Markdown reformat (1,959 files, 32 threads)    |
-| `@blue/oxlint-plugin` tests                  | 15 files / **206 tests pass** against `@oxlint/plugins` 1.87.0 |
+| `@ndigo/oxlint-plugin` tests                 | 15 files / **206 tests pass** against `@oxlint/plugins` 1.87.0 |
 | `pnpm build`                                 | 40 tasks successful, 0/40 cache hits, 9.3 s                    |
 | `pnpm test`                                  | 96 tasks (59 projects + 37 dependencies) successful            |
 | `pnpm manifest:check` / `pnpm docs:links`    | pass                                                           |
@@ -86,7 +86,7 @@ the three manifests and `pnpm-lock.yaml`.
 Environment: oxc crates **0.153.0** (2026-10-05) installed side-by-side with
 **0.151.0** (the version verified in the 2026-10-06 decorator work) in a
 throwaway directory, run against a standard-decorator fixture and the repo's
-own `packages/blue-service/src/service-decorators.ts`.
+own `packages/ndigo-service/src/service-decorators.ts`.
 
 ### 3.1 oxc-transform — TC39 decorators (the AD-58 revisit trigger)
 
@@ -156,13 +156,13 @@ extraction. Adoption is justified only when a tool genuinely needs ASTs
 
 ### 3.5 oxc-minify
 
-- Correct on compiled output: `packages/blue-core/lib/blue.js` 1,668 B → 281 B,
+- Correct on compiled output: `packages/ndigo-core/lib/ndigo.js` 1,668 B → 281 B,
   `node --check` clean.
 - Emits invalid JavaScript on **unlowered** standard decorators (`{@t …`) —
   usable only downstream of decorator lowering.
 - Vite 8's default `build.minify` is already `oxc` (vite dist:
   `minify = "oxc"`), but every app here sets `minify: false` deliberately —
-  `@blue/dispatcher` resolves parameters by parsing function signatures, which
+  `@ndigo/dispatcher` resolves parameters by parsing function signatures, which
   identifier mangling breaks (2026-10-04 e2e finding).
 
 **Verdict:** already present transitively; nothing to adopt or change.

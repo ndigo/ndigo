@@ -1,7 +1,7 @@
 # Feature Shared Dependency Contract — Micro Frontend Integration
 
 **Date:** 2026-09-03
-**Package:** `@blue/context` (core), `@blue/factory` (ContextToken/version annotations), `@blue/core` (new `@shared` decorator)
+**Package:** `@ndigo/context` (core), `@ndigo/factory` (ContextToken/version annotations), `@ndigo/core` (new `@shared` decorator)
 **Status:** Spec
 **Depends on:** Existing `ApplicationContext` hierarchy, `FeatureContextMountManager`, `ContextToken`, `Registration`
 
@@ -9,11 +9,11 @@
 
 ## 1. Problem
 
-A Blue micro frontend shell may host multiple feature contexts, each with its own bean registry. Without guardrails, two features can each register their own copy of a singleton bean (router, dispatcher, auth client, telemetry), and the application behaves incorrectly — duplicate router subscriptions, conflicting state, wasted memory.
+A Ndigo micro frontend shell may host multiple feature contexts, each with its own bean registry. Without guardrails, two features can each register their own copy of a singleton bean (router, dispatcher, auth client, telemetry), and the application behaves incorrectly — duplicate router subscriptions, conflicting state, wasted memory.
 
-Module Federation solves this at the **build level** with its `shared` / `shareScope` config. Blue needs an equivalent at the **runtime level**, using its existing context hierarchy as the dependency resolution chain.
+Module Federation solves this at the **build level** with its `shared` / `shareScope` config. Ndigo needs an equivalent at the **runtime level**, using its existing context hierarchy as the dependency resolution chain.
 
-**The core insight:** Blue's context hierarchy is already a shared-scope tree. A child context's `getValue()` walks up to the parent. The gap is that **nothing prevents a child from registering its own copy** of a bean that was intended to be a shell-wide singleton. The fix is a declaration system: "this bean is shared by the shell; features must not shadow it."
+**The core insight:** Ndigo's context hierarchy is already a shared-scope tree. A child context's `getValue()` walks up to the parent. The gap is that **nothing prevents a child from registering its own copy** of a bean that was intended to be a shell-wide singleton. The fix is a declaration system: "this bean is shared by the shell; features must not shadow it."
 
 ---
 
@@ -24,7 +24,7 @@ Module Federation solves this at the **build level** with its `shared` / `shareS
 A decorator that marks a bean class as "shell-managed singleton — features resolve this from the parent, never create locally."
 
 ```ts
-import { shared } from '@blue/core';
+import { shared } from '@ndigo/core';
 
 @shared()
 class ShellRouter implements Router {
@@ -53,7 +53,7 @@ class TelemetryService {
 **Implementation sketch:**
 
 ```ts
-// packages/blue-core/src/shared.ts
+// packages/ndigo-core/src/shared.ts
 import { SHARED_METADATA } from './shared-metadata';
 
 interface SharedOptions {
@@ -61,7 +61,7 @@ interface SharedOptions {
     version?: string; // semver range like "^1.0.0"
 }
 
-const SHARED_KEY = Symbol('blue:shared');
+const SHARED_KEY = Symbol('ndigo:shared');
 
 export function shared(options?: SharedOptions) {
     return function (target: Function) {
@@ -166,7 +166,7 @@ This catches deployment skew — if the shell was updated but a feature was not,
 
 ### 2.4 SharedDependencyRegistry
 
-A new service in `@blue/context` that:
+A new service in `@ndigo/context` that:
 
 - Lives in the shell context (registered at init)
 - Accepts declarations from auto-configuration
@@ -292,29 +292,29 @@ When a feature uses a custom `createContext` factory (instead of `parent.newChil
 
 ### New Files
 
-| File                                                        | Description                                                     |
-| ----------------------------------------------------------- | --------------------------------------------------------------- |
-| `packages/blue-core/src/shared.ts`                          | `@shared()` decorator, `isShared()`, `getSharedOptions()`       |
-| `packages/blue-context/src/shared-dependency-registry.ts`   | `SharedDependencyRegistry` interface and default implementation |
-| `packages/blue-context/src/dependency-validation-result.ts` | Validation result type                                          |
-| `packages/blue-context/src/dependency-validation-error.ts`  | Error class for failed validation                               |
+| File                                                         | Description                                                     |
+| ------------------------------------------------------------ | --------------------------------------------------------------- |
+| `packages/ndigo-core/src/shared.ts`                          | `@shared()` decorator, `isShared()`, `getSharedOptions()`       |
+| `packages/ndigo-context/src/shared-dependency-registry.ts`   | `SharedDependencyRegistry` interface and default implementation |
+| `packages/ndigo-context/src/dependency-validation-result.ts` | Validation result type                                          |
+| `packages/ndigo-context/src/dependency-validation-error.ts`  | Error class for failed validation                               |
 
 ### Modified Files
 
-| File                                                         | Change                                                      |
-| ------------------------------------------------------------ | ----------------------------------------------------------- |
-| `packages/blue-factory/src/context-token.ts`                 | Add optional `requiredVersion` to constructor               |
-| `packages/blue-factory/src/factory.ts`                       | `getValue()` checks `requiredVersion` against resolved bean |
-| `packages/blue-context/src/feature-context-mount-manager.ts` | `mount()` validates deps before proceeding                  |
-| `packages/blue-context/src/context-hierarchy.ts`             | `FeatureContextOptions` gains `dependencies` field          |
-| `packages/blue-context/src/index.ts`                         | Export new symbols                                          |
+| File                                                          | Change                                                      |
+| ------------------------------------------------------------- | ----------------------------------------------------------- |
+| `packages/ndigo-factory/src/context-token.ts`                 | Add optional `requiredVersion` to constructor               |
+| `packages/ndigo-factory/src/factory.ts`                       | `getValue()` checks `requiredVersion` against resolved bean |
+| `packages/ndigo-context/src/feature-context-mount-manager.ts` | `mount()` validates deps before proceeding                  |
+| `packages/ndigo-context/src/context-hierarchy.ts`             | `FeatureContextOptions` gains `dependencies` field          |
+| `packages/ndigo-context/src/index.ts`                         | Export new symbols                                          |
 
 ### Unchanged
 
-| `@blue/context` ApplicationContext / GenericApplicationContext | `@blue/router` PartitionRouter / FeatureRoutingRegistry |
-| -------------------------------------------------------------- | ------------------------------------------------------- |
-| Event gateway                                                  | Router interceptors                                     |
-| `@blue/boot` ApplicationBuilder                                | Existing tests                                          |
+| `@ndigo/context` ApplicationContext / GenericApplicationContext | `@ndigo/router` PartitionRouter / FeatureRoutingRegistry |
+| --------------------------------------------------------------- | -------------------------------------------------------- |
+| Event gateway                                                   | Router interceptors                                      |
+| `@ndigo/boot` ApplicationBuilder                                | Existing tests                                           |
 
 ---
 
@@ -339,9 +339,9 @@ The version check requires semver parsing. Options:
 | ----------------------------------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | Should `@shared` validation be **opt-in** or **opt-out**?               | (a) Always enforced, (b) Enabled by config flag          | **Opt-in via manifest** — not all features will declare deps immediately                                                  |
 | Version check: **hard error** or **soft warning**?                      | (a) Throw, (b) Warn + continue                           | **Warning** — same as Module Federation. Breaking a feature because of a minor version mismatch is too aggressive for 1.0 |
-| Who owns the `SharedDependencyRegistry`?                                | (a) Shell context, (b) `@blue/boot`                      | **Shell context** — it's a shell-level concern                                                                            |
+| Who owns the `SharedDependencyRegistry`?                                | (a) Shell context, (b) `@ndigo/boot`                     | **Shell context** — it's a shell-level concern                                                                            |
 | Should version be extracted from `package.json` or explicit annotation? | (a) Auto-read `package.json`, (b) `@shared({ version })` | **Explicit annotation** — `package.json` is unreliable in bundled output                                                  |
-| Rollout: add to existing `FeatureContextMountManager` or new package?   | (a) In-place, (b) New `@blue/mfe`                        | **In-place** — the feature mount manager is the right home. A separate package adds import overhead for no gain           |
+| Rollout: add to existing `FeatureContextMountManager` or new package?   | (a) In-place, (b) New `@ndigo/mfe`                       | **In-place** — the feature mount manager is the right home. A separate package adds import overhead for no gain           |
 
 ---
 
@@ -357,4 +357,4 @@ The version check requires semver parsing. Options:
 | `SharedDependencyRegistry` accepts shell manifest             | `registry.declare({...})` + `registry.validate({...})` returns valid |
 | Existing features without `dependencies` field work unchanged | `mount()` skips validation when deps omitted                         |
 | `pnpm build && pnpm test` passes                              | All 29 targets green                                                 |
-| Existing `blue-demo` Todo feature compiles without change     | No regression                                                        |
+| Existing `ndigo-demo` Todo feature compiles without change    | No regression                                                        |

@@ -1,4 +1,4 @@
-# 2026-10-07 Jobs and transactional outbox — `@blue/jobs`
+# 2026-10-07 Jobs and transactional outbox — `@ndigo/jobs`
 
 **Date:** 2026-10-07
 **Status:** Executed (see §8)
@@ -19,14 +19,14 @@ may email a rolled-back order; send it after `COMMIT` and a crash loses it.
 
 ## 2. Current state (verified 2026-10-07)
 
-| Seam           | What exists                                                                                                                                   | What is missing              |
-| :------------- | :-------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------- |
-| Scheduling     | `@scheduled` + `TaskScheduler` (single-flight, spans, drain)                                                                                  | — (triggers only)            |
-| Durable stores | `LibSQLSessionStore`, `LibSQLQueueMessageStore` in `@blue/orm-drizzle` (`{client?, ownsClient?, url?}` + awaited schema + idempotent dispose) | a job store                  |
-| Redis          | `RedisConnection` (owned/borrowed, `run()`, drain-close); subpaths `./cache`, `./pubsub`                                                      | a job driver                 |
-| Transactions   | `DrizzleTransactionManager.run()` brackets BEGIN/COMMIT/ROLLBACK on one libSQL connection; anything on that client inside `run()` joins it    | an outbox store that uses it |
-| Wiring         | `NodeAutoConfiguration` + `SmartLifecycle` auto-start (`ScheduleRegistry` = the template)                                                     | job beans                    |
-| Contracts      | `JobDriver`/`OutboxStore`/runner/registry                                                                                                     | everything                   |
+| Seam           | What exists                                                                                                                                    | What is missing              |
+| :------------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------- |
+| Scheduling     | `@scheduled` + `TaskScheduler` (single-flight, spans, drain)                                                                                   | — (triggers only)            |
+| Durable stores | `LibSQLSessionStore`, `LibSQLQueueMessageStore` in `@ndigo/orm-drizzle` (`{client?, ownsClient?, url?}` + awaited schema + idempotent dispose) | a job store                  |
+| Redis          | `RedisConnection` (owned/borrowed, `run()`, drain-close); subpaths `./cache`, `./pubsub`                                                       | a job driver                 |
+| Transactions   | `DrizzleTransactionManager.run()` brackets BEGIN/COMMIT/ROLLBACK on one libSQL connection; anything on that client inside `run()` joins it     | an outbox store that uses it |
+| Wiring         | `NodeAutoConfiguration` + `SmartLifecycle` auto-start (`ScheduleRegistry` = the template)                                                      | job beans                    |
+| Contracts      | `JobDriver`/`OutboxStore`/runner/registry                                                                                                      | everything                   |
 
 Probe finding (2026-10-07): `@entry` methods run eagerly, and a sibling
 `this.otherEntry()` call inside one returns a **fresh** instance, not the
@@ -35,7 +35,7 @@ registered bean — collaborators must be resolved through the context (the
 
 ## 3. Decisions
 
-Recorded in AD-72. Summary: one contract package (`@blue/jobs`); one driver SPI
+Recorded in AD-72. Summary: one contract package (`@ndigo/jobs`); one driver SPI
 with lease-based at-least-once semantics; `JobQueue` producer facade;
 `JobRunner` engine (concurrency, timeout, heartbeat, backoff, spans);
 `@jobHandler` discovery mirroring `@scheduled`; outbox store contract + relay +
@@ -54,13 +54,13 @@ producer ──► JobQueue ──► JobDriver ──(claim/lease)──► Job
 
 Packages:
 
-- `@blue/jobs` — contracts, `InProcessJobDriver`, `InProcessOutboxStore`,
+- `@ndigo/jobs` — contracts, `InProcessJobDriver`, `InProcessOutboxStore`,
   `JobQueue`, `JobRunner`, `JobHandlerRegistry`, `OutboxRelay`,
   `JobOutboxPublisher`, `@jobHandler`, telemetry, context tokens.
-- `@blue/orm-drizzle` — `LibSQLJobStore`, `LibSQLOutboxStore` (borrows the
+- `@ndigo/orm-drizzle` — `LibSQLJobStore`, `LibSQLOutboxStore` (borrows the
   `DrizzleDataSource` client so appends join `@transactional`).
-- `@blue/redis/jobs` — `RedisJobDriver` (atomic claim via one Lua script).
-- `@blue/platform-node` — `JOB_DRIVER`/`JOB_QUEUE`/`JOB_HANDLER_REGISTRY`/
+- `@ndigo/redis/jobs` — `RedisJobDriver` (atomic claim via one Lua script).
+- `@ndigo/platform-node` — `JOB_DRIVER`/`JOB_QUEUE`/`JOB_HANDLER_REGISTRY`/
   `JOB_RUNNER` beans; registry phase 0 (refresh scan), runner phase 10 with
   explicit `start()` (a poll timer keeps the process alive — the HTTPServer
   precedent; `autoStart: true` opts into refresh-driven start).
@@ -84,12 +84,12 @@ Packages:
 
 | Phase | Deliverable                                                                                          | Verify                                  |
 | :---- | :--------------------------------------------------------------------------------------------------- | :-------------------------------------- |
-| 0     | Package scaffold `@blue/jobs` (generator), tokens, types                                             | `pnpm --filter @blue/jobs build:lib`    |
+| 0     | Package scaffold `@ndigo/jobs` (generator), tokens, types                                            | `pnpm --filter @ndigo/jobs build:lib`   |
 | 1     | `InProcessJobDriver` + `JobQueue` (RED-first specs)                                                  | package tests                           |
 | 2     | `@jobHandler` + `JobHandlerRegistry` + `JobRunner` (+ spans, timeout, backoff, heartbeat)            | package tests incl. deterministic clock |
 | 3     | Outbox: contract + `InProcessOutboxStore` + `OutboxRelay` + `JobOutboxPublisher`                     | package tests incl. lease re-claim      |
-| 4     | `LibSQLJobStore` + `LibSQLOutboxStore`; transactional rollback/commit proof                          | `@blue/orm-drizzle` tests               |
-| 5     | `RedisJobDriver` (`@blue/redis/jobs`)                                                                | Redis-gated tests (existing lane)       |
+| 4     | `LibSQLJobStore` + `LibSQLOutboxStore`; transactional rollback/commit proof                          | `@ndigo/orm-drizzle` tests              |
+| 5     | `RedisJobDriver` (`@ndigo/redis/jobs`)                                                               | Redis-gated tests (existing lane)       |
 | 6     | `NodeAutoConfiguration` beans + runner/registry lifecycle; guide 22; READMEs; CHANGELOG; Package Map | full gate set (§7)                      |
 
 ## 7. Verification
@@ -110,20 +110,20 @@ under concurrent claim calls.
 
 Landed in this cycle, all phases:
 
-- **Phase 0–1** — `@blue/jobs` scaffolded (generator), `InProcessJobDriver`
+- **Phase 0–1** — `@ndigo/jobs` scaffolded (generator), `InProcessJobDriver`
   (runAt ordering, lease reclaim inside `claim`, attempts-at-claim, terminal
   `fail`), `JobQueue` defaults/validation.
 - **Phase 2** — `@jobHandler` + `JobHandlerRegistry` (context scan, duplicate/
   ownerless/class-registered failures), `JobRunner` (single-flight tick,
   concurrency slots, abort-on-timeout, lease heartbeat, exponential backoff,
-  `jobs.job.<type>` spans, `@blue/log` outcomes, `tick()`/`drain()` test seams).
+  `jobs.job.<type>` spans, `@ndigo/log` outcomes, `tick()`/`drain()` test seams).
 - **Phase 3** — `OutboxStore` contract, `InProcessOutboxStore` (lease-based
   claim/reclaim), `OutboxRelay` (batch publish, `markPublished`, optional
   `prunePublished`), `JobOutboxPublisher`.
 - **Phase 4** — `LibSQLJobStore` (single-statement atomic claim `RETURNING`,
   lease reclaim) and `LibSQLOutboxStore` (borrowed data-source client);
   transactional proof: `@transactional` commit publishes, rollback discards.
-- **Phase 5** — `RedisJobDriver` (`@blue/redis/jobs`): ready/lease ZSETs +
+- **Phase 5** — `RedisJobDriver` (`@ndigo/redis/jobs`): ready/lease ZSETs +
   record hash, Lua-script atomic claim/reclaim, owned/borrowed connection.
 - **Phase 6** — `NodeAutoConfiguration` beans (`jobDriver`, `jobQueue`,
   `jobHandlerRegistry`, `jobRunner`); guide 22; package READMEs (jobs, redis

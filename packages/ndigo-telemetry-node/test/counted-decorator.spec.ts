@@ -9,7 +9,6 @@
  * datapoint. There is no instrumentation/registry indirection to enable
  * (TEL-03).
  *
- * @module ndigo-telemetry-node
  * @since 1.0.0
  * @author Jeff Rose
  */

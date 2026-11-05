@@ -1,7 +1,6 @@
 /**
  * The `JobDriver` SPI — the one seam every jobs backend implements.
  *
- * @module ndigo-jobs
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -18,13 +17,13 @@ import type { ClaimOptions, JobId, JobRecord, JobRequest } from './job';
  * - **Lease-based.** `claim` returns jobs leased for `leaseMs`; expired leases
  *   are reclaimed by the next `claim` call (no sweeper, no leader election).
  * - **JSON payloads.** `enqueue` validates serializability (see
- *   {@link serializeJobPayload}) and stores text, not object graphs.
+ *   {@link request.serializeJobPayload | serializeJobPayload}) and stores text, not object graphs.
  * - **Terminal ends.** `complete` and `fail` remove the job from the queue;
  *   `fail` records the error in the caller's telemetry/log, not in storage
  *   (dead-letter inspection is out of scope — AD-72 D-2).
  *
  * Implementations are registered under the `jobDriver` bean; the default is
- * {@link InProcessJobDriver}, which is explicitly non-durable.
+ * {@link in-process-job-driver.InProcessJobDriver | InProcessJobDriver}, which is explicitly non-durable.
  *
  * @since 1.0.0
  */

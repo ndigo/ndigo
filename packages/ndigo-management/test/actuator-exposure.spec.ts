@@ -1,6 +1,6 @@
 /**
  * Exposure-model and `management.*`-section specs (AD-76 D-2/D-5).
- * @module ndigo-management
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

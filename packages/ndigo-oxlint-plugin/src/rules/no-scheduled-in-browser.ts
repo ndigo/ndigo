@@ -1,7 +1,7 @@
 /**
  * Rule that flags `@ndigo/scheduler` imports in files that also import
  * browser-platform packages.
- * @module ndigo-oxlint-plugin
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

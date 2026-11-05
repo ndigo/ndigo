@@ -1,6 +1,6 @@
 /**
  * Type-safe bean handles for the Node platform's shared beans (AD-34 D1).
- * @module ndigo-platform-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

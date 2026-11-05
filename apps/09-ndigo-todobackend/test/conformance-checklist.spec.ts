@@ -8,7 +8,6 @@
  * pipeline, so a regression in any documented behavior fails a local lane
  * instead of surfacing only in the manual runner.
  *
- * @module ndigo-todobackend
  * @since 1.0.0
  * @author Jeff Rose
  */

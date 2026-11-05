@@ -27,7 +27,6 @@
  * host compromise or code execution — the marker version prefix is the
  * documented migration seam to a KMS-envelope backend.
  *
- * @module ndigo-context
  * @since 1.0.0
  * @author Jeff Rose
  */

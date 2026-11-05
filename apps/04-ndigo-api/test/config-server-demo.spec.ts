@@ -9,7 +9,7 @@
  *
  * Production stance: point NDIGO_CONFIG_SERVER_URL at a real config server;
  * the demo endpoints exist so the surface runs with zero external infra.
- * @module ndigo-api
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

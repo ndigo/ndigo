@@ -12,7 +12,6 @@
  * adding a `Domain`) while keeping the prefix makes browsers reject the
  * cookie outright, so mutating requests fail closed.
  *
- * @module ndigo-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */

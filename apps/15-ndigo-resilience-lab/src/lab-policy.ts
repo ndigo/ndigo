@@ -3,7 +3,7 @@
  * and the tests all quote. Kept small and deterministic on purpose: three retry
  * attempts, three consecutive failures to open a circuit, and a 1.5 s reset
  * window the control-plane clock can advance instantly.
- * @module ndigo-resilience-lab
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

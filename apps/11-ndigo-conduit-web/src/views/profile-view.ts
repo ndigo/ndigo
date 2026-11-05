@@ -6,7 +6,6 @@
  * tab is a real, linkable location; the loaded window is cached in
  * `ProfileService` under the username + tab + page key.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

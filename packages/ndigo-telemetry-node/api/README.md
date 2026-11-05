@@ -4,38 +4,13 @@
 
 # @ndigo/telemetry-node v0.0.1
 
-NodeSDK configuration and the Node platform instrumentations.
+## Modules
 
-## Since
-
-1.0.0
-
-## Author
-
-Jeff Rose
-
-## Classes
-
-- [ContextInstrumentation](classes/ContextInstrumentation.md)
-- [HTTPResponseViewTargetInstrumentation](classes/HTTPResponseViewTargetInstrumentation.md)
-- [HTTPServerInstrumentation](classes/HTTPServerInstrumentation.md)
-- [PrometheusMetricReader](classes/PrometheusMetricReader.md)
-- [ServerSentEventViewInstrumentation](classes/ServerSentEventViewInstrumentation.md)
-- [SeverityFilterLogRecordProcessor](classes/SeverityFilterLogRecordProcessor.md)
-- [WebSocketServerInstrumentation](classes/WebSocketServerInstrumentation.md)
-
-## Interfaces
-
-- [TelemetryConfig](interfaces/TelemetryConfig.md)
-- [WebSocketServerInstrumentationOptions](interfaces/WebSocketServerInstrumentationOptions.md)
-
-## Type Aliases
-
-- [ExporterSpec](type-aliases/ExporterSpec.md)
-- [ResolvedExporter](type-aliases/ResolvedExporter.md)
-- [SamplerSpec](type-aliases/SamplerSpec.md)
-
-## Functions
-
-- [configureTelemetry](functions/configureTelemetry.md)
-- [resolveExporter](functions/resolveExporter.md)
+- [index](index/README.md)
+- [instrumentation/http-response-view-target/http-response-view-target](instrumentation/http-response-view-target/http-response-view-target/README.md)
+- [instrumentation/http-server/http-server](instrumentation/http-server/http-server/README.md)
+- [instrumentation/server-sent-event-view/server-sent-event-view](instrumentation/server-sent-event-view/server-sent-event-view/README.md)
+- [instrumentation/websocket-server/websocket-server](instrumentation/websocket-server/websocket-server/README.md)
+- [metrics/prometheus-metric-reader](metrics/prometheus-metric-reader/README.md)
+- [node-config](node-config/README.md)
+- [severity-filter-log-record-processor](severity-filter-log-record-processor/README.md)

@@ -1,7 +1,6 @@
 /**
  * Context tokens for the `@ndigo/locks` beans (AD-73 D-4).
  *
- * @module ndigo-locks
  * @since 1.0.0
  * @author Jeff Rose
  */

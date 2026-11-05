@@ -1,6 +1,6 @@
 /**
  * Echo probes: `/anything`, `/get`, `/post`, `/headers`, `/ip`.
- * @module ndigo-httpbin
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

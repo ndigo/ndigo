@@ -15,7 +15,7 @@
  * @requestMapping({ value: '/items/:id', queryParams: queryParamCondition('filter', 'all') })
  * @requestMapping({ value: '/x', queryParams: queryParamCondition('flag', undefined, { negate: true }) })
  * ```
- * @module ndigo-dispatcher
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,5 +1,4 @@
 /**
- * @module ndigo-test
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -10,7 +9,6 @@
  * matrix params, query params) so an in-process dispatch behaves identically
  * to a real HTTP request.
  *
- * @module
  * @since 1.0.0
  */
 

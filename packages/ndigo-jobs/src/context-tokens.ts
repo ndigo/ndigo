@@ -1,7 +1,6 @@
 /**
  * Type-safe bean handles for the ndigo-jobs contracts.
  *
- * @module ndigo-jobs
  * @since 1.0.0
  * @author Jeff Rose
  */

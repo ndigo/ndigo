@@ -3,7 +3,6 @@
  * bundle named `client.js` plus `client.css`), which the Node server serves
  * under `/static/`.
  *
- * @module ndigo-chat
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,6 +1,6 @@
 /**
  * Provides an isomorphic abstraction over DOM parsing and element creation.
- * @module ndigo-dom
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

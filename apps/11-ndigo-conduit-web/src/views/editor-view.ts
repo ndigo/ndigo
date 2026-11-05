@@ -9,7 +9,6 @@
  * (`parseTags`: trimmed, de-duplicated, empties dropped) before they reach the
  * API.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

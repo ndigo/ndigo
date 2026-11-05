@@ -1,7 +1,6 @@
 /**
  * <%= description %>.
  *
- * @module ndigo-<%= name %>
  * @since 1.0.0
  * @author Jeff Rose
  */

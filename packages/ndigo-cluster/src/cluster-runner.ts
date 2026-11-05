@@ -15,7 +15,6 @@
  * default signal host is `process` itself. The default logger is
  * `@ndigo/log` (the `ndigo-cluster:runner` channel).
  *
- * @module ndigo-cluster
  * @since 1.0.0
  * @author Jeff Rose
  */

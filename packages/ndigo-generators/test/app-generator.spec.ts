@@ -4,7 +4,6 @@
  * manifest properties the app gate (`scripts/check-manifests.mjs` rule 10)
  * depends on.
  *
- * @module ndigo-generators
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -135,7 +134,7 @@ describe('app generator', () => {
 
         const index = read(tree, `${appDir}/src/index.ts`);
         expect(index).toContain("process.env['PORT'] ??= '3020'");
-        expect(index).toContain('@module ndigo-todo-widget');
+        expect(index).toContain('@author Jeff Rose');
         expect(read(tree, `${appDir}/src/todo-widget-configuration.ts`)).toContain('@entry()');
         expect(read(tree, `${appDir}/README.md`)).toContain('apps/03-ndigo-todo-widget');
         expect(read(tree, `${appDir}/README.md`)).toContain('3020');

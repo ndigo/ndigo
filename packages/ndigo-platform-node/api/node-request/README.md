@@ -1,0 +1,20 @@
+[**@ndigo/platform-node v0.0.1**](../README.md)
+
+***
+
+[@ndigo/platform-node](../README.md) / node-request
+
+# node-request
+
+## Interfaces
+
+- [NodeRequest](interfaces/NodeRequest.md)
+
+## Variables
+
+- [NODE\_REQUEST\_ATTRIBUTE](variables/NODE_REQUEST_ATTRIBUTE.md)
+- [NODE\_RESPONSE\_ATTRIBUTE](variables/NODE_RESPONSE_ATTRIBUTE.md)
+
+## Functions
+
+- [getNodeRequest](functions/getNodeRequest.md)

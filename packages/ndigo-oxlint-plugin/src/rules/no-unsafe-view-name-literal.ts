@@ -1,6 +1,6 @@
 /**
  * Rule that flags unsafe string literals used as view names.
- * @module ndigo-oxlint-plugin
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

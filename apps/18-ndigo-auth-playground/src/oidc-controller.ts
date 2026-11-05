@@ -33,7 +33,6 @@
  * a server-held token or with a rejected/rotated-out one is
  * `oidc_refresh_unavailable` / `oidc_refresh_failed`.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

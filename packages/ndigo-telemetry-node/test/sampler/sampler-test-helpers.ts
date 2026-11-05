@@ -5,7 +5,7 @@
  * (later registrations are silently ignored — see AD-32), so every sampler
  * scenario runs in its own spec file: one `configureTelemetry` call per
  * worker process, asserting recording decisions at span start.
- * @module ndigo-telemetry-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

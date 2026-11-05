@@ -1,6 +1,6 @@
 /**
  * Per-name logger registry specs (AD-76 D-7).
- * @module ndigo-log
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -7,7 +7,6 @@
  * `@authenticated`/`@authorized` metadata — the guard must check the
  * request itself (SEC-1 wave finding).
  *
- * @module ndigo-api
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -2,7 +2,7 @@
  * AD-76 demo gate: the ndigo-api actuator surface served through the real
  * bootstrap path (the same `ApplicationBuilder` assembly `src/index.ts`
  * runs, with the app's own property sources).
- * @module ndigo-api
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,6 +1,6 @@
 /**
  * TC39 Stage 3 decorator and metadata utilities for shared dependency declarations.
- * @module ndigo-core
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

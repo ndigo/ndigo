@@ -1,5 +1,4 @@
 /**
- * @module ndigo-generators
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -10,6 +9,10 @@ import { validateKebabName } from '../../_validators.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+/**
+ * Options for the `readme` generator: the package name, its short description,
+ * and an optional destination directory (defaults to `packages/ndigo-<name>`).
+ */
 export interface ReadmeGeneratorSchema {
     /** Package name (kebab-case, without the `ndigo-` prefix). */
     name: string;

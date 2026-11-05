@@ -5,7 +5,6 @@
  * and tests resolve `@ndigo/*` against `packages/<pkg>/src` through the shared alias
  * table (HI-6/TST-B).
  *
- * @module ndigo-<%= name %>
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -7,7 +7,6 @@
  * (`JWT_ACCESS_TTL_MS`), and each Vitest file gets its own worker, so the short
  * lifetime cannot leak into the other JWT cases.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

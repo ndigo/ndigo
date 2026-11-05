@@ -9,7 +9,7 @@
  * the management health indicator) branches on the mode. Only this module does:
  * the Redis adapters are constructed and connected here, and they are the
  * resources this object hands back to the app for ordered shutdown.
- * @module ndigo-redis-fanout
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

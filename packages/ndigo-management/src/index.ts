@@ -1,7 +1,7 @@
 /**
  * Ndigo management endpoints — actuator-style `/health`, `/metrics`,
  * `/loggers`, `/env` and `/configprops` (AD-76).
- * @module ndigo-management
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

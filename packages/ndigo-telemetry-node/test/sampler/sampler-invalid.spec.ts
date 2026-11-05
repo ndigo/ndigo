@@ -3,7 +3,7 @@
  * time, before any provider is registered (AD-32 D-1). Validation runs
  * before the once-per-process latch, so every rejection throws in one
  * process.
- * @module ndigo-telemetry-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

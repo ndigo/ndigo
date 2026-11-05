@@ -1,7 +1,7 @@
 /**
  * Sampler default: parent-based always-on (AD-32 D-1) — the current
  * effective behavior, pinned before any drift is possible.
- * @module ndigo-telemetry-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

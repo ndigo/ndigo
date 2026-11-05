@@ -10,7 +10,7 @@
  * decryption wiring the raw marker binds instead. Documents the two-channel
  * posture — ciphertext in one source, key in another — and that the plaintext
  * is served only to an authenticated demo caller.
- * @module ndigo-api
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

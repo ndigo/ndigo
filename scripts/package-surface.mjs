@@ -6,7 +6,6 @@
  * `agent-local/` instead. `scripts/check-manifests.mjs` enforces the rule via
  * `surfaceViolations`; `scripts/test-package-surface.mjs` pins its behavior.
  *
- * @module scripts/package-surface
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,5 +1,4 @@
 /**
- * @module ndigo-factory
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -9,6 +8,11 @@ import { Aware, AsAware, likeAwareAnd } from './aware';
 import { Registry } from './registry';
 import { EntryProcessor } from './entry-processor';
 
+/**
+ * The minimal container contract: `getInstance` resolves a registered name to
+ * its value, instantiating constructors and returning registered instances
+ * and primitives as-is (identity preserved).
+ */
 export interface Factory {
     /**
      * Returns the value registered under `name`: constructor-registered

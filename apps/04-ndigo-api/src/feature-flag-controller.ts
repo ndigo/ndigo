@@ -7,7 +7,6 @@
  * value in a config source + `environment.refresh()` gates the route
  * without a redeploy.
  *
- * @module ndigo-api
  * @since 1.0.0
  * @author Jeff Rose
  */

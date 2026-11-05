@@ -1,5 +1,4 @@
 /**
- * @module ndigo-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -15,6 +14,12 @@ import type { InterceptorDenial } from './route-handler-denial';
  */
 export type PreHandleOutcome = boolean | InterceptorDenial;
 
+/**
+ * Around-handler hooks, run in chain order: `preHandle` before the handler
+ * (its outcome may short-circuit the chain), `postHandle` after a successful
+ * return, and `completeHandle` once the request is done — including the error
+ * path. Every hook may be async; the chain awaits each in turn.
+ */
 export interface RouteHandlerInterceptor {
     completeHandle(route: Route, handler: object | undefined, error: Error): void | Promise<void>;
     postHandle(route: Route, handler: object | undefined, modelAndView: ModelAndView): void | Promise<void>;

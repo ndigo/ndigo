@@ -1,6 +1,6 @@
 /**
  * Represents an object that can determine if it matches a given value.
- * @module ndigo-core
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

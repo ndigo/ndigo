@@ -11,7 +11,6 @@
  * endpoint. Call it on the refreshed context, before the server accepts
  * requests (guides 06/10).
  *
- * @module ndigo-telemetry-lab
  * @since 1.0.0
  * @author Jeff Rose
  */

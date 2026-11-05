@@ -1,6 +1,6 @@
 /**
  * A JavaScript primitive value.
- * @module ndigo-core
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

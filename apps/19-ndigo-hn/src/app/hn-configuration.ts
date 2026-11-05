@@ -5,7 +5,6 @@
  * their tokens; the route controllers are entries too, because the dispatcher
  * discovers `@routeMapping` handlers by scanning the context.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

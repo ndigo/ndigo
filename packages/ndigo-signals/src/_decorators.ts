@@ -1,6 +1,6 @@
 /**
  * Ndigo Signals decorator API.
- * @module ndigo-signals
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

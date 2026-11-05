@@ -10,7 +10,6 @@
  * thread views subscribe to its signals so hydration, incremental rendering,
  * and stale/online transitions re-render in place.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -15,7 +15,6 @@
  * The computation itself is deterministic on purpose: the checksum is a pure
  * function of the payload, so every assertion and transcript is reproducible.
  *
- * @module ndigo-telemetry-lab
  * @since 1.0.0
  * @author Jeff Rose
  */

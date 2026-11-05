@@ -1,13 +1,13 @@
 /**
  * OS-signal-driven graceful shutdown for Node.js platform applications.
- * @module ndigo-platform-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */
 import type { ApplicationContext } from '@ndigo/context';
 
 /**
- * A resource with a closeable lifecycle, e.g. an {@link HTTPServer}.
+ * A resource with a closeable lifecycle, e.g. an {@link http-server.HTTPServer | HTTPServer}.
  */
 export interface Closable {
     /** Close the resource. May be async; it is awaited during shutdown. */
@@ -25,7 +25,7 @@ export interface GracefulShutdownOptions {
     signals?: NodeJS.Signals[];
     /**
      * Extra resources to close, in order, before the context. Typically the
-     * application's {@link HTTPServer}.
+     * application's {@link http-server.HTTPServer | HTTPServer}.
      * @default []
      */
     resources?: ReadonlyArray<Closable>;

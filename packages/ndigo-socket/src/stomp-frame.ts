@@ -27,7 +27,7 @@
  * The terminating NUL may be followed by any number of EOLs ("The NULL
  * octet can be optionally followed by multiple EOLs", §1.2); any other
  * octet after the NUL is trailing data and fatal.
- * @module ndigo-socket
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -2,7 +2,7 @@
  * `currentTraceContext` (AD-32 D-4): boundary-mocked like
  * `ContextAwareLogger`, so no global provider is needed and every case
  * runs in one process.
- * @module ndigo-telemetry
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

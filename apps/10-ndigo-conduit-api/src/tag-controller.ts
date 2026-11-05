@@ -4,7 +4,6 @@
  * The spec leaves ordering open; this app answers sorted, deduplicated tags so
  * the response is stable across runs (see the README's conformance note).
  *
- * @module ndigo-conduit-api
  * @since 1.0.0
  * @author Jeff Rose
  */

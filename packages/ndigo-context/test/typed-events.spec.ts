@@ -3,7 +3,7 @@
  * payloads for declared events while the raw EventEmitter surface stays
  * usable. The positive usages below double as the compile gate — a payload
  * regressing to `unknown[]` would fail assignment/access here.
- * @module ndigo-context
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -9,7 +9,6 @@
  * rides the upgrade URL as `?token=` — the only channel a browser `WebSocket`
  * has.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

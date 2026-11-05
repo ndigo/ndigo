@@ -5,7 +5,6 @@
  * and connectivity signals, so a deep link that renders from a persisted
  * snapshot and then revalidates over the network updates in place.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

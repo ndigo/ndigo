@@ -5,7 +5,7 @@
  * environment, where `document`/`window`/`navigator` are absent.
  *
  * @vitest-environment node
- * @module ndigo-platform-web
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

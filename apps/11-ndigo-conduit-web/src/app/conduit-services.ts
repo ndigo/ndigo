@@ -11,7 +11,6 @@
  * Everything is constructed here and nowhere else, so a spec can build the same
  * graph against a stub {@link ConduitApi} or a `fetch` double.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

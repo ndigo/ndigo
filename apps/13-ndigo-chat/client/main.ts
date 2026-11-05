@@ -1,7 +1,7 @@
 /**
  * Client entry: imports the stylesheet and the `chat-room` element (whose
  * `@TagMapping` decorator registers it), upgrading the shell's inert markup.
- * @module ndigo-chat
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -38,7 +38,7 @@ oxlint executes the TypeScript directly (Node ≥24 type stripping), so:
 | `internal/no-mixed-case-acronyms`              | Acronyms follow `STYLE_GUIDE` casing                                                              |
 | `internal/no-uppercase-regexp-constants`       | RegExp instances are objects — camelCase                                                          |
 | `internal/no-global-state-in-create-factories` | `create*` factories must not reference mutable module/class state — the `create*` vs `get*` split |
-| `internal/requires-doc-header`                 | Source files begin with the canonical doc header (`@module`/`@since`/`@author`)                   |
+| `internal/requires-doc-header`                 | Source files begin with the canonical doc header (`@since`/`@author`)                             |
 | `internal/no-upward-layer-imports`             | Package imports flow only downward through the derived layer ranks (see below)                    |
 
 ## Layer ranks

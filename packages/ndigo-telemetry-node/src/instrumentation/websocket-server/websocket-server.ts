@@ -1,6 +1,6 @@
 /**
  * OpenTelemetry instrumentation for WebSocket session lifecycle + fan-out.
- * @module ndigo-telemetry-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

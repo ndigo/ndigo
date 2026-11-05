@@ -7,7 +7,6 @@
  * short JWT lifetime, a different database file) rather than to configure a
  * deployment.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

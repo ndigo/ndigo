@@ -3,7 +3,6 @@
  * migrations under `db/migrations` (AD-78 D-5; run by `ndigo db status` as
  * the app's `scripts.db:status`).
  *
- * @module ndigo-api
  * @since 1.0.0
  * @author Jeff Rose
  */

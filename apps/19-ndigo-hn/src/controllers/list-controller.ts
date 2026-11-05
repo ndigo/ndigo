@@ -7,7 +7,6 @@
  * The class-level `@routeMapping('/')` is the path prefix each method route is
  * merged with.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

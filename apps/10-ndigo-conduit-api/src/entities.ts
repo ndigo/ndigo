@@ -8,7 +8,6 @@
  * exposes both as collections with counts, which the in-memory manager
  * cannot express as a derived relation.
  *
- * @module ndigo-conduit-api
  * @since 1.0.0
  * @author Jeff Rose
  */

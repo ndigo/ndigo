@@ -1,5 +1,4 @@
 /**
- * @module ndigo-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -18,7 +17,7 @@ import { getNodeRequest } from './node-request';
  *
  * Reads `request.session` — the server-side session bag populated by
  * middleware before dispatch (session persistence/restoration is an open
- * contract; see {@link NodeRequest.session}).
+ * contract; see {@link node-request.NodeRequest#session | NodeRequest.session}).
  */
 export class NodeRequestSessionValueMethodArgumentResolver extends AbstractPlatformArgumentResolver {
     constructor() {

@@ -14,7 +14,6 @@
  * @ndigo/core (DataBinder's keypath family). A dotted source key that needs
  * array indexing should use a DataBinder-bound source instead.
  *
- * @module ndigo-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -9,7 +9,6 @@
  * verification and the local session issuance are all exercised for real —
  * nothing here is mocked, and the issuer is started and stopped by the harness.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

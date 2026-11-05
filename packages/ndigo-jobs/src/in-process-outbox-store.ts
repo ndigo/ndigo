@@ -1,7 +1,6 @@
 /**
  * The in-process reference outbox store (development and tests).
  *
- * @module ndigo-jobs
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,5 +1,4 @@
 /**
- * @module ndigo-telemetry
  * @since 1.0.0
  * @author Jeff Rose
  * @note OTel 2.x sweep (2026-09-15): all `@opentelemetry/*` usages verified

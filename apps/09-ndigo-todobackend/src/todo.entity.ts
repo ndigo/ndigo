@@ -1,6 +1,6 @@
 /**
  * The `todos` row — Todo-Backend's five-field resource as an `@ndigo/orm` entity.
- * @module ndigo-todobackend
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

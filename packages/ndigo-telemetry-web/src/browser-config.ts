@@ -2,7 +2,6 @@
  * Browser telemetry bootstrap: global OTel providers, console/OTLP gating,
  * once-per-process idempotency, and flush-on-unload.
  *
- * @module ndigo-telemetry-web
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -25,6 +24,11 @@ import { LoggerFactory } from '@ndigo/telemetry';
 
 const logger = getLogger('ndigo-telemetry-web:browser-config');
 
+/**
+ * Browser telemetry configuration: the service name reported on every signal,
+ * an optional OTLP/HTTP `traceUrl`, and `useConsoleExporters` to silence the
+ * console exporters in production.
+ */
 export interface BrowserTelemetryConfig {
     serviceName: string;
     /**

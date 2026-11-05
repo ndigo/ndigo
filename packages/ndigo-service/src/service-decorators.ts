@@ -1,6 +1,6 @@
 /**
  * Declarative service-client decorators (AD-08).
- * @module ndigo-service
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -167,4 +167,8 @@ export const patchCall = callDecorator('PATCH');
  */
 export const queryCall = callDecorator('QUERY');
 
+/**
+ * The HTTP verbs a service call maps to — re-exported from `@ndigo/http`
+ * so a service module needs one import.
+ */
 export type { HTTPMethod } from '@ndigo/http';

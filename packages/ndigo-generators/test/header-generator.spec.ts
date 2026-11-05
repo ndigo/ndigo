@@ -1,18 +1,17 @@
 /**
- * @module ndigo-generators
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 import type { Tree } from '@nx/devkit';
-import headerGenerator, { inferModule } from '../src/generators/header/generator';
+import headerGenerator from '../src/generators/header/generator';
 
 vi.mock('@nx/devkit', () => ({
     formatFiles: vi.fn(async () => undefined),
 }));
 
-const HEADER = '/**\n * @module ndigo-core\n * @since 1.0.0\n * @author Jeff Rose\n */\n';
+const HEADER = '/**\n * @since 1.0.0\n * @author Jeff Rose\n */\n';
 
 describe('header generator', () => {
     let tree: Tree;
@@ -30,26 +29,17 @@ describe('header generator', () => {
         expect(content).toBe(`${HEADER}export const x = 1;\n`);
     });
 
-    it('infers the module from the package directory', () => {
-        expect(inferModule('packages/ndigo-core/src/widget.ts')).toBe('ndigo-core');
-        expect(inferModule('apps/03-ndigo-todo/src/index.ts')).toBe('ndigo-todo');
-        expect(inferModule('apps/ndigo-views/src/index.ts')).toBe('ndigo-views');
-        expect(inferModule('src/tool.ts')).toBe('tool');
-    });
-
-    it('honors explicit module, summary, and author options', async () => {
+    it('honors explicit summary and author options', async () => {
         tree.write('packages/ndigo-core/src/widget.ts', 'export const x = 1;\n');
 
         await headerGenerator(tree, {
             file: 'packages/ndigo-core/src/widget.ts',
-            module: 'widget',
             summary: 'Widget utilities',
             author: 'Ada Lovelace',
         });
 
         const content = tree.read('packages/ndigo-core/src/widget.ts', 'utf-8');
         expect(content).toContain(' * Widget utilities.');
-        expect(content).toContain(' * @module widget');
         expect(content).toContain(' * @author Ada Lovelace');
     });
 

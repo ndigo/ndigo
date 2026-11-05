@@ -6,7 +6,7 @@
  * The lease table is process-wide (single-node semantics), so every test
  * uses its own key — cross-test leftovers on the real clock must never
  * satisfy or break another test's expectations.
- * @module ndigo-locks
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

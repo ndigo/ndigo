@@ -10,7 +10,6 @@
  * context — a different request, a background job — keep using the pool instead
  * of silently joining someone else's transaction.
  *
- * @module ndigo-orm-drizzle
  * @since 1.0.0
  * @author Jeff Rose
  */

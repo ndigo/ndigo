@@ -5,7 +5,7 @@
  * to guard the chain.
  *
  * @vitest-environment node
- * @module ndigo-telemetry-web
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

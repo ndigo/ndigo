@@ -1,5 +1,4 @@
 /**
- * @module ndigo-core
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -164,6 +163,9 @@ class GlobPatternComparator extends AbstractValueComparator {
 }
 
 /**
+ * Path matcher for literal comparison: `merge` joins two patterns and `match`
+ * accepts only an exact string match. The identity matcher for callers that
+ * need pattern plumbing without wildcard semantics.
  */
 export class EqualsPathMatcher implements PathMatcher {
     merge(pattern1: string, pattern2: string): string {
@@ -222,6 +224,9 @@ export class EqualsPathMatcher implements PathMatcher {
 }
 
 /**
+ * `PathMatcher` for URL globs: translates a pattern (`*`, `**`, `?`, character
+ * classes) into a regular expression, caches compiled patterns in a bounded
+ * LRU keyed by pattern string, and compares patterns by specificity.
  */
 export class URLGlobPathMatcher implements PathMatcher {
     #cache: LRUCache<string, RegExp>;
@@ -280,6 +285,11 @@ export class URLGlobPathMatcher implements PathMatcher {
     }
 }
 
+/**
+ * Wildcard-pattern analysis used by `GlobPatternComparator`: counts `*` and
+ * `**` occurrences and answers the specificity questions ordering depends on
+ * (`isLeastSpecific`, `isPrefixPattern`).
+ */
 export class GlobPatternInfo {
     #catchAllPattern: boolean;
 
@@ -341,6 +351,11 @@ export class GlobPatternInfo {
 }
 
 // ! Not sure I like this name. Should really come up with a better one.
+/**
+ * Mixin adding include/exclude pattern filtering to a class that owns a
+ * `pathMatcher`: `matches()` accepts a path when it satisfies every include
+ * pattern and no exclude pattern, and rejects an empty include list.
+ */
 export const AsPathMatcherFilter = <T extends Constructable>(superclass: T): Constructable<PathMatcherFilter> & T =>
     class extends superclass implements PathMatcherFilter {
         #excludePatterns: string[] | null = null;

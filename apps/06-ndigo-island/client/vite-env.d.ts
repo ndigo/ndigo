@@ -3,7 +3,6 @@
  * declaration to typecheck the client entry (the Web Awesome theme
  * stylesheet is imported for its side effect).
  *
- * @module ndigo-island
  * @since 1.0.0
  * @author Jeff Rose
  */

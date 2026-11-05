@@ -24,7 +24,7 @@
  * connection just after the frame), so it rejects all outstanding sends,
  * completes every subscription stream and surfaces through the `onError`
  * observer.
- * @module ndigo-socket
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -329,7 +329,7 @@ export class StompClient {
      * @param opts - Subscription policy (`id` defaults to an opaque uuid;
      *   `ack` defaults to `auto`).
      * @returns The subscription handle.
-     * @throws {@link StompProtocolError} when the session has ended
+     * @throws {@link stomp-frame.StompProtocolError | StompProtocolError} when the session has ended
      *   (disconnect, ERROR, transport closed) — a new subscription could
      *   never receive frames.
      */

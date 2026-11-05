@@ -5,7 +5,6 @@
  * `Set-Cookie` value shape: `name=value` plus attributes, `; `-joined per
  * RFC 6265 §4.1.
  *
- * @module ndigo-http
  * @since 1.0.0
  * @author Jeff Rose
  */

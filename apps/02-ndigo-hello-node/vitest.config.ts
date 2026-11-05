@@ -7,7 +7,6 @@
  * instead of the built `lib/` output (HI-6/TST-B). Both specs pin `node`; the
  * lane's default environment is therefore never used.
  *
- * @module ndigo-hello-node
  * @since 1.0.0
  * @author Jeff Rose
  */

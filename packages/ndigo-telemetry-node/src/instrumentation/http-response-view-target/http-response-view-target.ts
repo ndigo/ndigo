@@ -1,6 +1,6 @@
 /**
  * OpenTelemetry instrumentation for `HTTPResponseViewTarget.commit`.
- * @module ndigo-telemetry-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -2,7 +2,6 @@
  * Flag-key grammar, guard, and the never-throw evaluation contract
  * (AD-82 D-2): typing, DEFAULT-on-missing, error classification.
  *
- * @module ndigo-flags
  * @since 1.0.0
  * @author Jeff Rose
  */

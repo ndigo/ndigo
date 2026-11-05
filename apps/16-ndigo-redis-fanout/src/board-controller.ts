@@ -2,7 +2,7 @@
  * The scripted board route: post a message with plain HTTP, no socket — the
  * same room, the same payload, the same cross-node fan-out the socket endpoint
  * uses, so a `curl` can drive the demo the WebSocket clients observe.
- * @module ndigo-redis-fanout
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

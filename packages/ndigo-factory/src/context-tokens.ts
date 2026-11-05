@@ -1,6 +1,6 @@
 /**
  * A type-safe key used for value registration and retrieval in a `Registry`.
- * @module ndigo-factory
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

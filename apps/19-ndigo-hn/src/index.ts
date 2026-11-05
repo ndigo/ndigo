@@ -9,7 +9,6 @@
  * name) to that element, so a component that is never imported renders as an
  * unknown element.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

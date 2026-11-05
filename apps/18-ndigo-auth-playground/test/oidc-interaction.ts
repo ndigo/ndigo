@@ -10,7 +10,6 @@
  * app, so the verifier, the nonce and the `state` round-trip are all resolved by
  * the real `OIDCAdapter` against the real issuer.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,6 +1,6 @@
 /**
  * RFC 6265-style cookie parsing for `NodeRequest.cookies`.
- * @module ndigo-platform-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -10,6 +10,11 @@ export const DEFAULT_MAX_COOKIES = 50;
 /** Default cap on a single cookie value's byte length. */
 export const DEFAULT_MAX_COOKIE_VALUE_BYTES = 4_096;
 
+/**
+ * Limits applied while parsing a `Cookie` header: how many cookies are kept
+ * (`maxCookies`) and how long a single value may be (`maxValueBytes`). Values
+ * beyond either bound are rejected rather than truncated.
+ */
 export interface CookieParseOptions {
     /** Maximum number of cookies parsed per request (default 50). */
     maxCookies?: number;

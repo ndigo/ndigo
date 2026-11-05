@@ -6,7 +6,6 @@
  * the editor prefills from the API rather than from any cached list entry — a
  * list summary has no `body` to edit.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

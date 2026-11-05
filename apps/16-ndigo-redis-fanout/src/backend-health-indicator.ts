@@ -4,7 +4,7 @@
  * closed (or when its connection was never established) — memory mode is `UP`
  * for the life of the process, because a local backend is not a degraded
  * dependency.
- * @module ndigo-redis-fanout
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

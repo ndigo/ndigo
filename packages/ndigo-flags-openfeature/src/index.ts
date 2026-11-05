@@ -5,7 +5,6 @@
  * LaunchDarkly, …) arrive behind the existing SPI, plus the evaluation
  * telemetry hook. The browser counterpart lives in the `/web` entry.
  *
- * @module ndigo-flags-openfeature
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -3,7 +3,6 @@
  * the container at first `getValue` — so the interception processor weaves it
  * — whose `place` method carries `@audited` policy metadata.
  *
- * @module ndigo-api
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,7 +1,7 @@
 /**
  * `WebSocketServerInstrumentation` spec — session lifetime spans + counters
  * over a real socket (the SSE-instrumentation test pattern).
- * @module ndigo-telemetry-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

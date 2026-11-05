@@ -8,7 +8,6 @@
  * — the dispatcher discovers `@routeMapping` handlers by scanning the context,
  * which is why they must be beans rather than module-level instances.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

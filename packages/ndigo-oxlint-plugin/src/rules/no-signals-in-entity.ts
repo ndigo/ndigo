@@ -1,6 +1,6 @@
 /**
  * Rule that flags `@ndigo/signals` imports inside `@ndigo/orm` entity files.
- * @module ndigo-oxlint-plugin
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

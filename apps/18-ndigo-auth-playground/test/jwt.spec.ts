@@ -6,7 +6,6 @@
  * distinguishable `401` problems, and a successful refresh kills every older
  * token of the account by construction (the `ver` counter advances).
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

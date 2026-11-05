@@ -5,7 +5,6 @@
  * a signed-in visitor; it projects the account and its form-scoped envelope for
  * the view.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

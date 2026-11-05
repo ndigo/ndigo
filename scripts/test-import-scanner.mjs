@@ -11,7 +11,6 @@
  * Runs under `pnpm test:tooling` (`node --test scripts/test-import-scanner.mjs`
  * — no vitest, no nx). The name deliberately escapes vitest's `*.test.*` glob.
  *
- * @module scripts/import-scanner.test
  * @since 1.0.0
  * @author Jeff Rose
  */

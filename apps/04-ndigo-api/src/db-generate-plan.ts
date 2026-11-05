@@ -13,7 +13,6 @@
  *    entities (and the CI freshness gate could not see it, because a
  *    second run was a byte-identical no-op).
  *
- * @module ndigo-api
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -2,7 +2,7 @@
  * The HTTP surface: `GET /` renders the EJS shell that mounts the `chat-room`
  * Web Component; the built client bundle is served under `/static/` by the
  * platform `StaticController`.
- * @module ndigo-chat
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

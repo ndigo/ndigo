@@ -1,6 +1,6 @@
 /**
  * Oxlint plugin that bundles Ndigo's consumer-facing lint rules.
- * @module ndigo-oxlint-plugin
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

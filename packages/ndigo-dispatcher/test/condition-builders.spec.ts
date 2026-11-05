@@ -1,6 +1,6 @@
 /**
  * Route-condition builder specs (AD-34 D6).
- * @module ndigo-dispatcher
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

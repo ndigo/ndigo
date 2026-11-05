@@ -1,5 +1,4 @@
 /**
- * @module ndigo-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -8,6 +7,11 @@ import { Constructable, IllegalStateError } from '@ndigo/core';
 import { ControllerHandlerAdapter, MetadataHandlerAdapter, RouteHandlerAdapter } from '../route-handler-adapter';
 import { StrategyInitializer } from './strategy-initializer';
 
+/**
+ * Strategy mixin contract for handler adapters: exposes the ordered adapters
+ * that turn a matched handler into a response, and an initializer that installs
+ * them from the application context.
+ */
 export interface RouteHandlerAdapterStrategy {
     handlerAdapters: RouteHandlerAdapter[];
     initHandlerAdapters(context: ApplicationContext): void;
@@ -36,6 +40,10 @@ const HANDLER_ADAPTER = 'handlerAdapter',
     HANDLER_ADAPTERS = `${HANDLER_ADAPTER}s`,
     defaultRouteHandlerAdapters: RouteHandlerAdapter[] = [new ControllerHandlerAdapter(), new MetadataHandlerAdapter()];
 
+/**
+ * Mixin that installs the handler-adapter collection, defaulting to the
+ * controller and metadata adapters when the application configures none.
+ */
 export const AsRouteHandlerAdapterStrategy = <T extends Constructable<StrategyInitializer>>(
     superclass: T
 ): Constructable<RouteHandlerAdapterStrategy> & T =>

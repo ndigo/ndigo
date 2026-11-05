@@ -1,6 +1,6 @@
 /**
  * View that renders a `ResponseEntity` to a response document.
- * @module ndigo-platform-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

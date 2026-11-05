@@ -3,7 +3,7 @@
  * `POST /board` route, so both publish byte-identical payloads into the same
  * room — the property that makes a message posted on one node reachable from
  * the sockets connected to the other.
- * @module ndigo-redis-fanout
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

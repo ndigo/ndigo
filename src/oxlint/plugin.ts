@@ -6,7 +6,6 @@
  * `.ts` extensions. Consumer-facing rules ship in `@ndigo/oxlint-plugin`
  * instead; this tree never leaves the repository (AD-86).
  *
- * @module src/oxlint
  * @since 1.0.0
  * @author Jeff Rose
  */

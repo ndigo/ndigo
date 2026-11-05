@@ -1,6 +1,6 @@
 /**
  * `/loggers` endpoint specs (AD-76 D-7).
- * @module ndigo-management
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

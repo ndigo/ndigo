@@ -1,6 +1,6 @@
 /**
  * Rule that flags `create*` factories that reference mutable module or class state.
- * @module src/oxlint
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

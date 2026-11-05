@@ -6,7 +6,6 @@
  * frame shim is harness-local — it installs a global and needs no util
  * dependency.
  *
- * @module ndigo-test
  * @since 1.0.0
  * @author Jeff Rose
  */

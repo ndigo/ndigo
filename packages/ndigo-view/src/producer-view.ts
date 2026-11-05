@@ -1,5 +1,4 @@
 /**
- * @module ndigo-view
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -34,7 +33,7 @@ export interface RenderResult {
 
 /**
  * A view that produces a complete response document rather than rendering
- * into a {@link ViewTarget}.
+ * into a {@link view-target.ViewTarget | ViewTarget}.
  *
  * This is the server-side (document) rendering mode — the servlet/JSP-style
  * whole-page equivalent: an EJS page, a JSON API body, or a streamed

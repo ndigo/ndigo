@@ -1,7 +1,6 @@
 /**
  * Type declarations for {@link ./vite-plugin-lower-decorators.mjs}.
  *
- * @module scripts/vite-plugin-lower-decorators
  * @since 1.0.0
  * @author Jeff Rose
  */

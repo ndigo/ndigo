@@ -1,6 +1,6 @@
 /**
  * Sampler 'off' preset: never records a root span (AD-32 D-1).
- * @module ndigo-telemetry-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,5 +1,4 @@
 /**
- * @module ndigo-cache
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -105,7 +104,7 @@ export interface Cache<V = unknown> {
  *   untouched on access and updates, evicting the oldest insertion.
  * - `defaultTtl`/`maxSize`/`eviction` are fixed at construction — a shared
  *   instance has uniform behavior (configure per named cache via
- *   {@link MemoryCacheManager}).
+ *   {@link cache-manager.MemoryCacheManager | MemoryCacheManager}).
  */
 export class MemoryCache<V = unknown> implements Cache<V> {
     readonly #entries: Map<string, CacheEntry<V>> = new Map();

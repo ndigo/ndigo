@@ -10,7 +10,7 @@
  *
  * Inbound frames are parsed and validated with Zod at the boundary, so the
  * render path only ever reads checked values.
- * @module ndigo-chat
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

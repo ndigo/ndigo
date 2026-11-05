@@ -1,5 +1,4 @@
 /**
- * @module ndigo-orm-drizzle
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -10,6 +9,12 @@ import type { EntityMetadata } from '@ndigo/orm';
 import { Page, PageRequest, SortOrder, validatePageRequest } from '@ndigo/orm';
 import { DrizzleDataSource } from './drizzle-data-source';
 
+/**
+ * Drizzle-backed entity manager: maps `@ndigo/orm` entity metadata onto SQL
+ * through the data source's Drizzle database, validating every write against
+ * the entity's derived schema and running lifecycle hooks around
+ * persist/find/remove.
+ */
 export class DrizzleEntityManager {
     readonly #dataSource: DrizzleDataSource;
 

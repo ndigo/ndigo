@@ -17,7 +17,6 @@
  * | `typing`   | both      | `boolean`                                     |
  * | `error`    | S → C     | `{ reason: string }`                          |
  *
- * @module ndigo-chat
  * @since 1.0.0
  * @author Jeff Rose
  */

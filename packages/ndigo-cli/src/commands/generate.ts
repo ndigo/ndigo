@@ -4,7 +4,6 @@
  * thin, prompting front over the workspace's Nx bridge — the generator
  * implementations stay in their package (AD-75 D-3).
  *
- * @module ndigo-cli
  * @since 1.0.0
  * @author Jeff Rose
  */

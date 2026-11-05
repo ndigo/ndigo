@@ -1,6 +1,6 @@
 /**
  * Real Redis live socket fan-out and consumer lifecycle contracts.
- * @module ndigo-redis
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

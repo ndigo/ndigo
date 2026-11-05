@@ -7,7 +7,7 @@
  * exception is the article body, which goes through
  * {@link renderMarkdown} — an escaping-by-default renderer (see that module).
  *
- * @module ndigo-conduit-web
+
  * @since 1.0.0
  * @author Jeff Rose
  */

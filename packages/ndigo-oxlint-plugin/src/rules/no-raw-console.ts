@@ -1,7 +1,7 @@
 /**
  * Rule that flags raw `console.warn`/`console.error`/`console.log` calls in
  * package source, steering framework logging through `@ndigo/log`.
- * @module ndigo-oxlint-plugin
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

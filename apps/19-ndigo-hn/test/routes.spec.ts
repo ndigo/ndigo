@@ -5,7 +5,6 @@
  * Covers the feed routes and the `#/item/:id` deep link (including its
  * cache-backed second dispatch).
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -4,41 +4,15 @@
 
 # @ndigo/view-webcomponent v0.0.1
 
-## Since
+## Modules
 
-1.0.0
-
-## Author
-
-Jeff Rose
-
-## Classes
-
-- [AbstractWebComponent](classes/AbstractWebComponent.md)
-- [DOMElementViewTarget](classes/DOMElementViewTarget.md)
-- [WebComponentView](classes/WebComponentView.md)
-- [WebComponentViewResolver](classes/WebComponentViewResolver.md)
-
-## Interfaces
-
-- [DOMViewTarget](interfaces/DOMViewTarget.md)
-- [FormAssociatedElement](interfaces/FormAssociatedElement.md)
-- [ModelAwareElement](interfaces/ModelAwareElement.md)
-- [NdigoElement](interfaces/NdigoElement.md)
-- [WebComponentViewResolverOptions](interfaces/WebComponentViewResolverOptions.md)
-
-## Type Aliases
-
-- [RenderHost](type-aliases/RenderHost.md)
-
-## Variables
-
-- [TagMapping](variables/TagMapping.md)
-- [ViewMapping](variables/ViewMapping.md)
-
-## Functions
-
-- [AsFormAssociated](functions/AsFormAssociated.md)
-- [AsNdigoElement](functions/AsNdigoElement.md)
-- [hydrateIslands](functions/hydrateIslands.md)
-- [likeDOMViewTarget](functions/likeDOMViewTarget.md)
+- [abstract-web-component](abstract-web-component/README.md)
+- [engine](engine/README.md)
+- [form-associated](form-associated/README.md)
+- [hydrate](hydrate/README.md)
+- [index](index/README.md)
+- [ndigo-element](ndigo-element/README.md)
+- [tag-mapping](tag-mapping/README.md)
+- [view](view/README.md)
+- [view-mapping](view-mapping/README.md)
+- [web-component-view-resolver](web-component-view-resolver/README.md)

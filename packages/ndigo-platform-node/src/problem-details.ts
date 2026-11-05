@@ -1,6 +1,6 @@
 /**
  * RFC 9457 Problem Details for HTTP APIs (obsoletes RFC 7807).
- * @module ndigo-platform-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

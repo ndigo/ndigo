@@ -1,0 +1,11 @@
+[**@ndigo/service v0.0.1**](../../README.md)
+
+***
+
+[@ndigo/service](../../README.md) / [service-decorators](../README.md) / SERVICE\_CALL\_METADATA\_KEY
+
+# Variable: SERVICE\_CALL\_METADATA\_KEY
+
+> `const` **SERVICE\_CALL\_METADATA\_KEY**: `"service:call"` = `'service:call'`
+
+Metadata key (prefix) under which `@*Call` writes per-method call config.

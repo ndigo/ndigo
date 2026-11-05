@@ -6,7 +6,6 @@
  * asserts the wire contract end to end: status codes, payload keys, the
  * `{errors:{…}}` envelope, JWT auth, ownership, filtering and paging.
  *
- * @module ndigo-conduit-api
  * @since 1.0.0
  * @author Jeff Rose
  */

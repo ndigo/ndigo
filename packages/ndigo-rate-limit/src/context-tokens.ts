@@ -1,7 +1,6 @@
 /**
  * Context tokens for the `@ndigo/rate-limit` beans (AD-79 D-2).
  *
- * @module ndigo-rate-limit
  * @since 1.0.0
  * @author Jeff Rose
  */

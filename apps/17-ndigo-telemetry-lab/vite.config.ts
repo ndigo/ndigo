@@ -2,7 +2,6 @@
  * Builds the browser half of the telemetry lab into `dist/` (a single module
  * bundle named `client.js`), which the Node server serves under `/static/`.
  *
- * @module ndigo-telemetry-lab
  * @since 1.0.0
  * @author Jeff Rose
  */

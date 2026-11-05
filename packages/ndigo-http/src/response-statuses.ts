@@ -1,12 +1,10 @@
 /**
- * @module ndigo-http
  * @since 1.0.0
  * @author Jeff Rose
  */
 import ResponseStatus from './response-status';
 
 /**
- * @namespace module:http.ResponseStatuses
  */
 
 /**

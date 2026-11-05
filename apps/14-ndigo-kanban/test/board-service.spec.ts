@@ -7,7 +7,6 @@
  * deterministic by construction (the service serializes writes itself), so
  * there is no sleep, no timer and no retry anywhere in this spec.
  *
- * @module ndigo-kanban
  * @since 1.0.0
  * @author Jeff Rose
  */

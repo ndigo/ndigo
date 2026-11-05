@@ -1,7 +1,7 @@
 /**
  * Application composition: the room/STOMP/shell controllers, the shared room
  * store, the static client-bundle controller, and the EJS view resolver.
- * @module ndigo-chat
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

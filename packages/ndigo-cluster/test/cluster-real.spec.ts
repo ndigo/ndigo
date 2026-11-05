@@ -3,7 +3,7 @@
  * — slot identity env and PORT derivation reach real children, SIGTERM relay
  * drains them through their own signal handlers, and the children's exit
  * codes decide the cluster's.
- * @module ndigo-cluster
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,5 +1,4 @@
 /**
- * @module ndigo-http
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -9,7 +8,6 @@ import { ContentTypeHeader } from './content-type-header';
 import { SetCookieHeader } from './set-cookie-header';
 
 /**
- * @namespace module:http.HTTPHeaders
  */
 
 /**

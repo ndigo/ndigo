@@ -8,7 +8,6 @@
  * `execute()` on its own pooled connection, and returns any connection it finds
  * still in a transaction straight back to the pool with a ROLLBACK.
  *
- * @module ndigo-orm-drizzle
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -4,7 +4,6 @@
  * async SPI, the static-context semantics (per-call `ctx` not forwarded),
  * domains, the never-throw boundary, and hook-contract compatibility.
  *
- * @module ndigo-flags-openfeature
  * @since 1.0.0
  * @author Jeff Rose
  */

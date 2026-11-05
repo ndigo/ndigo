@@ -6,7 +6,6 @@
  * Plain DOM construction (no innerHTML interpolation of API data) keeps the
  * untrusted HN payload from ever being parsed as markup.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

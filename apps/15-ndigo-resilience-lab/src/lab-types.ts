@@ -1,7 +1,7 @@
 /**
  * Shared shapes for the resilience lab: upstream modes, breaker snapshots and
  * the machine-readable `/lab/state` document.
- * @module ndigo-resilience-lab
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

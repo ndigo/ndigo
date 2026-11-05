@@ -4,7 +4,6 @@
  * `db:*` scripts and the boot wiring, so the three callers cannot drift
  * (AD-78).
  *
- * @module ndigo-api
  * @since 1.0.0
  * @author Jeff Rose
  */

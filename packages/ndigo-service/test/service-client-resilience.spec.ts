@@ -9,7 +9,6 @@
  * never throws — fetch failures resolve as `ResponseError` *values* — so the
  * exception-path interceptors do not see them (see AD-43 D-8 amendment).
  *
- * @module ndigo-service
  * @since 1.0.0
  * @author Jeff Rose
  */

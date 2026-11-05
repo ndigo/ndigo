@@ -1,6 +1,6 @@
 /**
  * A type-safe route definition that can generate URLs, navigate, parse, and match routes.
- * @module ndigo-router
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -13,12 +13,22 @@ import type { Matchable } from '@ndigo/core';
 
 // ── Type helpers ────────────────────────────────────────────────────────────
 
+/**
+ * The parameter object a route pattern requires, derived from its `{name}`
+ * placeholders: each placeholder becomes a required `string` field, and a
+ * pattern without placeholders needs no arguments.
+ */
 export type RouteParams<T extends string> = T extends `${string}{${infer P}}${infer Rest}`
     ? Record<P, string> & RouteParams<Rest>
     : {};
 
 // ── RouteDefinition ─────────────────────────────────────────────────────────
 
+/**
+ * A route pattern bound to its registry: `url()` interpolates parameters into
+ * an absolute path, `href()` into a fragment link, and both reject a missing or
+ * unknown parameter instead of emitting a broken URL.
+ */
 export class RouteDefinition<TPattern extends string = string> implements Matchable<string> {
     readonly pattern: TPattern;
     readonly #context: Registry;

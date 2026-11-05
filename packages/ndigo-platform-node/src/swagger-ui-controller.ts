@@ -8,7 +8,7 @@
  * spec-wiring bootstrap (`swagger-ui-init.js`) is rendered server-side and
  * served by this controller (SEC-2): external, so the default-on CSP
  * (`script-src 'self'`) needs no `'unsafe-inline'`.
- * @module ndigo-platform-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -59,7 +59,7 @@ export function relativeSpecUrl(uiPath: string, path: string): string {
  * Renders the Swagger UI page for the given title.
  *
  * No inline script (SEC-2): the default-on CSP (`script-src 'self'`, see
- * {@link SecurityHeadersInterceptor}) blocks inline `<script>` blocks, so
+ * {@link security-headers-interceptor.SecurityHeadersInterceptor | SecurityHeadersInterceptor}) blocks inline `<script>` blocks, so
  * the spec-wiring bootstrap is served as the `swagger-ui-init.js` asset
  * next to the `swagger-ui-dist` bundle — all same-origin, all CSP-clean.
  *
@@ -114,7 +114,7 @@ export function renderSwaggerUiInitScript(specUrl: string): string {
 
 /**
  * The UI controller. Registered without decorator metadata by
- * {@link OpenAPIDocsAutoConfiguration} (per-instance paths).
+ * {@link openapi-docs-auto-configuration.OpenAPIDocsAutoConfiguration | OpenAPIDocsAutoConfiguration} (per-instance paths).
  *
  * `swagger-ui-dist` is a peer dependency resolved lazily: a missing or
  * unresolvable peer fails only the docs endpoints (500 problem document),

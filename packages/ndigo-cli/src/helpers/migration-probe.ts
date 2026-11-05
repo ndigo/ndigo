@@ -9,7 +9,6 @@
  * extensionless imports (tsx/vite consumers). The parity spec
  * (`test/db-new.spec.ts`) pins the two implementations together.
  *
- * @module ndigo-cli
  * @since 1.0.0
  * @author Jeff Rose
  */

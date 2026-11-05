@@ -8,7 +8,6 @@
  * single place that decides what is published, and `visits`/`type` are always
  * emitted (never `undefined`, which JSON cannot carry).
  *
- * @module ndigo-petclinic
  * @since 1.0.0
  * @author Jeff Rose
  */

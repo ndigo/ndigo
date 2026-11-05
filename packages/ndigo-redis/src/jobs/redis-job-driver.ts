@@ -17,7 +17,6 @@
  * never connects, subscribes, or closes it. `close()` only seals this handle —
  * manage the connection's lifecycle (`connect()`/`close()`), then the handle's.
  *
- * @module ndigo-redis
  * @since 1.0.0
  * @author Jeff Rose
  */

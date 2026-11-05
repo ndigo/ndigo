@@ -1,5 +1,4 @@
 /**
- * @module ndigo-generators
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -11,6 +10,11 @@ import { validateKebabName } from '../../_validators.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+/**
+ * Options for the `package` generator: the package name and its one-line
+ * description, plus `jobs` to wire the `@ndigo/jobs` dependency into the
+ * generated manifest.
+ */
 export interface PackageGeneratorSchema {
     name: string;
     description?: string;
@@ -22,6 +26,11 @@ export interface PackageGeneratorSchema {
     jobs?: boolean;
 }
 
+/**
+ * Scaffolds a package skeleton (manifest, tsconfig, README stub, `src/index.ts`
+ * with the canonical header) under `packages/ndigo-<name>`, validating the name
+ * and refusing to overwrite an existing directory.
+ */
 export default async function packageGenerator(tree: Tree, schema: PackageGeneratorSchema): Promise<void> {
     const { name, description, jobs } = schema;
 

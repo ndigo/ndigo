@@ -28,7 +28,7 @@
  * At-least-once semantics: `messageId` is the broker-issued dedupe key;
  * replay can redeliver (the broker's D9 ack tracking already tolerates
  * redelivery).
- * @module ndigo-socket
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

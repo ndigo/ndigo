@@ -6,7 +6,6 @@
  * a weaker guarantee. Decryption dispatches on the marker's scheme segment,
  * so mixed-scheme rotation works in one deployment.
  *
- * @module ndigo-context
  * @since 1.0.0
  * @author Jeff Rose
  */

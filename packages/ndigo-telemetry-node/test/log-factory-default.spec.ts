@@ -1,7 +1,7 @@
 /**
  * OP-8 negative: without an explicit `logExporter` the factory keeps its
  * console default, so dev-posture apps keep logging to the console.
- * @module ndigo-telemetry-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -5,7 +5,6 @@
  * is linkable and shareable; `ProfileService` keys its loaded window by
  * username + tab + page, so switching tabs (a navigation) loads the other list.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

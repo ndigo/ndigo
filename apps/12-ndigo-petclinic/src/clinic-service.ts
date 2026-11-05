@@ -11,7 +11,6 @@
  * controllers render the 404 page and the JSON controllers answer with a
  * problem document, each in its own idiom.
  *
- * @module ndigo-petclinic
  * @since 1.0.0
  * @author Jeff Rose
  */

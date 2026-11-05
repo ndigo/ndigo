@@ -3,7 +3,6 @@
  * context teardown is internal lifecycle work, not a network boundary — the
  * span must be INTERNAL (it was mislabeled CLIENT).
  *
- * @module ndigo-telemetry
  * @since 1.0.0
  * @author Jeff Rose
  */

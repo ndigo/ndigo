@@ -2,7 +2,6 @@
  * Public API of `@ndigo/cluster` — the process supervisor for replicated
  * worker slots (AD-74).
  *
- * @module ndigo-cluster
  * @since 1.0.0
  * @author Jeff Rose
  */

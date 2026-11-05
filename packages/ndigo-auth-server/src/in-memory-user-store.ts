@@ -4,12 +4,17 @@
  * (see `@ndigo/auth-core` `UserStore` contract); production apps implement
  * `UserStore` over `ndigo-orm`/Drizzle entities.
  *
- * @module ndigo-auth-server
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { type UserRecord, type UserStore } from '@ndigo/auth-core';
 
+/**
+ * In-memory `UserStore`: users live in two maps (by username and by id) and
+ * vanish with the process, which makes it the store for tests and
+ * single-process demos. The constructor seeds it in bulk; `upsert` keeps both
+ * indexes in step thereafter.
+ */
 export class InMemoryUserStore implements UserStore {
     readonly #byUsername = new Map<string, UserRecord>();
     readonly #byId = new Map<string, UserRecord>();

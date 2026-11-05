@@ -15,7 +15,6 @@
  * response at the same status — including the `409` that carries the current
  * card so the client can reconcile without a second round trip.
  *
- * @module ndigo-kanban
  * @since 1.0.0
  * @author Jeff Rose
  */

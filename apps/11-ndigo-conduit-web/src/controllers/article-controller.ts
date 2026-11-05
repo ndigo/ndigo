@@ -5,7 +5,6 @@
  * are keyed by slug, so a route refresh (favorite, follow, comment) re-renders
  * the cached state instead of re-fetching it.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

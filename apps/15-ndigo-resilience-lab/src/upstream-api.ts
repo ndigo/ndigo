@@ -3,7 +3,7 @@
  * carries the `@retry` + `@circuitBreaker` policies and whose `direct()` method
  * deliberately carries none, so the lab can contrast policy-driven and raw
  * calls against the same upstream.
- * @module ndigo-resilience-lab
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

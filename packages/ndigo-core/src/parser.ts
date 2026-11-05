@@ -1,6 +1,6 @@
 /**
  * Class-based interface for parsing a string into a structured value of type `T`.
- * @module ndigo-core
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

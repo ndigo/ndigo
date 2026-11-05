@@ -6,7 +6,7 @@
  * the same code serves from memory and the board reaches this node's sockets
  * only. Nothing in the controllers branches on the mode — only the backend
  * composition does.
- * @module ndigo-redis-fanout
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

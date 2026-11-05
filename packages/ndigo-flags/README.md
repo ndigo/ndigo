@@ -139,7 +139,7 @@ it that way: platform-specific enforcement lives in
 ## Contributing
 
 Follow the repository conventions ([guide 12](../../docs/guides/12-package-documentation.md)):
-JSDoc blocks with `@module`/`@since`/`@author`, `Symbol.metadata`
+JSDoc blocks with `@since`/`@author`, `Symbol.metadata`
 decoration-time validation, tested via vitest with fail-before/pass-after
 evidence per change.
 

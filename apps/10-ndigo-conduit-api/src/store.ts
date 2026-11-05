@@ -10,7 +10,6 @@
  * The default backend is `@ndigo/orm`'s in-memory manager, so the app needs
  * no external infrastructure.
  *
- * @module ndigo-conduit-api
  * @since 1.0.0
  * @author Jeff Rose
  */

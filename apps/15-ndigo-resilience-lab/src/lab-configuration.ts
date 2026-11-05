@@ -2,7 +2,7 @@
  * The lab's composition root: one shared `ResilienceLab` (upstream simulator +
  * clock + intercepted client) handed to every controller, so the control plane
  * and the consumer routes always observe the same state.
- * @module ndigo-resilience-lab
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

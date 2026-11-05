@@ -6,7 +6,6 @@
  * the sign-out intent as a DOM event. It has no container access of its own,
  * so the event bubbles to the view target's bridge like any other view action.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

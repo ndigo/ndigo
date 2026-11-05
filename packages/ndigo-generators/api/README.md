@@ -4,40 +4,11 @@
 
 # @ndigo/generators v0.0.1
 
-## Since
+## Modules
 
-1.0.0
-
-## Author
-
-Jeff Rose
-
-Public entry point for the Ndigo Nx generator set.
-
-Nx discovers the generators through `generators.json`; this module makes
-them importable as a library API as well (e.g. for programmatic use in
-other tooling).
-
-## Interfaces
-
-- [AppGeneratorSchema](interfaces/AppGeneratorSchema.md)
-- [ComponentGeneratorSchema](interfaces/ComponentGeneratorSchema.md)
-- [DocHeaderOptions](interfaces/DocHeaderOptions.md)
-- [HeaderGeneratorSchema](interfaces/HeaderGeneratorSchema.md)
-- [PackageGeneratorSchema](interfaces/PackageGeneratorSchema.md)
-- [ReadmeGeneratorSchema](interfaces/ReadmeGeneratorSchema.md)
-
-## Type Aliases
-
-- [AppKind](type-aliases/AppKind.md)
-
-## Functions
-
-- [appGenerator](functions/appGenerator.md)
-- [buildDocHeader](functions/buildDocHeader.md)
-- [componentGenerator](functions/componentGenerator.md)
-- [getTopDocBlock](functions/getTopDocBlock.md)
-- [headerGenerator](functions/headerGenerator.md)
-- [inferModule](functions/inferModule.md)
-- [packageGenerator](functions/packageGenerator.md)
-- [readmeGenerator](functions/readmeGenerator.md)
+- [generators/app/generator](generators/app/generator/README.md)
+- [generators/component/generator](generators/component/generator/README.md)
+- [generators/header/generator](generators/header/generator/README.md)
+- [generators/package/generator](generators/package/generator/README.md)
+- [generators/readme/generator](generators/readme/generator/README.md)
+- [index](index/README.md)

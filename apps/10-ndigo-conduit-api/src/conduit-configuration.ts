@@ -13,7 +13,6 @@
  *   the platform's problem+json resolver can claim them. The remaining links
  *   are the platform's own, in their original order.
  *
- * @module ndigo-conduit-api
  * @since 1.0.0
  * @author Jeff Rose
  */

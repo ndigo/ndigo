@@ -11,7 +11,7 @@
  * `tracker` (the lab's breaker projection) runs outermost so it sees the final
  * outcome of one chain pass, `breaker` counts one failure per pass, and `retry`
  * re-invokes the tail with backoff — the composition AD-43 D-5/D-7 prescribes.
- * @module ndigo-resilience-lab
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

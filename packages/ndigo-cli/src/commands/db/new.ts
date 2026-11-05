@@ -8,7 +8,6 @@
  * fill in. The filename is cosmetic; the runner orders by the exported
  * version.
  *
- * @module ndigo-cli
  * @since 1.0.0
  * @author Jeff Rose
  */

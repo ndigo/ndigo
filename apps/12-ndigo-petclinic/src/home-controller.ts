@@ -5,7 +5,6 @@
  * serves (owners, a new owner, the vet list) and reports the seeded counts, so
  * a booted server is self-describing.
  *
- * @module ndigo-petclinic
  * @since 1.0.0
  * @author Jeff Rose
  */

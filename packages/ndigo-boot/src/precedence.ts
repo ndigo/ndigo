@@ -1,6 +1,6 @@
 /**
  * Canonical ordered list of property-source names from HIGHEST to LOWEST.
- * @module ndigo-boot
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -14,4 +14,9 @@ export const PRECEDENCE = [
     'defaults', // always present, empty when unused (lowest)
 ] as const;
 
+/**
+ * The name of one property source in `PRECEDENCE` order — `commandLine`,
+ * `boot`, `systemEnvironment`, `configServer`, `dotenv`, `application`,
+ * `defaults`. Used to attribute a resolved value to the source that won.
+ */
 export type PrecedenceSource = (typeof PRECEDENCE)[number];

@@ -1,6 +1,6 @@
 /**
  * Zod schema derivation for `@ndigo/orm` entities (AD-07).
- * @module ndigo-orm
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

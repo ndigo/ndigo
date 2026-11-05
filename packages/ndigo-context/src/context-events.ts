@@ -15,7 +15,7 @@
  * Add a new framework event here (name → payload tuple) when a new lifecycle
  * contract is introduced. Raw (string-typed) emission remains legal on both
  * emitters.
- * @module ndigo-context
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

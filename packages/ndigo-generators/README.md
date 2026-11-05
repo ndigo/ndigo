@@ -65,13 +65,12 @@ pnpm exec nx generate @ndigo/generators:header --file apps/03-ndigo-todo/src/ind
 
 ### Header generator options
 
-| Option      | Description                                                            |
-| ----------- | ---------------------------------------------------------------------- |
-| `--file`    | Target file (required)                                                 |
-| `--module`  | `@module` value; inferred from the path (`ndigo-*` package / app name) |
-| `--summary` | One-line description (omitted when not given)                          |
-| `--author`  | `@author` value (default `Jeff Rose`)                                  |
-| `--force`   | Replace the existing top block instead of failing (idempotent guard)   |
+| Option      | Description                                                          |
+| ----------- | -------------------------------------------------------------------- |
+| `--file`    | Target file (required)                                               |
+| `--summary` | One-line description (omitted when not given)                        |
+| `--author`  | `@author` value (default `Jeff Rose`)                                |
+| `--force`   | Replace the existing top block instead of failing (idempotent guard) |
 
 `header` is intentionally dependency-free and does not run `formatFiles`: its output is canonical by construction, and the formatting hook pulls in the classic TypeScript API the TypeScript 7 runtime no longer exposes.
 

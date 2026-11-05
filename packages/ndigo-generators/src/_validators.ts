@@ -6,7 +6,6 @@
  * files carry the `.ts` extension (rewritten to `.js` on emit by
  * `rewriteRelativeImportExtensions` in the package tsconfig — AD-85).
  *
- * @module ndigo-generators
  * @since 1.0.0
  * @author Jeff Rose
  */

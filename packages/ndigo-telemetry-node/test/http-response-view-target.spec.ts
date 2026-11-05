@@ -4,7 +4,6 @@
  * must be INTERNAL, and the status code must use the numeric semconv
  * `http.response.status_code` (was the mislabeled string `http.status_code`).
  *
- * @module ndigo-telemetry-node
  * @since 1.0.0
  * @author Jeff Rose
  */

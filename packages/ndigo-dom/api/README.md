@@ -4,23 +4,10 @@
 
 # @ndigo/dom v0.0.1
 
-## Since
+## Modules
 
-1.0.0
-
-## Author
-
-Jeff Rose
-
-## Classes
-
-- [BrowserDOMProvider](classes/BrowserDOMProvider.md)
-- [LinkedomDOMProvider](classes/LinkedomDOMProvider.md)
-
-## Interfaces
-
-- [DOMProvider](interfaces/DOMProvider.md)
-
-## Functions
-
-- [createDOMProvider](functions/createDOMProvider.md)
+- [browser-dom-provider](browser-dom-provider/README.md)
+- [create-dom-provider](create-dom-provider/README.md)
+- [dom-provider](dom-provider/README.md)
+- [index](index/README.md)
+- [linkedom-dom-provider](linkedom-dom-provider/README.md)

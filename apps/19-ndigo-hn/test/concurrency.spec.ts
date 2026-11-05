@@ -2,7 +2,6 @@
  * `mapConcurrent` — the scheduler the feed hydration relies on: bounded
  * in-flight calls, input-order results, no lost work.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -6,7 +6,6 @@
  * change, and the fail-closed paths (`401` without a session, `415` for a
  * non-JSON login body).
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -7,7 +7,6 @@
  * is what makes hydration, a stale→fresh revalidation, and "load more" all
  * appear in place.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

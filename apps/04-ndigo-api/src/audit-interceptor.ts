@@ -2,7 +2,6 @@
  * Audit demo gate for `@ndigo/proxy` (AD-42 D-8): a `MethodInterceptor` +
  * annotation key pair that records every advised call in memory.
  *
- * @module ndigo-api
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,7 +1,7 @@
 /**
  * Exporter spec resolution (AD-32 D-2/D-3) — pure shape table, no
  * providers touched, so every case runs in one process.
- * @module ndigo-telemetry-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

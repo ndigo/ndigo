@@ -1,5 +1,4 @@
 /**
- * @module ndigo-orm
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -13,7 +12,7 @@ import { InMemoryDataSource } from './data-source';
  * the underlying database's begin/commit/rollback primitives.
  *
  * Inject a `TransactionManager` into a service class to enable the
- * {@link transactional} decorator to enforce transaction boundaries:
+ * {@link decorators.transactional | transactional} decorator to enforce transaction boundaries:
  *
  * @example
  * ```typescript

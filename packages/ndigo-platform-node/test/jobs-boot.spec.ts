@@ -3,7 +3,6 @@
  * beans exist, the registry scans `@jobHandler` beans on refresh, and an
  * explicitly started runner executes an enqueued job end to end.
  *
- * @module ndigo-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */

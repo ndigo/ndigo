@@ -1,7 +1,6 @@
 /**
  * Live standalone Redis job-driver contracts.
  *
- * @module ndigo-redis
  * @since 1.0.0
  * @author Jeff Rose
  */

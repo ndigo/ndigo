@@ -5,7 +5,7 @@
  *
  * jsdom has no IndexedDB, so this spec drives a minimal in-memory fake that
  * mirrors the request/transaction shape the loader uses.
- * @module ndigo-platform-web
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

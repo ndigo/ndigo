@@ -17,7 +17,6 @@
  * The handler yields the greeting as its first frame — the socket-side proof
  * that the principal really arrived — then echoes whatever the client sends.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -6,7 +6,6 @@
  * Nothing here touches the OpenTelemetry API — `resolveLabTelemetry` is pure by
  * design, which is exactly why it can be asserted in a plain worker.
  *
- * @module ndigo-telemetry-lab
  * @since 1.0.0
  * @author Jeff Rose
  */

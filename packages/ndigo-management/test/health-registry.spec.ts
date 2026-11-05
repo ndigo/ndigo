@@ -1,6 +1,6 @@
 /**
  * Health registry behavior — including AD-36 D-1 error redaction.
- * @module ndigo-management
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

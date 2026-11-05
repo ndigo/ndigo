@@ -14,7 +14,7 @@
  * `/^\s*@|[{(;]\s*@/m` pre-check (decorator-free and string-literal-only
  * modules pass through untouched), and the lowered output (raw decorator
  * syntax gone, sourcemap attached).
- * @module scripts/vite-plugin-lower-decorators.test
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

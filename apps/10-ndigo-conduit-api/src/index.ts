@@ -2,7 +2,6 @@
  * Entry point: boots the RealWorld (Conduit) API server on port 3040 (or
  * `PORT`).
  *
- * @module ndigo-conduit-api
  * @since 1.0.0
  * @author Jeff Rose
  */

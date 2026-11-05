@@ -1,6 +1,6 @@
 /**
  * Integration-layer constants for the repository-only lint rules.
- * @module src/oxlint
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

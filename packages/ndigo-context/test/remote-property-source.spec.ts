@@ -3,7 +3,7 @@
  * body-text change gating, `optional` failure semantics, precedence-slot
  * anchoring, polling lifecycle (start/stop via the scheduler seam), and the
  * refresh-event loop.
- * @module ndigo-context
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

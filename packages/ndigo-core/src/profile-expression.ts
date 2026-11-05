@@ -3,7 +3,6 @@
  * parentheses) — parsed, never eval'd. Re-homed from `@ndigo/context` with
  * the conditional-family profile unification (AD-83).
  *
- * @module ndigo-core
  * @since 1.0.0
  * @author Jeff Rose
  */

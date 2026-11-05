@@ -6,7 +6,6 @@
  * Deliberately no runtime dependency on the network here — this module is pure
  * data and types, shared by the HTTP client, the service, and the views.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

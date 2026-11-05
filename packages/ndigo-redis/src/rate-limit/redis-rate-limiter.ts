@@ -14,7 +14,6 @@
  * as a 429). `onError: 'fail-open'` is the documented availability escape
  * hatch — it logs every allowance.
  *
- * @module ndigo-redis
  * @since 1.0.0
  * @author Jeff Rose
  */

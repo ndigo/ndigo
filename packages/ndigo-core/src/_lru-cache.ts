@@ -1,6 +1,6 @@
 /**
  * A generic Least-Recently-Used (LRU) cache backed by insertion-order Map semantics.
- * @module ndigo-core
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

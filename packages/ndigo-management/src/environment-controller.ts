@@ -2,7 +2,7 @@
  * Serves environment/property-source visibility under `/env` (AD-76 D-3).
  * Registered WITHOUT route decorators — the auto-configuration wires the
  * routes explicitly so exposure can gate them.
- * @module ndigo-management
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

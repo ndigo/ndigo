@@ -14,7 +14,6 @@
  * authority is always `JWTAdapter.validate`, which verifies the signature,
  * issuer, audience, `exp` and the `ver` counter.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -8,7 +8,6 @@
  * mode is the unprefixed `ndigo-session`. Everything else (HttpOnly,
  * SameSite=Lax, Path=/) is fixed by the framework and stays.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

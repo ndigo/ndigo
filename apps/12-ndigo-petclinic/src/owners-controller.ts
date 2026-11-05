@@ -11,7 +11,6 @@
  * redirects to the owner's detail page (post/redirect/get), so a reload can
  * never re-post.
  *
- * @module ndigo-petclinic
  * @since 1.0.0
  * @author Jeff Rose
  */

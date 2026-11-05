@@ -1,6 +1,6 @@
 /**
  * Resolver that maps a view name to an `IslandView` (AD — view resolution.
- * @module ndigo-view
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

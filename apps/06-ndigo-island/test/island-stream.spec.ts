@@ -1,6 +1,6 @@
 /**
  * APP-D — the SSE push stream coalesces and bounds its pending snapshots.
- * @module ndigo-island
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

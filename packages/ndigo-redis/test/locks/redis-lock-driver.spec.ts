@@ -2,7 +2,6 @@
  * Live standalone Redis lock-driver contracts (AD-73): lease lifecycle,
  * fencing tokens across separate connections, and stale-holder isolation.
  *
- * @module ndigo-redis
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -3,7 +3,6 @@
  * await store.initialize() during application provisioning/startup, or provision
  * the same table through an application migration. Construction performs no SQL.
  *
- * @module ndigo-orm-drizzle
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -26,6 +25,11 @@ const SCHEMA = [
     `CREATE INDEX IF NOT EXISTS ${TABLE}_expiry ON ${TABLE} (expires_at)`,
 ];
 
+/**
+ * Options for `LibSQLSessionStore`: either a borrowed `client` (ownership
+ * transfers only with `ownsClient`) or a `url`/`authToken` pair for a client the
+ * store owns, plus the shared-table `maxSessions` cap.
+ */
 export interface LibSQLSessionStoreOptions {
     /**
      * Injected clients are borrowed unless ownership is explicitly transferred.

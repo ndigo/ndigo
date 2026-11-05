@@ -7,7 +7,6 @@
  * do. The `test` block (include/exclude) moved here verbatim from the old
  * in-`vite.config.ts` block.
  *
- * @module ndigo-todo
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,6 +1,6 @@
 /**
  * The Todo-Backend REST surface through `@ndigo/test` MockHTTP.
- * @module ndigo-todobackend
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

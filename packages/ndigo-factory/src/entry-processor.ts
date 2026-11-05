@@ -1,5 +1,4 @@
 /**
- * @module ndigo-factory
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -8,6 +7,12 @@ import { like } from '@ndigo/util/types';
 import { Registry } from './registry';
 import { Factory } from './factory';
 
+/**
+ * Processor applied to every instance the factory creates, before and after
+ * initialization callbacks run. Each hook receives the entry name and instance
+ * and returns the instance to use — the original, a wrapper, or `null` to stop
+ * further processors.
+ */
 export interface InitializationAwareProcessor {
     /**
      * Apply this {@link EntryProcessor} to the given new instance _after_ any initialization callbacks. The instance will already be populated with property values. The returned instance may be a wrapper around the original.

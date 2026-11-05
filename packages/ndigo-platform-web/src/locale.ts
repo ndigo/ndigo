@@ -1,5 +1,4 @@
 /**
- * @module ndigo-platform-web
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -56,7 +55,7 @@ export const currentLocale: Signal<string> = new Proxy(Object.create(null) as Si
  *
  * Persists the user's choice (cookie) and updates {@link currentLocale},
  * so subscribed views re-render with the new locale. Subsequent requests
- * resolve the cookie first via {@link CookieLanguageResolver}.
+ * resolve the cookie first via {@link cookie-language-resolver.CookieLanguageResolver | CookieLanguageResolver}.
  *
  * Invalid tags (non-BCP 47, markup characters, overlong) are ignored —
  * the current locale and cookie are left untouched.

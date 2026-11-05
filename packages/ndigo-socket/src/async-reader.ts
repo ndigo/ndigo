@@ -17,13 +17,20 @@
  *
  * Single-consumer by design: one `iterable()` at a time; ordering is
  * strictly FIFO.
- * @module ndigo-socket
+ *
  * @since 1.0.0
  * @author Jeff Rose
  * @internal
  */
 import { RingBuffer } from '@ndigo/core';
 
+/**
+ * Push-to-pull adapter: producers `push()` inbound values, consumers iterate or
+ * `read()` them. Pending values sit in a ring buffer bounded by count and
+ * (optionally) bytes; over a bound the newest values are dropped and
+ * `onOverflow` fires once per episode, so one slow reader cannot grow the queue
+ * without limit.
+ */
 export class AsyncReader<T> {
     /**
      * Queue of pending values — a head-indexed ring, not an array: the

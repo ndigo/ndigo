@@ -4,7 +4,7 @@
  * The browser-global half of the client reconnect wiring: `@ndigo/socket`'s
  * `WebSocketClient` stays isomorphic while this package provides the
  * window/`navigator` surface (AD-04 boundary).
- * @module ndigo-platform-web
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

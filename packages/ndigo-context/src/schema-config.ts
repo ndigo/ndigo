@@ -6,7 +6,7 @@
  * The same parsing semantics back `@configurationProperties(prefix,
  * { schema })` (ndigo-boot) and the environment's `typedConfig` — one module,
  * one behavior.
- * @module ndigo-context
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

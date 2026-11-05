@@ -2,7 +2,7 @@
  * `@whenProfile` configuration gating specs — the unified profile condition
  * (AD-83): class and method gates evaluated through the environment's
  * `acceptsProfiles`, composed `Profile` terms, and variadic either-of.
- * @module ndigo-context
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

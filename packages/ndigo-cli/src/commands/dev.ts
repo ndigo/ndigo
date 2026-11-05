@@ -3,7 +3,6 @@
  * apps, the app's `dev`/`start` for Node apps) under the supervisor
  * lifecycle. Server watch/hot-reload is documented as v1.1 (AD-75 D-2).
  *
- * @module ndigo-cli
  * @since 1.0.0
  * @author Jeff Rose
  */

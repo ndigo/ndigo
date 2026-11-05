@@ -2,7 +2,7 @@
  * Response-shaping probes: statuses, redirects, response headers, cookies,
  * auth challenges, delays, binary/streamed bodies, compression and the
  * rate-limit demo.
- * @module ndigo-httpbin
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

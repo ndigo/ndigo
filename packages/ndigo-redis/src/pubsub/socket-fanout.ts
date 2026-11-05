@@ -1,6 +1,6 @@
 /**
  * Redis live socket Pub/Sub adapter.
- * @module ndigo-redis
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -8,6 +8,12 @@ import { randomUUID } from 'node:crypto';
 import type { SocketFanout, SocketFanoutMessage, SocketFanoutScope } from '@ndigo/socket';
 import { RedisConnection } from '../connection';
 
+/**
+ * Options for the Redis socket fan-out: the borrowed command `connection`, a
+ * dedicated `subscriberUrl` for the fan-out's own subscription, the
+ * `namespace` isolating applications, and size/timeout bounds for message
+ * payloads and connect attempts.
+ */
 export interface RedisSocketFanoutOptions {
     /** Borrowed publisher; never subscribed or closed by this adapter. */
     connection: RedisConnection;

@@ -9,7 +9,6 @@
  * the route). Routes without the metadata — here `/auth/me` — are untouched: the
  * interceptor is a metadata gate, so registering it changed no other route.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

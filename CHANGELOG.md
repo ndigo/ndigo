@@ -225,6 +225,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `TransactionManager.run(fn)`, `@transactional` and the nested/concurrent
   rejection are unchanged.
 
+- **API reference regrouped by source file** (`pnpm doc:api`, guides 12 and
+  STYLE_GUIDE §5): each package's generated reference is now one module per
+  source file instead of a flat list of kinds. `api/README.md` lists the
+  files, each file page lists its own symbols, and symbol pages are namespaced
+  by file (`api/<file>/classes/<Symbol>.md`). `_*.ts` internal files stay out;
+  the `@module` header tag is retired (TypeDoc derives module names from paths —
+  a package-wide tag collapsed multi-entry packages into duplicate modules) and
+  the header generator, lint rule and 1,489 file headers were updated with it.
+  Cross-file `{@link}` targets must now name their module
+  (`{@link <module>.<Symbol> | Symbol}`); the doc-coverage gate was repaired (it
+  had been checking the wrong reflection kinds and could never fire) and the 62
+  public symbols it flagged are documented.
+
 ### Fixed
 
 - `apps/04-ndigo-api` (2026-10-08 review, REV-001): `migrations.runOnBoot`

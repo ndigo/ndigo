@@ -4,7 +4,7 @@
  * matching message. Both lanes drive real servers through the `@ndigo/socket`
  * `WebSocketClient` (the Node WHATWG transport, same wire as a browser), so the
  * helpers speak that client's API and nothing else.
- * @module ndigo-redis-fanout
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

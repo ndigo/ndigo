@@ -2,7 +2,7 @@
  * Secret-safe diagnostic redaction (SEC-11 / CF-2): a single helper every
  * error wrap that can echo a resolved property value uses, so a new wrap
  * point cannot silently reintroduce a plaintext leak (CTX-02/CTX-03).
- * @module ndigo-context
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

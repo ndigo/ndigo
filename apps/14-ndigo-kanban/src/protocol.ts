@@ -24,7 +24,6 @@
  * reconnect reconciles instead of replaying from memory (see the README's
  * "Concurrency model").
  *
- * @module ndigo-kanban
  * @since 1.0.0
  * @author Jeff Rose
  */

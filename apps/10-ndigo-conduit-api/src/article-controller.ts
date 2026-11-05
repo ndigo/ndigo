@@ -8,7 +8,6 @@
  * delete, and a non-author gets `403` — distinct from the `404` an unknown
  * slug produces.
  *
- * @module ndigo-conduit-api
  * @since 1.0.0
  * @author Jeff Rose
  */

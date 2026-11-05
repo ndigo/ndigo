@@ -1,6 +1,6 @@
 /**
  * HTTP pipeline wiring for the Todo-Backend app: CORS + a JSON-body gate.
- * @module ndigo-todobackend
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,5 +1,4 @@
 /**
- * @module ndigo-context
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -174,6 +173,11 @@ export class UnresolvedResource implements Resource<Error> {
     }
 }
 
+/**
+ * Mixin that resolves a resource by dynamic `import()` of its location, so a
+ * resource module is loaded on demand. A failed import is wrapped in
+ * `UnresolvedResource` rather than surfacing the loader error.
+ */
 export const AsModuleResourceLoader = <T extends Constructable>(superclass: T): Constructable<ResourceLoader> & T => {
     // TypeScript 5.7 requires explicit type assertion for mixin pattern
     const LoaderClass = class extends (superclass as new (...args: never[]) => object) implements ResourceLoader {

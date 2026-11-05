@@ -7,7 +7,6 @@
  * parsed query bag, the raw header record, and the parsed body. Multipart
  * file parts are summarised (`files`) with their names and byte sizes.
  *
- * @module ndigo-httpbin
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -11,7 +11,6 @@
  * are process-global already (`AuthRegistry`), and the store/config that back
  * them are published alongside.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

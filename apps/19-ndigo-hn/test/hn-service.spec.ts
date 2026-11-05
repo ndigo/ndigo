@@ -2,7 +2,6 @@
  * `HnService` against an msw-stubbed HN API: hydration order, bounded comment
  * trees, incremental windows, error/retry, and the offline→queued-replay story.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

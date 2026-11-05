@@ -3,7 +3,6 @@
  * AD-79): per-(key, window) budgets, window slide, fail-loud policies,
  * and the SEC-2 memory bound.
  *
- * @module ndigo-rate-limit
  * @since 1.0.0
  * @author Jeff Rose
  */

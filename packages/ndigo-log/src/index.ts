@@ -3,7 +3,6 @@
  * severity mappings. Depends only on the OpenTelemetry API packages so that
  * low-level framework code can log without pulling in the telemetry stack.
  *
- * @module ndigo-log
  * @since 1.0.0
  * @author Jeff Rose
  */

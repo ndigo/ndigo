@@ -4,7 +4,6 @@
  * a bare `denialOf(403)`, an `AuthRouteGuard`-shaped `401`, and a redirect
  * denial all produce the same wire response through the mock.
  *
- * @module ndigo-test
  * @since 1.0.0
  * @author Jeff Rose
  */

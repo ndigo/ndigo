@@ -4,7 +4,6 @@
  * tests dictate (custom reasons, error codes, metadata — shapes the
  * in-memory provider cannot produce).
  *
- * @module ndigo-flags-openfeature
  * @since 1.0.0
  * @author Jeff Rose
  */

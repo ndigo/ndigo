@@ -1,6 +1,6 @@
 /**
  * Behavioral tests for @ndigo/factory scope decorators (TC39).
- * @module ndigo-factory
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

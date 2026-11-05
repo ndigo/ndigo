@@ -3,7 +3,6 @@
  * across separate connections (two nodes), namespace isolation, TTL
  * windows, and the fail-closed/fail-open storage posture.
  *
- * @module ndigo-redis
  * @since 1.0.0
  * @author Jeff Rose
  */

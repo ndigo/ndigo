@@ -1,6 +1,6 @@
 /**
  * The five Todo-Backend operations, plus the OPTIONS/collection-reset extras.
- * @module ndigo-todobackend
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

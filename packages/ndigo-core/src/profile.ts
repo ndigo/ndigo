@@ -16,7 +16,7 @@
  *
  * Terms compose and can be passed anywhere a profile expression string is
  * accepted (`@whenProfile(...)`, `environment.acceptsProfiles(...)`).
- * @module ndigo-core
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -6,7 +6,7 @@
  * is parsed: patterns, method conditions, resolved `MethodParameter`s and
  * the zod schemas `validatedBy` carries are all runtime metadata the
  * framework already holds.
- * @module ndigo-openapi
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

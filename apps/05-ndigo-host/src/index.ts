@@ -1,6 +1,6 @@
 /**
  * Ndigo Micro Frontend Host entry point.
- * @module ndigo-host
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

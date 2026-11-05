@@ -7,7 +7,7 @@
  * One provider per file: the instrument cache in the instrumentation is
  * module-level, so a mid-file provider swap would orphan the cached
  * histogram onto the dead provider.
- * @module ndigo-telemetry-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

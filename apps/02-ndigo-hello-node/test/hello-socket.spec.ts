@@ -5,7 +5,7 @@
  * connection with 1011 before any echo. The suite boots the real server stack
  * on an ephemeral port and drives `/echo` over the node global WHATWG
  * `WebSocket` — the same wire a browser uses.
- * @module ndigo-hello-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

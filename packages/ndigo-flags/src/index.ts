@@ -3,7 +3,6 @@
  * SPI (typed, async, never-throw), the property-backed local provider,
  * and the `@whenFeature` gate metadata.
  *
- * @module ndigo-flags
  * @since 1.0.0
  * @author Jeff Rose
  */

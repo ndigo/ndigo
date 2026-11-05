@@ -8,7 +8,6 @@
  * way). The comment box renders the `422` envelope under the textarea; the
  * delete control appears only on the visitor's own comments.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

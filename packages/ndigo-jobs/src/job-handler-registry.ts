@@ -1,7 +1,6 @@
 /**
  * `JobHandlerRegistry` — discovers `@jobHandler` methods and holds handlers.
  *
- * @module ndigo-jobs
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -217,7 +216,7 @@ export class JobHandlerRegistry {
 /**
  * Structural type guard for {@link JobHandlerRegistry} — the `like*`
  * convention used where a bean or option is verified before use (sibling of
- * {@link likeJobDriver}).
+ * {@link job-driver.likeJobDriver | likeJobDriver}).
  *
  * @param value - The candidate value.
  * @returns Whether it exposes the registry seam (`get` + `register`).

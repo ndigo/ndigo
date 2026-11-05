@@ -3,7 +3,6 @@
  * inside a `DrizzleTransactionManager` bracket commits and rolls back with
  * the business data on the same connection.
  *
- * @module ndigo-orm-drizzle
  * @since 1.0.0
  * @author Jeff Rose
  */

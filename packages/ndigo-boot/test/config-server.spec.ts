@@ -4,7 +4,7 @@
  * a change → `environment.refresh()` → `config:refresh` → the config class
  * re-binds with the new value. Also: 304/unchanged → no event, `optional:
  * false` fails boot, `context:close` stops polling.
- * @module ndigo-boot
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

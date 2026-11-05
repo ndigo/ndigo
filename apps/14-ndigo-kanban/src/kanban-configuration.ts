@@ -3,7 +3,6 @@
  * broadcaster, the REST/socket/shell controllers, the static client-bundle
  * controller, and the EJS view resolver.
  *
- * @module ndigo-kanban
  * @since 1.0.0
  * @author Jeff Rose
  */

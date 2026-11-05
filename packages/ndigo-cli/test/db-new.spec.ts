@@ -3,7 +3,7 @@
  * the CLI's scaffold probe (`migration-probe`) and the framework loader's
  * `nextMigrationVersion` must agree on every directory shape, so a
  * scaffolded version is never one the runner would not load.
- * @module ndigo-cli
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

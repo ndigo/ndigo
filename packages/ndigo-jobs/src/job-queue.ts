@@ -1,7 +1,6 @@
 /**
  * The producer facade: `JobQueue` wraps a driver for enqueueing.
  *
- * @module ndigo-jobs
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -29,7 +28,7 @@ export interface JobQueueOptions {
 
 /**
  * The producer-facing queue: `enqueue` one job, inspect `size` — nothing else
- * (claiming and completion belong to {@link JobRunner}).
+ * (claiming and completion belong to {@link job-runner.JobRunner | JobRunner}).
  *
  * Produces, per AD-72 D-3, a single place where defaults live: drivers
  * normalize and validate, the queue only fills in the configured default

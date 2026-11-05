@@ -17,7 +17,6 @@
  * Deterministic output is the testable contract: the same snapshot array
  * always renders the same document.
  *
- * @module ndigo-telemetry
  * @since 1.0.0
  * @author Jeff Rose
  */

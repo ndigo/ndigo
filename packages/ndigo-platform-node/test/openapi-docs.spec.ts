@@ -2,7 +2,7 @@
  * End-to-end: boot a real context with NodeAutoConfiguration +
  * OpenAPIDocsAutoConfiguration, and serve spec + Swagger UI through the
  * actual pipeline (AD-35 D-5/D-6).
- * @module ndigo-platform-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

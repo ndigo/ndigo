@@ -1,7 +1,7 @@
 /**
  * WebSocket session registry contract — tracks live connections and fan-out
  * (moved from `ndigo-dispatcher`, which re-exports it — AD-22 D2).
- * @module ndigo-socket
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

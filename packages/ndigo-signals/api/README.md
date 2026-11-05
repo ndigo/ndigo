@@ -6,5 +6,7 @@
 
 ## Modules
 
-- [ndigo-signals](ndigo-signals/README.md)
-- [ndigo-signals](ndigo-signals/README-1.md)
+- [decorators](decorators/README.md)
+- [event-bridge](event-bridge/README.md)
+- [index](index/README.md)
+- [stream-to-signal](stream-to-signal/README.md)

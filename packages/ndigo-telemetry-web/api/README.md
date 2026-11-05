@@ -4,30 +4,9 @@
 
 # @ndigo/telemetry-web v0.0.1
 
-Browser telemetry configuration and web instrumentations.
+## Modules
 
-## Since
-
-1.0.0
-
-## Author
-
-Jeff Rose
-
-## Classes
-
-- [ContextInstrumentation](classes/ContextInstrumentation.md)
-- [DispatcherInstrumentation](classes/DispatcherInstrumentation.md)
-- [RouterInstrumentation](classes/RouterInstrumentation.md)
-- [WebSocketClientInstrumentation](classes/WebSocketClientInstrumentation.md)
-
-## Interfaces
-
-- [BrowserTelemetryConfig](interfaces/BrowserTelemetryConfig.md)
-- [BrowserTelemetryHandle](interfaces/BrowserTelemetryHandle.md)
-
-## Functions
-
-- [configureBrowserTelemetry](functions/configureBrowserTelemetry.md)
-- [countSocketClientBytes](functions/countSocketClientBytes.md)
-- [countSocketClientStatus](functions/countSocketClientStatus.md)
+- [browser-config](browser-config/README.md)
+- [index](index/README.md)
+- [instrumentation/router/router](instrumentation/router/router/README.md)
+- [instrumentation/websocket-client/websocket-client](instrumentation/websocket-client/websocket-client/README.md)

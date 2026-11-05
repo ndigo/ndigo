@@ -12,7 +12,6 @@
  *
  * The clock is injectable so expiry behavior is testable deterministically.
  *
- * @module ndigo-locks
  * @since 1.0.0
  * @author Jeff Rose
  */

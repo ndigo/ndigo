@@ -1,6 +1,6 @@
 /**
  * `@configurationProperties` — type-safe binding from environment properties.
- * @module ndigo-boot
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

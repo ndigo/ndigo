@@ -6,7 +6,6 @@
  * accepted write bumps `version` and stamps `updatedAt`, and a client write
  * must name the version it read (`BoardService.updateCard`).
  *
- * @module ndigo-kanban
  * @since 1.0.0
  * @author Jeff Rose
  */

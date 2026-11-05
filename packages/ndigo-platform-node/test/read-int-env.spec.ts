@@ -1,7 +1,7 @@
 /**
  * `readIntEnv` specs (HG-9): the single env-integer contract shared by the
  * socket-limit, socket-registry, and managed-server resolvers.
- * @module ndigo-platform-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

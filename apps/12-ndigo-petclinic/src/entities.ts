@@ -12,7 +12,6 @@
  * unimplemented), so it is modelled the way the reference database models it —
  * an explicit `VetSpecialty` link row the clinic service joins in one scan.
  *
- * @module ndigo-petclinic
  * @since 1.0.0
  * @author Jeff Rose
  */

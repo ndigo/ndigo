@@ -1,5 +1,4 @@
 /**
- * @module ndigo-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -19,7 +18,6 @@
  * oversized body, generic `500` otherwise — internal details logged, never
  * returned to the client).
  *
- * @module
  * @since 1.0.0
  */
 import { createServer, IncomingMessage, Server, ServerResponse } from 'node:http';

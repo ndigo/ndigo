@@ -1,7 +1,7 @@
 /**
  * `AsyncReader` unit tests — bounded queue, watermark overflow episodes
  * (drop while full, resume once drained), and byte-budget accounting.
- * @module ndigo-socket
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

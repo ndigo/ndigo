@@ -7,7 +7,7 @@
  * the transport-agnostic cross-check of the raw `@socketMapping` room. The
  * endpoint carries no auth wiring, so it is exercisable standalone; receipts
  * are the broker's own.
- * @module ndigo-chat
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

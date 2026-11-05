@@ -3,7 +3,7 @@
  * code-composed `Migration[]` in ascending version order, journaled in
  * `_ndigo_migrations`, applied outside any explicit transaction (see
  * {@link Migration.up} for the `batch()` constraint).
- * @module ndigo-orm-drizzle
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -43,8 +43,17 @@ export interface MigrationContext {
     batch(statements: string[]): Promise<unknown>;
 }
 
+/**
+ * Whether a migration version is recorded in the journal as `applied` or still
+ * `pending`.
+ */
 export type MigrationState = 'applied' | 'pending';
 
+/**
+ * One row of migration state as reported by the migrator: the version, its
+ * description, whether the journal records it as applied, and — when it is —
+ * the ISO-8601 timestamp recorded at apply time.
+ */
 export interface MigrationStatus {
     version: number;
     description: string;

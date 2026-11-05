@@ -11,7 +11,6 @@
  * 3. **Snapshots** — the whole-board shape `GET /api/boards/:id` returns and
  *    the socket replays on join.
  *
- * @module ndigo-kanban
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -8,7 +8,7 @@
  * caps, policy denials), transactions (caps + COMMIT abort), `/queue`
  * replay ordering, ack modes and id-only ACKs, byte budgets, session-close
  * cleanup, and closeAll.
- * @module ndigo-socket
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

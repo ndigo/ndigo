@@ -4365,16 +4365,14 @@ Ref: STYLE_GUIDE.md Section 4.6"
 ## 5. Documentation Blocks
 
 Every source file begins with a single canonical TSDoc block at the very top
-of the file, carrying the module name, the since-version stamp, and the
-author. This is the standard form — `@ndigo/generators` emits it for new
-packages/components and the `header` generator adds/replaces it on existing
-files:
+of the file, carrying the since-version stamp and the author. This is the
+standard form — `@ndigo/generators` emits it for new packages/components and
+the `header` generator adds/replaces it on existing files:
 
 ```
 /**
  * <One-line summary ending with a period>.
  *
- * @module ndigo-<package>
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -4384,9 +4382,11 @@ files:
 
 - ✅ One block per file, first thing in the file (before imports)
 - ✅ `<summary>` is a single sentence ending in a period; it may be omitted
-- ✅ `@module ndigo-<package>` for package sources (`<app>` name for apps)
 - ✅ `@since 1.0.0` stamps the framework version the file first shipped in
 - ✅ `@author Jeff Rose` (override per file only with `--author`)
+- ❌ No `@module` tag: the generated reference derives each module's name from
+  its source path, and a package-wide tag collapses every file of the package
+  into one module (see `docs/guides/12-package-documentation.md`)
 - ❌ Headings (`#`) inside doc blocks
 - ❌ `TODO:` summary placeholders — describe what the file does
 - ❌ `@file`, `@category`, or duplicate summary lines
@@ -4410,6 +4410,25 @@ export function isInitialized(value: unknown): boolean;
 Members (methods/getters/properties), variables, and enum members are exempt
 — names self-document. `@internal` and `_`-prefixed internal files are
 exempt. See `docs/guides/12-package-documentation.md`.
+
+**`{@link}` targets follow the file, not the package.** The reference is
+generated one module per source file, so an unqualified `{@link Name}` only
+resolves inside the file that declares `Name`. Link across files of the same
+package with the declaring module as the qualifier and keep the printed text
+short:
+
+```typescript
+// ❌ Fails the docs build (unresolved link) when DrizzleEntityManager lives
+//    in drizzle-entity-manager.ts
+* {@link DrizzleEntityManager}
+
+// ✅ Same package, another file
+* {@link drizzle-entity-manager.DrizzleEntityManager | DrizzleEntityManager}
+```
+
+Class members qualify with `#` (`{@link cache.CacheOptions#maxSize}`). A link
+to another package goes in `scripts/external-symbol-links.json` — never
+inline.
 
 ### Mixin Naming [CONVENTION: Code Review]
 
@@ -4495,8 +4514,6 @@ Here's a complete example demonstrating all conventions:
 ```typescript
 /**
  * Media type parser and comparator.
- *
- * @module
  */
 
 // Imports: Always use single quotes

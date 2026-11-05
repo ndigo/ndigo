@@ -1,5 +1,4 @@
 /**
- * @module ndigo-test
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -12,7 +11,6 @@
  * interceptor / view pipeline. The rendered output is captured for assertions,
  * with no real DOM container required (jsdom is sufficient).
  *
- * @module
  * @since 1.0.0
  */
 

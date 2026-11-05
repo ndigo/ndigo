@@ -7,7 +7,6 @@
  * `06-ndigo-island` guards against) would leave every other test green. Parsing
  * the built file with Node as an ES module closes that hole.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

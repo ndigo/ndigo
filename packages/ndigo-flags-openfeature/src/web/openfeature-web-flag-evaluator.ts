@@ -17,7 +17,6 @@
  * is READY (the SDK serves defaults before that; `setProviderAndWait`
  * settles readiness at bootstrap).
  *
- * @module ndigo-flags-openfeature
  * @since 1.0.0
  * @author Jeff Rose
  */

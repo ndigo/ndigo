@@ -1,5 +1,4 @@
 /**
- * @module ndigo-http
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -26,6 +25,11 @@ import type ResponseError from './response-error';
 import { patternCache } from './http-shared';
 import { is } from '@ndigo/util/types';
 
+/**
+ * `PatternMatcher` over wildcard patterns: compiles each pattern once into a
+ * `WildcardExp` (cached) and tests values against it — the mapping behind
+ * URL-mapped interceptors.
+ */
 export class WildcardMatcher implements PatternMatcher<string, string> {
     /**
      * Tests whether a value matches a wildcard pattern.

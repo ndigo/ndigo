@@ -8,7 +8,6 @@
  * application context *at publish time*, because the bean lives in
  * `NodeAutoConfiguration` and may be created after this class.
  *
- * @module ndigo-kanban
  * @since 1.0.0
  * @author Jeff Rose
  */

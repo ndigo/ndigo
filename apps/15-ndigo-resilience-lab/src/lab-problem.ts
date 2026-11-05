@@ -7,7 +7,7 @@
  * members (`ok`, `upstreamAttempts`, `error`, …) instead of being re-wrapped
  * into a bare `{status, title, detail, instance}` — machine-readable errors on
  * every failing route.
- * @module ndigo-resilience-lab
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

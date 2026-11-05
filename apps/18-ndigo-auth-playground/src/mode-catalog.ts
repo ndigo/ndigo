@@ -6,7 +6,6 @@
  * JavaScript), the interactive client (which reads the rendered DOM) and the
  * README's matrix — so the three can never disagree.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

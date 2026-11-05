@@ -3,7 +3,6 @@
  * client — typed dispatch, reason/error translation, context flattening,
  * domain clients, and the never-throw boundary.
  *
- * @module ndigo-flags-openfeature
  * @since 1.0.0
  * @author Jeff Rose
  */

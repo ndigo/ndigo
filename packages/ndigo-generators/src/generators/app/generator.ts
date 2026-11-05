@@ -7,7 +7,6 @@
  * private app and obeys the manifest gate's app rules
  * (`scripts/check-manifests.mjs` rule 10).
  *
- * @module ndigo-generators
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -26,6 +25,12 @@ export type AppKind = 'browser' | 'node';
 /** The application kinds the generator scaffolds. */
 const APP_KINDS: readonly AppKind[] = ['browser', 'node'];
 
+/**
+ * Options for the `app` generator: the slug, the scaffold kind (`browser`
+ * Vite SPA or `node` HTTP server), and optional reading-order number and dev
+ * port. Allocation defaults to the first free slot, and explicit values that
+ * collide fail the run.
+ */
 export interface AppGeneratorSchema {
     /** App slug (kebab-case, without the `ndigo-` prefix). */
     name: string;

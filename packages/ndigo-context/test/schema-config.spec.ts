@@ -1,6 +1,6 @@
 /**
  * Schema-config binding, property keys and typedConfig specs (AD-34 D3/D4).
- * @module ndigo-context
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

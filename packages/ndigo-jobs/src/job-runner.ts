@@ -1,7 +1,6 @@
 /**
  * `JobRunner` — polls a driver and executes registered handlers.
  *
- * @module ndigo-jobs
  * @since 1.0.0
  * @author Jeff Rose
  */

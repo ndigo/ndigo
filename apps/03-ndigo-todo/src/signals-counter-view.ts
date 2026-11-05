@@ -1,6 +1,6 @@
 /**
  * Demo component showing the @ndigo/signals decorator API.
- * @module ndigo-todo
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

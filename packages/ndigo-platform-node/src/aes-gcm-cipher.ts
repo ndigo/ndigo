@@ -34,7 +34,6 @@
  * old key is destroyed — there is no dual-key read path yet, so mid-rotation
  * config fails loud (safe) until markers are migrated.
  *
- * @module ndigo-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */

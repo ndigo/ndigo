@@ -4,7 +4,6 @@
  * `Authorization` value (via `headerValue('authorization')` or a record)
  * and stripping the scheme; the constant owns that parsing once.
  *
- * @module ndigo-http
  * @since 1.0.0
  * @author Jeff Rose
  */

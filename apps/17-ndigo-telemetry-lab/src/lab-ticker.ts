@@ -16,7 +16,6 @@
  * `tick()` is a plain method: the scheduler calls it on a timer, and tests
  * (and the socket push) call it directly — no timers, no sleeping.
  *
- * @module ndigo-telemetry-lab
  * @since 1.0.0
  * @author Jeff Rose
  */

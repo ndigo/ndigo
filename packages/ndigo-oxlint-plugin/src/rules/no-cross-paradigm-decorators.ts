@@ -1,6 +1,6 @@
 /**
  * Rule that flags cross-paradigm decorator misuse.
- * @module ndigo-oxlint-plugin
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

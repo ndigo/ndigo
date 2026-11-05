@@ -1,6 +1,6 @@
 /**
  * AD-24 demo gate: `@cached` on a controller-backed service method.
- * @module ndigo-api
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

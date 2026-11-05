@@ -3,7 +3,6 @@
  * rather than throw or hang, so a deployment that does not run the embedded
  * issuer still gets a labelled failure from every OIDC route.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

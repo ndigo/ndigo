@@ -1,5 +1,4 @@
 /**
- * @module ndigo-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -13,6 +12,11 @@ import type { PathMatcher } from '@ndigo/core';
 import { Route } from '@ndigo/router';
 import { StrategyInitializer } from './strategy-initializer';
 
+/**
+ * Strategy mixin contract for handler mappings: exposes the ordered mappings a
+ * route is resolved against, and an initializer that installs them from the
+ * application context.
+ */
 export interface RouteHandlerMappingStrategy {
     handlerMappings: RouteHandlerMapping[];
     initHandlerMappings(context: ApplicationContext): void;
@@ -29,6 +33,10 @@ const HANDLER_MAPPING = 'handlerMapping',
 /**
  */
 
+/**
+ * Mixin that installs the handler-mapping collection, defaulting to the
+ * framework's metadata-backed mappings when the application configures none.
+ */
 export const AsRouteHandlerMappingStrategy = <T extends Constructable<StrategyInitializer>>(
     superclass: T
 ): Constructable<RouteHandlerMappingStrategy> & T =>

@@ -17,7 +17,6 @@
  * make the credential visible. A real cookie-session app returns the principal
  * only.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

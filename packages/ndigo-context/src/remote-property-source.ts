@@ -43,7 +43,6 @@
  * is a secret-bearing channel, and an operator error or influenced env
  * value must not silently downgrade it to plaintext HTTP.
  *
- * @module ndigo-context
  * @since 1.0.0
  * @author Jeff Rose
  */

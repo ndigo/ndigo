@@ -10,7 +10,6 @@
  * and through the `@ndigo/test` mock sink (both merge headers set this way
  * into the later `writeHead`).
  *
- * @module ndigo-httpbin
  * @since 1.0.0
  * @author Jeff Rose
  */

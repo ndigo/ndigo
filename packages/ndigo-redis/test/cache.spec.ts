@@ -1,7 +1,6 @@
 /**
  * Live standalone Redis cache and lifecycle contracts.
  *
- * @module ndigo-redis
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -8,7 +8,6 @@
  * platform default (the port comes from `process.env.PORT`, the error-resolver
  * chain and the argument resolvers stay the platform's).
  *
- * @module ndigo-petclinic
  * @since 1.0.0
  * @author Jeff Rose
  */

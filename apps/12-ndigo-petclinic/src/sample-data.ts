@@ -15,7 +15,6 @@
  * rows — the fixture list this port was specified against names them, and they
  * keep the owner list at three pages of five.
  *
- * @module ndigo-petclinic
  * @since 1.0.0
  * @author Jeff Rose
  */

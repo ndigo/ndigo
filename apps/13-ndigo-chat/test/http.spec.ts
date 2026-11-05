@@ -1,6 +1,6 @@
 /**
  * HTTP surface through MockHTTP: the EJS shell and the management endpoints.
- * @module ndigo-chat
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

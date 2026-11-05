@@ -11,7 +11,6 @@
  * that stops the flow instead of draining to EOF. Rejected or post-abort
  * parts are drained with a real consumer so busboy always reaches `close`.
  *
- * @module ndigo-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */

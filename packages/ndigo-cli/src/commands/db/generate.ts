@@ -9,7 +9,6 @@
  * `db/schema.json` projection. Both artifacts are committed and freshness-
  * gated, so a generate run at HEAD is a no-op.
  *
- * @module ndigo-cli
  * @since 1.0.0
  * @author Jeff Rose
  */

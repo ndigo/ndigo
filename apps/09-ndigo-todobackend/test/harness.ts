@@ -1,6 +1,6 @@
 /**
  * Shared MockHTTP harness for the Todo-Backend app lanes.
- * @module ndigo-todobackend
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

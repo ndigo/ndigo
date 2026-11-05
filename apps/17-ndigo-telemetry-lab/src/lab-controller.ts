@@ -7,7 +7,6 @@
  * - `GET /lab/state` — the counters/gauges the lab has observed, plus the
  *   scheduled-task and socket wiring.
  *
- * @module ndigo-telemetry-lab
  * @since 1.0.0
  * @author Jeff Rose
  */

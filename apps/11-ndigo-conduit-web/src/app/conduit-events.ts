@@ -8,7 +8,6 @@
  * auditable — {@link CONDUIT_EVENT_MAP} is the complete list of what a view can
  * ask the app to do, and nothing else can cross.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

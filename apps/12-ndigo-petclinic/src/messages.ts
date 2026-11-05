@@ -7,7 +7,6 @@
  * language (`t(...)`, guide 04) and the Zod schemas can name a key as their
  * failure message instead of hard-coding prose.
  *
- * @module ndigo-petclinic
  * @since 1.0.0
  * @author Jeff Rose
  */

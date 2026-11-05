@@ -211,6 +211,26 @@ without changing its public API; the fallback is recorded in the plan.
 - Migrating every example app at once. The plan migrates reference apps first;
   the rest can follow without a flag day.
 
+## Execution note (2026-11-05)
+
+Phases 0–2 landed as planned; three implementation findings were folded back
+into this record:
+
+- `configureBuilder` was added to `RunNodeApplicationOptions` — app 05's
+  secrets, config-server, and method-interception wiring must land before
+  refresh, which the post-refresh `beforeStart` cannot cover. The web preset
+  deliberately has no such hook yet (no consumer needs one).
+- `@ndigo/boot`'s devDependencies on the platform packages were removed:
+  with `platform-node → boot` in place, the old dev edges closed an Nx
+  task-graph cycle (AD-67's acyclicity gate). Boot's platform-integration
+  specs reach the platform sources relatively, and `platform-boundary.spec.ts`
+  pins the manifest property. The runtime edges are legal under AD-89 as
+  decided.
+- `createWebApplication` loads the view engine behind a dynamic import: a
+  static `@ndigo/view-webcomponent` import would make the `@ndigo/platform-web`
+  barrel unimportable outside a DOM (PWB-REV-001), and `@ndigo/telemetry-web`
+  imports that barrel. The bundle delta is recorded under Consequences.
+
 ## Revisit trigger
 
 - A preset grows past roughly six options or starts encoding app policy

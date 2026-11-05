@@ -331,6 +331,12 @@ Re-exports [NODE_RESPONSE_ATTRIBUTE](../node-request/variables/NODE_RESPONSE_ATT
 
 ***
 
+### NodeApplication
+
+Re-exports [NodeApplication](../run-node-application/interfaces/NodeApplication.md)
+
+***
+
 ### NodeAutoConfiguration
 
 Re-exports [NodeAutoConfiguration](../node-auto-configuration/classes/NodeAutoConfiguration.md)
@@ -340,6 +346,12 @@ Re-exports [NodeAutoConfiguration](../node-auto-configuration/classes/NodeAutoCo
 ### NodeBodyValueMethodArgumentResolver
 
 Re-exports [NodeBodyValueMethodArgumentResolver](../body-argument-resolver/classes/NodeBodyValueMethodArgumentResolver.md)
+
+***
+
+### nodeConfigFileReader
+
+Re-exports [nodeConfigFileReader](../node-config-file-reader/variables/nodeConfigFileReader.md)
 
 ***
 
@@ -622,6 +634,18 @@ Re-exports [ResponseEntity](../response-entity/classes/ResponseEntity.md)
 ### ResponseEntityView
 
 Re-exports [ResponseEntityView](../response-entity-view/classes/ResponseEntityView.md)
+
+***
+
+### runNodeApplication
+
+Re-exports [runNodeApplication](../run-node-application/functions/runNodeApplication.md)
+
+***
+
+### RunNodeApplicationOptions
+
+Re-exports [RunNodeApplicationOptions](../run-node-application/interfaces/RunNodeApplicationOptions.md)
 
 ***
 

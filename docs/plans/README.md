@@ -7,6 +7,36 @@ Every implemented plan has its **decision recorded** in
 
 ## Completed Plans
 
+### 2026-11-05 - Application Lifecycle Presets
+
+`@ndigo/boot` + `@ndigo/platform-node` + `@ndigo/platform-web` (AD-90):
+additive entrypoint presets that compose the existing auto-configurations —
+**`runNodeApplication`** (NodeAutoConfiguration + NodeEnvironment + config
+files via the new `nodeConfigFileReader` + the managed `HTTP_SERVER` start +
+`gracefulShutdown`, with `configureBuilder` / `beforeStart` / `resources` /
+`shutdown` / `platform` / `configFiles` / `port` opt-outs) and
+**`createWebApplication`** (WebAutoConfiguration + BrowserEnvironment + the
+`DOMElementViewTarget` / `BrowserDispatcher` / `HashRouter` wiring, the
+runtime tokens, router interceptors, `beforeNavigate`, and the first
+navigation, with an idempotent `destroy()`). Also: `HTTPServer.port` reports
+the bound port (kernel-assigned for `port: 0`) and reverts on close;
+`@ndigo/boot`'s profile resolver reads through `getEnv` (browser-safe,
+pinned by a new spec); boot's platform devDependencies are gone — its
+platform-integration specs import the platform sources relatively, because
+the old edges would close an Nx build cycle now that the platforms depend
+on boot (AD-67's acyclicity gate). Apps 02/05/08/19, the app generator's
+node and browser templates (browser apps ship `<name>-configuration.ts` +
+the preset), guide 01 §1/§5, the new guide 30, the root README, and the
+CHANGELOG adopt the presets. Deviations from the approved plan, recorded in
+AD-90: the `configureBuilder` hook (app 05's secrets/config-server/processor
+wiring must land pre-refresh), the devDependency removal, the browser view
+engine behind a dynamic import (PWB-REV-001), and the measured bundle delta
+(+100.3 kB raw / +30.0 kB gzip on app 19, all chunks).
+
+[Read plan](2026-11-05_APPLICATION_LIFECYCLE_PRESETS.md)
+
+---
+
 ### 2026-10-10 - Feature Flags
 
 `@ndigo/flags` + `@ndigo/platform-node` + `apps/04-ndigo-api` (AD-82),
@@ -487,7 +517,6 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 
 ## Draft Plans
 
-- [2026-11-05_APPLICATION_LIFECYCLE_PRESETS.md](2026-11-05_APPLICATION_LIFECYCLE_PRESETS.md) - Application lifecycle presets (AD-90): `runNodeApplication` in `@ndigo/platform-node` and `createWebApplication` in `@ndigo/platform-web` — thin, overridable entrypoints that compose the existing auto-configurations, plus the default Node config-file reader and the `@ndigo/boot` browser-safety fix. Approved 2026-11-05; implementation pending.
 - [2026-11-03_TSCONFIG_PACKAGE_CONSISTENCY.md](2026-11-03_TSCONFIG_PACKAGE_CONSISTENCY.md) - TypeScript config & package setup consistency: Phase 0 (dead `tsconfig.vscode.json`, stale Nx input, over-broad root config, exposed script lint warnings) executed; Phases 1–6 standardize the app/package IDE and build lanes, consolidate the three alias tables, and add a CI guard.
 - [2026-11-02_COMPREHENSIVE_REVIEW.md](2026-11-02_COMPREHENSIVE_REVIEW.md) - Comprehensive review (2026-11-02): full-repo sweep across code, design, architecture, security, and docs. Gates green at `e732baf4` (lint, audit, manifest, doc-links, cycles); security surface verified fail-closed end-to-end. Findings: M1 unexported `EqualsURLMatcher` in ndigo-http README, M2 ndigo-redis `/rate-limit` entry point undocumented, M3–M4 AGENTS.md stale engine floor + dependency-convention drift, L1 unbounded jwt revocation cache, L2 todo-app `refresh()` persistence bug, L3–L4 minor doc gaps, F1 OIDC refresh-token grant (tracked gap). Waves: W1 docs contract, W2 correctness, W3 issue tracking. **Executed 2026-11-02**: all three waves merged via [PR #62](https://github.com/ndigo/ndigo/pull/62); F1 tracked in [#61](https://github.com/ndigo/ndigo/issues/61). §5 records the M1 revision (JSDIP-era orphan retired, not exported).
 - [2026-11-01_OPENFEATURE_BRIDGE.md](2026-11-01_OPENFEATURE_BRIDGE.md) - OpenFeature bridge (AD-87) — Phase 1 pre-1.0 ([#56](https://github.com/ndigo/ndigo/issues/56)): `@ndigo/flags-openfeature` server bridge + additive SPI vocabulary widening, with the targeting-context resolver companion ([#55](https://github.com/ndigo/ndigo/issues/55)); Phase 2 post-1.0 ([#57](https://github.com/ndigo/ndigo/issues/57)): web entry, `feature_flag.*` telemetry hook, conformance follow-ups, OFREP/flagd recipes.

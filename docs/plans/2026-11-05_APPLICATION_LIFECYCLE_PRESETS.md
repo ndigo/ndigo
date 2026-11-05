@@ -1,7 +1,7 @@
 # Application Lifecycle Presets — Node runner and browser runtime
 
-**Status:** In progress — Phases 0–2 (boot browser safety, Node preset, web
-preset) landed 2026-11-05; Phase 3 (close-out gates) pending.
+**Status:** Completed — Phases 0–2 landed 2026-11-05; Phase 3 close-out (API
+reference regeneration, graph refresh, full gates) done 2026-11-05.
 **Scope:** `@ndigo/boot`, `@ndigo/platform-node`, `@ndigo/platform-web`, the
 app generator templates, the reference apps, and the docs that teach the
 entrypoint story.
@@ -258,13 +258,13 @@ and record the reason in this plan and AD-90 D-5.
 
 ## 8. Definition of done
 
-- [ ] Phase 0–2 landed; Phase 3 gates green.
-- [ ] App 02 and app 05 use `runNodeApplication` with no behavior loss.
-- [ ] App 08 and app 19 use `createWebApplication`; app 19 no longer carries
+- [x] Phase 0–2 landed; Phase 3 gates green.
+- [x] App 02 and app 05 use `runNodeApplication` with no behavior loss.
+- [x] App 08 and app 19 use `createWebApplication`; app 19 no longer carries
       `currentPath`.
-- [ ] Generator templates emit the presets, not the long form.
-- [ ] Guide 01, guide 30, the guide index, the root README, and the boot README
+- [x] Generator templates emit the presets, not the long form.
+- [x] Guide 01, guide 30, the guide index, the root README, and the boot README
       describe the new default path and the manual escape hatch.
-- [ ] `CHANGELOG.md` has the Added/Changed/Fixed entries.
-- [ ] `docs/plans/README.md` moves this plan to Completed with the execution
+- [x] `CHANGELOG.md` has the Added/Changed/Fixed entries.
+- [x] `docs/plans/README.md` moves this plan to Completed with the execution
       date.

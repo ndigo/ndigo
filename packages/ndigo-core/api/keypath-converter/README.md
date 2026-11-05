@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/core](../README.md) / keypath-expression
+[@ndigo/core](../README.md) / keypath-converter
 
-# keypath-expression
+# keypath-converter
 
 ## Classes
 

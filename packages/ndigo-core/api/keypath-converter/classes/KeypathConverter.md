@@ -2,7 +2,7 @@
 
 ***
 
-[@ndigo/core](../../README.md) / [keypath-expression](../README.md) / KeypathConverter
+[@ndigo/core](../../README.md) / [keypath-converter](../README.md) / KeypathConverter
 
 # Class: KeypathConverter
 

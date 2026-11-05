@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/core](../README.md) / wildcard-expression
+[@ndigo/core](../README.md) / wildcard-converter
 
-# wildcard-expression
+# wildcard-converter
 
 ## Classes
 

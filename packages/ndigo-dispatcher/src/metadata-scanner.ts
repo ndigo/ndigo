@@ -12,7 +12,6 @@ const { defineProperty } = Reflect;
 
 /**
  * Create a new MetadataScanner for a given target.
- * Invoked via the `classdesc` decorator.
  *
  * **TC39 Decorator Migration Note:**
  * This class has been updated to work with TC39 Stage 3 decorators. It scans Symbol.metadata
@@ -174,43 +173,3 @@ export class MetadataScanner {
         this._cache.clear();
     }
 }
-
-/**
- * Create a WeakMap to store instances of Metadata Scanners
- * Invoked via the `classdesc` decorator.
- */
-class MetadataManager {
-    /**
-     * Weakly cached scanners keyed by target object.
-     */
-    _scannerMap: WeakMap<Record<string, unknown>, MetadataScanner>;
-
-    /**
-     * Create a metadata manager.
-     */
-    constructor() {
-        this._scannerMap = new WeakMap();
-    }
-
-    /**
-     * Get the property names of a target object that match the requested metadata key.
-     *
-     * @param target - The object, prototype, or constructor to scan.
-     * @param metadataKey - The metadata key to query.
-     * @returns The matching property names, or `undefined` when none are found.
-     */
-    get(target: Record<string, unknown>, metadataKey: string): string[] | undefined {
-        const scannerMap = this._scannerMap;
-        if (scannerMap.has(target)) {
-            const scanner = scannerMap.get(target);
-            if (scanner) {
-                return scanner.get(metadataKey);
-            }
-        }
-        const targetScanner = new MetadataScanner(target);
-        scannerMap.set(target, targetScanner);
-        return targetScanner.get(metadataKey);
-    }
-}
-
-export default new MetadataManager();

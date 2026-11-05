@@ -2,12 +2,11 @@
 
 ***
 
-[@ndigo/dispatcher](../../README.md) / [metadata-manager](../README.md) / MetadataScanner
+[@ndigo/dispatcher](../../README.md) / [metadata-scanner](../README.md) / MetadataScanner
 
 # Class: MetadataScanner
 
 Create a new MetadataScanner for a given target.
-Invoked via the `classdesc` decorator.
 
 **TC39 Decorator Migration Note:**
 This class has been updated to work with TC39 Stage 3 decorators. It scans Symbol.metadata

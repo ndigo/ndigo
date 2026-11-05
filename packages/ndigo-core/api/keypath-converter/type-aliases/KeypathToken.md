@@ -2,7 +2,7 @@
 
 ***
 
-[@ndigo/core](../../README.md) / [keypath-expression](../README.md) / KeypathToken
+[@ndigo/core](../../README.md) / [keypath-converter](../README.md) / KeypathToken
 
 # Type Alias: KeypathToken
 

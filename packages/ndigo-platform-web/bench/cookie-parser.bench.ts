@@ -1,13 +1,13 @@
 /**
- * Benchmark suite for `cookieExpression` (cookie-header) parser throughput.
+ * Benchmark suite for `parseCookieHeader` (cookie-header) parser throughput.
  *
  * Scenarios:
- *   1. cookieExpression – arcsecond parser            – parse all cookie strings
- *   2. cookieExpression – Object.fromEntries baseline – built-in JS split approach
+ *   1. parseCookieHeader – hand-rolled parser        – parse all cookie strings
+ *   2. parseCookieHeader – Object.fromEntries baseline – built-in JS split approach
  */
 
 import { test } from 'vitest';
-import cookieExpression from '../src/parser/cookie-expression';
+import { parseCookieHeader } from '../src/parser/cookie-parser';
 
 /* ------------------------------------------------------------------ */
 /*  Test patterns                                                      */
@@ -35,14 +35,13 @@ let _sink: unknown = 0;
 /*  Benchmarks                                                         */
 /* ------------------------------------------------------------------ */
 
-test('cookieExpression – Cookie header strings', async ({ bench }) => {
+test('parseCookieHeader – Cookie header strings', async ({ bench }) => {
     await bench.compare(
-        bench('arcsecond parser', () => {
+        bench('parseCookieHeader', () => {
             let accumulator = 0;
             for (let i = 0; i < 1000; i++) {
                 for (const cookie of cookieStrings) {
-                    const result = cookieExpression.run(cookie);
-                    accumulator += result.isError ? 0 : 1;
+                    accumulator += Object.keys(parseCookieHeader(cookie)).length > 0 ? 1 : 0;
                 }
             }
             _sink = accumulator;

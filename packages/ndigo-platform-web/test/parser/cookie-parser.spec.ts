@@ -3,12 +3,9 @@
  * @author Jeff Rose
  */
 import { describe, expect, it } from 'vitest';
-import type { CookieParseResult } from '../../src/cookies';
-import cookies from '../../src/cookies';
+import { parseCookieHeader } from '../../src/parser/cookie-parser';
 
-const parseCookies = (input: string): Record<string, string> => {
-    return (cookies.run(input) as Extract<CookieParseResult, { isError: false }>).result as Record<string, string>;
-};
+const parseCookies = (input: string): Record<string, string> => parseCookieHeader(input);
 
 describe('cookies', function () {
     describe('it should parse', function () {

@@ -454,13 +454,13 @@ Re-exports [JSONValue](../serializable/type-aliases/JSONValue.md)
 
 ### KeypathConverter
 
-Re-exports [KeypathConverter](../keypath-expression/classes/KeypathConverter.md)
+Re-exports [KeypathConverter](../keypath-converter/classes/KeypathConverter.md)
 
 ***
 
 ### KeypathToken
 
-Re-exports [KeypathToken](../keypath-expression/type-aliases/KeypathToken.md)
+Re-exports [KeypathToken](../keypath-converter/type-aliases/KeypathToken.md)
 
 ***
 
@@ -898,7 +898,7 @@ Re-exports [WhenPropertyOptions](../conditional/interfaces/WhenPropertyOptions.m
 
 ### WildcardConverter
 
-Re-exports [WildcardConverter](../wildcard-expression/classes/WildcardConverter.md)
+Re-exports [WildcardConverter](../wildcard-converter/classes/WildcardConverter.md)
 
 ***
 

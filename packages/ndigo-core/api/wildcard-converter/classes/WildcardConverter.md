@@ -2,14 +2,14 @@
 
 ***
 
-[@ndigo/core](../../README.md) / [wildcard-expression](../README.md) / WildcardConverter
+[@ndigo/core](../../README.md) / [wildcard-converter](../README.md) / WildcardConverter
 
 # Class: WildcardConverter
 
 Parses a wildcard pattern into a bounded regular-expression source string.
 
 Any string is a valid wildcard pattern — `*` matches any sequence of characters.
-This function always succeeds.
+This converter always succeeds.
 
 ## Param
 

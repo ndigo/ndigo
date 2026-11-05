@@ -2,7 +2,7 @@
 
 How handler arguments bind in Ndigo: the full source vocabulary, whole-source
 **data binding** (`dataBinderValue` — the form/model-binding story), and
-multipart **JSON parts** (`requestPart`). The engine mirrors Spring MVC's
+multipart **JSON parts** (`requestPart`). The engine mirrors the reference MVC layer's
 resolver architecture — each parameter source is one resolver, first match
 wins — and the binding machinery reuses `DataBinder` (keypath-aware,
 core/isomorphic), `ConversionService`, and the Zod `convert` hook (guide 02).
@@ -99,7 +99,7 @@ Semantics to know:
   `MissingParameterError` (→ 400). An empty-but-present source binds to an
   empty object.
 - **Form + query stay separate** in v1 — query fields do not fold into form
-  binding (a documented divergence from Spring's combined `@ModelAttribute`).
+  binding (a documented divergence from the reference framework's combined model-attribute binding).
 
 Nested scalar reads coexist: `bodyValue('address.city')` reads one value out
 of the JSON body without binding.

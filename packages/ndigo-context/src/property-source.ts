@@ -95,7 +95,7 @@ export class MapPropertySource implements PropertySource {
 }
 
 /**
- * Normalizes Spring-style dotted keys (`server.port`) into nested objects
+ * Normalizes dotted keys (`server.port`) into nested objects
  * (`server: { port: ... }`) so keypath resolution can find them.
  *
  * Produces a null-prototype copy — registration stays immune to caller

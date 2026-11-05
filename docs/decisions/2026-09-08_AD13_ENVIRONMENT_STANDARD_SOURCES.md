@@ -29,8 +29,8 @@ CLI/builder wiring. Boot stays isomorphic via an injected
 resolver-only.
 
 **D2 — `StandardConfigFileLoader`.** Locations `./config/`, `./` (default;
-`BLUE_CONFIG_LOCATION` overrides, comma-separated, `optional:` prefix like
-Spring). **First-present-wins per file name, no cross-location merge (Q4)**.
+`BLUE_CONFIG_LOCATION` overrides, comma-separated, `optional:` prefix as in the
+reference framework). **First-present-wins per file name, no cross-location merge (Q4)**.
 Names: `application.json` (base) + `application-{profile}.json` per active
 profile (later profiles higher). JSON only. **Deep-merge: objects merge,
 scalars override, arrays replace (Q3)** — an override that replaces a list is

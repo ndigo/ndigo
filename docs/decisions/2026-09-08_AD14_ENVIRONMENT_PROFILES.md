@@ -15,22 +15,22 @@ without code changes.
 
 ## Decision
 
-**D1 — Default-profile activation (Spring-exact).** `AbstractEnvironment`
+**D1 — Default-profile activation (exact parity).** `AbstractEnvironment`
 owns the effective-set semantics (Q3): the active set is `activeProfiles` when
 non-empty, else `defaultProfiles`, exposed as `activeProfilesOrDefaults` — the
 environment is the sole authority on "what's active", consumed by every gate
 (no duplicated gate-side fallback). `activeProfiles` getter stays explicit-only
-(Spring parity: `getActiveProfiles()` returns explicit; the merge is a
+(reference parity: `getActiveProfiles()` returns explicit; the merge is a
 condition-level view).
 
-**D2 — Profile expressions (Spring 6.1 `Profiles` port).** New
+**D2 — Profile expressions (the 6.1 `Profiles` port).** New
 `profile-expression.ts`: grammar `name` | `!expr` | `expr & expr` | `expr |
 expr` | `( expr )` (whitespace tolerated), evaluated by
 `evaluateProfileExpression(expr, active)` — parsed, never eval'd. **Fail-loud
 (Q4)**: paren depth cap 10, malformed → `IllegalStateError` naming the
 expression (a silently-never-matching typo ships as a missing feature).
 `@profile(...)` accepts one-or-more expression strings, **OR across entries
-(Q6)** — Spring's OR-list parity; AND is expressible within one entry.
+(Q6)** — the reference OR-list parity; AND is expressible within one entry.
 `ConfigurationProcessor` + new `@conditionalOnProfile` (blue-core, Q7 — core
 is the conditions home; the decorator consumes the injected
 `acceptsProfiles` capability, same architecture as `conditionalOnProperty`)

@@ -39,7 +39,7 @@ export interface TransformContext {
 /**
  * Contract for request/response body transformers.
  *
- * Inspired by Spring Framework's `HttpMessageConverter` pattern.
+ * Inspired by the `HttpMessageConverter` pattern.
  */
 export interface HTTPTransformer<TInput = unknown, TOutput = unknown> {
     /**

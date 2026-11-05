@@ -114,7 +114,7 @@ http.server.request.duration_sum{http.request.method="GET",http.response.status_
 
 ## 4. `/loggers` — level inspection and live changes
 
-Payloads follow the Spring Boot actuator endpoint:
+Payloads follow the actuator endpoint:
 
 - `GET /loggers` → `{ levels, loggers }` where `levels` is the canonical
   vocabulary (`trace`, `debug`, `info`, `warn`, `error`, `fatal`, `off`) and
@@ -124,7 +124,7 @@ Payloads follow the Spring Boot actuator endpoint:
 - `POST /loggers/<name>` with `{"configuredLevel": "warn"}` sets a per-name
   threshold; `{}` clears it back to the global settings floor. Unknown level
   names are rejected by the body schema (`422` — the dispatcher's
-  validation status, not Spring's `400`).
+  validation status, not the reference framework's `400`, which the engine reserves for unreadable JSON).
 
 Levels are **runtime, process-local state**: they apply to every handle for
 the name (including ones handed out before the change), survive global

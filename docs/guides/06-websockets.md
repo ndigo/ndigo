@@ -77,7 +77,7 @@ be awaited. Local delivery is best-effort — closed sessions are skipped,
 transport errors tolerated — but configured cross-node publish failures reject
 before local delivery; they never silently fall back to local-only mode. Backpressure is on by
 default: a session whose transport buffer exceeds 1 MiB is closed with
-`1013` ("try again later", Spring's `SESSION_NOT_RELIABLE`) —
+`1013` ("try again later", the `SESSION_NOT_RELIABLE` convention) —
 client reconnects and resyncs. Tune per registry:
 `{ backpressure: { maxBufferedBytes, onOverflow: 'drop' | 'close' } }`
 (`drop` skips silently; `null` disables the guard). The decision is
@@ -113,7 +113,7 @@ series), and backpressure counters (`close` and `drop` actions) — all
 under `ndigo.socket.*`.
 
 Also on the session: `session.attributes` — a per-connection state bag
-(Micronaut/Spring/Jakarta parity), and `session.close(code, reason)` for a
+(Micronaut/Jakarta parity), and `session.close(code, reason)` for a
 server-initiated close. The adapter's optional `authenticate(sources)`
 hook runs before the handler: return an object to populate
 `session.attributes` (the identity binding — e.g. `{ principal }`), or
@@ -316,7 +316,7 @@ consumer cannot pin memory on any path.
 ## 7. STOMP
 
 The same sessions speak the industry-standard STOMP 1.2 broker protocol:
-destinations, subscriptions, receipts — interop with Spring
+destinations, subscriptions, receipts — interop with reference STOMP clients
 (`SimpMessagingTemplate`), RabbitMQ/Artemis STOMP, and @stomp/stompjs
 clients. It is a protocol layer over the socket contracts, so it is
 isomorphic (`@ndigo/socket`) and transport-agnostic:
@@ -378,7 +378,7 @@ already owns liveness. The second wave rounds out the protocol:
   strings (`SocketSession`/`SocketClient` JSDoc updated).
 - **`/user` destinations** — principal-scoped routing: subscribe
   `/user/queue/events`, then `broker.sendToUser('alice', '/queue/events',
-  …)` delivers to that user's scope (Spring `convertAndSendToUser` parity).
+  …)` delivers to that user's scope (user-destination parity).
   `resolveUser(session)` (default: `session.attributes.user`) binds the
   scope; a client SEND to `/user/*` reaches only the sender's own scope,
   and sessions with no resolved user cannot bind `/user/*` (1008).
@@ -443,7 +443,7 @@ beyond the configured retained window. Durable LibSQL `/queue` storage and
 live Redis path/room/topic fan-out are implemented separately. `@stompMapping` paths negotiate the
 `v12.stomp`/`v11.stomp`/`v10.stomp` WebSocket subprotocol on upgrade;
 other socket paths keep the stock behavior. **STOMP over TCP is never** —
-no consumer base (browsers, STOMP.js, and Spring all use WebSocket), and
+no consumer base (browsers and STOMP.js both use WebSocket), and
 like SockJS it is a non-feature, not a gap.
 
 ### Cross-node live fan-out (opt-in)

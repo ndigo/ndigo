@@ -38,7 +38,7 @@ verified 2026-10-06:
 Building a kit in-house would permanently own: accessibility conformance,
 localized strings, RTL (BlueJS explicitly deferred RTL in Content/i18n — INV-1),
 form participation, theming, SSR/DSD parity, docs/lab and semver churn — with no
-differentiation. Spring Boot and Nest ship no UI kit; they integrate the
+differentiation. The reference boot layer and Nest ship no UI kit; they integrate the
 ecosystem (Vaadin, Bootstrap). A component library is a product/design-system
 decision wearing a framework costume.
 
@@ -101,7 +101,7 @@ or a 1.0 adoption blocker) and recorded separately.
   library-independent and now exists.
 - DSD + FACE are the two platform features that made the previous objections
   (server rendering, forms) obsolete; both are Baseline/standard.
-- Keeping components out of the framework preserves the "Spring for TypeScript"
+- Keeping components out of the framework preserves the "enterprise framework for TypeScript"
   positioning and avoids owning a design system the project does not have a
   design team for.
 - The bridge is testable without committing to a library: the spike verifies it

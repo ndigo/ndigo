@@ -9,8 +9,8 @@
 ## Context
 
 The management surface ships exactly `/health` (AD-36) and `/metrics`
-(proprietary JSON, tracked by GAP-5). Peer frameworks (Spring Boot
-/actuator, Micronaut management, Quarkus management interfaces) all offer at
+(proprietary JSON, tracked by GAP-5). Peer frameworks (the Java actuator stack,
+Micronaut management, Quarkus management interfaces) all offer at
 least log-level inspection and live changes, environment/source visibility,
 bound-configuration introspection, and composed health views. The 2026-10-07
 review rates actuator parity **high** and 1.0-severity; this record and the
@@ -49,7 +49,7 @@ What the repository already provides:
 
 ## Evidence
 
-- Ground truth pinned from the Spring Boot 4.1 reference
+- Ground truth pinned from the actuator reference (4.1)
   (`docs.spring.io/spring-boot/reference/actuator/endpoints.html`): only
   **health is exposed over HTTP by default**; exposure via
   `management.endpoints.web.exposure.include/exclude` (default `health`,
@@ -74,7 +74,7 @@ What the repository already provides:
 No `/actuator` prefix migration (existing `127.0.0.1:port/health` deployments
 keep working; a prefix is a documented future knob). The control surface is an
 exposure model: `management.endpoints.exposure.include` / `.exclude`
-(Spring's `management.endpoints.web.exposure.include` names, minus `web` —
+(`management.endpoints.web.exposure.include` names, minus `web` —
 blue serves only HTTP). Endpoint ids: `health`, `metrics`, `loggers`, `env`,
 `configprops`; `*` = all; `exclude` wins.
 
@@ -84,7 +84,7 @@ The two existing endpoints stay registered by default (current behavior,
 backward compatible) — nothing new is served without operator action. This
 preserves the AD-36 "open by default" posture for what already exists while
 keeping log-level mutation, environment dumps and config introspection behind
-an explicit opt-in, matching Spring's minimal-exposure default intent.
+an explicit opt-in, matching the actuator tradition's minimal-exposure default intent.
 
 ### D-3 — `/configprops` never emits values; `/env` is sanitized by default
 
@@ -94,13 +94,13 @@ secret cannot leak by construction (the AD-70 inspect contract). `/env`
 returns each source's flattened dotted keys with origins; values are
 `"<redacted>"` unless `management.endpoints.env.showValues: true`, and even
 then only the **stored config text** is emitted — decrypted plaintext never
-reaches the wire (SEC-A). Spring's `show-values` page shows the same choice;
+reaches the wire (SEC-A). The actuator `show-values` page shows the same choice;
 blue collapses `always`/`when-authorized` into one boolean because the
 endpoint-level guard is a single `accessGuard` (no role ladder, D-4).
 
 ### D-4 — One access model: the existing `accessGuard`, widened to the exposed set
 
-No per-endpoint `management.endpoint.<id>.access` ladder (Spring 4.1). The
+No per-endpoint `management.endpoint.<id>.access` ladder (the 4.1 reference). The
 guard remains a single unconditional `RouteHandlerInterceptor`; its path
 scoping is now **computed from the exposure** so it covers exactly the served
 surface (disabled endpoints are not registered and cannot be requested).
@@ -130,10 +130,10 @@ serves a group aggregate (same aggregation rules as `/health`, restricted to
 the members actually registered) when the name matches a group, else the
 single component as a **one-component aggregate document** — every
 `/health/:name` answer keeps blue's `{status, components, timestamp}`
-document shape (a Spring `{status, details}`-shaped response would need a
+document shape (an actuator `{status, details}`-shaped response would need a
 second serialization contract for the same status rules); unknown → 404. A
 group shadows a same-named component, and `details` stay as today (blue
-always shows health details; Spring's `show-details` default is a deliberate
+always shows health details; the actuator `show-details` default is a deliberate
 divergence, documented in guide 26).
 
 ### D-7 — Per-logger levels: runtime, process-local, name-keyed registry
@@ -143,7 +143,7 @@ divergence, documented in guide 26).
 `setLevel`/`clearLevel`/`loggerNames`/`configuredLevel`/`effectiveLevel`, and
 `getLogger` records requested names. The registry override wins over a
 handle-local override; global settings remain the floor. `/loggers` GET/POST
-follow Spring's payloads (`{levels, loggers: {name: {configuredLevel?,
+follow the actuator payloads (`{levels, loggers: {name: {configuredLevel?,
 effectiveLevel}}}`, POST `{"configuredLevel": "…"}` / `{}` clears, unknown
 level 400, unknown logger 404). Levels use the npm severity scheme
 (`silent|error|warn|info|http|verbose|silly`, honoring the module's existing
@@ -174,8 +174,8 @@ constructor option: D-3 has no other registry of bound classes to scan.
   reach the endpoints — exposure default-off plus the documented accessGuard
   pattern is the security posture; operators on untrusted networks follow
   AD-36 (guard + firewall).
-- Level changes are process-local and ephemeral (lost on restart) — Spring
-  runs the same model; persistence is a future ADR.
+- Level changes are process-local and ephemeral (lost on restart) — the
+  actuator model is the same; persistence is a future ADR.
 - GAP-4 closes; GAP-5 (/metrics parity) proceeds in parallel without touching
   this surface beyond the shared auto-configuration registration.
 
@@ -183,9 +183,8 @@ constructor option: D-3 has no other registry of bound classes to scan.
 
 - Review: `docs/plans/2026-10-07_CODE_REVIEW_AND_MITIGATION.md` §6 (GAP-4), §8 (Wave 6)
 - Plan: `docs/plans/2026-10-08_ACTUATOR_PARITY.md`
-- Spring reference: [Endpoints — Spring Boot](https://docs.spring.io/spring-boot/reference/actuator/endpoints.html),
-  [Health](https://docs.spring.io/spring-boot/api/rest/actuator/health.html),
-  [Loggers](https://docs.spring.io/spring-boot/api/rest/actuator/loggers.html)
+- Reference: the actuator endpoint/health/loggers documentation used as the
+  parity target when this ADR was written (captured 2026-10-08)
 - Related decisions: [AD-36](2026-09-28_AD36_MANAGEMENT_HARDENING.md)
   (health redaction + bind posture), [AD-35](2026-09-28_AD35_OPENAPI_DOCS.md)
   (metadata-free gated controllers), [AD-70](2026-10-06_AD70_EDITOR_TOOLING_INTROSPECTION_FIRST.md)

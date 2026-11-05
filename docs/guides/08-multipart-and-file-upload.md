@@ -6,7 +6,7 @@ and a handler binds each file part to a `MultipartFile`. The client half — bui
 `multipart/form-data` body with `ndigo-http`'s `FormData` — already exists and is untouched;
 this guide covers the receiving side.
 
-The design mirrors Spring MVC's `MultipartFile` + early `MultipartResolver`, adapted to
+The design mirrors the reference MVC layer's `MultipartFile` + early resolver split, adapted to
 Ndigo's resolver/interceptor model: parsing happens **before** argument binding, so resolvers
 see parts directly rather than a buffered body. The one new runtime dependency is busboy —
 the canonical zero-dependency streaming parser; Ndigo owns the contract and wraps it.

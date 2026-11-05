@@ -16,8 +16,8 @@ Two of the three were answered before this ADR: AD-26 landed a streaming
 multipart parser and `fileValue()`, unblocking `@requestPart`; a `matrixValue()`
 resolver existed (`MatrixValueMethodArgumentResolver`). The one genuine
 functional gap was **form/model binding**: nothing instantiated a DTO and bound
-matching request fields into it — the thing Spring calls `@ModelAttribute` and
-NestJS does with `@Body(DTO)` + `ValidationPipe`.
+matching request fields into it — model-attribute binding in the reference
+framework, `@Body(DTO)` + `ValidationPipe` in NestJS.
 
 Crucially, every primitive already existed (see the plan §2): the resolver
 strategy pattern, a browser-only whole-source bind resolver, `DataBinder`
@@ -26,7 +26,7 @@ hook (AD-07). The gap was a missing Node-path resolver + extractor naming a
 target shape — not a missing engine.
 
 The research (plan §3) found no framework behavior worth copying wholesale:
-Spring's resolver architecture is already Blue's 1:1; NestJS's `reflection`
+The reference resolver architecture is already Blue's 1:1; NestJS's `reflection`
 based DTO inference contradicts Blue's established explicit-marker convention
 (AD-26 D-5); no new runtime dependency is needed on either path.
 
@@ -140,6 +140,6 @@ properties (`path`, `method`, `id`, plus `attributes` — the old
 
 **Supersedes:** the stale "Argument binding" row of the
 [Framework Gap Analysis](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) §3
-and the unfinished Domain 2 of the Spring MVC research plan; the
+and the unfinished Domain 2 of the MVC research plan; the
 2026-03-16 argument-converter reference notes (archival pre-rename API
 descriptions) are retained as dated history only.

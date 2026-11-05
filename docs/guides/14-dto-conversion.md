@@ -26,7 +26,7 @@ through a DTO (data transfer object) schema is the explicit, typed answer.
 
 Fail-fast: schema targets are `schema.parse` — a missing field, wrong type,
 or failed transform throws the structured `ZodError`; a partial result never
-escapes. This is deliberate: implicit best-effort copying (Spring
+escapes. This is deliberate: implicit best-effort copying (the reference framework
 `BeanUtils`) hides drift until it reaches the client. Request-side mismatches
 were already 400 via `validatedBody`; a response-side failure is a handler
 bug and surfaces through the RFC 9457 error path.

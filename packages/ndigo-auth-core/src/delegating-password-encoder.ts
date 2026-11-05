@@ -7,7 +7,7 @@ import { type PasswordEncoder, schemePrefix, UnknownPasswordSchemeError } from '
 
 /**
  * Multi-scheme {@link PasswordEncoder} that dispatches on the `{scheme}`
- * prefix of each hash (Spring `DelegatingPasswordEncoder` shape, without
+ * prefix of each hash (the `DelegatingPasswordEncoder` shape, without
  * the legacy `{noop}` fallthrough).
  *
  * - `encode` routes to the configured default scheme and wraps the result

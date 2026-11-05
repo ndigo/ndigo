@@ -14,7 +14,7 @@ The template source comes from one of two places, in order of precedence:
 2. a `path` resolved through a [ResourceLoader](#) — the injected
    `loader`, or the view's application context.
 
-Like Spring MVC's self-rendering `View`, the view renders into a supplied
+Like a self-rendering `View`, the view renders into a supplied
 [ViewTarget](#) for fragment mode (islands, client-side DOM) and —
 through [ProducerView](#) — produces a whole HTML page for document mode
 (servlet/JSP-style server-side rendering).

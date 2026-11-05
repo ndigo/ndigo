@@ -17,7 +17,7 @@ import { ReportViewResolver } from './report-view-resolver';
 /**
  * Ndigo Views — the composite resolver demo.
  *
- * The app configures its own resolver chain (Spring's convention) proving
+ * The app configures its own resolver chain (the conventional layering) proving
  * three view locations behind one ordered composite:
  *
  *   1. WebComponentViewResolver — component module (eager registry:

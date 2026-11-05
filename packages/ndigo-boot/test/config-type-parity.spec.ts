@@ -15,7 +15,7 @@
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
-import type { TelemetryConfig } from '@ndigo/telemetry-node';
+import type { TelemetryConfig } from '../../ndigo-telemetry-node/src/node-config';
 // The `ManagementAutoConfigurationOptions` interface is not re-exported from
 // the `@ndigo/management` barrel, so read the real type from its source module
 // (the same cross-package test-import pattern used elsewhere in the repo).

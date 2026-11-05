@@ -118,8 +118,9 @@ Both:
   reach every bean and service; the Node handle's `port` is the bound port
   (the ephemeral port when `port: 0` is requested), not just the requested
   value;
-- expose explicit hooks for app-specific behavior (`beforeStart` /
-  `beforeNavigate`) and `false` switches for every implicit action;
+- expose explicit hooks for app-specific behavior (`configureBuilder` /
+  `beforeStart` / `beforeNavigate`) and `false` switches for every implicit
+  action;
 - leave `ApplicationBuilder`, `MetadataConfigApplicationContext`,
   `NodeAutoConfiguration`, `WebAutoConfiguration`, `HTTPServer.start()`, and
   `gracefulShutdown()` public and unchanged.
@@ -177,8 +178,14 @@ without changing its public API; the fallback is recorded in the plan.
 - The 13 Node entrypoints and 5 browser entrypoints can shrink to a few lines,
   and the generator templates stop reproducing the long form.
 - Two new runtime dependency edges: `platform-node → boot` and
-  `platform-web → boot`. Both are legal under AD-89 (rank 8 > 5 and 7 > 5),
-  acyclic, and do not change the committed ranks.
+  `platform-web → boot`. Both are legal under AD-89 (rank 8 > 5 and 7 > 5)
+  and do not change the committed ranks. They require the reverse **dev**
+  edges to go: `@ndigo/boot` drops its devDependencies on the platform
+  packages, with its platform-integration specs importing the platform
+  sources relatively. Nx builds the task graph from manifests of every
+  kind, so the old dev edges would close a build cycle
+  (`platform-node → boot → platform-node`, AD-67's acyclicity gate);
+  `platform-boundary.spec.ts` now pins the manifest property.
 - The browser bundle gains `@ndigo/boot`; the existing bundle guards must stay
   green. If the cost is material, D-5's fallback removes the edge without an
   API change.

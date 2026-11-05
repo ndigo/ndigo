@@ -34,9 +34,6 @@
   "license": "ISC",
   "devDependencies": {
     "@ndigo/dispatcher": "~0.0.1",
-    "@ndigo/platform-node": "~0.0.1",
-    "@ndigo/platform-web": "~0.0.1",
-    "@ndigo/telemetry-node": "~0.0.1",
     "@toon-format/toon": "catalog:"
   },
   "sideEffects": false,

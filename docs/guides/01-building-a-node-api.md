@@ -14,17 +14,50 @@ is worth reading.
 - Node platform packages built: `pnpm --filter @ndigo/platform-node build:lib`
   (workspace packages resolve to their `lib/` outputs).
 
-## 1. Bootstrap: `ApplicationBuilder`
+## 1. Bootstrap: `runNodeApplication`
 
-An application is assembled around a DI container: register platform auto-configuration
-plus your own `@configuration` classes, then `run()`.
+An application is assembled around a DI container. The Node preset
+(`@ndigo/platform-node`, AD-90) wires the standard assembly — platform
+auto-configuration, a `NodeEnvironment`, config files, the managed server,
+and graceful shutdown — and returns the refreshed context plus a runtime
+handle:
+
+```ts
+import 'node:process';
+import { runNodeApplication } from '@ndigo/platform-node';
+
+const app = await runNodeApplication([AppConfiguration], { port: 3000 });
+// app.context — the refreshed DI container (every bean stays reachable)
+// app.server  — the started HTTPServer
+// app.port    — the bound port
+// app.close() — programmatic teardown
+```
+
+The preset composes, it does not replace:
+
+- registers `NodeAutoConfiguration` plus your sources (`platform: false`
+  leaves the platform out);
+- builds the environment from `NodeEnvironment` (`process.env` arrives in
+  the `systemEnvironment` source) and applies `profiles` / `properties`;
+- loads `config/application*.json` through the platform reader by default
+  (`configFiles: false` disables file loading; a
+  `StandardConfigFileLoader` instance overrides it);
+- runs `configureBuilder(builder)` before refresh — the seam for secrets,
+  the remote config source, interception processors, and defaults;
+- runs `beforeStart(context)` after refresh and before the socket binds —
+  the seam for migrations and pre-listen wiring;
+- starts the managed `HTTP_SERVER` and installs the `SIGINT`/`SIGTERM`
+  teardown (`shutdown: false` opts out; `resources` adds teardown
+  resources).
+
+When you need to own the sequence, the manual path stays fully supported:
 
 ```ts
 import 'node:process';
 import { ApplicationBuilder } from '@ndigo/boot';
 import { NodeAutoConfiguration, HTTPServer, gracefulShutdown } from '@ndigo/platform-node';
 
-const context = new ApplicationBuilder([NodeAutoConfiguration, AppConfiguration]).run();
+const context = await new ApplicationBuilder([NodeAutoConfiguration, AppConfiguration]).run();
 ```
 
 `ApplicationBuilder.run()`:
@@ -143,6 +176,8 @@ processor starts beans that are `isAutoStartup`; on `close()` it stops them.
 
 Because `refresh()` must never bind sockets, the server is
 `isAutoStartup = false`: the app starts it explicitly and awaits readiness.
+`runNodeApplication` (1) does this for you and returns the started server;
+on the manual path:
 
 ```ts
 const server = context.getValue<HTTPServer>('httpServer');

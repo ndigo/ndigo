@@ -131,6 +131,10 @@ demo.
 The [apps/README](apps/README.md) documents the progression from simple to
 complex. App directories are numbered in reading order (`apps/01-ndigo-hello` …);
 the number is reading order only — package names stay unnumbered and stable.
+Paired front ends and back ends share a domain and take the `-web` / `-api` role
+suffixes (`03-ndigo-todo-web` + `04-ndigo-todo-api`); the full directory,
+package, and file-naming convention is
+[guide 29 — Application Conventions](docs/guides/29-application-conventions.md).
 
 ## Packages
 

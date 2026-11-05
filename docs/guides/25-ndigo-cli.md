@@ -81,6 +81,9 @@ ndigo new todo-widget --kind node --port 3190 --dry-run
   above 3000, scanned from the apps' own conventions (vite `server.port`,
   `PORT` defaults, `DEFAULT_PORT` constants); an explicit `--port` that
   collides fails and names the owning app.
+- **Naming:** pick the slug from the app's domain; a paired front end and back
+  end take `-web` / `-api` and sit next to each other in the ladder
+  ([guide 29](29-application-conventions.md)).
 - `--dry-run` previews the file plan without writing anything. After
   generating, add the app's row to `apps/README.md` and the root README
   table by hand — index tables are not generated.

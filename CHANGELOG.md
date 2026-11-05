@@ -259,6 +259,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   knobs like `NDIGO_DB_URL`, OTel endpoints and secret keys never reached the
   app script. The invoking environment now flows through (shell-free
   signal relays unchanged).
+- `@ndigo/boot` (AD-90 D-5): the profile resolver no longer reads
+  `process.env` directly — `NDIGO_PROFILES_ACTIVE`, `NDIGO_PROFILES_DEFAULT`,
+  and `NDIGO_PROFILES_GROUPS` resolve through `getEnv`, so booting through
+  `ApplicationBuilder` / `Application` works in browsers and workers where
+  `process` is absent instead of failing startup with `process is not
+  defined`; profile precedence is unchanged.
 
 ### Fixed
 

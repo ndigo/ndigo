@@ -53,7 +53,7 @@ export class NodeDispatcher extends AbstractDispatcher {
 
         // Producing views (e.g. ServerSentEventView): the handler returned a
         // stateful producing view for THIS request — stream its response
-        // document. (Spring's ViewMethodReturnValueHandler parity.)
+        // document. (View-method return handling parity.)
         if (likeProducerView(mv)) {
             await writeRenderResult(res, await mv.renderTo(null, route));
             return;

@@ -6,7 +6,7 @@
 
 # Class: InMemoryDerivedQueryRepository\<T, ID\>
 
-Base repository with in-memory Spring Data-style derived-query support.
+Base repository with in-memory derived-query support.
 
 Concrete repositories declare derived methods and delegate to [derive](#derive):
 

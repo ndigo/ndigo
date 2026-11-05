@@ -58,7 +58,7 @@ async function main() {
           })
         : undefined;
 
-    // Spring-style bootstrap: platform auto-config + app config (management
+    // DI-container bootstrap: platform auto-config + app config (management
     // endpoints wired in NodeAppConfiguration) + `ServerConfig`
     // (`@configurationProperties`). Profiles and properties exercise the
     // environment property sources (AD-13/14/15): the `devInfo` bean exists

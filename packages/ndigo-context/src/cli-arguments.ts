@@ -34,7 +34,7 @@ const setNested = (target: JSONObject, key: string, value: JSONValue): void => {
  *   of a present flag must not invert into "disabled")
  * - `--` — terminator; everything after is treated as positional and ignored
  *
- * Repeated keys: last one wins. Non-`--` positionals are ignored (Spring's
+ * Repeated keys: last one wins. Non-`--` positionals are ignored (the reference framework's
  * `CommandLinePropertySource` behavior — they never become properties; Node's
  * `process.argv` already exposes them natively).
  *

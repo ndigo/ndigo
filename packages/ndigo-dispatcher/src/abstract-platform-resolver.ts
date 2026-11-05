@@ -93,7 +93,7 @@ export abstract class AbstractPlatformArgumentResolver extends AbstractNamedValu
      * An absent whole source (no data at all) is treated as a missing value:
      * required → {@link MissingParameterError} (HTTP 400), else the
      * extractor's default. An empty-but-present source binds successfully to
-     * an empty object — Spring `@ModelAttribute` semantics.
+     * an empty object — model-attribute binding semantics.
      *
      * @param parameter - The method parameter being bound.
      * @param route - The current route.

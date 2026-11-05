@@ -21,7 +21,7 @@ const PORT = Number(getEnv('PORT', '<%= port %>'));
 const logger = getLogger('<%= name %>');
 
 async function main() {
-    // Spring-style bootstrap: register platform auto-config + app config,
+    // DI-container bootstrap: register platform auto-config + app config,
     // then run() prepares the environment and refreshes the context.
     const context = await new ApplicationBuilder([NodeAutoConfiguration, <%= className %>Configuration]).run();
 

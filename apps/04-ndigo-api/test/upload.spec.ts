@@ -91,7 +91,7 @@ describe('ndigo-api multipart upload (AD-26)', () => {
 
         expect(res.response.status).toBe(200);
         // The JSON part bound into the requestPart() DTO; the file part into
-        // MultipartFile — Spring @RequestPart parity, end to end.
+        // MultipartFile — part-binding parity, end to end.
         expect(res.json()).toEqual({
             size: Buffer.byteLength(content),
             name: 'meta.txt',

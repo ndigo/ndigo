@@ -296,7 +296,7 @@ export function fileValue(partName?: string, options: ParameterExtractorOptions 
  * File parts stay `fileValue()`/`MultipartFile`.
  *
  * The part name follows the AD-26 `fileValue` convention — explicit when
- * given, otherwise the method-argument name. Mirrors Spring's
+ * given, otherwise the method-argument name. Mirrors the reference
  * `@RequestPart(value)` with parameter-name fallback:
  *
  * - `requestPart()` reads the part named after the argument as a plain object;

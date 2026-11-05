@@ -26,7 +26,7 @@ The review also surfaced a genuine adjacency: **`@profile`** (blue-context,
 January 2026 — config registration, class + method) and **`@whenProfile`**
 (blue-core, September 2026 — boot-time class registration) were one concept
 wearing two costumes, evaluating the same predicate
-(`environment.acceptsProfiles`) over the same grammar. Spring lived exactly
+(`environment.acceptsProfiles`) over the same grammar. The reference framework lived exactly
 this arc: `@Profile` shipped standalone in 3.1 (2011), then was rewritten as
 `@Conditional(ProfileCondition.class)` in 4.0 (2013) with its target expanded
 to methods; Boot later added the `@ConditionalOn*` family without adding a
@@ -93,7 +93,7 @@ naming axis). The category determines the name's grammatical form:
 - **Policies** (`@retry`, `@circuitBreaker`, `@rateLimit`) — keep their
   names. Participial forms would misdescribe semantics ("retried" names a
   past outcome; the decorator declares "on failure, retry"), and the names
-  are the ecosystem's policy vocabulary (Spring Retry, Resilience4j). The
+  are the ecosystem's policy vocabulary (retry libraries, Resilience4j). The
   policy category legitimately takes noun forms; this supersedes any
   `@rateLimited`-style musing from the review discussion.
 - **The six reviewed as one set** (issue #8): `@scheduled`, `@authenticated`,
@@ -146,7 +146,7 @@ Comma-separated strings (`'dev,test'`) are rejected at decoration time — use
   parsed, never eval'd (P0 D8). That ceiling is by design.
 - **Interface-first lifecycle** — `SmartLifecycle` and the aware-interface
   family remain the supported lifecycle path. Annotation-based lifecycle
-  hooks (Spring's `@PostConstruct`/`@PreDestroy` arc) are a possible future
+  hooks (the `@PostConstruct`/`@PreDestroy` lifecycle arc) are a possible future
   _addition_ beside it — a feature conversation, not a naming oversight.
 - **Field binding for `@configurationProperties`** — constructor binding
   maps poorly to TC39 decorators (constructor parameters cannot be
@@ -177,6 +177,6 @@ durable record. AGENTS.md points at §3.17 from the pre-coding checklist.
 - Issue #8 — "deliberate naming review of the participatory decorator family"
   (closed by the implementing PR).
 - `ARCHITECTURE.md` roadmap — API-freeze consistency review (completed).
-- Spring Framework 3.1→4.0 `@Profile` → `@Conditional(ProfileCondition)` arc
-  and Spring Boot's `@ConditionalOn*` family (industry precedent for the
+- A 3.1→4.0 `@Profile` → `@Conditional(ProfileCondition)` arc
+  and the `@ConditionalOn*` family (industry precedent for the
   profile unification).

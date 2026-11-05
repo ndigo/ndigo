@@ -7,7 +7,7 @@
 
 P0 retained per-key winning sources in `FlatMergedIndex` _for_ this phase (the
 `#origins` map + comment). P2 shipped an ad-hoc `NodeEnvironment.refresh()`
-whose formalization was deferred here. The roadmap promised Spring's
+whose formalization was deferred here. The roadmap promised the reference framework's
 `EnvironmentPostProcessor` analog (customizers) as the documented
 reorder/replace seam.
 
@@ -23,7 +23,7 @@ top-level key — `originOf('server.port')` reports the source owning the
 `server` subtree (the retained winner is key-level; per-segment origins would
 need index rework for a rare split). `likeEnvironment` shape updated.
 
-**D2 — `EnvironmentCustomizer` (Q3: house name, not Spring's
+**D2 — `EnvironmentCustomizer` (Q3: house name, not the reference
 `PostProcessor`).** `interface EnvironmentCustomizer { customize(environment:
 ConfigurableEnvironment): void }` — an ordered hook receiving the fully-wired
 environment (profiles/files/CLI/builder) **before the context reads it**.
@@ -31,7 +31,7 @@ environment (profiles/files/CLI/builder) **before the context reads it**.
 `_prepareEnvironment` after `_configureEnvironment`. **Q2 ordering**:
 registration order (precedence inversion = register in reverse). **Q6**: a
 throwing customizer **fails boot loudly** — a partial environment would poison
-later reads (binding, conditions); Spring's `EnvironmentPostProcessor`
+later reads (binding, conditions); the reference `EnvironmentPostProcessor`
 propagates too.
 
 **D3 — `refresh()` formalized.** `ConfigurableEnvironment.refresh()`: clears

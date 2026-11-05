@@ -108,7 +108,7 @@ export function resolveCachedSpec(spec: CachedSpec = {}): NormalizedCachedSpec {
  *   read failures reject; write failures are logged and the computed result
  *   is returned (the existing best-effort write policy).
  * - Self-invocation through `this.method()` **is** cached: the wrapper
- *   replaces the prototype method (stronger than Spring proxy semantics,
+ *   replaces the prototype method (stronger than proxy interception semantics,
  *   where self-invocation bypasses the cache).
  *
  * @param spec - Cache selection/key/TTL (see {@link CachedSpec}).

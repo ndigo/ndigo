@@ -21,7 +21,7 @@ const PORT = Number(getEnv('PORT', '3070'));
 const logger = getLogger('ndigo-kanban');
 
 async function main() {
-    // Spring-style bootstrap: platform auto-config + management endpoints +
+    // DI-container bootstrap: platform auto-config + management endpoints +
     // the app's own composition. `run()` refreshes the context; the handler
     // mapping and dispatcher auto-initialize on refresh.
     const context = await new ApplicationBuilder([

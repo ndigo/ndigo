@@ -115,7 +115,7 @@ The explicitly active profiles.
 > **get** **activeProfilesOrDefaults**(): `string`[]
 
 The effective active set: explicit profiles when present, else the
-defaults (Spring parity — defaults gate only when nothing is explicit).
+defaults (reference parity — defaults gate only when nothing is explicit).
 
 ##### Returns
 

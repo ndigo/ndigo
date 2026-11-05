@@ -60,15 +60,15 @@ What the repository already provides, and what is missing:
   official OpenFeature provider (as do LaunchDarkly, Flagsmith, Unleash,
   PostHog, flagd). Sources: openfeature.dev spec sections, the 2026-08
   OpenFeature update, split-openfeature-provider-js.
-- **Spring** has no first-party flag framework. Enterprises compose:
+- **The reference framework** has no first-party flag framework. Enterprises compose:
   `@ConditionalOnProperty` (registration-time, static — the analog of our
-  `@whenProperty`), Spring Cloud Config + `@RefreshScope` for runtime
+  `@whenProperty`), a config server + `@RefreshScope` for runtime
   refresh, and **`@FeatureGate`** (Azure's
   `spring-cloud-azure-feature-management-web`, the closest "official"
   surface): an annotation on controller actions evaluated per-request with a
   **fallback handler** (default 404 via `DisabledFeaturesHandler`). Togglz
   fills the self-hosted niche (FeatureManager + activation strategies +
-  actuator `/togglz`), vendor SDKs the SaaS niche. The Spring enterprise
+  actuator `/togglz`), vendor SDKs the SaaS niche. The reference enterprise
   pattern is: **annotation for the declaration, a manager bean for programmatic
   checks, a provider/state-repo for change, a management surface for ops** —
   vendors swappable by design.

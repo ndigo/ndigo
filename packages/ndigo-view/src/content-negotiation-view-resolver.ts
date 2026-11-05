@@ -482,7 +482,7 @@ export class ContentNegotiationViewResolver implements ViewResolver {
     /**
      * Resolves a view name by aggregating candidate views from every delegate
      * resolver and selecting one by the given request's negotiated media types
-     * — the Spring ContentNegotiatingViewResolver model.
+     * — the content-negotiating view resolver model.
      *
      * @param name - The view name to resolve.
      * @param language - Optional locale or language hint.

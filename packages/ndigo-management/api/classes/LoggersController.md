@@ -9,7 +9,7 @@
 Serves `/loggers`: the level index, per-logger reads, and per-logger
 level changes (runtime, process-local — lost on restart, AD-76 D-7).
 
-Payloads follow the Spring Boot actuator loggers endpoint: the index is
+Payloads follow the actuator loggers endpoint: the index is
 `{ levels, loggers: { <name>: { configuredLevel?, effectiveLevel } } }`,
 a single logger is `{ configuredLevel?, effectiveLevel }` (404 when the
 name was never requested), and a POST body of

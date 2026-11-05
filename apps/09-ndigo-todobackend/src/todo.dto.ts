@@ -1,6 +1,6 @@
 /**
  * Request validation schemas and the Todo-Backend wire shape.
- * @module ndigo-todobackend
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -7,7 +7,6 @@
  * the article page adds edit/delete only when you are the author (the API
  * enforces both regardless — the UI just does not offer what would be refused).
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

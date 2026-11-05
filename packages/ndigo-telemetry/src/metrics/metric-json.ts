@@ -3,7 +3,6 @@
  * {@link MetricSnapshot} array the Prometheus renderer consumes, as a
  * deterministic JSON document. One source of truth, two wire forms.
  *
- * @module ndigo-telemetry
  * @since 1.0.0
  * @author Jeff Rose
  */

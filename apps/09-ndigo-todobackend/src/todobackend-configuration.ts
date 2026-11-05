@@ -1,6 +1,6 @@
 /**
  * Application composition for the Todo-Backend demo.
- * @module ndigo-todobackend
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

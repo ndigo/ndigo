@@ -1,7 +1,7 @@
 /**
  * `createOnlineReconnectTrigger` spec — jsdom window `online`/`offline`
  * events, transition notifications, and disposal (AD-22 D3).
- * @module ndigo-platform-web
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

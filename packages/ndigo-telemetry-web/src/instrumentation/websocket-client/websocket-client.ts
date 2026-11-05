@@ -1,6 +1,6 @@
 /**
  * OpenTelemetry instrumentation for the `@ndigo/socket` client.
- * @module ndigo-telemetry-web
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

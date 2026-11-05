@@ -3,7 +3,6 @@
  * generate, db, inspect, doctor. The `ndigo` binary is the primary surface;
  * `runCli` exposes the same dispatcher to embeddings.
  *
- * @module ndigo-cli
  * @since 1.0.0
  * @author Jeff Rose
  */

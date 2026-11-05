@@ -7,7 +7,6 @@
  * omitted from the patch when left empty (`PUT /api/user` treats an absent
  * member as unchanged).
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

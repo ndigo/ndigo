@@ -1,11 +1,15 @@
 /**
- * @module ndigo-router
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { RouterInterceptor } from './router-interceptor';
 import { Route } from './route';
 
+/**
+ * Runs a router's interceptors around one navigation: tracks the current
+ * interceptor index so a pre-handle outcome can short-circuit, and drives the
+ * post/complete hooks for whichever navigation actually ran.
+ */
 export default class RouterExecutionChain {
     #interceptors: RouterInterceptor[];
 

@@ -7,7 +7,6 @@
  * one (not the in-memory reference), which is what makes the restart
  * survivable — and that an unknown id is still refused after the restart.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -7,7 +7,6 @@
  * models), views stay pure (they only render models and emit intents), and the
  * whole interaction surface is readable in one file.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

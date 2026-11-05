@@ -3,7 +3,6 @@
  * generator's schema declares are forwarded, and `--dry-run` appears only
  * when requested.
  *
- * @module ndigo-cli
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -15,7 +15,6 @@
  * keys stay ~O(1) to insert (SEC-2). Redis-backed TTL windows need no
  * such machinery — the server expires keys itself.
  *
- * @module ndigo-rate-limit
  * @since 1.0.0
  * @author Jeff Rose
  */

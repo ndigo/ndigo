@@ -1,6 +1,6 @@
 /**
  * Rule that blocks direct imports from libraries wrapped by Ndigo integration packages.
- * @module src/oxlint
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

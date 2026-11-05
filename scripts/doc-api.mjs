@@ -2,9 +2,16 @@
  * Per-package API documentation generator.
  *
  * For every package with a `src/` directory, runs TypeDoc (markdown plugin)
- * over the package's own `exports` map and writes the reference tree to
+ * over the package's own `src/` tree and writes the reference to
  * `packages/<pkg>/api/`. Also regenerates `API.md`, the package-docs index
  * at the repo root.
+ *
+ * Entry points are the package's `src/` files (`entryPointStrategy: expand`),
+ * so the reference is grouped **by source file**: the index lists every file
+ * as a module page (`modules/<file>.md` or `<dir>/README.md`), each page lists
+ * that file's symbols, and symbol pages are namespaced by their file
+ * (`classes/<file>.<Symbol>.md`). `_*.ts` files are the repo's internal-file
+ * convention and stay out of the reference.
  *
  * Why per-package: each Ndigo package must read like a standalone library
  * — its API docs live with it, travel with it in the npm tarball (`files`
@@ -62,8 +69,16 @@ const EXTERNAL_SYMBOL_LINK_MAPPINGS = JSON.parse(
     readFileSync(join(ROOT, 'scripts', 'external-symbol-links.json'), 'utf8')
 );
 
-/** Map `exports` values to source entry points (`./lib/x.js` -> `src/x.ts`). */
-function entryPointsFor(manifest, pkgDir) {
+/**
+ * Asserts that every subpath in the package's `exports` map still resolves to
+ * `src/`. The reference itself is generated from the `src/` tree (grouped by
+ * file), so the exports map is no longer the entry-point source — but it is
+ * the published surface, and a subpath pointing at a missing source is a
+ * packaging bug worth failing the docs build over.
+ *
+ * @returns The resolved source paths (unused beyond the assertion).
+ */
+function assertExportsMapResolvable(manifest, pkgDir) {
     const points = [];
     for (const [subpath, target] of Object.entries(manifest.exports ?? {})) {
         const value = typeof target === 'string' ? target : (target?.default ?? target?.import);
@@ -88,21 +103,29 @@ function toSourcePath(value) {
 }
 
 function typedocConfig(pkgDir, manifest) {
+    assertExportsMapResolvable(manifest, pkgDir);
     return {
         name: manifest.name,
-        entryPoints: entryPointsFor(manifest, pkgDir).map((p) => join(pkgDir, p)),
+        // One module per source file: the reference is grouped by file, and
+        // every `src/` file must be documented (internal `_*.ts` excluded).
+        entryPoints: [join(pkgDir, 'src')],
+        entryPointStrategy: 'expand',
         out: join(pkgDir, 'api'),
         plugin: ['typedoc-plugin-markdown', join(ROOT, 'scripts', 'typedoc-tags-plugin.mjs')],
         readme: 'none',
         excludePrivate: true,
         excludeProtected: true,
+        // Other packages' declarations are external (they resolve through the
+        // workspace symlinks into node_modules); never materialise them as
+        // empty stubs in this package's reference.
+        excludeExternals: true,
         includeVersion: true,
         hideGenerator: true,
-        disableSources: true,
+        disableSources: false,
         skipErrorChecking: true,
         treatWarningsAsErrors: true,
         treatValidationWarningsAsErrors: true,
-        exclude: ['**/node_modules/**', '**/test/**', 'archive/**'],
+        exclude: ['**/node_modules/**', '**/test/**', 'archive/**', '**/_*.ts'],
         externalSymbolLinkMappings: EXTERNAL_SYMBOL_LINK_MAPPINGS,
         compilerOptions: { skipLibCheck: true, noEmit: true },
         // TypeDoc discovers `tsconfig.json` from its cwd (the repo root) when
@@ -127,17 +150,23 @@ function runTypedoc(configPath, watch = false) {
 /**
  * Documentation-coverage gate: every top-level exported declaration of the
  * four "needs prose" kinds must carry a doc comment.
+ *
  * Scoped deliberately: class/interface members, variables and enum members
- * self-document; `_`-prefixed internal files and bracket-named symbols
- * (Symbol.toStringTag etc.) are implementation artifacts.
+ * self-document; `_`-prefixed internal files never reach the tree (they are
+ * excluded at conversion time) and bracket-named symbols (Symbol.toStringTag
+ * etc.) are implementation artifacts.
+ *
  * @returns undocumented symbols [{name, kind, file}] — empty when clean.
  */
-function coverageViolations(jsonPath, pkgDir, packageName) {
+function coverageViolations(jsonPath, packageName, packageDir) {
+    // TypeDoc ReflectionKind values: Class 128, Interface 256, Function 64,
+    // TypeAlias 2097152. (4 is Namespace, 8 is Enum, 262144 is Accessor — an
+    // earlier version of this map had those, so the gate checked nothing.)
     const GATE_KINDS = new Map([
-        [4, 'class'],
-        [8, 'interface'],
+        [128, 'class'],
+        [256, 'interface'],
         [64, 'function'],
-        [262144, 'type-alias'],
+        [2097152, 'type-alias'],
     ]);
     const hasComment = (n) => !!n.comment || (n.signatures ?? []).some((s) => !!s.comment);
     const isInternal = (n) =>
@@ -152,15 +181,15 @@ function coverageViolations(jsonPath, pkgDir, packageName) {
         for (const child of n.children ?? []) {
             const kind = GATE_KINDS.get(child.kind);
             if (kind && !hasComment(child) && !isInternal(child)) {
-                const src = child.sources?.[0];
-                const file = src?.fileName ?? '';
-                const base = file.split('/').pop() ?? '';
                 if (child.name.startsWith('[')) continue; // synthetic keys
-                if (base.startsWith('_')) continue; // internal files
-                if (!file.startsWith(`${pkgDir.replaceAll('\\', '/')}/`)) continue; // external
-                violations.push({ name: child.name, kind, file: `${base}:${src?.line ?? '?'}` });
+                // Declarations copied in from another package (re-exports resolve
+                // to their owning package's file) are that package's coverage to
+                // keep, not this one's.
+                const file = child.sources?.[0]?.fileName ?? '';
+                if (file && !file.includes(`/${packageDir}/`)) continue;
+                violations.push({ name: child.name, kind, file: packageName });
             }
-            if (child.kind === 16384 && child.children) walkTopLevel(child, true); // namespaces
+            if (child.kind === 4 && child.children) walkTopLevel(child, true); // namespaces
         }
     };
     for (const module of doc.children ?? []) walkTopLevel(module);
@@ -193,6 +222,27 @@ const CONCURRENCY = Math.max(2, Math.min(4, cpus().length));
 let failures = 0;
 let coverageFailures = 0;
 
+/**
+ * Removes the `Defined in:` source pointers TypeDoc emits when sources are
+ * enabled. They are kept out of the committed tree on purpose: their line
+ * numbers come from the *built* `lib/*.d.ts` of a sibling package, so they
+ * drift with any rebuild and would make the freshness gate flap. The gate
+ * still reads the source file of every reflection from the JSON.
+ */
+function stripSourcePointers(dir) {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        const path = join(dir, entry.name);
+        if (entry.isDirectory()) {
+            stripSourcePointers(path);
+            continue;
+        }
+        if (!entry.name.endsWith('.md')) continue;
+        const text = readFileSync(path, 'utf8');
+        const next = text.replace(/^Defined in: .*\n(?:\n)?/gm, '').replace(/\n{3,}/g, '\n\n');
+        if (next !== text) writeFileSync(path, next);
+    }
+}
+
 /** Renders one package to its `api` tree; returns its report block. */
 async function renderPackage(dir) {
     const pkgDir = join(PACKAGES, dir);
@@ -206,7 +256,8 @@ async function renderPackage(dir) {
         config.json = jsonPath;
         writeFileSync(configPath, JSON.stringify(config, null, 2));
         await runTypedoc(configPath);
-        const violations = coverageViolations(jsonPath, pkgDir, manifest.name);
+        stripSourcePointers(join(pkgDir, 'api'));
+        const violations = coverageViolations(jsonPath, manifest.name, dir);
         if (violations.length) {
             const lines = [
                 `✗ ${manifest.name}: ${violations.length} public ${violations.length === 1 ? 'symbol has' : 'symbols have'} no doc comment:`,

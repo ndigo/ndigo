@@ -11,7 +11,6 @@
  * only when `LAYER_RANK[target] <= LAYER_RANK[importer]`; equal ranks are free
  * to cross-import (siblings). Tooling packages are outside the layer system.
  *
- * @module src/oxlint
  * @since 1.0.0
  * @author Jeff Rose
  */

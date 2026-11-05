@@ -1,7 +1,6 @@
 /**
  * <%= summary || className + ' — ' + packageName + ' component' %>.
  *
- * @module ndigo-<%= packageName %>
  * @since 1.0.0
  * @author <%= author %>
  */

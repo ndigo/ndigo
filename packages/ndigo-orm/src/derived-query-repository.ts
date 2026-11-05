@@ -16,13 +16,17 @@
  * The evaluation side lives in `InMemoryDerivedQueryRepository`
  * (repository.ts) and `DrizzleDerivedQueryRepository` (`@ndigo/orm-drizzle`).
  *
- * @module ndigo-orm
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { ColumnDefinition } from './metadata';
 import { SortOrder } from './page';
 
+/**
+ * The result of a derived query: always a list, since the method name decides
+ * filtering, ordering and the optional `First`/`TopN` limit rather than the
+ * return type.
+ */
 export type DerivedQueryResult<T> = T[];
 
 /**

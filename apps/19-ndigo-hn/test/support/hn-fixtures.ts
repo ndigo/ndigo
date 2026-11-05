@@ -5,7 +5,6 @@
  * `/v0/item/<id>.json`) with the recorded `requests`/`itemRequests` arrays, so
  * tests assert request order and coverage without touching the network.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

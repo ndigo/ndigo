@@ -3,7 +3,6 @@
  * builders, so a page of articles costs three scans regardless of page size
  * and every endpoint serializes through one code path.
  *
- * @module ndigo-conduit-api
  * @since 1.0.0
  * @author Jeff Rose
  */

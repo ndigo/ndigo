@@ -1,7 +1,7 @@
 /**
  * Application configuration: registers the httpbin controllers as beans so the
  * platform handler mapping discovers their routes on refresh.
- * @module ndigo-httpbin
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

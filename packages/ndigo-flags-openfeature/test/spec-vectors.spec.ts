@@ -9,7 +9,6 @@
  *
  * Source: https://github.com/open-feature/spec/blob/main/specification/appendix-b.md
  *
- * @module ndigo-flags-openfeature
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -6,7 +6,6 @@
  * fallback (AD-81). HTTP/3 terminates at an edge proxy in front of it
  * (AD-80).
  *
- * @module ndigo-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */

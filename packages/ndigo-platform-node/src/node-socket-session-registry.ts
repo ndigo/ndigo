@@ -1,7 +1,6 @@
 /**
  * Node WebSocket session registry — tracks live connections, rooms, broadcast.
  *
- * @module ndigo-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */

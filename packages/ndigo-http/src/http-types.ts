@@ -1,5 +1,4 @@
 /**
- * @module ndigo-http
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -10,6 +9,10 @@ import type { Transform } from './transformers/http-transformer';
 import type { HTTP } from './http-client';
 import type ResponseError from './response-error';
 
+/**
+ * The HTTP request methods the framework routes and dispatches, including
+ * `QUERY` — the safe, idempotent body-carrying method.
+ */
 export type HTTPMethod =
     | 'CONNECT'
     | 'DELETE'

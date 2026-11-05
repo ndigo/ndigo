@@ -5,7 +5,6 @@
  * produced by {@link resolveJobRequest} and stores the text produced by
  * {@link serializeJobPayload} — nothing else is contract.
  *
- * @module ndigo-jobs
  * @since 1.0.0
  * @author Jeff Rose
  */

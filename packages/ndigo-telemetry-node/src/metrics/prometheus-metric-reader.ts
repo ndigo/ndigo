@@ -15,7 +15,6 @@
  * `createLazyHistogram({ boundaries })` (the semconv duration metric) always
  * land on the explicit-bucket aggregation.
  *
- * @module ndigo-telemetry-node
  * @since 1.0.0
  * @author Jeff Rose
  */

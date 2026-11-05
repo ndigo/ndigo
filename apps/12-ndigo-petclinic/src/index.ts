@@ -5,7 +5,6 @@
  * managed `HTTPServer` reads it at construction time and `NodeAutoConfiguration`
  * builds that bean during refresh.
  *
- * @module ndigo-petclinic
  * @since 1.0.0
  * @author Jeff Rose
  */

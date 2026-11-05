@@ -1,5 +1,4 @@
 /**
- * @module src/oxlint
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -18,7 +17,6 @@ const ruleTester = new RuleTester({
 const CANONICAL = `/**
  * Widget utilities.
  *
- * @module ndigo-core
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -33,7 +31,6 @@ ruleTester.run('requires-doc-header', requiresDocHeader, {
         // Summary may be omitted; tags are what matter.
         {
             code: `/**
- * @module ndigo-core
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -68,7 +65,7 @@ export const x = 1;`,
         },
         {
             code: `/**
- * @module ndigo-core
+ * @since 1.0.0
  */
 export const x = 1;`,
             filename: '/apps/ndigo-todo/src/index.ts',
@@ -79,8 +76,8 @@ export const x = 1;`,
             code: `/**
  * Widget utilities.
  *
- * * @module ndigo-core
- * @since 1.0.0
+ * * @since 1.0.0
+ * @author Jeff Rose
  * @author Jeff Rose
  */
 export const x = 1;`,

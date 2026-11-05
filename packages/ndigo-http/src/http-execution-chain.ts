@@ -1,5 +1,4 @@
 /**
- * @module ndigo-http
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -19,6 +18,12 @@ import { isRequest } from './http-shared';
 import { likeResponse } from './like-response';
 import { is } from '@ndigo/util/types';
 
+/**
+ * Ordered interceptor chain for one `HTTP` client: tracks which interceptor
+ * capabilities are registered (completion/error/initialization/request/response
+ * aware) so the chain can skip work it has no interceptor for, and runs the
+ * hooks in registration order around each request.
+ */
 export class HTTPExecutionChain {
     #interceptors: HTTPInterceptor[];
 

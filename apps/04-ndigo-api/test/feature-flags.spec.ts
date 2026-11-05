@@ -3,7 +3,6 @@
  * gate over the real ndigo-api boot path — on-flag 200, refresh-flip to
  * 404 problem doc, un-gated routes untouched.
  *
- * @module ndigo-api
  * @since 1.0.0
  * @author Jeff Rose
  */

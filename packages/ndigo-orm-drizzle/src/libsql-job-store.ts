@@ -18,7 +18,6 @@
  * through it (`DrizzleTransactionManager`); run the worker on its own client
  * when both are in the same process.
  *
- * @module ndigo-orm-drizzle
  * @since 1.0.0
  * @author Jeff Rose
  */

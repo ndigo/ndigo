@@ -3,7 +3,7 @@
  * every source file.
  *
  * Per STYLE_GUIDE §5 (Documentation Blocks): every file begins with a single
- * TSDoc block carrying `@module`, `@since`, and `@author` tags, before any
+ * TSDoc block carrying `@since` and `@author` tags, before any
  * imports. The `header` generator (`@ndigo/generators`) creates and repairs
  * these blocks:
  *
@@ -16,10 +16,10 @@
 import type { Context } from '@oxlint/plugins';
 
 /** Tags the canonical header must carry. */
-const REQUIRED_TAGS = ['@module', '@since', '@author'] as const;
+const REQUIRED_TAGS = ['@since', '@author'] as const;
 
 /**
- * A stray `*` before a tag line (` * * @module …`) — a copy-paste artifact
+ * A stray `*` before a tag line (` * * @since …`) — a copy-paste artifact
  * that renders as a literal asterisk in generated module docs. Tag-presence
  * checks alone accept it, so it spread across the tree once (115 files).
  */
@@ -43,7 +43,7 @@ export const requiresDocHeader = {
     meta: {
         type: 'problem',
         docs: {
-            description: 'Require the canonical Ndigo doc header (@module/@since/@author) on source files',
+            description: 'Require the canonical Ndigo doc header (@since/@author) on source files',
         },
         messages: {
             missingHeader:

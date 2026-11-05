@@ -15,7 +15,6 @@
  *   configuration: it maps the configured names to status-bearing pages and
  *   delegates every other name to the standard `EJSViewResolver`.
  *
- * @module ndigo-petclinic
  * @since 1.0.0
  * @author Jeff Rose
  */

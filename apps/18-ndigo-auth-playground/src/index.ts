@@ -8,7 +8,6 @@
  * installs the app's two pipeline interceptors on the platform's handler
  * mapping, and starts listening.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

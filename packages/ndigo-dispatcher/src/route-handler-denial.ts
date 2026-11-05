@@ -1,6 +1,6 @@
 /**
  * Interceptor-denial contract: a {@link RouteHandlerInterceptor} may deny a.
- * @module ndigo-dispatcher
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

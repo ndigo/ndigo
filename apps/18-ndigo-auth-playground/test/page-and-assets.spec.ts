@@ -7,7 +7,6 @@
  * bytes served here are the bytes a browser would get — including the bundle the
  * `test` script builds first.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

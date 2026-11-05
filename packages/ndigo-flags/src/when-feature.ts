@@ -9,7 +9,6 @@
  * composes as an explicit `evaluator.evaluate()` check or an AD-42
  * interceptor.
  *
- * @module ndigo-flags
  * @since 1.0.0
  * @author Jeff Rose
  */

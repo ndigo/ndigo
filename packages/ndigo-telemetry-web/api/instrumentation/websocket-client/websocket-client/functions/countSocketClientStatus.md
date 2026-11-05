@@ -1,0 +1,28 @@
+[**@ndigo/telemetry-web v0.0.1**](../../../../README.md)
+
+***
+
+[@ndigo/telemetry-web](../../../../README.md) / [instrumentation/websocket-client/websocket-client](../README.md) / countSocketClientStatus
+
+# Function: countSocketClientStatus()
+
+> **countSocketClientStatus**(): (`status`) => `void`
+
+Status-transition metric wiring for a `WebSocketClient` — use as the
+client's `onStatusChange` option (constructor-injected seam; the client
+is app-constructed, so prototype patches cannot see its signal):
+
+```ts
+const count = countSocketClientStatus();
+const chat = new WebSocketClient(url, { onStatusChange: count });
+```
+
+Counts `ndigo.socket.client.{connecting,opened,reconnecting,closed}`
+transitions with a `socket.status` attribute — reconnects are the
+network-instability signal of interest.
+
+## Returns
+
+An `onStatusChange` observer.
+
+(`status`) => `void`

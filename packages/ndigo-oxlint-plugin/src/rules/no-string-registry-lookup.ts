@@ -1,6 +1,6 @@
 /**
  * Rule that flags string-typed registry lookups — the untyped bean handle.
- * @module ndigo-oxlint-plugin
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

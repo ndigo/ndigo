@@ -4,59 +4,18 @@
 
 # @ndigo/router v0.0.1
 
-## Since
+## Modules
 
-1.0.0
-
-## Author
-
-Jeff Rose
-
-## Classes
-
-- [AbstractRouter](classes/AbstractRouter.md)
-- [FeatureRoutingRegistry](classes/FeatureRoutingRegistry.md)
-- [MappedRouterInterceptor](classes/MappedRouterInterceptor.md)
-- [PartitionRouter](classes/PartitionRouter.md)
-- [PathRoute](classes/PathRoute.md)
-- [PathRouteSegment](classes/PathRouteSegment.md)
-- [RouteDefinition](classes/RouteDefinition.md)
-- [RouteRegistry](classes/RouteRegistry.md)
-- [RouterExecutionChain](classes/RouterExecutionChain.md)
-
-## Interfaces
-
-- [FeatureMetricRecorder](interfaces/FeatureMetricRecorder.md)
-- [FeatureRouteMount](interfaces/FeatureRouteMount.md)
-- [FeatureRouteRegistration](interfaces/FeatureRouteRegistration.md)
-- [FeatureRoutingRegistryOptions](interfaces/FeatureRoutingRegistryOptions.md)
-- [Route](interfaces/Route.md)
-- [Router](interfaces/Router.md)
-- [RouterInterceptor](interfaces/RouterInterceptor.md)
-- [RouterInterceptorRegistry](interfaces/RouterInterceptorRegistry.md)
-- [RouterOptions](interfaces/RouterOptions.md)
-- [RouteSegment](interfaces/RouteSegment.md)
-
-## Type Aliases
-
-- [FeatureActivationPolicy](type-aliases/FeatureActivationPolicy.md)
-- [FeatureRouteCallback](type-aliases/FeatureRouteCallback.md)
-- [RouteParams](type-aliases/RouteParams.md)
-- [RouterCallback](type-aliases/RouterCallback.md)
-- [RouterErrorHandler](type-aliases/RouterErrorHandler.md)
-- [RouterMiddleware](type-aliases/RouterMiddleware.md)
-
-## Variables
-
-- [ACCEPT\_LANGUAGE\_ATTRIBUTE](variables/ACCEPT_LANGUAGE_ATTRIBUTE.md)
-- [LANGUAGE\_ATTRIBUTE](variables/LANGUAGE_ATTRIBUTE.md)
-- [ROUTER](variables/ROUTER.md)
-
-## Functions
-
-- [applyNegotiatedLanguage](functions/applyNegotiatedLanguage.md)
-- [deriveKey](functions/deriveKey.md)
-- [matchesPartitionPath](functions/matchesPartitionPath.md)
-- [normalizePartitionPrefix](functions/normalizePartitionPrefix.md)
-- [restorePartitionPrefix](functions/restorePartitionPrefix.md)
-- [stripPartitionPrefix](functions/stripPartitionPrefix.md)
+- [context-tokens](context-tokens/README.md)
+- [feature-routing-registry](feature-routing-registry/README.md)
+- [index](index/README.md)
+- [partition-router](partition-router/README.md)
+- [path-route](path-route/README.md)
+- [route](route/README.md)
+- [route-attributes](route-attributes/README.md)
+- [route-definition](route-definition/README.md)
+- [route-partition](route-partition/README.md)
+- [route-registry](route-registry/README.md)
+- [router](router/README.md)
+- [router-execution-chain](router-execution-chain/README.md)
+- [router-interceptor](router-interceptor/README.md)

@@ -4,7 +4,6 @@
  * real registry→scheduler→driver wiring, and its lease is released after
  * the run.
  *
- * @module ndigo-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,7 +1,7 @@
 /**
  * Ndigo HTTPBin — an HTTP semantics playground (echo, redirects, cookies, auth,
  * compression) built on `@ndigo/platform-node`.
- * @module ndigo-httpbin
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

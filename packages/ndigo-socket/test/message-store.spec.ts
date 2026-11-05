@@ -3,7 +3,7 @@
  * the documented contract surface (append ordering, replay windows, bounds,
  * retention pruning). Backends are swap-in replaceable: these tests pin the
  * contract, not the implementation.
- * @module ndigo-socket
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -8,7 +8,6 @@
  * interpreted) so the two-way nature of the session is observable in
  * `/metrics` rather than silent.
  *
- * @module ndigo-telemetry-lab
  * @since 1.0.0
  * @author Jeff Rose
  */

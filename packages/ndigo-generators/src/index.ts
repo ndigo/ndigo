@@ -1,5 +1,4 @@
 /**
- * @module ndigo-generators
  * @since 1.0.0
  * @author Jeff Rose
  *
@@ -19,7 +18,6 @@ export { appGenerator, componentGenerator, headerGenerator, packageGenerator, re
 export {
     buildDocHeader,
     getTopDocBlock,
-    inferModule,
     type DocHeaderOptions,
     type HeaderGeneratorSchema,
 } from './generators/header/generator.js';

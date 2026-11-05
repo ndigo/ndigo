@@ -1,6 +1,6 @@
 /**
  * Demonstration controller for the Node.js platform demo.
- * @module ndigo-api
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

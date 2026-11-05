@@ -6,7 +6,6 @@
  * live sources rather than built `lib/` output — whether the lane is run from
  * the repo root or via `pnpm --filter @ndigo/oxlint-plugin test`.
  *
- * @module ndigo-oxlint-plugin
  * @since 1.0.0
  * @author Jeff Rose
  */

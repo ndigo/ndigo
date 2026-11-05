@@ -10,7 +10,6 @@
  * `setProviderAndWait` / `OpenFeature.close()`); this evaluator holds no
  * resources of its own and defines no `close()`.
  *
- * @module ndigo-flags-openfeature
  * @since 1.0.0
  * @author Jeff Rose
  */

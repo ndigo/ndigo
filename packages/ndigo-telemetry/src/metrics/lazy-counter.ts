@@ -7,7 +7,6 @@
  * silently drop every datapoint. These factories defer instrument creation to
  * the first recorded call (post-SDK-init) and cache it per metric name.
  *
- * @module ndigo-telemetry
  * @since 1.0.0
  * @author Jeff Rose
  */

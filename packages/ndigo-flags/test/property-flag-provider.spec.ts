@@ -4,7 +4,6 @@
  * TYPE_MISMATCH/PARSE_ERROR + default, never-throw on a throwing reader,
  * namespace resolution, and default-value typing.
  *
- * @module ndigo-flags
  * @since 1.0.0
  * @author Jeff Rose
  */

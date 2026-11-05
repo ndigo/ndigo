@@ -9,7 +9,6 @@
  * (exempt by {@link TOOLING_PACKAGES}) sit outside the layer system, and
  * non-package code (apps, root scripts) is never reported.
  *
- * @module src/oxlint
  * @since 1.0.0
  * @author Jeff Rose
  */

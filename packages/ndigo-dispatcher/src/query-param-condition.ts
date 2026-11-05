@@ -1,5 +1,4 @@
 /**
- * @module ndigo-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -13,7 +12,7 @@ const { defineProperty } = Reflect;
  * Query parameters are the `?key=value` pairs carried in `Route.data`.
  * Repeated keys aggregate into arrays, and a `key=value` expression matches
  * when any element equals `value` (`?q=a&q=b` matches `q=a` and `q=b`).
- * For path-segment matrix parameters (`/path;key=value`), see {@link MatrixParamExpression}.
+ * For path-segment matrix parameters (`/path;key=value`), see {@link matrix-param-condition.MatrixParamExpression | MatrixParamExpression}.
  */
 export class QueryParamExpression extends AbstractNameValueExpression<string> {
     /**

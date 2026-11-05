@@ -9,7 +9,7 @@
  * window. The projection never decides anything — the real breaker's
  * `CircuitOpenError` remains the authority, which is why the tests can assert
  * both the projected state and the fail-fast error class.
- * @module ndigo-resilience-lab
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

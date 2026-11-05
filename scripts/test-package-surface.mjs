@@ -5,7 +5,6 @@
  * Runs under `pnpm test:tooling` (`node --test` — no vitest, no nx). The name
  * deliberately escapes vitest's `*.test.*` glob.
  *
- * @module scripts/package-surface.test
  * @since 1.0.0
  * @author Jeff Rose
  */

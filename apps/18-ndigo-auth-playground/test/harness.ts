@@ -11,7 +11,6 @@
  * `PORT`, …), which is also what makes the restart-durability spec honest: the
  * second boot differs from the first only in being a second process-shaped boot.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

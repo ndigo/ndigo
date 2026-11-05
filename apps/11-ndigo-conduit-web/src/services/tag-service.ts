@@ -5,7 +5,6 @@
  * load and cached in a signal — a route refresh (every favorite, every follow)
  * must not turn into another request for the same sidebar.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

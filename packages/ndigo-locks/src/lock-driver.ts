@@ -10,7 +10,6 @@
  * with the successor's lease — the exact double-run the feature exists to
  * prevent.
  *
- * @module ndigo-locks
  * @since 1.0.0
  * @author Jeff Rose
  */

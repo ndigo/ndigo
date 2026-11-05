@@ -1,6 +1,6 @@
 /**
  * OpenTelemetry instrumentation for `ServerSentEventView` streaming renders.
- * @module ndigo-telemetry-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,5 +1,4 @@
 /**
- * @module ndigo-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -37,7 +36,7 @@ export interface MultipartFile {
 }
 
 /**
- * A parsed `multipart/form-data` request, stored on {@link NodeRequest.multipart}.
+ * A parsed `multipart/form-data` request, stored on {@link node-request.NodeRequest#multipart | NodeRequest.multipart}.
  * Populated by the adapter before dispatch so argument resolvers can read it.
  */
 export interface MultipartContext {

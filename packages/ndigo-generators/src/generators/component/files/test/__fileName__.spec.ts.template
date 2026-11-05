@@ -1,7 +1,6 @@
 /**
  * <%= className %> — spec.
  *
- * @module ndigo-<%= packageName %>
  * @since 1.0.0
  * @author <%= author %>
  */

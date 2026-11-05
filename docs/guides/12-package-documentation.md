@@ -80,10 +80,24 @@ Rules:
 ## Generated API docs
 
 - **Generate:** `pnpm doc:api` (alias `pnpm doc`) — runs TypeDoc per package
-  over the package's `exports` map, writing `packages/<name>/api/`,
-  then regenerates the root `API.md` index.
+  over the package's `src/` tree (`entryPointStrategy: expand`, so **one
+  module per source file**), writing `packages/<name>/api/`, then regenerates
+  the root `API.md` index.
+- **Layout:** the reference mirrors the source tree. `api/README.md` lists
+  every file as a module; each module page (`api/<file>.md`, or
+  `api/<dir>/README.md` for a subpath entry point) lists that file's symbols;
+  symbol pages are namespaced by their file
+  (`api/<file>/classes/<Symbol>.md`). `_*.ts` files are the repo's
+  internal-file convention and are excluded.
+- **Build before generating:** TypeDoc resolves cross-package types through
+  the workspace symlinks into built `lib/`, so `pnpm build` must precede
+  `pnpm doc:api` or the regenerated reference keeps the previous doc
+  comments.
 - **Zero-warning standard:** `treatWarningsAsErrors` is on. Broken JSDoc
-  links fail the lane — that's the drift guard.
+  links fail the lane — that's the drift guard. Because modules are per file,
+  an unqualified `{@link Name}` only resolves inside the declaring file; link
+  across files of the same package as
+  `{@link <module>.<Name> | Name}` (class members: `{@link <module>.<Type>#<member>}`).
 - **Cross-package links:** each package's API reference is isolated, so a
   JSDoc link to a symbol in another package needs an entry in
   [`scripts/external-symbol-links.json`](../../scripts/external-symbol-links.json)

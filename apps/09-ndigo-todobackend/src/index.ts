@@ -1,6 +1,6 @@
 /**
  * Ndigo Todo-Backend — the Todo-Backend spec implementation as a Node server.
- * @module ndigo-todobackend
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

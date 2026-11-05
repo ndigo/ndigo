@@ -1,5 +1,4 @@
 /**
- * @module ndigo-orm
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -17,8 +16,8 @@ export type EntityState = 'new' | 'managed' | 'removed';
  * Manages a set of changes to entities that will be committed as a single transaction.
  *
  * Use {@link InMemoryUnitOfWork} for in-memory stores or implement this interface
- * for SQL-backed data sources. Pair with {@link TransactionManager} and the
- * {@link transactional} decorator for full transactional workflows.
+ * for SQL-backed data sources. Pair with {@link transaction-manager.TransactionManager | TransactionManager} and the
+ * {@link decorators.transactional | transactional} decorator for full transactional workflows.
  *
  * @since 1.0.0
  */

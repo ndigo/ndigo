@@ -5,7 +5,7 @@
  * client woven with `@ndigo/resilience` policies, a control plane that drives
  * the upstream and reports breaker state, and management endpoints that expose
  * the same numbers as health and metrics.
- * @module ndigo-resilience-lab
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

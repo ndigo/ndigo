@@ -1,6 +1,6 @@
 /**
  * Re-exports from `@preact/signals-core` — the underlying signals engine.
- * @module ndigo-signals
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

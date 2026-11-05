@@ -1,6 +1,6 @@
 /**
  * Type-safe bean handles for the shared cache contracts (AD-34 D1).
- * @module ndigo-cache
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

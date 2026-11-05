@@ -7,7 +7,7 @@
  * `WebSocketClient`s to `/ws/chat`, and asserts the room fan-out, the
  * scheduler-driven `chat-tick`, and deliberate-close status transitions
  * (AD-22 D3/D6).
- * @module ndigo-api
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

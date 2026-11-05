@@ -6,7 +6,6 @@
  * the built `lib/` output the `node_modules` symlinks expose — mirrors the
  * sibling Node app lanes (`08-ndigo-httpbin`, `15-ndigo-resilience-lab`).
  *
- * @module ndigo-redis-fanout
  * @since 1.0.0
  * @author Jeff Rose
  */

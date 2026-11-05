@@ -1,5 +1,4 @@
 /**
- * @module ndigo-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -8,6 +7,11 @@ import { Constructable } from '@ndigo/core';
 import { MetadataErrorResolver, RouteErrorResolver } from '../route-error-resolver';
 import { StrategyInitializer } from './strategy-initializer';
 
+/**
+ * Strategy mixin contract for error handling: exposes the ordered
+ * `errorResolvers` that turn a thrown error into a response and a key under
+ * which the collection is registered.
+ */
 export interface RouteErrorResolverStrategy {
     errorResolvers: RouteErrorResolver[];
     initErrorResolvers(context: ApplicationContext): void;
@@ -20,6 +24,11 @@ const ERROR_RESOLVER = 'errorResolver',
     ERROR_RESOLVERS = `${ERROR_RESOLVER}s`,
     defaultRouteErrorResolvers: RouteErrorResolver[] = [new MetadataErrorResolver()];
 
+/**
+ * Mixin that installs the error-resolver collection: registers each configured
+ * resolver under the collection key and defaults to
+ * `MetadataErrorResolver` when the application configures none.
+ */
 export const AsRouteErrorResolverStrategy = <T extends Constructable<StrategyInitializer>>(
     superclass: T
 ): Constructable<RouteErrorResolverStrategy> & T =>

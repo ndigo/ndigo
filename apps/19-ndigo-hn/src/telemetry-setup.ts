@@ -6,7 +6,6 @@
  * actually recorded — and routes the browser `fetch`/document-load signals the
  * `@ndigo/telemetry-web` instrumentations provide onto the same providers.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

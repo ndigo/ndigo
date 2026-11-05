@@ -3,7 +3,6 @@
  * declaration to typecheck the client entry (the kanban stylesheet is imported
  * for its side effect).
  *
- * @module ndigo-kanban
  * @since 1.0.0
  * @author Jeff Rose
  */

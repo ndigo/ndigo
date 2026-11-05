@@ -6,7 +6,6 @@
  * every endpoint is discoverable) before the bundle runs; the client then
  * hydrates `#playground` and adds the buttons that actually exercise the modes.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

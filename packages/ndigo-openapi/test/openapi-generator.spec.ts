@@ -3,7 +3,7 @@
  * The fixture controllers exercise translation, exclusions, parameter
  * mapping and the zod schema seam — all through the real mapping
  * registration path.
- * @module ndigo-openapi
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

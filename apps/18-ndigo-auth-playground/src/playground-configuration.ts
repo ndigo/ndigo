@@ -12,7 +12,6 @@
  * The dependencies come from {@link runtime}, published by `createRuntime()`
  * before the context refreshes.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

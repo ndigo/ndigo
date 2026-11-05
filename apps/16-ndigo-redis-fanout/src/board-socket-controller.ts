@@ -4,7 +4,7 @@
  * fan-out configured, the republish travels over Redis, so the sessions of
  * every node receive it — the cross-node half of the demo. Without one, the
  * identical code delivers to this node's sessions only.
- * @module ndigo-redis-fanout
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

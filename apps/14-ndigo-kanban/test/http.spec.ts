@@ -1,6 +1,6 @@
 /**
  * HTTP surface through MockHTTP: the EJS shell and the management endpoints.
- * @module ndigo-kanban
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

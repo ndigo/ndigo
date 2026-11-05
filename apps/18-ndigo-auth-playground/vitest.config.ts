@@ -10,7 +10,6 @@
  * production password encoder (scrypt `ln=17`, ~300 ms per hash/verify): one
  * boot hashes the demo accounts once, and each login verifies once.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

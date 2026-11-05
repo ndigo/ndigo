@@ -7,7 +7,6 @@
  * the intents, so switching a tab is a service call that re-renders through the
  * route — not local view state.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

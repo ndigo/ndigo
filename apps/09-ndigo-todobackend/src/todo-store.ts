@@ -1,6 +1,6 @@
 /**
  * In-memory todo store on `@ndigo/orm` — the app's only persistence seam.
- * @module ndigo-todobackend
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -5,7 +5,7 @@
  * test caught a real regression when the chain was first wired (defaults
  * outranked builder properties); it boots a full application through
  * `ApplicationBuilder` so the two can never drift.
- * @module ndigo-boot
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

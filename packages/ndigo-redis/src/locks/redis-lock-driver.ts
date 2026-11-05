@@ -15,7 +15,6 @@
  * connection is **borrowed** (the `RedisJobDriver` pattern): the driver
  * never connects, subscribes, or closes it.
  *
- * @module ndigo-redis
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,6 +1,6 @@
 /**
  * Imperative server-push view: streams Server-Sent Events to the HTTP.
- * @module ndigo-platform-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

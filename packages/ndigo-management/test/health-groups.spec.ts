@@ -1,6 +1,6 @@
 /**
  * Health groups and single-component reads (AD-76 D-6).
- * @module ndigo-management
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

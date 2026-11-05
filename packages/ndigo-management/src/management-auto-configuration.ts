@@ -27,7 +27,6 @@
  * require authentication, and/or firewall the management routes at the
  * network boundary.
  *
- * @module ndigo-management
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -214,7 +213,7 @@ export interface ManagementAutoConfigurationOptions {
      * Whether thrown health-indicator errors are redacted on `/health`
      * (AD-36 D-1). Default `true`: the status stays `DOWN` and the component
      * name is preserved, but the exception text is replaced with
-     * {@link HEALTH_ERROR_REDACTED} so indicator internals never reach the
+     * {@link health.HEALTH_ERROR_REDACTED | HEALTH_ERROR_REDACTED} so indicator internals never reach the
      * wire. Set `false` to expose the raw error messages (only sensible
      * behind the `accessGuard`).
      */

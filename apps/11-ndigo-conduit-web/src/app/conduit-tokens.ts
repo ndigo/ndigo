@@ -5,7 +5,6 @@
  * compile-time type to the call site, so `context.getValue(ARTICLES)` is an
  * `ArticleService` at the type level and a rename cannot silently miss.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

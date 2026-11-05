@@ -6,7 +6,6 @@
  * lifecycle; the app script prints `DrizzleMigrator.status()` rows — the
  * journal readback (`_ndigo_migrations`) is the app's, not the CLI's.
  *
- * @module ndigo-cli
  * @since 1.0.0
  * @author Jeff Rose
  */

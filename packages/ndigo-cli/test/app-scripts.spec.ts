@@ -1,7 +1,7 @@
 /**
  * Helper unit specs (AD-75): directory resolution, script discovery, and
  * the pnpm argv the CLI runs — the command/process plumbing in isolation.
- * @module ndigo-cli
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -5,7 +5,6 @@
  * query string is text — so the coercion (and its failure mode) lives in one
  * place instead of being re-derived per handler.
  *
- * @module ndigo-petclinic
  * @since 1.0.0
  * @author Jeff Rose
  */

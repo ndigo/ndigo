@@ -1,6 +1,6 @@
 /**
  * Rule that flags duplicate route-mapping paths within a class.
- * @module ndigo-oxlint-plugin
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

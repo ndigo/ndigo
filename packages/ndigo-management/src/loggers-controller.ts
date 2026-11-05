@@ -2,7 +2,7 @@
  * Serves dynamic log-level inspection and changes under `/loggers`
  * (AD-76 D-7). Registered WITHOUT route decorators — the auto-configuration
  * wires the routes explicitly so exposure can gate them.
- * @module ndigo-management
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

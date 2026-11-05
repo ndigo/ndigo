@@ -16,7 +16,6 @@
  * 5. renders all of it — spans, server replies, pushes, and console lines —
  *    into the page.
  *
- * @module ndigo-telemetry-lab
  * @since 1.0.0
  * @author Jeff Rose
  */

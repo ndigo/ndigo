@@ -1,5 +1,4 @@
 /**
- * @module ndigo-generators
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -10,6 +9,11 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+/**
+ * Options for the `component` generator: the component name, the package it
+ * belongs to (without the `ndigo-` prefix), an optional class name override,
+ * and the doc header's summary/author.
+ */
 export interface ComponentGeneratorSchema {
     name: string;
     package: string;
@@ -20,6 +24,11 @@ export interface ComponentGeneratorSchema {
     author?: string;
 }
 
+/**
+ * Scaffolds a component file in the target package: class name derived from the
+ * component name, the canonical doc header, and the package's export list
+ * updated to include it.
+ */
 export default async function componentGenerator(tree: Tree, schema: ComponentGeneratorSchema): Promise<void> {
     const { name, package: pkg, author = 'Jeff Rose' } = schema;
     const className = schema.className || toPascal(name);

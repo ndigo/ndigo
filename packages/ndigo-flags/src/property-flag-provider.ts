@@ -5,7 +5,6 @@
  * `environment.refresh()` (AD-29) makes flag changes visible immediately
  * with no cache to invalidate.
  *
- * @module ndigo-flags
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -52,6 +51,11 @@ export interface PropertyFlagProviderOptions {
 const FNV_OFFSET_BASIS = 2166136261;
 const FNV_PRIME = 16777619;
 
+/**
+ * Maps a flag name and targeting key to a stable bucket in `[0, 1)` by hashing
+ * them together (FNV-1a), so percentage rollouts are deterministic per target
+ * and independent of iteration order or process restarts.
+ */
 export function stableBucket(flag: string, targetingKey: string): number {
     const input = `${flag}\u0000${targetingKey}`;
     let hash = FNV_OFFSET_BASIS;

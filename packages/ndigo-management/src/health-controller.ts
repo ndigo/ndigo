@@ -1,5 +1,4 @@
 /**
- * @module ndigo-management
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -54,7 +53,7 @@ export class HealthResponseView {
  *
  * Runs the context-level {@link HealthRegistry} (all registered indicators —
  * including the telemetry indicator wired at context refresh by
- * {@link ManagementAutoConfiguration}). The registry is read-only here;
+ * {@link management-auto-configuration.ManagementAutoConfiguration | ManagementAutoConfiguration}). The registry is read-only here;
  * it is never mutated per request.
  *
  * The HTTP status mirrors the aggregate: `503 Service Unavailable` when any

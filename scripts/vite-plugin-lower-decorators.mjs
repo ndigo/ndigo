@@ -37,7 +37,6 @@
  *   (`{ @dec`, `(@inject`), which is every syntactically valid position in
  *   practice. A module with no `@` in such a position is left alone.
  *
- * @module scripts/vite-plugin-lower-decorators
  * @since 1.0.0
  * @author Jeff Rose
  */

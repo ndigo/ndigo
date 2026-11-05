@@ -1,5 +1,4 @@
 /**
- * @module ndigo-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -264,7 +263,7 @@ export function bodyValue(name?: string, options: ParameterExtractorOptions = {}
  *
  * A missing part resolves to the extractor's `defaultValue` (`null`) unless
  * the part is declared required: `fileValue('avatar', { required: true })`
- * makes a missing upload a {@link MissingParameterError} (HTTP 400) instead
+ * makes a missing upload a {@link error.MissingParameterError | MissingParameterError} (HTTP 400) instead
  * of a late TypeError (DOC-5).
  *
  * @example
@@ -308,7 +307,7 @@ export function fileValue(partName?: string, options: ParameterExtractorOptions 
  * A missing part resolves to the extractor's `defaultValue` (`null`) unless
  * the part is declared required: `requestPart('meta', undefined, { required:
  * true })` / `requestPart(MetaDto, { required: true })` make a missing part
- * a {@link MissingParameterError} (HTTP 400) instead of a late TypeError
+ * a {@link error.MissingParameterError | MissingParameterError} (HTTP 400) instead of a late TypeError
  * (DOC-5).
  *
  * @example

@@ -1,5 +1,4 @@
 /**
- * @module ndigo-content
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -34,7 +33,7 @@ export interface MessageParams {
 /**
  * Formats messages for a given key and language.
  *
- * Composes a {@link ContentSource}: a message is a formatted content key.
+ * Composes a {@link content.ContentSource | ContentSource}: a message is a formatted content key.
  * Missing messages fall back to the key itself, matching the content layer's
  * fallback convention.
  *

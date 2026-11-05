@@ -1,5 +1,4 @@
 /**
- * @module ndigo-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -8,6 +7,11 @@ import { Constructable } from '@ndigo/core';
 import { LanguageResolver, NavigatorLanguageResolver } from '../language-resolver';
 import { StrategyInitializer } from './strategy-initializer';
 
+/**
+ * Strategy mixin contract for locale resolution: exposes the active
+ * `languageResolver` and an initializer that receives the application context
+ * so the resolver can be built from environment settings.
+ */
 export interface LanguageResolverStrategy {
     languageResolver: LanguageResolver;
     initLanguageResolver(context: ApplicationContext): void;
@@ -19,6 +23,11 @@ export interface LanguageResolverStrategy {
 const LANGUAGE_RESOLVER = 'languageResolver',
     defaultLanguageResolver: LanguageResolver = new NavigatorLanguageResolver('en-US');
 
+/**
+ * Mixin that plugs a `LanguageResolver` into a `StrategyInitializer`: registers
+ * the resolver under its well-known name and resolves the context default
+ * (English, `en-US`) when the configuration does not name one.
+ */
 export const AsLanguageResolverStrategy = <T extends Constructable<StrategyInitializer>>(
     superclass: T
 ): Constructable<LanguageResolverStrategy> & T =>

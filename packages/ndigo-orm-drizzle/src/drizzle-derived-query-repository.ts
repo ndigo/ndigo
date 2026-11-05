@@ -1,7 +1,7 @@
 /**
  * Drizzle-backed derived-query repository (ORM completion plan, Wave 4):
  * Derived-query method names evaluated to SQL.
- * @module ndigo-orm-drizzle
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -10,7 +10,7 @@ import { DrizzleRepository } from './drizzle-repository';
 
 /**
  * Async repository with derived-query support over
- * {@link DrizzleEntityManager}. Concrete repositories declare derived
+ * {@link drizzle-entity-manager.DrizzleEntityManager | DrizzleEntityManager}. Concrete repositories declare derived
  * methods and delegate to {@link derive}:
  *
  * ```ts

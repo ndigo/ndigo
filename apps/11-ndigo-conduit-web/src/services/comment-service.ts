@@ -7,7 +7,6 @@
  * the server, so showing a provisional one would mean inventing data — the
  * list reloads instead, which for a single-user comment box is one round trip.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

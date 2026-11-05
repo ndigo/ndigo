@@ -12,7 +12,6 @@
  * Tokens live in memory only: nothing here persists a JWT to storage, and
  * nothing re-implements what the server already owns.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -11,7 +11,6 @@
  *    event per accepted write; the socket broadcaster subscribes and fans it
  *    out to the board's room.
  *
- * @module ndigo-kanban
  * @since 1.0.0
  * @author Jeff Rose
  */

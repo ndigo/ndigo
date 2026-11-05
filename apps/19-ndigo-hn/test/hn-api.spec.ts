@@ -2,7 +2,6 @@
  * `HNAPIClient` against an msw-stubbed HN API: the two-layer cache story
  * (fresh cache TTL, snapshot fallback) and error surfacing.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

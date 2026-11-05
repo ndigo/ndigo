@@ -6,7 +6,6 @@
  * Responses are parsed with the app's own wire schemas, so a drift between
  * what the controller returns and what the contract says fails here.
  *
- * @module ndigo-kanban
  * @since 1.0.0
  * @author Jeff Rose
  */

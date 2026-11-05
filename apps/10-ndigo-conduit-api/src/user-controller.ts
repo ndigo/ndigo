@@ -7,7 +7,6 @@
  * parameters can move later without invalidating stored hashes. The raw
  * password is never stored, logged, or echoed.
  *
- * @module ndigo-conduit-api
  * @since 1.0.0
  * @author Jeff Rose
  */

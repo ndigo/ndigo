@@ -5,7 +5,6 @@
  * AD-29 D-2) runs `destroy()`/`close()` exactly once per instance. Singleton
  * teardown stays owned by `AbstractFactory.destroyValue` (no double destroy).
  *
- * @module ndigo-factory
  * @since 1.0.0
  * @author Jeff Rose
  */

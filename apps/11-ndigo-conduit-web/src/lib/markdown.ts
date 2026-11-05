@@ -15,7 +15,7 @@
  * `*italic*`, and `[label](href)` links. Everything else is literal text — a
  * documented boundary, not an accident.
  *
- * @module ndigo-conduit-web
+
  * @since 1.0.0
  * @author Jeff Rose
  */

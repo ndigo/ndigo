@@ -1,6 +1,6 @@
 /**
  * Drizzle table + Zod schema derivation from `@ndigo/orm` entity metadata.
- * @module ndigo-orm-drizzle
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

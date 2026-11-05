@@ -1,6 +1,6 @@
 /**
  * Interface for a service registry that maps service tokens to endpoints.
- * @module ndigo-service
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

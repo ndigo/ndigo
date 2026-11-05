@@ -1,5 +1,4 @@
 /**
- * @module ndigo-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -123,7 +122,7 @@ export default class RouteHandlerExecutionChain {
 
     /**
      * Run pre-handle callbacks until one denies. Denial outcomes (bare
-     * `false` or an explicit {@link InterceptorDenial}) are recorded on the
+     * `false` or an explicit {@link route-handler-denial.InterceptorDenial | InterceptorDenial}) are recorded on the
      * route via `resolvePreHandleOutcome`.
      *
      * @param route - The current route.

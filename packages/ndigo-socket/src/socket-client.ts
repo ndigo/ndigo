@@ -6,7 +6,7 @@
  * signal-based connection status, async-iterable messages, reconnect with
  * backoff + jitter on unexpected close, and an opt-in bounded outbound
  * queue while disconnected.
- * @module ndigo-socket
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

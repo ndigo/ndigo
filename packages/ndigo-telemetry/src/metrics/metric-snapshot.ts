@@ -7,7 +7,6 @@
  * `MetricReader.collect()`) nor the HTTP surface (`@ndigo/management` reads
  * the registry per request).
  *
- * @module ndigo-telemetry
  * @since 1.0.0
  * @author Jeff Rose
  */

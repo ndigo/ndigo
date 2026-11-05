@@ -6,7 +6,6 @@
  * Keeping them in one module means a field cannot be added to a controller and
  * forgotten by its view, or vice versa.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

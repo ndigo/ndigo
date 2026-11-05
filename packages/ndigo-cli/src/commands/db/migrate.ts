@@ -4,7 +4,6 @@
  * CLI fronts it with the one-shot process lifecycle, AD-75 D-2 — the
  * `db:new`/`db:generate`/`db:status` companions are AD-78).
  *
- * @module ndigo-cli
  * @since 1.0.0
  * @author Jeff Rose
  */

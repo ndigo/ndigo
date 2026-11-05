@@ -15,7 +15,6 @@
  * `{article:{title:""}}` reports as `{"errors":{"title":["can't be blank"]}}`
  * — the field name the collection expects, not the nested wire path.
  *
- * @module ndigo-conduit-api
  * @since 1.0.0
  * @author Jeff Rose
  */

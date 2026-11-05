@@ -1,12 +1,10 @@
 /**
- * @module ndigo-core
  * @since 1.0.0
  * @author Jeff Rose
  */
 import MediaType from './media-type.js';
 
 /**
- * @namespace module:core.MediaTypes
  */
 
 /**

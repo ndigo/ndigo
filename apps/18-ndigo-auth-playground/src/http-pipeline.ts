@@ -25,7 +25,6 @@
  * Called after the context has refreshed — by the bootstrap and by the test
  * harness, so tests dispatch through exactly the production chain.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

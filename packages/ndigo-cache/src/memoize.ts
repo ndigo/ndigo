@@ -1,5 +1,4 @@
 /**
- * @module ndigo-cache
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -17,7 +16,7 @@ export interface MemoizeOptions<A extends unknown[] = unknown[]> {
     ttl?: number;
     /**
      * Maximum memoized entries before eviction (see
-     * {@link CacheOptions.maxSize}).
+     * {@link cache.CacheOptions#maxSize | CacheOptions.maxSize}).
      */
     maxSize?: number;
     /**
@@ -35,7 +34,7 @@ export interface MemoizeOptions<A extends unknown[] = unknown[]> {
  * Memoizes a function: results are cached by (serialized) arguments — the
  * client-side half of the caching story, usable in browsers and Node with no
  * DI or beans (unlike the {@link cached} decorator, which resolves a
- * {@link CacheManager} from the instance).
+ * {@link cache-manager.CacheManager | CacheManager} from the instance).
  *
  * Semantics:
  * - **Async single-flight**: concurrent calls for the same key share one

@@ -1,5 +1,4 @@
 /**
- * @module ndigo-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -7,6 +6,12 @@ import { ApplicationContext } from '@ndigo/context';
 import { Constructable, Enumerable, IllegalStateError } from '@ndigo/core';
 import { toPascal } from '@ndigo/util/string';
 
+/**
+ * The strategy plumbing every strategy mixin relies on: a registry of strategy
+ * names it contributed, plus initializers that read the application context and
+ * install the configured strategy — falling back to the mixin's default when
+ * the context names none.
+ */
 export interface StrategyInitializer {
     strategies: string[];
     addStrategy(name: string): void;
@@ -31,6 +36,12 @@ const { isArray } = Array;
  */
 const dynamic = (target: object) => target as unknown as Record<string, unknown>;
 
+/**
+ * Mixin that implements `StrategyInitializer`: tracks the strategy names a
+ * composition contributes and resolves each one from the application context
+ * once, so a subclass can mix in several strategy contracts without repeating
+ * the wiring.
+ */
 export const AsStrategyInitializer = <T extends Constructable>(superclass: T): Constructable<StrategyInitializer> & T =>
     class extends superclass implements StrategyInitializer {
         initialized!: boolean;

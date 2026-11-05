@@ -13,7 +13,6 @@
  * `requestSessionValue('principal')` — the same seam
  * `NodeSessionInterceptor` fills for cookie requests.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

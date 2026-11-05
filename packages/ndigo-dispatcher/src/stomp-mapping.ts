@@ -7,7 +7,7 @@
  * `route:stomp:<method>` marker; the Node adapter consults the marker to
  * negotiate the `v12.stomp` / `v11.stomp` / `v10.stomp` WebSocket
  * subprotocol during the upgrade handshake.
- * @module ndigo-dispatcher
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

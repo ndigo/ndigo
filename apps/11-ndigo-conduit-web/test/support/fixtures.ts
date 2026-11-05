@@ -5,7 +5,6 @@
  * (not a mocking framework): every method rejects until a spec stubs it, so a
  * test that forgets a call fails loudly instead of silently resolving.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -5,7 +5,6 @@
  * is declared here instead of importing either OpenFeature SDK, so the
  * server and web entries can both flow through one mapper.
  *
- * @module ndigo-flags-openfeature
  * @since 1.0.0
  * @author Jeff Rose
  */

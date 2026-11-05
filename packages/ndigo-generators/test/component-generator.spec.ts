@@ -1,5 +1,4 @@
 /**
- * @module ndigo-generators
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -134,7 +133,7 @@ describe('component generator', () => {
         if (sourceContent === null) {
             throw new Error('expected generated my-service.ts to exist');
         }
-        expect(sourceContent).toContain('@module ndigo-core');
+        expect(sourceContent).toContain('@author Jeff Rose');
         expect(sourceContent).toContain('@since 1.0.0');
         expect(sourceContent).toContain('@author Jeff Rose');
         expect(sourceContent).not.toContain('TODO');

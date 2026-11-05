@@ -4,7 +4,7 @@
  * usage errors, and the `serve` end-to-end signal-relay drain. Requires
  * `build:lib` (the nx lane builds it; `pnpm --filter @ndigo/cli test` in
  * isolation needs a prior build).
- * @module ndigo-cli
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

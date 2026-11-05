@@ -11,7 +11,6 @@
  * the bound handler argument *is* the request body and no re-shaping step
  * exists between validation and use.
  *
- * @module ndigo-conduit-api
  * @since 1.0.0
  * @author Jeff Rose
  */

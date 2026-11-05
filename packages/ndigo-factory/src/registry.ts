@@ -1,5 +1,4 @@
 /**
- * @module ndigo-factory
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -36,7 +35,7 @@ export const likeRegistry = (value: unknown): value is Registry =>
  * A handler implementation that when applied to a {@link Registry|Registry} instance via {@link external:Proxy|Proxy} causes the registry
  * to behave like a plain object. This is used to implement `ProxiedFactory`.
  *
- * @see {@link ProxiedFactory}
+ * @see {@link default-factory.ProxiedFactory | ProxiedFactory}
  */
 export class RegistryProxyHandler<T extends Registry> implements ProxyHandler<T> {
     deleteProperty(target: T, key: PropertyKey): boolean {

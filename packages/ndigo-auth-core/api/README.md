@@ -6,5 +6,15 @@
 
 ## Modules
 
-- [ndigo-auth-core](ndigo-auth-core/README.md)
-- [ndigo-auth-core](ndigo-auth-core/README-1.md)
+- [adapter](adapter/README.md)
+- [decorators](decorators/README.md)
+- [delegating-password-encoder](delegating-password-encoder/README.md)
+- [index](index/README.md)
+- [password-encoder](password-encoder/README.md)
+- [principal](principal/README.md)
+- [registry](registry/README.md)
+- [scrypt-password-encoder](scrypt-password-encoder/README.md)
+- [session](session/README.md)
+- [session-store](session-store/README.md)
+- [state](state/README.md)
+- [user-store](user-store/README.md)

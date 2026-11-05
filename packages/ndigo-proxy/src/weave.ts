@@ -1,5 +1,4 @@
 /**
- * @module ndigo-proxy
  * @since 1.0.0
  * @author Jeff Rose
  * Proxy weaving for `@ndigo/proxy`.

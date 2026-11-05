@@ -14,7 +14,6 @@
  * The hook is synchronous, so the same instance also satisfies the web
  * SDK's hook contract (`OpenFeature.addHooks` in the browser).
  *
- * @module ndigo-flags-openfeature
  * @since 1.0.0
  * @author Jeff Rose
  */ import { SpanKind, SpanStatusCode, trace, type Span } from '@opentelemetry/api';

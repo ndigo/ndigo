@@ -10,7 +10,6 @@
  * (`AuthServer.validateAny` with an ordered adapter list, never "try them all"),
  * so a token minted for one scheme can never be accepted by the other.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

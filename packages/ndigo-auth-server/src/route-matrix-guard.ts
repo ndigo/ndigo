@@ -1,5 +1,4 @@
 /**
- * @module ndigo-auth-server
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -43,10 +42,10 @@ export interface AuthMatrixGuardOptions {
 /**
  * A {@link RouteHandlerInterceptor} that enforces `@authenticated` /
  * `@authorized` over **multiple** schemes — the multi-scheme counterpart to
- * {@link AuthRouteGuard}, which validates a single explicit adapter id from a
+ * {@link route-guard.AuthRouteGuard | AuthRouteGuard}, which validates a single explicit adapter id from a
  * single place.
  *
- * It reads the same metadata keys as {@link AuthRouteGuard} (`@ndigo/auth-core`'s
+ * It reads the same metadata keys as {@link route-guard.AuthRouteGuard | AuthRouteGuard} (`@ndigo/auth-core`'s
  * `AUTH_REQUIRED_KEY`/`AUTH_ROLES_KEY`), resolves the principal through
  * `AuthServer.validateAny(token, […explicit scheme order…])` — the documented
  * ordered-fallback seam, never "try every registered adapter" — and denies

@@ -1,6 +1,6 @@
 /**
  * the `requestMapping` decorator — server-side route mapping decorator.
- * @module ndigo-dispatcher
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

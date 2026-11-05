@@ -6,7 +6,7 @@
  * Bearer-token demo auth, so the plaintext is never revealed to an
  * unauthenticated caller. Also proves the two-channel posture: without the
  * key the raw marker binds (no false plaintext).
- * @module ndigo-api
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

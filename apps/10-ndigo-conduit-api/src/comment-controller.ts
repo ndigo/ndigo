@@ -7,7 +7,6 @@
  * article: a comment id that belongs to a *different* article is a `404`, not
  * a `403` — the resource named by the URL does not exist.
  *
- * @module ndigo-conduit-api
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,6 +1,6 @@
 /**
  * Reports feature module — lazy-loaded by the host via dynamic import.
- * @module ndigo-host
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

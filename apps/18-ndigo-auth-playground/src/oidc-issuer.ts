@@ -20,7 +20,6 @@
  * provider also holds grants in its in-memory adapter and prints the
  * corresponding startup warnings; both are deliberate for an ephemeral demo.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

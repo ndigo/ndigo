@@ -1,6 +1,6 @@
 /**
  * Boot helpers for `@ndigo/test` — boot a Ndigo application context and wire a.
- * @module ndigo-test
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

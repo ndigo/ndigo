@@ -3,7 +3,7 @@
  * `@ndigo/platform-web` barrel actually provides. It documents
  * `import { Cookies } from '@ndigo/platform-web'`, which the barrel previously
  * did not export.
- * @module ndigo-platform-web
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

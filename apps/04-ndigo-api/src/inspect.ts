@@ -8,7 +8,6 @@
  * and refreshes the context; only `server.start()` (which this entry omits)
  * would bind a port.
  *
- * @module ndigo-api
  * @since 1.0.0
  * @author Jeff Rose
  */

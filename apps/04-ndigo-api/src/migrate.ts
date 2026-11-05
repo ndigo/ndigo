@@ -4,7 +4,6 @@
  * readback. The data source is the same store the Drizzle routes read
  * (`NDIGO_DB_URL` override respected).
  *
- * @module ndigo-api
  * @since 1.0.0
  * @author Jeff Rose
  */

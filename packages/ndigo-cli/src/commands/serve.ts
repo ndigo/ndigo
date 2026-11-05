@@ -4,7 +4,6 @@
  * shutdown); `--cluster <n>` replicates it across N worker slots with slot
  * env and `PORT` derivation.
  *
- * @module ndigo-cli
  * @since 1.0.0
  * @author Jeff Rose
  */

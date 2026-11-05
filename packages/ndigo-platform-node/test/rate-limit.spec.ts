@@ -4,7 +4,6 @@
  * bean, and the 429 + `Retry-After` denial. The limiter itself is tested
  * in `@ndigo/rate-limit` (AD-79 moved the SPI).
  *
- * @module ndigo-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -7,7 +7,6 @@
  * into the view model. No filtering, paging arithmetic or formatting happens
  * here — those live in the service (state) and the view (presentation).
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

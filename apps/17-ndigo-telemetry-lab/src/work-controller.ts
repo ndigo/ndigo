@@ -7,7 +7,6 @@
  * that propagated its own span as `traceparent` sees its **own** trace id come
  * back — the continuation, visible in one response body.
  *
- * @module ndigo-telemetry-lab
  * @since 1.0.0
  * @author Jeff Rose
  */

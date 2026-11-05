@@ -3,7 +3,7 @@
  * the `QueueMessageStore` contract, on an in-memory libsql connection.
  * The contract surface (ordering, idempotent append, replay windows,
  * prune) must hold identically for the memory and libsql backends.
- * @module ndigo-orm-drizzle
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

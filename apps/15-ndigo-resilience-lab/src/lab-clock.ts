@@ -1,7 +1,7 @@
 /**
  * The lab's clock: real time plus a control-plane offset, so breaker reset
  * windows can be driven deterministically instead of by sleeping.
- * @module ndigo-resilience-lab
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -14,7 +14,7 @@
  * leaves no state behind and needs no teardown beyond closing its own clients.
  * HTTP responses are parsed with Zod at this boundary, so a shape change fails
  * loudly instead of slipping through a cast.
- * @module ndigo-redis-fanout
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

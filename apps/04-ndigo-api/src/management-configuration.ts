@@ -6,7 +6,6 @@
  * a production app would keep `["health","metrics"]` and add what it needs
  * behind the `accessGuard` + boundary-firewall posture (AD-36).
  *
- * @module ndigo-api
  * @since 1.0.0
  * @author Jeff Rose
  */

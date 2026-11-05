@@ -11,7 +11,6 @@
  * silently dropped — growing the metadata later must bump `predicate` so
  * committed snapshots fail the freshness check instead of diverging.
  *
- * @module ndigo-orm-drizzle
  * @since 1.0.0
  * @author Jeff Rose
  */

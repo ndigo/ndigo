@@ -9,7 +9,6 @@
  * (`@rateLimit`, `RATE_LIMIT_KEY`) and the `RateLimitInterceptor` live in
  * `@ndigo/platform-node`.
  *
- * @module ndigo-rate-limit
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -59,7 +58,7 @@ export interface RateLimiter {
 
 /**
  * Structural type guard for {@link RateLimiter} — used where a bean or
- * option is resolved by shape instead of the {@link RATE_LIMITER} token.
+ * option is resolved by shape instead of the {@link context-tokens.RATE_LIMITER | RATE_LIMITER} token.
  */
 export function likeRateLimiter(value: unknown): value is RateLimiter {
     return (

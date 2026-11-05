@@ -1,6 +1,6 @@
 /**
  * Behavioral tests for @parameters pattern (TC39 parameter injection).
- * @module ndigo-dispatcher
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

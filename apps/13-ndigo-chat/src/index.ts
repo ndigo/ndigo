@@ -1,6 +1,6 @@
 /**
  * Ndigo Chat — real-time room chat server.
- * @module ndigo-chat
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

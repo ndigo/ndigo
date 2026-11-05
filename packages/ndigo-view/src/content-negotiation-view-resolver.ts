@@ -1,5 +1,4 @@
 /**
- * @module ndigo-view
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -55,6 +54,11 @@ const hasFunction =
     hasGetAllFileExtensions = hasFunction('getAllFileExtensions'),
     hasResolveFileExtensions = hasFunction('resolveFileExtensions');
 
+/**
+ * Structural check for a `MediaTypeFileExtensionResolver`: accepts any value
+ * exposing both `getAllFileExtensions` and `resolveFileExtensions`, so a custom
+ * resolver needs no class.
+ */
 export const likeMediaTypeFileExtensionResolver = (value: unknown): value is MediaTypeFileExtensionResolver =>
     isNotNil(value) && hasGetAllFileExtensions(value) && hasResolveFileExtensions(value);
 

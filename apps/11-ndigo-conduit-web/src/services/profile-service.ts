@@ -8,7 +8,6 @@
  * call is awaited, and a rejected call rolls the flip back. See
  * `article-service.ts` for the rationale of keyed loading.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

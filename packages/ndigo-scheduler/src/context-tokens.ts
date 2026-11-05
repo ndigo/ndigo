@@ -1,6 +1,6 @@
 /**
  * Type-safe bean handles for the ndigo-scheduler contracts (AD-34 D1).
- * @module ndigo-scheduler
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,16 +1,17 @@
 /**
- * @module ndigo-generators
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { type Tree } from '@nx/devkit';
-import { basename } from 'node:path';
 
+/**
+ * Options for the `header` generator: the target file, the summary and author
+ * values, and `force` to replace an existing top-of-file block instead of
+ * failing.
+ */
 export interface HeaderGeneratorSchema {
     /** Target file path (src or test). */
     file: string;
-    /** Module name for the `@module` tag; inferred from the file path when omitted. */
-    module?: string;
     /** One-line summary used as the description in the doc header. */
     summary?: string;
     /** Value for the `@author` tag (defaults to `Jeff Rose`). */
@@ -19,9 +20,11 @@ export interface HeaderGeneratorSchema {
     force?: boolean;
 }
 
+/**
+ * Inputs for `buildDocHeader`: the optional one-line summary placed before the
+ * tags, the `@author` value, and the `@since` stamp.
+ */
 export interface DocHeaderOptions {
-    /** Module name for the `@module` tag (e.g. `ndigo-core`). */
-    module: string;
     /** Optional one-line summary placed before the tags. */
     summary?: string;
     /** Author value for the `@author` tag. */
@@ -33,22 +36,24 @@ export interface DocHeaderOptions {
 /**
  * Builds the canonical Ndigo documentation header block, trailing newline
  * included. The block opens with `slash-star-star` and closes with
- * `star-slash`:
+ * `star-slash`, and carries the tags:
  *
- *   ` * @module <module>`
  *   ` * @since 1.0.0`
  *   ` * @author Jeff Rose`
  *   ` * @author` may be omitted when the file-level author equals the
  *   repository default.
+ *
+ * No `@module` tag: TypeDoc derives each module's name from its entry-point
+ * path, and a package-wide tag collapses every file of the package into one
+ * module (or, worse, into `README-1.md`…`README-N.md` duplicates).
  */
 export function buildDocHeader(options: DocHeaderOptions): string {
-    const { module, summary, author = 'Jeff Rose', since = '1.0.0' } = options;
+    const { summary, author = 'Jeff Rose', since = '1.0.0' } = options;
     const lines: string[] = ['/**'];
     if (summary) {
         lines.push(` * ${summary.trimEnd().replace(/\n+/g, ' ')}.`);
         lines.push(' *');
     }
-    lines.push(` * @module ${module}`);
     lines.push(` * @since ${since}`);
     lines.push(` * @author ${author}`);
     lines.push(' */');
@@ -62,27 +67,8 @@ export function getTopDocBlock(content: string): string | null {
 }
 
 /**
- * Derives the module name from a file path: the `ndigo-*` package directory
- * for package sources, the app directory for apps, else the file basename.
- */
-export function inferModule(file: string): string {
-    const parts = file.split('/');
-    const packagesIndex = parts.indexOf('packages');
-    if (packagesIndex >= 0 && parts[packagesIndex + 1]?.startsWith('ndigo-')) {
-        return parts[packagesIndex + 1];
-    }
-    const appsIndex = parts.indexOf('apps');
-    if (appsIndex >= 0 && parts[appsIndex + 1]) {
-        // App directories are numbered in reading order (`01-ndigo-hello` …);
-        // the module name is the logical app name without the number.
-        return parts[appsIndex + 1].replace(/^\d\d-/, '');
-    }
-    return basename(file).replace(/\.(ts|mjs|js)$/, '');
-}
-
-/**
  * Standardizes the top-of-file documentation block of a source file to the
- * Ndigo canonical shape (@module, @since, @author tags). Idempotent: files
+ * Ndigo canonical shape (@since, @author tags). Idempotent: files
  * that already carry a doc block are left untouched unless --force is passed.
  */
 export default async function headerGenerator(tree: Tree, schema: HeaderGeneratorSchema): Promise<void> {
@@ -99,7 +85,6 @@ export default async function headerGenerator(tree: Tree, schema: HeaderGenerato
     }
 
     const header = buildDocHeader({
-        module: schema.module ?? inferModule(schema.file),
         summary: schema.summary,
         author: schema.author ?? 'Jeff Rose',
     });

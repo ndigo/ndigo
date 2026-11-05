@@ -4,7 +4,6 @@
  * outcomes classified via `error.type` (resolved errors) or the ERROR span
  * status (thrown errors).
  *
- * @module ndigo-flags-openfeature
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,6 +1,6 @@
 /**
  * Ndigo Kanban — collaborative board server.
- * @module ndigo-kanban
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

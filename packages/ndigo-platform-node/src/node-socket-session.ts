@@ -1,7 +1,6 @@
 /**
  * Node WebSocket session — wraps a `ws` (RFC 6455) connection as a.
  *
- * @module ndigo-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */

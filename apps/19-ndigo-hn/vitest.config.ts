@@ -5,7 +5,6 @@
  * and tests resolve `@ndigo/*` against `packages/<pkg>/src` through the shared alias
  * table (HI-6/TST-B) instead of whatever the nearest Vite config happened to do.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -4,7 +4,6 @@
  * Node and pnpm versions, the workspace root, and the git revision —
  * the canonical starting point for issue reports.
  *
- * @module ndigo-cli
  * @since 1.0.0
  * @author Jeff Rose
  */

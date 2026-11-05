@@ -15,7 +15,6 @@
  * 4. drains inbound frames until the peer closes, answering `resync` with a
  *    fresh snapshot and anything else with an `error` frame.
  *
- * @module ndigo-kanban
  * @since 1.0.0
  * @author Jeff Rose
  */

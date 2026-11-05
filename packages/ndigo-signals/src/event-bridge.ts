@@ -2,7 +2,7 @@
  * Bridges event occurrences and reactive state (AD-09): `eventsToSignal`
  * feeds a `Signal` from an emitter-shaped source, `signalToEvents`
  * re-emits a `Signal`'s changes as occurrences on an emitter-shaped sink.
- * @module ndigo-signals
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -24,6 +24,12 @@ export interface EventSink {
     emit(type: string | symbol, ...data: unknown[]): unknown;
 }
 
+/**
+ * Options for the signal↔event bridges: an optional `transform` mapping the
+ * source value to the emitted payload (default: the value itself) and
+ * `emitInitial` to emit the current value once on subscribe (default `false` — a
+ * subscription must not synthesize an occurrence from existing state).
+ */
 export interface SignalToEventsOptions<T> {
     /** Maps the signal value to the emitted payload. Default: the value itself. */
     transform?: (value: T) => unknown;

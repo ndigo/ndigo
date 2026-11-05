@@ -1,6 +1,6 @@
 /**
  * Behavioral tests for @ndigo/dispatcher decorators (TC39).
- * @module ndigo-dispatcher
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

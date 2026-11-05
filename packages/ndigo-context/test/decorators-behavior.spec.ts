@@ -1,6 +1,6 @@
 /**
  * Behavioral tests for @ndigo/context decorators.
- * @module ndigo-context
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

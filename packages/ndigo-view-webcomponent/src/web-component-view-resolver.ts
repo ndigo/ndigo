@@ -1,6 +1,6 @@
 /**
  * Resolver that maps a logical view name to a `WebComponentView` (AD — view.
- * @module ndigo-view-webcomponent
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

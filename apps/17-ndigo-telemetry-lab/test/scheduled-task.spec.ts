@@ -12,7 +12,6 @@
  * to an `InMemorySpanExporter` — the same instruments
  * `packages/ndigo-telemetry-node/test/counted-decorator.spec.ts` uses.
  *
- * @module ndigo-telemetry-lab
  * @since 1.0.0
  * @author Jeff Rose
  */

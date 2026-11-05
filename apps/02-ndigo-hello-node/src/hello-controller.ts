@@ -1,6 +1,6 @@
 /**
  * Minimal demonstration controller using the node platform's HTTP method.
- * @module ndigo-hello-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

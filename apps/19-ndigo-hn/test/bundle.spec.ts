@@ -1,5 +1,4 @@
 /**
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

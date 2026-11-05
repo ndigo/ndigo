@@ -41,7 +41,7 @@
  * `ownsClient: true` explicitly transfers ownership. {@link LibSQLQueueMessageStore.dispose}
  * closes only owned clients and rejects later store operations; it does not
  * drain pending writes. Stop and drain the broker before disposing the store.
- * @module ndigo-orm-drizzle
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

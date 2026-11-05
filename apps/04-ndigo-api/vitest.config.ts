@@ -7,7 +7,6 @@
  * instead of the built `lib/` output (HI-6/TST-B), mirroring the sibling Node
  * app lanes (`02-ndigo-hello-node`, `08-ndigo-httpbin`).
  *
- * @module ndigo-api
  * @since 1.0.0
  * @author Jeff Rose
  */

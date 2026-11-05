@@ -7,7 +7,6 @@
  * `emit`, and passes both down through {@link ViewContext}. Nothing here
  * touches the container or fetches anything.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

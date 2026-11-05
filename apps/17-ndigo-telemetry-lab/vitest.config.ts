@@ -7,7 +7,6 @@
  * pipeline, which leaves TC39 decorators untouched, so the `lowerDecorators()`
  * plugin is wired here too (HI-1).
  *
- * @module ndigo-telemetry-lab
  * @since 1.0.0
  * @author Jeff Rose
  */

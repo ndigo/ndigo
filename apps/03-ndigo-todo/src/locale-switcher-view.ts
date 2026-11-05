@@ -2,7 +2,7 @@
  * Demo component showing reactive locale switching: a persisted user choice
  * (`changeLocale` → cookie + signal) that re-renders subscribed views without
  * a reload.
- * @module ndigo-todo
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

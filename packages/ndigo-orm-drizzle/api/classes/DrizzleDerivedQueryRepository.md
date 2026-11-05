@@ -6,7 +6,7 @@
 
 # Class: DrizzleDerivedQueryRepository\<T, ID\>
 
-Async repository with Spring Data-style derived-query support over
+Async repository with derived-query support over
 [DrizzleEntityManager](DrizzleEntityManager.md). Concrete repositories declare derived
 methods and delegate to [derive](#derive):
 

@@ -52,12 +52,11 @@ now). Package names stay the coarse namespace; adjectives the fine one.
 ### D3 — Per-kind registry now; shared ID+bag contract deferred to M4
 
 `SocketSessionRegistry` is built per-kind — the industry shape (Socket.IO
-rooms, SignalR Groups, Micronaut `getOpenSessions()`, Spring
-`SimpUserRegistry`). No generic `SessionRegistry<S>` until the HTTP session
+rooms, SignalR Groups, Micronaut `getOpenSessions()`). No generic `SessionRegistry<S>` until the HTTP session
 store (audit M4) creates a second consumer; when it does, extract the
 **ID + attributes-bag** contract (Micronaut-style), not a registry base.
 Planted now: `SocketSession.attributes: Record<string, unknown>`
-(per-connection state; industry-universal — Micronaut, Spring, Jakarta all
+(per-connection state; industry-universal — Micronaut and Jakarta both
 expose it).
 
 ### D4 — Session lifecycle is application-context-owned

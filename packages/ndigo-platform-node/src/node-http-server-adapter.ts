@@ -75,7 +75,7 @@ import { getLogger } from '@ndigo/log';
 const logger = getLogger('ndigo-platform-node:node-http-server-adapter');
 
 /**
- * STOMP WebSocket subprotocols, best to worst (AD-23 D4). Spring and
+ * STOMP WebSocket subprotocols, best to worst (AD-23 D4). Reference clients and
  * STOMP.js clients offer these on upgrade; the adapter selects the best
  * mutual match.
  */

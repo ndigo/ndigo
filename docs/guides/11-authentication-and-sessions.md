@@ -44,7 +44,7 @@ requests.
 
 ## 2. Password hashing
 
-`PasswordEncoder` (`encode`/`verify`/`needsRehash`) — Spring-shaped with
+`PasswordEncoder` (`encode`/`verify`/`needsRehash`) — the reference shape with
 Ndigo names. Hashes are self-describing: `{scrypt}$ln=17,r=8,p=1$<salt>$<hash>`
 (cost parameters embedded), so parameter bumps never invalidate stored
 hashes. `DelegatingPasswordEncoder` dispatches on the `{scheme}` prefix;
@@ -261,7 +261,7 @@ posture:
 2. Never expose `/health`/`/metrics` on a public interface without the
    `accessGuard`.
 
-A dedicated management listener (Spring `management.server.port`
+A dedicated management listener (the `management.server.port`
 equivalent) is recorded as the post-1.0 follow-up; it needs a second
 dispatch stack on the platform, and guard + redaction cover the exposure
 in the meantime.

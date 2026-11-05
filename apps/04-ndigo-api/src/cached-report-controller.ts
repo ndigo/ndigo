@@ -29,7 +29,7 @@ export const REPORTS = new ContextToken<Cache<{ invocations: number; value: stri
  *   `cacheManager.getCache(REPORTS).delete/clear`.
  * - The cached method must be public for TC39 decorator application — the
  *   wrapper replaces the prototype method, so `this.report()` self-calls are
- *   cached too (documented semantics; stronger than Spring proxies).
+ *   cached too (documented semantics; stronger than proxy interception).
  *
  * @see docs/guides/07-caching.md
  */

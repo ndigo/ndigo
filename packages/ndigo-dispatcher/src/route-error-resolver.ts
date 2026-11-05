@@ -39,7 +39,7 @@ const collectErrorClassNames = (error: Error): string[] => {
 /**
  * Returns the depth (0 = the error's own class) of the first class along the
  * error's prototype chain whose name *contains* the mapping key, or `-1` when
- * no class matches. Mirrors Spring's `SimpleMappingExceptionResolver` depth
+ * no class matches. Mirrors the `SimpleMappingExceptionResolver` depth
  * search so the most specific (deepest) substring mapping wins.
  *
  * @param mapping - The substring mapping key.

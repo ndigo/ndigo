@@ -20,7 +20,7 @@ const PORT = Number(getEnv('PORT', '3030'));
 const logger = getLogger('ndigo-todobackend');
 
 async function main() {
-    // Spring-style bootstrap: platform auto-config (handler mapping, HTTP
+    // DI-container bootstrap: platform auto-config (handler mapping, HTTP
     // server, argument resolvers) plus the app's composition root.
     const context = await new ApplicationBuilder([NodeAutoConfiguration, TodoBackendConfiguration]).run();
 

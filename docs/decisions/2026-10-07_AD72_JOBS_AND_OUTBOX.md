@@ -48,8 +48,8 @@ What the repository already provides, and what is missing:
   (probe, 2026-10-07) rather than returning the registered bean. Wiring must
   therefore resolve collaborators through the `ApplicationContext`, as
   `ScheduleRegistry` already does (`context.getValue(TASK_SCHEDULER)`).
-- Delivery-model comparison (peer frameworks): Spring has no queue of its own
-  (Spring Batch/Integration are separate projects); NestJS delegates to BullMQ;
+- Delivery-model comparison (peer frameworks): the reference framework has no queue of its own
+  (its batch/integration layers are separate projects); NestJS delegates to BullMQ;
   AdonisJS ships a queue over Redis/pg-boss. The consistent framework-side
   boundary is **own the contract, wrap the backend** — the pattern this repo
   already applies three times (Zod, OpenTelemetry, preact signals).

@@ -19,7 +19,7 @@ const PORT = Number(process.env['PORT']);
 const logger = getLogger('ndigo-island');
 
 async function main() {
-    // Spring-style bootstrap: register platform auto-config + app config, then
+    // DI-container bootstrap: register platform auto-config + app config, then
     // run() refreshes the context — the handler mapping + dispatcher
     // auto-initialize on refresh.
     const context = await new ApplicationBuilder([NodeAutoConfiguration, IslandConfiguration]).run();

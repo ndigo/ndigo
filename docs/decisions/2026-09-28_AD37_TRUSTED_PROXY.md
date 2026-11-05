@@ -16,7 +16,7 @@ consulted because trusting it unconditionally is a spoofing hole. The
 industry question — is XFF still the standard answer, or is something
 better? — was researched against primary sources before this AD:
 
-- **X-Forwarded-For is the de facto standard**, predating Spring (Squid 1998) and emitted by every proxy/CDN/load balancer. MDN documents it as
+- **X-Forwarded-For is the de facto standard**, predating the frameworks that standardised it (Squid 1998) and emitted by every proxy/CDN/load balancer. MDN documents it as
   the reference implementation of client-IP propagation, including the
   security rules ([MDN X-Forwarded-For](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Forwarded-For)).
 - **RFC 7239 `Forwarded` is the IETF-standardized successor** (2014;

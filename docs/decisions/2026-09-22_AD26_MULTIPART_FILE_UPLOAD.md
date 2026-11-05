@@ -15,7 +15,7 @@ This is gap-analysis item #1 in the Tier 1 "must-have" row of
 Blue could _emit_ a `multipart/form-data` request (client `FormDataTransformer`,
 `@blue/http`) but not _receive_ one. A handler annotated for a file part had
 nothing to bind against; any `<input type="file">` form silently dropped the
-file. Spring's answer is `MultipartFile` + a `MultipartHttpServletRequest`
+file. The reference answer is `MultipartFile` + a `MultipartHttpServletRequest`
 resolved **before** argument binding — this ports that capability to Blue's
 resolver/interceptor model.
 
@@ -42,7 +42,7 @@ dependency (`busboy`) plus its types — minimal and idiomatic.
 
 ### D-2 — Parse early in the adapter, streaming from `req` (never through `#readBody`)
 
-Mirror Spring's early `MultipartResolver`: detect `Content-Type: multipart/form-data`
+Mirror the early `MultipartResolver`: detect `Content-Type: multipart/form-data`
 at the top of `NodeHTTPServerAdapter.handleRequest` and, when present, stream `req`
 directly through busboy (`parse-multipart.ts:832`), bypassing `#readBody` entirely.
 The parsed result is stored on the request as `nodeRequest.multipart`; text fields
@@ -55,7 +55,7 @@ event); its absence marks a text field (`field()`).
 
 ### D-3 — Threshold-based streaming: buffer small parts, stream large ones to disk
 
-Mirror Spring's `file-size-threshold` / multer's storage split. Each file part at or
+Mirror the `file-size-threshold` / multer's storage split. Each file part at or
 below a configurable `fileThreshold` (default **128 KiB**) is collected into an
 in-memory `Buffer`; parts above it are piped straight to a temp file via
 `fs.createWriteStream`. The `MultipartFile` handle records which backing it has and
@@ -90,7 +90,7 @@ explicit name only when the client form field differs from the JS variable
 `request.multipart.files.get(name)` and returns a single `MultipartFile` or a
 `MultipartFile[]` for an array-typed param. Text fields keep binding through the body
 resolver. Zero-arg inference removes the common boilerplate while keeping the
-explicit, unambiguous marker — Blue's analogue of Spring's
+explicit, unambiguous marker — Blue's analogue of the reference framework's
 `@RequestParam MultipartFile` / `@RequestPart`.
 
 ### D-6 — Filename safety is framework-owned (busboy does not sanitize)

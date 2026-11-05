@@ -30,7 +30,7 @@ Rationale: the four identical lifecycle methods (`preInit`, `preRequest`, `postE
 
 ### 3. Roadmap (build _after_ the current effort): full interface-based service client generation
 
-The industry direction (OpenFeign, Retrofit, Spring Boot 4 `@HttpExchange` declarative clients) is **declarative interface clients**: decorate an interface; the framework generates the client proxy. BlueJS already has the machinery (TC39 decorators + `Symbol.metadata` + metadata-driven generation).
+The industry direction (OpenFeign, Retrofit, declarative HTTP-interface clients) is **declarative interface clients**: decorate an interface; the framework generates the client proxy. BlueJS already has the machinery (TC39 decorators + `Symbol.metadata` + metadata-driven generation).
 
 Target shape:
 

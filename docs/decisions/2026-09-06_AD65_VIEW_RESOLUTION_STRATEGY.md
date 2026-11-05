@@ -8,7 +8,7 @@ resolvers/locations behind one composite.
 
 Demo controllers constructed concrete views inline (`new WebComponentView('todo-app')`,
 `new StringTemplateView()`) instead of returning view names for the
-dispatcher's resolver chain. The framework already ported Spring's resolution
+dispatcher's resolver chain. The framework already ported the reference resolution
 pipeline (`AbstractDispatcher._resolveViewName`, `AbstractCachingViewResolver`,
 `NameViewResolver`, `ContentNegotiationViewResolver`) but no resolver produced
 component views, so apps bypassed the concept and controllers knew view
@@ -54,7 +54,7 @@ mixed-case acronym convention).
   component/Island views. `WebComponentViewResolver` maps name → class →
   `TagMapping` → `WebComponentView` (zero-config `name === tag` default);
   `IslandViewResolver` maps the same name → `IslandView`. One logical name,
-  platform-negotiated representation (Spring's "same name, resolver picks
+  platform-negotiated representation ("same name, resolver picks
   representation"). Resolvers **map/load, never register** components —
   `customElements.define` is the module's own side effect.
 - **D-2** SSE is imperative — no resolver; renamed to the acronym-convention
@@ -69,7 +69,7 @@ mixed-case acronym convention).
   overrides removed); `blue-hello` keeps one intentionally-concrete
   `WebComponentView` as the "concrete is an option" sample; `blue-island`
   `/events` returns the SSE view directly. **String handler returns stay
-  JSON** (needs a `@ResponseBody`-style marker before Spring's implicit
+  JSON** (needs a `@ResponseBody`-style marker before the implicit
   String-as-view-name is adopted).
 - **D-7** ViewTarget stays but becomes a negotiated family (`supportsTarget`)
   with a `TargetingViewEngine` split — **follow-on**, not a resolver
@@ -101,7 +101,7 @@ mixed-case acronym convention).
 
 ## Revisit Trigger
 
-Revisit if a consumer needs Spring-style implicit String-as-view-name (after a
+Revisit if a consumer needs implicit String-as-view-name (after a
 `@ResponseBody`-style opt-out), the `@ViewMapping`-driven name→class registry,
 or the deferred engine-capability work (`ViewEngine`/`TargetingViewEngine`
 split, `supportsTarget` target family). Until then name-returning controllers

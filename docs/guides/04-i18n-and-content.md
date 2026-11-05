@@ -166,7 +166,7 @@ connectedCallback() {
 ## 6. Client-side: reactive locale
 
 The browser platform persists the user's choice and reacts to changes
-without a reload — the parts Spring never had to build:
+without a reload — the parts the reference framework never had to build:
 
 ```ts
 import { changeLocale, currentLocale, CookieLanguageResolver } from '@ndigo/platform-web';

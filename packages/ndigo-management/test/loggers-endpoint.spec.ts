@@ -92,7 +92,7 @@ describe('LoggersController (AD-76 D-7)', () => {
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify({ configuredLevel: 'loud' }),
         });
-        // The dispatcher's validatedBody convention (422), not Spring's 400.
+        // The dispatcher's validatedBody convention (422), not the reference framework's 400.
         expect(res.status).toBe(422);
     });
 });

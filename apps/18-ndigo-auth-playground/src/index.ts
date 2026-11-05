@@ -3,7 +3,7 @@
  *
  * The bootstrap wires the auth stack first (demo accounts, durable LibSQL
  * session store, both adapters), optionally starts the embedded OIDC issuer on
- * its own loopback listener, then refreshes the Spring-style context
+ * its own loopback listener, then refreshes the DI-container context
  * (`NodeAutoConfiguration` + `ManagementAutoConfiguration` + the app's beans),
  * installs the app's two pipeline interceptors on the platform's handler
  * mapping, and starts listening.

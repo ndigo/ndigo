@@ -4,7 +4,7 @@ How `@ndigo/proxy` and `@ndigo/resilience` work together: metadata-only method
 annotations, interceptor chains around managed methods, standalone weaving
 for service clients, and the retry + circuit-breaker policies on top.
 
-The design: Spring-style interception _without_ an AOP language. JavaScript's
+The design: declarative interception _without_ an AOP language. JavaScript's
 `Proxy` is the machinery; annotations are the selection contract; interceptors
 are plain objects that decide, in code, what runs around a call.
 

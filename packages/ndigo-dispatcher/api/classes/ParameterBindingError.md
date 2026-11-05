@@ -7,7 +7,7 @@
 # Class: ParameterBindingError
 
 Base error for method parameter binding issues.
-Analogous to Spring's ServletRequestBindingException.
+Analogous to the request-binding error model.
 
 ## Extends
 

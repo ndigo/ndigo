@@ -7,7 +7,7 @@
 
 `@blue/http` had no mechanism to transform request/response bodies beyond its
 interceptor chain (JSON sanitization, validation, parsing all had to be manual
-or ad hoc). The design follows Spring's `HttpMessageConverter`: composable,
+or ad hoc). The design follows the `HttpMessageConverter`: composable,
 type-safe body transformers selected by a transform context, wired through the
 existing interceptor system.
 
@@ -36,7 +36,7 @@ existing interceptor system.
 - D-1 Continuous-transform contract `HTTPTransformer<TInput, TOutput>` with
   `canTransform(body, context): boolean` and
   `transform(body, context): TOutput | Promise<TOutput>`; `Transform` covers
-  plain functions. (Spring `HttpMessageConverter` inspiration.)
+  plain functions. (`HttpMessageConverter` inspiration.)
 - D-2 `TransformContext` carries `url`, `headers`, `mediaType`, `direction`
   (`'request' | 'response'`), `metadata` for conditional transforms.
 - D-3 Specialized transformers: JSON, composition (via `pipe()` left-to-right),

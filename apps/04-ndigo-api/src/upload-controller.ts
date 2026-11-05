@@ -33,7 +33,7 @@ function uploadDirectory(): Promise<string> {
 
 /**
  * JSON `meta` part DTO for {@link UploadController.upload} (D-6): bound via
- * `requestPart(MetaDTO)` into a real instance — Spring `@RequestPart` parity.
+ * `requestPart(MetaDTO)` into a real instance — part-binding parity.
  */
 class UploadMeta {
     label: string | null = null;

@@ -1,5 +1,5 @@
 /**
- * Spring Data-style derived-query method-name parsing (ORM completion plan,
+ * Convention-derived query method-name parsing (ORM completion plan,
  * Wave 4).
  *
  * Supported method-name patterns:

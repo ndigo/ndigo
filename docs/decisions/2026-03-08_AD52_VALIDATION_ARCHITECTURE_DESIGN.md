@@ -48,7 +48,7 @@ the earlier design as history.
 - **D-4 — decorator semantics:** blocking by default, configurable
   non-blocking mode (approved gate).
 - **D-5 — contextual validation groups:** Symbol/enum groups for
-  create/update/process variants, Spring-inspired, not bound to any
+  create/update/process variants, principles-inspired, not bound to any
   framework layer.
 - **D-6 — incremental rollout:** foundation hardening → adapter boundary →
   one pilot backend behind feature-flag opt-in.

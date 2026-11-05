@@ -7,7 +7,7 @@ import { Parser, Stringifier } from './parser';
 import { z } from 'zod';
 
 // ---------------------------------------------------------------------------
-// Converter<S, T> — Spring-style single-direction class-based converter
+// Converter<S, T> — Single-direction class-based converter
 // ---------------------------------------------------------------------------
 
 /**
@@ -270,7 +270,7 @@ function sourceTypeOf(source: unknown): unknown {
 }
 
 /**
- * Central type-conversion service (modelled on Spring's `ConversionService`,
+ * Central type-conversion service (modelled on the classic `ConversionService`,
  * extended with schema targets — AD-38).
  *
  * Provides a unified API for registering, looking up, and executing type

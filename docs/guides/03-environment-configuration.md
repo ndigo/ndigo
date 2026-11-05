@@ -7,7 +7,7 @@ binding.
 The environment is a pipeline: **sources** provide raw values →
 **resolution** (lookup + profiles + placeholders) → **binding**
 (`@configurationProperties` → typed instances) → **validation**
-(`@environment` zod schemas). It is Spring's environment model, ported to
+(`@environment` zod schemas). It is the reference framework's environment model, ported to
 JavaScript-native structures with fail-loud semantics throughout.
 
 ## The pipeline

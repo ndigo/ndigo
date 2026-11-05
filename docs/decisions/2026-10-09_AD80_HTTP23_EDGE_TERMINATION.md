@@ -49,7 +49,7 @@ What the repository actually is at HEAD (verified 2026-10-09):
 - Peer 1.0 expectations: browsers and mobile clients negotiate h2 with the
   TLS terminator, and h3 at CDNs — nobody measures the edge→origin hop,
   which in practice is keep-alive h1.1 or h2 inside a trusted network.
-  The frameworks in the review's peer set (Spring Boot, Express, Fastify)
+  The frameworks in the review's peer set (Express, Fastify, and the comparable Java boot layers)
   ship optional `ssl:`/`https:` surfaces, yet their own documentation
   treats TLS termination at a proxy/LB as the normal production topology.
 - The only h2/h3 user-visible benefits (multiplexing, HPACK, 0-RTT) are

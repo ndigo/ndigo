@@ -46,7 +46,7 @@ silent kebab→camel matching would reintroduce the "typo silently doesn't bind"
 failure mode the P0–P4 arc eliminates.
 
 **D4 — Binding failures fail refresh (fail-fast, Q4).** First error throws,
-naming class.field + attempted value + target type (Spring's
+naming class.field + attempted value + target type (the reference framework's
 `ConfigurationPropertiesBindingPostProcessor` parity). Binding errors are
 usually dependent (a wrong prefix breaks every field beneath it), so
 aggregate reporting lists cascading noise.

@@ -89,7 +89,7 @@ export interface EJSViewOptions {
  * 2. a `path` resolved through a {@link ResourceLoader} — the injected
  *    `loader`, or the view's application context.
  *
- * Like Spring MVC's self-rendering `View`, the view renders into a supplied
+ * Like a self-rendering `View`, the view renders into a supplied
  * {@link ViewTarget} for fragment mode (islands, client-side DOM) and —
  * through {@link ProducerView} — produces a whole HTML page for document mode
  * (servlet/JSP-style server-side rendering).

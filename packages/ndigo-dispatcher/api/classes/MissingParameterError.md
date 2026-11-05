@@ -8,7 +8,7 @@
 
 Thrown when a required parameter is missing from the request.
 This is a RUNTIME error (request processing time).
-Analogous to Spring's MissingServletRequestParameterException.
+Analogous to the missing-parameter binding error.
 
 ## Extends
 

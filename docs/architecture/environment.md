@@ -1,6 +1,6 @@
 # Environment Architecture — Design & Decisions
 
-The Ndigo environment is a six-phase port of **Spring's environment model**
+The Ndigo environment is a six-phase port of the **reference framework's environment model**
 (PropertySource / MutablePropertySources / profiles / `@ConfigurationProperties` /
 `EnvironmentPostProcessor`), translated to **JavaScript-native structures** with
 fail-loud semantics throughout. This document is the "why" — the decisions,
@@ -9,7 +9,7 @@ this is the map.
 
 ## Design pillars
 
-1. **Port semantics, not structures.** Spring's implementation (iterate every
+1. **Port semantics, not structures.** The reference implementation (iterate every
    source per lookup, subclass zoo, `LinkedHashMap` ceremony) is Java-shaped.
    Ndigo uses a `Map`-backed registry + prototype-chain/flat index strategies —
    the P0 research table rejected radix/ART/QP-trie/HAMT/codegen accessors for
@@ -52,16 +52,16 @@ so doctrine cannot drift.
 
 ## Key tensions & how they resolved
 
-| Tension                                            | Resolution                                                                                                                                          |
-| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Origins are flat-only; the default is prototype    | Optional `originOf?` on the index — `null` on prototype (structural winner not stored); strategy-local later fix (P5/Q1)                            |
-| Refresh scope                                      | Minimal: rebuild + clear caches; customizers don't re-run (double-apply footgun); platform snapshots are the platform's own chain (P5/Q4)           |
-| Relaxed binding vs silent key drift                | Opt-in per class — exact keypaths default, `{ relaxed: true }` for kebab↔camel (P4/Q8); typo'd env keys stay fail-loud                              |
-| Profile defaults docstring vs reality              | `defaultProfiles` was documented-but-dead; P3 made the environment own the effective set — defaults gate only when nothing explicit (Spring parity) |
-| Config profile files as separate sources vs merged | Chain whole-subtree first-wins would shadow nested overrides; all files deep-merge into one `application` source (P2, impl-corrected)               |
-| Fail-fast vs aggregate                             | Dependent errors (binding) → fail-fast; independent config-shape violations (validation) → aggregate report (P4/Q4 vs P6/Q1)                        |
-| `@nestedConfig` prefix source                      | Field decorators can't read types; the field name is the sub-prefix and the author provides the initializer (P4)                                    |
-| Type conversion targets                            | TS types are compile-time-only; `@property(path, Type)` declares the runtime target (P4, impl-corrected)                                            |
+| Tension                                            | Resolution                                                                                                                                             |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Origins are flat-only; the default is prototype    | Optional `originOf?` on the index — `null` on prototype (structural winner not stored); strategy-local later fix (P5/Q1)                               |
+| Refresh scope                                      | Minimal: rebuild + clear caches; customizers don't re-run (double-apply footgun); platform snapshots are the platform's own chain (P5/Q4)              |
+| Relaxed binding vs silent key drift                | Opt-in per class — exact keypaths default, `{ relaxed: true }` for kebab↔camel (P4/Q8); typo'd env keys stay fail-loud                                 |
+| Profile defaults docstring vs reality              | `defaultProfiles` was documented-but-dead; P3 made the environment own the effective set — defaults gate only when nothing explicit (reference parity) |
+| Config profile files as separate sources vs merged | Chain whole-subtree first-wins would shadow nested overrides; all files deep-merge into one `application` source (P2, impl-corrected)                  |
+| Fail-fast vs aggregate                             | Dependent errors (binding) → fail-fast; independent config-shape violations (validation) → aggregate report (P4/Q4 vs P6/Q1)                           |
+| `@nestedConfig` prefix source                      | Field decorators can't read types; the field name is the sub-prefix and the author provides the initializer (P4)                                       |
+| Type conversion targets                            | TS types are compile-time-only; `@property(path, Type)` declares the runtime target (P4, impl-corrected)                                               |
 
 ## Security posture
 

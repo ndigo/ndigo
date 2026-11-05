@@ -6,7 +6,7 @@
 
 /**
  * Error thrown when a password-hash string carries an unknown or malformed
- * scheme. Verification fails **loud** on unrecognized schemes (Spring
+ * scheme. Verification fails **loud** on unrecognized schemes (reference parity
  * Security 5.8+ parity): a silent `false` could hide a migration mistake
  * that locks users out — or, worse, a fallthrough that accepts a plaintext.
  */
@@ -20,7 +20,7 @@ export class UnknownPasswordSchemeError extends Error {
 /**
  * Verifies and produces self-describing password hashes.
  *
- * The contract is Spring-shaped (encode + verify + rehash hook) with
+ * The contract follows the reference shape (encode + verify + rehash hook) with
  * Ndigo/JS names: `verify` not `matches` (`matches` is Ndigo vocabulary
  * for pattern matching; `verify` is the auth vocabulary — see the wrapped
  * `jose.jwtVerify`).

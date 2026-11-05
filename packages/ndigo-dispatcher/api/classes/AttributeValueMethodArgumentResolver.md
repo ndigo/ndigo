@@ -34,7 +34,7 @@ Resolves method arguments from request attributes.
 
 Handles a missing argument value by throwing a
 a MissingParameterError — a ParameterBindingError, so HTTP
-error resolvers map it to 400 (Spring's
+error resolvers map it to 400 (the reference framework's
 MissingServletRequestParameterException parity) instead of a 500
 from a bare TypeError.
 

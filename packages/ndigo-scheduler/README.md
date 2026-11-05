@@ -1,9 +1,9 @@
 # Ndigo Scheduler
 
-> Node-only scheduling for Ndigo: declarative `@scheduled` tasks with Spring-shaped semantics.
+> Node-only scheduling for Ndigo: declarative `@scheduled` tasks behind a declarative decorator shape.
 
 Node-only scheduling for Ndigo: a `@scheduled` method decorator, a
-schedule registry, and a task-execution engine. Spring's declarative shape
+schedule registry, and a task-execution engine. The declarative decorator shape
 with Nest/AdonisJS runtime semantics.
 
 ## Installation

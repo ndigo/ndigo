@@ -8,7 +8,7 @@
 
 A single part of a `multipart/form-data` request — an uploaded file.
 
-The shape mirrors the stable subset of Spring's `MultipartFile` that Ndigo
+The shape mirrors the stable subset of the reference framework's `MultipartFile` that Ndigo
 needs (`getName`, `getOriginalFilename`, `getSize`, `isEmpty`, `getBytes`,
 `getInputStream`, `transferTo`). A part is backed either by an in-memory
 buffer (small uploads) or a temp file (large uploads streamed above the

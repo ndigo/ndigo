@@ -100,7 +100,7 @@ describe('NodeDataBindingMethodArgumentResolver', () => {
             expect(resolver.resolveArgument(param, route, {})).toEqual({ SESSIONID: 'abc', theme: 'dark' });
         });
 
-        test('an empty-but-present body binds to an empty object (Spring @ModelAttribute parity)', () => {
+        test('an empty-but-present body binds to an empty object (model-attribute binding parity)', () => {
             const route = makeRoute({ body: {} });
 
             expect(resolver.resolveArgument(bodyParam(), route, {})).toEqual({});

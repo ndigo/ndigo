@@ -7,7 +7,7 @@
 /**
  * A framework-owned view of a first-party user account.
  *
- * Implementations are app-owned: the classic Spring `UserDetailsService`
+ * Implementations are app-owned: the classic `UserDetailsService`
  * split — the framework owns the contract, the application owns the data
  * (typically a `@ndigo/orm`/Drizzle entity). The framework ships no
  * reference store; `packages/ndigo-auth-core/test/fixtures` provides an

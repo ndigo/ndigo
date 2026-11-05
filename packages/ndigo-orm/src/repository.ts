@@ -247,7 +247,7 @@ export abstract class AbstractRepository<T extends object, ID> implements Reposi
 }
 
 /**
- * Base repository with in-memory Spring Data-style derived-query support.
+ * Base repository with in-memory derived-query support.
  *
  * Concrete repositories declare derived methods and delegate to {@link derive}:
  *

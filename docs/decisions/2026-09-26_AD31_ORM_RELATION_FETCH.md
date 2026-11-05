@@ -60,7 +60,7 @@ as argument to the database" from a bogus UPDATE.
 
 ## Risks
 
-- Implicit FK conventions (Spring/Hibernate naming) are NOT adopted — a
+- Implicit FK conventions (Java-ORM naming) are NOT adopted — a
   relation without join-column options is metadata-only and does not fetch.
   Convention-following apps pay one options argument per relation.
 - N+1 on eager loads (one query per relation per entity) — documented;

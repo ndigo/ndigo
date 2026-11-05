@@ -52,7 +52,7 @@ function flatten(node: unknown, prefix: string, into: Map<string, unknown>): voi
  * Serves `/env`: the active profiles and every property source in
  * precedence order with its flattened dotted keys, values and origins.
  *
- * Payload follows the Spring Boot actuator env endpoint:
+ * Payload follows the actuator env endpoint:
  * `{ activeProfiles, propertySources: [{ name, properties }] }`. Values are
  * `"<redacted>"` unless `management.endpoints.env.showValues: true`, and
  * even then only the raw stored text is emitted — decrypted plaintext

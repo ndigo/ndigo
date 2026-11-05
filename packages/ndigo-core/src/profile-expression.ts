@@ -1,5 +1,5 @@
 /**
- * Spring 6.1-style profile expression grammar (`name`, `!`, `&`, `|`,
+ * Reference-style profile expression grammar (`name`, `!`, `&`, `|`,
  * parentheses) — parsed, never eval'd. Re-homed from `@ndigo/context` with
  * the conditional-family profile unification (AD-83).
  *
@@ -180,7 +180,7 @@ class Parser {
 /**
  * Evaluates a profile expression against the active profile set.
  *
- * Grammar (Spring 6.1 `Profiles`): `name` | `!expr` | `expr & expr` |
+ * Grammar (the `Profiles` grammar, since 6.1): `name` | `!expr` | `expr & expr` |
  * `expr | expr` | `( expr )`; `&` binds tighter than `|`. Expressions are
  * **parsed, never eval'd** (no eval-family; P0 D8). Malformed expressions and
  * runaway nesting throw `IllegalStateError` naming the expression (fail-loud —

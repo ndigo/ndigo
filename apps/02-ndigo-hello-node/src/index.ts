@@ -20,7 +20,7 @@ const PORT = Number(getEnv('PORT', '3010'));
 const logger = getLogger('ndigo-hello-node');
 
 async function main() {
-    // Spring-style bootstrap: register platform auto-config + app config, then
+    // DI-container bootstrap: register platform auto-config + app config, then
     // run() prepares the environment, refreshes the context, and returns it —
     // the handler mapping and dispatcher initialize themselves on refresh.
     const context = await new ApplicationBuilder([NodeAutoConfiguration, HelloConfiguration]).run();

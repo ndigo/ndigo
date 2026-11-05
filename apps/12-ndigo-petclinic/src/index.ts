@@ -23,7 +23,7 @@ const PORT = Number(process.env['PORT']);
 const logger = getLogger('ndigo-petclinic');
 
 async function main() {
-    // Spring-style bootstrap: register platform auto-configuration plus the
+    // DI-container bootstrap: register platform auto-configuration plus the
     // app configuration, then run() refreshes the context — handler mappings
     // and dispatcher strategies initialize on refresh.
     const context = await new ApplicationBuilder([NodeAutoConfiguration, PetClinicConfiguration]).run();

@@ -1,4 +1,4 @@
-# AD-20: Scheduling — Nest/Adonis semantics behind Spring's declarative shape
+# AD-20: Scheduling — Nest/Adonis semantics behind a declarative decorator shape
 
 **Date:** 2026-09-13
 **Status:** Accepted — decision recorded; implementation sequenced (see
@@ -9,16 +9,16 @@
 Scheduled tasks are the top remaining Tier-1 gap in the framework audit
 (`docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md` §2.1): no cron, no task
 executor, no background processing in any package. The trigger to fix the
-gap surfaced a framing question: BlueJS is Spring-inspired, but the
+gap surfaced a framing question: BlueJS follows the reference framework, but the
 scheduler runs on Node — so whose capabilities should it track?
 
-Answer: **Spring's declarative shape, Nest/AdonisJS semantics.** The
+Answer: **The reference framework's declarative shape, Nest/AdonisJS semantics.** The
 decorator + container-managed lifecycle is excellent ergonomics and matches
 the existing BlueJS decorator system (TC39 `Symbol.metadata` keys, kind
 guards, `@conditionalOnNode`). But the runtime semantics must match what
 Node scheduling actually needs:
 
-- **Async single-flight.** Spring's `fixedRate` overlaps by default (a Java
+- **Async single-flight.** The reference `fixedRate` overlaps by default (a Java
   thread pool); NestJS and AdonisJS both default to **no overlap** because
   an async task that `await`s I/O can otherwise interleave with itself. The
   overlap lock must span the full await chain, not just dispatch.

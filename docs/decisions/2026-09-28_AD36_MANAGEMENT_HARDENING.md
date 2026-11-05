@@ -64,7 +64,7 @@ The documented posture (guide 11 §8, management README):
 - Do not expose `/health`/`/metrics` on a public interface without the
   `accessGuard` (the AD-33 recommendation unchanged).
 
-A dedicated management listener (Spring `management.server.port` equivalent)
+A dedicated management listener (the `management.server.port` equivalent)
 is recorded as the post-1.0 follow-up: it requires a second dispatch stack on
 the platform and is not on the 1.0 critical path now that guard + redaction
 are in place. All decisions that would make that follow-up cheap (the

@@ -21,7 +21,7 @@ The industry options were surveyed against the repo's established pattern
 (**own the contract, wrap the ecosystem standard, use platform APIs
 directly** — AD-07 Zod, AD-19 i18n, AD-24 caching, AD-35 OpenAPI):
 
-- **Spring `BeanUtils`/ModelMapper, .NET AutoMapper** — implicit
+- **`BeanUtils`/ModelMapper, .NET AutoMapper** — implicit
   reflection conventions; Java's workaround for erased types; silently
   partial on mismatch. TypeScript does not have this problem.
 - **MapStruct** — compile-time codegen; declined on the AD-34 D-8

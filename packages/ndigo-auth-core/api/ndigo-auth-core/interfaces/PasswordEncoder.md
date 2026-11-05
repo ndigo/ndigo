@@ -8,7 +8,7 @@
 
 Verifies and produces self-describing password hashes.
 
-The contract is Spring-shaped (encode + verify + rehash hook) with
+The contract follows the reference shape (encode + verify + rehash hook) with
 Ndigo/JS names: `verify` not `matches` (`matches` is Ndigo vocabulary
 for pattern matching; `verify` is the auth vocabulary — see the wrapped
 `jose.jwtVerify`).

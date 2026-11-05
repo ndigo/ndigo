@@ -6,11 +6,11 @@ waves; see [docs/plans/2026-09-27_TYPESCRIPT_NATIVE_LAYER.md](../plans/2026-09-2
 
 ## Background
 
-BlueJS ports Spring solutions deliberately. The 2026-09-27 evaluation found
+BlueJS ports reference solutions deliberately. The 2026-09-27 evaluation found
 the framework already TS-native where it replaced Java machinery (Zod over
 Bean Validation, extractor-factory parameter binding over reflection,
 wrapper decorators over AOP proxies — self-invocation is intercepted,
-stronger than Spring; SpEL rejected at AD-24 D-5). The remaining Spring-isms
+stronger than the reference; SpEL rejected at AD-24 D-5). The remaining reference carry-overs
 were **stringly-typed handles and expression DSLs** — exactly where
 TypeScript's compile-time layer pays. This ADR ratifies the TS layer added
 for those surfaces and records what stays deliberately Java-shaped.

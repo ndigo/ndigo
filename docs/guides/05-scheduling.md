@@ -3,7 +3,7 @@
 How scheduled tasks work in Ndigo: the `@scheduled` decorator, zero-wiring
 discovery, execution semantics, and guardrails. Scheduling is **Node-only**.
 
-The design: Spring's declarative decorator shape with Nest/AdonisJS runtime
+The design: the reference framework's declarative decorator shape with Nest/AdonisJS runtime
 semantics — async single-flight runs, error isolation, drain-on-close, and
 no catch-up after restarts.
 
@@ -81,7 +81,7 @@ no `timeZone` is given — pass an explicit zone for deterministic schedules.
   chain unresolved) is skipped that tick; the next fire slides forward.
 - **Error isolation**: one failing task never stops the scheduler or other
   tasks. Failures are recorded in the task stats and on the run's span.
-- **No overlap by default** — the Nest/AdonisJS default, not Spring's
+- **No overlap by default** — the Nest/AdonisJS default, not the reference framework's
   thread-pool overlap.
 - **No catch-up**: schedules are declared in code, single-process, and
   restart with the process.

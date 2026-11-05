@@ -1038,14 +1038,14 @@ class TemplateViewResolver implements ViewResolver, ResourceLoader {
 
 1. **Description-first prevents import conflicts** - Multiple packages can define `DataTransformer` interface without collision when implementing classes use descriptive prefixes
 2. **Abstract prefix signals inheritance** - Immediately identifies base classes vs concrete implementations
-3. **Consistent with Spring Framework** - Follows established enterprise patterns (e.g., `AbstractHandlerMapping`, `AbstractPathMatchingResourcePatternResolver`)
+3. **Consistent with established enterprise patterns** - Follows long-standing conventions (e.g., `AbstractHandlerMapping`, `AbstractPathMatchingResourcePatternResolver`)
 4. **Autocomplete-friendly** - Modern IDEs make long names effortless; clarity trumps brevity
 
 ### 3.11. Role-Based Suffixes [CONVENTION: Code Review]
 
 **Pattern:** Use semantic suffixes to convey component responsibility
 
-Ndigo uses role-based suffixes inspired by Spring Framework to indicate the responsibility and behavior of classes/interfaces. These suffixes provide instant semantic understanding and create a shared vocabulary across the codebase.
+Ndigo uses role-based suffixes aligned with established enterprise conventions to indicate the responsibility and behavior of classes/interfaces. These suffixes provide instant semantic understanding and create a shared vocabulary across the codebase.
 
 **Core Suffixes and Their Meanings:**
 
@@ -1294,7 +1294,7 @@ class UserResolver {
 
 - **Shared Vocabulary** - Consistent suffixes create common understanding across the team
 - **Instant Recognition** - Developers immediately understand a component's role from its name
-- **Spring Framework Alignment** - Leverages established enterprise patterns familiar to Java/Spring developers
+- **Enterprise-pattern alignment** - Leverages established conventions familiar to Java enterprise developers
 - **Semantic Clarity** - `*Handler` processes, `*Resolver` locates, `*Factory` creates—no ambiguity
 - **Autocomplete-Friendly** - Modern tooling makes specific, descriptive names effortless
 
@@ -1881,7 +1881,7 @@ class MediaType {
 - JavaScript ecosystem conventions (Array.length, String.length, Map.size)
 - Java Bean conventions (getters for properties, methods for operations)
 - TypeScript guidance (properties for data access, methods for operations)
-- Spring Framework patterns (get\* methods for external lookups)
+- Enterprise patterns (get\* methods for external lookups)
 
 #### When in Doubt
 
@@ -1900,7 +1900,7 @@ If still unsure, **prefer a method** - it's safer and more flexible for future c
 
 **Pattern:** Use conventional prefixes to signal method behavior and return expectations
 
-Method names should clearly communicate their purpose, behavior, and expected return values. Ndigo uses standardized prefixes inspired by JavaBeans, Spring Framework, and JavaScript ecosystem conventions.
+Method names should clearly communicate their purpose, behavior, and expected return values. Ndigo uses standardized prefixes inspired by JavaBeans, Java enterprise, and JavaScript ecosystem conventions.
 
 This section establishes clear rules for method naming across the entire codebase.
 
@@ -2781,7 +2781,7 @@ class GoodMediaType {
 **Influenced By:**
 
 - JavaBeans naming conventions (get\*, set\*, is\*)
-- Spring Framework patterns (get\* for external lookups)
+- Enterprise patterns (get\* for external lookups)
 - JavaScript standard library (Array.from, Array.of, toString, toJSON)
 - TypeScript type guard conventions (is\* predicates)
 - Functional programming (from\*, to\* transformations)

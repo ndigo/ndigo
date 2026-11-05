@@ -306,7 +306,7 @@ const ascii = (text: string): Uint8Array => new TextEncoder().encode(text);
 describe('content-length byte semantics (octets, not UTF-16 units)', () => {
     test('parses a non-ASCII text body against a byte-accurate content-length', () => {
         // 'café' is 4 code units but 5 UTF-8 octets; a conforming broker
-        // (Spring, Artemis) counts octets.
+        // (the STOMP spec, Artemis) counts octets.
         const frame = parseStompFrame('SEND\ncontent-length:5\n\ncaf\u00e9\0');
         expect(frame.body).toBe('caf\u00e9');
     });

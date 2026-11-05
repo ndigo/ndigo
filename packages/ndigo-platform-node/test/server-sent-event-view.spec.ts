@@ -17,7 +17,7 @@ import { ServerSentEventView } from '../src/server-sent-event-view';
  * SSE server push (AD-09): `ServerSentEventView` streams an async-iterable
  * event source to a real `node:http` response as `text/event-stream` frames,
  * one per yielded value, ending the response when the source completes.
- * Handlers return the view directly (producing-View branch — Spring
+ * Handlers return the view directly (producing-View branch — the reference
  * `SseEmitter`-style semantics, streamed through the producer path).
  */
 

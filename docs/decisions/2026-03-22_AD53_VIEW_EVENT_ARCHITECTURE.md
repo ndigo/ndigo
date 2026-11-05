@@ -6,7 +6,7 @@ strategy since extended by [AD-65](2026-09-06_AD65_VIEW_RESOLUTION_STRATEGY.md) 
 
 ## Context
 
-BlueJS's Spring MVC-inspired view pipeline had only half the contract
+BlueJS's MVC-inspired view pipeline had only half the contract
 formalized (Controller → View rendering). The reverse flows — View → Service
 (mapped UI events to context events) and Service → Controller/View
 (services trigger re-render after mutation) — were informal, and `@blue/view`
@@ -17,7 +17,7 @@ in View/ViewEngine, and event bridging is scoped to the rendering surface.
 ## Evidence
 
 - Plan: `docs/plans/2026-03-22_VIEW_EVENT_ARCHITECTURE.md` — interface
-  hierarchy, implemented changes, Spring MVC mapping, deferred work.
+  hierarchy, implemented changes, MVC mapping, deferred work.
 - `EventBridgeViewTarget extends ViewTarget` lives in
   `packages/blue-view/src/view-target.ts:45`, exported via
   `packages/blue-view/src/index.ts` (`export * from './view-target'`) and

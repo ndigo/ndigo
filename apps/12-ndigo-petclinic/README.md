@@ -4,7 +4,7 @@
 > clinic visits and the veterinarian directory — ported onto Ndigo as a server-rendered EJS application
 > over an in-memory `@ndigo/orm` store, with the same resources available as JSON.
 
-PetClinic is the reference web application of the Spring ecosystem: a small,
+PetClinic is a reference web application in the enterprise sample tradition: a small,
 form-driven CRUD vertical that exercises exactly the surface a server-rendered
 framework has to get right — search and paging, aggregate pages, five
 create/update forms, per-field validation that re-renders with the user's input
@@ -197,7 +197,7 @@ invalidated by a later write.
 ## Reference: what was ported, what was simplified
 
 **Reference application:** <https://github.com/spring-projects/spring-petclinic>
-(Spring Boot + Spring MVC + JPA). The ported surface is its feature list: the
+(boot + MVC + JPA). The ported surface is its feature list: the
 welcome page, the owner search with paging, owner detail with pets and visits,
 the five create/update forms with the reference's validation rules (required
 alpha names, required address and city, 10-digit telephone, a required pet type
@@ -213,15 +213,15 @@ Ported as written, because they are the point of the app:
 
 Deliberately simplified or replaced:
 
-| Reference                                        | This app                                                                                                          |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
-| JPA + HSQLDB/MySQL/PostgreSQL schema             | `@ndigo/orm` in-memory entities seeded from the reference's `data.sql`; no external service                       |
-| Thymeleaf templates + fragments                  | EJS templates + partial includes                                                                                  |
-| Spring `MessageSource` + `messages_*.properties` | `@ndigo/content-i18next` bundles in `src/messages.ts` (`en`, `fr`)                                                |
-| Bean Validation on the entity/DTO                | Zod schemas shared with the entity column metadata as the write-time gate                                         |
-| `spring-petclinic-rest`'s separate modules       | The same JSON shapes, served by the same app under `/api`                                                         |
-| Vet CRUD (`spring-petclinic-rest`)               | Read-only vet list — the reference web app's own scope, where vets are not editable                               |
-| Owner "find" autocomplete, spring-security       | Out of scope: this port covers the classic server-rendered flows, not authentication or the REST deployment shape |
+| Reference                                  | This app                                                                                                          |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| JPA + HSQLDB/MySQL/PostgreSQL schema       | `@ndigo/orm` in-memory entities seeded from the reference's `data.sql`; no external service                       |
+| Thymeleaf templates + fragments            | EJS templates + partial includes                                                                                  |
+| `MessageSource` + `messages_*.properties`  | `@ndigo/content-i18next` bundles in `src/messages.ts` (`en`, `fr`)                                                |
+| Bean Validation on the entity/DTO          | Zod schemas shared with the entity column metadata as the write-time gate                                         |
+| `spring-petclinic-rest`'s separate modules | The same JSON shapes, served by the same app under `/api`                                                         |
+| Vet CRUD (`spring-petclinic-rest`)         | Read-only vet list — the reference web app's own scope, where vets are not editable                               |
+| Owner "find" autocomplete, spring-security | Out of scope: this port covers the classic server-rendered flows, not authentication or the REST deployment shape |
 
 ## See Also
 

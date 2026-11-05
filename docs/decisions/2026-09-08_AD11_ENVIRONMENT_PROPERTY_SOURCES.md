@@ -5,7 +5,7 @@
 
 ## Background
 
-BlueJS's `Environment` (blue-context) models Spring's environment: profiles +
+BlueJS's `Environment` (blue-context) models the reference environment: profiles +
 `PropertyResolver` over an ordered list of `JSONObject` property sources. The
 current shape is a thin port:
 
@@ -20,7 +20,7 @@ current shape is a thin port:
   `process.env`, not a snapshot.
 - No per-key origin, no named sources, no reordering API.
 
-Spring's semantics are the reference, but its implementation (iterate a source
+The reference semantics are the target, but its implementation (iterate a source
 list, two virtual calls per source, per lookup) is a Java-shaped structure.
 BlueJS reads configuration per-request/per-render, so allocation count and
 lookup cost matter. Phase 0 ports _semantics_ with JavaScript-native
@@ -40,7 +40,7 @@ pollution (`__proto__` keys) and post-registration mutation surprises are
 impossible; sources are replaced, not mutated.
 
 **D2 — `PropertySources` read interface + `MutablePropertySources` class**
-(Spring-exact pair, mirroring the repo's `PropertyValues`/
+(an exact-parity pair, mirroring the repo's `PropertyValues`/
 `MutablePropertyValues` port). `Map<string, PropertySource>` backing gives
 O(1) name ops; a lazily rebuilt array serves order iteration;
 `addFirst/addLast/addBefore/addAfter/remove/replace`. `replace` keeps

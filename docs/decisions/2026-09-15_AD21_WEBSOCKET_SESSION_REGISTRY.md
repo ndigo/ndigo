@@ -6,7 +6,7 @@
 
 ## Background
 
-WebSockets in BlueJS are present but single-connection: `@socketMapping`
+WebSockets in ndigo are present but single-connection: `@socketMapping`
 handlers bind a `SocketSession` (path/params/sources, async-iterable
 messages, `send`/`close`), the Node adapter dispatches upgrades through the
 normal radix mapping, and that is the whole story (gap analysis
@@ -17,7 +17,7 @@ auto-configuration has no socket wiring at all.
 Framing the fix surfaced two design questions:
 
 1. **Should there be a generic session type?** `SocketSession`,
-   an HTTP session, and `@blue/auth-core`'s `Session` share "an ID and a
+   an HTTP session, and `@ndigo/auth-core`'s `Session` share "an ID and a
    data container" — is that enough of a common core for a shared
    interface (possibly in the abstract dispatcher)?
 2. **Who owns session machinery?** A Node application can run socket and
@@ -39,11 +39,11 @@ every operation past identity splits by lifecycle (logical cross-request
 state vs. physical connection lifetime — HTTP: invalidate/rotate/expire/
 persist; WebSocket: send/close/ping/reap).
 
-### D2 — Adjectival session naming; `Session` → `AuthSession` in `@blue/auth-core`
+### D2 — Adjectival session naming; `Session` → `AuthSession` in `@ndigo/auth-core`
 
-`@blue/auth-core`'s `Session` is the only unqualified session type and
+`@ndigo/auth-core`'s `Session` is the only unqualified session type and
 collides by name with the emerging family. Renamed as a standalone prereq
-commit (verified blast radius: one consumer — `blue-auth-client`'s
+commit (verified blast radius: one consumer — `ndigo-auth-client`'s
 `AuthHeaderInterceptor` — plus specs; pre-1.0 breaking is sanctioned).
 Family: `AuthSession`/`DefaultAuthSession` (auth state), `SocketSession`
 (connection), `HttpSession` (reserved for the M4 session store; not built
@@ -63,7 +63,7 @@ expose it).
 
 The dispatcher contributes **types only**; registries, heartbeat, and
 broadcast are beans registered by `NodeAutoConfiguration` (the AD-20
-zero-wiring pattern), with the implementation in `blue-platform-node`. A
+zero-wiring pattern), with the implementation in `ndigo-platform-node`. A
 Node app runs socket sessions and HTTP sessions side by side as separate
 beans bound through separate extractors (`socketSessionValue()` /
 `requestSessionValue()`) — ordinary DI, no unified session layer. The adapter
@@ -90,7 +90,7 @@ the feature exists to fix.
 ## Consequences
 
 - **Contracts:** `SocketSession` gains `attributes`/`join`/`leave`
-  (additive); new `SocketSessionRegistry` type in `blue-dispatcher`
+  (additive); new `SocketSessionRegistry` type in `ndigo-dispatcher`
   (unreferenced by the dispatcher's execution path).
 - **Implementation:** `NodeSocketSessionRegistry` (membership, rooms,
   broadcast, heartbeat sweep) + adapter registration/removal + graceful
@@ -98,9 +98,9 @@ the feature exists to fix.
 - **Composition:** `NodeAutoConfiguration` `@entry` bean + configuration
   properties (`socket.heartbeat-interval-ms`, `socket.idle-timeout-ms`).
 - **Deferred:** cross-node pub/sub (needs a store contract), STOMP/SockJS,
-  client reconnect/backoff (blue-platform-web/blue-service), generic
+  client reconnect/backoff (ndigo-platform-web/ndigo-service), generic
   registry — all documented in the plan's non-goals.
-- **Demo gate:** blue-api `/ws/room` chat + scheduler-driven broadcast.
+- **Demo gate:** ndigo-api `/ws/room` chat + scheduler-driven broadcast.
 
 **Decision record:** this ADR. **Implementation plan:**
 `docs/plans/2026-09-15_WEBSOCKET_BROADCAST.md`.

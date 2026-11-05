@@ -2,7 +2,7 @@
 
 ## 1. Executive Summary
 
-This audit evaluates the performance characteristics of Ramda utility functions compared to native JavaScript equivalents across the `@blue/util` categories. The goal is to establish data-driven guidelines for when to leverage Ramda's functional API and when to prefer native JavaScript for performance-critical paths.
+This audit evaluates the performance characteristics of Ramda utility functions compared to native JavaScript equivalents across the `@ndigo/util` categories. The goal is to establish data-driven guidelines for when to leverage Ramda's functional API and when to prefer native JavaScript for performance-critical paths.
 
 **Key Insights:**
 
@@ -19,7 +19,7 @@ Benchmarks were executed using the following environment and parameters:
 
 - **Runner:** Vitest Bench
 - **Environment:** Node.js with `jsdom`
-- **Location:** `packages/blue-util/bench/`
+- **Location:** `packages/ndigo-util/bench/`
 - **Workload:** 1000-iteration inner loops, mixed inputs, and accumulated sinks to prevent V8 dead-code elimination.
 - **Metrics:** Operations per second (hz). Higher is better.
 
@@ -118,7 +118,7 @@ Benchmarks were executed using the following environment and parameters:
 
 ## 4. Real Codebase Scenario Results
 
-These benchmarks test actual patterns found within the BlueJS codebase (`scenarios.bench.ts`).
+These benchmarks test actual patterns found within the ndigo codebase (`scenarios.bench.ts`).
 
 | Scenario                        | Ramda hz | Native hz | Winner    | Ratio     |
 | ------------------------------- | -------- | --------- | --------- | --------- |

@@ -2,7 +2,7 @@
 
 **Date:** 2026-02-01
 **Status:** Accepted — archived 2026-02-03; enforcement live via
-`@blue/no-internal-file-exports`
+`@ndigo/no-internal-file-exports`
 
 ## Context
 
@@ -24,15 +24,15 @@ not a guideline.
   hybrid naming (`_util.ts` vs `_<domain>.ts` vs descriptive) versus
   standardizing or moving to `src/internal/`.
 - **Enforcement exists today (2026-10-04):**
-  `packages/blue-oxlint-plugin/src/rules/no-internal-file-exports.ts` implements
+  `packages/ndigo-oxlint-plugin/src/rules/no-internal-file-exports.ts` implements
   the rule — it only reports on `src/index.ts` (`/src\/index\.ts$/`) and flags
   `ExportAllDeclaration` whose source starts with `./_`.
-  Registered in `packages/blue-oxlint-plugin/src/index.ts:29` and enabled as
-  `@blue/no-internal-file-exports: "error"` in `.oxlintrc.json` (rule entry), run by the
+  Registered in `packages/ndigo-oxlint-plugin/src/index.ts:29` and enabled as
+  `@ndigo/no-internal-file-exports: "error"` in `.oxlintrc.json` (rule entry), run by the
   repo global `lint` script (`package.json:20`, `oxlint --type-aware
   --deny-warnings .`).
-- Same-phase companion rules (`@blue/no-internal-file-imports: "error"`,
-  `@blue/no-direct-integration-imports: "warn"`) live in the same plugin
+- Same-phase companion rules (`@ndigo/no-internal-file-imports: "error"`,
+  `@ndigo/no-direct-integration-imports: "warn"`) live in the same plugin
   directory (see [AD-45](2026-02-01_AD45_ARCHITECTURAL_LINT_RULES.md)).
 
 ## Decision
@@ -48,17 +48,17 @@ not a guideline.
 ## Consequences
 
 - The no-export rule is enforced across the monorepo by oxlint
-  (`@blue/no-internal-file-exports` = error); public API expansion through
+  (`@ndigo/no-internal-file-exports` = error); public API expansion through
   internal files is now a lint failure.
 - Internal files continue to appear in `packages/*/src/_*.ts` (e.g.
-  `packages/blue-context/src/_util.ts`) but never leave the package boundary.
+  `packages/ndigo-context/src/_util.ts`) but never leave the package boundary.
 
 ## References
 
 - Plans: `docs/plans/2026-02-01_UTILITY_ORGANIZATION.md`,
   `docs/plans/2026-02-01_INTERNAL_FILE_NAMING_REVIEW.md`
-- Implementation: `packages/blue-oxlint-plugin/src/rules/no-internal-file-exports.ts`,
-  `.oxlintrc.json` (`@blue/no-internal-file-exports: error`)
+- Implementation: `packages/ndigo-oxlint-plugin/src/rules/no-internal-file-exports.ts`,
+  `.oxlintrc.json` (`@ndigo/no-internal-file-exports: error`)
 - Related: [AD-45](2026-02-01_AD45_ARCHITECTURAL_LINT_RULES.md)
 
 ## Revisit Trigger
@@ -72,8 +72,8 @@ directory-based `src/internal/` organization that the rule must learn to allow.
 - The `no-internal-file-exports` rule now also flags **named re-exports**
   (`ExportNamedDeclaration` with a `./_`-prefixed source), not only `export *`
   (`ExportAllDeclaration`); the companion `no-internal-file-imports` rule now
-  also covers `export * from '@blue/<pkg>/_…'`.
-- The one live violation this surfaced — `blue-auth-core` re-exporting
+  also covers `export * from '@ndigo/<pkg>/_…'`.
+- The one live violation this surfaced — `ndigo-auth-core` re-exporting
   `./_decorators` from its barrel — was fixed per the revisit trigger by
   promoting the file to a public filename: `src/decorators.ts` (spec renamed to
   `test/decorators.spec.ts`; the barrel now exports `./decorators`).

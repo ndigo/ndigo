@@ -5,7 +5,7 @@
 
 ## Background
 
-Blue's Node HTTP surface produces an **inconsistent, custom error envelope**.
+Ndigo's Node HTTP surface produces an **inconsistent, custom error envelope**.
 Grounded audit of today's response shaping:
 
 | Location                                                    | Today's shape                                                | Problem                                                           |
@@ -34,8 +34,8 @@ since 7230/9110).
    carrying the standard members `type`, `title`, `status`, `detail`,
    `instance`, plus `errors` as a registered extension member for per-field
    validation failures (RFC 9457 allows extension members).
-2. **Problem-type URI:** **`urn:blue:<slug>`** — for example
-   `urn:blue:validation-failed`. This is a **placeholder scheme** chosen for
+2. **Problem-type URI:** **`urn:ndigo:<slug>`** — for example
+   `urn:ndigo:validation-failed`. This is a **placeholder scheme** chosen for
    self-containment (no DNS obligation, no doc fetch); before any public
    release, register real HTTPS problem-type URIs
    (`https://<domain>/problems/<slug>`) at a discoverable location and update
@@ -63,17 +63,17 @@ since 7230/9110).
       This table is the canonical wiring of the existing-but-unused
       `ResponseStatuses` vocabulary.
 5. **`type`/`detail` split:** `type` is the machine code (the
-   `urn:blue:<slug>`); `detail` is the human-readable message. Today's
+   `urn:ndigo:<slug>`); `detail` is the human-readable message. Today's
    `{ error: code }` vs `{ error: message }` ambiguity disappears.
 
 ## Versions
 
-| Artifact                       | Status                                                                                      |
-| ------------------------------ | ------------------------------------------------------------------------------------------- |
-| RFC 9457                       | Proposed standard (2025-08); obsoletes 7807                                                 |
-| RFC 9110                       | HTTP Semantics (auth, 401/405, `Allow`, `WWW-Authenticate`)                                 |
-| RFC 9111                       | HTTP Caching (`Cache-Control` on errors)                                                    |
-| `ResponseStatuses` (blue-http) | 63 codes incl. 103/208/226/418/421/422/425/428/429/431/451/506–511 — audit-verified reasons |
+| Artifact                        | Status                                                                                      |
+| ------------------------------- | ------------------------------------------------------------------------------------------- |
+| RFC 9457                        | Proposed standard (2025-08); obsoletes 7807                                                 |
+| RFC 9110                        | HTTP Semantics (auth, 401/405, `Allow`, `WWW-Authenticate`)                                 |
+| RFC 9111                        | HTTP Caching (`Cache-Control` on errors)                                                    |
+| `ResponseStatuses` (ndigo-http) | 63 codes incl. 103/208/226/418/421/422/425/428/429/431/451/506–511 — audit-verified reasons |
 
 ## Consequences
 
@@ -112,7 +112,7 @@ since 7230/9110).
 
 ## HTTP vocabulary audit (the "types/enums up to date" workstream)
 
-The audit target is everything in `@blue/http` (and `@blue/core` where shared)
+The audit target is everything in `@ndigo/http` (and `@ndigo/core` where shared)
 that models the HTTP layer: `ResponseStatuses`, `HTTPHeader`/`HTTPHeaders`,
 `MediaType`, quality factors, and any RFC citations.
 
@@ -149,7 +149,7 @@ that models the HTTP layer: `ResponseStatuses`, `HTTPHeader`/`HTTPHeaders`,
 **Consistency sweep:**
 
 9. Update every test asserting the old `{ error }` shape (~30 sites).
-10. `urn:blue:*` → real HTTPS problem-type URIs **before first public
+10. `urn:ndigo:*` → real HTTPS problem-type URIs **before first public
     release** (placeholder scheme is tracked here).
 
 **AD-10 implementation tracked in docs/plans/ (see the error-model plan).**
@@ -158,8 +158,8 @@ that models the HTTP layer: `ResponseStatuses`, `HTTPHeader`/`HTTPHeaders`,
 
 **Application bootstrap (2026-09-07) — Node apps on `ApplicationBuilder`:**
 
-The three Node demo apps (`blue-hello-node`, `blue-api`, `blue-island`) now
-boot through `@blue/boot`'s `ApplicationBuilder` (a DI-container bootstrap):
+The three Node demo apps (`ndigo-hello-node`, `ndigo-api`, `ndigo-island`) now
+boot through `@ndigo/boot`'s `ApplicationBuilder` (a DI-container bootstrap):
 
 ```ts
 const context = new ApplicationBuilder([NodeAutoConfiguration, AppConfiguration]).run();
@@ -171,11 +171,11 @@ gracefulShutdown(context, { resources: [server] });
 `run()` prepares the environment, registers + refreshes the context, and
 returns it — the handler mapping and dispatcher auto-initialize on refresh
 (AD-10's 3A correctness work made this safe). This is the roadmap criterion
-("`@blue/boot` auto-starts server on Node | `ApplicationBuilder.run()` →
+("`@ndigo/boot` auto-starts server on Node | `ApplicationBuilder.run()` →
 server listening on port") and collapses the previous manual
 `MetadataConfigApplicationContext` + hand-wiring classes per app. The apps
-also log banners through `@blue/telemetry`'s `getLogger` instead of raw
-`console` (modernization item 4's cosmetic gap). `@blue/boot` + `@blue/telemetry`
+also log banners through `@ndigo/telemetry`'s `getLogger` instead of raw
+`console` (modernization item 4's cosmetic gap). `@ndigo/boot` + `@ndigo/telemetry`
 added to the three app manifests.
 
 **3A — Correctness — DONE (2026-09-07):**
@@ -197,26 +197,26 @@ added to the three app manifests.
   (unauthorized/forbidden/methodNotAllowed/notAcceptable/unsupportedMediaType/
   unprocessableEntity/tooManyRequests/serviceUnavailable) — wiring the
   existing `ResponseStatuses` vocabulary.
-- **Reason-phrase regression test:** `blue-http` `response-status.spec.ts`
+- **Reason-phrase regression test:** `ndigo-http` `response-status.spec.ts`
   locks the RFC 9110 code→phrase table (63 codes) so a future edit cannot
   silently drift a reason phrase; also fixed the stale `@see rfc2616`
   citation (→ RFC 9110).
 
 **3B — The RFC 9457 envelope — DONE (2026-09-07):**
 
-- `ProblemDetails` + `ProblemTypes` (`urn:blue:*`, placeholder scheme) +
-  `writeProblem` in `@blue/platform-node/src/problem-details.ts`.
+- `ProblemDetails` + `ProblemTypes` (`urn:ndigo:*`, placeholder scheme) +
+  `writeProblem` in `@ndigo/platform-node/src/problem-details.ts`.
 - **Every 4xx/5xx response is `application/problem+json`** with
   `Cache-Control: no-store`, `Vary: Accept`, and (where known) `instance`
   = request path:
     - framework resolvers (`NodeParameterBindingErrorResolver`,
       `NodeLastResortErrorResolver`) return registered problems; validation
-      failures → `422 urn:blue:validation-failed` with the structured
+      failures → `422 urn:ndigo:validation-failed` with the structured
       `errors` extension (Phase 4A);
-    - transport errors (413/400/408) map by code (`urn:blue:<code>`);
-    - 401/403 denials → `urn:blue:unauthorized`/`urn:blue:forbidden` (401
+    - transport errors (413/400/408) map by code (`urn:ndigo:<code>`);
+    - 401/403 denials → `urn:ndigo:unauthorized`/`urn:ndigo:forbidden` (401
       carries `WWW-Authenticate`);
-    - 404/405 → `urn:blue:not-found`/`urn:blue:method-not-allowed` (405
+    - 404/405 → `urn:ndigo:not-found`/`urn:ndigo:method-not-allowed` (405
       carries `Allow`);
     - handler-returned `ResponseEntity` 4xx/5xx wrap to an about:blank
       problem (`title` = reason phrase, `detail` = string/`error`/JSON body);
@@ -225,15 +225,15 @@ added to the three app manifests.
 
 **Consistency sweep:** existing tests migrated from `{ error }` to problem
 documents, and `api` validation test now asserts the 422 problem with
-`errors`. Live e2e over a real `blue-hello-node` socket confirms the
+`errors`. Live e2e over a real `ndigo-hello-node` socket confirms the
 headers (problem+json, no-store, Vary, Allow) and bodies. Remaining
 follow-ups, still parked: `Accept-Language` → localized `detail`, and the
-`urn:blue:*` → real HTTPS problem-type URIs before first public release.
+`urn:ndigo:*` → real HTTPS problem-type URIs before first public release.
 
 ## Revisit Trigger
 
 Revisit if (a) a real external consumer needs legacy `{ error }`
 compatibility (add `Accept`-based negotiation + `Vary: Accept`), (b) a
 standardized problem-type registry (e.g. IANA) gains normative force
-(migrate `urn:blue:*` URIs), or (c) a requirement emerges that the problem
+(migrate `urn:ndigo:*` URIs), or (c) a requirement emerges that the problem
 document cannot express (extend with a new registered member, not a fork).

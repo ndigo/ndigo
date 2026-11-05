@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-08
 **Status:** Draft — awaiting review (Q1–Q5)
-**Roadmap:** Final phase of the Environment roadmap, on P0–P5 (`a5aec4c6`, AD-11..16). Validation is the deployer-facing contract: declare the environment's shape with zod (already in-tree — blue-dispatcher's `@validatedBy`), get a loud, aggregate failure at boot when the resolved values don't match.
+**Roadmap:** Final phase of the Environment roadmap, on P0–P5 (`a5aec4c6`, AD-11..16). Validation is the deployer-facing contract: declare the environment's shape with zod (already in-tree — ndigo-dispatcher's `@validatedBy`), get a loud, aggregate failure at boot when the resolved values don't match.
 
 ## 1 · Objective
 
@@ -15,19 +15,19 @@ Non-goals (explicit): coercion into the environment (P4 binding owns conversion)
 
 ## 2 · Current state (evidence)
 
-| Area              | Today                                                               | Gap                                  |
-| ----------------- | ------------------------------------------------------------------- | ------------------------------------ |
-| Zod availability  | blue-dispatcher uses zod (`@validatedBy`) — **in-tree, no new dep** | Not wired to environment             |
-| Fail-loud boot    | P4/P5: missing/bad bindings throw                                   | No aggregate config-shape validation |
-| Config-class hook | `@configurationProperties` metadata + boot auto-registration (P4)   | No schema slot                       |
-| Origin            | `originOf` (P5)                                                     | Error-message composition (later)    |
+| Area              | Today                                                                | Gap                                  |
+| ----------------- | -------------------------------------------------------------------- | ------------------------------------ |
+| Zod availability  | ndigo-dispatcher uses zod (`@validatedBy`) — **in-tree, no new dep** | Not wired to environment             |
+| Fail-loud boot    | P4/P5: missing/bad bindings throw                                    | No aggregate config-shape validation |
+| Config-class hook | `@configurationProperties` metadata + boot auto-registration (P4)    | No schema slot                       |
+| Origin            | `originOf` (P5)                                                      | Error-message composition (later)    |
 
 ## 3 · Decisions (proposed — review Q1–Q5)
 
 ### D1 — `@environment(schema)` class decorator + `describeEnvironment(schema)`
 
 - `@environment(zoidSchema)` on a configuration class stores the schema in class metadata (`boot:environmentSchema`) — the schema IS the contract. Direct `describeEnvironment(schema)` export for ad-hoc use.
-- **Q5 — location**: blue-context (schema is an environment contract, decorator alongside `@property`) vs blue-boot (where validation runs). Blue-context already has the decorator machinery; zod becomes a context dep (it's already a _dispatcher_ dep — adding to context is a new edge on a used package, Q4).
+- **Q5 — location**: ndigo-context (schema is an environment contract, decorator alongside `@property`) vs ndigo-boot (where validation runs). Ndigo-context already has the decorator machinery; zod becomes a context dep (it's already a _dispatcher_ dep — adding to context is a new edge on a used package, Q4).
 
 ### D2 — `validateEnvironment(environment, schema)` free function
 
@@ -43,14 +43,14 @@ Non-goals (explicit): coercion into the environment (P4 binding owns conversion)
 ## 4 · Project structure
 
 ```
-packages/blue-context/src/
+packages/ndigo-context/src/
   environment-schema.ts  NEW  — @environment decorator + describeEnvironment + validateEnvironment
-packages/blue-boot/src/
+packages/ndigo-boot/src/
   application.ts         EDIT — validateWith wiring, auto-validation
   application-builder.ts EDIT — validateWith(...)
-packages/blue-context/test/
+packages/ndigo-context/test/
   environment-schema.spec.ts NEW
-packages/blue-boot/test/
+packages/ndigo-boot/test/
   environment-schema.spec.ts EDIT/NEW — boot validation report
 ```
 
@@ -88,5 +88,5 @@ Matches P0–P5. No new deps beyond zod (already in tree — Q4).
 - **Q1 — Aggregate vs fail-fast (resolved → aggregate)**: validation's whole point is the full report (independent violations surface together; P4's fail-fast was for _dependent_ binding errors).
 - **Q2 — Coercion (resolved → report-only)**: env is the source of truth; writing zod transforms back would silently rewrite deployer config (binding converts per-field, P4).
 - **Q3 — Invalid boot (resolved → fail loudly)**: silent config drift is the bug the arc eliminates; P4/P5 parity.
-- **Q4 — New dep edge (resolved → zod into blue-context manifest)**: already installed via dispatcher — only a new package edge, no new bytes.
-- **Q5 — Location (resolved → blue-context)**: decorator machinery there; schema is an environment contract; boot imports from context.
+- **Q4 — New dep edge (resolved → zod into ndigo-context manifest)**: already installed via dispatcher — only a new package edge, no new bytes.
+- **Q5 — Location (resolved → ndigo-context)**: decorator machinery there; schema is an environment contract; boot imports from context.

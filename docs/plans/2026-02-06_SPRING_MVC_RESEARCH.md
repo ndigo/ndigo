@@ -1,9 +1,9 @@
-# Spring MVC Research Plan for Blue Framework Enhancement
+# Spring MVC Research Plan for Ndigo Framework Enhancement
 
 **Status:** Not Started  
 **Created:** 2025-02-01  
 **Estimated Duration:** 23-34 hours  
-**Purpose:** Evaluate Spring MVC capabilities and identify features suitable for porting to Blue framework
+**Purpose:** Evaluate Spring MVC capabilities and identify features suitable for porting to Ndigo framework
 
 ---
 
@@ -26,18 +26,18 @@
 
 ### Project Goal
 
-Conduct comprehensive research into Spring MVC's feature set to identify patterns, capabilities, and abstractions that can be adapted for the Blue framework, with particular attention to platform-appropriate implementations (Web browser vs. Node.js vs. Universal JavaScript).
+Conduct comprehensive research into Spring MVC's feature set to identify patterns, capabilities, and abstractions that can be adapted for the Ndigo framework, with particular attention to platform-appropriate implementations (Web browser vs. Node.js vs. Universal JavaScript).
 
 ### Key Principles
 
 1. **Platform-Aware Analysis:** Filter all features through the lens of Web (browser), Node.js (server), and Universal (both) contexts
 2. **JavaScript-First Design:** Adapt Java patterns to idiomatic JavaScript/TypeScript conventions
 3. **Industry Relevance:** Focus on modern, widely-adopted patterns that remain relevant in 2025+
-4. **Blue Philosophy Alignment:** Maintain composition-over-inheritance, functional programming, and universal JavaScript principles
+4. **Ndigo Philosophy Alignment:** Maintain composition-over-inheritance, functional programming, and universal JavaScript principles
 
 ### Expected Outcomes
 
-- **Feature Comparison Matrix:** Comprehensive spreadsheet mapping Spring MVC features to potential Blue implementations
+- **Feature Comparison Matrix:** Comprehensive spreadsheet mapping Spring MVC features to potential Ndigo implementations
 - **Implementation Roadmap:** Phased plan with effort estimates and priorities
 - **Architecture Patterns Document:** Design patterns for adapting Java concepts to JavaScript
 - **Decision Log:** Rationale for all major design decisions
@@ -47,7 +47,7 @@ Conduct comprehensive research into Spring MVC's feature set to identify pattern
 10 Spring MVC feature domains, each analyzed for:
 
 - Spring's implementation approach
-- Current Blue capabilities
+- Current Ndigo capabilities
 - Platform applicability (Web/Node/Universal)
 - JavaScript adaptation strategy
 - Priority score (1-10)
@@ -57,9 +57,9 @@ Conduct comprehensive research into Spring MVC's feature set to identify pattern
 
 ## Context & Motivation
 
-### Blue's Current State
+### Ndigo's Current State
 
-Blue is a universal JavaScript framework built on the principles of:
+Ndigo is a universal JavaScript framework built on the principles of:
 
 - **Composition over inheritance:** Favor functional composition and mixins
 - **Functional programming:** Leverage Ramda, immutable data, pure functions
@@ -89,7 +89,7 @@ Spring MVC represents decades of battle-tested patterns for web application deve
 - Interceptor/filter patterns
 - Testing utilities
 
-**Potential value for Blue:**
+**Potential value for Ndigo:**
 
 - Proven patterns for complex web applications
 - Inspiration for decorator/annotation design
@@ -98,12 +98,12 @@ Spring MVC represents decades of battle-tested patterns for web application deve
 
 ### Guiding Example: Platform-Aware Design
 
-**User's insight:** "Blue has `@routeMapping` instead of Spring's `@requestMapping` because the Web uses routes."
+**User's insight:** "Ndigo has `@routeMapping` instead of Spring's `@requestMapping` because the Web uses routes."
 
 This exemplifies the research approach:
 
 - **Spring pattern:** `@RequestMapping` maps HTTP requests to handler methods
-- **Blue's Web adaptation:** `@routeMapping` for browser-based routing (SPA routing, History API)
+- **Ndigo's Web adaptation:** `@routeMapping` for browser-based routing (SPA routing, History API)
 - **Future Node.js adaptation:** Could add `@requestMapping` for HTTP request/response handling
 
 **Key insight:** The same underlying concept (mapping handlers) has platform-specific semantics:
@@ -140,7 +140,7 @@ Each domain will be researched using the template in [Appendix: Research Templat
 
 1. How does Spring's routing compare to modern JavaScript router patterns (React Router, Vue Router, etc.)?
 2. What's the relevance of matrix variables in modern web applications?
-3. Should Blue support method-based routing (`@GetMapping` style) or stick with configuration?
+3. Should Ndigo support method-based routing (`@GetMapping` style) or stick with configuration?
 4. How should path variable extraction integrate with TypeScript type safety?
 5. What patterns from Spring are platform-specific (HTTP-only) vs universal?
 
@@ -172,7 +172,7 @@ Each domain will be researched using the template in [Appendix: Research Templat
 - **Validation:** Parameter validation rules
 - **Constraints:** Must work in both contexts
 
-**Blue Current State:**
+**Ndigo Current State:**
 
 - ✅ `@routeMapping` for route configuration
 - ✅ Basic route parsing and matching
@@ -221,8 +221,8 @@ Each domain will be researched using the template in [Appendix: Research Templat
 
 1. How does Spring's data binding compare to modern form libraries (Formik, React Hook Form)?
 2. Is JSR-303 annotation-style validation still relevant vs. schema-based (Zod, Yup)?
-3. How should Blue integrate validation with existing `@Pattern` decorator?
-4. Should Blue support automatic JSON parsing or require explicit configuration?
+3. How should Ndigo integrate validation with existing `@Pattern` decorator?
+4. Should Ndigo support automatic JSON parsing or require explicit configuration?
 5. What's the right balance between magic (automatic binding) and explicit (manual parsing)?
 
 **Platform Analysis:**
@@ -251,7 +251,7 @@ Each domain will be researched using the template in [Appendix: Research Templat
 - **Validation logic:** Share between client and server
 - **Constraints:** Must serialize validation rules
 
-**Blue Current State:**
+**Ndigo Current State:**
 
 - ✅ `@Pattern` field decorator for regex validation
 - ❌ Object-level validation
@@ -301,7 +301,7 @@ Each domain will be researched using the template in [Appendix: Research Templat
 
 1. Is XML support still relevant in 2025? (JSON dominates)
 2. How do modern APIs handle content negotiation? (Often JSON-only)
-3. Should Blue support multiple formats or focus on JSON?
+3. Should Ndigo support multiple formats or focus on JSON?
 4. What's the role of content negotiation in SPAs? (Often N/A)
 5. How does this relate to GraphQL, tRPC, and other modern API patterns?
 
@@ -331,7 +331,7 @@ Each domain will be researched using the template in [Appendix: Research Templat
 - **Error handling:** Consistent error response format
 - **Constraints:** Must support multiple formats
 
-**Blue Current State:**
+**Ndigo Current State:**
 
 - ✅ `ModelAndView` abstraction for view and data
 - ✅ View resolver pattern for rendering
@@ -378,7 +378,7 @@ Each domain will be researched using the template in [Appendix: Research Templat
 **Research Questions:**
 
 1. How does Spring's exception handling compare to JavaScript error boundaries?
-2. Should Blue support global error handlers or per-controller only?
+2. Should Ndigo support global error handlers or per-controller only?
 3. How should exceptions map to HTTP status codes (Node.js) vs error states (Web)?
 4. What's the right granularity for exception handlers?
 5. How do modern frameworks handle errors (GraphQL, tRPC error handling)?
@@ -409,12 +409,12 @@ Each domain will be researched using the template in [Appendix: Research Templat
 - **Error context:** Attach metadata to errors
 - **Constraints:** Must work in both environments
 
-**Blue Current State:**
+**Ndigo Current State:**
 
 - ✅ `@errorHandler` class decorator for error handler classes
 - ✅ `@errorMapping` method decorator for error class mapping
 - ✅ `ErrorResolver` interface for error resolution
-- ✅ Error class hierarchy (from @blue/core)
+- ✅ Error class hierarchy (from @ndigo/core)
 - ❌ Global error handlers (`@ControllerAdvice` equivalent)
 - ❌ HTTP status code mapping
 - ❌ Default error handlers
@@ -456,7 +456,7 @@ Each domain will be researched using the template in [Appendix: Research Templat
 **Research Questions:**
 
 1. How does Spring's interceptor pattern compare to Express middleware?
-2. Should Blue support both interceptors and filters, or unify into one concept?
+2. Should Ndigo support both interceptors and filters, or unify into one concept?
 3. What's the right composition pattern for middleware chains?
 4. How do modern frameworks handle cross-cutting concerns (HOCs, decorators, middleware)?
 5. Should interceptors be declarative (decorators) or imperative (registration)?
@@ -487,7 +487,7 @@ Each domain will be researched using the template in [Appendix: Research Templat
 - **Error handling:** Interceptor error handling
 - **Constraints:** Must support both sync and async
 
-**Blue Current State:**
+**Ndigo Current State:**
 
 - ❌ No interceptor pattern
 - ❌ No filter pattern
@@ -531,10 +531,10 @@ Each domain will be researched using the template in [Appendix: Research Templat
 **Research Questions:**
 
 1. Is server-side template rendering still relevant in 2025 (vs. SPAs)?
-2. Should Blue support view resolution or focus on API-first?
+2. Should Ndigo support view resolution or focus on API-first?
 3. How does SSR (Next.js, Remix) change view resolution patterns?
 4. What's the role of view resolution in universal JavaScript apps?
-5. Should Blue support template engines or focus on component rendering?
+5. Should Ndigo support template engines or focus on component rendering?
 
 **Platform Analysis:**
 
@@ -562,7 +562,7 @@ Each domain will be researched using the template in [Appendix: Research Templat
 - **SEO:** Server-side rendering for SEO
 - **Constraints:** Must support both rendering contexts
 
-**Blue Current State:**
+**Ndigo Current State:**
 
 - ✅ `ViewResolver` interface
 - ✅ `ModelAndView` for view + data
@@ -609,10 +609,10 @@ Each domain will be researched using the template in [Appendix: Research Templat
 **Research Questions:**
 
 1. How relevant is traditional REST in 2025 vs. GraphQL, tRPC, gRPC?
-2. Should Blue embrace REST conventions or be more flexible?
+2. Should Ndigo embrace REST conventions or be more flexible?
 3. Is HATEOAS still relevant? (Rarely used in practice)
-4. What's the best API versioning strategy for Blue?
-5. How should Blue handle CORS in universal context?
+4. What's the best API versioning strategy for Ndigo?
+5. How should Ndigo handle CORS in universal context?
 
 **Platform Analysis:**
 
@@ -640,7 +640,7 @@ Each domain will be researched using the template in [Appendix: Research Templat
 - **Tooling:** API documentation, OpenAPI
 - **Constraints:** Must work for client and server
 
-**Blue Current State:**
+**Ndigo Current State:**
 
 - ✅ Basic routing (can build REST APIs)
 - ✅ Model and view abstraction
@@ -689,9 +689,9 @@ Each domain will be researched using the template in [Appendix: Research Templat
 **Research Questions:**
 
 1. How does Spring's async model compare to JavaScript's native Promise/async-await?
-2. Is reactive programming (RxJS) relevant for Blue?
+2. Is reactive programming (RxJS) relevant for Ndigo?
 3. What's the best pattern for streaming data (SSE, WebSockets, long polling)?
-4. How should Blue handle backpressure?
+4. How should Ndigo handle backpressure?
 5. What's the role of reactive streams in modern JavaScript?
 
 **Platform Analysis:**
@@ -720,7 +720,7 @@ Each domain will be researched using the template in [Appendix: Research Templat
 - **Cancellation:** AbortController pattern
 - **Constraints:** Platform-specific streaming
 
-**Blue Current State:**
+**Ndigo Current State:**
 
 - ✅ `Deferred` class for promise management
 - ✅ Promise-based APIs
@@ -767,9 +767,9 @@ Each domain will be researched using the template in [Appendix: Research Templat
 
 **Research Questions:**
 
-1. Should Blue provide security features or rely on external libraries?
+1. Should Ndigo provide security features or rely on external libraries?
 2. How do modern JavaScript apps handle auth (JWT, OAuth2, etc.)?
-3. What's the role of security annotations in Blue?
+3. What's the role of security annotations in Ndigo?
 4. Should security be built-in or pluggable?
 5. How does auth differ between Web (browser) and Node.js (server)?
 
@@ -801,7 +801,7 @@ Each domain will be researched using the template in [Appendix: Research Templat
 - **Security context:** Request-scoped security info
 - **Constraints:** Must work in both contexts
 
-**Blue Current State:**
+**Ndigo Current State:**
 
 - ❌ No security features
 - ❌ No authentication support
@@ -846,9 +846,9 @@ Each domain will be researched using the template in [Appendix: Research Templat
 **Research Questions:**
 
 1. How does Spring's testing compare to JavaScript testing tools (Vitest, Jest)?
-2. Should Blue provide testing utilities or rely on existing tools?
-3. What testing patterns are unique to Blue's architecture?
-4. How should Blue support integration testing?
+2. Should Ndigo provide testing utilities or rely on existing tools?
+3. What testing patterns are unique to Ndigo's architecture?
+4. How should Ndigo support integration testing?
 5. What's the right balance between unit and integration tests?
 
 **Platform Analysis:**
@@ -877,7 +877,7 @@ Each domain will be researched using the template in [Appendix: Research Templat
 - **Test organization:** Consistent test structure
 - **Constraints:** Must support both environments
 
-**Blue Current State:**
+**Ndigo Current State:**
 
 - ✅ Vitest for testing
 - ✅ Test files in `test/` directories
@@ -920,7 +920,7 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 - How does Spring's runtime performance compare to JavaScript frameworks?
 - What's the overhead of decorators in JavaScript vs. Java annotations?
 - Are there performance anti-patterns to avoid from Spring?
-- How does Blue's functional approach affect performance?
+- How does Ndigo's functional approach affect performance?
 
 **Considerations:**
 
@@ -935,8 +935,8 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 
 - How does Java's compile-time type checking compare to TypeScript?
 - What Spring patterns rely on runtime reflection vs. compile-time?
-- Can Blue provide stronger type safety than Spring?
-- How should Blue leverage TypeScript's advanced types?
+- Can Ndigo provide stronger type safety than Spring?
+- How should Ndigo leverage TypeScript's advanced types?
 
 **Considerations:**
 
@@ -949,12 +949,12 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 
 **Research Questions:**
 
-- How does Spring's DI container compare to Blue's context?
-- Should Blue adopt more Spring DI patterns?
+- How does Spring's DI container compare to Ndigo's context?
+- Should Ndigo adopt more Spring DI patterns?
 - What's the right granularity for dependency management?
 - How does DI interact with functional programming?
 
-**Blue Current State:**
+**Ndigo Current State:**
 
 - ✅ `ApplicationContext` for DI container
 - ✅ `@configuration` and `@entry` for bean registration
@@ -964,19 +964,19 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 **Considerations:**
 
 - Spring: Annotation-based DI, complex lifecycle, scopes
-- Blue: Configuration-based, functional approach
+- Ndigo: Configuration-based, functional approach
 - Integration: How do DI and functional composition coexist?
 
 #### Configuration Management
 
 **Research Questions:**
 
-- How does Spring Boot's auto-configuration compare to Blue?
-- Should Blue support externalized configuration (application.properties)?
+- How does Spring Boot's auto-configuration compare to Ndigo?
+- Should Ndigo support externalized configuration (application.properties)?
 - What's the right configuration format (JSON, YAML, TypeScript)?
 - How should configuration work in universal JavaScript?
 
-**Blue Current State:**
+**Ndigo Current State:**
 
 - ✅ `@propertySource` for property sources
 - ✅ `@property` for property injection
@@ -989,9 +989,9 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 **Research Questions:**
 
 - How does Spring's logging compare to JavaScript logging?
-- Should Blue provide structured logging?
+- Should Ndigo provide structured logging?
 - What's the role of observability in universal JavaScript?
-- Should Blue integrate with OpenTelemetry?
+- Should Ndigo integrate with OpenTelemetry?
 
 **Considerations:**
 
@@ -1005,14 +1005,14 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 **Research Questions:**
 
 - What makes Spring Boot developer-friendly?
-- How can Blue provide great DX?
-- What tooling would improve Blue development?
-- Should Blue provide CLI tools (like Spring CLI)?
+- How can Ndigo provide great DX?
+- What tooling would improve Ndigo development?
+- Should Ndigo provide CLI tools (like Spring CLI)?
 
 **Considerations:**
 
 - Spring: IDE support, auto-configuration, starter packages
-- Blue: TypeScript IDE support, simple configuration
+- Ndigo: TypeScript IDE support, simple configuration
 - Tooling: Code generation, scaffolding, dev server
 - Documentation: Examples, guides, API docs
 
@@ -1102,29 +1102,29 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 
 ---
 
-### Phase 3: Blue Current State Audit (3-4 hours)
+### Phase 3: Ndigo Current State Audit (3-4 hours)
 
-**Objective:** Map existing Blue features to Spring MVC features and identify gaps.
+**Objective:** Map existing Ndigo features to Spring MVC features and identify gaps.
 
 **Activities:**
 
-1. **Inventory Blue's Existing Features**
+1. **Inventory Ndigo's Existing Features**
 
-    - Review all packages: @blue/dispatcher, @blue/context, @blue/validate
+    - Review all packages: @ndigo/dispatcher, @ndigo/context, @ndigo/validate
     - Document existing decorators and their purposes
     - Identify patterns already implemented
     - List current capabilities and limitations
 
-2. **Map Blue to Spring MVC**
+2. **Map Ndigo to Spring MVC**
 
-    - Create mapping: Blue feature → Spring MVC equivalent
-    - Identify: What Spring patterns does Blue already have?
+    - Create mapping: Ndigo feature → Spring MVC equivalent
+    - Identify: What Spring patterns does Ndigo already have?
     - Compare: How do implementations differ?
     - Assess: Quality and completeness of existing features
 
 3. **Identify Gaps in Functionality**
 
-    - List: What Spring MVC features are missing from Blue?
+    - List: What Spring MVC features are missing from Ndigo?
     - Prioritize: Which gaps are critical vs. nice-to-have?
     - Assess: Effort required to close each gap
 
@@ -1135,8 +1135,8 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 
 **Deliverables:**
 
-- Blue feature inventory
-- Blue → Spring MVC mapping table
+- Ndigo feature inventory
+- Ndigo → Spring MVC mapping table
 - Gap analysis document
 - Architectural consistency report
 
@@ -1179,7 +1179,7 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 - Modern framework analysis
 - MVC relevance assessment
 - Emerging patterns report
-- Recommendations for Blue
+- Recommendations for Ndigo
 
 ---
 
@@ -1193,7 +1193,7 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 
     - **Industry Relevance (1-5):** How important is this feature in 2025?
     - **Platform Applicability:** Web / Node / Universal / None
-    - **Architectural Fit (1-5):** How well does it fit Blue's architecture?
+    - **Architectural Fit (1-5):** How well does it fit Ndigo's architecture?
     - **Implementation Complexity (1-5):** How hard is it to implement?
     - **User Demand (1-5):** How much do users need this feature?
 
@@ -1235,7 +1235,7 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 - Feature Domain (1-10)
 - Spring MVC Implementation (description)
 - Spring MVC Annotations (list)
-- Blue Current Implementation (description or "None")
+- Ndigo Current Implementation (description or "None")
 - Platform Applicability (Web / Node / Universal / None)
 - JavaScript Adaptation Strategy (description)
 - Industry Relevance Score (1-5)
@@ -1249,7 +1249,7 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 
 **Example Rows:**
 
-| Feature             | Domain | Spring                                    | Spring Annotations                             | Blue Current           | Platform  | Adaptation                              | Industry | Arch Fit | Complexity | Demand | Priority | Effort | Phase | Notes                       |
+| Feature             | Domain | Spring                                    | Spring Annotations                             | Ndigo Current          | Platform  | Adaptation                              | Industry | Arch Fit | Complexity | Demand | Priority | Effort | Phase | Notes                       |
 | ------------------- | ------ | ----------------------------------------- | ---------------------------------------------- | ---------------------- | --------- | --------------------------------------- | -------- | -------- | ---------- | ------ | -------- | ------ | ----- | --------------------------- |
 | Path Variables      | 1      | Extract URL segments as method parameters | `@PathVariable`                                | None                   | Universal | `@routeParams({ id: pathValue('id') })` | 5        | 5        | 3          | 5      | 10       | 25h    | 1     | Critical for RESTful routes |
 | Method Security     | 9      | Secure methods with annotations           | `@PreAuthorize`, `@Secured`                    | None                   | Node      | Middleware + decorators                 | 5        | 3        | 5          | 4      | 7        | 40h    | 2     | Consider external library   |
@@ -1267,7 +1267,7 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 
 #### Phase 1: Core Request Handling (High Priority, 8-10)
 
-**Objective:** Implement essential features for building web applications with Blue.
+**Objective:** Implement essential features for building web applications with Ndigo.
 
 **Features:**
 
@@ -1292,7 +1292,7 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 
 **Success Criteria:**
 
-- Can build RESTful APIs with Blue
+- Can build RESTful APIs with Ndigo
 - Full CRUD operations supported
 - Comprehensive validation
 - Proper error handling
@@ -1324,7 +1324,7 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 - SSE support (optional)
 - Content negotiation framework
 - REST decorators: `@RestController`, `@ResponseStatus`
-- Testing utilities for Blue applications
+- Testing utilities for Ndigo applications
 - Security decorators (or library recommendation)
 
 **Success Criteria:**
@@ -1395,12 +1395,12 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 [Description of JavaScript-idiomatic approach]
 [Explanation of differences from Spring]
 
-**Blue Implementation Strategy:**
-[Specific design decisions for Blue]
+**Ndigo Implementation Strategy:**
+[Specific design decisions for Ndigo]
 [Rationale for design choices]
 
 **Code Example:**
-[TypeScript/JavaScript code showing Blue's API]
+[TypeScript/JavaScript code showing Ndigo's API]
 
 **Design Decisions:**
 
@@ -1486,17 +1486,17 @@ Beyond the 10 feature domains, analyze these cross-cutting concerns:
 **Status:** Accepted
 
 **Context:**
-Spring MVC uses `@RequestMapping` which maps HTTP requests to handler methods. Blue needs to support both browser-based routing (SPAs) and Node.js HTTP request handling.
+Spring MVC uses `@RequestMapping` which maps HTTP requests to handler methods. Ndigo needs to support both browser-based routing (SPAs) and Node.js HTTP request handling.
 
 **Decision:**
-Blue will use `@routeMapping` for browser-based routing and reserve `@requestMapping` for future Node.js HTTP request/response handling.
+Ndigo will use `@routeMapping` for browser-based routing and reserve `@requestMapping` for future Node.js HTTP request/response handling.
 
 **Rationale:**
 
 - **Web applications** think in terms of "routes" (SPA routing, History API, URL paths)
 - **Node.js applications** think in terms of "requests" (HTTP request/response cycle)
 - Separation allows platform-appropriate abstractions
-- Consistent with Blue's universal JavaScript philosophy
+- Consistent with Ndigo's universal JavaScript philosophy
 - Users can understand the distinction clearly
 
 **Consequences:**
@@ -1563,15 +1563,15 @@ Replace parameter decorators with a method decorator that accepts a parameter ma
 
 ## Timeline Estimate
 
-| Phase                                 | Duration        | Activities                                                        | Deliverable                                                                  |
-| ------------------------------------- | --------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| **Phase 1: Spring MVC Deep Dive**     | 8-12 hours      | Read documentation, analyze projects, identify patterns           | Domain knowledge, annotation list, initial architecture doc                  |
-| **Phase 2: Platform Analysis**        | 4-6 hours       | Research Web/Node APIs, create compatibility matrix               | Platform compatibility matrix, abstraction guidelines                        |
-| **Phase 3: Blue Current State Audit** | 3-4 hours       | Inventory features, map to Spring, identify gaps                  | Blue feature inventory, gap analysis                                         |
-| **Phase 4: Industry Trends Research** | 2-3 hours       | Survey modern frameworks, analyze MVC evolution                   | Modern patterns report, recommendations                                      |
-| **Phase 5: Feature Prioritization**   | 2-3 hours       | Score features, estimate effort, create roadmap                   | Prioritization matrix, roadmap                                               |
-| **Documentation & Synthesis**         | 4-6 hours       | Compile all deliverables, write patterns doc, create decision log | Feature comparison matrix, architecture patterns, decision log, final report |
-| **TOTAL**                             | **23-34 hours** | Complete research + documentation                                 | All deliverables ready for implementation                                    |
+| Phase                                  | Duration        | Activities                                                        | Deliverable                                                                  |
+| -------------------------------------- | --------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Phase 1: Spring MVC Deep Dive**      | 8-12 hours      | Read documentation, analyze projects, identify patterns           | Domain knowledge, annotation list, initial architecture doc                  |
+| **Phase 2: Platform Analysis**         | 4-6 hours       | Research Web/Node APIs, create compatibility matrix               | Platform compatibility matrix, abstraction guidelines                        |
+| **Phase 3: Ndigo Current State Audit** | 3-4 hours       | Inventory features, map to Spring, identify gaps                  | Ndigo feature inventory, gap analysis                                        |
+| **Phase 4: Industry Trends Research**  | 2-3 hours       | Survey modern frameworks, analyze MVC evolution                   | Modern patterns report, recommendations                                      |
+| **Phase 5: Feature Prioritization**    | 2-3 hours       | Score features, estimate effort, create roadmap                   | Prioritization matrix, roadmap                                               |
+| **Documentation & Synthesis**          | 4-6 hours       | Compile all deliverables, write patterns doc, create decision log | Feature comparison matrix, architecture patterns, decision log, final report |
+| **TOTAL**                              | **23-34 hours** | Complete research + documentation                                 | All deliverables ready for implementation                                    |
 
 **Breakdown by Activity:**
 
@@ -1583,7 +1583,7 @@ Replace parameter decorators with a method decorator that accepts a parameter ma
 **Recommended Schedule:**
 
 - **Week 1:** Phases 1-2 (Spring MVC deep dive + platform analysis)
-- **Week 2:** Phases 3-5 (Blue audit + trends + prioritization)
+- **Week 2:** Phases 3-5 (Ndigo audit + trends + prioritization)
 - **Week 3:** Documentation synthesis and deliverable creation
 
 ---
@@ -1618,7 +1618,7 @@ Document open questions that arise during research. Resolve before implementatio
 
 ### Technical Questions
 
-1. **Should Blue support JSP/template-style view resolution, or focus on API-first?**
+1. **Should Ndigo support JSP/template-style view resolution, or focus on API-first?**
 
     - Context: SSR is coming back (Next.js), but JSP is dead
     - Consider: Modern SSR frameworks vs. traditional templates
@@ -1630,10 +1630,10 @@ Document open questions that arise during research. Resolve before implementatio
     - Consider: Passport.js, Auth0, Clerk, Supabase Auth
     - Decision pending: [Date]
 
-3. **Should Blue embrace GraphQL/tRPC patterns over traditional REST?**
+3. **Should Ndigo embrace GraphQL/tRPC patterns over traditional REST?**
 
     - Context: REST is declining, type-safe RPC is rising
-    - Consider: Industry trends, Blue's positioning
+    - Consider: Industry trends, Ndigo's positioning
     - Decision pending: [Date]
 
 4. **What's the balance between Spring-inspired vs. JavaScript-idiomatic?**
@@ -1646,10 +1646,10 @@ Document open questions that arise during research. Resolve before implementatio
 5. **Should interceptors be declarative (decorators) or imperative (registration)?**
 
     - Context: Spring uses registration, middleware uses imperative
-    - Consider: Blue's decorator philosophy
+    - Consider: Ndigo's decorator philosophy
     - Decision pending: [Date]
 
-6. **How should Blue handle backward compatibility for breaking changes?**
+6. **How should Ndigo handle backward compatibility for breaking changes?**
 
     - Context: Parameter decorator migration required breaking changes
     - Consider: Deprecation strategy, migration tooling
@@ -1662,21 +1662,21 @@ Document open questions that arise during research. Resolve before implementatio
 
 ### Strategic Questions
 
-8. **Should Blue aim for feature parity with Spring MVC?**
+8. **Should Ndigo aim for feature parity with Spring MVC?**
 
     - Context: Spring MVC has 20+ years of features
-    - Consider: Blue's scope, target use cases
+    - Consider: Ndigo's scope, target use cases
     - Decision pending: [Date]
 
-9. **What's Blue's positioning: framework or library collection?**
+9. **What's Ndigo's positioning: framework or library collection?**
 
     - Context: Spring is a full framework, some JS tools are minimal
     - Consider: Developer experience, flexibility vs. convention
     - Decision pending: [Date]
 
-10. **Should Blue prioritize Web (browser) or Node.js (server) features?**
+10. **Should Ndigo prioritize Web (browser) or Node.js (server) features?**
     - Context: Limited development resources
-    - Consider: Market demand, Blue's current usage
+    - Consider: Market demand, Ndigo's current usage
     - Decision pending: [Date]
 
 ---
@@ -1690,13 +1690,13 @@ Document open questions that arise during research. Resolve before implementatio
 - **Spring Boot Reference:** https://docs.spring.io/spring-boot/docs/current/reference/html/
 - **Spring Security Reference:** https://docs.spring.io/spring-security/reference/index.html
 
-### Blue Framework Documentation
+### Ndigo Framework Documentation
 
-- **Blue Architecture:** `/home/jeff/workspace/blue/ARCHITECTURE.md`
-- **Blue Style Guide:** `/home/jeff/workspace/blue/STYLE_GUIDE.md`
-- **Blue Agents Guide:** `/home/jeff/workspace/blue/AGENTS.md`
-- **Decorator Migration Plan:** `/home/jeff/workspace/blue/docs/plans/2025-02-01_DECORATOR_MIGRATION.md`
-- **TC39 Quick Reference:** `/home/jeff/workspace/blue/docs/plans/2025-02-01_TC39_QUICK_REFERENCE.md`
+- **Ndigo Architecture:** `/home/jeff/workspace/ndigo/ARCHITECTURE.md`
+- **Ndigo Style Guide:** `/home/jeff/workspace/ndigo/STYLE_GUIDE.md`
+- **Ndigo Agents Guide:** `/home/jeff/workspace/ndigo/AGENTS.md`
+- **Decorator Migration Plan:** `/home/jeff/workspace/ndigo/docs/plans/2025-02-01_DECORATOR_MIGRATION.md`
+- **TC39 Quick Reference:** `/home/jeff/workspace/ndigo/docs/plans/2025-02-01_TC39_QUICK_REFERENCE.md`
 
 ### JavaScript Framework Documentation
 
@@ -1855,11 +1855,11 @@ public class UserController {
 
 ---
 
-#### Blue Current State
+#### Ndigo Current State
 
 **Existing Features:**
 
-- Feature 1: [Description of what Blue currently has]
+- Feature 1: [Description of what Ndigo currently has]
 - Feature 2: [Description]
 - (or "None" if not implemented)
 
@@ -1869,7 +1869,7 @@ public class UserController {
 - Gap 2: [What's missing]
 
 **Compatibility Assessment:**
-[How well does Blue's current implementation align with Spring MVC? What would need to change?]
+[How well does Ndigo's current implementation align with Spring MVC? What would need to change?]
 
 ---
 
@@ -1877,7 +1877,7 @@ public class UserController {
 
 **Naming Decisions:**
 
-- Spring: `@RequestMapping` → Blue: `@routeMapping` (Web) / `@requestMapping` (Node)
+- Spring: `@RequestMapping` → Ndigo: `@routeMapping` (Web) / `@requestMapping` (Node)
 - Rationale: [Explanation]
 
 **API Design:**
@@ -1889,7 +1889,7 @@ public class UserController {
 **Example:**
 
 ```typescript
-// Blue's JavaScript-idiomatic API
+// Ndigo's JavaScript-idiomatic API
 class UserController {
     @routeMapping('/users/{id}')
     @routeParams({
@@ -1914,7 +1914,7 @@ class UserController {
 
 - **Industry Relevance:** X/5 - [Justification]
 - **Platform Fit:** Web / Node / Universal / None - [Explanation]
-- **Architectural Fit:** X/5 - [How well it fits Blue's architecture]
+- **Architectural Fit:** X/5 - [How well it fits Ndigo's architecture]
 - **Complexity:** X/5 - [Implementation difficulty]
 - **User Demand:** X/5 - [How much users need this]
 
@@ -1994,7 +1994,7 @@ Copy this template for each of the 10 feature domains and fill in during researc
 
 ## End of Research Plan
 
-This document provides a comprehensive framework for researching Spring MVC and adapting its patterns to Blue framework. Use this as a guide during the research phase, and update with findings as you progress.
+This document provides a comprehensive framework for researching Spring MVC and adapting its patterns to Ndigo framework. Use this as a guide during the research phase, and update with findings as you progress.
 
 **Next Steps:**
 

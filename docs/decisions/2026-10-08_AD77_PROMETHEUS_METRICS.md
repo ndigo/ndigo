@@ -28,7 +28,7 @@ missing:
 Recommendation from the review: _add Prometheus exporter + semconv emission;
 derive the JSON view from the meter provider_. No new runtime dependency is
 needed: `@opentelemetry/sdk-metrics` 2.11 is already a dependency of
-`@blue/telemetry-node` and its `MetricReader.collect()` is a public pull
+`@ndigo/telemetry-node` and its `MetricReader.collect()` is a public pull
 contract (the base class resolves the bound `MetricProducer` itself);
 `@opentelemetry/api` 1.9.1 ships `Meter.createHistogram` with
 `advice.explicitBucketBoundaries`, and the SDK's default aggregation honors
@@ -37,18 +37,18 @@ installed `view/Aggregation.js`).
 
 ## Evidence
 
-- `packages/blue-telemetry-node/src/node-config.ts:135-199` — the reader list
+- `packages/ndigo-telemetry-node/src/node-config.ts:135-199` — the reader list
   is built from `metricExporter` (`console`/`none`/`otlp`); `ResolvedExporter`
   has three kinds; adding a fourth is a pure-shape change plus one `NodeSDK`
   wiring branch.
-- `packages/blue-telemetry/src/metrics/lazy-counter.ts` — the lazy-instrument
+- `packages/ndigo-telemetry/src/metrics/lazy-counter.ts` — the lazy-instrument
   pattern (defer `metrics.getMeter()` to first recording so the NoopMeter is
   never captured); the same pattern applies to a histogram.
-- `packages/blue-telemetry-node/src/instrumentation/http-server/http-server.ts:44-108`
+- `packages/ndigo-telemetry-node/src/instrumentation/http-server/http-server.ts:44-108`
   — the per-request SERVER span wrap has both a success (`span.end()` in
   `.then`) and an error path (`.catch`); the metric records at the same two
   points.
-- `packages/blue-management/src/metrics-controller.ts` — reads the context
+- `packages/ndigo-management/src/metrics-controller.ts` — reads the context
   `METRIC_AGGREGATOR` and returns `{ features }`; the endpoint's JSON and the
   exported stream are independent data.
 - Installed `@opentelemetry/sdk-metrics` 2.11 (`build/src/export/MetricReader.js`:
@@ -90,7 +90,7 @@ empty snapshot instead of throwing, so the endpoint degrades to the
 
 ### D-3 — One global `MetricSnapshotProvider` slot; management reads it per request
 
-`@blue/telemetry` (isomorphic — no SDK types) gains the snapshot model and a
+`@ndigo/telemetry` (isomorphic — no SDK types) gains the snapshot model and a
 single-slot registry (`registerMetricSnapshotProvider` / `unregister` /
 `get`), mirroring the OTel global-provider pattern the codebase already
 embraces. `configureTelemetry` registers the reader after `sdk.start()`;
@@ -138,9 +138,9 @@ aggregated server-side, and the instrumentation layer does not know routes
 
 ## Consequences
 
-- `@blue/telemetry` gains a pure snapshot model + registry + Prometheus-text
-  renderer (sdk-free); `@blue/telemetry-node` gains the SDK reader and the
-  exporter-spec branch; `@blue/management`'s controller reads the registry —
+- `@ndigo/telemetry` gains a pure snapshot model + registry + Prometheus-text
+  renderer (sdk-free); `@ndigo/telemetry-node` gains the SDK reader and the
+  exporter-spec branch; `@ndigo/management`'s controller reads the registry —
   no new runtime dependencies anywhere.
 - `GET /metrics` with an `Accept: application/json` browser header still
   returns JSON, but the document is now the meter projection; clients

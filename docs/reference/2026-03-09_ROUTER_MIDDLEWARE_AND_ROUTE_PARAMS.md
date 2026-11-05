@@ -1,19 +1,19 @@
 # Router Middleware and Route Params Reference
 
-This reference documents the current middleware and route-parameter behavior in `@blue/router`.
+This reference documents the current middleware and route-parameter behavior in `@ndigo/router`.
 
 ## Summary
 
-`@blue/router` supports:
+`@ndigo/router` supports:
 
 - Interceptor-style middleware (`RouterInterceptor`)
 - Function middleware shorthand (`RouterMiddleware`)
 - Mapped middleware by route pattern
 - Automatic named route-parameter binding on `route.params`
 
-Browser hash routing (`HashRouter`) lives in `@blue/platform-web`
-(`hash-router.ts`) and extends `@blue/router`'s platform-neutral
-`AbstractRouter` — it is not part of `@blue/router` itself.
+Browser hash routing (`HashRouter`) lives in `@ndigo/platform-web`
+(`hash-router.ts`) and extends `@ndigo/router`'s platform-neutral
+`AbstractRouter` — it is not part of `@ndigo/router` itself.
 
 ## Route Params
 
@@ -31,7 +31,7 @@ When `resolveParams` matches, values are exposed on `route.params`.
 
 ## Router Middleware API (`use`)
 
-Every `AbstractRouter` implementation — including `@blue/platform-web`'s
+Every `AbstractRouter` implementation — including `@ndigo/platform-web`'s
 `HashRouter` — exposes `use` in three forms:
 
 1. Global middleware:
@@ -62,7 +62,7 @@ router.use(['/admin/*', '/ops/*'], interceptor, ['/admin/internal/*']);
 
 - Named patterns (`:id`, `{id}`) are matched against route segments and bind values to `route.params`.
 - Non-named (glob) patterns are matched through `URLGlobPathMatcher` from
-  `@blue/core` (`*` / `**` segments; compiled patterns are LRU-cached).
+  `@ndigo/core` (`*` / `**` segments; compiled patterns are LRU-cached).
 - Exclusion patterns are evaluated before inclusion patterns for mapped middleware.
 
 ## Execution Behavior

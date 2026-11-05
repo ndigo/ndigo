@@ -73,8 +73,8 @@ existing request pipeline is untouched (probe-verified compat layer).
 
 ### D-2 — Env wiring is all-or-nothing
 
-`BLUE_TLS_KEY` + `BLUE_TLS_CERT` (both required together) and optional
-`BLUE_TLS_CA` configure TLS without code. One key without the other
+`NDIGO_TLS_KEY` + `NDIGO_TLS_CERT` (both required together) and optional
+`NDIGO_TLS_CA` configure TLS without code. One key without the other
 throws a `RangeError` at construction — a half-configured listener must
 fail loud rather than silently serve plaintext (the fail-open trap that
 SEC posture rejects).
@@ -105,7 +105,7 @@ shutdown deadline wins (covers h2 sessions and h1.1-over-TLS alike —
 ### D-6 — HTTP/3 stays edge-only; client-side h2 stays out of scope
 
 No QUIC in Node core — h3 belongs to the edge/CDN (AD-80 unchanged).
-`@blue/http` continues on bundled fetch (h1.1); undici's `allowH2` agent
+`@ndigo/http` continues on bundled fetch (h1.1); undici's `allowH2` agent
 is the recorded path if a client-side consumer appears, and Node 26
 fetch-h2 is a watch item.
 
@@ -131,7 +131,7 @@ fetch-h2 is a watch item.
   `node:http2` secure (ALPN) servers; `#server` is a union, kept
   runtime-compatible with `ws` via a local cast (probe-verified).
 - Public API addition only: `TLSServerOptions` + `tls` on both option
-  surfaces, plus the `BLUE_TLS_*` env family. No existing option changes,
+  surfaces, plus the `NDIGO_TLS_*` env family. No existing option changes,
   no breakage.
 - The h2 server ignores `keepAliveTimeout`/`maxRequestsPerSocket`
   (h1.1-only semantics); `requestTimeout`/`headersTimeout` are honored on
@@ -147,7 +147,7 @@ fetch-h2 is a watch item.
 
 - **Cert rotation/ops**: file paths are read once at `listen()` — rotating
   a file requires a restart. Documented; same lifecycle as the process.
-- **Fail-open trap**: `BLUE_TLS_KEY` alone throws (D-2) rather than
+- **Fail-open trap**: `NDIGO_TLS_KEY` alone throws (D-2) rather than
   silently listening in plaintext. Operators see the error at boot.
 - **`alpnProtocol` timing**: client-side assertions must wait for the
   session (probe); the server itself is unaffected.
@@ -163,7 +163,7 @@ fetch-h2 is a watch item.
   §6.
 - Node.js docs: `node:http2` `createSecureServer`/`allowHTTP1`/ALPN;
   tls options accept PEM content (paths are this framework's wrapper).
-- Applied at: `packages/blue-platform-node/src/http-server.ts`
+- Applied at: `packages/ndigo-platform-node/src/http-server.ts`
   (`TLSServerOptions`, env reader), `node-http-server-adapter.ts`
   (secure branch, PEM resolution, drain force-close),
   `test/tls-http2.spec.ts`, guide 01 §8.

@@ -8,8 +8,8 @@ one is a separate decision (revisit trigger below).
 
 ## Context
 
-BlueJS's view layer is an _authoring_ layer, not a component library:
-`AbstractWebComponent` + `@TagMapping` (`@blue/view-webcomponent`), server-rendered
+ndigo's view layer is an _authoring_ layer, not a component library:
+`AbstractWebComponent` + `@TagMapping` (`@ndigo/view-webcomponent`), server-rendered
 islands with client hydration (`IslandView`/`hydrateIslands`), EJS views, and
 signals. There are no UI components, tokens, or design-system surface, and no
 existing decision about one (verified: zero mentions of component libraries,
@@ -36,7 +36,7 @@ verified 2026-10-06:
 | **Zag.js**                                 | `@zag-js/core` 1.45.0 · MIT · 2026-10-05           | Headless, framework-agnostic behavior (state machines) — the credible path for any owned primitives                                |
 
 Building a kit in-house would permanently own: accessibility conformance,
-localized strings, RTL (BlueJS explicitly deferred RTL in Content/i18n — INV-1),
+localized strings, RTL (ndigo explicitly deferred RTL in Content/i18n — INV-1),
 form participation, theming, SSR/DSD parity, docs/lab and semver churn — with no
 differentiation. The reference boot layer and Nest ship no UI kit; they integrate the
 ecosystem (Vaadin, Bootstrap). A component library is a product/design-system
@@ -97,7 +97,7 @@ or a 1.0 adoption blocker) and recorded separately.
 
 - The precondition "unless there isn't a good solution in the Web Component
   space" is false: five viable candidates with current publishes and OSI
-  licenses; the missing piece in BlueJS was the bridge, which is
+  licenses; the missing piece in ndigo was the bridge, which is
   library-independent and now exists.
 - DSD + FACE are the two platform features that made the previous objections
   (server rendering, forms) obsolete; both are Baseline/standard.
@@ -105,7 +105,7 @@ or a 1.0 adoption blocker) and recorded separately.
   positioning and avoids owning a design system the project does not have a
   design team for.
 - The bridge is testable without committing to a library: the spike verifies it
-  with BlueJS's own elements in a real browser (Chromium via Playwright) plus
+  with ndigo's own elements in a real browser (Chromium via Playwright) plus
   unit specs; the same contract is what an adopted library must satisfy.
 
 ## Consequences
@@ -139,9 +139,9 @@ or a 1.0 adoption blocker) and recorded separately.
 - Package metadata: npm registry (`npm view`, 2026-10-06) for the six candidates.
 - Spike (landed with this record): `IslandView` DSD option,
   `hydrateIslands` in-place upgrade, `AbstractWebComponent.ensureShadowRoot()`,
-  `AsFormAssociated`, each with unit specs (blue-view 119,
-  blue-view-webcomponent 82, blue-island 24 green). Verified live in Chromium:
-  blue-island serves the declarative template; with the client bundle blocked
+  `AsFormAssociated`, each with unit specs (ndigo-view 119,
+  ndigo-view-webcomponent 82, ndigo-island 24 green). Verified live in Chromium:
+  ndigo-island serves the declarative template; with the client bundle blocked
   the browser parses it into a real shadow root holding the server fallback;
   with the bundle it hydrates in place, renders into the adopted root, and
   receives SSE model updates — zero page errors.

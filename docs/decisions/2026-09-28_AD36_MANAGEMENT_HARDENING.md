@@ -89,10 +89,10 @@ here so the item is deliberately closed, not forgotten.
 
 ## Verification
 
-- `@blue/management` specs: `/health` with a throwing indicator returns
+- `@ndigo/management` specs: `/health` with a throwing indicator returns
   `status: 'DOWN'` with the redacted marker (default) and with the real
   message (`redactHealthErrors: false`); success payloads unchanged.
-- `@blue/platform-node`: host-binding regression (server binds the supplied
+- `@ndigo/platform-node`: host-binding regression (server binds the supplied
   host/port; loopback default assertion).
 - Docs: guide 11 §8 rewritten to the decided posture; management README +
   JSDoc updated; gap-analysis row flipped to closed.

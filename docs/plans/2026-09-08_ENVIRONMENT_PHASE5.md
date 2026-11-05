@@ -55,21 +55,21 @@ Non-goals (explicit): P6 zod validation, per-field origins _within_ `@configurat
 ## 4 · Project structure
 
 ```
-packages/blue-context/src/
+packages/ndigo-context/src/
   property-resolver.ts     EDIT — originOf (index-delegated), refresh support
   environment.ts           EDIT — originOf delegate, refresh() (cache/index rebuild), shape guard
   customizer.ts            NEW  — EnvironmentCustomizer interface + applyCustomizers helper
-packages/blue-boot/src/
+packages/ndigo-boot/src/
   application-builder.ts   EDIT — customizers(...) registration
   application.ts           EDIT — apply customizers in _prepareEnvironment
-packages/blue-platform-node/src/
+packages/ndigo-platform-node/src/
   node-environment.ts      EDIT — refresh() via super + re-snapshot
-packages/blue-context/test/
+packages/ndigo-context/test/
   environment.spec.ts      EDIT — originOf, refresh
   customizer.spec.ts       NEW  — ordering, mutations visible, failure
-packages/blue-boot/test/
+packages/ndigo-boot/test/
   customizer.spec.ts       EDIT — customizers run before context reads
-packages/blue-platform-node/test/
+packages/ndigo-platform-node/test/
   node-environment.spec.ts EDIT — refresh via super
 ```
 

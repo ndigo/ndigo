@@ -6,7 +6,7 @@ Wave 3 implemented the content negotiation framework and fixed the template-view
 
 ## What Was Implemented
 
-### 1. Content Negotiation Manager (`packages/blue-view/src/content-negotiation-view-resolver.ts`)
+### 1. Content Negotiation Manager (`packages/ndigo-view/src/content-negotiation-view-resolver.ts`)
 
 The `ContentNegotiationManager` aggregates multiple content negotiation strategies and file-extension resolvers to determine the best media type for a given request:
 
@@ -14,7 +14,7 @@ The `ContentNegotiationManager` aggregates multiple content negotiation strategi
 - **`resolveFileExtensions(mediaType)`** — Delegates to the first resolver capable of resolving the given media type; returns empty array if none match
 - **`ContentNegotiationManager.resolveMediaTypes(request)`** — Consults strategies in priority order and returns the first non-empty result; throws `FrameworkError` if no strategy matches
 
-### 2. Content Negotiation Strategies (`packages/blue-view/src/content-negotiation-view-resolver.ts`)
+### 2. Content Negotiation Strategies (`packages/ndigo-view/src/content-negotiation-view-resolver.ts`)
 
 | Strategy                                    | Purpose                                                                                                |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
@@ -22,7 +22,7 @@ The `ContentNegotiationManager` aggregates multiple content negotiation strategi
 | `AbstractMappingContentNegotiationStrategy` | Resolves all registered file extensions, optionally filtering by `mediaTypeHint` (e.g., Accept header) |
 | `PathExtensionContentNegotiationStrategy`   | Derives media type from the file extension in the request URI path                                     |
 
-### 3. Template View Contract (`packages/blue-view/src/view.ts`)
+### 3. Template View Contract (`packages/ndigo-view/src/view.ts`)
 
 Fixed the incomplete template-view contract that prevented proper delegation:
 
@@ -31,10 +31,10 @@ Fixed the incomplete template-view contract that prevented proper delegation:
 
 ### 4. Tests Created
 
-| File                                                  | Coverage                                                                                                                                       |
-| ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `packages/blue-view/test/content-negotiation.spec.ts` | ContentNegotiationManager, strategies, PathExtension resolution                                                                                |
-| `packages/blue-view/test/view.spec.ts`                | AbstractTemplateView delegation, StringTemplateView rendering with nested properties, array access, edge cases (undefined/null/missing values) |
+| File                                                   | Coverage                                                                                                                                       |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/ndigo-view/test/content-negotiation.spec.ts` | ContentNegotiationManager, strategies, PathExtension resolution                                                                                |
+| `packages/ndigo-view/test/view.spec.ts`                | AbstractTemplateView delegation, StringTemplateView rendering with nested properties, array access, edge cases (undefined/null/missing values) |
 
 ## Gap Findings (To Be Addressed Later)
 
@@ -58,8 +58,8 @@ The template renderer uses `String(value ?? '')`, which could execute user-contr
 
 ## Next Steps
 
-1. **Wave 4 — Service Layer Boundary**: Port remaining legacy service interceptors into `@blue/http`, finalize `@blue/service` facade
-2. **Wave 5 — Domain/Model Reconciliation**: Implement `GenericDomainComponent.validate()` via `@blue/validate` integration; complete domain/view-model projection pattern
+1. **Wave 4 — Service Layer Boundary**: Port remaining legacy service interceptors into `@ndigo/http`, finalize `@ndigo/service` facade
+2. **Wave 5 — Domain/Model Reconciliation**: Implement `GenericDomainComponent.validate()` via `@ndigo/validate` integration; complete domain/view-model projection pattern
 3. **Update maturity baselines** to reflect actual codebase state (current baselines are outdated)
 
 ## Commit Message

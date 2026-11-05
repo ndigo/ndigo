@@ -6,11 +6,11 @@ micro-frontend integration.
 
 ## Context
 
-A Blue micro-frontend shell may host multiple feature contexts, each with its
+A Ndigo micro-frontend shell may host multiple feature contexts, each with its
 own bean registry. Without guardrails, two features could each register their
 own copy of a singleton (router, dispatcher, auth client, telemetry) —
 duplicate subscriptions, conflicting state, wasted memory. Module Federation
-solves this at build level (`shared`/`shareScope`); Blue needs the runtime
+solves this at build level (`shared`/`shareScope`); Ndigo needs the runtime
 equivalent, using its existing context-hierarchy resolution chain as the
 shared-scope tree. The gap: nothing prevented a child from shadowing a
 shell-wide singleton. This ADR ratifies the declaration system that AD-18's
@@ -18,19 +18,19 @@ host-runtime design references without itself deciding.
 
 ## Evidence
 
-- `packages/blue-core/src/shared.ts` — `@shared` class decorator + helpers.
-  Verified: `export const SHARED_KEY = 'blue:shared'`, `export interface
+- `packages/ndigo-core/src/shared.ts` — `@shared` class decorator + helpers.
+  Verified: `export const SHARED_KEY = 'ndigo:shared'`, `export interface
   SharedOptions { singleton?; version? }`, `export function shared(options?)`,
   `getSharedOptions`, `isShared`, and `satisfiesVersion(version, range)`.
   Born `5ebf6821` (2026-09-04).
-- `packages/blue-context/src/shared-dependency-registry.ts` —
+- `packages/ndigo-context/src/shared-dependency-registry.ts` —
   `SharedDependencyRegistry` (declares shell-managed shared dependencies,
   validates feature manifests at mount time, exposes `getDependency`). Born
   `5ebf6821` (2026-09-04).
-- AD-18 (`apps/blue-host` shell-composition.ts) registers each feature twice
+- AD-18 (`apps/ndigo-host` shell-composition.ts) registers each feature twice
   — once in the mount manager, once via `createContext` relay gateways — and
   keeps shared values behind `SHARED_DEPENDENCY_REGISTRY_TOKEN` in the shell
-  `@blue/context` root; it references this shared-dependency contract without
+  `@ndigo/context` root; it references this shared-dependency contract without
   ratifying it, which this ADR does.
 
 ## Decision
@@ -54,7 +54,7 @@ host-runtime design references without itself deciding.
 - Micro-frontend features cannot silently duplicate shell singletons;
   deployment skew (shell/feature version drift) is caught before a feature
   runs.
-- `@blue/core` gained the `@shared` decorator; `@blue/context` gained the
+- `@ndigo/core` gained the `@shared` decorator; `@ndigo/context` gained the
   registry; `FeatureContextMountManager.mount()` validates feature
   dependencies through it (per the plan's §3.3 integration).
 - AD-18's host-runtime composition now has its ratified dependency contract.
@@ -62,8 +62,8 @@ host-runtime design references without itself deciding.
 ## References
 
 - Plan: `docs/plans/2026-09-03_SHARED_DEPENDENCY_CONTRACT.md`
-- Implementation: `packages/blue-core/src/shared.ts`,
-  `packages/blue-context/src/shared-dependency-registry.ts`, commit `5ebf6821` (2026-09-04)
+- Implementation: `packages/ndigo-core/src/shared.ts`,
+  `packages/ndigo-context/src/shared-dependency-registry.ts`, commit `5ebf6821` (2026-09-04)
 - Related: [AD-18](2026-09-13_AD18_HOST_RUNTIME.md)
 
 ## Revisit Trigger

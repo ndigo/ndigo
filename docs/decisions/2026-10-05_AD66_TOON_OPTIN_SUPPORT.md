@@ -20,8 +20,8 @@ registration is requested yet; §19 declares it a community specification,
 not standards-track. v4 already carried breaking evolution (legacy `key[0]:`
 headers replaced by `key: []`, still accepted on decode).
 
-BlueJS's config layer is JSON-only by explicit decision — AD-13: "JSON only
-(boring, structured, no YAML dep)". BlueJS is pre-1.0 (unreleased), so
+ndigo's config layer is JSON-only by explicit decision — AD-13: "JSON only
+(boring, structured, no YAML dep)". ndigo is pre-1.0 (unreleased), so
 additive options are inexpensive to introduce and cheap to remove.
 
 ## Decision
@@ -32,14 +32,14 @@ everywhere. No framework internals behavior changes; no IANA-dependent
 behavior; decode-only usage of the format.**
 
 - D-1 — `MediaTypes.TEXT_TOON` (Phase 0, landed): a registered `text/toon`
-  token in `@blue/core`. Inert: nothing negotiates it by default; users may
+  token in `@ndigo/core`. Inert: nothing negotiates it by default; users may
   compose it in views/interceptors. `getDefaultCharset()` returns `utf-8`
   for all `text/*`, matching spec §17's "always UTF-8". Reversible with a
   one-line diff.
 - D-2 — `.toon` config files (Phase 1, landed): `StandardConfigFileLoader`
   probes `application.json` then `application.toon` (JSON wins on
   collision; `require`d/`optional` location semantics cover the probed
-  formats as a pair); profile variants and `BLUE_CONFIG_IMPORT` inherit the
+  formats as a pair); profile variants and `NDIGO_CONFIG_IMPORT` inherit the
   rule (`format: 'auto' | 'json' | 'toon'`) — an imported path whose
   extension contradicts a non-`auto` format errors instead of silently
   parsing. Files decode (strict mode, spec §14) to `JSONObject` — with a
@@ -50,7 +50,7 @@ behavior; decode-only usage of the format.**
   shape (owner-confirmed): **optional peer** (`peerDependenciesMeta`),
   lazy dynamic import with a literal specifier + `@vite-ignore` (bundlers
   skip it for consumers without the peer; the manifest checker allowlists
-  the peer for `@blue/boot`, and a `decodeToon` seam covers specs and
+  the peer for `@ndigo/boot`, and a `decodeToon` seam covers specs and
   alternate validators), exact-version-pinned (`4.1.1`), `toon-spec: 4.1`
   documented.
 - D-3 — Boundaries (permanent): no TOON in wire formats (HTTP views, SSE,
@@ -81,7 +81,7 @@ behavior; decode-only usage of the format.**
   compatibility weight — this ADR pre-records the boundary so the format
   cannot creep into defaults later.
 - Token efficiency — TOON's raison d'être — is explicitly _not_ a driver
-  here (BlueJS has no LLM surface; config files are small, nested, ~0%
+  here (ndigo has no LLM surface; config files are small, nested, ~0%
   tabular-eligible). The win is authoring ergonomics; the decision would
   not change if the format never gained a token advantage.
 
@@ -101,7 +101,7 @@ boundaries.
 - Spec evolution breaks any pinned decode fixture → Phase 1 removed.
 - IANA registers `text/toon` under a different token, or the media type
   changes meaning → update the constant pre-1.0; post-1.0, additive note.
-- BlueJS reaches 1.0 without TOON usage in the wild → drop Phases 1–3,
+- ndigo reaches 1.0 without TOON usage in the wild → drop Phases 1–3,
   keep or remove the token per ecosystem signal.
 - A consumer needs TOON on a listed-forbidden surface → new ADR required;
   this ADR's boundary is not waivable by extension.
@@ -113,7 +113,7 @@ boundaries.
   stands.
 - **Config-server wire / HTTP views in TOON** — external and interop
   contracts; unregistered media type is not negotiable by clients.
-- **Encoder in framework internals** — would make BlueJS a TOON producer
+- **Encoder in framework internals** — would make ndigo a TOON producer
   for arbitrary models; no consumer exists; encode stays user-side via the
   SDK.
 - **YAML adoption instead** — AD-13 rationale unchanged; TOON's

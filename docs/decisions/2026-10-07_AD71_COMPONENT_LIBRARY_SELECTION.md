@@ -3,7 +3,7 @@
 **Date:** 2026-10-07
 **Status:** Accepted — selects the library AD-69 deferred, and lands its
 revisit trigger #1: one documented reference integration (guide 21 +
-`apps/blue-island`). **The framework packages stay dependency-free** — the
+`apps/ndigo-island`). **The framework packages stay dependency-free** — the
 library is a dependency of one demo application only.
 
 ## Context
@@ -71,7 +71,7 @@ vetted candidate passing every AD-69 D-2 gate, with an OSI license and an
 optional (never required) commercial tier.
 
 **D-2 — Scope: one application, zero framework dependencies.**
-`apps/blue-island` (the SSR/island demo) is the single reference integration;
+`apps/ndigo-island` (the SSR/island demo) is the single reference integration;
 no `packages/*` package may depend on the library. Adopters copy the pattern
 from the guide, not a framework API.
 
@@ -103,12 +103,12 @@ facade, no re-export shim.
 - The demo proves the _hard_ half of the contract (FACE inside shadow DOM,
   DSD fallback replacement, standard form encoding into the existing binding
   path) — the half a "build your own" library would postpone.
-- Framework positioning is preserved: BlueJS ships an integration contract
+- Framework positioning is preserved: ndigo ships an integration contract
   and a guide, not a component library (AD-69 D-1).
 
 ## Consequences
 
-- `apps/blue-island` gains the library dependency; its client bundle grows by
+- `apps/ndigo-island` gains the library dependency; its client bundle grows by
   the imported components (measured: per-component imports keep the added
   weight proportional — evidence in the guide).
 - The reference integration becomes the documented pattern for adopters;
@@ -129,7 +129,7 @@ facade, no re-export shim.
 
 ## Evidence
 
-- Consumer: [`apps/blue-island`](../../apps/06-ndigo-island/README.md) — add-item
+- Consumer: [`apps/ndigo-island`](../../apps/06-ndigo-island/README.md) — add-item
   form (Web Awesome input/button) → `POST /items` (`dataBinderValue` + Zod) →
   SSE model push; guide
   [21 — Component Integration](../guides/21-component-integration.md).
@@ -144,7 +144,7 @@ facade, no re-export shim.
   `wa-input` → `FormData(form)` = `[["title","hello"]]`,
   `internals.form === form`, zero page errors.
 - Reference-integration verification (2026-10-07, headless Chromium against the
-  live `blue-island` server): parsing the served bytes attaches the
+  live `ndigo-island` server): parsing the served bytes attaches the
   declarative shadow root with the derived fallback (items + form skeleton);
   hydration replaces it in place; the form's `FormData` carries the FACE
   control's value (`text=Browser round-trip`), the urlencoded `POST /items`

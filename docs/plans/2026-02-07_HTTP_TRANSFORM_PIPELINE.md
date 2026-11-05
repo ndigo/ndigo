@@ -3,23 +3,23 @@
 **Date:** February 7, 2026  
 **Status:** 🚧 IN PROGRESS  
 **Priority:** High  
-**Context:** Add Spring-inspired transform pipeline to @blue/http  
+**Context:** Add Spring-inspired transform pipeline to @ndigo/http  
 **Dependencies:** `docs/plans/2026-02-07_MEDIATYPE_LOCATION_ANALYSIS.md` (MediaType location decision)
 
 ---
 
 ## Executive Summary
 
-This plan implements a **HTTP request/response body transformation pipeline** for `@blue/http`, inspired by Spring Framework's `HttpMessageConverter` pattern. The design enables composable, type-safe transformations of HTTP bodies (JSON sanitization, validation, parsing, etc.) through a clean interceptor-based architecture.
+This plan implements a **HTTP request/response body transformation pipeline** for `@ndigo/http`, inspired by Spring Framework's `HttpMessageConverter` pattern. The design enables composable, type-safe transformations of HTTP bodies (JSON sanitization, validation, parsing, etc.) through a clean interceptor-based architecture.
 
 ### Key Features
 
 - **Type-Safe Transformations**: Generic `HTTPTransformer<TInput, TOutput>` interface
 - **5 Specialized Transformers**: JSON, Composition, Transducer, FormData, URLSearchParams
 - **Conditional Logic**: `TransformContext` enables transforms based on URL, headers, MediaType
-- **Clean Integration**: Leverages existing `@blue/http` interceptor system
-- **Subpath Exports**: `@blue/http/transformers` for specialized transformers
-- **No Defaults**: Explicit configuration (align with BlueJS philosophy)
+- **Clean Integration**: Leverages existing `@ndigo/http` interceptor system
+- **Subpath Exports**: `@ndigo/http/transformers` for specialized transformers
+- **No Defaults**: Explicit configuration (align with ndigo philosophy)
 
 ---
 
@@ -59,18 +59,18 @@ This removed the architectural blocker for response transformation while remaini
 ### Remaining Work
 
 - ✅ Add specialized transformer implementations (`json`, `composition`, `transducer`, `form-data`, `url-search-params`)
-- ✅ Add subpath exports for `@blue/http/transformers`
+- ✅ Add subpath exports for `@ndigo/http/transformers`
 - ✅ Expand README transformer documentation and examples
 
 ### Critical Decisions Made
 
 | Decision                       | Chosen Approach                                                  | Rationale                                                    |
 | ------------------------------ | ---------------------------------------------------------------- | ------------------------------------------------------------ |
-| **Interface Name**             | `HTTPTransformer<TInput, TOutput>`                               | Avoids conflict with `@blue/core` transducer `Transformer`   |
-| **Generic Names**              | `TInput`, `TOutput`                                              | Matches `@blue/core` conventions (not `TIn`/`TOut`)          |
+| **Interface Name**             | `HTTPTransformer<TInput, TOutput>`                               | Avoids conflict with `@ndigo/core` transducer `Transformer`  |
+| **Generic Names**              | `TInput`, `TOutput`                                              | Matches `@ndigo/core` conventions (not `TIn`/`TOut`)         |
 | **canTransform Signature**     | `canTransform(body: TInput, context: TransformContext): boolean` | Type-safe, body is TInput not any                            |
 | **Context Parameter**          | Required in both methods                                         | Enables powerful conditional transforms                      |
-| **Composition Pattern**        | `pipe()` from `@blue/util/function`                              | Left-to-right, familiar to JS developers                     |
+| **Composition Pattern**        | `pipe()` from `@ndigo/util/function`                             | Left-to-right, familiar to JS developers                     |
 | **Keep TransducerTransformer** | Yes                                                              | Unique performance benefits (early termination, single-pass) |
 | **Default Transforms**         | None                                                             | Explicit is better than implicit                             |
 | **Naming**                     | `CompositionTransformer` not `RamdaTransformer`                  | Names functionality, not library                             |
@@ -93,7 +93,7 @@ This removed the architectural blocker for response transformation while remaini
 **Use pipe() not compose():**
 
 - Left-to-right more intuitive: `pipe(f, g, h)` means f → g → h
-- Matches `@blue/util` conventions
+- Matches `@ndigo/util` conventions
 - JavaScript developers expect left-to-right (unlike Haskell/mathematical composition)
 
 ---
@@ -101,7 +101,7 @@ This removed the architectural blocker for response transformation while remaini
 ## File Structure
 
 ```
-packages/blue-http/
+packages/ndigo-http/
 ├── src/
 │   ├── http.ts                              [MODIFY] - Add transform config
 │   ├── interceptors/
@@ -131,13 +131,13 @@ packages/blue-http/
 
 ### 1.1 Define Core Types and Interfaces
 
-**File:** `packages/blue-http/src/transformers/http-transformer.ts`
+**File:** `packages/ndigo-http/src/transformers/http-transformer.ts`
 
 ````typescript
 /**
  * @author Jeff Rose
  */
-import { MediaType } from '@blue/core';
+import { MediaType } from '@ndigo/core';
 
 /**
  * Context information for conditional transformation logic.
@@ -240,7 +240,7 @@ export type Transform<TInput = any, TOutput = any> =
 
 ### 1.2 Implement TransformInterceptor
 
-**File:** `packages/blue-http/src/interceptors/transform-interceptor.ts`
+**File:** `packages/ndigo-http/src/interceptors/transform-interceptor.ts`
 
 ````typescript
 /**
@@ -248,7 +248,7 @@ export type Transform<TInput = any, TOutput = any> =
  */
 import { HTTPInterceptor } from '../http-interceptor';
 import { Transform, HTTPTransformer, TransformContext } from '../transformers/http-transformer';
-import { MediaType } from '@blue/core';
+import { MediaType } from '@ndigo/core';
 
 /**
  * Interceptor that applies body transformations to requests and responses.
@@ -433,7 +433,7 @@ export class TransformInterceptor implements HTTPInterceptor {
 
 ### 1.3 Update HTTP Class Configuration
 
-**File:** `packages/blue-http/src/http.ts`
+**File:** `packages/ndigo-http/src/http.ts`
 
 **Changes:**
 
@@ -489,15 +489,15 @@ constructor(config?: HTTPConfig) {
 
 ### 2.1 JSONTransformer - Pipeline of Functions
 
-**File:** `packages/blue-http/src/transformers/json-transformer.ts`
+**File:** `packages/ndigo-http/src/transformers/json-transformer.ts`
 
 ````typescript
 /**
  * @author Jeff Rose
  */
 import { HTTPTransformer, TransformContext } from './http-transformer';
-import { pipe } from '@blue/util/function';
-import { JSONObject } from '@blue/core';
+import { pipe } from '@ndigo/util/function';
+import { JSONObject } from '@ndigo/core';
 
 /**
  * JSON transformer that applies a pipeline of functions to JSON objects.
@@ -526,7 +526,7 @@ export class JSONTransformer implements HTTPTransformer<JSONObject, JSONObject> 
         private readonly transforms: Array<(obj: JSONObject) => JSONObject>,
         private readonly condition?: (body: JSONObject, context: TransformContext) => boolean
     ) {
-        // Build pipeline using pipe() from @blue/util
+        // Build pipeline using pipe() from @ndigo/util
         this.pipeline = pipe(...transforms);
     }
 
@@ -554,7 +554,7 @@ export class JSONTransformer implements HTTPTransformer<JSONObject, JSONObject> 
 
 - [ ] Create `json-transformer.ts`
 - [ ] Implement constructor with function array and optional condition
-- [ ] Use `pipe()` from `@blue/util/function` for composition
+- [ ] Use `pipe()` from `@ndigo/util/function` for composition
 - [ ] Implement `canTransform` with JSON type check and condition
 - [ ] Implement `transform` using pipeline
 - [ ] Add TSDoc with examples
@@ -566,14 +566,14 @@ export class JSONTransformer implements HTTPTransformer<JSONObject, JSONObject> 
 
 ### 2.2 CompositionTransformer - Generic Function Composition
 
-**File:** `packages/blue-http/src/transformers/composition-transformer.ts`
+**File:** `packages/ndigo-http/src/transformers/composition-transformer.ts`
 
 ````typescript
 /**
  * @author Jeff Rose
  */
 import { HTTPTransformer, TransformContext } from './http-transformer';
-import { pipe } from '@blue/util/function';
+import { pipe } from '@ndigo/util/function';
 
 /**
  * Generic transformer using function composition.
@@ -604,7 +604,7 @@ export class CompositionTransformer<TInput = any, TOutput = any> implements HTTP
         private readonly fns: Array<(x: any) => any>,
         private readonly condition?: (body: TInput, context: TransformContext) => boolean
     ) {
-        // Use pipe() from @blue/util for left-to-right composition
+        // Use pipe() from @ndigo/util for left-to-right composition
         this.pipeline = pipe(...fns) as (input: TInput) => TOutput;
     }
 
@@ -625,7 +625,7 @@ export class CompositionTransformer<TInput = any, TOutput = any> implements HTTP
 
 - [ ] Create `composition-transformer.ts`
 - [ ] Support generic `TInput` and `TOutput` types
-- [ ] Use `pipe()` from `@blue/util/function`
+- [ ] Use `pipe()` from `@ndigo/util/function`
 - [ ] Support optional condition function
 - [ ] Add comprehensive TSDoc with examples
 - [ ] Document left-to-right composition order
@@ -636,14 +636,14 @@ export class CompositionTransformer<TInput = any, TOutput = any> implements HTTP
 
 ### 2.3 TransducerTransformer - Performance-Optimized
 
-**File:** `packages/blue-http/src/transformers/transducer-transformer.ts`
+**File:** `packages/ndigo-http/src/transformers/transducer-transformer.ts`
 
 ````typescript
 /**
  * @author Jeff Rose
  */
 import { HTTPTransformer, TransformContext } from './http-transformer';
-import { transduce } from '@blue/util/list';
+import { transduce } from '@ndigo/util/list';
 
 /**
  * Transformer using transducers for memory-efficient transformations.
@@ -654,11 +654,11 @@ import { transduce } from '@blue/util/list';
  * - Single-pass transformations
  * - Memory-constrained environments
  *
- * Uses @blue/util's transduce() (Ramda-based).
+ * Uses @ndigo/util's transduce() (Ramda-based).
  *
  * @example
  * ```typescript
- * import * as R from '@blue/util';
+ * import * as R from '@ndigo/util';
  *
  * // Transform array with early termination
  * const transformer = new TransducerTransformer<number[], number[]>(
@@ -700,7 +700,7 @@ export class TransducerTransformer<TInput = any, TOutput = any> implements HTTPT
     }
 
     transform(body: TInput, context: TransformContext): TOutput {
-        // Use transduce from @blue/util (Ramda-based)
+        // Use transduce from @ndigo/util (Ramda-based)
         const result = transduce(
             this.transducer,
             (acc: any[], val: any) => [...acc, val], // Accumulator function
@@ -716,7 +716,7 @@ export class TransducerTransformer<TInput = any, TOutput = any> implements HTTPT
 **Checklist:**
 
 - [ ] Create `transducer-transformer.ts`
-- [ ] Use `transduce()` from `@blue/util/list`
+- [ ] Use `transduce()` from `@ndigo/util/list`
 - [ ] Support generic `TInput` and `TOutput`
 - [ ] Add iterable type check in `canTransform`
 - [ ] Document performance benefits (early termination, single-pass)
@@ -729,7 +729,7 @@ export class TransducerTransformer<TInput = any, TOutput = any> implements HTTPT
 
 ### 2.4 FormDataTransformer - FormData Entry Transform
 
-**File:** `packages/blue-http/src/transformers/form-data-transformer.ts`
+**File:** `packages/ndigo-http/src/transformers/form-data-transformer.ts`
 
 ````typescript
 /**
@@ -815,7 +815,7 @@ export class FormDataTransformer implements HTTPTransformer<FormData, FormData> 
 
 ### 2.5 URLSearchParamsTransformer - Query Parameter Transform
 
-**File:** `packages/blue-http/src/transformers/url-search-params-transformer.ts`
+**File:** `packages/ndigo-http/src/transformers/url-search-params-transformer.ts`
 
 ````typescript
 /**
@@ -909,7 +909,7 @@ export class URLSearchParamsTransformer implements HTTPTransformer<URLSearchPara
 
 ### 2.6 Public Exports
 
-**File:** `packages/blue-http/src/transformers/index.ts`
+**File:** `packages/ndigo-http/src/transformers/index.ts`
 
 ```typescript
 /**
@@ -917,7 +917,7 @@ export class URLSearchParamsTransformer implements HTTPTransformer<URLSearchPara
  *
  * Provides composable transformations for HTTP request/response bodies.
  *
- * @module @blue/http/transformers
+ * @module @ndigo/http/transformers
  */
 export { HTTPTransformer, TransformContext, Transform } from './http-transformer';
 export { JSONTransformer } from './json-transformer';
@@ -942,13 +942,13 @@ export { URLSearchParamsTransformer } from './url-search-params-transformer';
 
 ### 3.1 Update package.json for Subpath Exports
 
-**File:** `packages/blue-http/package.json`
+**File:** `packages/ndigo-http/package.json`
 
 **Add to exports:**
 
 ```json
 {
-    "name": "@blue/http",
+    "name": "@ndigo/http",
     "exports": {
         ".": {
             "types": "./lib/index.d.ts",
@@ -967,7 +967,7 @@ export { URLSearchParamsTransformer } from './url-search-params-transformer';
 - [ ] Add `./transformers` subpath export
 - [ ] Verify types path points to `lib/transformers/index.d.ts`
 - [ ] Verify import path points to `lib/transformers/index.js`
-- [ ] Test import: `import { JSONTransformer } from '@blue/http/transformers'`
+- [ ] Test import: `import { JSONTransformer } from '@ndigo/http/transformers'`
 
 **Estimated Time:** 15 minutes
 
@@ -977,7 +977,7 @@ export { URLSearchParamsTransformer } from './url-search-params-transformer';
 
 ### 4.1 Interface Tests
 
-**File:** `packages/blue-http/test/transformers/http-transformer.spec.ts`
+**File:** `packages/ndigo-http/test/transformers/http-transformer.spec.ts`
 
 ```typescript
 import { describe, it, expect } from 'vitest';
@@ -1163,7 +1163,7 @@ Each specialized transformer needs comprehensive tests:
 
 ### 5.1 Integration Testing
 
-**File:** `packages/blue-http/test/transform-integration.spec.ts`
+**File:** `packages/ndigo-http/test/transform-integration.spec.ts`
 
 ```typescript
 import { describe, it, expect } from 'vitest';
@@ -1215,19 +1215,19 @@ describe('Transform Pipeline Integration', () => {
 
 ### 5.2 Documentation
 
-**Update:** `packages/blue-http/README.md`
+**Update:** `packages/ndigo-http/README.md`
 
 **Add section:**
 
 ````markdown
 ## Body Transformations
 
-@blue/http supports composable request/response body transformations inspired by Spring Framework's HttpMessageConverter pattern.
+@ndigo/http supports composable request/response body transformations inspired by Spring Framework's HttpMessageConverter pattern.
 
 ### Basic Usage
 
 ```typescript
-import { HTTP } from '@blue/http';
+import { HTTP } from '@ndigo/http';
 
 const http = new HTTP({
     requestTransforms: [
@@ -1244,10 +1244,10 @@ const http = new HTTP({
 
 ### Specialized Transformers
 
-Import from `@blue/http/transformers`:
+Import from `@ndigo/http/transformers`:
 
 ```typescript
-import { JSONTransformer, CompositionTransformer, TransducerTransformer } from '@blue/http/transformers';
+import { JSONTransformer, CompositionTransformer, TransducerTransformer } from '@ndigo/http/transformers';
 ```
 
 #### JSONTransformer
@@ -1279,7 +1279,7 @@ const transformer = new CompositionTransformer<string, string>([
 Memory-efficient transformations with early termination:
 
 ```typescript
-import * as R from '@blue/util';
+import * as R from '@ndigo/util';
 
 const transformer = new TransducerTransformer<number[], number[]>(
     R.compose(
@@ -1351,7 +1351,7 @@ Before marking implementation complete:
 - [ ] All code uses 4-space indentation
 - [ ] All public APIs have TSDoc comments
 - [ ] No `any` types without justification
-- [ ] Imports follow Library Integration Layer pattern (use @blue/util, not ramda)
+- [ ] Imports follow Library Integration Layer pattern (use @ndigo/util, not ramda)
 
 ### Testing
 - [ ] All tests pass: `pnpm test`
@@ -1372,15 +1372,15 @@ Before marking implementation complete:
 - [ ] TransformContext usage documented
 
 ### Integration
-- [ ] Subpath export works: `import {} from '@blue/http/transformers'`
+- [ ] Subpath export works: `import {} from '@ndigo/http/transformers'`
 - [ ] TransformInterceptor integrates with HTTP class
 - [ ] Transforms run in correct order (after ContentTypeInterceptor)
 - [ ] No circular dependencies
 
 ### Architecture
 - [ ] MediaType location decision finalized (see research plan)
-- [ ] No direct imports from ramda (use @blue/util)
-- [ ] Follows existing @blue/http patterns
+- [ ] No direct imports from ramda (use @ndigo/util)
+- [ ] Follows existing @ndigo/http patterns
 - [ ] Interceptor pattern used correctly
 
 ---
@@ -1433,8 +1433,8 @@ Before marking implementation complete:
 ### Example 1: JSON Sanitizer
 
 ```typescript
-import { HTTP } from '@blue/http';
-import { JSONTransformer } from '@blue/http/transformers';
+import { HTTP } from '@ndigo/http';
+import { JSONTransformer } from '@ndigo/http/transformers';
 
 const http = new HTTP({
     responseTransforms: [
@@ -1460,7 +1460,7 @@ const response = await http.get('https://api.example.com/users/1');
 ### Example 2: Multi-Tenant Authentication
 
 ```typescript
-import { HTTP } from '@blue/http';
+import { HTTP } from '@ndigo/http';
 
 const http = new HTTP({
     requestTransforms: [
@@ -1481,7 +1481,7 @@ const http = new HTTP({
 ### Example 3: URL-Based Routing
 
 ```typescript
-import { HTTP } from '@blue/http';
+import { HTTP } from '@ndigo/http';
 
 const http = new HTTP({
     responseTransforms: [
@@ -1500,9 +1500,9 @@ const http = new HTTP({
 ### Example 4: Transducer Performance
 
 ```typescript
-import { HTTP } from '@blue/http';
-import { TransducerTransformer } from '@blue/http/transformers';
-import * as R from '@blue/util';
+import { HTTP } from '@ndigo/http';
+import { TransducerTransformer } from '@ndigo/http/transformers';
+import * as R from '@ndigo/util';
 
 const http = new HTTP({
     responseTransforms: [
@@ -1525,7 +1525,7 @@ const response = await http.get('https://api.example.com/items');
 ## References
 
 - Spring Framework HttpMessageConverter: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/converter/HttpMessageConverter.html
-- @blue/http Interceptor System: `packages/blue-http/src/http-interceptor.ts`
+- @ndigo/http Interceptor System: `packages/ndigo-http/src/http-interceptor.ts`
 - HTTP Feature Comparison: `docs/plans/2026-02-06_HTTP_FEATURE_COMPARISON.md`
 - MediaType Analysis: `docs/plans/2026-02-07_MEDIATYPE_LOCATION_ANALYSIS.md`
 - Generic Type Decision: `docs/plans/2026-02-07_HTTP_TRANSFORMER_GENERICS.md`

@@ -8,14 +8,14 @@
 
 ## Overview
 
-This plan consolidates query string and matrix string parsing/stringification functionality from `@blue/router` into `@blue/http`, following the established pattern and eliminating code duplication.
+This plan consolidates query string and matrix string parsing/stringification functionality from `@ndigo/router` into `@ndigo/http`, following the established pattern and eliminating code duplication.
 
 ## Decision Rationale
 
-After manual review, the code in `@blue/http` is newer and better structured than the older code in `@blue/router`. The `@blue/http` package:
+After manual review, the code in `@ndigo/http` is newer and better structured than the older code in `@ndigo/router`. The `@ndigo/http` package:
 
 - Uses a cleaner `Parser`/`Stringifier` class pattern
-- Has a proper parser expression using `@blue/parser` primitives
+- Has a proper parser expression using `@ndigo/parser` primitives
 - Follows better separation of concerns
 - Is the appropriate package for URL parsing utilities (HTTP protocol concerns)
 
@@ -23,13 +23,13 @@ After manual review, the code in `@blue/http` is newer and better structured tha
 
 ### Query String Implementation
 
-**@blue/http (CANONICAL - KEEP):**
+**@ndigo/http (CANONICAL - KEEP):**
 
 - `src/query-string.ts` (148 lines) - QueryString class with parse/stringify methods
 - `src/parsers/query-expression.ts` (35 lines) - Parser combinator for query strings
 - `test/query-string.spec.ts` (218 lines) - Comprehensive tests
 
-**@blue/router (DUPLICATE - DELETE):**
+**@ndigo/router (DUPLICATE - DELETE):**
 
 - `src/to-query-string.ts` (143 lines) - Standalone stringify function
 - `src/from-query-string.ts` (126 lines) - Standalone parse function
@@ -38,14 +38,14 @@ After manual review, the code in `@blue/http` is newer and better structured tha
 
 ### Matrix String Implementation
 
-**@blue/router (OLDER - REPLACE):**
+**@ndigo/router (OLDER - REPLACE):**
 
 - `src/to-matrix-string.ts` (57 lines) - Standalone stringify function
 - `src/from-matrix-string.ts` (58 lines) - Standalone parse function
 - `test/to-matrix-string.spec.ts` (66 lines) - Comprehensive tests
 - `test/from-matrix-string.spec.ts` (66 lines) - Comprehensive tests
 
-**@blue/http (NONE - CREATE):**
+**@ndigo/http (NONE - CREATE):**
 
 - Need to create matrix-string.ts following query-string.ts pattern
 - Need to create parsers/matrix-expression.ts following query-expression.ts pattern
@@ -64,18 +64,18 @@ After manual review, the code in `@blue/http` is newer and better structured tha
 
 ## Implementation Plan
 
-### Phase 1: Create Matrix String in @blue/http (2-3 hours)
+### Phase 1: Create Matrix String in @ndigo/http (2-3 hours)
 
 #### 1.1: Create parsers/matrix-expression.ts
 
-**Location:** `packages/blue-http/src/parsers/matrix-expression.ts`
+**Location:** `packages/ndigo-http/src/parsers/matrix-expression.ts`
 
 **Pattern:** Follow `query-expression.ts` structure
 
 - Replace `&` delimiter with `;`
 - Replace `?#&` prefix with `;`
 - Handle comma-separated array values (e.g., `foo=bar,baz`)
-- Use same parser combinators from `@blue/parser`
+- Use same parser combinators from `@ndigo/parser`
 
 **Key Differences from Query Expression:**
 
@@ -89,10 +89,10 @@ After manual review, the code in `@blue/http` is newer and better structured tha
 /**
  * @author Jeff Rose
  */
-import list from '@blue/util/list';
-import { replace, decodeURIComponent as decode } from '@blue/util/string';
-import { char, choice, coroutine, possibly, regex, sepByN, sequenceOf } from '@blue/parser';
-import { JSONObject } from '@blue/core';
+import list from '@ndigo/util/list';
+import { replace, decodeURIComponent as decode } from '@ndigo/util/string';
+import { char, choice, coroutine, possibly, regex, sepByN, sequenceOf } from '@ndigo/parser';
+import { JSONObject } from '@ndigo/core';
 
 const { fromRepeatedPairs } = list;
 
@@ -106,7 +106,7 @@ const { fromRepeatedPairs } = list;
 
 #### 1.2: Create matrix-string.ts
 
-**Location:** `packages/blue-http/src/matrix-string.ts`
+**Location:** `packages/ndigo-http/src/matrix-string.ts`
 
 **Pattern:** Follow `query-string.ts` class structure exactly
 
@@ -116,10 +116,10 @@ const { fromRepeatedPairs } = list;
 /**
  * @author Jeff Rose
  */
-import { JSONObject, Parser, Stringifier } from '@blue/core';
+import { JSONObject, Parser, Stringifier } from '@ndigo/core';
 import matrixExpression from './parsers/matrix-expression';
-import { isEmpty, isNotEmpty } from '@blue/util/logic';
-import { encodeURIComponent as encode } from '@blue/util/string';
+import { isEmpty, isNotEmpty } from '@ndigo/util/logic';
+import { encodeURIComponent as encode } from '@ndigo/util/string';
 
 // Stringify function (adapt from router/to-matrix-string.ts)
 const toMatrixString = (object): string => {
@@ -155,9 +155,9 @@ export default new MatrixString();
 
 **Estimated Lines:** ~150 lines
 
-#### 1.3: Update @blue/http exports
+#### 1.3: Update @ndigo/http exports
 
-**File:** `packages/blue-http/src/index.ts`
+**File:** `packages/ndigo-http/src/index.ts`
 
 **Add:**
 
@@ -168,11 +168,11 @@ export { default as MatrixString } from './matrix-string';
 
 ---
 
-### Phase 2: Migrate Tests to @blue/http (1-2 hours)
+### Phase 2: Migrate Tests to @ndigo/http (1-2 hours)
 
 #### 2.1: Enhance query-string.spec.ts
 
-**File:** `packages/blue-http/test/query-string.spec.ts`
+**File:** `packages/ndigo-http/test/query-string.spec.ts`
 
 **Current State:** 218 lines with many skipped tests
 
@@ -193,7 +193,7 @@ export { default as MatrixString } from './matrix-string';
 
 #### 2.2: Create matrix-string.spec.ts
 
-**File:** `packages/blue-http/test/matrix-string.spec.ts`
+**File:** `packages/ndigo-http/test/matrix-string.spec.ts`
 
 **Source Tests:**
 
@@ -227,9 +227,9 @@ export { default as MatrixString } from './matrix-string';
 #### 2.3: Run HTTP tests and verify
 
 ```bash
-nx run @blue/http:test
+nx run @ndigo/http:test
 # OR
-cd packages/blue-http && pnpm test
+cd packages/ndigo-http && pnpm test
 ```
 
 **Success Criteria:**
@@ -240,23 +240,23 @@ cd packages/blue-http && pnpm test
 
 ---
 
-### Phase 3: Update @blue/router to Use @blue/http (1 hour)
+### Phase 3: Update @ndigo/router to Use @ndigo/http (1 hour)
 
-#### 3.1: Add @blue/http dependency
+#### 3.1: Add @ndigo/http dependency
 
-**File:** `packages/blue-router/package.json`
+**File:** `packages/ndigo-router/package.json`
 
 **Before:**
 
 ```json
 {
     "devDependencies": {
-        "@blue/core": "~3.0.0-alpha",
-        "@blue/util": "~3.0.0-alpha"
+        "@ndigo/core": "~3.0.0-alpha",
+        "@ndigo/util": "~3.0.0-alpha"
     },
     "peerDependencies": {
-        "@blue/core": "~3.0.0-alpha",
-        "@blue/util": "~3.0.0-alpha"
+        "@ndigo/core": "~3.0.0-alpha",
+        "@ndigo/util": "~3.0.0-alpha"
     }
 }
 ```
@@ -266,14 +266,14 @@ cd packages/blue-http && pnpm test
 ```json
 {
     "devDependencies": {
-        "@blue/core": "~3.0.0-alpha",
-        "@blue/http": "~3.0.0-alpha",
-        "@blue/util": "~3.0.0-alpha"
+        "@ndigo/core": "~3.0.0-alpha",
+        "@ndigo/http": "~3.0.0-alpha",
+        "@ndigo/util": "~3.0.0-alpha"
     },
     "peerDependencies": {
-        "@blue/core": "~3.0.0-alpha",
-        "@blue/http": "~3.0.0-alpha",
-        "@blue/util": "~3.0.0-alpha"
+        "@ndigo/core": "~3.0.0-alpha",
+        "@ndigo/http": "~3.0.0-alpha",
+        "@ndigo/util": "~3.0.0-alpha"
     }
 }
 ```
@@ -286,7 +286,7 @@ pnpm install
 
 #### 3.2: Update path-route.ts imports
 
-**File:** `packages/blue-router/src/path-route.ts`
+**File:** `packages/ndigo-router/src/path-route.ts`
 
 **Before (lines 10-13):**
 
@@ -300,8 +300,8 @@ import fromQueryString from './from-query-string';
 **After:**
 
 ```typescript
-import QueryString from '@blue/http/query-string';
-import MatrixString from '@blue/http/matrix-string';
+import QueryString from '@ndigo/http/query-string';
+import MatrixString from '@ndigo/http/matrix-string';
 ```
 
 **Update usage (6 locations):**
@@ -362,7 +362,7 @@ queryString = data && !dataString ? QueryString.stringify(data) : dataString;
 
 #### 3.3: Update router index.ts exports
 
-**File:** `packages/blue-router/src/index.ts`
+**File:** `packages/ndigo-router/src/index.ts`
 
 **Before (lines 11-14):**
 
@@ -376,9 +376,9 @@ export { default as toQueryString } from './to-query-string';
 **After (backward compatibility re-exports):**
 
 ```typescript
-// Re-export from @blue/http for backward compatibility
-import QueryString from '@blue/http/query-string';
-import MatrixString from '@blue/http/matrix-string';
+// Re-export from @ndigo/http for backward compatibility
+import QueryString from '@ndigo/http/query-string';
+import MatrixString from '@ndigo/http/matrix-string';
 
 export const fromQueryString = QueryString.parse.bind(QueryString);
 export const toQueryString = QueryString.stringify.bind(QueryString);
@@ -389,7 +389,7 @@ export const toMatrixString = MatrixString.stringify.bind(MatrixString);
 export { QueryString, MatrixString };
 ```
 
-**Note:** This maintains backward compatibility for any external consumers while delegating to @blue/http.
+**Note:** This maintains backward compatibility for any external consumers while delegating to @ndigo/http.
 
 ---
 
@@ -398,7 +398,7 @@ export { QueryString, MatrixString };
 #### 4.1: Delete source files
 
 ```bash
-cd packages/blue-router
+cd packages/ndigo-router
 
 # Delete duplicate source files
 rm src/from-matrix-string.ts
@@ -417,7 +417,7 @@ rm src/to-query-string.ts
 #### 4.2: Delete test files
 
 ```bash
-cd packages/blue-router
+cd packages/ndigo-router
 
 # Delete duplicate test files
 rm test/from-matrix-string.spec.ts
@@ -437,10 +437,10 @@ rm test/to-query-string.spec.ts
 
 ```bash
 # Search for any remaining imports of deleted files
-rg "from '\./from-matrix-string'" packages/blue-router/
-rg "from '\./to-matrix-string'" packages/blue-router/
-rg "from '\./from-query-string'" packages/blue-router/
-rg "from '\./to-query-string'" packages/blue-router/
+rg "from '\./from-matrix-string'" packages/ndigo-router/
+rg "from '\./to-matrix-string'" packages/ndigo-router/
+rg "from '\./from-query-string'" packages/ndigo-router/
+rg "from '\./to-query-string'" packages/ndigo-router/
 
 # Should return no results
 ```
@@ -449,13 +449,13 @@ rg "from '\./to-query-string'" packages/blue-router/
 
 ### Phase 5: Build and Test Everything (30-45 minutes)
 
-#### 5.1: Build @blue/http
+#### 5.1: Build @ndigo/http
 
 ```bash
-nx run @blue/http:build:lib
+nx run @ndigo/http:build:lib
 
 # OR
-cd packages/blue-http && pnpm build:lib
+cd packages/ndigo-http && pnpm build:lib
 ```
 
 **Expected:** Successful build with no errors
@@ -463,7 +463,7 @@ cd packages/blue-http && pnpm build:lib
 **Verify output:**
 
 ```bash
-ls -la packages/blue-http/lib/
+ls -la packages/ndigo-http/lib/
 # Should contain:
 # - query-string.js, query-string.d.ts
 # - matrix-string.js, matrix-string.d.ts
@@ -471,13 +471,13 @@ ls -la packages/blue-http/lib/
 # - parsers/matrix-expression.js, parsers/matrix-expression.d.ts
 ```
 
-#### 5.2: Test @blue/http
+#### 5.2: Test @ndigo/http
 
 ```bash
-nx run @blue/http:test
+nx run @ndigo/http:test
 
 # OR
-cd packages/blue-http && pnpm test
+cd packages/ndigo-http && pnpm test
 ```
 
 **Expected:** All tests pass
@@ -487,29 +487,29 @@ cd packages/blue-http && pnpm test
 - MatrixString.parse tests: ~30-40 tests
 - MatrixString.stringify tests: ~30-40 tests
 
-#### 5.3: Build @blue/router
+#### 5.3: Build @ndigo/router
 
 ```bash
-nx run @blue/router:build:lib
+nx run @ndigo/router:build:lib
 
 # OR
-cd packages/blue-router && pnpm build:lib
+cd packages/ndigo-router && pnpm build:lib
 ```
 
 **Expected:** Successful build with no errors
 
 **Common Issues:**
 
-- Import path errors (check path to @blue/http exports)
+- Import path errors (check path to @ndigo/http exports)
 - Type errors (ensure class methods are properly bound)
 
-#### 5.4: Test @blue/router
+#### 5.4: Test @ndigo/router
 
 ```bash
-nx run @blue/router:test
+nx run @ndigo/router:test
 
 # OR
-cd packages/blue-router && pnpm test
+cd packages/ndigo-router && pnpm test
 ```
 
 **Expected:** All tests pass
@@ -539,28 +539,28 @@ pnpm test
 
 ### Files to Create (3 files)
 
-- [ ] `packages/blue-http/src/parsers/matrix-expression.ts` (~50-60 lines)
-- [ ] `packages/blue-http/src/matrix-string.ts` (~150 lines)
-- [ ] `packages/blue-http/test/matrix-string.spec.ts` (~140-150 lines)
+- [ ] `packages/ndigo-http/src/parsers/matrix-expression.ts` (~50-60 lines)
+- [ ] `packages/ndigo-http/src/matrix-string.ts` (~150 lines)
+- [ ] `packages/ndigo-http/test/matrix-string.spec.ts` (~140-150 lines)
 
 ### Files to Modify (4 files)
 
-- [ ] `packages/blue-http/src/index.ts` (add 2 export lines)
-- [ ] `packages/blue-http/test/query-string.spec.ts` (merge router tests, un-skip passing tests)
-- [ ] `packages/blue-router/package.json` (add @blue/http dependency)
-- [ ] `packages/blue-router/src/path-route.ts` (update imports and 6 usage locations)
-- [ ] `packages/blue-router/src/index.ts` (replace exports with re-exports)
+- [ ] `packages/ndigo-http/src/index.ts` (add 2 export lines)
+- [ ] `packages/ndigo-http/test/query-string.spec.ts` (merge router tests, un-skip passing tests)
+- [ ] `packages/ndigo-router/package.json` (add @ndigo/http dependency)
+- [ ] `packages/ndigo-router/src/path-route.ts` (update imports and 6 usage locations)
+- [ ] `packages/ndigo-router/src/index.ts` (replace exports with re-exports)
 
 ### Files to Delete (8 files)
 
-- [ ] `packages/blue-router/src/from-matrix-string.ts`
-- [ ] `packages/blue-router/src/to-matrix-string.ts`
-- [ ] `packages/blue-router/src/from-query-string.ts`
-- [ ] `packages/blue-router/src/to-query-string.ts`
-- [ ] `packages/blue-router/test/from-matrix-string.spec.ts`
-- [ ] `packages/blue-router/test/to-matrix-string.spec.ts`
-- [ ] `packages/blue-router/test/from-query-string.spec.ts`
-- [ ] `packages/blue-router/test/to-query-string.spec.ts`
+- [ ] `packages/ndigo-router/src/from-matrix-string.ts`
+- [ ] `packages/ndigo-router/src/to-matrix-string.ts`
+- [ ] `packages/ndigo-router/src/from-query-string.ts`
+- [ ] `packages/ndigo-router/src/to-query-string.ts`
+- [ ] `packages/ndigo-router/test/from-matrix-string.spec.ts`
+- [ ] `packages/ndigo-router/test/to-matrix-string.spec.ts`
+- [ ] `packages/ndigo-router/test/from-query-string.spec.ts`
+- [ ] `packages/ndigo-router/test/to-query-string.spec.ts`
 
 ---
 
@@ -568,14 +568,14 @@ pnpm test
 
 ### Unit Tests
 
-**@blue/http:**
+**@ndigo/http:**
 
 - **QueryString.parse()**: Test all query string parsing scenarios
 - **QueryString.stringify()**: Test all stringification scenarios
 - **MatrixString.parse()**: Test all matrix string parsing scenarios
 - **MatrixString.stringify()**: Test all stringification scenarios
 
-**@blue/router:**
+**@ndigo/router:**
 
 - **PathRoute**: Verify matrix/query string integration still works
 - Existing route tests should pass without modification
@@ -602,9 +602,9 @@ expect(route.matrix).toEqual({ sort: 'asc', limit: '10' });
 
 ### Coverage Goals
 
-- **@blue/http/query-string.ts**: >90% coverage
-- **@blue/http/matrix-string.ts**: >90% coverage
-- **@blue/router/path-route.ts**: Maintain current coverage
+- **@ndigo/http/query-string.ts**: >90% coverage
+- **@ndigo/http/matrix-string.ts**: >90% coverage
+- **@ndigo/router/path-route.ts**: Maintain current coverage
 
 ---
 
@@ -656,11 +656,11 @@ The router will re-export functions with the same names for backward compatibili
 
 ```typescript
 // Old way (still works):
-import { fromQueryString } from '@blue/router';
+import { fromQueryString } from '@ndigo/router';
 fromQueryString('?foo=bar');
 
 // New way (recommended):
-import { QueryString } from '@blue/http';
+import { QueryString } from '@ndigo/http';
 QueryString.parse('?foo=bar');
 ```
 
@@ -744,13 +744,13 @@ QueryString.parse('?foo=bar');
 
 1. **Update ARCHITECTURE.md:**
 
-    - Document that URL parsing utilities live in @blue/http
+    - Document that URL parsing utilities live in @ndigo/http
     - Explain router's dependency on http for URL utilities
 
 2. **Update Router README (if exists):**
 
-    - Note that query/matrix string functions are re-exported from @blue/http
-    - Recommend using @blue/http directly for new code
+    - Note that query/matrix string functions are re-exported from @ndigo/http
+    - Recommend using @ndigo/http directly for new code
 
 3. **Update HTTP README (if exists):**
     - Document QueryString and MatrixString classes
@@ -771,11 +771,11 @@ QueryString.parse('?foo=bar');
     git add .
     git commit -m "refactor(http,router): consolidate query/matrix string utilities
 
-    - Create MatrixString class in @blue/http following QueryString pattern
-    - Create matrix-expression parser using @blue/parser combinators
+    - Create MatrixString class in @ndigo/http following QueryString pattern
+    - Create matrix-expression parser using @ndigo/parser combinators
     - Migrate all matrix string tests from router to http
     - Enhance http query-string tests with router test cases
-    - Update router to import from @blue/http
+    - Update router to import from @ndigo/http
     - Delete duplicate query/matrix string code from router (759 lines)
     - Maintain backward compatibility via router re-exports
 
@@ -800,7 +800,7 @@ QueryString.parse('?foo=bar');
 
 ### Question 1: Export Format
 
-**Question:** Should @blue/http export both the class and convenience functions?
+**Question:** Should @ndigo/http export both the class and convenience functions?
 
 **Options:**
 
@@ -853,31 +853,31 @@ QueryString.parse('?foo=bar');
 
 ### Final Status: All Phases Complete ✅
 
-This consolidation project has been successfully completed. All query string and matrix string functionality has been consolidated into `@blue/http`, duplicate code has been removed from `@blue/router`, and comprehensive specification compliance testing has been implemented.
+This consolidation project has been successfully completed. All query string and matrix string functionality has been consolidated into `@ndigo/http`, duplicate code has been removed from `@ndigo/router`, and comprehensive specification compliance testing has been implemented.
 
 ### Phase Completion Timeline
 
-| Phase | Description                           | Status      | Completion Date |
-| ----- | ------------------------------------- | ----------- | --------------- |
-| 1     | Create Matrix String in @blue/http    | ✅ Complete | Feb 3, 2025     |
-| 2     | Migrate Tests to @blue/http           | ✅ Complete | Feb 3, 2025     |
-| 3     | Update @blue/router to Use @blue/http | ✅ Complete | Feb 3, 2025     |
-| 4     | Delete Router Duplicates              | ✅ Complete | Feb 3, 2025     |
-| 5     | Build and Test Everything             | ✅ Complete | Feb 3, 2025     |
-| 6     | Specification Research & Compliance   | ✅ Complete | Feb 6, 2025     |
+| Phase | Description                             | Status      | Completion Date |
+| ----- | --------------------------------------- | ----------- | --------------- |
+| 1     | Create Matrix String in @ndigo/http     | ✅ Complete | Feb 3, 2025     |
+| 2     | Migrate Tests to @ndigo/http            | ✅ Complete | Feb 3, 2025     |
+| 3     | Update @ndigo/router to Use @ndigo/http | ✅ Complete | Feb 3, 2025     |
+| 4     | Delete Router Duplicates                | ✅ Complete | Feb 3, 2025     |
+| 5     | Build and Test Everything               | ✅ Complete | Feb 3, 2025     |
+| 6     | Specification Research & Compliance     | ✅ Complete | Feb 6, 2025     |
 
 ### Achievement Metrics
 
 **Code Consolidation:**
 
-- 759 lines of duplicate code removed from @blue/router
-- 350+ lines of canonical implementation in @blue/http
+- 759 lines of duplicate code removed from @ndigo/router
+- 350+ lines of canonical implementation in @ndigo/http
 - Net reduction: ~400 lines with improved maintainability
 
 **Test Coverage:**
 
 - 167 new specification compliance tests added
-- Total @blue/http tests: 261 passing
+- Total @ndigo/http tests: 261 passing
 - Specification compliance rate: >95%
 
 **Documentation:**
@@ -888,7 +888,7 @@ This consolidation project has been successfully completed. All query string and
 
 **Architecture:**
 
-- Clear single source of truth established (@blue/http)
+- Clear single source of truth established (@ndigo/http)
 - Proper dependency structure (router → http)
 - Backward compatibility maintained via re-exports
 
@@ -896,15 +896,15 @@ This consolidation project has been successfully completed. All query string and
 
 1. **Implementation Files:**
 
-    - `packages/blue-http/src/matrix-string.ts`
-    - `packages/blue-http/src/parsers/matrix-expression.ts`
-    - Enhanced `packages/blue-http/src/query-string.ts`
+    - `packages/ndigo-http/src/matrix-string.ts`
+    - `packages/ndigo-http/src/parsers/matrix-expression.ts`
+    - Enhanced `packages/ndigo-http/src/query-string.ts`
 
 2. **Test Suites:**
 
-    - `packages/blue-http/test/query-string-spec-compliance.spec.ts` (61 tests)
-    - `packages/blue-http/test/matrix-string-spec-compliance.spec.ts` (62 tests)
-    - `packages/blue-http/test/url-search-params-compat.spec.ts` (44 tests)
+    - `packages/ndigo-http/test/query-string-spec-compliance.spec.ts` (61 tests)
+    - `packages/ndigo-http/test/matrix-string-spec-compliance.spec.ts` (62 tests)
+    - `packages/ndigo-http/test/url-search-params-compat.spec.ts` (44 tests)
 
 3. **Documentation:**
 
@@ -912,7 +912,7 @@ This consolidation project has been successfully completed. All query string and
     - `docs/plans/2025-02-03_SESSION_CHECKPOINT.md`
 
 4. **Backward Compatibility:**
-    - `packages/blue-router/src/index.ts` - Re-exports for existing consumers
+    - `packages/ndigo-router/src/index.ts` - Re-exports for existing consumers
 
 ### Specification Compliance
 
@@ -1164,7 +1164,7 @@ After the query string and matrix string code consolidation is complete, conduct
 
 #### Create Specification-Based Test Suite
 
-**File:** `packages/blue-http/test/query-string-spec-compliance.spec.ts`
+**File:** `packages/ndigo-http/test/query-string-spec-compliance.spec.ts`
 
 **Test Organization:**
 
@@ -1190,7 +1190,7 @@ describe('QueryString - WHATWG URL Standard Compliance', () => {
 });
 ```
 
-**File:** `packages/blue-http/test/matrix-string-spec-compliance.spec.ts`
+**File:** `packages/ndigo-http/test/matrix-string-spec-compliance.spec.ts`
 
 **Test Organization:**
 
@@ -1363,7 +1363,7 @@ describe('MatrixString - RFC 3986 Compliance', () => {
 
 #### Compare Against Native Implementations
 
-**File:** `packages/blue-http/test/query-string-compatibility.spec.ts`
+**File:** `packages/ndigo-http/test/query-string-compatibility.spec.ts`
 
 ```typescript
 describe('QueryString vs URLSearchParams Compatibility', () => {
@@ -1397,12 +1397,12 @@ describe('QueryString vs URLSearchParams Compatibility', () => {
 1. **Key Sorting:**
 
     - URLSearchParams: Preserves insertion order
-    - BlueJS: Sorts keys alphabetically
+    - ndigo: Sorts keys alphabetically
     - Rationale: Consistent output for testing/caching
 
 2. **Array Handling:**
     - URLSearchParams: Always returns single value via .get()
-    - BlueJS: Returns array for multiple values
+    - ndigo: Returns array for multiple values
     - Rationale: More intuitive developer experience
 ```
 
@@ -1433,7 +1433,7 @@ describe('QueryString vs URLSearchParams Compatibility', () => {
 
 ### Implementation Notes
 
-[How BlueJS implements these rules]
+[How ndigo implements these rules]
 
 ### Test Coverage
 
@@ -1452,7 +1452,7 @@ describe('QueryString vs URLSearchParams Compatibility', () => {
 
 ### Implementation Notes
 
-[How BlueJS implements these rules]
+[How ndigo implements these rules]
 
 ### Test Coverage
 
@@ -1468,7 +1468,7 @@ describe('QueryString vs URLSearchParams Compatibility', () => {
 
 #### Update Package Documentation
 
-**File:** `packages/blue-http/README.md` (if exists)
+**File:** `packages/ndigo-http/README.md` (if exists)
 
 Add sections:
 

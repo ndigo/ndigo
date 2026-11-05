@@ -2,9 +2,9 @@
 
 **Date:** 2026-09-13
 **Status:** Completed — all phases landed (2026-09-13)
-**Packages:** `@blue/scheduler` (new — node-only), `@blue/platform-node`
-(`taskScheduler` entry), `@blue/oxlint-plugin` (new rule), `apps/blue-api`
-(demo gate), `@blue/telemetry` (run spans)
+**Packages:** `@ndigo/scheduler` (new — node-only), `@ndigo/platform-node`
+(`taskScheduler` entry), `@ndigo/oxlint-plugin` (new rule), `apps/ndigo-api`
+(demo gate), `@ndigo/telemetry` (run spans)
 **Depends on:** AD-20, existing decorator/lifecycle patterns
 (`@configuration`/`@entry` metadata keys, `@conditionalOnNode`,
 `LifecycleProcessor`, `Closable`)
@@ -22,7 +22,7 @@ Node-only with three-tier misuse guardrails.
 
 ## 2. Design
 
-### 2.1 `@blue/scheduler` — surface
+### 2.1 `@ndigo/scheduler` — surface
 
 ```ts
 // croner: 5/6/7-field accepted, timeZone via croner or explicit option
@@ -56,20 +56,20 @@ class AnyRegisteredClass {
 
 ### 2.2 Guardrails (AD-20 D5)
 
-| Tier            | Where                 | Behavior                                                                                                                                      |
-| --------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Kind guard      | decorator             | non-method → `TypeError`                                                                                                                      |
-| Spec validation | decorator             | bad cron (croner parse), malformed duration, invalid TZ (Intl probe → `FrameworkError`) — runs in any importing env, browser included         |
-| Platform guard  | decorator             | no `process` → `FrameworkError` ('@scheduled is a Node-only decorator…')                                                                      |
-| Lint rule       | `@blue/oxlint-plugin` | `no-scheduled-in-browser`: imports `@blue/scheduler` + browser-platform imports (`@blue/platform-web`, `@blue/view-webcomponent`) in one file |
-| Bind guard      | refresh               | unresolvable owner instance → `FrameworkError` naming class + method                                                                          |
+| Tier            | Where                  | Behavior                                                                                                                                         |
+| --------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Kind guard      | decorator              | non-method → `TypeError`                                                                                                                         |
+| Spec validation | decorator              | bad cron (croner parse), malformed duration, invalid TZ (Intl probe → `FrameworkError`) — runs in any importing env, browser included            |
+| Platform guard  | decorator              | no `process` → `FrameworkError` ('@scheduled is a Node-only decorator…')                                                                         |
+| Lint rule       | `@ndigo/oxlint-plugin` | `no-scheduled-in-browser`: imports `@ndigo/scheduler` + browser-platform imports (`@ndigo/platform-web`, `@ndigo/view-webcomponent`) in one file |
+| Bind guard      | refresh                | unresolvable owner instance → `FrameworkError` naming class + method                                                                             |
 
 ### 2.3 Node integration
 
 `NodeAutoConfiguration` gains `@entry taskScheduler()` (conditional on node
 via the existing auto-registration path, zero-config for Node apps —
 browser bundles never touch the package). Run execution wraps each task in
-an OTel span + counter metric via `@blue/telemetry` (the `blue-service`
+an OTel span + counter metric via `@ndigo/telemetry` (the `ndigo-service`
 telemetry-hooks pattern).
 
 ### 2.4 Execution semantics
@@ -85,7 +85,7 @@ telemetry-hooks pattern).
 
 **Package + validation — Done.**
 
-1. `@blue/scheduler` scaffolded (manifest/tsconfigs per conformance rules),
+1. `@ndigo/scheduler` scaffolded (manifest/tsconfigs per conformance rules),
    croner `^10.0.1` added, vitest alias wired. Noted: croner validates cron
    expressions at construction but **silently accepts garbage time zones** —
    confirming the AD-20 D6 `Intl` probe requirement.
@@ -140,7 +140,7 @@ lint + manifest + format clean, graft refreshed.
    context-injected (`ApplicationContextAware`), **auto-started on refresh**
    (`SmartLifecycle` — the factory's `DefaultLifecycleProcessor` runs it),
    stopped on close, `destroy()`ed at teardown. Zero-config: any
-   `@scheduled` bean registered before refresh just runs. `@blue/scheduler`
+   `@scheduled` bean registered before refresh just runs. `@ndigo/scheduler`
    became a platform-node peer dep. Integration test in platform-node:
    auto-start + discovery + deterministic tick execution (2 tests).
 8. **Per-run telemetry — DONE.** `instrumentTask` wraps each run in an
@@ -149,7 +149,7 @@ lint + manifest + format clean, graft refreshed.
    using `startSpan` + explicit `end` — the SSE instrumentation pattern
    (`startActiveSpan`'s async-callback semantics are unreliable on
    rejection). `@opentelemetry/api` added as a dependency (no
-   `@blue/telemetry` peer dep needed — the scheduler emits spans directly,
+   `@ndigo/telemetry` peer dep needed — the scheduler emits spans directly,
    a simplification vs the original plan). 2 telemetry tests (success +
    failure spans) with the `InMemorySpanExporter` harness (one provider per
    describe — the OTel API caches tracers against the first global
@@ -166,11 +166,11 @@ graft refreshed.
 
 **Demo, lint rule, docs — Done.**
 
-9. `@blue/oxlint-plugin` `no-scheduled-in-browser` rule — flags
-   `@blue/scheduler` imports alongside browser-platform imports
-   (`@blue/platform-web`, `@blue/view-webcomponent`), registered + enabled;
+9. `@ndigo/oxlint-plugin` `no-scheduled-in-browser` rule — flags
+   `@ndigo/scheduler` imports alongside browser-platform imports
+   (`@ndigo/platform-web`, `@ndigo/view-webcomponent`), registered + enabled;
    5 rule tests.
-10. `apps/blue-api` demo gate — `Heartbeat` bean (`@scheduled
+10. `apps/ndigo-api` demo gate — `Heartbeat` bean (`@scheduled
     '*/30 * * * * *'`) auto-discovered + auto-started through the real
     ApplicationBuilder path; 8 bootstrap tests including deterministic
     scheduler ticks + real bean invocation.
@@ -182,7 +182,7 @@ graft refreshed.
 
 ### Phase 1 — Package + validation
 
-1. Scaffold `packages/blue-scheduler/` (manifest/tsconfig per conformance
+1. Scaffold `packages/ndigo-scheduler/` (manifest/tsconfig per conformance
    rules), add `croner` dependency, workspace install, vitest alias.
 2. `spec.ts` (`ScheduledSpec` type + narrowers), duration-string parser
    (`'10s'`, `'5m'`, `'2h'`, ms numbers), `scheduled()` decorator with kind
@@ -215,15 +215,15 @@ graft refreshed.
 7. `NodeAutoConfiguration.taskScheduler()` entry + registry wiring;
    bootApp/`bootApp`-style integration tests (scheduled class registered →
    ticks after refresh).
-8. Run span + counter metric per task (`@blue/telemetry` peer dep, the
+8. Run span + counter metric per task (`@ndigo/telemetry` peer dep, the
    service-call span pattern); tests: mock OTel provider captures span +
    task outcome attributes.
 
 ### Phase 4 — Demo, lint rule, docs
 
-9. `@blue/oxlint-plugin`: `no-scheduled-in-browser` rule + rule tests
+9. `@ndigo/oxlint-plugin`: `no-scheduled-in-browser` rule + rule tests
    (fixture: scheduled import + platform-web import → reported).
-10. Demo gate — `apps/blue-api`: a `@scheduled(cron: '*/30 * * * * *')`
+10. Demo gate — `apps/ndigo-api`: a `@scheduled(cron: '*/30 * * * * *')`
     heartbeat logging via telemetry; integration test asserts the heartbeat
     fires (registry `tick` with fake clock) and a real server boot registers
     it.
@@ -245,7 +245,7 @@ graft refreshed.
 4. All five guardrails are tested: wrong kind, invalid cron/duration/TZ,
    browser-platform decorator use, lint rule fixture, unresolvable owner.
 5. Every run produces a span + counter metric.
-6. `apps/blue-api` boots with a scheduled heartbeat and the heartbeat fires;
+6. `apps/ndigo-api` boots with a scheduled heartbeat and the heartbeat fires;
    full workspace build/test/lint/format/manifest clean; graft refreshed.
 
 ## 5. Non-goals (AD-20 D7)

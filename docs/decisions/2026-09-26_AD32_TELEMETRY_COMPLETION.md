@@ -9,11 +9,11 @@ waves; see [plan](../plans/2026-09-26_TELEMETRY_COMPLETION.md)).
 The Framework Gap Analysis §3 Telemetry row records three missing
 capabilities over the existing OTel stack: **no trace-sampling config**,
 **no exporter ergonomics beyond SDK defaults**, and **no exposed log↔trace
-correlation tooling**. `configureTelemetry` (`@blue/telemetry-node`,
+correlation tooling**. `configureTelemetry` (`@ndigo/telemetry-node`,
 `node-config.ts`) wraps `NodeSDK` with OTLP/HTTP exporters that accept only
 urls; no sampler option exists (effective default
 `parentbased_always_on` — 100%); a missing url silently targets the default
-`localhost:4318` collector. `@blue/telemetry-web` already ships the
+`localhost:4318` collector. `@ndigo/telemetry-web` already ships the
 ergonomics the node side lacks (`traceUrl`-missing → console exporter,
 `useConsoleExporters: false`, `enableDiagnostics`), and
 `ContextAwareLogger` stamps trace/span ids into log attributes without a
@@ -59,7 +59,7 @@ boot".
 
 **Behavior change (intentional):** today `url: undefined` means "OTLP to
 the default endpoint". The new default (console) is the safe dev posture;
-existing call sites (blue-api) are audited and updated in Wave 2.
+existing call sites (ndigo-api) are audited and updated in Wave 2.
 
 ### D-3 — OTLP urls validate at construction
 
@@ -70,7 +70,7 @@ remediation).
 
 ### D-4 — Correlation tooling is an explicit surface
 
-`@blue/telemetry` exports
+`@ndigo/telemetry` exports
 `currentTraceContext(): { traceId, spanId } | undefined`, read from the
 active OTel span (`trace.getSpan(context.active())`). Returns `undefined`
 when no provider or span is active — safe in pure-logging mode — and is the
@@ -82,7 +82,7 @@ through loggers.
 ### D-5 — No env-var duplication
 
 `OTEL_*` environment variables keep their native precedence for raw OTel
-consumers; the BlueJS option layer is explicit-first and documents that
+consumers; the ndigo option layer is explicit-first and documents that
 mixing the two is unsupported (one source of truth per deployment).
 
 ## Risks
@@ -101,8 +101,8 @@ mixing the two is unsupported (one source of truth per deployment).
 
 ## Verification
 
-Wave gates executed 2026-09-26: `vitest run` green in `@blue/telemetry`
-(33/33 incl. 2 correlation specs) and `@blue/telemetry-node` (29/29 incl.
+Wave gates executed 2026-09-26: `vitest run` green in `@ndigo/telemetry`
+(33/33 incl. 2 correlation specs) and `@ndigo/telemetry-node` (29/29 incl.
 9 sampler + 8 exporter specs); `tsc -b` clean in both packages;
-`apps/blue-api` suite green (52) over the rebuilt libs; gap-analysis §3
+`apps/ndigo-api` suite green (52) over the rebuilt libs; gap-analysis §3
 Telemetry row flipped to IMPLEMENTED; `graft build` refreshed.

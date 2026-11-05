@@ -5,9 +5,9 @@
 
 ## Background
 
-The hybrid island topology (AD-08 follow-ups) needs server→client push: the server holds source-of-truth model state; an island should receive model updates _after_ initial hydration. The demo (`apps/blue-island`) proves the _static_ hybrid (server renders island → client hydrates); this AD decides the _reactive_ half — the transport that pushes model changes into `@blue/signals` (local reactive state) which re-renders the island.
+The hybrid island topology (AD-08 follow-ups) needs server→client push: the server holds source-of-truth model state; an island should receive model updates _after_ initial hydration. The demo (`apps/ndigo-island`) proves the _static_ hybrid (server renders island → client hydrates); this AD decides the _reactive_ half — the transport that pushes model changes into `@ndigo/signals` (local reactive state) which re-renders the island.
 
-BlueJS currently has **no socket/SSE code** — `blue-platform-node` wraps raw `node:http` (`createServer`, `IncomingMessage`, `ServerResponse`). There is no transport upgrade path yet.
+ndigo currently has **no socket/SSE code** — `ndigo-platform-node` wraps raw `node:http` (`createServer`, `IncomingMessage`, `ServerResponse`). There is no transport upgrade path yet.
 
 ## Research findings
 
@@ -25,15 +25,15 @@ BlueJS currently has **no socket/SSE code** — `blue-platform-node` wraps raw `
 | Deps             | none (raw HTTP)                                      | `ws`                |
 | Reconnect        | automatic (EventSource)                              | manual              |
 | Auth/correlation | reuse HTTP headers/interceptors                      | separate handshake  |
-| BlueJS fit       | reuses `node:http` + cookies/auth + telemetry header | new upgrade surface |
+| ndigo fit        | reuses `node:http` + cookies/auth + telemetry header | new upgrade surface |
 
-**Decision: SSE-first.** The hybrid island push is unidirectional server→client model updates. SSE maps directly onto the existing stack and `@blue/signals`. WebSocket becomes a later, opt-in adapter when a bidirectional consumer appears (chat etc.) — not now.
+**Decision: SSE-first.** The hybrid island push is unidirectional server→client model updates. SSE maps directly onto the existing stack and `@ndigo/signals`. WebSocket becomes a later, opt-in adapter when a bidirectional consumer appears (chat etc.) — not now.
 
 ### Normalization: sockets as a _response modality of the service layer_
 
 The established industry model: reactive push is a **stream alongside REST** (Flux/Mono, SseEmitter), and RSocket/WebFlux extend the interaction model (request/response, request/stream, fire-and-forget, channel) rather than inventing a separate socket paradigm.
 
-BlueJS analog: **a service call can declare a streaming response.** In the `@blue/service` proxy (AD-08), a `@getCall`/`@postCall` that returns a _stream_ (SSE) is the same service contract as one returning a single value — the socket is not a new paradigm but a **response modality**. Concretely:
+ndigo analog: **a service call can declare a streaming response.** In the `@ndigo/service` proxy (AD-08), a `@getCall`/`@postCall` that returns a _stream_ (SSE) is the same service contract as one returning a single value — the socket is not a new paradigm but a **response modality**. Concretely:
 
 ```ts
 @service('ticks', { baseUrl: 'https://…' })
@@ -47,10 +47,10 @@ The normalization answer: **services + HTTP + SSE are one continuum**; a "socket
 
 ## Decision
 
-1. **Implement server push as SSE** in `blue-platform-node`: a view/response type that writes `text/event-stream` and streams model events; client side consumes via `EventSource` into `@blue/signals` → island re-render.
+1. **Implement server push as SSE** in `ndigo-platform-node`: a view/response type that writes `text/event-stream` and streams model events; client side consumes via `EventSource` into `@ndigo/signals` → island re-render.
 2. **No WebSocket now**; adopt `ws` only when a bidirectional consumer exists (documented opt-in path).
 3. **Normalize through the service layer (AD-08 proxy)**: a `stream: true` option on `@*Call` makes the service method return an async iterable/stream; the same interceptor/correlation/telemetry pipeline applies. Socket ≠ new paradigm; socket = streaming service response.
-4. **Reuse the hybrid demo** (`apps/blue-island`) as the proving consumer: server pushes model-update events over SSE; the island subscribes via a signal.
+4. **Reuse the hybrid demo** (`apps/ndigo-island`) as the proving consumer: server pushes model-update events over SSE; the island subscribes via a signal.
 
 ## Consequences
 
@@ -61,8 +61,8 @@ The normalization answer: **services + HTTP + SSE are one continuum**; a "socket
 ## Adopting WebSockets (`@socketMapping`)
 
 **Status (2026-09-07):** implemented. `@socketMapping` decorator +
-`SocketSession` contract in `@blue/dispatcher`; the Node adapter
-(`@blue/platform-node`) performs the RFC 6455 handshake via the `ws`
+`SocketSession` contract in `@ndigo/dispatcher`; the Node adapter
+(`@ndigo/platform-node`) performs the RFC 6455 handshake via the `ws`
 library and dispatches upgraded connections to socket handlers
 (async-iterable producer-consumers — `for await` inbound, `yield`
 outbound, mirroring the SSE view). The model keeps the AD-09 principle —
@@ -75,25 +75,25 @@ Revisit WebSocket when a **bidirectional** consumer (chat, collaborative presenc
 
 ## Implementation order (proposed)
 
-1. SSE response support in `blue-platform-node` (`ServerSentEventView`/streaming response).
-2. `stream: true` on `@blue/service` `@*Call` (AD-08 proxy returns `AsyncIterable`).
-3. Client `EventSource` → `@blue/signals` bridge.
+1. SSE response support in `ndigo-platform-node` (`ServerSentEventView`/streaming response).
+2. `stream: true` on `@ndigo/service` `@*Call` (AD-08 proxy returns `AsyncIterable`).
+3. Client `EventSource` → `@ndigo/signals` bridge.
 4. Wire the island demo: server pushes tick/model events; island re-renders.
 
 ## Follow-up (2026-09-06): SSE-first implementation landed
 
-All four implementation-order items are built and proven by the hybrid demo (`apps/blue-island`):
+All four implementation-order items are built and proven by the hybrid demo (`apps/ndigo-island`):
 
-1. **SSE response support in `blue-platform-node`** — `ServerSentEventView` (exported from the package index; naming cleanup, see plan): an imperative view constructed per request with its own async-iterable event source, writing `text/event-stream` frames (JSON `data:` lines, optional `event:` name) and ending the response when the source ends. `MediaTypes.TEXT_EVENT_STREAM` added in `blue-core`; the wire envelope is the shared `ServerSentEvent` type (also produced by the client parser). Headers are flushed before the stream begins (Node buffers headers until the first write — a waiting stream deadlocks otherwise). Handlers return the view directly (imperative View — rendered through the direct-View branch). Verified over a real `node:http` server in `test/server-sent-event-view.spec.ts`.
+1. **SSE response support in `ndigo-platform-node`** — `ServerSentEventView` (exported from the package index; naming cleanup, see plan): an imperative view constructed per request with its own async-iterable event source, writing `text/event-stream` frames (JSON `data:` lines, optional `event:` name) and ending the response when the source ends. `MediaTypes.TEXT_EVENT_STREAM` added in `ndigo-core`; the wire envelope is the shared `ServerSentEvent` type (also produced by the client parser). Headers are flushed before the stream begins (Node buffers headers until the first write — a waiting stream deadlocks otherwise). Handlers return the view directly (imperative View — rendered through the direct-View branch). Verified over a real `node:http` server in `test/server-sent-event-view.spec.ts`.
 
-2. **`stream: true` on `@blue/service` calls** — `ServiceCallConfig.stream`; the AD-08 proxy returns an `AsyncIterable` of parsed Server-Sent Events for a `stream: true` call (sends `Accept: text/event-stream`), validating each event's `data` with the call's `responseSchema` when declared. `ServerSentEventParser`/`parseServerSentEvents` (exported) implement incremental `text/event-stream` parsing (fields, JSON data fallback to raw, comments, CRLF, chunk-boundary assembly). Same interceptor/correlation/telemetry pipeline as any call.
+2. **`stream: true` on `@ndigo/service` calls** — `ServiceCallConfig.stream`; the AD-08 proxy returns an `AsyncIterable` of parsed Server-Sent Events for a `stream: true` call (sends `Accept: text/event-stream`), validating each event's `data` with the call's `responseSchema` when declared. `ServerSentEventParser`/`parseServerSentEvents` (exported) implement incremental `text/event-stream` parsing (fields, JSON data fallback to raw, comments, CRLF, chunk-boundary assembly). Same interceptor/correlation/telemetry pipeline as any call.
 
-3. **Client `EventSource`→signals bridge** — instead of the DOM `EventSource` (no fetch, no typed contracts), the demo consumes the typed service stream; `streamToSignal(source, signal)` (`@blue/signals`) writes each yielded value into a `Signal`, and an `effect` re-renders the island. `stop()` cancels consumption and closes the source.
+3. **Client `EventSource`→signals bridge** — instead of the DOM `EventSource` (no fetch, no typed contracts), the demo consumes the typed service stream; `streamToSignal(source, signal)` (`@ndigo/signals`) writes each yielded value into a `Signal`, and an `effect` re-renders the island. `stop()` cancels consumption and closes the source.
 
-4. **Island demo wired** — `TodoModelStore` (server-owned snapshot + push channel with unsubscribe) feeds `GET /events`; the shell's initial model and the pushed models share one store instance (composition root in `IslandConfiguration` — cross-entry `this.method()` calls do NOT share beans, so a private field is the single source). The client subscribes via a `@service('blue-island')` typed stream (`responseSchema` zod — AD-07) and re-renders on each push.
+4. **Island demo wired** — `TodoModelStore` (server-owned snapshot + push channel with unsubscribe) feeds `GET /events`; the shell's initial model and the pushed models share one store instance (composition root in `IslandConfiguration` — cross-entry `this.method()` calls do NOT share beans, so a private field is the single source). The client subscribes via a `@service('ndigo-island')` typed stream (`responseSchema` zod — AD-07) and re-renders on each push.
 
 ## Consequences (updated)
 
 - **No new dependency** — SSE rides raw `node:http` + `fetch`/`ReadableStream`; `ws` remains deferred (opt-in, bidirectional consumers only).
 - **Unified mental model realized** — a push endpoint is a streaming response of the service layer: `@getCall('/events', { stream: true })` + `serviceClient()` is the whole client API; the server side is a controller returning `new ServerSentEventView(events)` (the view is imperative — constructed per request — unlike resolved views; see the view-resolution strategy plan).
-- **The reactive hybrid is demonstrated** — server push → signal → island re-render, exercised by `apps/blue-island/test` (10 tests, incl. two sequential pushes over a real server) and live smoke.
+- **The reactive hybrid is demonstrated** — server push → signal → island re-render, exercised by `apps/ndigo-island/test` (10 tests, incl. two sequential pushes over a real server) and live smoke.

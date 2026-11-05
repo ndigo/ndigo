@@ -10,56 +10,56 @@
 
 ## 📦 Archive Notice
 
-This plan has been implemented and archived. The resolution involved consolidating URL parsing utilities from `@blue/router` into `@blue/http` following the approach detailed in `docs/plans/2026-02-03_QUERY_MATRIX_STRING_CONSOLIDATION.md`.
+This plan has been implemented and archived. The resolution involved consolidating URL parsing utilities from `@ndigo/router` into `@ndigo/http` following the approach detailed in `docs/plans/2026-02-03_QUERY_MATRIX_STRING_CONSOLIDATION.md`.
 
 ---
 
 ## Overview
 
-This document outlines the plan for resolving significant code duplication in URL parsing functionality across three packages: `@blue/parser`, `@blue/http`, and `@blue/router`.
+This document outlines the plan for resolving significant code duplication in URL parsing functionality across three packages: `@ndigo/parser`, `@ndigo/http`, and `@ndigo/router`.
 
 ## Problem Statement
 
 ### Affected Files and Line Counts
 
-| Package        | File                        | Lines   | Functionality                             |
-| -------------- | --------------------------- | ------- | ----------------------------------------- |
-| `@blue/http`   | `src/query-string.ts`       | 147     | Query string parsing/stringification      |
-| `@blue/router` | `src/to-query-string.ts`    | 142     | Query string stringification (duplicate)  |
-| `@blue/router` | `src/from-query-string.ts`  | 125     | Query string parsing (duplicate)          |
-| `@blue/parser` | `src/matrix-string.ts`      | 119     | Matrix string parsing                     |
-| `@blue/router` | `src/from-matrix-string.ts` | 57      | Matrix string parsing (duplicate)         |
-| `@blue/router` | `src/to-matrix-string.ts`   | 56      | Matrix string stringification (duplicate) |
-| **Total**      | **6 files**                 | **646** | **~300-400 lines of duplication**         |
+| Package         | File                        | Lines   | Functionality                             |
+| --------------- | --------------------------- | ------- | ----------------------------------------- |
+| `@ndigo/http`   | `src/query-string.ts`       | 147     | Query string parsing/stringification      |
+| `@ndigo/router` | `src/to-query-string.ts`    | 142     | Query string stringification (duplicate)  |
+| `@ndigo/router` | `src/from-query-string.ts`  | 125     | Query string parsing (duplicate)          |
+| `@ndigo/parser` | `src/matrix-string.ts`      | 119     | Matrix string parsing                     |
+| `@ndigo/router` | `src/from-matrix-string.ts` | 57      | Matrix string parsing (duplicate)         |
+| `@ndigo/router` | `src/to-matrix-string.ts`   | 56      | Matrix string stringification (duplicate) |
+| **Total**       | **6 files**                 | **646** | **~300-400 lines of duplication**         |
 
 ### Duplication Details
 
 **Query String Duplication:**
 
-- `packages/blue-http/src/query-string.ts` (147 lines)
-- `packages/blue-router/src/to-query-string.ts` (142 lines)
+- `packages/ndigo-http/src/query-string.ts` (147 lines)
+- `packages/ndigo-router/src/to-query-string.ts` (142 lines)
 - **Estimated duplication:** ~126 lines, 389 tokens (~95% duplicate)
 
 **Matrix String Duplication:**
 
-- `packages/blue-parser/src/matrix-string.ts` (119 lines)
-- `packages/blue-router/src/from-matrix-string.ts` (57 lines)
-- `packages/blue-router/src/to-matrix-string.ts` (56 lines)
+- `packages/ndigo-parser/src/matrix-string.ts` (119 lines)
+- `packages/ndigo-router/src/from-matrix-string.ts` (57 lines)
+- `packages/ndigo-router/src/to-matrix-string.ts` (56 lines)
 - **Estimated duplication:** 10-29 lines, 164-212 tokens per clone
 
 ### Root Cause
 
-The router package (`@blue/router`) does not currently depend on the parser (`@blue/parser`) or HTTP (`@blue/http`) packages. When URL parsing functionality was needed in the router, the code was duplicated instead of establishing proper dependencies.
+The router package (`@ndigo/router`) does not currently depend on the parser (`@ndigo/parser`) or HTTP (`@ndigo/http`) packages. When URL parsing functionality was needed in the router, the code was duplicated instead of establishing proper dependencies.
 
 **Current Dependencies (relevant):**
 
 ```json
-// packages/blue-router/package.json
+// packages/ndigo-router/package.json
 {
     "dependencies": {
-        "@blue/core": "workspace:*",
-        "@blue/util": "workspace:*"
-        // Missing: @blue/parser, @blue/http
+        "@ndigo/core": "workspace:*",
+        "@ndigo/util": "workspace:*"
+        // Missing: @ndigo/parser, @ndigo/http
     }
 }
 ```
@@ -70,13 +70,13 @@ The router package (`@blue/router`) does not currently depend on the parser (`@b
 
 **Approach:**
 
-1. Add `@blue/parser` to `@blue/router` dependencies
-2. Add `@blue/http` to `@blue/router` dependencies
+1. Add `@ndigo/parser` to `@ndigo/router` dependencies
+2. Add `@ndigo/http` to `@ndigo/router` dependencies
 3. Delete duplicated files in router:
-    - `src/to-query-string.ts` → use `@blue/http`
-    - `src/from-query-string.ts` → use `@blue/http`
-    - `src/from-matrix-string.ts` → use `@blue/parser`
-    - `src/to-matrix-string.ts` → use `@blue/parser`
+    - `src/to-query-string.ts` → use `@ndigo/http`
+    - `src/from-query-string.ts` → use `@ndigo/http`
+    - `src/from-matrix-string.ts` → use `@ndigo/parser`
+    - `src/to-matrix-string.ts` → use `@ndigo/parser`
 4. Update imports in `src/path-route.ts` and tests
 
 **Pros:**
@@ -101,13 +101,13 @@ The router package (`@blue/router`) does not currently depend on the parser (`@b
 
 ---
 
-### Option B: New `@blue/url` Package
+### Option B: New `@ndigo/url` Package
 
 **Approach:**
 
-1. Create new package `@blue/url`
+1. Create new package `@ndigo/url`
 2. Extract URL parsing utilities from parser, http, router
-3. All three packages depend on `@blue/url`
+3. All three packages depend on `@ndigo/url`
 4. Update imports across all affected packages
 
 **Pros:**
@@ -125,31 +125,31 @@ The router package (`@blue/router`) does not currently depend on the parser (`@b
 
 **Impact:**
 
-- **New package:** `@blue/url` (~400 lines)
+- **New package:** `@ndigo/url` (~400 lines)
 - **Files refactored:** 6+ files across 3 packages
 - **Test migration:** ~8 test files to move/update
 - **Breaking changes:** None (maintain existing exports)
 
 ---
 
-### Option C: Promote to `@blue/util`
+### Option C: Promote to `@ndigo/util`
 
 **Approach:**
 
-1. Move query string utilities to `@blue/util/src/url/query-string.ts`
-2. Move matrix string utilities to `@blue/util/src/url/matrix-string.ts`
+1. Move query string utilities to `@ndigo/util/src/url/query-string.ts`
+2. Move matrix string utilities to `@ndigo/util/src/url/matrix-string.ts`
 3. Update imports in http, parser, router packages
 4. Delete duplicates
 
 **Pros:**
 
 - ✅ No new package needed
-- ✅ `@blue/util` already widely used
+- ✅ `@ndigo/util` already widely used
 - ✅ URL utilities are general-purpose
 
 **Cons:**
 
-- ⚠️ `@blue/util` may become bloated
+- ⚠️ `@ndigo/util` may become bloated
 - ⚠️ URL utilities may not fit util's purpose (integration layer)
 - ⚠️ Creates circular dependency risk (util → parser → util)
 
@@ -165,7 +165,7 @@ The router package (`@blue/router`) does not currently depend on the parser (`@b
 
 **Approach:**
 
-1. Move all URL parsing to `@blue/parser`
+1. Move all URL parsing to `@ndigo/parser`
 2. HTTP and router import from parser
 3. Parser becomes the authority for URL utilities
 
@@ -197,8 +197,8 @@ Before choosing a resolution option, answer these questions:
 
 1. **Dependency Philosophy:**
 
-    - Is it acceptable for `@blue/router` to depend on `@blue/http`?
-    - Is it acceptable for `@blue/router` to depend on `@blue/parser`?
+    - Is it acceptable for `@ndigo/router` to depend on `@ndigo/http`?
+    - Is it acceptable for `@ndigo/router` to depend on `@ndigo/parser`?
 
 2. **Code Ownership:**
 
@@ -240,18 +240,18 @@ Manually compare duplicated files to verify similarity:
 
 ```bash
 # Compare query string implementations
-diff packages/blue-http/src/query-string.ts \
-     packages/blue-router/src/to-query-string.ts
+diff packages/ndigo-http/src/query-string.ts \
+     packages/ndigo-router/src/to-query-string.ts
 
-diff packages/blue-http/src/query-string.ts \
-     packages/blue-router/src/from-query-string.ts
+diff packages/ndigo-http/src/query-string.ts \
+     packages/ndigo-router/src/from-query-string.ts
 
 # Compare matrix string implementations
-diff packages/blue-parser/src/matrix-string.ts \
-     packages/blue-router/src/from-matrix-string.ts
+diff packages/ndigo-parser/src/matrix-string.ts \
+     packages/ndigo-router/src/from-matrix-string.ts
 
-diff packages/blue-parser/src/matrix-string.ts \
-     packages/blue-router/src/to-matrix-string.ts
+diff packages/ndigo-parser/src/matrix-string.ts \
+     packages/ndigo-router/src/to-matrix-string.ts
 ```
 
 **1.2: Dependency Analysis**
@@ -267,9 +267,9 @@ Check for any subtle differences that justify duplication:
 
 ```bash
 # Verify test coverage for all affected files
-nx run @blue/http:test -- --coverage
-nx run @blue/router:test -- --coverage
-nx run @blue/parser:test -- --coverage
+nx run @ndigo/http:test -- --coverage
+nx run @ndigo/router:test -- --coverage
+nx run @ndigo/parser:test -- --coverage
 ```
 
 Ensure >80% coverage before refactoring.
@@ -281,27 +281,27 @@ Ensure >80% coverage before refactoring.
 **2.1: Update Router package.json**
 
 ```bash
-cd packages/blue-router
+cd packages/ndigo-router
 ```
 
-**File:** `packages/blue-router/package.json`
+**File:** `packages/ndigo-router/package.json`
 
 ```json
 {
     "dependencies": {
-        "@blue/core": "workspace:*",
-        "@blue/http": "workspace:*", // ADD
-        "@blue/parser": "workspace:*", // ADD
-        "@blue/util": "workspace:*"
+        "@ndigo/core": "workspace:*",
+        "@ndigo/http": "workspace:*", // ADD
+        "@ndigo/parser": "workspace:*", // ADD
+        "@ndigo/util": "workspace:*"
     },
     "devDependencies": {
         // ... existing
-        "@blue/http": "workspace:*", // ADD to dev as well
-        "@blue/parser": "workspace:*" // ADD to dev as well
+        "@ndigo/http": "workspace:*", // ADD to dev as well
+        "@ndigo/parser": "workspace:*" // ADD to dev as well
     },
     "peerDependencies": {
-        "@blue/http": "workspace:*", // ADD
-        "@blue/parser": "workspace:*" // ADD
+        "@ndigo/http": "workspace:*", // ADD
+        "@ndigo/parser": "workspace:*" // ADD
     }
 }
 ```
@@ -318,7 +318,7 @@ pnpm install
 
 **3.1: Update path-route.ts**
 
-**File:** `packages/blue-router/src/path-route.ts`
+**File:** `packages/ndigo-router/src/path-route.ts`
 
 **Before:**
 
@@ -332,19 +332,19 @@ import fromQueryString from './from-query-string';
 **After:**
 
 ```typescript
-import { fromMatrixString, toMatrixString } from '@blue/parser';
-import { QueryString } from '@blue/http';
+import { fromMatrixString, toMatrixString } from '@ndigo/parser';
+import { QueryString } from '@ndigo/http';
 
 // Use QueryString.parse() and QueryString.stringify()
 // OR if http exports fromQueryString/toQueryString:
-import { fromQueryString, toQueryString } from '@blue/http';
+import { fromQueryString, toQueryString } from '@ndigo/http';
 ```
 
 **Note:** Verify the exact export names in http/parser packages.
 
 **3.2: Update router index.ts**
 
-**File:** `packages/blue-router/src/index.ts`
+**File:** `packages/ndigo-router/src/index.ts`
 
 **Before:**
 
@@ -359,16 +359,16 @@ export { default as toQueryString } from './to-query-string';
 
 ```typescript
 // Re-export from canonical sources for backward compatibility
-export { fromMatrixString, toMatrixString } from '@blue/parser';
-export { fromQueryString, toQueryString } from '@blue/http';
+export { fromMatrixString, toMatrixString } from '@ndigo/parser';
+export { fromQueryString, toQueryString } from '@ndigo/http';
 
 // OR if maintaining backward compat is critical:
-export { fromMatrixString, toMatrixString } from '@blue/parser';
+export { fromMatrixString, toMatrixString } from '@ndigo/parser';
 
 export {
     QueryString as fromQueryString, // Adapt as needed
     QueryString as toQueryString,
-} from '@blue/http';
+} from '@ndigo/http';
 ```
 
 ---
@@ -381,10 +381,10 @@ Update imports in test files:
 
 ```bash
 # Files to update:
-packages/blue-router/test/to-query-string.spec.ts
-packages/blue-router/test/from-query-string.spec.ts
-packages/blue-router/test/to-matrix-string.spec.ts
-packages/blue-router/test/from-matrix-string.spec.ts
+packages/ndigo-router/test/to-query-string.spec.ts
+packages/ndigo-router/test/from-query-string.spec.ts
+packages/ndigo-router/test/to-matrix-string.spec.ts
+packages/ndigo-router/test/from-matrix-string.spec.ts
 ```
 
 **Options:**
@@ -397,7 +397,7 @@ packages/blue-router/test/from-matrix-string.spec.ts
 
 **4.2: Update Test Imports**
 
-**Example:** `packages/blue-router/test/to-query-string.spec.ts`
+**Example:** `packages/ndigo-router/test/to-query-string.spec.ts`
 
 **Before:**
 
@@ -408,7 +408,7 @@ import toQueryString from '../src/to-query-string';
 **After:**
 
 ```typescript
-import { toQueryString } from '@blue/http';
+import { toQueryString } from '@ndigo/http';
 // OR
 import { toQueryString } from '../src/index'; // Via re-export
 ```
@@ -420,7 +420,7 @@ import { toQueryString } from '../src/index'; // Via re-export
 **5.1: Delete Duplicate Files**
 
 ```bash
-cd packages/blue-router/src
+cd packages/ndigo-router/src
 
 # Delete duplicates
 rm from-matrix-string.ts
@@ -433,10 +433,10 @@ rm to-query-string.ts
 
 ```bash
 # Search for imports of deleted files
-grep -r "from '\./from-matrix-string'" packages/blue-router/
-grep -r "from '\./to-matrix-string'" packages/blue-router/
-grep -r "from '\./from-query-string'" packages/blue-router/
-grep -r "from '\./to-query-string'" packages/blue-router/
+grep -r "from '\./from-matrix-string'" packages/ndigo-router/
+grep -r "from '\./to-matrix-string'" packages/ndigo-router/
+grep -r "from '\./from-query-string'" packages/ndigo-router/
+grep -r "from '\./to-query-string'" packages/ndigo-router/
 
 # Should return no results
 ```
@@ -448,7 +448,7 @@ grep -r "from '\./to-query-string'" packages/blue-router/
 **6.1: Build Router Package**
 
 ```bash
-nx run @blue/router:build:lib
+nx run @ndigo/router:build:lib
 ```
 
 **Expected:** Successful build, no errors.
@@ -456,7 +456,7 @@ nx run @blue/router:build:lib
 **6.2: Run Router Tests**
 
 ```bash
-nx run @blue/router:test
+nx run @ndigo/router:test
 ```
 
 **Expected:** All tests pass.
@@ -492,7 +492,7 @@ Document the dependency changes and rationale.
 
 ### Changed
 
-- **BREAKING INTERNAL:** Router now depends on @blue/parser and @blue/http
+- **BREAKING INTERNAL:** Router now depends on @ndigo/parser and @ndigo/http
 - Removed duplicated URL parsing code (from-query-string, to-query-string,
   from-matrix-string, to-matrix-string)
 - Router now re-exports URL utilities from canonical sources
@@ -512,15 +512,15 @@ Mark as "Implemented" and document any deviations from plan.
 
 ## Alternative Implementation Plans
 
-### If Option B Chosen: New @blue/url Package
+### If Option B Chosen: New @ndigo/url Package
 
 **Steps:**
 
-1. Create `packages/blue-url/` directory
+1. Create `packages/ndigo-url/` directory
 2. Initialize package with standard structure
 3. Extract common code from http/parser/router
 4. Design unified API (parseQueryString, stringifyQueryString, etc.)
-5. Update all three packages to depend on `@blue/url`
+5. Update all three packages to depend on `@ndigo/url`
 6. Delete duplicates
 7. Run tests
 
@@ -528,11 +528,11 @@ Mark as "Implemented" and document any deviations from plan.
 
 ---
 
-### If Option C Chosen: Promote to @blue/util
+### If Option C Chosen: Promote to @ndigo/util
 
 **Steps:**
 
-1. Create `packages/blue-util/src/url/` directory
+1. Create `packages/ndigo-util/src/url/` directory
 2. Move query-string utilities
 3. Move matrix-string utilities
 4. Update http/parser/router to import from util
@@ -643,7 +643,7 @@ Before implementing, complete this checklist:
 ## References
 
 - **Original Issue:** `docs/plans/2026-02-01_UTILITY_ORGANIZATION.md` lines 130-150
-- **Affected Packages:** `@blue/parser`, `@blue/http`, `@blue/router`
+- **Affected Packages:** `@ndigo/parser`, `@ndigo/http`, `@ndigo/router`
 - **Related Plans:** `docs/plans/2026-02-01_FILE_REFACTORING.md` (may need updates)
 - **Architecture:** `ARCHITECTURE.md` (dependency management patterns)
 

@@ -13,7 +13,7 @@ is `JSONValue`), and CLI args were accepted by `run(...args)` but **ignored**
 
 The reference `PropertyPlaceholderHelper`, `ConvertiblePropertyResolver`
 (`getProperty(key, Class)` throwing `ConversionFailedException`), and
-`CommandLinePropertySource` are the references. blue-core already ships a
+`CommandLinePropertySource` are the references. ndigo-core already ships a
 `ConversionService` (`createConversionService` with built-in
 UUID/Date/JSON/Number/Boolean/Array converters) — unused by the environment.
 
@@ -38,7 +38,7 @@ map edits may lag the cache (replace-not-mutate doctrine, documented). Eager
 resolve-at-build rejected (forces flat + rebuild-per-mutation — the model P0's
 bench rejected). `hasProperty` answers raw presence, never placeholder-resolved.
 
-**D2 — Typed lookup via blue-core ConversionService.** `PropertyResolver`
+**D2 — Typed lookup via ndigo-core ConversionService.** `PropertyResolver`
 gains `getPropertyAs(key, targetType, defaultValue?)` and
 `getRequiredPropertyAs(key, targetType)`; `AbstractEnvironment` delegates.
 `{ conversionService }` resolver option (Q8), default `createConversionService()`
@@ -66,11 +66,11 @@ first, then converts. All resolver-side failures throw `IllegalStateError`
 
 ## Consequences
 
-- New modules in `@blue/context`: `placeholder-resolver.ts`, `cli-arguments.ts`;
+- New modules in `@ndigo/context`: `placeholder-resolver.ts`, `cli-arguments.ts`;
   `property-resolver.ts` gains placeholder hook + resolution cache + typed
   lookups + `{ conversionService }` option; `environment.ts` widens
   `PropertyResolver`/`Environment` with the two typed methods and delegates.
-- `@blue/boot` wires CLI args into the environment (`addFirst('commandLine')`),
+- `@ndigo/boot` wires CLI args into the environment (`addFirst('commandLine')`),
   making `run('--key=value')` actually work — fixes dead args.
 - Behavior changes (pre-1.0, accepted): `getProperty` of a `${`-bearing value
   now interpolates (values containing literal `${}` semantics change);

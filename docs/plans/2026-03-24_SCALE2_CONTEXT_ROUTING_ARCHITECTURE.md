@@ -3,8 +3,8 @@
 **Date:** 2026-03-24  
 **Status:** ✅ Complete  
 **Priority:** High  
-**Context:** BlueJS multi-context/site architecture for micro-frontends and route partitioning  
-**Dependencies:** `@blue/context`, `@blue/router`, `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent`
+**Context:** ndigo multi-context/site architecture for micro-frontends and route partitioning  
+**Dependencies:** `@ndigo/context`, `@ndigo/router`, `@ndigo/dispatcher`, `@ndigo/view`, `@ndigo/view-webcomponent`
 
 ---
 
@@ -45,35 +45,35 @@ Scale 2 extends this to **multi-context applications** (site shell + isolated fe
 
 ### Implemented in this plan so far
 
-1. **Event gateway foundation** in `@blue/context`
+1. **Event gateway foundation** in `@ndigo/context`
 
     - `ContextEventGateway` for explicit allowlisted source→target relays.
     - Unit tests for relay behavior, dynamic registration, and destroy semantics.
 
-2. **Partition router baseline** in `@blue/router`
+2. **Partition router baseline** in `@ndigo/router`
 
     - `PartitionRouter` mounts feature callbacks on route prefixes.
     - `refresh()` replays current mounted route callback.
 
-3. **Route partition helpers** in `@blue/router`
+3. **Route partition helpers** in `@ndigo/router`
 
     - `normalizePartitionPrefix`, `matchesPartitionPath`, `stripPartitionPrefix`, `restorePartitionPrefix`.
     - Unit tests for partition matching and shell↔feature route mapping.
 
-4. **Hierarchical context composition helpers** in `@blue/context`
+4. **Hierarchical context composition helpers** in `@ndigo/context`
 
     - `createShellContext`, `createFeatureContext`.
     - Traversal/search helpers: `traverseToRoot`, `traverseSubtree`, `findAncestor`, `findDescendants`.
     - Unit tests covering parent/child composition and relay wiring via `ContextEventGateway`.
 
-5. **Demo shell/feature composition wiring** in `apps/blue-demo`
+5. **Demo shell/feature composition wiring** in `apps/ndigo-demo`
 
     - Added `shell-composition.ts` to compose `site-shell` + `todo` feature context relationship.
     - Added site partition mount for `/todo/**` with feature-local route dispatch.
     - Updated demo startup and view route links to use shell-prefixed paths via route partition helpers.
     - Added demo tests for shell route mapping and partition mount behavior.
 
-6. **Context gateway hardening foundation** in `@blue/context`
+6. **Context gateway hardening foundation** in `@ndigo/context`
 
     - Added optional `ContextEventGatewayOptions` with validation strategy + diagnostics handler.
     - Added namespace validator strategy (`NamespaceRelayValidationStrategy`) for `site:*` + feature namespace contracts.
@@ -84,10 +84,10 @@ Scale 2 extends this to **multi-context applications** (site shell + isolated fe
 
     - Added `unmountFeatureContext(feature, policy)` with `preserve` (default) and `close` policies.
     - Added tests for both unmount policies and gateway option pass-through in `context-hierarchy`.
-    - Integrated gateway diagnostic logging in demo runtime composition (`blue-demo:shell-composition`) with structured relay registration/blocked logs.
+    - Integrated gateway diagnostic logging in demo runtime composition (`ndigo-demo:shell-composition`) with structured relay registration/blocked logs.
     - Added demo composition test coverage for runtime relay gateway setup.
 
-8. **Feature mount manager abstraction** in `@blue/context`
+8. **Feature mount manager abstraction** in `@ndigo/context`
 
     - Added `FeatureContextMountManager` for feature registration, mount/unmount/remount orchestration.
     - Supports unmount policy-aware behavior (`preserve` reuses feature context, `close` recreates on next mount).
@@ -122,7 +122,7 @@ Scale 2 extends this to **multi-context applications** (site shell + isolated fe
     - Added shell route helpers (`ACCOUNT_ROUTE_PREFIX`, `toAccountShellRoute`) and account link in demo UI.
     - Added tests for account route mapping and cross-partition mount/unmount transitions.
 
-13. **Promoted routing registry to package-level utility (`@blue/router`)**
+13. **Promoted routing registry to package-level utility (`@ndigo/router`)**
 
     - Extended `FeatureRoutingRegistry` with `setActiveFeature(name)` for explicit activation control.
     - Refactored demo shell composition to use `FeatureRoutingRegistry` directly instead of demo-local registry wrapper.
@@ -303,4 +303,4 @@ All planned Scale 2 primitives have been implemented and validated:
 - Per-feature telemetry with `FeatureMetricAggregator`, `CounterRateResolver`, and `@counted` decorator
 - Demo integration: multi-feature (`/todo`, `/account`) with shared metrics panel
 
-Future work (latency tracking, histogram buckets, sliding-window rates) is tracked independently in `@blue/telemetry` package scope.
+Future work (latency tracking, histogram buckets, sliding-window rates) is tracked independently in `@ndigo/telemetry` package scope.

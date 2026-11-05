@@ -1,21 +1,21 @@
-# @blue/test — Integration Test Harness
+# @ndigo/test — Integration Test Harness
 
 **Date:** 2026-09-04
 **Status:** Spec
-**Package:** `@blue/test` (new)
-**Depends on:** `@blue/platform-node` (`NodeDispatcher`, `HTTPResponseViewTarget`), `@blue/dispatcher`, `@blue/context` (`ApplicationContext`), `@blue/boot` (`ApplicationBuilder`) — all in-process, socket-free
+**Package:** `@ndigo/test` (new)
+**Depends on:** `@ndigo/platform-node` (`NodeDispatcher`, `HTTPResponseViewTarget`), `@ndigo/dispatcher`, `@ndigo/context` (`ApplicationContext`), `@ndigo/boot` (`ApplicationBuilder`) — all in-process, socket-free
 **Runs on:** Vitest (the existing runner); Playwright remains the E2E layer above.
 
 ---
 
 ## 1. Motivation
 
-Blue apps today cannot test their own request pipeline. The gap, confirmed by a
-survey of `apps/blue-todo/*/test` and `apps/blue-api`:
+Ndigo apps today cannot test their own request pipeline. The gap, confirmed by a
+survey of `apps/ndigo-todo/*/test` and `apps/ndigo-api`:
 
-- **Library tests** (`@blue/dispatcher`, `@blue/platform-node`) test the dispatcher
+- **Library tests** (`@ndigo/dispatcher`, `@ndigo/platform-node`) test the dispatcher
   _in isolation_ with bespoke mock contexts.
-- **App tests** (`blue-todo/test/index-controller.spec.ts`) fabricate a _stubbed
+- **App tests** (`ndigo-todo/test/index-controller.spec.ts`) fabricate a _stubbed
   context_ in each test:
 
 ```ts
@@ -37,8 +37,8 @@ nothing validates the **dispatch → handler → response** contract without a s
 
 Hand-wiring `MetadataConfigApplicationContext` + `NodeAutoConfiguration` +
 `handlerMapping.setApplicationContext+init` + `dispatcher.initStrategies` +
-a fake `ServerResponse` (see `packages/blue-platform-node/test/integration-http.spec.ts`)
-is ~30 lines per fixture, repeated per app. `@blue/test` packages this.
+a fake `ServerResponse` (see `packages/ndigo-platform-node/test/integration-http.spec.ts`)
+is ~30 lines per fixture, repeated per app. `@ndigo/test` packages this.
 
 ---
 
@@ -47,13 +47,13 @@ is ~30 lines per fixture, repeated per app. `@blue/test` packages this.
 | Level           | Tool                      | Tests                                                        | Environment                   |
 | --------------- | ------------------------- | ------------------------------------------------------------ | ----------------------------- |
 | Unit            | **Vitest** (existing)     | Library internals, controller logic                          | jsdom / node                  |
-| **Integration** | **`@blue/test`** (new)    | Full app pipeline: context → dispatcher → handler → response | node, in-process, socket-free |
+| **Integration** | **`@ndigo/test`** (new)   | Full app pipeline: context → dispatcher → handler → response | node, in-process, socket-free |
 | E2E             | **Playwright** (existing) | Real browser flows                                           | real browser                  |
 
-- `@blue/test` is a **Vitest helper library**, not a competing runner. It provides
-  Blue-aware fixtures/bootstraps consumed inside ordinary `test()` blocks.
-- Playwright sits _above_ `@blue/test`: it validates the rendered browser
-  experience. `@blue/test` covers the headless server/API contract Playwright
+- `@ndigo/test` is a **Vitest helper library**, not a competing runner. It provides
+  Ndigo-aware fixtures/bootstraps consumed inside ordinary `test()` blocks.
+- Playwright sits _above_ `@ndigo/test`: it validates the rendered browser
+  experience. `@ndigo/test` covers the headless server/API contract Playwright
   can't reach cheaply.
 
 ---
@@ -67,7 +67,7 @@ and writes through `HTTPResponseViewTarget`. The `NodeHTTPServerAdapter` does al
 request→`Route` conversion (path, `method`, query params, body, `NodeRequest`,
 response attrs) then calls `dispatch(route)`.
 
-`@blue/test` reuses **both** pieces without a socket:
+`@ndigo/test` reuses **both** pieces without a socket:
 
 ```
 MockHTTP request  →  build Route (same as adapter)  →  dispatcher.dispatch(route)
@@ -86,7 +86,7 @@ tests fast and deterministic (no ports, no process, no teardown).
 
 ```ts
 // Composable API (the canonical, Vitest-friendly form):
-import { bootApp, MockHTTP } from '@blue/test';
+import { bootApp, MockHTTP } from '@ndigo/test';
 
 describe('Todo API', () => {
     let mockHTTP: MockHTTP;
@@ -109,7 +109,7 @@ describe('Todo API', () => {
 1. `new ApplicationBuilder(sources)` → `Application` → `_prepareContext()` →
    `MetadataConfigApplicationContext` with `WebAutoConfiguration`/`NodeAutoConfiguration`
    resolved by platform (this is where the `ApplicationBuilder` already shines).
-2. Wire the dispatcher exactly as `blue-hello-node/src/index.ts` does:
+2. Wire the dispatcher exactly as `ndigo-hello-node/src/index.ts` does:
     - `handlerMapping.setApplicationContext(context); handlerMapping.init();`
     - `dispatcher.initStrategies(context); dispatcher.applicationContext = context;`
 3. Cache the context and dispatcher in the fixture scope; tear down (close) in `afterAll`.
@@ -148,12 +148,12 @@ await mockHTTP.get('/todos').expect(200).json().toHaveLen(2);
 
 ### 3.4 What it does NOT do
 
-- **No socket / no real `node:http` server** — by default `@blue/test` is in-process.
+- **No socket / no real `node:http` server** — by default `@ndigo/test` is in-process.
   (An optional `live: true` mode can bind a real port for smoke tests, but it is
   not the default.)
 - **No browser** — that is Playwright's job.
 - **No new assertion API** — it returns shaped values for Vitest's `expect`.
-- **No mocking framework** — you still hand `@blue/context` normal beans; but now
+- **No mocking framework** — you still hand `@ndigo/context` normal beans; but now
   the _dispatcher and pipeline_ are real.
 
 ---
@@ -161,10 +161,10 @@ await mockHTTP.get('/todos').expect(200).json().toHaveLen(2);
 ## 4. Package Layout
 
 ```
-packages/blue-test/
+packages/ndigo-test/
   src/
     index.ts              # exports bootApp, MockHTTP, ResponseSink, memoryServer
-    blue-test.ts          # bootApp(): context-boot + dispatcher wiring
+    ndigo-test.ts          # bootApp(): context-boot + dispatcher wiring
     mock-mvc.ts           # MockHTTP: request builder → dispatch(route)
     request-builder.ts    # method/path/query/body/headers → Route (reuses NodeHTTPServerAdapter shape)
     response-sink.ts      # in-memory ServerResponse capture (writeHead/end)
@@ -175,26 +175,26 @@ packages/blue-test/
 
 ### Dependencies
 
-| Package                     | Reason                                                                       |
-| --------------------------- | ---------------------------------------------------------------------------- |
-| `@blue/platform-node` (dep) | `NodeAutoConfiguration`, `NodeDispatcher`, `NODE_*_ATTRIBUTE`, `NodeRequest` |
-| `@blue/dispatcher` (dep)    | `BrowserDispatcher`, argument resolvers                                      |
-| `@blue/context` (dep)       | `ApplicationContext`                                                         |
-| `@blue/boot` (peerDep)      | `ApplicationBuilder` (users may bring their own)                             |
-| `vitest` (devDep)           | runner                                                                       |
+| Package                      | Reason                                                                       |
+| ---------------------------- | ---------------------------------------------------------------------------- |
+| `@ndigo/platform-node` (dep) | `NodeAutoConfiguration`, `NodeDispatcher`, `NODE_*_ATTRIBUTE`, `NodeRequest` |
+| `@ndigo/dispatcher` (dep)    | `BrowserDispatcher`, argument resolvers                                      |
+| `@ndigo/context` (dep)       | `ApplicationContext`                                                         |
+| `@ndigo/boot` (peerDep)      | `ApplicationBuilder` (users may bring their own)                             |
+| `vitest` (devDep)            | runner                                                                       |
 
 ---
 
 ## 5. Open Questions
 
-| Question                                                            | Recommendation                                                                                                                                                                                           |
-| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@blueTest` fixture as decorator vs. explicit `bootApp()` helper?   | **Explicit `bootApp()` + `MockHTTP`** — the composable core matches Vitest's `beforeAll`/`afterAll`; no decorator ceremony. Decorator sugar may return if useful.                                        |
-| Should `MockHTTP.exec()` build a real `ServerResponse` or the sink? | **In-memory sink** (fast, deterministic). Real socket only via `live: true`.                                                                                                                             |
-| Where do fixtures live — `@blue/test` or a per-app `test/helpers`?  | In `@blue/test`; apps just `import { bootApp, MockHTTP } from '@blue/test'`.                                                                                                                             |
-| Does `@blue/test` boot the server or just the dispatcher?           | **Dispatcher only** — booting the listener adds nothing for in-process testing.                                                                                                                          |
-| Vitest env                                                          | `// @vitest-environment node` (global config is jsdom).                                                                                                                                                  |
-| `@blue/test` use `@blue/boot`?                                      | **No** — `@blue/boot`'s index re-exports browser `web-auto-configuration` → `@blue/view-webcomponent` (DOM). `bootApp` uses `MetadataConfigApplicationContext` directly, keeping `@blue/test` node-pure. |
+| Question                                                            | Recommendation                                                                                                                                                                                              |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@ndigoTest` fixture as decorator vs. explicit `bootApp()` helper?  | **Explicit `bootApp()` + `MockHTTP`** — the composable core matches Vitest's `beforeAll`/`afterAll`; no decorator ceremony. Decorator sugar may return if useful.                                           |
+| Should `MockHTTP.exec()` build a real `ServerResponse` or the sink? | **In-memory sink** (fast, deterministic). Real socket only via `live: true`.                                                                                                                                |
+| Where do fixtures live — `@ndigo/test` or a per-app `test/helpers`? | In `@ndigo/test`; apps just `import { bootApp, MockHTTP } from '@ndigo/test'`.                                                                                                                              |
+| Does `@ndigo/test` boot the server or just the dispatcher?          | **Dispatcher only** — booting the listener adds nothing for in-process testing.                                                                                                                             |
+| Vitest env                                                          | `// @vitest-environment node` (global config is jsdom).                                                                                                                                                     |
+| `@ndigo/test` use `@ndigo/boot`?                                    | **No** — `@ndigo/boot`'s index re-exports browser `web-auto-configuration` → `@ndigo/view-webcomponent` (DOM). `bootApp` uses `MetadataConfigApplicationContext` directly, keeping `@ndigo/test` node-pure. |
 
 ---
 
@@ -202,8 +202,8 @@ packages/blue-test/
 
 | Gate                                                                                               | Verification                                                    |
 | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| `bootApp` boots a real `MetadataConfigApplicationContext` + `NodeAutoConfiguration` once per suite | Two tests share the same cached context (blue-test.spec.ts)     |
-| `mockHTTP.get('/todos')` hits a `@getMapping` controller via the real dispatcher                   | Controller invoked; status 200 (blue-test.spec.ts)              |
+| `bootApp` boots a real `MetadataConfigApplicationContext` + `NodeAutoConfiguration` once per suite | Two tests share the same cached context (ndigo-test.spec.ts)    |
+| `mockHTTP.get('/todos')` hits a `@getMapping` controller via the real dispatcher                   | Controller invoked; status 200 (ndigo-test.spec.ts)             |
 | JSON API response returns `res.json()`                                                             | Plain-object handler → parsed JSON body                         |
 | SSR view response returns `res.text()`                                                             | `StringTemplateView` → HTML string body                         |
 | `ResponseEntity.notFound()` → 404                                                                  | Status code + headers honored                                   |
@@ -218,9 +218,9 @@ packages/blue-test/
 - ~~**Test context caching**~~ ✅ `cachedBootApp`/`releaseCachedApp` — per-worker
   dedupe across suites booting the same sources; cross-file sharing requires
   `isolate: false` (documented safety trade-off).
-- ~~**`@blue/test` for browser apps**~~ ✅ `BrowserMockHTTP` + `bootBrowserApp` +
+- ~~**`@ndigo/test` for browser apps**~~ ✅ `BrowserMockHTTP` + `bootBrowserApp` +
   `MemoryViewTarget` (drives `BrowserDispatcher`, captures rendered output).
-- **`@blue/test`-driven e2e breadcrumbs** — assert the API contract headlessly,
+- **`@ndigo/test`-driven e2e breadcrumbs** — assert the API contract headlessly,
   then use Playwright only for render assertions.
-- Revisit **automatic Node auto-registration** in `@blue/boot` when packages are
+- Revisit **automatic Node auto-registration** in `@ndigo/boot` when packages are
   regrouped into `web`/`node`/`isomorphic` (see `NODE_PLATFORM_FOUNDATION.md` §6.2).

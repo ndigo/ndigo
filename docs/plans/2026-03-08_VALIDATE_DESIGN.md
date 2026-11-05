@@ -2,9 +2,9 @@
 
 ## Objective
 
-Define the next-step architecture for `@blue/validate` as a Layer 2 infrastructure package that:
+Define the next-step architecture for `@ndigo/validate` as a Layer 2 infrastructure package that:
 
-1. preserves BlueJS integration-layer boundaries,
+1. preserves ndigo integration-layer boundaries,
 2. supports validation across form, domain, and service inputs,
 3. allows future backing-library swaps without consumer breakage.
 
@@ -12,14 +12,14 @@ Define the next-step architecture for `@blue/validate` as a Layer 2 infrastructu
 
 ## Captured Integration Philosophy
 
-This plan formalizes the current BlueJS philosophy discussed during package sequencing work:
+This plan formalizes the current ndigo philosophy discussed during package sequencing work:
 
-1. **Integrate or write**: BlueJS may use open-source libraries, but consumers should primarily interact with Blue APIs.
-2. **Encapsulation over leakage**: Integration-layer packages (`@blue/util`, `@blue/parser`, `@blue/model`) shield higher layers from direct third-party coupling.
+1. **Integrate or write**: ndigo may use open-source libraries, but consumers should primarily interact with Ndigo APIs.
+2. **Encapsulation over leakage**: Integration-layer packages (`@ndigo/util`, `@ndigo/parser`, `@ndigo/model`) shield higher layers from direct third-party coupling.
 3. **Pragmatic exception at the View layer**: Rendering engines (React/Lit/etc.) are not worth fully hiding due to integration cost and low architectural gain.
-4. **Potential future `@blue/util` split**: core-vs-extended utility API is a valid future evaluation, but explicitly out of scope for this phase.
+4. **Potential future `@ndigo/util` split**: core-vs-extended utility API is a valid future evaluation, but explicitly out of scope for this phase.
 
-Applied to `@blue/validate`: Blue should expose a stable validation interface while retaining freedom to implement with internal logic and/or an encapsulated backing library.
+Applied to `@ndigo/validate`: Ndigo should expose a stable validation interface while retaining freedom to implement with internal logic and/or an encapsulated backing library.
 
 ---
 
@@ -29,7 +29,7 @@ Applied to `@blue/validate`: Blue should expose a stable validation interface wh
 
 Spring combines **Jakarta Bean Validation** (spec) with **Hibernate Validator** (implementation) and framework orchestration (`@Valid`, `@Validated`, groups, composed constraints).
 
-Relevant takeaways for BlueJS:
+Relevant takeaways for ndigo:
 
 - Keep a **stable validation contract** while allowing multiple implementations.
 - Support **constraint composition** (reusable higher-level constraints).
@@ -38,7 +38,7 @@ Relevant takeaways for BlueJS:
 
 ### TypeScript Library Landscape
 
-| Library | Strengths                                                | Risks                                      | Fit for Encapsulated Blue API               |
+| Library | Strengths                                                | Risks                                      | Fit for Encapsulated Ndigo API              |
 | :------ | :------------------------------------------------------- | :----------------------------------------- | :------------------------------------------ |
 | Zod     | Mature ecosystem, strong TS ergonomics, sync/async parse | Bigger footprint than smaller alternatives | Strong candidate for adapter backend        |
 | Yup     | Mature and familiar                                      | Larger bundle, weaker modern TS ergonomics | Secondary candidate                         |
@@ -49,7 +49,7 @@ No option should be exposed directly to consumers of non-integration packages.
 
 ---
 
-## Current `@blue/validate` Assessment
+## Current `@ndigo/validate` Assessment
 
 ### Strengths
 
@@ -74,7 +74,7 @@ Current design is useful but incomplete as a long-term integration layer because
 ## Design Goals for the Next Revision
 
 1. **Layer-agnostic use**: Validate form payloads, domain objects, and service inputs with the same core API.
-2. **Stable Blue contract**: Preserve Blue-facing API independent of backend implementation choice.
+2. **Stable Ndigo contract**: Preserve Ndigo-facing API independent of backend implementation choice.
 3. **Explicit extension points**: First-class APIs for registering constraints/types.
 4. **Composable constraints**: Preserve/expand existing composition model.
 5. **Sync + async paths**: Clear support for synchronous predicates and async validation workflows.
@@ -84,9 +84,9 @@ Current design is useful but incomplete as a long-term integration layer because
 
 ## Proposed Architecture (Recommended)
 
-### 1) Blue-First Validation Core
+### 1) Ndigo-First Validation Core
 
-Retain a Blue-native core contract:
+Retain a Ndigo-native core contract:
 
 - `Constraint`
 - `TypeDefinition`
@@ -104,10 +104,10 @@ Add explicit registration and composition APIs:
 Introduce an internal adapter boundary for optional library-backed execution:
 
 - `ValidationBackendAdapter` (internal abstraction)
-- default backend: Blue native constraints/types
+- default backend: Ndigo native constraints/types
 - optional backend: adapter over Zod/Valibot/etc.
 
-Consumer packages continue importing only from `@blue/validate`.
+Consumer packages continue importing only from `@ndigo/validate`.
 
 ### 3) Constraint Groups (Spring-Inspired)
 
@@ -121,7 +121,7 @@ Keep decorators as a thin metadata layer over the same validation core. Avoid di
 
 ## Viable Implementation Tracks
 
-### Track A: Blue-Native First (No external backend in first increment)
+### Track A: Ndigo-Native First (No external backend in first increment)
 
 - Resolve TODOs and formalize registration APIs.
 - Improve type safety and error contract.
@@ -135,7 +135,7 @@ Keep decorators as a thin metadata layer over the same validation core. Avoid di
 
 - Do Track A foundation.
 - Add internal adapter boundary.
-- Pilot one backend (Zod **or** Valibot) behind Blue contract.
+- Pilot one backend (Zod **or** Valibot) behind Ndigo contract.
 
 **Pros:** validates future portability early.
 **Cons:** more moving parts in the first redesign increment.
@@ -157,7 +157,7 @@ If the pilot backend is selected now:
 - choose **Zod** if ecosystem/tooling compatibility is top priority,
 - choose **Valibot** if bundle size/modularity is top priority.
 
-Both remain implementation details of `@blue/validate`.
+Both remain implementation details of `@ndigo/validate`.
 
 ---
 
@@ -183,7 +183,7 @@ Implementation should begin only after explicit approval on:
 ## Immediate Next Steps
 
 1. Finalize approval decisions listed above.
-2. Draft `@blue/validate` API delta proposal (old vs new surfaces).
+2. Draft `@ndigo/validate` API delta proposal (old vs new surfaces).
 3. Implement foundation hardening in small commits with test re-activation.
 4. Add adapter boundary and optional backend pilot.
 5. Update package README and migration notes once implementation lands.

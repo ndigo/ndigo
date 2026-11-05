@@ -1,10 +1,10 @@
 # 2026-09-22 Multipart / File Upload
 
 **Status:** Ratified as [AD-26](../decisions/2026-09-22_AD26_MULTIPART_FILE_UPLOAD.md) (2026-09-22); all four waves implemented and landed.
-**Scope:** Server-side acceptance of `multipart/form-data` uploads in `@blue/platform-node`:
-a streaming parser (busboy), a Blue-owned `MultipartFile` contract, an argument resolver +
+**Scope:** Server-side acceptance of `multipart/form-data` uploads in `@ndigo/platform-node`:
+a streaming parser (busboy), a Ndigo-owned `MultipartFile` contract, an argument resolver +
 `@file` marker, size limits → `413`, and demo gates. Client-side `FormData` already exists
-(`blue-http`) and is untouched.
+(`ndigo-http`) and is untouched.
 **Companion docs:**
 [Framework Gap Analysis](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) §2.1 ("Multipart / file
 upload — the Node body resolver has no multipart parser", Tier 1 must-have),
@@ -22,17 +22,17 @@ The gap analysis records this as a Tier 1 enterprise must-have that is **complet
 > Server cannot accept uploads — `MULTIPART_FORM_DATA` constant and client `FormData` transformer
 > exist, but the Node body resolver has no multipart parser.
 
-Blue can _emit_ a `multipart/form-data` request (client `FormDataTransformer`, blue-http) but cannot
+Ndigo can _emit_ a `multipart/form-data` request (client `FormDataTransformer`, ndigo-http) but cannot
 _receive_ one. A handler annotated for a file part has nothing to bind against. This is a hard gap:
 any form with an `<input type="file">` silently drops the file. Spring's answer is
 `MultipartFile` + `MultipartHttpServletRequest` resolved before argument binding; this plan ports
-that capability to Blue's resolver/interceptor model.
+that capability to Ndigo's resolver/interceptor model.
 
 ## 2. Current state (verified 2026-09-22)
 
 - **No server multipart parser.** Grep over `packages/*/src` finds only the `MULTIPART_FORM_DATA`
-  media-type constant (`blue-core/src/media-types.ts:77`) and the client-side
-  `FormDataTransformer` (`blue-http/src/transformers/form-data-transformer.ts`). Nothing parses an
+  media-type constant (`ndigo-core/src/media-types.ts:77`) and the client-side
+  `FormDataTransformer` (`ndigo-http/src/transformers/form-data-transformer.ts`). Nothing parses an
   incoming multipart body.
 - **The pipeline buffers the whole body before parsing.** In
   `NodeHTTPServerAdapter.handleRequest` (node-http-server-adapter.ts:822) the flow is
@@ -68,7 +68,7 @@ that capability to Blue's resolver/interceptor model.
   which splits the stream on the multipart boundary; `CommonsMultipartResolver` wraps Apache Commons
   FileUpload as an alternative. Resolution happens **early** — the request is wrapped in a
   `MultipartHttpServletRequest` _before_ argument resolution, so resolvers see parts directly. This
-  is exactly why Blue must parse before `#readBody`.
+  is exactly why Ndigo must parse before `#readBody`.
 - **`MultipartFile` interface.** `getName()` (form field name), `getOriginalFilename()`, `getSize()`,
   `isEmpty()`, `getBytes()`, `getInputStream()` / `getStream()`, `transferTo(File)` / `copyTo(Path)`,
   `getContentType()`, `headers`. A part is either in memory or a temp file — the interface hides which.
@@ -96,12 +96,12 @@ that capability to Blue's resolver/interceptor model.
 
 ### D-1 — Own the contract, wrap busboy
 
-BlueJS owns the `MultipartFile` + request-access contract and wraps **busboy** as the streaming
+ndigo owns the `MultipartFile` + request-access contract and wraps **busboy** as the streaming
 parser. This follows the repo's three prior "own the contract, wrap the standard" settlements:
-`blue-signals` re-exports `@preact/signals-core`, validation adopted Zod (AD-07), telemetry wraps
+`ndigo-signals` re-exports `@preact/signals-core`, validation adopted Zod (AD-07), telemetry wraps
 OpenTelemetry. busboy is the zero-dep canonical primitive; multer/fastify-multipart add framework
-glue (Express/Fastify middleware shapes) that does not fit Blue's resolver/interceptor model, so we
-wrap the primitive directly and build the Blue-shaped contract on top. One new runtime dependency,
+glue (Express/Fastify middleware shapes) that does not fit Ndigo's resolver/interceptor model, so we
+wrap the primitive directly and build the Ndigo-shaped contract on top. One new runtime dependency,
 justified as minimal and idiomatic.
 
 ### D-2 — Parse early in the adapter, streaming from `req` (never through `#readBody`)
@@ -125,7 +125,7 @@ serves both `bytes()`/`stream()` from the same interface. Temp files live under 
 moves a part off temp to a caller-chosen path. This bounds peak memory while keeping the common small
 upload allocation-free-of-disk.
 upload allocation-free-of-disk. Tomcat's equivalent threshold defaults to 0 (everything to disk);
-Blue keeps common small uploads in memory by default and only spills larger parts — a deliberate
+Ndigo keeps common small uploads in memory by default and only spills larger parts — a deliberate
 efficiency choice over Spring's default.
 
 ### D-4 — Limits → 413, reusing the existing limits infra
@@ -149,14 +149,14 @@ binds client field `avatar`); pass an explicit name only when the client form fi
 variable (`@file('avatar_url') avatar`). `resolveName()` reads
 `request.multipart.files.get(name)` and returns a single `MultipartFile` or `MultipartFile[]` for an
 array-typed param. Text fields keep binding through the body resolver. Zero-arg inference removes the
-common boilerplate while keeping the explicit, unambiguous marker — Blue's analogue of Spring's
+common boilerplate while keeping the explicit, unambiguous marker — Ndigo's analogue of Spring's
 `@RequestParam MultipartFile` / `@RequestPart`.
 
 ### D-6 — Filename safety is framework-owned (busboy does not sanitize)
 
 busboy passes the client-supplied `filename` through verbatim; Spring defers sanitization to the
 caller. Uploading straight into a filesystem is a **path-traversal** risk (`../../etc/passwd`, drive
-letters, absolute paths). Blue sanitizes at the edge: reject names containing path separators or
+letters, absolute paths). Ndigo sanitizes at the edge: reject names containing path separators or
 segments `.`/`..`, collapse to a safe basename, and never resolve the temp file against the working
 directory. Virus scanning, content allow-listing, and storage backend (local vs. object store) are
 explicitly **out of scope** — the contract exposes bytes/stream so a caller pipes to S3/GCS unchanged.
@@ -171,25 +171,25 @@ candidates behind the `MultipartFile` seam.
 
 ## 5. Architecture
 
-| Piece                                                                          | Home                                                                           | Notes                                                           |
-| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------- |
-| `parseMultipart(req, config)` — busboy streaming wrapper → `{ fields, files }` | `blue-platform-node/src/parse-multipart.ts`                                    | New; the only busboy touchpoint                                 |
-| `MultipartFile` interface + impl (buffer or temp-file handle)                  | `blue-platform-node/src/multipart-file.ts`                                     | Contract consumers import from `@blue/platform-node`            |
-| `MultipartContext` (`{ fields, files: Map<string, MultipartFile[]> }`)         | `blue-platform-node/src/multipart-file.ts`                                     | Lives on `NodeRequest.multipart`                                |
-| `@file(partName?)` marker + metadata reader                                    | `blue-platform-node/src/file-argument-resolver.ts`                             | Mirrors `validatedBy`'s parameter-metadata hook                 |
-| `NodeMultipartFileMethodArgumentResolver`                                      | `blue-platform-node/src/multipart-file-argument-resolver.ts`                   | Reads `request.multipart.files.get(name)`                       |
-| Adapter detection + wiring into `handleRequest`                                | `node-http-server-adapter.ts:822`                                              | Before `#readBody`; bypasses buffering                          |
-| `NodeRequest.multipart?` field                                                 | `node-request.ts:20`                                                           | Optional, alongside `cookies`/`session`                         |
-| `MultipartConfig` + defaults                                                   | `blue-platform-node/src/http-request-limits.ts` (or new `multipart-config.ts`) | Extends the limits pattern; overflow → `RequestLimitError(413)` |
-| Auto-config wiring / defaults                                                  | `node-auto-configuration.ts`                                                   | AD-24/AD-25 platform-node precedent                             |
+| Piece                                                                          | Home                                                                            | Notes                                                           |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `parseMultipart(req, config)` — busboy streaming wrapper → `{ fields, files }` | `ndigo-platform-node/src/parse-multipart.ts`                                    | New; the only busboy touchpoint                                 |
+| `MultipartFile` interface + impl (buffer or temp-file handle)                  | `ndigo-platform-node/src/multipart-file.ts`                                     | Contract consumers import from `@ndigo/platform-node`           |
+| `MultipartContext` (`{ fields, files: Map<string, MultipartFile[]> }`)         | `ndigo-platform-node/src/multipart-file.ts`                                     | Lives on `NodeRequest.multipart`                                |
+| `@file(partName?)` marker + metadata reader                                    | `ndigo-platform-node/src/file-argument-resolver.ts`                             | Mirrors `validatedBy`'s parameter-metadata hook                 |
+| `NodeMultipartFileMethodArgumentResolver`                                      | `ndigo-platform-node/src/multipart-file-argument-resolver.ts`                   | Reads `request.multipart.files.get(name)`                       |
+| Adapter detection + wiring into `handleRequest`                                | `node-http-server-adapter.ts:822`                                               | Before `#readBody`; bypasses buffering                          |
+| `NodeRequest.multipart?` field                                                 | `node-request.ts:20`                                                            | Optional, alongside `cookies`/`session`                         |
+| `MultipartConfig` + defaults                                                   | `ndigo-platform-node/src/http-request-limits.ts` (or new `multipart-config.ts`) | Extends the limits pattern; overflow → `RequestLimitError(413)` |
+| Auto-config wiring / defaults                                                  | `node-auto-configuration.ts`                                                    | AD-24/AD-25 platform-node precedent                             |
 
-Package deps: `blue-platform-node` gains **busboy** (runtime) + its types; no other new runtime
-dependencies. No browser globals (passes `@blue/no-browser-globals-in-isomorphic`).
+Package deps: `ndigo-platform-node` gains **busboy** (runtime) + its types; no other new runtime
+dependencies. No browser globals (passes `@ndigo/no-browser-globals-in-isomorphic`).
 
 ### API sketch
 
 ```ts
-import { File, MultipartFile } from '@blue/platform-node';
+import { File, MultipartFile } from '@ndigo/platform-node';
 
 class ProfileController {
     // @file() infers the part name from the param name ("avatar"); pass a name only when the client
@@ -232,7 +232,7 @@ interface MultipartFile {
   so operators don't expect one knob to cover both.
 - **Filename encoding.** RFC 5987 `filename*` (UTF-8) vs plain `filename`; busboy exposes both — plan
   to prefer `filename*` when present.
-- **No scanning.** Blue accepts the bytes; virus/content scanning is the caller's contract, stated in
+- **No scanning.** Ndigo accepts the bytes; virus/content scanning is the caller's contract, stated in
   docs.
 
 ## 7. Sequencing
@@ -253,7 +253,7 @@ override); `NodeMultipartFileMethodArgumentResolver` (single + array), registere
 `configureNodeArgumentResolvers`. Spec asserts `@file()` binds by param name and `@file('x')` overrides.
 Gates: vitest + `tsc -b`.
 
-**Wave 4 — demo gates + docs.** blue-api `POST /api/upload` accepting `@file() file: MultipartFile`,
+**Wave 4 — demo gates + docs.** ndigo-api `POST /api/upload` accepting `@file() file: MultipartFile`,
 persists to temp, returns `{ size, name }`; spec round-trips an upload. AD-26; guide
 `docs/guides/08-multipart-and-file-upload.md`; status refresh: gap-analysis §2.1 multipart row →
 IMPLEMENTED, feature-assessment row updated, plan status header. Final: `pnpm lint`,

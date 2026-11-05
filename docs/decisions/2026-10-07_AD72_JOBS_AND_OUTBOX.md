@@ -1,4 +1,4 @@
-# AD-72: Durable jobs and the transactional outbox — `@blue/jobs`
+# AD-72: Durable jobs and the transactional outbox — `@ndigo/jobs`
 
 **Date:** 2026-10-07
 **Status:** Accepted
@@ -9,25 +9,25 @@
 ## Context
 
 The 2026-10-07 review lists GAP-1: **durable jobs/queues + transactional outbox**
-— absent, 1.0-severity high; recommended shape "ADR + `@blue/jobs` driver SPI
+— absent, 1.0-severity high; recommended shape "ADR + `@ndigo/jobs` driver SPI
 (Redis/SQL), outbox wired to the ORM UoW". Wave 6 is ADR-gated; this record and
 the companion plan (`docs/plans/2026-10-07_JOBS_AND_OUTBOX.md`) are the gate.
 
 What the repository already provides, and what is missing:
 
-- **Triggers exist, work delivery does not.** `@blue/scheduler` runs
+- **Triggers exist, work delivery does not.** `@ndigo/scheduler` runs
   `@scheduled` methods in-process with single-flight and drain-on-close — a
   _trigger_ mechanism. There is no way to hand a unit of work to a queue, retry
   it out-of-band, or survive a restart with the work still pending.
 - **Durability building blocks exist.** `LibSQLSessionStore` and
-  `LibSQLQueueMessageStore` (`@blue/orm-drizzle`, owner of `@libsql/client`)
+  `LibSQLQueueMessageStore` (`@ndigo/orm-drizzle`, owner of `@libsql/client`)
   established the durable-store pattern: options `{ client? , ownsClient?, url?,
   authToken? }`, eager schema creation awaited by every method, idempotent
-  `dispose()`. `@blue/redis` owns the Redis client behind `RedisConnection`
+  `dispose()`. `@ndigo/redis` owns the Redis client behind `RedisConnection`
   (owned/borrowed) and ships feature subpaths `./cache` and `./pubsub` (AD-51).
 - **No transactional bridge exists.** `DrizzleTransactionManager.run()` brackets
   `BEGIN`/`COMMIT`/`ROLLBACK` on the data source's single libSQL connection
-  (`packages/blue-orm-drizzle/src/drizzle-transaction-manager.ts`). Anything
+  (`packages/ndigo-orm-drizzle/src/drizzle-transaction-manager.ts`). Anything
   written through that same client inside `run()` joins the transaction —
   including a store that is handed the client. Nothing uses that property yet.
 
@@ -38,11 +38,11 @@ What the repository already provides, and what is missing:
   auto-started on refresh, stopped/drained on close; `TaskScheduler` adds
   single-flight, per-run span (`scheduler.task.<name>`), `tick()`/`stop()`/`close()`.
 - Durable-store contract template verified in
-  `packages/blue-orm-drizzle/src/libsql-queue-message-store.ts:74-237`
+  `packages/ndigo-orm-drizzle/src/libsql-queue-message-store.ts:74-237`
   (borrowed/owned client, awaited `#ready` schema, atomic `RETURNING` writes).
-- Redis adapter template verified in `packages/blue-redis/src/connection.ts`
+- Redis adapter template verified in `packages/ndigo-redis/src/connection.ts`
   (`run(operation)` tracking, owned/borrowed, close drains) and the
-  `./cache` | `./pubsub` subpath shape in `packages/blue-redis/package.json`.
+  `./cache` | `./pubsub` subpath shape in `packages/ndigo-redis/package.json`.
 - `@entry` methods execute eagerly at configuration parse; a sibling
   `this.otherEntry()` call inside an entry method creates a _fresh_ instance
   (probe, 2026-10-07) rather than returning the registered bean. Wiring must
@@ -56,13 +56,13 @@ What the repository already provides, and what is missing:
 
 ## Decision
 
-### D-1 — One contract package: `@blue/jobs`
+### D-1 — One contract package: `@ndigo/jobs`
 
-`@blue/jobs` (Node platform, layer 4 beside `@blue/scheduler`) owns the job and
+`@ndigo/jobs` (Node platform, layer 4 beside `@ndigo/scheduler`) owns the job and
 outbox **contracts**, the in-process reference driver, the worker engine, and
 the producer facade. Backends are adapters owned by the package that owns the
-underlying client — `@blue/orm-drizzle` (libSQL) and `@blue/redis` (subpath
-`@blue/redis/jobs`, per AD-51). The default driver is explicitly in-process and
+underlying client — `@ndigo/orm-drizzle` (libSQL) and `@ndigo/redis` (subpath
+`@ndigo/redis/jobs`, per AD-51). The default driver is explicitly in-process and
 non-durable, exactly like the default rate limiter and the memory cache manager;
 durability is opt-in by registering a durable driver bean.
 
@@ -89,7 +89,7 @@ interface JobDriver {
   leader election (distributed scheduling stays deferred, AD-41; multi-worker
   safety comes from the driver's atomic claim only).
 - **`fail` is terminal** and removes the job from the queue; the error is
-  recorded in the execution span and `@blue/log`. Dead-letter storage/inspection
+  recorded in the execution span and `@ndigo/log`. Dead-letter storage/inspection
   is deliberately out of scope (a separate capability; no consumer yet).
 - **Payloads are JSON.** Enqueue fails loud on non-serializable payloads
   (functions, `undefined` members, circulars). Documented as secret-free: a
@@ -152,7 +152,7 @@ interface OutboxStore {
 }
 ```
 
-- **`LibSQLOutboxStore` (in `@blue/orm-drizzle`) borrows the application's
+- **`LibSQLOutboxStore` (in `@ndigo/orm-drizzle`) borrows the application's
   `DrizzleDataSource` client**, so an `append()` inside `@transactional` joins
   the caller's transaction on the same connection: commit ⇒ the entry is
   visible to the relay; rollback ⇒ it never existed. This is the "wired to the
@@ -170,20 +170,20 @@ interface OutboxStore {
 
 ### D-7 — Backends
 
-- `InProcessJobDriver` (`@blue/jobs`): Map + runAt ordering + lease semantics.
-- `LibSQLJobStore` (`@blue/orm-drizzle`): `blue_jobs` table; claim is a single
+- `InProcessJobDriver` (`@ndigo/jobs`): Map + runAt ordering + lease semantics.
+- `LibSQLJobStore` (`@ndigo/orm-drizzle`): `ndigo_jobs` table; claim is a single
   `UPDATE … WHERE id IN (SELECT …) RETURNING *` (atomic, mirrors the queue
   store's `RETURNING` usage). Single-connection caveat documented: a worker on
   the same client as an open `@transactional` shares the connection — run the
   runner per process with its own client/url for throughput.
-- `RedisJobDriver` (`@blue/redis/jobs`): ready/lease ZSETs + record hash under
-  `blue:jobs:<namespace>:*`, atomic claim/reclaim via one Lua script
+- `RedisJobDriver` (`@ndigo/redis/jobs`): ready/lease ZSETs + record hash under
+  `ndigo:jobs:<namespace>:*`, atomic claim/reclaim via one Lua script
   (EVAL), owned/borrowed `RedisConnection` per `RedisConnectionOptions`.
 
 ### D-8 — Observability and configuration
 
 Spans via `@opentelemetry/api` (the repo's single instrumentation surface);
-retry/terminal outcomes logged through `@blue/log` (no raw console — RES-A).
+retry/terminal outcomes logged through `@ndigo/log` (no raw console — RES-A).
 No new config-file namespace: driver/runner options are programmatic (the
 `@configurationProperties` surface stays for keys with real readers, HI-5).
 
@@ -195,9 +195,9 @@ No new config-file namespace: driver/runner options are programmatic (the
   self-start, so no Node app's process-liveness or shutdown behavior changes
   until it calls `JOB_RUNNER.start()` (or opts into `autoStart: true`). The
   registry's refresh scan arms no timer.
-- `@blue/orm-drizzle` adds a runtime dependency on the `@blue/jobs` contract
-  (it already depends on `@blue/auth-core` and `@blue/socket` for contracts);
-  `@blue/redis` gains `@blue/jobs` as an optional peer (the `./cache` pattern).
+- `@ndigo/orm-drizzle` adds a runtime dependency on the `@ndigo/jobs` contract
+  (it already depends on `@ndigo/auth-core` and `@ndigo/socket` for contracts);
+  `@ndigo/redis` gains `@ndigo/jobs` as an optional peer (the `./cache` pattern).
   The ARCHITECTURE.md Package Map rows moved with this (the DOC-5 drift class
   stays hand-curated; there is no automated manifest↔map parity gate yet).
 - Outbox consumers must be idempotent; the relay guarantees at-least-once, not
@@ -212,8 +212,8 @@ No new config-file namespace: driver/runner options are programmatic (the
 - Plan: `docs/plans/2026-10-07_JOBS_AND_OUTBOX.md`
 - Related decisions: [AD-20](2026-09-13_AD20_SCHEDULING.md) (scheduling — trigger
   side of the same "background work" story), [AD-30](2026-09-26_AD30_ORM_MIGRATIONS.md)
-  (`@blue/orm-drizzle` schema ownership), [AD-24](2026-09-17_AD24_CACHING.md)
+  (`@ndigo/orm-drizzle` schema ownership), [AD-24](2026-09-17_AD24_CACHING.md)
   (contract-owns-backend pattern), [AD-40](2026-10-01_AD40_PERSISTENCE_BASELINE.md)
   (persistence backends baseline), [AD-41](2026-10-03_AD41_DISTRIBUTED_SCHEDULING_DEFERRED.md)
   (distributed coordination deferred), [AD-51](2026-02-11_AD51_SUBPATH_EXPORTS.md)
-  (`@blue/redis/jobs` subpath), AD-55/AD-56 (ORM MVP + completion)
+  (`@ndigo/redis/jobs` subpath), AD-55/AD-56 (ORM MVP + completion)

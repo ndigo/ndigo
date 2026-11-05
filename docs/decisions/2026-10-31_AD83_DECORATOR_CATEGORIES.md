@@ -22,15 +22,15 @@ describes — what the annotated element _is_, _participates in_, is _active
 when_, _registers_, _runs at_, _denotes_, or is _governed by_ — and fixed the
 form per category. New decorators pick a category first; the form follows.
 
-The review also surfaced a genuine adjacency: **`@profile`** (blue-context,
+The review also surfaced a genuine adjacency: **`@profile`** (ndigo-context,
 January 2026 — config registration, class + method) and **`@whenProfile`**
-(blue-core, September 2026 — boot-time class registration) were one concept
+(ndigo-core, September 2026 — boot-time class registration) were one concept
 wearing two costumes, evaluating the same predicate
 (`environment.acceptsProfiles`) over the same grammar. The reference framework lived exactly
 this arc: `@Profile` shipped standalone in 3.1 (2011), then was rewritten as
 `@Conditional(ProfileCondition.class)` in 4.0 (2013) with its target expanded
 to methods; Boot later added the `@ConditionalOn*` family without adding a
-second profile annotation. BlueJS was reproducing the pre-4.0 window; this
+second profile annotation. ndigo was reproducing the pre-4.0 window; this
 ADR takes the converged architecture.
 
 ## Decision
@@ -66,7 +66,7 @@ naming axis). The category determines the name's grammatical form:
 
 ### D2 — Renames applied (pre-1.0, no aliases)
 
-- **`@generated` → `@generatedColumn`** (`@blue/orm`). Reclassified: it is a
+- **`@generated` → `@generatedColumn`** (`@ndigo/orm`). Reclassified: it is a
   member descriptor, not a behavior — its siblings are the noun descriptors
   `@column`/`@primaryColumn`, and bare "generated" collides with the
   repository's heavy code-generation vocabulary ("generated trees", the doc
@@ -74,11 +74,11 @@ naming axis). The category determines the name's grammatical form:
   `@primaryColumn() @generatedColumn() id!: number`. The internal metadata key
   moved with it (`orm:generated` → `orm:generatedColumn`,
   `generatedColumnMetadataKey` — `src/_constants.ts`, zero external readers).
-- **`@shared` → `@sharedDependency`** (`@blue/core`). AD-62's own vocabulary
+- **`@shared` → `@sharedDependency`** (`@ndigo/core`). AD-62's own vocabulary
   is "shell-managed shared dependency"; the stereotype-noun form now matches
   the contract's name. Metadata helpers keep the concept noun
   (`isShared`, `getSharedOptions`, `SharedOptions`, `SHARED_KEY`).
-- **`@nested` → `@nestedConfig`** (`@blue/context`). Joins the config-field
+- **`@nested` → `@nestedConfig`** (`@ndigo/context`). Joins the config-field
   descriptor family (`@property`, `@defaultValue`, `@propertySource`) as a
   noun phrase; bare "nested" read as a mood rather than a member property.
   The metadata namespace (`config:nested[:<field>]`, `NESTED_KEY`) is
@@ -104,7 +104,7 @@ naming axis). The category determines the name's grammatical form:
 
 ### D4 — Profile unification: `@whenProfile` is the single profile gate
 
-- **Capabilities added to `@whenProfile`** (`packages/blue-core/src/conditional.ts`):
+- **Capabilities added to `@whenProfile`** (`packages/ndigo-core/src/conditional.ts`):
     - Method-level form — accepted on entry methods, writing
       `boot:whenProfile:<methodName>` (the shape the config gate already
       handled for `@profile`).
@@ -117,7 +117,7 @@ naming axis). The category determines the name's grammatical form:
   (`CONFIG_PROFILE`), its readers, and `ConfigurationProcessor._isActiveProfile`.
   No shims (pre-1.0).
 - **Re-homed**: `profile-expression.ts` (grammar) and `profile.ts`
-  (`Profile`/`ProfileTerm` builder) moved `@blue/context` → `@blue/core`.
+  (`Profile`/`ProfileTerm` builder) moved `@ndigo/context` → `@ndigo/core`.
   The dependency graph forces this: the decorator lives in core, core cannot
   depend on context, and both the decorator and `environment.acceptsProfiles`
   consume the same grammar. Profile concepts now live with the condition

@@ -2,9 +2,9 @@
 
 **Date:** 2026-10-04
 **Scope:** Working tree at `fb919eb9` + uncommitted AD-42/AD-43 work (new
-`packages/blue-proxy`, `packages/blue-resilience`, blue-boot `processors()`,
-blue-api demo gate) and the recent committed wave (`fb919eb9..HEAD`:
-blue-redis, LibSQL stores, socket fanout, AsyncRepository — commits
+`packages/ndigo-proxy`, `packages/ndigo-resilience`, ndigo-boot `processors()`,
+ndigo-api demo gate) and the recent committed wave (`fb919eb9..HEAD`:
+ndigo-redis, LibSQL stores, socket fanout, AsyncRepository — commits
 `2454c692` `c6d68a09` `33ba7ca5` `151f100f` and doc regen commits). Root
 tooling/hygiene reviewed repo-wide.
 **Method:** Two parallel read-only review slices (committed-feature review,
@@ -16,7 +16,7 @@ git-history claims verified directly.
 **Status:** Findings recorded; **Waves 1–3 EXECUTED 2026-10-04** — all items
 landed, regression-tested, full-repo gates green (tests, typecheck, lint,
 format, manifest, prod audit, docs — see §4). Pre-existing gate failures
-found en route (docs gate on `CacheMiss` links, blue-api typecheck, audit
+found en route (docs gate on `CacheMiss` links, ndigo-api typecheck, audit
 overrides) were remediated as part of Wave 3.
 **Legend:** `[code]` established by reading cited lines · `[exec]` reproduced
 by execution · `[inference]` reasoned from code without execution.
@@ -96,7 +96,7 @@ Acceptable v1 state machine; documented behavior.
 ### 1.3 Security (recent committed work)
 
 **S-1 (Should Fix, Wave 2) — `RedisSocketFanout` has no message
-authenticity.** `[code]` `blue-redis/src/pubsub/socket-fanout.ts`: the
+authenticity.** `[code]` `ndigo-redis/src/pubsub/socket-fanout.ts`: the
 `origin` UUID only excludes self-delivery (`decoded.origin !== this.#origin`);
 `#decode` validates shape only. Spoofing is prevented solely by Redis ACLs +
 namespace charset isolation. Documented at-most-once pub/sub tradeoff, not a
@@ -129,15 +129,15 @@ secrets.
 
 **W-1 (Block, Wave 1) — `pnpm doc:check` fails for both new packages.**
 `[code]` `scripts/doc-api.mjs` generates per-package `doc/api/` and
-`doc:check` fails on any diff; neither `packages/blue-proxy/doc/` nor
-`packages/blue-resilience/doc/` exists and `doc/README.md` is unregenerated.
+`doc:check` fails on any diff; neither `packages/ndigo-proxy/doc/` nor
+`packages/ndigo-resilience/doc/` exists and `doc/README.md` is unregenerated.
 **Fix:** run `pnpm doc:api` and commit the generated trees before the
 feature lands (READMEs already exist and satisfy the documented prerequisite).
 
 **W-2 (Nit, Wave 2) — Empty `"devDependencies": {}`** in both new manifests;
 siblings omit the field when unused.
 
-**W-3 (Verified non-issue) — `@tsmetadata/polyfill` in blue-proxy
+**W-3 (Verified non-issue) — `@tsmetadata/polyfill` in ndigo-proxy
 `dependencies` is correct**: it is a runtime side-effect import
 (`src/annotation.ts:15`, Symbol.metadata support for ES2022 targets), not
 build-only. Suggestion to move it to devDependencies is rejected; no action.
@@ -163,11 +163,11 @@ devDependencies (`pnpm exec tsx ...`).
 
 **H-2 (Should Fix, Wave 2) — Dead vendored `mockServiceWorker.js`.**
 `[code]` Root `test/mockServiceWorker.js` (MSW worker, `eslint-disable`
-headers) has zero references outside the graft index; blue-test's
+headers) has zero references outside the graft index; ndigo-test's
 `browser-mock-client` superseded it. Remove after a reference re-check.
 
 **H-3 (Nit, Wave 2) — Legacy root shim.** `[code]` Root `src/index.ts`
-re-exports `@blue/core` with commented-out legacy exports; root
+re-exports `@ndigo/core` with commented-out legacy exports; root
 `package.json` `exports`/`types` point at the gitignored `lib/`. No consumer
 found (`[inference]` — verified via grep; confirm with a build-graph check
 before deleting).
@@ -194,7 +194,7 @@ lack per-function JSDoc vs package convention.
   descriptor freezing, fail-loud annotation-name validation, `#private`
   preservation through the proxy — all exercised by tests.
 - AD-42/AD-43, plans, and guide 15 form a complete decision trail; the
-  demo-gate convention (blue-api audit, blue-service resilience) matches
+  demo-gate convention (ndigo-api audit, ndigo-service resilience) matches
   cached/scheduled precedent.
 - tsconfig / nx / vitest / workspace wiring of both packages is
   byte-for-byte consistent with siblings.

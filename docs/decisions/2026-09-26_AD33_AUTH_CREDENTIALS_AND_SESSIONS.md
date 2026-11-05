@@ -7,7 +7,7 @@ waves; see [docs/plans/2026-09-26_AUTH_COMPLETION.md](../plans/2026-09-26_AUTH_C
 ## Background
 
 The Framework Gap Analysis §3 Auth row records five missing capabilities
-over the existing stack (`blue-auth-core` adapter seam — `AuthAdapter`
+over the existing stack (`ndigo-auth-core` adapter seam — `AuthAdapter`
 {`id`, `validate`, `authenticate`, `refresh`, `logout`} — `AuthRegistry`,
 `AuthServer.validateAny` fail-closed adapter lists, `AuthRouteGuard`,
 `jose`-based JWT): **no credential/password auth, no first-party user
@@ -22,14 +22,14 @@ closing all three.
 The repo's settled pattern applies (AD-19, AD-29): **own the contract,
 wrap the ecosystem standard, use platform standard APIs directly** — and
 the design-space was narrowed in working session: `PasswordEncoder` names
-follow JS/TS + BlueJS vocabulary, no speculative `Verifier` interface, and
+follow JS/TS + ndigo vocabulary, no speculative `Verifier` interface, and
 the generalization point stays the existing `AuthAdapter` seam.
 
 ## Decisions
 
-### D-1 — `PasswordEncoder` contract: reference shape, BlueJS/JS names
+### D-1 — `PasswordEncoder` contract: reference shape, ndigo/JS names
 
-`blue-auth-core` gains:
+`ndigo-auth-core` gains:
 
 ```ts
 interface PasswordEncoder {
@@ -41,12 +41,12 @@ interface PasswordEncoder {
 
 The shape mirrors the reference security layer's `PasswordEncoder` (`encode`/`matches`);
 the verify method is named **`verify`**, not `matches` — deliberate
-deviation. `matches` is already BlueJS vocabulary for _pattern matching_
+deviation. `matches` is already ndigo vocabulary for _pattern matching_
 (`Matchable`, `MediaType.matches`, dispatcher conditions, interceptor
 guards); `verify` is the repo's existing auth vocabulary (adapter JSDoc
 "verify identities", route-guard, the wrapped `jose.jwtVerify`) and the JS
 ecosystem's convergent name (`argon2.verify`). `needsRehash` follows the
-JS password-lib convention and BlueJS's `can*` predicate shape; it is the
+JS password-lib convention and ndigo's `can*` predicate shape; it is the
 `upgradeEncoding` hook under a name that states the reason.
 
 ### D-2 — Self-describing format + delegating encoder; unknown scheme fails closed
@@ -82,7 +82,7 @@ identity-shaped. There is no consumer that needs polymorphism over
 boolean verifiers, and TS structural typing makes the deferral free: a
 future TOTP/captcha check with the same shape is assignable wherever a
 consumer wants it. The generalization point is the existing `AuthAdapter`,
-not a new `blue-core` contract. Extract a `Verifier` (next to `Matchable`)
+not a new `ndigo-core` contract. Extract a `Verifier` (next to `Matchable`)
 only if a second boolean-shaped credential verifier materializes.
 
 ### D-5 — First-party credentials adapter on the existing seam
@@ -106,7 +106,7 @@ Registered via the existing `AuthRegistry`; `AuthServer.validateAny` and
 
 First-party, server-rendered auth uses **opaque tokens** (32 bytes
 `randomBytes`, base64url), not JWTs: trivially revocable, no replay
-window. `SessionStore` contract in `blue-auth-server` (mirroring the
+window. `SessionStore` contract in `ndigo-auth-server` (mirroring the
 `QueueMessageStore` shape — `kind` string, in-memory first, Redis/LibSQL
 later): `create(record, ttlMs)`, `get(id)`, `rotate(id, record)`,
 `delete(id)`; TTL checked on read, opportunistic sweep on create. Cookie
@@ -143,7 +143,7 @@ revocation and rotation.
 ## Verification
 
 Per-wave gates in the plan (package `vitest run` + `tsc -b`, demo smoke on
-`apps/blue-api`, security matrix: fail-closed scheme handling, fixation
+`apps/ndigo-api`, security matrix: fail-closed scheme handling, fixation
 rotation, reuse detection, 429 + `Retry-After`, CSRF on login/logout).
 On landing: gap-analysis §2.1 rate-limiting row, §2.2 session-store row and
 §3 Auth row flipped to IMPLEMENTED with ADR/plan links; `graft build`

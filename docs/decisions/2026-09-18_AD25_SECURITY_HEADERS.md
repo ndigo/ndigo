@@ -1,4 +1,4 @@
-# AD-25: Security headers — wrap Helmet, default-on in `@blue/platform-node`
+# AD-25: Security headers — wrap Helmet, default-on in `@ndigo/platform-node`
 
 **Date:** 2026-09-18
 **Status:** Accepted — implementation landed 2026-09-18 (reviewed in the
@@ -11,7 +11,7 @@ SEC-6/server hardening: the Node server sent no security headers — no CSP,
 no HSTS, no frame/referrer/sniffing protections — on any default app. The
 only header was `X-Content-Type-Options: nosniff` on the static-file
 controller. The Framework Gap Analysis named the fix shape:
-interceptor-shaped, fitting the `blue-platform-node` interceptor +
+interceptor-shaped, fitting the `ndigo-platform-node` interceptor +
 auto-configuration machinery.
 
 ## Evidence
@@ -25,17 +25,17 @@ auto-configuration machinery.
 - Helmet 8.3.0: zero runtime dependencies, per-header middleware exports,
   TypeScript types built in, options validated at middleware construction —
   the wrap-don't-reimplement doctrine (croner/ws/jose precedent).
-- Demo pages use external scripts only; `blue-api` serves the STOMP demo
+- Demo pages use external scripts only; `ndigo-api` serves the STOMP demo
   over `ws://` — the CSP default must not break it.
-- Implementation live: `packages/blue-platform-node/src/security-headers-interceptor.ts`,
+- Implementation live: `packages/ndigo-platform-node/src/security-headers-interceptor.ts`,
   default prepended in `NodeAutoConfiguration.handlerMapping()`, spec
-  coverage in `packages/blue-platform-node/test/security-headers.spec.ts`;
+  coverage in `packages/ndigo-platform-node/test/security-headers.spec.ts`;
   commits `4798166b`, `1333a8cb`, `68b2c3a4` reviewed 2026-09-18.
 
 ## Decision
 
 - **D-1 — Wrap Helmet behind `SecurityHeadersInterceptor`**
-  (`RouteHandlerInterceptor` in `blue-platform-node`). Constructor builds
+  (`RouteHandlerInterceptor` in `ndigo-platform-node`). Constructor builds
   the per-header Helmet middlewares (construction-time validation — unknown
   options throw at bean startup, not first request); `preHandle` invokes
   each against the route's `ServerResponse`, skipping when absent or
@@ -79,8 +79,8 @@ auto-configuration machinery.
 ## References
 
 - Plan: `docs/plans/2026-09-18_SECURITY_HEADERS.md`
-- Implementation: `packages/blue-platform-node/src/security-headers-interceptor.ts`,
-  `packages/blue-platform-node/test/security-headers.spec.ts`
+- Implementation: `packages/ndigo-platform-node/src/security-headers-interceptor.ts`,
+  `packages/ndigo-platform-node/test/security-headers.spec.ts`
 - Review: `docs/plans/2026-09-18_CODE_REVIEW_AND_MITIGATION.md` (§2.3,
   D1 `connect-src` note)
 - Gap analysis row: `docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md` (SEC-6)

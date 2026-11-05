@@ -31,8 +31,8 @@ Provide durable state where restart survival is the requirement, and shared coor
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Session persistence          | `SessionStore`; memory default; completed `LibSQLSessionStore` with explicit initialization, atomic expiry-preserving rotation and owned/borrowed lifecycle | Redis session adapter only if a concrete consumer requires it; not part of the completed cache phase.                                                                                                                                             |
 | STOMP durable messages       | `QueueMessageStore`; memory default; completed LibSQL lifecycle baseline and `LibSQLQueueMessageStore` persistence/history                                  | Cross-node queue consumption/coordination is not implemented; any Redis store decision is independent of live pub/sub.                                                                                                                            |
-| Generic cache                | Awaitable `Cache`/`CacheManager`; memory default; completed `@blue/redis/cache` shared backend                                                              | Additional backend only for demonstrated need; Redis per-cache eviction is not supported.                                                                                                                                                         |
-| WebSocket cross-node fan-out | Completed `SocketFanout`, `@blue/redis/pubsub`, opt-in Node path/room and STOMP topic delivery                                                              | Live-only, no replay/reconnect/global ordering/exactly-once; sockets/membership and queues/users remain local.                                                                                                                                    |
+| Generic cache                | Awaitable `Cache`/`CacheManager`; memory default; completed `@ndigo/redis/cache` shared backend                                                             | Additional backend only for demonstrated need; Redis per-cache eviction is not supported.                                                                                                                                                         |
+| WebSocket cross-node fan-out | Completed `SocketFanout`, `@ndigo/redis/pubsub`, opt-in Node path/room and STOMP topic delivery                                                             | Live-only, no replay/reconnect/global ordering/exactly-once; sockets/membership and queues/users remain local.                                                                                                                                    |
 | Scheduled jobs               | `ScheduleRegistry` / `TaskScheduler`; in-process single-flight                                                                                              | Define whether the requirement is persisted schedule metadata, queued durable jobs, or distributed single-flight. These are distinct features. Implement only the requested scheduler persistence/coordination contract, not a generic job queue. |
 
 ## 3. Dependency-aware delivery order
@@ -52,9 +52,9 @@ Before backend work, pin the existing guarantees and identify truly shared prere
 
 ### Phase 1 — LibSQL session store (first consumer of durable state)
 
-Add `LibSQLSessionStore` in the persistence-friendly package selected by dependency review (likely `blue-orm-drizzle`, while keeping `SessionStore` in `blue-auth-core`). Use a schema/table owned or explicitly supplied by the application; do not silently migrate or drop application tables. Persist only the session fields required by the contract and use parameterized SQL.
+Add `LibSQLSessionStore` in the persistence-friendly package selected by dependency review (likely `ndigo-orm-drizzle`, while keeping `SessionStore` in `ndigo-auth-core`). Use a schema/table owned or explicitly supplied by the application; do not silently migrate or drop application tables. Persist only the session fields required by the contract and use parameterized SQL.
 
-**As built (2026-10-01):** `LibSQLSessionStore` in `blue-orm-drizzle` — explicit idempotent `initialize()` (table + expiry index, no migration of app tables), strict `Principal` decode (malformed records reject, never auth-miss), atomic rotation via a single conditional `UPDATE … WHERE session_id = ? AND expires_at > ?` (exactly one contender wins; absolute expiry preserved and reported), live-session cap enforced in the same write batch, expired-row purge on access/create, owned/borrowed client semantics, and `close()` as the container `Closeable` bridge (exactly-once close of owned clients). `intMode: 'number'` is a documented requirement for injected clients (strict decode rejects bigint/string modes). Real `CredentialsAuthAdapter` validate/refresh/logout compose over it in regression coverage; the in-memory store remains the default.
+**As built (2026-10-01):** `LibSQLSessionStore` in `ndigo-orm-drizzle` — explicit idempotent `initialize()` (table + expiry index, no migration of app tables), strict `Principal` decode (malformed records reject, never auth-miss), atomic rotation via a single conditional `UPDATE … WHERE session_id = ? AND expires_at > ?` (exactly one contender wins; absolute expiry preserved and reported), live-session cap enforced in the same write batch, expired-row purge on access/create, owned/borrowed client semantics, and `close()` as the container `Closeable` bridge (exactly-once close of owned clients). `intMode: 'number'` is a documented requirement for injected clients (strict decode rejects bigint/string modes). Real `CredentialsAuthAdapter` validate/refresh/logout compose over it in regression coverage; the in-memory store remains the default.
 
 **Acceptance:**
 
@@ -66,11 +66,11 @@ Add `LibSQLSessionStore` in the persistence-friendly package selected by depende
 
 ### Phase 2 — Redis client/lifecycle foundation and cache adapter
 
-First migrate the synchronous cache contract and all consumers to an awaitable API under AD-39: Redis cannot implement synchronous reads/writes. Decide supported serialized values and synchronous consumer behavior before the cutover; no parallel `AsyncCache` interface or local-snapshot fallback. Then introduce the smallest reusable Redis connection/configuration/lifecycle component in `@blue/redis` and implement the cache adapter against the migrated contract. See AD-40 for client and server-version selection.
+First migrate the synchronous cache contract and all consumers to an awaitable API under AD-39: Redis cannot implement synchronous reads/writes. Decide supported serialized values and synchronous consumer behavior before the cutover; no parallel `AsyncCache` interface or local-snapshot fallback. Then introduce the smallest reusable Redis connection/configuration/lifecycle component in `@ndigo/redis` and implement the cache adapter against the migrated contract. See AD-40 for client and server-version selection.
 
 **Async prerequisite as built:** `Cache` data operations now return promises, with `size()` replacing the synchronous getter. Manager acquisition remains a synchronous local handle lookup. `memoize` always returns a promise; `@cached` requires Promise-returning methods. All consumers await data I/O. Single-flight is scoped to the actual store and lasts through the write; read faults reject and decorator write faults keep the documented best-effort warning policy. This changes no default backend and adds no Redis dependency. Remote value serialization remains a Redis-adapter decision: memory retains arbitrary values without JSON conversion.
 
-**Redis as built (2026-10-01):** Node-only `@blue/redis` pins the verified
+**Redis as built (2026-10-01):** Node-only `@ndigo/redis` pins the verified
 `@redis/client` 6.3.0 base client. The root exposes explicit `RedisConnection`
 lifecycle; `/cache` exposes `RedisCache`/`RedisCacheManager` with optional cache
 and factory peers. Explicit URL-created clients are owned, with no automatic
@@ -107,12 +107,12 @@ scheduler adapter had landed; Phase 3 below subsequently adds live pub/sub.
 
 ### Phase 3 — Redis WebSocket/STOMP cross-node fan-out
 
-Add a transport-neutral pub/sub contract at the `blue-socket` seam and Redis implementation in a platform/adapter package consistent with dependency direction. Each process subscribes to shared topics and fans messages only to its local sessions. Keep `QueueMessageStore` persistence/replay separate; do not claim exactly-once delivery or durable pub/sub.
+Add a transport-neutral pub/sub contract at the `ndigo-socket` seam and Redis implementation in a platform/adapter package consistent with dependency direction. Each process subscribes to shared topics and fans messages only to its local sessions. Keep `QueueMessageStore` persistence/replay separate; do not claim exactly-once delivery or durable pub/sub.
 
-**As built (2026-10-03):** `SocketFanout` in `@blue/socket` exposes async
+**As built (2026-10-03):** `SocketFanout` in `@ndigo/socket` exposes async
 subscribe/unsubscribe and publish for `path | room | topic`, with serialized
 `string | Uint8Array` bodies and optional string headers. `RedisSocketFanout`
-in `@blue/redis/pubsub` borrows the root publisher connection and owns a
+in `@ndigo/redis/pubsub` borrows the root publisher connection and owns a
 separate URL-created subscriber; random origins suppress its own Redis echo.
 One consumer per scope per transport permits one registry and one broker to
 share it. Nodes agree on namespace and envelope schema.
@@ -157,7 +157,7 @@ started.
 
 ### Phase 4 — Distributed scheduling/job semantics decision, then adapter
 
-Do not start with Redis or LibSQL implementation. First ratify a focused ADR that distinguishes: (a) schedule definition persistence, (b) durable queued executions/retries, and (c) distributed leader/single-flight coordination. Choose only the semantics required by a concrete consumer. If selected, implement the narrow contract/adapter behind `@blue/scheduler`; avoid importing BullMQ unless the chosen requirements specifically need its queue semantics.
+Do not start with Redis or LibSQL implementation. First ratify a focused ADR that distinguishes: (a) schedule definition persistence, (b) durable queued executions/retries, and (c) distributed leader/single-flight coordination. Choose only the semantics required by a concrete consumer. If selected, implement the narrow contract/adapter behind `@ndigo/scheduler`; avoid importing BullMQ unless the chosen requirements specifically need its queue semantics.
 
 **Decision (2026-10-03):** no adapter — see [AD-41](../decisions/2026-10-03_AD41_DISTRIBUTED_SCHEDULING_DEFERRED.md). Every real `@scheduled` consumer is a per-node demo; the engine already documents single-flight, `maxRunTime` release-without-cancel, no catch-up, and AD-20 gates a persistent/multi-process adapter on a revisit trigger that has not fired. Constructing durable jobs or a global singleton now would be speculative generality against the cross-node intent that Phase 3 fan-out already covers. Conditional acceptance (a)–(c) is closed as not-applicable; revisit triggers are recorded for a future concrete worker requirement.
 

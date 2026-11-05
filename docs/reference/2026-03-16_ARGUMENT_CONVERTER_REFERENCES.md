@@ -6,7 +6,7 @@
 
 ## Summary
 
-BlueJS route-parameter extractors now support **converter references** in addition to converter functions.
+ndigo route-parameter extractors now support **converter references** in addition to converter functions.
 
 This enables:
 
@@ -45,7 +45,7 @@ sessionStorageValue('darkMode', {
 4. Typed Converter Wrappers (Recommended)
 
 ```typescript
-import { asNumber, queryValue } from '@blue/dispatcher';
+import { asNumber, queryValue } from '@ndigo/dispatcher';
 
 // Wraps an extractor to enforce number conversion
 asNumber(queryValue('page'));
@@ -67,7 +67,7 @@ Named converters are resolved against:
 
 ## Built-in Converter Presets
 
-`@blue/platform-web` exports `argumentValueConverters` with:
+`@ndigo/platform-web` exports `argumentValueConverters` with:
 
 - `identity`
 - `number`
@@ -78,12 +78,12 @@ Named converters are resolved against:
 ## Application Context Registry Example
 
 ```typescript
-import { GenericApplicationContext } from '@blue/context';
+import { GenericApplicationContext } from '@ndigo/context';
 import {
     argumentValueConverters,
     configureArgumentValueConverterRegistry,
     configureBrowserArgumentResolvers,
-} from '@blue/platform-web';
+} from '@ndigo/platform-web';
 
 const context = new GenericApplicationContext('app');
 
@@ -107,11 +107,11 @@ Set `strictNamedConverterLookup: true` in `configureBrowserArgumentResolvers(...
 
 ## Error Handling
 
-If a converter throws, BlueJS wraps it in `ParameterConversionError` so route error resolvers can map conversion failures consistently.
+If a converter throws, ndigo wraps it in `ParameterConversionError` so route error resolvers can map conversion failures consistently.
 
 ## Typed Converter Wrappers
 
-For better readability and type safety, `@blue/dispatcher` provides fluent wrappers:
+For better readability and type safety, `@ndigo/dispatcher` provides fluent wrappers:
 
 - `asNumber(extractor)`
 - `asBoolean(extractor)`

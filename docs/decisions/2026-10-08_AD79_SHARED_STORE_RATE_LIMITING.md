@@ -1,4 +1,4 @@
-# AD-79: Shared-store rate limiting — async `RateLimiter` SPI, `@blue/rate-limit`, Redis fixed-window driver
+# AD-79: Shared-store rate limiting — async `RateLimiter` SPI, `@ndigo/rate-limit`, Redis fixed-window driver
 
 **Date:** 2026-10-08
 **Status:** Accepted, executed 2026-10-08 (see the
@@ -23,13 +23,13 @@ What the repository already provides (verified at HEAD, 2026-10-08):
   decoration-time validation), `RateLimitInterceptor` (default-on in
   `NodeAutoConfiguration.handlerMapping`, metadata-gated — routes without
   metadata are untouched), 429 + `Retry-After` problem documents
-  (`urn:blue:rate-limited`), and `FixedWindowRateLimiter` — per
+  (`urn:ndigo:rate-limited`), and `FixedWindowRateLimiter` — per
   `(windowMs, key)` in-memory buckets with the SEC-2 bound (sweep + oldest
   eviction at 10 000 entries). AD-37 resolved the keying half of the
   peer-gap note ("behind a LB every client may look like the proxy"):
   `NodeRequest.remoteAddress` walks `X-Forwarded-For` rightmost-first
   through the `TrustedProxySet` allowlist.
-- **The SPI already promises Redis.** `packages/blue-platform-node/src/rate-limit.ts`
+- **The SPI already promises Redis.** `packages/ndigo-platform-node/src/rate-limit.ts`
   — the `RateLimiter` interface — is documented as "an integration point
   for distributed backends (Redis) later — the in-memory reference
   implementation ships now". The gap is the implementation, not the seam.
@@ -42,16 +42,16 @@ What the repository already provides (verified at HEAD, 2026-10-08):
   is synchronous; node-redis is inherently async. The interceptor chain
   already awaits: `RouteHandlerInterceptor.preHandle` is
   `PreHandleOutcome | Promise<PreHandleOutcome>`
-  (`packages/blue-dispatcher/src/route-handler-interceptor.ts:21`) and the
+  (`packages/ndigo-dispatcher/src/route-handler-interceptor.ts:21`) and the
   execution chain `await`s each outcome
   (`route-handler-execution-chain.ts:139`). AD-39 ("async by default")
   governs the naming/marking conventions.
 - **The integration precedent is AD-73.** GAP-3 shipped the same topology:
-  a leaf SPI package (`@blue/locks`) with the in-process driver and a
+  a leaf SPI package (`@ndigo/locks`) with the in-process driver and a
   `ContextToken`, the platform bean registered under the token, and the
-  Redis driver as an optional subpath of `@blue/redis` (`@blue/redis/locks`,
+  Redis driver as an optional subpath of `@ndigo/redis` (`@ndigo/redis/locks`,
   peer-optional on the SPI package). REU-9 fixed the inverse mistake the
-  same week (`@blue/inspect` pulling the boot tier transitively) — a Redis
+  same week (`@ndigo/inspect` pulling the boot tier transitively) — a Redis
   driver depending on the platform tier would re-create that coupling.
 
 ## Evidence
@@ -87,24 +87,24 @@ callers migrate, no re-exports or deprecated aliases. The contract
 complements stay: fail loud (`RangeError`) on malformed policies, safe
 for concurrent use.
 
-### D-2 — The SPI moves to a leaf package `@blue/rate-limit`
+### D-2 — The SPI moves to a leaf package `@ndigo/rate-limit`
 
 New package (AD-73's topology; layer 2, isomorphic): `RateLimitPolicy`,
 `RateLimitResult`, `RateLimiter`, `validateRateLimitPolicy`,
 `likeRateLimiter` guard, `FixedWindowRateLimiter` (moved unchanged), and
-the `RATE_LIMITER` context token. `@blue/platform-node` keeps the
+the `RATE_LIMITER` context token. `@ndigo/platform-node` keeps the
 enforcement surface — `@rateLimit` metadata, `RATE_LIMIT_KEY`, the
 interceptor — and registers its bean under `@entry(RATE_LIMITER)` (AD-34
 token alignment; the AD-73 `lockDriver` bean is the template). The
 decorator's options type and the interceptor's limiter type come from the
-SPI package. A driver in `@blue/redis` therefore peers on a dependency-
+SPI package. A driver in `@ndigo/redis` therefore peers on a dependency-
 light contract instead of pulling the dispatcher/router web tier
 (REU-9's lesson).
 
-### D-3 — `@blue/redis/rate-limit`: `RedisRateLimiter`, fixed windows in one Lua script
+### D-3 — `@ndigo/redis/rate-limit`: `RedisRateLimiter`, fixed windows in one Lua script
 
 Borrowed `RedisConnection` + `namespace` (the AD-40 driver shape), key
-`blue:rl:<namespace>:<windowMs>:<key>` — the window is part of the key,
+`ndigo:rl:<namespace>:<windowMs>:<key>` — the window is part of the key,
 exactly like the in-process bucket key, so policies with different windows
 never share a budget. One Lua script per consume: `INCR`, `PEXPIRE` on
 the first request of a window (window anchored at first request, matching
@@ -120,7 +120,7 @@ unthrottled (or misreporting it as 429 with `Retry-After`). This is the
 security-correct posture for a brute-force control (SEC-6): an outage
 must surface, not silently widen the budget ledger to infinity.
 `onError: 'fail-open'` is an explicit opt-in for availability-sensitive
-deployments; it logs every allowance through `@blue/log` (no raw
+deployments; it logs every allowance through `@ndigo/log` (no raw
 console — the wave-5 recurrence invariant). The in-process limiter never
 fails; this option exists only on the shared-store driver.
 
@@ -141,11 +141,11 @@ at first request, distinct keys and distinct windows independent. The
 live Redis lane asserts the cross-node property the memory driver cannot:
 **two drivers on separate connections, same namespace, share one budget**
 (the lock-driver live-lane pattern, skipped without
-`BLUE_REDIS_TEST_URL`). A malformed policy must fail loud on both.
+`NDIGO_REDIS_TEST_URL`). A malformed policy must fail loud on both.
 
 ## Alternatives considered
 
-- **Redis driver inside `@blue/platform-node`**: couples the platform tier
+- **Redis driver inside `@ndigo/platform-node`**: couples the platform tier
   to a leaf adapter and forces a node-redis dep on every platform consumer.
   Rejected — REU-9 fixed this exact class; AD-73's leaf-SPI topology is
   the settled pattern.
@@ -158,7 +158,7 @@ live Redis lane asserts the cross-node property the memory driver cannot:
   remainder semantics documented in guides and the demo). A later driver
   can implement a different algorithm behind the same SPI; D-6's parity
   tests pin the current one.
-- **A required peer of `@blue/rate-limit` on `@blue/redis`**: `@blue/redis`
+- **A required peer of `@ndigo/rate-limit` on `@ndigo/redis`**: `@ndigo/redis`
   keeps all capability contracts optional peers (AD-40); the rate-limit
   peer joins that list.
 
@@ -167,18 +167,18 @@ live Redis lane asserts the cross-node property the memory driver cannot:
 - Multi-process deployments enforce one global budget per (window, key):
   N nodes no longer multiply the effective limit by N. Budgets survive
   process restarts (server-held TTL counters).
-- Public API break in `@blue/platform-node`: `RateLimiter`/`RateLimitPolicy`/
+- Public API break in `@ndigo/platform-node`: `RateLimiter`/`RateLimitPolicy`/
   `RateLimitResult`/`validateRateLimitPolicy`/`FixedWindowRateLimiter` move
-  to `@blue/rate-limit`; `consume` is async; the bean registers under
+  to `@ndigo/rate-limit`; `consume` is async; the bean registers under
   `RATE_LIMITER`. Apps importing `RateLimitPolicy` migrate to
-  `@blue/rate-limit`; the `@rateLimit` decorator and the 429 behavior are
+  `@ndigo/rate-limit`; the `@rateLimit` decorator and the 429 behavior are
   unchanged.
 - Fail-closed means a Redis outage fails requests on limited routes
   (platform error path) — operators must choose `fail-open` explicitly and
   watch the log. Documented in the driver, the guide, and this ADR.
-- `@blue/redis` gains `@blue/log` (fail-open observability) and the
-  optional `@blue/rate-limit` peer; `@blue/platform-node` gains
-  `@blue/rate-limit` as a dependency.
+- `@ndigo/redis` gains `@ndigo/log` (fail-open observability) and the
+  optional `@ndigo/rate-limit` peer; `@ndigo/platform-node` gains
+  `@ndigo/rate-limit` as a dependency.
 - The in-process limiter keeps its SEC-2 bound and per-instance state;
   "one budget per process" is the documented wiring contract (one bean).
 
@@ -189,12 +189,12 @@ live Redis lane asserts the cross-node property the memory driver cannot:
   async interceptor specs; the logging interceptor already returns
   promises).
 - The moved limiter spec ports exactly with `await`; the interceptor spec
-  gains the same. The `@blue/util` delay helper in the moved spec is
+  gains the same. The `@ndigo/util` delay helper in the moved spec is
   replaced by promisified `node:timers/promises` `setTimeout` so the leaf
   package stays dependency-light.
 - The redis driver's two-node spec follows `RedisLockDriver`'s live-lane
-  template byte-for-byte (skip without `BLUE_REDIS_TEST_URL`, `afterEach`
-  SCAN+DEL cleanup under `blue:rl:<namespace>:*`), adding a same-namespace
+  template byte-for-byte (skip without `NDIGO_REDIS_TEST_URL`, `afterEach`
+  SCAN+DEL cleanup under `ndigo:rl:<namespace>:*`), adding a same-namespace
   second-connection budget test that the memory driver cannot have.
 
 ## Risks
@@ -210,7 +210,7 @@ live Redis lane asserts the cross-node property the memory driver cannot:
 - **`PTTL` edge**: a key whose TTL was externally cleared could return
   `-1`; the driver clamps `retryAfterMs` to ≥ 0 (the interceptor floors
   `Retry-After` at 1 s), and the deny decision itself is unaffected.
-- **Namespace collisions**: `blue:rl:<ns>:` is a convention, not
+- **Namespace collisions**: `ndigo:rl:<ns>:` is a convention, not
   authorization — the AD-40 doctrine (protect Redis with ACLs and trusted
   network) applies unchanged.
 
@@ -220,9 +220,9 @@ live Redis lane asserts the cross-node property the memory driver cannot:
   §8 Wave-6 capacity track ("GAP-8/9/13 … as capacity work"), §10
   deferred table.
 - AD-33 (rate limiting, SEC-6), AD-37 (trusted-proxy keying), AD-39
-  (async by default), AD-73 (leaf-SPI topology + `@blue/redis/locks`
+  (async by default), AD-73 (leaf-SPI topology + `@ndigo/redis/locks`
   driver + token bean), AD-34 (TypeScript-native tokens), AD-40
-  (`@blue/redis` connection/namespace doctrine), AD-67 (`@blue/log`
+  (`@ndigo/redis` connection/namespace doctrine), AD-67 (`@ndigo/log`
   leaf).
 - Companion plan: `docs/plans/2026-10-08_SHARED_STORE_RATE_LIMITING.md`;
   guide 11 §5 and guide 16 updated at execution.

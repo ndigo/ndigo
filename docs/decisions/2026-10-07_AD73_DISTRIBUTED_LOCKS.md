@@ -1,4 +1,4 @@
-# AD-73: Distributed locks — `@blue/locks`
+# AD-73: Distributed locks — `@ndigo/locks`
 
 **Date:** 2026-10-07
 **Status:** Accepted
@@ -9,7 +9,7 @@
 ## Context
 
 The 2026-10-07 review lists GAP-3: **distributed locks / persistent schedules**
-— absent, 1.0-severity high; recommended shape "`@blue/locks` (Redis/PG
+— absent, 1.0-severity high; recommended shape "`@ndigo/locks` (Redis/PG
 advisory, fencing) + `@scheduled({lock})`". Wave 6 is ADR-gated; this record is
 the gate. The Wave-6 dependency cluster is GAP-3 → GAP-1 → GAP-2 — GAP-1
 (durable jobs + outbox) landed as AD-72 at `d950ad5c`, so GAP-3 is next, ahead
@@ -17,22 +17,22 @@ of GAP-2 (cluster/worker offload).
 
 What the repository already provides, and what is missing:
 
-- **Single-executor is node-local today.** `@blue/scheduler` runs `@scheduled`
+- **Single-executor is node-local today.** `@ndigo/scheduler` runs `@scheduled`
   methods in-process with single-flight (a task never overlaps itself) and
   drain-on-close — the guarantee holds only inside one process. Two nodes can
   run the same schedule, or one node can run it while a failover node also
   starts; nothing coordinates them.
 - **Lease-based atomic claims have a verified template.** AD-72's
-  `RedisJobDriver` (`packages/blue-redis/src/jobs/redis-job-driver.ts`) claims
+  `RedisJobDriver` (`packages/ndigo-redis/src/jobs/redis-job-driver.ts`) claims
   jobs with one Lua script: expire-if-dead, CAS-style reacquire, heartbeat
   renew — exactly the mechanics a distributed lock needs, minus the fencing
   half (a lock must let its holder **prove** it is still the holder).
 - **The `@scheduled` extension point exists.** `ScheduledTaskDefinition`
-  (`packages/blue-scheduler/src/task-scheduler.ts`) already carries
+  (`packages/ndigo-scheduler/src/task-scheduler.ts`) already carries
   `maxRunTimeMs` next to the schedule; the runner wraps each run with
   flight-slot, span, and drain semantics. A `lock` option slots into the same
   wrapper rather than into the schedule grammar itself.
-- **No locks, no cluster.** GAP-2 (`blue serve --cluster <n>`) needs a shared
+- **No locks, no cluster.** GAP-2 (`ndigo serve --cluster <n>`) needs a shared
   truth for "who runs this" per task; GAP-1's `@jobHandler` needs single active
   lease-holders among workers. Locks are the shared primitive both consume —
   which is why they precede the cluster work.
@@ -41,7 +41,7 @@ What the repository already provides, and what is missing:
 
 - Redis lock primitive (SET key value PX ttl NX + Lua compare-and-delete on
   release): the industry-standard shape; `RedisConnection.run(operation)`
-  (`packages/blue-redis/src/connection.ts`) is the owned/borrowed connection
+  (`packages/ndigo-redis/src/connection.ts`) is the owned/borrowed connection
   wrapper the driver would use, identical to AD-72's template.
 - Fencing-token precedent: AD-72 increments `attempts` at claim and latches a
   terminal close — monotonically increasing per-key counters are already the
@@ -63,12 +63,12 @@ What the repository already provides, and what is missing:
 
 ## Decision
 
-### D-1 — One contract package: `@blue/locks`
+### D-1 — One contract package: `@ndigo/locks`
 
-`@blue/locks` (Node platform, layer 4 beside `@blue/scheduler`) owns the lock
+`@ndigo/locks` (Node platform, layer 4 beside `@ndigo/scheduler`) owns the lock
 **contract**, the fencing-token model, and the in-process reference driver.
 Backends are adapters owned by the package that owns the client —
-`@blue/redis/locks` (AD-51 subpath) for the Redis driver. The default driver is
+`@ndigo/redis/locks` (AD-51 subpath) for the Redis driver. The default driver is
 explicitly in-process and non-durable, exactly like `InProcessJobDriver` and
 the memory cache manager; cross-process guarantees are opt-in by registering
 the Redis driver bean.
@@ -145,10 +145,10 @@ way.
 
 ### D-5 — Backends: Redis now, PG advisory documented-deferred
 
-- `@blue/redis/locks` ships with AD-73's implementation: Lua script for
+- `@ndigo/redis/locks` ships with AD-73's implementation: Lua script for
   acquire (`SET ... NX PX` with token) and token-checked release/renew.
 - PG advisory locks need new substrate (no PG client exists in the repo;
-  `@blue/orm-drizzle` is libSQL) and have no consumer yet — the ADR records
+  `@ndigo/orm-drizzle` is libSQL) and have no consumer yet — the ADR records
   the driver as a follow-up, not a commitment. This is the pushed-back
   alternative below, not a silent omission.
 
@@ -188,4 +188,4 @@ way.
   `NodeAutoConfiguration` bean wiring.
 - AD-20 D2 (`@scheduled` registry + `TaskScheduler` single-flight).
 - AD-41 (distributed scheduling deferred — unchanged; locks do not reopen it).
-- AD-51 (`@blue/redis` subpath layout: `./cache`, `./pubsub`, `./jobs`).
+- AD-51 (`@ndigo/redis` subpath layout: `./cache`, `./pubsub`, `./jobs`).

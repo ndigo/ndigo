@@ -1,8 +1,8 @@
-# URL Parsing Specifications - BlueJS Implementation
+# URL Parsing Specifications - ndigo Implementation
 
 **Created:** 2025-02-06  
 **Status:** Reference Documentation  
-**Related Packages:** `@blue/http`, `@blue/router`
+**Related Packages:** `@ndigo/http`, `@ndigo/router`
 
 ---
 
@@ -21,19 +21,19 @@
 
 ## Overview
 
-This document describes BlueJS's implementation of URL query string and matrix string parsing/stringification, documenting compliance with relevant specifications and any intentional deviations.
+This document describes ndigo's implementation of URL query string and matrix string parsing/stringification, documenting compliance with relevant specifications and any intentional deviations.
 
 ### Key Implementation Files
 
 - **Query Strings:**
 
-    - Parser + stringifier: `packages/blue-http/src/query-string.ts`
+    - Parser + stringifier: `packages/ndigo-http/src/query-string.ts`
       (parsing delegates to the WHATWG `URLSearchParams` parser)
-    - Tests: `packages/blue-http/test/query-string*.spec.ts`
+    - Tests: `packages/ndigo-http/test/query-string*.spec.ts`
 
 - **Matrix Strings:**
-    - Parser + stringifier: `packages/blue-http/src/matrix-string.ts`
-    - Tests: `packages/blue-http/test/matrix-string*.spec.ts`
+    - Parser + stringifier: `packages/ndigo-http/src/matrix-string.ts`
+    - Tests: `packages/ndigo-http/test/matrix-string*.spec.ts`
 
 ---
 
@@ -275,22 +275,22 @@ MatrixString.stringify({
 
 ### Query String Compliance
 
-| Feature                         | RFC 3986 | WHATWG | BlueJS | Status              |
-| ------------------------------- | -------- | ------ | ------ | ------------------- |
-| Ampersand delimiter             | ✓        | ✓      | ✓      | ✅ Compliant        |
-| Semicolon delimiter             | ✓        | ✗      | ✗      | ✅ Aligned (WHATWG) |
-| Percent-encoding                | ✓        | ✓      | ✓      | ✅ Compliant        |
-| Plus-to-space                   | —        | ✓      | ✓      | ✅ Compliant        |
-| Multiple values (repeated keys) | —        | ✓      | ✓      | ✅ Compliant        |
-| Empty value semantics           | —        | `""`   | `""`   | ✅ Aligned (WHATWG) |
-| Missing value semantics         | —        | N/A    | `""`   | ✅ Aligned (WHATWG) |
-| Key sorting                     | —        | ✗      | ✓      | ℹ️ Extension        |
-| Bracket arrays (`foo[]`)        | —        | ✗      | ✗      | ℹ️ Not implemented  |
-| Indexed arrays (`foo[0]`)       | —        | ✗      | ✗      | ℹ️ Not implemented  |
+| Feature                         | RFC 3986 | WHATWG | ndigo | Status              |
+| ------------------------------- | -------- | ------ | ----- | ------------------- |
+| Ampersand delimiter             | ✓        | ✓      | ✓     | ✅ Compliant        |
+| Semicolon delimiter             | ✓        | ✗      | ✗     | ✅ Aligned (WHATWG) |
+| Percent-encoding                | ✓        | ✓      | ✓     | ✅ Compliant        |
+| Plus-to-space                   | —        | ✓      | ✓     | ✅ Compliant        |
+| Multiple values (repeated keys) | —        | ✓      | ✓     | ✅ Compliant        |
+| Empty value semantics           | —        | `""`   | `""`  | ✅ Aligned (WHATWG) |
+| Missing value semantics         | —        | N/A    | `""`  | ✅ Aligned (WHATWG) |
+| Key sorting                     | —        | ✗      | ✓     | ℹ️ Extension        |
+| Bracket arrays (`foo[]`)        | —        | ✗      | ✗     | ℹ️ Not implemented  |
+| Indexed arrays (`foo[0]`)       | —        | ✗      | ✗     | ℹ️ Not implemented  |
 
 ### Matrix String Compliance
 
-| Feature                | RFC 3986 | Tim BL | JAX-RS | BlueJS | Status         |
+| Feature                | RFC 3986 | Tim BL | JAX-RS | ndigo  | Status         |
 | ---------------------- | -------- | ------ | ------ | ------ | -------------- |
 | Semicolon delimiter    | ✓        | ✓      | ✓      | ✓      | ✅ Compliant   |
 | Comma-separated arrays | —        | —      | ✓      | ✓      | ✅ Compliant   |
@@ -314,7 +314,7 @@ MatrixString.stringify({
 
 **Specification:** RFC 3986 uses `%20`, WHATWG form encoding uses `+`
 
-**BlueJS Implementation:** Decodes `+` as space (form encoding style)
+**ndigo Implementation:** Decodes `+` as space (form encoding style)
 
 **Rationale:**
 
@@ -328,7 +328,7 @@ MatrixString.stringify({
 
 **Specification:** No specification requires key sorting
 
-**BlueJS Implementation:** Keys are alphabetically sorted in stringification
+**ndigo Implementation:** Keys are alphabetically sorted in stringification
 
 **Rationale:**
 
@@ -343,7 +343,7 @@ MatrixString.stringify({
 
 **Common Pattern:** `foo[]=bar&foo[]=baz` or `foo[0]=bar&foo[1]=baz`
 
-**BlueJS Implementation:** Not supported, brackets treated as literal characters
+**ndigo Implementation:** Not supported, brackets treated as literal characters
 
 **Rationale:**
 
@@ -369,7 +369,7 @@ hold duplicate keys, and `getAll()`-style access is the framework's shape.
 ### Query String Round-trips
 
 ```typescript
-import QueryString from '@blue/http/query-string';
+import QueryString from '@ndigo/http/query-string';
 
 // Basic parsing
 QueryString.parse('foo=bar&baz=qux');
@@ -413,7 +413,7 @@ const output = QueryString.stringify(parsed);
 ### Matrix String Round-trips
 
 ```typescript
-import MatrixString from '@blue/http/matrix-string';
+import MatrixString from '@ndigo/http/matrix-string';
 
 // Basic parsing
 MatrixString.parse('foo=bar;baz=qux');
@@ -455,7 +455,7 @@ native.get('foo'); // → "bar" (first value only)
 native.getAll('foo'); // → ["bar", "123"] (all values)
 Array.from(native.keys()); // → ["foo", "baz", "foo"] (not deduplicated)
 
-// BlueJS QueryString
+// ndigo QueryString
 const ours = QueryString.parse('foo=bar&baz=qux&foo=123');
 ours.foo; // → ["bar", "123"] (array of all values)
 Object.keys(ours); // → ["foo", "baz"] (deduplicated)
@@ -514,15 +514,15 @@ MatrixString.parse('emoji=%F0%9F%8D%95;chinese=%E4%B8%AD%E6%96%87');
 
 ### Related Documentation
 
-- **BlueJS Architecture:** `ARCHITECTURE.md`
-- **BlueJS Style Guide:** `STYLE_GUIDE.md`
+- **ndigo Architecture:** `ARCHITECTURE.md`
+- **ndigo Style Guide:** `STYLE_GUIDE.md`
 - **Consolidation Plan:** `docs/plans/2025-02-03_QUERY_MATRIX_STRING_CONSOLIDATION.md`
 - **Test Suites:**
-    - `packages/blue-http/test/query-string.spec.ts`
-    - `packages/blue-http/test/query-string-spec-compliance.spec.ts`
-    - `packages/blue-http/test/matrix-string.spec.ts`
-    - `packages/blue-http/test/matrix-string-spec-compliance.spec.ts`
-    - `packages/blue-http/test/url-search-params-compat.spec.ts`
+    - `packages/ndigo-http/test/query-string.spec.ts`
+    - `packages/ndigo-http/test/query-string-spec-compliance.spec.ts`
+    - `packages/ndigo-http/test/matrix-string.spec.ts`
+    - `packages/ndigo-http/test/matrix-string-spec-compliance.spec.ts`
+    - `packages/ndigo-http/test/url-search-params-compat.spec.ts`
 
 ---
 
@@ -546,4 +546,4 @@ MatrixString.parse('emoji=%F0%9F%8D%95;chinese=%E4%B8%AD%E6%96%87');
 
 **Document Status:** Complete  
 **Last Updated:** 2026-09-13  
-**Maintained By:** BlueJS Core Team
+**Maintained By:** ndigo Core Team

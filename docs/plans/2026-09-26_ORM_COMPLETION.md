@@ -16,7 +16,7 @@ API**, **relation fetch semantics / lazy loading**, and the thin
 **`DerivedQueryRepository`** (equality filters only).
 Builds on the existing five-contract ORM (`DataSource`, `EntityManager`,
 `UnitOfWork`, `TransactionManager`, `Repository` — all complete in
-`blue-orm-drizzle` since AD-07/M3 resolution).
+`ndigo-orm-drizzle` since AD-07/M3 resolution).
 
 **Working-session notes (as-built, Wave 1):**
 
@@ -34,7 +34,7 @@ Builds on the existing five-contract ORM (`DataSource`, `EntityManager`,
   (failed migrations leave no journal row and retry cleanly; partially
   applied DDL is the documented degradation — author idempotent DDL or
   restore from backup).
-- Journal: `_blue_migrations (version INTEGER PRIMARY KEY, description TEXT
+- Journal: `_ndigo_migrations (version INTEGER PRIMARY KEY, description TEXT
   NOT NULL, applied_at TEXT NOT NULL)`; `migrate()` is idempotent; `status()`
   reports applied/pending over the given migration list.
 - Versions are unique positive integers applied in ascending order; gaps in
@@ -69,7 +69,7 @@ and query-composition** layer on top.
 
 - **D-1 — Journaled, versioned, forward-only runner.** `DrizzleMigrator`
   applies `Migration[]` (code-composed; no file scanning in v1) in ascending
-  version order, recording each in `_blue_migrations`. Forward-only: no
+  version order, recording each in `_ndigo_migrations`. Forward-only: no
   `down`/rollback execution in v1 — rollback is achieved by restoring a
   backup and re-applying (same as Drizzle Kit). `down` is omitted, not
   abstracted.
@@ -110,19 +110,19 @@ and query-composition** layer on top.
 
 ### Wave 1 — Migrations ✅ (implemented 2026-09-26)
 
-- `packages/blue-orm-drizzle/src/drizzle-migrator.ts` — `DrizzleMigrator`
+- `packages/ndigo-orm-drizzle/src/drizzle-migrator.ts` — `DrizzleMigrator`
   (`migrate`, `status`), `Migration`/`MigrationContext`/`MigrationStatus`.
 - `createTableStatements(entities)` extracted into `drizzle-data-source.ts`.
 - Specs `test/drizzle-migrator.spec.ts`: ascending order, idempotency,
   no-journal-on-failure + clean retry, duplicate rejection,
   metadata-baseline parity (persist round-trip on a DB built only by the
   migrator), and baseline + `ALTER TABLE` evolution.
-- **Gate:** `pnpm test` + `pnpm build:lib` in `packages/blue-orm-drizzle`;
+- **Gate:** `pnpm test` + `pnpm build:lib` in `packages/ndigo-orm-drizzle`;
   dependent suites unaffected (additive exports only).
 
 ### Wave 2 — Pagination & sorting ✅ (implemented 2026-09-26)
 
-- **Contracts** (in `@blue/orm`, `src/page.ts`): `SortOrder { property,
+- **Contracts** (in `@ndigo/orm`, `src/page.ts`): `SortOrder { property,
   direction: 'asc' | 'desc' }` (direction defaults `asc`), `PageRequest {
   page, size, sort? }` (1-based page, positive integer size), `Page<T> {
   content, page, size, totalElements, totalPages }`. `validatePageRequest`
@@ -134,11 +134,11 @@ and query-composition** layer on top.
   delegates to a new `DrizzleEntityManager.findPage` that emits
   allowlisted+quoted `ORDER BY`, `LIMIT`, `OFFSET`, and `COUNT(*) AS total`.
   No-sort paging returns insertion order (SQLite rowid order).
-- Specs: `blue-orm/test/page.spec.ts` (9) + `blue-orm-drizzle/test/
+- Specs: `ndigo-orm/test/page.spec.ts` (9) + `ndigo-orm-drizzle/test/
   drizzle-repository.spec.ts` (5): page math, beyond-last pages (empty
   content, stable totals), asc/desc, multi-key clause order, allowlist
   rejection, direction validation.
-- **Gate:** `pnpm test` (blue-orm 96/96, blue-orm-drizzle 40/40, incl. Wave-1
+- **Gate:** `pnpm test` (ndigo-orm 96/96, ndigo-orm-drizzle 40/40, incl. Wave-1
   suites), both `tsc -b` builds green.
 
 ### Wave 3 — Relation fetch semantics ✅ (implemented 2026-09-26)
@@ -161,10 +161,10 @@ owner-confirmed 2026-09-26 (explicit metadata + explicit opt-in).
 - Field fix: `persist` binds unset optional columns as SQL `NULL`, and the
   upsert fallback rethrows the original insert error when the entity has no
   primary key (previously masked).
-- Specs: `blue-orm/test/relations.spec.ts` (8) + `blue-orm-drizzle/test/
+- Specs: `ndigo-orm/test/relations.spec.ts` (8) + `ndigo-orm-drizzle/test/
   drizzle-relations.spec.ts` (5): eager both directions, lazy, unset-FK /
   empty-inverse values, three fail-loud paths per backend.
-- **Gate:** `pnpm test` (blue-orm 113/113, blue-orm-drizzle 49/49, incl.
+- **Gate:** `pnpm test` (ndigo-orm 113/113, ndigo-orm-drizzle 49/49, incl.
   Waves 1–2 + 4 suites), both `tsc -b` builds green.
 
 ### Wave 4 — DerivedQueryRepository enrichment ✅ (implemented 2026-09-26)
@@ -184,11 +184,11 @@ owner-confirmed 2026-09-26 (explicit metadata + explicit opt-in).
   `WHERE … = ?` + allowlisted `ORDER BY` + `LIMIT` via a new
   `DrizzleEntityManager.findAllWhere` building block; sort properties are
   validated against declared columns before any SQL runs.
-- Specs: `blue-orm/test/derived-query.spec.ts` (9) + `blue-orm-drizzle/
+- Specs: `ndigo-orm/test/derived-query.spec.ts` (9) + `ndigo-orm-drizzle/
   test/drizzle-derived-query-repository.spec.ts` (4): grammar cases,
   ordering/direction, limits, chains, `And`-fallback, unsupported-name
   rejection.
-- **Gate:** `pnpm test` (blue-orm 105/105, blue-orm-drizzle 44/44, incl.
+- **Gate:** `pnpm test` (ndigo-orm 105/105, ndigo-orm-drizzle 44/44, incl.
   Waves 1–2 suites), both `tsc -b` builds green.
 
 ## 5. Verification

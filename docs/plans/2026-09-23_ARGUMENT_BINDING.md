@@ -26,7 +26,7 @@ can read individual fields (`bodyValue('email')`) or the whole parsed body as a 
 (`bodyValue('*')`), but nothing instantiates a DTO and binds matching request fields into it — the
 thing Spring calls `@ModelAttribute` and NestJS does with `@Body(DTO)` + `ValidationPipe`.
 
-This plan researches both frameworks' approaches, then proposes a BlueJS-native solution that reuses
+This plan researches both frameworks' approaches, then proposes a ndigo-native solution that reuses
 existing seams (`DataBinder`, `ConversionService`, the resolver strategy pattern, the Zod `convert`
 hook) rather than adding a parallel one.
 
@@ -34,41 +34,41 @@ hook) rather than adding a parallel one.
 
 ## 2. Current state (verified 2026-09-23)
 
-BlueJS already has **every primitive** form/model binding needs; it is simply not wired to the server
+ndigo already has **every primitive** form/model binding needs; it is simply not wired to the server
 path.
 
 - **The resolver strategy pattern is in place.** `HandlerMethodArgumentResolver`
-  (`blue-dispatcher/src/argument-resolver.ts:13`) — `supportsParameter()` + `resolveArgument()` — is
+  (`ndigo-dispatcher/src/argument-resolver.ts:13`) — `supportsParameter()` + `resolveArgument()` — is
   iterated per handler parameter, first match wins. This _is_ Spring's architecture (see §3.1).
 - **A platform resolver base class exists.** `AbstractPlatformArgumentResolver`
-  (`blue-dispatcher/src/abstract-platform-resolver.ts:38`) runs the shared pipeline
+  (`ndigo-dispatcher/src/abstract-platform-resolver.ts:38`) runs the shared pipeline
   `resolveName → default → convertType → Zod convert hook → nil/required check`; platforms implement
   only `resolveName()` + `supportsParameter()`.
 - **Bean binding already exists — browser-only.** `MethodParameterType.BIND = 'bind:value'`
-  (`blue-dispatcher/src/parameters.ts:131`) and the extractor factory `bindBrowserValue(source)`
+  (`ndigo-dispatcher/src/parameters.ts:131`) and the extractor factory `bindBrowserValue(source)`
   (`parameters.ts:342`). On the Node path BIND is **not** an allowed source (it is in the `route`
   set but not the `request` set, `parameters.ts:618-656`). The `BrowserBindMethodArgumentResolver`
-  (`blue-platform-web/src/bind-argument-resolver.ts:23`) binds a named browser data source into an
+  (`ndigo-platform-web/src/bind-argument-resolver.ts:23`) binds a named browser data source into an
   object via `DataBinder`, prefix-filtered. This browser-only BIND seam becomes `data-{source}:value` /
   `dataBinderValue(source)` on both platforms (D-3), with Node sourcing from `request.body`.
-- **The binder primitive is real and keypath-aware.** `DataBinder` (`blue-core/src/data-binder.ts:22`)
+- **The binder primitive is real and keypath-aware.** `DataBinder` (`ndigo-core/src/data-binder.ts:22`)
   applies property values to a target by parsed keypath (`_applyPropertyValues` → `parseKeypath` +
-  `_assocPath`, so `profile.name` nests correctly) and supports required-field checks. This is Blue's
+  `_assocPath`, so `profile.name` nests correctly) and supports required-field checks. This is Ndigo's
   `WebDataBinder`. It currently produces a plain nested object, not a typed class instance.
-- **Type conversion exists.** `ConversionService` (`blue-core`) backs the `convertType` lookup used by
+- **Type conversion exists.** `ConversionService` (`ndigo-core`) backs the `convertType` lookup used by
   every resolver — Spring's thread-safe `ConversionService`, minus the legacy `PropertyEditor` layer.
 - **Validation exists and is stronger than class-validator.** `validatedBy(schema, extractor)`
-  (`blue-dispatcher/src/zod-validated-by.ts:60`) installs a Zod validator as `parameter.convert`, run
+  (`ndigo-dispatcher/src/zod-validated-by.ts:60`) installs a Zod validator as `parameter.convert`, run
   after type conversion. Unknown-key whitelisting needs no option on zod ^4.5.4: object schemas strip
   unknown keys by default (`unknownKeys: 'strip'`); `passthrough` opts out (`.stripUnknown()` does not
   exist on the pinned Zod).
-- **Form fields already reach the request body.** `parseBody` (`blue-platform-node/src/http-request-limits.ts:114`)
+- **Form fields already reach the request body.** `parseBody` (`ndigo-platform-node/src/http-request-limits.ts:114`)
   dispatches `application/x-www-form-urlencoded` into a `Record` via `URLSearchParams`; JSON parses to
-  an object. `NodeBodyValueMethodArgumentResolver` (`blue-platform-node/src/body-argument-resolver.ts:16`)
+  an object. `NodeBodyValueMethodArgumentResolver` (`ndigo-platform-node/src/body-argument-resolver.ts:16`)
   returns `request.body` / `request.body?.[name]`. So the _data_ is there; only the binding step is not.
 - **Multipart context exists (unblocks `@requestPart`).** `NodeRequest.multipart` carries parsed parts
   (`request.multipart.files`, `request.multipart.fields`) after AD-26; `NodeMultipartFileMethodArgumentResolver`
-  (`blue-platform-node/src/multipart-file-argument-resolver.ts:33`) reads `files.get(name)`.
+  (`ndigo-platform-node/src/multipart-file-argument-resolver.ts:33`) reads `files.get(name)`.
 
 Net: the gap is **one missing resolver on the Node path + an extractor that names a target shape**, not
 a missing engine.
@@ -79,12 +79,12 @@ a missing engine.
 
 ### 3.1 Spring MVC — the contract to mirror
 
-BlueJS already mirrors most of this; the bullets note where it does and where form binding diverges.
+ndigo already mirrors most of this; the bullets note where it does and where form binding diverges.
 
 - **Resolver architecture.** `DispatcherServlet` iterates its registered
   `HandlerMethodArgumentResolver`s for each handler parameter, invoking the first whose
   `supportsParameter()` returns true (`resolveArgument(...)`). Custom resolvers register via
-  `WebMvcConfigurer.addArgumentResolvers`. This is a 1:1 match for BlueJS's pattern — so adding form
+  `WebMvcConfigurer.addArgumentResolvers`. This is a 1:1 match for ndigo's pattern — so adding form
   binding means **adding a resolver**, not changing the engine.
 - **`@ModelAttribute` (the gap).** `ModelAttributeMethodProcessor` instantiates the command object
   (default constructor, or reuses an existing model attribute), then a `WebDataBinder` populates its
@@ -93,42 +93,42 @@ BlueJS already mirrors most of this; the bullets note where it does and where fo
   Bean validation (`@Valid`/`@Validated`) into a `BindingResult`. `@ModelAttribute` on _methods_ also
   populates the shared model for later handlers/views.
 - **`@RequestBody`.** `RequestResponseBodyMethodProcessor` deserializes the body (JSON/XML) straight to
-  the typed parameter via `HttpMessageConverters` — no form binding. BlueJS's `bodyValue('*')` already
+  the typed parameter via `HttpMessageConverters` — no form binding. ndigo's `bodyValue('*')` already
   does the JSON half; the gap is the _bean_ side, not the raw-body side.
 - **Per-source resolvers.** `@RequestParam`, `@PathVariable`, `@MatrixVariable`, `@RequestPart`,
-  `@CookieValue`, `@RequestHeader` are each a dedicated resolver — exactly BlueJS's per-extractor model.
+  `@CookieValue`, `@RequestHeader` are each a dedicated resolver — exactly ndigo's per-extractor model.
   `@MatrixVariable` reads semicolon-separated matrix params from a path segment and can pair with a
   `@PathVariable` name; repeated values bind to arrays.
 - **`@RequestPart`.** Like `@RequestBody` but for multipart: a JSON part is deserialized into an object,
   a file part becomes `MultipartFile`. Distinction only matters once multipart exists (AD-26).
 - **`ConversionService` vs `PropertyEditor`.** Spring 3+ uses a thread-safe `ConversionService`
   (`Converter`/`ConverterFactory`/`GenericConverter` SPI) that replaced the stateful, string-centric
-  `PropertyEditor`. BlueJS has the former; never needs the latter.
+  `PropertyEditor`. ndigo has the former; never needs the latter.
 
 ### 3.2 NodeJS / NestJS — the transformation pattern to borrow
 
 - **`@Body(DTO)` + `ValidationPipe`.** The incoming JSON is a plain object; the pipe runs
   `class-transformer`'s `plainToInstance()` to make it a DTO _instance_, then `class-validator`
   decorators validate, and `whitelist: true` strips unknown properties; failure → HTTP 400. The key
-  idea for BlueJS is **runtime plain→class transformation driven by an explicit DTO type**, producing a
+  idea for ndigo is **runtime plain→class transformation driven by an explicit DTO type**, producing a
   real instance (not just a typed view over a plain object).
-- **The extensible seam is pipes.** Every value flows through transform+validate pipes. BlueJS's
+- **The extensible seam is pipes.** Every value flows through transform+validate pipes. ndigo's
   equivalent seam is the `parameter.convert` hook (`validatedBy`, AD-07) plus `convertType`. We already
   have the pipe; we need to bind _into_ an object first, then let the existing pipe validate.
 - **Reflection vs explicit.** NestJS infers the DTO type from `reflect-metadata` `design:type` (and
-  `@Type()` for nesting). BlueJS's established convention is **explicit markers, not reflection** —
+  `@Type()` for nesting). ndigo's established convention is **explicit markers, not reflection** —
   AD-26's `@file()` binds by an explicit marker because "TS parameter types are erased at runtime"
   (`2026-09-22_MULTIPART_FILE_UPLOAD.md` D-5). We follow the same rule: the target is named explicitly.
-- **Parsing primitives.** Express `body-parser` already does urlencoded→Record and JSON→object; BlueJS
+- **Parsing primitives.** Express `body-parser` already does urlencoded→Record and JSON→object; ndigo
   matches that in `parseBody`. Multer/busboy are covered by AD-26. No new parsing dependency needed.
 
-### 3.3 Takeaways for BlueJS
+### 3.3 Takeaways for ndigo
 
 1. The resolver pattern is shared — **add resolvers**, don't touch the engine.
 2. Bean binding = `DataBinder` + `ConversionService`, both owned and present — **reuse, never rebuild**.
-3. plain→class: NestJS wraps `class-transformer`; BlueJS can lean on `DataBinder` (builds nested objects
+3. plain→class: NestJS wraps `class-transformer`; ndigo can lean on `DataBinder` (builds nested objects
    from keypaths) + optional target-constructor instantiation + Zod for validation/whitelist — **no new
-   runtime dependency**, consistent with the "own-the-contract" pattern (`blue-signals`, AD-07, AD-24).
+   runtime dependency**, consistent with the "own-the-contract" pattern (`ndigo-signals`, AD-07, AD-24).
 4. Explicit marker over reflection — precedent is `@file()` / `validatedBy`.
 
 ---
@@ -149,7 +149,7 @@ case — `urlValue`/`locationValue` was a research idea that never landed and is
 ### D-2 — One type per wire source; dotted read only where the shape nests
 
 Each distinct source gets its own `MethodParameterType` (`query:value`, `header:value`, …), matching the
-dominant BlueJS pattern and its per-source resolver files, with kind-validation forbidding a source on an
+dominant ndigo pattern and its per-source resolver files, with kind-validation forbidding a source on an
 incompatible mapping. The discriminating axis is **does the source's value allow nesting?**
 
 - **Scalar-only** (single-level read, no dotted walk): `path:variable`, `query:value`, `matrix:value`,
@@ -164,7 +164,7 @@ to the nested-capable sources above; forcing it onto flat sources is dead code.
 
 ### D-3 — Whole-source binding via `dataBinderValue` → `data-{source}:value`
 
-`DataBinder` (`blue-core`) takes already-extracted flat `{key:value}` pairs and binds them into one target
+`DataBinder` (`ndigo-core`) takes already-extracted flat `{key:value}` pairs and binds them into one target
 object by keypath (`_assocPath`), with required-field checks; the existing `prefix` extractor field keeps
 key-prefix filtering at the resolver layer. Its distinct job is
 **assembling many flat keys into one nested object** — plain destructuring cannot group
@@ -221,12 +221,12 @@ only `body`; revisit on a use case):
 ### D-5 — `ROUTE` type untouched; attributes are framework context, not URL
 
 `attribute:value` / `attributeValue` is a **universal dispatcher-level** resolver
-(`blue-dispatcher/src/argument-resolver.ts:173`; part of the default resolver set that both platforms
+(`ndigo-dispatcher/src/argument-resolver.ts:173`; part of the default resolver set that both platforms
 merge), reading framework-injected `route.attributes` — `acceptLanguage`/`language` on both transports;
 on the server the adapter stashes the request/response under `NODE_REQUEST_ATTRIBUTE`/
 `NODE_RESPONSE_ATTRIBUTE` (`node-request.ts:18`, `node-dispatcher.ts:34`). Not URL-derived. The `ROUTE`
 type is **left as-is this wave**: its factories `routeValue()`/`pathValue()`/`methodValue()` are live
-and consumed in-repo (blue-todo binds the matched path with `pathValue()` on every handler), so nothing
+and consumed in-repo (ndigo-todo binds the matched path with `pathValue()` on every handler), so nothing
 here renames, removes, or redefines them. The whole-`Route` binding variants under research —
 including the `fullPathValue()` idea, one of several route-meta bindings explored and shelved — were
 **never implemented**, and no decision in this plan depends on them.
@@ -248,14 +248,14 @@ overrides the part name. Mirrors Spring's `@RequestPart(value)` with parameter-n
 ### D-7 — `@matrixVariable` parity as an optional light extension (lower priority)
 
 `matrixValue()` + `MatrixValueMethodArgumentResolver` already exist
-(`blue-dispatcher/src/argument-resolver.ts:94`). Full Spring parity — repeated matrix params binding to
+(`ndigo-dispatcher/src/argument-resolver.ts:94`). Full Spring parity — repeated matrix params binding to
 arrays, and required-path-value coupling with a `@PathVariable` segment name — is an incremental
 enhancement to that resolver, not a new component.
 
 ### D-8 — Non-goals
 
 No `urlValue` vs `routeValue` split (D-1), no automatic model-population (Spring's `@ModelAttribute` also
-fills the view model; BlueJS feeds views via `route.data`, so binding is bind-only), no
+fills the view model; ndigo feeds views via `route.data`, so binding is bind-only), no
 `class-validator`/`class-transformer` dependency, no combined form+query source in v1, no
 reflection-based type inference, no server-side session-store or DTO-to-model projection (the gap
 analysis's separate "DTO/object mapping" Tier-2 item).
@@ -305,7 +305,7 @@ surfaces; Node-only files pass the isomorphic browser-globals lint.
 
 ```ts
 import { z } from 'zod';
-import { parameters, dataBinderValue, requestPart, validatedBy } from '@blue/dispatcher';
+import { parameters, dataBinderValue, requestPart, validatedBy } from '@ndigo/dispatcher';
 
 class ProfileForm {
     email = '';
@@ -391,7 +391,7 @@ bracket keypaths like `address[0].street` work via `parseKeypath`); the Zod sche
 missing required field throws `MissingParameterError` (→ 400 — `handleMissingValue`'s bare `TypeError`
 is not mapped by `NodeParameterBindingErrorResolver`); and a target yields an `instanceof` DTO (requires
 the §6 DataBinder instance-preservation change) with unknown keys stripped by the schema by default.
-Gates: `blue-platform-node` vitest + `tsc -b`.
+Gates: `ndigo-platform-node` vitest + `tsc -b`.
 
 **Wave 3 — `@requestPart` (unblocked by AD-26).** `NodeRequestPartMethodArgumentResolver` reading
 `request.multipart`; JSON/text parts bound to a DTO via Wave 1/2 machinery, file parts untouched. Spec

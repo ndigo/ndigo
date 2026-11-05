@@ -24,8 +24,8 @@ tree was clean before and after; throwaway probes were removed.
 Waves 1–2 landed in `91712f40` (security + availability), waves 3–4 in
 `8f54a402` (context/boot, HTTP, data, ops, protocols,
 telemetry/resilience, platform-web, kernel-2, tooling, docs, apps), wave 5 in
-`fbb5233e` (framework `console.*` → `@blue/log` migration across 10
-packages, `@blue/test` synchronous-rAF helper with app-spec migration,
+`fbb5233e` (framework `console.*` → `@ndigo/log` migration across 10
+packages, `@ndigo/test` synchronous-rAF helper with app-spec migration,
 skipped-test policy, OpenAPI auto-config security forwarding, app-manifest
 checker, Redis CI service lane, benchmark exit code), and the wave-4
 dispatcher/views mop-up in `0c4becbd` (view-cache key collision +
@@ -35,7 +35,7 @@ mapping, EJS filename/includes, resolver dedup; CI graft pin; AD citation
 refresh). All 46 test projects and the full gate set are green.
 Residuals tracked for follow-up: the test-file typecheck lane (TOL-F5 —
 requires 46 per-project `tsconfig.spec.json` files plus triage of pre-existing
-test type errors), TEL-08's client byte-size seam is exposed by `@blue/socket`
+test type errors), TEL-08's client byte-size seam is exposed by `@ndigo/socket`
 (`onSend`) but not yet consumed by the web instrumentation, and the wave-6
 product roadmap (gaps 1–13: jobs/outbox, cluster runtime, distributed locks,
 actuator parity, OTel metrics, CLI, migration generation, shared rate-limit
@@ -44,17 +44,17 @@ implementation.
 
 **Post-plan discoveries (fixed in follow-up commits):** the app client bundles
 shipped raw TC39 decorators — Vite 8's oxc transform cannot lower them and
-Vitest's esbuild pipeline masked it, so blue-island and blue-todo production
-bundles were invalid JavaScript — and blue-todo's todo routes omitted `items`,
+Vitest's esbuild pipeline masked it, so ndigo-island and ndigo-todo production
+bundles were invalid JavaScript — and ndigo-todo's todo routes omitted `items`,
 so the Playwright e2e lane was failing end-to-end (build order, bundle syntax,
 and seeding were all broken); both are fixed (`60d601ca` — valid client
 bundles, todo seeding, Vite lower-decorators plugin) and the e2e passes
 locally. AD-69 records the component-integration contract (adopt the Web
 Component ecosystem; framework owns the DSD first-paint and FACE bridges) with
-its spike (`4ee4a41f`); AD-70 adds the `@blue/inspect` configuration JSON
+its spike (`4ee4a41f`); AD-70 adds the `@ndigo/inspect` configuration JSON
 Schema plus the two oxlint rules that enforce it (`f6cdf832`); AD-71 selects
 Web Awesome for the single reference integration and lands it in
-`apps/blue-island` (FACE form → `POST /items` → `dataBinderValue` + Zod → SSE)
+`apps/ndigo-island` (FACE form → `POST /items` → `dataBinderValue` + Zod → SSE)
 with [guide 21](../guides/21-component-integration.md) (`76d28575`) — framework
 packages stay library-free.
 
@@ -83,7 +83,7 @@ INV inventory, GAP industry}.
 | `pnpm doc` + freshness | ✅     | Regeneration byte-identical; `git diff` empty                                                |
 
 Process note: the green board hides five block-class defects (below) because the gates do
-not exercise: fresh-checkout e2e builds, non-DOM imports of `@blue/platform-web`,
+not exercise: fresh-checkout e2e builds, non-DOM imports of `@ndigo/platform-web`,
 malformed request targets with telemetry on, throwing view renders, and demo shell routing.
 
 ---
@@ -92,18 +92,18 @@ malformed request targets with telemetry on, throwing view renders, and demo she
 
 ### SEC-B1 `[exec]` Passwordless accounts authenticate with the hardcoded dummy password (account takeover)
 
-- **Where:** `packages/blue-auth-server/src/credentials-auth-adapter.ts:104-106`
+- **Where:** `packages/ndigo-auth-server/src/credentials-auth-adapter.ts:104-106`
   (`const hash = user?.passwordHash ?? this.#dummyHashValue();` … `if (!valid || user === null || user.disabled === true)`);
-  contract contradicts it: `packages/blue-auth-core/src/user-store.ts:23-24` (“A `null` hash
+  contract contradicts it: `packages/ndigo-auth-core/src/user-store.ts:23-24` (“A `null` hash
   never matches a password attempt”) and `docs/guides/11-authentication-and-sessions.md:89`.
 - **Evidence:** `[code]` the dummy hash (used for unknown-user timing equalization) is also
   substituted as the _verification target_ whenever an existing user's `passwordHash` is
   `null`/`undefined`; the guard only rejects `user === null`. `[exec]` integrator probe
   (throwaway spec, removed): `InMemoryUserStore([{id:'u1', passwordHash:null}])` +
-  `password: 'bluejs-dummy-password-for-timing-equalization'` →
+  `password: 'ndigo-dummy-password-for-timing-equalization'` →
   `ACCEPTED principal=u1 validate=ok` (session token issued and validated); wrong password
   rejected. The existing spec only submits `password: ''`, so CI stays green
-  (`packages/blue-auth-server/test/credentials-auth-adapter.spec.ts:161-166`).
+  (`packages/ndigo-auth-server/test/credentials-auth-adapter.spec.ts:161-166`).
 - **Impact:** Full account takeover (opaque session + HttpOnly cookie) for any
   OIDC/federated/invited/bootstrap account whose store projects no hash; the constant ships
   in the package. Guide 11's ORM example maps a nullable column straight through.
@@ -115,26 +115,26 @@ malformed request targets with telemetry on, throwing view renders, and demo she
 
 ### TEL-B1 `[exec]` Telemetry instrumentation crashes the process on a malformed request target (remote DoS)
 
-- **Where:** `packages/blue-telemetry-node/src/instrumentation/http-server/http-server.ts:68-76` —
+- **Where:** `packages/ndigo-telemetry-node/src/instrumentation/http-server/http-server.ts:68-76` —
   `'http.route': req.url ? String(new URL(req.url, 'http://local').pathname) : undefined`
   is evaluated synchronously in the shimmer wrapper **before** `original.apply` and outside
   every try/catch; the adapter invokes it as `void this.handleRequest(req, res)`
-  (`packages/blue-platform-node/src/node-http-server-adapter.ts:346-348`).
+  (`packages/ndigo-platform-node/src/node-http-server-adapter.ts:346-348`).
 - **Evidence:** `[code]`+`[exec]` (integrator): `new URL('http://[', 'http://local')` throws
   `Invalid URL`; Node/llhttp delivers `req.url === 'http://['` for a raw
   `GET http://[ HTTP/1.1` request. Slice probe with the real instrumentation + real adapter:
   one raw socket request → `UNCAUGHT: Invalid URL`; Node's default policy exits the process.
 - **Impact:** Unauthenticated remote process kill whenever the instrumentation is enabled
-  (blue-api enables it with `OTEL_EXPORTER_OTLP_ENDPOINT`).
+  (ndigo-api enables it with `OTEL_EXPORTER_OTLP_ENDPOINT`).
 - **Fix:** parse defensively (`try { path = new URL(...).pathname } catch { path = undefined }`
   or `req.url.split('?')[0]`); wrap `config.attributes?.()` in `AbstractBaseInstrumentation._patch`
   in try/catch; regression spec posting a raw malformed target. Wave 2.
 
 ### DSV-B1 `[exec]` A throwing view render/resolver leaves the HTTP response open — requests hang instead of 500/404
 
-- **Where:** `packages/blue-dispatcher/src/dispatcher.ts:335-343` — `render()` failures are
+- **Where:** `packages/ndigo-dispatcher/src/dispatcher.ts:335-343` — `render()` failures are
   captured into `dispatchError` and swallowed (`_processDispatchResult` returns normally);
-  `packages/blue-platform-node/src/node-http-server-adapter.ts:1012-1031` finalizes only on
+  `packages/ndigo-platform-node/src/node-http-server-adapter.ts:1012-1031` finalizes only on
   a denial or `noHandler`, so a matched route writes nothing.
 - **Evidence:** `[exec]` slice probe (real dispatcher + adapter): `GET /ok` → 200;
   `GET /boom` (handler returns a `ModelAndView` whose `render` throws) → client timeout, no
@@ -147,29 +147,29 @@ malformed request targets with telemetry on, throwing view renders, and demo she
 
 ### CI-B1 `[code]` `[regression]` CI e2e job cannot build the app on a fresh runner (workspace `lib/` outputs never built in that job)
 
-- **Where:** `.github/workflows/ci.yml:143-146` runs `pnpm --filter @blue/todo build` after
+- **Where:** `.github/workflows/ci.yml:143-146` runs `pnpm --filter @ndigo/todo build` after
   only `pnpm install`; libraries are built only in the separate `quality` job (line 46-47)
   and jobs do not share a filesystem. `**/lib/` is gitignored (`.gitignore:31`);
-  `apps/blue-todo`'s build is a bare `vite build` (no nx `dependsOn`), and 39 runtime
-  `@blue/*` imports resolve through package `exports` → `lib/`.
+  `apps/ndigo-todo`'s build is a bare `vite build` (no nx `dependsOn`), and 39 runtime
+  `@ndigo/*` imports resolve through package `exports` → `lib/`.
 - **Evidence:** `[code]` (integrator, above) + slice probe: `git archive HEAD` to `/tmp`,
-  `pnpm install`, `pnpm --filter @blue/todo build` → `Rolldown failed to resolve import
-  "@blue/telemetry-web"`. The “fix broken E2E job” commit only worked on a workstation with
+  `pnpm install`, `pnpm --filter @ndigo/todo build` → `Rolldown failed to resolve import
+  "@ndigo/telemetry-web"`. The “fix broken E2E job” commit only worked on a workstation with
   prebuilt `lib/`.
 - **Impact:** The e2e lane is red on any real GitHub runner; the workflow's green status is
   misleading.
-- **Fix:** build libraries in the e2e job (`pnpm build && pnpm --filter @blue/todo build`) or
+- **Fix:** build libraries in the e2e job (`pnpm build && pnpm --filter @ndigo/todo build`) or
   give the app target `dependsOn: ["^build:lib"]`. Wave 2 (cheap).
 
-### APP-B1 `[exec]` blue-todo Account feature is unreachable: partition prefix stripped before dispatch while AccountController registers `/account`-prefixed mappings
+### APP-B1 `[exec]` ndigo-todo Account feature is unreachable: partition prefix stripped before dispatch while AccountController registers `/account`-prefixed mappings
 
-- **Where:** `packages/blue-router/src/partition-router.ts:124` strips the mount prefix
-  before the feature callback; `apps/blue-todo/src/account-controller.ts:11,13,25` registers
+- **Where:** `packages/ndigo-router/src/partition-router.ts:124` strips the mount prefix
+  before the feature callback; `apps/ndigo-todo/src/account-controller.ts:11,13,25` registers
   `/account` and `/account/settings`, unlike root-relative `index-controller.ts:14,26-58`.
 - **Evidence:** `[exec]` slice probe against `composeTodoRuntime()` + `HashRouter`:
   `#/account` → dispatcher gets `''` → renders `todo-app`; `#/account/settings` →
   `IllegalStateError: No handler adapter found`; `#/auth/*` likewise. Tests dispatch
-  `AccountController` directly (`apps/blue-todo/test/browser-controller.spec.ts:23-38`) and
+  `AccountController` directly (`apps/ndigo-todo/test/browser-controller.spec.ts:23-38`) and
   shell tests assert only mount flags, so the wiring gap is invisible.
 - **Impact:** The demo's Account nav renders the Todo app; a headline app path is broken.
 - **Fix:** pick one convention — make `AccountController` root-relative like `IndexController`,
@@ -180,7 +180,7 @@ malformed request targets with telemetry on, throwing view renders, and demo she
 
 ## 2. High findings (28)
 
-### Kernel (`packages/blue-core`, `blue-util`, `blue-factory`, `blue-proxy`, `blue-dom`, `blue-signals`, `blue-log`)
+### Kernel (`packages/ndigo-core`, `ndigo-util`, `ndigo-factory`, `ndigo-proxy`, `ndigo-dom`, `ndigo-signals`, `ndigo-log`)
 
 - **KRN-REV-RADIX-01 `[exec]` RadixTree aliases distinct patterns onto shared nodes.**
   `radix-tree.ts:166-193,425-441`: param/greedy children are reused without label checks;
@@ -200,7 +200,7 @@ malformed request targets with telemetry on, throwing view renders, and demo she
   getter vs the browser provider. Fix: wrap fragment input in a full document or share one
   normalization; add a cross-provider parity suite. Wave 3.
 
-### Context/Boot (`packages/blue-context`, `blue-boot`)
+### Context/Boot (`packages/ndigo-context`, `ndigo-boot`)
 
 - **CTX-CTX-01 `[exec]` `{ relaxed: true }` binding can never work.** Every relaxed hit is
   followed by an exact-path typed re-read that fails boot (`configuration-properties.ts:139,
@@ -218,7 +218,7 @@ malformed request targets with telemetry on, throwing view renders, and demo she
   converter failures with `#diagnosticValue(value)` (or stop converters echoing raw input);
   extend the secrets spec. Wave 3.
 
-### HTTP client + harness (`packages/blue-http`, `blue-test`)
+### HTTP client + harness (`packages/ndigo-http`, `ndigo-test`)
 
 - **HTT-REV-001 `[exec]` Retry's pristine-body clone misses when a later interceptor
   replaces the Request.** `retry-interceptor.ts:64,84,144,151` keys the WeakMap on the request
@@ -243,7 +243,7 @@ malformed request targets with telemetry on, throwing view renders, and demo she
   (`mock-http.ts:368-388` vs `node-http-server-adapter.ts:1054-1086`). Fix: share the adapter's
   error mapping; specs mirroring `http-boundaries.spec.ts`. Wave 3.
 
-### Platform (Node) (`packages/blue-platform-node`, server side of `blue-service`)
+### Platform (Node) (`packages/ndigo-platform-node`, server side of `ndigo-service`)
 
 - **PLN-F1 `[exec]` Precompressed static variants bypass base-directory containment.**
   `static-resource-resolver.ts:216-225` contains the main path, but `:268` → `_statVariant`
@@ -267,7 +267,7 @@ malformed request targets with telemetry on, throwing view renders, and demo she
   rejection. Fix: treat `headersSent` like ended (log + `res.destroy()`); per-interceptor
   `completeHandle` try/catch; `.catch` backstop on `handleRequest`. Wave 2.
 
-### Dispatcher/views (`packages/blue-dispatcher`, `blue-view`, `blue-view-ejs`, `blue-view-webcomponent`)
+### Dispatcher/views (`packages/ndigo-dispatcher`, `ndigo-view`, `ndigo-view-ejs`, `ndigo-view-webcomponent`)
 
 - **DSV-SEC-1 `[exec]` View names are concatenated into resource paths/dynamic imports
   without containment — filesystem traversal (EJS file read + execution) and unvalidated
@@ -284,15 +284,15 @@ malformed request targets with telemetry on, throwing view renders, and demo she
   throws, island never hydrates. Fix: single shared encode/decode helper used by both sides;
   jsdom hydration spec. Wave 3.
 
-### Data (`packages/blue-orm`, `blue-orm-drizzle`, `blue-cache`, `blue-redis`, `blue-scheduler`, `blue-management`, `blue-openapi`)
+### Data (`packages/ndigo-orm`, `ndigo-orm-drizzle`, `ndigo-cache`, `ndigo-redis`, `ndigo-scheduler`, `ndigo-management`, `ndigo-openapi`)
 
 - **DAT-F1 `[exec]` DrizzleEntityManager lifecycle hooks diverge from InMemoryEntityManager:**
   `@preUpdate`/`@postLoad`/`@postRemove` never fire and `@prePersist` re-fires on every save
   (`drizzle-entity-manager.ts:36,97-115,217,279-294`); probe event sequences side by side;
   zero hook tests in the Drizzle suite. `[still-open]` — the 2026-09-05 assessment claims
-  parity was fixed. Fix: share one lifecycle runner in `@blue/orm`; parity spec. Wave 3.
+  parity was fixed. Fix: share one lifecycle runner in `@ndigo/orm`; parity spec. Wave 3.
 
-### Protocols (`packages/blue-socket`, `blue-redis` pubsub, SSE)
+### Protocols (`packages/ndigo-socket`, `ndigo-redis` pubsub, SSE)
 
 - **PRT-REV-001 `[exec]` StompClient `send()`/flush is not exception-safe:** invalid header
   input throws synchronously, strands the receipt entry (duplicate-receipt rejects), the
@@ -307,7 +307,7 @@ malformed request targets with telemetry on, throwing view renders, and demo she
   wherever body octets are charged (or cap header bytes); specs with small bodies + large
   headers. Wave 3.
 
-### Telemetry/resilience (`blue-telemetry*`, `blue-resilience`, `blue-log`)
+### Telemetry/resilience (`ndigo-telemetry*`, `ndigo-resilience`, `ndigo-log`)
 
 - **TEL-TEL-02 `[exec]` Circuit breaker races under concurrency:** stale `cell.failures`
   reads lose counts (3 concurrent failures never open at threshold 2); no in-flight latch →
@@ -319,19 +319,19 @@ malformed request targets with telemetry on, throwing view renders, and demo she
   lazily resolved instrument (like `@traced`), deleting the registry/enable-scan indirection;
   export-assertion spec. Wave 3.
 
-### Platform (web) (`packages/blue-platform-web`, `blue-router`, `blue-content*`, `blue-host`)
+### Platform (web) (`packages/ndigo-platform-web`, `ndigo-router`, `ndigo-content*`, `ndigo-host`)
 
-- **PWB-REV-001 `[exec]` The `@blue/platform-web` barrel cannot be imported outside a DOM:**
+- **PWB-REV-001 `[exec]` The `@ndigo/platform-web` barrel cannot be imported outside a DOM:**
   module-level `currentLocale` → `Cookies.get('lang')` → `document.cookie` throws
   `ReferenceError` at import (`locale.ts:33,18`; `cookies.ts:136-137` unguarded although
-  `set()` guards). `@blue/telemetry-web` fails identically via its static HashRouter import.
+  `set()` guards). `@ndigo/telemetry-web` fails identically via its static HashRouter import.
   Fix: guard `get()/getJSON` on `typeof document === 'undefined'` (symmetric with `set()`)
   and/or lazy-initialize `currentLocale`; Node-environment import spec for both barrels. Wave 3.
 
-### Tooling (`packages/blue-oxlint-plugin`, `blue-generators`, root tooling/CI)
+### Tooling (`packages/ndigo-oxlint-plugin`, `ndigo-generators`, root tooling/CI)
 
 - **TOL-F2 `[high]` `[still-open]` Live AD-46 violation + rule gap:** `CountedRegistry` from
-  `blue-telemetry/src/metrics/_registry.ts` reaches the public API via the sub-barrel
+  `ndigo-telemetry/src/metrics/_registry.ts` reaches the public API via the sub-barrel
   `src/metrics/index.ts:6` + `src/index.ts:12`, and `no-internal-file-exports` only inspects
   `src/index.ts` (`isPublicIndexFile`), so the gate cannot catch the shape. Fix: promote
   `_registry.ts` to a public filename (or stop re-exporting it) and extend the rule matcher to
@@ -339,17 +339,17 @@ malformed request targets with telemetry on, throwing view renders, and demo she
 
 ### Apps (`apps/*`)
 
-- **APP-N2 `[high]` blue-todo `AuthRouterInterceptor` matches nothing — auth guards inert**
+- **APP-N2 `[high]` ndigo-todo `AuthRouterInterceptor` matches nothing — auth guards inert**
   (path comparison against a table keyed without the leading slash); no login page exists to
   demonstrate it. Fix: normalize the comparison, add HashRouter-level specs, then implement
   the login/profile/admin views or remove the dead auth surface. Wave 4.
-- **APP-N3 `[high]` blue-island SSE push is silent for clients connecting after the 3-second
+- **APP-N3 `[high]` ndigo-island SSE push is silent for clients connecting after the 3-second
   boot ticker** — the headline demo is inert. Fix: emit the current snapshot as the first
   event per connection and/or keep the ticker while subscribers exist; late-subscriber spec. Wave 4.
-- **APP-N4 `[high]` blue-host's only spec never runs anywhere** (no `test` script/target;
+- **APP-N4 `[high]` ndigo-host's only spec never runs anywhere** (no `test` script/target;
   `pnpm test` false-green). Fix: add `"test": "vitest run"` + devDependency; consider the
-  same for blue-hello/blue-hello-node. Wave 4.
-- **APP-N5 `[high]` blue-island's suite cannot pass on a clean checkout** (asserts against
+  same for ndigo-hello/ndigo-hello-node. Wave 4.
+- **APP-N5 `[high]` ndigo-island's suite cannot pass on a clean checkout** (asserts against
   gitignored `dist/`; passes locally only because a stale `dist/` exists). Fix: prebuild the
   client in the test script, serve a fixture, or add the build step in CI. Wave 4.
 
@@ -359,13 +359,13 @@ malformed request targets with telemetry on, throwing view renders, and demo she
 
 | ID                 | Finding                                                                                                                                                                                 | Fix                                                                                                                        |
 | :----------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------- |
-| KRN-REV-URLGLOB-04 | URL-glob extglob emits nested quantifiers → catastrophic backtracking (ReDoS) in route matching (`blue-core/src/url-glob.ts:323-336`).                                                  | Flatten quantified groups in `parseExtGlob`; fail closed via `safe-regex`; bounded-match spec.                             |
+| KRN-REV-URLGLOB-04 | URL-glob extglob emits nested quantifiers → catastrophic backtracking (ReDoS) in route matching (`ndigo-core/src/url-glob.ts:323-336`).                                                 | Flatten quantified groups in `parseExtGlob`; fail closed via `safe-regex`; bounded-match spec.                             |
 | KRN-REV-BINDER-05  | `DataBinder.requiredFields` can never pass: names compared against RingBuffer slot indices (`data-binder.ts:139-148`).                                                                  | Validate property names (`getPropertyValue(field) !== null`); positive/negative specs.                                     |
 | KRN-REV-MEDIA-06   | `MediaType.withCharset` drops the `+suffix` (`application/problem+json` → `application/problem`).                                                                                       | Reconstruct `subtype+suffix`; spec.                                                                                        |
 | KRN-REV-MEDIA-07   | `MediaType.for(type,'*',params)` interns without params in the key → cross-call contamination (`media-type.ts:349-365`).                                                                | Include canonicalized params in the intern key (or reject params with `*`).                                                |
 | KRN-REV-MEDIA-08   | `MediaType.includes` treats `type/*+suffix` as a whole-subtype wildcard (`application/*+xml` includes `application/json`).                                                              | Suffix-specific matching; negative specs.                                                                                  |
 | KRN-REV-WILD-09    | `WildcardConverter`/`WildcardExp` do not escape regex metacharacters (`wildcard-expression.ts:24`).                                                                                     | Escape metachars except the `*` wildcard; metachar specs.                                                                  |
-| KRN-REV-SIGNALS-10 | `@reactive` destroy/dispose wiring fragile: subclass fields disable cleanup; getter-only accessors throw at construction (`blue-signals/src/_decorators.ts:227-252`).                   | Keep cleanup in a WeakMap; guarded non-enumerable wrapper; shadowing/accessor specs.                                       |
+| KRN-REV-SIGNALS-10 | `@reactive` destroy/dispose wiring fragile: subclass fields disable cleanup; getter-only accessors throw at construction (`ndigo-signals/src/_decorators.ts:227-252`).                  | Keep cleanup in a WeakMap; guarded non-enumerable wrapper; shadowing/accessor specs.                                       |
 | KRN-REV-LOG-11     | `[still-open]` `LoggerFactory` type/threshold switches cannot reach loggers created at module load — `configureTelemetry` OTel routing stays partly inert (`logger-factory.ts:99-118`). | Lazily-resolved logger handles or reconfigure existing loggers; spec that a pre-created logger follows configureTelemetry. |
 | KRN-REV-FACTORY-12 | `@hashScope`/route-scoped beans break context refresh; prototype-scoped beans eagerly instantiated and discarded (`abstract-factory.ts:229-256`).                                       | Skip non-singletons in the finish sweep; document route-scope lifecycle; boot spec.                                        |
 
@@ -455,31 +455,31 @@ malformed request targets with telemetry on, throwing view renders, and demo she
 | PWB-REV-007 | Offline-at-preRequest queue bypasses the remaining interceptor chain and drains via bare fetch (stored `http` field dead). | Queue at postResponse/postComplete or drain through the client; remove dead field.          |
 | PWB-REV-008 | `IndexedDBResourceLoader` caches a rejected open promise forever: one transient failure bricks the loader.                 | Clear the cached promise on rejection; fail-then-recover spec.                              |
 | PWB-REV-011 | Exclusive activation policy fires `onDeactivate` for never-activated features and skips their deactivation metrics.        | Track the activated set; route through `#deactivate`; parity spec.                          |
-| PWB-REV-012 | README documents `import { Cookies } from '@blue/platform-web'` but the barrel has no named `Cookies` export.              | Export it (or fix the README); add a README-snippet check.                                  |
+| PWB-REV-012 | README documents `import { Cookies } from '@ndigo/platform-web'` but the barrel has no named `Cookies` export.             | Export it (or fix the README); add a README-snippet check.                                  |
 
 ### Auth / security
 
 | ID             | Finding                                                                                                                                                                                                | Fix                                                                                                                                                              |
 | :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| SEC-AUD2-SEC-2 | Session cookie is not `__Host-`-prefixed and duplicate-cookie parsing is first-wins → session fixation via cookie tossing / HTTP planting (sibling-subdomain or non-Secure cookie beats the real one). | Rename to `__Host-blue-session` (defaults already satisfy the prefix rules); reject duplicate security-cookie names; document the trust assumption.              |
+| SEC-AUD2-SEC-2 | Session cookie is not `__Host-`-prefixed and duplicate-cookie parsing is first-wins → session fixation via cookie tossing / HTTP planting (sibling-subdomain or non-Secure cookie beats the real one). | Rename to `__Host-ndigo-session` (defaults already satisfy the prefix rules); reject duplicate security-cookie names; document the trust assumption.             |
 | SEC-AUD2-SEC-3 | Login CSRF reachable via form-encoded bodies while guide 11 asserts login is JSON-body only (probe: urlencoded POST → 200 + session cookie; CSRF interceptor is opt-in and unwired).                   | Correct the docs (login is cross-site-postable without CSRF); wire CSRF by default for cookie-session apps or enforce `Content-Type: application/json` on login. |
 
 ### Tooling / CI
 
-| ID     | Finding                                                                                                                                                                                                                             | Fix                                                                                                                                |
-| :----- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------- |
-| TOL-F3 | Package generator writes a dead vitest alias for hyphenated names (doubled backslash) and its spec locks the bug in.                                                                                                                | Drop the escaping; spec builds `new RegExp` and asserts a match; fail loudly on anchor miss.                                       |
-| TOL-F4 | Coverage configuration is dead and, by default, hides untested code.                                                                                                                                                                | Wire a real coverage lane with `include` + thresholds, or delete the dead block.                                                   |
-| TOL-F5 | No lane type-checks test files anywhere in the repo.                                                                                                                                                                                | Add `tsconfig.spec.json` per package/app and extend `typecheck` (or `vitest --typecheck`).                                         |
-| TOL-F6 | `[still-open]` The hand-maintained vitest alias table has drifted both ways (9 stale entries incl. `@blue/logger`, `@blue/auth`, `@blue/eslint-plugin`; 7 unaliased live packages); test source-resolution depends on built `lib/`. | Delete stale entries, add missing aliases, merge blue-orm's base config, add an alias-target existence check to the manifest gate. |
+| ID     | Finding                                                                                                                                                                                                                                | Fix                                                                                                                                 |
+| :----- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
+| TOL-F3 | Package generator writes a dead vitest alias for hyphenated names (doubled backslash) and its spec locks the bug in.                                                                                                                   | Drop the escaping; spec builds `new RegExp` and asserts a match; fail loudly on anchor miss.                                        |
+| TOL-F4 | Coverage configuration is dead and, by default, hides untested code.                                                                                                                                                                   | Wire a real coverage lane with `include` + thresholds, or delete the dead block.                                                    |
+| TOL-F5 | No lane type-checks test files anywhere in the repo.                                                                                                                                                                                   | Add `tsconfig.spec.json` per package/app and extend `typecheck` (or `vitest --typecheck`).                                          |
+| TOL-F6 | `[still-open]` The hand-maintained vitest alias table has drifted both ways (9 stale entries incl. `@ndigo/logger`, `@ndigo/auth`, `@ndigo/eslint-plugin`; 7 unaliased live packages); test source-resolution depends on built `lib/`. | Delete stale entries, add missing aliases, merge ndigo-orm's base config, add an alias-target existence check to the manifest gate. |
 
 ### Apps
 
 | ID     | Finding                                                                                                                                 | Fix                                                                                                       |
 | :----- | :-------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------- |
-| APP-N6 | blue-todo relay gateway is registration-only; deactivate metrics hardcoded zeros.                                                       | Emit a real `todo:stats:updated`; assert receipt; resolve metrics from the gateway.                       |
+| APP-N6 | ndigo-todo relay gateway is registration-only; deactivate metrics hardcoded zeros.                                                      | Emit a real `todo:stats:updated`; assert receipt; resolve metrics from the gateway.                       |
 | APP-N7 | `[still-open]` App manifests bypass every workspace gate: dead `vite-plugin-dts`, undeclared `@tsmetadata/polyfill` (phantom via root). | Extend the checker's dead/missing rules to app manifests (src/test/client/views/e2e dirs); fix manifests. |
-| APP-N8 | blue-todo e2e cannot be run per README (no command; Playwright serves an unbuilt `dist/`).                                              | Document `pnpm build && pnpm test:e2e` or add a prebuild/webServer build.                                 |
+| APP-N8 | ndigo-todo e2e cannot be run per README (no command; Playwright serves an unbuilt `dist/`).                                             | Document `pnpm build && pnpm test:e2e` or add a prebuild/webServer build.                                 |
 
 ### Documentation
 
@@ -488,7 +488,7 @@ malformed request targets with telemetry on, throwing view renders, and demo she
 | DOC-01 | `[regression]` Stale `AD-01..AD-67` ranges in `ARCHITECTURE.md:1762`, `docs/README.md:11`, `docs/plans/README.md:6` while AD-68 exists.                                                                | Bump to AD-68 (or drop hard maxima in favor of the ADR index); add a range check to a script. |
 | DOC-02 | ARCHITECTURE “peerDependencies … currently exactly two” contradicts the five allowlisted peers (`scripts/check-manifests.mjs:48-59`).                                                                  | Point at the single source (PEER_ALLOWLIST) or list the five.                                 |
 | DOC-03 | Package Map runtime-dep column wrong for management, boot, generators (`ARCHITECTURE.md:1123,1134,1136`).                                                                                              | Backfill from manifests; consider generating the column.                                      |
-| DOC-05 | STYLE_GUIDE enforcement markers contradict `.oxlintrc.json` (rules presented as review-only while they are error-level CI gates; no `@blue/no-*` rule names in living docs).                           | Add an `[AUTOMATED: oxlint]` marker for enforced sections; reference the rule names/config.   |
+| DOC-05 | STYLE_GUIDE enforcement markers contradict `.oxlintrc.json` (rules presented as review-only while they are error-level CI gates; no `@ndigo/no-*` rule names in living docs).                          | Add an `[AUTOMATED: oxlint]` marker for enforced sections; reference the rule names/config.   |
 | DOC-12 | The Framework Gap Analysis — declared the “live document” in `docs/README.md:46` — is stale through the AD-41..AD-68 wave (session-store cell contradicts shipped LibSQL sessions; AD refs end at 40). | Update or demote it to a dated baseline (see §6).                                             |
 
 ---
@@ -499,7 +499,7 @@ malformed request targets with telemetry on, throwing view renders, and demo she
 
 | ID                    | Finding                                                                                                                           | Fix                                                          |
 | :-------------------- | :-------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------- |
-| KRN-REV-FACTORY-13    | HashScope never destroys cached values; callback-gating TSDoc wrong (`blue-factory/src/scope.ts:160-186`).                        | Record per-bucket destruction callbacks; correct TSDoc.      |
+| KRN-REV-FACTORY-13    | HashScope never destroys cached values; callback-gating TSDoc wrong (`ndigo-factory/src/scope.ts:160-186`).                       | Record per-bucket destruction callbacks; correct TSDoc.      |
 | KRN-REV-FACTORY-14    | Factory name lookups treat `Object.prototype` members as registered values.                                                       | `hasOwnProperty` checks in `hasInstance`/`hasConstructor`.   |
 | KRN-REV-GLOB-15       | `GlobPatternInfo` counts `.*` only at pattern end (substring misuse, `path-matcher.ts:320-336`).                                  | Slice-check `.*` at any position; comparator cases.          |
 | KRN-REV-SERIAL-16     | `serialize()` array-recursion branch dead; cyclic input throws raw `JSON.stringify` TypeError (`serializable.ts:108-123`).        | Reorder branches; try/catch in `isJSONValue`/`isJSONObject`. |
@@ -510,11 +510,11 @@ malformed request targets with telemetry on, throwing view renders, and demo she
 
 ### Context / Boot
 
-| ID               | Finding                                                                                            | Fix                                                                                |
-| :--------------- | :------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------- |
-| CTX-CTX-12       | Profile-group precedence inverted: `BLUE_PROFILES_GROUPS` overrides CLI `--profiles.group.<name>`. | Env first, CLI last; spec.                                                         |
-| CTX-CTX-13       | Refresh rebind replaces `@refreshScope` config instances without destroying the previous one.      | Destroy/close previous before `setValue`; spec counting destroys across refreshes. |
-| CTX-CTX-14 (nit) | `close()` TSDoc sequence disagrees with implementation; omits `unsubscribeRefresh`.                | Align docs.                                                                        |
+| ID               | Finding                                                                                             | Fix                                                                                |
+| :--------------- | :-------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------- |
+| CTX-CTX-12       | Profile-group precedence inverted: `NDIGO_PROFILES_GROUPS` overrides CLI `--profiles.group.<name>`. | Env first, CLI last; spec.                                                         |
+| CTX-CTX-13       | Refresh rebind replaces `@refreshScope` config instances without destroying the previous one.       | Destroy/close previous before `setValue`; spec counting destroys across refreshes. |
+| CTX-CTX-14 (nit) | `close()` TSDoc sequence disagrees with implementation; omits `unsubscribeRefresh`.                 | Align docs.                                                                        |
 
 ### HTTP client / harness
 
@@ -545,17 +545,17 @@ malformed request targets with telemetry on, throwing view renders, and demo she
 
 ### Data
 
-| ID           | Finding                                                                                                                   | Fix                                                                            |
-| :----------- | :------------------------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------------------------- |
-| DAT-F8       | Drizzle `persist()` treats ANY INSERT failure as a possible PK-conflict upsert; can replace the original error.           | Gate on the PK-conflict signal or use `ON CONFLICT DO UPDATE`; preserve cause. |
-| DAT-F9       | DrizzleTransactionManager concurrency guard check-then-act race; overlapping run fails with raw SQLITE_ERROR.             | Set active before BEGIN; serialize; spec.                                      |
-| DAT-F10      | `GET /health` returns 200 with status DOWN.                                                                               | Return 503 or document always-200 prominently; pin in spec.                    |
-| DAT-F11      | OpenAPI: declared `@apiDocs` responses merge with, instead of replace, the implicit 200.                                  | Replace implicit 200 when responses provided (or document); spec.              |
-| DAT-F12      | OpenAPI: no security-scheme modeling — authenticated operations documented anonymous.                                     | Add `securitySchemes` + per-operation `security`; guide update.                |
-| DAT-F13      | `getCachedSpec(target)` returns undefined for instances despite its JSDoc; zero tests/callers.                            | Use `getSymbolMetadata` or fix docs; spec both forms.                          |
-| DAT-F14      | `[still-open]` blue-redis pub/sub and nearly all cache behavior not exercised in CI (suites env-gated; no Redis service). | Add a Redis service container and/or transport-double suite for pure logic.    |
-| DAT-N1 (nit) | Substring type matching maps unrelated declared types to integer.                                                         | Closed set/word-boundary matching in both helpers.                             |
-| DAT-N2 (nit) | `serializeCacheKeyStrict` keys functions by name only — collision in the “type-preserving” API.                           | WeakMap identity or documented limitation.                                     |
+| ID           | Finding                                                                                                                    | Fix                                                                            |
+| :----------- | :------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------- |
+| DAT-F8       | Drizzle `persist()` treats ANY INSERT failure as a possible PK-conflict upsert; can replace the original error.            | Gate on the PK-conflict signal or use `ON CONFLICT DO UPDATE`; preserve cause. |
+| DAT-F9       | DrizzleTransactionManager concurrency guard check-then-act race; overlapping run fails with raw SQLITE_ERROR.              | Set active before BEGIN; serialize; spec.                                      |
+| DAT-F10      | `GET /health` returns 200 with status DOWN.                                                                                | Return 503 or document always-200 prominently; pin in spec.                    |
+| DAT-F11      | OpenAPI: declared `@apiDocs` responses merge with, instead of replace, the implicit 200.                                   | Replace implicit 200 when responses provided (or document); spec.              |
+| DAT-F12      | OpenAPI: no security-scheme modeling — authenticated operations documented anonymous.                                      | Add `securitySchemes` + per-operation `security`; guide update.                |
+| DAT-F13      | `getCachedSpec(target)` returns undefined for instances despite its JSDoc; zero tests/callers.                             | Use `getSymbolMetadata` or fix docs; spec both forms.                          |
+| DAT-F14      | `[still-open]` ndigo-redis pub/sub and nearly all cache behavior not exercised in CI (suites env-gated; no Redis service). | Add a Redis service container and/or transport-double suite for pure logic.    |
+| DAT-N1 (nit) | Substring type matching maps unrelated declared types to integer.                                                          | Closed set/word-boundary matching in both helpers.                             |
+| DAT-N2 (nit) | `serializeCacheKeyStrict` keys functions by name only — collision in the “type-preserving” API.                            | WeakMap identity or documented limitation.                                     |
 
 ### Protocols
 
@@ -595,7 +595,7 @@ malformed request targets with telemetry on, throwing view renders, and demo she
 | SEC-AUD2-SEC-4 | Empty-string `passwordHash` escapes the one-generic-denial contract as `UnknownPasswordSchemeError` (500-class oracle). | Same normalization as SEC-B1; map to generic denial.                         |
 | SEC-AUD2-SEC-5 | OIDC ID tokens without `sub` authenticate as a shared `'unknown'` principal.                                            | Require non-empty `sub` in `#assertClaims`; delete fallback.                 |
 | SEC-AUD2-SEC-6 | `principal.roles` (String-coerced) disagrees with `hasRole`/`hasAnyRole` (raw includes) for non-string claims.          | Normalize once; align adapters; spec.                                        |
-| SEC-AUD2-SEC-7 | `@blue/platform-web` cookie jar defaults emit no SameSite/Secure.                                                       | Default `{path:'/', sameSite:'Lax', secure:true}` (overridable) or document. |
+| SEC-AUD2-SEC-7 | `@ndigo/platform-web` cookie jar defaults emit no SameSite/Secure.                                                      | Default `{path:'/', sameSite:'Lax', secure:true}` (overridable) or document. |
 
 ### Tooling / CI
 
@@ -611,27 +611,27 @@ malformed request targets with telemetry on, throwing view renders, and demo she
 
 ### Apps
 
-| ID            | Finding                                                                                             | Fix                                                             |
-| :------------ | :-------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------- |
-| APP-N9        | Dead demo leftovers (placeholder spec, dead auth CSS/exports, unfilled `learn.json`, `STATIC_DIR`). | Delete or implement; fix comment.                               |
-| APP-N10       | `apps/README` build instructions fail for the node apps; blue-hello/blue-hello-node have no tests.  | Qualify per app type; add smoke tests or state omission.        |
-| APP-N11       | Synchronous `requestAnimationFrame` mock copy-pasted in five specs.                                 | Export `installSynchronousAnimationFrames()` from `@blue/test`. |
-| APP-N12       | blue-todo auth nav interpolates identity into `innerHTML` (untested, copyable XSS pattern).         | Build nodes with `textContent`; nav-state spec.                 |
-| APP-N13 (nit) | blue-host/blue-views demo polish (status not cleared, shared cart unused, missing nav links).       | Minor UI fixes.                                                 |
+| ID            | Finding                                                                                              | Fix                                                              |
+| :------------ | :--------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------- |
+| APP-N9        | Dead demo leftovers (placeholder spec, dead auth CSS/exports, unfilled `learn.json`, `STATIC_DIR`).  | Delete or implement; fix comment.                                |
+| APP-N10       | `apps/README` build instructions fail for the node apps; ndigo-hello/ndigo-hello-node have no tests. | Qualify per app type; add smoke tests or state omission.         |
+| APP-N11       | Synchronous `requestAnimationFrame` mock copy-pasted in five specs.                                  | Export `installSynchronousAnimationFrames()` from `@ndigo/test`. |
+| APP-N12       | ndigo-todo auth nav interpolates identity into `innerHTML` (untested, copyable XSS pattern).         | Build nodes with `textContent`; nav-state spec.                  |
+| APP-N13 (nit) | ndigo-host/ndigo-views demo polish (status not cleared, shared cart unused, missing nav links).      | Minor UI fixes.                                                  |
 
 ### Documentation
 
-| ID           | Finding                                                                                                                     | Fix                                                  |
-| :----------- | :-------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------- |
-| DOC-04       | Package Map external-dependency parentheses incomplete (contract says “externals in parentheses”).                          | Backfill or relax the header.                        |
-| DOC-06       | STYLE_GUIDE filename rule omits the living-doc stable-slug convention.                                                      | Add third pattern; cross-link docs/README.           |
-| DOC-07       | `[still-open]` ARCHITECTURE still credits “functional composition (via Ramda)” (AD-57 removed it).                          | Drop “(via Ramda)”.                                  |
-| DOC-08       | Integration-layer table stale vs `@blue/util` manifest and the enforcement map (ramda/date-fns listed; safe-regex missing). | Update table + `INTEGRATION_LAYER_MAP`.              |
-| DOC-09       | README and AGENTS “Dividing Line” tables out of sync despite the maintenance note.                                          | Port the Decorators row.                             |
-| DOC-10       | STYLE_GUIDE “See:” points at a nonexistent plan path (uncatchable by the link gate — inline code span).                     | Fix path.                                            |
-| DOC-13       | `apps/README` generic build command fails for 3 of 7 apps.                                                                  | State per-type commands.                             |
-| DOC-14       | Guides gap: `@blue/test` harness (AD-63) and the HTTP client stack have no how-to.                                          | Add a testing guide + HTTP client guide; index them. |
-| DOC-11 (nit) | Archived reference lacks the index ARCHIVED marker.                                                                         | Add marker/banner.                                   |
+| ID           | Finding                                                                                                                      | Fix                                                  |
+| :----------- | :--------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------- |
+| DOC-04       | Package Map external-dependency parentheses incomplete (contract says “externals in parentheses”).                           | Backfill or relax the header.                        |
+| DOC-06       | STYLE_GUIDE filename rule omits the living-doc stable-slug convention.                                                       | Add third pattern; cross-link docs/README.           |
+| DOC-07       | `[still-open]` ARCHITECTURE still credits “functional composition (via Ramda)” (AD-57 removed it).                           | Drop “(via Ramda)”.                                  |
+| DOC-08       | Integration-layer table stale vs `@ndigo/util` manifest and the enforcement map (ramda/date-fns listed; safe-regex missing). | Update table + `INTEGRATION_LAYER_MAP`.              |
+| DOC-09       | README and AGENTS “Dividing Line” tables out of sync despite the maintenance note.                                           | Port the Decorators row.                             |
+| DOC-10       | STYLE_GUIDE “See:” points at a nonexistent plan path (uncatchable by the link gate — inline code span).                      | Fix path.                                            |
+| DOC-13       | `apps/README` generic build command fails for 3 of 7 apps.                                                                   | State per-type commands.                             |
+| DOC-14       | Guides gap: `@ndigo/test` harness (AD-63) and the HTTP client stack have no how-to.                                          | Add a testing guide + HTTP client guide; index them. |
+| DOC-11 (nit) | Archived reference lacks the index ARCHIVED marker.                                                                          | Add marker/banner.                                   |
 
 ## 5. Feature-inventory reconciliation (INV findings, 10)
 
@@ -650,7 +650,7 @@ documented limits).
 | INV-2       | §5 “persistent backends deferred” contradicts §2.2 (LibSQL sessions shipped 2026-10-01, AD-40 P1).                                                                                                                                                                    | Update the sequencing cell.                                                                                                                                      |
 | INV-3       | §4.1 “Current state (verified)” still describes pre-AD-19 behavior (view-name resolution only) though wiring shipped.                                                                                                                                                 | Retitle historical or update.                                                                                                                                    |
 | INV-4       | References line still says ADRs `(3, 7–20, 24, 26–29)`; doc rows already cite AD-30..AD-68.                                                                                                                                                                           | Update to the ADR index pointer.                                                                                                                                 |
-| INV-5       | §1 feature inventory lacks rows for `@blue/log` (AD-67), `@blue/proxy`/`@blue/resilience` (AD-42/43), `@blue/redis` (AD-40), TOON (AD-66).                                                                                                                            | Refresh or point at ARCHITECTURE §Package Map.                                                                                                                   |
+| INV-5       | §1 feature inventory lacks rows for `@ndigo/log` (AD-67), `@ndigo/proxy`/`@ndigo/resilience` (AD-42/43), `@ndigo/redis` (AD-40), TOON (AD-66).                                                                                                                        | Refresh or point at ARCHITECTURE §Package Map.                                                                                                                   |
 | INV-6       | §2.2 session row points at the wrong roadmap phase for the Redis session adapter (“Phase 2 family”).                                                                                                                                                                  | Retarget to roadmap Phase 5 / AD-40 (consumer-gated).                                                                                                            |
 | INV-7 (nit) | §2.2 broker wording “in-process EventEmitter only” ignores Redis fan-out + durable `/queue` store.                                                                                                                                                                    | Rephrase.                                                                                                                                                        |
 | INV-8 (nit) | §2.1 scheduling row lacks the AD-41 distributed-deferral qualifier.                                                                                                                                                                                                   | Append it.                                                                                                                                                       |
@@ -658,7 +658,7 @@ documented limits).
 | INV-10      | §3 Auth row predates AD-68 user-wide revocation.                                                                                                                                                                                                                      | Add AD-68.                                                                                                                                                       |
 
 Also recorded (additions since the audit, uncatalogued in its rows): AD-39 async-by-default,
-AD-42/43 interception/resilience, AD-66 TOON, AD-67 `@blue/log`, AD-68 revocation, AD-34
+AD-42/43 interception/resilience, AD-66 TOON, AD-67 `@ndigo/log`, AD-68 revocation, AD-34
 TypeScript-native layer.
 
 ---
@@ -672,23 +672,23 @@ shutdown, migrations-apply, security interceptors and OpenAPI already exist and 
 competitive — the gaps are the **distributed/runtime-scaling axis** and the **ops/DX
 surface**.
 
-| Rank | Gap                                                                                                                                                                                                                     | Severity | Effort | Proposed decision                                                                                                                                                                                                                     |
-| :--- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------- | :----- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1    | No durable jobs/queues and no transactional outbox (events are in-process; STOMP store is not a job substrate). Peers: Spring Modulith Event Publication Registry, Nest `@nestjs/bullmq`, Encore pub/sub, Adonis queue. | high     | L      | **Accept for 1.0**: new ADR + `@blue/jobs` (decorator processors, driver SPI over Redis/SQL, retries/DLQ, delayed+repeatable) and outbox-style publish-after-commit wired into the ORM unit-of-work.                                  |
-| 2    | Single-process runtime: no clustering/multi-core, no worker offload; per-process rate limiting compounds it. Peers: `node:cluster`, PM2, Spring/Tomcat thread-pool expectation.                                         | high     | M      | **Accept**: `blue serve --cluster <n>` supervisor fanning SIGTERM into the existing graceful shutdown; `@blue/worker` pool helper; publish a shared-state matrix (sessions/cache/limits/scheduler under N processes).                 |
-| 3    | Cron single-node only; no distributed locks/leader election/persistent schedules (AD-41 defers it). Peers: Quartz clustering, ShedLock, BullMQ schedulers, PG advisory locks.                                           | high     | M      | **Accept**: `@blue/locks` (Redis + PG advisory drivers, fencing tokens) + optional scheduler driver acquiring a lock per run; `@scheduled({lock})`; revisit AD-41 triggers.                                                           |
-| 4    | Management surface only `/health` + `/metrics` — no `/loggers`, `/env` (redacted), `/configprops`, `/info`, health groups for k8s probes. Peers: Spring Boot Actuator.                                                  | high     | S      | **Accept**: extend `blue-management` using the existing management-path access guard and `@blue/log` runtime levels.                                                                                                                  |
-| 5    | Metrics are a proprietary JSON snapshot; traces are OTel but metrics are not — no OTLP/Prometheus export, no semconv names. Peers: Micrometer + OTLP/Prometheus registries; OTel HTTP semconv.                          | high     | M      | **Accept**: emit real OTel metrics (semconv names, `http.server.request.duration`) with OTLP + Prometheus exporter options; keep the JSON view derived from the MeterProvider.                                                        |
-| 6    | No first-class CLI/dev loop: no watch/restart/HMR, app-facing commands, or packaging. Peers: Nest CLI, Adonis Ace (`serve --watch`/HMR), Spring DevTools, Encore CLI, Boot buildpacks.                                  | high     | M      | **Accept**: `@blue/cli` — `blue dev` (supervised restart; later metadata-aware reload), `blue generate` (promote Nx generators), `blue db`, `blue worker`, `blue build` (layered OCI/Dockerfile).                                     |
-| 7    | Migrations apply but are not generated from decorator entities and not wired into boot. Peers: drizzle-kit, Lucid, Flyway/Liquibase auto-config.                                                                        | medium   | M      | **Accept**: `blue db generate` (entity metadata → schema diff + snapshot) so decorator entities are the single schema source; `migrations.runOnBoot`.                                                                                 |
-| 8    | Rate limiting is per-process in-memory and keys on `remoteAddress` only; behind a LB every client may look like the proxy. Peers: `@fastify/rate-limit` pluggable stores, `@nestjs/throttler` storage.                  | medium   | S      | **Accept**: Redis fixed/sliding-window driver via the existing `RateLimiter` SPI + trusted-proxy client identity; document per-process default until then.                                                                            |
-| 9    | Testing lacks containerized dependencies and DB isolation/fixtures (MockHTTP covers in-process only). Peers: Spring Testcontainers `@ServiceConnection`, Adonis Japa, Nest testing module.                              | medium   | M      | **Accept**: `@blue/test-containers` glue (declare containers → register connection properties; migrate once; transactional rollback).                                                                                                 |
-| 10   | No API versioning, OpenAPI 3.1, typed-client codegen, or AsyncAPI for sockets. Peers: Spring 6.2 versioning, Nest versioning + CLI plugin, Hono/Fastify swagger, OAS 3.1.                                               | medium   | M      | **Defer with ADR**: versioning resolvers in `@requestMapping`, spec 3.1, client codegen, AsyncAPI 3 for `@socketMapping`/`@stompMapping`.                                                                                             |
-| 11   | Browser paradigm under-delivers: buffered EJS rendering, no streaming-HTML/form-action story, no official Vite integration. Peers: React/Next streaming SSR, Server Actions, Astro islands/actions, Adonis Vite.        | medium   | L      | **Defer with ADR**: async-iterable view contract (SSE plumbing already models streaming), `@blue/vite` integration, form-action helper reusing Zod + problem-details; document web-component islands as the partial-hydration answer. |
-| 12   | No multitenancy primitives (tenant context, scoped datasource/cache/locks/telemetry). Peer: Hibernate multi-tenancy strategies.                                                                                         | medium   | L      | **Defer**: define tenant-context token + resolution hook design in an ADR; implement when a design partner needs it, else record out-of-scope.                                                                                        |
-| 13   | No feature-flag abstraction. Peer: OpenFeature spec.                                                                                                                                                                    | low      | S      | **Defer**: `FlagEvaluator` SPI with an OpenFeature-compatible provider, local provider backed by the existing property sources/refresh.                                                                                               |
-| W1   | Edge/serverless portability (Web-standard adapter).                                                                                                                                                                     | low      | L      | **Watch**: acceptable for the Spring-for-TS positioning; introduce a Fetch-API server adapter only if a target demands it.                                                                                                            |
-| W2   | HTTP/3 (upstream Node/undici gap).                                                                                                                                                                                      | low      | L      | **Watch**: document H2 termination at the edge as the supported pattern.                                                                                                                                                              |
+| Rank | Gap                                                                                                                                                                                                                     | Severity | Effort | Proposed decision                                                                                                                                                                                                                      |
+| :--- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------- | :----- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | No durable jobs/queues and no transactional outbox (events are in-process; STOMP store is not a job substrate). Peers: Spring Modulith Event Publication Registry, Nest `@nestjs/bullmq`, Encore pub/sub, Adonis queue. | high     | L      | **Accept for 1.0**: new ADR + `@ndigo/jobs` (decorator processors, driver SPI over Redis/SQL, retries/DLQ, delayed+repeatable) and outbox-style publish-after-commit wired into the ORM unit-of-work.                                  |
+| 2    | Single-process runtime: no clustering/multi-core, no worker offload; per-process rate limiting compounds it. Peers: `node:cluster`, PM2, Spring/Tomcat thread-pool expectation.                                         | high     | M      | **Accept**: `ndigo serve --cluster <n>` supervisor fanning SIGTERM into the existing graceful shutdown; `@ndigo/worker` pool helper; publish a shared-state matrix (sessions/cache/limits/scheduler under N processes).                |
+| 3    | Cron single-node only; no distributed locks/leader election/persistent schedules (AD-41 defers it). Peers: Quartz clustering, ShedLock, BullMQ schedulers, PG advisory locks.                                           | high     | M      | **Accept**: `@ndigo/locks` (Redis + PG advisory drivers, fencing tokens) + optional scheduler driver acquiring a lock per run; `@scheduled({lock})`; revisit AD-41 triggers.                                                           |
+| 4    | Management surface only `/health` + `/metrics` — no `/loggers`, `/env` (redacted), `/configprops`, `/info`, health groups for k8s probes. Peers: Spring Boot Actuator.                                                  | high     | S      | **Accept**: extend `ndigo-management` using the existing management-path access guard and `@ndigo/log` runtime levels.                                                                                                                 |
+| 5    | Metrics are a proprietary JSON snapshot; traces are OTel but metrics are not — no OTLP/Prometheus export, no semconv names. Peers: Micrometer + OTLP/Prometheus registries; OTel HTTP semconv.                          | high     | M      | **Accept**: emit real OTel metrics (semconv names, `http.server.request.duration`) with OTLP + Prometheus exporter options; keep the JSON view derived from the MeterProvider.                                                         |
+| 6    | No first-class CLI/dev loop: no watch/restart/HMR, app-facing commands, or packaging. Peers: Nest CLI, Adonis Ace (`serve --watch`/HMR), Spring DevTools, Encore CLI, Boot buildpacks.                                  | high     | M      | **Accept**: `@ndigo/cli` — `ndigo dev` (supervised restart; later metadata-aware reload), `ndigo generate` (promote Nx generators), `ndigo db`, `ndigo worker`, `ndigo build` (layered OCI/Dockerfile).                                |
+| 7    | Migrations apply but are not generated from decorator entities and not wired into boot. Peers: drizzle-kit, Lucid, Flyway/Liquibase auto-config.                                                                        | medium   | M      | **Accept**: `ndigo db generate` (entity metadata → schema diff + snapshot) so decorator entities are the single schema source; `migrations.runOnBoot`.                                                                                 |
+| 8    | Rate limiting is per-process in-memory and keys on `remoteAddress` only; behind a LB every client may look like the proxy. Peers: `@fastify/rate-limit` pluggable stores, `@nestjs/throttler` storage.                  | medium   | S      | **Accept**: Redis fixed/sliding-window driver via the existing `RateLimiter` SPI + trusted-proxy client identity; document per-process default until then.                                                                             |
+| 9    | Testing lacks containerized dependencies and DB isolation/fixtures (MockHTTP covers in-process only). Peers: Spring Testcontainers `@ServiceConnection`, Adonis Japa, Nest testing module.                              | medium   | M      | **Accept**: `@ndigo/test-containers` glue (declare containers → register connection properties; migrate once; transactional rollback).                                                                                                 |
+| 10   | No API versioning, OpenAPI 3.1, typed-client codegen, or AsyncAPI for sockets. Peers: Spring 6.2 versioning, Nest versioning + CLI plugin, Hono/Fastify swagger, OAS 3.1.                                               | medium   | M      | **Defer with ADR**: versioning resolvers in `@requestMapping`, spec 3.1, client codegen, AsyncAPI 3 for `@socketMapping`/`@stompMapping`.                                                                                              |
+| 11   | Browser paradigm under-delivers: buffered EJS rendering, no streaming-HTML/form-action story, no official Vite integration. Peers: React/Next streaming SSR, Server Actions, Astro islands/actions, Adonis Vite.        | medium   | L      | **Defer with ADR**: async-iterable view contract (SSE plumbing already models streaming), `@ndigo/vite` integration, form-action helper reusing Zod + problem-details; document web-component islands as the partial-hydration answer. |
+| 12   | No multitenancy primitives (tenant context, scoped datasource/cache/locks/telemetry). Peer: Hibernate multi-tenancy strategies.                                                                                         | medium   | L      | **Defer**: define tenant-context token + resolution hook design in an ADR; implement when a design partner needs it, else record out-of-scope.                                                                                         |
+| 13   | No feature-flag abstraction. Peer: OpenFeature spec.                                                                                                                                                                    | low      | S      | **Defer**: `FlagEvaluator` SPI with an OpenFeature-compatible provider, local provider backed by the existing property sources/refresh.                                                                                                |
+| W1   | Edge/serverless portability (Web-standard adapter).                                                                                                                                                                     | low      | L      | **Watch**: acceptable for the Spring-for-TS positioning; introduce a Fetch-API server adapter only if a target demands it.                                                                                                             |
+| W2   | HTTP/3 (upstream Node/undici gap).                                                                                                                                                                                      | low      | L      | **Watch**: document H2 termination at the edge as the supported pattern.                                                                                                                                                               |
 
 Sequencing recommendation: gaps 1–3 are one dependency cluster (locks → scheduler/jobs →
 cluster), 4–5 reuse existing management/telemetry plumbing, 6–7 are the DX track. Do not
@@ -714,7 +714,7 @@ state/nonce/PKCE/HTTPS enforcement, CSRF timing-safe compare.
 | Item                                                                    | Why it recurs                                                                                              | Mitigation to add                                                                                                                                                   |
 | :---------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Secret redaction (CTX-CTX-02/03; CF-2 family)                           | Redaction was fixed per-site, not as an invariant; each new wrap point leaks again.                        | One redaction helper used by every error wrap that can contain a property value + a secrets-field-mode spec matrix (resolver, binding, env validation, converters). |
-| `@blue/log` adoption (KRN-REV-LOG-11; OP-8)                             | Module-load loggers cannot follow `LoggerFactory` switches; ~20 framework sites still use raw `console.*`. | Lazy handles (or reconfiguration) + migrate framework `console.warn/error` call sites to `@blue/log`.                                                               |
+| `@ndigo/log` adoption (KRN-REV-LOG-11; OP-8)                            | Module-load loggers cannot follow `LoggerFactory` switches; ~20 framework sites still use raw `console.*`. | Lazy handles (or reconfiguration) + migrate framework `console.warn/error` call sites to `@ndigo/log`.                                                              |
 | AD-46 internal files (TOL-F2; TO-1 family)                              | The rule only inspects `src/index.ts`; sub-barrels leak internals.                                         | Extend `isPublicIndexFile` to `src/**/index.ts` (or reachable-from-exports) + fixture; promote `_registry.ts`.                                                      |
 | Stale AD maxima (DOC-01; DO-3/DO-6 family)                              | Hand-maintained ranges in three index docs.                                                                | Generate the range (or drop it) as part of the ADR index script; add to review checklist.                                                                           |
 | Test-vs-real parity (HTT-REV-012..014, PLN-F2/F3, DAT-F14, APP-N5)      | Suites use doubles that cannot reproduce abort/case/limit behavior; env-gated suites never run.            | MockHTTP↔adapter parity specs; real-`ServerResponse` abort tests; Redis service container; clean-checkout app builds in CI.                                         |
@@ -735,7 +735,7 @@ wave's regression tests. Item IDs refer to the tables above.
 | SEC-B1                  | Dummy hash becomes a timing sink only; reject `null`/`undefined`/`''` hashes.                                                                       | Dummy constant vs null/undefined/'' hashes rejected; valid login still works (the removed integrator probe becomes a spec). |
 | DSV-SEC-1               | Reject `..`/separator segments in view names; canonicalize + contain against the resolver root; containment re-check in `FileSystemResourceLoader`. | E2E: `/..;x=1/..;x=1/tmp/x` → 400/404, never file content; loader-level join spec.                                          |
 | PLN-F1                  | realpath + `base + sep` containment for `.br`/`.gz` variants (or refuse symlinked variants).                                                        | `.br`/`.gz` symlink escape test mirroring the `escape.lnk` case.                                                            |
-| SEC-AUD2-SEC-2 / PLN-F6 | Session cookie → `__Host-blue-session` (config escape hatch for migrations); duplicate security-cookie names rejected.                              | Duplicate-cookie parse spec; cookie-name/attribute spec.                                                                    |
+| SEC-AUD2-SEC-2 / PLN-F6 | Session cookie → `__Host-ndigo-session` (config escape hatch for migrations); duplicate security-cookie names rejected.                             | Duplicate-cookie parse spec; cookie-name/attribute spec.                                                                    |
 | SEC-AUD2-SEC-3          | Correct guide 11 / security.md; enforce JSON content-type on login (or wire CSRF by default for cookie-session apps).                               | Form-encoded login → 415 (or CSRF-forced failure); doc claim updated.                                                       |
 | SEC-AUD2-SEC-4..7       | Hash normalization reuse; OIDC `sub` required; roles normalized once; web cookie-jar defaults SameSite=Lax + Secure.                                | One spec per item.                                                                                                          |
 
@@ -764,7 +764,7 @@ wave's regression tests. Item IDs refer to the tables above.
 | DAT-F1                              | Shared lifecycle runner + parity spec.                                                                                                                                                                                            |
 | PRT-REV-001/002                     | Exception-safe STOMP send/flush; header-octet accounting.                                                                                                                                                                         |
 | TEL-TEL-02/03                       | Breaker cell in-place mutation + probe latch + epoch guard; direct `@counted` wrapper.                                                                                                                                            |
-| PWB-REV-001                         | Guard `document` in the cookie jar; lazy `currentLocale`; Node import specs for `@blue/platform-web` and `@blue/telemetry-web`.                                                                                                   |
+| PWB-REV-001                         | Guard `document` in the cookie jar; lazy `currentLocale`; Node import specs for `@ndigo/platform-web` and `@ndigo/telemetry-web`.                                                                                                 |
 | DSV-WEBCOMP-1                       | Shared island encode/decode helper + hydration spec.                                                                                                                                                                              |
 
 ### Wave 4 — Medium/low backlog by area
@@ -784,12 +784,12 @@ wave's regression tests. Item IDs refer to the tables above.
 
 ### Wave 5 — Tooling, docs, hygiene, and cross-cutting gates
 
-| Items         | Change                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| :------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| TOL-F3..F13   | Generator alias fix; coverage lane decision; test-file typecheck lane; vitest alias repair + existence check; dead script/dep/report/benchmark fixes; pinned graft.                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| DOC-01..14    | AD-range fix/generation; ARCHITECTURE package map + peer table + Ramda line; STYLE_GUIDE enforcement markers + filename rule + dead path; README/AGENTS sync; apps README; testing + HTTP-client guides; archived marker.                                                                                                                                                                                                                                                                                                                                                                              |
-| INV-1..10     | Refresh or demote the gap analysis; per-item status split for Content/i18n; correct stale rows/pointers/table.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| Cross-cutting | Migrate framework `console.*` call sites (~20 across `blue-cache`, `blue-context`, `blue-signals`, `blue-scheduler`, `blue-proxy`, `blue-dispatcher`, `blue-platform-*`, `blue-util` where a leaf is allowed) to `@blue/log`; decide skipped-test backlog policy (`apps/blue-todo/test/placeholder.spec.ts`, 8 `test.skip` query-string parity cases, dispatcher `describe.skip` integration stub) — implement or delete with a documented limitation; export `installSynchronousAnimationFrames()` (APP-N11); stale `vitest.config.ts` aliases (`@blue/logger`, `@blue/auth`, `@blue/eslint-plugin`). |
+| Items         | Change                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| :------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| TOL-F3..F13   | Generator alias fix; coverage lane decision; test-file typecheck lane; vitest alias repair + existence check; dead script/dep/report/benchmark fixes; pinned graft.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| DOC-01..14    | AD-range fix/generation; ARCHITECTURE package map + peer table + Ramda line; STYLE_GUIDE enforcement markers + filename rule + dead path; README/AGENTS sync; apps README; testing + HTTP-client guides; archived marker.                                                                                                                                                                                                                                                                                                                                                                                           |
+| INV-1..10     | Refresh or demote the gap analysis; per-item status split for Content/i18n; correct stale rows/pointers/table.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Cross-cutting | Migrate framework `console.*` call sites (~20 across `ndigo-cache`, `ndigo-context`, `ndigo-signals`, `ndigo-scheduler`, `ndigo-proxy`, `ndigo-dispatcher`, `ndigo-platform-*`, `ndigo-util` where a leaf is allowed) to `@ndigo/log`; decide skipped-test backlog policy (`apps/ndigo-todo/test/placeholder.spec.ts`, 8 `test.skip` query-string parity cases, dispatcher `describe.skip` integration stub) — implement or delete with a documented limitation; export `installSynchronousAnimationFrames()` (APP-N11); stale `vitest.config.ts` aliases (`@ndigo/logger`, `@ndigo/auth`, `@ndigo/eslint-plugin`). |
 
 ### Wave 6 — Product roadmap (framework gaps)
 
@@ -813,7 +813,7 @@ Per-wave: fail-before/pass-after test for every block/high item; then the full g
 6. `no-internal-file-exports` extended to `src/**/index.ts` + fixture — TOL-F2.
 7. Secret-redaction invariant helper + spec matrix (resolver/binding/env-validation/converters) — CTX-CTX-02/03.
 8. MockHTTP↔adapter parity suite for error mapping, limits, multipart case, aborts — HTT-REV-012..014.
-9. Non-DOM import smoke test for browser barrels (`@blue/platform-web`, `@blue/telemetry-web`) — PWB-REV-001.
+9. Non-DOM import smoke test for browser barrels (`@ndigo/platform-web`, `@ndigo/telemetry-web`) — PWB-REV-001.
 10. Redis service container in CI for the env-gated suites — DAT-F14.
 11. Review-checklist addition: run `pnpm build` (already), plus fresh-checkout e2e, non-DOM import, abort-path, and fail-before regression checks; re-verify “live” docs against HEAD when they are used as references.
 
@@ -832,7 +832,7 @@ pnpm build && pnpm test && pnpm lint && pnpm format:check && pnpm docs:links \
 #  telemetry: raw socket `GET http://[ HTTP/1.1` with instrumentation -> process survives
 #  dispatcher: view.render throws -> terminal 500, no hang
 #  radix:     insert '/b/:foo' then '/b/:bar' -> params/pattern must agree or insert must reject
-#  e2e:       git archive HEAD | tar -x -C /tmp/x && pnpm install && pnpm --filter @blue/todo build
+#  e2e:       git archive HEAD | tar -x -C /tmp/x && pnpm install && pnpm --filter @ndigo/todo build
 ```
 
 Acceptance for closure: every block/high item has a fail-before/pass-after test; all
@@ -846,15 +846,15 @@ medium items either fixed or explicitly deferred with a reason in this file; gat
 | Slice            | Agent                   | Key probe artifacts (throwaway, /tmp)                                                                 |
 | :--------------- | :---------------------- | :---------------------------------------------------------------------------------------------------- |
 | Kernel           | KernelReview-2          | `/tmp/bprobe/*` (radix, property-values, DOM, media, glob, factory)                                   |
-| Context/Boot     | ContextBootReview-2     | `/tmp/blue-review/probes.spec.ts` (20 probes, 19 failing = reproductions)                             |
-| HTTP/harness     | HttpClientReview-2      | `/tmp/blue-probe/*` (pipeline, retry×auth, cache-sec, MockHTTP)                                       |
+| Context/Boot     | ContextBootReview-2     | `/tmp/ndigo-review/probes.spec.ts` (20 probes, 19 failing = reproductions)                            |
+| HTTP/harness     | HttpClientReview-2      | `/tmp/ndigo-probe/*` (pipeline, retry×auth, cache-sec, MockHTTP)                                      |
 | Platform-node    | PlatformNodeReview-2    | `/tmp/omp-review/*` (static variant, drain/fd, writer abort, SSE, adapter crash, multipart, dotfiles) |
 | Dispatcher/views | DispatcherViewsReview-2 | `/tmp/*-probe.mjs` (traversal e2e, hang, radix, negotiation, cache key, EJS)                          |
 | Data             | DataLayerReview-2       | `/tmp/ormprobe/*`, `/tmp/oaprobe/*`, `/tmp/schedprobe.mts`                                            |
 | Protocols        | ProtocolsReview-2       | `/tmp/probes/probe1..11` (STOMP, budgets, SSE)                                                        |
 | Telemetry        | TelemetryReview-2       | `/tmp/probe-real-crash2.mts`, `/tmp/probe-cb*.mts`, `/tmp/probe-counted.mts`                          |
-| Platform-web     | PlatformWebReview-2     | `/tmp/bluereview/*` (10 jsdom/Node probes)                                                            |
-| Auth/security    | AuthSecurityReview-2    | `/tmp/blue-sec/*` (nohash, login-csrf, jwt-roles, inherit, method casing)                             |
+| Platform-web     | PlatformWebReview-2     | `/tmp/ndigoreview/*` (10 jsdom/Node probes)                                                           |
+| Auth/security    | AuthSecurityReview-2    | `/tmp/ndigo-sec/*` (nohash, login-csrf, jwt-roles, inherit, method casing)                            |
 | Tooling          | ToolingReview-3         | clean-checkout CI simulation, alias-target loop, generator escaping                                   |
 | Apps             | AppsReview-3            | app test/build runs + `/tmp` routing/SSE probes                                                       |
 | Docs             | DocsReview-3            | index/table/manifest diffs, link checker                                                              |

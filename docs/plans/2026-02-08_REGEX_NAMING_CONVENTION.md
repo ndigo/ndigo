@@ -12,15 +12,15 @@
 
 Rename all `UPPER_SNAKE_CASE` RegExp constants to `camelCase` with standardized `Rule` suffix to adhere to the project's style guide.
 
-**Breaking Change Note:** The `@blue/validate/src/formats.ts` exports are public API (exposed via `formats.*` namespace in `@blue/validate`). External consumers will need to update references.
+**Breaking Change Note:** The `@ndigo/validate/src/formats.ts` exports are public API (exposed via `formats.*` namespace in `@ndigo/validate`). External consumers will need to update references.
 
 ---
 
 ## Affected Packages
 
-- `@blue/http` (2 files, 4 constants)
-- `@blue/validate` (2 files, 31 constants)
-- `@blue/platform-web` (1 file, 2 constants)
+- `@ndigo/http` (2 files, 4 constants)
+- `@ndigo/validate` (2 files, 31 constants)
+- `@ndigo/platform-web` (1 file, 2 constants)
 
 ---
 
@@ -28,18 +28,18 @@ Rename all `UPPER_SNAKE_CASE` RegExp constants to `camelCase` with standardized 
 
 ### Phase 1: Rename Constants
 
-#### 1.1 `@blue/http` Package
+#### 1.1 `@ndigo/http` Package
 
-- **File**: `packages/blue-http/src/parsers/matrix-expression.ts` (file-local, not exported)
+- **File**: `packages/ndigo-http/src/parsers/matrix-expression.ts` (file-local, not exported)
     - Rename `MATRIX_KEY_PATTERN` to `matrixKeyRule`
     - Rename `MATRIX_VALUE_PATTERN` to `matrixValueRule`
-- **File**: `packages/blue-http/src/parsers/query-expression.ts` (file-local, not exported)
+- **File**: `packages/ndigo-http/src/parsers/query-expression.ts` (file-local, not exported)
     - Rename `QUERY_KEY_PATTERN` to `queryKeyRule`
     - Rename `QUERY_VALUE_PATTERN` to `queryValueRule`
 
-#### 1.2 `@blue/validate` Package
+#### 1.2 `@ndigo/validate` Package
 
-- **File**: `packages/blue-validate/src/formats.ts` (all exported, public API via `formats.*`)
+- **File**: `packages/ndigo-validate/src/formats.ts` (all exported, public API via `formats.*`)
 
     - Rename `ADDRESS_LINE_REGEX` to `addressLineRule`
     - Rename `ALPHA_NUMERIC_REGEX` to `alphaNumericRule`
@@ -72,13 +72,13 @@ Rename all `UPPER_SNAKE_CASE` RegExp constants to `camelCase` with standardized 
     - Rename `ZIP_CODE_EXTENSION_REGEX` to `zipCodeExtensionRule`
     - Rename `ZIP_CODE_REGEX` to `zipCodeRule`
 
-- **File**: `packages/blue-validate/src/standard-constraints.ts` (file-local, not exported)
+- **File**: `packages/ndigo-validate/src/standard-constraints.ts` (file-local, not exported)
     - Rename `DATE_PATTERN` to `dateRule`
     - Update all 30 import names from `./formats` to match new names
 
-#### 1.3 `@blue/platform-web` Package
+#### 1.3 `@ndigo/platform-web` Package
 
-- **File**: `packages/blue-platform-web/src/parser/cookie-expression.ts` (file-local, not exported)
+- **File**: `packages/ndigo-platform-web/src/parser/cookie-expression.ts` (file-local, not exported)
     - Rename `COOKIE_VALUE_PATTERN` to `cookieValueRule`
     - Rename `PERCENT_ENCODED_PATTERN` to `percentEncodedRule`
 

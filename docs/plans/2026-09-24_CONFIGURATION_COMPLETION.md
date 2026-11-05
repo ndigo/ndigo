@@ -8,7 +8,7 @@ capability gate, `builder.secrets(...)`); **Wave 3** remote config source
 (`builder.configServer(...)`, ETag/304-gated poll → refresh → rebind,
 secrets × remote composition); **Wave 4** docs + status (this header, guide
 03, plans README, gap-analysis §3 row → IMPLEMENTED, feature-assessment
-status row). Demo gates: `blue-api` `/api/config/*`, `/api/config.json`,
+status row). Demo gates: `ndigo-api` `/api/config/*`, `/api/config.json`,
 `/api/config/secrets`. Working-session notes (as-built):
 
 - The decryption seam sits on the **resolver** (`ResolverOptions.
@@ -123,19 +123,19 @@ the ladder (D-3).
   (`node-environment.ts:63-66`). **No event, no listener** — environments are
   not emitters; `customizer.spec.ts:111-113` pins that refresh does NOT
   re-apply customizers (footgun-guard to preserve).
-- **`Emitter` already exists in blue-context** (`event-emitter.ts`:
+- **`Emitter` already exists in ndigo-context** (`event-emitter.ts`:
   `AsEventEmitter` mixin, `Emitter` class; `Application extends Emitter`,
   emits `'started'`). Adding the mixin to `AbstractEnvironment` is a
   one-line surface change; hot lookup paths are untouched (emit only inside
   `refresh()`).
-- **Scopes exist in blue-factory** (`scope.ts`): `KnownScope =
+- **Scopes exist in ndigo-factory** (`scope.ts`): `KnownScope =
   'singleton' | 'prototype' | 'route' | 'hash'`, `defineScope`/`getScope`/
   `hasScope`, decorators `singletonScope`/`prototypeScope`/`hashScope`, and
   per-scope classes (`SingletonScope`, `HashScope`, …). Spring's
   `@RefreshScope` _is_ a scope in Spring — the port is `scope('refresh')` +
   a `RefreshScope` class whose cache clears on the environment refresh
   event. Naming matches the existing camelCase scope decorators exactly.
-- **`PrecedenceDoc`** (`blue-boot/src/precedence.ts`, AD-13 D6) is the
+- **`PrecedenceDoc`** (`ndigo-boot/src/precedence.ts`, AD-13 D6) is the
   canonical ordered source-name list, integration-tested: `commandLine > boot
     > systemEnvironment > dotenv > application-{profile} > application >
     > defaults`. Any new named source MUST update it + its spec (documented
@@ -147,10 +147,10 @@ the ladder (D-3).
 - **Seam precedents:** AD-13's `readFile` injection (`StandardConfigFileLoader`
     - `node-file-reader.ts`, boot stays isomorphic) and its
       `optional:`/`required:` file convention; `TtlContentSource`
-      (`blue-content/src/async.ts`) TTL pattern; AD-24's demo-gate counter test
+      (`ndigo-content/src/async.ts`) TTL pattern; AD-24's demo-gate counter test
       (`cached-report`); AD-20's `NodeAutoConfiguration` `@entry` beans.
 - **Crypto posture:** zero crypto deps in-tree; `jose` is a dependency of
-  the auth packages only (never `blue-context`). `node:crypto` is the
+  the auth packages only (never `ndigo-context`). `node:crypto` is the
   platform standard (Node ≥ 22 per the i18n note; `Intl` precedent AD-19
   D3 — "use platform standard APIs directly").
 - **Fetch:** Node 22 has global `fetch` — a remote source needs only a
@@ -201,7 +201,7 @@ options differ in _where the key lives and who can read it_:
 | #                                                                                 | Scheme                                                                         | Defeats (beyond artifact leaks) | Key location                                                                               | Cost                                                                                      | Verdict |
 | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- | ------- |
 | **1. Minimal correct primitive** — AES-256-GCM, raw 32-byte key, versioned marker | artifact/repo/backup leaks; tamper (integrity)                                 | env var (same host)             | zero deps, `node:crypto`; **~250 lines + KAT spec** (AAD, nonces, versioning — not "thin") | **v1, the reference implementation**                                                      |
-| **2. `jose` JWE compact**                                                         | same + **public-key mode**: CI/devs encrypt _for prod_ without holding the key | private JWK (per-deployment)    | 1 dep on blue-context (already in auth pkgs)                                               | **documented adapter** — the concrete "next backend" (D-4 seam)                           |
+| **2. `jose` JWE compact**                                                         | same + **public-key mode**: CI/devs encrypt _for prod_ without holding the key | private JWK (per-deployment)    | 1 dep on ndigo-context (already in auth pkgs)                                              | **documented adapter** — the concrete "next backend" (D-4 seam)                           |
 | **3. `age-encryption`** (TyPage, audited, official port)                          | potentially hardware passkeys (WebAuthn PRF) as key material                   | age identity / passkey          | 1 dep; value-level integration is ours                                                     | **documented adapter** — hardware-key story                                               |
 | **4. KMS envelope** — DEK in file, KEK in AWS/GCP/Azure/Vault-transit             | **host compromise**: key never at rest in plaintext; audit + ACLs              | KMS (hardware boundary)         | network dep at boot, SDK, cloud lock-in                                                    | **documented adapter** — the migration ceiling                                            |
 | **5. Runtime delivery** — Vault/Secrets Manager, no ciphertext at all             | strongest; short-TTL creds                                                     | secret store                    | infra dependency; overlaps the config-server row (Wave 3)                                  | **fold into Wave 3** — same shape as `RemotePropertySource`, a `vault://` fetcher; not v1 |
@@ -257,7 +257,7 @@ for each rung: public-key write-without-read (JWE), hardware-backed keys
 
 ### D-4 — Cipher contract, marker format, key source, crypto discipline
 
-- `SecretCipher` interface in `blue-context`:
+- `SecretCipher` interface in `ndigo-context`:
   `encrypt(plain: string, aad?: string): string; decrypt(token: string,
   aad?: string): string`. Native token payload:
   `cipher:v1:<base64url(iv | tag | ct)>` (12-byte IV, 16-byte tag,
@@ -270,7 +270,7 @@ for each rung: public-key write-without-read (JWE), hardware-backed keys
   to another fails auth at lookup instead of silently decrypting under the
   wrong context. Binds the ciphertext to its semantic location.
 - **Key discipline — raw key, enforced shape, never a passphrase.**
-  `BLUE_SECRET_KEY` is base64 of exactly 32 bytes (AES-256). Construction
+  `NDIGO_SECRET_KEY` is base64 of exactly 32 bytes (AES-256). Construction
   with a malformed/wrong-length key → immediate `IllegalStateError` (fail at
   startup, not at first decrypt). **Passphrases are rejected outright** —
   no KDF (PBKDF2/Argon2) footgun, no weak-entropy surface; a raw 256-bit key
@@ -289,7 +289,7 @@ for each rung: public-key write-without-read (JWE), hardware-backed keys
   a KMS envelope backend, or a JWE backend can coexist behind the same
   marker; unknown version → `IllegalStateError` (never "treat as plaintext").
 
-### D-5 — `DecryptingPropertySource` (blue-context, seam-injected) + boot wiring
+### D-5 — `DecryptingPropertySource` (ndigo-context, seam-injected) + boot wiring
 
 - `DecryptingPropertySource(name, source, { cipher })` wraps any source:
   string values matching `^{cipher:` decrypt at `getProperty` time; all other
@@ -300,7 +300,7 @@ for each rung: public-key write-without-read (JWE), hardware-backed keys
   unambiguous; documented in the guide.
 - Boot (isomorphic) applies decryption when a cipher is provided:
   `ApplicationBuilder.secrets({ cipher })`; `NodeApplication`-style wiring
-  passes `AESGCMCipher.fromEnvironment()` when `BLUE_SECRET_KEY` is set —
+  passes `AESGCMCipher.fromEnvironment()` when `NDIGO_SECRET_KEY` is set —
   mirroring the AD-13 `readFile` seam (boot stays isomorphic; the platform
   supplies the crypto).
 - **Remote values decrypt too (owner-confirmed 2026-09-25).** The
@@ -316,7 +316,7 @@ for each rung: public-key write-without-read (JWE), hardware-backed keys
 
 ### D-6 — Config server: plain JSON-over-HTTPS remote source (own contract)
 
-`RemotePropertySource(name, options)` in blue-context:
+`RemotePropertySource(name, options)` in ndigo-context:
 
 ```ts
 interface RemoteSourceOptions {
@@ -329,7 +329,7 @@ interface RemoteSourceOptions {
 ```
 
 **Auth (owner-confirmed 2026-09-25): static header via env.** Token etc. is
-provided through `headers` — sourced from env (`BLUE_CONFIG_SERVER_TOKEN`)
+provided through `headers` — sourced from env (`NDIGO_CONFIG_SERVER_TOKEN`)
 or builder, **never** from `application.json` (the token header is itself a
 secret; the file layer is exactly what the secrets work exists to protect).
 Rotation = env rotation + re-poll. No token-provider callback seam in v1;
@@ -377,7 +377,7 @@ change → no event → no rebinding (no storms). Spring Cloud Config publishing
 ### D-9 — Emitter ↔ Signals reconciliation: follow-up ADR (confirmed)
 
 The repo now has two reactive vocabularies: **Emitter** events (context
-lifecycle, this wave's `config:refresh`) and **blue-signals**
+lifecycle, this wave's `config:refresh`) and **ndigo-signals**
 (`signal`/`computed`/`effect`), bridged by `streamToSignal` (AD-09). This wave
 uses the Emitter path on the server (synchronous, zero new deps). The future
 direction is a **unification ADR** — a signal-backed environment (e.g. a
@@ -388,19 +388,19 @@ consumer exists — NOT this wave.**
 
 ## 4. Architecture
 
-| Piece                                                                               | Home                                                                          | Notes                                                                                                                                                          |
-| ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `AsEventEmitter` on `AbstractEnvironment`; `refresh()` emits `config:refresh`       | `blue-context/src/environment.ts`                                             | after index rebuild; no hot-path cost                                                                                                                          |
-| `RefreshScope` class + `KnownScope 'refresh'` + `refreshScope` decorator            | `blue-factory/src/scope.ts`                                                   | cache clear on event; next `getValue` recreates                                                                                                                |
-| Boot rebind listener (`@refreshScope` config classes re-resolve + `setValue`)       | `blue-boot/src/application.ts`                                                | subscribes in `_prepareContext`; AD-16 D3 footgun guard intact                                                                                                 |
-| `SecretCipher` contract + `DecryptingPropertySource`                                | `blue-context/src/` (new `secret-cipher.ts`, `decrypting-property-source.ts`) | seam-injected cipher; **scheme-registry dispatch** (`cipher:`/`jwe:`/`age:`/`kms:`); key-path AAD binding; capability gate refuses AAD-less adapters at wiring |
-| `AESGCMCipher` + `fromEnvironment()` (`BLUE_SECRET_KEY`)                            | `blue-platform-node/src/` (new `aes-gcm-cipher.ts`)                           | `node:crypto` AES-256-GCM; scheme `cipher:v1`; base64url iv.tag.ct; ~250 lines + NIST KAT spec; raw 32-byte key enforced                                       |
-| `ApplicationBuilder.secrets(...)` wiring                                            | `blue-boot/src/application.ts`                                                | wraps registered sources when cipher provided (AD-13 `readFile` seam pattern)                                                                                  |
-| `RemotePropertySource` + `RemoteSourceOptions` + `start/stop`                       | `blue-context/src/` (new `remote-property-source.ts`)                         | ETag/If-None-Match; body-digest fallback; `optional` failure semantics                                                                                         |
-| Boot config-server wiring (`builder.configServer({...})`, `BLUE_CONFIG_SERVER_URL`) | `blue-boot/src/application.ts` + `_prepareEnvironment`                        | load aft. files, before CLI; start polling; stop on `context:close`                                                                                            |
-| `PrecedenceDoc` + order-assertion spec                                              | `blue-boot/src/precedence.ts` + spec                                          | `configServer` slot; doc and test updated together (AD-13 D6)                                                                                                  |
-| Demo gates                                                                          | `apps/blue-api`                                                               | `/config.json` self-served + `/api/config/*` rebind/secrets demos (AD-24 pattern)                                                                              |
-| Docs + status                                                                       | guide 03, plans README, gap analysis §3, AD-29                                | Configuration row → IMPLEMENTED; feature-assessment status refresh                                                                                             |
+| Piece                                                                                | Home                                                                           | Notes                                                                                                                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AsEventEmitter` on `AbstractEnvironment`; `refresh()` emits `config:refresh`        | `ndigo-context/src/environment.ts`                                             | after index rebuild; no hot-path cost                                                                                                                          |
+| `RefreshScope` class + `KnownScope 'refresh'` + `refreshScope` decorator             | `ndigo-factory/src/scope.ts`                                                   | cache clear on event; next `getValue` recreates                                                                                                                |
+| Boot rebind listener (`@refreshScope` config classes re-resolve + `setValue`)        | `ndigo-boot/src/application.ts`                                                | subscribes in `_prepareContext`; AD-16 D3 footgun guard intact                                                                                                 |
+| `SecretCipher` contract + `DecryptingPropertySource`                                 | `ndigo-context/src/` (new `secret-cipher.ts`, `decrypting-property-source.ts`) | seam-injected cipher; **scheme-registry dispatch** (`cipher:`/`jwe:`/`age:`/`kms:`); key-path AAD binding; capability gate refuses AAD-less adapters at wiring |
+| `AESGCMCipher` + `fromEnvironment()` (`NDIGO_SECRET_KEY`)                            | `ndigo-platform-node/src/` (new `aes-gcm-cipher.ts`)                           | `node:crypto` AES-256-GCM; scheme `cipher:v1`; base64url iv.tag.ct; ~250 lines + NIST KAT spec; raw 32-byte key enforced                                       |
+| `ApplicationBuilder.secrets(...)` wiring                                             | `ndigo-boot/src/application.ts`                                                | wraps registered sources when cipher provided (AD-13 `readFile` seam pattern)                                                                                  |
+| `RemotePropertySource` + `RemoteSourceOptions` + `start/stop`                        | `ndigo-context/src/` (new `remote-property-source.ts`)                         | ETag/If-None-Match; body-digest fallback; `optional` failure semantics                                                                                         |
+| Boot config-server wiring (`builder.configServer({...})`, `NDIGO_CONFIG_SERVER_URL`) | `ndigo-boot/src/application.ts` + `_prepareEnvironment`                        | load aft. files, before CLI; start polling; stop on `context:close`                                                                                            |
+| `PrecedenceDoc` + order-assertion spec                                               | `ndigo-boot/src/precedence.ts` + spec                                          | `configServer` slot; doc and test updated together (AD-13 D6)                                                                                                  |
+| Demo gates                                                                           | `apps/ndigo-api`                                                               | `/config.json` self-served + `/api/config/*` rebind/secrets demos (AD-24 pattern)                                                                              |
+| Docs + status                                                                        | guide 03, plans README, gap analysis §3, AD-29                                 | Configuration row → IMPLEMENTED; feature-assessment status refresh                                                                                             |
 
 ### API sketch
 
@@ -414,14 +414,14 @@ environment.on?.('config:refresh', () => /* rebind consumers */);
 class ServerConfig { /* rebinds on every environment.refresh() */ }
 
 // Secrets (D-4/D-5)
-const cipher = AESGCMCipher.fromEnvironment();  // BLUE_SECRET_KEY (raw 32B base64)
+const cipher = AESGCMCipher.fromEnvironment();  // NDIGO_SECRET_KEY (raw 32B base64)
 builder.secrets({ cipher });
 // application.json: { "db": { "password": "{cipher:v1:…}" } }
 // key path "db.password" binds as AAD: swap ciphertext between keys → auth failure
 
 // Config server (D-6..D-8)
 builder.configServer({
-    url: 'https://config.internal/blue-api.json',
+    url: 'https://config.internal/ndigo-api.json',
     pollMs: 30_000,
     optional: true,
 });
@@ -431,8 +431,8 @@ builder.configServer({
 
 Package deps: **zero new runtime dependencies.** `node:crypto` and global
 `fetch` are platform standards (Node ≥ 22); the fetch seam keeps specs
-deterministic; `blue-context` stays browser-safe (no `node:` imports — the
-cipher impl lives in blue-platform-node).
+deterministic; `ndigo-context` stays browser-safe (no `node:` imports — the
+cipher impl lives in ndigo-platform-node).
 
 ## 5. Risks
 
@@ -446,7 +446,7 @@ cipher impl lives in blue-platform-node).
   (grep-verified in review gate). Decrypted values exist only in the bound
   instance.
 - **R-3 — Key rotation.** v1 = single key; rotation is a redeploy of
-  `BLUE_SECRET_KEY` **plus re-encrypting values** (the marker version prefix
+  `NDIGO_SECRET_KEY` **plus re-encrypting values** (the marker version prefix
   and AAD-binding make this mechanical, but it is a real operational step —
   documented in the guide with a rotation recipe). A multi-key keystore /
   KMS envelope (D-3 rung 4) is the migration path if rotation frequency
@@ -460,7 +460,7 @@ cipher impl lives in blue-platform-node).
   is a product risk, not a supply-chain risk. Mitigations: NIST AES-GCM
   known-answer tests in the cipher spec, AAD-binding tests (ciphertext
   swapped between key paths must fail), nonce-uniqueness asserts, key-shape
-  enforcement (fail-loud on malformed `BLUE_SECRET_KEY`), and a review gate
+  enforcement (fail-loud on malformed `NDIGO_SECRET_KEY`), and a review gate
   dedicated to the cipher module. (~250-line module + KAT spec — sized for
   a full audit, not a "thin" wrapper.)
 - **R-4 — Customizer double-apply.** Preserved from AD-16: refresh never
@@ -484,8 +484,8 @@ integration (new env values → fresh bound instance). Gates: package vitest +
 `tsc -b`.
 
 **Wave 2 — secrets.** `SecretCipher` contract + `DecryptingPropertySource`
-(blue-context), `AESGCMCipher` (blue-platform-node), builder wiring, optional
-blue-api demo (`/api/config/secrets` returns a decrypted demo value bound
+(ndigo-context), `AESGCMCipher` (ndigo-platform-node), builder wiring, optional
+ndigo-api demo (`/api/config/secrets` returns a decrypted demo value bound
 from `application.json`). Specs: **NIST AES-256-GCM known-answer tests**
 (encrypt deterministically with fixed IV/key → exact expected ciphertext;
 decrypt the published vectors) — the correctness gate; round-trip
@@ -493,8 +493,8 @@ encrypt→decrypt; tampered token → error; wrong key → error; **AAD binding:
 ciphertext created under key path A decrypts under A, fails under B**;
 nonce-uniqueness assert (no two encryptions of the same plaintext share a
 nonce/IV); non-marker passthrough; placeholders-then-decrypt ordering;
-missing key + `{cipher` value → error naming `BLUE_SECRET_KEY`; malformed
-`BLUE_SECRET_KEY` (wrong length/not base64) → immediate construction error;
+missing key + `{cipher` value → error naming `NDIGO_SECRET_KEY`; malformed
+`NDIGO_SECRET_KEY` (wrong length/not base64) → immediate construction error;
 unknown marker version → error (never plaintext fallback); bound config
 class receives the decrypted value. Gates: package vitest + `tsc -b`.
 
@@ -506,15 +506,15 @@ value (the wave's payoff spec); 304 → no event; `optional:false` fetch
 failure fails boot; `context:close` stops polling (fake-timer spec);
 **secrets × remote composition**: fetched document carrying `{cipher:…}`
 values + cipher configured → decrypts; without cipher → fails loudly; static
-auth header from `BLUE_CONFIG_SERVER_TOKEN` sent on fetch; `vault://` +
+auth header from `NDIGO_CONFIG_SERVER_TOKEN` sent on fetch; `vault://` +
 custom `fetch` documented as the runtime-delivery extension point (no
-Vault-specific code). Demo gates in blue-api (self-served `/config.json`,
+Vault-specific code). Demo gates in ndigo-api (self-served `/config.json`,
 `/api/config/*` reflecting live rebind). Gates: package vitest + `tsc -b`.
 
 **Wave 4 — docs + status.** AD-29 (ratifies D-1..D-9; records the
 Emitter↔Signals reconciliation note per D-9, revisit triggers incl. KMS
 backend + noble/browser case + key rotation); guide 03 gains sections:
-refresh/rebind, `{cipher:` secrets + `BLUE_SECRET_KEY`, config-server source +
+refresh/rebind, `{cipher:` secrets + `NDIGO_SECRET_KEY`, config-server source +
 precedence; `docs/plans/README.md` entry; **status refresh:** gap analysis
 §3 Configuration row → IMPLEMENTED (D-9 follow-up noted), feature-assessment
 status row updated, plan status header. Final: `pnpm lint`,
@@ -530,7 +530,7 @@ status row updated, plan status header. Final: `pnpm lint`,
 - Cipher: NIST AES-256-GCM KATs (deterministic fixed-IV vectors); round-trip;
   tamper/wrong-key → `IllegalStateError`; **AAD binding** (same ciphertext,
   different key path → auth failure); nonce uniqueness across encryptions;
-  non-marker passthrough; lazy key failure naming `BLUE_SECRET_KEY` +
+  non-marker passthrough; lazy key failure naming `NDIGO_SECRET_KEY` +
   malformed-key construction error; unknown version → error; error rendering
   masks decrypted values.
 - Scheme dispatch: marker `cipher:v1:…` decrypts via `AESGCMCipher`;
@@ -543,7 +543,7 @@ status row updated, plan status header. Final: `pnpm lint`,
   `optional` false failure fails boot.
 - Full loop: server doc change → poll → rebind → `getValue`
   (`serverConfig`) returns fresh values — end-to-end spec.
-- Demo: blue-api `/api/config/*` counter/port reflects a live rebind and a
+- Demo: ndigo-api `/api/config/*` counter/port reflects a live rebind and a
   decrypted secret.
 - Repo gates: `pnpm lint` (`--deny-warnings`), `pnpm format:check`,
   changed-package `tsc -b`, changed-package `vitest run`, `graft build`.

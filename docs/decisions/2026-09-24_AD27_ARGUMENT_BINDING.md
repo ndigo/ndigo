@@ -26,8 +26,8 @@ hook (AD-07). The gap was a missing Node-path resolver + extractor naming a
 target shape — not a missing engine.
 
 The research (plan §3) found no framework behavior worth copying wholesale:
-The reference resolver architecture is already Blue's 1:1; NestJS's `reflection`
-based DTO inference contradicts Blue's established explicit-marker convention
+The reference resolver architecture is already Ndigo's 1:1; NestJS's `reflection`
+based DTO inference contradicts Ndigo's established explicit-marker convention
 (AD-26 D-5); no new runtime dependency is needed on either path.
 
 ## Decisions

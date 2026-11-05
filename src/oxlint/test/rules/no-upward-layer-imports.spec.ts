@@ -57,7 +57,7 @@ ruleTester.run('no-upward-layer-imports', noUpwardLayerImports, {
         {
             // Files outside packages/ are not layer subjects (apps, root scripts).
             code: "import { X } from '@ndigo/platform-node';",
-            filename: '/apps/04-ndigo-api/src/index.ts',
+            filename: '/apps/05-ndigo-api/src/index.ts',
         },
         {
             code: "import './local';",

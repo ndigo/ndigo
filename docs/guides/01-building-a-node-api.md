@@ -4,7 +4,7 @@ This guide walks through the primary Ndigo server-side workflow end-to-end:
 DI-scaffolded bootstrap, dependency configuration, controllers, request
 binding, validation, the error contract, and graceful shutdown.
 
-The finished shape of every pattern here lives in `apps/04-ndigo-api` — use it as
+The finished shape of every pattern here lives in `apps/05-ndigo-api` — use it as
 the canonical reference. Concepts link to the relevant decision record where the rationale
 is worth reading.
 
@@ -379,7 +379,7 @@ new HTTPServer(null, { tls: { key: '/etc/tls/key.pem', cert: '/etc/tls/cert.pem'
   `validatedBody`, and entity-derived schemas.
 - [Guide 17 — Static Files](17-static-files.md): serving a directory over
   HTTP — ETag/Range, precompressed variants, SPA fallback (the reference demo
-  is `apps/04-ndigo-api`'s `/static/`).
+  is `apps/05-ndigo-api`'s `/static/`).
 - Package READMEs: `@ndigo/platform-node`, `@ndigo/dispatcher`, `@ndigo/boot`,
   `@ndigo/orm` for the full symbol surface.
 - Decision records: [Zod validation](../decisions/2026-09-05_AD07_ZOD_VALIDATION.md),

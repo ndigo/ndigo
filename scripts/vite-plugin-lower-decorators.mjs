@@ -15,7 +15,7 @@
  * transforms and uses esbuild — which lowers decorators for any target below
  * `esnext` — for TypeScript modules in the workspace. Every app with browser
  * sources applies it for BOTH `vite build` and `vite dev` (the demo apps
- * forward it unconditionally; `ndigo-todo`'s former `command === 'build'` gate
+ * forward it unconditionally; `ndigo-todo-web`'s former `command === 'build'` gate
  * is gone), so neither path ships raw decorators. Every Vitest lane carries it
  * too: Vitest 5 transforms through the same Vite 8 Oxc pipeline, which passes
  * decorators through unchanged, while the lanes resolve workspace sources to

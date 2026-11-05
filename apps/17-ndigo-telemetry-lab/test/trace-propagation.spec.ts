@@ -4,7 +4,7 @@
  * The client half of the journey is `@ndigo/http`'s `TraceHeaderInterceptor`,
  * which injects the active span as a W3C `traceparent` header (browsers have no
  * async-local storage, so it reads a span the caller started — see
- * `apps/07-ndigo-views`' client demo). This lane plays that client with a raw
+ * `apps/08-ndigo-views`' client demo). This lane plays that client with a raw
  * `fetch`, and asserts the server half with the **in-memory span exporter**
  * (`@opentelemetry/sdk-trace-base`), the same instrument
  * `packages/ndigo-telemetry-node/test/http-server-continuation.spec.ts` uses:

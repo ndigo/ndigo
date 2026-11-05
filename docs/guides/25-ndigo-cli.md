@@ -9,15 +9,15 @@ library — commands, typed flags, `--help`, exit codes.
 
 | Command                 | Runs the app's…                                                     | Example                                                           |
 | :---------------------- | :------------------------------------------------------------------ | :---------------------------------------------------------------- |
-| `ndigo serve`           | `scripts.start` under the supervisor                                | `ndigo serve ./apps/04-ndigo-api --port 3000 --cluster 4`         |
+| `ndigo serve`           | `scripts.start` under the supervisor                                | `ndigo serve ./apps/05-ndigo-api --port 3000 --cluster 4`         |
 | `ndigo dev`             | `scripts.dev` (vite) or `scripts.start`                             | `ndigo dev ./apps/15-ndigo-resilience-lab --port 3200`            |
 | `ndigo new <name>`      | the `app` generator (a new app under `apps/NN-ndigo-<name>`)        | `ndigo new todo-widget --kind node`                               |
 | `ndigo generate <kind>` | `@ndigo/generators` via Nx                                          | `ndigo generate package --name my-app`                            |
-| `ndigo db new [slug]`   | scaffolds the next versioned migration                              | `ndigo db new ./apps/04-ndigo-api add-title-column`               |
-| `ndigo db generate`     | `scripts.db:generate` (AD-78: entities → next migration + snapshot) | `ndigo db generate ./apps/04-ndigo-api`                           |
-| `ndigo db migrate`      | `scripts.db:migrate`                                                | `ndigo db migrate ./apps/04-ndigo-api`                            |
-| `ndigo db status`       | `scripts.db:status` (journal readback)                              | `ndigo db status ./apps/04-ndigo-api`                             |
-| `ndigo inspect`         | `scripts.inspect` (the AD-70 printer)                               | `ndigo inspect ./apps/04-ndigo-api`                               |
+| `ndigo db new [slug]`   | scaffolds the next versioned migration                              | `ndigo db new ./apps/05-ndigo-api add-title-column`               |
+| `ndigo db generate`     | `scripts.db:generate` (AD-78: entities → next migration + snapshot) | `ndigo db generate ./apps/05-ndigo-api`                           |
+| `ndigo db migrate`      | `scripts.db:migrate`                                                | `ndigo db migrate ./apps/05-ndigo-api`                            |
+| `ndigo db status`       | `scripts.db:status` (journal readback)                              | `ndigo db status ./apps/05-ndigo-api`                             |
+| `ndigo inspect`         | `scripts.inspect` (the AD-70 printer)                               | `ndigo inspect ./apps/05-ndigo-api`                               |
 | `ndigo doctor`          | (self-diagnostics)                                                  | `ndigo doctor` — versions, workspace, git, and environment checks |
 
 Every command follows the oclif contract: `--help`, `--version`, exit `0`
@@ -93,7 +93,7 @@ ndigo new todo-widget --kind node --port 3190 --dry-run
 `ndigo serve --cluster <n>` runs the app across N worker slots:
 
 ```bash
-ndigo serve ./apps/04-ndigo-api --port 3000 --cluster 4
+ndigo serve ./apps/05-ndigo-api --port 3000 --cluster 4
 ```
 
 Each slot gets `NDIGO_CLUSTER_SLOT`/`SIZE` and `PORT = 3000 + slot` (guide
@@ -107,7 +107,7 @@ signals relay, crashes reap.
 declared scripts — add them when the CLI reports them missing (the AD-70
 `inspect` entry builds the manifest without binding a port; apps choose
 their own controllers/config classes, exactly as
-`apps/04-ndigo-api/src/inspect.ts` does). The `db:*` lifecycle — versioned
+`apps/05-ndigo-api/src/inspect.ts` does). The `db:*` lifecycle — versioned
 migration files, generation from entity metadata, and run-on-boot — is
 guide 27.
 
@@ -116,4 +116,4 @@ guide 27.
 - AD-75: `docs/decisions/2026-10-07_AD75_FRAMEWORK_CLI.md`
 - The cluster guide (24) — what `serve --cluster` runs
 - The jobs (22) and locks (23) guides — the coordination the CLI fronts
-- `apps/04-ndigo-api/src/inspect.ts` — the inspect-entry template (AD-70)
+- `apps/05-ndigo-api/src/inspect.ts` — the inspect-entry template (AD-70)

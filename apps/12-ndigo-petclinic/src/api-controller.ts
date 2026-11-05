@@ -11,7 +11,7 @@
  * negotiating `Accept` on the page routes, which would have to re-project the
  * model per representation anyway. `ContentNegotiationViewResolver` remains
  * the framework mechanism for one model in several representations (see
- * `apps/07-ndigo-views`).
+ * `apps/08-ndigo-views`).
  *
  * A miss is an RFC 9457 problem document (`application/problem+json`) with the
  * framework's `urn:ndigo:not-found` type, the mirror of the 404 page the same

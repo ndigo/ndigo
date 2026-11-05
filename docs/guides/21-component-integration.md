@@ -8,7 +8,7 @@ library selected for the reference integration is Web Awesome
 ([AD-71](../decisions/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md)).
 
 This guide is the how-to; the runnable reference is
-[`apps/06-ndigo-island`](../../apps/06-ndigo-island/README.md) — an SSR island whose
+[`apps/07-ndigo-island`](../../apps/07-ndigo-island/README.md) — an SSR island whose
 add-item form uses Web Awesome controls end-to-end.
 
 ## 1. Selecting a library
@@ -39,7 +39,7 @@ register the element — no wrapper, no facade, no re-export shim (AD-69 D-4).
 Use attributes and events directly, exactly as the library documents:
 
 ```ts
-// apps/06-ndigo-island/client/main.ts (abridged)
+// apps/07-ndigo-island/client/main.ts (abridged)
 import '@awesome.me/webawesome/dist/components/button/button.js';
 import '@awesome.me/webawesome/dist/components/input/input.js';
 
@@ -64,7 +64,7 @@ fallback** — skeleton or content from the same model — into a declarative
 shadow root, and the component's first client render replaces it in place.
 
 ```ts
-// apps/06-ndigo-island/src/island-controller.ts (abridged)
+// apps/07-ndigo-island/src/island-controller.ts (abridged)
 const island = new IslandView('todo-app', { shadowHtml: renderTodoFallback(model) });
 ```
 
@@ -154,7 +154,7 @@ its own labels from the island's negotiated locale (`data-ndigo-locale`).
 - **RTL** is delegated to the library (AD-71); Ndigo's own RTL work remains
   tracked with Content/i18n.
 
-## 8. Reference integration — `apps/06-ndigo-island`
+## 8. Reference integration — `apps/07-ndigo-island`
 
 The demo wires every step above together:
 
@@ -174,7 +174,7 @@ The demo wires every step above together:
 Run it:
 
 ```bash
-cd apps/06-ndigo-island && pnpm dev
+cd apps/07-ndigo-island && pnpm dev
 # GET http://127.0.0.1:3200/        — the hybrid shell
 # POST http://127.0.0.1:3200/items  — urlencoded form endpoint (text=…)
 
@@ -198,7 +198,7 @@ directives seam (the same seam a cross-host WebSocket uses to add
 unchanged:
 
 ```ts
-// apps/06-ndigo-island/src/island-configuration.ts (abridged)
+// apps/07-ndigo-island/src/island-configuration.ts (abridged)
 const mapping = context.getValue(HANDLER_MAPPING);
 mapping.interceptors.splice(
     0,
@@ -234,4 +234,4 @@ proportional to what the app actually uses.
 - [AD-69 — Component integration contract](../decisions/2026-10-06_AD69_COMPONENT_INTEGRATION_CONTRACT.md)
 - [AD-71 — Component library selection (Web Awesome)](../decisions/2026-10-07_AD71_COMPONENT_LIBRARY_SELECTION.md)
 - [Guide 18 — Signals & Islands](18-signals-and-islands.md) — the island lifecycle in detail
-- [apps/06-ndigo-island](../../apps/06-ndigo-island/README.md) — the runnable reference
+- [apps/07-ndigo-island](../../apps/07-ndigo-island/README.md) — the runnable reference

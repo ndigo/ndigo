@@ -63,7 +63,7 @@ pnpm --filter @ndigo/view-ejs test
 ## See Also
 
 - [@ndigo/view](../ndigo-view/README.md) — view contracts, view targets, and content negotiation
-- [apps/06-ndigo-island](../../apps/06-ndigo-island/README.md) — EJS shell + island hydration demo
+- [apps/07-ndigo-island](../../apps/07-ndigo-island/README.md) — EJS shell + island hydration demo
 
 ## Contributing
 

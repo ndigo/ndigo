@@ -24,7 +24,7 @@ export class ServeCommand extends Command {
 
     static examples = [
         '$ ndigo serve',
-        '$ ndigo serve ./apps/04-ndigo-api --port 3000',
+        '$ ndigo serve ./apps/05-ndigo-api --port 3000',
         '$ ndigo serve --cluster 4 --port 3000',
     ];
 

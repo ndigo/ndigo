@@ -21,7 +21,7 @@ export class DbStatusCommand extends Command {
         "Runs the app's scripts.db:status under the one-shot process " +
         'lifecycle — the app script prints DrizzleMigrator.status() rows ' +
         'from the journal (AD-78).';
-    static examples = ['$ ndigo db status', '$ ndigo db status ./apps/04-ndigo-api'];
+    static examples = ['$ ndigo db status', '$ ndigo db status ./apps/05-ndigo-api'];
 
     static flags = {};
 

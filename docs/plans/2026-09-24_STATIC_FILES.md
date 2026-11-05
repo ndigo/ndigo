@@ -16,7 +16,7 @@ history-mode fallback, or directory-listing control") and §5 sequencing item 6
 ## 1. Problem
 
 Static serving exists but is transport-poor. `StaticResourceResolver`
-(`packages/blue-platform-node/src/static-resource-resolver.ts:52`) does the
+(`packages/ndigo-platform-node/src/static-resource-resolver.ts:52`) does the
 hard security work — canonical-base containment via `realpath` prefix checks
 (`static-resource-resolver.ts:82-130`), MIME allowlist
 (`static-resource-resolver.ts:28-50`), whole-file `Buffer` reads — and
@@ -38,7 +38,7 @@ Two structural defects compound the work:
 
 1. **No greedy route segment.** The radix matcher supports per-segment
    `{name}`/`:name` params and a single-segment `*` wildcard
-   (`packages/blue-core/src/radix-tree.ts:148-195`), but `**` currently
+   (`packages/ndigo-core/src/radix-tree.ts:148-195`), but `**` currently
    classifies as a **literal static segment** (`_classifySegment`,
    `radix-tree.ts:193-200`). So `/static/{file}` matches one segment only —
    `/static/assets/logo.png` is unreachable today — and a SPA catch-all
@@ -72,7 +72,7 @@ Two structural defects compound the work:
     - `StaticFileView` (`static-file-view.ts:17`) — writes problem docs for
       errors itself (`writeProblem`, `static-file-view.ts:39-48`) and commits
       file bytes through a `ViewTarget` (`static-file-view.ts:54`). Currently
-      wired by no app (blue-island uses `StaticController`, `island.spec.ts`).
+      wired by no app (ndigo-island uses `StaticController`, `island.spec.ts`).
 - **Transport facts:** `route.path` is the raw, percent-encoded request path
   (`node-http-server-adapter.ts:867`); parameters bind raw (no decoding
   anywhere) — encoded filenames (`a%20b.png`) already 404 and stay 404 in v1.
@@ -211,7 +211,7 @@ containment rules.
 ## 5. Surface
 
 ```ts
-// blue-platform-node
+// ndigo-platform-node
 new StaticResourceHandler(basePath, options?);          // D-5/D-6
 handler.handle(route): Promise<void>;                    // writes the response directly
 
@@ -220,13 +220,13 @@ class StaticController {                                 // D-1
     // @getMapping('/{*file}') → handler.handle(route)
 }
 
-// blue-core radix (D-1)
+// ndigo-core radix (D-1)
 radix.insert('/static/{*file}', v);                      // greedy capture
 radix.lookup('/static/a/b.png');                         // { file: 'a/b.png' }
 radix.insert('/**', v);                                  // non-capturing catch-all
 ```
 
-Demo (blue-island): the `dist` mount serves nested bundle assets; an
+Demo (ndigo-island): the `dist` mount serves nested bundle assets; an
 `island.spec` smoke test asserts conditional GET (ETag/304) and a 206 Range.
 
 ## 6. Risks
@@ -257,14 +257,14 @@ Demo (blue-island): the `dist` mount serves nested bundle assets; an
 `PathPatternComparator` ordering (greedy strictly less specific than
 single-segment params), spec (nested capture, empty capture, static beats
 param beats wildcard beats greedy at the same level, comparator order).
-Gates: `@blue/core` + `@blue/dispatcher` vitest + `tsc -b`.
+Gates: `@ndigo/core` + `@ndigo/dispatcher` vitest + `tsc -b`.
 
 **Wave 2 — resolver metadata + variants.** `StaticResourceResult` gains
 size/mtimeMs/etag/encoding; `Accept-Encoding` variant resolution
 (compressible-types gate, `.br`/`.gz` lookup); directory index (D-6
 `indexNames`) and listing result modes; SPA-index resolution. Default
 behavior bit-identical (existing resolver spec must pass unmodified).
-Gates: `@blue/platform-node` vitest.
+Gates: `@ndigo/platform-node` vitest.
 
 **Wave 3 — handler + HEAD.** `StaticResourceHandler` (conditional GET →
 variant → Range → cache headers → body; 304/206/416; listing HTML generator;
@@ -273,7 +273,7 @@ specs incl. 304-header-parity, 416 `Content-Range`, suffix ranges, Vary,
 HEAD-through-adapter e2e. Gates: node vitest + `tsc -b`.
 
 **Wave 4 — wiring + demo + docs.** `StaticController` catch-all mount +
-options; `StaticFileView` delegates to the handler; blue-island demo (nested
+options; `StaticFileView` delegates to the handler; ndigo-island demo (nested
 assets + conditional-GET/range smoke in `island.spec.ts`); AD-28; gap-analysis
 §3 "Static files" row → IMPLEMENTED; feature-assessment status row; plan
 header. Final: `pnpm lint`, `pnpm format:check`, changed-package `vitest run` +

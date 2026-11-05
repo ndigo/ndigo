@@ -21,16 +21,16 @@ make cross-context communication explicitly allowlisted.
   topology, event-isolation rules, routing model, phased implementation
   (3.1–3.3), risks, success criteria; all 15 listed primitives documented as
   landed.
-- Hierarchical contexts + gateway: `packages/blue-context/src/context-hierarchy.ts`,
+- Hierarchical contexts + gateway: `packages/ndigo-context/src/context-hierarchy.ts`,
   `event-gateway.ts`, `feature-context-mount-manager.ts`, exported via
-  `packages/blue-context/src/index.ts` (`export * from './context-hierarchy'`,
+  `packages/ndigo-context/src/index.ts` (`export * from './context-hierarchy'`,
   `'./event-gateway'`, `'./feature-context-mount-manager'`).
-- Partition routing: `packages/blue-router/src/partition-router.ts`,
+- Partition routing: `packages/ndigo-router/src/partition-router.ts`,
   `feature-routing-registry.ts`, `route-partition.ts`, exported via
-  `packages/blue-router/src/index.ts` (`./feature-routing-registry`,
+  `packages/ndigo-router/src/index.ts` (`./feature-routing-registry`,
   `./route-partition`, `./partition-router`).
-- `ContextToken<T>` typed tokens re-exported from `@blue/factory`
-  (`packages/blue-context/src/index.ts:28`).
+- `ContextToken<T>` typed tokens re-exported from `@ndigo/factory`
+  (`packages/ndigo-context/src/index.ts:28`).
 
 ## Decision
 
@@ -70,14 +70,14 @@ make cross-context communication explicitly allowlisted.
 - Shell composes multiple feature routers under stable route partitions;
   feature-local `router.refresh()` updates only the feature's render flow.
 - Unmounted features tear down listeners/resources cleanly.
-- The demo (`apps/blue-demo` shell composition) wires `site-shell` +
+- The demo (`apps/ndigo-demo` shell composition) wires `site-shell` +
   `todo`/`account` features and route-driven unmount via the mount manager.
 
 ## References
 
 - Plan: `docs/plans/2026-03-24_SCALE2_CONTEXT_ROUTING_ARCHITECTURE.md`
-- Implementation: `packages/blue-context/src/{context-hierarchy,event-gateway,feature-context-mount-manager}.ts`;
-  `packages/blue-router/src/{partition-router,feature-routing-registry,route-partition}.ts`
+- Implementation: `packages/ndigo-context/src/{context-hierarchy,event-gateway,feature-context-mount-manager}.ts`;
+  `packages/ndigo-router/src/{partition-router,feature-routing-registry,route-partition}.ts`
 - Related: [AD-03](2026-09-07_AD03_SITE_PAGE_MODEL.md) (Site lineage),
   [AD-18](2026-09-13_AD18_HOST_RUNTIME.md) (host orchestration),
   [AD-65](2026-09-06_AD65_VIEW_RESOLUTION_STRATEGY.md) (2026-09-06, view-resolution strategy)

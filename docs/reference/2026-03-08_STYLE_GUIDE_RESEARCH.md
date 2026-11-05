@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-Based on analysis of major style guides (Airbnb, Google, Microsoft TypeScript, StandardJS) and examination of the current BlueJS STYLE_GUIDE.md, this document provides recommendations for improving the organization, clarity, and effectiveness of coding standards documentation.
+Based on analysis of major style guides (Airbnb, Google, Microsoft TypeScript, StandardJS) and examination of the current ndigo STYLE_GUIDE.md, this document provides recommendations for improving the organization, clarity, and effectiveness of coding standards documentation.
 
 ## 1. How to Organize Coding Standards and Conventions
 
@@ -68,7 +68,7 @@ Based on analysis of major style guides (Airbnb, Google, Microsoft TypeScript, S
     - Searchable headings
 
 5. **Separate automated from manual rules**
-    - Prettier/formatter-enforced rules (section 1 in BlueJS)
+    - Prettier/formatter-enforced rules (section 1 in ndigo)
     - Linter-enforced rules
     - Conventions requiring human judgment
 
@@ -104,7 +104,7 @@ Based on analysis of major style guides (Airbnb, Google, Microsoft TypeScript, S
 - **Explicit disclaimers:** "What Prettier is NOT concerned about"
 - **Philosophy:** Limit scope to printing, not transformation
 
-### Recommendations for BlueJS
+### Recommendations for ndigo
 
 **Current State:**
 
@@ -148,7 +148,7 @@ const foo = 'bar';
 const foo = 'bar';
 ```
 
-**BlueJS Format:**
+**ndigo Format:**
 
 ```typescript
 // ✅ Correct
@@ -160,7 +160,7 @@ const foo = 'bar';
 
 ### Effectiveness Ranking
 
-1. **BlueJS emoji approach** (✅/❌) - Most visually scannable
+1. **ndigo emoji approach** (✅/❌) - Most visually scannable
 2. **Airbnb comments** (good/bad) - Clear and simple
 3. **Google formal language** (Allowed/Disallowed) - Professional but verbose
 
@@ -180,7 +180,7 @@ const foo = 'bar';
 - Rely on examples without explaining the rule
 - Mix multiple concepts in one example
 
-### BlueJS Assessment
+### ndigo Assessment
 
 **Strengths:**
 
@@ -211,7 +211,7 @@ const foo = 'bar';
 
 ### Recommended Section Order (Synthesis)
 
-Based on analysis of all guides and current BlueJS structure:
+Based on analysis of all guides and current ndigo structure:
 
 ```
 1. Purpose and Scope                  (Meta)
@@ -232,7 +232,7 @@ Based on analysis of all guides and current BlueJS structure:
 - Then to module patterns (understanding relationships)
 - End with edge cases and complete examples
 
-### Current BlueJS Structure Assessment
+### Current ndigo Structure Assessment
 
 **Current Order:**
 
@@ -245,7 +245,7 @@ Based on analysis of all guides and current BlueJS structure:
 7. Complete Example ✅
 8. Maintenance ✅
 
-**Verdict:** BlueJS structure is already well-organized and follows best practices!
+**Verdict:** ndigo structure is already well-organized and follows best practices!
 
 ## 5. Examples from Major Projects
 
@@ -271,7 +271,7 @@ function foo() { ... }
 const short = function longUniqueMoreDescriptiveLexicalFoo() { ... };
 ```
 
-**Lessons for BlueJS:**
+**Lessons for ndigo:**
 
 - Link to automated enforcement tools (ESLint rules)
 - Consider "Who uses this" social proof section
@@ -293,7 +293,7 @@ const short = function longUniqueMoreDescriptiveLexicalFoo() { ... };
 // Only export symbols used outside the module.
 ```
 
-**Lessons for BlueJS:**
+**Lessons for ndigo:**
 
 - Use normative language for clarity
 - Explicitly state enforcement mechanism
@@ -316,7 +316,7 @@ Names
 3. Use PascalCase for enum values
 ```
 
-**Lessons for BlueJS:**
+**Lessons for ndigo:**
 
 - Clear disclaimer about scope (already done well)
 - Concise bullet points work for contributor guides
@@ -337,7 +337,7 @@ No configuration. The easiest way to enforce code quality.
 Just drop it in.
 ```
 
-**Lessons for BlueJS:**
+**Lessons for ndigo:**
 
 - Emphasize what's automated vs. manual
 - FAQ section could be useful for common questions
@@ -352,7 +352,7 @@ Just drop it in.
 - ESLint: Code quality (unused vars, no-console, etc.)
 - TypeScript: Type safety
 
-**Example from BlueJS (excellent):**
+**Example from ndigo (excellent):**
 
 ```markdown
 ## 1. Formatting Rules
@@ -412,7 +412,7 @@ Level 4: Documentation (Aspirational)
   ↓ "Should" and "may" recommendations
 ```
 
-### BlueJS Assessment
+### ndigo Assessment
 
 **Current Enforcement:**
 
@@ -497,7 +497,7 @@ standard --fix  # One command to rule them all
 - `semistandard` - With semicolons
 - `standardx` - With custom tweaks
 
-### BlueJS Current State
+### ndigo Current State
 
 **Tools in use:**
 
@@ -511,7 +511,7 @@ standard --fix  # One command to rule them all
 - ✅ ESLint config exists (`eslint.config.mjs`)
 - ⚠️ ESLint rules not documented in STYLE_GUIDE.md
 
-### Recommendations for BlueJS
+### Recommendations for ndigo
 
 **1. Add "Tool Integration" Section**
 
@@ -528,7 +528,7 @@ standard --fix  # One command to rule them all
 
 - Config: `eslint.config.mjs`
 - Run: `pnpm lint`
-- Rules: See [oxlint rules](../../packages/blue-oxlint-plugin/README.md) (ESLint retired in the OXC migration, AD-58)
+- Rules: See [oxlint rules](../../packages/ndigo-oxlint-plugin/README.md) (ESLint retired in the OXC migration, AD-58)
 
 ### TypeScript (Type Safety)
 
@@ -603,7 +603,7 @@ Like Airbnb and StandardJS, provide editor integration:
 - Philosophy over rules
 - Automation over documentation
 
-**BlueJS Current:**
+**ndigo Current:**
 - ~10,000 words
 - Detailed but focused
 - Good balance of examples and rules
@@ -613,7 +613,7 @@ Like Airbnb and StandardJS, provide editor integration:
 **1. Match Scope to Audience**
 - Contributors: Shorter, more prescriptive (Microsoft model)
 - Community: Longer, more educational (Airbnb model)
-- Internal: Balance (BlueJS current approach)
+- Internal: Balance (ndigo current approach)
 
 **2. Use Progressive Disclosure**
 - Quick reference at top
@@ -623,11 +623,11 @@ Like Airbnb and StandardJS, provide editor integration:
 
 **3. Split When Necessary**
 - Style guide for conventions
-- Architecture guide for patterns (✅ BlueJS does this)
+- Architecture guide for patterns (✅ ndigo does this)
 - Contributing guide for process
 - Tool configs in separate files
 
-### BlueJS Length Assessment
+### ndigo Length Assessment
 
 **Current: ~1,727 lines / ~10,000 words**
 
@@ -658,7 +658,7 @@ Like Airbnb and StandardJS, provide editor integration:
 - Automated enforcement
 - Obvious applications
 
-**Example of good balance (from BlueJS):**
+**Example of good balance (from ndigo):**
 ```markdown
 ### Semicolons
 
@@ -668,7 +668,7 @@ Like Airbnb and StandardJS, provide editor integration:
 // Good: Clear rule, references automation, brief example
 ````
 
-**Example of necessary detail (from BlueJS):**
+**Example of necessary detail (from ndigo):**
 
 ```markdown
 ### 4.5 Utility Function Organization
@@ -682,7 +682,7 @@ Organizing helper functions and utilities follows a clear hierarchy...
 
 ## Key Findings Summary
 
-### What BlueJS is Doing Well
+### What ndigo is Doing Well
 
 1. ✅ **Clear separation of concerns** (STYLE_GUIDE.md vs ARCHITECTURE.md)
 2. ✅ **Excellent use of visual markers** (✅/❌ is more scannable than comments)
@@ -712,11 +712,11 @@ Organizing helper functions and utilities follows a clear hierarchy...
 
 **Medium Priority:** 4. Add editor integration guide 5. Add philosophy/principles section 6. Create enforcement summary table
 
-**Low Priority:** 7. Consider splitting Module Organization section 8. Add "Who uses BlueJS" section (if public) 9. Add FAQ section for common questions
+**Low Priority:** 7. Consider splitting Module Organization section 8. Add "Who uses ndigo" section (if public) 9. Add FAQ section for common questions
 
 ## Conclusion
 
-BlueJS STYLE_GUIDE.md is already well-structured and follows industry best practices from major projects like Airbnb, Google, and Microsoft. The main opportunities for improvement are:
+ndigo STYLE_GUIDE.md is already well-structured and follows industry best practices from major projects like Airbnb, Google, and Microsoft. The main opportunities for improvement are:
 
 1. **Formalize enforcement levels** (automated vs. manual)
 2. **Document tooling integration** (ESLint, editor setup)

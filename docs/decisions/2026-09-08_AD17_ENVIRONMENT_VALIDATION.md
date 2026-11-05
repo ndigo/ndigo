@@ -12,7 +12,7 @@ the shape of the resolved environment and have boot fail loudly (with an
 aggregate report) when it's wrong — the t3-env / convict / envalid model,
 which the roadmap research flagged as a Phase 6 item.
 
-BlueJS already ships **zod** (blue-dispatcher's `@validatedBy` uses it) — no
+ndigo already ships **zod** (ndigo-dispatcher's `@validatedBy` uses it) — no
 new dependency.
 
 ## Decision

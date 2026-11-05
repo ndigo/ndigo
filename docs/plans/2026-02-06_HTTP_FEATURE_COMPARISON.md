@@ -1,16 +1,16 @@
 # HTTP Client Feature Comparison
 
-## @blue/http vs Spring Framework vs Axios vs Fetch API vs Node.js http/https
+## @ndigo/http vs Spring Framework vs Axios vs Fetch API vs Node.js http/https
 
 **Date:** 2026-02-06  
-**Purpose:** Comprehensive feature survey to identify gaps and prioritize enhancements for @blue/http  
+**Purpose:** Comprehensive feature survey to identify gaps and prioritize enhancements for @ndigo/http  
 **Context:** Spring MVC Research Plan - HTTP Feature Analysis
 
 ---
 
 ## Executive Summary
 
-This document compares @blue/http against five major HTTP client implementations:
+This document compares @ndigo/http against five major HTTP client implementations:
 
 - **Spring Framework RestClient** - Java enterprise HTTP client (inspiration source)
 - **Axios** - Popular JavaScript HTTP client (ecosystem reference)
@@ -19,7 +19,7 @@ This document compares @blue/http against five major HTTP client implementations
 
 ### Key Findings
 
-**@blue/http Strengths:**
+**@ndigo/http Strengths:**
 
 - ✅ Built on Fetch API foundation (Request/Response/Headers)
 - ✅ Sophisticated 5-hook interceptor system (preInit, preRequest, postResponse, postError, postComplete)
@@ -45,7 +45,7 @@ This document compares @blue/http against five major HTTP client implementations
 
 **Platform Considerations:**
 
-- @blue/http must work in **both Web browsers AND Node.js**
+- @ndigo/http must work in **both Web browsers AND Node.js**
 - Some features are platform-specific (progress tracking, XSRF protection, Node.js networking)
 
 ---
@@ -65,9 +65,9 @@ This document compares @blue/http against five major HTTP client implementations
 
 ## 1. Core Architecture
 
-| Feature             | @blue/http                  | Spring RestClient                          | Axios                                         | Fetch API                   | Node http            | Node https           | Priority   | Notes                                       |
+| Feature             | @ndigo/http                 | Spring RestClient                          | Axios                                         | Fetch API                   | Node http            | Node https           | Priority   | Notes                                       |
 | ------------------- | --------------------------- | ------------------------------------------ | --------------------------------------------- | --------------------------- | -------------------- | -------------------- | ---------- | ------------------------------------------- |
-| **Foundation**      | Fetch API                   | Java HttpClient / Apache                   | XMLHttpRequest (browser) / http module (Node) | Native                      | Native modules       | Native modules       | N/A        | @blue/http built on Fetch                   |
+| **Foundation**      | Fetch API                   | Java HttpClient / Apache                   | XMLHttpRequest (browser) / http module (Node) | Native                      | Native modules       | Native modules       | N/A        | @ndigo/http built on Fetch                  |
 | **API Style**       | Fluent + Method             | Fluent                                     | Function-based                                | Function-based              | Callback/Stream      | Callback/Stream      | N/A        | Different paradigms                         |
 | **Blocking**        | Yes (async/await)           | Yes                                        | Yes (Promise-based)                           | Yes (Promise-based)         | No (Event-driven)    | No (Event-driven)    | N/A        | All use Promises in JS (except Node native) |
 | **Thread Safety**   | N/A (single-threaded JS)    | Yes (Java)                                 | N/A                                           | N/A                         | N/A                  | N/A                  | N/A        | Not applicable to JavaScript                |
@@ -80,14 +80,14 @@ This document compares @blue/http against five major HTTP client implementations
 **Gap Analysis:**
 
 - **Instance System**: Critical gap. Axios pattern (`axios.create()`) widely adopted. Spring uses builder pattern. Both enable config reuse.
-- **Config Defaults**: Essential for DRY principle. Set headers/cookies/baseUrl once, use everywhere. @blue/http `init` supports some defaults, but not comprehensive like `baseURL` was.
-- **URI Templates**: @blue/http has powerful parsers but no convenient API for variable substitution.
+- **Config Defaults**: Essential for DRY principle. Set headers/cookies/baseUrl once, use everywhere. @ndigo/http `init` supports some defaults, but not comprehensive like `baseURL` was.
+- **URI Templates**: @ndigo/http has powerful parsers but no convenient API for variable substitution.
 
 ---
 
 ## 2. Request Configuration
 
-| Feature                | @blue/http                      | Spring RestClient           | Axios                              | Fetch API                        | Node http                                    | Node https                                   | Priority   | Notes                               |
+| Feature                | @ndigo/http                     | Spring RestClient           | Axios                              | Fetch API                        | Node http                                    | Node https                                   | Priority   | Notes                               |
 | ---------------------- | ------------------------------- | --------------------------- | ---------------------------------- | -------------------------------- | -------------------------------------------- | -------------------------------------------- | ---------- | ----------------------------------- |
 | **HTTP Methods**       | ✅ All standard                 | ✅ All standard             | ✅ All standard                    | ✅ All standard                  | ✅ All standard                              | ✅ All standard                              | N/A        | All support GET/POST/PUT/DELETE/etc |
 | **URL/URI**            | ✅                              | ✅                          | ✅                                 | ✅                               | ✅                                           | ✅                                           | N/A        | Basic requirement                   |
@@ -96,7 +96,7 @@ This document compares @blue/http against five major HTTP client implementations
 | **Path Variables**     | 🟡 String interpolation         | ✅ URI templates            | 🟡 String interpolation            | 🟡 String interpolation          | ❌                                           | ❌                                           | **MEDIUM** | Have parsers, need API              |
 | **Request Body**       | ✅                              | ✅                          | ✅ `data` config                   | ✅ `body` option                 | ✅ `request.write()`                         | ✅ `request.write()`                         | N/A        | All support bodies                  |
 | **Timeout**            | ✅ TimeoutInterceptor           | ✅ Via ClientRequestFactory | ✅ `timeout` config                | ✅ `signal` with AbortController | ✅ `options.timeout`, `request.setTimeout()` | ✅ `options.timeout`, `request.setTimeout()` | N/A        | All support timeouts                |
-| **Abort/Cancel**       | 🟡 Via AbortController          | ✅ Via signal               | ✅ CancelToken / signal            | ✅ `signal` option               | ✅ `request.abort()`                         | ✅ `request.abort()`                         | N/A        | @blue/http uses Fetch signal        |
+| **Abort/Cancel**       | 🟡 Via AbortController          | ✅ Via signal               | ✅ CancelToken / signal            | ✅ `signal` option               | ✅ `request.abort()`                         | ✅ `request.abort()`                         | N/A        | @ndigo/http uses Fetch signal       |
 | **Request Transform**  | 🟡 Via preRequest interceptor   | ✅ Via interceptors         | ✅ `transformRequest` array        | ❌                               | ❌                                           | ❌                                           | **HIGH**   | Axios pattern widely used           |
 | **Response Transform** | 🟡 Via postResponse interceptor | ✅ Via interceptors         | ✅ `transformResponse` array       | ❌                               | ❌                                           | ❌                                           | **HIGH**   | Axios pattern widely used           |
 | **Validate Status**    | 🟡 ResponseCodeInterceptor      | ✅ Custom status handlers   | ✅ `validateStatus` function       | ❌                               | ❌                                           | ❌                                           | **MEDIUM** | Useful for custom error logic       |
@@ -113,14 +113,14 @@ This document compares @blue/http against five major HTTP client implementations
 **Gap Analysis:**
 
 - **Query Parameters**: Major convenience gap. Axios `params` object is much cleaner than manual URL construction.
-- **Transform Pipeline**: Axios `transformRequest`/`transformResponse` arrays enable composable transformations. @blue/http interceptors can do this but not as ergonomic.
-- **Node.js Features**: Proxy, custom agents, socket path are well-supported natively in Node.js, presenting an opportunity for @blue/http to integrate these.
+- **Transform Pipeline**: Axios `transformRequest`/`transformResponse` arrays enable composable transformations. @ndigo/http interceptors can do this but not as ergonomic.
+- **Node.js Features**: Proxy, custom agents, socket path are well-supported natively in Node.js, presenting an opportunity for @ndigo/http to integrate these.
 
 ---
 
 ## 3. Request Body & Content Types
 
-| Feature                  | @blue/http                  | Spring RestClient              | Axios                                       | Fetch API                | Node http        | Node https       | Priority   | Notes                     |
+| Feature                  | @ndigo/http                 | Spring RestClient              | Axios                                       | Fetch API                | Node http        | Node https       | Priority   | Notes                     |
 | ------------------------ | --------------------------- | ------------------------------ | ------------------------------------------- | ------------------------ | ---------------- | ---------------- | ---------- | ------------------------- |
 | **JSON**                 | ✅                          | ✅                             | ✅ Auto-converts objects                    | ✅ `JSON.stringify()`    | ❌ (manual)      | ❌ (manual)      | N/A        | All support JSON          |
 | **Form Data**            | ✅                          | ✅                             | ✅ Auto-detects                             | ✅ `FormData` object     | ❌ (manual)      | ❌ (manual)      | N/A        | All support forms         |
@@ -135,37 +135,37 @@ This document compares @blue/http against five major HTTP client implementations
 **Gap Analysis:**
 
 - **Form Shortcuts**: Axios `postForm()` methods are convenient for form submissions.
-- **Content-Type Auto-detection**: Axios excels here. @blue/http could enhance its `ContentTypeInterceptor`.
+- **Content-Type Auto-detection**: Axios excels here. @ndigo/http could enhance its `ContentTypeInterceptor`.
 
 ---
 
 ## 4. Response Handling
 
-| Feature             | @blue/http                   | Spring RestClient                      | Axios                                | Fetch API                    | Node http                | Node https               | Priority | Notes                              |
-| ------------------- | ---------------------------- | -------------------------------------- | ------------------------------------ | ---------------------------- | ------------------------ | ------------------------ | -------- | ---------------------------------- |
-| **Response Object** | ✅ Native Response           | ✅ ResponseEntity                      | ✅ Custom response schema            | ✅ Native Response           | ✅ IncomingMessage       | ✅ IncomingMessage       | N/A      | Different structures               |
-| **Status Code**     | ✅ response.status           | ✅ response.getStatusCode()            | ✅ response.status                   | ✅ response.status           | ✅ message.statusCode    | ✅ message.statusCode    | N/A      | All expose status                  |
-| **Status Text**     | ✅ response.statusText       | ✅ response.getStatusCode().toString() | ✅ response.statusText               | ✅ response.statusText       | ✅ message.statusMessage | ✅ message.statusMessage | N/A      | All expose status text             |
-| **Headers**         | ✅ response.headers          | ✅ response.getHeaders()               | ✅ response.headers                  | ✅ response.headers          | ✅ message.headers       | ✅ message.headers       | N/A      | All expose headers                 |
-| **Body**            | ✅ Via .json(), .text(), etc | ✅ Via .body()                         | ✅ response.data                     | ✅ Via .json(), .text(), etc | ✅ Via Stream            | ✅ Via Stream            | N/A      | Different access patterns          |
-| **Request Config**  | 🟡 Not attached              | ✅ Via ResponseEntity                  | ✅ response.config                   | ❌                           | ❌                       | ❌                       | **LOW**  | Nice for debugging                 |
-| **Request Object**  | 🟡 Not attached              | ✅ Via ResponseEntity                  | ✅ response.request                  | ❌                           | ❌                       | ❌                       | **LOW**  | Nice for debugging                 |
-| **Status Checks**   | ✅ ResponseStatus helpers    | ✅ HttpStatus enum                     | 🟡 Manual checks                     | ✅ response.ok               | ❌                       | ❌                       | N/A      | @blue/http has 62 status constants |
-| **Auto JSON Parse** | 🟡 ResponseTypeInterceptor   | ✅ Message converters                  | ✅ Automatic for 'json' responseType | 🟡 Manual .json()            | ❌                       | ❌                       | N/A      | Different approaches               |
+| Feature             | @ndigo/http                  | Spring RestClient                      | Axios                                | Fetch API                    | Node http                | Node https               | Priority | Notes                               |
+| ------------------- | ---------------------------- | -------------------------------------- | ------------------------------------ | ---------------------------- | ------------------------ | ------------------------ | -------- | ----------------------------------- |
+| **Response Object** | ✅ Native Response           | ✅ ResponseEntity                      | ✅ Custom response schema            | ✅ Native Response           | ✅ IncomingMessage       | ✅ IncomingMessage       | N/A      | Different structures                |
+| **Status Code**     | ✅ response.status           | ✅ response.getStatusCode()            | ✅ response.status                   | ✅ response.status           | ✅ message.statusCode    | ✅ message.statusCode    | N/A      | All expose status                   |
+| **Status Text**     | ✅ response.statusText       | ✅ response.getStatusCode().toString() | ✅ response.statusText               | ✅ response.statusText       | ✅ message.statusMessage | ✅ message.statusMessage | N/A      | All expose status text              |
+| **Headers**         | ✅ response.headers          | ✅ response.getHeaders()               | ✅ response.headers                  | ✅ response.headers          | ✅ message.headers       | ✅ message.headers       | N/A      | All expose headers                  |
+| **Body**            | ✅ Via .json(), .text(), etc | ✅ Via .body()                         | ✅ response.data                     | ✅ Via .json(), .text(), etc | ✅ Via Stream            | ✅ Via Stream            | N/A      | Different access patterns           |
+| **Request Config**  | 🟡 Not attached              | ✅ Via ResponseEntity                  | ✅ response.config                   | ❌                           | ❌                       | ❌                       | **LOW**  | Nice for debugging                  |
+| **Request Object**  | 🟡 Not attached              | ✅ Via ResponseEntity                  | ✅ response.request                  | ❌                           | ❌                       | ❌                       | **LOW**  | Nice for debugging                  |
+| **Status Checks**   | ✅ ResponseStatus helpers    | ✅ HttpStatus enum                     | 🟡 Manual checks                     | ✅ response.ok               | ❌                       | ❌                       | N/A      | @ndigo/http has 62 status constants |
+| **Auto JSON Parse** | 🟡 ResponseTypeInterceptor   | ✅ Message converters                  | ✅ Automatic for 'json' responseType | 🟡 Manual .json()            | ❌                       | ❌                       | N/A      | Different approaches                |
 
 **Gap Analysis:**
 
-- **Response Schema**: Axios response structure (`data`, `status`, `headers`, `config`, `request`) is comprehensive but @blue/http uses native Response which is standard.
+- **Response Schema**: Axios response structure (`data`, `status`, `headers`, `config`, `request`) is comprehensive but @ndigo/http uses native Response which is standard.
 - **Node.js**: Node's native HTTP modules require stream-based processing for the body and manual status checks.
 
 ---
 
 ## 5. Error Handling
 
-| Feature                  | @blue/http                 | Spring RestClient          | Axios                             | Fetch API | Node http         | Node https        | Priority   | Notes                                                       |
+| Feature                  | @ndigo/http                | Spring RestClient          | Axios                             | Fetch API | Node http         | Node https        | Priority   | Notes                                                       |
 | ------------------------ | -------------------------- | -------------------------- | --------------------------------- | --------- | ----------------- | ----------------- | ---------- | ----------------------------------------------------------- |
 | **Error on 4xx/5xx**     | ✅ NotOkInterceptor        | ✅ Default behavior        | ✅ Default behavior               | ❌        | ❌ (manual check) | ❌ (manual check) | N/A        | Fetch/Node don't reject on HTTP errors                      |
-| **Error Object**         | ✅ ResponseError           | ✅ Custom exceptions       | ✅ AxiosError with rich info      | ❌        | ✅ `Error` events | ✅ `Error` events | N/A        | @blue/http has ResponseError                                |
+| **Error Object**         | ✅ ResponseError           | ✅ Custom exceptions       | ✅ AxiosError with rich info      | ❌        | ✅ `Error` events | ✅ `Error` events | N/A        | @ndigo/http has ResponseError                               |
 | **Error Response**       | ✅                         | ✅                         | ✅ error.response                 | ❌        | ❌                | ❌                | N/A        | All include response in error (except Fetch/Node native)    |
 | **Error Request**        | ✅                         | ✅                         | ✅ error.request                  | ❌        | ❌                | ❌                | N/A        | All include request in error (except Fetch/Node native)     |
 | **Error Config**         | ❌                         | ✅                         | ✅ error.config                   | ❌        | ❌                | ❌                | **LOW**    | Nice for retry logic                                        |
@@ -176,26 +176,26 @@ This document compares @blue/http against five major HTTP client implementations
 
 **Gap Analysis:**
 
-- **Error Categorization**: Axios provides `error.code` for network errors (ECONNABORTED, ETIMEDOUT, etc). Node.js native http/https also provide `error.code`. @blue/http could improve error types to better categorize network vs. HTTP errors.
+- **Error Categorization**: Axios provides `error.code` for network errors (ECONNABORTED, ETIMEDOUT, etc). Node.js native http/https also provide `error.code`. @ndigo/http could improve error types to better categorize network vs. HTTP errors.
 - **Custom Validation**: `validateStatus` function very useful for treating specific status codes as success/failure.
 
 ---
 
 ## 6. Interceptors & Middleware
 
-| Feature                    | @blue/http                                                              | Spring RestClient               | Axios                                    | Fetch API                | Node http | Node https | Priority   | Notes                                                        |
+| Feature                    | @ndigo/http                                                             | Spring RestClient               | Axios                                    | Fetch API                | Node http | Node https | Priority   | Notes                                                        |
 | -------------------------- | ----------------------------------------------------------------------- | ------------------------------- | ---------------------------------------- | ------------------------ | --------- | ---------- | ---------- | ------------------------------------------------------------ |
 | **Request Interceptors**   | ✅ preInit, preRequest                                                  | ✅ ClientHttpRequestInterceptor | ✅ request.use()                         | ❌                       | ❌        | ❌         | N/A        | All support request interception (except Fetch/Node native)  |
 | **Response Interceptors**  | ✅ postResponse                                                         | ✅ Via interceptors             | ✅ response.use()                        | ❌                       | ❌        | ❌         | N/A        | All support response interception (except Fetch/Node native) |
 | **Error Interceptors**     | ✅ postError                                                            | ✅ Via custom handlers          | ✅ response.use(onFulfilled, onRejected) | ❌                       | ❌        | ❌         | N/A        | All support error handling (except Fetch/Node native)        |
-| **Completion Handlers**    | ✅ postComplete                                                         | 🟡 Manual finally blocks        | 🟡 Manual finally blocks                 | 🟡 Manual finally blocks | ❌        | ❌         | N/A        | @blue/http unique feature                                    |
-| **Multiple Hooks**         | ✅ 5 hooks (preInit, preRequest, postResponse, postError, postComplete) | ✅ Multiple phases              | ✅ 2 hooks per type                      | ❌                       | ❌        | ❌         | N/A        | @blue/http most granular                                     |
+| **Completion Handlers**    | ✅ postComplete                                                         | 🟡 Manual finally blocks        | 🟡 Manual finally blocks                 | 🟡 Manual finally blocks | ❌        | ❌         | N/A        | @ndigo/http unique feature                                   |
+| **Multiple Hooks**         | ✅ 5 hooks (preInit, preRequest, postResponse, postError, postComplete) | ✅ Multiple phases              | ✅ 2 hooks per type                      | ❌                       | ❌        | ❌         | N/A        | @ndigo/http most granular                                    |
 | **Async Interceptors**     | ✅                                                                      | ✅                              | ✅                                       | ❌                       | ❌        | ❌         | N/A        | All support async (except Fetch/Node native)                 |
 | **Interceptor Order**      | ✅ Registration order                                                   | ✅ Registration order           | ✅ Registration order                    | ❌                       | ❌        | ❌         | N/A        | All deterministic (except Fetch/Node native)                 |
 | **Skip Interceptors**      | 🟡 Via condition                                                        | 🟡 Via condition                | 🟡 Via condition                         | ❌                       | ❌        | ❌         | N/A        | All can conditionally skip (except Fetch/Node native)        |
-| **URL Pattern Matching**   | ✅ MappedHTTPInterceptor                                                | 🟡 Manual checks                | 🟡 Manual checks                         | ❌                       | ❌        | ❌         | N/A        | **@blue/http unique feature**                                |
+| **URL Pattern Matching**   | ✅ MappedHTTPInterceptor                                                | 🟡 Manual checks                | 🟡 Manual checks                         | ❌                       | ❌        | ❌         | N/A        | **@ndigo/http unique feature**                               |
 | **Interceptor Management** | ❌ Cannot remove                                                        | 🟡 Static after creation        | ✅ `eject()` removes interceptors        | ❌                       | ❌        | ❌         | **MEDIUM** | Axios allows runtime removal                                 |
-| **Built-in Interceptors**  | ✅ 8 interceptors                                                       | 🟡 Via configuration            | 🟡 Community libraries                   | ❌                       | ❌        | ❌         | N/A        | **@blue/http strength**                                      |
+| **Built-in Interceptors**  | ✅ 8 interceptors                                                       | 🟡 Via configuration            | 🟡 Community libraries                   | ❌                       | ❌        | ❌         | N/A        | **@ndigo/http strength**                                     |
 
 **Gap Analysis:**
 
@@ -206,7 +206,7 @@ This document compares @blue/http against five major HTTP client implementations
 
 ## 7. Authentication
 
-| Feature          | @blue/http             | Spring RestClient                 | Axios                   | Fetch API        | Node http        | Node https       | Priority   | Notes                     |
+| Feature          | @ndigo/http            | Spring RestClient                 | Axios                   | Fetch API        | Node http        | Node https       | Priority   | Notes                     |
 | ---------------- | ---------------------- | --------------------------------- | ----------------------- | ---------------- | ---------------- | ---------------- | ---------- | ------------------------- |
 | **Basic Auth**   | 🟡 Manual header       | ✅ `.setBasicAuth()` convenience  | ✅ `auth` config object | 🟡 Manual header | 🟡 Manual header | 🟡 Manual header | **HIGH**   | Spring/Axios have helpers |
 | **Bearer Token** | 🟡 Manual header       | ✅ `.setBearerAuth()` convenience | 🟡 Manual header        | 🟡 Manual header | 🟡 Manual header | 🟡 Manual header | **MEDIUM** | Spring has helper         |
@@ -216,7 +216,7 @@ This document compares @blue/http against five major HTTP client implementations
 
 **Gap Analysis:**
 
-- **Basic Auth Helper**: Both Spring and Axios provide convenient helpers. @blue/http should add helper method.
+- **Basic Auth Helper**: Both Spring and Axios provide convenient helpers. @ndigo/http should add helper method.
 - **Bearer Token Helper**: Spring provides convenience method.
 - **Node.js**: Authentication must be handled manually by setting headers or implementing custom logic around requests.
 
@@ -224,7 +224,7 @@ This document compares @blue/http against five major HTTP client implementations
 
 ## 8. Cookies
 
-| Feature             | @blue/http               | Spring RestClient             | Axios                                 | Fetch API                | Node http   | Node https  | Priority   | Notes                                           |
+| Feature             | @ndigo/http              | Spring RestClient             | Axios                                 | Fetch API                | Node http   | Node https  | Priority   | Notes                                           |
 | ------------------- | ------------------------ | ----------------------------- | ------------------------------------- | ------------------------ | ----------- | ----------- | ---------- | ----------------------------------------------- |
 | **Send Cookies**    | ✅ Via credentials       | ✅ Default behavior           | ✅ `withCredentials` (CORS)           | ✅ `credentials` option  | ❌ (manual) | ❌ (manual) | N/A        | All support cookies (except Node native)        |
 | **Set Cookies**     | ✅ Via Set-Cookie header | ✅ Via ResponseCookie builder | ✅ Via Set-Cookie header              | ✅ Via Set-Cookie header | ❌ (manual) | ❌ (manual) | N/A        | All support setting (except Node native)        |
@@ -234,18 +234,18 @@ This document compares @blue/http against five major HTTP client implementations
 
 **Gap Analysis:**
 
-- **XSRF Protection**: Critical browser security feature. Axios automatically reads XSRF token from cookie and sends as header. @blue/http should implement.
+- **XSRF Protection**: Critical browser security feature. Axios automatically reads XSRF token from cookie and sends as header. @ndigo/http should implement.
 - **Node.js**: Native Node.js http/https modules do not manage cookies automatically. It's a manual process of parsing/setting headers.
 
 ---
 
 ## 9. Progress Tracking
 
-| Feature               | @blue/http | Spring RestClient | Axios                            | Fetch API             | Node http | Node https | Priority | Notes                           |
-| --------------------- | ---------- | ----------------- | -------------------------------- | --------------------- | --------- | ---------- | -------- | ------------------------------- |
-| **Upload Progress**   | ❌         | ❌                | ✅ `onUploadProgress` callback   | 🟡 Via ReadableStream | ❌        | ❌         | **HIGH** | 🔵 **Critical browser feature** |
-| **Download Progress** | ❌         | ❌                | ✅ `onDownloadProgress` callback | 🟡 Via ReadableStream | ❌        | ❌         | **HIGH** | 🔵 **Critical browser feature** |
-| **Bandwidth Limit**   | ❌         | 🟡 Via factory    | ✅ `maxRate` config (Node)       | ❌                    | ❌        | ❌         | **LOW**  | 🟣 Node-only, rare use case     |
+| Feature               | @ndigo/http | Spring RestClient | Axios                            | Fetch API             | Node http | Node https | Priority | Notes                           |
+| --------------------- | ----------- | ----------------- | -------------------------------- | --------------------- | --------- | ---------- | -------- | ------------------------------- |
+| **Upload Progress**   | ❌          | ❌                | ✅ `onUploadProgress` callback   | 🟡 Via ReadableStream | ❌        | ❌         | **HIGH** | 🔵 **Critical browser feature** |
+| **Download Progress** | ❌          | ❌                | ✅ `onDownloadProgress` callback | 🟡 Via ReadableStream | ❌        | ❌         | **HIGH** | 🔵 **Critical browser feature** |
+| **Bandwidth Limit**   | ❌          | 🟡 Via factory    | ✅ `maxRate` config (Node)       | ❌                    | ❌        | ❌         | **LOW**  | 🟣 Node-only, rare use case     |
 
 **Gap Analysis:**
 
@@ -256,25 +256,25 @@ This document compares @blue/http against five major HTTP client implementations
 
 ## 10. Caching
 
-| Feature                  | @blue/http                | Spring RestClient       | Axios             | Fetch API                                                                            | Node http | Node https | Priority   | Notes                                    |
-| ------------------------ | ------------------------- | ----------------------- | ----------------- | ------------------------------------------------------------------------------------ | --------- | ---------- | ---------- | ---------------------------------------- |
-| **Cache Control**        | 🟡 Manual headers         | ✅ CacheControl builder | 🟡 Manual headers | ✅ `cache` option                                                                    | ❌        | ❌         | **MEDIUM** | Spring has builder, Fetch has options    |
-| **Conditional Requests** | ✅ IfModifiedInterceptor  | ✅ Built-in support     | 🟡 Manual headers | 🟡 Manual headers                                                                    | ❌        | ❌         | N/A        | **@blue/http has IfModifiedInterceptor** |
-| **ETag Support**         | ✅ Via headers            | ✅ Built-in support     | ✅ Via headers    | ✅ Via headers                                                                       | ❌        | ❌         | N/A        | All support ETags                        |
-| **If-Modified-Since**    | ✅ IfModifiedInterceptor  | ✅ Built-in support     | 🟡 Manual headers | 🟡 Manual headers                                                                    | ❌        | ❌         | N/A        | **@blue/http has interceptor**           |
-| **Cache Modes**          | 🟡 Via Fetch cache option | 🟡 Via factory          | ❌                | ✅ `cache` option (default, no-store, reload, no-cache, force-cache, only-if-cached) | ❌        | ❌         | **LOW**    | Fetch provides modes                     |
+| Feature                  | @ndigo/http               | Spring RestClient       | Axios             | Fetch API                                                                            | Node http | Node https | Priority   | Notes                                     |
+| ------------------------ | ------------------------- | ----------------------- | ----------------- | ------------------------------------------------------------------------------------ | --------- | ---------- | ---------- | ----------------------------------------- |
+| **Cache Control**        | 🟡 Manual headers         | ✅ CacheControl builder | 🟡 Manual headers | ✅ `cache` option                                                                    | ❌        | ❌         | **MEDIUM** | Spring has builder, Fetch has options     |
+| **Conditional Requests** | ✅ IfModifiedInterceptor  | ✅ Built-in support     | 🟡 Manual headers | 🟡 Manual headers                                                                    | ❌        | ❌         | N/A        | **@ndigo/http has IfModifiedInterceptor** |
+| **ETag Support**         | ✅ Via headers            | ✅ Built-in support     | ✅ Via headers    | ✅ Via headers                                                                       | ❌        | ❌         | N/A        | All support ETags                         |
+| **If-Modified-Since**    | ✅ IfModifiedInterceptor  | ✅ Built-in support     | 🟡 Manual headers | 🟡 Manual headers                                                                    | ❌        | ❌         | N/A        | **@ndigo/http has interceptor**           |
+| **Cache Modes**          | 🟡 Via Fetch cache option | 🟡 Via factory          | ❌                | ✅ `cache` option (default, no-store, reload, no-cache, force-cache, only-if-cached) | ❌        | ❌         | **LOW**    | Fetch provides modes                      |
 
 **Gap Analysis:**
 
 - **Cache Control Builder**: Spring provides fluent CacheControl builder. Could be convenience addition.
-- **@blue/http Strength**: IfModifiedInterceptor is sophisticated - handles ETags and Last-Modified automatically.
+- **@ndigo/http Strength**: IfModifiedInterceptor is sophisticated - handles ETags and Last-Modified automatically.
 - **Node.js**: Native http/https modules do not offer high-level caching abstractions; this is typically handled by proxy servers or application-level logic.
 
 ---
 
 ## 11. Content Negotiation
 
-| Feature                    | @blue/http                | Spring RestClient               | Axios                     | Fetch API | Node http | Node https | Priority | Notes                                    |
+| Feature                    | @ndigo/http               | Spring RestClient               | Axios                     | Fetch API | Node http | Node https | Priority | Notes                                    |
 | -------------------------- | ------------------------- | ------------------------------- | ------------------------- | --------- | --------- | ---------- | -------- | ---------------------------------------- |
 | **Accept Header**          | 🟡 Manual                 | ✅ `.accept()` convenience      | 🟡 Manual                 | 🟡 Manual | ❌        | ❌         | **LOW**  | Spring has convenience                   |
 | **Content-Type**           | ✅ ContentTypeInterceptor | ✅ `.contentType()` convenience | ✅ Auto-set based on data | ✅ Manual | ❌        | ❌         | N/A      | All support                              |
@@ -292,7 +292,7 @@ This document compares @blue/http against five major HTTP client implementations
 
 ## 12. Range Requests
 
-| Feature                 | @blue/http        | Spring RestClient            | Axios     | Fetch API | Node http | Node https | Priority   | Notes                          |
+| Feature                 | @ndigo/http       | Spring RestClient            | Axios     | Fetch API | Node http | Node https | Priority   | Notes                          |
 | ----------------------- | ----------------- | ---------------------------- | --------- | --------- | --------- | ---------- | ---------- | ------------------------------ |
 | **Range Header**        | 🟡 Manual         | ✅ `.setRange()` convenience | 🟡 Manual | 🟡 Manual | ❌        | ❌         | **MEDIUM** | Spring has convenience         |
 | **HttpRange Class**     | ❌                | ✅ HttpRange abstraction     | ❌        | ❌        | ❌        | ❌         | **MEDIUM** | Useful for byte range requests |
@@ -309,7 +309,7 @@ This document compares @blue/http against five major HTTP client implementations
 
 ## 13. HTTP/2 & Modern Features
 
-| Feature         | @blue/http                  | Spring RestClient         | Axios               | Fetch API                | Node http        | Node https       | Priority | Notes                   |
+| Feature         | @ndigo/http                 | Spring RestClient         | Axios               | Fetch API                | Node http        | Node https       | Priority | Notes                   |
 | --------------- | --------------------------- | ------------------------- | ------------------- | ------------------------ | ---------------- | ---------------- | -------- | ----------------------- |
 | **HTTP/2**      | ✅ Via Fetch                | ✅ Via factory            | ✅ Via Node http2   | ✅ Automatic             | ✅ Via `http2`   | ✅ Via `http2`   | N/A      | All support HTTP/2      |
 | **Server Push** | 🟡 Fetch support            | ✅ Via factory            | 🟡 Node support     | 🟡 Some browsers         | ✅ Via `http2`   | ✅ Via `http2`   | **LOW**  | Limited use cases       |
@@ -324,7 +324,7 @@ This document compares @blue/http against five major HTTP client implementations
 
 ## 14. Testing & Debugging
 
-| Feature                         | @blue/http           | Spring RestClient      | Axios                 | Fetch API      | Node http     | Node https    | Priority | Notes                        |
+| Feature                         | @ndigo/http          | Spring RestClient      | Axios                 | Fetch API      | Node http     | Node https    | Priority | Notes                        |
 | ------------------------------- | -------------------- | ---------------------- | --------------------- | -------------- | ------------- | ------------- | -------- | ---------------------------- |
 | **Mock Support**                | 🟡 Via Fetch mocking | ✅ MockMvc integration | 🟡 axios-mock-adapter | 🟡 fetch-mock  | 🟡 (nock)     | 🟡 (nock)     | **LOW**  | External testing tools       |
 | **Logging**                     | 🟡 Via interceptors  | 🟡 Via interceptors    | 🟡 Via interceptors   | 🟡 Manual      | 🟡 Manual     | 🟡 Manual     | **LOW**  | All support custom logging   |
@@ -341,7 +341,7 @@ This document compares @blue/http against five major HTTP client implementations
 
 ### Browser-Only Features
 
-| Feature               | @blue/http   | Spring | Axios        | Fetch        | Node http | Node https | Priority | Notes                                |
+| Feature               | @ndigo/http  | Spring | Axios        | Fetch        | Node http | Node https | Priority | Notes                                |
 | --------------------- | ------------ | ------ | ------------ | ------------ | --------- | ---------- | -------- | ------------------------------------ |
 | **XSRF Protection**   | ❌           | N/A    | ✅           | ❌           | N/A       | N/A        | **HIGH** | 🔵 **Critical for browser security** |
 | **Upload Progress**   | ❌           | N/A    | ✅           | 🟡           | N/A       | N/A        | **HIGH** | 🔵 **File upload UX requirement**    |
@@ -351,32 +351,32 @@ This document compares @blue/http against five major HTTP client implementations
 
 ### Node.js-Only Features
 
-| Feature                         | @blue/http | Spring | Axios | Fetch | Node http | Node https | Priority   | Notes                                          |
-| ------------------------------- | ---------- | ------ | ----- | ----- | --------- | ---------- | ---------- | ---------------------------------------------- |
-| **Proxy**                       | ❌         | ✅     | ✅    | ❌    | ✅        | ✅         | **MEDIUM** | 🟣 **Common Node requirement**                 |
-| **HTTP Agent**                  | ❌         | ✅     | ✅    | ❌    | ✅        | ✅         | **MEDIUM** | 🟣 **Connection pooling**                      |
-| **HTTPS Agent**                 | ❌         | ✅     | ✅    | ❌    | N/A       | ✅         | **MEDIUM** | 🟣 **Custom certs**                            |
-| **Socket Path**                 | ❌         | ❌     | ✅    | ❌    | ✅        | ✅         | **LOW**    | 🟣 Unix socket communication                   |
-| **Max Redirects**               | 🟡         | ✅     | ✅    | 🟡    | ✅        | ✅         | **LOW**    | 🟣 Safety feature                              |
-| **Max Content/Body Length**     | ❌         | ✅     | ✅    | ❌    | ✅        | ✅         | **LOW**    | 🟣 Safety feature                              |
-| **Response Encoding**           | ❌         | ✅     | ✅    | ❌    | ✅        | ✅         | **LOW**    | 🟣 Charset handling                            |
-| **Bandwidth Limit**             | ❌         | ❌     | ✅    | ❌    | ❌        | ❌         | **LOW**    | 🟣 Rate limiting (Axios)                       |
-| **Connection Pooling**          | ❌         | ✅     | ✅    | ❌    | ✅        | ✅         | **MEDIUM** | 🟣 Via `http.Agent`/`https.Agent`              |
-| **Client Certificates**         | ❌         | ✅     | ✅    | ❌    | ❌        | ✅         | **MEDIUM** | 🟣 Via `https.Agent` options                   |
-| **Custom DNS**                  | ❌         | ✅     | ❌    | ❌    | ✅        | ✅         | **LOW**    | 🟣 Via `dns.lookup` / `agent.createConnection` |
-| **TLS Session Resumption**      | ❌         | ✅     | ❌    | ❌    | ❌        | ✅         | **LOW**    | 🟣 Via `https.Agent` options                   |
-| **Streaming (Node.js Streams)** | ❌         | ✅     | 🟡    | ❌    | ✅        | ✅         | **LOW**    | 🟣 Native Node.js streams                      |
+| Feature                         | @ndigo/http | Spring | Axios | Fetch | Node http | Node https | Priority   | Notes                                          |
+| ------------------------------- | ----------- | ------ | ----- | ----- | --------- | ---------- | ---------- | ---------------------------------------------- |
+| **Proxy**                       | ❌          | ✅     | ✅    | ❌    | ✅        | ✅         | **MEDIUM** | 🟣 **Common Node requirement**                 |
+| **HTTP Agent**                  | ❌          | ✅     | ✅    | ❌    | ✅        | ✅         | **MEDIUM** | 🟣 **Connection pooling**                      |
+| **HTTPS Agent**                 | ❌          | ✅     | ✅    | ❌    | N/A       | ✅         | **MEDIUM** | 🟣 **Custom certs**                            |
+| **Socket Path**                 | ❌          | ❌     | ✅    | ❌    | ✅        | ✅         | **LOW**    | 🟣 Unix socket communication                   |
+| **Max Redirects**               | 🟡          | ✅     | ✅    | 🟡    | ✅        | ✅         | **LOW**    | 🟣 Safety feature                              |
+| **Max Content/Body Length**     | ❌          | ✅     | ✅    | ❌    | ✅        | ✅         | **LOW**    | 🟣 Safety feature                              |
+| **Response Encoding**           | ❌          | ✅     | ✅    | ❌    | ✅        | ✅         | **LOW**    | 🟣 Charset handling                            |
+| **Bandwidth Limit**             | ❌          | ❌     | ✅    | ❌    | ❌        | ❌         | **LOW**    | 🟣 Rate limiting (Axios)                       |
+| **Connection Pooling**          | ❌          | ✅     | ✅    | ❌    | ✅        | ✅         | **MEDIUM** | 🟣 Via `http.Agent`/`https.Agent`              |
+| **Client Certificates**         | ❌          | ✅     | ✅    | ❌    | ❌        | ✅         | **MEDIUM** | 🟣 Via `https.Agent` options                   |
+| **Custom DNS**                  | ❌          | ✅     | ❌    | ❌    | ✅        | ✅         | **LOW**    | 🟣 Via `dns.lookup` / `agent.createConnection` |
+| **TLS Session Resumption**      | ❌          | ✅     | ❌    | ❌    | ❌        | ✅         | **LOW**    | 🟣 Via `https.Agent` options                   |
+| **Streaming (Node.js Streams)** | ❌          | ✅     | 🟡    | ❌    | ✅        | ✅         | **LOW**    | 🟣 Native Node.js streams                      |
 
 **Gap Analysis:**
 
 - **Browser Features**: XSRF protection and progress tracking are critical gaps.
-- **Node Features**: Proxy, custom agents, TLS/SSL configuration, streaming are important for server-side Node.js applications. @blue/http needs to add explicit support or provide integration points for these native Node.js capabilities.
+- **Node Features**: Proxy, custom agents, TLS/SSL configuration, streaming are important for server-side Node.js applications. @ndigo/http needs to add explicit support or provide integration points for these native Node.js capabilities.
 
 ---
 
 ## 16. Unique Features by Library
 
-### @blue/http Unique Strengths
+### @ndigo/http Unique Strengths
 
 1. ✅ **5-Hook Interceptor System** - Most granular lifecycle control (preInit, preRequest, postResponse, postError, postComplete)
 2. ✅ **URL Pattern Matching** - MappedHTTPInterceptor conditionally applies interceptors based on URL patterns
@@ -665,7 +665,7 @@ http.get('/search', {
 
 **Implementation Complexity:** Low
 
-- Leverage existing query string parsers in @blue/parser
+- Leverage existing query string parsers in @ndigo/parser
 - Add convenience API wrapper
 - Integrate with URL builder
 
@@ -1375,7 +1375,7 @@ class HTTP {
 
 ---
 
-## Migration Path from Current @blue/http
+## Migration Path from Current @ndigo/http
 
 ### Backward Compatibility Approach
 
@@ -1457,7 +1457,7 @@ api.get('/users');
 4. **Compatibility Tests**
     - Axios API parity (for migration)
     - Fetch API behavior preservation
-    - Existing @blue/http interceptors
+    - Existing @ndigo/http interceptors
 
 ### Test Environment Setup
 
@@ -1530,7 +1530,7 @@ global.process = {
 
     - New API usage for all features
     - Guidance for migrating existing code
-    - Comparison of @blue/http current vs future
+    - Comparison of @ndigo/http current vs future
 
 2. **API Reference**
 

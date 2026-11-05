@@ -1,7 +1,7 @@
 # Application Context Lifecycle
 
 **Date:** 2026-08-22  
-**Scope:** `@blue/context` — `GenericApplicationContext`, `ContextEventGateway`, `EventEmitter`  
+**Scope:** `@ndigo/context` — `GenericApplicationContext`, `ContextEventGateway`, `EventEmitter`  
 **Status:** Reference
 
 ---
@@ -164,7 +164,7 @@ child.bubble(type, ...data)
 ```
 
 - Emits on the origin context (inclusive), then climbs the parent chain
-- Uses `escalate()` from `@blue/core`:
+- Uses `escalate()` from `@ndigo/core`:
     - First call: `escalate(origin, callback, true)` — emits on origin
     - Subsequent calls: `escalate(parent, callback)` — emits on each ancestor
 - Stops at the root (context with no parent)

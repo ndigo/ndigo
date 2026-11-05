@@ -6,7 +6,7 @@
 
 ## Overview
 
-This document describes the migration from ESLint to oxlint in the BlueJS monorepo. oxlint is a fast, Rust-based linter from the OXC project that provides ESLint-compatible rules with 50-100x performance improvements.
+This document describes the migration from ESLint to oxlint in the ndigo monorepo. oxlint is a fast, Rust-based linter from the OXC project that provides ESLint-compatible rules with 50-100x performance improvements.
 
 ## Motivation
 
@@ -38,7 +38,7 @@ This document describes the migration from ESLint to oxlint in the BlueJS monore
 
 The oxlint config was generated from the ESLint config using the `@oxlint/migrate` tool, then manually adjusted for oxlint-specific syntax.
 
-### Custom Plugin (`@blue/eslint-plugin`)
+### Custom Plugin (`@ndigo/eslint-plugin`)
 
 The custom ESLint plugin was migrated to use oxlint's JS Plugin API:
 
@@ -75,7 +75,7 @@ The custom ESLint plugin was migrated to use oxlint's JS Plugin API:
 
 ### Rule Coverage
 
-oxlint has 845+ built-in rules covering ESLint core, typescript-eslint, unicorn, and more. Most BlueJS rules are covered natively. Custom rules use the JS Plugin API.
+oxlint has 845+ built-in rules covering ESLint core, typescript-eslint, unicorn, and more. Most ndigo rules are covered natively. Custom rules use the JS Plugin API.
 
 ### Configuration Syntax
 
@@ -88,7 +88,7 @@ oxlint has 845+ built-in rules covering ESLint core, typescript-eslint, unicorn,
 The oxlint JS Plugin API is currently in alpha. This means:
 
 - The API may change in future versions
-- BlueJS custom rules are migrated but may need updates
+- ndigo custom rules are migrated but may need updates
 - The `eslintCompatPlugin` wrapper provides dual compatibility with ESLint
 
 ## Rollback Plan
@@ -97,14 +97,14 @@ If issues arise:
 
 1. Revert the git commit
 2. ESLint config (`eslint.config.mjs`) is still in git history
-3. Custom rules remain in `@blue/eslint-plugin` (just need to swap back to ESLint API)
+3. Custom rules remain in `@ndigo/eslint-plugin` (just need to swap back to ESLint API)
 4. No data loss — oxlint config is additive, not destructive
 
 ## Future Considerations
 
 ### Type-Aware Linting
 
-oxlint supports type-aware linting via `tsgolint` (built on TypeScript 7.0.2 native Go port). This could replace `tsc --noEmit` in the future, but BlueJS currently relies on `tsc -b` for project references and decorator support.
+oxlint supports type-aware linting via `tsgolint` (built on TypeScript 7.0.2 native Go port). This could replace `tsc --noEmit` in the future, but ndigo currently relies on `tsc -b` for project references and decorator support.
 
 ### oxfmt (Formatter)
 
@@ -112,7 +112,7 @@ oxfmt is available as a Prettier replacement but is still in beta. Evaluation is
 
 ### oxc-transform (Transpiler)
 
-oxc-transform is 4x faster than SWC but doesn't yet support TC39 decorators (tracked at [oxc#9170](https://github.com/oxc-project/oxc/issues/9170)). BlueJS relies on TC39 decorators, so `tsc` must remain for building.
+oxc-transform is 4x faster than SWC but doesn't yet support TC39 decorators (tracked at [oxc#9170](https://github.com/oxc-project/oxc/issues/9170)). ndigo relies on TC39 decorators, so `tsc` must remain for building.
 
 ## References
 

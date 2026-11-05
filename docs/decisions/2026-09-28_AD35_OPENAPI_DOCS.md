@@ -25,16 +25,16 @@ framework already owns everything generation needs at runtime:
   `validateParameters` hold the caller's Zod schema — but only in the opaque
   `convert` closure, unreachable at generation time (D-3 fixes this seam).
 
-No new parser or source-of-truth is needed: BlueJS's declaration IS the
+No new parser or source-of-truth is needed: ndigo's declaration IS the
 metadata. This mirrors how AD-07 (Zod), AD-19/24 (wrap the ecosystem standard),
 and the springdoc/NestJS model work — own the contract, wrap the standard.
 
 ## Decisions
 
-### D-1 — New package `@blue/openapi`: own the contract, wrap the ecosystem
+### D-1 — New package `@ndigo/openapi`: own the contract, wrap the ecosystem
 
-New package `@blue/openapi` (app-facing, alongside `@blue/cache`,
-`@blue/scheduler`, `@blue/management`). It owns:
+New package `@ndigo/openapi` (app-facing, alongside `@ndigo/cache`,
+`@ndigo/scheduler`, `@ndigo/management`). It owns:
 
 - `OpenAPISpecGenerator` — `RouteHandlerMapping[]` → OpenAPI 3.0.3 document
   (D-2).
@@ -55,10 +55,10 @@ It wraps the ecosystem standards rather than reimplementing them:
   served by the framework, so the spec+UI work air-gapped (the same offline
   posture as the rest of the framework).
 
-Dependencies: `@blue/dispatcher` (mappings, `MethodParameter`), `@blue/core`
-(media types), `@blue/http` (type-only), `@blue/router` (type-only), `zod`,
-`swagger-ui-dist`, `@tsmetadata/polyfill`. Like `@blue/management`, it does
-not depend on `@blue/platform-node` — it contributes controllers + a
+Dependencies: `@ndigo/dispatcher` (mappings, `MethodParameter`), `@ndigo/core`
+(media types), `@ndigo/http` (type-only), `@ndigo/router` (type-only), `zod`,
+`swagger-ui-dist`, `@tsmetadata/polyfill`. Like `@ndigo/management`, it does
+not depend on `@ndigo/platform-node` — it contributes controllers + a
 `handlerMappings` entry and rides whatever platform registers it.
 
 ### D-2 — Introspection, not AOP: generate from the mapping registry
@@ -90,7 +90,7 @@ registration path. Per `RouteMappingInfo`:
 `requestBody`; `multipartFile`/`requestPart` become `multipart/form-data`
 parts with `type: string, format: binary`. Matrix-parameter conditions
 (`matrixCondition`) and query conditions (`queryCondition`) — framework
-specifics with no OpenAPI equivalent — are preserved as the `x-blue-*`
+specifics with no OpenAPI equivalent — are preserved as the `x-ndigo-*`
 extensions on the operation rather than silently dropped.
 
 **Responses**: every operation gets `200: { description: 'OK' }`. Response
@@ -120,12 +120,12 @@ deprecated?, hidden? })` on handler methods, stored in the same
 without inventing a comment-parsing pipeline (comments are not data this
 framework has ever parsed).
 
-### D-5 — Serving: `OpenAPIDocsAutoConfiguration` (in `@blue/platform-node`)
+### D-5 — Serving: `OpenAPIDocsAutoConfiguration` (in `@ndigo/platform-node`)
 
 _Amended at implementation:_ the auto-configuration lives in
-`@blue/platform-node` — the transport layer owns byte/header serving (the
+`@ndigo/platform-node` — the transport layer owns byte/header serving (the
 static-file machinery), and no package depends on platform-node (established
-layering: platform integrates feature packages). `@blue/openapi` stays
+layering: platform integrates feature packages). `@ndigo/openapi` stays
 platform-agnostic (generator + decorator + document types) and the platform
 re-exports the auto-configuration.
 
@@ -178,7 +178,7 @@ only place that names the distribution.
 
 The gap row also names typed-client generation. Decision: defer. The
 ecosystem already owns this (openapi-generator, openapi-typescript, orval);
-the contract seam is the served spec document. A BlueJS-side generator would
+the contract seam is the served spec document. A ndigo-side generator would
 duplicate that work for little framework-specific gain. Recorded here as the
 follow-up, alongside response-schema inference and problem+json error
 documentation (Risks).
@@ -205,12 +205,12 @@ documentation (Risks).
 - Package specs: generator units against a `RadixMetadataHandlerMapping`
   fixture — path translation (`:name`, `{*name}`), method exclusion,
   private/`hidden` exclusion, parameter mapping per source, schema
-  derivation via `zod-to-json-schema`, `x-blue-*` extensions, dedup.
-- Zod seam specs in `@blue/dispatcher` (`validatedBy` attaches `schema`;
+  derivation via `zod-to-json-schema`, `x-ndigo-*` extensions, dedup.
+- Zod seam specs in `@ndigo/dispatcher` (`validatedBy` attaches `schema`;
   `MethodParameter` threads + `toJSON` excludes it).
 - Auto-config: the docs mapping serves spec + UI through the real node
   pipeline; `GET /v3/api-docs` parses as JSON with the expected operations;
   `GET /swagger-ui/` HTML references asset URLs that return 200 with the
-  right content types. Demos: `apps/blue-api` registers the auto-config and
+  right content types. Demos: `apps/ndigo-api` registers the auto-config and
   its integration spec asserts the spec endpoint + a sampled operation
   (`POST /api/echo` with `application/json` requestBody).

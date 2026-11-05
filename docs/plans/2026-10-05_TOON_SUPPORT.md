@@ -20,7 +20,7 @@ characters retain meaning across versions (§18).
 
 ## 1. Problem
 
-BlueJS config surface is JSON-only by design ([AD-13]'s "JSON only (boring,
+ndigo config surface is JSON-only by design ([AD-13]'s "JSON only (boring,
 structured, no YAML dep)"). JSON config files cannot carry comments, give
 position-only parse errors, and repeat structure for uniform maps/tables.
 TOON offers comments (full-line `#`), strict-mode diagnostics (declared
@@ -29,22 +29,22 @@ zero token-efficiency relevance for config (config files are small, nested,
 0% tabular-eligible: TOON ≈ +7% vs minified JSON on that profile in the
 upstream benchmarks).
 
-Question: which BlueJS surfaces, if any, should gain opt-in TOON support
+Question: which ndigo surfaces, if any, should gain opt-in TOON support
 before 1.0 — without letting a Working-Draft format into internals, wire
 contracts, or defaults?
 
 ## 2. Candidate surface & verdict
 
-| Surface                                                                                      | Where                                           | Verdict                                                                                                                                                                                                                |
-| :------------------------------------------------------------------------------------------- | :---------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `MediaTypes` token (`text/toon`)                                                             | `@blue/core` `media-types.ts`                   | ✅ **Phase 0 — landed.** Inert, typed, zero-dep; negotiable only when a user composes it (view/interceptor). `getDefaultCharset()` already yields `utf-8` for `text/*` → `text/toon;charset=utf-8`, matching spec §17. |
-| `application.json` config files                                                              | `@blue/boot` `StandardConfigFileLoader`         | ✅ **Phase 1 — landed.** Decode-only `.toon` variant feeding the same `JSONObject` merge pipeline. Opt-in, reversible, no default change.                                                                              |
-| `ApplicationBuilder.fromConfig(url)`                                                         | `@blue/boot`                                    | 🟡 **Phase 3 — optional.** Auto-detect by URL extension / `format` option; single-shot bootstrap, low value.                                                                                                           |
-| Config server wire format                                                                    | `@blue/context` `RemotePropertySource`          | ❌ Never — external contract; ETag/last-good/304 logic is JSON-shaped.                                                                                                                                                 |
-| Wire formats (HTTP views, SSE, WebSocket/STOMP, mock-http)                                   | blue-view, blue-service, blue-socket, blue-test | ❌ Never — interop surface, IANA-registered media-types territory.                                                                                                                                                     |
-| Storage (Redis codec envelope, LibSQL session/roles, cookies, local-storage resource loader) | blue-redis, blue-orm-drizzle, platform-web      | ❌ Never — existing data, no format migration.                                                                                                                                                                         |
-| OIDC discovery/JWKS, `parseBody('application/json')`                                         | auth-client, platform-node                      | ❌ Never — external protocols.                                                                                                                                                                                         |
-| Content-negotiation defaults (`.toon` path-extension mapping, default view)                  | blue-view                                       | ❌ Never — would make an unregistered type framework-negotiable globally.                                                                                                                                              |
+| Surface                                                                                      | Where                                               | Verdict                                                                                                                                                                                                                |
+| :------------------------------------------------------------------------------------------- | :-------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MediaTypes` token (`text/toon`)                                                             | `@ndigo/core` `media-types.ts`                      | ✅ **Phase 0 — landed.** Inert, typed, zero-dep; negotiable only when a user composes it (view/interceptor). `getDefaultCharset()` already yields `utf-8` for `text/*` → `text/toon;charset=utf-8`, matching spec §17. |
+| `application.json` config files                                                              | `@ndigo/boot` `StandardConfigFileLoader`            | ✅ **Phase 1 — landed.** Decode-only `.toon` variant feeding the same `JSONObject` merge pipeline. Opt-in, reversible, no default change.                                                                              |
+| `ApplicationBuilder.fromConfig(url)`                                                         | `@ndigo/boot`                                       | 🟡 **Phase 3 — optional.** Auto-detect by URL extension / `format` option; single-shot bootstrap, low value.                                                                                                           |
+| Config server wire format                                                                    | `@ndigo/context` `RemotePropertySource`             | ❌ Never — external contract; ETag/last-good/304 logic is JSON-shaped.                                                                                                                                                 |
+| Wire formats (HTTP views, SSE, WebSocket/STOMP, mock-http)                                   | ndigo-view, ndigo-service, ndigo-socket, ndigo-test | ❌ Never — interop surface, IANA-registered media-types territory.                                                                                                                                                     |
+| Storage (Redis codec envelope, LibSQL session/roles, cookies, local-storage resource loader) | ndigo-redis, ndigo-orm-drizzle, platform-web        | ❌ Never — existing data, no format migration.                                                                                                                                                                         |
+| OIDC discovery/JWKS, `parseBody('application/json')`                                         | auth-client, platform-node                          | ❌ Never — external protocols.                                                                                                                                                                                         |
+| Content-negotiation defaults (`.toon` path-extension mapping, default view)                  | ndigo-view                                          | ❌ Never — would make an unregistered type framework-negotiable globally.                                                                                                                                              |
 
 Non-negotiable invariants (recheck on every phase): JSON remains the
 default; **decode-only** (no encoder in framework internals); merge
@@ -56,9 +56,9 @@ plain JSON model); no IANA-dependent behavior.
 ### Phase 0 — `MediaTypes.TEXT_TOON` (landed, 2026-10-05)
 
 `export const TEXT_TOON = MediaType.registered('text', 'toon')` in
-`packages/blue-core/src/media-types.ts` + pinning test in
+`packages/ndigo-core/src/media-types.ts` + pinning test in
 `media-type.spec.ts` (registry identity, baseType, utf-8 default charset,
-`text/*` negotiation match). 40/40 blue-core media-type tests green.
+`text/*` negotiation match). 40/40 ndigo-core media-type tests green.
 **No framework behavior change** — the token is material only when a user
 composes it.
 
@@ -66,7 +66,7 @@ composes it.
 
 - `StandardConfigFileLoader.addLocation` probes `${fileName}.json` then
   `${fileName}.toon` (JSON wins on collision; formats never mix within one
-  logical file). Profile variants and `BLUE_CONFIG_IMPORT` files inherit the
+  logical file). Profile variants and `NDIGO_CONFIG_IMPORT` files inherit the
   probing rule. Optional explicit override: `baseName` → `format: 'json' |
   'toon' | 'auto'` (default `auto`).
 - Parse via `decode()` from `@toon-format/toon` (strict mode, default),
@@ -116,7 +116,7 @@ a consumer asks.
       validate identically to their JSON counterparts (27-loader-spec suite
       incl. SEC-1 parity, empty-doc, comments/CRLF/BOM, strict duplicates,
       shape guard, import files, seam); JSON path byte-identical behavior
-      (123/123 blue-boot tests).
+      (123/123 ndigo-boot tests).
 - [x] P1: no new runtime cost when TOON unused — optional peer + lazy
       dynamic import (literal specifier + `@vite-ignore`, allowlisted in
       `check-manifests.mjs`; manifest conformance green).

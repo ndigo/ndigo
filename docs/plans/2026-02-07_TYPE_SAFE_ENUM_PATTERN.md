@@ -8,7 +8,7 @@
 
 ## Summary
 
-Documented the **Type-Safe Enum Pattern** (aka Java Enum Pattern, Class-Based Enum Pattern) used in 6 locations across the BlueJS repository. This pattern provides enhanced capabilities over built-in TypeScript enums through class-based implementation with methods, inheritance, and full serialization control.
+Documented the **Type-Safe Enum Pattern** (aka Java Enum Pattern, Class-Based Enum Pattern) used in 6 locations across the ndigo repository. This pattern provides enhanced capabilities over built-in TypeScript enums through class-based implementation with methods, inheritance, and full serialization control.
 
 ---
 
@@ -16,20 +16,20 @@ Documented the **Type-Safe Enum Pattern** (aka Java Enum Pattern, Class-Based En
 
 **Current Usage (6 implementations):**
 
-1. `MethodParameterType` - @blue/dispatcher (3 constants: COOKIE, MATRIX, QUERY)
-2. `Level` - @blue/logger (2 constants: OFF, ALL)
-3. `SyslogLevel` - @blue/logger (8 constants: EMERG → DEBUG)
-4. `CLILevel` - @blue/logger (10 constants: ERROR → SILLY)
-5. `NPMLevel` - @blue/logger (7 constants: ERROR → SILLY)
-6. `ApacheLevel` - @blue/logger (6 constants: FATAL → TRACE)
+1. `MethodParameterType` - @ndigo/dispatcher (3 constants: COOKIE, MATRIX, QUERY)
+2. `Level` - @ndigo/logger (2 constants: OFF, ALL)
+3. `SyslogLevel` - @ndigo/logger (8 constants: EMERG → DEBUG)
+4. `CLILevel` - @ndigo/logger (10 constants: ERROR → SILLY)
+5. `NPMLevel` - @ndigo/logger (7 constants: ERROR → SILLY)
+6. `ApacheLevel` - @ndigo/logger (6 constants: FATAL → TRACE)
 
 **Built-in Enums (2 appropriate uses):**
 
-- `RouteAccess`, `RouteSource` in @blue/router (internal, simple, no behavior)
+- `RouteAccess`, `RouteSource` in @ndigo/router (internal, simple, no behavior)
 
 **Related Pattern:**
 
-- `ResponseStatus` - @blue/http (Factory Registry pattern for 60+ HTTP status codes)
+- `ResponseStatus` - @ndigo/http (Factory Registry pattern for 60+ HTTP status codes)
 
 ---
 
@@ -190,7 +190,7 @@ MethodParameterType.COOKIE = new MethodParameterType('cookie:value');
 
 ### Simple Type-Safe Enum
 
-**File:** `packages/blue-dispatcher/src/route-parameter.ts` (lines 45-95)
+**File:** `packages/ndigo-dispatcher/src/route-parameter.ts` (lines 45-95)
 
 - 3 constants: COOKIE, MATRIX, QUERY
 - Factory method: fromType(type: string)
@@ -198,7 +198,7 @@ MethodParameterType.COOKIE = new MethodParameterType('cookie:value');
 
 ### Enum Hierarchy
 
-**Base:** `packages/blue-logger/src/level.ts`
+**Base:** `packages/ndigo-logger/src/level.ts`
 
 - 2 base constants: OFF, ALL
 - Implements: Comparable<Level>, Serializable
@@ -210,8 +210,8 @@ MethodParameterType.COOKIE = new MethodParameterType('cookie:value');
 
 ### Factory Registry Pattern
 
-**Class:** `packages/blue-http/src/response-status.ts`
-**Constants:** `packages/blue-http/src/response-statuses.ts`
+**Class:** `packages/ndigo-http/src/response-status.ts`
+**Constants:** `packages/ndigo-http/src/response-statuses.ts`
 
 - 60+ HTTP status codes
 - Factory method: for(code, reason)
@@ -219,7 +219,7 @@ MethodParameterType.COOKIE = new MethodParameterType('cookie:value');
 
 ### Built-in Enum (Appropriate)
 
-**File:** `packages/blue-router/src/hash-router.ts` (lines 16-24)
+**File:** `packages/ndigo-router/src/hash-router.ts` (lines 16-24)
 
 - RouteAccess: PUBLIC, PRIVATE
 - RouteSource: EXTERNAL, INTERNAL

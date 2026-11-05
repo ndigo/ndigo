@@ -9,7 +9,7 @@ Every implemented plan has its **decision recorded** in
 
 ### 2026-10-10 - Feature Flags
 
-`@blue/flags` + `@blue/platform-node` + `apps/04-blue-api` (AD-82),
+`@ndigo/flags` + `@ndigo/platform-node` + `apps/04-ndigo-api` (AD-82),
 closing GAP-11: the `FlagEvaluator` SPI (typed, async, **never-throw** —
 default value + reason/error-code on abnormal execution), the zero-config
 `PropertyFlagProvider` (flag `name` → `feature.<name>`, read-through so
@@ -26,14 +26,14 @@ providers) stays a documented provider bridge behind the SPI.
 
 ### 2026-10-08 - Shared-Store Rate Limiting
 
-`@blue/rate-limit` + `@blue/platform-node` + `@blue/redis` (AD-79),
+`@ndigo/rate-limit` + `@ndigo/platform-node` + `@ndigo/redis` (AD-79),
 closing GAP-8: the `RateLimiter` SPI moves to a leaf package with an
 **async** `consume` (AD-39) plus `validateRateLimitPolicy`,
 `likeRateLimiter`, `FixedWindowRateLimiter` and the `RATE_LIMITER` token;
 the platform interceptor awaits and the bean registers under the token
-(`src/rate-limit.ts` deleted — clean cutover); `@blue/redis/rate-limit`
+(`src/rate-limit.ts` deleted — clean cutover); `@ndigo/redis/rate-limit`
 ships `RedisRateLimiter` (one Lua script per consume:
-INCR/PEXPIRE-on-first/PTTL, keys `blue:rl:<ns>:<windowMs>:<key>`,
+INCR/PEXPIRE-on-first/PTTL, keys `ndigo:rl:<ns>:<windowMs>:<key>`,
 **fail-closed** default with a documented `fail-open` option). Guide 11 §5
 and guide 16 updated.
 
@@ -43,12 +43,12 @@ and guide 16 updated.
 
 ### 2026-10-08 - Migration Generation + Run-on-Boot
 
-`@blue/orm-drizzle` + `@blue/cli` + `apps/04-blue-api` (AD-78), closing
+`@ndigo/orm-drizzle` + `@ndigo/cli` + `apps/04-ndigo-api` (AD-78), closing
 GAP-7: versioned **file migrations** (`db/migrations/<NNNN>-<slug>.ts`,
 loader + `migrateOnBoot` — the AD-30 runner untouched), entity-metadata
 **generation** against a committed `db/schema.json` projection
 (`projectEntities`/`diffProjections`, freshness-gated in CI by
-`db:schema:check`), `blue db new|generate|status` (closing the AD-75 `db:*`
+`db:schema:check`), `ndigo db new|generate|status` (closing the AD-75 `db:*`
 remainder), and the app's `config/application.json` as the dotted-key
 carrier for `migrations.runOnBoot`.
 
@@ -58,14 +58,14 @@ carrier for `migrations.runOnBoot`.
 
 ### 2026-10-08 - Prometheus Metrics
 
-`@blue/telemetry-node` + `@blue/management` + `@blue/telemetry` (AD-77),
+`@ndigo/telemetry-node` + `@ndigo/management` + `@ndigo/telemetry` (AD-77),
 closing GAP-5: `metricExporter: 'prometheus'` (metric signal only) registers
 a pull `PrometheusMetricReader` over the SDK `MeterProvider`; `/metrics`
 serves the same snapshot as the Prometheus text exposition document by
 default and as JSON on `Accept: application/json` (the `{ features }`
 aggregator document is replaced); `HTTPServerInstrumentation` records the
 semconv `http.server.request.duration` histogram in every export mode. The
-isomorphic snapshot model + renderers live in `@blue/telemetry`.
+isomorphic snapshot model + renderers live in `@ndigo/telemetry`.
 
 [Read plan](2026-10-08_PROMETHEUS_METRICS.md)
 
@@ -73,9 +73,9 @@ isomorphic snapshot model + renderers live in `@blue/telemetry`.
 
 ### 2026-10-08 - Actuator Parity
 
-`@blue/management` (AD-76), closing GAP-4: `/loggers` (level index,
+`@ndigo/management` (AD-76), closing GAP-4: `/loggers` (level index,
 per-logger reads, live `POST` changes over a per-name registry in
-`@blue/log`), `/env` (sources with origins, values redacted by default,
+`@ndigo/log`), `/env` (sources with origins, values redacted by default,
 `showValues` never serves decrypted plaintext, `?toMatch=`), `/configprops`
 (declared `@configurationProperties` keys + types, never values), health
 groups + single-component reads at `/health/<name>`, and an opt-in exposure
@@ -88,7 +88,7 @@ annotation flips to a real read path).
 
 ### 2026-10-07 - Durable Jobs and Transactional Outbox
 
-`@blue/jobs` (AD-72), closing GAP-1: one `JobDriver` SPI (at-least-once,
+`@ndigo/jobs` (AD-72), closing GAP-1: one `JobDriver` SPI (at-least-once,
 lease-based claim with self-healing reclamation), `JobQueue` producer facade,
 `JobRunner` worker engine (concurrency, timeout via `AbortSignal`, lease
 heartbeat, exponential backoff, `jobs.job.<type>` spans), `@jobHandler`
@@ -97,7 +97,7 @@ discovery mirroring `@scheduled`, and the transactional outbox — `OutboxStore`
 - `OutboxRelay` + `JobOutboxPublisher` with the LibSQL store borrowing the
   `DrizzleDataSource` client so `append()` joins the caller's `@transactional`
   boundary. Backends: `InProcessJobDriver` (default), `LibSQLJobStore`
-  (`@blue/orm-drizzle`), `RedisJobDriver` (`@blue/redis/jobs` subpath).
+  (`@ndigo/orm-drizzle`), `RedisJobDriver` (`@ndigo/redis/jobs` subpath).
   Node-only, zero-wiring via `NodeAutoConfiguration`.
 
 [Read plan](2026-10-07_JOBS_AND_OUTBOX.md)
@@ -106,10 +106,10 @@ discovery mirroring `@scheduled`, and the transactional outbox — `OutboxStore`
 
 ### 2026-10-07 - Distributed Locks
 
-`@blue/locks` (AD-73), closing GAP-3: one `LockDriver` SPI (non-blocking
+`@ndigo/locks` (AD-73), closing GAP-3: one `LockDriver` SPI (non-blocking
 acquire, TTL leases, monotonic **fencing tokens** — only the current token
 can renew/release), the process-wide `InProcessLockDriver` (single-node
-truth), `RedisLockDriver` (`@blue/redis/locks`, Lua `SET NX PX` +
+truth), `RedisLockDriver` (`@ndigo/redis/locks`, Lua `SET NX PX` +
 compare-and-delete), and `@scheduled({ lock, lockWait, lockWaitStep,
 lockTtl })` for cross-process single-executor. `NodeAutoConfiguration`
 registers a `lockDriver` bean (in-process default, Redis override).
@@ -121,9 +121,9 @@ PG advisory locks documented-deferred in the ADR.
 
 ### 2026-10-07 - Clustering / Worker Offload
 
-`@blue/cluster` (AD-74), closing GAP-2: a process **supervisor, not a
+`@ndigo/cluster` (AD-74), closing GAP-2: a process **supervisor, not a
 coordinator** — `ClusterRunner` spawns N replicated worker slots with
-`BLUE_CLUSTER_SLOT`/`SIZE` (+ `PORT` derivation), relays `SIGINT`/`SIGTERM`
+`NDIGO_CLUSTER_SLOT`/`SIZE` (+ `PORT` derivation), relays `SIGINT`/`SIGTERM`
 into each child's own graceful shutdown, respawns crashed slots with
 bounded-backoff, and trips fail-closed past the per-slot crash-loop window.
 Single-executor work stays arbitrated by the AD-72/73 leases and locks.
@@ -134,10 +134,10 @@ Single-executor work stays arbitrated by the AD-72/73 leases and locks.
 
 ### 2026-10-07 - The Framework CLI
 
-`@blue/cli` (AD-75), closing GAP-6: the `blue` binary on **`@oclif/core`
+`@ndigo/cli` (AD-75), closing GAP-6: the `ndigo` binary on **`@oclif/core`
 v5 as an embedded library** (research-backed; Node ≥22 baseline matches),
 with `serve` (the AD-74 `--cluster` surface), `dev`, `generate` (fronting
-`@blue/generators`), `db:migrate`, `inspect` (the AD-70 entry), and
+`@ndigo/generators`), `db:migrate`, `inspect` (the AD-70 entry), and
 `doctor`. Scripts run shell-free so OS signals reach the actual
 application. Server watch + upgrade codemods deferred in the ADR.
 
@@ -148,7 +148,7 @@ application. Server watch + upgrade codemods deferred in the ADR.
 ### 2026-10-05 - TOON Support (opt-in authoring format)
 
 Opt-in, decode-only TOON support (AD-66): inert `MediaTypes.TEXT_TOON`
-token in `@blue/core`; `application.toon` / `application-{profile}.toon`
+token in `@ndigo/core`; `application.toon` / `application-{profile}.toon`
 config files in `StandardConfigFileLoader` (`format: 'auto' | 'json' |
 'toon'`, JSON wins collisions, `required:` covers the format pair) — the
 `@toon-format/toon` decoder is an optional peer loaded lazily, and
@@ -162,9 +162,9 @@ model. Wire/storage/config-server surfaces stay permanently JSON. Phase 3
 
 ### 2026-10-04 - Resilience: Retry and Circuit Breaking
 
-New isomorphic package `@blue/resilience` (AD-43): annotation-driven
+New isomorphic package `@ndigo/resilience` (AD-43): annotation-driven
 `@retry(...)` / `@circuitBreaker(...)` policy interceptors on the
-`@blue/proxy` chain, plain-function backoffs (`fixedBackoff`,
+`@ndigo/proxy` chain, plain-function backoffs (`fixedBackoff`,
 `exponentialBackoff`), per-method circuit cells with half-open probes, and
 standalone weaving via `interceptMethods(instance, interceptors)`.
 
@@ -175,7 +175,7 @@ standalone weaving via `interceptMethods(instance, interceptors)`.
 ### 2026-10-03 - Shared Persistence and Distributed Backends
 
 Dependency-ordered persistence roadmap, complete: durable LibSQL sessions
-(Phase 1), awaitable cache cutover + `@blue/redis` cache (Phase 2), cross-node
+(Phase 1), awaitable cache cutover + `@ndigo/redis` cache (Phase 2), cross-node
 WebSocket/STOMP fan-out (Phase 3), distributed scheduling deferred with
 evidence (Phase 4, AD-41), backend-matrix review closed (Phase 5). Memory
 remains the default everywhere; external backends are opt-in.
@@ -184,10 +184,10 @@ remains the default everywhere; external backends are opt-in.
 
 ---
 
-### 2026-10-03 - Method Interception (`@blue/proxy`)
+### 2026-10-03 - Method Interception (`@ndigo/proxy`)
 
 Container-managed method interception on JavaScript `Proxy` (AD-42): the new
-`@blue/proxy` package — annotation keys (`methodAnnotation`), the
+`@ndigo/proxy` package — annotation keys (`methodAnnotation`), the
 `MethodInterceptor` chain (`invokeChain`; `next()` re-entry added with
 AD-43), and weaving via `InitializationAwareProcessor` (`interception(...)`).
 No AspectJ pointcut language; existing method decorators stay as they are.
@@ -210,7 +210,7 @@ explicit-contract level). No new mapper package.
 
 ### 2026-09-28 - OpenAPI Docs + Management Hardening
 
-The last Tier-1 gap row closes: `@blue/openapi` generates a spec from
+The last Tier-1 gap row closes: `@ndigo/openapi` generates a spec from
 dispatch metadata (zod-native `toJSONSchema`) and serves it at
 `/v3/api-docs` with Swagger UI at `/swagger-ui/` (no CDN, optional guard);
 management hardening adds `/health` redaction and documents the bind posture
@@ -260,7 +260,7 @@ correlation — the gap-analysis Telemetry row flipped to implemented (AD-32).
 ### 2026-09-26 - ORM Completion
 
 Migrations (`DrizzleMigrator`: journaled, versioned, forward-only over
-`@blue/orm-drizzle`, AD-30), pagination/sorting, explicit-opt-in relation
+`@ndigo/orm-drizzle`, AD-30), pagination/sorting, explicit-opt-in relation
 fetch (AD-31), and derived-query expansion beyond equality — closing the
 Framework Gap Analysis ORM rows.
 
@@ -300,7 +300,7 @@ Also fixed a real precedence bug (`defaults` now truly lowest; `boot` above
 Static HTTP semantics (AD-28): strong ETag + conditional GET (304),
 single-range 206/416, `Cache-Control`, precompressed `.br`/`.gz` variants,
 directory index/listing, SPA history fallback, dispatcher HEAD→GET — on top
-of greedy `{*name}`/`**` route segments. Demo gates in blue-island.
+of greedy `{*name}`/`**` route segments. Demo gates in ndigo-island.
 
 [Read full plan](2026-09-24_STATIC_FILES.md)
 
@@ -342,10 +342,10 @@ frame/referrer/sniffing controls and no `X-Powered-By` (AD-25; the CSP
 
 ### 2026-09-17 - Caching
 
-`@blue/cache`: `Cache`/`MemoryCache` (TTL + LRU/FIFO eviction), `CacheManager`
+`@ndigo/cache`: `Cache`/`MemoryCache` (TTL + LRU/FIFO eviction), `CacheManager`
 bean (zero-wiring node auto-config), `memoize` (client-side, single-flight),
 `@cached` decorator (no-AOP wrapper, graceful degradation) — demo gates in
-blue-api (`/api/cached-report` counter) and blue-views (client memoize).
+ndigo-api (`/api/cached-report` counter) and ndigo-views (client memoize).
 
 [Read full plan](2026-09-17_CACHING.md)
 
@@ -355,7 +355,7 @@ blue-api (`/api/cached-report` counter) and blue-views (client memoize).
 
 `@scheduled` decorator, ScheduleRegistry + TaskScheduler engine, croner
 seam, Node-only guardrails, zero-config discovery, per-run OTel spans —
-Phase 4 demo gate in blue-api.
+Phase 4 demo gate in ndigo-api.
 
 [Read full plan](2026-09-13_SCHEDULING.md)
 
@@ -364,7 +364,7 @@ Phase 4 demo gate in blue-api.
 ### 2026-09-13 - Content/i18n
 
 Content/i18n completion: `MessageSource` contract, i18next adapter
-(`@blue/content-i18next`), Intl formatters, locale flow (server +
+(`@ndigo/content-i18next`), Intl formatters, locale flow (server +
 client), EJS/island integration, and both demo gates.
 
 [Read full plan](2026-09-13_CONTENT_I18N.md)
@@ -373,10 +373,10 @@ client), EJS/island integration, and both demo gates.
 
 ### 2026-06-08 - TypeScript 6.0 Migration Remediation
 
-Post-migration fix-up, all four waves landed: restored `@blue/domain`
+Post-migration fix-up, all four waves landed: restored `@ndigo/domain`
 property delegation and `RouteHandlerAdapter.supports()`, replaced
 type-lie casts with runtime checks, stabilized widened return types across
-consumers, and refactored the `@blue/validate` constraints.
+consumers, and refactored the `@ndigo/validate` constraints.
 
 [Read plan](2026-06-08_TS6_REMEDIATION.md)
 
@@ -400,7 +400,7 @@ Multi-context/site architecture with hierarchical shell/feature contexts, route 
 
 ### 2026-02-08 - RegExp Naming Convention Standardization
 
-Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix across @blue/validate, @blue/http, and @blue/platform-web packages.
+Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix across @ndigo/validate, @ndigo/http, and @ndigo/platform-web packages.
 
 [Read full plan](2026-02-08_REGEX_NAMING_CONVENTION.md)
 
@@ -429,7 +429,7 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 - [2026-09-03 Node Platform Foundation](2026-09-03_NODE_PLATFORM_FOUNDATION.md) — [AD-60](../decisions/2026-09-03_AD60_NODE_PLATFORM_FOUNDATION.md)
 - [2026-09-03 RouteRegistry](2026-09-03_ROUTE_REGISTRY.md) — [AD-61](../decisions/2026-09-03_AD61_ROUTE_REGISTRY.md)
 - [2026-09-03 Shared Dependency Contract](2026-09-03_SHARED_DEPENDENCY_CONTRACT.md) — [AD-62](../decisions/2026-09-03_AD62_SHARED_DEPENDENCY_CONTRACT.md)
-- [2026-09-04 Test Harness](2026-09-04_BLUE_TEST_HARNESS.md) — [AD-63](../decisions/2026-09-04_AD63_BLUE_TEST_HARNESS.md)
+- [2026-09-04 Test Harness](2026-09-04_NDIGO_TEST_HARNESS.md) — [AD-63](../decisions/2026-09-04_AD63_NDIGO_TEST_HARNESS.md)
 - [2026-09-04 Package Separation](2026-09-04_PACKAGE_SEPARATION.md) — [AD-64](../decisions/2026-09-04_AD64_PLATFORM_SEPARATION.md)
 - [2026-09-06 View Resolution Strategy](2026-09-06_VIEW_RESOLUTION_STRATEGY.md) — [AD-65](../decisions/2026-09-06_AD65_VIEW_RESOLUTION_STRATEGY.md)
 - [2026-09-06 Telemetry Gaps](2026-09-06_TELEMETRY_GAPS.md) — folded into [AD-32](../decisions/2026-09-26_AD32_TELEMETRY_COMPLETION.md)
@@ -437,11 +437,11 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 
 ## Completed Reviews
 
-- [2026-10-07_CODE_REVIEW_AND_MITIGATION_AD72_75.md](2026-10-07_CODE_REVIEW_AND_MITIGATION_AD72_75.md) - Delta sweep at `6a4979d4` (AD-72 jobs/outbox, AD-73 locks, AD-74 cluster, AD-75 CLI + the deferred sweep + portfolio 08–19): gates green at HEAD, but 3 Block / 8 High / 13 Medium / 9 Low findings — the crash-loop guard fails open (a tripped slot hangs every sibling and `run()` forever), `blue serve --cluster N --port P` gives every slot the same PORT (derivation never wired), `blue generate component|header` cannot run (required flags not exposed), plus Redis job-driver check-then-act races (non-atomic heartbeat enabling double-claim, retry resurrecting terminal jobs). Remediation waves 1–5 proposed.
-- [2026-10-07_CODE_REVIEW_AND_MITIGATION.md](2026-10-07_CODE_REVIEW_AND_MITIGATION.md) - Delta sweep at `76d28575` (AD-69/70/71 + wave-4/5 remediation) with a whole-repo residual/architecture/gap refresh: all gates green, 1 Block / 6 High / 33 Medium / 28 Low findings (a fresh-runner test-lane import escape, raw TC39 decorators shipping in `blue-hello`/`blue-views` bundles and `blue-todo` dev, incomplete FACE callbacks, and the AD-70 config schema/guide teaching a secret-marker form the resolver never decrypts) — remediation waves 1–7 proposed. **Follow-up executed 2026-10-07**: the deferred items landed — the spec-typecheck lane (`tsconfig.spec.json`, ~900 diagnostics triaged to zero), REU-9 (config metadata relocated to `@blue/context`), TEL-08 (client byte-size seam consumed), SEC-B/WC-I (tooling lane). **GAP-12 closed 2026-10-09** (AD-80/AD-81: edge termination documented; native h2 opt-in landed — `tls` + `BLUE_TLS_*`, ALPN h2/h1.1; HTTP/3 stays at the edge).
+- [2026-10-07_CODE_REVIEW_AND_MITIGATION_AD72_75.md](2026-10-07_CODE_REVIEW_AND_MITIGATION_AD72_75.md) - Delta sweep at `6a4979d4` (AD-72 jobs/outbox, AD-73 locks, AD-74 cluster, AD-75 CLI + the deferred sweep + portfolio 08–19): gates green at HEAD, but 3 Block / 8 High / 13 Medium / 9 Low findings — the crash-loop guard fails open (a tripped slot hangs every sibling and `run()` forever), `ndigo serve --cluster N --port P` gives every slot the same PORT (derivation never wired), `ndigo generate component|header` cannot run (required flags not exposed), plus Redis job-driver check-then-act races (non-atomic heartbeat enabling double-claim, retry resurrecting terminal jobs). Remediation waves 1–5 proposed.
+- [2026-10-07_CODE_REVIEW_AND_MITIGATION.md](2026-10-07_CODE_REVIEW_AND_MITIGATION.md) - Delta sweep at `76d28575` (AD-69/70/71 + wave-4/5 remediation) with a whole-repo residual/architecture/gap refresh: all gates green, 1 Block / 6 High / 33 Medium / 28 Low findings (a fresh-runner test-lane import escape, raw TC39 decorators shipping in `ndigo-hello`/`ndigo-views` bundles and `ndigo-todo` dev, incomplete FACE callbacks, and the AD-70 config schema/guide teaching a secret-marker form the resolver never decrypts) — remediation waves 1–7 proposed. **Follow-up executed 2026-10-07**: the deferred items landed — the spec-typecheck lane (`tsconfig.spec.json`, ~900 diagnostics triaged to zero), REU-9 (config metadata relocated to `@ndigo/context`), TEL-08 (client byte-size seam consumed), SEC-B/WC-I (tooling lane). **GAP-12 closed 2026-10-09** (AD-80/AD-81: edge termination documented; native h2 opt-in landed — `tls` + `NDIGO_TLS_*`, ALPN h2/h1.1; HTTP/3 stays at the edge).
 - [2026-10-06_COMPREHENSIVE_REVIEW_AND_MITIGATION.md](2026-10-06_COMPREHENSIVE_REVIEW_AND_MITIGATION.md) - Second full-repository sweep (39 packages, 7 apps, docs, tooling, CI; 16 slices) at `96337f24`: all gates green, 5 Block / 28 High / 71 Medium / 63 Low / 12 Nit new findings (incl. a passwordless-account auth bypass, a telemetry remote process-crash, a view-name path traversal, a render-hang, and a fresh-checkout CI e2e failure), plus 10 inventory-reconciliation items and 13 framework gaps — remediation waves 1–5 landed (`91712f40`, `8f54a402`, `fbb5233e`, `0c4becbd`; post-plan discoveries fixed in `60d601ca`, `4ee4a41f`, `f6cdf832`, `76d28575`)
 - [2026-10-06_CODE_REVIEW_AND_MITIGATION.md](2026-10-06_CODE_REVIEW_AND_MITIGATION.md) - Full-repository review (42 packages, 7 apps, docs, tooling, hygiene) with remediation waves (1 Block build-breaker + 4 architecture findings + 18 Must Fix, ~60 Should Fix, remainder Optional/Nit/FYI)
-- [2026-10-04_CODE_REVIEW_AND_MITIGATION.md](2026-10-04_CODE_REVIEW_AND_MITIGATION.md) - Review of the AD-42/AD-43 wave (blue-proxy, blue-resilience) and recent committed features with remediation plan (2 Must Fix, 3 Should Fix, 1 Block, 8 Medium, 10 Nit/FYI)
+- [2026-10-04_CODE_REVIEW_AND_MITIGATION.md](2026-10-04_CODE_REVIEW_AND_MITIGATION.md) - Review of the AD-42/AD-43 wave (ndigo-proxy, ndigo-resilience) and recent committed features with remediation plan (2 Must Fix, 3 Should Fix, 1 Block, 8 Medium, 10 Nit/FYI)
 - [2026-09-29_CODE_REVIEW_AND_MITIGATION.md](2026-09-29_CODE_REVIEW_AND_MITIGATION.md) - Post-AD-38 comprehensive sweep (35 packages, 7 apps; 11 review slices) with Waves 1–6 remediation
 - [2026-09-28_CODE_REVIEW_AND_MITIGATION.md](2026-09-28_CODE_REVIEW_AND_MITIGATION.md) - Review of the Wave 6 / AD-34 / AD-35-36 / AD-37 wave with remediation plan (2 Must Fix, 22 Should Fix, 16 Optional)
 - [2026-09-27_CODE_REVIEW_AND_MITIGATION.md](2026-09-27_CODE_REVIEW_AND_MITIGATION.md) - Review of the AD-30..33 wave (ORM, telemetry, auth) with Waves 1–4 remediation
@@ -456,13 +456,13 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 - [2026-05-29_WAVE10_CHECKPOINT.md](2026-05-29_WAVE10_CHECKPOINT.md) - Wave 10 — 1.0 checkpoint of the 10-wave feature-completeness roadmap (package matrix, API stability commitment)
 - [2026-05-29_WAVE11_PLAN.md](2026-05-29_WAVE11_PLAN.md) - Wave 11 follow-on: benchmark coverage, hot-path native replacements, API hardening
 - [2026-06-18_CLIENT_FIRST_ROADMAP.md](2026-06-18_CLIENT_FIRST_ROADMAP.md) - Client-first roadmap (10 waves, 6–12 month horizon; all waves complete) — legacy ports, runtime stabilization, 1.0 checkpoint
-- [2026-06-18_WAVE_4_SERVICE_BOUNDARY.md](2026-06-18_WAVE_4_SERVICE_BOUNDARY.md) - Wave 4 spec of the client-first roadmap: legacy service interceptors ported into `@blue/http`/`@blue/platform-web`; `@blue/service` registry + telemetry hooks
+- [2026-06-18_WAVE_4_SERVICE_BOUNDARY.md](2026-06-18_WAVE_4_SERVICE_BOUNDARY.md) - Wave 4 spec of the client-first roadmap: legacy service interceptors ported into `@ndigo/http`/`@ndigo/platform-web`; `@ndigo/service` registry + telemetry hooks
 - [2026-03-08_PACKAGE_ROADMAP.md](2026-03-08_PACKAGE_ROADMAP.md) - Package scope roadmap — completed ✅ (delivered package set)
 - [2026-09-04_REPOSITORY_REMEDIATION.md](2026-09-04_REPOSITORY_REMEDIATION.md) - Comprehensive remediation plan — proposed; superseded by the weekly review series
 
 ## Archived Plans
 
-- [2026-01-30_PARSER_ENHANCEMENT.md](2026-01-30_PARSER_ENHANCEMENT.md) - @blue/parser Enhancement Plan
+- [2026-01-30_PARSER_ENHANCEMENT.md](2026-01-30_PARSER_ENHANCEMENT.md) - @ndigo/parser Enhancement Plan
 - [2026-02-01_DECORATOR_MIGRATION.md](2026-02-01_DECORATOR_MIGRATION.md) - Decorator Migration Plan: Legacy to TC39 Stage 3
 - [2026-02-01_ESLINT_PLUGIN.md](2026-02-01_ESLINT_PLUGIN.md) - ESLint Plugin Implementation Plan
 - [2026-02-01_FILE_REFACTORING.md](2026-02-01_FILE_REFACTORING.md) - File Size Refactoring Plan
@@ -488,10 +488,10 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 ## Draft Plans
 
 - [2026-11-03_TSCONFIG_PACKAGE_CONSISTENCY.md](2026-11-03_TSCONFIG_PACKAGE_CONSISTENCY.md) - TypeScript config & package setup consistency: Phase 0 (dead `tsconfig.vscode.json`, stale Nx input, over-broad root config, exposed script lint warnings) executed; Phases 1–6 standardize the app/package IDE and build lanes, consolidate the three alias tables, and add a CI guard.
-- [2026-11-02_COMPREHENSIVE_REVIEW.md](2026-11-02_COMPREHENSIVE_REVIEW.md) - Comprehensive review (2026-11-02): full-repo sweep across code, design, architecture, security, and docs. Gates green at `e732baf4` (lint, audit, manifest, doc-links, cycles); security surface verified fail-closed end-to-end. Findings: M1 unexported `EqualsURLMatcher` in blue-http README, M2 blue-redis `/rate-limit` entry point undocumented, M3–M4 AGENTS.md stale engine floor + dependency-convention drift, L1 unbounded jwt revocation cache, L2 todo-app `refresh()` persistence bug, L3–L4 minor doc gaps, F1 OIDC refresh-token grant (tracked gap). Waves: W1 docs contract, W2 correctness, W3 issue tracking. **Executed 2026-11-02**: all three waves merged via [PR #62](https://github.com/jeffrose/blue/pull/62); F1 tracked in [#61](https://github.com/jeffrose/blue/issues/61). §5 records the M1 revision (JSDIP-era orphan retired, not exported).
-- [2026-11-01_OPENFEATURE_BRIDGE.md](2026-11-01_OPENFEATURE_BRIDGE.md) - OpenFeature bridge (AD-87) — Phase 1 pre-1.0 ([#56](https://github.com/jeffrose/blue/issues/56)): `@blue/flags-openfeature` server bridge + additive SPI vocabulary widening, with the targeting-context resolver companion ([#55](https://github.com/jeffrose/blue/issues/55)); Phase 2 post-1.0 ([#57](https://github.com/jeffrose/blue/issues/57)): web entry, `feature_flag.*` telemetry hook, conformance follow-ups, OFREP/flagd recipes.
-- [2026-11-01_APP_SCAFFOLDING.md](2026-11-01_APP_SCAFFOLDING.md) - App scaffolding — Phase A (`blue new` + the `app` generator) implemented and validated 2026-11-01 (AD-85); Phase B (`create-blue-app` for standalone projects) gated on the 1.0 package publish.
-- [2026-10-07_EXAMPLE_APPLICATIONS.md](2026-10-07_EXAMPLE_APPLICATIONS.md) - Example-application portfolio: number the app directories (`01-blue-hello` …), keep the existing seven in order, and grow the suite with externally-oracled conformance apps (httpbin, Todo-Backend, RealWorld/Conduit), verticals (Conduit web, PetClinic), realtime (STOMP chat, kanban), distributed (resilience lab, Redis fan-out), and operations (telemetry lab, auth playground) apps — plus a port registry, a boot-and-probe smoke gate, and the W0 rename sweep mechanics. **Executed 2026-10-07**: apps `08`–`19` landed with tests + smoke coverage; §11 records execution and the defects the exercise found (port seeding, ≥400 `ResponseEntity` headers, unregistered CORS, single-scheme auth guard, import-scanner `lib` skip, socket 1011 DX).
+- [2026-11-02_COMPREHENSIVE_REVIEW.md](2026-11-02_COMPREHENSIVE_REVIEW.md) - Comprehensive review (2026-11-02): full-repo sweep across code, design, architecture, security, and docs. Gates green at `e732baf4` (lint, audit, manifest, doc-links, cycles); security surface verified fail-closed end-to-end. Findings: M1 unexported `EqualsURLMatcher` in ndigo-http README, M2 ndigo-redis `/rate-limit` entry point undocumented, M3–M4 AGENTS.md stale engine floor + dependency-convention drift, L1 unbounded jwt revocation cache, L2 todo-app `refresh()` persistence bug, L3–L4 minor doc gaps, F1 OIDC refresh-token grant (tracked gap). Waves: W1 docs contract, W2 correctness, W3 issue tracking. **Executed 2026-11-02**: all three waves merged via [PR #62](https://github.com/ndigo/ndigo/pull/62); F1 tracked in [#61](https://github.com/ndigo/ndigo/issues/61). §5 records the M1 revision (JSDIP-era orphan retired, not exported).
+- [2026-11-01_OPENFEATURE_BRIDGE.md](2026-11-01_OPENFEATURE_BRIDGE.md) - OpenFeature bridge (AD-87) — Phase 1 pre-1.0 ([#56](https://github.com/ndigo/ndigo/issues/56)): `@ndigo/flags-openfeature` server bridge + additive SPI vocabulary widening, with the targeting-context resolver companion ([#55](https://github.com/ndigo/ndigo/issues/55)); Phase 2 post-1.0 ([#57](https://github.com/ndigo/ndigo/issues/57)): web entry, `feature_flag.*` telemetry hook, conformance follow-ups, OFREP/flagd recipes.
+- [2026-11-01_APP_SCAFFOLDING.md](2026-11-01_APP_SCAFFOLDING.md) - App scaffolding — Phase A (`ndigo new` + the `app` generator) implemented and validated 2026-11-01 (AD-85); Phase B (`create-ndigo-app` for standalone projects) gated on the 1.0 package publish.
+- [2026-10-07_EXAMPLE_APPLICATIONS.md](2026-10-07_EXAMPLE_APPLICATIONS.md) - Example-application portfolio: number the app directories (`01-ndigo-hello` …), keep the existing seven in order, and grow the suite with externally-oracled conformance apps (httpbin, Todo-Backend, RealWorld/Conduit), verticals (Conduit web, PetClinic), realtime (STOMP chat, kanban), distributed (resilience lab, Redis fan-out), and operations (telemetry lab, auth playground) apps — plus a port registry, a boot-and-probe smoke gate, and the W0 rename sweep mechanics. **Executed 2026-10-07**: apps `08`–`19` landed with tests + smoke coverage; §11 records execution and the defects the exercise found (port seeding, ≥400 `ResponseEntity` headers, unregistered CORS, single-scheme auth guard, import-scanner `lib` skip, socket 1011 DX).
 
 ---
 

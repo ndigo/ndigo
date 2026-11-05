@@ -2,30 +2,30 @@
 
 ## Objective
 
-Define near-term roadmap direction for package evolution after `@blue/logger` removal, with focus on:
+Define near-term roadmap direction for package evolution after `@ndigo/logger` removal, with focus on:
 
-- `@blue/telemetry` consolidation
-- planned `@blue/orm`
-- planned `@blue/auth`
-- planned `@blue/eslint-plugin`
+- `@ndigo/telemetry` consolidation
+- planned `@ndigo/orm`
+- planned `@ndigo/auth`
+- planned `@ndigo/eslint-plugin`
 
 ## Current State
 
-- `@blue/logger` removed from active packages
-- `@blue/telemetry` now provides tracing/metrics/logging bridge APIs
+- `@ndigo/logger` removed from active packages
+- `@ndigo/telemetry` now provides tracing/metrics/logging bridge APIs
 - Root and package documentation updated to reflect telemetry transition
 
 ## Roadmap Streams
 
 ### 1) Telemetry Consolidation (Short-term)
 
-**Goal:** Make `@blue/telemetry` the single supported logging/observability path.
+**Goal:** Make `@ndigo/telemetry` the single supported logging/observability path.
 
 **Status:** Completed ✅
 
 Delivered:
 
-- Expand real package/app integrations (starting with `blue-demo`)
+- Expand real package/app integrations (starting with `ndigo-demo`)
 - Add migration examples from old logger-style usage to telemetry logger APIs
 - Finalize API polish around severity schemes and context-aware logging
 - Add docs/reference for recommended production OTel setup patterns
@@ -33,11 +33,11 @@ Delivered:
 Success criteria:
 
 - At least one app flow emits trace + metric + log with correlated context
-- No root/package docs reference removed `@blue/logger`
+- No root/package docs reference removed `@ndigo/logger`
 
-### 2) `@blue/orm` (Medium-term)
+### 2) `@ndigo/orm` (Medium-term)
 
-**Goal:** Introduce persistence abstraction aligned with BlueJS patterns.
+**Goal:** Introduce persistence abstraction aligned with ndigo patterns.
 
 **Status:** MVP implemented ✅
 
@@ -59,8 +59,8 @@ Post-MVP scope:
 - Entity lifecycle hooks (`@prePersist`, `@postLoad`, etc.)
 - `@transactional` decorator
 - Transaction boundary helpers
-- Adapter pattern for backing stores (SQL/NoSQL) — `@blue/orm-drizzle`, `@blue/orm-mikro`
-- `@blue/validate` integration for entity validation
+- Adapter pattern for backing stores (SQL/NoSQL) — `@ndigo/orm-drizzle`, `@ndigo/orm-mikro`
+- `@ndigo/validate` integration for entity validation
 
 Design constraints:
 
@@ -68,7 +68,7 @@ Design constraints:
 - Strong package boundary discipline
 - Avoid premature abstraction (Rule of Three)
 
-### 3) `@blue/auth` (Medium-term)
+### 3) `@ndigo/auth` (Medium-term)
 
 **Goal:** Provide framework-level authentication/authorization components.
 
@@ -77,16 +77,16 @@ Proposed scope:
 - Authentication strategy interfaces
 - Request/route authorization hooks
 - Principal/session abstractions
-- Integration points for `@blue/http`, `@blue/dispatcher`, and router layers
+- Integration points for `@ndigo/http`, `@ndigo/dispatcher`, and router layers
 
 Design constraints:
 
 - Policy-driven architecture (strategy/handler suffix conventions)
 - Minimal coupling to concrete token/session implementations
 
-### 4) `@blue/eslint-plugin` (Short-medium term)
+### 4) `@ndigo/eslint-plugin` (Short-medium term)
 
-**Goal:** Encode BlueJS conventions as enforceable lint rules.
+**Goal:** Encode ndigo conventions as enforceable lint rules.
 
 **Status:** Implemented ✅
 
@@ -121,5 +121,5 @@ Success criteria:
 
 - Author telemetry migration reference document (examples + recommended defaults)
 - Draft eslint-plugin rule specification document
-- Open MVP design docs for `@blue/auth` and `@blue/orm`
-- Add a post-stabilization architecture checkpoint for `@blue/factory` to evaluate splitting `AbstractFactoryBase` and `AbstractScopedFactory` once real non-scoped usage requirements are known
+- Open MVP design docs for `@ndigo/auth` and `@ndigo/orm`
+- Add a post-stabilization architecture checkpoint for `@ndigo/factory` to evaluate splitting `AbstractFactoryBase` and `AbstractScopedFactory` once real non-scoped usage requirements are known

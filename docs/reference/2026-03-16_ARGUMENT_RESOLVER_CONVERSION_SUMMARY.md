@@ -6,10 +6,10 @@
 
 ## Scope
 
-This reference summarizes the recent BlueJS updates to argument resolver conversion support across:
+This reference summarizes the recent ndigo updates to argument resolver conversion support across:
 
-- `@blue/dispatcher`
-- `@blue/platform-web`
+- `@ndigo/dispatcher`
+- `@ndigo/platform-web`
 
 It is intended as a compact upgrade note for framework consumers.
 
@@ -17,7 +17,7 @@ It is intended as a compact upgrade note for framework consumers.
 
 ### 1) Browser resolver expansion
 
-`@blue/platform-web` now includes browser argument resolvers for:
+`@ndigo/platform-web` now includes browser argument resolvers for:
 
 - cookies (`BrowserCookieValueMethodArgumentResolver`)
 - whole-source data binding (`BrowserDataBindingMethodArgumentResolver`)
@@ -27,7 +27,7 @@ It is intended as a compact upgrade note for framework consumers.
 
 ### 2) Converter metadata on route parameters
 
-`@blue/dispatcher` extractor factories now support richer `convert` forms:
+`@ndigo/dispatcher` extractor factories now support richer `convert` forms:
 
 - function converter
 - named converter reference (`'number'`, `'toInt'`, etc.)
@@ -47,7 +47,7 @@ Supported across:
 
 ### 3) Built-in converter presets
 
-`@blue/platform-web` exports `argumentValueConverters`:
+`@ndigo/platform-web` exports `argumentValueConverters`:
 
 - `identity`
 - `number`
@@ -80,13 +80,13 @@ In strict mode, unknown named converters fail fast.
 
 `dataBinderValue(source, Target?)` allows mapping an entire data source (like query parameters or history state) to a nested object structure.
 
-- Supports dot-notation (`user.name`) and bracket-notation (`tags[0]`) via `@blue/core` `DataBinder`.
+- Supports dot-notation (`user.name`) and bracket-notation (`tags[0]`) via `@ndigo/core` `DataBinder`.
 - Supports optional `prefix` filtering.
 - Integrates with the conversion pipeline for post-binding coercion.
 
-### 7) Zod / @blue/validate Integration
+### 7) Zod / @ndigo/validate Integration
 
-`validatedBy(schema, extractor)` allows wrapping any parameter extractor with a Zod schema or `@blue/validate` validator.
+`validatedBy(schema, extractor)` allows wrapping any parameter extractor with a Zod schema or `@ndigo/validate` validator.
 
 - Provides runtime validation and coercion.
 - Enables compile-time type safety for controller methods.

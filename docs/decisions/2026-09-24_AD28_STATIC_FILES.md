@@ -7,7 +7,7 @@
 ## Background
 
 Static serving existed but was transport-poor: `StaticResourceResolver`
-(packages/blue-platform-node/src/static-resource-resolver.ts) did the hard
+(packages/ndigo-platform-node/src/static-resource-resolver.ts) did the hard
 security work — canonical-base containment, MIME allowlist, whole-file
 `Buffer` reads — and `StaticController` served `/static/{file}` with a fixed
 MIME/nosniff header pair. The gap analysis (§3 "Static files") listed six
@@ -121,8 +121,8 @@ conditional requests on POST.
   media seeking works via 206; text assets ship precompressed with correct
   `Vary`; SPA deployments serve client routes; directories are index- or
   listing-controlled, never raw-listed.
-- `@blue/test` was _not_ added as a devDependency of `blue-platform-node`:
-  the nx task graph cycles (`platform-node → blue-test → platform-node`).
+- `@ndigo/test` was _not_ added as a devDependency of `ndigo-platform-node`:
+  the nx task graph cycles (`platform-node → ndigo-test → platform-node`).
   Platform specs use a local response sink instead.
 - `routeValue()`'s dead name-argument form is removed; no-argument
   `routeValue()` binds the Route (D-8).

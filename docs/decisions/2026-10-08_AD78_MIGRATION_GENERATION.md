@@ -1,4 +1,4 @@
-# AD-78: Migration generation + run-on-boot — `blue db generate`, committed schema snapshot, `migrations.runOnBoot`
+# AD-78: Migration generation + run-on-boot — `ndigo db generate`, committed schema snapshot, `migrations.runOnBoot`
 
 **Date:** 2026-10-08
 **Status:** Accepted, executed 2026-10-08 (see the
@@ -13,16 +13,16 @@
 
 The 2026-10-07 review lists GAP-7: **migration generation + run-on-boot** —
 severity medium, status **partial** ("forward-only journaled runner, baseline
-DDL only"); recommended shape "`blue db generate` from entity metadata;
+DDL only"); recommended shape "`ndigo db generate` from entity metadata;
 `migrations.runOnBoot`". Wave 6 is ADR-gated ("GAP-7..15 stay ADR-gated");
 this record is the gate.
 
 What the repository already provides (verified at HEAD, 2026-10-08):
 
 - **The runner is complete; generation is not.** AD-30's `DrizzleMigrator`
-  (`packages/blue-orm-drizzle/src/drizzle-migrator.ts:82-173`) applies a
+  (`packages/ndigo-orm-drizzle/src/drizzle-migrator.ts:82-173`) applies a
   **code-composed** `Migration[]` — `{ version, description, up(ctx) }` — in
-  ascending order, journaled in `_blue_migrations`, forward-only,
+  ascending order, journaled in `_ndigo_migrations`, forward-only,
   idempotent, with `status()` readback. AD-30 D-1 explicitly anticipated
   external authoring: _"Drizzle Kit may author the SQL; the runner
   executes"_ — GAP-7's generator is that author.
@@ -35,15 +35,15 @@ What the repository already provides (verified at HEAD, 2026-10-08):
   `fieldName, columnName, type?, nullable?, schema?` only —
   no defaults, `UNIQUE`, indexes, CHECKs; relation metadata (AD-31) emits
   no DDL; the storage mapping is SQLite-only (`_column-types.ts`).
-- **The CLI seam is sized for this.** AD-75's `blue db migrate`
-  (`packages/blue-cli/src/commands/db/migrate.ts`) runs the _app's own_
+- **The CLI seam is sized for this.** AD-75's `ndigo db migrate`
+  (`packages/ndigo-cli/src/commands/db/migrate.ts`) runs the _app's own_
   `scripts.db:migrate` under the one-shot lifecycle
   (`app-scripts.ts: runAppOnce`) — its docstring names GAP-7's `generate`
   as the CLI-owned extension. AD-75 D-2 promised `db:*` = `new`, `migrate`;
   only `migrate` shipped — the AD-72..75 follow-up review records `db:new` /
   migration generation as the GAP-7 remainder.
 - **No consumer exists.** No app declares `db:migrate` or constructs a
-  migrator. `apps/04-blue-api` — the only Drizzle app — lazy-inits a
+  migrator. `apps/04-ndigo-api` — the only Drizzle app — lazy-inits a
   `:memory:` data source (`drizzle-note-controller.ts:28-35`) and relies on
   `init`'s `IF NOT EXISTS`; there is no ORM auto-configuration bean in the
   platform (the assembly is app-owned by convention).
@@ -73,7 +73,7 @@ gap analyses (Drizzle Kit, Flyway/Liquibase, AdonisJS Lucid — sources in
 Generated migrations are **one file per migration**:
 `db/migrations/<NNNN>-<slug>.ts`, each a module exporting a `Migration`
 (exact AD-30 contract). A new `loadMigrations(dir): Promise<Migration[]>`
-in `@blue/orm-drizzle` skims the directory, imports the modules, and orders
+in `@ndigo/orm-drizzle` skims the directory, imports the modules, and orders
 by the **exported** version through the unchanged `orderedMigrations`
 (filenames are cosmetic; renames break nothing). Code-composed `Migration[]`
 remains fully supported — both forms coexist, versions unique across both.
@@ -87,7 +87,7 @@ concurrent edits.
 
 `db/schema.json` is a **committed, normalized projection** of the entity
 metadata under the D-3 predicate (tables, columns, storage types,
-PK/generated, nullability; format carries `predicate: 1`). `blue db
+PK/generated, nullability; format carries `predicate: 1`). `ndigo db
 generate` → read entities → project → **diff against the committed
 snapshot** → (a) write the next-version migration file emitting the delta
 (first run: a baseline of the `createTableStatements` result), (b) rewrite
@@ -109,7 +109,7 @@ non-SQLite backend ever lands.
 
 ### D-4 — `migrations.runOnBoot` is an explicit, app-owned opt-in
 
-New `@blue/orm-drizzle` export `migrateOnBoot({ dataSource, dir })`:
+New `@ndigo/orm-drizzle` export `migrateOnBoot({ dataSource, dir })`:
 loads pending migrations and runs them through the plain
 `DrizzleMigrator.migrate`, **throwing on failure (fail-closed boot)**.
 The app binds `migrations.{runOnBoot, dir}` through its own
@@ -122,12 +122,12 @@ migrators fail loud on the journal PK).
 
 ### D-5 — CLI surface: `db:new`, `db:generate`, `db:status` beside `db:migrate`
 
-| Command              | Owner                                                           | Seam                                                                   |
-| :------------------- | :-------------------------------------------------------------- | :--------------------------------------------------------------------- |
-| `blue db new <slug>` | CLI-owned (pure file scaffold, no app code)                     | probes `db/migrations` for the next version; writes `<NNNN>-<slug>.ts` |
-| `blue db generate`   | app script `scripts.db:generate` (entities + dir are the app's) | existing `runAppOnce` one-shot lifecycle                               |
-| `blue db status`     | app script `scripts.db:status`                                  | prints `DrizzleMigrator.status()` rows                                 |
-| `blue db migrate`    | unchanged (AD-75)                                               | `scripts.db:migrate`                                                   |
+| Command               | Owner                                                           | Seam                                                                   |
+| :-------------------- | :-------------------------------------------------------------- | :--------------------------------------------------------------------- |
+| `ndigo db new <slug>` | CLI-owned (pure file scaffold, no app code)                     | probes `db/migrations` for the next version; writes `<NNNN>-<slug>.ts` |
+| `ndigo db generate`   | app script `scripts.db:generate` (entities + dir are the app's) | existing `runAppOnce` one-shot lifecycle                               |
+| `ndigo db status`     | app script `scripts.db:status`                                  | prints `DrizzleMigrator.status()` rows                                 |
+| `ndigo db migrate`    | unchanged (AD-75)                                               | `scripts.db:migrate`                                                   |
 
 This closes the AD-75 D-2 surface gap (`db:new`) and the AD-72..75
 follow-up row ("`db:new` / migration generation — GAP-7 remainder").
@@ -144,7 +144,7 @@ re-finding.
 
 - **Drizzle Kit as the generator**: peer-grade snapshot/diff engine, but an
   external tool + new dependency whose model centers on its own schema file,
-  while BlueJS's source of truth is decorator metadata — and there is no
+  while ndigo's source of truth is decorator metadata — and there is no
   dialect target beyond SQLite to justify the codegen seam. Rejected for
   v1; retained as the fallback trigger if multi-dialect arrives (D-3's
   projector is the swap point).
@@ -160,7 +160,7 @@ re-finding.
 ## Consequences
 
 - For the modeled predicate, decorator entities become the single schema
-  source: `blue db generate` emits what `createTableStatements` would have
+  source: `ndigo db generate` emits what `createTableStatements` would have
   created, versioned and reviewable; hand-written SQL migrations remain
   first-class in the same directory (mixed mode).
 - AD-30's runner contract, journal, and semantics are untouched; the loader
@@ -169,7 +169,7 @@ re-finding.
   mechanical); the documented fidelity ceiling (constraints stay authored
   by hand until metadata grows — predicate bump is the explicit decision
   point).
-- `apps/04-blue-api` becomes the reference consumer: `db:migrate` /
+- `apps/04-ndigo-api` becomes the reference consumer: `db:migrate` /
   `db:generate` / `db:status` scripts, a checked-in baseline migration and
   snapshot, and `migrateOnBoot` in the start path.
 
@@ -178,16 +178,16 @@ re-finding.
 Substrate defects the reference cutover surfaced, fixed in the same pass
 (details in the companion plan §7):
 
-- The `db:*` nested-command space form (`blue db migrate`) never resolved —
+- The `db:*` nested-command space form (`ndigo db migrate`) never resolved —
   oclif `topicSeparator` was `:`. Now a space; colon form kept.
 - One-shot CLI commands forwarded only `PATH` to the app script, silently
-  dropping every config knob (`BLUE_DB_URL`, OTel endpoints, secret keys).
+  dropping every config knob (`NDIGO_DB_URL`, OTel endpoints, secret keys).
   The invoking environment now flows through.
 - The reference app's file-backed store needed its parent directory created
   (`ensureDbDir`) — libSQL fails CANTOPEN otherwise.
 - Dotted env names cannot cross package-manager runners (`pnpm` drops
   non-identifier variables), so the config FILE is the documented
-  dotted-key carrier — `apps/04-blue-api/config/application.json` is the
+  dotted-key carrier — `apps/04-ndigo-api/config/application.json` is the
   first real `config/*` fixture (BOOT-5) with an app-local reader (a
   platform default Node reader remains a follow-up).
 

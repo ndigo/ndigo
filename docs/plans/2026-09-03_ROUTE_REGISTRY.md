@@ -1,7 +1,7 @@
 # RouteRegistry — Type-Safe Routes from Decorator Metadata
 
 **Date:** 2026-09-03  
-**Package:** `@blue/router` (new `RouteRegistry` + `RouteDefinition` classes)  
+**Package:** `@ndigo/router` (new `RouteRegistry` + `RouteDefinition` classes)  
 **Status:** Design  
 **Depends on:** Existing `@routeMapping` decorator, `LinearMetadataHandlerMapping`, `PathRoute`, `ApplicationContext`
 
@@ -458,18 +458,18 @@ routes
 
 ### New Code
 
-| File                                                       | Description                                                                                   |
-| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `packages/blue-router/src/route-definition.ts`             | `RouteDefinition<T>` class with `.url()`, `.href()`, `.redirect()`, `.navigate()`, `.parse()` |
-| `packages/blue-router/src/route-registry.ts`               | `RouteRegistry` class — scans bean metadata, builds route tree                                |
-| `packages/blue-router/src/route-registry-configuration.ts` | Auto-configuration `@configuration` that creates and registers the `RouteRegistry`            |
+| File                                                        | Description                                                                                   |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `packages/ndigo-router/src/route-definition.ts`             | `RouteDefinition<T>` class with `.url()`, `.href()`, `.redirect()`, `.navigate()`, `.parse()` |
+| `packages/ndigo-router/src/route-registry.ts`               | `RouteRegistry` class — scans bean metadata, builds route tree                                |
+| `packages/ndigo-router/src/route-registry-configuration.ts` | Auto-configuration `@configuration` that creates and registers the `RouteRegistry`            |
 
 ### Modified Code
 
-| File                                            | Change                                                                 |
-| ----------------------------------------------- | ---------------------------------------------------------------------- |
-| `packages/blue-router/src/index.ts`             | Export `RouteDefinition`, `RouteRegistry`                              |
-| `packages/blue-dispatcher/src/route-mapping.ts` | Accept optional `name` in `RouteMappingConfiguration` for key override |
+| File                                             | Change                                                                 |
+| ------------------------------------------------ | ---------------------------------------------------------------------- |
+| `packages/ndigo-router/src/index.ts`             | Export `RouteDefinition`, `RouteRegistry`                              |
+| `packages/ndigo-dispatcher/src/route-mapping.ts` | Accept optional `name` in `RouteMappingConfiguration` for key override |
 
 |
 

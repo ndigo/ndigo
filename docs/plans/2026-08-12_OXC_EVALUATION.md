@@ -1,19 +1,19 @@
-# OXC Evaluation and Migration Plan for BlueJS Monorepo
+# OXC Evaluation and Migration Plan for ndigo Monorepo
 
 ## Executive Summary
 
-This document evaluates the adoption of OXC (Open eXtension Compiler) in the BlueJS monorepo, analyzing its potential to replace existing tooling including TypeScript compiler (`tsc`), ESLint, and Prettier. OXC offers significant performance improvements with `oxlint` being 50-100x faster than ESLint and `oxc-transform` providing 4x faster transpilation than SWC. However, critical compatibility issues exist: TC39 decorators (used extensively in BlueJS), lack of TypeScript project references support, and alpha status of JS plugins for custom rules. The recommended migration path involves phased adoption starting with oxlint alongside ESLint, followed by formatter evaluation, and conditional transformer adoption after resolving decorator support.
+This document evaluates the adoption of OXC (Open eXtension Compiler) in the ndigo monorepo, analyzing its potential to replace existing tooling including TypeScript compiler (`tsc`), ESLint, and Prettier. OXC offers significant performance improvements with `oxlint` being 50-100x faster than ESLint and `oxc-transform` providing 4x faster transpilation than SWC. However, critical compatibility issues exist: TC39 decorators (used extensively in ndigo), lack of TypeScript project references support, and alpha status of JS plugins for custom rules. The recommended migration path involves phased adoption starting with oxlint alongside ESLint, followed by formatter evaluation, and conditional transformer adoption after resolving decorator support.
 
 ## Current Tooling Audit
 
-BlueJS currently uses a robust toolchain built around:
+ndigo currently uses a robust toolchain built around:
 
 - **TypeScript 6.0.3** (`tsc -b`) for building 28 packages with project references
 - **ESLint 9.17.0** + **@typescript-eslint 8.18.2** for linting
 - **Prettier 3.4.2** for formatting
 - **Nx 21.0.0** for monorepo orchestration
 - **Vitest 3.0.0** for testing
-- **Custom ESLint plugin** (`@blue/eslint-plugin`) with 4 rules:
+- **Custom ESLint plugin** (`@ndigo/eslint-plugin`) with 4 rules:
     - `no-direct-integration-imports` - blocks direct imports from encapsulated libs
     - `no-internal-file-imports` - blocks cross-package imports of underscore files
     - `no-internal-file-exports` - blocks re-exporting internal files in public API
@@ -53,7 +53,7 @@ BlueJS currently uses a robust toolchain built around:
 ### What Cannot Migrate
 
 - **TC39 decorators** - No support in oxc-transform
-- **TypeScript project references** - Required for BlueJS's 28-package build
+- **TypeScript project references** - Required for ndigo's 28-package build
 - **Custom ESLint plugin rules** - JS plugins are alpha quality
 
 ### What's Risky
@@ -79,12 +79,12 @@ BlueJS currently uses a robust toolchain built around:
 1. Install oxlint alongside ESLint
 2. Run `@oxlint/migrate` to generate `.oxlintrc.json`
 3. Identify rule gaps and mismatches
-4. Verify native rules coverage for BlueJS ruleset
+4. Verify native rules coverage for ndigo ruleset
 
 ### Wave 1: Linter Migration (Medium Risk)
 
 1. Replace ESLint with oxlint in CI and local `pnpm lint`
-2. Migrate `@blue/eslint-plugin` to oxlint JS Plugins (alpha)
+2. Migrate `@ndigo/eslint-plugin` to oxlint JS Plugins (alpha)
 3. Test all 4 custom rules work correctly
 4. Remove ESLint dependencies
 

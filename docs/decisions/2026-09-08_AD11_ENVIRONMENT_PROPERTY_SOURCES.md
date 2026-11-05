@@ -5,7 +5,7 @@
 
 ## Background
 
-BlueJS's `Environment` (blue-context) models the reference environment: profiles +
+ndigo's `Environment` (ndigo-context) models the reference environment: profiles +
 `PropertyResolver` over an ordered list of `JSONObject` property sources. The
 current shape is a thin port:
 
@@ -22,7 +22,7 @@ current shape is a thin port:
 
 The reference semantics are the target, but its implementation (iterate a source
 list, two virtual calls per source, per lookup) is a Java-shaped structure.
-BlueJS reads configuration per-request/per-render, so allocation count and
+ndigo reads configuration per-request/per-render, so allocation count and
 lookup cost matter. Phase 0 ports _semantics_ with JavaScript-native
 structures; a research pass (documents in the plan §3) compared object
 property access vs `Map` vs radix/ART vs QP-trie vs HAMT vs codegen accessors
@@ -102,7 +102,7 @@ directly (grep-verified), so blast radius is zero; the contract is set before
 (`unsafe-eval`), static scanners, and bundle audits outweigh projected
 speedups at this workload. Any future eval-family candidate ships only with:
 measured evidence of persistent poor performance, an explicit opt-in, a
-security review, and never in `blue-platform-web`.
+security review, and never in `ndigo-platform-web`.
 
 **Compatibility (Q1/Q3):** the old `propertySources: JSONObject[]` get/set is
 kept **indefinitely** as a deprecated alias — setter = replace-all (registry
@@ -113,7 +113,7 @@ callers migrate to the registry (boot `addLast`; `merge` composes registries;
 
 ## Consequences
 
-- New modules in `@blue/context`: `property-source.ts`, `property-sources.ts`;
+- New modules in `@ndigo/context`: `property-source.ts`, `property-sources.ts`;
   `property-resolver.ts` refactored onto the strategy interface; `environment.ts`
   wires the registry; `node-environment.ts` gains `systemEnvironment` (named)
     - `refresh()`; boot's `_configurePropertySources` migrates to `addLast`.

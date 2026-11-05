@@ -1,4 +1,4 @@
-# AD-82: Feature flags — `@blue/flags` (FlagEvaluator SPI + `@whenFeature` gate)
+# AD-82: Feature flags — `@ndigo/flags` (FlagEvaluator SPI + `@whenFeature` gate)
 
 **Date:** 2026-10-10
 **Status:** Accepted
@@ -19,7 +19,7 @@ What the repository already provides, and what is missing:
 
 - **Registration-time conditions exist.** `@whenProperty` /
   `@whenProfile` / `@whenBrowser` / `@whenMissingEntry`
-  (`packages/blue-core/src/conditional.ts`) gate whether a configuration
+  (`packages/ndigo-core/src/conditional.ts`) gate whether a configuration
   class registers, evaluated once at boot by `isActive(target, ctx)`;
   `@whenProfile` carries the expression grammar. This is the
   `@ConditionalOnProperty` layer — static, boot-time, no runtime
@@ -31,9 +31,9 @@ What the repository already provides, and what is missing:
   config keys today are just app properties bound by user classes.
 - **The `@scheduled` decorator pattern is the template for a gate.**
   Decoration-time validation → `Symbol.metadata` key (`schedule:<method>`)
-  → registry discovery → enforcement (`packages/blue-scheduler/src/scheduled.ts`).
+  → registry discovery → enforcement (`packages/ndigo-scheduler/src/scheduled.ts`).
   `@rateLimit` follows the same shape with default-on interceptor
-  enforcement in `@blue/platform-node` (`rate-limit-interceptor.ts`).
+  enforcement in `@ndigo/platform-node` (`rate-limit-interceptor.ts`).
 - **Per-request enforcement has a verified seam.** `RadixMetadataHandlerMapping`
   runs a `RouteHandlerInterceptor` chain (`mapping.interceptors`), and
   `RateLimitInterceptor` is the reference: async `preHandle`, metadata gate,
@@ -42,7 +42,7 @@ What the repository already provides, and what is missing:
 - **Beans reach the environment.** `AsApplicationContextAware(Null)` +
   `this.applicationContext?.environment` is the established pattern
   (`ManagementAutoConfiguration`, the `/env` and `/health` controllers in
-  `@blue/management`); the `CONFIG_REFRESH_EVENT` (`environment.ts:25`)
+  `@ndigo/management`); the `CONFIG_REFRESH_EVENT` (`environment.ts:25`)
   already notifies refresh-scope rebinding on config changes (AD-29).
 
 ## Industry evidence (2026-10 research)
@@ -80,15 +80,15 @@ What the repository already provides, and what is missing:
 
 ## Decision
 
-### D-1 — One contract package: `@blue/flags` (new, layer 2, isomorphic)
+### D-1 — One contract package: `@ndigo/flags` (new, layer 2, isomorphic)
 
-`@blue/flags` owns the flag **contract** — the `FlagEvaluator` SPI, the
+`@ndigo/flags` owns the flag **contract** — the `FlagEvaluator` SPI, the
 flag-value/reason/error typing, the graph metadata decorator, and the local
-reference provider. It is a leaf package (depends only on `@blue/factory`
-for the `ContextToken`, mirroring `@blue/rate-limit`), so the tooling and
+reference provider. It is a leaf package (depends only on `@ndigo/factory`
+for the `ContextToken`, mirroring `@ndigo/rate-limit`), so the tooling and
 browser tiers can consume the contract without pulling a platform. Backends
 are adapters owned by the packages that own their clients (future
-`@blue/redis/flags`; vendor providers are third-party OpenFeature providers).
+`@ndigo/redis/flags`; vendor providers are third-party OpenFeature providers).
 
 ### D-2 — `FlagEvaluator` SPI: typed, async, never-throw
 
@@ -135,7 +135,7 @@ interface FlagEvaluator {
   both.
 - **`kind`** identifies the backend for log/troubleshooting, matching the
   `RateLimiter.kind` / `LockDriver.kind` convention.
-- **`FLAG_EVALUATOR` ContextToken** (`@blue/factory`) for bean wiring.
+- **`FLAG_EVALUATOR` ContextToken** (`@ndigo/factory`) for bean wiring.
 
 ### D-3 — `PropertyFlagProvider`: the zero-config local provider
 
@@ -188,13 +188,13 @@ class TodoService {
 - Writes `Symbol.metadata` under `flags:whenFeature:<method>`
   (class-level under `flags:whenFeature`) — passive metadata, exactly the
   `@scheduled` / `@rateLimit` pattern.
-- **Enforcement is the `FeatureGateInterceptor`** in `@blue/platform-node`
+- **Enforcement is the `FeatureGateInterceptor`** in `@ndigo/platform-node`
   (default-on in the node mapping, like `RateLimitInterceptor`): per
   request, when the handler method carries the metadata, evaluate the flag
   via the `FLAG_EVALUATOR` bean; when the flag is off → **404 problem
   document** (`ProblemTypes.notFound`, the repository's `DisabledFeaturesHandler`
   analog — Azure's default). Un-gated routes are untouched.
-- `@blue/flags` stays isomorphic: the decorator/metadata/SPI carry no
+- `@ndigo/flags` stays isomorphic: the decorator/metadata/SPI carry no
   platform dependency; the interceptor (node-only) lives beside the other
   platform interceptors.
 
@@ -234,7 +234,7 @@ unmade (the SPI is the seam).
   conformance is still rolling (v0.9.0 compliance tracking across SDKs).
   The SPI keeps us SDK-free; the bridge provider is additive later.
 - **Method-scope gate for service beans** — deferred: automatic weaving of
-  non-route methods is AD-42's `@blue/proxy` interception territory, and no
+  non-route methods is AD-42's `@ndigo/proxy` interception territory, and no
   1.0 consumer needs it. Route-level gates + programmatic
   `evaluator.evaluate()` cover the documented patterns; service-method
   gating composes as an explicit check or an interceptor when a consumer
@@ -263,12 +263,12 @@ unmade (the SPI is the seam).
 - `docs/plans/2026-10-07_CODE_REVIEW_AND_MITIGATION.md` §6 GAP-11 row.
 - OpenFeature spec §1.3-1.4 (flag evaluation, details, never-throw),
   §2 (providers), §3 (evaluation context); openfeature.dev ecosystem.
-- `packages/blue-core/src/conditional.ts` (`@whenProperty` family).
-- `packages/blue-platform-node/src/rate-limit-interceptor.ts`
+- `packages/ndigo-core/src/conditional.ts` (`@whenProperty` family).
+- `packages/ndigo-platform-node/src/rate-limit-interceptor.ts`
   (interceptor pattern + `denialOf` + problem documents).
-- `packages/blue-scheduler/src/scheduled.ts` (metadata decorator pattern).
-- `packages/blue-management/src/management-auto-configuration.ts`
+- `packages/ndigo-scheduler/src/scheduled.ts` (metadata decorator pattern).
+- `packages/ndigo-management/src/management-auto-configuration.ts`
   (`AsApplicationContextAware` pattern).
-- `packages/blue-rate-limit` (leaf SPI package layout, AD-79).
+- `packages/ndigo-rate-limit` (leaf SPI package layout, AD-79).
 - AD-29 (config refresh), AD-39 (async by default), AD-42 (method
   interception — deferred scope note), AD-40 (memory-first doctrine).

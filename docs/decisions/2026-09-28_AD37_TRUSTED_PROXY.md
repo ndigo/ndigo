@@ -42,7 +42,7 @@ belongs to it.
 
 `trustedProxies` (IP literal or CIDR prefix, IPv4/IPv6) on
 `NodeHTTPServerAdapterOptions` / `HTTPServerOptions`, plus the
-`BLUE_TRUSTED_PROXIES` env var (comma-separated) for deploy-time config.
+`NDIGO_TRUSTED_PROXIES` env var (comma-separated) for deploy-time config.
 Empty default: the socket address stands and the header is never read.
 
 Deliberate deviation from Rails, whose default trusts private ranges
@@ -84,7 +84,7 @@ documented extension path: the same walk over `for=` node identifiers
 §6), when a real deployment needs it. `X-Forwarded-Proto`/`-Host`
 rewriting remains out of scope (see the SECURITY_HEADERS plan notes).
 
-### D-4 — Header read through `@blue/http`'s headers module
+### D-4 — Header read through `@ndigo/http`'s headers module
 
 Resolution uses the repo's own headers module (`HTTPHeader` /
 `X_FORWARDED_FOR.getJoined`), which joins repeated header lines into one
@@ -94,7 +94,7 @@ chain — MDN's required parsing rule; Node surfaces repeated lines as
 
 ### D-5 — Type: `TrustedProxySet implements Matchable<string>`
 
-The set implements `@blue/core`'s `Matchable<TValue>` (`matches(value):
+The set implements `@ndigo/core`'s `Matchable<TValue>` (`matches(value):
 boolean`) — the value-matching half of the core matcher family. It does
 **not** implement `PatternMatcher` / `PathMatcher` / `URLMatcher`: those
 match a caller-supplied pattern against a value, while the set _owns_ its
@@ -121,7 +121,7 @@ normalize — Node reports dual-stack IPv4 peers in mapped form.
 - **Fail-closed**: unknowns (no config, untrusted peer, empty chain,
   all-trusted chain, malformed entries) never fabricate an address — the
   peer stands.
-- **Operational**: `BLUE_TRUSTED_PROXIES` lets DevOps configure the trust
+- **Operational**: `NDIGO_TRUSTED_PROXIES` lets DevOps configure the trust
   boundary without app code changes; the option wins over the env when an
   app pins its own topology.
 

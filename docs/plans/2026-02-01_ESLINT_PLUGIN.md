@@ -3,12 +3,12 @@
 **Date:** February 1, 2026  
 **Status:** ✅ Implemented  
 **Priority:** Medium  
-**Package:** `@blue/eslint-plugin`  
+**Package:** `@ndigo/eslint-plugin`  
 **Implemented:** March 29, 2026
 
 ## Overview
 
-This document outlines the plan for creating a custom ESLint plugin to enforce architectural rules in the BlueJS monorepo that cannot be enforced through TypeScript, package.json, or standard ESLint rules.
+This document outlines the plan for creating a custom ESLint plugin to enforce architectural rules in the ndigo monorepo that cannot be enforced through TypeScript, package.json, or standard ESLint rules.
 
 ### Purpose
 
@@ -45,16 +45,16 @@ Provide automated enforcement of architectural constraints to prevent common vio
 
 ```typescript
 // ❌ INCORRECT: Direct import bypasses integration layer
-import * as R from 'ramda'; // Should use @blue/util
-import { format } from 'date-fns'; // Should use @blue/util
-import { choice } from 'arcsecond'; // Should use @blue/parser
-import { Model } from 'objectmodel'; // Should use @blue/model
+import * as R from 'ramda'; // Should use @ndigo/util
+import { format } from 'date-fns'; // Should use @ndigo/util
+import { choice } from 'arcsecond'; // Should use @ndigo/parser
+import { Model } from 'objectmodel'; // Should use @ndigo/model
 
 // ✅ CORRECT: Import through integration layer
-import * as R from '@blue/util';
-import { format } from '@blue/util';
-import { choice } from '@blue/parser';
-import { Model } from '@blue/model';
+import * as R from '@ndigo/util';
+import { format } from '@ndigo/util';
+import { choice } from '@ndigo/parser';
+import { Model } from '@ndigo/model';
 ```
 
 **Rule Name:** `no-direct-integration-imports`
@@ -64,13 +64,13 @@ import { Model } from '@blue/model';
 ```typescript
 {
   encapsulatedLibraries: {
-    'ramda': '@blue/util',
-    'date-fns': '@blue/util',
-    'date-fns-tz': '@blue/util',
-    'seedrandom': '@blue/util',
-    'slug': '@blue/util',
-    'arcsecond': '@blue/parser',
-    'objectmodel': '@blue/model'
+    'ramda': '@ndigo/util',
+    'date-fns': '@ndigo/util',
+    'date-fns-tz': '@ndigo/util',
+    'seedrandom': '@ndigo/util',
+    'slug': '@ndigo/util',
+    'arcsecond': '@ndigo/parser',
+    'objectmodel': '@ndigo/model'
   },
   allowInTests: true,  // Allow direct imports in *.spec.ts, *.test.ts
   allowInIntegrationLayers: true  // Skip check in the integration layer packages themselves
@@ -95,16 +95,16 @@ import { Model } from '@blue/model';
 
 ```typescript
 // ❌ INCORRECT: Importing internal file from another package
-// In @blue/core/src/container.ts
-import { isNotNil } from '@blue/util/_util'; // Internal file!
-import { parseQuery } from '@blue/parser/src/_util'; // Internal file!
+// In @ndigo/core/src/container.ts
+import { isNotNil } from '@ndigo/util/_util'; // Internal file!
+import { parseQuery } from '@ndigo/parser/src/_util'; // Internal file!
 
 // ❌ INCORRECT: Relative import across package boundary
-import { helper } from '../../blue-util/src/_util';
+import { helper } from '../../ndigo-util/src/_util';
 
 // ✅ CORRECT: Import from public API only
-import { isNotNil } from '@blue/util';
-import { parseQuery } from '@blue/parser';
+import { isNotNil } from '@ndigo/util';
+import { parseQuery } from '@ndigo/parser';
 ```
 
 **Rule Name:** `no-internal-file-imports`
@@ -113,10 +113,10 @@ import { parseQuery } from '@blue/parser';
 
 ```regex
 # Import specifier ends with /_something
-@blue/[^/]+/_[^/]+
+@ndigo/[^/]+/_[^/]+
 
 # Or contains /src/_ anywhere
-@blue/[^/]+/src/_[^/]+
+@ndigo/[^/]+/src/_[^/]+
 
 # Or relative path contains /_
 \.\./.*/_[^/]+
@@ -149,7 +149,7 @@ import { parseQuery } from '@blue/parser';
 **Violations to Prevent:**
 
 ```typescript
-// ❌ INCORRECT: In packages/blue-util/src/index.ts
+// ❌ INCORRECT: In packages/ndigo-util/src/index.ts
 export * from './_util';
 export { helper } from './_util';
 export type { Config } from './_config';
@@ -196,7 +196,7 @@ export { Deferred } from './deferred';
 ### Package Structure
 
 ```
-packages/blue-eslint-plugin/
+packages/ndigo-eslint-plugin/
 ├── package.json
 ├── tsconfig.json
 ├── src/
@@ -225,7 +225,7 @@ packages/blue-eslint-plugin/
 import { ESLintUtils } from '@typescript-eslint/utils';
 
 const createRule = ESLintUtils.RuleCreator(
-    (name) => `https://github.com/bluelibs/blue/blob/main/docs/eslint-rules/${name}.md`
+    (name) => `https://github.com/ndigo/ndigo/blob/main/docs/eslint-rules/${name}.md`
 );
 
 export const exampleRule = createRule({
@@ -286,11 +286,11 @@ export = {
 ```typescript
 // src/configs/recommended.ts
 export default {
-    plugins: ['@blue'],
+    plugins: ['@ndigo'],
     rules: {
-        '@blue/no-direct-integration-imports': 'error',
-        '@blue/no-internal-file-imports': 'error',
-        '@blue/no-internal-file-exports': 'error',
+        '@ndigo/no-direct-integration-imports': 'error',
+        '@ndigo/no-internal-file-imports': 'error',
+        '@ndigo/no-internal-file-exports': 'error',
     },
 };
 ```
@@ -305,8 +305,8 @@ export default {
 
 ```bash
 cd packages
-mkdir blue-eslint-plugin
-cd blue-eslint-plugin
+mkdir ndigo-eslint-plugin
+cd ndigo-eslint-plugin
 pnpm init
 ```
 
@@ -314,9 +314,9 @@ pnpm init
 
 ```json
 {
-    "name": "@blue/eslint-plugin",
+    "name": "@ndigo/eslint-plugin",
     "version": "0.1.0",
-    "description": "Custom ESLint rules for BlueJS architectural enforcement",
+    "description": "Custom ESLint rules for ndigo architectural enforcement",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
     "files": ["lib"],
@@ -405,7 +405,7 @@ mkdir -p test/rules
 
 - ✅ Valid: Internal file import within same package
 - ✅ Valid: Public API import from another package
-- ❌ Invalid: Internal file import via `@blue/pkg/_util`
+- ❌ Invalid: Internal file import via `@ndigo/pkg/_util`
 - ❌ Invalid: Internal file import via relative path
 - ❌ Invalid: Internal file import in test file
 
@@ -438,18 +438,18 @@ mkdir -p test/rules
 **File:** `eslint.config.mjs`
 
 ```javascript
-import bluePlugin from '@blue/eslint-plugin';
+import ndigoPlugin from '@ndigo/eslint-plugin';
 
 export default [
     // ... existing config
     {
         plugins: {
-            '@blue': bluePlugin,
+            '@ndigo': ndigoPlugin,
         },
         rules: {
-            '@blue/no-direct-integration-imports': 'error',
-            '@blue/no-internal-file-imports': 'error',
-            '@blue/no-internal-file-exports': 'error',
+            '@ndigo/no-direct-integration-imports': 'error',
+            '@ndigo/no-internal-file-imports': 'error',
+            '@ndigo/no-internal-file-exports': 'error',
         },
     },
 ];
@@ -565,7 +565,7 @@ done
 
 **4.3: Update Plugin README**
 
-**File:** `packages/blue-eslint-plugin/README.md`
+**File:** `packages/ndigo-eslint-plugin/README.md`
 
 Include:
 
@@ -603,28 +603,28 @@ const ruleTester = new RuleTester({
 ruleTester.run('no-direct-integration-imports', noDirectIntegrationImports, {
     valid: [
         {
-            code: "import * as R from '@blue/util';",
-            filename: 'packages/blue-core/src/container.ts',
+            code: "import * as R from '@ndigo/util';",
+            filename: 'packages/ndigo-core/src/container.ts',
         },
         {
             code: "import * as R from 'ramda';",
-            filename: 'packages/blue-util/src/index.ts', // Integration layer
+            filename: 'packages/ndigo-util/src/index.ts', // Integration layer
         },
         {
             code: "import * as R from 'ramda';",
-            filename: 'packages/blue-core/test/container.spec.ts', // Test file
+            filename: 'packages/ndigo-core/test/container.spec.ts', // Test file
         },
     ],
     invalid: [
         {
             code: "import * as R from 'ramda';",
-            filename: 'packages/blue-core/src/container.ts',
+            filename: 'packages/ndigo-core/src/container.ts',
             errors: [
                 {
                     messageId: 'directImport',
                     data: {
                         library: 'ramda',
-                        integrationLayer: '@blue/util',
+                        integrationLayer: '@ndigo/util',
                     },
                 },
             ],
@@ -833,16 +833,16 @@ The plugin was implemented with the following deviations from the original plan:
 ### Structural Simplifications
 
 - No `src/configs/` or `src/utils/` directories — the recommended config is inlined in `src/index.ts`, and package detection logic is embedded directly in each rule (simple path pattern matching).
-- Constants (integration layer mapping) are in `src/_constants.ts` (internal file, following BlueJS conventions).
+- Constants (integration layer mapping) are in `src/_constants.ts` (internal file, following ndigo conventions).
 - Test setup uses a `test/_setup.ts` bridge to integrate `@typescript-eslint/rule-tester` with Vitest.
 
 ### Rule Design Decisions
 
-1. **`no-direct-integration-imports` (warn):** Set to `warn` (not `error`) to allow gradual adoption per the plan's rollout recommendation. Detects integration layer packages by filepath pattern (`packages/blue-util/`, `packages/blue-parser/`, `packages/blue-model/`). Test files (`.spec.ts`, `.test.ts`) are exempt.
+1. **`no-direct-integration-imports` (warn):** Set to `warn` (not `error`) to allow gradual adoption per the plan's rollout recommendation. Detects integration layer packages by filepath pattern (`packages/ndigo-util/`, `packages/ndigo-parser/`, `packages/ndigo-model/`). Test files (`.spec.ts`, `.test.ts`) are exempt.
 
-2. **`no-internal-file-imports` (error):** Detects `@blue/<pkg>/_*` patterns in import specifiers. Only flags cross-package imports — same-package relative `_*.ts` imports are allowed.
+2. **`no-internal-file-imports` (error):** Detects `@ndigo/<pkg>/_*` patterns in import specifiers. Only flags cross-package imports — same-package relative `_*.ts` imports are allowed.
 
-3. **`no-internal-file-exports` (error):** **Key deviation from plan** — The original plan flagged ALL exports from internal files (including named re-exports like `export { foo } from './_util'`). During integration testing, this produced a false positive on `@blue/parser/src/index.ts`, which legitimately uses `export { anyChar, choice, ... } from './_parser.js'` as a controlled integration layer re-export. The rule was **narrowed to only flag `export * from './_*'`** (barrel re-exports), since named re-exports are deliberate and controlled.
+3. **`no-internal-file-exports` (error):** **Key deviation from plan** — The original plan flagged ALL exports from internal files (including named re-exports like `export { foo } from './_util'`). During integration testing, this produced a false positive on `@ndigo/parser/src/index.ts`, which legitimately uses `export { anyChar, choice, ... } from './_parser.js'` as a controlled integration layer re-export. The rule was **narrowed to only flag `export * from './_*'`** (barrel re-exports), since named re-exports are deliberate and controlled.
 
 ### ESM Import Resolution
 
@@ -850,4 +850,4 @@ All relative imports in TypeScript source files use `.js` extensions (e.g., `imp
 
 ### Workspace Integration
 
-The plugin is imported in `eslint.config.mjs` via relative path (`./packages/blue-eslint-plugin/lib/index.js`) rather than package name, because pnpm workspaces don't hoist `@blue/*` packages to the root `node_modules/`.
+The plugin is imported in `eslint.config.mjs` via relative path (`./packages/ndigo-eslint-plugin/lib/index.js`) rather than package name, because pnpm workspaces don't hoist `@ndigo/*` packages to the root `node_modules/`.

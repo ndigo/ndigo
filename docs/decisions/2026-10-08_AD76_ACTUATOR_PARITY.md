@@ -23,7 +23,7 @@ What the repository already provides:
   `checkAll()` with concurrent probes, aggregation rules, error redaction
   AD-36) feeds a `{status, components, timestamp}` document at `/health`
   (503-on-DOWN). No way to select a subset (groups/components) exists.
-- **Loggers substrate is 90% there.** `@blue/log` (AD-67) resolves loggers
+- **Loggers substrate is 90% there.** `@ndigo/log` (AD-67) resolves loggers
   lazily from global settings + a revision counter; `ConfigurableLogger`
   already carries a **handle-local** `#thresholdOverride`
   (`logger-factory.ts:101-128`) — the per-name machinery is missing only the
@@ -32,7 +32,7 @@ What the repository already provides:
 - **Configuration introspection exists and is value-free.** Boot 5's
   `declaredConfigurationProperties(ctor)` returns declared keys + conversion
   types (schema-mode types included, REU-12), never values — the exact
-  contract `@blue/inspect` (AD-70) codified as "values are never read".
+  contract `@ndigo/inspect` (AD-70) codified as "values are never read".
 - **Environment enumeration exists.** `MutablePropertySources.entries()`
   yields name/source pairs in precedence order; `FlatMergedIndex.originOf`
   reports winning origins at top-level granularity.
@@ -43,7 +43,7 @@ What the repository already provides:
   auto-configuration registers the route at construction with per-instance
   paths", `openapi-docs-controller.ts`).
 - **Config wiring was explicitly NOT wired.** The schema `management` section
-  is annotated `x-blue-read-from-config: false` (HI-5): every exposed key is a
+  is annotated `x-ndigo-read-from-config: false` (HI-5): every exposed key is a
   constructor option of `ManagementAutoConfiguration`; no reader consumes a
   `management.*` property.
 
@@ -57,11 +57,11 @@ What the repository already provides:
   (`******`), `show-values` = never/always/when-authorized; health groups
   aggregate configured component subsets; `/loggers` supports GET (index and
   per-name) and POST (`{"configuredLevel": …}`, `{}` clears).
-- Blue's own posture: management endpoints are **open by default** with the
+- Ndigo's own posture: management endpoints are **open by default** with the
   accessGuard + boundary-firewall documented pattern (AD-36); the inspect
   contract says values are never read; SEC-A forbids decrypted plaintext on
   the wire (`bindings` redaction); `REDACTED_VALUE` exists in
-  `@blue/context/src/redaction.ts`.
+  `@ndigo/context/src/redaction.ts`.
 - Route gating ship-shape: `AbstractHandlerMethodMapping.init()` detection
   scans **context values** for route metadata, so a controller that is a
   context bean with decorator routes cannot be gated per-endpoint — the
@@ -75,7 +75,7 @@ No `/actuator` prefix migration (existing `127.0.0.1:port/health` deployments
 keep working; a prefix is a documented future knob). The control surface is an
 exposure model: `management.endpoints.exposure.include` / `.exclude`
 (`management.endpoints.web.exposure.include` names, minus `web` —
-blue serves only HTTP). Endpoint ids: `health`, `metrics`, `loggers`, `env`,
+ndigo serves only HTTP). Endpoint ids: `health`, `metrics`, `loggers`, `env`,
 `configprops`; `*` = all; `exclude` wins.
 
 ### D-2 — Default exposure `["health","metrics"]`; new endpoints opt-in
@@ -95,7 +95,7 @@ returns each source's flattened dotted keys with origins; values are
 `"<redacted>"` unless `management.endpoints.env.showValues: true`, and even
 then only the **stored config text** is emitted — decrypted plaintext never
 reaches the wire (SEC-A). The actuator `show-values` page shows the same choice;
-blue collapses `always`/`when-authorized` into one boolean because the
+ndigo collapses `always`/`when-authorized` into one boolean because the
 endpoint-level guard is a single `accessGuard` (no role ladder, D-4).
 
 ### D-4 — One access model: the existing `accessGuard`, widened to the exposed set
@@ -107,19 +107,19 @@ surface (disabled endpoints are not registered and cannot be requested).
 
 ### D-5 — `management.*` becomes a real read namespace
 
-New `ManagementProperties` (living in `@blue/management`) reads the
+New `ManagementProperties` (living in `@ndigo/management`) reads the
 `management` subtree from the environment's property sources (deep-merged in
 precedence order, validated by a zod schema with the file-model defaults) and
 exposes `endpoints.exposure.include/exclude`, `endpoints.env.showValues`,
 and `health.groups.<name>.include`. The schema `management` section flips
-from `x-blue-read-from-config: false` to a cited read path (the HI-5
+from `x-ndigo-read-from-config: false` to a cited read path (the HI-5
 reachability spec gains the keys); leftover constructor options
 (`redactHealthErrors`, `accessGuard`, `configurationClasses`) keep the
 annotation. Programmatic `ManagementAutoConfigurationOptions.exposure`
 takes precedence over the read values (code intent wins over files).
 _Amendment (2026-10-08, implementation): no `@configurationProperties`
-decorator — the decorator lives in `@blue/boot`, and no package depends on
-boot at runtime (REU-9 removed it from `@blue/inspect`'s closure). The
+decorator — the decorator lives in `@ndigo/boot`, and no package depends on
+boot at runtime (REU-9 removed it from `@ndigo/inspect`'s closure). The
 reader walks the merged `management` subtree directly, which is the same
 config-file convention every other key follows._
 
@@ -129,10 +129,10 @@ config-file convention every other key follows._
 serves a group aggregate (same aggregation rules as `/health`, restricted to
 the members actually registered) when the name matches a group, else the
 single component as a **one-component aggregate document** — every
-`/health/:name` answer keeps blue's `{status, components, timestamp}`
+`/health/:name` answer keeps ndigo's `{status, components, timestamp}`
 document shape (an actuator `{status, details}`-shaped response would need a
 second serialization contract for the same status rules); unknown → 404. A
-group shadows a same-named component, and `details` stay as today (blue
+group shadows a same-named component, and `details` stay as today (ndigo
 always shows health details; the actuator `show-details` default is a deliberate
 divergence, documented in guide 26).
 
@@ -158,7 +158,7 @@ are context-aware beans with **no** `@requestMapping`/`@getMapping` metadata;
 explicitly (`RouteMappingInfo` + `HTTPMethodCondition`), gated by exposure —
 the AD-35 openapi pattern. Health/metrics stay decorator-driven and
 detection-registered (always exposed). `configurationClasses` (the explicit
-app list `/configprops` enumerates, mirroring `@blue/inspect`) is a
+app list `/configprops` enumerates, mirroring `@ndigo/inspect`) is a
 constructor option: D-3 has no other registry of bound classes to scan.
 
 ## Consequences
@@ -166,9 +166,9 @@ constructor option: D-3 has no other registry of bound classes to scan.
 - Default installs serve exactly what they serve today; enabling the new
   endpoints is a config-file key (`management.endpoints.exposure.include`)
   or a constructor option.
-- `@blue/management` gains the loggers/environment/configprops surface, a new
+- `@ndigo/management` gains the loggers/environment/configprops surface, a new
   `management.*` config namespace (schema + reachability spec updated), and a
-  first-class guide 26; `@blue/log` gains the per-name registry (leaf package,
+  first-class guide 26; `@ndigo/log` gains the per-name registry (leaf package,
   no new dependencies); the HI-5 "read or annotated" invariant is preserved.
 - `/env` and `/configprops` reveal configuration structure to anyone who can
   reach the endpoints — exposure default-off plus the documented accessGuard
@@ -189,5 +189,5 @@ constructor option: D-3 has no other registry of bound classes to scan.
   (health redaction + bind posture), [AD-35](2026-09-28_AD35_OPENAPI_DOCS.md)
   (metadata-free gated controllers), [AD-70](2026-10-06_AD70_EDITOR_TOOLING_INTROSPECTION_FIRST.md)
   (introspection-first tooling — the value-free contract), [AD-67](2026-10-06_AD67_LOG_LEAF_PACKAGE.md)
-  (`@blue/log` leaf), [AD-29](2026-09-25_AD29_CONFIGURATION_REFRESH_SECRETS_CONFIG_SERVER.md)
+  (`@ndigo/log` leaf), [AD-29](2026-09-25_AD29_CONFIGURATION_REFRESH_SECRETS_CONFIG_SERVER.md)
   (config file conventions), GAP-5 (metrics parity)

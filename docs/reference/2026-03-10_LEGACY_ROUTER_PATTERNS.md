@@ -1,8 +1,8 @@
-# Legacy Router Patterns (BlueJS)
+# Legacy Router Patterns (ndigo)
 
 > **⚠️ ARCHIVED** — patterns recorded from the removed legacy AMD router
 > (`old-router.legacy.js`), kept for history. The living routing surface is
-> `@blue/router` ([AD-61](../decisions/2026-09-03_AD61_ROUTE_REGISTRY.md)).
+> `@ndigo/router` ([AD-61](../decisions/2026-09-03_AD61_ROUTE_REGISTRY.md)).
 
 This document captures notable patterns from the legacy AMD router implementation (`old-router.legacy.js`) before removal.
 
@@ -22,9 +22,9 @@ This document captures notable patterns from the legacy AMD router implementatio
 ## Deferred Patterns
 
 - **Named history entries** (for example: `site`, `redirect`)
-    - Deferred until `Site`/`SiteBuilder` lifecycle is implemented in `@blue/boot`.
+    - Deferred until `Site`/`SiteBuilder` lifecycle is implemented in `@ndigo/boot`.
 - **Canonical-route analytics emission**
-    - Deferred until explicit `@blue/telemetry` router integration.
+    - Deferred until explicit `@ndigo/telemetry` router integration.
 - **Context-tree broadcast routing model**
     - Deferred. Current design uses dispatcher handler mappings as the primary matching mechanism.
 

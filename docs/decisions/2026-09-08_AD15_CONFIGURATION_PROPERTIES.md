@@ -7,7 +7,7 @@
 
 P1 delivered typed _lookup_ (`getPropertyAs` via ConversionService). The
 existing `@ConfigurationProperties(prefix)` + manual
-`resolveConfigurationProperties(ctor, ctx)` in blue-boot bound `@property`
+`resolveConfigurationProperties(ctor, ctx)` in ndigo-boot bound `@property`
 fields to **raw** values (no conversion), required a manual call (never
 auto-registered), and its failures were silent no-ops (`isValid` only). P4
 makes typed config classes bind automatically at refresh — the payoff that
@@ -20,7 +20,7 @@ explicit call) — consistent with the repo's `@property`, `@entry`, `@profile`.
 
 **D1 — `@configurationProperties` (renamed) + automatic registration.**
 `ConfigurationProperties` → `configurationProperties` — **clean cutover (Q1)**:
-BlueJS is pre-1.0, no backward-compat alias; the PascalCase export is removed
+ndigo is pre-1.0, no backward-compat alias; the PascalCase export is removed
 outright. The `ConfigurationProcessor` detects the decorator on registered
 `@configuration` classes and registers the bound instance as an **entry bean**
 at refresh, keyed by the **camelCase-derived class name (Q2)** (`ServerConfig`

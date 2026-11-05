@@ -1,6 +1,6 @@
 # Migration Guide: 2025 Modernization
 
-This document describes the breaking changes introduced during the January 2025 modernization of the BlueJS monorepo.
+This document describes the breaking changes introduced during the January 2025 modernization of the ndigo monorepo.
 
 ## Overview
 
@@ -99,7 +99,7 @@ npx eslint .  # Uses eslint.config.mjs automatically
 
 ## Runtime Dependency Breaking Changes
 
-### date-fns 2.x → 4.x (blue-util)
+### date-fns 2.x → 4.x (ndigo-util)
 
 **Changes:**
 
@@ -123,9 +123,9 @@ format(new Date(), 'yyyy-MM-dd'); // ✅ Still works
 // Check date-fns changelog for advanced features
 ```
 
-**Action Required:** Test date-related functionality in blue-util
+**Action Required:** Test date-related functionality in ndigo-util
 
-### date-fns-tz 2.x → 3.x (blue-util)
+### date-fns-tz 2.x → 3.x (ndigo-util)
 
 **Changes:**
 
@@ -142,9 +142,9 @@ import { formatInTimeZone } from 'date-fns-tz/fp';
 // May need moduleResolution update or path adjustment
 ```
 
-**Action Required:** Fix import in `packages/blue-util/src/date/index.ts`
+**Action Required:** Fix import in `packages/ndigo-util/src/date/index.ts`
 
-### Ramda 0.30 → 0.31 (blue-util) ⚠️
+### Ramda 0.30 → 0.31 (ndigo-util) ⚠️
 
 **Breaking Change:**
 
@@ -156,7 +156,7 @@ R.range(0, 10, 2); // [0, 2, 4, 6, 8]  ❌ No longer works
 R.range(0, 10); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]  ✅
 ```
 
-**Impact:** 52 test failures in `packages/blue-util/src/list/range-n.spec.ts`
+**Impact:** 52 test failures in `packages/ndigo-util/src/list/range-n.spec.ts`
 
 **Action Required:**
 
@@ -170,7 +170,7 @@ const rangeStep = (start, end, step) => R.range(start, end).filter((_, i) => i %
 
 3. Update tests to use new API
 
-### slug 8.x → 11.x (blue-util)
+### slug 8.x → 11.x (ndigo-util)
 
 **Changes:**
 
@@ -190,7 +190,7 @@ const rangeStep = (start, end, step) => R.range(start, end).filter((_, i) => i %
 
 **Action Required:** None. Should work transparently.
 
-### objectmodel 4.4.1 → 4.4.6 (blue-model)
+### objectmodel 4.4.1 → 4.4.6 (ndigo-model)
 
 **Note:** Version 5.0 does not exist. Updated to latest 4.x version.
 
@@ -339,7 +339,7 @@ After migration, verify:
 
 ### 1. Ramda Range Tests Failing
 
-**Issue:** 52 test failures in `packages/blue-util/src/list/range-n.spec.ts`
+**Issue:** 52 test failures in `packages/ndigo-util/src/list/range-n.spec.ts`
 
 **Cause:** `R.range()` no longer accepts step parameter
 

@@ -882,9 +882,6 @@ importers:
       '@ndigo/platform-web':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-platform-web
-      '@ndigo/router':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-router
       '@ndigo/telemetry-web':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-telemetry-web
@@ -2168,6 +2165,9 @@ importers:
 
   packages/ndigo-platform-web:
     dependencies:
+      '@ndigo/boot':
+        specifier: ~0.0.1
+        version: link:../ndigo-boot
       '@ndigo/content':
         specifier: ~0.0.1
         version: link:../ndigo-content

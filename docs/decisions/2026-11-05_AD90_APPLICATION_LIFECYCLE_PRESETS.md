@@ -186,9 +186,14 @@ without changing its public API; the fallback is recorded in the plan.
   kind, so the old dev edges would close a build cycle
   (`platform-node → boot → platform-node`, AD-67's acyclicity gate);
   `platform-boundary.spec.ts` now pins the manifest property.
-- The browser bundle gains `@ndigo/boot`; the existing bundle guards must stay
-  green. If the cost is material, D-5's fallback removes the edge without an
-  API change.
+- The browser bundle gains `@ndigo/boot`, and the view engine moves behind a
+  lazy import so the barrel stays DOM-free (PWB-REV-001). Measured on
+  2026-11-05 with `apps/19-ndigo-hn`, summing all dist chunks:
+  **+100.3 kB raw / +30.0 kB gzip** (1,162.5 → 1,262.8 kB / 279.1 →
+  309.1 kB). Accepted rather than falling back (D-5): no size budget exists,
+  the bundle guards are behavioral, and the fallback would drop
+  profiles/properties/config files from the browser story. The existing
+  bundle guards stay green.
 - No breaking change: the presets are new exports; every existing API remains
   and every implicit action has an opt-out.
 - Docs must change with the code: guide 01 (Node §5), a new browser-app guide,

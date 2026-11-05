@@ -2,12 +2,8 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { MetadataConfigApplicationContext } from '@ndigo/context';
 import { configureBrowserTelemetry } from '@ndigo/telemetry-web';
-import { WebAutoConfiguration } from '@ndigo/platform-web';
-import { BrowserDispatcher, HashRouter } from '@ndigo/platform-web';
-import { DOMElementViewTarget } from '@ndigo/view-webcomponent';
-import type { Route } from '@ndigo/router';
+import { createWebApplication } from '@ndigo/platform-web';
 import { ViewsAppConfiguration } from './views-app-configuration';
 import './components/shell-component';
 
@@ -18,24 +14,7 @@ import './components/shell-component';
 // the console exporter is the default dev posture.
 configureBrowserTelemetry({ serviceName: 'ndigo-views' });
 
-const viewsContext = new MetadataConfigApplicationContext('ndigo-views');
-viewsContext.register(WebAutoConfiguration);
-viewsContext.register(ViewsAppConfiguration);
-viewsContext.refresh();
-
-// The real app renders into #app (tests provide their own view target).
-viewsContext.setValue('viewTarget', new DOMElementViewTarget(document.getElementById('app')));
-
-const dispatcher = new BrowserDispatcher();
-dispatcher.initStrategies(viewsContext);
-dispatcher.applicationContext = viewsContext;
-
-const router = new HashRouter((route: Route) => {
-    void dispatcher.dispatch(route);
-});
-
-if (location.hash === '#/') {
-    router.refresh();
-} else {
-    location.hash = '/';
-}
+// Lifecycle preset (AD-90): builds the container (WebAutoConfiguration +
+// ViewsAppConfiguration), wires the router, dispatcher, and DOM view target,
+// registers the runtime tokens, and navigates to the URL's current route.
+await createWebApplication([ViewsAppConfiguration]);

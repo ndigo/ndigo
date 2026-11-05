@@ -1,7 +1,7 @@
 # Application Lifecycle Presets — Node runner and browser runtime
 
-**Status:** In progress — Phase 0 (boot browser safety) and Phase 1 (Node
-preset) landed 2026-11-05; Phase 2 (web preset) pending.
+**Status:** In progress — Phases 0–2 (boot browser safety, Node preset, web
+preset) landed 2026-11-05; Phase 3 (close-out gates) pending.
 **Scope:** `@ndigo/boot`, `@ndigo/platform-node`, `@ndigo/platform-web`, the
 app generator templates, the reference apps, and the docs that teach the
 entrypoint story.
@@ -187,7 +187,7 @@ is green, including a boot on `port: 0` that reports the ephemeral port.
 | 2.7  | New guide 30 “Building a browser app” (DI boot, runtime wiring, routing, view targets, app-specific extension) and its guide-index row                                                                                                                 | `docs/guides/30-building-a-browser-app.md`, `docs/guides/README.md`                |
 | 2.8  | Root README browser starter list: point at `@ndigo/platform-web` + the preset, not boot alone                                                                                                                                                          | `README.md`                                                                        |
 | 2.9  | Verify the boot README's browser claim (or correct it)                                                                                                                                                                                                 | `packages/ndigo-boot/README.md`                                                    |
-| 2.10 | Bundle guards stay green for the migrated apps; record any size delta                                                                                                                                                                                  | app bundle specs                                                                   |
+| 2.10 | Bundle guards stay green for the migrated apps; record any size delta (measured on `apps/19-ndigo-hn`, all dist chunks: 1,162.5 kB → 1,262.8 kB raw, 279.1 kB → 309.1 kB gzip — the `@ndigo/boot` inclusion plus the lazy view-engine chunk, accepted) | app bundle specs                                                                   |
 | 2.11 | `CHANGELOG.md` Added/Changed entries                                                                                                                                                                                                                   | `CHANGELOG.md`                                                                     |
 
 **Acceptance:** app 19's runtime drops the duplicated `currentPath` and the

@@ -16,8 +16,8 @@ import '@tsmetadata/polyfill';
 import './telemetry-setup';
 import './views/hn-item';
 import './views/hn-list';
-import { composeHnRuntime, createHnContext } from './app/hn-runtime';
+import { composeHnRuntime } from './app/hn-runtime';
 
-const runtime = await composeHnRuntime(await createHnContext());
+const runtime = await composeHnRuntime();
 
 export default runtime;

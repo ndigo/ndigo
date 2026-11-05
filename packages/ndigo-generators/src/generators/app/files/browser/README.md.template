@@ -13,7 +13,7 @@ cd apps/<%= dirName %> && pnpm dev
 
 ## Demonstrates
 
-- The minimal `@ndigo` browser application shape: context + route + Web Component render
+- The minimal `@ndigo` browser application shape: the `createWebApplication` preset + a route + Web Component render
 - Vite dev server wiring with the shared decorator-lowering policy
 
 ## See Also

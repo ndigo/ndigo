@@ -19,7 +19,6 @@
         "@ndigo/context": "~0.0.1",
         "@ndigo/dispatcher": "~0.0.1",
         "@ndigo/platform-web": "~0.0.1",
-        "@ndigo/router": "~0.0.1",
         "@ndigo/view-webcomponent": "~0.0.1"
     },
     "devDependencies": {

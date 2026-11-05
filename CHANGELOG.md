@@ -168,6 +168,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `@ndigo/platform-node` (AD-90): `HTTPServer.port` reports the **bound**
   port once started — the kernel-assigned port when `port: 0` was requested —
   and reverts to the configured port on `close()`.
+- `@ndigo/platform-web` (AD-90): the **`createWebApplication(sources, options)`**
+  lifecycle preset — composes `WebAutoConfiguration` and `BrowserEnvironment`
+  with the `DOMElementViewTarget` / `BrowserDispatcher` / `HashRouter` wiring
+  and the first navigation, registers `VIEW_TARGET` / `DISPATCHER` / `ROUTER`,
+  and exposes `root` / `eventMap` / `interceptors` / `initialPath` /
+  `autoNavigate` / `beforeNavigate` / `platform` / `profiles` / `properties`
+  options; `destroy()` is idempotent. The manual
+  `MetadataConfigApplicationContext` path stays public and unchanged.
 
 ### Changed
 
@@ -254,6 +262,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   assembly, and `05-ndigo-api` drops its hand-written config-file reader.
   Generated node apps infer the dev port from `{ port: … }` and no longer
   declare `@ndigo/boot` directly (the platform carries it).
+- `apps/08-ndigo-views`, `apps/19-ndigo-hn`, `@ndigo/generators` (AD-90): the
+  browser entrypoints adopt the `createWebApplication` preset — no more
+  hand-wired dispatcher/router/view-target assembly or duplicated hash-path
+  helper. Generated browser apps ship `<name>-configuration.ts` (replacing
+  `<name>-context.ts`) and no longer declare `@ndigo/router` directly.
 
 ### Fixed
 

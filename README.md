@@ -60,12 +60,12 @@ path below: each lists the packages to start with, then the demo apps to follow.
 
 #### If you want to build a client-side web app
 
-1. [`@ndigo/context`](packages/ndigo-context/README.md) + [`@ndigo/boot`](packages/ndigo-boot/README.md) — DI container and bootstrap
-2. [`@ndigo/view-webcomponent`](packages/ndigo-view-webcomponent/README.md) — Web Component views
-3. [`@ndigo/signals`](packages/ndigo-signals/README.md) — reactive state
-4. [`@ndigo/router`](packages/ndigo-router/README.md) — routing
-5. [`@ndigo/http`](packages/ndigo-http/README.md) — HTTP client (interceptors, parsers, cache)
-6. [`@ndigo/platform-web`](packages/ndigo-platform-web/README.md) — browser platform glue
+1. [`@ndigo/platform-web`](packages/ndigo-platform-web/README.md) — the browser platform: the `createWebApplication` boot preset, routing, dispatch, and offline helpers
+2. [`@ndigo/context`](packages/ndigo-context/README.md) — DI container and typed configuration
+3. [`@ndigo/view-webcomponent`](packages/ndigo-view-webcomponent/README.md) — Web Component views
+4. [`@ndigo/signals`](packages/ndigo-signals/README.md) — reactive state
+5. [`@ndigo/router`](packages/ndigo-router/README.md) — routing
+6. [`@ndigo/http`](packages/ndigo-http/README.md) — HTTP client (interceptors, parsers, cache)
 
 Then follow the ladder: [apps/01-ndigo-hello](apps/01-ndigo-hello/README.md)
 (minimal SPA) → [apps/03-ndigo-todo-web](apps/03-ndigo-todo-web/README.md) (micro

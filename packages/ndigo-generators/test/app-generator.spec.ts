@@ -147,12 +147,13 @@ describe('app generator', () => {
         expect(tree.exists(`${appDir}/vite.config.ts`)).toBe(true);
         expect(tree.exists(`${appDir}/vitest.config.ts`)).toBe(true);
         expect(tree.exists(`${appDir}/index.html`)).toBe(true);
-        expect(tree.exists(`${appDir}/src/widget-context.ts`)).toBe(true);
+        expect(tree.exists(`${appDir}/src/widget-configuration.ts`)).toBe(true);
         expect(tree.exists(`${appDir}/src/widget-app-view.ts`)).toBe(true);
         expect(tree.exists(`${appDir}/test/widget.smoke.spec.ts`)).toBe(true);
         expect(tree.exists(`${appDir}/test/bundle.spec.ts`)).toBe(true);
 
         expect(read(tree, `${appDir}/vite.config.ts`)).toContain('port: 3020');
+        expect(read(tree, `${appDir}/src/index.ts`)).toContain('createWebApplication');
         expect(read(tree, `${appDir}/src/widget-app-view.ts`)).toContain("customElements.define('widget-app'");
         expect(read(tree, `${appDir}/test/widget.smoke.spec.ts`)).toContain("'WIDGET-APP'");
     });
@@ -203,7 +204,6 @@ describe('app generator', () => {
                 '@ndigo/context',
                 '@ndigo/dispatcher',
                 '@ndigo/platform-web',
-                '@ndigo/router',
                 '@ndigo/view-webcomponent',
             ])
         );

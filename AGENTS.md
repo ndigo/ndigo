@@ -8,12 +8,15 @@ This document provides essential instructions for AI agents (and human developer
 
 ```bash
 pnpm install          # Install dependencies
+pnpm hooks:install   # Enable the primary-checkout commit guard (once per clone)
 pnpm build           # Build all packages (~30s)
 pnpm test            # Run all tests (~2min)
 pnpm lint            # Check code quality
 ```
 
 **Critical - Read Before Coding:**
+
+⚠️ **Section 8 (Worktrees)** - The primary checkout is for reading, releases, and `git worktree` management. Before the first write, create an adjacent worktree, branch off `main`, and move the session there.
 
 ⚠️ **Section 5 (Research Workflow)** - ALWAYS perform two-step reconnaissance before writing code. This repo is graft-indexed: run `graft ask`/`graft callers` (see the Graft section at the end) to understand code or trace callers before grepping/reading; use raw grep only for unindexed files or exhaustive checks.
 
@@ -549,21 +552,39 @@ stay in `docs/`. The project board flows
 
 **One issue = one branch = one worktree = one session = one PR**
 
-- Branch off `main`: `type/N-short-slug` (e.g. `feat/12-auth-refresh`);
-  `type` is the conventional-commit type.
-- Run concurrent sessions in separate git worktrees **adjacent to the repo**,
-  named `<repo>-<issue>-<slug>` (e.g. `~/Workspace/ndigo-50-lint-surface-split`)
-  — never inside the repo and never in a harness data directory. OpenCode
-  defaults to `~/.local/share/opencode/worktree/…`; `opencode.json` sets
-  `worktree.directory: ".."`, so pass the `<repo>-…` name to `worktree_create`,
-  run `git switch -c type/N-slug` in it (the tool leaves HEAD detached), and
-  move the session there. One `pnpm install` per worktree is expected — the
-  shared pnpm store makes it cheap. If a tool places one elsewhere, stop the
-  processes whose cwd is inside it (MCP servers included), `git worktree move`
-  it, and re-point the session.
+Worktrees are **mandatory, not a concurrency optimization**. The primary
+checkout (`~/Workspace/ndigo`) is for reading, `git worktree` management, and
+release operations. Every session that writes files — source, docs, generated
+output, commits — works in its own worktree, because another session can start
+after you do and detection alone cannot prevent the collision.
+
+- **Before the first write**, start the worktree:
+    1. `worktree_create` with the name below. `opencode.json` sets
+       `worktree.directory: ".."`, so the tree lands beside the repo — never
+       inside it and never in a harness data directory.
+    2. `git switch -c <branch> main` in the new tree; the tool leaves HEAD
+       detached, and branching off `main` is required.
+    3. `session_move` the session into it, then run `pnpm install` once (the
+       shared pnpm store makes it cheap).
+- **Names:** `<repo>-<issue>-<slug>` (e.g.
+  `~/Workspace/ndigo-50-lint-surface-split`) when the work has an issue;
+  `<repo>-<slug>` when it does not (e.g. `~/Workspace/ndigo-worktree-discipline`).
+- **Branches:** `type/N-short-slug` (`feat/12-auth-refresh`), or
+  `type/short-slug` when there is no issue (`docs/worktree-discipline`); `type`
+  is the conventional-commit type.
+- **If the checkout already has changes you did not make**, stop and report —
+  do not edit, stage, commit, or "repair" around them. If the collision is
+  discovered after writing, create the worktree anyway, re-apply the work
+  there, and leave the foreign changes untouched.
+- If a tool places a worktree elsewhere, stop the processes whose cwd is inside
+  it (MCP servers included), `git worktree move` it, and re-point the session.
 - PR back to `main`: title `type(scope): summary`, body `Closes #N`. Rebase
   onto `main` before merging; **squash-merge only**; delete the branch and
   remove the worktree directory afterwards.
+
+The tracked `.githooks/pre-commit` guard enforces the checkout rule once
+`pnpm hooks:install` has run; releases opt out with
+`ALLOW_PRIMARY_COMMIT=1 git commit …`.
 
 **Never**
 

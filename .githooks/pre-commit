@@ -1,0 +1,19 @@
+#!/bin/sh
+# Refuse commits made from the primary checkout (AGENTS.md §8): every session
+# that writes works in its own worktree. Releases may opt out explicitly.
+set -eu
+
+if [ "${ALLOW_PRIMARY_COMMIT:-0}" = "1" ]; then
+    exit 0
+fi
+
+git_dir=$(cd "$(git rev-parse --git-dir)" && pwd -P)
+common_dir=$(cd "$(git rev-parse --git-common-dir)" && pwd -P)
+
+if [ "$git_dir" = "$common_dir" ]; then
+    printf '%s\n' \
+        'pre-commit: refusing to commit from the primary checkout.' \
+        'Create a worktree beside the repo and commit there (AGENTS.md §8).' \
+        'Releases: ALLOW_PRIMARY_COMMIT=1 git commit ...' >&2
+    exit 1
+fi

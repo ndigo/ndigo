@@ -164,13 +164,11 @@ app's test lane; run that lane and `pnpm typecheck` before and after.
 The directory and package renames are complete. These file-level shapes remain
 and are deferred so the ladder stays reviewable:
 
-| App                    | Current shape                                            | Target shape                                                                                |
-| :--------------------- | :------------------------------------------------------- | :------------------------------------------------------------------------------------------ |
-| `10-ndigo-conduit-api` | `entities.ts`, `schemas.ts`, `store.ts`, `views.ts`      | `article.entity.ts` / `comment.entity.ts` / …; `conduit-store.ts`; split `views.ts` by view |
-| `10-ndigo-conduit-web` | `models.ts`, `conduit-services.ts`, `conduit-actions.ts` | `models/` or `*.dto.ts`; role folders once the client grows                                 |
-| `12-ndigo-petclinic`   | `entities.ts`, `forms.ts`, `messages.ts`, `responses.ts` | `owner.entity.ts` / `pet.entity.ts` / …; `forms/`; `messages/`                              |
-| `06-ndigo-host-demo`   | `catalog.ts`, `checkout.ts`, `reports.ts`                | `*-feature.ts` or a `features/` folder                                                      |
-| `08-ndigo-views`       | `client-demo.ts`, `report-view.ts`                       | `client-demo.ts` → `client-demo-service.ts`; keep view suffixes                             |
+| App                    | Current shape                                                                                                                                         | Target shape                                                                                                                                                                           |
+| :--------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `11-ndigo-conduit-api` | Flat `src/`: `entities.ts` (User, Article, Comment, Favorite, Follow), `schemas.ts`, `store.ts`, `views.ts`, `auth.ts`, `errors.ts`, `presenter.ts`   | `entities/` with `user.entity.ts`, `article.entity.ts`, `comment.entity.ts`, `favorite.entity.ts`, `follow.entity.ts`; `conduit-store.ts`; `views/article-view.ts` + `comment-view.ts` |
+| `12-ndigo-petclinic`   | Flat `src/`: `entities.ts` (Owner, Pet, PetType, Visit, Vet, Specialty, VetSpecialty), `forms.ts`, `messages.ts`, `responses.ts`, `request-values.ts` | `entities/` per entity, `forms/`, `messages/`; keep the domain-prefixed root files                                                                                                     |
+| `10-ndigo-conduit-web` | Role folders already in place; the last generic names are `views/models.ts` and `app/conduit-services.ts`                                             | `views/models.ts` → per-resource `*.dto.ts`; `conduit-services.ts` is already domain-prefixed and may stay                                                                             |
 
 Each row is a candidate for the next touch of that app, not a licence for a
 repo-wide rename. When a row is complete, delete it from this table.

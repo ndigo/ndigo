@@ -23,7 +23,7 @@ export interface CSVViewOptions {
 
     /**
      * Model attribute holding the record array. Views receive the whole
-     * model map (Spring-style attributes), so when the records live under a
+     * model map (attribute-style model), so when the records live under a
      * named attribute (e.g. `{ rows: [...] }`), name it here. When omitted,
      * the model itself must be the array.
      */

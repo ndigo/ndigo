@@ -27,7 +27,7 @@ the generalization point stays the existing `AuthAdapter` seam.
 
 ## Decisions
 
-### D-1 — `PasswordEncoder` contract: Spring shape, BlueJS/JS names
+### D-1 — `PasswordEncoder` contract: reference shape, BlueJS/JS names
 
 `blue-auth-core` gains:
 
@@ -39,7 +39,7 @@ interface PasswordEncoder {
 }
 ```
 
-The shape mirrors Spring Security's `PasswordEncoder` (`encode`/`matches`);
+The shape mirrors the reference security layer's `PasswordEncoder` (`encode`/`matches`);
 the verify method is named **`verify`**, not `matches` — deliberate
 deviation. `matches` is already BlueJS vocabulary for _pattern matching_
 (`Matchable`, `MediaType.matches`, dispatcher conditions, interceptor
@@ -56,7 +56,7 @@ Encoded hashes are prefixed with their scheme: `{scrypt}$ln=17,r=8,p=1$<salt>$<h
 **parameters embedded**, so cost bumps never invalidate stored hashes.
 `DelegatingPasswordEncoder(encoders, defaultId)` dispatches `verify` on the
 prefix and routes `encode` to the default. An unknown or malformed scheme
-**throws** (`UnknownPasswordSchemeError` — Spring 5.8+ parity): loud
+**throws** (`UnknownPasswordSchemeError` — 5.8+ parity): loud
 fail-closed, never a silent `false`, never a `{noop}`-style fallthrough.
 `needsRehash` on the delegating encoder is the transparent-migration hook:
 login flows rehash when the stored scheme/params no longer match the
@@ -130,15 +130,15 @@ revocation and rotation.
 
 ## Risks
 
-| Risk                                           | Mitigation                                                                                                      |
-| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| Unknown-scheme throw breaks legacy strings     | Loud failure is the point (Spring 5.8+ parity); migration path is `needsRehash` on login — zero-downtime rehash |
-| Wrong-password timing leaks username existence | Dummy-hash verify on missing user; constant-time compare via `timingSafeEqual`                                  |
-| Session fixation / hijack                      | Rotation on login (D-5/D-6); HttpOnly + SameSite cookies; `Secure` in production config                         |
-| Brute force on credentials                     | Wave 3 rate limiter (SEC-6) — mandated for login routes, see plan                                               |
-| CSRF over cookie sessions                      | Existing double-submit-cookie interceptor applies to login/logout (mutating); plan pins specs for it            |
-| Revocation read cost per JWT validation        | `ver` check behind `UserStore` with documented short-TTL cache option                                           |
-| Trusted-proxy absence limits client-IP keying  | Rate limiter keys on socket remote address; `X-Forwarded-For` support stays a Tier-2 deferral, documented       |
+| Risk                                           | Mitigation                                                                                                |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Unknown-scheme throw breaks legacy strings     | Loud failure is the point (5.8+ parity); migration path is `needsRehash` on login — zero-downtime rehash  |
+| Wrong-password timing leaks username existence | Dummy-hash verify on missing user; constant-time compare via `timingSafeEqual`                            |
+| Session fixation / hijack                      | Rotation on login (D-5/D-6); HttpOnly + SameSite cookies; `Secure` in production config                   |
+| Brute force on credentials                     | Wave 3 rate limiter (SEC-6) — mandated for login routes, see plan                                         |
+| CSRF over cookie sessions                      | Existing double-submit-cookie interceptor applies to login/logout (mutating); plan pins specs for it      |
+| Revocation read cost per JWT validation        | `ver` check behind `UserStore` with documented short-TTL cache option                                     |
+| Trusted-proxy absence limits client-IP keying  | Rate limiter keys on socket remote address; `X-Forwarded-For` support stays a Tier-2 deferral, documented |
 
 ## Verification
 

@@ -20,7 +20,7 @@ location determines the dependency graph.
   (`@blue/logger`, `@blue/service`) to depend on an HTTP package; RFC 9110
   defines media types as string grammar, so a rich class is an extension, but
   the class's registry/wildcards/suffix/quality-factor API serves content
-  negotiation and type safety (Spring-inspired) beyond HTTP.
+  negotiation and type safety (principles-inspired) beyond HTTP.
 - `docs/plans/2026-02-08_MEDIATYPE_ENHANCEMENT_SUMMARY.md` (COMPLETE) adds
   `baseType`, `getDefaultCharset()`, `toContentType()`, `parseMediaType()`, and
   fixes `withCharset()` and `MediaType.for()`; 8 new tests (82/82 core passing).
@@ -61,4 +61,4 @@ location determines the dependency graph.
 
 Revisit if a second non-core consumer drives the cost of `@blue/core` carrying
 HTTP-ish concepts, or if the media-type API needs to grow beyond the
-Spring-inspired surface.
+Principles-inspired surface.

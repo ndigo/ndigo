@@ -11,7 +11,7 @@ semantics_: no placeholder interpolation (`${key}`), no typed reads (everything
 is `JSONValue`), and CLI args were accepted by `run(...args)` but **ignored**
 (`Application._configurePropertySources` received them and dropped them).
 
-Spring's `PropertyPlaceholderHelper`, `ConvertiblePropertyResolver`
+The reference `PropertyPlaceholderHelper`, `ConvertiblePropertyResolver`
 (`getProperty(key, Class)` throwing `ConversionFailedException`), and
 `CommandLinePropertySource` are the references. blue-core already ships a
 `ConversionService` (`createConversionService` with built-in
@@ -28,7 +28,7 @@ cannot catch cycles; a depth cap of 10 remains only as a panic-switch for
 runaway non-cyclic nesting. **Unresolvable** (Q4): lenient passthrough in
 `getProperty` (the de-facto escape under Q2's no-escape decision);
 `getRequiredProperty` throws a distinct "could not be resolved" error (key
-exists but unresolved ≠ missing). **No escape syntax** (Q2): Spring parity (no
+exists but unresolved ≠ missing). **No escape syntax** (Q2): reference parity (no
 `\${` exists); a literal `${key}` matching no property passes through; a literal
 matching a real key is substituted (documented limitation; store such literals
 indirectly). **Cache** (Q7): per-key `Map<key, resolved>` engaging only
@@ -53,9 +53,9 @@ missing / unresolved placeholder / conversion failure.
 **D3 — CLI args as the `commandLine` source.** New `cli-arguments.ts`
 (`parseCommandLineArgs`): `--key=value`, `--key value`, bare `--flag` → `true`
 (Q1 — minimist-style; typed reads: `getPropertyAs('debug', Boolean)` survives
-identity, while Spring's `''` would invert flag presence into disabled),
+identity, while the reference `''` would invert flag presence into disabled),
 `--` terminator, repeated keys last-wins, **positionals ignored** (Q6 —
-Spring's `CommandLinePropertySource` behavior; `process.argv` exposes them
+The reference `CommandLinePropertySource` behavior; `process.argv` exposes them
 natively). Boot wiring: `_configurePropertySources` does
 `addFirst('commandLine', parsed)` when non-empty — top of the precedence chain,
 beats every other source. Named per P0 semantics (anchorable/replaceable).

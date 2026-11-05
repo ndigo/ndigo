@@ -9,7 +9,7 @@
 Resolves logical view names to [EJSView](EJSView.md) instances by applying a
 prefix and suffix around the name (e.g. `views/` + name + `.html`).
 
-This is the Ndigo equivalent of Spring's `InternalResourceViewResolver`: it
+This is the Ndigo equivalent of the classic `InternalResourceViewResolver`: it
 maps a controller's returned view name to a template on disk. Restrict the
 names it serves by setting [EJSViewResolver.viewNames](#viewnames); when left null
 every name is resolved.

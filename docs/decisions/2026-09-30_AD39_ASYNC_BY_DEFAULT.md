@@ -7,7 +7,7 @@ sync/async split (`AsyncContentSource`, `getContentAsync`).
 
 ## Background
 
-BlueJS inherits a Spring-like sync-by-default framing. Spring's
+BlueJS inherits a sync-by-default framing from the reference framework. Its
 `ContentSource` methods are synchronous, so the Blue port kept
 `getContent(key, language): string` synchronous and later added an async twin
 interface (`AsyncContentSource extends ContentSource`) with a
@@ -21,7 +21,7 @@ are native, and a method that can be awaited needs no name-level marker. The
 - **doubles the API surface** — every async capability needs a second
   interface + method pair (`AsyncContentSource` + `getContentAsync`), and
   every caller must know which variant a source implements;
-- **inverts the default** — the sync method (the Spring leftover) is the
+- **inverts the default** — the sync method (the inherited leftover) is the
   "base" contract, so a loader-backed source exposes a degraded sync path
   (TTL's sync `getContent` returned the key itself before any load) beside
   the real one;

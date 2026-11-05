@@ -77,7 +77,7 @@ export class RouteBindingError extends FrameworkError {
 
 /**
  * Base error for method parameter binding issues.
- * Analogous to Spring's ServletRequestBindingException.
+ * Analogous to the request-binding error model.
  *
  */
 export class ParameterBindingError extends FrameworkError {
@@ -131,7 +131,7 @@ export class InvalidParameterMappingError extends ParameterBindingError {
 /**
  * Thrown when a required parameter is missing from the request.
  * This is a RUNTIME error (request processing time).
- * Analogous to Spring's MissingServletRequestParameterException.
+ * Analogous to the missing-parameter binding error.
  *
  */
 export class MissingParameterError extends ParameterBindingError {

@@ -56,7 +56,7 @@ What the repository already provides, and what is missing:
   default is in-process (correct on one node), Redis is the opt-in durable
   mode.
 - Peer comparison: Redis `SET NX PX` + Lua release is the common implementation
-  (Redlock and its successors); Spring/AdonisJS ship a lock abstraction over
+  (Redlock and its successors); AdonisJS ships a lock abstraction over
   Redis/DBs rather than a leader-election scheme. Leader-election is the
   heavier alternative and stays deferred (AD-41) — per-task locks compose
   without a global coordinator.

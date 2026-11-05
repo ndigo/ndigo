@@ -7,7 +7,7 @@
 # Interface: EnvironmentCustomizer
 
 Ordered hook that adjusts the environment after the standard sources are
-wired and before the context reads it (AD-16 D2 — Spring's
+wired and before the context reads it (AD-16 D2 — the reference framework's
 `EnvironmentPostProcessor` analog, house-named `EnvironmentCustomizer`).
 
 Customizers run in registration order; a throwing customizer fails boot

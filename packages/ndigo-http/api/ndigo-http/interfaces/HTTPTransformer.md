@@ -8,7 +8,7 @@
 
 Contract for request/response body transformers.
 
-Inspired by Spring Framework's `HttpMessageConverter` pattern.
+Inspired by the `HttpMessageConverter` pattern.
 
 ## Type Parameters
 

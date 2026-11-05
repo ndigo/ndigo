@@ -8,7 +8,7 @@ import { StringTemplateView } from '@ndigo/view';
 /**
  * The demo's context-bean view location: a plain view registered in the
  * application context under the name `footer` and resolved by
- * `NameViewResolver` (bean-name resolution, Spring's BeanNameViewResolver).
+ * `NameViewResolver` (bean-name resolution, the reference framework's `BeanNameViewResolver`).
  *
  * The controller passes a localized `message` + `language` (from
  * `@ndigo/content` `ContentSource` — see ViewsController); the template

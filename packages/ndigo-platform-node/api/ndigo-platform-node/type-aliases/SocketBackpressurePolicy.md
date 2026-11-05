@@ -9,7 +9,7 @@
 > **SocketBackpressurePolicy** = `object`
 
 Server-side fan-out backpressure policy — the slow-consumer guard
-(Spring `bufferSizeLimit` shape).
+(the `bufferSizeLimit` shape).
 
 A peer that stops reading (stalled tab, throttled network) accumulates
 buffered frames in its transport buffer (`ws` `bufferedAmount`). Without a
@@ -32,7 +32,7 @@ this many bytes queued is handled per `onOverflow`. Default
 > **onOverflow**: `"close"` \| `"drop"`
 
 `close` (default) — close the session with `1013` ("try again later",
-Spring's `SESSION_NOT_RELIABLE`): bounded memory, an explicit
+the `SESSION_NOT_RELIABLE` convention): bounded memory, an explicit
 client-visible signal — the AD-22 client reconnects automatically.
 `drop` — silently skip fan-out to that session (ordered gaps for that
 consumer only).

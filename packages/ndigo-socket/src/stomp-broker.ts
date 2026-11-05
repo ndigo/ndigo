@@ -781,7 +781,7 @@ export class StompBroker {
     /**
      * Principal-scoped fan-out (D10): deliver to the `resolveUser`-scoped
      * subscriptions of `user` — those bound to `/user/<destination>`
-     * (Spring convention: subscribe `/user/queue/errors`, then
+     * (the STOMP convention: subscribe `/user/queue/errors`, then
      * `sendToUser(user, '/queue/errors', …)`). MESSAGE frames carry the
      * `/user/...` destination the client subscribed with.
      *

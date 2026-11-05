@@ -14,7 +14,7 @@ A live WebSocket connection as seen by a socket handler.
 
 > `readonly` **attributes**: `Record`\<`string`, `unknown`\>
 
-Per-connection state bag (AD-21 D3, Micronaut/Spring/Jakarta
+Per-connection state bag (AD-21 D3, Micronaut/Jakarta
 parity). Any value may be stored; the bag lives as long as the
 session and is never shared with other sessions.
 

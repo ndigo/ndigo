@@ -17,7 +17,6 @@
  * framework's `urn:ndigo:not-found` type, the mirror of the 404 page the same
  * miss produces on the HTML routes.
  *
- * @module ndigo-petclinic
  * @since 1.0.0
  * @author Jeff Rose
  */

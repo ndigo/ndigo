@@ -4,7 +4,6 @@
  * guard's `preHandle` produces the identical deterministic response whether
  * the request arrives over a socket or through the mock dispatcher.
  *
- * @module ndigo-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */

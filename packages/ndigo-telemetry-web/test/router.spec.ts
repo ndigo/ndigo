@@ -2,7 +2,7 @@
  * `RouterInstrumentation` specs (OP-3): `HashRouter._setRoute` is async, so
  * the span must stay open until the navigation promise settles, record
  * rejections, and flag the router's swallowed failure outcome (`false`).
- * @module ndigo-telemetry-web
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

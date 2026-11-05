@@ -1,6 +1,6 @@
 /**
  * Typed context tokens shared by the host shell and its features.
- * @module ndigo-host
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

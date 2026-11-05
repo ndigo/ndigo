@@ -7,7 +7,6 @@
  * runner contract (AD-30) is unchanged; these helpers only discover and
  * order the files, so `DrizzleMigrator` internals stay untouched.
  *
- * @module ndigo-orm-drizzle
  * @since 1.0.0
  * @author Jeff Rose
  */

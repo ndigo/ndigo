@@ -8,7 +8,6 @@
  * created lazily on first use so integration tests can pin `NDIGO_DB_URL`
  * before any request touches it.
  *
- * @module ndigo-api
  * @since 1.0.0
  * @author Jeff Rose
  */

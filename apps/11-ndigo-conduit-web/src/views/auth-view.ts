@@ -11,7 +11,6 @@
  * the refresh that follows a failed submit (which re-renders the page from the
  * new model) does not clear what the visitor typed.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,6 +1,6 @@
 /**
  * Ndigo integration test harness — MockHTTP-style in-process dispatch.
- * @module ndigo-test
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

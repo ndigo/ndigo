@@ -1,7 +1,7 @@
 /**
  * NodeSDK configuration for `@ndigo/telemetry-node` (AD-32): sampler
  * presets, per-signal exporter ergonomics, and a once-per-process guard.
- * @module ndigo-telemetry-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -58,6 +58,11 @@ export type ExporterSpec =
     | 'none'
     | 'prometheus';
 
+/**
+ * Node telemetry configuration: the exporter chosen per signal (traces,
+ * metrics, logs), an optional sampler and instrumentation list, and the minimum
+ * severity applied to the log pipeline.
+ */
 export interface TelemetryConfig {
     traceExporter?: ExporterSpec;
     metricExporter?: ExporterSpec;

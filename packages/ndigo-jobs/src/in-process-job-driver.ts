@@ -1,7 +1,6 @@
 /**
  * The in-process reference driver: full contract semantics, no durability.
  *
- * @module ndigo-jobs
  * @since 1.0.0
  * @author Jeff Rose
  */

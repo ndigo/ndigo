@@ -17,7 +17,6 @@
  * unseen, and the explicit `--port` stays the escape hatch. Extra matches
  * (preview/e2e/auxiliary ports) only make the map more conservative.
  *
- * @module ndigo-generators
  * @since 1.0.0
  * @author Jeff Rose
  */

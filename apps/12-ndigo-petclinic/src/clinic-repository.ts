@@ -9,7 +9,6 @@
  * `EntityManager` means constructing this class with a different manager and
  * nothing else changes.
  *
- * @module ndigo-petclinic
  * @since 1.0.0
  * @author Jeff Rose
  */

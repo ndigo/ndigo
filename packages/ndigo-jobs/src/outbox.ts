@@ -1,7 +1,6 @@
 /**
  * Transactional-outbox contracts: store, publisher, and the jobs publisher.
  *
- * @module ndigo-jobs
  * @since 1.0.0
  * @author Jeff Rose
  */

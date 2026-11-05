@@ -8,7 +8,6 @@
  * instrumentation instead of a server-side snapshot. No inline script — the
  * framework's default CSP (`script-src 'self'`) stays intact.
  *
- * @module ndigo-telemetry-lab
  * @since 1.0.0
  * @author Jeff Rose
  */

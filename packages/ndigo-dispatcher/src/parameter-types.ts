@@ -1,5 +1,4 @@
 /**
- * @module ndigo-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -48,6 +47,11 @@ export interface ParameterExtractorOptions {
     convertType?: { source: unknown; target: unknown };
 }
 
+/**
+ * Context handed to a `ParameterValueConverter`: the bound parameter name, the
+ * `MethodParameter` it came from, and the route/mapping metadata the value is
+ * being bound for.
+ */
 export interface ParameterValueConversionContext {
     name: string;
     parameter: MethodParameter;
@@ -55,6 +59,11 @@ export interface ParameterValueConversionContext {
     mapping: unknown;
 }
 
+/**
+ * Converts one raw argument value into the type its `MethodParameter` declares.
+ * A converter is chosen per source/target type pair (see
+ * `ResolverConverterOption`) and may be async.
+ */
 export type ParameterValueConverter = (value: unknown, context: ParameterValueConversionContext) => unknown;
 
 /**
@@ -180,7 +189,7 @@ export class MethodParameter implements Serializable {
     readonly prefix!: string | null;
     /**
      * Optional post-bind validator/converter applied to the resolved value.
-     * Set by {@link validatedBy} (Zod-backed, AD-07).
+     * Set by {@link zod-validated-by.validatedBy | validatedBy} (Zod-backed, AD-07).
      */
     readonly convert!: ((value: unknown) => unknown) | undefined;
     /**

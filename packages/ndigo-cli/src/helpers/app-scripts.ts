@@ -6,7 +6,6 @@
  * propagation); one-shot commands (`generate`, `db:*`, `inspect`) use a
  * plain spawn with relay because a completing process must not respawn.
  *
- * @module ndigo-cli
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -140,7 +139,6 @@ export async function runAppSupervised(
  * @param dir - The app directory (absolute).
  * @param scriptKey - The `scripts.<key>` to run.
  * @param hint - The missing-script hint.
- * @param extraArgv - Extra argv appended to the `pnpm run` invocation.
  * @returns The child's exit code.
  */
 export async function runAppOnce(dir: string, scriptKey: string, hint: string): Promise<number> {

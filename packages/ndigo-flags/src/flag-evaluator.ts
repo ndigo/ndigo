@@ -9,7 +9,6 @@
  * LaunchDarkly / … providers). Enforcement — the `@whenFeature` route gate
  * — lives in `@ndigo/platform-node` beside the other interceptors.
  *
- * @module ndigo-flags
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -125,7 +124,7 @@ export interface FlagEvaluator {
 
 /**
  * Structural type guard for {@link FlagEvaluator} — used where a bean or
- * option is resolved by shape instead of the {@link FLAG_EVALUATOR} token.
+ * option is resolved by shape instead of the {@link context-tokens.FLAG_EVALUATOR | FLAG_EVALUATOR} token.
  */
 export function likeFlagEvaluator(value: unknown): value is FlagEvaluator {
     return (

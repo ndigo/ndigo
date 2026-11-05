@@ -75,7 +75,9 @@
     "RouteMappingValue": "#",
     "SocketSession": "#",
     "ViewNameTranslator": "#",
-    "default": "#"
+    "default": "#",
+    "MaybeHandler": "#",
+    "MetadataManager": "#"
   },
   "@ndigo/factory": {
     "Constructable": "#",
@@ -169,9 +171,17 @@
     "AbstractSerializingView.serialize": "#",
     "ProducerView": "#",
     "View": "#",
-    "ViewTarget": "#"
+    "ViewTarget": "#",
+    "RenderResult": "#"
   },
   "typescript": {
     "external": "#"
+  },
+  "@ndigo/orm-drizzle": {
+    "DrizzleEntityManager": "#"
+  },
+  "@ndigo/oxlint-plugin": {
+    "DECORATOR_METHOD": "#",
+    "IdentifierLike": "#"
   }
 }

@@ -9,7 +9,6 @@
  * `authenticate`/`lookupPrincipal`/`invalidateToken` now back onto the
  * 'credentials' adapter (session store) instead of a token map.
  *
- * @module ndigo-api
  * @since 1.0.0
  * @author Jeff Rose
  */

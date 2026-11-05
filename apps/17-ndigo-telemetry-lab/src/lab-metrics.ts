@@ -12,7 +12,6 @@
  * The class keeps its own tallies too, so `/lab/state` reports the same
  * numbers even when no aggregator is wired (direct instantiation in tests).
  *
- * @module ndigo-telemetry-lab
  * @since 1.0.0
  * @author Jeff Rose
  */

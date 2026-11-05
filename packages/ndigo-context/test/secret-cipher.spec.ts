@@ -3,7 +3,7 @@
  * dispatch, pass-through of non-marker values, resolver integration
  * (placeholders-then-decrypt, key-path AAD, typed reads), and the wiring
  * capability gate.
- * @module ndigo-context
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

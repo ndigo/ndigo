@@ -2,7 +2,6 @@
  * `@whenFeature` decoration-time contract (AD-82 D-4): method and class
  * metadata keys, decoration-time key validation, and the reader.
  *
- * @module ndigo-flags
  * @since 1.0.0
  * @author Jeff Rose
  */

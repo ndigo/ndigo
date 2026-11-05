@@ -6,7 +6,6 @@
  * the built `lib/` output the `node_modules` symlinks expose — mirrors the
  * sibling Node app lanes (`08-ndigo-httpbin`, `09-ndigo-todobackend`).
  *
- * @module ndigo-resilience-lab
  * @since 1.0.0
  * @author Jeff Rose
  */

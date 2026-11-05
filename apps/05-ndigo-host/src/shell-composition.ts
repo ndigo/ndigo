@@ -1,6 +1,6 @@
 /**
  * Host shell composition — sets up the micro frontend shell, a shared.
- * @module ndigo-host
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

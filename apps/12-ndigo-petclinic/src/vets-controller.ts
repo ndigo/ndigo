@@ -6,7 +6,6 @@
  * the app models as a `VetSpecialty` link row rather than a many-to-many
  * relation the in-memory manager cannot resolve.
  *
- * @module ndigo-petclinic
  * @since 1.0.0
  * @author Jeff Rose
  */

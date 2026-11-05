@@ -1,7 +1,6 @@
 /**
  * Core job contracts: requests, stored records, and claim options.
  *
- * @module ndigo-jobs
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -51,7 +50,7 @@ export interface ResolvedJobRequest {
 
 /**
  * A stored job as returned by a driver — the record handed to
- * {@link JobDriver.claim} callers and into handler execution.
+ * {@link job-driver.JobDriver#claim | JobDriver.claim} callers and into handler execution.
  *
  * @since 1.0.0
  */
@@ -72,7 +71,7 @@ export interface JobRecord {
 }
 
 /**
- * Claim window for {@link JobDriver.claim}.
+ * Claim window for {@link job-driver.JobDriver#claim | JobDriver.claim}.
  *
  * @since 1.0.0
  */

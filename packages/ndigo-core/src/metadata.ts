@@ -1,5 +1,4 @@
 /**
- * @module ndigo-core
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -16,6 +15,13 @@ import '@tsmetadata/polyfill';
  */
 type MetadataCarrier = { [Symbol.metadata]?: unknown; constructor?: MetadataCarrier };
 
+/**
+ * Reads the TC39 `Symbol.metadata` record a class carries (the carrier set up
+ * by `@tsmetadata/polyfill`), accepting either the class or an instance — an
+ * instance is unwrapped through its constructor. Targets that never received
+ * metadata yield an empty record rather than throwing, so callers can read a
+ * missing key without a guard.
+ */
 // oxlint-disable-next-line typescript/no-explicit-any -- callers (ndigo-dispatcher, ndigo-telemetry) return values read from this record as their own typed payloads; `unknown` values would break those returns.
 export function getSymbolMetadata(target: unknown): Record<string, any> {
     const carrier = (typeof target === 'function' ? target : target?.constructor) as MetadataCarrier | undefined;

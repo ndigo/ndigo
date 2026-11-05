@@ -1,10 +1,13 @@
 /**
- * @module ndigo-view-webcomponent
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { Constructable } from '@ndigo/core';
 
+/**
+ * Contract for a custom element that exposes a name: the element's tag name
+ * reflected as a `name` property by the `AsNdigoElement` mixin.
+ */
 export interface NdigoElement {
     name: string;
 }

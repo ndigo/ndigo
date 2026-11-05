@@ -1,6 +1,6 @@
 /**
  * A route condition that matches an HTTP request method.
- * @module ndigo-dispatcher
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

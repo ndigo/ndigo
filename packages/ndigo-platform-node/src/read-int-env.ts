@@ -9,7 +9,6 @@
  * variable, so boot fails fast instead of silently coercing
  * (`Number('') === 0`, `Number(' 80 ') === 80`, `Number('1e3') === 1000`).
  *
- * @module ndigo-platform-node
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,5 +1,4 @@
 /**
- * @module ndigo-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -19,14 +18,29 @@ const { toString } = Object.prototype;
 const typeName = (value: unknown): string =>
     value == null ? (value === null ? 'Null' : 'Undefined') : toString.call(value).slice(8, -1);
 
+/**
+ * Anything that can be invoked with positional arguments — the minimal shape a
+ * handler method must satisfy, kept separate so interceptors and mocks can
+ * implement it without the route plumbing below.
+ */
 export interface Invocable {
     invoke<T = unknown>(...args: unknown[]): T;
 }
 
+/**
+ * A handler bound to a route: `invoke` receives the `Route` as its first
+ * argument and returns the handler's result (`ModelAndView`, a view name, a
+ * value).
+ */
 export interface HandlerMethod extends Invocable {
     invoke<ModelAndView>(route: Route, ...args: unknown[]): ModelAndView;
 }
 
+/**
+ * Assigns the name a handler method's mapping is registered and inspectable
+ * under — the mapping's own name when it declares one, otherwise a name the
+ * strategy derives from the handler and mapping metadata.
+ */
 export interface RouteHandlerMethodMappingNamingStrategy<T = unknown> {
     getName(handlerMethod: RouteHandlerMethod, mapping: T): string;
 }
@@ -158,6 +172,9 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
 }
 
 /**
+ * Handler for the error path: `invoke` receives the `Route` and the thrown
+ * error and returns the value the error resolver chain produced, mirroring
+ * `RouteHandlerMethod`'s invocation contract.
  */
 export class ErrorHandlerMethod extends RouteHandlerMethod {
     invoke<ModelAndView>(route: Route, error: Error, handlerMethod: RouteHandlerMethod): ModelAndView {

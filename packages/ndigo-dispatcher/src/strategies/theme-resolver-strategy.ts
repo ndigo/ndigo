@@ -1,5 +1,4 @@
 /**
- * @module ndigo-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -9,6 +8,11 @@ import { AbstractThemeResolver, FixedThemeResolver, ThemeResolver } from '../the
 import { Route } from '@ndigo/router';
 import { StrategyInitializer } from './strategy-initializer';
 
+/**
+ * Strategy mixin contract for theme resolution: exposes the active
+ * `themeResolver` and an initializer that builds it from the application
+ * context (falling back to a context-backed fixed resolver).
+ */
 export interface ThemeResolverStrategy {
     themeResolver: ThemeResolver;
     initThemeResolver(context: ApplicationContext): void;
@@ -41,6 +45,10 @@ const createDefaultThemeResolver = (context: ApplicationContext): ThemeResolver 
     }
 };
 
+/**
+ * Mixin that installs the theme resolver: uses the context's `themeName` by
+ * default and registers the resolver under its well-known name.
+ */
 export const AsThemeResolverStrategy = <T extends Constructable<StrategyInitializer>>(
     superclass: T
 ): Constructable<ThemeResolverStrategy> & T =>

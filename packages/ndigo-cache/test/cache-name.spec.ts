@@ -1,6 +1,6 @@
 /**
  * Shared cache-name resolution contract (DA-9).
- * @module ndigo-cache
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

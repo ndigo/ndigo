@@ -1,5 +1,4 @@
 /**
- * @module ndigo-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -8,6 +7,11 @@ import { Constructable } from '@ndigo/core';
 import { ImportViewResolver, ViewResolver } from '@ndigo/view';
 import { StrategyInitializer } from './strategy-initializer';
 
+/**
+ * Strategy mixin contract for view resolution: exposes the ordered
+ * `viewResolvers` that resolve a view name to a rendered result, and an
+ * initializer that installs them from the application context.
+ */
 export interface ViewResolverStrategy {
     viewResolvers: ViewResolver[];
     initViewResolvers(context: ApplicationContext): void;
@@ -20,6 +24,10 @@ const VIEW_RESOLVER = 'viewResolver',
     VIEW_RESOLVERS = `${VIEW_RESOLVER}s`,
     defaultViewResolvers: ViewResolver[] = [new ImportViewResolver()];
 
+/**
+ * Mixin that installs the view-resolver chain, defaulting to the import-based
+ * resolver when the application configures none.
+ */
 export const AsViewResolverStrategy = <T extends Constructable<StrategyInitializer>>(
     superclass: T
 ): Constructable<ViewResolverStrategy> & T =>

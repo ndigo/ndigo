@@ -17,7 +17,6 @@
  *
  * Run: `pnpm apps:smoke` (or `node scripts/apps-smoke.mjs --only api`).
  *
- * @module scripts
  * @since 1.0.0
  * @author Jeff Rose
  */

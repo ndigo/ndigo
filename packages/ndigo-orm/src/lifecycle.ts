@@ -3,7 +3,7 @@
  * Drizzle-backed `DrizzleEntityManager`, so every persistence backend fires
  * `@prePersist` / `@postLoad` / `@preUpdate` / `@postRemove` at the same
  * points (DAT-F1).
- * @module ndigo-orm
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,7 +1,6 @@
 /**
  * Context tokens for `@ndigo/flags` (AD-82 D-2).
  *
- * @module ndigo-flags
  * @since 1.0.0
  * @author Jeff Rose
  */

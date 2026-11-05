@@ -1,5 +1,4 @@
 /**
- * @module ndigo-inspect
  * @since 1.0.0
  * @author Jeff Rose
  *
@@ -149,7 +148,7 @@ export type RouteSource =
 export type MappingSource = readonly InspectMappingTable[] | InspectMappingTable | InspectDispatcherLike;
 
 /**
- * The input to {@link inspectApplication}.
+ * The input to {@link inspect-application.inspectApplication | inspectApplication}.
  */
 export interface InspectInput {
     /** The application context to inspect. */

@@ -1,5 +1,4 @@
 /**
- * @module ndigo-api
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -10,7 +9,6 @@
  * container-managed `@audited` interceptor advises a constructor-created
  * entry while leaving plain methods and private state untouched.
  *
- * @module ndigo-api
  * @since 1.0.0
  * @author Jeff Rose
  */

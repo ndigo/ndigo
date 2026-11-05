@@ -5,7 +5,6 @@
  * compile-time type to the call site, so `context.getValue(HN_SERVICE)` is an
  * `HnService` at the type level and a rename cannot silently miss.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

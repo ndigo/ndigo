@@ -13,7 +13,7 @@
  * in-process dispatcher instead of a socket. `ResilienceLab.setUpstreamFetch`
  * is the public seam for exactly that — the same seam the running app fills
  * with its loopback transport.
- * @module ndigo-resilience-lab
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,0 +1,24 @@
+[**@ndigo/factory v0.0.1**](../../README.md)
+
+***
+
+[@ndigo/factory](../../README.md) / [aware](../README.md) / Aware
+
+# Interface: Aware
+
+An interface indicating that a value is eligible to be notified by the factory of a particular framework object through a callback-style method. The actual method signature is determined by individual subinterfaces but should typically consist of just one void-returning method that accepts a single argument, e.g. `setName( name )`.
+
+Note that merely implementing `Aware` provides no default functionality. Rather, processing must be done explicitly, for example in an `EntryProcessor`. Refer to `ApplicationContextAwareProcessor` for an example of processing specific `*Aware` interface callbacks
+
+## Extended by
+
+- [`NameAware`](NameAware.md)
+- [`FactoryAware`](../../factory-contract/interfaces/FactoryAware.md)
+
+## Properties
+
+### \[$aware\]
+
+> `readonly` **\[$aware\]**: `boolean`
+
+A symbol indicating that the value is aware.

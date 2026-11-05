@@ -8,7 +8,6 @@
  * *view name* (the resolver owns the template and the status), and the API
  * helper returns the framework's problem entity.
  *
- * @module ndigo-petclinic
  * @since 1.0.0
  * @author Jeff Rose
  */

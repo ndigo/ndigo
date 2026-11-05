@@ -9,7 +9,6 @@
  * share; new code can use the `HTTPHeaders.CONTENT_TYPE` constant's
  * typed methods or `MediaType` directly.
  *
- * @module ndigo-http
  * @since 1.0.0
  * @author Jeff Rose
  */

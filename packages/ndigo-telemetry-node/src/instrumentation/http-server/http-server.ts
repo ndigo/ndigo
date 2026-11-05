@@ -1,6 +1,6 @@
 /**
  * OpenTelemetry instrumentation for `HTTPServer` lifecycle + inbound requests.
- * @module ndigo-telemetry-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

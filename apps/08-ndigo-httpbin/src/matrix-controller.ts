@@ -1,7 +1,7 @@
 /**
  * Matrix-parameter binding probe: `/matrix/{id};color={color}` with a plain
  * fallback.
- * @module ndigo-httpbin
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

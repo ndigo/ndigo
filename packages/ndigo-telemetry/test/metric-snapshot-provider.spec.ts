@@ -1,7 +1,7 @@
 /**
  * The metric snapshot source registry's fallback semantics (REV-003) and the
  * aggregator-backed provider projection.
- * @module ndigo-telemetry
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

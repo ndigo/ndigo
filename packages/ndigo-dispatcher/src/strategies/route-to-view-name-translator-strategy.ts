@@ -1,5 +1,4 @@
 /**
- * @module ndigo-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -9,6 +8,11 @@ import { DefaultRouteToViewNameTranslator, RouteToViewNameTranslator } from '../
 import { Route } from '@ndigo/router';
 import { StrategyInitializer } from './strategy-initializer';
 
+/**
+ * Strategy mixin contract for view-name translation: exposes the translator
+ * that derives a view name from a route when a handler returns none, and an
+ * initializer that installs it from the application context.
+ */
 export interface RouteToViewNameTranslatorStrategy {
     routeToViewNameTranslator: RouteToViewNameTranslator;
     initRouteToViewNameTranslator(context: ApplicationContext): void;
@@ -21,6 +25,10 @@ export interface RouteToViewNameTranslatorStrategy {
 const ROUTE_TO_VIEW_NAME_TRANSLATOR = 'routeToViewNameTranslator',
     defaultRouteToViewNameTranslator: RouteToViewNameTranslator = new DefaultRouteToViewNameTranslator();
 
+/**
+ * Mixin that installs the route-to-view-name translator, defaulting to
+ * `DefaultRouteToViewNameTranslator` when the application configures none.
+ */
 export const AsRouteToViewNameTranslatorStrategy = <T extends Constructable<StrategyInitializer>>(
     superclass: T
 ): Constructable<RouteToViewNameTranslatorStrategy> & T =>

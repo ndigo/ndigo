@@ -1,5 +1,4 @@
 /**
- * @module ndigo-generators
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -200,7 +199,7 @@ export const ndigoAliases: { find: RegExp; replacement: string }[] = [
         if (indexContent === null) {
             throw new Error('expected generated index.ts to exist');
         }
-        expect(indexContent).toContain('@module ndigo-test-pkg');
+        expect(indexContent).toContain('@author Jeff Rose');
         expect(indexContent).toContain('@since 1.0.0');
         expect(indexContent).toContain('@author Jeff Rose');
         expect(indexContent).not.toContain('TODO');

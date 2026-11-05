@@ -31,7 +31,6 @@
  * Same options/dispose semantics as the sibling durable stores: owned
  * URL-created clients, borrowed injected clients unless `ownsClient`.
  *
- * @module ndigo-orm-drizzle
  * @since 1.0.0
  * @author Jeff Rose
  */

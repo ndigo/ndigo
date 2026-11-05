@@ -1,6 +1,6 @@
 /**
  * An object with a `null` prototype.
- * @module ndigo-core
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

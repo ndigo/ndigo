@@ -10,7 +10,7 @@
  * REUSE-1), except `X-Content-Type-Options: nosniff`, reused verbatim from the
  * resolver (SEC-2); request-header reads go through the constants' `get()`,
  * which case-folds over Node's lower-cased `IncomingMessage` records.
- * @module ndigo-platform-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

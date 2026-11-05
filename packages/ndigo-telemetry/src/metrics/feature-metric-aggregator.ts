@@ -1,5 +1,4 @@
 /**
- * @module ndigo-telemetry
  * @since 1.0.0
  * @author Jeff Rose
  */

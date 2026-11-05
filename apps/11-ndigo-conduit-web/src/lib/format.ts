@@ -6,7 +6,7 @@
  * empty string rather than `Invalid Date`, so a malformed value degrades to
  * missing metadata instead of leaking a debug string into the page.
  *
- * @module ndigo-conduit-web
+
  * @since 1.0.0
  * @author Jeff Rose
  */

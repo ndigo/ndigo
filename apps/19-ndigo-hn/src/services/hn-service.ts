@@ -21,7 +21,6 @@
  *    connection banner and, in the background, replays the request through the
  *    offline queue.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

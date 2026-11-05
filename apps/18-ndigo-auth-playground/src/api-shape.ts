@@ -7,7 +7,6 @@
  * authenticates anything; it only *describes* the outcome (the ids are shown on
  * purpose: the playground exists to make session identifiers visible).
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

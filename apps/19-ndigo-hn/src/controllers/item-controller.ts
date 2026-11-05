@@ -5,7 +5,6 @@
  * deep link) re-renders the resident state instead of re-fetching it; a reload
  * with no memory falls back to the persisted snapshot, then the network.
  *
- * @module ndigo-hn
  * @since 1.0.0
  * @author Jeff Rose
  */

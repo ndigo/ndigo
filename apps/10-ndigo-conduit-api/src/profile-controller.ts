@@ -6,7 +6,6 @@
  * actually follows the profile. Follow/unfollow are idempotent, so a retried
  * request cannot flip the flag back.
  *
- * @module ndigo-conduit-api
  * @since 1.0.0
  * @author Jeff Rose
  */

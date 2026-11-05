@@ -8,7 +8,6 @@
  * for an opaque session id and for a JWT access token — and a duplicated
  * session cookie fails closed.
  *
- * @module ndigo-auth-playground
  * @since 1.0.0
  * @author Jeff Rose
  */

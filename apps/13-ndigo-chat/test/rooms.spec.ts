@@ -3,7 +3,7 @@
  * ephemeral port, driven by the Node global WHATWG `WebSocket` — history replay
  * on join, room isolation, presence join/leave, and reconnect (re-join + replay
  * without duplicates).
- * @module ndigo-chat
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

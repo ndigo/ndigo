@@ -1,6 +1,6 @@
 /**
  * MockHTTP — in-process, socket-free integration-test client for Ndigo applications.
- * @module ndigo-test
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

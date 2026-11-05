@@ -4,34 +4,13 @@
 
 # @ndigo/auth-server v0.0.1
 
-## Since
+## Modules
 
-1.0.0
-
-## Author
-
-Jeff Rose
-
-## Classes
-
-- [AuthMatrixGuard](classes/AuthMatrixGuard.md)
-- [AuthRouteGuard](classes/AuthRouteGuard.md)
-- [AuthServer](classes/AuthServer.md)
-- [CredentialsAuthAdapter](classes/CredentialsAuthAdapter.md)
-- [InMemorySessionStore](classes/InMemorySessionStore.md)
-- [InMemoryUserStore](classes/InMemoryUserStore.md)
-- [InvalidCredentialsError](classes/InvalidCredentialsError.md)
-- [JWTAdapter](classes/JWTAdapter.md)
-- [JWTTokenError](classes/JWTTokenError.md)
-
-## Interfaces
-
-- [AuthGuardDenialOptions](interfaces/AuthGuardDenialOptions.md)
-- [AuthMatrixGuardOptions](interfaces/AuthMatrixGuardOptions.md)
-- [AuthScheme](interfaces/AuthScheme.md)
-- [Credentials](interfaces/Credentials.md)
-- [CredentialsAuthAdapterOptions](interfaces/CredentialsAuthAdapterOptions.md)
-- [InMemorySessionStoreOptions](interfaces/InMemorySessionStoreOptions.md)
-- [JWTAdapterConfig](interfaces/JWTAdapterConfig.md)
-- [JWTRefreshResult](interfaces/JWTRefreshResult.md)
-- [TokenSubject](interfaces/TokenSubject.md)
+- [credentials-auth-adapter](credentials-auth-adapter/README.md)
+- [in-memory-session-store](in-memory-session-store/README.md)
+- [in-memory-user-store](in-memory-user-store/README.md)
+- [index](index/README.md)
+- [jwt-adapter](jwt-adapter/README.md)
+- [route-guard](route-guard/README.md)
+- [route-matrix-guard](route-matrix-guard/README.md)
+- [server](server/README.md)

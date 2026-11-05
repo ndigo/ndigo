@@ -9,7 +9,6 @@
  * leak into the register form, and a stale envelope is ignored rather than
  * rendered.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

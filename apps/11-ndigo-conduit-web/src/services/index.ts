@@ -2,7 +2,6 @@
  * The service layer's public surface: the beans the container registers and the
  * state/model types controllers and views share.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

@@ -1,6 +1,6 @@
 /**
  * Rule that flags abstract classes whose name does not start with `Abstract`.
- * @module src/oxlint
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

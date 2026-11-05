@@ -1,7 +1,7 @@
 /**
  * Unit coverage for the room store's bounding and presence bookkeeping
  * (deterministic — no sockets).
- * @module ndigo-chat
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

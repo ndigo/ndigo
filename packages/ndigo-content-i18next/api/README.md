@@ -4,18 +4,7 @@
 
 # @ndigo/content-i18next v0.0.1
 
-## Since
+## Modules
 
-1.0.0
-
-## Author
-
-Jeff Rose
-
-## Classes
-
-- [I18nextMessageSource](classes/I18nextMessageSource.md)
-
-## Interfaces
-
-- [I18nextMessageSourceOptions](interfaces/I18nextMessageSourceOptions.md)
+- [i18next-message-source](i18next-message-source/README.md)
+- [index](index/README.md)

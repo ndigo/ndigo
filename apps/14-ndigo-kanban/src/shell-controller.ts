@@ -3,7 +3,6 @@
  * Web Component on the seeded demo board; the built client bundle is served
  * under `/static/` by the platform `StaticController`.
  *
- * @module ndigo-kanban
  * @since 1.0.0
  * @author Jeff Rose
  */

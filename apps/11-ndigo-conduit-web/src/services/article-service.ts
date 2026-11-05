@@ -13,7 +13,6 @@
  * refresh re-renders the patch instead of re-fetching the pre-mutation list
  * over it.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

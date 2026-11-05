@@ -9,7 +9,6 @@
  * extension `pnpm test:internal` in the quality lane) until the map is
  * updated deliberately.
  *
- * @module src/oxlint
  * @since 1.0.0
  * @author Jeff Rose
  */

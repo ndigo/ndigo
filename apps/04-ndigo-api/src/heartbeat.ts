@@ -2,7 +2,7 @@
  * Scheduled demo task (AD-20): a heartbeat that pings every 30 seconds,
  * registered as a context bean so the scheduler's auto-discovery picks it
  * up at refresh. The ping counter is observable in tests.
- * @module ndigo-api
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

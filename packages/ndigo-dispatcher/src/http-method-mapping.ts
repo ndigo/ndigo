@@ -1,6 +1,6 @@
 /**
  * HTTP verb route mapping decorators — sugar over `requestMapping` with the.
- * @module ndigo-dispatcher
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

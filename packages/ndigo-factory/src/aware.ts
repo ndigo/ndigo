@@ -1,5 +1,4 @@
 /**
- * @module ndigo-factory
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -43,6 +42,11 @@ export interface NameAware extends Aware {
     setName(name: string): void;
 }
 
+/**
+ * Mixin marking a class as aware: adds a `true` value under the `Aware` symbol
+ * key so the factory can recognise aware instances without a concrete
+ * interface.
+ */
 export const AsAware = <T extends Constructable>(superclass: T): Constructable<Aware> & T =>
     class extends superclass implements Aware {
         get [$aware](): boolean {

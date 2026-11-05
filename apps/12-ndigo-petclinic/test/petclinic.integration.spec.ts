@@ -14,7 +14,6 @@
  * groups that create or update rows run last, so no count asserted earlier can
  * be invalidated by a later write.
  *
- * @module ndigo-petclinic
  * @since 1.0.0
  * @author Jeff Rose
  */

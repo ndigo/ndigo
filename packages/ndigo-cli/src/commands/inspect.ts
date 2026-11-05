@@ -4,7 +4,6 @@
  * port). The introspection logic stays in `@ndigo/inspect`; the app owns
  * the wiring (AD-75 D-3, AD-70).
  *
- * @module ndigo-cli
  * @since 1.0.0
  * @author Jeff Rose
  */

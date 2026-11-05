@@ -8,7 +8,6 @@
  * guard — and finally restores the persisted session before navigating to the
  * URL's route.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

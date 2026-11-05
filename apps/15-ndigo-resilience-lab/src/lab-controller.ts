@@ -2,7 +2,7 @@
  * The control plane: set the upstream behaviour, read the lab state, move the
  * clock, reset counters. Everything the lab does is observable and drivable
  * over HTTP — the tests and the README use the same surface a browser would.
- * @module ndigo-resilience-lab
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

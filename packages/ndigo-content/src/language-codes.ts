@@ -1,12 +1,10 @@
 /**
- * @module ndigo-content
  * @since 1.0.0
  * @author Jeff Rose
  */
 import { LanguageCode } from './language-code';
 
 /**
- * @namespace module:content.LanguageCodes
  */
 
 /**

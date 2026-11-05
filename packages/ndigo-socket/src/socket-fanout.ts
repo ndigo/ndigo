@@ -1,6 +1,6 @@
 /**
  * Transport-neutral live socket fan-out contract.
- * @module ndigo-socket
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

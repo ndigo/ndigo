@@ -1,6 +1,6 @@
 /**
  * Ndigo Island — hybrid island demo server.
- * @module ndigo-island
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

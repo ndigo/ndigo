@@ -10,7 +10,6 @@
  * The aliases are ordered: package-root entries must not capture subpath
  * imports such as `@ndigo/util/types`, so the more specific subpaths come first.
  *
- * @module vitest.aliases
  * @since 1.0.0
  * @author Jeff Rose
  */

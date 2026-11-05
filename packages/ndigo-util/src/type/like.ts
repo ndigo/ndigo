@@ -1,5 +1,4 @@
 /**
- * @module ndigo-util
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -161,6 +160,12 @@ function checkLike(cached: { keys: string[]; types: (Function | true)[]; isTrue:
 //  Public API
 // --------------------------------------------------------------------
 
+/**
+ * Curried duck-typing predicate: `like(descriptor)` returns a function that
+ * tests values against it, while `like(descriptor, value)` evaluates once.
+ * Descriptor metadata is cached per descriptor in a `WeakMap`, so repeated
+ * curried use pays the descriptor analysis cost once.
+ */
 function like(descriptor: LikeDescriptor, value: unknown): boolean;
 function like(descriptor: LikeDescriptor): (value: unknown) => boolean;
 function like(descriptor: LikeDescriptor, value?: unknown): boolean | ((value: unknown) => boolean) {

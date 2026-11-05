@@ -7,7 +7,6 @@
  * and a single `disable()` would leave the inner one live — so the shared
  * base must latch each enable/disable cycle.
  *
- * @module ndigo-telemetry
  * @since 1.0.0
  * @author Jeff Rose
  */

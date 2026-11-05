@@ -1,6 +1,6 @@
 /**
  * Server-Sent Events parsing for streaming service calls (AD-09).
- * @module ndigo-service
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

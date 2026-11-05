@@ -1,5 +1,4 @@
 /**
- * @module ndigo-orm
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -15,10 +14,23 @@ import {
     lifecycleHooksMetadataKey,
 } from './_constants';
 
+/**
+ * A constructable class reference (`new (...args) => unknown`), used wherever
+ * entity metadata has to name a class it resolves lazily.
+ */
 export type ClassType = new (...args: unknown[]) => unknown;
 
+/**
+ * The four relation shapes the decorators declare: `one-to-many`,
+ * `many-to-one`, `many-to-many`, `one-to-one`.
+ */
 export type RelationKind = 'one-to-many' | 'many-to-one' | 'many-to-many' | 'one-to-one';
 
+/**
+ * Metadata recorded for one `@relation` field: the relation kind, the owning
+ * field, the lazily-resolved target entity, and the join columns for either
+ * side of the relation.
+ */
 export interface RelationDefinition {
     kind: RelationKind;
     fieldName: string;
@@ -35,8 +47,16 @@ export interface RelationDefinition {
     inverseJoinColumn?: string;
 }
 
+/**
+ * The entity lifecycle moments a hook can be attached to: `prePersist`,
+ * `postLoad`, `preUpdate`, `postRemove`.
+ */
 export type LifecycleEvent = 'prePersist' | 'postLoad' | 'preUpdate' | 'postRemove';
 
+/**
+ * One registered lifecycle hook: the event it fires on and the method the
+ * manager invokes when that event occurs.
+ */
 export interface LifecycleHookDefinition {
     event: LifecycleEvent;
     methodName: string;

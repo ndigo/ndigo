@@ -2,7 +2,7 @@
  * The wire documents this app answers with, defined once and parsed at the test
  * boundary by every lane — so a response-shape change fails loudly in each lane
  * instead of slipping through a cast, and the three lanes cannot drift apart.
- * @module ndigo-redis-fanout
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

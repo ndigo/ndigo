@@ -1,6 +1,6 @@
 /**
  * The island demo's server-side todo model (AD-09).
- * @module ndigo-island
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

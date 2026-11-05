@@ -1,6 +1,6 @@
 /**
  * Ndigo Hello Node — minimal HTTP server.
- * @module ndigo-hello-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

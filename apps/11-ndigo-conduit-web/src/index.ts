@@ -8,7 +8,6 @@
  * load, and the dispatcher resolves a view name to that tag, so a component that
  * is never imported renders as an unknown element.
  *
- * @module ndigo-conduit-web
  * @since 1.0.0
  * @author Jeff Rose
  */

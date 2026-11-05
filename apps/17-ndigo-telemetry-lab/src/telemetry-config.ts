@@ -11,7 +11,6 @@
  * - The description is safe to compute in tests, where registering global
  *   providers would leak across a worker; nothing here touches the OTel API.
  *
- * @module ndigo-telemetry-lab
  * @since 1.0.0
  * @author Jeff Rose
  */

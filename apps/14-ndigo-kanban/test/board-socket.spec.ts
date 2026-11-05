@@ -6,7 +6,6 @@
  * snapshot before the event stream resumes, and two boards never leaking into
  * each other's room.
  *
- * @module ndigo-kanban
  * @since 1.0.0
  * @author Jeff Rose
  */

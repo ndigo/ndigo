@@ -12,7 +12,6 @@
  * never touches the OTel API, which is what keeps `bootApp`-based tests
  * hermetic.
  *
- * @module ndigo-telemetry-lab
  * @since 1.0.0
  * @author Jeff Rose
  */

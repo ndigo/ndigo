@@ -5,7 +5,7 @@
  * + close on violations (server-initiated publish from outside the
  * handler). Non-STOMP socket paths keep the stock first-offered
  * subprotocol behavior.
- * @module ndigo-platform-node
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

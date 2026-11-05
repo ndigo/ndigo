@@ -1,5 +1,4 @@
 /**
- * @module ndigo-dispatcher
  * @since 1.0.0
  * @author Jeff Rose
  */
@@ -8,6 +7,11 @@ import { RouteMappingInfo } from './route-mapping-info-model';
 const { defineProperty } = Reflect;
 const separator = '';
 
+/**
+ * Default naming strategy for route mappings: prefers the mapping's explicit
+ * `name`, and otherwise joins the handler class and method with the static
+ * `separator`.
+ */
 export class RouteMappingInfoHandlerMethodMappingNamingStrategy implements RouteHandlerMethodMappingNamingStrategy<RouteMappingInfo> {
     /**
      * Separator used when generating fallback mapping names.

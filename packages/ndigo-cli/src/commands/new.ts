@@ -5,7 +5,6 @@
  * the workspace's Nx bridge (AD-75 D-3); the generator owns the templates,
  * the reading-order number, and the dev-port allocation.
  *
- * @module ndigo-cli
  * @since 1.0.0
  * @author Jeff Rose
  */

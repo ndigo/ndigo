@@ -6,7 +6,6 @@
  * the built `lib/` output the `node_modules` symlinks expose — mirrors the
  * sibling Node app lanes (`02-ndigo-hello-node`, `04-ndigo-api`).
  *
- * @module ndigo-httpbin
  * @since 1.0.0
  * @author Jeff Rose
  */

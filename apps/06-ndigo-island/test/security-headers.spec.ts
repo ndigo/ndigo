@@ -1,7 +1,7 @@
 /**
  * SEC-C — the demo widens its CSP `connect-src` so the adopted library's
  * inline-icon fetch (Web Awesome `with-clear`) is admitted.
- * @module ndigo-island
+ *
  * @since 1.0.0
  * @author Jeff Rose
  */

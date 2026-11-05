@@ -1,20 +1,4 @@
 {
-  "@ndigo/js": {
-    "AuthAdapter": "#",
-    "AuthResult": "#",
-    "FeatureMetricAggregator": "#",
-    "Initializable": "#",
-    "InterceptorDenial": "#",
-    "JobDriver": "#",
-    "MessageSource": "#",
-    "OutboxStore": "#",
-    "Principal": "#",
-    "ProducerView": "#",
-    "ResourceLoader": "#",
-    "RouteHandlerInterceptor": "#",
-    "SessionStore": "#",
-    "ViewTarget": "#"
-  },
   "@ndigo/auth-core": {
     "AuthAdapter": "#",
     "AuthResult": "#",

@@ -143,7 +143,7 @@ export async function runAppSupervised(
  * @param hint - The missing-script hint.
  * @returns The child's exit code.
  */
-export async function runAppOnce(dir: string, scriptKey: string, hint: string): Promise<number> {
+export async function runAppOnce(dir: string, scriptKey: string, hint: string, extraArgv: string[] = []): Promise<number> {
     const resolved = appScriptCommand(dir, scriptKey, hint);
     // Handlers are installed BEFORE the spawn (AD75-H2): a signal arriving
     // between spawn and registration would otherwise drop the relay and
@@ -157,7 +157,7 @@ export async function runAppOnce(dir: string, scriptKey: string, hint: string): 
         process.on(signal, relay);
     }
     try {
-        child = spawn(resolved.argv[0] ?? '', resolved.argv.slice(1), {
+        child = spawn(resolved.argv[0] ?? '', [...resolved.argv.slice(1), ...extraArgv], {
             cwd: resolved.cwd,
             env: resolved.env,
             stdio: 'inherit',

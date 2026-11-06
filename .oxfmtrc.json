@@ -42,7 +42,10 @@
     ".review-notes.md",
     "index.js",
     "index.cjs",
-    "src/index.js"
+    "src/index.js",
+    "AGENTS.md",
+    ".github/copilot-instructions.md",
+    "opencode.json"
   ],
   "overrides": [
     {

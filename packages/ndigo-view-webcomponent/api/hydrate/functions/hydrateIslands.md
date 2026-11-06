@@ -58,7 +58,3 @@ The number of islands hydrated.
 import { hydrateIslands } from '@ndigo/view-webcomponent';
 const n = hydrateIslands();
 ```
-
-## Since
-
-1.0.0

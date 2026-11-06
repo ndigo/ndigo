@@ -66,17 +66,12 @@ describe('app-scripts helpers', () => {
     });
 
     test('an embedded newline in a declared script fails loud (SEC-005, issue #148)', () => {
-        writeFileSync(
-            join(fixture, 'package.json'),
-            JSON.stringify({ name: 'b', scripts: { dev: 'vite\nbuild' } })
-        );
+        writeFileSync(join(fixture, 'package.json'), JSON.stringify({ name: 'b', scripts: { dev: 'vite\nbuild' } }));
         try {
             // The previous behavior silently glued `build` onto vite's argv:
             // vite ran as an accidental production build instead of the dev
             // server. The guard names the split-script fix.
-            expect(() => appScriptCommand(fixture, 'dev', 'hint')).toThrow(
-                /spans multiple lines/
-            );
+            expect(() => appScriptCommand(fixture, 'dev', 'hint')).toThrow(/spans multiple lines/);
         } finally {
             writeFileSync(
                 join(fixture, 'package.json'),
@@ -85,7 +80,8 @@ describe('app-scripts helpers', () => {
         }
     });
 
-    test('the shell-operator guard also catches $() and backtick substitution (AD75-L1)', () => {        writeFileSync(
+    test('the shell-operator guard also catches $() and backtick substitution (AD75-L1)', () => {
+        writeFileSync(
             join(fixture, 'package.json'),
             JSON.stringify({ name: 'b', scripts: { start: 'echo $(whoami)' } })
         );

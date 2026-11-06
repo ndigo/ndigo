@@ -25,9 +25,9 @@ export const infoCommand = buildCommand({
             for (const name of readdirSync(resolved)) {
                 let version = 'unknown';
                 try {
-                    const m = JSON.parse(
-                        readFileSync(join(resolved, name, 'package.json'), 'utf8')
-                    ) as { version?: string };
+                    const m = JSON.parse(readFileSync(join(resolved, name, 'package.json'), 'utf8')) as {
+                        version?: string;
+                    };
                     version = m.version ?? version;
                 } catch {
                     /* ignore */

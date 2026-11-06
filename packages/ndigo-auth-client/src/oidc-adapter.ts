@@ -472,7 +472,12 @@ export class OIDCAdapter implements AuthAdapter {
         if (!this.#config.discovery) {
             throw new OIDCError('configuration', 'discovery is not enabled for this adapter');
         }
-        this.#discoveryPromise ??= this.#fetchDiscovery();
+        if (this.#discoveryPromise === null) {
+            this.#discoveryPromise = this.#fetchDiscovery().catch((error) => {
+                this.#discoveryPromise = null;
+                throw error;
+            });
+        }
         return this.#discoveryPromise;
     }
 
@@ -502,7 +507,12 @@ export class OIDCAdapter implements AuthAdapter {
         if (typeof value !== 'string' || value.length === 0) {
             throw new OIDCError('discovery', `Discovery document is missing a valid ${label}`);
         }
-        const url = new URL(value);
+        let url: URL;
+        try {
+            url = new URL(value);
+        } catch (error) {
+            throw new OIDCError('discovery', `Discovery document has an invalid ${label}: ${value}`, { cause: error });
+        }
         assertTrustedUrl(url, `discovery ${label}`);
         return value;
     }
@@ -559,7 +569,11 @@ export class OIDCAdapter implements AuthAdapter {
                 throw new OIDCError('network', `${label} exceeds the ${maxBytes}-byte limit`);
             }
             if (!response.body) {
-                return JSON.parse(await response.text());
+                try {
+                    return JSON.parse(await response.text());
+                } catch (error) {
+                    throw new OIDCError('malformed_response', `${label} is not valid JSON`, { cause: error });
+                }
             }
             const reader = response.body.getReader();
             const chunks: Uint8Array[] = [];
@@ -581,7 +595,11 @@ export class OIDCAdapter implements AuthAdapter {
                 body.set(chunk, offset);
                 offset += chunk.byteLength;
             }
-            return JSON.parse(new TextDecoder().decode(body));
+            try {
+                return JSON.parse(new TextDecoder().decode(body));
+            } catch (error) {
+                throw new OIDCError('malformed_response', `${label} is not valid JSON`, { cause: error });
+            }
         } catch (error) {
             if (error instanceof OIDCError) throw error;
             throw new OIDCError('network', `${label} fetch failed`, { cause: error });

@@ -59,7 +59,7 @@ describe('create-ndigo-app scaffold', () => {
         expect(index).toContain('createWebApplication');
     });
 
-    test('--local rewrites @ndigo/* deps to workspace:*', async () => {
+    test('--local rewrites @ndigo/* deps to file: links', async () => {
         const target = join(ROOT, 'apps', '99-scaffold-test-local');
         created.push(target);
 

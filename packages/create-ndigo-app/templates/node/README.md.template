@@ -20,10 +20,6 @@ cd {{name}} && pnpm install && pnpm start
 
 - [@ndigo/platform-node](https://www.npmjs.com/package/@ndigo/platform-node) — the Node platform foundation
 
-## Contributing
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
-
 ## License
 
-[ISC](./LICENSE)
+ISC

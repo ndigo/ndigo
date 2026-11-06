@@ -15,10 +15,13 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 /**
- * The framework Node baseline (matches `@oclif/core` v5 and the repo's
- * `engines`): versions below it are reported as a doctor failure.
+ * The framework Node baseline (matches `@oclif/core` v5, the root
+ * `engines` floor, and CI): versions below it are reported as a doctor
+ * failure. Exported for the parity spec — `doctor` answering "healthy" on
+ * a runtime `engine-strict` refuses to install on is the one thing this
+ * check cannot be allowed to do.
  */
-const MIN_NODE_MAJOR = 22;
+export const MIN_NODE_MAJOR = 24;
 
 /** Captured command output, with spawn failures told apart from empty output. */
 interface CaptureResult {

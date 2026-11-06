@@ -1,7 +1,7 @@
 # Micro Frontends in Ndigo — architecture map
 
 **Status:** Live — the patterns below are implemented (`@ndigo/host` since
-2026-09-13) and demonstrated by `apps/05-ndigo-host` and `apps/03-ndigo-todo`.
+2026-09-13) and demonstrated by `apps/06-ndigo-host-demo` and `apps/03-ndigo-todo-web`.
 
 This is the cross-cutting map for Ndigo micro frontends: how the shell
 hosts feature contexts, how islands fit in, and where the seams,
@@ -130,8 +130,8 @@ a graph of call sites. Both demo hosts exercise this discipline.
 - **Route registry** (AD-61): `docs/decisions/2026-09-03_AD61_ROUTE_REGISTRY.md`
 - **Framework assessment** (partial hydration ✅, MFE shell status):
   `docs/reference/2026-09-01_FEATURE_ASSESSMENT.md`
-- **Demo hosts**: `apps/05-ndigo-host` (@ndigo/host-demo), `apps/03-ndigo-todo`,
-  reactive island: `apps/06-ndigo-island`
+- **Demo hosts**: `apps/06-ndigo-host-demo` (@ndigo/host-demo), `apps/03-ndigo-todo-web`,
+  reactive island: `apps/07-ndigo-island`
 
 ## Known gaps (deliberate)
 

@@ -4,7 +4,7 @@
  *
  * Vitest transforms TypeScript through esbuild, so a client bundle that ships
  * unparseable output (the Vite 8 / oxc decorator-passthrough failure
- * `06-ndigo-island` guards against) would leave every other test green. Parsing
+ * `07-ndigo-island` guards against) would leave every other test green. Parsing
  * the built file with Node as an ES module closes that hole.
  *
  * @since 1.0.0

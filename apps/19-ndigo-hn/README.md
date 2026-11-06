@@ -97,9 +97,9 @@ list + item flow, run `pnpm dev` with network access.
 ## See Also
 
 - [apps/README](../README.md) — the applications progression
-- [07-ndigo-views](../07-ndigo-views/README.md) — the HTTP client cache + offline
+- [08-ndigo-views](../08-ndigo-views/README.md) — the HTTP client cache + offline
   queueing demo this app builds on
-- [11-ndigo-conduit-web](../11-ndigo-conduit-web/README.md) — the other
+- [10-ndigo-conduit-web](../10-ndigo-conduit-web/README.md) — the other
   hash-routed browser app
 - [guide 20 — the HTTP client](../../docs/guides/20-http-client.md)
 - [guide 18 — signals & islands](../../docs/guides/18-signals-and-islands.md)

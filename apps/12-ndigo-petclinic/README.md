@@ -100,8 +100,8 @@ shape (owner → pets → type/visits, vet → specialties). A per-name
 the explicit mapping keeps each contract honest and lets both be asserted
 without header juggling. `ContentNegotiationViewResolver` remains the right tool
 for one model in several representations — see
-[`apps/07-ndigo-views`](../07-ndigo-views/README.md) and
-[`apps/04-ndigo-api`](../04-ndigo-api/README.md).
+[`apps/08-ndigo-views`](../08-ndigo-views/README.md) and
+[`apps/05-ndigo-api`](../05-ndigo-api/README.md).
 
 ## Domain and storage
 
@@ -226,7 +226,7 @@ Deliberately simplified or replaced:
 ## See Also
 
 - [apps/README](../README.md) — the numbered application ladder and port registry
-- [06 — ndigo-island](../06-ndigo-island/README.md) — EJS view resolution,
+- [07 — ndigo-island](../07-ndigo-island/README.md) — EJS view resolution,
   static asset serving and i18n in a Node app
 - [02 — Request Validation](../../docs/guides/02-request-validation.md) — Zod
   contracts, `validatedQuery`/`validatedBody`, the 422 document

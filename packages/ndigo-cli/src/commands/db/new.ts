@@ -27,7 +27,7 @@ export class DbNewCommand extends Command {
         'directory with the next free version and an empty `up` body — ' +
         'fill it in, then run `ndigo db migrate` (the runner orders by the ' +
         'exported version; the filename is cosmetic).';
-    static examples = ['$ ndigo db new add-inbox-column', '$ ndigo db new ./apps/04-ndigo-api add-inbox-column'];
+    static examples = ['$ ndigo db new add-inbox-column', '$ ndigo db new ./apps/05-ndigo-api add-inbox-column'];
 
     static flags = {};
 

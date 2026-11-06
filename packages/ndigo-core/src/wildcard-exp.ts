@@ -2,7 +2,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { WildcardConverter } from './wildcard-expression.js';
+import { WildcardConverter } from './wildcard-converter.js';
 
 const wildcardConverter = new WildcardConverter();
 /**

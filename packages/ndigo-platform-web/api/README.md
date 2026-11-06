@@ -27,6 +27,6 @@
 - [locale](locale/README.md)
 - [offline-interceptor](offline-interceptor/README.md)
 - [online-reconnect-trigger](online-reconnect-trigger/README.md)
-- [parser/cookie-expression](parser/cookie-expression/README.md)
+- [parser/cookie-parser](parser/cookie-parser/README.md)
 - [retry-on-offline-interceptor](retry-on-offline-interceptor/README.md)
 - [web-auto-configuration](web-auto-configuration/README.md)

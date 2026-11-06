@@ -7,7 +7,7 @@
  * classes (the container constructs them itself). So the runtime is created
  * first — `createRuntime()` — and published here for
  * {@link PlaygroundConfiguration} to read at refresh time. This is the same
- * shape `04-ndigo-api` uses (`initAuth()` before the builder runs): the adapters
+ * shape `05-ndigo-api` uses (`initAuth()` before the builder runs): the adapters
  * are process-global already (`AuthRegistry`), and the store/config that back
  * them are published alongside.
  *

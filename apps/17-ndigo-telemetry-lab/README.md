@@ -267,8 +267,8 @@ pnpm --filter @ndigo/telemetry-lab test        # vitest, 4 files, 21 tests
   [Guide 06 — WebSockets](../../docs/guides/06-websockets.md),
   [Guide 19 — Testing](../../docs/guides/19-testing.md),
   [Guide 20 — The HTTP client](../../docs/guides/20-http-client.md).
-- [`apps/04-ndigo-api`](../04-ndigo-api/README.md) — the same collector wiring in a
-  larger app; `apps/07-ndigo-views`' client demo for the browser-side
+- [`apps/05-ndigo-api`](../05-ndigo-api/README.md) — the same collector wiring in a
+  larger app; `apps/08-ndigo-views`' client demo for the browser-side
   `TraceHeaderInterceptor` pattern.
 
 [ISC](../../LICENSE)

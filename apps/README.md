@@ -12,21 +12,27 @@ add the app's row below by hand. See the
 [example-applications plan](../docs/plans/2026-10-07_EXAMPLE_APPLICATIONS.md)
 for the planned `08+` portfolio.
 
+Paired front-end/back-end apps use the `-web` / `-api` role suffixes and sit
+next to each other in the ladder (`03-ndigo-todo-web` + `04-ndigo-todo-api`,
+`10-ndigo-conduit-web` + `11-ndigo-conduit-api`). The full directory, package,
+and file-naming convention is in
+[guide 29 — Application Conventions](../docs/guides/29-application-conventions.md).
+
 ## Progression
 
 | #   | Directory                  | Package                  | Runtime             | Dev port         | Demonstrates                                                                                                                                                                                                                       |
 | --- | -------------------------- | ------------------------ | ------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | `01-ndigo-hello`           | `@ndigo/hello`           | Browser (Vite)      | 3001             | Browser — context + route + template/Web Component render                                                                                                                                                                          |
 | 2   | `02-ndigo-hello-node`      | `@ndigo/hello-node`      | Node (`tsx`)        | 3010             | Node — `HTTPServer` + `NodeDispatcher` + `@getMapping`, JSON responses, WebSocket echo                                                                                                                                             |
-| 3   | `03-ndigo-todo`            | `@ndigo/todo`            | Browser (Vite)      | 3003             | Browser — TodoMVC + micro frontend shell (`@ndigo/host` one-call registration, relay gateway)                                                                                                                                      |
-| 4   | `04-ndigo-api`             | `@ndigo/api`             | Node (`tsx`)        | 3000             | Node — controllers, opaque session-token auth, ORM (+Drizzle), content negotiation, problem+json errors, **management `/health`/`/metrics`**, **Accept-Language i18n**, config bindings                                            |
-| 5   | `05-ndigo-host`            | `@ndigo/host-demo`       | Browser (Vite)      | 3100             | Browser — micro frontend host: `@ndigo/host` `HostManager` + 3 lazy-loaded feature chunks, shared-dependency validation                                                                                                            |
-| 6   | `06-ndigo-island`          | `@ndigo/island`          | Node + built client | 3200             | Node SSR — EJS shell + island hydration, SSE push → `@ndigo/signals`, typed service stream, adopted component-library form (AD-71)                                                                                                 |
-| 7   | `07-ndigo-views`           | `@ndigo/views`           | Browser (Vite)      | 3005             | Browser — view-resolution composite (three view locations), i18n (`@ndigo/content`), HTTP client with cache + offline queueing                                                                                                     |
-| 8   | `08-ndigo-httpbin`         | `@ndigo/httpbin`         | Node (`tsx`)        | 3020             | Node — HTTP semantics playground: cross-source binding, redirects/status/cookies/auth challenges, compression, rate limiting, matrix params (modelled on httpbin)                                                                  |
-| 9   | `09-ndigo-todobackend`     | `@ndigo/todobackend`     | Node (`tsx`)        | 3030             | Node — the Todo-Backend REST spec (CRUD + CORS/HEAD/OPTIONS/status contract), verified against the public runner's checklist                                                                                                       |
-| 10  | `10-ndigo-conduit-api`     | `@ndigo/conduit-api`     | Node (`tsx`)        | 3040             | Node — RealWorld (Conduit) API conformance: JWT auth, articles/comments/tags/favorites/follows, pagination + filters, spec-exact error envelope                                                                                    |
-| 11  | `11-ndigo-conduit-web`     | `@ndigo/conduit-web`     | Browser (Vite)      | 3400             | Browser — RealWorld frontend: hash routes, auth guard + 401 session drop, forms with error-envelope mapping, optimistic favorite/follow with rollback, markdown (escape-by-default), pagination (proxies `/api` → the Conduit API) |
+| 3   | `03-ndigo-todo-web`        | `@ndigo/todo-web`        | Browser (Vite)      | 3003             | Browser — TodoMVC + micro frontend shell (`@ndigo/host` one-call registration, relay gateway)                                                                                                                                      |
+| 4   | `04-ndigo-todo-api`        | `@ndigo/todo-api`        | Node (`tsx`)        | 3030             | Node — the Todo-Backend REST spec (CRUD + CORS/HEAD/OPTIONS/status contract), verified against the public runner's checklist                                                                                                       |
+| 5   | `05-ndigo-api`             | `@ndigo/api`             | Node (`tsx`)        | 3000             | Node — controllers, opaque session-token auth, ORM (+Drizzle), content negotiation, problem+json errors, **management `/health`/`/metrics`**, **Accept-Language i18n**, config bindings                                            |
+| 6   | `06-ndigo-host-demo`       | `@ndigo/host-demo`       | Browser (Vite)      | 3100             | Browser — micro frontend host: `@ndigo/host` `HostManager` + 3 lazy-loaded feature chunks, shared-dependency validation                                                                                                            |
+| 7   | `07-ndigo-island`          | `@ndigo/island`          | Node + built client | 3200             | Node SSR — EJS shell + island hydration, SSE push → `@ndigo/signals`, typed service stream, adopted component-library form (AD-71)                                                                                                 |
+| 8   | `08-ndigo-views`           | `@ndigo/views`           | Browser (Vite)      | 3005             | Browser — view-resolution composite (three view locations), i18n (`@ndigo/content`), HTTP client with cache + offline queueing                                                                                                     |
+| 9   | `09-ndigo-httpbin`         | `@ndigo/httpbin`         | Node (`tsx`)        | 3020             | Node — HTTP semantics playground: cross-source binding, redirects/status/cookies/auth challenges, compression, rate limiting, matrix params (modelled on httpbin)                                                                  |
+| 10  | `10-ndigo-conduit-web`     | `@ndigo/conduit-web`     | Browser (Vite)      | 3400             | Browser — RealWorld frontend: hash routes, auth guard + 401 session drop, forms with error-envelope mapping, optimistic favorite/follow with rollback, markdown (escape-by-default), pagination (proxies `/api` → the Conduit API) |
+| 11  | `11-ndigo-conduit-api`     | `@ndigo/conduit-api`     | Node (`tsx`)        | 3040             | Node — RealWorld (Conduit) API conformance: JWT auth, articles/comments/tags/favorites/follows, pagination + filters, spec-exact error envelope                                                                                    |
 | 12  | `12-ndigo-petclinic`       | `@ndigo/petclinic`       | Node (`tsx`)        | 3050             | Node SSR — EJS forms + validation re-render, i18n (en/fr), paginated owner/pet/visit/vet flows, JSON negotiation, static assets (spring-petclinic port)                                                                            |
 | 13  | `13-ndigo-chat`            | `@ndigo/chat`            | Node + built client | 3060             | Real-time rooms: history replay, presence, typing, reconnect — plus STOMP interop with a third-party client (`@stomp/stompjs`)                                                                                                     |
 | 14  | `14-ndigo-kanban`          | `@ndigo/kanban`          | Node + built client | 3070             | Collaborative board: versioned cards, 409 conflict on stale writes, optimistic UI with rollback, live multi-client updates (snapshot-then-events on reconnect)                                                                     |
@@ -56,29 +62,43 @@ cd apps/02-ndigo-hello-node && pnpm start
 # GET http://127.0.0.1:3010/hello?name=Ndigo
 ```
 
-### 03-ndigo-todo
+### 03-ndigo-todo-web
 
 TodoMVC implementation with a micro frontend shell: feature mount manager,
 relay gateway, and feature routing registry. Vite dev server + integration tests.
+The matching Todo-Backend spec server is
+[04-ndigo-todo-api](04-ndigo-todo-api/README.md).
 
 ```bash
-cd apps/03-ndigo-todo && pnpm dev
+cd apps/03-ndigo-todo-web && pnpm dev
 ```
 
-### 04-ndigo-api
+### 04-ndigo-todo-api
+
+Implementation of the [Todo-Backend](https://www.todobackend.com/) REST spec:
+five JSON operations plus the protocol surface its public browser runner
+exercises (CORS preflight, `HEAD`, `OPTIONS`, exact statuses). The paired
+frontend is [03-ndigo-todo-web](03-ndigo-todo-web/README.md).
+
+```bash
+cd apps/04-ndigo-todo-api && pnpm start
+# GET http://127.0.0.1:3030/todos
+```
+
+### 05-ndigo-api
 
 Full Node server demo: greeting/echo controllers, opaque session-token auth,
 ORM-backed notes, matrix-parameter product routes, `ResponseEntity`
 (status/headers), and static file serving.
 
 ```bash
-cd apps/04-ndigo-api && pnpm start
+cd apps/05-ndigo-api && pnpm start
 # GET  http://127.0.0.1:3000/api/hello?name=Alice
 # POST http://127.0.0.1:3000/auth/login {"username":"admin","password":"demo"}
 # GET  http://127.0.0.1:3000/notes  (Authorization: Bearer <token>)
 ```
 
-### 05-ndigo-host
+### 06-ndigo-host-demo
 
 Micro frontend host: a shell context with a shared dependency registry, three
 features (catalog, checkout, reports) loaded as lazy chunks via `mountLazy` +
@@ -86,14 +106,14 @@ dynamic `import()`, and one-call feature registration through the
 `@ndigo/host` `HostManager` (exclusive activation).
 
 ```bash
-cd apps/05-ndigo-host && pnpm dev
+cd apps/06-ndigo-host-demo && pnpm dev
 # navigate to /catalog, /checkout, /reports
 ```
 
 Build output shows each feature as its own chunk (`catalog-*.js`,
 `checkout-*.js`, `reports-*.js`) — fetched only on demand.
 
-### 06-ndigo-island
+### 07-ndigo-island
 
 Hybrid island demo: the Node server renders a whole shell document with EJS
 (`@ndigo/view-ejs`) containing server-side island markup, serves the built
@@ -101,23 +121,23 @@ client bundle that hydrates it, and pushes source-of-truth model updates to
 islands over SSE.
 
 ```bash
-cd apps/06-ndigo-island && pnpm dev
+cd apps/07-ndigo-island && pnpm dev
 # GET http://127.0.0.1:3200/
 # GET http://127.0.0.1:3200/events   (SSE stream)
 ```
 
-### 07-ndigo-views
+### 08-ndigo-views
 
 View-resolution demo: one ordered resolver chain over three view locations
 (component module, context bean, module on disk). Content negotiation — one
 logical view served as JSON or CSV — lives in
-[04-ndigo-api](../apps/04-ndigo-api/README.md).
+[05-ndigo-api](05-ndigo-api/README.md).
 
 ```bash
-cd apps/07-ndigo-views && pnpm dev
+cd apps/08-ndigo-views && pnpm dev
 ```
 
-### 08-ndigo-httpbin
+### 09-ndigo-httpbin
 
 HTTP semantics playground modelled on [httpbin](https://github.com/postmanlabs/httpbin):
 echo what the dispatcher saw, and shape the response back — statuses,
@@ -125,43 +145,33 @@ redirect chains, cookies, auth challenges, compression, delays, binary bodies,
 matrix-parameter routes, and a rate-limited endpoint.
 
 ```bash
-cd apps/08-ndigo-httpbin && pnpm start
+cd apps/09-ndigo-httpbin && pnpm start
 # GET http://127.0.0.1:3020/get?a=1
 ```
 
-### 09-ndigo-todobackend
+### 10-ndigo-conduit-web
 
-Implementation of the [Todo-Backend](https://www.todobackend.com/) REST spec:
-five JSON operations plus the protocol surface its public browser runner
-exercises (CORS preflight, `HEAD`, `OPTIONS`, exact statuses).
+The RealWorld (Conduit) frontend: hash-routed pages for feeds, articles,
+profiles, editor and settings on top of
+[11-ndigo-conduit-api](11-ndigo-conduit-api/README.md) (the Vite dev server
+proxies `/api` to the API, so the browser stays same-origin).
 
 ```bash
-cd apps/09-ndigo-todobackend && pnpm start
-# GET http://127.0.0.1:3030/todos
+cd apps/11-ndigo-conduit-api && pnpm start   # in one terminal
+cd apps/10-ndigo-conduit-web && pnpm dev     # in another
+# open http://127.0.0.1:3400/
 ```
 
-### 10-ndigo-conduit-api
+### 11-ndigo-conduit-api
 
 The [RealWorld](https://github.com/gothinkster/realworld) "Conduit" backend: JWT
 auth, articles/tags/comments, follows and favorites, pagination and filters,
 with the spec-exact `{errors:{…}}` envelope — in-memory, zero infrastructure.
+The paired frontend is [10-ndigo-conduit-web](10-ndigo-conduit-web/README.md).
 
 ```bash
-cd apps/10-ndigo-conduit-api && pnpm start
+cd apps/11-ndigo-conduit-api && pnpm start
 # GET http://127.0.0.1:3040/api/tags
-```
-
-### 11-ndigo-conduit-web
-
-The RealWorld (Conduit) frontend: hash-routed pages for feeds, articles,
-profiles, editor and settings on top of
-[10-ndigo-conduit-api](10-ndigo-conduit-api/README.md) (the Vite dev server
-proxies `/api` to the API, so the browser stays same-origin).
-
-```bash
-cd apps/10-ndigo-conduit-api && pnpm start   # in one terminal
-cd apps/11-ndigo-conduit-web && pnpm dev     # in another
-# open http://127.0.0.1:3400/
 ```
 
 ### 12-ndigo-petclinic
@@ -267,24 +277,24 @@ apps on the next free port.
 
 | Port        | App                                                                 |
 | ----------- | ------------------------------------------------------------------- |
-| 3000        | `04-ndigo-api` (the flagship Node app owns the 3000 default)        |
+| 3000        | `05-ndigo-api` (the flagship Node app owns the 3000 default)        |
 | 3001        | `01-ndigo-hello` (Vite)                                             |
-| 3003        | `03-ndigo-todo` (Vite dev; e2e preview uses 4173)                   |
-| 3005        | `07-ndigo-views` (Vite)                                             |
+| 3003        | `03-ndigo-todo-web` (Vite dev; e2e preview uses 4173)               |
+| 3005        | `08-ndigo-views` (Vite)                                             |
 | 3010        | `02-ndigo-hello-node`                                               |
-| 3020        | `08-ndigo-httpbin`                                                  |
-| 3030        | `09-ndigo-todobackend`                                              |
-| 3040        | `10-ndigo-conduit-api`                                              |
+| 3020        | `09-ndigo-httpbin`                                                  |
+| 3030        | `04-ndigo-todo-api`                                                 |
+| 3040        | `11-ndigo-conduit-api`                                              |
 | 3050        | `12-ndigo-petclinic`                                                |
 | 3060        | `13-ndigo-chat` (serves its built client)                           |
 | 3070        | `14-ndigo-kanban` (serves its built client)                         |
 | 3080        | `15-ndigo-resilience-lab`                                           |
 | 3090        | `17-ndigo-telemetry-lab` (server + built client)                    |
-| 3100        | `05-ndigo-host` (Vite)                                              |
+| 3100        | `06-ndigo-host-demo` (Vite)                                         |
 | 3110        | `18-ndigo-auth-playground` (client dev server 3440)                 |
 | 3160 / 3161 | `16-ndigo-redis-fanout` (two instances for the fan-out demo)        |
-| 3200 / 3280 | `06-ndigo-island` (dev / e2e)                                       |
-| 3400        | `11-ndigo-conduit-web` (Vite dev; proxies `/api` → 3040)            |
+| 3200 / 3280 | `07-ndigo-island` (dev / e2e)                                       |
+| 3400        | `10-ndigo-conduit-web` (Vite dev; proxies `/api` → 3040)            |
 | 3450        | `19-ndigo-hn` (Vite)                                                |
 | 4000–4200   | dedicated `pnpm apps:smoke` probe ports (never reused as dev ports) |
 
@@ -307,17 +317,18 @@ pnpm apps:smoke
 **Build an application** (per app type):
 
 ```bash
-# Browser apps — 01-ndigo-hello, 03-ndigo-todo, 05-ndigo-host, 07-ndigo-views
+# Browser apps — 01-ndigo-hello, 03-ndigo-todo-web, 06-ndigo-host-demo,
+# 08-ndigo-views, 10-ndigo-conduit-web, 19-ndigo-hn
 cd apps/<app-dir> && pnpm build
 
-# 06-ndigo-island — builds only the client bundle; the server runs from source
-cd apps/06-ndigo-island && pnpm build:client
+# 07-ndigo-island — builds only the client bundle; the server runs from source
+cd apps/07-ndigo-island && pnpm build:client
 
-# Node apps — 02-ndigo-hello-node and 04-ndigo-api have no build step;
+# Node apps — 02-ndigo-hello-node and 05-ndigo-api have no build step;
 # pnpm start runs src/index.ts directly through tsx.
 ```
 
-Not every app defines a `build` script and `06-ndigo-island` defines
+Not every app defines a `build` script and `07-ndigo-island` defines
 `build:client` instead, so the generic `cd apps/<app-dir> && pnpm build` does
 not apply to all of them.
 
@@ -334,15 +345,15 @@ endpoints, and what the app demonstrates:
 
 - [01-ndigo-hello](01-ndigo-hello/README.md)
 - [02-ndigo-hello-node](02-ndigo-hello-node/README.md)
-- [03-ndigo-todo](03-ndigo-todo/README.md)
-- [04-ndigo-api](04-ndigo-api/README.md)
-- [05-ndigo-host](05-ndigo-host/README.md)
-- [06-ndigo-island](06-ndigo-island/README.md)
-- [07-ndigo-views](07-ndigo-views/README.md)
-- [08-ndigo-httpbin](08-ndigo-httpbin/README.md)
-- [09-ndigo-todobackend](09-ndigo-todobackend/README.md)
-- [10-ndigo-conduit-api](10-ndigo-conduit-api/README.md)
-- [11-ndigo-conduit-web](11-ndigo-conduit-web/README.md)
+- [03-ndigo-todo-web](03-ndigo-todo-web/README.md)
+- [04-ndigo-todo-api](04-ndigo-todo-api/README.md)
+- [05-ndigo-api](05-ndigo-api/README.md)
+- [06-ndigo-host-demo](06-ndigo-host-demo/README.md)
+- [07-ndigo-island](07-ndigo-island/README.md)
+- [08-ndigo-views](08-ndigo-views/README.md)
+- [09-ndigo-httpbin](09-ndigo-httpbin/README.md)
+- [10-ndigo-conduit-web](10-ndigo-conduit-web/README.md)
+- [11-ndigo-conduit-api](11-ndigo-conduit-api/README.md)
 - [12-ndigo-petclinic](12-ndigo-petclinic/README.md)
 - [13-ndigo-chat](13-ndigo-chat/README.md)
 - [14-ndigo-kanban](14-ndigo-kanban/README.md)
@@ -361,4 +372,6 @@ Applications in this directory:
 - Can depend on any `@ndigo/*` package
 - Use bundlers (Vite, etc.) for browser apps, `tsx` for node apps
 
-See individual app directories for specific details.
+See individual app directories for specific details, and
+[guide 29 — Application Conventions](../docs/guides/29-application-conventions.md)
+for the shared layout and naming rules.

@@ -24,7 +24,7 @@ process lifecycle — signals relay into the app's own graceful shutdown:
 
 ```bash
 ndigo serve                       # current directory
-ndigo serve ./apps/04-ndigo-api --port 3000
+ndigo serve ./apps/05-ndigo-api --port 3000
 ndigo serve --cluster 4 --port 3000   # 4 replicated worker slots
 ```
 

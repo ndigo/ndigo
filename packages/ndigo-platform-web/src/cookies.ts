@@ -3,7 +3,7 @@
  * @author Jeff Rose
  */
 import { createNull, JSONObject, JSONValue } from '@ndigo/core';
-import cookieExpression from './parser/cookie-expression';
+import { parseCookieHeader } from './parser/cookie-parser';
 import { getLogger } from '@ndigo/log';
 
 const logger = getLogger('ndigo-platform-web:cookies');
@@ -50,18 +50,11 @@ export type CookieParseResult =
     | { isError: true; error: string; index: number; data: unknown };
 type CookieParseSuccess = Extract<CookieParseResult, { isError: false }>;
 
-/** Parser shape of the cookie-expression parser, which always succeeds. */
-type CookieParser = {
-    run: (input: string) => CookieParseSuccess;
-};
-
-const cookieParser = cookieExpression as CookieParser;
-
 const { assign } = Object;
 
-/** Parses the browser cookie string using the package parser. */
+/** Parses the browser cookie string into the jar's parse-result envelope. */
 function parseCookieJar(input: string): CookieParseSuccess {
-    return cookieParser.run(input);
+    return { isError: false, result: parseCookieHeader(input), index: input.length, data: '' };
 }
 
 /** Creates a cookie-jar API bound to the current browser environment. */

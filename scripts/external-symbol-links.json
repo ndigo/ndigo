@@ -60,8 +60,7 @@
     "SocketSession": "#",
     "ViewNameTranslator": "#",
     "default": "#",
-    "MaybeHandler": "#",
-    "MetadataManager": "#"
+    "MaybeHandler": "#"
   },
   "@ndigo/factory": {
     "Constructable": "#",

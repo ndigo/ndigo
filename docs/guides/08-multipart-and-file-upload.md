@@ -145,5 +145,5 @@ the contract exposes bytes/stream so a caller pipes to their store unchanged. Wr
 - **The global body cap doesn't govern uploads.** Multipart parses before `#readBody`; tune the upload
   caps (`maxFileSize` / `maxRequestSize`) separately so one knob doesn't masquerade as both.
 
-Reference: `apps/04-ndigo-api` (`POST /api/upload` demo gate in `upload-controller.ts`, round-trip +
+Reference: `apps/05-ndigo-api` (`POST /api/upload` demo gate in `upload-controller.ts`, round-trip +
 empty-file spec in `upload.spec.ts`). Design rationale: [AD-26](../decisions/2026-09-22_AD26_MULTIPART_FILE_UPLOAD.md).

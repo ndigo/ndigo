@@ -28,7 +28,7 @@ class AppConfiguration {
 }
 ```
 
-`apps/04-ndigo-api` registers exactly this and serves `/static/assets/logo.png`
+`apps/05-ndigo-api` registers exactly this and serves `/static/assets/logo.png`
 from `./public/assets/logo.png`.
 
 Greedy capture is raw and **undecoded**: nothing percent-decodes request

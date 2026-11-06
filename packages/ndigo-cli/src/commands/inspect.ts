@@ -21,7 +21,7 @@ export class InspectCommand extends Command {
         'the app (choose its controllers/config classes); @ndigo/inspect owns ' +
         'the introspection.';
 
-    static examples = ['$ ndigo inspect', '$ ndigo inspect ./apps/04-ndigo-api'];
+    static examples = ['$ ndigo inspect', '$ ndigo inspect ./apps/05-ndigo-api'];
 
     static args = {
         dir: Args.string({

@@ -836,7 +836,7 @@ The framework is organized into 8 architectural layers with clear dependency dir
 > **Package Map:** the canonical per-package reference (purpose · platform ·
 > runtime deps) — see [§ Package Map](#package-map) below.
 
-The `ndigo-todo` app sits above these layers as a reference implementation and integration proving ground.
+The `ndigo-todo-web` app sits above these layers as a reference implementation and integration proving ground.
 
 ### Platform Portability
 

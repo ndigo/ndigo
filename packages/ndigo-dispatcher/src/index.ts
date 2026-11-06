@@ -19,7 +19,7 @@ export * from './route-handler-execution-chain';
 export * from './route-handler-mapping';
 export * from './radix-metadata-handler-mapping';
 export * from './language-resolver';
-export * from './metadata-manager';
+export * from './metadata-scanner';
 export * from './model-and-view';
 export { ModelAndView } from './model-and-view';
 export * from './route-condition';

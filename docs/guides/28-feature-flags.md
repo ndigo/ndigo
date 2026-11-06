@@ -209,5 +209,5 @@ registers on the web client with the same instance.
 - **Not** a caching layer — the local provider is read-through by design;
   caching is a provider concern (a follow-up behind the SPI).
 
-Reference application: `apps/04-ndigo-api` — the `/gated-report` demo route,
+Reference application: `apps/05-ndigo-api` — the `/gated-report` demo route,
 grounded in `test/feature-flags.spec.ts`.

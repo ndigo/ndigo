@@ -4,7 +4,7 @@
  */
 import { FrameworkError, IllegalStateError } from './error.js';
 import { MutablePropertyValues, PropertyValues } from './property-value.js';
-import { KeypathConverter, KeypathToken } from './keypath-expression.js';
+import { KeypathConverter, KeypathToken } from './keypath-converter.js';
 
 const keypathConverter = new KeypathConverter();
 const { keys } = Object;

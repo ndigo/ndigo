@@ -106,7 +106,7 @@ pnpm --filter @ndigo/view-webcomponent test
 
 - [@ndigo/view](../ndigo-view/README.md) — view contracts and targets
 - [@ndigo/dom](../ndigo-dom/README.md) — isomorphic DOM providers used for server-side component rendering
-- [apps/06-ndigo-island](../../apps/06-ndigo-island/README.md) — server-side island hydration
+- [apps/07-ndigo-island](../../apps/07-ndigo-island/README.md) — server-side island hydration
 
 ## Contributing
 

@@ -132,7 +132,7 @@ const APP_DEV_DIRS = new Set(['test', 'e2e']);
 const APP_TOOLING = new Set([...TOOLING, 'vite', '@playwright/test']);
 const APP_ASSET_DEPS = new Set([
     'swagger-ui-dist', // ndigo-api serves the docs UI assets (asset-only, like the platform peer)
-    'todomvc-app-css', // ndigo-todo copies the TodoMVC stylesheet
+    'todomvc-app-css', // ndigo-todo-web copies the TodoMVC stylesheet
 ]);
 
 /**
@@ -451,7 +451,7 @@ for (const dir of readdirSync(APPS)) {
 //   - `vitest.config.*` for the root, every package and every app;
 //   - the shared `vitest.aliases.ts` table;
 //   - `vite.config.*` that carries a `test` block, where an app's vitest
-//     aliases live (ndigo-todo's in-config test block was previously skipped).
+//     aliases live (ndigo-todo-web's in-config test block was previously skipped).
 // Recognized replacement spellings are resolved by `aliasTargetFromReplacement`;
 // an unrecognized, alias-looking value warns instead of passing silently.
 const aliasConfigs = new Set([join(ROOT, 'vitest.config.ts'), join(ROOT, 'vitest.aliases.ts')]);

@@ -60,7 +60,7 @@ pnpm exec nx generate @ndigo/generators:header --file packages/ndigo-core/src/wi
     --summary "Widget utilities"
 
 # Replace a non-standard top doc block
-pnpm exec nx generate @ndigo/generators:header --file apps/03-ndigo-todo/src/index.ts --force
+pnpm exec nx generate @ndigo/generators:header --file apps/03-ndigo-todo-web/src/index.ts --force
 ```
 
 ### Header generator options

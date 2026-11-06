@@ -19,6 +19,7 @@ cd apps/<%= dirName %> && pnpm dev
 ## See Also
 
 - [apps/README](../README.md) — the applications progression
+- [guide 29 — Application Conventions](../../docs/guides/29-application-conventions.md) — the shared ladder, layout, and naming rules
 
 ## Contributing
 

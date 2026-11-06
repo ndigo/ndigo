@@ -129,7 +129,7 @@ pnpm --filter @ndigo/service test
 ## See Also
 
 - [@ndigo/http](../ndigo-http/README.md) — the underlying HTTP client
-- [apps/06-ndigo-island](../../apps/06-ndigo-island/README.md) — a server-push SSE demo bridged to signals
+- [apps/07-ndigo-island](../../apps/07-ndigo-island/README.md) — a server-push SSE demo bridged to signals
 
 ## Contributing
 

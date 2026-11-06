@@ -3513,6 +3513,10 @@ packages/
     └── tsconfig.build.json
 ```
 
+Applications (`apps/NN-ndigo-<slug>`) use a role-based variant of this layout
+(`controllers/`, `services/`, `entities/`, `views/`) and are not published — see
+[guide 29 — Application Conventions](docs/guides/29-application-conventions.md).
+
 ### Barrel Exports (index.ts) [CONVENTION: Code Review]
 
 **Public API Definition:**

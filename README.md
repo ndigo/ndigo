@@ -68,8 +68,8 @@ path below: each lists the packages to start with, then the demo apps to follow.
 6. [`@ndigo/platform-web`](packages/ndigo-platform-web/README.md) — browser platform glue
 
 Then follow the ladder: [apps/01-ndigo-hello](apps/01-ndigo-hello/README.md)
-(minimal SPA) → [apps/03-ndigo-todo](apps/03-ndigo-todo/README.md) (micro
-frontend) → [apps/11-ndigo-conduit-web](apps/11-ndigo-conduit-web/README.md)
+(minimal SPA) → [apps/03-ndigo-todo-web](apps/03-ndigo-todo-web/README.md) (micro
+frontend) → [apps/10-ndigo-conduit-web](apps/10-ndigo-conduit-web/README.md)
 (RealWorld frontend).
 
 #### If you want to build a Node server-side app
@@ -81,14 +81,14 @@ frontend) → [apps/11-ndigo-conduit-web](apps/11-ndigo-conduit-web/README.md)
 5. [`@ndigo/telemetry-node`](packages/ndigo-telemetry-node/README.md) — tracing, metrics, logging
 
 Then follow the ladder: [apps/02-ndigo-hello-node](apps/02-ndigo-hello-node/README.md)
-(minimal server) → [apps/04-ndigo-api](apps/04-ndigo-api/README.md) (the reference
-Node app) → [apps/10-ndigo-conduit-api](apps/10-ndigo-conduit-api/README.md)
+(minimal server) → [apps/05-ndigo-api](apps/05-ndigo-api/README.md) (the reference
+Node app) → [apps/11-ndigo-conduit-api](apps/11-ndigo-conduit-api/README.md)
 (RealWorld API). The end-to-end tutorial is [guide 01 — Building a Node
 API](docs/guides/01-building-a-node-api.md).
 
 #### Server-rendered with islands (both)
 
-EJS shell + hydration + live updates: [apps/06-ndigo-island](apps/06-ndigo-island/README.md)
+EJS shell + hydration + live updates: [apps/07-ndigo-island](apps/07-ndigo-island/README.md)
 and [apps/12-ndigo-petclinic](apps/12-ndigo-petclinic/README.md); the model is
 [guide 18 — Signals & Islands](docs/guides/18-signals-and-islands.md).
 
@@ -110,15 +110,15 @@ demo.
 | ---------------------------------------------------------------- | ------------------------------------------------------------------- |
 | [ndigo-hello](apps/01-ndigo-hello/README.md)                     | Minimal browser SPA — context + route + Web Component               |
 | [ndigo-hello-node](apps/02-ndigo-hello-node/README.md)           | Minimal Node HTTP server                                            |
-| [ndigo-todo](apps/03-ndigo-todo/README.md)                       | TodoMVC + micro frontend shell                                      |
-| [ndigo-api](apps/04-ndigo-api/README.md)                         | Node API server — auth, ORM, negotiation, problem+json              |
-| [ndigo-host](apps/05-ndigo-host/README.md)                       | Micro frontend host with lazy feature chunks                        |
-| [ndigo-island](apps/06-ndigo-island/README.md)                   | Node SSR — EJS shell + island hydration + SSE                       |
-| [ndigo-views](apps/07-ndigo-views/README.md)                     | View-resolution composite and negotiation                           |
-| [ndigo-httpbin](apps/08-ndigo-httpbin/README.md)                 | HTTP semantics playground (binding, redirects, compression, limits) |
-| [ndigo-todobackend](apps/09-ndigo-todobackend/README.md)         | Todo-Backend REST spec implementation                               |
-| [ndigo-conduit-api](apps/10-ndigo-conduit-api/README.md)         | RealWorld (Conduit) API — JWT auth, CRUD, filters                   |
-| [ndigo-conduit-web](apps/11-ndigo-conduit-web/README.md)         | RealWorld frontend (routes, guards, optimistic UI)                  |
+| [ndigo-todo-web](apps/03-ndigo-todo-web/README.md)               | TodoMVC + micro frontend shell                                      |
+| [ndigo-todo-api](apps/04-ndigo-todo-api/README.md)               | Todo-Backend REST spec implementation                               |
+| [ndigo-api](apps/05-ndigo-api/README.md)                         | Node API server — auth, ORM, negotiation, problem+json              |
+| [ndigo-host-demo](apps/06-ndigo-host-demo/README.md)             | Micro frontend host with lazy feature chunks                        |
+| [ndigo-island](apps/07-ndigo-island/README.md)                   | Node SSR — EJS shell + island hydration + SSE                       |
+| [ndigo-views](apps/08-ndigo-views/README.md)                     | View-resolution composite and negotiation                           |
+| [ndigo-httpbin](apps/09-ndigo-httpbin/README.md)                 | HTTP semantics playground (binding, redirects, compression, limits) |
+| [ndigo-conduit-web](apps/10-ndigo-conduit-web/README.md)         | RealWorld frontend (routes, guards, optimistic UI)                  |
+| [ndigo-conduit-api](apps/11-ndigo-conduit-api/README.md)         | RealWorld (Conduit) API — JWT auth, CRUD, filters                   |
 | [ndigo-petclinic](apps/12-ndigo-petclinic/README.md)             | Server-rendered CRUD vertical (forms, i18n, JSON)                   |
 | [ndigo-chat](apps/13-ndigo-chat/README.md)                       | Real-time rooms: presence, history, STOMP interop                   |
 | [ndigo-kanban](apps/14-ndigo-kanban/README.md)                   | Collaborative board: versioned writes, optimistic UI                |
@@ -131,6 +131,10 @@ demo.
 The [apps/README](apps/README.md) documents the progression from simple to
 complex. App directories are numbered in reading order (`apps/01-ndigo-hello` …);
 the number is reading order only — package names stay unnumbered and stable.
+Paired front ends and back ends share a domain and take the `-web` / `-api` role
+suffixes (`03-ndigo-todo-web` + `04-ndigo-todo-api`); the full directory,
+package, and file-naming convention is
+[guide 29 — Application Conventions](docs/guides/29-application-conventions.md).
 
 ## Packages
 

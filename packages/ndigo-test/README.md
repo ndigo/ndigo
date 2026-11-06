@@ -85,7 +85,7 @@ pnpm --filter @ndigo/test test
 
 ## See Also
 
-- [apps/03-ndigo-todo](../../apps/03-ndigo-todo/README.md) — harness-driven controller/pipeline tests
+- [apps/03-ndigo-todo-web](../../apps/03-ndigo-todo-web/README.md) — harness-driven controller/pipeline tests
 
 ## Contributing
 

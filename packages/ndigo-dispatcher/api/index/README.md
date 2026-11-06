@@ -622,7 +622,7 @@ Re-exports [MetadataHandlerAdapter](../route-handler-adapter/classes/MetadataHan
 
 ### MetadataScanner
 
-Re-exports [MetadataScanner](../metadata-manager/classes/MetadataScanner.md)
+Re-exports [MetadataScanner](../metadata-scanner/classes/MetadataScanner.md)
 
 ***
 

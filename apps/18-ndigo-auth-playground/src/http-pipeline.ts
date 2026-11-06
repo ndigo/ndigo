@@ -5,7 +5,7 @@
  * `NodeAutoConfiguration.handlerMapping()` owns the mapping — security headers
  * and the (metadata-gated) rate limiter are already on it — so the playground
  * *adds* to that chain instead of replacing it, the same way
- * `09-ndigo-todobackend` splices in its CORS/JSON gates. Order matters:
+ * `04-ndigo-todo-api` splices in its CORS/JSON gates. Order matters:
  *
  * 1. {@link NodeSessionInterceptor} — resolves the session cookie through the
  *    durable store into the documented `request.session` bag *before* dispatch,

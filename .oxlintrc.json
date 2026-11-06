@@ -127,6 +127,17 @@
   "overrides": [
     {
       "files": [
+        "packages/ndigo-context/src/**/*.ts",
+        "packages/ndigo-orm/src/**/*.ts",
+        "packages/ndigo-dispatcher/src/**/*.ts",
+        "packages/ndigo-view/src/**/*.ts"
+      ],
+      "rules": {
+        "internal/tsdoc-syntax": "error"
+      }
+    },
+    {
+      "files": [
         "packages/ndigo-core/src/**/*.ts",
         "packages/ndigo-http/src/**/*.ts",
         "packages/ndigo-router/src/**/*.ts",

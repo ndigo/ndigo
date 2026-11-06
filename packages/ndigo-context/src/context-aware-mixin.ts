@@ -18,7 +18,7 @@ export const AsApplicationContextAware = <T extends Constructable>(
          * Set the ApplicationContext that this object runs in. Normally this call will be used to initialize the object.
          *
          * Invoked after population of normal value properties but before an `init` callback.
-         * @param {module:context.ApplicationContext} context The ApplicationContext to be used by this object.
+         * @param context - The ApplicationContext to be used by this object.
          */
         setApplicationContext(applicationContext: ApplicationContext): void {
             /**

@@ -1,5 +1,6 @@
 /**
  */
+
 import { ApplicationContext } from '@ndigo/context';
 import { Constructable } from '@ndigo/core';
 import { NamePathHandlerMapping, RouteHandlerMapping } from '../route-handler-mapping';
@@ -27,9 +28,6 @@ const HANDLER_MAPPING = 'handlerMapping',
         new NamePathHandlerMapping(),
         new RadixMetadataHandlerMapping(),
     ];
-
-/**
- */
 
 /**
  * Mixin that installs the handler-mapping collection, defaulting to the

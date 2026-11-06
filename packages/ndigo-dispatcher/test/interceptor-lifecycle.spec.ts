@@ -1,5 +1,4 @@
-/**
- */
+
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Route } from '@ndigo/router';
 import { AbstractDispatcher } from '../src/dispatcher';

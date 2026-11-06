@@ -1,5 +1,4 @@
-/**
- */
+
 import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { GenericApplicationContext } from '@ndigo/context';
 import { type Route, type RouteSegment } from '@ndigo/router';

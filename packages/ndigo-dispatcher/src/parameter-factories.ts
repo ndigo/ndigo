@@ -1,5 +1,6 @@
 /**
  */
+
 import {
     MethodParameterType,
     type DataBindingSource,
@@ -11,10 +12,12 @@ import {
  * Factory function: Create a query parameter extractor
  *
  * @example
- * `parameters`({
+ * ```ts
+ * parameters({
  *   page: queryValue('page'),
  *   limit: queryValue('limit', { required: true, defaultValue: '10' })
  * })
+ * ```
  */
 export function queryValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -30,9 +33,11 @@ export function queryValue(name?: string, options: ParameterExtractorOptions = {
  * Factory function: Create a path parameter extractor
  *
  * @example
- * `parameters`({
+ * ```ts
+ * parameters({
  *   userId: pathVariable('userId')
  * })
+ * ```
  */
 export function pathVariable(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -48,10 +53,12 @@ export function pathVariable(name?: string, options: ParameterExtractorOptions =
  * Factory function: Create a matrix parameter extractor
  *
  * @example
- * `parameters`({
+ * ```ts
+ * parameters({
  *   color: matrixValue('color'),
  *   size: matrixValue('size', { required: true })
  * })
+ * ```
  */
 export function matrixValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -67,10 +74,12 @@ export function matrixValue(name: string, options: ParameterExtractorOptions = {
  * Factory function: Create a cookie parameter extractor
  *
  * @example
- * `parameters`({
+ * ```ts
+ * parameters({
  *   session: cookieValue('SESSIONID'),
  *   token: cookieValue('AUTH_TOKEN', { required: true })
  * })
+ * ```
  */
 export function cookieValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -87,10 +96,12 @@ export function cookieValue(name?: string, options: ParameterExtractorOptions = 
  * Reads `request.session` on the Node platform (nested-capable).
  *
  * @example
- * `parameters`({
+ * ```ts
+ * parameters({
  *   userId: requestSessionValue('userId'),
  *   token: requestSessionValue('AUTH_TOKEN', { required: true })
  * })
+ * ```
  */
 export function requestSessionValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -107,9 +118,11 @@ export function requestSessionValue(name?: string, options: ParameterExtractorOp
  * Reads `sessionStorage` on the browser platform (scalar-only).
  *
  * @example
- * `parameters`({
+ * ```ts
+ * parameters({
  *   theme: sessionStorageValue('theme'),
  * })
+ * ```
  */
 export function sessionStorageValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -126,9 +139,11 @@ export function sessionStorageValue(name?: string, options: ParameterExtractorOp
  * Reads `localStorage` on the browser platform (scalar-only).
  *
  * @example
- * `parameters`({
+ * ```ts
+ * parameters({
  *   token: localStorageValue('token'),
  * })
+ * ```
  */
 export function localStorageValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -145,9 +160,11 @@ export function localStorageValue(name?: string, options: ParameterExtractorOpti
  * Reads `history.state` on the browser platform (nested-capable).
  *
  * @example
- * `parameters`({
+ * ```ts
+ * parameters({
  *   token: historyStateValue('token'),
  * })
+ * ```
  */
 export function historyStateValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -170,10 +187,12 @@ export function historyStateValue(name?: string, options: ParameterExtractorOpti
  * convention, AD-26 D-5).
  *
  * @example
- * `parameters`({
+ * ```ts
+ * parameters({
  *   user: dataBinderValue('body'),
  *   profile: dataBinderValue('body', ProfileForm, { prefix: 'profile.' })
  * })
+ * ```
  */
 export function dataBinderValue(
     source: DataBindingSource,
@@ -200,9 +219,11 @@ export function dataBinderValue(
  * Factory function: Create a route attribute parameter extractor.
  *
  * @example
- * `parameters`({
+ * ```ts
+ * parameters({
  *   user: attributeValue('user')
  * })
+ * ```
  */
 export function attributeValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -218,10 +239,12 @@ export function attributeValue(name?: string, options: ParameterExtractorOptions
  * Factory function: Create a request-header parameter extractor.
  *
  * @example
- * `parameters`({
+ * ```ts
+ * parameters({
  *   contentType: headerValue('content-type'),
  *   authorization: headerValue('authorization', { required: true })
  * })
+ * ```
  */
 export function headerValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -238,10 +261,12 @@ export function headerValue(name?: string, options: ParameterExtractorOptions = 
  * Omit the name to bind the entire parsed body object (`bodyValue()`).
  *
  * @example
- * `parameters`({
+ * ```ts
+ * parameters({
  *   user: bodyValue('user'),
  *   payload: bodyValue()
  * })
+ * ```
  */
 export function bodyValue(name?: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
@@ -265,11 +290,13 @@ export function bodyValue(name?: string, options: ParameterExtractorOptions = {}
  * of a late TypeError (DOC-5).
  *
  * @example
- * `parameters`({
+ * ```ts
+ * parameters({
  *   avatar: fileValue(),
  *   profile: fileValue('avatar_url'),
  *   cv: fileValue('cv', { required: true })
  * })
+ * ```
  *
  * @param partName - The multipart field name; defaults to the argument name.
  * @param options - Extractor options (`required`).
@@ -303,17 +330,19 @@ export function fileValue(partName?: string, options: ParameterExtractorOptions 
  * Resolved by `NodeRequestPartMethodArgumentResolver` (ndigo-platform-node).
  *
  * A missing part resolves to the extractor's `defaultValue` (`null`) unless
- * the part is declared required: `requestPart('meta', undefined, { required:
- * true })` / `requestPart(MetaDto, { required: true })` make a missing part
+ * the part is declared required: requestPart('meta', undefined, \{ required:
+ * true \}) / requestPart(MetaDto, \{ required: true \}) make a missing part
  * a {@link error.MissingParameterError | MissingParameterError} (HTTP 400) instead of a late TypeError
  * (DOC-5).
  *
  * @example
- * `parameters`({
+ * ```ts
+ * parameters({
  *   meta: requestPart(MetaDto),
  *   biography: requestPart('bio'),
  *   file: fileValue()
  * })
+ * ```
  */
 export function requestPart(
     partName?: string,
@@ -477,7 +506,10 @@ export function asArray(extractor: ParameterExtractor): ParameterExtractor {
 
 /**
  * Wraps a parameter extractor to enforce type-based conversion via ConversionService.
- * @example withConversion(queryValue('id'), { source: String, target: UUID })
+ * @example
+ * ```ts
+ * withConversion(queryValue('id'), { source: String, target: UUID })
+ * ```
  */
 export function withConversion(
     extractor: ParameterExtractor,

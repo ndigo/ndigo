@@ -1,5 +1,6 @@
 /**
  */
+
 import { Route, RouteSegment } from '@ndigo/router';
 import { AbstractNameValueExpression, AbstractRouteCondition } from './route-condition';
 const { defineProperty } = Reflect;
@@ -195,5 +196,5 @@ export class MatrixParamCondition extends AbstractRouteCondition<MatrixParamCond
 
 /**
  * Creates a new instance with the given route patterns. Each pattern that is not empty and does not start with "/" is prepended with "/".
- * @param {...external:string} [patterns] 0 or more route patterns; if 0 the condition will match to every route.
+ * @param patterns - 0 or more route patterns; if 0 the condition will match to every route.
  */

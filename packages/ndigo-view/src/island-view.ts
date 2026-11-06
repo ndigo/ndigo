@@ -140,8 +140,6 @@ export interface IslandViewOptions {
  * ```ts
  * return new ModelAndView(new IslandView('todo-app'), { items: [...], filter: 'all' });
  * ```
- *
- * @since 1.0.0
  */
 export class IslandView extends AbstractTemplateView {
     /**
@@ -163,7 +161,7 @@ export class IslandView extends AbstractTemplateView {
      *
      * @param name - The custom element tag name.
      * @param options - Island rendering options ({@link IslandViewOptions.shadowHtml}).
-     * @throws {FrameworkError} When `name` is not a valid custom-element name.
+     * @throws When `name` is not a valid custom-element name.
      */
     constructor(name: string, options: IslandViewOptions = {}) {
         super();

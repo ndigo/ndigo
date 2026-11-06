@@ -33,10 +33,6 @@ element, sets `.model`, and lets `connectedCallback` run.
 return new ModelAndView(new IslandView('todo-app'), { items: [...], filter: 'all' });
 ```
 
-## Since
-
-1.0.0
-
 ## Extends
 
 - [`AbstractTemplateView`](../../view/classes/AbstractTemplateView.md)

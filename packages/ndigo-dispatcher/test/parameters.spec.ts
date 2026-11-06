@@ -1,5 +1,4 @@
-/**
- */
+
 import { describe, test, expect } from 'vitest';
 import { MetadataConfigApplicationContext, configuration, entry } from '@ndigo/context';
 import {

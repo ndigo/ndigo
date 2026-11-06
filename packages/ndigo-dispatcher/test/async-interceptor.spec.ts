@@ -1,5 +1,4 @@
-/**
- */
+
 import { describe, it, expect } from 'vitest';
 import { AbstractDispatcher } from '../src/dispatcher';
 import { RouteHandlerInterceptor } from '../src/route-handler-interceptor';

@@ -162,7 +162,7 @@ export class RemotePropertySource {
      *
      * @param environment - The environment the source fetches into.
      * @param options - The source configuration.
-     * @throws {IllegalStateError} When the URL is missing, or — with the
+     * @throws When the URL is missing, or — with the
      * default fetch (no injected seam) — when the URL scheme is not `https:`.
      */
     constructor(environment: ConfigurableEnvironment, options: RemoteSourceOptions) {
@@ -212,7 +212,7 @@ export class RemotePropertySource {
      *
      * @returns `true` when a document was applied, `false` when skipped
      * (optional failure).
-     * @throws {IllegalStateError} When `optional: false` and the fetch fails,
+     * @throws When `optional: false` and the fetch fails,
      * or the response is not a JSON object.
      */
     async load(): Promise<boolean> {
@@ -224,7 +224,7 @@ export class RemotePropertySource {
      * Starts polling. Idempotent — a second call is a no-op on an already
      * started source.
      *
-     * @throws {IllegalStateError} When `pollMs` is 0 (nothing to poll).
+     * @throws When `pollMs` is 0 (nothing to poll).
      */
     start(): void {
         if (this.#started) return;
@@ -283,7 +283,7 @@ export class RemotePropertySource {
      * `optional: false` keeps last-good too.
      *
      * @returns The applied document, or `null` when skipped/failed-optional.
-     * @throws {IllegalStateError} When `optional: false` and no document has
+     * @throws When `optional: false` and no document has
      * ever been applied (boot-time failure).
      */
     async #fetchAndApply(): Promise<JSONObject | null> {
@@ -395,7 +395,7 @@ export class RemotePropertySource {
      * @param response - The fetch response (streaming body optional).
      * @param maxBytes - The byte cap; exceeding it cancels the stream and
      * throws, so the caller can apply the `optional`/keep-last-good policy.
-     * @throws {IllegalStateError} When the document exceeds `maxBytes`.
+     * @throws When the document exceeds `maxBytes`.
      */
     async #readBody(
         response: { body?: ReadableStream<Uint8Array> | null; text(): Promise<string> },
@@ -442,8 +442,8 @@ export class RemotePropertySource {
     /**
      * Registers/replaces the source entry at the documented precedence slot.
      *
-     * Positioning (highest → lowest): `commandLine > boot > systemEnvironment
-     * > configServer > dotenv > application(+-profile) > defaults`. Anchors:
+     * Positioning (highest to lowest): commandLine, boot, systemEnvironment,
+     * configServer, dotenv, application(+-profile), defaults. Anchors:
      * after `systemEnvironment` when present, else before `application` when
      * present, else before `defaults` when present (boot always registers
      * `defaults` last, so this preserves the documented order), else append.
@@ -493,7 +493,7 @@ export class RemotePropertySource {
      * @param failure - Short failure classifier for the message (HTTP status,
      * `'<transport>'`, …).
      * @param cause - The underlying error, when one was thrown.
-     * @throws {IllegalStateError} When `optional: false` on the first fetch.
+     * @throws When `optional: false` on the first fetch.
      */
     #handleBootFailure(failure: string, cause?: unknown): null {
         const reason = cause instanceof Error ? ` (${cause.message})` : '';

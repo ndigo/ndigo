@@ -1,5 +1,4 @@
-/**
- */
+
 import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { PathViewController } from '../src/controller';
 import { Route } from '@ndigo/router';

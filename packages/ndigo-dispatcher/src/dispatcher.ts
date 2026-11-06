@@ -1,5 +1,6 @@
 /**
  */
+
 import { Null } from '@ndigo/core';
 import { View } from '@ndigo/view';
 import { Route, applyNegotiatedLanguage } from '@ndigo/router';
@@ -284,7 +285,7 @@ export class AbstractDispatcher
      * @returns A {@link ModelAndView} if the error was resolved; when every resolver
      * declines, the original error is rethrown so `completeHandle` interceptors
      * observe the handler failure rather than a synthetic TypeError.
-     * @throws {Error} The original handler error when no resolver handles it.
+     * @throws The original handler error when no resolver handles it.
      */
     protected _processHandlerError(route: Route, handler: object | null, error: Error): ModelAndView | null {
         // Handle the case where handler might be null

@@ -22,16 +22,22 @@ export interface RequestMappingConfiguration extends RouteMappingConfiguration {
  * @returns A decorator function for the target.
  *
  * @example
- * // Any method — equivalent to `routeMapping`('/users')
- * \`requestMapping`('/users')
+ * ```ts
+ * // Any method — equivalent to routeMapping('/users')
+ * requestMapping('/users')
+ * ```
  *
  * @example
+ * ```ts
  * // GET only
- * \`requestMapping`({ value: '/users', method: 'GET' })
+ * requestMapping({ value: '/users', method: 'GET' })
+ * ```
  *
  * @example
- * // With the same query/matrix conditions as `routeMapping`
- * \`requestMapping`({ value: '/users/{id}', method: 'DELETE', queryParams: 'filter=all' })
+ * ```ts
+ * // With the same query/matrix conditions as routeMapping
+ * requestMapping({ value: '/users/{id}', method: 'DELETE', queryParams: 'filter=all' })
+ * ```
  */
 export function requestMapping(route: string | RequestMappingConfiguration) {
     return routeMapping(route);

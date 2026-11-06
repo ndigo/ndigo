@@ -18,7 +18,7 @@ export class JSONView extends AbstractSerializingView {
         this.mediaType = MediaTypes.APPLICATION_JSON?.withCharset('UTF-8') ?? null;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     protected serialize(model: unknown): string {
         return JSON.stringify(model ?? null);
     }

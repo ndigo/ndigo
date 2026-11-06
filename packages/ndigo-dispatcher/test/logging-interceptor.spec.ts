@@ -1,5 +1,4 @@
-/**
- */
+
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Route } from '@ndigo/router';
 import { ModelAndView } from '../src/model-and-view';

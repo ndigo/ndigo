@@ -5,8 +5,7 @@
  * @author Jeff Rose
  */
 import { buildCommand } from '@stricli/core';
-import { spawn } from 'node:child_process';
-import { resolveAppDir } from '../helpers/app-scripts.js';
+import { resolveAppDir, runInteractiveSpawn } from '../helpers/app-scripts.js';
 
 export const addCommand = buildCommand({
     async func(_flags: {}, pkg: string, dir: string) {
@@ -16,19 +15,17 @@ export const addCommand = buildCommand({
             process.exitCode = 2;
             return;
         }
-        const child = spawn('pnpm', ['add', pkg], { cwd: resolved, stdio: 'inherit' });
-        const code = await new Promise<number>((resolve) => child.once('exit', (c) => resolve(c ?? 1)));
+        const code = await runInteractiveSpawn(['pnpm', 'add', pkg], { cwd: resolved });
         process.exitCode = code;
         if (code === 0) {
             const setupName = pkg.replace('@ndigo/', '') + '-setup';
             process.stdout.write(`\nAdded ${pkg}. Attempting setup generator @ndigo/generators:${setupName}...\n`);
-            const gen = spawn('pnpm', ['exec', 'nx', 'g', `@ndigo/generators:${setupName}`, '--directory', resolved], {
-                cwd: resolved,
-                stdio: 'inherit',
-            });
-            const gcode = await new Promise<number>((resolve) => gen.once('exit', (c) => resolve(c ?? 1)));
-            if (gcode !== 0) {
-                process.stdout.write(`(no setup generator available or it failed; wire manually)\n`);
+            const gcode = await runInteractiveSpawn(
+                ['pnpm', 'exec', 'nx', 'g', `@ndigo/generators:${setupName}`, '--directory', resolved],
+                { cwd: resolved }
+            );
+            if (gcode !== 0 && gcode !== 127) {
+                process.stdout.write(`(setup generator failed; wire manually)\n`);
             }
         }
     },

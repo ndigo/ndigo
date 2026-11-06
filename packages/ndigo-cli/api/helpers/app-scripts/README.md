@@ -13,5 +13,6 @@
 - [resolveAppDir](functions/resolveAppDir.md)
 - [runAppOnce](functions/runAppOnce.md)
 - [runAppSupervised](functions/runAppSupervised.md)
+- [runInteractiveSpawn](functions/runInteractiveSpawn.md)
 - [runWorkspaceOnce](functions/runWorkspaceOnce.md)
 - [usageError](functions/usageError.md)

@@ -41,6 +41,7 @@
   "sideEffects": false,
   "dependencies": {
     "@ndigo/auth-core": "~0.0.1",
+    "@ndigo/boot": "~0.0.1",
     "@ndigo/cache": "~0.0.1",
     "@ndigo/context": "~0.0.1",
     "@ndigo/core": "~0.0.1",

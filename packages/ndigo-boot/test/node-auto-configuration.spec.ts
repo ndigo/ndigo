@@ -5,16 +5,17 @@
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';
 import { Application } from '../src/application';
-import { NodeAutoConfiguration } from '@ndigo/platform-node';
+import { NodeAutoConfiguration } from '../../ndigo-platform-node/src/node-auto-configuration';
 import { configuration, entry } from '@ndigo/context';
 
 /**
  * @ndigo/boot is platform-neutral: it never imports @ndigo/platform-node (or
  * DOM code) itself. Node apps pass `NodeAutoConfiguration` explicitly as a
  * source — same contract as browser apps passing `WebAutoConfiguration`.
- * These specs double as the dependency-boundary proof: this package's source
- * compiles with no boot → platform-node edge (enforced by the absence of the
- * runtime dependency in package.json).
+ * These specs double as the dependency-boundary proof: neither the source nor
+ * the manifest carries a boot → platform-node edge (the spec reaches the
+ * platform source relatively; a manifest entry would close an Nx build cycle
+ * — platform-node depends on boot).
  */
 
 describe('Application node auto-configuration', () => {

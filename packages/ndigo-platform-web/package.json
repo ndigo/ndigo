@@ -45,6 +45,7 @@
     "zod": "catalog:"
   },
   "dependencies": {
+    "@ndigo/boot": "~0.0.1",
     "@ndigo/content": "~0.0.1",
     "@ndigo/context": "~0.0.1",
     "@ndigo/core": "~0.0.1",

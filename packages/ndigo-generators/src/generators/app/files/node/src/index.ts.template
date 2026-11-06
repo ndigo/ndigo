@@ -5,36 +5,24 @@
  * @author Jeff Rose
  */
 import 'node:process';
-import { ApplicationBuilder } from '@ndigo/boot';
-import { getEnv } from '@ndigo/context';
-import { NodeAutoConfiguration, HTTP_SERVER, gracefulShutdown } from '@ndigo/platform-node';
+import { runNodeApplication } from '@ndigo/platform-node';
 import { getLogger } from '@ndigo/log';
 import { getErrorMessage } from '@ndigo/util';
 import { <%= className %>Configuration } from './<%= name %>-configuration';
 
-// The managed server reads `process.env.PORT` when no explicit port is
-// passed, so surface the app's default before the context is built —
-// otherwise `pnpm start` and the logged URL would disagree.
-process.env['PORT'] ??= '<%= port %>';
-const PORT = Number(getEnv('PORT', '<%= port %>'));
 const logger = getLogger('<%= name %>');
 
 async function main() {
-    // DI-container bootstrap: register platform auto-config + app config,
-    // then run() prepares the environment and refreshes the context.
-    const context = await new ApplicationBuilder([NodeAutoConfiguration, <%= className %>Configuration]).run();
+    // Lifecycle preset (AD-90): NodeAutoConfiguration + NodeEnvironment +
+    // config files by default; the managed server is started before this
+    // returns, and `app.port` is the port the socket actually bound (`PORT`
+    // still wins over the app default).
+    const app = await runNodeApplication([<%= className %>Configuration], { port: <%= port %> });
 
-    // Managed HTTP server: resolve it from the context and await its start
-    // so "listening" fires once the socket is bound. The context stops it
-    // on close.
-    const server = context.getValue(HTTP_SERVER);
-    await server.start();
-    gracefulShutdown(context, { resources: [server] });
-
-    logger.info(`listening on http://127.0.0.1:${PORT}`);
+    logger.info(`listening on http://127.0.0.1:${app.port}`);
 }
 
-main().catch((err) => {
-    logger.error(`failed to start: ${getErrorMessage(err)}`);
+main().catch((error) => {
+    logger.error(`failed to start: ${getErrorMessage(error)}`);
     process.exit(1);
 });

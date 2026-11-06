@@ -29,4 +29,5 @@
 - [online-reconnect-trigger](online-reconnect-trigger/README.md)
 - [parser/cookie-parser](parser/cookie-parser/README.md)
 - [retry-on-offline-interceptor](retry-on-offline-interceptor/README.md)
+- [web-application](web-application/README.md)
 - [web-auto-configuration](web-auto-configuration/README.md)

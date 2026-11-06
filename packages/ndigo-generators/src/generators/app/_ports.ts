@@ -5,9 +5,10 @@
  * claims, because the ports are the ladder's run-everything contract (see
  * `apps/README.md`). The scan reads every `.ts`/`.mts`/`.mjs`/`.json` file
  * under `apps/NN-*` (install and build output skipped) and understands the
- * five conventions in use across the ladder:
+ * conventions in use across the ladder:
  *
  * - vite `server: { port: 3001 }`
+ * - a `{ port: 3010 }` preset option (AD-90; `runNodeApplication`)
  * - `process.env.PORT ??= '3200'` (dot and bracket forms)
  * - `getEnv('PORT', '3050')`
  * - a `DEFAULT_PORT = 3040` constant

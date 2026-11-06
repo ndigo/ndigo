@@ -169,6 +169,18 @@ Re-exports [createOnlineReconnectTrigger](../online-reconnect-trigger/functions/
 
 ***
 
+### createWebApplication
+
+Re-exports [createWebApplication](../web-application/functions/createWebApplication.md)
+
+***
+
+### CreateWebApplicationOptions
+
+Re-exports [CreateWebApplicationOptions](../web-application/interfaces/CreateWebApplicationOptions.md)
+
+***
+
 ### currentLocale
 
 Re-exports [currentLocale](../locale/variables/currentLocale.md)
@@ -274,6 +286,12 @@ Re-exports [RetryOnOfflineConfig](../retry-on-offline-interceptor/interfaces/Ret
 ### RetryOnOfflineInterceptor
 
 Re-exports [RetryOnOfflineInterceptor](../retry-on-offline-interceptor/classes/RetryOnOfflineInterceptor.md)
+
+***
+
+### WebApplication
+
+Re-exports [WebApplication](../web-application/interfaces/WebApplication.md)
 
 ***
 

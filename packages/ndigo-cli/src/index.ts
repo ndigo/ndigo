@@ -27,6 +27,8 @@ import { configCommand } from './commands/config.js';
 import { routesCommand } from './commands/routes.js';
 import { completionCommand } from './commands/completion.js';
 import { envCommand } from './commands/env.js';
+import { addCommand } from './commands/add.js';
+import { updateCommand } from './commands/update.js';
 import { openapiCommand } from './commands/openapi.js';
 import { dbMigrateCommand } from './commands/db/migrate.js';
 import { dbStatusCommand } from './commands/db/status.js';
@@ -84,6 +86,8 @@ export function buildCliApp() {
                 completion: completionCommand,
                 env: envCommand,
                 openapi: openapiCommand,
+                add: addCommand,
+                update: updateCommand,
                 db: dbRouteMap,
             },
             aliases: { g: 'generate' },

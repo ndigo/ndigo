@@ -6,31 +6,10 @@
 
 # Class: OIDCAdapter
 
-An [AuthAdapter](../../index/interfaces/AuthAdapter.md) implementation for OpenID Connect (OIDC).
+A standardized adapter for authentication providers.
 
-This adapter implements the OIDC authorization code flow with PKCE,
-plus the refresh-token grant:
-- Resolving endpoints from validated discovery metadata (optional)
-- Redirecting to the identity provider with `state`, PKCE, and `nonce`
-- Exchanging the authorization code for tokens (capturing any
-  `refresh_token` and binding it to the verified subject)
-- Exchanging a captured refresh token for a new token set
-  (`grant_type=refresh_token`) with the same verification discipline
-- Verifying ID-token signature, issuer, audience, expiration, and nonce
-  before constructing a principal
-
-## Remarks
-
-Verification is mandatory: construct with `jwksUrl`, `discovery`,
-or `tokenValidator`. There is no claim-only mode.
-
-Pending authorization requests live in a [PendingAuthorizationStore](../interfaces/PendingAuthorizationStore.md)
-and refresh-token bindings in a [RefreshTokenStore](../interfaces/RefreshTokenStore.md). The defaults
-are in-memory and scoped to this adapter instance, so a flow that spans a
-redirect or a refresh that arrives on another instance MUST reuse that
-instance or inject a shared store — see
-[OIDCAdapterConfig.pendingStore](../interfaces/OIDCAdapterConfig.md#pendingstore) and
-[OIDCAdapterConfig.refreshStore](../interfaces/OIDCAdapterConfig.md#refreshstore).
+Implementations of this interface handle the protocol-specific logic
+(e.g., OAuth2, OIDC, SAML) to verify identities and manage sessions.
 
 ## Implements
 

@@ -49,7 +49,7 @@ dependency direction — `rank(p) = 1 + max(rank(deps))` over `dependencies` and
 layers). `internal/no-upward-layer-imports` applies to runtime `src/**` code
 and allows an import only when the target's rank is at or below the importer's;
 equal ranks are siblings and may cross-import freely. Tooling packages
-(`@ndigo/cli`, `@ndigo/generators`, `@ndigo/oxlint-plugin`, `@ndigo/test`) sit
+(`@ndigo/cli`, `create-ndigo-app`, `@ndigo/oxlint-plugin`, `@ndigo/test`) sit
 outside the layer system.
 
 The ranks are a **derived** artifact: `test/layers.spec.ts` recomputes them

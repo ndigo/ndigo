@@ -184,6 +184,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `@ndigo/generators` (AD-93): the repo-only Nx generator collection moved
+  out of `packages/` to `tools/generators/` (`private: true`) — it hard-codes
+  this repository's layout and is never published. `packages/` now contains
+  consumer packages only; `ndigo new` / `ndigo generate` are unchanged.
 - **The project is renamed: BlueJS → ndigo** (issue #78, AD-88): packages
   publish under `@ndigo/*`, the CLI is `ndigo`, problem-type URIs are
   `urn:ndigo:*`, env vars are `NDIGO_*`, Redis keys are `ndigo:*`, session

@@ -1,6 +1,7 @@
 {
   "name": "@ndigo/generators",
   "version": "0.0.1",
+  "private": true,
   "description": "Nx generators for Ndigo application, package, component, README, and documentation-header scaffolding",
   "keywords": [
     "ndigo",
@@ -19,12 +20,6 @@
     },
     "./package.json": "./package.json"
   },
-  "files": [
-    "src",
-    "lib",
-    "api",
-    "generators.json"
-  ],
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run --config ../../vitest.config.ts",

@@ -11,15 +11,15 @@ docs consistency.
 
 ## 0. Gate baseline (run at `07baf688`, 2026-11-05)
 
-| Gate                                  | Result                                  |
-| ------------------------------------- | --------------------------------------- |
-| `pnpm lint` (oxlint, type-aware)      | ✅ exit 0                               |
-| `pnpm build`                          | ✅ 48/48 tasks                           |
-| `pnpm doc:check`                      | ✅ fresh (zero warnings)                |
-| `pnpm manifest:check`                 | ✅ all packages + root conform          |
-| `pnpm docs:links`                     | ✅ 356 files, 1477 links OK             |
-| `pnpm audit --prod`                   | ✅ no known vulnerabilities             |
-| `create-ndigo-app` tests              | ✅ 3/3 (but see F-01/F-02)             |
+| Gate                             | Result                         |
+| -------------------------------- | ------------------------------ |
+| `pnpm lint` (oxlint, type-aware) | ✅ exit 0                      |
+| `pnpm build`                     | ✅ 48/48 tasks                 |
+| `pnpm doc:check`                 | ✅ fresh (zero warnings)       |
+| `pnpm manifest:check`            | ✅ all packages + root conform |
+| `pnpm docs:links`                | ✅ 356 files, 1477 links OK    |
+| `pnpm audit --prod`              | ✅ no known vulnerabilities    |
+| `create-ndigo-app` tests         | ✅ 3/3 (but see F-01/F-02)     |
 
 ## 1. Findings
 
@@ -102,7 +102,7 @@ docs consistency.
 
 - **F-10 — Web preset registers runtime services after context refresh.**
   `packages/ndigo-platform-web/src/web-application.ts:174-176` calls
-  `context.setValue(VIEW_TARGET/DISPATCHER/ROUTER, …)` *after* `builder.run()`.
+  `context.setValue(VIEW_TARGET/DISPATCHER/ROUTER, …)` _after_ `builder.run()`.
   Beans that inject these tokens at construction time (the `@ndigo/test` browser
   harness already notes `WebAutoConfiguration` provides no dispatcher entry)
   cannot resolve them; they must use late resolution. This is an architectural
@@ -140,7 +140,7 @@ docs consistency.
   Fix: wrap and rethrow as `OIDCError('discovery', …)`.
 
 - **F-15 — Refresh HTTP 400 is over-classified as `invalid_grant`.**
-  `refresh()` maps *any* 400 response to `invalid_token`/invalid_grant, including
+  `refresh()` maps _any_ 400 response to `invalid_token`/invalid_grant, including
   `invalid_client` (wrong client secret) or `invalid_request`. It also does not
   handle 401. Fix: parse the provider's `error` field from the body and map
   `invalid_grant` specifically; surface other codes as `network`/`configuration`.
@@ -303,6 +303,7 @@ Implemented in two commits on `docs/comprehensive-review-2026-11-05`:
 - **Wave 4 (F-11, F-27):** exception-safe Node preset close(), bundle-test guard.
 
 Remaining (documented, intentionally deferred as design decisions):
+
 - F-10 (web late binding): the late-resolution contract is documented in `web-application.ts`; changing to eager beans would require a post-refresh registration phase and is tracked separately.
 - F-21 (flag memo): providers are expected to cache; per-request evaluation is by design for live flags (AD-82). Opt-in memoization deferred to a follow-up if profiling shows need.
 - F-26 (historical doc refs): historical plans/migrations/decisions intentionally retain old app numbers; live guides already use current numbers.

@@ -38,7 +38,7 @@ Scaffold kind.
 
 > **local**: `boolean`
 
-Rewrite `@ndigo/*` deps to `file:` links against the workspace (dev mode).
+Rewrite `@ndigo/*` deps to `workspace:*` links against the workspace (dev mode).
 
 ***
 
@@ -54,7 +54,7 @@ App slug (kebab-case, without the `ndigo-` prefix).
 
 > **port**: `number`
 
-Dev port (defaults to the first free multiple-of-ten slot above 3000).
+Dev port (defaults to 3000).
 
 ***
 

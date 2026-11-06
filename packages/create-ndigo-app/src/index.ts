@@ -229,8 +229,11 @@ Options:
     }
 
     if (isNonEmpty(targetDir) && parsed.force) {
-        const forbidden = targetDir === '/' || targetDir === resolve(process.env.HOME ?? '/') ||
-            targetDir.includes(`${sep}node_modules`) || targetDir.endsWith('.git');
+        const forbidden =
+            targetDir === '/' ||
+            targetDir === resolve(process.env.HOME ?? '/') ||
+            targetDir.includes(`${sep}node_modules`) ||
+            targetDir.endsWith('.git');
         if (forbidden) {
             console.error(`create-ndigo-app: refusing to overwrite protected path: ${targetDir}`);
             return 1;

@@ -6,7 +6,7 @@
 
 # Interface: ClaimOptions
 
-Claim window for [JobDriver.claim](../../job-driver/interfaces/JobDriver.md#claim).
+Claim window for `JobDriver.claim`.
 
 ## Properties
 

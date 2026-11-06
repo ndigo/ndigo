@@ -26,12 +26,8 @@ Uses function parameter name extraction to map extractors to positions.
 ## Example
 
 ```ts
-// Old (legacy - not supported in TC39):
-handleRequest(@queryValue('page') page: string) {}
-
-// New (TC39):
-parameters({
-  page: queryValue('page')
-})
-handleRequest(page: string) {}
+class PageController {
+  @parameters({ page: queryValue('page') })
+  handleRequest(page: string) {}
+}
 ```

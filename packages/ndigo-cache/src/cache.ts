@@ -42,7 +42,7 @@ export interface CacheOptions {
      */
     maxSize?: number;
     /**
-     * Size-limit eviction policy when {@link CacheOptions.maxSize maxSize} is
+     * Size-limit eviction policy when {@link CacheOptions#maxSize | maxSize} is
      * set: `lru` (default) evicts the least-recently-used entry (get and set
      * hits promote it), `fifo` evicts the oldest-inserted entry regardless of
      * access or update.

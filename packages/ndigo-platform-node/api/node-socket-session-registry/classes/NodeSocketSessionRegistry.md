@@ -18,6 +18,7 @@ The implementation is registered as a context bean by
 ## Implements
 
 - `SocketSessionRegistry`
+- `AsyncCloseable`
 
 ## Constructors
 
@@ -169,6 +170,10 @@ Release registry subscriptions and heartbeat, not the application-owned transpor
 #### Returns
 
 `Promise`\<`void`\>
+
+#### Implementation of
+
+`AsyncCloseable.close`
 
 ***
 

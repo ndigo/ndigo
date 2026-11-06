@@ -13,6 +13,7 @@ Redis keys are the shared truth.
 ## Implements
 
 - [`RateLimiter`](#)
+- `AsyncCloseable`
 
 ## Constructors
 
@@ -56,6 +57,10 @@ borrowed connection is untouched; idempotent.
 #### Returns
 
 `Promise`\<`void`\>
+
+#### Implementation of
+
+`AsyncCloseable.close`
 
 ***
 

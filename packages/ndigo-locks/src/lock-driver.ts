@@ -12,6 +12,8 @@
  */
 import { like } from '@ndigo/util/types';
 
+import type { AsyncCloseable } from '@ndigo/factory';
+
 /**
  * Options for acquiring a lock.
  */
@@ -67,7 +69,7 @@ export interface LockHandle {
  * belong to the caller (`@scheduled({ lock, lockWait })`), never to the
  * driver.
  */
-export interface LockDriver {
+export interface LockDriver extends AsyncCloseable {
     /**
      * Backend identifier (`'in-process'`, `'redis'`, …), for diagnostics.
      */

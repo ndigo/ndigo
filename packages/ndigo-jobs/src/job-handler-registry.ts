@@ -4,6 +4,7 @@
 import { FrameworkError, getSymbolMetadata } from '@ndigo/core';
 import { like } from '@ndigo/util/types';
 import type { ApplicationContext } from '@ndigo/context';
+import type { AsyncDestroyable } from '@ndigo/factory';
 import { JOB_HANDLER_METADATA_PREFIX, type JobHandler, type JobHandlerMetadata } from './job-handler';
 
 /**
@@ -30,7 +31,7 @@ export interface RegisteredJobHandler {
  * Duplicate types, handlers on class (not instance) registrations, and
  * non-callable members all fail loud at start.
  */
-export class JobHandlerRegistry {
+export class JobHandlerRegistry implements AsyncDestroyable {
     #applicationContext: ApplicationContext | null = null;
     readonly #handlers = new Map<string, RegisteredJobHandler>();
 

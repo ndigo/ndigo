@@ -2,6 +2,7 @@
  * Transactional-outbox contracts: store, publisher, and the jobs publisher.
  */
 import { like } from '@ndigo/util/types';
+import type { AsyncCloseable } from '@ndigo/factory';
 
 import type { JobId } from './job';
 import type { JobQueue } from './job-queue';
@@ -43,7 +44,7 @@ export interface OutboxClaimOptions {
  * its lease expires (crashed relay, failed publish), so consumers subscribe
  * idempotently.
  */
-export interface OutboxStore {
+export interface OutboxStore extends AsyncCloseable {
     /**
      * Records one side effect.
      *

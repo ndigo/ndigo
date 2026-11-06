@@ -11,13 +11,12 @@
     },
     "kind": {
       "type": "string",
-      "enum": ["browser", "node"],
+      "enum": [
+        "browser",
+        "node"
+      ],
       "description": "browser = Vite SPA, node = HTTP server",
-      "x-prompt": {
-        "message": "What kind of application?",
-        "type": "list",
-        "items": ["browser", "node"]
-      }
+      "x-prompt": null
     },
     "description": {
       "type": "string",
@@ -34,7 +33,19 @@
       "description": "Dev port (defaults to the first free multiple-of-ten slot)",
       "minimum": 1,
       "maximum": 65535
+    },
+    "preset": {
+      "type": "string",
+      "enum": [
+        "api",
+        "browser",
+        "full-stack",
+        "minimal"
+      ],
+      "description": "Starter preset (defaults to minimal)"
     }
   },
-  "required": ["name", "kind"]
+  "required": [
+    "name"
+  ]
 }

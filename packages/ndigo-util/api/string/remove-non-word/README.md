@@ -6,6 +6,8 @@
 
 # string/remove-non-word
 
-## String
+Removes non-word characters from a string.
+
+## Variables
 
 - [default](variables/default.md)

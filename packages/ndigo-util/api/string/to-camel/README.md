@@ -6,6 +6,8 @@
 
 # string/to-camel
 
+Converts strings to camelCase.
+
 ## Variables
 
 - [default](variables/default.md)

@@ -6,6 +6,8 @@
 
 # type/is-number
 
+Type guard for finite numbers.
+
 ## References
 
 ### default

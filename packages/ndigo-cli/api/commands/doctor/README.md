@@ -9,3 +9,7 @@
 ## Classes
 
 - [DoctorCommand](classes/DoctorCommand.md)
+
+## Variables
+
+- [MIN\_NODE\_MAJOR](variables/MIN_NODE_MAJOR.md)

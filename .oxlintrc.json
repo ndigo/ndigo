@@ -127,6 +127,17 @@
   "overrides": [
     {
       "files": [
+        "packages/ndigo-content-i18next/src/**/*.ts",
+        "packages/ndigo-signals/src/**/*.ts",
+        "packages/ndigo-service/src/**/*.ts",
+        "packages/ndigo-oxlint-plugin/src/**/*.ts"
+      ],
+      "rules": {
+        "internal/tsdoc-syntax": "error"
+      }
+    },
+    {
+      "files": [
         "packages/ndigo-boot/src/**/*.ts",
         "packages/ndigo-host/src/**/*.ts",
         "packages/ndigo-inspect/src/**/*.ts",

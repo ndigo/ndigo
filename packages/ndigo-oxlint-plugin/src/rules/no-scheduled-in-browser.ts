@@ -1,9 +1,6 @@
 /**
  * Rule that flags `@ndigo/scheduler` imports in files that also import
  * browser-platform packages.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 

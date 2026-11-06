@@ -95,8 +95,13 @@ export function buildCliApp() {
 
     let version = '0.0.1';
     try {
+        // One level up works from BOTH layouts: `lib/index.js` and
+        // `src/index.ts` each sit directly inside the package root.
+        // `../..` pointed at `packages/package.json` — a file that does not
+        // exist — so every read silently fell back to 0.0.1, invisible only
+        // while the version *is* 0.0.1 (issue #146, review REV-004).
         const manifest = JSON.parse(
-            readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'package.json'), 'utf8')
+            readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'package.json'), 'utf8')
         ) as { version?: unknown };
         if (typeof manifest.version === 'string') {
             version = manifest.version;

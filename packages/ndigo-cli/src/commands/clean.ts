@@ -21,6 +21,14 @@ export const cleanCommand = buildCommand({
             process.exitCode = 2;
             return;
         }
+        // `--force` is required exactly as the help states (issue #146):
+        // the gate used to be advertised but never enforced, so plain
+        // `ndigo clean` recursively deleted dist/lib/.nx/coverage.
+        if (!flags.dryRun && !flags.force) {
+            process.stderr.write(`refusing to clean without --force (use --dryRun to preview)\n`);
+            process.exitCode = 2;
+            return;
+        }
         for (const target of TARGETS) {
             const path = join(resolved, target);
             if (!existsSync(path)) continue;

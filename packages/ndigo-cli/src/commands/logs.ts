@@ -1,15 +1,30 @@
 /**
  * `ndigo logs` — print (and optionally follow) an application log file.
+ * The follow protocol is byte-faithful: one fd plus Buffer end-offsets, so
+ * multibyte logs stay intact and appended lines are read incrementally
+ * rather than re-reading the whole file every poll (issue #146).
  *
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { buildCommand } from '@stricli/core';
-import { existsSync, readFileSync, watchFile, unwatchFile, statSync } from 'node:fs';
+import { buildCommand, numberParser } from '@stricli/core';
+import {
+    closeSync,
+    existsSync,
+    openSync,
+    readFileSync,
+    readSync,
+    statSync,
+    unwatchFile,
+    watchFile,
+} from 'node:fs';
 import { join } from 'node:path';
 
 export const logsCommand = buildCommand({
     async func(flags: { file?: string; lines?: number; follow?: boolean }, dir: string) {
+        // `dir` names the app whose default log location is used; --file
+        // overrides the location entirely (no package.json check — a log
+        // file is addressable without the app manifest).
         const file = flags.file ?? join(dir, 'logs', 'app.log');
         if (!existsSync(file)) {
             process.stderr.write(`log file not found: ${file}\n`);
@@ -17,44 +32,93 @@ export const logsCommand = buildCommand({
             return;
         }
 
-        const printTail = (n: number): void => {
-            const content = readFileSync(file, 'utf8');
-            const lines = content.split(/\r?\n/);
-            const tail = lines.slice(-n).join('\n');
-            process.stdout.write(tail + (tail.endsWith('\n') ? '' : '\n'));
+        const lines = flags.lines ?? 50;
+        // `numberParser` already rejects non-numbers; zero, negatives, and
+        // fractions must not shift the tail silently — `slice(-NaN)` used
+        // to print the whole file instead of failing (issue #146).
+        if (!Number.isInteger(lines) || lines <= 0) {
+            process.stderr.write(`--lines must be a positive integer (received ${flags.lines})\n`);
+            process.exitCode = 2;
+            return;
+        }
+
+        const printLastLines = (buffer: Buffer, count: number): void => {
+            // Count the VISIBLY populated line endings: a single trailing
+            // newline closes the final line and must not consume one of the
+            // requested lines (the previous `slice(-n)` counted that empty
+            // segment too, so `--lines 2` showed one line on newline-terminated
+            // logs — the off-by-one this rewrite is expected to fix).
+            let end = buffer.byteLength;
+            if (end > 0 && buffer[end - 1] === 0x0a) {
+                end--;
+            }
+            let cut = 0;
+            let seen = 0;
+            for (let index = end - 1; index >= 0; index--) {
+                if (buffer[index] === 0x0a) {
+                    seen++;
+                    if (seen === count) {
+                        cut = index + 1;
+                        break;
+                    }
+                }
+            }
+            process.stdout.write(buffer.subarray(cut));
         };
 
-        const n = flags.lines ?? 50;
-        printTail(n);
+        // One snapshot drives both the printed tail and the follow position:
+        // snapshotting the offset AFTER a string-based print used to drop
+        // every line appended in the gap between the two reads (issue #146).
+        const initial = readFileSync(file);
+        printLastLines(initial, lines);
+        let position = initial.byteLength;
+        let fd = openSync(file, 'r');
 
-        if (!flags.follow) return;
+        if (!flags.follow) {
+            closeSync(fd);
+            return;
+        }
 
-        let position = statSync(file).size;
         const onChange = (): void => {
             let size: number;
             try {
                 size = statSync(file).size;
             } catch {
+                // Deleted/transiently invisible mid-rotation: keep watching;
+                // a permanent disappearance simply never updates again.
                 return;
             }
-            if (size < position) {
-                // Truncated/rotated: print whole file.
-                process.stdout.write(readFileSync(file, 'utf8'));
-                position = size;
-                return;
+            if (size > position) {
+                const buffer = Buffer.alloc(size - position);
+                let read: number;
+                try {
+                    read = readSync(fd, buffer, 0, buffer.byteLength, position);
+                } catch {
+                    // A shrank-mid-read race or EBUSY: skip this tick, the
+                    // next stat re-checks from the unchanged position.
+                    return;
+                }
+                if (read > 0) {
+                    process.stdout.write(buffer.subarray(0, read));
+                    position += read;
+                }
+            } else if (size < position) {
+                // Truncated/rotated (new inode): reopen and print whole.
+                closeSync(fd);
+                fd = openSync(file, 'r');
+                const buffer = readFileSync(file);
+                process.stdout.write(buffer);
+                position = buffer.byteLength;
             }
-            if (size === position) return;
-            const buf = readFileSync(file, 'utf8');
-            process.stdout.write(buf.slice(position));
-            position = size;
         };
-
         watchFile(file, { interval: 200 }, onChange);
 
-        // Keep the process alive until interrupted.
+        // Keep the process alive until interrupted; Ctrl-C/SIGTERM resolves
+        // with exit code 0 (the tail contract the plan records).
         await new Promise<void>((resolve) => {
             const stop = (): void => {
                 unwatchFile(file, onChange);
+                closeSync(fd);
                 resolve();
             };
             process.on('SIGINT', stop);
@@ -66,7 +130,7 @@ export const logsCommand = buildCommand({
             file: { kind: 'parsed', parse: (v: string) => v, brief: 'Log file path.', optional: true },
             lines: {
                 kind: 'parsed',
-                parse: (v: string) => Number(v),
+                parse: numberParser,
                 brief: 'Number of lines to show.',
                 optional: true,
             },

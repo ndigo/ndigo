@@ -95,7 +95,15 @@ describe('ndigo (real bin)', () => {
     test('--version prints the CLI version and exits 0', async () => {
         const { code, out } = await runCli(['--version']);
         expect(code).toBe(0);
-        expect(out).toContain('@ndigo/cli/');
+        // Assert the Digits, not just the prefix: the version read used to
+        // fall back to 0.0.1 from an unresolvable path (issue #146) and the
+        // prefix-only assert could not catch the next-version breakage.
+        const pkgVersion = (
+            JSON.parse(readFileSync(resolve(dirname(BIN), '..', 'package.json'), 'utf8')) as {
+                version: unknown;
+            }
+        ).version as string;
+        expect(out.trim()).toBe(`@ndigo/cli/${pkgVersion}`);
     });
 
     test('--help lists the v1 surface', async () => {
@@ -392,5 +400,163 @@ describe('ndigo update (issue #144 manifest boundary)', () => {
         expect(code).toBe(2);
         expect(err).toContain('no version manifest to apply');
         expect(`${out}${err}`).not.toContain('TypeError');
+    });
+});
+
+describe('ndigo logs (issue #146 byte-faithful follow)', () => {
+    let logsAppDir: string;
+    let logFile: string;
+
+    beforeAll(() => {
+        logsAppDir = join(base, 'logs-app');
+        mkdirSync(join(logsAppDir, 'logs'), { recursive: true });
+        logFile = join(logsAppDir, 'logs', 'app.log');
+    });
+
+    test('missing file exits 2 with a clean message', async () => {
+        const emptyDir = join(base, 'logs-empty');
+        mkdirSync(emptyDir, { recursive: true });
+        const { code, err } = await runCli(['logs', emptyDir]);
+        expect(code).toBe(2);
+        expect(err).toContain('log file not found');
+    });
+
+    test('--lines 0 and fractional counts are refused, non-numbers rejected by the parser', async () => {
+        writeFileSync(logFile, 'l-1\nl-2\nl-3\n');
+        const zero = await runCli(['logs', '--lines', '0', logsAppDir]);
+        expect(zero.code).toBe(2);
+        expect(zero.err).toContain('--lines must be a positive integer');
+
+        const parsed = await runCli(['logs', '--lines', 'abc', logsAppDir]);
+        expect(parsed.code).not.toBe(0);
+        expect(`${parsed.out}${parsed.err}`).toContain('lines');
+    });
+
+    test('the tail prints the last n lines byte-exactly (multibyte seed)', async () => {
+        writeFileSync(logFile, 'l-1\nmulti-é-2\nl-3\nβ-4\nl-5\n');
+        const { code, out } = await runCli(['logs', '--lines', '2', logsAppDir]);
+        expect(code).toBe(0);
+        expect(out).toBe('β-4\nl-5\n');
+    });
+
+    test('follow prints growth and rotated content intact, exits 0 on SIGTERM', async () => {
+        writeFileSync(logFile, 'line-1\nline-2\nseed-é-β-3\n');
+        const proc = spawn(process.execPath, [BIN, 'logs', '--follow', logsAppDir], {
+            cwd: logsAppDir,
+            stdio: ['ignore', 'pipe', 'pipe'],
+        });
+        const captured: string[] = [];
+        if (proc.stdout !== null) {
+            void (async () => {
+                for await (const chunk of proc.stdout) captured.push(String(chunk));
+            })().catch(() => undefined);
+        }
+        const out = (): string => captured.join('');
+        const exitCode = new Promise<number>((resolveCode) => proc.once('exit', resolveCode));
+        try {
+            await waitFor(() => out().includes('seed-é-β-3'));
+            const { writeFile: rewrite } = await import('node:fs/promises');
+            await rewrite(logFile, 'line-1\nline-2\nseed-é-β-3\ngrowth-α✓-4\n');
+            await waitFor(() => out().includes('growth-α✓-4'));
+            // Rotation: the file is truncated to a smaller body (same inode
+            // or a new one — both follow the size<position reopen path).
+            await rewrite(logFile, 'rotated-ε-0\n');
+            await waitFor(() => out().includes('rotated-ε-0'));
+        } finally {
+            kill(proc.pid ?? 0, 'SIGTERM');
+            const code = await exitCode;
+            expect(code).toBe(0);
+            // The trailing empty tick must not re-print a stale full file.
+            await delay(250);
+            expect(out().split('rotated-ε-0').length).toBeLessThanOrEqual(3);
+        }
+    }, 15_000);
+});
+
+describe('ndigo clean (issue #146 --force gate)', () => {
+    let cleanChain = 0;
+
+    function cleanAppWithDist(): { dir: string; distPath: string } {
+        cleanChain += 1;
+        const dir = join(base, `clean-${process.pid}-${cleanChain}`);
+        mkdirSync(join(dir, 'dist'), { recursive: true });
+        writeFileSync(
+            join(dir, 'package.json'),
+            JSON.stringify({ name: 'clean-app', private: true })
+        );
+        writeFileSync(join(dir, 'dist', 'artifact.js'), 'export {};\n');
+        return { dir, distPath: join(dir, 'dist') };
+    }
+
+    test('plain clean is refused and removes nothing', async () => {
+        const { dir, distPath } = cleanAppWithDist();
+        const { code, err } = await runCli(['clean', dir]);
+        expect(code).toBe(2);
+        expect(err).toContain('refusing to clean without --force');
+        expect(existsSync(distPath)).toBe(true);
+    });
+
+    test('--dryRun previews and keeps everything', async () => {
+        const { dir, distPath } = cleanAppWithDist();
+        const { code, out } = await runCli(['clean', dir, '--dryRun']);
+        expect(code).toBe(0);
+        expect(out).toContain('would remove');
+        expect(existsSync(distPath)).toBe(true);
+    });
+
+    test('--force removes the target directories', async () => {
+        const { dir, distPath } = cleanAppWithDist();
+        const { code, out } = await runCli(['clean', '--force', dir]);
+        expect(code).toBe(0);
+        expect(out).toContain('removed');
+        expect(existsSync(distPath)).toBe(false);
+    });
+
+    test('$HOME-matching dirs are protected regardless of --force', async () => {
+        const { dir } = cleanAppWithDist();
+        const { code, err } = await runCli(['clean', '--force', dir], undefined, { HOME: dir });
+        expect(code).toBe(2);
+        expect(err).toContain('refusing to clean protected path');
+    });
+});
+
+describe('ndigo config (issue #146 edges)', () => {
+    let cfgChain = 0;
+
+    function cfgDir(): string {
+        cfgChain += 1;
+        const dir = join(base, `config-${process.pid}-${cfgChain}`);
+        mkdirSync(dir, { recursive: true });
+        return dir;
+    }
+
+    test('set requires a value; get reports absence as null; unknown action is a usage error', async () => {
+        const dir = cfgDir();
+        const missing = await runCli(['config', 'get', 'absent'], dir);
+        expect(missing.code).toBe(0);
+        expect(missing.out).toBe('null\n');
+
+        const noValue = await runCli(['config', 'set', 'k2'], dir);
+        expect(noValue.code).toBe(2);
+        expect(noValue.err).toContain('a value is required');
+        expect(existsSync(join(dir, '.ndigorc.json'))).toBe(false);
+
+        const unknown = await runCli(['config', 'patch', 'k'], dir);
+        expect(unknown.code).toBe(2);
+        expect(unknown.err).toContain('Unknown config action');
+    });
+
+    test('set writes, get reads back, --list shows the pair', async () => {
+        const dir = cfgDir();
+        const setResult = await runCli(['config', 'set', 'probe', 'v-1'], dir);
+        expect(setResult.code).toBe(0);
+        expect(setResult.out).toContain('set probe');
+        expect(readFileSync(join(dir, '.ndigorc.json'), 'utf8')).toContain('"probe": "v-1"');
+
+        const getResult = await runCli(['config', 'get', 'probe'], dir);
+        expect(getResult.out).toBe('"v-1"\n');
+
+        const listResult = await runCli(['config', 'list'], dir);
+        expect(listResult.out).toBe('probe="v-1"\n');
     });
 });

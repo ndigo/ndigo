@@ -421,7 +421,7 @@
   },
   "ndigo-scheduler": {
     "modules": 9,
-    "modulesWithoutSummary": 8,
+    "modulesWithoutSummary": 0,
     "members": 71,
     "membersUndocumented": 6,
     "methodsWithParams": 17,

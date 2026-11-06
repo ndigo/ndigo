@@ -1,4 +1,5 @@
 /**
+ * The `@scheduled` decorator and its metadata key.
  */
 import '@tsmetadata/polyfill';
 import { Cron } from 'croner';

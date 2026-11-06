@@ -1,4 +1,5 @@
 /**
+ * Client-side authentication: OIDC adapter and auth header interceptor.
  */
 export * from '@ndigo/auth-core';
 export * from './client';

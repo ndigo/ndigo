@@ -8,6 +8,10 @@
 
 Result of matching a route pattern to a path.
 
+## Implements
+
+- `Serializable`
+
 ## Constructors
 
 ### Constructor
@@ -75,3 +79,7 @@ Serialize the match result to JSON.
 `JSONValue`
 
 A JSON representation of the match.
+
+#### Implementation of
+
+`Serializable.toJSON`

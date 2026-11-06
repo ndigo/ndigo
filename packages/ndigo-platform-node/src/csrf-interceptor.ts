@@ -13,10 +13,10 @@
  * cookie outright, so mutating requests fail closed.
  */
 import { timingSafeEqual } from 'node:crypto';
-import { randomToken } from '\@ndigo/util';
-import { Route } from '\@ndigo/router';
-import { RouteHandlerInterceptor } from '\@ndigo/dispatcher';
-import { HTTPHeaders } from '\@ndigo/http';
+import { randomToken } from '@ndigo/util';
+import { Route } from '@ndigo/router';
+import { RouteHandlerInterceptor } from '@ndigo/dispatcher';
+import { HTTPHeaders } from '@ndigo/http';
 import { getNodeRequest, NODE_RESPONSE_ATTRIBUTE, NodeRequest } from './node-request';
 import { ProblemTypes, writeProblem } from './problem-details';
 import type { ServerResponse } from 'node:http';

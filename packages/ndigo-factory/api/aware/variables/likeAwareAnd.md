@@ -23,9 +23,8 @@ A function that will test whether a `value` is both [Aware](../interfaces/Aware.
 ## Example
 
 ```ts
-const
- isYellow = ( value ) => 'color' in value && value.color === 'yellow',
- likeAwareAndYellow = likeAwareAnd( isYellow );
-likeAwareAndYellow( { color: 'yellow' } ); // false
-likeAwareAndYellow( { '@@aware': true, color: 'yellow' } ); // true
+const isYellow = (value: unknown) => 'color' in value && value.color === 'yellow';
+const likeAwareAndYellow = likeAwareAnd(isYellow);
+likeAwareAndYellow({ color: 'yellow' }); // false
+likeAwareAndYellow({ '@@aware': true, color: 'yellow' }); // true
 ```

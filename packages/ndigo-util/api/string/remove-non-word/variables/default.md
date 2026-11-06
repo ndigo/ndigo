@@ -27,6 +27,5 @@ The `value` with the non-word characters removed.
 ## Example
 
 ```ts
-removeNonWord( "lorem ~!@#$%^&*()_+`-={}[]|\\:\";'/?><., ipsum" );
-//=> "lorem _- ipsum"
+removeNonWord('lorem ipsum'); //=> 'lorem ipsum'
 ```

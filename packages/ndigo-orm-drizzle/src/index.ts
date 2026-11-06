@@ -30,3 +30,5 @@ export { DrizzleUnitOfWork } from './drizzle-unit-of-work';
 export { DrizzleRepository } from './drizzle-repository';
 export { DrizzleDerivedQueryRepository } from './drizzle-derived-query-repository';
 export { drizzleTableForEntity, insertSchemaForEntity, selectSchemaForEntity } from './drizzle-zod';
+export { createDrizzleAdapter } from './drizzle-adapter';
+export type { DrizzleAdapterOptions } from './drizzle-adapter';

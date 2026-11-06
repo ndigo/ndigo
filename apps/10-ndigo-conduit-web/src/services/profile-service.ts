@@ -7,9 +7,6 @@
  * profile and every cached article by-line flip immediately and re-render, the
  * call is awaited, and a rejected call rolls the flip back. See
  * `article-service.ts` for the rationale of keyed loading.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { Null } from '@ndigo/core';

@@ -5,9 +5,6 @@
  * so this is a single paged list: each row is a vet with its specialties, which
  * the app models as a `VetSpecialty` link row rather than a many-to-many
  * relation the in-memory manager cannot resolve.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { getMapping, ModelAndView, parameters, requestMapping, validatedQuery } from '@ndigo/dispatcher';
 import { ClinicService } from './clinic-service';

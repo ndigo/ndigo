@@ -6,6 +6,8 @@
 
 # web-component-view-resolver
 
+Resolver that maps a logical view name to a `WebComponentView` (AD — view.
+
 ## Classes
 
 - [WebComponentViewResolver](classes/WebComponentViewResolver.md)

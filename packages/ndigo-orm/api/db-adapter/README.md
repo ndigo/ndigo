@@ -6,6 +6,8 @@
 
 # db-adapter
 
+Database-adapter abstraction (AD-96): the contract `@ndigo/cli`'s
+
 ## Interfaces
 
 - [NdigoDatabaseAdapter](interfaces/NdigoDatabaseAdapter.md)

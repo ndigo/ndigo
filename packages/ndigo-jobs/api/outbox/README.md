@@ -6,6 +6,8 @@
 
 # outbox
 
+Transactional-outbox contracts: store, publisher, and the jobs publisher.
+
 ## Classes
 
 - [JobOutboxPublisher](classes/JobOutboxPublisher.md)

@@ -1,8 +1,5 @@
 /**
  * Rule that blocks unguarded access to browser globals in isomorphic packages.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Context, ESTree, Scope } from '@oxlint/plugins';
 

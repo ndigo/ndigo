@@ -5,9 +5,6 @@
  *
  * jsdom has no IndexedDB, so this spec drives a minimal in-memory fake that
  * mirrors the request/transaction shape the loader uses.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { IndexedDBResourceLoader } from '../src/indexeddb-resource-loader';

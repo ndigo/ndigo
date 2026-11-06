@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { configuration, entry, AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { whenNode, Null, createConversionService, type ConversionService } from '@ndigo/core';

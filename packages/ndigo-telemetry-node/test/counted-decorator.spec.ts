@@ -8,9 +8,6 @@
  * decoration time would capture the NoopMeter and silently drop every
  * datapoint. There is no instrumentation/registry indirection to enable
  * (TEL-03).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';

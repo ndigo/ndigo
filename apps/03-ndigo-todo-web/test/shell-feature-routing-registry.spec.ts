@@ -1,7 +1,3 @@
-/**
- * @since 1.0.0
- * @author Jeff Rose
- */
 import { describe, expect, test, vi } from 'vitest';
 import { GenericApplicationContext } from '@ndigo/context';
 import { FeatureContextMountManager } from '@ndigo/context';

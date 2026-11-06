@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { createNull, JSONValue, Serializable } from '@ndigo/core';
 

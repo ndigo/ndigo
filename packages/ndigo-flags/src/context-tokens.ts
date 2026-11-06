@@ -1,8 +1,5 @@
 /**
  * Context tokens for `@ndigo/flags` (AD-82 D-2).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ContextToken } from '@ndigo/factory';
 import type { FlagEvaluator } from './flag-evaluator';

@@ -6,6 +6,8 @@
 
 # index
 
+Public entry point for `@ndigo/inspect` — the programmatic manifest
+
 ## References
 
 ### InspectApp

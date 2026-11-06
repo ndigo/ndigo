@@ -11,9 +11,6 @@
  *
  * Tokens live in memory only: nothing here persists a JWT to storage, and
  * nothing re-implements what the server already owns.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /** Tokens held for this page only (the refresh flow needs both). */

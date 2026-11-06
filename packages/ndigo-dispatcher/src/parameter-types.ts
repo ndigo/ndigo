@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { isString } from '@ndigo/util/types';
 import { Serializable, JSONObject, createNull, Equatable } from '@ndigo/core';

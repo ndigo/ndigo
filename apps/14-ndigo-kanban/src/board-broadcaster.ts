@@ -7,9 +7,6 @@
  * neither side has to import the other. The registry is read from the
  * application context *at publish time*, because the bean lives in
  * `NodeAutoConfiguration` and may be created after this class.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';

@@ -22,11 +22,6 @@
       "type": "string",
       "description": "One-line summary used as the doc header description",
       "default": ""
-    },
-    "author": {
-      "type": "string",
-      "description": "Value for the @author tag",
-      "default": "Jeff Rose"
     }
   },
   "required": ["name", "package"]

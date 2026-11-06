@@ -1,8 +1,5 @@
 /**
  * OpenTelemetry instrumentation for `HTTPResponseViewTarget.commit`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { SpanKind } from '@opentelemetry/api';
 import { HTTPResponseViewTarget } from '@ndigo/platform-node';

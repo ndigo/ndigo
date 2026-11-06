@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 export default class HelloApp extends HTMLElement {
     set model(model: { message?: string }) {

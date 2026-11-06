@@ -4,9 +4,6 @@
  * These are the driver-authoring surface: a backend persists the record
  * produced by {@link resolveJobRequest} and stores the text produced by
  * {@link serializeJobPayload} — nothing else is contract.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
 import type { JobRequest, ResolvedJobRequest } from './job';

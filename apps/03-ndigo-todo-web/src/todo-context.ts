@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { configuration, entry, MetadataConfigApplicationContext } from '@ndigo/context';
 import { WebAutoConfiguration } from '@ndigo/platform-web';

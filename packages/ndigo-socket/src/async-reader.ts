@@ -17,9 +17,6 @@
  *
  * Single-consumer by design: one `iterable()` at a time; ordering is
  * strictly FIFO.
- *
- * @since 1.0.0
- * @author Jeff Rose
  * @internal
  */
 import { RingBuffer } from '@ndigo/core';

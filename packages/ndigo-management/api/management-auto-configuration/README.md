@@ -6,6 +6,8 @@
 
 # management-auto-configuration
 
+Auto-configuration for management endpoints.
+
 ## Classes
 
 - [ManagementAutoConfiguration](classes/ManagementAutoConfiguration.md)

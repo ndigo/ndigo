@@ -7,9 +7,6 @@
  * without re-deriving them. Controllers and the handler mapping are entries too
  * — the dispatcher discovers `@routeMapping` handlers by scanning the context,
  * which is why they must be beans rather than module-level instances.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { configuration, entry } from '@ndigo/context';
 import { LoggingRouteHandlerInterceptor, RadixMetadataHandlerMapping } from '@ndigo/dispatcher';

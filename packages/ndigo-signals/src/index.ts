@@ -1,8 +1,5 @@
 /**
  * Re-exports from `@preact/signals-core` — the underlying signals engine.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export { signal, computed, effect, batch, untracked, Signal } from '@preact/signals-core';
 

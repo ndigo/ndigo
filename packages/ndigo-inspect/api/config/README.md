@@ -6,6 +6,8 @@
 
 # config
 
+Configuration enumeration for the inspect manifest. Declares keys via
+
 ## Functions
 
 - [collectConfig](functions/collectConfig.md)

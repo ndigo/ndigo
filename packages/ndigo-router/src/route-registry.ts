@@ -1,8 +1,5 @@
 /**
  * Scans `routeMapping` decorator metadata from registered beans and builds.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { type Registry } from '@ndigo/factory';
 import { URLGlobPathMatcher } from '@ndigo/core';

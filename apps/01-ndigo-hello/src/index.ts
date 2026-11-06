@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import helloContext from './hello-context';
 import './hello-app-view';

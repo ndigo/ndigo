@@ -2,9 +2,6 @@
  * Fixed-window limiter contracts (AD-33, moved to `@ndigo/rate-limit` by
  * AD-79): per-(key, window) budgets, window slide, fail-loud policies,
  * and the SEC-2 memory bound.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { setTimeout as delay } from 'node:timers/promises';

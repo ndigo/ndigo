@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CounterRateResolver } from '../src/metrics/counter-rate-resolver';

@@ -1,8 +1,5 @@
 /**
  * `/configprops` endpoint specs (AD-76 D-3).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';

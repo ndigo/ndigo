@@ -6,6 +6,8 @@
 
 # secret-cipher
 
+Secret-at-rest cipher contract and marker format (AD-29 D-3..D-5).
+
 ## Interfaces
 
 - [SecretCipher](interfaces/SecretCipher.md)

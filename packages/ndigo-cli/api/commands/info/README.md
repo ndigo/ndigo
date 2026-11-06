@@ -6,6 +6,8 @@
 
 # commands/info
 
+`ndigo info` — versions, installed @ndigo packages, workspace, git.
+
 ## Variables
 
 - [infoCommand](variables/infoCommand.md)

@@ -9,9 +9,6 @@
  * `setSessionCookie` uses, so the call works identically over a real socket
  * and through the `@ndigo/test` mock sink (both merge headers set this way
  * into the later `writeHead`).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Route } from '@ndigo/router';
 import { NODE_RESPONSE_ATTRIBUTE } from '@ndigo/platform-node';

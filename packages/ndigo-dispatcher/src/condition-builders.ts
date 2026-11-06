@@ -15,9 +15,6 @@
  * @requestMapping({ value: '/items/:id', queryParams: queryParamCondition('filter', 'all') })
  * @requestMapping({ value: '/x', queryParams: queryParamCondition('flag', undefined, { negate: true }) })
  * ```
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { IllegalStateError } from '@ndigo/core';
 import { QueryParamExpression } from './query-param-condition';

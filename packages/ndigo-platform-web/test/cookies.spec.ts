@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { beforeEach, describe, expect, test } from 'vitest';
 import type { CookieParseResult } from '../src/cookies';

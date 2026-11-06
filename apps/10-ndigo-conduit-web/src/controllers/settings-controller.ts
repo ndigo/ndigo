@@ -4,9 +4,6 @@
  * The route is behind the auth guard, so this controller only ever renders for
  * a signed-in visitor; it projects the account and its form-scoped envelope for
  * the view.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { Null } from '@ndigo/core';

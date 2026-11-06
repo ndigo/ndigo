@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Null, PathMatcher, URLGlobPathMatcher } from '@ndigo/core';
 import { AsNameAware } from '@ndigo/factory';

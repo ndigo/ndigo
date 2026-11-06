@@ -6,6 +6,8 @@
 
 # spec
 
+OpenAPI 3.0.3 spec generation from dispatch metadata (AD-35 D-2/D-3).
+
 ## Classes
 
 - [OpenAPISpecGenerator](classes/OpenAPISpecGenerator.md)

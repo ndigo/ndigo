@@ -6,6 +6,8 @@
 
 # socket-fanout
 
+Transport-neutral live socket fan-out contract.
+
 ## Interfaces
 
 - [SocketFanout](interfaces/SocketFanout.md)

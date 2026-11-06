@@ -1,7 +1,3 @@
-/**
- * @since 1.0.0
- * @author Jeff Rose
- */
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { ConduitApiError, type ConduitApi, type ConduitSession } from '../src/lib/api/conduit-types';

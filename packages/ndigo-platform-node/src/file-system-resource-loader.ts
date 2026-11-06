@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { readFile, realpath } from 'node:fs/promises';
 import { resolve, sep } from 'node:path';

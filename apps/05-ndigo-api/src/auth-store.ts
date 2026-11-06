@@ -8,9 +8,6 @@
  * authenticator, note controllers and integration tests needed no changes:
  * `authenticate`/`lookupPrincipal`/`invalidateToken` now back onto the
  * 'credentials' adapter (session store) instead of a token map.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AuthRegistry, type Principal, DelegatingPasswordEncoder } from '@ndigo/auth-core';
 import { ScryptPasswordEncoder } from '@ndigo/auth-core/scrypt';

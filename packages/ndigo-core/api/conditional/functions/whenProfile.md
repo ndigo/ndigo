@@ -36,9 +36,11 @@ A class/method decorator that stores the canonical condition.
 
 ```ts
 @whenProfile('!prod & (dev | test)')
-class DevOnlyConfiguration { ... }
+class DevOnlyConfiguration {}
 
-@whenProfile('dev', 'test') // either-of → 'dev | test'
+@whenProfile('dev', 'test') // either-of -> 'dev | test'
 @entry()
-devOrTestEntry() { ... }
+class DevOrTestConfiguration {
+  devOrTestEntry() {}
+}
 ```

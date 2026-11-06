@@ -1,4 +1,5 @@
 /**
+ * Server-side authentication: adapters, session stores, and route guards.
  */
 export * from './server';
 export * from './route-guard';

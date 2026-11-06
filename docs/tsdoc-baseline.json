@@ -13,7 +13,7 @@
   },
   "ndigo-auth-client": {
     "modules": 5,
-    "modulesWithoutSummary": 5,
+    "modulesWithoutSummary": 4,
     "members": 67,
     "membersUndocumented": 17,
     "methodsWithParams": 27,
@@ -37,7 +37,7 @@
   },
   "ndigo-auth-server": {
     "modules": 8,
-    "modulesWithoutSummary": 7,
+    "modulesWithoutSummary": 6,
     "members": 61,
     "membersUndocumented": 23,
     "methodsWithParams": 28,

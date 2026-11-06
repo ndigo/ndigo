@@ -4757,12 +4757,12 @@ A file containing one public type documents the relationship between name and co
 vocabulary. When a new piece of code reaches for an ad-hoc implementation of
 one of those patterns, wire the contract instead:
 
-| Hand-rolled idiom                                             | Reuse instead                                                            |
-| :---------------------------------------------------------- | :----------------------------------------------------------------------- |
-| Multi-line `typeof x.prop === 'function'` shape chain         | `like({...})` one-liner, or an existing `like*` guard (`likeDestroyable`, `likeMatchable`, `likeJobDriver`) |
-| Inline `.sort((a, b) => a.x < b.x ? -1 : a.x > b.x ? 1 : 0)`  | `stringComparator` / `numberComparator` (+ `compareBy` for key triples, `chainComparisons`/`invertComparison` for multi-key and descending) |
-| `.sort((a, b) => a.x - b.x)`                                  | `numberComparator.compare` (via `compareBy` when extracting a key)                    |
-| Class with `equals()` / `compareTo()` / `toJSON()` / `close()` / `destroy()` that never declares its contract | Declare `Equatable` / `Comparable` / `Serializable` / `Closeable` / `Destroyable` on the class or extend the owning contract interface |
+| Hand-rolled idiom                                                                                             | Reuse instead                                                                                                                               |
+| :------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------ |
+| Multi-line `typeof x.prop === 'function'` shape chain                                                         | `like({...})` one-liner, or an existing `like*` guard (`likeDestroyable`, `likeMatchable`, `likeJobDriver`)                                 |
+| Inline `.sort((a, b) => a.x < b.x ? -1 : a.x > b.x ? 1 : 0)`                                                  | `stringComparator` / `numberComparator` (+ `compareBy` for key triples, `chainComparisons`/`invertComparison` for multi-key and descending) |
+| `.sort((a, b) => a.x - b.x)`                                                                                  | `numberComparator.compare` (via `compareBy` when extracting a key)                                                                          |
+| Class with `equals()` / `compareTo()` / `toJSON()` / `close()` / `destroy()` that never declares its contract | Declare `Equatable` / `Comparable` / `Serializable` / `Closeable` / `Destroyable` on the class or extend the owning contract interface      |
 
 Rules of engagement:
 

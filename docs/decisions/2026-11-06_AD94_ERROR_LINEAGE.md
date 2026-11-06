@@ -49,15 +49,15 @@ Classes representing framework bypass/protocol/transport failures extend
 `FrameworkError`; classes representing the application's own domain denials
 extend `ApplicationError`:
 
-| Class | Base | Rationale |
-| :---- | :--- | :-------- |
-| `StompProtocolError` | `FrameworkError` | wire-protocol failure |
-| `RequestLimitError` | `FrameworkError` | pipeline transport limit |
-| `ZodValidationError` | `FrameworkError` | request-binding failure |
-| `JWTTokenError` | `FrameworkError` | token-processing failure |
-| `OIDCError` | `FrameworkError` | provider-bridge failure |
-| `InvalidCredentialsError` | `ApplicationError` | domain denial |
-| `CircuitOpenError` | `ApplicationError` | domain fail-fast signal |
+| Class                     | Base               | Rationale                |
+| :------------------------ | :----------------- | :----------------------- |
+| `StompProtocolError`      | `FrameworkError`   | wire-protocol failure    |
+| `RequestLimitError`       | `FrameworkError`   | pipeline transport limit |
+| `ZodValidationError`      | `FrameworkError`   | request-binding failure  |
+| `JWTTokenError`           | `FrameworkError`   | token-processing failure |
+| `OIDCError`               | `FrameworkError`   | provider-bridge failure  |
+| `InvalidCredentialsError` | `ApplicationError` | domain denial            |
+| `CircuitOpenError`        | `ApplicationError` | domain fail-fast signal  |
 
 Names, messages, and the explicit `this.name` pins are unchanged —
 `instanceof` uses against the concrete classes keep working, because only the

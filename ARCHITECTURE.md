@@ -1721,7 +1721,7 @@ The working rules:
 
 1. **Declare what you structurally are.** A class that carries `equals()`,
    `compareTo()`, `toJSON()`, `matches()`, `close()`, `init()`, or `destroy()`
-   names the contract in its `implements` clause; contract *interfaces*
+   names the contract in its `implements` clause; contract _interfaces_
    (`JobDriver`, `OutboxStore`, `LockDriver`) extend the matching lifecycle
    contract so every backend is compiler-checked. The container's duck-typed
    shutdown (`likeDestroyable`/`likeCloseable`) does not depend on the

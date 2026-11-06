@@ -1,7 +1,8 @@
 # AD-87: OpenFeature bridge — adopt the standard behind the `FlagEvaluator` SPI
 
 **Date:** 2026-11-01
-**Status:** Accepted (Phase 1 in the 1.0 cycle; Phase 2 demand-driven)
+**Status:** Accepted (Phase 1 + the Phase 2 web entry and telemetry hook
+shipped; the remainder is externally gated — see the 2026-11-02 amendment)
 **Deciders:** Framework owner (2026-11-01 OpenFeature reconciliation review —
 session `OpenFeature-1`; AD-82 D-6 is the deferred seam this record honors)
 
@@ -188,6 +189,19 @@ Phase 2 (no consumer in Phase 1).
 - Docs: guide 28 §Vendors becomes a runnable recipe (in-memory, flagd,
   OFREP); the Package Map gains the bridge row; the CHANGELOG records the
   SPI widening and the new package.
+
+## Amendment (2026-11-02)
+
+D-2 recorded the web entry as "recorded not built". It was built the next
+day: `@ndigo/flags-openfeature/web` (`WebOpenFeatureFlagEvaluator` over
+`@openfeature/web-sdk`) shipped 2026-11-02 together with the
+`FeatureFlagTelemetryHook`, closing Phase 2's buildable half (#57, PR #64 —
+the plan's §5 records the split). D-2's reasoning is unchanged and
+unrewritten; only its "not built" clause is superseded, in part.
+
+Still externally gated, unchanged by this amendment: provider-TCK adoption
+(waits for the normative Appendix F), the reverse adapter, and OFREP/flagd
+SSE push (waits on JS SDK support).
 
 ## References
 

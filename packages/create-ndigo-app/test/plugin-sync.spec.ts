@@ -14,8 +14,24 @@ const ROOT = resolve(import.meta.dirname, '..', '..', '..');
 describe('vite-plugin-lower-decorators sync', () => {
     const paths = [
         resolve(ROOT, 'scripts', 'vite-plugin-lower-decorators.mjs'),
-        resolve(ROOT, 'packages', 'create-ndigo-app', 'templates', 'browser', 'scripts', 'vite-plugin-lower-decorators.mjs'),
-        resolve(ROOT, 'packages', 'create-ndigo-app', 'templates', 'node', 'scripts', 'vite-plugin-lower-decorators.mjs'),
+        resolve(
+            ROOT,
+            'packages',
+            'create-ndigo-app',
+            'templates',
+            'browser',
+            'scripts',
+            'vite-plugin-lower-decorators.mjs'
+        ),
+        resolve(
+            ROOT,
+            'packages',
+            'create-ndigo-app',
+            'templates',
+            'node',
+            'scripts',
+            'vite-plugin-lower-decorators.mjs'
+        ),
     ];
 
     test('all copies are byte-identical', () => {

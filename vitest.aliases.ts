@@ -77,7 +77,7 @@ export const ndigoAliases: { find: RegExp; replacement: string }[] = [
     { find: /^@ndigo\/auth-server$/, replacement: resolve(repoRoot, 'packages/ndigo-auth-server/src') },
     { find: /^@ndigo\/auth-client$/, replacement: resolve(repoRoot, 'packages/ndigo-auth-client/src') },
     { find: /^@ndigo\/openapi$/, replacement: resolve(repoRoot, 'packages/ndigo-openapi/src') },
-    { find: /^@ndigo\/generators$/, replacement: resolve(repoRoot, 'packages/ndigo-generators/src') },
+    { find: /^@ndigo\/generators$/, replacement: resolve(repoRoot, 'tools/generators/src') },
     { find: /^@ndigo\/test$/, replacement: resolve(repoRoot, 'packages/ndigo-test/src') },
     { find: /^@ndigo\/inspect$/, replacement: resolve(repoRoot, 'packages/ndigo-inspect/src') },
     { find: /^@ndigo\/flags-openfeature$/, replacement: resolve(repoRoot, 'packages/ndigo-flags-openfeature/src') },

@@ -1827,25 +1827,6 @@ importers:
         specifier: 'catalog:'
         version: 2.12.0(@opentelemetry/api@1.10.0)
 
-  packages/ndigo-generators:
-    dependencies:
-      '@ndigo/util':
-        specifier: ~0.0.1
-        version: link:../ndigo-util
-      '@nx/devkit':
-        specifier: 'catalog:'
-        version: 24.0.4(nx@24.0.4)
-    devDependencies:
-      nx:
-        specifier: '>=24.0.4'
-        version: 24.0.4
-      typescript:
-        specifier: 'catalog:'
-        version: 7.0.2
-      vitest:
-        specifier: 'catalog:'
-        version: 5.1.0(@opentelemetry/api@1.10.0)(@types/node@24.13.6)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@24.13.6)(supports-color@8.1.1)(typescript@7.0.2)(vite@8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)))(vite@8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))
-
   packages/ndigo-host:
     dependencies:
       '@ndigo/context':
@@ -2642,6 +2623,25 @@ importers:
       '@tsmetadata/polyfill':
         specifier: 'catalog:'
         version: 1.1.3
+
+  tools/generators:
+    dependencies:
+      '@ndigo/util':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-util
+      '@nx/devkit':
+        specifier: 'catalog:'
+        version: 24.0.4(nx@24.0.4)
+    devDependencies:
+      nx:
+        specifier: '>=24.0.4'
+        version: 24.0.4
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vitest:
+        specifier: 'catalog:'
+        version: 5.1.0(@opentelemetry/api@1.10.0)(@types/node@24.13.6)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@24.13.6)(supports-color@8.1.1)(typescript@7.0.2)(vite@8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)))(vite@8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))
 
 packages:
 

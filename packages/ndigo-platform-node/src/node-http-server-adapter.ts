@@ -25,6 +25,7 @@ import { readFileSync } from 'node:fs';
 import * as http2 from 'node:http2';
 import type { Socket } from 'node:net';
 import { WebSocketServer } from 'ws';
+import { like } from '@ndigo/util/types';
 import { Route, RouteSegment, ACCEPT_LANGUAGE_ATTRIBUTE } from '@ndigo/router';
 import { ARGUMENT_RESOLVERS } from '@ndigo/dispatcher';
 import {
@@ -93,10 +94,7 @@ const DEFAULT_AUTHENTICATE_TIMEOUT_MS = 10_000;
  * its concrete implementations.
  */
 function likeRolePrincipal(value: unknown): value is { hasRole(role: string): boolean } {
-    if (typeof value !== 'object' || value === null || !('hasRole' in value)) {
-        return false;
-    }
-    return typeof value.hasRole === 'function';
+    return like({ hasRole: Function })(value);
 }
 
 /**

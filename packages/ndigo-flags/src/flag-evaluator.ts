@@ -12,6 +12,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import { like } from '@ndigo/util/types';
 
 /**
  * A flag value: boolean, number, string, or a JSON-like structure.
@@ -127,12 +128,7 @@ export interface FlagEvaluator {
  * option is resolved by shape instead of the {@link context-tokens.FLAG_EVALUATOR | FLAG_EVALUATOR} token.
  */
 export function likeFlagEvaluator(value: unknown): value is FlagEvaluator {
-    return (
-        value !== null &&
-        typeof value === 'object' &&
-        typeof (value as Partial<FlagEvaluator>).kind === 'string' &&
-        typeof (value as Partial<FlagEvaluator>).evaluate === 'function'
-    );
+    return like({ kind: String, evaluate: Function })(value);
 }
 
 /**

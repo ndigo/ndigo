@@ -4,6 +4,8 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import { like } from '@ndigo/util/types';
+
 import type { ClaimOptions, JobId, JobRecord, JobRequest } from './job';
 
 /**
@@ -111,19 +113,14 @@ export interface JobDriver {
  * @param value - The value to test.
  * @returns Whether the value behaves like a job driver.
  */
-export const likeJobDriver = (value: unknown): value is JobDriver => {
-    if (value === null || typeof value !== 'object') {
-        return false;
-    }
-    const driver = value as JobDriver; // structural check below
-    return (
-        typeof driver.enqueue === 'function' &&
-        typeof driver.claim === 'function' &&
-        typeof driver.complete === 'function' &&
-        typeof driver.retry === 'function' &&
-        typeof driver.fail === 'function' &&
-        typeof driver.heartbeat === 'function' &&
-        typeof driver.size === 'function' &&
-        typeof driver.close === 'function'
-    );
-};
+export const likeJobDriver = (value: unknown): value is JobDriver =>
+    like({
+        enqueue: Function,
+        claim: Function,
+        complete: Function,
+        retry: Function,
+        fail: Function,
+        heartbeat: Function,
+        size: Function,
+        close: Function,
+    })(value);

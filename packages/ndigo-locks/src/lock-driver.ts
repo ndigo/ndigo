@@ -13,6 +13,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import { like } from '@ndigo/util/types';
 
 /**
  * Options for acquiring a lock.
@@ -99,11 +100,5 @@ export interface LockDriver {
  * @returns Whether the value satisfies the driver contract shape.
  */
 export function likeLockDriver(value: unknown): value is LockDriver {
-    if (value === null || typeof value !== 'object') {
-        return false;
-    }
-    const driver = value as LockDriver;
-    return (
-        typeof driver.kind === 'string' && typeof driver.acquire === 'function' && typeof driver.close === 'function'
-    );
+    return like({ kind: String, acquire: Function, close: Function })(value);
 }

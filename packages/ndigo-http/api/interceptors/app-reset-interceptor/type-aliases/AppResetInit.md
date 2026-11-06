@@ -18,7 +18,7 @@ Extends HTTP initialization with app-reset response handling options.
 
 The status code that triggers an app reset.
 
-#### Default
+#### Default Value
 
 ```ts
 205
@@ -30,7 +30,7 @@ The status code that triggers an app reset.
 
 The header name to check for an app reset signal.
 
-#### Default
+#### Default Value
 
 ```ts
 'Alt-Location'

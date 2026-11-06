@@ -269,7 +269,7 @@ export class HTTPHeader implements Serializable {
      *
      * @param headers - The header collection to mutate.
      * @param value - The header value to store.
-     * @throws {TypeError} When `headers` is not provided.
+     * @throws When `headers` is not provided.
      */
     set(headers: HeadersInit | HeaderRecord, value: unknown): void {
         if (!headers) {
@@ -279,14 +279,14 @@ export class HTTPHeader implements Serializable {
     }
 
     /**
-     * @returns {module:core.JSONObject} A JSON representation of the HTTP header
+     * @returns A JSON representation of the HTTP header
      */
     toJSON(): JSONValue {
         return this.name;
     }
 
     /**
-     * @returns {string} A string representation of the HTTP header
+     * @returns A string representation of the HTTP header
      */
     toString(): string {
         return this.name;

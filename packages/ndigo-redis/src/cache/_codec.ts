@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /** Validate JSON values without silently dropping fields or invoking getters/toJSON. */

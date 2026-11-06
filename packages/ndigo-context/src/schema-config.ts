@@ -3,9 +3,8 @@
  * property resolver by declaring the SHAPE once — keys, coercion, required
  * and defaults all come from the schema — instead of per-field decorators.
  *
- * The same parsing semantics back `@configurationProperties(prefix,
- * { schema })` (ndigo-boot) and the environment's `typedConfig` — one module,
- * one behavior.
+ * The same parsing semantics back `@configurationProperties(prefix, { schema })`
+ * (ndigo-boot) and the environment's `typedConfig` — one module, one behavior.
  */
 import { z } from 'zod';
 import type { PropertyResolver } from './property-resolver';
@@ -43,7 +42,7 @@ export function parseSchemaConfig<S extends z.ZodType>(schema: S, raw: Record<st
  * @param prefix - Property prefix, e.g. `'server'` → `'server.port'`.
  * @param resolver - The property resolver.
  * @returns The parsed typed value.
- * @throws {z.ZodError} When the resolved values violate the schema.
+ * @throws When the resolved values violate the schema.
  */
 export function resolveSchemaConfig<S extends z.ZodType>(
     schema: S,

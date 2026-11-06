@@ -28,8 +28,8 @@ given, otherwise the method-argument name. Mirrors the reference
 Resolved by `NodeRequestPartMethodArgumentResolver` (ndigo-platform-node).
 
 A missing part resolves to the extractor's `defaultValue` (`null`) unless
-the part is declared required: `requestPart('meta', undefined, { required:
-true })` / `requestPart(MetaDto, { required: true })` make a missing part
+the part is declared required: requestPart('meta', undefined, { required:
+true }) / requestPart(MetaDto, { required: true }) make a missing part
 a [MissingParameterError](../../error/classes/MissingParameterError.md) (HTTP 400) instead of a late TypeError
 (DOC-5).
 
@@ -54,7 +54,7 @@ new () => `object`
 ### Example
 
 ```ts
-`parameters`({
+parameters({
   meta: requestPart(MetaDto),
   biography: requestPart('bio'),
   file: fileValue()
@@ -83,8 +83,8 @@ given, otherwise the method-argument name. Mirrors the reference
 Resolved by `NodeRequestPartMethodArgumentResolver` (ndigo-platform-node).
 
 A missing part resolves to the extractor's `defaultValue` (`null`) unless
-the part is declared required: `requestPart('meta', undefined, { required:
-true })` / `requestPart(MetaDto, { required: true })` make a missing part
+the part is declared required: requestPart('meta', undefined, { required:
+true }) / requestPart(MetaDto, { required: true }) make a missing part
 a [MissingParameterError](../../error/classes/MissingParameterError.md) (HTTP 400) instead of a late TypeError
 (DOC-5).
 
@@ -105,7 +105,7 @@ new () => `object`
 ### Example
 
 ```ts
-`parameters`({
+parameters({
   meta: requestPart(MetaDto),
   biography: requestPart('bio'),
   file: fileValue()

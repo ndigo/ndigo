@@ -3,9 +3,6 @@
  * The follow protocol is byte-faithful: one fd plus Buffer end-offsets, so
  * multibyte logs stay intact and appended lines are read incrementally
  * rather than re-reading the whole file every poll (issue #146).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand, numberParser } from '@stricli/core';
 import { closeSync, existsSync, openSync, readFileSync, readSync, statSync, unwatchFile, watchFile } from 'node:fs';

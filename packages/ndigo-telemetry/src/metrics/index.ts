@@ -1,4 +1,5 @@
 /**
+ * Telemetry metrics: counters, gauges, and feature-level aggregation.
  */
 export * from './decorators';
 export * from './counter-rate-resolver';

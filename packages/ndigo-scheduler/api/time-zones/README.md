@@ -6,6 +6,8 @@
 
 # time-zones
 
+Common IANA time-zone identifiers.
+
 ## Variables
 
 - [TimeZones](variables/TimeZones.md)

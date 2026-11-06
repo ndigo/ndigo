@@ -8,10 +8,6 @@
 
 One recorded side effect awaiting publication.
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### id

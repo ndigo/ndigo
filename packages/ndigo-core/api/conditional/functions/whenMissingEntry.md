@@ -25,6 +25,5 @@ registered — the "provide your own override" guarantee for auto-configs.
 
 ```ts
 @whenMissingEntry('metricsController')
-@class
-class ManagementAutoConfiguration { … }
+class ManagementAutoConfiguration {}
 ```

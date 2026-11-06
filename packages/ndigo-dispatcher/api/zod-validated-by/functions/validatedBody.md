@@ -36,6 +36,8 @@ A parameter extractor binding `bodyValue()` through the schema.
 ## Example
 
 ```ts
-@parameters({ note: validatedBody(NoteSchema) })
-create(note: z.infer<typeof NoteSchema>) { … }
+class NoteController {
+  @parameters({ note: validatedBody(NoteSchema) })
+  create(note: z.infer<typeof NoteSchema>) {}
+}
 ```

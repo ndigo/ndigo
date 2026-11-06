@@ -15,8 +15,6 @@
  * a deterministic status (`400` malformed input, `408` timeout, `413`
  * oversized body, generic `500` otherwise — internal details logged, never
  * returned to the client).
- *
- * @since 1.0.0
  */
 import { createServer, IncomingMessage, Server, ServerResponse } from 'node:http';
 import { readFileSync } from 'node:fs';
@@ -282,7 +280,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      * paths (404) from HTTP 405s; handler mappings are static for the
      * lifetime of the dispatcher, so the probe result is stable — cache it
      * and clear on close so re-listening re-resolves. Only static paths are
-     * keyed (see {@link #hasSocketHandler}); a
+     * keyed (see {@link hasSocketHandler}); a
      * parameterized mapping matches every concrete path, so memoizing it
      * would add one entry per distinct request path (unbounded growth).
      */

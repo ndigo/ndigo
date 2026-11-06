@@ -196,7 +196,7 @@ const { defineProperty } = Reflect;
 let serviceId = 0;
 
 /**
- * @returns {number} The next service id
+ * @returns The next service id
  */
 function nextServiceId(): number {
     return ++serviceId;
@@ -326,7 +326,7 @@ export class ServiceExecutionChain {
      * Adds a single interceptor to the chain.
      *
      * @param interceptor - Interceptor to append.
-     * @throws {IllegalStateError} When the value does not look like a service interceptor.
+     * @throws When the value does not look like a service interceptor.
      */
     addInterceptor(interceptor: ServiceInterceptor): void {
         if (!interceptor) {

@@ -8,10 +8,6 @@
 
 Claim window for [OutboxStore.claimPending](OutboxStore.md#claimpending).
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### leaseMs?

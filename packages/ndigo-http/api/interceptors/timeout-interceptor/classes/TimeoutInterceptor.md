@@ -108,9 +108,9 @@ The HTTP client executing the request
 
 [`HTTPInit`](../../../http-types/type-aliases/HTTPInit.md)
 
-The per-request settings, used to
-  release the timer on the error exit path (which never reaches
-  `postComplete` when a later error-aware interceptor throws).
+The per-request settings, used to release the timer on the
+  error exit path (which never reaches `postComplete` when a later
+  error-aware interceptor throws).
 
 #### Returns
 

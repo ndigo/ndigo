@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { parseHTML as linkedomParseHTML } from 'linkedom';
 import type { DOMProvider } from './dom-provider';
@@ -37,8 +35,8 @@ export class LinkedomDOMProvider implements DOMProvider {
      * bare fragment like `<div>hello</div>` becomes the *document element*
      * (with an empty `<head>`/`<body>` nested inside it), and plain text or an
      * empty string leave `document.documentElement` null so any `body` access
-     * throws. A browser `DOMParser` always yields `<html><head></head><body>…
-     * fragment …</body></html>` instead. Fragments are therefore wrapped in
+     * throws. A browser `DOMParser` always yields an html document with head and body
+     * instead. Fragments are therefore wrapped in
      * that skeleton so the `DOMProvider` contract holds identically across
      * providers.
      *

@@ -8,9 +8,6 @@
  * SPI without reinterpretation.
  *
  * Source: https://github.com/open-feature/spec/blob/main/specification/appendix-b.md
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { afterEach, describe, expect, it } from 'vitest';
 import { OpenFeature } from '@openfeature/server-sdk';

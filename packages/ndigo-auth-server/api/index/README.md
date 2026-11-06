@@ -6,6 +6,8 @@
 
 # index
 
+Server-side authentication: adapters, session stores, and route guards.
+
 ## References
 
 ### AuthGuardDenialOptions

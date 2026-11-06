@@ -21,7 +21,3 @@ The `Route` object representing the matched feature route.
 ## Returns
 
 `void`
-
-## Since
-
-1.0.0

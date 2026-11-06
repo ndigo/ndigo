@@ -25,7 +25,7 @@ export interface ReadIntEnvOptions {
  * @param name - The variable name (used in the error message).
  * @param options - `allowZero` to accept `0` (default rejects it).
  * @returns The parsed integer, or `undefined` when unset or empty.
- * @throws {RangeError} When the value is not an allowed integer literal.
+ * @throws When the value is not an allowed integer literal.
  */
 export function readIntEnv(
     env: Readonly<Record<string, string | undefined>>,

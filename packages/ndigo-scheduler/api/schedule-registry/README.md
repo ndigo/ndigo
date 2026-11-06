@@ -6,6 +6,8 @@
 
 # schedule-registry
 
+Schedule registry: collects and manages declared schedules.
+
 ## Classes
 
 - [ScheduleRegistry](classes/ScheduleRegistry.md)

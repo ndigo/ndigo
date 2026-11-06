@@ -6,6 +6,8 @@
 
 # spec
 
+Schedule specification: duration and cron parsing.
+
 ## Interfaces
 
 - [CronScheduleSpec](interfaces/CronScheduleSpec.md)

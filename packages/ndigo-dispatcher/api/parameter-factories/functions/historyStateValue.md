@@ -28,7 +28,7 @@ Reads `history.state` on the browser platform (nested-capable).
 ## Example
 
 ```ts
-`parameters`({
+parameters({
   token: historyStateValue('token'),
 })
 ```

@@ -9,10 +9,6 @@
 Defines the interface for a registry that manages `RouterInterceptor` instances.
 It provides methods to add interceptors and middleware, with support for path-based matching.
 
-## Since
-
-1.0.0
-
 ## Methods
 
 ### addInterceptor()

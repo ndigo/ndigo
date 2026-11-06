@@ -6,27 +6,7 @@
 
 # Class: PatternsRouteCondition
 
-## Param
-
-**patterns**
-
-the route patterns to use; if 0, the condition will match to every route.
-
-## Param
-
-**pathMatcher**
-
-## Param
-
-**useTrailingSlashMatch**
-
-whether to match irrespective of a trailing slash
-
-## Param
-
-**fileExtensions**
-
-a list of file extensions to consider for path matching
+Contract for route matching conditions.
 
 ## Extends
 

@@ -30,18 +30,18 @@ export class MemoryViewTarget implements ViewTarget {
         return this.#lastRender;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async prepare(route: Route): Promise<void> {
         // No DOM container to clear.
         void route;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async commit(output: unknown, model: unknown, route: Route): Promise<void> {
         this.#lastRender = { output, model, route };
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async clear(): Promise<void> {
         this.#lastRender = null;
     }

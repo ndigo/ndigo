@@ -1,5 +1,6 @@
 /**
  */
+
 import { Route } from '@ndigo/router';
 
 /**

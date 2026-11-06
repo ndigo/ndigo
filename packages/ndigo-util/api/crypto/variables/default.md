@@ -10,9 +10,7 @@
 
 ## Type Declaration
 
-## Crypto
-
-#### randomHex
+### randomHex
 
 > **randomHex**: (`byteLength`) => `string`
 
@@ -20,42 +18,41 @@ Generates a cryptographically secure random lowercase hex string of
 `byteLength` bytes — 2 hex characters per byte.
 
 Backed by `globalThis.crypto.getRandomValues` (Node.js 15+, all modern
-browsers) with the same fail-closed contract as [randomToken](../random-token/functions/randomToken.md): if
+browsers) with the same fail-closed contract as `randomToken`: if
 Web Cryptography is unavailable it throws instead of degrading to an
 insecure PRNG. Use it for collision-resistant filenames, request ids, and
-other non-secret unique names; use [randomToken](../random-token/functions/randomToken.md) when the value is a
+other non-secret unique names; use `randomToken` when the value is a
 secret that benefits from base64url's entropy per character.
 
-##### Parameters
+#### Parameters
 
-###### byteLength
+##### byteLength
 
 `number`
 
 Number of random bytes to draw; must be a positive integer.
 
-##### Returns
+#### Returns
 
 `string`
 
 A lowercase hex string of `byteLength * 2` characters.
 
-##### Throws
+#### Throws
 
 If `byteLength` is not a positive integer.
 
-##### Throws
+#### Throws
 
 If the Web Cryptography API is unavailable.
 
-##### Example
+#### Example
 
 ```ts
-randomHex(8);
-//=> 'a3f09c12de45b7e8' (16 chars)
+randomHex(8); //=> 'a3f09c12de45b7e8' (16 chars)
 ```
 
-#### randomToken
+### randomToken
 
 > **randomToken**: (`bytes`) => `string`
 
@@ -71,31 +68,30 @@ characters. For a fixed byte count the encoding is identical to Node's
 `Buffer#toString('base64url')`, so call sites can migrate without changing
 token format.
 
-##### Parameters
+#### Parameters
 
-###### bytes
+##### bytes
 
 `number`
 
 Number of random bytes to draw; must be a positive integer.
 
-##### Returns
+#### Returns
 
 `string`
 
 A base64url string with no padding.
 
-##### Throws
+#### Throws
 
 If `bytes` is not a positive integer.
 
-##### Throws
+#### Throws
 
 If the Web Cryptography API is unavailable.
 
-##### Example
+#### Example
 
 ```ts
-randomToken(32);
-//=> 'U2xpoMkrQaQj2mZs6D4fJf9FmWP0nN1rQkzL7mBc3d8' (43 chars)
+randomToken(32); //=> 'U2xpoMkrQaQj2mZs6D4fJf9FmWP0nN1rQkzL7mBc3d8' (43 chars)
 ```

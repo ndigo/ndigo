@@ -28,6 +28,5 @@ Marks a configuration class as browser-only.
 
 ```ts
 @whenBrowser
-@class
-class WebAutoConfiguration { … }
+class WebAutoConfiguration {}
 ```

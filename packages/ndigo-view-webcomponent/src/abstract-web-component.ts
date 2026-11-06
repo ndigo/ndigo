@@ -80,7 +80,7 @@ export abstract class AbstractWebComponent
      * This is a convenience wrapper around the `on` method.
      *
      * @param mapping - A mapping of selectors or 'event selector' to method names.
-     * Example: { '.btn': 'handleBtn', 'change .input': 'handleInput' }
+     * Example: `.btn` to `handleBtn`, `change .input` to `handleInput`.
      */
     bindEvents(mapping: Record<string, string>): void {
         for (const [key, methodName] of Object.entries(mapping)) {
@@ -319,7 +319,7 @@ export abstract class AbstractWebComponent
      *
      * @param init - Shadow root options; defaults to `{ mode: 'open' }`.
      * @returns The existing or newly attached shadow root.
-     * @throws {IllegalStateError} When a root already exists with a mode other
+     * @throws When a root already exists with a mode other
      *   than the requested one — an attached root's mode cannot change, so
      *   silently returning it would hide the mismatch.
      */

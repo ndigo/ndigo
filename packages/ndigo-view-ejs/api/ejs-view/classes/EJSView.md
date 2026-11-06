@@ -223,8 +223,6 @@ The optional view target.
 
 `Promise`\<[`RenderResult`](#)\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `ProducerView.renderTo`

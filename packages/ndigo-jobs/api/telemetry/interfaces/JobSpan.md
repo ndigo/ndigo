@@ -8,10 +8,6 @@
 
 One in-flight job-execution span, ended exactly once by the runner.
 
-## Since
-
-1.0.0
-
 ## Methods
 
 ### end()

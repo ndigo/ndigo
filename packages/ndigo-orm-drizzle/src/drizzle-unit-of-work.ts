@@ -7,8 +7,6 @@ import { DrizzleEntityManager } from './drizzle-entity-manager';
 /**
  * Tracks new, dirty, and removed entities and flushes them to a Drizzle store
  * as a single async batch.
- *
- * @since 1.0.0
  */
 export class DrizzleUnitOfWork {
     readonly #entityManager: DrizzleEntityManager;

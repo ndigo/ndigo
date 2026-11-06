@@ -1,8 +1,5 @@
 /**
  * `ndigo db pull` — front the application’s db:pull script.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runAppOnce } from '../../helpers/app-scripts.js';

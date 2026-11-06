@@ -27,7 +27,7 @@ Factory function: Create a path parameter extractor
 ## Example
 
 ```ts
-`parameters`({
+parameters({
   userId: pathVariable('userId')
 })
 ```

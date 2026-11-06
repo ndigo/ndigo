@@ -22,7 +22,7 @@ The route pattern (e.g. "/users", "/{id}", "/").
 
 `string`
 
-Optional explicit name from `@routeMapping({ name: '...' })`.
+Optional explicit name from the routeMapping decorator's name option.
 
 ## Returns
 

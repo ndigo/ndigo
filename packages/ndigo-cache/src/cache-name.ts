@@ -12,7 +12,7 @@ import type { Cache } from './cache';
  * @param nameOrToken - The cache name or typed store token.
  * @param context - Caller name used as the validation error prefix.
  * @returns The non-empty store name.
- * @throws {TypeError} When the resolved name is not a non-empty string.
+ * @throws When the resolved name is not a non-empty string.
  */
 export function resolveCacheName(nameOrToken: string | ContextToken<Cache<unknown>>, context: string): string {
     const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;

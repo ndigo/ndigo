@@ -179,8 +179,8 @@ export class FeatureContextMountManager {
      *
      * @param name - The registered feature name.
      * @returns A promise resolving to the feature context composition.
-     * @throws {TypeError} If the feature has no `loader` registered.
-     * @throws {Error} If the loader rejects or `createContext` throws.
+     * @throws If the feature has no `loader` registered.
+     * @throws If the loader rejects or `createContext` throws.
      */
     async mountLazy(name: string): Promise<FeatureContextComposition> {
         const registration = this.#requireRegistration(name);
@@ -255,7 +255,6 @@ export class FeatureContextMountManager {
      *
      * @param name - The registered feature name.
      * @returns `true` if a registration was removed.
-     * @since 1.0.0
      */
     unregister(name: string): boolean {
         const registration = this.#registrations.get(name);

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { RuleTester } from 'oxlint/plugins-dev';
 import { noStringRegistryLookup } from '../../src/rules/no-string-registry-lookup';

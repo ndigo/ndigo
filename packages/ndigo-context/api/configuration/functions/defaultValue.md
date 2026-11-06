@@ -31,6 +31,5 @@ A field decorator.
 ```ts
 @configurationProperties('server')
 class ServerConfig {
-    @property('port') @defaultValue('8080') port!: number;
 }
 ```

@@ -63,7 +63,7 @@ const DEFAULT_ALLOWED_HEADERS = ['Content-Type', 'Authorization', 'X-Requested-W
  * the Node HTTP pipeline: preflights are short-circuited with 204 and actual
  * responses receive the allow headers.
  *
- * @throws {TypeError} when `allowedOrigins: ['*']` is combined with
+ * @throws when `allowedOrigins: ['*']` is combined with
  *   `allowCredentials: true` — the browser forbids that combination and the
  *   misconfiguration must fail at startup, not at request time.
  */

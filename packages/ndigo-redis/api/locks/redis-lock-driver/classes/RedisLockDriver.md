@@ -66,8 +66,6 @@ Backend identifier for diagnostics.
 
 `Promise`\<[`LockHandle`](#) \| `null`\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `LockDriver.acquire`

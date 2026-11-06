@@ -1,4 +1,5 @@
 /**
+ * Node.js platform integration: HTTP server, auto-configuration, and runtime adapters.
  */
 export {
     argumentValueConverters,

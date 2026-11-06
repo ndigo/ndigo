@@ -1,5 +1,6 @@
 /**
  */
+
 import { FrameworkError } from '@ndigo/core';
 import { Route } from '@ndigo/router';
 import { isString } from '@ndigo/util/types';

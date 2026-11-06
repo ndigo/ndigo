@@ -10,10 +10,6 @@ The canonical publisher: outbox entries become jobs on a [JobQueue](../../job-qu
 (`type` → job type, `payload` → job payload) — the transactional side
 effect of `outbox.append(…)` is delivered through the durable queue.
 
-## Since
-
-1.0.0
-
 ## Implements
 
 - [`OutboxPublisher`](../interfaces/OutboxPublisher.md)
@@ -42,15 +38,11 @@ The queue entries are enqueued on.
 
 > **publish**(`entry`): `Promise`\<`void`\>
 
-Publishes one entry.
-
 #### Parameters
 
 ##### entry
 
 [`OutboxEntry`](../interfaces/OutboxEntry.md)
-
-The claimed entry.
 
 #### Returns
 

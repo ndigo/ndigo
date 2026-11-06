@@ -9,7 +9,7 @@ import { HTTPInit, ResponseAwareHTTPInterceptor } from '@ndigo/http';
 export interface OfflineInterceptorConfig {
     /**
      * The interval in milliseconds to check for online status.
-     * @default 5000
+     * @defaultValue 5000
      */
     checkInterval?: number;
 }

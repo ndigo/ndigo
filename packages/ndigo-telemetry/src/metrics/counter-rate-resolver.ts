@@ -189,7 +189,7 @@ export class CounterRateResolver {
      * exceeds this threshold, an alert will be triggered by `resolveAlerts`.
      * @param counterKey - The key of the counter to set the threshold for.
      * @param threshold - The rate per second threshold. Must be a finite number.
-     * @throws {IllegalStateError} If the threshold is not a finite number.
+     * @throws If the threshold is not a finite number.
      */
     setThreshold(counterKey: string, threshold: number): void {
         if (!Number.isFinite(threshold)) {

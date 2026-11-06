@@ -28,6 +28,5 @@ Marks a configuration class as node-only.
 
 ```ts
 @whenNode
-@class
-class NodeAutoConfiguration { … }
+class NodeAutoConfiguration {}
 ```

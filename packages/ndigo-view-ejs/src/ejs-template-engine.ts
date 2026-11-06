@@ -169,7 +169,7 @@ export class EJSTemplateEngine {
      * @param parentModel - The including template's locals.
      * @param state - The shared per-render include bookkeeping.
      * @returns The rendered include output.
-     * @throws {EJSIncludeCycleError} When the include chain revisits a template
+     * @throws When the include chain revisits a template
      *   or exceeds {@link MAX_INCLUDE_DEPTH}.
      */
     async #include(

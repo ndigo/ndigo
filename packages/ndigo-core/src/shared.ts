@@ -25,7 +25,7 @@ export interface SharedOptions {
  * @example
  * ```ts
  * @sharedDependency({ version: '1.2.0' })
- * class TelemetryService { … }
+ * class TelemetryService {}
  * ```
  */
 export function sharedDependency(

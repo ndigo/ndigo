@@ -12,10 +12,6 @@ Either `delayMs` or `runAt` may be given (not both): the two spellings of
 "do not run before". `payload` must be JSON-serializable — drivers fail
 loud at enqueue on functions, symbols, bigints, and circular structures.
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### delayMs?

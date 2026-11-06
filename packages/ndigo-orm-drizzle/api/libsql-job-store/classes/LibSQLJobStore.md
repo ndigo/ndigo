@@ -9,10 +9,6 @@
 Durable [JobDriver](#) on libSQL. Clients created by the store are
 owned; injected clients are borrowed by default.
 
-## Since
-
-1.0.0
-
 ## Implements
 
 - [`JobDriver`](#)
@@ -64,8 +60,6 @@ Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`).
 
 `Promise`\<`JobRecord`[]\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `JobDriver.claim`
@@ -105,8 +99,6 @@ stop and drain the runner first.
 
 `Promise`\<`void`\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `JobDriver.complete`
@@ -126,8 +118,6 @@ stop and drain the runner first.
 #### Returns
 
 `Promise`\<`JobRecord`\>
-
-#### Inherit Doc
 
 #### Implementation of
 
@@ -153,8 +143,6 @@ stop and drain the runner first.
 
 `Promise`\<`void`\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `JobDriver.fail`
@@ -178,8 +166,6 @@ stop and drain the runner first.
 #### Returns
 
 `Promise`\<`void`\>
-
-#### Inherit Doc
 
 #### Implementation of
 
@@ -209,8 +195,6 @@ stop and drain the runner first.
 
 `Promise`\<`void`\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `JobDriver.retry`
@@ -224,8 +208,6 @@ stop and drain the runner first.
 #### Returns
 
 `Promise`\<`number`\>
-
-#### Inherit Doc
 
 #### Implementation of
 

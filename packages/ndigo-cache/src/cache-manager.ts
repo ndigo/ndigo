@@ -15,7 +15,7 @@ export interface CacheManager {
      * when absent.
      *
      * @param name - Non-empty cache name.
-     * @throws {TypeError} For a non-string or empty name.
+     * @throws For a non-string or empty name.
      */
     getCache<V = unknown>(name: string): Cache<V>;
     /**
@@ -29,14 +29,14 @@ export interface CacheManager {
      * Returns whether the named cache exists (no creation).
      *
      * @param name - Non-empty cache name.
-     * @throws {TypeError} For a non-string or empty name.
+     * @throws For a non-string or empty name.
      */
     hasCache(name: string): boolean;
     /**
      * Returns whether the token-identified cache exists (no creation).
      *
      * @param token - The cache store token.
-     * @throws {TypeError} For an empty token description.
+     * @throws For an empty token description.
      */
     hasCache(token: ContextToken<Cache<unknown>>): boolean;
 }

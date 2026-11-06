@@ -141,7 +141,7 @@ export class MutablePropertySources implements PropertySources {
      * @param name - The source name.
      * @param source - The property values to capture.
      * @returns `this`, for chaining.
-     * @throws {IllegalStateError} When the anchor is not registered.
+     * @throws When the anchor is not registered.
      */
     addBefore(anchor: string, name: string, source: JSONObject): this {
         if (anchor === name) return this.#replaceInPlace(name, source);
@@ -157,7 +157,7 @@ export class MutablePropertySources implements PropertySources {
      * @param name - The source name.
      * @param source - The property values to capture.
      * @returns `this`, for chaining.
-     * @throws {IllegalStateError} When the anchor is not registered.
+     * @throws When the anchor is not registered.
      */
     addAfter(anchor: string, name: string, source: JSONObject): this {
         if (anchor === name) return this.#replaceInPlace(name, source);

@@ -33,7 +33,7 @@ export class PriorityContentSource implements ContentSource {
      *
      * @param sources - Sources ordered by priority, highest first.
      *                  The first source with a non-trivial translation wins.
-     * @throws {TypeError} When no sources are provided.
+     * @throws When no sources are provided.
      */
     constructor(sources: ContentSource[]) {
         if (!sources.length) {

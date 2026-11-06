@@ -35,13 +35,19 @@ Adds conditional request headers and caches validators from prior responses.
 
 `Response`
 
+The HTTP response.
+
 ##### settings
 
 [`IfModifiedInit`](../type-aliases/IfModifiedInit.md)
 
+The HTTP request settings.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+Whether or not the request should continue.
 
 #### Implementation of
 

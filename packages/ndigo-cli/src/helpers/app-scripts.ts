@@ -5,9 +5,6 @@
  * {@link ClusterRunner} (signal relay, straggler kill, exit-code
  * propagation); one-shot commands (`generate`, `db:*`, `inspect`) use a
  * plain spawn with relay because a completing process must not respawn.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { spawn, type ChildProcess } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';

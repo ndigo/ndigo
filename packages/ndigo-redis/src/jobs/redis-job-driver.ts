@@ -16,9 +16,6 @@
  * The connection is **borrowed** (the `RedisSocketFanout` pattern): the driver
  * never connects, subscribes, or closes it. `close()` only seals this handle —
  * manage the connection's lifecycle (`connect()`/`close()`), then the handle's.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
 import {
@@ -160,8 +157,6 @@ export interface RedisJobDriverOptions {
 /**
  * Durable {@link JobDriver} on Redis (standalone 7.2+; sorted sets and Lua
  * only). One handle per namespace; construct independently in every worker.
- *
- * @since 1.0.0
  */
 export class RedisJobDriver implements JobDriver {
     readonly kind = 'redis';
@@ -187,7 +182,7 @@ export class RedisJobDriver implements JobDriver {
         this.#idFactory = options.idFactory ?? (() => crypto.randomUUID());
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async enqueue(request: JobRequest): Promise<JobRecord> {
         this.#assertOpen();
         const now = Date.now();
@@ -221,7 +216,7 @@ export class RedisJobDriver implements JobDriver {
         return record;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async claim(options: ClaimOptions): Promise<JobRecord[]> {
         this.#assertOpen();
         assertClaimOptions(options);
@@ -267,13 +262,13 @@ export class RedisJobDriver implements JobDriver {
         });
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async complete(id: JobId): Promise<void> {
         this.#assertOpen();
         await this.#discard(id);
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async retry(id: JobId, runAt: number, lastError: string): Promise<void> {
         this.#assertOpen();
         const keys = this.#keys();
@@ -288,14 +283,14 @@ export class RedisJobDriver implements JobDriver {
         });
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async fail(id: JobId, lastError: string): Promise<void> {
         this.#assertOpen();
         void lastError; // terminal errors surface through telemetry/logs, not storage (AD-72 D-2)
         await this.#discard(id);
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async heartbeat(id: JobId, leaseMs: number): Promise<void> {
         this.#assertOpen();
         const keys = this.#keys();
@@ -310,7 +305,7 @@ export class RedisJobDriver implements JobDriver {
         });
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async size(): Promise<number> {
         this.#assertOpen();
         const keys = this.#keys();

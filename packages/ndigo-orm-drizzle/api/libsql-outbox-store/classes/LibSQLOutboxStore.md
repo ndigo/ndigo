@@ -10,10 +10,6 @@ Durable [OutboxStore](#) on libSQL. Every method awaits schema creation;
 clients created by the store are owned, injected clients are borrowed by
 default.
 
-## Since
-
-1.0.0
-
 ## Implements
 
 - [`OutboxStore`](#)
@@ -59,8 +55,6 @@ The data-source client (recommended), or url/authToken
 
 `Promise`\<`OutboxEntry`\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `OutboxStore.append`
@@ -80,8 +74,6 @@ The data-source client (recommended), or url/authToken
 #### Returns
 
 `Promise`\<`OutboxEntry`[]\>
-
-#### Inherit Doc
 
 #### Implementation of
 
@@ -122,8 +114,6 @@ first.
 
 `Promise`\<`void`\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `OutboxStore.markPublished`
@@ -144,8 +134,6 @@ first.
 
 `Promise`\<`number`\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `OutboxStore.prunePublished`
@@ -159,8 +147,6 @@ first.
 #### Returns
 
 `Promise`\<`number`\>
-
-#### Inherit Doc
 
 #### Implementation of
 

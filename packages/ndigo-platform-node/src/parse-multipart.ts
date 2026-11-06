@@ -2,7 +2,7 @@
  * Streaming `multipart/form-data` parser for {@link NodeHTTPServerAdapter}.
  *
  * Wraps busboy (the zero-dependency streaming primitive that multer and
- * @fastify/multipart build on). Parts below {@link MultipartLimits.fileThreshold}
+ * \@fastify/multipart build on). Parts below {@link MultipartLimits.fileThreshold}
  * are held in memory; larger parts spill to a temp file so peak memory stays
  * bounded regardless of upload size. Size limits reject with `413` through the
  * same {@link RequestLimitError} the body-limit path uses, so uploads fail

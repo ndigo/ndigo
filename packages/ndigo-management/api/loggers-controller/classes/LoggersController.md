@@ -17,10 +17,6 @@ name was never requested), and a POST body of
 the global settings floor. Unknown level names are rejected 400 by the
 body schema's enum.
 
-## Since
-
-1.0.0
-
 ## Extends
 
 - `ApplicationContextAware` & `Null`\<`this`\>

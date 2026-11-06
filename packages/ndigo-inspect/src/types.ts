@@ -146,7 +146,7 @@ export type RouteSource =
 export type MappingSource = readonly InspectMappingTable[] | InspectMappingTable | InspectDispatcherLike;
 
 /**
- * The input to {@link inspect-application.inspectApplication | inspectApplication}.
+ * The input to {@link "inspect-application".inspectApplication | inspectApplication}.
  */
 export interface InspectInput {
     /** The application context to inspect. */

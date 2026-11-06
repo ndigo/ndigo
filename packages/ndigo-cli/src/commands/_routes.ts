@@ -3,9 +3,6 @@
  * completion script and its parity test both read this list, so adding a
  * command without forgetting completion is test-pinned (review REV-011,
  * issue #148).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /** The registered top-level route names, excluding the `db` namespace and the two aliases. */

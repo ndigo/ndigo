@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { RuleTester } from 'oxlint/plugins-dev';
 import { noScheduledInBrowser } from '../../src/rules/no-scheduled-in-browser';

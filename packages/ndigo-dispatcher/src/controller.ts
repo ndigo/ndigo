@@ -1,5 +1,6 @@
 /**
  */
+
 import { ModelAndView } from './model-and-view';
 import { PathRoute, Route } from '@ndigo/router';
 

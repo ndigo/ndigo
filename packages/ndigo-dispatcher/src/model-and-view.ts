@@ -1,5 +1,6 @@
 /**
  */
+
 import { View, AbstractView } from '@ndigo/view';
 
 type Model<T = unknown> = { [key: string]: T } | Map<string, T>;

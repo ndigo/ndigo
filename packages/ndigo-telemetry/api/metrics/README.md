@@ -6,6 +6,8 @@
 
 # metrics
 
+Telemetry metrics: counters, gauges, and feature-level aggregation.
+
 ## References
 
 ### counted

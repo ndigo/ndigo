@@ -9,7 +9,7 @@
 Locale-aware template locals injected by [EJSView](../classes/EJSView.md).
 
 `t` resolves messages through the view's application context (itself a
-[@ndigo/content!MessageSource](#)); the formatter helpers wrap `Intl` through
+MessageSource from `@ndigo/content`); the formatter helpers wrap `Intl` through
 `@ndigo/core` formatters and use the request's negotiated language.
 
 ## Properties

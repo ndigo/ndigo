@@ -27,10 +27,7 @@ Whether or not `value` is a string.
 ## Example
 
 ```ts
-isString( new String( 'hello' ) );
-//=> true
-isString( 'hello' );
-//=> true
-isString( {} );
-//=> false
+isString(new String('hello')); //=> true
+isString('hello'); //=> true
+isString({}); //=> false
 ```

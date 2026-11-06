@@ -9,10 +9,6 @@
 Represents a single segment of a `PathRoute`, including its name, matrix parameters, and raw string value.
 It implements `RouteSegment` and `Serializable`.
 
-## Since
-
-1.0.0
-
 ## Implements
 
 - [`RouteSegment`](../../route/interfaces/RouteSegment.md)
@@ -38,10 +34,6 @@ The raw string representation of the route segment.
 #### Returns
 
 `PathRouteSegment`
-
-#### Since
-
-1.0.0
 
 ## Properties
 
@@ -97,10 +89,6 @@ Serializes the `PathRouteSegment` instance to a JSON object.
 
 A `JSONValue` representation of the segment.
 
-#### Since
-
-1.0.0
-
 #### Implementation of
 
 [`RouteSegment`](../../route/interfaces/RouteSegment.md).[`toJSON`](../../route/interfaces/RouteSegment.md#tojson)
@@ -118,10 +106,6 @@ Returns the string representation of the `PathRouteSegment`, including its name 
 `string`
 
 The string representation of the segment.
-
-#### Since
-
-1.0.0
 
 #### Implementation of
 

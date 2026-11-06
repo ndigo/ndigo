@@ -154,7 +154,7 @@ export class PropertyFlagProvider implements FlagEvaluator {
 
     /**
      * @param options - The reader and optional namespace.
-     * @throws {TypeError} When the namespace is empty or malformed.
+     * @throws When the namespace is empty or malformed.
      */
     constructor(options: PropertyFlagProviderOptions) {
         const { getProperty, namespace = 'feature' } = options;

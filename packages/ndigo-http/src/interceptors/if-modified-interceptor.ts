@@ -23,9 +23,9 @@ export class IfModifiedInterceptor
     }
 
     /**
-     * @param {URL} url The requested URL.
-     * @param {module:http.IfModifiedInit} settings The HTTP request settings, including the `ifModified` setting.
-     * @returns {boolean} Whether or not the http request should continue execution.
+     * @param url - The requested URL.
+     * @param settings - The HTTP request settings, including the `ifModified` setting.
+     * @returns Whether or not the http request should continue execution.
      */
     preInit(url: URL, settings: IfModifiedInit): boolean {
         if (settings.ifModified) {
@@ -44,9 +44,9 @@ export class IfModifiedInterceptor
 
     /**
 
-     * @param {Response} response
-     * @param {module:http.IfModifiedInit} settings
-     * @returns {Promise<external:void>}
+     * @param response - The HTTP response.
+     * @param settings - The HTTP request settings.
+     * @returns Whether or not the request should continue.
      */
     async postResponse({ headers, url }: Response, settings: IfModifiedInit): Promise<void> {
         if (settings.ifModified) {

@@ -8,9 +8,6 @@
  * script writes `db/migrations/<NNNN>-<slug>.ts` plus the committed
  * `db/schema.json` projection. Both artifacts are committed and freshness-
  * gated, so a generate run at HEAD is a no-op.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runAppOnce } from '../../helpers/app-scripts.js';

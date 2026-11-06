@@ -29,16 +29,16 @@ A decorator function for the target.
 ## Examples
 
 ```ts
-// Any method — equivalent to `routeMapping`('/users')
-`requestMapping`('/users')
+// Any method — equivalent to routeMapping('/users')
+requestMapping('/users')
 ```
 
 ```ts
 // GET only
-`requestMapping`({ value: '/users', method: 'GET' })
+requestMapping({ value: '/users', method: 'GET' })
 ```
 
 ```ts
-// With the same query/matrix conditions as `routeMapping`
-`requestMapping`({ value: '/users/{id}', method: 'DELETE', queryParams: 'filter=all' })
+// With the same query/matrix conditions as routeMapping
+requestMapping({ value: '/users/{id}', method: 'DELETE', queryParams: 'filter=all' })
 ```

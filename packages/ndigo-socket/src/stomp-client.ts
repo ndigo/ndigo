@@ -326,7 +326,7 @@ export class StompClient {
      * @param opts - Subscription policy (`id` defaults to an opaque uuid;
      *   `ack` defaults to `auto`).
      * @returns The subscription handle.
-     * @throws {@link stomp-frame.StompProtocolError | StompProtocolError} when the session has ended
+     * @throws when the session has ended
      *   (disconnect, ERROR, transport closed) — a new subscription could
      *   never receive frames.
      */

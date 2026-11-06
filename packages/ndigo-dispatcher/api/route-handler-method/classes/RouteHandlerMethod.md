@@ -6,13 +6,10 @@
 
 # Class: RouteHandlerMethod
 
-## Param
+A strategy for assigning a name to a route handler method's mapping.
 
-**handlerMethod**
-
-## Param
-
-**mapping**
+The strategy can be configured on [AbstractHandlerMethodMapping](../../abstract-handler-method-mapping/classes/AbstractHandlerMethodMapping.md).
+It is used to assign a name to the mapping of every registered handler method.
 
 ## Extended by
 
@@ -144,6 +141,8 @@
 ### toString()
 
 > **toString**(): `string`
+
+Returns a string representation of an object.
 
 #### Returns
 

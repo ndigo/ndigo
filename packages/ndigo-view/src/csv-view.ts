@@ -45,7 +45,7 @@ export class CSVView extends AbstractSerializingView {
         this.#records = options.records;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     protected serialize(model: unknown): string {
         const data = this.#records ? (model as Record<string, unknown> | null | undefined)?.[this.#records] : model;
         const records = Array.isArray(data) ? data : [];

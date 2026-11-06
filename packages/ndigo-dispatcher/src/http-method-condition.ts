@@ -11,10 +11,12 @@ const { defineProperty } = Reflect;
  * Matches a route's `method` against a required HTTP method.
  *
  * @example
+ * ```ts
  * // A GET-only mapping
  * const condition = new HTTPMethodCondition('GET');
- * condition.match({ method: 'GET', … } as Route) // this
- * condition.match({ method: 'POST', … } as Route) // null
+ * condition.match({ method: 'GET' } as Route); // this
+ * condition.match({ method: 'POST' } as Route); // null
+ * ```
  */
 export class HTTPMethodCondition extends AbstractRouteCondition<HTTPMethodCondition> {
     /**

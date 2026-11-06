@@ -1,5 +1,6 @@
 /**
  */
+
 import { Route } from '@ndigo/router';
 import { PathMatcher, URLGlobPathMatcher, likePathMatcher } from '@ndigo/core';
 import { AbstractRouteCondition, likeRouteCondition } from './route-condition';
@@ -8,12 +9,6 @@ const { isArray } = Array;
 const preprendPeriod = (value: string) => (value[0] === '.' ? value : `.${value}`);
 const prependSlash = (value: string) => (value[0] === '/' ? value : `/${value}`);
 
-/**
- * @param {Array<external:string>} patterns the route patterns to use; if 0, the condition will match to every route.
- * @param {module:core.PathMatcher} pathMatcher
- * @param {boolean} useTrailingSlashMatch whether to match irrespective of a trailing slash
- * @param {Array<external:string>} [fileExtensions] a list of file extensions to consider for path matching
- */
 export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRouteCondition> {
     /**
      * Matcher used to compare and merge route patterns.

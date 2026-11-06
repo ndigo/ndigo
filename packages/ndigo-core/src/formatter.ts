@@ -111,7 +111,7 @@ const MAX_CACHED_FORMATTERS = 256;
 /**
  * Returns the cached formatter for `key`, creating and caching it on a miss.
  *
- * @template T - The Intl formatter type.
+ * @typeParam T - The Intl formatter type.
  * @param cache - The per-kind formatter cache.
  * @param key - The option-set cache key.
  * @param create - Builder for a fresh formatter.
@@ -175,7 +175,7 @@ export class DateTimeFormatter {
      *
      * @param value - A `Date`, an ISO 8601 string, or a millisecond timestamp.
      * @returns The locale-formatted date string.
-     * @throws {TypeError} When the value cannot be parsed as a valid date.
+     * @throws When the value cannot be parsed as a valid date.
      */
     format(value: Date | string | number): string {
         const date = value instanceof Date ? value : new Date(value);
@@ -408,7 +408,7 @@ export interface FormattingService {
  *
  * @param options - The service-wide defaults.
  * @returns A configured formatting service.
- * @throws {IllegalStateError} When a formatter is created without a locale
+ * @throws When a formatter is created without a locale
  * from either the service defaults or the per-formatter options.
  *
  * @example

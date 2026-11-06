@@ -18,7 +18,7 @@ import type { ViewTarget } from './view-target.js';
  * `serialize`.
  */
 export abstract class AbstractSerializingView extends AbstractView implements ProducerView {
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async renderTo(model: unknown, _route: Route): Promise<RenderResult> {
         void _route;
         return {
@@ -27,7 +27,7 @@ export abstract class AbstractSerializingView extends AbstractView implements Pr
         };
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     protected async _renderView(viewModel: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (!target) {
             throw new IllegalStateError('AbstractSerializingView requires a ViewTarget to render.');
@@ -41,7 +41,6 @@ export abstract class AbstractSerializingView extends AbstractView implements Pr
      *
      * @param model - The data model to encode.
      * @returns The encoded body.
-     * @protected
      */
     protected abstract serialize(model: unknown): string | Uint8Array;
 }

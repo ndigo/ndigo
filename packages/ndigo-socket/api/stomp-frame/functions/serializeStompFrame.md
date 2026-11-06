@@ -31,4 +31,4 @@ The wire frame (string for text bodies, bytes for binary).
 
 ## Throws
 
-[StompProtocolError](../classes/StompProtocolError.md) on values that cannot be framed.
+on values that cannot be framed.

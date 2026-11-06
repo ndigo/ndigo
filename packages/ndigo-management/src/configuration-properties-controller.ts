@@ -21,8 +21,6 @@ import { isEndpointExposed } from './management-properties';
  *
  * Payload shape: `{ beans: [{ name, properties: [{ key, type? }] }] }`,
  * deterministically sorted.
- *
- * @since 1.0.0
  */
 @requestMapping('/configprops')
 export class ConfigurationPropertiesController extends AsApplicationContextAware(Null) {

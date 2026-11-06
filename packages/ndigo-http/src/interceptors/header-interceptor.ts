@@ -17,7 +17,7 @@ export interface HeaderInterceptorConfig {
     channelId?: string;
     /**
      * Whether to generate a unique request ID for each request.
-     * @default false
+     * @defaultValue false
      */
     generateRequestId?: boolean;
 }

@@ -8,8 +8,6 @@ import { JOB_HANDLER_METADATA_PREFIX, type JobHandler, type JobHandlerMetadata }
 
 /**
  * One registered handler, ready to execute.
- *
- * @since 1.0.0
  */
 export interface RegisteredJobHandler {
     /** The job type served. */
@@ -31,8 +29,6 @@ export interface RegisteredJobHandler {
  *
  * Duplicate types, handlers on class (not instance) registrations, and
  * non-callable members all fail loud at start.
- *
- * @since 1.0.0
  */
 export class JobHandlerRegistry {
     #applicationContext: ApplicationContext | null = null;
@@ -83,7 +79,7 @@ export class JobHandlerRegistry {
      * @param handler - The handler.
      * @param options - Optional `maxAttempts`/`timeoutMs` overrides.
      * @param name - Diagnostics name (defaults to `type`).
-     * @throws {FrameworkError} When the type is already registered.
+     * @throws When the type is already registered.
      */
     register(type: string, handler: JobHandler, options: JobHandlerMetadata = { type }, name = type): void {
         if (this.#handlers.has(type)) {
@@ -115,7 +111,7 @@ export class JobHandlerRegistry {
      * SmartLifecycle start: scans the bound context for `@jobHandler`
      * methods and registers them. Idempotent.
      *
-     * @throws {FrameworkError} When no context is bound or a registration is
+     * @throws When no context is bound or a registration is
      *   invalid (class instead of instance, non-callable member, duplicate type).
      */
     start(): void {
@@ -214,11 +210,10 @@ export class JobHandlerRegistry {
 /**
  * Structural type guard for {@link JobHandlerRegistry} — the `like*`
  * convention used where a bean or option is verified before use (sibling of
- * {@link job-driver.likeJobDriver | likeJobDriver}).
+ * {@link "job-driver".likeJobDriver | likeJobDriver}).
  *
  * @param value - The candidate value.
  * @returns Whether it exposes the registry seam (`get` + `register`).
- * @since 1.0.0
  */
 export const likeJobHandlerRegistry = (value: unknown): value is JobHandlerRegistry =>
     like({ get: Function, register: Function })(value);

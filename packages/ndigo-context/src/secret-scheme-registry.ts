@@ -34,7 +34,7 @@ export class SecretSchemeRegistry implements SecretDecryptor {
      * wins), so rotating an implementation in place is a plain re-wire.
      *
      * @param cipher - The cipher backend to register.
-     * @throws {IllegalStateError} When `cipher.capabilities.aad` is false.
+     * @throws When `cipher.capabilities.aad` is false.
      */
     register(cipher: SecretCipher): void {
         if (!cipher.capabilities?.aad) {
@@ -57,7 +57,7 @@ export class SecretSchemeRegistry implements SecretDecryptor {
      * @param value - The resolved value (post-placeholder resolution).
      * @param context - The resolution context (key path, used as AAD).
      * @returns The decrypted value or the value passed through.
-     * @throws {IllegalStateError} On unknown scheme, tamper, or wrong key.
+     * @throws On unknown scheme, tamper, or wrong key.
      */
     decrypt(value: string, context: SecretDecryptContext): string {
         const marker = parseSecretMarker(value);

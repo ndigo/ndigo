@@ -3,9 +3,6 @@
  * (the journaled `DrizzleMigrator` runner assembly lives in the app; the
  * CLI fronts it with the one-shot process lifecycle, AD-75 D-2 — the
  * `db:new`/`db:generate`/`db:status` companions are AD-78).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runAppOnce } from '../../helpers/app-scripts.js';

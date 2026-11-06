@@ -13,8 +13,6 @@ export const JOB_HANDLER_METADATA_PREFIX = 'jobs:handler:';
 /**
  * Per-handler policy overrides. Either value, when set, wins over the
  * per-request value stored on the job record (AD-72 D-4).
- *
- * @since 1.0.0
  */
 export interface JobHandlerOptions {
     /** Attempts allowed before the job is failed terminally. */
@@ -25,8 +23,6 @@ export interface JobHandlerOptions {
 
 /**
  * The registration `@jobHandler` records for a method.
- *
- * @since 1.0.0
  */
 export interface JobHandlerMetadata extends JobHandlerOptions {
     /** Job type this handler serves. */
@@ -35,8 +31,6 @@ export interface JobHandlerMetadata extends JobHandlerOptions {
 
 /**
  * Execution context handed to a handler alongside the payload.
- *
- * @since 1.0.0
  */
 export interface JobHandlerContext {
     /** The claimed job's identifier. */
@@ -55,8 +49,6 @@ export interface JobHandlerContext {
 /**
  * A job handler: receives the payload and execution context, resolves when
  * the work is done. Failures (throw / rejection) drive the retry policy.
- *
- * @since 1.0.0
  */
 export type JobHandler = (payload: unknown, context: JobHandlerContext) => void | Promise<void>;
 

@@ -6,6 +6,8 @@
 
 # env
 
+Environment variable accessors.
+
 ## Functions
 
 - [getEnv](functions/getEnv.md)

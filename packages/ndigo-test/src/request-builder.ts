@@ -6,8 +6,6 @@
  * Mirrors `NodeHTTPServerAdapter`'s request→route conversion (path segments,
  * matrix params, query params) so an in-process dispatch behaves identically
  * to a real HTTP request.
- *
- * @since 1.0.0
  */
 
 import { HTTPHeaders } from '@ndigo/http';

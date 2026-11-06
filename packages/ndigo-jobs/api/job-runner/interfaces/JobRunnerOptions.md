@@ -8,10 +8,6 @@
 
 Options for [JobRunner](../classes/JobRunner.md).
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### autoStart?

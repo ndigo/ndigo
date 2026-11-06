@@ -5,9 +5,6 @@
  * object of `@ndigo/<name> -> <exact semver pin>` pairs — npm alias specs
  * (`npm:@evil/pkg@1`), git/tarball/file specs, dist-tags, or range
  * specifiers — is rejected before a byte reaches the disk.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { existsSync, readFileSync } from 'node:fs';
 

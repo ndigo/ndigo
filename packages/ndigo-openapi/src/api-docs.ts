@@ -65,10 +65,12 @@ const API_DOCS_KEY = (name: string | symbol) => `api:docs:${String(name)}`;
  *
  * @example
  * ```ts
- * @getMapping('/reports')
- * @parameters({ from: queryValue('from') })
- * @apiDocs({ summary: 'List reports', tags: ['reports'] })
- * list(from: string | undefined) { … }
+ * class ReportsController {
+ *   @getMapping('/reports')
+ *   @parameters({ from: queryValue('from') })
+ *   @apiDocs({ summary: 'List reports', tags: ['reports'] })
+ *   list(from: string | undefined) {}
+ * }
  * ```
  */
 export function apiDocs(docs: APIDocsMetadata) {

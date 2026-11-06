@@ -4,9 +4,6 @@
  * header, controller, service, entity, middleware, config, and migration.
  * The CLI is a thin, prompting front over the workspace's Nx bridge — the
  * generator implementations stay in their package (AD-75 D-3).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runWorkspaceOnce, usageError } from '../helpers/app-scripts.js';

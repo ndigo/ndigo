@@ -43,8 +43,6 @@ export type ResponseTypeInit = HTTPInit & {
 export type ResponseTypeSettings = HTTPInit & { responseParsers: ResponseParserMap; responseType: MediaType | true };
 
 /**
- * @typedef {module:http.HTTPInit} module:http.ResponseTypeInit
- * @property {string | module:core.MediaType | external:boolean} [responseType]
  */
 
 const { defineProperty } = Reflect,
@@ -102,9 +100,9 @@ export class ResponseTypeInterceptor
     implements InitializationAwareHTTPInterceptor<ResponseTypeInit>, ResponseAwareHTTPInterceptor<ResponseTypeSettings>
 {
     /**
-     * @param {URL} url The requested URL.
-     * @param {module:http.ResponseTypeInit} settings The HTTP request settings, including the `responseType` setting.
-     * @returns {boolean} Whether or not the http request should continue execution.
+     * @param url - The requested URL.
+     * @param settings - The HTTP request settings, including the `responseType` setting.
+     * @returns Whether or not the http request should continue execution.
      */
     preInit(url: URL, settings: ResponseTypeInit): boolean {
         let parsers: Map<MediaType, ResponseParser>;
@@ -142,9 +140,9 @@ export class ResponseTypeInterceptor
 
     /**
 
-     * @param {Response} response
-     * @param {module:http.ResponseTypeSettings} settings
-     * @returns {Promise<external:void>}
+     * @param response - The HTTP response.
+     * @param settings - The HTTP request settings.
+     * @returns Whether or not the request should continue.
      */
     async postResponse(response: Response, settings: ResponseTypeSettings): Promise<Response | void> {
         if ('responseType' in settings) {

@@ -27,20 +27,12 @@ Whether or not `value` is a number.
 ## Example
 
 ```ts
-typeof new Number( 1 ) === 'number';
-//=> false
-isNumber( new Number( 1 ) );
-//=> true
-typeof 2 === 'number';
-//=> true
-isNumber( 2 );
-//=> true
-typeof NaN === 'number';
-//=> true
-isNumber( NaN );
-//=> false
-typeof Infinity === 'number';
-//=> true
-isNumber( Infinity );
-//=> false
+typeof new Number(1) === 'number'; //=> false
+isNumber(new Number(1)); //=> true
+typeof 2 === 'number'; //=> true
+isNumber(2); //=> true
+typeof NaN === 'number'; //=> true
+isNumber(NaN); //=> false
+typeof Infinity === 'number'; //=> true
+isNumber(Infinity); //=> false
 ```

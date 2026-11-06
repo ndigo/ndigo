@@ -9,13 +9,13 @@ import ResponseError from '../response-error';
 export type RetryInit = HTTPInit & {
     /**
      * The maximum number of retry attempts.
-     * @default 0
+     * @defaultValue 0
      */
     retryLimit?: number;
 
     /**
      * The fixed interval (in seconds, 1–120) to wait between retries.
-     * @default 0
+     * @defaultValue 0
      */
     retryBufferInterval?: number;
 

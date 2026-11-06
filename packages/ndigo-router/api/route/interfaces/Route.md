@@ -9,10 +9,6 @@
 Represents a complete route, composed of multiple segments, along with its parameters, path, and associated data.
 It extends `ArrayLike<RouteSegment>` to allow iteration over its segments.
 
-## Since
-
-1.0.0
-
 ## Extends
 
 - `ArrayLike`\<[`RouteSegment`](RouteSegment.md)\>

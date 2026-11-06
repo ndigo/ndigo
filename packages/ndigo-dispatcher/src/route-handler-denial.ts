@@ -23,8 +23,7 @@ export const INTERCEPTOR_DENIAL_ATTRIBUTE = '__interceptor:denial';
 /**
  * Route attribute key under which the `Allow` header value is stored when a
  * path resolves but the request method matches none of its handlers (RFC
- * 9110 §15.5.6). The platform adapter finalizes the response as `405 Method
- * Not Allowed` with this `Allow` value.
+ * 9110 §15.5.6). The platform adapter finalizes the response as `405 Method Not Allowed` with this `Allow` value.
  */
 export const METHOD_NOT_ALLOWED_ATTRIBUTE = '__mapping:methodNotAllowed';
 

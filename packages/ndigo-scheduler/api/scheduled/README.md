@@ -6,6 +6,8 @@
 
 # scheduled
 
+The `@scheduled` decorator and its metadata key.
+
 ## Variables
 
 - [SCHEDULED\_METADATA\_PREFIX](variables/SCHEDULED_METADATA_PREFIX.md)

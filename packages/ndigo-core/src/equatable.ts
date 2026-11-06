@@ -5,7 +5,7 @@ import { like } from '@ndigo/util/types';
 
 /**
  * Represents an object that can be compared for equality with another object of the same type.
- * @template T - The type of the object being compared. Defaults to `unknown`.
+ * @typeParam T - The type of the object being compared. Defaults to `unknown`.
  */
 export interface Equatable<T = unknown> {
     /**

@@ -51,7 +51,7 @@ const TOKEN_COUNTERS = new Map<string, number>();
  * Validates a lease duration.
  *
  * @param ttlMs - The lease duration in milliseconds.
- * @throws {TypeError} When the value is not a finite positive number.
+ * @throws When the value is not a finite positive number.
  */
 function requireTtl(ttlMs: number): void {
     if (Number.isFinite(ttlMs) && ttlMs > 0) {

@@ -8,7 +8,7 @@ const { setPrototypeOf } = Reflect;
 
 /**
  * A mixin that adds serialization capabilities to an Error class, allowing it to be converted to a JSON object.
- * @template T - The constructor type of the Error class to extend.
+ * @typeParam T - The constructor type of the Error class to extend.
  * @param superclass - The Error class to extend.
  * @returns A new class that is an Error and also `Serializable`.
  */
@@ -37,7 +37,6 @@ export const AsSerializableError = <T extends Constructable<Error>>(superclass: 
 
 /**
  * Represents a general application-level error.
- * @extends Error
 
  */
 export class ApplicationError extends AsSerializableError(Error) {
@@ -62,7 +61,6 @@ export class ApplicationError extends AsSerializableError(Error) {
 
 /**
  * Represents an error within the framework itself.
- * @extends Error
 
  */
 export class FrameworkError extends AsSerializableError(Error) {
@@ -89,7 +87,6 @@ export class FrameworkError extends AsSerializableError(Error) {
 
 /**
  * Represents an error indicating that an operation cannot be completed due to an invalid state or misconfiguration.
- * @extends FrameworkError
  */
 export class IllegalStateError extends FrameworkError {
     /**

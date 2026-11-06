@@ -1,4 +1,5 @@
 /**
+ * URI component decoding.
  */
 const token = '%[a-f0-9]{2}',
     singleMatcher = new RegExp(token, 'gi'),
@@ -101,9 +102,8 @@ function enhancedDecodeURIComponent(input: string): string {
  * - Converts the BOM to a replacement character �.
  * - Does not throw with invalid encoded input.
  * - Decodes as much of the string as possible.
- * @param {string} value The encoded string
- * @returns {string} The decoded string
- * @category String
+ * @param value - The encoded string.
+ * @returns The decoded string.
  */
 export default function (value: string): string {
     try {

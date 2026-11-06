@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  *
  * Cross-provider parity: `LinkedomDOMProvider` (server-side linkedom) and
  * `BrowserDOMProvider` (native `DOMParser`, backed by jsdom in this suite)

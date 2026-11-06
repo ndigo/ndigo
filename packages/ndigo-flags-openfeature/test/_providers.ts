@@ -3,9 +3,6 @@
  * for realistic flag sets, plus a scripted provider whose resolutions the
  * tests dictate (custom reasons, error codes, metadata — shapes the
  * in-memory provider cannot produce).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { InMemoryProvider } from '@openfeature/server-sdk';
 import type { JsonValue, Provider, ResolutionDetails } from '@openfeature/server-sdk';

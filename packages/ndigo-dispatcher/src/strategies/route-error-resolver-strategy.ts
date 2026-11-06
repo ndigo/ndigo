@@ -1,5 +1,6 @@
 /**
  */
+
 import { ApplicationContext } from '@ndigo/context';
 import { Constructable } from '@ndigo/core';
 import { MetadataErrorResolver, RouteErrorResolver } from '../route-error-resolver';
@@ -14,9 +15,6 @@ export interface RouteErrorResolverStrategy {
     errorResolvers: RouteErrorResolver[];
     initErrorResolvers(context: ApplicationContext): void;
 }
-
-/**
- */
 
 const ERROR_RESOLVER = 'errorResolver',
     ERROR_RESOLVERS = `${ERROR_RESOLVER}s`,

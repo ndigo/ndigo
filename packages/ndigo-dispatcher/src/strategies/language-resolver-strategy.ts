@@ -1,5 +1,6 @@
 /**
  */
+
 import { ApplicationContext } from '@ndigo/context';
 import { Constructable } from '@ndigo/core';
 import { LanguageResolver, NavigatorLanguageResolver } from '../language-resolver';
@@ -14,9 +15,6 @@ export interface LanguageResolverStrategy {
     languageResolver: LanguageResolver;
     initLanguageResolver(context: ApplicationContext): void;
 }
-
-/**
- */
 
 const LANGUAGE_RESOLVER = 'languageResolver',
     defaultLanguageResolver: LanguageResolver = new NavigatorLanguageResolver('en-US');

@@ -9,7 +9,6 @@ const { keys } = Object;
 
 /**
  * Represents an error that occurs during data binding operations.
- * @extends FrameworkError
  */
 export class BindError extends FrameworkError {}
 
@@ -84,7 +83,7 @@ export class DataBinder {
     /**
      * Binds the provided property values to the target object.
      * @param properties - The property values to bind.
-     * @throws {FrameworkError} If a required field is missing.
+     * @throws If a required field is missing.
      */
     bind(properties: PropertyValues) {
         const mpv = properties instanceof MutablePropertyValues ? properties : new MutablePropertyValues(properties);
@@ -94,7 +93,7 @@ export class DataBinder {
 
     /**
      * Validates the current state of the data binder.
-     * @throws {IllegalStateError} If no target object is set.
+     * @throws If no target object is set.
      */
     validate() {
         if (!this.target) {
@@ -104,7 +103,6 @@ export class DataBinder {
 
     /**
      * Applies the given property values to the target object.
-     * @protected
      * @param properties - The mutable property values to apply.
      */
     protected _applyPropertyValues(properties: MutablePropertyValues): void {
@@ -128,9 +126,8 @@ export class DataBinder {
 
     /**
      * Checks if all required fields are present in the provided property values.
-     * @protected
      * @param properties - The mutable property values to check.
-     * @throws {FrameworkError} If a required field is missing.
+     * @throws If a required field is missing.
      */
     protected _checkRequiredFields(properties: MutablePropertyValues): void {
         if (this.#requiredFields?.size) {

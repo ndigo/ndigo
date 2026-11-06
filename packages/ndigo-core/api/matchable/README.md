@@ -6,6 +6,8 @@
 
 # matchable
 
+Matchable contracts and the duck-typing guard.
+
 ## Interfaces
 
 - [Matchable](interfaces/Matchable.md)

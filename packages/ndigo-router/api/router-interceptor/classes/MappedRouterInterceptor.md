@@ -9,10 +9,6 @@
 A `RouterInterceptor` that applies a wrapped interceptor only when the route matches specified include and exclude patterns.
 It extends `AsPathMatcherFilter` to leverage path matching capabilities.
 
-## Since
-
-1.0.0
-
 ## Extends
 
 - `PathMatcherFilter`\<`this`\> & `Null`\<`this`\>
@@ -54,10 +50,6 @@ An optional array of patterns that define when the interceptor should be inactiv
 
 `MappedRouterInterceptor`
 
-#### Since
-
-1.0.0
-
 #### Overrides
 
 `AsPathMatcherFilter(Null).constructor`
@@ -88,10 +80,6 @@ The `PathMatcher` instance used for matching patterns.
 
 Gets the array of patterns that, if matched, will prevent the interceptor from being applied.
 
-##### Since
-
-1.0.0
-
 ##### Returns
 
 `string`[]
@@ -109,10 +97,6 @@ An array of exclusion patterns.
 Gets the array of patterns that, if matched, will allow the interceptor to be applied.
 If no include patterns are specified, the interceptor applies to all routes (unless excluded).
 
-##### Since
-
-1.0.0
-
 ##### Returns
 
 `string`[]
@@ -128,10 +112,6 @@ An array of inclusion patterns.
 > **get** **interceptor**(): [`RouterInterceptor`](../interfaces/RouterInterceptor.md)
 
 Gets the underlying `RouterInterceptor` that this mapped interceptor wraps.
-
-##### Since
-
-1.0.0
 
 ##### Returns
 
@@ -161,10 +141,6 @@ The `Route` object that was processed.
 `Promise`\<`void`\>
 
 A promise that resolves when the `afterCompletion` operation is complete.
-
-#### Since
-
-1.0.0
 
 #### Implementation of
 
@@ -229,10 +205,6 @@ The `Route` object to check.
 
 `true` if the route matches the patterns and should be intercepted, `false` otherwise.
 
-#### Since
-
-1.0.0
-
 ***
 
 ### postHandle()
@@ -255,10 +227,6 @@ The `Route` object that was processed.
 `Promise`\<`void`\>
 
 A promise that resolves when the `postHandle` operation is complete.
-
-#### Since
-
-1.0.0
 
 #### Implementation of
 
@@ -287,10 +255,6 @@ The `Route` object to be processed.
 
 A promise that resolves to `true` to continue processing, or `false` to stop.
 
-#### Since
-
-1.0.0
-
 #### Implementation of
 
 [`RouterInterceptor`](../interfaces/RouterInterceptor.md).[`preHandle`](../interfaces/RouterInterceptor.md#prehandle)
@@ -317,10 +281,6 @@ The `Route` object from which to resolve parameters.
 `Record`\<`string`, `string`\> \| `null`
 
 An object containing resolved parameters, or `null` if no parameters are resolved or no matching named pattern is found.
-
-#### Since
-
-1.0.0
 
 ***
 

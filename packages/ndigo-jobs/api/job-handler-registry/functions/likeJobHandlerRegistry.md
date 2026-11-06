@@ -25,7 +25,3 @@ The candidate value.
 `value is JobHandlerRegistry`
 
 Whether it exposes the registry seam (`get` + `register`).
-
-## Since
-
-1.0.0

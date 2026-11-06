@@ -8,6 +8,8 @@
 
 > **encodeURIComponent**(`value`): `string`
 
+URI component encoding.
+
 ## Parameters
 
 ### value

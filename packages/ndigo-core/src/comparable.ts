@@ -5,7 +5,7 @@ import { like } from '@ndigo/util';
 /**
  * A function that compares two values for order. Returns a negative integer, zero, or a positive integer
  * as the first argument is less than, equal to, or greater than the second.
- * @template T - The type of values being compared.
+ * @typeParam T - The type of values being compared.
  * @param value1 - The first value to compare.
  * @param value2 - The second value to compare.
  * @returns A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
@@ -14,7 +14,7 @@ export type comparison<T> = (value1: T, value2: T) => number;
 
 /**
  * A function that evaluates a condition between two values, returning a boolean.
- * @template T - The type of values being evaluated.
+ * @typeParam T - The type of values being evaluated.
  * @param value1 - The first value.
  * @param value2 - The second value.
  * @returns `true` if the condition is met, `false` otherwise.
@@ -23,7 +23,7 @@ export type predicate<T> = (value1: T, value2: T) => boolean;
 
 /**
  * Interface for objects that can be compared to another object of the same type.
- * @template T - The type of the object being compared.
+ * @typeParam T - The type of the object being compared.
  */
 export interface Comparable<T> {
     /**
@@ -37,7 +37,7 @@ export interface Comparable<T> {
 
 /**
  * Interface for string-based objects that can be compared to another object of the same type, with case-insensitive comparison.
- * @template T - The type of the string-based object being compared.
+ * @typeParam T - The type of the string-based object being compared.
  */
 export interface StringComparable<T> extends Comparable<T> {
     /**
@@ -51,7 +51,7 @@ export interface StringComparable<T> extends Comparable<T> {
 
 /**
  * Interface for objects that can compare two values of a specific type.
- * @template T - The type of values being compared.
+ * @typeParam T - The type of values being compared.
  */
 export interface Comparator<T> {
     /**
@@ -122,7 +122,7 @@ export const likeComparator = like({ compare: Function }) as (value: unknown) =>
 
 /**
  * A comparison function that uses natural ordering (less than operator).
- * @template T - The type of values being compared.
+ * @typeParam T - The type of values being compared.
  * @param value1 - The first value.
  * @param value2 - The second value.
  * @returns A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
@@ -131,7 +131,7 @@ export const naturalComparison = _comparator(naturalPredicate);
 
 /**
  * Inverts the order of a given comparison function.
- * @template T - The type of values being compared.
+ * @typeParam T - The type of values being compared.
  * @param compare - The comparison function to invert.
  * @returns A new comparison function with inverted order.
  */
@@ -171,7 +171,7 @@ export const chainComparisons =
 
 /**
  * A comparator that uses a predicate function to determine order.
- * @template T - The type of values being compared.
+ * @typeParam T - The type of values being compared.
  */
 class PredicateComparator<T> implements Comparator<T> {
     /**
@@ -202,8 +202,7 @@ class PredicateComparator<T> implements Comparator<T> {
 
 /**
  * A comparator that uses natural ordering for comparison.
- * @template T - The type of values being compared.
- * @extends PredicateComparator
+ * @typeParam T - The type of values being compared.
  */
 class NaturalComparator<T> extends PredicateComparator<T> {
     /**
@@ -216,13 +215,11 @@ class NaturalComparator<T> extends PredicateComparator<T> {
 
 /**
  * A comparator for `number` objects.
- * @extends NaturalComparator
  */
 class NumberComparator extends NaturalComparator<number> {}
 
 /**
  * A comparator for `string` objects, with a method for case-insensitive comparison.
- * @extends NaturalComparator
  */
 class StringComparator extends NaturalComparator<string> {
     /**

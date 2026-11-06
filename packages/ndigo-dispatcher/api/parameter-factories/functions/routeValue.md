@@ -36,6 +36,8 @@ A route-value extractor.
 ## Example
 
 ```ts
-@parameters({ route: routeValue() })
-async handle(route: Route) { … }
+class RouteController {
+  @parameters({ route: routeValue() })
+  async handle(route: Route) {}
+}
 ```

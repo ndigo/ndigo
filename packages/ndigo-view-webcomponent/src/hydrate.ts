@@ -65,8 +65,6 @@ const UNPARSEABLE = Symbol('unparseable model');
  * import { hydrateIslands } from '@ndigo/view-webcomponent';
  * const n = hydrateIslands();
  * ```
- *
- * @since 1.0.0
  */
 export function hydrateIslands(root: ParentNode = document): number {
     const markers = root.querySelectorAll<HTMLElement>(

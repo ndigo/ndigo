@@ -42,17 +42,17 @@ If applied to anything other than a method.
 
 ```typescript
 class MyService {
-  `traced`()
+  @traced()
   myMethod() {
     // ...
   }
 
-  `traced`('custom-span-name')
+  @traced('custom-span-name')
   anotherMethod() {
     // ...
   }
 
-  `traced`('async-operation')
+  @traced('async-operation')
   async asyncMethod() {
     await someAsyncOperation();
   }

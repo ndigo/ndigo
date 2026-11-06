@@ -1,5 +1,6 @@
 /**
  */
+
 import { ApplicationContext } from '@ndigo/context';
 import { Constructable, IllegalStateError } from '@ndigo/core';
 import { ControllerHandlerAdapter, MetadataHandlerAdapter, RouteHandlerAdapter } from '../route-handler-adapter';
@@ -17,21 +18,14 @@ export interface RouteHandlerAdapterStrategy {
 }
 
 /**
- */
-
-/**
- */
-
-/**
  * Initialize the handler adapters used by the class. If no handler adapters are defined, it defaults to {@link ControllerHandlerAdapter|ControllerHandlerAdapter}.
- * @param {module:core.ApplicationContext} context
  */
 
 /**
  * Return the handler adapter for the given handler.
- * @param {module:dispatcher.MaybeHandler} handler The handler to find an adapter for.
- * @returns {module:dispatcher.HandlerAdapter} The adapter for the handler.
- * @throws {Error} If no adapter can be found for the handler.
+ * @param handler - The handler to find an adapter for.
+ * @returns The adapter for the handler.
+ * @throws If no adapter can be found for the handler.
  */
 
 const HANDLER_ADAPTER = 'handlerAdapter',

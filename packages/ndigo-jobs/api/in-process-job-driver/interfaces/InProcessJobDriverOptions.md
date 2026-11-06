@@ -8,10 +8,6 @@
 
 Options for [InProcessJobDriver](../classes/InProcessJobDriver.md).
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### clock?

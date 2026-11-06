@@ -18,7 +18,7 @@ Configuration options for the retry interceptor.
 
 The fixed interval (in seconds, 1–120) to wait between retries.
 
-#### Default
+#### Default Value
 
 ```ts
 0
@@ -37,7 +37,7 @@ Commonly set to `'Retry-After'`.
 
 The maximum number of retry attempts.
 
-#### Default
+#### Default Value
 
 ```ts
 0

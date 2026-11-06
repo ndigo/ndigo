@@ -55,8 +55,7 @@ const hasImportMetaEnv = (override?: boolean): boolean => {
  *
  * Registers `importMetaEnv` (Vite's `import.meta.env`, `VITE_`-prefixed keys
  * only) when Vite is present; the host app may register a `bootstrap` source
- * with server-injected JSON via `getPropertySources().addLast('bootstrap',
- * data)`.
+ * with server-injected JSON via `getPropertySources().addLast('bootstrap', data)`.
  *
  * **Secret boundary (AD-13)**: anything in `importMetaEnv` or `bootstrap` is
  * client-visible by definition — secrets belong in server-only sources and

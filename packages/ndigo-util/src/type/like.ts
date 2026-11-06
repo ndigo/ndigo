@@ -1,4 +1,5 @@
 /**
+ * Duck-typing predicate factory.
  */
 export type LikeDescriptor = { [key: string]: Function | true };
 
@@ -36,27 +37,22 @@ export type LikeDescriptor = { [key: string]: Function | true };
  * pattern `export const likePromise = like({ then: Function })` where the
  * descriptor is created once at module load and reused many times.
  *
- * @category Type
- * @param {LikeDescriptor} descriptor - Object describing the expected shape
- * @param {*} value - The value to be tested (optional, for curried usage)
- * @returns {boolean | Function} Whether value matches, or a curried function
+ * @param descriptor - Object describing the expected shape
+ * @param value - The value to be tested (optional, for curried usage)
+ * @returns Whether value matches, or a curried function
  *
  * @example
+ * ```ts
  * const wxy = { w: true, x: Number, y: Number };
- * like( wxy, { w: {}, x: 123, y: 456 } );
- * //=> true
- * like( wxy, { w: 'abc', x: 123, z: 789 } );
- * //=> false
+ * like(wxy, { w: {}, x: 123, y: 456 }); //=> true
+ * like(wxy, { w: 'abc', x: 123, z: 789 }); //=> false
  *
- * const likeWXY = like( wxy );
- * likeWXY( { w: {}, x: 123, y: 456 } );
- * //=> true
- * likeWXY( { w: 'abc', x: 123, y: 456, z: 789 } );
- * //=> true
- * likeWXY( { w: true, x: 123, y: '456' } );
- * //=> false
- * likeWXY( { w: 0, x: 123, z: 789 } );
- * //=> false
+ * const likeWXY = like(wxy);
+ * likeWXY({ w: {}, x: 123, y: 456 }); //=> true
+ * likeWXY({ w: 'abc', x: 123, y: 456, z: 789 }); //=> true
+ * likeWXY({ w: true, x: 123, y: '456' }); //=> false
+ * likeWXY({ w: 0, x: 123, z: 789 }); //=> false
+ * ```
  *
  * @see {@link https://en.wikipedia.org/wiki/Duck_typing}
  */

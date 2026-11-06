@@ -8,8 +8,6 @@ const TRACER_NAME = '@ndigo/jobs';
 
 /**
  * One in-flight job-execution span, ended exactly once by the runner.
- *
- * @since 1.0.0
  */
 export interface JobSpan {
     /**

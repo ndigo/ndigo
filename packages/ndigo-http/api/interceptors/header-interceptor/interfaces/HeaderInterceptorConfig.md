@@ -32,7 +32,7 @@ The CSRF token to include in the X-CSRF-Token header.
 
 Whether to generate a unique request ID for each request.
 
-#### Default
+#### Default Value
 
 ```ts
 false

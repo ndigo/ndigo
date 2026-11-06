@@ -33,8 +33,8 @@ The value to test.
 ## Example
 
 ```ts
-isNotNil( null ); //=> false
-isNotNil( undefined ); //=> false
-isNotNil( 0 ); //=> true
-isNotNil( [] ); //=> true
+isNotNil(null); //=> false
+isNotNil(undefined); //=> false
+isNotNil(0); //=> true
+isNotNil([]); //=> true
 ```

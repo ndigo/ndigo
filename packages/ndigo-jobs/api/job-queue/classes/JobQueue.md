@@ -13,10 +13,6 @@ Produces, per AD-72 D-3, a single place where defaults live: drivers
 normalize and validate, the queue only fills in the configured default
 `maxAttempts` and forwards.
 
-## Since
-
-1.0.0
-
 ## Constructors
 
 ### Constructor

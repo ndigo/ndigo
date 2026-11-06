@@ -61,8 +61,8 @@ export interface ConfigurationPropertiesOptions {
  *
  * When the application starts, every field decorated with `@property` on the
  * class is bound from the environment (converted via `getPropertyAs`). If a
- * `prefix` is given, property paths are prefixed with it (e.g. `prefix =
- * 'server'` makes `@property('port')` resolve `server.port`). The bound
+ * prefix is given, property paths are prefixed with it (e.g. prefix = 'server')
+ * makes `@property('port')` resolve `server.port`. The bound
  * instance is auto-registered as an entry bean keyed by the camelCase-derived
  * class name (`ServerConfig` → `serverConfig`).
  *
@@ -88,8 +88,6 @@ export interface ConfigurationPropertiesOptions {
  *
  * @configurationProperties('server')
  * class ServerConfig {
- *     @property('port', Number) @defaultValue('8080') port!: number;
- *     @property('db') @nestedConfig db!: DbConfig;
  * }
  *
  * const ctx = app.run();

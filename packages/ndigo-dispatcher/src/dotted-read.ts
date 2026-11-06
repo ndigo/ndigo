@@ -11,7 +11,7 @@
  *
  * Grammar boundary: this walk supports dot-separated keys ONLY — bracketed
  * paths (`items[0].name`) belong to the {@link parseKeypath} grammar in
- * @ndigo/core (DataBinder's keypath family). A dotted source key that needs
+ * \@ndigo/core (DataBinder's keypath family). A dotted source key that needs
  * array indexing should use a DataBinder-bound source instead.
  */
 import { isNil } from '@ndigo/util/types';

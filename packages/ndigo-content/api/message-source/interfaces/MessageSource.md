@@ -15,7 +15,7 @@ fallback convention.
 ## Example
 
 ```ts
-const messages = new I18nextMessageSource({ … });
+const messages = new I18nextMessageSource({});
 await messages.getMessage('greeting', { values: { name: 'Ada' } }, 'en');
 // → 'Hello, Ada!'
 await messages.getMessage('items', { count: 3 }, 'en');

@@ -2,9 +2,6 @@
  * Unit spec for the `ndigo new` argv seam (AD-85): only flags the `app`
  * generator's schema declares are forwarded, and `--dry-run` appears only
  * when requested.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, expect, test } from 'vitest';
 import { newAppArgv } from '../src/commands/new';

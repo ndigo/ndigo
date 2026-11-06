@@ -6,6 +6,8 @@
 
 # index
 
+Proxy and interceptor chain for request forwarding.
+
 ## References
 
 ### AnnotationKey

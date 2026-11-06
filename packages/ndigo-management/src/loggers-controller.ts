@@ -28,8 +28,6 @@ const LOGGER_BODY_SCHEMA = z.object({
  * `{"configuredLevel": "debug"}` sets a level while `{}` clears it back to
  * the global settings floor. Unknown level names are rejected 400 by the
  * body schema's enum.
- *
- * @since 1.0.0
  */
 @requestMapping('/loggers')
 export class LoggersController extends AsApplicationContextAware(Null) {

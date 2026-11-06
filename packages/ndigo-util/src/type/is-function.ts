@@ -1,19 +1,20 @@
 /**
+ * Type guard for functions.
  */
+
 /**
  * Determines whether a given object is a function.
- * @category Type
- * @param {*} value The value to be tested.
- * @returns {boolean} Whether or not `value` is a function.
+ *
+ * @param value - The value to be tested.
+ * @returns Whether or not `value` is a function.
+ *
  * @example
- * isFunction( new Function() );
- * //=> true
- * isFunction( () => void 0 );
- * //=> true
- * isFunction( function(){} );
- * //=> true
- * isFunction( {} );
- * //=> false
+ * ```ts
+ * isFunction(new Function()); //=> true
+ * isFunction(() => void 0); //=> true
+ * isFunction(function () {}); //=> true
+ * isFunction({}); //=> false
+ * ```
  */
 const isFunction = (value: unknown): value is Function => typeof value === 'function';
 

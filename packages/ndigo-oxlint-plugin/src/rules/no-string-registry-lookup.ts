@@ -1,8 +1,5 @@
 /**
  * Rule that flags string-typed registry lookups — the untyped bean handle.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 

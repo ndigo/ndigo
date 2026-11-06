@@ -9,10 +9,6 @@
 A normalized request as stored by a driver: `runAt` and `maxAttempts`
 are resolved, and `delayMs` is gone.
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### maxAttempts

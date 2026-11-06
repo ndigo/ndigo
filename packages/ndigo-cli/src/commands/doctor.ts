@@ -1,8 +1,5 @@
 /**
  * `ndigo doctor` — environment and framework self-diagnostics.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand } from '@stricli/core';
 import { runDiagnostics } from './_diagnostics.js';

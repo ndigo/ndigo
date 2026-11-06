@@ -8,12 +8,15 @@ import { HTTPInit, ResponseAwareHTTPInterceptor, rebuildResponse } from '../http
 export interface StatusInterceptorConfig {
     /**
      * A mapping of HTTP status codes to application-specific status strings.
-     * @example { 200: 'SUCCESS', 404: 'NOT_FOUND', 500: 'SERVER_ERROR' }
+     * @example
+     * ```ts
+     * const statusMappings = { 200: 'SUCCESS', 404: 'NOT_FOUND', 500: 'SERVER_ERROR' };
+     * ```
      */
     statusMappings?: Record<number, string>;
     /**
      * The default status string to use when no mapping is found.
-     * @default 'UNKNOWN'
+     * @defaultValue 'UNKNOWN'
      */
     defaultStatus?: string;
 }

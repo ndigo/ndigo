@@ -105,7 +105,7 @@ export function insertSchemaForEntity<T extends object>(
  *
  * @param entityClass - The entity constructor.
  * @param entity - The entity instance to validate.
- * @throws {FrameworkError} When any column fails validation, listing the
+ * @throws When any column fails validation, listing the
  *   offending field paths.
  */
 export function validateEntity<T extends object>(entityClass: Constructable<T>, entity: T): void {

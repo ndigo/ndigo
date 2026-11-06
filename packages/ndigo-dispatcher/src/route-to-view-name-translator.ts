@@ -1,5 +1,6 @@
 /**
  */
+
 import { Route } from '@ndigo/router';
 
 /**
@@ -58,12 +59,3 @@ export class DefaultRouteToViewNameTranslator implements RouteToViewNameTranslat
         return viewName;
     }
 }
-
-/**
- */
-
-/**
- */
-
-/**
- */

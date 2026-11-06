@@ -29,8 +29,8 @@ import { z } from 'zod';
  * const parseHex: Converter<string, number> = (s) => parseInt(s, 16);
  * ```
  *
- * @template S The source type.
- * @template T The target type.
+ * @typeParam S - The source type.
+ * @typeParam T - The target type.
  */
 export interface Converter<S, T> {
     /**

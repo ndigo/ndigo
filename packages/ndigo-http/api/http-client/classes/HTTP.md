@@ -50,9 +50,11 @@ Fetch implementation (defaults to globalThis.fetch)
 
 ```ts
 // Dependency injection pattern (AsHTTPStrategy)
-getHTTP(fetch: Fetch = globalThis.fetch): HTTP {
+class Consumer {
+  getHTTP(fetch: Fetch = globalThis.fetch): HTTP {
     const { httpInterceptors, httpSettings } = this;
     return new HTTP(httpInterceptors, httpSettings, fetch);
+  }
 }
 ```
 
@@ -321,6 +323,10 @@ use the constructor directly.
 [`HTTPConfig`](../../http-types/interfaces/HTTPConfig.md) = `{}`
 
 Configuration options for the HTTP client
+  - `baseURL` - Base URL for resolving relative URLs
+  - `params` - Default query parameters to include in all requests
+  - `interceptors` - Optional HTTP interceptors
+  - `fetch` - Optional custom fetch implementation (defaults to globalThis.fetch)
 
 #### Returns
 
@@ -352,4 +358,4 @@ const api = HTTP.create({
 
 #### See
 
-[HTTP.constructor](#constructor) for dependency injection scenarios
+the constructor for dependency injection scenarios

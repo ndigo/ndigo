@@ -9,10 +9,6 @@
 An abstract base class that provides common functionality for router implementations.
 It includes mechanisms for managing route interceptors.
 
-## Since
-
-1.0.0
-
 ## Extended by
 
 - [`PartitionRouter`](../../partition-router/classes/PartitionRouter.md)
@@ -85,10 +81,6 @@ The `RouterInterceptor` to add.
 
 `void`
 
-#### Since
-
-1.0.0
-
 #### Implementation of
 
 [`RouterInterceptorRegistry`](../../router-interceptor/interfaces/RouterInterceptorRegistry.md).[`addInterceptor`](../../router-interceptor/interfaces/RouterInterceptorRegistry.md#addinterceptor)
@@ -105,10 +97,6 @@ This is useful for re-applying routing logic or interceptors without a full page
 #### Returns
 
 `void`
-
-#### Since
-
-1.0.0
 
 #### Implementation of
 
@@ -150,10 +138,6 @@ An optional array of patterns to exclude from matching.
 #### Throws
 
 If `interceptor` is not provided when `interceptorOrPatterns` defines patterns.
-
-#### Since
-
-1.0.0
 
 #### Implementation of
 

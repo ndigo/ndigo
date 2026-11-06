@@ -362,7 +362,7 @@ export class InMemoryQueueMessageStore implements QueueMessageStore {
     /**
      * Drop the oldest message and charge its bytes back. Deliberately does
      * NOT detach an emptied ring from `#byDestination` — the caller decides
-     * (an in-flight `append` keeps it, {@link #release} drops it with the
+     * (an in-flight `append` keeps it, `release` drops it with the
      * destination).
      */
     #dropOldest(queue: RingBuffer<StoredQueueMessage>): void {

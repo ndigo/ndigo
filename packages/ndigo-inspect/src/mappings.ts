@@ -126,7 +126,7 @@ function tablesOf(source: MappingSource): InspectMappingTable[] {
  * @param source - The mapping source, `undefined` for no mappings, or `null`
  *   (rejected).
  * @returns The sorted mapping rows.
- * @throws {FrameworkError} When `source` is `null`.
+ * @throws When `source` is `null`.
  */
 export function collectMappings(source?: MappingSource | null): InspectMapping[] {
     if (source === undefined) return [];

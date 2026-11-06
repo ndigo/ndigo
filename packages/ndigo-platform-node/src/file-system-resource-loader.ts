@@ -69,7 +69,7 @@ export class FileSystemResourceLoader implements ResourceLoader {
      * @param location - The requested location.
      * @param root - The configured root directory.
      * @returns The canonical, contained path.
-     * @throws {Error} When the location escapes the root.
+     * @throws When the location escapes the root.
      */
     async #contained(location: string, root: string): Promise<string> {
         if (this.#base === null) {

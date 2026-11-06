@@ -14,7 +14,7 @@ source, so feature counters are served even when no telemetry pipeline
 
 Projection rules:
 - counters → `sum` snapshots, gauges → `gauge` snapshots, both named
-  `` `{feature}.{metric}` `` with empty attributes;
+  `{feature}.{metric}` with empty attributes;
 - durations → `histogram` snapshots (count/sum/min/max, no buckets — the
   raw samples are summarized, not bucketed), so the Prometheus view
   projects the `_count` counter + `_sum` gauge pair;

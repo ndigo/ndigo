@@ -57,7 +57,7 @@ export interface ExponentialBackoffOptions {
  * next tick), which is exactly the misconfiguration this throws on.
  *
  * @param options - The growth configuration.
- * @throws {TypeError} When an option is not a finite, in-range number.
+ * @throws When an option is not a finite, in-range number.
  */
 export function exponentialBackoff(options: ExponentialBackoffOptions): BackoffPolicy {
     const { initialMs, maxMs, jitter } = options;

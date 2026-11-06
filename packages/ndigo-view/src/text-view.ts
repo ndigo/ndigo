@@ -15,7 +15,7 @@ export class TextView extends AbstractSerializingView {
         this.mediaType = MediaTypes.TEXT_PLAIN?.withCharset('UTF-8') ?? null;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     protected serialize(model: unknown): string {
         return model == null ? '' : String(model);
     }

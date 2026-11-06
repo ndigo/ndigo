@@ -27,8 +27,6 @@ import { InMemoryDataSource } from './data-source';
  *     }
  * }
  * ```
- *
- * @since 1.0.0
  */
 export interface TransactionManager {
     /**
@@ -62,8 +60,6 @@ export interface TransactionManager {
  * Overlapping `run()` calls are rejected (the backing store can only hold one
  * snapshot at a time); a second concurrent call fails loud rather than
  * silently discarding the first run's commits on rollback (DAT-F2).
- *
- * @since 1.0.0
  */
 export class InMemoryTransactionManager implements TransactionManager {
     #active = false;
@@ -76,12 +72,12 @@ export class InMemoryTransactionManager implements TransactionManager {
         this.#dataSource = dataSource;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     isActive(): boolean {
         return this.#active;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async run<T>(fn: () => T | Promise<T>): Promise<T> {
         if (this.#active) {
             throw new IllegalStateError('InMemoryTransactionManager: a transaction is already active');

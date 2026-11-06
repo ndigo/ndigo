@@ -25,6 +25,5 @@ present (and, when `havingValue` is set, matches it).
 
 ```ts
 @whenProperty({ name: 'app.management.enabled' })
-@class
-class ManagementConfiguration { … }
+class ManagementConfiguration {}
 ```

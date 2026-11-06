@@ -19,8 +19,6 @@ interface StoredJob {
 
 /**
  * Options for {@link InProcessJobDriver}.
- *
- * @since 1.0.0
  */
 export interface InProcessJobDriverOptions {
     /** Clock override for deterministic tests; defaults to `Date.now`. */
@@ -40,8 +38,6 @@ export interface InProcessJobDriverOptions {
  *
  * Payloads round-trip through JSON like every driver, so handlers see the
  * same shape they would after a restart.
- *
- * @since 1.0.0
  */
 export class InProcessJobDriver implements JobDriver {
     readonly kind = 'in-process';
@@ -58,7 +54,7 @@ export class InProcessJobDriver implements JobDriver {
         this.#idFactory = options.idFactory ?? randomUUID;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async enqueue(request: JobRequest): Promise<JobRecord> {
         this.#assertOpen();
         const now = this.#clock();
@@ -77,7 +73,7 @@ export class InProcessJobDriver implements JobDriver {
         return structuredClone(record);
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async claim(options: ClaimOptions): Promise<JobRecord[]> {
         this.#assertOpen();
         assertClaimOptions(options);
@@ -107,13 +103,13 @@ export class InProcessJobDriver implements JobDriver {
         return claimed;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async complete(id: JobId): Promise<void> {
         this.#assertOpen();
         this.#jobs.delete(id);
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async retry(id: JobId, runAt: number, lastError: string): Promise<void> {
         this.#assertOpen();
         const stored = this.#jobs.get(id);
@@ -126,14 +122,14 @@ export class InProcessJobDriver implements JobDriver {
         stored.record.lastError = lastError;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async fail(id: JobId, lastError: string): Promise<void> {
         this.#assertOpen();
         void lastError; // terminal errors surface through telemetry/logs, not storage (AD-72 D-2)
         this.#jobs.delete(id);
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async heartbeat(id: JobId, leaseMs: number): Promise<void> {
         this.#assertOpen();
         const stored = this.#jobs.get(id);
@@ -142,7 +138,7 @@ export class InProcessJobDriver implements JobDriver {
         }
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async size(): Promise<number> {
         this.#assertOpen();
         let pending = 0;
@@ -154,7 +150,7 @@ export class InProcessJobDriver implements JobDriver {
         return pending;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async close(): Promise<void> {
         this.#closed = true;
         this.#jobs.clear();

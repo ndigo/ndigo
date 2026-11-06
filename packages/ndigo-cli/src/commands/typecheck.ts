@@ -1,8 +1,5 @@
 /**
  * `ndigo typecheck` — front the application's typecheck script.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { createScriptFrontCommand } from './_script-fronts.js';
 

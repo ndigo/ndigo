@@ -20,10 +20,10 @@ Enhanced decodeURIComponent
 
 `string`
 
-The encoded string
+The encoded string.
 
 ## Returns
 
 `string`
 
-The decoded string
+The decoded string.

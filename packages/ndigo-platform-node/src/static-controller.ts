@@ -8,18 +8,20 @@ import { Route } from '@ndigo/router';
 import { StaticResourceHandler, type StaticHandlerOptions } from './static-resource-handler';
 
 /**
- * Static file serving controller (AD-28): `/static/{*file}`.
+ * Static file serving controller (AD-28): serves files under /static.
  *
- * The catch-all `{*file}` route binds nested paths (`/static/assets/logo.png`
- * → `assets/logo.png`), and every HTTP concern — conditional GET, Range,
+ * The catch-all route binds nested paths (`/static/assets/logo.png`
+ * to `assets/logo.png`), and every HTTP concern — conditional GET, Range,
  * cache headers, precompressed variants, directory index/listing, SPA
  * fallback — is delegated to {@link StaticResourceHandler}.
  *
  * @example
  * ```ts
- * @entry()
- * staticController() {
+ * class AppConfig {
+ *   @entry()
+ *   staticController() {
  *     return new StaticController(resolve('dist'), { spaFallback: true });
+ *   }
  * }
  * ```
  */
@@ -37,7 +39,7 @@ export class StaticController {
     }
 
     /**
-     * GET/HEAD /static/{*file} — serves the file with full HTTP semantics.
+     * GET/HEAD /static/`{*file}` — serves the file with full HTTP semantics.
      */
     @getMapping('/{*file}')
     @parameters({ file: pathVariable('file'), route: routeValue() })

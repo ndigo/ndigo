@@ -13,10 +13,6 @@ Reports `UP` when a [FeatureMetricAggregator](#) is present (metrics are
 being collected); details include the number of features tracked. Reports
 `DOWN` when none is wired (management endpoints would serve empty metrics).
 
-## Since
-
-1.0.0
-
 ## Implements
 
 - [`HealthIndicator`](../../health/interfaces/HealthIndicator.md)
@@ -58,13 +54,9 @@ The stable name of the subsystem (e.g. `'telemetry'`).
 
 > **check**(): [`HealthResult`](../../health/interfaces/HealthResult.md)
 
-Checks the subsystem health.
-
 #### Returns
 
 [`HealthResult`](../../health/interfaces/HealthResult.md)
-
-A promise resolving to the health result.
 
 #### Implementation of
 

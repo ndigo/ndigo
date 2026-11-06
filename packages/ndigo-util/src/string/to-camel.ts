@@ -1,4 +1,5 @@
 /**
+ * Converts strings to camelCase.
  */
 import removeNonWord from './remove-non-word.js';
 import replaceDiacritics from './replace-diacritics.js';
@@ -17,12 +18,15 @@ const // Underscores and hyphens
     replaceDashesWithSpaces = (val: string) => val.replace(dashes, ' '),
     /**
      * Returns the camel case version of a string.
-     * @param {string} value
-     * @returns {string}
-     * @category String
+     *
+     * @param value - The input string.
+     * @returns The camelCase version.
+     *
      * @example
-     * toCamel( 'lorem-ipsum-dolor' );
-     * //=> "loremIpsumDolor"
+     * ```ts
+     * toCamel('lorem-ipsum-dolor'); //=> "loremIpsumDolor"
+     * ```
+     *
      * @see {@link http://wiki.c2.com/?CamelCase}
      */
     toCamel: (value: string) => string = (val: string): string => {

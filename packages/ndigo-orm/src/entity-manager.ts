@@ -14,7 +14,7 @@ export interface EntityManager {
     /**
      * Persists a new entity or updates an existing one.
      * @param entity - The entity to persist.
-     * @throws {IllegalStateError} If the entity class is not decorated with `@entity` or is missing a `@primaryColumn`.
+     * @throws If the entity class is not decorated with `@entity` or is missing a `@primaryColumn`.
      */
     persist<T extends object>(entity: T): void;
     /**
@@ -43,7 +43,7 @@ export interface EntityManager {
      * @param relationName - The declared relation field name.
      * @returns The related entity, an array of related entities, or
      *   `undefined`/`[]` when nothing relates.
-     * @throws {IllegalStateError} When the relation or its join column is not
+     * @throws When the relation or its join column is not
      *   declared, or for many-to-many relations (join-table semantics not
      *   implemented).
      */
@@ -82,9 +82,9 @@ export class InMemoryEntityManager implements EntityManager {
      * entity against its Zod schema derived from `@column` metadata (AD-07).
      *
      * @param entity - The entity to persist.
-     * @throws {IllegalStateError} If the entity class is not decorated with `@entity`,
+     * @throws If the entity class is not decorated with `@entity`,
      * is missing a `@primaryColumn`, or the primary column value is `undefined` or `null`.
-     * @throws {Error} If the entity has a `validate()` method and validation fails.
+     * @throws If the entity has a `validate()` method and validation fails.
      */
     persist<T extends object>(entity: T): void {
         const entityClass = entity.constructor as Constructable<T>;
@@ -182,7 +182,7 @@ export class InMemoryEntityManager implements EntityManager {
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     fetchRelation(entity: object, relationName: string): unknown {
         const entityClass = entity.constructor as Constructable<object>;
@@ -288,7 +288,7 @@ export class InMemoryEntityManager implements EntityManager {
      *
      * @param entityClass - The entity constructor.
      * @param entity - The entity to validate.
-     * @throws {FrameworkError} When validation fails.
+     * @throws When validation fails.
      */
     #validateEntity<T extends object>(entityClass: Constructable<T>, entity: T): void {
         validateEntity(entityClass, entity);

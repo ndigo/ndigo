@@ -25,7 +25,7 @@ type Token =
  *
  * @param expression - The expression string.
  * @returns The token stream.
- * @throws {IllegalStateError} On an unknown character.
+ * @throws On an unknown character.
  */
 const tokenize = (expression: string): Token[] => {
     const tokens: Token[] = [];
@@ -76,7 +76,7 @@ const tokenize = (expression: string): Token[] => {
 /**
  * Recursive-descent evaluator over the token stream.
  *
- * Grammar (precedence low→high): `or` < `and` < `not` < name/paren.
+ * Grammar (precedence low to high): or, and, not, name/paren.
  */
 class Parser {
     #tokens: Token[];
@@ -185,7 +185,7 @@ class Parser {
  * @param expression - The expression to evaluate.
  * @param active - The active (effective) profile set.
  * @returns `true` when the expression matches.
- * @throws {IllegalStateError} On malformed expressions or excessive nesting.
+ * @throws On malformed expressions or excessive nesting.
  *
  * @example
  * ```ts

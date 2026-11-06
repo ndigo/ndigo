@@ -1,5 +1,6 @@
 /**
  */
+
 import { Comparator, Serializable } from '@ndigo/core';
 import { RouteHandlerMethod } from './route-handler-method';
 

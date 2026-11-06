@@ -1,5 +1,6 @@
 /**
  */
+
 import { ApplicationContext } from '@ndigo/context';
 import { Constructable, Enumerable, IllegalStateError } from '@ndigo/core';
 import { toPascal } from '@ndigo/util/string';

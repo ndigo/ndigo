@@ -16,7 +16,7 @@ Configuration options for the ErrorNormalizationInterceptor.
 
 The default error type to use when a specific type cannot be determined.
 
-#### Default
+#### Default Value
 
 ```ts
 'HTTP_ERROR'

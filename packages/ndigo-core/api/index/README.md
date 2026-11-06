@@ -6,6 +6,8 @@
 
 # index
 
+Core primitives, containers, and patterns for the Ndigo framework.
+
 ## References
 
 ### AbstractValueComparator

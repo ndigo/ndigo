@@ -211,20 +211,26 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
 
 /**
  * Retrieves a matching instance of `ResponseStatus`, or creates it if it does not exist and `text` is provided. Standard HTTP response statuses have already been created.
- * @param {number} code
- * @param {string} [text]
- * @returns {module:http.ResponseStatus}
+ * @param code - The status code.
+ * @param text - The status text.
+ * @returns The matching ResponseStatus, or null.
+ *
  * @example
- * const okStatus = ResponseStatus.for( 200 ); // 200 OK
- * const coffeePotStatus = ResponseStatus.for( 419, 'I\'m a coffee pot' ); // 419 I'm a coffee pot
- * const invalidStatus = ResponseStatus.for( 999 ); // null
+ * ```ts
+ * const okStatus = ResponseStatus.for(200); // 200 OK
+ * const coffeePotStatus = ResponseStatus.for(419, "I'm a coffee pot"); // 419 I'm a coffee pot
+ * const invalidStatus = ResponseStatus.for(999); // null
+ * ```
  */
 
 /**
  * Retrieves a matching instance of `ResponseStatus`, or creates it if it does not exist. Standard HTTP response statuses have already been created.
- * @param {Response} response
- * @returns {module:http.ResponseStatus}
+ * @param response - The HTTP response.
+ * @returns The matching ResponseStatus.
+ *
  * @example
- * const response = new Response( null, { status: 200, statusText: "OK" } );
- * const okStatus = ResponseStatus.for( response ); // 200 OK
+ * ```ts
+ * const response = new Response(null, { status: 200, statusText: "OK" });
+ * const okStatus = ResponseStatus.for(response); // 200 OK
+ * ```
  */

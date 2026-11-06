@@ -9,10 +9,6 @@
 Manages the registration and activation of features based on routing.
 It allows features to be mounted at specific URL prefixes and provides policies for feature activation.
 
-## Since
-
-1.0.0
-
 ## Constructors
 
 ### Constructor
@@ -39,10 +35,6 @@ Configuration options for the registry.
 
 `FeatureRoutingRegistry`
 
-#### Since
-
-1.0.0
-
 ## Accessors
 
 ### activeFeatureName
@@ -52,10 +44,6 @@ Configuration options for the registry.
 > **get** **activeFeatureName**(): `string` \| `undefined`
 
 Gets the name of the currently active feature.
-
-##### Since
-
-1.0.0
 
 ##### Returns
 
@@ -72,10 +60,6 @@ The name of the active feature, or `undefined` if no feature is active.
 > **get** **partitionRouter**(): [`PartitionRouter`](../../partition-router/classes/PartitionRouter.md)
 
 Gets the underlying `PartitionRouter` instance used by the registry.
-
-##### Since
-
-1.0.0
 
 ##### Returns
 
@@ -106,10 +90,6 @@ The path to navigate to.
 
 `true` if the navigation was handled by a registered route, `false` otherwise.
 
-#### Since
-
-1.0.0
-
 ***
 
 ### refresh()
@@ -122,10 +102,6 @@ This can re-evaluate the current URL against registered routes.
 #### Returns
 
 `void`
-
-#### Since
-
-1.0.0
 
 ***
 
@@ -155,10 +131,6 @@ The current `FeatureRoutingRegistry` instance for chaining.
 If a feature with the same name is already registered,
   or another feature already occupies the same route prefix.
 
-#### Since
-
-1.0.0
-
 ***
 
 ### setActiveFeature()
@@ -186,10 +158,6 @@ The current `FeatureRoutingRegistry` instance for chaining.
 
 If the specified feature name is not registered.
 
-#### Since
-
-1.0.0
-
 ***
 
 ### unregister()
@@ -212,7 +180,3 @@ The registered feature name.
 `boolean`
 
 `true` if a registration was removed.
-
-#### Since
-
-1.0.0

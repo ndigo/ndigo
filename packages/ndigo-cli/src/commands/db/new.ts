@@ -7,9 +7,6 @@
  * writes `<NNNN>-<slug>.ts` exporting an empty `Migration` for the author to
  * fill in. The exported `version` drives apply order; the `NNNN` filename
  * prefix stays in lockstep with the loader's own filename contract.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand } from '@stricli/core';
 import { mkdir, writeFile } from 'node:fs/promises';

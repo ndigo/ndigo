@@ -22,7 +22,7 @@ const DEFAULT_LOCALE = 'en-US';
  * Locale-aware template locals injected by {@link EJSView}.
  *
  * `t` resolves messages through the view's application context (itself a
- * {@link @ndigo/content!MessageSource}); the formatter helpers wrap `Intl` through
+ * MessageSource from `@ndigo/content`); the formatter helpers wrap `Intl` through
  * `@ndigo/core` formatters and use the request's negotiated language.
  */
 export interface EJSLocaleHelpers {
@@ -122,7 +122,7 @@ export class EJSView extends AbstractTemplateView implements ProducerView {
         this.#loader = options.loader;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     protected async _renderTemplate(templateModel: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (!target) {
             throw new IllegalStateError('EJSView requires a ViewTarget to render.');
@@ -132,7 +132,7 @@ export class EJSView extends AbstractTemplateView implements ProducerView {
         await target.commit(html, templateModel, request as Route);
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async renderTo(model: unknown, route: Route): Promise<RenderResult> {
         return {
             mediaType: this.mediaType ?? undefined,
@@ -197,7 +197,7 @@ export class EJSView extends AbstractTemplateView implements ProducerView {
      * Resolve the EJS template source for this view.
      *
      * @returns The template source text.
-     * @throws {IllegalStateError} When neither an inline `template` nor a
+     * @throws When neither an inline `template` nor a
      *   `path` with a resource loader is available.
      */
     async #resolveSource(): Promise<string> {

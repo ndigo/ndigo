@@ -6,7 +6,7 @@
  * helpers (`randomToken`, `randomHex`) so neither can silently degrade to a
  * predictable PRNG on a platform without `globalThis.crypto`.
  *
- * @throws {Error} If `globalThis.crypto.getRandomValues` is missing.
+ * @throws If `globalThis.crypto.getRandomValues` is missing.
  */
 export function assertCryptoAvailable(): void {
     if (typeof globalThis.crypto === 'undefined' || typeof globalThis.crypto.getRandomValues !== 'function') {

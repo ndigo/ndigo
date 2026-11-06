@@ -5,9 +5,6 @@
  * out-of-scope names, non-string values, and alias/tag/range specs — is
  * rejected as `invalid` with a concrete reason instead of reaching the
  * disk or crashing with a TypeError.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { mkdtemp, rm, writeFile, mkdir } from 'node:fs/promises';

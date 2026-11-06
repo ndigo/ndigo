@@ -16,7 +16,7 @@ Configuration options for the CacheInterceptor.
 
 Headers that, if present in the request, will bypass the cache.
 
-#### Default
+#### Default Value
 
 ```ts
 ['Cache-Control: no-cache']
@@ -30,7 +30,7 @@ Headers that, if present in the request, will bypass the cache.
 
 The default time-to-live for cached responses in milliseconds.
 
-#### Default
+#### Default Value
 
 ```ts
 300000 (5 minutes)
@@ -44,7 +44,7 @@ The default time-to-live for cached responses in milliseconds.
 
 The maximum number of responses to store in the cache.
 
-#### Default
+#### Default Value
 
 ```ts
 100

@@ -6,7 +6,7 @@
 
 # Class: RegistryProxyHandler\<T\>
 
-A handler implementation that when applied to a [Registry](../interfaces/Registry.md) instance via [roxy\|Proxy](#) causes the registry
+A handler implementation that when applied to a [Registry](../interfaces/Registry.md) instance via `Proxy` causes the registry
 to behave like a plain object. This is used to implement `ProxiedFactory`.
 
 ## See

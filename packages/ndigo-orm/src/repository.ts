@@ -17,8 +17,8 @@ export interface RelationFetchOptions {
 
 /**
  * Defines the basic contract for a repository, providing common data access operations for entities.
- * @template T - The type of the entity.
- * @template ID - The type of the entity's primary identifier.
+ * @typeParam T - The type of the entity.
+ * @typeParam ID - The type of the entity's primary identifier.
  */
 export interface Repository<T extends object, ID> {
     /**
@@ -127,8 +127,8 @@ export function toAsyncRepository<T extends object, ID>(repository: Repository<T
 /**
  * An abstract base class for implementing the `Repository` interface.
  * Provides common functionality for interacting with an `EntityManager`.
- * @template T - The type of the entity.
- * @template ID - The type of the entity's primary identifier.
+ * @typeParam T - The type of the entity.
+ * @typeParam ID - The type of the entity's primary identifier.
  */
 export abstract class AbstractRepository<T extends object, ID> implements Repository<T, ID> {
     readonly #entityClass: Constructable<T>;
@@ -182,7 +182,7 @@ export abstract class AbstractRepository<T extends object, ID> implements Reposi
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
      */
     loadRelation(entity: T, relationName: string): unknown {
         const value = this.#entityManager.fetchRelation(entity, relationName);
@@ -256,8 +256,8 @@ export abstract class AbstractRepository<T extends object, ID> implements Reposi
  * }
  * ```
  *
- * @template T - The type of the entity.
- * @template ID - The type of the entity's primary identifier.
+ * @typeParam T - The type of the entity.
+ * @typeParam ID - The type of the entity's primary identifier.
  */
 export class InMemoryDerivedQueryRepository<T extends object, ID> extends AbstractRepository<T, ID> {
     /**
@@ -266,7 +266,7 @@ export class InMemoryDerivedQueryRepository<T extends object, ID> extends Abstra
      * @param methodName - The method name that was called.
      * @param args - The method arguments (query values).
      * @returns Matching entities.
-     * @throws {TypeError} When the method name is not a supported derived query.
+     * @throws When the method name is not a supported derived query.
      */
     derive(methodName: string, args: unknown[]): T[] {
         const columns = getEntityMetadata(this.getEntityClass()).columns;
@@ -291,8 +291,8 @@ export class InMemoryDerivedQueryRepository<T extends object, ID> extends Abstra
  * An in-memory implementation of a repository, extending `AbstractRepository`.
  * It uses an `InMemoryEntityManager` for data operations, and supports derived
  * queries via {@link InMemoryDerivedQueryRepository.derive}.
- * @template T - The type of the entity.
- * @template ID - The type of the entity's primary identifier.
+ * @typeParam T - The type of the entity.
+ * @typeParam ID - The type of the entity's primary identifier.
  */
 export class InMemoryRepository<T extends object, ID> extends InMemoryDerivedQueryRepository<T, ID> {
     /**

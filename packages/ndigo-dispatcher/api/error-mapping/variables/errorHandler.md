@@ -49,9 +49,8 @@ Check if target has error handler metadata
 ## Example
 
 ```typescript
-Invoked via the `errorHandler` decorator.
-  // ...
-}
+@errorHandler()
+class MyErrorHandler {}
 
 const isHandler = errorHandler.has(MyErrorHandler);
 ```

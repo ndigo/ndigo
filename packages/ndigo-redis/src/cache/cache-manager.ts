@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { resolveCacheName } from '@ndigo/cache';
 import { IllegalStateError } from '@ndigo/core';

@@ -218,7 +218,3 @@ The registered feature name.
 `boolean`
 
 `true` if a registration was removed.
-
-#### Since
-
-1.0.0

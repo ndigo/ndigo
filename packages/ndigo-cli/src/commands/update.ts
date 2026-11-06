@@ -1,8 +1,5 @@
 /**
- * `ndigo update` — bump @ndigo/* versions in an app.
- *
- * @since 1.0.0
- * @author Jeff Rose
+ * `ndigo update` — bump \@ndigo/* versions in an app.
  */
 import { buildCommand } from '@stricli/core';
 import { writeFileSync } from 'node:fs';

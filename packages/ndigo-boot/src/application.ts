@@ -45,7 +45,7 @@ const splitProfiles = (raw: string): string[] =>
 /**
  * Class that can be used to bootstrap and launch an application.
  *
- * @param {string} name The name of the application
+ * @param name - The name of the application
 
 
  */
@@ -104,7 +104,7 @@ export class Application extends Emitter {
      *
      * @param args - Command-line arguments used while preparing the environment.
      * @returns The refreshed application context.
-     * @throws {IllegalStateError} When application startup fails.
+     * @throws When application startup fails.
      */
     async run(...args: string[]): Promise<ConfigurableApplicationContext> {
         try {
@@ -257,12 +257,11 @@ export class Application extends Emitter {
      * Applies environment-level configuration before the application context is created.
      *
      * Order matters (AD-13): profiles first (file loading is profile-aware),
-     * then config files, then CLI + builder sources (CLI > boot > files > env
-     * > defaults).
+     * then config files, then CLI + builder sources (CLI \> boot \> files \> env
+     * \> defaults).
      *
      * @param environment - The environment being prepared.
      * @param args - Command-line arguments supplied to the application.
-     * @protected
      */
     protected async _configureEnvironment(environment: ConfigurableEnvironment, args: string[]): Promise<void> {
         this._configureProfiles(environment, args);
@@ -274,14 +273,13 @@ export class Application extends Emitter {
 
     /**
      * Applies the configured active profiles to the environment, in
-     * precedence order (AD-14): CLI `--profiles.active=` > env
-     * `NDIGO_PROFILES_ACTIVE` > builder `.profiles()`. `profiles.default` /
+     * precedence order (AD-14): CLI `--profiles.active=` \> env
+     * `NDIGO_PROFILES_ACTIVE` \> builder `.profiles()`. `profiles.default` /
      * `NDIGO_PROFILES_DEFAULT` set the default set; `profiles.group.*` /
      * `NDIGO_PROFILES_GROUPS` expand group names to members.
      *
      * @param environment - The environment being prepared.
      * @param args - Command-line arguments supplied to the application.
-     * @protected
      */
     protected _configureProfiles(environment: ConfigurableEnvironment, args: string[]): void {
         const parsed = parseCommandLineArgs(args);
@@ -373,7 +371,7 @@ export class Application extends Emitter {
         if (this.#properties) {
             // `boot` sits directly BELOW `commandLine` and ABOVE every other
             // source (PrecedenceDoc: commandLine > boot > systemEnvironment >
-            // dotenv > application > defaults). `systemEnvironment` registers at
+            // dotenv > application \> defaults). `systemEnvironment` registers at
             // platform construction, so insert AHEAD of it; without it, append
             // (boot is then the highest non-CLI source, as nothing above it is
             // present yet — defaults registers at the absolute end).

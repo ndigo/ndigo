@@ -8,10 +8,6 @@
 
 The registration `@jobHandler` records for a method.
 
-## Since
-
-1.0.0
-
 ## Extends
 
 - [`JobHandlerOptions`](JobHandlerOptions.md)

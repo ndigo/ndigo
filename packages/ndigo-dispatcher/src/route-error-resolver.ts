@@ -1,5 +1,6 @@
 /**
  */
+
 import { Constructable } from '@ndigo/core';
 import { ModelAndView } from './model-and-view';
 import { Route } from '@ndigo/router';
@@ -480,8 +481,7 @@ export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
      */
     constructor(defaultErrorView?: string) {
         super();
-        /**
-         */
+
         defineProperty(this, 'defaultErrorView', {
             value: defaultErrorView || null,
             configurable: true,
@@ -505,11 +505,10 @@ export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
      * Actually resolve the given error that got thrown during on handler execution, returning a `ModelAndView` that represents a specific error page if appropriate.
      *
      * May be overridden in subclasses, in order to apply specific error checks.
-     * @protected
-     * @param {module:router.Route} route The current route.
-     * @param {*} handler The executed handler or `null` if none chosen at the time of the error.
-     * @param {Error} error The error that was thrown during execution.
-     * @returns {module:dispatcher.ModelAndView} The corresponding `ModelAndView` to forward to or `null` for default processing in the resolution chain.
+     * @param route - The current route.
+     * @param handler - The executed handler or `null` if none chosen at the time of the error.
+     * @param error - The error that was thrown during execution.
+     * @returns The corresponding `ModelAndView` to forward to or `null` for default processing in the resolution chain.
      */
     /**
      * Resolve an error by matching configured substring mappings against the

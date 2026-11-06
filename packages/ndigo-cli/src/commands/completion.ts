@@ -1,8 +1,5 @@
 /**
  * `ndigo completion` — print a shell completion script.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand } from '@stricli/core';
 // Derived from the shared route-list source of truth (src/commands/_routes.ts):

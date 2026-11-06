@@ -33,7 +33,7 @@ export const CSRF_COOKIE = '__Host-ndigo-csrf';
 /** Mutating HTTP methods that require CSRF validation. */
 const MUTATING_METHODS = new Set(['POST', 'PUT', 'DELETE', 'PATCH', 'QUERY']);
 
-/** Header used to echo the token back (a constant from the @ndigo/http vocabulary). */
+/** Header used to echo the token back (a constant from the \@ndigo/http vocabulary). */
 const CSRF_HEADER = String(HTTPHeaders.X_CSRF_TOKEN);
 
 /**

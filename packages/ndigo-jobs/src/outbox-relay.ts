@@ -14,8 +14,6 @@ import {
 
 /**
  * Options for {@link OutboxRelay}.
- *
- * @since 1.0.0
  */
 export interface OutboxRelayOptions {
     /** The store entries are claimed from. */
@@ -44,8 +42,6 @@ export interface OutboxRelayOptions {
  * Lifecycle: `SmartLifecycle`, phase 10, auto-start when registered as a
  * bean; `close()` stops and awaits the pass in flight. Direct construction is
  * the standalone/test path.
- *
- * @since 1.0.0
  */
 export class OutboxRelay {
     readonly phase = 10;

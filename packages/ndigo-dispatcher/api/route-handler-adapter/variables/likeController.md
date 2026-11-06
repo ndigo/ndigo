@@ -14,10 +14,6 @@
 
 `unknown`
 
-The value to be tested
-
 ## Returns
 
 `value is Controller`
-
-Whether or not the `value` is a [Controller](../../controller/interfaces/Controller.md)

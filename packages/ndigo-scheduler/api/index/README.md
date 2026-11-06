@@ -6,6 +6,8 @@
 
 # index
 
+Task scheduling with cron, interval, and fixed-delay triggers.
+
 ## References
 
 ### CronSchedule

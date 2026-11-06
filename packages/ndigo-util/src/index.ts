@@ -1,4 +1,5 @@
 /**
+ * Common utilities: environment, errors, timing, crypto, and type guards.
  */
 export { getEnv, isDevMode } from './env.js';
 export { getErrorMessage } from './error.js';

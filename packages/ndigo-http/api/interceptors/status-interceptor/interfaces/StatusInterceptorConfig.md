@@ -16,7 +16,7 @@ Configuration options for the StatusInterceptor.
 
 The default status string to use when no mapping is found.
 
-#### Default
+#### Default Value
 
 ```ts
 'UNKNOWN'
@@ -33,5 +33,5 @@ A mapping of HTTP status codes to application-specific status strings.
 #### Example
 
 ```ts
-{ 200: 'SUCCESS', 404: 'NOT_FOUND', 500: 'SERVER_ERROR' }
+const statusMappings = { 200: 'SUCCESS', 404: 'NOT_FOUND', 500: 'SERVER_ERROR' };
 ```

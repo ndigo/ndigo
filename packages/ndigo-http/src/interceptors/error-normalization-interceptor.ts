@@ -11,7 +11,7 @@ const { defineProperty } = Reflect;
 export interface ErrorNormalizationInterceptorConfig {
     /**
      * The default error type to use when a specific type cannot be determined.
-     * @default 'HTTP_ERROR'
+     * @defaultValue 'HTTP_ERROR'
      */
     defaultErrorType?: string;
 }
@@ -22,7 +22,6 @@ export interface ErrorNormalizationInterceptorConfig {
  * This interceptor ensures that both network-level failures and HTTP error
  * responses are normalized into a consistent format for the application.
  *
-
 
  */
 export class ErrorNormalizationInterceptor implements ResponseAwareHTTPInterceptor, ErrorAwareHTTPInterceptor {

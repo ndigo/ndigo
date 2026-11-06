@@ -27,8 +27,8 @@ x is null \| undefined
 ## Example
 
 ```ts
-isNil( null ); //=> true
-isNil( undefined ); //=> true
-isNil( 0 ); //=> false
-isNil( [] ); //=> false
+isNil(null); //=> true
+isNil(undefined); //=> true
+isNil(0); //=> false
+isNil([]); //=> false
 ```

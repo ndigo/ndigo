@@ -1,8 +1,5 @@
 /**
- * `ndigo info` — versions, installed @ndigo packages, workspace, git.
- *
- * @since 1.0.0
- * @author Jeff Rose
+ * `ndigo info` — versions, installed \@ndigo packages, workspace, git.
  */
 import { buildCommand } from '@stricli/core';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';

@@ -6,6 +6,8 @@
 
 # type/is-function
 
+Type guard for functions.
+
 ## References
 
 ### default

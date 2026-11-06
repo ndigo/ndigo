@@ -493,7 +493,7 @@ export class ContentNegotiationViewResolver implements ViewResolver {
      *   explicitly so interleaved async resolutions never share state; when
      *   omitted, the first candidate is served without negotiation.
      * @returns The matching view, or `null` when no resolver/default produced one.
-     * @throws {NotAcceptableError} When candidates exist but none serves the
+     * @throws When candidates exist but none serves the
      *   request's accepted media types (HTTP 406).
      */
     async resolveViewName(name: string, language?: unknown, request?: unknown): Promise<View | null> {

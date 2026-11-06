@@ -30,10 +30,10 @@ A decorator function for the target.
 
 ```ts
 // Query params — selects only when ?filter=active is present
-`routeMapping`({ value: '/:id', queryParams: 'filter=active' })
+routeMapping({ value: '/:id', queryParams: 'filter=active' })
 ```
 
 ```ts
 // Matrix params — selects only when ;color=red is in any path segment
-`routeMapping`({ value: '/:id', matrixParams: 'color=red' })
+routeMapping({ value: '/:id', matrixParams: 'color=red' })
 ```

@@ -122,26 +122,26 @@ function createCountedDecorator(options: CountedOptions = {}) {
  * @param attributesOrContext - Overload 1: Optional attributes for the counter. Overload 3: The decorator context.
  * @param maybeContext - Overload 3: The decorator context.
  * @returns A method decorator or the decorated method itself.
- * @throws {TypeError} If applied to anything other than a method.
+ * @throws If applied to anything other than a method.
  * @example
  * ```typescript
  * class MyService {
- *   `counted`()
+ *   @counted()
  *   myMethod() {
  *     // Increments 'myMethod.count'
  *   }
  *
- *   `counted`('custom.event.count')
+ *   @counted('custom.event.count')
  *   anotherMethod() {
  *     // Increments 'custom.event.count'
  *   }
  *
- *   `counted`({ name: 'api.calls', attributes: { endpoint: '/users' } })
+ *   @counted({ name: 'api.calls', attributes: { endpoint: '/users' } })
  *   apiCall() {
  *     // Increments 'api.calls' with 'endpoint: /users'
  *   }
  *
- *   `counted`('feature.usage', { feature: 'dashboard' })
+ *   @counted('feature.usage', { feature: 'dashboard' })
  *   dashboardView() {
  *     // Increments 'feature.usage' with 'feature: dashboard'
  *   }

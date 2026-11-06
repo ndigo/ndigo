@@ -1,5 +1,6 @@
 /**
  */
+
 import { Route } from '@ndigo/router';
 import { AbstractRouteCondition, RouteCondition } from './route-condition';
 
@@ -29,7 +30,7 @@ export type AccessLevel = 'public' | 'private';
  * public routes match regardless.
  *
  * This replaces the previous TODO comment in `route-mapping-info.ts`:
- * > TODO Create a condition for public vs. private routes
+ * TODO Create a condition for public vs. private routes
  */
 export class AccessControlCondition
     extends AbstractRouteCondition<AccessControlCondition>

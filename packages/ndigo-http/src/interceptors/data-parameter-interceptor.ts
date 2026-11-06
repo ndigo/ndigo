@@ -15,7 +15,6 @@ export type DataInit = BodyInit; // | JSONObject;
 export type DataParameterInit = HTTPInit & { data?: DataInit };
 
 /**
- * @todo This interceptor could be more robust, e.g. it could do additional data processing,
  * * set a consistent Content-Type header, and/or read an existing Content-Type header
  * * to affect processing.
  */
@@ -51,7 +50,6 @@ const getEntries = (data: DataInit) => entriesIterator(isString(data) ? QueryStr
     isURLSearchParams = is(URLSearchParams),
     isReadableStream = is(ReadableStream),
     /**
-     * @todo parseData() could be turned into an ifElse() where the identity() results are joined within an anyPass()...
      * ifElse( anyPass( [ isBlob, isBufferSource, ... ] ), identity, JSON.stringify );
      * I don't know if there are performance implications to either approach but I thought this approach laid out the logic more clearly.
      *
@@ -72,9 +70,9 @@ const getEntries = (data: DataInit) => entriesIterator(isString(data) ? QueryStr
 export class DataParameterInterceptor implements InitializationAwareHTTPInterceptor<DataParameterInit> {
     /**
      * module:http.DataParameterInterceptor#preInit
-     * @param {URL} url The requested URL.
-     * @param {module:http.DataParameterInit} settings The HTTP request settings, including the `data` setting.
-     * @returns {boolean} Whether or not the http request should continue execution.
+     * @param url - The requested URL.
+     * @param settings - The HTTP request settings, including the `data` setting.
+     * @returns Whether or not the http request should continue execution.
      */
     preInit(url: URL, settings: DataParameterInit): boolean {
         if ('data' in settings) {

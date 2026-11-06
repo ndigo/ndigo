@@ -148,7 +148,8 @@ On duplicate names or after `close()`.
 > **setApplicationContext**(`context`): `void`
 
 Container injection (`ApplicationContextAware`): the context is used
-to resolve the `lockDriver` bean for [\* locked](../interfaces/ScheduledTaskDefinition.md) tasks when no driver was passed to the constructor (AD-73).
+to resolve the `lockDriver` bean for locked tasks when no driver was
+passed to the constructor (AD-73).
 
 #### Parameters
 

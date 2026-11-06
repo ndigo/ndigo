@@ -13,25 +13,25 @@ function will check up the inheritance chain, if any.
 
 **ctor**
 
-A constructor
+A constructor.
 
 ## Param
 
 **val**
 
-The value to test
+The value to test.
 
 ## Example
 
 ```ts
-is( Object, {} ); //=> true
-is( Number, 1 ); //=> true
-is( Object, 1 ); //=> false
-is( String, 's' ); //=> true
-is( String, new String('') ); //=> true
-is( Object, new String('') ); //=> true
-is( Object, 's' ); //=> false
-is( Number, {} ); //=> false
+is(Object, {}); //=> true
+is(Number, 1); //=> true
+is(Object, 1); //=> false
+is(String, 's'); //=> true
+is(String, new String('')); //=> true
+is(Object, new String('')); //=> true
+is(Object, 's'); //=> false
+is(Number, {}); //=> false
 ```
 
 ## Call Signature

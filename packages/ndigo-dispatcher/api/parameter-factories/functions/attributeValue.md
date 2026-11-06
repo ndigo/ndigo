@@ -27,7 +27,7 @@ Factory function: Create a route attribute parameter extractor.
 ## Example
 
 ```ts
-`parameters`({
+parameters({
   user: attributeValue('user')
 })
 ```

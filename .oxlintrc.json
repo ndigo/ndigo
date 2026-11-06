@@ -22,7 +22,10 @@
   ],
   "jsPlugins": [
     "./packages/ndigo-oxlint-plugin/lib/index.js",
-    { "name": "internal", "specifier": "./src/oxlint/plugin.ts" }
+    {
+      "name": "internal",
+      "specifier": "./src/oxlint/plugin.ts"
+    }
   ],
   "rules": {
     "no-unused-vars": "off",
@@ -123,8 +126,10 @@
   },
   "overrides": [
     {
-      "files": ["src/oxlint/**/*.ts"],
-      "rules": { "internal/tsdoc-syntax": "error" }
+      "files": ["packages/*/src/**/*.ts"],
+      "rules": {
+        "internal/tsdoc-syntax": "error"
+      }
     },
     {
       "files": ["**/*.spec.ts", "**/*.test.ts", "**/test/**/*.ts", "**/test/**/*.js", "**/test/**/*.mjs"],

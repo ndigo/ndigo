@@ -1,8 +1,5 @@
 /**
  * `ndigo build` — front the application's build script.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { createScriptFrontCommand } from './_script-fronts.js';
 

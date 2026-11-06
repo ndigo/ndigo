@@ -8,10 +8,6 @@
 
 Options for [InProcessOutboxStore](../classes/InProcessOutboxStore.md).
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### clock?

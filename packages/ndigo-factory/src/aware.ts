@@ -5,7 +5,7 @@ import { like } from '@ndigo/util/types';
 
 /**
  * A generic constructor type.
- * @template T The type of the instance created by the constructor.
+ * @typeParam T - The type of the instance created by the constructor.
  */
 // oxlint-disable-next-line typescript/no-explicit-any -- TS2545 requires mixin superclass ctors to be exactly `...args: any[]`; no erasable alternative.
 type Constructable<T = {}> = new (...args: any[]) => T;
@@ -26,7 +26,6 @@ export interface Aware {
 
 /**
  * Interface to be implemented by values that want to be aware of their value name in a factory.
- * @extends Aware
  */
 export interface NameAware extends Aware {
     /**
@@ -35,7 +34,7 @@ export interface NameAware extends Aware {
     readonly name: string;
     /**
      * Sets the name of the value in the factory.
-     * @param name The name to set.
+     * @param name - The name to set.
      */
     setName(name: string): void;
 }
@@ -59,14 +58,12 @@ export const AsAware = <T extends Constructable>(superclass: T): Constructable<A
 /**
  * @see module:factory.AsNameAware
 
- * @returns {module:factory.Constructable<module:factory.NameAware>}
  */
 export const AsNameAware = <T extends Constructable>(superclass: T): Constructable<NameAware> & T =>
     class extends AsAware(superclass) implements NameAware {
         readonly name!: string;
 
         /**
-         * @param {string} name
          */
         setName(name: string): void {
             Reflect.defineProperty(this, 'name', {
@@ -87,7 +84,7 @@ export const AsNameAware = <T extends Constructable>(superclass: T): Constructab
 
 /**
  * Determines whether or not the `value` provided is {@link Aware}.
- * @param value The value to be tested.
+ * @param value - The value to be tested.
  * @returns Whether or not the `value` provided is {@link Aware}.
  */
 export const likeAware = (value: unknown): value is Aware => {
@@ -95,20 +92,19 @@ export const likeAware = (value: unknown): value is Aware => {
 };
 
 /**
- * @param {Function} predicate
- * @returns {Function} A function that will test whether a `value` is both {@link Aware|Aware} and matches the the given `predicate`.
+ * @returns A function that will test whether a `value` is both {@link Aware|Aware} and matches the the given `predicate`.
  * @example
- * const
- *  isYellow = ( value ) => 'color' in value && value.color === 'yellow',
- *  likeAwareAndYellow = likeAwareAnd( isYellow );
- * likeAwareAndYellow( { color: 'yellow' } ); // false
- * likeAwareAndYellow( { '@@aware': true, color: 'yellow' } ); // true
+ * ```ts
+ * const isYellow = (value: unknown) => 'color' in value && value.color === 'yellow';
+ * const likeAwareAndYellow = likeAwareAnd(isYellow);
+ * likeAwareAndYellow({ color: 'yellow' }); // false
+ * likeAwareAndYellow({ '@@aware': true, color: 'yellow' }); // true
+ * ```
  */
 export const likeAwareAnd = ((predicate: (value: unknown) => boolean) => (value: unknown) =>
     likeAware(value) && predicate(value)) as (predicate: (value: unknown) => boolean) => (value: unknown) => boolean;
 
 /**
- * @param {*} value
- * @returns {boolean} Whether or not the `value` is {@link NameAware|NameAware}.
+ * @returns Whether or not the `value` is {@link NameAware|NameAware}.
  */
 export const likeNameAware = likeAwareAnd(like({ setName: Function })) as (value: unknown) => value is NameAware;

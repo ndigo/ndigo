@@ -6,6 +6,8 @@
 
 # index
 
+Browser platform integration: dispatcher, router, and web components.
+
 ## Type Aliases
 
 - [ArgumentValueConversionContext](type-aliases/ArgumentValueConversionContext.md)

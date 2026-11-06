@@ -13,17 +13,17 @@ const normalizePath = (path: string): string => {
 /**
  * Normalize a route partition prefix.
  *
- * @param {string} prefix The partition prefix to normalize.
- * @returns {string} A normalized partition prefix.
+ * @param prefix - The partition prefix to normalize.
+ * @returns A normalized partition prefix.
  */
 export const normalizePartitionPrefix = (prefix: string): string => normalizePath(prefix);
 
 /**
  * Determine whether `path` belongs to `prefix` partition.
  *
- * @param {string} path The full shell route path.
- * @param {string} prefix The feature partition prefix.
- * @returns {boolean} Whether `path` belongs to `prefix`.
+ * @param path - The full shell route path.
+ * @param prefix - The feature partition prefix.
+ * @returns Whether `path` belongs to `prefix`.
  */
 export const matchesPartitionPath = (path: string, prefix: string): boolean => {
     const normalizedPath = normalizePath(path);
@@ -39,9 +39,9 @@ export const matchesPartitionPath = (path: string, prefix: string): boolean => {
 /**
  * Strip a shell partition prefix from a full route path to produce feature-local route.
  *
- * @param {string} path The full shell route path.
- * @param {string} prefix The feature partition prefix.
- * @returns {string} The feature-local route (always rooted with `/`).
+ * @param path - The full shell route path.
+ * @param prefix - The feature partition prefix.
+ * @returns The feature-local route (always rooted with `/`).
  */
 export const stripPartitionPrefix = (path: string, prefix: string): string => {
     const normalizedPath = normalizePath(path);
@@ -63,9 +63,9 @@ export const stripPartitionPrefix = (path: string, prefix: string): string => {
 /**
  * Restore a shell partition prefix for a feature-local route path.
  *
- * @param {string} path The feature-local route path.
- * @param {string} prefix The feature partition prefix.
- * @returns {string} The full shell route path.
+ * @param path - The feature-local route path.
+ * @param prefix - The feature partition prefix.
+ * @returns The full shell route path.
  */
 export const restorePartitionPrefix = (path: string, prefix: string): string => {
     const normalizedPath = normalizePath(path);

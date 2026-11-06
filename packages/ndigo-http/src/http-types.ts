@@ -177,54 +177,49 @@ export interface HTTPAware extends Aware {
 
 /**
  * HTTP request Methods
- * @typedef {string} module:http.HTTPMethod
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods}
  */
 
 /**
- * @typedef {RequestInit} module:http.HTTPInit
- * @property {module:http.HTTPMethod} [method] The HTTP request method
  */
 
 /**
  * Interface that allows for the execution of custom behavior after an HTTP request is completed. It executes whether the request was successful or not.
  * @example
+ * ```ts
  * class LogInterceptor implements CompletionAwareHTTPInterceptor {
- *  postComplete( request, response ){
- *      console.log( \`Completed request \${ request.url }\` );
- *  }
+ *   postComplete(request: HTTPRequest, response: Response) {
+ *     console.log(`Completed request ${request.url}`);
+ *   }
  * }
  *
- * const http = new HTTP( [ new LogInterceptor() ] );
- *
- * await const response = http.request( 'https://www.chase.com/' );
- * //=> "Completed request https://www.chase.com/"
+ * const http = new HTTP([new LogInterceptor()]);
+ * const response = await http.request('https://www.chase.com/');
+ * ```
  */
 
 /**
- * @param {Request} request The HTTP request
- * @param {Response} response The HTTP response
+ * @param request - The HTTP request
+ * @param response - The HTTP response
  */
 
 /**
  * Interface that allows for the execution of custom behavior after an HTTP request fails. If \`postError\` returns a \`Response\`, it will be the return value of the request.
  * @example
+ * ```ts
  * class RetryInterceptor implements ErrorAwareHTTPInterceptor {
- *  postError( error, request, http ){
- *      return http.request( request.url );
- *  }
+ *   postError(error: unknown, request: HTTPRequest, http: HTTP) {
+ *     return http.request(request.url);
+ *   }
  * }
  *
- * const http = new HTTP( [ new RetryInterceptor() ] );
- *
- * await const response = http.request( 'https://www.chase123.com/' );
+ * const http = new HTTP([new RetryInterceptor()]);
+ * const response = await http.request('https://www.chase123.com/');
+ * ```
  */
 
 /**
- * @param {Error} error
- * @param {Request} request
- * @param {module:http.HTTP} http
- * @returns {Promise<external:Response | external:undefined>} An optional response
+ * @returns An optional response
  */
 
 /**
@@ -232,9 +227,7 @@ export interface HTTPAware extends Aware {
  */
 
 /**
- * @param {URL} url
- * @param {module:http.HTTPInit} settings
- * @returns {boolean}
+ * @returns
  */
 
 /**
@@ -242,9 +235,7 @@ export interface HTTPAware extends Aware {
  */
 
 /**
- * @param {Request} request
- * @param {module:http.HTTP} http
- * @returns {Promise<external:Request|void>}
+ * @returns
  */
 
 /**
@@ -252,9 +243,7 @@ export interface HTTPAware extends Aware {
  */
 
 /**
- * @param {Response} response
- * @param {module:http.HTTPInit} settings
- * @returns {Promise<void>}
+ * @returns
  */
 
 /**
@@ -264,7 +253,6 @@ export interface HTTPAware extends Aware {
  * 2. \`preRequest\`
  * 3. \`postResponse\` or \`postError\`
  * 5. \`postComplete\`
- * @typedef {module:http.CompletionAwareHTTPInterceptor|module:http.ErrorAwareHTTPInterceptor|module:http.InitializationAwareHTTPInterceptor|module:http.RequestAwareHTTPInterceptor|external:ResponseAwareHTTPInterceptor} module:http.HTTPInterceptor
  * @see {@link CompletionAwareHTTPInterceptor}
  * @see {@link ErrorAwareHTTPInterceptor}
  * @see {@link InitializationAwareHTTPInterceptor}
@@ -276,5 +264,4 @@ export interface HTTPAware extends Aware {
  */
 
 /**
- * @param {module:http.HTTP} http
  */

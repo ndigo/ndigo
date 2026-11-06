@@ -6,6 +6,8 @@
 
 # string/encode-uri-component
 
+URI component encoding.
+
 ## References
 
 ### default

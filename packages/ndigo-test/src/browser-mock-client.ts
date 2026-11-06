@@ -8,8 +8,6 @@
  * as `viewTarget`, and dispatches routes through the real handler-mapping /
  * interceptor / view pipeline. The rendered output is captured for assertions,
  * with no real DOM container required (jsdom is sufficient).
- *
- * @since 1.0.0
  */
 
 import { MetadataConfigApplicationContext, ApplicationContext } from '@ndigo/context';

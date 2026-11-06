@@ -6,7 +6,7 @@
 
 # Class: MultiValueMap\<K, V\>
 
-Extension of the [ap\|Map](#) interface that stores multiple values under a single key.
+Extension of the `Map` interface that stores multiple values under a single key.
 
 ## Extends
 

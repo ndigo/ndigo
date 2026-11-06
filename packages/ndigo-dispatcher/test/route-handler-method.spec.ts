@@ -1,5 +1,3 @@
-/**
- */
 import { describe, test, expect } from 'vitest';
 import { RouteHandlerMethod } from '../src/route-handler-method';
 import { Route } from '@ndigo/router';

@@ -6,6 +6,8 @@
 
 # index
 
+Common utilities: environment, errors, timing, crypto, and type guards.
+
 ## Functions
 
 - [like](functions/like.md)

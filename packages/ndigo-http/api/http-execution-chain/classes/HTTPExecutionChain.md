@@ -81,6 +81,24 @@ The interceptors registered with this execution chain.
 
 ## Methods
 
+### \_checkInterceptorType()
+
+> **\_checkInterceptorType**(`interceptor`): `void`
+
+#### Parameters
+
+##### interceptor
+
+[`HTTPInterceptor`](../../http-types/type-aliases/HTTPInterceptor.md)
+
+The interceptor to check.
+
+#### Returns
+
+`void`
+
+***
+
 ### addInterceptor()
 
 > **addInterceptor**(`interceptor`): `void`

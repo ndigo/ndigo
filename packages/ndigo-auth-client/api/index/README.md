@@ -6,6 +6,8 @@
 
 # index
 
+Client-side authentication: OIDC adapter and auth header interceptor.
+
 ## Classes
 
 - [AnonymousPrincipal](classes/AnonymousPrincipal.md)

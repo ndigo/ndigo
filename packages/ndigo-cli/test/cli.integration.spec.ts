@@ -4,9 +4,6 @@
  * usage errors, and the `serve` end-to-end signal-relay drain. Requires
  * `build:lib` (the nx lane builds it; `pnpm --filter @ndigo/cli test` in
  * isolation needs a prior build).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, expect, beforeAll } from 'vitest';

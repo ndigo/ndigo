@@ -39,7 +39,7 @@ Extractor options (`required`).
 ## Example
 
 ```ts
-`parameters`({
+parameters({
   avatar: fileValue(),
   profile: fileValue('avatar_url'),
   cv: fileValue('cv', { required: true })

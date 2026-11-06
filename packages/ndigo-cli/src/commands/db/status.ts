@@ -5,9 +5,6 @@
  * Runs the app's declared `scripts.db:status` under the one-shot process
  * lifecycle; the app script prints `DrizzleMigrator.status()` rows — the
  * journal readback (`_ndigo_migrations`) is the app's, not the CLI's.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runAppOnce } from '../../helpers/app-scripts.js';

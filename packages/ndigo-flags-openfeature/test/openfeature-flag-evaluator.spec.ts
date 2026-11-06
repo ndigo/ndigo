@@ -2,9 +2,6 @@
  * Bridge spec (AD-87): the `FlagEvaluator` mapping over an OpenFeature
  * client — typed dispatch, reason/error translation, context flattening,
  * domain clients, and the never-throw boundary.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { afterEach, describe, expect, it } from 'vitest';
 import { OpenFeature } from '@openfeature/server-sdk';

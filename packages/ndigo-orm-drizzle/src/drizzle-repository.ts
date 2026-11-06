@@ -8,9 +8,8 @@ import { DrizzleEntityManager } from './drizzle-entity-manager';
 /**
  * Async repository over a {@link DrizzleEntityManager} for one entity type.
  *
- * @template T - The entity type.
- * @template ID - The entity's primary identifier type.
- * @since 1.0.0
+ * @typeParam T - The entity type.
+ * @typeParam ID - The entity's primary identifier type.
  */
 export class DrizzleRepository<T extends object, ID> implements AsyncRepository<T, ID> {
     readonly #entityClass: Constructable<T>;

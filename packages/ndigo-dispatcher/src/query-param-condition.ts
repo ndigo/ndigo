@@ -1,5 +1,6 @@
 /**
  */
+
 import { Route } from '@ndigo/router';
 import { AbstractNameValueExpression, AbstractRouteCondition } from './route-condition';
 const { defineProperty } = Reflect;
@@ -10,7 +11,7 @@ const { defineProperty } = Reflect;
  * Query parameters are the `?key=value` pairs carried in `Route.data`.
  * Repeated keys aggregate into arrays, and a `key=value` expression matches
  * when any element equals `value` (`?q=a&q=b` matches `q=a` and `q=b`).
- * For path-segment matrix parameters (`/path;key=value`), see {@link matrix-param-condition.MatrixParamExpression | MatrixParamExpression}.
+ * For path-segment matrix parameters (`/path;key=value`), see {@link "matrix-param-condition".MatrixParamExpression | MatrixParamExpression}.
  */
 export class QueryParamExpression extends AbstractNameValueExpression<string> {
     /**

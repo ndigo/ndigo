@@ -4,7 +4,6 @@ import { AbstractRouter, RouterCallback } from '@ndigo/router';
 
 /**
  * A router implementation for Node.js that resolves routes based on the file system.
- * @since 1.0.0
  */
 export class FileSystemRouter extends AbstractRouter {
     #route: string = '/';

@@ -28,7 +28,7 @@ Omit the name to bind the entire parsed body object (`bodyValue()`).
 ## Example
 
 ```ts
-`parameters`({
+parameters({
   user: bodyValue('user'),
   payload: bodyValue()
 })

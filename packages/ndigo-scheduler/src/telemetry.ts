@@ -1,4 +1,5 @@
 /**
+ * Telemetry integration for scheduled tasks.
  */
 import { SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
 import { ScheduledTaskDefinition } from './task-scheduler';

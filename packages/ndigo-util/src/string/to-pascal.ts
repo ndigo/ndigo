@@ -1,4 +1,5 @@
 /**
+ * Converts strings to PascalCase.
  */
 import toCamel from './to-camel.js';
 
@@ -6,12 +7,15 @@ const // Lower case letters at the beginning of a string
     lowerCaseLetters = /^[a-z]/,
     /**
      * Returns the pascal case version of a string.
-     * @param {string} value
-     * @returns {string}
-     * @category String
+     *
+     * @param value - The input string.
+     * @returns The PascalCase version.
+     *
      * @example
-     * toPascal( 'lorem-ipsum-dolor' );
-     * //=> "LoremIpsumDolor"
+     * ```ts
+     * toPascal('lorem-ipsum-dolor'); //=> "LoremIpsumDolor"
+     * ```
+     *
      * @see {@link http://wiki.c2.com/?PascalCase}
      */
     toPascal: (value: string) => string = (val: string): string => {

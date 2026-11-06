@@ -79,7 +79,7 @@ export class ServerSentEventView implements ProducerView {
         this.destroyed = true;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async renderTo(_model: unknown, route: Route): Promise<RenderResult> {
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
 

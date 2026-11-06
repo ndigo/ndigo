@@ -1,5 +1,6 @@
 /**
  */
+
 import { ApplicationContext } from '@ndigo/context';
 import { Constructable } from '@ndigo/core';
 import { AbstractThemeResolver, FixedThemeResolver, ThemeResolver } from '../theme-resolver';
@@ -15,9 +16,6 @@ export interface ThemeResolverStrategy {
     themeResolver: ThemeResolver;
     initThemeResolver(context: ApplicationContext): void;
 }
-
-/**
- */
 
 const THEME_RESOLVER = 'themeResolver';
 

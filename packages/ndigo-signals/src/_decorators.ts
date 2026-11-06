@@ -23,7 +23,7 @@ const pendingEffects = new WeakMap<object, Array<() => void>>();
 // most once. See installLifecycleMethod.
 const cleanupMap = new WeakMap<object, () => void>();
 
-/** The reserved teardown method names @reactive installs. */
+/** The reserved teardown method names that \@reactive installs. */
 type LifecycleMethod = 'destroy' | 'dispose';
 
 // Explains the two ways `@signal`/`@effect` metadata can stay pending: the
@@ -217,14 +217,12 @@ export function effect(target: (...args: unknown[]) => void, context: ClassMetho
  * declares `@signal`/`@effect` members:
  *
  * ```ts
- * @reactive
  * class Counter {
  *     @signal count = 0;
  *     @computed get doubled() { return this.count * 2; }
  *     @effect log() { console.log(this.count); }
  * }
  *
- * @reactive
  * class NamedCounter extends Counter {
  *     @signal label = 'unnamed';
  * }

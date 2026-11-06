@@ -18,10 +18,6 @@ component is `DOWN`, `200 OK` otherwise (`UP` or `UNKNOWN`) — so
 orchestrators (Kubernetes probes, load balancers) can route on the status
 code alone, per the actuator convention.
 
-## Since
-
-1.0.0
-
 ## Extends
 
 - `ApplicationContextAware` & `Null`\<`this`\>

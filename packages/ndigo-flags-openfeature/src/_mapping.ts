@@ -4,9 +4,6 @@
  * `FlagEvaluation` translation. Deliberately structural — the details shape
  * is declared here instead of importing either OpenFeature SDK, so the
  * server and web entries can both flow through one mapper.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { FlagErrorCode, FlagEvaluation, FlagEvaluationReason, FlagValue } from '@ndigo/flags';
 

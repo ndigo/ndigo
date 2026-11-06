@@ -68,6 +68,8 @@ post/complete hooks for whichever navigation actually ran.
 
 [`RouterInterceptor`](../../router-interceptor/interfaces/RouterInterceptor.md)
 
+The interceptor to add.
+
 #### Returns
 
 `void`
@@ -83,6 +85,8 @@ post/complete hooks for whichever navigation actually ran.
 ##### interceptors
 
 [`RouterInterceptor`](../../router-interceptor/interfaces/RouterInterceptor.md)[]
+
+The interceptors to add.
 
 #### Returns
 
@@ -100,6 +104,8 @@ post/complete hooks for whichever navigation actually ran.
 
 [`Route`](../../route/interfaces/Route.md)
 
+The route to process.
+
 #### Returns
 
 `Promise`\<`void`\>
@@ -116,6 +122,8 @@ post/complete hooks for whichever navigation actually ran.
 
 [`Route`](../../route/interfaces/Route.md)
 
+The route to process.
+
 #### Returns
 
 `Promise`\<`void`\>
@@ -131,6 +139,8 @@ post/complete hooks for whichever navigation actually ran.
 ##### route
 
 [`Route`](../../route/interfaces/Route.md)
+
+The route to process.
 
 #### Returns
 

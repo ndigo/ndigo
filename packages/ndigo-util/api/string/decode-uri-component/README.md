@@ -6,6 +6,8 @@
 
 # string/decode-uri-component
 
-## String
+URI component decoding.
+
+## Functions
 
 - [default](functions/default.md)

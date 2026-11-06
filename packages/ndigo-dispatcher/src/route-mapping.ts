@@ -1,5 +1,6 @@
 /**
  */
+
 import '@tsmetadata/polyfill';
 import { FrameworkError, getSymbolMetadata } from '@ndigo/core';
 import type { HTTPMethod } from '@ndigo/http';
@@ -96,12 +97,16 @@ export const hasRouteMapping = (target: unknown, propertyKey?: string | symbol):
  * @returns A decorator function for the target.
  *
  * @example
+ * ```ts
  * // Query params — selects only when ?filter=active is present
- * \`routeMapping`({ value: '/:id', queryParams: 'filter=active' })
+ * routeMapping({ value: '/:id', queryParams: 'filter=active' })
+ * ```
  *
  * @example
+ * ```ts
  * // Matrix params — selects only when ;color=red is in any path segment
- * \`routeMapping`({ value: '/:id', matrixParams: 'color=red' })
+ * routeMapping({ value: '/:id', matrixParams: 'color=red' })
+ * ```
  */
 export function routeMapping(route: string | RouteMappingConfiguration = defaultMapping) {
     const conf = toRouteMappingConfiguration(route);

@@ -10,10 +10,6 @@ A concrete router implementation that extends `AbstractRouter` to manage
 and navigate through partitioned routes.
 It supports mounting feature-specific routes at defined prefixes.
 
-## Since
-
-1.0.0
-
 ## Extends
 
 - [`AbstractRouter`](../../router/classes/AbstractRouter.md)
@@ -30,10 +26,6 @@ Creates an instance of `PartitionRouter`.
 
 `PartitionRouter`
 
-#### Since
-
-1.0.0
-
 #### Overrides
 
 [`AbstractRouter`](../../router/classes/AbstractRouter.md).[`constructor`](../../router/classes/AbstractRouter.md#constructor)
@@ -47,10 +39,6 @@ Creates an instance of `PartitionRouter`.
 > **get** **route**(): `string`
 
 Gets the current full route path managed by the `PartitionRouter`.
-
-##### Since
-
-1.0.0
 
 ##### Returns
 
@@ -82,10 +70,6 @@ The `RouterInterceptor` to add.
 #### Returns
 
 `void`
-
-#### Since
-
-1.0.0
 
 #### Inherited from
 
@@ -142,10 +126,6 @@ The current `PartitionRouter` instance for chaining.
 
 When a mount already exists at the normalized prefix.
 
-#### Since
-
-1.0.0
-
 ***
 
 ### navigate()
@@ -169,10 +149,6 @@ The path to navigate to.
 
 `true` if a mounted route handled the navigation, `false` otherwise.
 
-#### Since
-
-1.0.0
-
 ***
 
 ### refresh()
@@ -185,10 +161,6 @@ This can be used to re-evaluate all mounted routes and their callbacks.
 #### Returns
 
 `void`
-
-#### Since
-
-1.0.0
 
 #### Overrides
 
@@ -215,10 +187,6 @@ The URL prefix to unmount.
 `boolean`
 
 `true` if a mount was removed, `false` if none matched.
-
-#### Since
-
-1.0.0
 
 ***
 
@@ -256,10 +224,6 @@ An optional array of patterns to exclude from matching.
 #### Throws
 
 If `interceptor` is not provided when `interceptorOrPatterns` defines patterns.
-
-#### Since
-
-1.0.0
 
 #### Inherited from
 

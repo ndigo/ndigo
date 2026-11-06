@@ -1,5 +1,6 @@
 /**
  */
+
 import { like } from '@ndigo/util/types';
 import { ModelAndView } from './model-and-view';
 import { Controller } from './controller';
@@ -51,10 +52,6 @@ const { getPrototypeOf } = Reflect,
     { assign, keys } = Object,
     isNotArray = (value: unknown) => !Array.isArray(value);
 
-/**
- * @param {*} value The value to be tested
- * @returns {boolean} Whether or not the `value` is a {@link Controller|Controller}
- */
 export const likeController = like({ handleRoute: Function }) as (value: unknown) => value is Controller;
 
 export abstract class AbstractHandlerMethodAdapter

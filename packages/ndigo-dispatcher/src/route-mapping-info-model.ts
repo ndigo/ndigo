@@ -1,5 +1,6 @@
 /**
  */
+
 import { Route } from '@ndigo/router';
 import type { HTTPMethod } from '@ndigo/http';
 import { RouteCondition, RouteConditionHolder } from './route-condition';

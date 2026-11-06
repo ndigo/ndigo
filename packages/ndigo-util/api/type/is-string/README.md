@@ -6,6 +6,8 @@
 
 # type/is-string
 
+Type guard for strings.
+
 ## References
 
 ### default

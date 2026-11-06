@@ -155,27 +155,19 @@ The optional view target.
 
 > **renderTo**(`model`, `_route`): `Promise`\<[`RenderResult`](../../producer-view/interfaces/RenderResult.md)\>
 
-Renders the view to a complete response document.
-
 #### Parameters
 
 ##### model
 
 `unknown`
 
-The data model supplied to the view.
-
 ##### \_route
 
 [`Route`](#)
 
-The current route.
-
 #### Returns
 
 `Promise`\<[`RenderResult`](../../producer-view/interfaces/RenderResult.md)\>
-
-The response document.
 
 #### Inherited from
 

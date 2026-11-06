@@ -1,17 +1,15 @@
 /**
+ * HTTP client with interceptor support and convenience verb helpers.
  */
 /**
- * @external fetch
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch}
  */
 
 /**
- * @external Body
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Body}
  */
 
 /**
- * @external BodyInit
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Response/Response#Parameters}
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Blob}
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/BufferSource}
@@ -22,36 +20,29 @@
  */
 
 /**
- * @external Headers
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Headers}
  */
 
 /**
- * @external HeadersInit
  */
 
 /**
- * @external Request
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Request}
  */
 
 /**
- * @external RequestInfo
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#Parameters}
  */
 
 /**
- * @external RequestInit
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Request/Request#Parameters}
  */
 
 /**
- * @external Response
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Response}
  */
 
 /**
- * @external ResponseInit
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Response/Response#Parameters}
  */
 

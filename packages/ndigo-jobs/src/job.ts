@@ -13,8 +13,6 @@ export type JobId = string;
  * Either `delayMs` or `runAt` may be given (not both): the two spellings of
  * "do not run before". `payload` must be JSON-serializable — drivers fail
  * loud at enqueue on functions, symbols, bigints, and circular structures.
- *
- * @since 1.0.0
  */
 export interface JobRequest {
     /** Job type, matched against registered `@jobHandler` types. */
@@ -34,8 +32,6 @@ export interface JobRequest {
 /**
  * A normalized request as stored by a driver: `runAt` and `maxAttempts`
  * are resolved, and `delayMs` is gone.
- *
- * @since 1.0.0
  */
 export interface ResolvedJobRequest {
     type: string;
@@ -47,9 +43,7 @@ export interface ResolvedJobRequest {
 
 /**
  * A stored job as returned by a driver — the record handed to
- * {@link job-driver.JobDriver#claim | JobDriver.claim} callers and into handler execution.
- *
- * @since 1.0.0
+ * `JobDriver.claim` callers and into handler execution.
  */
 export interface JobRecord {
     id: JobId;
@@ -68,9 +62,7 @@ export interface JobRecord {
 }
 
 /**
- * Claim window for {@link job-driver.JobDriver#claim | JobDriver.claim}.
- *
- * @since 1.0.0
+ * Claim window for `JobDriver.claim`.
  */
 export interface ClaimOptions {
     /** Maximum number of jobs to claim in one call. */

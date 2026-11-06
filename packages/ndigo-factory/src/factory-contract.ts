@@ -16,7 +16,7 @@ export interface Factory {
      * Returns the value registered under `name`: constructor-registered
      * values are instantiated, while values registered as instances (or
      * primitives) are returned as-is, preserving identity (CF-12).
-     * @param name The name of the value.
+     * @param name - The name of the value.
      * @returns The instance (or registered value) specified by the `name`.
      */
     getInstance<T = unknown>(name: string): T;
@@ -32,7 +32,7 @@ export interface HierarchicalFactory extends Factory {
     readonly parent: Factory | null;
     /**
      * Determines whether this factory contains a value with the given name.
-     * @param name The name of the value.
+     * @param name - The name of the value.
      * @returns `true` if this factory contains the value, `false` otherwise.
      */
     hasOwnValue(name: string): boolean;
@@ -44,12 +44,12 @@ export interface HierarchicalFactory extends Factory {
 export interface ConfigurableFactory extends HierarchicalFactory, Registry {
     /**
      * Adds an entry processor to the factory.
-     * @param processor The entry processor to add.
+     * @param processor - The entry processor to add.
      */
     addProcessor(processor: EntryProcessor): void;
     /**
      * Sets the parent factory.
-     * @param parent The parent factory.
+     * @param parent - The parent factory.
      */
     setParent(parent: Factory | null): void;
 }
@@ -60,7 +60,7 @@ export interface ConfigurableFactory extends HierarchicalFactory, Registry {
 export interface FactoryAware extends Aware {
     /**
      * Setter that supplies the owning factory to the instance.
-     * @param factory The factory that created this instance.
+     * @param factory - The factory that created this instance.
      */
     setFactory(factory: Factory): void;
 }
@@ -69,8 +69,8 @@ const { defineProperty } = Reflect;
 
 /**
  * A mixin that adds {@link FactoryAware} capabilities to a class.
- * @template T The type of the constructor.
- * @param superclass The superclass to extend.
+ * @typeParam T - The type of the constructor.
+ * @param superclass - The superclass to extend.
  * @returns A new class that extends the superclass and implements {@link FactoryAware}.
  */
 export const AsFactoryAware = <T extends Constructable>(superclass: T): Constructable<FactoryAware> & T =>
@@ -82,7 +82,7 @@ export const AsFactoryAware = <T extends Constructable>(superclass: T): Construc
 
         /**
          * Sets the factory that created this instance.
-         * @param factory The factory instance.
+         * @param factory - The factory instance.
          */
         setFactory(factory: Factory): void {
             defineProperty(this, 'factory', {
@@ -95,14 +95,14 @@ export const AsFactoryAware = <T extends Constructable>(superclass: T): Construc
 
 /**
  * Determines whether or not the `value` provided is a {@link Factory}.
- * @param value The value to be tested.
+ * @param value - The value to be tested.
  * @returns Whether or not the `value` provided is a {@link Factory}.
  */
 export const likeFactory = (value: unknown): value is Factory => like({ getInstance: Function })(value);
 
 /**
  * Determines whether or not the `value` provided is {@link FactoryAware}.
- * @param value The value to be tested.
+ * @param value - The value to be tested.
  * @returns Whether or not the `value` provided is {@link FactoryAware}.
  */
 export const likeFactoryAware = (value: unknown): value is FactoryAware =>
@@ -112,7 +112,7 @@ const _likeHierarchicalShape = like({ parent: true, hasOwnValue: Function });
 
 /**
  * Determines whether or not the `value` provided is {@link HierarchicalFactory}.
- * @param value The value to be tested.
+ * @param value - The value to be tested.
  * @returns Whether or not the `value` provided is {@link HierarchicalFactory}.
  */
 export const likeHierarchicalFactory = (value: unknown) => likeFactory(value) && _likeHierarchicalShape(value);
@@ -121,7 +121,7 @@ const _likeConfigurableShape = like({ addProcessor: Function, setParent: Functio
 
 /**
  * Determines whether or not the `value` provided is {@link ConfigurableFactory}.
- * @param value The value to be tested.
+ * @param value - The value to be tested.
  * @returns Whether or not the `value` provided is {@link ConfigurableFactory}.
  */
 export const likeConfigurableFactory = (value: unknown) =>

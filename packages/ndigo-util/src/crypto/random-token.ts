@@ -1,4 +1,5 @@
 /**
+ * Generates cryptographically secure random tokens.
  */
 
 import { assertCryptoAvailable } from './_crypto.js';
@@ -61,14 +62,15 @@ function base64urlNoPadding(bytes: Uint8Array): string {
  * `Buffer#toString('base64url')`, so call sites can migrate without changing
  * token format.
  *
- * @category Crypto
- * @param bytes Number of random bytes to draw; must be a positive integer.
+ * @param bytes - Number of random bytes to draw; must be a positive integer.
  * @returns A base64url string with no padding.
- * @throws {RangeError} If `bytes` is not a positive integer.
- * @throws {Error} If the Web Cryptography API is unavailable.
+ * @throws If `bytes` is not a positive integer.
+ * @throws If the Web Cryptography API is unavailable.
+ *
  * @example
- * randomToken(32);
- * //=> 'U2xpoMkrQaQj2mZs6D4fJf9FmWP0nN1rQkzL7mBc3d8' (43 chars)
+ * ```ts
+ * randomToken(32); //=> 'U2xpoMkrQaQj2mZs6D4fJf9FmWP0nN1rQkzL7mBc3d8' (43 chars)
+ * ```
  */
 export function randomToken(bytes: number): string {
     if (!Number.isInteger(bytes) || bytes < 1) {

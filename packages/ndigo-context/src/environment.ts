@@ -52,7 +52,7 @@ export interface Environment extends PropertyResolver {
      * @param expression - The profile expression (`dev`, `!prod`, `a & b`,
      *   `(a | b) & c`) or a composed {@link ProfileTerm} (AD-34 D5).
      * @returns `true` when the expression matches.
-     * @throws {IllegalStateError} On malformed expressions.
+     * @throws On malformed expressions.
      */
     acceptsProfiles(expression: string | ProfileTerm): boolean;
     /**
@@ -141,7 +141,7 @@ export interface ConfigurableEnvironment extends Environment, EventEmitter {
  */
 
 /**
- * @param {module:context.Environment} environment The {@link Environment|Environment} to be set.
+ * @param environment - The {@link Environment|Environment} to be set.
  */
 
 const { defineProperty } = Reflect;

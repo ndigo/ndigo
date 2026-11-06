@@ -172,6 +172,8 @@ error and returns the value the error resolver chain produced, mirroring
 
 > **toString**(): `string`
 
+Returns a string representation of an object.
+
 #### Returns
 
 `string`

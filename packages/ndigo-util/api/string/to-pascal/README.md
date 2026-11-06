@@ -6,6 +6,8 @@
 
 # string/to-pascal
 
+Converts strings to PascalCase.
+
 ## References
 
 ### default

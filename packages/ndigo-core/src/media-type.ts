@@ -507,7 +507,7 @@ export default class MediaType extends Null implements Serializable, StringCompa
      * @param type - The top-level type (e.g. `'application'`).
      * @param subtype - The subtype or wildcard (default `'*'`).
      * @param parameters - Optional parameters.
-     * @throws {IllegalStateError} When the composed expression is empty.
+     * @throws When the composed expression is empty.
      */
     static registered(
         type: SupportedMediaType | string,
@@ -557,8 +557,6 @@ export default class MediaType extends Null implements Serializable, StringCompa
     }
 
     /**
-     * @param {module:core.MediaType} mediaType
-     * @returns {number}
      */
     compareTo(mediaType: MediaType): number {
         let comparison: number;
@@ -612,8 +610,6 @@ export default class MediaType extends Null implements Serializable, StringCompa
     }
 
     /**
-     * @param {module:core.MediaType} mediaType
-     * @returns {number}
      */
     compareToIgnoreCase(mediaType: MediaType): number {
         let comparison: number;
@@ -672,9 +668,7 @@ export default class MediaType extends Null implements Serializable, StringCompa
 
     /**
      * Creates a new blob of the media type with the given parameters
-     * @param {BufferSource | externsl:Blob | external:string } data
-     * @param {string} endings
-     * @returns {Blob} A new blob of the media type
+     * @returns A new blob of the media type
      */
     createBlob(data?: BlobPart[], endings: EndingType = 'transparent'): Blob {
         return new Blob(data, {
@@ -687,8 +681,7 @@ export default class MediaType extends Null implements Serializable, StringCompa
      * Indicates whether the `MediaType` includes the given `MediaType`.
      *
      * For example, `text/*` includes `text/plain` and `text/html`, `application/*+xml` includes `application/soap+xml`, etc.
-     * @param {module:core.MediaType} value
-     * @returns {boolean} If this `MediaType` includes the given `MediaType`.
+     * @returns If this `MediaType` includes the given `MediaType`.
      */
     includes(value?: MediaType): boolean {
         if (!value) {
@@ -741,7 +734,7 @@ export default class MediaType extends Null implements Serializable, StringCompa
      *
      * Currently returns 'utf-8' for all text/* and application/json media types.
      *
-     * @returns {string | null} The default charset or null if unknown
+     * @returns The default charset or null if unknown
      */
     getDefaultCharset(): string | null {
         return this.type === 'text' || (this.type === 'application' && this.subtype === 'json') ? 'utf-8' : null;
@@ -752,9 +745,8 @@ export default class MediaType extends Null implements Serializable, StringCompa
      *
      * Optionally adds a default charset if none is present and the media type supports it.
      *
-     * @param {Object} [options] Formatting options
-     * @param {boolean} [options.autoCharset=true] Whether to automatically add a default charset
-     * @returns {string} The formatted Content-Type string
+     * @param options - Formatting options; `autoCharset` adds a default charset when absent.
+     * @returns The formatted Content-Type string
      */
     toContentType(options?: { autoCharset?: boolean }): string {
         const base = this.toString();
@@ -781,9 +773,9 @@ export default class MediaType extends Null implements Serializable, StringCompa
  *
  * Standalone function for functional programming style and Transform Pipeline usage.
  *
- * @param {string} value - Media type string (e.g., "text/html;charset=UTF-8")
- * @returns {MediaType} MediaType instance from registry
- * @throws {IllegalStateError} If value is invalid or cannot be parsed
+ * @param value - - Media type string (e.g., "text/html;charset=UTF-8")
+ * @returns MediaType instance from registry
+ * @throws If value is invalid or cannot be parsed
  */
 export function parseMediaType(value: string): MediaType {
     if (!value || typeof value !== 'string') {

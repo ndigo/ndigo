@@ -100,7 +100,7 @@ export class AESGCMCipher implements SecretCipher {
      *
      * @param key - Base64 encoding of exactly 32 bytes, or the raw 32-byte
      * buffer/array. Any other length or non-base64 input fails loudly here.
-     * @throws {IllegalStateError} When the key is not exactly 32 bytes.
+     * @throws When the key is not exactly 32 bytes.
      */
     constructor(key: string | Buffer | Uint8Array) {
         const raw = typeof key === 'string' ? Buffer.from(key, 'base64url') : Buffer.from(key);
@@ -119,7 +119,7 @@ export class AESGCMCipher implements SecretCipher {
      * @param environment - The environment to read the key from (defaults to
      * `process.env`).
      * @returns The configured cipher.
-     * @throws {IllegalStateError} When `NDIGO_SECRET_KEY` is missing or malformed.
+     * @throws When `NDIGO_SECRET_KEY` is missing or malformed.
      */
     static fromEnvironment(environment: Record<string, string | undefined> = process.env): AESGCMCipher {
         const encoded = environment?.[NDIGO_SECRET_KEY];
@@ -155,7 +155,7 @@ export class AESGCMCipher implements SecretCipher {
      * @param aad - The additional authenticated data the value was bound to
      * (the key path). A mismatch fails auth.
      * @returns The plaintext value.
-     * @throws {IllegalStateError} On tamper, wrong key, wrong AAD, or an
+     * @throws On tamper, wrong key, wrong AAD, or an
      * unsupported scheme/version.
      */
     decrypt(marker: string, aad?: string): string {

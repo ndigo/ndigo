@@ -35,13 +35,19 @@ Parses response bodies into typed data and attaches the result as `data`.
 
 `Response`
 
+The HTTP response.
+
 ##### settings
 
 [`ResponseTypeSettings`](../type-aliases/ResponseTypeSettings.md)
 
+The HTTP request settings.
+
 #### Returns
 
 `Promise`\<`void` \| `Response`\>
+
+Whether or not the request should continue.
 
 #### Implementation of
 

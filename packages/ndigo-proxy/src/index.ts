@@ -1,4 +1,5 @@
 /**
+ * Proxy and interceptor chain for request forwarding.
  */
 export * from './annotation';
 export * from './chain';

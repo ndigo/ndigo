@@ -4,9 +4,6 @@
  * (AD-85). The CLI is a thin front: flags reach `@ndigo/generators:app` via
  * the workspace's Nx bridge (AD-75 D-3); the generator owns the templates,
  * the reading-order number, and the dev-port allocation.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand, numberParser } from '@stricli/core';
 import { runWorkspaceOnce } from '../helpers/app-scripts.js';

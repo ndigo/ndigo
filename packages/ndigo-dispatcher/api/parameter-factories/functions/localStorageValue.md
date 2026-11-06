@@ -28,7 +28,7 @@ Reads `localStorage` on the browser platform (scalar-only).
 ## Example
 
 ```ts
-`parameters`({
+parameters({
   token: localStorageValue('token'),
 })
 ```

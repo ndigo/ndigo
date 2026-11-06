@@ -13,11 +13,9 @@ A factory that uses a Proxy to allow direct property access for value manipulati
 ```ts
 const factory = new ProxiedFactory();
 factory.foo = 123;
-'foo' in factory;
-//=> true
-delete factory.foo
-'foo' in factory;
-//=> false
+'foo' in factory; //=> true
+delete factory.foo;
+'foo' in factory; //=> false
 ```
 
 ## See

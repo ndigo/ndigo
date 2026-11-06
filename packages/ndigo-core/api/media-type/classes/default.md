@@ -373,13 +373,11 @@ Optionally adds a default charset if none is present and the media type supports
 
 ##### options?
 
-Formatting options
+Formatting options; `autoCharset` adds a default charset when absent.
 
 ###### autoCharset?
 
 `boolean`
-
-Whether to automatically add a default charset
 
 #### Returns
 

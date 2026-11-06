@@ -1,8 +1,5 @@
 /**
  * The producer facade: `JobQueue` wraps a driver for enqueueing.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
 import type { ApplicationContext } from '@ndigo/context';

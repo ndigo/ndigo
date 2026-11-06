@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Route } from './route';
 import { PathMatcher, AsPathMatcherFilter, Null, PathMatcherFilter, URLGlobPathMatcher } from '@ndigo/core';

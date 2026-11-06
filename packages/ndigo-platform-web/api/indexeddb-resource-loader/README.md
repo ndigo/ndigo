@@ -6,6 +6,8 @@
 
 # indexeddb-resource-loader
 
+Configuration options for the IndexedDB resource loader.
+
 ## Classes
 
 - [IndexedDBResourceLoader](classes/IndexedDBResourceLoader.md)

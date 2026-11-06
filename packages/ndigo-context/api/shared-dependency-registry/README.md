@@ -6,6 +6,8 @@
 
 # shared-dependency-registry
 
+Shared dependency registry for the application context hierarchy.
+
 ## Classes
 
 - [DefaultSharedDependencyRegistry](classes/DefaultSharedDependencyRegistry.md)

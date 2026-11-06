@@ -1,8 +1,5 @@
 /**
  * Interface for a service registry that maps service tokens to endpoints.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export interface ServiceRegistry {
     /**

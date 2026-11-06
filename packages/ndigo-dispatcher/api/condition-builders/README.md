@@ -6,6 +6,8 @@
 
 # condition-builders
 
+Typed route-condition builders (AD-34 D6).
+
 ## Interfaces
 
 - [ConditionBuilderOptions](interfaces/ConditionBuilderOptions.md)

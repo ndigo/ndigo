@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractPathBasedViewResolver, View } from '@ndigo/view';
 import { MediaTypes } from '@ndigo/core';

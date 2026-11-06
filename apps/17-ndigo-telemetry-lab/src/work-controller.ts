@@ -6,9 +6,6 @@
  * enabled the handler executes inside the request's SERVER span, so a browser
  * that propagated its own span as `traceparent` sees its **own** trace id come
  * back — the continuation, visible in one response body.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { bodyValue, getMapping, parameters, postMapping, queryValue, requestMapping } from '@ndigo/dispatcher';

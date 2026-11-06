@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 export { DrizzleDataSource, createTableStatements } from './drizzle-data-source';
 export type { DrizzleDataSourceOptions } from './drizzle-data-source';

@@ -6,6 +6,8 @@
 
 # job-handler-registry
 
+`JobHandlerRegistry` — discovers `@jobHandler` methods and holds handlers.
+
 ## Classes
 
 - [JobHandlerRegistry](classes/JobHandlerRegistry.md)

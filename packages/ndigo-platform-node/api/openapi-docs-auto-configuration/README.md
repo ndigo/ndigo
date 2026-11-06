@@ -6,6 +6,8 @@
 
 # openapi-docs-auto-configuration
 
+OpenAPI docs auto-configuration for Node applications (AD-35 D-5/D-6).
+
 ## Classes
 
 - [OpenAPIDocsAutoConfiguration](classes/OpenAPIDocsAutoConfiguration.md)

@@ -6,6 +6,8 @@
 
 # instrumentation/base
 
+against the installed 2.x SDK line (`@opentelemetry/api` 1.9,
+
 ## Classes
 
 - [AbstractBaseInstrumentation](classes/AbstractBaseInstrumentation.md)

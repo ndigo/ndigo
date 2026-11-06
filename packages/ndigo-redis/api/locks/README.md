@@ -6,6 +6,8 @@
 
 # locks
 
+Redis locks subpath (`@ndigo/redis/locks`) — the multi-node `LockDriver`
+
 ## References
 
 ### RedisLockDriver

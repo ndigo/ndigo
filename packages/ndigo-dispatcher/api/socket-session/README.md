@@ -6,6 +6,8 @@
 
 # socket-session
 
+WebSocket session contract — re-exported for `@socketMapping` handler
+
 ## References
 
 ### SocketRequestSources

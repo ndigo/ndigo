@@ -6,9 +6,6 @@
  * (`ensureFeed` fetches only when the query changed), then project the signals
  * into the view model. No filtering, paging arithmetic or formatting happens
  * here — those live in the service (state) and the view (presentation).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { Null } from '@ndigo/core';

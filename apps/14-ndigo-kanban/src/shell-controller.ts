@@ -2,9 +2,6 @@
  * The HTML shell: `GET /` renders the EJS page that mounts the `kanban-board`
  * Web Component on the seeded demo board; the built client bundle is served
  * under `/static/` by the platform `StaticController`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { getMapping, ModelAndView, requestMapping } from '@ndigo/dispatcher';
 import { DEMO_BOARD } from './board-service';

@@ -6,6 +6,8 @@
 
 # index
 
+NodeSDK configuration and the Node platform instrumentations.
+
 ## Classes
 
 - [ContextInstrumentation](classes/ContextInstrumentation.md)

@@ -3,9 +3,6 @@
  * the documented contract surface (append ordering, replay windows, bounds,
  * retention pruning). Backends are swap-in replaceable: these tests pin the
  * contract, not the implementation.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, expect, test } from 'vitest';
 import { InMemoryQueueMessageStore } from '../src/index';

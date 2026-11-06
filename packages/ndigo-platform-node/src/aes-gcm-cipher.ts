@@ -33,9 +33,6 @@
  * (then deploy), or (2) deploying the new key and re-encrypting before the
  * old key is destroyed — there is no dual-key read path yet, so mid-rotation
  * config fails loud (safe) until markers are migrated.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { IllegalStateError } from '@ndigo/core';
 import { createCipheriv, createDecipheriv, randomBytes, type CipherGCM, type DecipherGCM } from 'node:crypto';

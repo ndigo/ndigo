@@ -1,8 +1,5 @@
 /**
  * Internal utilities for decorator implementation.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 /**
  * Extract parameter names from a function signature.

@@ -6,6 +6,8 @@
 
 # finalize-denial
 
+Interceptor-denial finalization shared by the live Node adapter and the
+
 ## Interfaces
 
 - [DenialResponseWriter](interfaces/DenialResponseWriter.md)

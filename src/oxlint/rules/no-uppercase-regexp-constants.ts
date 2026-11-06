@@ -1,8 +1,5 @@
 /**
  * Rule that flags UPPER_SNAKE_CASE constants initialized with a RegExp literal.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 

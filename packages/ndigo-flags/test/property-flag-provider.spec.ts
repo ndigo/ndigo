@@ -3,9 +3,6 @@
  * boolean/number/string/object, DEFAULT on missing, DISABLED on false,
  * TYPE_MISMATCH/PARSE_ERROR + default, never-throw on a throwing reader,
  * namespace resolution, and default-value typing.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { PropertyFlagProvider, stableBucket } from '../src/property-flag-provider';

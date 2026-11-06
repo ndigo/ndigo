@@ -14,9 +14,6 @@
  *    ordering games), and only then
  * 4. drains inbound frames until the peer closes, answering `resync` with a
  *    fresh snapshot and anything else with an `error` frame.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { parameters, pathVariable, requestMapping, socketMapping, socketSessionValue } from '@ndigo/dispatcher';

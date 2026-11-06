@@ -6,6 +6,8 @@
 
 # rate-limit/redis-rate-limiter
 
+Redis-backed {@link RateLimiter} — the shared-store fixed-window driver
+
 ## Classes
 
 - [RedisRateLimiter](classes/RedisRateLimiter.md)

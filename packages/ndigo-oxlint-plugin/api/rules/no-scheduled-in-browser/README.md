@@ -6,6 +6,8 @@
 
 # rules/no-scheduled-in-browser
 
+Rule that flags `@ndigo/scheduler` imports in files that also import
+
 ## Variables
 
 - [noScheduledInBrowser](variables/noScheduledInBrowser.md)

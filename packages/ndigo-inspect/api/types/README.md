@@ -6,6 +6,8 @@
 
 # types
 
+Public types for the `@ndigo/inspect` manifest.
+
 ## Interfaces
 
 - [InspectApp](interfaces/InspectApp.md)

@@ -1,29 +1,19 @@
 /**
- * Rule that requires the canonical Ndigo documentation header at the top of
- * every source file.
+ * Rule that requires a canonical Ndigo documentation header at the top of
+ * every source file: a top-of-file TSDoc block whose first non-empty line is a
+ * one-line module summary. Tags are not required — Ndigo follows the TSDoc
+ * standard, and the summary is what the module-summary TypeDoc plugin lifts
+ * onto the generated module page.
  *
- * Per STYLE_GUIDE §5 (Documentation Blocks): every file begins with a single
- * TSDoc block carrying `@since` and `@author` tags, before any
- * imports. The `header` generator (`@ndigo/generators`) creates and repairs
- * these blocks:
+ * The `header` generator (`@ndigo/generators`) creates and repairs these
+ * blocks:
  *
- *   `nx generate @ndigo/generators:header --file <path>`
+ *   `nx generate @ndigo/generators:header --file <path> --summary "..."`
  *
- * Only files under `src/` and `test/` (and app client directories) are
- * checked; build configuration and generated files are exempt.
+ * Only files under `src/` (and app client directories) are checked; test
+ * files and build configuration are exempt.
  */
-
 import type { Context } from '@oxlint/plugins';
-
-/** Tags the canonical header must carry. */
-const REQUIRED_TAGS = ['@since', '@author'] as const;
-
-/**
- * A stray `*` before a tag line (` * * @since …`) — a copy-paste artifact
- * that renders as a literal asterisk in generated module docs. Tag-presence
- * checks alone accept it, so it spread across the tree once (115 files).
- */
-const malformedTagLinePattern = /^[ \t]*\*[ \t]+\*[ \t]+@/mu;
 
 /** Sniffs a top-of-file TSDoc block (slash-star-star … star-slash). */
 function topDocBlock(source: string): string | null {
@@ -31,27 +21,20 @@ function topDocBlock(source: string): string | null {
     return match ? match[0] : null;
 }
 
-/** Whether the file is one the convention applies to (source or tests). */
+/** Whether the file is one the convention applies to (source only). */
 function isCheckedFile(filename: string): boolean {
-    return /(^|[\\/])(src|test|client)([\\/]|$)/u.test(filename) && filename.endsWith('.ts');
+    return /(^|[\\/])(src|client)([\\/]|$)/u.test(filename) && filename.endsWith('.ts');
 }
 
-/**
- * Reports missing or incomplete documentation headers.
- */
 export const requiresDocHeader = {
     meta: {
         type: 'problem',
         docs: {
-            description: 'Require the canonical Ndigo doc header (@since/@author) on source files',
+            description: 'Require a canonical Ndigo doc header (top-of-file TSDoc block) on source files',
         },
         messages: {
             missingHeader:
-                "Source file is missing the canonical doc header. Run 'nx generate @ndigo/generators:header --file {{file}}'.",
-            missingTags:
-                "Doc header is missing the {{tags}} tag(s); run 'nx generate @ndigo/generators:header --file {{file}} --force'.",
-            malformedTagLine:
-                "Doc header has a stray '*' before a tag line (reads '* * @…'); repair with 'nx generate @ndigo/generators:header --file {{file}} --force'.",
+                'Source file is missing the canonical doc header. Run \'nx generate @ndigo/generators:header --file {{file}} --summary "…"\'.',
         },
         schema: [],
     } as const,
@@ -70,25 +53,6 @@ export const requiresDocHeader = {
                         node: context.sourceCode.ast,
                         messageId: 'missingHeader',
                         data: { file: filename },
-                    });
-                    return;
-                }
-
-                if (malformedTagLinePattern.test(block)) {
-                    context.report({
-                        node: context.sourceCode.ast,
-                        messageId: 'malformedTagLine',
-                        data: { file: filename },
-                    });
-                    return;
-                }
-
-                const missing = REQUIRED_TAGS.filter((tag) => !block.includes(tag));
-                if (missing.length > 0) {
-                    context.report({
-                        node: context.sourceCode.ast,
-                        messageId: 'missingTags',
-                        data: { tags: missing.join(', '), file: filename },
                     });
                 }
             },

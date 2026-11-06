@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect, vi } from 'vitest';
 import { DefaultAuthSession, AnonymousPrincipal } from '@ndigo/auth-core';

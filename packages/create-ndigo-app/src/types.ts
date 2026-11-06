@@ -1,8 +1,5 @@
 /**
  * Options and result shapes for the `create-ndigo-app` scaffold.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /** The scaffoldable application kinds (mirror `ndigo new`). */

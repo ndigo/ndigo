@@ -6,6 +6,8 @@
 
 # online-reconnect-trigger
 
+Browser online/offline reconnect trigger (AD-22 D3/D6).
+
 ## Interfaces
 
 - [OnlineReconnectTrigger](interfaces/OnlineReconnectTrigger.md)

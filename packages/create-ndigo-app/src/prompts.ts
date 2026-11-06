@@ -1,8 +1,5 @@
 /**
  * Minimal interactive prompts (readline-based, zero dependencies).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { createInterface } from 'node:readline';
 

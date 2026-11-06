@@ -7,9 +7,6 @@
  * (`NodeAutoConfiguration` + `ManagementAutoConfiguration` + the app's beans),
  * installs the app's two pipeline interceptors on the platform's handler
  * mapping, and starts listening.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import 'node:process';
 import { ApplicationBuilder } from '@ndigo/boot';

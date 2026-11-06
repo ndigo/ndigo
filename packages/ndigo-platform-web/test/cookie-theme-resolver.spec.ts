@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect, afterEach, vi } from 'vitest';
 import { GenericApplicationContext } from '@ndigo/context';

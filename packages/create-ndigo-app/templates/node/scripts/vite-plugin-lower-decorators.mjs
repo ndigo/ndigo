@@ -36,9 +36,6 @@
  *   formatted form) and one starting a class/member body or a parameter list
  *   (`{ @dec`, `(@inject`), which is every syntactically valid position in
  *   practice. A module with no `@` in such a position is left alone.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { transform } from 'esbuild';
 

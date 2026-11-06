@@ -5,9 +5,6 @@
  *
  * Plain DOM construction (no innerHTML interpolation of API data) keeps the
  * untrusted HN payload from ever being parsed as markup.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FEED_LABELS, FEED_KEYS, FEED_ROUTES, type HnFeedKey, type HnItem } from '../hn-types';
 import type { HnCommentNode, HnConnectionState, HnFeedState } from '../services/hn-service';

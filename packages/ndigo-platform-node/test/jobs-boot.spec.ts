@@ -2,9 +2,6 @@
  * Jobs stack through the real `NodeAutoConfiguration` (AD-72): the four
  * beans exist, the registry scans `@jobHandler` beans on refresh, and an
  * explicitly started runner executes an enqueued job end to end.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';

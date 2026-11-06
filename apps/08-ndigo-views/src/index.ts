@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { configureBrowserTelemetry } from '@ndigo/telemetry-web';
 import { createWebApplication } from '@ndigo/platform-web';

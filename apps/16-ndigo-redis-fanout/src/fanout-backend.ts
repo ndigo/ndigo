@@ -9,9 +9,6 @@
  * the management health indicator) branches on the mode. Only this module does:
  * the Redis adapters are constructed and connected here, and they are the
  * resources this object hands back to the app for ordered shutdown.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { hostname } from 'node:os';
 import { AsApplicationContextAware, ContextToken, getEnv, type ApplicationContext } from '@ndigo/context';

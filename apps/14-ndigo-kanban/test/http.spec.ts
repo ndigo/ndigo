@@ -1,8 +1,5 @@
 /**
  * HTTP surface through MockHTTP: the EJS shell and the management endpoints.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

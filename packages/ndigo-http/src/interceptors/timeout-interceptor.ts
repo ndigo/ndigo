@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import ResponseError from '../response-error';
 import { isNumber } from '@ndigo/util/types';

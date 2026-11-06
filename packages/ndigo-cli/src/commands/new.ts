@@ -14,6 +14,7 @@ import { runWorkspaceOnce } from '../helpers/app-scripts.js';
 /** The flags `ndigo new` forwards to the `app` generator's schema. */
 export interface NewAppFlags {
     kind?: 'browser' | 'node';
+    preset?: string;
     number?: number;
     port?: number;
     description?: string;
@@ -32,6 +33,9 @@ export interface NewAppFlags {
  */
 export function newAppArgv(name: string, flags: NewAppFlags): string[] {
     const argv = ['--name', name];
+    if (flags.preset !== undefined) {
+        argv.push('--preset', flags.preset);
+    }
     if (flags.kind !== undefined) {
         argv.push('--kind', flags.kind);
     }
@@ -62,6 +66,7 @@ export const newCommand = buildCommand({
             '@ndigo/generators:app',
             ...newAppArgv(name, {
                 kind: flags.kind,
+                preset: flags.preset,
                 number: flags.number,
                 port: flags.port,
                 description: flags.description,
@@ -75,6 +80,12 @@ export const newCommand = buildCommand({
                 kind: 'enum',
                 values: ['browser', 'node'],
                 brief: 'Application kind.',
+                optional: true,
+            },
+            preset: {
+                kind: 'parsed',
+                parse: (v: string) => v,
+                brief: 'Starter preset (api, browser, full-stack, minimal).',
                 optional: true,
             },
             number: {

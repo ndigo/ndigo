@@ -6,6 +6,8 @@
 
 # type/like
 
+Duck-typing predicate factory.
+
 ## Type Aliases
 
 - [LikeDescriptor](type-aliases/LikeDescriptor.md)

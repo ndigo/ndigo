@@ -45,6 +45,5 @@ If the Web Cryptography API is unavailable.
 ## Example
 
 ```ts
-randomToken(32);
-//=> 'U2xpoMkrQaQj2mZs6D4fJf9FmWP0nN1rQkzL7mBc3d8' (43 chars)
+randomToken(32); //=> 'U2xpoMkrQaQj2mZs6D4fJf9FmWP0nN1rQkzL7mBc3d8' (43 chars)
 ```

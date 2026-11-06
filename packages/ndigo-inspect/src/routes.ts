@@ -5,6 +5,9 @@
  * or explicit descriptors into sorted {@link InspectRoute} rows.
  */
 
+import { chainComparisons, compareBy, stringComparator } from '@ndigo/core';
+import { like } from '@ndigo/util/types';
+
 import { deriveKey } from '@ndigo/router';
 import type { RouteDefinition, RouteRegistry } from '@ndigo/router';
 import type { InspectRoute, RouteSource } from './types';
@@ -17,8 +20,7 @@ import type { InspectRoute, RouteSource } from './types';
  * @returns `true` when the value is duck-type compatible with `RouteRegistry`.
  */
 function likeRouteRegistry(value: RouteSource): value is RouteRegistry {
-    const candidate = value as { entries?: unknown; get?: unknown };
-    return typeof candidate.entries === 'function' && typeof candidate.get === 'function';
+    return like({ entries: Function, get: Function })(value);
 }
 
 /**
@@ -82,7 +84,10 @@ export function collectRoutes(source?: RouteSource): InspectRoute[] {
         }
     }
 
-    return [...rows.values()].sort((a, b) =>
-        a.name === b.name ? (a.path < b.path ? -1 : a.path > b.path ? 1 : 0) : a.name < b.name ? -1 : 1
+    return [...rows.values()].sort(
+        chainComparisons(
+            compareBy((row) => row.name, stringComparator.compare),
+            compareBy((row) => row.path, stringComparator.compare)
+        )
     );
 }

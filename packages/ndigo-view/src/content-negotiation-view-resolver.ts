@@ -1,6 +1,6 @@
 /**
  */
-import { FrameworkError, MediaType, MultiValueMap } from '@ndigo/core';
+import { compareBy, FrameworkError, invertComparison, MediaType, MultiValueMap, numberComparator } from '@ndigo/core';
 import { HTTPHeaders } from '@ndigo/http';
 import { isFunction, isNotNil } from '@ndigo/util/types';
 import { View } from './view.js';
@@ -177,7 +177,7 @@ export class FixedContentNegotiationStrategy implements ContentNegotiationStrate
  */
 const parseAcceptedRanges = (accept: string): MediaType[] => {
     const ranges = MediaType.parseAccept(accept).filter((mediaType) => mediaType.qualityFactor > 0);
-    return ranges.sort((a, b) => b.qualityFactor - a.qualityFactor);
+    return ranges.sort(invertComparison(compareBy((range) => range.qualityFactor, numberComparator.compare)));
 };
 
 /**

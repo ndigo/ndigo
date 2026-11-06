@@ -5,6 +5,8 @@
  * {@link Migration.up} for the `batch()` constraint).
  */
 import type { InValue } from '@libsql/client';
+import { compareBy, numberComparator } from '@ndigo/core';
+
 import { DrizzleDataSource } from './drizzle-data-source';
 
 /**
@@ -195,5 +197,5 @@ function orderedMigrations(migrations: Migration[]): Migration[] {
         seen.add(migration.version);
     }
 
-    return [...migrations].sort((left, right) => left.version - right.version);
+    return [...migrations].sort(compareBy((migration) => migration.version, numberComparator.compare));
 }

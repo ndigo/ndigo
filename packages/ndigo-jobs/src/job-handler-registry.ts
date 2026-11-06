@@ -2,6 +2,7 @@
  * `JobHandlerRegistry` — discovers `@jobHandler` methods and holds handlers.
  */
 import { FrameworkError, getSymbolMetadata } from '@ndigo/core';
+import { like } from '@ndigo/util/types';
 import type { ApplicationContext } from '@ndigo/context';
 import { JOB_HANDLER_METADATA_PREFIX, type JobHandler, type JobHandlerMetadata } from './job-handler';
 
@@ -220,7 +221,4 @@ export class JobHandlerRegistry {
  * @since 1.0.0
  */
 export const likeJobHandlerRegistry = (value: unknown): value is JobHandlerRegistry =>
-    value !== null &&
-    typeof value === 'object' &&
-    typeof (value as JobHandlerRegistry).get === 'function' &&
-    typeof (value as JobHandlerRegistry).register === 'function';
+    like({ get: Function, register: Function })(value);

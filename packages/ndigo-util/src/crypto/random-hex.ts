@@ -11,10 +11,10 @@ const HEX_DIGITS = '0123456789abcdef';
  * `byteLength` bytes — 2 hex characters per byte.
  *
  * Backed by `globalThis.crypto.getRandomValues` (Node.js 15+, all modern
- * browsers) with the same fail-closed contract as {@link "random-token".randomToken | randomToken}: if
+ * browsers) with the same fail-closed contract as `randomToken`: if
  * Web Cryptography is unavailable it throws instead of degrading to an
  * insecure PRNG. Use it for collision-resistant filenames, request ids, and
- * other non-secret unique names; use {@link "random-token".randomToken | randomToken} when the value is a
+ * other non-secret unique names; use `randomToken` when the value is a
  * secret that benefits from base64url's entropy per character.
  *
  * @param byteLength - Number of random bytes to draw; must be a positive integer.

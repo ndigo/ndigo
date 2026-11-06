@@ -8,10 +8,6 @@
 
 Options for [OutboxRelay](../classes/OutboxRelay.md).
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### batchSize?

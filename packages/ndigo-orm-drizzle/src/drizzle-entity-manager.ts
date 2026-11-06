@@ -205,7 +205,7 @@ export class DrizzleEntityManager {
      * owning side (many-to-one, one-to-one) or the related entities for the
      * inverse side (one-to-many, one-to-one). Does not mutate the entity.
      *
-     * @throws {FrameworkError} When the relation, its join column, or the
+     * @throws When the relation, its join column, or the
      *   target class is not declared, or for many-to-many relations
      *   (join-table semantics not implemented).
      */
@@ -270,7 +270,7 @@ export class DrizzleEntityManager {
      *
      * @param entities - Entities of one class; an empty batch is a no-op.
      * @param relationNames - Declared relation field names to load.
-     * @throws {FrameworkError} When a relation, its join column, or the
+     * @throws When a relation, its join column, or the
      *   target class is not declared, or for many-to-many relations.
      */
     async fetchRelations(entities: object[], relationNames: string[]): Promise<void> {

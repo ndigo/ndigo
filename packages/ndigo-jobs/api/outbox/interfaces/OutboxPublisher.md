@@ -9,10 +9,6 @@
 Publishes one outbox entry. Implementations must be idempotent-friendly:
 a failed publish is retried after the claim lease expires.
 
-## Since
-
-1.0.0
-
 ## Methods
 
 ### publish()

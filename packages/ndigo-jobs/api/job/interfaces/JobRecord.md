@@ -9,10 +9,6 @@
 A stored job as returned by a driver — the record handed to
 [JobDriver.claim](../../job-driver/interfaces/JobDriver.md#claim) callers and into handler execution.
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### attempts

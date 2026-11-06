@@ -30,21 +30,21 @@ export class TransactionScopedClient implements Client {
         this.#base = base;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     get closed(): boolean {
         return this.#base.closed;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     get protocol(): string {
         return this.#base.protocol;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     execute(stmt: InStatement): Promise<ResultSet>;
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     execute(sql: string, args?: InArgs): Promise<ResultSet>;
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     execute(stmtOrSql: InStatement | string, args?: InArgs): Promise<ResultSet> {
         const transaction = currentTransaction();
 
@@ -57,10 +57,7 @@ export class TransactionScopedClient implements Client {
     }
 
     /**
-     * @inheritdoc
-     *
-     * Inside a transaction the mode argument is moot — the statements run in the
-     * transaction's own mode rather than in a batch of their own.
+     * {@inheritDoc}
      */
     batch(stmts: Array<InStatement | [string, InArgs?]>, mode?: TransactionMode): Promise<Array<ResultSet>> {
         const transaction = currentTransaction();
@@ -74,47 +71,41 @@ export class TransactionScopedClient implements Client {
     }
 
     /**
-     * @inheritdoc
-     *
-     * Never routed: `PRAGMA foreign_keys=off` around a migration body belongs on
-     * a connection of its own, and `Transaction` has no `migrate`.
+     * {@inheritDoc}
      */
     migrate(stmts: Array<InStatement>): Promise<Array<ResultSet>> {
         return this.#base.migrate(stmts);
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     executeMultiple(sql: string): Promise<void> {
         const transaction = currentTransaction();
 
         return transaction === undefined ? this.#base.executeMultiple(sql) : transaction.executeMultiple(sql);
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     transaction(mode: TransactionMode): Promise<Transaction>;
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     transaction(): Promise<Transaction>;
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     transaction(mode?: TransactionMode): Promise<Transaction> {
         return mode === undefined ? this.#base.transaction() : this.#base.transaction(mode);
     }
 
     /**
-     * @inheritdoc
-     *
-     * Never routed: replication sync is a client-level operation and cannot run
-     * inside a transaction.
+     * {@inheritDoc}
      */
     sync(): ReturnType<Client['sync']> {
         return this.#base.sync();
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     close(): void {
         this.#base.close();
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     reconnect(): void {
         this.#base.reconnect();
     }

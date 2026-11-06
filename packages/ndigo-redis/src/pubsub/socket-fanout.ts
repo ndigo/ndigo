@@ -1,8 +1,5 @@
 /**
  * Redis live socket Pub/Sub adapter.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { randomUUID } from 'node:crypto';
 import type { SocketFanout, SocketFanoutMessage, SocketFanoutScope } from '@ndigo/socket';

@@ -8,10 +8,6 @@
 
 Execution context handed to a handler alongside the payload.
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### attempt

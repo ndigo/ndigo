@@ -10,8 +10,6 @@ import { JOB_DRIVER } from './context-tokens';
 
 /**
  * Options for {@link JobQueue}.
- *
- * @since 1.0.0
  */
 export interface JobQueueOptions {
     /**
@@ -25,13 +23,11 @@ export interface JobQueueOptions {
 
 /**
  * The producer-facing queue: `enqueue` one job, inspect `size` — nothing else
- * (claiming and completion belong to {@link job-runner.JobRunner | JobRunner}).
+ * (claiming and completion belong to {@link "job-runner".JobRunner | JobRunner}).
  *
  * Produces, per AD-72 D-3, a single place where defaults live: drivers
  * normalize and validate, the queue only fills in the configured default
  * `maxAttempts` and forwards.
- *
- * @since 1.0.0
  */
 export class JobQueue {
     #driver: JobDriver | null;

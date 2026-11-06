@@ -143,7 +143,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Adds an entry processor to the factory.
-     * @param processor The entry processor to add.
+     * @param processor - The entry processor to add.
      */
     addProcessor(processor: EntryProcessor): void {
         const index = this.processors.indexOf(processor);
@@ -179,8 +179,8 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Destroys a value managed by the factory.
-     * @param token (the scope-entry key) The name or ContextToken of the value to destroy.
-     * @template T The type of the value.
+     * @param token - (the scope-entry key) The name or ContextToken of the value to destroy.
+     * @typeParam T - The type of the value.
      */
     destroyValue<T = unknown>(token: ContextToken<T>): void;
     destroyValue(name: string): void;
@@ -216,10 +216,10 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * `_create` path; non-constructor values (instances, primitives) are
      * returned as-is, preserving identity (CF-12). An unregistered name
      * resolves to `undefined`.
-     * @param name The name of the value.
-     * @param argumentsList (constructor arguments) Optional arguments to pass to the constructor if the value is a constructor.
+     * @param name - The name of the value.
+     * @param argumentsList - (constructor arguments) Optional arguments to pass to the constructor if the value is a constructor.
      * @returns An instance of the value.
-     * @template T The type of the instance.
+     * @typeParam T - The type of the instance.
      */
     getInstance<T = unknown>(name: string, argumentsList: unknown[] = []): T {
         if (this.hasConstructor(name)) {
@@ -235,9 +235,9 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Retrieves a value from the factory, creating it if necessary.
-     * @param token (the scope-entry key) The name or ContextToken of the value to retrieve.
+     * @param token - (the scope-entry key) The name or ContextToken of the value to retrieve.
      * @returns The retrieved value.
-     * @template T The type of the value.
+     * @typeParam T - The type of the value.
      */
     getValue<T = unknown>(token: ContextToken<T>): T;
     getValue<T = unknown>(name: string, argumentsList?: unknown[]): T;
@@ -345,8 +345,8 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Destroys a scoped value.
-     * @param scopeName The name of the scope.
-     * @param valueName The name of the value within the scope.
+     * @param scopeName - The name of the scope.
+     * @param valueName - The name of the value within the scope.
      */
     destroyScopedValue(scopeName: PossibleScope, valueName: string): void {
         this.#scopeRegistry.destroyScopedValue(scopeName, valueName);
@@ -354,7 +354,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Retrieves a scope by its name.
-     * @param name The name of the scope.
+     * @param name - The name of the scope.
      * @returns The Scope instance.
      */
     getScope(name: PossibleScope): Scope {
@@ -371,7 +371,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Checks if the factory has a constructor registered under the given name.
-     * @param name The name of the constructor.
+     * @param name - The name of the constructor.
      * @returns `true` if a constructor is registered, `false` otherwise.
      */
     hasConstructor(name: string): boolean {
@@ -383,7 +383,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Checks if the factory has an instance registered under the given name.
-     * @param name The name of the instance.
+     * @param name - The name of the instance.
      * @returns `true` if an instance is registered, `false` otherwise.
      */
     hasInstance(name: string): boolean {
@@ -394,7 +394,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Checks if the factory has its own value (either an instance or a constructor) registered under the given name.
-     * @param name The name of the value.
+     * @param name - The name of the value.
      * @returns `true` if this factory has its own value, `false` otherwise.
      */
     hasOwnValue(name: string): boolean {
@@ -405,9 +405,9 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Checks if the factory has a value (either an instance or a constructor) registered under the given name or token.
-     * @param token (the scope-entry key) The name or ContextToken of the value.
+     * @param token - (the scope-entry key) The name or ContextToken of the value.
      * @returns `true` if a value is registered, `false` otherwise.
-     * @template T The type of the value.
+     * @typeParam T - The type of the value.
      */
     hasValue<T = unknown>(token: ContextToken<T>): boolean;
     hasValue(name: string): boolean;
@@ -431,7 +431,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * `refresh`) and custom scopes are instantiated as before. Unregistered
      * names return `false`.
      *
-     * @param name The name of the value.
+     * @param name - The name of the value.
      * @returns `true` when eager instantiation is safe and non-wasteful.
      */
     shouldEagerlyInstantiate(name: string): boolean {
@@ -445,8 +445,8 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Registers a new scope with the factory.
-     * @param name The name of the scope.
-     * @param scope The Scope instance to register.
+     * @param name - The name of the scope.
+     * @param scope - The Scope instance to register.
      */
     registerScope(name: PossibleScope, scope: Scope): void {
         this.#scopeRegistry.registerScope(name, scope);
@@ -454,7 +454,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Sets the parent factory for this hierarchical factory.
-     * @param parent The parent factory.
+     * @param parent - The parent factory.
      */
     setParent(parent: Factory | null): void {
         this.#parent = parent;
@@ -462,9 +462,9 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Sets a value (either a constructor or an instance) in the factory.
-     * @param token (the scope-entry key) The name or ContextToken under which to register the value.
-     * @param value The value to register.
-     * @template T The type of the value.
+     * @param token - (the scope-entry key) The name or ContextToken under which to register the value.
+     * @param value - The value to register.
+     * @typeParam T - The type of the value.
      */
     setValue<T = unknown>(token: ContextToken<T>, value: T): void;
     setValue<T = unknown>(name: string, value: T): void;
@@ -529,10 +529,10 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Applies construction-aware processors after an instance has been constructed.
-     * @param name The name of the instance.
-     * @param instance The constructed instance.
+     * @param name - The name of the instance.
+     * @param instance - The constructed instance.
      * @returns `true` if properties should be populated, `false` otherwise.
-     * @template T The type of the instance.
+     * @typeParam T - The type of the instance.
      */
     protected _applyProcessorsAfterConstruction<T = unknown>(name: string, instance: T): boolean {
         let populateProperties = true;
@@ -556,10 +556,10 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Applies initialization-aware processors after an instance has been initialized.
-     * @param name The name of the instance.
-     * @param instance The initialized instance.
+     * @param name - The name of the instance.
+     * @param instance - The initialized instance.
      * @returns The processed instance.
-     * @template T The type of the instance.
+     * @typeParam T - The type of the instance.
      */
     protected _applyProcessorsAfterInitialization<T>(name: string, instance: T): T {
         let result = instance;
@@ -584,11 +584,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Applies construction-aware processors before an instance is constructed.
-     * @param name The name of the instance.
-     * @param constructor The constructor function.
-     * @param argumentsList (constructor arguments) Optional arguments to pass to the constructor.
+     * @param name - The name of the instance.
+     * @param constructor - The constructor function.
+     * @param argumentsList - (constructor arguments) Optional arguments to pass to the constructor.
      * @returns The instance to use, or `null` to proceed with default construction.
-     * @template T The type of the instance.
+     * @typeParam T - The type of the instance.
      */
     protected _applyProcessorsBeforeConstruction<T = unknown>(
         name: string,
@@ -616,8 +616,8 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Applies destruction-aware processors before an instance is destroyed.
-     * @param name The name of the instance.
-     * @param instance The instance to be destroyed.
+     * @param name - The name of the instance.
+     * @param instance - The instance to be destroyed.
      */
     protected _applyProcessorsBeforeDestruction(name: string, instance: Destroyable): void {
         if (this.hasDestructionAwareProcessors) {
@@ -634,10 +634,10 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Applies initialization-aware processors before an instance is initialized.
-     * @param name The name of the instance.
-     * @param instance The instance to be initialized.
+     * @param name - The name of the instance.
+     * @param instance - The instance to be initialized.
      * @returns The processed instance.
-     * @template T The type of the instance.
+     * @typeParam T - The type of the instance.
      */
     protected _applyProcessorsBeforeInitialization<T>(name: string, instance: T): T {
         let result = instance;
@@ -661,11 +661,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Configures an instance by populating properties, invoking aware callbacks, and initializing.
-     * @param name The name of the instance.
-     * @param instance The instance to configure.
+     * @param name - The name of the instance.
+     * @param instance - The instance to configure.
      * @returns The configured instance.
-     * @throws {FrameworkError} If configuration fails.
-     * @template T The type of the instance.
+     * @throws If configuration fails.
+     * @typeParam T - The type of the instance.
      */
     protected _configure<T = unknown>(name: string, instance: T): T {
         try {
@@ -683,11 +683,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Creates a new instance from a registered constructor.
-     * @param name The name of the constructor.
-     * @param argumentsList (constructor arguments) Optional arguments to pass to the constructor.
+     * @param name - The name of the constructor.
+     * @param argumentsList - (constructor arguments) Optional arguments to pass to the constructor.
      * @returns The newly created instance.
-     * @throws {FrameworkError} If instance creation fails.
-     * @template T The type of the instance.
+     * @throws If instance creation fails.
+     * @typeParam T - The type of the instance.
      */
     protected _create<T = unknown>(name: string, argumentsList: unknown[] = []): T {
         let instance: T | null = null;
@@ -714,11 +714,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
     /**
      * Initializes an instance by applying initialization processors and invoking the `init` method if available.
      * Initialization is fail-loud: an `init()` failure propagates, so a half-initialized instance is never served.
-     * @param name The name of the instance.
-     * @param instance The instance to initialize.
+     * @param name - The name of the instance.
+     * @param instance - The instance to initialize.
      * @returns The initialized instance.
-     * @throws {FrameworkError} If initialization fails.
-     * @template T The type of the instance.
+     * @throws If initialization fails.
+     * @typeParam T - The type of the instance.
      */
     protected _initialize<T>(name: string, instance: T): T {
         instance = this._applyProcessorsBeforeInitialization(name, instance);
@@ -734,10 +734,10 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Populates properties of an instance, applying construction-aware processors.
-     * @param name The name of the instance.
-     * @param instance The instance to populate.
-     * @param properties Optional property descriptor map to apply.
-     * @template T The type of the instance.
+     * @param name - The name of the instance.
+     * @param instance - The instance to populate.
+     * @param properties - Optional property descriptor map to apply.
+     * @typeParam T - The type of the instance.
      */
     protected _populate<T = unknown>(name: string, instance: T, properties: PropertyDescriptorMap = {}): void {
         if (instance === null) {
@@ -778,8 +778,8 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Invokes aware callbacks on an instance.
-     * @param name The name of the instance.
-     * @param instance The instance to invoke callbacks on.
+     * @param name - The name of the instance.
+     * @param instance - The instance to invoke callbacks on.
      * @returns The instance after aware callbacks have been invoked.
      */
     private _invokeAware(name: string, instance: Aware): Aware {
@@ -794,9 +794,9 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Invokes the `init` method on an initializable instance.
-     * @param name The name of the instance.
-     * @param instance The initializable instance.
-     * @throws {FrameworkError} If initialization fails.
+     * @param name - The name of the instance.
+     * @param instance - The initializable instance.
+     * @throws If initialization fails.
      */
     private _invokeInit(name: string, instance: Initializable): void {
         try {
@@ -809,15 +809,13 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
 /**
  * A default implementation of {@link AbstractFactory}.
- * @extends AbstractFactory
  * @example
+ * ```ts
  * const factory = new DefaultFactory();
- * factory.setValue( 'foo', 123 );
- * factory.getValue( 'foo' );
- * //=> 123
- * factory.hasValue( 'foo' );
- * //=> true
- * factory.deleteValue( 'foo' );
- * factory.hasValue( 'foo' );
- * //=> false
+ * factory.setValue('foo', 123);
+ * factory.getValue('foo'); //=> 123
+ * factory.hasValue('foo'); //=> true
+ * factory.deleteValue('foo');
+ * factory.hasValue('foo'); //=> false
+ * ```
  */

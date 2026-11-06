@@ -1,8 +1,5 @@
 /**
  * `ndigo config` — get/set/list app-level config keys.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand } from '@stricli/core';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';

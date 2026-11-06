@@ -1,8 +1,5 @@
 /**
- * `ndigo update` — bump @ndigo/* versions in an app.
- *
- * @since 1.0.0
- * @author Jeff Rose
+ * `ndigo update` — bump \@ndigo/* versions in an app.
  */
 import { buildCommand } from '@stricli/core';
 import { writeFileSync } from 'node:fs';
@@ -42,7 +39,7 @@ export const updateCommand = buildCommand({
                 devDependencies?: Record<string, string>;
             } | null;
             const deps = { ...appManifest?.dependencies, ...appManifest?.devDependencies };
-            const ndigoDeps = Object.keys(deps).filter((name) => name.startsWith('@ndigo/'));
+            const ndigoDeps = Object.keys(deps).filter((name) => name.startsWith('\@ndigo/'));
             let behind = 0;
             for (const name of ndigoDeps) {
                 const installed = deps[name];
@@ -66,7 +63,7 @@ export const updateCommand = buildCommand({
                 process.exitCode = 1;
                 process.stdout.write(`${behind} package(s) can be updated. Run 'ndigo update'.\n`);
             } else {
-                process.stdout.write('All @ndigo/* packages are up to date.\n');
+                process.stdout.write('All \@ndigo/* packages are up to date.\n');
             }
             return;
         }
@@ -87,7 +84,7 @@ export const updateCommand = buildCommand({
             const sectionDeps = full[section] as Record<string, string> | undefined;
             if (!sectionDeps) continue;
             for (const name of Object.keys(sectionDeps)) {
-                if (name.startsWith('@ndigo/') && manifest.packages[name]) {
+                if (name.startsWith('\@ndigo/') && manifest.packages[name]) {
                     if (sectionDeps[name] !== manifest.packages[name]) {
                         sectionDeps[name] = manifest.packages[name];
                         changed = true;
@@ -125,6 +122,6 @@ export const updateCommand = buildCommand({
         },
     },
     docs: {
-        brief: 'Bump @ndigo/* versions in an app from a version manifest (exact pins only)',
+        brief: 'Bump \@ndigo/* versions in an app from a version manifest (exact pins only)',
     },
 });

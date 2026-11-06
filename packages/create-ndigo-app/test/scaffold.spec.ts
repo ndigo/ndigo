@@ -6,10 +6,9 @@
 import { afterEach, describe, expect, test } from 'vitest';
 import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
-import { join, resolve } from 'node:path';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { scaffold } from '../src/index';
-
-const ROOT = resolve(import.meta.dirname, '..', '..', '..');
 
 describe('create-ndigo-app scaffold', () => {
     const created: string[] = [];
@@ -21,7 +20,7 @@ describe('create-ndigo-app scaffold', () => {
     });
 
     test('scaffolds a node app with the preset entrypoint and a passing manifest shape', async () => {
-        const target = join(ROOT, 'apps', '99-scaffold-test-node');
+        const target = join(tmpdir(), 'ndigo-scaffold-test-node');
         created.push(target);
 
         const code = await scaffold([target, '--kind', 'node', '--name', 'scaffoldtest', '--yes']);
@@ -44,7 +43,7 @@ describe('create-ndigo-app scaffold', () => {
     });
 
     test('scaffolds a browser app with the preset entrypoint and bundle guard', async () => {
-        const target = join(ROOT, 'apps', '99-scaffold-test-browser');
+        const target = join(tmpdir(), 'ndigo-scaffold-test-browser');
         created.push(target);
 
         const code = await scaffold([target, '--kind', 'browser', '--name', 'scaffoldtest', '--yes']);
@@ -60,7 +59,7 @@ describe('create-ndigo-app scaffold', () => {
     });
 
     test('--local rewrites @ndigo/* deps to file: links', async () => {
-        const target = join(ROOT, 'apps', '99-scaffold-test-local');
+        const target = join(tmpdir(), 'ndigo-scaffold-test-local');
         created.push(target);
 
         const code = await scaffold([target, '--kind', 'node', '--name', 'scaffoldtest', '--yes', '--local']);

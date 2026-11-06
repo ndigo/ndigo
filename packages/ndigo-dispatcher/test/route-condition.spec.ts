@@ -1,4 +1,3 @@
-
 import { describe, test, expect } from 'vitest';
 import { RouteCondition, RouteConditionHolder, CompositeRouteCondition } from '../src/route-condition';
 import { QueryParamExpression, QueryParamCondition, PatternsRouteCondition } from '../src/route-mapping-info';

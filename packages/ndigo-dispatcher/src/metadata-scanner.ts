@@ -42,7 +42,6 @@ export class MetadataScanner {
     constructor(target: Record<string, unknown> = {}) {
         this._cache = new MultiValueMap();
 
-        
         defineProperty(this, '_target', {
             value: target,
             configurable: false,
@@ -51,7 +50,6 @@ export class MetadataScanner {
         });
     }
 
-    
     /**
      * Populate the cache from the target's metadata and return the matching entries.
      *

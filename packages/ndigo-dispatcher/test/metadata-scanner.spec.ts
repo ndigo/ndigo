@@ -1,4 +1,3 @@
-
 import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { MetadataScanner } from '../src/metadata-scanner';
 

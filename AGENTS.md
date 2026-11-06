@@ -566,6 +566,11 @@ after you do and detection alone cannot prevent the collision.
        detached, and branching off `main` is required.
     3. `session_move` the session into it, then run `pnpm install` once (the
        shared pnpm store makes it cheap).
+- **Find the issue first.** Before naming anything, search GitHub for the
+  work's tracking issue (`gh issue list --search "<task>"`). When one exists —
+  or after filing one — use the issue forms below: the worktree, branch, and
+  PR all carry the same number. The no-issue forms are for genuinely
+  untracked one-offs only.
 - **Names:** `<repo>-<issue>-<slug>` (e.g.
   `~/Workspace/ndigo-50-lint-surface-split`) when the work has an issue;
   `<repo>-<slug>` when it does not (e.g. `~/Workspace/ndigo-worktree-discipline`).

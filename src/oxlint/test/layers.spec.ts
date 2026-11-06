@@ -138,6 +138,12 @@ describe('the package layer ranks', () => {
             }
             const text = readFileSync(file, 'utf8');
             for (const match of text.matchAll(importSpecifierPattern)) {
+                // Type-only imports/exports erase at runtime: skip them.
+                const lineStart = text.lastIndexOf('\\n', match.index ?? 0) + 1;
+                const line = text.slice(lineStart, text.indexOf('\\n', match.index ?? 0));
+                if (/\\b(?:import|export)\\s+type\\b/u.test(line)) {
+                    continue;
+                }
                 const target = /^@ndigo\/([^/]+)/u.exec(match[1])?.[1];
                 if (target === undefined || target === importer || TOOLING_PACKAGES.has(target)) {
                     continue;

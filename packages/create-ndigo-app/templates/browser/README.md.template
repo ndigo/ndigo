@@ -20,10 +20,6 @@ cd {{name}} && pnpm install && pnpm dev
 
 - [@ndigo/platform-web](https://www.npmjs.com/package/@ndigo/platform-web) — the browser platform foundation
 
-## Contributing
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
-
 ## License
 
-[ISC](./LICENSE)
+ISC

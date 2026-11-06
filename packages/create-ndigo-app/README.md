@@ -33,7 +33,7 @@ create-ndigo-app [dir] [--kind node|browser] [--name <slug>]
 - `--port` — dev port (default 3000).
 - `--dir` — target directory (defaults to `./<name>`).
 - `--yes` / `-y` — accept all defaults (non-interactive, CI-friendly).
-- `--local` — rewrite `@ndigo/*` dependencies to `workspace:*` for development
+- `--local` (or `CREATE_NDIGO_APP_LOCAL=1`) — rewrite `@ndigo/*` dependencies to `workspace:*` for development
   against a local Ndigo checkout (place the scaffolded app under `apps/` or add
   it to `pnpm-workspace.yaml`).
 - `--force` — overwrite a non-empty target directory.

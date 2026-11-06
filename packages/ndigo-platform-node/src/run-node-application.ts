@@ -165,12 +165,15 @@ export async function runNodeApplication(
         if (closed) return;
         closed = true;
         unregisterSignals?.();
-        await server.close();
-        for (const resource of extraResources) {
-            // eslint-disable-next-line no-await-in-loop -- sequential teardown is intentional: resources close in order, after the server and before the context
-            await resource.close();
+        try {
+            await server.close();
+            for (const resource of extraResources) {
+                // eslint-disable-next-line no-await-in-loop -- sequential teardown is intentional: resources close in order, after the server and before the context
+                await resource.close();
+            }
+        } finally {
+            context.close();
         }
-        context.close();
     };
 
     return { context, server, port: server.port, close };

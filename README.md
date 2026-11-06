@@ -44,6 +44,11 @@ pnpm lint
 pnpm format:check
 ```
 
+> **Optional:** the benchmark lanes (`pnpm test:benchmark:*`, `pnpm build:all`)
+> require a sibling checkout of the `todomvc` repository at `../todomvc`
+> (see `pnpm-workspace.yaml`). These are not part of the core build/test and
+> are skipped automatically when the directory is absent.
+
 The full workflow — Nx targets, focused test runs, and the work-tracking
 process — lives in [CONTRIBUTING.md](CONTRIBUTING.md).
 

@@ -5,7 +5,7 @@
  * @author Jeff Rose
  */
 import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync, readFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { join, resolve, sep } from 'node:path';
 import { promptChoice, promptLine } from './prompts.js';
 import { copyTemplate, templateVars } from './templates.js';
 import type { AppKind } from './types.js';
@@ -21,10 +21,12 @@ interface ParsedArgs {
     yes: boolean;
     local: boolean;
     force: boolean;
+    help: boolean;
+    version: boolean;
 }
 
 function parseArgs(argv: string[]): ParsedArgs {
-    const result: ParsedArgs = { yes: false, local: false, force: false };
+    const result: ParsedArgs = { yes: false, local: false, force: false, help: false, version: false };
     let i = 0;
     while (i < argv.length) {
         const token = argv[i];
@@ -44,6 +46,10 @@ function parseArgs(argv: string[]): ParsedArgs {
             result.local = true;
         } else if (token === '--force') {
             result.force = true;
+        } else if (token === '--help' || token === '-h') {
+            result.help = true;
+        } else if (token === '--version') {
+            result.version = true;
         } else if (token.startsWith('--')) {
             throw new Error(`Unknown flag: ${token}`);
         } else if (result.targetDir === undefined && (token.includes('/') || token.includes('\\\\'))) {
@@ -70,11 +76,7 @@ function toKebab(slug: string): string {
 
 function isNonEmpty(dir: string): boolean {
     if (!existsSync(dir)) return false;
-    try {
-        return readdirSync(dir).length > 0;
-    } catch {
-        return false;
-    }
+    return readdirSync(dir).length > 0;
 }
 
 function rewriteLocalDeps(targetDir: string): void {
@@ -87,13 +89,18 @@ function rewriteLocalDeps(targetDir: string): void {
         if (!deps) return;
         for (const [name, version] of Object.entries(deps)) {
             if (name.startsWith('@ndigo/') && version === '~0.0.1') {
+                // Dev mode: workspace link only resolves when the scaffolded app
+                // is a member of this pnpm workspace (see the printed hint).
+                // `file:` links cannot be used pre-publish because workspace
+                // packages declare `catalog:` specifiers that are only resolved
+                // by `pnpm publish` (F-28).
                 deps[name] = 'workspace:*';
             }
         }
     };
     rewrite(manifest.dependencies);
     rewrite(manifest.devDependencies);
-    writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 4)}\n`, 'utf8');
+    writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
 }
 
 function printNextSteps(targetDir: string, kind: AppKind): void {
@@ -124,17 +131,50 @@ export async function scaffold(argv: string[]): Promise<number> {
         return 2;
     }
 
+    if (parsed.help) {
+        console.log(`create-ndigo-app — scaffold a standalone Ndigo application
+
+Usage: create-ndigo-app [name|target-dir] [options]
+
+Options:
+  --kind <node|browser>   Application kind (default: node)
+  --name <slug>           App slug (kebab-case)
+  --description <text>    One-line description
+  --port <n>              Dev port (default: 3000)
+  --dir <path>            Target directory
+  --yes, -y               Accept defaults without prompting
+  --local                 Rewrite @ndigo/* deps to file: links (dev mode)
+  --force                 Overwrite a non-empty target directory
+  --help, -h              Show this help
+  --version               Show version
+`);
+        return 0;
+    }
+    if (parsed.version) {
+        console.log('create-ndigo-app 0.0.1');
+        return 0;
+    }
+
     let name = parsed.name;
+    if (process.env.CREATE_NDIGO_APP_LOCAL === '1' || process.env.CREATE_NDIGO_APP_LOCAL === 'true') {
+        parsed.local = true;
+    }
+
     if (name === undefined && parsed.targetDir !== undefined) {
         const base = parsed.targetDir.split(/[/\\]/).filter(Boolean).pop() ?? '';
         name = toKebab(base) || 'ndigo-app';
     }
-    if (name === undefined) {
-        if (parsed.yes) {
-            name = 'ndigo-app';
-        } else {
-            name = await promptLine('App name (kebab-case)', 'ndigo-app');
+    try {
+        if (name === undefined) {
+            if (parsed.yes) {
+                name = 'ndigo-app';
+            } else {
+                name = await promptLine('App name (kebab-case)', 'ndigo-app');
+            }
         }
+    } catch (error) {
+        console.error(`create-ndigo-app: ${(error as Error).message}`);
+        return 2;
     }
     name = toKebab(name ?? '');
     if (name.length === 0) {
@@ -147,23 +187,34 @@ export async function scaffold(argv: string[]): Promise<number> {
     }
 
     let kind = parsed.kind;
-    if (kind === undefined) {
-        if (parsed.yes) {
-            kind = 'node';
-        } else {
-            kind = await promptChoice('App kind', ['node', 'browser'] as const, 'node');
+    try {
+        if (kind === undefined) {
+            if (parsed.yes) {
+                kind = 'node';
+            } else {
+                kind = await promptChoice('App kind', ['node', 'browser'] as const, 'node');
+            }
         }
+    } catch (error) {
+        console.error(`create-ndigo-app: ${(error as Error).message}`);
+        return 2;
     }
     if (!VALID_KINDS.includes(kind)) {
         console.error(`create-ndigo-app: --kind must be one of ${VALID_KINDS.join(', ')}`);
         return 2;
     }
 
-    const description =
-        parsed.description ??
-        (parsed.yes
-            ? `${toPascal(name)} — Ndigo demo application`
-            : await promptLine('Description', `${toPascal(name)} — Ndigo demo application`));
+    let description: string;
+    try {
+        description =
+            parsed.description ??
+            (parsed.yes
+                ? `${toPascal(name)} — Ndigo demo application`
+                : await promptLine('Description', `${toPascal(name)} — Ndigo demo application`));
+    } catch (error) {
+        console.error(`create-ndigo-app: ${(error as Error).message}`);
+        return 2;
+    }
 
     const port = parsed.port ?? 3000;
     if (!Number.isInteger(port) || port < 0 || port > 65_535) {
@@ -178,6 +229,12 @@ export async function scaffold(argv: string[]): Promise<number> {
     }
 
     if (isNonEmpty(targetDir) && parsed.force) {
+        const forbidden = targetDir === '/' || targetDir === resolve(process.env.HOME ?? '/') ||
+            targetDir.includes(`${sep}node_modules`) || targetDir.endsWith('.git');
+        if (forbidden) {
+            console.error(`create-ndigo-app: refusing to overwrite protected path: ${targetDir}`);
+            return 1;
+        }
         rmSync(targetDir, { recursive: true, force: true });
     }
     mkdirSync(targetDir, { recursive: true });

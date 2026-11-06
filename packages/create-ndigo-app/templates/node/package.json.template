@@ -6,6 +6,8 @@
   "private": true,
   "scripts": {
     "start": "tsx src/index.ts",
+    "dev": "tsx src/index.ts",
+    "build": "tsc -b tsconfig.build.json",
     "test": "vitest run"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
@@ -19,6 +21,7 @@
     "@tsmetadata/polyfill": "^1.1.3"
   },
   "devDependencies": {
+    "@ndigo/cli": "~0.0.1",
     "@ndigo/test": "~0.0.1",
     "esbuild": "^0.28.2",
     "tsx": "^4.23.13",

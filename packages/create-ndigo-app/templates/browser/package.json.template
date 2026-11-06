@@ -20,6 +20,7 @@
     "@ndigo/view-webcomponent": "~0.0.1"
   },
   "devDependencies": {
+    "@ndigo/cli": "~0.0.1",
     "@ndigo/test": "~0.0.1",
     "@tsmetadata/polyfill": "^1.1.3",
     "esbuild": "^0.28.2",

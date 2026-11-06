@@ -16,13 +16,13 @@ export interface ScaffoldOptions {
     kind: AppKind;
     /** One-line description used in the manifest and README. */
     description: string;
-    /** Dev port (defaults to the first free multiple-of-ten slot above 3000). */
+    /** Dev port (defaults to 3000). */
     port: number;
     /** Target directory (relative to the cwd unless absolute). */
     targetDir: string;
     /** When true, accept all defaults without prompting. */
     yes: boolean;
-    /** Rewrite `@ndigo/*` deps to `file:` links against the workspace (dev mode). */
+    /** Rewrite `@ndigo/*` deps to `workspace:*` links against the workspace (dev mode). */
     local: boolean;
     /** Force overwrite a non-empty target directory. */
     force: boolean;

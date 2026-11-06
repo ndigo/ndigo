@@ -107,6 +107,12 @@ D-3); the `create-*` bin stays a thin wrapper for discovery.
 Revisit trigger: the 1.0 publish lands (issue #10). Until then, Phase B stays
 a plan, not an implementation.
 
+**Timing superseded (AD-92, 2026-11-05):** Phase B is pulled forward to ship
+_with_ the 1.0 release rather than after it — the entrypoint presets (AD-90)
+are now settled, so the scaffold lands on the same defaults as the in-repo
+apps. The package is built and validated in-repo now (dev mode via
+`--local`); the publish event is unchanged.
+
 ### D-3 — Nx stays the in-repo substrate; consumers do not need it
 
 Nx remains how this repository runs its generators (`nx g

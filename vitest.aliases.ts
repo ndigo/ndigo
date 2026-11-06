@@ -81,4 +81,5 @@ export const ndigoAliases: { find: RegExp; replacement: string }[] = [
     { find: /^@ndigo\/test$/, replacement: resolve(repoRoot, 'packages/ndigo-test/src') },
     { find: /^@ndigo\/inspect$/, replacement: resolve(repoRoot, 'packages/ndigo-inspect/src') },
     { find: /^@ndigo\/flags-openfeature$/, replacement: resolve(repoRoot, 'packages/ndigo-flags-openfeature/src') },
+    { find: /^create-ndigo-app$/, replacement: resolve(repoRoot, 'packages/create-ndigo-app/src') },
 ];

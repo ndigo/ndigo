@@ -92,6 +92,27 @@ EJS shell + hydration + live updates: [apps/07-ndigo-island](apps/07-ndigo-islan
 and [apps/12-ndigo-petclinic](apps/12-ndigo-petclinic/README.md); the model is
 [guide 18 — Signals & Islands](docs/guides/18-signals-and-islands.md).
 
+### Scaffold a new app
+
+Inside this repository, scaffold an example app with the in-repo generator:
+
+```bash
+ndigo new <name> --kind node     # or: --kind browser
+```
+
+Outside the repository (or as part of the 1.0 release), use the standalone
+scaffold (AD-92), which writes a plain pnpm project pinned to the published
+`@ndigo/*` line:
+
+```bash
+npm create ndigo-app@latest <name>          # node kind by default
+npm create ndigo-app@latest <name> -- --kind browser
+```
+
+Both paths use the AD-90 lifecycle presets (`runNodeApplication` /
+`createWebApplication`) and follow the conventions in
+[guide 29](docs/guides/29-application-conventions.md).
+
 #### Run the demos
 
 ```bash

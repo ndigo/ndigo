@@ -1,0 +1,15 @@
+/**
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+import { createWebApplication } from '@ndigo/platform-web';
+import { {{className}}Configuration } from './{{name}}-configuration';
+// Side effect: registers the `{{name}}-app` custom element.
+import './{{name}}-app-view';
+
+// Lifecycle preset (AD-90): builds WebAutoConfiguration + the app
+// configuration, wires the router, dispatcher, and DOM view target into
+// `#app`, and navigates to the URL's current route.
+const app = await createWebApplication([{{className}}Configuration]);
+
+export default app;

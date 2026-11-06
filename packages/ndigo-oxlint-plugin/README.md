@@ -68,8 +68,7 @@ contract. The rule's predicates are asserted against the runtime helpers
 
 ## API
 
-The full API is generated from JSDoc via `pnpm doc:api` into
-[`api/`](api/README.md). Primary exports live in
+The full API is at [`api/`](api/README.md). Primary exports live in
 [`src/index.ts`](src/index.ts); see the [package index](../../API.md) for
 how it fits with the rest of Ndigo.
 

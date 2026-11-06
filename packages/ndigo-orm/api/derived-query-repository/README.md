@@ -6,6 +6,8 @@
 
 # derived-query-repository
 
+Convention-derived query method-name parsing (ORM completion plan,
+
 ## Interfaces
 
 - [DerivedQuery](interfaces/DerivedQuery.md)

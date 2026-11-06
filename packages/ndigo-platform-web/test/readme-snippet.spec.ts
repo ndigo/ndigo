@@ -3,9 +3,6 @@
  * `@ndigo/platform-web` barrel actually provides. It documents
  * `import { Cookies } from '@ndigo/platform-web'`, which the barrel previously
  * did not export.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';

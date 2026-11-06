@@ -5,9 +5,6 @@
  * real pipeline (argument resolution → Zod → handler → view), so the suite
  * asserts the wire contract end to end: status codes, payload keys, the
  * `{errors:{…}}` envelope, JWT auth, ownership, filtering and paging.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

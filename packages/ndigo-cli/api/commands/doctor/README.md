@@ -6,6 +6,8 @@
 
 # commands/doctor
 
+`ndigo doctor` — environment and framework self-diagnostics.
+
 ## Variables
 
 - [doctorCommand](variables/doctorCommand.md)

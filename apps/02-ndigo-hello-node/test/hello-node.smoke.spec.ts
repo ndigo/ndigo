@@ -1,7 +1,3 @@
-/**
- * @since 1.0.0
- * @author Jeff Rose
- */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { bootApp, MockHTTP } from '@ndigo/test';

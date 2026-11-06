@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
 import { ViewTarget } from '@ndigo/view';

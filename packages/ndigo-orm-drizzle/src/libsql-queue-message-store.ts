@@ -41,9 +41,6 @@
  * `ownsClient: true` explicitly transfers ownership. {@link LibSQLQueueMessageStore.dispose}
  * closes only owned clients and rejects later store operations; it does not
  * drain pending writes. Stop and drain the broker before disposing the store.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { createClient, type Client } from '@libsql/client';
 import type { QueueMessageStore, StoredQueueMessage, StompBody } from '@ndigo/socket';

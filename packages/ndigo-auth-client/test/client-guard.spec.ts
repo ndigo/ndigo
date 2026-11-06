@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect, beforeEach } from 'vitest';
 import { ClientAuthGuard, extractAuthMetadata } from '../src/client-guard';

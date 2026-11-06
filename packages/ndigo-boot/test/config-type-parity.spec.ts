@@ -8,9 +8,6 @@
  * Direction: the schema documents a SUBSET of each option type's keys, and
  * every schema key must be a real key of that type (adding a bogus schema key,
  * or a type rename that drops a documented key, turns this red).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';

@@ -6,6 +6,8 @@
 
 # metrics/metric-json
 
+The JSON projection of metric snapshots (AD-77 D-4): the same
+
 ## Interfaces
 
 - [MetricJSONEntry](interfaces/MetricJSONEntry.md)

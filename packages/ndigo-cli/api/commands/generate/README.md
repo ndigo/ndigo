@@ -6,6 +6,8 @@
 
 # commands/generate
 
+`ndigo generate` — front the framework-owned generators
+
 ## Interfaces
 
 - [GenerateFlags](interfaces/GenerateFlags.md)

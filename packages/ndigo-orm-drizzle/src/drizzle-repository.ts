@@ -1,8 +1,5 @@
 /**
  * Repository for the Drizzle-backed persistence layer.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Constructable } from '@ndigo/core';
 import type { AsyncRepository, PageRequest, Page, RelationFetchOptions } from '@ndigo/orm';

@@ -7,9 +7,6 @@
  * members (`ok`, `upstreamAttempts`, `error`, …) instead of being re-wrapped
  * into a bare `{status, title, detail, instance}` — machine-readable errors on
  * every failing route.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { ResponseStatus } from '@ndigo/http';
 import { ResponseEntity } from '@ndigo/platform-node';

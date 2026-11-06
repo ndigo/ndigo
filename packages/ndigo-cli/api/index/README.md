@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/cli` — the complete CLI command surface: app
+
 ## Functions
 
 - [buildCliApp](functions/buildCliApp.md)

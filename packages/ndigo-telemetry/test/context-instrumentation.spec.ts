@@ -2,9 +2,6 @@
  * `ContextInstrumentation` span-kind regression spec (TEL-11): application
  * context teardown is internal lifecycle work, not a network boundary — the
  * span must be INTERNAL (it was mislabeled CLIENT).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, expect, it, afterEach, vi } from 'vitest';
 import { SpanKind, trace } from '@opentelemetry/api';

@@ -6,6 +6,8 @@
 
 # context-tokens
 
+Type-safe bean handles for the ndigo-jobs contracts.
+
 ## Variables
 
 - [JOB\_DRIVER](variables/JOB_DRIVER.md)

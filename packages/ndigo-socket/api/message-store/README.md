@@ -6,6 +6,8 @@
 
 # message-store
 
+The `/queue` message store contract (D11 hardening, AD-24 direction).
+
 ## Classes
 
 - [InMemoryQueueMessageStore](classes/InMemoryQueueMessageStore.md)

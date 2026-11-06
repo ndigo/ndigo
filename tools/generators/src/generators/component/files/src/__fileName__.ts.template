@@ -1,8 +1,5 @@
 /**
  * <%= summary || className + ' — ' + packageName + ' component' %>.
- *
- * @since 1.0.0
- * @author <%= author %>
  */
 export class <%= className %> {
     get [Symbol.toStringTag](): string {

@@ -6,6 +6,8 @@
 
 # node-view-target
 
+View target that writes rendered output to a Node.js `ServerResponse`.
+
 ## Classes
 
 - [HTTPResponseViewTarget](classes/HTTPResponseViewTarget.md)

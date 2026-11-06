@@ -1,8 +1,5 @@
 /**
  * Internal helper functions for the event emitter.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { is, isFunction, isNil, isNumber, isString } from '@ndigo/util/types';
 import { createNull } from '@ndigo/core';

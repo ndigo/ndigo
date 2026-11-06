@@ -11,9 +11,6 @@
  *
  * The dependencies come from {@link runtime}, published by `createRuntime()`
  * before the context refreshes.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { fileURLToPath } from 'node:url';

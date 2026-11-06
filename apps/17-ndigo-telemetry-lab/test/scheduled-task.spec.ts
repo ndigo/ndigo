@@ -11,9 +11,6 @@
  * interval that never auto-fires, and the tracer provider hands finished spans
  * to an `InMemorySpanExporter` — the same instruments
  * `packages/ndigo-telemetry-node/test/counted-decorator.spec.ts` uses.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, describe, expect, test } from 'vitest';

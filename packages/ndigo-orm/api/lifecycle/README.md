@@ -6,6 +6,8 @@
 
 # lifecycle
 
+The single lifecycle-hook runner shared by `InMemoryEntityManager` and the
+
 ## Functions
 
 - [runLifecycleHooks](functions/runLifecycleHooks.md)

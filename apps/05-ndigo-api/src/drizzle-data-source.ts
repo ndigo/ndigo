@@ -7,9 +7,6 @@
  * and the routed store share one durable database (AD-78). The instance is
  * created lazily on first use so integration tests can pin `NDIGO_DB_URL`
  * before any request touches it.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { fileURLToPath } from 'node:url';
 import { mkdir } from 'node:fs/promises';

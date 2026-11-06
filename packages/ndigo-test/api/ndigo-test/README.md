@@ -6,6 +6,8 @@
 
 # ndigo-test
 
+Boot helpers for `@ndigo/test` — boot a Ndigo application context and wire a.
+
 ## Interfaces
 
 - [NdigoTestApp](interfaces/NdigoTestApp.md)

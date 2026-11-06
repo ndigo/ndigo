@@ -1,8 +1,5 @@
 /**
  * Shared MockHTTP harness for the Todo-Backend app lanes.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { ApplicationContext } from '@ndigo/context';
 import { bootApp, MockHTTP } from '@ndigo/test';

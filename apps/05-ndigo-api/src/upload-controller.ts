@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { fileValue, postMapping, parameters, requestMapping, requestPart } from '@ndigo/dispatcher';

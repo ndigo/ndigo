@@ -1,8 +1,5 @@
 /**
  * MockHTTP — in-process, socket-free integration-test client for Ndigo applications.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { HTTPHeaders, contentTypeBase, MULTIPART_FORM_DATA } from '@ndigo/http';
 import { NodeDispatcher } from '@ndigo/platform-node';

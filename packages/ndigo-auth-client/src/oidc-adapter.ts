@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { base64url, createRemoteJWKSet, decodeJwt, jwtVerify, type JWTPayload } from 'jose';
 import { createHash } from 'node:crypto';

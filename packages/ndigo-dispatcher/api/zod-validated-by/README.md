@@ -6,6 +6,8 @@
 
 # zod-validated-by
 
+Zod-backed request validation (AD-07).
+
 ## Classes
 
 - [ZodValidationError](classes/ZodValidationError.md)

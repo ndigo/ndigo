@@ -1,8 +1,5 @@
 /**
  * The `todos` row — Todo-Backend's five-field resource as an `@ndigo/orm` entity.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { z } from 'zod';

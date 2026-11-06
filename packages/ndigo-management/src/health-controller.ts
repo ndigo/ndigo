@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { getMapping, requestMapping, parameters, pathVariable } from '@ndigo/dispatcher';
 import { ApplicationContext, AsApplicationContextAware } from '@ndigo/context';

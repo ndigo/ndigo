@@ -10,9 +10,6 @@
  * indexes, FK DDL from relations) is reported as unsupported rather than
  * silently dropped — growing the metadata later must bump `predicate` so
  * committed snapshots fail the freshness check instead of diverging.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Constructable } from '@ndigo/core';
 import { getEntityMetadata, isEntity } from '@ndigo/orm';

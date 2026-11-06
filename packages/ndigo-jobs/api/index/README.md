@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/jobs` — durable job queues, worker execution, and the
+
 ## References
 
 ### ClaimOptions

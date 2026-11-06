@@ -6,6 +6,8 @@
 
 # authorization-header
 
+Authorization specific {@link HTTPHeader} category (Wave 5, 2026-09-27):
+
 ## Classes
 
 - [AuthorizationHeader](classes/AuthorizationHeader.md)

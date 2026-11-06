@@ -6,6 +6,8 @@
 
 # commands/db/rollback
 
+`ndigo db rollback` — front the application’s db:rollback script.
+
 ## Variables
 
 - [dbRollbackCommand](variables/dbRollbackCommand.md)

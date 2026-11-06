@@ -7,9 +7,6 @@
  * Inbound frames are counted (a client can send anything; the payload is not
  * interpreted) so the two-way nature of the session is observable in
  * `/metrics` rather than silent.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { $aware } from '@ndigo/factory';

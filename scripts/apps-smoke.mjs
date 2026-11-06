@@ -16,9 +16,6 @@
  * probe ports unique.
  *
  * Run: `pnpm apps:smoke` (or `node scripts/apps-smoke.mjs --only api`).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';

@@ -6,6 +6,8 @@
 
 # commands/update
 
+`ndigo update` — bump @ndigo/* versions in an app.
+
 ## Variables
 
 - [updateCommand](variables/updateCommand.md)

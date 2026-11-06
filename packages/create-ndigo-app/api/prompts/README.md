@@ -6,6 +6,8 @@
 
 # prompts
 
+Minimal interactive prompts (readline-based, zero dependencies).
+
 ## Functions
 
 - [promptChoice](functions/promptChoice.md)

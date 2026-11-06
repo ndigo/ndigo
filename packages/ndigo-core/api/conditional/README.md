@@ -6,6 +6,8 @@
 
 # conditional
 
+Conditional auto-configuration metadata helpers.
+
 ## Interfaces
 
 - [ConditionContext](interfaces/ConditionContext.md)

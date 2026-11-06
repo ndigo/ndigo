@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Cache, CacheOptions, MemoryCache } from './cache';
 import { resolveCacheName } from './cache-name';

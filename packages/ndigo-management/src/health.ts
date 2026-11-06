@@ -1,8 +1,5 @@
 /**
  * Health indicators and the registry that aggregates them for a management.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Enumerable } from '@ndigo/core';
 import { getErrorMessage } from '@ndigo/util';

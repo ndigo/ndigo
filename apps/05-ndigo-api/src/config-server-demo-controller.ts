@@ -9,9 +9,6 @@
  *
  * In production, point `NDIGO_CONFIG_SERVER_URL` at a real config server;
  * this endpoint exists so the demo runs with zero external infrastructure.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { AsApplicationContextAware, ApplicationContext } from '@ndigo/context';

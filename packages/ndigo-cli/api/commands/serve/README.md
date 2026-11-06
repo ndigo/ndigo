@@ -6,6 +6,8 @@
 
 # commands/serve
 
+`ndigo serve` — run the application under the AD-74 supervisor: every
+
 ## Variables
 
 - [serveCommand](variables/serveCommand.md)

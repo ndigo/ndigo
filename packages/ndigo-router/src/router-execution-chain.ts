@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { RouterInterceptor } from './router-interceptor';
 import { Route } from './route';

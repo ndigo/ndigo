@@ -1,9 +1,6 @@
 /**
  * The service layer's public surface: the beans the container registers and the
  * state/model types controllers and views share.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export { ArticleService, FEED_PAGE_SIZE } from './article-service';
 export type { ConduitArticleState, ConduitFeedState, ConduitFeedTab } from './article-service';

@@ -26,9 +26,6 @@
  * from the key (in a privileged channel). It does NOT defend against full
  * host compromise or code execution — the marker version prefix is the
  * documented migration seam to a KMS-envelope backend.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
 

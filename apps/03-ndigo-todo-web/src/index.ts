@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 // TodoMVC common base (css class + style tweaks). Bundled through the entry
 // because vite only processes module scripts in index.html — a classic

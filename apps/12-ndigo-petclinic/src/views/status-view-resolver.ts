@@ -14,9 +14,6 @@
  * - {@link StatusViewResolver} is the view resolver registered by the app
  *   configuration: it maps the configured names to status-bearing pages and
  *   delegates every other name to the standard `EJSViewResolver`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { EJSView, type EJSViewOptions } from '@ndigo/view-ejs';
 import type { ResourceLoader } from '@ndigo/context';

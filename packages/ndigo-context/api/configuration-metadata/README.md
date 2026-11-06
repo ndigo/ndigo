@@ -6,6 +6,8 @@
 
 # configuration-metadata
 
+Configuration metadata shared by the `@configurationProperties` decorator
+
 ## Interfaces
 
 - [DeclaredConfigurationProperty](interfaces/DeclaredConfigurationProperty.md)

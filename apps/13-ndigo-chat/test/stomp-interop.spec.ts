@@ -5,9 +5,6 @@
  * Verifies connect → subscribe (with a receipt) → send → receive, a receipted
  * SEND, and cross-client fan-out on `/topic/chat`. The endpoint carries no auth
  * wiring, so the client stands up standalone.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

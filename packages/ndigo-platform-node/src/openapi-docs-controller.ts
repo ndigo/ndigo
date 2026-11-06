@@ -5,9 +5,6 @@
  * registers the route at construction with per-instance paths. Dispatch
  * never reads the access condition; it exists so the spec generator
  * excludes these endpoints from the document.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { ServerResponse } from 'node:http';
 import '@tsmetadata/polyfill';

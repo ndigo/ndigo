@@ -6,6 +6,8 @@
 
 # templates
 
+Template resolution and substitution for the scaffold.
+
 ## Functions
 
 - [copyTemplate](functions/copyTemplate.md)

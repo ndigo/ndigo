@@ -24,6 +24,36 @@
       "factory": "./src/generators/readme/generator",
       "schema": "./src/generators/readme/schema.json",
       "description": "Scaffold a new package README on the standard Ndigo template"
+    },
+    "controller": {
+      "factory": "./src/generators/component/generator",
+      "schema": "./src/generators/component/schema.json",
+      "description": "Generate a controller source file (scaffold)"
+    },
+    "service": {
+      "factory": "./src/generators/component/generator",
+      "schema": "./src/generators/component/schema.json",
+      "description": "Generate a service source file (scaffold)"
+    },
+    "entity": {
+      "factory": "./src/generators/component/generator",
+      "schema": "./src/generators/component/schema.json",
+      "description": "Generate a entity source file (scaffold)"
+    },
+    "middleware": {
+      "factory": "./src/generators/component/generator",
+      "schema": "./src/generators/component/schema.json",
+      "description": "Generate a middleware source file (scaffold)"
+    },
+    "config": {
+      "factory": "./src/generators/component/generator",
+      "schema": "./src/generators/component/schema.json",
+      "description": "Generate a config source file (scaffold)"
+    },
+    "migration": {
+      "factory": "./src/generators/component/generator",
+      "schema": "./src/generators/component/schema.json",
+      "description": "Generate a migration source file (scaffold)"
     }
   }
 }

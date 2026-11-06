@@ -11,7 +11,7 @@ import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runWorkspaceOnce, usageError } from '../helpers/app-scripts.js';
 
 /** The generator kinds `@ndigo/generators` exposes (checked at run time). */
-const GENERATOR_KINDS = ['package', 'component', 'readme', 'header'] as const;
+const GENERATOR_KINDS = ['package', 'component', 'readme', 'header', 'controller', 'service', 'entity', 'middleware', 'config', 'migration'] as const;
 
 /**
  * The flags each generator's schema accepts. The CLI exposes the full
@@ -44,6 +44,12 @@ const FLAG_KEYS_BY_KIND: Record<string, readonly string[]> = {
     component: ['name', 'package', 'className', 'summary', 'author'],
     readme: ['name', 'description', 'path'],
     header: ['file', 'module', 'summary', 'author', 'force'],
+    controller: ['name', 'package', 'className', 'summary', 'author'],
+    service: ['name', 'package', 'className', 'summary', 'author'],
+    entity: ['name', 'package', 'className', 'summary', 'author'],
+    middleware: ['name', 'package', 'className', 'summary', 'author'],
+    config: ['name', 'package', 'className', 'summary', 'author'],
+    migration: ['name', 'package', 'className', 'summary', 'author'],
 };
 
 /**

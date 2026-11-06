@@ -1,8 +1,5 @@
 /**
  * Rule that flags `@ndigo/signals` imports inside `@ndigo/orm` entity files.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 

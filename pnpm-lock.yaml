@@ -1554,6 +1554,9 @@ importers:
       '@ndigo/auth-core':
         specifier: ~0.0.1
         version: link:../ndigo-auth-core
+      '@ndigo/core':
+        specifier: ~0.0.1
+        version: link:../ndigo-core
       '@ndigo/http':
         specifier: ~0.0.1
         version: link:../ndigo-http
@@ -1583,6 +1586,9 @@ importers:
       '@ndigo/auth-core':
         specifier: ~0.0.1
         version: link:../ndigo-auth-core
+      '@ndigo/core':
+        specifier: ~0.0.1
+        version: link:../ndigo-core
       '@ndigo/dispatcher':
         specifier: ~0.0.1
         version: link:../ndigo-dispatcher
@@ -2268,6 +2274,9 @@ importers:
 
   packages/ndigo-resilience:
     dependencies:
+      '@ndigo/core':
+        specifier: ~0.0.1
+        version: link:../ndigo-core
       '@ndigo/proxy':
         specifier: ~0.0.1
         version: link:../ndigo-proxy

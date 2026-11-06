@@ -66,7 +66,7 @@ import {
 } from './http-request-limits';
 import { parseCookies } from './cookie-parser';
 import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@ndigo/auth-core';
-import { getSymbolMetadata } from '@ndigo/core';
+import { IllegalStateError, getSymbolMetadata } from '@ndigo/core';
 import { NotAcceptableError } from '@ndigo/view';
 import { getLogger } from '@ndigo/log';
 
@@ -383,7 +383,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      */
     async listen(port: number, host?: string): Promise<void> {
         if (this.#server) {
-            throw new Error('NodeHTTPServerAdapter is already listening — close it before listening again');
+            throw new IllegalStateError('NodeHTTPServerAdapter is already listening — close it before listening again');
         }
         return new Promise<void>((resolve, reject) => {
             const onError = (error: Error): void => reject(error);

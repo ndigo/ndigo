@@ -46,6 +46,7 @@
  * @author Jeff Rose
  */
 import { createClient, type Client } from '@libsql/client';
+import { IllegalStateError } from '@ndigo/core';
 import type { QueueMessageStore, StoredQueueMessage, StompBody } from '@ndigo/socket';
 
 /** Table/column layout (column names stay stable for migrations). One
@@ -232,7 +233,7 @@ export class LibSQLQueueMessageStore implements QueueMessageStore {
     }
 
     #assertOpen(): void {
-        if (this.#disposed) throw new Error('libsql queue store is disposed');
+        if (this.#disposed) throw new IllegalStateError('libsql queue store is disposed');
     }
 }
 

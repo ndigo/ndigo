@@ -14,7 +14,7 @@ so error resolvers can render either a flat detail string or a structured
 
 ## Extends
 
-- `Error`
+- [`FrameworkError`](#)
 
 ## Constructors
 
@@ -44,7 +44,7 @@ The structured per-field failures.
 
 #### Overrides
 
-`Error.constructor`
+`FrameworkError.constructor`
 
 ## Properties
 
@@ -53,3 +53,49 @@ The structured per-field failures.
 > `readonly` **issues**: readonly [`ValidationIssue`](../interfaces/ValidationIssue.md)[]
 
 The structured per-field failures from the Zod parse.
+
+## Accessors
+
+### \[toStringTag\]
+
+#### Get Signature
+
+> **get** **\[toStringTag\]**(): `string`
+
+The string tag for this class.
+
+##### Returns
+
+`string`
+
+#### Inherited from
+
+`FrameworkError.[toStringTag]`
+
+## Methods
+
+### toJSON()?
+
+> `optional` **toJSON**(): `JSONValue`
+
+#### Returns
+
+`JSONValue`
+
+#### Inherited from
+
+`FrameworkError.toJSON`
+
+***
+
+### toString()
+
+> **toString**(): `string`
+
+#### Returns
+
+`string`
+
+#### Inherited from
+
+`FrameworkError.toString`

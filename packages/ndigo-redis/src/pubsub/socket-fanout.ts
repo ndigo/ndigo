@@ -5,6 +5,7 @@
  * @author Jeff Rose
  */
 import { randomUUID } from 'node:crypto';
+import { IllegalStateError } from '@ndigo/core';
 import type { SocketFanout, SocketFanoutMessage, SocketFanoutScope } from '@ndigo/socket';
 import { RedisConnection } from '../connection';
 
@@ -176,7 +177,7 @@ export class RedisSocketFanout implements SocketFanout {
     ): Promise<() => Promise<void>> {
         this.#assertOpen();
         const channel = this.#channel(scope);
-        if (this.#scopes.has(scope)) throw new Error('RedisSocketFanout already has a consumer for this scope');
+        if (this.#scopes.has(scope)) throw new IllegalStateError('RedisSocketFanout already has a consumer for this scope');
         this.#scopes.add(scope);
         let active = true;
         const listener = (wire: string): void => {
@@ -218,7 +219,7 @@ export class RedisSocketFanout implements SocketFanout {
         }
         if (this.#closed) {
             await unsubscribe();
-            throw new Error('RedisSocketFanout is closed');
+            throw new IllegalStateError('RedisSocketFanout is closed');
         }
         return unsubscribe;
     }
@@ -262,8 +263,8 @@ export class RedisSocketFanout implements SocketFanout {
     }
 
     #assertOpen(): void {
-        if (this.#closed) throw new Error('RedisSocketFanout is closed');
-        if (!this.#ready) throw new Error('RedisSocketFanout is not ready; await connect()');
+        if (this.#closed) throw new IllegalStateError('RedisSocketFanout is closed');
+        if (!this.#ready) throw new IllegalStateError('RedisSocketFanout is not ready; await connect()');
     }
 
     #channel(scope: SocketFanoutScope): string {

@@ -35,6 +35,7 @@
  * @author Jeff Rose
  */
 import { createClient, type Client } from '@libsql/client';
+import { IllegalStateError } from '@ndigo/core';
 import { randomUUID } from 'node:crypto';
 import type { JobId } from '@ndigo/jobs';
 import {
@@ -220,7 +221,7 @@ export class LibSQLOutboxStore implements OutboxStore {
 
     #assertOpen(): void {
         if (this.#disposed) {
-            throw new Error('libsql outbox store is disposed');
+            throw new IllegalStateError('libsql outbox store is disposed');
         }
     }
 }

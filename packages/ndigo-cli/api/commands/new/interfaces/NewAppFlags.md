@@ -38,3 +38,9 @@ The flags `ndigo new` forwards to the `app` generator's schema.
 
 > `optional` **port?**: `number`
 
+***
+
+### preset?
+
+> `optional` **preset?**: `string`
+

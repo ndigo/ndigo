@@ -34,7 +34,12 @@ export const envCommand = buildCommand({
     },
     parameters: {
         flags: {
-            file: { kind: 'parsed', parse: (v: string) => v, brief: 'Env template file (default: .env.example).', optional: true },
+            file: {
+                kind: 'parsed',
+                parse: (v: string) => v,
+                brief: 'Env template file (default: .env.example).',
+                optional: true,
+            },
         },
         positional: { kind: 'tuple', parameters: [] },
     },

@@ -194,6 +194,18 @@ Re-exports [manyToOne](../decorators/functions/manyToOne.md)
 
 ***
 
+### MigrationStatus
+
+Re-exports [MigrationStatus](../db-adapter/type-aliases/MigrationStatus.md)
+
+***
+
+### NdigoDatabaseAdapter
+
+Re-exports [NdigoDatabaseAdapter](../db-adapter/interfaces/NdigoDatabaseAdapter.md)
+
+***
+
 ### oneToMany
 
 Re-exports [oneToMany](../decorators/functions/oneToMany.md)
@@ -287,6 +299,12 @@ Re-exports [RelationOptions](../decorators/interfaces/RelationOptions.md)
 ### Repository
 
 Re-exports [Repository](../repository/interfaces/Repository.md)
+
+***
+
+### runDbCommand
+
+Re-exports [runDbCommand](../db-adapter/functions/runDbCommand.md)
 
 ***
 

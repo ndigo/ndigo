@@ -21,7 +21,9 @@ export const infoCommand = buildCommand({
                 try {
                     const m = JSON.parse(readFileSync(join(nm, name, 'package.json'), 'utf8')) as { version?: string };
                     version = m.version ?? version;
-                } catch { /* ignore */ }
+                } catch {
+                    /* ignore */
+                }
                 process.stdout.write(`  @ndigo/${name}  ${version}\n`);
             }
         }

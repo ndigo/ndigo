@@ -11,19 +11,31 @@ import { fileURLToPath } from 'node:url';
 
 export const MIN_NODE_MAJOR = 24;
 
-interface CaptureResult { value: string; missing: boolean; }
+interface CaptureResult {
+    value: string;
+    missing: boolean;
+}
 
 function capture(argv: string[]): Promise<CaptureResult> {
     return new Promise<CaptureResult>((resolve) => {
         let spawned: ChildProcess | null;
-        try { spawned = spawn(argv[0] ?? '', argv.slice(1), { stdio: 'pipe' }); }
-        catch { resolve({ value: '', missing: true }); return; }
-        if (spawned === null) { resolve({ value: '', missing: true }); return; }
+        try {
+            spawned = spawn(argv[0] ?? '', argv.slice(1), { stdio: 'pipe' });
+        } catch {
+            resolve({ value: '', missing: true });
+            return;
+        }
+        if (spawned === null) {
+            resolve({ value: '', missing: true });
+            return;
+        }
         const child = spawned;
         const chunks: string[] = [];
         const stdout = child.stdout;
         if (stdout !== null) {
-            void (async () => { for await (const chunk of stdout) chunks.push(String(chunk)); })().catch(() => undefined);
+            void (async () => {
+                for await (const chunk of stdout) chunks.push(String(chunk));
+            })().catch(() => undefined);
         }
         child.once('exit', () => resolve({ value: chunks.join('').trim().split('\n')[0] ?? '', missing: false }));
     });
@@ -31,9 +43,13 @@ function capture(argv: string[]): Promise<CaptureResult> {
 
 function cliVersion(): string {
     try {
-        const manifest = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'package.json'), 'utf8')) as { version?: unknown };
+        const manifest = JSON.parse(
+            readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'package.json'), 'utf8')
+        ) as { version?: unknown };
         return typeof manifest.version === 'string' ? manifest.version : 'n/a';
-    } catch { return 'n/a'; }
+    } catch {
+        return 'n/a';
+    }
 }
 
 function workspaceRoot(): string | undefined {
@@ -48,7 +64,9 @@ function workspaceRoot(): string | undefined {
 
 export async function runDiagnostics(): Promise<number> {
     const failures: string[] = [];
-    const check = (ok: boolean, message: string): void => { if (!ok) failures.push(message); };
+    const check = (ok: boolean, message: string): void => {
+        if (!ok) failures.push(message);
+    };
     const rows: string[] = [];
     rows.push(`ndigo ${cliVersion()}`);
     rows.push(`node ${process.version}`);

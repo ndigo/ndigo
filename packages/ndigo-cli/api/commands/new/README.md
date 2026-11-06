@@ -6,13 +6,13 @@
 
 # commands/new
 
-## Classes
-
-- [NewCommand](classes/NewCommand.md)
-
 ## Interfaces
 
 - [NewAppFlags](interfaces/NewAppFlags.md)
+
+## Variables
+
+- [newCommand](variables/newCommand.md)
 
 ## Functions
 

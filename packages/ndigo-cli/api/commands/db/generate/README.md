@@ -6,6 +6,6 @@
 
 # commands/db/generate
 
-## Classes
+## Variables
 
-- [DbGenerateCommand](classes/DbGenerateCommand.md)
+- [dbGenerateCommand](variables/dbGenerateCommand.md)

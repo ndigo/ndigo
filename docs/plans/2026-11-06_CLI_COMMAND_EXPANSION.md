@@ -14,14 +14,14 @@ framework generator via the Nx bridge. No command reimplements framework logic.
 Apps already declare `start`/`dev`/`inspect`/`db:*`. Extend the same
 one-shot/supervised pattern to the remaining standard scripts.
 
-| Command | Script key | Lifecycle | Notes |
-|---|---|---|---|
-| `ndigo build` | `build` | one-shot | Production bundle; `--watch` optional. |
-| `ndigo test` | `test` | one-shot | Pass-through args after `--`. |
-| `ndigo lint` | `lint` | one-shot | Pass-through args. |
-| `ndigo format` | `format` | one-shot | Pass-through args. |
-| `ndigo clean` | (none — CLI-owned) | one-shot | Remove `dist`/`lib`/`.nx/cache`/coverage; `--dry-run`. |
-| `ndigo typecheck` | `typecheck` (or `tsc --noEmit`) | one-shot | Useful for CI. |
+| Command           | Script key                      | Lifecycle | Notes                                                  |
+| ----------------- | ------------------------------- | --------- | ------------------------------------------------------ |
+| `ndigo build`     | `build`                         | one-shot  | Production bundle; `--watch` optional.                 |
+| `ndigo test`      | `test`                          | one-shot  | Pass-through args after `--`.                          |
+| `ndigo lint`      | `lint`                          | one-shot  | Pass-through args.                                     |
+| `ndigo format`    | `format`                        | one-shot  | Pass-through args.                                     |
+| `ndigo clean`     | (none — CLI-owned)              | one-shot  | Remove `dist`/`lib`/`.nx/cache`/coverage; `--dry-run`. |
+| `ndigo typecheck` | `typecheck` (or `tsc --noEmit`) | one-shot  | Useful for CI.                                         |
 
 Implementation: reuse `runAppOnce`/`runWorkspaceOnce`; add `build`/`test`/`lint`/
 `format`/`typecheck` to the script-key allow-list. `clean` is CLI-owned
@@ -133,22 +133,16 @@ capture). Lower priority; only if apps adopt a log file convention.
 ## 5. Prioritisation
 
 **Wave 1 (high ROI, low risk, fits existing patterns):**
+
 1. `build` / `test` / `lint` / `format` / `typecheck` / `clean`
 2. `completion`
 3. `info` (doctor superset) + `--json`
 4. `config get|set|list`
 5. `routes`
 
-**Wave 2 (medium effort, generator work):**
-6. `generate` expansion (controller/service/entity/middleware/config)
-7. `new --preset`
-8. `add`
-9. `env`
+**Wave 2 (medium effort, generator work):** 6. `generate` expansion (controller/service/entity/middleware/config) 7. `new --preset` 8. `add` 9. `env`
 
-**Wave 3 (release-coupled / larger):**
-10. `update`
-11. `openapi`
-12. `logs`/`tail`
+**Wave 3 (release-coupled / larger):** 10. `update` 11. `openapi` 12. `logs`/`tail`
 
 ---
 

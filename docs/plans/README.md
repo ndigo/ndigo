@@ -7,6 +7,39 @@ Every implemented plan has its **decision recorded** in
 
 ## Completed Plans
 
+### 2026-11-06 - Database adapter abstraction
+
+The `db` command family became engine-agnostic: `@ndigo/orm` defines the
+`NdigoDatabaseAdapter` contract plus a `runDbCommand` dispatcher, engine
+packages supply adapters (`@ndigo/orm-drizzle` ships `createDrizzleAdapter`),
+and `@ndigo/cli` fronts the app's registry (`--db <name>` selects among
+several) with a fallback to the app's `db:*` scripts.
+
+[Read plan](2026-11-06_DB_ADAPTER_ABSTRACTION.md)
+
+---
+
+### 2026-11-06 - CLI command expansion
+
+The remaining command surface: lifecycle parity (`build`/`test`/`lint`/
+`format`/`typecheck`/`clean`), scaffolding (`add`, `new --preset`, the
+tenant `generate` kinds), maintenance (`update`, `info`, `completion`,
+`config`), and introspection/DX (`routes`, `openapi`, `env`, `logs`).
+
+[Read plan](2026-11-06_CLI_COMMAND_EXPANSION.md)
+
+---
+
+### 2026-11-06 - CLI infrastructure remaining
+
+The generator- and release-side work behind the expanded surface: setup
+generators for `add`, preset templates, kind-specific `generate` templates,
+the version manifest behind `update`, `writeOpenAPISpec`, and log following.
+
+[Read plan](2026-11-06_CLI_INFRASTRUCTURE_REMAINING.md)
+
+---
+
 ### 2026-11-05 - create-ndigo-app (standalone scaffold)
 
 `create-ndigo-app` (AD-92): an unscoped `npm create ndigo-app` bin that

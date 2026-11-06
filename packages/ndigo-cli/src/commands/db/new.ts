@@ -37,20 +37,23 @@ export const dbNewCommand = buildCommand({
     },
     parameters: {
         flags: {},
-        positional: { kind: 'tuple', parameters: [
-            {
-                parse: (value: string) => value,
-                brief: 'Application directory (default: current directory).',
-                default: '.',
-                placeholder: 'dir',
-            },
-            {
-                parse: (value: string) => value,
-                brief: 'Short description used in the filename and journal (default: change).',
-                default: 'change',
-                placeholder: 'slug',
-            },
-        ] },
+        positional: {
+            kind: 'tuple',
+            parameters: [
+                {
+                    parse: (value: string) => value,
+                    brief: 'Application directory (default: current directory).',
+                    default: '.',
+                    placeholder: 'dir',
+                },
+                {
+                    parse: (value: string) => value,
+                    brief: 'Short description used in the filename and journal (default: change).',
+                    default: 'change',
+                    placeholder: 'slug',
+                },
+            ],
+        },
     },
     docs: {
         brief: 'Scaffold the next versioned migration file',

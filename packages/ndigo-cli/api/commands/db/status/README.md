@@ -6,6 +6,6 @@
 
 # commands/db/status
 
-## Classes
+## Variables
 
-- [DbStatusCommand](classes/DbStatusCommand.md)
+- [dbStatusCommand](variables/dbStatusCommand.md)

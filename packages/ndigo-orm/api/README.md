@@ -8,6 +8,7 @@
 
 - [column-type](column-type/README.md)
 - [data-source](data-source/README.md)
+- [db-adapter](db-adapter/README.md)
 - [decorators](decorators/README.md)
 - [derived-query-repository](derived-query-repository/README.md)
 - [entity-manager](entity-manager/README.md)

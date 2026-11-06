@@ -8,7 +8,7 @@
 
 > **usageError**(`message`): `Error` & `object`
 
-An error whose process exit code is `2` (usage), per the oclif contract.
+An error whose process exit code is `2` (usage).
 
 ## Parameters
 

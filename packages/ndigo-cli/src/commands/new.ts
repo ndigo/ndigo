@@ -112,20 +112,23 @@ export const newCommand = buildCommand({
                 optional: true,
             },
         },
-        positional: { kind: 'tuple', parameters: [
-            {
-                parse: (value: string) => value,
-                brief: 'App slug (kebab-case, without the ndigo- prefix)',
-                placeholder: 'name',
-            },
-        ] },
+        positional: {
+            kind: 'tuple',
+            parameters: [
+                {
+                    parse: (value: string) => value,
+                    brief: 'App slug (kebab-case, without the ndigo- prefix)',
+                    placeholder: 'name',
+                },
+            ],
+        },
     },
     docs: {
         brief: 'Scaffold an example application under apps/ (ndigo new <name>)',
         fullDescription:
-            'Adds an application to this repository\'s apps/ ladder through the ' +
+            "Adds an application to this repository's apps/ ladder through the " +
             'framework-owned app generator (@ndigo/generators:app). The reading-order number ' +
-            'and dev port are allocated automatically (the port scan covers the ladder\'s ' +
+            "and dev port are allocated automatically (the port scan covers the ladder's " +
             'documented conventions); pass --number/--port to override, --dry-run to ' +
             'preview the file plan without writing.',
     },

@@ -6,6 +6,6 @@
 
 # commands/db/migrate
 
-## Classes
+## Variables
 
-- [DbMigrateCommand](classes/DbMigrateCommand.md)
+- [dbMigrateCommand](variables/dbMigrateCommand.md)

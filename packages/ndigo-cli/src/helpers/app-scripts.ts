@@ -15,9 +15,8 @@ import { join, resolve as resolvePath } from 'node:path';
 import { runCluster, type ClusterRunResult } from '@ndigo/cluster';
 
 /** An error whose process exit code is `2` (usage). */
-export function usageError(message: string): Error & { oclif?: { exit: number }; exitCode?: number } {
-    const error = new Error(message) as Error & { oclif?: { exit: number }; exitCode?: number };
-    error.oclif = { exit: 2 };
+export function usageError(message: string): Error & { exitCode?: number } {
+    const error = new Error(message) as Error & { exitCode?: number };
     error.exitCode = 2;
     process.exitCode = 2;
     return error;
@@ -143,7 +142,12 @@ export async function runAppSupervised(
  * @param hint - The missing-script hint.
  * @returns The child's exit code.
  */
-export async function runAppOnce(dir: string, scriptKey: string, hint: string, extraArgv: string[] = []): Promise<number> {
+export async function runAppOnce(
+    dir: string,
+    scriptKey: string,
+    hint: string,
+    extraArgv: string[] = []
+): Promise<number> {
     const resolved = appScriptCommand(dir, scriptKey, hint);
     // Handlers are installed BEFORE the spawn (AD75-H2): a signal arriving
     // between spawn and registration would otherwise drop the relay and

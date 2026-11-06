@@ -16,22 +16,32 @@ interface VersionManifest {
 
 function readManifest(path: string): VersionManifest | null {
     if (!existsSync(path)) return null;
-    try { return JSON.parse(readFileSync(path, 'utf8')) as VersionManifest; }
-    catch { return null; }
+    try {
+        return JSON.parse(readFileSync(path, 'utf8')) as VersionManifest;
+    } catch {
+        return null;
+    }
 }
 
 function readAppManifest(dir: string): Record<string, unknown> | null {
-    try { return JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8')) as Record<string, unknown>; }
-    catch { return null; }
+    try {
+        return JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8')) as Record<string, unknown>;
+    } catch {
+        return null;
+    }
 }
 
 export const updateCommand = buildCommand({
     async func(flags: { check?: boolean; manifest?: string }, dir: string) {
         const resolved = resolveAppDir(dir);
-        const manifestPath = flags.manifest ?? process.env.NDIGO_VERSION_MANIFEST ?? join(resolved, 'ndigo-versions.json');
+        const manifestPath =
+            flags.manifest ?? process.env.NDIGO_VERSION_MANIFEST ?? join(resolved, 'ndigo-versions.json');
         const manifest = readManifest(manifestPath);
 
-        const appManifest = readAppManifest(resolved) as { dependencies?: Record<string, string>; devDependencies?: Record<string, string> } | null;
+        const appManifest = readAppManifest(resolved) as {
+            dependencies?: Record<string, string>;
+            devDependencies?: Record<string, string>;
+        } | null;
         const deps = { ...appManifest?.dependencies, ...appManifest?.devDependencies };
         const ndigoDeps = Object.keys(deps).filter((name) => name.startsWith('@ndigo/'));
 
@@ -88,11 +98,24 @@ export const updateCommand = buildCommand({
     parameters: {
         flags: {
             check: { kind: 'boolean', brief: 'Check without applying.', optional: true },
-            manifest: { kind: 'parsed', parse: (v: string) => v, brief: 'Path to a version manifest JSON.', optional: true },
+            manifest: {
+                kind: 'parsed',
+                parse: (v: string) => v,
+                brief: 'Path to a version manifest JSON.',
+                optional: true,
+            },
         },
-        positional: { kind: 'tuple', parameters: [
-            { parse: (v: string) => v, brief: 'Application directory (default: current directory).', default: '.', placeholder: 'dir' },
-        ] },
+        positional: {
+            kind: 'tuple',
+            parameters: [
+                {
+                    parse: (v: string) => v,
+                    brief: 'Application directory (default: current directory).',
+                    default: '.',
+                    placeholder: 'dir',
+                },
+            ],
+        },
     },
     docs: { brief: 'Bump @ndigo/* versions in an app (optionally from a manifest)' },
 });

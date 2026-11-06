@@ -6,7 +6,25 @@
  */
 import { buildCommand } from '@stricli/core';
 
-const COMMANDS = ['serve', 'dev', 'new', 'generate', 'inspect', 'doctor', 'info', 'build', 'test', 'lint', 'format', 'typecheck', 'clean', 'config', 'routes', 'db', 'completion'];
+const COMMANDS = [
+    'serve',
+    'dev',
+    'new',
+    'generate',
+    'inspect',
+    'doctor',
+    'info',
+    'build',
+    'test',
+    'lint',
+    'format',
+    'typecheck',
+    'clean',
+    'config',
+    'routes',
+    'db',
+    'completion',
+];
 
 export const completionCommand = buildCommand({
     async func(flags: { shell?: string }) {
@@ -16,7 +34,9 @@ export const completionCommand = buildCommand({
             process.exitCode = 2;
             return;
         }
-        process.stdout.write(`# ndigo bash completion\n_ndigo() {\n  local cur="\${COMP_WORDS[COMP_CWORD]}"\n  COMPREPLY=( $(compgen -W "${COMMANDS.join(' ')}" -- "$cur") )\n}\ncomplete -F _ndigo ndigo\n`);
+        process.stdout.write(
+            `# ndigo bash completion\n_ndigo() {\n  local cur="\${COMP_WORDS[COMP_CWORD]}"\n  COMPREPLY=( $(compgen -W "${COMMANDS.join(' ')}" -- "$cur") )\n}\ncomplete -F _ndigo ndigo\n`
+        );
     },
     parameters: {
         flags: {

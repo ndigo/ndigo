@@ -24,14 +24,17 @@ export const dbMigrateCommand = buildCommand({
     },
     parameters: {
         flags: {},
-        positional: { kind: 'tuple', parameters: [
-            {
-                parse: (value: string) => value,
-                brief: 'Application directory (default: current directory).',
-                default: '.',
-                placeholder: 'dir',
-            },
-        ] },
+        positional: {
+            kind: 'tuple',
+            parameters: [
+                {
+                    parse: (value: string) => value,
+                    brief: 'Application directory (default: current directory).',
+                    default: '.',
+                    placeholder: 'dir',
+                },
+            ],
+        },
     },
     docs: {
         brief: 'Run the application’s db:migrate script',

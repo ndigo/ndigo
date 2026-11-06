@@ -54,6 +54,26 @@
       "factory": "./src/generators/component/generator",
       "schema": "./src/generators/component/schema.json",
       "description": "Generate a migration source file (scaffold)"
+    },
+    "redis-setup": {
+      "factory": "./src/generators/redis-setup/generator",
+      "schema": "./src/generators/redis-setup/schema.json",
+      "description": "Wire @ndigo/redis into an application"
+    },
+    "jobs-setup": {
+      "factory": "./src/generators/jobs-setup/generator",
+      "schema": "./src/generators/jobs-setup/schema.json",
+      "description": "Wire @ndigo/jobs into an application"
+    },
+    "socket-setup": {
+      "factory": "./src/generators/socket-setup/generator",
+      "schema": "./src/generators/socket-setup/schema.json",
+      "description": "Wire @ndigo/socket into an application"
+    },
+    "cache-setup": {
+      "factory": "./src/generators/cache-setup/generator",
+      "schema": "./src/generators/cache-setup/schema.json",
+      "description": "Wire @ndigo/cache into an application"
     }
   }
 }

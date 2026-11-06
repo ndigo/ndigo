@@ -103,7 +103,7 @@ describe('FeatureGateInterceptor', () => {
         expect(denial).toMatchObject({ statusCode: 404 });
         expect(res.writableEnded).toBe(true);
         expect(body()).toContain('urn:ndigo:not-found');
-        expect(body()).toContain("Feature 'pay' is not enabled");
+        expect(body()).toContain('Feature not enabled');
     });
 
     test('a missing flag evaluates DEFAULT → the gate is closed (404)', async () => {
@@ -162,7 +162,7 @@ describe('FeatureGateInterceptor targeting context + rollouts (AD-82 addendum)',
         };
         const interceptor = new FeatureGateInterceptor({ evaluator: spy });
         await interceptor.preHandle(routeFrom('198.51.100.2'), { handler: gatedHandler('pay'), method: 'due' });
-        expect(received).toBe('198.51.100.2');
+        expect(received).toBe('ip:8c9bbd8a13b8a1f9016d2b64ef226bfdca4945918f299b5a34141013b8ae8ecc');
     });
 
     test('a 0% rollout gates everyone out; a 100% rollout admits the same requester', async () => {
@@ -308,7 +308,7 @@ describe('targeting-context resolvers (AD-87 companion)', () => {
         const resolver = new ClientAddressFlagContextResolver();
 
         expect(resolver.resolve(routeWith({ remoteAddress: '203.0.113.9' }))).toEqual({
-            targetingKey: '203.0.113.9',
+            targetingKey: 'ip:d861b7e91033ebc1c1e8e7af3929010158b3241b54ca87ef73e79c32f26400ec',
         });
         expect(resolver.resolve(routeWith({}))).toBeUndefined();
         expect(resolver.resolve(routeWith({ remoteAddress: '' }))).toBeUndefined();
@@ -331,7 +331,7 @@ describe('targeting-context resolvers (AD-87 companion)', () => {
         const resolver = new SessionPrincipalFlagContextResolver();
 
         expect(resolver.resolve(routeWith({ remoteAddress: '203.0.113.9' }))).toEqual({
-            targetingKey: '203.0.113.9',
+            targetingKey: 'ip:d861b7e91033ebc1c1e8e7af3929010158b3241b54ca87ef73e79c32f26400ec',
         });
         expect(resolver.resolve(routeWith({}))).toBeUndefined();
     });
@@ -343,7 +343,7 @@ describe('targeting-context resolvers (AD-87 companion)', () => {
             routeWith({ remoteAddress: '203.0.113.9', session: { principal: { id: 'incomplete' } } })
         );
 
-        expect(context).toEqual({ targetingKey: '203.0.113.9' });
+        expect(context).toEqual({ targetingKey: 'ip:d861b7e91033ebc1c1e8e7af3929010158b3241b54ca87ef73e79c32f26400ec' });
     });
 
     test('the interceptor uses the built-in default when no bean or override is present', async () => {

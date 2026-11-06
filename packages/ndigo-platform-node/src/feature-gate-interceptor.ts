@@ -180,7 +180,7 @@ export class FeatureGateInterceptor implements RouteHandlerInterceptor, Applicat
                     type: ProblemTypes.notFound,
                     title: 'Not Found',
                     status: 404,
-                    detail: `Feature '${flag}' is not enabled.`,
+                    detail: 'Feature not enabled.',
                 },
                 {}
             );

@@ -24,8 +24,11 @@ export class AuthClient {
     /** The most recent refresh token a refresh-capable adapter returned. */
     #refreshToken: string | null = null;
 
+    /** In-flight refresh promise, so concurrent refresh() calls share one exchange. */
+    #refreshPromise: Promise<AuthResult> | null = null;
+
     get state(): AuthenticationState {
-        return this.#state;
+        return { ...this.#state };
     }
 
     get principal(): Principal | null {
@@ -92,6 +95,10 @@ export class AuthClient {
      * @returns The updated {@link AuthResult}.
      */
     async refresh(adapterId: string): Promise<AuthResult> {
+        if (this.#refreshPromise !== null) {
+            return this.#refreshPromise;
+        }
+
         const token = this.#refreshToken ?? this.#state.token;
         if (!token) {
             throw new Error('No token to refresh');
@@ -102,9 +109,17 @@ export class AuthClient {
             throw new Error(`Authentication adapter '${adapterId}' not found`);
         }
 
-        const result = await adapter.refresh(token);
-        this.#updateState(result);
-        return result;
+        this.#refreshPromise = (async () => {
+            try {
+                const result = await adapter.refresh(token);
+                this.#updateState(result);
+                return result;
+            } finally {
+                this.#refreshPromise = null;
+            }
+        })();
+
+        return this.#refreshPromise;
     }
 
     /**

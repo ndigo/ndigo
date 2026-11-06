@@ -12,6 +12,7 @@
 import { likePrincipal } from '@ndigo/auth-core';
 import type { FlagEvaluationContext } from '@ndigo/flags';
 import type { Route } from '@ndigo/router';
+import { createHash } from 'node:crypto';
 import { getNodeRequest } from './node-request';
 
 /**
@@ -38,7 +39,13 @@ export interface FlagEvaluationContextResolver {
 export class ClientAddressFlagContextResolver implements FlagEvaluationContextResolver {
     resolve(route: Route): FlagEvaluationContext | undefined {
         const address = getNodeRequest(route)?.remoteAddress;
-        return typeof address === 'string' && address !== '' ? { targetingKey: address } : undefined;
+        if (typeof address !== 'string' || address === '') return undefined;
+        // Hash the client address before it becomes a targeting key: the key is
+        // forwarded to (possibly third-party) flag providers, and a raw IP is
+        // personal data under GDPR/CCPA. Hashing keeps per-IP bucketing stable
+        // without leaking the address. (AD-87 companion)
+        const hashed = createHash('sha256').update(address).digest('hex');
+        return { targetingKey: `ip:${hashed}` };
     }
 }
 

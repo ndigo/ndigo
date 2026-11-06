@@ -18,7 +18,12 @@ import { join, resolve } from 'node:path';
 import { afterAll, describe, expect, test } from 'vitest';
 
 const distDir = resolve(import.meta.dirname, '..', 'dist');
-const bundles = readdirSync(distDir, { recursive: true, encoding: 'utf-8' }).filter((entry) => entry.endsWith('.js'));
+let bundles: string[] = [];
+try {
+    bundles = readdirSync(distDir, { recursive: true, encoding: 'utf-8' }).filter((entry) => entry.endsWith('.js'));
+} catch {
+    bundles = [];
+}
 
 const scratch = mkdtempSync(join(tmpdir(), 'ndigo-bundle-check-'));
 

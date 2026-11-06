@@ -1,8 +1,5 @@
 /**
  * View that renders a `ResponseEntity` to a response document.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Route } from '@ndigo/router';
 import { MediaTypes } from '@ndigo/core';

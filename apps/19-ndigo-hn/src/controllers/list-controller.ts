@@ -6,9 +6,6 @@
  * (`ensureFeed` loads only when the feed changed), then hand the view a model.
  * The class-level `@routeMapping('/')` is the path prefix each method route is
  * merged with.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { Null } from '@ndigo/core';

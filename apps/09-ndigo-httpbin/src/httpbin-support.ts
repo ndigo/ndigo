@@ -6,9 +6,6 @@
  * request carried: the matched {@link Route} (method/path/raw target), the
  * parsed query bag, the raw header record, and the parsed body. Multipart
  * file parts are summarised (`files`) with their names and byte sizes.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Route } from '@ndigo/router';
 import { getNodeRequest, type MultipartFile } from '@ndigo/platform-node';

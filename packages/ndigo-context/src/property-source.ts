@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { JSONObject, JSONValue, createNull, KeypathConverter } from '@ndigo/core';
 import { isNil } from '@ndigo/util/types';

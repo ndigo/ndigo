@@ -1,8 +1,5 @@
 /**
  * Ndigo integration test harness — MockHTTP-style in-process dispatch.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export { MockHTTP, MockHTTPRequestBuilder } from './mock-http';
 export type { MockRequest, PreparedRoute } from './request-builder';

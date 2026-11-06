@@ -4,9 +4,6 @@
  *
  * Runs under `pnpm test:tooling` (`node --test` — no vitest, no nx). The name
  * deliberately escapes vitest's `*.test.*` glob.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

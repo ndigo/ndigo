@@ -1,8 +1,5 @@
 /**
  * Resolver that maps a logical view name to a `WebComponentView` (AD — view.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractPathBasedViewResolver, View } from '@ndigo/view';
 import { Constructable } from '@ndigo/core';

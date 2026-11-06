@@ -1,8 +1,5 @@
 /**
  * Request-pipeline limits and timeouts for {@link NodeHTTPServerAdapter}.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { MediaType } from '@ndigo/core';
 import { contentTypeBase } from '@ndigo/http';

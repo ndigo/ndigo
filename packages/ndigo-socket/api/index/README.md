@@ -6,6 +6,8 @@
 
 # index
 
+Ndigo Socket — isomorphic WebSocket domain (AD-22).
+
 ## References
 
 ### AsyncReader

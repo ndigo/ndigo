@@ -3,9 +3,6 @@
  *
  * The spec leaves ordering open; this app answers sorted, deduplicated tags so
  * the response is stable across runs (see the README's conformance note).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { getMapping, requestMapping } from '@ndigo/dispatcher';

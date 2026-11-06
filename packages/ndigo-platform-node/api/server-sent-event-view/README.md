@@ -6,6 +6,8 @@
 
 # server-sent-event-view
 
+Imperative server-push view: streams Server-Sent Events to the HTTP.
+
 ## Classes
 
 - [ServerSentEventView](classes/ServerSentEventView.md)

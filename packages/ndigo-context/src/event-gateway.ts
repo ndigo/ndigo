@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
 import type { EventType } from './event-emitter';

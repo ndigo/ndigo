@@ -6,6 +6,8 @@
 
 # commands/db/status
 
+`ndigo db status` — report the applied/pending state of every migration
+
 ## Variables
 
 - [dbStatusCommand](variables/dbStatusCommand.md)

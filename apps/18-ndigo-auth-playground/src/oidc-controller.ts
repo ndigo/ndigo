@@ -32,9 +32,6 @@
  * (`oidc_account_unknown`) even though its ID token verified; a refresh without
  * a server-held token or with a rejected/rotated-out one is
  * `oidc_refresh_unavailable` / `oidc_refresh_failed`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import {

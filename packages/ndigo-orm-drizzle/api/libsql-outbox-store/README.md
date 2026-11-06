@@ -6,6 +6,8 @@
 
 # libsql-outbox-store
 
+LibSQL-backed {@link OutboxStore} — the transactional outbox on the
+
 ## Classes
 
 - [LibSQLOutboxStore](classes/LibSQLOutboxStore.md)

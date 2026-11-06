@@ -2,9 +2,6 @@
  * Response-shaping probes: statuses, redirects, response headers, cookies,
  * auth challenges, delays, binary/streamed bodies, compression and the
  * rate-limit demo.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { deflateSync, gzipSync } from 'node:zlib';

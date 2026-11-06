@@ -8,9 +8,6 @@
  * node mapping, mirror of `RateLimitInterceptor`); service-method usage
  * composes as an explicit `evaluator.evaluate()` check or an AD-42
  * interceptor.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { validateFlagKey } from './flag-evaluator';

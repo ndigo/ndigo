@@ -10,9 +10,6 @@
  * shape `05-ndigo-api` uses (`initAuth()` before the builder runs): the adapters
  * are process-global already (`AuthRegistry`), and the store/config that back
  * them are published alongside.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { IllegalStateError } from '@ndigo/core';
 import { loadConfig, type PlaygroundConfig } from './config';

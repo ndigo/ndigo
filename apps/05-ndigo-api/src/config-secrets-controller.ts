@@ -10,9 +10,6 @@
  * decryption wiring the raw marker binds instead. Documents the two-channel
  * posture — ciphertext in one source, key in another — and that the plaintext
  * is served only to an authenticated demo caller.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { AsApplicationContextAware, ApplicationContext, ApplicationContextAware } from '@ndigo/context';

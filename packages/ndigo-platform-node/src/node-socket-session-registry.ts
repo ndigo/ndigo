@@ -1,8 +1,5 @@
 /**
  * Node WebSocket session registry — tracks live connections, rooms, broadcast.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { SocketSession, SocketSessionRegistry } from '@ndigo/dispatcher';
 import type { AsyncCloseable } from '@ndigo/factory';

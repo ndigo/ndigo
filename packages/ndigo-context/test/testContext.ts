@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { configuration, entry, MetadataConfigApplicationContext, propertySource, property } from '../src/configuration';
 import { whenProfile } from '@ndigo/core';

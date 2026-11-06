@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  *
  * Contract for `schema/application.schema.json` — the permissive editor schema
  * for the `./config/application.json` + `application-{profile}.json`

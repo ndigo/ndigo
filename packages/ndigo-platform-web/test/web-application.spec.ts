@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { DISPATCHER, VIEW_TARGET } from '@ndigo/dispatcher';

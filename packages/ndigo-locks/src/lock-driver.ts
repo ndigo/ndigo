@@ -9,9 +9,6 @@
  * lease expired and another node acquired) can therefore never interfere
  * with the successor's lease — the exact double-run the feature exists to
  * prevent.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 import type { AsyncCloseable } from '@ndigo/factory';

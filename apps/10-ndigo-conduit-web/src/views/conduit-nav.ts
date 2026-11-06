@@ -5,9 +5,6 @@
  * visitor; new-article/settings/username/logout for a signed-in one) and emits
  * the sign-out intent as a DOM event. It has no container access of its own,
  * so the event bubbles to the view target's bridge like any other view action.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractWebComponent, TagMapping } from '@ndigo/view-webcomponent';
 import { ACTIONS } from '../app/conduit-events';

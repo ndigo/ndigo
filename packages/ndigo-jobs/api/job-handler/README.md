@@ -6,6 +6,8 @@
 
 # job-handler
 
+`@jobHandler` — declarative, Node-only job handler registration.
+
 ## Interfaces
 
 - [JobHandlerContext](interfaces/JobHandlerContext.md)

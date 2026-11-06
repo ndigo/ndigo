@@ -7,9 +7,6 @@
  * the controllers stay free of view construction: the page helper returns a
  * *view name* (the resolver owns the template and the status), and the API
  * helper returns the framework's problem entity.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ModelAndView } from '@ndigo/dispatcher';
 import { HTTPHeaders, ResponseStatuses } from '@ndigo/http';

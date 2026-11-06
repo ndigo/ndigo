@@ -6,6 +6,8 @@
 
 # service-decorators
 
+Declarative service-client decorators (AD-08).
+
 ## Interfaces
 
 - [ServiceCallConfig](interfaces/ServiceCallConfig.md)

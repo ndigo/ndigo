@@ -6,6 +6,8 @@
 
 # locks/redis-lock-driver
 
+Redis-backed `LockDriver` — the shared multi-node lock for
+
 ## Classes
 
 - [RedisLockDriver](classes/RedisLockDriver.md)

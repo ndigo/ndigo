@@ -9,9 +9,6 @@
  *
  * Production stance: point NDIGO_CONFIG_SERVER_URL at a real config server;
  * the demo endpoints exist so the surface runs with zero external infra.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';

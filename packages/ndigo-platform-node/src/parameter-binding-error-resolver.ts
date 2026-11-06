@@ -1,8 +1,5 @@
 /**
  * Node platform default error resolver: request-binding failures → problem.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractRouteErrorResolver, ParameterBindingError, ModelAndView, ZodValidationError } from '@ndigo/dispatcher';
 import { Route } from '@ndigo/router';

@@ -18,9 +18,6 @@
  * would never reach the gate. `HTTPServer`'s late `getValue` resolution is
  * the precedent; the interceptor registers as an entry so the aware
  * processor injects the application context into it.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Route } from '@ndigo/router';
 import {

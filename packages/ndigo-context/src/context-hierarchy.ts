@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ContentSource, ThemeResolver } from '@ndigo/content';
 import { JSONObject, escalate } from '@ndigo/core';

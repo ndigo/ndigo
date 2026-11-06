@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { createClient, Client } from '@libsql/client';
 import { drizzle as createDrizzle, LibSQLDatabase } from 'drizzle-orm/libsql';

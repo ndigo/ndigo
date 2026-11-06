@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError, getSymbolMetadata } from '@ndigo/core';
 import type { AsyncDestroyable } from '@ndigo/factory';

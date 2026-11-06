@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { createNull, JSONObject, JSONValue } from '@ndigo/core';
 import { parseCookieHeader } from './parser/cookie-parser';

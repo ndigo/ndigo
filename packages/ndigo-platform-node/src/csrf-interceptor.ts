@@ -11,9 +11,6 @@
  * when every sibling subdomain is trusted. Dropping `Secure`/`Path=/` (or
  * adding a `Domain`) while keeping the prefix makes browsers reject the
  * cookie outright, so mutating requests fail closed.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { timingSafeEqual } from 'node:crypto';
 import { randomToken } from '@ndigo/util';

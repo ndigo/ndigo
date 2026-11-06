@@ -6,6 +6,8 @@
 
 # dom-provider
 
+Provides an isomorphic abstraction over DOM parsing and element creation.
+
 ## Interfaces
 
 - [DOMProvider](interfaces/DOMProvider.md)

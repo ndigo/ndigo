@@ -12,9 +12,6 @@
  *   chain: schema failures become the RealWorld `{errors:{…}}` envelope before
  *   the platform's problem+json resolver can claim them. The remaining links
  *   are the platform's own, in their original order.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { configuration, entry, getEnv } from '@ndigo/context';

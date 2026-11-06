@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { formatFiles, generateFiles, type Tree } from '@nx/devkit';
 import { toPascal } from '@ndigo/util/string';
@@ -12,7 +10,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 /**
  * Options for the `component` generator: the component name, the package it
  * belongs to (without the `ndigo-` prefix), an optional class name override,
- * and the doc header's summary/author.
+ * and the doc header's summary.
  */
 export interface ComponentGeneratorSchema {
     name: string;
@@ -20,8 +18,6 @@ export interface ComponentGeneratorSchema {
     className?: string;
     /** One-line summary used as the description in the doc header. */
     summary?: string;
-    /** Value for the `@author` tag (defaults to `Jeff Rose`). */
-    author?: string;
 }
 
 /**
@@ -30,7 +26,7 @@ export interface ComponentGeneratorSchema {
  * updated to include it.
  */
 export default async function componentGenerator(tree: Tree, schema: ComponentGeneratorSchema): Promise<void> {
-    const { name, package: pkg, author = 'Jeff Rose' } = schema;
+    const { name, package: pkg } = schema;
     const className = schema.className || toPascal(name);
     const projectRoot = `packages/ndigo-${pkg}`;
 
@@ -43,7 +39,6 @@ export default async function componentGenerator(tree: Tree, schema: ComponentGe
         className,
         packageName: pkg,
         summary: schema.summary,
-        author,
         tmpl: '',
     });
 

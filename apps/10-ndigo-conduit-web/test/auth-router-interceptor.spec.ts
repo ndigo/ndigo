@@ -1,7 +1,3 @@
-/**
- * @since 1.0.0
- * @author Jeff Rose
- */
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { HashRouter } from '@ndigo/platform-web';

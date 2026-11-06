@@ -1,9 +1,6 @@
 /**
  * NodeSDK configuration for `@ndigo/telemetry-node` (AD-32): sampler
  * presets, per-signal exporter ergonomics, and a once-per-process guard.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { SeverityNumber } from '@opentelemetry/api-logs';
 import { NodeSDK } from '@opentelemetry/sdk-node';

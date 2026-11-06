@@ -1,8 +1,5 @@
 /**
  * Minimal demonstration controller using the node platform's HTTP method.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { getMapping, socketMapping, socketSessionValue, type SocketSession, requestMapping } from '@ndigo/dispatcher';

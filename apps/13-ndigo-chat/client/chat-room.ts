@@ -10,9 +10,6 @@
  *
  * Inbound frames are parsed and validated with Zod at the boundary, so the
  * render path only ever reads checked values.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { effect, signal } from '@ndigo/signals';

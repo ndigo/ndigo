@@ -1,8 +1,5 @@
 /**
  * `OutboxRelay` — publishes claimed outbox entries and marks them done.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
 import type { AsyncCloseable } from '@ndigo/factory';

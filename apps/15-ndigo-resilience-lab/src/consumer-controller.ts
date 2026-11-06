@@ -2,9 +2,6 @@
  * The consumer routes: `/consumer/data` runs the typed client through
  * `@retry` + `@circuitBreaker`, `/consumer/direct` runs the same call with no
  * policy at all, so the two are directly comparable from one control plane.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { getMapping, requestMapping } from '@ndigo/dispatcher';

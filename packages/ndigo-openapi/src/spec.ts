@@ -6,9 +6,6 @@
  * is parsed: patterns, method conditions, resolved `MethodParameter`s and
  * the zod schemas `validatedBy` carries are all runtime metadata the
  * framework already holds.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { z } from 'zod';
 import type { HTTPMethod } from '@ndigo/http';

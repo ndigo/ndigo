@@ -6,6 +6,8 @@
 
 # cluster-runner
 
+The cluster supervisor (AD-74): replicated worker slots with signal
+
 ## Classes
 
 - [ClusterRunner](classes/ClusterRunner.md)

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ModelAndView } from './model-and-view';
 import { PathRoute, Route } from '@ndigo/router';

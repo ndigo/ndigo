@@ -1,7 +1,3 @@
-/**
- * @since 1.0.0
- * @author Jeff Rose
- */
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 import type { Tree } from '@nx/devkit';
 import { describe, expect, it } from 'vitest';

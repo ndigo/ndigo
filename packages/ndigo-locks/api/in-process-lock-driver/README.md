@@ -6,6 +6,8 @@
 
 # in-process-lock-driver
 
+The default {@link LockDriver}: in-process and single-node (AD-73 D-1).
+
 ## Classes
 
 - [InProcessLockDriver](classes/InProcessLockDriver.md)

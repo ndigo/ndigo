@@ -1,8 +1,5 @@
 /**
  * Unit of work for the Drizzle-backed persistence layer.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { EntityState } from '@ndigo/orm';
 import { DrizzleEntityManager } from './drizzle-entity-manager';

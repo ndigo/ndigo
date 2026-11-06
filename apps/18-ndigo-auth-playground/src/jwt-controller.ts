@@ -13,9 +13,6 @@
  * expiry label comes from an unverified claim read (`jose.decodeJwt`); the
  * authority is always `JWTAdapter.validate`, which verifies the signature,
  * issuer, audience, `exp` and the `ver` counter.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { decodeJwt, errors, jwtVerify } from 'jose';

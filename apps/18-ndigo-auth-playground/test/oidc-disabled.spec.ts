@@ -2,9 +2,6 @@
  * Mode 6, switched off: `OIDC_ENABLED=false` must answer `503 oidc_disabled`
  * rather than throw or hang, so a deployment that does not run the embedded
  * issuer still gets a labelled failure from every OIDC route.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

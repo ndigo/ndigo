@@ -1,8 +1,5 @@
 /**
  * Ndigo Island — hybrid island demo server.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import 'node:process';
 import { ApplicationBuilder } from '@ndigo/boot';

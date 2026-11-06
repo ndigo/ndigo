@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { RouterInterceptor, Route } from '@ndigo/router';
 import { authClient } from './auth-store';

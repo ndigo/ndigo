@@ -6,6 +6,8 @@
 
 # timing
 
+Timing helpers for specs.
+
 ## Functions
 
 - [installSynchronousAnimationFrames](functions/installSynchronousAnimationFrames.md)

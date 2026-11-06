@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  *
  * Public entry point for `@ndigo/inspect` — the programmatic manifest
  * generator. `inspectApplication()` produces a deterministic, versioned JSON

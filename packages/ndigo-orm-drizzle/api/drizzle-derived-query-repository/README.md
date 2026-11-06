@@ -6,6 +6,8 @@
 
 # drizzle-derived-query-repository
 
+Drizzle-backed derived-query repository (ORM completion plan, Wave 4):
+
 ## Classes
 
 - [DrizzleDerivedQueryRepository](classes/DrizzleDerivedQueryRepository.md)

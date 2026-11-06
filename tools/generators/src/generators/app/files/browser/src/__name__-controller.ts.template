@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { routeMapping, ModelAndView } from '@ndigo/dispatcher';
 import { WebComponentView } from '@ndigo/view-webcomponent';

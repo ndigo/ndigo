@@ -5,9 +5,6 @@
  * builders, which project the entity columns onto the spec's members
  * (`favorited`, `favoritesCount`, `following` are view-relative and are
  * supplied by the caller from the store's indexes).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Article, Comment, User } from './entities';
 

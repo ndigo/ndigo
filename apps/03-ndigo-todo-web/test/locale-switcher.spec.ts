@@ -1,7 +1,3 @@
-/**
- * @since 1.0.0
- * @author Jeff Rose
- */
 // @vitest-environment jsdom
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import { LOCALE_COOKIE_NAME, currentLocale } from '@ndigo/platform-web';

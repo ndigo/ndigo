@@ -14,8 +14,6 @@
  * API answer.
  *
  * @module ndigo-conduit-web
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { HTTP } from '@ndigo/http';
 import { buildQuery } from './conduit-http';

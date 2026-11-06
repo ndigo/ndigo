@@ -6,6 +6,8 @@
 
 # index
 
+Ndigo management endpoints — actuator-style `/health`, `/metrics`,
+
 ## References
 
 ### ConfigurationPropertiesController

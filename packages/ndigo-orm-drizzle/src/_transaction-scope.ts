@@ -9,9 +9,6 @@
  * that entered `run(fn)` (and its descendants); statements issued from another
  * context — a different request, a background job — keep using the pool instead
  * of silently joining someone else's transaction.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AsyncLocalStorage } from 'node:async_hooks';
 import type { Transaction } from '@libsql/client';

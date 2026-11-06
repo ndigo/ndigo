@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { View } from './view.js';
 import { createNull, MediaType, MediaTypes, Null, Constructable } from '@ndigo/core';

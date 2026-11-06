@@ -2,9 +2,6 @@
  * Sampler ratio 0.5: statistical bounds + parent-child inheritance
  * (AD-32 D-1). Both scenarios share the one provider this process can
  * register, so they live together.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { test, expect } from 'vitest';

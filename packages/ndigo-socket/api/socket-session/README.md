@@ -6,6 +6,8 @@
 
 # socket-session
 
+WebSocket session contract — the handler's view of a live connection
+
 ## Interfaces
 
 - [SocketRequestSources](interfaces/SocketRequestSources.md)

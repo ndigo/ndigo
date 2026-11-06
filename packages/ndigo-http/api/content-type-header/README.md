@@ -6,6 +6,8 @@
 
 # content-type-header
 
+Content-Type specific {@link HTTPHeader} category (Wave 5, 2026-09-27).
+
 ## Classes
 
 - [ContentTypeHeader](classes/ContentTypeHeader.md)

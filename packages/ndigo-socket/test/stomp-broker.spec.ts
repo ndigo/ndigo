@@ -8,9 +8,6 @@
  * caps, policy denials), transactions (caps + COMMIT abort), `/queue`
  * replay ordering, ack modes and id-only ACKs, byte budgets, session-close
  * cleanup, and closeAll.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, expect, test, vi } from 'vitest';
 import {

@@ -3,9 +3,6 @@
  * `POST /board` route, so both publish byte-identical payloads into the same
  * room — the property that makes a message posted on one node reachable from
  * the sockets connected to the other.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /** The room every board session joins; the fan-out scope that crosses nodes. */

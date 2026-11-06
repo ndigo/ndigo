@@ -6,9 +6,6 @@
  * by the `page` member, and both hand it the session-shaped envelope for *their*
  * form (`FormErrorState` is form-scoped, so a login failure never renders on the
  * register form).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { Null } from '@ndigo/core';

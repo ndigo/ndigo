@@ -32,6 +32,12 @@ Re-exports [OpenAPIDocument](../spec/interfaces/OpenAPIDocument.md)
 
 ***
 
+### OpenAPIFormat
+
+Re-exports [OpenAPIFormat](../writer/type-aliases/OpenAPIFormat.md)
+
+***
+
 ### OpenAPIGeneratorOptions
 
 Re-exports [OpenAPIGeneratorOptions](../spec/interfaces/OpenAPIGeneratorOptions.md)
@@ -95,3 +101,15 @@ Re-exports [OpenAPISpecGenerator](../spec/classes/OpenAPISpecGenerator.md)
 ### RouteMappingTable
 
 Re-exports [RouteMappingTable](../spec/interfaces/RouteMappingTable.md)
+
+***
+
+### writeOpenAPISpec
+
+Re-exports [writeOpenAPISpec](../writer/functions/writeOpenAPISpec.md)
+
+***
+
+### WriteOpenAPISpecOptions
+
+Re-exports [WriteOpenAPISpecOptions](../writer/interfaces/WriteOpenAPISpecOptions.md)

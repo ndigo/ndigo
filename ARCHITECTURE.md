@@ -1140,7 +1140,7 @@ Canonical reference for every publishable package: purpose · layer · platform 
 | `@ndigo/auth-server`                                                          | 6       | node     | Server auth: `AuthServer`, `AuthRouteGuard`, JWT (`jose`)                                                                                                                  | `auth-core`, `dispatcher`, `router`, `util`                                                       |
 | `@ndigo/platform-node`                                                        | 6       | node     | Node platform: HTTP server adapter, auto-configuration, static files, multipart (`busboy`, `helmet`, `ws`)                                                                 | 18 Ndigo deps — hub                                                                               |
 | `@ndigo/cluster`                                                              | 6       | node     | Process supervisor: replicated worker slots, signal relay, bounded restarts (AD-74)                                                                                        | `log`                                                                                             |
-| `@ndigo/cli`                                                                  | 6       | node     | Framework CLI: serve/dev/generate/db/inspect/doctor on `@stricli/core` (AD-75)                                                                                            | `cluster`, `@stricli/core`                                                                          |
+| `@ndigo/cli`                                                                  | 6       | node     | Framework CLI: serve/build/test/db/generate/inspect/doctor plus the maintenance surface, on `@stricli/core` (AD-75)                                                        | `cluster`, `@stricli/core`                                                                        |
 | `@ndigo/platform-web`                                                         | 6       | browser  | Browser platform glue: dispatcher, history/cookie/data-binding resolvers, theme                                                                                            | 12 Ndigo deps — hub                                                                               |
 | `@ndigo/telemetry-node`                                                       | 6       | node     | OTel NodeSDK wiring + Node instrumentations (10 OTel packages; peer `ws`)                                                                                                  | `telemetry`, `platform-node`, `router`, `socket`, `view`, `log`                                   |
 | `@ndigo/telemetry-web`                                                        | 6       | browser  | Browser SDK wiring + web instrumentations (8 OTel packages)                                                                                                                | `log`, `platform-web`, `socket`, `telemetry`                                                      |
@@ -1800,7 +1800,12 @@ Guides: [`docs/guides/`](docs/guides/README.md).
   `@stricli/core` as an embedded library — `serve` (with the AD-74
   `--cluster` surface), `dev`, `generate` (fronting `@ndigo/generators`),
   `db:migrate`, `inspect` (the AD-70 entry), and `doctor`; scripts run
-  shell-free so signals reach the app.
+  shell-free so signals reach the app. The command surface has since grown to
+  the full lifecycle (`build`/`test`/`lint`/`format`/`typecheck`/`clean`),
+  scaffolding (`new --preset`, `add`, ten `generate` kinds), the
+  engine-agnostic `db` family (backed by the `NdigoDatabaseAdapter` contract
+  in `@ndigo/orm`), and maintenance/DX (`info`, `update`, `config`, `env`,
+  `openapi`, `routes`, `logs`, `completion`).
 - **Clustering shipped** (AD-74): `@ndigo/cluster` supervises replicated
   worker slots — `SIGINT`/`SIGTERM` relay into each child's own graceful
   shutdown, bounded-backoff respawns behind a fail-closed crash-loop guard,

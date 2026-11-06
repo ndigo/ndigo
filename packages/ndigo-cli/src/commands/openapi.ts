@@ -13,16 +13,29 @@ export const openapiCommand = buildCommand({
         const extra: string[] = [];
         if (flags.out) extra.push('--out', flags.out);
         if (flags.format) extra.push('--format', flags.format);
-        process.exitCode = await runAppOnce(resolved, 'openapi', 'add an "openapi" script that emits the spec (AD-70 manifest)', extra);
+        process.exitCode = await runAppOnce(
+            resolved,
+            'openapi',
+            'add an "openapi" script that emits the spec (AD-70 manifest)',
+            extra
+        );
     },
     parameters: {
         flags: {
             out: { kind: 'parsed', parse: (v: string) => v, brief: 'Output file path.', optional: true },
             format: { kind: 'enum', values: ['json', 'yaml'], brief: 'Output format.', optional: true },
         },
-        positional: { kind: 'tuple', parameters: [
-            { parse: (v: string) => v, brief: 'Application directory (default: current directory).', default: '.', placeholder: 'dir' },
-        ] },
+        positional: {
+            kind: 'tuple',
+            parameters: [
+                {
+                    parse: (v: string) => v,
+                    brief: 'Application directory (default: current directory).',
+                    default: '.',
+                    placeholder: 'dir',
+                },
+            ],
+        },
     },
     docs: { brief: 'Emit an OpenAPI document (fronts the app openapi script)' },
 });

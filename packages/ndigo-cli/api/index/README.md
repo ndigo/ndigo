@@ -8,4 +8,5 @@
 
 ## Functions
 
+- [buildCliApp](functions/buildCliApp.md)
 - [runCli](functions/runCli.md)

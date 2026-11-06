@@ -14,9 +14,17 @@ export const formatCommand = buildStricliCommand({
     },
     parameters: {
         flags: {},
-        positional: { kind: 'tuple', parameters: [
-            { parse: (v: string) => v, brief: 'Application directory (default: current directory).', default: '.', placeholder: 'dir' },
-        ] },
+        positional: {
+            kind: 'tuple',
+            parameters: [
+                {
+                    parse: (v: string) => v,
+                    brief: 'Application directory (default: current directory).',
+                    default: '.',
+                    placeholder: 'dir',
+                },
+            ],
+        },
     },
     docs: { brief: 'Run the application’s format script' },
 });

@@ -11,7 +11,18 @@ import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runWorkspaceOnce, usageError } from '../helpers/app-scripts.js';
 
 /** The generator kinds `@ndigo/generators` exposes (checked at run time). */
-const GENERATOR_KINDS = ['package', 'component', 'readme', 'header', 'controller', 'service', 'entity', 'middleware', 'config', 'migration'] as const;
+const GENERATOR_KINDS = [
+    'package',
+    'component',
+    'readme',
+    'header',
+    'controller',
+    'service',
+    'entity',
+    'middleware',
+    'config',
+    'migration',
+] as const;
 
 /**
  * The flags each generator's schema accepts. The CLI exposes the full
@@ -112,31 +123,78 @@ export const generateCommand = buildCommand({
     },
     parameters: {
         flags: {
-            name: { kind: 'parsed', parse: (v: string) => v, brief: 'Artifact name (package/component/readme; prompted when omitted).', optional: true },
-            package: { kind: 'parsed', parse: (v: string) => v, brief: 'Target package (component; required — prompted when omitted).', optional: true },
-            file: { kind: 'parsed', parse: (v: string) => v, brief: 'Header target file (header; required — prompted when omitted).', optional: true },
+            name: {
+                kind: 'parsed',
+                parse: (v: string) => v,
+                brief: 'Artifact name (package/component/readme; prompted when omitted).',
+                optional: true,
+            },
+            package: {
+                kind: 'parsed',
+                parse: (v: string) => v,
+                brief: 'Target package (component; required — prompted when omitted).',
+                optional: true,
+            },
+            file: {
+                kind: 'parsed',
+                parse: (v: string) => v,
+                brief: 'Header target file (header; required — prompted when omitted).',
+                optional: true,
+            },
             force: { kind: 'boolean', brief: 'Overwrite an existing header (header).', optional: true },
-            className: { kind: 'parsed', parse: (v: string) => v, brief: 'Generated class name (component).', optional: true },
-            summary: { kind: 'parsed', parse: (v: string) => v, brief: 'One-line summary (component/header).', optional: true },
-            author: { kind: 'parsed', parse: (v: string) => v, brief: 'Author line (component/header).', optional: true },
-            description: { kind: 'parsed', parse: (v: string) => v, brief: 'Package description (package/readme; prompted when omitted).', optional: true },
-            module: { kind: 'parsed', parse: (v: string) => v, brief: 'Documented module name for the header block (header).', optional: true },
+            className: {
+                kind: 'parsed',
+                parse: (v: string) => v,
+                brief: 'Generated class name (component).',
+                optional: true,
+            },
+            summary: {
+                kind: 'parsed',
+                parse: (v: string) => v,
+                brief: 'One-line summary (component/header).',
+                optional: true,
+            },
+            author: {
+                kind: 'parsed',
+                parse: (v: string) => v,
+                brief: 'Author line (component/header).',
+                optional: true,
+            },
+            description: {
+                kind: 'parsed',
+                parse: (v: string) => v,
+                brief: 'Package description (package/readme; prompted when omitted).',
+                optional: true,
+            },
+            module: {
+                kind: 'parsed',
+                parse: (v: string) => v,
+                brief: 'Documented module name for the header block (header).',
+                optional: true,
+            },
             path: { kind: 'parsed', parse: (v: string) => v, brief: 'README target path (readme).', optional: true },
-            jobs: { kind: 'boolean', brief: 'Wire the @ndigo/jobs dependency into a new package (package).', optional: true },
+            jobs: {
+                kind: 'boolean',
+                brief: 'Wire the @ndigo/jobs dependency into a new package (package).',
+                optional: true,
+            },
         },
-        positional: { kind: 'tuple', parameters: [
-            {
-                parse: (value: string) => value,
-                brief: `One of: ${GENERATOR_KINDS.join(', ')}`,
-                placeholder: 'kind',
-            },
-            {
-                parse: (value: string) => value,
-                brief: 'Workspace/app directory (default: current directory).',
-                default: '.',
-                placeholder: 'dir',
-            },
-        ] },
+        positional: {
+            kind: 'tuple',
+            parameters: [
+                {
+                    parse: (value: string) => value,
+                    brief: `One of: ${GENERATOR_KINDS.join(', ')}`,
+                    placeholder: 'kind',
+                },
+                {
+                    parse: (value: string) => value,
+                    brief: 'Workspace/app directory (default: current directory).',
+                    default: '.',
+                    placeholder: 'dir',
+                },
+            ],
+        },
     },
     docs: {
         brief: 'Generate framework artifacts through @ndigo/generators',

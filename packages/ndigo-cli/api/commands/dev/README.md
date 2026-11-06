@@ -6,6 +6,6 @@
 
 # commands/dev
 
-## Classes
+## Variables
 
-- [DevCommand](classes/DevCommand.md)
+- [devCommand](variables/devCommand.md)

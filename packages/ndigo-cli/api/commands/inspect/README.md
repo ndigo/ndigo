@@ -6,6 +6,6 @@
 
 # commands/inspect
 
-## Classes
+## Variables
 
-- [InspectCommand](classes/InspectCommand.md)
+- [inspectCommand](variables/inspectCommand.md)

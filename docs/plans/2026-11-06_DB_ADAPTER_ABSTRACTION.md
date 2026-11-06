@@ -108,8 +108,8 @@ The CLI resolves the registry by trying, in order:
 - `ndigo db <action> --db <name>` selects explicitly.
 - If only one adapter is registered, it is used automatically.
 - If multiple are registered and no `--db` is given:
-  - TTY: prompt with the registered names (default marked).
-  - non-TTY: fail with exit code 2 listing available names.
+    - TTY: prompt with the registered names (default marked).
+    - non-TTY: fail with exit code 2 listing available names.
 - `ndigo db list` prints registered adapters, engine labels, and the
   default.
 
@@ -152,18 +152,18 @@ with `--db <name> <action> [...args]`.
 
 ### 4.1 New / changed commands
 
-| Command | Behaviour |
-|---|---|
-| `ndigo db list` | Print registered adapters + default. |
-| `ndigo db migrate [--db name]` | Run `migrate()` (or fall back to `db:migrate` script). |
-| `ndigo db generate [--db name]` | Run `generate()`. |
-| `ndigo db status [--db name]` | Run `status()` and render a table. |
-| `ndigo db push [--db name]` | Run `push()` if supported else exit 2 with "not supported by <engine>". |
-| `ndigo db pull [--db name]` | Run `pull()`. |
-| `ndigo db studio [--db name]` | Run `studio()` (long-lived; supervisor lifecycle). |
-| `ndigo db seed [--db name]` | Run `seed()`. |
-| `ndigo db rollback [--db name] [n]` | Run `rollback(n)`. |
-| `ndigo db new [slug]` | Keep as-is (CLI-owned scaffold; engine-agnostic already). |
+| Command                             | Behaviour                                                               |
+| ----------------------------------- | ----------------------------------------------------------------------- |
+| `ndigo db list`                     | Print registered adapters + default.                                    |
+| `ndigo db migrate [--db name]`      | Run `migrate()` (or fall back to `db:migrate` script).                  |
+| `ndigo db generate [--db name]`     | Run `generate()`.                                                       |
+| `ndigo db status [--db name]`       | Run `status()` and render a table.                                      |
+| `ndigo db push [--db name]`         | Run `push()` if supported else exit 2 with "not supported by <engine>". |
+| `ndigo db pull [--db name]`         | Run `pull()`.                                                           |
+| `ndigo db studio [--db name]`       | Run `studio()` (long-lived; supervisor lifecycle).                      |
+| `ndigo db seed [--db name]`         | Run `seed()`.                                                           |
+| `ndigo db rollback [--db name] [n]` | Run `rollback(n)`.                                                      |
+| `ndigo db new [slug]`               | Keep as-is (CLI-owned scaffold; engine-agnostic already).               |
 
 Global flag `--db <name>` added to every `db` subcommand (and to top-level
 `ndigo db` route map docs).

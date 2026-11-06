@@ -8,7 +8,10 @@
 
 > **usageError**(`message`): `Error` & `object`
 
-An error whose process exit code is `2` (usage).
+The error whose command run terminates with exit code `2` (usage).
+Rendering and exit behavior are owned by the CLI application config in
+`index.ts` (formatException + determineExitCode, issue #148) — creating
+this error must not touch `process.exitCode` directly.
 
 ## Parameters
 

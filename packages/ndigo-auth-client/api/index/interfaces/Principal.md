@@ -8,14 +8,6 @@
 
 Represents an authenticated user or entity in the system.
 
-## Since
-
-1.0.0
-
-## Author
-
-Jeff Rose
-
 ## Properties
 
 ### id

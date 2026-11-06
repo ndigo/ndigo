@@ -33,8 +33,6 @@ A field decorator.
 ```ts
 @configurationProperties('server')
 class ServerConfig {
-    @property('port') @defaultValue('8080') port!: number;
-    @property('db') @nestedConfig db!: DbConfig;
 }
 class DbConfig { @property('url') url!: string; } // binds server.db.url
 ```

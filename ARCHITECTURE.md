@@ -20,8 +20,9 @@ Ndigo is a JavaScript-first application framework built on the enduring architec
     - [Standards Compliance](#standards-compliance)
 8. [Naming Conventions](#naming-conventions)
 9. [Module Visibility & API Design](#module-visibility--api-design)
-10. [Node Platform & Application Lifecycle](#node-platform--application-lifecycle)
-11. [Roadmap](#roadmap)
+10. [Contract-First Patterns](#contract-first-patterns)
+11. [Node Platform & Application Lifecycle](#node-platform--application-lifecycle)
+12. [Roadmap](#roadmap)
 
 ## Core Philosophy
 
@@ -1699,6 +1700,48 @@ Files beginning with underscore (`_`) are **internal implementation details**:
 - Provides clear API boundaries without exposing implementation details
 - Allows internal refactoring without breaking external consumers
 - Reduces cognitive load when exploring package capabilities
+
+## Contract-First Patterns
+
+The framework ships one shared contract vocabulary instead of a vocabulary per
+capability: `Equatable`/`Comparable`/`Comparator` (+ `stringComparator`,
+`numberComparator`, `compareBy`, `chainComparisons`, `invertComparison`),
+`Enumerable`, `Serializable`, `Matchable`/`ResultMatcher`/`PatternMatcher`,
+`Parser`/`Stringifier`, `Converter`/`ConversionService`, the `FormattingService`
+family, and — in `@ndigo/factory` — the lifecycle set (`Initializable`,
+`Destroyable`/`AsyncDestroyable`, `Closeable`/`AsyncCloseable`,
+`Lifecycle`/`Phased`/`SmartLifecycle`) with the `Aware` mixins. The
+2026-11-06 contract-reuse survey ([audit](./docs/audits/2026-11-06_CONTRACT_REUSE_AUDIT.md))
+grounded this vocabulary in usage: every `equals()`-carrying class declares
+`Equatable`, the container's bean shutdown is duck-typed through the `like*`
+guards, and `ConversionService`/`FormattingService` are wired through the
+context as beans.
+
+The working rules:
+
+1. **Declare what you structurally are.** A class that carries `equals()`,
+   `compareTo()`, `toJSON()`, `matches()`, `close()`, `init()`, or `destroy()`
+   names the contract in its `implements` clause; contract _interfaces_
+   (`JobDriver`, `OutboxStore`, `LockDriver`) extend the matching lifecycle
+   contract so every backend is compiler-checked. The container's duck-typed
+   shutdown (`likeDestroyable`/`likeCloseable`) does not depend on the
+   declarations — declarations are compile-time intent, which is why deliberate
+   exclusions (self-stopping servers, parameterized `close()`s) are documented
+   next to the class.
+2. **Shape guards are `like`, not `typeof` chains.** Duck-typing uses
+   `@ndigo/util`'s `like({...})` one-liners wrapped by the owning package's
+   `like*` guards (`likeJobDriver`, `likeLockDriver`, `likeMatchable`, …).
+   Hand-rolled `typeof x === 'function'` ladders are a review flag.
+3. **Ordering goes through the comparator primitives.** Inline
+   `a.x < b.x ? -1 : …` and `a.x - b.x` comparisons compile fine but bypass the
+   shared idiom; use `stringComparator`/`numberComparator` (+ `compareBy`,
+   `chainComparisons`, `invertComparison`). Locale-aware sorts keep
+   `localeCompare`.
+4. **Errors carry their lineage.** Closed-state guards throw
+   `IllegalStateError`; framework/denial errors extend `FrameworkError`;
+   application-domain failures extend `ApplicationError`
+   ([AD-94](./docs/decisions/2026-11-06_AD94_ERROR_LINEAGE.md)). Dependency-free
+   contract packages (`@ndigo/auth-core`) keep plain `Error` by design.
 
 ## Node Platform & Application Lifecycle
 

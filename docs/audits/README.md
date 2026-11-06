@@ -4,6 +4,7 @@ This directory contains audit reports analyzing various aspects of the ndigo cod
 
 ## Available Audits
 
+- [2026-11-06_CONTRACT_REUSE_AUDIT.md](./2026-11-06_CONTRACT_REUSE_AUDIT.md) - Adoption state of the `@ndigo/core`/`@ndigo/factory` contract vocabulary with finding→outcome tracking (#163–#167) and the re-run sweeps
 - [2026-11-06_CLI_REVIEW.md](./2026-11-06_CLI_REVIEW.md) - Three-lane review of the `@ndigo/cli` Stricli migration + command-expansion range (`02d6bb4a..HEAD`): verified must-fixes, docs drift, test gaps, and the six-PR remediation plan (tracked in #144)
 
 - [2026-11-03_POST_RENAME_CLEANUP_AUDIT.md](./2026-11-03_POST_RENAME_CLEANUP_AUDIT.md) - Post-rename dead-code/dependency audit (knip report mode + manual verification; dead files pruned, findings triaged to #90–#92)

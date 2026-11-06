@@ -1,12 +1,11 @@
 /**
  */
-
-import { createNull, JSONValue } from '@ndigo/core';
+import { createNull, JSONValue, Serializable } from '@ndigo/core';
 
 /**
  * Result of matching a route pattern to a path.
  */
-export class RouteMatchResult {
+export class RouteMatchResult implements Serializable {
     /**
      * The matched pattern.
      */

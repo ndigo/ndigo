@@ -4,6 +4,7 @@ import { Null } from '@ndigo/core';
 import { View } from '@ndigo/view';
 import { Route, applyNegotiatedLanguage } from '@ndigo/router';
 import { $aware } from '@ndigo/factory';
+import { like } from '@ndigo/util/types';
 import { ApplicationContext, likeApplicationContextAware } from '@ndigo/context';
 import { VIEW_TARGET } from './context-tokens';
 
@@ -183,7 +184,9 @@ export class AbstractDispatcher
     }
 
     private _isDestroyableView(view: View): view is View & { destroy(): void | Promise<void> } {
-        return !!view && typeof view.destroy === 'function';
+        // Not likeDestroyable(): views are not lifecycle beans — they carry no
+        // `destroyed` flag, so the destroy-callable shape alone is the contract.
+        return like({ destroy: Function })(view);
     }
 
     /**

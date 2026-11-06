@@ -24,6 +24,10 @@ Semantics every driver must preserve:
 Implementations are registered under the `jobDriver` bean; the default is
 [InProcessJobDriver](../../in-process-job-driver/classes/InProcessJobDriver.md), which is explicitly non-durable.
 
+## Extends
+
+- `AsyncCloseable`
+
 ## Properties
 
 ### kind
@@ -68,6 +72,10 @@ operations on a closed driver fail loud.
 #### Returns
 
 `Promise`\<`void`\>
+
+#### Overrides
+
+`AsyncCloseable.close`
 
 ***
 

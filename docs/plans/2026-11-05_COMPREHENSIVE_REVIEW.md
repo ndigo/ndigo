@@ -302,7 +302,10 @@ Implemented in two commits on `docs/comprehensive-review-2026-11-05`:
 - **Wave 3 (F-20, F-22, F-23, F-24):** generic feature-gate detail, hashed IP targeting key, type-only import exemption, tooling exemption doc.
 - **Wave 4 (F-11, F-27):** exception-safe Node preset close(), bundle-test guard.
 
-Remaining (documented, not yet implemented): F-07 (scaffolded-app gate test), F-10 (web late binding design), F-21 (flag memo), F-25 (sibling todomvc portability), F-26 (historical doc refs).
+Remaining (documented, intentionally deferred as design decisions):
+- F-10 (web late binding): the late-resolution contract is documented in `web-application.ts`; changing to eager beans would require a post-refresh registration phase and is tracked separately.
+- F-21 (flag memo): providers are expected to cache; per-request evaluation is by design for live flags (AD-82). Opt-in memoization deferred to a follow-up if profiling shows need.
+- F-26 (historical doc refs): historical plans/migrations/decisions intentionally retain old app numbers; live guides already use current numbers.
 - Each wave is intended to be one PR per AGENTS.md §8 (one issue = one branch =
   one worktree = one PR). Single-lane files (lockfile, generated trees) are not
   touched by this plan.

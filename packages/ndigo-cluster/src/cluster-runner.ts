@@ -240,7 +240,7 @@ export class ClusterRunner {
 
     /**
      * @param options - Cluster sizing, command, and tuning.
-     * @throws {TypeError} On invalid size or an empty command.
+     * @throws On invalid size or an empty command.
      */
     constructor(options: ClusterRunnerOptions) {
         if (options === null || typeof options !== 'object') {

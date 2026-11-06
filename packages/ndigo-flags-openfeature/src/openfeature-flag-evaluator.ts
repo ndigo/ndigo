@@ -56,7 +56,7 @@ export class OpenFeatureFlagEvaluator implements FlagEvaluator {
     /**
      * @param options - An explicit client, or a domain key resolved against
      *   the global OpenFeature API; omit both for the global default client.
-     * @throws {TypeError} When both `client` and `domain` are given.
+     * @throws When both `client` and `domain` are given.
      */
     constructor(options: OpenFeatureFlagEvaluatorOptions = {}) {
         if (options.client !== undefined && options.domain !== undefined) {

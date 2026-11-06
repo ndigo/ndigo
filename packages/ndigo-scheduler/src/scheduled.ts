@@ -42,7 +42,7 @@ const lockNamePattern = /^[A-Za-z0-9._:-]+$/;
  *
  * @param spec - The raw spec object (unknown-typed via narrowing).
  * @returns The normalized lock fields; absent when `lock` is absent.
- * @throws {TypeError} On a malformed lock name or duration.
+ * @throws On a malformed lock name or duration.
  */
 function resolveLockFields(spec: { lock?: unknown; lockWait?: unknown; lockWaitStep?: unknown; lockTtl?: unknown }): {
     lockKey?: string;

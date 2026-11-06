@@ -70,7 +70,7 @@ export class CronSchedule implements Schedule {
      * @param timeZone - Optional IANA time zone the expression is evaluated
      *   in; when omitted the schedule uses the **system time zone** (pass an
      *   explicit zone for deterministic behavior).
-     * @throws {TypeError} When the expression does not parse.
+     * @throws When the expression does not parse.
      */
     constructor(expression: string, timeZone?: string) {
         try {
@@ -118,7 +118,7 @@ export class IntervalSchedule implements Schedule {
      * @param kind - `fixedRate` (start-anchored) or `fixedDelay`
      *   (end-anchored).
      * @param intervalMs - The interval in milliseconds; must be positive.
-     * @throws {TypeError} When the interval is not positive.
+     * @throws When the interval is not positive.
      */
     constructor(kind: 'fixedRate' | 'fixedDelay', intervalMs: number) {
         if (typeof intervalMs !== 'number' || !Number.isFinite(intervalMs) || intervalMs <= 0) {
@@ -144,7 +144,7 @@ export class IntervalSchedule implements Schedule {
  *
  * @param spec - The normalized spec produced by `@scheduled`.
  * @returns The schedule implementation for the spec's trigger.
- * @throws {FrameworkError} When the spec has no trigger — it should have
+ * @throws When the spec has no trigger — it should have
  *   been rejected at decoration time; this is defense in depth.
  */
 export function scheduleFromSpec(spec: NormalizedScheduledSpec): Schedule {

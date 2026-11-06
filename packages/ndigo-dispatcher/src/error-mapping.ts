@@ -75,9 +75,8 @@ const hasErrorMapping = (target: unknown, propertyKey: string | symbol): boolean
  *
  * @example
  * ```typescript
- * Invoked via the `errorHandler` decorator.
- *   // ...
- * }
+ * @errorHandler()
+ * class MyErrorHandler {}
  *
  * const isHandler = errorHandler.has(MyErrorHandler);
  * ```

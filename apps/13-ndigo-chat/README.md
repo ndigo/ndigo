@@ -115,8 +115,8 @@ c.activate();
 - [apps/README](../README.md) — the applications progression
 - [Guide 06 — WebSockets, Rooms, Broadcast, and STOMP](../../docs/guides/06-websockets.md)
 - [@ndigo/socket](../../packages/ndigo-socket/README.md) — the isomorphic client and STOMP layer
-- [06-ndigo-island](../06-ndigo-island/README.md) — SSR shell + Web Component island + SSE
-- [04-ndigo-api](../04-ndigo-api/README.md) — the raw socket and STOMP demos this app builds on
+- [07-ndigo-island](../07-ndigo-island/README.md) — SSR shell + Web Component island + SSE
+- [05-ndigo-api](../05-ndigo-api/README.md) — the raw socket and STOMP demos this app builds on
 
 ## Contributing
 

@@ -18,7 +18,7 @@ markers, links.
 
 How-to guides (numbered `NN-slug.md`, living documents — no dates). Guide 01
 is the end-to-end tutorial/integration path; 02–28 cover one feature area
-each.
+each, and 29 covers the application directory/file conventions.
 
 ### [Plans](./plans/README.md)
 

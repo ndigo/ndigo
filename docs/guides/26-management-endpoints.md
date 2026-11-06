@@ -8,7 +8,7 @@ point and the single access-guard model; the endpoints are **open by
 default**, so the security posture from guide 11 (guard + boundary firewall)
 applies to everything below.
 
-Reference application: `apps/04-ndigo-api` (the demo exposes the full surface).
+Reference application: `apps/05-ndigo-api` (the demo exposes the full surface).
 
 ## 1. Enabling the endpoints
 

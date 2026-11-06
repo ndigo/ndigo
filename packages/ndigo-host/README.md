@@ -2,7 +2,7 @@
 
 > Micro frontend orchestration for Ndigo — register features from any context and mount them into a shared shell.
 
-`@ndigo/host` gives the shell one-call feature registration with dependency-validated mounting. Features are plain Ndigo contexts (or context factories); the shell owns their lifecycle and exclusive activation, declaring what they need from the shell and checking availability before mounting. The browser app shell demonstrates the pattern end to end (`apps/05-ndigo-host`).
+`@ndigo/host` gives the shell one-call feature registration with dependency-validated mounting. Features are plain Ndigo contexts (or context factories); the shell owns their lifecycle and exclusive activation, declaring what they need from the shell and checking availability before mounting. The browser app shell demonstrates the pattern end to end (`apps/06-ndigo-host-demo`).
 
 ## Installation
 
@@ -35,7 +35,7 @@ host.unmount('catalog');
 
 ### Lazy feature chunks
 
-For lazy feature chunks loaded with dynamic `import()`, use the `mountLazy` support used by the ndigo-host demo app.
+For lazy feature chunks loaded with dynamic `import()`, use the `mountLazy` support used by the ndigo-host-demo app.
 
 ## API
 
@@ -56,7 +56,7 @@ pnpm --filter @ndigo/host test
 
 ## See Also
 
-- [apps/05-ndigo-host](../../apps/05-ndigo-host/README.md) — micro frontend host demo with three lazy-loaded feature chunks
+- [apps/06-ndigo-host-demo](../../apps/06-ndigo-host-demo/README.md) — micro frontend host demo with three lazy-loaded feature chunks
 - [@ndigo/router](../ndigo-router/README.md) — feature routing registry used by the shell
 
 ## Contributing

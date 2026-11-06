@@ -187,7 +187,7 @@ Precedence: **cookie (user choice) → navigator → default** — the
 `lang` cookie the signal writes, so the next dispatcher pass agrees with the
 current UI.
 
-The `ndigo-todo` demo ships a working switcher (`locale-switcher-view.ts`):
+The `ndigo-todo-web` demo ships a working switcher (`locale-switcher-view.ts`):
 EN/FR buttons, a message-source-backed label, cookie persistence, and
 signal-driven re-rendering.
 
@@ -206,7 +206,7 @@ signal-driven re-rendering.
 
 - [Content/i18n decision](../decisions/2026-09-13_AD19_CONTENT_I18N.md)
 - [Content/i18n implementation plan](../plans/2026-09-13_CONTENT_I18N.md)
-- [ndigo-island demo](../../apps/06-ndigo-island/README.md) — localized SSR page
-- [ndigo-todo demo](../../apps/03-ndigo-todo/README.md) — reactive locale switcher
+- [ndigo-island demo](../../apps/07-ndigo-island/README.md) — localized SSR page
+- [ndigo-todo-web demo](../../apps/03-ndigo-todo-web/README.md) — reactive locale switcher
 - [`@ndigo/content-i18next`](../../packages/ndigo-content-i18next/README.md) —
   the i18next adapter

@@ -4,7 +4,7 @@
  * session store.
  *
  * Wiring is application-owned and happens before the container refreshes — the
- * same shape as `04-ndigo-api`'s `initAuth()` — because `AuthRegistry` is a
+ * same shape as `05-ndigo-api`'s `initAuth()` — because `AuthRegistry` is a
  * process-global seam: each adapter is registered under its own id
  * (`credentials`, `jwt`) and the routes select the scheme explicitly
  * (`AuthServer.validateAny` with an ordered adapter list, never "try them all"),

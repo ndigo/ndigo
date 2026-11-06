@@ -4,7 +4,7 @@
  * Kept separate from any build config so tests resolve `@ndigo/*` against
  * `packages/<pkg>/src` through the shared alias table (HI-6/TST-B) instead of
  * the built `lib/` output the `node_modules` symlinks expose — mirrors the
- * sibling Node app lanes (`08-ndigo-httpbin`, `09-ndigo-todobackend`).
+ * sibling Node app lanes (`09-ndigo-httpbin`, `04-ndigo-todo-api`).
  *
  * @since 1.0.0
  * @author Jeff Rose

@@ -247,7 +247,7 @@ nothing behind (entries carry the demo TTL).
 - [Guide 16 — Persistence & Distributed Backends](../../docs/guides/16-persistence-and-distributed-backends.md)
 - [@ndigo/redis](../../packages/ndigo-redis/README.md) — the adapters this app composes
 - [@ndigo/cache](../../packages/ndigo-cache/README.md), [@ndigo/socket](../../packages/ndigo-socket/README.md), [@ndigo/platform-node](../../packages/ndigo-platform-node/README.md)
-- `apps/04-ndigo-api` — the same broadcast pattern single-node (`/ws/chat`)
+- `apps/05-ndigo-api` — the same broadcast pattern single-node (`/ws/chat`)
 - `apps/15-ndigo-resilience-lab` — the sibling single-process lab, and the health-indicator pattern this app reuses
 
 ## License

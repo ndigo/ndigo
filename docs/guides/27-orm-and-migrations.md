@@ -3,7 +3,7 @@
 The journaled migration lifecycle (AD-30/AD-78): decorator entities are the
 single schema source, `ndigo db generate` renders versioned migrations from
 them, `ndigo db migrate` applies them through the journaled runner, and
-`ndigo db status` reports the journal. Reference application: `apps/04-ndigo-api`.
+`ndigo db status` reports the journal. Reference application: `apps/05-ndigo-api`.
 
 ## The lifecycle
 
@@ -125,7 +125,7 @@ config files — env names must be identifier-safe, since package-manager
 runners drop dotted variables):
 
 ```jsonc
-// apps/04-ndigo-api/config/application.json
+// apps/05-ndigo-api/config/application.json
 {
     "migrations": {
         "runOnBoot": true,
@@ -158,7 +158,7 @@ key (operator contract, not a lock).
 
 ## 5. Reference consumer
 
-`apps/04-ndigo-api` is the working example: `db/migrations/0001-…ts` and
+`apps/05-ndigo-api` is the working example: `db/migrations/0001-…ts` and
 `db/schema.json` are committed, `ndigo db generate` at HEAD is a no-op (and
 `pnpm db:schema:check` in CI says so), `db migrate` applies to the same
 `file:`-backed store the Drizzle routes read (`NDIGO_DB_URL` override), and

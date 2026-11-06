@@ -4,7 +4,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { spawn, type ChildProcess } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,18 +18,7 @@ interface CaptureResult {
 
 function capture(argv: string[]): Promise<CaptureResult> {
     return new Promise<CaptureResult>((resolve) => {
-        let spawned: ChildProcess | null;
-        try {
-            spawned = spawn(argv[0] ?? '', argv.slice(1), { stdio: 'pipe' });
-        } catch {
-            resolve({ value: '', missing: true });
-            return;
-        }
-        if (spawned === null) {
-            resolve({ value: '', missing: true });
-            return;
-        }
-        const child = spawned;
+        const child = spawn(argv[0] ?? '', argv.slice(1), { stdio: 'pipe' });
         const chunks: string[] = [];
         const stdout = child.stdout;
         if (stdout !== null) {
@@ -37,7 +26,19 @@ function capture(argv: string[]): Promise<CaptureResult> {
                 for await (const chunk of stdout) chunks.push(String(chunk));
             })().catch(() => undefined);
         }
-        child.once('exit', () => resolve({ value: chunks.join('').trim().split('\n')[0] ?? '', missing: false }));
+        let settled = false;
+        const settle = (result: CaptureResult): void => {
+            if (settled) return;
+            settled = true;
+            resolve(result);
+        };
+        child.once('exit', () => settle({ value: chunks.join('').trim().split('\n')[0] ?? '', missing: false }));
+        // Node emits 'error' asynchronously when the program cannot be
+        // spawned (ENOENT) and does not guarantee a matching 'exit', so the
+        // constructor try/catch previously wrapped the one case it could
+        // not catch (issue #144): a missing `pnpm` reported a lying healthy
+        // row instead of the diagnostic this check exists to print.
+        child.once('error', () => settle({ value: '', missing: true }));
     });
 }
 

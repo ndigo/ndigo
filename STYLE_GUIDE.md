@@ -21,6 +21,13 @@ This document defines the concrete implementation rules, naming conventions, and
 
 These rules are enforced by oxfmt (`.oxfmtrc.json`). When the oxfmt configuration changes, this section must be updated.
 
+> **Ignored files.** `.oxfmtrc.json`'s `ignorePatterns` excludes the files another
+> tool owns the bytes of: `AGENTS.md` and `.github/copilot-instructions.md`
+> (graft rewrites their context blocks and strips the blank line oxfmt wants
+> after the `graft:start` marker) and `opencode.json` (OpenCode rewrites its own
+> config). `pnpm format:check` cannot hold a formatting contract for a file a
+> generator rewrites.
+
 ### Indentation [AUTOMATED: oxfmt]
 
 - **TypeScript/JavaScript:** 4 spaces

@@ -282,6 +282,28 @@ describe('HTTPServer lifecycle', () => {
         await server.close();
     });
 
+    test('port: 0 reports the kernel-assigned port after start and reverts on close', async () => {
+        const context = new MetadataConfigApplicationContext('bound-port');
+        context.register(NodeAutoConfiguration);
+        context.refresh();
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+        const server = new HTTPServer(dispatcher, { port: 0 });
+        expect(server.port).toBe(0);
+
+        await server.start();
+        try {
+            const bound = (server.server as { address(): { port: number } }).address().port;
+            expect(bound).toBeGreaterThan(0);
+            expect(server.port).toBe(bound);
+        } finally {
+            await server.close();
+        }
+
+        // Back to the configured port: a restart re-binds `0`, not the
+        // previous ephemeral allocation.
+        expect(server.port).toBe(0);
+    });
+
     test('binds the supplied host and answers on it (AD-36 D-2)', async () => {
         const context = new MetadataConfigApplicationContext('bind-host');
         context.register(NodeAutoConfiguration);

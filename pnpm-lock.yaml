@@ -882,9 +882,6 @@ importers:
       '@ndigo/platform-web':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-platform-web
-      '@ndigo/router':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-router
       '@ndigo/telemetry-web':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-telemetry-web
@@ -1624,15 +1621,6 @@ importers:
       '@ndigo/dispatcher':
         specifier: ~0.0.1
         version: link:../ndigo-dispatcher
-      '@ndigo/platform-node':
-        specifier: ~0.0.1
-        version: link:../ndigo-platform-node
-      '@ndigo/platform-web':
-        specifier: ~0.0.1
-        version: link:../ndigo-platform-web
-      '@ndigo/telemetry-node':
-        specifier: ~0.0.1
-        version: link:../ndigo-telemetry-node
       '@toon-format/toon':
         specifier: 'catalog:'
         version: 4.4.0
@@ -2095,6 +2083,9 @@ importers:
       '@ndigo/auth-core':
         specifier: ~0.0.1
         version: link:../ndigo-auth-core
+      '@ndigo/boot':
+        specifier: ~0.0.1
+        version: link:../ndigo-boot
       '@ndigo/cache':
         specifier: ~0.0.1
         version: link:../ndigo-cache
@@ -2174,6 +2165,9 @@ importers:
 
   packages/ndigo-platform-web:
     dependencies:
+      '@ndigo/boot':
+        specifier: ~0.0.1
+        version: link:../ndigo-boot
       '@ndigo/content':
         specifier: ~0.0.1
         version: link:../ndigo-content

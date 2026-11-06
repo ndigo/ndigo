@@ -33,6 +33,7 @@ Conceptual and hands-on guides for building applications with Ndigo. These compl
 27. [27 — ORM & Migrations](27-orm-and-migrations.md) — the journaled migration lifecycle (AD-30/AD-78): decorator entities as the schema source, `ndigo db generate` (committed snapshot + freshness gate), `ndigo db migrate`/`db:status`, `migrations.runOnBoot`, and the fidelity ceiling (what stays hand-written). Reference application: `apps/05-ndigo-api`.
 28. [28 — Feature Flags](28-feature-flags.md) — `@ndigo/flags` (AD-82): the never-throw `FlagEvaluator` SPI, the zero-config property provider (`feature.*`, live refresh), `@whenFeature` route gates (404 when off), the OpenFeature bridge for vendor flagging (server + browser entries, evaluation telemetry), and the targeting-context resolver. Reference application: `apps/05-ndigo-api` (`/gated-report`).
 29. [29 — Application Conventions](29-application-conventions.md) — the `apps/NN-ndigo-<slug>` ladder, `-web`/`-api` pairing, role-based file suffixes (`*-controller`, `*-service`, `*-configuration`, `*.entity.ts`, `*.dto.ts`), folder layout, test naming, and the deferred normalization backlog.
+30. [30 — Building a Browser App](30-building-a-browser-app.md) — the browser twin of guide 01: the `createWebApplication` preset (`@ndigo/platform-web`, AD-90) — context bootstrap, hash routing, DOM view targets, router interceptors, app-specific tokens, and the `bootBrowserApp` test harness. Reference applications: `apps/08-ndigo-views`, `apps/19-ndigo-hn`.
 
 ## Reading Order
 

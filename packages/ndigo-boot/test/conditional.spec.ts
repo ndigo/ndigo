@@ -9,8 +9,8 @@ import { Application } from '../src/application';
 import { ApplicationBuilder, configurationProperties } from '../src/index';
 import { property, defaultValue, configuration, environment, refreshScope } from '@ndigo/context';
 import type { ConfigurableEnvironment } from '@ndigo/context';
-import { WebAutoConfiguration } from '@ndigo/platform-web';
-import { NodeAutoConfiguration } from '@ndigo/platform-node';
+import { WebAutoConfiguration } from '../../ndigo-platform-web/src/web-auto-configuration';
+import { NodeAutoConfiguration } from '../../ndigo-platform-node/src/node-auto-configuration';
 import type { RouteRegistry } from '@ndigo/router';
 
 describe('whenBrowser', () => {

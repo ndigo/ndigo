@@ -46,6 +46,8 @@ export * from './http-server';
 export * from './node-http-server-adapter';
 export type { SocketRequestAuthenticator } from './node-http-server-adapter';
 export * from './graceful-shutdown';
+export * from './run-node-application';
+export * from './node-config-file-reader';
 export * from './http-request-limits';
 export * from './node-dispatcher';
 export * from './node-view-target';

@@ -172,6 +172,7 @@ export interface HTTPServerOptions {
 export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
     #adapter: HTTPServerAdapter | null;
     #port: number;
+    #boundPort: number | null;
     #host: string;
     #started: boolean;
     #dispatcher: NodeDispatcher | null;
@@ -187,10 +188,12 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
     #startPromise: Promise<void> | null = null;
 
     /**
-     * The port the server is listening on, or `0` if not yet started.
+     * The port the server is listening on: the kernel-assigned port once
+     * started (the ephemeral port when `port: 0` was requested), otherwise
+     * the configured port (before start and after close).
      */
     get port(): number {
-        return this.#port;
+        return this.#boundPort ?? this.#port;
     }
 
     /**
@@ -243,6 +246,7 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
             throw new RangeError(`HTTPServer: invalid port ${String(rawPort)} — must be an integer in [0, 65535]`);
         }
         this.#port = rawPort;
+        this.#boundPort = null;
         this.#host = options.host ?? '127.0.0.1';
         this.#dispatcher = dispatcher;
         this.#socketRegistry = options.socketRegistry ?? null;
@@ -312,6 +316,13 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         }
         await this.#adapter.listen(this.#port, this.#host);
         this.#started = true;
+        // The adapter surface is `unknown` by design (custom adapters); the
+        // default Node http/http2 servers expose `net.Server#address()` with
+        // the kernel-assigned port for a `port: 0` bind.
+        const address = (
+            this.#adapter.server as { address?: () => string | { port: number } | null } | undefined
+        )?.address?.();
+        this.#boundPort = typeof address === 'object' && address !== null ? address.port : this.#port;
     }
 
     /**
@@ -335,6 +346,7 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         // (with a fresh default registry) instead of reusing a dead one.
         this.#adapter = null;
         this.#started = false;
+        this.#boundPort = null;
         this.#startPromise = null;
     }
 

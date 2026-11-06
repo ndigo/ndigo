@@ -32,6 +32,7 @@ export * from './locale';
 export * from './history-state-argument-resolver';
 export * from './browser-storage-argument-resolver';
 export * from './hash-router';
+export * from './web-application';
 export * from './browser-router';
 export * from './browser-dispatcher';
 export * from './web-auto-configuration';

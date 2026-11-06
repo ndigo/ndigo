@@ -13,7 +13,7 @@ import { describe, test, expect } from 'vitest';
 import { ConfigurableEnvironment, MutablePropertySources } from '@ndigo/context';
 import { ApplicationBuilder } from '../src/application-builder';
 import { PRECEDENCE, PrecedenceSource } from '../src/precedence';
-import { NodeEnvironment } from '@ndigo/platform-node';
+import { NodeEnvironment } from '../../ndigo-platform-node/src/node-environment';
 
 class AppConfig {}
 

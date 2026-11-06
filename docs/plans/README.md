@@ -7,6 +7,36 @@ Every implemented plan has its **decision recorded** in
 
 ## Completed Plans
 
+### 2026-11-05 - Application Lifecycle Presets
+
+`@ndigo/boot` + `@ndigo/platform-node` + `@ndigo/platform-web` (AD-90):
+additive entrypoint presets that compose the existing auto-configurations —
+**`runNodeApplication`** (NodeAutoConfiguration + NodeEnvironment + config
+files via the new `nodeConfigFileReader` + the managed `HTTP_SERVER` start +
+`gracefulShutdown`, with `configureBuilder` / `beforeStart` / `resources` /
+`shutdown` / `platform` / `configFiles` / `port` opt-outs) and
+**`createWebApplication`** (WebAutoConfiguration + BrowserEnvironment + the
+`DOMElementViewTarget` / `BrowserDispatcher` / `HashRouter` wiring, the
+runtime tokens, router interceptors, `beforeNavigate`, and the first
+navigation, with an idempotent `destroy()`). Also: `HTTPServer.port` reports
+the bound port (kernel-assigned for `port: 0`) and reverts on close;
+`@ndigo/boot`'s profile resolver reads through `getEnv` (browser-safe,
+pinned by a new spec); boot's platform devDependencies are gone — its
+platform-integration specs import the platform sources relatively, because
+the old edges would close an Nx build cycle now that the platforms depend
+on boot (AD-67's acyclicity gate). Apps 02/05/08/19, the app generator's
+node and browser templates (browser apps ship `<name>-configuration.ts` +
+the preset), guide 01 §1/§5, the new guide 30, the root README, and the
+CHANGELOG adopt the presets. Deviations from the approved plan, recorded in
+AD-90: the `configureBuilder` hook (app 05's secrets/config-server/processor
+wiring must land pre-refresh), the devDependency removal, the browser view
+engine behind a dynamic import (PWB-REV-001), and the measured bundle delta
+(+100.3 kB raw / +30.0 kB gzip on app 19, all chunks).
+
+[Read plan](2026-11-05_APPLICATION_LIFECYCLE_PRESETS.md)
+
+---
+
 ### 2026-10-10 - Feature Flags
 
 `@ndigo/flags` + `@ndigo/platform-node` + `apps/04-ndigo-api` (AD-82),

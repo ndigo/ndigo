@@ -157,6 +157,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   in `ws`/browsers). Plaintext, edge-terminated stays the default posture
   (AD-80); a half-configured env pair throws rather than silently serving
   plaintext.
+- `@ndigo/platform-node` (AD-90): the **`runNodeApplication(sources, options)`**
+  lifecycle preset — composes `NodeAutoConfiguration` and `NodeEnvironment`
+  with config files (new default reader `nodeConfigFileReader`), the
+  `configureBuilder` / `beforeStart` hooks, extra teardown `resources`, and
+  the `SIGINT`/`SIGTERM` wiring, then starts the managed `HTTP_SERVER` and
+  returns `{ context, server, port, close }`. Every implicit action has a
+  `false` switch; `ApplicationBuilder` and `gracefulShutdown` stay public
+  and unchanged.
+- `@ndigo/platform-node` (AD-90): `HTTPServer.port` reports the **bound**
+  port once started — the kernel-assigned port when `port: 0` was requested —
+  and reverts to the configured port on `close()`.
+- `@ndigo/platform-web` (AD-90): the **`createWebApplication(sources, options)`**
+  lifecycle preset — composes `WebAutoConfiguration` and `BrowserEnvironment`
+  with the `DOMElementViewTarget` / `BrowserDispatcher` / `HashRouter` wiring
+  and the first navigation, registers `VIEW_TARGET` / `DISPATCHER` / `ROUTER`,
+  and exposes `root` / `eventMap` / `interceptors` / `initialPath` /
+  `autoNavigate` / `beforeNavigate` / `platform` / `profiles` / `properties`
+  options; `destroy()` is idempotent. The manual
+  `MetadataConfigApplicationContext` path stays public and unchanged.
 
 ### Changed
 
@@ -237,6 +256,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`{@link <module>.<Symbol> | Symbol}`); the doc-coverage gate was repaired (it
   had been checking the wrong reflection kinds and could never fire) and the 62
   public symbols it flagged are documented.
+- `apps/02-ndigo-hello-node`, `apps/05-ndigo-api`, `@ndigo/generators`
+  (AD-90): the Node entrypoints adopt the `runNodeApplication` preset — no
+  more `process.env['PORT']` mutation or hand-written start/shutdown
+  assembly, and `05-ndigo-api` drops its hand-written config-file reader.
+  Generated node apps infer the dev port from `{ port: … }` and no longer
+  declare `@ndigo/boot` directly (the platform carries it).
+- `apps/08-ndigo-views`, `apps/19-ndigo-hn`, `@ndigo/generators` (AD-90): the
+  browser entrypoints adopt the `createWebApplication` preset — no more
+  hand-wired dispatcher/router/view-target assembly or duplicated hash-path
+  helper. Generated browser apps ship `<name>-configuration.ts` (replacing
+  `<name>-context.ts`) and no longer declare `@ndigo/router` directly.
 
 ### Fixed
 
@@ -259,6 +289,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   knobs like `NDIGO_DB_URL`, OTel endpoints and secret keys never reached the
   app script. The invoking environment now flows through (shell-free
   signal relays unchanged).
+- `@ndigo/boot` (AD-90 D-5): the profile resolver no longer reads
+  `process.env` directly — `NDIGO_PROFILES_ACTIVE`, `NDIGO_PROFILES_DEFAULT`,
+  and `NDIGO_PROFILES_GROUPS` resolve through `getEnv`, so booting through
+  `ApplicationBuilder` / `Application` works in browsers and workers where
+  `process` is absent instead of failing startup with `process is not
+  defined`; profile precedence is unchanged.
 
 ### Fixed
 

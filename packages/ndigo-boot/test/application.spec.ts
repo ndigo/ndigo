@@ -4,8 +4,8 @@
  */
 import { describe, test, expect, vi, afterEach } from 'vitest';
 import { Application } from '../src/application';
-import { WebAutoConfiguration } from '@ndigo/platform-web';
-import { NodeAutoConfiguration } from '@ndigo/platform-node';
+import { WebAutoConfiguration } from '../../ndigo-platform-web/src/web-auto-configuration';
+import { NodeAutoConfiguration } from '../../ndigo-platform-node/src/node-auto-configuration';
 import { configuration, entry } from '@ndigo/context';
 import { whenProfile } from '@ndigo/core';
 import { hashScope } from '@ndigo/factory';

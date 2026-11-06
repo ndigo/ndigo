@@ -25,6 +25,7 @@ import { z } from 'zod';
 import { StandardConfigFileLoader } from './config-file-loader';
 import { isConfigurationProperties, resolveConfigurationProperties } from './configuration-properties';
 import { getLogger } from '@ndigo/log';
+import { getEnv } from '@ndigo/util';
 
 const logger = getLogger('ndigo-boot:application');
 
@@ -296,7 +297,7 @@ export class Application extends Emitter {
         const fromBuilder = this.#profiles;
         if (fromBuilder.length) active = [...fromBuilder];
 
-        const envActive = process.env.NDIGO_PROFILES_ACTIVE;
+        const envActive = getEnv('NDIGO_PROFILES_ACTIVE');
         if (envActive) active = splitProfiles(envActive);
 
         const cli = parsed as Record<string, unknown>;
@@ -311,7 +312,7 @@ export class Application extends Emitter {
         // the env's own defaultProfiles (if set) are consulted by gates.
 
         // Defaults as config (profiles.default / NDIGO_PROFILES_DEFAULT).
-        const envDefault = process.env.NDIGO_PROFILES_DEFAULT;
+        const envDefault = getEnv('NDIGO_PROFILES_DEFAULT');
         if (envDefault) defaults = splitProfiles(envDefault);
         const cliDefault = typeof cliProfiles?.default === 'string' ? cliProfiles.default : undefined;
         if (cliDefault) defaults = splitProfiles(cliDefault);
@@ -343,7 +344,7 @@ export class Application extends Emitter {
      */
     #profileGroups(cli: Record<string, unknown>): Map<string, string[]> {
         const groups = new Map<string, string[]>();
-        const envGroups = process.env.NDIGO_PROFILES_GROUPS;
+        const envGroups = getEnv('NDIGO_PROFILES_GROUPS');
         if (envGroups) {
             // Pairs are `;`-separated; members within a pair are `,`-separated
             // (`short=dev,test;other=prod`) — a bare `,` is ambiguous as both

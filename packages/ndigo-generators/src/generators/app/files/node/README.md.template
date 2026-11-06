@@ -13,7 +13,7 @@ cd apps/<%= dirName %> && pnpm start
 
 ## Demonstrates
 
-- A minimal `ApplicationBuilder` + `NodeAutoConfiguration` boot with one controller
+- A minimal `runNodeApplication` boot (AD-90) with one controller
 - `@getMapping` handlers with query-parameter binding
 
 ## See Also

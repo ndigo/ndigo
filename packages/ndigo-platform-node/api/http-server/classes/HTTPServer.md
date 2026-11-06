@@ -126,7 +126,9 @@ Marks the value as `Aware` for the factory's aware injection, so
 
 > **get** **port**(): `number`
 
-The port the server is listening on, or `0` if not yet started.
+The port the server is listening on: the kernel-assigned port once
+started (the ephemeral port when `port: 0` was requested), otherwise
+the configured port (before start and after close).
 
 ##### Returns
 

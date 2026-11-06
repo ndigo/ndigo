@@ -4,10 +4,10 @@
 
 One `ndigo` entry absorbs the bespoke per-app scripts, fronts the
 framework-owned generators and introspection, scaffolds new applications,
-ships the AD-74 `--cluster` surface, and drives migrations through an
-engine-agnostic database adapter. Built on `@stricli/core` as an embedded
-library — route maps, typed flags, help, exit codes — with the framework
-features (generators, introspection, ORM) staying in their packages.
+replicates apps across N worker slots (`--cluster`), and drives migrations
+through an engine-agnostic database adapter. Built on `@stricli/core` as an
+embedded library — route maps, typed flags, help, exit codes — with the
+framework features (generators, introspection, ORM) staying in their packages.
 
 ## Installation
 
@@ -19,8 +19,8 @@ Prerequisites: Node.js ≥24 (the repository runtime baseline), pnpm ≥12.
 
 ## Getting Started
 
-Run an application (its `package.json` `start` script) with the AD-74
-process lifecycle — signals relay into the app's own graceful shutdown:
+Run an application (its `package.json` `start` script) under the supervisor
+lifecycle — signals relay into the app's own graceful shutdown:
 
 ```bash
 ndigo serve                       # current directory
@@ -35,23 +35,23 @@ ndigo serve --cluster 4 --port 3000   # 4 replicated worker slots
 | Command                 | What it does                                                          |
 | :---------------------- | :-------------------------------------------------------------------- |
 | `ndigo serve [dir]`     | Runs the app under the supervisor (`--cluster <n>`, `--port <base>`). |
-| `ndigo dev [dir]`       | Runs the app's `dev` script (vite) or `start` (Node apps).            |
+| `ndigo dev [dir]`       | Runs the app's `dev` script (vite) or `start` (Node apps), `--port`.  |
 | `ndigo build [dir]`     | Runs the app's `build` script (one-shot).                             |
 | `ndigo test [dir]`      | Runs the app's `test` script.                                         |
 | `ndigo lint [dir]`      | Runs the app's `lint` script.                                         |
 | `ndigo format [dir]`    | Runs the app's `format` script.                                       |
 | `ndigo typecheck [dir]` | Runs the app's `typecheck` script.                                    |
-| `ndigo clean [dir]`     | Removes `dist`/`lib`/`.nx`/`coverage` (`--dry-run` previews).         |
-| `ndigo inspect [dir]`   | Runs the app's `inspect` entry (the AD-70 manifest printer).          |
-| `ndigo routes [dir]`    | Prints the route table (fronts `inspect`).                            |
+| `ndigo clean [dir]`     | Removes `dist`/`lib`/`.nx`/`coverage` (`--dryRun` previews; `--force` required). |
+| `ndigo inspect [dir]`   | Runs the app's `inspect` entry (the manifest printer).                |
+| `ndigo routes [dir]`    | Alias of `inspect` (the route-table view).                            |
 | `ndigo logs [dir]`      | Tails `logs/app.log` (`--file`, `--lines`, `--follow`).               |
 
 ### Scaffolding and generators
 
 | Command                 | What it does                                                                 |
 | :---------------------- | :--------------------------------------------------------------------------- |
-| `ndigo new <name>`      | Scaffolds an app into `apps/` (`--kind`, `--preset`, `--port`, `--dry-run`). |
-| `ndigo generate <kind>` | Fronts `@ndigo/generators` via Nx (see below).                               |
+| `ndigo new <name>`      | Scaffolds an app into `apps/` (`--kind`, `--preset`, `--port`, `--number`, `--description`, `--dryRun`). |
+| `ndigo generate <kind>` | Fronts `@ndigo/generators` via Nx (alias `ndigo g`; see below).              |
 | `ndigo add <package>`   | Installs an `@ndigo/*` capability and runs its setup generator.              |
 
 `generate` kinds: `package`, `component`, `readme`, `header`, `controller`,
@@ -59,9 +59,10 @@ ndigo serve --cluster 4 --port 3000   # 4 replicated worker slots
 
 ### Database (engine-agnostic)
 
-The `db` commands front either the app's `db:*` scripts or the app's
-registered `NdigoDatabaseAdapter` (see `@ndigo/orm`). `--db <name>` selects
-among multiple registered adapters.
+The adapter-path `db` commands read the app's registered
+`NdigoDatabaseAdapter`s (`@ndigo/orm`) — `--db <name>` selects among them
+(`list`, `push`, `pull`, `studio`, `seed`, `rollback`). The remaining
+commands front the app's declared `db:*` scripts.
 
 | Command                  | What it does                                             |
 | :----------------------- | :------------------------------------------------------- |
@@ -81,16 +82,16 @@ among multiple registered adapters.
 | :-------------------- | :------------------------------------------------------------------ |
 | `ndigo doctor`        | Environment diagnostics — the issue-report starter.                 |
 | `ndigo info`          | `doctor` plus the installed `@ndigo/*` packages.                    |
-| `ndigo update [dir]`  | Bumps `@ndigo/*` from a version manifest (`--check`, `--manifest`). |
+| `ndigo update [dir]`  | Bumps `@ndigo/*` from a version manifest (`--check` compares; apply pins exact versions). |
 | `ndigo config`        | Gets/sets app-level keys in `.ndigorc.json`.                        |
-| `ndigo env`           | Validates required env vars against `.env.example`.                 |
-| `ndigo openapi [dir]` | Emits an OpenAPI document (`--out`, `--format json                  | yaml`). |
+| `ndigo env [dir]`     | Validates required env vars against `.env.example`.                 |
+| `ndigo openapi [dir]` | Emits an OpenAPI document (`--out`, `--format json\|yaml`).         |
 | `ndigo completion`    | Prints a bash completion script (`--shell`).                        |
 
 Every command: `--help`/`-h`, `--version`/`-v`, exit `0` ok / `2` usage /
 `1` runtime. Scripts run **shell-free** (single commands only) so OS
 signals reach the actual application — package-manager `run` wrappers and
-dash-style shells both swallow `SIGTERM` (verified 2026-10-07).
+dash-style shells both swallow `SIGTERM`.
 
 ## API
 

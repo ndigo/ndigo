@@ -8,3 +8,4 @@
 
 > `const` **envCommand**: `Command`\<`CommandContext`\>
 
+The env-template validation command.

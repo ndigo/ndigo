@@ -6,6 +6,9 @@
  */
 import { createScriptFrontCommand } from './_script-fronts.js';
 
+/**
+ * The application build one-shot front.
+ */
 export const buildScriptCommand = createScriptFrontCommand(
     'build',
     'Run the application build script',

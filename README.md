@@ -55,9 +55,10 @@ process — lives in [CONTRIBUTING.md](CONTRIBUTING.md).
 ### Build an application
 
 Applications are pnpm workspaces over `@ndigo/*` packages; the
-[`ndigo` CLI](packages/ndigo-cli/README.md) fronts the application lifecycle
-(`ndigo new`, `ndigo dev`, `ndigo serve`, `ndigo generate`, `ndigo db`,
-`ndigo inspect`, `ndigo doctor` — [guide 25](docs/guides/25-ndigo-cli.md)). Pick a
+[`ndigo` CLI](packages/ndigo-cli/README.md) fronts the application
+lifecycle (`ndigo serve`/`ndigo dev`, `ndigo new`/`ndigo generate`,
+`ndigo db`) plus the build/test/lint/format/typecheck fronts and the
+maintenance/DX tools ([guide 25](docs/guides/25-ndigo-cli.md)). Pick a
 path below: each lists the packages to start with, then the demo apps to follow.
 
 > **Pre-1.0:** the packages are not published yet — build from this repository

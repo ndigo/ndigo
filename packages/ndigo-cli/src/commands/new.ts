@@ -85,7 +85,7 @@ export const newCommand = buildCommand({
             preset: {
                 kind: 'parsed',
                 parse: (v: string) => v,
-                brief: 'Starter preset (api, browser, full-stack, minimal).',
+                brief: 'Starter preset (minimal, browser, api). Unknown presets fall back to minimal.',
                 optional: true,
             },
             number: {

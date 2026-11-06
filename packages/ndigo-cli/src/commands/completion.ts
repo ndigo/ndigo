@@ -10,6 +10,9 @@ import { buildCommand } from '@stricli/core';
 // wave-2/3 commands landed (review REV-011, issue #148).
 import { COMPLETION_WORDS } from './_routes.js';
 
+/**
+ * The shell-completion command.
+ */
 export const completionCommand = buildCommand({
     async func(flags: { shell?: string }) {
         const shell = flags.shell ?? 'bash';

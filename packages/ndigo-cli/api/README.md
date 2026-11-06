@@ -32,7 +32,6 @@
 - [commands/logs](commands/logs/README.md)
 - [commands/new](commands/new/README.md)
 - [commands/openapi](commands/openapi/README.md)
-- [commands/routes](commands/routes/README.md)
 - [commands/serve](commands/serve/README.md)
 - [commands/test](commands/test/README.md)
 - [commands/typecheck](commands/typecheck/README.md)

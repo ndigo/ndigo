@@ -7,6 +7,8 @@
  * @author Jeff Rose
  */
 import type { AttributeValue } from '@opentelemetry/api';
+import { compareBy, stringComparator } from '@ndigo/core';
+
 import { MetricHistogramBucket, MetricSnapshot } from './metric-snapshot';
 
 /**
@@ -52,7 +54,7 @@ export interface MetricJSONView {
 export function renderMetricJson(snapshots: readonly MetricSnapshot[]): MetricJSONView {
     const metrics: Record<string, MetricJSONEntry> = {};
 
-    for (const snapshot of [...snapshots].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))) {
+    for (const snapshot of [...snapshots].sort(compareBy((item) => item.name, stringComparator.compare))) {
         const points: MetricJSONPoint[] = [];
 
         for (const point of snapshot.points) {

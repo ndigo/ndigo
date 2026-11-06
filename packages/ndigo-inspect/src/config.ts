@@ -8,6 +8,8 @@
  * value and which source won — values are never read or decrypted.
  */
 
+import { compareBy, stringComparator } from '@ndigo/core';
+
 import { declaredConfigurationProperties, relaxedKeyCandidates } from '@ndigo/context';
 import type { Environment } from '@ndigo/context';
 import type { InspectConfigEntry } from './types';
@@ -75,5 +77,5 @@ export function collectConfig(classes: readonly Function[], environment?: Enviro
         }
     }
 
-    return [...entries.values()].sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
+    return [...entries.values()].sort(compareBy((entry) => entry.key, stringComparator.compare));
 }

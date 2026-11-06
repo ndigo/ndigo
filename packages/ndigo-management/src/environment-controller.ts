@@ -12,7 +12,7 @@ import {
     type ConfigurableEnvironment,
     REDACTED_VALUE,
 } from '@ndigo/context';
-import { Null } from '@ndigo/core';
+import { compareBy, Null, stringComparator } from '@ndigo/core';
 import { getMapping, requestMapping, parameters, queryValue } from '@ndigo/dispatcher';
 import { ResponseEntity } from '@ndigo/platform-node';
 import { isEndpointExposed, readManagementSettings } from './management-properties';
@@ -101,7 +101,7 @@ export class EnvironmentController extends AsApplicationContextAware(Null) {
                 const flattened = new Map<string, unknown>();
                 flatten(source.properties, '', flattened);
                 const nameMatches = term === undefined || name.includes(term);
-                const sorted = [...flattened.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+                const sorted = [...flattened.entries()].sort(compareBy(([key]) => key, stringComparator.compare));
                 for (const [key, value] of sorted) {
                     if (!nameMatches && term !== undefined && !key.startsWith(term)) {
                         continue;

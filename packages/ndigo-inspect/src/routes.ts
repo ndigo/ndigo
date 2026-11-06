@@ -7,6 +7,8 @@
  * or explicit descriptors into sorted {@link InspectRoute} rows.
  */
 
+import { chainComparisons, compareBy, stringComparator } from '@ndigo/core';
+
 import { deriveKey } from '@ndigo/router';
 import type { RouteDefinition, RouteRegistry } from '@ndigo/router';
 import type { InspectRoute, RouteSource } from './types';
@@ -84,7 +86,10 @@ export function collectRoutes(source?: RouteSource): InspectRoute[] {
         }
     }
 
-    return [...rows.values()].sort((a, b) =>
-        a.name === b.name ? (a.path < b.path ? -1 : a.path > b.path ? 1 : 0) : a.name < b.name ? -1 : 1
+    return [...rows.values()].sort(
+        chainComparisons(
+            compareBy((row) => row.name, stringComparator.compare),
+            compareBy((row) => row.path, stringComparator.compare)
+        )
     );
 }

@@ -20,6 +20,12 @@ import { dbMigrateCommand } from './commands/db/migrate.js';
 import { dbStatusCommand } from './commands/db/status.js';
 import { dbGenerateCommand } from './commands/db/generate.js';
 import { dbNewCommand } from './commands/db/new.js';
+import { dbListCommand } from './commands/db/list.js';
+import { dbPushCommand } from './commands/db/push.js';
+import { dbPullCommand } from './commands/db/pull.js';
+import { dbStudioCommand } from './commands/db/studio.js';
+import { dbSeedCommand } from './commands/db/seed.js';
+import { dbRollbackCommand } from './commands/db/rollback.js';
 
 /**
  * Builds the Stricli application for `@ndigo/cli`.
@@ -34,6 +40,12 @@ export function buildCliApp() {
                 status: dbStatusCommand,
                 generate: dbGenerateCommand,
                 new: dbNewCommand,
+                list: dbListCommand,
+                push: dbPushCommand,
+                pull: dbPullCommand,
+                studio: dbStudioCommand,
+                seed: dbSeedCommand,
+                rollback: dbRollbackCommand,
             },
             docs: { brief: 'Database migration commands (AD-78)' },
         }

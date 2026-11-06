@@ -19,6 +19,10 @@ export type { EntityState, UnitOfWork } from './unit-of-work';
 export type { TransactionManager } from './transaction-manager';
 export type { Repository, AsyncRepository } from './repository';
 
+// Database adapter abstraction (AD-96)
+export type { NdigoDatabaseAdapter, MigrationStatus } from './db-adapter';
+export { runDbCommand } from './db-adapter';
+
 // Decorators
 export {
     entity,

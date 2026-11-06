@@ -138,7 +138,7 @@ export interface IslandViewOptions {
  *
  * @example
  * ```ts
- * return new ModelAndView(new IslandView('todo-app'), { items: [...], filter: 'all' });
+ * const view = new ModelAndView(new IslandView('todo-app'), { items: [], filter: 'all' });
  * ```
  */
 export class IslandView extends AbstractTemplateView {

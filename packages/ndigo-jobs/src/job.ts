@@ -43,7 +43,7 @@ export interface ResolvedJobRequest {
 
 /**
  * A stored job as returned by a driver — the record handed to
- * {@link "job-driver".JobDriver#claim | JobDriver.claim} callers and into handler execution.
+ * `JobDriver.claim` callers and into handler execution.
  */
 export interface JobRecord {
     id: JobId;
@@ -62,7 +62,7 @@ export interface JobRecord {
 }
 
 /**
- * Claim window for {@link "job-driver".JobDriver#claim | JobDriver.claim}.
+ * Claim window for `JobDriver.claim`.
  */
 export interface ClaimOptions {
     /** Maximum number of jobs to claim in one call. */

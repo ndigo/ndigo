@@ -34,7 +34,7 @@ export const requiresDocHeader = {
         },
         messages: {
             missingHeader:
-                "Source file is missing the canonical doc header. Run 'nx generate @ndigo/generators:header --file {{file}} --summary \"…\"'.",
+                'Source file is missing the canonical doc header. Run \'nx generate @ndigo/generators:header --file {{file}} --summary "…"\'.',
         },
         schema: [],
     } as const,

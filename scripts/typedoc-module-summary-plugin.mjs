@@ -22,10 +22,17 @@ export function load(app) {
         const fileName = src.fullFileName || src.fileName;
         if (!fileName) return;
         let text;
-        try { text = readFileSync(fileName, 'utf8'); } catch { return; }
+        try {
+            text = readFileSync(fileName, 'utf8');
+        } catch {
+            return;
+        }
         const m = /^\s*\/\*\*([\s\S]*?)\*\//.exec(text);
         if (!m) return;
-        const lines = m[1].split('\n').map((l) => l.replace(/^\s*\*\s?/, '').trim()).filter(Boolean);
+        const lines = m[1]
+            .split('\n')
+            .map((l) => l.replace(/^\s*\*\s?/, '').trim())
+            .filter(Boolean);
         const summary = lines.find((l) => !l.startsWith('@'));
         if (!summary) return;
         reflection.comment = new Comment([{ kind: 'text', text: summary }]);

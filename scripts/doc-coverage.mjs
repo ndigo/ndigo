@@ -41,19 +41,26 @@ function walk(dir, out = []) {
     return out;
 }
 
-function hasDoc(node) { return (ts.getJSDocCommentsAndTags(node) ?? []).length > 0; }
+function hasDoc(node) {
+    return (ts.getJSDocCommentsAndTags(node) ?? []).length > 0;
+}
 function tagsOf(node) {
     const jsdoc = ts.getJSDocCommentsAndTags(node) ?? [];
     const tags = [];
     for (const d of jsdoc) if (d.tags) for (const t of d.tags) tags.push(t);
     return tags;
 }
-function tagName(t) { return t.tagName.getText().replace(/^@/, '').toLowerCase(); }
+function tagName(t) {
+    return t.tagName.getText().replace(/^@/, '').toLowerCase();
+}
 
 function topBlockSummary(text) {
     const m = /^\s*\/\*\*([\s\S]*?)\*\//.exec(text);
     if (!m) return false;
-    const lines = m[1].split('\n').map((l) => l.replace(/^\s*\*\s?/, '').trim()).filter(Boolean);
+    const lines = m[1]
+        .split('\n')
+        .map((l) => l.replace(/^\s*\*\s?/, '').trim())
+        .filter(Boolean);
     return lines.some((l) => !l.startsWith('@'));
 }
 
@@ -65,11 +72,16 @@ function scanPackage(dir) {
     const src = join(PACKAGES, dir, 'src');
     if (!existsSync(src)) return null;
     const stats = {
-        modules: 0, modulesWithoutSummary: 0,
-        members: 0, membersUndocumented: 0,
-        methodsWithParams: 0, methodsMissingParam: 0,
-        functionsWithReturns: 0, functionsMissingReturns: 0,
-        examples: 0, remarks: 0,
+        modules: 0,
+        modulesWithoutSummary: 0,
+        members: 0,
+        membersUndocumented: 0,
+        methodsWithParams: 0,
+        methodsMissingParam: 0,
+        functionsWithReturns: 0,
+        functionsMissingReturns: 0,
+        examples: 0,
+        remarks: 0,
     };
     for (const file of walk(src)) {
         const text = readFileSync(file, 'utf8');
@@ -93,8 +105,12 @@ function scanPackage(dir) {
                     if ((ts.isMethodDeclaration(m) || ts.isMethodSignature(m)) && m.parameters?.length) {
                         stats.methodsWithParams++;
                         const tags = tagsOf(m);
-                        const paramNames = [...m.parameters].filter((p) => ts.isIdentifier(p.name)).map((p) => p.name.getText());
-                        const documented = new Set(tags.filter((t) => tagName(t) === 'param').map((t) => t.name?.getText?.() ?? ''));
+                        const paramNames = [...m.parameters]
+                            .filter((p) => ts.isIdentifier(p.name))
+                            .map((p) => p.name.getText());
+                        const documented = new Set(
+                            tags.filter((t) => tagName(t) === 'param').map((t) => t.name?.getText?.() ?? '')
+                        );
                         if (paramNames.some((n) => !documented.has(n))) stats.methodsMissingParam++;
                     }
                 }
@@ -105,14 +121,19 @@ function scanPackage(dir) {
                 const tags = tagsOf(stmt);
                 if (stmt.parameters.length) {
                     stats.methodsWithParams++;
-                    const paramNames = stmt.parameters.filter((p) => ts.isIdentifier(p.name)).map((p) => p.name.getText());
-                    const documented = new Set(tags.filter((t) => tagName(t) === 'param').map((t) => t.name?.getText?.() ?? ''));
+                    const paramNames = stmt.parameters
+                        .filter((p) => ts.isIdentifier(p.name))
+                        .map((p) => p.name.getText());
+                    const documented = new Set(
+                        tags.filter((t) => tagName(t) === 'param').map((t) => t.name?.getText?.() ?? '')
+                    );
                     if (paramNames.some((n) => !documented.has(n))) stats.methodsMissingParam++;
                 }
                 const rt = stmt.type?.getText();
                 if (rt && !/^\s*(void|never)\s*$/.test(rt)) {
                     stats.functionsWithReturns++;
-                    if (!tags.some((t) => tagName(t) === 'returns' || tagName(t) === 'return')) stats.functionsMissingReturns++;
+                    if (!tags.some((t) => tagName(t) === 'returns' || tagName(t) === 'return'))
+                        stats.functionsMissingReturns++;
                 }
                 stats.examples += tags.filter((t) => tagName(t) === 'example').length;
                 stats.remarks += tags.filter((t) => tagName(t) === 'remarks').length;
@@ -130,7 +151,9 @@ function scanPackage(dir) {
     return stats;
 }
 
-const dirs = readdirSync(PACKAGES).filter((d) => existsSync(join(PACKAGES, d, 'package.json')) && existsSync(join(PACKAGES, d, 'src'))).sort();
+const dirs = readdirSync(PACKAGES)
+    .filter((d) => existsSync(join(PACKAGES, d, 'package.json')) && existsSync(join(PACKAGES, d, 'src')))
+    .sort();
 const results = {};
 for (const dir of dirs) {
     const s = scanPackage(dir);
@@ -156,10 +179,14 @@ for (const dir of dirs) {
     if (!s) continue;
     console.log(
         dir.padEnd(26),
-        pad(s.modules, 4), pad(s.modulesWithoutSummary, 5),
-        pad(s.members, 7), pad(s.membersUndocumented, 5),
-        pad(s.methodsMissingParam, 9), pad(s.functionsMissingReturns, 7),
-        pad(s.examples, 2), pad(s.remarks, 3)
+        pad(s.modules, 4),
+        pad(s.modulesWithoutSummary, 5),
+        pad(s.members, 7),
+        pad(s.membersUndocumented, 5),
+        pad(s.methodsMissingParam, 9),
+        pad(s.functionsMissingReturns, 7),
+        pad(s.examples, 2),
+        pad(s.remarks, 3)
     );
 }
 
@@ -174,7 +201,12 @@ if (CHECK) {
         const cur = results[dir];
         const base = baseline[dir];
         if (!cur || !base) continue;
-        const badKeys = ['modulesWithoutSummary', 'membersUndocumented', 'methodsMissingParam', 'functionsMissingReturns'];
+        const badKeys = [
+            'modulesWithoutSummary',
+            'membersUndocumented',
+            'methodsMissingParam',
+            'functionsMissingReturns',
+        ];
         for (const k of badKeys) {
             if (cur[k] > base[k]) {
                 regressions++;

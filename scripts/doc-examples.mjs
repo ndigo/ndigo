@@ -33,7 +33,11 @@ let errors = 0;
 for (const pkg of readdirSync(PACKAGES)) {
     const src = join(PACKAGES, pkg, 'src');
     let filesHere;
-    try { filesHere = walk(src); } catch { continue; }
+    try {
+        filesHere = walk(src);
+    } catch {
+        continue;
+    }
     for (const file of filesHere) {
         files++;
         const text = readFileSync(file, 'utf8');

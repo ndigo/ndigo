@@ -51,7 +51,7 @@ export interface RouteHandlerMethodMappingNamingStrategy<T = unknown> {
 /**
  * A strategy for assigning a name to a route handler method's mapping.
  *
- * The strategy can be configured on {@link abstract-handler-method-mapping.AbstractHandlerMethodMapping | AbstractHandlerMethodMapping}.
+ * The strategy can be configured on {@link "abstract-handler-method-mapping".AbstractHandlerMethodMapping | AbstractHandlerMethodMapping}.
  * It is used to assign a name to the mapping of every registered handler method.
  */
 

@@ -39,6 +39,8 @@ A parameter extractor binding `queryValue()` through the schema.
 ## Example
 
 ```ts
-@parameters({ search: validatedQuery(SearchSchema) })
-search(search: z.infer<typeof SearchSchema>) { … }
+class SearchController {
+  @parameters({ search: validatedQuery(SearchSchema) })
+  search(search: z.infer<typeof SearchSchema>) {}
+}
 ```

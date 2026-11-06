@@ -44,7 +44,9 @@ const UserSchema = z.object({
     age: z.coerce.number().min(18),
 });
 
-@routeMapping('/create')
-@parameters({ user: validatedBy(UserSchema, dataBinderValue('query')) })
-create(user: z.infer<typeof UserSchema>) { … }
+class UserController {
+  @routeMapping('/create')
+  @parameters({ user: validatedBy(UserSchema, dataBinderValue('query')) })
+  create(user: z.infer<typeof UserSchema>) {}
+}
 ```

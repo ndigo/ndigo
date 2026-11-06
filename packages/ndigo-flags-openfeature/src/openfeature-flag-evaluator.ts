@@ -9,9 +9,6 @@
  * **application-owned** (`OpenFeature.setProvider` /
  * `setProviderAndWait` / `OpenFeature.close()`); this evaluator holds no
  * resources of its own and defines no `close()`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { OpenFeature } from '@openfeature/server-sdk';
 import type { Client, EvaluationContext, EvaluationContextValue, JsonValue } from '@openfeature/server-sdk';
@@ -59,7 +56,7 @@ export class OpenFeatureFlagEvaluator implements FlagEvaluator {
     /**
      * @param options - An explicit client, or a domain key resolved against
      *   the global OpenFeature API; omit both for the global default client.
-     * @throws {TypeError} When both `client` and `domain` are given.
+     * @throws When both `client` and `domain` are given.
      */
     constructor(options: OpenFeatureFlagEvaluatorOptions = {}) {
         if (options.client !== undefined && options.domain !== undefined) {

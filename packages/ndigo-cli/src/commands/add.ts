@@ -1,8 +1,5 @@
 /**
- * `ndigo add <package>` — install and wire an @ndigo/* capability.
- *
- * @since 1.0.0
- * @author Jeff Rose
+ * `ndigo add <package>` — install and wire an \@ndigo/* capability.
  */
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runInteractiveSpawn } from '../helpers/app-scripts.js';

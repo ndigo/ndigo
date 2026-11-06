@@ -390,8 +390,10 @@ export function requestPart(
  *
  * @example
  * ```ts
- * @parameters({ route: routeValue() })
- * async handle(route: Route) { … }
+ * class RouteController {
+ *   @parameters({ route: routeValue() })
+ *   async handle(route: Route) {}
+ * }
  * ```
  *
  * @param name - The `Route` property to bind; omit to bind the `Route` itself.

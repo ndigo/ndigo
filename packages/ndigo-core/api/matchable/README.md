@@ -6,8 +6,6 @@
 
 # matchable
 
-Represents an object that can determine if it matches a given value.
-
 ## Interfaces
 
 - [Matchable](interfaces/Matchable.md)

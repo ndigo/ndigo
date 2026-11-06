@@ -7,6 +7,20 @@ Every implemented plan has its **decision recorded** in
 
 ## Completed Plans
 
+### 2026-11-05 - create-ndigo-app (standalone scaffold)
+
+`create-ndigo-app` (AD-92): an unscoped `npm create ndigo-app` bin that
+scaffolds a standalone pnpm project (node + browser kinds) using the AD-90
+presets (`runNodeApplication` / `createWebApplication`), with `--local` dev
+mode against the workspace and a copied decorator-lowering plugin. Templates
+follow guide 29 conventions; scaffolded apps pass `pnpm install` + `pnpm
+build` + `pnpm test` (smoke + bundle guard) in dev mode. Supersedes AD-85
+D-2's "post-1.0" gate — ships at 1.0.
+
+[Read plan](2026-11-05_CREATE_NDIGO_APP.md)
+
+---
+
 ### 2026-11-05 - Application Lifecycle Presets
 
 `@ndigo/boot` + `@ndigo/platform-node` + `@ndigo/platform-web` (AD-90):

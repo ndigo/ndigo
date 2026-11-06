@@ -1,0 +1,15 @@
+/**
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+import '@tsmetadata/polyfill';
+import { configuration, entry } from '@ndigo/context';
+import { {{className}}Controller } from './{{name}}-controller';
+
+@configuration
+export class {{className}}Configuration {
+    @entry()
+    {{camelName}}Controller() {
+        return new {{className}}Controller();
+    }
+}

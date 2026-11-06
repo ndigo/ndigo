@@ -1,0 +1,29 @@
+# {{name}} — {{className}}
+
+> {{description}}.
+
+Scaffolded by `create-ndigo-app` — extend this README as the app grows.
+
+## Run
+
+```bash
+cd {{name}} && pnpm install && pnpm dev
+# open http://127.0.0.1:{{port}}
+```
+
+## Demonstrates
+
+- The minimal `@ndigo` browser application shape: the `createWebApplication` preset + a route + Web Component render
+- Vite dev server wiring with the shared decorator-lowering policy
+
+## See Also
+
+- [@ndigo/platform-web](https://www.npmjs.com/package/@ndigo/platform-web) — the browser platform foundation
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## License
+
+[ISC](./LICENSE)

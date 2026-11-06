@@ -6,6 +6,8 @@
 
 # index
 
+Resilience patterns: circuit breaker, retry, and backoff.
+
 ## References
 
 ### BackoffPolicy

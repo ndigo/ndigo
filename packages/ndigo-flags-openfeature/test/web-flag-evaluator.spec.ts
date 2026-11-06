@@ -3,9 +3,6 @@
  * `@openfeature/web-sdk` client — sync-snapshot evaluation wrapped in the
  * async SPI, the static-context semantics (per-call `ctx` not forwarded),
  * domains, the never-throw boundary, and hook-contract compatibility.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from 'vitest';

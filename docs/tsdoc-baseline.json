@@ -361,7 +361,7 @@
   },
   "ndigo-proxy": {
     "modules": 6,
-    "modulesWithoutSummary": 5,
+    "modulesWithoutSummary": 4,
     "members": 13,
     "membersUndocumented": 2,
     "methodsWithParams": 16,
@@ -397,7 +397,7 @@
   },
   "ndigo-resilience": {
     "modules": 4,
-    "modulesWithoutSummary": 4,
+    "modulesWithoutSummary": 3,
     "members": 15,
     "membersUndocumented": 5,
     "methodsWithParams": 7,

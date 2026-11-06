@@ -34,8 +34,10 @@ const APP_KINDS: readonly AppKind[] = ['browser', 'node'];
 export interface AppGeneratorSchema {
     /** App slug (kebab-case, without the `ndigo-` prefix). */
     name: string;
+    /** Starter preset (api, browser, full-stack, minimal). */
+    preset?: string;
     /** `browser` (Vite SPA) or `node` (HTTP server) scaffold. */
-    kind: AppKind;
+    kind?: AppKind;
     /** One-line description used in the manifest and README. */
     description?: string;
     /** Reading-order number (defaults to one past the highest existing app). */
@@ -49,7 +51,10 @@ export interface AppGeneratorSchema {
  * explicit-value collisions), then the kind's template tree.
  */
 export default async function appGenerator(tree: Tree, schema: AppGeneratorSchema): Promise<void> {
-    const { name, kind, description } = schema;
+    const preset = schema.preset ?? 'minimal';
+    const kind: AppKind =
+        schema.kind ?? (preset === 'browser' ? 'browser' : 'node');
+    const { name, description } = schema;
     validateKebabName(name, 'App name');
     if (!(APP_KINDS as readonly string[]).includes(kind)) {
         throw new Error(`App kind must be one of ${APP_KINDS.join(', ')}: "${String(kind)}"`);

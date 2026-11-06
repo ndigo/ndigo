@@ -3,7 +3,7 @@
 import { resolveCacheName } from '@ndigo/cache';
 import { IllegalStateError } from '@ndigo/core';
 import type { Cache, CacheManager } from '@ndigo/cache';
-import type { ContextToken } from '@ndigo/factory';
+import type { AsyncCloseable, ContextToken } from '@ndigo/factory';
 import { RedisConnection, type RedisConnectionOptions } from '../connection';
 import { RedisCache } from './cache';
 
@@ -19,7 +19,7 @@ export type RedisCacheManagerOptions = RedisConnectionOptions & {
  * Container-compatible close() drains operations; a ready injected client is
  * borrowed and remains usable after manager shutdown.
  */
-export class RedisCacheManager implements CacheManager {
+export class RedisCacheManager implements CacheManager, AsyncCloseable {
     readonly #connection: RedisConnection;
     readonly #namespace: string;
     readonly #defaults: { defaultTtl?: number };

@@ -22,6 +22,7 @@ Stop/drain consumers before close/dispose; pending operations are not drained.
 ## Implements
 
 - [`SessionStore`](#)
+- `Closeable`
 
 ## Constructors
 
@@ -63,6 +64,10 @@ Supported Closeable bridge used by application-context shutdown.
 #### Returns
 
 `void`
+
+#### Implementation of
+
+`Closeable.close`
 
 ***
 

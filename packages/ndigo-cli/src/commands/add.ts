@@ -20,7 +20,13 @@ export const addCommand = buildCommand({
         const code = await new Promise<number>((resolve) => child.once('exit', (c) => resolve(c ?? 1)));
         process.exitCode = code;
         if (code === 0) {
-            process.stdout.write(`\nAdded ${pkg}. Run the package's setup generator if available.\n`);
+            const setupName = pkg.replace('@ndigo/', '') + '-setup';
+            process.stdout.write(`\nAdded ${pkg}. Attempting setup generator @ndigo/generators:${setupName}...\n`);
+            const gen = spawn('pnpm', ['exec', 'nx', 'g', `@ndigo/generators:${setupName}`, '--directory', resolved], { cwd: resolved, stdio: 'inherit' });
+            const gcode = await new Promise<number>((resolve) => gen.once('exit', (c) => resolve(c ?? 1)));
+            if (gcode !== 0) {
+                process.stdout.write(`(no setup generator available or it failed; wire manually)\n`);
+            }
         }
     },
     parameters: {

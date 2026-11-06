@@ -127,6 +127,17 @@
   "overrides": [
     {
       "files": [
+        "packages/ndigo-management/src/**/*.ts",
+        "packages/ndigo-openapi/src/**/*.ts",
+        "packages/ndigo-log/src/**/*.ts",
+        "packages/ndigo-auth-core/src/**/*.ts"
+      ],
+      "rules": {
+        "internal/tsdoc-syntax": "error"
+      }
+    },
+    {
+      "files": [
         "packages/ndigo-redis/src/**/*.ts",
         "packages/ndigo-orm-drizzle/src/**/*.ts",
         "packages/ndigo-jobs/src/**/*.ts",

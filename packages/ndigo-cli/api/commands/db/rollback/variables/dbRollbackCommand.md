@@ -8,3 +8,4 @@
 
 > `const` **dbRollbackCommand**: `Command`\<`CommandContext`\>
 
+The rollback-last-N command.

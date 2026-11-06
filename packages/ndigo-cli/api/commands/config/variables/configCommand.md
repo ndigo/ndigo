@@ -8,3 +8,4 @@
 
 > `const` **configCommand**: `Command`\<`CommandContext`\>
 
+The app-config get/set/list command.

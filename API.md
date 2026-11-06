@@ -16,7 +16,7 @@ package can be read — and installed — on its own.
 | `@ndigo/auth-server` | Server-side authentication for Ndigo — AuthServer, AuthRouteGuard, and JWT adapter | [api/README.md](packages/ndigo-auth-server/api/README.md) |
 | `@ndigo/boot` | Application bootstrap, profiles, and typed configuration for Ndigo | [api/README.md](packages/ndigo-boot/api/README.md) |
 | `@ndigo/cache` | Isomorphic caching for Ndigo — memory cache manager, memoize, and the @cached decorator | [api/README.md](packages/ndigo-cache/api/README.md) |
-| `@ndigo/cli` | The Ndigo framework CLI — serve, dev, new, generate, db, inspect, doctor (AD-75) | [api/README.md](packages/ndigo-cli/api/README.md) |
+| `@ndigo/cli` | The Ndigo framework CLI — app lifecycle, scaffolding, db migrations, and DX commands | [api/README.md](packages/ndigo-cli/api/README.md) |
 | `@ndigo/cluster` | Process supervisor for Node.js applications — replicated worker slots with signal relay, graceful drains, and bounded-backoff restarts (AD-74) | [api/README.md](packages/ndigo-cluster/api/README.md) |
 | `@ndigo/content` | i18n content keys, themes, and the MessageSource contract for Ndigo | [api/README.md](packages/ndigo-content/api/README.md) |
 | `@ndigo/content-i18next` | Ndigo Content i18next Adapter | [api/README.md](packages/ndigo-content-i18next/api/README.md) |

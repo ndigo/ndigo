@@ -8,3 +8,4 @@
 
 > `const` **openapiCommand**: `Command`\<`CommandContext`\>
 
+The OpenAPI emission command.

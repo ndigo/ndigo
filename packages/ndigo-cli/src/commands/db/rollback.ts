@@ -7,6 +7,9 @@
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runAppOnce } from '../../helpers/app-scripts.js';
 
+/**
+ * The rollback-last-N command.
+ */
 export const dbRollbackCommand = buildCommand({
     async func(flags: { db?: string }, dir: string, count: string) {
         const resolved = resolveAppDir(dir);

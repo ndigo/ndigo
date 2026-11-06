@@ -6,6 +6,9 @@
  */
 import { createScriptFrontCommand } from './_script-fronts.js';
 
+/**
+ * The application format front.
+ */
 export const formatCommand = createScriptFrontCommand(
     'format',
     'Run the application format script',

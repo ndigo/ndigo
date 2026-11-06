@@ -9,6 +9,9 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { appDirPositional } from './_script-fronts.js';
 
+/**
+ * The env-template validation command.
+ */
 export const envCommand = buildCommand({
     async func(flags: { file?: string }, dir: string) {
         const file = flags.file ?? join(dir, '.env.example');

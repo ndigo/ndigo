@@ -20,7 +20,7 @@ const durationPattern = /^(\d+(?:\.\d+)?)(s|m|h|d)$/iu;
  * @param options - When `positive` is set, zero is rejected (used for
  *   intervals, where a zero period can never fire).
  * @returns The duration in milliseconds.
- * @throws {TypeError} When the value is not a finite non-negative number of
+ * @throws When the value is not a finite non-negative number of
  *   milliseconds or a `'10s'`-style string.
  */
 export function parseDuration(value: DurationValue, label = 'duration', options: { positive?: boolean } = {}): number {

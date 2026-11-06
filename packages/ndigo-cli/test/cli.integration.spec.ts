@@ -20,8 +20,16 @@ import { setTimeout as delay } from 'node:timers/promises';
 /** The compiled bin — the nx lane runs build:lib before test. */
 const BIN = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'bin', 'run.js');
 
-async function runCli(args: string[], cwd?: string): Promise<{ code: number; out: string; err: string }> {
-    const proc = spawn(process.execPath, [BIN, ...args], { cwd, stdio: ['ignore', 'pipe', 'pipe'] });
+async function runCli(
+    args: string[],
+    cwd?: string,
+    env?: NodeJS.ProcessEnv
+): Promise<{ code: number; out: string; err: string }> {
+    const proc = spawn(process.execPath, [BIN, ...args], {
+        cwd,
+        stdio: ['ignore', 'pipe', 'pipe'],
+        env: env === undefined ? process.env : { ...process.env, ...env },
+    });
     const out: string[] = [];
     const err: string[] = [];
     if (proc.stdout !== null) {
@@ -144,6 +152,19 @@ describe('ndigo (real bin)', () => {
         await delay(20);
         expect(code).toBe(1);
         expect(`${out.join('')}${err.join('')}`).toContain('pnpm-workspace.yaml');
+    });
+
+    test('doctor without pnpm on PATH reports it instead of crashing (issue #144)', async () => {
+        // An empty PATH means both `pnpm` and `git` cannot spawn: before the
+        // issue-#144 fix the raw `Error: spawn pnpm ENOENT` stack escaped and
+        // the pnpm row lied healthy.
+        const noPnpmDir = join(base, 'empty-path');
+        mkdirSync(noPnpmDir, { recursive: true });
+        const { code, out, err } = await runCli(['doctor'], undefined, { PATH: noPnpmDir });
+        expect(code).toBe(1);
+        expect(out).toContain('pnpm n/a (not found)');
+        expect(out).toContain('pnpm is not on PATH');
+        expect(`${out}${err}`).not.toContain('Error: spawn pnpm');
     });
 
     test('generate rejects unknown kinds with a usage error', async () => {
@@ -307,5 +328,69 @@ describe('ndigo db (AD-78)', () => {
             expect(code).toBe(2);
             expect(`${out}${err}`).toContain(`db:${script}`);
         }
+    });
+});
+
+describe('ndigo update (issue #144 manifest boundary)', () => {
+    let noPnpmDir: string;
+
+    let fixtureIndex = 0;
+
+    function appWith(depSpec: string): string {
+        fixtureIndex += 1;
+        const dir = join(base, `update-${process.pid}-${fixtureIndex}`);
+        mkdirSync(dir, { recursive: true });
+        writeFileSync(
+            join(dir, 'package.json'),
+            JSON.stringify({ name: 'update-app', private: true, dependencies: { '@ndigo/core': depSpec } })
+        );
+        return dir;
+    }
+
+    beforeAll(() => {
+        noPnpmDir = join(base, 'empty-path-update');
+        mkdirSync(noPnpmDir, { recursive: true });
+    });
+
+    test('--check with a broken-shape manifest exits 2 with a clean message (no TypeError)', async () => {
+        const dir = appWith('0.0.1');
+        writeFileSync(join(dir, 'ndigo-versions.json'), '{}');
+        const { code, out, err } = await runCli(['update', '--check', dir]);
+        expect(code).toBe(2);
+        expect(err).toContain('invalid version manifest');
+        expect(`${out}${err}`).not.toContain('TypeError');
+        expect(`${out}${err}`).not.toContain('    at ');
+    });
+
+    test('apply refuses alias specs and leaves package.json untouched', async () => {
+        const dir = appWith('0.0.1');
+        writeFileSync(
+            join(dir, 'ndigo-versions.json'),
+            JSON.stringify({ packages: { '@ndigo/core': 'npm:@evil/companion@1.0.0' } })
+        );
+        const before = readFileSync(join(dir, 'package.json'), 'utf8');
+        const { code, out, err } = await runCli(['update', dir]);
+        expect(code).toBe(2);
+        expect(err).toContain('not an exact version pin');
+        expect(readFileSync(join(dir, 'package.json'), 'utf8')).toBe(before);
+        expect(out).not.toContain('Updated package.json');
+    });
+
+    test('apply pins the dependency, then reports the missing pnpm as 127', async () => {
+        const dir = appWith('^0.0.1');
+        writeFileSync(join(dir, 'ndigo-versions.json'), JSON.stringify({ packages: { '@ndigo/core': '1.2.3' } }));
+        const { code, err } = await runCli(['update', dir], undefined, { PATH: noPnpmDir });
+        expect(JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8')).dependencies['@ndigo/core']).toBe('1.2.3');
+        expect(code).toBe(127);
+        expect(err).toContain('is not available on PATH');
+        expect(`${err}`).not.toContain('Error: spawn pnpm');
+    });
+
+    test('apply without a manifest fails loud instead of falling through to pnpm install', async () => {
+        const dir = appWith('0.0.1');
+        const { code, out, err } = await runCli(['update', dir], undefined, { PATH: noPnpmDir });
+        expect(code).toBe(2);
+        expect(err).toContain('no version manifest to apply');
+        expect(`${out}${err}`).not.toContain('TypeError');
     });
 });

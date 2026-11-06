@@ -1,0 +1,15 @@
+import { entity, primaryColumn, column } from '@ndigo/orm';
+
+/**
+ * <%= summary ?? className %>
+ *
+ * @author <%= author %>
+ */
+@entity('<%= className %>')
+export class <%= className %> {
+    @primaryColumn()
+    id!: string;
+
+    @column()
+    name!: string;
+}

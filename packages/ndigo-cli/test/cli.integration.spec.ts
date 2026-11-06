@@ -106,13 +106,16 @@ describe('ndigo (real bin)', () => {
         expect(out.trim()).toBe(`@ndigo/cli/${pkgVersion}`);
     });
 
-    test('--help lists the v1 surface', async () => {
+    test('--help lists every route and alias (issue #152 parity pin)', async () => {
         const { code, out } = await runCli(['--help']);
         expect(code).toBe(0);
-        for (const command of ['serve', 'dev', 'new', 'generate', 'inspect', 'doctor']) {
-            expect(out).toContain(command);
+        const { COMPLETION_WORDS } = await import('../src/commands/_routes.js');
+        // Every registered root route plus the namespace and the two aliases
+        // must appear in the help output — the previous six-command surface
+        // assertion let the expansion drift invisibly.
+        for (const word of COMPLETION_WORDS) {
+            expect(out).toContain(word);
         }
-        expect(out).toContain('db');
     });
 
     test('doctor prints the environment diagnostics', async () => {
@@ -602,5 +605,178 @@ describe('ndigo config (issue #146 edges)', () => {
 
         const listResult = await runCli(['config', 'list'], dir);
         expect(listResult.out).toBe('probe="v-1"\n');
+    });
+});
+
+describe('ndigo script fronts, env, and passthrough (issue #152)', () => {
+    let frontsAppDir: string;
+    let dbAppDir: string;
+    let envInfoAppDir: string;
+
+    beforeAll(() => {
+        // The five qc fronts share one app whose scripts resolve the exit
+        // code from the relayed environment; openapi/dev use dedicated
+        // relays. No shell metacharacters anywhere — every script stays a
+        // single command by the no-shell contract.
+        frontsAppDir = join(base, 'fronts-app');
+        mkdirSync(frontsAppDir, { recursive: true });
+        writeFileSync(
+            join(frontsAppDir, 'package.json'),
+            JSON.stringify({
+                name: 'fronts-app',
+                private: true,
+                scripts: {
+                    build: 'node ctl.mjs',
+                    test: 'node ctl.mjs',
+                    lint: 'node ctl.mjs',
+                    format: 'node ctl.mjs',
+                    typecheck: 'node ctl.mjs',
+                    dev: 'node endfast.mjs',
+                    openapi: 'node relay.mjs',
+                },
+            })
+        );
+        writeFileSync(join(frontsAppDir, 'ctl.mjs'), 'process.exit(Number(process.env.NDIGO_EXIT ?? 0));\n');
+        writeFileSync(
+            join(frontsAppDir, 'relay.mjs'),
+            'console.log(JSON.stringify({ args: process.argv.slice(2), env: process.env.NDIGO_RELAY_OUT ?? "" }));\n'
+        );
+        writeFileSync(
+            join(frontsAppDir, 'endfast.mjs'),
+            'const { writeFileSync } = await import("node:fs");\n' +
+                'process.on("SIGTERM", () => { writeFileSync(process.env.NDIGO_MARKER || "/tmp/ndigo-dev-marker", "drained"); process.exit(0); });\n' +
+                'writeFileSync(process.env.NDIGO_READY || "/tmp/ndigo-dev-ready", "ready");\n' +
+                'setTimeout(() => {}, 120000);\n'
+        );
+
+        dbAppDir = join(base, 'db-fronts-app');
+        mkdirSync(dbAppDir, { recursive: true });
+        writeFileSync(
+            join(dbAppDir, 'package.json'),
+            JSON.stringify({
+                name: 'db-fronts-app',
+                private: true,
+                scripts: {
+                    'db:generate': 'node relay.mjs',
+                    'db:migrate': 'node relay.mjs',
+                    'db:status': 'node relay.mjs',
+                    'db:list': 'node relay.mjs',
+                    'db:push': 'node relay.mjs',
+                    'db:pull': 'node relay.mjs',
+                    'db:studio': 'node relay.mjs',
+                    'db:seed': 'node relay.mjs',
+                    'db:rollback': 'node relay.mjs',
+                },
+            })
+        );
+        writeFileSync(join(dbAppDir, 'relay.mjs'), 'console.log(JSON.stringify(process.argv.slice(2)));\n');
+
+        envInfoAppDir = join(base, 'env-info-app');
+        mkdirSync(join(envInfoAppDir, 'node_modules', '@ndigo', 'demo-pkg'), { recursive: true });
+        writeFileSync(
+            join(envInfoAppDir, 'package.json'),
+            JSON.stringify({ name: 'env-info-app', private: true })
+        );
+        writeFileSync(join(envInfoAppDir, '.env.example'), 'NDIGO_TEST_PRESENT=x\nNDIGO_TEST_ABSENT=y\n');
+        writeFileSync(
+            join(envInfoAppDir, 'node_modules', '@ndigo', 'demo-pkg', 'package.json'),
+            JSON.stringify({ name: '@ndigo/demo-pkg', version: '9.9.9' })
+        );
+    });
+
+    test('the five qc fronts propagate the app script exit code', async () => {
+        for (const front of ['build', 'test', 'lint', 'format', 'typecheck']) {
+            // oxlint-disable-next-line no-await-in-loop -- sequential CLI spawns keep each front's output isolated for its own assertion
+            const { code } = await runCli([front, frontsAppDir], undefined, { NDIGO_EXIT: '3' });
+            expect(`${front} -> ${code}`).toBe(`${front} -> 3`);
+        }
+    });
+
+    test('ndigo dev supervises the dev/start script: drain relay on SIGTERM, exit 0', async () => {
+        // The supervisor runs until interrupted and respawns crashed slots
+        // (bounded backoff) — a fast child exit does not resolve `dev`, so
+        // the contract under test is the serve one: readiness, relayed
+        // SIGTERM drain, exit 0 (issue #152).
+        const ready = join(base, 'dev-ready.marker');
+        const drained = join(base, 'dev-drained.marker');
+        const proc = spawn(process.execPath, [BIN, 'dev', frontsAppDir, '--port', '4501'], {
+            env: { ...process.env, NDIGO_READY: ready, NDIGO_MARKER: drained },
+            stdio: ['ignore', 'pipe', 'pipe'],
+        });
+        const exitCode = new Promise<number>((resolveCode) => proc.once('exit', resolveCode));
+        try {
+            await waitFor(() => existsSync(ready));
+            kill(proc.pid ?? 0, 'SIGTERM');
+            await waitFor(() => existsSync(drained));
+            expect(await exitCode).toBe(0);
+        } finally {
+            if (proc.pid !== undefined) {
+                try {
+                    kill(proc.pid, 'SIGKILL');
+                } catch {
+                    // already gone
+                }
+            }
+        }
+    }, 15_000);
+
+    test('ndigo openapi forwards --out/--format to the app script', async () => {
+        const { code, out } = await runCli(
+            ['openapi', frontsAppDir, '--out', 'spec.json', '--format', 'yaml'],
+            undefined,
+            { NDIGO_RELAY_OUT: '' }
+        );
+        expect(code).toBe(0);
+        expect(out).toContain('["--out","spec.json","--format","yaml"]');
+    });
+
+    test('db adapter-path commands pass --db through, and the DB url relays (AD-78)', async () => {
+        const { code, out } = await runCli(
+            ['db', 'list', '--db', 'bar', dbAppDir],
+            undefined,
+            { NDIGO_DB_URL: 'postgres://demo' }
+        );
+        expect(code).toBe(0);
+        expect(out).toContain('["--db","bar"]');
+
+        for (const sub of ['generate', 'migrate', 'status', 'push', 'pull', 'studio', 'seed', 'rollback']) {
+            // oxlint-disable-next-line no-await-in-loop -- sequential CLI spawns keep each db front's output isolated for its own assertion
+            const result = await runCli(['db', sub, dbAppDir], undefined, { NDIGO_DB_URL: 'postgres://demo' });
+            expect(`${sub}: ${result.code}`).toBe(`${sub}: 0`);
+        }
+    });
+
+    test('env reports OK/MISSING per key and exits 1 when anything is missing', async () => {
+        const absentFile = join(base, 'definitely-not-present.env');
+        const partial = await runCli(['env', '--file', absentFile, envInfoAppDir]);
+        expect(partial.code).toBe(2);
+        expect(partial.err).toContain('env file not found');
+
+        const partialRun = await runCli(['env', envInfoAppDir], undefined, { NDIGO_TEST_PRESENT: 'x' });
+        expect(partialRun.out).toContain('OK      NDIGO_TEST_PRESENT');
+        expect(partialRun.out).toContain('MISSING NDIGO_TEST_ABSENT');
+        expect(partialRun.code).toBe(1);
+
+        const fullRun = await runCli(['env', envInfoAppDir], undefined, {
+            NDIGO_TEST_PRESENT: 'x',
+            NDIGO_TEST_ABSENT: 'y',
+        });
+        expect(fullRun.code).toBe(0);
+    });
+
+    test('info prints diagnostics and the addressed app packages', async () => {
+        const { code, out } = await runCli(['info', envInfoAppDir]);
+        expect(code).toBe(0);
+        expect(out).toContain('ndigo ');
+        expect(out).toContain('node v');
+        expect(out).toContain('pnpm ');
+        expect(out).toContain('Installed @ndigo packages:');
+        expect(out).toContain('@ndigo/demo-pkg  9.9.9');
+    });
+
+    test('add refuses non-@ndigo names without installing', async () => {
+        const { code, err } = await runCli(['add', 'evil-pkg', frontsAppDir]);
+        expect(code).toBe(2);
+        expect(err).toContain('Only @ndigo/* packages are supported');
     });
 });

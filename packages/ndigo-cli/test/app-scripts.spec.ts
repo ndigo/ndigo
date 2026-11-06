@@ -26,7 +26,17 @@ beforeAll(() => {
 describe('app-scripts helpers', () => {
     test('resolveAppDir resolves relative dirs and rejects non-app directories', () => {
         expect(resolveAppDir(fixture)).toBe(fixture);
-        expect(resolveAppDir('.').endsWith('/packages/ndigo-cli')).toBe(true);
+        // The '.'-branch resolves against the CALLER's cwd, so make the cwd
+        // explicit instead of assuming the lane runs inside this package
+        // (root-level `pnpm vitest run ...` runs from the repo root — the
+        // sticky '/packages/ndigo-cli' assert broke that lane; issue #152).
+        const prevCwd = process.cwd();
+        process.chdir(fixture);
+        try {
+            expect(resolveAppDir('.')).toBe(fixture);
+        } finally {
+            process.chdir(prevCwd);
+        }
         expect(() => resolveAppDir(join('/tmp', 'does-not-exist-xyz'))).toThrow(/not an application directory/);
         expect(() => resolveAppDir('/tmp')).toThrow(/no package.json/);
     });

@@ -6,6 +6,8 @@
 
 # commands/db/generate
 
+`ndigo db generate` — generate the next migration from the application's
+
 ## Variables
 
 - [dbGenerateCommand](variables/dbGenerateCommand.md)

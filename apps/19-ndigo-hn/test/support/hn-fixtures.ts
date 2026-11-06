@@ -4,9 +4,6 @@
  * Every spec stubs the official HN endpoints (`/v0/<feed>.json` and
  * `/v0/item/<id>.json`) with the recorded `requests`/`itemRequests` arrays, so
  * tests assert request order and coverage without touching the network.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';

@@ -1,8 +1,5 @@
 /**
  * Ndigo Todo-Backend — the Todo-Backend spec implementation as a Node server.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import 'node:process';
 import { ApplicationBuilder } from '@ndigo/boot';

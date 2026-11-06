@@ -2,9 +2,6 @@
  * `currentTraceContext` (AD-32 D-4): boundary-mocked like
  * `ContextAwareLogger`, so no global provider is needed and every case
  * runs in one process.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { trace } from '@opentelemetry/api';

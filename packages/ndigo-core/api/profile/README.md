@@ -6,6 +6,8 @@
 
 # profile
 
+Typed profile-expression builder (AD-34 D5; re-homed into `@ndigo/core`
+
 ## Classes
 
 - [ProfileTerm](classes/ProfileTerm.md)

@@ -18,9 +18,6 @@
  *
  * The server listens on port `0` (ephemeral), so the lane can run beside a real
  * dev server without colliding.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

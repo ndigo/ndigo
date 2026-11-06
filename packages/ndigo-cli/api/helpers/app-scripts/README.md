@@ -6,6 +6,8 @@
 
 # helpers/app-scripts
 
+Command-side process helpers: everything `@ndigo/cli` runs is one of the
+
 ## Functions
 
 - [appScriptCommand](functions/appScriptCommand.md)

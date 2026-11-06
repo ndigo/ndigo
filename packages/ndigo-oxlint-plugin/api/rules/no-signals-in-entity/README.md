@@ -6,6 +6,8 @@
 
 # rules/no-signals-in-entity
 
+Rule that flags `@ndigo/signals` imports inside `@ndigo/orm` entity files.
+
 ## Variables
 
 - [noSignalsInEntity](variables/noSignalsInEntity.md)

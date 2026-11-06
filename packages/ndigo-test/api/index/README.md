@@ -6,6 +6,8 @@
 
 # index
 
+Ndigo integration test harness — MockHTTP-style in-process dispatch.
+
 ## Functions
 
 - [delay](functions/delay.md)

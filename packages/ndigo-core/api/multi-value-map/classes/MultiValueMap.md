@@ -8,14 +8,6 @@
 
 Extension of the [ap\|Map](#) interface that stores multiple values under a single key.
 
-## Since
-
-1.0.0
-
-## Author
-
-Jeff Rose
-
 ## Extends
 
 - `Map`\<`K`, `V`[]\>

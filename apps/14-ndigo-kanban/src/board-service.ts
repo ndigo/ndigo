@@ -10,9 +10,6 @@
  * 3. **Change notification** — {@link BoardService.onEvent} publishes one
  *    event per accepted write; the socket broadcaster subscribes and fans it
  *    out to the board's room.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { ContextToken } from '@ndigo/context';

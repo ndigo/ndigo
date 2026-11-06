@@ -6,9 +6,6 @@
  * single `effect` re-renders it whenever the feed or connectivity changes. That
  * is what makes hydration, a stale→fresh revalidation, and "load more" all
  * appear in place.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { effect } from '@ndigo/signals';
 import { AbstractWebComponent, TagMapping } from '@ndigo/view-webcomponent';

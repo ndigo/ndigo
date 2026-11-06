@@ -4,9 +4,6 @@
  * Tags change only when someone publishes, so the list is fetched once per page
  * load and cached in a signal — a route refresh (every favorite, every follow)
  * must not turn into another request for the same sidebar.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { signal, type Signal } from '@ndigo/signals';
 import type { ConduitApi } from '../lib/api/conduit-types';

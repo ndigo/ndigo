@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { http, HttpResponse, delay } from 'msw';
 import { setupServer } from 'msw/node';

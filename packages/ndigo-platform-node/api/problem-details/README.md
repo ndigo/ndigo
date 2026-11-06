@@ -6,6 +6,8 @@
 
 # problem-details
 
+RFC 9457 Problem Details for HTTP APIs (obsoletes RFC 7807).
+
 ## Interfaces
 
 - [ProblemDetails](interfaces/ProblemDetails.md)

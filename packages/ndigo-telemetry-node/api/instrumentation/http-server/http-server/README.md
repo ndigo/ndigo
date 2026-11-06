@@ -6,6 +6,8 @@
 
 # instrumentation/http-server/http-server
 
+OpenTelemetry instrumentation for `HTTPServer` lifecycle + inbound requests.
+
 ## Classes
 
 - [HTTPServerInstrumentation](classes/HTTPServerInstrumentation.md)

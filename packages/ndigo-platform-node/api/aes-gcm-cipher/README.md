@@ -6,6 +6,8 @@
 
 # aes-gcm-cipher
 
+AES-256-GCM cipher backend for at-rest config secrets (AD-29 D-4).
+
 ## Classes
 
 - [AESGCMCipher](classes/AESGCMCipher.md)

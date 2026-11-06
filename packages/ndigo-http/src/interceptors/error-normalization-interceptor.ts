@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { HTTP, HTTPInit, ResponseAwareHTTPInterceptor, ErrorAwareHTTPInterceptor } from '../http';
 import ResponseError from '../response-error';

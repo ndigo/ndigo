@@ -6,6 +6,8 @@
 
 # stream-to-signal
 
+Bridges an async event stream into a reactive signal (AD-09).
+
 ## Functions
 
 - [streamToSignal](functions/streamToSignal.md)

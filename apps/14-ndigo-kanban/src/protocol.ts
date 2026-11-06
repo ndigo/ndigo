@@ -23,9 +23,6 @@
  * A joiner always receives the authoritative `snapshot` before any event, so a
  * reconnect reconciles instead of replaying from memory (see the README's
  * "Concurrency model").
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { z } from 'zod';
 

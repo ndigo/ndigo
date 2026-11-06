@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Null } from '@ndigo/core';
 import { View } from '@ndigo/view';

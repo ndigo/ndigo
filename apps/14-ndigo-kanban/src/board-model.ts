@@ -10,9 +10,6 @@
  *    `validatedBody` (a violation is the platform's `422` problem document).
  * 3. **Snapshots** — the whole-board shape `GET /api/boards/:id` returns and
  *    the socket replays on join.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { z } from 'zod';
 import type { BoardColumn, Card } from './board.entity';

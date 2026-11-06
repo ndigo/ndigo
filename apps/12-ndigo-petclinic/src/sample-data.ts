@@ -14,9 +14,6 @@
  * Two owners (`Bonnie Davis`, `Nancy McArdle`) are the classic dataset's extra
  * rows — the fixture list this port was specified against names them, and they
  * keep the owner list at three pages of five.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { EntityManager } from '@ndigo/orm';
 import { Owner, Pet, PetType, Specialty, Vet, VetSpecialty, Visit } from './entities';

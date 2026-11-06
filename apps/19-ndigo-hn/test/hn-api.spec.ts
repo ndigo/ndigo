@@ -1,9 +1,6 @@
 /**
  * `HNAPIClient` against an msw-stubbed HN API: the two-layer cache story
  * (fresh cache TTL, snapshot fallback) and error surfacing.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment jsdom
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from 'vitest';

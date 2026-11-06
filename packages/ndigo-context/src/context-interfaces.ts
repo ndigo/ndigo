@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { JSONObject, type ChildNode, type ParentNode } from '@ndigo/core';
 import type { z } from 'zod';

@@ -17,9 +17,6 @@
  * without a principal the dispatch fails closed with `1008`. The raw
  * `/ws/chat` socket endpoint next door stays unauthenticated as the
  * public-socket contrast.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { authenticated } from '@ndigo/auth-core';

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { compareBy, IllegalStateError, numberComparator, stringComparator } from '@ndigo/core';
 import { type MetricSnapshot, type MetricSnapshotProvider } from './metric-snapshot';

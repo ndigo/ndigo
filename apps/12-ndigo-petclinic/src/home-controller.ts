@@ -4,9 +4,6 @@
  * The one screen that is not a resource: it links the three sections the app
  * serves (owners, a new owner, the vet list) and reports the seeded counts, so
  * a booted server is self-describing.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { getMapping, ModelAndView, requestMapping } from '@ndigo/dispatcher';
 import { ClinicService } from './clinic-service';

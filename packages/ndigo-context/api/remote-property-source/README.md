@@ -6,6 +6,8 @@
 
 # remote-property-source
 
+Remote config property source (AD-29 D-6..D-8).
+
 ## Classes
 
 - [RemotePropertySource](classes/RemotePropertySource.md)

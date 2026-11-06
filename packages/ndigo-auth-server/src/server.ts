@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { type Principal } from '@ndigo/auth-core';
 import { AuthRegistry } from '@ndigo/auth-core';

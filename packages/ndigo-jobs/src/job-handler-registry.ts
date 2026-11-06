@@ -1,8 +1,5 @@
 /**
  * `JobHandlerRegistry` — discovers `@jobHandler` methods and holds handlers.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError, getSymbolMetadata } from '@ndigo/core';
 import type { ApplicationContext } from '@ndigo/context';

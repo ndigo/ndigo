@@ -2,9 +2,6 @@
  * The JSON projection of metric snapshots (AD-77 D-4): the same
  * {@link MetricSnapshot} array the Prometheus renderer consumes, as a
  * deterministic JSON document. One source of truth, two wire forms.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { AttributeValue } from '@opentelemetry/api';
 import { compareBy, stringComparator } from '@ndigo/core';

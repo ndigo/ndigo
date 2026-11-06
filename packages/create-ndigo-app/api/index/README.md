@@ -6,6 +6,8 @@
 
 # index
 
+`create-ndigo-app` — scaffold a standalone Ndigo application.
+
 ## Functions
 
 - [scaffold](functions/scaffold.md)

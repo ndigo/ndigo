@@ -3,9 +3,6 @@
  * metadata gate, per-client-address budgets over the platform's limiter
  * bean, and the 429 + `Retry-After` denial. The limiter itself is tested
  * in `@ndigo/rate-limit` (AD-79 moved the SPI).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import type { ServerResponse } from 'node:http';

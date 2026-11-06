@@ -10,9 +10,6 @@
  * Draft values are held per element instance and restored on every render, so
  * the refresh that follows a failed submit (which re-renders the page from the
  * new model) does not clear what the visitor typed.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractWebComponent, TagMapping } from '@ndigo/view-webcomponent';
 import { ACTIONS } from '../app/conduit-events';

@@ -1,8 +1,5 @@
 /**
  * Resolver that maps a view name to an `IslandView` (AD — view resolution.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractPathBasedViewResolver } from './view-resolver.js';
 import { View } from './view.js';

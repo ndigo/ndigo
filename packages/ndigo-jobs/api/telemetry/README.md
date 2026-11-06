@@ -6,6 +6,8 @@
 
 # telemetry
 
+OpenTelemetry instrumentation for job execution.
+
 ## Interfaces
 
 - [JobSpan](interfaces/JobSpan.md)

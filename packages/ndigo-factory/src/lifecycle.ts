@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { compareBy, invertComparison, numberComparator } from '@ndigo/core';
 import { like } from '@ndigo/util/types';

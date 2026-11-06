@@ -2,9 +2,6 @@
  * Boot-level secrets integration (AD-29 Wave 2, D-5): `builder.secrets(...)`
  * wires a cipher so `{cipher:...}` markers in properties resolve to
  * plaintext in `@configurationProperties` binding.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { z } from 'zod';

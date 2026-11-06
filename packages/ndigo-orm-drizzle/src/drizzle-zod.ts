@@ -1,8 +1,5 @@
 /**
  * Drizzle table + Zod schema derivation from `@ndigo/orm` entity metadata.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Table } from 'drizzle-orm';
 import { sqliteTable, integer, text, real, blob } from 'drizzle-orm/sqlite-core';

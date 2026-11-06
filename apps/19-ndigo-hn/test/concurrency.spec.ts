@@ -1,9 +1,6 @@
 /**
  * `mapConcurrent` — the scheduler the feed hydration relies on: bounded
  * in-flight calls, input-order results, no lost work.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, expect, test } from 'vitest';
 import { delay } from '@ndigo/util';

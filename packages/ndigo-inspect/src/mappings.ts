@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  *
  * Handler-mapping enumeration for the inspect manifest. Reads the dispatcher's
  * registered mappings through the `getMappingEntries()`/`getHandlerMethods()`

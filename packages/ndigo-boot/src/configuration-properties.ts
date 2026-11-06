@@ -1,8 +1,5 @@
 /**
  * `@configurationProperties` — type-safe binding from environment properties.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { IllegalStateError, JSONValue } from '@ndigo/core';
 import { getErrorMessage } from '@ndigo/util';

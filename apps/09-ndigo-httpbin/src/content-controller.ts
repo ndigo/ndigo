@@ -1,9 +1,6 @@
 /**
  * Static-shaped content probes: `/uuid`, `/json`, `/html`, `/xml`,
  * `/robots.txt`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { randomUUID } from 'node:crypto';

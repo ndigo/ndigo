@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { randomToken } from '@ndigo/util';
 import { type SessionRecord, type SessionStore } from '@ndigo/auth-core';

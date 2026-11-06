@@ -6,6 +6,8 @@
 
 # metrics/metric-snapshot
 
+The metric snapshot model — the SDK-free seam between the OpenTelemetry
+
 ## Interfaces
 
 - [MetricHistogramBucket](interfaces/MetricHistogramBucket.md)

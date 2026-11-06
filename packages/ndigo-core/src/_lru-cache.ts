@@ -1,8 +1,5 @@
 /**
  * A generic Least-Recently-Used (LRU) cache backed by insertion-order Map semantics.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export class LRUCache<K, V> {
     readonly #capacity: number;

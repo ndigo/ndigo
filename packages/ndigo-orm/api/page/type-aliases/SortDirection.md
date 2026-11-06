@@ -11,11 +11,3 @@
 Pagination and sorting contracts for repositories (ORM completion plan,
 Wave 2): 1-based page requests, multi-key sort orders, and stable page
 math shared by every backend.
-
-## Since
-
-1.0.0
-
-## Author
-
-Jeff Rose

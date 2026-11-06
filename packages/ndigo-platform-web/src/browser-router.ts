@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 /* eslint-disable internal/no-browser-globals-in-isomorphic -- BrowserRouter is a browser-only implementation; browser globals are intentional and expected here */
 

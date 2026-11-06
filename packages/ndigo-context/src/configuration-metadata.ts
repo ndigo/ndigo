@@ -7,9 +7,6 @@
  * (`declaredConfigurationProperties`) both consume, so tooling does not have
  * to pull the whole boot layer (REU-9). The public functions are re-exported
  * from `@ndigo/boot` unchanged for API continuity.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { compareBy, stringComparator } from '@ndigo/core';
 import { z } from 'zod';

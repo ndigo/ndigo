@@ -1,9 +1,6 @@
 /**
  * Public API of `@ndigo/jobs` — durable job queues, worker execution, and the
  * transactional outbox for Node.js (AD-72).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 export type { ClaimOptions, JobId, JobRecord, JobRequest, ResolvedJobRequest } from './job';

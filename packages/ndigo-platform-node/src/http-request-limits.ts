@@ -1,7 +1,7 @@
 /**
  * Request-pipeline limits and timeouts for {@link NodeHTTPServerAdapter}.
  */
-import { MediaType } from '@ndigo/core';
+import { FrameworkError, MediaType } from '@ndigo/core';
 import { contentTypeBase } from '@ndigo/http';
 /**
  * Tunable bounds for the Node HTTP request pipeline.
@@ -71,7 +71,7 @@ export function resolveHTTPRequestLimits(limits?: HTTPRequestLimits): ResolvedHT
  * the request pipeline so the adapter can map it to a problem document
  * without ever leaking internals to the client.
  */
-export class RequestLimitError extends Error {
+export class RequestLimitError extends FrameworkError {
     readonly statusCode: number;
     readonly code: string;
 

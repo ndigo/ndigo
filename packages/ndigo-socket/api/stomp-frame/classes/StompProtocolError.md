@@ -10,7 +10,7 @@ Raised on malformed frames (missing NUL, bad `content-length`, …).
 
 ## Extends
 
-- `Error`
+- [`FrameworkError`](#)
 
 ## Constructors
 
@@ -32,4 +32,50 @@ Human-readable protocol failure detail.
 
 #### Overrides
 
-`Error.constructor`
+`FrameworkError.constructor`
+
+## Accessors
+
+### \[toStringTag\]
+
+#### Get Signature
+
+> **get** **\[toStringTag\]**(): `string`
+
+The string tag for this class.
+
+##### Returns
+
+`string`
+
+#### Inherited from
+
+`FrameworkError.[toStringTag]`
+
+## Methods
+
+### toJSON()?
+
+> `optional` **toJSON**(): `JSONValue`
+
+#### Returns
+
+`JSONValue`
+
+#### Inherited from
+
+`FrameworkError.toJSON`
+
+***
+
+### toString()
+
+> **toString**(): `string`
+
+#### Returns
+
+`string`
+
+#### Inherited from
+
+`FrameworkError.toString`

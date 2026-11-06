@@ -13,7 +13,7 @@ without ever leaking internals to the client.
 
 ## Extends
 
-- `Error`
+- [`FrameworkError`](#)
 
 ## Constructors
 
@@ -41,7 +41,7 @@ without ever leaking internals to the client.
 
 #### Overrides
 
-`Error.constructor`
+`FrameworkError.constructor`
 
 ## Properties
 
@@ -55,3 +55,48 @@ without ever leaking internals to the client.
 
 > `readonly` **statusCode**: `number`
 
+## Accessors
+
+### \[toStringTag\]
+
+#### Get Signature
+
+> **get** **\[toStringTag\]**(): `string`
+
+The string tag for this class.
+
+##### Returns
+
+`string`
+
+#### Inherited from
+
+`FrameworkError.[toStringTag]`
+
+## Methods
+
+### toJSON()?
+
+> `optional` **toJSON**(): `JSONValue`
+
+#### Returns
+
+`JSONValue`
+
+#### Inherited from
+
+`FrameworkError.toJSON`
+
+***
+
+### toString()
+
+> **toString**(): `string`
+
+#### Returns
+
+`string`
+
+#### Inherited from
+
+`FrameworkError.toString`

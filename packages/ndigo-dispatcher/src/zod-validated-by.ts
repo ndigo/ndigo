@@ -1,6 +1,7 @@
 /**
  * Zod-backed request validation (AD-07).
  */
+import { FrameworkError } from '@ndigo/core';
 import { z } from 'zod';
 import { ParameterConversionError } from './error';
 import { type ParameterExtractor, type ParameterMap, bodyValue, queryValue } from './parameters';
@@ -27,7 +28,7 @@ export interface ValidationIssue {
  * so error resolvers can render either a flat detail string or a structured
  * `errors` array.
  */
-export class ZodValidationError extends Error {
+export class ZodValidationError extends FrameworkError {
     /** The structured per-field failures from the Zod parse. */
     readonly issues: readonly ValidationIssue[];
 

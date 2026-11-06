@@ -12,7 +12,7 @@ leak which condition failed (no user enumeration via error text).
 
 ## Extends
 
-- `Error`
+- `ApplicationError`
 
 ## Constructors
 
@@ -26,4 +26,50 @@ leak which condition failed (no user enumeration via error text).
 
 #### Overrides
 
-`Error.constructor`
+`ApplicationError.constructor`
+
+## Accessors
+
+### \[toStringTag\]
+
+#### Get Signature
+
+> **get** **\[toStringTag\]**(): `string`
+
+The string tag for this class.
+
+##### Returns
+
+`string`
+
+#### Inherited from
+
+`ApplicationError.[toStringTag]`
+
+## Methods
+
+### toJSON()?
+
+> `optional` **toJSON**(): `JSONValue`
+
+#### Returns
+
+`JSONValue`
+
+#### Inherited from
+
+`ApplicationError.toJSON`
+
+***
+
+### toString()
+
+> **toString**(): `string`
+
+#### Returns
+
+`string`
+
+#### Inherited from
+
+`ApplicationError.toString`

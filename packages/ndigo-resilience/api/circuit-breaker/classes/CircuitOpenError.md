@@ -10,7 +10,7 @@ Thrown while a circuit is open: the call was not executed.
 
 ## Extends
 
-- `Error`
+- `ApplicationError`
 
 ## Constructors
 
@@ -38,4 +38,50 @@ Thrown while a circuit is open: the call was not executed.
 
 #### Overrides
 
-`Error.constructor`
+`ApplicationError.constructor`
+
+## Accessors
+
+### \[toStringTag\]
+
+#### Get Signature
+
+> **get** **\[toStringTag\]**(): `string`
+
+The string tag for this class.
+
+##### Returns
+
+`string`
+
+#### Inherited from
+
+`ApplicationError.[toStringTag]`
+
+## Methods
+
+### toJSON()?
+
+> `optional` **toJSON**(): `JSONValue`
+
+#### Returns
+
+`JSONValue`
+
+#### Inherited from
+
+`ApplicationError.toJSON`
+
+***
+
+### toString()
+
+> **toString**(): `string`
+
+#### Returns
+
+`string`
+
+#### Inherited from
+
+`ApplicationError.toString`

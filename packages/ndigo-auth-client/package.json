@@ -25,7 +25,8 @@
     "@ndigo/auth-core": "~0.0.1",
     "@ndigo/http": "~0.0.1",
     "@ndigo/util": "~0.0.1",
-    "jose": "catalog:"
+    "jose": "catalog:",
+    "@ndigo/core": "~0.0.1"
   },
   "exports": {
     ".": {

@@ -22,11 +22,13 @@ export type OIDCErrorCode =
     | 'invalid_state'
     | 'invalid_nonce';
 
+import { FrameworkError } from '@ndigo/core';
+
 /**
  * An OIDC-specific failure. Every authorization/token failure mode throws
  * this so callers can distinguish provider errors from programming errors.
  */
-export class OIDCError extends Error {
+export class OIDCError extends FrameworkError {
     readonly code: OIDCErrorCode;
     /**
      * The HTTP status behind a `network` failure, when one exists — lets
@@ -860,7 +862,7 @@ export class OIDCAdapter implements AuthAdapter {
 
     async authenticate(_credentials: unknown): Promise<AuthResult> {
         // OIDC uses the authorization code flow, not direct credential authentication.
-        throw new Error(
+        throw new FrameworkError(
             'OIDCAdapter does not support direct credential authentication — use createAuthorizationRequest() and exchangeCodeForTokens()'
         );
     }

@@ -85,6 +85,10 @@ The `RouterInterceptor` to add.
 
 `void`
 
+#### Since
+
+1.0.0
+
 #### Inherited from
 
 `AbstractRouter.addInterceptor`
@@ -117,6 +121,10 @@ This is useful for re-applying routing logic or interceptors without a full page
 #### Returns
 
 `void`
+
+#### Since
+
+1.0.0
 
 #### Inherited from
 
@@ -158,6 +166,10 @@ An optional array of patterns to exclude from matching.
 #### Throws
 
 If `interceptor` is not provided when `interceptorOrPatterns` defines patterns.
+
+#### Since
+
+1.0.0
 
 #### Inherited from
 

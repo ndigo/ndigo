@@ -280,7 +280,7 @@ export class RetryOnOfflineInterceptor
      * the queue without bound.
      *
      * @param entry - The entry to queue (with `nextRetryAt` unset).
-     * @throws {FrameworkError} When the queue is at capacity.
+     * @throws When the queue is at capacity.
      */
     #enqueue(entry: OfflineQueueEntry): void {
         const cap = this.#config.queueCap ?? DEFAULT_QUEUE_CAP;

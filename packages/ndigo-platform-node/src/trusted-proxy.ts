@@ -222,7 +222,7 @@ export class TrustedProxySet implements Matchable<string> {
 
     /**
      * @param entries - Proxy addresses/ranges, e.g. `['10.0.0.0/8', '::1']`.
-     * @throws {RangeError} When an entry is not an IP literal or CIDR
+     * @throws When an entry is not an IP literal or CIDR
      * (hostnames and ports are rejected — proxies must be identified by
      * address range), or the prefix is out of range.
      */

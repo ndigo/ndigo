@@ -1,5 +1,6 @@
 /**
  */
+import { compareBy, invertComparison, numberComparator } from '@ndigo/core';
 import { like } from '@ndigo/util/types';
 import { Registry } from './registry';
 
@@ -126,7 +127,7 @@ export class DefaultLifecycleProcessor implements LifecycleProcessor {
     onClose(registry: Registry): void {
         const stopTargets = this._resolveLifecycleTargets(registry)
             .filter(likeSmartLifecycle)
-            .sort((a, b) => b.phase - a.phase);
+            .sort(invertComparison(compareBy((target) => target.phase, numberComparator.compare)));
 
         for (const target of stopTargets) {
             if (target.isRunning) {
@@ -141,7 +142,7 @@ export class DefaultLifecycleProcessor implements LifecycleProcessor {
         const startTargets = this._resolveLifecycleTargets(registry)
             .filter(likeSmartLifecycle)
             .filter((target) => target.isAutoStartup)
-            .sort((a, b) => a.phase - b.phase);
+            .sort(compareBy((target) => target.phase, numberComparator.compare));
 
         for (const target of startTargets) {
             if (!target.isRunning) {

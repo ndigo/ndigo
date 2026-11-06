@@ -85,7 +85,8 @@ Advances the account's `tokenVersion` by one and returns the new
 value (AD-33 D-7). This is the revocation primitive: JWTs carry a
 `ver` claim that must equal `tokenVersion`; every bump kills every
 outstanding token for the account. Stores should implement this as
-a single atomic write (UPDATE ... SET token_version = token_version + 1) — the read-modify-write must not race.
+a single atomic write (`UPDATE … SET token_version = token_version
++ 1`) — the read-modify-write must not race.
 Throws when `id` is unknown (fail closed).
 
 #### Parameters
@@ -115,7 +116,8 @@ current version no longer matches (someone else advanced it). This is
 the atomic guard against refresh-token replay races — a stolen token
 must lose to the legitimate holder's rotation even when both present
 the same `ver` claim concurrently. Backed by a conditional UPDATE
-(UPDATE ... SET token_version = token_version + 1 WHERE id = $1 AND token_version = $2) and the affected-rows count. Must be atomic under
+(`UPDATE … SET token_version = token_version + 1 WHERE id = $1 AND
+token_version = $2`) and the affected-rows count. Must be atomic under
 concurrent callers.
 Throws when `id` is unknown (fail closed).
 

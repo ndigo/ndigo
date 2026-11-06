@@ -8,6 +8,14 @@
 
 Contract for recording feature-level metrics.
 
+## Since
+
+1.0.0
+
+## Author
+
+Jeff Rose
+
 ## Methods
 
 ### incrementCounter()

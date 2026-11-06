@@ -1777,7 +1777,7 @@ Guides: [`docs/guides/`](docs/guides/README.md).
 
 ## Roadmap
 
-### Current Status (2026-10-06)
+### Current Status (2026-11-02)
 
 - **The 10-wave program shipped.** Foundation (`@ndigo/util`, `@ndigo/core`,
   `@ndigo/signals`), IoC/context, the web stack (`@ndigo/http`,
@@ -1814,6 +1814,22 @@ Guides: [`docs/guides/`](docs/guides/README.md).
 - **ConversionService shipped** (AD-38) — schema-target conversion is the
   supported binding/conversion path; the former handwritten
   `Converter<S,T>` design note is obsolete.
+- **Feature flags shipped** (AD-82, AD-87): `@ndigo/flags` owns the
+  `FlagEvaluator` SPI, the zero-config `PropertyFlagProvider` (live-refresh,
+  percentage rollouts) and the `@whenFeature` route gate;
+  `@ndigo/flags-openfeature` bridges the standard on both the server and
+  `/web` entries, so vendors arrive as providers behind the SPI.
+- **Scaffolding shipped** (AD-85): `ndigo new` plus the `@ndigo/generators`
+  `app` generator stand up an in-repo app; the standalone
+  `create-ndigo-app` scaffold waits on the 1.0 publish.
+- **Pre-1.0 consistency closed** (AD-83, AD-84, AD-86): the decorator
+  taxonomy with its renames, the `@ndigo/util` prune to the consumed surface,
+  and the lint-rule split — repo-only rules live in root `src/`, `packages/`
+  stays the consumer surface.
+- **Runtime floor is Node ≥ 24** (`engines` with `engine-strict`; CI runs 24) — the floor every package README and the README template state.
+- **Work tracking is issue-based** (`AGENTS.md` §8): one issue = one branch =
+  one worktree = one PR, trunk-based releases, incomplete features merged
+  behind `@ndigo/flags`.
 
 ### Near-Term (1.0)
 
@@ -1824,13 +1840,14 @@ Guides: [`docs/guides/`](docs/guides/README.md).
   concrete consumer appears.
 - **Release gate** — changelog cuts `1.0.0`
   ([Keep a Changelog](./CHANGELOG.md)), package README/API docs
-  re-verified (`pnpm doc:check`), CI gates green.
+  re-verified (`pnpm doc:check`), CI gates green. The frozen surface is
+  recorded (AD-91); the gate itself is tracked in the issue tracker.
 
 ### Closed / Deferred
 
 - API-freeze consistency review (AD-20 D8) — completed 2026-10-31: the full
   decorator taxonomy and naming conventions (AD-83); profile gates unified
-  on `@whenProfile`.
+  on `@whenProfile`. The freeze record itself is AD-91 (2026-11-02).
 - Distributed scheduling (AD-41) and cross-node queue consumption — closed
   with revisit triggers; not speculative scope.
 - The 2026-03-08 architecture roadmap reference and the 2026-05-27

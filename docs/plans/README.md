@@ -37,6 +37,33 @@ engine behind a dynamic import (PWB-REV-001), and the measured bundle delta
 
 ---
 
+### 2026-11-01 - OpenFeature Bridge (AD-87)
+
+`@ndigo/flags-openfeature`: an OpenFeature client bridges into the existing
+`FlagEvaluator` SPI (server evaluator plus a `/web` entry over the web SDK),
+so vendors (flagd, OFREP, LaunchDarkly, …) arrive as providers rather than
+framework integrations. The SPI vocabulary widened additively
+(`CACHED`/`UNKNOWN`/`STALE` reasons, `TARGETING_KEY_MISSING`/`INVALID_CONTEXT`
+errors, optional `flagMetadata`), and the request-derived targeting-context
+resolver landed alongside. Phase 2's buildable half shipped 2026-11-02 (web
+entry + `FeatureFlagTelemetryHook`); provider-TCK adoption and OFREP/flagd
+SSE push remain externally gated.
+
+[Read plan](2026-11-01_OPENFEATURE_BRIDGE.md)
+
+---
+
+### 2026-11-01 - App Scaffolding (AD-85)
+
+`ndigo new` plus the `@ndigo/generators` `app` generator stand up a new in-repo
+application (kind, number, port, description) through the CLI. Phase B — the
+standalone `create-ndigo-app` scaffold for projects outside the monorepo — is
+gated on the 1.0 publish.
+
+[Read plan](2026-11-01_APP_SCAFFOLDING.md)
+
+---
+
 ### 2026-10-10 - Feature Flags
 
 `@ndigo/flags` + `@ndigo/platform-node` + `apps/04-ndigo-api` (AD-82),
@@ -172,6 +199,20 @@ with `serve` (the AD-74 `--cluster` surface), `dev`, `generate` (fronting
 application. Server watch + upgrade codemods deferred in the ADR.
 
 [Read plan](2026-10-07_FRAMEWORK_CLI.md)
+
+---
+
+### 2026-10-07 - Example Application Portfolio
+
+The numbered app suite (`01-ndigo-hello` … `19-*`): externally-oracled
+conformance apps (httpbin, Todo-Backend, RealWorld/Conduit), verticals
+(Conduit web, PetClinic), realtime (STOMP chat, kanban), distributed
+(resilience lab, Redis fan-out) and operations (telemetry lab, auth
+playground) apps — plus the port registry and the boot-and-probe smoke gate.
+Executed 2026-10-07 (apps `08`–`19`); §11–12 record the defects the exercise
+found and their fixes.
+
+[Read plan](2026-10-07_EXAMPLE_APPLICATIONS.md)
 
 ---
 
@@ -467,6 +508,7 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 
 ## Completed Reviews
 
+- [2026-11-02_COMPREHENSIVE_REVIEW.md](2026-11-02_COMPREHENSIVE_REVIEW.md) - Full-repository sweep (code, design, architecture, security, docs) at `e732baf4`: gates green (lint, audit, manifest, doc-links, dependency cycles) and the security-critical surface verified fail-closed end-to-end; 4 Medium / 4 Low findings — an unexported `EqualsURLMatcher` in the ndigo-http README (resolved by retiring the JSDIP-era orphan), the undocumented `@ndigo/redis` `/rate-limit` entry point, AGENTS.md engine-floor and dependency-convention drift, an unbounded JWT revocation cache, a demo-app `refresh()` that never persisted its TTL extension, and two minor doc gaps — plus one tracked feature gap (OIDC refresh grant, landed as #61). Waves 1–3 executed 2026-11-02 (PR #62).
 - [2026-10-07_CODE_REVIEW_AND_MITIGATION_AD72_75.md](2026-10-07_CODE_REVIEW_AND_MITIGATION_AD72_75.md) - Delta sweep at `6a4979d4` (AD-72 jobs/outbox, AD-73 locks, AD-74 cluster, AD-75 CLI + the deferred sweep + portfolio 08–19): gates green at HEAD, but 3 Block / 8 High / 13 Medium / 9 Low findings — the crash-loop guard fails open (a tripped slot hangs every sibling and `run()` forever), `ndigo serve --cluster N --port P` gives every slot the same PORT (derivation never wired), `ndigo generate component|header` cannot run (required flags not exposed), plus Redis job-driver check-then-act races (non-atomic heartbeat enabling double-claim, retry resurrecting terminal jobs). Remediation waves 1–5 proposed.
 - [2026-10-07_CODE_REVIEW_AND_MITIGATION.md](2026-10-07_CODE_REVIEW_AND_MITIGATION.md) - Delta sweep at `76d28575` (AD-69/70/71 + wave-4/5 remediation) with a whole-repo residual/architecture/gap refresh: all gates green, 1 Block / 6 High / 33 Medium / 28 Low findings (a fresh-runner test-lane import escape, raw TC39 decorators shipping in `ndigo-hello`/`ndigo-views` bundles and `ndigo-todo` dev, incomplete FACE callbacks, and the AD-70 config schema/guide teaching a secret-marker form the resolver never decrypts) — remediation waves 1–7 proposed. **Follow-up executed 2026-10-07**: the deferred items landed — the spec-typecheck lane (`tsconfig.spec.json`, ~900 diagnostics triaged to zero), REU-9 (config metadata relocated to `@ndigo/context`), TEL-08 (client byte-size seam consumed), SEC-B/WC-I (tooling lane). **GAP-12 closed 2026-10-09** (AD-80/AD-81: edge termination documented; native h2 opt-in landed — `tls` + `NDIGO_TLS_*`, ALPN h2/h1.1; HTTP/3 stays at the edge).
 - [2026-10-06_COMPREHENSIVE_REVIEW_AND_MITIGATION.md](2026-10-06_COMPREHENSIVE_REVIEW_AND_MITIGATION.md) - Second full-repository sweep (39 packages, 7 apps, docs, tooling, CI; 16 slices) at `96337f24`: all gates green, 5 Block / 28 High / 71 Medium / 63 Low / 12 Nit new findings (incl. a passwordless-account auth bypass, a telemetry remote process-crash, a view-name path traversal, a render-hang, and a fresh-checkout CI e2e failure), plus 10 inventory-reconciliation items and 13 framework gaps — remediation waves 1–5 landed (`91712f40`, `8f54a402`, `fbb5233e`, `0c4becbd`; post-plan discoveries fixed in `60d601ca`, `4ee4a41f`, `f6cdf832`, `76d28575`)
@@ -518,10 +560,6 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 ## Draft Plans
 
 - [2026-11-03_TSCONFIG_PACKAGE_CONSISTENCY.md](2026-11-03_TSCONFIG_PACKAGE_CONSISTENCY.md) - TypeScript config & package setup consistency: Phase 0 (dead `tsconfig.vscode.json`, stale Nx input, over-broad root config, exposed script lint warnings) executed; Phases 1–6 standardize the app/package IDE and build lanes, consolidate the three alias tables, and add a CI guard.
-- [2026-11-02_COMPREHENSIVE_REVIEW.md](2026-11-02_COMPREHENSIVE_REVIEW.md) - Comprehensive review (2026-11-02): full-repo sweep across code, design, architecture, security, and docs. Gates green at `e732baf4` (lint, audit, manifest, doc-links, cycles); security surface verified fail-closed end-to-end. Findings: M1 unexported `EqualsURLMatcher` in ndigo-http README, M2 ndigo-redis `/rate-limit` entry point undocumented, M3–M4 AGENTS.md stale engine floor + dependency-convention drift, L1 unbounded jwt revocation cache, L2 todo-app `refresh()` persistence bug, L3–L4 minor doc gaps, F1 OIDC refresh-token grant (tracked gap). Waves: W1 docs contract, W2 correctness, W3 issue tracking. **Executed 2026-11-02**: all three waves merged via [PR #62](https://github.com/ndigo/ndigo/pull/62); F1 tracked in [#61](https://github.com/ndigo/ndigo/issues/61). §5 records the M1 revision (JSDIP-era orphan retired, not exported).
-- [2026-11-01_OPENFEATURE_BRIDGE.md](2026-11-01_OPENFEATURE_BRIDGE.md) - OpenFeature bridge (AD-87) — Phase 1 pre-1.0 ([#56](https://github.com/ndigo/ndigo/issues/56)): `@ndigo/flags-openfeature` server bridge + additive SPI vocabulary widening, with the targeting-context resolver companion ([#55](https://github.com/ndigo/ndigo/issues/55)); Phase 2 post-1.0 ([#57](https://github.com/ndigo/ndigo/issues/57)): web entry, `feature_flag.*` telemetry hook, conformance follow-ups, OFREP/flagd recipes.
-- [2026-11-01_APP_SCAFFOLDING.md](2026-11-01_APP_SCAFFOLDING.md) - App scaffolding — Phase A (`ndigo new` + the `app` generator) implemented and validated 2026-11-01 (AD-85); Phase B (`create-ndigo-app` for standalone projects) gated on the 1.0 package publish.
-- [2026-10-07_EXAMPLE_APPLICATIONS.md](2026-10-07_EXAMPLE_APPLICATIONS.md) - Example-application portfolio: number the app directories (`01-ndigo-hello` …), keep the existing seven in order, and grow the suite with externally-oracled conformance apps (httpbin, Todo-Backend, RealWorld/Conduit), verticals (Conduit web, PetClinic), realtime (STOMP chat, kanban), distributed (resilience lab, Redis fan-out), and operations (telemetry lab, auth playground) apps — plus a port registry, a boot-and-probe smoke gate, and the W0 rename sweep mechanics. **Executed 2026-10-07**: apps `08`–`19` landed with tests + smoke coverage; §11 records execution and the defects the exercise found (port seeding, ≥400 `ResponseEntity` headers, unregistered CORS, single-scheme auth guard, import-scanner `lib` skip, socket 1011 DX).
 
 ---
 

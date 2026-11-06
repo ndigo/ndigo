@@ -3,9 +3,6 @@
  * the CLI's scaffold probe (`migration-probe`) and the framework loader's
  * `nextMigrationVersion` must agree on every directory shape, so a
  * scaffolded version is never one the runner would not load.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';

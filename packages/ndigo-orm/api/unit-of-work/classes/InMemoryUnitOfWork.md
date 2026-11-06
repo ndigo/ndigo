@@ -12,10 +12,6 @@ Tracks new, dirty, and removed entities and flushes changes via an `EntityManage
 Use this class in tests or with `InMemoryEntityManager`. For SQL-backed stores,
 implement `UnitOfWork` with your `EntityManager` adapter.
 
-## Since
-
-1.0.0
-
 ## Implements
 
 - [`UnitOfWork`](../interfaces/UnitOfWork.md)

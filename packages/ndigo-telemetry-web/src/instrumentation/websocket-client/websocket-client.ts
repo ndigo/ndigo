@@ -143,8 +143,7 @@ export function countSocketClientStatus(): (status: SocketStatus) => void {
  * ```
  *
  * While wired, {@link WebSocketClientInstrumentation}'s `send` wrap skips its
- * own payload estimation for that client (TEL-08), so `ndigo.socket.client
- * .messages.bytes` counts each wire write exactly once — no re-serialized
+ * own payload estimation for that client (TEL-08), so `ndigo.socket.client.messages.bytes` counts each wire write exactly once — no re-serialized
  * estimation, no double count.
  *
  * @returns An `onSend` observer feeding `ndigo.socket.client.messages.bytes`.

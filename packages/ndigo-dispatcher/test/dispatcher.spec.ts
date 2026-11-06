@@ -1,5 +1,3 @@
-/**
- */
 import { describe, test, beforeEach, afterEach, expect, vi } from 'vitest';
 import { DISPATCHER } from '../src/context-tokens';
 import { AbstractDispatcher, DISPATCH_ERROR_ATTRIBUTE, getDispatchError } from '../src/dispatcher';

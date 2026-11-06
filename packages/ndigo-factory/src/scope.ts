@@ -53,8 +53,8 @@ const getConstructor = (target: unknown): (Function & { [Symbol.metadata]?: Reco
 
 /**
  * Defines scope metadata on a class
- * @param {*} value - Scope name
- * @param {*} target - Class constructor
+ * @param value - - Scope name
+ * @param target - - Class constructor
  */
 export const defineScope = (value: PossibleScope, target: unknown): void => {
     const ctor = getConstructor(target);
@@ -73,8 +73,8 @@ export const defineScope = (value: PossibleScope, target: unknown): void => {
 
 /**
  * Retrieves scope metadata from a class or instance
- * @param {*} target - Class constructor or instance
- * @returns {*} Scope name or undefined
+ * @param target - - Class constructor or instance
+ * @returns Scope name or undefined
  */
 export const getScope = (target: unknown): PossibleScope | undefined => {
     const ctor = getConstructor(target);
@@ -83,8 +83,8 @@ export const getScope = (target: unknown): PossibleScope | undefined => {
 
 /**
  * Checks if target has scope metadata
- * @param {*} target - Class constructor or instance
- * @returns {boolean} Whether or not the target has a scope mapping defined
+ * @param target - - Class constructor or instance
+ * @returns Whether or not the target has a scope mapping defined
  */
 export const hasScope = (target: unknown): boolean => {
     const ctor = getConstructor(target);
@@ -93,8 +93,8 @@ export const hasScope = (target: unknown): boolean => {
 
 /**
  * TC39 decorator for defining scope on a class
- * @param {string} scopeName - The scope name (singleton, prototype, route, etc.)
- * @returns {ClassDecorator} TC39 class decorator
+ * @param scopeName - - The scope name (singleton, prototype, route, etc.)
+ * @returns TC39 class decorator
  */
 export function scope(scopeName: PossibleScope) {
     return function <T extends new (...args: never[]) => unknown>(target: T, context: ClassDecoratorContext): T {

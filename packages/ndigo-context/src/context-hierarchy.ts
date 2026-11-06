@@ -89,8 +89,8 @@ export type FeatureUnmountPolicy = 'close' | 'preserve';
 /**
  * Create a shell/root context with optional infrastructure overrides.
  *
- * @param {module:context.ShellContextOptions} options Optional shell context options.
- * @returns {module:context.GenericApplicationContext} A configured shell context.
+ * @param options - Optional shell context options.
+ * @returns A configured shell context.
  */
 export const createShellContext = (options: ShellContextOptions = {}): GenericApplicationContext => {
     const { contentSource, data, environment, name = 'shell', themeName, themeResolver } = options;
@@ -111,9 +111,9 @@ export const createShellContext = (options: ShellContextOptions = {}): GenericAp
 /**
  * Create a feature context as a child of `parent`, optionally wiring an allowlisted relay gateway.
  *
- * @param {module:context.ApplicationContext} parent The shell or owning parent context.
- * @param {module:context.FeatureContextOptions} options Feature context options.
- * @returns {module:context.FeatureContextComposition} The composed feature context and optional gateway.
+ * @param parent - The shell or owning parent context.
+ * @param options - Feature context options.
+ * @returns The composed feature context and optional gateway.
  */
 export const createFeatureContext = (
     parent: ApplicationContext,
@@ -139,8 +139,8 @@ export const createFeatureContext = (
 /**
  * Unmount a feature context by disconnecting relay gateway and optionally closing the context.
  *
- * @param {module:context.FeatureContextComposition} feature Feature context composition.
- * @param {module:context.FeatureUnmountPolicy} policy Unmount policy: preserve context or close it.
+ * @param feature - Feature context composition.
+ * @param policy - Unmount policy: preserve context or close it.
  */
 export const unmountFeatureContext = (
     feature: FeatureContextComposition,
@@ -156,8 +156,8 @@ export const unmountFeatureContext = (
 /**
  * Walk from `context` up to root (inclusive), invoking `visitor` for each node.
  *
- * @param {module:context.ApplicationContext} context The starting context.
- * @param {Function} visitor A callback invoked for each visited context; its return value is ignored.
+ * @param context - The starting context.
+ * @param visitor - A callback invoked for each visited context; its return value is ignored.
  */
 export const traverseToRoot = (context: ApplicationContext, visitor: (context: ApplicationContext) => void): void => {
     escalate(
@@ -172,8 +172,8 @@ export const traverseToRoot = (context: ApplicationContext, visitor: (context: A
 /**
  * Walk a subtree depth-first from `context` (inclusive), invoking `visitor` for each node.
  *
- * @param {module:context.ApplicationContext} context The subtree root.
- * @param {Function} visitor A callback invoked for each visited context; its return value is ignored.
+ * @param context - The subtree root.
+ * @param visitor - A callback invoked for each visited context; its return value is ignored.
  */
 export const traverseSubtree = (context: ApplicationContext, visitor: (context: ApplicationContext) => void): void => {
     // Keep live child iteration: visitors may append siblings that must also be visited.
@@ -187,9 +187,9 @@ export const traverseSubtree = (context: ApplicationContext, visitor: (context: 
 /**
  * Find the first ancestor (excluding self) that matches `predicate`.
  *
- * @param {module:context.ApplicationContext} context The starting context.
- * @param {Function} predicate Matching predicate.
- * @returns {(module:context.ApplicationContext|undefined)} The first matching ancestor, if found.
+ * @param context - The starting context.
+ * @param predicate - Matching predicate.
+ * @returns The first matching ancestor, if found.
  */
 export const findAncestor = (
     context: ApplicationContext,
@@ -211,9 +211,9 @@ export const findAncestor = (
 /**
  * Find descendants (excluding root `context`) that match `predicate`.
  *
- * @param {module:context.ApplicationContext} context The subtree root.
- * @param {Function} predicate Matching predicate.
- * @returns {module:context.ApplicationContext[]} Matching descendants.
+ * @param context - The subtree root.
+ * @param predicate - Matching predicate.
+ * @returns Matching descendants.
  */
 export const findDescendants = (
     context: ApplicationContext,

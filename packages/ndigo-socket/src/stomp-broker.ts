@@ -1174,7 +1174,7 @@ export class StompBroker {
      *
      * @param destination - The destination the MESSAGE would carry.
      * @param headers - The pass-through headers.
-     * @throws {@link StompProtocolError} on a value that cannot be framed.
+     * @throws on a value that cannot be framed.
      */
     #assertDeliverable(destination: string, headers: Record<string, string>): void {
         if (destination.includes('\0')) {

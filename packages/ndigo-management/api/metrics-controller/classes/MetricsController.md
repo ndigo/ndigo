@@ -14,10 +14,6 @@ exposition document with `Content-Type: text/plain; version=0.0.4`.
 When no snapshot source is registered (no telemetry configured), the
 endpoint answers the classic error document.
 
-## Since
-
-1.0.0
-
 ## Extends
 
 - `ApplicationContextAware` & `Null`\<`this`\>

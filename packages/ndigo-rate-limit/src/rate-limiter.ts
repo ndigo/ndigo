@@ -56,7 +56,7 @@ export interface RateLimiter {
 
 /**
  * Structural type guard for {@link RateLimiter} — used where a bean or
- * option is resolved by shape instead of the {@link context-tokens.RATE_LIMITER | RATE_LIMITER} token.
+ * option is resolved by shape instead of the {@link "context-tokens".RATE_LIMITER | RATE_LIMITER} token.
  */
 export function likeRateLimiter(value: unknown): value is RateLimiter {
     return like({ kind: String, consume: Function })(value);

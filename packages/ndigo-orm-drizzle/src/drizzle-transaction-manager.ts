@@ -24,8 +24,6 @@ import { DrizzleDataSource } from './drizzle-data-source';
  *
  * Nested calls throw: `@transactional` already serializes the boundary
  * (DAT-F9), and a transaction owns one connection for its lifetime.
- *
- * @since 1.0.0
  */
 export class DrizzleTransactionManager implements TransactionManager {
     readonly #dataSource: DrizzleDataSource;
@@ -39,12 +37,12 @@ export class DrizzleTransactionManager implements TransactionManager {
         this.#dataSource = dataSource;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     isActive(): boolean {
         return this.#active;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async run<T>(fn: () => T | Promise<T>): Promise<T> {
         if (this.#active) {
             throw new IllegalStateError('DrizzleTransactionManager: a transaction is already active');

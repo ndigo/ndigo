@@ -112,7 +112,7 @@ export class FeatureMetricAggregator {
      * @param name - The name of the counter.
      * @param value - The amount to increment the counter by. Defaults to 1. Must be a finite number.
      * @returns The new value of the counter.
-     * @throws {IllegalStateError} If the value is not a finite number or if the feature limit is reached.
+     * @throws If the value is not a finite number or if the feature limit is reached.
      */
     incrementCounter(feature: string, name: string, value: number = 1): number {
         this.#assertMetricValue(value);
@@ -132,7 +132,7 @@ export class FeatureMetricAggregator {
      * @param feature - The name of the feature.
      * @param name - The name of the gauge.
      * @param value - The value to set the gauge to. Must be a finite number.
-     * @throws {IllegalStateError} If the value is not a finite number or if the feature limit is reached.
+     * @throws If the value is not a finite number or if the feature limit is reached.
      */
     setGauge(feature: string, name: string, value: number): void {
         this.#assertMetricValue(value);
@@ -149,7 +149,7 @@ export class FeatureMetricAggregator {
      * @param feature - The name of the feature.
      * @param name - The name of the duration metric.
      * @param durationMs - The duration in milliseconds. Must be a non-negative finite number.
-     * @throws {IllegalStateError} If the duration is not a finite number, is negative, or if the feature limit is reached.
+     * @throws If the duration is not a finite number, is negative, or if the feature limit is reached.
      */
     recordDuration(feature: string, name: string, durationMs: number): void {
         this.#assertMetricValue(durationMs);
@@ -236,7 +236,7 @@ export class FeatureMetricAggregator {
  *
  * Projection rules:
  * - counters → `sum` snapshots, gauges → `gauge` snapshots, both named
- *   `` `{feature}.{metric}` `` with empty attributes;
+ *   `{feature}.{metric}` with empty attributes;
  * - durations → `histogram` snapshots (count/sum/min/max, no buckets — the
  *   raw samples are summarized, not bucketed), so the Prometheus view
  *   projects the `_count` counter + `_sum` gauge pair;

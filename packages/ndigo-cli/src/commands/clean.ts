@@ -1,8 +1,5 @@
 /**
  * `ndigo clean` — remove build artifacts and caches for an application.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand } from '@stricli/core';
 import { rmSync, existsSync } from 'node:fs';

@@ -1,5 +1,3 @@
-/**
- */
 import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { AbstractDispatcher } from '../src/dispatcher';
 import routeErrorResolverContext from './assets/route-error-resolver-context';

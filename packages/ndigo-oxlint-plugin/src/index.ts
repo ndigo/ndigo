@@ -1,8 +1,5 @@
 /**
  * Oxlint plugin that bundles Ndigo's consumer-facing lint rules.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { eslintCompatPlugin } from '@oxlint/plugins';
 

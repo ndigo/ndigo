@@ -3,9 +3,6 @@
  * evaluation with the OTel feature-flag semconv attributes; abnormal
  * outcomes classified via `error.type` (resolved errors) or the ERROR span
  * status (thrown errors).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from 'vitest';

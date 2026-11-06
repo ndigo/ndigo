@@ -6,6 +6,8 @@
 
 # http-client
 
+HTTP client with interceptor support and convenience verb helpers.
+
 ## Classes
 
 - [HTTP](classes/HTTP.md)

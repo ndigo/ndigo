@@ -41,8 +41,6 @@ where resource content is known at construction time.
 
 `Promise`\<[`Resource`](../interfaces/Resource.md)\<`unknown`\>\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 [`ResourceLoader`](../interfaces/ResourceLoader.md).[`getResource`](../interfaces/ResourceLoader.md#getresource)

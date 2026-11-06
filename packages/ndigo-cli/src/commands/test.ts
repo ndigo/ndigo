@@ -1,8 +1,5 @@
 /**
  * `ndigo test` — front the application's test script.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { createScriptFrontCommand } from './_script-fronts.js';
 

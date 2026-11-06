@@ -9,10 +9,6 @@
 Durable [JobDriver](#) on Redis (standalone 7.2+; sorted sets and Lua
 only). One handle per namespace; construct independently in every worker.
 
-## Since
-
-1.0.0
-
 ## Implements
 
 - [`JobDriver`](#)
@@ -63,8 +59,6 @@ Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`).
 
 `Promise`\<`JobRecord`[]\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `JobDriver.claim`
@@ -102,8 +96,6 @@ operations reject with a closed-handle error.
 
 `Promise`\<`void`\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `JobDriver.complete`
@@ -123,8 +115,6 @@ operations reject with a closed-handle error.
 #### Returns
 
 `Promise`\<`JobRecord`\>
-
-#### Inherit Doc
 
 #### Implementation of
 
@@ -150,8 +140,6 @@ operations reject with a closed-handle error.
 
 `Promise`\<`void`\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `JobDriver.fail`
@@ -175,8 +163,6 @@ operations reject with a closed-handle error.
 #### Returns
 
 `Promise`\<`void`\>
-
-#### Inherit Doc
 
 #### Implementation of
 
@@ -206,8 +192,6 @@ operations reject with a closed-handle error.
 
 `Promise`\<`void`\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `JobDriver.retry`
@@ -221,8 +205,6 @@ operations reject with a closed-handle error.
 #### Returns
 
 `Promise`\<`number`\>
-
-#### Inherit Doc
 
 #### Implementation of
 

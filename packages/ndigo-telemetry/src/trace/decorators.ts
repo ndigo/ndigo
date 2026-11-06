@@ -27,7 +27,7 @@ export function getTraced(target: object, propertyKey: string | symbol): string 
 }
 
 /**
- * Checks if a method has been decorated with the `traced` decorator.
+ * Checks if a method has been decorated with the traced decorator.
  * @param target - The target object or prototype.
  * @param propertyKey - The name of the method.
  * @returns `true` if the method is traced, otherwise `false`.
@@ -96,21 +96,21 @@ function createTracedDecorator(spanName?: string) {
  *                       Alternatively, if used without parentheses, this will be the target function.
  * @param maybeContext - Optional. The decorator context provided by TypeScript for method decorators.
  * @returns A method decorator or the decorated method itself.
- * @throws {TypeError} If applied to anything other than a method.
+ * @throws If applied to anything other than a method.
  * @example
  * ```typescript
  * class MyService {
- *   `traced`()
+ *   @traced()
  *   myMethod() {
  *     // ...
  *   }
  *
- *   `traced`('custom-span-name')
+ *   @traced('custom-span-name')
  *   anotherMethod() {
  *     // ...
  *   }
  *
- *   `traced`('async-operation')
+ *   @traced('async-operation')
  *   async asyncMethod() {
  *     await someAsyncOperation();
  *   }

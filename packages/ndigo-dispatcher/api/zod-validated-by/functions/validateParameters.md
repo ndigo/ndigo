@@ -33,5 +33,8 @@ The map with the schema attached to each extractor.
 ## Example
 
 ```ts
-@parameters(validateParameters(UserSchema, { user: dataBinderValue('query') }))
+class UserController {
+  @parameters(validateParameters(UserSchema, { user: dataBinderValue('query') }))
+  create(user: z.infer<typeof UserSchema>) {}
+}
 ```

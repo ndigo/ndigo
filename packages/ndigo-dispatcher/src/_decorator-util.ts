@@ -6,12 +6,10 @@
  * Used by decorators to map parameter names to positions.
  *
  * @example
- * function example(foo, bar, baz) {}
- * getFunctionParamNames(example) // ['foo', 'bar', 'baz']
- *
- * @example
+ * ```ts
  * function example(foo: string, bar: number = 10, baz?) {}
- * getFunctionParamNames(example) // ['foo', 'bar', 'baz']
+ * getFunctionParamNames(example); // ['foo', 'bar', 'baz']
+ * ```
  *
  * @param fn - The function to extract parameter names from
  * @returns Array of parameter names in declaration order

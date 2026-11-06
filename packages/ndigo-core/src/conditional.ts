@@ -62,8 +62,7 @@ function conditionalDecorator(key: string, value: unknown, target: Function, con
  * @example
  * ```ts
  * @whenBrowser
- * @class
- * class WebAutoConfiguration { … }
+ * class WebAutoConfiguration {}
  * ```
  */
 export function whenBrowser(target: Function, context: ClassDecoratorContext): void {
@@ -76,8 +75,7 @@ export function whenBrowser(target: Function, context: ClassDecoratorContext): v
  * @example
  * ```ts
  * @whenNode
- * @class
- * class NodeAutoConfiguration { … }
+ * class NodeAutoConfiguration {}
  * ```
  */
 export function whenNode(target: Function, context: ClassDecoratorContext): void {
@@ -103,8 +101,7 @@ export interface WhenPropertyOptions {
  * @example
  * ```ts
  * @whenProperty({ name: 'app.management.enabled' })
- * @class
- * class ManagementConfiguration { … }
+ * class ManagementConfiguration {}
  * ```
  */
 export function whenProperty(options: WhenPropertyOptions) {
@@ -144,11 +141,13 @@ const normalizeProfileCondition = (expressions: Array<string | ProfileTerm>): st
  * @example
  * ```ts
  * @whenProfile('!prod & (dev | test)')
- * class DevOnlyConfiguration { ... }
+ * class DevOnlyConfiguration {}
  *
- * @whenProfile('dev', 'test') // either-of → 'dev | test'
+ * @whenProfile('dev', 'test') // either-of -> 'dev | test'
  * @entry()
- * devOrTestEntry() { ... }
+ * class DevOrTestConfiguration {
+ *   devOrTestEntry() {}
+ * }
  * ```
  */
 export function whenProfile(...expressions: Array<string | ProfileTerm>) {
@@ -174,8 +173,7 @@ export function whenProfile(...expressions: Array<string | ProfileTerm>) {
  * @example
  * ```ts
  * @whenMissingEntry('metricsController')
- * @class
- * class ManagementAutoConfiguration { … }
+ * class ManagementAutoConfiguration {}
  * ```
  */
 export function whenMissingEntry(entryName: string) {
@@ -228,7 +226,7 @@ export function isActiveForCurrentPlatform(target: unknown): boolean {
     const platform = getConditionalPlatform(target);
 
     if (!platform) {
-        return true; // No constraint → always active
+        return true; // No constraint -> always active
     }
 
     if (platform === 'browser') {

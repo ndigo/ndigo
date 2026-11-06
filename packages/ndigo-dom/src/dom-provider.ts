@@ -1,8 +1,5 @@
 /**
  * Provides an isomorphic abstraction over DOM parsing and element creation.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export interface DOMProvider {
     /**

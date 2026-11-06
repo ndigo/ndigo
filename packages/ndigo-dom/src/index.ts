@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 export type { DOMProvider } from './dom-provider';
 export { BrowserDOMProvider } from './browser-dom-provider';

@@ -1,9 +1,6 @@
 /**
  * Live standalone Redis lock-driver contracts (AD-73): lease lifecycle,
  * fencing tokens across separate connections, and stale-holder isolation.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterEach, describe, expect, it } from 'vitest';

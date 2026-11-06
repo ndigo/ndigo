@@ -71,7 +71,7 @@ export class CompositeThemeResolver implements ThemeResolver {
      *
      * @param name - Optional theme name.
      * @returns The first resolved theme.
-     * @throws {TypeError} When no resolver can provide the theme.
+     * @throws When no resolver can provide the theme.
      */
     getTheme(name?: string): Theme {
         for (const resolver of this.#resolvers) {

@@ -168,8 +168,8 @@ function resultStatus(outcome: { ok: boolean }): { code: SpanStatusCode } {
  * throwing.
  *
  * This runs synchronously in the shimmer wrapper — before `original.apply`
- * and outside any try/catch — so it must not throw: `new URL('http://[',
- * 'http://local')` raises `Invalid URL`, and Node delivers exactly that
+ * and outside any try/catch — so it must not throw: `new URL('http://[')` raises
+ * `Invalid URL`, and Node delivers exactly that
  * request target for a raw `GET http://[ HTTP/1.1` (remote process kill).
  * Falls back to the raw target before the query string.
  *

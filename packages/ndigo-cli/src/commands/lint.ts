@@ -1,8 +1,5 @@
 /**
  * `ndigo lint` — front the application's lint script.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { createScriptFrontCommand } from './_script-fronts.js';
 

@@ -2,9 +2,6 @@
  * Live standalone Redis rate-limiter contracts (AD-79): shared budgets
  * across separate connections (two nodes), namespace isolation, TTL
  * windows, and the fail-closed/fail-open storage posture.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterEach, describe, expect, it } from 'vitest';

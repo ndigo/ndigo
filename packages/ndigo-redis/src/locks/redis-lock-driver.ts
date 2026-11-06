@@ -14,9 +14,6 @@
  * fencing tokens starting at `1`, and `close()` seals the handle only. The
  * connection is **borrowed** (the `RedisJobDriver` pattern): the driver
  * never connects, subscribes, or closes it.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
 import type { LockDriver, LockHandle } from '@ndigo/locks';
@@ -90,7 +87,7 @@ return -1`;
  * Validates a lease duration.
  *
  * @param ttlMs - The lease duration in milliseconds.
- * @throws {TypeError} When the value is not a finite positive number.
+ * @throws When the value is not a finite positive number.
  */
 function requireTtl(ttlMs: number): void {
     if (Number.isFinite(ttlMs) && ttlMs > 0) {
@@ -140,7 +137,7 @@ export class RedisLockDriver implements LockDriver {
         this.#prefix = `ndigo:locks:${options.namespace}:`;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async acquire(key: string, options: { ttlMs: number }): Promise<LockHandle | null> {
         this.#assertOpen();
         requireTtl(options.ttlMs);

@@ -122,7 +122,7 @@ export interface FlagEvaluator {
 
 /**
  * Structural type guard for {@link FlagEvaluator} — used where a bean or
- * option is resolved by shape instead of the {@link context-tokens.FLAG_EVALUATOR | FLAG_EVALUATOR} token.
+ * option is resolved by shape instead of the {@link "context-tokens".FLAG_EVALUATOR | FLAG_EVALUATOR} token.
  */
 export function likeFlagEvaluator(value: unknown): value is FlagEvaluator {
     return like({ kind: String, evaluate: Function })(value);
@@ -141,7 +141,7 @@ const flagKeyPattern = /^[A-Za-z0-9._:-]+$/;
  *
  * @param flag - The flag key to validate.
  * @param where - Call-site label for the error message.
- * @throws {TypeError} When the key is not a non-empty identifier string.
+ * @throws When the key is not a non-empty identifier string.
  */
 export function validateFlagKey(flag: string, where = 'feature flag'): void {
     if (typeof flag !== 'string' || flag.length === 0 || !flagKeyPattern.test(flag)) {

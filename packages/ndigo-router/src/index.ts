@@ -1,4 +1,5 @@
 /**
+ * Router abstractions and implementations for client-side navigation.
  */
 export * from './route';
 export * from './route-attributes';

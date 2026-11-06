@@ -18,8 +18,8 @@ export interface Registry {
 }
 
 /**
- * @param {*} value The value to be tested
- * @returns {boolean} Whether or not the `value` provided is a {@link Registry|Registry}.
+ * @param value - The value to be tested
+ * @returns Whether or not the `value` provided is a {@link Registry|Registry}.
  */
 export const likeRegistry = (value: unknown): value is Registry =>
     like({
@@ -30,10 +30,10 @@ export const likeRegistry = (value: unknown): value is Registry =>
     })(value);
 
 /**
- * A handler implementation that when applied to a {@link Registry|Registry} instance via {@link external:Proxy|Proxy} causes the registry
+ * A handler implementation that when applied to a {@link Registry|Registry} instance via `Proxy` causes the registry
  * to behave like a plain object. This is used to implement `ProxiedFactory`.
  *
- * @see {@link default-factory.ProxiedFactory | ProxiedFactory}
+ * @see {@link "default-factory".ProxiedFactory | ProxiedFactory}
  */
 export class RegistryProxyHandler<T extends Registry> implements ProxyHandler<T> {
     deleteProperty(target: T, key: PropertyKey): boolean {

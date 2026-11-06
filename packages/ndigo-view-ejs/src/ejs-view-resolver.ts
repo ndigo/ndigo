@@ -45,7 +45,7 @@ export class EJSViewResolver extends AbstractPathBasedViewResolver {
         this.#options = options;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     protected async _loadView(name: string, language?: unknown): Promise<View | null> {
         if (this.viewNames && !this.supports(name, language)) {
             return null;

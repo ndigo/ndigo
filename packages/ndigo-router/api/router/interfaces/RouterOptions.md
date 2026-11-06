@@ -8,10 +8,6 @@
 
 Options accepted by router implementations.
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### onError?

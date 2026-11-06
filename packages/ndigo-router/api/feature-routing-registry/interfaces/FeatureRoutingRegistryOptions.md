@@ -8,10 +8,6 @@
 
 Options for configuring the `FeatureRoutingRegistry`.
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### activationPolicy?

@@ -8,6 +8,8 @@
 
 > **LikeDescriptor** = `object`
 
+Duck-typing predicate factory.
+
 ## Index Signature
 
 \[`key`: `string`\]: `true` \| `Function`

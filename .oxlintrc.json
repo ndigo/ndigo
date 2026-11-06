@@ -137,21 +137,13 @@
       }
     },
     {
-      "files": [
-        "src/oxlint/**/*.ts"
-      ],
+      "files": ["src/oxlint/**/*.ts"],
       "rules": {
         "internal/tsdoc-syntax": "error"
       }
     },
     {
-      "files": [
-        "**/*.spec.ts",
-        "**/*.test.ts",
-        "**/test/**/*.ts",
-        "**/test/**/*.js",
-        "**/test/**/*.mjs"
-      ],
+      "files": ["**/*.spec.ts", "**/*.test.ts", "**/test/**/*.ts", "**/test/**/*.js", "**/test/**/*.mjs"],
       "rules": {
         "@typescript-eslint/no-unused-vars": "off",
         "no-shadow": "off",
@@ -162,11 +154,7 @@
       }
     },
     {
-      "files": [
-        "apps/**/*.ts",
-        "apps/**/*.js",
-        "apps/**/*.mjs"
-      ],
+      "files": ["apps/**/*.ts", "apps/**/*.js", "apps/**/*.mjs"],
       "rules": {
         "internal/no-browser-globals-in-isomorphic": "off"
       }

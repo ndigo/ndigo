@@ -1,8 +1,5 @@
 /**
  * `ndigo env` — validate required environment variables.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand } from '@stricli/core';
 import { existsSync, readFileSync } from 'node:fs';

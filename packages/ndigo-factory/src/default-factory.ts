@@ -7,16 +7,15 @@ export class DefaultFactory extends AbstractFactory {}
 
 /**
  * A factory that uses a Proxy to allow direct property access for value manipulation.
- * @extends DefaultFactory
 
  * @example
+ * ```ts
  * const factory = new ProxiedFactory();
  * factory.foo = 123;
- * 'foo' in factory;
- * //=> true
- * delete factory.foo
- * 'foo' in factory;
- * //=> false
+ * 'foo' in factory; //=> true
+ * delete factory.foo;
+ * 'foo' in factory; //=> false
+ * ```
  * @see {@link DefaultFactory}
  */
 export class ProxiedFactory extends DefaultFactory implements Record<string, unknown> {

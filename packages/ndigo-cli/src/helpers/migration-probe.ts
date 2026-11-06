@@ -8,9 +8,6 @@
  * compiled output, while `@ndigo/orm-drizzle`'s lib emits Bundler-style
  * extensionless imports (tsx/vite consumers). The parity spec
  * (`test/db-new.spec.ts`) pins the two implementations together.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { readdir } from 'node:fs/promises';
 

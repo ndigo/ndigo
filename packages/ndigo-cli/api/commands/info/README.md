@@ -6,7 +6,7 @@
 
 # commands/info
 
-`ndigo info` — versions, installed @ndigo packages, workspace, git.
+`ndigo info` — versions, installed \@ndigo packages, workspace, git.
 
 ## Variables
 

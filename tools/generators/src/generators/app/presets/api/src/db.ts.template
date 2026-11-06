@@ -1,0 +1,15 @@
+import { createDrizzleAdapter } from '@ndigo/orm-drizzle';
+import { DrizzleDataSource } from '@ndigo/orm-drizzle';
+
+/** The app's primary database adapter (see `ndigo db list`). */
+const dataSource = new DrizzleDataSource({ url: process.env.NDIGO_DB_URL ?? 'file:./app.db' });
+
+export const databases = {
+    primary: createDrizzleAdapter({
+        name: 'primary',
+        dataSource,
+        migrations: [],
+    }),
+};
+
+export const defaultDatabase = 'primary';

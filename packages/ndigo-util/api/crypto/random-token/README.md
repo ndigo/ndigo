@@ -6,11 +6,13 @@
 
 # crypto/random-token
 
-## Crypto
+Generates cryptographically secure random tokens.
+
+## Functions
 
 - [randomToken](functions/randomToken.md)
 
-## Other
+## References
 
 ### default
 

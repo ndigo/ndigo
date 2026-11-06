@@ -3,7 +3,7 @@
  * @author Jeff Rose
  */
 import { RuleTester } from 'oxlint/plugins-dev';
-import { noRawConsole } from '../../src/rules/no-raw-console';
+import { noRawConsole } from '../../rules/no-raw-console.ts';
 
 const ruleTester = new RuleTester({
     languageOptions: {

@@ -3,7 +3,7 @@
  * @author Jeff Rose
  */
 import { RuleTester } from 'oxlint/plugins-dev';
-import { noBrowserGlobalsInIsomorphic } from '../../src/rules/no-browser-globals-in-isomorphic';
+import { noBrowserGlobalsInIsomorphic } from '../../rules/no-browser-globals-in-isomorphic.ts';
 
 const ruleTester = new RuleTester({
     languageOptions: {

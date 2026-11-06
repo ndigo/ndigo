@@ -87,6 +87,12 @@ usage guards listed above. The repo-only eight move out:
 A rule is public iff it guards use of the framework API; it is repo-only iff
 it enforces this monorepo's layout or house style.
 
+**Amended (2026-11-05, #117):** `no-raw-console` and
+`no-browser-globals-in-isomorphic` returned to the internal plugin — both key
+off this repository's `packages/ndigo-*` layout, so the first is inert and the
+second misfires in consumer projects. They rejoin the public set when
+de-hardcoded for app repos (#116); the package ships six rules until then.
+
 ### D3 — Root `src/` hosts repo-only cross-package concerns; the internal plugin is uncompiled TS
 
 `src/oxlint/` holds `plugin.ts`, `rules/`, and the moved specs. It is

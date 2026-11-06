@@ -200,6 +200,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   directly from TypeScript (rule IDs `internal/*`, e.g.
   `internal/no-internal-file-exports`). The package now ships the
   consumer-facing rules only; `pnpm test:internal` runs the internal specs.
+- `@ndigo/oxlint-plugin` (AD-86, #117): `no-raw-console` and
+  `no-browser-globals-in-isomorphic` returned to the internal plugin
+  (`internal/*`) — both key off this repository's `packages/ndigo-*` layout,
+  so they are inert or misleading in consumer projects. The package ships its
+  six layout-independent rules until the two are de-hardcoded for app repos.
 - `@ndigo/host` (AD-18): dropped the `private: true` staging flag — the
   package is publishable and the AD-86 `packages/` surface guard now carries
   no exceptions.

@@ -2,7 +2,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-/* eslint-disable @ndigo/no-browser-globals-in-isomorphic -- BrowserRouter is a browser-only implementation; browser globals are intentional and expected here */
+/* eslint-disable internal/no-browser-globals-in-isomorphic -- BrowserRouter is a browser-only implementation; browser globals are intentional and expected here */
 
 import { PathRoute } from '@ndigo/router';
 import { AbstractRouter, RouterCallback } from '@ndigo/router';

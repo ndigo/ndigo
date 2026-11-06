@@ -6,7 +6,7 @@
  */
 import type { Context, ESTree, Scope } from '@oxlint/plugins';
 
-import { BROWSER_GLOBALS, BROWSER_ONLY_PACKAGES } from '../_constants.js';
+import { BROWSER_GLOBALS, BROWSER_ONLY_PACKAGES } from '../_constants.ts';
 
 /**
  * Identifier node types the `Identifier` visitor dispatches, all carrying `name`.

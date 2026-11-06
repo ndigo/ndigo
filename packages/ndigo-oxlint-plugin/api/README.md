@@ -7,10 +7,8 @@
 ## Modules
 
 - [index](index/README.md)
-- [rules/no-browser-globals-in-isomorphic](rules/no-browser-globals-in-isomorphic/README.md)
 - [rules/no-cross-paradigm-decorators](rules/no-cross-paradigm-decorators/README.md)
 - [rules/no-duplicate-mapping-path](rules/no-duplicate-mapping-path/README.md)
-- [rules/no-raw-console](rules/no-raw-console/README.md)
 - [rules/no-scheduled-in-browser](rules/no-scheduled-in-browser/README.md)
 - [rules/no-signals-in-entity](rules/no-signals-in-entity/README.md)
 - [rules/no-string-registry-lookup](rules/no-string-registry-lookup/README.md)

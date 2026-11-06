@@ -148,8 +148,8 @@ remediation.
 2. **Generator/template work:** `full-stack` preset (+`--with-db`),
    remaining setup generators, the openapi runner.
 3. **Release-coupled:** the remote version manifest + cache + `--dry-run`
-   + framework migrations — the trust boundary landed in #145, so this
-   work can start against a validated front; keep it gated behind the 1.0
-   release as before.
+    - framework migrations — the trust boundary landed in #145, so this
+      work can start against a validated front; keep it gated behind the 1.0
+      release as before.
 
 Each item should land as its own PR following the worktree discipline.

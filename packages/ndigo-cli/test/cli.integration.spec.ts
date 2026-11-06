@@ -527,10 +527,7 @@ describe('ndigo clean (issue #146 --force gate)', () => {
         cleanChain += 1;
         const dir = join(base, `clean-${process.pid}-${cleanChain}`);
         mkdirSync(join(dir, 'dist'), { recursive: true });
-        writeFileSync(
-            join(dir, 'package.json'),
-            JSON.stringify({ name: 'clean-app', private: true })
-        );
+        writeFileSync(join(dir, 'package.json'), JSON.stringify({ name: 'clean-app', private: true }));
         writeFileSync(join(dir, 'dist', 'artifact.js'), 'export {};\n');
         return { dir, distPath: join(dir, 'dist') };
     }
@@ -673,10 +670,7 @@ describe('ndigo script fronts, env, and passthrough (issue #152)', () => {
 
         envInfoAppDir = join(base, 'env-info-app');
         mkdirSync(join(envInfoAppDir, 'node_modules', '@ndigo', 'demo-pkg'), { recursive: true });
-        writeFileSync(
-            join(envInfoAppDir, 'package.json'),
-            JSON.stringify({ name: 'env-info-app', private: true })
-        );
+        writeFileSync(join(envInfoAppDir, 'package.json'), JSON.stringify({ name: 'env-info-app', private: true }));
         writeFileSync(join(envInfoAppDir, '.env.example'), 'NDIGO_TEST_PRESENT=x\nNDIGO_TEST_ABSENT=y\n');
         writeFileSync(
             join(envInfoAppDir, 'node_modules', '@ndigo', 'demo-pkg', 'package.json'),
@@ -731,11 +725,9 @@ describe('ndigo script fronts, env, and passthrough (issue #152)', () => {
     });
 
     test('db adapter-path commands pass --db through, and the DB url relays (AD-78)', async () => {
-        const { code, out } = await runCli(
-            ['db', 'list', '--db', 'bar', dbAppDir],
-            undefined,
-            { NDIGO_DB_URL: 'postgres://demo' }
-        );
+        const { code, out } = await runCli(['db', 'list', '--db', 'bar', dbAppDir], undefined, {
+            NDIGO_DB_URL: 'postgres://demo',
+        });
         expect(code).toBe(0);
         expect(out).toContain('["--db","bar"]');
 

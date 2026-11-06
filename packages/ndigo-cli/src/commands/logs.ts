@@ -8,16 +8,7 @@
  * @author Jeff Rose
  */
 import { buildCommand, numberParser } from '@stricli/core';
-import {
-    closeSync,
-    existsSync,
-    openSync,
-    readFileSync,
-    readSync,
-    statSync,
-    unwatchFile,
-    watchFile,
-} from 'node:fs';
+import { closeSync, existsSync, openSync, readFileSync, readSync, statSync, unwatchFile, watchFile } from 'node:fs';
 import { join } from 'node:path';
 
 /**

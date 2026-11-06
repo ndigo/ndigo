@@ -16,7 +16,8 @@ import { readVersionManifest } from './_version-manifest.js';
 export const updateCommand = buildCommand({
     async func(flags: { check?: boolean; manifest?: string }, dir: string) {
         const resolved = resolveAppDir(dir);
-        const manifestPath = flags.manifest ?? process.env.NDIGO_VERSION_MANIFEST ?? join(resolved, 'ndigo-versions.json');
+        const manifestPath =
+            flags.manifest ?? process.env.NDIGO_VERSION_MANIFEST ?? join(resolved, 'ndigo-versions.json');
         const lookup = readVersionManifest(manifestPath);
 
         // The manifest is a trust boundary (issue #144): its values flow into

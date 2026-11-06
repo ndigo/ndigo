@@ -21,18 +21,18 @@ no lint violations, no integration-layer import violations.
 
 ## Must fix (verified live)
 
-| # | Finding | Evidence |
-|---| ---| --- |
-| F1 | Spawn sites await only `'exit'` with no `'error'` listener (`runAppOnce`/`runWorkspaceOnce`, `update.ts`, `add.ts`, `_diagnostics.capture`); ENOENT arrives as an async `'error'` event instead. | `ndigo doctor` with `pnpm` off PATH printed `Error: spawn pnpm ENOENT` + stack (the check built to diagnose broken environments cannot report cleanly); `_diagnostics` resolved a lying healthy row `pnpm ` with `missing:false`. |
-| F2 | No validation boundary on the update manifest: bare `JSON.parse` cast; `manifest.packages[name]` throws on shape mismatch; values pass verbatim into `package.json` before `pnpm install`. | Valid-JSON-wrong-shape manifest → `TypeError` stack in both `--check` and apply mode (live). Supply-chain: `"@ndigo/core": "npm:@evil/companion@1"` is a valid npm alias that installs an arbitrary package *as* `@ndigo/*` (security lane SEC-001); version logic was meaningless string inequality and silently pinned over `^`/`~` ranges. |
-| F3 | `logs --follow`: `position` is a byte offset (`statSync().size`) sliced into a UTF-8 string; snapshot races the initial tail; every poll re-reads the whole file; `--lines` accepts `NaN` (prints whole file) and negatives. | Confirmed by two review lanes; garbles non-ASCII logs, can drop appended lines. |
-| F4 | `clean --force` declared "Required to clean" but the body never reads the flag — deletes unconditionally. | Destructive gate advertised and unwired; delete guards themselves are correct. |
+| #   | Finding                                                                                                                                                                                                                      | Evidence                                                                                                                                                                                                                                                                                                                                      |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F1  | Spawn sites await only `'exit'` with no `'error'` listener (`runAppOnce`/`runWorkspaceOnce`, `update.ts`, `add.ts`, `_diagnostics.capture`); ENOENT arrives as an async `'error'` event instead.                             | `ndigo doctor` with `pnpm` off PATH printed `Error: spawn pnpm ENOENT` + stack (the check built to diagnose broken environments cannot report cleanly); `_diagnostics` resolved a lying healthy row `pnpm ` with `missing:false`.                                                                                                             |
+| F2  | No validation boundary on the update manifest: bare `JSON.parse` cast; `manifest.packages[name]` throws on shape mismatch; values pass verbatim into `package.json` before `pnpm install`.                                   | Valid-JSON-wrong-shape manifest → `TypeError` stack in both `--check` and apply mode (live). Supply-chain: `"@ndigo/core": "npm:@evil/companion@1"` is a valid npm alias that installs an arbitrary package _as_ `@ndigo/*` (security lane SEC-001); version logic was meaningless string inequality and silently pinned over `^`/`~` ranges. |
+| F3  | `logs --follow`: `position` is a byte offset (`statSync().size`) sliced into a UTF-8 string; snapshot races the initial tail; every poll re-reads the whole file; `--lines` accepts `NaN` (prints whole file) and negatives. | Confirmed by two review lanes; garbles non-ASCII logs, can drop appended lines.                                                                                                                                                                                                                                                               |
+| F4  | `clean --force` declared "Required to clean" but the body never reads the flag — deletes unconditionally.                                                                                                                    | Destructive gate advertised and unwired; delete guards themselves are correct.                                                                                                                                                                                                                                                                |
 
 ## Warnings
 
 - **REV-004** — `--version` reads `'..','..','package.json'`, which does not
   exist from the built layout; falls back to `0.0.1`. Masked only because the
-  version *is* 0.0.1 (`packages/package.json` confirmed absent, live).
+  version _is_ 0.0.1 (`packages/package.json` confirmed absent, live).
 - **REV-008** — `add`/`update` bypass the helper layer: private
   `readAppManifest` twin in `update.ts`; `add.ts` re-implemented the spawn
   bridge and dropped the AD75-H2 signal relay (Ctrl-C orphans `pnpm install`).
@@ -117,12 +117,12 @@ Sequenced, independently landable PRs (worktree per PR, issue-tracking):
   integration lane requires a fresh `build:lib`.
 - Live proofs (all against the real bin, post-fix both crashes reproduce on
   pre-fix HEAD):
-  - `ndigo update --check` with manifest `{}` → `TypeError: Cannot read
-    properties of undefined (reading '@ndigo/core')`, exit 1 + stack.
-  - `PATH` without `pnpm`: `ndigo doctor` → `Error: spawn pnpm ENOENT` stack.
-  - usage-error render: `Command failed, Error: '<dir>' is not an
-    application directory — it has no package.json` + stack (exit code
-    preserved at 2 via the `process.exitCode` side channel).
+    - `ndigo update --check` with manifest `{}` → `TypeError: Cannot read
+      properties of undefined (reading '@ndigo/core')`, exit 1 + stack.
+    - `PATH` without `pnpm`: `ndigo doctor` → `Error: spawn pnpm ENOENT` stack.
+    - usage-error render: `Command failed, Error: '<dir>' is not an
+      application directory — it has no package.json` + stack (exit code
+      preserved at 2 via the `process.exitCode` side channel).
 - Post-fix (PR1) states verified: `--check`/apply with broken or malicious
   manifests exit 2 with clean stderr; apply pins then reports missing
   `pnpm` as 127; doctor without pnpm reports `n/a (not found)` + failure
@@ -132,13 +132,13 @@ Sequenced, independently landable PRs (worktree per PR, issue-tracking):
 
 All findings were remediated in five tracked PRs, one per issue:
 
-| PR | Issue | Scope |
-| --- | --- | --- |
-| [#145](https://github.com/ndigo/ndigo/pull/145) | #144 | `runInteractiveSpawn` (relay + async `'error'` → 127) at every one-shot spawn site; `_diagnostics` capture no longer reports a lying healthy row; update-manifest boundary (`likeVersionManifest`, exact pins only, `@ndigo/*` names, clean exit-2 in both modes — closes the npm-alias supply-chain channel). |
-| [#147](https://github.com/ndigo/ndigo/pull/147) | #146 | `logs --follow` fd/Buffer rewrite (multibyte-faithful, snapshot-race-free, delta reads, rotation reopen, `--lines` validation); `clean --force` enforced (also documented: Stricli registers camelCase flag spellings — `--dry-run` never existed); `--version` reads the package root from both layouts; `config` edges (no-value `set` refused, `get` absent → `null`, null-proto store). |
-| [#149](https://github.com/ndigo/ndigo/pull/149) | #148 | `createScriptFrontCommand` factory + shared `dir` positional; uniform usage-error rendering (method-level `exceptionWhileRunningCommand` override — `formatException` alone cannot remove the fixed `Command failed, ` prefix) with `determineExitCode` replacing the side channel; `routes` → alias of `inspect`; completion derived from `_routes.ts` + parity pin; newline-in-script fail-loud; `dev`/`serve` exit alignment; `env`/`info` gain the `dir` positional. |
-| [#151](https://github.com/ndigo/ndigo/pull/151) | #150 | Docs accuracy/standard/freshness (invalid `--db` example, broken table pipes, README internal-leak, stale intros, `generate` kind enumeration, `--preset` brief, kebab→camel flag spellings) + TSDoc on the 20 undocumented exports; `MIN_NODE_MAJOR` re-export dropped. |
-| [#153](https://github.com/ndigo/ndigo/pull/153) | #152 | Help-surface parity pin; script-relay coverage for the five qc fronts, `dev` (serve contract — the supervisor respawns crashed slots by design, so a fast child exit cannot resolve dev), `openapi`/db forwarding with `--db` + `NDIGO_DB_URL` relay asserted across nine subcommands, `env`/`info`/`add` lanes; the cwd-fragile assertion replaced by an explicit-chdir test — 62/62 green in both invocation modes. |
+| PR                                              | Issue | Scope                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ----------------------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [#145](https://github.com/ndigo/ndigo/pull/145) | #144  | `runInteractiveSpawn` (relay + async `'error'` → 127) at every one-shot spawn site; `_diagnostics` capture no longer reports a lying healthy row; update-manifest boundary (`likeVersionManifest`, exact pins only, `@ndigo/*` names, clean exit-2 in both modes — closes the npm-alias supply-chain channel).                                                                                                                                                           |
+| [#147](https://github.com/ndigo/ndigo/pull/147) | #146  | `logs --follow` fd/Buffer rewrite (multibyte-faithful, snapshot-race-free, delta reads, rotation reopen, `--lines` validation); `clean --force` enforced (also documented: Stricli registers camelCase flag spellings — `--dry-run` never existed); `--version` reads the package root from both layouts; `config` edges (no-value `set` refused, `get` absent → `null`, null-proto store).                                                                              |
+| [#149](https://github.com/ndigo/ndigo/pull/149) | #148  | `createScriptFrontCommand` factory + shared `dir` positional; uniform usage-error rendering (method-level `exceptionWhileRunningCommand` override — `formatException` alone cannot remove the fixed `Command failed, ` prefix) with `determineExitCode` replacing the side channel; `routes` → alias of `inspect`; completion derived from `_routes.ts` + parity pin; newline-in-script fail-loud; `dev`/`serve` exit alignment; `env`/`info` gain the `dir` positional. |
+| [#151](https://github.com/ndigo/ndigo/pull/151) | #150  | Docs accuracy/standard/freshness (invalid `--db` example, broken table pipes, README internal-leak, stale intros, `generate` kind enumeration, `--preset` brief, kebab→camel flag spellings) + TSDoc on the 20 undocumented exports; `MIN_NODE_MAJOR` re-export dropped.                                                                                                                                                                                                 |
+| [#153](https://github.com/ndigo/ndigo/pull/153) | #152  | Help-surface parity pin; script-relay coverage for the five qc fronts, `dev` (serve contract — the supervisor respawns crashed slots by design, so a fast child exit cannot resolve dev), `openapi`/db forwarding with `--db` + `NDIGO_DB_URL` relay asserted across nine subcommands, `env`/`info`/`add` lanes; the cwd-fragile assertion replaced by an explicit-chdir test — 62/62 green in both invocation modes.                                                    |
 
 Verification deltas recorded en route (worth keeping for future reviews):
 Stricli honors `this.formatException` inside its en-US text bundle, but the

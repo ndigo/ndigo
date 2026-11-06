@@ -20,7 +20,8 @@ import { generateCommand } from './commands/generate.js';
 import { inspectCommand } from './commands/inspect.js';
 import { doctorCommand } from './commands/doctor.js';
 import { infoCommand } from './commands/info.js';
-import { buildScriptCommand as buildCmd } from './commands/build.js';import { testCommand } from './commands/test.js';
+import { buildScriptCommand as buildCmd } from './commands/build.js';
+import { testCommand } from './commands/test.js';
 import { lintCommand } from './commands/lint.js';
 import { formatCommand } from './commands/format.js';
 import { typecheckCommand } from './commands/typecheck.js';
@@ -133,8 +134,10 @@ export function buildCliApp() {
                         return exc.message;
                     }
                     return text_en.exceptionWhileRunningCommand.call(
-                        { formatException: (value: unknown): string =>
-                            value instanceof Error ? (value.stack ?? String(value)) : String(value) },
+                        {
+                            formatException: (value: unknown): string =>
+                                value instanceof Error ? (value.stack ?? String(value)) : String(value),
+                        },
                         exc,
                         ansiColor
                     );

@@ -1,6 +1,8 @@
 /**
  * Transactional-outbox contracts: store, publisher, and the jobs publisher.
  */
+import { like } from '@ndigo/util/types';
+
 import type { JobId } from './job';
 import type { JobQueue } from './job-queue';
 
@@ -99,20 +101,15 @@ export interface OutboxStore {
  * @param value - The value to test.
  * @returns Whether the value behaves like an outbox store.
  */
-export const likeOutboxStore = (value: unknown): value is OutboxStore => {
-    if (value === null || typeof value !== 'object') {
-        return false;
-    }
-    const store = value as OutboxStore; // structural check below
-    return (
-        typeof store.append === 'function' &&
-        typeof store.claimPending === 'function' &&
-        typeof store.markPublished === 'function' &&
-        typeof store.prunePublished === 'function' &&
-        typeof store.size === 'function' &&
-        typeof store.close === 'function'
-    );
-};
+export const likeOutboxStore = (value: unknown): value is OutboxStore =>
+    like({
+        append: Function,
+        claimPending: Function,
+        markPublished: Function,
+        prunePublished: Function,
+        size: Function,
+        close: Function,
+    })(value);
 
 /**
  * Publishes one outbox entry. Implementations must be idempotent-friendly:

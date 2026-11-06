@@ -1807,6 +1807,9 @@ importers:
       '@ndigo/factory':
         specifier: ~0.0.1
         version: link:../ndigo-factory
+      '@ndigo/util':
+        specifier: ~0.0.1
+        version: link:../ndigo-util
       '@tsmetadata/polyfill':
         specifier: 'catalog:'
         version: 1.1.3
@@ -1881,6 +1884,9 @@ importers:
       '@ndigo/router':
         specifier: ~0.0.1
         version: link:../ndigo-router
+      '@ndigo/util':
+        specifier: ~0.0.1
+        version: link:../ndigo-util
     devDependencies:
       '@ndigo/boot':
         specifier: ~0.0.1
@@ -1928,6 +1934,9 @@ importers:
       '@ndigo/factory':
         specifier: ~0.0.1
         version: link:../ndigo-factory
+      '@ndigo/util':
+        specifier: ~0.0.1
+        version: link:../ndigo-util
 
   packages/ndigo-log:
     dependencies:
@@ -2222,6 +2231,9 @@ importers:
       '@ndigo/factory':
         specifier: ~0.0.1
         version: link:../ndigo-factory
+      '@ndigo/util':
+        specifier: ~0.0.1
+        version: link:../ndigo-util
 
   packages/ndigo-redis:
     dependencies:
@@ -2620,6 +2632,9 @@ importers:
       '@ndigo/router':
         specifier: ~0.0.1
         version: link:../ndigo-router
+      '@ndigo/util':
+        specifier: ~0.0.1
+        version: link:../ndigo-util
       '@ndigo/view':
         specifier: ~0.0.1
         version: link:../ndigo-view

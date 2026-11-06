@@ -1,5 +1,4 @@
-/**
- */
+
 import { describe, expect, test, vi } from 'vitest';
 import { URLGlobPathMatcher } from '@ndigo/core';
 import type { PathMatcher } from '@ndigo/core';

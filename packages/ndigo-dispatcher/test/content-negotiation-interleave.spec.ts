@@ -1,5 +1,4 @@
-/**
- */
+
 import { describe, expect, test } from 'vitest';
 import { MediaTypes, type MediaType } from '@ndigo/core';
 import { MetadataConfigApplicationContext } from '@ndigo/context';

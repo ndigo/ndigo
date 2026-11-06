@@ -1,5 +1,6 @@
 /**
  */
+
 import { Comparator, IllegalStateError } from '@ndigo/core';
 import { Initializable, SmartLifecycle } from '@ndigo/factory';
 import { Route } from '@ndigo/router';

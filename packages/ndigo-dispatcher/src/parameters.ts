@@ -1,5 +1,6 @@
 /**
  */
+
 import '@tsmetadata/polyfill';
 import { getSymbolMetadata, IllegalStateError } from '@ndigo/core';
 import { getFunctionParamNames } from './_decorator-util';
@@ -20,14 +21,16 @@ export * from './parameter-factories';
  * Uses function parameter name extraction to map extractors to positions.
  *
  * @example
+ * ```ts
  * // Old (legacy - not supported in TC39):
  * handleRequest(@queryValue('page') page: string) {}
  *
  * // New (TC39):
- * `parameters`({
+ * parameters({
  *   page: queryValue('page')
  * })
  * handleRequest(page: string) {}
+ * ```
  */
 export function parameters(paramMap: ParameterMap) {
     return function (target: unknown, context: ClassMethodDecoratorContext): void {
@@ -175,7 +178,7 @@ export function getParameterMap(target: unknown, propertyKey: string | symbol): 
  * @param propertyKey - The method name.
  * @param handlerMethod - The method function (for signature discovery).
  * @returns The converted parameters (may be the empty array).
- * @throws {InvalidParameterMappingError} On source/kind incompatibility or a sparse positional map.
+ * @throws On source/kind incompatibility or a sparse positional map.
  */
 export function resolveParameters(
     target: unknown,

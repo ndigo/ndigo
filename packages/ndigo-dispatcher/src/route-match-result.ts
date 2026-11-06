@@ -1,5 +1,6 @@
 /**
  */
+
 import { createNull, JSONValue } from '@ndigo/core';
 
 /**

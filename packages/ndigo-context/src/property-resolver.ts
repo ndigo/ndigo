@@ -52,7 +52,7 @@ export interface PropertyResolver {
      *
      * @param key - The property name to resolve.
      * @returns The resolved property value.
-     * @throws {IllegalStateError} When the property cannot be resolved.
+     * @throws When the property cannot be resolved.
      */
     getRequiredProperty(key: string): JSONValue;
     /**
@@ -69,7 +69,7 @@ export interface PropertyResolver {
      * @param targetType - The target constructor or primitive (`Number`, `Boolean`, `Date`, ...).
      * @param defaultValue - The value to return when the property is missing.
      * @returns The typed value or the default.
-     * @throws {IllegalStateError} When a present value cannot be converted.
+     * @throws When a present value cannot be converted.
      */
     getPropertyAs<T>(
         key: string,
@@ -82,7 +82,7 @@ export interface PropertyResolver {
      * @param key - The property name to resolve.
      * @param targetType - The target constructor or primitive.
      * @returns The typed value.
-     * @throws {IllegalStateError} When missing, unresolved, or unconvertible.
+     * @throws When missing, unresolved, or unconvertible.
      */
     getRequiredPropertyAs<T>(key: string, targetType: (new (...args: never[]) => T) | (() => T) | T): T;
     /**
@@ -105,8 +105,8 @@ export interface PropertyResolver {
 }
 
 /**
- * @param {*} value The value to be tested.
- * @returns {boolean} Whether or not the value is like a {@link PropertyResolver|PropertyResolver}.
+ * @param value - The value to be tested.
+ * @returns Whether or not the value is like a {@link PropertyResolver|PropertyResolver}.
  */
 export const likePropertyResolver = like({
     getProperty: Function,

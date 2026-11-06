@@ -27,7 +27,7 @@ Factory function: Create a cookie parameter extractor
 ## Example
 
 ```ts
-`parameters`({
+parameters({
   session: cookieValue('SESSIONID'),
   token: cookieValue('AUTH_TOKEN', { required: true })
 })

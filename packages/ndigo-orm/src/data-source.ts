@@ -45,7 +45,7 @@ export interface DataSource extends Initializable, Destroyable {
      * Retrieves the store for a given entity name.
      * @param entityName - The name of the entity.
      * @returns A Map representing the entity store.
-     * @throws {IllegalStateError} If the store for the entity does not exist.
+     * @throws If the store for the entity does not exist.
      */
     getStore<T>(entityName: string): Map<unknown, T>;
     /**
@@ -98,7 +98,7 @@ export class InMemoryDataSource implements DataSource {
      * Retrieves the store for a given entity name.
      * @param entityName - The name of the entity.
      * @returns A Map representing the entity store.
-     * @throws {IllegalStateError} If the store for the entity does not exist.
+     * @throws If the store for the entity does not exist.
      */
     getStore<T>(entityName: string): Map<unknown, T> {
         const store = this.#stores.get(entityName);

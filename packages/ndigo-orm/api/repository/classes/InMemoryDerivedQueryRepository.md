@@ -263,29 +263,19 @@ The requested page with totals. Pages beyond the last are empty.
 
 > **loadRelation**(`entity`, `relationName`): `unknown`
 
-Loads a declared relation of an entity lazily and assigns it onto the
-entity's field.
-
 #### Parameters
 
 ##### entity
 
 `T`
 
-The entity whose relation is loaded.
-
 ##### relationName
 
 `string`
 
-The declared relation field name.
-
 #### Returns
 
 `unknown`
-
-The loaded relation value (entity, array, or undefined/[] when
-  nothing relates).
 
 #### Inherited from
 

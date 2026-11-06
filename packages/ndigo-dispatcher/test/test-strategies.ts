@@ -1,5 +1,4 @@
-/**
- */
+
 import { vi, expect } from 'vitest';
 import { ModelAndView } from '../src/model-and-view';
 import type { MediaType } from '@ndigo/core';

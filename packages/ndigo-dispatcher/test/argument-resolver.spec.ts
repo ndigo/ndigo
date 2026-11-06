@@ -1,5 +1,4 @@
-/**
- */
+
 import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { AbstractDispatcher } from '../src/dispatcher';
 import argumemtResolverContext from './assets/argument-resolver-context';

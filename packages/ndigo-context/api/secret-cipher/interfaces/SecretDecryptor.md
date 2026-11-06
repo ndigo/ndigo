@@ -8,8 +8,9 @@
 
 Decrypts raw resolved values against a scheme registry.
 
-Implementations are injected into the property resolver (`ResolverOptions
-.secretDecryptor`) and consulted for every string value after placeholder
+Implementations are injected into the property resolver
+(`ResolverOptions.secretDecryptor`) and consulted for every string value
+after placeholder
 resolution. Values that are not well-formed markers pass through unchanged;
 marker values with an unknown scheme fail loud (never plaintext fallback).
 

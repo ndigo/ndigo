@@ -1,5 +1,4 @@
-/**
- */
+
 import {
     ApplicationContextAwareProcessor,
     configuration,

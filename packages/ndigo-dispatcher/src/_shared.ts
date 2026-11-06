@@ -1,5 +1,6 @@
 /**
  */
+
 import { isString } from '@ndigo/util/types';
 import { ContextToken, isContextToken } from '@ndigo/factory';
 import type { ApplicationContext } from '@ndigo/context';

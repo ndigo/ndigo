@@ -1,5 +1,4 @@
-/**
- */
+
 import { describe, test, expect } from 'vitest';
 import { PathPatternComparator } from '../src/path-pattern-comparator';
 

@@ -1,5 +1,4 @@
-/**
- */
+
 import { describe, test, expect } from 'vitest';
 import { ModelAndView } from '../src/model-and-view';
 

@@ -1,5 +1,6 @@
 /**
  */
+
 import { isNil } from '@ndigo/util/types';
 import { Route } from '@ndigo/router';
 import { DataBinder, MutablePropertyValues, PropertyValues } from '@ndigo/core';

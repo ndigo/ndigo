@@ -30,7 +30,7 @@ Uses function parameter name extraction to map extractors to positions.
 handleRequest(@queryValue('page') page: string) {}
 
 // New (TC39):
-`parameters`({
+parameters({
   page: queryValue('page')
 })
 handleRequest(page: string) {}

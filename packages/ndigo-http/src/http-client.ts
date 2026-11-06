@@ -1,4 +1,3 @@
-
 /**
  * HTTP client with interceptor support and convenience verb helpers.
  */
@@ -131,7 +130,6 @@ export class HTTP {
         this.settings = init === defaults ? assign({}, init) : assign({}, defaults, init);
     }
 
-    
     async request(input: string, init: HTTPInit | null = null): Promise<Response> {
         const settings = init === null ? assign({}, this.settings) : assign({}, this.settings, init);
 
@@ -259,70 +257,60 @@ export class HTTP {
         }
     }
 
-    
     async connect(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'CONNECT';
         return this.request(input, init);
     }
 
-    
     async delete(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'DELETE';
         return this.request(input, init);
     }
 
-    
     async get(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'GET';
         return this.request(input, init);
     }
 
-    
     async head(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'HEAD';
         return this.request(input, init);
     }
 
-    
     async options(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'OPTIONS';
         return this.request(input, init);
     }
 
-    
     async patch(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'PATCH';
         return this.request(input, init);
     }
 
-    
     async post(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'POST';
         return this.request(input, init);
     }
 
-    
     async put(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'PUT';
         return this.request(input, init);
     }
 
-    
     async trace(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'TRACE';
         return this.request(input, init);
     }
 
-    
     protected _getHTTPExecutionChain(http: HTTP | HTTPExecutionChain, url: string): HTTPExecutionChain {
         const chain = isHTTPExecutionChain(http) ? http : new HTTPExecutionChain(http),
             interceptors = this.#interceptors,

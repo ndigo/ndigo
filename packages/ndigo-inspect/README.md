@@ -117,7 +117,7 @@ pnpm --filter @ndigo/inspect test
 
 ## See Also
 
-- [apps/04-ndigo-api](../../apps/04-ndigo-api/README.md) — `pnpm --filter @ndigo/api inspect` prints a manifest for the demo API
+- [apps/05-ndigo-api](../../apps/05-ndigo-api/README.md) — `pnpm --filter @ndigo/api inspect` prints a manifest for the demo API
 - [@ndigo/openapi](../ndigo-openapi/README.md) — the served API document built from the same dispatch metadata
 - [@ndigo/dispatcher](../ndigo-dispatcher/README.md) — owns the handler-mapping read model
 

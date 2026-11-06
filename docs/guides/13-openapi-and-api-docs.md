@@ -116,7 +116,7 @@ spec from self-referencing and changes nothing about live dispatch.
 >   discoverable at all);
 > - deploy the docs behind an `accessGuard` — the whole spec becomes
 >   private, but is not redacted. The demo demonstrates this: it registers
->   `SecureDocsConfiguration` (`apps/04-ndigo-api/src/secure-docs-configuration.ts`),
+>   `SecureDocsConfiguration` (`apps/05-ndigo-api/src/secure-docs-configuration.ts`),
 >   whose guard accepts only an `Authorization: Bearer <token>` that
 >   resolves through the same `lookupPrincipal` check the protected
 >   handlers apply, so anonymous `/v3/api-docs` and `/swagger-ui/` are 401.

@@ -346,8 +346,8 @@ a process restart — while an unknown id is refused in both worlds.
 - [Guide 11 — Authentication and Sessions](../../docs/guides/11-authentication-and-sessions.md)
 - [Guide 16 — Persistence and Distributed Backends](../../docs/guides/16-persistence-and-distributed-backends.md)
 - [Guide 19 — Testing](../../docs/guides/19-testing.md) · [Guide 20 — HTTP Client](../../docs/guides/20-http-client.md)
-- [04-ndigo-api](../04-ndigo-api/README.md) — the canonical Node auth wiring this app mirrors
-- [06-ndigo-island](../06-ndigo-island/README.md) — the server + built-client layout (shell, `/static/`, dev client)
+- [05-ndigo-api](../05-ndigo-api/README.md) — the canonical Node auth wiring this app mirrors
+- [07-ndigo-island](../07-ndigo-island/README.md) — the server + built-client layout (shell, `/static/`, dev client)
 - [@ndigo/auth-core](../../packages/ndigo-auth-core/README.md) · [@ndigo/auth-server](../../packages/ndigo-auth-server/README.md) · [@ndigo/auth-client](../../packages/ndigo-auth-client/README.md) · [@ndigo/orm-drizzle](../../packages/ndigo-orm-drizzle/README.md)
 
 ## Contributing

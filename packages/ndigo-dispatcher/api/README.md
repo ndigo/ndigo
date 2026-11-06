@@ -27,7 +27,7 @@
 - [logging-interceptor](logging-interceptor/README.md)
 - [mapping-registry](mapping-registry/README.md)
 - [matrix-param-condition](matrix-param-condition/README.md)
-- [metadata-manager](metadata-manager/README.md)
+- [metadata-scanner](metadata-scanner/README.md)
 - [model-and-view](model-and-view/README.md)
 - [name-path-handler-mapping](name-path-handler-mapping/README.md)
 - [parameter-factories](parameter-factories/README.md)

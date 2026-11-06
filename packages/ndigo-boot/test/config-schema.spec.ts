@@ -51,8 +51,8 @@ const documentedKeys = (): string[] =>
  * Every entry must name the code that consumes the key.
  */
 const READ_FROM_CONFIG: Record<string, string> = {
-    'server.name': "apps/04-ndigo-api/src/server-config.ts — @configurationProperties('server', { schema })",
-    'server.port': "apps/04-ndigo-api/src/server-config.ts — @configurationProperties('server', { schema })",
+    'server.name': "apps/05-ndigo-api/src/server-config.ts — @configurationProperties('server', { schema })",
+    'server.port': "apps/05-ndigo-api/src/server-config.ts — @configurationProperties('server', { schema })",
     'management.endpoints':
         'packages/ndigo-management/src/management-properties.ts — readManagementSettings (AD-76 D-5): the deep-merged `management` source subtree read at refresh',
     'management.health':

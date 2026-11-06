@@ -25,7 +25,7 @@ export class DbGenerateCommand extends Command {
         'lifecycle. The generator (entities, snapshot, migrations dir) ' +
         'belongs to the app; the CLI fronts it — the app script writes the ' +
         'versioned migration file and rewrites db/schema.json for review.';
-    static examples = ['$ ndigo db generate', '$ ndigo db generate ./apps/04-ndigo-api'];
+    static examples = ['$ ndigo db generate', '$ ndigo db generate ./apps/05-ndigo-api'];
 
     static flags = {};
 

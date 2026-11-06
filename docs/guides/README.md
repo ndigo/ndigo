@@ -4,7 +4,7 @@ Conceptual and hands-on guides for building applications with Ndigo. These compl
 
 ## Available Guides
 
-1. [01 — Building a Node API](01-building-a-node-api.md) — the primary workflow end-to-end: DI bootstrap, configuration + entries, controllers, request binding, validation, errors, and shutdown. Reference application: `apps/04-ndigo-api`.
+1. [01 — Building a Node API](01-building-a-node-api.md) — the primary workflow end-to-end: DI bootstrap, configuration + entries, controllers, request binding, validation, errors, and shutdown. Reference application: `apps/05-ndigo-api`.
 2. [02 — Request Validation](02-request-validation.md) — how validation fits the request pipeline: `@parameters` extractor composition, the `validatedBy` / `validatedBody` / `validatedQuery` surface, and entity-derived schemas (`insertSchemaForEntity`).
 3. [03 — Environment & Configuration](03-environment-configuration.md) — the configuration pipeline: property sources + precedence, profiles, `@configurationProperties` typed binding, placeholders, customizers, `@environment` validation, live rebind (`@refreshScope`), at-rest secrets (`{cipher:...}` + `NDIGO_SECRET_KEY`), and the remote config source (`configServer`, poll → refresh → rebind).
 4. [04 — Content, i18n, and Locale](04-i18n-and-content.md) — the message source contract, i18next resources, server negotiation (`Accept-Language`), EJS `t()`/formatter helpers, and island locale propagation.
@@ -24,14 +24,15 @@ Conceptual and hands-on guides for building applications with Ndigo. These compl
 18. [18 — Signals & Islands](18-signals-and-islands.md) — reactive state with `@ndigo/signals` (`signal`/`computed`/`effect`, the `@reactive` decorators, stream and event bridges) and the island lifecycle: `IslandView` marker → `hydrateIslands()` → SSE-driven re-render.
 19. [19 — Testing with `@ndigo/test`](19-testing.md) — the in-process harness (AD-63): `bootApp`/`cachedBootApp`, the `MockHTTP` request builder and `MockResult`, browser apps via `BrowserMockClient` + `MemoryViewTarget`, and what the harness deliberately is not.
 20. [20 — The HTTP Client](20-http-client.md) — `@ndigo/http`: `HTTP.create` settings, the verb surface, the interceptor lifecycle hooks and built-ins, body transform pipelines, and the `QueryString`/`MatrixString` parsers.
-21. [21 — Component Integration](21-component-integration.md) — adopting a Web Component library: the AD-69 vetting checklist, per-component imports without wrappers, the server-fallback pattern for first paint, FACE form submission into the existing binding/Zod path, token theming, and i18n wiring. Reference application: `apps/06-ndigo-island` (AD-71 — Web Awesome).
+21. [21 — Component Integration](21-component-integration.md) — adopting a Web Component library: the AD-69 vetting checklist, per-component imports without wrappers, the server-fallback pattern for first paint, FACE form submission into the existing binding/Zod path, token theming, and i18n wiring. Reference application: `apps/07-ndigo-island` (AD-71 — Web Awesome).
 22. [22 — Jobs and the Transactional Outbox](22-jobs-and-outbox.md) — `@ndigo/jobs`: the `JobDriver` SPI (at-least-once lease-based delivery), `@jobHandler` discovery, retries/timeouts/spans, the durable libSQL and Redis drivers, and the outbox that commits side effects with the data.
 23. [23 — Distributed Locks](23-distributed-locks.md) — `@ndigo/locks` (AD-73): leases + fencing tokens, the in-process and Redis drivers, and the `@scheduled({ lock })` single-executor contract across nodes.
 24. [24 — Clustering](24-clustering.md) — `@ndigo/cluster` (AD-74): the process supervisor — replicated worker slots, `SIGINT`/`SIGTERM` relay into each child's own graceful shutdown, bounded-backoff restarts, and the fail-closed crash-loop guard.
 25. [25 — The `ndigo` CLI](25-ndigo-cli.md) — `@ndigo/cli` (AD-75): serve (with the `--cluster` surface), dev, generate, db, inspect, and doctor — how scripts run shell-free so signals reach the app.
-26. [26 — Management Endpoints](26-management-endpoints.md) — the actuator-parity surface (AD-76): `/health` groups and component reads, `/loggers` level inspection + live changes, `/env` with source origins and redaction, `/configprops` (declared keys, never values), and the opt-in exposure model. Reference application: `apps/04-ndigo-api`.
-27. [27 — ORM & Migrations](27-orm-and-migrations.md) — the journaled migration lifecycle (AD-30/AD-78): decorator entities as the schema source, `ndigo db generate` (committed snapshot + freshness gate), `ndigo db migrate`/`db:status`, `migrations.runOnBoot`, and the fidelity ceiling (what stays hand-written). Reference application: `apps/04-ndigo-api`.
-28. [28 — Feature Flags](28-feature-flags.md) — `@ndigo/flags` (AD-82): the never-throw `FlagEvaluator` SPI, the zero-config property provider (`feature.*`, live refresh), `@whenFeature` route gates (404 when off), the OpenFeature bridge for vendor flagging (server + browser entries, evaluation telemetry), and the targeting-context resolver. Reference application: `apps/04-ndigo-api` (`/gated-report`).
+26. [26 — Management Endpoints](26-management-endpoints.md) — the actuator-parity surface (AD-76): `/health` groups and component reads, `/loggers` level inspection + live changes, `/env` with source origins and redaction, `/configprops` (declared keys, never values), and the opt-in exposure model. Reference application: `apps/05-ndigo-api`.
+27. [27 — ORM & Migrations](27-orm-and-migrations.md) — the journaled migration lifecycle (AD-30/AD-78): decorator entities as the schema source, `ndigo db generate` (committed snapshot + freshness gate), `ndigo db migrate`/`db:status`, `migrations.runOnBoot`, and the fidelity ceiling (what stays hand-written). Reference application: `apps/05-ndigo-api`.
+28. [28 — Feature Flags](28-feature-flags.md) — `@ndigo/flags` (AD-82): the never-throw `FlagEvaluator` SPI, the zero-config property provider (`feature.*`, live refresh), `@whenFeature` route gates (404 when off), the OpenFeature bridge for vendor flagging (server + browser entries, evaluation telemetry), and the targeting-context resolver. Reference application: `apps/05-ndigo-api` (`/gated-report`).
+29. [29 — Application Conventions](29-application-conventions.md) — the `apps/NN-ndigo-<slug>` ladder, `-web`/`-api` pairing, role-based file suffixes (`*-controller`, `*-service`, `*-configuration`, `*.entity.ts`, `*.dto.ts`), folder layout, test naming, and the deferred normalization backlog.
 
 ## Reading Order
 
@@ -39,7 +40,7 @@ Start with guide 01; it introduces every concept the other guides and the packag
 
 ## Conventions
 
-- Code snippets are written against the current framework surface and mirror the demo applications — treat `apps/04-ndigo-api` as the canonical reference.
+- Code snippets are written against the current framework surface and mirror the demo applications — treat `apps/05-ndigo-api` as the canonical reference.
 - API names link to nothing inline; the per-package TypeDoc references are
   generated (`pnpm doc:api` → `packages/<name>/api/`; index
   `API.md`) and the package READMEs link them.

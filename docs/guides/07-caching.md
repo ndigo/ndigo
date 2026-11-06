@@ -163,7 +163,7 @@ await catalog.getCache('catalog').clear(); // whole-store eviction
 - **Bounded stores** — cap `maxSize` (or rely on TTL) where keys are
   user-controlled: unbounded caches grow with the key space.
 
-Reference: `apps/04-ndigo-api` (`GET /api/cached-report` demo gate, counter spec
+Reference: `apps/05-ndigo-api` (`GET /api/cached-report` demo gate, counter spec
 in `app-bootstrap.spec.ts`) and the `ndigo-views` client demo (memoized
 payload derivation next to the HTTP cache-hit refresh). Design rationale:
 [caching decision](../decisions/2026-09-17_AD24_CACHING.md).

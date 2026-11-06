@@ -22,7 +22,7 @@ export class DbMigrateCommand extends Command {
         'app; `db new` scaffolds a migration, `db generate` renders one ' +
         'from entity metadata, and `db status` reports the journal (AD-78).';
 
-    static examples = ['$ ndigo db migrate', '$ ndigo db migrate ./apps/04-ndigo-api'];
+    static examples = ['$ ndigo db migrate', '$ ndigo db migrate ./apps/05-ndigo-api'];
 
     static flags = {};
 

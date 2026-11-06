@@ -184,7 +184,7 @@ cd apps/14-ndigo-kanban && pnpm test
 - [apps/README](../README.md) — the applications progression
 - [13-ndigo-chat](../13-ndigo-chat/README.md) — the nearest sibling: socket rooms,
   presence, and a reconnecting Web Component client
-- [04-ndigo-api](../04-ndigo-api/README.md) — controllers, `@ndigo/orm`, and the
+- [05-ndigo-api](../05-ndigo-api/README.md) — controllers, `@ndigo/orm`, and the
   problem+json error contract in depth
 - [Guide 06 — WebSockets, Rooms, Broadcast, and STOMP](../../docs/guides/06-websockets.md)
 - [Guide 18 — Signals & Islands](../../docs/guides/18-signals-and-islands.md)

@@ -563,7 +563,7 @@ importers:
         specifier: 'catalog:'
         version: 4.23.13
 
-  apps/03-ndigo-todo:
+  apps/03-ndigo-todo-web:
     dependencies:
       '@ndigo/auth-client':
         specifier: ~0.0.1
@@ -627,7 +627,56 @@ importers:
         specifier: 'catalog:'
         version: 8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
 
-  apps/04-ndigo-api:
+  apps/04-ndigo-todo-api:
+    dependencies:
+      '@ndigo/boot':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-boot
+      '@ndigo/context':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-context
+      '@ndigo/core':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-core
+      '@ndigo/dispatcher':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-dispatcher
+      '@ndigo/http':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-http
+      '@ndigo/log':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-log
+      '@ndigo/orm':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-orm
+      '@ndigo/platform-node':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-platform-node
+      '@ndigo/router':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-router
+      '@ndigo/util':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-util
+      '@tsmetadata/polyfill':
+        specifier: 'catalog:'
+        version: 1.1.3
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.7
+    devDependencies:
+      '@ndigo/test':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-test
+      tsx:
+        specifier: 'catalog:'
+        version: 4.23.13
+      vitest:
+        specifier: 'catalog:'
+        version: 5.1.0(@opentelemetry/api@1.10.0)(@types/node@24.13.6)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@24.13.6)(supports-color@8.1.1)(typescript@7.0.2)(vite@8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)))(vite@8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))
+
+  apps/05-ndigo-api:
     dependencies:
       '@ndigo/auth-core':
         specifier: ~0.0.1
@@ -727,7 +776,7 @@ importers:
         specifier: 'catalog:'
         version: 8.22.1
 
-  apps/05-ndigo-host:
+  apps/06-ndigo-host-demo:
     dependencies:
       '@ndigo/context':
         specifier: ~0.0.1
@@ -746,7 +795,7 @@ importers:
         specifier: 'catalog:'
         version: 8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
 
-  apps/06-ndigo-island:
+  apps/07-ndigo-island:
     dependencies:
       '@awesome.me/webawesome':
         specifier: ^3.14.0
@@ -813,7 +862,7 @@ importers:
         specifier: 'catalog:'
         version: 8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
 
-  apps/07-ndigo-views:
+  apps/08-ndigo-views:
     dependencies:
       '@ndigo/cache':
         specifier: ~0.0.1
@@ -868,7 +917,7 @@ importers:
         specifier: 'catalog:'
         version: 8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
 
-  apps/08-ndigo-httpbin:
+  apps/09-ndigo-httpbin:
     dependencies:
       '@ndigo/boot':
         specifier: ~0.0.1
@@ -908,11 +957,8 @@ importers:
         specifier: 'catalog:'
         version: 5.1.0(@opentelemetry/api@1.10.0)(@types/node@24.13.6)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@24.13.6)(supports-color@8.1.1)(typescript@7.0.2)(vite@8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)))(vite@8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))
 
-  apps/09-ndigo-todobackend:
+  apps/10-ndigo-conduit-web:
     dependencies:
-      '@ndigo/boot':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-boot
       '@ndigo/context':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-context
@@ -928,36 +974,30 @@ importers:
       '@ndigo/log':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-log
-      '@ndigo/orm':
+      '@ndigo/platform-web':
         specifier: ~0.0.1
-        version: link:../../packages/ndigo-orm
-      '@ndigo/platform-node':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-platform-node
+        version: link:../../packages/ndigo-platform-web
       '@ndigo/router':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-router
-      '@ndigo/util':
+      '@ndigo/signals':
         specifier: ~0.0.1
-        version: link:../../packages/ndigo-util
-      '@tsmetadata/polyfill':
-        specifier: 'catalog:'
-        version: 1.1.3
-      zod:
-        specifier: 'catalog:'
-        version: 4.6.7
+        version: link:../../packages/ndigo-signals
+      '@ndigo/view-webcomponent':
+        specifier: ~0.0.1
+        version: link:../../packages/ndigo-view-webcomponent
     devDependencies:
       '@ndigo/test':
         specifier: ~0.0.1
         version: link:../../packages/ndigo-test
-      tsx:
+      '@tsmetadata/polyfill':
         specifier: 'catalog:'
-        version: 4.23.13
-      vitest:
+        version: 1.1.3
+      vite:
         specifier: 'catalog:'
-        version: 5.1.0(@opentelemetry/api@1.10.0)(@types/node@24.13.6)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@24.13.6)(supports-color@8.1.1)(typescript@7.0.2)(vite@8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)))(vite@8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))
+        version: 8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
 
-  apps/10-ndigo-conduit-api:
+  apps/11-ndigo-conduit-api:
     dependencies:
       '@ndigo/auth-core':
         specifier: ~0.0.1
@@ -1011,46 +1051,6 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 5.1.0(@opentelemetry/api@1.10.0)(@types/node@24.13.6)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@24.13.6)(supports-color@8.1.1)(typescript@7.0.2)(vite@8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)))(vite@8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))
-
-  apps/11-ndigo-conduit-web:
-    dependencies:
-      '@ndigo/context':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-context
-      '@ndigo/core':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-core
-      '@ndigo/dispatcher':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-dispatcher
-      '@ndigo/http':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-http
-      '@ndigo/log':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-log
-      '@ndigo/platform-web':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-platform-web
-      '@ndigo/router':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-router
-      '@ndigo/signals':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-signals
-      '@ndigo/view-webcomponent':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-view-webcomponent
-    devDependencies:
-      '@ndigo/test':
-        specifier: ~0.0.1
-        version: link:../../packages/ndigo-test
-      '@tsmetadata/polyfill':
-        specifier: 'catalog:'
-        version: 1.1.3
-      vite:
-        specifier: 'catalog:'
-        version: 8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
 
   apps/12-ndigo-petclinic:
     dependencies:
@@ -5154,9 +5154,6 @@ packages:
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
 
-  '@types/ws@8.18.1':
-    resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
-
   '@types/ws@8.18.2':
     resolution: {integrity: sha512-67MQl+fpWKVTT1NYdnmo3U4sc/xPo/zQBncVnI74qmQa0z/b+1g6iYqNmGCPbxO+zz2aklb08a0oHfegiVd0/w==}
 
@@ -9040,18 +9037,6 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  ws@8.21.3:
-    resolution: {integrity: sha512-201TZ/kPWxoPr/OKWjquZR1SWKXcvxdH+e1xrx89b3YbmzLMFCLfnaG1HFIgWzJOEWZ7MvpK++odZufgYR50Rw==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-
   ws@8.22.1:
     resolution: {integrity: sha512-oyL6OPYme/CmiFvNuGzeoxCJ4nOrZE2O1FwM9MWM1AsGri6nLXB2pg+lNA8aLeXMSav0J6eIVS1j6vUPzUtK9g==}
     engines: {node: '>=10.0.0'}
@@ -11513,10 +11498,6 @@ snapshots:
   '@types/trusted-types@2.0.7': {}
 
   '@types/unist@3.0.3': {}
-
-  '@types/ws@8.18.1':
-    dependencies:
-      '@types/node': 26.6.6
 
   '@types/ws@8.18.2':
     dependencies:
@@ -15254,7 +15235,7 @@ snapshots:
       '@types/serve-index': 1.9.4
       '@types/serve-static': 1.15.10
       '@types/sockjs': 0.3.36
-      '@types/ws': 8.18.1
+      '@types/ws': 8.18.2
       ansi-html-community: 0.0.8
       bonjour-service: 1.4.4
       chokidar: 3.6.0
@@ -15277,7 +15258,7 @@ snapshots:
       sockjs: 0.3.24
       spdy: 4.0.2(supports-color@8.1.1)
       webpack-dev-middleware: 5.3.4(webpack@5.112.2)
-      ws: 8.21.3
+      ws: 8.22.1
     optionalDependencies:
       webpack: 5.112.2(clean-css@5.3.3)(cssnano@7.1.9(postcss@8.5.28))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(lightningcss@1.33.0)(postcss@8.5.28)(svgo@4.1.0)(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack-dev-server@4.15.2)(webpack@5.112.2)
@@ -15296,7 +15277,7 @@ snapshots:
       '@types/serve-index': 1.9.4
       '@types/serve-static': 1.15.10
       '@types/sockjs': 0.3.36
-      '@types/ws': 8.18.1
+      '@types/ws': 8.18.2
       ansi-html-community: 0.0.8
       bonjour-service: 1.4.4
       chokidar: 3.6.0
@@ -15316,7 +15297,7 @@ snapshots:
       sockjs: 0.3.24
       spdy: 4.0.2(supports-color@8.1.1)
       webpack-dev-middleware: 7.4.6(webpack@5.112.2)
-      ws: 8.21.3
+      ws: 8.22.1
     optionalDependencies:
       webpack: 5.112.2(clean-css@5.3.3)(cssnano@7.1.9(postcss@8.5.28))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(lightningcss@1.33.0)(postcss@8.5.28)(svgo@4.1.0)(webpack-cli@7.3.0)
       webpack-cli: 7.3.0(json5@2.2.3)(webpack-dev-server@5.2.7)(webpack@5.112.2)
@@ -15479,8 +15460,6 @@ snapshots:
       strip-ansi: 7.2.0
 
   wrappy@1.0.2: {}
-
-  ws@8.21.3: {}
 
   ws@8.22.1: {}
 

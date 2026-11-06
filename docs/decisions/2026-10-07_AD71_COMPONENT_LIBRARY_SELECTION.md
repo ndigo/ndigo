@@ -129,7 +129,7 @@ facade, no re-export shim.
 
 ## Evidence
 
-- Consumer: [`apps/ndigo-island`](../../apps/06-ndigo-island/README.md) — add-item
+- Consumer: [`apps/07-ndigo-island`](../../apps/07-ndigo-island/README.md) — add-item
   form (Web Awesome input/button) → `POST /items` (`dataBinderValue` + Zod) →
   SSE model push; guide
   [21 — Component Integration](../guides/21-component-integration.md).

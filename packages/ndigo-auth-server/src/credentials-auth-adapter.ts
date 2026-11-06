@@ -9,6 +9,7 @@ import {
     type UserStore,
     DefaultPrincipal,
 } from '@ndigo/auth-core';
+import { ApplicationError } from '@ndigo/core';
 
 /**
  * Credential shape the adapter authenticates: `{ username, password }`.
@@ -39,7 +40,7 @@ const DEFAULT_SESSION_TTL_MS = 30 * 60 * 1000;
  * user, disabled account, malformed credentials — so responses never
  * leak which condition failed (no user enumeration via error text).
  */
-export class InvalidCredentialsError extends Error {
+export class InvalidCredentialsError extends ApplicationError {
     constructor() {
         super('Invalid credentials');
         this.name = 'InvalidCredentialsError';

@@ -1,5 +1,6 @@
 /**
  */
+import { ApplicationError } from '@ndigo/core';
 import { methodAnnotation, type MethodDescriptor, type MethodInvocation, type MethodInterceptor } from '@ndigo/proxy';
 
 /**
@@ -37,7 +38,7 @@ export interface CircuitBreakerSpec {
 /**
  * Thrown while a circuit is open: the call was not executed.
  */
-export class CircuitOpenError extends Error {
+export class CircuitOpenError extends ApplicationError {
     constructor(method: PropertyKey, entryName: string, remainingMs: number) {
         super(`circuit open for '${entryName}.${String(method)}' — failing fast (reset in ${remainingMs} ms)`);
     }

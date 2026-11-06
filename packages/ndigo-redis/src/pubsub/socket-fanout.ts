@@ -177,7 +177,8 @@ export class RedisSocketFanout implements SocketFanout {
     ): Promise<() => Promise<void>> {
         this.#assertOpen();
         const channel = this.#channel(scope);
-        if (this.#scopes.has(scope)) throw new IllegalStateError('RedisSocketFanout already has a consumer for this scope');
+        if (this.#scopes.has(scope))
+            throw new IllegalStateError('RedisSocketFanout already has a consumer for this scope');
         this.#scopes.add(scope);
         let active = true;
         const listener = (wire: string): void => {

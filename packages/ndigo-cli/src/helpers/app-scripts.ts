@@ -14,11 +14,15 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve as resolvePath } from 'node:path';
 import { runCluster, type ClusterRunResult } from '@ndigo/cluster';
 
-/** An error whose process exit code is `2` (usage). */
+/**
+ * The error whose command run terminates with exit code `2` (usage).
+ * Rendering and exit behavior are owned by the CLI application config in
+ * `index.ts` (exceptionWhileRunningCommand + determineExitCode, issue #148)
+ * — creating this error must not touch `process.exitCode` directly.
+ */
 export function usageError(message: string): Error & { exitCode?: number } {
     const error = new Error(message) as Error & { exitCode?: number };
     error.exitCode = 2;
-    process.exitCode = 2;
     return error;
 }
 
@@ -75,6 +79,16 @@ export function appScriptCommand(
     // forks instead of execs) were verified to swallow SIGTERM on
     // 2026-10-07. The repo's start/dev scripts are single commands; the
     // app's local `.bin` (tsx, vite, …) goes on PATH for argv[0] lookup.
+    // An embedded newline can only have entered the script as a
+    // continuation line (SEC-005, issue #148): split(/\\s+/) would silently
+    // glue the next line onto argv of the first binary, so fail loud.
+    if (/[\r\n]/u.test(script)) {
+        throw usageError(
+            `"${scriptKey}" in ${join(dir, 'package.json')} spans multiple lines — ` +
+                'serve runs one declared command per script; split it into separate scripts: ' +
+                JSON.stringify(script)
+        );
+    }
     const argv = script.split(/\s+/).filter((token) => token.length > 0);
     if (argv.length === 0) {
         throw usageError(`"${scriptKey}" in ${join(dir, 'package.json')} resolves to an empty command`);

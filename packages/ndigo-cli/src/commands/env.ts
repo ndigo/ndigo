@@ -6,10 +6,12 @@
  */
 import { buildCommand } from '@stricli/core';
 import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { appDirPositional } from './_script-fronts.js';
 
 export const envCommand = buildCommand({
-    async func(flags: { file?: string }) {
-        const file = flags.file ?? '.env.example';
+    async func(flags: { file?: string }, dir: string) {
+        const file = flags.file ?? join(dir, '.env.example');
         if (!existsSync(file)) {
             process.stderr.write(`env file not found: ${file}\n`);
             process.exitCode = 2;
@@ -41,7 +43,10 @@ export const envCommand = buildCommand({
                 optional: true,
             },
         },
-        positional: { kind: 'tuple', parameters: [] },
+        positional: {
+            kind: 'tuple',
+            parameters: [appDirPositional],
+        },
     },
     docs: { brief: 'Validate required environment variables against a template' },
 });

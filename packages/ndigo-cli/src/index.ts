@@ -1,12 +1,15 @@
 /**
- * Public API of `@ndigo/cli` — the framework CLI (AD-75): serve, dev, new,
- * generate, db, inspect, doctor. The `ndigo` binary is the primary surface;
- * `runCli` exposes the same dispatcher to embeddings.
+ * Public API of `@ndigo/cli` — the complete CLI command surface: app
+ * lifecycle (serve, dev), scaffolding (new, generate, db), release-qc
+ * fronts (build, test, lint, format, typecheck), maintenance/DX (clean,
+ * config, routes, completion, env, openapi, add, update, logs, info,
+ * inspect, doctor). The `ndigo` binary is the primary surface; `runCli`
+ * exposes the same dispatcher to embeddings.
  *
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { buildApplication, buildRouteMap, run } from '@stricli/core';
+import { buildApplication, buildRouteMap, run, text_en, ExitCode } from '@stricli/core';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -17,14 +20,12 @@ import { generateCommand } from './commands/generate.js';
 import { inspectCommand } from './commands/inspect.js';
 import { doctorCommand } from './commands/doctor.js';
 import { infoCommand } from './commands/info.js';
-import { buildScriptCommand as buildCmd } from './commands/build.js';
-import { testCommand } from './commands/test.js';
+import { buildScriptCommand as buildCmd } from './commands/build.js';import { testCommand } from './commands/test.js';
 import { lintCommand } from './commands/lint.js';
 import { formatCommand } from './commands/format.js';
 import { typecheckCommand } from './commands/typecheck.js';
 import { cleanCommand } from './commands/clean.js';
 import { configCommand } from './commands/config.js';
-import { routesCommand } from './commands/routes.js';
 import { completionCommand } from './commands/completion.js';
 import { envCommand } from './commands/env.js';
 import { addCommand } from './commands/add.js';
@@ -80,7 +81,6 @@ export function buildCliApp() {
             typecheck: typecheckCommand,
             clean: cleanCommand,
             config: configCommand,
-            routes: routesCommand,
             completion: completionCommand,
             env: envCommand,
             openapi: openapiCommand,
@@ -89,7 +89,7 @@ export function buildCliApp() {
             logs: logsCommand,
             db: dbRouteMap,
         },
-        aliases: { g: 'generate' },
+        aliases: { g: 'generate', routes: 'inspect' },
         docs: { brief: 'The Ndigo framework CLI' },
     });
 
@@ -113,6 +113,41 @@ export function buildCliApp() {
     return buildApplication(rootRouteMap, {
         name: '@ndigo/cli',
         versionInfo: { currentVersion: `@ndigo/cli/${version}` },
+        // One default text bundle with the project's error-rendering
+        // override (review REV-009, issue #148): a thrown error carrying an
+        // `exitCode` is a usage error rendered as its bare message — the
+        // Stricli default renders `Command failed,` followed by the whole
+        // stack, which looks like a crash for an expected mistake. Genuine
+        // faults (no `exitCode`) keep the stack visibly.
+        localization: {
+            text: {
+                ...text_en,
+                // REV-009 (issue #148): overriding `formatException` alone
+                // would only fill the `${exc}` slot inside Stricli's fixed
+                // `Command failed, ` prefix — the whole rendering belongs to
+                // this method, so override it. A thrown error carrying an
+                // `exitCode` is a usage error: its bare message, no stack.
+                // Genuine faults keep the stack visibly.
+                exceptionWhileRunningCommand: (exc: unknown, ansiColor: boolean): string => {
+                    if (exc instanceof Error && typeof (exc as { exitCode?: number }).exitCode === 'number') {
+                        return exc.message;
+                    }
+                    return text_en.exceptionWhileRunningCommand.call(
+                        { formatException: (value: unknown): string =>
+                            value instanceof Error ? (value.stack ?? String(value)) : String(value) },
+                        exc,
+                        ansiColor
+                    );
+                },
+            },
+        },
+        // The same duck-flag drives the exit code for thrown AND
+        // safely-returned errors, replacing the `process.exitCode = 2`
+        // side channel the error factory used to set.
+        determineExitCode: (exc: unknown): number => {
+            const exitCode = (exc as { exitCode?: unknown })?.exitCode;
+            return typeof exitCode === 'number' ? exitCode : ExitCode.CommandRunError;
+        },
     });
 }
 

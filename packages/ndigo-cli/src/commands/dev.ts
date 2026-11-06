@@ -22,7 +22,10 @@ export const devCommand = buildCommand({
                 ? 'add a "dev" script, e.g. "dev": "vite" — or a "start" script for Node apps'
                 : 'add a "start" script, e.g. "start": "tsx src/index.ts"';
         const result = await runAppSupervised(resolved, key, hint, { port: flags.port });
-        process.exitCode = result.exitCode;
+        // Aligned with serve (review REV-016): runCluster leaves watch
+        // handles behind, so both long-lived commands force-terminate with
+        // the supervisor's exit code rather than draining the event loop.
+        process.exit(result.exitCode);
     },
     parameters: {
         flags: {

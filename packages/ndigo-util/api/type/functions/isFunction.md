@@ -27,12 +27,8 @@ Whether or not `value` is a function.
 ## Example
 
 ```ts
-isFunction( new Function() );
-//=> true
-isFunction( () => void 0 );
-//=> true
-isFunction( function(){} );
-//=> true
-isFunction( {} );
-//=> false
+isFunction(new Function()); //=> true
+isFunction(() => void 0); //=> true
+isFunction(function () {}); //=> true
+isFunction({}); //=> false
 ```

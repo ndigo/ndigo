@@ -3,12 +3,13 @@
 > Consumer-facing oxlint rules for Ndigo — guard application code against wrong framework usage.
 
 Custom **oxlint** rules that catch common mistakes when building Ndigo
-applications: mixed decorator paradigms, unsafe view names, browser-only
-primitives in isomorphic code, duplicate route mappings, and unsupported
-logging. Repository-structure rules (integration-layer boundaries,
-internal-file hygiene, doc headers, naming conventions) live in the Ndigo
-repository's internal plugin at root `src/oxlint/` — they are not part of
-this package.
+applications: mixed decorator paradigms, unsafe view names, string-literal
+registry lookups, duplicate route mappings, reactivity leaking into entities,
+and Node-only scheduling in browser code. Rules that key off the Ndigo
+repository's own layout (integration-layer boundaries, internal-file hygiene,
+doc headers, naming conventions, the console policy, and browser-global
+guards) live in the repository's internal plugin at root `src/oxlint/` — they
+are not part of this package.
 
 ## Installation
 
@@ -34,16 +35,14 @@ Prerequisites for every Ndigo package: Node.js ≥24 and pnpm ≥12.
 
 ### Rules
 
-| Rule                                      | Enforces                                                                                                                                                   |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@ndigo/no-browser-globals-in-isomorphic` | Isomorphic code must not reference browser globals                                                                                                         |
-| `@ndigo/no-cross-paradigm-decorators`     | Decorator families stay within their paradigm                                                                                                              |
-| `@ndigo/no-scheduled-in-browser`          | Disallow `@ndigo/scheduler` imports in browser-platform files                                                                                              |
-| `@ndigo/no-signals-in-entity`             | `@ndigo/signals` reactivity does not leak into entities                                                                                                    |
-| `@ndigo/no-string-registry-lookup`        | Disallow string-literal registry lookups in source files                                                                                                   |
-| `@ndigo/no-unsafe-view-name-literal`      | View-name literals are relative — no absolute prefixes, `..` segments, or NUL bytes (DSV-SEC-1); `IslandView` names must be valid custom-element tags      |
-| `@ndigo/no-duplicate-mapping-path`        | Duplicate method-level mapping paths of the same HTTP-method identity in one class (class-local, best-effort); disabled in specs                           |
-| `@ndigo/no-raw-console`                   | Raw `console.warn`/`console.error`/`console.log` calls in package source are banned — log through `@ndigo/log` (allow-listed: `@ndigo/log`, `@ndigo/util`) |
+| Rule                                  | Enforces                                                                                                                                              |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@ndigo/no-cross-paradigm-decorators` | Decorator families stay within their paradigm                                                                                                         |
+| `@ndigo/no-scheduled-in-browser`      | Disallow `@ndigo/scheduler` imports in browser-platform files                                                                                         |
+| `@ndigo/no-signals-in-entity`         | `@ndigo/signals` reactivity does not leak into entities                                                                                               |
+| `@ndigo/no-string-registry-lookup`    | Disallow string-literal registry lookups in source files                                                                                              |
+| `@ndigo/no-unsafe-view-name-literal`  | View-name literals are relative — no absolute prefixes, `..` segments, or NUL bytes (DSV-SEC-1); `IslandView` names must be valid custom-element tags |
+| `@ndigo/no-duplicate-mapping-path`    | Duplicate method-level mapping paths of the same HTTP-method identity in one class (class-local, best-effort); disabled in specs                      |
 
 `no-duplicate-mapping-path` is method-level, class-local, and best-effort: it
 compares only mapping decorators syntactically attached to methods of a single
@@ -60,13 +59,6 @@ any registration carrying extra conditions (`matrixParams`, `params`, `method`,
 never compared. Paths composed dynamically, or contributed by a base class, are
 not seen. Deliberate duplicate-registration fixtures are legitimate, so the rule
 is `off` in the repo's spec/test override block.
-
-`no-raw-console` scopes itself to `packages/ndigo-*/src/**` and reports direct
-`console.warn`/`console.error`/`console.log` call sites, steering framework
-logging through `@ndigo/log` (the `getLogger(...)` seam) so records follow the
-configured logger and carry trace context. `@ndigo/log` (the console bridge
-itself) and `@ndigo/util` (the documented leaf exception) are allow-listed, and
-spec/test files are out of scope — they legitimately spy on the console.
 
 `no-unsafe-view-name-literal` branches on the callee: `IslandView` is validated
 against the custom-element tag grammar (lowercase, ≥1 hyphen, non-reserved)

@@ -67,7 +67,7 @@
     "internal/no-direct-integration-imports": "warn",
     "internal/no-internal-file-imports": "error",
     "internal/no-internal-file-exports": "error",
-    "@ndigo/no-browser-globals-in-isomorphic": "warn",
+    "internal/no-browser-globals-in-isomorphic": "warn",
     "internal/no-uppercase-regexp-constants": "error",
     "internal/no-abstract-class-without-prefix": "error",
     "internal/no-mixed-case-acronyms": "error",
@@ -100,7 +100,7 @@
     "typescript/no-implied-eval": "off",
     "internal/requires-doc-header": "error",
     "internal/no-upward-layer-imports": "error",
-    "@ndigo/no-raw-console": "error"
+    "internal/no-raw-console": "error"
   },
   "env": {
     "browser": true,
@@ -129,13 +129,13 @@
         "no-useless-escape": "off",
         "no-instanceof-builtins": "off",
         "@ndigo/no-duplicate-mapping-path": "off",
-        "@ndigo/no-raw-console": "off"
+        "internal/no-raw-console": "off"
       }
     },
     {
       "files": ["apps/**/*.ts", "apps/**/*.js", "apps/**/*.mjs"],
       "rules": {
-        "@ndigo/no-browser-globals-in-isomorphic": "off"
+        "internal/no-browser-globals-in-isomorphic": "off"
       }
     }
   ]

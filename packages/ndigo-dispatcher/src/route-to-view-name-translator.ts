@@ -59,4 +59,3 @@ export class DefaultRouteToViewNameTranslator implements RouteToViewNameTranslat
         return viewName;
     }
 }
-

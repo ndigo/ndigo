@@ -1,4 +1,3 @@
-
 import { describe, test, expect } from 'vitest';
 import { Route, ACCEPT_LANGUAGE_ATTRIBUTE } from '@ndigo/router';
 import {

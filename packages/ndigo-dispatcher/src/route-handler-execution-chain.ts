@@ -63,7 +63,6 @@ export default class RouteHandlerExecutionChain {
         this.interceptorIndex = -1;
     }
 
-    
     /**
      * Add a single interceptor to the chain.
      *
@@ -78,7 +77,6 @@ export default class RouteHandlerExecutionChain {
         }
     }
 
-    
     /**
      * Add multiple interceptors to the chain.
      *
@@ -93,7 +91,6 @@ export default class RouteHandlerExecutionChain {
         }
     }
 
-    
     /**
      * Run post-handle callbacks in registration order.
      *
@@ -137,7 +134,6 @@ export default class RouteHandlerExecutionChain {
         return true;
     }
 
-    
     /**
      * Run completion callbacks in reverse order.
      *

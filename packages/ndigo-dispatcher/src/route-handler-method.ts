@@ -96,7 +96,6 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
         this.parameters = args.filter((arg) => arg instanceof MethodParameter);
     }
 
-    
     invoke<ModelAndView>(route: Route, ...foo: unknown[]): ModelAndView {
         /**
          * * Hardcoding route as a parameter is a bit of a cop-out. It would be better to allow them to pick parameters, etc. as arguments.
@@ -150,7 +149,6 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
         return (this.handler as Record<string, Function>)[this.method](...args);
     }
 
-    
     toString(): string {
         return `${typeName(this.handler)}#${this.method}( ${JSON.stringify(this.parameters)} )`;
     }

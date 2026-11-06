@@ -481,7 +481,7 @@ export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
      */
     constructor(defaultErrorView?: string) {
         super();
-        
+
         defineProperty(this, 'defaultErrorView', {
             value: defaultErrorView || null,
             configurable: true,

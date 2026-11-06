@@ -1,4 +1,3 @@
-
 import { describe, test, expect } from 'vitest';
 import { Route } from '@ndigo/router';
 import { HTTPMethodCondition } from '../src/http-method-condition';

@@ -24,9 +24,6 @@
  * connection just after the frame), so it rejects all outstanding sends,
  * completes every subscription stream and surfaces through the `onError`
  * observer.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { effect, signal, type Signal } from '@ndigo/signals';
 import { RingBuffer } from '@ndigo/core';

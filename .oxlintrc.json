@@ -100,7 +100,8 @@
     "typescript/no-implied-eval": "off",
     "internal/requires-doc-header": "error",
     "internal/no-upward-layer-imports": "error",
-    "internal/no-raw-console": "error"
+    "internal/no-raw-console": "error",
+    "internal/tsdoc-syntax": "off"
   },
   "env": {
     "browser": true,
@@ -121,6 +122,10 @@
     "vi": "readonly"
   },
   "overrides": [
+    {
+      "files": ["src/oxlint/**/*.ts"],
+      "rules": { "internal/tsdoc-syntax": "error" }
+    },
     {
       "files": ["**/*.spec.ts", "**/*.test.ts", "**/test/**/*.ts", "**/test/**/*.js", "**/test/**/*.mjs"],
       "rules": {

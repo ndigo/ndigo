@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { type Principal } from './principal';
 import { type AuthResult } from './state';

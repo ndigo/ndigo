@@ -28,9 +28,6 @@
  * At-least-once semantics: `messageId` is the broker-issued dedupe key;
  * replay can redeliver (the broker's D9 ack tracking already tolerates
  * redelivery).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { RingBuffer } from '@ndigo/core';
 import type { StompBody } from './stomp-frame';

@@ -6,6 +6,8 @@
 
 # principal
 
+Represents an authenticated user or entity in the system.
+
 ## Classes
 
 - [AnonymousPrincipal](classes/AnonymousPrincipal.md)

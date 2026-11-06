@@ -1,9 +1,6 @@
 /**
  * Browser telemetry bootstrap: global OTel providers, console/OTLP gating,
  * once-per-process idempotency, and flush-on-unload.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { metrics, trace, DiagConsoleLogger, DiagLogLevel, diag, propagation } from '@opentelemetry/api';
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';

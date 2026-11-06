@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Parser, Stringifier } from './parser';
 import { z } from 'zod';

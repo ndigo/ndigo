@@ -6,6 +6,8 @@
 
 # lock-driver
 
+The distributed-lock contract (AD-73): a lease-bearing lock with a
+
 ## Interfaces
 
 - [LockAcquireOptions](interfaces/LockAcquireOptions.md)

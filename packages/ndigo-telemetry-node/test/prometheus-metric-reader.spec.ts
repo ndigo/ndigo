@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, expect, test, afterEach } from 'vitest';
 import { metrics } from '@opentelemetry/api';

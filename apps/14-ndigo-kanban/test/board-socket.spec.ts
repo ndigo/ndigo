@@ -5,9 +5,6 @@
  * two clients seeing each other's writes, a reconnect reconciling from the
  * snapshot before the event stream resumes, and two boards never leaking into
  * each other's room.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

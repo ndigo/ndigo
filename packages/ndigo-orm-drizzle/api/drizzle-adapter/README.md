@@ -6,6 +6,8 @@
 
 # drizzle-adapter
 
+`NdigoDatabaseAdapter` implementation over Drizzle/libSQL (AD-96).
+
 ## Interfaces
 
 - [DrizzleAdapterOptions](interfaces/DrizzleAdapterOptions.md)

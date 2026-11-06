@@ -6,9 +6,6 @@
  * deleting require a caller. Deleting is author-only and scoped to the named
  * article: a comment id that belongs to a *different* article is a `404`, not
  * a `403` — the resource named by the URL does not exist.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import {

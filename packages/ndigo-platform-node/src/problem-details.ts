@@ -1,8 +1,5 @@
 /**
  * RFC 9457 Problem Details for HTTP APIs (obsoletes RFC 7807).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ValidationIssue } from '@ndigo/dispatcher';
 import { MediaTypes } from '@ndigo/core';

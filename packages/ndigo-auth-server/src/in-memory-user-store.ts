@@ -3,9 +3,6 @@
  * tests and demos. NOT a production store: user storage is application data
  * (see `@ndigo/auth-core` `UserStore` contract); production apps implement
  * `UserStore` over `ndigo-orm`/Drizzle entities.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { type UserRecord, type UserStore } from '@ndigo/auth-core';
 

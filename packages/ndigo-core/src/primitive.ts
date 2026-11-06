@@ -1,8 +1,5 @@
 /**
  * A JavaScript primitive value.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export type primitive = boolean | null | number | string | symbol | bigint | undefined;
 

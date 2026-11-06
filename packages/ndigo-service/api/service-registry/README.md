@@ -6,6 +6,8 @@
 
 # service-registry
 
+Interface for a service registry that maps service tokens to endpoints.
+
 ## Classes
 
 - [MapServiceRegistry](classes/MapServiceRegistry.md)

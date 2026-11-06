@@ -1,9 +1,6 @@
 /**
  * Application configuration: registers the httpbin controllers as beans so the
  * platform handler mapping discovers their routes on refresh.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { configuration, entry } from '@ndigo/context';

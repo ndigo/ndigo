@@ -2,9 +2,6 @@
  * AD-76 demo gate: the ndigo-api actuator surface served through the real
  * bootstrap path (the same `ApplicationBuilder` assembly `src/index.ts`
  * runs, with the app's own property sources).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';

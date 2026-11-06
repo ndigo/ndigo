@@ -11,9 +11,6 @@
  * the in-memory manager deliberately does not resolve (join-table fetch is
  * unimplemented), so it is modelled the way the reference database models it —
  * an explicit `VetSpecialty` link row the clinic service joins in one scan.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { column, entity, generatedColumn, manyToOne, oneToMany, primaryColumn } from '@ndigo/orm';

@@ -6,6 +6,8 @@
 
 # local-storage-resource-loader
 
+Resource loader that persists data to `localStorage`.
+
 ## Classes
 
 - [LocalStorageResourceLoader](classes/LocalStorageResourceLoader.md)

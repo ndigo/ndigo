@@ -1,9 +1,6 @@
 /**
  * Matrix-parameter binding probe: `/matrix/{id};color={color}` with a plain
  * fallback.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import {

@@ -6,6 +6,8 @@
 
 # tree-node
 
+A node that can reference its parent.
+
 ## Interfaces
 
 - [ChildNode](interfaces/ChildNode.md)

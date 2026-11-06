@@ -5,9 +5,6 @@
  *
  * Responses are parsed with the app's own wire schemas, so a drift between
  * what the controller returns and what the contract says fails here.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest';

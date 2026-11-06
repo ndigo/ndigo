@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { getMapping, requestMapping, parameters, headerValue } from '@ndigo/dispatcher';
 import { MediaType } from '@ndigo/core';

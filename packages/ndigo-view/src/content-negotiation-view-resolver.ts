@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError, MediaType, MultiValueMap } from '@ndigo/core';
 import { HTTPHeaders } from '@ndigo/http';

@@ -6,6 +6,8 @@
 
 # host-manager
 
+Host orchestration — the centralized micro frontend host (AD-18).
+
 ## Classes
 
 - [HostManager](classes/HostManager.md)

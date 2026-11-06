@@ -2,9 +2,6 @@
  * The controllable flaky upstream: a pure behaviour engine the lab points its
  * consumer at, with modes chosen to drive retry and circuit-breaker
  * transitions (always-fail, N-then-recover, F/S patterns, latency).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { setTimeout as delay } from 'node:timers/promises';
 import type { UpstreamMode, UpstreamModeInput, UpstreamModeName, UpstreamOutcome } from './lab-types';

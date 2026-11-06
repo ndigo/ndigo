@@ -6,6 +6,8 @@
 
 # commands/test
 
+`ndigo test` — front the application's test script.
+
 ## Variables
 
 - [testCommand](variables/testCommand.md)

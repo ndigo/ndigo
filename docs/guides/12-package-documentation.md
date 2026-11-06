@@ -120,6 +120,20 @@ Rules:
   members are exempt (names self-document); `@internal` and `_`-prefixed
   internal files are exempt. Adding a public symbol with no comment is a
   CI failure — write the one-liner (type aliases included).
+- **Depth ratchet:** `scripts/doc-coverage.mjs` tracks per-package documentation
+  depth (module summaries, undocumented members, missing `@param`/`@returns`,
+  example/remarks counts) against a committed baseline
+  (`docs/tsdoc-baseline.json`). CI fails on regression; the baseline is
+  refreshed as packages are cleaned, and is deleted once everything is at
+  zero tolerance. Run `node scripts/doc-coverage.mjs --write-baseline` after
+  a batch.
+- **Example syntax:** `scripts/doc-examples.mjs` parses every fenced
+  `@example` block as TypeScript; CI fails on syntax errors.
+- **TSDoc syntax:** `internal/tsdoc-syntax` (oxlint) validates every doc
+  comment against the TSDoc standard (`@microsoft/tsdoc`).
+- **Module summaries:** `scripts/typedoc-module-summary-plugin.mjs` lifts the
+  canonical file-header summary onto the generated module page, so
+  `api/<file>/README.md` describes the module.
 
 ## Adding a new package
 

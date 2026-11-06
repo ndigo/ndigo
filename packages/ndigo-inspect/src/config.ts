@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  *
  * Configuration enumeration for the inspect manifest. Declares keys via
  * `@ndigo/context`'s `declaredConfigurationProperties()` (the seam `@ndigo/boot`

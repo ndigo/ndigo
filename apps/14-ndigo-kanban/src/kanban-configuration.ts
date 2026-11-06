@@ -2,9 +2,6 @@
  * Application composition: the board service (seeded demo board), the socket
  * broadcaster, the REST/socket/shell controllers, the static client-bundle
  * controller, and the EJS view resolver.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { fileURLToPath } from 'node:url';

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 // AD-71 reference integration — Web Awesome, imported per component (no
 // wrappers): importing a component registers its element (the intended side

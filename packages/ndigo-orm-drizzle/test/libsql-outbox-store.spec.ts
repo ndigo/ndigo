@@ -2,9 +2,6 @@
  * `LibSQLOutboxStore` tests — including the transactional proof: an append
  * inside a `DrizzleTransactionManager` bracket commits and rolls back with
  * the business data on the same connection.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

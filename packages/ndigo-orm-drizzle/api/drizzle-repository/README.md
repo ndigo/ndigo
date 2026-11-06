@@ -6,6 +6,8 @@
 
 # drizzle-repository
 
+Repository for the Drizzle-backed persistence layer.
+
 ## Classes
 
 - [DrizzleRepository](classes/DrizzleRepository.md)

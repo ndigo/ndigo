@@ -6,6 +6,8 @@
 
 # commands/typecheck
 
+`ndigo typecheck` — front the application's typecheck script.
+
 ## Variables
 
 - [typecheckCommand](variables/typecheckCommand.md)

@@ -1,8 +1,5 @@
 /**
  * Typed context tokens shared by the host shell and its features.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ContextToken } from '@ndigo/context';
 

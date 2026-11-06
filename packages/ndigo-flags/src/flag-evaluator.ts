@@ -8,9 +8,6 @@
  * `@openfeature/server-sdk` client (accessing flagd / OFREP /
  * LaunchDarkly / … providers). Enforcement — the `@whenFeature` route gate
  * — lives in `@ndigo/platform-node` beside the other interceptors.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /**

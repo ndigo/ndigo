@@ -1,9 +1,6 @@
 /**
  * The simulated upstream endpoint: every response is produced by the lab's
  * behaviour engine, so the control plane decides what the consumer sees.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { getMapping, requestMapping } from '@ndigo/dispatcher';

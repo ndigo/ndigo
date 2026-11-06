@@ -6,6 +6,8 @@
 
 # memory-response
 
+In-memory HTTP response captured by a {@link MockMvcDispatch}.
+
 ## Interfaces
 
 - [MemoryResponse](interfaces/MemoryResponse.md)

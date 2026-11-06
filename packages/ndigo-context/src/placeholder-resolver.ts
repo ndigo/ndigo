@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { IllegalStateError, JSONValue } from '@ndigo/core';
 import { PropertyResolver } from './property-resolver';

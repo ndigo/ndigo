@@ -6,6 +6,8 @@
 
 # parser
 
+Class-based interface for parsing a string into a structured value of type `T`.
+
 ## Interfaces
 
 - [Parser](interfaces/Parser.md)

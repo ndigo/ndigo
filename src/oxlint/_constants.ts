@@ -1,8 +1,5 @@
 /**
  * Shared constants for the repository-only lint rules.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export const INTEGRATION_LAYER_MAP: Record<string, string> = {
     linkedom: '@ndigo/dom',

@@ -10,9 +10,6 @@
  *
  * Everything is constructed here and nowhere else, so a spec can build the same
  * graph against a stub {@link ConduitApi} or a `fetch` double.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { HTTP } from '@ndigo/http';
 import { ConduitApiClient } from '../lib/api/conduit-api-client';

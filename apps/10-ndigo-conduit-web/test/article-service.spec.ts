@@ -1,7 +1,3 @@
-/**
- * @since 1.0.0
- * @author Jeff Rose
- */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { ArticleService, FEED_PAGE_SIZE } from '../src/services/article-service';
 import { ConduitTokenStorage, SessionService } from '../src/services/session-service';

@@ -3,9 +3,6 @@
  * the named distributed lock before each locked run, releases it in the
  * finally, skips contended fires (optionally after a bounded wait), and
  * fails loud when a locked task has no lock driver at all.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { FrameworkError } from '@ndigo/core';

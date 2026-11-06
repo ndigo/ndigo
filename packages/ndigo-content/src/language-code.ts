@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Equatable, JSONValue, Serializable, StringComparable, stringComparator } from '@ndigo/core';
 

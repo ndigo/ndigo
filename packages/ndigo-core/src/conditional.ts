@@ -1,8 +1,5 @@
 /**
  * Conditional auto-configuration metadata helpers.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { FrameworkError } from './error.js';

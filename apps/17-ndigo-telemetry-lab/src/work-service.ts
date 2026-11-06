@@ -14,9 +14,6 @@
  *
  * The computation itself is deterministic on purpose: the checksum is a pure
  * function of the payload, so every assertion and transcript is reproducible.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { counted, traced } from '@ndigo/telemetry';
 import type { LabMetrics } from './lab-metrics';

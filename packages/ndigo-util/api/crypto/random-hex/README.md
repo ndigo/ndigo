@@ -6,11 +6,13 @@
 
 # crypto/random-hex
 
-## Crypto
+Generates cryptographically secure random hex strings.
+
+## Functions
 
 - [randomHex](functions/randomHex.md)
 
-## Other
+## References
 
 ### default
 

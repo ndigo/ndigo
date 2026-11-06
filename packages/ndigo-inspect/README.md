@@ -101,8 +101,7 @@ is read from `originOf` — no value is ever read or decrypted.
 
 ## API
 
-The full API is generated from JSDoc via `pnpm doc:api` into
-[`api/`](api/README.md). Primary exports live in [`src/index.ts`](src/index.ts).
+The full API is at [`api/`](api/README.md). Primary exports live in [`src/index.ts`](src/index.ts).
 
 - `inspectApplication(input)` — build an `InspectManifest` from a context
 - `InspectManifest` + companions — the manifest type model

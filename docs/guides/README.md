@@ -1,6 +1,6 @@
 # Ndigo Guides
 
-Conceptual and hands-on guides for building applications with Ndigo. These complement the API reference (generated from JSDoc via `pnpm doc`); they explain the _how_ with runnable patterns grounded in the demo apps.
+Conceptual and hands-on guides for building applications with Ndigo. These complement the API reference; they explain the _how_ with runnable patterns grounded in the demo apps.
 
 ## Available Guides
 

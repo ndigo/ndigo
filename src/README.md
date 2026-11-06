@@ -11,6 +11,10 @@ Current tenants:
   boundaries, internal-file hygiene, house style) loaded directly from
   TypeScript by oxlint. See [`oxlint/README.md`](oxlint/README.md).
 
+Package-shaped repo-only tooling — a resolvable name, a collection manifest,
+workspace-linked dependencies — lives in [`tools/`](../tools/README.md)
+instead (AD-93).
+
 If you are tempted to add a barrel here: don't — this location's predecessor
 (`src/index.ts`, an `export * from '@ndigo/core'` shim) was deleted as dead
 code on 2026-10-04.

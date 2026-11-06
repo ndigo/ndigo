@@ -39,6 +39,10 @@ this so callers can distinguish provider errors from programming errors.
 
 `number`
 
+###### oauthError?
+
+`string`
+
 #### Returns
 
 `OIDCError`
@@ -62,3 +66,11 @@ this so callers can distinguish provider errors from programming errors.
 The HTTP status behind a `network` failure, when one exists — lets
 callers distinguish a provider rejection (e.g. a `400` on the refresh
 grant) from a transport failure.
+
+***
+
+### oauthError
+
+> `readonly` **oauthError**: `string` \| `undefined`
+
+The OAuth `error` code from a provider error response, when present.

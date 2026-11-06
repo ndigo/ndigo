@@ -146,6 +146,12 @@ every package resolves its own install closure”, Package Map). The decision:
 4. No `@ndigo/ndigo` umbrella meta-package: it duplicates the platform hubs
    and drifts; the scaffold templates plus starter lists carry the entry set.
 
+**Amended (2026-11-05, AD-93):** the D-4.3 list is corrected and resolved.
+`@ndigo/generators` is repo-only and moved to `tools/generators/`
+(`private: true`); `@ndigo/oxlint-plugin` (the consumer rule set, AD-86 D2)
+and `@ndigo/inspect` (the editor/CI manifest substrate, AD-70 D-4) are
+public-intent and stay in `packages/`.
+
 ## Alternatives considered
 
 - **Reuse the `package` generator for apps, or one generator for both.** Its

@@ -3,7 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@ndigo/*": ["../ndigo-*/src"]
+      "@ndigo/*": ["../../packages/ndigo-*/src"]
     },
     "rootDir": "../../",
     // Nx loads generator factories with Node's native TypeScript stripping,

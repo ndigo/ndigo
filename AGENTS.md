@@ -119,7 +119,7 @@ Every package must meet the documentation standard:
 - **README.md** — required sections (tagline, Installation, Getting Started,
   Usage, API _link only_, Development, Contributing, License). No internal
   tracking IDs or decision-record links in package READMEs. Template:
-  `packages/ndigo-generators/src/generators/readme/files/README.md.template`.
+  `tools/generators/src/generators/readme/files/README.md.template`.
 - **Generated API reference** — `pnpm doc:api` writes
   `packages/<name>/api/` per package (zero-warning TypeDoc standard,
   CI-enforced). After public API changes: regenerate, commit the tree.

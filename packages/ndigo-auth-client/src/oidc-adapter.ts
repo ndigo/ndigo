@@ -39,7 +39,11 @@ export class OIDCError extends Error {
     /** The OAuth `error` code from a provider error response, when present. */
     readonly oauthError: string | undefined;
 
-    constructor(code: OIDCErrorCode, message: string, options?: { cause?: unknown; httpStatus?: number; oauthError?: string }) {
+    constructor(
+        code: OIDCErrorCode,
+        message: string,
+        options?: { cause?: unknown; httpStatus?: number; oauthError?: string }
+    ) {
         super(message, options !== undefined ? { cause: options.cause } : undefined);
         this.name = 'OIDCError';
         this.code = code;
@@ -938,19 +942,31 @@ export class OIDCAdapter implements AuthAdapter {
                 }),
             });
         } catch (error) {
-            if (error instanceof OIDCError && error.code === 'network' && (error.httpStatus === 400 || error.httpStatus === 401)) {
+            if (
+                error instanceof OIDCError &&
+                error.code === 'network' &&
+                (error.httpStatus === 400 || error.httpStatus === 401)
+            ) {
                 if (error.oauthError !== undefined && error.oauthError !== 'invalid_grant') {
-                    throw new OIDCError('configuration', `The identity provider rejected the refresh: ${error.oauthError}`, {
+                    throw new OIDCError(
+                        'configuration',
+                        `The identity provider rejected the refresh: ${error.oauthError}`,
+                        {
+                            cause: error,
+                            httpStatus: error.httpStatus,
+                            oauthError: error.oauthError,
+                        }
+                    );
+                }
+                throw new OIDCError(
+                    'invalid_token',
+                    'The identity provider rejected the refresh token (invalid_grant)',
+                    {
                         cause: error,
                         httpStatus: error.httpStatus,
-                        oauthError: error.oauthError,
-                    });
-                }
-                throw new OIDCError('invalid_token', 'The identity provider rejected the refresh token (invalid_grant)', {
-                    cause: error,
-                    httpStatus: error.httpStatus,
-                    oauthError: 'invalid_grant',
-                });
+                        oauthError: 'invalid_grant',
+                    }
+                );
             }
             if (error instanceof OIDCError) throw error;
             throw new OIDCError('network', 'Token refresh request failed', { cause: error });

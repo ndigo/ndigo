@@ -26,14 +26,14 @@
       "description": "Scaffold a new package README on the standard Ndigo template"
     },
     "controller": {
-      "factory": "./src/generators/component/generator",
-      "schema": "./src/generators/component/schema.json",
-      "description": "Generate a controller source file (scaffold)"
+      "factory": "./src/generators/controller/generator",
+      "schema": "./src/generators/controller/schema.json",
+      "description": "Generate a controller source file"
     },
     "service": {
-      "factory": "./src/generators/component/generator",
-      "schema": "./src/generators/component/schema.json",
-      "description": "Generate a service source file (scaffold)"
+      "factory": "./src/generators/service/generator",
+      "schema": "./src/generators/service/schema.json",
+      "description": "Generate a service source file"
     },
     "entity": {
       "factory": "./src/generators/entity/generator",

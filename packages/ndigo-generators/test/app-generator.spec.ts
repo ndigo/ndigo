@@ -133,7 +133,7 @@ describe('app generator', () => {
         expect(tree.exists(`${appDir}/README.md`)).toBe(true);
 
         const index = read(tree, `${appDir}/src/index.ts`);
-        expect(index).toContain("process.env['PORT'] ??= '3020'");
+        expect(index).toContain('port: 3020');
         expect(index).toContain('@author Jeff Rose');
         expect(read(tree, `${appDir}/src/todo-widget-configuration.ts`)).toContain('@entry()');
         expect(read(tree, `${appDir}/README.md`)).toContain('apps/03-ndigo-todo-widget');
@@ -147,12 +147,13 @@ describe('app generator', () => {
         expect(tree.exists(`${appDir}/vite.config.ts`)).toBe(true);
         expect(tree.exists(`${appDir}/vitest.config.ts`)).toBe(true);
         expect(tree.exists(`${appDir}/index.html`)).toBe(true);
-        expect(tree.exists(`${appDir}/src/widget-context.ts`)).toBe(true);
+        expect(tree.exists(`${appDir}/src/widget-configuration.ts`)).toBe(true);
         expect(tree.exists(`${appDir}/src/widget-app-view.ts`)).toBe(true);
         expect(tree.exists(`${appDir}/test/widget.smoke.spec.ts`)).toBe(true);
         expect(tree.exists(`${appDir}/test/bundle.spec.ts`)).toBe(true);
 
         expect(read(tree, `${appDir}/vite.config.ts`)).toContain('port: 3020');
+        expect(read(tree, `${appDir}/src/index.ts`)).toContain('createWebApplication');
         expect(read(tree, `${appDir}/src/widget-app-view.ts`)).toContain("customElements.define('widget-app'");
         expect(read(tree, `${appDir}/test/widget.smoke.spec.ts`)).toContain("'WIDGET-APP'");
     });
@@ -163,7 +164,7 @@ describe('app generator', () => {
         await appGenerator(bare, { name: 'first', kind: 'node' });
 
         expect(bare.exists('apps/01-ndigo-first/package.json')).toBe(true);
-        expect(read(bare, 'apps/01-ndigo-first/src/index.ts')).toContain("process.env['PORT'] ??= '3000'");
+        expect(read(bare, 'apps/01-ndigo-first/src/index.ts')).toContain('port: 3000');
     });
 
     it('generates a closure-shaped private manifest for the node kind', async () => {
@@ -176,7 +177,6 @@ describe('app generator', () => {
         expect(manifest.scripts).toEqual({ start: 'tsx src/index.ts', test: 'vitest run' });
         expect(Object.keys(manifest.dependencies)).toEqual(
             expect.arrayContaining([
-                '@ndigo/boot',
                 '@ndigo/context',
                 '@ndigo/dispatcher',
                 '@ndigo/log',
@@ -204,7 +204,6 @@ describe('app generator', () => {
                 '@ndigo/context',
                 '@ndigo/dispatcher',
                 '@ndigo/platform-web',
-                '@ndigo/router',
                 '@ndigo/view-webcomponent',
             ])
         );

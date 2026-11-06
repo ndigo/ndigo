@@ -1,6 +1,6 @@
 # ndigo Decision Records (ADRs)
 
-Architecture Decision Records for the ndigo monorepo — **AD-01..AD-89**,
+Architecture Decision Records for the ndigo monorepo — **AD-01..AD-90**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -115,3 +115,4 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-87** | 2026-11-01    | Accepted           | [OpenFeature bridge — adopt the standard behind the `FlagEvaluator` SPI](2026-11-01_AD87_OPENFEATURE_BRIDGE.md)                                                                                                            |
 | **AD-88** | 2026-11-03    | Accepted           | [Project rename — ndigo → ndigo](2026-11-03_AD88_NDIGO_RENAME.md)                                                                                                                                                          |
 | **AD-89** | 2026-11-03    | Accepted           | [Layer-boundary enforcement — derived ranks, not named tiers](2026-11-03_AD89_LAYER_BOUNDARIES.md)                                                                                                                         |
+| **AD-90** | 2026-11-05    | Accepted           | [Application lifecycle presets — entrypoint defaults, not configuration classes](2026-11-05_AD90_APPLICATION_LIFECYCLE_PRESETS.md)                                                                                         |

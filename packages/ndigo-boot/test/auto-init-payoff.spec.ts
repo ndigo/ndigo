@@ -6,7 +6,7 @@
 import { describe, test, expect } from 'vitest';
 import { Application } from '../src/application';
 import { ApplicationBuilder } from '../src/application-builder';
-import { NodeAutoConfiguration } from '@ndigo/platform-node';
+import { NodeAutoConfiguration } from '../../ndigo-platform-node/src/node-auto-configuration';
 
 describe('ApplicationBuilder + NodeAutoConfiguration payoff', () => {
     test('run() produces auto-initialized mapping, dispatcher, and httpServer entry', async () => {

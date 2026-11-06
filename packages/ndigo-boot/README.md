@@ -2,7 +2,7 @@
 
 > Application startup for Ndigo — profile-aware bootstrapping, typed config binding, and environment auto-configuration.
 
-Application startup for Ndigo: profile-aware bootstrapping, typed config binding, and environment auto-configuration. Register configurations and bind them with `@configurationProperties` class binding validated by zod (`@environment`); standard environment/file/CLI config sources combine with documented precedence and placeholder resolution. Activate profiles with `ApplicationBuilder.profiles('dev')`, run, and let auto-configuration provision platform components by environment — Node's `NodeAutoConfiguration` (argument resolvers, converter registry, metadata handler mapping, error-resolver chain, managed `HTTPServer`) or the Browser web auto-configuration (cookie/model/session/state resolvers, built-in converters).
+Application startup for Ndigo: profile-aware bootstrapping, typed config binding, and environment auto-configuration. Register configurations and bind them with `@configurationProperties` class binding validated by zod (`@environment`); standard environment/file/CLI config sources combine with documented precedence and placeholder resolution. Activate profiles with `ApplicationBuilder.profiles('dev')`, run, and let auto-configuration provision platform components by environment — Node's `NodeAutoConfiguration` (argument resolvers, converter registry, metadata handler mapping, error-resolver chain, managed `HTTPServer`) or the Browser web auto-configuration (cookie/model/session/state resolvers, built-in converters). The builder is isomorphic — profiles and properties work without a `process` global; browser apps compose it through [`@ndigo/platform-web`](../ndigo-platform-web/README.md)'s `createWebApplication` preset, or wire it directly.
 
 ## Installation
 
@@ -63,6 +63,7 @@ pnpm --filter @ndigo/boot test
 
 - [@ndigo/context](../ndigo-context/README.md) — the context underneath
 - [@ndigo/platform-node](../ndigo-platform-node/README.md) — the Node auto-configuration provisions this on Node
+- [@ndigo/platform-web](../ndigo-platform-web/README.md) — the browser platform composes this package (`createWebApplication`)
 
 ## Contributing
 

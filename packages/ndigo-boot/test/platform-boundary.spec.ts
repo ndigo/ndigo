@@ -14,7 +14,11 @@ import { join } from 'node:path';
  * passed in explicitly as application sources instead.
  *
  * The rule rejects any `@ndigo/platform-node` / `@ndigo/platform-web` import
- * (static or re-exported) under `src/`. Test files MAY import platforms.
+ * (static or re-exported) under `src/`. Test files reach the platform sources
+ * relatively (`../../ndigo-platform-node/src/…`) instead of naming them in
+ * the manifest: any dependency entry — of any kind — puts the edge in the Nx
+ * task graph, and `@ndigo/platform-node` depends on `@ndigo/boot` (AD-90), so
+ * the build would fail on the cycle (AD-67's acyclicity gate).
  */
 
 const SRC_ROOT = join(import.meta.dirname, '..', 'src');
@@ -48,9 +52,10 @@ describe('@ndigo/boot platform boundary', () => {
         expect(violations).toEqual([]);
     });
 
-    test('package.json has no runtime platform-node dependency', () => {
+    test('package.json carries no platform-node/platform-web entry at all', () => {
         const manifest = JSON.parse(readFileSync(join(import.meta.dirname, '..', 'package.json'), 'utf-8'));
-        const runtime = { ...manifest.dependencies, ...manifest.peerDependencies };
-        expect(runtime['@ndigo/platform-node']).toBeUndefined();
+        const all = { ...manifest.dependencies, ...manifest.peerDependencies, ...manifest.devDependencies };
+        expect(all['@ndigo/platform-node']).toBeUndefined();
+        expect(all['@ndigo/platform-web']).toBeUndefined();
     });
 });

@@ -16,6 +16,16 @@ import { newCommand } from './commands/new.js';
 import { generateCommand } from './commands/generate.js';
 import { inspectCommand } from './commands/inspect.js';
 import { doctorCommand } from './commands/doctor.js';
+import { infoCommand } from './commands/info.js';
+import { buildScriptCommand as buildCmd } from './commands/build.js';
+import { testCommand } from './commands/test.js';
+import { lintCommand } from './commands/lint.js';
+import { formatCommand } from './commands/format.js';
+import { typecheckCommand } from './commands/typecheck.js';
+import { cleanCommand } from './commands/clean.js';
+import { configCommand } from './commands/config.js';
+import { routesCommand } from './commands/routes.js';
+import { completionCommand } from './commands/completion.js';
 import { dbMigrateCommand } from './commands/db/migrate.js';
 import { dbStatusCommand } from './commands/db/status.js';
 import { dbGenerateCommand } from './commands/db/generate.js';
@@ -60,6 +70,16 @@ export function buildCliApp() {
                 generate: generateCommand,
                 inspect: inspectCommand,
                 doctor: doctorCommand,
+                info: infoCommand,
+                build: buildCmd,
+                test: testCommand,
+                lint: lintCommand,
+                format: formatCommand,
+                typecheck: typecheckCommand,
+                clean: cleanCommand,
+                config: configCommand,
+                routes: routesCommand,
+                completion: completionCommand,
                 db: dbRouteMap,
             },
             aliases: { g: 'generate' },

@@ -7,8 +7,6 @@
  * therefore a failing test rather than a comment.
  *
  * @module blue-cli
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, expect, test } from 'vitest';

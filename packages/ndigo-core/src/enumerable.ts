@@ -4,8 +4,8 @@ import { like } from '@ndigo/util/types';
 
 /**
  * Represents an object that can be iterated over, providing methods to access its entries, keys, and values.
- * @template K - The type of the keys in the enumerable collection.
- * @template V - The type of the values in the enumerable collection.
+ * @typeParam K - The type of the keys in the enumerable collection.
+ * @typeParam V - The type of the values in the enumerable collection.
  */
 export interface Enumerable<K extends PropertyKey, V> {
     /**

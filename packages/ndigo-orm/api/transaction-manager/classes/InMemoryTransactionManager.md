@@ -22,10 +22,6 @@ Overlapping `run()` calls are rejected (the backing store can only hold one
 snapshot at a time); a second concurrent call fails loud rather than
 silently discarding the first run's commits on rollback (DAT-F2).
 
-## Since
-
-1.0.0
-
 ## Implements
 
 - [`TransactionManager`](../interfaces/TransactionManager.md)
@@ -54,8 +50,6 @@ The in-memory data source to snapshot/roll back.
 
 > **isActive**(): `boolean`
 
-Returns `true` if a transaction is currently active.
-
 #### Returns
 
 `boolean`
@@ -70,10 +64,6 @@ Returns `true` if a transaction is currently active.
 
 > **run**\<`T`\>(`fn`): `Promise`\<`T`\>
 
-Executes `fn` within a transaction.
-If `fn` throws or rejects, the transaction is rolled back.
-Otherwise, the transaction is committed.
-
 #### Type Parameters
 
 ##### T
@@ -86,13 +76,9 @@ Otherwise, the transaction is committed.
 
 () => `T` \| `Promise`\<`T`\>
 
-The work to execute inside the transaction.
-
 #### Returns
 
 `Promise`\<`T`\>
-
-A promise that resolves to the return value of `fn`.
 
 #### Implementation of
 

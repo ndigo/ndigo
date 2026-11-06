@@ -43,8 +43,6 @@ complete response document.
 
 `Promise`\<[`RenderResult`](#)\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `ProducerView.renderTo`

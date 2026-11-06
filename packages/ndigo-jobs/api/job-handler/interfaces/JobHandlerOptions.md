@@ -9,10 +9,6 @@
 Per-handler policy overrides. Either value, when set, wins over the
 per-request value stored on the job record (AD-72 D-4).
 
-## Since
-
-1.0.0
-
 ## Extended by
 
 - [`JobHandlerMetadata`](JobHandlerMetadata.md)

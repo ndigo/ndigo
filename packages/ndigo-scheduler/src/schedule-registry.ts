@@ -1,4 +1,5 @@
 /**
+ * Schedule registry: collects and manages declared schedules.
  */
 import { FrameworkError, getSymbolMetadata } from '@ndigo/core';
 import type { AsyncDestroyable } from '@ndigo/factory';
@@ -90,7 +91,7 @@ export class ScheduleRegistry implements AsyncDestroyable {
      * Idempotent; scans once per lifecycle (double-init guard on the
      * underlying scan).
      *
-     * @throws {FrameworkError} When no context is bound or the context has
+     * @throws When no context is bound or the context has
      *   no `taskScheduler` bean (the node platform provides one).
      */
     start(): void {
@@ -164,7 +165,7 @@ export class ScheduleRegistry implements AsyncDestroyable {
      *
      * @param applicationContext - The context whose beans are scanned.
      * @param scheduler - The scheduler tasks are registered with.
-     * @throws {FrameworkError} When already initialized or a scheduled
+     * @throws When already initialized or a scheduled
      *   method's owner cannot be resolved.
      */
     scan(applicationContext: ApplicationContext, scheduler: TaskScheduler): void {

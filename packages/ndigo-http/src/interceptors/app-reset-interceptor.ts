@@ -8,13 +8,13 @@ import { HTTPInit, ResponseAwareHTTPInterceptor } from '../http';
 export type AppResetInit = HTTPInit & {
     /**
      * The header name to check for an app reset signal.
-     * @default 'Alt-Location'
+     * @defaultValue 'Alt-Location'
      */
     appResetHeader?: string;
 
     /**
      * The status code that triggers an app reset.
-     * @default 205
+     * @defaultValue 205
      */
     appResetCode?: number;
 };

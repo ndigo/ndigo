@@ -297,8 +297,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-     * @protected
-     * @param {module:http.HttpInterceptor} interceptor
+     * @param interceptor - The interceptor to check.
      */
     _checkInterceptorType(interceptor: HTTPInterceptor): void {
         if (!this.#hasCompletionAwareInterceptors) {

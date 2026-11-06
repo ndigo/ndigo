@@ -1,5 +1,6 @@
 /**
  */
+
 import { RouteHandlerInterceptor } from './route-handler-interceptor';
 import { resolvePreHandleOutcome } from './route-handler-denial';
 import { ModelAndView } from './model-and-view';
@@ -63,9 +64,6 @@ export default class RouteHandlerExecutionChain {
     }
 
     /**
-     * @param {module:router.RouteHandlerInterceptor} interceptor
-     */
-    /**
      * Add a single interceptor to the chain.
      *
      * @param interceptor - The interceptor to add.
@@ -80,9 +78,6 @@ export default class RouteHandlerExecutionChain {
     }
 
     /**
-     * @param {Array<module:router.RouteHandlerInterceptor>} interceptors
-     */
-    /**
      * Add multiple interceptors to the chain.
      *
      * @param interceptors - The interceptors to add.
@@ -96,10 +91,6 @@ export default class RouteHandlerExecutionChain {
         }
     }
 
-    /**
-     * @param {module:router.Route} route
-     * @param {module:dispatcher.ModelAndView} mv
-     */
     /**
      * Run post-handle callbacks in registration order.
      *
@@ -120,7 +111,7 @@ export default class RouteHandlerExecutionChain {
 
     /**
      * Run pre-handle callbacks until one denies. Denial outcomes (bare
-     * `false` or an explicit {@link route-handler-denial.InterceptorDenial | InterceptorDenial}) are recorded on the
+     * `false` or an explicit {@link "route-handler-denial".InterceptorDenial | InterceptorDenial}) are recorded on the
      * route via `resolvePreHandleOutcome`.
      *
      * @param route - The current route.
@@ -143,10 +134,6 @@ export default class RouteHandlerExecutionChain {
         return true;
     }
 
-    /**
-     * @param {module:router.Route} route
-     * @param {Error} error
-     */
     /**
      * Run completion callbacks in reverse order.
      *

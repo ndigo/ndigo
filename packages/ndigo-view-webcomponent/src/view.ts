@@ -41,7 +41,7 @@ export class WebComponentView extends AbstractView {
         this.tagName = tagName;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     protected async _renderView(viewModel: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (!target) {
             throw new IllegalStateError('WebComponentView requires a ViewTarget to render.');

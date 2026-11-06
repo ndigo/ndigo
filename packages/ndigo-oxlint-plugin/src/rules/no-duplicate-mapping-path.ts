@@ -1,8 +1,5 @@
 /**
  * Rule that flags duplicate route-mapping paths within a class.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 
@@ -63,7 +60,7 @@ interface MappingPathLiteral {
  * Extracts the statically-known path from an argument node.
  *
  * Accepts a plain string literal and a no-substitution template literal
- * (`` `/a/b` ``) — the latter is a literal at runtime, so it is a legitimate,
+ * (`/a/b`) — the latter is a literal at runtime, so it is a legitimate,
  * statically-comparable spelling. A template with substitutions, an identifier,
  * or any other expression is not statically known.
  *
@@ -204,7 +201,7 @@ function resolveDecoratorName(name: string, aliases: Map<string, string>): strin
  * Extracts the mapping path from a decorator, when it is a static string.
  *
  * Handles the direct-string form (`@getMapping('/a')`), the no-substitution
- * template form (`` @getMapping(`/a`) ``), the configuration form
+ * template form (`@getMapping(/a)`), the configuration form
  * (`@routeMapping({ value: '/a' })`), and aliased callees (`@g('/a')` where `g`
  * is an import or `const` alias of a mapping decorator). Dynamic expressions
  * (identifiers, templates with substitutions) are not statically known and are

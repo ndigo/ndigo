@@ -1,4 +1,5 @@
 /**
+ * Replaces accented characters with their ASCII equivalents.
  */
 const accented = /[\xC0-\xFF\u0152\u0153\u0160\u0161\u0178\u0192\uA732\uA733]/g,
     combiningCharacters = /[\u0300-\u036f]/g,
@@ -19,12 +20,15 @@ const accented = /[\xC0-\xFF\u0152\u0153\u0160\u0161\u0178\u0192\uA732\uA733]/g,
     decomposeCombinedGraphemes = (text: string): string => text.normalize('NFD'),
     /**
      * Replace accented chars with regular ones
-     * @category String
-     * @param {string} value The string to be transformed.
-     * @returns {string} The `value` with the accented characters replaced with regular ones.
+     *
+     * @param value - The string to be transformed.
+     * @returns The `value` with the accented characters replaced with regular ones.
+     *
      * @example
-     * replaceDiacritics( "spéçïãl çhârs" );
-     * //=> "special chars"
+     * ```ts
+     * replaceDiacritics("spéçïãl çhârs"); //=> "special chars"
+     * ```
+     *
      * @see {@link https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript}
      */
     hasAccentedChars = (value: string) => {

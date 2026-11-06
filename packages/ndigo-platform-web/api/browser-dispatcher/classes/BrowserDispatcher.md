@@ -190,8 +190,6 @@ entry.
 
 > **get** **\[toStringTag\]**(): `string`
 
-##### Inherit Doc
-
 ##### Returns
 
 `string`

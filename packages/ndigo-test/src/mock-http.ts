@@ -273,7 +273,7 @@ export class MockHTTP {
     readonly #limits: ResolvedHTTPRequestLimits;
 
     /**
-     * @param arg (application dispatcher) - A configured node dispatcher, or an app with one.
+     * @param arg - (application dispatcher) - A configured node dispatcher, or an app with one.
      * @param options - Optional harness configuration. `multipartLimits` is
      * passed through to the multipart parser, mirroring
      * `NodeHTTPServerAdapterOptions.multipart`; `limits` are the transport

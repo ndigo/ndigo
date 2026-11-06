@@ -30,12 +30,8 @@ element, sets `.model`, and lets `connectedCallback` run.
 ## Example
 
 ```ts
-return new ModelAndView(new IslandView('todo-app'), { items: [...], filter: 'all' });
+const view = new ModelAndView(new IslandView('todo-app'), { items: [], filter: 'all' });
 ```
-
-## Since
-
-1.0.0
 
 ## Extends
 

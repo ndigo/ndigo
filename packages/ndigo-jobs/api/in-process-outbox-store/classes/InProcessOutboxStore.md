@@ -11,10 +11,6 @@ transaction to join**: `append` succeeds unconditionally, so it is a test
 double and development default, not a correctness guarantee (AD-72 D-6).
 Entries vanish with the process.
 
-## Since
-
-1.0.0
-
 ## Implements
 
 - [`OutboxStore`](../../outbox/interfaces/OutboxStore.md)
@@ -43,13 +39,9 @@ Clock/id overrides for deterministic tests.
 
 > **append**(`input`): `Promise`\<[`OutboxEntry`](../../outbox/interfaces/OutboxEntry.md)\>
 
-Records one side effect.
-
 #### Parameters
 
 ##### input
-
-Type and payload to record.
 
 ###### payload?
 
@@ -63,8 +55,6 @@ Type and payload to record.
 
 `Promise`\<[`OutboxEntry`](../../outbox/interfaces/OutboxEntry.md)\>
 
-The stored entry (with id and `occurredAt`).
-
 #### Implementation of
 
 [`OutboxStore`](../../outbox/interfaces/OutboxStore.md).[`append`](../../outbox/interfaces/OutboxStore.md#append)
@@ -75,22 +65,15 @@ The stored entry (with id and `occurredAt`).
 
 > **claimPending**(`options?`): `Promise`\<[`OutboxEntry`](../../outbox/interfaces/OutboxEntry.md)[]\>
 
-Leases up to `limit` unpublished entries whose lease is absent or
-expired, in `occurredAt` order.
-
 #### Parameters
 
 ##### options?
 
 [`OutboxClaimOptions`](../../outbox/interfaces/OutboxClaimOptions.md) = `{}`
 
-Claim window.
-
 #### Returns
 
 `Promise`\<[`OutboxEntry`](../../outbox/interfaces/OutboxEntry.md)[]\>
-
-The claimed entries.
 
 #### Implementation of
 
@@ -101,8 +84,6 @@ The claimed entries.
 ### close()
 
 > **close**(): `Promise`\<`void`\>
-
-Releases store resources (idempotent).
 
 #### Returns
 
@@ -118,15 +99,11 @@ Releases store resources (idempotent).
 
 > **markPublished**(`id`): `Promise`\<`void`\>
 
-Marks an entry as published (terminal for relaying; may be retained).
-
 #### Parameters
 
 ##### id
 
 `string`
-
-The entry identifier.
 
 #### Returns
 
@@ -142,21 +119,15 @@ The entry identifier.
 
 > **prunePublished**(`olderThanMs`): `Promise`\<`number`\>
 
-Deletes published entries older than the given age.
-
 #### Parameters
 
 ##### olderThanMs
 
 `number`
 
-Age in milliseconds.
-
 #### Returns
 
 `Promise`\<`number`\>
-
-Number of pruned entries.
 
 #### Implementation of
 
@@ -168,13 +139,9 @@ Number of pruned entries.
 
 > **size**(): `Promise`\<`number`\>
 
-Number of unpublished entries.
-
 #### Returns
 
 `Promise`\<`number`\>
-
-The pending count.
 
 #### Implementation of
 

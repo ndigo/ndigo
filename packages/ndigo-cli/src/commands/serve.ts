@@ -3,9 +3,6 @@
  * `SIGINT`/`SIGTERM` relays to the app (which runs its own graceful
  * shutdown); `--cluster <n>` replicates it across N worker slots with slot
  * env and `PORT` derivation.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand, numberParser } from '@stricli/core';
 import { resolveAppDir, runAppSupervised } from '../helpers/app-scripts.js';

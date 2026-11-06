@@ -57,7 +57,7 @@ export class DOMElementViewTarget implements DOMViewTarget, Destroyable {
      *
      * @param host - The host node that will contain rendered content.
      * @param options - Event mapping used to bridge DOM events to the application context.
-     * @throws {TypeError} When `host` is null or undefined.
+     * @throws When `host` is null or undefined.
      */
     constructor(
         host: RenderHost | null,
@@ -141,7 +141,7 @@ export class DOMElementViewTarget implements DOMViewTarget, Destroyable {
      * Prepares the target for a new render pass by clearing existing content.
      *
      * @param route - The active route associated with the render pass.
-     * @throws {IllegalStateError} When the target has already been destroyed.
+     * @throws When the target has already been destroyed.
      */
     prepare(route: Route): void {
         void route;
@@ -162,7 +162,7 @@ export class DOMElementViewTarget implements DOMViewTarget, Destroyable {
      * @param output - The rendered DOM subtree to attach.
      * @param model - The model passed through from the view engine.
      * @param route - The active route associated with the render pass.
-     * @throws {IllegalStateError} When the target has already been destroyed.
+     * @throws When the target has already been destroyed.
      */
     commit(output: HTMLElement, model: unknown, route: Route): void {
         if (this.destroyed) {

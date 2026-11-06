@@ -24,7 +24,3 @@ the work is done. Failures (throw / rejection) drive the retry policy.
 ## Returns
 
 `void` \| `Promise`\<`void`\>
-
-## Since
-
-1.0.0

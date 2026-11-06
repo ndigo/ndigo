@@ -4,9 +4,6 @@
  * declared script they run and their help text (review REV-013). The
  * shared `dir` positional lives here too so new script-fronting commands
  * cannot drift from it.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runAppOnce } from '../helpers/app-scripts.js';

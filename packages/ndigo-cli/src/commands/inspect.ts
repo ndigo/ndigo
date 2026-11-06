@@ -3,9 +3,6 @@
  * AD-70 introspection entry prints the app manifest without binding a
  * port). The introspection logic stays in `@ndigo/inspect`; the app owns
  * the wiring (AD-75 D-3, AD-70).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runAppOnce } from '../helpers/app-scripts.js';

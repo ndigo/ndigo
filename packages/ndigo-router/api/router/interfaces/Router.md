@@ -8,10 +8,6 @@
 
 Defines the core interface for a router, providing access to the current route and a mechanism to refresh it.
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### callback
@@ -49,10 +45,6 @@ The target path to navigate to.
 `boolean` \| `void` \| `Promise`\<`void`\>
 
 `void`, `boolean` (whether a mount matched), or a `Promise<void>` depending on the implementation.
-
-#### Since
-
-1.0.0
 
 ***
 

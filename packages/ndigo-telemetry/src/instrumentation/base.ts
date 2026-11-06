@@ -1,5 +1,4 @@
 /**
- * @note OTel 2.x sweep (2026-09-15): all `@opentelemetry/*` usages verified
  *   against the installed 2.x SDK line (`@opentelemetry/api` 1.9,
  *   `sdk-*` 2.11, instrumentation 0.222). Findings: `InMemoryMetricReader`
  *   was dropped (specs now use `InMemoryMetricExporter` +
@@ -167,7 +166,7 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
         };
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     protected init(): InstrumentationModuleDefinition[] {
         return [];
     }

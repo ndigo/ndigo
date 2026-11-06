@@ -27,7 +27,7 @@ Factory function: Create a query parameter extractor
 ## Example
 
 ```ts
-`parameters`({
+parameters({
   page: queryValue('page'),
   limit: queryValue('limit', { required: true, defaultValue: '10' })
 })

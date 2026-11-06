@@ -46,7 +46,10 @@ for (const pkg of readdirSync(PACKAGES)) {
         let m;
         let idx = 0;
         while ((m = exampleRe.exec(text)) !== null) {
-            const code = m[1];
+            const code = m[1]
+                .split('\n')
+                .map((line) => line.replace(/^\s*\*\s?/, ''))
+                .join('\n');
             idx++;
             blocks++;
             const res = ts.transpileModule(code, {

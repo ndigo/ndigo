@@ -60,7 +60,7 @@ new () => `object`
 ## Example
 
 ```ts
-`parameters`({
+parameters({
   user: dataBinderValue('body'),
   profile: dataBinderValue('body', ProfileForm, { prefix: 'profile.' })
 })

@@ -125,7 +125,7 @@ export class HostManager {
      * Registers a feature in one call: mount manager + routing registry,
      * with mount-on-activate / unmount-on-deactivate wiring.
      *
-     * @throws {TypeError} If a feature with the same name is already registered.
+     * @throws If a feature with the same name is already registered.
      */
     registerFeature(options: HostRegistrationOptions): this {
         if (this.#names.has(options.name)) {

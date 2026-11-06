@@ -74,11 +74,7 @@ class RatingInput extends AsFormAssociated(AbstractWebComponent) {
     set model(model: { score: number }) {
         this.value = String(model.score);
     }
-    render(): void { … }
+    render(): void {}
 }
 customElements.define('rating-input', RatingInput); // <form><rating-input name="rating" value="5">
 ```
-
-## Since
-
-1.0.0

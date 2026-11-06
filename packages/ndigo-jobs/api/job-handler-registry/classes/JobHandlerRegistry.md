@@ -16,14 +16,6 @@ Holds the job-type → handler mapping. Two registration paths (AD-72 D-5):
 Duplicate types, handlers on class (not instance) registrations, and
 non-callable members all fail loud at start.
 
-## Since
-
-1.0.0
-
-## Implements
-
-- `AsyncDestroyable`
-
 ## Constructors
 
 ### Constructor
@@ -41,10 +33,6 @@ non-callable members all fail loud at start.
 > **destroyed**: `boolean` = `false`
 
 Whether this registry has been destroyed.
-
-#### Implementation of
-
-`AsyncDestroyable.destroyed`
 
 ***
 
@@ -97,10 +85,6 @@ Container teardown: releases the context and registrations.
 #### Returns
 
 `Promise`\<`void`\>
-
-#### Implementation of
-
-`AsyncDestroyable.destroy`
 
 ***
 

@@ -6,6 +6,8 @@
 
 # index
 
+Router abstractions and implementations for client-side navigation.
+
 ## References
 
 ### AbstractRouter

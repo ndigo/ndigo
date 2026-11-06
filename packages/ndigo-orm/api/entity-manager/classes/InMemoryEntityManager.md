@@ -55,36 +55,19 @@ Clears all managed entities and resets identity counters in the in-memory store.
 
 > **fetchRelation**(`entity`, `relationName`): `unknown`
 
-Loads one declared relation of an entity: the related entity for the
-owning side (many-to-one, one-to-one) or the related entities for the
-inverse side (one-to-many, one-to-one). Does not mutate the entity.
-
 #### Parameters
 
 ##### entity
 
 `object`
 
-The entity whose relation is loaded.
-
 ##### relationName
 
 `string`
 
-The declared relation field name.
-
 #### Returns
 
 `unknown`
-
-The related entity, an array of related entities, or
-  `undefined`/`[]` when nothing relates.
-
-#### Throws
-
-When the relation or its join column is not
-  declared, or for many-to-many relations (join-table semantics not
-  implemented).
 
 #### Implementation of
 

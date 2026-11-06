@@ -8,14 +8,6 @@
 
 Provides an isomorphic abstraction over DOM parsing and element creation.
 
-## Since
-
-1.0.0
-
-## Author
-
-Jeff Rose
-
 ## Methods
 
 ### createElement()

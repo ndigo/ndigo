@@ -1,5 +1,6 @@
 /**
  */
+
 import { ApplicationContext } from '@ndigo/context';
 import { isString } from '@ndigo/util/types';
 import { AbstractPathHandlerMapping } from './abstract-path-handler-mapping';
@@ -10,8 +11,6 @@ const { keys } = Object;
 
 /**
  * Implementation of the {@link RouteHandlerMapping|HandlerMapping} interface to map from paths to handlers.
- * @param {module:core.ApplicationContext} [context]
- * @param {Map<external:string, module:dispatcher.MaybeHandler>} [mappings]
  */
 /**
  * Map handlers from explicit path registrations.

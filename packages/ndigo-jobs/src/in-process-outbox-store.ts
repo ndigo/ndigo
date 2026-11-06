@@ -19,8 +19,6 @@ interface StoredOutboxEntry {
 
 /**
  * Options for {@link InProcessOutboxStore}.
- *
- * @since 1.0.0
  */
 export interface InProcessOutboxStoreOptions {
     /** Clock override for deterministic tests; defaults to `Date.now`. */
@@ -37,8 +35,6 @@ const DEFAULT_LEASE_MS = 60_000;
  * transaction to join**: `append` succeeds unconditionally, so it is a test
  * double and development default, not a correctness guarantee (AD-72 D-6).
  * Entries vanish with the process.
- *
- * @since 1.0.0
  */
 export class InProcessOutboxStore implements OutboxStore {
     readonly #entries = new Map<JobId, StoredOutboxEntry>();
@@ -54,7 +50,7 @@ export class InProcessOutboxStore implements OutboxStore {
         this.#idFactory = options.idFactory ?? randomUUID;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async append(input: { type: string; payload?: unknown }): Promise<OutboxEntry> {
         this.#assertOpen();
         if (
@@ -75,7 +71,7 @@ export class InProcessOutboxStore implements OutboxStore {
         return structuredClone(entry);
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async claimPending(options: OutboxClaimOptions = {}): Promise<OutboxEntry[]> {
         this.#assertOpen();
         const limit = options.limit ?? DEFAULT_CLAIM_LIMIT;
@@ -108,7 +104,7 @@ export class InProcessOutboxStore implements OutboxStore {
         return claimed;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async markPublished(id: JobId): Promise<void> {
         this.#assertOpen();
         const stored = this.#entries.get(id);
@@ -117,7 +113,7 @@ export class InProcessOutboxStore implements OutboxStore {
         }
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async prunePublished(olderThanMs: number): Promise<number> {
         this.#assertOpen();
         const cutoff = this.#clock() - olderThanMs;
@@ -131,7 +127,7 @@ export class InProcessOutboxStore implements OutboxStore {
         return pruned;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async size(): Promise<number> {
         this.#assertOpen();
         let pending = 0;
@@ -143,7 +139,7 @@ export class InProcessOutboxStore implements OutboxStore {
         return pending;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async close(): Promise<void> {
         this.#closed = true;
         this.#entries.clear();

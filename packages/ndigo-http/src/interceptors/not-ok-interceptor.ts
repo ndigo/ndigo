@@ -9,9 +9,9 @@ import ResponseError from '../response-error';
 export class NotOKInterceptor implements ResponseAwareHTTPInterceptor {
     /**
 
-     * @param {Response} response The HTTP response
-     * @param {module:http.HTTPInit} settings The HTTP request settings
-     * @returns {Promise<external:void>}
+     * @param response - The HTTP response
+     * @param settings - The HTTP request settings
+     * @returns
      */
     async postResponse(response: Response, settings: HTTPInit): Promise<Response | void> {
         if (!response.ok) {

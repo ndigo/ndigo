@@ -18,7 +18,7 @@ export interface Parser<T = unknown> {
  * For standalone utility functions, use the `stringify*` or `to*` naming convention
  * and type with `Converter<T, string>` directly (imported from `'@ndigo/core'`).
  *
- * @template T The type of the value to stringify.
+ * @typeParam T - The type of the value to stringify.
  */
 export interface Stringifier<T = unknown> {
     /**

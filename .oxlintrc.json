@@ -22,7 +22,10 @@
   ],
   "jsPlugins": [
     "./packages/ndigo-oxlint-plugin/lib/index.js",
-    { "name": "internal", "specifier": "./src/oxlint/plugin.ts" }
+    {
+      "name": "internal",
+      "specifier": "./src/oxlint/plugin.ts"
+    }
   ],
   "rules": {
     "no-unused-vars": "off",
@@ -123,11 +126,32 @@
   },
   "overrides": [
     {
-      "files": ["src/oxlint/**/*.ts"],
-      "rules": { "internal/tsdoc-syntax": "error" }
+      "files": [
+        "packages/ndigo-core/src/**/*.ts",
+        "packages/ndigo-http/src/**/*.ts",
+        "packages/ndigo-router/src/**/*.ts",
+        "packages/ndigo-util/src/**/*.ts"
+      ],
+      "rules": {
+        "internal/tsdoc-syntax": "error"
+      }
     },
     {
-      "files": ["**/*.spec.ts", "**/*.test.ts", "**/test/**/*.ts", "**/test/**/*.js", "**/test/**/*.mjs"],
+      "files": [
+        "src/oxlint/**/*.ts"
+      ],
+      "rules": {
+        "internal/tsdoc-syntax": "error"
+      }
+    },
+    {
+      "files": [
+        "**/*.spec.ts",
+        "**/*.test.ts",
+        "**/test/**/*.ts",
+        "**/test/**/*.js",
+        "**/test/**/*.mjs"
+      ],
       "rules": {
         "@typescript-eslint/no-unused-vars": "off",
         "no-shadow": "off",
@@ -138,7 +162,11 @@
       }
     },
     {
-      "files": ["apps/**/*.ts", "apps/**/*.js", "apps/**/*.mjs"],
+      "files": [
+        "apps/**/*.ts",
+        "apps/**/*.js",
+        "apps/**/*.mjs"
+      ],
       "rules": {
         "internal/no-browser-globals-in-isomorphic": "off"
       }

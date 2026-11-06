@@ -6,6 +6,7 @@
  */
 import { FrameworkError, getSymbolMetadata } from '@ndigo/core';
 import type { ApplicationContext } from '@ndigo/context';
+import type { AsyncDestroyable } from '@ndigo/factory';
 import { JOB_HANDLER_METADATA_PREFIX, type JobHandler, type JobHandlerMetadata } from './job-handler';
 
 /**
@@ -36,7 +37,7 @@ export interface RegisteredJobHandler {
  *
  * @since 1.0.0
  */
-export class JobHandlerRegistry {
+export class JobHandlerRegistry implements AsyncDestroyable {
     #applicationContext: ApplicationContext | null = null;
     readonly #handlers = new Map<string, RegisteredJobHandler>();
 

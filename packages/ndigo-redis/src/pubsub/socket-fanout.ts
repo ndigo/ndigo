@@ -6,6 +6,7 @@
  */
 import { randomUUID } from 'node:crypto';
 import type { SocketFanout, SocketFanoutMessage, SocketFanoutScope } from '@ndigo/socket';
+import type { AsyncCloseable } from '@ndigo/factory';
 import { RedisConnection } from '../connection';
 
 /**
@@ -98,7 +99,7 @@ export function decodeSocketFanoutEnvelope(
 }
 
 /** Redis Pub/Sub live fan-out: at-most-once, no replay, reconnect, or offline queue. */
-export class RedisSocketFanout implements SocketFanout {
+export class RedisSocketFanout implements SocketFanout, AsyncCloseable {
     readonly #publisher: RedisConnection;
     readonly #subscriber: RedisConnection;
     readonly #namespace: string;

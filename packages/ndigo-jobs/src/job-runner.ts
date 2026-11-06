@@ -5,6 +5,7 @@
  * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
+import type { AsyncCloseable } from '@ndigo/factory';
 import { getErrorMessage } from '@ndigo/util';
 import { getLogger, type Logger } from '@ndigo/log';
 import type { ApplicationContext } from '@ndigo/context';
@@ -73,7 +74,7 @@ export interface JobRunnerOptions {
  *
  * @since 1.0.0
  */
-export class JobRunner {
+export class JobRunner implements AsyncCloseable {
     readonly phase = 10;
     readonly isAutoStartup: boolean;
     #context: ApplicationContext | null = null;

@@ -18,6 +18,7 @@
  * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
+import type { AsyncCloseable } from '@ndigo/factory';
 import { getLogger } from '@ndigo/log';
 import {
     validateRateLimitPolicy,
@@ -64,7 +65,7 @@ export interface RedisRateLimiterOptions {
  * One handle per namespace; construct independently in every node — the
  * Redis keys are the shared truth.
  */
-export class RedisRateLimiter implements RateLimiter {
+export class RedisRateLimiter implements RateLimiter, AsyncCloseable {
     /** Backend identifier for diagnostics. */
     readonly kind = 'redis';
 

@@ -4,6 +4,8 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import type { AsyncCloseable } from '@ndigo/factory';
+
 import type { ClaimOptions, JobId, JobRecord, JobRequest } from './job';
 
 /**
@@ -27,7 +29,7 @@ import type { ClaimOptions, JobId, JobRecord, JobRequest } from './job';
  *
  * @since 1.0.0
  */
-export interface JobDriver {
+export interface JobDriver extends AsyncCloseable {
     /** Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`). */
     readonly kind: string;
 

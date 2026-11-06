@@ -4,6 +4,8 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import type { AsyncCloseable } from '@ndigo/factory';
+
 import type { JobId } from './job';
 import type { JobQueue } from './job-queue';
 
@@ -50,7 +52,7 @@ export interface OutboxClaimOptions {
  *
  * @since 1.0.0
  */
-export interface OutboxStore {
+export interface OutboxStore extends AsyncCloseable {
     /**
      * Records one side effect.
      *

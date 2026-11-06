@@ -5,6 +5,7 @@
 import { EventBridgeViewTarget } from '@ndigo/view';
 import { Route } from '@ndigo/router';
 import { IllegalStateError } from '@ndigo/core';
+import type { Destroyable } from '@ndigo/factory';
 import { EventEmitter } from '@ndigo/context';
 import { ModelAwareElement } from './view';
 import { DOMEventBinder } from './_dom-event-binder';
@@ -53,7 +54,7 @@ export const likeDOMViewTarget = (value: unknown): value is DOMViewTarget => {
 /**
  * View target implementation that renders into a host DOM node.
  */
-export class DOMElementViewTarget implements DOMViewTarget {
+export class DOMElementViewTarget implements DOMViewTarget, Destroyable {
     #host: RenderHost;
     #eventMap: Record<string, string>;
     #applicationContext: EventEmitter | null;

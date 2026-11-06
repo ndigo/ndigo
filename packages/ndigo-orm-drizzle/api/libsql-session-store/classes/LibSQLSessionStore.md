@@ -22,6 +22,7 @@ Stop/drain consumers before close/dispose; pending operations are not drained.
 ## Implements
 
 - [`SessionStore`](#)
+- `unknown`
 
 ## Constructors
 

@@ -3,6 +3,7 @@
  * @author Jeff Rose
  */
 import { createClient, type RedisClientType } from '@redis/client';
+import type { AsyncCloseable } from '@ndigo/factory';
 
 /** Standalone node-redis client with default string replies (no keyPrefix). */
 export type RedisClient = RedisClientType;
@@ -18,7 +19,7 @@ export type RedisConnectionOptions =
  * offline queues; call and await connect() before use. Errors are observable
  * through lastError and command rejections, never logged with credentials.
  */
-export class RedisConnection {
+export class RedisConnection implements AsyncCloseable {
     readonly #client: RedisClient;
     readonly #owned: boolean;
     readonly #pending = new Set<Promise<unknown>>();

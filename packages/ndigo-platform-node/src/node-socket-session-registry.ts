@@ -5,6 +5,7 @@
  * @author Jeff Rose
  */
 import type { SocketSession, SocketSessionRegistry } from '@ndigo/dispatcher';
+import type { AsyncCloseable } from '@ndigo/factory';
 import type { SocketFanout } from '@ndigo/socket';
 import type { WebSocket } from 'ws';
 import { assertCloseFrame } from './node-socket-session';
@@ -154,7 +155,7 @@ export function resolveSocketRegistryOptions(
  * The implementation is registered as a context bean by
  * `NodeAutoConfiguration`; any service can inject it and push to a room.
  */
-export class NodeSocketSessionRegistry implements SocketSessionRegistry {
+export class NodeSocketSessionRegistry implements SocketSessionRegistry, AsyncCloseable {
     #sessions: Map<SocketSession, string> = new Map();
     /** Auto-join path index: path → sessions (mirror of `#sessions`, O(n)→O(set-size)). */
     #paths: Map<string, Set<SocketSession>> = new Map();

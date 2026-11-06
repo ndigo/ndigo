@@ -5,6 +5,7 @@
  * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
+import type { AsyncCloseable } from '@ndigo/factory';
 import { getErrorMessage } from '@ndigo/util';
 import { getLogger, type Logger } from '@ndigo/log';
 import {
@@ -50,7 +51,7 @@ export interface OutboxRelayOptions {
  *
  * @since 1.0.0
  */
-export class OutboxRelay {
+export class OutboxRelay implements AsyncCloseable {
     readonly phase = 10;
     readonly isAutoStartup = true;
     readonly #store: OutboxStore;

@@ -20,6 +20,10 @@ the standalone/test path.
 
 1.0.0
 
+## Implements
+
+- `AsyncCloseable`
+
 ## Constructors
 
 ### Constructor
@@ -75,6 +79,10 @@ Container teardown: stops and awaits the pass in flight.
 #### Returns
 
 `Promise`\<`void`\>
+
+#### Implementation of
+
+`AsyncCloseable.close`
 
 ***
 

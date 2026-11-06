@@ -22,6 +22,10 @@ idempotently.
 
 1.0.0
 
+## Extends
+
+- `AsyncCloseable`
+
 ## Methods
 
 ### append()
@@ -84,6 +88,10 @@ Releases store resources (idempotent).
 #### Returns
 
 `Promise`\<`void`\>
+
+#### Overrides
+
+`AsyncCloseable.close`
 
 ***
 

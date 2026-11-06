@@ -28,6 +28,10 @@ Implementations are registered under the `jobDriver` bean; the default is
 
 1.0.0
 
+## Extends
+
+- `AsyncCloseable`
+
 ## Properties
 
 ### kind
@@ -72,6 +76,10 @@ operations on a closed driver fail loud.
 #### Returns
 
 `Promise`\<`void`\>
+
+#### Overrides
+
+`AsyncCloseable.close`
 
 ***
 

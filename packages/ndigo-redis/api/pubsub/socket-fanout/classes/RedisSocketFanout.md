@@ -11,6 +11,7 @@ Redis Pub/Sub live fan-out: at-most-once, no replay, reconnect, or offline queue
 ## Implements
 
 - [`SocketFanout`](#)
+- `AsyncCloseable`
 
 ## Constructors
 
@@ -70,6 +71,10 @@ Unsubscribe all listeners, then close only the dedicated owned subscriber.
 #### Returns
 
 `Promise`\<`void`\>
+
+#### Implementation of
+
+`AsyncCloseable.close`
 
 ***
 

@@ -7,36 +7,38 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { Command, Args } from '@oclif/core';
+import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runAppOnce } from '../helpers/app-scripts.js';
 
 /**
  * The application-manifest inspection command.
  */
-export class InspectCommand extends Command {
-    static summary = 'Print the application manifest (routes, mappings, config keys)';
-    static description =
-        "Runs the app's scripts.inspect — the AD-70 introspection entry " +
-        'that builds the manifest without listening. The wiring lives in ' +
-        'the app (choose its controllers/config classes); @ndigo/inspect owns ' +
-        'the introspection.';
-
-    static examples = ['$ ndigo inspect', '$ ndigo inspect ./apps/05-ndigo-api'];
-
-    static args = {
-        dir: Args.string({
-            summary: 'Application directory (default: current directory).',
-            default: '.',
-        }),
-    };
-
-    async run(): Promise<void> {
-        const { args } = await this.parse();
-        const dir = resolveAppDir(args.dir);
+export const inspectCommand = buildCommand({
+    async func(_flags: {}, dir: string) {
+        const resolved = resolveAppDir(dir);
         process.exitCode = await runAppOnce(
-            dir,
+            resolved,
             'inspect',
             'add an "inspect" script that builds and prints the manifest, e.g. "inspect": "tsx src/inspect.ts" (AD-70)'
         );
-    }
-}
+    },
+    parameters: {
+        flags: {},
+        positional: { kind: 'tuple', parameters: [
+            {
+                parse: (value: string) => value,
+                brief: 'Application directory (default: current directory).',
+                default: '.',
+                placeholder: 'dir',
+            },
+        ] },
+    },
+    docs: {
+        brief: 'Print the application manifest (routes, mappings, config keys)',
+        fullDescription:
+            "Runs the app's scripts.inspect — the AD-70 introspection entry " +
+            'that builds the manifest without listening. The wiring lives in ' +
+            'the app (choose its controllers/config classes); @ndigo/inspect owns ' +
+            'the introspection.',
+    },
+});

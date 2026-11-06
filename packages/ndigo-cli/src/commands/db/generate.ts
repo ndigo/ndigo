@@ -12,37 +12,38 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { Command, Args } from '@oclif/core';
+import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runAppOnce } from '../../helpers/app-scripts.js';
 
 /**
  * The database generation command.
  */
-export class DbGenerateCommand extends Command {
-    static summary = 'Generate the next migration from the app’s entity metadata';
-    static description =
-        "Runs the app's scripts.db:generate under the one-shot process " +
-        'lifecycle. The generator (entities, snapshot, migrations dir) ' +
-        'belongs to the app; the CLI fronts it — the app script writes the ' +
-        'versioned migration file and rewrites db/schema.json for review.';
-    static examples = ['$ ndigo db generate', '$ ndigo db generate ./apps/05-ndigo-api'];
-
-    static flags = {};
-
-    static args = {
-        dir: Args.string({
-            summary: 'Application directory (default: current directory).',
-            default: '.',
-        }),
-    };
-
-    async run(): Promise<void> {
-        const { args } = await this.parse();
-        const dir = resolveAppDir(args.dir);
+export const dbGenerateCommand = buildCommand({
+    async func(_flags: {}, dir: string) {
+        const resolved = resolveAppDir(dir);
         process.exitCode = await runAppOnce(
-            dir,
+            resolved,
             'db:generate',
             'add a "db:generate" script, e.g. "db:generate": "tsx src/db-generate.ts"'
         );
-    }
-}
+    },
+    parameters: {
+        flags: {},
+        positional: { kind: 'tuple', parameters: [
+            {
+                parse: (value: string) => value,
+                brief: 'Application directory (default: current directory).',
+                default: '.',
+                placeholder: 'dir',
+            },
+        ] },
+    },
+    docs: {
+        brief: 'Generate the next migration from the app’s entity metadata',
+        fullDescription:
+            "Runs the app's scripts.db:generate under the one-shot process " +
+            'lifecycle. The generator (entities, snapshot, migrations dir) ' +
+            'belongs to the app; the CLI fronts it — the app script writes the ' +
+            'versioned migration file and rewrites db/schema.json for review.',
+    },
+});

@@ -172,14 +172,27 @@ const PROCESS_SPAWNER: ClusterSpawner = (options) => {
         env: { ...process.env, ...options.env },
         stdio: 'inherit',
     });
+    let exitPromise: Promise<number> | undefined;
     return {
         pid: child.pid ?? 0,
         signal: (signalName) => child.kill(signalName),
         kill: () => child.kill('SIGKILL'),
-        waitForExit: () =>
-            new Promise<number>((resolve) => {
-                child.once('exit', resolve);
-            }),
+        waitForExit: () => {
+            if (child.exitCode !== null) {
+                return Promise.resolve(child.exitCode);
+            }
+            if (child.signalCode !== null) {
+                return Promise.resolve(1);
+            }
+            if (exitPromise === undefined) {
+                exitPromise = new Promise<number>((resolve) => {
+                    child.once('exit', (code, signal) => {
+                        resolve(code ?? (signal !== null ? 1 : 0));
+                    });
+                });
+            }
+            return exitPromise;
+        },
     };
 };
 

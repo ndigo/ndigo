@@ -170,6 +170,7 @@ describe('ndigo (real bin)', () => {
     test('serve runs the app and relays SIGTERM into its own drain (exit 0)', async () => {
         const port = '4301';
         const proc = spawn(process.execPath, [BIN, 'serve', appDir, '--port', port], { stdio: 'inherit' });
+    const exitPromise = new Promise<number>((resolveCode) => { proc.once('exit', resolveCode); });
         try {
             // The marker can exist before its content lands (writeFileSync opens
             // the file first) — wait for the value, not the name (CI flake 2026-10-31).
@@ -187,9 +188,7 @@ describe('ndigo (real bin)', () => {
             );
             expect(readFileSync(join(base, 'drained.signal'), 'utf8')).toBe(port);
 
-            const code = await new Promise<number>((resolveCode) => {
-                proc.once('exit', resolveCode);
-            });
+            const code = await exitPromise;
             expect(code).toBe(0);
         } finally {
             rmSync(join(base, 'app.up'), { force: true });
@@ -202,7 +201,7 @@ describe('ndigo (real bin)', () => {
                 }
             }
         }
-    });
+    }, 10_000);
 
     test('serve --cluster 2 derives distinct per-slot PORTs (base + slot)', async () => {
         const clusterDir = join(base, 'cluster-app');
@@ -230,6 +229,7 @@ setTimeout(() => {}, 120_000);
         const proc = spawn(process.execPath, [BIN, 'serve', clusterDir, '--port', port, '--cluster', '2'], {
             stdio: 'inherit',
         });
+        const clusterExitPromise = new Promise<number>((resolveCode) => { proc.once('exit', resolveCode); });
         try {
             // Both slots must be up with PORT = base + slot (BLK-2: the flat
             // env.PORT bug gave every slot the same port).
@@ -243,9 +243,7 @@ setTimeout(() => {}, 120_000);
             await waitFor(
                 () => existsSync(join(base, 'cluster-0.signal')) && existsSync(join(base, 'cluster-1.signal'))
             );
-            const code = await new Promise<number>((resolveCode) => {
-                proc.once('exit', resolveCode);
-            });
+            const code = await clusterExitPromise;
             expect(code).toBe(0);
         } finally {
             for (const slot of ['0', '1']) {

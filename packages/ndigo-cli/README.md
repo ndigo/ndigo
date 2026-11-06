@@ -5,7 +5,7 @@
 One `ndigo` entry absorbs the bespoke per-app start scripts, fronts the
 framework-owned generators and introspection, scaffolds new applications
 (`ndigo new`), and ships the AD-74 `--cluster` surface. Built on
-`@oclif/core ^5` as an embedded library — commands/topics, typed flags,
+`@stricli/core` as an embedded library — commands/route maps, typed flags,
 help, exit codes — with the framework features (generators, introspection)
 staying in their packages.
 

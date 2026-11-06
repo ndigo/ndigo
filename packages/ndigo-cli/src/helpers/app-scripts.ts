@@ -14,10 +14,12 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve as resolvePath } from 'node:path';
 import { runCluster, type ClusterRunResult } from '@ndigo/cluster';
 
-/** An error whose process exit code is `2` (usage), per the oclif contract. */
-export function usageError(message: string): Error & { oclif?: { exit: number } } {
-    const error = new Error(message) as Error & { oclif?: { exit: number } };
+/** An error whose process exit code is `2` (usage). */
+export function usageError(message: string): Error & { oclif?: { exit: number }; exitCode?: number } {
+    const error = new Error(message) as Error & { oclif?: { exit: number }; exitCode?: number };
     error.oclif = { exit: 2 };
+    error.exitCode = 2;
+    process.exitCode = 2;
     return error;
 }
 

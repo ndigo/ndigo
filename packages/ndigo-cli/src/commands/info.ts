@@ -12,13 +12,13 @@ import { appDirPositional } from './_script-fronts.js';
  */
 export const infoCommand = buildCommand({
     async func(_flags: {}, dir: string) {
-        const resolved = join(dir, 'node_modules', '\@ndigo');
+        const resolved = join(dir, 'node_modules', '@ndigo');
         process.exitCode = await runDiagnostics();
-        // Installed \@ndigo packages of the addressed app (`.` or the
+        // Installed @ndigo packages of the addressed app (`.` or the
         // positional; review REV-017 gave the same app-addressing model to
         // every command).
         if (existsSync(resolved)) {
-            process.stdout.write('\nInstalled \@ndigo packages:\n');
+            process.stdout.write('\nInstalled @ndigo packages:\n');
             for (const name of readdirSync(resolved)) {
                 let version = 'unknown';
                 try {
@@ -29,7 +29,7 @@ export const infoCommand = buildCommand({
                 } catch {
                     /* ignore */
                 }
-                process.stdout.write(`  \@ndigo/${name}  ${version}\n`);
+                process.stdout.write(`  @ndigo/${name}  ${version}\n`);
             }
         }
     },
@@ -40,5 +40,5 @@ export const infoCommand = buildCommand({
             parameters: [appDirPositional],
         },
     },
-    docs: { brief: 'Print framework + workspace diagnostics and installed \@ndigo packages' },
+    docs: { brief: 'Print framework + workspace diagnostics and installed @ndigo packages' },
 });

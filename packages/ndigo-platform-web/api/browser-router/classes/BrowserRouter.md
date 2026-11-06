@@ -119,10 +119,6 @@ The `RouterInterceptor` to add.
 
 `void`
 
-#### Since
-
-1.0.0
-
 #### Inherited from
 
 `AbstractRouter.addInterceptor`
@@ -245,10 +241,6 @@ An optional array of patterns to exclude from matching.
 #### Throws
 
 If `interceptor` is not provided when `interceptorOrPatterns` defines patterns.
-
-#### Since
-
-1.0.0
 
 #### Inherited from
 

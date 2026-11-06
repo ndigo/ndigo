@@ -293,7 +293,9 @@ export class FeatureMetricAggregatorProvider implements MetricSnapshotProvider {
             for (const [name, value] of counters) {
                 push(`${feature}.${name}`, 'sum', { kind: 'scalar', value });
             }
-            const durations = [...metrics.durations.entries()].sort(compareBy(([key]) => key, stringComparator.compare));
+            const durations = [...metrics.durations.entries()].sort(
+                compareBy(([key]) => key, stringComparator.compare)
+            );
             for (const [name, summary] of durations) {
                 push(`${feature}.${name}`, 'histogram', {
                     kind: 'histogram',

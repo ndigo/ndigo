@@ -4,6 +4,8 @@
 /**
  * Chain composition for `@ndigo/proxy`.
  */
+import { compareBy, numberComparator } from '@ndigo/core';
+
 import type { MethodInterceptor, MethodInvocation } from './interceptor';
 
 /**
@@ -11,7 +13,7 @@ import type { MethodInterceptor, MethodInvocation } from './interceptor';
  * equal orders keep registration order.
  */
 export function sortInterceptors(interceptors: readonly MethodInterceptor[]): MethodInterceptor[] {
-    return [...interceptors].sort((left, right) => (left.order ?? 0) - (right.order ?? 0));
+    return [...interceptors].sort(compareBy((interceptor) => interceptor.order ?? 0, numberComparator.compare));
 }
 
 /**

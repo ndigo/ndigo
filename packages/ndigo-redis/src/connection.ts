@@ -2,6 +2,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
+import { IllegalStateError } from '@ndigo/core';
 import { createClient, type RedisClientType } from '@redis/client';
 import type { AsyncCloseable } from '@ndigo/factory';
 
@@ -97,8 +98,8 @@ export class RedisConnection implements AsyncCloseable {
      * new operations require readiness and never become cache misses on failure.
      */
     async run<T>(operation: (client: RedisClient) => Promise<T>): Promise<T> {
-        if (this.#closed) throw new Error('RedisConnection is closed');
-        if (!this.#client.isReady) throw new Error('RedisConnection is not ready; await connect()');
+        if (this.#closed) throw new IllegalStateError('RedisConnection is closed');
+        if (!this.#client.isReady) throw new IllegalStateError('RedisConnection is not ready; await connect()');
         const pending = Promise.resolve().then(() => operation(this.#client));
         this.#pending.add(pending);
         try {

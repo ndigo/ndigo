@@ -23,6 +23,7 @@ import { readFileSync } from 'node:fs';
 import * as http2 from 'node:http2';
 import type { Socket } from 'node:net';
 import { WebSocketServer } from 'ws';
+import { like } from '@ndigo/util/types';
 import { Route, RouteSegment, ACCEPT_LANGUAGE_ATTRIBUTE } from '@ndigo/router';
 import { ARGUMENT_RESOLVERS } from '@ndigo/dispatcher';
 import {
@@ -64,7 +65,7 @@ import {
 } from './http-request-limits';
 import { parseCookies } from './cookie-parser';
 import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@ndigo/auth-core';
-import { getSymbolMetadata } from '@ndigo/core';
+import { IllegalStateError, getSymbolMetadata } from '@ndigo/core';
 import { NotAcceptableError } from '@ndigo/view';
 import { getLogger } from '@ndigo/log';
 
@@ -91,10 +92,7 @@ const DEFAULT_AUTHENTICATE_TIMEOUT_MS = 10_000;
  * its concrete implementations.
  */
 function likeRolePrincipal(value: unknown): value is { hasRole(role: string): boolean } {
-    if (typeof value !== 'object' || value === null || !('hasRole' in value)) {
-        return false;
-    }
-    return typeof value.hasRole === 'function';
+    return like({ hasRole: Function })(value);
 }
 
 /**
@@ -381,7 +379,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      */
     async listen(port: number, host?: string): Promise<void> {
         if (this.#server) {
-            throw new Error('NodeHTTPServerAdapter is already listening — close it before listening again');
+            throw new IllegalStateError('NodeHTTPServerAdapter is already listening — close it before listening again');
         }
         return new Promise<void>((resolve, reject) => {
             const onError = (error: Error): void => reject(error);

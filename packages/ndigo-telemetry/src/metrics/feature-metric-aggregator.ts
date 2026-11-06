@@ -1,6 +1,6 @@
 /**
  */
-import { IllegalStateError } from '@ndigo/core';
+import { compareBy, IllegalStateError, numberComparator, stringComparator } from '@ndigo/core';
 import { type MetricSnapshot, type MetricSnapshotProvider } from './metric-snapshot';
 
 interface MutableFeatureMetrics {
@@ -212,7 +212,7 @@ export class FeatureMetricAggregator {
                 continue;
             }
 
-            const sorted = [...samples].sort((a, b) => a - b);
+            const sorted = [...samples].sort(numberComparator.compare);
             const count = sorted.length;
             const min = sorted[0];
             const max = sorted[count - 1];
@@ -283,19 +283,18 @@ export class FeatureMetricAggregatorProvider implements MetricSnapshotProvider {
                 });
             };
 
-            for (const [name, value] of [...metrics.gauges.entries()].sort(([a], [b]) =>
-                a < b ? -1 : a > b ? 1 : 0
-            )) {
+            const gauges = [...metrics.gauges.entries()].sort(compareBy(([key]) => key, stringComparator.compare));
+            for (const [name, value] of gauges) {
                 push(`${feature}.${name}`, 'gauge', { kind: 'scalar', value });
             }
-            for (const [name, value] of [...metrics.counters.entries()].sort(([a], [b]) =>
-                a < b ? -1 : a > b ? 1 : 0
-            )) {
+            const counters = [...metrics.counters.entries()].sort(compareBy(([key]) => key, stringComparator.compare));
+            for (const [name, value] of counters) {
                 push(`${feature}.${name}`, 'sum', { kind: 'scalar', value });
             }
-            for (const [name, summary] of [...metrics.durations.entries()].sort(([a], [b]) =>
-                a < b ? -1 : a > b ? 1 : 0
-            )) {
+            const durations = [...metrics.durations.entries()].sort(
+                compareBy(([key]) => key, stringComparator.compare)
+            );
+            for (const [name, summary] of durations) {
                 push(`${feature}.${name}`, 'histogram', {
                     kind: 'histogram',
                     count: summary.count,

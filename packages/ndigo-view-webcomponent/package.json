@@ -35,6 +35,7 @@
     "@ndigo/factory": "~0.0.1",
     "@ndigo/log": "~0.0.1",
     "@ndigo/router": "~0.0.1",
+    "@ndigo/util": "~0.0.1",
     "@ndigo/view": "~0.0.1",
     "@tsmetadata/polyfill": "catalog:"
   }

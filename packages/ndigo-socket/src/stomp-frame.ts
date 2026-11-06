@@ -29,6 +29,8 @@
  * octet after the NUL is trailing data and fatal.
  */
 
+import { FrameworkError } from '@ndigo/core';
+
 /** A STOMP body: text (string) or byte-exact binary (D8). */
 export type StompBody = string | Uint8Array;
 
@@ -46,7 +48,7 @@ export interface StompFrame {
 export type StompWireInput = string | Uint8Array | ArrayBuffer;
 
 /** Raised on malformed frames (missing NUL, bad `content-length`, …). */
-export class StompProtocolError extends Error {
+export class StompProtocolError extends FrameworkError {
     /**
      * @param message - Human-readable protocol failure detail.
      */

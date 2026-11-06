@@ -3,6 +3,7 @@
  * @author Jeff Rose
  */
 import { resolveCacheName } from '@ndigo/cache';
+import { IllegalStateError } from '@ndigo/core';
 import type { Cache, CacheManager } from '@ndigo/cache';
 import type { AsyncCloseable, ContextToken } from '@ndigo/factory';
 import { RedisConnection, type RedisConnectionOptions } from '../connection';
@@ -57,7 +58,7 @@ export class RedisCacheManager implements CacheManager, AsyncCloseable {
     getCache<V = unknown>(name: string): RedisCache<V>;
     getCache<V = unknown>(token: ContextToken<Cache<V>>): RedisCache<V>;
     getCache<V = unknown>(nameOrToken: string | ContextToken<Cache<V>>): RedisCache<V> {
-        if (this.#closed) throw new Error('RedisCacheManager is closed');
+        if (this.#closed) throw new IllegalStateError('RedisCacheManager is closed');
         const name = resolveCacheName(nameOrToken, 'RedisCacheManager');
         let cache = this.#caches.get(name);
         if (cache === undefined) {
@@ -74,7 +75,7 @@ export class RedisCacheManager implements CacheManager, AsyncCloseable {
     hasCache(name: string): boolean;
     hasCache(token: ContextToken<Cache<unknown>>): boolean;
     hasCache(nameOrToken: string | ContextToken<Cache<unknown>>): boolean {
-        if (this.#closed) throw new Error('RedisCacheManager is closed');
+        if (this.#closed) throw new IllegalStateError('RedisCacheManager is closed');
         const name = resolveCacheName(nameOrToken, 'RedisCacheManager');
         return this.#caches.has(name);
     }

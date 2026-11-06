@@ -2,6 +2,7 @@
  * LibSQL/Drizzle-backed transaction manager (AD-07 completion).
  */
 import { TransactionManager } from '@ndigo/orm';
+import { IllegalStateError } from '@ndigo/core';
 import { runInTransaction } from './_transaction-scope';
 import { DrizzleDataSource } from './drizzle-data-source';
 
@@ -46,7 +47,7 @@ export class DrizzleTransactionManager implements TransactionManager {
     /** @inheritdoc */
     async run<T>(fn: () => T | Promise<T>): Promise<T> {
         if (this.#active) {
-            throw new Error('DrizzleTransactionManager: a transaction is already active');
+            throw new IllegalStateError('DrizzleTransactionManager: a transaction is already active');
         }
 
         // Claim the boundary synchronously (no await in between) so a

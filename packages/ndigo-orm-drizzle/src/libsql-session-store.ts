@@ -5,6 +5,7 @@
  */
 import { createClient, type Client, type InValue, type Row } from '@libsql/client';
 import { DefaultPrincipal, type SessionRecord, type SessionStore } from '@ndigo/auth-core';
+import { IllegalStateError } from '@ndigo/core';
 import type { Closeable } from '@ndigo/factory';
 import { randomToken } from '@ndigo/util';
 
@@ -194,7 +195,7 @@ export class LibSQLSessionStore implements SessionStore, Closeable {
     }
 
     #assertOpen(): void {
-        if (this.#disposed) throw new Error('LibSQL session store is disposed');
+        if (this.#disposed) throw new IllegalStateError('LibSQL session store is disposed');
     }
 }
 

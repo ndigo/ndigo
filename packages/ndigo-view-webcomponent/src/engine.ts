@@ -1,6 +1,8 @@
 /**
  */
 import { EventBridgeViewTarget } from '@ndigo/view';
+import { like } from '@ndigo/util/types';
+
 import { Route } from '@ndigo/router';
 import { IllegalStateError } from '@ndigo/core';
 import type { Destroyable } from '@ndigo/factory';
@@ -33,21 +35,12 @@ export interface DOMViewTarget extends EventBridgeViewTarget {
  * @param value - The value to inspect.
  * @returns `true` when the value behaves like a DOM view target.
  */
-export const likeDOMViewTarget = (value: unknown): value is DOMViewTarget => {
-    if (!value || typeof value !== 'object') {
-        return false;
-    }
-
-    const target = value as Partial<DOMViewTarget>;
-
-    return (
-        typeof target.prepare === 'function' &&
-        typeof target.commit === 'function' &&
-        typeof target.clear === 'function' &&
-        typeof target.setEventMap === 'function' &&
-        target.container instanceof Node
-    );
-};
+export const likeDOMViewTarget = (value: unknown): value is DOMViewTarget =>
+    // The secondary Node check is an instanceof, but the primary check is the
+    // like() shape match — the DOM target contract is `prepare`/`commit`/`clear`/
+    // `setEventMap`; `container` is a DOM Node the descriptor cannot express.
+    like({ prepare: Function, commit: Function, clear: Function, setEventMap: Function })(value) &&
+    (value as Partial<DOMViewTarget>).container instanceof Node;
 
 /**
  * View target implementation that renders into a host DOM node.

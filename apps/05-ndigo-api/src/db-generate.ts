@@ -12,9 +12,6 @@
  * AD-30 predicate cannot express **fails loud** (exit code 1) until the
  * operator acknowledges them with `NDIGO_DB_ACCEPT_DROPS=true` /
  * `NDIGO_DB_ACCEPT_UNSUPPORTED=true` (REV-002/REV-006).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import 'node:process';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';

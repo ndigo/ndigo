@@ -6,9 +6,6 @@
  * table (HI-6/TST-B) instead of whatever the nearest Vite config happened to
  * do. The `test` block (include/exclude) moved here verbatim from the old
  * in-`vite.config.ts` block.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { defineConfig } from 'vitest/config';
 import { lowerDecorators } from '../../scripts/vite-plugin-lower-decorators.mjs';

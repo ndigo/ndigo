@@ -5,9 +5,6 @@
  * One source for the server-rendered page (the shell renders it without
  * JavaScript), the interactive client (which reads the rendered DOM) and the
  * README's matrix — so the three can never disagree.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { LOGIN_RATE_LIMIT } from './config';
 

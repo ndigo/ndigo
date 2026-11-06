@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { MediaType } from '@ndigo/core';
 import type { Route } from '@ndigo/router';

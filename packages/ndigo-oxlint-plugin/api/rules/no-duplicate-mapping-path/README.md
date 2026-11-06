@@ -6,6 +6,8 @@
 
 # rules/no-duplicate-mapping-path
 
+Rule that flags duplicate route-mapping paths within a class.
+
 ## Variables
 
 - [noDuplicateMappingPath](variables/noDuplicateMappingPath.md)

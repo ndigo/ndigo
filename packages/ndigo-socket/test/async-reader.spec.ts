@@ -1,9 +1,6 @@
 /**
  * `AsyncReader` unit tests — bounded queue, watermark overflow episodes
  * (drop while full, resume once drained), and byte-budget accounting.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, expect, test } from 'vitest';
 import { AsyncReader } from '../src/index';

@@ -1,8 +1,5 @@
 /**
  * OpenTelemetry instrumentation for `HTTPServer` lifecycle + inbound requests.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { context as otelContext, propagation, ROOT_CONTEXT, SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
 import { HTTPServer, NodeHTTPServerAdapter } from '@ndigo/platform-node';

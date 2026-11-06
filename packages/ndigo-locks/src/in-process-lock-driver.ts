@@ -11,9 +11,6 @@
  * like the in-process job driver.
  *
  * The clock is injectable so expiry behavior is testable deterministically.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
 import type { LockDriver, LockHandle } from './lock-driver';

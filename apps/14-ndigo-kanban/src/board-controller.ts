@@ -14,9 +14,6 @@
  * the service reports as a problem becomes an RFC 9457 `application/problem+json`
  * response at the same status — including the `409` that carries the current
  * card so the client can reconcile without a second round trip.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import {

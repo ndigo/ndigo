@@ -1,8 +1,5 @@
 /**
  * Sampler 'off' preset: never records a root span (AD-32 D-1).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { test, expect } from 'vitest';

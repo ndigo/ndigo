@@ -3,9 +3,6 @@
  *
  * The `@ndigo/*` aliases come from the shared table so the suite resolves the
  * live `packages/<pkg>/src` sources instead of the built `lib/` output.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { defineConfig } from 'vitest/config';
 import { lowerDecorators } from '../../scripts/vite-plugin-lower-decorators.mjs';

@@ -6,6 +6,8 @@
 
 # feature-flag-telemetry-hook
 
+Evaluation telemetry as an OpenFeature hook (AD-87 D-7): one INTERNAL
+
 ## Classes
 
 - [FeatureFlagTelemetryHook](classes/FeatureFlagTelemetryHook.md)

@@ -8,14 +8,6 @@
 
 Represents an object that can determine if it matches a given value.
 
-## Since
-
-1.0.0
-
-## Author
-
-Jeff Rose
-
 ## Extended by
 
 - [`PathMatcherFilter`](../../path-matcher/interfaces/PathMatcherFilter.md)

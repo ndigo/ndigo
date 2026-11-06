@@ -6,6 +6,8 @@
 
 # route-registry
 
+Scans `routeMapping` decorator metadata from registered beans and builds.
+
 ## Classes
 
 - [RouteRegistry](classes/RouteRegistry.md)

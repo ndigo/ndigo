@@ -1,8 +1,5 @@
 /**
  * Configuration options for the IndexedDB resource loader.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export interface IndexedDBConfig {
     /** Database name. Defaults to `'ndigo-store'`. */

@@ -6,6 +6,8 @@
 
 # http-request-limits
 
+Request-pipeline limits and timeouts for {@link NodeHTTPServerAdapter}.
+
 ## Classes
 
 - [RequestLimitError](classes/RequestLimitError.md)

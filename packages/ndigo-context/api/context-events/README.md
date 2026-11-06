@@ -6,6 +6,8 @@
 
 # context-events
 
+Typed event maps for the framework's emitters (AD-34 D2).
+
 ## Interfaces
 
 - [ContextEvents](interfaces/ContextEvents.md)

@@ -6,6 +6,8 @@
 
 # commands/new
 
+`ndigo new <name>` — scaffold an example application in the workspace
+
 ## Interfaces
 
 - [NewAppFlags](interfaces/NewAppFlags.md)

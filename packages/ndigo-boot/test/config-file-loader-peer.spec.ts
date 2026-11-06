@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  *
  * Peer-loading behavior of the TOON lazy decoder (AD-66): the optional
  * `@toon-format/toon` module must never be resolved for JSON-only loads,

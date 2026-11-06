@@ -1,8 +1,5 @@
 /**
  * An object with a `null` prototype.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export class Null {}
 

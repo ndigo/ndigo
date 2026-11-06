@@ -6,6 +6,8 @@
 
 # context-tokens
 
+Type-safe bean handles for the Node platform's shared beans (AD-34 D1).
+
 ## Variables
 
 - [CONVERSION\_SERVICE](variables/CONVERSION_SERVICE.md)

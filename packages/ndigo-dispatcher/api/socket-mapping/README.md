@@ -6,6 +6,8 @@
 
 # socket-mapping
 
+`@socketMapping` — WebSocket route mapping decorator (RFC 6455).
+
 ## Variables
 
 - [SOCKET\_MAPPING\_KEY](variables/SOCKET_MAPPING_KEY.md)

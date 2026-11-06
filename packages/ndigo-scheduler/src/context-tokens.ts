@@ -1,8 +1,5 @@
 /**
  * Type-safe bean handles for the ndigo-scheduler contracts (AD-34 D1).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ContextToken } from '@ndigo/factory';
 import type { TaskScheduler } from './task-scheduler';

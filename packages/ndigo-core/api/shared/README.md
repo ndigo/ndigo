@@ -6,6 +6,8 @@
 
 # shared
 
+TC39 Stage 3 decorator and metadata utilities for shared dependency declarations.
+
 ## Interfaces
 
 - [SharedOptions](interfaces/SharedOptions.md)

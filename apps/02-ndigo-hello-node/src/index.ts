@@ -1,8 +1,5 @@
 /**
  * Ndigo Hello Node — minimal HTTP server.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import 'node:process';
 import { runNodeApplication } from '@ndigo/platform-node';

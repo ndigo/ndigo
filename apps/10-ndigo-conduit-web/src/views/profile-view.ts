@@ -5,9 +5,6 @@
  * The tab is part of the route (`#/profile/:username/favorited`), so a profile
  * tab is a real, linkable location; the loaded window is cached in
  * `ProfileService` under the username + tab + page key.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractWebComponent, TagMapping } from '@ndigo/view-webcomponent';
 import { ACTIONS } from '../app/conduit-events';

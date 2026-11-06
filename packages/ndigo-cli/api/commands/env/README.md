@@ -6,6 +6,8 @@
 
 # commands/env
 
+`ndigo env` — validate required environment variables.
+
 ## Variables
 
 - [envCommand](variables/envCommand.md)

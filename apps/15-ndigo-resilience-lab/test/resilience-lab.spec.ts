@@ -13,9 +13,6 @@
  * in-process dispatcher instead of a socket. `ResilienceLab.setUpstreamFetch`
  * is the public seam for exactly that — the same seam the running app fills
  * with its loopback transport.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';

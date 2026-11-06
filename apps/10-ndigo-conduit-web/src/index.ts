@@ -7,9 +7,6 @@
  * side effects: `@TagMapping` performs the `customElements.define` at module
  * load, and the dispatcher resolves a view name to that tag, so a component that
  * is never imported renders as an unknown element.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { composeConduitRuntime, createConduitContext } from './app/conduit-runtime';

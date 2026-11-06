@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, beforeEach, afterEach, expect, vi } from 'vitest';
 import { ContextToken } from '@ndigo/factory';

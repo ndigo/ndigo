@@ -12,9 +12,6 @@
  * broker, D5), and deliberate disconnect teardown. A dedicated case pins
  * the socket-side auth gate: an upgrade without a principal is closed with
  * `1008` (SEC-3).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

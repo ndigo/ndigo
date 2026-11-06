@@ -5,9 +5,6 @@
  * ({@link TLSServerOptions}) upgrades it to ALPN h2 with an HTTP/1.1
  * fallback (AD-81). HTTP/3 terminates at an edge proxy in front of it
  * (AD-80).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { $aware, type SmartLifecycle } from '@ndigo/factory';
 import { IllegalStateError } from '@ndigo/core';

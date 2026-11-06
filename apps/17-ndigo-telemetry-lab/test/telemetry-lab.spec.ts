@@ -8,9 +8,6 @@
  * Assertions are on route-specific values (the response envelope's checksum,
  * the route counters) rather than on wall-clock behaviour, so the scheduled
  * task firing in the background can never make the lane flaky.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

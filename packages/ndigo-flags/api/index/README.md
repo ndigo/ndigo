@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/flags` — feature flags (AD-82): the `FlagEvaluator`
+
 ## References
 
 ### FLAG\_EVALUATOR

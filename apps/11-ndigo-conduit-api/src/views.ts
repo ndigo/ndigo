@@ -2,9 +2,6 @@
  * View assembly: composes the store's favorite/follow indexes with the DTO
  * builders, so a page of articles costs three scans regardless of page size
  * and every endpoint serializes through one code path.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { IllegalStateError } from '@ndigo/core';
 import type { Article, Comment, User } from './entities';

@@ -1,8 +1,5 @@
 /**
  * Integration tests for the full conversion pipeline:.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { conversionService } from '@ndigo/core';

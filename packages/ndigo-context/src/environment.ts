@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Constructable, Null, JSONValue, JSONObject, evaluateProfileExpression } from '@ndigo/core';
 import type { ProfileTerm } from '@ndigo/core';

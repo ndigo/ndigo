@@ -1,8 +1,5 @@
 /**
  * Rule that blocks direct imports from libraries wrapped by Ndigo integration packages.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 

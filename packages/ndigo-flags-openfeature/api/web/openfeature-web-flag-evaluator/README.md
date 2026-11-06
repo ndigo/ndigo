@@ -6,6 +6,8 @@
 
 # web/openfeature-web-flag-evaluator
 
+The browser-side OpenFeature evaluator (AD-87 Phase 2): maps the
+
 ## Classes
 
 - [WebOpenFeatureFlagEvaluator](classes/WebOpenFeatureFlagEvaluator.md)

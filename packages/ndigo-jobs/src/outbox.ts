@@ -1,8 +1,5 @@
 /**
  * Transactional-outbox contracts: store, publisher, and the jobs publisher.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { JobId } from './job';
 import type { JobQueue } from './job-queue';

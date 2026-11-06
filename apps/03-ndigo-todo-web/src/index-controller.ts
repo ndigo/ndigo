@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { routeMapping, parameters, pathValue, ModelAndView } from '@ndigo/dispatcher';
 import { ApplicationContext, AsApplicationContextAware } from '@ndigo/context';

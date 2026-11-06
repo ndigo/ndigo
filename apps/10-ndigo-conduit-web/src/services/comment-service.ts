@@ -6,9 +6,6 @@
  * no optimistic path: a comment's identity (id, createdAt, author) comes from
  * the server, so showing a provisional one would mean inventing data — the
  * list reloads instead, which for a single-user comment box is one round trip.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { Null } from '@ndigo/core';

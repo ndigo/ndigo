@@ -3,9 +3,6 @@
  * `db/migrations` (AD-30 runner, AD-78 D-1 loader) and prints the journal
  * readback. The data source is the same store the Drizzle routes read
  * (`NDIGO_DB_URL` override respected).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import 'node:process';
 import { DrizzleDataSource, DrizzleMigrator, loadMigrations } from '@ndigo/orm-drizzle';

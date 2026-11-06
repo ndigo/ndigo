@@ -1,8 +1,5 @@
 /**
  * `jobs-setup` generator — wires @ndigo/jobs into an application.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { formatFiles, generateFiles, type Tree } from '@nx/devkit';
 import { dirname, join } from 'node:path';

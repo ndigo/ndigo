@@ -1,9 +1,6 @@
 /**
  * Flag-key grammar, guard, and the never-throw evaluation contract
  * (AD-82 D-2): typing, DEFAULT-on-missing, error classification.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { likeFlagEvaluator, validateFlagKey, type FlagEvaluator } from '../src/flag-evaluator';

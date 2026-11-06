@@ -6,6 +6,8 @@
 
 # mock-http
 
+MockHTTP — in-process, socket-free integration-test client for Ndigo applications.
+
 ## Classes
 
 - [MockHTTP](classes/MockHTTP.md)

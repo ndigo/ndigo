@@ -10,8 +10,6 @@
  * failures as {@link ConduitApiError}.
  *
  * @module ndigo-conduit-web
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /** The RealWorld `errors` member: field name → failure messages. */

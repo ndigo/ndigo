@@ -1,8 +1,5 @@
 /**
  * OpenTelemetry instrumentation for job execution.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { SpanKind, SpanStatusCode, trace, type Span } from '@opentelemetry/api';
 import type { JobRecord } from './job';

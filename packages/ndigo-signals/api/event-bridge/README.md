@@ -6,6 +6,8 @@
 
 # event-bridge
 
+Bridges event occurrences and reactive state (AD-09): `eventsToSignal`
+
 ## Interfaces
 
 - [EventSink](interfaces/EventSink.md)

@@ -5,9 +5,6 @@
  * binary payload framing, and the reconnect trigger (AD-22 D3). Node
  * environment: the binary specs need the same-realm `Buffer` (jsdom's
  * cross-realm intrinsics make `Buffer instanceof Uint8Array` false).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';

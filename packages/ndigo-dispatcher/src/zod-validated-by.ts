@@ -1,8 +1,5 @@
 /**
  * Zod-backed request validation (AD-07).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
 import { z } from 'zod';

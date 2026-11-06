@@ -6,6 +6,8 @@
 
 # job-queue
 
+The producer facade: `JobQueue` wraps a driver for enqueueing.
+
 ## Classes
 
 - [JobQueue](classes/JobQueue.md)

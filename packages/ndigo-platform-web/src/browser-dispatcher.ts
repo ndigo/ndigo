@@ -1,8 +1,5 @@
 /**
  * Browser-flavored dispatcher.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractDispatcher } from '@ndigo/dispatcher';
 

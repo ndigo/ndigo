@@ -4,9 +4,6 @@
  * Templates live under `templates/<kind>/` and use `{{key}}` placeholders
  * (distinct from the `${...}` template literals that appear in the
  * generated TypeScript, so the two never collide).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';

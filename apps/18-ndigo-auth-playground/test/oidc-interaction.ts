@@ -9,9 +9,6 @@
  * the provider finally redirected to. The spec then hands that URL back to the
  * app, so the verifier, the nonce and the `state` round-trip are all resolved by
  * the real `OIDCAdapter` against the real issuer.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /** The validated subset of the provider's discovery document this driver reads. */

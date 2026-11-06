@@ -6,9 +6,6 @@
  * browser-shaped `_wrap` (plain `shimmer.wrap`) would nest a second wrapper
  * and a single `disable()` would leave the inner one live — so the shared
  * base must latch each enable/disable cycle.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, expect, it, afterEach, vi } from 'vitest';
 import { SpanKind, trace } from '@opentelemetry/api';

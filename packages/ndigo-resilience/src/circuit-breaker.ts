@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ApplicationError } from '@ndigo/core';
 import { methodAnnotation, type MethodDescriptor, type MethodInvocation, type MethodInterceptor } from '@ndigo/proxy';

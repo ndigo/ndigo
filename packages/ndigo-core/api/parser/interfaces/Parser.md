@@ -8,14 +8,6 @@
 
 Class-based interface for parsing a string into a structured value of type `T`.
 
-## Since
-
-1.0.0
-
-## Author
-
-Jeff Rose
-
 ## Type Parameters
 
 ### T

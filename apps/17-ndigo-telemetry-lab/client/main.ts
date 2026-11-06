@@ -15,9 +15,6 @@
  *    the scheduled snapshot pushes,
  * 5. renders all of it — spans, server replies, pushes, and console lines —
  *    into the page.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ROOT_CONTEXT, SpanStatusCode, trace, type Span } from '@opentelemetry/api';
 import { HTTP, TraceHeaderInterceptor } from '@ndigo/http';

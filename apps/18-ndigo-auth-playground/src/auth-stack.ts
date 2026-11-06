@@ -9,9 +9,6 @@
  * (`credentials`, `jwt`) and the routes select the scheme explicitly
  * (`AuthServer.validateAny` with an ordered adapter list, never "try them all"),
  * so a token minted for one scheme can never be accepted by the other.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';

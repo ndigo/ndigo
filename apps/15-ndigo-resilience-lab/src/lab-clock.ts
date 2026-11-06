@@ -1,9 +1,6 @@
 /**
  * The lab's clock: real time plus a control-plane offset, so breaker reset
  * windows can be driven deterministically instead of by sleeping.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 /**
  * A monotonic-enough time source for `CircuitBreakerInterceptor({ now })`.

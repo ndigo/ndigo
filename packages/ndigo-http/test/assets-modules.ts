@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 // Ambient module declarations for the base64-encoded fixture assets imported
 // by `_worker.ts`. Deliberately a script file (no top-level import/export) so

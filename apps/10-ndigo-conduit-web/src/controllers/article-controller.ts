@@ -4,9 +4,6 @@
  * Loads the article and its comments through the services that own them — both
  * are keyed by slug, so a route refresh (favorite, follow, comment) re-renders
  * the cached state instead of re-fetching it.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { Null } from '@ndigo/core';

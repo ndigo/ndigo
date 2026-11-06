@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AsNameAware } from '@ndigo/factory';
 import { IllegalStateError, JSONObject, MediaType, MediaTypes, Serializable, createNull, Null } from '@ndigo/core';

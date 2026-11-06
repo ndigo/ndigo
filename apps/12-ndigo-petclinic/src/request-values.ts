@@ -4,9 +4,6 @@
  * HTML pages read their inputs as text — a path segment is a string, and a
  * query string is text — so the coercion (and its failure mode) lives in one
  * place instead of being re-derived per handler.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /**

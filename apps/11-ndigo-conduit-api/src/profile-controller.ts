@@ -5,9 +5,6 @@
  * `following` member is view-relative: it is `true` only when the caller
  * actually follows the profile. Follow/unfollow are idempotent, so a retried
  * request cannot flip the flag back.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import {

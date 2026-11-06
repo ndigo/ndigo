@@ -5,9 +5,6 @@
  * principal when one is present, falling back to the client address; apps
  * register their own resolver for tenant/attribute targeting from anywhere
  * else in the request.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { likePrincipal } from '@ndigo/auth-core';
 import type { FlagEvaluationContext } from '@ndigo/flags';

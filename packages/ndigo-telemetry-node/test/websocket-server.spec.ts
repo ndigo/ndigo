@@ -1,9 +1,6 @@
 /**
  * `WebSocketServerInstrumentation` spec — session lifetime spans + counters
  * over a real socket (the SSE-instrumentation test pattern).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';

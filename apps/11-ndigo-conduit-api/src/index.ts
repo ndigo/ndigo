@@ -1,9 +1,6 @@
 /**
  * Entry point: boots the RealWorld (Conduit) API server on port 3040 (or
  * `PORT`).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import 'node:process';
 import { ApplicationBuilder } from '@ndigo/boot';

@@ -61,8 +61,7 @@ in the child's environment. The child performs its own
 
 ## API
 
-The full API is generated from JSDoc via `pnpm doc:api` into
-[`api/`](api/README.md). Primary exports:
+The full API is at [`api/`](api/README.md). Primary exports:
 
 - `ClusterRunner` — the supervisor (`run()` / `stop()` / `abort()`).
 - `runCluster` — run-to-completion entry.

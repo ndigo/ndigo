@@ -41,7 +41,12 @@ export const noUpwardLayerImports = {
     create(context: Context) {
         let importer: string | null = null;
 
-        function checkSource(sourceNode: ESTree.Expression): void {
+        function checkSource(sourceNode: ESTree.Expression, typeOnly: boolean = false): void {
+            // Type-only imports/exports erase at runtime and do not create a
+            // runtime dependency edge, so they are exempt from the layer ranks.
+            if (typeOnly) {
+                return;
+            }
             if (importer === null || sourceNode.type !== 'Literal') {
                 return;
             }
@@ -83,18 +88,18 @@ export const noUpwardLayerImports = {
                 importer = TOOLING_PACKAGES.has(match[1]) ? null : match[1];
             },
             ImportDeclaration(node: ESTree.ImportDeclaration) {
-                checkSource(node.source);
+                checkSource(node.source, node.importKind === 'type');
             },
             ExportNamedDeclaration(node: ESTree.ExportNamedDeclaration) {
                 if (node.source !== null) {
-                    checkSource(node.source);
+                    checkSource(node.source, node.exportKind === 'type');
                 }
             },
             ExportAllDeclaration(node: ESTree.ExportAllDeclaration) {
-                checkSource(node.source);
+                checkSource(node.source, node.exportKind === 'type');
             },
             ImportExpression(node: ESTree.ImportExpression) {
-                checkSource(node.source);
+                checkSource(node.source, false);
             },
         };
     },

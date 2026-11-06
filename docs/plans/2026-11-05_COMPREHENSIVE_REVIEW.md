@@ -292,6 +292,17 @@ Verify: `pnpm build`, `pnpm test`, `pnpm lint`, `pnpm docs:links`,
   on `main` (bounded revocation cache, persisted todo refresh, redis README,
   AGENTS engine/dependency convention, dom prerequisite, STYLE_GUIDE numbering).
 - No dependency changes are proposed; `pnpm-lock.yaml` stays untouched.
+
+## 5. Execution log (2026-11-05)
+
+Implemented in two commits on `docs/comprehensive-review-2026-11-05`:
+
+- **Wave 1 (F-01…F-09, F-28):** create-ndigo-app contract alignment, drift guard, prompt/error handling, force guard, templates, docs.
+- **Wave 2 (F-13, F-14, F-15, F-16, F-17, F-18, F-19):** OIDC discovery reset, URL validation, provider-error parsing, hashed refresh keys, in-flight serialization, JSON misclassification, AuthClient state copy + refresh serialization.
+- **Wave 3 (F-20, F-22, F-23, F-24):** generic feature-gate detail, hashed IP targeting key, type-only import exemption, tooling exemption doc.
+- **Wave 4 (F-11, F-27):** exception-safe Node preset close(), bundle-test guard.
+
+Remaining (documented, not yet implemented): F-07 (scaffolded-app gate test), F-10 (web late binding design), F-21 (flag memo), F-25 (sibling todomvc portability), F-26 (historical doc refs).
 - Each wave is intended to be one PR per AGENTS.md §8 (one issue = one branch =
   one worktree = one PR). Single-lane files (lockfile, generated trees) are not
   touched by this plan.

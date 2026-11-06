@@ -3,6 +3,7 @@
  * @author Jeff Rose
  */
 import { base64url, createRemoteJWKSet, decodeJwt, jwtVerify, type JWTPayload } from 'jose';
+import { createHash } from 'node:crypto';
 import { randomToken } from '@ndigo/util';
 import { HTTPHeaders } from '@ndigo/http';
 import { type AuthAdapter } from '@ndigo/auth-core';
@@ -35,12 +36,15 @@ export class OIDCError extends Error {
      * grant) from a transport failure.
      */
     readonly httpStatus: number | undefined;
+    /** The OAuth `error` code from a provider error response, when present. */
+    readonly oauthError: string | undefined;
 
-    constructor(code: OIDCErrorCode, message: string, options?: { cause?: unknown; httpStatus?: number }) {
+    constructor(code: OIDCErrorCode, message: string, options?: { cause?: unknown; httpStatus?: number; oauthError?: string }) {
         super(message, options !== undefined ? { cause: options.cause } : undefined);
         this.name = 'OIDCError';
         this.code = code;
         this.httpStatus = options?.httpStatus;
+        this.oauthError = options?.oauthError;
     }
 }
 
@@ -435,6 +439,11 @@ function principalFromPayload(payload: JWTPayload): Principal {
  * {@link OIDCAdapterConfig.pendingStore} and
  * {@link OIDCAdapterConfig.refreshStore}.
  */
+/** Hashes a refresh token for use as a store key (never store the raw bearer). */
+function hashRefreshToken(token: string): string {
+    return createHash('sha256').update(token).digest('hex');
+}
+
 export class OIDCAdapter implements AuthAdapter {
     readonly id = 'oidc';
     readonly #config: OIDCAdapterConfig;
@@ -443,6 +452,7 @@ export class OIDCAdapter implements AuthAdapter {
     #jwks: ReturnType<typeof createRemoteJWKSet> | null = null;
     readonly #pending: PendingAuthorizationStore;
     readonly #refresh: RefreshTokenStore;
+    readonly #refreshInFlight = new Map<string, Promise<OIDCResult>>();
 
     constructor(config: OIDCAdapterConfig) {
         this.#config = config;
@@ -560,8 +570,17 @@ export class OIDCAdapter implements AuthAdapter {
         try {
             const response = await fetch(url, { ...init, signal: controller.signal, redirect: 'error' });
             if (!response.ok) {
+                let oauthError: string | undefined;
+                try {
+                    const text = await response.text();
+                    const parsed = JSON.parse(text) as { error?: unknown };
+                    if (typeof parsed?.error === 'string') oauthError = parsed.error;
+                } catch {
+                    // Body is not JSON (or empty); keep httpStatus only.
+                }
                 throw new OIDCError('network', `${label} fetch failed with status ${response.status}`, {
                     httpStatus: response.status,
+                    oauthError,
                 });
             }
             const contentLength = Number(HTTPHeaders.CONTENT_LENGTH.get(response.headers));
@@ -763,7 +782,7 @@ export class OIDCAdapter implements AuthAdapter {
         // Bind the refresh token to the verified subject: refresh() redeems
         // only tokens this adapter captured, and only for that principal.
         if (tokens.refreshToken !== null) {
-            await this.#refresh.set(tokens.refreshToken, { subject: principal.id });
+            await this.#refresh.set(hashRefreshToken(tokens.refreshToken), { subject: principal.id });
         }
 
         return {
@@ -885,7 +904,20 @@ export class OIDCAdapter implements AuthAdapter {
      * @param token - The refresh token captured from the exchange.
      */
     async refresh(token: string): Promise<OIDCResult> {
-        const binding = await this.#refresh.get(token);
+        const key = hashRefreshToken(token);
+        const existing = this.#refreshInFlight.get(key);
+        if (existing !== undefined) {
+            return existing;
+        }
+        const promise = this.#doRefresh(token).finally(() => {
+            this.#refreshInFlight.delete(key);
+        });
+        this.#refreshInFlight.set(key, promise);
+        return promise;
+    }
+
+    async #doRefresh(token: string): Promise<OIDCResult> {
+        const binding = await this.#refresh.get(hashRefreshToken(token));
         if (binding === null) {
             throw new OIDCError('invalid_token', 'Unknown or already-consumed refresh token');
         }
@@ -906,14 +938,19 @@ export class OIDCAdapter implements AuthAdapter {
                 }),
             });
         } catch (error) {
-            if (error instanceof OIDCError && error.code === 'network' && error.httpStatus === 400) {
-                throw new OIDCError(
-                    'invalid_token',
-                    'The identity provider rejected the refresh token (invalid_grant)',
-                    {
+            if (error instanceof OIDCError && error.code === 'network' && (error.httpStatus === 400 || error.httpStatus === 401)) {
+                if (error.oauthError !== undefined && error.oauthError !== 'invalid_grant') {
+                    throw new OIDCError('configuration', `The identity provider rejected the refresh: ${error.oauthError}`, {
                         cause: error,
-                    }
-                );
+                        httpStatus: error.httpStatus,
+                        oauthError: error.oauthError,
+                    });
+                }
+                throw new OIDCError('invalid_token', 'The identity provider rejected the refresh token (invalid_grant)', {
+                    cause: error,
+                    httpStatus: error.httpStatus,
+                    oauthError: 'invalid_grant',
+                });
             }
             if (error instanceof OIDCError) throw error;
             throw new OIDCError('network', 'Token refresh request failed', { cause: error });
@@ -929,8 +966,8 @@ export class OIDCAdapter implements AuthAdapter {
         // Rotation consumes the presented token; without rotation it stays
         // current (the provider still accepts it).
         if (tokens.refreshToken !== null) {
-            await this.#refresh.delete(token);
-            await this.#refresh.set(tokens.refreshToken, { subject: binding.subject });
+            await this.#refresh.delete(hashRefreshToken(token));
+            await this.#refresh.set(hashRefreshToken(tokens.refreshToken), { subject: binding.subject });
         }
 
         return {

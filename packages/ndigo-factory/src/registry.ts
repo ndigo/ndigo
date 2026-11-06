@@ -30,7 +30,7 @@ export const likeRegistry = (value: unknown): value is Registry =>
     })(value);
 
 /**
- * A handler implementation that when applied to a {@link Registry|Registry} instance via {@link external#Proxy|Proxy} causes the registry
+ * A handler implementation that when applied to a {@link Registry|Registry} instance via `Proxy` causes the registry
  * to behave like a plain object. This is used to implement `ProxiedFactory`.
  *
  * @see {@link "default-factory".ProxiedFactory | ProxiedFactory}

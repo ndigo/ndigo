@@ -27,5 +27,5 @@ the factory skips registration and resolves the entry from the parent chain inst
 
 ```ts
 @sharedDependency({ version: '1.2.0' })
-class TelemetryService { … }
+class TelemetryService {}
 ```

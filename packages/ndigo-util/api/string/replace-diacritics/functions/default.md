@@ -8,6 +8,8 @@
 
 > **default**(`text`): `string`
 
+Replaces accented characters with their ASCII equivalents.
+
 ## Parameters
 
 ### text

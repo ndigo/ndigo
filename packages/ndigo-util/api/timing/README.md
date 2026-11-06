@@ -6,6 +6,8 @@
 
 # timing
 
+Timing utilities: async delay.
+
 ## Functions
 
 - [delay](functions/delay.md)

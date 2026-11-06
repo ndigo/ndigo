@@ -196,6 +196,50 @@ describe('ndigo (real bin)', () => {
         expect(`${out}${err}`).toContain('no "inspect" script');
     });
 
+    test('thrown usage errors render message-only, exit 2 (issue #148)', async () => {
+        // resolveAppDir throws inside the command (serve path)
+        const missing = join(base, 'does-not-exist-for-usage');
+        const { code: serveCode, out: serveOut, err: serveErr } = await runCli(['serve', missing]);
+        expect(serveCode).toBe(2);
+        expect(`${serveOut}${serveErr}`).toContain('is not an application directory');
+        expect(`${serveOut}${serveErr}`).not.toContain('Command failed');
+        expect(`${serveOut}${serveErr}`).not.toContain('    at ');
+
+        // generate throws its own usageError (unknown kind)
+        const { code: genCode, out: genOut, err: genErr } = await runCli(['generate', 'wat']);
+        expect(genCode).toBe(2);
+        expect(`${genOut}${genErr}`).toContain("unknown generator 'wat'");
+        expect(`${genOut}${genErr}`).not.toContain('Command failed');
+        expect(`${genOut}${genErr}`).not.toContain('    at ');
+    });
+
+    test('routes is an alias of inspect (issue #148)', async () => {
+        const dir = join(base, 'no-inspect');
+        const { code, out, err } = await runCli(['routes', dir]);
+        expect(code).toBe(2);
+        expect(`${out}${err}`).toContain('no "inspect" script');
+    });
+
+    test('completion matches the exported route list (issue #148 parity pin)', async () => {
+        const { COMPLETION_WORDS } = await import('../src/commands/_routes.js');
+        const { code, out } = await runCli(['completion']);
+        expect(code).toBe(0);
+        for (const word of COMPLETION_WORDS) {
+            expect(out).toContain(word);
+        }
+        // The previously-drifted wave-2/3 commands are present (REV-011).
+        for (const drifted of ['env', 'add', 'update', 'openapi', 'logs']) {
+            expect(out).toContain(drifted);
+        }
+    });
+
+    test('script-front commands render their factory help (issue #148)', async () => {
+        const { code, out } = await runCli(['build', '--help']);
+        expect(code).toBe(0);
+        expect(out).toContain('build script');
+        expect(out).toContain('dir');
+    });
+
     test('serve runs the app and relays SIGTERM into its own drain (exit 0)', async () => {
         const port = '4301';
         const proc = spawn(process.execPath, [BIN, 'serve', appDir, '--port', port], { stdio: 'inherit' });

@@ -14,9 +14,6 @@
  * without processes; the default spawner uses `node:child_process` and the
  * default signal host is `process` itself. The default logger is
  * `@ndigo/log` (the `ndigo-cluster:runner` channel).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { spawn } from 'node:child_process';
 import { getLogger } from '@ndigo/log';

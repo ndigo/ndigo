@@ -1,4 +1,5 @@
 /**
+ * Schedule registry: collects and manages declared schedules.
  */
 import { FrameworkError, getSymbolMetadata } from '@ndigo/core';
 import type { ApplicationContext } from '@ndigo/context';

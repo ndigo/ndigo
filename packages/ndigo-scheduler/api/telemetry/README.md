@@ -6,6 +6,8 @@
 
 # telemetry
 
+Telemetry integration for scheduled tasks.
+
 ## Functions
 
 - [instrumentTask](functions/instrumentTask.md)

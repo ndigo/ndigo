@@ -1,4 +1,5 @@
 /**
+ * Task scheduler: drives scheduled task execution.
  */
 import { FrameworkError } from '@ndigo/core';
 import { like } from '@ndigo/util/types';

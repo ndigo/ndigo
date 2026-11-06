@@ -1,4 +1,5 @@
 /**
+ * Schedule specification: duration and cron parsing.
  */
 
 /**

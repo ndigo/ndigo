@@ -1,4 +1,5 @@
 /**
+ * Schedule trigger definitions: cron, interval, and fixed-delay.
  */
 import { Cron } from 'croner';
 import { FrameworkError } from '@ndigo/core';

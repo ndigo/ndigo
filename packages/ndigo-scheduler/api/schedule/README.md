@@ -6,6 +6,8 @@
 
 # schedule
 
+Schedule trigger definitions: cron, interval, and fixed-delay.
+
 ## Classes
 
 - [CronSchedule](classes/CronSchedule.md)

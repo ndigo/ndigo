@@ -4769,8 +4769,31 @@ A file containing one public type documents the relationship between name and co
 | Commented-out                       | Delete it.                                                                                             |
 | Optional path you chose not to take | Document the decision in `docs/decisions/` or a commit message                                         |
 
+### Reuse the contract before hand-rolling
+
+`@ndigo/core`, `@ndigo/factory`, and `@ndigo/util` carry a shared contract
+vocabulary. When a new piece of code reaches for an ad-hoc implementation of
+one of those patterns, wire the contract instead:
+
+| Hand-rolled idiom                                                                                             | Reuse instead                                                                                                                               |
+| :------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------ |
+| Multi-line `typeof x.prop === 'function'` shape chain                                                         | `like({...})` one-liner, or an existing `like*` guard (`likeDestroyable`, `likeMatchable`, `likeJobDriver`)                                 |
+| Inline `.sort((a, b) => a.x < b.x ? -1 : a.x > b.x ? 1 : 0)`                                                  | `stringComparator` / `numberComparator` (+ `compareBy` for key triples, `chainComparisons`/`invertComparison` for multi-key and descending) |
+| `.sort((a, b) => a.x - b.x)`                                                                                  | `numberComparator.compare` (via `compareBy` when extracting a key)                                                                          |
+| Class with `equals()` / `compareTo()` / `toJSON()` / `close()` / `destroy()` that never declares its contract | Declare `Equatable` / `Comparable` / `Serializable` / `Closeable` / `Destroyable` on the class or extend the owning contract interface      |
+
+Rules of engagement:
+
+- A class that structurally matches a contract names the contract in its
+  `implements` clause — the compiler then enforces future changes.
+- Closed-resource guards throw `IllegalStateError`; domain errors extend
+  `FrameworkError`/`ApplicationError` (see AD-94).
+- Exclusions are documented at the exclusion site (e.g. `HTTPServer` closes
+  through `SmartLifecycle.stop()`; `SocketSession.close(code, reason)` takes
+  per-session parameters).
+
 ---
 
-**Last Updated:** August 22, 2026
+**Last Updated:** November 6, 2026
 
 _This guide is a living document. When code style evolves, update this guide to reflect current practices._

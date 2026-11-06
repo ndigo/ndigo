@@ -8,7 +8,7 @@ import { buildCommand } from '@stricli/core';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { readAppManifest, resolveAppDir, runInteractiveSpawn } from '../helpers/app-scripts.js';
-import { readVersionManifest, type VersionManifest } from './_version-manifest.js';
+import { readVersionManifest } from './_version-manifest.js';
 
 export const updateCommand = buildCommand({
     async func(flags: { check?: boolean; manifest?: string }, dir: string) {

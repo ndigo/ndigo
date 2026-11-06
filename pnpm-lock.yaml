@@ -2014,6 +2014,9 @@ importers:
       '@ndigo/core':
         specifier: ~0.0.1
         version: link:../ndigo-core
+      '@ndigo/factory':
+        specifier: ~0.0.1
+        version: link:../ndigo-factory
       '@ndigo/jobs':
         specifier: ~0.0.1
         version: link:../ndigo-jobs

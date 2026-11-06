@@ -16,7 +16,7 @@ Configuration options for the OfflineInterceptor.
 
 The interval in milliseconds to check for online status.
 
-#### Default
+#### Default Value
 
 ```ts
 5000

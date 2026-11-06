@@ -170,6 +170,6 @@ The subscription handle.
 
 #### Throws
 
-[StompProtocolError](../../stomp-frame/classes/StompProtocolError.md) when the session has ended
+when the session has ended
   (disconnect, ERROR, transport closed) — a new subscription could
   never receive frames.

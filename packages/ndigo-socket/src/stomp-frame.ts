@@ -115,11 +115,11 @@ function escapeHeaderValue(value: string): string {
  * Decode a header value per STOMP 1.2 §1.2. Only `\n`, `\r`, `\c` and `\\`
  * are defined; any other backslash sequence — including a trailing lone
  * backslash — is a fatal protocol error ("Undefined escape sequences such as
- * \t MUST be treated as a fatal protocol error").
+ * `\\t` MUST be treated as a fatal protocol error").
  *
  * @param value - The wire-encoded value.
  * @returns The decoded value.
- * @throws {@link StompProtocolError} on an undefined escape sequence.
+ * @throws on an undefined escape sequence.
  */
 function unescapeHeaderValue(value: string): string {
     let out = '';
@@ -161,7 +161,7 @@ function unescapeHeaderValue(value: string): string {
  *
  * @param headerBlock - The frame text before the blank line, EOLs excluded.
  * @returns The parsed command and header map.
- * @throws {@link StompProtocolError} on an empty command, a raw CR/NUL, a
+ * @throws on an empty command, a raw CR/NUL, a
  * malformed header line, or an undefined escape sequence.
  */
 function parseHeaderBlock(headerBlock: string): { command: string; headers: Record<string, string> } {
@@ -262,7 +262,7 @@ function headerBlockEnd(units: ArrayLike<string | number>, terminator: number): 
  *
  * @param units - The frame, indexed by code unit (text) or octet (bytes).
  * @param from - Offset just past the terminating NUL.
- * @throws {@link StompProtocolError} on any octet that is not an EOL.
+ * @throws on any octet that is not an EOL.
  */
 function assertTrailingEols(units: ArrayLike<string | number>, from: number): void {
     const length = units.length;
@@ -292,7 +292,7 @@ function assertTrailingEols(units: ArrayLike<string | number>, from: number): vo
  *
  * @param frame - The wire frame (a WebSocket text or binary message).
  * @returns The parsed frame (`command: ''` for a ping).
- * @throws {@link StompProtocolError} on malformed input.
+ * @throws on malformed input.
  */
 export function parseStompFrame(frame: StompWireInput): StompFrame {
     if (typeof frame === 'string') {
@@ -371,7 +371,7 @@ export function parseStompFrame(frame: StompWireInput): StompFrame {
  *
  * @param frame - The wire frame text.
  * @returns The parsed frame (`command: ''` for a ping).
- * @throws {@link StompProtocolError} on malformed input.
+ * @throws on malformed input.
  */
 export function parseTextFrame(frame: string): StompFrame {
     if (textPing.test(frame)) {
@@ -433,7 +433,7 @@ export function parseTextFrame(frame: string): StompFrame {
  *
  * @param frame - The frame to serialize.
  * @returns The wire frame (string for text bodies, bytes for binary).
- * @throws {@link StompProtocolError} on values that cannot be framed.
+ * @throws on values that cannot be framed.
  */
 export function serializeStompFrame(frame: StompFrame): StompBody {
     const { command, headers, body } = frame;

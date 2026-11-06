@@ -14,7 +14,7 @@ import { AbstractDispatcher } from '@ndigo/dispatcher';
  * ```
  */
 export class BrowserDispatcher extends AbstractDispatcher {
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     get [Symbol.toStringTag](): string {
         return 'BrowserDispatcher';
     }

@@ -24,7 +24,6 @@ import type { RouterErrorHandler } from '@ndigo/router';
  * @param restore - Rolls back a rejected or failed route change.
  * @param onError - Surfaces a pipeline failure (defaults to silent when omitted).
  * @returns `true` when the route was accepted, `false` when rejected or failed.
- * @since 1.0.0
  */
 async function commitRoute(
     route: PathRoute,

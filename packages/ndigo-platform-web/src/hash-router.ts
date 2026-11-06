@@ -16,18 +16,15 @@ import { commitRoute } from './_commit-route';
 /**
  * A type alias for the native `HashChangeEvent` handler function.
  * @param event - The `HashChangeEvent` object.
- * @since 1.0.0
  */
 type HashChangeHandler = (event: HashChangeEvent) => void;
 /**
  * A type alias for a `RingBuffer` that stores `RouteTransaction` objects, representing the route history.
- * @since 1.0.0
  */
 type RouteHistory = RingBuffer<RouteTransaction>;
 
 /**
  * Defines the access level of a route, indicating whether it's public or private.
- * @since 1.0.0
  */
 enum RouteAccess {
     PUBLIC,
@@ -36,7 +33,6 @@ enum RouteAccess {
 
 /**
  * Defines the source of a route change, indicating whether it's external (e.g., browser navigation) or internal (e.g., programmatic).
- * @since 1.0.0
  */
 enum RouteSource {
     EXTERNAL,
@@ -49,7 +45,6 @@ const { defineProperty } = Reflect,
 
 /**
  * Represents a single route transaction, capturing the route, its access level, and its source.
- * @since 1.0.0
  */
 class RouteTransaction {
     route!: string;
@@ -61,7 +56,6 @@ class RouteTransaction {
      * @param route - The route string involved in the transaction.
      * @param access - The `RouteAccess` level of the route.
      * @param source - The `RouteSource` indicating how the route change originated.
-     * @since 1.0.0
      */
     constructor(route: string, access: RouteAccess, source: RouteSource) {
         defineProperty(this, 'route', {
@@ -92,7 +86,6 @@ class RouteTransaction {
  * It manages routing based on the URL hash fragment, supports route interceptors, and maintains a route history.
  * This class structurally conforms to the `Destroyable` shape (`destroyed` + `destroy()`) without importing the interface,
  * so `likeDestroyable` checks can still identify it by duck typing.
- * @since 1.0.0
  */
 export class HashRouter extends AbstractRouter {
     #handler: HashChangeHandler;
@@ -113,7 +106,6 @@ export class HashRouter extends AbstractRouter {
     /**
      * Gets the current route as a string.
      * @returns The string representation of the current route, or an empty string if no route is set.
-     * @since 1.0.0
      */
     get route(): string {
         return this.#route?.toString() || '';
@@ -121,14 +113,12 @@ export class HashRouter extends AbstractRouter {
 
     /**
      * Indicates whether the router has been destroyed and its event listeners removed.
-     * @since 1.0.0
      */
     destroyed!: boolean;
 
     /**
      * Gets the `RingBuffer` instance that stores the route history.
      * @returns The route history buffer.
-     * @since 1.0.0
      */
     get history(): RouteHistory {
         return this.#history;
@@ -138,7 +128,6 @@ export class HashRouter extends AbstractRouter {
      * Creates an instance of `HashRouter`.
      * @param callback - The `RouterCallback` to be invoked when the route changes.
      * @param options - Router options, e.g. the navigation-error hook.
-     * @since 1.0.0
      */
     constructor(callback: RouterCallback, options: RouterOptions = {}) {
         super(options);
@@ -174,7 +163,6 @@ export class HashRouter extends AbstractRouter {
     /**
      * Destroys the router by removing its `hashchange` event listener.
      * Once destroyed, the router will no longer respond to URL hash changes.
-     * @since 1.0.0
      */
     destroy() {
         if (!this.destroyed) {
@@ -195,7 +183,6 @@ export class HashRouter extends AbstractRouter {
      * @param newRoute - The new route string to set.
      * @param isPublic - `true` if the route change should be reflected in the browser's URL hash and recorded as a public route, `false` for internal/private route changes. Defaults to `true`.
      * @returns A promise that resolves when the route has been successfully set and processed.
-     * @since 1.0.0
      */
     async setRoute(newRoute: string, isPublic = true): Promise<void> {
         await this.#serialize(() => this.#applyNavigation(newRoute, isPublic, RouteSource.INTERNAL));
@@ -204,7 +191,6 @@ export class HashRouter extends AbstractRouter {
     /**
      * Refreshes the current route by re-invoking the router's callback with the current route.
      * This can be useful to re-apply routing logic or update UI components without a full navigation.
-     * @since 1.0.0
      */
     refresh(): void {
         if (this.#route) {
@@ -220,7 +206,6 @@ export class HashRouter extends AbstractRouter {
      *
      * @param path - The target route string to navigate to.
      * @returns A promise that resolves when the route has been set and processed.
-     * @since 1.0.0
      */
     navigate(path: string): Promise<void> {
         return this.setRoute(path, true);
@@ -231,8 +216,6 @@ export class HashRouter extends AbstractRouter {
      * The echo of a hash written by {@link setRoute} is ignored — that route change has already been
      * recorded and dispatched, so re-running the pipeline would duplicate it.
      * @param event - The `HashChangeEvent` object.
-     * @protected
-     * @since 1.0.0
      */
     protected _onHashChange(event: HashChangeEvent) {
         const newRoute = extractRouteFromURL(event.newURL),
@@ -287,8 +270,6 @@ export class HashRouter extends AbstractRouter {
      * @param newRoute - The new route string to set.
      * @param syncHash - `true` if the browser hash should be updated, `false` otherwise. Defaults to `true`.
      * @returns A promise that resolves to `true` if the route was successfully set and processed, `false` otherwise.
-     * @protected
-     * @since 1.0.0
      */
     protected async _setRoute(newRoute: string, syncHash = true): Promise<boolean> {
         const route = new PathRoute(newRoute),
@@ -313,8 +294,6 @@ export class HashRouter extends AbstractRouter {
      * Mirrors the current route into `location.hash`, recording the written hash so the
      * `hashchange` event the browser emits for it is not re-dispatched.
      * Does nothing outside a browser environment.
-     * @private
-     * @since 1.0.0
      */
     private _syncHash(): void {
         if (typeof location === 'undefined') {
@@ -358,8 +337,6 @@ export class HashRouter extends AbstractRouter {
      * For `MappedRouterInterceptor`s, it checks if the route matches their patterns and resolves parameters.
      * @param route - The `PathRoute` object for which to resolve interceptors.
      * @returns An array of active `RouterInterceptor` instances.
-     * @private
-     * @since 1.0.0
      */
     private _resolveInterceptors(route: PathRoute): RouterInterceptor[] {
         return this.interceptors.filter((interceptor) => {

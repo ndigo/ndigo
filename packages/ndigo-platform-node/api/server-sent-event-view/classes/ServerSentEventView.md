@@ -101,8 +101,6 @@ Destroys the view; renders after destruction produce an empty stream.
 
 `Promise`\<[`RenderResult`](#)\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `ProducerView.renderTo`

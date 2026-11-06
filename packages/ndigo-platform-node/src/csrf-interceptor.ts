@@ -13,10 +13,10 @@
  * cookie outright, so mutating requests fail closed.
  */
 import { timingSafeEqual } from 'node:crypto';
-import { randomToken } from '@ndigo/util';
-import { Route } from '@ndigo/router';
-import { RouteHandlerInterceptor } from '@ndigo/dispatcher';
-import { HTTPHeaders } from '@ndigo/http';
+import { randomToken } from '\@ndigo/util';
+import { Route } from '\@ndigo/router';
+import { RouteHandlerInterceptor } from '\@ndigo/dispatcher';
+import { HTTPHeaders } from '\@ndigo/http';
 import { getNodeRequest, NODE_RESPONSE_ATTRIBUTE, NodeRequest } from './node-request';
 import { ProblemTypes, writeProblem } from './problem-details';
 import type { ServerResponse } from 'node:http';
@@ -33,7 +33,7 @@ export const CSRF_COOKIE = '__Host-ndigo-csrf';
 /** Mutating HTTP methods that require CSRF validation. */
 const MUTATING_METHODS = new Set(['POST', 'PUT', 'DELETE', 'PATCH', 'QUERY']);
 
-/** Header used to echo the token back (a constant from the @ndigo/http vocabulary). */
+/** Header used to echo the token back (a constant from the \@ndigo/http vocabulary). */
 const CSRF_HEADER = String(HTTPHeaders.X_CSRF_TOKEN);
 
 /**

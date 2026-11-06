@@ -337,7 +337,7 @@
   },
   "ndigo-platform-node": {
     "modules": 55,
-    "modulesWithoutSummary": 24,
+    "modulesWithoutSummary": 23,
     "members": 315,
     "membersUndocumented": 53,
     "methodsWithParams": 117,
@@ -349,7 +349,7 @@
   },
   "ndigo-platform-web": {
     "modules": 25,
-    "modulesWithoutSummary": 21,
+    "modulesWithoutSummary": 20,
     "members": 98,
     "membersUndocumented": 21,
     "methodsWithParams": 42,
@@ -469,7 +469,7 @@
   },
   "ndigo-telemetry": {
     "modules": 15,
-    "modulesWithoutSummary": 8,
+    "modulesWithoutSummary": 7,
     "members": 84,
     "membersUndocumented": 44,
     "methodsWithParams": 24,

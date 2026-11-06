@@ -13,9 +13,6 @@
  * request rather than passing it through unthrottled (or misreporting it
  * as a 429). `onError: 'fail-open'` is the documented availability escape
  * hatch — it logs every allowance.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
 import { getLogger } from '@ndigo/log';

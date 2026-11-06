@@ -24,10 +24,6 @@ concurrent writer from failing the upgrade mid-transaction.
 Nested calls throw: `@transactional` already serializes the boundary
 (DAT-F9), and a transaction owns one connection for its lifetime.
 
-## Since
-
-1.0.0
-
 ## Implements
 
 - `TransactionManager`
@@ -61,8 +57,6 @@ The Drizzle data source whose connection is
 
 `boolean`
 
-#### Inherit Doc
-
 #### Implementation of
 
 `TransactionManager.isActive`
@@ -88,8 +82,6 @@ The Drizzle data source whose connection is
 #### Returns
 
 `Promise`\<`T`\>
-
-#### Inherit Doc
 
 #### Implementation of
 

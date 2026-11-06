@@ -20,9 +20,7 @@ import type { ClaimOptions, JobId, JobRecord, JobRequest } from './job';
  *   (dead-letter inspection is out of scope — AD-72 D-2).
  *
  * Implementations are registered under the `jobDriver` bean; the default is
- * {@link in-process-job-driver.InProcessJobDriver | InProcessJobDriver}, which is explicitly non-durable.
- *
- * @since 1.0.0
+ * {@link "in-process-job-driver".InProcessJobDriver | InProcessJobDriver}, which is explicitly non-durable.
  */
 export interface JobDriver {
     /** Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`). */

@@ -71,7 +71,7 @@ export interface Cache<V = unknown> {
      * Stores a value, optionally overriding the backend default TTL.
      * Capacity and eviction policy are backend-specific configuration.
      *
-     * @throws {TypeError} When the value is the {@link CacheMiss} sentinel or
+     * @throws When the value is the {@link CacheMiss} sentinel or
      *   the TTL is not a positive finite number of milliseconds.
      */
     set(key: string, value: V, ttl?: number): Promise<void>;
@@ -102,7 +102,7 @@ export interface Cache<V = unknown> {
  *   untouched on access and updates, evicting the oldest insertion.
  * - `defaultTtl`/`maxSize`/`eviction` are fixed at construction — a shared
  *   instance has uniform behavior (configure per named cache via
- *   {@link cache-manager.MemoryCacheManager | MemoryCacheManager}).
+ *   {@link "cache-manager".MemoryCacheManager | MemoryCacheManager}).
  */
 export class MemoryCache<V = unknown> implements Cache<V> {
     readonly #entries: Map<string, CacheEntry<V>> = new Map();
@@ -112,7 +112,7 @@ export class MemoryCache<V = unknown> implements Cache<V> {
 
     /**
      * @param options - Store configuration (see {@link CacheOptions}).
-     * @throws {TypeError} For a non-integer/negative `maxSize`, a
+     * @throws For a non-integer/negative `maxSize`, a
      *   non-positive `defaultTtl`, or an unknown `eviction` policy.
      */
     constructor(options: CacheOptions = {}) {

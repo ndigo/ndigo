@@ -18,10 +18,6 @@ Publication is at-least-once: a claimed entry becomes claimable again after
 its lease expires (crashed relay, failed publish), so consumers subscribe
 idempotently.
 
-## Since
-
-1.0.0
-
 ## Methods
 
 ### append()

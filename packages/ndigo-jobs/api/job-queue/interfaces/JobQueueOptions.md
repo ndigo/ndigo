@@ -8,10 +8,6 @@
 
 Options for [JobQueue](../classes/JobQueue.md).
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### driver?

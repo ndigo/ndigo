@@ -8,10 +8,6 @@
 
 Claim window for [JobDriver.claim](../../job-driver/interfaces/JobDriver.md#claim).
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### leaseMs

@@ -149,7 +149,7 @@ const sanitizeDecoderMessage = (message: string): string => {
  * `format` is `'auto'` or `'toon'`, `application.toon` /
  * `application-{profile}.toon` — JSON wins the collision) config files into
  * a `ConfigurableEnvironment`, orchestrated by boot AFTER profiles are
- * applied and BEFORE CLI/builder wiring (CLI > boot > files > env >
+ * applied and BEFORE CLI/builder wiring (CLI \> boot \> files \> env \>
  * defaults). See AD-66: TOON is an opt-in, decode-only authoring format;
  * JSON stays the default.
  */

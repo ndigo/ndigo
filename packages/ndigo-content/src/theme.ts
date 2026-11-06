@@ -53,7 +53,7 @@ export class StaticThemeResolver implements ThemeResolver {
      *
      * @param themes - Available themes.
      * @param defaultThemeName - Optional name of the default theme.
-     * @throws {TypeError} When no valid default theme is available.
+     * @throws When no valid default theme is available.
      */
     constructor(themes: Theme[], defaultThemeName?: string) {
         this.#themes = new Map(themes.map((theme) => [theme.name, theme]));
@@ -69,7 +69,7 @@ export class StaticThemeResolver implements ThemeResolver {
      *
      * @param name - Optional theme name.
      * @returns The requested or default theme.
-     * @throws {TypeError} When the theme cannot be found.
+     * @throws When the theme cannot be found.
      */
     getTheme(name?: string): Theme {
         const selected = (name && this.#themes.get(name)) || this.#themes.get(this.#defaultThemeName);

@@ -1,8 +1,5 @@
 /**
  * Interceptor-denial contract: a {@link RouteHandlerInterceptor} may deny a.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Route } from '@ndigo/router';
 

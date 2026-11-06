@@ -10,9 +10,6 @@
  *   so the browser can see exactly what the server booted with.
  * - The description is safe to compute in tests, where registering global
  *   providers would leak across a worker; nothing here touches the OTel API.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { getEnv } from '@ndigo/context';
 import { DispatcherInstrumentation } from '@ndigo/telemetry';

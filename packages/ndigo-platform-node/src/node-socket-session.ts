@@ -1,8 +1,5 @@
 /**
  * Node WebSocket session — wraps a `ws` (RFC 6455) connection as a.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { SocketSession, SocketRequestSources, SocketSessionRegistry } from '@ndigo/dispatcher';
 import type { WebSocket } from 'ws';

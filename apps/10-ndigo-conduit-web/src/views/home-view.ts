@@ -6,9 +6,6 @@
  * lives in `ArticleService`; this component only renders the model and emits
  * the intents, so switching a tab is a service call that re-renders through the
  * route — not local view state.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractWebComponent, TagMapping } from '@ndigo/view-webcomponent';
 import { ACTIONS } from '../app/conduit-events';

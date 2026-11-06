@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ApplicationContext } from '@ndigo/context';
 import { isString } from '@ndigo/util/types';

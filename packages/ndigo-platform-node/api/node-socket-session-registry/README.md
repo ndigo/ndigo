@@ -6,6 +6,8 @@
 
 # node-socket-session-registry
 
+Node WebSocket session registry — tracks live connections, rooms, broadcast.
+
 ## Classes
 
 - [NodeSocketSessionRegistry](classes/NodeSocketSessionRegistry.md)

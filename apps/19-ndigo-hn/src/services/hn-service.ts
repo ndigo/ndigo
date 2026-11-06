@@ -20,9 +20,6 @@
  *    the wire, the HTTP cache, or a stale snapshot; a stale serve flips the
  *    connection banner and, in the background, replays the request through the
  *    offline queue.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { trace } from '@opentelemetry/api';
 import { signal, type Signal } from '@ndigo/signals';

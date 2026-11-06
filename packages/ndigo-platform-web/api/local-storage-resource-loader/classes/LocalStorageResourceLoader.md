@@ -8,14 +8,6 @@
 
 Resource loader that persists data to `localStorage`.
 
-## Since
-
-1.0.0
-
-## Author
-
-Jeff Rose
-
 ## Constructors
 
 ### Constructor

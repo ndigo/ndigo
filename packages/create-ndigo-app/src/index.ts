@@ -1,8 +1,5 @@
 /**
  * `create-ndigo-app` — scaffold a standalone Ndigo application.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync, readFileSync } from 'node:fs';
 import { join, resolve, sep } from 'node:path';

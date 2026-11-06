@@ -15,9 +15,6 @@
  *
  * The evaluation side lives in `InMemoryDerivedQueryRepository`
  * (repository.ts) and `DrizzleDerivedQueryRepository` (`@ndigo/orm-drizzle`).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ColumnDefinition } from './metadata';
 import { SortOrder } from './page';

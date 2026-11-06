@@ -8,9 +8,6 @@
  * evaluation), so bean-creation ordering can never capture a stale or
  * undefined environment. `environment.refresh()` (AD-29) therefore flips
  * flags live through the read-through provider — no cache, no restart.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { Null } from '@ndigo/core';

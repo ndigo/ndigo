@@ -6,6 +6,8 @@
 
 # writer
 
+File-writing helper for `@ndigo/openapi` (AD-96 / richer openapi output).
+
 ## Interfaces
 
 - [WriteOpenAPISpecOptions](interfaces/WriteOpenAPISpecOptions.md)

@@ -5,9 +5,6 @@
  * wire, not the framework's intentions), the fixation rotation on a privilege
  * change, and the fail-closed paths (`401` without a session, `415` for a
  * non-JSON login body).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

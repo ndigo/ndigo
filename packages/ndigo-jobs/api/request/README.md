@@ -6,6 +6,8 @@
 
 # request
 
+Payload and request helpers shared by every driver implementation.
+
 ## Variables
 
 - [DEFAULT\_MAX\_ATTEMPTS](variables/DEFAULT_MAX_ATTEMPTS.md)

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { configurationProperties } from '@ndigo/boot';
 import { ContextToken } from '@ndigo/context';

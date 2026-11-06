@@ -14,9 +14,6 @@
  * oldest bucket is evicted, so `size` never exceeds `maxEntries` and new
  * keys stay ~O(1) to insert (SEC-2). Redis-backed TTL windows need no
  * such machinery — the server expires keys itself.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { type RateLimitPolicy, type RateLimitResult, type RateLimiter, validateRateLimitPolicy } from './rate-limiter';
 

@@ -3,9 +3,6 @@
  * `preHandle` is finalized exactly like the live `NodeHTTPServerAdapter` —
  * a bare `denialOf(403)`, an `AuthRouteGuard`-shaped `401`, and a redirect
  * denial all produce the same wire response through the mock.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';

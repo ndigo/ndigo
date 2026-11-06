@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 const charMatcher = /[!'()*]/g,
     hexEncode = (value: string): string => `%${value.charCodeAt(0).toString(16).toUpperCase()}`,

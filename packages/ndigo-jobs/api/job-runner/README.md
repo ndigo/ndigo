@@ -6,6 +6,8 @@
 
 # job-runner
 
+`JobRunner` — polls a driver and executes registered handlers.
+
 ## Classes
 
 - [JobRunner](classes/JobRunner.md)

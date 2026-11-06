@@ -1,8 +1,5 @@
 /**
  * Type-safe bean handles for the ndigo-jobs contracts.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ContextToken } from '@ndigo/factory';
 import type { JobDriver } from './job-driver';

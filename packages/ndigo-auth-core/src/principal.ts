@@ -1,8 +1,5 @@
 /**
  * Represents an authenticated user or entity in the system.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export interface Principal {
     /** Unique identifier for this principal. */

@@ -1,8 +1,5 @@
 /**
  * Type declarations for {@link ./vite-plugin-lower-decorators.mjs}.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /** A minimal Vite plugin shape (avoids depending on Vite's types from `scripts/`). */

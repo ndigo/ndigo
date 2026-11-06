@@ -4375,38 +4375,46 @@ Ref: STYLE_GUIDE.md Section 4.6"
 
 ## 5. Documentation Blocks
 
+Ndigo source documentation follows the **TSDoc standard** as parsed by
+`@microsoft/tsdoc` (the same parser wired into oxlint as
+`internal/tsdoc-syntax`). Comments are written so that `pnpm doc:api`
+(TypeDoc) and `pnpm lint` (oxlint) agree on what is valid. `pnpm lint` runs
+`--deny-warnings`, so a TSDoc syntax diagnostic is a hard error.
+
 Every source file begins with a single canonical TSDoc block at the very top
-of the file, carrying the since-version stamp and the author. This is the
+of the file, before any imports. The block carries a one-line module summary;
+no tags. The summary is what the module-summary TypeDoc plugin lifts onto the
+generated module page (`packages/<name>/api/<file>/README.md`). This is the
 standard form — `@ndigo/generators` emits it for new packages/components and
 the `header` generator adds/replaces it on existing files:
 
 ```
 /**
  * <One-line summary ending with a period>.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 ```
 
 **Rules:**
 
 - ✅ One block per file, first thing in the file (before imports)
-- ✅ `<summary>` is a single sentence ending in a period; it may be omitted
-- ✅ `@since 1.0.0` stamps the framework version the file first shipped in
-- ✅ `@author Jeff Rose` (override per file only with `--author`)
-- ❌ No `@module` tag: the generated reference derives each module's name from
-  its source path, and a package-wide tag collapses every file of the package
-  into one module (see `docs/guides/12-package-documentation.md`)
+- ✅ `<summary>` is a single sentence ending in a period; required for `src`
+  modules, optional for test files
+- ✅ No tags in the file header — no `@since`, `@author`, `@module`,
+  `@category`, `@file`, or duplicate summary lines. Ndigo follows the TSDoc
+  standard, which defines no version/author tags; `@since`/`@author` are
+  deliberately not used.
+- ❌ No `@module` tag: TypeDoc derives each module's name from its source path,
+  and a package-wide tag collapses every file of the package into one module
+  (see `docs/guides/12-package-documentation.md`)
 - ❌ Headings (`#`) inside doc blocks
 - ❌ `TODO:` summary placeholders — describe what the file does
-- ❌ `@file`, `@category`, or duplicate summary lines
 - ✅ Generate with:
-  `pnpm exec nx generate @ndigo/generators:header --file <path> [--summary ...]`
+  `pnpm exec nx generate @ndigo/generators:header --file <path> --summary "…"`
 
 The file-level block documents the whole module; class/method members carry
 their own focused TSDoc. `internal/requires-doc-header` (oxlint, error level —
-`.oxlintrc.json`) enforces the canonical block on source files.
+`.oxlintrc.json`) enforces the canonical block on source files. Module-summary
+presence is tracked per package by `scripts/doc-coverage.mjs`.
 
 **Public symbol comments (coverage gate):** every top-level exported
 function, class, interface, or type alias needs a doc comment — the docs
@@ -4421,6 +4429,16 @@ export function isInitialized(value: unknown): boolean;
 Members (methods/getters/properties), variables, and enum members are exempt
 — names self-document. `@internal` and `_`-prefixed internal files are
 exempt. See `docs/guides/12-package-documentation.md`.
+
+**Standard tags.** Use only TSDoc-standard tags: `@remarks`, `@example`,
+`@param`, `@typeParam`, `@returns`, `@throws`, `@defaultValue`,
+`@deprecated`, `@see`, `@internal`, `@inheritDoc`, `{@link}`. Do not use
+JSDoc-only tags (`@template`, `@default`, `@inheritdoc`, `@protected`,
+`@private`, `@extends`, `@category`, `@external`, `@global`, `@typedef`,
+`@class`, `@abstract`, `@property`, `@todo`); migrate them to the standard
+forms (`@typeParam`, `@defaultValue`, `{@inheritDoc}`, or prose). `@example`
+code must be valid TypeScript and is syntax-checked by
+`scripts/doc-examples.mjs`.
 
 **`{@link}` targets follow the file, not the package.** The reference is
 generated one module per source file, so an unqualified `{@link Name}` only

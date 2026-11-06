@@ -5,9 +5,6 @@
  * stripping) — there is no build step, so relative imports carry explicit
  * `.ts` extensions. Consumer-facing rules ship in `@ndigo/oxlint-plugin`
  * instead; this tree never leaves the repository (AD-86).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { eslintCompatPlugin } from '@oxlint/plugins';
 
@@ -22,6 +19,7 @@ import { noRawConsole } from './rules/no-raw-console.ts';
 import { noUppercaseRegexpConstants } from './rules/no-uppercase-regexp-constants.ts';
 import { noUpwardLayerImports } from './rules/no-upward-layer-imports.ts';
 import { requiresDocHeader } from './rules/requires-doc-header.ts';
+import { tsdocSyntax } from './rules/tsdoc-syntax.ts';
 
 const plugin = eslintCompatPlugin({
     meta: {
@@ -39,6 +37,7 @@ const plugin = eslintCompatPlugin({
         'no-uppercase-regexp-constants': noUppercaseRegexpConstants,
         'no-upward-layer-imports': noUpwardLayerImports,
         'requires-doc-header': requiresDocHeader,
+        'tsdoc-syntax': tsdocSyntax,
     },
 });
 

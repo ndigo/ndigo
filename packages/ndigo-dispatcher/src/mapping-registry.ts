@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { MultiValueMap } from '@ndigo/core';
 import { RouteHandlerMethod } from './route-handler-method';

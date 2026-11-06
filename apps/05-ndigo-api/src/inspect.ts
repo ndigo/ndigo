@@ -7,9 +7,6 @@
  * manifest as pretty JSON and exits. No HTTP server is started: `run()` builds
  * and refreshes the context; only `server.start()` (which this entry omits)
  * would bind a port.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import 'node:process';
 import { ApplicationBuilder } from '@ndigo/boot';

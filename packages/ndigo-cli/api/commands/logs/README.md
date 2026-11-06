@@ -6,6 +6,8 @@
 
 # commands/logs
 
+`ndigo logs` — print (and optionally follow) an application log file.
+
 ## Variables
 
 - [logsCommand](variables/logsCommand.md)

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Route, RouteSegment } from '@ndigo/router';
 import { AbstractNameValueExpression, AbstractRouteCondition } from './route-condition';

@@ -6,9 +6,6 @@
  * `metrics.getMeter(...).createCounter(...)` would capture the NoopMeter and
  * silently drop every datapoint. These factories defer instrument creation to
  * the first recorded call (post-SDK-init) and cache it per metric name.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { metrics } from '@opentelemetry/api';
 import type { Attributes, Counter, Histogram } from '@opentelemetry/api';

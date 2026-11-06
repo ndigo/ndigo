@@ -6,6 +6,8 @@
 
 # migration-loader
 
+Migration-file loading and boot wiring (AD-78).
+
 ## Interfaces
 
 - [MigrateOnBootOptions](interfaces/MigrateOnBootOptions.md)

@@ -1,9 +1,6 @@
 /**
  * Rule that flags raw `console.warn`/`console.error`/`console.log` calls in
  * package source, steering framework logging through `@ndigo/log`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 

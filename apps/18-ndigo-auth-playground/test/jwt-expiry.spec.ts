@@ -6,9 +6,6 @@
  * A separate spec file because the token lifetime is fixed at boot
  * (`JWT_ACCESS_TTL_MS`), and each Vitest file gets its own worker, so the short
  * lifetime cannot leak into the other JWT cases.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

@@ -4,9 +4,6 @@
  * The browser-global half of the client reconnect wiring: `@ndigo/socket`'s
  * `WebSocketClient` stays isomorphic while this package provides the
  * window/`navigator` surface (AD-04 boundary).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { signal, type Signal } from '@ndigo/signals';
 import { type ReconnectTrigger } from '@ndigo/socket';

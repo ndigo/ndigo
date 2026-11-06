@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import removeNonWord from './remove-non-word.js';
 import replaceDiacritics from './replace-diacritics.js';

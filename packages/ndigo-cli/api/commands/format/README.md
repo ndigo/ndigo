@@ -6,6 +6,8 @@
 
 # commands/format
 
+`ndigo format` — front the application's format script.
+
 ## Variables
 
 - [formatCommand](variables/formatCommand.md)

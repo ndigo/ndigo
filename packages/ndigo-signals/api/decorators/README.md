@@ -5,3 +5,5 @@
 [@ndigo/signals](../README.md) / decorators
 
 # decorators
+
+Entry point for `@ndigo/signals/decorators`.

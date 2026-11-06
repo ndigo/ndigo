@@ -1,7 +1,3 @@
-/**
- * @since 1.0.0
- * @author Jeff Rose
- */
 import { describe, expect, test } from 'vitest';
 import { renderMarkdown } from '../src/lib/markdown';
 

@@ -5,9 +5,6 @@
  * leaf so the harness's own dependency graph stays acyclic). The animation-
  * frame shim is harness-local — it installs a global and needs no util
  * dependency.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export { delay } from '@ndigo/util';
 

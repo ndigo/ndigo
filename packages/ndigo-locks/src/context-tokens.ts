@@ -1,8 +1,5 @@
 /**
  * Context tokens for the `@ndigo/locks` beans (AD-73 D-4).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ContextToken } from '@ndigo/factory';
 import type { LockDriver } from './lock-driver';

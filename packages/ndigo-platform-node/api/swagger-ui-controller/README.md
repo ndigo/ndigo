@@ -6,6 +6,8 @@
 
 # swagger-ui-controller
 
+Serves the Swagger UI page + assets (AD-35 D-6).
+
 ## Classes
 
 - [SwaggerUIController](classes/SwaggerUIController.md)

@@ -1,8 +1,5 @@
 /**
  * Health registry behavior — including AD-36 D-1 error redaction.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import {

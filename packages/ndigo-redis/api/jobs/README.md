@@ -6,6 +6,8 @@
 
 # jobs
 
+Redis jobs subpath (`@ndigo/redis/jobs`) — the durable `JobDriver` backed by
+
 ## References
 
 ### RedisJobDriver

@@ -1,8 +1,5 @@
 /**
  * Utility for managing DOM event listeners on a specific element.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export class DOMEventBinder {
     #element: EventTarget;

@@ -5,9 +5,6 @@
  * fanned out to the whole room (including the sender). A `chat-tick` fires
  * into the room every 2 seconds — the scheduler → registry reachability
  * proof (AD-21 D4): zero-wiring `@scheduled` next to the socket endpoint.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { $aware } from '@ndigo/factory';

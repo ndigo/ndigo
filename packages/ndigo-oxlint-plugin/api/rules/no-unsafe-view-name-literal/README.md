@@ -6,6 +6,8 @@
 
 # rules/no-unsafe-view-name-literal
 
+Rule that flags unsafe string literals used as view names.
+
 ## Variables
 
 - [noUnsafeViewNameLiteral](variables/noUnsafeViewNameLiteral.md)

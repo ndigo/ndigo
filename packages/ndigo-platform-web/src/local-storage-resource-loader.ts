@@ -1,8 +1,5 @@
 /**
  * Resource loader that persists data to `localStorage`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export class LocalStorageResourceLoader {
     readonly #prefix: string;

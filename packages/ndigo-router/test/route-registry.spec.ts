@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, it, expect } from 'vitest';
 import { RouteRegistry, deriveKey } from '../src/route-registry';

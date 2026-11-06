@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Serializable, JSONValue } from './serializable.js';
 import {

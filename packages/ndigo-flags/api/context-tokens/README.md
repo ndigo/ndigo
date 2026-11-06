@@ -6,6 +6,8 @@
 
 # context-tokens
 
+Context tokens for `@ndigo/flags` (AD-82 D-2).
+
 ## Variables
 
 - [FLAG\_EVALUATOR](variables/FLAG_EVALUATOR.md)

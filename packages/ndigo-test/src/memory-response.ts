@@ -1,8 +1,5 @@
 /**
  * In-memory HTTP response captured by a {@link MockMvcDispatch}.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { foldHeaderName } from '@ndigo/http';
 

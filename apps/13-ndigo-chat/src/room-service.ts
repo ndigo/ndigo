@@ -7,9 +7,6 @@
  * application data a newcomer needs — the last N messages to replay and who is
  * currently connected. Both maps are bounded by application policy, so a busy
  * room cannot grow the process without limit.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { SocketSession } from '@ndigo/dispatcher';
 

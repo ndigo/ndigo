@@ -5,9 +5,6 @@
  * `@configurationProperties` classes. The endpoints' exposure is opt-in —
  * a production app would keep `["health","metrics"]` and add what it needs
  * behind the `accessGuard` + boundary-firewall posture (AD-36).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ManagementAutoConfiguration } from '@ndigo/management';
 import { ServerConfig, SecretsConfig } from './server-config';

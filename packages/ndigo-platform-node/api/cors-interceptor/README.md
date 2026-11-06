@@ -6,6 +6,8 @@
 
 # cors-interceptor
 
+Server-side CORS enforcement for Node applications.
+
 ## Classes
 
 - [CORSInterceptor](classes/CORSInterceptor.md)

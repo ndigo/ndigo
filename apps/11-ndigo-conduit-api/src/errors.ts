@@ -14,9 +14,6 @@
  * translated here: each issue's leaf path becomes the envelope key, so
  * `{article:{title:""}}` reports as `{"errors":{"title":["can't be blank"]}}`
  * — the field name the collection expects, not the nested wire path.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { MediaTypes } from '@ndigo/core';
 import {

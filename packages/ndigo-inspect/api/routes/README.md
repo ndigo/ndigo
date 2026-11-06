@@ -6,6 +6,8 @@
 
 # routes
 
+Route enumeration for the inspect manifest — reads a `RouteRegistry`, an
+
 ## Functions
 
 - [collectRoutes](functions/collectRoutes.md)

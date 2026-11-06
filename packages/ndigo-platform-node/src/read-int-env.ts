@@ -8,9 +8,6 @@
  * greater than zero. Invalid values throw a `RangeError` naming the
  * variable, so boot fails fast instead of silently coercing
  * (`Number('') === 0`, `Number(' 80 ') === 80`, `Number('1e3') === 1000`).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /**

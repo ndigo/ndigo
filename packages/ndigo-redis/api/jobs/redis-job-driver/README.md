@@ -6,6 +6,8 @@
 
 # jobs/redis-job-driver
 
+Redis-backed {@link JobDriver} — the shared durable queue for multi-node
+
 ## Classes
 
 - [RedisJobDriver](classes/RedisJobDriver.md)

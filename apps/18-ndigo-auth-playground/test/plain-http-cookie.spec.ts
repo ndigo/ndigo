@@ -7,9 +7,6 @@
  * `__Host-ndigo-session` mandates `Secure`, so the schema-blessed name for this
  * mode is the unprefixed `ndigo-session`. Everything else (HttpOnly,
  * SameSite=Lax, Path=/) is fixed by the framework and stays.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

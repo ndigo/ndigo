@@ -3,9 +3,6 @@
  * instances point at, with the counter and the producing instance id carried
  * inside the entry — so the same `GET /cache/:key` on node B shows the entry
  * node A created, and the count both of them have driven up.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { randomUUID } from 'node:crypto';
 import '@tsmetadata/polyfill';

@@ -1,8 +1,5 @@
 /**
  * RFC 6265-style cookie parsing for `NodeRequest.cookies`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 /** Default cap on parsed cookie entries per request. */
 export const DEFAULT_MAX_COOKIES = 50;

@@ -4,9 +4,6 @@
  * Wraps the existing `DrizzleMigrator` and the app-supplied migration list /
  * generate callback so `@ndigo/cli` can drive migrations without knowing
  * anything about Drizzle.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { DrizzleDataSource } from './drizzle-data-source.js';
 import { DrizzleMigrator } from './drizzle-migrator.js';

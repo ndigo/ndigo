@@ -13,9 +13,6 @@
  * paths (`items[0].name`) belong to the {@link parseKeypath} grammar in
  * @ndigo/core (DataBinder's keypath family). A dotted source key that needs
  * array indexing should use a DataBinder-bound source instead.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { isNil } from '@ndigo/util/types';
 

@@ -10,9 +10,6 @@
  * form with the submitted values and per-field message keys, and a success
  * redirects to the owner's detail page (post/redirect/get), so a reload can
  * never re-post.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import {
     dataBinderValue,

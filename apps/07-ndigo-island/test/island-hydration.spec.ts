@@ -1,7 +1,3 @@
-/**
- * @since 1.0.0
- * @author Jeff Rose
- */
 // @vitest-environment jsdom
 import { resolve, sep } from 'node:path';
 import { describe, test, expect } from 'vitest';

@@ -1,7 +1,3 @@
-/**
- * @since 1.0.0
- * @author Jeff Rose
- */
 // @vitest-environment node
 import { afterEach, describe, expect, test } from 'vitest';
 import { existsSync, readFileSync, rmSync } from 'node:fs';

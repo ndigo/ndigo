@@ -6,6 +6,8 @@
 
 # libsql-job-store
 
+LibSQL-backed {@link JobDriver} — the durable SQL jobs backend.
+
 ## Classes
 
 - [LibSQLJobStore](classes/LibSQLJobStore.md)

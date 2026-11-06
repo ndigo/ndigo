@@ -4,9 +4,6 @@
  * Every read goes through a token, never a string: the token carries the bean's
  * compile-time type to the call site, so `context.getValue(ARTICLES)` is an
  * `ArticleService` at the type level and a rename cannot silently miss.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ContextToken } from '@ndigo/context';
 import { DISPATCHER, HANDLER_MAPPING, VIEW_TARGET } from '@ndigo/dispatcher';

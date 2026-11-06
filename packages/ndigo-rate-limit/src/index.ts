@@ -1,9 +1,6 @@
 /**
  * Public API of `@ndigo/rate-limit` — fixed-window rate limiting (AD-33,
  * shared-store seam AD-79).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 export {

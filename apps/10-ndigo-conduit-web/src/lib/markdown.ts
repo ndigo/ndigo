@@ -16,8 +16,6 @@
  * documented boundary, not an accident.
  *
 
- * @since 1.0.0
- * @author Jeff Rose
  */
 const HTML_ESCAPES: Record<string, string> = {
     '&': '&amp;',

@@ -8,9 +8,6 @@
  * verifier), the `state` round-trip, the `nonce`, discovery, JWKS signature
  * verification and the local session issuance are all exercised for real —
  * nothing here is mocked, and the issuer is started and stopped by the harness.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

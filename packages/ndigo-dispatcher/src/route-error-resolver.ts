@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Constructable } from '@ndigo/core';
 import { ModelAndView } from './model-and-view';

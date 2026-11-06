@@ -8,8 +8,6 @@
  * {@link renderMarkdown} — an escaping-by-default renderer (see that module).
  *
 
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { ConduitErrors } from './api/conduit-types';
 

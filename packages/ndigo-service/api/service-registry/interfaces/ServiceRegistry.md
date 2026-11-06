@@ -8,14 +8,6 @@
 
 Interface for a service registry that maps service tokens to endpoints.
 
-## Since
-
-1.0.0
-
-## Author
-
-Jeff Rose
-
 ## Methods
 
 ### getAllEndpoints()

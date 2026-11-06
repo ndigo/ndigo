@@ -6,6 +6,8 @@
 
 # commands/build
 
+`ndigo build` — front the application's build script.
+
 ## Variables
 
 - [buildScriptCommand](variables/buildScriptCommand.md)

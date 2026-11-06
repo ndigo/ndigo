@@ -4,9 +4,6 @@
  * framework pipeline (handler mapping → controller → WebComponentView),
  * driven by the shared `@ndigo/test` browser harness (`bootBrowserApp` +
  * `BrowserMockClient`; guide 19 §3).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';

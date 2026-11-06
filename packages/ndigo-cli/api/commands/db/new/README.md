@@ -6,6 +6,8 @@
 
 # commands/db/new
 
+`ndigo db new` — scaffold the next versioned migration file (AD-78 D-5).
+
 ## Variables
 
 - [dbNewCommand](variables/dbNewCommand.md)

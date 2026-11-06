@@ -1,8 +1,5 @@
 /**
  * View target that writes rendered output to a Node.js `ServerResponse`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { ServerResponse } from 'node:http';
 import { Route } from '@ndigo/router';

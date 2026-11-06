@@ -6,6 +6,8 @@
 
 # static-file-view
 
+View that serves static files from the filesystem.
+
 ## Classes
 
 - [StaticFileView](classes/StaticFileView.md)

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { entriesIterator, JSONObject, MediaType, MediaTypes } from '@ndigo/core';
 import { is, isString } from '@ndigo/util/types';

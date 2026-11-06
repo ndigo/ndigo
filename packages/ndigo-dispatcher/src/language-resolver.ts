@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { normalizeLocale, parseAcceptLanguage } from '@ndigo/content';
 import { ACCEPT_LANGUAGE_ATTRIBUTE, Route } from '@ndigo/router';

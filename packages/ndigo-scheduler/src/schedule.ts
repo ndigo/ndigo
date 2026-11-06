@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Cron } from 'croner';
 import { FrameworkError } from '@ndigo/core';

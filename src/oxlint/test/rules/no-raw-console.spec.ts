@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { RuleTester } from 'oxlint/plugins-dev';
 import { noRawConsole } from '../../rules/no-raw-console.ts';

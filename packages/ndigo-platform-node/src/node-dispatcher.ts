@@ -1,8 +1,5 @@
 /**
  * Node.js dispatcher extending the platform-independent `AbstractDispatcher` for server-side rendering.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractDispatcher } from '@ndigo/dispatcher';
 import { ModelAndView } from '@ndigo/dispatcher';

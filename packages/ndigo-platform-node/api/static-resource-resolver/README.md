@@ -6,6 +6,8 @@
 
 # static-resource-resolver
 
+Secure static-resource resolution shared by `StaticFileView` and any.
+
 ## Classes
 
 - [StaticResourceResolver](classes/StaticResourceResolver.md)

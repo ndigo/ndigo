@@ -6,6 +6,8 @@
 
 # static-resource-handler
 
+Per-request HTTP semantics for static resources (D-5): conditional GET,
+
 ## Classes
 
 - [StaticResourceHandler](classes/StaticResourceHandler.md)

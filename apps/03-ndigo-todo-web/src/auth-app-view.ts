@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { TagMapping } from '@ndigo/view-webcomponent';
 import { authClient, login } from './auth-store';

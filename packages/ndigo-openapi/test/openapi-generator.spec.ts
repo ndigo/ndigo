@@ -3,9 +3,6 @@
  * The fixture controllers exercise translation, exclusions, parameter
  * mapping and the zod schema seam — all through the real mapping
  * registration path.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, it, expect } from 'vitest';
 import { GenericApplicationContext } from '@ndigo/context';

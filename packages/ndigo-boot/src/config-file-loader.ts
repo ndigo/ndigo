@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { IllegalStateError, JSONObject } from '@ndigo/core';
 import { getErrorMessage } from '@ndigo/util';

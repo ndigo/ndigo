@@ -16,9 +16,6 @@
  * A miss is an RFC 9457 problem document (`application/problem+json`) with the
  * framework's `urn:ndigo:not-found` type, the mirror of the 404 page the same
  * miss produces on the HTML routes.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { getMapping, parameters, pathVariable, requestMapping, routeValue, validatedQuery } from '@ndigo/dispatcher';
 import type { Route } from '@ndigo/router';

@@ -17,9 +17,6 @@
  * Best-effort by construction: an unrecognized convention leaves its port
  * unseen, and the explicit `--port` stays the escape hatch. Extra matches
  * (preview/e2e/auxiliary ports) only make the map more conservative.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Tree } from '@nx/devkit';
 

@@ -4,9 +4,6 @@
  * Like the list view it holds no state of its own: it subscribes to the item
  * and connectivity signals, so a deep link that renders from a persisted
  * snapshot and then revalidates over the network updates in place.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { effect } from '@ndigo/signals';
 import { AbstractWebComponent, TagMapping } from '@ndigo/view-webcomponent';

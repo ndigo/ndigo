@@ -6,9 +6,6 @@
  * (scrypt, self-describing `{scrypt}$ln=…$salt$hash` strings), so the cost
  * parameters can move later without invalidating stored hashes. The raw
  * password is never stored, logged, or echoed.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { DelegatingPasswordEncoder } from '@ndigo/auth-core';

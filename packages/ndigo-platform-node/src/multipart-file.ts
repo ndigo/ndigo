@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Readable } from 'node:stream';
 import { createReadStream } from 'node:fs';

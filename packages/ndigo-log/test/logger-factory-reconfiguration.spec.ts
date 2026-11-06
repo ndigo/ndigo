@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  *
  * Regression specs for KRN-REV-LOG-11: `LoggerFactory` switches must reach
  * loggers created earlier (the framework logs through module-load

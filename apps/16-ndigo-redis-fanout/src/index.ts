@@ -6,9 +6,6 @@
  * the same code serves from memory and the board reaches this node's sockets
  * only. Nothing in the controllers branches on the mode — only the backend
  * composition does.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import 'node:process';
 import { ApplicationBuilder } from '@ndigo/boot';

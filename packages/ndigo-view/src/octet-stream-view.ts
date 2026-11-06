@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { IllegalStateError, MediaTypes } from '@ndigo/core';
 import { AbstractSerializingView } from './abstract-serializing-view.js';

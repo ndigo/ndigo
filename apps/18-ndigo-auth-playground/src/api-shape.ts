@@ -6,9 +6,6 @@
  * one vocabulary instead of each mode inventing its own. Nothing here
  * authenticates anything; it only *describes* the outcome (the ids are shown on
  * purpose: the playground exists to make session identifiers visible).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { SESSION_COOKIE } from '@ndigo/platform-node';
 import type { Principal } from '@ndigo/auth-core';

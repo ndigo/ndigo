@@ -6,6 +6,8 @@
 
 # flag-evaluator
 
+The feature-flag backend contract (AD-82): typed, **async** (AD-39),
+
 ## Interfaces
 
 - [FlagEvaluation](interfaces/FlagEvaluation.md)

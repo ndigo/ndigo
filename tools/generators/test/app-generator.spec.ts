@@ -3,9 +3,6 @@
  * numbering/port allocation and their collision failures, and the
  * manifest properties the app gate (`scripts/check-manifests.mjs` rule 10)
  * depends on.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
@@ -134,7 +131,7 @@ describe('app generator', () => {
 
         const index = read(tree, `${appDir}/src/index.ts`);
         expect(index).toContain('port: 3020');
-        expect(index).toContain('@author Jeff Rose');
+        expect(index).not.toContain('@author Jeff Rose');
         expect(read(tree, `${appDir}/src/todo-widget-configuration.ts`)).toContain('@entry()');
         expect(read(tree, `${appDir}/README.md`)).toContain('apps/03-ndigo-todo-widget');
         expect(read(tree, `${appDir}/README.md`)).toContain('3020');

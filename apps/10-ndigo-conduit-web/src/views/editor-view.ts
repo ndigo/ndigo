@@ -8,9 +8,6 @@
  * entered as a comma-separated list and split with the editor's own rules
  * (`parseTags`: trimmed, de-duplicated, empties dropped) before they reach the
  * API.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractWebComponent, TagMapping } from '@ndigo/view-webcomponent';
 import { ACTIONS } from '../app/conduit-events';

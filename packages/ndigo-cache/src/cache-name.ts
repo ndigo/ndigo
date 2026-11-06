@@ -1,8 +1,5 @@
 /**
  * Shared cache-name resolution for the cache managers and `@cached` (DA-9).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ContextToken } from '@ndigo/factory';
 import type { Cache } from './cache';

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, expect, test, beforeAll, afterAll, afterEach } from 'vitest';
 import { http as mswHttp, HttpResponse } from 'msw';

@@ -3,9 +3,6 @@
  * (`baseSchemaForType`) and the Drizzle-backed SQLite storage mapping
  * (`sqliteTypeForColumnType`), so both agree on which declared types are
  * integer-, real-, blob-, boolean-, json- and text-like.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /**

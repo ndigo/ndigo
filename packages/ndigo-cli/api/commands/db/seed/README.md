@@ -6,6 +6,8 @@
 
 # commands/db/seed
 
+`ndigo db seed` — front the application’s db:seed script.
+
 ## Variables
 
 - [dbSeedCommand](variables/dbSeedCommand.md)

@@ -1,7 +1,3 @@
-/**
- * @since 1.0.0
- * @author Jeff Rose
- */
 // Node environment: the client is isomorphic, and the API base falls back to
 // the platform default (`http://localhost/`) with no `location` present.
 import { describe, expect, test, vi } from 'vitest';

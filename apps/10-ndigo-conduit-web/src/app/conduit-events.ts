@@ -7,9 +7,6 @@
  * the context side. Keeping the two names in one module makes the bridge
  * auditable — {@link CONDUIT_EVENT_MAP} is the complete list of what a view can
  * ask the app to do, and nothing else can cross.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { ConduitFeedTab } from '../services';
 

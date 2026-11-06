@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/rate-limit` — fixed-window rate limiting (AD-33,
+
 ## References
 
 ### FixedWindowRateLimiter

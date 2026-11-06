@@ -1,8 +1,5 @@
 /**
  * Transport-neutral live socket fan-out contract.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 /** Cross-node live socket fan-out. No persistence, replay, or queue distribution. */
 export type SocketFanoutScope = 'path' | 'room' | 'topic';

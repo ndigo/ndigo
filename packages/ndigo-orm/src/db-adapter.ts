@@ -5,9 +5,6 @@
  * The ORM package defines the contract; concrete engines
  * (`@ndigo/orm-drizzle`, future `@ndigo/orm-*`) implement it. The CLI depends
  * on this module only, never on a specific engine.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /** Status of a single migration in the journal. */

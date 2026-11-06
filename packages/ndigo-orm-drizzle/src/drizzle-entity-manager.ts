@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { InValue } from '@libsql/client';
 import { Constructable, FrameworkError } from '@ndigo/core';

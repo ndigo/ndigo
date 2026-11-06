@@ -7,9 +7,6 @@
  * of this port. Entities never reach the wire directly: the projection is the
  * single place that decides what is published, and `visits`/`type` are always
  * emitted (never `undefined`, which JSON cannot carry).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Visit } from './entities';
 import type { OwnerDetail, PetDetail, VetView } from './clinic-service';

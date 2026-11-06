@@ -6,6 +6,8 @@
 
 # stomp-frame
 
+STOMP 1.2 frame codec — parse/serialize text **and binary** frames
+
 ## Classes
 
 - [StompProtocolError](classes/StompProtocolError.md)

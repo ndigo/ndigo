@@ -2,9 +2,6 @@
  * Builds the client half of the chat demo into `dist/` (a single module
  * bundle named `client.js` plus `client.css`), which the Node server serves
  * under `/static/`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { defineConfig } from 'vite';
 import { lowerDecorators } from '../../scripts/vite-plugin-lower-decorators.mjs';

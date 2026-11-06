@@ -6,6 +6,8 @@
 
 # island-view-resolver
 
+Resolver that maps a view name to an `IslandView` (AD — view resolution.
+
 ## Classes
 
 - [IslandViewResolver](classes/IslandViewResolver.md)

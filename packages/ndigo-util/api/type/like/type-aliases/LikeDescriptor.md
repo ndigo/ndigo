@@ -11,11 +11,3 @@
 ## Index Signature
 
 \[`key`: `string`\]: `true` \| `Function`
-
-## Since
-
-1.0.0
-
-## Author
-
-Jeff Rose

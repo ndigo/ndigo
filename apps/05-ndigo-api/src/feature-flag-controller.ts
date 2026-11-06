@@ -6,9 +6,6 @@
  * — the `@ndigo/flags` local provider's zero-config channel. Flipping the
  * value in a config source + `environment.refresh()` gates the route
  * without a redeploy.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { whenFeature } from '@ndigo/flags';
 import { requestMapping } from '@ndigo/dispatcher';

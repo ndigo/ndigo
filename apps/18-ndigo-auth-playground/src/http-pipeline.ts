@@ -24,9 +24,6 @@
  *
  * Called after the context has refreshed — by the bootstrap and by the test
  * harness, so tests dispatch through exactly the production chain.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { HANDLER_MAPPING } from '@ndigo/dispatcher';
 import type { ApplicationContext } from '@ndigo/context';

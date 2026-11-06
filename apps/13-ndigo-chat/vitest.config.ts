@@ -6,9 +6,6 @@
  * the shared alias table. Vitest 5 transforms through Vite 8's Oxc pipeline,
  * which leaves TC39 decorators untouched, so the `lowerDecorators()` plugin is
  * wired here too (HI-1).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { defineConfig } from 'vitest/config';
 import { lowerDecorators } from '../../scripts/vite-plugin-lower-decorators.mjs';

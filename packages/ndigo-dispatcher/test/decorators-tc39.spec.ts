@@ -1,8 +1,5 @@
 /**
  * Behavioral tests for @ndigo/dispatcher decorators (TC39).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, it, expect } from 'vitest';
 import '@tsmetadata/polyfill';

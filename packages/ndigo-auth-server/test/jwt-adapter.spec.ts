@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 // Helper to create a minimal JWT token string with a real HMAC signature

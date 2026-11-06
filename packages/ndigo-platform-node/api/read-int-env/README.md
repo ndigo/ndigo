@@ -6,6 +6,8 @@
 
 # read-int-env
 
+Environment integer parsing shared by the platform-node resolvers (HG-9).
+
 ## Interfaces
 
 - [ReadIntEnvOptions](interfaces/ReadIntEnvOptions.md)

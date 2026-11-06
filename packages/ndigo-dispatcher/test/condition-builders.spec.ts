@@ -1,8 +1,5 @@
 /**
  * Route-condition builder specs (AD-34 D6).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { queryParamCondition, matrixParamCondition } from '../src/condition-builders';

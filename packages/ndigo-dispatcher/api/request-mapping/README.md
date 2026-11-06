@@ -6,6 +6,8 @@
 
 # request-mapping
 
+the `requestMapping` decorator — server-side route mapping decorator.
+
 ## Interfaces
 
 - [RequestMappingConfiguration](interfaces/RequestMappingConfiguration.md)

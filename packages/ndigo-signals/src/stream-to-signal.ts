@@ -1,8 +1,5 @@
 /**
  * Bridges an async event stream into a reactive signal (AD-09).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Signal } from '@preact/signals-core';
 import { getLogger } from '@ndigo/log';

@@ -6,6 +6,8 @@
 
 # index
 
+Isomorphic logging core for Ndigo: logger abstraction, factory, and
+
 ## References
 
 ### ContextAwareLogger

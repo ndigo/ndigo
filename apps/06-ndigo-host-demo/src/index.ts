@@ -1,8 +1,5 @@
 /**
  * Ndigo Micro Frontend Host entry point.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { HashRouter } from '@ndigo/platform-web';
 import type { Route } from '@ndigo/router';

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractDataBindingArgumentResolver, type DataBindingSource } from '@ndigo/dispatcher';
 import { Route } from '@ndigo/router';

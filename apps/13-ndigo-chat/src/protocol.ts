@@ -16,9 +16,6 @@
  * | `presence` | S → C     | `{ room, users: string[], joined?, left? }`   |
  * | `typing`   | both      | `boolean`                                     |
  * | `error`    | S → C     | `{ reason: string }`                          |
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { z } from 'zod';
 import type { ChatMessage } from './room-service';

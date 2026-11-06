@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import type { AddressInfo } from 'node:net';

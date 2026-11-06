@@ -4,9 +4,6 @@
  * One instance owns the data port and the state service and exposes both under
  * their tokens; the route controllers are entries too, because the dispatcher
  * discovers `@routeMapping` handlers by scanning the context.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { configuration, entry } from '@ndigo/context';
 import ItemController from '../controllers/item-controller';

@@ -1,8 +1,5 @@
 /**
  * `LibSQLJobStore` tests — the durable jobs driver against real libSQL.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

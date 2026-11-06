@@ -1,8 +1,5 @@
 /**
  * Imperative server-push view: streams Server-Sent Events to the HTTP.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { MediaTypes, ServerSentEvent } from '@ndigo/core';
 import { Route } from '@ndigo/router';

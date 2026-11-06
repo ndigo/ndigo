@@ -2,9 +2,6 @@
  * Internal metadata → SQLite storage-type mapping shared by the DDL emitter
  * (`createTableStatements`) and the Drizzle table builder
  * (`drizzleTableForEntity`), so both paths agree on the type of every column.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { columnTypeFamily } from '@ndigo/orm';
 

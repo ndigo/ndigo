@@ -6,9 +6,6 @@
  * signal-based connection status, async-iterable messages, reconnect with
  * backoff + jitter on unexpected close, and an opt-in bounded outbound
  * queue while disconnected.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { signal, type Signal } from '@ndigo/signals';
 import { RingBuffer } from '@ndigo/core';

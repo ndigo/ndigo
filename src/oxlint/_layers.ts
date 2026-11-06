@@ -10,9 +10,6 @@
  * The `no-upward-layer-imports` rule allows an import of `@ndigo/<target>`
  * only when `LAYER_RANK[target] <= LAYER_RANK[importer]`; equal ranks are free
  * to cross-import (siblings). Tooling packages are outside the layer system.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export const LAYER_RANK: Record<string, number> = {
     // 0 — foundations: no framework imports

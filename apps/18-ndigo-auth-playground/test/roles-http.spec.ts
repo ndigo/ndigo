@@ -7,9 +7,6 @@
  * wrong role. The scheme is deliberately orthogonal — the same matrix answers
  * for an opaque session id and for a JWT access token — and a duplicated
  * session cookie fails closed.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

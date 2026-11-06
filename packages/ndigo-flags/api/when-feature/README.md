@@ -6,6 +6,8 @@
 
 # when-feature
 
+`@whenFeature` — declarative feature-gate metadata (AD-82 D-4).
+
 ## Variables
 
 - [WHEN\_FEATURE\_KEY](variables/WHEN_FEATURE_KEY.md)

@@ -6,6 +6,8 @@
 
 # context-tokens
 
+Context tokens for the `@ndigo/locks` beans (AD-73 D-4).
+
 ## Variables
 
 - [LOCK\_DRIVER](variables/LOCK_DRIVER.md)

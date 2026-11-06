@@ -1,8 +1,5 @@
 /**
  * Schema-config binding, property keys and typedConfig specs (AD-34 D3/D4).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { z } from 'zod';

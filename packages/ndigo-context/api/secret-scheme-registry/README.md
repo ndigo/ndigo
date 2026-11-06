@@ -6,6 +6,8 @@
 
 # secret-scheme-registry
 
+Secret scheme registry — marker dispatch + wiring capability gate (AD-29 D-3).
+
 ## Classes
 
 - [SecretSchemeRegistry](classes/SecretSchemeRegistry.md)

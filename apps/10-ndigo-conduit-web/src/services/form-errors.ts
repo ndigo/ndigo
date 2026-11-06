@@ -8,9 +8,6 @@
  * envelope is stamped with the form that produced it: a login failure cannot
  * leak into the register form, and a stale envelope is ignored rather than
  * rendered.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { signal, type Signal } from '@ndigo/signals';
 import type { ConduitErrors } from '../lib/api/conduit-types';

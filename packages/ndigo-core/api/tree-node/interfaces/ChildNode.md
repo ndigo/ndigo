@@ -8,14 +8,6 @@
 
 A node that can reference its parent.
 
-## Since
-
-1.0.0
-
-## Author
-
-Jeff Rose
-
 ## Extended by
 
 - [`TreeNode`](TreeNode.md)

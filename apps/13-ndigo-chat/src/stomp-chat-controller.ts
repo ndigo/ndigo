@@ -7,9 +7,6 @@
  * the transport-agnostic cross-check of the raw `@socketMapping` room. The
  * endpoint carries no auth wiring, so it is exercisable standalone; receipts
  * are the broker's own.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { parameters, requestMapping, socketSessionValue, stompMapping, type SocketSession } from '@ndigo/dispatcher';

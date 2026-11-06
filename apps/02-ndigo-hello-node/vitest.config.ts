@@ -6,9 +6,6 @@
  * the shared table so the suite resolves the live `packages/<pkg>/src` sources
  * instead of the built `lib/` output (HI-6/TST-B). Both specs pin `node`; the
  * lane's default environment is therefore never used.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { defineConfig } from 'vitest/config';
 import { lowerDecorators } from '../../scripts/vite-plugin-lower-decorators.mjs';

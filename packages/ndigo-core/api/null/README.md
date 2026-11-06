@@ -6,6 +6,8 @@
 
 # null
 
+An object with a `null` prototype.
+
 ## Classes
 
 - [Null](classes/Null.md)

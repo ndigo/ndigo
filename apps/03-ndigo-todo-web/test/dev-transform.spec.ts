@@ -1,7 +1,3 @@
-/**
- * @since 1.0.0
- * @author Jeff Rose
- */
 // @vitest-environment node
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';

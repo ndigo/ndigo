@@ -1,8 +1,5 @@
 /**
  * Demo component showing the @ndigo/signals decorator API.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractWebComponent } from '@ndigo/view-webcomponent';
 import { signal, computed, effect, reactive } from '@ndigo/signals/decorators';

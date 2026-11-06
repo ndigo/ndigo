@@ -14,11 +14,6 @@
       "description": "One-line summary used as the doc header description",
       "default": ""
     },
-    "author": {
-      "type": "string",
-      "description": "Value for the @author tag",
-      "default": "Jeff Rose"
-    },
     "force": {
       "type": "boolean",
       "description": "Replace an existing top-of-file doc block with the standard header",

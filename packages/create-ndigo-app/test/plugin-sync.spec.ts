@@ -1,9 +1,6 @@
 /**
  * Drift guard: the decorator-lowering plugin ships as a copied script in three
  * places (root tooling + both scaffold templates). They must stay byte-identical.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';

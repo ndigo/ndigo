@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { IllegalStateError, JSONValue, JSONObject, createNull, KeypathConverter } from '@ndigo/core';
 import type { KeypathToken } from '@ndigo/core';

@@ -6,6 +6,8 @@
 
 # stomp-broker
 
+STOMP server broker — endpoint state machine + destination fan-out
+
 ## Classes
 
 - [StompBroker](classes/StompBroker.md)

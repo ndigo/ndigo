@@ -6,6 +6,8 @@
 
 # rules/no-cross-paradigm-decorators
 
+Rule that flags cross-paradigm decorator misuse.
+
 ## Variables
 
 - [noCrossParadigmDecorators](variables/noCrossParadigmDecorators.md)

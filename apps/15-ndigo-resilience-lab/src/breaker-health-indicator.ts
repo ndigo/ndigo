@@ -2,9 +2,6 @@
  * Breaker health for the management `/health` aggregate: `UP` while every
  * circuit is closed or probing, `DOWN` as soon as one circuit is fully open —
  * the state in which calls are being refused without reaching the upstream.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { HealthIndicator, HealthResult } from '@ndigo/management';
 import type { CircuitSnapshot } from './lab-types';

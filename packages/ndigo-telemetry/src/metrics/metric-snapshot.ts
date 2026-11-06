@@ -6,9 +6,6 @@
  * (`@ndigo/telemetry-node` implements {@link MetricSnapshotProvider} over
  * `MetricReader.collect()`) nor the HTTP surface (`@ndigo/management` reads
  * the registry per request).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { AttributeValue } from '@opentelemetry/api';
 

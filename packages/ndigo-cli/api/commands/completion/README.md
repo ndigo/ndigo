@@ -6,6 +6,8 @@
 
 # commands/completion
 
+`ndigo completion` — print a shell completion script.
+
 ## Variables
 
 - [completionCommand](variables/completionCommand.md)

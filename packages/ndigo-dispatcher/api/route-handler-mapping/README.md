@@ -6,6 +6,8 @@
 
 # route-handler-mapping
 
+Barrel file — re-exports all public types from the split handler-mapping modules.
+
 ## References
 
 ### AbstractDetectingPathHandlerMapping

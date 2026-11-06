@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { isString } from '@ndigo/util/types';
 import { ContextToken, isContextToken } from '@ndigo/factory';

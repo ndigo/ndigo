@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { RouteSegment, Route } from './route';
 import { JSONValue, Serializable, JSONObject, createNull, type Matchable } from '@ndigo/core';

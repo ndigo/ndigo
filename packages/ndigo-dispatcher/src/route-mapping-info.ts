@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 // Barrel: the route-mapping condition model and mapping-info aggregates were
 // split into cohesive modules (query/matrix/patterns conditions, the mapping

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Context } from '@opentelemetry/api';
 import { LogRecordProcessor, type ReadWriteLogRecord } from '@opentelemetry/sdk-logs';

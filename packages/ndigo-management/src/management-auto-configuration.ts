@@ -26,9 +26,6 @@
  * `ManagementAutoConfiguration(options)` so the exposed management routes
  * require authentication, and/or firewall the management routes at the
  * network boundary.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { configuration, entry, AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { Null } from '@ndigo/core';

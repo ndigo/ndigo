@@ -6,6 +6,8 @@
 
 # csrf-interceptor
 
+CSRF protection for Node applications (Double-Submit Cookie pattern).
+
 ## Classes
 
 - [CSRFInterceptor](classes/CSRFInterceptor.md)

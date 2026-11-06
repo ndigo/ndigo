@@ -2,9 +2,6 @@
  * Feature-flags demo (AD-82): `FeatureFlagController`'s `@whenFeature`
  * gate over the real ndigo-api boot path — on-flag 200, refresh-flip to
  * 404 problem doc, un-gated routes untouched.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';

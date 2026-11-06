@@ -6,6 +6,8 @@
 
 # static-controller
 
+Static file serving controller.
+
 ## Classes
 
 - [StaticController](classes/StaticController.md)

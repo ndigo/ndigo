@@ -5,9 +5,6 @@
  * The catalog renders without JavaScript on purpose — the page is readable (and
  * every endpoint is discoverable) before the bundle runs; the client then
  * hydrates `#playground` and adds the buttons that actually exercise the modes.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { getMapping, ModelAndView, requestMapping } from '@ndigo/dispatcher';
 import { MODE_CATALOG } from './mode-catalog';

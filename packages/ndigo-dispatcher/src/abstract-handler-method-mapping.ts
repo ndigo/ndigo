@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Comparator, IllegalStateError } from '@ndigo/core';
 import { Initializable, SmartLifecycle } from '@ndigo/factory';

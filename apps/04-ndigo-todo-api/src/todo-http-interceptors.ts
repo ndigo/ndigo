@@ -1,8 +1,5 @@
 /**
  * HTTP pipeline wiring for the Todo-Backend app: CORS + a JSON-body gate.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { MediaTypes } from '@ndigo/core';
 import type { ApplicationContext } from '@ndigo/context';

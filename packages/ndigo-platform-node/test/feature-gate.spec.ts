@@ -3,9 +3,6 @@
  * the metadata gate, the 404 problem-document denial, method-over-class
  * precedence, untouched un-gated routes, and the live-refresh flip through
  * the real `NodeAutoConfiguration` wiring.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, afterAll, expect } from 'vitest';

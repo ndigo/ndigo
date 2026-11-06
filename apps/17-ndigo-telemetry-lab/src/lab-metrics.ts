@@ -11,9 +11,6 @@
  *
  * The class keeps its own tallies too, so `/lab/state` reports the same
  * numbers even when no aggregator is wired (direct instantiation in tests).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { $aware } from '@ndigo/factory';
 import type { ApplicationContext, ApplicationContextAware } from '@ndigo/context';

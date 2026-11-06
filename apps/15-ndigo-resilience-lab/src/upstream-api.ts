@@ -3,9 +3,6 @@
  * carries the `@retry` + `@circuitBreaker` policies and whose `direct()` method
  * deliberately carries none, so the lab can contrast policy-driven and raw
  * calls against the same upstream.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { getCall, service } from '@ndigo/service';

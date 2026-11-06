@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { likeContentSourceAware, likeMessageSourceAware } from '@ndigo/content';
 import { likeApplicationEventEmitterAware } from './event-emitter';

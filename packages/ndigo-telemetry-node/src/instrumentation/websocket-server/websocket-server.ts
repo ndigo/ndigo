@@ -1,8 +1,5 @@
 /**
  * OpenTelemetry instrumentation for WebSocket session lifecycle + fan-out.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { SpanKind, trace } from '@opentelemetry/api';
 import type { Attributes, Span } from '@opentelemetry/api';

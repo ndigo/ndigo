@@ -1,9 +1,6 @@
 /**
  * Builds the browser half of the telemetry lab into `dist/` (a single module
  * bundle named `client.js`), which the Node server serves under `/static/`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { defineConfig } from 'vite';
 import { lowerDecorators } from '../../scripts/vite-plugin-lower-decorators.mjs';

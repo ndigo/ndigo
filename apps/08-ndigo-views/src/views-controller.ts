@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { parameters, pathVariable, routeMapping, ModelAndView } from '@ndigo/dispatcher';
 import type { ContentSource } from '@ndigo/content';

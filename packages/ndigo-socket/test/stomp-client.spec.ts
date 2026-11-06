@@ -5,9 +5,6 @@
  * timeout, RT-1), subscription routing, send/receipt correlation and its
  * drop semantics (COR-12), ERROR surfacing, ack modes, deliberate teardown,
  * and the re-CONNECT + re-SUBSCRIBE lifecycle across socket reconnects.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, expect, test, vi } from 'vitest';
 import { signal, type Signal } from '@ndigo/signals';

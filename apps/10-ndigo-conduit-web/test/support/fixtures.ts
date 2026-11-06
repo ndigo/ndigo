@@ -4,9 +4,6 @@
  * The stub API is a hand-written implementation of the {@link ConduitApi} port
  * (not a mocking framework): every method rejects until a spec stubs it, so a
  * test that forgets a call fails loudly instead of silently resolving.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { vi, type Mock } from 'vitest';
 import type { ApplicationContext } from '@ndigo/context';

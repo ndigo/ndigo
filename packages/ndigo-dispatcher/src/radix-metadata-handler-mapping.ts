@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { RadixTree, RadixMatch, Comparator, MultiValueMap } from '@ndigo/core';
 import type { HTTPMethod } from '@ndigo/http';

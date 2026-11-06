@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractThemeResolver } from '@ndigo/dispatcher';
 import { ApplicationContext } from '@ndigo/context';

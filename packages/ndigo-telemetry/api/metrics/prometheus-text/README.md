@@ -6,6 +6,8 @@
 
 # metrics/prometheus-text
 
+Renders metric snapshots in the Prometheus text exposition format
+
 ## Functions
 
 - [renderPrometheusAttributes](functions/renderPrometheusAttributes.md)

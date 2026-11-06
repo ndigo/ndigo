@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import { type PasswordEncoder, schemePrefix, UnknownPasswordSchemeError } from './password-encoder';

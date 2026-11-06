@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { HTTPHeader } from './http-header';
 import { AuthorizationHeader } from './authorization-header';

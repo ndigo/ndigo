@@ -6,6 +6,8 @@
 
 # health
 
+Health indicators and the registry that aggregates them for a management.
+
 ## Classes
 
 - [HealthRegistry](classes/HealthRegistry.md)

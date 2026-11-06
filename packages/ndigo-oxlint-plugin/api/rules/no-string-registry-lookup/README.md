@@ -6,6 +6,8 @@
 
 # rules/no-string-registry-lookup
 
+Rule that flags string-typed registry lookups — the untyped bean handle.
+
 ## Variables
 
 - [noStringRegistryLookup](variables/noStringRegistryLookup.md)

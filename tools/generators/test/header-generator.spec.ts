@@ -1,7 +1,3 @@
-/**
- * @since 1.0.0
- * @author Jeff Rose
- */
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 import type { Tree } from '@nx/devkit';
@@ -11,7 +7,7 @@ vi.mock('@nx/devkit', () => ({
     formatFiles: vi.fn(async () => undefined),
 }));
 
-const HEADER = '/**\n * @since 1.0.0\n * @author Jeff Rose\n */\n';
+const HEADER = '/**\n */\n';
 
 describe('header generator', () => {
     let tree: Tree;
@@ -29,18 +25,16 @@ describe('header generator', () => {
         expect(content).toBe(`${HEADER}export const x = 1;\n`);
     });
 
-    it('honors explicit summary and author options', async () => {
+    it('honors explicit summary', async () => {
         tree.write('packages/ndigo-core/src/widget.ts', 'export const x = 1;\n');
 
         await headerGenerator(tree, {
             file: 'packages/ndigo-core/src/widget.ts',
             summary: 'Widget utilities',
-            author: 'Ada Lovelace',
         });
 
         const content = tree.read('packages/ndigo-core/src/widget.ts', 'utf-8');
         expect(content).toContain(' * Widget utilities.');
-        expect(content).toContain(' * @author Ada Lovelace');
     });
 
     it('fails when the file already has a doc block', async () => {

@@ -6,6 +6,8 @@
 
 # feature-metric-recorder
 
+Contract for recording feature-level metrics.
+
 ## Interfaces
 
 - [FeatureMetricRecorder](interfaces/FeatureMetricRecorder.md)

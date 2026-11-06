@@ -1,9 +1,6 @@
 /**
  * Ndigo HTTPBin — an HTTP semantics playground (echo, redirects, cookies, auth,
  * compression) built on `@ndigo/platform-node`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import 'node:process';
 import { ApplicationBuilder } from '@ndigo/boot';

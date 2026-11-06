@@ -6,6 +6,8 @@
 
 # job
 
+Core job contracts: requests, stored records, and claim options.
+
 ## Interfaces
 
 - [ClaimOptions](interfaces/ClaimOptions.md)

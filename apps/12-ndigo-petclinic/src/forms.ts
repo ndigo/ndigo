@@ -10,9 +10,6 @@
  * parses with the same schema, and on failure re-renders the form view with the
  * bound values plus the Zod issue's message key per field, which the template
  * resolves through the request's message source (`t(...)`).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { z } from 'zod';
 

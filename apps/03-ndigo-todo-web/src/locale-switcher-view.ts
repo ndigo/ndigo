@@ -2,9 +2,6 @@
  * Demo component showing reactive locale switching: a persisted user choice
  * (`changeLocale` → cookie + signal) that re-renders subscribed views without
  * a reload.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { changeLocale, currentLocale } from '@ndigo/platform-web';
 import { effect } from '@ndigo/signals';

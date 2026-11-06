@@ -6,6 +6,8 @@
 
 # metrics/lazy-counter
 
+Shared lazily-resolved instrument seam.
+
 ## Interfaces
 
 - [LazyHistogramOptions](interfaces/LazyHistogramOptions.md)

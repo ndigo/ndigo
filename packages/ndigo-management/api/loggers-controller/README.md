@@ -6,6 +6,8 @@
 
 # loggers-controller
 
+Serves dynamic log-level inspection and changes under `/loggers`
+
 ## Classes
 
 - [LoggersController](classes/LoggersController.md)

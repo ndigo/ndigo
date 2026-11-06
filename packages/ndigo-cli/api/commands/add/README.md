@@ -6,6 +6,8 @@
 
 # commands/add
 
+`ndigo add <package>` — install and wire an @ndigo/* capability.
+
 ## Variables
 
 - [addCommand](variables/addCommand.md)

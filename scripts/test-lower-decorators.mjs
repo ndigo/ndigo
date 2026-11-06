@@ -14,9 +14,6 @@
  * `/^\s*@|[{(;]\s*@/m` pre-check (decorator-free and string-literal-only
  * modules pass through untouched), and the lowered output (raw decorator
  * syntax gone, sourcemap attached).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect, beforeEach, afterEach } from 'vitest';
 import { DataBinder } from '../src/data-binder';

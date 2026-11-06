@@ -1,8 +1,5 @@
 /**
  * the `requestMapping` decorator — server-side route mapping decorator.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { HTTPMethod } from '@ndigo/http';
 import { routeMapping, RouteMappingConfiguration } from './route-mapping';

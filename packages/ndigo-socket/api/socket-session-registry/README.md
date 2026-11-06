@@ -6,6 +6,8 @@
 
 # socket-session-registry
 
+WebSocket session registry contract — tracks live connections and fan-out
+
 ## Interfaces
 
 - [SocketSessionRegistry](interfaces/SocketSessionRegistry.md)

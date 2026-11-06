@@ -6,9 +6,6 @@
  * unparseable output (the Vite 8 / oxc decorator-passthrough failure
  * `07-ndigo-island` guards against) would leave every other test green. Parsing
  * the built file with Node as an ES module closes that hole.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { spawnSync } from 'node:child_process';

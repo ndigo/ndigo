@@ -5,9 +5,6 @@
  * + close on violations (server-initiated publish from outside the
  * handler). Non-STOMP socket paths keep the stock first-offered
  * subprotocol behavior.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';

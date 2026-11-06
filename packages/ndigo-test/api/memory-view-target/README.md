@@ -6,6 +6,8 @@
 
 # memory-view-target
 
+Memory view target — a DOM-free `ViewTarget` that captures rendered output.
+
 ## Classes
 
 - [MemoryViewTarget](classes/MemoryViewTarget.md)

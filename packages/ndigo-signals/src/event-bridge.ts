@@ -2,9 +2,6 @@
  * Bridges event occurrences and reactive state (AD-09): `eventsToSignal`
  * feeds a `Signal` from an emitter-shaped source, `signalToEvents`
  * re-emits a `Signal`'s changes as occurrences on an emitter-shaped sink.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Signal, effect } from '@preact/signals-core';
 

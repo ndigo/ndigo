@@ -6,6 +6,8 @@
 
 # http-method-condition
 
+A route condition that matches an HTTP request method.
+
 ## Classes
 
 - [HTTPMethodCondition](classes/HTTPMethodCondition.md)

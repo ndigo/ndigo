@@ -1,7 +1,3 @@
-/**
- * @since 1.0.0
- * @author Jeff Rose
- */
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest';

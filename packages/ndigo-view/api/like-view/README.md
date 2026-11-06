@@ -6,6 +6,8 @@
 
 # like-view
 
+Structural guard for the {@link View} contract.
+
 ## Functions
 
 - [likeView](functions/likeView.md)

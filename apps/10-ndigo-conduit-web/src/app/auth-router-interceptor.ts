@@ -10,9 +10,6 @@
  * `preHandle` would be clobbered by the rollback restoring the old route.
  * Writing it afterwards lets the router's `hashchange` listener commit the
  * login navigation as a normal route change.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Route, RouterInterceptor } from '@ndigo/router';
 

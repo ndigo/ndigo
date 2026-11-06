@@ -8,9 +8,6 @@
  * Redis driver in `@ndigo/redis/rate-limit`. The enforcement metadata
  * (`@rateLimit`, `RATE_LIMIT_KEY`) and the `RateLimitInterceptor` live in
  * `@ndigo/platform-node`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /**

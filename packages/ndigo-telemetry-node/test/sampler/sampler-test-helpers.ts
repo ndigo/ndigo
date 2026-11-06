@@ -5,9 +5,6 @@
  * (later registrations are silently ignored — see AD-32), so every sampler
  * scenario runs in its own spec file: one `configureTelemetry` call per
  * worker process, asserting recording decisions at span start.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { context as otelContext, trace } from '@opentelemetry/api';
 import type { Span, Tracer } from '@opentelemetry/api';

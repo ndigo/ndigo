@@ -6,6 +6,8 @@
 
 # node-config
 
+NodeSDK configuration for `@ndigo/telemetry-node` (AD-32): sampler
+
 ## Interfaces
 
 - [TelemetryConfig](interfaces/TelemetryConfig.md)

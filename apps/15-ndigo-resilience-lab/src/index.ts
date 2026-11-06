@@ -5,9 +5,6 @@
  * client woven with `@ndigo/resilience` policies, a control plane that drives
  * the upstream and reports breaker state, and management endpoints that expose
  * the same numbers as health and metrics.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import 'node:process';
 import { ApplicationBuilder } from '@ndigo/boot';

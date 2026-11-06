@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { direct, escalate, indexOf, type ChildNode, type ParentNode, type TreeNode } from '../src/tree-node';

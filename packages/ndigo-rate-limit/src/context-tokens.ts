@@ -1,8 +1,5 @@
 /**
  * Context tokens for the `@ndigo/rate-limit` beans (AD-79 D-2).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ContextToken } from '@ndigo/factory';
 import type { RateLimiter } from './rate-limiter';

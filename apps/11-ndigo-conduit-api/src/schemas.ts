@@ -10,9 +10,6 @@
  * Each payload schema mirrors the wire shape (`{user: …}`, `{article: …}`), so
  * the bound handler argument *is* the request body and no re-shaping step
  * exists between validation and use.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { z } from 'zod';
 

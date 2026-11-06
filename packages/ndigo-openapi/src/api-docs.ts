@@ -5,9 +5,6 @@
  * OpenAPI generator can carry summary, tags, operation ids and deprecation
  * into the spec. Stored in the same `Symbol.metadata` store as
  * `@routeMapping` / `@parameters`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { z } from 'zod';
 import { FrameworkError, getSymbolMetadata } from '@ndigo/core';

@@ -2,9 +2,6 @@
  * The HTTP surface: `GET /` renders the EJS shell that mounts the `chat-room`
  * Web Component; the built client bundle is served under `/static/` by the
  * platform `StaticController`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { getMapping, ModelAndView, requestMapping } from '@ndigo/dispatcher';
 

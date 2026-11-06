@@ -6,6 +6,8 @@
 
 # profile-expression
 
+Reference-style profile expression grammar (`name`, `!`, `&`, `|`,
+
 ## Functions
 
 - [evaluateProfileExpression](functions/evaluateProfileExpression.md)

@@ -6,6 +6,8 @@
 
 # api-docs
 
+`@apiDocs` — optional per-handler documentation metadata (AD-35 D-4).
+
 ## Interfaces
 
 - [APIDocsMetadata](interfaces/APIDocsMetadata.md)

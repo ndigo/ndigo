@@ -6,9 +6,6 @@
  * here, so the EJS templates resolve them through the request's negotiated
  * language (`t(...)`, guide 04) and the Zod schemas can name a key as their
  * failure message instead of hard-coding prose.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /** The `en`/`fr` bundles passed to `I18nextMessageSource` (one `translation` namespace). */

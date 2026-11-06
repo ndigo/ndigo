@@ -6,6 +6,8 @@
 
 # commands/db/studio
 
+`ndigo db studio` — front the application’s db:studio script.
+
 ## Variables
 
 - [dbStudioCommand](variables/dbStudioCommand.md)

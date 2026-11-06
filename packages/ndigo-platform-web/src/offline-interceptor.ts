@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { EventEmitter } from '@ndigo/context';
 import { HTTPInit, ResponseAwareHTTPInterceptor } from '@ndigo/http';

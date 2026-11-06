@@ -6,6 +6,8 @@
 
 # context-tokens
 
+A type-safe key used for value registration and retrieval in a `Registry`.
+
 ## Classes
 
 - [ContextToken](classes/ContextToken.md)

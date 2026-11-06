@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { isEntries, isJSONObject, JSONValue, Serializable } from '@ndigo/core';
 import { is } from '@ndigo/util/types';

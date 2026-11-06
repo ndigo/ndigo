@@ -6,6 +6,8 @@
 
 # schema-snapshot
 
+Committed schema snapshot + generation (AD-78 D-2/D-3).
+
 ## Interfaces
 
 - [ColumnProjection](interfaces/ColumnProjection.md)

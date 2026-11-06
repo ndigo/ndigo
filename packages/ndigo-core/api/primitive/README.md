@@ -6,6 +6,8 @@
 
 # primitive
 
+A JavaScript primitive value.
+
 ## Type Aliases
 
 - [primitive](type-aliases/primitive.md)

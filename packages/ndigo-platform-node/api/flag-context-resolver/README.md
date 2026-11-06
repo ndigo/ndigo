@@ -6,6 +6,8 @@
 
 # flag-context-resolver
 
+The flag targeting-context seam (AD-87 companion): the
+
 ## Classes
 
 - [ClientAddressFlagContextResolver](classes/ClientAddressFlagContextResolver.md)

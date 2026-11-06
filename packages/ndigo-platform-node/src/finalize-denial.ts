@@ -3,9 +3,6 @@
  * in-process MockHTTP client (IN-1): a denial recorded on the route by a
  * guard's `preHandle` produces the identical deterministic response whether
  * the request arrives over a socket or through the mock dispatcher.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { InterceptorDenial } from '@ndigo/dispatcher';
 import { HTTPHeaders, ResponseStatus } from '@ndigo/http';

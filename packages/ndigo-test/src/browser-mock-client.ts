@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 /**
  * BrowserMockClient — drive `BrowserDispatcher` with a DOM-free capture target.

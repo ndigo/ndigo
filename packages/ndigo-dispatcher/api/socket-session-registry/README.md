@@ -6,6 +6,8 @@
 
 # socket-session-registry
 
+WebSocket session registry contract — re-exported for handler and
+
 ## References
 
 ### SocketSessionRegistry

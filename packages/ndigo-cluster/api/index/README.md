@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/cluster` — the process supervisor for replicated
+
 ## References
 
 ### ClusterChild

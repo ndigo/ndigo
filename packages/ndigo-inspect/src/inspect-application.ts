@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  *
  * `inspectApplication` — build a deterministic, versioned JSON manifest for a
  * running application: its identity, routes, handler mappings and declared

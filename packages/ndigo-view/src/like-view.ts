@@ -1,8 +1,5 @@
 /**
  * Structural guard for the {@link View} contract.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { isFunction } from '@ndigo/util/types';
 import { View } from './view.js';

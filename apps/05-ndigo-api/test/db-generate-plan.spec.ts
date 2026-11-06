@@ -2,9 +2,6 @@
  * The `ndigo db generate` gates (REV-002/REV-006): destructive drops and
  * unexpressible changes must block generation until acknowledged, and a
  * clean delta must plan the next migration — pure logic, no script run.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect, afterEach } from 'vitest';
 import { rm, mkdir, writeFile } from 'node:fs/promises';

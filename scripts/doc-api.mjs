@@ -151,7 +151,7 @@ function typedocConfig(pkgDir, manifest) {
         entryPoints: [join(pkgDir, 'src')],
         entryPointStrategy: 'expand',
         out: join(pkgDir, 'api'),
-        plugin: ['typedoc-plugin-markdown', join(ROOT, 'scripts', 'typedoc-tags-plugin.mjs')],
+        plugin: ['typedoc-plugin-markdown', join(ROOT, 'scripts', 'typedoc-module-summary-plugin.mjs')],
         readme: 'none',
         excludePrivate: true,
         excludeProtected: true,

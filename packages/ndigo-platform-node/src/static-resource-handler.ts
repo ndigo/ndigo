@@ -10,9 +10,6 @@
  * REUSE-1), except `X-Content-Type-Options: nosniff`, reused verbatim from the
  * resolver (SEC-2); request-header reads go through the constants' `get()`,
  * which case-folds over Node's lower-cased `IncomingMessage` records.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { ServerResponse } from 'node:http';
 import { createReadStream } from 'node:fs';

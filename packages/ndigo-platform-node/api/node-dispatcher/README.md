@@ -6,6 +6,8 @@
 
 # node-dispatcher
 
+Node.js dispatcher extending the platform-independent `AbstractDispatcher` for server-side rendering.
+
 ## Classes
 
 - [NodeDispatcher](classes/NodeDispatcher.md)

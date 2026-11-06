@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  *
  * Route enumeration for the inspect manifest — reads a `RouteRegistry`, an
  * iterable of keyed `[key, RouteDefinition]` entries, plain `RouteDefinition`s,

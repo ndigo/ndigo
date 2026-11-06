@@ -2,9 +2,6 @@
  * Client-side socket telemetry specs: `WebSocketClientInstrumentation`
  * (outbound/close counters over a fake-transport client) and
  * `countSocketClientStatus` (status/reconnect counters).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import {

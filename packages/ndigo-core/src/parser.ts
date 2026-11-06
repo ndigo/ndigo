@@ -1,8 +1,5 @@
 /**
  * Class-based interface for parsing a string into a structured value of type `T`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export interface Parser<T = unknown> {
     /**

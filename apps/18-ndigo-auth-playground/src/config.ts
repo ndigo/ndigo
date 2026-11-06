@@ -6,9 +6,6 @@
  * all; the overrides exist to *demonstrate* the decisions (plain-HTTP cookie,
  * short JWT lifetime, a different database file) rather than to configure a
  * deployment.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { fileURLToPath } from 'node:url';
 import { getEnv } from '@ndigo/context';

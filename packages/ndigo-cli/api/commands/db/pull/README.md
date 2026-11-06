@@ -6,6 +6,8 @@
 
 # commands/db/pull
 
+`ndigo db pull` — front the application’s db:pull script.
+
 ## Variables
 
 - [dbPullCommand](variables/dbPullCommand.md)

@@ -6,6 +6,8 @@
 
 # response-entity-view
 
+View that renders a `ResponseEntity` to a response document.
+
 ## Classes
 
 - [ResponseEntityView](classes/ResponseEntityView.md)

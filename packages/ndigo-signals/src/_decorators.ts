@@ -1,8 +1,5 @@
 /**
  * Ndigo Signals decorator API.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import {
     signal as _signal,

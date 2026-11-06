@@ -6,6 +6,8 @@
 
 # dotted-read
 
+Shared dotted-keypath read for the nested-capable value sources (D-2).
+
 ## Functions
 
 - [readDottedValue](functions/readDottedValue.md)

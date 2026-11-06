@@ -6,9 +6,6 @@
  * This lane is the single-node contract: the same routes must behave
  * identically whether or not a fan-out exists, and the mode must be visible in
  * what they report.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

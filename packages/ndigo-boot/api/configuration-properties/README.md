@@ -6,6 +6,8 @@
 
 # configuration-properties
 
+`@configurationProperties` — type-safe binding from environment properties.
+
 ## Interfaces
 
 - [ConfigurationPropertiesOptions](interfaces/ConfigurationPropertiesOptions.md)

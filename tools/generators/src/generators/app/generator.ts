@@ -6,9 +6,6 @@
  * `02-ndigo-hello-node` for the node kind); the generated manifest is a
  * private app and obeys the manifest gate's app rules
  * (`scripts/check-manifests.mjs` rule 10).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { formatFiles, generateFiles, type Tree } from '@nx/devkit';
 import { toPascal } from '@ndigo/util/string';

@@ -6,6 +6,8 @@
 
 # last-resort-error-resolver
 
+Last-resort error resolver for the Node pipeline: any error that no other.
+
 ## Classes
 
 - [NodeLastResortErrorResolver](classes/NodeLastResortErrorResolver.md)

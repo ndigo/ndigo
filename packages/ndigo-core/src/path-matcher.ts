@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { like } from '@ndigo/util/types';
 import { AbstractValueComparator, Comparator } from './comparable.js';

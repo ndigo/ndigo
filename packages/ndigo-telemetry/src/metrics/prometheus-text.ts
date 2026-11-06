@@ -16,9 +16,6 @@
  *
  * Deterministic output is the testable contract: the same snapshot array
  * always renders the same document.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { AttributeValue } from '@opentelemetry/api';
 import { MetricSnapshot } from './metric-snapshot';

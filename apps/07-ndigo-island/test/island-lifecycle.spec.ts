@@ -2,9 +2,6 @@
  * WC-F / WC-G — the island's subscription lifecycle: disposers released on
  * disconnect, a single active subscription across a reconnect, and SSE
  * resubscription after the stream ends.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment jsdom
 import { describe, test, expect, vi } from 'vitest';

@@ -1,9 +1,6 @@
 /**
  * Smoke test (APP-N10): the app boots through the real
  * `ApplicationBuilder` path and serves its documented endpoints.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

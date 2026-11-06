@@ -6,9 +6,6 @@
  * `@ndigo/test`'s in-process dispatch carries the real `StaticController`, so the
  * bytes served here are the bytes a browser would get — including the bundle the
  * `test` script builds first.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { existsSync } from 'node:fs';

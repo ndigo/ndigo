@@ -6,6 +6,8 @@
 
 # browser-config
 
+Browser telemetry bootstrap: global OTel providers, console/OTLP gating,
+
 ## Interfaces
 
 - [BrowserTelemetryConfig](interfaces/BrowserTelemetryConfig.md)

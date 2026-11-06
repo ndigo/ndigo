@@ -6,6 +6,8 @@
 
 # cookie-parser
 
+RFC 6265-style cookie parsing for `NodeRequest.cookies`.
+
 ## Interfaces
 
 - [CookieParseOptions](interfaces/CookieParseOptions.md)

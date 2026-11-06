@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Destroyable } from './lifecycle';
 import { like } from '@ndigo/util/types';

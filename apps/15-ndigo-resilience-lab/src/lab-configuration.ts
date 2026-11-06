@@ -2,9 +2,6 @@
  * The lab's composition root: one shared `ResilienceLab` (upstream simulator +
  * clock + intercepted client) handed to every controller, so the control plane
  * and the consumer routes always observe the same state.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { configuration, entry, getEnv } from '@ndigo/context';

@@ -6,6 +6,8 @@
 
 # types
 
+Options and result shapes for the `create-ndigo-app` scaffold.
+
 ## Interfaces
 
 - [PlannedFile](interfaces/PlannedFile.md)

@@ -7,9 +7,6 @@
  * `NodeAutoConfiguration`, so it contributes beans without replacing any
  * platform default (the port comes from `process.env.PORT`, the error-resolver
  * chain and the argument resolvers stay the platform's).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { fileURLToPath } from 'node:url';

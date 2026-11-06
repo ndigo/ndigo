@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 // Barrel: the factory contract (interfaces, aware mixin, guards), the
 // AbstractFactory implementation, and the concrete factories were split

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { type RouteHandlerInterceptor, type ModelAndView } from '@ndigo/dispatcher';
 import type { Route } from '@ndigo/router';

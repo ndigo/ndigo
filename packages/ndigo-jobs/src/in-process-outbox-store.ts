@@ -1,8 +1,5 @@
 /**
  * The in-process reference outbox store (development and tests).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
 import { randomUUID } from 'node:crypto';

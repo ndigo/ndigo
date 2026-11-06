@@ -1,8 +1,5 @@
 /**
  * `management.*` configuration reads and the exposure model (AD-76 D-5/D-2).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { type ConfigurableEnvironment, type Environment } from '@ndigo/context';
 import { z } from 'zod';

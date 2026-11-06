@@ -5,9 +5,6 @@
  * token, a malformed one, an expired one and a refused refresh are four
  * distinguishable `401` problems, and a successful refresh kills every older
  * token of the account by construction (the `ver` counter advances).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

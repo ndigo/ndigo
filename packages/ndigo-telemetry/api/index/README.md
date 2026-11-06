@@ -6,6 +6,8 @@
 
 # index
 
+API-only: metrics, tracing decorators, platform-free instrumentation bases,
+
 ## Classes
 
 - [ContextAwareLogger](classes/ContextAwareLogger.md)

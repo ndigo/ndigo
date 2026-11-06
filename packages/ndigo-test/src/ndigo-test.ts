@@ -1,8 +1,5 @@
 /**
  * Boot helpers for `@ndigo/test` — boot a Ndigo application context and wire a.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { MetadataConfigApplicationContext, ApplicationContext } from '@ndigo/context';
 import { isFunction } from '@ndigo/util/types';

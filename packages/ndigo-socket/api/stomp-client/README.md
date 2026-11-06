@@ -6,6 +6,8 @@
 
 # stomp-client
 
+STOMP client — CONNECT negotiation, subscriptions, receipts (AD-23
+
 ## Classes
 
 - [StompClient](classes/StompClient.md)

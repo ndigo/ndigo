@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractRouter, RouterCallback } from '@ndigo/router';
 

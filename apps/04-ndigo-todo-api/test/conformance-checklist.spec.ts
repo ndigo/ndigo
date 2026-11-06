@@ -7,9 +7,6 @@
  * `specify` in that file is reproduced here against this app's MockHTTP
  * pipeline, so a regression in any documented behavior fails a local lane
  * instead of surfacing only in the manual runner.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest';

@@ -6,6 +6,8 @@
 
 # request-id-correlation
 
+Interface for request-ID correlation across service calls.
+
 ## Classes
 
 - [CryptoRequestIdCorrelation](classes/CryptoRequestIdCorrelation.md)

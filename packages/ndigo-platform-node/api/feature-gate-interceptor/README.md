@@ -6,6 +6,8 @@
 
 # feature-gate-interceptor
 
+`@whenFeature` route-gate enforcement (AD-82 D-4): per request, when the
+
 ## Classes
 
 - [FeatureGateInterceptor](classes/FeatureGateInterceptor.md)

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 const group = (zones: Record<string, string>): Readonly<Record<string, string>> => Object.freeze(zones);

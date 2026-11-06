@@ -6,6 +6,8 @@
 
 # inspect-application
 
+`inspectApplication` — build a deterministic, versioned JSON manifest for a
+
 ## Functions
 
 - [inspectApplication](functions/inspectApplication.md)

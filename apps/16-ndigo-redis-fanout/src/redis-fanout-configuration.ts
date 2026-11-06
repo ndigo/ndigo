@@ -12,9 +12,6 @@
  * both from its own entry and to every controller: the container registers
  * exactly one instance, and `context.getValue(FANOUT_BACKEND)` hands out that
  * same one.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { configuration, entry } from '@ndigo/context';

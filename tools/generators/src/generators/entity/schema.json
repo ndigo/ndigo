@@ -4,11 +4,22 @@
   "title": "Entity Generator",
   "type": "object",
   "properties": {
-    "name": { "type": "string", "description": "Entity name" },
-    "package": { "type": "string", "description": "Target package" },
-    "className": { "type": "string", "description": "Class name override" },
-    "summary": { "type": "string", "description": "One-line summary" },
-    "author": { "type": "string", "description": "Author" }
+    "name": {
+      "type": "string",
+      "description": "Entity name"
+    },
+    "package": {
+      "type": "string",
+      "description": "Target package"
+    },
+    "className": {
+      "type": "string",
+      "description": "Class name override"
+    },
+    "summary": {
+      "type": "string",
+      "description": "One-line summary"
+    }
   },
   "required": ["name", "package"]
 }

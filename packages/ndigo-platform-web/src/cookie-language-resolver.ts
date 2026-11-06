@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractLanguageResolver, NavigatorLanguageResolver } from '@ndigo/dispatcher';
 import { normalizeLocale } from '@ndigo/content';

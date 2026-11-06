@@ -9,11 +9,3 @@
 > **primitive** = `boolean` \| `null` \| `number` \| `string` \| `symbol` \| `bigint` \| `undefined`
 
 A JavaScript primitive value.
-
-## Since
-
-1.0.0
-
-## Author
-
-Jeff Rose

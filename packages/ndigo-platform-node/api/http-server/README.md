@@ -6,6 +6,8 @@
 
 # http-server
 
+Managed HTTP server for Node.js platform applications.
+
 ## Classes
 
 - [HTTPServer](classes/HTTPServer.md)

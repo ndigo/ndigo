@@ -1,8 +1,5 @@
 /**
  * `JobRunner` — polls a driver and executes registered handlers.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
 import { getErrorMessage } from '@ndigo/util';

@@ -1,8 +1,5 @@
 /**
  * Shared dependency registry for the application context hierarchy.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { satisfiesVersion } from '@ndigo/core';
 

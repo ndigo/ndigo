@@ -6,6 +6,8 @@
 
 # index
 
+Server-side EJS template rendering expressed as an isomorphic Ndigo view.
+
 ## References
 
 ### EJSIncludeCycleError

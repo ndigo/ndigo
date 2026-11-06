@@ -2,9 +2,6 @@
  * Durable opaque sessions on LibSQL. Schema creation is deliberately explicit:
  * await store.initialize() during application provisioning/startup, or provision
  * the same table through an application migration. Construction performs no SQL.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { createClient, type Client, type InValue, type Row } from '@libsql/client';
 import { DefaultPrincipal, type SessionRecord, type SessionStore } from '@ndigo/auth-core';

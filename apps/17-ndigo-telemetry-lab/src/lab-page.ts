@@ -7,9 +7,6 @@
  * bundle at `/static/client.js`, so the page exercises the real browser-side
  * instrumentation instead of a server-side snapshot. No inline script — the
  * framework's default CSP (`script-src 'self'`) stays intact.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export const LAB_PAGE_HTML = `<!DOCTYPE html>
 <html lang="en">

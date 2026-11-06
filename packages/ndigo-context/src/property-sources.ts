@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { IllegalStateError, JSONObject, type Enumerable } from '@ndigo/core';
 import { PropertySource, wrapSource } from './property-source';

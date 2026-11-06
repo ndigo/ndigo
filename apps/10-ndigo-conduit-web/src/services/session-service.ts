@@ -11,9 +11,6 @@
  * Failures never throw at the caller: a rejected write records the API's
  * envelope in {@link FormErrorState} and refreshes, so the form re-renders with
  * its per-field messages.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { Null } from '@ndigo/core';

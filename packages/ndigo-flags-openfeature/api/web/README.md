@@ -6,6 +6,8 @@
 
 # web
 
+Web entry (`@ndigo/flags-openfeature/web`) — the browser bridge over
+
 ## References
 
 ### WebOpenFeatureFlagEvaluator

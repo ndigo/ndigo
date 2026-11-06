@@ -2,9 +2,6 @@
  * Log↔trace correlation tooling (AD-32 D-4): a stand-alone accessor for
  * the active OpenTelemetry trace context, for consumers that do not go
  * through loggers — queue payloads, outbound headers, custom sinks.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { context, trace } from '@opentelemetry/api';
 

@@ -6,6 +6,8 @@
 
 # commands/config
 
+`ndigo config` — get/set/list app-level config keys.
+
 ## Variables
 
 - [configCommand](variables/configCommand.md)

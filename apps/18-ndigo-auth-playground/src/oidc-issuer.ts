@@ -19,9 +19,6 @@
  * playground (the README shows the two POSTs that complete the flow). The
  * provider also holds grants in its in-memory adapter and prints the
  * corresponding startup warnings; both are deliberate for an ephemeral demo.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { createServer, type Server } from 'node:http';
 import { Provider } from 'oidc-provider';

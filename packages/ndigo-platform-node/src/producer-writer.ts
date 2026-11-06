@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { ServerResponse } from 'node:http';
 import { once } from 'node:events';

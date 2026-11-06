@@ -6,6 +6,8 @@
 
 # drizzle-zod
 
+Drizzle table + Zod schema derivation from `@ndigo/orm` entity metadata.
+
 ## Functions
 
 - [drizzleTableForEntity](functions/drizzleTableForEntity.md)

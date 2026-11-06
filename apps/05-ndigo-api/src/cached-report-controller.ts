@@ -1,8 +1,5 @@
 /**
  * AD-24 demo gate: `@cached` on a controller-backed service method.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { getMapping, requestMapping } from '@ndigo/dispatcher';

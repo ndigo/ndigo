@@ -6,6 +6,8 @@
 
 # helpers/migration-probe
 
+Migration-version probing for scaffold commands (AD-78 D-5).
+
 ## Functions
 
 - [nextMigrationVersion](functions/nextMigrationVersion.md)

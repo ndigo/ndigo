@@ -6,6 +6,8 @@
 
 # libsql-queue-message-store
 
+LibSQL-backed {@link QueueMessageStore} — the durable `/queue` backend.
+
 ## Classes
 
 - [LibSQLQueueMessageStore](classes/LibSQLQueueMessageStore.md)

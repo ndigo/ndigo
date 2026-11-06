@@ -1,9 +1,6 @@
 /**
  * Drizzle-backed derived-query repository (ORM completion plan, Wave 4):
  * Derived-query method names evaluated to SQL.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { getEntityMetadata, parseDerivedQuery } from '@ndigo/orm';
 import { DrizzleRepository } from './drizzle-repository';

@@ -6,6 +6,8 @@
 
 # rate-limiter
 
+The rate-limit backend contract (AD-33 Wave 3, shared-store follow-up
+
 ## Interfaces
 
 - [RateLimiter](interfaces/RateLimiter.md)

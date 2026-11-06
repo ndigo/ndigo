@@ -6,6 +6,8 @@
 
 # page
 
+Pagination and sorting contracts for repositories (ORM completion plan,
+
 ## Interfaces
 
 - [Page](interfaces/Page.md)

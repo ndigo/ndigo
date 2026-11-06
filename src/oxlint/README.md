@@ -41,7 +41,8 @@ oxlint executes the TypeScript directly (Node ≥24 type stripping), so:
 | `internal/no-global-state-in-create-factories` | `create*` factories must not reference mutable module/class state — the `create*` vs `get*` split                                                                     |
 | `internal/no-browser-globals-in-isomorphic`    | Browser globals are guarded in isomorphic packages; browser-only packages (`@ndigo/platform-web`, `@ndigo/dom`, `@ndigo/view-webcomponent`, `@ndigo/boot`) are exempt |
 | `internal/no-raw-console`                      | Raw `console.warn`/`console.error`/`console.log` calls in package source go through `@ndigo/log` (allow-listed: `@ndigo/log`, `@ndigo/util`)                          |
-| `internal/requires-doc-header`                 | Source files begin with the canonical doc header (`@since`/`@author`)                                                                                                 |
+| `internal/requires-doc-header`                 | Source files begin with a canonical doc header carrying a module summary (TSDoc standard; no tags)                                                                    |
+| `internal/tsdoc-syntax`                        | TSDoc syntax in doc comments is valid (`@microsoft/tsdoc`): no unknown/legacy tags, well-formed inline tags, escaped braces, standard `@param` form                   |
 | `internal/no-upward-layer-imports`             | Package imports flow only downward through the derived layer ranks (see below)                                                                                        |
 
 `no-browser-globals-in-isomorphic` and `no-raw-console` returned from the

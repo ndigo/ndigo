@@ -16,9 +16,6 @@
  *
  * Terms compose and can be passed anywhere a profile expression string is
  * accepted (`@whenProfile(...)`, `environment.acceptsProfiles(...)`).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { IllegalStateError } from './error.js';
 import { evaluateProfileExpression } from './profile-expression.js';

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, expect, test, vi } from 'vitest';
 import { FeatureRoutingRegistry } from '../src/feature-routing-registry';

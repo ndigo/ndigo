@@ -2,9 +2,6 @@
  * Live-rebind specs for AD-29 Wave 1: `@refreshScope` on
  * `@configurationProperties` classes re-binds on environment `refresh()`;
  * unmarked classes keep the boot-time snapshot.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect, vi } from 'vitest';
 import { ApplicationBuilder, configurationProperties } from '../src/index';

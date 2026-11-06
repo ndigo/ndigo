@@ -6,9 +6,6 @@
  * docs endpoints because the docs handlers carry no
  * `@authenticated`/`@authorized` metadata — the guard must check the
  * request itself (SEC-1 wave finding).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { denialOf, type RouteHandlerInterceptor } from '@ndigo/dispatcher';

@@ -4,9 +4,6 @@
  * `feature.<name>` by default — and is **read-through**, so an
  * `environment.refresh()` (AD-29) makes flag changes visible immediately
  * with no cache to invalidate.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import {
     type FlagEvaluation,

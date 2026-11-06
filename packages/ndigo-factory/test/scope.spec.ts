@@ -1,8 +1,5 @@
 /**
  * Behavioral tests for @ndigo/factory scope decorators (TC39).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, it, expect, vi } from 'vitest';
 import {

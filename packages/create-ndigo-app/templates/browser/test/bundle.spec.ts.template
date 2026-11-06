@@ -7,9 +7,6 @@
  * temp `.mjs`, since classic-script grammar would spuriously reject legitimate
  * `export`/`import.meta`), so dropping the `lowerDecorators()` plugin fails
  * loudly. The app `test` script runs `vite build` first.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';

@@ -12,9 +12,6 @@
  *    advanced, so type/nullability edits silently diverged the DB from the
  *    entities (and the CI freshness gate could not see it, because a
  *    second run was a byte-identical no-op).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { diffProjections, nextMigrationVersion, type SchemaSnapshot } from '@ndigo/orm-drizzle';
 

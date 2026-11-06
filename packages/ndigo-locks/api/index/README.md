@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/locks` — distributed locks with fencing tokens
+
 ## References
 
 ### InProcessLockDriver

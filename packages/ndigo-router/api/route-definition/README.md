@@ -6,6 +6,8 @@
 
 # route-definition
 
+A type-safe route definition that can generate URLs, navigate, parse, and match routes.
+
 ## Classes
 
 - [RouteDefinition](classes/RouteDefinition.md)

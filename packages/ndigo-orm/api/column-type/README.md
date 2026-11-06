@@ -6,6 +6,8 @@
 
 # column-type
 
+Declared `@column({ type })` classification shared by the Zod schema mapping
+
 ## Type Aliases
 
 - [ColumnTypeFamily](type-aliases/ColumnTypeFamily.md)

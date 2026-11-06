@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import ejs from 'ejs';
 import { FrameworkError } from '@ndigo/core';

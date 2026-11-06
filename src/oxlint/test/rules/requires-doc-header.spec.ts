@@ -1,6 +1,5 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
+ * Spec for the requires-doc-header rule (summary-only, src-only).
  */
 import { RuleTester } from 'oxlint/plugins-dev';
 import { requiresDocHeader } from '../../rules/requires-doc-header.ts';
@@ -16,9 +15,6 @@ const ruleTester = new RuleTester({
 
 const CANONICAL = `/**
  * Widget utilities.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 `;
 
@@ -28,18 +24,9 @@ ruleTester.run('requires-doc-header', requiresDocHeader, {
             code: `${CANONICAL}export const x = 1;`,
             filename: '/packages/ndigo-core/src/widget.ts',
         },
-        // Summary may be omitted; tags are what matter.
+        // Test files are exempt.
         {
-            code: `/**
- * @since 1.0.0
- * @author Jeff Rose
- */
-export const x = 1;`,
-            filename: '/packages/ndigo-core/src/widget.ts',
-        },
-        // Test files are checked too…
-        {
-            code: `${CANONICAL}import { x } from '../src/widget';\nit('x', () => x);`,
+            code: 'export const x = 1;',
             filename: '/packages/ndigo-core/test/widget.spec.ts',
         },
         // …but build configs and non-source locations are exempt.
@@ -57,32 +44,6 @@ export const x = 1;`,
             code: 'export const x = 1;',
             filename: '/packages/ndigo-core/src/widget.ts',
             errors: [{ messageId: 'missingHeader' }],
-        },
-        {
-            code: `/**\n * Only a description.\n */\nexport const x = 1;`,
-            filename: '/packages/ndigo-core/src/widget.ts',
-            errors: [{ messageId: 'missingTags' }],
-        },
-        {
-            code: `/**
- * @since 1.0.0
- */
-export const x = 1;`,
-            filename: '/apps/ndigo-todo/src/index.ts',
-            errors: [{ messageId: 'missingTags' }],
-        },
-        {
-            // Copy-paste artifact: the stray '*' renders in generated docs.
-            code: `/**
- * Widget utilities.
- *
- * * @since 1.0.0
- * @author Jeff Rose
- * @author Jeff Rose
- */
-export const x = 1;`,
-            filename: '/packages/ndigo-core/src/widget.ts',
-            errors: [{ messageId: 'malformedTagLine' }],
         },
     ],
 });

@@ -12,9 +12,6 @@
  * after the guard has put the principal in the session bag, so they bind it with
  * `requestSessionValue('principal')` — the same seam
  * `NodeSessionInterceptor` fills for cookie requests.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { authenticated, authorized, type Principal } from '@ndigo/auth-core';

@@ -6,6 +6,8 @@
 
 # metrics/prometheus-metric-reader
 
+The Prometheus pull reader (AD-77 D-2): an SDK `MetricReader` whose
+
 ## Classes
 
 - [PrometheusMetricReader](classes/PrometheusMetricReader.md)

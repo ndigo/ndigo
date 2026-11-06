@@ -1,8 +1,5 @@
 /**
  * Type-safe bean handles for the Node platform's shared beans (AD-34 D1).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ContextToken } from '@ndigo/factory';
 import type { ConversionService } from '@ndigo/core';

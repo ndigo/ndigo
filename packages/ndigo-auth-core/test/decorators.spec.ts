@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { authenticated, authorized, AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '../src/decorators';

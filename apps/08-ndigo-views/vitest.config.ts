@@ -4,9 +4,6 @@
  * Kept separate from `vite.config.ts` so the build/dev config stays build-only
  * and tests resolve `@ndigo/*` against `packages/<pkg>/src` through the shared alias
  * table (HI-6/TST-B).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { defineConfig } from 'vitest/config';
 import { lowerDecorators } from '../../scripts/vite-plugin-lower-decorators.mjs';

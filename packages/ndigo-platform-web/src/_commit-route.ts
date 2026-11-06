@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { PathRoute, RouterExecutionChain } from '@ndigo/router';
 import type { RouterErrorHandler } from '@ndigo/router';

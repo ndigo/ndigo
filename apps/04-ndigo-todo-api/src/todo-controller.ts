@@ -1,8 +1,5 @@
 /**
  * The five Todo-Backend operations, plus the OPTIONS/collection-reset extras.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import {

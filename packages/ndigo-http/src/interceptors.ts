@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 export * from './interceptors/response-class-interceptor';
 export * from './interceptors/response-code-interceptor';

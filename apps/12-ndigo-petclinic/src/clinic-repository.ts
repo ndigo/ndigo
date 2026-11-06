@@ -8,9 +8,6 @@
  * queries (last-name prefix search, vet paging), so moving to a SQL/Drizzle
  * `EntityManager` means constructing this class with a different manager and
  * nothing else changes.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import {
     AbstractRepository,

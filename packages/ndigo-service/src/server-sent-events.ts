@@ -1,8 +1,5 @@
 /**
  * Server-Sent Events parsing for streaming service calls (AD-09).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ServerSentEvent } from '@ndigo/core';
 

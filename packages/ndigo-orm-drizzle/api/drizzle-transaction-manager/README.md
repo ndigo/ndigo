@@ -6,6 +6,8 @@
 
 # drizzle-transaction-manager
 
+LibSQL/Drizzle-backed transaction manager (AD-07 completion).
+
 ## Classes
 
 - [DrizzleTransactionManager](classes/DrizzleTransactionManager.md)

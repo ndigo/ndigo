@@ -1,9 +1,6 @@
 /**
  * Unit coverage for the room store's bounding and presence bookkeeping
  * (deterministic — no sockets).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, expect, test } from 'vitest';
 import type { SocketSession } from '@ndigo/dispatcher';

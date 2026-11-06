@@ -6,6 +6,8 @@
 
 # graceful-shutdown
 
+OS-signal-driven graceful shutdown for Node.js platform applications.
+
 ## Interfaces
 
 - [Closable](interfaces/Closable.md)

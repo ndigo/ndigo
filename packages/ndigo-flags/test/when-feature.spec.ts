@@ -1,9 +1,6 @@
 /**
  * `@whenFeature` decoration-time contract (AD-82 D-4): method and class
  * metadata keys, decoration-time key validation, and the reader.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { getWhenFeature, whenFeature } from '../src/when-feature';

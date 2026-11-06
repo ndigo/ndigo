@@ -1,9 +1,6 @@
 /**
  * Exporter spec resolution (AD-32 D-2/D-3) — pure shape table, no
  * providers touched, so every case runs in one process.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { resolveExporter } from '../src/node-config';

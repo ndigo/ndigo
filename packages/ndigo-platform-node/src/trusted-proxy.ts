@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { X_FORWARDED_FOR } from '@ndigo/http';
 import { type Matchable } from '@ndigo/core';

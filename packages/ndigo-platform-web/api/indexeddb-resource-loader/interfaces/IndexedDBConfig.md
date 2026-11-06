@@ -8,14 +8,6 @@
 
 Configuration options for the IndexedDB resource loader.
 
-## Since
-
-1.0.0
-
-## Author
-
-Jeff Rose
-
 ## Properties
 
 ### dbName?

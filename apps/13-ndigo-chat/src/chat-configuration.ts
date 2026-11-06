@@ -1,9 +1,6 @@
 /**
  * Application composition: the room/STOMP/shell controllers, the shared room
  * store, the static client-bundle controller, and the EJS view resolver.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { fileURLToPath } from 'node:url';

@@ -5,9 +5,6 @@
  * fixed key/IV/AAD → exact ciphertext + tag. They cross-check the cipher's
  * raw AES-GCM behavior (tamper rejection, AAD binding) against published
  * authoritative values independently of our own encrypt/decrypt pairing.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, it, expect, beforeEach } from 'vitest';
 import { randomBytes } from 'node:crypto';

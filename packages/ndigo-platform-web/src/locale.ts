@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Signal, signal } from '@ndigo/signals';
 import { normalizeLocale } from '@ndigo/content';

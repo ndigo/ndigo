@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 /**
  * Node.js HTTP server adapter wrapping `node:http.createServer()`.

@@ -22,9 +22,6 @@
  * posture); on an untrusted network pass a guard
  * (`OpenAPIDocsAutoConfiguration({ accessGuard })`) scoped to the docs
  * paths, and/or firewall the routes at the network boundary.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { configuration, entry } from '@ndigo/context';

@@ -6,6 +6,8 @@
 
 # commands/openapi
 
+`ndigo openapi` — emit an OpenAPI document (fronts the app openapi script).
+
 ## Variables
 
 - [openapiCommand](variables/openapiCommand.md)

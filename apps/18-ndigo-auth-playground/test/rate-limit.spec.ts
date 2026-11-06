@@ -8,9 +8,6 @@
  * credential endpoints share one budget per address (the key is the address, not
  * the route). Routes without the metadata — here `/auth/me` — are untouched: the
  * interceptor is a metadata gate, so registering it changed no other route.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

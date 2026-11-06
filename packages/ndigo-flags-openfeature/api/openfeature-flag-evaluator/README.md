@@ -6,6 +6,8 @@
 
 # openfeature-flag-evaluator
 
+The OpenFeature-backed evaluator (AD-87): maps the `FlagEvaluator` SPI
+
 ## Classes
 
 - [OpenFeatureFlagEvaluator](classes/OpenFeatureFlagEvaluator.md)

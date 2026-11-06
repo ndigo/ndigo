@@ -4,9 +4,6 @@
  * The favorited tab is its own route rather than page state, so a profile tab
  * is linkable and shareable; `ProfileService` keys its loaded window by
  * username + tab + page, so switching tabs (a navigation) loads the other list.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { Null } from '@ndigo/core';

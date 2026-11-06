@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { runNodeApplication } from '@ndigo/platform-node';
 import { getLogger } from '@ndigo/log';

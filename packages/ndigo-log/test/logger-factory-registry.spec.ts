@@ -1,8 +1,5 @@
 /**
  * Per-name logger registry specs (AD-76 D-7).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect, beforeEach } from 'vitest';
 import { SeverityNumber } from '@opentelemetry/api-logs';

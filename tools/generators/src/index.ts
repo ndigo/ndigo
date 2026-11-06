@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  *
  * Public entry point for the Ndigo Nx generator set.
  *

@@ -42,9 +42,6 @@
  * (the source is created at load): it must be `https:` — config in transit
  * is a secret-bearing channel, and an operator error or influenced env
  * value must not silently downgrade it to plaintext HTTP.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { IllegalStateError, JSONObject } from '@ndigo/core';
 import { ConfigurableEnvironment } from './environment';

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 const DOT_LITERAL = '\\.',
     SLASH_LITERAL = '\\/',

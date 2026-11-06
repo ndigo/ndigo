@@ -6,6 +6,8 @@
 
 # precedence
 
+Canonical ordered list of property-source names from HIGHEST to LOWEST.
+
 ## Type Aliases
 
 - [PrecedenceSource](type-aliases/PrecedenceSource.md)

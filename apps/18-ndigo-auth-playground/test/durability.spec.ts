@@ -6,9 +6,6 @@
  * present the very same id. It also pins that the store really is the LibSQL
  * one (not the in-memory reference), which is what makes the restart
  * survivable — and that an unknown id is still refused after the restart.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { mkdtempSync, rmSync } from 'node:fs';

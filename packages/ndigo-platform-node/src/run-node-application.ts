@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ApplicationBuilder, StandardConfigFileLoader } from '@ndigo/boot';
 import type { ConfigurableApplicationContext } from '@ndigo/context';

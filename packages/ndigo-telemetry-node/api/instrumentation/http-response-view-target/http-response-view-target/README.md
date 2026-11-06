@@ -6,6 +6,8 @@
 
 # instrumentation/http-response-view-target/http-response-view-target
 
+OpenTelemetry instrumentation for `HTTPResponseViewTarget.commit`.
+
 ## Classes
 
 - [HTTPResponseViewTargetInstrumentation](classes/HTTPResponseViewTargetInstrumentation.md)

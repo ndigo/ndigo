@@ -6,9 +6,6 @@
  * The lease table is process-wide (single-node semantics), so every test
  * uses its own key — cross-test leftovers on the real clock must never
  * satisfy or break another test's expectations.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { FrameworkError } from '@ndigo/core';

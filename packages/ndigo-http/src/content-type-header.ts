@@ -8,9 +8,6 @@
  * keeps the functional surface the request pipeline and the mock harness
  * share; new code can use the `HTTPHeaders.CONTENT_TYPE` constant's
  * typed methods or `MediaType` directly.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { MediaType, MediaTypes } from '@ndigo/core';
 import { HTTPHeader } from './http-header';

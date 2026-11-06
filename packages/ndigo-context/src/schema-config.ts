@@ -6,9 +6,6 @@
  * The same parsing semantics back `@configurationProperties(prefix,
  * { schema })` (ndigo-boot) and the environment's `typedConfig` — one module,
  * one behavior.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { z } from 'zod';
 import type { PropertyResolver } from './property-resolver';

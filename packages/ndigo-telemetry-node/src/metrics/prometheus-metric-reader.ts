@@ -14,9 +14,6 @@
  * model explicit buckets. Instruments created with
  * `createLazyHistogram({ boundaries })` (the semconv duration metric) always
  * land on the explicit-bucket aggregation.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { AttributeValue } from '@opentelemetry/api';
 import {

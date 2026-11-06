@@ -1,8 +1,5 @@
 /**
  * Host shell composition — sets up the micro frontend shell, a shared.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { createShellContext, DefaultSharedDependencyRegistry, SHARED_DEPENDENCY_REGISTRY_TOKEN } from '@ndigo/context';
 import { HOST_MANAGER_TOKEN, HostManager } from '@ndigo/host';

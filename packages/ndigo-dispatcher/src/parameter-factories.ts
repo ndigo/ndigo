@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import {
     MethodParameterType,
@@ -362,8 +360,10 @@ export function requestPart(
  * unit); not available on sockets.
  *
  * @example
+ * ```ts
  * @parameters({ route: routeValue() })
  * async handle(route: Route) { … }
+ * ```
  *
  * @param name - The `Route` property to bind; omit to bind the `Route` itself.
  * @returns A route-value extractor.

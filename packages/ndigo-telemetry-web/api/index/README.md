@@ -6,6 +6,8 @@
 
 # index
 
+Browser telemetry configuration and web instrumentations.
+
 ## Classes
 
 - [ContextInstrumentation](classes/ContextInstrumentation.md)

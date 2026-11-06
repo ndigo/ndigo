@@ -6,6 +6,8 @@
 
 # weave
 
+Proxy weaving for `@ndigo/proxy`.
+
 ## Interfaces
 
 - [MethodChainSpec](interfaces/MethodChainSpec.md)

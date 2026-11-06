@@ -9,9 +9,6 @@
  * Unlike a server view model, these carry the live `HnService`: the list and
  * thread views subscribe to its signals so hydration, incremental rendering,
  * and stale/online transitions re-render in place.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { HnFeedKey } from '../hn-types';
 import type { HnService } from '../services/hn-service';

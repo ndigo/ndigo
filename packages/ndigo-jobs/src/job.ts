@@ -1,8 +1,5 @@
 /**
  * Core job contracts: requests, stored records, and claim options.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /**

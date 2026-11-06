@@ -6,6 +6,8 @@
 
 # trace/correlation
 
+Log↔trace correlation tooling (AD-32 D-4): a stand-alone accessor for
+
 ## Interfaces
 
 - [TraceCorrelation](interfaces/TraceCorrelation.md)

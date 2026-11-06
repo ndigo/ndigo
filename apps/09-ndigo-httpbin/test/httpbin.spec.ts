@@ -1,7 +1,3 @@
-/**
- * @since 1.0.0
- * @author Jeff Rose
- */
 // @vitest-environment node
 import { deflateSync, gunzipSync, inflateSync, gzipSync } from 'node:zlib';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

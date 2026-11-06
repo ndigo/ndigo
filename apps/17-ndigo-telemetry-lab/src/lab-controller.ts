@@ -6,9 +6,6 @@
  *   targets), which the page displays and uses to aim its own OTLP export.
  * - `GET /lab/state` — the counters/gauges the lab has observed, plus the
  *   scheduled-task and socket wiring.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { getMapping, requestMapping } from '@ndigo/dispatcher';

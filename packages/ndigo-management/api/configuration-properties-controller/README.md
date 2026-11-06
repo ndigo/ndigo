@@ -6,6 +6,8 @@
 
 # configuration-properties-controller
 
+Serves bound-configuration introspection under `/configprops`
+
 ## Classes
 
 - [ConfigurationPropertiesController](classes/ConfigurationPropertiesController.md)

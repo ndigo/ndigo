@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 export * from './abstract-web-component';
 export * from './ndigo-element';

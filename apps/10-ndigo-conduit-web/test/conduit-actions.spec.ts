@@ -1,7 +1,3 @@
-/**
- * @since 1.0.0
- * @author Jeff Rose
- */
 import { beforeEach, describe, expect, test, vi, type Mock } from 'vitest';
 import type { ApplicationContext } from '@ndigo/context';
 import { delay } from '@ndigo/test';

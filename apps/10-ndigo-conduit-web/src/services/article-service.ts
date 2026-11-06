@@ -12,9 +12,6 @@
  * updates viable: favoriting patches the cached list and refreshes, and the
  * refresh re-renders the patch instead of re-fetching the pre-mutation list
  * over it.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { Null } from '@ndigo/core';

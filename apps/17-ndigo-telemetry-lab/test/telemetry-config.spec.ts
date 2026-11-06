@@ -5,9 +5,6 @@
  *
  * Nothing here touches the OpenTelemetry API — `resolveLabTelemetry` is pure by
  * design, which is exactly why it can be asserted in a plain worker.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';

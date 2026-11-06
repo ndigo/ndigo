@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Constructable, IllegalStateError } from '@ndigo/core';
 import { DataSource } from './data-source';

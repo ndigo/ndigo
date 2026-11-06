@@ -1,8 +1,5 @@
 /**
  * APP-D — the SSE push stream coalesces and bounds its pending snapshots.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';

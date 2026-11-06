@@ -6,6 +6,8 @@
 
 # commands/dev
 
+`ndigo dev` — run the application's development script (vite for browser
+
 ## Variables
 
 - [devCommand](variables/devCommand.md)

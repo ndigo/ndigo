@@ -5,9 +5,6 @@
  * Card is the versioned aggregate root of the concurrency story: every
  * accepted write bumps `version` and stamps `updatedAt`, and a client write
  * must name the version it read (`BoardService.updateCard`).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { z } from 'zod';

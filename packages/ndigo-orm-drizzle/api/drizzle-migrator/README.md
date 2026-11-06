@@ -6,6 +6,8 @@
 
 # drizzle-migrator
 
+Versioned schema migrations for Drizzle data sources (AD-30): applies
+
 ## Classes
 
 - [DrizzleMigrator](classes/DrizzleMigrator.md)

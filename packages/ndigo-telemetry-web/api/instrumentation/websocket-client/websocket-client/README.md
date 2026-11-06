@@ -6,6 +6,8 @@
 
 # instrumentation/websocket-client/websocket-client
 
+OpenTelemetry instrumentation for the `@ndigo/socket` client.
+
 ## Classes
 
 - [WebSocketClientInstrumentation](classes/WebSocketClientInstrumentation.md)

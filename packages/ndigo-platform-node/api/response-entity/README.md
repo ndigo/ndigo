@@ -6,6 +6,8 @@
 
 # response-entity
 
+`ResponseEntity` — rich HTTP response wrapper for Node.js handlers.
+
 ## Classes
 
 - [ResponseEntity](classes/ResponseEntity.md)

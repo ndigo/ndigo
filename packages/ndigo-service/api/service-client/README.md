@@ -6,6 +6,8 @@
 
 # service-client
 
+Runtime proxy generator for declarative service clients (AD-08).
+
 ## Variables
 
 - [SERVICE\_NAME\_HEADER](variables/SERVICE_NAME_HEADER.md)

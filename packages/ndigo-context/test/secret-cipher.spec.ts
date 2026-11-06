@@ -3,9 +3,6 @@
  * dispatch, pass-through of non-marker values, resolver integration
  * (placeholders-then-decrypt, key-path AAD, typed reads), and the wiring
  * capability gate.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect, vi } from 'vitest';
 import { parseSecretMarker, SecretCipher } from '../src/secret-cipher';

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Serializable, JSONObject } from './serializable.js';
 import { createNull } from './null.js';

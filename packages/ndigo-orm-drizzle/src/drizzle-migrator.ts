@@ -3,9 +3,6 @@
  * code-composed `Migration[]` in ascending version order, journaled in
  * `_ndigo_migrations`, applied outside any explicit transaction (see
  * {@link Migration.up} for the `batch()` constraint).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { InValue } from '@libsql/client';
 import { DrizzleDataSource } from './drizzle-data-source';

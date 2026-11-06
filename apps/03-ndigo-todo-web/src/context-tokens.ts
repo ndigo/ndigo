@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ContextToken } from '@ndigo/context';
 import { DISPATCHER } from '@ndigo/dispatcher';

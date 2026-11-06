@@ -6,6 +6,8 @@
 
 # libsql-session-store
 
+Durable opaque sessions on LibSQL. Schema creation is deliberately explicit:
+
 ## Classes
 
 - [LibSQLSessionStore](classes/LibSQLSessionStore.md)

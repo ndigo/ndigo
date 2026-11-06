@@ -6,6 +6,8 @@
 
 # instrumentation/server-sent-event-view/server-sent-event-view
 
+OpenTelemetry instrumentation for `ServerSentEventView` streaming renders.
+
 ## Classes
 
 - [ServerSentEventViewInstrumentation](classes/ServerSentEventViewInstrumentation.md)

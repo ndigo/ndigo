@@ -1,8 +1,5 @@
 /**
  * Rule that prevents public index files from re-exporting internal underscore-prefixed files.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 

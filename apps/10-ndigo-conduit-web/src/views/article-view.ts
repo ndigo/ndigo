@@ -7,9 +7,6 @@
  * author, the edit link and delete button (the API enforces ownership either
  * way). The comment box renders the `422` envelope under the textarea; the
  * delete control appears only on the visitor's own comments.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractWebComponent, TagMapping } from '@ndigo/view-webcomponent';
 import { ACTIONS } from '../app/conduit-events';

@@ -6,9 +6,6 @@
  * messages without losing the edits. The password field starts empty and is
  * omitted from the patch when left empty (`PUT /api/user` treats an absent
  * member as unchanged).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractWebComponent, TagMapping } from '@ndigo/view-webcomponent';
 import { ACTIONS } from '../app/conduit-events';

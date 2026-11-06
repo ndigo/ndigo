@@ -1,8 +1,5 @@
 /**
  * <%= className %> — spec.
- *
- * @since 1.0.0
- * @author <%= author %>
  */
 import { describe, expect, it } from 'vitest';
 import { <%= className %> } from '@ndigo/<%= packageName %>';

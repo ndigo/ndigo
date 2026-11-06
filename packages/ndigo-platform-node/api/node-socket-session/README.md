@@ -6,6 +6,8 @@
 
 # node-socket-session
 
+Node WebSocket session — wraps a `ws` (RFC 6455) connection as a.
+
 ## Interfaces
 
 - [ResolvedSocketLimits](interfaces/ResolvedSocketLimits.md)

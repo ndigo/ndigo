@@ -7,8 +7,6 @@
  * missing metadata instead of leaking a debug string into the page.
  *
 
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /**

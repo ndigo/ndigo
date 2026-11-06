@@ -6,6 +6,8 @@
 
 # commands/clean
 
+`ndigo clean` — remove build artifacts and caches for an application.
+
 ## Variables
 
 - [cleanCommand](variables/cleanCommand.md)

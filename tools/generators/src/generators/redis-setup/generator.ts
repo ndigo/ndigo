@@ -1,8 +1,5 @@
 /**
  * `redis-setup` generator — wires @ndigo/redis into an application.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { formatFiles, generateFiles, type Tree } from '@nx/devkit';
 import { dirname, join } from 'node:path';

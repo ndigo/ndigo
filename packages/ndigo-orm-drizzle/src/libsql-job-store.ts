@@ -17,9 +17,6 @@
  * application's client shares that connection, including any transaction open
  * through it (`DrizzleTransactionManager`); run the worker on its own client
  * when both are in the same process.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { createClient, type Client } from '@libsql/client';
 import { randomUUID } from 'node:crypto';

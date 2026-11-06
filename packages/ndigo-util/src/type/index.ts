@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import isFunction from './is-function.js';
 import isNumber from './is-number.js';

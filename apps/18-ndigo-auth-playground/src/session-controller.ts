@@ -16,9 +16,6 @@
  * The session id is echoed in response bodies on purpose: this app exists to
  * make the credential visible. A real cookie-session app returns the principal
  * only.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import {

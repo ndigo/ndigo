@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { DEFAULT_MAX_ATTEMPTS, parseJobPayload, resolveJobRequest, serializeJobPayload } from '../src/request';

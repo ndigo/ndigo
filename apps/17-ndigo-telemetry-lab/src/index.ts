@@ -11,9 +11,6 @@
  * `configureTelemetry` must run first and wins. The app configuration class
  * never touches the OTel API, which is what keeps `bootApp`-based tests
  * hermetic.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import 'node:process';
 import { ApplicationBuilder } from '@ndigo/boot';

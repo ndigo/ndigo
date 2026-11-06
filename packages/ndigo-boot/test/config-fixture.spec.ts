@@ -5,9 +5,6 @@
  * schema — the convention the `.vscode` `fileMatch`, the guide and the schema
  * document, exercised end-to-end (including a `{cipher:…}` string marker and a
  * profile deep-merge).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';

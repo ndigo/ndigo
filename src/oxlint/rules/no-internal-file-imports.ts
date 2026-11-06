@@ -1,8 +1,5 @@
 /**
  * Rule that prevents cross-package imports of underscore-prefixed internal files.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 

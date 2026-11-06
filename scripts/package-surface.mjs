@@ -5,9 +5,6 @@
  * a consumer package. Repo-only tooling lives in `src/`, `scripts/`, or
  * `agent-local/` instead. `scripts/check-manifests.mjs` enforces the rule via
  * `surfaceViolations`; `scripts/test-package-surface.mjs` pins its behavior.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 /**

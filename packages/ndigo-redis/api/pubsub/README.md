@@ -6,6 +6,8 @@
 
 # pubsub
 
+Redis live socket fan-out exports.
+
 ## References
 
 ### RedisSocketFanout

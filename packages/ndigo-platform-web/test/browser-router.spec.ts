@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect, vi, afterEach, beforeAll, type Mock } from 'vitest';
 import { BrowserRouter } from '../src/browser-router';

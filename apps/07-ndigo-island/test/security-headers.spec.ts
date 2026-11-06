@@ -1,9 +1,6 @@
 /**
  * SEC-C — the demo widens its CSP `connect-src` so the adopted library's
  * inline-icon fetch (Web Awesome `with-clear`) is admitted.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';

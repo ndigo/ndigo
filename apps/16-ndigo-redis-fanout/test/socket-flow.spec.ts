@@ -7,9 +7,6 @@
  * This is the documented fallback the app promises when `NDIGO_REDIS_URL` is
  * absent: identical routes, identical payloads, delivery bounded to this
  * process's sessions.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

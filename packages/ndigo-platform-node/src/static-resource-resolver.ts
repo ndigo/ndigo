@@ -1,8 +1,5 @@
 /**
  * Secure static-resource resolution shared by `StaticFileView` and any.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { readdir, realpath, stat } from 'node:fs/promises';
 import { sep, resolve, isAbsolute } from 'node:path';

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { JSONObject, Parser, Stringifier } from '@ndigo/core';
 import { encodeURIComponent as encode } from '@ndigo/util/string';

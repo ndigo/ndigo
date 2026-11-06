@@ -5,9 +5,6 @@
  * `ArticleService.ensureArticle` (the same keyed load the article page uses), so
  * the editor prefills from the API rather than from any cached list entry — a
  * list summary has no `body` to edit.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { Null } from '@ndigo/core';

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { RouteHandlerMethod, RouteHandlerMethodMappingNamingStrategy } from './route-handler-method';
 import { RouteMappingInfo } from './route-mapping-info-model';

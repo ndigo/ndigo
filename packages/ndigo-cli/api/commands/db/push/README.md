@@ -6,6 +6,8 @@
 
 # commands/db/push
 
+`ndigo db push` — front the application’s db:push script.
+
 ## Variables
 
 - [dbPushCommand](variables/dbPushCommand.md)

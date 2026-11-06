@@ -3,9 +3,6 @@
  * `lockDriver` bean exists, a `@scheduled({ lock })` task runs through the
  * real registry→scheduler→driver wiring, and its lease is released after
  * the run.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';

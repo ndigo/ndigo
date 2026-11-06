@@ -8,9 +8,6 @@
  * A dependency change that reorders layers therefore fails this spec (and by
  * extension `pnpm test:internal` in the quality lane) until the map is
  * updated deliberately.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';

@@ -6,6 +6,8 @@
 
 # stomp-mapping
 
+`@stompMapping` — STOMP-over-WebSocket route decorator (AD-23 D4).
+
 ## Variables
 
 - [STOMP\_MAPPING\_KEY](variables/STOMP_MAPPING_KEY.md)

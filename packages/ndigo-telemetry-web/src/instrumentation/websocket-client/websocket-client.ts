@@ -1,8 +1,5 @@
 /**
  * OpenTelemetry instrumentation for the `@ndigo/socket` client.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { WebSocketClient, type SocketStatus } from '@ndigo/socket';
 import { AbstractBaseInstrumentation, createLazyCounter } from '@ndigo/telemetry';

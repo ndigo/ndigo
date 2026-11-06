@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FeatureMetricAggregator } from '@ndigo/telemetry';
 import { HealthIndicator, HealthResult, HealthState } from './health';

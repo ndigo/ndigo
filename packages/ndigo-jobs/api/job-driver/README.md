@@ -6,6 +6,8 @@
 
 # job-driver
 
+The `JobDriver` SPI — the one seam every jobs backend implements.
+
 ## Interfaces
 
 - [JobDriver](interfaces/JobDriver.md)

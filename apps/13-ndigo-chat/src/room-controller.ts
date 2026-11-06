@@ -14,9 +14,6 @@
  * Slow consumers are handled by the platform's backpressure watermark (a
  * session whose transport buffer exceeds the limit is closed `1013`), so no
  * unbounded per-session buffering exists on this path.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import type { ApplicationContext, ApplicationContextAware } from '@ndigo/context';

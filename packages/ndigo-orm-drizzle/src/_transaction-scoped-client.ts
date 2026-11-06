@@ -7,9 +7,6 @@
  * would cover nothing but its own BEGIN/COMMIT: `@libsql/client` 0.18 runs each
  * `execute()` on its own pooled connection, and returns any connection it finds
  * still in a transaction straight back to the pool with a ROLLBACK.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Client, InArgs, InStatement, ResultSet, Transaction, TransactionMode } from '@libsql/client';
 import { currentTransaction } from './_transaction-scope';

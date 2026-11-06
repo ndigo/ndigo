@@ -6,6 +6,8 @@
 
 # mappings
 
+Handler-mapping enumeration for the inspect manifest. Reads the dispatcher's
+
 ## Functions
 
 - [collectMappings](functions/collectMappings.md)

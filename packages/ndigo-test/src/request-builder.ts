@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 /**
  * Builds a Ndigo `Route` and `NodeRequest` from a MockHTTP request spec.

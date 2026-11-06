@@ -2,9 +2,6 @@
  * The AD-35 schema seam: `validatedBy` exposes the Zod schema on the
  * extractor and on the resolved {@link MethodParameter}, for generation-time
  * introspection (OpenAPI), without changing resolution behavior.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, it, expect } from 'vitest';
 import '@tsmetadata/polyfill';

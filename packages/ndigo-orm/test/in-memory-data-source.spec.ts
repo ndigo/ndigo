@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { IllegalStateError } from '@ndigo/core';
 import { ENTITY_CLONE, InMemoryDataSource } from '../src/data-source';

@@ -8,14 +8,6 @@
 
 An object with a `null` prototype.
 
-## Since
-
-1.0.0
-
-## Author
-
-Jeff Rose
-
 ## Extended by
 
 - [`default`](../../media-type/classes/default.md)

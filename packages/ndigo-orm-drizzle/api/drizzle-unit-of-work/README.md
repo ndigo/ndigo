@@ -6,6 +6,8 @@
 
 # drizzle-unit-of-work
 
+Unit of work for the Drizzle-backed persistence layer.
+
 ## Classes
 
 - [DrizzleUnitOfWork](classes/DrizzleUnitOfWork.md)

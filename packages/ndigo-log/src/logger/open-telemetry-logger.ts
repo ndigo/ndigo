@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
 import { context, trace, Exception, SpanStatusCode } from '@opentelemetry/api';

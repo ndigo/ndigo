@@ -6,9 +6,6 @@
  * *inside* a page component's render pass: the page owns the model and its
  * `emit`, and passes both down through {@link ViewContext}. Nothing here
  * touches the container or fetches anything.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ACTIONS } from '../app/conduit-events';
 import { create, link } from '../lib/dom';

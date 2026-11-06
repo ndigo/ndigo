@@ -6,6 +6,8 @@
 
 # commands/lint
 
+`ndigo lint` — front the application's lint script.
+
 ## Variables
 
 - [lintCommand](variables/lintCommand.md)

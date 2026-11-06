@@ -1,8 +1,5 @@
 /**
  * Static file serving controller.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { getEnv } from '@ndigo/context';

@@ -6,6 +6,8 @@
 
 # index
 
+Oxlint plugin that bundles Ndigo's consumer-facing lint rules.
+
 ## Variables
 
 - [default](variables/default.md)

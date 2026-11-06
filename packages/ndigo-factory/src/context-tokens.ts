@@ -1,8 +1,5 @@
 /**
  * A type-safe key used for value registration and retrieval in a `Registry`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 /**
  * A type-safe key used for value registration and retrieval in a `Registry`.

@@ -6,6 +6,8 @@
 
 # http-method-mapping
 
+HTTP verb route mapping decorators — sugar over `requestMapping` with the.
+
 ## Variables
 
 - [deleteMapping](variables/deleteMapping.md)

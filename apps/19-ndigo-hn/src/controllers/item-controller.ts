@@ -4,9 +4,6 @@
  * The service is keyed by id, so re-dispatching the same route (or reloading the
  * deep link) re-renders the resident state instead of re-fetching it; a reload
  * with no memory falls back to the persisted snapshot, then the network.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AsApplicationContextAware, type ApplicationContext } from '@ndigo/context';
 import { Null } from '@ndigo/core';

@@ -6,6 +6,8 @@
 
 # fixed-window-rate-limiter
 
+The default {@link RateLimiter}: in-process and single-node (AD-33
+
 ## Classes
 
 - [FixedWindowRateLimiter](classes/FixedWindowRateLimiter.md)

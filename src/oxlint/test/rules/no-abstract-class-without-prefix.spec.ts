@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { RuleTester } from 'oxlint/plugins-dev';
 import { noAbstractClassWithoutPrefix } from '../../rules/no-abstract-class-without-prefix.ts';

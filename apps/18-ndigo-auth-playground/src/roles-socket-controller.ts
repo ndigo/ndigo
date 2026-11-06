@@ -16,9 +16,6 @@
  *
  * The handler yields the greeting as its first frame — the socket-side proof
  * that the principal really arrived — then echoes whatever the client sends.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { authenticated, authorized, type Principal } from '@ndigo/auth-core';

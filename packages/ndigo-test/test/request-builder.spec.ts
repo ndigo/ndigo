@@ -3,9 +3,6 @@
  * `NodeHTTPServerAdapter`'s HTTP parsing — repeated query parameters become
  * arrays (`?a=1&a=2` → `['1', '2']`) and the map carries no prototype
  * (SEC-8), so `?__proto__=x` stays an ordinary parameter key.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';

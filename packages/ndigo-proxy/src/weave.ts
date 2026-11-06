@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  * Proxy weaving for `@ndigo/proxy`.
  *
  * One `Proxy` per advised entry with a single `get` trap:

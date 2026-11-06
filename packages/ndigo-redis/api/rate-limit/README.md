@@ -6,6 +6,8 @@
 
 # rate-limit
 
+Shared-store rate limiting (AD-79): {@link RedisRateLimiter} — the
+
 ## References
 
 ### RedisRateLimiter

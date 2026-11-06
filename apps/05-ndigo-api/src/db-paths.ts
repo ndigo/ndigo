@@ -3,9 +3,6 @@
  * committed schema snapshot (`db/schema.json`) — one resolution for the
  * `db:*` scripts and the boot wiring, so the three callers cannot drift
  * (AD-78).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { fileURLToPath } from 'node:url';
 

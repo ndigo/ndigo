@@ -6,6 +6,8 @@
 
 # index
 
+Re-exports from `@preact/signals-core` — the underlying signals engine.
+
 ## References
 
 ### EventSink

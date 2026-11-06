@@ -6,6 +6,8 @@
 
 # route-handler-denial
 
+Interceptor-denial contract: a {@link RouteHandlerInterceptor} may deny a.
+
 ## Interfaces
 
 - [InterceptorDenial](interfaces/InterceptorDenial.md)

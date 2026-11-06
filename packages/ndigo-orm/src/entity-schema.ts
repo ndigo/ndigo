@@ -1,8 +1,5 @@
 /**
  * Zod schema derivation for `@ndigo/orm` entities (AD-07).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { z } from 'zod';
 import { Constructable, FrameworkError } from '@ndigo/core';

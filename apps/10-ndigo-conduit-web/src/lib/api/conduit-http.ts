@@ -13,8 +13,6 @@
  * the same paths are correct wherever a reverse proxy fronts the app.
  *
  * @module ndigo-conduit-web
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { HTTP, type Fetch, type HTTPInit, type RequestAwareHTTPInterceptor, type ResponseAwareHTTPInterceptor } from '@ndigo/http';
 

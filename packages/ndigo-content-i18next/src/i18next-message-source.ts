@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { createInstance, i18n, Resource, TFunction } from 'i18next';
 import { LanguageCode, MessageParams, MessageSource, normalizeLocale } from '@ndigo/content';

@@ -58,9 +58,6 @@
  *   `login`/`passcode` (fail-closed `1008`, and CONNECT credentials are
  *   rejected outright while no verifier is configured), and
  *   `maxIdentifierLength` caps every identifier-valued header.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { RingBuffer } from '@ndigo/core';
 import {

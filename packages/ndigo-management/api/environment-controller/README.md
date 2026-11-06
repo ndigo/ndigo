@@ -6,6 +6,8 @@
 
 # environment-controller
 
+Serves environment/property-source visibility under `/env` (AD-76 D-3).
+
 ## Classes
 
 - [EnvironmentController](classes/EnvironmentController.md)

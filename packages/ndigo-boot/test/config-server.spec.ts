@@ -4,9 +4,6 @@
  * a change → `environment.refresh()` → `config:refresh` → the config class
  * re-binds with the new value. Also: 304/unchanged → no event, `optional:
  * false` fails boot, `context:close` stops polling.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect, vi } from 'vitest';
 import { ConfigurableEnvironment, CONFIG_REFRESH_EVENT, refreshScope, SecretCipher } from '@ndigo/context';

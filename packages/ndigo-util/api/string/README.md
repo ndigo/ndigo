@@ -6,6 +6,8 @@
 
 # string
 
+String utilities: decoding, encoding, case conversion, and normalization.
+
 ## Variables
 
 - [toPascal](variables/toPascal.md)

@@ -6,13 +6,13 @@
 
 # commands/generate
 
-## Classes
-
-- [GenerateCommand](classes/GenerateCommand.md)
-
 ## Interfaces
 
 - [GenerateFlags](interfaces/GenerateFlags.md)
+
+## Variables
+
+- [generateCommand](variables/generateCommand.md)
 
 ## Functions
 

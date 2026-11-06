@@ -120,7 +120,7 @@ export async function runDbCommand(
 
     const names = Object.keys(registry);
 
-    if (action === 'list' || action === undefined && rest.length === 0) {
+    if (action === 'list' || (action === undefined && rest.length === 0)) {
         if (names.length === 0) {
             process.stdout.write('No database adapters registered.\n');
             return 0;
@@ -151,17 +151,14 @@ export async function runDbCommand(
             selectedName = names[0];
         } else {
             process.stderr.write(
-                `Multiple database adapters registered (${names.join(', ')}); ` +
-                    `pass --db <name>.\n`
+                `Multiple database adapters registered (${names.join(', ')}); ` + `pass --db <name>.\n`
             );
             return 2;
         }
     }
     const adapter = registry[selectedName];
     if (adapter === undefined) {
-        process.stderr.write(
-            `Unknown database adapter '${selectedName}'. Available: ${names.join(', ')}.\n`
-        );
+        process.stderr.write(`Unknown database adapter '${selectedName}'. Available: ${names.join(', ')}.\n`);
         return 2;
     }
 

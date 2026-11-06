@@ -6,7 +6,7 @@
 
 # Function: runAppOnce()
 
-> **runAppOnce**(`dir`, `scriptKey`, `hint`): `Promise`\<`number`\>
+> **runAppOnce**(`dir`, `scriptKey`, `hint`, `extraArgv?`): `Promise`\<`number`\>
 
 Runs a one-shot app script (generators, db, inspect) with signal relay
 and exit-code propagation — deliberately NOT respawned.
@@ -30,6 +30,10 @@ The `scripts.<key>` to run.
 `string`
 
 The missing-script hint.
+
+### extraArgv?
+
+`string`[] = `[]`
 
 ## Returns
 

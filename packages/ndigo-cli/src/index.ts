@@ -48,54 +48,50 @@ import { dbRollbackCommand } from './commands/db/rollback.js';
  * @returns The application instance.
  */
 export function buildCliApp() {
-    const dbRouteMap = buildRouteMap(
-        {
-            routes: {
-                migrate: dbMigrateCommand,
-                status: dbStatusCommand,
-                generate: dbGenerateCommand,
-                new: dbNewCommand,
-                list: dbListCommand,
-                push: dbPushCommand,
-                pull: dbPullCommand,
-                studio: dbStudioCommand,
-                seed: dbSeedCommand,
-                rollback: dbRollbackCommand,
-            },
-            docs: { brief: 'Database migration commands (AD-78)' },
-        }
-    );
+    const dbRouteMap = buildRouteMap({
+        routes: {
+            migrate: dbMigrateCommand,
+            status: dbStatusCommand,
+            generate: dbGenerateCommand,
+            new: dbNewCommand,
+            list: dbListCommand,
+            push: dbPushCommand,
+            pull: dbPullCommand,
+            studio: dbStudioCommand,
+            seed: dbSeedCommand,
+            rollback: dbRollbackCommand,
+        },
+        docs: { brief: 'Database migration commands (AD-78)' },
+    });
 
-    const rootRouteMap = buildRouteMap(
-        {
-            routes: {
-                serve: serveCommand,
-                dev: devCommand,
-                new: newCommand,
-                generate: generateCommand,
-                inspect: inspectCommand,
-                doctor: doctorCommand,
-                info: infoCommand,
-                build: buildCmd,
-                test: testCommand,
-                lint: lintCommand,
-                format: formatCommand,
-                typecheck: typecheckCommand,
-                clean: cleanCommand,
-                config: configCommand,
-                routes: routesCommand,
-                completion: completionCommand,
-                env: envCommand,
-                openapi: openapiCommand,
-                add: addCommand,
-                update: updateCommand,
-                logs: logsCommand,
-                db: dbRouteMap,
-            },
-            aliases: { g: 'generate' },
-            docs: { brief: 'The Ndigo framework CLI' },
-        }
-    );
+    const rootRouteMap = buildRouteMap({
+        routes: {
+            serve: serveCommand,
+            dev: devCommand,
+            new: newCommand,
+            generate: generateCommand,
+            inspect: inspectCommand,
+            doctor: doctorCommand,
+            info: infoCommand,
+            build: buildCmd,
+            test: testCommand,
+            lint: lintCommand,
+            format: formatCommand,
+            typecheck: typecheckCommand,
+            clean: cleanCommand,
+            config: configCommand,
+            routes: routesCommand,
+            completion: completionCommand,
+            env: envCommand,
+            openapi: openapiCommand,
+            add: addCommand,
+            update: updateCommand,
+            logs: logsCommand,
+            db: dbRouteMap,
+        },
+        aliases: { g: 'generate' },
+        docs: { brief: 'The Ndigo framework CLI' },
+    });
 
     let version = '0.0.1';
     try {

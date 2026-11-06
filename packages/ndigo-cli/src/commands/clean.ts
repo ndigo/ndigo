@@ -15,9 +15,7 @@ export const cleanCommand = buildCommand({
     async func(flags: { dryRun?: boolean; force?: boolean }, dir: string) {
         const resolved = resolveAppDir(dir);
         const forbidden =
-            resolved === '/' ||
-            resolved === resolve(process.env.HOME ?? '/') ||
-            resolved.includes('/node_modules');
+            resolved === '/' || resolved === resolve(process.env.HOME ?? '/') || resolved.includes('/node_modules');
         if (forbidden) {
             process.stderr.write(`refusing to clean protected path: ${resolved}\n`);
             process.exitCode = 2;
@@ -39,9 +37,17 @@ export const cleanCommand = buildCommand({
             dryRun: { kind: 'boolean', brief: 'Preview what would be removed.', optional: true },
             force: { kind: 'boolean', brief: 'Required to clean.', optional: true },
         },
-        positional: { kind: 'tuple', parameters: [
-            { parse: (v: string) => v, brief: 'Application directory (default: current directory).', default: '.', placeholder: 'dir' },
-        ] },
+        positional: {
+            kind: 'tuple',
+            parameters: [
+                {
+                    parse: (v: string) => v,
+                    brief: 'Application directory (default: current directory).',
+                    default: '.',
+                    placeholder: 'dir',
+                },
+            ],
+        },
     },
     docs: { brief: 'Remove build artifacts and caches' },
 });

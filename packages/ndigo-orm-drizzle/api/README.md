@@ -6,6 +6,7 @@
 
 ## Modules
 
+- [drizzle-adapter](drizzle-adapter/README.md)
 - [drizzle-data-source](drizzle-data-source/README.md)
 - [drizzle-derived-query-repository](drizzle-derived-query-repository/README.md)
 - [drizzle-entity-manager](drizzle-entity-manager/README.md)

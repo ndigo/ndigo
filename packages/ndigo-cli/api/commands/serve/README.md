@@ -6,6 +6,6 @@
 
 # commands/serve
 
-## Classes
+## Variables
 
-- [ServeCommand](classes/ServeCommand.md)
+- [serveCommand](variables/serveCommand.md)

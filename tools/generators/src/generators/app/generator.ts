@@ -52,8 +52,7 @@ export interface AppGeneratorSchema {
  */
 export default async function appGenerator(tree: Tree, schema: AppGeneratorSchema): Promise<void> {
     const preset = schema.preset ?? 'minimal';
-    const kind: AppKind =
-        schema.kind ?? (preset === 'browser' ? 'browser' : 'node');
+    const kind: AppKind = schema.kind ?? (preset === 'browser' ? 'browser' : 'node');
     const { name, description } = schema;
     validateKebabName(name, 'App name');
     if (!(APP_KINDS as readonly string[]).includes(kind)) {

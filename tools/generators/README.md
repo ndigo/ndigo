@@ -11,13 +11,19 @@ consumer Nx story (AD-85 D-3) would be a new package, not this collection.
 
 ## Generators
 
-| Generator   | Purpose                                                                                                            |
-| ----------- | ------------------------------------------------------------------------------------------------------------------ |
-| `app`       | Scaffold an example application under `apps/NN-ndigo-<name>` (`node` or `browser` kind), allocating number + port  |
-| `package`   | Scaffold a new `@ndigo/*` package: manifest, tsconfigs, empty `src/`/`test/`, and a standard-header `src/index.ts` |
-| `component` | Generate a source + test file pair in an existing package, with the standard doc header                            |
-| `header`    | Add or replace the standard documentation header on an existing source file                                        |
-| `readme`    | Scaffold a new package `README.md` on the standard Ndigo template                                                  |
+| Generator     | Purpose                                                                                                                    |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `app`         | Scaffold an example application under `apps/NN-ndigo-<name>` (`node`/`browser` kind, `--preset`), allocating number + port |
+| `package`     | Scaffold a new `@ndigo/*` package: manifest, tsconfigs, empty `src/`/`test/`, and a standard-header `src/index.ts`         |
+| `component`   | Generate a source + test file pair in an existing package, with the standard doc header                                    |
+| `controller`  | Generate a controller class in an existing package                                                                         |
+| `service`     | Generate a service class in an existing package                                                                            |
+| `entity`      | Generate an `@ndigo/orm` entity (`@entity`/`@primaryColumn`/`@column`)                                                     |
+| `middleware`  | Generate a middleware class                                                                                                |
+| `config`      | Generate a configuration class                                                                                             |
+| `header`      | Add or replace the standard documentation header on an existing source file                                                |
+| `readme`      | Scaffold a new package `README.md` on the standard Ndigo template                                                          |
+| `<cap>-setup` | Wire `@ndigo/<cap>` into an app (`redis`, `jobs`, `socket`, `cache`) — run by `ndigo add`                                  |
 
 ## Running
 
@@ -27,6 +33,8 @@ pnpm exec nx generate @ndigo/generators:package --name my-package
 pnpm exec nx generate @ndigo/generators:readme --name my-package
 pnpm exec nx generate @ndigo/generators:component --name my-service --package core --summary "My service wires X to Y"
 pnpm exec nx generate @ndigo/generators:header --file packages/ndigo-core/src/widget.ts --summary "Widget utilities"
+pnpm exec nx generate @ndigo/generators:entity --name note --package core
+pnpm exec nx generate @ndigo/generators:redis-setup --directory apps/05-ndigo-api
 ```
 
 `ndigo new <name>` and `ndigo generate <kind>` front the same collection; the

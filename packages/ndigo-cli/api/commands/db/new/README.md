@@ -6,6 +6,6 @@
 
 # commands/db/new
 
-## Classes
+## Variables
 
-- [DbNewCommand](classes/DbNewCommand.md)
+- [dbNewCommand](variables/dbNewCommand.md)

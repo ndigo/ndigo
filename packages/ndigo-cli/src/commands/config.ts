@@ -7,13 +7,15 @@
 import { buildCommand } from '@stricli/core';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
-
 const CONFIG_FILE = '.ndigorc.json';
 
 function readConfig(): Record<string, unknown> {
     if (!existsSync(CONFIG_FILE)) return {};
-    try { return JSON.parse(readFileSync(CONFIG_FILE, 'utf8')) as Record<string, unknown>; }
-    catch { return {}; }
+    try {
+        return JSON.parse(readFileSync(CONFIG_FILE, 'utf8')) as Record<string, unknown>;
+    } catch {
+        return {};
+    }
 }
 
 export const configCommand = buildCommand({
@@ -38,11 +40,14 @@ export const configCommand = buildCommand({
     },
     parameters: {
         flags: { list: { kind: 'boolean', brief: 'List all config keys.', optional: true } },
-        positional: { kind: 'tuple', parameters: [
-            { parse: (v: string) => v, brief: 'Action: get|set|list.', default: 'list', placeholder: 'action' },
-            { parse: (v: string) => v, brief: 'Config key.', default: '', placeholder: 'key' },
-            { parse: (v: string) => v, brief: 'Value (for set).', default: '', placeholder: 'value' },
-        ] },
+        positional: {
+            kind: 'tuple',
+            parameters: [
+                { parse: (v: string) => v, brief: 'Action: get|set|list.', default: 'list', placeholder: 'action' },
+                { parse: (v: string) => v, brief: 'Config key.', default: '', placeholder: 'key' },
+                { parse: (v: string) => v, brief: 'Value (for set).', default: '', placeholder: 'value' },
+            ],
+        },
     },
     docs: { brief: 'Get/set/list app-level config keys (.ndigorc.json)' },
 });

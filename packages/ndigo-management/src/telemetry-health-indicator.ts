@@ -10,8 +10,6 @@ import { HealthIndicator, HealthResult, HealthState } from './health';
  * Reports `UP` when a {@link FeatureMetricAggregator} is present (metrics are
  * being collected); details include the number of features tracked. Reports
  * `DOWN` when none is wired (management endpoints would serve empty metrics).
- *
- * @since 1.0.0
  */
 export class TelemetryHealthIndicator implements HealthIndicator {
     readonly name = 'telemetry';
@@ -25,7 +23,7 @@ export class TelemetryHealthIndicator implements HealthIndicator {
         this.#aggregator = aggregator;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     check(): HealthResult {
         const status: HealthState = this.#aggregator ? 'UP' : 'DOWN';
         const details = this.#aggregator

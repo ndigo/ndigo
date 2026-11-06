@@ -30,6 +30,7 @@ import { envCommand } from './commands/env.js';
 import { addCommand } from './commands/add.js';
 import { updateCommand } from './commands/update.js';
 import { openapiCommand } from './commands/openapi.js';
+import { logsCommand } from './commands/logs.js';
 import { dbMigrateCommand } from './commands/db/migrate.js';
 import { dbStatusCommand } from './commands/db/status.js';
 import { dbGenerateCommand } from './commands/db/generate.js';
@@ -88,6 +89,7 @@ export function buildCliApp() {
                 openapi: openapiCommand,
                 add: addCommand,
                 update: updateCommand,
+                logs: logsCommand,
                 db: dbRouteMap,
             },
             aliases: { g: 'generate' },

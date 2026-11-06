@@ -9,9 +9,6 @@
  * **application-owned** (`OpenFeature.setProvider` /
  * `setProviderAndWait` / `OpenFeature.close()`); this evaluator holds no
  * resources of its own and defines no `close()`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { OpenFeature } from '@openfeature/server-sdk';
 import type { Client, EvaluationContext, EvaluationContextValue, JsonValue } from '@openfeature/server-sdk';

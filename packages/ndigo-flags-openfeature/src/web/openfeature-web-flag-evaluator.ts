@@ -16,9 +16,6 @@
  * evaluator holds no resources of its own. Evaluate only when the provider
  * is READY (the SDK serves defaults before that; `setProviderAndWait`
  * settles readiness at bootstrap).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { OpenFeature } from '@openfeature/web-sdk';
 import type { Client, JsonValue } from '@openfeature/web-sdk';

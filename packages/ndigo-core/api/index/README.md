@@ -500,6 +500,12 @@ Re-exports [likeIterable](../iterable/functions/likeIterable.md)
 
 ***
 
+### likeMatchable
+
+Re-exports [likeMatchable](../matchable/variables/likeMatchable.md)
+
+***
+
 ### likePathMatcher
 
 Re-exports [likePathMatcher](../path-matcher/variables/likePathMatcher.md)

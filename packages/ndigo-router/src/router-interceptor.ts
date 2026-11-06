@@ -1,7 +1,14 @@
 /**
  */
 import { Route } from './route';
-import { PathMatcher, AsPathMatcherFilter, Null, PathMatcherFilter, URLGlobPathMatcher } from '@ndigo/core';
+import {
+    AsPathMatcherFilter,
+    likeMatchable,
+    Null,
+    PathMatcher,
+    PathMatcherFilter,
+    URLGlobPathMatcher,
+} from '@ndigo/core';
 
 /**
  * A function signature for a router middleware, which can optionally prevent further processing.
@@ -215,11 +222,8 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
      * @since 1.0.0
      */
     private _matchesPattern(route: Route, routePath: string, pattern: string): boolean {
-        if (
-            this._isNamedRoutePattern(pattern) &&
-            typeof (route as Route & { matches?: (pattern: string) => boolean }).matches === 'function'
-        ) {
-            return (route as Route & { matches: (pattern: string) => boolean }).matches(pattern);
+        if (this._isNamedRoutePattern(pattern) && likeMatchable(route)) {
+            return route.matches(pattern);
         }
 
         return this.pathMatcher.match(pattern, routePath);

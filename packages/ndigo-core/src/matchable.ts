@@ -1,4 +1,10 @@
 /**
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+import { like } from '@ndigo/util/types';
+
+/**
  * Represents an object that can determine if it matches a given value.
  */
 export interface Matchable<TValue> {
@@ -9,6 +15,14 @@ export interface Matchable<TValue> {
      */
     matches(value: TValue): boolean;
 }
+
+/**
+ * Type guard to check if a value implements the `Matchable` interface.
+ *
+ * @param value - The value to check.
+ * @returns `true` if the value implements `Matchable`, `false` otherwise.
+ */
+export const likeMatchable = like({ matches: Function }) as (value: unknown) => value is Matchable<unknown>;
 
 /**
  * Represents an object that returns a matching result for an input.

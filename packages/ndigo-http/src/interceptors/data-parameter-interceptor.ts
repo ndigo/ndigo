@@ -3,7 +3,7 @@
 import { is, isString } from '@ndigo/util/types';
 import QueryString from '../query-string';
 import { HTTPInit, HTTPMethod, InitializationAwareHTTPInterceptor } from '../http';
-import { entriesIterator } from '@ndigo/core';
+import { likeIterable, entriesIterator } from '@ndigo/core';
 
 /**
  * Body value accepted by {@link DataParameterInterceptor}.
@@ -84,7 +84,7 @@ export class DataParameterInterceptor implements InitializationAwareHTTPIntercep
                     return true;
                 }
                 const entries = getEntries(data);
-                if (entries && typeof entries[Symbol.iterator] === 'function') {
+                if (entries && likeIterable(entries)) {
                     for (const [key, value] of entries) {
                         url.searchParams.set(String(key), String(value));
                     }

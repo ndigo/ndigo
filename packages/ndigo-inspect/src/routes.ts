@@ -6,6 +6,7 @@
  */
 
 import { chainComparisons, compareBy, stringComparator } from '@ndigo/core';
+import { like } from '@ndigo/util/types';
 
 import { deriveKey } from '@ndigo/router';
 import type { RouteDefinition, RouteRegistry } from '@ndigo/router';
@@ -19,8 +20,7 @@ import type { InspectRoute, RouteSource } from './types';
  * @returns `true` when the value is duck-type compatible with `RouteRegistry`.
  */
 function likeRouteRegistry(value: RouteSource): value is RouteRegistry {
-    const candidate = value as { entries?: unknown; get?: unknown };
-    return typeof candidate.entries === 'function' && typeof candidate.get === 'function';
+    return like({ entries: Function, get: Function })(value);
 }
 
 /**

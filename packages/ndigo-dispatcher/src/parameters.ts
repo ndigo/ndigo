@@ -22,14 +22,10 @@ export * from './parameter-factories';
  *
  * @example
  * ```ts
- * // Old (legacy - not supported in TC39):
- * handleRequest(@queryValue('page') page: string) {}
- *
- * // New (TC39):
- * parameters({
- *   page: queryValue('page')
- * })
- * handleRequest(page: string) {}
+ * class PageController {
+ *   @parameters({ page: queryValue('page') })
+ *   handleRequest(page: string) {}
+ * }
  * ```
  */
 export function parameters(paramMap: ParameterMap) {

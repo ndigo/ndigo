@@ -36,9 +36,9 @@
       "description": "Generate a service source file (scaffold)"
     },
     "entity": {
-      "factory": "./src/generators/component/generator",
-      "schema": "./src/generators/component/schema.json",
-      "description": "Generate a entity source file (scaffold)"
+      "factory": "./src/generators/entity/generator",
+      "schema": "./src/generators/entity/schema.json",
+      "description": "Generate an @ndigo/orm entity class"
     },
     "middleware": {
       "factory": "./src/generators/component/generator",

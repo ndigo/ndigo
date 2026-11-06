@@ -1,4 +1,5 @@
 /**
+ * Timing utilities: async delay.
  */
 
 /**

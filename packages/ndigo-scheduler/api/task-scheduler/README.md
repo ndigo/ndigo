@@ -6,6 +6,8 @@
 
 # task-scheduler
 
+Task scheduler: drives scheduled task execution.
+
 ## Classes
 
 - [TaskScheduler](classes/TaskScheduler.md)

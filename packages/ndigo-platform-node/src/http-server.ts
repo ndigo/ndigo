@@ -7,6 +7,7 @@
  * (AD-80).
  */
 import { $aware, type SmartLifecycle } from '@ndigo/factory';
+import { IllegalStateError } from '@ndigo/core';
 import { getEnv, type ApplicationContext, type ApplicationContextAware } from '@ndigo/context';
 import { DISPATCHER } from '@ndigo/dispatcher';
 import type { NodeDispatcher } from './node-dispatcher';
@@ -165,6 +166,9 @@ export interface HTTPServerOptions {
  * // ... later
  * context.close(); // stops the server
  * ```
+ *
+ * Deliberately NOT `Closeable`: shutdown is owned by `SmartLifecycle` — the
+ * adapter's close is invoked through `stop()`, not the context bean close.
  */
 export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
     #adapter: HTTPServerAdapter | null;
@@ -362,7 +366,7 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         if (this.#applicationContext) {
             return this.#applicationContext.getValue(DISPATCHER) as NodeDispatcher;
         }
-        throw new Error(
+        throw new IllegalStateError(
             'HTTPServer: no dispatcher provided and no application context available — pass a dispatcher to the ' +
                 'constructor or register the server as a context entry'
         );

@@ -28,7 +28,7 @@ Reads `request.session` on the Node platform (nested-capable).
 ## Example
 
 ```ts
-`parameters`({
+parameters({
   userId: requestSessionValue('userId'),
   token: requestSessionValue('AUTH_TOKEN', { required: true })
 })

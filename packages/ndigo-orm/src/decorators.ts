@@ -345,8 +345,6 @@ export function postRemove() {
  *     }
  * }
  * ```
- *
- * @since 1.0.0
  */
 export function transactional() {
     return function (target: Function, context: ClassMethodDecoratorContext): Function {

@@ -8,10 +8,6 @@
 
 One registered handler, ready to execute.
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### maxAttempts?

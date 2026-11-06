@@ -11,7 +11,7 @@ this so callers can distinguish provider errors from programming errors.
 
 ## Extends
 
-- `Error`
+- [`FrameworkError`](#)
 
 ## Constructors
 
@@ -49,7 +49,7 @@ this so callers can distinguish provider errors from programming errors.
 
 #### Overrides
 
-`Error.constructor`
+`FrameworkError.constructor`
 
 ## Properties
 
@@ -74,3 +74,49 @@ grant) from a transport failure.
 > `readonly` **oauthError**: `string` \| `undefined`
 
 The OAuth `error` code from a provider error response, when present.
+
+## Accessors
+
+### \[toStringTag\]
+
+#### Get Signature
+
+> **get** **\[toStringTag\]**(): `string`
+
+The string tag for this class.
+
+##### Returns
+
+`string`
+
+#### Inherited from
+
+`FrameworkError.[toStringTag]`
+
+## Methods
+
+### toJSON()?
+
+> `optional` **toJSON**(): `JSONValue`
+
+#### Returns
+
+`JSONValue`
+
+#### Inherited from
+
+`FrameworkError.toJSON`
+
+***
+
+### toString()
+
+> **toString**(): `string`
+
+#### Returns
+
+`string`
+
+#### Inherited from
+
+`FrameworkError.toString`

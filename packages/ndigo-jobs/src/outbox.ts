@@ -1,13 +1,14 @@
 /**
  * Transactional-outbox contracts: store, publisher, and the jobs publisher.
  */
+import { like } from '@ndigo/util/types';
+import type { AsyncCloseable } from '@ndigo/factory';
+
 import type { JobId } from './job';
 import type { JobQueue } from './job-queue';
 
 /**
  * One recorded side effect awaiting publication.
- *
- * @since 1.0.0
  */
 export interface OutboxEntry {
     /** Entry identifier. */
@@ -22,8 +23,6 @@ export interface OutboxEntry {
 
 /**
  * Claim window for {@link OutboxStore.claimPending}.
- *
- * @since 1.0.0
  */
 export interface OutboxClaimOptions {
     /** Maximum entries per claim; default 100. */
@@ -44,10 +43,8 @@ export interface OutboxClaimOptions {
  * Publication is at-least-once: a claimed entry becomes claimable again after
  * its lease expires (crashed relay, failed publish), so consumers subscribe
  * idempotently.
- *
- * @since 1.0.0
  */
-export interface OutboxStore {
+export interface OutboxStore extends AsyncCloseable {
     /**
      * Records one side effect.
      *
@@ -99,26 +96,19 @@ export interface OutboxStore {
  * @param value - The value to test.
  * @returns Whether the value behaves like an outbox store.
  */
-export const likeOutboxStore = (value: unknown): value is OutboxStore => {
-    if (value === null || typeof value !== 'object') {
-        return false;
-    }
-    const store = value as OutboxStore; // structural check below
-    return (
-        typeof store.append === 'function' &&
-        typeof store.claimPending === 'function' &&
-        typeof store.markPublished === 'function' &&
-        typeof store.prunePublished === 'function' &&
-        typeof store.size === 'function' &&
-        typeof store.close === 'function'
-    );
-};
+export const likeOutboxStore = (value: unknown): value is OutboxStore =>
+    like({
+        append: Function,
+        claimPending: Function,
+        markPublished: Function,
+        prunePublished: Function,
+        size: Function,
+        close: Function,
+    })(value);
 
 /**
  * Publishes one outbox entry. Implementations must be idempotent-friendly:
  * a failed publish is retried after the claim lease expires.
- *
- * @since 1.0.0
  */
 export interface OutboxPublisher {
     /**
@@ -133,8 +123,6 @@ export interface OutboxPublisher {
  * The canonical publisher: outbox entries become jobs on a {@link JobQueue}
  * (`type` → job type, `payload` → job payload) — the transactional side
  * effect of `outbox.append(…)` is delivered through the durable queue.
- *
- * @since 1.0.0
  */
 export class JobOutboxPublisher implements OutboxPublisher {
     readonly #queue: JobQueue;
@@ -146,7 +134,7 @@ export class JobOutboxPublisher implements OutboxPublisher {
         this.#queue = queue;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async publish(entry: OutboxEntry): Promise<void> {
         await this.#queue.enqueue({ type: entry.type, payload: entry.payload });
     }

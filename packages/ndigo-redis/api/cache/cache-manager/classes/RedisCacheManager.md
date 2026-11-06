@@ -14,6 +14,7 @@ borrowed and remains usable after manager shutdown.
 ## Implements
 
 - `CacheManager`
+- `AsyncCloseable`
 
 ## Constructors
 
@@ -52,6 +53,10 @@ borrowed and remains usable after manager shutdown.
 #### Returns
 
 `Promise`\<`void`\>
+
+#### Implementation of
+
+`AsyncCloseable.close`
 
 ***
 

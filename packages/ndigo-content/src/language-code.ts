@@ -72,7 +72,7 @@ export class LanguageCode implements Serializable, Equatable<LanguageCode>, Stri
      * Creates a validated language code for the given tag.
      *
      * @param code - The language tag to canonicalize.
-     * @throws {TypeError} When the value is not a usable BCP 47 tag.
+     * @throws When the value is not a usable BCP 47 tag.
      */
     constructor(code: string) {
         const canonical = normalizeLocale(code);
@@ -126,14 +126,14 @@ export class LanguageCode implements Serializable, Equatable<LanguageCode>, Stri
     }
 
     /**
-     * @returns {module:core.JSONObject} A JSON representation of the language code
+     * @returns A JSON representation of the language code
      */
     toJSON(): JSONValue {
         return this.code;
     }
 
     /**
-     * @returns {string} A string representation of the language code
+     * @returns A string representation of the language code
      */
     toString(): string {
         return this.code;

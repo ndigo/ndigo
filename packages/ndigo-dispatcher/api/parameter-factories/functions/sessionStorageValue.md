@@ -28,7 +28,7 @@ Reads `sessionStorage` on the browser platform (scalar-only).
 ## Example
 
 ```ts
-`parameters`({
+parameters({
   theme: sessionStorageValue('theme'),
 })
 ```

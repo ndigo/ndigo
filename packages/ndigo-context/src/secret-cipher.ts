@@ -3,7 +3,7 @@
  *
  * Encrypted property values use a versioned, scheme-dispatched marker:
  *
- *   {cipher:v1:<base64url(iv | tag | ct)>}
+ *   `cipher:v1:base64url(iv, tag, ct)`
  *
  * The first segment (`cipher`, `jwe`, `age`, `kms`) is the scheme id; the
  * optional second segment (`v1`) is the format version; the remainder is the
@@ -173,7 +173,7 @@ export interface SecretCipher {
      * @param marker - The stored marker (`{scheme[:version]:payload}`).
      * @param aad - The additional authenticated data the value was bound to.
      * @returns The plaintext value.
-     * @throws {IllegalStateError} On tamper, wrong key, or unknown scheme/version.
+     * @throws On tamper, wrong key, or unknown scheme/version.
      */
     decrypt(marker: string, aad?: string): string;
 }
@@ -192,8 +192,9 @@ export interface SecretDecryptContext {
 /**
  * Decrypts raw resolved values against a scheme registry.
  *
- * Implementations are injected into the property resolver (`ResolverOptions
- * .secretDecryptor`) and consulted for every string value after placeholder
+ * Implementations are injected into the property resolver
+ * (`ResolverOptions.secretDecryptor`) and consulted for every string value
+ * after placeholder
  * resolution. Values that are not well-formed markers pass through unchanged;
  * marker values with an unknown scheme fail loud (never plaintext fallback).
  */

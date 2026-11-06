@@ -1,5 +1,6 @@
 /**
  */
+
 import { ApplicationContext } from '@ndigo/context';
 import { Constructable } from '@ndigo/core';
 import { ImportViewResolver, ViewResolver } from '@ndigo/view';
@@ -14,9 +15,6 @@ export interface ViewResolverStrategy {
     viewResolvers: ViewResolver[];
     initViewResolvers(context: ApplicationContext): void;
 }
-
-/**
- */
 
 const VIEW_RESOLVER = 'viewResolver',
     VIEW_RESOLVERS = `${VIEW_RESOLVER}s`,

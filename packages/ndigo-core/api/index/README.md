@@ -6,6 +6,8 @@
 
 # index
 
+Core primitives, containers, and patterns for the Ndigo framework.
+
 ## References
 
 ### AbstractValueComparator
@@ -497,6 +499,12 @@ Re-exports [likeEquatable](../equatable/variables/likeEquatable.md)
 ### likeIterable
 
 Re-exports [likeIterable](../iterable/functions/likeIterable.md)
+
+***
+
+### likeMatchable
+
+Re-exports [likeMatchable](../matchable/variables/likeMatchable.md)
 
 ***
 

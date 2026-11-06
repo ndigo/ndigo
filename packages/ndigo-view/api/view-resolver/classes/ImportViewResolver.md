@@ -4,7 +4,7 @@
 
 [@ndigo/view](../../README.md) / [view-resolver](../README.md) / ImportViewResolver
 
-# Abstract Class: ImportViewResolver
+# Class: ImportViewResolver
 
 Convenient base class for [\`ViewResolver\`](../interfaces/ViewResolver.md) implementations. Caches [\`View\`](../../view/interfaces/View.md) instances once resolved.
 Subclasses need to implement the [\`\_loadView\`](#) method, building the instance for the specific view name and locale.

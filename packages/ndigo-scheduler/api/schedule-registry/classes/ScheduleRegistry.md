@@ -21,6 +21,10 @@ per-name value): every bean instance's class metadata is read through
 owner instance. A `@scheduled` class registered as a prototype (not an
 instance) has no resolvable owner and fails start loudly (AD-20 D5.5).
 
+## Implements
+
+- `AsyncDestroyable`
+
 ## Constructors
 
 ### Constructor
@@ -38,6 +42,10 @@ instance) has no resolvable owner and fails start loudly (AD-20 D5.5).
 > **destroyed**: `boolean` = `false`
 
 Whether this registry has been destroyed.
+
+#### Implementation of
+
+`AsyncDestroyable.destroyed`
 
 ***
 
@@ -103,6 +111,10 @@ container does not await the drain (context close is synchronous).
 #### Returns
 
 `Promise`\<`void`\>
+
+#### Implementation of
+
+`AsyncDestroyable.destroy`
 
 ***
 

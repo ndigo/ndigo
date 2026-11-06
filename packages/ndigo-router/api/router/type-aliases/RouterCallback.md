@@ -21,7 +21,3 @@ The new `Route` object.
 ## Returns
 
 `void`
-
-## Since
-
-1.0.0

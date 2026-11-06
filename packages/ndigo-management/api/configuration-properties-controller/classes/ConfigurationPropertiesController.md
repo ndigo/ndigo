@@ -18,10 +18,6 @@ registry of bound classes to scan.
 Payload shape: `{ beans: [{ name, properties: [{ key, type? }] }] }`,
 deterministically sorted.
 
-## Since
-
-1.0.0
-
 ## Extends
 
 - `ApplicationContextAware` & `Null`\<`this`\>

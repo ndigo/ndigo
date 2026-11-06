@@ -17,7 +17,7 @@ Options for [gracefulShutdown](../functions/gracefulShutdown.md).
 Process exit code when shutdown is aborted (second signal, a close that
 throws, or the deadline elapsing).
 
-#### Default
+#### Default Value
 
 ```ts
 1
@@ -31,7 +31,7 @@ throws, or the deadline elapsing).
 
 Process exit code after a clean shutdown.
 
-#### Default
+#### Default Value
 
 ```ts
 0
@@ -46,7 +46,7 @@ Process exit code after a clean shutdown.
 Extra resources to close, in order, before the context. Typically the
 application's [HTTPServer](../../http-server/classes/HTTPServer.md).
 
-#### Default
+#### Default Value
 
 ```ts
 []
@@ -60,7 +60,7 @@ application's [HTTPServer](../../http-server/classes/HTTPServer.md).
 
 Signals to listen for.
 
-#### Default
+#### Default Value
 
 ```ts
 ['SIGINT', 'SIGTERM']
@@ -75,7 +75,7 @@ Signals to listen for.
 Force-exit deadline (ms) for the whole teardown. Guards against a close
 that never completes (e.g. in-flight connections that never drain).
 
-#### Default
+#### Default Value
 
 ```ts
 10_000

@@ -1,8 +1,5 @@
 /**
  * Shared diagnostics routine used by `doctor` and `info`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { spawn } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';

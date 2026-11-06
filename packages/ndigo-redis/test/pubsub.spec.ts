@@ -1,8 +1,5 @@
 /**
  * Real Redis live socket fan-out and consumer lifecycle contracts.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { randomUUID } from 'node:crypto';

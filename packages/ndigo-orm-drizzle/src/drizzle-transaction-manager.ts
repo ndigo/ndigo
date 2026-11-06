@@ -2,6 +2,7 @@
  * LibSQL/Drizzle-backed transaction manager (AD-07 completion).
  */
 import { TransactionManager } from '@ndigo/orm';
+import { IllegalStateError } from '@ndigo/core';
 import { runInTransaction } from './_transaction-scope';
 import { DrizzleDataSource } from './drizzle-data-source';
 
@@ -23,8 +24,6 @@ import { DrizzleDataSource } from './drizzle-data-source';
  *
  * Nested calls throw: `@transactional` already serializes the boundary
  * (DAT-F9), and a transaction owns one connection for its lifetime.
- *
- * @since 1.0.0
  */
 export class DrizzleTransactionManager implements TransactionManager {
     readonly #dataSource: DrizzleDataSource;
@@ -38,15 +37,15 @@ export class DrizzleTransactionManager implements TransactionManager {
         this.#dataSource = dataSource;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     isActive(): boolean {
         return this.#active;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async run<T>(fn: () => T | Promise<T>): Promise<T> {
         if (this.#active) {
-            throw new Error('DrizzleTransactionManager: a transaction is already active');
+            throw new IllegalStateError('DrizzleTransactionManager: a transaction is already active');
         }
 
         // Claim the boundary synchronously (no await in between) so a

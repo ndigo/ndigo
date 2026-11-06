@@ -1,5 +1,6 @@
 /**
  */
+
 import { isString } from '@ndigo/util/types';
 import { Serializable, JSONObject, createNull, Equatable } from '@ndigo/core';
 import type { z } from 'zod';
@@ -15,7 +16,7 @@ export type ParameterExtractor = {
     name: string;
     required: boolean;
     defaultValue: string | null;
-    /** Type-based conversion: { source: SourceConstructor, target: TargetConstructor } */
+    /** Type-based conversion: \{ source: SourceConstructor, target: TargetConstructor \} */
     convertType?: { source: unknown; target: unknown };
     prefix?: string | null;
     /** Optional post-bind validator/converter (e.g. Zod via `validatedBy`). */
@@ -187,7 +188,7 @@ export class MethodParameter implements Serializable {
     readonly prefix!: string | null;
     /**
      * Optional post-bind validator/converter applied to the resolved value.
-     * Set by {@link zod-validated-by.validatedBy | validatedBy} (Zod-backed, AD-07).
+     * Set by {@link "zod-validated-by".validatedBy | validatedBy} (Zod-backed, AD-07).
      */
     readonly convert!: ((value: unknown) => unknown) | undefined;
     /**

@@ -1,6 +1,6 @@
 /**
  */
-import { FrameworkError, MediaType, MultiValueMap } from '@ndigo/core';
+import { compareBy, FrameworkError, invertComparison, MediaType, MultiValueMap, numberComparator } from '@ndigo/core';
 import { HTTPHeaders } from '@ndigo/http';
 import { isFunction, isNotNil } from '@ndigo/util/types';
 import { View } from './view.js';
@@ -177,7 +177,7 @@ export class FixedContentNegotiationStrategy implements ContentNegotiationStrate
  */
 const parseAcceptedRanges = (accept: string): MediaType[] => {
     const ranges = MediaType.parseAccept(accept).filter((mediaType) => mediaType.qualityFactor > 0);
-    return ranges.sort((a, b) => b.qualityFactor - a.qualityFactor);
+    return ranges.sort(invertComparison(compareBy((range) => range.qualityFactor, numberComparator.compare)));
 };
 
 /**
@@ -493,7 +493,7 @@ export class ContentNegotiationViewResolver implements ViewResolver {
      *   explicitly so interleaved async resolutions never share state; when
      *   omitted, the first candidate is served without negotiation.
      * @returns The matching view, or `null` when no resolver/default produced one.
-     * @throws {NotAcceptableError} When candidates exist but none serves the
+     * @throws When candidates exist but none serves the
      *   request's accepted media types (HTTP 406).
      */
     async resolveViewName(name: string, language?: unknown, request?: unknown): Promise<View | null> {

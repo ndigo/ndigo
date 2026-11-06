@@ -13,7 +13,7 @@ class StringifyView extends AbstractSerializingView {
         this.mediaType = MediaTypes.TEXT_CSV?.withCharset('UTF-8') ?? null;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     protected serialize(model: unknown): string {
         return model == null ? '' : String(model);
     }

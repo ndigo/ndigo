@@ -1,4 +1,5 @@
 /**
+ * Browser platform integration: dispatcher, router, and web components.
  */
 export * from './browser-environment';
 export {

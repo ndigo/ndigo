@@ -12,7 +12,7 @@ cannot issue tokens. Always a `401`-class outcome at the flow level.
 
 ## Extends
 
-- `Error`
+- [`FrameworkError`](#)
 
 ## Constructors
 
@@ -32,4 +32,50 @@ cannot issue tokens. Always a `401`-class outcome at the flow level.
 
 #### Overrides
 
-`Error.constructor`
+`FrameworkError.constructor`
+
+## Accessors
+
+### \[toStringTag\]
+
+#### Get Signature
+
+> **get** **\[toStringTag\]**(): `string`
+
+The string tag for this class.
+
+##### Returns
+
+`string`
+
+#### Inherited from
+
+`FrameworkError.[toStringTag]`
+
+## Methods
+
+### toJSON()?
+
+> `optional` **toJSON**(): `JSONValue`
+
+#### Returns
+
+`JSONValue`
+
+#### Inherited from
+
+`FrameworkError.toJSON`
+
+***
+
+### toString()
+
+> **toString**(): `string`
+
+#### Returns
+
+`string`
+
+#### Inherited from
+
+`FrameworkError.toString`

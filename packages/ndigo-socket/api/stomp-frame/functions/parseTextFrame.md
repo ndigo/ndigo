@@ -29,4 +29,4 @@ The parsed frame (`command: ''` for a ping).
 
 ## Throws
 
-[StompProtocolError](../classes/StompProtocolError.md) on malformed input.
+on malformed input.

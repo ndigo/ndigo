@@ -56,7 +56,7 @@ export function relativeSpecUrl(uiPath: string, path: string): string {
  * Renders the Swagger UI page for the given title.
  *
  * No inline script (SEC-2): the default-on CSP (`script-src 'self'`, see
- * {@link security-headers-interceptor.SecurityHeadersInterceptor | SecurityHeadersInterceptor}) blocks inline `<script>` blocks, so
+ * {@link "security-headers-interceptor".SecurityHeadersInterceptor | SecurityHeadersInterceptor}) blocks inline `<script>` blocks, so
  * the spec-wiring bootstrap is served as the `swagger-ui-init.js` asset
  * next to the `swagger-ui-dist` bundle — all same-origin, all CSP-clean.
  *
@@ -111,7 +111,7 @@ export function renderSwaggerUiInitScript(specUrl: string): string {
 
 /**
  * The UI controller. Registered without decorator metadata by
- * {@link openapi-docs-auto-configuration.OpenAPIDocsAutoConfiguration | OpenAPIDocsAutoConfiguration} (per-instance paths).
+ * {@link "openapi-docs-auto-configuration".OpenAPIDocsAutoConfiguration | OpenAPIDocsAutoConfiguration} (per-instance paths).
  *
  * `swagger-ui-dist` is a peer dependency resolved lazily: a missing or
  * unresolvable peer fails only the docs endpoints (500 problem document),

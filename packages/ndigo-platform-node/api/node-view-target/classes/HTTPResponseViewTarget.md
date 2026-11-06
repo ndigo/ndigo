@@ -41,8 +41,6 @@ The Node.js `ServerResponse` to write to.
 
 `Promise`\<`void`\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `ViewTarget.clear`
@@ -71,8 +69,6 @@ The Node.js `ServerResponse` to write to.
 
 `Promise`\<`void`\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `ViewTarget.commit`
@@ -92,8 +88,6 @@ The Node.js `ServerResponse` to write to.
 #### Returns
 
 `Promise`\<`void`\>
-
-#### Inherit Doc
 
 #### Implementation of
 

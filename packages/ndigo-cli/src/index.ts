@@ -5,9 +5,6 @@
  * config, routes, completion, env, openapi, add, update, logs, info,
  * inspect, doctor). The `ndigo` binary is the primary surface; `runCli`
  * exposes the same dispatcher to embeddings.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildApplication, buildRouteMap, run, text_en, ExitCode } from '@stricli/core';
 import { readFileSync } from 'node:fs';

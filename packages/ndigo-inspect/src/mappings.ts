@@ -5,7 +5,7 @@
  * read model and flattens them into sorted {@link InspectMapping} rows.
  */
 
-import { FrameworkError } from '@ndigo/core';
+import { chainComparisons, compareBy, FrameworkError, stringComparator } from '@ndigo/core';
 import { isSocketMapping } from '@ndigo/dispatcher';
 import type { RouteHandlerMethod, RouteMappingInfo } from '@ndigo/dispatcher';
 import type {
@@ -126,7 +126,7 @@ function tablesOf(source: MappingSource): InspectMappingTable[] {
  * @param source - The mapping source, `undefined` for no mappings, or `null`
  *   (rejected).
  * @returns The sorted mapping rows.
- * @throws {FrameworkError} When `source` is `null`.
+ * @throws When `source` is `null`.
  */
 export function collectMappings(source?: MappingSource | null): InspectMapping[] {
     if (source === undefined) return [];
@@ -146,12 +146,12 @@ export function collectMappings(source?: MappingSource | null): InspectMapping[]
         }
     }
 
-    return [...rows.values()].sort((a, b) => {
-        if (a.pattern !== b.pattern) return a.pattern < b.pattern ? -1 : 1;
-        if (a.handler.class !== b.handler.class) return a.handler.class < b.handler.class ? -1 : 1;
-        if (a.handler.method !== b.handler.method) return a.handler.method < b.handler.method ? -1 : 1;
-        const left = a.httpMethods?.join(',') ?? '';
-        const right = b.httpMethods?.join(',') ?? '';
-        return left < right ? -1 : left > right ? 1 : 0;
-    });
+    return [...rows.values()].sort(
+        chainComparisons(
+            compareBy((row) => row.pattern, stringComparator.compare),
+            compareBy((row) => row.handler.class, stringComparator.compare),
+            compareBy((row) => row.handler.method, stringComparator.compare),
+            compareBy((row) => row.httpMethods?.join(',') ?? '', stringComparator.compare)
+        )
+    );
 }

@@ -10,6 +10,9 @@
  * with the successor's lease — the exact double-run the feature exists to
  * prevent.
  */
+import { like } from '@ndigo/util/types';
+
+import type { AsyncCloseable } from '@ndigo/factory';
 
 /**
  * Options for acquiring a lock.
@@ -66,7 +69,7 @@ export interface LockHandle {
  * belong to the caller (`@scheduled({ lock, lockWait })`), never to the
  * driver.
  */
-export interface LockDriver {
+export interface LockDriver extends AsyncCloseable {
     /**
      * Backend identifier (`'in-process'`, `'redis'`, …), for diagnostics.
      */
@@ -96,11 +99,5 @@ export interface LockDriver {
  * @returns Whether the value satisfies the driver contract shape.
  */
 export function likeLockDriver(value: unknown): value is LockDriver {
-    if (value === null || typeof value !== 'object') {
-        return false;
-    }
-    const driver = value as LockDriver;
-    return (
-        typeof driver.kind === 'string' && typeof driver.acquire === 'function' && typeof driver.close === 'function'
-    );
+    return like({ kind: String, acquire: Function, close: Function })(value);
 }

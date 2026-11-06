@@ -35,7 +35,7 @@ const currentHashPath = (): string => {
  *
  * @param root - The element, or the id of the element (with or without `#`).
  * @returns The render host element.
- * @throws {IllegalStateError} When the id matches no element.
+ * @throws When the id matches no element.
  */
 const resolveRoot = (root: string | Element): Element => {
     if (typeof root !== 'string') return root;

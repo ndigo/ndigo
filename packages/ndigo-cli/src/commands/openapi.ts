@@ -1,8 +1,5 @@
 /**
  * `ndigo openapi` — emit an OpenAPI document (fronts the app openapi script).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runAppOnce } from '../helpers/app-scripts.js';

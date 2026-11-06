@@ -8,7 +8,7 @@
 
 > **hasTraced**(`target`, `propertyKey`): `boolean`
 
-Checks if a method has been decorated with the `traced` decorator.
+Checks if a method has been decorated with the traced decorator.
 
 ## Parameters
 

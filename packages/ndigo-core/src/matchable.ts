@@ -1,4 +1,9 @@
 /**
+ * Matchable contracts and the duck-typing guard.
+ */
+import { like } from '@ndigo/util/types';
+
+/**
  * Represents an object that can determine if it matches a given value.
  */
 export interface Matchable<TValue> {
@@ -11,9 +16,17 @@ export interface Matchable<TValue> {
 }
 
 /**
+ * Type guard to check if a value implements the `Matchable` interface.
+ *
+ * @param value - The value to check.
+ * @returns `true` if the value implements `Matchable`, `false` otherwise.
+ */
+export const likeMatchable = like({ matches: Function }) as (value: unknown) => value is Matchable<unknown>;
+
+/**
  * Represents an object that returns a matching result for an input.
- * @template TInput - The type of the input to match.
- * @template TResult - The type of the matching result.
+ * @typeParam TInput - The type of the input to match.
+ * @typeParam TResult - The type of the matching result.
  */
 export interface ResultMatcher<TInput, TResult> {
     /**
@@ -26,8 +39,8 @@ export interface ResultMatcher<TInput, TResult> {
 
 /**
  * Represents an object that can match a pattern against a value.
- * @template TPattern - The type of the pattern to match.
- * @template TValue - The type of the value to match against.
+ * @typeParam TPattern - The type of the pattern to match.
+ * @typeParam TValue - The type of the value to match against.
  */
 export interface PatternMatcher<TPattern, TValue> {
     /**

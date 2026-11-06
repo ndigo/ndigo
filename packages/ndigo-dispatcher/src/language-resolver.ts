@@ -1,5 +1,6 @@
 /**
  */
+
 import { normalizeLocale, parseAcceptLanguage } from '@ndigo/content';
 import { ACCEPT_LANGUAGE_ATTRIBUTE, Route } from '@ndigo/router';
 

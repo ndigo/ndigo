@@ -24,12 +24,12 @@ export class HTTPResponseViewTarget implements ViewTarget {
         this.#response = response;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async prepare(route: Route): Promise<void> {
         // Content type and headers are set by the view or response entity
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async commit(output: unknown, model: unknown, route: Route): Promise<void> {
         if (!this.#response || this.#response.headersSent) {
             return;
@@ -56,7 +56,7 @@ export class HTTPResponseViewTarget implements ViewTarget {
         }
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async clear(): Promise<void> {
         // No-op — the response is finalized after commit
     }

@@ -56,7 +56,7 @@ export function hasDuplicateCookie(header: string | readonly string[] | undefine
  * Duplicated names keep the **first** occurrence (RFC 6265 §5.3 ordering);
  * malformed entries (no `=`, empty name) are skipped.
  *
- * @throws {RangeError} when the entry or value limits are exceeded.
+ * @throws when the entry or value limits are exceeded.
  */
 export function parseCookies(header: string | undefined, options: CookieParseOptions = {}): Record<string, string> {
     const cookies: Record<string, string> = {};

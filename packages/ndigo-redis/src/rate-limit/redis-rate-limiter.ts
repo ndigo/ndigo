@@ -13,11 +13,9 @@
  * request rather than passing it through unthrottled (or misreporting it
  * as a 429). `onError: 'fail-open'` is the documented availability escape
  * hatch — it logs every allowance.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
+import type { AsyncCloseable } from '@ndigo/factory';
 import { getLogger } from '@ndigo/log';
 import {
     validateRateLimitPolicy,
@@ -64,7 +62,7 @@ export interface RedisRateLimiterOptions {
  * One handle per namespace; construct independently in every node — the
  * Redis keys are the shared truth.
  */
-export class RedisRateLimiter implements RateLimiter {
+export class RedisRateLimiter implements RateLimiter, AsyncCloseable {
     /** Backend identifier for diagnostics. */
     readonly kind = 'redis';
 

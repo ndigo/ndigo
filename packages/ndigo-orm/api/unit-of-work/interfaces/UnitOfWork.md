@@ -12,10 +12,6 @@ Use [InMemoryUnitOfWork](../classes/InMemoryUnitOfWork.md) for in-memory stores 
 for SQL-backed data sources. Pair with [TransactionManager](../../transaction-manager/interfaces/TransactionManager.md) and the
 [transactional](../../decorators/functions/transactional.md) decorator for full transactional workflows.
 
-## Since
-
-1.0.0
-
 ## Methods
 
 ### clear()

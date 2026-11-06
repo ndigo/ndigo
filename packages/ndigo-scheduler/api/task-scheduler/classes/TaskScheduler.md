@@ -15,6 +15,11 @@ The engine is driven two ways:
 - `start()`/`stop()` — a wall-clock timer chain that calls `tick` at each
   computed next-fire time (fire-and-forget; single-flight guards overlap).
 
+## Implements
+
+- `AsyncCloseable`
+- `AsyncDestroyable`
+
 ## Constructors
 
 ### Constructor
@@ -40,6 +45,10 @@ Clock, warning-sink, and lock-driver injection.
 ### destroyed
 
 > **destroyed**: `boolean` = `false`
+
+#### Implementation of
+
+`AsyncDestroyable.destroyed`
 
 ## Accessors
 
@@ -74,6 +83,10 @@ registration.
 
 `Promise`\<`void`\>
 
+#### Implementation of
+
+`AsyncCloseable.close`
+
 ***
 
 ### destroy()
@@ -90,6 +103,10 @@ registrations immediately.
 #### Returns
 
 `Promise`\<`void`\>
+
+#### Implementation of
+
+`AsyncDestroyable.destroy`
 
 ***
 
@@ -148,7 +165,8 @@ On duplicate names or after `close()`.
 > **setApplicationContext**(`context`): `void`
 
 Container injection (`ApplicationContextAware`): the context is used
-to resolve the `lockDriver` bean for [\* locked](../interfaces/ScheduledTaskDefinition.md) tasks when no driver was passed to the constructor (AD-73).
+to resolve the `lockDriver` bean for locked tasks when no driver was
+passed to the constructor (AD-73).
 
 #### Parameters
 

@@ -7,7 +7,7 @@ import { DrizzleRepository } from './drizzle-repository';
 
 /**
  * Async repository with derived-query support over
- * {@link drizzle-entity-manager.DrizzleEntityManager | DrizzleEntityManager}. Concrete repositories declare derived
+ * {@link "drizzle-entity-manager".DrizzleEntityManager | DrizzleEntityManager}. Concrete repositories declare derived
  * methods and delegate to {@link derive}:
  *
  * ```ts
@@ -27,8 +27,8 @@ import { DrizzleRepository } from './drizzle-repository';
  * matched property is a declared entity column, so the generated SQL is
  * allowlisted and parameterized.
  *
- * @template T - The entity type.
- * @template ID - The entity's primary identifier type.
+ * @typeParam T - The entity type.
+ * @typeParam ID - The entity's primary identifier type.
  */
 export class DrizzleDerivedQueryRepository<T extends object, ID> extends DrizzleRepository<T, ID> {
     /**
@@ -37,7 +37,7 @@ export class DrizzleDerivedQueryRepository<T extends object, ID> extends Drizzle
      * @param methodName - The method name that was called.
      * @param args - The method arguments (query values).
      * @returns Matching entities, ordered and limited as parsed.
-     * @throws {Error} When the method name is not a supported derived query.
+     * @throws When the method name is not a supported derived query.
      */
     async derive(methodName: string, args: unknown[]): Promise<T[]> {
         const entityClass = this.getEntityClass();

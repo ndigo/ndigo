@@ -1,6 +1,8 @@
 /**
+ * Task scheduler: drives scheduled task execution.
  */
 import { FrameworkError } from '@ndigo/core';
+import type { AsyncCloseable, AsyncDestroyable } from '@ndigo/factory';
 import { like } from '@ndigo/util/types';
 import { LOCK_DRIVER, likeLockDriver, type LockDriver, type LockHandle } from '@ndigo/locks';
 import { Schedule } from './schedule';
@@ -154,7 +156,7 @@ export const likeTaskScheduler = like({
  * - `start()`/`stop()` — a wall-clock timer chain that calls `tick` at each
  *   computed next-fire time (fire-and-forget; single-flight guards overlap).
  */
-export class TaskScheduler {
+export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
     readonly #clock: () => Date;
     readonly #warn: (message: string) => void;
     readonly #tasks = new Map<string, TaskState>();
@@ -194,8 +196,8 @@ export class TaskScheduler {
 
     /**
      * Container injection (`ApplicationContextAware`): the context is used
-     * to resolve the `lockDriver` bean for {@link ScheduledTaskDefinition
-     * locked} tasks when no driver was passed to the constructor (AD-73).
+     * to resolve the `lockDriver` bean for locked tasks when no driver was
+     * passed to the constructor (AD-73).
      *
      * @param context - The application context.
      */
@@ -211,7 +213,7 @@ export class TaskScheduler {
      * fires on time.
      *
      * @param definition - The task to register.
-     * @throws {FrameworkError} On duplicate names or after `close()`.
+     * @throws On duplicate names or after `close()`.
      */
     register(definition: ScheduledTaskDefinition): void {
         if (this.#closed) {
@@ -476,7 +478,7 @@ export class TaskScheduler {
      *
      * @param definition - The task definition.
      * @returns The lease, or `null` when the fire is skipped.
-     * @throws {FrameworkError} When `lockKey` is set but no lock driver is
+     * @throws When `lockKey` is set but no lock driver is
      *   configured (fail-loud: running unguarded would defeat the feature).
      */
     async #acquireTaskLock(definition: ScheduledTaskDefinition): Promise<LockHandle | null> {

@@ -2,6 +2,8 @@
  * Node WebSocket session registry — tracks live connections, rooms, broadcast.
  */
 import type { SocketSession, SocketSessionRegistry } from '@ndigo/dispatcher';
+import { IllegalStateError } from '@ndigo/core';
+import type { AsyncCloseable } from '@ndigo/factory';
 import type { SocketFanout } from '@ndigo/socket';
 import type { WebSocket } from 'ws';
 import { assertCloseFrame } from './node-socket-session';
@@ -151,7 +153,7 @@ export function resolveSocketRegistryOptions(
  * The implementation is registered as a context bean by
  * `NodeAutoConfiguration`; any service can inject it and push to a room.
  */
-export class NodeSocketSessionRegistry implements SocketSessionRegistry {
+export class NodeSocketSessionRegistry implements SocketSessionRegistry, AsyncCloseable {
     #sessions: Map<SocketSession, string> = new Map();
     /** Auto-join path index: path → sessions (mirror of `#sessions`, O(n)→O(set-size)). */
     #paths: Map<string, Set<SocketSession>> = new Map();
@@ -203,14 +205,14 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
      */
     connect(): Promise<void> {
         if (this.#closed) {
-            return Promise.reject(new Error('Socket session registry is closed'));
+            return Promise.reject(new IllegalStateError('Socket session registry is closed'));
         }
         return (this.#connectPromise ??= Promise.resolve().then(() => this.#connect()));
     }
 
     async #connect(): Promise<void> {
         if (this.#closed) {
-            throw new Error('Socket session registry is closed');
+            throw new IllegalStateError('Socket session registry is closed');
         }
         if (!this.#fanout) {
             return;
@@ -223,7 +225,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
             });
             this.#unsubscribe.push(unsubscribePath);
             if (this.#closed) {
-                throw new Error('Socket session registry is closed');
+                throw new IllegalStateError('Socket session registry is closed');
             }
             const unsubscribeRoom = await this.#fanout.subscribe('room', (message) => {
                 if (this.#connected && !this.#closed) {
@@ -232,7 +234,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
             });
             this.#unsubscribe.push(unsubscribeRoom);
             if (this.#closed) {
-                throw new Error('Socket session registry is closed');
+                throw new IllegalStateError('Socket session registry is closed');
             }
             this.#connected = true;
         } catch (error) {
@@ -417,10 +419,10 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
 
     #assertPublishing(): void {
         if (this.#closed) {
-            throw new Error('Socket session registry is closed');
+            throw new IllegalStateError('Socket session registry is closed');
         }
         if (this.#fanout && !this.#connected) {
-            throw new Error('Await Socket session registry connect() before publishing');
+            throw new IllegalStateError('Await Socket session registry connect() before publishing');
         }
     }
 

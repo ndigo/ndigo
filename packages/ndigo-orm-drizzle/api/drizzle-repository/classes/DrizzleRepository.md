@@ -8,10 +8,6 @@
 
 Async repository over a [DrizzleEntityManager](../../drizzle-entity-manager/classes/DrizzleEntityManager.md) for one entity type.
 
-## Since
-
-1.0.0
-
 ## Extended by
 
 - [`DrizzleDerivedQueryRepository`](../../drizzle-derived-query-repository/classes/DrizzleDerivedQueryRepository.md)

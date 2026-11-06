@@ -1,5 +1,7 @@
 /**
  */
+import { compareBy, invertComparison, numberComparator } from '@ndigo/core';
+
 import { ContentSource } from './content';
 import { LanguageCode } from './language-code';
 import * as LanguageCodes from './language-codes';
@@ -47,7 +49,7 @@ export const parseAcceptLanguage = (header: string): string | undefined => {
     }
 
     // Stable sort: equal weights retain header order.
-    candidates.sort((a, b) => b.q - a.q);
+    candidates.sort(invertComparison(compareBy((candidate) => candidate.q, numberComparator.compare)));
 
     return candidates[0]?.tag;
 };

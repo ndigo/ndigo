@@ -11,10 +11,6 @@ It manages routing based on the URL hash fragment, supports route interceptors, 
 This class structurally conforms to the `Destroyable` shape (`destroyed` + `destroy()`) without importing the interface,
 so `likeDestroyable` checks can still identify it by duck typing.
 
-## Since
-
-1.0.0
-
 ## Extends
 
 - `AbstractRouter`
@@ -45,10 +41,6 @@ Router options, e.g. the navigation-error hook.
 
 `HashRouter`
 
-#### Since
-
-1.0.0
-
 #### Overrides
 
 `AbstractRouter.constructor`
@@ -71,10 +63,6 @@ Router options, e.g. the navigation-error hook.
 
 Indicates whether the router has been destroyed and its event listeners removed.
 
-#### Since
-
-1.0.0
-
 ## Accessors
 
 ### history
@@ -84,10 +72,6 @@ Indicates whether the router has been destroyed and its event listeners removed.
 > **get** **history**(): [`RouteHistory`](#)
 
 Gets the `RingBuffer` instance that stores the route history.
-
-##### Since
-
-1.0.0
 
 ##### Returns
 
@@ -104,10 +88,6 @@ The route history buffer.
 > **get** **route**(): `string`
 
 Gets the current route as a string.
-
-##### Since
-
-1.0.0
 
 ##### Returns
 
@@ -161,10 +141,6 @@ Once destroyed, the router will no longer respond to URL hash changes.
 
 `void`
 
-#### Since
-
-1.0.0
-
 ***
 
 ### navigate()
@@ -190,10 +166,6 @@ The target route string to navigate to.
 
 A promise that resolves when the route has been set and processed.
 
-#### Since
-
-1.0.0
-
 ***
 
 ### refresh()
@@ -206,10 +178,6 @@ This can be useful to re-apply routing logic or update UI components without a f
 #### Returns
 
 `void`
-
-#### Since
-
-1.0.0
 
 #### Overrides
 
@@ -243,10 +211,6 @@ The new route string to set.
 `Promise`\<`void`\>
 
 A promise that resolves when the route has been successfully set and processed.
-
-#### Since
-
-1.0.0
 
 ***
 

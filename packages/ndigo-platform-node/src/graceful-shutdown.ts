@@ -4,7 +4,7 @@
 import type { ApplicationContext } from '@ndigo/context';
 
 /**
- * A resource with a closeable lifecycle, e.g. an {@link http-server.HTTPServer | HTTPServer}.
+ * A resource with a closeable lifecycle, e.g. an {@link "http-server".HTTPServer | HTTPServer}.
  */
 export interface Closable {
     /** Close the resource. May be async; it is awaited during shutdown. */
@@ -17,30 +17,30 @@ export interface Closable {
 export interface GracefulShutdownOptions {
     /**
      * Signals to listen for.
-     * @default ['SIGINT', 'SIGTERM']
+     * @defaultValue ['SIGINT', 'SIGTERM']
      */
     signals?: NodeJS.Signals[];
     /**
      * Extra resources to close, in order, before the context. Typically the
-     * application's {@link http-server.HTTPServer | HTTPServer}.
-     * @default []
+     * application's {@link "http-server".HTTPServer | HTTPServer}.
+     * @defaultValue []
      */
     resources?: ReadonlyArray<Closable>;
     /**
      * Force-exit deadline (ms) for the whole teardown. Guards against a close
      * that never completes (e.g. in-flight connections that never drain).
-     * @default 10_000
+     * @defaultValue 10_000
      */
     timeoutMs?: number;
     /**
      * Process exit code after a clean shutdown.
-     * @default 0
+     * @defaultValue 0
      */
     exitCode?: number;
     /**
      * Process exit code when shutdown is aborted (second signal, a close that
      * throws, or the deadline elapsing).
-     * @default 1
+     * @defaultValue 1
      */
     abortExitCode?: number;
 }

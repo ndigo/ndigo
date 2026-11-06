@@ -2,6 +2,7 @@
  * `JobRunner` — polls a driver and executes registered handlers.
  */
 import { FrameworkError } from '@ndigo/core';
+import type { AsyncCloseable } from '@ndigo/factory';
 import { getErrorMessage } from '@ndigo/util';
 import { getLogger, type Logger } from '@ndigo/log';
 import type { ApplicationContext } from '@ndigo/context';
@@ -23,8 +24,6 @@ function defaultBackoffMs(attempt: number): number {
 
 /**
  * Options for {@link JobRunner}.
- *
- * @since 1.0.0
  */
 export interface JobRunnerOptions {
     /** The driver to claim from; resolved from the `jobDriver` bean when omitted. */
@@ -67,10 +66,8 @@ export interface JobRunnerOptions {
  * on context close).
  *
  * Deterministic tests drive {@link tick} directly with an injected clock.
- *
- * @since 1.0.0
  */
-export class JobRunner {
+export class JobRunner implements AsyncCloseable {
     readonly phase = 10;
     readonly isAutoStartup: boolean;
     #context: ApplicationContext | null = null;

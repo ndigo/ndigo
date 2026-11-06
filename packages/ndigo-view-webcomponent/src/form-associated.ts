@@ -58,8 +58,8 @@ export interface FormAssociatedElement {
     readonly defaultValue: string;
 
     /**
-     * `true` while the platform has disabled this control (a `<fieldset
-     * disabled>` ancestor); reflects to the `data-ndigo-disabled` attribute.
+     * `true` while the platform has disabled this control (a `fieldset disabled`
+     * ancestor); reflects to the `data-ndigo-disabled` attribute.
      */
     readonly disabled: boolean;
 }
@@ -135,12 +135,10 @@ function acquireInternals(element: HTMLElement): ElementInternals | undefined {
  *     set model(model: { score: number }) {
  *         this.value = String(model.score);
  *     }
- *     render(): void { … }
+ *     render(): void {}
  * }
  * customElements.define('rating-input', RatingInput); // <form><rating-input name="rating" value="5">
  * ```
- *
- * @since 1.0.0
  */
 export const AsFormAssociated = <T extends Constructable<HTMLElement>>(
     superclass: T
@@ -233,8 +231,8 @@ export const AsFormAssociated = <T extends Constructable<HTMLElement>>(
         }
 
         /**
-         * Tracks the disabled state the platform pushes when a `<fieldset
-         * disabled>` ancestor toggles, reflecting it to the
+         * Tracks the disabled state the platform pushes when a `fieldset disabled`
+         * ancestor toggles, reflecting it to the
          * `data-ndigo-disabled` attribute for styling and JS inspection.
          *
          * The custom element has no platform-level `disabled` attribute, so

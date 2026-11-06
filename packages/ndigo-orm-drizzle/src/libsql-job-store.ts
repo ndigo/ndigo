@@ -21,6 +21,7 @@
 import { createClient, type Client } from '@libsql/client';
 import { randomUUID } from 'node:crypto';
 import type { ClaimOptions, JobId, JobRecord, JobRequest } from '@ndigo/jobs';
+import { IllegalStateError } from '@ndigo/core';
 import { parseJobPayload, resolveJobRequest, serializeJobPayload, type JobDriver } from '@ndigo/jobs';
 
 /** Table/column layout (column names stay stable for migrations). One
@@ -91,8 +92,6 @@ export interface LibSQLJobStoreOptions {
 /**
  * Durable {@link JobDriver} on libSQL. Clients created by the store are
  * owned; injected clients are borrowed by default.
- *
- * @since 1.0.0
  */
 export class LibSQLJobStore implements JobDriver {
     readonly kind = 'libsql';
@@ -116,7 +115,7 @@ export class LibSQLJobStore implements JobDriver {
         void this.#ready.catch(() => undefined);
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async enqueue(request: JobRequest): Promise<JobRecord> {
         await this.#ready;
         this.#assertOpen();
@@ -148,7 +147,7 @@ export class LibSQLJobStore implements JobDriver {
         return record;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async claim(options: ClaimOptions): Promise<JobRecord[]> {
         await this.#ready;
         this.#assertOpen();
@@ -173,14 +172,14 @@ export class LibSQLJobStore implements JobDriver {
         return result.rows.map((row) => decodeRow(row as unknown as Row));
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async complete(id: JobId): Promise<void> {
         await this.#ready;
         this.#assertOpen();
         await this.#client.execute({ sql: `DELETE FROM ${TABLE} WHERE id = ?`, args: [id] });
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async retry(id: JobId, runAt: number, lastError: string): Promise<void> {
         await this.#ready;
         this.#assertOpen();
@@ -192,7 +191,7 @@ export class LibSQLJobStore implements JobDriver {
         });
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async fail(id: JobId, lastError: string): Promise<void> {
         await this.#ready;
         this.#assertOpen();
@@ -200,7 +199,7 @@ export class LibSQLJobStore implements JobDriver {
         await this.#client.execute({ sql: `DELETE FROM ${TABLE} WHERE id = ?`, args: [id] });
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async heartbeat(id: JobId, leaseMs: number): Promise<void> {
         await this.#ready;
         this.#assertOpen();
@@ -210,7 +209,7 @@ export class LibSQLJobStore implements JobDriver {
         });
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async size(): Promise<number> {
         await this.#ready;
         this.#assertOpen();
@@ -236,7 +235,7 @@ export class LibSQLJobStore implements JobDriver {
 
     #assertOpen(): void {
         if (this.#disposed) {
-            throw new Error('libsql job store is disposed');
+            throw new IllegalStateError('libsql job store is disposed');
         }
     }
 }

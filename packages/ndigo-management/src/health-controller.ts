@@ -51,15 +51,13 @@ export class HealthResponseView {
  *
  * Runs the context-level {@link HealthRegistry} (all registered indicators —
  * including the telemetry indicator wired at context refresh by
- * {@link management-auto-configuration.ManagementAutoConfiguration | ManagementAutoConfiguration}). The registry is read-only here;
+ * {@link "management-auto-configuration".ManagementAutoConfiguration | ManagementAutoConfiguration}). The registry is read-only here;
  * it is never mutated per request.
  *
  * The HTTP status mirrors the aggregate: `503 Service Unavailable` when any
  * component is `DOWN`, `200 OK` otherwise (`UP` or `UNKNOWN`) — so
  * orchestrators (Kubernetes probes, load balancers) can route on the status
  * code alone, per the actuator convention.
- *
- * @since 1.0.0
  */
 @requestMapping('/health')
 export class HealthController extends AsApplicationContextAware(Null) {

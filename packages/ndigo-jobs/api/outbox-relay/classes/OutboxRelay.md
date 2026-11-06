@@ -16,9 +16,9 @@ Lifecycle: `SmartLifecycle`, phase 10, auto-start when registered as a
 bean; `close()` stops and awaits the pass in flight. Direct construction is
 the standalone/test path.
 
-## Since
+## Implements
 
-1.0.0
+- `AsyncCloseable`
 
 ## Constructors
 
@@ -75,6 +75,10 @@ Container teardown: stops and awaits the pass in flight.
 #### Returns
 
 `Promise`\<`void`\>
+
+#### Implementation of
+
+`AsyncCloseable.close`
 
 ***
 

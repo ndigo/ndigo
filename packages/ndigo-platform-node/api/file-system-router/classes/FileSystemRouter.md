@@ -8,10 +8,6 @@
 
 A router implementation for Node.js that resolves routes based on the file system.
 
-## Since
-
-1.0.0
-
 ## Extends
 
 - `AbstractRouter`

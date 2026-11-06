@@ -1,5 +1,6 @@
 /**
  */
+
 import '@tsmetadata/polyfill';
 import { Constructable, getSymbolMetadata } from '@ndigo/core';
 import { isNotNil } from '@ndigo/util/types';
@@ -74,9 +75,8 @@ const hasErrorMapping = (target: unknown, propertyKey: string | symbol): boolean
  *
  * @example
  * ```typescript
- * Invoked via the `errorHandler` decorator.
- *   // ...
- * }
+ * @errorHandler()
+ * class MyErrorHandler {}
  *
  * const isHandler = errorHandler.has(MyErrorHandler);
  * ```
@@ -100,7 +100,7 @@ const _isConstructorErrorHandler = (value: unknown): boolean =>
  * An object is considered an error handler if it has the the `errorHandler` decorator metadata
  * or if its constructor has the the `errorHandler` decorator metadata.
  *
- * @param target The object to check.
+ * @param target - The object to check.
  * @returns `true` if the target or its constructor is an error handler, `false` otherwise.
  */
 export const likeErrorHandler = (target: unknown): boolean =>

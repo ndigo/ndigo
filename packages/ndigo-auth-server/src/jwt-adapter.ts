@@ -68,12 +68,13 @@ export interface JWTAdapterConfig {
     clockToleranceSeconds?: number;
 }
 
+import { FrameworkError } from '@ndigo/core';
 /**
  * Error for refresh/issue/revocation failures: invalid, superseded or
  * revoked tokens, unknown/disabled accounts, and configuration that
  * cannot issue tokens. Always a `401`-class outcome at the flow level.
  */
-export class JWTTokenError extends Error {
+export class JWTTokenError extends FrameworkError {
     constructor(message: string) {
         super(message);
         this.name = 'JWTTokenError';

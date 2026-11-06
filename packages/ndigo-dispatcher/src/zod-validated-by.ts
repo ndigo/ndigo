@@ -1,6 +1,7 @@
 /**
  * Zod-backed request validation (AD-07).
  */
+import { FrameworkError } from '@ndigo/core';
 import { z } from 'zod';
 import { ParameterConversionError } from './error';
 import { type ParameterExtractor, type ParameterMap, bodyValue, queryValue } from './parameters';
@@ -27,7 +28,7 @@ export interface ValidationIssue {
  * so error resolvers can render either a flat detail string or a structured
  * `errors` array.
  */
-export class ZodValidationError extends Error {
+export class ZodValidationError extends FrameworkError {
     /** The structured per-field failures from the Zod parse. */
     readonly issues: readonly ValidationIssue[];
 
@@ -53,9 +54,11 @@ export class ZodValidationError extends Error {
  *     age: z.coerce.number().min(18),
  * });
  *
- * @routeMapping('/create')
- * @parameters({ user: validatedBy(UserSchema, dataBinderValue('query')) })
- * create(user: z.infer<typeof UserSchema>) { … }
+ * class UserController {
+ *   @routeMapping('/create')
+ *   @parameters({ user: validatedBy(UserSchema, dataBinderValue('query')) })
+ *   create(user: z.infer<typeof UserSchema>) {}
+ * }
  * ```
  *
  * @param schema - The Zod schema to validate and coerce the resolved value.
@@ -90,7 +93,10 @@ export function validatedBy<T>(schema: z.ZodType<T>, extractor: ParameterExtract
  *
  * @example
  * ```ts
- * @parameters(validateParameters(UserSchema, { user: dataBinderValue('query') }))
+ * class UserController {
+ *   @parameters(validateParameters(UserSchema, { user: dataBinderValue('query') }))
+ *   create(user: z.infer<typeof UserSchema>) {}
+ * }
  * ```
  *
  * @param schema - The Zod schema validating the bound object.
@@ -113,8 +119,10 @@ export function validateParameters(schema: z.ZodType, extractors: ParameterMap):
  *
  * @example
  * ```ts
- * @parameters({ note: validatedBody(NoteSchema) })
- * create(note: z.infer<typeof NoteSchema>) { … }
+ * class NoteController {
+ *   @parameters({ note: validatedBody(NoteSchema) })
+ *   create(note: z.infer<typeof NoteSchema>) {}
+ * }
  * ```
  *
  * @param schema - The Zod schema validating the whole body.
@@ -135,8 +143,10 @@ export function validatedBody<T>(schema: z.ZodType<T>): ParameterExtractor {
  *
  * @example
  * ```ts
- * @parameters({ search: validatedQuery(SearchSchema) })
- * search(search: z.infer<typeof SearchSchema>) { … }
+ * class SearchController {
+ *   @parameters({ search: validatedQuery(SearchSchema) })
+ *   search(search: z.infer<typeof SearchSchema>) {}
+ * }
  * ```
  *
  * @param schema - The Zod schema validating the whole query object.

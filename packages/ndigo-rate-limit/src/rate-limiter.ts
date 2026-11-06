@@ -9,6 +9,7 @@
  * (`@rateLimit`, `RATE_LIMIT_KEY`) and the `RateLimitInterceptor` live in
  * `@ndigo/platform-node`.
  */
+import { like } from '@ndigo/util/types';
 
 /**
  * A route's rate-limit policy: at most `limit` requests per `windowMs`
@@ -55,15 +56,10 @@ export interface RateLimiter {
 
 /**
  * Structural type guard for {@link RateLimiter} — used where a bean or
- * option is resolved by shape instead of the {@link context-tokens.RATE_LIMITER | RATE_LIMITER} token.
+ * option is resolved by shape instead of the {@link "context-tokens".RATE_LIMITER | RATE_LIMITER} token.
  */
 export function likeRateLimiter(value: unknown): value is RateLimiter {
-    return (
-        value !== null &&
-        typeof value === 'object' &&
-        typeof (value as Partial<RateLimiter>).kind === 'string' &&
-        typeof (value as Partial<RateLimiter>).consume === 'function'
-    );
+    return like({ kind: String, consume: Function })(value);
 }
 
 /**

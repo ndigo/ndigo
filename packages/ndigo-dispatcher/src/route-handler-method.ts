@@ -1,5 +1,6 @@
 /**
  */
+
 import { Factory, likeFactory } from '@ndigo/factory';
 import { Route } from '@ndigo/router';
 import { Serializable } from '@ndigo/core';
@@ -44,23 +45,14 @@ export interface RouteHandlerMethodMappingNamingStrategy<T = unknown> {
 }
 
 /**
- */
-
-/**
  * Encapsulates information about a handler method consisting of a `method` and `handler`.
  */
 
 /**
  * A strategy for assigning a name to a route handler method's mapping.
  *
- * The strategy can be configured on {@link AbstractHandlerMethodMapping|AbstractHandlerMethodMapping}.
+ * The strategy can be configured on {@link "abstract-handler-method-mapping".AbstractHandlerMethodMapping | AbstractHandlerMethodMapping}.
  * It is used to assign a name to the mapping of every registered handler method.
- */
-
-/**
- * @param {*} handlerMethod
- * @param {*} mapping
- * @returns {string} The name
  */
 
 export class RouteHandlerMethod implements HandlerMethod, Serializable {
@@ -104,10 +96,6 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
         this.parameters = args.filter((arg) => arg instanceof MethodParameter);
     }
 
-    /**
-     * @param {module:router.Request} route
-     * @returns {module:dispatcher.ModelAndView}
-     */
     invoke<ModelAndView>(route: Route, ...foo: unknown[]): ModelAndView {
         /**
          * * Hardcoding route as a parameter is a bit of a cop-out. It would be better to allow them to pick parameters, etc. as arguments.
@@ -161,9 +149,6 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
         return (this.handler as Record<string, Function>)[this.method](...args);
     }
 
-    /**
-     * @returns {string}
-     */
     toString(): string {
         return `${typeName(this.handler)}#${this.method}( ${JSON.stringify(this.parameters)} )`;
     }

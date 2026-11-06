@@ -16,10 +16,6 @@ even then only the raw stored text is emitted — decrypted plaintext
 never reaches the wire (AD-76 D-3). `?toMatch=` filters to sources whose
 name contains the term plus properties whose key starts with it.
 
-## Since
-
-1.0.0
-
 ## Extends
 
 - `ApplicationContextAware` & `Null`\<`this`\>

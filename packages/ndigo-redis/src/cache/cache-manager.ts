@@ -1,10 +1,9 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { resolveCacheName } from '@ndigo/cache';
+import { IllegalStateError } from '@ndigo/core';
 import type { Cache, CacheManager } from '@ndigo/cache';
-import type { ContextToken } from '@ndigo/factory';
+import type { AsyncCloseable, ContextToken } from '@ndigo/factory';
 import { RedisConnection, type RedisConnectionOptions } from '../connection';
 import { RedisCache } from './cache';
 
@@ -20,7 +19,7 @@ export type RedisCacheManagerOptions = RedisConnectionOptions & {
  * Container-compatible close() drains operations; a ready injected client is
  * borrowed and remains usable after manager shutdown.
  */
-export class RedisCacheManager implements CacheManager {
+export class RedisCacheManager implements CacheManager, AsyncCloseable {
     readonly #connection: RedisConnection;
     readonly #namespace: string;
     readonly #defaults: { defaultTtl?: number };
@@ -57,7 +56,7 @@ export class RedisCacheManager implements CacheManager {
     getCache<V = unknown>(name: string): RedisCache<V>;
     getCache<V = unknown>(token: ContextToken<Cache<V>>): RedisCache<V>;
     getCache<V = unknown>(nameOrToken: string | ContextToken<Cache<V>>): RedisCache<V> {
-        if (this.#closed) throw new Error('RedisCacheManager is closed');
+        if (this.#closed) throw new IllegalStateError('RedisCacheManager is closed');
         const name = resolveCacheName(nameOrToken, 'RedisCacheManager');
         let cache = this.#caches.get(name);
         if (cache === undefined) {
@@ -74,7 +73,7 @@ export class RedisCacheManager implements CacheManager {
     hasCache(name: string): boolean;
     hasCache(token: ContextToken<Cache<unknown>>): boolean;
     hasCache(nameOrToken: string | ContextToken<Cache<unknown>>): boolean {
-        if (this.#closed) throw new Error('RedisCacheManager is closed');
+        if (this.#closed) throw new IllegalStateError('RedisCacheManager is closed');
         const name = resolveCacheName(nameOrToken, 'RedisCacheManager');
         return this.#caches.has(name);
     }

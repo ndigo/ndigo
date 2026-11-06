@@ -88,6 +88,9 @@ export interface SocketSession {
      * @param code - Close status code (default `1000` normal; `1008` policy,
      *   `1011` server error, …).
      * @param reason - Human-readable close reason.
+     *
+     * (Not `Closeable` — the parameters are per-session wire state, not a
+     * lifecycle hook.)
      */
     close(code?: number, reason?: string): void;
 

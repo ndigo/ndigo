@@ -1,5 +1,3 @@
-/**
- */
 import { describe, test, expect } from 'vitest';
 import { routeMapping } from '../src/route-mapping';
 import { getMapping, postMapping } from '../src/http-method-mapping';

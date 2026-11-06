@@ -1,5 +1,6 @@
 /**
  */
+
 import { Comparator } from '@ndigo/core';
 
 /**

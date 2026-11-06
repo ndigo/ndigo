@@ -8,6 +8,7 @@
  * to pull the whole boot layer (REU-9). The public functions are re-exported
  * from `@ndigo/boot` unchanged for API continuity.
  */
+import { compareBy, stringComparator } from '@ndigo/core';
 import { z } from 'zod';
 
 /** Metadata-key constants and helpers shared with `@ndigo/boot`'s binding
@@ -213,7 +214,7 @@ export function declaredConfigurationProperties(ctor: new () => unknown): Declar
 
     return [...declared]
         .map(([key, type]) => (type === undefined ? { key } : { key, type }))
-        .sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
+        .sort(compareBy((declaredProperty) => declaredProperty.key, stringComparator.compare));
 }
 
 /**

@@ -32,6 +32,7 @@
  * URL-created clients, borrowed injected clients unless `ownsClient`.
  */
 import { createClient, type Client } from '@libsql/client';
+import { IllegalStateError } from '@ndigo/core';
 import { randomUUID } from 'node:crypto';
 import type { JobId } from '@ndigo/jobs';
 import {
@@ -89,8 +90,6 @@ export interface LibSQLOutboxStoreOptions {
  * Durable {@link OutboxStore} on libSQL. Every method awaits schema creation;
  * clients created by the store are owned, injected clients are borrowed by
  * default.
- *
- * @since 1.0.0
  */
 export class LibSQLOutboxStore implements OutboxStore {
     readonly #client: Client;
@@ -113,7 +112,7 @@ export class LibSQLOutboxStore implements OutboxStore {
         void this.#ready.catch(() => undefined);
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async append(input: { type: string; payload?: unknown }): Promise<OutboxEntry> {
         await this.#ready;
         this.#assertOpen();
@@ -138,7 +137,7 @@ export class LibSQLOutboxStore implements OutboxStore {
         return entry;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async claimPending(options: OutboxClaimOptions = {}): Promise<OutboxEntry[]> {
         await this.#ready;
         this.#assertOpen();
@@ -167,7 +166,7 @@ export class LibSQLOutboxStore implements OutboxStore {
         return result.rows.map((row) => decodeRow(row as unknown as Row));
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async markPublished(id: JobId): Promise<void> {
         await this.#ready;
         this.#assertOpen();
@@ -177,7 +176,7 @@ export class LibSQLOutboxStore implements OutboxStore {
         });
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async prunePublished(olderThanMs: number): Promise<number> {
         await this.#ready;
         this.#assertOpen();
@@ -188,7 +187,7 @@ export class LibSQLOutboxStore implements OutboxStore {
         return result.rowsAffected;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async size(): Promise<number> {
         await this.#ready;
         this.#assertOpen();
@@ -217,7 +216,7 @@ export class LibSQLOutboxStore implements OutboxStore {
 
     #assertOpen(): void {
         if (this.#disposed) {
-            throw new Error('libsql outbox store is disposed');
+            throw new IllegalStateError('libsql outbox store is disposed');
         }
     }
 }

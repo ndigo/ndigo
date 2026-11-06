@@ -606,6 +606,8 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 
 ## Draft Plans
 
+- [2026-11-06_CLI_INFRASTRUCTURE_REMAINING.md](2026-11-06_CLI_INFRASTRUCTURE_REMAINING.md) - Reconciled `ndigo-cli` infrastructure work plan: what landed through the expansion wave + 2026-11-06 review remediation (#145–#153), and the genuinely open items — the remote version manifest, `--with-db`, the `full-stack` preset, the openapi runner, `logs --since`.
+
 - [2026-11-03_TSCONFIG_PACKAGE_CONSISTENCY.md](2026-11-03_TSCONFIG_PACKAGE_CONSISTENCY.md) - TypeScript config & package setup consistency: Phase 0 (dead `tsconfig.vscode.json`, stale Nx input, over-broad root config, exposed script lint warnings) executed; Phases 1–6 standardize the app/package IDE and build lanes, consolidate the three alias tables, and add a CI guard.
 
 ---

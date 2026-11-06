@@ -745,8 +745,8 @@ export default class MediaType extends Null implements Serializable, StringCompa
      *
      * Optionally adds a default charset if none is present and the media type supports it.
      *
-     *  * @param o - ptions] Formatting options
-     *  * @param o - ptions.autoCharset=true] Whether to automatically add a default charset
+     * @param options - Formatting options
+     * @param options.autoCharset - Whether to automatically add a default charset
      * @returns The formatted Content-Type string
      */
     toContentType(options?: { autoCharset?: boolean }): string {

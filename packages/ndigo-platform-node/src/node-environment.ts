@@ -30,8 +30,7 @@ const snapshotProcessEnv = (): JSONObject => {
  * that sources are replaced, not mutated.
  *
  * Extends `StandardEnvironment` so that DI containers can discriminate between
- * browser and Node environments by class identity (e.g., `instanceof
- * NodeEnvironment`). All other environment behaviour (profiles, property
+ * browser and Node environments by class identity (e.g., `instanceof NodeEnvironment`). All other environment behaviour (profiles, property
  * resolution) is inherited.
  */
 export class NodeEnvironment extends StandardEnvironment {

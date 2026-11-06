@@ -9,10 +9,6 @@
 Tracks new, dirty, and removed entities and flushes them to a Drizzle store
 as a single async batch.
 
-## Since
-
-1.0.0
-
 ## Constructors
 
 ### Constructor

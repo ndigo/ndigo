@@ -58,8 +58,8 @@ export interface ResourceLoaderAware extends Aware {
  * Return a Resource handle for the specified resource location.
  *
  * Note that a Resource handle does not imply an existing resource; you need to invoke {@link Resource#exists|Resource#exists} to check for existence.
- * @param {string} location The resource location
- * @returns {module:context.Resource} A resource handle for the specified resource location.
+ * @param location - The resource location
+ * @returns A resource handle for the specified resource location.
  */
 
 const { defineProperty } = Reflect,
@@ -222,7 +222,7 @@ export class InMemoryResourceLoader implements ResourceLoader {
         return this;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     async getResource(location: string): Promise<Resource> {
         const value = this.#sources.get(location);
         if (value === undefined) {

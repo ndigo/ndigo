@@ -4,9 +4,6 @@
  * `@openfeature/server-sdk` client, so vendor providers (flagd, OFREP,
  * LaunchDarkly, …) arrive behind the existing SPI, plus the evaluation
  * telemetry hook. The browser counterpart lives in the `/web` entry.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 
 export { OpenFeatureFlagEvaluator, type OpenFeatureFlagEvaluatorOptions } from './openfeature-flag-evaluator';

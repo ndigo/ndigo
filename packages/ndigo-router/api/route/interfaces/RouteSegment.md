@@ -8,10 +8,6 @@
 
 Represents a single segment within a route, including its name, associated data, and raw string value.
 
-## Since
-
-1.0.0
-
 ## Extends
 
 - `Serializable`

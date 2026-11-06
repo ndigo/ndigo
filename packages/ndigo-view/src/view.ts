@@ -32,16 +32,15 @@ export interface View {
     destroy?(): void | Promise<void>;
     /**
      * Render the view given the specified model.
-     * @param model The data model.
-     * @param request The current request.
-     * @param target The optional view target.
+     * @param model - The data model.
+     * @param request - The current request.
+     * @param target - The optional view target.
      */
     render(model: unknown, request: unknown, target?: ViewTarget): void | Promise<void>;
 }
 
 /**
  * Abstract base class for {@link View|`View`} implementations. Subclasses need to implement the actual rendering.
- * @abstract
  */
 export abstract class AbstractView extends AsNameAware(AsApplicationContextAware(Null)) implements Serializable, View {
     /**
@@ -84,9 +83,9 @@ export abstract class AbstractView extends AsNameAware(AsApplicationContextAware
 
     /**
      * Render the view given the specified model.
-     * @param model The data model.
-     * @param request The current request.
-     * @param target The optional view target.
+     * @param model - The data model.
+     * @param request - The current request.
+     * @param target - The optional view target.
      */
     async render(model: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (this.destroyed) {
@@ -118,10 +117,9 @@ export abstract class AbstractView extends AsNameAware(AsApplicationContextAware
 
     /**
      * Creates the view model from the given model and request.
-     * @param model The data model.
-     * @param request The current request.
+     * @param model - The data model.
+     * @param request - The current request.
      * @returns The created view model.
-     * @protected
      */
     protected _createViewModel(model: unknown, request: unknown): unknown {
         return model;
@@ -129,18 +127,15 @@ export abstract class AbstractView extends AsNameAware(AsApplicationContextAware
 
     /**
      * Renders the view with the given view model, request, and optional target.
-     * @param viewModel The view model.
-     * @param request The current request.
-     * @param target The optional view target.
-     * @protected
-     * @abstract
+     * @param viewModel - The view model.
+     * @param request - The current request.
+     * @param target - The optional view target.
      */
     protected abstract _renderView(viewModel: unknown, request: unknown, target?: ViewTarget): void | Promise<void>;
 }
 
 /**
  * Abstract base class for path-based views.
- * @abstract
  */
 export abstract class AbstractPathBasedView extends AbstractView {
     /**
@@ -177,15 +172,13 @@ export abstract class AbstractPathBasedView extends AbstractView {
 
 /**
  * Abstract base class for template-based views.
- * @abstract
  */
 export abstract class AbstractTemplateView extends AbstractPathBasedView {
     /**
      * Creates the template model from the view model.
-     * @param viewModel The view model.
-     * @param request The current request.
+     * @param viewModel - The view model.
+     * @param request - The current request.
      * @returns The template model.
-     * @protected
      */
     protected _projectViewModel(viewModel: unknown, request: unknown): unknown {
         return viewModel;
@@ -193,11 +186,9 @@ export abstract class AbstractTemplateView extends AbstractPathBasedView {
 
     /**
      * Renders the template with the given template model and request.
-     * @param templateModel The template data model.
-     * @param request The current request.
-     * @param target The optional view target.
-     * @protected
-     * @abstract
+     * @param templateModel - The template data model.
+     * @param request - The current request.
+     * @param target - The optional view target.
      */
     protected abstract _renderTemplate(
         templateModel: unknown,
@@ -208,10 +199,9 @@ export abstract class AbstractTemplateView extends AbstractPathBasedView {
     /**
      * Renders the view with the given view model.
      *
-     * @param viewModel The view model to render.
-     * @param request The current request.
-     * @param target The optional view target (required for rendering).
-     * @protected
+     * @param viewModel - The view model to render.
+     * @param request - The current request.
+     * @param target - The optional view target (required for rendering).
      */
     protected async _renderView(viewModel: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (!target) throw new IllegalStateError('View requires a ViewTarget to render.');
@@ -238,8 +228,8 @@ export class RerouteView extends AbstractPathBasedView {
 
     /**
      * Creates a new RerouteView.
-     * @param path The path to reroute to.
-     * @param contextRelative True if the path is context relative, false otherwise.
+     * @param path - The path to reroute to.
+     * @param contextRelative - True if the path is context relative, false otherwise.
      */
     constructor(path: string, contextRelative: boolean = false) {
         super(path);
@@ -248,10 +238,9 @@ export class RerouteView extends AbstractPathBasedView {
 
     /**
      * Creates the target path for rerouting.
-     * @param model The data model.
-     * @param request The current request.
+     * @param model - The data model.
+     * @param request - The current request.
      * @returns The created target path.
-     * @protected
      */
     protected _createTargetPath(model: unknown, request: unknown): string {
         const data: string = this.contextRelative ? MatrixString.stringify(model) : QueryString.stringify(model);
@@ -264,10 +253,9 @@ export class RerouteView extends AbstractPathBasedView {
      * Delegates navigation to the registered `Router` when available (via the application context).
      * Falls back to `history.pushState` for environments where no router is registered.
      *
-     * @param viewModel The view model.
-     * @param request The current request.
-     * @param target The optional view target.
-     * @protected
+     * @param viewModel - The view model.
+     * @param request - The current request.
+     * @param target - The optional view target.
      */
     protected _renderView(viewModel: unknown, request: unknown, target?: ViewTarget): void {
         const targetPath: string = this._createTargetPath(viewModel, request);
@@ -282,7 +270,7 @@ export class RerouteView extends AbstractPathBasedView {
 }
 
 /**
- * Renders a simple string template into HTML by replacing {{variable}} placeholders.
+ * Renders a simple string template into HTML by replacing \{\{variable\}\} placeholders.
  *
  * **Warning — RAW interpolation, security-sensitive.** Model values are
  * interpolated into the output without any HTML escaping. If a model value can
@@ -295,19 +283,19 @@ export class RerouteView extends AbstractPathBasedView {
  * This view renders HTML snippets (e.g. `{{title}}` → `&lt;em&gt;Hi&lt;/em&gt;`)
  * and intentionally does not encode, so escaping is the caller's responsibility.
  *
- * @param path The URL path for this view.
+ * @param path - The URL path for this view.
  */
 export class StringTemplateView extends AbstractTemplateView {
     /**
      * The template string to render.
      *
-     * Supports simple Jinja-like syntax: {{variable}}, {{array[key]}}, etc.
+     * Supports simple Jinja-like syntax: \{\{variable\}\}, \{\{array[key]\}\}, etc.
      */
     template!: string;
 
     /**
      * Creates a new StringTemplateView.
-     * @param path The URL path for this view.
+     * @param path - The URL path for this view.
      */
     constructor(path: string | null = null) {
         super(path);
@@ -316,9 +304,9 @@ export class StringTemplateView extends AbstractTemplateView {
     /**
      * Renders the template with the given template model and request.
      *
-     * @param templateModel The rendered template model.
-     * @param request The current request.
-     * @param target The view target (required for rendering).
+     * @param templateModel - The rendered template model.
+     * @param request - The current request.
+     * @param target - The view target (required for rendering).
      */
     protected async _renderTemplate(templateModel: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (!target) throw new IllegalStateError('View requires a ViewTarget.');
@@ -329,11 +317,11 @@ export class StringTemplateView extends AbstractTemplateView {
     }
 
     /**
-     * Renders the template string by replacing {{variable}} placeholders.
+     * Renders the template string by replacing \{\{variable\}\} placeholders.
      *
      * Supports:
-     *   - {{var}} for simple variables
-     *   - {{array[key]}} for object/array access
+     *   - \{\{var\}\} for simple variables
+     *   - \{\{array[key]\}\} for object/array access
      */
     private renderTemplate(template: string, model: unknown): string {
         return template.replace(/\{\{([^}]+)\}\}/g, (match, key) => {

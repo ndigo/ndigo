@@ -23,7 +23,3 @@ The `Route` object being processed.
 `boolean` \| `void` \| `Promise`\<`boolean` \| `void`\>
 
 `true` to continue processing, `false` to stop, or `void` to continue by default.
-
-## Since
-
-1.0.0

@@ -85,7 +85,7 @@ This is a convenience wrapper around the `on` method.
 `Record`\<`string`, `string`\>
 
 A mapping of selectors or 'event selector' to method names.
-Example: { '.btn': 'handleBtn', 'change .input': 'handleInput' }
+Example: `.btn` to `handleBtn`, `change .input` to `handleInput`.
 
 #### Returns
 

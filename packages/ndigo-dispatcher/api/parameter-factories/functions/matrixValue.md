@@ -27,7 +27,7 @@ Factory function: Create a matrix parameter extractor
 ## Example
 
 ```ts
-`parameters`({
+parameters({
   color: matrixValue('color'),
   size: matrixValue('size', { required: true })
 })

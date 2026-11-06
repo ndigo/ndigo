@@ -1,5 +1,6 @@
 /**
  */
+
 import { IllegalStateError } from '@ndigo/core';
 import { ApplicationContext } from '@ndigo/context';
 import { Route } from '@ndigo/router';

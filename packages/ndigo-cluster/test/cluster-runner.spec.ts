@@ -4,9 +4,6 @@
  * guard, stuck-child force-kill, and the two-signal abort — all through
  * injected spawner/signal-host/clock seams (no real processes here; see
  * `cluster-real.spec.ts` for the real-process lane).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import {

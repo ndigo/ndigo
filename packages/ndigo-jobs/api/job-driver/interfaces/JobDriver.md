@@ -24,10 +24,6 @@ Semantics every driver must preserve:
 Implementations are registered under the `jobDriver` bean; the default is
 [InProcessJobDriver](../../in-process-job-driver/classes/InProcessJobDriver.md), which is explicitly non-durable.
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### kind

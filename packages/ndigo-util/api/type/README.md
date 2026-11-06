@@ -6,13 +6,9 @@
 
 # type
 
-## Other
+Type guards and duck-typing predicates.
 
-### like
-
-Re-exports [like](../index/functions/like.md)
-
-## Type
+## Functions
 
 - [is](functions/is.md)
 - [isFunction](functions/isFunction.md)
@@ -20,3 +16,9 @@ Re-exports [like](../index/functions/like.md)
 - [isNotNil](functions/isNotNil.md)
 - [isNumber](functions/isNumber.md)
 - [isString](functions/isString.md)
+
+## References
+
+### like
+
+Re-exports [like](../index/functions/like.md)

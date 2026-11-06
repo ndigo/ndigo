@@ -17,8 +17,7 @@ const chat = new WebSocketClient(url, { onSend: countSocketClientBytes() });
 ```
 
 While wired, [WebSocketClientInstrumentation](../classes/WebSocketClientInstrumentation.md)'s `send` wrap skips its
-own payload estimation for that client (TEL-08), so `ndigo.socket.client
-.messages.bytes` counts each wire write exactly once — no re-serialized
+own payload estimation for that client (TEL-08), so `ndigo.socket.client.messages.bytes` counts each wire write exactly once — no re-serialized
 estimation, no double count.
 
 ## Returns

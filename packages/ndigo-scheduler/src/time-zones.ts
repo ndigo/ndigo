@@ -1,4 +1,5 @@
 /**
+ * Common IANA time-zone identifiers.
  */
 
 const group = (zones: Record<string, string>): Readonly<Record<string, string>> => Object.freeze(zones);

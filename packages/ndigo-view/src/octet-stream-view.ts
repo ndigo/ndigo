@@ -16,7 +16,7 @@ export class OctetStreamView extends AbstractSerializingView {
         this.mediaType = MediaTypes.APPLICATION_OCTET_STREAM ?? null;
     }
 
-    /** @inheritdoc */
+    /** {@inheritDoc} */
     protected serialize(model: unknown): Uint8Array {
         if (model instanceof Uint8Array) {
             return model;

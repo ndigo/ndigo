@@ -57,7 +57,7 @@ function assertValidCookie(name: string, secure: boolean): void {
  * `__Host-ndigo-session=<token>; HttpOnly; SameSite=Lax; Path=/[; Secure]`.
  * The name is configurable via `options.name`.
  *
- * @throws {IllegalStateError} When a `__Host-`-prefixed `name` is combined
+ * @throws When a `__Host-`-prefixed `name` is combined
  * with `secure: false` (the browser would reject the cookie).
  */
 export function buildSessionCookie(token: string, options: SessionCookieOptions = {}): string {
@@ -74,7 +74,7 @@ export function buildSessionCookie(token: string, options: SessionCookieOptions 
  * immediately (`Max-Age=0` + epoch `Expires`) under the same name and
  * `Secure`/`Path` attributes it was set with (no `Domain`).
  *
- * @throws {IllegalStateError} When a `__Host-`-prefixed `name` is combined
+ * @throws When a `__Host-`-prefixed `name` is combined
  * with `secure: false` (the browser would reject the clear).
  */
 export function buildSessionCookieClear(options: SessionCookieOptions = {}): string {

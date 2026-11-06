@@ -23,8 +23,6 @@ function defaultBackoffMs(attempt: number): number {
 
 /**
  * Options for {@link JobRunner}.
- *
- * @since 1.0.0
  */
 export interface JobRunnerOptions {
     /** The driver to claim from; resolved from the `jobDriver` bean when omitted. */
@@ -67,8 +65,6 @@ export interface JobRunnerOptions {
  * on context close).
  *
  * Deterministic tests drive {@link tick} directly with an injected clock.
- *
- * @since 1.0.0
  */
 export class JobRunner {
     readonly phase = 10;

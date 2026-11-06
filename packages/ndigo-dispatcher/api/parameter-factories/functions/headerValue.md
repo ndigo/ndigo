@@ -27,7 +27,7 @@ Factory function: Create a request-header parameter extractor.
 ## Example
 
 ```ts
-`parameters`({
+parameters({
   contentType: headerValue('content-type'),
   authorization: headerValue('authorization', { required: true })
 })

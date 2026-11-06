@@ -6,6 +6,8 @@
 
 # index
 
+Node.js platform integration: HTTP server, auto-configuration, and runtime adapters.
+
 ## Type Aliases
 
 - [ArgumentValueConversionContext](type-aliases/ArgumentValueConversionContext.md)

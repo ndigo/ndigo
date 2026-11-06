@@ -9,15 +9,11 @@
 Represents a concrete route based on a URL path, parsing segments, matrix parameters, and query strings.
 It implements `Route` and `Serializable`.
 
-## Template
+## Type Param
 
 **TParams**
 
 A type representing the route parameters, defaulting to `Record<string, string>`.
-
-## Since
-
-1.0.0
 
 ## Implements
 
@@ -49,10 +45,6 @@ The raw string representation of the route (e.g., `/foo;a=b/bar?c=d`).
 #### Returns
 
 `PathRoute`
-
-#### Since
-
-1.0.0
 
 ## Properties
 
@@ -144,10 +136,6 @@ The raw string representation of the route (e.g., `/foo;a=b/bar?c=d`).
 
 Gets the number of segments in the route.
 
-##### Since
-
-1.0.0
-
 ##### Returns
 
 `number`
@@ -181,10 +169,6 @@ The route pattern to match against.
 
 `true` if the route matches the pattern, `false` otherwise.
 
-#### Since
-
-1.0.0
-
 #### Implementation of
 
 `Matchable.matches`
@@ -212,10 +196,6 @@ The route pattern (e.g., `/users/:id` or `/products/{productId}`).
 
 An object of resolved parameters if the route matches, or `null` if there is no match.
 
-#### Since
-
-1.0.0
-
 ***
 
 ### toJSON()
@@ -229,10 +209,6 @@ Serializes the `PathRoute` instance to a JSON object.
 `JSONValue`
 
 A `JSONValue` representation of the route.
-
-#### Since
-
-1.0.0
 
 #### Implementation of
 
@@ -251,10 +227,6 @@ Returns the string representation of the `PathRoute`, including its segments and
 `string`
 
 The string representation of the route.
-
-#### Since
-
-1.0.0
 
 #### Implementation of
 

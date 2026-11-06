@@ -8,17 +8,17 @@ import { HTTP, HTTPInit, RequestAwareHTTPInterceptor, ResponseAwareHTTPIntercept
 export interface CacheInterceptorConfig {
     /**
      * The default time-to-live for cached responses in milliseconds.
-     * @default 300000 (5 minutes)
+     * @defaultValue 300000 (5 minutes)
      */
     defaultTtl?: number;
     /**
      * The maximum number of responses to store in the cache.
-     * @default 100
+     * @defaultValue 100
      */
     maxCacheSize?: number;
     /**
      * Headers that, if present in the request, will bypass the cache.
-     * @default ['Cache-Control: no-cache']
+     * @defaultValue ['Cache-Control: no-cache']
      */
     cacheBustingHeaders?: string[];
 }

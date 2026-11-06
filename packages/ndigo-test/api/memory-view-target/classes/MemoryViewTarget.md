@@ -46,8 +46,6 @@ The last captured render, or `null` if none yet.
 
 `Promise`\<`void`\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `ViewTarget.clear`
@@ -76,8 +74,6 @@ The last captured render, or `null` if none yet.
 
 `Promise`\<`void`\>
 
-#### Inherit Doc
-
 #### Implementation of
 
 `ViewTarget.commit`
@@ -97,8 +93,6 @@ The last captured render, or `null` if none yet.
 #### Returns
 
 `Promise`\<`void`\>
-
-#### Inherit Doc
 
 #### Implementation of
 

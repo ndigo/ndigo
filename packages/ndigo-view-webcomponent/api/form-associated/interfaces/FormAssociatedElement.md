@@ -34,8 +34,8 @@ changes the live value only — mirroring native `input.value` versus
 
 > `readonly` **disabled**: `boolean`
 
-`true` while the platform has disabled this control (a `<fieldset
-disabled>` ancestor); reflects to the `data-ndigo-disabled` attribute.
+`true` while the platform has disabled this control (a `fieldset disabled`
+ancestor); reflects to the `data-ndigo-disabled` attribute.
 
 ***
 

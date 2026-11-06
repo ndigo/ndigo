@@ -76,7 +76,7 @@ const asTerm = (value: ProfileExpressionInput): ProfileTerm => {
  *
  * @param expression - The expression to validate.
  * @returns The trimmed expression (canonical form).
- * @throws {IllegalStateError} On malformed expressions.
+ * @throws On malformed expressions.
  */
 export function validateProfileExpression(expression: string): string {
     const trimmed = expression.trim();

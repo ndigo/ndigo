@@ -1,5 +1,6 @@
 /**
  */
+
 import { MultiValueMap, getSymbolMetadata } from '@ndigo/core';
 
 const { defineProperty } = Reflect;
@@ -20,7 +21,7 @@ const { defineProperty } = Reflect;
  * - `route:mapping:methodName` (method-level)
  * - `method:parameter:methodName` (method parameter info)
  *
- * @param {Record} target - Class constructor, prototype, or instance
+ * @param target - - Class constructor, prototype, or instance
  */
 export class MetadataScanner {
     /**
@@ -41,9 +42,6 @@ export class MetadataScanner {
     constructor(target: Record<string, unknown> = {}) {
         this._cache = new MultiValueMap();
 
-        /**
-         * @private
-         */
         defineProperty(this, '_target', {
             value: target,
             configurable: false,
@@ -52,11 +50,6 @@ export class MetadataScanner {
         });
     }
 
-    /**
-     * @private
-     * @param {string} metadataKey - The metadata key to search for (e.g., 'route:mapping')
-     * @returns {Array<external:string>} The property names that have metadata matching the key pattern.
-     */
     /**
      * Populate the cache from the target's metadata and return the matching entries.
      *
@@ -140,8 +133,8 @@ export class MetadataScanner {
 
     /**
      * Get the property names of the target object that have the requested metadata.
-     * @param {string} metadataKey - The metadata key pattern (e.g., 'route:mapping')
-     * @returns {Array<external:string>} The property names that have metadata, or undefined if none found.
+     * @param metadataKey - - The metadata key pattern (e.g., 'route:mapping')
+     * @returns The property names that have metadata, or undefined if none found.
      */
     /**
      * Get the property names that match a metadata key.

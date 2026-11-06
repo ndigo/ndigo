@@ -6,7 +6,7 @@ import { Initializable, likeInitializable } from '@ndigo/factory';
 import { ApplicationContext, AsApplicationContextAware, likeApplicationContextAware } from '@ndigo/context';
 
 /**
- * Should ViewResolver be typed, i.e. ViewResolver<T extends View>?
+ * Should ViewResolver be typed, i.e. `ViewResolver<T extends View>`?
  *
  */
 
@@ -111,7 +111,7 @@ export class BoundedCache<V> {
  * Builds an unambiguous cache key for a view name/language pair.
  *
  * The key MUST distinguish every distinct pair: a naive
- * `` `${name}_${language}` `` join collides — `('user_en', 'US')` and
+ * `\${name}_\${language}` join collides — `('user_en', 'US')` and
  * `('user', 'en_US')` both yield `user_en_US` — and would serve the first
  * resolved view for the second pair. JSON-encoding the tuple preserves the
  * `_` characters inside each component while keeping them separate.
@@ -310,15 +310,15 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
  * Resolve the given view by name.
  *
  * To allow for ViewResolver chaining, a ViewResolver should return `null` if a view with the given name is not defined in it.
- * @param {string} viewName The name of the view to resolve.
- * @param {*} [language]
- * @returns {module:view.View} The resolved view.
+ * @param viewName - The name of the view to resolve.
+ * @param language - The locale language (optional).
+ * @returns The resolved view.
  */
 
 /**
  * Convenient base class for {@link ViewResolver|`ViewResolver`} implementations. Caches {@link View|`View`} instances once resolved.
  * Subclasses need to implement the {@link AbstractCachingViewResolver#_loadView|`_loadView`} method, building the instance for the specific view name and locale.
- * @abstract
+ * 
 
  * @see {@link AbstractCachingViewResolver#_loadView}
  */

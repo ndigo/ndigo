@@ -70,7 +70,7 @@ function scanPlaceholders(template: string): PlaceholderOccurrence[] {
  * @param inProgress - Keys currently being resolved (cycle detection).
  * @param depth - Current nesting depth.
  * @returns The resolved string.
- * @throws {IllegalStateError} On a placeholder cycle or runaway nesting.
+ * @throws On a placeholder cycle or runaway nesting.
  */
 export function resolvePlaceholders(
     template: string,

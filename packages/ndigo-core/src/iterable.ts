@@ -4,67 +4,67 @@ import { isNil, is } from '@ndigo/util/types';
 
 /**
  * Extracts the key type from a Map-like value.
- * @template Value - The Map-like value type.
+ * @typeParam Value - The Map-like value type.
  */
 type MapKey<Value> = Value extends Map<infer KeyType, unknown> ? KeyType : unknown;
 
 /**
  * Extracts the value type from a Map-like value.
- * @template Value - The Map-like value type.
+ * @typeParam Value - The Map-like value type.
  */
 type MapValue<Value> = Value extends Map<unknown, infer ValueType> ? ValueType : unknown;
 
 /**
  * Represents an array of entries for an array-like value, where each entry is `[index, value]`.
- * @template Value - The array-like value type.
+ * @typeParam Value - The array-like value type.
  */
 type ArrayEntries<Value extends readonly unknown[]> = Array<ArrayEntry<Value>>;
 
 /**
  * Represents an array of entries for a Map-like value, where each entry is `[key, value]`.
- * @template Value - The Map-like value type.
+ * @typeParam Value - The Map-like value type.
  */
 type MapEntries<Value> = Array<MapEntry<Value>>;
 
 /**
  * Represents an array of entries for an object-like value, where each entry is `[key, value]`.
- * @template Value - The object-like value type.
+ * @typeParam Value - The object-like value type.
  */
 type ObjectEntries<Value> = Array<ObjectEntry<Value>>;
 
 /**
  * Represents an array of entries for a Set-like value, where each entry is `[value, value]`.
- * @template Value - The Set-like value type.
+ * @typeParam Value - The Set-like value type.
  */
 type SetEntries<Value extends Set<unknown>> = Array<SetEntry<Value>>;
 
 /**
  * Represents a single entry for an array-like value, where the entry is `[index, value]`.
- * @template Value - The array-like value type.
+ * @typeParam Value - The array-like value type.
  */
 export type ArrayEntry<Value extends readonly unknown[]> = [number, Value[number]];
 
 /**
  * Represents a single entry for a Map-like value, where the entry is `[key, value]`.
- * @template Value - The Map-like value type.
+ * @typeParam Value - The Map-like value type.
  */
 export type MapEntry<Value> = [MapKey<Value>, MapValue<Value>];
 
 /**
  * Represents a single entry for an object-like value, where the entry is `[key, value]`.
- * @template Value - The object-like value type.
+ * @typeParam Value - The object-like value type.
  */
 export type ObjectEntry<Value> = [keyof Value, Value[keyof Value]];
 
 /**
  * Represents a single entry for a Set-like value, where the entry is `[value, value]`.
- * @template Value - The Set-like value type.
+ * @typeParam Value - The Set-like value type.
  */
 export type SetEntry<Value> = Value extends Set<infer ValueType> ? [ValueType, ValueType] : never;
 
 /**
  * Represents a generic entry type, which can be an `ArrayEntry`, `MapEntry`, `ObjectEntry`, or `SetEntry`.
- * @template Value - The original value type from which the entry is derived.
+ * @typeParam Value - The original value type from which the entry is derived.
  */
 export type Entry<Value> =
     Value extends Map<unknown, unknown>
@@ -79,7 +79,7 @@ export type Entry<Value> =
 
 /**
  * Represents a generic collection of entries, which can be `MapEntries`, `SetEntries`, `ArrayEntries`, or `ObjectEntries`.
- * @template Value - The original value type from which the entries are derived.
+ * @typeParam Value - The original value type from which the entries are derived.
  */
 export type Entries<Value> =
     Value extends Map<unknown, unknown>
@@ -131,7 +131,7 @@ export const likeIterable = (value: unknown): value is Iterable<unknown> =>
 
 /**
  * An iterator for array-like objects, providing sequential access to elements by index.
- * @template T - The type of elements in the indexed collection.
+ * @typeParam T - The type of elements in the indexed collection.
 
  */
 export class IndexedIterator<T = unknown> implements IterableIterator<T> {
@@ -172,7 +172,7 @@ export class IndexedIterator<T = unknown> implements IterableIterator<T> {
 
 /**
  * Creates a new `IndexedIterator` for an array-like collection.
- * @template T - The type of elements in the indexed collection.
+ * @typeParam T - The type of elements in the indexed collection.
  * @param indexed - The array-like collection to iterate over.
  * @returns An `IterableIterator` for the provided collection.
  */
@@ -182,7 +182,7 @@ export const indexedIterator = <T = unknown>(indexed: ArrayLike<T | undefined>):
 /**
  * An iterator for the key-value pairs (entries) of an object or collection.
  * It can adapt to objects with an `entries()` method, or fall back to `Object.entries()`.
- * @template T - The type of values in the entries.
+ * @typeParam T - The type of values in the entries.
 
  */
 export class EntriesIterator<T = unknown> implements IterableIterator<Entry<T>> {
@@ -217,7 +217,7 @@ export class EntriesIterator<T = unknown> implements IterableIterator<Entry<T>> 
 
 /**
  * Creates a new `EntriesIterator` for an object or collection.
- * @template T - The type of values in the entries.
+ * @typeParam T - The type of values in the entries.
  * @param target - The object or collection to iterate over its entries.
  * @returns An `IterableIterator` for the entries of the provided target.
  */

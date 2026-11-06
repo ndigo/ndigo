@@ -1,0 +1,29 @@
+# {{name}} — {{className}}
+
+> {{description}}.
+
+Scaffolded by `create-ndigo-app` — extend this README as the app grows.
+
+## Run
+
+```bash
+cd {{name}} && pnpm install && pnpm start
+# GET http://127.0.0.1:{{port}}/hello?name=Ndigo
+```
+
+## Demonstrates
+
+- A minimal `runNodeApplication` boot (AD-90) with one controller
+- `@getMapping` handlers with query-parameter binding
+
+## See Also
+
+- [@ndigo/platform-node](https://www.npmjs.com/package/@ndigo/platform-node) — the Node platform foundation
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## License
+
+[ISC](./LICENSE)

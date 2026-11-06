@@ -1540,6 +1540,15 @@ importers:
         specifier: 'catalog:'
         version: 8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
 
+  packages/create-ndigo-app:
+    devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vitest:
+        specifier: 'catalog:'
+        version: 5.1.0(@opentelemetry/api@1.10.0)(@types/node@24.13.6)(jsdom@30.1.3(@noble/hashes@1.8.0))(msw@3.0.3(@types/node@24.13.6)(supports-color@8.1.1)(typescript@7.0.2)(vite@8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)))(vite@8.3.5(@types/node@24.13.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))
+
   packages/ndigo-auth-client:
     dependencies:
       '@ndigo/auth-core':

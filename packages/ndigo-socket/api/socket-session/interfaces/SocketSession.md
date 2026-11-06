@@ -115,6 +115,9 @@ Close status code (default `1000` normal; `1008` policy,
 
 Human-readable close reason.
 
+(Not `Closeable` — the parameters are per-session wire state, not a
+lifecycle hook.)
+
 #### Returns
 
 `void`

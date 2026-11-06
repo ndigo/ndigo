@@ -11,6 +11,7 @@ View target implementation that renders into a host DOM node.
 ## Implements
 
 - [`DOMViewTarget`](../interfaces/DOMViewTarget.md)
+- `Destroyable`
 
 ## Constructors
 
@@ -49,6 +50,10 @@ When `host` is null or undefined.
 ### destroyed
 
 > **destroyed**: `boolean`
+
+#### Implementation of
+
+`Destroyable.destroyed`
 
 ## Accessors
 
@@ -141,6 +146,10 @@ Permanently disables the target and releases its event listeners.
 #### Returns
 
 `void`
+
+#### Implementation of
+
+`Destroyable.destroy`
 
 ***
 

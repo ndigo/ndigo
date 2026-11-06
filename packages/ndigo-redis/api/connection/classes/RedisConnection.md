@@ -11,6 +11,10 @@ never connects. Owned connections fail fast without automatic reconnect or
 offline queues; call and await connect() before use. Errors are observable
 through lastError and command rejections, never logged with credentials.
 
+## Implements
+
+- `AsyncCloseable`
+
 ## Constructors
 
 ### Constructor
@@ -66,6 +70,10 @@ Rejects new work, drains tracked operations, then closes only owned clients.
 #### Returns
 
 `Promise`\<`void`\>
+
+#### Implementation of
+
+`AsyncCloseable.close`
 
 ***
 

@@ -2,6 +2,7 @@
  * Schedule registry: collects and manages declared schedules.
  */
 import { FrameworkError, getSymbolMetadata } from '@ndigo/core';
+import type { AsyncDestroyable } from '@ndigo/factory';
 import type { ApplicationContext } from '@ndigo/context';
 import { TASK_SCHEDULER } from './context-tokens';
 import { SCHEDULED_METADATA_PREFIX } from './scheduled';
@@ -42,7 +43,7 @@ const likeNormalizedSpec = (value: unknown): value is NormalizedScheduledSpec =>
  * owner instance. A `@scheduled` class registered as a prototype (not an
  * instance) has no resolvable owner and fails start loudly (AD-20 D5.5).
  */
-export class ScheduleRegistry {
+export class ScheduleRegistry implements AsyncDestroyable {
     #applicationContext: ApplicationContext | null = null;
     #scheduler: TaskScheduler | null = null;
     #tasks: ScheduledTaskDefinition[] = [];

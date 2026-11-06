@@ -2,6 +2,7 @@
  * The `JobDriver` SPI — the one seam every jobs backend implements.
  */
 import { like } from '@ndigo/util/types';
+import type { AsyncCloseable } from '@ndigo/factory';
 
 import type { ClaimOptions, JobId, JobRecord, JobRequest } from './job';
 
@@ -24,7 +25,7 @@ import type { ClaimOptions, JobId, JobRecord, JobRequest } from './job';
  * Implementations are registered under the `jobDriver` bean; the default is
  * {@link "in-process-job-driver".InProcessJobDriver | InProcessJobDriver}, which is explicitly non-durable.
  */
-export interface JobDriver {
+export interface JobDriver extends AsyncCloseable {
     /** Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`). */
     readonly kind: string;
 

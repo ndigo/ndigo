@@ -6,6 +6,7 @@
 import { createClient, type Client, type InValue, type Row } from '@libsql/client';
 import { DefaultPrincipal, type SessionRecord, type SessionStore } from '@ndigo/auth-core';
 import { IllegalStateError } from '@ndigo/core';
+import type { Closeable } from '@ndigo/factory';
 import { randomToken } from '@ndigo/util';
 
 const TABLE = 'ndigo_sessions';
@@ -61,7 +62,7 @@ export interface LibSQLSessionStoreOptions {
  * Stop/drain consumers before close/dispose; pending operations are not drained.
  * `close` is the container's supported shutdown bridge, not automatic migration.
  */
-export class LibSQLSessionStore implements SessionStore {
+export class LibSQLSessionStore implements SessionStore, Closeable {
     readonly kind = 'libsql';
     readonly #client: Client;
     readonly #ownsClient: boolean;

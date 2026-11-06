@@ -11,6 +11,10 @@ crash-self-healing. Acquisition is **non-blocking** — waiting policies
 belong to the caller (`@scheduled({ lock, lockWait })`), never to the
 driver.
 
+## Extends
+
+- `AsyncCloseable`
+
 ## Properties
 
 ### kind
@@ -61,3 +65,7 @@ Never affects leases acquired through other driver instances.
 #### Returns
 
 `Promise`\<`void`\>
+
+#### Overrides
+
+`AsyncCloseable.close`

@@ -46,7 +46,8 @@
     "@libsql/client": "0.18.0",
     "drizzle-orm": "0.45.4",
     "drizzle-zod": "^0.8.3",
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "@ndigo/factory": "~0.0.1"
   },
   "sideEffects": false
 }

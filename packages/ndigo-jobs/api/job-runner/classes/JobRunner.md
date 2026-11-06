@@ -20,6 +20,10 @@ on context close).
 
 Deterministic tests drive [tick](#tick) directly with an injected clock.
 
+## Implements
+
+- `AsyncCloseable`
+
 ## Constructors
 
 ### Constructor
@@ -89,6 +93,10 @@ Container teardown: stops claiming and drains in-flight executions.
 #### Returns
 
 `Promise`\<`void`\>
+
+#### Implementation of
+
+`AsyncCloseable.close`
 
 ***
 

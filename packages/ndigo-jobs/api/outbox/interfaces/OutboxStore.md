@@ -18,6 +18,10 @@ Publication is at-least-once: a claimed entry becomes claimable again after
 its lease expires (crashed relay, failed publish), so consumers subscribe
 idempotently.
 
+## Extends
+
+- `AsyncCloseable`
+
 ## Methods
 
 ### append()
@@ -80,6 +84,10 @@ Releases store resources (idempotent).
 #### Returns
 
 `Promise`\<`void`\>
+
+#### Overrides
+
+`AsyncCloseable.close`
 
 ***
 

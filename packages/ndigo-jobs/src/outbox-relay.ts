@@ -2,6 +2,7 @@
  * `OutboxRelay` — publishes claimed outbox entries and marks them done.
  */
 import { FrameworkError } from '@ndigo/core';
+import type { AsyncCloseable } from '@ndigo/factory';
 import { getErrorMessage } from '@ndigo/util';
 import { getLogger, type Logger } from '@ndigo/log';
 import {
@@ -43,7 +44,7 @@ export interface OutboxRelayOptions {
  * bean; `close()` stops and awaits the pass in flight. Direct construction is
  * the standalone/test path.
  */
-export class OutboxRelay {
+export class OutboxRelay implements AsyncCloseable {
     readonly phase = 10;
     readonly isAutoStartup = true;
     readonly #store: OutboxStore;

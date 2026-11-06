@@ -2,6 +2,7 @@
  * Task scheduler: drives scheduled task execution.
  */
 import { FrameworkError } from '@ndigo/core';
+import type { AsyncCloseable, AsyncDestroyable } from '@ndigo/factory';
 import { like } from '@ndigo/util/types';
 import { LOCK_DRIVER, likeLockDriver, type LockDriver, type LockHandle } from '@ndigo/locks';
 import { Schedule } from './schedule';
@@ -155,7 +156,7 @@ export const likeTaskScheduler = like({
  * - `start()`/`stop()` — a wall-clock timer chain that calls `tick` at each
  *   computed next-fire time (fire-and-forget; single-flight guards overlap).
  */
-export class TaskScheduler {
+export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
     readonly #clock: () => Date;
     readonly #warn: (message: string) => void;
     readonly #tasks = new Map<string, TaskState>();

@@ -1,0 +1,16 @@
+import { entity, primaryColumn, column } from '@ndigo/orm';
+
+/**
+ * Sample entity for the `<%= name %>` api preset.
+ *
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+@entity('<%= className %>Item')
+export class <%= className %>Item {
+    @primaryColumn()
+    id!: string;
+
+    @column()
+    title!: string;
+}

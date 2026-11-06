@@ -96,6 +96,17 @@ export default async function appGenerator(tree: Tree, schema: AppGeneratorSchem
         tmpl: '',
     });
 
+    // Presets layer extra files on top of the kind scaffold: `api` adds an
+    // entity and a database adapter runner (AD-96).
+    if (preset === 'api') {
+        generateFiles(tree, join(__dirname, 'presets', 'api'), appDir, {
+            name,
+            className,
+            camelName,
+            tmpl: '',
+        });
+    }
+
     await formatFiles(tree);
 }
 

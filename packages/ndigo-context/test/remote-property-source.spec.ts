@@ -3,9 +3,6 @@
  * body-text change gating, `optional` failure semantics, precedence-slot
  * anchoring, polling lifecycle (start/stop via the scheduler seam), and the
  * refresh-event loop.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import { CONFIG_SERVER_SOURCE_NAME, RemotePropertySource } from '../src/remote-property-source';

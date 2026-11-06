@@ -6,9 +6,6 @@
  * bodies), CRLF line endings (`EOL = [CR] LF`), repeated header entries,
  * trailing EOLs after the terminating NUL, heart-beat pings, and
  * malformed-frame errors.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, expect, test } from 'vitest';
 import { StompProtocolError, bodyAsText, parseStompFrame, serializeStompFrame, type StompFrame } from '../src/index';

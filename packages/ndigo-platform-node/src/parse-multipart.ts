@@ -10,9 +10,6 @@
  * before any body byte is read; chunked uploads are capped by a counting gate
  * that stops the flow instead of draining to EOF. Rejected or post-abort
  * parts are drained with a real consumer so busboy always reaches `close`.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import busboy from 'busboy';
 import type { Readable } from 'node:stream';

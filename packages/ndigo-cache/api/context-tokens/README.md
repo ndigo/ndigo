@@ -6,6 +6,8 @@
 
 # context-tokens
 
+Type-safe bean handles for the shared cache contracts (AD-34 D1).
+
 ## Variables
 
 - [CACHE\_MANAGER](variables/CACHE_MANAGER.md)

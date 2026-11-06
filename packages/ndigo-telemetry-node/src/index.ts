@@ -1,8 +1,5 @@
 /**
  * NodeSDK configuration and the Node platform instrumentations.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export {
     configureTelemetry,

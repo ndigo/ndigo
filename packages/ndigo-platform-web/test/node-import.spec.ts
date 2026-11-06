@@ -5,9 +5,6 @@
  * environment, where `document`/`window`/`navigator` are absent.
  *
  * @vitest-environment node
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, expect, test } from 'vitest';
 

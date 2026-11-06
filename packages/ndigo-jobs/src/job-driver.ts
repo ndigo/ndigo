@@ -1,8 +1,5 @@
 /**
  * The `JobDriver` SPI — the one seam every jobs backend implements.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { like } from '@ndigo/util/types';
 

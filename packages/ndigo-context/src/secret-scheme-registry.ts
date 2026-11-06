@@ -5,9 +5,6 @@
  * the full guarantee set is REFUSED here (throws), never silently wired with
  * a weaker guarantee. Decryption dispatches on the marker's scheme segment,
  * so mixed-scheme rotation works in one deployment.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { IllegalStateError } from '@ndigo/core';
 import { parseSecretMarker, SecretCipher, SecretDecryptContext, SecretDecryptor } from './secret-cipher';

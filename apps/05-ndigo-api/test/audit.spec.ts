@@ -1,9 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
- */
-
-/**
  * Method-interception demo gate (AD-42 D-8): boots the REAL ndigo-api
  * bootstrap path (same assembly as `src/index.ts`) and proves a
  * container-managed `@audited` interceptor advises a constructor-created

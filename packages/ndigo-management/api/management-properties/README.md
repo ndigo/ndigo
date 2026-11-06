@@ -6,6 +6,8 @@
 
 # management-properties
 
+`management.*` configuration reads and the exposure model (AD-76 D-5/D-2).
+
 ## Type Aliases
 
 - [ManagementProperties](type-aliases/ManagementProperties.md)

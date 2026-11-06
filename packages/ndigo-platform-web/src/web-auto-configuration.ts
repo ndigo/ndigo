@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { configuration, entry } from '@ndigo/context';
 import { argumentValueConverters, RadixMetadataHandlerMapping } from '@ndigo/dispatcher';

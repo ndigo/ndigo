@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 /// <reference lib="dom" />
 // TypeScript 6.0 declaration generation fix

@@ -6,6 +6,8 @@
 
 # browser-dispatcher
 
+Browser-flavored dispatcher.
+
 ## Classes
 
 - [BrowserDispatcher](classes/BrowserDispatcher.md)

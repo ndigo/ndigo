@@ -1,8 +1,5 @@
 /**
  * `ResponseEntity` — rich HTTP response wrapper for Node.js handlers.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { ResponseStatus, ResponseStatuses } from '@ndigo/http';
 

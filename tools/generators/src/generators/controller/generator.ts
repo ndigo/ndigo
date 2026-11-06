@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { formatFiles, generateFiles, type Tree } from '@nx/devkit';
 import { toPascal } from '@ndigo/util/string';
@@ -14,11 +12,10 @@ export interface ControllerGeneratorSchema {
     package: string;
     className?: string;
     summary?: string;
-    author?: string;
 }
 
 export default async function controllerGenerator(tree: Tree, schema: ControllerGeneratorSchema): Promise<void> {
-    const { name, package: pkg, author = 'Jeff Rose' } = schema;
+    const { name, package: pkg } = schema;
     const className = schema.className || toPascal(name);
     const projectRoot = `packages/ndigo-${pkg}`;
     if (!tree.exists(`${projectRoot}/package.json`)) {
@@ -29,7 +26,6 @@ export default async function controllerGenerator(tree: Tree, schema: Controller
         className,
         packageName: pkg,
         summary: schema.summary,
-        author,
         tmpl: '',
     });
     await formatFiles(tree);

@@ -6,6 +6,8 @@
 
 # async-reader
 
+A minimal async iterable built from push + complete events.
+
 ## Classes
 
 - [AsyncReader](classes/AsyncReader.md)

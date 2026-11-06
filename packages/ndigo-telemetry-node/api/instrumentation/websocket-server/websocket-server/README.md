@@ -6,6 +6,8 @@
 
 # instrumentation/websocket-server/websocket-server
 
+OpenTelemetry instrumentation for WebSocket session lifecycle + fan-out.
+
 ## Classes
 
 - [WebSocketServerInstrumentation](classes/WebSocketServerInstrumentation.md)

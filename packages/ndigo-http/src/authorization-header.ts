@@ -3,9 +3,6 @@
  * credential-scheme extraction. Apps gate handlers by reading the
  * `Authorization` value (via `headerValue('authorization')` or a record)
  * and stripping the scheme; the constant owns that parsing once.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { HTTPHeader } from './http-header';
 

@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/flags-openfeature` — the OpenFeature bridge for
+
 ## References
 
 ### FeatureFlagTelemetryHook

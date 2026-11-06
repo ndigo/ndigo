@@ -1,8 +1,5 @@
 /**
  * Declarative service-client decorators (AD-08).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { HTTPMethod } from '@ndigo/http';
 import { z } from 'zod';

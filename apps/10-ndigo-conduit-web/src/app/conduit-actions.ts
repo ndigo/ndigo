@@ -6,9 +6,6 @@
  * each to the service that owns it. Controllers stay thin (they only build
  * models), views stay pure (they only render models and emit intents), and the
  * whole interaction surface is readable in one file.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { ApplicationContext } from '@ndigo/context';
 import type { ConduitServices } from './conduit-services';

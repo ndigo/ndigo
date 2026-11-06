@@ -2,9 +2,6 @@
  * Profile expression builder specs (AD-34 D5; re-homed with the builder —
  * AD-83). Config-gating integration for `@whenProfile` lives in
  * `@ndigo/context` (`test/when-profile.spec.ts`).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { describe, test, expect } from 'vitest';
 import { Profile, ProfileTerm } from '../src/profile';

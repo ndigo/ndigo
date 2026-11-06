@@ -9,9 +9,6 @@
  *
  * Only the account id travels in the token (`sub`); every request re-reads
  * the account row, so a renamed user keeps working and a deleted one stops.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { JWTAdapter } from '@ndigo/auth-server';
 import { tokenInvalid, tokenMissing, type ConduitErrorView } from './errors';

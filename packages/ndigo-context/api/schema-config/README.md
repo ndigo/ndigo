@@ -6,6 +6,8 @@
 
 # schema-config
 
+Zod-schema-driven config resolution (AD-34 D3): bind a typed value from a
+
 ## Type Aliases
 
 - [DeepPropertyKey](type-aliases/DeepPropertyKey.md)

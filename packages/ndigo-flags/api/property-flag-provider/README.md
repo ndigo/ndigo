@@ -6,6 +6,8 @@
 
 # property-flag-provider
 
+The property-backed local flag provider (AD-82 D-3): reads flag state
+
 ## Classes
 
 - [PropertyFlagProvider](classes/PropertyFlagProvider.md)

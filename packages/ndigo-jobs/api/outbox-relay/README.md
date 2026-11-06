@@ -6,6 +6,8 @@
 
 # outbox-relay
 
+`OutboxRelay` — publishes claimed outbox entries and marks them done.
+
 ## Classes
 
 - [OutboxRelay](classes/OutboxRelay.md)

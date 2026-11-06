@@ -8,9 +8,6 @@
  * A real listener is used (`MockHTTP` has no socket path), and the credential
  * rides the upgrade URL as `?token=` — the only channel a browser `WebSocket`
  * has.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';

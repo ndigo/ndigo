@@ -1,8 +1,5 @@
 /**
  * HTTP verb route mapping decorators — sugar over `requestMapping` with the.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
 import { isString } from '@ndigo/util/types';

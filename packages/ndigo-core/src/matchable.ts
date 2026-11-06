@@ -6,9 +6,6 @@ import { like } from '@ndigo/util/types';
 
 /**
  * Represents an object that can determine if it matches a given value.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 export interface Matchable<TValue> {
     /**

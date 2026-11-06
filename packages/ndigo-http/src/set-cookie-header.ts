@@ -4,9 +4,6 @@
  * in `@ndigo/platform-node` (`parseCookies`); this module owns the
  * `Set-Cookie` value shape: `name=value` plus attributes, `; `-joined per
  * RFC 6265 §4.1.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { HTTPHeader } from './http-header';
 

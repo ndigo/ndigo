@@ -9,9 +9,6 @@
  *
  * The default backend is `@ndigo/orm`'s in-memory manager, so the app needs
  * no external infrastructure.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { InMemoryDataSource, InMemoryEntityManager, type EntityManager } from '@ndigo/orm';
 import { Article, Comment, Favorite, Follow, User } from './entities';

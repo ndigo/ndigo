@@ -6,6 +6,8 @@
 
 # socket-client
 
+Isomorphic WebSocket client — WHATWG `WebSocket`-based (AD-22 D3).
+
 ## Classes
 
 - [WebSocketClient](classes/WebSocketClient.md)

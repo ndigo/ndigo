@@ -1,8 +1,5 @@
 /**
  * The in-process reference driver: full contract semantics, no durability.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { FrameworkError } from '@ndigo/core';
 import type { ClaimOptions, JobId, JobRecord, JobRequest } from './job';

@@ -6,6 +6,8 @@
 
 # entity-schema
 
+Zod schema derivation for `@ndigo/orm` entities (AD-07).
+
 ## Functions
 
 - [baseSchemaForType](functions/baseSchemaForType.md)

@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment jsdom
 import { describe, test, expect, beforeEach } from 'vitest';

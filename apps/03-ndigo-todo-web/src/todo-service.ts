@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { signal, effect } from '@ndigo/signals';
 import { ApplicationContext, AsApplicationContextAware } from '@ndigo/context';

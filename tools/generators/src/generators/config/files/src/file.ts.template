@@ -1,7 +1,5 @@
 /**
  * <%= summary ?? className %>
- *
- * @author <%= author %>
  */
 export class <%= className %> {
     // TODO: implement

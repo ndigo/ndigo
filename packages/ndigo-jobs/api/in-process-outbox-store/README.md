@@ -6,6 +6,8 @@
 
 # in-process-outbox-store
 
+The in-process reference outbox store (development and tests).
+
 ## Classes
 
 - [InProcessOutboxStore](classes/InProcessOutboxStore.md)

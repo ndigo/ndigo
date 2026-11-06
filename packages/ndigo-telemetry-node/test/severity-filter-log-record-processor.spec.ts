@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Context, ROOT_CONTEXT } from '@opentelemetry/api';
 import { SeverityNumber } from '@opentelemetry/api-logs';

@@ -1,8 +1,5 @@
 /**
  * The Todo-Backend REST surface through `@ndigo/test` MockHTTP.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest';

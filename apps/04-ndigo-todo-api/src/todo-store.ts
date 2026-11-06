@@ -1,8 +1,5 @@
 /**
  * In-memory todo store on `@ndigo/orm` — the app's only persistence seam.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { InMemoryDataSource, InMemoryEntityManager, InMemoryRepository } from '@ndigo/orm';

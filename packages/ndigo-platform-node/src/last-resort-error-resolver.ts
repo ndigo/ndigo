@@ -1,8 +1,5 @@
 /**
  * Last-resort error resolver for the Node pipeline: any error that no other.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractRouteErrorResolver, ModelAndView } from '@ndigo/dispatcher';
 import { Route } from '@ndigo/router';

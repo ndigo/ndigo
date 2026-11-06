@@ -7,9 +7,6 @@
  * `BrowserDispatcher`, the DOM view target with its event bridge, and the auth
  * guard — and finally restores the persisted session before navigating to the
  * URL's route.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { MetadataConfigApplicationContext, type ApplicationContext } from '@ndigo/context';
 import { IllegalStateError } from '@ndigo/core';

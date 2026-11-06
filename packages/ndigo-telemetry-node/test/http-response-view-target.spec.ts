@@ -3,9 +3,6 @@
  * (TEL-11): committing a rendered view is internal lifecycle work — the span
  * must be INTERNAL, and the status code must use the numeric semconv
  * `http.response.status_code` (was the mislabeled string `http.status_code`).
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { describe, expect, test, afterEach, vi } from 'vitest';

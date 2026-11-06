@@ -6,6 +6,8 @@
 
 # commands/db/migrate
 
+`ndigo db migrate` — run the application's declared `db:migrate` script
+
 ## Variables
 
 - [dbMigrateCommand](variables/dbMigrateCommand.md)

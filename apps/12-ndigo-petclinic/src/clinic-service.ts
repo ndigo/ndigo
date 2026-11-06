@@ -10,9 +10,6 @@
  * Reads that can miss return `undefined` rather than throwing: the HTML
  * controllers render the 404 page and the JSON controllers answer with a
  * problem document, each in its own idiom.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Page } from '@ndigo/orm';
 import { ClinicRepository, PAGE_SIZE } from './clinic-repository';

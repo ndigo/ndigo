@@ -6,9 +6,6 @@
  * the loader) — each exporting a `Migration` as its default export. The
  * runner contract (AD-30) is unchanged; these helpers only discover and
  * order the files, so `DrizzleMigrator` internals stay untouched.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';

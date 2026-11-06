@@ -1,8 +1,5 @@
 /**
  * View that serves static files from the filesystem.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { Route } from '@ndigo/router';
 import { ViewTarget } from '@ndigo/view';

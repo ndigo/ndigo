@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { createWebApplication } from '@ndigo/platform-web';
 import { {{className}}Configuration } from './{{name}}-configuration';

@@ -6,9 +6,6 @@
  * both read the same base version must resolve to exactly one winner. It is
  * deterministic by construction (the service serializes writes itself), so
  * there is no sleep, no timer and no retry anywhere in this spec.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 // @vitest-environment node
 import { beforeEach, describe, expect, test } from 'vitest';

@@ -6,6 +6,8 @@
 
 # pubsub/socket-fanout
 
+Redis live socket Pub/Sub adapter.
+
 ## Classes
 
 - [RedisSocketFanout](classes/RedisSocketFanout.md)

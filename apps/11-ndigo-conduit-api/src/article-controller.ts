@@ -7,9 +7,6 @@
  * envelope). Ownership is checked in-handler: only the author may update or
  * delete, and a non-author gets `403` — distinct from the `404` an unknown
  * slug produces.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import {

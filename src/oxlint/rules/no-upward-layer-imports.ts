@@ -8,9 +8,6 @@
  * `devDependencies`, which the ranks deliberately exclude), tooling packages
  * (exempt by {@link TOOLING_PACKAGES}) sit outside the layer system, and
  * non-package code (apps, root scripts) is never reported.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import type { Context, ESTree } from '@oxlint/plugins';
 

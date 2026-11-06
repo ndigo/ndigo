@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { getMapping, parameters, pathVariable, requestMapping, matrixParamCondition } from '@ndigo/dispatcher';

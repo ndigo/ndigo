@@ -1,6 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { AbstractTemplateView, type ProducerView, type RenderResult, ViewTarget } from '@ndigo/view';
 import { IllegalStateError } from '@ndigo/core';

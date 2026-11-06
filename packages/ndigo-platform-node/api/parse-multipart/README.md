@@ -6,6 +6,8 @@
 
 # parse-multipart
 
+Streaming `multipart/form-data` parser for {@link NodeHTTPServerAdapter}.
+
 ## Interfaces
 
 - [MultipartLimits](interfaces/MultipartLimits.md)

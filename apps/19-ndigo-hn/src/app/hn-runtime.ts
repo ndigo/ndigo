@@ -7,9 +7,6 @@
  * pieces routes flow through — the `HashRouter`, the `BrowserDispatcher`, and
  * the DOM view target — and navigates to the route the URL already addresses,
  * so a reload of `#/item/123` restores that item.
- *
- * @since 1.0.0
- * @author Jeff Rose
  */
 import { createWebApplication } from '@ndigo/platform-web';
 import type { WebApplication } from '@ndigo/platform-web';

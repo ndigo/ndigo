@@ -1,9 +1,4 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
- */
-
-/**
  * jsdom ships `ElementInternals` with only the ARIA half — the
  * form-participation API (`setFormValue`, `setValidity`, `validity`, `states`)
  * is missing (every real browser has it). The adopted library's

@@ -8,10 +8,6 @@
 
 Represents a mounted feature route, associating a callback with a URL prefix.
 
-## Since
-
-1.0.0
-
 ## Properties
 
 ### callback

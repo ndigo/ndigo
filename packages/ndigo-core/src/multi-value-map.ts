@@ -1,5 +1,5 @@
 /**
- * Extension of the {@link external:Map|Map} interface that stores multiple values under a single key.
+ * Extension of the {@link external#Map|Map} interface that stores multiple values under a single key.
  */
 export class MultiValueMap<K, V> extends Map<K, V[]> {
     /**

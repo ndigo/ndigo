@@ -1,4 +1,6 @@
+
 /**
+ * HTTP client with interceptor support and convenience verb helpers.
  */
 /// <reference lib="dom" />
 // TypeScript 6.0 declaration generation fix
@@ -41,22 +43,25 @@ export class HTTP {
      * use the constructor directly.
      *
      * @param config - Configuration options for the HTTP client
-     * @param config.baseURL - Base URL for resolving relative URLs
-     * @param config.params - Default query parameters to include in all requests
-     * @param config.interceptors - Optional HTTP interceptors
-     * @param config.fetch - Optional custom fetch implementation (defaults to globalThis.fetch)
+     *   - `baseURL` - Base URL for resolving relative URLs
+     *   - `params` - Default query parameters to include in all requests
+     *   - `interceptors` - Optional HTTP interceptors
+     *   - `fetch` - Optional custom fetch implementation (defaults to globalThis.fetch)
      *
      * @returns A configured HTTP client instance
      *
      * @example
+     * ```ts
      * // Direct construction (recommended for standalone use)
      * const api = HTTP.create({
      *     baseURL: 'https://api.example.com/',
      *     headers: { 'Authorization': 'Bearer token123' },
      *     params: { 'version': 'v2' }
      * });
+     * ```
      *
      * @example
+     * ```ts
      * // With interceptors
      * const api = HTTP.create({
      *     baseURL: 'https://api.example.com/',
@@ -65,8 +70,9 @@ export class HTTP {
      *         new LoggingInterceptor()
      *     ]
      * });
+     * ```
      *
-     * @see {@link HTTP.constructor} for dependency injection scenarios
+     * @see the constructor for dependency injection scenarios
      */
     static create(config: HTTPConfig = {}): HTTP {
         const { interceptors = [], fetch, requestTransforms = [], responseTransforms = [], ...init } = config;
@@ -94,18 +100,24 @@ export class HTTP {
      * @param fetch - Fetch implementation (defaults to globalThis.fetch)
      *
      * @example
+     * ```ts
      * // Dependency injection pattern (AsHTTPStrategy)
-     * getHTTP(fetch: Fetch = globalThis.fetch): HTTP {
+     * class Consumer {
+     *   getHTTP(fetch: Fetch = globalThis.fetch): HTTP {
      *     const { httpInterceptors, httpSettings } = this;
      *     return new HTTP(httpInterceptors, httpSettings, fetch);
+     *   }
      * }
+     * ```
      *
      * @example
+     * ```ts
      * // Direct construction (when DI is not used)
      * const http = new HTTP(
      *     [new TimeoutInterceptor(5000)],
      *     { baseURL: 'https://api.example.com/' }
      * );
+     * ```
      *
      * @see {@link HTTP.create} for a cleaner API when not using DI
      */
@@ -119,12 +131,7 @@ export class HTTP {
         this.settings = init === defaults ? assign({}, init) : assign({}, defaults, init);
     }
 
-    /**
-
-     * @param {string} input
-     * @param {module:http.HTTPInit} [init={}]
-     * @returns {Promise<external:Response>}
-     */
+    
     async request(input: string, init: HTTPInit | null = null): Promise<Response> {
         const settings = init === null ? assign({}, this.settings) : assign({}, this.settings, init);
 
@@ -252,120 +259,70 @@ export class HTTP {
         }
     }
 
-    /**
-
-     * @param {string} input
-     * @param {module:http.HTTPInit} [init={}]
-     * @returns {Promise<external:Response>}
-     */
+    
     async connect(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'CONNECT';
         return this.request(input, init);
     }
 
-    /**
-
-     * @param {string} input
-     * @param {module:http.HTTPInit} [init={}]
-     * @returns {Promise<external:Response>}
-     */
+    
     async delete(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'DELETE';
         return this.request(input, init);
     }
 
-    /**
-
-     * @param {string} input
-     * @param {module:http.HTTPInit} [init={}]
-     * @returns {Promise<external:Response>}
-     */
+    
     async get(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'GET';
         return this.request(input, init);
     }
 
-    /**
-
-     * @param {string} input
-     * @param {module:http.HTTPInit} [init={}]
-     * @returns {Promise<external:Response>}
-     */
+    
     async head(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'HEAD';
         return this.request(input, init);
     }
 
-    /**
-
-     * @param {string} input
-     * @param {module:http.HTTPInit} [init={}]
-     * @returns {Promise<external:Response>}
-     */
+    
     async options(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'OPTIONS';
         return this.request(input, init);
     }
 
-    /**
-
-     * @param {string} input
-     * @param {module:http.HTTPInit} [init={}]
-     * @returns {Promise<external:Response>}
-     */
+    
     async patch(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'PATCH';
         return this.request(input, init);
     }
 
-    /**
-
-     * @param {string} input
-     * @param {module:http.HTTPInit} [init={}]
-     * @returns {Promise<external:Response>}
-     */
+    
     async post(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'POST';
         return this.request(input, init);
     }
 
-    /**
-
-     * @param {string} input
-     * @param {module:http.HTTPInit} [init={}]
-     * @returns {Promise<external:Response>}
-     */
+    
     async put(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'PUT';
         return this.request(input, init);
     }
 
-    /**
-
-     * @param {string} input
-     * @param {module:http.HTTPInit} [init={}]
-     * @returns {Promise<external:Response>}
-     */
+    
     async trace(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'TRACE';
         return this.request(input, init);
     }
 
-    /**
-     * @protected
-     * @param {module:http.HTTP|module:http.HTTPExecutionChain} http
-     * @param {string} url
-     * @returns {module:http.HTTPExecutionChain}
-     */
+    
     protected _getHTTPExecutionChain(http: HTTP | HTTPExecutionChain, url: string): HTTPExecutionChain {
         const chain = isHTTPExecutionChain(http) ? http : new HTTPExecutionChain(http),
             interceptors = this.#interceptors,

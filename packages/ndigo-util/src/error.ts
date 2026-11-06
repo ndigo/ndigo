@@ -1,4 +1,5 @@
 /**
+ * Error message extraction utilities.
  */
 
 /**

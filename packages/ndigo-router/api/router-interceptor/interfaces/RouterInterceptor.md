@@ -9,10 +9,6 @@
 Defines an interface for intercepting route processing at different stages.
 Interceptors can perform actions before (`preRoute`) or after (`postRoute`) a route is handled.
 
-## Since
-
-1.0.0
-
 ## Methods
 
 ### afterCompletion()?

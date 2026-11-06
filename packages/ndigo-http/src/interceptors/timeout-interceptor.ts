@@ -106,9 +106,9 @@ export class TimeoutInterceptor
     }
 
     /**
-     * @param {URL} url The requested URL.
-     * @param {module:http.TimeoutInit} settings The HTTP request settings, including the `timeout` setting.
-     * @returns {boolean} Whether or not the http request should continue execution.
+     * @param url - The requested URL.
+     * @param settings - The HTTP request settings, including the `timeout` setting.
+     * @returns Whether or not the http request should continue execution.
      */
     preInit(url: URL, settings: TimeoutInit): boolean {
         const controller = new AbortController(),
@@ -134,13 +134,13 @@ export class TimeoutInterceptor
     }
 
     /**
-     * @param {Error} error The error that was thrown
-     * @param {Request} request The HTTP request
-     * @param {module:http.HTTP} http The HTTP client executing the request
-     * @param {module:http.HTTPInit} [settings] The per-request settings, used to
-     *   release the timer on the error exit path (which never reaches
-     *   `postComplete` when a later error-aware interceptor throws).
-     * @returns {Promise<external:Response | undefined>} A 408 response for
+     * @param error - The error that was thrown
+     * @param request - The HTTP request
+     * @param http - The HTTP client executing the request
+     * @param settings - The per-request settings, used to release the timer on the
+     *   error exit path (which never reaches `postComplete` when a later
+     *   error-aware interceptor throws).
+     * @returns A 408 response for
      *   timed-out requests, or `undefined` so other error-aware interceptors
      *   (and finally the caller) can handle cancels and transport failures.
      */
@@ -165,9 +165,9 @@ export class TimeoutInterceptor
     }
 
     /**
-     * @param {Request} request The HTTP request
-     * @param {Response} response The HTTP response
-     * @param {module:http.HTTPInit} [settings] The settings the request was prepared from
+     * @param request - The HTTP request
+     * @param response - The HTTP response
+     * @param settings - The settings the request was prepared from
      */
     postComplete(request: Request, response: Response, settings?: HTTPInit): void {
         if (settings !== undefined) {

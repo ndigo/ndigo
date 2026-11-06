@@ -9,7 +9,3 @@
 > `const` **ROUTER**: [`ContextToken`](#)\<[`Router`](../../router/interfaces/Router.md)\>
 
 A `ContextToken` for retrieving the application's `Router` instance from the dependency injection context.
-
-## Since
-
-1.0.0

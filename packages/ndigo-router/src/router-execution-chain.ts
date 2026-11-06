@@ -36,7 +36,7 @@ export default class RouterExecutionChain {
     }
 
     /**
-     * @param {module:router.RouterInterceptor} interceptor
+     * @param interceptor - The interceptor to add.
      */
     addInterceptor(interceptor: RouterInterceptor): void {
         if (interceptor) {
@@ -45,7 +45,7 @@ export default class RouterExecutionChain {
     }
 
     /**
-     * @param {Array<module:router.RouterInterceptor>} interceptors
+     * @param interceptors - The interceptors to add.
      */
     addInterceptors(interceptors: RouterInterceptor[]): void {
         const length = interceptors?.length;
@@ -57,7 +57,7 @@ export default class RouterExecutionChain {
     }
 
     /**
-     * @param {module:router.Route} route
+     * @param route - The route to process.
      */
     async applyPostHandle(route: Route): Promise<void> {
         const interceptors = this.#interceptors;
@@ -75,7 +75,7 @@ export default class RouterExecutionChain {
     }
 
     /**
-     * @param {module:router.Route} route
+     * @param route - The route to process.
      */
     async applyAfterCompletion(route: Route): Promise<void> {
         const interceptors = this.#interceptors;
@@ -93,7 +93,7 @@ export default class RouterExecutionChain {
     }
 
     /**
-     * @param {module:router.Route} route
+     * @param route - The route to process.
      */
     async applyPreHandle(route: Route): Promise<boolean> {
         const interceptors = this.#interceptors,

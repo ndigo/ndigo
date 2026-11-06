@@ -7,22 +7,63 @@ library — commands, typed flags, `--help`, exit codes.
 
 ## Commands
 
-| Command                 | Runs the app's…                                                     | Example                                                           |
-| :---------------------- | :------------------------------------------------------------------ | :---------------------------------------------------------------- |
-| `ndigo serve`           | `scripts.start` under the supervisor                                | `ndigo serve ./apps/05-ndigo-api --port 3000 --cluster 4`         |
-| `ndigo dev`             | `scripts.dev` (vite) or `scripts.start`                             | `ndigo dev ./apps/15-ndigo-resilience-lab --port 3200`            |
-| `ndigo new <name>`      | the `app` generator (a new app under `apps/NN-ndigo-<name>`)        | `ndigo new todo-widget --kind node`                               |
-| `ndigo generate <kind>` | `@ndigo/generators` via Nx                                          | `ndigo generate package --name my-app`                            |
-| `ndigo db new [slug]`   | scaffolds the next versioned migration                              | `ndigo db new ./apps/05-ndigo-api add-title-column`               |
-| `ndigo db generate`     | `scripts.db:generate` (AD-78: entities → next migration + snapshot) | `ndigo db generate ./apps/05-ndigo-api`                           |
-| `ndigo db migrate`      | `scripts.db:migrate`                                                | `ndigo db migrate ./apps/05-ndigo-api`                            |
-| `ndigo db status`       | `scripts.db:status` (journal readback)                              | `ndigo db status ./apps/05-ndigo-api`                             |
-| `ndigo inspect`         | `scripts.inspect` (the AD-70 printer)                               | `ndigo inspect ./apps/05-ndigo-api`                               |
-| `ndigo doctor`          | (self-diagnostics)                                                  | `ndigo doctor` — versions, workspace, git, and environment checks |
+### Application lifecycle
 
-Every command follows the oclif contract: `--help`, `--version`, exit `0`
-ok / `2` usage / `1` runtime. `ndigo doctor` exits `1` when a check fails
-(an unsupported Node, a missing pnpm/git, or no workspace above the cwd).
+| Command           | Runs the app's…                                         | Example                                                   |
+| :---------------- | :------------------------------------------------------ | :-------------------------------------------------------- |
+| `ndigo serve`     | `scripts.start` under the supervisor                    | `ndigo serve ./apps/05-ndigo-api --port 3000 --cluster 4` |
+| `ndigo dev`       | `scripts.dev` (vite) or `scripts.start`                 | `ndigo dev ./apps/15-ndigo-resilience-lab --port 3200`    |
+| `ndigo build`     | `scripts.build` (one-shot)                              | `ndigo build ./apps/05-ndigo-api`                         |
+| `ndigo test`      | `scripts.test`                                          | `ndigo test`                                              |
+| `ndigo lint`      | `scripts.lint`                                          | `ndigo lint`                                              |
+| `ndigo format`    | `scripts.format`                                        | `ndigo format`                                            |
+| `ndigo typecheck` | `scripts.typecheck`                                     | `ndigo typecheck`                                         |
+| `ndigo clean`     | (CLI-owned: `dist`/`lib`/`.nx`/`coverage`; `--dry-run`) | `ndigo clean --dry-run`                                   |
+| `ndigo inspect`   | `scripts.inspect` (the AD-70 printer)                   | `ndigo inspect ./apps/05-ndigo-api`                       |
+| `ndigo routes`    | `scripts.inspect` (route-table view)                    | `ndigo routes ./apps/05-ndigo-api`                        |
+| `ndigo logs`      | (CLI-owned: tails `logs/app.log`; `--follow`)           | `ndigo logs --follow`                                     |
+
+### Scaffolding
+
+| Command                 | Runs…                                                        | Example                                            |
+| :---------------------- | :----------------------------------------------------------- | :------------------------------------------------- |
+| `ndigo new <name>`      | the `app` generator (a new app under `apps/NN-ndigo-<name>`) | `ndigo new todo-widget --preset api`               |
+| `ndigo generate <kind>` | `@ndigo/generators` via Nx                                   | `ndigo generate entity --name note --package demo` |
+| `ndigo add <package>`   | `pnpm add` + the capability's setup generator                | `ndigo add @ndigo/redis ./apps/05-ndigo-api`       |
+
+### Database
+
+These front either the app's `db:*` scripts or the app's registered
+`NdigoDatabaseAdapter` (see `@ndigo/orm`); `--db <name>` picks among multiple
+registered adapters, and `ndigo db list` prints them.
+
+| Command                 | Runs the app's…                                                     | Example                                               |
+| :---------------------- | :------------------------------------------------------------------ | :---------------------------------------------------- |
+| `ndigo db list`         | (adapter registry readback)                                         | `ndigo db list`                                       |
+| `ndigo db new [slug]`   | scaffolds the next versioned migration                              | `ndigo db new ./apps/05-ndigo-api add-title-column`   |
+| `ndigo db generate`     | `scripts.db:generate` (AD-78: entities → next migration + snapshot) | `ndigo db generate ./apps/05-ndigo-api`               |
+| `ndigo db migrate`      | `scripts.db:migrate`                                                | `ndigo db migrate ./apps/05-ndigo-api --db analytics` |
+| `ndigo db status`       | `scripts.db:status` (journal readback)                              | `ndigo db status ./apps/05-ndigo-api`                 |
+| `ndigo db push`/`pull`  | `scripts.db:push` / `scripts.db:pull` (adapter-optional)            | `ndigo db push`                                       |
+| `ndigo db studio`       | `scripts.db:studio` (adapter-optional)                              | `ndigo db studio`                                     |
+| `ndigo db seed`         | `scripts.db:seed` (adapter-optional)                                | `ndigo db seed`                                       |
+| `ndigo db rollback [n]` | `scripts.db:rollback` (adapter-optional)                            | `ndigo db rollback 1`                                 |
+
+### Maintenance
+
+| Command            | Runs…                                                        | Example                                           |
+| :----------------- | :----------------------------------------------------------- | :------------------------------------------------ |
+| `ndigo doctor`     | (self-diagnostics: versions, workspace, git, checks)         | `ndigo doctor`                                    |
+| `ndigo info`       | `doctor` + installed `@ndigo/*` packages                     | `ndigo info`                                      |
+| `ndigo update`     | `pnpm install` after applying a version manifest (`--check`) | `ndigo update --check`                            |
+| `ndigo config`     | `.ndigorc.json` get/set/list                                 | `ndigo config set db.primary analytics`           |
+| `ndigo env`        | validates env vars against `.env.example`                    | `ndigo env --file .env.example`                   |
+| `ndigo openapi`    | `scripts.openapi` (`--out`, `--format json                   | yaml`)                                            | `ndigo openapi --out openapi.json` |
+| `ndigo completion` | prints a bash completion script                              | `ndigo completion > /etc/bash_completion.d/ndigo` |
+
+Every command follows the Stricli contract: `--help`/`-h`, `--version`/`-v`,
+exit `0` ok / `2` usage / `1` runtime. `ndigo doctor` exits `1` when a check
+fails (an unsupported Node, a missing pnpm/git, or no workspace above the cwd).
 
 ## `ndigo dev` and server watch
 
@@ -48,13 +89,17 @@ The CLI resolves `package.json` scripts and runs them **shell-free**
 
 ## Generate
 
-`ndigo generate <kind>` fronts `@ndigo/generators` (package, component,
-readme, header) — the repo-local collection in `tools/generators/` (AD-93):
+`ndigo generate <kind>` fronts `@ndigo/generators` — the repo-local
+collection in `tools/generators/` (AD-93). Kinds: `package`, `component`,
+`readme`, `header`, `controller`, `service`, `entity`, `middleware`,
+`config`, `migration`:
 
 ```bash
 ndigo generate package --name my-app --description "A demo package" --jobs
 ndigo generate component --name widget --package ndigo-demo
 ndigo generate header --file packages/ndigo-demo/src/index.ts --force
+ndigo generate entity --name note --package ndigo-demo
+ndigo generate controller --name notes --package ndigo-demo
 ```
 
 Each kind forwards exactly the flags its generator declares (`--name`,
@@ -70,11 +115,15 @@ ladder (`apps/NN-ndigo-<name>`) through the framework-owned `app` generator
 ```bash
 ndigo new todo-widget --kind node
 ndigo new todo-widget --kind browser --description "Widget demo"
+ndigo new todo-widget --preset api              # node + sample entity + DB adapter
 ndigo new todo-widget --kind node --port 3190 --dry-run
 ```
 
 - **Kinds:** `node` (the `02-ndigo-hello-node` shape — server + smoke test)
   and `browser` (the `01-ndigo-hello` shape — Vite SPA + bundle guard).
+- **Presets:** `minimal` (default), `browser`, and `api` (node plus a sample
+  `@entity` and a `db.ts` adapter registry). `--preset` resolves the kind when
+  `--kind` is omitted.
 - **Numbering:** the reading-order number defaults to one past the highest
   existing app; `--number` overrides it (a taken number fails).
 - **Ports:** the dev port defaults to the first free multiple-of-ten slot

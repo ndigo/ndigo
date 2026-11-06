@@ -16,10 +16,15 @@ import { resolveAppDir, runAppSupervised } from '../helpers/app-scripts.js';
 export const serveCommand = buildCommand({
     async func(flags: { cluster: number; port?: number }, dir: string) {
         const resolved = resolveAppDir(dir);
-        const result = await runAppSupervised(resolved, 'start', 'add a "start" script, e.g. "start": "tsx src/index.ts"', {
-            port: flags.port,
-            cluster: flags.cluster,
-        });
+        const result = await runAppSupervised(
+            resolved,
+            'start',
+            'add a "start" script, e.g. "start": "tsx src/index.ts"',
+            {
+                port: flags.port,
+                cluster: flags.cluster,
+            }
+        );
         process.exitCode = result.exitCode;
         process.exit(result.exitCode);
     },
@@ -38,14 +43,17 @@ export const serveCommand = buildCommand({
                 optional: true,
             },
         },
-        positional: { kind: 'tuple', parameters: [
-            {
-                parse: (value: string) => value,
-                brief: 'Application directory (default: current directory).',
-                default: '.',
-                placeholder: 'dir',
-            },
-        ] },
+        positional: {
+            kind: 'tuple',
+            parameters: [
+                {
+                    parse: (value: string) => value,
+                    brief: 'Application directory (default: current directory).',
+                    default: '.',
+                    placeholder: 'dir',
+                },
+            ],
+        },
     },
     docs: {
         brief: 'Run the application with the cluster process lifecycle (AD-74)',

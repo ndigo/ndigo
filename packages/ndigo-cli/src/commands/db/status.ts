@@ -26,14 +26,17 @@ export const dbStatusCommand = buildCommand({
     },
     parameters: {
         flags: {},
-        positional: { kind: 'tuple', parameters: [
-            {
-                parse: (value: string) => value,
-                brief: 'Application directory (default: current directory).',
-                default: '.',
-                placeholder: 'dir',
-            },
-        ] },
+        positional: {
+            kind: 'tuple',
+            parameters: [
+                {
+                    parse: (value: string) => value,
+                    brief: 'Application directory (default: current directory).',
+                    default: '.',
+                    placeholder: 'dir',
+                },
+            ],
+        },
     },
     docs: {
         brief: 'Report applied and pending migrations',

@@ -11,10 +11,7 @@
     },
     "kind": {
       "type": "string",
-      "enum": [
-        "browser",
-        "node"
-      ],
+      "enum": ["browser", "node"],
       "description": "browser = Vite SPA, node = HTTP server",
       "x-prompt": null
     },
@@ -36,16 +33,9 @@
     },
     "preset": {
       "type": "string",
-      "enum": [
-        "api",
-        "browser",
-        "full-stack",
-        "minimal"
-      ],
+      "enum": ["api", "browser", "full-stack", "minimal"],
       "description": "Starter preset (defaults to minimal)"
     }
   },
-  "required": [
-    "name"
-  ]
+  "required": ["name"]
 }

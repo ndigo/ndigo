@@ -170,7 +170,9 @@ describe('ndigo (real bin)', () => {
     test('serve runs the app and relays SIGTERM into its own drain (exit 0)', async () => {
         const port = '4301';
         const proc = spawn(process.execPath, [BIN, 'serve', appDir, '--port', port], { stdio: 'inherit' });
-    const exitPromise = new Promise<number>((resolveCode) => { proc.once('exit', resolveCode); });
+        const exitPromise = new Promise<number>((resolveCode) => {
+            proc.once('exit', resolveCode);
+        });
         try {
             // The marker can exist before its content lands (writeFileSync opens
             // the file first) — wait for the value, not the name (CI flake 2026-10-31).
@@ -229,7 +231,9 @@ setTimeout(() => {}, 120_000);
         const proc = spawn(process.execPath, [BIN, 'serve', clusterDir, '--port', port, '--cluster', '2'], {
             stdio: 'inherit',
         });
-        const clusterExitPromise = new Promise<number>((resolveCode) => { proc.once('exit', resolveCode); });
+        const clusterExitPromise = new Promise<number>((resolveCode) => {
+            proc.once('exit', resolveCode);
+        });
         try {
             // Both slots must be up with PORT = base + slot (BLK-2: the flat
             // env.PORT bug gave every slot the same port).

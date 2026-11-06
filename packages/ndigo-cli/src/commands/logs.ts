@@ -32,8 +32,11 @@ export const logsCommand = buildCommand({
         let position = statSync(file).size;
         const onChange = (): void => {
             let size: number;
-            try { size = statSync(file).size; }
-            catch { return; }
+            try {
+                size = statSync(file).size;
+            } catch {
+                return;
+            }
             if (size < position) {
                 // Truncated/rotated: print whole file.
                 process.stdout.write(readFileSync(file, 'utf8'));
@@ -61,12 +64,25 @@ export const logsCommand = buildCommand({
     parameters: {
         flags: {
             file: { kind: 'parsed', parse: (v: string) => v, brief: 'Log file path.', optional: true },
-            lines: { kind: 'parsed', parse: (v: string) => Number(v), brief: 'Number of lines to show.', optional: true },
+            lines: {
+                kind: 'parsed',
+                parse: (v: string) => Number(v),
+                brief: 'Number of lines to show.',
+                optional: true,
+            },
             follow: { kind: 'boolean', brief: 'Follow the log (tail -f).', optional: true },
         },
-        positional: { kind: 'tuple', parameters: [
-            { parse: (v: string) => v, brief: 'Application directory (default: current directory).', default: '.', placeholder: 'dir' },
-        ] },
+        positional: {
+            kind: 'tuple',
+            parameters: [
+                {
+                    parse: (v: string) => v,
+                    brief: 'Application directory (default: current directory).',
+                    default: '.',
+                    placeholder: 'dir',
+                },
+            ],
+        },
     },
     docs: { brief: 'Print (and optionally follow) an application log file' },
 });

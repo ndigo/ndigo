@@ -22,7 +22,10 @@ export const addCommand = buildCommand({
         if (code === 0) {
             const setupName = pkg.replace('@ndigo/', '') + '-setup';
             process.stdout.write(`\nAdded ${pkg}. Attempting setup generator @ndigo/generators:${setupName}...\n`);
-            const gen = spawn('pnpm', ['exec', 'nx', 'g', `@ndigo/generators:${setupName}`, '--directory', resolved], { cwd: resolved, stdio: 'inherit' });
+            const gen = spawn('pnpm', ['exec', 'nx', 'g', `@ndigo/generators:${setupName}`, '--directory', resolved], {
+                cwd: resolved,
+                stdio: 'inherit',
+            });
             const gcode = await new Promise<number>((resolve) => gen.once('exit', (c) => resolve(c ?? 1)));
             if (gcode !== 0) {
                 process.stdout.write(`(no setup generator available or it failed; wire manually)\n`);
@@ -31,10 +34,18 @@ export const addCommand = buildCommand({
     },
     parameters: {
         flags: {},
-        positional: { kind: 'tuple', parameters: [
-            { parse: (v: string) => v, brief: 'Package to add (must be @ndigo/*).', placeholder: 'package' },
-            { parse: (v: string) => v, brief: 'Application directory (default: current directory).', default: '.', placeholder: 'dir' },
-        ] },
+        positional: {
+            kind: 'tuple',
+            parameters: [
+                { parse: (v: string) => v, brief: 'Package to add (must be @ndigo/*).', placeholder: 'package' },
+                {
+                    parse: (v: string) => v,
+                    brief: 'Application directory (default: current directory).',
+                    default: '.',
+                    placeholder: 'dir',
+                },
+            ],
+        },
     },
     docs: { brief: 'Install and wire an @ndigo/* capability into an app' },
 });

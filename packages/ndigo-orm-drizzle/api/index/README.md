@@ -14,6 +14,12 @@ Re-exports [ColumnProjection](../schema-snapshot/interfaces/ColumnProjection.md)
 
 ***
 
+### createDrizzleAdapter
+
+Re-exports [createDrizzleAdapter](../drizzle-adapter/functions/createDrizzleAdapter.md)
+
+***
+
 ### createTableStatements
 
 Re-exports [createTableStatements](../drizzle-data-source/functions/createTableStatements.md)
@@ -23,6 +29,12 @@ Re-exports [createTableStatements](../drizzle-data-source/functions/createTableS
 ### diffProjections
 
 Re-exports [diffProjections](../schema-snapshot/functions/diffProjections.md)
+
+***
+
+### DrizzleAdapterOptions
+
+Re-exports [DrizzleAdapterOptions](../drizzle-adapter/interfaces/DrizzleAdapterOptions.md)
 
 ***
 

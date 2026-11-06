@@ -22,6 +22,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `@ndigo/cli`: the command surface expanded from the AD-75 core (serve, dev,
+  generate, db, inspect, doctor) to the full developer loop — `build`, `test`,
+  `lint`, `format`, `typecheck`, `clean`, `info`, `config`, `routes`, `logs`,
+  `completion`, `env`, `openapi` (`--out`/`--format`), `add` (installs an
+  `@ndigo/*` capability and runs its setup generator), `update`
+  (manifest-driven `@ndigo/*` bumps with `--check`), and `new --preset`
+  (`minimal`, `browser`, `api`).
+- `@ndigo/cli`: the engine-agnostic `db` family — `list`, `push`, `pull`,
+  `studio`, `seed`, `rollback`, plus `--db <name>` selection on the existing
+  `migrate`/`generate`/`status`. Commands front the app's `db:*` scripts or
+  its registered adapter, so the CLI carries no ORM knowledge.
+- `@ndigo/orm`: the `NdigoDatabaseAdapter` contract and `runDbCommand`
+  dispatcher — the seam `@ndigo/cli` talks to, with engine packages providing
+  adapters (`@ndigo/orm-drizzle` ships `createDrizzleAdapter`).
+- `@ndigo/generators`: `entity` (real `@entity`/`@column` template),
+  `controller`, `service`, `middleware`, and `config` generators, plus
+  `redis`/`jobs`/`socket`/`cache` setup generators invoked by `ndigo add`.
+  The `app` generator gains `--preset` and an `api` preset that scaffolds a
+  sample entity and a database adapter registry.
+- `@ndigo/openapi`: `writeOpenAPISpec` — generate an `OpenAPIDocument` and
+  write it to a file (`json`; `yaml` reserved in the signature).
+- `@ndigo/cluster`: `waitForExit` now resolves for a child that has already
+  exited, and maps signal termination to a defined exit code — removes an
+  intermittent supervisor shutdown hang.
+
 - `@ndigo/auth-client` (issue #61): the **OIDC refresh-token grant** —
   `OIDCAdapter.refresh(refreshToken)` performs the `grant_type=refresh_token`
   exchange (discovery-resolved, client-secret auth for confidential clients)
@@ -183,6 +208,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   plugin, and a smoke + bundle guard in the generated app. Ships at 1.0.
 
 ### Changed
+
+- `@ndigo/cli` (AD-75): the CLI underpinnings moved from `@oclif/core` v5 to
+  `@stricli/core` — commands are `buildCommand` declarations, nested `db`
+  routes use `buildRouteMap`, and the bin reads the same Stricli application
+  the `runCli` embedding entry exposes. Exit-code contract unchanged
+  (`0` ok / `2` usage / `1` runtime).
+- `create-ndigo-app` is unchanged: it uses a hand-rolled argument parser (no
+  OCLIF), so the migration did not apply to it.
 
 - `@ndigo/generators` (AD-93): the repo-only Nx generator collection moved
   out of `packages/` to `tools/generators/` (`private: true`) — it hard-codes

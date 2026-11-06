@@ -6,6 +6,8 @@
 
 # error
 
+Error message extraction utilities.
+
 ## Functions
 
 - [getErrorMessage](functions/getErrorMessage.md)

@@ -6,6 +6,9 @@
  */
 import { createScriptFrontCommand } from './_script-fronts.js';
 
+/**
+ * The application lint front.
+ */
 export const lintCommand = createScriptFrontCommand(
     'lint',
     'Run the application lint script',

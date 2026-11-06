@@ -8,3 +8,4 @@
 
 > `const` **addCommand**: `Command`\<`CommandContext`\>
 
+The capability add command.

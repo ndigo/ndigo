@@ -8,3 +8,4 @@
 
 > `const` **infoCommand**: `Command`\<`CommandContext`\>
 
+The diagnostics-plus-packages command.

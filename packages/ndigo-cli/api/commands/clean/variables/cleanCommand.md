@@ -8,3 +8,4 @@
 
 > `const` **cleanCommand**: `Command`\<`CommandContext`\>
 
+The artifact-removal command.

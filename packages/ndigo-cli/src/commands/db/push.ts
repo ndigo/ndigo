@@ -7,6 +7,9 @@
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runAppOnce } from '../../helpers/app-scripts.js';
 
+/**
+ * The adapter schema-push command.
+ */
 export const dbPushCommand = buildCommand({
     async func(flags: { db?: string }, dir: string) {
         const resolved = resolveAppDir(dir);

@@ -8,3 +8,4 @@
 
 > `const` **dbPullCommand**: `Command`\<`CommandContext`\>
 
+The adapter schema-pull command.

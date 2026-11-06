@@ -1,7 +1,7 @@
 {
   "name": "@ndigo/cli",
   "version": "0.0.1",
-  "description": "The Ndigo framework CLI — serve, dev, new, generate, db, inspect, doctor (AD-75)",
+  "description": "The Ndigo framework CLI — app lifecycle, scaffolding, db migrations, and DX commands",
   "type": "module",
   "keywords": [
     "ndigo",

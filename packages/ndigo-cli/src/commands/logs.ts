@@ -20,6 +20,9 @@ import {
 } from 'node:fs';
 import { join } from 'node:path';
 
+/**
+ * The log-file tail command.
+ */
 export const logsCommand = buildCommand({
     async func(flags: { file?: string; lines?: number; follow?: boolean }, dir: string) {
         // `dir` names the app whose default log location is used; --file

@@ -10,6 +10,9 @@ import { join } from 'node:path';
 import { runDiagnostics } from './_diagnostics.js';
 import { appDirPositional } from './_script-fronts.js';
 
+/**
+ * The diagnostics-plus-packages command.
+ */
 export const infoCommand = buildCommand({
     async func(_flags: {}, dir: string) {
         const resolved = join(dir, 'node_modules', '@ndigo');

@@ -1,8 +1,9 @@
 /**
  * `ndigo generate` — front the framework-owned generators
- * (`@ndigo/generators`): package, component, readme, header. The CLI is a
- * thin, prompting front over the workspace's Nx bridge — the generator
- * implementations stay in their package (AD-75 D-3).
+ * (`@ndigo/generators`): the scaffolding kinds package, component, readme,
+ * header, controller, service, entity, middleware, config, and migration.
+ * The CLI is a thin, prompting front over the workspace's Nx bridge — the
+ * generator implementations stay in their package (AD-75 D-3).
  *
  * @since 1.0.0
  * @author Jeff Rose
@@ -199,9 +200,10 @@ export const generateCommand = buildCommand({
     docs: {
         brief: 'Generate framework artifacts through @ndigo/generators',
         fullDescription:
-            'Generates an artifact (package, component, readme, header) via the ' +
-            "workspace's generator package. The CLI resolves the workspace from the " +
-            'directory argument and runs the generator there — the generator ' +
-            'implementations themselves live in @ndigo/generators (AD-75 D-3).',
+            'Generates an artifact via the workspace generator package — kinds: package, ' +
+            'component, readme, header, controller, service, entity, middleware, config, ' +
+            'migration. The CLI resolves the workspace from the directory argument and runs ' +
+            'the generator there — the generator implementations themselves live in ' +
+            '@ndigo/generators (AD-75 D-3).',
     },
 });

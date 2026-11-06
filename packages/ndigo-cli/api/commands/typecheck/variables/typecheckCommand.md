@@ -8,3 +8,4 @@
 
 > `const` **typecheckCommand**: `Command`\<`CommandContext`\>
 
+The application typecheck front.

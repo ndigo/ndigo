@@ -10,6 +10,9 @@ import { join } from 'node:path';
 import { readAppManifest, resolveAppDir, runInteractiveSpawn } from '../helpers/app-scripts.js';
 import { readVersionManifest } from './_version-manifest.js';
 
+/**
+ * The version-bump command.
+ */
 export const updateCommand = buildCommand({
     async func(flags: { check?: boolean; manifest?: string }, dir: string) {
         const resolved = resolveAppDir(dir);

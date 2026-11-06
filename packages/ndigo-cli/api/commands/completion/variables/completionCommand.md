@@ -8,3 +8,4 @@
 
 > `const` **completionCommand**: `Command`\<`CommandContext`\>
 
+The shell-completion command.

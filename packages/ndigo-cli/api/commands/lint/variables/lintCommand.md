@@ -8,3 +8,4 @@
 
 > `const` **lintCommand**: `Command`\<`CommandContext`\>
 
+The application lint front.

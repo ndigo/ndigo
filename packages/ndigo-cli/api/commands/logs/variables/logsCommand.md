@@ -8,3 +8,4 @@
 
 > `const` **logsCommand**: `Command`\<`CommandContext`\>
 
+The log-file tail command.

@@ -6,6 +6,9 @@
  */
 import { createScriptFrontCommand } from './_script-fronts.js';
 
+/**
+ * The application typecheck front.
+ */
 export const typecheckCommand = createScriptFrontCommand(
     'typecheck',
     'Run the application typecheck script',

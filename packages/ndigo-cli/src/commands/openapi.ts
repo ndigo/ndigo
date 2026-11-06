@@ -7,6 +7,9 @@
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runAppOnce } from '../helpers/app-scripts.js';
 
+/**
+ * The OpenAPI emission command.
+ */
 export const openapiCommand = buildCommand({
     async func(flags: { out?: string; format?: 'json' | 'yaml' }, dir: string) {
         const resolved = resolveAppDir(dir);

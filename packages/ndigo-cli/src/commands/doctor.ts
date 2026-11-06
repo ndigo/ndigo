@@ -5,10 +5,11 @@
  * @author Jeff Rose
  */
 import { buildCommand } from '@stricli/core';
-import { runDiagnostics, MIN_NODE_MAJOR } from './_diagnostics.js';
+import { runDiagnostics } from './_diagnostics.js';
 
-export { MIN_NODE_MAJOR };
-
+/**
+ * The environment self-diagnostics command.
+ */
 export const doctorCommand = buildCommand({
     async func() {
         process.exitCode = await runDiagnostics();

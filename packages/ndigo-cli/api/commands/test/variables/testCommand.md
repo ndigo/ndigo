@@ -8,3 +8,4 @@
 
 > `const` **testCommand**: `Command`\<`CommandContext`\>
 
+The application test front.

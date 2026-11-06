@@ -8,3 +8,4 @@
 
 > `const` **formatCommand**: `Command`\<`CommandContext`\>
 
+The application format front.

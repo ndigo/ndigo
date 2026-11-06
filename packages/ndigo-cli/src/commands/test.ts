@@ -6,6 +6,9 @@
  */
 import { createScriptFrontCommand } from './_script-fronts.js';
 
+/**
+ * The application test front.
+ */
 export const testCommand = createScriptFrontCommand(
     'test',
     'Run the application test script',

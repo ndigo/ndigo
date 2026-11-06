@@ -7,6 +7,9 @@
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runInteractiveSpawn } from '../helpers/app-scripts.js';
 
+/**
+ * The capability add command.
+ */
 export const addCommand = buildCommand({
     async func(_flags: {}, pkg: string, dir: string) {
         const resolved = resolveAppDir(dir);

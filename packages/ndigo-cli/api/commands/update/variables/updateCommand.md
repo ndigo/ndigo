@@ -8,3 +8,4 @@
 
 > `const` **updateCommand**: `Command`\<`CommandContext`\>
 
+The version-bump command.

@@ -8,3 +8,4 @@
 
 > `const` **dbListCommand**: `Command`\<`CommandContext`\>
 
+The registered-adapter readback command.

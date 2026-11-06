@@ -8,3 +8,4 @@
 
 > `const` **dbPushCommand**: `Command`\<`CommandContext`\>
 
+The adapter schema-push command.

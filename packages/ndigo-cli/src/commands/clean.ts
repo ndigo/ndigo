@@ -11,6 +11,9 @@ import { resolveAppDir } from '../helpers/app-scripts.js';
 
 const TARGETS = ['dist', 'lib', '.nx', 'coverage'] as const;
 
+/**
+ * The artifact-removal command.
+ */
 export const cleanCommand = buildCommand({
     async func(flags: { dryRun?: boolean; force?: boolean }, dir: string) {
         const resolved = resolveAppDir(dir);

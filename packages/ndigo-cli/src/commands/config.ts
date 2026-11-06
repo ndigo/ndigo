@@ -25,6 +25,9 @@ function readConfig(): Record<string, unknown> {
     return cfg;
 }
 
+/**
+ * The app-config get/set/list command.
+ */
 export const configCommand = buildCommand({
     async func(flags: { list?: boolean }, action: string, key: string, value: string) {
         const cfg = readConfig();

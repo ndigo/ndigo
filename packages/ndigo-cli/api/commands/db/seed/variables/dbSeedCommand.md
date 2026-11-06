@@ -8,3 +8,4 @@
 
 > `const` **dbSeedCommand**: `Command`\<`CommandContext`\>
 
+The app seed command.

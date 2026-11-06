@@ -5,8 +5,8 @@
  * application directory for the highest `NNNN` prefix (via
  * `@ndigo/orm-drizzle`'s `nextMigrationVersion`, the loader's own contract) and
  * writes `<NNNN>-<slug>.ts` exporting an empty `Migration` for the author to
- * fill in. The filename is cosmetic; the runner orders by the exported
- * version.
+ * fill in. The exported `version` drives apply order; the `NNNN` filename
+ * prefix stays in lockstep with the loader's own filename contract.
  *
  * @since 1.0.0
  * @author Jeff Rose
@@ -60,8 +60,8 @@ export const dbNewCommand = buildCommand({
         fullDescription:
             'Writes db/migrations/<NNNN>-<slug>.ts under the application ' +
             'directory with the next free version and an empty `up` body — ' +
-            'fill it in, then run `ndigo db migrate` (the runner orders by the ' +
-            'exported version; the filename is cosmetic).',
+            'fill it in, then run `ndigo db migrate` (the exported version ' +
+            'drives apply order; the NNNN filename prefix follows the loader).',
     },
 });
 

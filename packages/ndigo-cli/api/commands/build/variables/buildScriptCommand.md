@@ -8,3 +8,4 @@
 
 > `const` **buildScriptCommand**: `Command`\<`CommandContext`\>
 
+The application build one-shot front.

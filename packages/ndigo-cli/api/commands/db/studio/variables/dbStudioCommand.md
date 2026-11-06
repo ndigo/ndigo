@@ -8,3 +8,4 @@
 
 > `const` **dbStudioCommand**: `Command`\<`CommandContext`\>
 
+The adapter browser launch command.

@@ -8,3 +8,4 @@
 
 > `const` **doctorCommand**: `Command`\<`CommandContext`\>
 
+The environment self-diagnostics command.

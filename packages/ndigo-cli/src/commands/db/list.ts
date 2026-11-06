@@ -7,6 +7,9 @@
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runAppOnce } from '../../helpers/app-scripts.js';
 
+/**
+ * The registered-adapter readback command.
+ */
 export const dbListCommand = buildCommand({
     async func(flags: { db?: string }, dir: string) {
         const resolved = resolveAppDir(dir);

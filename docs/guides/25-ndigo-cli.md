@@ -1,9 +1,12 @@
 # Guide 25 — The `ndigo` CLI
 
-One `ndigo` entry replaces the bespoke per-app start scripts and fronts the
-framework surface: serve (with the AD-74 cluster lifecycle), dev, generate,
-db, inspect, and doctor (AD-75). Built on `@stricli/core` as an embedded
-library — commands, typed flags, `--help`, exit codes.
+One `ndigo` entry replaces the bespoke per-app start scripts and covers the
+whole command surface: app lifecycle (serve/dev — serve replicates across
+worker slots), release-qc fronts (build/test/lint/format/typecheck),
+scaffolding (new/generate/add), db migrations, and the maintenance/DX tools
+(inspect/doctor/info/clean/config/env/logs/openapi/update/completion).
+Built on `@stricli/core` as an embedded library — commands, typed flags,
+`--help`, exit codes. Full tables below and in the package README.
 
 ## Commands
 
@@ -18,10 +21,10 @@ library — commands, typed flags, `--help`, exit codes.
 | `ndigo lint`      | `scripts.lint`                                          | `ndigo lint`                                              |
 | `ndigo format`    | `scripts.format`                                        | `ndigo format`                                            |
 | `ndigo typecheck` | `scripts.typecheck`                                     | `ndigo typecheck`                                         |
-| `ndigo clean`     | (CLI-owned: `dist`/`lib`/`.nx`/`coverage`; `--dry-run`) | `ndigo clean --dry-run`                                   |
+| `ndigo clean`     | (CLI-owned: `dist`/`lib`/`.nx`/`coverage`; `--dryRun` previews, `--force` removes) | `ndigo clean --force`                                     |
 | `ndigo inspect`   | `scripts.inspect` (the AD-70 printer)                   | `ndigo inspect ./apps/05-ndigo-api`                       |
-| `ndigo routes`    | `scripts.inspect` (route-table view)                    | `ndigo routes ./apps/05-ndigo-api`                        |
-| `ndigo logs`      | (CLI-owned: tails `logs/app.log`; `--follow`)           | `ndigo logs --follow`                                     |
+| `ndigo routes`    | `scripts.inspect` (alias of `inspect`)                  | `ndigo routes ./apps/05-ndigo-api`                        |
+| `ndigo logs`      | (CLI-owned: tails `logs/app.log`; `--follow`, `--lines`, `--file`) | `ndigo logs --follow`                              |
 
 ### Scaffolding
 
@@ -33,16 +36,17 @@ library — commands, typed flags, `--help`, exit codes.
 
 ### Database
 
-These front either the app's `db:*` scripts or the app's registered
-`NdigoDatabaseAdapter` (see `@ndigo/orm`); `--db <name>` picks among multiple
-registered adapters, and `ndigo db list` prints them.
+These front either the app's `db:*` scripts or the adapter path: the
+app's registered `NdigoDatabaseAdapter`s (see `@ndigo/orm`), where
+`--db <name>` picks among multiple registered ones (`list`, `push`, `pull`,
+`studio`, `seed`, `rollback`); `ndigo db list` prints them and the default.
 
 | Command                 | Runs the app's…                                                     | Example                                               |
 | :---------------------- | :------------------------------------------------------------------ | :---------------------------------------------------- |
 | `ndigo db list`         | (adapter registry readback)                                         | `ndigo db list`                                       |
 | `ndigo db new [slug]`   | scaffolds the next versioned migration                              | `ndigo db new ./apps/05-ndigo-api add-title-column`   |
 | `ndigo db generate`     | `scripts.db:generate` (AD-78: entities → next migration + snapshot) | `ndigo db generate ./apps/05-ndigo-api`               |
-| `ndigo db migrate`      | `scripts.db:migrate`                                                | `ndigo db migrate ./apps/05-ndigo-api --db analytics` |
+| `ndigo db migrate`      | `scripts.db:migrate`                                                | `ndigo db migrate ./apps/05-ndigo-api`                   |
 | `ndigo db status`       | `scripts.db:status` (journal readback)                              | `ndigo db status ./apps/05-ndigo-api`                 |
 | `ndigo db push`/`pull`  | `scripts.db:push` / `scripts.db:pull` (adapter-optional)            | `ndigo db push`                                       |
 | `ndigo db studio`       | `scripts.db:studio` (adapter-optional)                              | `ndigo db studio`                                     |
@@ -55,10 +59,10 @@ registered adapters, and `ndigo db list` prints them.
 | :----------------- | :----------------------------------------------------------- | :------------------------------------------------ |
 | `ndigo doctor`     | (self-diagnostics: versions, workspace, git, checks)         | `ndigo doctor`                                    |
 | `ndigo info`       | `doctor` + installed `@ndigo/*` packages                     | `ndigo info`                                      |
-| `ndigo update`     | `pnpm install` after applying a version manifest (`--check`) | `ndigo update --check`                            |
+| `ndigo update`     | (CLI-owned: applies exact pins from a version manifest, then `pnpm install`; `--check` compares, `--manifest` picks the file) | `ndigo update --check`                            |
 | `ndigo config`     | `.ndigorc.json` get/set/list                                 | `ndigo config set db.primary analytics`           |
 | `ndigo env`        | validates env vars against `.env.example`                    | `ndigo env --file .env.example`                   |
-| `ndigo openapi`    | `scripts.openapi` (`--out`, `--format json                   | yaml`)                                            | `ndigo openapi --out openapi.json` |
+| `ndigo openapi`    | `scripts.openapi` (`--out`, `--format json\|yaml`)          | `ndigo openapi --out openapi.json`                 |
 | `ndigo completion` | prints a bash completion script                              | `ndigo completion > /etc/bash_completion.d/ndigo` |
 
 Every command follows the Stricli contract: `--help`/`-h`, `--version`/`-v`,
@@ -116,7 +120,7 @@ ladder (`apps/NN-ndigo-<name>`) through the framework-owned `app` generator
 ndigo new todo-widget --kind node
 ndigo new todo-widget --kind browser --description "Widget demo"
 ndigo new todo-widget --preset api              # node + sample entity + DB adapter
-ndigo new todo-widget --kind node --port 3190 --dry-run
+ndigo new todo-widget --kind node --port 3190 --dryRun
 ```
 
 - **Kinds:** `node` (the `02-ndigo-hello-node` shape — server + smoke test)
@@ -133,7 +137,7 @@ ndigo new todo-widget --kind node --port 3190 --dry-run
 - **Naming:** pick the slug from the app's domain; a paired front end and back
   end take `-web` / `-api` and sit next to each other in the ladder
   ([guide 29](29-application-conventions.md)).
-- `--dry-run` previews the file plan without writing anything. After
+- `--dryRun` previews the file plan without writing anything. After
   generating, add the app's row to `apps/README.md` and the root README
   table by hand — index tables are not generated.
 

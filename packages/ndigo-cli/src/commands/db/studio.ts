@@ -7,6 +7,9 @@
 import { buildCommand } from '@stricli/core';
 import { resolveAppDir, runAppOnce } from '../../helpers/app-scripts.js';
 
+/**
+ * The adapter browser launch command.
+ */
 export const dbStudioCommand = buildCommand({
     async func(flags: { db?: string }, dir: string) {
         const resolved = resolveAppDir(dir);

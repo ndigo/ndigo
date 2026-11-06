@@ -609,7 +609,6 @@ branch. Incomplete features merge behind `@ndigo/flags` instead of living on
 long-lived branches.
 
 <!-- graft:start -->
-
 ## Graft — repo context graph
 
 This repo is indexed in `graft/`: small linked markdown nodes that explain each

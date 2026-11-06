@@ -2,7 +2,7 @@
 
 One `ndigo` entry replaces the bespoke per-app start scripts and fronts the
 framework surface: serve (with the AD-74 cluster lifecycle), dev, generate,
-db, inspect, and doctor (AD-75). Built on `@oclif/core` as an embedded
+db, inspect, and doctor (AD-75). Built on `@stricli/core` as an embedded
 library — commands, typed flags, `--help`, exit codes.
 
 ## Commands

@@ -7,15 +7,14 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { Command } from '@oclif/core';
-import { flush } from '@oclif/core';
+import { buildCommand } from '@stricli/core';
 import { spawn, type ChildProcess } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 /**
- * The framework Node baseline (matches `@oclif/core` v5, the root
+ * The framework Node baseline (matches the root
  * `engines` floor, and CI): versions below it are reported as a doctor
  * failure. Exported for the parity spec — `doctor` answering "healthy" on
  * a runtime `engine-strict` refuses to install on is the one thing this
@@ -109,17 +108,8 @@ function workspaceRoot(): string | undefined {
 /**
  * The environment and framework diagnostics command.
  */
-export class DoctorCommand extends Command {
-    static summary = 'Prints the framework-environment diagnostics (issue-report starter)';
-    static description = `Prints the CLI, Node, and pnpm versions, the workspace root
-(by walking up to a pnpm-workspace.yaml), and the git revision
-at the working directory — the canonical first attachment for issue
-reports (the nest info / artisan about precedent). Exits 1 when a
-diagnostic fails (an unsupported Node, a missing pnpm, or no workspace).`;
-
-    async run(): Promise<void> {
-        // Real checks, not a version dump (AD75-H1): each row carries a
-        // verdict, and the command exits non-zero when any check fails.
+export const doctorCommand = buildCommand({
+    async func() {
         const failures: string[] = [];
         const check = (ok: boolean, message: string): void => {
             if (!ok) {
@@ -149,16 +139,26 @@ diagnostic fails (an unsupported Node, a missing pnpm, or no workspace).`;
         rows.push(`cwd ${process.cwd()}`);
 
         for (const row of rows) {
-            // oclif's own output seam (`ux.stdout`) — the report is the
-            // command's product, not a log record; no raw console use.
-            this.log(row);
+            process.stdout.write(`${row}\n`);
         }
         for (const failure of failures) {
-            this.log(`✗ ${failure}`);
+            process.stdout.write(`✗ ${failure}\n`);
         }
         if (failures.length > 0) {
             process.exitCode = 1;
         }
-        await flush();
-    }
-}
+    },
+    parameters: {
+        flags: {},
+        positional: { kind: 'tuple', parameters: [] },
+    },
+    docs: {
+        brief: 'Prints the framework-environment diagnostics (issue-report starter)',
+        fullDescription:
+            'Prints the CLI, Node, and pnpm versions, the workspace root ' +
+            '(by walking up to a pnpm-workspace.yaml), and the git revision ' +
+            'at the working directory — the canonical first attachment for issue ' +
+            'reports (the nest info / artisan about precedent). Exits 1 when a ' +
+            'diagnostic fails (an unsupported Node, a missing pnpm, or no workspace).',
+    },
+});

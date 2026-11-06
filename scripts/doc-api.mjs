@@ -28,6 +28,13 @@
  *
  * Deterministic: output is derived from source + manifests only. CI verifies
  * freshness by regenerating and diffing the working tree.
+ *
+ * Requires built dependencies: `pnpm build` must run first (CI builds before
+ * the docs step). TypeDoc resolves `@ndigo/*` imports through the workspace
+ * symlinks into each dependency's `lib/`; without that build they join this
+ * package's program and every cross-package `{@link}` degrades to a
+ * "resolved but not documented" warning. The preflight below fails with that
+ * hint instead (see docs/guides/12-package-documentation.md).
  */
 
 import { readdirSync, readFileSync, writeFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
@@ -64,6 +71,39 @@ function parseOnly(argv) {
 }
 
 const ONLY = parseOnly(process.argv);
+
+/**
+ * Asserts every workspace dependency of the package has built declarations.
+ *
+ * TypeDoc resolves `@ndigo/*` imports through the workspace symlinks into each
+ * dependency's published `types` entry (`lib/`). Without that build the imports
+ * fall back into this package's program, and every cross-package `{@link}`
+ * degrades to "resolved but is not documented" — warnings this script treats
+ * as errors. Failing with a build hint is far clearer than 25 link warnings.
+ *
+ * @param manifest - The rendering package's manifest.
+ * @param dir - Its directory name (for the message).
+ * @returns A failure message, or `null` when every dependency is built.
+ */
+function missingBuiltDependencies(manifest, dir) {
+    const deps = Object.keys({ ...manifest.dependencies, ...manifest.peerDependencies }).filter((name) =>
+        name.startsWith('@ndigo/')
+    );
+    const missing = [];
+    for (const name of deps) {
+        const depDir = join(PACKAGES, `ndigo-${name.slice('@ndigo/'.length)}`);
+        const depManifestPath = join(depDir, 'package.json');
+        if (!existsSync(depManifestPath)) continue; // published, not a workspace member
+        const depManifest = JSON.parse(readFileSync(depManifestPath, 'utf8'));
+        const types =
+            depManifest.types ??
+            (typeof depManifest.exports === 'object' ? depManifest.exports['.']?.types : undefined);
+        if (typeof types !== 'string') continue;
+        if (!existsSync(join(depDir, types))) missing.push(name);
+    }
+    if (missing.length === 0) return null;
+    return `✗ @ndigo/${dir.slice('ndigo-'.length)}: dependencies not built (${missing.join(', ')}) — run \`pnpm build\` before \`pnpm doc:api\``;
+}
 
 const EXTERNAL_SYMBOL_LINK_MAPPINGS = JSON.parse(
     readFileSync(join(ROOT, 'scripts', 'external-symbol-links.json'), 'utf8')
@@ -247,6 +287,8 @@ function stripSourcePointers(dir) {
 async function renderPackage(dir) {
     const pkgDir = join(PACKAGES, dir);
     const manifest = JSON.parse(readFileSync(join(pkgDir, 'package.json'), 'utf8'));
+    const unbuilt = missingBuiltDependencies(manifest, dir);
+    if (unbuilt !== null) return { failed: true, coverage: 0, lines: [unbuilt] };
     let tmp;
     try {
         tmp = mkdtempSync(join(tmpdir(), 'ndigo-doc-'));

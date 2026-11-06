@@ -41,14 +41,14 @@
       "description": "Generate an @ndigo/orm entity class"
     },
     "middleware": {
-      "factory": "./src/generators/component/generator",
-      "schema": "./src/generators/component/schema.json",
-      "description": "Generate a middleware source file (scaffold)"
+      "factory": "./src/generators/middleware/generator",
+      "schema": "./src/generators/middleware/schema.json",
+      "description": "Generate a middleware source file"
     },
     "config": {
-      "factory": "./src/generators/component/generator",
-      "schema": "./src/generators/component/schema.json",
-      "description": "Generate a config source file (scaffold)"
+      "factory": "./src/generators/config/generator",
+      "schema": "./src/generators/config/schema.json",
+      "description": "Generate a config source file"
     },
     "migration": {
       "factory": "./src/generators/component/generator",

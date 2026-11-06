@@ -4,7 +4,7 @@
 
 # Ndigo
 
-A modular TypeScript framework that spans the Browser and Node: a shared context and dispatcher core, view and template technologies, HTTP clients and servers, ORM, telemetry, auth, and micro frontend hosting.
+Ndigo gives TypeScript applications the structure of a server framework and the reach of the web. One context, one dispatcher, one view model — shared by browser and Node — so server-rendered islands, micro frontends, SPAs, and APIs run on the same primitives, with views, HTTP, ORM, auth, and telemetry adopted only when needed.
 
 ## Requirements
 

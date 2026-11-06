@@ -134,6 +134,62 @@ export async function runAppSupervised(
 }
 
 /**
+ * Spawns `argv` as an interactive subprocess (stdio inherit) and resolves
+ * the child's exit code. Signal handlers are installed BEFORE the spawn
+ * (AD75-H2: a signal arriving between spawn and registration would
+ * otherwise lay the relay bare and orphan the child) and relay
+ * SIGINT/SIGTERM into the child. An `'error'` event — which Node emits
+ * asynchronously when the program cannot be spawned (ENOENT) and for which
+ * `'exit'` is not guaranteed — becomes a deterministic exit 127 with a
+ * readable stderr message instead of Node's unhandled `'error'` stack
+ * (issue #144, verified live on `ndigo doctor`).
+ *
+ * @param argv - The command and its arguments (no shell is used).
+ * @param options - `cwd` and `env` (omit `env` to inherit the invoking
+ *   environment, matching a bare `spawn`).
+ * @returns The child's exit code (`128 + signal` when killed, `127` when
+ *   the program could not be spawned).
+ */
+export async function runInteractiveSpawn(
+    argv: string[],
+    options: { cwd?: string; env?: NodeJS.ProcessEnv } = {}
+): Promise<number> {
+    let child: ChildProcess | null = null;
+    const relay = (signal: NodeJS.Signals): void => {
+        child?.kill(signal);
+    };
+    for (const signal of ['SIGINT', 'SIGTERM'] as NodeJS.Signals[]) {
+        process.on(signal, relay);
+    }
+    try {
+        child = spawn(argv[0] ?? '', argv.slice(1), {
+            stdio: 'inherit',
+            cwd: options.cwd,
+            env: options.env,
+        });
+        return await new Promise<number>((resolve) => {
+            child?.once('exit', (code, signal) => {
+                // A signal-killed child exits without a code; shell
+                // convention encodes it as 128 + signal number.
+                resolve(code ?? (signal === 'SIGINT' ? 130 : signal === 'SIGTERM' ? 143 : 1));
+            });
+            child?.once('error', () => {
+                process.stderr.write(`'${argv[0] ?? ''}' is not available on PATH — cannot run the command\n`);
+                process.exitCode = 127;
+                resolve(127);
+            });
+        });
+    } finally {
+        // The SAME handler object is registered and removed (signal handlers
+        // receive the signal name as their argument, so `relay` doubles as
+        // the handler).
+        for (const signal of ['SIGINT', 'SIGTERM'] as NodeJS.Signals[]) {
+            process.off(signal, relay);
+        }
+    }
+}
+
+/**
  * Runs a one-shot app script (generators, db, inspect) with signal relay
  * and exit-code propagation — deliberately NOT respawned.
  *
@@ -149,35 +205,7 @@ export async function runAppOnce(
     extraArgv: string[] = []
 ): Promise<number> {
     const resolved = appScriptCommand(dir, scriptKey, hint);
-    // Handlers are installed BEFORE the spawn (AD75-H2): a signal arriving
-    // between spawn and registration would otherwise drop the relay and
-    // orphan the child. The relay reads the child through a mutable holder —
-    // a signal before the spawn has nothing to relay, never an orphan.
-    let child: ChildProcess | null = null;
-    const relay = (signal: NodeJS.Signals): void => {
-        child?.kill(signal);
-    };
-    for (const signal of ['SIGINT', 'SIGTERM'] as NodeJS.Signals[]) {
-        process.on(signal, relay);
-    }
-    try {
-        child = spawn(resolved.argv[0] ?? '', [...resolved.argv.slice(1), ...extraArgv], {
-            cwd: resolved.cwd,
-            env: resolved.env,
-            stdio: 'inherit',
-        });
-        const exit = new Promise<number>((resolve) => {
-            child?.once('exit', resolve);
-        });
-        return await exit;
-    } finally {
-        // The SAME handler object is registered and removed (signal handlers
-        // receive the signal name as their argument, so `relay` doubles as
-        // the handler).
-        for (const signal of ['SIGINT', 'SIGTERM'] as NodeJS.Signals[]) {
-            process.off(signal, relay);
-        }
-    }
+    return runInteractiveSpawn([...resolved.argv, ...extraArgv], { cwd: resolved.cwd, env: resolved.env });
 }
 
 /**
@@ -189,23 +217,7 @@ export async function runAppOnce(
  * @returns The child's exit code.
  */
 export async function runWorkspaceOnce(extraArgv: string[], cwd?: string): Promise<number> {
-    // Handlers installed before spawn (AD75-H2) — see runAppOnce.
-    let child: ChildProcess | null = null;
-    const relay = (signal: NodeJS.Signals): void => {
-        child?.kill(signal);
-    };
-    for (const signal of ['SIGINT', 'SIGTERM'] as NodeJS.Signals[]) {
-        process.on(signal, relay);
-    }
-    try {
-        child = spawn('pnpm', extraArgv, { stdio: 'inherit', cwd });
-        const exit = new Promise<number>((resolve) => {
-            child?.once('exit', resolve);
-        });
-        return await exit;
-    } finally {
-        for (const signal of ['SIGINT', 'SIGTERM'] as NodeJS.Signals[]) {
-            process.off(signal, relay);
-        }
-    }
+    // Signal relay and spawn-failure handling come from runInteractiveSpawn
+    // (AD75-H2, issue #144).
+    return runInteractiveSpawn(['pnpm', ...extraArgv], { cwd });
 }

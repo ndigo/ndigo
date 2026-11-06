@@ -176,6 +176,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `autoNavigate` / `beforeNavigate` / `platform` / `profiles` / `properties`
   options; `destroy()` is idempotent. The manual
   `MetadataConfigApplicationContext` path stays public and unchanged.
+- `create-ndigo-app` (AD-92): an unscoped `npm create ndigo-app` bin that
+  scaffolds a standalone pnpm project (node or browser kind) using the
+  AD-90 presets (`runNodeApplication` / `createWebApplication`), with
+  `--local` dev mode against the workspace, a copied decorator-lowering
+  plugin, and a smoke + bundle guard in the generated app. Ships at 1.0.
 
 ### Changed
 

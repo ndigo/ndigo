@@ -1,0 +1,12 @@
+import { defineConfig } from 'vitest/config';
+import { lowerDecorators } from './scripts/vite-plugin-lower-decorators.mjs';
+
+export default defineConfig({
+    plugins: [lowerDecorators()],
+    test: {
+        globals: true,
+        environment: 'jsdom',
+        include: ['test/**/*.spec.ts'],
+        exclude: ['**/node_modules/**', '**/dist/**', '**/lib/**', '**/coverage/**', '**/e2e/**'],
+    },
+});

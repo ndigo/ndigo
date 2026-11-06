@@ -1,0 +1,16 @@
+/**
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+import { routeMapping, ModelAndView } from '@ndigo/dispatcher';
+import { WebComponentView } from '@ndigo/view-webcomponent';
+
+@routeMapping('/')
+export class {{className}}Controller {
+    @routeMapping('/')
+    handleRoot() {
+        return new ModelAndView(new WebComponentView('{{name}}-app'), { message: 'Hello, World!' });
+    }
+}
+
+export default {{className}}Controller;

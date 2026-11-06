@@ -27,7 +27,6 @@ package can be read — and installed — on its own.
 | `@ndigo/factory` | IoC factory with scopes, lifecycle, and aware processors for Ndigo | [api/README.md](packages/ndigo-factory/api/README.md) |
 | `@ndigo/flags` | Feature flags for Ndigo — the FlagEvaluator SPI (typed, async, never-throw), the property-backed local provider, and the @whenFeature gate metadata | [api/README.md](packages/ndigo-flags/api/README.md) |
 | `@ndigo/flags-openfeature` | OpenFeature bridge for Ndigo flags — the FlagEvaluator over @openfeature/server-sdk (and the web SDK for the ./web entry), so vendor providers (flagd, OFREP, LaunchDarkly, …) arrive behind the existing SPI | [api/README.md](packages/ndigo-flags-openfeature/api/README.md) |
-| `@ndigo/generators` | Nx generators for Ndigo application, package, component, README, and documentation-header scaffolding | [api/README.md](packages/ndigo-generators/api/README.md) |
 | `@ndigo/host` | Ndigo Host — centralized micro frontend orchestration in the shell context | [api/README.md](packages/ndigo-host/api/README.md) |
 | `@ndigo/http` | Fetch-based HTTP client, interceptors, and content parsing for Ndigo | [api/README.md](packages/ndigo-http/api/README.md) |
 | `@ndigo/inspect` | Deterministic JSON manifest generator for Ndigo applications (routes, mappings, config keys) | [api/README.md](packages/ndigo-inspect/api/README.md) |

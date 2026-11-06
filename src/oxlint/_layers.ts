@@ -74,4 +74,4 @@ export const LAYER_RANK: Record<string, number> = {
  * Packages outside the runtime layer system — tooling that legitimately
  * reaches across any rank and is never a layer-ranked runtime dependency.
  */
-export const TOOLING_PACKAGES: ReadonlySet<string> = new Set(['cli', 'create-ndigo-app', 'generators', 'oxlint-plugin', 'test']);
+export const TOOLING_PACKAGES: ReadonlySet<string> = new Set(['cli', 'create-ndigo-app', 'oxlint-plugin', 'test']);

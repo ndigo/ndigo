@@ -1,6 +1,6 @@
 # ndigo Decision Records (ADRs)
 
-Architecture Decision Records for the ndigo monorepo — **AD-01..AD-92**,
+Architecture Decision Records for the ndigo monorepo — **AD-01..AD-93**,
 contiguous. Every record captures a decision with its context, the evidence
 (plan, code, commits), the decided shape, consequences, and a revisit trigger.
 
@@ -118,3 +118,4 @@ contiguous. Every record captures a decision with its context, the evidence
 | **AD-90** | 2026-11-05    | Accepted           | [Application lifecycle presets — entrypoint defaults, not configuration classes](2026-11-05_AD90_APPLICATION_LIFECYCLE_PRESETS.md)                                                                                         |
 | **AD-91** | 2026-11-02    | Accepted           | [The 1.0 API freeze — reviewed surface and accepted shapes](2026-11-02_AD91_1_0_API_FREEZE.md)                                                                                                                             |
 | **AD-92** | 2026-11-05    | Accepted           | [`create-ndigo-app` — standalone scaffold ships at 1.0](2026-11-05_AD92_CREATE_NDIGO_APP_AT_1_0.md)                                                                                                                        |
+| **AD-93** | 2026-11-05    | Accepted           | [`packages/` stays consumer-only — the generator collection moves to `tools/`](2026-11-05_AD93_INTERNALIZE_GENERATORS.md)                                                                                                  |

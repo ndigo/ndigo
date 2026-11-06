@@ -258,6 +258,18 @@ const workspaceUsage = importsOf(ROOT, DEV_DIRS);
 // Root `src/` is repo-only source (AD-86): its imports count as usage too.
 for (const spec of importsOf(ROOT, SOURCE_DIRS)) workspaceUsage.add(spec);
 
+// Repo-only tooling under `tools/` is workspace code too (AD-93): its imports
+// count as usage for the root manifest's shared tooling pool (e.g. @nx/devkit).
+const toolsRoot = join(ROOT, 'tools');
+if (existsSync(toolsRoot)) {
+    for (const dir of readdirSync(toolsRoot)) {
+        const toolDir = join(toolsRoot, dir);
+        if (!statSync(toolDir).isDirectory()) continue;
+        for (const spec of importsOf(toolDir, SOURCE_DIRS)) workspaceUsage.add(spec);
+        for (const spec of importsOf(toolDir, DEV_DIRS)) workspaceUsage.add(spec);
+    }
+}
+
 // Rule 13: `packages/` is the published surface (AD-86) — every directory in
 // it must be a consumer package: a `package.json` must exist and must not be
 // `private` (the `files`/`exports` requirement is the legacy contract checked
@@ -339,10 +351,7 @@ for (const dir of readdirSync(PACKAGES)) {
         fail(name, `keywords must be a non-empty array (docs standard)`);
     }
     // Documentation standard (see docs/guides/12-package-documentation.md): every
-    // publishable package ships its compiled lib/ and generated api/. (No
-    // @ndigo/generators exemption — it is a normal build-output package: its
-    // exports point at lib/ and its files include lib alongside the Nx-runtime
-    // assets src/ and generators.json.)
+    // publishable package ships its compiled lib/ and generated api/.
     if (!Array.isArray(manifest.files) || !manifest.files.includes('api') || !manifest.files.includes('lib')) {
         fail(name, `files must include "api" and "lib" (docs standard)`);
     }

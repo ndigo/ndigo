@@ -233,7 +233,7 @@ Testing & tooling:
 - [ndigo-test](packages/ndigo-test/README.md) — MockHTTP in-process test harness
 - [ndigo-oxlint-plugin](packages/ndigo-oxlint-plugin/README.md) — consumer-facing oxlint rules (repo-only rules live in [src/oxlint](src/oxlint/README.md))
 - [ndigo-inspect](packages/ndigo-inspect/README.md) — deterministic app manifest generator (routes, mappings, config keys)
-- [ndigo-generators](packages/ndigo-generators/README.md) — Nx scaffolding
+- [ndigo-generators](tools/generators/README.md) — repo-local Nx scaffolding (the `ndigo new` / `ndigo generate` engines)
 
 Micro frontends:
 

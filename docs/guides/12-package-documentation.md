@@ -3,7 +3,7 @@
 How Ndigo packages document themselves — the standard every package must
 meet, and the tooling that keeps it true. Applies to all
 `packages/*`; the reference implementation of the standard is the
-[`ndigo-generators`](../../packages/ndigo-generators/README.md) scaffolding.
+[`ndigo-generators`](../../tools/generators/README.md) scaffolding.
 
 ## Why this shape
 
@@ -67,15 +67,15 @@ Rules:
 
 ## package.json metadata
 
-| Field                                             | Requirement                                                                                             | Why                                   |
-| :------------------------------------------------ | :------------------------------------------------------------------------------------------------------ | :------------------------------------ |
-| `description`                                     | ≥ 25 chars, non-generic (not `"Ndigo Cache"`); one-sentence value statement                             | npm listing, doc index, search        |
-| `keywords`                                        | non-empty array incl. `"ndigo"` + domain tags                                                           | npm discoverability                   |
-| `author`                                          | `"Jeff Rose <jeff_rose@outlook.com>"`                                                                   | npm profile                           |
-| `license`                                         | `"ISC"`                                                                                                 | always                                |
-| `files`                                           | `["doc", "lib"]` for every package; `@ndigo/generators` additionally ships `["src", "generators.json"]` | npm tarball ships only these + README |
-| `repository` / `homepage` / `bugs`                | set at publish time, when a public remote exists                                                        | npm links                             |
-| `exports` / `sideEffects` / `type` / dep sections | enforced by `scripts/check-manifests.mjs` — see ARCHITECTURE.md "Manifest Dependency Sections"          | install closure                       |
+| Field                                             | Requirement                                                                                    | Why                                   |
+| :------------------------------------------------ | :--------------------------------------------------------------------------------------------- | :------------------------------------ |
+| `description`                                     | ≥ 25 chars, non-generic (not `"Ndigo Cache"`); one-sentence value statement                    | npm listing, doc index, search        |
+| `keywords`                                        | non-empty array incl. `"ndigo"` + domain tags                                                  | npm discoverability                   |
+| `author`                                          | `"Jeff Rose <jeff_rose@outlook.com>"`                                                          | npm profile                           |
+| `license`                                         | `"ISC"`                                                                                        | always                                |
+| `files`                                           | `["api", "lib"]` for every package (enforced by `scripts/check-manifests.mjs`)                 | npm tarball ships only these + README |
+| `repository` / `homepage` / `bugs`                | set at publish time, when a public remote exists                                               | npm links                             |
+| `exports` / `sideEffects` / `type` / dep sections | enforced by `scripts/check-manifests.mjs` — see ARCHITECTURE.md "Manifest Dependency Sections" | install closure                       |
 
 ## Generated API docs
 

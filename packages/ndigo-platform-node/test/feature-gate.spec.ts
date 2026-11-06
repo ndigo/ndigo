@@ -343,7 +343,9 @@ describe('targeting-context resolvers (AD-87 companion)', () => {
             routeWith({ remoteAddress: '203.0.113.9', session: { principal: { id: 'incomplete' } } })
         );
 
-        expect(context).toEqual({ targetingKey: 'ip:d861b7e91033ebc1c1e8e7af3929010158b3241b54ca87ef73e79c32f26400ec' });
+        expect(context).toEqual({
+            targetingKey: 'ip:d861b7e91033ebc1c1e8e7af3929010158b3241b54ca87ef73e79c32f26400ec',
+        });
     });
 
     test('the interceptor uses the built-in default when no bean or override is present', async () => {

@@ -49,7 +49,7 @@ The CLI resolves `package.json` scripts and runs them **shell-free**
 ## Generate
 
 `ndigo generate <kind>` fronts `@ndigo/generators` (package, component,
-readme, header):
+readme, header) — the repo-local collection in `tools/generators/` (AD-93):
 
 ```bash
 ndigo generate package --name my-app --description "A demo package" --jobs

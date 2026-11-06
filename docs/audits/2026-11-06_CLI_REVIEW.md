@@ -127,3 +127,37 @@ Sequenced, independently landable PRs (worktree per PR, issue-tracking):
   manifests exit 2 with clean stderr; apply pins then reports missing
   `pnpm` as 127; doctor without pnpm reports `n/a (not found)` + failure
   line, exit 1, no stack.
+
+## Remediation outcome (2026-11-06 close-out)
+
+All findings were remediated in five tracked PRs, one per issue:
+
+| PR | Issue | Scope |
+| --- | --- | --- |
+| [#145](https://github.com/ndigo/ndigo/pull/145) | #144 | `runInteractiveSpawn` (relay + async `'error'` → 127) at every one-shot spawn site; `_diagnostics` capture no longer reports a lying healthy row; update-manifest boundary (`likeVersionManifest`, exact pins only, `@ndigo/*` names, clean exit-2 in both modes — closes the npm-alias supply-chain channel). |
+| [#147](https://github.com/ndigo/ndigo/pull/147) | #146 | `logs --follow` fd/Buffer rewrite (multibyte-faithful, snapshot-race-free, delta reads, rotation reopen, `--lines` validation); `clean --force` enforced (also documented: Stricli registers camelCase flag spellings — `--dry-run` never existed); `--version` reads the package root from both layouts; `config` edges (no-value `set` refused, `get` absent → `null`, null-proto store). |
+| [#149](https://github.com/ndigo/ndigo/pull/149) | #148 | `createScriptFrontCommand` factory + shared `dir` positional; uniform usage-error rendering (method-level `exceptionWhileRunningCommand` override — `formatException` alone cannot remove the fixed `Command failed, ` prefix) with `determineExitCode` replacing the side channel; `routes` → alias of `inspect`; completion derived from `_routes.ts` + parity pin; newline-in-script fail-loud; `dev`/`serve` exit alignment; `env`/`info` gain the `dir` positional. |
+| [#151](https://github.com/ndigo/ndigo/pull/151) | #150 | Docs accuracy/standard/freshness (invalid `--db` example, broken table pipes, README internal-leak, stale intros, `generate` kind enumeration, `--preset` brief, kebab→camel flag spellings) + TSDoc on the 20 undocumented exports; `MIN_NODE_MAJOR` re-export dropped. |
+| [#153](https://github.com/ndigo/ndigo/pull/153) | #152 | Help-surface parity pin; script-relay coverage for the five qc fronts, `dev` (serve contract — the supervisor respawns crashed slots by design, so a fast child exit cannot resolve dev), `openapi`/db forwarding with `--db` + `NDIGO_DB_URL` relay asserted across nine subcommands, `env`/`info`/`add` lanes; the cwd-fragile assertion replaced by an explicit-chdir test — 62/62 green in both invocation modes. |
+
+Verification deltas recorded en route (worth keeping for future reviews):
+Stricli honors `this.formatException` inside its en-US text bundle, but the
+fixed `Command failed, ` prefix lives in `exceptionWhileRunningCommand`;
+`pnpm doc:api` regenerates but never prunes deleted modules (manual `git rm`
+of the stale `routes/` tree was required; a tooling follow-up is desirable);
+the full per-PR gate list is build + test + lint + `doc:api` +
+`manifest:check`.
+
+### Open items (deliberately deferred, not findings)
+
+- **Remote version manifest** — plan §1 of the infrastructure doc: stable
+  URL fetch + offline cache + `--dry-run` + framework migrations. The trust
+  boundary landed with PR1 (exact pins, `@ndigo/*` names, clean usage
+  errors), so the remote work can ship against a validated front.
+- **`logs --since`** — noted in the infrastructure plan §6; unrequested.
+- **Strict env-relay opt-in** (`NDIGO_ENV_RELAY=strict`) — hardening for
+  untrusted-app runs; documented exposure from the review stands.
+- **`scripts/doc-api.mjs` pruning** for deleted modules.
+- Minor spec nits: `@module blue-cli` header in `doctor-floor.spec.ts`,
+  mixed `.js` suffix style across specs, `db new` empty-slug guard and
+  `db rollback` non-numeric count validation.

@@ -1,6 +1,5 @@
 /**
- * @since 1.0.0
- * @author Jeff Rose
+ * Matchable contracts and the duck-typing guard.
  */
 import { like } from '@ndigo/util/types';
 

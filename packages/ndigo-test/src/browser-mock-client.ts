@@ -1,6 +1,4 @@
 /**
- */
-/**
  * BrowserMockClient — drive `BrowserDispatcher` with a DOM-free capture target.
  *
  * Mirrors `MockHTTP` for the client side: boots a browser application context
@@ -123,6 +121,8 @@ export class BrowserMockClient {
     #app: BrowserTestApp;
 
     /**
+     * Creates a client around a booted browser app.
+     *
      * @param app - A booted browser app.
      */
     constructor(app: BrowserTestApp) {

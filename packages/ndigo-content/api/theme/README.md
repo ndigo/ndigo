@@ -6,6 +6,8 @@
 
 # theme
 
+Theme contracts, a static resolver, and structural guards.
+
 ## Classes
 
 - [StaticThemeResolver](classes/StaticThemeResolver.md)

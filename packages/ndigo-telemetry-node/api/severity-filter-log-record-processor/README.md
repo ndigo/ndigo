@@ -6,6 +6,8 @@
 
 # severity-filter-log-record-processor
 
+Filters OpenTelemetry log records by minimum severity.
+
 ## Classes
 
 - [SeverityFilterLogRecordProcessor](classes/SeverityFilterLogRecordProcessor.md)

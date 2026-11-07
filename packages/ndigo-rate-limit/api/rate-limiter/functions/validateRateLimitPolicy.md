@@ -17,10 +17,26 @@ decorator (decoration-time) and every limiter (call-time).
 
 [`RateLimitPolicy`](../interfaces/RateLimitPolicy.md)
 
+The policy to validate.
+
 ### where?
 
 `string` = `'rate limit policy'`
 
+Label used in the thrown error (defaults to `"rate limit policy"`).
+
 ## Returns
 
 `void`
+
+Nothing; throws on an invalid policy.
+
+## Throws
+
+When `limit` or `windowMs` is not a positive integer.
+
+## Example
+
+```ts
+validateRateLimitPolicy({ limit: 100, windowMs: 60_000 });
+```

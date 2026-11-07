@@ -34,13 +34,19 @@ or return a value / throw to short-circuit.
 
 [`MethodInvocation`](MethodInvocation.md)
 
+The current call's descriptor, target, and arguments.
+
 ##### next
 
 () => `unknown`
 
+Continues the inner interceptor chain.
+
 #### Returns
 
 `unknown`
+
+The call result, or the short-circuit value.
 
 ***
 
@@ -57,6 +63,10 @@ method while the processor prepares the entry — not per call.
 
 [`MethodDescriptor`](MethodDescriptor.md)
 
+The method descriptor being considered.
+
 #### Returns
 
 `boolean`
+
+`true` when the interceptor should advise the method.

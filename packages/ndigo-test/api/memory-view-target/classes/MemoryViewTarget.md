@@ -42,9 +42,13 @@ The last captured render, or `null` if none yet.
 
 > **clear**(): `Promise`\<`void`\>
 
+Clears the captured render.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the capture is cleared.
 
 #### Implementation of
 
@@ -56,23 +60,33 @@ The last captured render, or `null` if none yet.
 
 > **commit**(`output`, `model`, `route`): `Promise`\<`void`\>
 
+Captures a rendered output for assertions.
+
 #### Parameters
 
 ##### output
 
 `unknown`
 
+The rendered output.
+
 ##### model
 
 `unknown`
+
+The data model used for the render.
 
 ##### route
 
 [`Route`](#)
 
+The route that was rendered.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the render is captured.
 
 #### Implementation of
 
@@ -84,15 +98,21 @@ The last captured render, or `null` if none yet.
 
 > **prepare**(`route`): `Promise`\<`void`\>
 
+Prepares the target for a render (there is no DOM container to clear).
+
 #### Parameters
 
 ##### route
 
 [`Route`](#)
 
+The route being rendered.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves immediately.
 
 #### Implementation of
 

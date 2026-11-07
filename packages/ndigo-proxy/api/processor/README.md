@@ -6,6 +6,8 @@
 
 # processor
 
+Container integration: turns interceptors into an entry processor.
+
 ## Functions
 
 - [interception](functions/interception.md)

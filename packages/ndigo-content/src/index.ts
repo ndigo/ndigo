@@ -1,4 +1,6 @@
 /**
+ * Public API of `@ndigo/content` — messages, language codes, themes, and
+ * negotiation.
  */
 import * as LanguageCodes from './language-codes';
 

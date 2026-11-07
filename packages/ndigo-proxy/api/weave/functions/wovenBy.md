@@ -18,6 +18,10 @@ unrecorded producer. Not an interception check — see [isIntercepted](isInterce
 
 `object`
 
+The woven proxy to inspect.
+
 ## Returns
 
 `object` \| `undefined`
+
+The owning processor, or `undefined` for standalone weaving.

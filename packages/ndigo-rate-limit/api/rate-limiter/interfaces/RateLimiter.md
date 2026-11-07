@@ -36,10 +36,16 @@ backend resolves its counter over a network hop.
 
 `string`
 
+The client key whose budget is consumed.
+
 ##### policy
 
 [`RateLimitPolicy`](RateLimitPolicy.md)
 
+The window and limit to enforce.
+
 #### Returns
 
 `Promise`\<[`RateLimitResult`](RateLimitResult.md)\>
+
+Whether the request may proceed and, when denied, the wait before retry.

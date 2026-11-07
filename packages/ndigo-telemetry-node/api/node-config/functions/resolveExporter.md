@@ -18,10 +18,27 @@ OTLP urls fail loud here (`new URL`), naming the signal in the error.
 
 [`ExporterSpec`](../type-aliases/ExporterSpec.md) \| `undefined`
 
+The exporter spec to resolve.
+
 ### signal
 
 `"trace"` \| `"metric"` \| `"log"`
 
+The signal being configured.
+
 ## Returns
 
 [`ResolvedExporter`](../type-aliases/ResolvedExporter.md)
+
+The normalized export choice.
+
+## Throws
+
+When `'prometheus'` is used for a non-metric signal or an OTLP url is invalid.
+
+## Example
+
+```ts
+resolveExporter({ url: 'http://localhost:4318/v1/traces' }, 'trace');
+// { kind: 'otlp', url: 'http://localhost:4318/v1/traces' }
+```

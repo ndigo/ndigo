@@ -41,3 +41,11 @@ The advice to apply.
 ## Returns
 
 [`InitializationAwareProcessor`](#)
+
+An initialization-aware processor that weaves matching entries.
+
+## Example
+
+```ts
+factory.addProcessor(interception([new RetryInterceptor()]));
+```

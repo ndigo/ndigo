@@ -22,14 +22,26 @@ Prompts for a choice from a fixed list, returning the default on empty input.
 
 `string`
 
+The prompt shown to the user.
+
 ### choices
 
 readonly `T`[]
+
+The allowed answers.
 
 ### defaultValue
 
 `T`
 
+Value returned when the answer is blank.
+
 ## Returns
 
 `Promise`\<`T`\>
+
+The selected choice.
+
+## Throws
+
+When the answer is not one of `choices`.

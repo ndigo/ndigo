@@ -31,3 +31,10 @@ The parsed flags.
 `string`[]
 
 The argv appended to `exec nx g @ndigo/generators:<kind>`.
+
+## Example
+
+```ts
+generateArgv('component', { name: 'card', package: 'ndigo-views' });
+// ['--name', 'card', '--package', 'ndigo-views']
+```

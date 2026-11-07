@@ -37,7 +37,7 @@ In-memory fixed-window reference implementation: one counter per
 
 > `readonly` **kind**: `"fixed-window"` = `'fixed-window'`
 
-Backend identifier e.g. `'fixed-window'`, `'redis'`.
+Backend identifier (`'fixed-window'`).
 
 #### Implementation of
 
@@ -49,10 +49,7 @@ Backend identifier e.g. `'fixed-window'`, `'redis'`.
 
 > **consume**(`key`, `policy`): `Promise`\<[`RateLimitResult`](../../rate-limiter/interfaces/RateLimitResult.md)\>
 
-Accounts one request for `key` under `policy`. Implementations MUST
-fail loud (`RangeError`) on malformed policies and MUST be safe for
-concurrent use. The async signature is deliberate (AD-39): a shared
-backend resolves its counter over a network hop.
+Accounts one request for `key` under `policy`.
 
 #### Parameters
 
@@ -60,13 +57,19 @@ backend resolves its counter over a network hop.
 
 `string`
 
+The client key whose budget is consumed.
+
 ##### policy
 
 [`RateLimitPolicy`](../../rate-limiter/interfaces/RateLimitPolicy.md)
 
+The window and limit to enforce.
+
 #### Returns
 
 `Promise`\<[`RateLimitResult`](../../rate-limiter/interfaces/RateLimitResult.md)\>
+
+Whether the request is allowed and, when denied, the wait before retry.
 
 #### Implementation of
 

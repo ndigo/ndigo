@@ -16,6 +16,10 @@ Absolute path to the template directory for a kind.
 
 [`AppKind`](../../types/type-aliases/AppKind.md)
 
+The application kind.
+
 ## Returns
 
 `string`
+
+The absolute template directory for `kind`.

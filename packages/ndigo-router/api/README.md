@@ -4,6 +4,8 @@
 
 # @ndigo/router v0.0.1
 
+Routing primitives for Ndigo — route construction, feature routing, route partitions, and query/matrix-string helpers.
+
 ## Modules
 
 - [context-tokens](context-tokens/README.md)

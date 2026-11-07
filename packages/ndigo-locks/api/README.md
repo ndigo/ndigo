@@ -4,6 +4,8 @@
 
 # @ndigo/locks v0.0.1
 
+Distributed locks with fencing tokens for Node.js.
+
 ## Modules
 
 - [context-tokens](context-tokens/README.md)

@@ -4,6 +4,8 @@
 
 # @ndigo/test v0.0.1
 
+Integration test harness for Ndigo — in-process MockHTTP request dispatch without binding a port.
+
 ## Modules
 
 - [browser-mock-client](browser-mock-client/README.md)

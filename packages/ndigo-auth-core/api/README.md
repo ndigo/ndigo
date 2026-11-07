@@ -4,6 +4,8 @@
 
 # @ndigo/auth-core v0.0.1
 
+Core authentication contracts and utilities for Ndigo — environment-agnostic, zero runtime dependencies.
+
 ## Modules
 
 - [adapter](adapter/README.md)

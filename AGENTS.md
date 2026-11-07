@@ -458,7 +458,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 
 ### Creating New Files
 
-- Match the standard file-header style observed in adjacent files (TSDoc module doc — one-line summary plus `@since`/`@author`, no `@module` tag; no author/copyright lines beyond those tags).
+- Match the standard file-header style observed in adjacent files (TSDoc module doc — a one-line module summary, no tags; no `@module` tag; no author/copyright lines). See STYLE_GUIDE §5.
 - Add to `exports` in `package.json` if the file needs to be part of the public API.
 
 ## 6. Documentation Standards

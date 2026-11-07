@@ -1,4 +1,5 @@
 /**
+ * Runtime-aware DOM provider factory.
  */
 import type { DOMProvider } from './dom-provider';
 

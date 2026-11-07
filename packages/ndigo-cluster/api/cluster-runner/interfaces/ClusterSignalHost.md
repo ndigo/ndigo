@@ -24,9 +24,13 @@ Registers a handler for the signal.
 
 `Signals`
 
+The signal to listen for.
+
 ##### handler
 
 () => `void`
+
+The handler to invoke when the signal arrives.
 
 #### Returns
 
@@ -46,9 +50,13 @@ Removes a previously registered handler.
 
 `Signals`
 
+The signal the handler was registered for.
+
 ##### handler
 
 () => `void`
+
+The handler to remove.
 
 #### Returns
 

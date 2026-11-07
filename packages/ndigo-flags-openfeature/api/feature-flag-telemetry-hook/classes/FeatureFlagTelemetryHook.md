@@ -44,13 +44,19 @@ clean resolutions only; errorCode results route through
 
 `Readonly`\<`HookContext`\>
 
+The hook context carrying the evaluation's span.
+
 ##### evaluationDetails
 
 `EvaluationDetails`\<`FlagValue`\>
 
+The resolved flag value and its metadata.
+
 ##### \_hookHints?
 
 `Readonly`\<`Record`\<`string`, `unknown`\>\>
+
+OpenFeature hook hints; unused.
 
 #### Returns
 
@@ -74,9 +80,13 @@ Opens the evaluation span and records the key/provider identity.
 
 `BeforeHookContext`
 
+The hook context for the evaluation being started.
+
 ##### \_hookHints?
 
 `Readonly`\<`Record`\<`string`, `unknown`\>\>
+
+OpenFeature hook hints; unused.
 
 #### Returns
 
@@ -102,13 +112,19 @@ code when the error carries one, else the error's name.
 
 `Readonly`\<`HookContext`\>
 
+The hook context carrying the evaluation's span.
+
 ##### error
 
 `unknown`
 
+The error that aborted the evaluation.
+
 ##### \_hookHints?
 
 `Readonly`\<`Record`\<`string`, `unknown`\>\>
+
+OpenFeature hook hints; unused.
 
 #### Returns
 
@@ -132,13 +148,19 @@ Ends the span (success or failure path — `finally` always runs).
 
 `Readonly`\<`HookContext`\>
 
+The hook context carrying the evaluation's span.
+
 ##### \_evaluationDetails
 
 `EvaluationDetails`\<`FlagValue`\>
 
+The evaluation details; unused.
+
 ##### \_hookHints?
 
 `Readonly`\<`Record`\<`string`, `unknown`\>\>
+
+OpenFeature hook hints; unused.
 
 #### Returns
 

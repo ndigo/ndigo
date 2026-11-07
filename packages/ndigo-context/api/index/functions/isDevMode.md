@@ -15,3 +15,5 @@ where it is absent (e.g. some browser/worker bundles).
 ## Returns
 
 `boolean`
+
+`true` unless `NODE_ENV` is exactly `production`.

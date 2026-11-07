@@ -177,6 +177,7 @@ export class TaskScheduler implements AsyncCloseable, AsyncDestroyable {
      */
     #started = false;
     #closed = false;
+    /** Set once {@link destroy} runs; new registrations are rejected. */
     destroyed = false;
     /** Constructor-provided lock driver; `undefined` = resolve from context. */
     readonly #lockDriverOption: LockDriver | null | undefined;

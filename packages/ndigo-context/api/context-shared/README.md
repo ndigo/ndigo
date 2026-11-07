@@ -8,7 +8,7 @@
 
 Shared module-level state for the application context.
 
-## Variables
+## Functions
 
-- [defineProperty](variables/defineProperty.md)
-- [ownKeys](variables/ownKeys.md)
+- [defineProperty](functions/defineProperty.md)
+- [ownKeys](functions/ownKeys.md)

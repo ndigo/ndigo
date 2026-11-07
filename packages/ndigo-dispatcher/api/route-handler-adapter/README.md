@@ -16,6 +16,6 @@
 
 - [RouteHandlerAdapter](interfaces/RouteHandlerAdapter.md)
 
-## Variables
+## Functions
 
-- [likeController](variables/likeController.md)
+- [likeController](functions/likeController.md)

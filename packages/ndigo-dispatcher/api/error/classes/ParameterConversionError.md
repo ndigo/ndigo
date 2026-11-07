@@ -117,6 +117,8 @@ This is a RUNTIME error (request processing time).
 
 > `optional` **toJSON**(): `JSONValue`
 
+Returns a JSON-safe representation of the value.
+
 #### Returns
 
 `JSONValue`
@@ -130,6 +132,8 @@ This is a RUNTIME error (request processing time).
 ### toString()
 
 > **toString**(): `string`
+
+Returns a string representation of the value.
 
 #### Returns
 

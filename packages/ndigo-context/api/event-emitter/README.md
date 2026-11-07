@@ -28,11 +28,6 @@ Application event emitters and listener contracts.
 - [EventListener](type-aliases/EventListener.md)
 - [EventType](type-aliases/EventType.md)
 
-## Variables
-
-- [likeApplicationEventEmitterAware](variables/likeApplicationEventEmitterAware.md)
-- [likeEventEmitter](variables/likeEventEmitter.md)
-
 ## Functions
 
 - [AsAsyncEventEmitter](functions/AsAsyncEventEmitter.md)
@@ -40,3 +35,5 @@ Application event emitters and listener contracts.
 - [asEventEmitter](functions/asEventEmitter.md)
 - [AsEventEmitter](functions/AsEventEmitter-1.md)
 - [AsPositionalEventEmitter](functions/AsPositionalEventEmitter.md)
+- [likeApplicationEventEmitterAware](functions/likeApplicationEventEmitterAware.md)
+- [likeEventEmitter](functions/likeEventEmitter.md)

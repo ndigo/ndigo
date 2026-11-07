@@ -12,10 +12,7 @@ A JavaScript primitive value.
 
 - [primitive](type-aliases/primitive.md)
 
-## Variables
-
-- [isNotPrimitive](variables/isNotPrimitive.md)
-
 ## Functions
 
+- [isNotPrimitive](functions/isNotPrimitive.md)
 - [isPrimitive](functions/isPrimitive.md)

@@ -58,6 +58,8 @@ The string tag for this class.
 
 > `optional` **toJSON**(): `JSONValue`
 
+Returns a JSON-safe representation of the value.
+
 #### Returns
 
 `JSONValue`
@@ -71,6 +73,8 @@ The string tag for this class.
 ### toString()
 
 > **toString**(): `string`
+
+Returns a string representation of the value.
 
 #### Returns
 

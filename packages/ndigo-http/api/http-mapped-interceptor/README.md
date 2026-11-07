@@ -11,6 +11,6 @@
 - [MappedHTTPInterceptor](classes/MappedHTTPInterceptor.md)
 - [WildcardMatcher](classes/WildcardMatcher.md)
 
-## Variables
+## Functions
 
-- [isMappedHTTPInterceptor](variables/isMappedHTTPInterceptor.md)
+- [isMappedHTTPInterceptor](functions/isMappedHTTPInterceptor.md)

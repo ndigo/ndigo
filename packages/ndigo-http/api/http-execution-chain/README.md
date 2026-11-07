@@ -10,6 +10,6 @@
 
 - [HTTPExecutionChain](classes/HTTPExecutionChain.md)
 
-## Variables
+## Functions
 
-- [isHTTPExecutionChain](variables/isHTTPExecutionChain.md)
+- [isHTTPExecutionChain](functions/isHTTPExecutionChain.md)

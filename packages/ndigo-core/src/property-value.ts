@@ -39,9 +39,8 @@ const _likePropertyValuesShape = like({ propertyValues: Array, getPropertyValue:
  * @param value - Value to test.
  * @returns `true` when the value is iterable and exposes property lookup helpers.
  */
-export const likePropertyValues = ((value: unknown) => likeIterable(value) && _likePropertyValuesShape(value)) as (
-    value: unknown
-) => value is PropertyValues;
+export const likePropertyValues = (value: unknown): value is PropertyValues =>
+    likeIterable(value) && _likePropertyValuesShape(value);
 
 /**
  * A named value wrapper used for property bags and metadata.

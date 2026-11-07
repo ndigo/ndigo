@@ -12,11 +12,8 @@
 - [MessageSource](interfaces/MessageSource.md)
 - [MessageSourceAware](interfaces/MessageSourceAware.md)
 
-## Variables
-
-- [likeMessageSource](variables/likeMessageSource.md)
-- [likeMessageSourceAware](variables/likeMessageSourceAware.md)
-
 ## Functions
 
 - [AsMessageSourceAware](functions/AsMessageSourceAware.md)
+- [likeMessageSource](functions/likeMessageSource.md)
+- [likeMessageSourceAware](functions/likeMessageSourceAware.md)

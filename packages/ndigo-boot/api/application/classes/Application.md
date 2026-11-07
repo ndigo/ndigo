@@ -48,6 +48,8 @@ Source classes that will be registered when the application runs.
 
 > **destroyed**: `boolean`
 
+Whether the emitter has been destroyed.
+
 #### Inherited from
 
 `Emitter.destroyed`
@@ -58,6 +60,8 @@ Source classes that will be registered when the application runs.
 
 > `readonly` `static` **every**: `string`
 
+Sentinel type matching every event.
+
 #### Inherited from
 
 `Emitter.every`
@@ -67,6 +71,8 @@ Source classes that will be registered when the application runs.
 ### version
 
 > `readonly` `static` **version**: `string`
+
+Emitter implementation version.
 
 #### Inherited from
 

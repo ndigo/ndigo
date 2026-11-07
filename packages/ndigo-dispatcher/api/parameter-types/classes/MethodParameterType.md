@@ -169,6 +169,8 @@ The value to compare with this object.
 
 > **toJSON**(): `string`
 
+Returns a JSON-safe representation of the value.
+
 #### Returns
 
 `string`

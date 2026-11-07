@@ -80,6 +80,8 @@ A type representing the route parameters, defaulting to `Record<string, string>`
 
 > `optional` **toJSON**(): `JSONValue`
 
+Returns a JSON-safe representation of the value.
+
 #### Returns
 
 `JSONValue`
@@ -93,6 +95,8 @@ A type representing the route parameters, defaulting to `Record<string, string>`
 ### toString()
 
 > **toString**(): `string`
+
+Returns a string representation of the value.
 
 #### Returns
 

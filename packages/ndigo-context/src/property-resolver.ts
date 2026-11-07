@@ -106,6 +106,8 @@ export interface PropertyResolver {
 }
 
 /**
+ * Returns whether a value behaves like a {@link PropertyResolver|PropertyResolver}.
+ *
  * @param value - The value to be tested.
  * @returns Whether or not the value is like a {@link PropertyResolver|PropertyResolver}.
  */

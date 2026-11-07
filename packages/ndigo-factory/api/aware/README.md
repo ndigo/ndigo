@@ -14,11 +14,11 @@
 ## Variables
 
 - [$aware](variables/$aware.md)
-- [likeAwareAnd](variables/likeAwareAnd.md)
-- [likeNameAware](variables/likeNameAware.md)
 
 ## Functions
 
 - [AsAware](functions/AsAware.md)
 - [AsNameAware](functions/AsNameAware.md)
 - [likeAware](functions/likeAware.md)
+- [likeAwareAnd](functions/likeAwareAnd.md)
+- [likeNameAware](functions/likeNameAware.md)

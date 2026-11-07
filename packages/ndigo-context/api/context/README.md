@@ -60,13 +60,13 @@ Re-exports [GenericApplicationContext](../generic-application-context/classes/Ge
 
 ### likeApplicationContext
 
-Re-exports [likeApplicationContext](../context-interfaces/variables/likeApplicationContext.md)
+Re-exports [likeApplicationContext](../context-interfaces/functions/likeApplicationContext.md)
 
 ***
 
 ### likeApplicationContextAware
 
-Re-exports [likeApplicationContextAware](../context-interfaces/variables/likeApplicationContextAware.md)
+Re-exports [likeApplicationContextAware](../context-interfaces/functions/likeApplicationContextAware.md)
 
 ***
 

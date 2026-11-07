@@ -6,14 +6,11 @@
 
 # http-interceptor-guards
 
-## Variables
-
-- [likeCompletionAwareHTTPInterceptor](variables/likeCompletionAwareHTTPInterceptor.md)
-- [likeErrorAwareHTTPInterceptor](variables/likeErrorAwareHTTPInterceptor.md)
-- [likeInitializationAwareHTTPInterceptor](variables/likeInitializationAwareHTTPInterceptor.md)
-- [likeRequestAwareHTTPInterceptor](variables/likeRequestAwareHTTPInterceptor.md)
-- [likeResponseAwareHTTPInterceptor](variables/likeResponseAwareHTTPInterceptor.md)
-
 ## Functions
 
+- [likeCompletionAwareHTTPInterceptor](functions/likeCompletionAwareHTTPInterceptor.md)
+- [likeErrorAwareHTTPInterceptor](functions/likeErrorAwareHTTPInterceptor.md)
 - [likeHTTPInterceptor](functions/likeHTTPInterceptor.md)
+- [likeInitializationAwareHTTPInterceptor](functions/likeInitializationAwareHTTPInterceptor.md)
+- [likeRequestAwareHTTPInterceptor](functions/likeRequestAwareHTTPInterceptor.md)
+- [likeResponseAwareHTTPInterceptor](functions/likeResponseAwareHTTPInterceptor.md)

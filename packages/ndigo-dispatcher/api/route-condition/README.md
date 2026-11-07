@@ -18,6 +18,6 @@
 - [NameValueExpression](interfaces/NameValueExpression.md)
 - [RouteCondition](interfaces/RouteCondition.md)
 
-## Variables
+## Functions
 
-- [likeRouteCondition](variables/likeRouteCondition.md)
+- [likeRouteCondition](functions/likeRouteCondition.md)

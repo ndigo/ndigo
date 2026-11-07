@@ -196,6 +196,8 @@ Optional relay target context.
 
 > `optional` **unmountPolicy?**: `FeatureUnmountPolicy`
 
+Policy applied when the feature is unmounted.
+
 #### Inherited from
 
 `FeatureRegistrationOptions.unmountPolicy`

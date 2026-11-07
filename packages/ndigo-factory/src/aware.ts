@@ -92,6 +92,9 @@ export const likeAware = (value: unknown): value is Aware => {
 };
 
 /**
+ * Builds a predicate that tests whether a value is {@link Aware} and matches the given `predicate`.
+ *
+ * @param predicate - The additional test applied to aware values.
  * @returns A function that will test whether a `value` is both {@link Aware|Aware} and matches the the given `predicate`.
  * @example
  * ```ts
@@ -101,10 +104,15 @@ export const likeAware = (value: unknown): value is Aware => {
  * likeAwareAndYellow({ '@@aware': true, color: 'yellow' }); // true
  * ```
  */
-export const likeAwareAnd = ((predicate: (value: unknown) => boolean) => (value: unknown) =>
-    likeAware(value) && predicate(value)) as (predicate: (value: unknown) => boolean) => (value: unknown) => boolean;
+export const likeAwareAnd =
+    (predicate: (value: unknown) => boolean) =>
+    (value: unknown): boolean =>
+        likeAware(value) && predicate(value);
 
 /**
+ * Returns whether a value is {@link NameAware|NameAware}.
+ *
+ * @param value - The value to be tested.
  * @returns Whether or not the `value` is {@link NameAware|NameAware}.
  */
 export const likeNameAware = likeAwareAnd(like({ setName: Function })) as (value: unknown) => value is NameAware;

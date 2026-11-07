@@ -12,4 +12,4 @@ Converts strings to PascalCase.
 
 ### default
 
-Renames and re-exports [toPascal](../variables/toPascal.md)
+Renames and re-exports [toPascal](../functions/toPascal.md)

@@ -25,13 +25,10 @@ Resource loading abstractions and implementations.
 
 - [ConfigFileReader](type-aliases/ConfigFileReader.md)
 
-## Variables
-
-- [likeResource](variables/likeResource.md)
-- [likeResourceLoader](variables/likeResourceLoader.md)
-- [likeResourceLoaderAware](variables/likeResourceLoaderAware.md)
-
 ## Functions
 
 - [AsModuleResourceLoader](functions/AsModuleResourceLoader.md)
 - [AsResourceLoaderAware](functions/AsResourceLoaderAware.md)
+- [likeResource](functions/likeResource.md)
+- [likeResourceLoader](functions/likeResourceLoader.md)
+- [likeResourceLoaderAware](functions/likeResourceLoaderAware.md)

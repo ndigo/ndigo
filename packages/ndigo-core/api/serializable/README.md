@@ -19,13 +19,10 @@ JSON serialization contracts and the `serialize` helper.
 - [JSONValue](type-aliases/JSONValue.md)
 - [serializable](type-aliases/serializable.md)
 
-## Variables
-
-- [isJSONArray](variables/isJSONArray.md)
-- [isJSONObject](variables/isJSONObject.md)
-
 ## Functions
 
+- [isJSONArray](functions/isJSONArray.md)
+- [isJSONObject](functions/isJSONObject.md)
 - [isJSONValue](functions/isJSONValue.md)
 - [likeSerializable](functions/likeSerializable.md)
 - [serialize](functions/serialize.md)

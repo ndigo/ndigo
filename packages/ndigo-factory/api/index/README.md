@@ -148,7 +148,7 @@ Re-exports [getScope](../scope/functions/getScope.md)
 
 ### hashScope
 
-Re-exports [hashScope](../scope/variables/hashScope.md)
+Re-exports [hashScope](../scope/functions/hashScope.md)
 
 ***
 
@@ -214,7 +214,7 @@ Re-exports [likeAware](../aware/functions/likeAware.md)
 
 ### likeAwareAnd
 
-Re-exports [likeAwareAnd](../aware/variables/likeAwareAnd.md)
+Re-exports [likeAwareAnd](../aware/functions/likeAwareAnd.md)
 
 ***
 
@@ -298,7 +298,7 @@ Re-exports [likeLifecycle](../lifecycle/functions/likeLifecycle.md)
 
 ### likeNameAware
 
-Re-exports [likeNameAware](../aware/variables/likeNameAware.md)
+Re-exports [likeNameAware](../aware/functions/likeNameAware.md)
 
 ***
 
@@ -346,7 +346,7 @@ Re-exports [PossibleScope](../scope/type-aliases/PossibleScope.md)
 
 ### prototypeScope
 
-Re-exports [prototypeScope](../scope/variables/prototypeScope.md)
+Re-exports [prototypeScope](../scope/functions/prototypeScope.md)
 
 ***
 
@@ -364,7 +364,7 @@ Re-exports [ProxiedFactory](../default-factory/classes/ProxiedFactory.md)
 
 ### refreshScope
 
-Re-exports [refreshScope](../scope/variables/refreshScope.md)
+Re-exports [refreshScope](../scope/functions/refreshScope.md)
 
 ***
 
@@ -406,7 +406,7 @@ Re-exports [ScopedFactory](../scope/interfaces/ScopedFactory.md)
 
 ### singletonScope
 
-Re-exports [singletonScope](../scope/variables/singletonScope.md)
+Re-exports [singletonScope](../scope/functions/singletonScope.md)
 
 ***
 

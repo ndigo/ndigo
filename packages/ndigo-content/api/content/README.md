@@ -19,11 +19,8 @@
 
 - [ContentDictionary](type-aliases/ContentDictionary.md)
 
-## Variables
-
-- [likeContentSource](variables/likeContentSource.md)
-- [likeContentSourceAware](variables/likeContentSourceAware.md)
-
 ## Functions
 
 - [AsContentSourceAware](functions/AsContentSourceAware.md)
+- [likeContentSource](functions/likeContentSource.md)
+- [likeContentSourceAware](functions/likeContentSourceAware.md)

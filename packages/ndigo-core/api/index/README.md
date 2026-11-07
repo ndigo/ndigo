@@ -402,13 +402,13 @@ Re-exports [isEntry](../iterable/functions/isEntry.md)
 
 ### isJSONArray
 
-Re-exports [isJSONArray](../serializable/variables/isJSONArray.md)
+Re-exports [isJSONArray](../serializable/functions/isJSONArray.md)
 
 ***
 
 ### isJSONObject
 
-Re-exports [isJSONObject](../serializable/variables/isJSONObject.md)
+Re-exports [isJSONObject](../serializable/functions/isJSONObject.md)
 
 ***
 
@@ -420,7 +420,7 @@ Re-exports [isJSONValue](../serializable/functions/isJSONValue.md)
 
 ### isNotPrimitive
 
-Re-exports [isNotPrimitive](../primitive/variables/isNotPrimitive.md)
+Re-exports [isNotPrimitive](../primitive/functions/isNotPrimitive.md)
 
 ***
 
@@ -474,31 +474,31 @@ Re-exports [KeypathToken](../keypath-converter/type-aliases/KeypathToken.md)
 
 ### likeComparable
 
-Re-exports [likeComparable](../comparable/variables/likeComparable.md)
+Re-exports [likeComparable](../comparable/functions/likeComparable.md)
 
 ***
 
 ### likeComparator
 
-Re-exports [likeComparator](../comparable/variables/likeComparator.md)
+Re-exports [likeComparator](../comparable/functions/likeComparator.md)
 
 ***
 
 ### likeConstructable
 
-Re-exports [likeConstructable](../constructable/variables/likeConstructable.md)
+Re-exports [likeConstructable](../constructable/functions/likeConstructable.md)
 
 ***
 
 ### likeEnumerable
 
-Re-exports [likeEnumerable](../enumerable/variables/likeEnumerable.md)
+Re-exports [likeEnumerable](../enumerable/functions/likeEnumerable.md)
 
 ***
 
 ### likeEquatable
 
-Re-exports [likeEquatable](../equatable/variables/likeEquatable.md)
+Re-exports [likeEquatable](../equatable/functions/likeEquatable.md)
 
 ***
 
@@ -510,19 +510,19 @@ Re-exports [likeIterable](../iterable/functions/likeIterable.md)
 
 ### likeMatchable
 
-Re-exports [likeMatchable](../matchable/variables/likeMatchable.md)
+Re-exports [likeMatchable](../matchable/functions/likeMatchable.md)
 
 ***
 
 ### likePathMatcher
 
-Re-exports [likePathMatcher](../path-matcher/variables/likePathMatcher.md)
+Re-exports [likePathMatcher](../path-matcher/functions/likePathMatcher.md)
 
 ***
 
 ### likePropertyValues
 
-Re-exports [likePropertyValues](../property-value/variables/likePropertyValues.md)
+Re-exports [likePropertyValues](../property-value/functions/likePropertyValues.md)
 
 ***
 
@@ -606,7 +606,7 @@ Re-exports [MutablePropertyValues](../property-value/classes/MutablePropertyValu
 
 ### naturalComparison
 
-Re-exports [naturalComparison](../comparable/variables/naturalComparison.md)
+Re-exports [naturalComparison](../comparable/functions/naturalComparison.md)
 
 ***
 

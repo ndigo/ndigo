@@ -22,4 +22,7 @@ Task scheduler: drives scheduled task execution.
 
 - [DEFAULT\_LOCK\_TTL\_MS](variables/DEFAULT_LOCK_TTL_MS.md)
 - [DEFAULT\_LOCK\_WAIT\_STEP\_MS](variables/DEFAULT_LOCK_WAIT_STEP_MS.md)
-- [likeTaskScheduler](variables/likeTaskScheduler.md)
+
+## Functions
+
+- [likeTaskScheduler](functions/likeTaskScheduler.md)

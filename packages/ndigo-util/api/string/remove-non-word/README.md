@@ -8,6 +8,6 @@
 
 Removes non-word characters from a string.
 
-## Variables
+## Functions
 
-- [default](variables/default.md)
+- [default](functions/default.md)

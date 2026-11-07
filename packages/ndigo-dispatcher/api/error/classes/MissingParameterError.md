@@ -114,6 +114,8 @@ Analogous to the missing-parameter binding error.
 
 > `optional` **toJSON**(): `JSONValue`
 
+Returns a JSON-safe representation of the value.
+
 #### Returns
 
 `JSONValue`
@@ -127,6 +129,8 @@ Analogous to the missing-parameter binding error.
 ### toString()
 
 > **toString**(): `string`
+
+Returns a string representation of the value.
 
 #### Returns
 

@@ -61,6 +61,8 @@ This typically indicates a misconfiguration or an unhandled route.
 
 > `optional` **toJSON**(): `JSONValue`
 
+Returns a JSON-safe representation of the value.
+
 #### Returns
 
 `JSONValue`
@@ -74,6 +76,8 @@ This typically indicates a misconfiguration or an unhandled route.
 ### toString()
 
 > **toString**(): `string`
+
+Returns a string representation of the value.
 
 #### Returns
 

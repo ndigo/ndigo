@@ -91,6 +91,8 @@ Analogous to the request-binding error model.
 
 > `optional` **toJSON**(): `JSONValue`
 
+Returns a JSON-safe representation of the value.
+
 #### Returns
 
 `JSONValue`
@@ -104,6 +106,8 @@ Analogous to the request-binding error model.
 ### toString()
 
 > **toString**(): `string`
+
+Returns a string representation of the value.
 
 #### Returns
 

@@ -19,10 +19,7 @@
 
 - [HandlerMethodArgumentResolver](interfaces/HandlerMethodArgumentResolver.md)
 
-## Variables
-
-- [likeArgumentResolver](variables/likeArgumentResolver.md)
-
 ## Functions
 
+- [likeArgumentResolver](functions/likeArgumentResolver.md)
 - [registerArgumentResolvers](functions/registerArgumentResolvers.md)

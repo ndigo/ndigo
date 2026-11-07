@@ -66,7 +66,7 @@ Re-exports [isValidTimeZone](../time-zones/functions/isValidTimeZone.md)
 
 ### likeTaskScheduler
 
-Re-exports [likeTaskScheduler](../task-scheduler/variables/likeTaskScheduler.md)
+Re-exports [likeTaskScheduler](../task-scheduler/functions/likeTaskScheduler.md)
 
 ***
 

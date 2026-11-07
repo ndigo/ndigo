@@ -20,6 +20,6 @@ Property resolution with prototype-chain and merged indexes.
 - [PropertyResolver](interfaces/PropertyResolver.md)
 - [ResolverOptions](interfaces/ResolverOptions.md)
 
-## Variables
+## Functions
 
-- [likePropertyResolver](variables/likePropertyResolver.md)
+- [likePropertyResolver](functions/likePropertyResolver.md)

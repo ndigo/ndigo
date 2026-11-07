@@ -42,6 +42,8 @@ Represents a single segment within a route, including its name, associated data,
 
 > `optional` **toJSON**(): `JSONValue`
 
+Returns a JSON-safe representation of the value.
+
 #### Returns
 
 `JSONValue`
@@ -55,6 +57,8 @@ Represents a single segment within a route, including its name, associated data,
 ### toString()
 
 > **toString**(): `string`
+
+Returns a string representation of the value.
 
 #### Returns
 

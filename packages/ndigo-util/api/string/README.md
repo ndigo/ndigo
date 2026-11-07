@@ -8,13 +8,10 @@
 
 String utilities: decoding, encoding, case conversion, and normalization.
 
-## Variables
-
-- [toPascal](variables/toPascal.md)
-
 ## Functions
 
 - [encodeURIComponent](functions/encodeURIComponent.md)
+- [toPascal](functions/toPascal.md)
 
 ## References
 

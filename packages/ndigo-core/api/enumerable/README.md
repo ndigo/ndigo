@@ -12,6 +12,6 @@ The `Enumerable` interface and `likeEnumerable` guard.
 
 - [Enumerable](interfaces/Enumerable.md)
 
-## Variables
+## Functions
 
-- [likeEnumerable](variables/likeEnumerable.md)
+- [likeEnumerable](functions/likeEnumerable.md)

@@ -18,18 +18,15 @@ Barrel re-exporting the context package surface.
 - [EntryRegistryProcessor](interfaces/EntryRegistryProcessor.md)
 - [Registry](interfaces/Registry.md)
 
-## Variables
-
-- [getScope](variables/getScope.md)
-- [hasScope](variables/hasScope.md)
-- [isContextToken](variables/isContextToken.md)
-- [likeEntryRegistryProcessor](variables/likeEntryRegistryProcessor.md)
-- [refreshScope](variables/refreshScope.md)
-
 ## Functions
 
 - [getEnv](functions/getEnv.md)
+- [getScope](functions/getScope.md)
+- [hasScope](functions/hasScope.md)
+- [isContextToken](functions/isContextToken.md)
 - [isDevMode](functions/isDevMode.md)
+- [likeEntryRegistryProcessor](functions/likeEntryRegistryProcessor.md)
+- [refreshScope](functions/refreshScope.md)
 
 ## References
 
@@ -497,67 +494,67 @@ Re-exports [LazyFeatureModule](../feature-context-mount-manager/interfaces/LazyF
 
 ### likeApplicationContext
 
-Re-exports [likeApplicationContext](../context-interfaces/variables/likeApplicationContext.md)
+Re-exports [likeApplicationContext](../context-interfaces/functions/likeApplicationContext.md)
 
 ***
 
 ### likeApplicationContextAware
 
-Re-exports [likeApplicationContextAware](../context-interfaces/variables/likeApplicationContextAware.md)
+Re-exports [likeApplicationContextAware](../context-interfaces/functions/likeApplicationContextAware.md)
 
 ***
 
 ### likeApplicationEventEmitterAware
 
-Re-exports [likeApplicationEventEmitterAware](../event-emitter/variables/likeApplicationEventEmitterAware.md)
+Re-exports [likeApplicationEventEmitterAware](../event-emitter/functions/likeApplicationEventEmitterAware.md)
 
 ***
 
 ### likeEnvironment
 
-Re-exports [likeEnvironment](../environment/variables/likeEnvironment.md)
+Re-exports [likeEnvironment](../environment/functions/likeEnvironment.md)
 
 ***
 
 ### likeEnvironmentAware
 
-Re-exports [likeEnvironmentAware](../environment/variables/likeEnvironmentAware.md)
+Re-exports [likeEnvironmentAware](../environment/functions/likeEnvironmentAware.md)
 
 ***
 
 ### likeEnvironmentSource
 
-Re-exports [likeEnvironmentSource](../environment/variables/likeEnvironmentSource.md)
+Re-exports [likeEnvironmentSource](../environment/functions/likeEnvironmentSource.md)
 
 ***
 
 ### likeEventEmitter
 
-Re-exports [likeEventEmitter](../event-emitter/variables/likeEventEmitter.md)
+Re-exports [likeEventEmitter](../event-emitter/functions/likeEventEmitter.md)
 
 ***
 
 ### likePropertyResolver
 
-Re-exports [likePropertyResolver](../property-resolver/variables/likePropertyResolver.md)
+Re-exports [likePropertyResolver](../property-resolver/functions/likePropertyResolver.md)
 
 ***
 
 ### likeResource
 
-Re-exports [likeResource](../resource/variables/likeResource.md)
+Re-exports [likeResource](../resource/functions/likeResource.md)
 
 ***
 
 ### likeResourceLoader
 
-Re-exports [likeResourceLoader](../resource/variables/likeResourceLoader.md)
+Re-exports [likeResourceLoader](../resource/functions/likeResourceLoader.md)
 
 ***
 
 ### likeResourceLoaderAware
 
-Re-exports [likeResourceLoaderAware](../resource/variables/likeResourceLoaderAware.md)
+Re-exports [likeResourceLoaderAware](../resource/functions/likeResourceLoaderAware.md)
 
 ***
 

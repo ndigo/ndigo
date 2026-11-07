@@ -94,6 +94,18 @@ Rules:
   so `api/README.md` opens with the same one-line description as the README.
   `@packageDocumentation` is deliberately not used: TypeDoc ignores it under
   `entryPointStrategy: expand` (probed 2026-11-06).
+- **Function display:** TypeDoc converts a `const` to a Function only when the
+  initializer is a function literal and the declaration has no type
+  annotation. Factory-produced callables — guards such as
+  `export const likeContentSource = like({...}) as (value) => value is ContentSource`,
+  decorator factories, and re-export stubs — therefore stayed Variables.
+  `scripts/typedoc-function-kind-plugin.mjs` reclassifies a function-typed
+  constant as a Function when its type has call signatures, no properties, and
+  no construct signatures, so those pages move under `## Functions` with the
+  normal `Function: name()` rendering. Callable objects that carry members
+  (`TagMapping`, `ViewMapping`, `errorHandler`, `errorMapping`) stay Variables
+  so their member docs survive. No `@function` tag is used — that is not a
+  TSDoc-standard tag and STYLE_GUIDE §5 rules it out.
 - **Build before generating:** TypeDoc resolves cross-package types through
   the workspace symlinks into built `lib/`, so `pnpm build` must precede
   `pnpm doc:api` or the regenerated reference keeps the previous doc

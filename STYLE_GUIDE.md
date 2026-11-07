@@ -475,7 +475,18 @@ let currentIndex = 0;
 // ✅ Correct
 const transform = (value: string) => value.toUpperCase();
 const add = (a: number, b: number) => a + b;
+
+// ✅ Correct: narrow with a return annotation, not an `as` cast
+const likeThing = (value: unknown): value is Thing => isThingLike(value);
 ```
+
+A type guard built by a factory (for example `like({...}) as (value: unknown) =>
+value is Thing`) is a function value, so give it a return annotation when you
+can rather than asserting the whole signature — the cast hides the narrowing
+from readers and from TypeDoc. Do not add `@function` to make the page render
+as a function: the API reference classifies function-typed constants with the
+repo-local plugin described in
+[`docs/guides/12-package-documentation.md`](docs/guides/12-package-documentation.md).
 
 ### Predicate Functions [CONVENTION: Code Review]
 

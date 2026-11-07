@@ -24,10 +24,10 @@ Environment and profile activation for the application context.
 ## Variables
 
 - [CONFIG\_REFRESH\_EVENT](variables/CONFIG_REFRESH_EVENT.md)
-- [likeEnvironment](variables/likeEnvironment.md)
-- [likeEnvironmentAware](variables/likeEnvironmentAware.md)
-- [likeEnvironmentSource](variables/likeEnvironmentSource.md)
 
 ## Functions
 
 - [AsEnvironmentAware](functions/AsEnvironmentAware.md)
+- [likeEnvironment](functions/likeEnvironment.md)
+- [likeEnvironmentAware](functions/likeEnvironmentAware.md)
+- [likeEnvironmentSource](functions/likeEnvironmentSource.md)

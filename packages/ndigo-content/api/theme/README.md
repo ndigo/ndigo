@@ -16,7 +16,7 @@
 - [ThemeResolver](interfaces/ThemeResolver.md)
 - [ThemeSource](interfaces/ThemeSource.md)
 
-## Variables
+## Functions
 
-- [likeTheme](variables/likeTheme.md)
-- [likeThemeResolver](variables/likeThemeResolver.md)
+- [likeTheme](functions/likeTheme.md)
+- [likeThemeResolver](functions/likeThemeResolver.md)

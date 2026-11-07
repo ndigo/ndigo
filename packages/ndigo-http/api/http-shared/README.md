@@ -8,13 +8,13 @@
 
 ## Variables
 
-- [assign](variables/assign.md)
 - [defaults](variables/defaults.md)
-- [defineProperty](variables/defineProperty.md)
-- [freeze](variables/freeze.md)
-- [isRequest](variables/isRequest.md)
 - [patternCache](variables/patternCache.md)
 
 ## Functions
 
+- [assign](functions/assign.md)
+- [defineProperty](functions/defineProperty.md)
+- [freeze](functions/freeze.md)
+- [isRequest](functions/isRequest.md)
 - [rebuildResponse](functions/rebuildResponse.md)

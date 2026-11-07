@@ -4,6 +4,8 @@
 
 # @ndigo/auth-server v0.0.1
 
+Server-side authentication coordination and JWT support for Ndigo — Node.js environments, adapters registered in `@ndigo/auth-core`.
+
 ## Modules
 
 - [credentials-auth-adapter](credentials-auth-adapter/README.md)

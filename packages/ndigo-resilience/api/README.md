@@ -4,6 +4,8 @@
 
 # @ndigo/resilience v0.0.1
 
+Retry, backoff, and circuit-breaking policies for Ndigo, applied through `@ndigo/proxy` interceptors.
+
 ## Modules
 
 - [backoff](backoff/README.md)

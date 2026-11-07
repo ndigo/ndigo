@@ -4,6 +4,8 @@
 
 # @ndigo/util v0.0.1
 
+Zero-dependency Ndigo helpers: type guards, string utilities, environment access, and WebCrypto-backed tokens.
+
 ## Modules
 
 - [crypto](crypto/README.md)

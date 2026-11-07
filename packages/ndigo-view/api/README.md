@@ -4,6 +4,8 @@
 
 # @ndigo/view v0.0.1
 
+View contracts, view targets, and content-negotiation resolution for Ndigo — the contract layer between controllers and their representations.
+
 ## Modules
 
 - [abstract-serializing-view](abstract-serializing-view/README.md)

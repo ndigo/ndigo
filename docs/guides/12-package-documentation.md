@@ -89,6 +89,11 @@ Rules:
   symbol pages are namespaced by their file
   (`api/<file>/classes/<Symbol>.md`). `_*.ts` files are the repo's
   internal-file convention and are excluded.
+- **Package index description:** `scripts/typedoc-module-summary-plugin.mjs`
+  lifts the package README's blockquote tagline onto the project reflection,
+  so `api/README.md` opens with the same one-line description as the README.
+  `@packageDocumentation` is deliberately not used: TypeDoc ignores it under
+  `entryPointStrategy: expand` (probed 2026-11-06).
 - **Build before generating:** TypeDoc resolves cross-package types through
   the workspace symlinks into built `lib/`, so `pnpm build` must precede
   `pnpm doc:api` or the regenerated reference keeps the previous doc

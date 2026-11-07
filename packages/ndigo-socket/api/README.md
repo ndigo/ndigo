@@ -4,6 +4,8 @@
 
 # @ndigo/socket v0.0.1
 
+Isomorphic WebSocket domain for Ndigo — session contracts and a WHATWG `WebSocket`-based client running in browsers and Node ≥24.
+
 ## Modules
 
 - [async-reader](async-reader/README.md)

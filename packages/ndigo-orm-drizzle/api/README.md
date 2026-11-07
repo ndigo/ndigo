@@ -4,6 +4,8 @@
 
 # @ndigo/orm-drizzle v0.0.1
 
+SQL-backed Drizzle ORM adapter for `@ndigo/orm` — a libSQL data source with automatic table creation and an async entity manager for CRUD.
+
 ## Modules
 
 - [drizzle-adapter](drizzle-adapter/README.md)

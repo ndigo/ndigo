@@ -4,6 +4,8 @@
 
 # @ndigo/platform-node v0.0.1
 
+Node.js HTTP argument resolvers, environment integration, and auto-configuration for @ndigo/dispatcher.
+
 ## Modules
 
 - [aes-gcm-cipher](aes-gcm-cipher/README.md)

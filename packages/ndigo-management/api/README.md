@@ -4,6 +4,8 @@
 
 # @ndigo/management v0.0.1
 
+Actuator-style management endpoints for Ndigo Node applications: `/health` (the aggregate component health report) and `/metrics` (the meter snapshot — Prometheus text exposition by default, JSON projection on an explicit `Accept: application/json`). It complements `@ndigo/telemetry`: telemetry _produces_ metric data (OTel instruments, `@counted`); management _serves_ it as HTTP.
+
 ## Modules
 
 - [configuration-properties-controller](configuration-properties-controller/README.md)

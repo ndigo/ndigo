@@ -4,6 +4,8 @@
 
 # @ndigo/content v0.0.1
 
+Content and theme abstractions for Ndigo — localized lookups, theme-aware rendering, and default-language fallback.
+
 ## Modules
 
 - [composite](composite/README.md)

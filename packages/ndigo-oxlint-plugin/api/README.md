@@ -4,6 +4,8 @@
 
 # @ndigo/oxlint-plugin v0.0.1
 
+Consumer-facing oxlint rules for Ndigo — guard application code against wrong framework usage.
+
 ## Modules
 
 - [index](index/README.md)

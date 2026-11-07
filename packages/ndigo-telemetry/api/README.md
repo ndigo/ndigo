@@ -4,6 +4,8 @@
 
 # @ndigo/telemetry v0.0.1
 
+Isomorphic OpenTelemetry core for Ndigo — tracing, metrics, and logging with zero platform installation weight.
+
 ## Modules
 
 - [index](index/README.md)

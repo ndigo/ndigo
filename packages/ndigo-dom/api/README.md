@@ -4,6 +4,8 @@
 
 # @ndigo/dom v0.0.1
 
+Browser and server-side (linkedom) DOM providers for Ndigo — isomorphic Web Component rendering.
+
 ## Modules
 
 - [browser-dom-provider](browser-dom-provider/README.md)

@@ -4,6 +4,8 @@
 
 # @ndigo/view-webcomponent v0.0.1
 
+Web Component rendering engine for Ndigo — turns `AbstractWebComponent` views into live custom elements with island hydration.
+
 ## Modules
 
 - [abstract-web-component](abstract-web-component/README.md)

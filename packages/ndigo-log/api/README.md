@@ -4,6 +4,8 @@
 
 # @ndigo/log v0.0.1
 
+Isomorphic logging core for Ndigo — one `Logger` abstraction over the OpenTelemetry API, with severity mappings and threshold filtering.
+
 ## Modules
 
 - [index](index/README.md)

@@ -4,6 +4,8 @@
 
 # @ndigo/context v0.0.1
 
+Application context for Ndigo: dependency container, configuration decorators, property sources, environment, and resource/event infrastructure.
+
 ## Modules
 
 - [application-context-aware-processor](application-context-aware-processor/README.md)

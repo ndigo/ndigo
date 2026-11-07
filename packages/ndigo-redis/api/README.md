@@ -4,6 +4,8 @@
 
 # @ndigo/redis v0.0.1
 
+Node-only standalone Redis connections, namespaced shared cache adapters, and live WebSocket/STOMP fan-out for Ndigo.
+
 ## Modules
 
 - [cache](cache/README.md)

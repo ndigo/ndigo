@@ -4,6 +4,8 @@
 
 # @ndigo/dispatcher v0.0.1
 
+Platform-independent request dispatch for Ndigo: maps routes to handlers, binds parameters, runs interceptors, resolves errors, renders views.
+
 ## Modules
 
 - [abstract-handler-mapping](abstract-handler-mapping/README.md)

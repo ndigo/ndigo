@@ -4,6 +4,8 @@
 
 # @ndigo/scheduler v0.0.1
 
+Node-only scheduling for Ndigo: declarative `@scheduled` tasks behind a declarative decorator shape.
+
 ## Modules
 
 - [context-tokens](context-tokens/README.md)

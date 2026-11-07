@@ -4,6 +4,8 @@
 
 # @ndigo/orm v0.0.1
 
+Repository and data mapper persistence abstractions for Ndigo — entities, columns, and Zod schema derivation backed by in-memory or SQL adapters.
+
 ## Modules
 
 - [column-type](column-type/README.md)

@@ -4,6 +4,8 @@
 
 # @ndigo/telemetry-node v0.0.1
 
+NodeSDK configuration and Node platform instrumentations for Ndigo, built on the isomorphic [`@ndigo/telemetry`](../ndigo-telemetry/README.md) core.
+
 ## Modules
 
 - [index](index/README.md)

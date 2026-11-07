@@ -4,6 +4,8 @@
 
 # @ndigo/rate-limit v0.0.1
 
+Fixed-window rate limiting for Node.js.
+
 ## Modules
 
 - [context-tokens](context-tokens/README.md)

@@ -4,6 +4,8 @@
 
 # @ndigo/jobs v0.0.1
 
+Durable job queues, worker execution, and the transactional outbox for Node.js.
+
 ## Modules
 
 - [context-tokens](context-tokens/README.md)

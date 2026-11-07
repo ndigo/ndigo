@@ -4,6 +4,8 @@
 
 # @ndigo/proxy v0.0.1
 
+Optional container-managed method interception for Ndigo, built on the native JavaScript `Proxy`.
+
 ## Modules
 
 - [annotation](annotation/README.md)

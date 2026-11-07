@@ -4,6 +4,8 @@
 
 # @ndigo/auth-client v0.0.1
 
+Client-side authentication state management and OIDC for Ndigo — browser environments, works with `@ndigo/auth-core` adapters.
+
 ## Modules
 
 - [auth-header-interceptor](auth-header-interceptor/README.md)

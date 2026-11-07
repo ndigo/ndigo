@@ -4,6 +4,8 @@
 
 # @ndigo/service v0.0.1
 
+Service-layer abstractions for Ndigo: typed service clients, server-sent event streams, and service registration.
+
 ## Modules
 
 - [index](index/README.md)

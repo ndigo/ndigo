@@ -4384,7 +4384,10 @@ Ndigo source documentation follows the **TSDoc standard** as parsed by
 Every source file begins with a single canonical TSDoc block at the very top
 of the file, before any imports. The block carries a one-line module summary;
 no tags. The summary is what the module-summary TypeDoc plugin lifts onto the
-generated module page (`packages/<name>/api/<file>/README.md`). This is the
+generated module page (`packages/<name>/api/<file>/README.md`). The same
+plugin lifts the package README's blockquote tagline onto
+`packages/<name>/api/README.md`; `@packageDocumentation` is not used because
+TypeDoc ignores it under `entryPointStrategy: expand`. This is the
 standard form — `@ndigo/generators` emits it for new packages/components and
 the `header` generator adds/replaces it on existing files:
 

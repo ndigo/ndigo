@@ -4,6 +4,8 @@
 
 # @ndigo/flags v0.0.1
 
+Feature flags for Ndigo — the `FlagEvaluator` SPI and the `@whenFeature` gate.
+
 ## Modules
 
 - [context-tokens](context-tokens/README.md)

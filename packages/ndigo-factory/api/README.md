@@ -4,6 +4,8 @@
 
 # @ndigo/factory v0.0.1
 
+Inversion-of-control container and scope strategies for Ndigo — powers dependency injection in the application context.
+
 ## Modules
 
 - [abstract-factory](abstract-factory/README.md)

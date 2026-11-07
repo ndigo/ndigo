@@ -4,6 +4,8 @@
 
 # @ndigo/platform-web v0.0.1
 
+Browser-specific platform integrations for Ndigo — argument resolvers, converters, and cookie helpers.
+
 ## Modules
 
 - [browser-dispatcher](browser-dispatcher/README.md)

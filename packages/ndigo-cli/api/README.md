@@ -4,6 +4,8 @@
 
 # @ndigo/cli v0.0.1
 
+The Ndigo framework CLI — serve, build, db, generate, inspect, and the developer loop.
+
 ## Modules
 
 - [commands/add](commands/add/README.md)

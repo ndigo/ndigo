@@ -4,6 +4,8 @@
 
 # @ndigo/inspect v0.0.1
 
+Programmatic manifest generator for Ndigo apps — a deterministic, versioned JSON description of a running application.
+
 ## Modules
 
 - [config](config/README.md)

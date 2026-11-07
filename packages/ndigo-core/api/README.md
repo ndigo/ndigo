@@ -4,6 +4,8 @@
 
 # @ndigo/core v0.0.1
 
+Foundational primitives, contracts, and utilities for Ndigo — zero third-party dependencies.
+
 ## Modules
 
 - [comparable](comparable/README.md)

@@ -4,6 +4,8 @@
 
 # create-ndigo-app v0.0.1
 
+Scaffold a standalone Ndigo application (node or browser kind).
+
 ## Modules
 
 - [index](index/README.md)

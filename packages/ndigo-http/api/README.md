@@ -4,6 +4,8 @@
 
 # @ndigo/http v0.0.1
 
+Fetch-based HTTP client for Ndigo — interceptor system, body transforms, and a type-safe HTTP vocabulary.
+
 ## Modules
 
 - [authorization-header](authorization-header/README.md)

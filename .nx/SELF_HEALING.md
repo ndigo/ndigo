@@ -1,5 +1,10 @@
 # Self-Healing CI — workspace instructions
 
+> **Parked (2026-11-06, issue #206):** Nx Cloud is disabled until its credit
+> allowance restores — `nxCloudId` is removed from `nx.json` and CI sets
+> `NX_NO_CLOUD=true`. This file is retained for the re-enable; nothing reads it
+> while the cloud is off.
+
 The Nx Cloud fix agent reads this file (plus `AGENTS.md` context) before
 proposing changes. Ndigo conventions: `STYLE_GUIDE.md` (how to write),
 `ARCHITECTURE.md` (why the system is shaped this way), `CONTRIBUTING.md`

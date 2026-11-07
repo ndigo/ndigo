@@ -26,10 +26,13 @@ concurrency:
 
 env:
   CI: true
-  # Nx Cloud (Hobby: remote cache + self-healing reports). Token lives in the
-  # repo secret; when absent, Nx Cloud features stay off and CI behaves as
-  # before.
-  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+  # Nx Cloud is parked until its credit allowance restores (issue #206): no
+  # remote cache and no self-healing calls. The quality and e2e jobs persist
+  # `.nx/cache` through GitHub Actions instead, which costs no Nx credits.
+  # Re-enable by restoring `nxCloudId` in nx.json and the
+  # NX_CLOUD_ACCESS_TOKEN secret — leave self-healing (`nx fix-ci`) off unless
+  # the workspace plan has room for it.
+  NX_NO_CLOUD: 'true'
   # Pinning: third-party actions are pinned to reviewed commit SHAs
   # (see each `uses:` below for the resolved SHA).
 
@@ -70,6 +73,17 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
+
+      - name: Restore Nx cache
+        # Local Nx cache persisted across runs instead of the Nx Cloud remote
+        # cache (issue #206). The key rolls with the lockfile and Nx/TS config;
+        # restore-keys reuse the newest compatible tree.
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: .nx/cache
+          key: ${{ runner.os }}-nx-${{ hashFiles('pnpm-lock.yaml', 'nx.json', 'tsconfig.base.json', 'tsconfig.build.json') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-nx-${{ hashFiles('pnpm-lock.yaml', 'nx.json', 'tsconfig.base.json', 'tsconfig.build.json') }}-
 
       - name: Install dependencies (frozen lockfile)
         run: pnpm install --frozen-lockfile
@@ -223,13 +237,6 @@ jobs:
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: graft check
 
-      - name: Nx Cloud — self-healing report
-        # Runs even when earlier steps fail; a no-op on all-success runs.
-        # Failed tasks are analyzed by Nx Cloud, with fix proposals posted to
-        # the PR (workspace setting). Guardrails: .nx/SELF_HEALING.md.
-        if: always()
-        run: pnpm exec nx fix-ci
-
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -249,6 +256,17 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
+
+      - name: Restore Nx cache
+        # Local Nx cache persisted across runs instead of the Nx Cloud remote
+        # cache (issue #206). The key rolls with the lockfile and Nx/TS config;
+        # restore-keys reuse the newest compatible tree.
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: .nx/cache
+          key: ${{ runner.os }}-nx-${{ hashFiles('pnpm-lock.yaml', 'nx.json', 'tsconfig.base.json', 'tsconfig.build.json') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-nx-${{ hashFiles('pnpm-lock.yaml', 'nx.json', 'tsconfig.base.json', 'tsconfig.build.json') }}-
 
       - name: Install dependencies (frozen lockfile)
         run: pnpm install --frozen-lockfile
@@ -296,10 +314,3 @@ jobs:
             apps/03-ndigo-todo-web/test-results
             apps/07-ndigo-island/test-results
           if-no-files-found: ignore
-
-      - name: Nx Cloud — self-healing report
-        # e2e-side copy: covers e2e failures. Quality failures are reported by
-        # that job's own copy (e2e never runs after a failed quality job).
-        # No-op on all-success runs.
-        if: always()
-        run: pnpm exec nx fix-ci

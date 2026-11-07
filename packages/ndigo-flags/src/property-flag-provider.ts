@@ -52,6 +52,10 @@ const FNV_PRIME = 16777619;
  * Maps a flag name and targeting key to a stable bucket in `[0, 1)` by hashing
  * them together (FNV-1a), so percentage rollouts are deterministic per target
  * and independent of iteration order or process restarts.
+ *
+ * @param flag - The flag name being rolled out.
+ * @param targetingKey - The stable identity the rollout is bucketed by.
+ * @returns A deterministic value in `[0, 1)`.
  */
 export function stableBucket(flag: string, targetingKey: string): number {
     const input = `${flag}\u0000${targetingKey}`;
@@ -166,7 +170,12 @@ export class PropertyFlagProvider implements FlagEvaluator {
         this.#namespace = namespace;
     }
 
-    /** The property key a flag resolves to: `<namespace>.<flag>`. */
+    /**
+     * The property key a flag resolves to: `<namespace>.<flag>`.
+     *
+     * @param flag - The flag name.
+     * @returns The fully qualified property key.
+     */
     keyFor(flag: string): string {
         return `${this.#namespace}.${flag}`;
     }
@@ -174,6 +183,11 @@ export class PropertyFlagProvider implements FlagEvaluator {
     /**
      * Evaluates the flag against the current property state. Never
      * throws: a throwing reader resolves as `ERROR` + `${defaultValue}`.
+     *
+     * @param flag - The flag name to evaluate.
+     * @param defaultValue - The value returned when the flag is absent or fails.
+     * @param ctx - Optional evaluation context supplying the targeting key.
+     * @returns The evaluated value plus the reason and any rollout metadata.
      */
     async evaluate<T extends FlagValue>(
         flag: string,

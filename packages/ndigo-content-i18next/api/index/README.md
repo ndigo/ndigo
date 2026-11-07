@@ -6,6 +6,8 @@
 
 # index
 
+i18next integration for the Ndigo content pipeline.
+
 ## References
 
 ### I18nextMessageSource

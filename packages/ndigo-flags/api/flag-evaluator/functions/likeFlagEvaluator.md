@@ -17,6 +17,10 @@ option is resolved by shape instead of the [FLAG\_EVALUATOR](../../context-token
 
 `unknown`
 
+The value to inspect.
+
 ## Returns
 
 `value is FlagEvaluator`
+
+`true` when the value has a string `kind` and an `evaluate` method.

@@ -70,6 +70,11 @@ export class OpenFeatureFlagEvaluator implements FlagEvaluator {
      * Evaluates the flag through the OpenFeature client. Never rejects: any
      * escape (a hook/provider violating the SDK's no-throw contract)
      * resolves as the caller's default with `reason: 'ERROR'`.
+     *
+     * @param flag - The flag key to evaluate.
+     * @param defaultValue - The value returned when evaluation fails.
+     * @param ctx - Optional evaluation context forwarded to OpenFeature.
+     * @returns The evaluated value plus reason, error code, and metadata.
      */
     async evaluate<T extends FlagValue>(
         flag: string,

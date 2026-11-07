@@ -79,17 +79,25 @@ throws: a throwing reader resolves as `ERROR` + `${defaultValue}`.
 
 `string`
 
+The flag name to evaluate.
+
 ##### defaultValue
 
 `T`
+
+The value returned when the flag is absent or fails.
 
 ##### ctx?
 
 [`FlagEvaluationContext`](../../flag-evaluator/interfaces/FlagEvaluationContext.md)
 
+Optional evaluation context supplying the targeting key.
+
 #### Returns
 
 `Promise`\<[`FlagEvaluation`](../../flag-evaluator/interfaces/FlagEvaluation.md)\<`T`\>\>
+
+The evaluated value plus the reason and any rollout metadata.
 
 #### Implementation of
 
@@ -109,6 +117,10 @@ The property key a flag resolves to: `<namespace>.<flag>`.
 
 `string`
 
+The flag name.
+
 #### Returns
 
 `string`
+
+The fully qualified property key.

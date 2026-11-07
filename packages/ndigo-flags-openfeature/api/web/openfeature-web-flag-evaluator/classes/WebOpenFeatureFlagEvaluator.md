@@ -76,17 +76,25 @@ the caller's default with `reason: 'ERROR'`.
 
 `string`
 
+The flag key to evaluate.
+
 ##### defaultValue
 
 `T`
+
+The value returned when evaluation fails.
 
 ##### \_ctx?
 
 `FlagEvaluationContext`
 
+Per-call context; not forwarded by the web SDK.
+
 #### Returns
 
 `Promise`\<`FlagEvaluation`\<`T`\>\>
+
+The evaluated value plus reason, error code, and metadata.
 
 #### Implementation of
 

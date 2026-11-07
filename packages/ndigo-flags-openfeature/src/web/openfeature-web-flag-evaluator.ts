@@ -74,6 +74,11 @@ export class WebOpenFeatureFlagEvaluator implements FlagEvaluator {
      * Evaluates the flag through the web client. Never rejects: any escape
      * (a hook/provider violating the SDK's no-throw contract) resolves as
      * the caller's default with `reason: 'ERROR'`.
+     *
+     * @param flag - The flag key to evaluate.
+     * @param defaultValue - The value returned when evaluation fails.
+     * @param _ctx - Per-call context; not forwarded by the web SDK.
+     * @returns The evaluated value plus reason, error code, and metadata.
      */
     async evaluate<T extends FlagValue>(
         flag: string,

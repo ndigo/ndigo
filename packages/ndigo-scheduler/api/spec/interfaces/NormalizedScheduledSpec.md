@@ -15,17 +15,23 @@ by `@scheduled` (AD-20 D1).
 
 > `readonly` `optional` **cron?**: `string`
 
+Standard five-field cron expression, when the spec declared `cron`.
+
 ***
 
 ### fixedDelayMs?
 
 > `readonly` `optional` **fixedDelayMs?**: `number`
 
+Fixed-delay interval in milliseconds, when the spec declared `fixedDelay`.
+
 ***
 
 ### fixedRateMs?
 
 > `readonly` `optional` **fixedRateMs?**: `number`
+
+Fixed-rate interval in milliseconds, when the spec declared `fixedRate`.
 
 ***
 
@@ -65,9 +71,12 @@ Contended-lock poll interval in milliseconds.
 
 > `readonly` `optional` **maxRunTimeMs?**: `number`
 
+Per-run execution budget in milliseconds; `undefined` = unbounded.
+
 ***
 
 ### timeZone?
 
 > `readonly` `optional` **timeZone?**: `string`
 
+IANA time zone the cron expression is evaluated in.

@@ -130,10 +130,15 @@ export type ScheduledSpec = string | CronScheduleSpec | IntervalScheduleSpec;
  * by `@scheduled` (AD-20 D1).
  */
 export interface NormalizedScheduledSpec {
+    /** Standard five-field cron expression, when the spec declared `cron`. */
     readonly cron?: string;
+    /** Fixed-rate interval in milliseconds, when the spec declared `fixedRate`. */
     readonly fixedRateMs?: number;
+    /** Fixed-delay interval in milliseconds, when the spec declared `fixedDelay`. */
     readonly fixedDelayMs?: number;
+    /** IANA time zone the cron expression is evaluated in. */
     readonly timeZone?: string;
+    /** Per-run execution budget in milliseconds; `undefined` = unbounded. */
     readonly maxRunTimeMs?: number;
     /** Distributed lock key (AD-73), when the spec declared `lock`. */
     readonly lockKey?: string;

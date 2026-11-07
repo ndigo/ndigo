@@ -6,6 +6,8 @@
 
 # i18next-message-source
 
+i18next-backed message source for localized content.
+
 ## Classes
 
 - [I18nextMessageSource](classes/I18nextMessageSource.md)

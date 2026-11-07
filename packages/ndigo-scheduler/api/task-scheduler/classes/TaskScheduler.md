@@ -46,6 +46,8 @@ Clock, warning-sink, and lock-driver injection.
 
 > **destroyed**: `boolean` = `false`
 
+Set once [destroy](#destroy) runs; new registrations are rejected.
+
 #### Implementation of
 
 `AsyncDestroyable.destroyed`

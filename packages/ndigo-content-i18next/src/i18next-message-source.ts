@@ -1,4 +1,5 @@
 /**
+ * i18next-backed message source for localized content.
  */
 import { createInstance, i18n, Resource, TFunction } from 'i18next';
 import { LanguageCode, MessageParams, MessageSource, normalizeLocale } from '@ndigo/content';

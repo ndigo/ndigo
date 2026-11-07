@@ -50,9 +50,7 @@ Backend identifier for diagnostics.
 
 > **acquire**(`key`, `options`): `Promise`\<[`LockHandle`](../../lock-driver/interfaces/LockHandle.md) \| `null`\>
 
-Acquire `key` for `ttlMs`. Returns a fencing-token handle, or `null`
-while another holder owns the lease. A lease that expired is simply
-expired — the next acquirer wins, no sweeper involved.
+Acquires a lock lease for `key`, or returns `null` when it is already held.
 
 #### Parameters
 
@@ -60,11 +58,11 @@ expired — the next acquirer wins, no sweeper involved.
 
 `string`
 
-The lock key (namespaced by the driver).
+The lock key.
 
 ##### options
 
-Acquisition options.
+Lease options; `ttlMs` bounds how long the lease is held.
 
 ###### ttlMs
 
@@ -74,7 +72,7 @@ Acquisition options.
 
 `Promise`\<[`LockHandle`](../../lock-driver/interfaces/LockHandle.md) \| `null`\>
 
-The fencing handle, or `null` when the key is held.
+The lock handle, or `null` when the key is already locked.
 
 #### Implementation of
 
@@ -86,12 +84,13 @@ The fencing handle, or `null` when the key is held.
 
 > **close**(): `Promise`\<`void`\>
 
-Releases every lease this driver's handles acquired and seals it.
-Never affects leases acquired through other driver instances.
+Releases every lease this driver still holds and marks it closed.
 
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the leases are released.
 
 #### Implementation of
 

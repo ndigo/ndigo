@@ -1,4 +1,5 @@
 /**
+ * Native-browser DOM provider implementation.
  */
 import type { DOMProvider } from './dom-provider';
 

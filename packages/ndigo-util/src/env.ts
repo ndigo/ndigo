@@ -23,6 +23,8 @@ export function getEnv(name: string, fallback?: string): string | undefined {
  * True when runtime warnings are desired: any environment except an explicit
  * production build. Guards against referencing `process` in environments
  * where it is absent (e.g. some browser/worker bundles).
+ *
+ * @returns `true` unless `NODE_ENV` is exactly `production`.
  */
 export function isDevMode(): boolean {
     return typeof process !== 'undefined' && !!process.env && getEnv('NODE_ENV') !== 'production';

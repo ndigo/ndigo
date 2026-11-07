@@ -6,6 +6,8 @@
 
 # customizer
 
+Customizer callbacks for application context configuration.
+
 ## Interfaces
 
 - [EnvironmentCustomizer](interfaces/EnvironmentCustomizer.md)

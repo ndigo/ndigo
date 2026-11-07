@@ -6,6 +6,8 @@
 
 # event-emitter
 
+Application event emitters and listener contracts.
+
 ## Classes
 
 - [Emitter](classes/Emitter.md)
@@ -38,9 +40,3 @@
 - [asEventEmitter](functions/asEventEmitter.md)
 - [AsEventEmitter](functions/AsEventEmitter-1.md)
 - [AsPositionalEventEmitter](functions/AsPositionalEventEmitter.md)
-
-## References
-
-### default
-
-Renames and re-exports [Emitter](classes/Emitter.md)

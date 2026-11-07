@@ -33,8 +33,7 @@ without a rebuild.
 
 > **build**(`sources`): `void`
 
-Rebuilds the index from the given ordered sources (first = highest
-precedence).
+Builds the index from sources.
 
 #### Parameters
 
@@ -42,7 +41,7 @@ precedence).
 
 [`PropertySource`](../../property-source/interfaces/PropertySource.md)[]
 
-The ordered property sources.
+The property sources.
 
 #### Returns
 
@@ -58,7 +57,7 @@ The ordered property sources.
 
 > **getProperty**(`key`): `JSONValue` \| `undefined`
 
-Resolves a property value, or `undefined` when absent.
+Gets a property.
 
 #### Parameters
 
@@ -66,13 +65,13 @@ Resolves a property value, or `undefined` when absent.
 
 `string`
 
-The property name (keypath syntax).
+The key.
 
 #### Returns
 
 `JSONValue` \| `undefined`
 
-The resolved value or `undefined`.
+The value.
 
 #### Implementation of
 
@@ -84,7 +83,7 @@ The resolved value or `undefined`.
 
 > **hasProperty**(`key`): `boolean`
 
-Returns whether the property resolves to a non-null value.
+Whether a property exists.
 
 #### Parameters
 
@@ -92,13 +91,13 @@ Returns whether the property resolves to a non-null value.
 
 `string`
 
-The property name (keypath syntax).
+The key.
 
 #### Returns
 
 `boolean`
 
-`true` when the property is defined.
+`true` when present.
 
 #### Implementation of
 

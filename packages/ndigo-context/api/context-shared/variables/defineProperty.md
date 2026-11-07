@@ -8,6 +8,10 @@
 
 > **defineProperty**: (`target`, `propertyKey`, `attributes`) => `boolean`
 
+**`Internal`**
+
+Reflect helpers re-exported for intra-package use.
+
 Adds a property to an object, or modifies attributes of an existing property.
 
 ## Parameters

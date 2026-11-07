@@ -1,4 +1,5 @@
 /**
+ * Mounting and unmounting feature contexts.
  */
 import type { FeatureMetricRecorder } from '@ndigo/core';
 
@@ -41,6 +42,7 @@ export interface LazyFeatureModule {
  * Options used to register a feature for mounting.
  */
 export interface FeatureRegistrationOptions extends FeatureContextOptions {
+    /** Policy applied when the feature is unmounted. */
     unmountPolicy?: FeatureUnmountPolicy;
     /**
      * Declare dependencies this feature requires from the shell.
@@ -73,6 +75,7 @@ export interface FeatureRegistrationOptions extends FeatureContextOptions {
  * Options for the feature context mount manager.
  */
 export interface FeatureContextMountManagerOptions {
+    /** Optional metric recorder. */
     metricRecorder?: FeatureMetricRecorder;
 }
 
@@ -105,6 +108,13 @@ const createGateway = (
 
 /**
  * Creates, tracks, and tears down mounted feature contexts.
+ *
+ * @example
+ * ```ts
+ * const manager = new FeatureContextMountManager(context);
+ * manager.registerFeature({ name: 'checkout', loader: () => import('./checkout-module') });
+ * await manager.mountLazy('checkout');
+ * ```
  */
 export class FeatureContextMountManager {
     #metricRecorder?: FeatureMetricRecorder;
@@ -117,6 +127,7 @@ export class FeatureContextMountManager {
         this.#registrations = new Map();
     }
 
+    /** Registers a feature. @param options - Registration options. @returns This manager. */
     registerFeature(options: FeatureRegistrationOptions): this {
         const { unmountPolicy = 'preserve', ...featureOptions } = options;
 
@@ -130,6 +141,7 @@ export class FeatureContextMountManager {
         return this;
     }
 
+    /** Mounts a registered feature. @param name - Feature name. @returns The composition. */
     mount(name: string): FeatureContextComposition {
         const registration = this.#requireRegistration(name);
         this.#recordCounter(name, 'mountAttemptCount');
@@ -182,6 +194,7 @@ export class FeatureContextMountManager {
      * @throws If the feature has no `loader` registered.
      * @throws If the loader rejects or `createContext` throws.
      */
+    /** Lazily mounts a feature with a loader. @param name - Feature name. @returns The composition. */
     async mountLazy(name: string): Promise<FeatureContextComposition> {
         const registration = this.#requireRegistration(name);
 
@@ -225,11 +238,13 @@ export class FeatureContextMountManager {
      * Unmount and re-mount a feature, re-executing its loader.
      * Useful for retrying after a failed load.
      */
+    /** Re-mounts a feature. @param name - Feature name. @param policy - Unmount policy. @returns The composition. */
     async remountLazy(name: string, policy?: FeatureUnmountPolicy): Promise<FeatureContextComposition> {
         this.unmount(name, policy ?? 'close');
         return this.mountLazy(name);
     }
 
+    /** Unmounts a feature. @param name - Feature name. @param policy - Unmount policy. @returns `true` when unmounted. */
     unmount(name: string, policy?: FeatureUnmountPolicy): boolean {
         const registration = this.#registrations.get(name);
 
@@ -267,10 +282,12 @@ export class FeatureContextMountManager {
         return this.#registrations.delete(name);
     }
 
+    /** Whether a feature is registered. @param name - Feature name. @returns `true` when registered. */
     hasRegistration(name: string): boolean {
         return this.#registrations.has(name);
     }
 
+    /** Whether a feature is mounted. @param name - Feature name. @returns `true` when mounted. */
     isMounted(name: string): boolean {
         const registration = this.#registrations.get(name);
 
@@ -292,10 +309,12 @@ export class FeatureContextMountManager {
         return hasActiveGateway(gateway);
     }
 
+    /** Returns the mounted composition. @param name - Feature name. @returns The composition, if mounted. */
     getMountedFeature(name: string): FeatureContextComposition | undefined {
         return this.isMounted(name) ? this.#registrations.get(name)?.composition : undefined;
     }
 
+    /** Destroys the manager and all mounted features. */
     destroy(): void {
         for (const [name] of this.#registrations) {
             this.unmount(name, 'close');

@@ -1,4 +1,5 @@
 /**
+ * Application event emitters and listener contracts.
  */
 import { Constructable, JSONValue, Serializable, Null, createNull } from '@ndigo/core';
 import { like } from '@ndigo/util/types';
@@ -181,6 +182,7 @@ export const likeApplicationEventEmitterAware = likeAwareAnd(
     })
 ) as (value: unknown) => value is ApplicationEventEmitterAware;
 
+/** Tests whether a value behaves like an `EventEmitter`. */
 export const likeEventEmitter = like({
     emit: Function,
     eventTypes: Function,
@@ -466,9 +468,12 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
  * Standalone event emitter with destroy and serialization support.
  */
 export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serializable {
+    /** Sentinel type matching every event. */
     static readonly every: string = $every;
+    /** Emitter implementation version. */
     static readonly version: string = '3.0.0';
 
+    /** Whether the emitter has been destroyed. */
     destroyed: boolean = false;
 
     /**
@@ -600,5 +605,3 @@ export const asEventEmitter = <TTarget extends object>(target: TTarget): TTarget
 
     return target as TTarget & EventEmitter;
 };
-
-export default Emitter;

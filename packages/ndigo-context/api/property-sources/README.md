@@ -6,6 +6,8 @@
 
 # property-sources
 
+Ordered, mutable collection of property sources.
+
 ## Classes
 
 - [MutablePropertySources](classes/MutablePropertySources.md)

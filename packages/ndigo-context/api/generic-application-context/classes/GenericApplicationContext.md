@@ -8,6 +8,15 @@
 
 Default application context implementation used throughout the package.
 
+## Example
+
+```ts
+const context = new GenericApplicationContext('app');
+context.register(AppConfig);
+context.refresh();
+const service = context.getValue<GreetingService>('greetingService');
+```
+
 ## Extends
 
 - [`EventEmitter`](../../event-emitter/interfaces/EventEmitter.md)\<`this`\> & [`ResourceLoader`](../../resource/interfaces/ResourceLoader.md) & `DefaultFactory`\<`this`\>
@@ -59,17 +68,23 @@ Optional initial values to register.
 
 > **createdTimestamp**: `number`
 
+Timestamp when the context was created.
+
 ***
 
 ### destroyed
 
 > **destroyed**: `boolean`
 
+Whether the context has been destroyed.
+
 ***
 
 ### destroyedTimestamp?
 
 > `optional` **destroyedTimestamp?**: `number`
+
+Timestamp when the context was destroyed.
 
 ***
 
@@ -663,11 +678,15 @@ The formatted message, or the key when nothing resolves it.
 
 > **getResource**(`location`): `Promise`\<[`Resource`](../../resource/interfaces/Resource.md)\<`unknown`\>\>
 
+Returns a resource handle for the location.
+
 #### Parameters
 
 ##### location
 
 `string`
+
+The resource location.
 
 #### Returns
 
@@ -1193,6 +1212,8 @@ Replaces the content source used by this context.
 
 [`ContentSource`](#)
 
+The content source.
+
 #### Returns
 
 `void`
@@ -1211,6 +1232,8 @@ Replaces the environment used by this context.
 
 [`ConfigurableEnvironment`](../../environment/interfaces/ConfigurableEnvironment.md)
 
+The environment.
+
 #### Returns
 
 `void`
@@ -1228,6 +1251,8 @@ Updates the identifier assigned to this context.
 ##### id
 
 `number`
+
+The id.
 
 #### Returns
 
@@ -1267,6 +1292,8 @@ Updates the context name.
 
 `string`
 
+The name.
+
 #### Returns
 
 `void`
@@ -1284,6 +1311,8 @@ Reassigns the parent context and keeps the child list in sync.
 ##### parent
 
 [`ApplicationContext`](../../context-interfaces/interfaces/ApplicationContext.md)
+
+The parent context.
 
 #### Returns
 
@@ -1307,6 +1336,8 @@ Updates the default theme name.
 
 `string`
 
+The theme name.
+
 #### Returns
 
 `void`
@@ -1324,6 +1355,8 @@ Overrides the theme resolver used by this context.
 ##### themeResolver
 
 `ThemeResolver`
+
+The theme resolver.
 
 #### Returns
 
@@ -1457,13 +1490,19 @@ Schema-typed configuration read off the context environment (AD-34 D3).
 
 `string`
 
+The prefix.
+
 ##### schema
 
 `S`
 
+The schema.
+
 #### Returns
 
 `output`\<`S`\> \| `undefined`
+
+The value.
 
 ***
 

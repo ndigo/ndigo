@@ -1,4 +1,5 @@
 /**
+ * Barrel re-exporting the context package surface.
  */
 export * from './context';
 export * from './context-events';

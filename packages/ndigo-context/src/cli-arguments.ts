@@ -1,4 +1,5 @@
 /**
+ * Command-line argument parsing for the application context.
  */
 import { JSONObject, JSONValue } from '@ndigo/core';
 

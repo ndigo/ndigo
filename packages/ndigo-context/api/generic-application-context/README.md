@@ -6,6 +6,8 @@
 
 # generic-application-context
 
+Generic application context implementation.
+
 ## Classes
 
 - [GenericApplicationContext](classes/GenericApplicationContext.md)

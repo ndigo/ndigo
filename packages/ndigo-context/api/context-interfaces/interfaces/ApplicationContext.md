@@ -6,7 +6,7 @@
 
 # Interface: ApplicationContext
 
-Emits and manages event listeners.
+Central application context: a hierarchical, configurable factory and event emitter.
 
 ## Extends
 
@@ -292,7 +292,7 @@ Calling `close()` on an already-destroyed context is a safe no-op.
 
 > **emit**\<`K`\>(`type`, ...`payload`): `boolean`
 
-Emits an event to the listeners registered for the given type.
+Emits a typed event.
 
 ##### Type Parameters
 
@@ -306,17 +306,19 @@ Emits an event to the listeners registered for the given type.
 
 `K`
 
-The event type.
+Event type.
 
 ###### payload
 
 ...[`ContextEvents`](../../context-events/interfaces/ContextEvents.md)\[`K`\]
 
+Payload.
+
 ##### Returns
 
 `boolean`
 
-`true` when at least one listener ran.
+Whether a listener ran.
 
 ##### Overrides
 
@@ -326,7 +328,7 @@ The event type.
 
 > **emit**(`type`, ...`data`): `boolean`
 
-Emits an event to the listeners registered for the given type.
+Emits an event.
 
 ##### Parameters
 
@@ -334,19 +336,19 @@ Emits an event to the listeners registered for the given type.
 
 [`EventType`](../../event-emitter/type-aliases/EventType.md)
 
-The event type.
+Event type.
 
 ###### data
 
 ...`unknown`[]
 
-Event payload values.
+Data.
 
 ##### Returns
 
 `boolean`
 
-`true` when at least one listener ran.
+Whether a listener ran.
 
 ##### Overrides
 
@@ -487,11 +489,15 @@ A promise of the formatted message, or the key itself when no translation exists
 
 > **getResource**(`location`): `Promise`\<[`Resource`](../../resource/interfaces/Resource.md)\<`unknown`\>\>
 
+Returns a resource handle for the location.
+
 #### Parameters
 
 ##### location
 
 `string`
+
+The resource location.
 
 #### Returns
 
@@ -757,7 +763,7 @@ The newly created child application context.
 
 > **off**\<`K`\>(`type`, `listener`): `this`
 
-Removes a listener for an event type.
+Removes a typed listener.
 
 ##### Type Parameters
 
@@ -771,19 +777,19 @@ Removes a listener for an event type.
 
 `K`
 
-The event type.
+Event type.
 
 ###### listener
 
 (...`payload`) => `void`
 
-The listener to remove.
+Listener.
 
 ##### Returns
 
 `this`
 
-This emitter.
+This.
 
 ##### Overrides
 
@@ -793,7 +799,7 @@ This emitter.
 
 > **off**(`type`, `listener`): `this`
 
-Removes a listener for an event type.
+Removes a listener.
 
 ##### Parameters
 
@@ -801,19 +807,19 @@ Removes a listener for an event type.
 
 [`EventType`](../../event-emitter/type-aliases/EventType.md)
 
-The event type.
+Event type.
 
 ###### listener
 
 `Function`
 
-The listener to remove.
+Listener.
 
 ##### Returns
 
 `this`
 
-This emitter.
+This.
 
 ##### Overrides
 
@@ -827,9 +833,7 @@ This emitter.
 
 > **on**\<`K`\>(`type`, `listener`): `this`
 
-Typed event overloads (AD-34 D2): lifecycle events deliver their
-[ContextEvents](../../context-events/interfaces/ContextEvents.md) payloads to the listener; any other event type
-falls through to the raw `EventEmitter` surface.
+Registers a typed listener.
 
 ##### Type Parameters
 
@@ -843,20 +847,19 @@ falls through to the raw `EventEmitter` surface.
 
 `K`
 
+Event type.
+
 ###### listener
 
 (...`payload`) => `void`
+
+Listener.
 
 ##### Returns
 
 `this`
 
-##### Example
-
-```ts
-context.on('context:refresh', (refreshed) => refreshed.isActive); // typed
-context.on('custom:event', (...data: unknown[]) => {});            // raw
-```
+This.
 
 ##### Overrides
 
@@ -866,7 +869,7 @@ context.on('custom:event', (...data: unknown[]) => {});            // raw
 
 > **on**(`type`, `listener?`): `this`
 
-Adds a listener for an event type.
+Registers a listener.
 
 ##### Parameters
 
@@ -874,19 +877,19 @@ Adds a listener for an event type.
 
 [`EventType`](../../event-emitter/type-aliases/EventType.md) \| [`EventHandlers`](../../event-emitter/type-aliases/EventHandlers.md)
 
-The event type.
+Event type.
 
 ###### listener?
 
 `Function`
 
-The listener to register.
+Listener.
 
 ##### Returns
 
 `this`
 
-This emitter.
+This.
 
 ##### Overrides
 

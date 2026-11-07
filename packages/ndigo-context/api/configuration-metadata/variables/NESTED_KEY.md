@@ -8,3 +8,4 @@
 
 > `const` **NESTED\_KEY**: `"config:nested:"` = `'config:nested:'`
 
+Metadata key marking a nested configuration.

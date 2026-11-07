@@ -6,6 +6,8 @@
 
 # feature-context-mount-manager
 
+Mounting and unmounting feature contexts.
+
 ## Classes
 
 - [FeatureContextMountManager](classes/FeatureContextMountManager.md)

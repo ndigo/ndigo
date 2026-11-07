@@ -6,6 +6,8 @@
 
 # property-source
 
+Named property source contract and `MapPropertySource`.
+
 ## Classes
 
 - [MapPropertySource](classes/MapPropertySource.md)

@@ -8,3 +8,4 @@
 
 > `const` **DEFAULT\_KEY**: `"config:defaultValue:"` = `'config:defaultValue:'`
 
+Metadata key for a field's default value.

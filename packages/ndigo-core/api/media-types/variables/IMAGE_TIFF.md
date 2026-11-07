@@ -6,5 +6,6 @@
 
 # Variable: IMAGE\_TIFF
 
-> `const` **IMAGE\_TIFF**: [`default`](../../media-type/classes/default.md)
+> `const` **IMAGE\_TIFF**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `image/tiff` media type.

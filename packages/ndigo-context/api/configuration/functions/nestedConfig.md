@@ -18,9 +18,13 @@ recursively into this plain-class field under the property's keypath
 
 `undefined`
 
+The field value.
+
 ### context
 
 `ClassFieldDecoratorContext`
+
+The field decorator context.
 
 ## Returns
 

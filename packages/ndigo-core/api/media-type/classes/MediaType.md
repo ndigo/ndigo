@@ -2,11 +2,28 @@
 
 ***
 
-[@ndigo/core](../../README.md) / [media-type](../README.md) / default
+[@ndigo/core](../../README.md) / [media-type](../README.md) / MediaType
 
-# Class: default
+# Class: MediaType
 
-A value that can safely be converted to a string or JSON payload.
+An interned, immutable media type (`type/subtype;param=value`) with comparison,
+matching, and content-negotiation helpers. Instances are interned process-wide:
+use [MediaType.for](#for) to parse header values and [MediaType.registered](#registered)
+for the `MediaTypes.*` constants.
+
+## Remarks
+
+Instances are interned process-wide: header parsing goes through
+bounded FIFO caches so attacker-controlled values cannot grow the registry
+unboundedly; `MediaTypes.*` constants live for the process lifetime.
+
+## Example
+
+```ts
+const mt = MediaType.for('text/html;charset=UTF-8');
+mt.baseType; // "text/html"
+mt.qualityFactor; // 1
+```
 
 ## Extends
 
@@ -22,7 +39,9 @@ A value that can safely be converted to a string or JSON payload.
 
 ### Constructor
 
-> **new default**(`type?`, `subtype?`, `parameters?`): `MediaType`
+> **new MediaType**(`type?`, `subtype?`, `parameters?`): `MediaType`
+
+Creates (interns) a media type.
 
 #### Parameters
 
@@ -30,13 +49,19 @@ A value that can safely be converted to a string or JSON payload.
 
 [`SupportedMediaType`](../type-aliases/SupportedMediaType.md) = `WILDCARD`
 
+Top-level type (default `'*'`).
+
 ##### subtype?
 
 `string` = `WILDCARD`
 
+Subtype or wildcard (default `'*'`).
+
 ##### parameters?
 
 [`MediaTypeParameters`](../type-aliases/MediaTypeParameters.md) = `{}`
+
+Optional parameters (default `{}`).
 
 #### Returns
 
@@ -52,11 +77,15 @@ A value that can safely be converted to a string or JSON payload.
 
 > `readonly` **experimental**: `boolean`
 
+Whether the subtype carries the experimental `x-` facet (RFC 6838 §4.2).
+
 ***
 
 ### facets
 
 > `readonly` **facets**: `string`[]
+
+Dot-separated subtype facets (e.g. `vnd.api+json` → `['vnd', 'api']`).
 
 ***
 
@@ -64,11 +93,15 @@ A value that can safely be converted to a string or JSON payload.
 
 > `readonly` **parameters**: [`MediaTypeParameters`](../type-aliases/MediaTypeParameters.md)
 
+Parameters parsed from the expression, keyed by lower-case name.
+
 ***
 
 ### personal
 
 > `readonly` **personal**: `boolean`
+
+Whether the subtype carries the personal `prs` facet.
 
 ***
 
@@ -76,11 +109,15 @@ A value that can safely be converted to a string or JSON payload.
 
 > `readonly` **subtype**: `string`
 
+Subtype without the structured-syntax suffix (e.g. `problem` for `application/problem+json`).
+
 ***
 
 ### suffix
 
 > `readonly` **suffix**: `string` \| `null`
+
+Structured-syntax suffix after `+` (e.g. `json`), or `null` when absent.
 
 ***
 
@@ -88,11 +125,15 @@ A value that can safely be converted to a string or JSON payload.
 
 > `readonly` **type**: [`SupportedMediaType`](../type-aliases/SupportedMediaType.md)
 
+Top-level type (`application`, `text`, …).
+
 ***
 
 ### vendor
 
 > `readonly` **vendor**: `boolean`
+
+Whether the subtype carries the vendor `vnd` facet.
 
 ***
 
@@ -100,11 +141,15 @@ A value that can safely be converted to a string or JSON payload.
 
 > `static` **qualityFactorComparator**: [`Comparator`](../../comparable/interfaces/Comparator.md)\<`MediaType`\>
 
+Comparator ordering by descending quality factor, then specificity.
+
 ***
 
 ### specificityComparator
 
-> `static` **specificityComparator**: [`SpecificityComparator`](#)\<`MediaType`\>
+> `static` **specificityComparator**: [`SpecificityComparator`](SpecificityComparator.md)\<`MediaType`\>
+
+Comparator ordering more-specific media types before wildcards.
 
 ## Accessors
 
@@ -172,6 +217,8 @@ interceptor (Wave 6, 2026-09-27).
 
 > **get** **isWildcardSubtype**(): `boolean`
 
+Whether the subtype is the `*` wildcard.
+
 ##### Returns
 
 `boolean`
@@ -184,6 +231,8 @@ interceptor (Wave 6, 2026-09-27).
 
 > **get** **isWildcardType**(): `boolean`
 
+Whether the top-level type is the `*` wildcard.
+
 ##### Returns
 
 `boolean`
@@ -195,6 +244,8 @@ interceptor (Wave 6, 2026-09-27).
 #### Get Signature
 
 > **get** **qualityFactor**(): `number`
+
+Quality factor parsed from `parameters.q`, defaulting to `1` (RFC 7231 §5.3.1).
 
 ##### Returns
 
@@ -223,15 +274,21 @@ boundedness is observable in tests (DSG-1, SEC-7).
 
 > **compareTo**(`mediaType`): `number`
 
+Compares two media types by type, subtype, and parameters.
+
 #### Parameters
 
 ##### mediaType
 
 `MediaType`
 
+The media type to compare against.
+
 #### Returns
 
 `number`
+
+A negative, zero, or positive number as this is less than, equal to, or greater than the other.
 
 #### Implementation of
 
@@ -243,15 +300,21 @@ boundedness is observable in tests (DSG-1, SEC-7).
 
 > **compareToIgnoreCase**(`mediaType`): `number`
 
+Compares two media types, ignoring case.
+
 #### Parameters
 
 ##### mediaType
 
 `MediaType`
 
+The media type to compare against.
+
 #### Returns
 
 `number`
+
+A negative, zero, or positive number as this is less than, equal to, or greater than the other.
 
 #### Implementation of
 
@@ -263,7 +326,7 @@ boundedness is observable in tests (DSG-1, SEC-7).
 
 > **createBlob**(`data?`, `endings?`): `Blob`
 
-Creates a new blob of the media type with the given parameters
+Creates a new blob of the media type with the given parameters.
 
 #### Parameters
 
@@ -271,15 +334,19 @@ Creates a new blob of the media type with the given parameters
 
 `BlobPart`[]
 
+Blob parts to include (default `[]`).
+
 ##### endings?
 
 `EndingType` = `'transparent'`
+
+Line-ending mode (default `'transparent'`).
 
 #### Returns
 
 `Blob`
 
-A new blob of the media type
+A new blob of the media type.
 
 ***
 
@@ -287,15 +354,21 @@ A new blob of the media type
 
 > **equals**(`mediaType`): `boolean`
 
+Whether this media type equals `mediaType` (case-sensitive, full parameters).
+
 #### Parameters
 
 ##### mediaType
 
 `MediaType`
 
+The media type to compare.
+
 #### Returns
 
 `boolean`
+
+`true` when equal.
 
 ***
 
@@ -329,11 +402,13 @@ For example, `text/*` includes `text/plain` and `text/html`, `application/*+xml`
 
 `MediaType`
 
+The media type to test for inclusion.
+
 #### Returns
 
 `boolean`
 
-If this `MediaType` includes the given `MediaType`.
+`true` if this includes `value`.
 
 ***
 
@@ -341,7 +416,7 @@ If this `MediaType` includes the given `MediaType`.
 
 > **matches**(`mediaType`): `boolean`
 
-Determines if this object matches the specified value.
+Whether this media type matches `mediaType` according to wildcard rules.
 
 #### Parameters
 
@@ -349,11 +424,13 @@ Determines if this object matches the specified value.
 
 `MediaType`
 
+The media type to match against.
+
 #### Returns
 
 `boolean`
 
-`true` if the object matches the value, `false` otherwise.
+`true` when matched.
 
 #### Implementation of
 
@@ -391,9 +468,13 @@ The formatted Content-Type string
 
 > **toJSON**(): [`JSONValue`](../../serializable/type-aliases/JSONValue.md)
 
+Serializes the media type to its string form.
+
 #### Returns
 
 [`JSONValue`](../../serializable/type-aliases/JSONValue.md)
+
+The canonical media-type string.
 
 #### Implementation of
 
@@ -405,11 +486,13 @@ The formatted Content-Type string
 
 > **toString**(): `string`
 
-Returns a string representation of an object.
+Returns the canonical `type/subtype;param=value` string.
 
 #### Returns
 
 `string`
+
+The canonical media-type string.
 
 #### Implementation of
 
@@ -421,23 +504,51 @@ Returns a string representation of an object.
 
 > **withCharset**(`charset`): `MediaType`
 
+Returns a copy of this media type with the given `charset` parameter.
+
 #### Parameters
 
 ##### charset
 
 `string`
 
+The charset to set.
+
 #### Returns
 
 `MediaType`
+
+A new interned media type.
 
 ***
 
 ### for()
 
+Interns a media type from an expression or components.
+
+#### Param
+
+**typeOrExpression**
+
+Expression or top-level type.
+
+#### Param
+
+**subtype**
+
+Subtype or wildcard (default `'*'`).
+
+#### Param
+
+**parameters**
+
+Optional parameters (default `{}`).
+
 #### Call Signature
 
 > `static` **for**(`mediaType`): `MediaType` \| `null`
+
+Parses a media-type expression (e.g. `text/html;charset=UTF-8`), returning `null` when invalid.
 
 ##### Parameters
 
@@ -445,13 +556,19 @@ Returns a string representation of an object.
 
 `string`
 
+The expression to parse.
+
 ##### Returns
 
 `MediaType` \| `null`
 
+The interned media type, or `null`.
+
 #### Call Signature
 
 > `static` **for**(`type`, `subtype`, `parameters?`): `MediaType` \| `null`
+
+Builds an interned media type from its components.
 
 ##### Parameters
 
@@ -459,17 +576,25 @@ Returns a string representation of an object.
 
 [`SupportedMediaType`](../type-aliases/SupportedMediaType.md)
 
+Top-level type.
+
 ###### subtype
 
 `string`
+
+Subtype or wildcard.
 
 ###### parameters?
 
 [`MediaTypeParameters`](../type-aliases/MediaTypeParameters.md)
 
+Optional parameters.
+
 ##### Returns
 
 `MediaType` \| `null`
+
+The interned media type, or `null`.
 
 ***
 

@@ -1,4 +1,5 @@
 /**
+ * Aware-processor mixin that injects the application context.
  */
 import { likeContentSourceAware, likeMessageSourceAware } from '@ndigo/content';
 import { likeApplicationEventEmitterAware } from './event-emitter';
@@ -13,6 +14,7 @@ import { defineProperty } from './context-shared';
  * An {@link InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the `EnvironmentAware`, `ResourceLoaderAware`, `ApplicationEventEmitterAware`, `ContentSourceAware`, `MessageSourceAware`, and/or `ApplicationContextAware` interfaces.
  */
 export class ApplicationContextAwareProcessor implements InitializationAwareProcessor {
+    /** The application context injected into aware values. */
     readonly applicationContext!: ApplicationContext;
 
     /**
@@ -34,6 +36,9 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
 
     /**
      * Returns the value unchanged after initialization.
+     * @param name - The bean name.
+     * @param value - The bean value.
+     * @returns The unchanged value.
      */
     processAfterInitialization<T = unknown>(name: string, value: T): T {
         return value;

@@ -23,3 +23,9 @@ Value to serialize.
 [`JSONValue`](../type-aliases/JSONValue.md)
 
 A JSON-compatible value derived from the best available serialization strategy.
+
+## Example
+
+```ts
+serialize({ when: new Date('2026-01-01T00:00:00Z') }); // { when: '2026-01-01T00:00:00.000Z' }
+```

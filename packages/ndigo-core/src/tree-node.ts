@@ -52,6 +52,11 @@ export interface TreeNode<T = unknown> extends ChildNode<T>, ParentNode<T> {
  * @param node - Starting node.
  * @param callback - Function invoked for each visited node; returning `false` prunes that node's descendants.
  * @param inclusive - When `true`, include the starting node in the traversal.
+ *
+ * @example
+ * ```ts
+ * direct(root, (node) => console.log(node));
+ * ```
  */
 export function direct<T extends ParentNode<T>>(
     node: T,

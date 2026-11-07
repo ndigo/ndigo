@@ -1,5 +1,13 @@
 /**
  * Extension of the `Map` interface that stores multiple values under a single key.
+ *
+ * @example
+ * ```ts
+ * const map = new MultiValueMap<string, number>();
+ * map.add('a', 1);
+ * map.add('a', 2);
+ * map.get('a'); // [1, 2]
+ * ```
  */
 export class MultiValueMap<K, V> extends Map<K, V[]> {
     /**

@@ -6,5 +6,6 @@
 
 # Variable: IMAGE\_X\_ICON
 
-> `const` **IMAGE\_X\_ICON**: [`default`](../../media-type/classes/default.md)
+> `const` **IMAGE\_X\_ICON**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `image/x-icon` media type.

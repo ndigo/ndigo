@@ -1,4 +1,5 @@
 /**
+ * Environment and profile activation for the application context.
  */
 import { Constructable, Null, JSONValue, JSONObject, evaluateProfileExpression } from '@ndigo/core';
 import type { ProfileTerm } from '@ndigo/core';
@@ -88,6 +89,7 @@ export interface Environment extends PropertyResolver {
  * Receives the current environment during initialization.
  */
 export interface EnvironmentAware extends Aware {
+    /** Captures the environment. @param environment - The environment. */
     setEnvironment(environment: Environment): void;
 }
 
@@ -109,15 +111,21 @@ export interface ConfigurableEnvironment extends Environment, EventEmitter {
      * The ordered, named property source registry.
      */
     getPropertySources(): MutablePropertySources;
-    /** Applies at-rest secret decryption to property lookups. */
+    /** Applies at-rest secret decryption to property lookups. @param decryptor - The decryptor. */
     applySecretDecryptor(decryptor: SecretDecryptor): void;
-    /** Merges property sources and profiles from another configurable environment. */
+    /** Merges property sources and profiles from another configurable environment. @param environment - The other environment. */
     merge(environment: ConfigurableEnvironment): void;
+    /** Registers a typed listener. @param type - Event type. @param listener - Listener. @returns This. */
     on<K extends keyof EnvironmentEvents>(type: K, listener: (...payload: EnvironmentEvents[K]) => void): this;
+    /** Registers a listener. @param type - Event type. @param listener - Listener. @returns This. */
     on(type: EventType | EventHandlers, listener?: Function): this;
+    /** Removes a typed listener. @param type - Event type. @param listener - Listener. @returns This. */
     off<K extends keyof EnvironmentEvents>(type: K, listener: (...payload: EnvironmentEvents[K]) => void): this;
+    /** Removes a listener. @param type - Event type. @param listener - Listener. @returns This. */
     off(type: EventType, listener: Function): this;
+    /** Emits a typed event. @param type - Event type. @param payload - Payload. @returns Whether a listener ran. */
     emit<K extends keyof EnvironmentEvents>(type: K, ...payload: EnvironmentEvents[K]): boolean;
+    /** Emits an event. @param type - Event type. @param data - Data. @returns Whether a listener ran. */
     emit(type: EventType, ...data: unknown[]): boolean;
 }
 /**
@@ -153,6 +161,13 @@ const { defineProperty } = Reflect;
  * {@link CONFIG_REFRESH_EVENT} after recomputing from current sources, so
  * listeners (e.g. boot's `@refreshScope` rebinder, AD-29) observe config
  * changes.
+ *
+ * @example
+ * ```ts
+ * const env = new StandardEnvironment([new MapPropertySource('app', { 'server.port': '8080' })]);
+ * env.getProperty('server.port'); // '8080'
+ * env.acceptsProfiles('dev'); // false
+ * ```
  */
 export abstract class AbstractEnvironment extends AsEventEmitter(Null) implements ConfigurableEnvironment {
     #propertyResolver: PrototypalPropertyResolver;
@@ -171,14 +186,17 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
         return this.#propertyResolver.registry;
     }
 
+    /** String tag for this environment. */
     get [Symbol.toStringTag](): string {
         return `Environment:${[...this.#activeProfiles].join(',')}`;
     }
 
+    /** The explicitly active profiles. */
     get activeProfiles(): string[] {
         return [...this.#activeProfiles];
     }
 
+    /** Sets the active profiles. */
     set activeProfiles(profiles: string[]) {
         const activeProfiles = this.#activeProfiles;
         // eslint-disable-next-line no-unused-expressions -- guarded call: clear only when the set is non-empty
@@ -186,10 +204,12 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
         profiles.forEach(activeProfiles.add, activeProfiles);
     }
 
+    /** The default profiles. */
     get defaultProfiles(): string[] {
         return [...this.#defaultProfiles];
     }
 
+    /** Sets the default profiles. */
     set defaultProfiles(profiles: string[]) {
         const defaultProfiles = this.#defaultProfiles;
         // eslint-disable-next-line no-unused-expressions -- guarded call: clear only when the set is non-empty
@@ -209,10 +229,12 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
         this.#propertyResolver = PrototypalPropertyResolver.create(sources, options);
     }
 
+    /** {@inheritDoc Environment#addActiveProfile} @param profile - The profile. */
     addActiveProfile(profile: string): void {
         this.#activeProfiles.add(profile);
     }
 
+    /** {@inheritDoc Environment#addDefaultProfile} @param profile - The profile. */
     addDefaultProfile(profile: string): void {
         this.#defaultProfiles.add(profile);
     }
@@ -225,22 +247,27 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
         return this.#activeProfiles.size ? [...this.#activeProfiles] : [...this.#defaultProfiles];
     }
 
+    /** {@inheritDoc Environment#acceptsProfiles} @param expression - The expression. */
     acceptsProfiles(expression: string | ProfileTerm): boolean {
         return evaluateProfileExpression(String(expression), new Set(this.activeProfilesOrDefaults));
     }
 
+    /** {@inheritDoc property-resolver.PropertyResolver#hasProperty} @param key - The key. */
     hasProperty(key: string): boolean {
         return this.#propertyResolver.hasProperty(key);
     }
 
+    /** {@inheritDoc property-resolver.PropertyResolver#getProperty} @param key - The key. @param defaultValue - Default value. */
     getProperty(key: string, defaultValue?: JSONValue): JSONValue | undefined {
         return this.#propertyResolver.getProperty(key, defaultValue);
     }
 
+    /** {@inheritDoc property-resolver.PropertyResolver#getRequiredProperty} @param key - The key. */
     getRequiredProperty(key: string): JSONValue {
         return this.#propertyResolver.getRequiredProperty(key);
     }
 
+    /** {@inheritDoc property-resolver.PropertyResolver#getPropertyAs} @param key - The key. @param targetType - Target type. @param defaultValue - Default. */
     getPropertyAs<T>(
         key: string,
         targetType: (new (...args: never[]) => T) | (() => T) | T,
@@ -249,22 +276,27 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
         return this.#propertyResolver.getPropertyAs(key, targetType, defaultValue);
     }
 
+    /** {@inheritDoc property-resolver.PropertyResolver#getRequiredPropertyAs} @param key - The key. @param targetType - Target type. */
     getRequiredPropertyAs<T>(key: string, targetType: (new (...args: never[]) => T) | (() => T) | T): T {
         return this.#propertyResolver.getRequiredPropertyAs(key, targetType);
     }
 
+    /** {@inheritDoc Environment#typedConfig} @param prefix - The prefix. @param schema - The schema. */
     typedConfig<S extends z.ZodType>(prefix: string, schema: S): z.infer<S> | undefined {
         return resolveSchemaConfig(schema, prefix, this);
     }
 
+    /** {@inheritDoc property-resolver.PropertyResolver#getRawProperty} @param key - The key. */
     getRawProperty(key: string): JSONValue | undefined {
         return this.#propertyResolver.getRawProperty(key);
     }
 
+    /** {@inheritDoc Environment#originOf} @param key - The key. */
     originOf(key: string): string | null {
         return this.#propertyResolver.originOf(key);
     }
 
+    /** {@inheritDoc Environment#refresh} */
     refresh(): void {
         this.#propertyResolver.refresh();
         // AD-29 D-1: emit AFTER the rebuild so listeners read fresh state.
@@ -289,6 +321,7 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
         });
     }
 
+    /** {@inheritDoc ConfigurableEnvironment#merge} @param environment - The environment to merge. */
     merge(environment: ConfigurableEnvironment): void {
         const sources = this.getPropertySources();
         for (const source of environment.getPropertySources()) {
@@ -303,6 +336,7 @@ export abstract class AbstractEnvironment extends AsEventEmitter(Null) implement
             environment.defaultProfiles.forEach((profile) => this.addDefaultProfile(profile));
     }
 
+    /** Whether a profile is active. @param profile - The profile. @returns `true` when active. */
     protected _isActiveProfile(profile: string): boolean {
         return this.#activeProfiles.has(profile);
     }
@@ -350,6 +384,7 @@ const _likeEnvironmentShape = like({
     refresh: Function,
 });
 
+/** Tests whether a value behaves like an `Environment`. @param value - Value to test. @returns `true` when it does. */
 export const likeEnvironment = ((value: unknown) => likePropertyResolver(value) && _likeEnvironmentShape(value)) as (
     value: unknown
 ) => value is Environment;

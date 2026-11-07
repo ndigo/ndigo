@@ -6,6 +6,8 @@
 
 # context-aware-mixin
 
+Mixin adding application-context awareness to a class.
+
 ## Functions
 
 - [AsApplicationContextAware](functions/AsApplicationContextAware.md)

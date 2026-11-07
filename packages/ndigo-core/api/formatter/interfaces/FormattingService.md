@@ -26,6 +26,8 @@ Creates a [DateTimeFormatter](../classes/DateTimeFormatter.md) with the service 
 
 [`DateTimeFormatOptions`](../type-aliases/DateTimeFormatOptions.md)
 
+Optional overrides.
+
 #### Returns
 
 [`DateTimeFormatter`](../classes/DateTimeFormatter.md)
@@ -43,6 +45,8 @@ Creates a [ListFormatter](../classes/ListFormatter.md) with the service defaults
 ##### options?
 
 [`ListFormatOptions`](../type-aliases/ListFormatOptions.md)
+
+Optional overrides.
 
 #### Returns
 
@@ -62,6 +66,8 @@ Creates a [NumberFormatter](../classes/NumberFormatter.md) with the service defa
 
 [`NumberFormatOptions`](../type-aliases/NumberFormatOptions.md)
 
+Optional overrides.
+
 #### Returns
 
 [`NumberFormatter`](../classes/NumberFormatter.md)
@@ -79,6 +85,8 @@ Creates a [RelativeTimeFormatter](../classes/RelativeTimeFormatter.md) with the 
 ##### options?
 
 [`RelativeTimeFormatOptions`](../type-aliases/RelativeTimeFormatOptions.md)
+
+Optional overrides.
 
 #### Returns
 

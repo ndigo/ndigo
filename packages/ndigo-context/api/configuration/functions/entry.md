@@ -6,11 +6,19 @@
 
 # Function: entry()
 
+Creates an entry decorator.
+
+## Param
+
+**nameOrTarget**
+
+Entry name.
+
 ## Call Signature
 
-> **entry**(`nameOrTarget`): [`EntryDecorator`](#)
+> **entry**(`nameOrTarget`): [`EntryDecorator`](../type-aliases/EntryDecorator.md)
 
-Can be used as `@entry()` or `@entry('customName')`.
+Creates an entry decorator.
 
 ### Parameters
 
@@ -22,18 +30,18 @@ Entry name.
 
 ### Returns
 
-[`EntryDecorator`](#)
+[`EntryDecorator`](../type-aliases/EntryDecorator.md)
 
 A method decorator.
 
 ## Call Signature
 
-> **entry**(): [`EntryDecorator`](#)
+> **entry**(): [`EntryDecorator`](../type-aliases/EntryDecorator.md)
 
-Can be used as `@entry()` or `@entry('customName')`.
+Creates an entry decorator.
 
 ### Returns
 
-[`EntryDecorator`](#)
+[`EntryDecorator`](../type-aliases/EntryDecorator.md)
 
 A method decorator.

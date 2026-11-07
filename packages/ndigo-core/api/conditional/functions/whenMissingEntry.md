@@ -17,6 +17,8 @@ registered — the "provide your own override" guarantee for auto-configs.
 
 `string`
 
+The entry name that must be absent.
+
 ## Returns
 
 (`target`, `context`) => `void`

@@ -20,6 +20,17 @@ missing key without a guard.
 
 `unknown`
 
+A class constructor or instance.
+
 ## Returns
 
 `Record`\<`string`, `any`\>
+
+The metadata record, or an empty object when none is present.
+
+## Example
+
+```ts
+class Foo {}
+getSymbolMetadata(Foo); // {}
+```

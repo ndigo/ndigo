@@ -6,5 +6,6 @@
 
 # Variable: TEXT\_CSV
 
-> `const` **TEXT\_CSV**: [`default`](../../media-type/classes/default.md)
+> `const` **TEXT\_CSV**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `text/csv` media type.

@@ -6,7 +6,7 @@
 
 # Function: parseMediaType()
 
-> **parseMediaType**(`value`): [`default`](../classes/default.md)
+> **parseMediaType**(`value`): [`MediaType`](../classes/MediaType.md)
 
 Parses a media type string into a MediaType instance.
 
@@ -22,7 +22,7 @@ Media type string (e.g., "text/html;charset=UTF-8")
 
 ## Returns
 
-[`default`](../classes/default.md)
+[`MediaType`](../classes/MediaType.md)
 
 MediaType instance from registry
 

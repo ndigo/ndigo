@@ -6,5 +6,6 @@
 
 # Variable: TEXT\_JAVASCRIPT
 
-> `const` **TEXT\_JAVASCRIPT**: [`default`](../../media-type/classes/default.md)
+> `const` **TEXT\_JAVASCRIPT**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `text/javascript` media type.

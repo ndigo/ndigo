@@ -4,6 +4,7 @@
 import '@tsmetadata/polyfill';
 import semver from 'semver';
 
+/** Metadata key under which `@sharedDependency` stores its options. */
 export const SHARED_KEY = 'ndigo:shared';
 
 /**
@@ -27,6 +28,9 @@ export interface SharedOptions {
  * @sharedDependency({ version: '1.2.0' })
  * class TelemetryService {}
  * ```
+ *
+ * @param options - Shared dependency options.
+ * @returns A class decorator.
  */
 export function sharedDependency(
     options?: SharedOptions

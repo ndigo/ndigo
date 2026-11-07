@@ -2,9 +2,9 @@
 
 ***
 
-[@ndigo/core](../../README.md) / [wildcard-exp](../README.md) / default
+[@ndigo/core](../../README.md) / [wildcard-exp](../README.md) / WildcardExp
 
-# Class: default
+# Class: WildcardExp
 
 A regular expression compiled from a wildcard pattern.
 
@@ -16,7 +16,7 @@ A regular expression compiled from a wildcard pattern.
 
 ### Constructor
 
-> **new default**(`pattern?`): `WildcardExp`
+> **new WildcardExp**(`pattern?`): `WildcardExp`
 
 Compiles a wildcard pattern into a regular expression.
 

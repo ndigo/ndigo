@@ -30,11 +30,15 @@ A symbol indicating that the value is aware.
 
 > **setEnvironment**(`environment`): `void`
 
+Captures the environment.
+
 #### Parameters
 
 ##### environment
 
 [`Environment`](Environment.md)
+
+The environment.
 
 #### Returns
 

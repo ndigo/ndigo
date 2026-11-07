@@ -39,6 +39,8 @@ The context to inject into aware values.
 
 > `readonly` **applicationContext**: [`ApplicationContext`](../../context-interfaces/interfaces/ApplicationContext.md)
 
+The application context injected into aware values.
+
 ## Methods
 
 ### processAfterInitialization()
@@ -59,13 +61,19 @@ Returns the value unchanged after initialization.
 
 `string`
 
+The bean name.
+
 ##### value
 
 `T`
 
+The bean value.
+
 #### Returns
 
 `T`
+
+The unchanged value.
 
 #### Implementation of
 

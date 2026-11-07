@@ -145,3 +145,4 @@ Optional relay target context.
 
 > `optional` **unmountPolicy?**: [`FeatureUnmountPolicy`](../../context-hierarchy/type-aliases/FeatureUnmountPolicy.md)
 
+Policy applied when the feature is unmounted.

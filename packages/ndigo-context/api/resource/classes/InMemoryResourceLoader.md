@@ -11,6 +11,15 @@ Resource loader backed by an in-memory map of location to value.
 Useful for tests, browser rendering with bundled content, and prototypes
 where resource content is known at construction time.
 
+## Example
+
+```ts
+const loader = new InMemoryResourceLoader();
+loader.set('app.js', 'console.log("hi")');
+const resource = await loader.getResource('app.js');
+resource.value; // 'console.log("hi")'
+```
+
 ## Implements
 
 - [`ResourceLoader`](../interfaces/ResourceLoader.md)
@@ -31,11 +40,15 @@ where resource content is known at construction time.
 
 > **getResource**(`location`): `Promise`\<[`Resource`](../interfaces/Resource.md)\<`unknown`\>\>
 
+Returns a resource handle for the location.
+
 #### Parameters
 
 ##### location
 
 `string`
+
+The resource location.
 
 #### Returns
 

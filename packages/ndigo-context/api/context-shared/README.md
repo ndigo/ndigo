@@ -6,6 +6,8 @@
 
 # context-shared
 
+Shared module-level state for the application context.
+
 ## Variables
 
 - [defineProperty](variables/defineProperty.md)

@@ -6,6 +6,8 @@
 
 # radix-tree
 
+A radix tree for URL routing with parameter capture.
+
 ## Classes
 
 - [RadixTree](classes/RadixTree.md)

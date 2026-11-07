@@ -14,17 +14,23 @@ Result of validating a feature's dependency manifest against the registry.
 
 > **missing**: `string`[]
 
+Missing dependency names.
+
 ***
 
 ### valid
 
 > **valid**: `boolean`
 
+Whether validation passed.
+
 ***
 
 ### versionMismatches
 
 > **versionMismatches**: `object`[]
+
+Version mismatches found.
 
 #### found
 
@@ -44,3 +50,4 @@ Result of validating a feature's dependency manifest against the registry.
 
 > **warnings**: `string`[]
 
+Non-fatal warnings.

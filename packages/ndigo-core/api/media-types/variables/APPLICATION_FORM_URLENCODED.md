@@ -6,5 +6,6 @@
 
 # Variable: APPLICATION\_FORM\_URLENCODED
 
-> `const` **APPLICATION\_FORM\_URLENCODED**: [`default`](../../media-type/classes/default.md)
+> `const` **APPLICATION\_FORM\_URLENCODED**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `application/x-www-form-urlencoded` media type.

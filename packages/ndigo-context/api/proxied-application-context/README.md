@@ -6,6 +6,8 @@
 
 # proxied-application-context
 
+Proxied application context forwarding to a delegate.
+
 ## Classes
 
 - [ProxiedGenericApplicationContext](classes/ProxiedGenericApplicationContext.md)

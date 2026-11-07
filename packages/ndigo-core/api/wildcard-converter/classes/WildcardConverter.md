@@ -45,7 +45,7 @@ wildcards.convert('*')       // '^.*?$'
 
 > **convert**(`pattern`): `string`
 
-Converts a value of type `S` to type `T`.
+Converts a wildcard pattern into a regex source string.
 
 #### Parameters
 
@@ -53,11 +53,13 @@ Converts a value of type `S` to type `T`.
 
 `string`
 
+The wildcard pattern.
+
 #### Returns
 
 `string`
 
-The converted target value.
+The regex source string.
 
 #### Implementation of
 

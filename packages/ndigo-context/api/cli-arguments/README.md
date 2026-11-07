@@ -6,6 +6,8 @@
 
 # cli-arguments
 
+Command-line argument parsing for the application context.
+
 ## Functions
 
 - [parseCommandLineArgs](functions/parseCommandLineArgs.md)

@@ -1,4 +1,5 @@
 /**
+ * Named property source contract and `MapPropertySource`.
  */
 import { JSONObject, JSONValue, createNull, KeypathConverter } from '@ndigo/core';
 import { isNil } from '@ndigo/util/types';
@@ -72,6 +73,7 @@ export class MapPropertySource implements PropertySource {
         this.#properties = properties;
     }
 
+    /** Gets a property. @param key - The key. @returns The value. */
     getProperty(key: string): JSONValue | undefined {
         const keypath = keypathConverter.convert(key);
         if (!keypath) return undefined;
@@ -84,6 +86,7 @@ export class MapPropertySource implements PropertySource {
         return value as JSONValue | undefined;
     }
 
+    /** Whether a property exists. @param key - The key. @returns `true` when present. */
     containsProperty(key: string): boolean {
         const keypath = keypathConverter.convert(key);
         if (!keypath) return false;

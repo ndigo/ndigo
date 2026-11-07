@@ -25,6 +25,8 @@ Cancels a scheduled callback by its handle.
 
 `unknown`
 
+The handle.
+
 #### Returns
 
 `void`
@@ -43,10 +45,16 @@ Schedules a repeated callback. Returns an opaque handle.
 
 () => `void`
 
+The callback.
+
 ##### ms
 
 `number`
 
+The interval in ms.
+
 #### Returns
 
 `unknown`
+
+An opaque handle.

@@ -8,3 +8,4 @@
 
 > `const` **PROPERTY\_KEY\_TYPE**: `"config:propertyType:"` = `'config:propertyType:'`
 
+Metadata key for a field's declared type.

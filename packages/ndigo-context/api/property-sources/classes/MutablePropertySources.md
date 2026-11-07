@@ -19,6 +19,14 @@ Error semantics: `addBefore`/`addAfter` with an unknown anchor throw
 (a typo in an anchor silently changes precedence otherwise). `remove` and
 `replace` return booleans — absence is a valid outcome there.
 
+## Example
+
+```ts
+const sources = new MutablePropertySources();
+sources.addLast('app', { 'server.port': '8080' });
+sources.get('app')?.properties; // { 'server.port': '8080' }
+```
+
 ## Implements
 
 - [`PropertySources`](../interfaces/PropertySources.md)
@@ -222,7 +230,7 @@ The property values to capture.
 
 > **contains**(`name`): `boolean`
 
-Returns whether a source is registered under the given name.
+Whether a source exists.
 
 #### Parameters
 
@@ -230,13 +238,13 @@ Returns whether a source is registered under the given name.
 
 `string`
 
-The source name.
+The name.
 
 #### Returns
 
 `boolean`
 
-`true` when registered.
+`true` when present.
 
 #### Implementation of
 
@@ -264,7 +272,7 @@ Returns name/source pairs in precedence order.
 
 > **forEach**(`callback`, `context?`): `void`
 
-Visits each source in precedence order, using `context` as callback `this`.
+Visits each source.
 
 #### Parameters
 
@@ -272,9 +280,13 @@ Visits each source in precedence order, using `context` as callback `this`.
 
 (`value`, `key`, `list`) => `void`
 
+Visitor.
+
 ##### context?
 
 `unknown`
+
+`this` binding.
 
 #### Returns
 
@@ -290,7 +302,7 @@ Visits each source in precedence order, using `context` as callback `this`.
 
 > **get**(`name`): [`PropertySource`](../../property-source/interfaces/PropertySource.md) \| `undefined`
 
-Returns the source registered under the given name.
+Gets a source by name.
 
 #### Parameters
 
@@ -298,13 +310,13 @@ Returns the source registered under the given name.
 
 `string`
 
-The source name.
+The name.
 
 #### Returns
 
 [`PropertySource`](../../property-source/interfaces/PropertySource.md) \| `undefined`
 
-The matching source, or `undefined`.
+The source.
 
 #### Implementation of
 
@@ -383,13 +395,13 @@ The replacement property values to capture.
 
 > **toArray**(): [`PropertySource`](../../property-source/interfaces/PropertySource.md)[]
 
-Returns the sources in precedence order (first = highest precedence).
+Returns sources in precedence order.
 
 #### Returns
 
 [`PropertySource`](../../property-source/interfaces/PropertySource.md)[]
 
-A fresh snapshot of the ordered sources.
+The sources.
 
 #### Implementation of
 

@@ -6,6 +6,6 @@
 
 # Variable: stringComparator
 
-> `const` **stringComparator**: [`StringComparator`](#)
+> `const` **stringComparator**: [`StringComparator`](../classes/StringComparator.md)
 
 A `Comparator` instance for `string` objects.

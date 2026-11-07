@@ -17,6 +17,10 @@ parenthesization is needed; raw compound strings stay wrapped for safety.
 
 ...[`ProfileExpressionInput`](../type-aliases/ProfileExpressionInput.md)[]
 
+Terms to disjoin.
+
 ## Returns
 
 [`ProfileTerm`](../classes/ProfileTerm.md)
+
+A composed profile term.

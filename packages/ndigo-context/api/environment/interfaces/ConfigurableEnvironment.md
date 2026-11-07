@@ -131,6 +131,8 @@ Applies at-rest secret decryption to property lookups.
 
 [`SecretDecryptor`](../../secret-cipher/interfaces/SecretDecryptor.md)
 
+The decryptor.
+
 #### Returns
 
 `void`
@@ -143,7 +145,7 @@ Applies at-rest secret decryption to property lookups.
 
 > **emit**\<`K`\>(`type`, ...`payload`): `boolean`
 
-Emits an event to the listeners registered for the given type.
+Emits a typed event.
 
 ##### Type Parameters
 
@@ -157,17 +159,19 @@ Emits an event to the listeners registered for the given type.
 
 `K`
 
-The event type.
+Event type.
 
 ###### payload
 
 ...[`EnvironmentEvents`](../../context-events/interfaces/EnvironmentEvents.md)\[`K`\]
 
+Payload.
+
 ##### Returns
 
 `boolean`
 
-`true` when at least one listener ran.
+Whether a listener ran.
 
 ##### Overrides
 
@@ -177,7 +181,7 @@ The event type.
 
 > **emit**(`type`, ...`data`): `boolean`
 
-Emits an event to the listeners registered for the given type.
+Emits an event.
 
 ##### Parameters
 
@@ -185,19 +189,19 @@ Emits an event to the listeners registered for the given type.
 
 [`EventType`](../../event-emitter/type-aliases/EventType.md)
 
-The event type.
+Event type.
 
 ###### data
 
 ...`unknown`[]
 
-Event payload values.
+Data.
 
 ##### Returns
 
 `boolean`
 
-`true` when at least one listener ran.
+Whether a listener ran.
 
 ##### Overrides
 
@@ -504,6 +508,8 @@ Merges property sources and profiles from another configurable environment.
 
 `ConfigurableEnvironment`
 
+The other environment.
+
 #### Returns
 
 `void`
@@ -516,7 +522,7 @@ Merges property sources and profiles from another configurable environment.
 
 > **off**\<`K`\>(`type`, `listener`): `this`
 
-Removes a listener for an event type.
+Removes a typed listener.
 
 ##### Type Parameters
 
@@ -530,19 +536,19 @@ Removes a listener for an event type.
 
 `K`
 
-The event type.
+Event type.
 
 ###### listener
 
 (...`payload`) => `void`
 
-The listener to remove.
+Listener.
 
 ##### Returns
 
 `this`
 
-This emitter.
+This.
 
 ##### Overrides
 
@@ -552,7 +558,7 @@ This emitter.
 
 > **off**(`type`, `listener`): `this`
 
-Removes a listener for an event type.
+Removes a listener.
 
 ##### Parameters
 
@@ -560,19 +566,19 @@ Removes a listener for an event type.
 
 [`EventType`](../../event-emitter/type-aliases/EventType.md)
 
-The event type.
+Event type.
 
 ###### listener
 
 `Function`
 
-The listener to remove.
+Listener.
 
 ##### Returns
 
 `this`
 
-This emitter.
+This.
 
 ##### Overrides
 
@@ -586,7 +592,7 @@ This emitter.
 
 > **on**\<`K`\>(`type`, `listener`): `this`
 
-Adds a listener for an event type.
+Registers a typed listener.
 
 ##### Type Parameters
 
@@ -600,19 +606,19 @@ Adds a listener for an event type.
 
 `K`
 
-The event type.
+Event type.
 
 ###### listener
 
 (...`payload`) => `void`
 
-The listener to register.
+Listener.
 
 ##### Returns
 
 `this`
 
-This emitter.
+This.
 
 ##### Overrides
 
@@ -622,7 +628,7 @@ This emitter.
 
 > **on**(`type`, `listener?`): `this`
 
-Adds a listener for an event type.
+Registers a listener.
 
 ##### Parameters
 
@@ -630,19 +636,19 @@ Adds a listener for an event type.
 
 [`EventType`](../../event-emitter/type-aliases/EventType.md) \| [`EventHandlers`](../../event-emitter/type-aliases/EventHandlers.md)
 
-The event type.
+Event type.
 
 ###### listener?
 
 `Function`
 
-The listener to register.
+Listener.
 
 ##### Returns
 
 `this`
 
-This emitter.
+This.
 
 ##### Overrides
 

@@ -16,9 +16,13 @@ Marks a configuration class as browser-only.
 
 `Function`
 
+The decorated class.
+
 ### context
 
 `ClassDecoratorContext`
+
+The decorator context.
 
 ## Returns
 

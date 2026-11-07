@@ -6,6 +6,8 @@
 
 # error
 
+Framework error hierarchy: `FrameworkError`, `ApplicationError`, `IllegalStateError`.
+
 ## Classes
 
 - [ApplicationError](classes/ApplicationError.md)

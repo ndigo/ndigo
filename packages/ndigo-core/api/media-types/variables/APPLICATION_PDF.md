@@ -6,5 +6,6 @@
 
 # Variable: APPLICATION\_PDF
 
-> `const` **APPLICATION\_PDF**: [`default`](../../media-type/classes/default.md)
+> `const` **APPLICATION\_PDF**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `application/pdf` media type.

@@ -6,6 +6,8 @@
 
 # property-value
 
+Property value bags: `PropertyValues`, `MutablePropertyValues`, and `PropertyValue`.
+
 ## Classes
 
 - [MutablePropertyValues](classes/MutablePropertyValues.md)

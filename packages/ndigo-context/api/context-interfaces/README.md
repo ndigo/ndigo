@@ -6,6 +6,8 @@
 
 # context-interfaces
 
+Application context, environment, and awareness interfaces.
+
 ## Interfaces
 
 - [ApplicationContext](interfaces/ApplicationContext.md)

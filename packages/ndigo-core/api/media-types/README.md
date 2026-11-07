@@ -6,6 +6,8 @@
 
 # media-types
 
+Well-known, interned `MediaType` constants for common media types.
+
 ## Variables
 
 - [APPLICATION\_FORM\_URLENCODED](variables/APPLICATION_FORM_URLENCODED.md)

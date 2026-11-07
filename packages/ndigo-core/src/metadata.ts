@@ -1,4 +1,5 @@
 /**
+ * TC39 decorator metadata access helpers.
  */
 import '@tsmetadata/polyfill';
 
@@ -19,6 +20,15 @@ type MetadataCarrier = { [Symbol.metadata]?: unknown; constructor?: MetadataCarr
  * instance is unwrapped through its constructor. Targets that never received
  * metadata yield an empty record rather than throwing, so callers can read a
  * missing key without a guard.
+ *
+ * @param target - A class constructor or instance.
+ * @returns The metadata record, or an empty object when none is present.
+ *
+ * @example
+ * ```ts
+ * class Foo {}
+ * getSymbolMetadata(Foo); // {}
+ * ```
  */
 // oxlint-disable-next-line typescript/no-explicit-any -- callers (ndigo-dispatcher, ndigo-telemetry) return values read from this record as their own typed payloads; `unknown` values would break those returns.
 export function getSymbolMetadata(target: unknown): Record<string, any> {

@@ -1,4 +1,5 @@
 /**
+ * Parsing dotted/bracketed keypaths into ordered path tokens.
  */
 import type { Converter } from './converter.js';
 
@@ -29,6 +30,7 @@ function isIdentPart(ch: string): boolean {
  * keypaths.convert('a["key"]')         // ['a', 'key']
  */
 export class KeypathConverter implements Converter<string, KeypathToken[] | null> {
+    /** Parses a keypath string into path tokens. @param input - The keypath string. @returns The path tokens, or `null` when invalid. */
     convert(input: string): KeypathToken[] | null {
         const tokens: KeypathToken[] = [];
         let i = 0;

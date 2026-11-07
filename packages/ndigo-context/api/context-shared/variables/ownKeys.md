@@ -8,6 +8,10 @@
 
 > **ownKeys**: (`target`) => (`string` \| `symbol`)[]
 
+**`Internal`**
+
+Reflect helpers re-exported for intra-package use.
+
 Returns the string and symbol keys of the own properties of an object. The own properties of an object
 are those that are defined directly on that object, and are not inherited from the object's prototype.
 

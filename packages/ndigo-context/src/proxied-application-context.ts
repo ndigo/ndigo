@@ -1,4 +1,5 @@
 /**
+ * Proxied application context forwarding to a delegate.
  */
 import { JSONObject } from '@ndigo/core';
 import { GenericApplicationContext } from './generic-application-context';

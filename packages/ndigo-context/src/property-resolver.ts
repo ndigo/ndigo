@@ -1,4 +1,5 @@
 /**
+ * Property resolution with prototype-chain and merged indexes.
  */
 import { IllegalStateError, JSONValue, JSONObject, createNull, KeypathConverter } from '@ndigo/core';
 import type { KeypathToken } from '@ndigo/core';
@@ -212,11 +213,13 @@ export class PrototypeChainIndex implements PropertyIndex {
     #chain: unknown;
     #tokens = new TokenCache();
 
+    /** Builds the index from sources. @param sources - The property sources. */
     build(sources: PropertySource[]): void {
         const properties = sources.map((source) => source.properties);
         this.#chain = properties.length === 1 ? properties[0] : toPrototypeChain(properties);
     }
 
+    /** Gets a property. @param key - The key. @returns The value. */
     getProperty(key: string): JSONValue | undefined {
         const keypath = this.#tokens.get(key);
         if (!keypath) return undefined;
@@ -228,6 +231,7 @@ export class PrototypeChainIndex implements PropertyIndex {
         return value as JSONValue | undefined;
     }
 
+    /** Whether a property exists. @param key - The key. @returns `true` when present. */
     hasProperty(key: string): boolean {
         const keypath = this.#tokens.get(key);
         return keypath ? pathIsDefined(keypath, this.#chain) : false;
@@ -248,6 +252,7 @@ export class FlatMergedIndex implements PropertyIndex {
     #origins = new Map<string, string>();
     #tokens = new TokenCache();
 
+    /** Builds the index from sources. @param sources - The property sources. */
     build(sources: PropertySource[]): void {
         const merged: Record<string | number, unknown> = createNull();
         const origins = new Map<string, string>();
@@ -262,6 +267,7 @@ export class FlatMergedIndex implements PropertyIndex {
         this.#origins = origins;
     }
 
+    /** Gets a property. @param key - The key. @returns The value. */
     getProperty(key: string): JSONValue | undefined {
         const keypath = this.#tokens.get(key);
         if (!keypath) return undefined;
@@ -273,6 +279,7 @@ export class FlatMergedIndex implements PropertyIndex {
         return value as JSONValue | undefined;
     }
 
+    /** Whether a property exists. @param key - The key. @returns `true` when present. */
     hasProperty(key: string): boolean {
         const keypath = this.#tokens.get(key);
         return keypath ? pathIsDefined(keypath, this.#merged) : false;
@@ -329,6 +336,12 @@ export interface ResolverOptions {
 
 /**
  * Property resolver that layers sources through a live property source registry.
+ *
+ * @example
+ * ```ts
+ * const resolver = new PrototypalPropertyResolver({ sources: [new MapPropertySource('app', { 'server.port': '8080' })] });
+ * resolver.getProperty('server.port'); // '8080'
+ * ```
  */
 export class PrototypalPropertyResolver implements PropertyResolver {
     #sources: PropertySource[] = [];
@@ -366,10 +379,12 @@ export class PrototypalPropertyResolver implements PropertyResolver {
     get registry(): MutablePropertySources {
         return this.#registry;
     }
+    /** The resolver options. */
     get options(): ResolverOptions {
         return this.#options;
     }
 
+    /** Gets a property. @param key - The key. @param defaultValue - Default. @returns The value. */
     getProperty(key: string, defaultValue?: JSONValue): JSONValue | undefined {
         this.#syncRegistry();
         const raw = this.#index.getProperty(key);
@@ -377,6 +392,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
         return this.#decrypt(key, this.#resolve(key, raw));
     }
 
+    /** Gets a required property. @param key - The key. @returns The value. */
     getRequiredProperty(key: string): JSONValue {
         this.#syncRegistry();
         const raw = this.#index.getProperty(key);
@@ -392,6 +408,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
         return this.#decrypt(key, resolved) as JSONValue;
     }
 
+    /** Gets a typed property. @param key - The key. @param targetType - Target type. @param defaultValue - Default. @returns The value. */
     getPropertyAs<T>(
         key: string,
         targetType: (new (...args: never[]) => T) | (() => T) | T,
@@ -404,6 +421,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
         return this.#convert(key, resolved, targetType) ?? defaultValue;
     }
 
+    /** Gets a required typed property. @param key - The key. @param targetType - Target type. @returns The value. */
     getRequiredPropertyAs<T>(key: string, targetType: (new (...args: never[]) => T) | (() => T) | T): T {
         this.#syncRegistry();
         const raw = this.#index.getProperty(key);
@@ -428,6 +446,7 @@ export class PrototypalPropertyResolver implements PropertyResolver {
         return value;
     }
 
+    /** Whether a property exists. @param key - The key. @returns `true` when present. */
     hasProperty(key: string): boolean {
         this.#syncRegistry();
         return this.#index.hasProperty(key);

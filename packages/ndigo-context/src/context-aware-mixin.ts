@@ -1,4 +1,5 @@
 /**
+ * Mixin adding application-context awareness to a class.
  */
 import { Constructable } from '@ndigo/core';
 import { AsAware } from '@ndigo/factory';

@@ -1,4 +1,5 @@
 /**
+ * HTTP media type parsing, interning, comparison, and content negotiation.
  */
 import { Serializable, JSONValue } from './serializable.js';
 import {
@@ -199,7 +200,8 @@ const stringifyParameters = (value: MediaTypeParameters): string => {
 /**
  * Comparator to sort `MediaType` in order of specificity.
  */
-class SpecificityComparator<T extends MediaType> implements Comparator<T> {
+export class SpecificityComparator<T extends MediaType> implements Comparator<T> {
+    /** Compares two media types by specificity. @param mediaType1 - First media type. @param mediaType2 - Second media type. @returns A comparison result. */
     compare(mediaType1: T, mediaType2: T): number {
         // */* < audio/*
         if (mediaType1.isWildcardType && !mediaType2.isWildcardType) {
@@ -229,6 +231,7 @@ class SpecificityComparator<T extends MediaType> implements Comparator<T> {
         }
     }
 
+    /** Compares parameters by size (more parameters = more specific). @param mediaType1 - First media type. @param mediaType2 - Second media type. @returns A comparison result. */
     compareParameters(mediaType1: T, mediaType2: T): number {
         const paramsSize1 = keys(mediaType1.parameters).length,
             paramsSize2 = keys(mediaType2.parameters).length;
@@ -239,6 +242,9 @@ class SpecificityComparator<T extends MediaType> implements Comparator<T> {
 
 const specificityComparator = new SpecificityComparator();
 
+/**
+ * Comparator ordering by descending quality factor, then specificity.
+ */
 const qualityFactorComparator: Comparator<MediaType> = {
     compare: chainComparisons(
         invertComparison(compareBy((mediaType: MediaType) => mediaType.qualityFactor, numberComparator.compare)),
@@ -377,28 +383,56 @@ function internComponents(
     );
 }
 
-export default class MediaType extends Null implements Serializable, StringComparable<MediaType>, Matchable<MediaType> {
+/**
+ * An interned, immutable media type (`type/subtype;param=value`) with comparison,
+ * matching, and content-negotiation helpers. Instances are interned process-wide:
+ * use {@link MediaType.for} to parse header values and {@link MediaType.registered}
+ * for the `MediaTypes.*` constants.
+ *
+ * @remarks Instances are interned process-wide: header parsing goes through
+ * bounded FIFO caches so attacker-controlled values cannot grow the registry
+ * unboundedly; `MediaTypes.*` constants live for the process lifetime.
+ *
+ * @example
+ * ```ts
+ * const mt = MediaType.for('text/html;charset=UTF-8');
+ * mt.baseType; // "text/html"
+ * mt.qualityFactor; // 1
+ * ```
+ */
+export class MediaType extends Null implements Serializable, StringComparable<MediaType>, Matchable<MediaType> {
+    /** Whether the subtype carries the experimental `x-` facet (RFC 6838 §4.2). */
     readonly experimental: boolean;
+    /** Dot-separated subtype facets (e.g. `vnd.api+json` → `['vnd', 'api']`). */
     readonly facets: string[];
+    /** Parameters parsed from the expression, keyed by lower-case name. */
     readonly parameters: MediaTypeParameters;
+    /** Whether the subtype carries the personal `prs` facet. */
     readonly personal: boolean;
+    /** Structured-syntax suffix after `+` (e.g. `json`), or `null` when absent. */
     readonly suffix: string | null;
+    /** Subtype without the structured-syntax suffix (e.g. `problem` for `application/problem+json`). */
     readonly subtype: string;
+    /** Top-level type (`application`, `text`, …). */
     readonly type: SupportedMediaType;
+    /** Whether the subtype carries the vendor `vnd` facet. */
     readonly vendor: boolean;
 
     get [Symbol.toStringTag](): string {
         return `MediaType:${this.toString()}`;
     }
 
+    /** Whether the top-level type is the `*` wildcard. */
     get isWildcardType(): boolean {
         return this.type === WILDCARD;
     }
 
+    /** Whether the subtype is the `*` wildcard. */
     get isWildcardSubtype(): boolean {
         return this.subtype === WILDCARD;
     }
 
+    /** Quality factor parsed from `parameters.q`, defaulting to `1` (RFC 7231 §5.3.1). */
     get qualityFactor(): number {
         const value = this.parameters[QUALITY_FACTOR_PARAM];
         if (isString(value)) {
@@ -471,8 +505,11 @@ export default class MediaType extends Null implements Serializable, StringCompa
         return `${this.type}/${this.subtype}`;
     }
 
+    /** Parses a media-type expression (e.g. `text/html;charset=UTF-8`), returning `null` when invalid. @param mediaType - The expression to parse. @returns The interned media type, or `null`. */
     static for(mediaType: string): MediaType | null;
+    /** Builds an interned media type from its components. @param type - Top-level type. @param subtype - Subtype or wildcard. @param parameters - Optional parameters. @returns The interned media type, or `null`. */
     static for(type: SupportedMediaType, subtype: string, parameters?: MediaTypeParameters): MediaType | null;
+    /** Interns a media type from an expression or components. @param typeOrExpression - Expression or top-level type. @param subtype - Subtype or wildcard (default `'*'`). @param parameters - Optional parameters (default `{}`). @returns The interned media type, or `null`. */
     static for(
         typeOrExpression: SupportedMediaType | string,
         subtype: string = WILDCARD,
@@ -491,8 +528,10 @@ export default class MediaType extends Null implements Serializable, StringCompa
         return typeRegistry.size + parameterlessRegistry.size + parameterizedRegistry.size;
     }
 
+    /** Comparator ordering by descending quality factor, then specificity. */
     static qualityFactorComparator = qualityFactorComparator;
 
+    /** Comparator ordering more-specific media types before wildcards. */
     static specificityComparator = specificityComparator;
 
     /**
@@ -521,6 +560,12 @@ export default class MediaType extends Null implements Serializable, StringCompa
         return mediaType;
     }
 
+    /**
+     * Creates (interns) a media type.
+     * @param type - Top-level type (default `'*'`).
+     * @param subtype - Subtype or wildcard (default `'*'`).
+     * @param parameters - Optional parameters (default `{}`).
+     */
     constructor(type: SupportedMediaType = WILDCARD, subtype: string = WILDCARD, parameters: MediaTypeParameters = {}) {
         super();
 
@@ -557,6 +602,9 @@ export default class MediaType extends Null implements Serializable, StringCompa
     }
 
     /**
+     * Compares two media types by type, subtype, and parameters.
+     * @param mediaType - The media type to compare against.
+     * @returns A negative, zero, or positive number as this is less than, equal to, or greater than the other.
      */
     compareTo(mediaType: MediaType): number {
         let comparison: number;
@@ -610,6 +658,9 @@ export default class MediaType extends Null implements Serializable, StringCompa
     }
 
     /**
+     * Compares two media types, ignoring case.
+     * @param mediaType - The media type to compare against.
+     * @returns A negative, zero, or positive number as this is less than, equal to, or greater than the other.
      */
     compareToIgnoreCase(mediaType: MediaType): number {
         let comparison: number;
@@ -662,13 +713,20 @@ export default class MediaType extends Null implements Serializable, StringCompa
         return 0;
     }
 
+    /**
+     * Whether this media type equals `mediaType` (case-sensitive, full parameters).
+     * @param mediaType - The media type to compare.
+     * @returns `true` when equal.
+     */
     equals(mediaType: MediaType): boolean {
         return this.compareTo(mediaType) === 0;
     }
 
     /**
-     * Creates a new blob of the media type with the given parameters
-     * @returns A new blob of the media type
+     * Creates a new blob of the media type with the given parameters.
+     * @param data - Blob parts to include (default `[]`).
+     * @param endings - Line-ending mode (default `'transparent'`).
+     * @returns A new blob of the media type.
      */
     createBlob(data?: BlobPart[], endings: EndingType = 'transparent'): Blob {
         return new Blob(data, {
@@ -681,7 +739,8 @@ export default class MediaType extends Null implements Serializable, StringCompa
      * Indicates whether the `MediaType` includes the given `MediaType`.
      *
      * For example, `text/*` includes `text/plain` and `text/html`, `application/*+xml` includes `application/soap+xml`, etc.
-     * @returns If this `MediaType` includes the given `MediaType`.
+     * @param value - The media type to test for inclusion.
+     * @returns `true` if this includes `value`.
      */
     includes(value?: MediaType): boolean {
         if (!value) {
@@ -707,6 +766,11 @@ export default class MediaType extends Null implements Serializable, StringCompa
         return false;
     }
 
+    /**
+     * Whether this media type matches `mediaType` according to wildcard rules.
+     * @param mediaType - The media type to match against.
+     * @returns `true` when matched.
+     */
     matches(mediaType: MediaType): boolean {
         if (this.type === WILDCARD || mediaType.type === WILDCARD) {
             return true;
@@ -717,10 +781,18 @@ export default class MediaType extends Null implements Serializable, StringCompa
         }
     }
 
+    /**
+     * Serializes the media type to its string form.
+     * @returns The canonical media-type string.
+     */
     toJSON(): JSONValue {
         return this.toString();
     }
 
+    /**
+     * Returns the canonical `type/subtype;param=value` string.
+     * @returns The canonical media-type string.
+     */
     toString(): string {
         const mediaTypeString =
                 this.suffix === null ? `${this.type}/${this.subtype}` : `${this.type}/${this.subtype}+${this.suffix}`,
@@ -760,6 +832,11 @@ export default class MediaType extends Null implements Serializable, StringCompa
         return base;
     }
 
+    /**
+     * Returns a copy of this media type with the given `charset` parameter.
+     * @param charset - The charset to set.
+     * @returns A new interned media type.
+     */
     withCharset(charset: string): MediaType {
         // The constructor splits `subtype+suffix`; re-join them so
         // `application/problem+json` does not degrade to `application/problem`.

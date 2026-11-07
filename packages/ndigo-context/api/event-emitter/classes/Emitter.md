@@ -47,6 +47,8 @@ Optional initial event mappings.
 
 > **destroyed**: `boolean` = `false`
 
+Whether the emitter has been destroyed.
+
 #### Implementation of
 
 `Destroyable.destroyed`
@@ -57,11 +59,15 @@ Optional initial event mappings.
 
 > `readonly` `static` **every**: `string` = `$every`
 
+Sentinel type matching every event.
+
 ***
 
 ### version
 
 > `readonly` `static` **version**: `string` = `'3.0.0'`
+
+Emitter implementation version.
 
 ## Methods
 

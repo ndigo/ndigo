@@ -6,6 +6,8 @@
 
 # url-glob
 
+URL glob parsing utilities.
+
 ## Functions
 
 - [parseUrlGlob](functions/parseUrlGlob.md)

@@ -6,5 +6,6 @@
 
 # Variable: APPLICATION\_JAVASCRIPT
 
-> `const` **APPLICATION\_JAVASCRIPT**: [`default`](../../media-type/classes/default.md)
+> `const` **APPLICATION\_JAVASCRIPT**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `application/javascript` media type.

@@ -1,4 +1,5 @@
 /**
+ * Framework error hierarchy: `FrameworkError`, `ApplicationError`, `IllegalStateError`.
  */
 import { Serializable, JSONObject } from './serializable.js';
 import { createNull } from './null.js';
@@ -37,7 +38,11 @@ export const AsSerializableError = <T extends Constructable<Error>>(superclass: 
 
 /**
  * Represents a general application-level error.
-
+ *
+ * @example
+ * ```ts
+ * throw new ApplicationError('boom', { cause: originalError });
+ * ```
  */
 export class ApplicationError extends AsSerializableError(Error) {
     /**

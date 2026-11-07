@@ -15,9 +15,12 @@ Formatter options with all shared fields optional — used by
 
 > `optional` **locale?**: `string`
 
+Locale used for formatting.
+
 ***
 
 ### timeZone?
 
 > `optional` **timeZone?**: `string`
 
+Time zone used for formatting.

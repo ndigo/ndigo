@@ -32,11 +32,15 @@ Resource loader that resolves modules through dynamic import.
 
 > **getResource**(`location`): `Promise`\<[`Resource`](../interfaces/Resource.md)\<`unknown`\>\>
 
+Returns a resource handle for the location.
+
 #### Parameters
 
 ##### location
 
 `string`
+
+The resource location.
 
 #### Returns
 

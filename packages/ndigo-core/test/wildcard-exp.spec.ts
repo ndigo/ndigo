@@ -1,7 +1,7 @@
 /**
  */
 import { describe, test, expect } from 'vitest';
-import WildcardExp from '../src/wildcard-exp';
+import { WildcardExp } from '../src/wildcard-exp';
 
 describe('WildcardExp', () => {
     test('it should test using wildcards', () => {

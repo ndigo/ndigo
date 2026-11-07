@@ -14,6 +14,8 @@ A value that can safely be converted to a string or JSON payload.
 
 > `optional` **toJSON**(): [`JSONValue`](../type-aliases/JSONValue.md)
 
+Returns a JSON-safe representation of the value.
+
 #### Returns
 
 [`JSONValue`](../type-aliases/JSONValue.md)
@@ -23,6 +25,8 @@ A value that can safely be converted to a string or JSON payload.
 ### toString()
 
 > **toString**(): `string`
+
+Returns a string representation of the value.
 
 #### Returns
 

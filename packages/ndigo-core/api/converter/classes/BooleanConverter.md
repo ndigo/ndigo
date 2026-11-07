@@ -31,7 +31,7 @@ Falsy values (case-insensitive): `false`, `0`, `no`, `off`
 
 > **convert**(`value`): `boolean`
 
-Converts a value of type `S` to type `T`.
+Parses a string as a boolean.
 
 #### Parameters
 
@@ -39,11 +39,13 @@ Converts a value of type `S` to type `T`.
 
 `string`
 
+The boolean string.
+
 #### Returns
 
 `boolean`
 
-The converted target value.
+The parsed boolean.
 
 #### Implementation of
 

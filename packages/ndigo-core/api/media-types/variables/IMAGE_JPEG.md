@@ -6,5 +6,6 @@
 
 # Variable: IMAGE\_JPEG
 
-> `const` **IMAGE\_JPEG**: [`default`](../../media-type/classes/default.md)
+> `const` **IMAGE\_JPEG**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `image/jpeg` media type.

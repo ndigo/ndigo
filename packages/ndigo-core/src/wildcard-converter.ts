@@ -1,4 +1,5 @@
 /**
+ * Conversion of wildcard patterns into regular-expression sources.
  */
 import type { Converter } from './converter.js';
 
@@ -17,6 +18,7 @@ import type { Converter } from './converter.js';
  * wildcards.convert('*')       // '^.*?$'
  */
 export class WildcardConverter implements Converter<string, string> {
+    /** Converts a wildcard pattern into a regex source string. @param pattern - The wildcard pattern. @returns The regex source string. */
     convert(pattern: string): string {
         // Every regex metacharacter is escaped so a wildcard pattern matches
         // literally except for `*`, which becomes the wildcard group `.*?`.

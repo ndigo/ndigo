@@ -52,11 +52,15 @@ Gateway validation and diagnostic options.
 
 > **destroyed**: `boolean`
 
+Whether the gateway has been destroyed.
+
 ***
 
 ### relays
 
 > `readonly` **relays**: [`ContextEventRelay`](../interfaces/ContextEventRelay.md)[]
+
+The accepted relays.
 
 ***
 
@@ -64,11 +68,15 @@ Gateway validation and diagnostic options.
 
 > `readonly` **source**: [`ApplicationContext`](../../context-interfaces/interfaces/ApplicationContext.md)
 
+The source context.
+
 ***
 
 ### target
 
 > `readonly` **target**: [`ApplicationContext`](../../context-interfaces/interfaces/ApplicationContext.md)
+
+The target context.
 
 ## Accessors
 

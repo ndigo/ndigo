@@ -28,7 +28,7 @@ Converts strings to parsed JSON values via `JSON.parse`.
 
 > **convert**(`value`): `unknown`
 
-Converts a value of type `S` to type `T`.
+Parses a string as JSON.
 
 #### Parameters
 
@@ -36,11 +36,13 @@ Converts a value of type `S` to type `T`.
 
 `string`
 
+The JSON string.
+
 #### Returns
 
 `unknown`
 
-The converted target value.
+The parsed value.
 
 #### Implementation of
 

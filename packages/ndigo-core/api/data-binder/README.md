@@ -6,6 +6,8 @@
 
 # data-binder
 
+Data binding from property values to target objects via keypaths.
+
 ## Classes
 
 - [BindError](classes/BindError.md)

@@ -28,7 +28,7 @@ Converts string values to lowercase UUID strings (validation + normalization).
 
 > **convert**(`value`): `string`
 
-Converts a value of type `S` to type `T`.
+Converts a string to a normalized lowercase UUID.
 
 #### Parameters
 
@@ -36,11 +36,13 @@ Converts a value of type `S` to type `T`.
 
 `string`
 
+The UUID string to normalize.
+
 #### Returns
 
 `string`
 
-The converted target value.
+The normalized UUID.
 
 #### Implementation of
 

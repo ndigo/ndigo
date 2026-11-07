@@ -44,6 +44,8 @@ Default environment implementation used by application contexts.
 
 > **get** **\[toStringTag\]**(): `string`
 
+String tag for this environment.
+
 ##### Returns
 
 `string`
@@ -70,7 +72,7 @@ The explicitly active profiles.
 
 > **set** **activeProfiles**(`profiles`): `void`
 
-The explicitly active profiles.
+Sets the active profiles.
 
 ##### Parameters
 
@@ -115,7 +117,7 @@ defaults (reference parity — defaults gate only when nothing is explicit).
 
 > **get** **defaultProfiles**(): `string`[]
 
-The default profiles used when no active profile is configured.
+The default profiles.
 
 ##### Returns
 
@@ -125,7 +127,7 @@ The default profiles used when no active profile is configured.
 
 > **set** **defaultProfiles**(`profiles`): `void`
 
-The default profiles used when no active profile is configured.
+Sets the default profiles.
 
 ##### Parameters
 
@@ -166,10 +168,6 @@ The profile expression (`dev`, `!prod`, `a & b`,
 `boolean`
 
 `true` when the expression matches.
-
-#### Throws
-
-On malformed expressions.
 
 #### Inherited from
 
@@ -373,10 +371,6 @@ The value to return when the property is missing.
 
 The typed value or the default.
 
-#### Throws
-
-When a present value cannot be converted.
-
 #### Inherited from
 
 [`AbstractEnvironment`](AbstractEnvironment.md).[`getPropertyAs`](AbstractEnvironment.md#getpropertyas)
@@ -451,10 +445,6 @@ The property name to resolve.
 
 The resolved property value.
 
-#### Throws
-
-When the property cannot be resolved.
-
 #### Inherited from
 
 [`AbstractEnvironment`](AbstractEnvironment.md).[`getRequiredProperty`](AbstractEnvironment.md#getrequiredproperty)
@@ -492,10 +482,6 @@ The target constructor or primitive.
 `T`
 
 The typed value.
-
-#### Throws
-
-When missing, unresolved, or unconvertible.
 
 #### Inherited from
 
@@ -592,6 +578,8 @@ Merges property sources and profiles from another configurable environment.
 ##### environment
 
 [`ConfigurableEnvironment`](../interfaces/ConfigurableEnvironment.md)
+
+The other environment.
 
 #### Returns
 

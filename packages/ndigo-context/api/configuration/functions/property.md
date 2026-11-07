@@ -22,6 +22,8 @@ The property path to resolve.
 
 `string` \| (new (...`args`) => `number`) \| (new (...`args`) => `boolean`) \| (new (...`args`) => `Date`) \| (new (...`args`) => `string`)
 
+Optional type constructor.
+
 ## Returns
 
 A field decorator that captures the path in metadata.

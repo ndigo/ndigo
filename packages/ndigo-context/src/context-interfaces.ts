@@ -1,4 +1,5 @@
 /**
+ * Application context, environment, and awareness interfaces.
  */
 import { JSONObject, type ChildNode, type ParentNode } from '@ndigo/core';
 import type { z } from 'zod';
@@ -25,6 +26,9 @@ import {
 import { EnvironmentSource, likeEnvironmentSource, ConfigurableEnvironment } from './environment';
 import { ResourceLoader, likeResourceLoader } from './resource';
 
+/**
+ * Central application context: a hierarchical, configurable factory and event emitter.
+ */
 export interface ApplicationContext
     extends
         ChildNode<ApplicationContext>,
@@ -160,13 +164,17 @@ export interface ApplicationContext
      * context.on('custom:event', (...data: unknown[]) => {});            // raw
      * ```
      */
+    /** Registers a typed listener. @param type - Event type. @param listener - Listener. @returns This. */
     on<K extends keyof ContextEvents>(type: K, listener: (...payload: ContextEvents[K]) => void): this;
-    // Raw fallback (last overload = implementation): any other event type
-    // keeps the string-typed EventEmitter surface.
+    /** Registers a listener. @param type - Event type. @param listener - Listener. @returns This. */
     on(type: EventType | EventHandlers, listener?: Function): this;
+    /** Removes a typed listener. @param type - Event type. @param listener - Listener. @returns This. */
     off<K extends keyof ContextEvents>(type: K, listener: (...payload: ContextEvents[K]) => void): this;
+    /** Removes a listener. @param type - Event type. @param listener - Listener. @returns This. */
     off(type: EventType, listener: Function): this;
+    /** Emits a typed event. @param type - Event type. @param payload - Payload. @returns Whether a listener ran. */
     emit<K extends keyof ContextEvents>(type: K, ...payload: ContextEvents[K]): boolean;
+    /** Emits an event. @param type - Event type. @param data - Data. @returns Whether a listener ran. */
     emit(type: EventType, ...data: unknown[]): boolean;
 }
 
@@ -195,34 +203,42 @@ export interface ApplicationContextAware extends Aware {
 export interface ConfigurableApplicationContext extends ApplicationContext {
     /**
      * Replaces the content source used by this context.
+     * @param contentSource - The content source.
      */
     setContentSource(contentSource: ContentSource): void;
     /**
      * Replaces the message source used by this context.
+     * @param messageSource - The message source.
      */
     setMessageSource(messageSource: MessageSource): void;
     /**
      * Replaces the environment used by this context.
+     * @param environment - The environment.
      */
     setEnvironment(environment: ConfigurableEnvironment): void;
     /**
      * Updates the context identifier.
+     * @param id - The id.
      */
     setId(id: number): void;
     /**
      * Updates the context name.
+     * @param name - The name.
      */
     setName(name: string): void;
     /**
      * Reassigns the parent context and keeps the child list in sync.
+     * @param parent - The parent context.
      */
     setParent(parent: ApplicationContext): void;
     /**
      * Updates the default theme name.
+     * @param themeName - The theme name.
      */
     setThemeName(themeName: string): void;
     /**
      * Overrides the theme resolver used by this context.
+     * @param themeResolver - The theme resolver.
      */
     setThemeResolver(themeResolver: ThemeResolver): void;
 }

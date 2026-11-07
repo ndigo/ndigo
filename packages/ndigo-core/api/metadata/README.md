@@ -6,6 +6,8 @@
 
 # metadata
 
+TC39 decorator metadata access helpers.
+
 ## Functions
 
 - [getSymbolMetadata](functions/getSymbolMetadata.md)

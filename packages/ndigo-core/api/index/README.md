@@ -34,6 +34,12 @@ Re-exports [ArrayConverter](../converter/classes/ArrayConverter.md)
 
 ***
 
+### ArrayEntries
+
+Re-exports [ArrayEntries](../iterable/type-aliases/ArrayEntries.md)
+
+***
+
 ### ArrayEntry
 
 Re-exports [ArrayEntry](../iterable/type-aliases/ArrayEntry.md)
@@ -544,9 +550,27 @@ Re-exports [ListFormatterOptions](../formatter/interfaces/ListFormatterOptions.m
 
 ***
 
+### MapEntries
+
+Re-exports [MapEntries](../iterable/type-aliases/MapEntries.md)
+
+***
+
 ### MapEntry
 
 Re-exports [MapEntry](../iterable/type-aliases/MapEntry.md)
+
+***
+
+### MapKey
+
+Re-exports [MapKey](../iterable/type-aliases/MapKey.md)
+
+***
+
+### MapValue
+
+Re-exports [MapValue](../iterable/type-aliases/MapValue.md)
 
 ***
 
@@ -558,7 +582,7 @@ Re-exports [Matchable](../matchable/interfaces/Matchable.md)
 
 ### MediaType
 
-Renames and re-exports [default](../media-type/classes/default.md)
+Re-exports [MediaType](../media-type/classes/MediaType.md)
 
 ***
 
@@ -604,6 +628,12 @@ Re-exports [numberComparator](../comparable/variables/numberComparator.md)
 
 ***
 
+### NumberComparator
+
+Re-exports [NumberComparator](../comparable/classes/NumberComparator.md)
+
+***
+
 ### NumberConverter
 
 Re-exports [NumberConverter](../converter/classes/NumberConverter.md)
@@ -625,6 +655,12 @@ Re-exports [NumberFormatter](../formatter/classes/NumberFormatter.md)
 ### NumberFormatterOptions
 
 Re-exports [NumberFormatterOptions](../formatter/interfaces/NumberFormatterOptions.md)
+
+***
+
+### ObjectEntries
+
+Re-exports [ObjectEntries](../iterable/type-aliases/ObjectEntries.md)
 
 ***
 
@@ -796,6 +832,12 @@ Re-exports [ServerSentEvent](../server-sent-event/interfaces/ServerSentEvent.md)
 
 ***
 
+### SetEntries
+
+Re-exports [SetEntries](../iterable/type-aliases/SetEntries.md)
+
+***
+
 ### SetEntry
 
 Re-exports [SetEntry](../iterable/type-aliases/SetEntry.md)
@@ -829,6 +871,12 @@ Re-exports [StringComparable](../comparable/interfaces/StringComparable.md)
 ### stringComparator
 
 Re-exports [stringComparator](../comparable/variables/stringComparator.md)
+
+***
+
+### StringComparator
+
+Re-exports [StringComparator](../comparable/classes/StringComparator.md)
 
 ***
 
@@ -912,4 +960,4 @@ Re-exports [WildcardConverter](../wildcard-converter/classes/WildcardConverter.m
 
 ### WildcardExp
 
-Renames and re-exports [default](../wildcard-exp/classes/default.md)
+Re-exports [WildcardExp](../wildcard-exp/classes/WildcardExp.md)

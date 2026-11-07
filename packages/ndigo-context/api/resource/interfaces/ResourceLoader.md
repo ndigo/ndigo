@@ -18,11 +18,15 @@ Loads resources from a location string.
 
 > **getResource**(`location`): `Promise`\<[`Resource`](Resource.md)\<`unknown`\>\>
 
+Returns a resource handle for the location.
+
 #### Parameters
 
 ##### location
 
 `string`
+
+The resource location.
 
 #### Returns
 

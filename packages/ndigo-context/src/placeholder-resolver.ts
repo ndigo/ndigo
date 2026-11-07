@@ -1,4 +1,5 @@
 /**
+ * Placeholder (`${...}`) resolution in property values.
  */
 import { IllegalStateError, JSONValue } from '@ndigo/core';
 import { PropertyResolver } from './property-resolver';

@@ -6,5 +6,6 @@
 
 # Variable: APPLICATION\_SSML\_XML
 
-> `const` **APPLICATION\_SSML\_XML**: [`default`](../../media-type/classes/default.md)
+> `const` **APPLICATION\_SSML\_XML**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `application/ssml+xml` media type.

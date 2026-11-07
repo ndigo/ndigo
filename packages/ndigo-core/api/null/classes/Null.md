@@ -10,7 +10,7 @@ An object with a `null` prototype.
 
 ## Extended by
 
-- [`default`](../../media-type/classes/default.md)
+- [`MediaType`](../../media-type/classes/MediaType.md)
 
 ## Constructors
 

@@ -38,6 +38,8 @@ Validation options.
 
 > `readonly` `optional` **featureNamespace?**: `string`
 
+Optional feature namespace for relay validation.
+
 ## Methods
 
 ### validate()

@@ -19,7 +19,11 @@ the factory skips registration and resolves the entry from the parent chain inst
 
 [`SharedOptions`](../interfaces/SharedOptions.md)
 
+Shared dependency options.
+
 ## Returns
+
+A class decorator.
 
 (`target`, `context`) => `Function`
 

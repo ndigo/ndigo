@@ -6,6 +6,8 @@
 
 # linkedom-dom-provider
 
+linkedom-backed DOM provider for server-side environments.
+
 ## Classes
 
 - [LinkedomDOMProvider](classes/LinkedomDOMProvider.md)

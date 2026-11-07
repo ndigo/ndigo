@@ -2,7 +2,8 @@
 
 **Status:** Phases 0–1 landed 2026-10-05 (owner-confirmed dependency shape);
 Phase 2 (docs) landed with the guide section below; Phase 3 (`fromConfig`)
-deferred until a consumer asks. Ratified by
+deferred until a consumer asks. The pin advanced to `4.4.0` (spec v4.4) on
+2026-10-31 via the October dependency train (#36). Ratified by
 [ADR-66](../decisions/2026-10-05_AD66_TOON_OPTIN_SUPPORT.md).
 
 **Context:** [TOON](https://github.com/toon-format/toon) (Token-Oriented

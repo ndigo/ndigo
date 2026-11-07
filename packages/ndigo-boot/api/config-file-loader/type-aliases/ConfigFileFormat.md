@@ -13,5 +13,5 @@ The config-file format to load. `'auto'` (default) probes
 collision; the other values restrict probing to one format, and
 `NDIGO_CONFIG_IMPORT` paths whose extension contradicts a restricted
 `format` error out (imports inherit the rule, AD-66 D-2). TOON files
-follow spec v4.1 and decode through the optional `@toon-format/toon` peer
+follow spec v4.4 and decode through the optional `@toon-format/toon` peer
 (see [StandardConfigFileLoader](../classes/StandardConfigFileLoader.md)).

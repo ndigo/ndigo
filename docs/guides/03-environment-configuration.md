@@ -154,7 +154,7 @@ env.acceptsProfiles(Profile.and(Profile.or('a', 'b'), 'c')); // '(a | b) & c'
 ### TOON config files (opt-in, AD-66)
 
 Config files may be authored in [TOON](https://github.com/toon-format/toon)
-(spec v4.1) instead of JSON — same files, same deep-merge, same profiles:
+(spec v4.4) instead of JSON — same files, same deep-merge, same profiles:
 
 ```toon
 # comments are allowed — the main reason to choose TOON

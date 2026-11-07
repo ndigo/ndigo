@@ -29,7 +29,7 @@ interface ToonDecoderModule {
  * collision; the other values restrict probing to one format, and
  * `NDIGO_CONFIG_IMPORT` paths whose extension contradicts a restricted
  * `format` error out (imports inherit the rule, AD-66 D-2). TOON files
- * follow spec v4.1 and decode through the optional `@toon-format/toon` peer
+ * follow spec v4.4 and decode through the optional `@toon-format/toon` peer
  * (see {@link StandardConfigFileLoader}).
  */
 export type ConfigFileFormat = 'auto' | 'json' | 'toon';
@@ -75,7 +75,7 @@ const DEFAULT_LOCATIONS = ['./config/', './'];
  * optional peer keep zero install/build cost — a static import would fail
  * their builds. The literal specifier plus `@vite-ignore` keeps the module a
  * *declared, scannable* runtime dependency while bundlers skip it.
- * `toon-spec: 4.1` (https://github.com/toon-format/spec).
+ * `toon-spec: 4.4` (https://github.com/toon-format/spec).
  */
 const loadToonDecoder = async (): Promise<(content: string) => JSONObject> => {
     let peer: ToonDecoderModule;
@@ -273,7 +273,7 @@ export class StandardConfigFileLoader {
     }
 
     /**
-     * Decodes a `.toon` document (spec v4.1) into the JSON object the
+     * Decodes a `.toon` document (spec v4.4) into the JSON object the
      * property-source merge consumes. Strict mode is the reference decoder's
      * default, so duplicate sibling keys and count/width mismatches error
      * (§14) — cross-file profile merging is unaffected: it happens after

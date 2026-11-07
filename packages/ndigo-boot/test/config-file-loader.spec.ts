@@ -160,7 +160,7 @@ describe('StandardConfigFileLoader', () => {
         expect(env.getPropertySources().size).toBe(0);
     });
 
-    describe('TOON config files (AD-66, spec v4.1)', () => {
+    describe('TOON config files (AD-66, spec v4.4)', () => {
         test('auto format loads a .toon file when no .json exists (real decoder)', async () => {
             const env = envWithProfiles();
             const content = 'server:\n  port: 8080\n  host: localhost';

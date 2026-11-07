@@ -5,6 +5,10 @@
 files) landed 2026-10-05; Phase 3 (`fromConfig`) deferred until a consumer
 asks (plan: [2026-10-05_TOON_SUPPORT](../plans/2026-10-05_TOON_SUPPORT.md)).
 
+_Amendment (2026-11-07): the optional peer pin advanced from `4.1.1` to
+`4.4.0` (spec v4.4, 2026-10-08) in the October dependency train (#36); the
+decode-only contract and the boundaries above are unchanged._
+
 ## Context
 
 TOON ([toon-format/toon](https://github.com/toon-format/toon)) is a

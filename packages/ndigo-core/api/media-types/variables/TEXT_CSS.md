@@ -6,5 +6,6 @@
 
 # Variable: TEXT\_CSS
 
-> `const` **TEXT\_CSS**: [`default`](../../media-type/classes/default.md)
+> `const` **TEXT\_CSS**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `text/css` media type.

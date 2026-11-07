@@ -8,6 +8,17 @@
 
 Binds data from property values to a target object, supporting keypath expressions.
 
+## Example
+
+```ts
+const target = { user: { name: '' } };
+const binder = new DataBinder(target);
+const values = new MutablePropertyValues();
+values.addPropertyValue('user.name', 'Ada');
+binder.bind(values);
+target.user.name; // 'Ada'
+```
+
 ## Constructors
 
 ### Constructor

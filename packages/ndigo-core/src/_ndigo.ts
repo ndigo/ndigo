@@ -1,4 +1,5 @@
 /**
+ * Installs the framework's null-prototype `ndigo` namespace on the global scope.
  */
 import { createNull } from './null.js';
 
@@ -26,5 +27,3 @@ if (_global) {
         writable: false,
     });
 }
-
-export default ndigo;

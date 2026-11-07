@@ -30,11 +30,15 @@ A symbol indicating that the value is aware.
 
 > **setResourceLoader**(`loader`): `void`
 
+Sets the resource loader.
+
 #### Parameters
 
 ##### loader
 
 [`ResourceLoader`](ResourceLoader.md)
+
+The loader.
 
 #### Returns
 

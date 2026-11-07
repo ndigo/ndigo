@@ -6,6 +6,8 @@
 
 # environment-schema
 
+Zod-based environment schema validation.
+
 ## Interfaces
 
 - [EnvironmentIssue](interfaces/EnvironmentIssue.md)

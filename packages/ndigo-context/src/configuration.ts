@@ -1,4 +1,5 @@
 /**
+ * Configuration decorators: `@configuration`, `@entry`, `@environment`, `@configurationProperties`.
  */
 import '@tsmetadata/polyfill';
 import { FrameworkError, getProfileCondition } from '@ndigo/core';
@@ -97,6 +98,14 @@ const { defineProperty, getOwnPropertyDescriptor } = Reflect,
  * @param target - The configuration class constructor.
  * @param context - The decorator context.
  * @returns The original class constructor.
+ *
+ * @example
+ * ```ts
+ * @configuration
+ * class AppConfig {
+ *     @entry() greetingService() { return new GreetingService(); }
+ * }
+ * ```
  */
 export function configuration<T extends new (...args: never[]) => unknown>(
     target: T,
@@ -110,6 +119,7 @@ export function configuration<T extends new (...args: never[]) => unknown>(
  * Binds a class field to a property path resolved from the environment.
  *
  * @param path - The property path to resolve.
+ * @param propertyType - Optional type constructor.
  * @returns A field decorator that captures the path in metadata.
  */
 export function property(
@@ -165,6 +175,9 @@ export function defaultValue(rawDefault: string) {
  * (AD-15 D3). One prefix mechanism (`@property`), one recursion flag.
  *
  * @returns A field decorator.
+ *
+ * @param value - The field value.
+ * @param context - The field decorator context.
  *
  * @example
  * ```ts
@@ -265,7 +278,7 @@ function createEntryDecorator(entryName?: string | ContextToken<unknown>) {
 /**
  * A method decorator that marks a configuration entry factory.
  */
-type EntryDecorator = <M extends Function>(target: M, context: ClassMethodDecoratorContext) => M;
+export type EntryDecorator = <M extends Function>(target: M, context: ClassMethodDecoratorContext) => M;
 
 /**
  * Can be used as `@entry()` or `@entry('customName')`.
@@ -273,8 +286,11 @@ type EntryDecorator = <M extends Function>(target: M, context: ClassMethodDecora
  * @param nameOrTarget - Entry name.
  * @returns A method decorator.
  */
+/** Creates an entry decorator. @param nameOrTarget - Entry name. @returns A method decorator. */
 export function entry(nameOrTarget: string | ContextToken<unknown>): EntryDecorator;
+/** Creates an entry decorator. @returns A method decorator. */
 export function entry(): EntryDecorator;
+/** Creates an entry decorator. @param nameOrTarget - Entry name. @returns A method decorator. */
 export function entry(nameOrTarget?: string | ContextToken<unknown>): EntryDecorator {
     if (typeof nameOrTarget === 'string' || isContextToken(nameOrTarget)) {
         return createEntryDecorator(nameOrTarget);

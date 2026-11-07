@@ -6,5 +6,12 @@
 
 # Variable: TEXT\_EVENT\_STREAM
 
-> `const` **TEXT\_EVENT\_STREAM**: [`default`](../../media-type/classes/default.md)
+> `const` **TEXT\_EVENT\_STREAM**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `text/event-stream` media type.
+
+## Example
+
+```ts
+res.setHeader('Content-Type', MediaTypes.TEXT_EVENT_STREAM.toString());
+```

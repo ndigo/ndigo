@@ -6,6 +6,8 @@
 
 # enumerable
 
+The `Enumerable` interface and `likeEnumerable` guard.
+
 ## Interfaces
 
 - [Enumerable](interfaces/Enumerable.md)

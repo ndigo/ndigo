@@ -1,4 +1,5 @@
 /**
+ * Type conversion contracts and the `ConversionService`.
  */
 import { Parser, Stringifier } from './parser';
 import { z } from 'zod';
@@ -136,6 +137,7 @@ const uuidPattern = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[89abAB][0-9a
  * Converts string values to lowercase UUID strings (validation + normalization).
  */
 export class UUIDConverter implements Converter<string, string> {
+    /** Converts a string to a normalized lowercase UUID. @param value - The UUID string to normalize. @returns The normalized UUID. */
     convert(value: string): string {
         const normalized = value.trim().toLowerCase();
 
@@ -154,6 +156,7 @@ export class UUIDConverter implements Converter<string, string> {
  * Validates the date is actually valid (not a normalized invalid date like Feb 29 in non-leap years).
  */
 export class DateConverter implements Converter<string, Date> {
+    /** Parses a string into a `Date`. @param value - The date string. @returns The parsed date. */
     convert(value: string): Date {
         const date = new Date(value);
 
@@ -170,6 +173,7 @@ export class DateConverter implements Converter<string, Date> {
  * Converts strings to parsed JSON values via `JSON.parse`.
  */
 export class JSONConverter implements Converter<string, unknown> {
+    /** Parses a string as JSON. @param value - The JSON string. @returns The parsed value. */
     convert(value: string): unknown {
         try {
             return JSON.parse(value);
@@ -185,6 +189,7 @@ export class JSONConverter implements Converter<string, unknown> {
  * Returns `NaN` for non-numeric input — callers should check with `Number.isFinite()`.
  */
 export class NumberConverter implements Converter<string, number> {
+    /** Parses a string as a number. @param value - The numeric string. @returns The parsed number (may be `NaN`). */
     convert(value: string): number {
         return parseFloat(value);
     }
@@ -197,6 +202,7 @@ export class NumberConverter implements Converter<string, number> {
  * Falsy values (case-insensitive): `false`, `0`, `no`, `off`
  */
 export class BooleanConverter implements Converter<string, boolean> {
+    /** Parses a string as a boolean. @param value - The boolean string. @returns The parsed boolean. */
     convert(value: string): boolean {
         const normalized = value.trim().toLowerCase();
 
@@ -221,6 +227,7 @@ export class BooleanConverter implements Converter<string, boolean> {
  * Converts strings to arrays by splitting on a separator.
  */
 export class ArrayConverter implements Converter<string, string[]> {
+    /** Splits a string into an array. @param value - The string to split. @param separator - Split separator (default `','`). @returns The resulting array. */
     convert(value: string, separator: string | RegExp = ','): string[] {
         return `${value}`
             .split(separator)
@@ -292,6 +299,9 @@ export interface ConversionService {
      * an exactly-registered converter exists, or a String-source converter
      * is registered for the target type (the environment/config binding
      * fallback `convert` applies). Schema targets are always convertible.
+     * @param sourceType - Runtime identity of the source type.
+     * @param targetType - Runtime identity of the target type or zod schema.
+     * @returns `true` when a converter can handle the pair.
      */
     canConvert(sourceType: unknown, targetType: unknown): boolean;
 
@@ -314,15 +324,21 @@ export interface ConversionService {
      *   (constructor targets) or the schema rejects the value (`ZodError`).
      */
     convert<T>(source: unknown, targetType: z.ZodType<T>): T;
+    /** @param source - The value to convert. @param targetType - The target type. @returns The converted value. */
     convert(source: unknown, targetType: unknown): unknown;
 
     /**
      * Registers a converter for a source/target type pair.
+     * @param converter - The converter instance.
+     * @param sourceType - Runtime identity of the source type.
+     * @param targetType - Runtime identity of the target type.
      */
     register<S, T>(converter: Converter<S, T>, sourceType: unknown, targetType: unknown): void;
 
     /**
      * Removes the converter for a source/target type pair.
+     * @param sourceType - Runtime identity of the source type.
+     * @param targetType - Runtime identity of the target type.
      */
     unregister(sourceType: unknown, targetType: unknown): void;
 

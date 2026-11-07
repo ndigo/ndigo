@@ -20,9 +20,12 @@ Represents a resolved resource handle and its loaded value.
 
 > `readonly` **exists**: `boolean`
 
+Whether the resource exists.
+
 ***
 
 ### value
 
 > `readonly` **value**: `T`
 
+The loaded value.

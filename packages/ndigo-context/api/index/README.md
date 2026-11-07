@@ -6,6 +6,8 @@
 
 # index
 
+Barrel re-exporting the context package surface.
+
 ## Classes
 
 - [ContextToken](classes/ContextToken.md)
@@ -298,6 +300,12 @@ Re-exports [Emitter](../event-emitter/classes/Emitter.md)
 ### entry
 
 Re-exports [entry](../configuration/functions/entry.md)
+
+***
+
+### EntryDecorator
+
+Re-exports [EntryDecorator](../configuration/type-aliases/EntryDecorator.md)
 
 ***
 

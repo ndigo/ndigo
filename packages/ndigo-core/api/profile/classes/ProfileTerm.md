@@ -38,6 +38,8 @@ canonical expression string, so terms drop into `@whenProfile(...)` and
 
 > **get** **kind**(): [`TermKind`](../type-aliases/TermKind.md)
 
+The kind of term (`name`, `not`, `and`, `or`, `compound`).
+
 ##### Returns
 
 [`TermKind`](../type-aliases/TermKind.md)

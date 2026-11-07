@@ -1,4 +1,5 @@
 /**
+ * Data binding from property values to target objects via keypaths.
  */
 import { FrameworkError, IllegalStateError } from './error.js';
 import { MutablePropertyValues, PropertyValues } from './property-value.js';
@@ -14,6 +15,16 @@ export class BindError extends FrameworkError {}
 
 /**
  * Binds data from property values to a target object, supporting keypath expressions.
+ *
+ * @example
+ * ```ts
+ * const target = { user: { name: '' } };
+ * const binder = new DataBinder(target);
+ * const values = new MutablePropertyValues();
+ * values.addPropertyValue('user.name', 'Ada');
+ * binder.bind(values);
+ * target.user.name; // 'Ada'
+ * ```
  */
 export class DataBinder {
     #name: string;

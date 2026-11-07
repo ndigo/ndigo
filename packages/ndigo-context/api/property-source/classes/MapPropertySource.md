@@ -84,7 +84,7 @@ The captured property values of this source.
 
 > **containsProperty**(`key`): `boolean`
 
-Returns whether a property resolves to a non-null value from this source.
+Whether a property exists.
 
 #### Parameters
 
@@ -92,13 +92,13 @@ Returns whether a property resolves to a non-null value from this source.
 
 `string`
 
-The property name to check (keypath syntax).
+The key.
 
 #### Returns
 
 `boolean`
 
-`true` when the property is defined.
+`true` when present.
 
 #### Implementation of
 
@@ -110,7 +110,7 @@ The property name to check (keypath syntax).
 
 > **getProperty**(`key`): `JSONValue` \| `undefined`
 
-Resolves a property from this source, or `undefined` when absent.
+Gets a property.
 
 #### Parameters
 
@@ -118,13 +118,13 @@ Resolves a property from this source, or `undefined` when absent.
 
 `string`
 
-The property name to resolve (keypath syntax).
+The key.
 
 #### Returns
 
 `JSONValue` \| `undefined`
 
-The resolved value, or `undefined`.
+The value.
 
 #### Implementation of
 

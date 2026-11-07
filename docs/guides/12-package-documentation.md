@@ -132,6 +132,14 @@ Rules:
   refreshed as packages are cleaned, and is deleted once everything is at
   zero tolerance. Run `node scripts/doc-coverage.mjs --write-baseline` after
   a batch.
+- **Named exports render readable pages:** TypeDoc derives each page's name
+  from the declaration, so a default export renders as `default`
+  (`api/<module>/classes/default.md`). Export named symbols and re-export them
+  by name from `src/index.ts`; a stray `export default` is a documentation
+  defect, not just a style one.
+- **Empty doc blocks do not count as documentation:** an empty `/** */`
+  satisfies the presence gate but renders nothing. Every block must carry a
+  real one-line summary (file header) or a member description.
 - **Example syntax:** `scripts/doc-examples.mjs` parses every fenced
   `@example` block as TypeScript; CI fails on syntax errors.
 - **TSDoc syntax:** `internal/tsdoc-syntax` (oxlint) validates every doc

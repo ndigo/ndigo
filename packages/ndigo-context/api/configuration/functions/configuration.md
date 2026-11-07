@@ -58,3 +58,12 @@ The original class constructor.
 ## See
 
 [MetadataConfigApplicationContext](../classes/MetadataConfigApplicationContext.md)
+
+## Example
+
+```ts
+@configuration
+class AppConfig {
+    @entry() greetingService() { return new GreetingService(); }
+}
+```

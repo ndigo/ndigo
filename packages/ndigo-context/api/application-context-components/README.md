@@ -6,6 +6,8 @@
 
 # application-context-components
 
+Application context component assembly helpers.
+
 ## Classes
 
 - [ApplicationComponent](classes/ApplicationComponent.md)

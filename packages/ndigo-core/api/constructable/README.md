@@ -6,6 +6,8 @@
 
 # constructable
 
+The `Constructable` type and `likeConstructable` guard for mixin bases.
+
 ## Type Aliases
 
 - [Constructable](type-aliases/Constructable.md)

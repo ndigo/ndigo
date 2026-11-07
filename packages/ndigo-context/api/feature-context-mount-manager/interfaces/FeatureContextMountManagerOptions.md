@@ -14,3 +14,4 @@ Options for the feature context mount manager.
 
 > `optional` **metricRecorder?**: [`FeatureMetricRecorder`](FeatureMetricRecorder.md)
 
+Optional metric recorder.

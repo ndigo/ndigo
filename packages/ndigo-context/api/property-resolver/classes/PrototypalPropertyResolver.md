@@ -8,6 +8,13 @@
 
 Property resolver that layers sources through a live property source registry.
 
+## Example
+
+```ts
+const resolver = new PrototypalPropertyResolver({ sources: [new MapPropertySource('app', { 'server.port': '8080' })] });
+resolver.getProperty('server.port'); // '8080'
+```
+
 ## Implements
 
 - [`PropertyResolver`](../interfaces/PropertyResolver.md)
@@ -19,6 +26,8 @@ Property resolver that layers sources through a live property source registry.
 #### Get Signature
 
 > **get** **options**(): [`ResolverOptions`](../interfaces/ResolverOptions.md)
+
+The resolver options.
 
 ##### Returns
 
@@ -44,7 +53,7 @@ The registry backing this resolver.
 
 > **getProperty**(`key`, `defaultValue?`): `JSONValue` \| `undefined`
 
-Resolves a property value, falling back to a default when missing.
+Gets a property.
 
 #### Parameters
 
@@ -52,19 +61,19 @@ Resolves a property value, falling back to a default when missing.
 
 `string`
 
-The property name to resolve.
+The key.
 
 ##### defaultValue?
 
 `JSONValue`
 
-The value to return when no property is found.
+Default.
 
 #### Returns
 
 `JSONValue` \| `undefined`
 
-The resolved property value or the default value.
+The value.
 
 #### Implementation of
 
@@ -76,7 +85,7 @@ The resolved property value or the default value.
 
 > **getPropertyAs**\<`T`\>(`key`, `targetType`, `defaultValue?`): `T` \| `undefined`
 
-Resolves a property as a typed value, converting when needed.
+Gets a typed property.
 
 #### Type Parameters
 
@@ -90,29 +99,25 @@ Resolves a property as a typed value, converting when needed.
 
 `string`
 
-The property name to resolve.
+The key.
 
 ##### targetType
 
 `T` \| (new (...`args`) => `T`) \| (() => `T`)
 
-The target constructor or primitive (`Number`, `Boolean`, `Date`, ...).
+Target type.
 
 ##### defaultValue?
 
 `T`
 
-The value to return when the property is missing.
+Default.
 
 #### Returns
 
 `T` \| `undefined`
 
-The typed value or the default.
-
-#### Throws
-
-When a present value cannot be converted.
+The value.
 
 #### Implementation of
 
@@ -154,7 +159,7 @@ The raw value or `undefined`.
 
 > **getRequiredProperty**(`key`): `JSONValue`
 
-Returns the resolved property value or throws when missing.
+Gets a required property.
 
 #### Parameters
 
@@ -162,17 +167,13 @@ Returns the resolved property value or throws when missing.
 
 `string`
 
-The property name to resolve.
+The key.
 
 #### Returns
 
 `JSONValue`
 
-The resolved property value.
-
-#### Throws
-
-When the property cannot be resolved.
+The value.
 
 #### Implementation of
 
@@ -184,7 +185,7 @@ When the property cannot be resolved.
 
 > **getRequiredPropertyAs**\<`T`\>(`key`, `targetType`): `T`
 
-Returns a typed property or throws when missing or unconvertible.
+Gets a required typed property.
 
 #### Type Parameters
 
@@ -198,23 +199,19 @@ Returns a typed property or throws when missing or unconvertible.
 
 `string`
 
-The property name to resolve.
+The key.
 
 ##### targetType
 
 `T` \| (new (...`args`) => `T`) \| (() => `T`)
 
-The target constructor or primitive.
+Target type.
 
 #### Returns
 
 `T`
 
-The typed value.
-
-#### Throws
-
-When missing, unresolved, or unconvertible.
+The value.
 
 #### Implementation of
 
@@ -226,7 +223,7 @@ When missing, unresolved, or unconvertible.
 
 > **hasProperty**(`key`): `boolean`
 
-Returns whether a property key can be resolved.
+Whether a property exists.
 
 #### Parameters
 
@@ -234,13 +231,13 @@ Returns whether a property key can be resolved.
 
 `string`
 
-The property name to resolve.
+The key.
 
 #### Returns
 
 `boolean`
 
-`true` when the property exists.
+`true` when present.
 
 #### Implementation of
 

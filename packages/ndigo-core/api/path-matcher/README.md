@@ -6,6 +6,8 @@
 
 # path-matcher
 
+Path matching, globbing, and include/exclude filtering contracts.
+
 ## Classes
 
 - [EqualsPathMatcher](classes/EqualsPathMatcher.md)

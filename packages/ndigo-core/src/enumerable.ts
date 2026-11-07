@@ -1,4 +1,5 @@
 /**
+ * The `Enumerable` interface and `likeEnumerable` guard.
  */
 import { like } from '@ndigo/util/types';
 

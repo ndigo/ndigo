@@ -29,6 +29,11 @@ A configured formatting service.
 When a formatter is created without a locale
 from either the service defaults or the per-formatter options.
 
+## Remarks
+
+The ambient runtime locale is never used; a missing locale is a
+programming error so server and client render identically.
+
 ## Example
 
 ```ts

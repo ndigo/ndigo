@@ -6,5 +6,6 @@
 
 # Variable: TEXT\_XML
 
-> `const` **TEXT\_XML**: [`default`](../../media-type/classes/default.md)
+> `const` **TEXT\_XML**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `text/xml` media type.

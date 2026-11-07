@@ -56,6 +56,8 @@ Optional initial values to register.
 
 > **createdTimestamp**: `number`
 
+Timestamp when the context was created.
+
 #### Inherited from
 
 [`GenericApplicationContext`](../../generic-application-context/classes/GenericApplicationContext.md).[`createdTimestamp`](../../generic-application-context/classes/GenericApplicationContext.md#createdtimestamp)
@@ -66,6 +68,8 @@ Optional initial values to register.
 
 > **destroyed**: `boolean`
 
+Whether the context has been destroyed.
+
 #### Inherited from
 
 [`GenericApplicationContext`](../../generic-application-context/classes/GenericApplicationContext.md).[`destroyed`](../../generic-application-context/classes/GenericApplicationContext.md#destroyed)
@@ -75,6 +79,8 @@ Optional initial values to register.
 ### destroyedTimestamp?
 
 > `optional` **destroyedTimestamp?**: `number`
+
+Timestamp when the context was destroyed.
 
 #### Inherited from
 
@@ -728,11 +734,15 @@ The formatted message, or the key when nothing resolves it.
 
 > **getResource**(`location`): `Promise`\<[`Resource`](../../resource/interfaces/Resource.md)\<`unknown`\>\>
 
+Returns a resource handle for the location.
+
 #### Parameters
 
 ##### location
 
 `string`
+
+The resource location.
 
 #### Returns
 
@@ -1278,6 +1288,8 @@ Replaces the content source used by this context.
 
 [`ContentSource`](#)
 
+The content source.
+
 #### Returns
 
 `void`
@@ -1300,6 +1312,8 @@ Replaces the environment used by this context.
 
 [`ConfigurableEnvironment`](../../environment/interfaces/ConfigurableEnvironment.md)
 
+The environment.
+
 #### Returns
 
 `void`
@@ -1321,6 +1335,8 @@ Updates the identifier assigned to this context.
 ##### id
 
 `number`
+
+The id.
 
 #### Returns
 
@@ -1368,6 +1384,8 @@ Updates the context name.
 
 `string`
 
+The name.
+
 #### Returns
 
 `void`
@@ -1389,6 +1407,8 @@ Reassigns the parent context and keeps the child list in sync.
 ##### parent
 
 [`ApplicationContext`](../../context-interfaces/interfaces/ApplicationContext.md)
+
+The parent context.
 
 #### Returns
 
@@ -1412,6 +1432,8 @@ Updates the default theme name.
 
 `string`
 
+The theme name.
+
 #### Returns
 
 `void`
@@ -1433,6 +1455,8 @@ Overrides the theme resolver used by this context.
 ##### themeResolver
 
 `ThemeResolver`
+
+The theme resolver.
 
 #### Returns
 
@@ -1570,13 +1594,19 @@ Schema-typed configuration read off the context environment (AD-34 D3).
 
 `string`
 
+The prefix.
+
 ##### schema
 
 `S`
 
+The schema.
+
 #### Returns
 
 `output`\<`S`\> \| `undefined`
+
+The value.
 
 #### Inherited from
 

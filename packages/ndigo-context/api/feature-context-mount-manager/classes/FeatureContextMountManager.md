@@ -8,6 +8,14 @@
 
 Creates, tracks, and tears down mounted feature contexts.
 
+## Example
+
+```ts
+const manager = new FeatureContextMountManager(context);
+manager.registerFeature({ name: 'checkout', loader: () => import('./checkout-module') });
+await manager.mountLazy('checkout');
+```
+
 ## Constructors
 
 ### Constructor
@@ -34,6 +42,8 @@ Creates, tracks, and tears down mounted feature contexts.
 
 > **destroy**(): `void`
 
+Destroys the manager and all mounted features.
+
 #### Returns
 
 `void`
@@ -44,15 +54,21 @@ Creates, tracks, and tears down mounted feature contexts.
 
 > **getMountedFeature**(`name`): [`FeatureContextComposition`](../../context-hierarchy/interfaces/FeatureContextComposition.md) \| `undefined`
 
+Returns the mounted composition.
+
 #### Parameters
 
 ##### name
 
 `string`
 
+Feature name.
+
 #### Returns
 
 [`FeatureContextComposition`](../../context-hierarchy/interfaces/FeatureContextComposition.md) \| `undefined`
+
+The composition, if mounted.
 
 ***
 
@@ -60,15 +76,21 @@ Creates, tracks, and tears down mounted feature contexts.
 
 > **hasRegistration**(`name`): `boolean`
 
+Whether a feature is registered.
+
 #### Parameters
 
 ##### name
 
 `string`
 
+Feature name.
+
 #### Returns
 
 `boolean`
+
+`true` when registered.
 
 ***
 
@@ -76,15 +98,21 @@ Creates, tracks, and tears down mounted feature contexts.
 
 > **isMounted**(`name`): `boolean`
 
+Whether a feature is mounted.
+
 #### Parameters
 
 ##### name
 
 `string`
 
+Feature name.
+
 #### Returns
 
 `boolean`
+
+`true` when mounted.
 
 ***
 
@@ -92,15 +120,21 @@ Creates, tracks, and tears down mounted feature contexts.
 
 > **mount**(`name`): [`FeatureContextComposition`](../../context-hierarchy/interfaces/FeatureContextComposition.md)
 
+Mounts a registered feature.
+
 #### Parameters
 
 ##### name
 
 `string`
 
+Feature name.
+
 #### Returns
 
 [`FeatureContextComposition`](../../context-hierarchy/interfaces/FeatureContextComposition.md)
+
+The composition.
 
 ***
 
@@ -108,13 +142,7 @@ Creates, tracks, and tears down mounted feature contexts.
 
 > **mountLazy**(`name`): `Promise`\<[`FeatureContextComposition`](../../context-hierarchy/interfaces/FeatureContextComposition.md)\>
 
-Mount a feature whose context is loaded dynamically via its registered `loader`.
-
-For features registered with a static `createContext`, use [mount](#mount) instead.
-
-If the feature has already been loaded and mounted, returns the existing composition.
-If a load is already in progress, awaits that same promise (deduplication).
-Failed loads are retried on the next call — the error state is cleared.
+Lazily mounts a feature with a loader.
 
 #### Parameters
 
@@ -122,21 +150,13 @@ Failed loads are retried on the next call — the error state is cleared.
 
 `string`
 
-The registered feature name.
+Feature name.
 
 #### Returns
 
 `Promise`\<[`FeatureContextComposition`](../../context-hierarchy/interfaces/FeatureContextComposition.md)\>
 
-A promise resolving to the feature context composition.
-
-#### Throws
-
-If the feature has no `loader` registered.
-
-#### Throws
-
-If the loader rejects or `createContext` throws.
+The composition.
 
 ***
 
@@ -144,15 +164,21 @@ If the loader rejects or `createContext` throws.
 
 > **registerFeature**(`options`): `this`
 
+Registers a feature.
+
 #### Parameters
 
 ##### options
 
 [`FeatureRegistrationOptions`](../interfaces/FeatureRegistrationOptions.md)
 
+Registration options.
+
 #### Returns
 
 `this`
+
+This manager.
 
 ***
 
@@ -160,8 +186,7 @@ If the loader rejects or `createContext` throws.
 
 > **remountLazy**(`name`, `policy?`): `Promise`\<[`FeatureContextComposition`](../../context-hierarchy/interfaces/FeatureContextComposition.md)\>
 
-Unmount and re-mount a feature, re-executing its loader.
-Useful for retrying after a failed load.
+Re-mounts a feature.
 
 #### Parameters
 
@@ -169,13 +194,19 @@ Useful for retrying after a failed load.
 
 `string`
 
+Feature name.
+
 ##### policy?
 
 [`FeatureUnmountPolicy`](../../context-hierarchy/type-aliases/FeatureUnmountPolicy.md)
 
+Unmount policy.
+
 #### Returns
 
 `Promise`\<[`FeatureContextComposition`](../../context-hierarchy/interfaces/FeatureContextComposition.md)\>
+
+The composition.
 
 ***
 
@@ -183,19 +214,27 @@ Useful for retrying after a failed load.
 
 > **unmount**(`name`, `policy?`): `boolean`
 
+Unmounts a feature.
+
 #### Parameters
 
 ##### name
 
 `string`
 
+Feature name.
+
 ##### policy?
 
 [`FeatureUnmountPolicy`](../../context-hierarchy/type-aliases/FeatureUnmountPolicy.md)
 
+Unmount policy.
+
 #### Returns
 
 `boolean`
+
+`true` when unmounted.
 
 ***
 

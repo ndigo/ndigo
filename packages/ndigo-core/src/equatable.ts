@@ -1,4 +1,5 @@
 /**
+ * Equality contracts: `Equatable` and the `equates` helper.
  */
 import { primitive } from './primitive.js';
 import { like } from '@ndigo/util/types';

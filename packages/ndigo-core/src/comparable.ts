@@ -1,4 +1,5 @@
 /**
+ * Comparison contracts: `Comparable`, `Comparator`, and combinators for ordering values.
  */
 import { like } from '@ndigo/util';
 
@@ -71,6 +72,9 @@ const { defineProperty } = Reflect,
         (a: T, b: T): number =>
             pred(a, b) ? -1 : pred(b, a) ? 1 : 0;
 
+/**
+ * Base comparator storing a readonly context string for pattern-ordering strategies.
+ */
 export abstract class AbstractValueComparator implements Comparator<string> {
     /**
      * The string value being compared.
@@ -156,6 +160,11 @@ export const compareBy =
 /**
  * Applies comparisons in order, returning the first nonzero result.
  * Returns zero when every comparison ties, including an empty chain.
+ *
+ * @example
+ * ```ts
+ * items.sort(chainComparisons(compareBy((x) => x.name, stringComparator.compare)));
+ * ```
  */
 export const chainComparisons =
     <T>(...comparisons: comparison<T>[]): comparison<T> =>
@@ -216,12 +225,12 @@ class NaturalComparator<T> extends PredicateComparator<T> {
 /**
  * A comparator for `number` objects.
  */
-class NumberComparator extends NaturalComparator<number> {}
+export class NumberComparator extends NaturalComparator<number> {}
 
 /**
  * A comparator for `string` objects, with a method for case-insensitive comparison.
  */
-class StringComparator extends NaturalComparator<string> {
+export class StringComparator extends NaturalComparator<string> {
     /**
      * Compares two strings ignoring case.
      * @param value1 - The first string.

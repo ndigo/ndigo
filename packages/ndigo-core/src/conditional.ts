@@ -64,6 +64,9 @@ function conditionalDecorator(key: string, value: unknown, target: Function, con
  * @whenBrowser
  * class WebAutoConfiguration {}
  * ```
+ *
+ * @param target - The decorated class.
+ * @param context - The decorator context.
  */
 export function whenBrowser(target: Function, context: ClassDecoratorContext): void {
     conditionalDecorator(WHEN_PLATFORM, 'browser', target, context);
@@ -77,6 +80,9 @@ export function whenBrowser(target: Function, context: ClassDecoratorContext): v
  * @whenNode
  * class NodeAutoConfiguration {}
  * ```
+ *
+ * @param target - The decorated class.
+ * @param context - The decorator context.
  */
 export function whenNode(target: Function, context: ClassDecoratorContext): void {
     conditionalDecorator(WHEN_PLATFORM, 'node', target, context);
@@ -103,6 +109,8 @@ export interface WhenPropertyOptions {
  * @whenProperty({ name: 'app.management.enabled' })
  * class ManagementConfiguration {}
  * ```
+ *
+ * @param options - Property condition options.
  */
 export function whenProperty(options: WhenPropertyOptions) {
     return function (target: Function, context: ClassDecoratorContext): void {
@@ -175,6 +183,8 @@ export function whenProfile(...expressions: Array<string | ProfileTerm>) {
  * @whenMissingEntry('metricsController')
  * class ManagementAutoConfiguration {}
  * ```
+ *
+ * @param entryName - The entry name that must be absent.
  */
 export function whenMissingEntry(entryName: string) {
     return function (target: Function, context: ClassDecoratorContext): void {

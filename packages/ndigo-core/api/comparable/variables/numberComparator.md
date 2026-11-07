@@ -6,6 +6,6 @@
 
 # Variable: numberComparator
 
-> `const` **numberComparator**: [`NumberComparator`](#)
+> `const` **numberComparator**: [`NumberComparator`](../classes/NumberComparator.md)
 
 A `Comparator` instance for `number` objects.

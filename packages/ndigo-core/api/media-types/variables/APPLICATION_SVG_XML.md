@@ -6,5 +6,6 @@
 
 # Variable: APPLICATION\_SVG\_XML
 
-> `const` **APPLICATION\_SVG\_XML**: [`default`](../../media-type/classes/default.md)
+> `const` **APPLICATION\_SVG\_XML**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `application/svg+xml` media type.

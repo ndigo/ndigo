@@ -1,4 +1,5 @@
 /**
+ * Resource loading abstractions and implementations.
  */
 import { AsAware, Aware } from '@ndigo/factory';
 import { like } from '@ndigo/util/types';
@@ -20,7 +21,9 @@ export type ConfigFileReader = (path: string) => Promise<string | null>;
  * Represents a resolved resource handle and its loaded value.
  */
 export interface Resource<T = unknown> {
+    /** Whether the resource exists. */
     readonly exists: boolean;
+    /** The loaded value. */
     readonly value: T;
 }
 
@@ -28,6 +31,7 @@ export interface Resource<T = unknown> {
  * Loads resources from a location string.
  */
 export interface ResourceLoader {
+    /** Returns a resource handle for the location. @param location - The resource location. */
     getResource(location: string): Promise<Resource>;
 }
 
@@ -35,6 +39,7 @@ export interface ResourceLoader {
  * Receives a resource loader during initialization.
  */
 export interface ResourceLoaderAware extends Aware {
+    /** Sets the resource loader. @param loader - The loader. */
     setResourceLoader(loader: ResourceLoader): void;
 }
 
@@ -113,9 +118,12 @@ export const likeResourceLoaderAware = like({ setResourceLoader: Function }) as 
  * Resource implementation backed by a URL.
  */
 export class URLResource<T = unknown> implements Resource<T> {
+    /** The resolved URL. */
     readonly url!: URL;
+    /** The loaded value. */
     readonly value!: T;
 
+    /** Whether the resource exists (always `true` for URL resources). */
     get exists(): boolean {
         return true;
     }
@@ -149,8 +157,10 @@ export class URLResource<T = unknown> implements Resource<T> {
  * Resource wrapper used when loading fails.
  */
 export class UnresolvedResource implements Resource<Error> {
+    /** The load error. */
     readonly value!: Error;
 
+    /** Whether the resource exists (always `false`). */
     get exists(): boolean {
         return false;
     }
@@ -206,6 +216,14 @@ export class DefaultResourceLoader extends AsModuleResourceLoader(Null) {}
  *
  * Useful for tests, browser rendering with bundled content, and prototypes
  * where resource content is known at construction time.
+ *
+ * @example
+ * ```ts
+ * const loader = new InMemoryResourceLoader();
+ * loader.set('app.js', 'console.log("hi")');
+ * const resource = await loader.getResource('app.js');
+ * resource.value; // 'console.log("hi")'
+ * ```
  */
 export class InMemoryResourceLoader implements ResourceLoader {
     readonly #sources = new Map<string, unknown>();
@@ -222,7 +240,7 @@ export class InMemoryResourceLoader implements ResourceLoader {
         return this;
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc ResourceLoader#getResource} @param location - The resource location. */
     async getResource(location: string): Promise<Resource> {
         const value = this.#sources.get(location);
         if (value === undefined) {

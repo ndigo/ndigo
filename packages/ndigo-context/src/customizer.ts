@@ -1,4 +1,5 @@
 /**
+ * Customizer callbacks for application context configuration.
  */
 import type { ConfigurableEnvironment } from './environment';
 

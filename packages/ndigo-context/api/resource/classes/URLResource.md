@@ -44,11 +44,15 @@ Resource implementation backed by a URL.
 
 > `readonly` **url**: `URL`
 
+The resolved URL.
+
 ***
 
 ### value
 
 > `readonly` **value**: `T`
+
+The loaded value.
 
 #### Implementation of
 
@@ -62,9 +66,13 @@ Resource implementation backed by a URL.
 
 > **get** **exists**(): `boolean`
 
+Whether the resource exists (always `true` for URL resources).
+
 ##### Returns
 
 `boolean`
+
+Whether the resource exists.
 
 #### Implementation of
 

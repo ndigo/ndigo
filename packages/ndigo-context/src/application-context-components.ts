@@ -1,4 +1,5 @@
 /**
+ * Application context component assembly helpers.
  */
 import { Null } from '@ndigo/core';
 import { AsApplicationContextAware } from './context-aware-mixin';

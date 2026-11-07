@@ -16,6 +16,10 @@ Reads configuration metadata from a class constructor.
 
 `unknown`
 
+The target.
+
 ## Returns
 
 `Record`\<`string`, `unknown`\>
+
+The metadata record.

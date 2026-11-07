@@ -1,4 +1,5 @@
 /**
+ * Locale-aware formatting services for dates, numbers, lists, and relative time.
  */
 import { IllegalStateError } from './error.js';
 
@@ -358,7 +359,9 @@ export interface FormattingServiceOptions {
  * {@link FormattingService} where service-wide defaults fill the gaps.
  */
 export interface DefaultableFormatOptions {
+    /** Locale used for formatting. */
     locale?: string;
+    /** Time zone used for formatting. */
     timeZone?: string;
 }
 
@@ -387,18 +390,22 @@ export type ListFormatOptions = Omit<ListFormatterOptions, keyof DefaultableForm
 export interface FormattingService {
     /**
      * Creates a {@link DateTimeFormatter} with the service defaults.
+     * @param options - Optional overrides.
      */
     date(options?: DateTimeFormatOptions): DateTimeFormatter;
     /**
      * Creates a {@link NumberFormatter} with the service defaults.
+     * @param options - Optional overrides.
      */
     number(options?: NumberFormatOptions): NumberFormatter;
     /**
      * Creates a {@link RelativeTimeFormatter} with the service defaults.
+     * @param options - Optional overrides.
      */
     relativeTime(options?: RelativeTimeFormatOptions): RelativeTimeFormatter;
     /**
      * Creates a {@link ListFormatter} with the service defaults.
+     * @param options - Optional overrides.
      */
     list(options?: ListFormatOptions): ListFormatter;
 }
@@ -410,6 +417,9 @@ export interface FormattingService {
  * @returns A configured formatting service.
  * @throws When a formatter is created without a locale
  * from either the service defaults or the per-formatter options.
+ *
+ * @remarks The ambient runtime locale is never used; a missing locale is a
+ * programming error so server and client render identically.
  *
  * @example
  * ```ts

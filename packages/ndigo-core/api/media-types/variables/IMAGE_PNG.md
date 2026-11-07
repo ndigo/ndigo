@@ -6,5 +6,6 @@
 
 # Variable: IMAGE\_PNG
 
-> `const` **IMAGE\_PNG**: [`default`](../../media-type/classes/default.md)
+> `const` **IMAGE\_PNG**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `image/png` media type.

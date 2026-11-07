@@ -1,4 +1,5 @@
 /**
+ * Path matching, globbing, and include/exclude filtering contracts.
  */
 import { like } from '@ndigo/util/types';
 import { AbstractValueComparator, Comparator } from './comparable.js';
@@ -88,6 +89,7 @@ export const likePathMatcher = like({ getPatternComparator: Function, match: Fun
 ) => value is PathMatcher;
 
 /**
+ * Comparator that orders patterns by exact equality with the matched path.
  */
 class EqualsPathComparator extends AbstractValueComparator {
     compare(pattern1: string, pattern2: string): number {
@@ -108,6 +110,7 @@ class EqualsPathComparator extends AbstractValueComparator {
 }
 
 /**
+ * Comparator that orders glob patterns by specificity.
  */
 class GlobPatternComparator extends AbstractValueComparator {
     compare(pattern1: string, pattern2: string): number {
@@ -166,6 +169,7 @@ class GlobPatternComparator extends AbstractValueComparator {
  * need pattern plumbing without wildcard semantics.
  */
 export class EqualsPathMatcher implements PathMatcher {
+    /** {@inheritDoc PathMatcher#merge} @param pattern1 - First pattern. @param pattern2 - Second pattern. */
     merge(pattern1: string, pattern2: string): string {
         if (typeof pattern1 !== 'string') {
             throw new TypeError('"pattern1" must be a string');
@@ -212,10 +216,12 @@ export class EqualsPathMatcher implements PathMatcher {
         return `${pattern1}${SLASH}${hasSlash2 ? pattern2.substring(1) : pattern2}`;
     }
 
+    /** {@inheritDoc PathMatcher#getPatternComparator} @param path - The path. */
     getPatternComparator(path: string): Comparator<string> {
         return new EqualsPathComparator(path);
     }
 
+    /** {@inheritDoc PathMatcher#match} @param pattern - The pattern. @param path - The path. */
     match(pattern: string, path: string): boolean {
         return pattern === path;
     }
@@ -225,6 +231,12 @@ export class EqualsPathMatcher implements PathMatcher {
  * `PathMatcher` for URL globs: translates a pattern (`*`, `**`, `?`, character
  * classes) into a regular expression, caches compiled patterns in a bounded
  * LRU keyed by pattern string, and compares patterns by specificity.
+ *
+ * @example
+ * ```ts
+ * const matcher = new URLGlobPathMatcher();
+ * matcher.match('/users/*', '/users/42'); // true
+ * ```
  */
 export class URLGlobPathMatcher implements PathMatcher {
     #cache: LRUCache<string, RegExp>;
@@ -236,10 +248,12 @@ export class URLGlobPathMatcher implements PathMatcher {
         this.#cache = new LRUCache(cacheCapacity);
     }
 
+    /** {@inheritDoc PathMatcher#getPatternComparator} @param path - The path. */
     getPatternComparator(path: string): Comparator<string> {
         return new GlobPatternComparator(path);
     }
 
+    /** {@inheritDoc PathMatcher#match} @param pattern - The pattern. @param path - The path. */
     match(pattern: string, path: string): boolean {
         let regex = this.#cache.get(pattern);
         if (regex === undefined) {
@@ -251,6 +265,7 @@ export class URLGlobPathMatcher implements PathMatcher {
         return (regex as RegExp).test(path);
     }
 
+    /** {@inheritDoc PathMatcher#merge} @param pattern1 - First pattern. @param pattern2 - Second pattern. */
     merge(pattern1: string, pattern2: string): string {
         if (typeof pattern1 !== 'string') {
             throw new TypeError('"pattern1" must be a string');
@@ -291,23 +306,30 @@ export class URLGlobPathMatcher implements PathMatcher {
 export class GlobPatternInfo {
     #catchAllPattern: boolean;
 
+    /** The glob pattern being analyzed. */
     readonly pattern: string;
 
+    /** Number of `**` double-wildcard occurrences. */
     doubleWildcards: number;
+    /** Number of single `*` wildcard occurrences. */
     singleWildcards: number;
 
+    /** Whether the pattern is the catch-all `/**`. */
     get isLeastSpecific(): boolean {
         return this.pattern === null || this.#catchAllPattern;
     }
 
+    /** Whether the pattern ends with a trailing `/**`. */
     get isPrefixPattern(): boolean {
         return !this.#catchAllPattern && this.pattern.endsWith(SLASH_GLOBSTAR);
     }
 
+    /** Length of the pattern string. */
     get length(): number {
         return this.pattern ? this.pattern.length : 0;
     }
 
+    /** Weighted wildcard count used for specificity ordering. */
     get totalCount(): number {
         return this.singleWildcards + 2 * this.doubleWildcards;
     }
@@ -325,6 +347,7 @@ export class GlobPatternInfo {
         }
     }
 
+    /** Counts wildcard occurrences in the pattern. */
     protected _initCounters(): void {
         let index: number = 0;
         const pattern = this.pattern;

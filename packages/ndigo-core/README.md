@@ -1,9 +1,9 @@
 # Ndigo Core
 
-> Foundational primitives, contracts, and utilities for Ndigo — zero third-party dependencies.
+> Foundational primitives, contracts, and utilities for Ndigo.
 
 The foundational package for Ndigo: shared primitives, contracts, and
-utilities with zero third-party dependencies.
+utilities used by every other package.
 
 ## Installation
 

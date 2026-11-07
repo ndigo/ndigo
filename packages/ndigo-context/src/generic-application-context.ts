@@ -1,4 +1,5 @@
 /**
+ * Generic application context implementation.
  */
 import { JSONObject, direct, escalate } from '@ndigo/core';
 import {
@@ -37,6 +38,14 @@ let uuid = 0;
 
 /**
  * Default application context implementation used throughout the package.
+ *
+ * @example
+ * ```ts
+ * const context = new GenericApplicationContext('app');
+ * context.register(AppConfig);
+ * context.refresh();
+ * const service = context.getValue<GreetingService>('greetingService');
+ * ```
  */
 export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLoader(DefaultFactory)) {
     #children: GenericApplicationContext[];
@@ -55,8 +64,11 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     #themeName: string;
     #themeResolver: ThemeResolver | null;
 
+    /** Timestamp when the context was created. */
     createdTimestamp!: number;
+    /** Whether the context has been destroyed. */
     destroyed!: boolean;
+    /** Timestamp when the context was destroyed. */
     destroyedTimestamp?: number;
 
     /**
@@ -72,6 +84,9 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Schema-typed configuration read off the context environment (AD-34 D3).
+     * @param prefix - The prefix.
+     * @param schema - The schema.
+     * @returns The value.
      */
     typedConfig<S extends z.ZodType>(prefix: string, schema: S): z.infer<S> | undefined {
         return resolveSchemaConfig(schema, prefix, this.environment);
@@ -462,6 +477,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Replaces the content source used by this context.
+     * @param contentSource - The content source.
      */
     setContentSource(contentSource: ContentSource): void {
         this.#contentSource = contentSource;
@@ -482,6 +498,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Replaces the environment used by this context.
+     * @param environment - The environment.
      */
     setEnvironment(environment: ConfigurableEnvironment): void {
         this.unsubscribeRefresh();
@@ -538,6 +555,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Updates the identifier assigned to this context.
+     * @param id - The id.
      */
     setId(id: number): void {
         this.#id = id;
@@ -545,6 +563,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Updates the context name.
+     * @param name - The name.
      */
     setName(name: string): void {
         this.#name = name;
@@ -552,6 +571,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Reassigns the parent context and keeps the child list in sync.
+     * @param parent - The parent context.
      */
     setParent(parent: ApplicationContext): void {
         if (this.#parent instanceof GenericApplicationContext) {
@@ -577,6 +597,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Updates the default theme name.
+     * @param themeName - The theme name.
      */
     setThemeName(themeName: string): void {
         this.#themeName = themeName;
@@ -584,16 +605,19 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Overrides the theme resolver used by this context.
+     * @param themeResolver - The theme resolver.
      */
     setThemeResolver(themeResolver: ThemeResolver): void {
         this.#customThemeResolver = true;
         this.#themeResolver = themeResolver;
     }
 
+    /** Creates the environment for this context. */
     protected _createEnvironment(): Environment {
         return new StandardEnvironment();
     }
 
+    /** Creates the theme resolver for this context. */
     protected _createThemeResolver(): ThemeResolver {
         return new StaticThemeResolver(
             [
@@ -606,6 +630,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         );
     }
 
+    /** Destroys managed values. */
     protected _destroyValues(): void {
         const names: Set<string> = new Set();
 
@@ -642,6 +667,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         }
     }
 
+    /** Finishes factory initialization. */
     protected _finishFactoryInitialization(): void {
         for (const key of ownKeys(this)) {
             if (typeof key !== 'string' || !key.startsWith('$')) {
@@ -660,10 +686,13 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         }
     }
 
+    /** Hook invoked on refresh. */
     protected _onRefresh(): void {}
 
+    /** Post-processes the factory. */
     protected _postProcessFactory(): void {}
 
+    /** Prepares the factory. */
     protected _prepareFactory(): void {
         const hasAwareProcessor = this.processors.some(
             (processor) => processor instanceof ApplicationContextAwareProcessor
@@ -674,6 +703,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         }
     }
 
+    /** Invokes registry processors. */
     protected _invokeRegistryProcessors(): void {
         const { processors } = this;
         const length = processors.length;

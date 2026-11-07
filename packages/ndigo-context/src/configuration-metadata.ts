@@ -26,12 +26,17 @@ export const CONFIG_PROPS_SCHEMA = 'boot:configurationProperties:schema';
 
 /** Field-level property metadata keys (set by the context decorators). */
 export const PROPERTY_KEY = 'config:property:';
+/** Metadata key for a field's default value. */
 export const DEFAULT_KEY = 'config:defaultValue:';
+/** Metadata key marking a nested configuration. */
 export const NESTED_KEY = 'config:nested:';
+/** Metadata key for a field's declared type. */
 export const PROPERTY_KEY_TYPE = 'config:propertyType:';
 
 /**
  * Reads configuration metadata from a class constructor.
+ * @param target - The target.
+ * @returns The metadata record.
  */
 export function getMetadata(target: unknown): Record<string, unknown> {
     return (target as { [Symbol.metadata]?: Record<string, unknown> })?.[Symbol.metadata] ?? {};

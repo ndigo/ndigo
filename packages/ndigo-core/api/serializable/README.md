@@ -6,6 +6,8 @@
 
 # serializable
 
+JSON serialization contracts and the `serialize` helper.
+
 ## Interfaces
 
 - [JSONArray](interfaces/JSONArray.md)

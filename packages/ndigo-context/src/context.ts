@@ -1,4 +1,5 @@
 /**
+ * Barrel re-exporting the application context surface.
  */
 // Barrel: the application-context contract and implementations were split
 // into cohesive modules (interfaces, GenericApplicationContext, proxied

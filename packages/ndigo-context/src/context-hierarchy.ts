@@ -1,4 +1,5 @@
 /**
+ * Parent/child application context hierarchy.
  */
 import { ContentSource, ThemeResolver } from '@ndigo/content';
 import { JSONObject, escalate } from '@ndigo/core';

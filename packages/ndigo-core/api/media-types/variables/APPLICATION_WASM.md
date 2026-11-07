@@ -6,5 +6,6 @@
 
 # Variable: APPLICATION\_WASM
 
-> `const` **APPLICATION\_WASM**: [`default`](../../media-type/classes/default.md)
+> `const` **APPLICATION\_WASM**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `application/wasm` media type.

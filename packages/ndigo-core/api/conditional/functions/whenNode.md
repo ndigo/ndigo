@@ -16,9 +16,13 @@ Marks a configuration class as node-only.
 
 `Function`
 
+The decorated class.
+
 ### context
 
 `ClassDecoratorContext`
+
+The decorator context.
 
 ## Returns
 

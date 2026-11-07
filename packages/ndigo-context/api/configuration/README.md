@@ -6,10 +6,16 @@
 
 # configuration
 
+Configuration decorators: `@configuration`, `@entry`, `@environment`, `@configurationProperties`.
+
 ## Classes
 
 - [ConfigurationProcessor](classes/ConfigurationProcessor.md)
 - [MetadataConfigApplicationContext](classes/MetadataConfigApplicationContext.md)
+
+## Type Aliases
+
+- [EntryDecorator](type-aliases/EntryDecorator.md)
 
 ## Functions
 

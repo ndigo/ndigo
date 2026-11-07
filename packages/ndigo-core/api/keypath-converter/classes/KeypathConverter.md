@@ -46,7 +46,7 @@ keypaths.convert('a["key"]')         // ['a', 'key']
 
 > **convert**(`input`): [`KeypathToken`](../type-aliases/KeypathToken.md)[] \| `null`
 
-Converts a value of type `S` to type `T`.
+Parses a keypath string into path tokens.
 
 #### Parameters
 
@@ -54,11 +54,13 @@ Converts a value of type `S` to type `T`.
 
 `string`
 
+The keypath string.
+
 #### Returns
 
 [`KeypathToken`](../type-aliases/KeypathToken.md)[] \| `null`
 
-The converted target value.
+The path tokens, or `null` when invalid.
 
 #### Implementation of
 

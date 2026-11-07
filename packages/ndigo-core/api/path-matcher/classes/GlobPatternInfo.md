@@ -32,17 +32,23 @@ Wildcard-pattern analysis used by `GlobPatternComparator`: counts `*` and
 
 > **doubleWildcards**: `number`
 
+Number of `**` double-wildcard occurrences.
+
 ***
 
 ### pattern
 
 > `readonly` **pattern**: `string`
 
+The glob pattern being analyzed.
+
 ***
 
 ### singleWildcards
 
 > **singleWildcards**: `number`
+
+Number of single `*` wildcard occurrences.
 
 ## Accessors
 
@@ -51,6 +57,8 @@ Wildcard-pattern analysis used by `GlobPatternComparator`: counts `*` and
 #### Get Signature
 
 > **get** **isLeastSpecific**(): `boolean`
+
+Whether the pattern is the catch-all `/**`.
 
 ##### Returns
 
@@ -64,6 +72,8 @@ Wildcard-pattern analysis used by `GlobPatternComparator`: counts `*` and
 
 > **get** **isPrefixPattern**(): `boolean`
 
+Whether the pattern ends with a trailing `/**`.
+
 ##### Returns
 
 `boolean`
@@ -76,6 +86,8 @@ Wildcard-pattern analysis used by `GlobPatternComparator`: counts `*` and
 
 > **get** **length**(): `number`
 
+Length of the pattern string.
+
 ##### Returns
 
 `number`
@@ -87,6 +99,8 @@ Wildcard-pattern analysis used by `GlobPatternComparator`: counts `*` and
 #### Get Signature
 
 > **get** **totalCount**(): `number`
+
+Weighted wildcard count used for specificity ordering.
 
 ##### Returns
 

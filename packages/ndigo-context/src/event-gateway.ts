@@ -1,4 +1,5 @@
 /**
+ * Event gateway relaying events between contexts.
  */
 import { FrameworkError } from '@ndigo/core';
 import type { EventType } from './event-emitter';
@@ -132,6 +133,7 @@ export class PermissiveRelayValidationStrategy implements RelayValidationStrateg
  * Namespace-based relay validator for `site:*` and `<feature>:*` contracts.
  */
 export class NamespaceRelayValidationStrategy implements RelayValidationStrategy {
+    /** Optional feature namespace for relay validation. */
     readonly featureNamespace?: string;
 
     /**
@@ -231,9 +233,13 @@ export class ContextEventGateway {
     #throwOnInvalid: boolean;
     #validationStrategy: RelayValidationStrategy;
 
+    /** Whether the gateway has been destroyed. */
     destroyed: boolean;
+    /** The accepted relays. */
     readonly relays: ContextEventRelay[];
+    /** The source context. */
     readonly source: ApplicationContext;
+    /** The target context. */
     readonly target: ApplicationContext;
 
     /**

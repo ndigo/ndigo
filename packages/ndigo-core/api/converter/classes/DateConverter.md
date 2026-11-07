@@ -31,7 +31,7 @@ Validates the date is actually valid (not a normalized invalid date like Feb 29 
 
 > **convert**(`value`): `Date`
 
-Converts a value of type `S` to type `T`.
+Parses a string into a `Date`.
 
 #### Parameters
 
@@ -39,11 +39,13 @@ Converts a value of type `S` to type `T`.
 
 `string`
 
+The date string.
+
 #### Returns
 
 `Date`
 
-The converted target value.
+The parsed date.
 
 #### Implementation of
 

@@ -6,6 +6,8 @@
 
 # iterable
 
+Entry iterators and `Iterable`-related type helpers.
+
 ## Classes
 
 - [EntriesIterator](classes/EntriesIterator.md)
@@ -13,11 +15,17 @@
 
 ## Type Aliases
 
+- [ArrayEntries](type-aliases/ArrayEntries.md)
 - [ArrayEntry](type-aliases/ArrayEntry.md)
 - [Entries](type-aliases/Entries.md)
 - [Entry](type-aliases/Entry.md)
+- [MapEntries](type-aliases/MapEntries.md)
 - [MapEntry](type-aliases/MapEntry.md)
+- [MapKey](type-aliases/MapKey.md)
+- [MapValue](type-aliases/MapValue.md)
+- [ObjectEntries](type-aliases/ObjectEntries.md)
 - [ObjectEntry](type-aliases/ObjectEntry.md)
+- [SetEntries](type-aliases/SetEntries.md)
 - [SetEntry](type-aliases/SetEntry.md)
 
 ## Functions

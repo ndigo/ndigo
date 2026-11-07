@@ -64,10 +64,14 @@ export const CONFIG_SERVER_SOURCE_NAME = 'configServer';
 export interface RemoteSourceScheduler {
     /**
      * Schedules a repeated callback. Returns an opaque handle.
+     * @param callback - The callback.
+     * @param ms - The interval in ms.
+     * @returns An opaque handle.
      */
     setInterval(callback: () => void, ms: number): unknown;
     /**
      * Cancels a scheduled callback by its handle.
+     * @param handle - The handle.
      */
     clearInterval(handle: unknown): void;
 }

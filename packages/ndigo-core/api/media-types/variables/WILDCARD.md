@@ -6,5 +6,6 @@
 
 # Variable: WILDCARD
 
-> `const` **WILDCARD**: [`default`](../../media-type/classes/default.md)
+> `const` **WILDCARD**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known wildcard media type.

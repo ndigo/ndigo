@@ -8,6 +8,14 @@
 
 A mutable collection of named property values.
 
+## Example
+
+```ts
+const values = new MutablePropertyValues();
+values.addPropertyValue('name', 'Ada');
+values.getPropertyValue('name'); // PropertyValue { name: 'name', value: 'Ada' }
+```
+
 ## Extends
 
 - [`RingBuffer`](../../ring-buffer/classes/RingBuffer.md)\<[`PropertyValue`](PropertyValue.md)\>
@@ -226,6 +234,20 @@ An iterator for the elements.
 ***
 
 ### addPropertyValue()
+
+Adds a property value.
+
+#### Param
+
+**nameOrPropertyValue**
+
+Property name or value.
+
+#### Param
+
+**value**
+
+Property value (when name given).
 
 #### Call Signature
 

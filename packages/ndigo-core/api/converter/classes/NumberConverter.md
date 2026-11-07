@@ -30,7 +30,7 @@ Returns `NaN` for non-numeric input — callers should check with `Number.isFini
 
 > **convert**(`value`): `number`
 
-Converts a value of type `S` to type `T`.
+Parses a string as a number.
 
 #### Parameters
 
@@ -38,11 +38,13 @@ Converts a value of type `S` to type `T`.
 
 `string`
 
+The numeric string.
+
 #### Returns
 
 `number`
 
-The converted target value.
+The parsed number (may be `NaN`).
 
 #### Implementation of
 

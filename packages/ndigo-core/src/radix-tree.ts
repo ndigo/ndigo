@@ -1,4 +1,5 @@
 /**
+ * A radix tree for URL routing with parameter capture.
  */
 import { createNull } from './null.js';
 import { JSONValue, Serializable } from './serializable.js';
@@ -97,6 +98,17 @@ class RadixNode<V> {
 
 /**
  * A radix tree implementation for URL routing.
+ *
+ * @remarks Patterns support static segments, `:param`, single-segment `*`, and
+ * greedy `**`/`{*name}`; probe order per segment is static → param → wildcard →
+ * greedy, with the deepest greedy child as a backtracking fallback.
+ *
+ * @example
+ * ```ts
+ * const tree = new RadixTree<string>();
+ * tree.insert('/users/:id', 'getUser');
+ * tree.lookup('/users/42')?.params; // { id: '42' }
+ * ```
  */
 export class RadixTree<V> implements Serializable {
     #root: RadixNode<V>;

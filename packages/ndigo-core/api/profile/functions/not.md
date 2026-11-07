@@ -16,6 +16,10 @@ Negates a profile (`!a`, `!(a & b)` — compound children parenthesize).
 
 [`ProfileExpressionInput`](../type-aliases/ProfileExpressionInput.md)
 
+The term to negate.
+
 ## Returns
 
 [`ProfileTerm`](../classes/ProfileTerm.md)
+
+A composed profile term.

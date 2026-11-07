@@ -6,6 +6,8 @@
 
 # environment
 
+Environment and profile activation for the application context.
+
 ## Classes
 
 - [AbstractEnvironment](classes/AbstractEnvironment.md)

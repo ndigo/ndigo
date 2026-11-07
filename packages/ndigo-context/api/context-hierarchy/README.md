@@ -6,6 +6,8 @@
 
 # context-hierarchy
 
+Parent/child application context hierarchy.
+
 ## Interfaces
 
 - [FeatureContextComposition](interfaces/FeatureContextComposition.md)

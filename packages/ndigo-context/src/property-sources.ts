@@ -1,4 +1,5 @@
 /**
+ * Ordered, mutable collection of property sources.
  */
 import { IllegalStateError, JSONObject, type Enumerable } from '@ndigo/core';
 import { PropertySource, wrapSource } from './property-source';
@@ -51,6 +52,13 @@ export interface PropertySources extends Enumerable<string, PropertySource>, Ite
  * `IllegalStateError` naming the anchor and listing the registered names
  * (a typo in an anchor silently changes precedence otherwise). `remove` and
  * `replace` return booleans — absence is a valid outcome there.
+ *
+ * @example
+ * ```ts
+ * const sources = new MutablePropertySources();
+ * sources.addLast('app', { 'server.port': '8080' });
+ * sources.get('app')?.properties; // { 'server.port': '8080' }
+ * ```
  */
 export class MutablePropertySources implements PropertySources {
     #byName!: Map<string, PropertySource>;
@@ -76,10 +84,12 @@ export class MutablePropertySources implements PropertySources {
         this.#byName = new Map<string, PropertySource>();
     }
 
+    /** Gets a source by name. @param name - The name. @returns The source. */
     get(name: string): PropertySource | undefined {
         return this.#byName.get(name);
     }
 
+    /** Whether a source exists. @param name - The name. @returns `true` when present. */
     contains(name: string): boolean {
         return this.#byName.has(name);
     }
@@ -100,10 +110,12 @@ export class MutablePropertySources implements PropertySources {
     }
 
     /** Visits each source in precedence order, using `context` as callback `this`. */
+    /** Visits each source. @param callback - Visitor. @param context - `this` binding. */
     forEach(callback: (value: PropertySource, key: string, list: this) => void, context?: unknown): void {
         this.#byName.forEach((value, key) => callback.call(context, value, key, this));
     }
 
+    /** Returns sources in precedence order. @returns The sources. */
     toArray(): PropertySource[] {
         return (this.#ordered ??= [...this.#byName.values()]);
     }

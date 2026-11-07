@@ -38,6 +38,8 @@ Resource wrapper used when loading fails.
 
 > `readonly` **value**: `Error`
 
+The load error.
+
 #### Implementation of
 
 [`Resource`](../interfaces/Resource.md).[`value`](../interfaces/Resource.md#value)
@@ -50,9 +52,13 @@ Resource wrapper used when loading fails.
 
 > **get** **exists**(): `boolean`
 
+Whether the resource exists (always `false`).
+
 ##### Returns
 
 `boolean`
+
+Whether the resource exists.
 
 #### Implementation of
 

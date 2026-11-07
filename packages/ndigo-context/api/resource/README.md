@@ -6,6 +6,8 @@
 
 # resource
 
+Resource loading abstractions and implementations.
+
 ## Classes
 
 - [DefaultResourceLoader](classes/DefaultResourceLoader.md)

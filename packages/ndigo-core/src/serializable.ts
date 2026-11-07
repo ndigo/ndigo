@@ -1,4 +1,5 @@
 /**
+ * JSON serialization contracts and the `serialize` helper.
  */
 import { is } from '@ndigo/util/types';
 import { isNotPrimitive } from './primitive.js';
@@ -22,7 +23,9 @@ export interface JSONArray extends Array<JSONValue> {}
  * A value that can safely be converted to a string or JSON payload.
  */
 export interface Serializable {
+    /** Returns a string representation of the value. */
     toString(): string;
+    /** Returns a JSON-safe representation of the value. */
     toJSON?(): JSONValue;
 }
 
@@ -117,6 +120,11 @@ export const likeSerializable = (value: unknown) => isJSONValue(value) || hasToJ
  *
  * @param value - Value to serialize.
  * @returns A JSON-compatible value derived from the best available serialization strategy.
+ *
+ * @example
+ * ```ts
+ * serialize({ when: new Date('2026-01-01T00:00:00Z') }); // { when: '2026-01-01T00:00:00.000Z' }
+ * ```
  */
 export const serialize = (value: unknown): JSONValue => {
     // `hasToJSON`/`hasToString` already established the shape; cast past the boolean predicate.

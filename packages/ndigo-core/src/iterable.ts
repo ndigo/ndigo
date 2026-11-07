@@ -1,4 +1,5 @@
 /**
+ * Entry iterators and `Iterable`-related type helpers.
  */
 import { isNil, is } from '@ndigo/util/types';
 
@@ -6,37 +7,37 @@ import { isNil, is } from '@ndigo/util/types';
  * Extracts the key type from a Map-like value.
  * @typeParam Value - The Map-like value type.
  */
-type MapKey<Value> = Value extends Map<infer KeyType, unknown> ? KeyType : unknown;
+export type MapKey<Value> = Value extends Map<infer KeyType, unknown> ? KeyType : unknown;
 
 /**
  * Extracts the value type from a Map-like value.
  * @typeParam Value - The Map-like value type.
  */
-type MapValue<Value> = Value extends Map<unknown, infer ValueType> ? ValueType : unknown;
+export type MapValue<Value> = Value extends Map<unknown, infer ValueType> ? ValueType : unknown;
 
 /**
  * Represents an array of entries for an array-like value, where each entry is `[index, value]`.
  * @typeParam Value - The array-like value type.
  */
-type ArrayEntries<Value extends readonly unknown[]> = Array<ArrayEntry<Value>>;
+export type ArrayEntries<Value extends readonly unknown[]> = Array<ArrayEntry<Value>>;
 
 /**
  * Represents an array of entries for a Map-like value, where each entry is `[key, value]`.
  * @typeParam Value - The Map-like value type.
  */
-type MapEntries<Value> = Array<MapEntry<Value>>;
+export type MapEntries<Value> = Array<MapEntry<Value>>;
 
 /**
  * Represents an array of entries for an object-like value, where each entry is `[key, value]`.
  * @typeParam Value - The object-like value type.
  */
-type ObjectEntries<Value> = Array<ObjectEntry<Value>>;
+export type ObjectEntries<Value> = Array<ObjectEntry<Value>>;
 
 /**
  * Represents an array of entries for a Set-like value, where each entry is `[value, value]`.
  * @typeParam Value - The Set-like value type.
  */
-type SetEntries<Value extends Set<unknown>> = Array<SetEntry<Value>>;
+export type SetEntries<Value extends Set<unknown>> = Array<SetEntry<Value>>;
 
 /**
  * Represents a single entry for an array-like value, where the entry is `[index, value]`.

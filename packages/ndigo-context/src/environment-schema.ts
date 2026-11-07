@@ -1,4 +1,5 @@
 /**
+ * Zod-based environment schema validation.
  */
 import { z } from 'zod';
 import { IllegalStateError, JSONValue } from '@ndigo/core';

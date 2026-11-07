@@ -13,6 +13,14 @@ Environments are [EventEmitter](../../event-emitter/interfaces/EventEmitter.md) 
 listeners (e.g. boot's `@refreshScope` rebinder, AD-29) observe config
 changes.
 
+## Example
+
+```ts
+const env = new StandardEnvironment([new MapPropertySource('app', { 'server.port': '8080' })]);
+env.getProperty('server.port'); // '8080'
+env.acceptsProfiles('dev'); // false
+```
+
 ## Extends
 
 - [`EventEmitter`](../../event-emitter/interfaces/EventEmitter.md)\<`this`\> & `Null`\<`this`\>
@@ -58,6 +66,8 @@ changes.
 
 > **get** **\[toStringTag\]**(): `string`
 
+String tag for this environment.
+
 ##### Returns
 
 `string`
@@ -80,7 +90,7 @@ The explicitly active profiles.
 
 > **set** **activeProfiles**(`profiles`): `void`
 
-The explicitly active profiles.
+Sets the active profiles.
 
 ##### Parameters
 
@@ -121,7 +131,7 @@ defaults (reference parity — defaults gate only when nothing is explicit).
 
 > **get** **defaultProfiles**(): `string`[]
 
-The default profiles used when no active profile is configured.
+The default profiles.
 
 ##### Returns
 
@@ -131,7 +141,7 @@ The default profiles used when no active profile is configured.
 
 > **set** **defaultProfiles**(`profiles`): `void`
 
-The default profiles used when no active profile is configured.
+Sets the default profiles.
 
 ##### Parameters
 
@@ -172,10 +182,6 @@ The profile expression (`dev`, `!prod`, `a & b`,
 `boolean`
 
 `true` when the expression matches.
-
-#### Throws
-
-On malformed expressions.
 
 #### Implementation of
 
@@ -387,10 +393,6 @@ The value to return when the property is missing.
 
 The typed value or the default.
 
-#### Throws
-
-When a present value cannot be converted.
-
 #### Implementation of
 
 [`ConfigurableEnvironment`](../interfaces/ConfigurableEnvironment.md).[`getPropertyAs`](../interfaces/ConfigurableEnvironment.md#getpropertyas)
@@ -465,10 +467,6 @@ The property name to resolve.
 
 The resolved property value.
 
-#### Throws
-
-When the property cannot be resolved.
-
 #### Implementation of
 
 [`ConfigurableEnvironment`](../interfaces/ConfigurableEnvironment.md).[`getRequiredProperty`](../interfaces/ConfigurableEnvironment.md#getrequiredproperty)
@@ -506,10 +504,6 @@ The target constructor or primitive.
 `T`
 
 The typed value.
-
-#### Throws
-
-When missing, unresolved, or unconvertible.
 
 #### Implementation of
 
@@ -614,6 +608,8 @@ Merges property sources and profiles from another configurable environment.
 ##### environment
 
 [`ConfigurableEnvironment`](../interfaces/ConfigurableEnvironment.md)
+
+The other environment.
 
 #### Returns
 

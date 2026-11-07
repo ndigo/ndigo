@@ -6,5 +6,6 @@
 
 # Variable: APPLICATION\_ZIP
 
-> `const` **APPLICATION\_ZIP**: [`default`](../../media-type/classes/default.md)
+> `const` **APPLICATION\_ZIP**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `application/zip` media type.

@@ -6,5 +6,6 @@
 
 # Variable: IMAGE\_GIF
 
-> `const` **IMAGE\_GIF**: [`default`](../../media-type/classes/default.md)
+> `const` **IMAGE\_GIF**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `image/gif` media type.

@@ -6,7 +6,7 @@
 
 # Type Alias: MapEntry\<Value\>
 
-> **MapEntry**\<`Value`\> = \[[`MapKey`](#)\<`Value`\>, [`MapValue`](#)\<`Value`\>\]
+> **MapEntry**\<`Value`\> = \[[`MapKey`](MapKey.md)\<`Value`\>, [`MapValue`](MapValue.md)\<`Value`\>\]
 
 Represents a single entry for a Map-like value, where the entry is `[key, value]`.
 

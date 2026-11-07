@@ -26,3 +26,9 @@ Returns zero when every comparison ties, including an empty chain.
 ## Returns
 
 [`comparison`](../type-aliases/comparison.md)\<`T`\>
+
+## Example
+
+```ts
+items.sort(chainComparisons(compareBy((x) => x.name, stringComparator.compare)));
+```

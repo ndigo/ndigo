@@ -8,6 +8,8 @@
 
 > `const` **likeEventEmitter**: (`value`) => `value is EventEmitter`
 
+Tests whether a value behaves like an `EventEmitter`.
+
 ## Parameters
 
 ### value

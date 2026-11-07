@@ -6,6 +6,8 @@
 
 # ring-buffer
 
+A fixed-capacity ring buffer implementing `ArrayLike` and `Iterable`.
+
 ## Classes
 
 - [RingBuffer](classes/RingBuffer.md)

@@ -6,9 +6,13 @@
 
 # comparable
 
+Comparison contracts: `Comparable`, `Comparator`, and combinators for ordering values.
+
 ## Classes
 
 - [AbstractValueComparator](classes/AbstractValueComparator.md)
+- [NumberComparator](classes/NumberComparator.md)
+- [StringComparator](classes/StringComparator.md)
 
 ## Interfaces
 

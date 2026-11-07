@@ -1,4 +1,5 @@
 /**
+ * A fixed-capacity ring buffer implementing `ArrayLike` and `Iterable`.
  */
 import { Serializable, JSONArray, serialize } from './serializable.js';
 
@@ -36,10 +37,24 @@ const { defineProperty } = Reflect,
         return n + 1;
     };
 
+/**
+ * A fixed-capacity ring buffer implementing `ArrayLike` and `Iterable`.
+ *
+ * @example
+ * ```ts
+ * const buffer = new RingBuffer<number>(4);
+ * buffer.put(1, 2);
+ * [...buffer]; // [1, 2]
+ * ```
+ */
 export class RingBuffer<T = unknown> implements ArrayLike<T | undefined>, Iterable<T>, Serializable {
+    /** Current capacity (power of two). */
     protected _capacity!: number;
+    /** Head index. */
     protected _head!: number;
+    /** Tail index. */
     protected _tail!: number;
+    /** Full flag bit. */
     protected _full!: number;
 
     /**

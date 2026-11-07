@@ -6,6 +6,8 @@
 
 # event-gateway
 
+Event gateway relaying events between contexts.
+
 ## Classes
 
 - [ContextEventGateway](classes/ContextEventGateway.md)

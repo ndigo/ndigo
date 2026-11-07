@@ -1,4 +1,5 @@
 /**
+ * Property value bags: `PropertyValues`, `MutablePropertyValues`, and `PropertyValue`.
  */
 import { RingBuffer } from './ring-buffer.js';
 import { JSONValue, Serializable, serialize } from './serializable.js';
@@ -33,6 +34,11 @@ const isString = is(String) as (value: unknown) => value is string;
  */
 const _likePropertyValuesShape = like({ propertyValues: Array, getPropertyValue: Function });
 
+/**
+ * Tests whether a value behaves like a `PropertyValues` collection.
+ * @param value - Value to test.
+ * @returns `true` when the value is iterable and exposes property lookup helpers.
+ */
 export const likePropertyValues = ((value: unknown) => likeIterable(value) && _likePropertyValuesShape(value)) as (
     value: unknown
 ) => value is PropertyValues;
@@ -116,6 +122,13 @@ export class PropertyValue implements Equatable, Serializable {
 
 /**
  * A mutable collection of named property values.
+ *
+ * @example
+ * ```ts
+ * const values = new MutablePropertyValues();
+ * values.addPropertyValue('name', 'Ada');
+ * values.getPropertyValue('name'); // PropertyValue { name: 'name', value: 'Ada' }
+ * ```
  */
 export class MutablePropertyValues
     extends RingBuffer<PropertyValue>
@@ -200,6 +213,7 @@ export class MutablePropertyValues
      */
     addPropertyValue(pv: PropertyValue): void;
 
+    /** Adds a property value. @param nameOrPropertyValue - Property name or value. @param value - Property value (when name given). */
     addPropertyValue(nameOrPropertyValue: string | PropertyValue, value?: unknown): void {
         if (isString(nameOrPropertyValue)) {
             this.put(new PropertyValue(nameOrPropertyValue, value));

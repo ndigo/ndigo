@@ -6,6 +6,8 @@
 
 # keypath-converter
 
+Parsing dotted/bracketed keypaths into ordered path tokens.
+
 ## Classes
 
 - [KeypathConverter](classes/KeypathConverter.md)

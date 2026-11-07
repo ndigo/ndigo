@@ -81,11 +81,15 @@ The registry to process.
 
 > **setEnvironment**(`environment`): `void`
 
+Captures the environment.
+
 #### Parameters
 
 ##### environment
 
 [`Environment`](../../environment/interfaces/Environment.md)
+
+The environment.
 
 #### Returns
 
@@ -101,11 +105,15 @@ The registry to process.
 
 > **setResourceLoader**(`loader`): `void`
 
+Sets the resource loader.
+
 #### Parameters
 
 ##### loader
 
 [`ResourceLoader`](../../resource/interfaces/ResourceLoader.md)
+
+The loader.
 
 #### Returns
 

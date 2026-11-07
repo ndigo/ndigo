@@ -17,9 +17,13 @@ export interface SharedDependencyEntry {
  * Result of validating a feature's dependency manifest against the registry.
  */
 export interface DependencyValidationResult {
+    /** Whether validation passed. */
     valid: boolean;
+    /** Missing dependency names. */
     missing: string[];
+    /** Version mismatches found. */
     versionMismatches: Array<{ name: string; required: string; found: string }>;
+    /** Non-fatal warnings. */
     warnings: string[];
 }
 
@@ -66,16 +70,19 @@ export class DefaultSharedDependencyRegistry implements SharedDependencyRegistry
         this.#services = new Map();
     }
 
+    /** {@inheritDoc SharedDependencyRegistry#declare} @param manifest - The manifest. */
     declare(manifest: Record<string, SharedDependencyEntry>): void {
         for (const [key, entry] of Object.entries(manifest)) {
             this.#services.set(key, entry);
         }
     }
 
+    /** {@inheritDoc SharedDependencyRegistry#getDependency} @param name - The name. */
     getDependency(name: string): SharedDependencyEntry | undefined {
         return this.#services.get(name);
     }
 
+    /** {@inheritDoc SharedDependencyRegistry#validate} @param required - Required deps. @param optional - Optional deps. */
     validate(required: Record<string, string>, optional: Record<string, string>): DependencyValidationResult {
         const missing: string[] = [];
         const versionMismatches: Array<{ name: string; required: string; found: string }> = [];

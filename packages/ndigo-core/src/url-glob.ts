@@ -1,4 +1,5 @@
 /**
+ * URL glob parsing utilities.
  */
 const DOT_LITERAL = '\\.',
     SLASH_LITERAL = '\\/',

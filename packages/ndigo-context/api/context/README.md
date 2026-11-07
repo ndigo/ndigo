@@ -6,6 +6,8 @@
 
 # context
 
+Barrel re-exporting the application context surface.
+
 ## References
 
 ### ApplicationComponent

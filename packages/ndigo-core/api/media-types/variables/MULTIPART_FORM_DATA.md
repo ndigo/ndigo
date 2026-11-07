@@ -6,5 +6,6 @@
 
 # Variable: MULTIPART\_FORM\_DATA
 
-> `const` **MULTIPART\_FORM\_DATA**: [`default`](../../media-type/classes/default.md)
+> `const` **MULTIPART\_FORM\_DATA**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `multipart/form-data` media type.

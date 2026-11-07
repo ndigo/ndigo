@@ -6,6 +6,8 @@
 
 # property-resolver
 
+Property resolution with prototype-chain and merged indexes.
+
 ## Classes
 
 - [FlatMergedIndex](classes/FlatMergedIndex.md)

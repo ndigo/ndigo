@@ -4,7 +4,7 @@
 
 # @ndigo/core v0.0.1
 
-Foundational primitives, contracts, and utilities for Ndigo — zero third-party dependencies.
+Foundational primitives, contracts, and utilities for Ndigo.
 
 ## Modules
 
@@ -26,7 +26,6 @@ Foundational primitives, contracts, and utilities for Ndigo — zero third-party
 - [media-types](media-types/README.md)
 - [metadata](metadata/README.md)
 - [multi-value-map](multi-value-map/README.md)
-- [ndigo](ndigo/README.md)
 - [null](null/README.md)
 - [parser](parser/README.md)
 - [path-matcher](path-matcher/README.md)

@@ -6,5 +6,6 @@
 
 # Variable: FONT\_WOFF2
 
-> `const` **FONT\_WOFF2**: [`default`](../../media-type/classes/default.md)
+> `const` **FONT\_WOFF2**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `font/woff2` media type.

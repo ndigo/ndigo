@@ -39,3 +39,9 @@ When `true`, include the starting node in the traversal.
 ## Returns
 
 `void`
+
+## Example
+
+```ts
+direct(root, (node) => console.log(node));
+```

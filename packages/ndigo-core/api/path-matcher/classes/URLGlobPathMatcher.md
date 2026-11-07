@@ -10,6 +10,13 @@
 classes) into a regular expression, caches compiled patterns in a bounded
 LRU keyed by pattern string, and compares patterns by specificity.
 
+## Example
+
+```ts
+const matcher = new URLGlobPathMatcher();
+matcher.match('/users/*', '/users/42'); // true
+```
+
 ## Implements
 
 - [`PathMatcher`](../interfaces/PathMatcher.md)

@@ -6,5 +6,6 @@
 
 # Variable: APPLICATION\_OCTET\_STREAM
 
-> `const` **APPLICATION\_OCTET\_STREAM**: [`default`](../../media-type/classes/default.md)
+> `const` **APPLICATION\_OCTET\_STREAM**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `application/octet-stream` media type.

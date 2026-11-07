@@ -6,6 +6,8 @@
 
 # wildcard-exp
 
+A `RegExp` subclass compiled from a wildcard pattern.
+
 ## Classes
 
-- [default](classes/default.md)
+- [WildcardExp](classes/WildcardExp.md)

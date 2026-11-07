@@ -6,5 +6,6 @@
 
 # Variable: IMAGE\_WEBP
 
-> `const` **IMAGE\_WEBP**: [`default`](../../media-type/classes/default.md)
+> `const` **IMAGE\_WEBP**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `image/webp` media type.

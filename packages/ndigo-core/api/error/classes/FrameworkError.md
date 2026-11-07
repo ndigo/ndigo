@@ -69,6 +69,8 @@ The string tag for this class.
 
 > `optional` **toJSON**(): [`JSONValue`](../../serializable/type-aliases/JSONValue.md)
 
+Returns a JSON-safe representation of the value.
+
 #### Returns
 
 [`JSONValue`](../../serializable/type-aliases/JSONValue.md)
@@ -82,6 +84,8 @@ The string tag for this class.
 ### toString()
 
 > **toString**(): `string`
+
+Returns a string representation of the value.
 
 #### Returns
 

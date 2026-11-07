@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractValueComparator
 
-Interface for objects that can compare two values of a specific type.
+Base comparator storing a readonly context string for pattern-ordering strategies.
 
 ## Implements
 

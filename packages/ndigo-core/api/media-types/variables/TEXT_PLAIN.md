@@ -6,5 +6,6 @@
 
 # Variable: TEXT\_PLAIN
 
-> `const` **TEXT\_PLAIN**: [`default`](../../media-type/classes/default.md)
+> `const` **TEXT\_PLAIN**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `text/plain` media type.

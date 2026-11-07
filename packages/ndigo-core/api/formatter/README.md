@@ -6,6 +6,8 @@
 
 # formatter
 
+Locale-aware formatting services for dates, numbers, lists, and relative time.
+
 ## Classes
 
 - [DateTimeFormatter](classes/DateTimeFormatter.md)

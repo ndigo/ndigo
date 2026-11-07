@@ -6,6 +6,8 @@
 
 # placeholder-resolver
 
+Placeholder (`${...}`) resolution in property values.
+
 ## Functions
 
 - [resolvePlaceholders](functions/resolvePlaceholders.md)

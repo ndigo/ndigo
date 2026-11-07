@@ -1,4 +1,5 @@
 /**
+ * The `Constructable` type and `likeConstructable` guard for mixin bases.
  */
 import { like } from '@ndigo/util/types';
 

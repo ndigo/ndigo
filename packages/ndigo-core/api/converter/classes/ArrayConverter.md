@@ -28,7 +28,7 @@ Converts strings to arrays by splitting on a separator.
 
 > **convert**(`value`, `separator?`): `string`[]
 
-Converts a value of type `S` to type `T`.
+Splits a string into an array.
 
 #### Parameters
 
@@ -36,15 +36,19 @@ Converts a value of type `S` to type `T`.
 
 `string`
 
+The string to split.
+
 ##### separator?
 
 `string` \| `RegExp` = `','`
+
+Split separator (default `','`).
 
 #### Returns
 
 `string`[]
 
-The converted target value.
+The resulting array.
 
 #### Implementation of
 

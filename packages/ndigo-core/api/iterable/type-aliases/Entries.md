@@ -6,7 +6,7 @@
 
 # Type Alias: Entries\<Value\>
 
-> **Entries**\<`Value`\> = `Value` *extends* `Map`\<`unknown`, `unknown`\> ? [`MapEntries`](#)\<`Value`\> : `Value` *extends* `Set`\<`unknown`\> ? [`SetEntries`](#)\<`Value`\> : `Value` *extends* `unknown`[] ? [`ArrayEntries`](#)\<`Value`\> : `Value` *extends* `object` ? [`ObjectEntries`](#)\<`Value`\> : `never`
+> **Entries**\<`Value`\> = `Value` *extends* `Map`\<`unknown`, `unknown`\> ? [`MapEntries`](MapEntries.md)\<`Value`\> : `Value` *extends* `Set`\<`unknown`\> ? [`SetEntries`](SetEntries.md)\<`Value`\> : `Value` *extends* `unknown`[] ? [`ArrayEntries`](ArrayEntries.md)\<`Value`\> : `Value` *extends* `object` ? [`ObjectEntries`](ObjectEntries.md)\<`Value`\> : `never`
 
 Represents a generic collection of entries, which can be `MapEntries`, `SetEntries`, `ArrayEntries`, or `ObjectEntries`.
 

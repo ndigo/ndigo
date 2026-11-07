@@ -6,6 +6,5 @@
 
 # Variable: CONTENT\_RANGE
 
-> `const` `readonly` **CONTENT\_RANGE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **CONTENT\_RANGE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

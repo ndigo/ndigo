@@ -6,6 +6,5 @@
 
 # Variable: MAX\_FORWARDS
 
-> `const` `readonly` **MAX\_FORWARDS**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **MAX\_FORWARDS**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

@@ -23,3 +23,10 @@ The decorated class/interface constructor.
 `Record`\<`string`, [`ServiceCallConfig`](../interfaces/ServiceCallConfig.md)\>
 
 A map of method name → call config, or an empty record.
+
+## Example
+
+```ts
+const calls = getServiceCalls(AccountsApi);
+// { getUser: { method: 'GET', path: '/users/:id' }, … }
+```

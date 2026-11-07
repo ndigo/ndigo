@@ -10,12 +10,7 @@
 
 Status-transition metric wiring for a `WebSocketClient` — use as the
 client's `onStatusChange` option (constructor-injected seam; the client
-is app-constructed, so prototype patches cannot see its signal):
-
-```ts
-const count = countSocketClientStatus();
-const chat = new WebSocketClient(url, { onStatusChange: count });
-```
+is app-constructed, so prototype patches cannot see its signal).
 
 Counts `ndigo.socket.client.{connecting,opened,reconnecting,closed}`
 transitions with a `socket.status` attribute — reconnects are the
@@ -26,3 +21,10 @@ network-instability signal of interest.
 An `onStatusChange` observer.
 
 (`status`) => `void`
+
+## Example
+
+```ts
+const count = countSocketClientStatus();
+const chat = new WebSocketClient(url, { onStatusChange: count });
+```

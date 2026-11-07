@@ -6,6 +6,5 @@
 
 # Variable: ORIGIN
 
-> `const` `readonly` **ORIGIN**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **ORIGIN**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

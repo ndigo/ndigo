@@ -37,3 +37,9 @@ The endpoint id to test.
 `boolean`
 
 `true` when the endpoint is served.
+
+## Example
+
+```ts
+isEndpointExposed(context.environment, undefined, 'health'); // true
+```

@@ -6,6 +6,5 @@
 
 # Variable: X\_ROBOTS\_TAG
 
-> `const` `readonly` **X\_ROBOTS\_TAG**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **X\_ROBOTS\_TAG**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

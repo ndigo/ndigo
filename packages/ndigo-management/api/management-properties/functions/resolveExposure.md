@@ -32,3 +32,9 @@ The ids to withhold.
 `ReadonlySet`\<`string`\>
 
 The served id set.
+
+## Example
+
+```ts
+resolveExposure(['*'], ['env']); // every endpoint except 'env'
+```

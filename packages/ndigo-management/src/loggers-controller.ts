@@ -31,10 +31,13 @@ const LOGGER_BODY_SCHEMA = z.object({
  */
 @requestMapping('/loggers')
 export class LoggersController extends AsApplicationContextAware(Null) {
+    /** The application context injected by the aware mixin. */
     readonly applicationContext!: ApplicationContext;
     readonly #exposure: { include?: string[]; exclude?: string[] };
 
     /**
+     * Creates the `/loggers` controller.
+     *
      * @param exposure - The programmatic exposure override (AD-76 D-5);
      *   wins over the `management.*` source section.
      */

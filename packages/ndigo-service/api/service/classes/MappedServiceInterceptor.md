@@ -48,6 +48,8 @@ Glob patterns that opt the interceptor out.
 
 > **get** **interceptor**(): [`ServiceInterceptor`](../type-aliases/ServiceInterceptor.md)
 
+The wrapped interceptor.
+
 ##### Returns
 
 [`ServiceInterceptor`](../type-aliases/ServiceInterceptor.md)

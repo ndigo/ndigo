@@ -21,3 +21,13 @@ The fixed delay in milliseconds.
 ## Returns
 
 [`BackoffPolicy`](../interfaces/BackoffPolicy.md)
+
+A policy that waits `ms` before every retry.
+
+## Example
+
+```ts
+const policy = fixedBackoff(250);
+policy.delay(1); // 250
+policy.delay(2); // 250
+```

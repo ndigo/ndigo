@@ -6,6 +6,5 @@
 
 # Variable: X\_UA\_COMPATIBLE
 
-> `const` `readonly` **X\_UA\_COMPATIBLE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **X\_UA\_COMPATIBLE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

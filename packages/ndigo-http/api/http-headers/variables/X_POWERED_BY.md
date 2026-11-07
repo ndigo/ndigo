@@ -6,6 +6,5 @@
 
 # Variable: X\_POWERED\_BY
 
-> `const` `readonly` **X\_POWERED\_BY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **X\_POWERED\_BY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

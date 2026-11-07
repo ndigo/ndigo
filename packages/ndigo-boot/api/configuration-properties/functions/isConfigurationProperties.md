@@ -16,6 +16,18 @@ Utility to check if a class is decorated with `@configurationProperties`.
 
 `unknown`
 
+The class (or instance) to inspect.
+
 ## Returns
 
 `boolean`
+
+Whether the target carries the `@configurationProperties` metadata.
+
+## Example
+
+```ts
+if (isConfigurationProperties(ServerConfig)) {
+    console.log('prefix:', getConfigurationPropertiesPrefix(ServerConfig));
+}
+```

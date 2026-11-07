@@ -6,6 +6,5 @@
 
 # Variable: REFERER
 
-> `const` `readonly` **REFERER**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **REFERER**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

@@ -6,6 +6,5 @@
 
 # Variable: REFERER\_POLICY
 
-> `const` `readonly` **REFERER\_POLICY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **REFERER\_POLICY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

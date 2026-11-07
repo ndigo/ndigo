@@ -6,6 +6,8 @@
 
 # circuit-breaker
 
+Circuit-breaker policy, interceptor, and `@circuitBreaker` annotation.
+
 ## Classes
 
 - [CircuitBreakerInterceptor](classes/CircuitBreakerInterceptor.md)

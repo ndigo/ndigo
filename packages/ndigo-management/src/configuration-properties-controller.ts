@@ -24,12 +24,16 @@ import { isEndpointExposed } from './management-properties';
  */
 @requestMapping('/configprops')
 export class ConfigurationPropertiesController extends AsApplicationContextAware(Null) {
+    /** The application context injected by the aware mixin. */
     readonly applicationContext!: ApplicationContext;
     readonly #classes: Array<new () => unknown>;
     readonly #exposure: { include?: string[]; exclude?: string[] };
 
     /**
+     * Creates the `/configprops` controller.
+     *
      * @param classes - The `@configurationProperties` classes to enumerate.
+     * @param exposure - The programmatic exposure override.
      */
     constructor(classes: Array<new () => unknown> = [], exposure: { include?: string[]; exclude?: string[] } = {}) {
         super();

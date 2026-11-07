@@ -66,6 +66,8 @@ export class HealthRegistry implements Enumerable<string, HealthIndicator> {
     readonly #redactHealthErrors: boolean;
 
     /**
+     * Creates a registry with the given options.
+     *
      * @param options - Registry options (e.g. error redaction).
      */
     constructor(options: HealthRegistryOptions = {}) {
@@ -93,22 +95,39 @@ export class HealthRegistry implements Enumerable<string, HealthIndicator> {
         return this.#indicators.delete(name);
     }
 
-    /** Returns name/indicator pairs in registration order. */
+    /**
+     * Returns name/indicator pairs in registration order.
+     *
+     * @returns An iterator over `[name, indicator]` pairs.
+     */
     entries(): IterableIterator<[string, HealthIndicator]> {
         return this.#indicators.entries();
     }
 
-    /** Returns indicator names in registration order. */
+    /**
+     * Returns indicator names in registration order.
+     *
+     * @returns An iterator over the registered names.
+     */
     keys(): IterableIterator<string> {
         return this.#indicators.keys();
     }
 
-    /** Returns indicators in registration order. */
+    /**
+     * Returns indicators in registration order.
+     *
+     * @returns An iterator over the registered indicators.
+     */
     values(): IterableIterator<HealthIndicator> {
         return this.#indicators.values();
     }
 
-    /** Visits registrations in order, using `context` as callback `this`. */
+    /**
+     * Visits registrations in order, using `context` as callback `this`.
+     *
+     * @param callback - Invoked for each `(indicator, name)` pair.
+     * @param context - Value bound to `this` inside the callback.
+     */
     forEach(callback: (value: HealthIndicator, key: string, list: this) => void, context?: unknown): void {
         this.#indicators.forEach((value, key) => callback.call(context, value, key, this));
     }

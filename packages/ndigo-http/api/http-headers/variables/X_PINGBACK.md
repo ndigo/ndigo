@@ -6,6 +6,5 @@
 
 # Variable: X\_PINGBACK
 
-> `const` `readonly` **X\_PINGBACK**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **X\_PINGBACK**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

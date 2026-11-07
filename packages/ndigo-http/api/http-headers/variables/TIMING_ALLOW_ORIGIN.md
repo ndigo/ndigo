@@ -6,6 +6,5 @@
 
 # Variable: TIMING\_ALLOW\_ORIGIN
 
-> `const` `readonly` **TIMING\_ALLOW\_ORIGIN**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **TIMING\_ALLOW\_ORIGIN**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

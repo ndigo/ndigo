@@ -6,6 +6,5 @@
 
 # Variable: SERVICE\_WORKER\_ALLOWED
 
-> `const` `readonly` **SERVICE\_WORKER\_ALLOWED**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **SERVICE\_WORKER\_ALLOWED**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

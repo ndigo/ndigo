@@ -1,4 +1,5 @@
 /**
+ * Health indicator for the telemetry/metrics pipeline.
  */
 import { FeatureMetricAggregator } from '@ndigo/telemetry';
 import { HealthIndicator, HealthResult, HealthState } from './health';
@@ -12,6 +13,7 @@ import { HealthIndicator, HealthResult, HealthState } from './health';
  * `DOWN` when none is wired (management endpoints would serve empty metrics).
  */
 export class TelemetryHealthIndicator implements HealthIndicator {
+    /** The indicator name reported under `/health`. */
     readonly name = 'telemetry';
     #aggregator: FeatureMetricAggregator | undefined;
 
@@ -23,7 +25,11 @@ export class TelemetryHealthIndicator implements HealthIndicator {
         this.#aggregator = aggregator;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Reports `UP` when a metric aggregator is wired, `DOWN` otherwise.
+     *
+     * @returns The health result and feature-count details.
+     */
     check(): HealthResult {
         const status: HealthState = this.#aggregator ? 'UP' : 'DOWN';
         const details = this.#aggregator

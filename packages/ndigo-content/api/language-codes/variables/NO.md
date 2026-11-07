@@ -6,6 +6,5 @@
 
 # Variable: NO
 
-> `const` `readonly` **NO**: [`LanguageCode`](../../language-code/classes/LanguageCode.md)
+> `const` **NO**: [`LanguageCode`](../../language-code/classes/LanguageCode.md)
 
-The constant value documented by the code.

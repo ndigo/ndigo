@@ -6,6 +6,5 @@
 
 # Variable: ACCEPT\_SIGNATURE
 
-> `const` `readonly` **ACCEPT\_SIGNATURE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **ACCEPT\_SIGNATURE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

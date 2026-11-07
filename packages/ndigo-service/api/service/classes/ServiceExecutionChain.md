@@ -40,11 +40,15 @@ Additional interceptors to append.
 
 > **interceptorIndex**: `number`
 
+Index of the interceptor currently executing.
+
 ***
 
 ### service
 
 > **service**: [`Service`](Service.md)
+
+The service this chain executes.
 
 ## Accessors
 
@@ -65,6 +69,8 @@ Additional interceptors to append.
 #### Get Signature
 
 > **get** **interceptors**(): [`ServiceInterceptor`](../type-aliases/ServiceInterceptor.md)[]
+
+The interceptors in this chain, in execution order.
 
 ##### Returns
 

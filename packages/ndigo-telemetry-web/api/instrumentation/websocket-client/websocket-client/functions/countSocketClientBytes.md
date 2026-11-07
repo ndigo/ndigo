@@ -10,11 +10,7 @@
 
 Exact outbound-byte wiring for a `WebSocketClient` — use as the client's
 `onSend` option (constructor-injected; the client reports the actual bytes
-written to the transport, buffered flushes and retried writes included):
-
-```ts
-const chat = new WebSocketClient(url, { onSend: countSocketClientBytes() });
-```
+written to the transport, buffered flushes and retried writes included).
 
 While wired, [WebSocketClientInstrumentation](../classes/WebSocketClientInstrumentation.md)'s `send` wrap skips its
 own payload estimation for that client (TEL-08), so `ndigo.socket.client.messages.bytes` counts each wire write exactly once — no re-serialized
@@ -25,3 +21,9 @@ estimation, no double count.
 An `onSend` observer feeding `ndigo.socket.client.messages.bytes`.
 
 (`bytes`) => `void`
+
+## Example
+
+```ts
+const chat = new WebSocketClient(url, { onSend: countSocketClientBytes() });
+```

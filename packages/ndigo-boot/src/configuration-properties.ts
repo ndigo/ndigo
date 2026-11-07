@@ -113,6 +113,16 @@ export function configurationProperties(prefix?: string, options?: Configuration
 
 /**
  * Utility to check if a class is decorated with `@configurationProperties`.
+ *
+ * @param target - The class (or instance) to inspect.
+ * @returns Whether the target carries the `@configurationProperties` metadata.
+ *
+ * @example
+ * ```ts
+ * if (isConfigurationProperties(ServerConfig)) {
+ *     console.log('prefix:', getConfigurationPropertiesPrefix(ServerConfig));
+ * }
+ * ```
  */
 export function isConfigurationProperties(target: unknown): boolean {
     return getMetadata(target)[CONFIG_PROPS] === true;
@@ -120,6 +130,14 @@ export function isConfigurationProperties(target: unknown): boolean {
 
 /**
  * Reads the optional prefix from a `@configurationProperties` class.
+ *
+ * @param target - The decorated class (or instance) to inspect.
+ * @returns The declared prefix, or `undefined` when none was set.
+ *
+ * @example
+ * ```ts
+ * const prefix = getConfigurationPropertiesPrefix(ServerConfig); // 'server'
+ * ```
  */
 export function getConfigurationPropertiesPrefix(target: unknown): string | undefined {
     return getMetadata(target)[CONFIG_PROPS_PREFIX] as string | undefined;
@@ -223,6 +241,12 @@ function bindingValue(
  * @param ctor - The configuration properties class constructor.
  * @param context - The application context providing the environment.
  * @returns The resolved instance and binding metadata.
+ *
+ * @example
+ * ```ts
+ * const { instance, bindings } = resolveConfigurationProperties(ServerConfig, context);
+ * console.log(instance.port, bindings);
+ * ```
  */
 export function resolveConfigurationProperties<T>(
     ctor: new () => T,

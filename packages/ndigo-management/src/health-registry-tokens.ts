@@ -1,4 +1,5 @@
 /**
+ * Context token for the shared health registry.
  */
 import { ContextToken } from '@ndigo/context';
 import { HealthRegistry } from './health';

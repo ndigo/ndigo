@@ -154,6 +154,8 @@ bound value is a real instance of the target (see
 
 > **toJSON**(): `JSONObject`
 
+Returns a JSON-safe representation of the value.
+
 #### Returns
 
 `JSONObject`
@@ -167,6 +169,8 @@ bound value is a real instance of the target (see
 ### toString()
 
 > **toString**(): `string`
+
+Returns a string representation of the value.
 
 #### Returns
 

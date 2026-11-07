@@ -75,9 +75,7 @@ const { isArray } = Array,
  * @param value - Value to test.
  * @returns `true` when the value is an array that survives a JSON round trip unchanged.
  */
-export const isJSONArray = ((value: unknown) => isArray(value) && _jsonRoundTrips(value)) as (
-    value: unknown
-) => value is JSONArray;
+export const isJSONArray = (value: unknown): value is JSONArray => isArray(value) && _jsonRoundTrips(value);
 
 /**
  * Tests whether a value is a JSON object.
@@ -85,8 +83,8 @@ export const isJSONArray = ((value: unknown) => isArray(value) && _jsonRoundTrip
  * @param value - Value to test.
  * @returns `true` when the value is a non-primitive, non-array object that survives a JSON round trip unchanged.
  */
-export const isJSONObject = ((value: unknown) =>
-    isNotPrimitive(value) && isNotArray(value) && _jsonRoundTrips(value)) as (value: unknown) => value is JSONObject;
+export const isJSONObject = (value: unknown): value is JSONObject =>
+    isNotPrimitive(value) && isNotArray(value) && _jsonRoundTrips(value);
 
 /**
  * Tests whether a value is directly representable in JSON.

@@ -6,9 +6,9 @@
 
 # factory-shared
 
-## Variables
+## Functions
 
-- [construct](variables/construct.md)
-- [defineProperty](variables/defineProperty.md)
-- [deleteProperty](variables/deleteProperty.md)
-- [keys](variables/keys.md)
+- [construct](functions/construct.md)
+- [defineProperty](functions/defineProperty.md)
+- [deleteProperty](functions/deleteProperty.md)
+- [keys](functions/keys.md)

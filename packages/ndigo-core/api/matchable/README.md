@@ -14,6 +14,6 @@ Matchable contracts and the duck-typing guard.
 - [PatternMatcher](interfaces/PatternMatcher.md)
 - [ResultMatcher](interfaces/ResultMatcher.md)
 
-## Variables
+## Functions
 
-- [likeMatchable](variables/likeMatchable.md)
+- [likeMatchable](functions/likeMatchable.md)

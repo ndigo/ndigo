@@ -88,31 +88,31 @@ Re-exports [InformationAwareHTTPInterceptor](response-class-interceptor/interfac
 
 ### likeClientErrorAwareHTTPInterceptor
 
-Re-exports [likeClientErrorAwareHTTPInterceptor](response-class-interceptor/variables/likeClientErrorAwareHTTPInterceptor.md)
+Re-exports [likeClientErrorAwareHTTPInterceptor](response-class-interceptor/functions/likeClientErrorAwareHTTPInterceptor.md)
 
 ***
 
 ### likeInformationAwareHTTPInterceptor
 
-Re-exports [likeInformationAwareHTTPInterceptor](response-class-interceptor/variables/likeInformationAwareHTTPInterceptor.md)
+Re-exports [likeInformationAwareHTTPInterceptor](response-class-interceptor/functions/likeInformationAwareHTTPInterceptor.md)
 
 ***
 
 ### likeRedirectAwareHTTPInterceptor
 
-Re-exports [likeRedirectAwareHTTPInterceptor](response-class-interceptor/variables/likeRedirectAwareHTTPInterceptor.md)
+Re-exports [likeRedirectAwareHTTPInterceptor](response-class-interceptor/functions/likeRedirectAwareHTTPInterceptor.md)
 
 ***
 
 ### likeServerErrorAwareHTTPInterceptor
 
-Re-exports [likeServerErrorAwareHTTPInterceptor](response-class-interceptor/variables/likeServerErrorAwareHTTPInterceptor.md)
+Re-exports [likeServerErrorAwareHTTPInterceptor](response-class-interceptor/functions/likeServerErrorAwareHTTPInterceptor.md)
 
 ***
 
 ### likeSuccessAwareHTTPInterceptor
 
-Re-exports [likeSuccessAwareHTTPInterceptor](response-class-interceptor/variables/likeSuccessAwareHTTPInterceptor.md)
+Re-exports [likeSuccessAwareHTTPInterceptor](response-class-interceptor/functions/likeSuccessAwareHTTPInterceptor.md)
 
 ***
 

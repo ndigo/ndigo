@@ -71,6 +71,8 @@ This indicates that the specified view template or component could not be locate
 
 > `optional` **toJSON**(): `JSONValue`
 
+Returns a JSON-safe representation of the value.
+
 #### Returns
 
 `JSONValue`
@@ -84,6 +86,8 @@ This indicates that the specified view template or component could not be locate
 ### toString()
 
 > **toString**(): `string`
+
+Returns a string representation of the value.
 
 #### Returns
 

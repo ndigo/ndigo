@@ -92,6 +92,8 @@ An error that represents a failure to retrieve a required [Route](#) property.
 
 > `optional` **toJSON**(): `JSONValue`
 
+Returns a JSON-safe representation of the value.
+
 #### Returns
 
 `JSONValue`
@@ -105,6 +107,8 @@ An error that represents a failure to retrieve a required [Route](#) property.
 ### toString()
 
 > **toString**(): `string`
+
+Returns a string representation of the value.
 
 #### Returns
 

@@ -8,6 +8,6 @@
 
 Converts strings to camelCase.
 
-## Variables
+## Functions
 
-- [default](variables/default.md)
+- [default](functions/default.md)

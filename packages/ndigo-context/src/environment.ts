@@ -384,10 +384,14 @@ const _likeEnvironmentShape = like({
     refresh: Function,
 });
 
-/** Tests whether a value behaves like an `Environment`. @param value - Value to test. @returns `true` when it does. */
-export const likeEnvironment = ((value: unknown) => likePropertyResolver(value) && _likeEnvironmentShape(value)) as (
-    value: unknown
-) => value is Environment;
+/**
+ * Tests whether a value behaves like an `Environment`.
+ *
+ * @param value - Value to test.
+ * @returns `true` when it does.
+ */
+export const likeEnvironment = (value: unknown): value is Environment =>
+    likePropertyResolver(value) && _likeEnvironmentShape(value);
 
 /**
  * Returns whether a value can receive an environment.
@@ -408,9 +412,8 @@ const hasEnvironmentProperty = (value: unknown): boolean =>
  * @param value - The value to test.
  * @returns `true` when the value looks like an environment source.
  */
-export const likeEnvironmentSource = ((value: unknown) => !isNil(value) && hasEnvironmentProperty(value)) as (
-    value: unknown
-) => value is EnvironmentSource;
+export const likeEnvironmentSource = (value: unknown): value is EnvironmentSource =>
+    !isNil(value) && hasEnvironmentProperty(value);
 
 /**
  * Environment implementation intended for tests.

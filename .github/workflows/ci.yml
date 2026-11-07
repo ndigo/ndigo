@@ -219,7 +219,7 @@ jobs:
         # every PR run; the parser/fingerprint regression gate still runs on
         # the weekly sweep and manual dispatches.
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-        run: npm install -g @nanonets/graft@0.23.0
+        run: npm install -g @nanonets/graft@0.29.0
 
       - name: Repo graph build (graft)
         # Tier-1 graph: tree-sitter wiring + symbol spans across the whole

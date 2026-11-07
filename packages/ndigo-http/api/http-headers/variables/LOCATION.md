@@ -6,6 +6,5 @@
 
 # Variable: LOCATION
 
-> `const` `readonly` **LOCATION**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **LOCATION**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

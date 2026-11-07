@@ -6,6 +6,5 @@
 
 # Variable: AR
 
-> `const` `readonly` **AR**: [`LanguageCode`](../../language-code/classes/LanguageCode.md)
+> `const` **AR**: [`LanguageCode`](../../language-code/classes/LanguageCode.md)
 
-The constant value documented by the code.

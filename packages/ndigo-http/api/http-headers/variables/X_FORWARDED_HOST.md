@@ -6,6 +6,5 @@
 
 # Variable: X\_FORWARDED\_HOST
 
-> `const` `readonly` **X\_FORWARDED\_HOST**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **X\_FORWARDED\_HOST**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

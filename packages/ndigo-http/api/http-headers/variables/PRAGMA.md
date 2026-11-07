@@ -6,6 +6,5 @@
 
 # Variable: PRAGMA
 
-> `const` `readonly` **PRAGMA**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **PRAGMA**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

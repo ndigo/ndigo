@@ -6,6 +6,5 @@
 
 # Variable: KO
 
-> `const` `readonly` **KO**: [`LanguageCode`](../../language-code/classes/LanguageCode.md)
+> `const` **KO**: [`LanguageCode`](../../language-code/classes/LanguageCode.md)
 
-The constant value documented by the code.

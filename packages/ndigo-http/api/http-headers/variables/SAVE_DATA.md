@@ -6,6 +6,5 @@
 
 # Variable: SAVE\_DATA
 
-> `const` `readonly` **SAVE\_DATA**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **SAVE\_DATA**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

@@ -6,6 +6,5 @@
 
 # Variable: CROSS\_ORIGIN\_RESOURCE\_POLICY
 
-> `const` `readonly` **CROSS\_ORIGIN\_RESOURCE\_POLICY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **CROSS\_ORIGIN\_RESOURCE\_POLICY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

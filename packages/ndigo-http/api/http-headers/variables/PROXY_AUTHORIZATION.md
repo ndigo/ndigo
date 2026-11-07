@@ -6,6 +6,5 @@
 
 # Variable: PROXY\_AUTHORIZATION
 
-> `const` `readonly` **PROXY\_AUTHORIZATION**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **PROXY\_AUTHORIZATION**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

@@ -6,6 +6,5 @@
 
 # Variable: EARLY\_DATA
 
-> `const` `readonly` **EARLY\_DATA**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **EARLY\_DATA**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

@@ -6,6 +6,5 @@
 
 # Variable: IF\_RANGE
 
-> `const` `readonly` **IF\_RANGE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **IF\_RANGE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

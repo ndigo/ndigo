@@ -6,6 +6,5 @@
 
 # Variable: SOURCEMAP
 
-> `const` `readonly` **SOURCEMAP**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **SOURCEMAP**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

@@ -6,6 +6,5 @@
 
 # Variable: CONTENT\_LANGUAGE
 
-> `const` `readonly` **CONTENT\_LANGUAGE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **CONTENT\_LANGUAGE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

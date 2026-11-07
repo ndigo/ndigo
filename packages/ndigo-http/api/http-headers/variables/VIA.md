@@ -6,6 +6,5 @@
 
 # Variable: VIA
 
-> `const` `readonly` **VIA**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **VIA**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

@@ -6,6 +6,5 @@
 
 # Variable: LAST\_MODIFIED
 
-> `const` `readonly` **LAST\_MODIFIED**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **LAST\_MODIFIED**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

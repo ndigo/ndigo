@@ -6,6 +6,5 @@
 
 # Variable: X\_XSS\_PROTECTION
 
-> `const` `readonly` **X\_XSS\_PROTECTION**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **X\_XSS\_PROTECTION**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

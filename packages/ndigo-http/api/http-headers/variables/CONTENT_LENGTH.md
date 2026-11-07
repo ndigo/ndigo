@@ -6,6 +6,5 @@
 
 # Variable: CONTENT\_LENGTH
 
-> `const` `readonly` **CONTENT\_LENGTH**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **CONTENT\_LENGTH**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

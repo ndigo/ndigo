@@ -6,6 +6,5 @@
 
 # Variable: VARY
 
-> `const` `readonly` **VARY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **VARY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

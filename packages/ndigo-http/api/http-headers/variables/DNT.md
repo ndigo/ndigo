@@ -6,6 +6,5 @@
 
 # Variable: DNT
 
-> `const` `readonly` **DNT**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **DNT**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

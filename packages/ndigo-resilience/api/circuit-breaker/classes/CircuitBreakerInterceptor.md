@@ -37,9 +37,7 @@ per retry attempt.
 
 > **invoke**(`invocation`, `next`): `Promise`\<`unknown`\>
 
-Runs for an intercepted call. Return `next()` to continue down the
-chain (ultimately invoking the installed method on `invocation.target`),
-or return a value / throw to short-circuit.
+Runs the call through the per-method circuit.
 
 #### Parameters
 
@@ -47,13 +45,19 @@ or return a value / throw to short-circuit.
 
 `MethodInvocation`
 
+The woven method invocation.
+
 ##### next
 
 () => `unknown`
 
+Continues the inner interceptor chain.
+
 #### Returns
 
 `Promise`\<`unknown`\>
+
+The call result, or a rejection from the call or the open circuit.
 
 #### Implementation of
 
@@ -65,8 +69,7 @@ or return a value / throw to short-circuit.
 
 > **matches**(`method`): `boolean`
 
-Whether this interceptor applies to `method`. Called once per managed
-method while the processor prepares the entry — not per call.
+Whether the method carries a valid `@circuitBreaker` spec.
 
 #### Parameters
 
@@ -74,9 +77,17 @@ method while the processor prepares the entry — not per call.
 
 `MethodDescriptor`
 
+The method descriptor being woven.
+
 #### Returns
 
 `boolean`
+
+`true` when the interceptor should advise the method.
+
+#### Throws
+
+When the annotation carries an invalid spec (fail loud at weave time).
 
 #### Implementation of
 

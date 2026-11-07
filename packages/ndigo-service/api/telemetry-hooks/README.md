@@ -6,6 +6,8 @@
 
 # telemetry-hooks
 
+Telemetry hooks for service request lifecycles.
+
 ## Classes
 
 - [EventEmitterTelemetryHooks](classes/EventEmitterTelemetryHooks.md)

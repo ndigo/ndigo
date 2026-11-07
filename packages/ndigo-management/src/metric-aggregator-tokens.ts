@@ -1,4 +1,5 @@
 /**
+ * Context token for the shared feature-metric aggregator.
  */
 import { ContextToken } from '@ndigo/context';
 import { FeatureMetricAggregator } from '@ndigo/telemetry';

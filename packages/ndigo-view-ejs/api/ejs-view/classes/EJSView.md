@@ -19,6 +19,15 @@ Like a self-rendering `View`, the view renders into a supplied
 through [ProducerView](#) — produces a whole HTML page for document mode
 (servlet/JSP-style server-side rendering).
 
+## Example
+
+```ts
+const view = new EJSView('pages/home', {
+    template: '<h1><%= await t("home.title") %></h1>',
+});
+const { body } = await view.renderTo({}, route);
+```
+
 ## Extends
 
 - `AbstractTemplateView`
@@ -209,19 +218,27 @@ The optional view target.
 
 > **renderTo**(`model`, `route`): `Promise`\<[`RenderResult`](#)\>
 
+Produces the complete HTML document for document mode.
+
 #### Parameters
 
 ##### model
 
 `unknown`
 
+The data model exposed to the template.
+
 ##### route
 
 [`Route`](#)
 
+The current route (provides the negotiated language).
+
 #### Returns
 
 `Promise`\<[`RenderResult`](#)\>
+
+The rendered HTML and its media type.
 
 #### Implementation of
 

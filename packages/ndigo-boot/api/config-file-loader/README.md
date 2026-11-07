@@ -6,6 +6,8 @@
 
 # config-file-loader
 
+Loads `application.json` / `application.toon` config files, with profile
+
 ## Classes
 
 - [StandardConfigFileLoader](classes/StandardConfigFileLoader.md)

@@ -6,6 +6,5 @@
 
 # Variable: X\_REQUESTED\_WITH
 
-> `const` `readonly` **X\_REQUESTED\_WITH**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **X\_REQUESTED\_WITH**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

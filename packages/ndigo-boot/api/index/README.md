@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/boot` — application bootstrap.
+
 ## Type Aliases
 
 - [ConfigFileReader](type-aliases/ConfigFileReader.md)

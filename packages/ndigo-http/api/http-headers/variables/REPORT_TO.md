@@ -6,6 +6,5 @@
 
 # Variable: REPORT\_TO
 
-> `const` `readonly` **REPORT\_TO**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **REPORT\_TO**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

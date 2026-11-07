@@ -6,6 +6,5 @@
 
 # Variable: AGE
 
-> `const` `readonly` **AGE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **AGE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

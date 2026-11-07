@@ -6,6 +6,5 @@
 
 # Variable: ACCEPT\_LANGUAGE
 
-> `const` `readonly` **ACCEPT\_LANGUAGE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **ACCEPT\_LANGUAGE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

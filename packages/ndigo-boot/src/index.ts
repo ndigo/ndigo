@@ -1,4 +1,5 @@
 /**
+ * Public API of `@ndigo/boot` — application bootstrap.
  */
 export * from './application';
 export * from './application-builder';

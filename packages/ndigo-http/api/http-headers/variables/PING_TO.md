@@ -6,6 +6,5 @@
 
 # Variable: PING\_TO
 
-> `const` `readonly` **PING\_TO**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **PING\_TO**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

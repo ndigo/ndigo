@@ -16,12 +16,18 @@ function contract — no scheduling machinery (AD-43 D-4).
 
 > **delay**(`attempt`): `number`
 
+Computes the delay before the given retry attempt.
+
 #### Parameters
 
 ##### attempt
 
 `number`
 
+1-based retry number (the first retry is `1`).
+
 #### Returns
 
 `number`
+
+The delay in milliseconds.

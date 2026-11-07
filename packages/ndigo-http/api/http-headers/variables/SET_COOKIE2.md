@@ -6,6 +6,5 @@
 
 # Variable: SET\_COOKIE2
 
-> `const` `readonly` **SET\_COOKIE2**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **SET\_COOKIE2**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

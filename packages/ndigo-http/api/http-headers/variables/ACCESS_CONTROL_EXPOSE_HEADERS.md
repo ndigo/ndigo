@@ -6,6 +6,5 @@
 
 # Variable: ACCESS\_CONTROL\_EXPOSE\_HEADERS
 
-> `const` `readonly` **ACCESS\_CONTROL\_EXPOSE\_HEADERS**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **ACCESS\_CONTROL\_EXPOSE\_HEADERS**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

@@ -6,6 +6,5 @@
 
 # Variable: CONTENT\_SECURITY\_POLICY\_REPORT\_ONLY
 
-> `const` `readonly` **CONTENT\_SECURITY\_POLICY\_REPORT\_ONLY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **CONTENT\_SECURITY\_POLICY\_REPORT\_ONLY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

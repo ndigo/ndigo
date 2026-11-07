@@ -6,6 +6,5 @@
 
 # Variable: LINK
 
-> `const` `readonly` **LINK**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **LINK**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

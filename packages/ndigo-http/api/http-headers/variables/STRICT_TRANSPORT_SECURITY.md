@@ -6,6 +6,5 @@
 
 # Variable: STRICT\_TRANSPORT\_SECURITY
 
-> `const` `readonly` **STRICT\_TRANSPORT\_SECURITY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **STRICT\_TRANSPORT\_SECURITY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

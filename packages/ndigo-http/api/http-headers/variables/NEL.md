@@ -6,6 +6,5 @@
 
 # Variable: NEL
 
-> `const` `readonly` **NEL**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **NEL**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

@@ -6,6 +6,5 @@
 
 # Variable: VIEWPORT\_WIDTH
 
-> `const` `readonly` **VIEWPORT\_WIDTH**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **VIEWPORT\_WIDTH**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

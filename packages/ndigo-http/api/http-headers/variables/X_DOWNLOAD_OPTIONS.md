@@ -6,6 +6,5 @@
 
 # Variable: X\_DOWNLOAD\_OPTIONS
 
-> `const` `readonly` **X\_DOWNLOAD\_OPTIONS**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **X\_DOWNLOAD\_OPTIONS**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

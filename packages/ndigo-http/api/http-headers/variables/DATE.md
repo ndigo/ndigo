@@ -6,6 +6,5 @@
 
 # Variable: DATE
 
-> `const` `readonly` **DATE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **DATE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

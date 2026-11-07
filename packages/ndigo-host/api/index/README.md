@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/host` — the centralized micro frontend host.
+
 ## References
 
 ### HOST\_MANAGER\_TOKEN

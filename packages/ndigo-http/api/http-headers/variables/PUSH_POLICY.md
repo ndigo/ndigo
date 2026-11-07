@@ -6,6 +6,5 @@
 
 # Variable: PUSH\_POLICY
 
-> `const` `readonly` **PUSH\_POLICY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **PUSH\_POLICY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

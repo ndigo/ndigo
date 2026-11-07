@@ -6,6 +6,5 @@
 
 # Variable: ALLOW
 
-> `const` `readonly` **ALLOW**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **ALLOW**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

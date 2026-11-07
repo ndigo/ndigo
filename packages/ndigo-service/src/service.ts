@@ -1,4 +1,5 @@
 /**
+ * Declarative service calls: execution chains, interceptors, and HTTP transport.
  */
 import { IllegalStateError } from '@ndigo/core';
 import { AsyncDestroyable } from '@ndigo/factory';
@@ -196,7 +197,9 @@ const { defineProperty } = Reflect;
 let serviceId = 0;
 
 /**
- * @returns The next service id
+ * Allocates the next monotonic service id.
+ *
+ * @returns The next service id.
  */
 function nextServiceId(): number {
     return ++serviceId;
@@ -221,6 +224,7 @@ export class MappedServiceInterceptor {
     #includePatterns!: string[];
     #interceptor: ServiceInterceptor;
 
+    /** The wrapped interceptor. */
     get interceptor(): ServiceInterceptor {
         return this.#interceptor;
     }
@@ -283,13 +287,16 @@ export class MappedServiceInterceptor {
 export class ServiceExecutionChain {
     #interceptors: ServiceInterceptor[];
 
+    /** The service this chain executes. */
     service: Service;
+    /** Index of the interceptor currently executing. */
     interceptorIndex: number;
 
     get [Symbol.toStringTag](): string {
         return 'ServiceExecutionChain';
     }
 
+    /** The interceptors in this chain, in execution order. */
     get interceptors(): ServiceInterceptor[] {
         return this.#interceptors;
     }
@@ -368,8 +375,11 @@ export class Service implements AsyncDestroyable {
     #correlation: RequestIdCorrelation;
     #http: HTTP;
 
+    /** Monotonic identifier assigned when the service is created. */
     id!: number;
+    /** The service name, used for correlation headers and diagnostics. */
     name!: string;
+    /** Whether {@link Service.destroy} has run. */
     destroyed!: boolean;
 
     get [Symbol.toStringTag](): string {
@@ -453,10 +463,23 @@ export class Service implements AsyncDestroyable {
         }
     }
 
+    /**
+     * Marks the service as destroyed.
+     *
+     * @returns A promise that resolves once the service is marked destroyed.
+     */
     async destroy(): Promise<void> {
         this.destroyed = true;
     }
 
+    /**
+     * Builds the interceptor chain for one call, filtering path-mapped
+     * interceptors by `path`.
+     *
+     * @param service - The service (or an existing chain) to execute.
+     * @param path - The concrete request path used for include/exclude matching.
+     * @returns A chain carrying the interceptors that apply to the call.
+     */
     protected _getServiceExecutionChain(service: Service | ServiceExecutionChain, path: string): ServiceExecutionChain {
         const chain = service instanceof ServiceExecutionChain ? service : new ServiceExecutionChain(service),
             interceptors = this.#interceptors,

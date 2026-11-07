@@ -6,6 +6,8 @@
 
 # instrumentation/router/router
 
+OpenTelemetry instrumentation for `HashRouter` route changes.
+
 ## Classes
 
 - [RouterInstrumentation](classes/RouterInstrumentation.md)

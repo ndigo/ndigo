@@ -6,6 +6,5 @@
 
 # Variable: SEC\_WEBSOCKET\_ACCEPT
 
-> `const` `readonly` **SEC\_WEBSOCKET\_ACCEPT**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **SEC\_WEBSOCKET\_ACCEPT**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

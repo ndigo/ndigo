@@ -6,6 +6,8 @@
 
 # language-codes
 
+Common ISO 639-1 language-code constants.
+
 ## Variables
 
 - [AR](variables/AR.md)

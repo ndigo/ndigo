@@ -6,6 +6,5 @@
 
 # Variable: SIGNATURE
 
-> `const` `readonly` **SIGNATURE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **SIGNATURE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

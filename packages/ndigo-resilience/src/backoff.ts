@@ -1,4 +1,5 @@
 /**
+ * Retry backoff policies: fixed and exponential.
  */
 
 /**
@@ -7,6 +8,12 @@
  * function contract — no scheduling machinery (AD-43 D-4).
  */
 export interface BackoffPolicy {
+    /**
+     * Computes the delay before the given retry attempt.
+     *
+     * @param attempt - 1-based retry number (the first retry is `1`).
+     * @returns The delay in milliseconds.
+     */
     delay(attempt: number): number;
 }
 
@@ -14,6 +21,14 @@ export interface BackoffPolicy {
  * Constant delay for every retry attempt.
  *
  * @param ms - The fixed delay in milliseconds.
+ * @returns A policy that waits `ms` before every retry.
+ *
+ * @example
+ * ```ts
+ * const policy = fixedBackoff(250);
+ * policy.delay(1); // 250
+ * policy.delay(2); // 250
+ * ```
  */
 export function fixedBackoff(ms: number): BackoffPolicy {
     return { delay: () => ms };
@@ -57,7 +72,15 @@ export interface ExponentialBackoffOptions {
  * next tick), which is exactly the misconfiguration this throws on.
  *
  * @param options - The growth configuration.
+ * @returns A policy that grows the delay exponentially per attempt.
  * @throws When an option is not a finite, in-range number.
+ *
+ * @example
+ * ```ts
+ * const policy = exponentialBackoff({ initialMs: 100, maxMs: 5_000, jitter: 0.2 });
+ * policy.delay(1); // ~100ms (±20%)
+ * policy.delay(3); // ~400ms (±20%)
+ * ```
  */
 export function exponentialBackoff(options: ExponentialBackoffOptions): BackoffPolicy {
     const { initialMs, maxMs, jitter } = options;

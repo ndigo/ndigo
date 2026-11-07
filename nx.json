@@ -21,6 +21,5 @@
   "plugins": [],
   "generators": {},
   "defaultBase": "main",
-  "analytics": false,
-  "nxCloudId": "6ae63713aff2508553e63b69"
+  "analytics": false
 }

@@ -34,13 +34,19 @@ Formats a date value in the request locale.
 
 `string` \| `number` \| `Date`
 
+The date value to format.
+
 ##### options?
 
 `DateTimeFormatOptions`
 
+Optional `Intl.DateTimeFormat` overrides.
+
 #### Returns
 
 `string`
+
+The localized date string.
 
 ***
 
@@ -56,13 +62,19 @@ Formats a string list in the request locale.
 
 readonly `string`[]
 
+The list entries to join.
+
 ##### options?
 
 `ListFormatOptions`
 
+Optional `Intl.ListFormat` overrides.
+
 #### Returns
 
 `string`
+
+The localized list string.
 
 ***
 
@@ -78,13 +90,19 @@ Formats a number in the request locale.
 
 `number`
 
+The numeric value to format.
+
 ##### options?
 
 `NumberFormatOptions`
 
+Optional `Intl.NumberFormat` overrides.
+
 #### Returns
 
 `string`
+
+The localized number string.
 
 ***
 
@@ -100,17 +118,25 @@ Formats a relative-time delta in the request locale.
 
 `number`
 
+The delta value (negative for the past).
+
 ##### unit
 
 `RelativeTimeFormatUnit`
+
+The unit the delta is expressed in.
 
 ##### options?
 
 `RelativeTimeFormatOptions`
 
+Optional `Intl.RelativeTimeFormat` overrides.
+
 #### Returns
 
 `string`
+
+The localized relative-time string.
 
 ***
 
@@ -127,10 +153,16 @@ Async by convention — templates call it as `await t(…)`.
 
 `string`
 
+The message key to resolve.
+
 ##### params?
 
 `MessageParams`
 
+Optional interpolation parameters for the message.
+
 #### Returns
 
 `Promise`\<`string`\>
+
+The localized message, or the key when no message exists.

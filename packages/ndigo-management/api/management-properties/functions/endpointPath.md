@@ -23,3 +23,9 @@ The endpoint id.
 `string` \| `undefined`
 
 The root path.
+
+## Example
+
+```ts
+endpointPath('loggers'); // '/loggers'
+```

@@ -23,6 +23,11 @@ export const SERVICE_NAME_HEADER = 'X-Ndigo-Service';
  * @param template - The path template (e.g. `'/users/:id'`).
  * @param args - The method call arguments.
  * @returns The concrete path.
+ *
+ * @example
+ * ```ts
+ * fillPathTemplate('/users/:id/posts/:postId', [42, 'intro']); // '/users/42/posts/intro'
+ * ```
  */
 export function fillPathTemplate(template: string, args: unknown[]): string {
     let argIndex = 0;
@@ -42,6 +47,12 @@ export function fillPathTemplate(template: string, args: unknown[]): string {
  * @param method - The HTTP method.
  * @param args - The method call arguments.
  * @returns The body payload, or `undefined` for no body.
+ *
+ * @example
+ * ```ts
+ * resolveCallBody('POST', [{ title: 'Hello' }]); // { title: 'Hello' }
+ * resolveCallBody('GET', []); // undefined
+ * ```
  */
 export function resolveCallBody(method: string, args: unknown[]): unknown {
     const handled = args.findIndex(

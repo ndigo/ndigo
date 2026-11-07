@@ -16,19 +16,27 @@ satisfies it, so `@ndigo/signals` stays free of that dependency.
 
 > **off**(`type`, `listener`): `unknown`
 
+Removes a subscription previously installed with [EventSource.on](#on).
+
 #### Parameters
 
 ##### type
 
 `string` \| `symbol`
 
+The event type the listener was registered for.
+
 ##### listener
 
 (...`args`) => `void`
 
+The exact listener passed to `on`.
+
 #### Returns
 
 `unknown`
+
+The source's own unsubscribe result; ignored by the bridge.
 
 ***
 
@@ -36,16 +44,24 @@ satisfies it, so `@ndigo/signals` stays free of that dependency.
 
 > **on**(`type`, `listener`): `unknown`
 
+Subscribes `listener` to occurrences of `type`.
+
 #### Parameters
 
 ##### type
 
 `string` \| `symbol`
 
+The event type to listen for.
+
 ##### listener
 
 (...`args`) => `void`
 
+Invoked with each occurrence's payload.
+
 #### Returns
 
 `unknown`
+
+The source's subscription handle; ignored by the bridge.

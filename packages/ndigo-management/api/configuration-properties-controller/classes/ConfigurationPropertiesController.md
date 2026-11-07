@@ -28,6 +28,8 @@ deterministically sorted.
 
 > **new ConfigurationPropertiesController**(`classes?`, `exposure?`): `ConfigurationPropertiesController`
 
+Creates the `/configprops` controller.
+
 #### Parameters
 
 ##### classes?
@@ -37,6 +39,8 @@ deterministically sorted.
 The `@configurationProperties` classes to enumerate.
 
 ##### exposure?
+
+The programmatic exposure override.
 
 ###### exclude?
 
@@ -71,6 +75,8 @@ A symbol indicating that the value is aware.
 ### applicationContext
 
 > `readonly` **applicationContext**: `ApplicationContext`
+
+The application context injected by the aware mixin.
 
 ## Methods
 

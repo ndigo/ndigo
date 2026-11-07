@@ -125,6 +125,8 @@ export class HostManager {
      * Registers a feature in one call: mount manager + routing registry,
      * with mount-on-activate / unmount-on-deactivate wiring.
      *
+     * @param options - The feature's name, route prefix, loader, and lifecycle hooks.
+     * @returns This manager, so registrations can be chained.
      * @throws If a feature with the same name is already registered.
      */
     registerFeature(options: HostRegistrationOptions): this {
@@ -175,6 +177,9 @@ export class HostManager {
 
     /**
      * Mount a registered feature (static `createContext`/`data` features).
+     *
+     * @param name - The registered feature name.
+     * @returns The mounted feature's context composition.
      */
     mount(name: string): FeatureContextComposition {
         return this.#mountManager.mount(name);
@@ -182,6 +187,9 @@ export class HostManager {
 
     /**
      * Mount a feature loaded dynamically via its registered `loader`.
+     *
+     * @param name - The registered feature name.
+     * @returns A promise for the mounted feature's context composition.
      */
     mountLazy(name: string): Promise<FeatureContextComposition> {
         return this.#mountManager.mountLazy(name);
@@ -201,6 +209,10 @@ export class HostManager {
     /**
      * Unmount a feature, honoring the registration's `unmountPolicy` unless
      * one is given.
+     *
+     * @param name - The registered feature name.
+     * @param policy - Overrides the registration's unmount policy for this call.
+     * @returns Whether a mounted feature was unmounted.
      */
     unmount(name: string, policy?: FeatureUnmountPolicy): boolean {
         return this.#mountManager.unmount(name, policy);
@@ -208,6 +220,9 @@ export class HostManager {
 
     /**
      * Whether a feature is currently mounted.
+     *
+     * @param name - The registered feature name.
+     * @returns `true` while the feature's context is mounted.
      */
     isMounted(name: string): boolean {
         return this.#mountManager.isMounted(name);
@@ -215,6 +230,9 @@ export class HostManager {
 
     /**
      * Get the mounted feature composition, if any.
+     *
+     * @param name - The registered feature name.
+     * @returns The mounted composition, or `undefined` when the feature is not mounted.
      */
     getMountedFeature(name: string): FeatureContextComposition | undefined {
         return this.#mountManager.getMountedFeature(name);
@@ -222,7 +240,10 @@ export class HostManager {
 
     /**
      * Navigate the host's partition router; activates/deactivates features
-     * per the activation policy. Returns whether a feature handled the path.
+     * per the activation policy.
+     *
+     * @param path - The absolute path to navigate to.
+     * @returns Whether a feature handled the path.
      */
     navigate(path: string): boolean {
         return this.#routingRegistry.navigate(path);
@@ -239,6 +260,7 @@ export class HostManager {
      * Unmount (close policy) a feature and remove it from both registries,
      * freeing its name for re-registration.
      *
+     * @param name - The registered feature name.
      * @returns `true` if a registration was removed.
      */
     unregister(name: string): boolean {

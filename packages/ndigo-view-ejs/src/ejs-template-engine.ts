@@ -1,4 +1,5 @@
 /**
+ * Renders EJS template strings to HTML with bounded include resolution.
  */
 import ejs from 'ejs';
 import { FrameworkError } from '@ndigo/core';

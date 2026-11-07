@@ -1,4 +1,5 @@
 /**
+ * Fluent builder for configuring and running an application bootstrap sequence.
  */
 import {
     ConfigurableApplicationContext,

@@ -30,3 +30,10 @@ The method call arguments.
 `unknown`
 
 The body payload, or `undefined` for no body.
+
+## Example
+
+```ts
+resolveCallBody('POST', [{ title: 'Hello' }]); // { title: 'Hello' }
+resolveCallBody('GET', []); // undefined
+```

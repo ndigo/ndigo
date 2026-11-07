@@ -6,6 +6,8 @@
 
 # ejs-template-engine
 
+Renders EJS template strings to HTML with bounded include resolution.
+
 ## Classes
 
 - [EJSIncludeCycleError](classes/EJSIncludeCycleError.md)

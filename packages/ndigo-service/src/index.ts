@@ -1,4 +1,5 @@
 /**
+ * Public API of `@ndigo/service` — declarative service calls and interceptors.
  */
 export {
     MappedServiceInterceptor,

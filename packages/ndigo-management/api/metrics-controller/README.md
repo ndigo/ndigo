@@ -6,6 +6,8 @@
 
 # metrics-controller
 
+Serves meter snapshots under `/metrics` in Prometheus and JSON form.
+
 ## Classes
 
 - [MetricsController](classes/MetricsController.md)

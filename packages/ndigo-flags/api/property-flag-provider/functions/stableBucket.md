@@ -18,10 +18,16 @@ and independent of iteration order or process restarts.
 
 `string`
 
+The flag name being rolled out.
+
 ### targetingKey
 
 `string`
 
+The stable identity the rollout is bucketed by.
+
 ## Returns
 
 `number`
+
+A deterministic value in `[0, 1)`.

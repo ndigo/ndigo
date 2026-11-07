@@ -79,17 +79,25 @@ resolves as the caller's default with `reason: 'ERROR'`.
 
 `string`
 
+The flag key to evaluate.
+
 ##### defaultValue
 
 `T`
+
+The value returned when evaluation fails.
 
 ##### ctx?
 
 `FlagEvaluationContext`
 
+Optional evaluation context forwarded to OpenFeature.
+
 #### Returns
 
 `Promise`\<`FlagEvaluation`\<`T`\>\>
+
+The evaluated value plus reason, error code, and metadata.
 
 #### Implementation of
 

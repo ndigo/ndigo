@@ -43,6 +43,8 @@ Sends a signal (e.g. `SIGTERM`) to the child.
 
 `Signals`
 
+The signal to send.
+
 #### Returns
 
 `void`

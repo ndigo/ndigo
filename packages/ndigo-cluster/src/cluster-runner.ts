@@ -27,7 +27,11 @@ const logger = getLogger('ndigo-cluster:runner');
 export interface ClusterChild {
     /** The operating-system process id. */
     readonly pid: number;
-    /** Sends a signal (e.g. `SIGTERM`) to the child. */
+    /**
+     * Sends a signal (e.g. `SIGTERM`) to the child.
+     *
+     * @param signal - The signal to send.
+     */
     signal(signal: NodeJS.Signals): void;
     /** Force-kills the child (`SIGKILL`). */
     kill(): void;
@@ -50,9 +54,19 @@ export interface ClusterSpawner {
  * the vitest worker. Defaults to `process`.
  */
 export interface ClusterSignalHost {
-    /** Registers a handler for the signal. */
+    /**
+     * Registers a handler for the signal.
+     *
+     * @param signal - The signal to listen for.
+     * @param handler - The handler to invoke when the signal arrives.
+     */
     on(signal: NodeJS.Signals, handler: () => void): void;
-    /** Removes a previously registered handler. */
+    /**
+     * Removes a previously registered handler.
+     *
+     * @param signal - The signal the handler was registered for.
+     * @param handler - The handler to remove.
+     */
     removeHandler(signal: NodeJS.Signals, handler: () => void): void;
 }
 

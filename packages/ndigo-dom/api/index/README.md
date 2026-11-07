@@ -6,6 +6,8 @@
 
 # index
 
+Isomorphic DOM parsing and creation primitives.
+
 ## References
 
 ### BrowserDOMProvider

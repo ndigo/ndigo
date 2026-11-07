@@ -6,6 +6,8 @@
 
 # browser-dom-provider
 
+Native-browser DOM provider implementation.
+
 ## Classes
 
 - [BrowserDOMProvider](classes/BrowserDOMProvider.md)

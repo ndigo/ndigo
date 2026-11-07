@@ -82,6 +82,13 @@ export class InProcessLockDriver implements LockDriver {
         this.#prefix = options.prefix ?? 'ndigo';
     }
 
+    /**
+     * Acquires a lock lease for `key`, or returns `null` when it is already held.
+     *
+     * @param key - The lock key.
+     * @param options - Lease options; `ttlMs` bounds how long the lease is held.
+     * @returns The lock handle, or `null` when the key is already locked.
+     */
     acquire(key: string, options: { ttlMs: number }): Promise<LockHandle | null> {
         return Promise.resolve().then(() => this.#acquireNow(key, options));
     }
@@ -153,6 +160,11 @@ export class InProcessLockDriver implements LockDriver {
         return true;
     }
 
+    /**
+     * Releases every lease this driver still holds and marks it closed.
+     *
+     * @returns A promise that resolves once the leases are released.
+     */
     close(): Promise<void> {
         return Promise.resolve().then(() => {
             for (const [lockKey, token] of this.#acquired) {

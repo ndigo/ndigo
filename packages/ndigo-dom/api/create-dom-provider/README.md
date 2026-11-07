@@ -6,6 +6,8 @@
 
 # create-dom-provider
 
+Runtime-aware DOM provider factory.
+
 ## Functions
 
 - [createDOMProvider](functions/createDOMProvider.md)

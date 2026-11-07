@@ -24,16 +24,13 @@
 - [ObjectFactory](type-aliases/ObjectFactory.md)
 - [PossibleScope](type-aliases/PossibleScope.md)
 
-## Variables
-
-- [hashScope](variables/hashScope.md)
-- [prototypeScope](variables/prototypeScope.md)
-- [refreshScope](variables/refreshScope.md)
-- [singletonScope](variables/singletonScope.md)
-
 ## Functions
 
 - [defineScope](functions/defineScope.md)
 - [getScope](functions/getScope.md)
+- [hashScope](functions/hashScope.md)
 - [hasScope](functions/hasScope.md)
+- [prototypeScope](functions/prototypeScope.md)
+- [refreshScope](functions/refreshScope.md)
 - [scope](functions/scope.md)
+- [singletonScope](functions/singletonScope.md)

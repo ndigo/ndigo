@@ -52,6 +52,12 @@ const { getPrototypeOf } = Reflect,
     { assign, keys } = Object,
     isNotArray = (value: unknown) => !Array.isArray(value);
 
+/**
+ * Returns whether a value behaves like a {@link Controller}.
+ *
+ * @param value - The value to be tested.
+ * @returns `true` when the value exposes a `handleRoute` method.
+ */
 export const likeController = like({ handleRoute: Function }) as (value: unknown) => value is Controller;
 
 export abstract class AbstractHandlerMethodAdapter

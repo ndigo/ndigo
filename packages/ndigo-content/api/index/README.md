@@ -208,37 +208,37 @@ Renames and re-exports [language-codes](../language-codes/README.md)
 
 ### likeContentSource
 
-Re-exports [likeContentSource](../content/variables/likeContentSource.md)
+Re-exports [likeContentSource](../content/functions/likeContentSource.md)
 
 ***
 
 ### likeContentSourceAware
 
-Re-exports [likeContentSourceAware](../content/variables/likeContentSourceAware.md)
+Re-exports [likeContentSourceAware](../content/functions/likeContentSourceAware.md)
 
 ***
 
 ### likeMessageSource
 
-Re-exports [likeMessageSource](../message-source/variables/likeMessageSource.md)
+Re-exports [likeMessageSource](../message-source/functions/likeMessageSource.md)
 
 ***
 
 ### likeMessageSourceAware
 
-Re-exports [likeMessageSourceAware](../message-source/variables/likeMessageSourceAware.md)
+Re-exports [likeMessageSourceAware](../message-source/functions/likeMessageSourceAware.md)
 
 ***
 
 ### likeTheme
 
-Re-exports [likeTheme](../theme/variables/likeTheme.md)
+Re-exports [likeTheme](../theme/functions/likeTheme.md)
 
 ***
 
 ### likeThemeResolver
 
-Re-exports [likeThemeResolver](../theme/variables/likeThemeResolver.md)
+Re-exports [likeThemeResolver](../theme/functions/likeThemeResolver.md)
 
 ***
 

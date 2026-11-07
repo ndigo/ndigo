@@ -19,10 +19,7 @@ Path matching, globbing, and include/exclude filtering contracts.
 - [PathMatcher](interfaces/PathMatcher.md)
 - [PathMatcherFilter](interfaces/PathMatcherFilter.md)
 
-## Variables
-
-- [likePathMatcher](variables/likePathMatcher.md)
-
 ## Functions
 
 - [AsPathMatcherFilter](functions/AsPathMatcherFilter.md)
+- [likePathMatcher](functions/likePathMatcher.md)

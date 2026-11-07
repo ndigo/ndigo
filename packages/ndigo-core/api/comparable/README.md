@@ -27,9 +27,6 @@ Comparison contracts: `Comparable`, `Comparator`, and combinators for ordering v
 
 ## Variables
 
-- [likeComparable](variables/likeComparable.md)
-- [likeComparator](variables/likeComparator.md)
-- [naturalComparison](variables/naturalComparison.md)
 - [numberComparator](variables/numberComparator.md)
 - [stringComparator](variables/stringComparator.md)
 
@@ -39,3 +36,6 @@ Comparison contracts: `Comparable`, `Comparator`, and combinators for ordering v
 - [comparableComparison](functions/comparableComparison.md)
 - [compareBy](functions/compareBy.md)
 - [invertComparison](functions/invertComparison.md)
+- [likeComparable](functions/likeComparable.md)
+- [likeComparator](functions/likeComparator.md)
+- [naturalComparison](functions/naturalComparison.md)

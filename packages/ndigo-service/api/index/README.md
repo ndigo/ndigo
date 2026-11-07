@@ -26,7 +26,7 @@ Re-exports [CryptoRequestIdCorrelation](../request-id-correlation/classes/Crypto
 
 ### deleteCall
 
-Re-exports [deleteCall](../service-decorators/variables/deleteCall.md)
+Re-exports [deleteCall](../service-decorators/functions/deleteCall.md)
 
 ***
 
@@ -50,7 +50,7 @@ Re-exports [fillPathTemplate](../service-client/functions/fillPathTemplate.md)
 
 ### getCall
 
-Re-exports [getCall](../service-decorators/variables/getCall.md)
+Re-exports [getCall](../service-decorators/functions/getCall.md)
 
 ***
 
@@ -74,31 +74,31 @@ Re-exports [InitializationAwareServiceInterceptor](../service/interfaces/Initial
 
 ### likeCompletionAwareServiceInterceptor
 
-Re-exports [likeCompletionAwareServiceInterceptor](../service/variables/likeCompletionAwareServiceInterceptor.md)
+Re-exports [likeCompletionAwareServiceInterceptor](../service/functions/likeCompletionAwareServiceInterceptor.md)
 
 ***
 
 ### likeErrorAwareServiceInterceptor
 
-Re-exports [likeErrorAwareServiceInterceptor](../service/variables/likeErrorAwareServiceInterceptor.md)
+Re-exports [likeErrorAwareServiceInterceptor](../service/functions/likeErrorAwareServiceInterceptor.md)
 
 ***
 
 ### likeInitializationAwareServiceInterceptor
 
-Re-exports [likeInitializationAwareServiceInterceptor](../service/variables/likeInitializationAwareServiceInterceptor.md)
+Re-exports [likeInitializationAwareServiceInterceptor](../service/functions/likeInitializationAwareServiceInterceptor.md)
 
 ***
 
 ### likeRequestAwareServiceInterceptor
 
-Re-exports [likeRequestAwareServiceInterceptor](../service/variables/likeRequestAwareServiceInterceptor.md)
+Re-exports [likeRequestAwareServiceInterceptor](../service/functions/likeRequestAwareServiceInterceptor.md)
 
 ***
 
 ### likeResponseAwareServiceInterceptor
 
-Re-exports [likeResponseAwareServiceInterceptor](../service/variables/likeResponseAwareServiceInterceptor.md)
+Re-exports [likeResponseAwareServiceInterceptor](../service/functions/likeResponseAwareServiceInterceptor.md)
 
 ***
 
@@ -128,25 +128,25 @@ Re-exports [parseServerSentEvents](../server-sent-events/functions/parseServerSe
 
 ### patchCall
 
-Re-exports [patchCall](../service-decorators/variables/patchCall.md)
+Re-exports [patchCall](../service-decorators/functions/patchCall.md)
 
 ***
 
 ### postCall
 
-Re-exports [postCall](../service-decorators/variables/postCall.md)
+Re-exports [postCall](../service-decorators/functions/postCall.md)
 
 ***
 
 ### putCall
 
-Re-exports [putCall](../service-decorators/variables/putCall.md)
+Re-exports [putCall](../service-decorators/functions/putCall.md)
 
 ***
 
 ### queryCall
 
-Re-exports [queryCall](../service-decorators/variables/queryCall.md)
+Re-exports [queryCall](../service-decorators/functions/queryCall.md)
 
 ***
 

@@ -16,10 +16,7 @@ Equality contracts: `Equatable` and the `equates` helper.
 
 - [equatable](type-aliases/equatable.md)
 
-## Variables
-
-- [likeEquatable](variables/likeEquatable.md)
-
 ## Functions
 
 - [equates](functions/equates.md)
+- [likeEquatable](functions/likeEquatable.md)

@@ -316,7 +316,7 @@ Re-exports [DefaultRouteToViewNameTranslator](../route-to-view-name-translator/c
 
 ### deleteMapping
 
-Re-exports [deleteMapping](../http-method-mapping/variables/deleteMapping.md)
+Re-exports [deleteMapping](../http-method-mapping/functions/deleteMapping.md)
 
 ***
 
@@ -394,7 +394,7 @@ Re-exports [getInterceptorDenial](../route-handler-denial/functions/getIntercept
 
 ### getMapping
 
-Re-exports [getMapping](../http-method-mapping/variables/getMapping.md)
+Re-exports [getMapping](../http-method-mapping/functions/getMapping.md)
 
 ***
 
@@ -526,13 +526,13 @@ Re-exports [LanguageResolver](../language-resolver/interfaces/LanguageResolver.m
 
 ### likeArgumentResolver
 
-Re-exports [likeArgumentResolver](../argument-resolver/variables/likeArgumentResolver.md)
+Re-exports [likeArgumentResolver](../argument-resolver/functions/likeArgumentResolver.md)
 
 ***
 
 ### likeController
 
-Re-exports [likeController](../route-handler-adapter/variables/likeController.md)
+Re-exports [likeController](../route-handler-adapter/functions/likeController.md)
 
 ***
 
@@ -544,7 +544,7 @@ Re-exports [likeErrorHandler](../error-mapping/functions/likeErrorHandler.md)
 
 ### likeRouteCondition
 
-Re-exports [likeRouteCondition](../route-condition/variables/likeRouteCondition.md)
+Re-exports [likeRouteCondition](../route-condition/functions/likeRouteCondition.md)
 
 ***
 
@@ -760,7 +760,7 @@ Re-exports [passthroughArgumentValue](../argument-value-converter/functions/pass
 
 ### patchMapping
 
-Re-exports [patchMapping](../http-method-mapping/variables/patchMapping.md)
+Re-exports [patchMapping](../http-method-mapping/functions/patchMapping.md)
 
 ***
 
@@ -808,7 +808,7 @@ Re-exports [PatternsRouteCondition](../patterns-route-condition/classes/Patterns
 
 ### postMapping
 
-Re-exports [postMapping](../http-method-mapping/variables/postMapping.md)
+Re-exports [postMapping](../http-method-mapping/functions/postMapping.md)
 
 ***
 
@@ -832,13 +832,13 @@ Re-exports [publicMapping](../route-mapping/functions/publicMapping.md)
 
 ### putMapping
 
-Re-exports [putMapping](../http-method-mapping/variables/putMapping.md)
+Re-exports [putMapping](../http-method-mapping/functions/putMapping.md)
 
 ***
 
 ### queryMapping
 
-Re-exports [queryMapping](../http-method-mapping/variables/queryMapping.md)
+Re-exports [queryMapping](../http-method-mapping/functions/queryMapping.md)
 
 ***
 

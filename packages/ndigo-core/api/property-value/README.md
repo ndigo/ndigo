@@ -17,6 +17,6 @@ Property value bags: `PropertyValues`, `MutablePropertyValues`, and `PropertyVal
 
 - [PropertyValues](interfaces/PropertyValues.md)
 
-## Variables
+## Functions
 
-- [likePropertyValues](variables/likePropertyValues.md)
+- [likePropertyValues](functions/likePropertyValues.md)

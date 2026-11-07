@@ -8,3 +8,4 @@
 
 > `const` **SHARED\_KEY**: `"ndigo:shared"` = `'ndigo:shared'`
 
+Metadata key under which `@sharedDependency` stores its options.

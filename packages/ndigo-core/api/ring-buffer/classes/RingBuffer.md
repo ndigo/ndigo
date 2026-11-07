@@ -6,7 +6,15 @@
 
 # Class: RingBuffer\<T\>
 
-A value that can safely be converted to a string or JSON payload.
+A fixed-capacity ring buffer implementing `ArrayLike` and `Iterable`.
+
+## Example
+
+```ts
+const buffer = new RingBuffer<number>(4);
+buffer.put(1, 2);
+[...buffer]; // [1, 2]
+```
 
 ## Extended by
 

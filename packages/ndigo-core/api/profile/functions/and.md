@@ -18,6 +18,10 @@ looser precedence than `&` parenthesize: `and(or('a', 'b'), 'c')` →
 
 ...[`ProfileExpressionInput`](../type-aliases/ProfileExpressionInput.md)[]
 
+Terms to conjoin.
+
 ## Returns
 
 [`ProfileTerm`](../classes/ProfileTerm.md)
+
+A composed profile term.

@@ -8,6 +8,12 @@
 
 Represents a general application-level error.
 
+## Example
+
+```ts
+throw new ApplicationError('boom', { cause: originalError });
+```
+
 ## Extends
 
 - [`Serializable`](../../serializable/interfaces/Serializable.md) & `Error`
@@ -57,6 +63,8 @@ The string tag for this class.
 
 > `optional` **toJSON**(): [`JSONValue`](../../serializable/type-aliases/JSONValue.md)
 
+Returns a JSON-safe representation of the value.
+
 #### Returns
 
 [`JSONValue`](../../serializable/type-aliases/JSONValue.md)
@@ -70,6 +78,8 @@ The string tag for this class.
 ### toString()
 
 > **toString**(): `string`
+
+Returns a string representation of the value.
 
 #### Returns
 

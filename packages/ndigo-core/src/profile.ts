@@ -50,6 +50,7 @@ export class ProfileTerm {
         return this.#source;
     }
 
+    /** The kind of term (`name`, `not`, `and`, `or`, `compound`). */
     get kind(): TermKind {
         return this.#kind;
     }
@@ -90,6 +91,9 @@ const wrapIf = (term: ProfileTerm, wrap: boolean): string => (wrap ? `(${term})`
  * Profiles that are all active (`a & b & …`). Compound children with a
  * looser precedence than `&` parenthesize: `and(or('a', 'b'), 'c')` →
  * `'(a | b) & c'`.
+ *
+ * @param terms - Terms to conjoin.
+ * @returns A composed profile term.
  */
 export function and(...terms: ProfileExpressionInput[]): ProfileTerm {
     if (terms.length === 0) {
@@ -105,6 +109,9 @@ export function and(...terms: ProfileExpressionInput[]): ProfileTerm {
 /**
  * Profiles where any is active (`a | b | …`). `&`/`!` bind tighter, so no
  * parenthesization is needed; raw compound strings stay wrapped for safety.
+ *
+ * @param terms - Terms to disjoin.
+ * @returns A composed profile term.
  */
 export function or(...terms: ProfileExpressionInput[]): ProfileTerm {
     if (terms.length === 0) {
@@ -119,6 +126,9 @@ export function or(...terms: ProfileExpressionInput[]): ProfileTerm {
 
 /**
  * Negates a profile (`!a`, `!(a & b)` — compound children parenthesize).
+ *
+ * @param term - The term to negate.
+ * @returns A composed profile term.
  */
 export function not(term: ProfileExpressionInput): ProfileTerm {
     const inner = asTerm(term);

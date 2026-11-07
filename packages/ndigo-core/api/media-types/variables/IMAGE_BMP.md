@@ -6,5 +6,6 @@
 
 # Variable: IMAGE\_BMP
 
-> `const` **IMAGE\_BMP**: [`default`](../../media-type/classes/default.md)
+> `const` **IMAGE\_BMP**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `image/bmp` media type.

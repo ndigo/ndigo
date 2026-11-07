@@ -1,7 +1,7 @@
 /**
  */
 import { describe, test, expect } from 'vitest';
-import MediaType, { SupportedMediaType, parseMediaType } from '../src/media-type';
+import { MediaType, SupportedMediaType, parseMediaType } from '../src/media-type';
 import * as MediaTypes from '../src/media-types';
 
 describe('MediaType', () => {

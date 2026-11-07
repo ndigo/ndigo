@@ -6,9 +6,12 @@
 
 # media-type
 
+HTTP media type parsing, interning, comparison, and content negotiation.
+
 ## Classes
 
-- [default](classes/default.md)
+- [MediaType](classes/MediaType.md)
+- [SpecificityComparator](classes/SpecificityComparator.md)
 
 ## Type Aliases
 

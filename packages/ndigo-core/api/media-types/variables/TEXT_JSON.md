@@ -6,5 +6,6 @@
 
 # Variable: TEXT\_JSON
 
-> `const` **TEXT\_JSON**: [`default`](../../media-type/classes/default.md)
+> `const` **TEXT\_JSON**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `text/json` media type.

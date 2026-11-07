@@ -6,5 +6,6 @@
 
 # Variable: APPLICATION\_PROBLEM\_JSON
 
-> `const` **APPLICATION\_PROBLEM\_JSON**: [`default`](../../media-type/classes/default.md)
+> `const` **APPLICATION\_PROBLEM\_JSON**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `application/problem+json` media type.

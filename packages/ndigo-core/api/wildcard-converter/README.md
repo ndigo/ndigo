@@ -6,6 +6,8 @@
 
 # wildcard-converter
 
+Conversion of wildcard patterns into regular-expression sources.
+
 ## Classes
 
 - [WildcardConverter](classes/WildcardConverter.md)

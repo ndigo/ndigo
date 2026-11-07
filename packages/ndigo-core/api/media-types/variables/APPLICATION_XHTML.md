@@ -6,5 +6,6 @@
 
 # Variable: APPLICATION\_XHTML
 
-> `const` **APPLICATION\_XHTML**: [`default`](../../media-type/classes/default.md)
+> `const` **APPLICATION\_XHTML**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `application/xhtml` media type.

@@ -17,6 +17,8 @@ present (and, when `havingValue` is set, matches it).
 
 [`WhenPropertyOptions`](../interfaces/WhenPropertyOptions.md)
 
+Property condition options.
+
 ## Returns
 
 (`target`, `context`) => `void`

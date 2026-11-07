@@ -6,6 +6,8 @@
 
 # converter
 
+Type conversion contracts and the `ConversionService`.
+
 ## Classes
 
 - [ArrayConverter](classes/ArrayConverter.md)

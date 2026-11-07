@@ -51,13 +51,19 @@ fallback `convert` applies). Schema targets are always convertible.
 
 `unknown`
 
+Runtime identity of the source type.
+
 ##### targetType
 
 `unknown`
 
+Runtime identity of the target type or zod schema.
+
 #### Returns
 
 `boolean`
+
+`true` when a converter can handle the pair.
 
 ***
 
@@ -116,13 +122,19 @@ The converted value; throws when no converter is registered
 
 `unknown`
 
+The value to convert.
+
 ###### targetType
 
 `unknown`
 
+The target type.
+
 ##### Returns
 
 `unknown`
+
+The converted value.
 
 ***
 
@@ -148,13 +160,19 @@ Registers a converter for a source/target type pair.
 
 [`Converter`](Converter.md)\<`S`, `T`\>
 
+The converter instance.
+
 ##### sourceType
 
 `unknown`
 
+Runtime identity of the source type.
+
 ##### targetType
 
 `unknown`
+
+Runtime identity of the target type.
 
 #### Returns
 
@@ -174,9 +192,13 @@ Removes the converter for a source/target type pair.
 
 `unknown`
 
+Runtime identity of the source type.
+
 ##### targetType
 
 `unknown`
+
+Runtime identity of the target type.
 
 #### Returns
 

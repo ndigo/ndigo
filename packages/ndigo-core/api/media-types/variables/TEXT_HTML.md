@@ -6,5 +6,6 @@
 
 # Variable: TEXT\_HTML
 
-> `const` **TEXT\_HTML**: [`default`](../../media-type/classes/default.md)
+> `const` **TEXT\_HTML**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `text/html` media type.

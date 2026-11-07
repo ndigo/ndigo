@@ -6,5 +6,6 @@
 
 # Variable: FONT\_TTF
 
-> `const` **FONT\_TTF**: [`default`](../../media-type/classes/default.md)
+> `const` **FONT\_TTF**: [`MediaType`](../../media-type/classes/MediaType.md)
 
+Well-known `font/ttf` media type.

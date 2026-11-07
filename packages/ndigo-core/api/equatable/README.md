@@ -6,6 +6,8 @@
 
 # equatable
 
+Equality contracts: `Equatable` and the `equates` helper.
+
 ## Interfaces
 
 - [Equatable](interfaces/Equatable.md)

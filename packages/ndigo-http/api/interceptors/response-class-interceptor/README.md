@@ -22,10 +22,10 @@
 
 - [ResponseClassAwareHTTPInterceptor](type-aliases/ResponseClassAwareHTTPInterceptor.md)
 
-## Variables
+## Functions
 
-- [likeClientErrorAwareHTTPInterceptor](variables/likeClientErrorAwareHTTPInterceptor.md)
-- [likeInformationAwareHTTPInterceptor](variables/likeInformationAwareHTTPInterceptor.md)
-- [likeRedirectAwareHTTPInterceptor](variables/likeRedirectAwareHTTPInterceptor.md)
-- [likeServerErrorAwareHTTPInterceptor](variables/likeServerErrorAwareHTTPInterceptor.md)
-- [likeSuccessAwareHTTPInterceptor](variables/likeSuccessAwareHTTPInterceptor.md)
+- [likeClientErrorAwareHTTPInterceptor](functions/likeClientErrorAwareHTTPInterceptor.md)
+- [likeInformationAwareHTTPInterceptor](functions/likeInformationAwareHTTPInterceptor.md)
+- [likeRedirectAwareHTTPInterceptor](functions/likeRedirectAwareHTTPInterceptor.md)
+- [likeServerErrorAwareHTTPInterceptor](functions/likeServerErrorAwareHTTPInterceptor.md)
+- [likeSuccessAwareHTTPInterceptor](functions/likeSuccessAwareHTTPInterceptor.md)

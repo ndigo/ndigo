@@ -14,7 +14,7 @@ Application context, environment, and awareness interfaces.
 - [ApplicationContextAware](interfaces/ApplicationContextAware.md)
 - [ConfigurableApplicationContext](interfaces/ConfigurableApplicationContext.md)
 
-## Variables
+## Functions
 
-- [likeApplicationContext](variables/likeApplicationContext.md)
-- [likeApplicationContextAware](variables/likeApplicationContextAware.md)
+- [likeApplicationContext](functions/likeApplicationContext.md)
+- [likeApplicationContextAware](functions/likeApplicationContextAware.md)

@@ -25,14 +25,11 @@
 - [ServiceInit](type-aliases/ServiceInit.md)
 - [ServiceInterceptor](type-aliases/ServiceInterceptor.md)
 
-## Variables
-
-- [likeCompletionAwareServiceInterceptor](variables/likeCompletionAwareServiceInterceptor.md)
-- [likeErrorAwareServiceInterceptor](variables/likeErrorAwareServiceInterceptor.md)
-- [likeInitializationAwareServiceInterceptor](variables/likeInitializationAwareServiceInterceptor.md)
-- [likeRequestAwareServiceInterceptor](variables/likeRequestAwareServiceInterceptor.md)
-- [likeResponseAwareServiceInterceptor](variables/likeResponseAwareServiceInterceptor.md)
-
 ## Functions
 
+- [likeCompletionAwareServiceInterceptor](functions/likeCompletionAwareServiceInterceptor.md)
+- [likeErrorAwareServiceInterceptor](functions/likeErrorAwareServiceInterceptor.md)
+- [likeInitializationAwareServiceInterceptor](functions/likeInitializationAwareServiceInterceptor.md)
+- [likeRequestAwareServiceInterceptor](functions/likeRequestAwareServiceInterceptor.md)
+- [likeResponseAwareServiceInterceptor](functions/likeResponseAwareServiceInterceptor.md)
 - [likeServiceInterceptor](functions/likeServiceInterceptor.md)

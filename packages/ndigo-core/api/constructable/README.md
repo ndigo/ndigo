@@ -12,6 +12,6 @@ The `Constructable` type and `likeConstructable` guard for mixin bases.
 
 - [Constructable](type-aliases/Constructable.md)
 
-## Variables
+## Functions
 
-- [likeConstructable](variables/likeConstructable.md)
+- [likeConstructable](functions/likeConstructable.md)

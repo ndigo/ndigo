@@ -8,11 +8,11 @@
 
 HTTP verb route mapping decorators — sugar over `requestMapping` with the.
 
-## Variables
+## Functions
 
-- [deleteMapping](variables/deleteMapping.md)
-- [getMapping](variables/getMapping.md)
-- [patchMapping](variables/patchMapping.md)
-- [postMapping](variables/postMapping.md)
-- [putMapping](variables/putMapping.md)
-- [queryMapping](variables/queryMapping.md)
+- [deleteMapping](functions/deleteMapping.md)
+- [getMapping](functions/getMapping.md)
+- [patchMapping](functions/patchMapping.md)
+- [postMapping](functions/postMapping.md)
+- [putMapping](functions/putMapping.md)
+- [queryMapping](functions/queryMapping.md)

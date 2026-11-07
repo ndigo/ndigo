@@ -10,7 +10,7 @@
 
 ### assign
 
-Re-exports [assign](../http-shared/variables/assign.md)
+Re-exports [assign](../http-shared/functions/assign.md)
 
 ***
 
@@ -28,7 +28,7 @@ Re-exports [defaults](../http-shared/variables/defaults.md)
 
 ### defineProperty
 
-Re-exports [defineProperty](../http-shared/variables/defineProperty.md)
+Re-exports [defineProperty](../http-shared/functions/defineProperty.md)
 
 ***
 
@@ -46,7 +46,7 @@ Re-exports [Fetch](../http-types/type-aliases/Fetch.md)
 
 ### freeze
 
-Re-exports [freeze](../http-shared/variables/freeze.md)
+Re-exports [freeze](../http-shared/functions/freeze.md)
 
 ***
 
@@ -100,19 +100,19 @@ Re-exports [InitializationAwareHTTPInterceptor](../http-types/interfaces/Initial
 
 ### isRequest
 
-Re-exports [isRequest](../http-shared/variables/isRequest.md)
+Re-exports [isRequest](../http-shared/functions/isRequest.md)
 
 ***
 
 ### likeCompletionAwareHTTPInterceptor
 
-Re-exports [likeCompletionAwareHTTPInterceptor](../http-interceptor-guards/variables/likeCompletionAwareHTTPInterceptor.md)
+Re-exports [likeCompletionAwareHTTPInterceptor](../http-interceptor-guards/functions/likeCompletionAwareHTTPInterceptor.md)
 
 ***
 
 ### likeErrorAwareHTTPInterceptor
 
-Re-exports [likeErrorAwareHTTPInterceptor](../http-interceptor-guards/variables/likeErrorAwareHTTPInterceptor.md)
+Re-exports [likeErrorAwareHTTPInterceptor](../http-interceptor-guards/functions/likeErrorAwareHTTPInterceptor.md)
 
 ***
 
@@ -124,19 +124,19 @@ Re-exports [likeHTTPInterceptor](../http-interceptor-guards/functions/likeHTTPIn
 
 ### likeInitializationAwareHTTPInterceptor
 
-Re-exports [likeInitializationAwareHTTPInterceptor](../http-interceptor-guards/variables/likeInitializationAwareHTTPInterceptor.md)
+Re-exports [likeInitializationAwareHTTPInterceptor](../http-interceptor-guards/functions/likeInitializationAwareHTTPInterceptor.md)
 
 ***
 
 ### likeRequestAwareHTTPInterceptor
 
-Re-exports [likeRequestAwareHTTPInterceptor](../http-interceptor-guards/variables/likeRequestAwareHTTPInterceptor.md)
+Re-exports [likeRequestAwareHTTPInterceptor](../http-interceptor-guards/functions/likeRequestAwareHTTPInterceptor.md)
 
 ***
 
 ### likeResponseAwareHTTPInterceptor
 
-Re-exports [likeResponseAwareHTTPInterceptor](../http-interceptor-guards/variables/likeResponseAwareHTTPInterceptor.md)
+Re-exports [likeResponseAwareHTTPInterceptor](../http-interceptor-guards/functions/likeResponseAwareHTTPInterceptor.md)
 
 ***
 

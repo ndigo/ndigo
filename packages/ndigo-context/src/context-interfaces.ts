@@ -278,7 +278,7 @@ export interface ConfigurableApplicationContext extends ApplicationContext {
  * @param value - The value to test.
  * @returns `true` when the value looks like an application context.
  */
-export const likeApplicationContext = ((value: unknown) =>
+export const likeApplicationContext = (value: unknown): value is ApplicationContext =>
     likeContentSource(value) &&
     likeMessageSource(value) &&
     likeDestroyable(value) &&
@@ -286,7 +286,7 @@ export const likeApplicationContext = ((value: unknown) =>
     likeEventEmitter(value) &&
     likeFactory(value) &&
     likeRegistry(value) &&
-    likeResourceLoader(value)) as (value: unknown) => value is ApplicationContext;
+    likeResourceLoader(value);
 
 /**
  * Returns whether a value can receive an application context.

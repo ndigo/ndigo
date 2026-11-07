@@ -97,6 +97,8 @@ This is a CONFIGURATION error (application startup time).
 
 > `optional` **toJSON**(): `JSONValue`
 
+Returns a JSON-safe representation of the value.
+
 #### Returns
 
 `JSONValue`
@@ -110,6 +112,8 @@ This is a CONFIGURATION error (application startup time).
 ### toString()
 
 > **toString**(): `string`
+
+Returns a string representation of the value.
 
 #### Returns
 

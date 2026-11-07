@@ -33,4 +33,4 @@ export const isPrimitive = (value: unknown): value is primitive => {
  * @returns `true` when the value is an object.
  * @see {@link primitive}
  */
-export const isNotPrimitive = ((value: unknown) => !isPrimitive(value)) as (value: unknown) => value is object;
+export const isNotPrimitive = (value: unknown): value is object => !isPrimitive(value);

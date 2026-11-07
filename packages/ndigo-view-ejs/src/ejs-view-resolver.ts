@@ -1,4 +1,5 @@
 /**
+ * Resolves logical view names to EJS views with a prefix/suffix.
  */
 import { AbstractPathBasedViewResolver, View } from '@ndigo/view';
 import { MediaTypes } from '@ndigo/core';
@@ -45,7 +46,14 @@ export class EJSViewResolver extends AbstractPathBasedViewResolver {
         this.#options = options;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Resolves a logical view name to an EJS view, applying the configured
+     * prefix and suffix.
+     *
+     * @param name - The logical view name returned by the controller.
+     * @param language - The negotiated language (used by view-name restrictions).
+     * @returns The resolved EJS view, or `null` when the name is unsupported or unsafe.
+     */
     protected async _loadView(name: string, language?: unknown): Promise<View | null> {
         if (this.viewNames && !this.supports(name, language)) {
             return null;

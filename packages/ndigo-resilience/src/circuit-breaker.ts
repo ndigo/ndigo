@@ -1,4 +1,5 @@
 /**
+ * Circuit-breaker policy, interceptor, and `@circuitBreaker` annotation.
  */
 import { ApplicationError } from '@ndigo/core';
 import { methodAnnotation, type MethodDescriptor, type MethodInvocation, type MethodInterceptor } from '@ndigo/proxy';
@@ -12,6 +13,14 @@ import { methodAnnotation, type MethodDescriptor, type MethodInvocation, type Me
  * **sync** method returns a Promise even though its declared type is not
  * (the annotation is invisible to the type system). Prefer advising
  * Promise-returning methods.
+ *
+ * @example
+ * ```ts
+ * class PaymentsAPI {
+ *     @circuitBreaker({ failureThreshold: 5, resetMs: 30_000 })
+ *     charge(amount: number): Promise<void> {}
+ * }
+ * ```
  */
 export const circuitBreaker = methodAnnotation<CircuitBreakerSpec>('circuitBreaker');
 
@@ -118,6 +127,13 @@ export class CircuitBreakerInterceptor implements MethodInterceptor {
         this.#now = options.now ?? Date.now;
     }
 
+    /**
+     * Whether the method carries a valid `@circuitBreaker` spec.
+     *
+     * @param method - The method descriptor being woven.
+     * @returns `true` when the interceptor should advise the method.
+     * @throws When the annotation carries an invalid spec (fail loud at weave time).
+     */
     matches(method: MethodDescriptor): boolean {
         const spec = method.annotation(circuitBreaker);
         if (spec !== undefined) {
@@ -128,6 +144,13 @@ export class CircuitBreakerInterceptor implements MethodInterceptor {
         return false;
     }
 
+    /**
+     * Runs the call through the per-method circuit.
+     *
+     * @param invocation - The woven method invocation.
+     * @param next - Continues the inner interceptor chain.
+     * @returns The call result, or a rejection from the call or the open circuit.
+     */
     async invoke(invocation: MethodInvocation, next: () => unknown): Promise<unknown> {
         const spec = invocation.annotation(circuitBreaker);
         if (spec === undefined) {

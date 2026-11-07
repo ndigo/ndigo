@@ -6,6 +6,8 @@
 
 # ejs-view
 
+EJS view that renders templates into HTML, with locale-aware helpers.
+
 ## Classes
 
 - [EJSView](classes/EJSView.md)

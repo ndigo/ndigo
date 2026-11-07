@@ -1,4 +1,6 @@
 /**
+ * Loads `application.json` / `application.toon` config files, with profile
+ * support, into a configurable environment.
  */
 import { IllegalStateError, JSONObject } from '@ndigo/core';
 import { getErrorMessage } from '@ndigo/util';
@@ -112,6 +114,19 @@ const stripPrefix = (location: string): { path: string; optional: boolean; requi
 /**
  * Recursively merges `override` into `base` (mutates a copy of `base`):
  * objects merge, scalars override, **arrays replace**.
+ *
+ * @param base - The lower-precedence configuration object.
+ * @param override - The object whose values win.
+ * @returns A new object with `override` merged over `base`.
+ *
+ * @example
+ * ```ts
+ * mergeConfig(
+ *     { server: { port: 8080, hosts: ['a'] } },
+ *     { server: { port: 9090, hosts: ['b'] } }
+ * );
+ * // { server: { port: 9090, hosts: ['b'] } }
+ * ```
  */
 export function mergeConfig(base: JSONObject, override: JSONObject): JSONObject {
     const result: JSONObject = { ...base };

@@ -6,6 +6,5 @@
 
 # Variable: EXPIRES
 
-> `const` `readonly` **EXPIRES**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **EXPIRES**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

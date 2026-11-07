@@ -6,6 +6,5 @@
 
 # Variable: DEVICE\_MEMORY
 
-> `const` `readonly` **DEVICE\_MEMORY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **DEVICE\_MEMORY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

@@ -1,4 +1,5 @@
 /**
+ * Telemetry hooks for service request lifecycles.
  */
 import { EventEmitter } from '@ndigo/context';
 

@@ -6,6 +6,8 @@
 
 # ejs-view-resolver
 
+Resolves logical view names to EJS views with a prefix/suffix.
+
 ## Classes
 
 - [EJSViewResolver](classes/EJSViewResolver.md)

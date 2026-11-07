@@ -6,6 +6,5 @@
 
 # Variable: CLEAR\_SITE\_DATA
 
-> `const` `readonly` **CLEAR\_SITE\_DATA**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **CLEAR\_SITE\_DATA**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

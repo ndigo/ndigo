@@ -6,6 +6,5 @@
 
 # Variable: SEC\_FETCH\_SITE
 
-> `const` `readonly` **SEC\_FETCH\_SITE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **SEC\_FETCH\_SITE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

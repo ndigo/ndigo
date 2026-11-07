@@ -50,6 +50,8 @@ A service that provides a high-level API for interacting with remote endpoints.
 
 > **destroyed**: `boolean`
 
+Whether [Service.destroy](#destroy) has run.
+
 #### Implementation of
 
 `AsyncDestroyable.destroyed`
@@ -60,11 +62,15 @@ A service that provides a high-level API for interacting with remote endpoints.
 
 > **id**: `number`
 
+Monotonic identifier assigned when the service is created.
+
 ***
 
 ### name
 
 > **name**: `string`
+
+The service name, used for correlation headers and diagnostics.
 
 ## Accessors
 
@@ -138,9 +144,13 @@ A promise that resolves to the service response.
 
 > **destroy**(): `Promise`\<`void`\>
 
+Marks the service as destroyed.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the service is marked destroyed.
 
 #### Implementation of
 

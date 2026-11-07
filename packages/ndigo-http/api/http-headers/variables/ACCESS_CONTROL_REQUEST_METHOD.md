@@ -6,6 +6,5 @@
 
 # Variable: ACCESS\_CONTROL\_REQUEST\_METHOD
 
-> `const` `readonly` **ACCESS\_CONTROL\_REQUEST\_METHOD**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **ACCESS\_CONTROL\_REQUEST\_METHOD**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

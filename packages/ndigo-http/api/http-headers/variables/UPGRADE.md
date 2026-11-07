@@ -6,6 +6,5 @@
 
 # Variable: UPGRADE
 
-> `const` `readonly` **UPGRADE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **UPGRADE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

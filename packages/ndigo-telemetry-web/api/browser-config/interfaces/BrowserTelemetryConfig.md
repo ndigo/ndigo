@@ -16,17 +16,24 @@ console exporters in production.
 
 > `optional` **enableDiagnostics?**: `boolean`
 
+Enables OTel diagnostic logging at debug level (noisy; development only).
+
 ***
 
 ### minimumSeverity?
 
 > `optional` **minimumSeverity?**: `SeverityNumber`
 
+Minimum severity routed to the OpenTelemetry log pipeline; forwarded to
+the logger factory's threshold. Defaults to the factory's own threshold.
+
 ***
 
 ### serviceName
 
 > **serviceName**: `string`
+
+The service name reported as `service.name` on every signal.
 
 ***
 

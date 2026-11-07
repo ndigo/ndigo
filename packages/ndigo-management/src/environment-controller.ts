@@ -58,10 +58,13 @@ function flatten(node: unknown, prefix: string, into: Map<string, unknown>): voi
  */
 @requestMapping('/env')
 export class EnvironmentController extends AsApplicationContextAware(Null) {
+    /** The application context injected by the aware mixin. */
     readonly applicationContext!: ApplicationContext;
     readonly #exposure: { include?: string[]; exclude?: string[] };
 
     /**
+     * Creates the `/env` controller.
+     *
      * @param exposure - The programmatic exposure override (AD-76 D-5);
      *   wins over the `management.*` source section.
      */

@@ -1,4 +1,5 @@
 /**
+ * Retry policy, interceptor, and `@retry` annotation.
  */
 import { methodAnnotation, type MethodDescriptor, type MethodInvocation, type MethodInterceptor } from '@ndigo/proxy';
 import { CircuitOpenError } from './circuit-breaker';
@@ -14,17 +15,18 @@ export const DEFAULT_RETRY_ATTEMPTS = 3;
  * `@retry` annotation key: methods carrying a {@link RetrySpec} are retried
  * by a registered {@link RetryInterceptor}.
  *
+ * The advice is async: through a woven proxy a `@retry`-advised **sync**
+ * method returns a Promise even though its declared type is not (the
+ * annotation is invisible to the type system). Prefer advising
+ * Promise-returning methods.
+ *
+ * @example
  * ```ts
  * class PushAPI {
  *     @retry({ attempts: 3, backoff: exponentialBackoff({ initialMs: 100 }) })
  *     push(payload: PushPayload): Promise<void> {}
  * }
  * ```
- *
- * The advice is async: through a woven proxy a `@retry`-advised **sync**
- * method returns a Promise even though its declared type is not (the
- * annotation is invisible to the type system). Prefer advising
- * Promise-returning methods.
  */
 export const retry = methodAnnotation<RetrySpec>('retry');
 
@@ -83,6 +85,13 @@ function validateRetrySpec(spec: RetrySpec): void {
  * @see AD-43 D-3 for the retry semantics and idempotency contract.
  */
 export class RetryInterceptor implements MethodInterceptor {
+    /**
+     * Whether the method carries a valid `@retry` spec.
+     *
+     * @param method - The method descriptor being woven.
+     * @returns `true` when the interceptor should advise the method.
+     * @throws When the annotation carries an invalid spec (fail loud at weave time).
+     */
     matches(method: MethodDescriptor): boolean {
         const spec = method.annotation(retry);
         if (spec !== undefined) {
@@ -93,6 +102,14 @@ export class RetryInterceptor implements MethodInterceptor {
         return false;
     }
 
+    /**
+     * Re-invokes the inner chain until it succeeds, the attempts run out, or
+     * the error is not retryable.
+     *
+     * @param invocation - The woven method invocation.
+     * @param next - Continues the inner interceptor chain.
+     * @returns The settled call result.
+     */
     async invoke(invocation: MethodInvocation, next: () => unknown): Promise<unknown> {
         const spec = invocation.annotation(retry);
         if (spec === undefined) {

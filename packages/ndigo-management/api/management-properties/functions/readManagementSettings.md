@@ -65,3 +65,10 @@ The validated management settings.
 #### health.groups
 
 > **groups**: `Record`\<`string`, \{ `include`: `string`[]; \}\>
+
+## Example
+
+```ts
+const settings = readManagementSettings(context.environment);
+settings.endpoints.exposure.include; // ['health', 'metrics']
+```

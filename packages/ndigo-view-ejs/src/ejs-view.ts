@@ -1,4 +1,5 @@
 /**
+ * EJS view that renders templates into HTML, with locale-aware helpers.
  */
 import { AbstractTemplateView, type ProducerView, type RenderResult, ViewTarget } from '@ndigo/view';
 import { IllegalStateError } from '@ndigo/core';
@@ -33,22 +34,43 @@ export interface EJSLocaleHelpers {
     /**
      * Formats a message key; falls back to the key when unavailable.
      * Async by convention — templates call it as `await t(…)`.
+     *
+     * @param key - The message key to resolve.
+     * @param params - Optional interpolation parameters for the message.
+     * @returns The localized message, or the key when no message exists.
      */
     t(key: string, params?: MessageParams): Promise<string>;
     /**
      * Formats a date value in the request locale.
+     *
+     * @param value - The date value to format.
+     * @param options - Optional `Intl.DateTimeFormat` overrides.
+     * @returns The localized date string.
      */
     formatDate(value: Date | string | number, options?: DateTimeFormatOptions): string;
     /**
      * Formats a number in the request locale.
+     *
+     * @param value - The numeric value to format.
+     * @param options - Optional `Intl.NumberFormat` overrides.
+     * @returns The localized number string.
      */
     formatNumber(value: number, options?: NumberFormatOptions): string;
     /**
      * Formats a relative-time delta in the request locale.
+     *
+     * @param value - The delta value (negative for the past).
+     * @param unit - The unit the delta is expressed in.
+     * @param options - Optional `Intl.RelativeTimeFormat` overrides.
+     * @returns The localized relative-time string.
      */
     formatRelativeTime(value: number, unit: Intl.RelativeTimeFormatUnit, options?: RelativeTimeFormatOptions): string;
     /**
      * Formats a string list in the request locale.
+     *
+     * @param values - The list entries to join.
+     * @param options - Optional `Intl.ListFormat` overrides.
+     * @returns The localized list string.
      */
     formatList(values: readonly string[], options?: ListFormatOptions): string;
 }
@@ -90,6 +112,14 @@ export interface EJSViewOptions {
  * {@link ViewTarget} for fragment mode (islands, client-side DOM) and —
  * through {@link ProducerView} — produces a whole HTML page for document mode
  * (servlet/JSP-style server-side rendering).
+ *
+ * @example
+ * ```ts
+ * const view = new EJSView('pages/home', {
+ *     template: '<h1><%= await t("home.title") %></h1>',
+ * });
+ * const { body } = await view.renderTo({}, route);
+ * ```
  */
 export class EJSView extends AbstractTemplateView implements ProducerView {
     /**
@@ -122,7 +152,14 @@ export class EJSView extends AbstractTemplateView implements ProducerView {
         this.#loader = options.loader;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Renders the template into `target` for fragment mode.
+     *
+     * @param templateModel - The data model exposed to the template.
+     * @param request - The current request/route.
+     * @param target - The view target that receives the rendered HTML.
+     * @returns A promise that resolves once the target commits the HTML.
+     */
     protected async _renderTemplate(templateModel: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (!target) {
             throw new IllegalStateError('EJSView requires a ViewTarget to render.');
@@ -132,7 +169,13 @@ export class EJSView extends AbstractTemplateView implements ProducerView {
         await target.commit(html, templateModel, request as Route);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Produces the complete HTML document for document mode.
+     *
+     * @param model - The data model exposed to the template.
+     * @param route - The current route (provides the negotiated language).
+     * @returns The rendered HTML and its media type.
+     */
     async renderTo(model: unknown, route: Route): Promise<RenderResult> {
         return {
             mediaType: this.mediaType ?? undefined,

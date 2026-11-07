@@ -6,6 +6,5 @@
 
 # Variable: TK
 
-> `const` `readonly` **TK**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **TK**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

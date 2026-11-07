@@ -6,6 +6,5 @@
 
 # Variable: IF\_UNMODIFIED\_SINCE
 
-> `const` `readonly` **IF\_UNMODIFIED\_SINCE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **IF\_UNMODIFIED\_SINCE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

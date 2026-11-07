@@ -6,6 +6,5 @@
 
 # Variable: CONTENT\_DISPOSITION
 
-> `const` `readonly` **CONTENT\_DISPOSITION**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **CONTENT\_DISPOSITION**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

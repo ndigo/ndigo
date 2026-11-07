@@ -1,4 +1,5 @@
 /**
+ * Serves application health under `/health`.
  */
 import { getMapping, requestMapping, parameters, pathVariable } from '@ndigo/dispatcher';
 import { ApplicationContext, AsApplicationContextAware } from '@ndigo/context';
@@ -24,6 +25,8 @@ export class HealthResponseView {
     readonly #status: number;
 
     /**
+     * Creates the response view for a health document.
+     *
      * @param body - The aggregate health document.
      * @param status - The HTTP status to write (200 or 503).
      */
@@ -61,6 +64,7 @@ export class HealthResponseView {
  */
 @requestMapping('/health')
 export class HealthController extends AsApplicationContextAware(Null) {
+    /** The application context injected by the aware mixin. */
     readonly applicationContext!: ApplicationContext;
 
     /**

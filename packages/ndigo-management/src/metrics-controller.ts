@@ -1,4 +1,5 @@
 /**
+ * Serves meter snapshots under `/metrics` in Prometheus and JSON form.
  */
 import { getMapping, requestMapping, parameters, headerValue } from '@ndigo/dispatcher';
 import { MediaType } from '@ndigo/core';
@@ -21,6 +22,15 @@ export const PROMETHEUS_TEXT_CONTENT_TYPE = 'text/plain; version=0.0.4; charset=
  * (`application/json` or any `application/*+json` suffix) selects JSON;
  * everything else — absent headers, wildcard accepts, `text/plain`,
  * browsers — selects the Prometheus text document.
+ *
+ * @param accept - The `Accept` header value, if any.
+ * @returns `true` when the best acceptable entry is a JSON media type.
+ *
+ * @example
+ * ```ts
+ * prefersJsonView('application/json'); // true
+ * prefersJsonView('text/plain'); // false
+ * ```
  */
 export function prefersJsonView(accept: string | undefined): boolean {
     let best: MediaType | undefined;
@@ -51,6 +61,7 @@ export function prefersJsonView(accept: string | undefined): boolean {
  */
 @requestMapping('/metrics')
 export class MetricsController extends AsApplicationContextAware(Null) {
+    /** The application context injected by the aware mixin. */
     readonly applicationContext!: ApplicationContext;
 
     /**

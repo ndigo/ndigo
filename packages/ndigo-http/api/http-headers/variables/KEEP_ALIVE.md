@@ -6,6 +6,5 @@
 
 # Variable: KEEP\_ALIVE
 
-> `const` `readonly` **KEEP\_ALIVE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **KEEP\_ALIVE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

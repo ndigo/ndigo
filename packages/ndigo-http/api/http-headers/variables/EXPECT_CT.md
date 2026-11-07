@@ -6,6 +6,5 @@
 
 # Variable: EXPECT\_CT
 
-> `const` `readonly` **EXPECT\_CT**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **EXPECT\_CT**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

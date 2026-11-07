@@ -52,6 +52,7 @@ import { endpointPath, MANAGEMENT_ENDPOINT_IDS } from './management-properties';
  */
 @configuration
 export class ManagementAutoConfiguration extends AsApplicationContextAware(Null) {
+    /** The application context injected by the aware mixin. */
     readonly applicationContext!: ApplicationContext;
     readonly #accessGuard: RouteHandlerInterceptor | undefined;
     readonly #redactHealthErrors: boolean;

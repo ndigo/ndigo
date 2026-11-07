@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/service` — declarative service calls and interceptors.
+
 ## Interfaces
 
 - [ServerSentEvent](interfaces/ServerSentEvent.md)

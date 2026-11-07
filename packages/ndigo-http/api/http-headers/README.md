@@ -6,6 +6,8 @@
 
 # http-headers
 
+Standard HTTP header constants.
+
 ## Variables
 
 - [ACCEPT](variables/ACCEPT.md)

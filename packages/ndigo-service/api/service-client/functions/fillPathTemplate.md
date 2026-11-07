@@ -29,3 +29,9 @@ The method call arguments.
 `string`
 
 The concrete path.
+
+## Example
+
+```ts
+fillPathTemplate('/users/:id/posts/:postId', [42, 'intro']); // '/users/42/posts/intro'
+```

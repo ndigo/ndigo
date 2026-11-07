@@ -6,6 +6,5 @@
 
 # Variable: FEATURE\_POLICY
 
-> `const` `readonly` **FEATURE\_POLICY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **FEATURE\_POLICY**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

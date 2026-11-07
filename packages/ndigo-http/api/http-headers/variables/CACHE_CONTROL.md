@@ -6,6 +6,5 @@
 
 # Variable: CACHE\_CONTROL
 
-> `const` `readonly` **CACHE\_CONTROL**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **CACHE\_CONTROL**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

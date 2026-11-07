@@ -27,6 +27,16 @@ The growth configuration.
 
 [`BackoffPolicy`](../interfaces/BackoffPolicy.md)
 
+A policy that grows the delay exponentially per attempt.
+
 ## Throws
 
 When an option is not a finite, in-range number.
+
+## Example
+
+```ts
+const policy = exponentialBackoff({ initialMs: 100, maxMs: 5_000, jitter: 0.2 });
+policy.delay(1); // ~100ms (±20%)
+policy.delay(3); // ~400ms (±20%)
+```

@@ -6,6 +6,5 @@
 
 # Variable: HOST
 
-> `const` `readonly` **HOST**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **HOST**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

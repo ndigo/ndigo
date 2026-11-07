@@ -6,6 +6,5 @@
 
 # Variable: RETRY\_AFTER
 
-> `const` `readonly` **RETRY\_AFTER**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **RETRY\_AFTER**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

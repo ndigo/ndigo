@@ -6,6 +6,5 @@
 
 # Variable: TRAILER
 
-> `const` `readonly` **TRAILER**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **TRAILER**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

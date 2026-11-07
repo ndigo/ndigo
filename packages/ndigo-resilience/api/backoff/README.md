@@ -6,6 +6,8 @@
 
 # backoff
 
+Retry backoff policies: fixed and exponential.
+
 ## Interfaces
 
 - [BackoffPolicy](interfaces/BackoffPolicy.md)

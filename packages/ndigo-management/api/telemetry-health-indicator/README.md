@@ -6,6 +6,8 @@
 
 # telemetry-health-indicator
 
+Health indicator for the telemetry/metrics pipeline.
+
 ## Classes
 
 - [TelemetryHealthIndicator](classes/TelemetryHealthIndicator.md)

@@ -35,7 +35,7 @@ providing visibility into route change events within the application.
 
 > **disable**(): `void`
 
-Hook for subclasses to wire up `_unwrap` calls.
+Restores the original `_setRoute` implementation.
 
 #### Returns
 
@@ -51,7 +51,7 @@ Hook for subclasses to wire up `_unwrap` calls.
 
 > **enable**(): `void`
 
-Hook for subclasses to wire up `_wrap` calls.
+Patches `HashRouter#_setRoute` to record one span per navigation.
 
 #### Returns
 

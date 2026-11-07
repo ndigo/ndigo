@@ -6,6 +6,5 @@
 
 # Variable: WWW\_AUTHENTICATE
 
-> `const` `readonly` **WWW\_AUTHENTICATE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **WWW\_AUTHENTICATE**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

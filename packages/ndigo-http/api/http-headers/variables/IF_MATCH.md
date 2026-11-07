@@ -6,6 +6,5 @@
 
 # Variable: IF\_MATCH
 
-> `const` `readonly` **IF\_MATCH**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **IF\_MATCH**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

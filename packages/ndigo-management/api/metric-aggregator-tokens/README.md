@@ -6,6 +6,8 @@
 
 # metric-aggregator-tokens
 
+Context token for the shared feature-metric aggregator.
+
 ## Variables
 
 - [METRIC\_AGGREGATOR](variables/METRIC_AGGREGATOR.md)

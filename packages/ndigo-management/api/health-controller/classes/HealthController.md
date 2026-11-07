@@ -54,6 +54,8 @@ A symbol indicating that the value is aware.
 
 > `readonly` **applicationContext**: `ApplicationContext`
 
+The application context injected by the aware mixin.
+
 ## Methods
 
 ### component()

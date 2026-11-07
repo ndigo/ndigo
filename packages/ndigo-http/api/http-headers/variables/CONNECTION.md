@@ -6,6 +6,5 @@
 
 # Variable: CONNECTION
 
-> `const` `readonly` **CONNECTION**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **CONNECTION**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

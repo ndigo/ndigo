@@ -53,7 +53,7 @@ new WebSocketClient(url, {
 
 > **disable**(): `void`
 
-Hook for subclasses to wire up `_unwrap` calls.
+Restores the original `send` and `close` methods.
 
 #### Returns
 
@@ -69,7 +69,8 @@ Hook for subclasses to wire up `_unwrap` calls.
 
 > **enable**(): `void`
 
-Hook for subclasses to wire up `_wrap` calls.
+Patches `WebSocketClient#send` and `#close` to count outbound messages,
+estimated bytes (when `onSend` is unwired), and terminal closes.
 
 #### Returns
 

@@ -6,6 +6,5 @@
 
 # Variable: CONTENT\_ENCODING
 
-> `const` `readonly` **CONTENT\_ENCODING**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **CONTENT\_ENCODING**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

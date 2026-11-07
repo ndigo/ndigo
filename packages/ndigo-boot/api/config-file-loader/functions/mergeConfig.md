@@ -17,10 +17,26 @@ objects merge, scalars override, **arrays replace**.
 
 `JSONObject`
 
+The lower-precedence configuration object.
+
 ### override
 
 `JSONObject`
 
+The object whose values win.
+
 ## Returns
 
 `JSONObject`
+
+A new object with `override` merged over `base`.
+
+## Example
+
+```ts
+mergeConfig(
+    { server: { port: 8080, hosts: ['a'] } },
+    { server: { port: 9090, hosts: ['b'] } }
+);
+// { server: { port: 9090, hosts: ['b'] } }
+```

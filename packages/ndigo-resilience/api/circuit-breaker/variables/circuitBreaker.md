@@ -16,3 +16,12 @@ The advice is async: through a woven proxy a `@circuitBreaker`-advised
 **sync** method returns a Promise even though its declared type is not
 (the annotation is invisible to the type system). Prefer advising
 Promise-returning methods.
+
+## Example
+
+```ts
+class PaymentsAPI {
+    @circuitBreaker({ failureThreshold: 5, resetMs: 30_000 })
+    charge(amount: number): Promise<void> {}
+}
+```

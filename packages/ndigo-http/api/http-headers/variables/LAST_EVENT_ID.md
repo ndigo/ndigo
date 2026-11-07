@@ -6,6 +6,5 @@
 
 # Variable: LAST\_EVENT\_ID
 
-> `const` `readonly` **LAST\_EVENT\_ID**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **LAST\_EVENT\_ID**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

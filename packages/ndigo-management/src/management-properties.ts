@@ -104,6 +104,12 @@ function deepMerge(base: JSONRecord, over: JSONRecord): JSONRecord {
  *
  * @param environment - The application environment.
  * @returns The validated management settings.
+ *
+ * @example
+ * ```ts
+ * const settings = readManagementSettings(context.environment);
+ * settings.endpoints.exposure.include; // ['health', 'metrics']
+ * ```
  */
 export function readManagementSettings(environment: Environment | undefined): ManagementProperties {
     // `getPropertySources` is the configurable-environment seam (the same
@@ -132,6 +138,11 @@ export function readManagementSettings(environment: Environment | undefined): Ma
  * @param include - The ids to serve (or `'*'`).
  * @param exclude - The ids to withhold.
  * @returns The served id set.
+ *
+ * @example
+ * ```ts
+ * resolveExposure(['*'], ['env']); // every endpoint except 'env'
+ * ```
  */
 export function resolveExposure(
     include: readonly string[] | undefined = DEFAULT_EXPOSURE,
@@ -149,6 +160,11 @@ export function resolveExposure(
  *
  * @param id - The endpoint id.
  * @returns The root path.
+ *
+ * @example
+ * ```ts
+ * endpointPath('loggers'); // '/loggers'
+ * ```
  */
 export function endpointPath(id: string): string | undefined {
     return ENDPOINT_PATHS[id];
@@ -163,6 +179,11 @@ export function endpointPath(id: string): string | undefined {
  * @param options - The programmatic exposure override.
  * @param id - The endpoint id to test.
  * @returns `true` when the endpoint is served.
+ *
+ * @example
+ * ```ts
+ * isEndpointExposed(context.environment, undefined, 'health'); // true
+ * ```
  */
 export function isEndpointExposed(
     environment: Environment | undefined,

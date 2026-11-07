@@ -6,6 +6,8 @@
 
 # application
 
+Application bootstrap and lifecycle: environment preparation, context
+
 ## Classes
 
 - [Application](classes/Application.md)

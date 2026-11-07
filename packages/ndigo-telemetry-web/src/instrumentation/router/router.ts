@@ -1,4 +1,5 @@
 /**
+ * OpenTelemetry instrumentation for `HashRouter` route changes.
  */
 import { SpanKind, SpanStatusCode } from '@opentelemetry/api';
 import { HashRouter } from '@ndigo/platform-web';
@@ -24,6 +25,9 @@ export class RouterInstrumentation extends AbstractBaseInstrumentation {
         super('router');
     }
 
+    /**
+     * Patches `HashRouter#_setRoute` to record one span per navigation.
+     */
     enable(): void {
         this._wrap(
             HashRouter.prototype as unknown as HashRouterPatchTarget,
@@ -50,6 +54,9 @@ export class RouterInstrumentation extends AbstractBaseInstrumentation {
         );
     }
 
+    /**
+     * Restores the original `_setRoute` implementation.
+     */
     disable(): void {
         this._unwrap(HashRouter.prototype as unknown as HashRouterPatchTarget, '_setRoute');
     }

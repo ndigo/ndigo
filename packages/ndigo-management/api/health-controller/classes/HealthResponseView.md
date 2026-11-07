@@ -22,6 +22,8 @@ DOWN aggregate is signalled by the status code, not by an error envelope).
 
 > **new HealthResponseView**(`body`, `status`): `HealthResponseView`
 
+Creates the response view for a health document.
+
 #### Parameters
 
 ##### body

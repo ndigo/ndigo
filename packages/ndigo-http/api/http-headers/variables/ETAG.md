@@ -6,6 +6,5 @@
 
 # Variable: ETAG
 
-> `const` `readonly` **ETAG**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **ETAG**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

@@ -6,6 +6,5 @@
 
 # Variable: SIGNED\_HEADERS
 
-> `const` `readonly` **SIGNED\_HEADERS**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **SIGNED\_HEADERS**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

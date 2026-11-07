@@ -6,6 +6,5 @@
 
 # Variable: TR
 
-> `const` `readonly` **TR**: [`LanguageCode`](../../language-code/classes/LanguageCode.md)
+> `const` **TR**: [`LanguageCode`](../../language-code/classes/LanguageCode.md)
 
-The constant value documented by the code.

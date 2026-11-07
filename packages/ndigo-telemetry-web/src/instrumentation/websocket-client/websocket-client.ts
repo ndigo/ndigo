@@ -32,6 +32,10 @@ export class WebSocketClientInstrumentation extends AbstractBaseInstrumentation 
         super('websocket-client');
     }
 
+    /**
+     * Patches `WebSocketClient#send` and `#close` to count outbound messages,
+     * estimated bytes (when `onSend` is unwired), and terminal closes.
+     */
     enable(): void {
         // `InstrumentationBase` calls `enable()` from ITS constructor and on
         // every SDK `registerInstrumentations` — a second enable must not
@@ -84,6 +88,9 @@ export class WebSocketClientInstrumentation extends AbstractBaseInstrumentation 
         });
     }
 
+    /**
+     * Restores the original `send` and `close` methods.
+     */
     disable(): void {
         this._unwrap(WebSocketClient.prototype, 'send');
         this._unwrap(WebSocketClient.prototype, 'close');
@@ -103,16 +110,17 @@ const COUNTED_CLOSES = new WeakSet<WebSocketClient>();
 /**
  * Status-transition metric wiring for a `WebSocketClient` — use as the
  * client's `onStatusChange` option (constructor-injected seam; the client
- * is app-constructed, so prototype patches cannot see its signal):
- *
- * ```ts
- * const count = countSocketClientStatus();
- * const chat = new WebSocketClient(url, { onStatusChange: count });
- * ```
+ * is app-constructed, so prototype patches cannot see its signal).
  *
  * Counts `ndigo.socket.client.{connecting,opened,reconnecting,closed}`
  * transitions with a `socket.status` attribute — reconnects are the
  * network-instability signal of interest.
+ *
+ * @example
+ * ```ts
+ * const count = countSocketClientStatus();
+ * const chat = new WebSocketClient(url, { onStatusChange: count });
+ * ```
  *
  * @returns An `onStatusChange` observer.
  */
@@ -136,15 +144,16 @@ export function countSocketClientStatus(): (status: SocketStatus) => void {
 /**
  * Exact outbound-byte wiring for a `WebSocketClient` — use as the client's
  * `onSend` option (constructor-injected; the client reports the actual bytes
- * written to the transport, buffered flushes and retried writes included):
- *
- * ```ts
- * const chat = new WebSocketClient(url, { onSend: countSocketClientBytes() });
- * ```
+ * written to the transport, buffered flushes and retried writes included).
  *
  * While wired, {@link WebSocketClientInstrumentation}'s `send` wrap skips its
  * own payload estimation for that client (TEL-08), so `ndigo.socket.client.messages.bytes` counts each wire write exactly once — no re-serialized
  * estimation, no double count.
+ *
+ * @example
+ * ```ts
+ * const chat = new WebSocketClient(url, { onSend: countSocketClientBytes() });
+ * ```
  *
  * @returns An `onSend` observer feeding `ndigo.socket.client.messages.bytes`.
  */

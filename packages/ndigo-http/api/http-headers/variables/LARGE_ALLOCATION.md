@@ -6,6 +6,5 @@
 
 # Variable: LARGE\_ALLOCATION
 
-> `const` `readonly` **LARGE\_ALLOCATION**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **LARGE\_ALLOCATION**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

@@ -6,6 +6,8 @@
 
 # health-controller
 
+Serves application health under `/health`.
+
 ## Classes
 
 - [HealthController](classes/HealthController.md)

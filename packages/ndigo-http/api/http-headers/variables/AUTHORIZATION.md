@@ -6,6 +6,5 @@
 
 # Variable: AUTHORIZATION
 
-> `const` `readonly` **AUTHORIZATION**: [`AuthorizationHeader`](../../authorization-header/classes/AuthorizationHeader.md)
+> `const` **AUTHORIZATION**: [`AuthorizationHeader`](../../authorization-header/classes/AuthorizationHeader.md)
 
-The constant value documented by the code.

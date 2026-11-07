@@ -6,6 +6,5 @@
 
 # Variable: FROM
 
-> `const` `readonly` **FROM**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **FROM**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

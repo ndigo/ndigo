@@ -27,6 +27,7 @@ const logger = getLogger('ndigo-telemetry-web:browser-config');
  * console exporters in production.
  */
 export interface BrowserTelemetryConfig {
+    /** The service name reported as `service.name` on every signal. */
     serviceName: string;
     /**
      * OTLP/HTTP trace endpoint (e.g. a local OpenTelemetry Collector:
@@ -46,7 +47,12 @@ export interface BrowserTelemetryConfig {
      * routed through OpenTelemetry (they stay on the console bridge).
      */
     useConsoleExporters?: boolean;
+    /**
+     * Minimum severity routed to the OpenTelemetry log pipeline; forwarded to
+     * the logger factory's threshold. Defaults to the factory's own threshold.
+     */
     minimumSeverity?: SeverityNumber;
+    /** Enables OTel diagnostic logging at debug level (noisy; development only). */
     enableDiagnostics?: boolean;
 }
 
@@ -136,6 +142,15 @@ function currentTracerProvider(): unknown {
  *
  * @param config - Service identity, exporter gating, and diagnostics options.
  * @returns The telemetry lifecycle handle.
+ *
+ * @example
+ * ```ts
+ * const telemetry = configureBrowserTelemetry({
+ *     serviceName: 'conduit-web',
+ *     traceUrl: 'http://localhost:4318/v1/traces',
+ * });
+ * window.addEventListener('pagehide', () => void telemetry.shutdown());
+ * ```
  */
 export function configureBrowserTelemetry(config: BrowserTelemetryConfig): BrowserTelemetryHandle {
     if (activeTracerProvider !== undefined && currentTracerProvider() === activeTracerProvider) {

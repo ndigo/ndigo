@@ -6,6 +6,8 @@
 
 # health-registry-tokens
 
+Context token for the shared health registry.
+
 ## Variables
 
 - [HEALTH\_REGISTRY](variables/HEALTH_REGISTRY.md)

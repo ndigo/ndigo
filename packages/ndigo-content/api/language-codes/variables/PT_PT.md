@@ -6,6 +6,5 @@
 
 # Variable: PT\_PT
 
-> `const` `readonly` **PT\_PT**: [`LanguageCode`](../../language-code/classes/LanguageCode.md)
+> `const` **PT\_PT**: [`LanguageCode`](../../language-code/classes/LanguageCode.md)
 
-The constant value documented by the code.

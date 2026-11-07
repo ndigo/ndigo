@@ -6,6 +6,5 @@
 
 # Variable: X\_PERMITTED\_CROSS\_DOMAIN\_POLICIES
 
-> `const` `readonly` **X\_PERMITTED\_CROSS\_DOMAIN\_POLICIES**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **X\_PERMITTED\_CROSS\_DOMAIN\_POLICIES**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

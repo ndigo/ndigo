@@ -8,4 +8,3 @@
 
 > `const` **X\_CSRF\_TOKEN**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-Ndigo Custom Headers

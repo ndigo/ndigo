@@ -23,6 +23,8 @@ exposing the backing collection. Replacing an indicator keeps its position.
 
 > **new HealthRegistry**(`options?`): `HealthRegistry`
 
+Creates a registry with the given options.
+
 #### Parameters
 
 ##### options?
@@ -101,6 +103,8 @@ Returns name/indicator pairs in registration order.
 
 `IterableIterator`\<\[`string`, [`HealthIndicator`](../interfaces/HealthIndicator.md)\]\>
 
+An iterator over `[name, indicator]` pairs.
+
 #### Implementation of
 
 `Enumerable.entries`
@@ -119,9 +123,13 @@ Visits registrations in order, using `context` as callback `this`.
 
 (`value`, `key`, `list`) => `void`
 
+Invoked for each `(indicator, name)` pair.
+
 ##### context?
 
 `unknown`
+
+Value bound to `this` inside the callback.
 
 #### Returns
 
@@ -142,6 +150,8 @@ Returns indicator names in registration order.
 #### Returns
 
 `IterableIterator`\<`string`\>
+
+An iterator over the registered names.
 
 #### Implementation of
 
@@ -202,6 +212,8 @@ Returns indicators in registration order.
 #### Returns
 
 `IterableIterator`\<[`HealthIndicator`](../interfaces/HealthIndicator.md)\>
+
+An iterator over the registered indicators.
 
 #### Implementation of
 

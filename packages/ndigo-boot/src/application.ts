@@ -1,4 +1,6 @@
 /**
+ * Application bootstrap and lifecycle: environment preparation, context
+ * creation, and shutdown.
  */
 import {
     ConfigurableApplicationContext,
@@ -262,6 +264,7 @@ export class Application extends Emitter {
      *
      * @param environment - The environment being prepared.
      * @param args - Command-line arguments supplied to the application.
+     * @returns A promise that resolves once profiles, config files, and property sources are applied.
      */
     protected async _configureEnvironment(environment: ConfigurableEnvironment, args: string[]): Promise<void> {
         this._configureProfiles(environment, args);

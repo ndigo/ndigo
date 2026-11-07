@@ -6,6 +6,5 @@
 
 # Variable: FORWARDED
 
-> `const` `readonly` **FORWARDED**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **FORWARDED**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

@@ -6,6 +6,5 @@
 
 # Variable: TRANSFER\_ENCODING
 
-> `const` `readonly` **TRANSFER\_ENCODING**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **TRANSFER\_ENCODING**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

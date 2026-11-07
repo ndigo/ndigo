@@ -6,6 +6,5 @@
 
 # Variable: SERVER\_TIMING
 
-> `const` `readonly` **SERVER\_TIMING**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **SERVER\_TIMING**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

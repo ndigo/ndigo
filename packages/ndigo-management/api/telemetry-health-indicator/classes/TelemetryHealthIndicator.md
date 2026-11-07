@@ -42,7 +42,7 @@ The shared feature-metric aggregator (may be
 
 > `readonly` **name**: `"telemetry"` = `'telemetry'`
 
-The stable name of the subsystem (e.g. `'telemetry'`).
+The indicator name reported under `/health`.
 
 #### Implementation of
 
@@ -54,9 +54,13 @@ The stable name of the subsystem (e.g. `'telemetry'`).
 
 > **check**(): [`HealthResult`](../../health/interfaces/HealthResult.md)
 
+Reports `UP` when a metric aggregator is wired, `DOWN` otherwise.
+
 #### Returns
 
 [`HealthResult`](../../health/interfaces/HealthResult.md)
+
+The health result and feature-count details.
 
 #### Implementation of
 

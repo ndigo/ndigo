@@ -11,13 +11,34 @@ import { Signal, effect } from '@preact/signals-core';
  * satisfies it, so `@ndigo/signals` stays free of that dependency.
  */
 export interface EventSource {
+    /**
+     * Subscribes `listener` to occurrences of `type`.
+     *
+     * @param type - The event type to listen for.
+     * @param listener - Invoked with each occurrence's payload.
+     * @returns The source's subscription handle; ignored by the bridge.
+     */
     on(type: string | symbol, listener: (...args: unknown[]) => void): unknown;
 
+    /**
+     * Removes a subscription previously installed with {@link EventSource.on}.
+     *
+     * @param type - The event type the listener was registered for.
+     * @param listener - The exact listener passed to `on`.
+     * @returns The source's own unsubscribe result; ignored by the bridge.
+     */
     off(type: string | symbol, listener: (...args: unknown[]) => void): unknown;
 }
 
 /** An emitter-shaped sink that event occurrences are written to. */
 export interface EventSink {
+    /**
+     * Writes an occurrence of `type` with `data` to the sink.
+     *
+     * @param type - The event type to emit.
+     * @param data - Payload arguments carried by the occurrence.
+     * @returns The sink's own emit result; ignored by the bridge.
+     */
     emit(type: string | symbol, ...data: unknown[]): unknown;
 }
 

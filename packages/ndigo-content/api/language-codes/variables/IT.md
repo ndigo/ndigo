@@ -6,6 +6,5 @@
 
 # Variable: IT
 
-> `const` `readonly` **IT**: [`LanguageCode`](../../language-code/classes/LanguageCode.md)
+> `const` **IT**: [`LanguageCode`](../../language-code/classes/LanguageCode.md)
 
-The constant value documented by the code.

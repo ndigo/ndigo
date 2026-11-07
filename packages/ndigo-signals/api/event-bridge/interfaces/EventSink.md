@@ -14,16 +14,24 @@ An emitter-shaped sink that event occurrences are written to.
 
 > **emit**(`type`, ...`data`): `unknown`
 
+Writes an occurrence of `type` with `data` to the sink.
+
 #### Parameters
 
 ##### type
 
 `string` \| `symbol`
 
+The event type to emit.
+
 ##### data
 
 ...`unknown`[]
 
+Payload arguments carried by the occurrence.
+
 #### Returns
 
 `unknown`
+
+The sink's own emit result; ignored by the bridge.

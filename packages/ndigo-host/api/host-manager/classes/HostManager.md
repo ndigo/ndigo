@@ -101,9 +101,13 @@ Get the mounted feature composition, if any.
 
 `string`
 
+The registered feature name.
+
 #### Returns
 
 `FeatureContextComposition` \| `undefined`
+
+The mounted composition, or `undefined` when the feature is not mounted.
 
 ***
 
@@ -119,9 +123,13 @@ Whether a feature is currently mounted.
 
 `string`
 
+The registered feature name.
+
 #### Returns
 
 `boolean`
+
+`true` while the feature's context is mounted.
 
 ***
 
@@ -137,9 +145,13 @@ Mount a registered feature (static `createContext`/`data` features).
 
 `string`
 
+The registered feature name.
+
 #### Returns
 
 `FeatureContextComposition`
+
+The mounted feature's context composition.
 
 ***
 
@@ -155,9 +167,13 @@ Mount a feature loaded dynamically via its registered `loader`.
 
 `string`
 
+The registered feature name.
+
 #### Returns
 
 `Promise`\<`FeatureContextComposition`\>
+
+A promise for the mounted feature's context composition.
 
 ***
 
@@ -166,7 +182,7 @@ Mount a feature loaded dynamically via its registered `loader`.
 > **navigate**(`path`): `boolean`
 
 Navigate the host's partition router; activates/deactivates features
-per the activation policy. Returns whether a feature handled the path.
+per the activation policy.
 
 #### Parameters
 
@@ -174,9 +190,13 @@ per the activation policy. Returns whether a feature handled the path.
 
 `string`
 
+The absolute path to navigate to.
+
 #### Returns
 
 `boolean`
+
+Whether a feature handled the path.
 
 ***
 
@@ -205,9 +225,13 @@ with mount-on-activate / unmount-on-deactivate wiring.
 
 [`HostRegistrationOptions`](../interfaces/HostRegistrationOptions.md)
 
+The feature's name, route prefix, loader, and lifecycle hooks.
+
 #### Returns
 
 `this`
+
+This manager, so registrations can be chained.
 
 #### Throws
 
@@ -228,13 +252,19 @@ one is given.
 
 `string`
 
+The registered feature name.
+
 ##### policy?
 
 `FeatureUnmountPolicy`
 
+Overrides the registration's unmount policy for this call.
+
 #### Returns
 
 `boolean`
+
+Whether a mounted feature was unmounted.
 
 ***
 
@@ -250,6 +280,8 @@ freeing its name for re-registration.
 ##### name
 
 `string`
+
+The registered feature name.
 
 #### Returns
 

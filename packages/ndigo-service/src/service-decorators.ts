@@ -53,6 +53,11 @@ export interface ServiceCallConfig {
  *
  * @param target - The decorated class/interface constructor.
  * @returns The service configuration, or `undefined` when not decorated.
+ *
+ * @example
+ * ```ts
+ * const config = getServiceConfig(AccountsApi); // { name: 'accounts', baseUrl: '…' }
+ * ```
  */
 export function getServiceConfig(target: object): ServiceClientConfig | undefined {
     // `object` doesn't declare TC39's Symbol.metadata; every @service-decorated target carries it at runtime.
@@ -66,6 +71,12 @@ export function getServiceConfig(target: object): ServiceClientConfig | undefine
  *
  * @param target - The decorated class/interface constructor.
  * @returns A map of method name → call config, or an empty record.
+ *
+ * @example
+ * ```ts
+ * const calls = getServiceCalls(AccountsApi);
+ * // { getUser: { method: 'GET', path: '/users/:id' }, … }
+ * ```
  */
 export function getServiceCalls(target: object): Record<string, ServiceCallConfig> {
     // `object` doesn't declare TC39's Symbol.metadata; every @service-decorated target carries it at runtime.

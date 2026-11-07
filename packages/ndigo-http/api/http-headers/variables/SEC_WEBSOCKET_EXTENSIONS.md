@@ -6,6 +6,5 @@
 
 # Variable: SEC\_WEBSOCKET\_EXTENSIONS
 
-> `const` `readonly` **SEC\_WEBSOCKET\_EXTENSIONS**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **SEC\_WEBSOCKET\_EXTENSIONS**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

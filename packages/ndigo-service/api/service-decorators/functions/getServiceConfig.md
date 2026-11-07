@@ -23,3 +23,9 @@ The decorated class/interface constructor.
 [`ServiceClientConfig`](../interfaces/ServiceClientConfig.md) \| `undefined`
 
 The service configuration, or `undefined` when not decorated.
+
+## Example
+
+```ts
+const config = getServiceConfig(AccountsApi); // { name: 'accounts', baseUrl: '…' }
+```

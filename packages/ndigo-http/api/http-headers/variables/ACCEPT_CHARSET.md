@@ -6,6 +6,5 @@
 
 # Variable: ACCEPT\_CHARSET
 
-> `const` `readonly` **ACCEPT\_CHARSET**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **ACCEPT\_CHARSET**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

@@ -40,3 +40,10 @@ The application context providing the environment.
 [`ConfigurationPropertiesResult`](../interfaces/ConfigurationPropertiesResult.md)\<`T`\>
 
 The resolved instance and binding metadata.
+
+## Example
+
+```ts
+const { instance, bindings } = resolveConfigurationProperties(ServerConfig, context);
+console.log(instance.port, bindings);
+```

@@ -6,6 +6,8 @@
 
 # service
 
+Declarative service calls: execution chains, interceptors, and HTTP transport.
+
 ## Classes
 
 - [MappedServiceInterceptor](classes/MappedServiceInterceptor.md)

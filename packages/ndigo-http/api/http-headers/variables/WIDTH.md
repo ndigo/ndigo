@@ -6,6 +6,5 @@
 
 # Variable: WIDTH
 
-> `const` `readonly` **WIDTH**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **WIDTH**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

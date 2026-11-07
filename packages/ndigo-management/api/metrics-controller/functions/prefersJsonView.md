@@ -21,6 +21,17 @@ browsers — selects the Prometheus text document.
 
 `string` \| `undefined`
 
+The `Accept` header value, if any.
+
 ## Returns
 
 `boolean`
+
+`true` when the best acceptable entry is a JSON media type.
+
+## Example
+
+```ts
+prefersJsonView('application/json'); // true
+prefersJsonView('text/plain'); // false
+```

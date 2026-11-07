@@ -6,6 +6,5 @@
 
 # Variable: UGPRADE\_INSECURE\_REQUESTS
 
-> `const` `readonly` **UGPRADE\_INSECURE\_REQUESTS**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **UGPRADE\_INSECURE\_REQUESTS**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

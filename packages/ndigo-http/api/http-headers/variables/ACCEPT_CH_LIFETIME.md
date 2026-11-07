@@ -6,6 +6,5 @@
 
 # Variable: ACCEPT\_CH\_LIFETIME
 
-> `const` `readonly` **ACCEPT\_CH\_LIFETIME**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **ACCEPT\_CH\_LIFETIME**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

@@ -6,6 +6,5 @@
 
 # Variable: CONTENT\_TYPE
 
-> `const` `readonly` **CONTENT\_TYPE**: [`ContentTypeHeader`](../../content-type-header/classes/ContentTypeHeader.md)
+> `const` **CONTENT\_TYPE**: [`ContentTypeHeader`](../../content-type-header/classes/ContentTypeHeader.md)
 
-The constant value documented by the code.

@@ -6,6 +6,8 @@
 
 # retry
 
+Retry policy, interceptor, and `@retry` annotation.
+
 ## Classes
 
 - [RetryInterceptor](classes/RetryInterceptor.md)

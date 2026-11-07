@@ -6,6 +6,5 @@
 
 # Variable: ZH
 
-> `const` `readonly` **ZH**: [`LanguageCode`](../../language-code/classes/LanguageCode.md)
+> `const` **ZH**: [`LanguageCode`](../../language-code/classes/LanguageCode.md)
 
-The constant value documented by the code.

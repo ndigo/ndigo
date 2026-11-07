@@ -16,6 +16,16 @@ Reads the optional prefix from a `@configurationProperties` class.
 
 `unknown`
 
+The decorated class (or instance) to inspect.
+
 ## Returns
 
 `string` \| `undefined`
+
+The declared prefix, or `undefined` when none was set.
+
+## Example
+
+```ts
+const prefix = getConfigurationPropertiesPrefix(ServerConfig); // 'server'
+```

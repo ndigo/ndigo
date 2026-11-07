@@ -6,6 +6,5 @@
 
 # Variable: X\_DNS\_PREFETCH\_CONTROL
 
-> `const` `readonly` **X\_DNS\_PREFETCH\_CONTROL**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
+> `const` **X\_DNS\_PREFETCH\_CONTROL**: [`HTTPHeader`](../../http-header/classes/HTTPHeader.md)
 
-The constant value documented by the code.

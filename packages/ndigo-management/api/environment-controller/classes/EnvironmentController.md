@@ -26,6 +26,8 @@ name contains the term plus properties whose key starts with it.
 
 > **new EnvironmentController**(`exposure?`): `EnvironmentController`
 
+Creates the `/env` controller.
+
 #### Parameters
 
 ##### exposure?
@@ -66,6 +68,8 @@ A symbol indicating that the value is aware.
 ### applicationContext
 
 > `readonly` **applicationContext**: `ApplicationContext`
+
+The application context injected by the aware mixin.
 
 ## Methods
 

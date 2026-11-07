@@ -28,3 +28,13 @@ Service identity, exporter gating, and diagnostics options.
 [`BrowserTelemetryHandle`](../interfaces/BrowserTelemetryHandle.md)
 
 The telemetry lifecycle handle.
+
+## Example
+
+```ts
+const telemetry = configureBrowserTelemetry({
+    serviceName: 'conduit-web',
+    traceUrl: 'http://localhost:4318/v1/traces',
+});
+window.addEventListener('pagehide', () => void telemetry.shutdown());
+```

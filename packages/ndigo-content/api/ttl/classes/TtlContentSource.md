@@ -118,10 +118,16 @@ Evicts the cache entry for a specific key+language pair.
 
 `string`
 
+The content key.
+
 ##### language
 
 `string` \| [`LanguageCode`](../../language-code/classes/LanguageCode.md)
 
+The language whose entry is evicted.
+
 #### Returns
 
 `void`
+
+Nothing; the entry is removed when present.

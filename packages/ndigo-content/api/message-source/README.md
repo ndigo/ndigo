@@ -6,6 +6,8 @@
 
 # message-source
 
+The message-source contract and its awareness mixins.
+
 ## Interfaces
 
 - [MessageParams](interfaces/MessageParams.md)

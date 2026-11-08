@@ -6,6 +6,8 @@
 
 # interceptor
 
+Interceptor contract for `@ndigo/proxy`.
+
 ## Interfaces
 
 - [MethodDescriptor](interfaces/MethodDescriptor.md)

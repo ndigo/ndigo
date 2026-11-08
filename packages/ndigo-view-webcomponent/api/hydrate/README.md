@@ -6,6 +6,8 @@
 
 # hydrate
 
+Client-side hydration of server-rendered islands.
+
 ## Functions
 
 - [hydrateIslands](functions/hydrateIslands.md)

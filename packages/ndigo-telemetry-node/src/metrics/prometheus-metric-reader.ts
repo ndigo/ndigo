@@ -29,12 +29,20 @@ import type { MetricHistogramBucket, MetricPoint, MetricSnapshot } from '@ndigo/
  * A pull metric reader for the Prometheus text exposition format.
  */
 export class PrometheusMetricReader extends MetricReader {
-    /** {@inheritDoc} */
+    /**
+     * Stops the reader; pull-only readers hold no resources.
+     *
+     * @returns A promise that resolves once shutdown is complete.
+     */
     protected async onShutdown(): Promise<void> {
         // Pull-only: nothing to stop.
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Flushes the reader; a pull-only reader has nothing to flush.
+     *
+     * @returns A promise that resolves once the flush completes.
+     */
     protected async onForceFlush(): Promise<void> {
         // Pull-only: a scrape already collects; nothing to flush.
     }

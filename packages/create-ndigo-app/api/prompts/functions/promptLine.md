@@ -16,10 +16,16 @@ Reads a single line from stdin with an optional default.
 
 `string`
 
+The prompt shown to the user.
+
 ### defaultValue?
 
 `string`
 
+Value returned when the answer is blank.
+
 ## Returns
 
 `Promise`\<`string`\>
+
+The trimmed answer, or `defaultValue` when blank.

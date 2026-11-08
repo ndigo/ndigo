@@ -3,7 +3,13 @@
  */
 import { createInterface } from 'node:readline';
 
-/** Reads a single line from stdin with an optional default. */
+/**
+ * Reads a single line from stdin with an optional default.
+ *
+ * @param question - The prompt shown to the user.
+ * @param defaultValue - Value returned when the answer is blank.
+ * @returns The trimmed answer, or `defaultValue` when blank.
+ */
 export async function promptLine(question: string, defaultValue?: string): Promise<string> {
     const rl = createInterface({ input: process.stdin, output: process.stdout });
     const suffix = defaultValue !== undefined && defaultValue !== '' ? ` [${defaultValue}]` : '';
@@ -15,7 +21,15 @@ export async function promptLine(question: string, defaultValue?: string): Promi
     return trimmed.length > 0 ? trimmed : (defaultValue ?? '');
 }
 
-/** Prompts for a choice from a fixed list, returning the default on empty input. */
+/**
+ * Prompts for a choice from a fixed list, returning the default on empty input.
+ *
+ * @param question - The prompt shown to the user.
+ * @param choices - The allowed answers.
+ * @param defaultValue - Value returned when the answer is blank.
+ * @returns The selected choice.
+ * @throws When the answer is not one of `choices`.
+ */
 export async function promptChoice<T extends string>(
     question: string,
     choices: readonly T[],

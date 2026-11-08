@@ -31,3 +31,9 @@ Unique annotation name within the `proxy:` namespace.
 [`AnnotationKey`](../interfaces/AnnotationKey.md)\<`T`\>
 
 An [AnnotationKey](../interfaces/AnnotationKey.md) callable with the annotation value.
+
+## Example
+
+```ts
+const audited = methodAnnotation<{ action: string }>('audited');
+```

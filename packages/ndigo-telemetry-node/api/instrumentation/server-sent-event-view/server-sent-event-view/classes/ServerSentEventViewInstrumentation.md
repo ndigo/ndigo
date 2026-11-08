@@ -40,7 +40,7 @@ configureTelemetry({
 
 > **disable**(): `void`
 
-Hook for subclasses to wire up `_unwrap` calls.
+Restores the original `renderTo` method.
 
 #### Returns
 
@@ -56,7 +56,8 @@ Hook for subclasses to wire up `_unwrap` calls.
 
 > **enable**(): `void`
 
-Hook for subclasses to wire up `_wrap` calls.
+Patches `ServerSentEventView#renderTo` to record SSE rendering spans and
+byte counts.
 
 #### Returns
 

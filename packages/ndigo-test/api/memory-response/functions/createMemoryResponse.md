@@ -23,3 +23,12 @@ A mutable response record plus the `ServerResponse`-shaped sink.
 ### sink
 
 > **sink**: [`ResponseSink`](../interfaces/ResponseSink.md)
+
+## Example
+
+```ts
+const { response, sink } = createMemoryResponse();
+sink.writeHead(201, { 'content-type': 'text/plain' });
+sink.end('created');
+expect(response.status).toBe(201);
+```

@@ -23,3 +23,10 @@ The raw CLI arguments (flags + positional name).
 `Promise`\<`number`\>
 
 The process exit code (0 success, 1 runtime failure, 2 usage error).
+
+## Example
+
+```ts
+const code = await scaffold(['my-app', '--kind', 'node', '--yes']);
+process.exitCode = code;
+```

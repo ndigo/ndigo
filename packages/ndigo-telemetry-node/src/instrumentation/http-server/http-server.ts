@@ -44,6 +44,9 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
         super('http-server');
     }
 
+    /**
+     * Patches `HTTPServer#start` and `#close` to record server lifecycle spans.
+     */
     enable(): void {
         this._wrap(
             HTTPServer.prototype,
@@ -152,6 +155,9 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
         });
     }
 
+    /**
+     * Restores the original `start` and `close` methods.
+     */
     disable(): void {
         this._unwrap(HTTPServer.prototype, 'start');
         this._unwrap(HTTPServer.prototype, 'close');

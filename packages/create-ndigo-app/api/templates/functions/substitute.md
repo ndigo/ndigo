@@ -16,10 +16,16 @@ Replaces `{{key}}` placeholders; unknown keys are left untouched.
 
 `string`
 
+The template content.
+
 ### vars
 
 `Record`\<`string`, `string` \| `number`\>
 
+The substitution map.
+
 ## Returns
 
 `string`
+
+The content with known placeholders replaced.

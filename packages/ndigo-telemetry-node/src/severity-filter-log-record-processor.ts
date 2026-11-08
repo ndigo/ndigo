@@ -1,4 +1,5 @@
 /**
+ * Filters OpenTelemetry log records by minimum severity.
  */
 import { Context } from '@opentelemetry/api';
 import { LogRecordProcessor, type ReadWriteLogRecord } from '@opentelemetry/sdk-logs';

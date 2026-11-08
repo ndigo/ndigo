@@ -30,3 +30,9 @@ The in-memory response sink to place at `NODE_RESPONSE_ATTRIBUTE`.
 [`PreparedRoute`](../interfaces/PreparedRoute.md)
 
 The prepared route.
+
+## Example
+
+```ts
+const route = buildRoute({ method: 'GET', path: '/todos/42' }, sink);
+```

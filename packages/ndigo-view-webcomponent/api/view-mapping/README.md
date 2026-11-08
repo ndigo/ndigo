@@ -6,6 +6,8 @@
 
 # view-mapping
 
+`@viewMapping` decorator metadata for view-to-tag mappings.
+
 ## Variables
 
 - [ViewMapping](variables/ViewMapping.md)

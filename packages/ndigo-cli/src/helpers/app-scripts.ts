@@ -16,6 +16,9 @@ import { runCluster, type ClusterRunResult } from '@ndigo/cluster';
  * Rendering and exit behavior are owned by the CLI application config in
  * `index.ts` (exceptionWhileRunningCommand + determineExitCode, issue #148)
  * — creating this error must not touch `process.exitCode` directly.
+ *
+ * @param message - The usage error message.
+ * @returns An `Error` carrying exit code `2`.
  */
 export function usageError(message: string): Error & { exitCode?: number } {
     const error = new Error(message) as Error & { exitCode?: number };
@@ -25,6 +28,9 @@ export function usageError(message: string): Error & { exitCode?: number } {
 
 /**
  * Reads a directory's `package.json`.
+ *
+ * @param dir - The application directory.
+ * @returns The parsed manifest, or `null` when missing or unreadable.
  */
 export function readAppManifest(dir: string): Record<string, unknown> | null {
     try {
@@ -207,6 +213,7 @@ export async function runInteractiveSpawn(
  * @param dir - The app directory (absolute).
  * @param scriptKey - The `scripts.<key>` to run.
  * @param hint - The missing-script hint.
+ * @param extraArgv - Arguments appended to the resolved script.
  * @returns The child's exit code.
  */
 export async function runAppOnce(

@@ -12,17 +12,31 @@ import type { AppKind, ScaffoldOptions } from './types.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-/** Absolute path to the templates root shipped with the package. */
+/**
+ * Absolute path to the templates root shipped with the package.
+ *
+ * @returns The absolute `templates/` directory.
+ */
 export function templatesRoot(): string {
     return resolve(__dirname, '..', 'templates');
 }
 
-/** Absolute path to the template directory for a kind. */
+/**
+ * Absolute path to the template directory for a kind.
+ *
+ * @param kind - The application kind.
+ * @returns The absolute template directory for `kind`.
+ */
 export function kindTemplateDir(kind: AppKind): string {
     return join(templatesRoot(), kind);
 }
 
-/** Substitution variables derived from the scaffold options. */
+/**
+ * Substitution variables derived from the scaffold options.
+ *
+ * @param options - The scaffold options.
+ * @returns The `{{key}}` substitution map.
+ */
 export function templateVars(options: ScaffoldOptions): Record<string, string | number> {
     const className = toPascal(options.name);
     const camelName = className.charAt(0).toLowerCase() + className.slice(1);
@@ -46,7 +60,13 @@ function toPascal(slug: string): string {
         .join('');
 }
 
-/** Replaces `{{key}}` placeholders; unknown keys are left untouched. */
+/**
+ * Replaces `{{key}}` placeholders; unknown keys are left untouched.
+ *
+ * @param content - The template content.
+ * @param vars - The substitution map.
+ * @returns The content with known placeholders replaced.
+ */
 export function substitute(content: string, vars: Record<string, string | number>): string {
     return content.replace(/\{\{(\w+)\}\}/g, (match, key: string) => {
         if (!(key in vars)) return match;
@@ -58,6 +78,11 @@ export function substitute(content: string, vars: Record<string, string | number
  * Recursively copies a template tree into `targetDir`, applying `{{...}}`
  * substitution to file contents and `__name__` substitution to file names.
  * Strips a trailing `.template` suffix.
+ *
+ * @param kind - The application kind whose template tree is copied.
+ * @param targetDir - The destination directory.
+ * @param vars - The `{{key}}` substitution map.
+ * @returns Nothing; writes the tree to disk.
  */
 export function copyTemplate(kind: AppKind, targetDir: string, vars: Record<string, string | number>): void {
     const src = kindTemplateDir(kind);

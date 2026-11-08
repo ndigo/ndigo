@@ -22,3 +22,10 @@ The sources the app was booted with.
 ## Returns
 
 `void`
+
+## Example
+
+```ts
+const app = bootApp([AppConfiguration]);
+releaseCachedApp([AppConfiguration]);
+```

@@ -16,6 +16,10 @@ Reads a directory's `package.json`.
 
 `string`
 
+The application directory.
+
 ## Returns
 
 `Record`\<`string`, `unknown`\> \| `null`
+
+The parsed manifest, or `null` when missing or unreadable.

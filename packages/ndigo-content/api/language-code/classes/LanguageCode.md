@@ -82,6 +82,8 @@ Orders canonical tags lexicographically, not by language preference or specifici
 
 `LanguageCode`
 
+The code to compare against.
+
 #### Returns
 
 `number`
@@ -105,6 +107,8 @@ Orders canonical tags lexicographically with case ignored.
 ##### other
 
 `LanguageCode`
+
+The code to compare against.
 
 #### Returns
 
@@ -131,9 +135,13 @@ Equality is by value, not instance identity or shared base language.
 
 `LanguageCode`
 
+The code to compare against.
+
 #### Returns
 
 `boolean`
+
+Whether both canonical tags are identical.
 
 #### Implementation of
 
@@ -145,11 +153,13 @@ Equality is by value, not instance identity or shared base language.
 
 > **toJSON**(): `JSONValue`
 
+Serializes the code to its canonical string.
+
 #### Returns
 
 `JSONValue`
 
-A JSON representation of the language code
+A JSON representation of the language code.
 
 #### Implementation of
 
@@ -161,11 +171,13 @@ A JSON representation of the language code
 
 > **toString**(): `string`
 
+Returns the canonical language tag.
+
 #### Returns
 
 `string`
 
-A string representation of the language code
+A string representation of the language code.
 
 #### Implementation of
 

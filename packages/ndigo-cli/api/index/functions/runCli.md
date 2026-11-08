@@ -23,3 +23,9 @@ The argv after the binary name (defaults to the process argv).
 `Promise`\<`unknown`\>
 
 When the process completes (commands set their own exit codes).
+
+## Example
+
+```ts
+await runCli(['db', 'status']);
+```

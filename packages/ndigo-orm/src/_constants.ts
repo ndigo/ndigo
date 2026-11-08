@@ -1,4 +1,5 @@
 /**
+ * Metadata keys used by the ORM entity decorators.
  */
 export const entityMetadataKey = 'orm:entity';
 export const entityNameMetadataKey = 'orm:entity:name';

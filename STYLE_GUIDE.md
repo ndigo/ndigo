@@ -4428,7 +4428,7 @@ the `header` generator adds/replaces it on existing files:
 The file-level block documents the whole module; class/method members carry
 their own focused TSDoc. `internal/requires-doc-header` (oxlint, error level —
 `.oxlintrc.json`) enforces the canonical block on source files. Module-summary
-presence is tracked per package by `scripts/doc-coverage.mjs`.
+presence is gated per package by `scripts/doc-coverage.mjs`.
 
 **Public symbol comments (coverage gate):** every top-level exported
 function, class, interface, or type alias needs a doc comment — the docs
@@ -4440,9 +4440,13 @@ summary suffices for self-evident type aliases and predicate helpers:
 export function isInitialized(value: unknown): boolean;
 ```
 
-Members (methods/getters/properties), variables, and enum members are exempt
-— names self-document. `@internal` and `_`-prefixed internal files are
-exempt. See `docs/guides/12-package-documentation.md`.
+**Depth gate (zero tolerance):** `pnpm doc:coverage` also fails CI when any
+source module lacks a real summary, any exported class/interface member lacks
+a doc comment, any method with parameters omits a parameter's `@param`, or any
+function with a non-`void` return omits `@returns`. Document members too —
+variables and enum members are the only exemptions, because their names
+self-document. `@internal` and `_`-prefixed internal files are exempt. See
+`docs/guides/12-package-documentation.md`.
 
 **Standard tags.** Use only TSDoc-standard tags: `@remarks`, `@example`,
 `@param`, `@typeParam`, `@returns`, `@throws`, `@defaultValue`,

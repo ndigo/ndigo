@@ -143,7 +143,7 @@ pnpm --filter @ndigo/cache test
 
 ## See Also
 
-- [Guide 07 — Caching](../../docs/guides/07-caching.md) — the server decorator, client memoization, invalidation, and pitfalls
+- [Guide 19 — Caching](../../docs/guides/19-caching.md) — the server decorator, client memoization, invalidation, and pitfalls
 
 ## Contributing
 

@@ -118,7 +118,7 @@ pnpm --filter @ndigo/resilience test
 
 ## See Also
 
-- [Guide 15 — Method Interception & Resilience](../../docs/guides/15-method-interception.md)
+- [Guide 35 — Method Interception & Resilience](../../docs/guides/35-method-interception-and-resilience.md)
 - [@ndigo/proxy](../ndigo-proxy/README.md) — the annotation, interceptor, and weaving contract these policies run on
 
 ## Contributing

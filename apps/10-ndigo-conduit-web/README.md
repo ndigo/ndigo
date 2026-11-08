@@ -149,9 +149,9 @@ validity (no raw TC39 decorators in `dist/`, HI-1) is a gate here.
 - [apps/README](../README.md) — the numbered application ladder and port registry
 - [11 — Conduit API](../11-ndigo-conduit-api/README.md) — the backend this app drives, and its spec conformance notes
 - [03 — TodoMVC](../03-ndigo-todo-web/README.md) — the router/views/signals/auth reference for this app's structure
-- [Guide 18 — Signals & Islands](../../docs/guides/18-signals-and-islands.md) — the reactive state layer
-- [Guide 19 — Testing with @ndigo/test](../../docs/guides/19-testing.md) — `BrowserMockClient`/`MemoryViewTarget`
-- [Guide 20 — The HTTP client](../../docs/guides/20-http-client.md) — interceptors, transforms, parsers
+- [Guide 29 — Signals & Islands](../../docs/guides/29-signals-and-islands.md) — the reactive state layer
+- [Guide 36 — Testing with @ndigo/test](../../docs/guides/36-testing.md) — `BrowserMockClient`/`MemoryViewTarget`
+- [Guide 11 — The HTTP client](../../docs/guides/11-http-client.md) — interceptors, transforms, parsers
 - [RealWorld spec](https://github.com/realworld-apps/realworld/tree/main/specs/api) — the API contract and official collections
 
 ## Contributing

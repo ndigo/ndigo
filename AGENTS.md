@@ -126,7 +126,7 @@ Every package must meet the documentation standard:
 - **Cross-package JSDoc links** — add an entry to
   `scripts/external-symbol-links.json`; never sprinkle links into package code.
 - **Enforcement** — `pnpm manifest:check` (README/metadata/files), CI
-  freshness diff. Full rules: `docs/guides/12-package-documentation.md`.
+  freshness diff. Full rules: `docs/guides/90-package-documentation.md`.
 
 **No HTML docs:** `doc-html/` and `typedoc.html.json` are gone; do not
 reintroduce them.

@@ -5,7 +5,7 @@
  * the template reads — the controller never builds markup or a view instance
  * (the status-bearing 404 page included: it returns a view *name*).
  *
- * Form posts bind their whole body through `dataBinderValue('body')` (guide 09)
+ * Form posts bind their whole body through `dataBinderValue('body')` (guide 06)
  * and are then parsed with the schema in `forms.ts`; a failure re-renders the
  * form with the submitted values and per-field message keys, and a success
  * redirects to the owner's detail page (post/redirect/get), so a reload can

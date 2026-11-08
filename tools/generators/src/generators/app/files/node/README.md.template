@@ -19,7 +19,7 @@ cd apps/<%= dirName %> && pnpm start
 ## See Also
 
 - [apps/README](../README.md) — the applications progression
-- [guide 29 — Application Conventions](../../docs/guides/29-application-conventions.md) — the shared ladder, layout, and naming rules
+- [guide 91 — Application Conventions](../../docs/guides/91-application-conventions.md) — the shared ladder, layout, and naming rules
 - [@ndigo/platform-node](../../packages/ndigo-platform-node/README.md) — the Node platform foundation
 
 ## Contributing

@@ -3,7 +3,7 @@
  * `WebAutoConfiguration` path and dispatches the root route through the
  * framework pipeline (handler mapping → controller → WebComponentView),
  * driven by the shared `@ndigo/test` browser harness (`bootBrowserApp` +
- * `BrowserMockClient`; guide 19 §3).
+ * `BrowserMockClient`; guide 36 §3).
  */
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';

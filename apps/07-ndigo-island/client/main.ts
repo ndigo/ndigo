@@ -28,7 +28,7 @@ import { z } from 'zod';
  * The add-item form is the AD-71 reference integration: Web Awesome
  * form-associated controls submit standard name/value pairs, so the POST body
  * is ordinary `application/x-www-form-urlencoded` and the server binds it
- * through the existing `dataBinderValue` + Zod path (guide 09/02).
+ * through the existing `dataBinderValue` + Zod path (guide 06/07).
  */
 
 export type TodoItem = { text: string; done: boolean };
@@ -139,7 +139,7 @@ class TodoIsland extends AbstractWebComponent {
 
     /**
      * The negotiated locale, assigned by `hydrateIslands` from the island
-     * marker before the model (guide 04 propagates the server's choice).
+     * marker before the model (guide 17 propagates the server's choice).
      */
     set locale(locale: string) {
         this.#locale = locale;

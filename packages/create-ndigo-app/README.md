@@ -41,7 +41,7 @@ create-ndigo-app [dir] [--kind node|browser] [--name <slug>]
 The scaffolded app uses the AD-90 lifecycle presets (`runNodeApplication` /
 `createWebApplication`), ships a smoke test and (for the browser kind) the
 bundle guard, and follows the conventions in
-[guide 29](../../docs/guides/29-application-conventions.md).
+[guide 91](../../docs/guides/91-application-conventions.md).
 
 ## API
 

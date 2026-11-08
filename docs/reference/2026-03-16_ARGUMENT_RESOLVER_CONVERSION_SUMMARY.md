@@ -1,7 +1,7 @@
 # Argument Resolver Conversion Summary
 
 > **⚠️ ARCHIVED** — session-era upgrade note, superseded by
-> [guide 09](../guides/09-argument-binding.md), AD-27 (argument binding) and
+> [guide 06](../guides/06-argument-binding.md), AD-27 (argument binding) and
 > AD-38 (schema-target conversion). Kept for history.
 
 ## Scope

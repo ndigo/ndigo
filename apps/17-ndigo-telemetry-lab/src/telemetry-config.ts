@@ -1,5 +1,5 @@
 /**
- * The lab's telemetry wiring resolved from the environment (AD-32, guide 10).
+ * The lab's telemetry wiring resolved from the environment (AD-32, guide 32).
  *
  * Two things are deliberately separate:
  *

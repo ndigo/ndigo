@@ -6,7 +6,7 @@
  *
  * - `@scheduled` with the every-five-seconds cron registers it with the scheduler
  *   auto-discovery (`ScheduleRegistry`) — zero wiring on a registered bean
- *   (AD-20, guides 05).
+ *   (AD-20, guides 23).
  * - `@counted('telemetry-lab.scheduled.ticks')` records one OpenTelemetry
  *   counter per run (push view).
  * - `@traced('lab.ticker.tick')` opens a root span per run (the task runs

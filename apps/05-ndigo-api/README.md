@@ -68,7 +68,7 @@ GET  /swagger-ui/              Swagger UI (AD-35; Bearer-gated, SEC-4)
 - Opaque session-token auth (`@ndigo/auth-server`, AD-33) and profile-gated dev beans (`@whenProfile('dev')`)
 - In-memory and Drizzle ORM entity managers
 - RFC 9457 problem+json error envelope
-- Scheduled heartbeat task (`@scheduled`, auto-discovered and auto-started; see the [scheduling guide](../../docs/guides/05-scheduling.md))
+- Scheduled heartbeat task (`@scheduled`, auto-discovered and auto-started; see the [scheduling guide](../../docs/guides/23-scheduling.md))
 
 ## Socket authentication
 

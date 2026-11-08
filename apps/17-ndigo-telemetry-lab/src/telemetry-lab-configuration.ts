@@ -9,7 +9,7 @@
  * framework's default CSP (`connect-src 'self'`): the page opens a WebSocket
  * on the same origin, and in collector mode it must also reach the OTLP
  * endpoint. Call it on the refreshed context, before the server accepts
- * requests (guides 06/10).
+ * requests (guides 15/32).
  */
 import '@tsmetadata/polyfill';
 import { configuration, entry, type ApplicationContext } from '@ndigo/context';

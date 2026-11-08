@@ -96,8 +96,8 @@ Browser (untrusted) ──HTTPS──▶ TLS-terminating proxy ──▶ Node se
 - Decisions: AD-10 (error model), AD-25 (headers), AD-29 (secrets),
   AD-33 (auth credentials/sessions/rate limit), AD-37 (trusted proxy),
   AD-40 (durable sessions), AD-56 (auth design)
-- How-to: guides 03 (secrets/config), 11 (auth & sessions),
-  15 (interception/resilience)
+- How-to: guides 03 (secrets/config), 26 (auth & sessions),
+  35 (interception/resilience)
 - History: SEC-1..SEC-6 remediation records in
   `docs/plans/*CODE_REVIEW_AND_MITIGATION.md`; the gap analysis that seeded
   them: `docs/audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md`

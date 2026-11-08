@@ -115,7 +115,7 @@ subdomain is trusted. Dropping `Secure`/`Path=/` (or adding a `Domain`)
 while keeping the prefix makes browsers reject the cookie, so mutating
 requests fail closed. Pair the interceptor with
 `NodeSessionInterceptor` and `AuthRouteGuard` for cookie-authenticated
-routes; see the [authentication guide](../../docs/guides/11-authentication-and-sessions.md#6-csrf-on-auth-mutations).
+routes; see the [authentication guide](../../docs/guides/26-authentication-and-sessions.md#6-csrf-on-auth-mutations).
 
 ### Controller Example
 
@@ -198,13 +198,13 @@ Auto-configuration for Node.js-based applications that provisions:
   :- A `lockDriver` bean (`@ndigo/locks`): the default in-process driver
   coordinates schedulers within one process; register a `RedisLockDriver`
   bean to make `@scheduled({ lock })` arbitrate across nodes — see
-  [guide 23](../../docs/guides/23-distributed-locks.md)
+  [guide 24](../../docs/guides/24-distributed-locks.md)
   :- A `flagEvaluator` + `flagContextResolver` pair (`@ndigo/flags`): the
   `@whenFeature` gate is default-on and evaluates through them — the default
   evaluator reads `feature.*` properties live, the default context resolver
   targets the session principal (else the client address); override either
   bean for vendor flagging and tenant/attribute targeting — see
-  [guide 28](../../docs/guides/28-feature-flags.md)
+  [guide 34](../../docs/guides/34-feature-flags.md)
   :- A managed `httpServer` entry (`HTTPServer`, a `SmartLifecycle` bean)
   :- A `socketSessionRegistry` bean (`SocketSessionRegistry`): rooms, path
   broadcast, heartbeat, and backpressure for `@socketMapping` endpoints —
@@ -216,7 +216,7 @@ Auto-configuration for Node.js-based applications that provisions:
 
 Applications that previously relied on no language negotiation now render
 with the header-negotiated locale (`en-US` default) — see the
-[content and i18n guide](../../docs/guides/04-i18n-and-content.md).
+[content and i18n guide](../../docs/guides/17-i18n-and-content.md).
 
 ### WebSockets (`@socketMapping`)
 
@@ -247,7 +247,7 @@ may take before the socket closes `1011`; default `10000`), `maxConnections`
 (concurrent connections, counted from the accepted upgrade until close;
 default `10000`, overflow closes `1013`, `Infinity` disables),
 `allowedWebSocketOrigins`, and `socketLimits`.
-See the [websockets guide](../../docs/guides/06-websockets.md) and
+See the [websockets guide](../../docs/guides/15-websockets.md) and
 [Socket authentication](#socket-authentication).
 
 #### Opt-in cross-node paths and rooms
@@ -293,7 +293,7 @@ runs with `finally` even on failure, including failed startup. The registry does
 not own/close the transport. `StompBroker({ fanout })` can share it for topics;
 await `broker.connect()` before serving and `broker.close()` before transport
 shutdown. Each transport permits one consumer per scope. See the
-[websockets guide](../../docs/guides/06-websockets.md#cross-node-live-fan-out-opt-in)
+[websockets guide](../../docs/guides/15-websockets.md#cross-node-live-fan-out-opt-in)
 for complete composition, failure semantics, Redis limits and deployment policy.
 
 ### Socket authentication
@@ -364,7 +364,7 @@ and `writeProblem` are exported for custom errors.
 ### Guides
 
 - [Building a Node API](../../docs/guides/01-building-a-node-api.md)
-- [Request Validation](../../docs/guides/02-request-validation.md)
+- [Request Validation](../../docs/guides/07-request-validation.md)
 
 ## API
 

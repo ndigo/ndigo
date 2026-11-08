@@ -120,7 +120,7 @@ await broker.publish('/queue/jobs', 'work'); // backlog; late subscribers replay
 await broker.publish('/topic/bin', new Uint8Array([0, 1, 255])); // binary MESSAGE
 ```
 
-Semantics include transactions (BEGIN/COMMIT/ABORT, per-session buffers), ack tracking + NACK redelivery (`redelivered: true`), and `/user` scoped routing. Durable `/queue` storage is available through `LibSQLQueueMessageStore` from `@ndigo/orm-drizzle`; it is separate from cross-node live delivery. STOMP-over-TCP and SockJS are deliberately not provided — see the [websockets guide](../../docs/guides/06-websockets.md) for the full semantics.
+Semantics include transactions (BEGIN/COMMIT/ABORT, per-session buffers), ack tracking + NACK redelivery (`redelivered: true`), and `/user` scoped routing. Durable `/queue` storage is available through `LibSQLQueueMessageStore` from `@ndigo/orm-drizzle`; it is separate from cross-node live delivery. STOMP-over-TCP and SockJS are deliberately not provided — see the [websockets guide](../../docs/guides/15-websockets.md) for the full semantics.
 
 ### Cross-node live delivery
 
@@ -155,7 +155,7 @@ no reconnect, replay, global ordering or exactly-once promise. Each transport
 supports one consumer per scope; a registry (`path`/`room`) and broker (`topic`)
 can share one. Await `broker.close()` to close sessions and unsubscribe before
 the owner closes the transport/publisher; it does not close either transport or
-queue store. See the [opt-in composition and limits](../../docs/guides/06-websockets.md#cross-node-live-fan-out-opt-in).
+queue store. See the [opt-in composition and limits](../../docs/guides/15-websockets.md#cross-node-live-fan-out-opt-in).
 
 ## API
 

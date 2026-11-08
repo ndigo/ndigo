@@ -32,10 +32,10 @@ cd apps/07-ndigo-island && pnpm dev
   bound and validated through the standard `dataBinderValue` + Zod path, and
   the resulting model update reaches every client over SSE. The theme is the
   library's token stylesheet plus `--wa-*` overrides from the shell. See
-  [guide 21](../../docs/guides/21-component-integration.md).
+  [guide 30](../../docs/guides/30-component-integration.md).
 - The library's `with-clear` icon is fetched from a `data:` URL, so the demo
   widens the CSP `connect-src` (via the `SecurityHeadersInterceptor` seam) —
-  see guide 21 §9.
+  see guide 30 §9.
 
 ## Development
 
@@ -47,7 +47,7 @@ cd apps/07-ndigo-island && pnpm test:e2e   # Playwright browser lane (starts the
 ## See Also
 
 - [apps/README](../README.md) — the applications progression
-- [Guide 21 — Component Integration](../../docs/guides/21-component-integration.md) — the library adoption pattern this app demonstrates
+- [Guide 30 — Component Integration](../../docs/guides/30-component-integration.md) — the library adoption pattern this app demonstrates
 - [@ndigo/view-ejs](../../packages/ndigo-view-ejs/README.md) — the EJS technology
 
 ## Contributing

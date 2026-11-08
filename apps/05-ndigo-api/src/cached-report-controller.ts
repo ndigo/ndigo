@@ -28,7 +28,7 @@ export const REPORTS = new ContextToken<Cache<{ invocations: number; value: stri
  *   wrapper replaces the prototype method, so `this.report()` self-calls are
  *   cached too (documented semantics; stronger than proxy interception).
  *
- * @see docs/guides/07-caching.md
+ * @see docs/guides/19-caching.md
  */
 @requestMapping('/api')
 export class CachedReportController extends AsApplicationContextAware(Object) {

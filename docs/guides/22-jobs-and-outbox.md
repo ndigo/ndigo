@@ -1,4 +1,4 @@
-# Guide 22 — Jobs and the Transactional Outbox
+# Guide 22 — Jobs & the Transactional Outbox
 
 How background work is delivered in Ndigo: `@ndigo/jobs` — the `JobDriver`
 contract, worker execution, and the transactional outbox that ties side
@@ -182,9 +182,9 @@ record — see AD-72's consequences.
 
 ## See Also
 
-- [Guide 05 — Scheduling](05-scheduling.md): the trigger side — `@scheduled`
+- [Guide 23 — Scheduling](23-scheduling.md): the trigger side — `@scheduled`
   for time-based work, jobs for delivered work.
-- [Guide 16 — Persistence & Distributed Backends](16-persistence-and-distributed-backends.md):
+- [Guide 21 — Persistence & Shared Stores](21-persistence-and-shared-stores.md):
   the memory-first doctrine and the durable-store family the job stores join.
 - [AD-72](../decisions/2026-10-07_AD72_JOBS_AND_OUTBOX.md): the decision
   record behind this surface.

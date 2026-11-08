@@ -115,7 +115,7 @@ pnpm --filter @ndigo/proxy test
 
 ## See Also
 
-- [Guide 15 — Method Interception & Resilience](../../docs/guides/15-method-interception.md)
+- [Guide 35 — Method Interception & Resilience](../../docs/guides/35-method-interception-and-resilience.md)
 - [@ndigo/resilience](../ndigo-resilience/README.md) — retry and circuit-breaker interceptors on this contract
 
 ## Contributing

@@ -1,4 +1,5 @@
 /**
+ * Routes navigation across feature partitions.
  */
 import { PathRoute } from './path-route';
 import { Route } from './route';
@@ -15,7 +16,9 @@ export type FeatureRouteCallback = (route: Route) => void;
  * Represents a mounted feature route, associating a callback with a URL prefix.
  */
 export interface FeatureRouteMount {
+    /** The feature's route callback. */
     callback: FeatureRouteCallback;
+    /** The URL prefix that activates the feature. */
     prefix: string;
 }
 
@@ -25,6 +28,7 @@ export interface FeatureRouteMount {
  * It supports mounting feature-specific routes at defined prefixes.
  */
 export class PartitionRouter extends AbstractRouter {
+    /** The always-no-op callback (partitions own their callbacks). */
     readonly callback = () => undefined;
     #mounts: FeatureRouteMount[];
     #route: string;

@@ -31,6 +31,12 @@ export interface DrizzleAdapterOptions {
     rollback?: (count?: number) => Promise<void>;
 }
 
+/**
+ * Builds a `NdigoDatabaseAdapter` around a Drizzle data source and migrations.
+ *
+ * @param options - Data source, migrations, name, and app-owned hooks.
+ * @returns The database adapter.
+ */
 export function createDrizzleAdapter(options: DrizzleAdapterOptions): NdigoDatabaseAdapter {
     const migrator = new DrizzleMigrator(options.dataSource);
 

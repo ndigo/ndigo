@@ -6,6 +6,8 @@
 
 # response-status
 
+HTTP status value object.
+
 ## Classes
 
 - [default](classes/default.md)

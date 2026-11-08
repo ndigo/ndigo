@@ -6,6 +6,8 @@
 
 # interceptors/not-ok-interceptor
 
+Rejects non-2xx responses.
+
 ## Classes
 
 - [NotOKInterceptor](classes/NotOKInterceptor.md)

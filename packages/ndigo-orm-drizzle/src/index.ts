@@ -1,4 +1,5 @@
 /**
+ * Public API of `@ndigo/orm-drizzle` — Drizzle adapters and LibSQL stores.
  */
 export { DrizzleDataSource, createTableStatements } from './drizzle-data-source';
 export type { DrizzleDataSourceOptions } from './drizzle-data-source';

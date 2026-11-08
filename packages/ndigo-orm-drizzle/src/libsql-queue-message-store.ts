@@ -90,6 +90,7 @@ export interface LibSQLQueueMessageStoreOptions {
  * store are owned; injected clients are borrowed by default.
  */
 export class LibSQLQueueMessageStore implements QueueMessageStore {
+    /** Store identifier (`'libsql'`). */
     readonly kind = 'libsql';
     readonly #client: Client;
     readonly #ready: Promise<void>;
@@ -109,6 +110,12 @@ export class LibSQLQueueMessageStore implements QueueMessageStore {
         void this.#ready.catch(() => undefined);
     }
 
+    /**
+     * Appends one message to its destination.
+     *
+     * @param message - The message payload (sequence and stored time are assigned here).
+     * @returns The stored message.
+     */
     async append(message: Omit<StoredQueueMessage, 'seq' | 'storedAt'>): Promise<StoredQueueMessage> {
         const destination = assertDestination(message.destination);
         await this.#ready;
@@ -146,6 +153,13 @@ export class LibSQLQueueMessageStore implements QueueMessageStore {
         return decodeRow(row as unknown as Row);
     }
 
+    /**
+     * Replays retained messages after a sequence cursor.
+     *
+     * @param destination - The destination to replay.
+     * @param options - Sequence cursor and result limit.
+     * @returns The retained messages in sequence order.
+     */
     async replay(
         destination: string,
         options: { afterSeq?: number; limit?: number } = {}
@@ -174,6 +188,13 @@ export class LibSQLQueueMessageStore implements QueueMessageStore {
         return result.rows.map((row) => decodeRow(row as unknown as Row));
     }
 
+    /**
+     * Applies a retention policy to one destination.
+     *
+     * @param destination - The destination to prune.
+     * @param retention - TTL and count bounds.
+     * @returns The number of pruned messages.
+     */
     async prune(destination: string, retention: { ttlMs?: number; maxMessages?: number }): Promise<number> {
         const name = assertDestination(destination);
         await this.#ready;
@@ -206,6 +227,12 @@ export class LibSQLQueueMessageStore implements QueueMessageStore {
         return pruned;
     }
 
+    /**
+     * Whether a destination currently retains messages.
+     *
+     * @param destination - The destination to check.
+     * @returns `true` when the destination has retained messages.
+     */
     async has(destination: string): Promise<boolean> {
         const name = assertDestination(destination);
         await this.#ready;

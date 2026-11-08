@@ -1,4 +1,5 @@
 /**
+ * Feature route partitions and activation policy.
  */
 import type { FeatureMetricRecorder } from '@ndigo/core';
 
@@ -17,7 +18,9 @@ export type FeatureActivationPolicy = 'tracked' | 'exclusive';
  * Options for configuring the `FeatureRoutingRegistry`.
  */
 export interface FeatureRoutingRegistryOptions {
+    /** Feature activation policy; defaults to `'tracked'`. */
     activationPolicy?: FeatureActivationPolicy;
+    /** Records feature activation metrics. */
     metricRecorder?: FeatureMetricRecorder;
 }
 
@@ -25,10 +28,15 @@ export interface FeatureRoutingRegistryOptions {
  * Defines the structure for registering a feature with the `FeatureRoutingRegistry`.
  */
 export interface FeatureRouteRegistration {
+    /** The feature name. */
     name: string;
+    /** The URL prefix that activates the feature. */
     prefix: string;
+    /** Invoked after the feature activates. */
     onActivate?: () => void;
+    /** Invoked after the feature deactivates. */
     onDeactivate?: () => void;
+    /** Receives the feature-local route. */
     onRoute: (route: Route) => void;
 }
 

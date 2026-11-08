@@ -1,4 +1,5 @@
 /**
+ * Public API of `@ndigo/orm` — entities, repositories, and pagination.
  */
 // Types and interfaces
 export type {

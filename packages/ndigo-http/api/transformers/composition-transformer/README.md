@@ -6,6 +6,8 @@
 
 # transformers/composition-transformer
 
+Composes HTTP transformers.
+
 ## Classes
 
 - [CompositionTransformer](classes/CompositionTransformer.md)

@@ -38,7 +38,7 @@ A borrowed client, or url/authToken to create an owned
 
 > `readonly` **kind**: `"libsql"` = `'libsql'`
 
-Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`).
+Backend identifier (`'libsql'`).
 
 #### Implementation of
 
@@ -50,15 +50,21 @@ Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`).
 
 > **claim**(`options`): `Promise`\<`JobRecord`[]\>
 
+Atomically leases up to `limit` eligible jobs.
+
 #### Parameters
 
 ##### options
 
 `ClaimOptions`
 
+Claim window.
+
 #### Returns
 
 `Promise`\<`JobRecord`[]\>
+
+The claimed records (possibly empty).
 
 #### Implementation of
 
@@ -89,15 +95,21 @@ stop and drain the runner first.
 
 > **complete**(`id`): `Promise`\<`void`\>
 
+Removes a finished job.
+
 #### Parameters
 
 ##### id
 
 `string`
 
+The job identifier.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once removed.
 
 #### Implementation of
 
@@ -109,15 +121,21 @@ stop and drain the runner first.
 
 > **enqueue**(`request`): `Promise`\<`JobRecord`\>
 
+Stores one job and makes it eligible at its resolved `runAt`.
+
 #### Parameters
 
 ##### request
 
 `JobRequest`
 
+The producer-supplied job request.
+
 #### Returns
 
 `Promise`\<`JobRecord`\>
+
+The stored record.
 
 #### Implementation of
 
@@ -129,19 +147,27 @@ stop and drain the runner first.
 
 > **fail**(`id`, `lastError`): `Promise`\<`void`\>
 
+Terminally fails a job, removing it from the queue.
+
 #### Parameters
 
 ##### id
 
 `string`
 
+The job identifier.
+
 ##### lastError
 
 `string`
 
+Message from the final failed attempt.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once removed.
 
 #### Implementation of
 
@@ -153,19 +179,27 @@ stop and drain the runner first.
 
 > **heartbeat**(`id`, `leaseMs`): `Promise`\<`void`\>
 
+Extends the lease of a running job.
+
 #### Parameters
 
 ##### id
 
 `string`
 
+The job identifier.
+
 ##### leaseMs
 
 `number`
 
+New lease duration from now.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once extended.
 
 #### Implementation of
 
@@ -177,23 +211,33 @@ stop and drain the runner first.
 
 > **retry**(`id`, `runAt`, `lastError`): `Promise`\<`void`\>
 
+Returns a job to the queue at `runAt` with the failure recorded.
+
 #### Parameters
 
 ##### id
 
 `string`
 
+The job identifier.
+
 ##### runAt
 
 `number`
+
+Next eligible time (epoch milliseconds).
 
 ##### lastError
 
 `string`
 
+Message from the failed attempt.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once requeued.
 
 #### Implementation of
 
@@ -205,9 +249,13 @@ stop and drain the runner first.
 
 > **size**(): `Promise`\<`number`\>
 
+Number of jobs pending delivery.
+
 #### Returns
 
 `Promise`\<`number`\>
+
+The pending count.
 
 #### Implementation of
 

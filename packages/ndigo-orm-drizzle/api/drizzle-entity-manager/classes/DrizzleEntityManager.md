@@ -138,13 +138,19 @@ inverse side (one-to-many, one-to-one). Does not mutate the entity.
 
 `object`
 
+The entity whose relation is loaded.
+
 ##### relationName
 
 `string`
 
+The declared relation field name.
+
 #### Returns
 
 `Promise`\<`unknown`\>
+
+The loaded relation value.
 
 #### Throws
 
@@ -192,6 +198,8 @@ When a relation, its join column, or the
 
 > **find**\<`T`\>(`entityClass`, `id`): `Promise`\<`T` \| `undefined`\>
 
+Finds an entity by its primary identifier.
+
 #### Type Parameters
 
 ##### T
@@ -204,13 +212,19 @@ When a relation, its join column, or the
 
 `Constructable`\<`T`\>
 
+The entity class.
+
 ##### id
 
 `unknown`
 
+The primary identifier.
+
 #### Returns
 
 `Promise`\<`T` \| `undefined`\>
+
+The entity, or `undefined` when absent.
 
 ***
 
@@ -218,6 +232,8 @@ When a relation, its join column, or the
 
 > **findAll**\<`T`\>(`entityClass`): `Promise`\<`T`[]\>
 
+Returns all entities of a class.
+
 #### Type Parameters
 
 ##### T
@@ -230,9 +246,13 @@ When a relation, its join column, or the
 
 `Constructable`\<`T`\>
 
+The entity class.
+
 #### Returns
 
 `Promise`\<`T`[]\>
+
+All entities.
 
 ***
 
@@ -257,11 +277,17 @@ runs); unlike `findPage`, no total counts are computed.
 
 `Constructable`\<`T`\>
 
+The entity class to query.
+
 ##### conditions
 
 `object`[]
 
+Equality conditions as column/value pairs.
+
 ##### options?
+
+Optional ordering and limit.
 
 ###### limit?
 
@@ -274,6 +300,8 @@ runs); unlike `findPage`, no total counts are computed.
 #### Returns
 
 `Promise`\<`T`[]\>
+
+The matching entities.
 
 ***
 
@@ -298,13 +326,19 @@ so the request can never inject SQL.
 
 `Constructable`\<`T`\>
 
+The entity class to page.
+
 ##### request
 
 `PageRequest`
 
+The page index (1-based), size, and sort orders.
+
 #### Returns
 
 `Promise`\<`Page`\<`T`\>\>
+
+The requested page with totals.
 
 ***
 
@@ -312,6 +346,8 @@ so the request can never inject SQL.
 
 > **persist**\<`T`\>(`entity`): `Promise`\<`void`\>
 
+Persists (inserts or updates) the entity.
+
 #### Type Parameters
 
 ##### T
@@ -324,9 +360,13 @@ so the request can never inject SQL.
 
 `T`
 
+The entity to persist.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once persisted.
 
 ***
 
@@ -334,6 +374,8 @@ so the request can never inject SQL.
 
 > **remove**\<`T`\>(`entity`): `Promise`\<`void`\>
 
+Removes an entity row.
+
 #### Type Parameters
 
 ##### T
@@ -346,6 +388,10 @@ so the request can never inject SQL.
 
 `T`
 
+The entity to remove.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once removed.

@@ -6,6 +6,8 @@
 
 # transaction-manager
 
+Transaction contracts and the in-memory snapshot manager.
+
 ## Classes
 
 - [InMemoryTransactionManager](classes/InMemoryTransactionManager.md)

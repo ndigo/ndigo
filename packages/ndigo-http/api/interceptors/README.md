@@ -6,6 +6,8 @@
 
 # interceptors
 
+Built-in HTTP interceptors.
+
 ## References
 
 ### AppResetInit

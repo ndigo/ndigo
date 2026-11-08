@@ -110,19 +110,27 @@ The interceptors configured for this client instance.
 
 > **connect**(`input`, `init?`): `Promise`\<`Response`\>
 
+Sends a CONNECT request.
+
 #### Parameters
 
 ##### input
 
 `string`
 
+The request URL.
+
 ##### init?
 
 [`HTTPInit`](../../http-types/type-aliases/HTTPInit.md) = `{}`
 
+Request options.
+
 #### Returns
 
 `Promise`\<`Response`\>
+
+The final response.
 
 ***
 
@@ -130,19 +138,27 @@ The interceptors configured for this client instance.
 
 > **delete**(`input`, `init?`): `Promise`\<`Response`\>
 
+Sends a DELETE request.
+
 #### Parameters
 
 ##### input
 
 `string`
 
+The request URL.
+
 ##### init?
 
 [`HTTPInit`](../../http-types/type-aliases/HTTPInit.md) = `{}`
 
+Request options.
+
 #### Returns
 
 `Promise`\<`Response`\>
+
+The final response.
 
 ***
 
@@ -150,19 +166,27 @@ The interceptors configured for this client instance.
 
 > **get**(`input`, `init?`): `Promise`\<`Response`\>
 
+Sends a GET request.
+
 #### Parameters
 
 ##### input
 
 `string`
 
+The request URL.
+
 ##### init?
 
 [`HTTPInit`](../../http-types/type-aliases/HTTPInit.md) = `{}`
 
+Request options.
+
 #### Returns
 
 `Promise`\<`Response`\>
+
+The final response.
 
 ***
 
@@ -170,19 +194,27 @@ The interceptors configured for this client instance.
 
 > **head**(`input`, `init?`): `Promise`\<`Response`\>
 
+Sends a HEAD request.
+
 #### Parameters
 
 ##### input
 
 `string`
 
+The request URL.
+
 ##### init?
 
 [`HTTPInit`](../../http-types/type-aliases/HTTPInit.md) = `{}`
 
+Request options.
+
 #### Returns
 
 `Promise`\<`Response`\>
+
+The final response.
 
 ***
 
@@ -190,19 +222,27 @@ The interceptors configured for this client instance.
 
 > **options**(`input`, `init?`): `Promise`\<`Response`\>
 
+Sends an OPTIONS request.
+
 #### Parameters
 
 ##### input
 
 `string`
 
+The request URL.
+
 ##### init?
 
 [`HTTPInit`](../../http-types/type-aliases/HTTPInit.md) = `{}`
 
+Request options.
+
 #### Returns
 
 `Promise`\<`Response`\>
+
+The final response.
 
 ***
 
@@ -210,19 +250,27 @@ The interceptors configured for this client instance.
 
 > **patch**(`input`, `init?`): `Promise`\<`Response`\>
 
+Sends a PATCH request.
+
 #### Parameters
 
 ##### input
 
 `string`
 
+The request URL.
+
 ##### init?
 
 [`HTTPInit`](../../http-types/type-aliases/HTTPInit.md) = `{}`
 
+Request options.
+
 #### Returns
 
 `Promise`\<`Response`\>
+
+The final response.
 
 ***
 
@@ -230,19 +278,27 @@ The interceptors configured for this client instance.
 
 > **post**(`input`, `init?`): `Promise`\<`Response`\>
 
+Sends a POST request.
+
 #### Parameters
 
 ##### input
 
 `string`
 
+The request URL.
+
 ##### init?
 
 [`HTTPInit`](../../http-types/type-aliases/HTTPInit.md) = `{}`
 
+Request options.
+
 #### Returns
 
 `Promise`\<`Response`\>
+
+The final response.
 
 ***
 
@@ -250,19 +306,27 @@ The interceptors configured for this client instance.
 
 > **put**(`input`, `init?`): `Promise`\<`Response`\>
 
+Sends a PUT request.
+
 #### Parameters
 
 ##### input
 
 `string`
 
+The request URL.
+
 ##### init?
 
 [`HTTPInit`](../../http-types/type-aliases/HTTPInit.md) = `{}`
 
+Request options.
+
 #### Returns
 
 `Promise`\<`Response`\>
+
+The final response.
 
 ***
 
@@ -270,19 +334,27 @@ The interceptors configured for this client instance.
 
 > **request**(`input`, `init?`): `Promise`\<`Response`\>
 
+Sends an HTTP request through the interceptor chain.
+
 #### Parameters
 
 ##### input
 
 `string`
 
+The request URL.
+
 ##### init?
 
 [`HTTPInit`](../../http-types/type-aliases/HTTPInit.md) \| `null` = `null`
 
+Request options.
+
 #### Returns
 
 `Promise`\<`Response`\>
+
+The final response.
 
 ***
 
@@ -290,19 +362,27 @@ The interceptors configured for this client instance.
 
 > **trace**(`input`, `init?`): `Promise`\<`Response`\>
 
+Sends a TRACE request.
+
 #### Parameters
 
 ##### input
 
 `string`
 
+The request URL.
+
 ##### init?
 
 [`HTTPInit`](../../http-types/type-aliases/HTTPInit.md) = `{}`
 
+Request options.
+
 #### Returns
 
 `Promise`\<`Response`\>
+
+The final response.
 
 ***
 

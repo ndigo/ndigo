@@ -15,15 +15,21 @@ Interceptors can perform actions before (`preRoute`) or after (`postRoute`) a ro
 
 > `optional` **afterCompletion**(`route`): `void` \| `Promise`\<`void`\>
 
+Runs after completion, regardless of outcome.
+
 #### Parameters
 
 ##### route
 
 [`Route`](../../route/interfaces/Route.md)
 
+The route being navigated.
+
 #### Returns
 
 `void` \| `Promise`\<`void`\>
+
+A promise that resolves once the hook completes.
 
 ***
 
@@ -31,15 +37,21 @@ Interceptors can perform actions before (`preRoute`) or after (`postRoute`) a ro
 
 > `optional` **postHandle**(`route`): `void` \| `Promise`\<`void`\>
 
+Runs after the route is committed.
+
 #### Parameters
 
 ##### route
 
 [`Route`](../../route/interfaces/Route.md)
 
+The route being navigated.
+
 #### Returns
 
 `void` \| `Promise`\<`void`\>
+
+A promise that resolves once the hook completes.
 
 ***
 
@@ -47,12 +59,18 @@ Interceptors can perform actions before (`preRoute`) or after (`postRoute`) a ro
 
 > `optional` **preHandle**(`route`): `boolean` \| `Promise`\<`boolean`\>
 
+Runs before navigation; `false` aborts it.
+
 #### Parameters
 
 ##### route
 
 [`Route`](../../route/interfaces/Route.md)
 
+The route being navigated.
+
 #### Returns
 
 `boolean` \| `Promise`\<`boolean`\>
+
+Whether navigation may proceed.

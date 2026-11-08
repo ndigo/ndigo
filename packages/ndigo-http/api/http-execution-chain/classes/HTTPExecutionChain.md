@@ -85,6 +85,8 @@ The interceptors registered with this execution chain.
 
 > **\_checkInterceptorType**(`interceptor`): `void`
 
+Checks one interceptor's shape and updates the chain's capability flags.
+
 #### Parameters
 
 ##### interceptor

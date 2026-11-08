@@ -6,6 +6,8 @@
 
 # interceptors/data-parameter-interceptor
 
+Serializes the `data` request option.
+
 ## Classes
 
 - [DataParameterInterceptor](classes/DataParameterInterceptor.md)

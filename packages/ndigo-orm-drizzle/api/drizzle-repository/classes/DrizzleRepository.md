@@ -36,6 +36,8 @@ The entity's primary identifier type.
 
 > **new DrizzleRepository**\<`T`, `ID`\>(`entityClass`, `entityManager`): `DrizzleRepository`\<`T`, `ID`\>
 
+Creates a repository for an entity class.
+
 #### Parameters
 
 ##### entityClass
@@ -65,6 +67,8 @@ Returns the number of entities of the managed type.
 #### Returns
 
 `Promise`\<`number`\>
+
+The entity count.
 
 #### Implementation of
 
@@ -110,9 +114,13 @@ Checks whether an entity with the given primary identifier exists.
 
 `ID`
 
+The entity's primary identifier.
+
 #### Returns
 
 `Promise`\<`boolean`\>
+
+Whether the entity exists.
 
 #### Implementation of
 
@@ -137,6 +145,8 @@ Optional relation loading (eager fetch).
 #### Returns
 
 `Promise`\<`T`[]\>
+
+All entities.
 
 #### Implementation of
 

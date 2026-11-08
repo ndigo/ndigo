@@ -112,7 +112,12 @@ export class LibSQLOutboxStore implements OutboxStore {
         void this.#ready.catch(() => undefined);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Records one side effect.
+     *
+     * @param input - Type and payload to record.
+     * @returns The stored entry.
+     */
     async append(input: { type: string; payload?: unknown }): Promise<OutboxEntry> {
         await this.#ready;
         this.#assertOpen();
@@ -137,7 +142,12 @@ export class LibSQLOutboxStore implements OutboxStore {
         return entry;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Leases up to `limit` unpublished entries.
+     *
+     * @param options - Claim window.
+     * @returns The claimed entries.
+     */
     async claimPending(options: OutboxClaimOptions = {}): Promise<OutboxEntry[]> {
         await this.#ready;
         this.#assertOpen();
@@ -166,7 +176,12 @@ export class LibSQLOutboxStore implements OutboxStore {
         return result.rows.map((row) => decodeRow(row as unknown as Row));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Marks an entry as published.
+     *
+     * @param id - The entry identifier.
+     * @returns A promise that resolves once marked.
+     */
     async markPublished(id: JobId): Promise<void> {
         await this.#ready;
         this.#assertOpen();
@@ -176,7 +191,12 @@ export class LibSQLOutboxStore implements OutboxStore {
         });
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Deletes published entries older than the given age.
+     *
+     * @param olderThanMs - Age in milliseconds.
+     * @returns Number of pruned entries.
+     */
     async prunePublished(olderThanMs: number): Promise<number> {
         await this.#ready;
         this.#assertOpen();
@@ -187,7 +207,11 @@ export class LibSQLOutboxStore implements OutboxStore {
         return result.rowsAffected;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Number of unpublished entries.
+     *
+     * @returns The pending count.
+     */
     async size(): Promise<number> {
         await this.#ready;
         this.#assertOpen();

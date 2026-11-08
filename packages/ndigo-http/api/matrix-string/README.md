@@ -6,6 +6,8 @@
 
 # matrix-string
 
+Matrix-string parsing and serialization.
+
 ## Variables
 
 - [default](variables/default.md)

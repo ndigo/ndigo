@@ -24,6 +24,10 @@ derived-query repositories.
 
 [`SortOrder`](../interfaces/SortOrder.md)[]
 
+The sort clauses.
+
 ## Returns
+
+The comparator.
 
 (`left`, `right`) => `number`

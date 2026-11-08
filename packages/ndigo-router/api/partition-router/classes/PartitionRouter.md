@@ -46,6 +46,8 @@ Gets the current full route path managed by the `PartitionRouter`.
 
 The current route path as a string.
 
+The current route path.
+
 #### Overrides
 
 [`AbstractRouter`](../../router/classes/AbstractRouter.md).[`route`](../../router/classes/AbstractRouter.md#route)
@@ -80,6 +82,8 @@ The `RouterInterceptor` to add.
 ### callback()
 
 > `readonly` **callback**(): `undefined`
+
+The always-no-op callback (partitions own their callbacks).
 
 #### Returns
 

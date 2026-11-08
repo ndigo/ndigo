@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "ndigo",
+  "homepage": "https://ndigo.dev",
+  "items": [
+    {
+      "name": "theme",
+      "type": "registry:theme",
+      "title": "Ndigo theme",
+      "description": "Ndigo brand tokens (--nd-*) plus the opt-in base layer for native elements.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["theme", "tokens"],
+      "files": [
+        {
+          "path": "tokens/ndigo-tokens.css",
+          "type": "registry:file",
+          "target": "styles/ndigo-tokens.css"
+        },
+        {
+          "path": "theme/base.css",
+          "type": "registry:file",
+          "target": "styles/ndigo-base.css"
+        }
+      ],
+      "docs": "Import `styles/ndigo-tokens.css` before the base layer. Set `data-theme=\"light\"` for the light palette; leaving it unset follows the operating system."
+    }
+  ]
+}

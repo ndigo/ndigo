@@ -1,0 +1,149 @@
+/* ==========================================================================
+   Ndigo design tokens — the canonical source of every --nd-* custom property.
+   Framework-free on purpose: no font files, no @import, no element selectors.
+   Consumers import this file and read the variables; adapters (Starlight,
+   Tailwind, frameworks) live with the consumer, never here.
+   ========================================================================== */
+
+:root {
+    /* Brand palette — sampled from the Ndigo mark. */
+    --nd-palette-indigo-deep: #293896;
+    --nd-palette-violet: #5b3be0;
+    --nd-palette-violet-bright: #9a38ff;
+    --nd-gradient-brand: linear-gradient(135deg, #293896 0%, #5b3be0 45%, #9a38ff 100%);
+
+    /* Typography */
+    --nd-font-display: 'Michroma', 'Inter', system-ui, sans-serif;
+    --nd-font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --nd-font-mono: 'Fira Code', 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+
+    --nd-text-xs: 0.75rem;
+    --nd-text-sm: 0.875rem;
+    --nd-text-base: 1rem;
+    --nd-text-lg: 1.125rem;
+    --nd-text-xl: 1.25rem;
+    --nd-text-2xl: 1.5rem;
+    --nd-text-3xl: 1.875rem;
+    --nd-text-4xl: 2.25rem;
+
+    --nd-leading-tight: 1.2;
+    --nd-leading-normal: 1.5;
+    --nd-leading-relaxed: 1.65;
+
+    --nd-weight-regular: 400;
+    --nd-weight-medium: 500;
+    --nd-weight-semibold: 600;
+    --nd-weight-bold: 700;
+
+    --nd-tracking-tight: -0.01em;
+    --nd-tracking-wide: 0.02em;
+
+    /* Spacing — 4px base. */
+    --nd-space-0: 0;
+    --nd-space-1: 0.25rem;
+    --nd-space-2: 0.5rem;
+    --nd-space-3: 0.75rem;
+    --nd-space-4: 1rem;
+    --nd-space-6: 1.5rem;
+    --nd-space-8: 2rem;
+    --nd-space-12: 3rem;
+    --nd-space-16: 4rem;
+
+    /* Radius */
+    --nd-radius-sm: 0.25rem;
+    --nd-radius-md: 0.5rem;
+    --nd-radius-lg: 0.75rem;
+    --nd-radius-xl: 1rem;
+    --nd-radius-full: 9999px;
+
+    /* Elevation */
+    --nd-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --nd-shadow-md: 0 4px 16px rgb(0 0 0 / 0.35);
+    --nd-shadow-lg: 0 16px 48px rgb(0 0 0 / 0.5);
+    --nd-shadow-brand: 0 4px 24px rgb(41 56 150 / 0.18);
+
+    /* Motion */
+    --nd-duration-fast: 120ms;
+    --nd-duration-base: 200ms;
+    --nd-duration-slow: 320ms;
+    --nd-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --nd-ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    /* Stacking order */
+    --nd-z-base: 0;
+    --nd-z-raised: 10;
+    --nd-z-dropdown: 100;
+    --nd-z-sticky: 200;
+    --nd-z-overlay: 300;
+    --nd-z-modal: 400;
+    --nd-z-toast: 500;
+    --nd-z-tooltip: 600;
+
+    /* Focus */
+    --nd-focus-ring-width: 2px;
+    --nd-focus-ring-color: var(--nd-color-accent-strong);
+    --nd-focus-ring-offset: 2px;
+}
+
+/* ---------- Dark mode (primary) ---------- */
+:root,
+:root[data-theme='dark'] {
+    --nd-color-bg: #0a0a14;
+    --nd-color-surface: #13132a;
+    --nd-color-surface-raised: #1c1c3a;
+    --nd-color-text: #e8e8f2;
+    --nd-color-text-muted: #9898b8;
+    --nd-color-border: #2a2a4a;
+    --nd-color-code-bg: #0f0f1f;
+    --nd-color-accent: var(--nd-palette-violet);
+    --nd-color-accent-strong: var(--nd-palette-violet-bright);
+    --nd-color-accent-soft: rgb(91 59 224 / 0.18);
+    --nd-color-on-accent: #ffffff;
+    --nd-color-success: #4ade80;
+    --nd-color-warning: #fbbf24;
+    --nd-color-danger: #f87171;
+    --nd-color-info: #60a5fa;
+    color-scheme: dark;
+}
+
+/* ---------- Light mode ---------- */
+:root[data-theme='light'] {
+    --nd-color-bg: #fafaff;
+    --nd-color-surface: #f2f2fa;
+    --nd-color-surface-raised: #ffffff;
+    --nd-color-text: #1a1a2e;
+    --nd-color-text-muted: #5a5a7a;
+    --nd-color-border: #e0e0f0;
+    --nd-color-code-bg: #f0f0f8;
+    --nd-color-accent: var(--nd-palette-violet);
+    --nd-color-accent-strong: var(--nd-palette-indigo-deep);
+    --nd-color-accent-soft: rgb(91 59 224 / 0.1);
+    --nd-color-on-accent: #ffffff;
+    --nd-color-success: #15803d;
+    --nd-color-warning: #a16207;
+    --nd-color-danger: #b91c1c;
+    --nd-color-info: #1d4ed8;
+    color-scheme: light;
+}
+
+/* Follow the OS when the consumer has not set an explicit theme. */
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+        --nd-color-bg: #fafaff;
+        --nd-color-surface: #f2f2fa;
+        --nd-color-surface-raised: #ffffff;
+        --nd-color-text: #1a1a2e;
+        --nd-color-text-muted: #5a5a7a;
+        --nd-color-border: #e0e0f0;
+        --nd-color-code-bg: #f0f0f8;
+        --nd-color-accent: var(--nd-palette-violet);
+        --nd-color-accent-strong: var(--nd-palette-indigo-deep);
+        --nd-color-accent-soft: rgb(91 59 224 / 0.1);
+        --nd-color-on-accent: #ffffff;
+        --nd-color-success: #15803d;
+        --nd-color-warning: #a16207;
+        --nd-color-danger: #b91c1c;
+        --nd-color-info: #1d4ed8;
+        color-scheme: light;
+    }
+}

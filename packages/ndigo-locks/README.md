@@ -41,7 +41,7 @@ if (lease === null) {
 }
 ```
 
-Multi node: register a `RedisLockDriver` bean (see [guide 23](../../docs/guides/23-distributed-locks.md)); the same code coordinates across processes.
+Multi node: register a `RedisLockDriver` bean (see [guide 24](../../docs/guides/24-distributed-locks.md)); the same code coordinates across processes.
 
 ## Usage
 

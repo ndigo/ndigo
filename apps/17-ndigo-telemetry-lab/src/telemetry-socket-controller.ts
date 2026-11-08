@@ -2,7 +2,7 @@
  * The socket half of the lab: `/ws/telemetry` accepts connections into the
  * `telemetry` room, and a second `@scheduled` task pushes the current metric
  * snapshot into that room every few seconds — the scheduler → registry →
- * live-client path (AD-21 D4, guides 06).
+ * live-client path (AD-21 D4, guides 15).
  *
  * Inbound frames are counted (a client can send anything; the payload is not
  * interpreted) so the two-way nature of the session is observable in

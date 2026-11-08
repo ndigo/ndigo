@@ -113,7 +113,7 @@ ISC — see the repository license.
 Declare gates on routes (`@whenFeature`, enforced by the platform's
 `FeatureGateInterceptor`), check flags programmatically via the
 `FLAG_EVALUATOR` bean, or implement a custom provider behind the
-`FlagEvaluator` SPI. See [guide 28](../../docs/guides/28-feature-flags.md)
+`FlagEvaluator` SPI. See [guide 34](../../docs/guides/34-feature-flags.md)
 for the full walk-through (config shapes, refresh semantics, the 404
 denial, vendor bridging).
 
@@ -138,7 +138,7 @@ it that way: platform-specific enforcement lives in
 
 ## Contributing
 
-Follow the repository conventions ([guide 12](../../docs/guides/12-package-documentation.md)):
+Follow the repository conventions ([guide 90](../../docs/guides/90-package-documentation.md)):
 JSDoc blocks with `@since`/`@author`, `Symbol.metadata`
 decoration-time validation, tested via vitest with fail-before/pass-after
 evidence per change.

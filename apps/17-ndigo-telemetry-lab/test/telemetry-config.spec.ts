@@ -1,7 +1,7 @@
 /**
  * The lab's telemetry configuration surface: how `NDIGO_TELEMETRY_SAMPLER` and
  * `OTEL_EXPORTER_OTLP_ENDPOINT` resolve, and that a typo fails loud rather than
- * silently meaning "always" (guide 10 §2).
+ * silently meaning "always" (guide 32 §2).
  *
  * Nothing here touches the OpenTelemetry API — `resolveLabTelemetry` is pure by
  * design, which is exactly why it can be asserted in a plain worker.

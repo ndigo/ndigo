@@ -17,6 +17,7 @@
     "paths": {
       "@ndigo/util/crypto": ["./packages/ndigo-util/src/crypto"],
       "@ndigo/util/crypto/*": ["./packages/ndigo-util/src/crypto/*"],
+      "@/lib/*": ["./packages/ndigo-ui/registry/base/*"],
       "@ndigo/util/math": ["./packages/ndigo-util/src/math"],
       "@ndigo/util/math/*": ["./packages/ndigo-util/src/math/*"],
       "@ndigo/util/string": ["./packages/ndigo-util/src/string"],

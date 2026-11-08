@@ -350,8 +350,8 @@ Where:
 Docs updated in place rather than frozen by date use a stable kebab-case slug with no date:
 
 ```
-✅ docs/guides/19-testing.md
-✅ docs/guides/04-i18n-and-content.md
+✅ docs/guides/36-testing.md
+✅ docs/guides/17-i18n-and-content.md
 ✅ docs/architecture/security.md
 ✅ ARCHITECTURE.md
 
@@ -486,7 +486,7 @@ can rather than asserting the whole signature — the cast hides the narrowing
 from readers and from TypeDoc. Do not add `@function` to make the page render
 as a function: the API reference classifies function-typed constants with the
 repo-local plugin described in
-[`docs/guides/12-package-documentation.md`](docs/guides/12-package-documentation.md).
+[`docs/guides/90-package-documentation.md`](docs/guides/90-package-documentation.md).
 
 ### Predicate Functions [CONVENTION: Code Review]
 
@@ -3533,7 +3533,7 @@ packages/
 
 Applications (`apps/NN-ndigo-<slug>`) use a role-based variant of this layout
 (`controllers/`, `services/`, `entities/`, `views/`) and are not published — see
-[guide 29 — Application Conventions](docs/guides/29-application-conventions.md).
+[guide 91 — Application Conventions](docs/guides/91-application-conventions.md).
 
 ### Barrel Exports (index.ts) [CONVENTION: Code Review]
 
@@ -4419,7 +4419,7 @@ the `header` generator adds/replaces it on existing files:
   deliberately not used.
 - ❌ No `@module` tag: TypeDoc derives each module's name from its source path,
   and a package-wide tag collapses every file of the package into one module
-  (see `docs/guides/12-package-documentation.md`)
+  (see `docs/guides/90-package-documentation.md`)
 - ❌ Headings (`#`) inside doc blocks
 - ❌ `TODO:` summary placeholders — describe what the file does
 - ✅ Generate with:
@@ -4446,7 +4446,7 @@ a doc comment, any method with parameters omits a parameter's `@param`, or any
 function with a non-`void` return omits `@returns`. Document members too —
 variables and enum members are the only exemptions, because their names
 self-document. `@internal` and `_`-prefixed internal files are exempt. See
-`docs/guides/12-package-documentation.md`.
+`docs/guides/90-package-documentation.md`.
 
 **Standard tags.** Use only TSDoc-standard tags: `@remarks`, `@example`,
 `@param`, `@typeParam`, `@returns`, `@throws`, `@defaultValue`,

@@ -4,7 +4,7 @@
  * Every user-visible string the app owns — page titles, labels, table headers,
  * navigation, the 404 page and the per-field validation messages — is a key
  * here, so the EJS templates resolve them through the request's negotiated
- * language (`t(...)`, guide 04) and the Zod schemas can name a key as their
+ * language (`t(...)`, guide 17) and the Zod schemas can name a key as their
  * failure message instead of hard-coding prose.
  */
 

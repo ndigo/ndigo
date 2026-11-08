@@ -64,7 +64,7 @@ Two layers, both additive on the AD-30 runner:
   `diffProjections(before, after)` renders the SQL delta (create/alter/drop)
   with anything the metadata predicate cannot express reported as
   unsupported; `renderMigrationFile` + `renderSnapshot`/`readSnapshot` are
-  the committed artifacts. `ndigo db generate` (guide 27) drives the whole
+  the committed artifacts. `ndigo db generate` (guide 20) drives the whole
   loop against the committed snapshot, so regeneration is byte-identical —
   the CI freshness gate's premise.
 
@@ -176,8 +176,8 @@ pnpm --filter @ndigo/orm-drizzle test
 ## See Also
 
 - [@ndigo/orm](../ndigo-orm/README.md) — the entity metadata and repository contracts this adapter implements
-- [Guide 11 — Authentication & Sessions](../../docs/guides/11-authentication-and-sessions.md) — wiring `LibSQLSessionStore` into credentials auth and cookie sessions
-- [Guide 16 — Persistence & Distributed Backends](../../docs/guides/16-persistence-and-distributed-backends.md) — the memory-first persistence baseline and durable-session posture
+- [Guide 26 — Authentication & Sessions](../../docs/guides/26-authentication-and-sessions.md) — wiring `LibSQLSessionStore` into credentials auth and cookie sessions
+- [Guide 21 — Persistence & Shared Stores](../../docs/guides/21-persistence-and-shared-stores.md) — the memory-first persistence baseline and durable-session posture
 
 ## Contributing
 

@@ -58,7 +58,7 @@ Applications are pnpm workspaces over `@ndigo/*` packages; the
 [`ndigo` CLI](packages/ndigo-cli/README.md) fronts the application
 lifecycle (`ndigo serve`/`ndigo dev`, `ndigo new`/`ndigo generate`,
 `ndigo db`) plus the build/test/lint/format/typecheck fronts and the
-maintenance/DX tools ([guide 25](docs/guides/25-ndigo-cli.md)). Pick a
+maintenance/DX tools ([guide 37](docs/guides/37-ndigo-cli.md)). Pick a
 path below: each lists the packages to start with, then the demo apps to follow.
 
 > **Pre-1.0:** the packages are not published yet — build from this repository
@@ -96,7 +96,7 @@ API](docs/guides/01-building-a-node-api.md).
 
 EJS shell + hydration + live updates: [apps/07-ndigo-island](apps/07-ndigo-island/README.md)
 and [apps/12-ndigo-petclinic](apps/12-ndigo-petclinic/README.md); the model is
-[guide 18 — Signals & Islands](docs/guides/18-signals-and-islands.md).
+[guide 29 — Signals & Islands](docs/guides/29-signals-and-islands.md).
 
 ### Scaffold a new app
 
@@ -117,7 +117,7 @@ npm create ndigo-app@latest <name> -- --kind browser
 
 Both paths use the AD-90 lifecycle presets (`runNodeApplication` /
 `createWebApplication`) and follow the conventions in
-[guide 29](docs/guides/29-application-conventions.md).
+[guide 91](docs/guides/91-application-conventions.md).
 
 #### Run the demos
 
@@ -161,7 +161,7 @@ the number is reading order only — package names stay unnumbered and stable.
 Paired front ends and back ends share a domain and take the `-web` / `-api` role
 suffixes (`03-ndigo-todo-web` + `04-ndigo-todo-api`); the full directory,
 package, and file-naming convention is
-[guide 29 — Application Conventions](docs/guides/29-application-conventions.md).
+[guide 91 — Application Conventions](docs/guides/91-application-conventions.md).
 
 ## Packages
 

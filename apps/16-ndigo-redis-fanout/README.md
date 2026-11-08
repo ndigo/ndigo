@@ -243,8 +243,8 @@ nothing behind (entries carry the demo TTL).
 
 ## See Also
 
-- [Guide 06 — WebSockets, Rooms, Broadcast, and STOMP](../../docs/guides/06-websockets.md) — the session registry, the fan-out seam
-- [Guide 16 — Persistence & Distributed Backends](../../docs/guides/16-persistence-and-distributed-backends.md)
+- [Guide 15 — WebSockets](../../docs/guides/15-websockets.md) — the session registry, the fan-out seam
+- [Guide 21 — Persistence & Shared Stores](../../docs/guides/21-persistence-and-shared-stores.md)
 - [@ndigo/redis](../../packages/ndigo-redis/README.md) — the adapters this app composes
 - [@ndigo/cache](../../packages/ndigo-cache/README.md), [@ndigo/socket](../../packages/ndigo-socket/README.md), [@ndigo/platform-node](../../packages/ndigo-platform-node/README.md)
 - `apps/05-ndigo-api` — the same broadcast pattern single-node (`/ws/chat`)

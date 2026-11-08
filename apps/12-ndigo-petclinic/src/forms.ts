@@ -2,9 +2,9 @@
  * The PetClinic form contracts.
  *
  * Every HTML form posts `application/x-www-form-urlencoded` name/value pairs
- * and is bound as a whole source (`dataBinderValue('body')`, guide 09). The
+ * and is bound as a whole source (`dataBinderValue('body')`, guide 06). The
  * bound object is deliberately **not** wrapped in `validatedBy`: a schema
- * failure there becomes a `422` problem document (guide 02), which is the right
+ * failure there becomes a `422` problem document (guide 07), which is the right
  * answer for a JSON API and the wrong one for a browser form — the reference
  * app re-renders the form with the user's input intact. So the controller
  * parses with the same schema, and on failure re-renders the form view with the

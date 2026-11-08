@@ -34,7 +34,7 @@
  * symlinks into each dependency's `lib/`; without that build they join this
  * package's program and every cross-package `{@link}` degrades to a
  * "resolved but not documented" warning. The preflight below fails with that
- * hint instead (see docs/guides/12-package-documentation.md).
+ * hint instead (see docs/guides/90-package-documentation.md).
  */
 
 import { readdirSync, readFileSync, writeFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';

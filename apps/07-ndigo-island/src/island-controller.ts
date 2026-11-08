@@ -178,7 +178,7 @@ export class IslandController {
      * Web Awesome input is a form-associated custom element, so the browser
      * submits ordinary `application/x-www-form-urlencoded` name/value pairs —
      * bound and validated through the standard path (`dataBinderValue` +
-     * Zod, guides 09/02), with no component-specific handling.
+     * Zod, guides 06/07), with no component-specific handling.
      *
      * The mutation goes through the model store, so every connected client
      * (including the submitting one) receives the update over SSE.

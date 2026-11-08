@@ -1,7 +1,7 @@
 # Argument Converter References
 
 > **⚠️ ARCHIVED** — superseded by the conversion pipeline in
-> [guide 09](../guides/09-argument-binding.md) / [guide 14](../guides/14-dto-conversion.md),
+> [guide 06](../guides/06-argument-binding.md) / [guide 13](../guides/13-dto-conversion.md),
 > AD-27 and AD-38 (`ConversionService`). Kept for history.
 
 ## Summary

@@ -101,8 +101,8 @@ list + item flow, run `pnpm dev` with network access.
   queueing demo this app builds on
 - [10-ndigo-conduit-web](../10-ndigo-conduit-web/README.md) — the other
   hash-routed browser app
-- [guide 20 — the HTTP client](../../docs/guides/20-http-client.md)
-- [guide 18 — signals & islands](../../docs/guides/18-signals-and-islands.md)
+- [guide 11 — the HTTP client](../../docs/guides/11-http-client.md)
+- [guide 29 — signals & islands](../../docs/guides/29-signals-and-islands.md)
 
 ## Contributing
 

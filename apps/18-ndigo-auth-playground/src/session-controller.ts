@@ -2,7 +2,7 @@
  * Mode 1 — credentials + opaque session cookie, with the flags on display.
  *
  * `POST /auth/login` is JSON-only (`415` otherwise — the login-CSRF defense from
- * guide 11 §5/§6) and rate limited (`@rateLimit`): 5 attempts per minute per
+ * guide 26 §5/§6) and rate limited (`@rateLimit`): 5 attempts per minute per
  * client address. Success issues an opaque 32-byte session id from the
  * **durable** store and writes it as an `HttpOnly`, `SameSite=Lax`, `Path=/`
  * cookie — plus `Secure` when `AUTH_COOKIE_SECURE` is on, under the
@@ -85,7 +85,7 @@ export class SessionController {
     async login(credentials: unknown, route: Route, contentType: string | undefined) {
         if (contentTypeBase(contentType) !== String(MediaTypes.APPLICATION_JSON)) {
             // A cross-site HTML form can never send `application/json`, so this
-            // media-type gate closes the login-CSRF vector (guide 11 §6).
+            // media-type gate closes the login-CSRF vector (guide 26 §6).
             return ResponseEntity.unsupportedMediaType({ error: 'only_application_json_is_accepted' });
         }
         const submitted = credentials as { username?: unknown; password?: unknown } | null;

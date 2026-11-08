@@ -1,4 +1,5 @@
 /**
+ * Name-based path handler mapping.
  */
 
 import { AbstractDetectingPathHandlerMapping } from './abstract-path-handler-mapping';

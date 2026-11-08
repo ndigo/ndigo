@@ -145,13 +145,13 @@
   },
   "ndigo-dispatcher": {
     "modules": 61,
-    "modulesWithoutSummary": 49,
+    "modulesWithoutSummary": 0,
     "members": 385,
-    "membersUndocumented": 150,
+    "membersUndocumented": 0,
     "methodsWithParams": 257,
-    "methodsMissingParam": 100,
+    "methodsMissingParam": 0,
     "functionsWithReturns": 56,
-    "functionsMissingReturns": 39,
+    "functionsMissingReturns": 0,
     "examples": 32,
     "remarks": 0
   },

@@ -16,17 +16,23 @@ context (falling back to a context-backed fixed resolver).
 
 > **themeResolver**: [`ThemeResolver`](../../../theme-resolver/interfaces/ThemeResolver.md)
 
+The active theme resolver.
+
 ## Methods
 
 ### initThemeResolver()
 
 > **initThemeResolver**(`context`): `void`
 
+Builds and installs the theme resolver.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 

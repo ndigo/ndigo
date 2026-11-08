@@ -6,6 +6,8 @@
 
 # abstract-handler-method-mapping
 
+Abstract method-level handler mapping.
+
 ## Classes
 
 - [AbstractHandlerMethodMapping](classes/AbstractHandlerMethodMapping.md)

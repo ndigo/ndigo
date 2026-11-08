@@ -1,4 +1,5 @@
 /**
+ * Route mapping-info contracts.
  */
 
 // Barrel: the route-mapping condition model and mapping-info aggregates were

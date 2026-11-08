@@ -51,11 +51,15 @@ The expression to parse.
 
 > `abstract` `readonly` **isCaseSensitiveName**: `boolean`
 
+Whether the name comparison is case-sensitive.
+
 ***
 
 ### isNegated
 
 > `readonly` **isNegated**: `boolean`
+
+Whether the expression is negated (`!`).
 
 #### Implementation of
 
@@ -67,6 +71,8 @@ The expression to parse.
 
 > `readonly` **name**: `string`
 
+The expression name.
+
 #### Implementation of
 
 [`NameValueExpression`](../interfaces/NameValueExpression.md).[`name`](../interfaces/NameValueExpression.md#name)
@@ -76,6 +82,8 @@ The expression to parse.
 ### value?
 
 > `readonly` `optional` **value?**: `T`
+
+The parsed value, when present.
 
 #### Implementation of
 
@@ -143,15 +151,21 @@ The route to test.
 
 > `abstract` **matchName**(`route`): `boolean`
 
+Whether the route matches the expression name.
+
 #### Parameters
 
 ##### route
 
 [`Route`](#)
 
+The current route.
+
 #### Returns
 
 `boolean`
+
+Whether the name matches.
 
 ***
 
@@ -159,15 +173,21 @@ The route to test.
 
 > `abstract` **matchValue**(`route`): `boolean`
 
+Whether the route matches the expression value.
+
 #### Parameters
 
 ##### route
 
 [`Route`](#)
 
+The current route.
+
 #### Returns
 
 `boolean`
+
+Whether the value matches.
 
 ***
 
@@ -175,15 +195,21 @@ The route to test.
 
 > `abstract` **parseValue**(`valueExpression`): `T`
 
+Parses the value side of the expression.
+
 #### Parameters
 
 ##### valueExpression
 
 `string`
 
+The raw value text.
+
 #### Returns
 
 `T`
+
+The parsed value.
 
 ***
 

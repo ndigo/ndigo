@@ -16,17 +16,23 @@ so the resolver can be built from environment settings.
 
 > **languageResolver**: [`LanguageResolver`](../../../language-resolver/interfaces/LanguageResolver.md)
 
+The active locale resolver.
+
 ## Methods
 
 ### initLanguageResolver()
 
 > **initLanguageResolver**(`context`): `void`
 
+Builds and installs the language resolver.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 

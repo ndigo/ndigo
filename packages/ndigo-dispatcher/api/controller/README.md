@@ -6,6 +6,8 @@
 
 # controller
 
+Controller base class.
+
 ## Classes
 
 - [AbstractPathViewController](classes/AbstractPathViewController.md)

@@ -6,6 +6,8 @@
 
 # query-param-condition
 
+Query-parameter route conditions.
+
 ## Classes
 
 - [QueryParamCondition](classes/QueryParamCondition.md)

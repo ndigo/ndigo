@@ -6,6 +6,8 @@
 
 # model-and-view
 
+The model-and-view result type.
+
 ## Classes
 
 - [ModelAndView](classes/ModelAndView.md)

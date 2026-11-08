@@ -1,4 +1,5 @@
 /**
+ * Access-control route condition.
  */
 
 import { Route } from '@ndigo/router';
@@ -41,10 +42,12 @@ export class AccessControlCondition
      */
     readonly access!: AccessLevel;
 
+    /** The condition's content parts. */
     get content(): string[] {
         return [this.access];
     }
 
+    /** The separator used when rendering. */
     get infix(): string {
         return ' ';
     }

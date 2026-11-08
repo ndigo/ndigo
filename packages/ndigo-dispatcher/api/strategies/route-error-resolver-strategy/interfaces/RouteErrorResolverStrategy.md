@@ -16,17 +16,23 @@ which the collection is registered.
 
 > **errorResolvers**: [`RouteErrorResolver`](../../../route-error-resolver/interfaces/RouteErrorResolver.md)[]
 
+The ordered error resolvers.
+
 ## Methods
 
 ### initErrorResolvers()
 
 > **initErrorResolvers**(`context`): `void`
 
+Installs the error-resolver collection.
+
 #### Parameters
 
 ##### context
 
 `ApplicationContext`
+
+The application context.
 
 #### Returns
 

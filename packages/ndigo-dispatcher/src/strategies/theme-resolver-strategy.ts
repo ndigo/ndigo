@@ -1,4 +1,5 @@
 /**
+ * Theme-resolver strategy.
  */
 
 import { ApplicationContext } from '@ndigo/context';
@@ -13,7 +14,13 @@ import { StrategyInitializer } from './strategy-initializer';
  * context (falling back to a context-backed fixed resolver).
  */
 export interface ThemeResolverStrategy {
+    /** The active theme resolver. */
     themeResolver: ThemeResolver;
+    /**
+     * Builds and installs the theme resolver.
+     *
+     * @param context - The application context.
+     */
     initThemeResolver(context: ApplicationContext): void;
 }
 

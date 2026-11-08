@@ -55,6 +55,8 @@ This is a RUNTIME error (request processing time).
 
 > `readonly` **cause**: `Error` \| `null`
 
+The conversion error that caused the failure.
+
 #### Overrides
 
 `ParameterBindingError.cause`
@@ -64,6 +66,8 @@ This is a RUNTIME error (request processing time).
 ### controllerName
 
 > `readonly` **controllerName**: `string` \| `null`
+
+The controller name, when known.
 
 #### Inherited from
 
@@ -75,6 +79,8 @@ This is a RUNTIME error (request processing time).
 
 > `readonly` **methodName**: `string` \| `null`
 
+The handler method name, when known.
+
 #### Inherited from
 
 [`ParameterBindingError`](ParameterBindingError.md).[`methodName`](ParameterBindingError.md#methodname)
@@ -85,6 +91,8 @@ This is a RUNTIME error (request processing time).
 
 > `readonly` **parameterName**: `string` \| `null`
 
+The parameter name, when known.
+
 #### Inherited from
 
 [`ParameterBindingError`](ParameterBindingError.md).[`parameterName`](ParameterBindingError.md#parametername)
@@ -94,6 +102,8 @@ This is a RUNTIME error (request processing time).
 ### parameterType
 
 > `readonly` **parameterType**: `string` \| `null`
+
+The parameter type (e.g. `path:variable`).
 
 ## Accessors
 

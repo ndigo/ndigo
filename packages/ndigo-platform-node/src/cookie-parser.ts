@@ -57,6 +57,9 @@ export function hasDuplicateCookie(header: string | readonly string[] | undefine
  * malformed entries (no `=`, empty name) are skipped.
  *
  * @throws when the entry or value limits are exceeded.
+ * @param header - The raw `Cookie` header.
+ * @param options - Parsing limits.
+ * @returns The parsed cookie record.
  */
 export function parseCookies(header: string | undefined, options: CookieParseOptions = {}): Record<string, string> {
     const cookies: Record<string, string> = {};

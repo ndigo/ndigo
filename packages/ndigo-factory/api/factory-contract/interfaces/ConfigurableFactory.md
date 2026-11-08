@@ -53,6 +53,8 @@ The entry processor to add.
 
 > **destroyValue**\<`T`\>(`token`): `void`
 
+Destroys a value by token.
+
 ##### Type Parameters
 
 ###### T
@@ -64,6 +66,8 @@ The entry processor to add.
 ###### token
 
 [`ContextToken`](../../context-tokens/classes/ContextToken.md)\<`T`\>
+
+The value token.
 
 ##### Returns
 
@@ -77,11 +81,15 @@ The entry processor to add.
 
 > **destroyValue**(`name`): `void`
 
+Destroys a value by name.
+
 ##### Parameters
 
 ###### name
 
 `string`
+
+The value name.
 
 ##### Returns
 
@@ -133,6 +141,8 @@ The instance (or registered value) specified by the `name`.
 
 > **getValue**\<`T`\>(`token`): `T`
 
+Retrieves a value by token.
+
 ##### Type Parameters
 
 ###### T
@@ -144,6 +154,8 @@ The instance (or registered value) specified by the `name`.
 ###### token
 
 [`ContextToken`](../../context-tokens/classes/ContextToken.md)\<`T`\>
+
+The value token.
 
 ##### Returns
 
@@ -157,6 +169,8 @@ The instance (or registered value) specified by the `name`.
 
 > **getValue**\<`T`\>(`name`): `T`
 
+Retrieves a value by name.
+
 ##### Type Parameters
 
 ###### T
@@ -168,6 +182,8 @@ The instance (or registered value) specified by the `name`.
 ###### name
 
 `string`
+
+The value name.
 
 ##### Returns
 
@@ -211,6 +227,8 @@ The name of the value.
 
 > **hasValue**\<`T`\>(`token`): `boolean`
 
+Checks for a value by token.
+
 ##### Type Parameters
 
 ###### T
@@ -222,6 +240,8 @@ The name of the value.
 ###### token
 
 [`ContextToken`](../../context-tokens/classes/ContextToken.md)\<`T`\>
+
+The value token.
 
 ##### Returns
 
@@ -235,11 +255,15 @@ The name of the value.
 
 > **hasValue**(`name`): `boolean`
 
+Checks for a value by name.
+
 ##### Parameters
 
 ###### name
 
 `string`
+
+The value name.
 
 ##### Returns
 
@@ -277,6 +301,8 @@ The parent factory.
 
 > **setValue**\<`T`\>(`token`, `value`): `void`
 
+Sets a value by token.
+
 ##### Type Parameters
 
 ###### T
@@ -289,9 +315,13 @@ The parent factory.
 
 [`ContextToken`](../../context-tokens/classes/ContextToken.md)\<`T`\>
 
+The value token.
+
 ###### value
 
 `T`
+
+The value.
 
 ##### Returns
 
@@ -305,6 +335,8 @@ The parent factory.
 
 > **setValue**\<`T`\>(`name`, `value`): `void`
 
+Sets a value by name.
+
 ##### Type Parameters
 
 ###### T
@@ -317,9 +349,13 @@ The parent factory.
 
 `string`
 
+The value name.
+
 ###### value
 
 `T`
+
+The value.
 
 ##### Returns
 

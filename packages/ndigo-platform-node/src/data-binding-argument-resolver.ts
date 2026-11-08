@@ -1,4 +1,5 @@
 /**
+ * Argument resolver that reads Node data sources.
  */
 import { AbstractDataBindingArgumentResolver, type DataBindingSource } from '@ndigo/dispatcher';
 import { Route } from '@ndigo/router';
@@ -25,13 +26,20 @@ const NODE_BINDABLE_SOURCES: readonly DataBindingSource[] = ['body', 'cookie'];
  * `AbstractDataBindingArgumentResolver` base.
  */
 export class NodeDataBindingMethodArgumentResolver extends AbstractDataBindingArgumentResolver {
+    /** The Node data sources this resolver binds. */
     protected readonly bindableSources = NODE_BINDABLE_SOURCES;
 
     get [Symbol.toStringTag](): string {
         return 'NodeDataBindingMethodArgumentResolver';
     }
 
-    /** Retrieves the Node wire source identified by the source name. */
+    /**
+     * Retrieves the Node wire source identified by the source name.
+     *
+     * @param source - The data-source name.
+     * @param route - The current route.
+     * @returns The source's data, or `undefined`.
+     */
     protected getSourceData(source: string, route: Route): Record<string, unknown> | undefined {
         const request = getNodeRequest(route);
         if (!request) {

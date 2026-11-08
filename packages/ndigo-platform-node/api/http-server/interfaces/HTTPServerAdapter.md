@@ -43,9 +43,13 @@ Start listening on the given port and host.
 
 `number`
 
+The port.
+
 ##### host?
 
 `string`
+
+The bind host.
 
 #### Returns
 

@@ -65,23 +65,33 @@ The session cookie name to read (default
 
 > **completeHandle**(`_route`, `_handler`, `_error`): `Promise`\<`void`\>
 
+No-op completion hook.
+
 #### Parameters
 
 ##### \_route
 
 [`Route`](#)
 
+The dispatched route.
+
 ##### \_handler
 
 `object` \| `undefined`
+
+The handler that ran.
 
 ##### \_error
 
 `Error` \| `null`
 
+The error raised, if any.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves immediately.
 
 #### Implementation of
 
@@ -93,23 +103,33 @@ The session cookie name to read (default
 
 > **postHandle**(`_route`, `_handler`, `_modelAndView`): `Promise`\<`void`\>
 
+No-op post-handle hook.
+
 #### Parameters
 
 ##### \_route
 
 [`Route`](#)
 
+The dispatched route.
+
 ##### \_handler
 
 `object` \| `undefined`
+
+The handler that ran.
 
 ##### \_modelAndView
 
 [`ModelAndView`](#)
 
+The produced model and view.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves immediately.
 
 #### Implementation of
 
@@ -121,15 +141,21 @@ The session cookie name to read (default
 
 > **preHandle**(`route`): `Promise`\<`boolean`\>
 
+Restores the session principal from the session cookie before dispatch.
+
 #### Parameters
 
 ##### route
 
 [`Route`](#)
 
+The route being dispatched.
+
 #### Returns
 
 `Promise`\<`boolean`\>
+
+Whether to proceed.
 
 #### Implementation of
 

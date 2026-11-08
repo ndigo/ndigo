@@ -6,6 +6,8 @@
 
 # factory-contract
 
+The factory contract and structural guards.
+
 ## Interfaces
 
 - [ConfigurableFactory](interfaces/ConfigurableFactory.md)

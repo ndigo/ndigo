@@ -174,6 +174,8 @@ Copy the part to `dest` (`transferTo`). Creates parent directories.
 
 `string`
 
+The destination path.
+
 #### Returns
 
 `Promise`\<`void`\>

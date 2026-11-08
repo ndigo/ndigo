@@ -6,6 +6,8 @@
 
 # entry-processor
 
+Entry-processor contracts and structural guards.
+
 ## Interfaces
 
 - [ConstructionAwareProcessor](interfaces/ConstructionAwareProcessor.md)

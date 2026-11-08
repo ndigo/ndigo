@@ -30,7 +30,7 @@ key the rate limiter uses. An absent address yields no context.
 
 > **resolve**(`route`): `FlagEvaluationContext` \| `undefined`
 
-Resolves the evaluation context for a route.
+Resolves the flag context from the trusted client address.
 
 #### Parameters
 
@@ -38,14 +38,13 @@ Resolves the evaluation context for a route.
 
 [`Route`](#)
 
-The route being gated.
+The current route.
 
 #### Returns
 
 `FlagEvaluationContext` \| `undefined`
 
-The context, or `undefined` for no targeting (percentage
-  rollouts stay closed for untargeted requests).
+The evaluation context, or `undefined`.
 
 #### Implementation of
 

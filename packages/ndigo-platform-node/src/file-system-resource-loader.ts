@@ -1,4 +1,5 @@
 /**
+ * Resource loader backed by the file system.
  */
 import { readFile, realpath } from 'node:fs/promises';
 import { resolve, sep } from 'node:path';

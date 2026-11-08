@@ -177,6 +177,8 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry, AsyncCl
     #unsubscribe: Array<() => Promise<void>> = [];
 
     /**
+     * Creates the registry.
+     *
      * @param options - Heartbeat/backpressure knobs and clock.
      */
     constructor(options: NodeSocketSessionRegistryOptions = {}) {
@@ -202,6 +204,8 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry, AsyncCl
      * Subscribe both registry scopes once. With a configured transport, callers
      * must await this before publishing. A failed connection rolls back partial
      * subscriptions and remains observable on subsequent connect calls.
+     *
+     * @returns A promise that resolves once connected.
      */
     connect(): Promise<void> {
         if (this.#closed) {
@@ -249,7 +253,11 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry, AsyncCl
         }
     }
 
-    /** Release registry subscriptions and heartbeat, not the application-owned transport. */
+    /**
+     * Release registry subscriptions and heartbeat, not the application-owned transport.
+     *
+     * @returns A promise that resolves once closed.
+     */
     close(): Promise<void> {
         if (this.#closePromise) {
             return this.#closePromise;

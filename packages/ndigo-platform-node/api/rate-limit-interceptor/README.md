@@ -6,6 +6,8 @@
 
 # rate-limit-interceptor
 
+Applies rate-limit policies to routes.
+
 ## Classes
 
 - [RateLimitInterceptor](classes/RateLimitInterceptor.md)

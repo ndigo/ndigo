@@ -20,6 +20,8 @@ It extends `Initializable` and `Destroyable` for lifecycle management.
 
 > **destroyed**: `boolean`
 
+Whether the value has been destroyed.
+
 #### Inherited from
 
 `Destroyable.destroyed`
@@ -61,6 +63,8 @@ The name of the entity.
 ### destroy()
 
 > **destroy**(): `void`
+
+Releases the value's resources.
 
 #### Returns
 
@@ -130,11 +134,15 @@ The name of the entity.
 
 > **init**(...`args`): `void`
 
+Runs the post-construction initialization hook.
+
 #### Parameters
 
 ##### args
 
 ...`unknown`[]
+
+Initialization arguments.
 
 #### Returns
 

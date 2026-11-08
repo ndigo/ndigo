@@ -22,6 +22,10 @@ the original).
 
 `string` \| `undefined`
 
+The `Accept-Encoding` header.
+
 ## Returns
 
 [`StaticEncoding`](../type-aliases/StaticEncoding.md) \| `null`
+
+The chosen encoding, or `null`.

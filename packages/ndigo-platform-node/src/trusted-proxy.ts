@@ -1,4 +1,5 @@
 /**
+ * Trusted-proxy client-address resolution.
  */
 import { X_FORWARDED_FOR } from '@ndigo/http';
 import { type Matchable } from '@ndigo/core';
@@ -267,6 +268,7 @@ export class TrustedProxySet implements Matchable<string> {
      * never matches.
      *
      * @param address - An IP literal (socket peer or header entry).
+     * @returns Whether the address is trusted.
      */
     matches(address: string): boolean {
         const ip = parseIPLiteral(address);

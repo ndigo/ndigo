@@ -30,6 +30,8 @@ export class StaticController {
     readonly #handler: StaticResourceHandler;
 
     /**
+     * Creates the static controller.
+     *
      * @param baseDir - Static root. Defaults to `STATIC_DIR` env or `./public`.
      * @param options - Static handler options (D-6).
      */
@@ -40,6 +42,9 @@ export class StaticController {
 
     /**
      * GET/HEAD /static/`{*file}` — serves the file with full HTTP semantics.
+     *
+     * @param file - The requested file path.
+     * @param route - The current route.
      */
     @getMapping('/{*file}')
     @parameters({ file: pathVariable('file'), route: routeValue() })

@@ -27,6 +27,8 @@ Finalize the body.
 
 `unknown`
 
+The body to write.
+
 #### Returns
 
 `void`
@@ -45,9 +47,13 @@ Write the status line + headers.
 
 `number`
 
+The status code.
+
 ##### headers
 
 `Record`\<`string`, `string` \| `string`[]\>
+
+The headers.
 
 #### Returns
 

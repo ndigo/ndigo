@@ -1,4 +1,5 @@
 /**
+ * Applies rate-limit policies to routes.
  */
 import type { Route } from '@ndigo/router';
 import {
@@ -34,6 +35,9 @@ export const RATE_LIMIT_KEY = 'rate:limit';
  * ```
  *
  * The policy is validated at decoration time (fail loud at definition).
+ *
+ * @param options - The rate-limit policy.
+ * @returns The class/method decorator.
  */
 export function rateLimit(options: RateLimitPolicy) {
     validateRateLimitPolicy(options, '@rateLimit');
@@ -69,6 +73,13 @@ export class RateLimitInterceptor implements RouteHandlerInterceptor {
         this.#limiter = limiter;
     }
 
+    /**
+     * Enforces the route's rate-limit policy.
+     *
+     * @param route - The route being dispatched.
+     * @param handler - The route handler carrying `@rateLimit` metadata.
+     * @returns Whether to proceed, or a 429 denial.
+     */
     async preHandle(route: Route, handler: object | undefined): Promise<boolean | InterceptorDenial> {
         const policy = this.#policyFor(handler);
         if (!policy) return true;
@@ -82,10 +93,26 @@ export class RateLimitInterceptor implements RouteHandlerInterceptor {
         return denialOf(429, { body: { error: 'Too Many Requests' } });
     }
 
+    /**
+     * No-op post-handle hook.
+     *
+     * @param _route - The dispatched route.
+     * @param _handler - The handler that ran.
+     * @param _modelAndView - The produced model and view.
+     * @returns A promise that resolves immediately.
+     */
     async postHandle(_route: Route, _handler: object | undefined, _modelAndView: ModelAndView): Promise<void> {
         // no-op — rate limiting is a pre-handler concern.
     }
 
+    /**
+     * No-op completion hook.
+     *
+     * @param _route - The dispatched route.
+     * @param _handler - The handler that ran.
+     * @param _error - The error raised, if any.
+     * @returns A promise that resolves immediately.
+     */
     async completeHandle(_route: Route, _handler: object | undefined, _error: Error | null): Promise<void> {
         // no-op.
     }

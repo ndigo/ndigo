@@ -6,6 +6,8 @@
 
 # lifecycle
 
+Lifecycle contracts and structural guards.
+
 ## Classes
 
 - [DefaultLifecycleProcessor](classes/DefaultLifecycleProcessor.md)

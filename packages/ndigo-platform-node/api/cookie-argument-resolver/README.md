@@ -6,6 +6,8 @@
 
 # cookie-argument-resolver
 
+Argument resolver that reads cookies.
+
 ## Classes
 
 - [NodeCookieValueMethodArgumentResolver](classes/NodeCookieValueMethodArgumentResolver.md)

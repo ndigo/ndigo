@@ -1,4 +1,5 @@
 /**
+ * Node environment backed by process environment sources.
  */
 import { StandardEnvironment } from '@ndigo/context';
 import type { ResolverOptions } from '@ndigo/context';

@@ -74,6 +74,8 @@ export class CSRFInterceptor implements RouteHandlerInterceptor {
     #tokenBytes: number;
 
     /**
+     * Creates the CSRF interceptor.
+     *
      * @param options - Interceptor options.
      */
     constructor(options: CSRFInterceptorOptions = {}) {
@@ -91,10 +93,12 @@ export class CSRFInterceptor implements RouteHandlerInterceptor {
         }
     }
 
+    /** No post-processing — CSRF is a pre-handler concern. */
     postHandle(): void {
         // No post-processing — CSRF is a pre-handler concern.
     }
 
+    /** No completion hook needed. */
     completeHandle(): void {
         // No completion hook needed.
     }

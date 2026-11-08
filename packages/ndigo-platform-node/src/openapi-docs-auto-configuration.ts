@@ -68,9 +68,13 @@ export interface OpenAPIDocsAutoConfigurationOptions extends OpenAPIGeneratorOpt
  * trailing-slash form so `{uiPath}{*file}` concatenation is clean.
  */
 export interface ResolvedOpenAPIDocsOptions extends OpenAPIGeneratorOptions {
+    /** Whether the docs endpoints are enabled. */
     enabled: boolean;
+    /** The spec path. */
     path: string;
+    /** The Swagger UI path. */
     uiPath: string;
+    /** Optional access guard for both endpoints. */
     accessGuard: RouteHandlerInterceptor | undefined;
 }
 

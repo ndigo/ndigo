@@ -23,6 +23,74 @@
         }
       ],
       "docs": "Import `styles/ndigo-tokens.css` before the base layer. Set `data-theme=\"light\"` for the light palette; leaving it unset follows the operating system."
+    },
+    {
+      "name": "lib",
+      "type": "registry:lib",
+      "title": "Ndigo element foundation",
+      "description": "Shared light-DOM custom-element base and the Zag.js machine controller.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["lib", "behaviour"],
+      "dependencies": ["@zag-js/core@~1.47.0", "@zag-js/vanilla@~1.47.0"],
+      "files": [
+        {
+          "path": "registry/base/base-element.ts",
+          "type": "registry:lib",
+          "target": "@lib/base-element.ts"
+        },
+        {
+          "path": "registry/base/zag-element.ts",
+          "type": "registry:lib",
+          "target": "@lib/zag-element.ts"
+        }
+      ],
+      "docs": "Copy-in foundation for `<nd-*>` elements: the `NdElement` lifecycle base and `createZagElement`."
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "description": "Modal dialog with focus trapping, dismissal, and ARIA wiring from the Zag.js dialog machine.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "overlay"],
+      "dependencies": ["@zag-js/dialog@~1.47.0"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/dialog/nd-dialog.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-dialog/nd-dialog.ts"
+        },
+        {
+          "path": "registry/ui/dialog/nd-dialog.css",
+          "type": "registry:file",
+          "target": "@ui/nd-dialog/nd-dialog.css"
+        }
+      ],
+      "docs": "`<nd-dialog>` with `trigger`, `content`, `title`, `description`, and `close-trigger` parts. Emits `nd-open-change`."
+    },
+    {
+      "name": "menu",
+      "type": "registry:ui",
+      "title": "Menu",
+      "description": "Dropdown menu with roving highlight, typeahead, and dismissal from the Zag.js menu machine.",
+      "author": "Ndigo <https://ndigo.dev>",
+      "categories": ["ui", "overlay"],
+      "dependencies": ["@zag-js/menu@~1.47.0"],
+      "registryDependencies": ["lib"],
+      "files": [
+        {
+          "path": "registry/ui/menu/nd-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/nd-menu/nd-menu.ts"
+        },
+        {
+          "path": "registry/ui/menu/nd-menu.css",
+          "type": "registry:file",
+          "target": "@ui/nd-menu/nd-menu.css"
+        }
+      ],
+      "docs": "`<nd-menu>` with `trigger`, `content`, `item`, and `separator` parts. Emits `nd-select` and `nd-open-change`."
     }
   ]
 }

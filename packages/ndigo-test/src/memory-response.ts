@@ -31,22 +31,48 @@ const okStatus = 200;
 export interface ResponseSink {
     /** Whether the response head has been written. */
     readonly headersSent: boolean;
-    /** Record a single header (lower-cased key), merging with prior sets. */
+    /**
+     * Record a single header (lower-cased key), merging with prior sets.
+     *
+     * @param name - The header name (stored lower-cased).
+     * @param value - The header value.
+     */
     setHeader(name: string, value: string | string[]): void;
-    /** Read a previously set header (case-insensitive), mirroring `ServerResponse`. */
+    /**
+     * Read a previously set header (case-insensitive), mirroring `ServerResponse`.
+     *
+     * @param name - The header name.
+     * @returns The header value, or `undefined` when it was never set.
+     */
     getHeader(name: string): string | string[] | undefined;
-    /** Remove a header previously set (lower-cased key; no-op when absent). */
+    /**
+     * Remove a header previously set (lower-cased key; no-op when absent).
+     *
+     * @param name - The header name to remove.
+     */
     removeHeader(name: string): void;
-    /** Record the status and headers, merging with prior sets. */
+    /**
+     * Record the status and headers, merging with prior sets.
+     *
+     * @param status - The HTTP status code.
+     * @param headers - Headers to merge into the response.
+     */
     writeHead(status: number, headers?: Record<string, string | string[]>): void;
     /**
      * Stream a body chunk into `response.body` (concatenated, in order).
      * Returns `true` — an in-memory sink never backpressures.
+     *
+     * @param chunk - The body chunk to append.
+     * @returns Always `true`.
      */
     write(chunk: string | Uint8Array): boolean;
     /** Abort the response (stream failure after headers were sent). */
     destroy(): void;
-    /** Finalize the response with the given body. */
+    /**
+     * Finalize the response with the given body.
+     *
+     * @param body - The final body to record.
+     */
     end(body?: string | unknown): void;
 }
 
@@ -54,6 +80,14 @@ export interface ResponseSink {
  * Creates an in-memory response sink usable as `route.attributes[NODE_RESPONSE_ATTRIBUTE]`.
  *
  * @returns A mutable response record plus the `ServerResponse`-shaped sink.
+ *
+ * @example
+ * ```ts
+ * const { response, sink } = createMemoryResponse();
+ * sink.writeHead(201, { 'content-type': 'text/plain' });
+ * sink.end('created');
+ * expect(response.status).toBe(201);
+ * ```
  */
 export function createMemoryResponse(): { response: MemoryResponse; sink: ResponseSink } {
     const response: MemoryResponse = {

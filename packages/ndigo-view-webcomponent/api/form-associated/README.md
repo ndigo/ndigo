@@ -6,6 +6,8 @@
 
 # form-associated
 
+Form-associated custom element support.
+
 ## Interfaces
 
 - [FormAssociatedElement](interfaces/FormAssociatedElement.md)

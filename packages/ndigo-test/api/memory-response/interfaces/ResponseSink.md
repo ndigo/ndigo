@@ -45,6 +45,8 @@ Finalize the response with the given body.
 
 `unknown`
 
+The final body to record.
+
 #### Returns
 
 `void`
@@ -63,9 +65,13 @@ Read a previously set header (case-insensitive), mirroring `ServerResponse`.
 
 `string`
 
+The header name.
+
 #### Returns
 
 `string` \| `string`[] \| `undefined`
+
+The header value, or `undefined` when it was never set.
 
 ***
 
@@ -80,6 +86,8 @@ Remove a header previously set (lower-cased key; no-op when absent).
 ##### name
 
 `string`
+
+The header name to remove.
 
 #### Returns
 
@@ -99,9 +107,13 @@ Record a single header (lower-cased key), merging with prior sets.
 
 `string`
 
+The header name (stored lower-cased).
+
 ##### value
 
 `string` \| `string`[]
+
+The header value.
 
 #### Returns
 
@@ -122,9 +134,13 @@ Returns `true` — an in-memory sink never backpressures.
 
 `string` \| `Uint8Array`\<`ArrayBufferLike`\>
 
+The body chunk to append.
+
 #### Returns
 
 `boolean`
+
+Always `true`.
 
 ***
 
@@ -140,9 +156,13 @@ Record the status and headers, merging with prior sets.
 
 `number`
 
+The HTTP status code.
+
 ##### headers?
 
 `Record`\<`string`, `string` \| `string`[]\>
+
+Headers to merge into the response.
 
 #### Returns
 

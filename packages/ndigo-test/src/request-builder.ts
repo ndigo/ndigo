@@ -1,6 +1,4 @@
 /**
- */
-/**
  * Builds a Ndigo `Route` and `NodeRequest` from a MockHTTP request spec.
  *
  * Mirrors `NodeHTTPServerAdapter`'s request→route conversion (path segments,
@@ -102,6 +100,11 @@ let mockPeerCounter = 0;
  * @param request - The mock request spec.
  * @param responseSink - The in-memory response sink to place at `NODE_RESPONSE_ATTRIBUTE`.
  * @returns The prepared route.
+ *
+ * @example
+ * ```ts
+ * const route = buildRoute({ method: 'GET', path: '/todos/42' }, sink);
+ * ```
  */
 export function buildRoute(request: MockRequest, responseSink: ResponseSink): PreparedRoute {
     const { cleanedPath, segments } = splitPath(request.path);

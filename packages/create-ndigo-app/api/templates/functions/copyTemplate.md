@@ -18,14 +18,22 @@ Strips a trailing `.template` suffix.
 
 [`AppKind`](../../types/type-aliases/AppKind.md)
 
+The application kind whose template tree is copied.
+
 ### targetDir
 
 `string`
+
+The destination directory.
 
 ### vars
 
 `Record`\<`string`, `string` \| `number`\>
 
+The `{{key}}` substitution map.
+
 ## Returns
 
 `void`
+
+Nothing; writes the tree to disk.

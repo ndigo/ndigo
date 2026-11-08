@@ -1,4 +1,5 @@
 /**
+ * Composite content and theme sources that delegate across a list.
  */
 import { ContentSource } from './content';
 import { LanguageCode } from './language-code';

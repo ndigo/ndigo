@@ -61,11 +61,17 @@ export type ExporterSpec =
  * severity applied to the log pipeline.
  */
 export interface TelemetryConfig {
+    /** Trace exporter spec; defaults to the console exporter. */
     traceExporter?: ExporterSpec;
+    /** Metric exporter spec; `'prometheus'` selects the pull reader. */
     metricExporter?: ExporterSpec;
+    /** Log exporter spec; defaults to the console exporter. */
     logExporter?: ExporterSpec;
+    /** Trace sampler preset or raw OTel sampler; defaults to `'always'`. */
     sampler?: SamplerSpec;
+    /** OTel instrumentations registered with the NodeSDK. */
     instrumentations?: Instrumentation[];
+    /** Minimum severity routed to the OpenTelemetry log pipeline. */
     minimumSeverity?: SeverityNumber;
 }
 
@@ -80,6 +86,17 @@ export type ResolvedExporter =
  * Resolves a per-signal exporter spec (AD-32 D-2/D-3). Pure — no providers
  * are touched — so the shape table is unit-testable in one process.
  * OTLP urls fail loud here (`new URL`), naming the signal in the error.
+ *
+ * @param spec - The exporter spec to resolve.
+ * @param signal - The signal being configured.
+ * @returns The normalized export choice.
+ * @throws When `'prometheus'` is used for a non-metric signal or an OTLP url is invalid.
+ *
+ * @example
+ * ```ts
+ * resolveExporter({ url: 'http://localhost:4318/v1/traces' }, 'trace');
+ * // { kind: 'otlp', url: 'http://localhost:4318/v1/traces' }
+ * ```
  */
 export function resolveExporter(spec: ExporterSpec | undefined, signal: 'trace' | 'metric' | 'log'): ResolvedExporter {
     if (spec === undefined || spec === 'console' || (typeof spec === 'object' && spec.console === true)) {
@@ -148,6 +165,17 @@ let configured = false;
  * subsystem trying to reconfigure). Configuration validation (sampler
  * ratios, exporter urls) runs before the latch and fails loud on every
  * call.
+ *
+ * @param config - Exporter, sampler, instrumentation, and severity settings.
+ * @returns Nothing; the providers are registered as a side effect.
+ *
+ * @example
+ * ```ts
+ * configureTelemetry({
+ *     traceExporter: { url: 'http://localhost:4318/v1/traces' },
+ *     sampler: { ratio: 0.1 },
+ * });
+ * ```
  */
 export function configureTelemetry(config: TelemetryConfig) {
     // Resolve/validate before any side effects or the once-per-process latch.

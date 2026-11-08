@@ -20,14 +20,28 @@ would resolve to `Function` and miss the metadata.
 
 `Function`
 
+The class the method was resolved from.
+
 ### entryName
 
 `string`
+
+The container entry name.
 
 ### methodName
 
 `PropertyKey`
 
+The method name.
+
 ## Returns
 
 [`MethodDescriptor`](../interfaces/MethodDescriptor.md)
+
+A frozen descriptor with annotation lookup bound to `targetType`.
+
+## Example
+
+```ts
+const descriptor = createMethodDescriptor(OrderService, 'orderService', 'submit');
+```

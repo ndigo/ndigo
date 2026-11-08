@@ -18,3 +18,4 @@ An HTMLElement that carries the view model used to render it.
 
 > **model**: `unknown`
 
+The view model used to render the element.

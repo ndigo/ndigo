@@ -10,11 +10,17 @@ import { runWorkspaceOnce } from '../helpers/app-scripts.js';
 
 /** The flags `ndigo new` forwards to the `app` generator's schema. */
 export interface NewAppFlags {
+    /** The application kind (browser or node). */
     kind?: 'browser' | 'node';
+    /** The scaffold preset. */
     preset?: string;
+    /** The reading-order number (`apps/NN-…`). */
     number?: number;
+    /** The dev port. */
     port?: number;
+    /** One-line app description. */
     description?: string;
+    /** Preview the file plan without writing. */
     dryRun?: boolean;
 }
 
@@ -27,6 +33,12 @@ export interface NewAppFlags {
  * @param name - The app slug (kebab-case).
  * @param flags - The parsed flags.
  * @returns The argv appended to `exec nx g @ndigo/generators:app`.
+ *
+ * @example
+ * ```ts
+ * newAppArgv('todo', { kind: 'browser', port: 3000 });
+ * // ['--name', 'todo', '--kind', 'browser', '--port', '3000']
+ * ```
  */
 export function newAppArgv(name: string, flags: NewAppFlags): string[] {
     const argv = ['--name', name];

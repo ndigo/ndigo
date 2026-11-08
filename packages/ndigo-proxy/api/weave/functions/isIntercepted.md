@@ -18,6 +18,10 @@ processing runs twice.
 
 `object`
 
+The object to inspect.
+
 ## Returns
 
 `boolean`
+
+`true` when the object is already registered as woven.

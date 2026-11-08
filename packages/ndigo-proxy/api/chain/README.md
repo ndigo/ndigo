@@ -6,6 +6,8 @@
 
 # chain
 
+Chain composition for `@ndigo/proxy`.
+
 ## Functions
 
 - [invokeChain](functions/invokeChain.md)

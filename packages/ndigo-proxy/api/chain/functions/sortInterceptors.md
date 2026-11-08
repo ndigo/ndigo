@@ -17,6 +17,10 @@ equal orders keep registration order.
 
 readonly [`MethodInterceptor`](../../interceptor/interfaces/MethodInterceptor.md)[]
 
+The interceptors to sort.
+
 ## Returns
 
 [`MethodInterceptor`](../../interceptor/interfaces/MethodInterceptor.md)[]
+
+A new array in execution order.

@@ -6,6 +6,8 @@
 
 # negotiation
 
+Content negotiation from `Accept-Language` headers.
+
 ## Classes
 
 - [NegotiatingContentSource](classes/NegotiatingContentSource.md)

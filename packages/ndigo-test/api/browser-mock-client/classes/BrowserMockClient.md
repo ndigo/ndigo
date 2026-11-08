@@ -15,6 +15,8 @@ through the real `BrowserDispatcher` and captures the rendered view.
 
 > **new BrowserMockClient**(`app`): `BrowserMockClient`
 
+Creates a client around a booted browser app.
+
 #### Parameters
 
 ##### app

@@ -15,3 +15,4 @@ reflected as a `name` property by the `AsNdigoElement` mixin.
 
 > **name**: `string`
 
+The element's tag name.

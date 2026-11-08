@@ -17,6 +17,18 @@ option is resolved by shape instead of the [RATE\_LIMITER](../../context-tokens/
 
 `unknown`
 
+The candidate value to inspect.
+
 ## Returns
 
 `value is RateLimiter`
+
+`true` when the value implements the limiter contract.
+
+## Example
+
+```ts
+if (likeRateLimiter(candidate)) {
+    await candidate.consume('client-1', policy);
+}
+```

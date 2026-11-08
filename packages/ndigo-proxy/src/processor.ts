@@ -1,7 +1,4 @@
 /**
- */
-
-/**
  * Container integration: turns interceptors into an entry processor.
  *
  * Register with `factory.addProcessor(interception([...]))`; every instance
@@ -39,6 +36,12 @@ const logger = getLogger('ndigo-proxy:processor');
  * holds on the container path and the standalone path alike.
  *
  * @param interceptors - The advice to apply.
+ * @returns An initialization-aware processor that weaves matching entries.
+ *
+ * @example
+ * ```ts
+ * factory.addProcessor(interception([new RetryInterceptor()]));
+ * ```
  */
 export function interception(interceptors: readonly MethodInterceptor[]): InitializationAwareProcessor {
     // Identity token recorded as weaving provenance: distinguishes proxies

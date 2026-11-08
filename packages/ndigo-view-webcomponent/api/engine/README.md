@@ -6,6 +6,8 @@
 
 # engine
 
+DOM view target that renders into a host node.
+
 ## Classes
 
 - [DOMElementViewTarget](classes/DOMElementViewTarget.md)

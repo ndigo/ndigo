@@ -1,4 +1,5 @@
 /**
+ * `@viewMapping` decorator metadata for view-to-tag mappings.
  */
 import '@tsmetadata/polyfill';
 import { Constructable } from '@ndigo/core';

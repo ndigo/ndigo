@@ -1,7 +1,4 @@
 /**
- */
-
-/**
  * Interceptor contract for `@ndigo/proxy`.
  *
  * Interceptors separate *selection* (`matches`) from *execution*
@@ -31,6 +28,9 @@ export interface MethodDescriptor {
      * Reads the annotation value stored on this method by
      * `methodAnnotation(...)`, walking the class hierarchy (nearest
      * declaration wins). `undefined` when the method carries none.
+     *
+     * @param key - The annotation handle to read.
+     * @returns The annotation value, or `undefined` when the method carries none.
      */
     annotation<T>(key: AnnotationKey<T>): T | undefined;
 }
@@ -64,12 +64,19 @@ export interface MethodInterceptor {
     /**
      * Whether this interceptor applies to `method`. Called once per managed
      * method while the processor prepares the entry — not per call.
+     *
+     * @param method - The method descriptor being considered.
+     * @returns `true` when the interceptor should advise the method.
      */
     matches(method: MethodDescriptor): boolean;
     /**
      * Runs for an intercepted call. Return `next()` to continue down the
      * chain (ultimately invoking the installed method on `invocation.target`),
      * or return a value / throw to short-circuit.
+     *
+     * @param invocation - The current call's descriptor, target, and arguments.
+     * @param next - Continues the inner interceptor chain.
+     * @returns The call result, or the short-circuit value.
      */
     invoke(invocation: MethodInvocation, next: () => unknown): unknown;
 }
@@ -80,6 +87,16 @@ export interface MethodInterceptor {
  * class) rather than the instance: when the instance is itself a proxy —
  * e.g. a service client over a class — the instance's `constructor` chain
  * would resolve to `Function` and miss the metadata.
+ *
+ * @param targetType - The class the method was resolved from.
+ * @param entryName - The container entry name.
+ * @param methodName - The method name.
+ * @returns A frozen descriptor with annotation lookup bound to `targetType`.
+ *
+ * @example
+ * ```ts
+ * const descriptor = createMethodDescriptor(OrderService, 'orderService', 'submit');
+ * ```
  */
 export function createMethodDescriptor(
     targetType: Function,

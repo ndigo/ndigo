@@ -1,4 +1,5 @@
 /**
+ * The message-source contract and its awareness mixins.
  */
 import { like } from '@ndigo/util/types';
 import { Constructable } from '@ndigo/core';

@@ -1,4 +1,5 @@
 /**
+ * BCP 47 language-code value object with canonical parsing and comparison.
  */
 import { Equatable, JSONValue, Serializable, StringComparable, stringComparator } from '@ndigo/core';
 
@@ -79,9 +80,6 @@ export class LanguageCode implements Serializable, Equatable<LanguageCode>, Stri
         if (canonical === undefined) {
             throw new TypeError(`Invalid language tag: "${code}"`);
         }
-        /**
-         * @readonly
-         */
         defineProperty(this, 'code', {
             value: canonical,
             configurable: true,
@@ -104,6 +102,9 @@ export class LanguageCode implements Serializable, Equatable<LanguageCode>, Stri
     /**
      * Compares complete canonical tags, including region, script, and extensions.
      * Equality is by value, not instance identity or shared base language.
+     *
+     * @param other - The code to compare against.
+     * @returns Whether both canonical tags are identical.
      */
     equals(other: LanguageCode): boolean {
         return other instanceof LanguageCode && this.code === other.code;
@@ -111,6 +112,8 @@ export class LanguageCode implements Serializable, Equatable<LanguageCode>, Stri
 
     /**
      * Orders canonical tags lexicographically, not by language preference or specificity.
+     *
+     * @param other - The code to compare against.
      * @returns A negative number, zero, or a positive number for less, equal, or greater.
      */
     compareTo(other: LanguageCode): number {
@@ -119,6 +122,8 @@ export class LanguageCode implements Serializable, Equatable<LanguageCode>, Stri
 
     /**
      * Orders canonical tags lexicographically with case ignored.
+     *
+     * @param other - The code to compare against.
      * @returns A negative number, zero, or a positive number for less, equal, or greater.
      */
     compareToIgnoreCase(other: LanguageCode): number {
@@ -126,14 +131,18 @@ export class LanguageCode implements Serializable, Equatable<LanguageCode>, Stri
     }
 
     /**
-     * @returns A JSON representation of the language code
+     * Serializes the code to its canonical string.
+     *
+     * @returns A JSON representation of the language code.
      */
     toJSON(): JSONValue {
         return this.code;
     }
 
     /**
-     * @returns A string representation of the language code
+     * Returns the canonical language tag.
+     *
+     * @returns A string representation of the language code.
      */
     toString(): string {
         return this.code;

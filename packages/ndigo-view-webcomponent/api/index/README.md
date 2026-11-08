@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/view-webcomponent` — custom-element views.
+
 ## References
 
 ### AbstractWebComponent

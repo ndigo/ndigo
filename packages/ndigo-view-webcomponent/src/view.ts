@@ -1,4 +1,5 @@
 /**
+ * A view that renders a custom element into a view target.
  */
 import { AbstractView, ViewTarget } from '@ndigo/view';
 import { IllegalStateError } from '@ndigo/core';
@@ -8,6 +9,7 @@ import type { Route } from '@ndigo/router';
  * An HTMLElement that carries the view model used to render it.
  */
 export interface ModelAwareElement extends HTMLElement {
+    /** The view model used to render the element. */
     model: unknown;
 }
 
@@ -41,7 +43,14 @@ export class WebComponentView extends AbstractView {
         this.tagName = tagName;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Creates the element for `tagName`, binds the model, and commits it.
+     *
+     * @param viewModel - The model assigned to the element before commit.
+     * @param request - The current request/route.
+     * @param target - The view target that receives the element.
+     * @returns A promise that resolves once the target commits the element.
+     */
     protected async _renderView(viewModel: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (!target) {
             throw new IllegalStateError('WebComponentView requires a ViewTarget to render.');

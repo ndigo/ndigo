@@ -1,4 +1,5 @@
 /**
+ * Priority-ordered content source selection.
  */
 import { ContentSource } from './content';
 import { LanguageCode } from './language-code';

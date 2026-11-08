@@ -70,6 +70,8 @@ export class AsyncReader<T> {
     /**
      * Queue a value for the consumer. Drops the incoming value when a
      * bound is exceeded; `onOverflow` fires once per overflow episode.
+     *
+     * @param value - The value to enqueue.
      */
     push(value: T): void {
         if (this.#completed) {
@@ -105,6 +107,8 @@ export class AsyncReader<T> {
     /**
      * Consume the stream: FIFO values, then completion. Draining below the
      * bound clears any overflow episode, letting pushes resume.
+     *
+     * @returns An async generator over the queued values.
      */
     async *iterable(): AsyncGenerator<T> {
         while (true) {

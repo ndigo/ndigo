@@ -1,4 +1,5 @@
 /**
+ * View resolution: caches, name safety, and resolver contracts.
  */
 import { View } from './view.js';
 import { createNull, MediaType, MediaTypes, Null, Constructable } from '@ndigo/core';
@@ -171,6 +172,14 @@ export abstract class AbstractCachingViewResolver implements ViewResolver {
         return view === unresolvedView ? null : view;
     }
 
+    /**
+     * Creates a view for a name/language pair; the default delegates to
+     * {@link AbstractCachingViewResolver._loadView}.
+     *
+     * @param name - The view name.
+     * @param language - Optional language/locale hint.
+     * @returns The created view, or `null` when it cannot be created.
+     */
     protected async _createView(name: string, language?: unknown): Promise<View | null> {
         return this._loadView(name, language);
     }
@@ -188,6 +197,13 @@ export abstract class AbstractCachingViewResolver implements ViewResolver {
         return createViewCacheKey(name, language);
     }
 
+    /**
+     * Loads a view for a name/language pair.
+     *
+     * @param name - The view name.
+     * @param language - Optional language/locale hint.
+     * @returns The loaded view, or `null` when it is missing.
+     */
     protected abstract _loadView(name: string, language?: unknown): Promise<View | null>;
 }
 

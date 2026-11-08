@@ -46,6 +46,8 @@ Send an ACK frame for a delivered message (client acks, §1.4).
 
 `string`
 
+The delivered message id.
+
 #### Returns
 
 `void`
@@ -63,6 +65,8 @@ Send a NACK frame for a delivered message (§1.4).
 ##### messageId
 
 `string`
+
+The delivered message id.
 
 #### Returns
 

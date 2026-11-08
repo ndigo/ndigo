@@ -6,6 +6,8 @@
 
 # abstract-serializing-view
 
+Base view that serializes a model into a rendered body.
+
 ## Classes
 
 - [AbstractSerializingView](classes/AbstractSerializingView.md)

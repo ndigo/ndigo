@@ -14,11 +14,15 @@ An OpenAPI parameter object.
 
 > `optional` **description?**: `string`
 
+Human-readable parameter description.
+
 ***
 
 ### in
 
 > **in**: `"query"` \| `"path"` \| `"header"` \| `"cookie"`
+
+Where the parameter travels.
 
 ***
 
@@ -26,11 +30,15 @@ An OpenAPI parameter object.
 
 > **name**: `string`
 
+Parameter name as it appears in the request.
+
 ***
 
 ### required
 
 > **required**: `boolean`
+
+Whether the parameter is required.
 
 ***
 
@@ -38,3 +46,4 @@ An OpenAPI parameter object.
 
 > `optional` **schema?**: [`OpenAPISchemaObject`](OpenAPISchemaObject.md)
 
+The parameter's JSON Schema.

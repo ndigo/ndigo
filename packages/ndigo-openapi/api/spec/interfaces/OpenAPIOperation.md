@@ -15,11 +15,15 @@ under `x-ndigo-*` extensions rather than dropped.
 
 > `optional` **deprecated?**: `boolean`
 
+Whether the operation is deprecated.
+
 ***
 
 ### description?
 
 > `optional` **description?**: `string`
+
+Longer operation description.
 
 ***
 
@@ -27,11 +31,15 @@ under `x-ndigo-*` extensions rather than dropped.
 
 > `optional` **operationId?**: `string`
 
+Unique operation id (defaults to the handler method name).
+
 ***
 
 ### parameters?
 
 > `optional` **parameters?**: [`OpenAPIParameter`](OpenAPIParameter.md)[]
+
+Declared parameters.
 
 ***
 
@@ -39,11 +47,15 @@ under `x-ndigo-*` extensions rather than dropped.
 
 > `optional` **requestBody?**: [`OpenAPIRequestBody`](OpenAPIRequestBody.md)
 
+Declared request body.
+
 ***
 
 ### responses
 
 > **responses**: `Record`\<`string`, [`OpenAPIResponse`](OpenAPIResponse.md)\>
+
+Responses keyed by status code.
 
 ***
 
@@ -61,11 +73,15 @@ An empty array documents an explicitly anonymous operation.
 
 > `optional` **summary?**: `string`
 
+Short operation summary.
+
 ***
 
 ### tags?
 
 > `optional` **tags?**: `string`[]
+
+OpenAPI tags for grouping.
 
 ***
 

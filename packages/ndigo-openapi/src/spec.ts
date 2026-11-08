@@ -23,6 +23,11 @@ import { getApiDocs, type APIDocsMetadata, type OpenAPIResponseDocs } from './ap
  * `AbstractHandlerMethodMapping`) satisfies it structurally.
  */
 export interface RouteMappingTable {
+    /**
+     * The registered route table: route info → handler method.
+     *
+     * @returns The mapping's handler methods.
+     */
     getHandlerMethods(): Map<RouteMappingInfo, RouteHandlerMethod>;
 }
 
@@ -37,10 +42,15 @@ export interface OpenAPISchemaObject {
  * An OpenAPI parameter object.
  */
 export interface OpenAPIParameter {
+    /** Parameter name as it appears in the request. */
     name: string;
+    /** Where the parameter travels. */
     in: 'query' | 'path' | 'header' | 'cookie';
+    /** Whether the parameter is required. */
     required: boolean;
+    /** The parameter's JSON Schema. */
     schema?: OpenAPISchemaObject;
+    /** Human-readable parameter description. */
     description?: string;
 }
 
@@ -48,7 +58,9 @@ export interface OpenAPIParameter {
  * An OpenAPI request body.
  */
 export interface OpenAPIRequestBody {
+    /** Whether a body is required. */
     required: boolean;
+    /** Media types and their schemas. */
     content: Record<string, { schema?: OpenAPISchemaObject }>;
 }
 
@@ -56,6 +68,7 @@ export interface OpenAPIRequestBody {
  * An OpenAPI operation response object.
  */
 export interface OpenAPIResponse {
+    /** Human-readable response description. */
     description: string;
     /**
      * Response content — e.g. `{ 'application/json': { schema } }` when the
@@ -70,7 +83,9 @@ export interface OpenAPIResponse {
  * referenced by name from operation/`@apiDocs` `security` requirements.
  */
 export interface OpenAPISecurityScheme {
+    /** Security scheme type. */
     type: 'apiKey' | 'http' | 'oauth2' | 'openIdConnect';
+    /** Human-readable scheme description. */
     description?: string;
     /** `apiKey`: the header/query/cookie name. */
     name?: string;
@@ -91,13 +106,21 @@ export interface OpenAPISecurityScheme {
  * under `x-ndigo-*` extensions rather than dropped.
  */
 export interface OpenAPIOperation {
+    /** Unique operation id (defaults to the handler method name). */
     operationId?: string;
+    /** Short operation summary. */
     summary?: string;
+    /** Longer operation description. */
     description?: string;
+    /** OpenAPI tags for grouping. */
     tags?: string[];
+    /** Whether the operation is deprecated. */
     deprecated?: boolean;
+    /** Declared parameters. */
     parameters?: OpenAPIParameter[];
+    /** Declared request body. */
     requestBody?: OpenAPIRequestBody;
+    /** Responses keyed by status code. */
     responses: Record<string, OpenAPIResponse>;
     /**
      * Security requirements for this operation (scheme name → scopes). Set
@@ -120,13 +143,17 @@ export type OpenAPIPathItem = Partial<Record<string, OpenAPIOperation>>;
  * The generated OpenAPI 3.0.3 document.
  */
 export interface OpenAPIDocument {
+    /** The OpenAPI version emitted (`3.0.3`). */
     openapi: '3.0.3';
+    /** Document metadata (title, version, description). */
     info: {
         title: string;
         version: string;
         description?: string;
     };
+    /** Optional server list. */
     servers?: Array<{ url: string }>;
+    /** Path items keyed by URL template. */
     paths: Record<string, OpenAPIPathItem>;
     /**
      * Security requirements applied document-wide (scheme name → scopes);

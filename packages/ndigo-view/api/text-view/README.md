@@ -6,6 +6,8 @@
 
 # text-view
 
+Plain-text response view.
+
 ## Classes
 
 - [TextView](classes/TextView.md)

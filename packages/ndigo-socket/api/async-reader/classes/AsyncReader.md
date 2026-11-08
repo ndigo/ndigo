@@ -80,6 +80,8 @@ bound clears any overflow episode, letting pushes resume.
 
 `AsyncGenerator`\<`T`\>
 
+An async generator over the queued values.
+
 ***
 
 ### push()
@@ -94,6 +96,8 @@ bound is exceeded; `onOverflow` fires once per overflow episode.
 ##### value
 
 `T`
+
+The value to enqueue.
 
 #### Returns
 

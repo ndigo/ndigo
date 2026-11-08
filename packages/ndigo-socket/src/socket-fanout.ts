@@ -6,8 +6,11 @@ export type SocketFanoutScope = 'path' | 'room' | 'topic';
 
 /** Already serialized wire payload; topic headers are application headers only. */
 export interface SocketFanoutMessage {
+    /** Destination key (path, room, or topic). */
     key: string;
+    /** Serialized wire payload. */
     body: string | Uint8Array;
+    /** Application headers; not transport framing. */
     headers?: Record<string, string>;
 }
 
@@ -18,6 +21,20 @@ export interface SocketFanoutMessage {
  * Consumers must unsubscribe before the application closes the transport.
  */
 export interface SocketFanout {
+    /**
+     * Subscribes to a scope's messages; completion signals readiness.
+     *
+     * @param scope - The fan-out scope to subscribe to.
+     * @param receive - Invoked for each published message.
+     * @returns An unsubscribe function.
+     */
     subscribe(scope: SocketFanoutScope, receive: (message: SocketFanoutMessage) => void): Promise<() => Promise<void>>;
+    /**
+     * Publishes one message after backend acceptance.
+     *
+     * @param scope - The fan-out scope to publish to.
+     * @param message - The message to publish.
+     * @returns A promise that resolves after backend acceptance.
+     */
     publish(scope: SocketFanoutScope, message: SocketFanoutMessage): Promise<void>;
 }

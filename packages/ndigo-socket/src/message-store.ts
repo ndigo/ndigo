@@ -211,6 +211,7 @@ export interface InMemoryQueueStoreStats {
  * `#seqs` can never outgrow the destination cap (SEC-1).
  */
 export class InMemoryQueueMessageStore implements QueueMessageStore {
+    /** Store identifier (`'in-memory'`). */
     readonly kind = 'in-memory';
     readonly #byDestination = new Map<string, RingBuffer<StoredQueueMessage>>();
     readonly #seqs = new Map<string, number>();
@@ -221,6 +222,8 @@ export class InMemoryQueueMessageStore implements QueueMessageStore {
     #bytes = 0;
 
     /**
+     * Creates a store with the given retention bounds.
+     *
      * @param options - Retained-message bounds. Defaults mirror the
      *   broker's backlog caps; `0`/`null` disables a bound.
      */
@@ -233,6 +236,12 @@ export class InMemoryQueueMessageStore implements QueueMessageStore {
         this.#now = options.now ?? Date.now;
     }
 
+    /**
+     * Appends one message to its destination's ring, evicting past the bounds.
+     *
+     * @param message - The message payload (sequence and stored time are assigned here).
+     * @returns The stored message with its assigned `seq` and `storedAt`.
+     */
     async append(message: Omit<StoredQueueMessage, 'seq' | 'storedAt'>): Promise<StoredQueueMessage> {
         const destination = this.#assertDestination(message.destination);
         const nextSeq = (this.#seqs.get(destination) ?? 0) + 1;
@@ -279,6 +288,13 @@ export class InMemoryQueueMessageStore implements QueueMessageStore {
         return stored;
     }
 
+    /**
+     * Replays retained messages after a sequence cursor.
+     *
+     * @param destination - The destination to replay.
+     * @param options - Sequence cursor and result limit.
+     * @returns The retained messages in sequence order.
+     */
     async replay(
         destination: string,
         options: { afterSeq?: number; limit?: number } = {}
@@ -306,6 +322,13 @@ export class InMemoryQueueMessageStore implements QueueMessageStore {
         return replayed;
     }
 
+    /**
+     * Applies a retention policy to one destination.
+     *
+     * @param destination - The destination to prune.
+     * @param retention - TTL and count bounds.
+     * @returns The number of pruned messages.
+     */
     async prune(destination: string, retention: QueueStoreRetention): Promise<number> {
         const name = this.#assertDestination(destination);
         const queue = this.#byDestination.get(name);
@@ -335,6 +358,12 @@ export class InMemoryQueueMessageStore implements QueueMessageStore {
         return pruned;
     }
 
+    /**
+     * Whether a destination currently retains messages.
+     *
+     * @param destination - The destination to check.
+     * @returns `true` when the destination has a retained ring.
+     */
     async has(destination: string): Promise<boolean> {
         return this.#byDestination.has(this.#assertDestination(destination));
     }

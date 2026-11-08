@@ -6,6 +6,8 @@
 
 # csv-view
 
+CSV view that serializes models to comma-separated values.
+
 ## Classes
 
 - [CSVView](classes/CSVView.md)

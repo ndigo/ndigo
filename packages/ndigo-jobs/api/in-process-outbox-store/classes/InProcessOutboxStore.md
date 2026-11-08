@@ -21,6 +21,8 @@ Entries vanish with the process.
 
 > **new InProcessOutboxStore**(`options?`): `InProcessOutboxStore`
 
+Creates a store with optional clock/id overrides.
+
 #### Parameters
 
 ##### options?
@@ -39,9 +41,13 @@ Clock/id overrides for deterministic tests.
 
 > **append**(`input`): `Promise`\<[`OutboxEntry`](../../outbox/interfaces/OutboxEntry.md)\>
 
+Records one side effect.
+
 #### Parameters
 
 ##### input
+
+Type and payload to record.
 
 ###### payload?
 
@@ -55,6 +61,8 @@ Clock/id overrides for deterministic tests.
 
 `Promise`\<[`OutboxEntry`](../../outbox/interfaces/OutboxEntry.md)\>
 
+The stored entry (with id and `occurredAt`).
+
 #### Implementation of
 
 [`OutboxStore`](../../outbox/interfaces/OutboxStore.md).[`append`](../../outbox/interfaces/OutboxStore.md#append)
@@ -65,15 +73,22 @@ Clock/id overrides for deterministic tests.
 
 > **claimPending**(`options?`): `Promise`\<[`OutboxEntry`](../../outbox/interfaces/OutboxEntry.md)[]\>
 
+Leases up to `limit` unpublished entries whose lease is absent or
+expired, in `occurredAt` order.
+
 #### Parameters
 
 ##### options?
 
 [`OutboxClaimOptions`](../../outbox/interfaces/OutboxClaimOptions.md) = `{}`
 
+Claim window.
+
 #### Returns
 
 `Promise`\<[`OutboxEntry`](../../outbox/interfaces/OutboxEntry.md)[]\>
+
+The claimed entries.
 
 #### Implementation of
 
@@ -85,9 +100,13 @@ Clock/id overrides for deterministic tests.
 
 > **close**(): `Promise`\<`void`\>
 
+Releases the store's in-memory entries; idempotent.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the store is closed.
 
 #### Implementation of
 
@@ -99,15 +118,21 @@ Clock/id overrides for deterministic tests.
 
 > **markPublished**(`id`): `Promise`\<`void`\>
 
+Marks an entry as published.
+
 #### Parameters
 
 ##### id
 
 `string`
 
+The entry identifier.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the entry is marked.
 
 #### Implementation of
 
@@ -119,15 +144,21 @@ Clock/id overrides for deterministic tests.
 
 > **prunePublished**(`olderThanMs`): `Promise`\<`number`\>
 
+Deletes published entries older than the given age.
+
 #### Parameters
 
 ##### olderThanMs
 
 `number`
 
+Age in milliseconds.
+
 #### Returns
 
 `Promise`\<`number`\>
+
+Number of pruned entries.
 
 #### Implementation of
 
@@ -139,9 +170,13 @@ Clock/id overrides for deterministic tests.
 
 > **size**(): `Promise`\<`number`\>
 
+Number of unpublished entries.
+
 #### Returns
 
 `Promise`\<`number`\>
+
+The pending count.
 
 #### Implementation of
 

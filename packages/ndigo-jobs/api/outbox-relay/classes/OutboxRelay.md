@@ -26,6 +26,8 @@ the standalone/test path.
 
 > **new OutboxRelay**(`options`): `OutboxRelay`
 
+Creates a relay over the given store and publisher.
+
 #### Parameters
 
 ##### options
@@ -44,11 +46,15 @@ Store, publisher, and relay tuning.
 
 > `readonly` **isAutoStartup**: `true` = `true`
 
+Whether the relay auto-starts with the context.
+
 ***
 
 ### phase
 
 > `readonly` **phase**: `10` = `10`
+
+SmartLifecycle phase: after the store/queue wiring.
 
 ## Accessors
 
@@ -75,6 +81,8 @@ Container teardown: stops and awaits the pass in flight.
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the relay is closed.
 
 #### Implementation of
 

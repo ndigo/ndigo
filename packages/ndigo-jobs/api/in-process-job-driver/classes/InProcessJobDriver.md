@@ -27,6 +27,8 @@ same shape they would after a restart.
 
 > **new InProcessJobDriver**(`options?`): `InProcessJobDriver`
 
+Creates a driver with optional clock/id overrides.
+
 #### Parameters
 
 ##### options?
@@ -45,7 +47,7 @@ Clock/id overrides for deterministic tests.
 
 > `readonly` **kind**: `"in-process"` = `'in-process'`
 
-Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`).
+Backend identifier (`'in-process'`).
 
 #### Implementation of
 
@@ -57,15 +59,22 @@ Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`).
 
 > **claim**(`options`): `Promise`\<[`JobRecord`](../../job/interfaces/JobRecord.md)[]\>
 
+Atomically leases up to `limit` eligible jobs, reclaiming expired leases
+first.
+
 #### Parameters
 
 ##### options
 
 [`ClaimOptions`](../../job/interfaces/ClaimOptions.md)
 
+Claim window.
+
 #### Returns
 
 `Promise`\<[`JobRecord`](../../job/interfaces/JobRecord.md)[]\>
+
+The claimed records (possibly empty).
 
 #### Implementation of
 
@@ -77,9 +86,13 @@ Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`).
 
 > **close**(): `Promise`\<`void`\>
 
+Releases the driver's in-memory jobs; idempotent.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the driver is closed.
 
 #### Implementation of
 
@@ -91,15 +104,21 @@ Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`).
 
 > **complete**(`id`): `Promise`\<`void`\>
 
+Removes a finished job.
+
 #### Parameters
 
 ##### id
 
 `string`
 
+The job identifier.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the job is removed.
 
 #### Implementation of
 
@@ -111,15 +130,21 @@ Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`).
 
 > **enqueue**(`request`): `Promise`\<[`JobRecord`](../../job/interfaces/JobRecord.md)\>
 
+Stores one job and makes it eligible at its resolved `runAt`.
+
 #### Parameters
 
 ##### request
 
 [`JobRequest`](../../job/interfaces/JobRequest.md)
 
+The producer-supplied job request.
+
 #### Returns
 
 `Promise`\<[`JobRecord`](../../job/interfaces/JobRecord.md)\>
+
+The stored record.
 
 #### Implementation of
 
@@ -131,19 +156,27 @@ Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`).
 
 > **fail**(`id`, `lastError`): `Promise`\<`void`\>
 
+Terminally fails a job, removing it from the queue.
+
 #### Parameters
 
 ##### id
 
 `string`
 
+The job identifier.
+
 ##### lastError
 
 `string`
 
+Message from the final failed attempt.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the job is removed.
 
 #### Implementation of
 
@@ -155,19 +188,28 @@ Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`).
 
 > **heartbeat**(`id`, `leaseMs`): `Promise`\<`void`\>
 
+Extends the lease of a running job; a no-op when the lease is no longer
+valid.
+
 #### Parameters
 
 ##### id
 
 `string`
 
+The job identifier.
+
 ##### leaseMs
 
 `number`
 
+New lease duration from now.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the lease is extended.
 
 #### Implementation of
 
@@ -179,23 +221,33 @@ Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`).
 
 > **retry**(`id`, `runAt`, `lastError`): `Promise`\<`void`\>
 
+Returns a job to the queue at `runAt` with the failure recorded.
+
 #### Parameters
 
 ##### id
 
 `string`
 
+The job identifier.
+
 ##### runAt
 
 `number`
+
+Next eligible time (epoch milliseconds).
 
 ##### lastError
 
 `string`
 
+Message from the failed attempt.
+
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves once the job is requeued.
 
 #### Implementation of
 
@@ -207,9 +259,13 @@ Backend discriminator (`'in-process'`, `'libsql'`, `'redis'`).
 
 > **size**(): `Promise`\<`number`\>
 
+Number of jobs pending delivery: queued plus leased (running).
+
 #### Returns
 
 `Promise`\<`number`\>
+
+The pending count.
 
 #### Implementation of
 

@@ -6,11 +6,15 @@
 
 # Interface: WriteOpenAPISpecOptions
 
+Options for [writeOpenAPISpec](../functions/writeOpenAPISpec.md).
+
 ## Properties
 
 ### format?
 
 > `optional` **format?**: [`OpenAPIFormat`](../type-aliases/OpenAPIFormat.md)
+
+Serialization format; `'yaml'` currently falls back to JSON.
 
 ***
 
@@ -18,11 +22,15 @@
 
 > `optional` **generatorOptions?**: [`OpenAPIGeneratorOptions`](../../spec/interfaces/OpenAPIGeneratorOptions.md)
 
+Generator options (security, server url, etc.).
+
 ***
 
 ### mappings
 
 > **mappings**: readonly [`RouteMappingTable`](../../spec/interfaces/RouteMappingTable.md)[]
+
+Route tables to merge into the document.
 
 ***
 
@@ -30,3 +38,4 @@
 
 > **outPath**: `string`
 
+Destination file path.

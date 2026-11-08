@@ -1,4 +1,5 @@
 /**
+ * JSON response view.
  */
 import { MediaTypes } from '@ndigo/core';
 import { AbstractSerializingView } from './abstract-serializing-view.js';
@@ -18,7 +19,12 @@ export class JSONView extends AbstractSerializingView {
         this.mediaType = MediaTypes.APPLICATION_JSON?.withCharset('UTF-8') ?? null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Serializes the model as JSON.
+     *
+     * @param model - The data model to serialize.
+     * @returns The JSON body.
+     */
     protected serialize(model: unknown): string {
         return JSON.stringify(model ?? null);
     }

@@ -1,4 +1,5 @@
 /**
+ * The view-target contract that receives rendered output.
  */
 import { Route } from '@ndigo/router';
 

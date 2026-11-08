@@ -40,6 +40,7 @@ export interface InProcessJobDriverOptions {
  * same shape they would after a restart.
  */
 export class InProcessJobDriver implements JobDriver {
+    /** Backend identifier (`'in-process'`). */
     readonly kind = 'in-process';
     readonly #jobs = new Map<JobId, StoredJob>();
     readonly #clock: () => number;
@@ -47,6 +48,8 @@ export class InProcessJobDriver implements JobDriver {
     #closed = false;
 
     /**
+     * Creates a driver with optional clock/id overrides.
+     *
      * @param options - Clock/id overrides for deterministic tests.
      */
     constructor(options: InProcessJobDriverOptions = {}) {
@@ -54,7 +57,12 @@ export class InProcessJobDriver implements JobDriver {
         this.#idFactory = options.idFactory ?? randomUUID;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Stores one job and makes it eligible at its resolved `runAt`.
+     *
+     * @param request - The producer-supplied job request.
+     * @returns The stored record.
+     */
     async enqueue(request: JobRequest): Promise<JobRecord> {
         this.#assertOpen();
         const now = this.#clock();
@@ -73,7 +81,13 @@ export class InProcessJobDriver implements JobDriver {
         return structuredClone(record);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Atomically leases up to `limit` eligible jobs, reclaiming expired leases
+     * first.
+     *
+     * @param options - Claim window.
+     * @returns The claimed records (possibly empty).
+     */
     async claim(options: ClaimOptions): Promise<JobRecord[]> {
         this.#assertOpen();
         assertClaimOptions(options);
@@ -103,13 +117,25 @@ export class InProcessJobDriver implements JobDriver {
         return claimed;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Removes a finished job.
+     *
+     * @param id - The job identifier.
+     * @returns A promise that resolves once the job is removed.
+     */
     async complete(id: JobId): Promise<void> {
         this.#assertOpen();
         this.#jobs.delete(id);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Returns a job to the queue at `runAt` with the failure recorded.
+     *
+     * @param id - The job identifier.
+     * @param runAt - Next eligible time (epoch milliseconds).
+     * @param lastError - Message from the failed attempt.
+     * @returns A promise that resolves once the job is requeued.
+     */
     async retry(id: JobId, runAt: number, lastError: string): Promise<void> {
         this.#assertOpen();
         const stored = this.#jobs.get(id);
@@ -122,14 +148,27 @@ export class InProcessJobDriver implements JobDriver {
         stored.record.lastError = lastError;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Terminally fails a job, removing it from the queue.
+     *
+     * @param id - The job identifier.
+     * @param lastError - Message from the final failed attempt.
+     * @returns A promise that resolves once the job is removed.
+     */
     async fail(id: JobId, lastError: string): Promise<void> {
         this.#assertOpen();
         void lastError; // terminal errors surface through telemetry/logs, not storage (AD-72 D-2)
         this.#jobs.delete(id);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Extends the lease of a running job; a no-op when the lease is no longer
+     * valid.
+     *
+     * @param id - The job identifier.
+     * @param leaseMs - New lease duration from now.
+     * @returns A promise that resolves once the lease is extended.
+     */
     async heartbeat(id: JobId, leaseMs: number): Promise<void> {
         this.#assertOpen();
         const stored = this.#jobs.get(id);
@@ -138,7 +177,11 @@ export class InProcessJobDriver implements JobDriver {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Number of jobs pending delivery: queued plus leased (running).
+     *
+     * @returns The pending count.
+     */
     async size(): Promise<number> {
         this.#assertOpen();
         let pending = 0;
@@ -150,7 +193,11 @@ export class InProcessJobDriver implements JobDriver {
         return pending;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Releases the driver's in-memory jobs; idempotent.
+     *
+     * @returns A promise that resolves once the driver is closed.
+     */
     async close(): Promise<void> {
         this.#closed = true;
         this.#jobs.clear();

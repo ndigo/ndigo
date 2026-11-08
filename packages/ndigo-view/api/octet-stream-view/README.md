@@ -6,6 +6,8 @@
 
 # octet-stream-view
 
+Binary (`application/octet-stream`) response view.
+
 ## Classes
 
 - [OctetStreamView](classes/OctetStreamView.md)

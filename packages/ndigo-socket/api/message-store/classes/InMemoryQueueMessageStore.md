@@ -27,6 +27,8 @@ ring that a budget drops whole takes its sequence counter with it, so
 
 > **new InMemoryQueueMessageStore**(`options?`): `InMemoryQueueMessageStore`
 
+Creates a store with the given retention bounds.
+
 #### Parameters
 
 ##### options?
@@ -46,8 +48,7 @@ Retained-message bounds. Defaults mirror the
 
 > `readonly` **kind**: `"in-memory"` = `'in-memory'`
 
-Backend identifier for observability/diagnostics
-(e.g. `'in-memory'`, `'libsql'`, `'redis'`).
+Store identifier (`'in-memory'`).
 
 #### Implementation of
 
@@ -73,9 +74,7 @@ Retained-destination, byte and sequence-counter totals (observability).
 
 > **append**(`message`): `Promise`\<[`StoredQueueMessage`](../interfaces/StoredQueueMessage.md)\>
 
-Persist one message and return it with the store-issued `seq` and
-`storedAt`. Applied in call order per destination. Rejects when the
-message cannot be stored (the caller owns fail-closed behavior).
+Appends one message to its destination's ring, evicting past the bounds.
 
 #### Parameters
 
@@ -83,13 +82,13 @@ message cannot be stored (the caller owns fail-closed behavior).
 
 `Omit`\<[`StoredQueueMessage`](../interfaces/StoredQueueMessage.md), `"seq"` \| `"storedAt"`\>
 
-The message without store-issued fields.
+The message payload (sequence and stored time are assigned here).
 
 #### Returns
 
 `Promise`\<[`StoredQueueMessage`](../interfaces/StoredQueueMessage.md)\>
 
-The stored message.
+The stored message with its assigned `seq` and `storedAt`.
 
 #### Implementation of
 
@@ -119,7 +118,7 @@ ring (and `seq` at 1). Idempotent.
 
 > **has**(`destination`): `Promise`\<`boolean`\>
 
-Whether a destination exists (has live or retained messages).
+Whether a destination currently retains messages.
 
 #### Parameters
 
@@ -127,13 +126,13 @@ Whether a destination exists (has live or retained messages).
 
 `string`
 
-The `/queue/<name>` destination.
+The destination to check.
 
 #### Returns
 
 `Promise`\<`boolean`\>
 
-Whether the destination is known to the store.
+`true` when the destination has a retained ring.
 
 #### Implementation of
 
@@ -145,10 +144,7 @@ Whether the destination is known to the store.
 
 > **prune**(`destination`, `retention`): `Promise`\<`number`\>
 
-Enforce retention on one destination, dropping the oldest messages
-past the TTL and/or count bound. The TTL boundary is inclusive: a
-message whose age is exactly `ttlMs` is expired. Idempotent; safe to
-call on any cadence.
+Applies a retention policy to one destination.
 
 #### Parameters
 
@@ -156,19 +152,19 @@ call on any cadence.
 
 `string`
 
-The `/queue/<name>` destination.
+The destination to prune.
 
 ##### retention
 
 [`QueueStoreRetention`](../interfaces/QueueStoreRetention.md)
 
-The policy to enforce.
+TTL and count bounds.
 
 #### Returns
 
 `Promise`\<`number`\>
 
-How many messages were pruned.
+The number of pruned messages.
 
 #### Implementation of
 
@@ -180,11 +176,7 @@ How many messages were pruned.
 
 > **replay**(`destination`, `options?`): `Promise`\<[`StoredQueueMessage`](../interfaces/StoredQueueMessage.md)[]\>
 
-Replay a destination's messages, oldest first (ascending `seq`,
-newest last). `afterSeq` resumes after a gap (crash recovery);
-`limit` bounds the window to the newest `limit` messages (history
-length) — absent, `NaN` or `+Infinity` means the whole window, and
-negative values clamp to `0` (empty).
+Replays retained messages after a sequence cursor.
 
 #### Parameters
 
@@ -192,11 +184,11 @@ negative values clamp to `0` (empty).
 
 `string`
 
-The `/queue/<name>` destination.
+The destination to replay.
 
 ##### options?
 
-Replay window.
+Sequence cursor and result limit.
 
 ###### afterSeq?
 
@@ -210,7 +202,7 @@ Replay window.
 
 `Promise`\<[`StoredQueueMessage`](../interfaces/StoredQueueMessage.md)[]\>
 
-The matching messages, append-ordered.
+The retained messages in sequence order.
 
 #### Implementation of
 

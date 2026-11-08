@@ -34,10 +34,15 @@ export interface JobRequest {
  * are resolved, and `delayMs` is gone.
  */
 export interface ResolvedJobRequest {
+    /** Job type, matched against registered `@jobHandler` types. */
     type: string;
+    /** JSON-serializable payload handed to the handler. */
     payload: unknown;
+    /** Absolute earliest run time (epoch milliseconds). */
     runAt: number;
+    /** Attempts allowed before terminal failure. */
     maxAttempts: number;
+    /** Per-execution timeout, when configured. */
     timeoutMs?: number;
 }
 
@@ -46,16 +51,21 @@ export interface ResolvedJobRequest {
  * `JobDriver.claim` callers and into handler execution.
  */
 export interface JobRecord {
+    /** Unique job id. */
     id: JobId;
+    /** Job type, matched against registered `@jobHandler` types. */
     type: string;
+    /** JSON-serializable payload handed to the handler. */
     payload: unknown;
     /** Attempts claimed so far (1 while the first execution runs). */
     attempts: number;
+    /** Attempts allowed before terminal failure. */
     maxAttempts: number;
     /** Earliest run time (epoch milliseconds). */
     runAt: number;
     /** Enqueue time (epoch milliseconds). */
     createdAt: number;
+    /** Per-execution timeout, when configured. */
     timeoutMs?: number;
     /** Error message of the most recent failed attempt, when any. */
     lastError?: string;

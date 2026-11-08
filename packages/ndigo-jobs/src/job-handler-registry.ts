@@ -15,8 +15,11 @@ export interface RegisteredJobHandler {
     type: string;
     /** `<beanName>.<methodName>` — diagnostics and spans. */
     name: string;
+    /** Attempts allowed before terminal failure, when declared. */
     maxAttempts?: number;
+    /** Per-execution timeout, when declared. */
     timeoutMs?: number;
+    /** The handler function. */
     run: JobHandler;
 }
 
@@ -157,6 +160,8 @@ export class JobHandlerRegistry implements AsyncDestroyable {
 
     /**
      * Container teardown: releases the context and registrations.
+     *
+     * @returns A promise that resolves once the registry is destroyed.
      */
     async destroy(): Promise<void> {
         if (this.destroyed) {

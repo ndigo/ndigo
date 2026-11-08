@@ -43,6 +43,8 @@ export class InProcessOutboxStore implements OutboxStore {
     #closed = false;
 
     /**
+     * Creates a store with optional clock/id overrides.
+     *
      * @param options - Clock/id overrides for deterministic tests.
      */
     constructor(options: InProcessOutboxStoreOptions = {}) {
@@ -50,7 +52,12 @@ export class InProcessOutboxStore implements OutboxStore {
         this.#idFactory = options.idFactory ?? randomUUID;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Records one side effect.
+     *
+     * @param input - Type and payload to record.
+     * @returns The stored entry (with id and `occurredAt`).
+     */
     async append(input: { type: string; payload?: unknown }): Promise<OutboxEntry> {
         this.#assertOpen();
         if (
@@ -71,7 +78,13 @@ export class InProcessOutboxStore implements OutboxStore {
         return structuredClone(entry);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Leases up to `limit` unpublished entries whose lease is absent or
+     * expired, in `occurredAt` order.
+     *
+     * @param options - Claim window.
+     * @returns The claimed entries.
+     */
     async claimPending(options: OutboxClaimOptions = {}): Promise<OutboxEntry[]> {
         this.#assertOpen();
         const limit = options.limit ?? DEFAULT_CLAIM_LIMIT;
@@ -104,7 +117,12 @@ export class InProcessOutboxStore implements OutboxStore {
         return claimed;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Marks an entry as published.
+     *
+     * @param id - The entry identifier.
+     * @returns A promise that resolves once the entry is marked.
+     */
     async markPublished(id: JobId): Promise<void> {
         this.#assertOpen();
         const stored = this.#entries.get(id);
@@ -113,7 +131,12 @@ export class InProcessOutboxStore implements OutboxStore {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Deletes published entries older than the given age.
+     *
+     * @param olderThanMs - Age in milliseconds.
+     * @returns Number of pruned entries.
+     */
     async prunePublished(olderThanMs: number): Promise<number> {
         this.#assertOpen();
         const cutoff = this.#clock() - olderThanMs;
@@ -127,7 +150,11 @@ export class InProcessOutboxStore implements OutboxStore {
         return pruned;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Number of unpublished entries.
+     *
+     * @returns The pending count.
+     */
     async size(): Promise<number> {
         this.#assertOpen();
         let pending = 0;
@@ -139,7 +166,11 @@ export class InProcessOutboxStore implements OutboxStore {
         return pending;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Releases the store's in-memory entries; idempotent.
+     *
+     * @returns A promise that resolves once the store is closed.
+     */
     async close(): Promise<void> {
         this.#closed = true;
         this.#entries.clear();

@@ -32,6 +32,8 @@ for await (const message of chat.messages) {
 
 > **new WebSocketClient**(`url`, `options?`): `WebSocketClient`
 
+Creates a client and starts connecting.
+
 #### Parameters
 
 ##### url
@@ -56,7 +58,7 @@ Reconnect/buffering/trigger/transport options.
 
 > `readonly` **status**: `Signal`\<[`SocketStatus`](../type-aliases/SocketStatus.md)\>
 
-Reactive connection state (`@ndigo/signals` signal, AD-22 D3).
+The live connection status.
 
 #### Implementation of
 
@@ -68,7 +70,7 @@ Reactive connection state (`@ndigo/signals` signal, AD-22 D3).
 
 > `readonly` **url**: `string`
 
-The endpoint URL the client connects to.
+The endpoint URL.
 
 #### Implementation of
 
@@ -82,10 +84,7 @@ The endpoint URL the client connects to.
 
 > **get** **messages**(): `AsyncIterable`\<`unknown`\>
 
-Inbound messages as an async iterable. Text frames arrive as
-strings; binary frames as `ArrayBuffer`s. The stream completes only
-on a **deliberate** close — unexpected drops pause, then continue
-after reconnect.
+Inbound messages as an async iterable.
 
 ##### Returns
 

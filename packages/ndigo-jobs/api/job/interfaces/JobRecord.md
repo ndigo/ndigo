@@ -31,6 +31,8 @@ Enqueue time (epoch milliseconds).
 
 > **id**: `string`
 
+Unique job id.
+
 ***
 
 ### lastError?
@@ -45,11 +47,15 @@ Error message of the most recent failed attempt, when any.
 
 > **maxAttempts**: `number`
 
+Attempts allowed before terminal failure.
+
 ***
 
 ### payload
 
 > **payload**: `unknown`
+
+JSON-serializable payload handed to the handler.
 
 ***
 
@@ -65,9 +71,12 @@ Earliest run time (epoch milliseconds).
 
 > `optional` **timeoutMs?**: `number`
 
+Per-execution timeout, when configured.
+
 ***
 
 ### type
 
 > **type**: `string`
 
+Job type, matched against registered `@jobHandler` types.

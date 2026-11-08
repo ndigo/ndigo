@@ -1,4 +1,5 @@
 /**
+ * The producer-view contract for whole-document rendering.
  */
 import { MediaType } from '@ndigo/core';
 import type { Route } from '@ndigo/router';

@@ -1,4 +1,5 @@
 /**
+ * The view contract, abstract bases, and rendering lifecycle.
  */
 import { AsNameAware } from '@ndigo/factory';
 import { IllegalStateError, JSONObject, MediaType, MediaTypes, Serializable, createNull, Null } from '@ndigo/core';

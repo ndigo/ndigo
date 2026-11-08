@@ -6,6 +6,8 @@
 
 # index
 
+Public API of `@ndigo/view` — view resolution, targets, and renderers.
+
 ## References
 
 ### AbstractCachingViewResolver

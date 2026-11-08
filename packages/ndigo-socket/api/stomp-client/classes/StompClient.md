@@ -27,6 +27,8 @@ stomp.send('/topic/chat', JSON.stringify({ hello: 'world' }));
 
 > **new StompClient**(`socket`, `options?`): `StompClient`
 
+Creates a STOMP client over the given socket.
+
 #### Parameters
 
 ##### socket

@@ -6,6 +6,8 @@
 
 # view
 
+The view contract, abstract bases, and rendering lifecycle.
+
 ## Classes
 
 - [AbstractPathBasedView](classes/AbstractPathBasedView.md)

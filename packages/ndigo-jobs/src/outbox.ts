@@ -128,13 +128,20 @@ export class JobOutboxPublisher implements OutboxPublisher {
     readonly #queue: JobQueue;
 
     /**
+     * Creates the publisher over `queue`.
+     *
      * @param queue - The queue entries are enqueued on.
      */
     constructor(queue: JobQueue) {
         this.#queue = queue;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Publishes one outbox entry as a job.
+     *
+     * @param entry - The entry to publish.
+     * @returns A promise that resolves once the job is enqueued.
+     */
     async publish(entry: OutboxEntry): Promise<void> {
         await this.#queue.enqueue({ type: entry.type, payload: entry.payload });
     }

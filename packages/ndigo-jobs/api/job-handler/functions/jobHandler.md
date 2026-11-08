@@ -32,3 +32,12 @@ Optional `maxAttempts`/`timeoutMs` overrides.
 The class method decorator.
 
 (`value`, `context`) => `void`
+
+## Example
+
+```ts
+class EmailJobs {
+    @jobHandler('email.send', { maxAttempts: 5, timeoutMs: 30_000 })
+    async send(payload: unknown): Promise<void> {}
+}
+```

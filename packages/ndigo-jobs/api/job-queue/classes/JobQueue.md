@@ -19,6 +19,8 @@ normalize and validate, the queue only fills in the configured default
 
 > **new JobQueue**(`options?`): `JobQueue`
 
+Creates a queue over a driver or a context-resolved driver.
+
 #### Parameters
 
 ##### options?

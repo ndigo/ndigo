@@ -1,4 +1,5 @@
 /**
+ * Binary (`application/octet-stream`) response view.
  */
 import { IllegalStateError, MediaTypes } from '@ndigo/core';
 import { AbstractSerializingView } from './abstract-serializing-view.js';
@@ -16,7 +17,13 @@ export class OctetStreamView extends AbstractSerializingView {
         this.mediaType = MediaTypes.APPLICATION_OCTET_STREAM ?? null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Serializes the model to bytes (`Uint8Array`, `ArrayBuffer`, or a UTF-8
+     * string).
+     *
+     * @param model - The data model to serialize.
+     * @returns The binary body.
+     */
     protected serialize(model: unknown): Uint8Array {
         if (model instanceof Uint8Array) {
             return model;

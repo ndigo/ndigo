@@ -6,6 +6,8 @@
 
 # view-mapping
 
+View mappings that resolve a route to a view.
+
 ## Classes
 
 - [AbstractPathViewMapping](classes/AbstractPathViewMapping.md)

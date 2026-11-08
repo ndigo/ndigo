@@ -30,6 +30,8 @@ Deterministic tests drive [tick](#tick) directly with an injected clock.
 
 > **new JobRunner**(`options?`): `JobRunner`
 
+Creates a runner over a driver/registry or a context that resolves them.
+
 #### Parameters
 
 ##### options?
@@ -48,11 +50,15 @@ Driver/registry (or context resolution) and tuning.
 
 > `readonly` **isAutoStartup**: `boolean`
 
+Whether the runner starts with the context (`autoStart`).
+
 ***
 
 ### phase
 
 > `readonly` **phase**: `10` = `10`
+
+SmartLifecycle phase: after the handler-registry scan (phase 0).
 
 ## Accessors
 
@@ -94,6 +100,8 @@ Container teardown: stops claiming and drains in-flight executions.
 
 `Promise`\<`void`\>
 
+A promise that resolves once the drain completes.
+
 #### Implementation of
 
 `AsyncCloseable.close`
@@ -118,6 +126,8 @@ completes.
 #### Returns
 
 `Promise`\<`void`\>
+
+A promise that resolves when no executions are in flight.
 
 ***
 

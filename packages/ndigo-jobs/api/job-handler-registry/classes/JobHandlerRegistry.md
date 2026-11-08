@@ -94,6 +94,8 @@ Container teardown: releases the context and registrations.
 
 `Promise`\<`void`\>
 
+A promise that resolves once the registry is destroyed.
+
 #### Implementation of
 
 `AsyncDestroyable.destroy`

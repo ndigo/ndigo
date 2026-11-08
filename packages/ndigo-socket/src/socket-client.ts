@@ -32,13 +32,26 @@ export type SocketStatus = 'connecting' | 'open' | 'reconnecting' | 'closed';
 export interface SocketTransport {
     /** Binary frame delivery mode. Defaults to `'arraybuffer'` in the client. */
     binaryType?: 'blob' | 'arraybuffer';
+    /** Called when the connection opens. */
     onopen: ((event: unknown) => void) | null;
+    /** Called for each inbound frame. */
     onmessage: ((event: { data: unknown }) => void) | null;
+    /** Called when the connection closes. */
     onclose: ((event: { code: number; reason: string; wasClean: boolean }) => void) | null;
+    /** Called on transport errors. */
     onerror: ((event: unknown) => void) | null;
-    /** Send a text (or binary) frame. */
+    /**
+     * Send a text (or binary) frame.
+     *
+     * @param data - The frame payload.
+     */
     send(data: string | ArrayBuffer): void;
-    /** Initiate (or coerce) a close handshake. */
+    /**
+     * Initiate (or coerce) a close handshake.
+     *
+     * @param code - Close status code (default `1000` normal).
+     * @param reason - Human-readable close reason.
+     */
     close(code?: number, reason?: string): void;
 }
 
@@ -137,6 +150,8 @@ export interface SocketClient {
      * Send: strings as text frames, anything else JSON-encoded. Sent while
      * disconnected: queued (when `bufferWhileDisconnected` is set, overflow
      * drops oldest) or dropped silently.
+     *
+     * @param data - The payload to send.
      */
     send(data: unknown): void;
     /**
@@ -186,7 +201,9 @@ function defaultTransportFactory(url: string): SocketTransport {
  * ```
  */
 export class WebSocketClient implements SocketClient {
+    /** The endpoint URL. */
     readonly url: string;
+    /** The live connection status. */
     readonly status: Signal<SocketStatus> = signal<SocketStatus>('connecting');
     readonly #reconnect: ReconnectPolicy | null;
     readonly #bufferLimit: number | null;
@@ -213,6 +230,8 @@ export class WebSocketClient implements SocketClient {
     #unsubscribeTrigger: (() => void) | null = null;
 
     /**
+     * Creates a client and starts connecting.
+     *
      * @param url - The endpoint URL (e.g. `ws://host/ws/chat`).
      * @param options - Reconnect/buffering/trigger/transport options.
      */
@@ -245,6 +264,7 @@ export class WebSocketClient implements SocketClient {
         return this.#onSend !== null;
     }
 
+    /** Inbound messages as an async iterable. */
     get messages(): AsyncIterable<unknown> {
         return this.#inbound.iterable();
     }

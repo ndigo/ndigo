@@ -1,4 +1,5 @@
 /**
+ * View mappings that resolve a route to a view.
  */
 import { Null, PathMatcher, URLGlobPathMatcher } from '@ndigo/core';
 import { AsNameAware } from '@ndigo/factory';
@@ -89,6 +90,12 @@ export abstract class AbstractViewMapping extends AsNameAware(AsApplicationConte
         return target;
     }
 
+    /**
+     * Resolves the target for a route.
+     *
+     * @param route - The route to resolve.
+     * @returns The mapped target, or `null` when the route does not match.
+     */
     protected abstract _getTarget(route: Route): unknown;
 }
 
@@ -105,6 +112,7 @@ export abstract class AbstractPathViewMapping extends AbstractViewMapping {
      */
     useTrailingSlashMatch: boolean;
 
+    /** The path-to-target map for this mapping. */
     protected readonly _targets!: Map<string, unknown>;
 
     constructor() {

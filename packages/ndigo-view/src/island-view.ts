@@ -1,4 +1,5 @@
 /**
+ * Server-rendered island markup with hydratable model payloads.
  */
 import { FrameworkError } from '@ndigo/core';
 import type { Route } from '@ndigo/router';

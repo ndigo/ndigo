@@ -88,6 +88,8 @@ drops oldest) or dropped silently.
 
 `unknown`
 
+The payload to send.
+
 #### Returns
 
 `void`
